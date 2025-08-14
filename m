@@ -1,73 +1,56 @@
-Return-Path: <bpf+bounces-65598-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65599-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 298D3B25B28
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 07:49:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DE0BB25B72
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 08:00:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C9FC1791CB
-	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 05:45:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1DD88838F3
+	for <lists+bpf@lfdr.de>; Thu, 14 Aug 2025 06:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D3C23817D;
-	Thu, 14 Aug 2025 05:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F4001D90AD;
+	Thu, 14 Aug 2025 06:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=nandakumar.co.in header.i=@nandakumar.co.in header.b="AEI1JF1w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from mx2.nandakumar.co.in (mx2.nandakumar.co.in [51.79.255.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D371E2036E9
-	for <bpf@vger.kernel.org>; Thu, 14 Aug 2025 05:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E7F21FF5E
+	for <bpf@vger.kernel.org>; Thu, 14 Aug 2025 06:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.79.255.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755150091; cv=none; b=MDrxAA0XIMZ3BGB/bF51exYhgHQQHYd0VFuHM6iVQBQKIM+tm3Qc9JsPcZmmd/ufxfYYol1qOyqkPHVbAAEQyHoGc5HoI0IYHeduWKUruXG/7jqwafigaS8YkLbGR6FwYZ6sCPpZsZwaWEfvL0juNtOeBmjYuFr0X7eUs0Ay7vU=
+	t=1755151248; cv=none; b=tdJd3pHTCdg9aFGlRIQQ46ENTy/LbhBlyS+sXP/vofTGIev8kDSCJ+rZMqcIUAsKVOfGaFh75XUiUK52Lu3NDBJ8T3TkufN1I5b1xArEbJ8Epbcq0KeEf1pY6RIDe96BKPFHSEdgfkeYpNNByIrfqXuqxi74ghFyAIB/MJHlIKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755150091; c=relaxed/simple;
-	bh=8pSqJzj14U/m6nHgqrv6YjHkcsNW/MDwdEmAXoI/vq8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=D9yvz6hZ5Io/Q8/ZdfczPUh2YwmH3xjMNq2y20Vw/cdyyW9nJXIVRVSvWIaUkqfSi1ptrauH+IBS6zwmBjvFS+14HE/9DVQIp2Kwfa/U24C7eZtEcFUPeR4UzdcGITbg77QEyMt9nm7HUFHlPEExxNCkHbRuzxsF01z9IwlnU9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 4ec30a7078d111f0b29709d653e92f7d-20250814
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:a66ad255-1f4b-418c-96a8-2a98014e3f9c,IP:15,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-40,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-25
-X-CID-INFO: VERSION:1.1.45,REQID:a66ad255-1f4b-418c-96a8-2a98014e3f9c,IP:15,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-40,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-25
-X-CID-META: VersionHash:6493067,CLOUDID:8d31acd77193798c89d92ec22632573b,BulkI
-	D:250814134123WJ8QDRGK,BulkQuantity:0,Recheck:0,SF:10|24|44|64|66|78|80|81
-	|82|83|102|841,TC:nil,Content:0|51,EDM:-3,IP:-2,URL:1,File:nil,RT:nil,Bulk
-	:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,
-	BRE:0,ARC:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FSI
-X-UUID: 4ec30a7078d111f0b29709d653e92f7d-20250814
-X-User: jianghaoran@kylinos.cn
-Received: from [172.30.70.212] [(39.156.73.13)] by mailgw.kylinos.cn
-	(envelope-from <jianghaoran@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1656895287; Thu, 14 Aug 2025 13:41:21 +0800
-Message-ID: <f603e0d6d357c3354ce60369439b2fa5895a44c2.camel@kylinos.cn>
-Subject: =?gb2312?Q?Re=A3=BA=5BPATCH=5D?= LoongArch: BPF: Fix incorrect
- return pointer value in the eBPF program
-From: jianghaoran <jianghaoran@kylinos.cn>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, kernel@xen0n.name, 
- hengqi.chen@gmail.com, yangtiezhu@loongson.cn, jolsa@kernel.org,
- haoluo@google.com,  sdf@fomichev.me, kpsingh@kernel.org,
- john.fastabend@gmail.com,  yonghong.song@linux.dev, song@kernel.org,
- eddyz87@gmail.com, martin.lau@linux.dev,  andrii@kernel.org,
- daniel@iogearbox.net, ast@kernel.org
-Date: Thu, 14 Aug 2025 13:40:43 +0800
-In-Reply-To: <CAAhV-H5RRRMsmdbcB-Jq=04C3r+7g_Sq-OB7pLEu8z3y_-==og@mail.gmail.com>
-References: <20250814013412.108668-1-jianghaoran@kylinos.cn>
-	 <CAAhV-H5RRRMsmdbcB-Jq=04C3r+7g_Sq-OB7pLEu8z3y_-==og@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1-2kord0k2.4.25.1 
+	s=arc-20240116; t=1755151248; c=relaxed/simple;
+	bh=l63tudJfJujte34u/7/OZZwJ6ASdE00KC3lDVsws2V0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Pufkl9NpuFFwp66bmBLL01pnYMKrLPsYmnTMQ6CkTRQv7wl7qtgY8rpTxeUMg5LiQ7rtl5cxcpZn+nCc1aPDwi7rs7AkNsAKwZjLaD88SNyG2xJMTyXR4H4ATaJbic7eYSGdBPURMybIB9mYknlWIpWILm7q569hvdt0aHGLrjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nandakumar.co.in; spf=pass smtp.mailfrom=nandakumar.co.in; dkim=pass (2048-bit key) header.d=nandakumar.co.in header.i=@nandakumar.co.in header.b=AEI1JF1w; arc=none smtp.client-ip=51.79.255.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nandakumar.co.in
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nandakumar.co.in
+Received: from localhost.localdomain (unknown [14.139.174.50])
+	by mx2.nandakumar.co.in (Postfix) with ESMTPSA id 86E8D44BCD;
+	Thu, 14 Aug 2025 05:51:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nandakumar.co.in;
+	s=feb22; t=1755150668;
+	bh=l63tudJfJujte34u/7/OZZwJ6ASdE00KC3lDVsws2V0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AEI1JF1wlUrn3pRCm4ShbS5B1s+6ZmKQQp1gppD4HqQ5FX10Q5fl54/l6tKPwgD48
+	 k3Bqq+ve9djw66IH+5q2aQrZVsFRAjDH9KaWDqCb5QLH6njt1fqk/2MXhYQRisZM0W
+	 Ob/9a/G34Eu7gbURC6O/25oJfvSwBommWf6z/8cnXnkoLw7tjpERhtWi92R5pNY406
+	 w5ydA5sStk3z/5ZlYtMFd2mMX25pfBqIWN19YIrAlhVjUp9yhg3BFpDc3ZlJede8Qe
+	 wmQbWfpujTMuAir+ubGQJtqryVrC7yK6iDo9c9NOzrM6rFM+/32DzgZ9cxFst4vp5b
+	 RLYf17j0kGSOA==
+From: Nandakumar Edamana <nandakumar@nandakumar.co.in>
+To: Alexei Starovoitov <ast@kernel.org>
+Cc: bpf@vger.kernel.org,
+	Nandakumar Edamana <nandakumar@nandakumar.co.in>
+Subject: [PATCH bpf-next] bpf: improve the general precision of tnum_mul
+Date: Thu, 14 Aug 2025 11:20:55 +0530
+Message-Id: <20250814055055.1199797-1-nandakumar@nandakumar.co.in>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,130 +59,124 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+This commit addresses a challenge explained in an open question ("How
+can we incorporate correlation in unknown bits across partial
+products?") left by Harishankar et al. in their paper:
+https://arxiv.org/abs/2105.05398
 
-在 2025-08-14星期四的 11:23 +0800，Huacai Chen写道：
-> Hi, Haoran,
-> 
-> On Thu, Aug 14, 2025 at 9:34 AM Haoran Jiang <
-> jianghaoran@kylinos.cn
-> > wrote:
-> > In some eBPF programs, the return value is a pointer.
-> > When the kernel call an eBPF program (such as struct_ops),
-> > it expects a 64-bit address to be returned, but instead a 32-
-> > bit value.
-> > 
-> > Before applying this patch:
-> > ./test_progs -a ns_bpf_qdisc
-> > CPU 7 Unable to handle kernel paging request at virtual
-> > address 0000000010440158.
-> > 
-> > As shown in the following test case,
-> > bpf_fifo_dequeue return value is a pointer.
-> > progs/bpf_qdisc_fifo.c
-> > 
-> > SEC("struct_ops/bpf_fifo_dequeue")
-> > struct sk_buff *BPF_PROG(bpf_fifo_dequeue, struct Qdisc *sch)
-> > {
-> >         struct sk_buff *skb = NULL;
-> >         ........
-> >         skb = bpf_kptr_xchg(&skbn->skb, skb);
-> >         ........
-> >         return skb;
-> > }
-> > 
-> > kernel call bpf_fifo_dequeue：
-> > net/sched/sch_generic.c
-> > 
-> > static struct sk_buff *dequeue_skb(struct Qdisc *q, bool
-> > *validate,
-> >                                    int *packets)
-> > {
-> >         struct sk_buff *skb = NULL;
-> >         ........
-> >         skb = q->dequeue(q);
-> >         .........
-> > }
-> > When accessing the skb, an address exception error will occur.
-> > because the value returned by q->dequeue at this point is a 32-
-> > bit
-> > address rather than a 64-bit address.
-> > 
-> > After applying the patch：
-> > ./test_progs -a ns_bpf_qdisc
-> > Warning: sch_htb: quantum of class 10001 is small. Consider r2q
-> > change.
-> > 213/1   ns_bpf_qdisc/fifo:OK
-> > 213/2   ns_bpf_qdisc/fq:OK
-> > 213/3   ns_bpf_qdisc/attach to mq:OK
-> > 213/4   ns_bpf_qdisc/attach to non root:OK
-> > 213/5   ns_bpf_qdisc/incompl_ops:OK
-> > 213     ns_bpf_qdisc:OK
-> > Summary: 1/5 PASSED, 0 SKIPPED, 0 FAILED
-> > 
-> > Fixes: 73c359d1d356 ("LoongArch: BPF: Sign-extend return
-> > values")
-> > Signed-off-by: Haoran Jiang <
-> > jianghaoran@kylinos.cn
-> > >
-> 
-> Can this patch solve this bug?
-> https://lore.kernel.org/loongarch/CAK3+h2x1gjuqEsUSj+B-9sb73kRo3bStH6ROw=1LVSqQGMNcUw@mail.gmail.com/T/#t
-> 
-> 
-> Huacai
+When LSB(a) is uncertain, we know for sure that it is either 0 or 1,
+from which we could find two possible partial products and take a
+union. Experiment shows that applying this technique in long
+multiplication improves the precision in a significant number of cases
+(at the cost of losing precision in a relatively lower number of
+cases).
 
-This patch can't  solve this problem. Currently, Chenghao is
-researching this issue.
+This commit also removes the value-mask decomposition technique
+employed by Harishankar et al., as its direct incorporation did not
+result in any improvements for the new algorithm.
 
-Haoran
-> > ---
-> >  arch/loongarch/net/bpf_jit.c | 18 +++++++++++++++++-
-> >  1 file changed, 17 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/loongarch/net/bpf_jit.c
-> > b/arch/loongarch/net/bpf_jit.c
-> > index abfdb6bb5c38..7df067a42f36 100644
-> > --- a/arch/loongarch/net/bpf_jit.c
-> > +++ b/arch/loongarch/net/bpf_jit.c
-> > @@ -229,8 +229,24 @@ static void __build_epilogue(struct
-> > jit_ctx *ctx, bool is_tail_call)
-> >         emit_insn(ctx, addid, LOONGARCH_GPR_SP,
-> > LOONGARCH_GPR_SP, stack_adjust);
-> > 
-> >         if (!is_tail_call) {
-> > -               /* Set return value */
-> > +               /*
-> > +                *  Set return value
-> > +                *  Check if the 64th bit in regmap[BPF_REG_0]
-> > is 1. If it is,
-> > +                *  the value in regmap[BPF_REG_0] is a kernel-
-> > space address.
-> > +                *
-> > +                *  t1 = regmap[BPF_REG_0] >> 63
-> > +                *  t2 = 1
-> > +                *  if(t2 == t1)
-> > +                *      move a0 <- regmap[BPF_REG_0]
-> > +                *  else
-> > +                *      addiw a0 <- regmap[BPF_REG_0] + 0
-> > +                */
-> > +               emit_insn(ctx, srlid, LOONGARCH_GPR_T1,
-> > regmap[BPF_REG_0], 63);
-> > +               emit_insn(ctx, addid, LOONGARCH_GPR_T2,
-> > LOONGARCH_GPR_ZERO, 0x1);
-> > +               emit_cond_jmp(ctx, BPF_JEQ, LOONGARCH_GPR_T1,
-> > LOONGARCH_GPR_T2, 3);
-> >                 emit_insn(ctx, addiw, LOONGARCH_GPR_A0,
-> > regmap[BPF_REG_0], 0);
-> > +               emit_uncond_jmp(ctx, 2);
-> > +               move_reg(ctx, LOONGARCH_GPR_A0,
-> > regmap[BPF_REG_0]);
-> >                 /* Return to the caller */
-> >                 emit_insn(ctx, jirl, LOONGARCH_GPR_ZERO,
-> > LOONGARCH_GPR_RA, 0);
-> >         } else {
-> > --
-> > 2.43.0
-> > 
-> > 
+Signed-off-by: Nandakumar Edamana <nandakumar@nandakumar.co.in>
+---
+ include/linux/tnum.h |  3 +++
+ kernel/bpf/tnum.c    | 52 ++++++++++++++++++++++++++++++++------------
+ 2 files changed, 41 insertions(+), 14 deletions(-)
+
+diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+index 57ed3035cc30..68e9cdd0a2ab 100644
+--- a/include/linux/tnum.h
++++ b/include/linux/tnum.h
+@@ -54,6 +54,9 @@ struct tnum tnum_mul(struct tnum a, struct tnum b);
+ /* Return a tnum representing numbers satisfying both @a and @b */
+ struct tnum tnum_intersect(struct tnum a, struct tnum b);
+ 
++/* Returns a tnum representing numbers satisfying either @a or @b */
++struct tnum tnum_union(struct tnum t1, struct tnum t2);
++
+ /* Return @a with all but the lowest @size bytes cleared */
+ struct tnum tnum_cast(struct tnum a, u8 size);
+ 
+diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+index fa353c5d550f..1ae00dbc8b0e 100644
+--- a/kernel/bpf/tnum.c
++++ b/kernel/bpf/tnum.c
+@@ -116,31 +116,47 @@ struct tnum tnum_xor(struct tnum a, struct tnum b)
+ 	return TNUM(v & ~mu, mu);
+ }
+ 
+-/* Generate partial products by multiplying each bit in the multiplier (tnum a)
+- * with the multiplicand (tnum b), and add the partial products after
+- * appropriately bit-shifting them. Instead of directly performing tnum addition
+- * on the generated partial products, equivalenty, decompose each partial
+- * product into two tnums, consisting of the value-sum (acc_v) and the
+- * mask-sum (acc_m) and then perform tnum addition on them. The following paper
+- * explains the algorithm in more detail: https://arxiv.org/abs/2105.05398.
++/* Perform long multiplication, iterating through the trits in a. A small trick
++ * inside the loop finds two possible partial products and takes their union,
++ * improving the precision significantly.
++ * A comment inside refers to a paper by Harishankar et al.:
++ * https://arxiv.org/abs/2105.05398
+  */
+ struct tnum tnum_mul(struct tnum a, struct tnum b)
+ {
+-	u64 acc_v = a.value * b.value;
+-	struct tnum acc_m = TNUM(0, 0);
++	struct tnum acc = TNUM(0, 0);
+ 
+ 	while (a.value || a.mask) {
+ 		/* LSB of tnum a is a certain 1 */
+-		if (a.value & 1)
+-			acc_m = tnum_add(acc_m, TNUM(0, b.mask));
++		if (a.value & 1) {
++			acc = tnum_add(acc, b);
++		}
+ 		/* LSB of tnum a is uncertain */
+-		else if (a.mask & 1)
+-			acc_m = tnum_add(acc_m, TNUM(0, b.value | b.mask));
++		else if (a.mask & 1) {
++			/* Simply multiplying b with LSB(a)'s uncertainty results in decreased
++			 * precision, as explained in an open question ("How can we incorporate
++			 * correlation in unknown bits across partial products?") left by
++			 * Harishankar et al. However, we know for sure that LSB(a) is either
++			 * 0 or 1, from which we could find two possible partial products and
++			 * take a union. This improves the precision in a significant number of
++			 * cases.
++			 *
++			 * The first partial product (acc_0) is for the case LSB(a) = 0;
++			 * but acc_0 = acc + 0 * b = acc.
++			 */
++
++			/* In case LSB(a) is 1 */
++			u64 itermask = b.value | b.mask;
++			struct tnum iterprod = TNUM(b.value & ~itermask, itermask);
++			struct tnum acc_1 = tnum_add(acc, iterprod);
++
++			acc = tnum_union(acc, acc_1);
++		}
+ 		/* Note: no case for LSB is certain 0 */
+ 		a = tnum_rshift(a, 1);
+ 		b = tnum_lshift(b, 1);
+ 	}
+-	return tnum_add(TNUM(acc_v, 0), acc_m);
++	return acc;
+ }
+ 
+ /* Note that if a and b disagree - i.e. one has a 'known 1' where the other has
+@@ -155,6 +171,14 @@ struct tnum tnum_intersect(struct tnum a, struct tnum b)
+ 	return TNUM(v & ~mu, mu);
+ }
+ 
++struct tnum tnum_union(struct tnum a, struct tnum b)
++{
++	u64 v = a.value & b.value;
++	u64 mu = (a.value ^ b.value) | a.mask | b.mask;
++
++	return TNUM(v & ~mu, mu);
++}
++
+ struct tnum tnum_cast(struct tnum a, u8 size)
+ {
+ 	a.value &= (1ULL << (size * 8)) - 1;
+-- 
+2.39.5
 
 
