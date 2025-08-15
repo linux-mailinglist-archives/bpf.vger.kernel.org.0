@@ -1,84 +1,89 @@
-Return-Path: <bpf+bounces-65768-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65769-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4107BB27FC2
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 14:12:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39EABB2801F
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 14:44:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1F7756663B
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 12:12:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C66EA7A51E5
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 12:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB632FF16A;
-	Fri, 15 Aug 2025 12:12:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D4630103F;
+	Fri, 15 Aug 2025 12:44:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2vhFvrT5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a621F5wb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC9BC137E
-	for <bpf@vger.kernel.org>; Fri, 15 Aug 2025 12:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F6B2C3264;
+	Fri, 15 Aug 2025 12:44:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755259943; cv=none; b=iQ/NVieCug0By+BDa3ghP52sN9CN+2ctXUgu5rAgX1hahWRUjYz683PJ7xVKw6QKVL2oCt/LtMjwhQKvfKG9+98t5ln5s+vCVqtEB6jsfhS+TB7h2FyvdDd7Apguw5tIpvqxs6RDwF2iyxuTCSW5O1nYEbEvnF6ttuivWewZ9aU=
+	t=1755261883; cv=none; b=Ssc0NBDJFkX+4XJbMUY2fFODzGzqBrKKOMZ3VdArVklAxLG8+YFOpKEgjqNoa3NG4EWtudDo/v2mZTDg/we7Rm9HZRMUuBkF3214yK4PfLG/dMDiWXtEOFS0rj8G0k+T5Dn1SZCMlfbOsdY/wo0MwFUgHJgewvF4M69X2jZz51Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755259943; c=relaxed/simple;
-	bh=eJYWJQBF11z0VLWX05nTM8+j9c1+/1TrZvyLZ40kLtQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=cU93DsEnpEqGf29SSMYJfslxgFw1Nv4O26bjvQ1DNP51OnCKQ+xzd0RRLXPbwiU0QtKECG6uaVEOcgpksdgzZMrZZW3FhWE3FqLaDzTsqVkEu278j7PrBexxPjFQiPesKkIRbG7q/sqydjomVDy4HrnJ3erHvFuKGywsuhdepmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2vhFvrT5; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-afcb7a3ee3cso292779266b.2
-        for <bpf@vger.kernel.org>; Fri, 15 Aug 2025 05:12:21 -0700 (PDT)
+	s=arc-20240116; t=1755261883; c=relaxed/simple;
+	bh=gdXFBB295mBNGVsJgAbR1vP0UTgaD4mZH6tytmxhwnQ=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PpuIfTxZzsxARCC8Ene5DxHChVo9JFcIOoJvAY6n6/1FvAwBFH62aVCkQyVudBxow7Ayi6puHg7V/W+9bWVVzmngLz36RmyMF3luiB/8j6KiD3zZgJXZvnobHyB/fP7lw8xA+gU5+4zWbScZ1Ejx1voXd6Nus74AJeKDoxoW43s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a621F5wb; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-afcb7347e09so306522366b.0;
+        Fri, 15 Aug 2025 05:44:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755259940; x=1755864740; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kgh7P1bEIZBR17lW59I3zPrNy0CyJ0mnhNWhfTDyyyc=;
-        b=2vhFvrT5CoMiG5qk+o99apc6jDrmz3LktHDXQ3HCTGf+yiad/uTPcFP+JR2ynngoQX
-         s8em3it9i4184ix6jw6l9L9JxKjN89h6POclMD1tJh6nCSTtMxmM5M1qB7SnDZWWwAMx
-         i3YnnY64EGXcj0GUA/mCWRyLH49rmhALfM6H1rr+qDNoc1rLFFYejMZaf0UjZ+H/x9Jx
-         kB4wi8bSljimU2r+WoXfjhdPrzjM9sr5rGuqJ9KEqFj2dVRklAMVdIX11EwoBHqLWwDj
-         iIsw29nfMT9rjhegHUAz1UWZsvWoCE5gkJzLaOxCNNmKzTHXg7CO+D/reMkZ96Hgzt4v
-         BrEw==
+        d=gmail.com; s=20230601; t=1755261880; x=1755866680; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hjeBt9GCyvF4EZYxj/on9NBWCQ0HQWui55lR9+/qkb0=;
+        b=a621F5wbZ7lOLge1xfuqFv4jc0tNRqysphcZwt9hlYCIIuFH+3D82hNbcYhrEPZTbX
+         8HrEIsnpWxIN06ZHqbltnXhhiPfUCfLqyRjUCOKTgZOuKn/qmiQrTX0PzzZ9Bm8GtU1i
+         m82J/Cz6Qyhbr+WcgLmwUeF6lSvRgqq4WoPrW80JdhS4F9yAq0BCszMQIJsZP6jzkxPp
+         e1vkD+CLdW3G94bKjLUAAKbtrU/9UY6qBCQhrmaykTAE8KxbZ0dd1KfeUhkkqOUIEp8n
+         +t39q47kYwHd59hveWflMOoCdfOh7KZZhk8Wh2Xe2CQejyBo5FJrADSLoLrpVhS5hQnc
+         W//Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755259940; x=1755864740;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kgh7P1bEIZBR17lW59I3zPrNy0CyJ0mnhNWhfTDyyyc=;
-        b=X2SLS2UWduYMs+MCmhNSgBMIb18r+CuI0U6wn88sY7I9XGOlXwDKlK57gzs1ErTA0P
-         r1O4wBMGAG09MubsM8bi/ri22DDeBHsJNT0JqGxgfZzA7MKeTs+WmNi24GrZtC6FwSr4
-         f1JYANDfCFen0KIYABLreuNxJz1IAd/gI9oOO5nv5zKEL6Vr5+nyhi7PXwqn5QehenGF
-         5GBblg7xyGRNNgIMgcdS6X+n603wJ0BVw7yfVItmUpyjZbSrV0aZD2J+7TlYFq5ukg0y
-         5ploe6ZbAZjccakrvlyHJWFEj7bcjxDEqYj/bHWQDfl9BBK3z6dNDvDHksM9YJIX2ZMg
-         aV3A==
-X-Gm-Message-State: AOJu0YyB9eJ9hhkm/7FJ3lLTthI68SuI3KWJDuTB4ccRLfgCUI4fnkBs
-	LNi2lKlYQ2AqpaHnOYPpehjEVnmHtuYbfb09+kqxBmvBl2toNuh8iFUpZEK/BkARIy6sNOvG2EU
-	sSF7T3Q==
-X-Gm-Gg: ASbGnctTOKNzfESJBzsJKmgq7ahaBlqmfH4T/0dFaj6UP+3IjA/htx2UGjN5PmS7fdK
-	T3zS0+vNg2BK9J9+PjAJogtotps5WyGEuyxN+X8armbhrLaCoQxw1fxzmhCz/dEogVZjJTjsuJE
-	vpo/wV/H9uvJw3MzE3BZbjdaV0HpdC/lcY3VVHqEnf1BnE3f46Urhp1QAKftiZqR+R/jLTjYNaK
-	riSwnl4b7D5YTAy9qbkLwE8CQvue/AFQ3/sYzNpzkirXlHL7QtHNuVsIG/W/5K7CTjr3eft5sfy
-	mi7evuOUar2+OoWLjkmza9FKcMOhvTzgVsyP0xvwF3NXf5MzjoYqcG9hCc3qOvgKGKFMotJHXQC
-	+TwT37pPTA+EDOuEIiZPGRZlHb8oEPVp4/tDYxjacz/+bR0TT0TIIMeukbO6t5Z7A/6C8dqR2hS
-	3dECb4tkj5TdSuwdhQUQimBg==
-X-Google-Smtp-Source: AGHT+IGgjMWBITmeVok5KFaDiK9pG8OBMHYxM+MxYXxJ0/5QA/vA5VadU3N7dKdeJVZKK/N7FWgLkg==
-X-Received: by 2002:a17:907:6e9e:b0:af9:9d7b:6f44 with SMTP id a640c23a62f3a-afcdc1a5772mr175113966b.19.1755259939555;
-        Fri, 15 Aug 2025 05:12:19 -0700 (PDT)
-Received: from google.com (155.217.141.34.bc.googleusercontent.com. [34.141.217.155])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-afcdd04e0a4sm134661466b.114.2025.08.15.05.12.18
+        d=1e100.net; s=20230601; t=1755261880; x=1755866680;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hjeBt9GCyvF4EZYxj/on9NBWCQ0HQWui55lR9+/qkb0=;
+        b=c8v2TrcxsrBiXD7BdH8oZJ7ejl9P+l2v2xbvAvYOAqC2PdeCR6DvV5GVW6rYGvRH7N
+         eAJp7HLrP7368QzZn+rQ+IxIBGezosgokiCK73kpFbo9w0Rq66ttOAGgAb4JURc5cG/f
+         WPbLYTTZ6dwuDFctjOg7Nkw+IoLydTBACV/3c6aA2EmSzrkm1TPQtlQrAciJOw4n+ak3
+         94S1FiLjpvUCbIv4967gPRXnFZjAPCslmX8Xb9vI5Ub7bTI8Oxmw4hn13BN+DZWB8lDd
+         8EpCRsGsTlAvb5py0Vuq98S/lnese3bWvGRjJHeFLmW++aVCIEsHC6kxaHqvqryxqc/d
+         /i7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUoeINI+mIFDOs9Qg9t2w6R4EvbQFFbVUKsliuKrL713BtIXMl0fUp/ThVrsQKhKQlrQAi5Ijxl09hq72qPQToW@vger.kernel.org, AJvYcCVldQkL7nuwn+fBWJYBMI5/23E9nIBQzbvNWWdb3Yz1YFXA9D8rAKK/+isezLKMbl+1TC8jFIRKOullG9RG@vger.kernel.org, AJvYcCXrkA2d1JVXsZbuFPaeqo5DmM+fRRa8au2iXR0HiGu2iV4WVS6ZsgGkeXFW+vd1gv90oTc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVW+dxTBXYOq86BxqAquiv5nk59jCuaJ/B68MdAQMeg8+rfZvU
+	kGIbn+9o/xf1t48DFV6Tm2qa0nCG8f40T+l1H2GPF8h+FvzBcIOrGd28
+X-Gm-Gg: ASbGncuYMRCsAeBu8phKgBbglEGGxIeGhIaALugP1iw3qbykhNAYzX9hLbRHb3siBiy
+	cLrk+MW1HDRFVSTKuT+PIq7BOieHr0oHtVJ0a8sSV9wsmaRjuWRstBV5IWqvzL4AI5fQdy+DO5P
+	XEmSRI4YDsn/GcTPjtey4qzY6zn/SfuPEyrap3YIdMYCrgeF0Bi2VcBpUE6UY2sYjjEws8tsgbf
+	J6yGfZaFzybHWqJa5r085OQoh2ftWt2Ww/MyFydFub5aHATuHKCb1FIhaqkfIwJUUt8b93oGQ8a
+	hiqTJvTWSwWO+Ogp7dRrwv9kpGAsI6KANgw6/vDnVSom+nZ7DQd5CKrmYDJL5oFC94cw1S72RQL
+	u6wPo/mUowg==
+X-Google-Smtp-Source: AGHT+IHG+YotOlvULIwtil5MjsG5WCy1TrbFl0wpQ0pvXdVu8f9TwR47lcgTFQCHv+6evIR/26cmdw==
+X-Received: by 2002:a17:907:3e9f:b0:afa:2672:8c49 with SMTP id a640c23a62f3a-afcdc1d40cbmr180056266b.18.1755261879931;
+        Fri, 15 Aug 2025 05:44:39 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-618af9d3112sm1413205a12.9.2025.08.15.05.44.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Aug 2025 05:12:19 -0700 (PDT)
-Date: Fri, 15 Aug 2025 12:12:14 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: bpf@vger.kernel.org
+        Fri, 15 Aug 2025 05:44:39 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 15 Aug 2025 14:44:32 +0200
+To: Jiawei Zhao <phoenix500526@163.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	eddyz87@gmail.com, mykolal@fb.com
-Subject: [PATCH bpf] bpf/selftests: fix test_tcpnotify_user
-Message-ID: <aJ8kHhwgATmA3rLf@google.com>
+	yonghong.song@linux.dev, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v10 3/3] selftests/bpf: make usdt_o2 reliably
+ generate SIB USDT arg spec
+Message-ID: <aJ8rsK2-XcPXNX7h@krava>
+References: <20250814160740.96150-1-phoenix500526@163.com>
+ <20250814160740.96150-4-phoenix500526@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,130 +92,157 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20250814160740.96150-4-phoenix500526@163.com>
 
-Based on a bisect, it appears that commit 7ee988770326 ("timers:
-Implement the hierarchical pull model") has somehow inadvertently
-broken BPF selftest test_tcpnotify_user. The error that is being
-generated by this test is as follows:
+On Thu, Aug 14, 2025 at 04:07:39PM +0000, Jiawei Zhao wrote:
+> usdt_o2 is intended to exercise the SIB (Scale-Index-Base) argument
+> handling in libbpf's USDT path. With GCC 13 this reliably produced a
+> SIB-form argument (e.g. 8@(%rdx,%rax,8)), but with newer GCC (e.g. 15)
+> the compiler frequently optimizes the probe argument into a plain
+> register (e.g. 8@%rax) or a stack slot, so the test stops covering the
+> SIB code path and becomes flaky across toolchains.
+> 
+> Force a SIB memory operand in the probe by:
+> * placing the base pointer into %rdx and the index into %rax using an
+>   empty inline asm with output constraints ("=d", "=a") and matching
+>   inputs
+> * immediately passing base[idx] to STAP_PROBE1.
+> * only enable on x86 platform.
+> 
+> This makes the compiler encode the operand as SIB (base + index8),
+> which in .note.stapsdt shows up as 8@(%rdx,%rax,8) regardless of GCC
+> version. A memory clobber and noinline prevent reordering/re-allocation
+> around the probe site.
+> 
+> This change is x86_64-specific and does not alter program semantics; it
+> only stabilizes the USDT argument shape so the test consistently
+> validates SIB handling. Clang historically prefers stack temporaries for
+> such operands, but the selftests build with GCC, and this keeps behavior
+> stable across GCC versions without introducing a separate .S file.
+> 
+> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
+> ---
+>  .../selftests/bpf/prog_tests/usdt_o2.c        | 20 ++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
+> index f02dcf5188ab..e46d5743ad24 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
+> @@ -15,11 +15,19 @@ __attribute__((optimize("O2")))
+>  int lets_test_this(int);
+>  static volatile __u64 array[1] = {test_value};
+>  
+> -static __always_inline void trigger_func(void)
+> +static noinline void trigger_func(void)
+>  {
+> +#if defined(__x86_64__) || defined(__i386__)
+>  	/* Base address + offset + (index * scale) */
+> -	for (volatile int i = 0; i <= 0; i++)
+> -		STAP_PROBE1(test, usdt1, array[i]);
+> +	/* Force SIB addressing with inline assembly */
+> +	const __u64 *base;
+> +	__u32 idx;
+> +	/* binding base to %rdx and idx to %rax */
+> +	asm volatile("" : "=d"(base), "=a"(idx) : "0"(array), "1"((__u32)0) : "memory");
+> +	STAP_PROBE1(test, usdt1, base[idx]);
 
-	FAILED: Wrong stats Expected 10 calls, got 8
+hum, I still end up with
 
-It looks like the change allows timer functions to be run on CPUs
-different from the one they are armed on. The test had pinned itself
-to CPU 0, and in the past the retransmit attempts also occurred on CPU
-0. The test had set the max_entries attribute for
-BPF_MAP_TYPE_PERF_EVENT_ARRAY to 2 and was calling
-bpf_perf_event_output() with BPF_F_CURRENT_CPU, so the entry was
-likely to be in range. With the change to allow timers to run on other
-CPUs, the current CPU tasked with performing the retransmit might be
-bumped and in turn fall out of range, as the event will be filtered
-out via __bpf_perf_event_output() using:
+	  stapsdt              0x0000002a       NT_STAPSDT (SystemTap probe descriptors)
+	    Provider: test
+	    Name: usdt1
+	    Location: 0x00000000007674c9, Base: 0x00000000035bc698, Semaphore: 0x0000000000000000
+	    Arguments: 8@%rax
 
-    if (unlikely(index >= array->map.max_entries))
-            return -E2BIG;
+disasm being:
 
-A possible change would be to explicitly set the max_entries attribute
-for perf_event_map in test_tcpnotify_kern.c to a value that's at least
-as large as the number of CPUs. As it turns out however, if the field
-is left unset, then the BPF selftest library will determine the number
-of CPUs available on the underlying system and update the max_entries
-attribute accordingly.
+	static noinline void trigger_func(void)
+	{
+	  76749f:       55                      push   %rbp
+	  7674a0:       48 89 e5                mov    %rsp,%rbp
+		/* Base address + offset + (index * scale) */
+		/* Force SIB addressing with inline assembly */
+		const __u64 *base;
+		__u32 idx;
+		/* binding base to %rdx and idx to %rax */
+		asm volatile("" : "=d"(base), "=a"(idx) : "0"(array), "1"((__u32)0) : "memory");
+	  7674a3:       ba 20 49 9c 03          mov    $0x39c4920,%edx
+	  7674a8:       b8 00 00 00 00          mov    $0x0,%eax
+	  7674ad:       48 89 55 f8             mov    %rdx,-0x8(%rbp)
+	  7674b1:       89 45 f4                mov    %eax,-0xc(%rbp)
+		STAP_PROBE1(test, usdt1, base[idx]);
+	  7674b4:       8b 45 f4                mov    -0xc(%rbp),%eax
+	  7674b7:       48 8d 14 c5 00 00 00    lea    0x0(,%rax,8),%rdx
+	  7674be:       00
+	  7674bf:       48 8b 45 f8             mov    -0x8(%rbp),%rax
+	  7674c3:       48 01 d0                add    %rdx,%rax
+	  7674c6:       48 8b 00                mov    (%rax),%rax
+	  7674c9:       90                      nop
+	#else
+		STAP_PROBE1(test, usdt1, array[0]);
+	#endif
+	}
+	  7674ca:       90                      nop
+	  7674cb:       5d                      pop    %rbp
+	  7674cc:       c3                      ret
 
-A further problem with the test is that it has a thread that continues
-running up until the program exits. The main thread cleans up some
-LIBBPF data structures, while the other thread continues to use them,
-which inevitably will trigger a SIGSEGV. This can be dealt with by
-telling the thread to run for as long as necessary and doing a
-pthread_join on it before exiting the program.
 
-Finally, I don't think binding the process to CPU 0 is meaningful for
-this test any more, so get rid of that.
+I wonder we could also try to bring in Andrii's usdt.h [1] and overload usdt
+arguments like outlined in the hack below (full code in [1])
 
-Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
+we will probably need smarter and sustainable change, but you I guess you get
+the idea
+
+jirka
+
+
+[1] https://github.com/anakryiko/usdt
+[2] git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git usdt_hack
 ---
- .../selftests/bpf/progs/test_tcpnotify_kern.c |  1 -
- .../selftests/bpf/test_tcpnotify_user.c       | 20 +++++++++----------
- 2 files changed, 10 insertions(+), 11 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_tcpnotify_kern.c b/tools/testing/selftests/bpf/progs/test_tcpnotify_kern.c
-index 540181c115a8..ef00d38b0a8d 100644
---- a/tools/testing/selftests/bpf/progs/test_tcpnotify_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcpnotify_kern.c
-@@ -23,7 +23,6 @@ struct {
+diff --git a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
+index e46d5743ad24..7bb098c37de5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
++++ b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
+@@ -4,6 +4,8 @@
  
- struct {
- 	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
--	__uint(max_entries, 2);
- 	__type(key, int);
- 	__type(value, __u32);
- } perf_event_map SEC(".maps");
-diff --git a/tools/testing/selftests/bpf/test_tcpnotify_user.c b/tools/testing/selftests/bpf/test_tcpnotify_user.c
-index 595194453ff8..35b4893ccdf8 100644
---- a/tools/testing/selftests/bpf/test_tcpnotify_user.c
-+++ b/tools/testing/selftests/bpf/test_tcpnotify_user.c
-@@ -15,20 +15,18 @@
- #include <bpf/libbpf.h>
- #include <sys/ioctl.h>
- #include <linux/rtnetlink.h>
--#include <signal.h>
- #include <linux/perf_event.h>
--#include <linux/err.h>
+ #include "../sdt.h"
+ #include "test_usdt_o2.skel.h"
++#define USDT_ARGS ".asciz \"(,%%rax,8)\"\n"
++#include "usdt.h"
  
--#include "bpf_util.h"
- #include "cgroup_helpers.h"
+ #if defined(__GNUC__) && !defined(__clang__)
+ __attribute__((optimize("O2")))
+@@ -28,6 +30,7 @@ static noinline void trigger_func(void)
+ #else
+ 	STAP_PROBE1(test, usdt1, array[0]);
+ #endif
++	USDT(krava, test1, 1, 2);
+ }
  
- #include "test_tcpnotify.h"
--#include "trace_helpers.h"
- #include "testing_helpers.h"
+ static void basic_sib_usdt(void)
+diff --git a/tools/testing/selftests/bpf/usdt.h b/tools/testing/selftests/bpf/usdt.h
+index 549d1f774810..960ebd6aa88b 100644
+--- a/tools/testing/selftests/bpf/usdt.h
++++ b/tools/testing/selftests/bpf/usdt.h
+@@ -403,6 +403,10 @@ struct usdt_sema { volatile unsigned short active; };
+ 	__asm__ __volatile__ ("" :: "m" (sema));
+ #endif
  
- #define SOCKET_BUFFER_SIZE (getpagesize() < 8192L ? getpagesize() : 8192L)
- 
- pthread_t tid;
-+static bool exit_thread;
++#ifndef USDT_ARGS
++#define USDT_ARGS __usdt_asm_args(__VA_ARGS__)
++#endif
 +
- int rx_callbacks;
- 
- static void dummyfn(void *ctx, int cpu, void *data, __u32 size)
-@@ -45,7 +43,7 @@ void tcp_notifier_poller(struct perf_buffer *pb)
- {
- 	int err;
- 
--	while (1) {
-+	while (!exit_thread) {
- 		err = perf_buffer__poll(pb, 100);
- 		if (err < 0 && err != -EINTR) {
- 			printf("failed perf_buffer__poll: %d\n", err);
-@@ -78,15 +76,10 @@ int main(int argc, char **argv)
- 	int error = EXIT_FAILURE;
- 	struct bpf_object *obj;
- 	char test_script[80];
--	cpu_set_t cpuset;
- 	__u32 key = 0;
- 
- 	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
- 
--	CPU_ZERO(&cpuset);
--	CPU_SET(0, &cpuset);
--	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
--
- 	cg_fd = cgroup_setup_and_join(cg_path);
- 	if (cg_fd < 0)
- 		goto err;
-@@ -151,6 +144,13 @@ int main(int argc, char **argv)
- 
- 	sleep(10);
- 
-+	exit_thread = true;
-+	int ret = pthread_join(tid, NULL);
-+	if (ret) {
-+		printf("FAILED: pthread_join\n");
-+		goto err;
-+	}
-+
- 	if (verify_result(&g)) {
- 		printf("FAILED: Wrong stats Expected %d calls, got %d\n",
- 			g.ncalls, rx_callbacks);
--- 
-2.51.0.rc1.167.g924127e9c0-goog
-
+ /* main USDT definition (nop and .note.stapsdt metadata) */
+ #define __usdt_probe(group, name, sema_def, sema, ...) do {					\
+ 	sema_def(sema)										\
+@@ -418,7 +422,7 @@ struct usdt_sema { volatile unsigned short active; };
+ 	__usdt_asm1(		__usdt_asm_addr sema)						\
+ 	__usdt_asm_strz(group)									\
+ 	__usdt_asm_strz(name)									\
+-	__usdt_asm_args(__VA_ARGS__)								\
++	USDT_ARGS										\
+ 	__usdt_asm1(		.ascii "\0")							\
+ 	__usdt_asm1(994:	.balign 4)							\
+ 	__usdt_asm1(		.popsection)							\
 
