@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-65715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F456B278FD
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 08:19:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27E3BB278F8
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 08:19:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F3F33BC8C6
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 06:18:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AAF3188BE06
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 06:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D646429D292;
-	Fri, 15 Aug 2025 06:18:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B3C2BE023;
+	Fri, 15 Aug 2025 06:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d8hDl+mW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gvWFhFoY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f66.google.com (mail-pj1-f66.google.com [209.85.216.66])
+Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE5F31984A;
-	Fri, 15 Aug 2025 06:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8862153CE;
+	Fri, 15 Aug 2025 06:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755238722; cv=none; b=F7u+s2CEj70tGSNDdYg+9+uepar2arltH06nDQ01bIimmR2CmdpIC/bpyo/2hSXh/FrLiiQDAEhgVfMkdrIr7nzcvo2h7hYln9m0sOg+zZvcEa5CV6MTYHd6xcwcdM7WPzJruRpZFpnnFNvWUNxN+eHGFd9SPGA5hlGKIgc23/M=
+	t=1755238725; cv=none; b=TaYjsu0IV1eo+vzfswxR4o6h1iUfObwDMczBHTE9tFEMoflVOE0wu9dPobwFlSne6L0lGRnLANZiuvC4NTpKOlP+KVLGUJcJJlL19BX/HktLZXbvyNXjtG9ETGN6vmnA8xktUdgOvl5eoIYfKPkdzTweMZNpC6cOf6MSVtHrixk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755238722; c=relaxed/simple;
-	bh=x1ATtyTcNSslUyv0qjv3375CuVeybZpmPNqMbhb1yZ0=;
+	s=arc-20240116; t=1755238725; c=relaxed/simple;
+	bh=lR5h6MbApSZ5sM+smUV5Z0UymMEQuA/jTBLHSP9jWSQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gVZPKbPLWaQaMPSh+6WZhJ+kdjsA5JfSlbL0cwBd2JXhqIa3Mvz1axuuPzQO5cAm/Q9Emp5CsSWnFpxcj3xas5Rs1K6PtWDIA+bND+n4vyZqoRO+wYyyJOR3vOGjUywwABhriO+ezhkY9FEYjCkIIMA/1RWRHRru82Vo3Dk+kto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d8hDl+mW; arc=none smtp.client-ip=209.85.216.66
+	 MIME-Version; b=Hv19HfsFuX6kHKNEe+582kDb7wylSq+lNPCoJlYLHVauOPQ8FjnxBvG8toWCGsvocETD3nGqf2nD3V+1euqgWP5yQ2mE8vFBFmolg/EcJp99yulK+PCo9WU+pkbtuxozVlQEEGrb1Ng+zUKs4gUIJ9Js/G8fvcEH/pJOaEt/r7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gvWFhFoY; arc=none smtp.client-ip=209.85.210.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f66.google.com with SMTP id 98e67ed59e1d1-32326e2f0b3so1359558a91.2;
-        Thu, 14 Aug 2025 23:18:38 -0700 (PDT)
+Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-76e39ec6f52so1232396b3a.1;
+        Thu, 14 Aug 2025 23:18:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755238718; x=1755843518; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755238722; x=1755843522; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4J1O4cvXmQVXOS+LA9W9A1gYpwwOti/g631zQHcAM1M=;
-        b=d8hDl+mWoGqwLrnbGmArmB/zKOljRNrXPB0O7o6n3DUYccdNqfU8jAPLnJg/UFM9Ce
-         DclQX4xAmBnffRzrfXigvcSfCfTdfrRgWekfijDvFAjH/7/OeSXiJYMNDk4+LnP0U17/
-         9Nv889IG4OVZ/6Ma9pOiy//x7jnO54+7TBKDviXlYAYjvsa0B88g5u1s4rdoJ4bXikUp
-         gwfnbgzdomausRTO2fP+sCUm2jXpHcOBNAZ80ZyF//FAoBROrNHP3ZdOVHMiFA3okFJT
-         CqhBRfefMyfscZV6EJlFklikV153dsHd1KszPf1lOu760O3mxZhrD+38Cn5p4h6akQqw
-         ByeQ==
+        bh=ojMIruf+CfSEtOOKLXCYppMGwHdqsotd/cjThFA4M8A=;
+        b=gvWFhFoYY2/ha+TDghbVq2/KGcZjj77Kx31EHlkoyRPEzABXuPOxG7GnRZBQBnkfcq
+         1AFmdkGJqMV4Orr2M5gRmm/G5S7EY3OarV2N4yawkqykQMXRDoldSqBA7StX/syITpRq
+         v8lZH3WHOjfv9qCpZElkK3a7MAqrME/ROARZigDLW8P2mCRx/GdxWVmbB9kR+waQ16OD
+         nyBv0+TxSMRx9HEz1KvOK9GPwlhOM3OogNYxVntVmUK9hhW4hlGNtHBGThHlRIO+TYEp
+         ola/GPF4GXEjAbua0nNDpdPdhmsGxpQqWWn9aBn+L1T0TSX8fDobO1q8/BbGBx/DtiIE
+         KKXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755238718; x=1755843518;
+        d=1e100.net; s=20230601; t=1755238722; x=1755843522;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4J1O4cvXmQVXOS+LA9W9A1gYpwwOti/g631zQHcAM1M=;
-        b=dltmutn0TKvaE5dz7TZ42qmyitnraeJAqaKVZtv86gY2CLsqTzagmeEKPogFzdwbtW
-         xfmvYYv/TX7ftqFSPbMZro89pXJnSdTVLhc2Fmoj7tb1Sgfvp/EQaInmkjrLZYM/tT6L
-         CUYBBUjggwnTlY/AcK/pL8bR5tyF8sC9W6lb6BIsbJemwruKg01V5uYIdQtuDPQnXfXa
-         X074jUP1vdfGPvPp4aWQ4I38d8gVO7V8YDqO+UCILCe6zbPx7gZR9hB5ZTJZsWTzU9u4
-         2dJKEYpOziGyq4XnMk2mOn0TjAlvZ5phr2g40k/usNpB9Qz4mJ7AkiOifoKT3M+JERNo
-         FBVg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKU00PzZOxp9ZBraVC2SPWwhC20mav5XJaH3Yo6W23yzLeHqO6vmBo7k4u1Gpn8Y1xf64=@vger.kernel.org, AJvYcCXePOopB6aiXqjKzAYD2BK6DbEQ7MSSR2lUnqM0qdXxIgejfPJ8YqK6XFE4PJF0Gt9+b3kIHIXTVxVsbHYJ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2WtIg3+6UU7wvzrvvfsIWisEi7bIYVpfHemw5mMLnrlPFpYNB
-	qZsK9ro+4NSATdyCLgnisx+RIXoP9drjTG7pfTRCaa6PZX8GctLg2LTf
-X-Gm-Gg: ASbGncvb6cknJZlBtbzb0S7upulq5emtDZR233O1NevBJrENBbFnZ4cFbdU1TvwUio1
-	V9HQs+diJL9L11MZv6yyu7ULKCbUYEcp+o7t21JWhcy1pvENfu2K5+un/Angzd4zRev16L7yayi
-	PYZWvXgzEZBZfzBuRalF9PjYqbF8hFTJk32phgZ2yekqzsmDl9b2GiTsR/oM+UNz/FlwNwY4aoq
-	DnMHyyeD8uc/NUwnjBIZrhP0aCpxUHZ2KW+n2zvPI5WOfwDvmX9HAk4muP0ePpGM4aSyXHPM3Na
-	HSO/mKXsTani7cfoRcmXP5nBxyYJh64O5UCbqLwFa28FcY1A7eivrujfd0VWq9Orr1pDNOpm+o4
-	f6emFqqihsSm86+mBC1c=
-X-Google-Smtp-Source: AGHT+IGEamtl0+FoPBkIDlXgUljBSam0In6IaXjx3HrsQ//QiaFz+SZtALG8m3pGv2VN3oPUxCaPqw==
-X-Received: by 2002:a17:90b:3dc7:b0:315:aa28:9501 with SMTP id 98e67ed59e1d1-323421610e4mr1795691a91.24.1755238717706;
-        Thu, 14 Aug 2025 23:18:37 -0700 (PDT)
+        bh=ojMIruf+CfSEtOOKLXCYppMGwHdqsotd/cjThFA4M8A=;
+        b=svRgMbd0MeEa8QgNaB2RKGjaCaf13BLSHmO53y82cUJYhbgmmVswog02FnHwSv3KHI
+         106ZIGKkg/B/BfbRxcgQTX92vp7K8GqxXOgirC87FjrpeVyTRQhpNtYA+24feMuoD7cT
+         Cif8DUTh2hMPdBwGoaxFuSzIxoE/ED7s/cvaJ+xVxkf8QNZIu8HX90RkLQ3lCrukhVLC
+         cJACRYNwPJoQlGO7+AojPurqcqVtYZ/GP57elIUrBqwxEomL4/8RvGA+3N67bflQf7OZ
+         W+ERnERZGpXNupYmqT5vUF9pe57jxbc0ILnOxh1xk187QYNCQ+5Uk7eb1DIAjXh7GXeI
+         4aHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUrFp4GQMup/i260jU5VGKH9+u/I0I/DofVdvCkxbJrgMBG9o2BZaJXc3HTzVYIULiqZSo=@vger.kernel.org, AJvYcCXWhNDB2wcfNQJT6gIwBncg2t9LBNaEpzFv3A3vk0Kt4cj8lAZc4uNO9qPdG9KLvv1rkBs5w+lci8CI/Of0@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw92EtocvJ9T6e24nUykFAujVlhllMwmXU9qh7GG6ZGtyZVHjNq
+	4eibZ8yL+4FH6iLdWSVypaRfNqJqb2yASTGpeJOY5dl0fS/EW2PHUTcIy700DormngE=
+X-Gm-Gg: ASbGncsX7LTPlNXKsEqG3oo53gsJTN2r3yYzVrs6k3uRgKYUHeQAOuLK+ZsDkAyw/ag
+	clT6o7GmMjgCKJ6r+pKBaJAg9mY0A37F4wVEuYE6XGK5mbneqZ+yJXoJgikSrOldMSFfDwvo8Bl
+	/t0oEekYpPXNsOeTyZadmune+jYnP3YJzLoYRHgGQb0GFGw3qqL0UkPnyG4FUlxL5s4W8o4uT2R
+	AxDT3fFh5uoqpFxgN2A46VPxdLJmtWAlaACMPpA4ivFU9PzMD2iXEL+sw5h/BSRS562uMaAXbIh
+	PW++Faier+2DVHFe1NV6tNZYS3wsYIQFV+uwF5jgGZjjVoK2SlgIIfRXfrHLWPcZq/28Lo0VzPt
+	4LTE2SkfrVFbEkhgymd4=
+X-Google-Smtp-Source: AGHT+IGnGoG3feiYTpDg1rm0V+UULmIqyjLhO11TZdSGX9k33joBlyQrh5QuyGGd7rVPLCi3xRo+Aw==
+X-Received: by 2002:a05:6a00:815:b0:76b:d8f7:d30b with SMTP id d2e1a72fcca58-76e446ef45amr1185825b3a.10.1755238721879;
+        Thu, 14 Aug 2025 23:18:41 -0700 (PDT)
 Received: from 7940hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e4558ae7bsm408607b3a.95.2025.08.14.23.18.33
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e4558ae7bsm408607b3a.95.2025.08.14.23.18.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Aug 2025 23:18:37 -0700 (PDT)
+        Thu, 14 Aug 2025 23:18:41 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: ast@kernel.org
@@ -89,9 +89,9 @@ Cc: daniel@iogearbox.net,
 	jolsa@kernel.org,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 1/7] rcu: add rcu_migrate_enable and rcu_migrate_disable
-Date: Fri, 15 Aug 2025 14:18:18 +0800
-Message-ID: <20250815061824.765906-2-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next 2/7] bpf: use rcu_migrate_* for bpf_cgrp_storage_free()
+Date: Fri, 15 Aug 2025 14:18:19 +0800
+Message-ID: <20250815061824.765906-3-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250815061824.765906-1-dongml2@chinatelecom.cn>
 References: <20250815061824.765906-1-dongml2@chinatelecom.cn>
@@ -103,57 +103,37 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-migrate_disable() is called to disable migration in the kernel, and it is
-used togather with rcu_read_lock() oftenly.
-
-However, with PREEMPT_RCU disabled, it's unnecessary, as rcu_read_lock()
-will disable preemption, which will also disable migration.
-
-Introduce rcu_migrate_enable() and rcu_migrate_disable(), which will do
-the migration enable and disable only when the rcu_read_lock() can't do
-it.
+Replace the migrate_disable/migrate_enable with
+rcu_migrate_disable/rcu_migrate_enable in bpf_cgrp_storage_free to obtain
+better performance when PREEMPT_RCU is not enabled.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- include/linux/rcupdate.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ kernel/bpf/bpf_cgrp_storage.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 120536f4c6eb..0d9dbd90d025 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -72,6 +72,16 @@ static inline bool same_state_synchronize_rcu(unsigned long oldstate1, unsigned
- void __rcu_read_lock(void);
- void __rcu_read_unlock(void);
+diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
+index 148da8f7ff36..9bbe74cdf918 100644
+--- a/kernel/bpf/bpf_cgrp_storage.c
++++ b/kernel/bpf/bpf_cgrp_storage.c
+@@ -45,7 +45,7 @@ void bpf_cgrp_storage_free(struct cgroup *cgroup)
+ {
+ 	struct bpf_local_storage *local_storage;
  
-+static inline void rcu_migrate_enable(void)
-+{
-+	migrate_enable();
-+}
-+
-+static inline void rcu_migrate_disable(void)
-+{
-+	migrate_disable();
-+}
-+
- /*
-  * Defined as a macro as it is a very low level header included from
-  * areas that don't even know about current.  This gives the rcu_read_lock()
-@@ -105,6 +115,14 @@ static inline int rcu_preempt_depth(void)
- 	return 0;
+-	migrate_disable();
++	rcu_migrate_disable();
+ 	rcu_read_lock();
+ 	local_storage = rcu_dereference(cgroup->bpf_cgrp_storage);
+ 	if (!local_storage)
+@@ -56,7 +56,7 @@ void bpf_cgrp_storage_free(struct cgroup *cgroup)
+ 	bpf_cgrp_storage_unlock();
+ out:
+ 	rcu_read_unlock();
+-	migrate_enable();
++	rcu_migrate_enable();
  }
  
-+static inline void rcu_migrate_enable(void)
-+{
-+}
-+
-+static inline void rcu_migrate_disable(void)
-+{
-+}
-+
- #endif /* #else #ifdef CONFIG_PREEMPT_RCU */
- 
- #ifdef CONFIG_RCU_LAZY
+ static struct bpf_local_storage_data *
 -- 
 2.50.1
 
