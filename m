@@ -1,234 +1,161 @@
-Return-Path: <bpf+bounces-65793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48ED8B2874D
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 22:44:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C2E2B28821
+	for <lists+bpf@lfdr.de>; Sat, 16 Aug 2025 00:00:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E88015E2055
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 20:42:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A7B9AA39ED
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 22:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CDC9308F2D;
-	Fri, 15 Aug 2025 20:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A923D26E708;
+	Fri, 15 Aug 2025 22:00:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RJVuOE6f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OK1jBw/y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64BA82C0F80;
-	Fri, 15 Aug 2025 20:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F8A926B971
+	for <bpf@vger.kernel.org>; Fri, 15 Aug 2025 22:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755290536; cv=none; b=J5dNEnqygF16HrhQVB4Zo+bvAdpsgJQCFR3GOFilp0idOvCgQGkdqj8Rp6ZnoHoxvCeb8txwBbzHlxgXJmHPywgZIWKuXYMrEBjRptiM5X2Kn59bIDuboKYwCLnfyhEzO1PLGgxcrgGalUQDxVk/pDTtPLdMlaqJ3Rb5Znpi8cc=
+	t=1755295221; cv=none; b=oerNKdvIAgw3eJIsoWXW/P9Kc8BLI1bl1YcjP14FmwQqPczbdQdM6P8LDtXvNXhcLgFiBebYH9J5dwz0NRnBKriUKY1wQwaO42CmCNBVT7cZfAlgDT40fvG7MIley+5cIygxdjy+uAvUjG1HvNIlo5XkwxGbeBcX2STQ1MFi5cE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755290536; c=relaxed/simple;
-	bh=qTwScyjioHSsDj0BnqZZRgvKP7UwEeCQX5ykxBAfJvc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r/DL/1YWSY+T62k2dRoSeJMWNi5LiD70g89I+vxeLSat+kLMkUdTUbaRuqmUewxj7HU7LRM86BY4fnIjxAN0sUgsiOiWIHe6Lehaum11UiSm+WB6i1DOxnJkQIyokV2nA/P1+gkdljA1f7TIILrzJFRP7+s/Q48T6wJdTqUp+g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RJVuOE6f; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1755290534; x=1786826534;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qTwScyjioHSsDj0BnqZZRgvKP7UwEeCQX5ykxBAfJvc=;
-  b=RJVuOE6f8TKfWP7zdtggkCKcQ17l8WsVp53B3YoFMLsAP9tBH3wRcy3H
-   RnybWHgsT25G7J77IPIlDuHwr2Z+249rt5f0oCIeYcIoi+mbhDxBMdq6u
-   QeW2YAw5fwKK31uUgrHceHDYaa6y/Q/TdLlFQDyYVmTjVZsdyRBvgup1F
-   HvS0p5De9MxnuZvbNGCAGBouqnC/3yipiemSC1SO882e7thxDrAbA3WNy
-   gpv40N7LynXlruP8HZAGWl/ZhpkLFZYqu9FJoXIvBlivWl1BMJVkX5ofO
-   dN7w0ewIist33wUp1QrV6hguKskgW9AfXtIFjDgQyilBbK7DUrn2fUZYu
-   w==;
-X-CSE-ConnectionGUID: 1TwbAUZ2SnqiK+26PpJpzQ==
-X-CSE-MsgGUID: u13PfKJwRFWcACsk0T4/2A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11523"; a="68320327"
-X-IronPort-AV: E=Sophos;i="6.17,293,1747724400"; 
-   d="scan'208";a="68320327"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2025 13:42:11 -0700
-X-CSE-ConnectionGUID: OnXMJl7gQsqmPru+UvGeoA==
-X-CSE-MsgGUID: eMXSpnxmQfiQVKt8hnIFIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,293,1747724400"; 
-   d="scan'208";a="198084326"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by orviesa002.jf.intel.com with ESMTP; 15 Aug 2025 13:42:10 -0700
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	andrew+netdev@lunn.ch,
-	netdev@vger.kernel.org
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	anthony.l.nguyen@intel.com,
-	magnus.karlsson@intel.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	sdf@fomichev.me,
-	bpf@vger.kernel.org,
-	=?UTF-8?q?Tobias=20B=C3=B6hm?= <tobias.boehm@hetzner-cloud.de>,
-	Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>,
-	Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Subject: [PATCH net 5/6] ixgbe: fix ndo_xdp_xmit() workloads
-Date: Fri, 15 Aug 2025 13:42:01 -0700
-Message-ID: <20250815204205.1407768-6-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250815204205.1407768-1-anthony.l.nguyen@intel.com>
-References: <20250815204205.1407768-1-anthony.l.nguyen@intel.com>
+	s=arc-20240116; t=1755295221; c=relaxed/simple;
+	bh=X3GA9ghE8XNWj9SSgyitkZlwJHthBAgCECt7UESXSXs=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=at8BuznoqGLwx6GEF1nXwfY2/11MmL15IArqry2KfKdHtqC8cryLLPSUig9waJK7Xq3dWt6DPOVARH5o1AniqyeG0bRgkSt6jmVvigPpuD3+fgNLwhb+lGSVZOrCaxN73P46BxjDze3qBbs4sK8r5VeBywEBqyz72m3Q397QTxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OK1jBw/y; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-afcb731ca8eso386618566b.0
+        for <bpf@vger.kernel.org>; Fri, 15 Aug 2025 15:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755295218; x=1755900018; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eJi8jYFjRcK61f7nSW1Xmdv8BYXKhJYS/wRZp+8KNwA=;
+        b=OK1jBw/yBB81UF6pK0We4wong7IuoH2b8f4Z0++o31YJ4vSvSiVerzu4ZCuEqi8A4T
+         eamU2AG55tkKjoDxyYo7w6j1NaK/rMo8YVDl7g6JNdt7/bI255dgcjSR+jRo/o+u6Pr7
+         l2JFYzsO+pYcHYdt5vSVU7+FIO70LSUYDCdPNiWljNViKa+AvxEyCc1K1kg8xMVteWPE
+         uLEv48EjfKgrzU7HjCULCSkOiPommPxefcxi93U4hUAa1hoharg1voeWCsz7YvkIHXla
+         FGaIU3ANVHh3hJ9hMHboTlFaFM0fODfvlt/5xyMvO+don2mj8DufuU2Y2ihejsx6jlvO
+         bSNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755295218; x=1755900018;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eJi8jYFjRcK61f7nSW1Xmdv8BYXKhJYS/wRZp+8KNwA=;
+        b=Ci6kGy46jeNmTmJiylJqZk3e071zvUcDrKqfpKRoFb3735ikuzt+At0hYp7uYDWMVa
+         eNqVVeMRSCbOAjn439G7G0qsYMtK2G/RhQeT+MRNTfpGHd5zHjABtz/J0pHdU+ODr8Fh
+         JMmPZeRxdSV3V7AHF6/qFgsvXbgR+Zg4fe5h8APL/uE+9LrL4KYc08rHaF/hJ97Vg0/H
+         iPOkXjNoCuTrtY5cBjOPiJhyjbb1y4EjrAUzbR/8bgpRIzNlujAfDgrL+MozWvXpaNP0
+         tfbJtzQt4l+WIcvhKSmx2RGa8qp0nqcevcWnTidc6EsCdLE73VnrtNDUamYHJbGygZ4E
+         rt5A==
+X-Gm-Message-State: AOJu0YykvIKFr2DmSbqAlSWMWYj6GgogKBJPACEQsczUWOoQFCadAWce
+	VNzpBmTNHFyIFwj/+goqURQqAwYlA/VuKZyC31U039MAJNRhbbANHsXO
+X-Gm-Gg: ASbGnctOWQvfp2zxWum7imngVOtZObFDNu7iELPeB4jOkCuMjewCHMuTI4+/YTSkhwm
+	4yfC1o6ieK1PzP/m5syKFzEIMKQ1rM6656fIGnXKGZZk3LQeOVwYFy67JV9oQBa/CrlvRVuGpLm
+	clPBt6rXUc1oXHmcUjIdf0H7i6LzXNd1dEaUXOxwKUccn9/mQNCnOI/DamXF/dZe80uldHLMFhL
+	OJP+0ogR3g4WQQnlH26fwzDXGy1RNy0BI9tNTaMmsb2tvJpBj873dW2WoMmU0h2iM0Dgk5Qt3oY
+	orxhf6RyuArxVIFLDoGTmmZp/hYFW6bl/wuDa1Dsis8j4a1RWpo5B7zUTIwn6l8+RsEWD+u5vG6
+	NmCTF9HAVpQ==
+X-Google-Smtp-Source: AGHT+IFZBqmls0WNn1o6yoVpvClSn716SMrZHnq8Th2amfe83EFA36p4zEJSachrboRob7yADbTyQA==
+X-Received: by 2002:a17:907:6d06:b0:af6:361e:664d with SMTP id a640c23a62f3a-afcdc1f8b6bmr299202766b.7.1755295217663;
+        Fri, 15 Aug 2025 15:00:17 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-afcdce53dd5sm225225466b.5.2025.08.15.15.00.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Aug 2025 15:00:17 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sat, 16 Aug 2025 00:00:15 +0200
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+	eddyz87@gmail.com, memxor@gmail.com,
+	Mykyta Yatsenko <yatsenko@meta.com>
+Subject: Re: [PATCH bpf-next v2 3/4] bpf: task work scheduling kfuncs
+Message-ID: <aJ-t7wxrQIB1oYyh@krava>
+References: <20250815192156.272445-1-mykyta.yatsenko5@gmail.com>
+ <20250815192156.272445-4-mykyta.yatsenko5@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250815192156.272445-4-mykyta.yatsenko5@gmail.com>
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Fri, Aug 15, 2025 at 08:21:55PM +0100, Mykyta Yatsenko wrote:
 
-Currently ixgbe driver checks periodically in its watchdog subtask if
-there is anything to be transmitted (considering both Tx and XDP rings)
-under state of carrier not being 'ok'. Such event is interpreted as Tx
-hang and therefore results in interface reset.
+SNIP
 
-This is currently problematic for ndo_xdp_xmit() as it is allowed to
-produce descriptors when interface is going through reset or its carrier
-is turned off.
+>  void bpf_task_work_cancel_and_free(void *val)
+>  {
+> +	struct bpf_task_work *tw = val;
+> +	struct bpf_task_work_context *ctx;
+> +	enum bpf_task_work_state state;
+> +
+> +	/* No need do rcu_read_lock as no other codepath can reset this pointer */
+> +	ctx = unrcu_pointer(xchg((struct bpf_task_work_context __force __rcu **)&tw->ctx, NULL));
+> +	if (!ctx)
+> +		return;
+> +	state = xchg(&ctx->state, BPF_TW_FREED);
+> +
+> +	switch (state) {
+> +	case BPF_TW_SCHEDULED:
+> +		/* If we can't cancel task work, rely on task work callback to free the context */
+> +		if (!task_work_cancel_match(ctx->task, task_work_match, ctx))
+> +			break;
+> +		bpf_task_work_context_reset(ctx);
+> +		fallthrough;
+> +	case BPF_TW_STANDBY:
+> +		call_rcu_tasks_trace(&ctx->rcu, bpf_task_work_context_free);
+> +		break;
+> +	/* In all below cases scheduling logic should detect context state change and cleanup */
+> +	case BPF_TW_SCHEDULING:
+> +	case BPF_TW_PENDING:
+> +	case BPF_TW_RUNNING:
+> +	default:
+> +		break;
+> +	}
+>  }
+>  
+>  BTF_KFUNCS_START(generic_btf_ids)
+> @@ -3769,6 +4017,8 @@ BTF_ID_FLAGS(func, bpf_rbtree_first, KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_rbtree_root, KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_rbtree_left, KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_rbtree_right, KF_RET_NULL)
+> +BTF_ID_FLAGS(func, bpf_task_work_schedule_signal, KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_task_work_schedule_resume, KF_TRUSTED_ARGS)
 
-Furthermore, XDP rings should not really be objects of Tx hang
-detection. This mechanism is rather a matter of ndo_tx_timeout() being
-called from dev_watchdog against Tx rings exposed to networking stack.
+hi,
+I'd like to use that with uprobes, could we add it to common_kfunc_set?
+I tried it with uprobe and it seems to work nicely
 
-Taking into account issues described above, let us have a two fold fix -
-do not respect XDP rings in local ixgbe watchdog and do not produce Tx
-descriptors in ndo_xdp_xmit callback when there is some problem with
-carrier currently. For now, keep the Tx hang checks in clean Tx irq
-routine, but adjust it to not execute for XDP rings.
+thanks,
+jirka
 
-Cc: Tobias Böhm <tobias.boehm@hetzner-cloud.de>
-Reported-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Closes: https://lore.kernel.org/netdev/eca1880f-253a-4955-afe6-732d7c6926ee@hetzner-cloud.de/
-Fixes: 6453073987ba ("ixgbe: add initial support for xdp redirect")
-Fixes: 33fdc82f0883 ("ixgbe: add support for XDP_TX action")
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 34 ++++++-------------
- 1 file changed, 11 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 6122a0abb41f..80e6a2ef1350 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -968,10 +968,6 @@ static void ixgbe_update_xoff_rx_lfc(struct ixgbe_adapter *adapter)
- 	for (i = 0; i < adapter->num_tx_queues; i++)
- 		clear_bit(__IXGBE_HANG_CHECK_ARMED,
- 			  &adapter->tx_ring[i]->state);
--
--	for (i = 0; i < adapter->num_xdp_queues; i++)
--		clear_bit(__IXGBE_HANG_CHECK_ARMED,
--			  &adapter->xdp_ring[i]->state);
- }
+----
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 346ae8fd3ada..b5d52168ba77 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -4129,6 +4129,8 @@ BTF_ID_FLAGS(func, bpf_strnstr);
+ BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
+ #endif
+ BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_task_work_schedule_signal, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_task_work_schedule_resume, KF_TRUSTED_ARGS)
+ BTF_KFUNCS_END(common_btf_ids)
  
- static void ixgbe_update_xoff_received(struct ixgbe_adapter *adapter)
-@@ -1214,7 +1210,7 @@ static void ixgbe_pf_handle_tx_hang(struct ixgbe_ring *tx_ring,
- 	struct ixgbe_adapter *adapter = netdev_priv(tx_ring->netdev);
- 	struct ixgbe_hw *hw = &adapter->hw;
- 
--	e_err(drv, "Detected Tx Unit Hang%s\n"
-+	e_err(drv, "Detected Tx Unit Hang\n"
- 		   "  Tx Queue             <%d>\n"
- 		   "  TDH, TDT             <%x>, <%x>\n"
- 		   "  next_to_use          <%x>\n"
-@@ -1222,16 +1218,14 @@ static void ixgbe_pf_handle_tx_hang(struct ixgbe_ring *tx_ring,
- 		   "tx_buffer_info[next_to_clean]\n"
- 		   "  time_stamp           <%lx>\n"
- 		   "  jiffies              <%lx>\n",
--	      ring_is_xdp(tx_ring) ? " (XDP)" : "",
- 	      tx_ring->queue_index,
- 	      IXGBE_READ_REG(hw, IXGBE_TDH(tx_ring->reg_idx)),
- 	      IXGBE_READ_REG(hw, IXGBE_TDT(tx_ring->reg_idx)),
- 	      tx_ring->next_to_use, next,
- 	      tx_ring->tx_buffer_info[next].time_stamp, jiffies);
- 
--	if (!ring_is_xdp(tx_ring))
--		netif_stop_subqueue(tx_ring->netdev,
--				    tx_ring->queue_index);
-+	netif_stop_subqueue(tx_ring->netdev,
-+			    tx_ring->queue_index);
- }
- 
- /**
-@@ -1451,6 +1445,9 @@ static bool ixgbe_clean_tx_irq(struct ixgbe_q_vector *q_vector,
- 				   total_bytes);
- 	adapter->tx_ipsec += total_ipsec;
- 
-+	if (ring_is_xdp(tx_ring))
-+		return !!budget;
-+
- 	if (check_for_tx_hang(tx_ring) && ixgbe_check_tx_hang(tx_ring)) {
- 		if (adapter->hw.mac.type == ixgbe_mac_e610)
- 			ixgbe_handle_mdd_event(adapter, tx_ring);
-@@ -1468,9 +1465,6 @@ static bool ixgbe_clean_tx_irq(struct ixgbe_q_vector *q_vector,
- 		return true;
- 	}
- 
--	if (ring_is_xdp(tx_ring))
--		return !!budget;
--
- #define TX_WAKE_THRESHOLD (DESC_NEEDED * 2)
- 	txq = netdev_get_tx_queue(tx_ring->netdev, tx_ring->queue_index);
- 	if (!__netif_txq_completed_wake(txq, total_packets, total_bytes,
-@@ -7974,12 +7968,9 @@ static void ixgbe_check_hang_subtask(struct ixgbe_adapter *adapter)
- 		return;
- 
- 	/* Force detection of hung controller */
--	if (netif_carrier_ok(adapter->netdev)) {
-+	if (netif_carrier_ok(adapter->netdev))
- 		for (i = 0; i < adapter->num_tx_queues; i++)
- 			set_check_for_tx_hang(adapter->tx_ring[i]);
--		for (i = 0; i < adapter->num_xdp_queues; i++)
--			set_check_for_tx_hang(adapter->xdp_ring[i]);
--	}
- 
- 	if (!(adapter->flags & IXGBE_FLAG_MSIX_ENABLED)) {
- 		/*
-@@ -8199,13 +8190,6 @@ static bool ixgbe_ring_tx_pending(struct ixgbe_adapter *adapter)
- 			return true;
- 	}
- 
--	for (i = 0; i < adapter->num_xdp_queues; i++) {
--		struct ixgbe_ring *ring = adapter->xdp_ring[i];
--
--		if (ring->next_to_use != ring->next_to_clean)
--			return true;
--	}
--
- 	return false;
- }
- 
-@@ -11005,6 +10989,10 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
- 	if (unlikely(test_bit(__IXGBE_DOWN, &adapter->state)))
- 		return -ENETDOWN;
- 
-+	if (!netif_carrier_ok(adapter->netdev) ||
-+	    !netif_running(adapter->netdev))
-+		return -ENETDOWN;
-+
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
- 
--- 
-2.47.1
-
+ static const struct btf_kfunc_id_set common_kfunc_set = {
 
