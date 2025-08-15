@@ -1,111 +1,131 @@
-Return-Path: <bpf+bounces-65775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65776-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEE74B2828A
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 17:01:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1C91B282FC
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 17:33:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90DDBAE2D1C
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 14:59:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AA071CE4139
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 15:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 176CF28504B;
-	Fri, 15 Aug 2025 14:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C0A291C03;
+	Fri, 15 Aug 2025 15:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eIoz1QsG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eNTWQ230"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1A026A1BB;
-	Fri, 15 Aug 2025 14:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BEB9302745;
+	Fri, 15 Aug 2025 15:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755269971; cv=none; b=b80r2XpiehDvTmU05hwMfsZus1g/2LH+gMNkxpz/rOcwY57PXUpG2O4OEMoaEQ4FTbXH/DBmgjLtmSK5dU/9yoiNzlILeC50bE7nNqTKxXEluXD7AHmJ35DXRti7jUKOCnRWaVPjDiRwrjwfLruHM5H8o8iY94scZ8sTi+mC7Io=
+	t=1755271879; cv=none; b=kEL3ZFMru1cgzNUH3+WxYF63odwyE3cuDCePHTPsvgJmi5N1WL3LWFzJQXYHryL4POTeC/RtNsnhL5c2SdQ6nfObXjjEbmKFhycerZtNfNhFZaVFpekf1+roUyPSLinIGCwILSGhLVtYYNflgLERNavzD099QqivfaQykI9gehg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755269971; c=relaxed/simple;
-	bh=K2HCrlZN3WAPvhfqlDgI0HwTxr0z7vN0Dze152XGvxo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jQtaSEEhmzn9/BbgIHQYgWniEx8DbFm0+wytrlhrIqn/bKOsS28tRUs+MxftLhpQRA/BFvbxLxTqdL+NqBqmY/HLGkqt6JgkiwBwwqWkh5aKO1KNsblyMExP86u7DJIjZF4CTdNYTVGmNTFk+AuG5LfBpg0uYIcllP9ZyMtH1n8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eIoz1QsG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75DA1C4CEF5;
-	Fri, 15 Aug 2025 14:59:30 +0000 (UTC)
+	s=arc-20240116; t=1755271879; c=relaxed/simple;
+	bh=/jvMp/guKLSHe+yxsr6XthvTtUUPzj4tZ+6lXJrq+Ws=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F/Mr/6HyFk+QheCxL8/DgYJvWHjrefku7AbpRc0GyMKXA8XrGkAs+7AGL9HUKtTo6TZFAeygiezfPglQbeGhcRUXA65HknWvW/m7vHScHlVJZ9Gc9eYY02Nia778U3jyeqSRPkw+1sR4WCIIfh/n2AiqFGJP/zJnhM5zUHwiCw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eNTWQ230; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB2F5C4CEEB;
+	Fri, 15 Aug 2025 15:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755269971;
-	bh=K2HCrlZN3WAPvhfqlDgI0HwTxr0z7vN0Dze152XGvxo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eIoz1QsGfZ++g0ntpzGQz7rXt4xHHVvQ2CbxlJ5uHFRLtTK0zmCO0Fp9dgnYkNdRI
-	 PYAaD3UqD228zU6iYWJKO1qTB8nCKELKq3LKCyCYQoECrWV8dc+t9lIM6stKdslpi2
-	 52iuMPsFI6CINkUhNDJMEJ1Xd9Bq3IuqJJWF71QVJjJNr2eb1oGE4+VDJ7TiI7gaAv
-	 AXX76uDqywqdCc5p0ez0JWpnc2n/bnFBuBy/cBZfGbN7XlCUhH1ef5PwzJlOuXAuJH
-	 tCKssakIbb4xE0Nsci2/Tpoh/Bm0u3sMdInEKcrUo09GryrMG3pk/GiGSxNh+IsI1M
-	 TJmEbMjbBEaAw==
-Date: Fri, 15 Aug 2025 07:59:29 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Dragos Tatulea <dtatulea@nvidia.com>, Chris Arges
- <carges@cloudflare.com>, Jesse Brandeburg <jbrandeburg@cloudflare.com>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team
- <kernel-team@cloudflare.com>, tariqt@nvidia.com, saeedm@nvidia.com, Leon
- Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- Simon Horman <horms@kernel.org>, Andrew Rzeznik <arzeznik@cloudflare.com>,
- Yan Zhai <yan@cloudflare.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [BUG] mlx5_core memory management issue
-Message-ID: <20250815075929.6a19662d@kernel.org>
-In-Reply-To: <8d165026-1477-46cb-94d4-a01e1da40833@kernel.org>
-References: <aJTYNG1AroAnvV31@861G6M3>
-	<hlsks2646fmhbnhxwuihheri2z4ymldtqlca6fob7rmvzncpat@gljjmlorugzw>
-	<aqti6c3imnaffenkgnnw5tnmjwrzw7g7pwbt47bvbgar2c4rbv@af4mch7msf3w>
-	<9b27d605-9211-43c9-aa49-62bbf87f7574@cloudflare.com>
-	<72vpwjc4tosqt2djhyatkycofi2hlktulevzlszmhb6w3mlo46@63sxu3or7suc>
-	<aJuxY9oTtxSn4qZP@861G6M3>
-	<aJzfPFCTlc35b2Bp@861G6M3>
-	<5hinwlan55y6fl6ocilg7iccatuu5ftiyruf7wwfi44w5b4gpa@ainmdlgjtm5g>
-	<4zkm7dmkxhfhf3cm7eniim26z6nbp3zsm4qttapg3xbvkrqhro@cvjnbr624m5h>
-	<e60404e2-4782-409f-8596-ae21ce7272c4@kernel.org>
-	<tyioy6vj2os2lnlirqxdbiwdaquoxd64lf3j3quqmyz6qvryft@xrfztbgfk7td>
-	<8d165026-1477-46cb-94d4-a01e1da40833@kernel.org>
+	s=k20201202; t=1755271879;
+	bh=/jvMp/guKLSHe+yxsr6XthvTtUUPzj4tZ+6lXJrq+Ws=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=eNTWQ230HNQDLCZPyyrGOXSNjpesnhlV280U2+vvvc7Meqb4LSG8o74PRS8igrwK5
+	 CiLgOxbyWw4rBmbaHnK1a5ZtGVRP9AIEFBem9N0EYngiOS21gIKb242jDvIlxeN5Q3
+	 0xxch+lZghGVAQKZQFkWyvr190/Ci9nBhaUeURUX0ky06TL7H42Wa/w2nTlRo/+Tgk
+	 xRZR4Rikpr0uwswxyDjeo6mUFLs3dXYqCcjlEqGBSIh51h9T57VMVcz0YUDHtB9xs+
+	 XNv4Jam0CO+c8bkf0GrkbdDIlaWsVnC7D83/G+BgbSMXD7kT80qGLYt+yrakd3JzCA
+	 1i/En66p5pJsw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 8BB3BCE0ADB; Fri, 15 Aug 2025 08:31:17 -0700 (PDT)
+Date: Fri, 15 Aug 2025 08:31:17 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Menglong Dong <menglong8.dong@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/7] rcu: add rcu_migrate_enable and
+ rcu_migrate_disable
+Message-ID: <eb93f12d-2232-4b7e-a7c6-71082a69f1f6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250815061824.765906-1-dongml2@chinatelecom.cn>
+ <20250815061824.765906-2-dongml2@chinatelecom.cn>
+ <CAADnVQKA98hBSsb02djL-zMsaXQDCjn4Ytck+WP3SWfvgXqDYg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKA98hBSsb02djL-zMsaXQDCjn4Ytck+WP3SWfvgXqDYg@mail.gmail.com>
 
-On Thu, 14 Aug 2025 17:58:21 +0200 Jesper Dangaard Brouer wrote:
-> Found-by: Dragos Tatulea <dtatulea@nvidia.com>
-
-ENOSUCHTAG?
-
-> Reported-by: Chris Arges <carges@cloudflare.com>
-
-> >> The XDP code have evolved since the xdp_set_return_frame_no_direct()
-> >> calls were added.  Now page_pool keeps track of pp->napi and
-> >> pool-> cpuid.  Maybe the __xdp_return [1] checks should be updated?
-> >> (and maybe it allows us to remove the no_direct helpers).
-> >>  
-> > So you mean to drop the napi_direct flag in __xdp_return and let
-> > page_pool_put_unrefed_netmem() decide if direct should be used by
-> > page_pool_napi_local()?  
+On Fri, Aug 15, 2025 at 04:02:14PM +0300, Alexei Starovoitov wrote:
+> On Fri, Aug 15, 2025 at 9:18 AM Menglong Dong <menglong8.dong@gmail.com> wrote:
+> >
+> > migrate_disable() is called to disable migration in the kernel, and it is
+> > used togather with rcu_read_lock() oftenly.
+> >
+> > However, with PREEMPT_RCU disabled, it's unnecessary, as rcu_read_lock()
+> > will disable preemption, which will also disable migration.
+> >
+> > Introduce rcu_migrate_enable() and rcu_migrate_disable(), which will do
+> > the migration enable and disable only when the rcu_read_lock() can't do
+> > it.
+> >
+> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > ---
+> >  include/linux/rcupdate.h | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
+> >
+> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > index 120536f4c6eb..0d9dbd90d025 100644
+> > --- a/include/linux/rcupdate.h
+> > +++ b/include/linux/rcupdate.h
+> > @@ -72,6 +72,16 @@ static inline bool same_state_synchronize_rcu(unsigned long oldstate1, unsigned
+> >  void __rcu_read_lock(void);
+> >  void __rcu_read_unlock(void);
+> >
+> > +static inline void rcu_migrate_enable(void)
+> > +{
+> > +       migrate_enable();
+> > +}
 > 
-> Yes, something like that, but I would like Kuba/Jakub's input, as IIRC
-> he introduced the page_pool->cpuid and page_pool->napi.
+> Interesting idea.
+> I think it has to be combined with rcu_read_lock(), since this api
+> makes sense only when used together.
 > 
-> There are some corner-cases we need to consider if they are valid.  If
-> cpumap get redirected to the *same* CPU as "previous" NAPI instance,
-> which then makes page_pool->cpuid match, is it then still valid to do
-> "direct" return(?).
+> rcu_read_lock_dont_migrate() ?
+> 
+> It will do rcu_read_lock() + migrate_disalbe() in PREEMPT_RCU
+> and rcu_read_lock() + preempt_disable() otherwise?
 
-I think/hope so, but it depends on xdp_return only being called from
-softirq context.. Since softirqs can't nest if producer and consumer 
-of the page pool pages are on the same CPU they can't race.
-I'm slightly worried that drivers which don't have dedicated Tx XDP
-rings will clean it up from hard IRQ when netpoll calls. But that'd
-be a bug, right? We don't allow XDP processing from IRQ context.
+That could easily be provided.  Or just make one, and if it starts
+having enough use cases, it could be pulled into RCU proper.
+
+> Also I'm not sure we can rely on rcu_read_lock()
+> disabling preemption in all !PREEMPT_RCU cases.
+> iirc it's more nuanced than that.
+
+For once, something about RCU is non-nuanced.  But don't worry, it won't
+happen again.  ;-)
+
+In all !PREEMPT_RCU, preemption must be disabled across all RCU read-side
+critical sections in order for RCU to work correctly.
+
+							Thanx, Paul
 
