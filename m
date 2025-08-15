@@ -1,248 +1,139 @@
-Return-Path: <bpf+bounces-65769-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65771-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39EABB2801F
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 14:44:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30C83B2804D
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 15:04:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C66EA7A51E5
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 12:43:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6DF2189F9DD
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 13:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D4630103F;
-	Fri, 15 Aug 2025 12:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCD030147B;
+	Fri, 15 Aug 2025 13:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a621F5wb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RjOf/PTG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F6B2C3264;
-	Fri, 15 Aug 2025 12:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9A11D8DE1;
+	Fri, 15 Aug 2025 13:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755261883; cv=none; b=Ssc0NBDJFkX+4XJbMUY2fFODzGzqBrKKOMZ3VdArVklAxLG8+YFOpKEgjqNoa3NG4EWtudDo/v2mZTDg/we7Rm9HZRMUuBkF3214yK4PfLG/dMDiWXtEOFS0rj8G0k+T5Dn1SZCMlfbOsdY/wo0MwFUgHJgewvF4M69X2jZz51Y=
+	t=1755262948; cv=none; b=LIIOOkM73YevdEfHIqC74eU4ooedexVP29BG3GQ7HD8O9+G3pR+4aH9MCwj6hDGlSsmNZ7fR9D6fQtdM5CZCCGsPMxSKhNkWg2ytdfuuzRiCiEjlO234kkMFrxd3vMEEVZV+5bCQnuGimzgsWH5xQMC4FV+OPIAj8CeIAeWT4xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755261883; c=relaxed/simple;
-	bh=gdXFBB295mBNGVsJgAbR1vP0UTgaD4mZH6tytmxhwnQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PpuIfTxZzsxARCC8Ene5DxHChVo9JFcIOoJvAY6n6/1FvAwBFH62aVCkQyVudBxow7Ayi6puHg7V/W+9bWVVzmngLz36RmyMF3luiB/8j6KiD3zZgJXZvnobHyB/fP7lw8xA+gU5+4zWbScZ1Ejx1voXd6Nus74AJeKDoxoW43s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a621F5wb; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1755262948; c=relaxed/simple;
+	bh=u2ps14JXB0LkkuaVrO5TB009zdNfH12FXy6mTNPj9A0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PUXP5adaciGAtKw5elBISeIyTXpmM/k2RmNGkf6dTTHmxthcSKMT+KOSqQclccd1W9izFq1xqmYeURaTyfy/g1EOF2Y2yVh1wjJ2SJGPO60FHe5B7wBg09H/ugNNbM6scveqbvTdf6OLhkSqeYESRQ1V6tY11FzZiT4cic19jb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RjOf/PTG; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-afcb7347e09so306522366b.0;
-        Fri, 15 Aug 2025 05:44:41 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3b9d41d2a5cso1603071f8f.0;
+        Fri, 15 Aug 2025 06:02:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755261880; x=1755866680; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hjeBt9GCyvF4EZYxj/on9NBWCQ0HQWui55lR9+/qkb0=;
-        b=a621F5wbZ7lOLge1xfuqFv4jc0tNRqysphcZwt9hlYCIIuFH+3D82hNbcYhrEPZTbX
-         8HrEIsnpWxIN06ZHqbltnXhhiPfUCfLqyRjUCOKTgZOuKn/qmiQrTX0PzzZ9Bm8GtU1i
-         m82J/Cz6Qyhbr+WcgLmwUeF6lSvRgqq4WoPrW80JdhS4F9yAq0BCszMQIJsZP6jzkxPp
-         e1vkD+CLdW3G94bKjLUAAKbtrU/9UY6qBCQhrmaykTAE8KxbZ0dd1KfeUhkkqOUIEp8n
-         +t39q47kYwHd59hveWflMOoCdfOh7KZZhk8Wh2Xe2CQejyBo5FJrADSLoLrpVhS5hQnc
-         W//Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755261880; x=1755866680;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1755262945; x=1755867745; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hjeBt9GCyvF4EZYxj/on9NBWCQ0HQWui55lR9+/qkb0=;
-        b=c8v2TrcxsrBiXD7BdH8oZJ7ejl9P+l2v2xbvAvYOAqC2PdeCR6DvV5GVW6rYGvRH7N
-         eAJp7HLrP7368QzZn+rQ+IxIBGezosgokiCK73kpFbo9w0Rq66ttOAGgAb4JURc5cG/f
-         WPbLYTTZ6dwuDFctjOg7Nkw+IoLydTBACV/3c6aA2EmSzrkm1TPQtlQrAciJOw4n+ak3
-         94S1FiLjpvUCbIv4967gPRXnFZjAPCslmX8Xb9vI5Ub7bTI8Oxmw4hn13BN+DZWB8lDd
-         8EpCRsGsTlAvb5py0Vuq98S/lnese3bWvGRjJHeFLmW++aVCIEsHC6kxaHqvqryxqc/d
-         /i7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUoeINI+mIFDOs9Qg9t2w6R4EvbQFFbVUKsliuKrL713BtIXMl0fUp/ThVrsQKhKQlrQAi5Ijxl09hq72qPQToW@vger.kernel.org, AJvYcCVldQkL7nuwn+fBWJYBMI5/23E9nIBQzbvNWWdb3Yz1YFXA9D8rAKK/+isezLKMbl+1TC8jFIRKOullG9RG@vger.kernel.org, AJvYcCXrkA2d1JVXsZbuFPaeqo5DmM+fRRa8au2iXR0HiGu2iV4WVS6ZsgGkeXFW+vd1gv90oTc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVW+dxTBXYOq86BxqAquiv5nk59jCuaJ/B68MdAQMeg8+rfZvU
-	kGIbn+9o/xf1t48DFV6Tm2qa0nCG8f40T+l1H2GPF8h+FvzBcIOrGd28
-X-Gm-Gg: ASbGncuYMRCsAeBu8phKgBbglEGGxIeGhIaALugP1iw3qbykhNAYzX9hLbRHb3siBiy
-	cLrk+MW1HDRFVSTKuT+PIq7BOieHr0oHtVJ0a8sSV9wsmaRjuWRstBV5IWqvzL4AI5fQdy+DO5P
-	XEmSRI4YDsn/GcTPjtey4qzY6zn/SfuPEyrap3YIdMYCrgeF0Bi2VcBpUE6UY2sYjjEws8tsgbf
-	J6yGfZaFzybHWqJa5r085OQoh2ftWt2Ww/MyFydFub5aHATuHKCb1FIhaqkfIwJUUt8b93oGQ8a
-	hiqTJvTWSwWO+Ogp7dRrwv9kpGAsI6KANgw6/vDnVSom+nZ7DQd5CKrmYDJL5oFC94cw1S72RQL
-	u6wPo/mUowg==
-X-Google-Smtp-Source: AGHT+IHG+YotOlvULIwtil5MjsG5WCy1TrbFl0wpQ0pvXdVu8f9TwR47lcgTFQCHv+6evIR/26cmdw==
-X-Received: by 2002:a17:907:3e9f:b0:afa:2672:8c49 with SMTP id a640c23a62f3a-afcdc1d40cbmr180056266b.18.1755261879931;
-        Fri, 15 Aug 2025 05:44:39 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-618af9d3112sm1413205a12.9.2025.08.15.05.44.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Aug 2025 05:44:39 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 15 Aug 2025 14:44:32 +0200
-To: Jiawei Zhao <phoenix500526@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	yonghong.song@linux.dev, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v10 3/3] selftests/bpf: make usdt_o2 reliably
- generate SIB USDT arg spec
-Message-ID: <aJ8rsK2-XcPXNX7h@krava>
-References: <20250814160740.96150-1-phoenix500526@163.com>
- <20250814160740.96150-4-phoenix500526@163.com>
+        bh=nCqdqKfR7JWpIAzXwpOsu5S5/DY9ctzDb5dC2b7Rt6k=;
+        b=RjOf/PTGdXJJ6azgiPNhxPwd83Tbm0iGtHVdkmSkzMKsXwqfcHw+/A0A9echnbuYKI
+         BKoZp4s43tLkvZ6l6vT34DoV+VeuH8iDKsIxZZgLdtWOTKbPqNcWYecCMTomcqBTGQK5
+         9W9Kd1vQimhH0FZ/+z7b6C+Op5WJrv3AF25b8SxqQf6ir6JPuVn6uClxK7rAlezb777W
+         ZVPhYy679BADzi5V4jdyiL3tvdpXiIevgj4HAECttUUnbywCC2wBO+T6Z48F6CZspAAu
+         SCO55IR6xzSnIQ1gXotc0mL456fx3RDgIP9EwqFJ+Zqvbaf7Bwxr0UnDe+qcz4jjwoqX
+         pJWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755262945; x=1755867745;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nCqdqKfR7JWpIAzXwpOsu5S5/DY9ctzDb5dC2b7Rt6k=;
+        b=wpsdslrX6KxN8xVgjUWiinOC/RGLRMvcMmUo79lK52tNjsCLL/s6VhO2a+F3XM7Vt5
+         2fUTMu64svR3mmPu6gww9P0yVATWg33apIKBHm3nTNwduE3ITguYnTUxdltdZlSH2u15
+         YhzuiHcUvoQ3hgwkvia40P9of9HoQTwicO6zQ6G+kbj8ezA1A6OtFzu7vD72b6m5hL8c
+         F08zOn6kcplzSTgJDZLGMTnUVxeLAqK3moEivbKwm3hr2m7AeRAOPjpxRLB2cbB+0JB9
+         uNgqDtzH7c7CQdJIJrNZ5rwHlUwrVBkh4JRRuOcBtnMqqxgGjB8DjSTjHNRemSNYjyzc
+         BFKw==
+X-Forwarded-Encrypted: i=1; AJvYcCUO9yuw+vdVo//o5tB/EVLamDqr043F+eWzrxag5Sj46EXi1WcNdYibxbCB3chqnfY5Jpc=@vger.kernel.org, AJvYcCXg/+zYfhmzkkoZmkSLDu3QYuJGMaGsP8M2XOYrl5E69bBMpBmQiCo4EE52k4mRyMtE7RdoTJrIY6KH3XZi@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoWovQaV4YOwbg5C5QpQLRda/NrEMfIJ2jJmUs2fL2hB8up1Dv
+	mEZVYOGidV9Wx+WmC4uLmDh+VzWFqVE37s5MQ9xjuUwWceN6O0FEV6Ymj5XqmBg21vxhootDALx
+	7yEOGfF57vGZbBA5ddCwKzgJ2BcbTXD8=
+X-Gm-Gg: ASbGnctQ4I5SOT0BUqjjzkQ/Subt2KROIsHQJT/g17l4CfgAbMLtz4iYfAg4GDwghHX
+	mF6RznckSWgW/pJt1rAlD+vVSQXbk77NYw/W5gv2RdHm2LGzG0MgiX4izpUu0jgwNV47eOU+sO+
+	VspEIXL6dPd9nFdw9e6X5Y/k9DvckGVl7cAQOjJaMTADPCdVN9OwgY8c6LLlZua+gsVhAjNnNIX
+	zJI
+X-Google-Smtp-Source: AGHT+IGEdwLg3p2fR5bmwGm5l1IK6ISQ9DvNjZPh+0oZUeBkXgmVZSVjAvnuPzdYE45LUoMyon7I3WsAQTd3w9AT2Jo=
+X-Received: by 2002:a05:6000:144b:b0:3b4:9dbd:eee9 with SMTP id
+ ffacd0b85a97d-3bb68a1889bmr1590923f8f.36.1755262945365; Fri, 15 Aug 2025
+ 06:02:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250814160740.96150-4-phoenix500526@163.com>
+References: <20250815061824.765906-1-dongml2@chinatelecom.cn> <20250815061824.765906-2-dongml2@chinatelecom.cn>
+In-Reply-To: <20250815061824.765906-2-dongml2@chinatelecom.cn>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 15 Aug 2025 16:02:14 +0300
+X-Gm-Features: Ac12FXxhpjPOjkPr0vtpq9_q-GpsyHvtAa-ClsGNYuYMIqzoIFfdzL5KMNRvFGY
+Message-ID: <CAADnVQKA98hBSsb02djL-zMsaXQDCjn4Ytck+WP3SWfvgXqDYg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/7] rcu: add rcu_migrate_enable and rcu_migrate_disable
+To: Menglong Dong <menglong8.dong@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 14, 2025 at 04:07:39PM +0000, Jiawei Zhao wrote:
-> usdt_o2 is intended to exercise the SIB (Scale-Index-Base) argument
-> handling in libbpf's USDT path. With GCC 13 this reliably produced a
-> SIB-form argument (e.g. 8@(%rdx,%rax,8)), but with newer GCC (e.g. 15)
-> the compiler frequently optimizes the probe argument into a plain
-> register (e.g. 8@%rax) or a stack slot, so the test stops covering the
-> SIB code path and becomes flaky across toolchains.
-> 
-> Force a SIB memory operand in the probe by:
-> * placing the base pointer into %rdx and the index into %rax using an
->   empty inline asm with output constraints ("=d", "=a") and matching
->   inputs
-> * immediately passing base[idx] to STAP_PROBE1.
-> * only enable on x86 platform.
-> 
-> This makes the compiler encode the operand as SIB (base + index8),
-> which in .note.stapsdt shows up as 8@(%rdx,%rax,8) regardless of GCC
-> version. A memory clobber and noinline prevent reordering/re-allocation
-> around the probe site.
-> 
-> This change is x86_64-specific and does not alter program semantics; it
-> only stabilizes the USDT argument shape so the test consistently
-> validates SIB handling. Clang historically prefers stack temporaries for
-> such operands, but the selftests build with GCC, and this keeps behavior
-> stable across GCC versions without introducing a separate .S file.
-> 
-> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
+On Fri, Aug 15, 2025 at 9:18=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+>
+> migrate_disable() is called to disable migration in the kernel, and it is
+> used togather with rcu_read_lock() oftenly.
+>
+> However, with PREEMPT_RCU disabled, it's unnecessary, as rcu_read_lock()
+> will disable preemption, which will also disable migration.
+>
+> Introduce rcu_migrate_enable() and rcu_migrate_disable(), which will do
+> the migration enable and disable only when the rcu_read_lock() can't do
+> it.
+>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 > ---
->  .../selftests/bpf/prog_tests/usdt_o2.c        | 20 ++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-> index f02dcf5188ab..e46d5743ad24 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-> @@ -15,11 +15,19 @@ __attribute__((optimize("O2")))
->  int lets_test_this(int);
->  static volatile __u64 array[1] = {test_value};
->  
-> -static __always_inline void trigger_func(void)
-> +static noinline void trigger_func(void)
->  {
-> +#if defined(__x86_64__) || defined(__i386__)
->  	/* Base address + offset + (index * scale) */
-> -	for (volatile int i = 0; i <= 0; i++)
-> -		STAP_PROBE1(test, usdt1, array[i]);
-> +	/* Force SIB addressing with inline assembly */
-> +	const __u64 *base;
-> +	__u32 idx;
-> +	/* binding base to %rdx and idx to %rax */
-> +	asm volatile("" : "=d"(base), "=a"(idx) : "0"(array), "1"((__u32)0) : "memory");
-> +	STAP_PROBE1(test, usdt1, base[idx]);
+>  include/linux/rcupdate.h | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 120536f4c6eb..0d9dbd90d025 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -72,6 +72,16 @@ static inline bool same_state_synchronize_rcu(unsigned=
+ long oldstate1, unsigned
+>  void __rcu_read_lock(void);
+>  void __rcu_read_unlock(void);
+>
+> +static inline void rcu_migrate_enable(void)
+> +{
+> +       migrate_enable();
+> +}
 
-hum, I still end up with
+Interesting idea.
+I think it has to be combined with rcu_read_lock(), since this api
+makes sense only when used together.
 
-	  stapsdt              0x0000002a       NT_STAPSDT (SystemTap probe descriptors)
-	    Provider: test
-	    Name: usdt1
-	    Location: 0x00000000007674c9, Base: 0x00000000035bc698, Semaphore: 0x0000000000000000
-	    Arguments: 8@%rax
+rcu_read_lock_dont_migrate() ?
 
-disasm being:
+It will do rcu_read_lock() + migrate_disalbe() in PREEMPT_RCU
+and rcu_read_lock() + preempt_disable() otherwise?
 
-	static noinline void trigger_func(void)
-	{
-	  76749f:       55                      push   %rbp
-	  7674a0:       48 89 e5                mov    %rsp,%rbp
-		/* Base address + offset + (index * scale) */
-		/* Force SIB addressing with inline assembly */
-		const __u64 *base;
-		__u32 idx;
-		/* binding base to %rdx and idx to %rax */
-		asm volatile("" : "=d"(base), "=a"(idx) : "0"(array), "1"((__u32)0) : "memory");
-	  7674a3:       ba 20 49 9c 03          mov    $0x39c4920,%edx
-	  7674a8:       b8 00 00 00 00          mov    $0x0,%eax
-	  7674ad:       48 89 55 f8             mov    %rdx,-0x8(%rbp)
-	  7674b1:       89 45 f4                mov    %eax,-0xc(%rbp)
-		STAP_PROBE1(test, usdt1, base[idx]);
-	  7674b4:       8b 45 f4                mov    -0xc(%rbp),%eax
-	  7674b7:       48 8d 14 c5 00 00 00    lea    0x0(,%rax,8),%rdx
-	  7674be:       00
-	  7674bf:       48 8b 45 f8             mov    -0x8(%rbp),%rax
-	  7674c3:       48 01 d0                add    %rdx,%rax
-	  7674c6:       48 8b 00                mov    (%rax),%rax
-	  7674c9:       90                      nop
-	#else
-		STAP_PROBE1(test, usdt1, array[0]);
-	#endif
-	}
-	  7674ca:       90                      nop
-	  7674cb:       5d                      pop    %rbp
-	  7674cc:       c3                      ret
-
-
-I wonder we could also try to bring in Andrii's usdt.h [1] and overload usdt
-arguments like outlined in the hack below (full code in [1])
-
-we will probably need smarter and sustainable change, but you I guess you get
-the idea
-
-jirka
-
-
-[1] https://github.com/anakryiko/usdt
-[2] git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git usdt_hack
----
-diff --git a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-index e46d5743ad24..7bb098c37de5 100644
---- a/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-+++ b/tools/testing/selftests/bpf/prog_tests/usdt_o2.c
-@@ -4,6 +4,8 @@
- 
- #include "../sdt.h"
- #include "test_usdt_o2.skel.h"
-+#define USDT_ARGS ".asciz \"(,%%rax,8)\"\n"
-+#include "usdt.h"
- 
- #if defined(__GNUC__) && !defined(__clang__)
- __attribute__((optimize("O2")))
-@@ -28,6 +30,7 @@ static noinline void trigger_func(void)
- #else
- 	STAP_PROBE1(test, usdt1, array[0]);
- #endif
-+	USDT(krava, test1, 1, 2);
- }
- 
- static void basic_sib_usdt(void)
-diff --git a/tools/testing/selftests/bpf/usdt.h b/tools/testing/selftests/bpf/usdt.h
-index 549d1f774810..960ebd6aa88b 100644
---- a/tools/testing/selftests/bpf/usdt.h
-+++ b/tools/testing/selftests/bpf/usdt.h
-@@ -403,6 +403,10 @@ struct usdt_sema { volatile unsigned short active; };
- 	__asm__ __volatile__ ("" :: "m" (sema));
- #endif
- 
-+#ifndef USDT_ARGS
-+#define USDT_ARGS __usdt_asm_args(__VA_ARGS__)
-+#endif
-+
- /* main USDT definition (nop and .note.stapsdt metadata) */
- #define __usdt_probe(group, name, sema_def, sema, ...) do {					\
- 	sema_def(sema)										\
-@@ -418,7 +422,7 @@ struct usdt_sema { volatile unsigned short active; };
- 	__usdt_asm1(		__usdt_asm_addr sema)						\
- 	__usdt_asm_strz(group)									\
- 	__usdt_asm_strz(name)									\
--	__usdt_asm_args(__VA_ARGS__)								\
-+	USDT_ARGS										\
- 	__usdt_asm1(		.ascii "\0")							\
- 	__usdt_asm1(994:	.balign 4)							\
- 	__usdt_asm1(		.popsection)							\
+Also I'm not sure we can rely on rcu_read_lock()
+disabling preemption in all !PREEMPT_RCU cases.
+iirc it's more nuanced than that.
 
