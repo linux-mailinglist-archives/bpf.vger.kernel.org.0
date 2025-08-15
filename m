@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-65763-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65764-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96B8B27F5B
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 13:38:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2875AB27F5F
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 13:39:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B3745E8C91
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7716FAE699E
 	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 11:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B611301004;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0EF301012;
 	Fri, 15 Aug 2025 11:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FZ/eoI7h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vLOIUVNc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B5928850C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F4A28851C;
 	Fri, 15 Aug 2025 11:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755257846; cv=none; b=jyDt/TDC0EIF91KcWT7JwdHp/E/kD2jMdOcaOeVDEo+4S/wT1bEkHhcH9U+Cws9EMlDAu+A1nPQ8C5mL/TfQtL2olvO1o7ots8aido0ZDTUWxK16f4SdF8ytZ84Crq3hotcfXfx7vmj2hFtxYsUfpZH3q9ngLTK0dFcHeeSv1lE=
+	t=1755257846; cv=none; b=iKC5J+k6hScXz0xl27QuhxYJP6g3kkayr7GrVvQ3fb9a6uQyWZLkjGMMnJczUNfTXn5uAZHRX2gq1c8+ybhRO7H+dM37UvsmZ1rbsYvu1n+IP5eHB/r2No/jg2zXeVjeYT9MwS2Fqgkds4EoO/I++gwcJZazw3w+mnCWNGwKCTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1755257846; c=relaxed/simple;
-	bh=+/6Ro+Dnlq3YRqR0pERxWJ2pVEtF9E0U8Tw5zszBXiA=;
+	bh=FF6CTJItuLQX4L+saUiPgdc0K549DCILUpiRkhl6c30=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U6jo03oD2O83igjeBO5VZ6icHA6iulmJE4XlV87OPZZrhgyfWr2ngzP6QT+QdqFiJj/jcuKA+TPvlW3KMbc/ZxUhpTdML0vWphFUwecigg2FOSV4ufhXbj9h++TWfG3iLSdf+LP5jDgu0cb2vAcmTuRIlaLpk1th4JEHknJ2xsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FZ/eoI7h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AF2FC116C6;
+	 MIME-Version; b=jHa1NBYDj5VeBRoaCU961DUxyPSXjuna6nd+Eg1fYPnEIqGA1oDrJFz/P+KDGk4sTHJpHCP8Y2jmSFH+AzGTrLMfg72DoxnUjWjp5Iz2QnLlPs4ArYZdxk7eD3P5S6LdW52oACn0q0i/H2K3YJJh0hvFYi5p+3eB1z5kXvh1a6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vLOIUVNc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16F36C116B1;
 	Fri, 15 Aug 2025 11:37:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1755257846;
-	bh=+/6Ro+Dnlq3YRqR0pERxWJ2pVEtF9E0U8Tw5zszBXiA=;
+	bh=FF6CTJItuLQX4L+saUiPgdc0K549DCILUpiRkhl6c30=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FZ/eoI7hgGjAOCA/3mIAwwuH9K9EOlHvwUhndcA3cDo9yKMesrquaJPB6iKLYS8IS
-	 D0B/eV+Wgbk996r8FUUaAYpyQafzvqRf2/MRw1j7KJbX9eRI8M0ioSIrK9uXB1XTT8
-	 mmkR6xvkpgM2fdoxhFZfvZVVy/tGYYQJMwFZuqdyWgiy6YmsrqT8ooSdjKKr5Z04CL
-	 wonNQmhgc1Q+CJtTCkhvnc/bJhPU0nA+BQuGOOc8VDAhFT/EDIBwqA78xFCQVX8ZMi
-	 ixhbAcyG5zTEq5XiscEgV9fQNlIrlr2dXUqxFwGTa2O/Mduu9wnwbN6F47U4HwevyN
-	 biK2iIIeD2p4w==
+	b=vLOIUVNcxzibC03/MJr57laqLFHNh4zKfsrDIxXugUTygc+6I2VcnO+yYYaYIdigV
+	 BcEusm2FKdC0qRq9zLxzPV11cMpY2wUoBT/5S8Ta/KcxhqaP5ju7hvVp6FyiYv5yUu
+	 +VLBXIoD3XY+WMM3ap6bcDAnXUQ3xlHwmH6voojjAx+RDRxmKLLG7xnJWy8f8Qtje/
+	 3Ro0XSOWzlaOhHJuSc0NAluRaYF0VQP74F3FPR2N4nhGFrSu3vYbWFFoYoGaFKpKSz
+	 ZWd6VG93gkAY3uCSwspTvmUi3jbgNxEx8tKv4fTkqNfB1u01jRzKT0pCdSQCiM6+wW
+	 0mAsqyZWSHirg==
 Received: from mchehab by mail.kernel.org with local (Exim 4.98.2)
 	(envelope-from <mchehab+huawei@kernel.org>)
-	id 1umskO-000000042TX-0sw8;
+	id 1umskO-000000042Tb-10C5;
 	Fri, 15 Aug 2025 13:37:24 +0200
 From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To: Jonathan Corbet <corbet@lwn.net>,
@@ -63,9 +63,9 @@ Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	rust-for-linux@vger.kernel.org
-Subject: [PATCH 10/11] scripts: sphinx-pre-install: fix pdf dependencies for Mageia 9
-Date: Fri, 15 Aug 2025 13:36:26 +0200
-Message-ID: <daaaf4633a1cf465c5f904b7716fd445d49a3f6a.1755256868.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 11/11] scripts: sphinx-pre-install: fix PDF dependencies for gentoo
+Date: Fri, 15 Aug 2025 13:36:27 +0200
+Message-ID: <fc1dbf7d4eb4cb0887a19f75d1ae71d683648771.1755256868.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <cover.1755256868.git.mchehab+huawei@kernel.org>
 References: <cover.1755256868.git.mchehab+huawei@kernel.org>
@@ -78,19 +78,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-On Mageia 9, two packages are missing. Add them.
-
-With that, all PDF packages now build:
-
-Mageia 9:
----------
-    PASSED: OS detection: Mageia 9
-    PASSED: System packages: Packages installed
-    PASSED: Sphinx on venv: Sphinx Sphinx 8.1.3
-    PASSED: Sphinx package: Sphinx Sphinx 6.1.3
-    PASSED: Clean documentation: Build time: 0:00, return code: 0
-    PASSED: Build HTML documentation: Build time: 5:17, return code: 0
-    PASSED: Build PDF documentation: Build time: 14:28, return code: 0
+Package fonts are wrong. Fix it. With that, most PDF files
+now builds.
 
   PDF docs:
   ---------
@@ -117,19 +106,19 @@ Mageia 9:
       PASSED: timers: pdf/timers.pdf
       PASSED: accel: pdf/accel.pdf
       PASSED: hid: pdf/hid.pdf
-      PASSED: userspace-api: pdf/userspace-api.pdf
+      FAILED: userspace-api: Build failed (FAILED)
       PASSED: spi: pdf/spi.pdf
       PASSED: networking: pdf/networking.pdf
       PASSED: virt: pdf/virt.pdf
       PASSED: nvme: pdf/nvme.pdf
-      PASSED: translations: pdf/translations.pdf
+      FAILED: translations: Build failed (FAILED)
       PASSED: input: pdf/input.pdf
       PASSED: tee: pdf/tee.pdf
       PASSED: doc-guide: pdf/doc-guide.pdf
       PASSED: cdrom: pdf/cdrom.pdf
-      PASSED: gpu: pdf/gpu.pdf
-      PASSED: i2c: pdf/i2c.pdf
-      PASSED: RCU: pdf/RCU.pdf
+      FAILED: gpu: Build failed (FAILED)
+      FAILED: i2c: Build failed (FAILED)
+      FAILED: RCU: Build failed (FAILED)
       PASSED: watchdog: pdf/watchdog.pdf
       PASSED: usb: pdf/usb.pdf
       PASSED: rust: pdf/rust.pdf
@@ -144,7 +133,7 @@ Mageia 9:
       PASSED: devicetree: pdf/devicetree.pdf
       PASSED: block: pdf/block.pdf
       PASSED: target: pdf/target.pdf
-      PASSED: arch: pdf/arch.pdf
+      FAILED: arch: Build failed (FAILED)
       PASSED: pcmcia: pdf/pcmcia.pdf
       PASSED: scsi: pdf/scsi.pdf
       PASSED: netlabel: pdf/netlabel.pdf
@@ -152,7 +141,7 @@ Mageia 9:
       PASSED: security: pdf/security.pdf
       PASSED: accounting: pdf/accounting.pdf
       PASSED: admin-guide: pdf/admin-guide.pdf
-      PASSED: core-api: pdf/core-api.pdf
+      FAILED: core-api: Build failed (FAILED)
       PASSED: fb: pdf/fb.pdf
       PASSED: peci: pdf/peci.pdf
       PASSED: trace: pdf/trace.pdf
@@ -160,28 +149,27 @@ Mageia 9:
       PASSED: kernel-hacking: pdf/kernel-hacking.pdf
       PASSED: hwmon: pdf/hwmon.pdf
 
-Summary
-=======
-  PASSED - Mageia 9 (7 tests)
-
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/sphinx-pre-install | 2 ++
- 1 file changed, 2 insertions(+)
+ scripts/sphinx-pre-install | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
-index 224db3af17db..758a84ae6347 100755
+index 758a84ae6347..c46d7b76f93c 100755
 --- a/scripts/sphinx-pre-install
 +++ b/scripts/sphinx-pre-install
-@@ -979,6 +979,8 @@ class SphinxDependencyChecker(MissingCheckers):
- 
-         tex_pkgs = [
-             "texlive-fontsextra",
-+            "texlive-fonts-asian",
-+            "fonts-ttf-dejavu",
+@@ -1069,10 +1069,10 @@ class SphinxDependencyChecker(MissingCheckers):
+         Provide package installation hints for Gentoo.
+         """
+         texlive_deps = [
++            "dev-texlive/texlive-fontsrecommended",
+             "dev-texlive/texlive-latexextra",
+             "dev-texlive/texlive-xetex",
+             "media-fonts/dejavu",
+-            "media-fonts/lm",
          ]
  
-         if re.search(r"OpenMandriva", self.system_release):
+         progs = {
 -- 
 2.50.1
 
