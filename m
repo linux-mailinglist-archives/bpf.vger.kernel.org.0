@@ -1,91 +1,116 @@
-Return-Path: <bpf+bounces-65789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CB78B286F3
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 22:11:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E2AAB2871E
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 22:20:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 716E01C261C2
-	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 20:10:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 023A4620B24
+	for <lists+bpf@lfdr.de>; Fri, 15 Aug 2025 20:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5B0298CD5;
-	Fri, 15 Aug 2025 20:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C054E23D7CF;
+	Fri, 15 Aug 2025 20:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Go+mp4/O"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YT88qVQ0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242AD2853EB
-	for <bpf@vger.kernel.org>; Fri, 15 Aug 2025 20:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB78B2BE055
+	for <bpf@vger.kernel.org>; Fri, 15 Aug 2025 20:18:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755288595; cv=none; b=PT0ueXzNuwFd2i4GFjQCesnRkFkdBW6/CSEJXtJn1ZUlNnaRiBP0VlfyX93nd85DgWt/MC2yU7gYsFPpP8qat+FLVRaFb4XaRR9RXOYKag63d/42259lez++RgGpHEh/S9vbgK01Nn3VkHkzWkpcjXMRuRxK9fqsC8O47MwIf3A=
+	t=1755289085; cv=none; b=nTyE98Z0tUsXMSNj/aoUd1HVAiBkjXCTFEvfed75rlQbdjj9G/ns54Bs590tKgzvJucIjCWXFRCeBHcv7aoR+zUsXyiCbLppWK1v1Iy5Hz+Fj5y2Qc9Wk6E0j6TPH22rjt9yeUmKvMLvfG0SJDxQZvHvQcNM9D5kv6HMusHKyQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755288595; c=relaxed/simple;
-	bh=f+N8DoiyCqhcjW7tAZgkHxLoysdXVIjdGopSN/st36w=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=WliQig8XtMKH+IVnloPx0iYucsPGhqnTfpnyBA8pO5N1WZ9TpRPEWbZgHEHiNes9zOnO/0+cQ3GmjqAN4nlSVdCMtQWkqBmBXyw9nZQ/9fbSzVbUkJkSAuhf2YrJ79GcvFO+gMMe8myZW1ZHGVl9ricyVTRx9y5B4A+e0A3trno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Go+mp4/O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8243C4CEEB;
-	Fri, 15 Aug 2025 20:09:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755288595;
-	bh=f+N8DoiyCqhcjW7tAZgkHxLoysdXVIjdGopSN/st36w=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Go+mp4/OKDQOb4EvZb829pTVB9a+8oRrruyFe3LiOx8PjNttco3PiT+Yi8v72MzU2
-	 PnvCNwLTd+aKWsKwoa1Set7iRHfp4toSrCAV5LlQC4YVO7lmlt8WecmmyglJrBI6M5
-	 hQkyKxWlshj+9zyJZqQZazHpYjhY9H+5tjpI3UMFvV7HHgtPr8QJ74pMfJvPIUdjne
-	 Dc5DbZZyPoamlYTzbTM3zLJLyZ+y6o0q85Ft8IHLWyfm6QZUjl5Rm9a68+8ebmpu7U
-	 XkzPbfvo1vjg9pbBnurrTLKxsG5ogkaeznpN5Ftvo63qoOMkO973lN9WnG78IErEd5
-	 rFeAbrYNcsjyw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33DC639D0C3D;
-	Fri, 15 Aug 2025 20:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1755289085; c=relaxed/simple;
+	bh=8vMaMJmZ58dU+V8WLmtNoLhWkY53OJshlCWFXVY9SsQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h8hRwtaHK4EYxmIV0SXEnVkEJWpfMCdVOhkXW6MxHZUqU1RLjw+t0/t4Gxmr1x/XuxfSsZPOTXrv6JhJAcOlEPWR1RfpNpGmaoAFTyiDrghLuy37VdR2uTPg5OKcQOPQfDazsOhn56SVaPejbLV/Ro4uQSrUc9QHS3qJFQO76Lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YT88qVQ0; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <70cdb532-4477-459c-8762-638ceedae043@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755289079;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P22hqZIj5gevNHPgEa4U/ghutY8E332kiZN0qP3rNHw=;
+	b=YT88qVQ0N6H+gizdVxQEnnfYPvkE4kgIOeGKU67/hf0LdIAWWzsp2kJwW1CogBsTUe24lw
+	RmfwuDlTg4PBqP1XGstXGPmy6JTy6MtDBKtDgf/yOSX46XiotMqmlAm4EZ3iW1ykYxP2F6
+	hP7xYWXPifVmzUrpWxUrWqj2a7a2TAI=
+Date: Fri, 15 Aug 2025 13:17:39 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH bpf] bpf/selftests: fix test_tcpnotify_user
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175528860601.1260101.369344232738070354.git-patchwork-notify@kernel.org>
-Date: Fri, 15 Aug 2025 20:10:06 +0000
-References: <aJ8kHhwgATmA3rLf@google.com>
-In-Reply-To: <aJ8kHhwgATmA3rLf@google.com>
-To: Matt Bobrowski <mattbobrowski@google.com>
+To: Stanislav Fomichev <stfomichev@gmail.com>,
+ Matt Bobrowski <mattbobrowski@google.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
  andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com
+References: <aJ8kHhwgATmA3rLf@google.com> <aJ9V9r4U24phxzQG@mini-arch>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <aJ9V9r4U24phxzQG@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Fri, 15 Aug 2025 12:12:14 +0000 you wrote:
-> Based on a bisect, it appears that commit 7ee988770326 ("timers:
-> Implement the hierarchical pull model") has somehow inadvertently
-> broken BPF selftest test_tcpnotify_user. The error that is being
-> generated by this test is as follows:
+On 8/15/25 8:44 AM, Stanislav Fomichev wrote:
+> On 08/15, Matt Bobrowski wrote:
+>> Based on a bisect, it appears that commit 7ee988770326 ("timers:
+>> Implement the hierarchical pull model") has somehow inadvertently
+>> broken BPF selftest test_tcpnotify_user. The error that is being
+>> generated by this test is as follows:
+>>
+>> 	FAILED: Wrong stats Expected 10 calls, got 8
+>>
+>> It looks like the change allows timer functions to be run on CPUs
+>> different from the one they are armed on. The test had pinned itself
+>> to CPU 0, and in the past the retransmit attempts also occurred on CPU
+>> 0. The test had set the max_entries attribute for
+>> BPF_MAP_TYPE_PERF_EVENT_ARRAY to 2 and was calling
+>> bpf_perf_event_output() with BPF_F_CURRENT_CPU, so the entry was
+>> likely to be in range. With the change to allow timers to run on other
+>> CPUs, the current CPU tasked with performing the retransmit might be
+>> bumped and in turn fall out of range, as the event will be filtered
+>> out via __bpf_perf_event_output() using:
+>>
+>>      if (unlikely(index >= array->map.max_entries))
+>>              return -E2BIG;
 > 
-> 	FAILED: Wrong stats Expected 10 calls, got 8
+> [..]
 > 
-> [...]
+>> A possible change would be to explicitly set the max_entries attribute
+>> for perf_event_map in test_tcpnotify_kern.c to a value that's at least
+>> as large as the number of CPUs. As it turns out however, if the field
+>> is left unset, then the BPF selftest library will determine the number
+>> of CPUs available on the underlying system and update the max_entries
+>> attribute accordingly.
+> 
+> nit: the max_entries is set by libbpf in map_set_def_max_entries. 'BPF
+> selftest library' seems a bit vague. But not a reason for respin.
 
-Here is the summary with links:
-  - [bpf] bpf/selftests: fix test_tcpnotify_user
-    https://git.kernel.org/bpf/bpf-next/c/c80d79720647
+Fixed the commit message. Thanks. Applied.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>   
+>> A further problem with the test is that it has a thread that continues
+>> running up until the program exits. The main thread cleans up some
+>> LIBBPF data structures, while the other thread continues to use them,
+>> which inevitably will trigger a SIGSEGV. This can be dealt with by
+>> telling the thread to run for as long as necessary and doing a
+>> pthread_join on it before exiting the program.
 
-
+Some of the "goto err" seems to have similar problem but ok-ish as long as the 
+iptables runs fine. I didn't look why the test needs to start a thread at all, 
+so I leave it as is. The CI is not running this test. The test is getting rotten 
+overall. It should be moved to test_progs. Probably as a subtest in some of the 
+existing sockops test in test_progs.
 
