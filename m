@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-65827-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65828-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8615FB29003
-	for <lists+bpf@lfdr.de>; Sat, 16 Aug 2025 20:03:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EC37B29004
+	for <lists+bpf@lfdr.de>; Sat, 16 Aug 2025 20:03:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55527AE5ECF
-	for <lists+bpf@lfdr.de>; Sat, 16 Aug 2025 18:02:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDA25AE60FE
+	for <lists+bpf@lfdr.de>; Sat, 16 Aug 2025 18:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE1A304964;
-	Sat, 16 Aug 2025 18:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F3D2D7D2E;
+	Sat, 16 Aug 2025 18:02:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IZDSpieK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MQkJClf0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41104302777
-	for <bpf@vger.kernel.org>; Sat, 16 Aug 2025 18:02:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D10B302CCC
+	for <bpf@vger.kernel.org>; Sat, 16 Aug 2025 18:02:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755367334; cv=none; b=j8Dw4nE0W9kZfKdIP52Ysbw3KqfDoOEHWjHQ6udHsSYFBXXpMXd9OEEk6TKZOqjGog5pekhI6xjJ+nCupelEccY+eqzMF7tyBmxmmWHG0ke4OlmmFqDVeqKiH8X/1Srv7seOGZA4YaVAIu1dH9wtzidNC8bHwMLbOTbyUs7Tz+Y=
+	t=1755367335; cv=none; b=M2+exD42KktjE8HqPPhbMw6k5Ti0gHHAVjq0cxOKF4RvBx31Aixvhp+hIgL30dCoRxHgDcqAAXbT/vsiYT0/OgQrK8Ha2tYV2e3kXQ7J0v9b3u1ymdGu06Ou4BFt8owS2IcS/KWJFsk4T0bnzUhbAoI181XkuJz+vU1ohfoCLm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755367334; c=relaxed/simple;
-	bh=Brpf8SqzYzbKSLgUG/6b6BJJMCTgCPXaWxxmsQkzvXk=;
+	s=arc-20240116; t=1755367335; c=relaxed/simple;
+	bh=a5vmD1ku3Z9DUSXb7F/ND35rpsCEkRUL2XYa37S9V48=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=e6laVG9JHKObFvwQaelRvwYz5Y5F648K3WCVRqja54Wfg9nnBv3F22nUTK+1HYkaOx2p3fK88RzrqojrmZqj+X1ikI76hPWRBpGJCXVsTNagaCgyCa0GhyuD+wNHRyTN1iNg9wWXhCplC8IYu8dycD2gaP4qWfLpp/KlvWD2ynw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IZDSpieK; arc=none smtp.client-ip=209.85.221.42
+	 MIME-Version; b=NNp4EI08iWKRdjO+lNcHD5Lwfb4ZxRdi8egKrdxQVqh2MdeNOtT2jMH5hXQYiTInSDr3ZVtLeIxRQI0DddXc8kaHfGVkZqxI1N4vAn7ZTTxjHvpL0aqfn1ESd/QZo4GENQmgVEQotiaGsY0Y99eMHt84TrRMwL6O7m0XfHskpNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MQkJClf0; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3b9e414ef53so2840314f8f.2
-        for <bpf@vger.kernel.org>; Sat, 16 Aug 2025 11:02:11 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3b9d41bfa35so2643019f8f.0
+        for <bpf@vger.kernel.org>; Sat, 16 Aug 2025 11:02:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755367330; x=1755972130; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755367331; x=1755972131; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5NW1fpUW+Qdz+AYW15D1LJbRQ7daeI3WyA9wV+jFd/w=;
-        b=IZDSpieKg1nNPO3zZL6LnC47+IXvOCWF3GCyuwhkgDW+SARXM041LxIKwJXYIDv0o+
-         1n7fleEo9Etzd9Jlu8MxdfWmBEIrLnDjMROSnzNODRcq9yy4Wem4VASKKxRtEFHDAKF0
-         QeUm6Nym+pjlabzECALSRFsszeQzdoS4Cn11FGz2Z7YH/v8GL20ZuEf1LuBhJT0yfKmF
-         1Xp0huV5VhvlEJHAiClW9ELbeCPs23pdofwHjJIG5dkW9VETTY69BkXKwJ2IMzb9Aioe
-         fPJ7gz19YeIpHETIJkWRkLr9jYHVqY6SEA1AmW1BtVGT9y4+x6T5ljakY+QgMbSzzyfZ
-         x9QQ==
+        bh=RsRnUIl1Szxnnveafq8o71OdTZYn43v6IP79p3CvC2E=;
+        b=MQkJClf0tQq0prDRp8w24gt7gyQ1+GRHn2/bwRtzLj7ZZMskdYqkP1Dta9lK3f6Ghx
+         x9aQ+K3Ps9RnLzrEEcxQHO+VXLtXtM0gQWtcz9GdtJHgd36ZL2XZKQYPGyhkCN/Frfuy
+         Zjhwx7Ny6pYifp3ZwXL0ZiArz2nrBtKb0/okSaHL4AAKSQBaI1jKG5spLiOXqTu+hzCV
+         mwaquLDguyQmjreZIJ+Obo03/10s1loCoXY4KO8catDkW5Pw4QYgreq+M9DtRQj8tG3s
+         xXNQ/4U1Bu63McWK0p2dzf2x+v6T0z0mFdARXPB6fvypk33Xye9rY3iW8dtc3K2lJRYm
+         4hoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755367330; x=1755972130;
+        d=1e100.net; s=20230601; t=1755367331; x=1755972131;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5NW1fpUW+Qdz+AYW15D1LJbRQ7daeI3WyA9wV+jFd/w=;
-        b=rWdOtTZUQIU61eYvy/d95B3xMAl/ZkyN5fOgB21MyscHchVuZtLgrd3WjZgrRVGpk9
-         7BLeEISw8D4r1EecJeinN0l8vZLu7F6LQ0g7y7349RUBaac64pCxPdad7zA1EMdOVQnm
-         C/pRH0prL87yFjavjh5f9MIXwlAc9TnfP8aobHvANw4u9Ftd4MW1J/t0b9cj3U1oTdJB
-         KNpu4vzknH8b/rA1IjJY3DaeJtHbJU/IAJz4pzQNdN3FphRHa3KxgyZ9RYTBmlyKu/gY
-         fK6RwnRjbL+ZjYLR1ksFvndSZWGIdgB+5SqxprcrbH6hGxaxoXXJvhJKms4QAsRp3I73
-         8OCA==
-X-Gm-Message-State: AOJu0YxfpfqI8rRwihNiAL7SSSb52CcRcNeXkFJ4tdPHGdybHDvrRAc5
-	1xLXgJ8F0JHl7JPOq7i/Npc0at6ysSD4mhYJQJWT4WlRdnOBcoy5sabXlgmefQ==
-X-Gm-Gg: ASbGnctaJYB6TP8/HVwWeQsHZ1NFbZ0D0ouaD73mPk4VKumbS/N1wIxUHpwkZu0dMwi
-	Bo2BMlt9NMiTD3D59Nx6CNTkh0vvFkEcnGIwnH6inaPu7IovzVs5LMAUctDHS50Io0r4mX79CRk
-	SrxH7DiS9KvCid5xT0FF0dF3dJBwsRZVYSXyzLsM/Caet6C7Dnmng4Q3SycWeKKBUvJEwEih+ym
-	t1eyIMZPNBv4Ghu3jxP0JA/P8sUSNiwFogPMgyWBgLMwJ9skVFzej0zIRcKCacPRCrgYCC2TeNb
-	XruK9Nok629hAzRFZUtv6ZEWG+pDv31fdxYqiGGQcUMhYCa71ul+by9j/7WkVwq7df2uEdtnzFD
-	ccpN7cYHk9WDalNFWuqcIOnczRoFLcoMmDM3XWXgd/6s=
-X-Google-Smtp-Source: AGHT+IGVTWqvn2Jqf7O4uvXTqlHduktyH91m0OwCf6+turRdrIpo9cDVGkHYQEFJnOanEH04qR4Tlg==
-X-Received: by 2002:a05:6000:188c:b0:3b4:9721:2b2d with SMTP id ffacd0b85a97d-3bb667532b4mr4545680f8f.9.1755367329793;
-        Sat, 16 Aug 2025 11:02:09 -0700 (PDT)
+        bh=RsRnUIl1Szxnnveafq8o71OdTZYn43v6IP79p3CvC2E=;
+        b=CB0zikJe2s88+gyKjCzO9hLpA+rEs+Gb37AbRVaD6JHQXIIeJcS+eoG8797Xl0GLFd
+         l68PxJ6FFn1JzkLRT+VQ2EMIPpTvnCDNXpEocLUVOFcQH2RUPsTpn8MxKSgm+2XYf9it
+         v2+qYw2SLgD8G5CD85k+K2uWA1cDE+aMSCgNOw2IK69Y0y34NsBw5yARdpi6d/BBRaBG
+         wA3SY3FkJPgJlPIafHHz4FE7iycr38Ivd+NYJJfsWso3JCuh9H/Yhqz2I+LVX+D03Uco
+         JQA+TFjoN48LgH2LcB/1ArrE1x2d0aYKWjQQsiAsGqzLkqaz6STzox35/2+8ie8Mjymy
+         G5ng==
+X-Gm-Message-State: AOJu0Yyb+07gqbWn2ml4KTU8VyEk2AJV/2tRuuX+DO1kOVO43TvV0FYE
+	qDMArDEm7jW+5Xe7dlu1KqrNFuanqqSGE6YoGLZtLE+0rP07l8K75QWdA7VLEQ==
+X-Gm-Gg: ASbGncuWYmDy9gW6EmgQG3PRbmnw/JB0rK56mrMXwiP4ci2OwdtYUpYC8U5GJr+i+C4
+	l3KCW5KLJMhGrJwR7uPZ9gea7kCDCYH01K9x8UPDECemObHiH8WJHhDjEOwfNY5WBFvckX+11w7
+	XVCh+28O0xAfde1KTu9tmk/+GbFHoAfDGQdiA+45sHkJsYOE3ZOun6PwbtjgT+1SKXtPMAiB36s
+	qVyiy1MqfVmu+wa8YLQEdzR+DS+I/rIuI2Gvn38ssYVhO95HwqUKv84Kchb0KdaobzoN8c6vxCA
+	GPRsE7pUKykSr/afCQqWcEUQbe3b4VFlFYdtTZSdkogz1iV4azVG7UjLYncexmRykf0jETWFCcx
+	pYsIr+VYyCmld+6DD9PftWsk+0AqnkkL8ShBEnIwhsIyHPBIXb4Qt6w==
+X-Google-Smtp-Source: AGHT+IGNQh3qrUK/InUKH6LvFdRZ7U4NMJFXPYXRuJxkJFCZ+OA5Wns2E8+ORlsn5exXTeInnIVaMQ==
+X-Received: by 2002:a05:6000:2c02:b0:3b9:167f:7f2e with SMTP id ffacd0b85a97d-3bb665647e9mr4935295f8f.11.1755367330626;
+        Sat, 16 Aug 2025 11:02:10 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3bd736b88besm1080193f8f.67.2025.08.16.11.02.08
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3bd736b88besm1080193f8f.67.2025.08.16.11.02.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Aug 2025 11:02:08 -0700 (PDT)
+        Sat, 16 Aug 2025 11:02:10 -0700 (PDT)
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	Quentin Monnet <qmo@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>
 Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH v1 bpf-next 10/11] libbpf: support llvm-generated indirect jumps
-Date: Sat, 16 Aug 2025 18:06:30 +0000
-Message-Id: <20250816180631.952085-11-a.s.protopopov@gmail.com>
+Subject: [PATCH v1 bpf-next 11/11] selftests/bpf: add selftests for indirect jumps
+Date: Sat, 16 Aug 2025 18:06:31 +0000
+Message-Id: <20250816180631.952085-12-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250816180631.952085-1-a.s.protopopov@gmail.com>
 References: <20250816180631.952085-1-a.s.protopopov@gmail.com>
@@ -96,383 +96,562 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For v5 instruction set, LLVM now is allowed to generate indirect
-jumps for switch statements and for 'goto *rX' assembly. Every such a
-jump will be accompanied by necessary metadata, e.g. (`llvm-objdump
--Sr ...`):
-
-       0:       r2 = 0x0 ll
-                0000000000000030:  R_BPF_64_64  BPF.JT.0.0
-
-Here BPF.JT.1.0 is a symbol residing in the .jumptables section:
-
-    Symbol table:
-       4: 0000000000000000   240 OBJECT  GLOBAL DEFAULT     4 BPF.JT.0.0
-
-The -bpf-min-jump-table-entries llvm option may be used to control
-the minimal size of a switch which will be converted to an indirect
-jumps.
-
-The code generated by LLVM for a switch will look, approximately,
-like this:
-
-    0: rX <- jump_table_x[i]
-    2: rX <<= 3
-    3: gotox *rX
-
-Right now there is no robust way to associate the jump with the
-corresponding map, so libbpf doesn't insert map file descriptor
-inside the gotox instruction.
+Add selftests for indirect jumps. All the indirect jumps are
+generated from C switch statements, so, if compiled by a compiler
+which doesn't support indirect jumps, then should pass as well.
 
 Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 ---
- .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
- tools/bpf/bpftool/map.c                       |   2 +-
- tools/lib/bpf/libbpf.c                        | 159 +++++++++++++++---
- tools/lib/bpf/libbpf_probes.c                 |   4 +
- tools/lib/bpf/linker.c                        |  12 +-
- 5 files changed, 153 insertions(+), 26 deletions(-)
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../selftests/bpf/prog_tests/bpf_goto_x.c     | 132 ++++++
+ .../testing/selftests/bpf/progs/bpf_goto_x.c  | 384 ++++++++++++++++++
+ 3 files changed, 519 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_goto_x.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_goto_x.c
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-index 252e4c538edb..3377d4a01c62 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-@@ -55,7 +55,7 @@ MAP COMMANDS
- |     | **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
- |     | **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
- |     | **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage**
--|     | **task_storage** | **bloom_filter** | **user_ringbuf** | **cgrp_storage** | **arena** }
-+|     | **task_storage** | **bloom_filter** | **user_ringbuf** | **cgrp_storage** | **arena** | **insn_array** }
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 77794efc020e..c0d8d2ba50b5 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -453,7 +453,9 @@ BPF_CFLAGS = -g -Wall -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)	\
+ 	     -I$(abspath $(OUTPUT)/../usr/include)			\
+ 	     -std=gnu11		 					\
+ 	     -fno-strict-aliasing 					\
+-	     -Wno-compare-distinct-pointer-types
++	     -Wno-compare-distinct-pointer-types			\
++	     -Wno-initializer-overrides					\
++	     #
+ # TODO: enable me -Wsign-compare
  
- DESCRIPTION
- ===========
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index c9de44a45778..79b90f274bef 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -1477,7 +1477,7 @@ static int do_help(int argc, char **argv)
- 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
- 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
- 		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage |\n"
--		"                 task_storage | bloom_filter | user_ringbuf | cgrp_storage | arena }\n"
-+		"                 task_storage | bloom_filter | user_ringbuf | cgrp_storage | arena | insn_array }\n"
- 		"       " HELP_SPEC_OPTIONS " |\n"
- 		"                    {-f|--bpffs} | {-n|--nomount} }\n"
- 		"",
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index fe4fc5438678..a5f04544c09c 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -191,6 +191,7 @@ static const char * const map_type_name[] = {
- 	[BPF_MAP_TYPE_USER_RINGBUF]             = "user_ringbuf",
- 	[BPF_MAP_TYPE_CGRP_STORAGE]		= "cgrp_storage",
- 	[BPF_MAP_TYPE_ARENA]			= "arena",
-+	[BPF_MAP_TYPE_INSN_ARRAY]		= "insn_array",
- };
- 
- static const char * const prog_type_name[] = {
-@@ -372,6 +373,7 @@ enum reloc_type {
- 	RELO_EXTERN_CALL,
- 	RELO_SUBPROG_ADDR,
- 	RELO_CORE,
-+	RELO_INSN_ARRAY,
- };
- 
- struct reloc_desc {
-@@ -383,6 +385,7 @@ struct reloc_desc {
- 			int map_idx;
- 			int sym_off;
- 			int ext_idx;
-+			int sym_size;
- 		};
- 	};
- };
-@@ -496,6 +499,10 @@ struct bpf_program {
- 	__u32 line_info_rec_size;
- 	__u32 line_info_cnt;
- 	__u32 prog_flags;
+ CLANG_CFLAGS = $(CLANG_SYS_INCLUDES)
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_goto_x.c b/tools/testing/selftests/bpf/prog_tests/bpf_goto_x.c
+new file mode 100644
+index 000000000000..7b7cbbed2a62
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_goto_x.c
+@@ -0,0 +1,132 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+	__u32 subprog_offset[256];
-+	__u32 subprog_sec_offst[256];
-+	__u32 subprog_cnt;
- };
- 
- struct bpf_struct_ops {
-@@ -525,6 +532,7 @@ struct bpf_struct_ops {
- #define STRUCT_OPS_SEC ".struct_ops"
- #define STRUCT_OPS_LINK_SEC ".struct_ops.link"
- #define ARENA_SEC ".addr_space.1"
-+#define JUMPTABLES_SEC ".jumptables"
- 
- enum libbpf_map_type {
- 	LIBBPF_MAP_UNSPEC,
-@@ -658,6 +666,7 @@ struct elf_state {
- 	Elf64_Ehdr *ehdr;
- 	Elf_Data *symbols;
- 	Elf_Data *arena_data;
-+	Elf_Data jumptables_data;
- 	size_t shstrndx; /* section index for section name strings */
- 	size_t strtabidx;
- 	struct elf_sec_desc *secs;
-@@ -668,6 +677,7 @@ struct elf_state {
- 	int symbols_shndx;
- 	bool has_st_ops;
- 	int arena_data_shndx;
-+	int jumptables_data_shndx;
- };
- 
- struct usdt_manager;
-@@ -3945,6 +3955,9 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
- 			} else if (strcmp(name, ARENA_SEC) == 0) {
- 				obj->efile.arena_data = data;
- 				obj->efile.arena_data_shndx = idx;
-+			} else if (strcmp(name, JUMPTABLES_SEC) == 0) {
-+				memcpy(&obj->efile.jumptables_data, data, sizeof(*data));
-+				obj->efile.jumptables_data_shndx = idx;
- 			} else {
- 				pr_info("elf: skipping unrecognized data section(%d) %s\n",
- 					idx, name);
-@@ -4599,6 +4612,16 @@ static int bpf_program__record_reloc(struct bpf_program *prog,
- 		return 0;
- 	}
- 
-+	/* jump table data relocation */
-+	if (shdr_idx == obj->efile.jumptables_data_shndx) {
-+		reloc_desc->type = RELO_INSN_ARRAY;
-+		reloc_desc->insn_idx = insn_idx;
-+		reloc_desc->map_idx = -1;
-+		reloc_desc->sym_off = sym->st_value;
-+		reloc_desc->sym_size = sym->st_size;
-+		return 0;
-+	}
++#include <test_progs.h>
 +
- 	/* generic map reference relocation */
- 	if (type == LIBBPF_MAP_UNSPEC) {
- 		if (!bpf_object__shndx_is_maps(obj, shdr_idx)) {
-@@ -6101,6 +6124,60 @@ static void poison_kfunc_call(struct bpf_program *prog, int relo_idx,
- 	insn->imm = POISON_CALL_KFUNC_BASE + ext_idx;
- }
- 
-+static int create_jt_map(struct bpf_object *obj, int off, int size, int adjust_off)
++#include <linux/if_ether.h>
++#include <linux/in.h>
++#include <linux/ip.h>
++#include <linux/ipv6.h>
++#include <linux/in6.h>
++#include <linux/udp.h>
++#include <linux/tcp.h>
++
++#include <sys/syscall.h>
++#include <bpf/bpf.h>
++
++#include "bpf_goto_x.skel.h"
++
++static void __test_run(struct bpf_program *prog, void *ctx_in, size_t ctx_size_in)
 +{
-+	static union bpf_attr attr = {
-+		.map_type = BPF_MAP_TYPE_INSN_ARRAY,
-+		.key_size = 4,
-+		.value_size = sizeof(struct bpf_insn_array_value),
-+		.max_entries = 0,
-+	};
-+	struct bpf_insn_array_value val = {};
-+	int map_fd;
-+	int err;
-+	__u32 i;
-+	__u32 *jt;
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++			    .ctx_in = ctx_in,
++			    .ctx_size_in = ctx_size_in,
++		   );
++	int err, prog_fd;
 +
-+	attr.max_entries = size / 8;
-+
-+	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
-+	if (map_fd < 0)
-+		return map_fd;
-+
-+	jt = (__u32 *)(obj->efile.jumptables_data.d_buf + off);
-+	if (!jt)
-+		return -EINVAL;
-+
-+	for (i = 0; i < attr.max_entries; i++) {
-+		val.xlated_off = jt[2*i]/8 + adjust_off;
-+		err = bpf_map_update_elem(map_fd, &i, &val, 0);
-+		if (err) {
-+			close(map_fd);
-+			return err;
-+		}
-+	}
-+
-+	err = bpf_map_freeze(map_fd);
-+	if (err) {
-+		close(map_fd);
-+		return err;
-+	}
-+
-+	return map_fd;
++	prog_fd = bpf_program__fd(prog);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run_opts err");
 +}
 +
-+static int subprog_insn_off(struct bpf_program *prog, int insn_idx)
++static void check_simple(struct bpf_goto_x *skel,
++			 struct bpf_program *prog,
++			 __u64 ctx_in,
++			 __u64 expected)
++{
++	skel->bss->ret_user = 0;
++
++	__test_run(prog, &ctx_in, sizeof(ctx_in));
++
++	if (!ASSERT_EQ(skel->bss->ret_user, expected, "skel->bss->ret_user"))
++		return;
++}
++
++static void check_simple_fentry(struct bpf_goto_x *skel,
++				struct bpf_program *prog,
++				__u64 ctx_in,
++				__u64 expected)
++{
++	skel->bss->in_user = ctx_in;
++	skel->bss->ret_user = 0;
++
++	/* trigger */
++	usleep(1);
++
++	if (!ASSERT_EQ(skel->bss->ret_user, expected, "skel->bss->ret_user"))
++		return;
++}
++
++static void check_goto_x_skel(struct bpf_goto_x *skel)
 +{
 +	int i;
++	__u64 in[]   = {0, 1, 2, 3, 4,  5, 77};
++	__u64 out[]  = {2, 3, 4, 5, 7, 19, 19};
++	__u64 out2[] = {103, 104, 107, 205, 115, 1019, 1019};
++	__u64 in3[]  = {0, 11, 27, 31, 22, 45, 99};
++	__u64 out3[] = {2,  3,  4,  5, 19, 19, 19};
++	__u64 in4[]  = {0, 1, 2, 3, 4,  5, 77};
++	__u64 out4[] = {12, 15, 7 , 15, 12, 15, 15};
 +
-+	for (i = prog->subprog_cnt - 1; i >= 0; i--)
-+		if (insn_idx >= prog->subprog_offset[i])
-+			return prog->subprog_offset[i] - prog->subprog_sec_offst[i];
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.simple_test, in[i], out[i]);
 +
-+	return -prog->sec_insn_off;
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.simple_test2, in[i], out[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.two_switches, in[i], out2[i]);
++
++	if (0) for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.big_jump_table, in3[i], out3[i]);
++
++	if (0) for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.one_jump_two_maps, in4[i], out4[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.use_static_global1, in[i], out[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.use_static_global2, in[i], out[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.use_nonstatic_global1, in[i], out[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.use_nonstatic_global2, in[i], out[i]);
++
++	bpf_program__attach(skel->progs.simple_test_other_sec);
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple_fentry(skel, skel->progs.simple_test_other_sec, in[i], out[i]);
++
++	bpf_program__attach(skel->progs.use_static_global_other_sec);
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple_fentry(skel, skel->progs.use_static_global_other_sec, in[i], out[i]);
++
++	bpf_program__attach(skel->progs.use_nonstatic_global_other_sec);
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple_fentry(skel, skel->progs.use_nonstatic_global_other_sec, in[i], out[i]);
 +}
 +
-+
- /* Relocate data references within program code:
-  *  - map references;
-  *  - global variable references;
-@@ -6192,6 +6269,21 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
- 		case RELO_CORE:
- 			/* will be handled by bpf_program_record_relos() */
- 			break;
-+		case RELO_INSN_ARRAY: {
-+			int map_fd;
-+
-+			map_fd = create_jt_map(obj, relo->sym_off, relo->sym_size,
-+					       subprog_insn_off(prog, relo->insn_idx));
-+			if (map_fd < 0) {
-+				pr_warn("prog '%s': relo #%d: failed to create a jt map for sym_off=%u\n",
-+						prog->name, i, relo->sym_off);
-+				return map_fd;
-+			}
-+			insn[0].src_reg = BPF_PSEUDO_MAP_VALUE;
-+			insn->imm = map_fd;
-+			insn->off = 0;
-+		}
-+			break;
- 		default:
- 			pr_warn("prog '%s': relo #%d: bad relo type %d\n",
- 				prog->name, i, relo->type);
-@@ -6389,36 +6481,58 @@ static int append_subprog_relos(struct bpf_program *main_prog, struct bpf_progra
- 	return 0;
- }
- 
-+static int
-+bpf_prog__append_subprog_offsets(struct bpf_program *prog, __u32 sec_insn_off, __u32 sub_insn_off)
++void goto_x_skel(void)
 +{
-+	if (prog->subprog_cnt == ARRAY_SIZE(prog->subprog_sec_offst)) {
-+		pr_warn("prog '%s': number of subprogs exceeds %zu\n",
-+			prog->name, ARRAY_SIZE(prog->subprog_sec_offst));
-+		return -E2BIG;
++	struct bpf_goto_x *skel;
++	int ret;
++
++	skel = bpf_goto_x__open();
++	if (!ASSERT_NEQ(skel, NULL, "bpf_goto_x__open"))
++		return;
++
++	ret = bpf_goto_x__load(skel);
++	if (!ASSERT_OK(ret, "bpf_goto_x__load"))
++		return;
++
++	check_goto_x_skel(skel);
++
++	bpf_goto_x__destroy(skel);
++}
++
++void test_bpf_goto_x(void)
++{
++	if (test__start_subtest("goto_x_skel"))
++		goto_x_skel();
++}
+diff --git a/tools/testing/selftests/bpf/progs/bpf_goto_x.c b/tools/testing/selftests/bpf/progs/bpf_goto_x.c
+new file mode 100644
+index 000000000000..b6ce7cba52e8
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bpf_goto_x.c
+@@ -0,0 +1,384 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_misc.h"
++
++__u64 in_user;
++__u64 ret_user;
++
++struct simple_ctx {
++	__u64 x;
++};
++
++__u64 some_var;
++
++/*
++ * This function adds code which will be replaced by a different
++ * number of instructions by the verifier. This adds additional
++ * stress on testing the insn_array maps corresponding to indirect jumps.
++ */
++static __always_inline void adjust_insns(__u64 x)
++{
++	some_var ^= x + bpf_jiffies64();
++}
++
++SEC("syscall")
++int simple_test(struct simple_ctx *ctx)
++{
++	switch (ctx->x) {
++	case 0:
++		adjust_insns(ctx->x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(ctx->x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(ctx->x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(ctx->x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(ctx->x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(ctx->x + 177);
++		ret_user = 19;
++		break;
 +	}
 +
-+	prog->subprog_sec_offst[prog->subprog_cnt] = sec_insn_off;
-+	prog->subprog_offset[prog->subprog_cnt] = sub_insn_off;
-+
-+	prog->subprog_cnt += 1;
 +	return 0;
 +}
 +
- static int
- bpf_object__append_subprog_code(struct bpf_object *obj, struct bpf_program *main_prog,
--				struct bpf_program *subprog)
-+		struct bpf_program *subprog)
- {
--       struct bpf_insn *insns;
--       size_t new_cnt;
--       int err;
-+	struct bpf_insn *insns;
-+	size_t new_cnt;
-+	int err;
- 
--       subprog->sub_insn_off = main_prog->insns_cnt;
-+	subprog->sub_insn_off = main_prog->insns_cnt;
- 
--       new_cnt = main_prog->insns_cnt + subprog->insns_cnt;
--       insns = libbpf_reallocarray(main_prog->insns, new_cnt, sizeof(*insns));
--       if (!insns) {
--               pr_warn("prog '%s': failed to realloc prog code\n", main_prog->name);
--               return -ENOMEM;
--       }
--       main_prog->insns = insns;
--       main_prog->insns_cnt = new_cnt;
-+	new_cnt = main_prog->insns_cnt + subprog->insns_cnt;
-+	insns = libbpf_reallocarray(main_prog->insns, new_cnt, sizeof(*insns));
-+	if (!insns) {
-+		pr_warn("prog '%s': failed to realloc prog code\n", main_prog->name);
-+		return -ENOMEM;
++SEC("syscall")
++int simple_test2(struct simple_ctx *ctx)
++{
++	switch (ctx->x) {
++	case 0:
++		adjust_insns(ctx->x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(ctx->x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(ctx->x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(ctx->x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(ctx->x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(ctx->x + 177);
++		ret_user = 19;
++		break;
 +	}
-+	main_prog->insns = insns;
-+	main_prog->insns_cnt = new_cnt;
- 
--       memcpy(main_prog->insns + subprog->sub_insn_off, subprog->insns,
--              subprog->insns_cnt * sizeof(*insns));
-+	memcpy(main_prog->insns + subprog->sub_insn_off, subprog->insns,
-+			subprog->insns_cnt * sizeof(*insns));
- 
--       pr_debug("prog '%s': added %zu insns from sub-prog '%s'\n",
--                main_prog->name, subprog->insns_cnt, subprog->name);
-+	pr_debug("prog '%s': added %zu insns from sub-prog '%s'\n",
-+			main_prog->name, subprog->insns_cnt, subprog->name);
- 
--       /* The subprog insns are now appended. Append its relos too. */
--       err = append_subprog_relos(main_prog, subprog);
--       if (err)
--               return err;
--       return 0;
-+	/* The subprog insns are now appended. Append its relos too. */
-+	err = append_subprog_relos(main_prog, subprog);
-+	if (err)
-+		return err;
-+
-+	err = bpf_prog__append_subprog_offsets(main_prog, subprog->sec_insn_off,
-+					       subprog->sub_insn_off);
-+	if (err)
-+		return err;
 +
 +	return 0;
- }
- 
- static int
-@@ -7954,6 +8068,7 @@ static int bpf_object_prepare_progs(struct bpf_object *obj)
- 		if (err)
- 			return err;
- 	}
++}
 +
- 	return 0;
- }
- 
-diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-index 9dfbe7750f56..bccf4bb747e1 100644
---- a/tools/lib/bpf/libbpf_probes.c
-+++ b/tools/lib/bpf/libbpf_probes.c
-@@ -364,6 +364,10 @@ static int probe_map_create(enum bpf_map_type map_type)
- 	case BPF_MAP_TYPE_SOCKHASH:
- 	case BPF_MAP_TYPE_REUSEPORT_SOCKARRAY:
- 		break;
-+	case BPF_MAP_TYPE_INSN_ARRAY:
-+		key_size	= sizeof(__u32);
-+		value_size	= sizeof(struct bpf_insn_array_value);
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int simple_test_other_sec(struct pt_regs *ctx)
++{
++	__u64 x = in_user;
++
++	switch (x) {
++	case 0:
++		adjust_insns(x + 1);
++		ret_user = 2;
 +		break;
- 	case BPF_MAP_TYPE_UNSPEC:
- 	default:
- 		return -EOPNOTSUPP;
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index a469e5d4fee7..827867f8bba3 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -28,6 +28,9 @@
- #include "str_error.h"
- 
- #define BTF_EXTERN_SEC ".extern"
-+#define RODATA_REL_SEC ".rel.rodata"
-+#define JUMPTABLES_SEC ".jumptables"
-+#define JUMPTABLES_REL_SEC ".rel.jumptables"
- 
- struct src_sec {
- 	const char *sec_name;
-@@ -2026,6 +2029,9 @@ static int linker_append_elf_sym(struct bpf_linker *linker, struct src_obj *obj,
- 			obj->sym_map[src_sym_idx] = dst_sec->sec_sym_idx;
- 			return 0;
- 		}
++	case 1:
++		adjust_insns(x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(x + 177);
++		ret_user = 19;
++		break;
++	}
 +
-+		if (!strcmp(src_sec->sec_name, JUMPTABLES_SEC))
-+			goto add_sym;
- 	}
- 
- 	if (sym_bind == STB_LOCAL)
-@@ -2272,8 +2278,10 @@ static int linker_append_elf_relos(struct bpf_linker *linker, struct src_obj *ob
- 						insn->imm += sec->dst_off / sizeof(struct bpf_insn);
- 					else
- 						insn->imm += sec->dst_off;
--				} else {
--					pr_warn("relocation against STT_SECTION in non-exec section is not supported!\n");
-+				} else if (strcmp(src_sec->sec_name, JUMPTABLES_REL_SEC) &&
-+					   strcmp(src_sec->sec_name, RODATA_REL_SEC)) {
-+					pr_warn("relocation against STT_SECTION in section %s is not supported!\n",
-+						src_sec->sec_name);
- 					return -EINVAL;
- 				}
- 			}
++	return 0;
++}
++
++SEC("syscall")
++int two_switches(struct simple_ctx *ctx)
++{
++	switch (ctx->x) {
++	case 0:
++		adjust_insns(ctx->x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(ctx->x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(ctx->x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(ctx->x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(ctx->x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(ctx->x + 177);
++		ret_user = 19;
++		break;
++	}
++
++	switch (ctx->x + !!ret_user) {
++	case 1:
++		adjust_insns(ctx->x + 7);
++		ret_user = 103;
++		break;
++	case 2:
++		adjust_insns(ctx->x + 9);
++		ret_user = 104;
++		break;
++	case 3:
++		adjust_insns(ctx->x + 11);
++		ret_user = 107;
++		break;
++	case 4:
++		adjust_insns(ctx->x + 11);
++		ret_user = 205;
++		break;
++	case 5:
++		adjust_insns(ctx->x + 11);
++		ret_user = 115;
++		break;
++	default:
++		adjust_insns(ctx->x + 177);
++		ret_user = 1019;
++		break;
++	}
++
++	return 0;
++}
++
++SEC("syscall")
++int big_jump_table(struct simple_ctx *ctx __attribute__((unused)))
++{
++#if 0
++	const void *const jt[256] = {
++		[0 ... 255] = &&default_label,
++		[0] = &&l0,
++		[11] = &&l11,
++		[27] = &&l27,
++		[31] = &&l31,
++	};
++
++	goto *jt[ctx->x & 0xff];
++
++l0:
++	adjust_insns(ctx->x + 1);
++	ret_user = 2;
++	return 0;
++
++l11:
++	adjust_insns(ctx->x + 7);
++	ret_user = 3;
++	return 0;
++
++l27:
++	adjust_insns(ctx->x + 9);
++	ret_user = 4;
++	return 0;
++
++l31:
++	adjust_insns(ctx->x + 11);
++	ret_user = 5;
++	return 0;
++
++default_label:
++	adjust_insns(ctx->x + 177);
++	ret_user = 19;
++	return 0;
++#else
++	return 0;
++#endif
++}
++
++SEC("syscall")
++int one_jump_two_maps(struct simple_ctx *ctx __attribute__((unused)))
++{
++#if 0
++	__label__ l1, l2, l3, l4;
++	void *jt1[2] = { &&l1, &&l2 };
++	void *jt2[2] = { &&l3, &&l4 };
++	unsigned int a = ctx->x % 2;
++	unsigned int b = (ctx->x / 2) % 2;
++	volatile int ret = 0;
++
++	if (!(a < 2 && b < 2))
++		return 19;
++
++	if (ctx->x % 2)
++		goto *jt1[a];
++	else
++		goto *jt2[b];
++
++	l1: ret += 1;
++	l2: ret += 3;
++	l3: ret += 5;
++	l4: ret += 7;
++
++	ret_user = ret;
++	return ret;
++#else
++	return 0;
++#endif
++}
++
++/* Just to introduce some non-zero offsets in .text */
++static __noinline int f0(volatile struct simple_ctx *ctx __arg_ctx)
++{
++	if (ctx)
++		return 1;
++	else
++		return 13;
++}
++
++SEC("syscall") int f1(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	return f0(ctx);
++}
++
++static __noinline int __static_global(__u64 x)
++{
++	switch (x) {
++	case 0:
++		adjust_insns(x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(x + 177);
++		ret_user = 19;
++		break;
++	}
++
++	return 0;
++}
++
++SEC("syscall")
++int use_static_global1(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	return __static_global(ctx->x);
++}
++
++SEC("syscall")
++int use_static_global2(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	adjust_insns(ctx->x + 1);
++	return __static_global(ctx->x);
++}
++
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int use_static_global_other_sec(void *ctx)
++{
++	return __static_global(in_user);
++}
++
++__noinline int __nonstatic_global(__u64 x)
++{
++	switch (x) {
++	case 0:
++		adjust_insns(x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(x + 177);
++		ret_user = 19;
++		break;
++	}
++
++	return 0;
++}
++
++SEC("syscall")
++int use_nonstatic_global1(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	return __nonstatic_global(ctx->x);
++}
++
++SEC("syscall")
++int use_nonstatic_global2(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	adjust_insns(ctx->x + 1);
++	return __nonstatic_global(ctx->x);
++}
++
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int use_nonstatic_global_other_sec(void *ctx)
++{
++	return __nonstatic_global(in_user);
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.34.1
 
