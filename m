@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-65823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38ABEB28FFF
-	for <lists+bpf@lfdr.de>; Sat, 16 Aug 2025 20:02:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1462B28FFC
+	for <lists+bpf@lfdr.de>; Sat, 16 Aug 2025 20:02:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C309FA26437
-	for <lists+bpf@lfdr.de>; Sat, 16 Aug 2025 18:02:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B48845C096A
+	for <lists+bpf@lfdr.de>; Sat, 16 Aug 2025 18:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66ED3019DB;
-	Sat, 16 Aug 2025 18:02:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7DE3019B5;
+	Sat, 16 Aug 2025 18:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ChrcBLBG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E63/3cUx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 500DA301498
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14721E1A3D
 	for <bpf@vger.kernel.org>; Sat, 16 Aug 2025 18:02:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755367329; cv=none; b=gsd1bb3DvDZt+WAMeVtzO0SLA8VQRWBRTrphOul3Hvu1zmzz5Y0WIit1LQU8C+/ZDpumCMzttgkoeFzNay/kkKYhImW+lq8AbdqXS7MN3TAcBstWKBn3krrDYNYArwm3mNDXYPXSK9QEuO3Znd77L0nS3vrpe49x9E6RL/+4sIA=
+	t=1755367328; cv=none; b=rXIdqcUcFdzAvz7l15sh3v6KHhSMe5BKYfEAi+n+idVtwPHzZzmqqRijkP1oM1mT0YLBWzDsmgl7ynZO0WAAifW49nmLOmYF9cZvFUQLqDKzg21DKwQhhZ5IwaeMxYjFnfjkEmAtdXcrdwmNdYte4I4MA++baRKiA08QtF5adXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755367329; c=relaxed/simple;
-	bh=pGsCXLbdGGTsSaFpdd8/DMZeUoZ8ZR3WsHJhmSHQri8=;
+	s=arc-20240116; t=1755367328; c=relaxed/simple;
+	bh=b8m08FEJ82EolP51zIAwwLa3onPEWcFAvAvIUiQH1dU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oBqVpdW3+auHX87Y6eXp5mKERtdQGlcRjBVjUViFz4csZwwJO4t9Eh/WEsWd7JqtGnJtj6ZDCNqNUJcFk0BEwQ3+HvIlVLxvKKIeIDZ4DRz0nBu0x6OmFfgIUqxfldIE5tFIXiohgWR84IVYxIkf6+hrkWl46GARB3wZSnzaCOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ChrcBLBG; arc=none smtp.client-ip=209.85.128.44
+	 MIME-Version; b=QNRwAaDs1r3KB5V+xGG5qgdjbJpuYfMMTdBfzUgzxe5R0OXxn/isvEz9POlfTE4gy5bXnOc9GRinZgyaJoemDe9hWxA55JEk0mflDhjf7UK9LavAZKwHuUzR9kuyPMTokR7ArXm6HiJUhajLxIoEGTmV6wf9jQnxiAFEL8FZbRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E63/3cUx; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-45a1b0becf5so13561275e9.2
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3b9d41c1963so1453993f8f.0
         for <bpf@vger.kernel.org>; Sat, 16 Aug 2025 11:02:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755367324; x=1755972124; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755367325; x=1755972125; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RSdG2maZKT21zwZDLFHVm8O9AySrFID+XhBN31Fz/rg=;
-        b=ChrcBLBGaQrPMxWiTKxl1O67XO7y4SkXJzwozRj/SfBckFpcKUPcixX98VmQgFxGRZ
-         plkIbO9N9/r8GWtghXdKPtnozNFli3N+9TOSzFSEmaQKPXuC4Q3akv2WN/R6+qbepNjr
-         WZxoyM2K/tIZZFIHHiwJBQ+wz97bgRQSO+xT4Z4S2qYEQihnbMJRBlxiP/ZJ8cdUmB49
-         he7dmybrK2aSA0wTS+1VfUV3mBG+7IJGRhteygf5/djGykwl9JSxcxYzG65PIxMriole
-         wmUYRI9cAeVBQkxGTrHCaTcqYmNcC+uhLwmQcAdee9cB1RislIzrho9nuMYy5J12dji+
-         hPKQ==
+        bh=AYrjQhvJMHXaP/9ruUcfnVI2r2C+MiR/30xTndOw3+s=;
+        b=E63/3cUxWUDFP8/4EqHbsXPW/uPu4CyRDKteWPlOCDQm5Xh8aqxeGvaX4b78g7T3J9
+         Dn0mWJjfLG85YoZ58IVx8K6ig8GP3A25fU6q1eSEERoismAOQA+nKn3ZgVB66sOvsRsK
+         sVd5hTXu+QIqIdZwdrhrf0DcwkKSWJwsaXjvB0mFBD/OeTT9kQZ8KRnTHu09SykNDpHZ
+         D+GVc6RuL66PTQqRqw0MHxzNccoKEYd2wSNzJetq2EfVHGGH71Ml6nM7JvQ0zuz5TEiY
+         OANCQ/LhwIxZ2wOhuAyXPnJy0yKg/OisV5YezuIxeD6c7CFLOr5ju7KOhUcRYR97k2og
+         st6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755367324; x=1755972124;
+        d=1e100.net; s=20230601; t=1755367325; x=1755972125;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RSdG2maZKT21zwZDLFHVm8O9AySrFID+XhBN31Fz/rg=;
-        b=XSp2bIzE3rfjiBBLZ0+KkDhFrTiP0XD+uNvYhjDBiUFYmYl+2reC7L/59wp95Za+jT
-         LIymvY7W6U1MzeGUeB9/OESDjKuZxMHcfIT4r7ocL9q+tS0WCjKWTuew1ZPikvBW2c/f
-         AZ5FWZUJ9qeyg7TRNkRK+gYnzBrXxbq8axT/JkYON2hkCBzl85xpbpsx0T8Zqs1dCNhl
-         L49/jyHpMOdbHUcD41nL7XNWHeWQcprHP4NbgmCmB9QMCHCstfA9ptwYezKqDqZgI7IZ
-         l7Ev8lTcEHYiWrsweYDNSqHbMdccFpU2jjfweoFQ5TdHBf6dlurPjxPT1pTCJ6vq2blw
-         dZhQ==
-X-Gm-Message-State: AOJu0Yxlidb7NV6Omu0nnBk5XfaUReO8xqlHGzcY9uEERFbzWsuwMqmr
-	h5kp/O44ORYE7rdlngPdNDdhVLH0UqCbOlL8M4QPAwFkODIga1EYRXfW6mcfiw==
-X-Gm-Gg: ASbGncthiQylloEIBzDWtA2fl5lml14bs5eln1F2BssrqBV6msHtGykCAf1RkNhQxlE
-	ckgiwlgHSH+UdvlmU33PRk5YcRjjjYFxt3dCSE9bZD3cyoOheFVRw1oCm+a6G2PiiQGhx5ch1s8
-	tvdKM+zDSjbdzzNqxBElamfTmbobZCKGBWgEDePqLb0IAhad8rXFypoc2D848YzGyGX2HUTrO1o
-	BlKkD2eXCRRe84LnlY0HHBB16mIWgajd6LrWZi++GSM77EjQj3kUKcqn7uFf9p7vGdpa4H3axYB
-	nsNFrTXTNbgTN2RuCIYQSOekQxAQJnWG1xZO6dlOxs2XvCSMCnAgpEiIG0WUT7pJx2gkhPgoqtu
-	ytMMHYnoeGEfJ4bWl6XpeJX6AhqZJrjlNYLLp+sUI8UQ=
-X-Google-Smtp-Source: AGHT+IFFjBWioWEZA5GPCPr0LhJgT1NjLjyixjoh5Gfq2gDuaa0O2Xs6DsCRDgjBrFOb36UID5UmBA==
-X-Received: by 2002:a05:600c:3baa:b0:458:bc3f:6a72 with SMTP id 5b1f17b1804b1-45a23d36b37mr45955845e9.4.1755367323932;
-        Sat, 16 Aug 2025 11:02:03 -0700 (PDT)
+        bh=AYrjQhvJMHXaP/9ruUcfnVI2r2C+MiR/30xTndOw3+s=;
+        b=GtQ0KNE+Pr20AvjGC/vjA5GVUZeDrYmsNCGCIQdbpIVQNuRs+LPEPeU6iQ/S5tcL/L
+         6nH3FZue7aqNQTUGX6fywWd/I9VttdqvS7T1nnKX4OcW26S/z2ezSpWh7ippIkFpfaUd
+         bbZ1I6YAoWOdZB8zKKidaMtxRyPNDxakZGG0uoGVnCb+Gis00trVIuPTLHdrQNbYA3em
+         QTURd7QLZCUdoij9dZPCIS//sYfQxmFx2C3LCMrI6PfUUpZGJmrq2tC8mUzvCc9p/MFU
+         cJvGZROZDGO9x57k3jDNDlY1a915+Cdcf+Q9tBQSkMeKawCfFk+zD+bwYITbrI9qqa5I
+         xqiw==
+X-Gm-Message-State: AOJu0YwqyPlOy/S5H383IfTSKq6jG0oUA2iNjJo+oNM06yXXmvTKK0wV
+	NvSHn1+Lcub44EkFWwAoUBNvVufxuH+yEAGLt700Qy8LgW1tOjqI5b8Cyv0Xsg==
+X-Gm-Gg: ASbGncuXx+ymq8t6i0nzVZOPFVEpkUB5+tv7KubamTDE6UWAmlkgmraY4piJDjg2SxS
+	cTVah2wzLYZEt+EgWgOoeLxN1JEe5ffu+wKY3B7sq/Sj/5jRsKqUEO5YsqNqoOJS62VdaFbia/w
+	N5GjNnbHtWNtjS3swOcbAnlusDylqDb597qh6P+yUVzjtjFcJUujJQ95GTVInbApiOIvt6/zoHs
+	sBS6Rz3SYz5Oi5Fyk1LjbMKcJIG3yleZU4dnHLjOzssATXoNLSUx9q40Wa3/XFHPWWuYrtYwtQd
+	6T6J8cLlibVkyVNIznrPHXtkXZqQeZEAWUEFaSVUpkgdfxBD9h5UqGgP4kIJBbSQwE9TdA350Kt
+	R4nP3nixUVlfVVWPX02eGrT67vsTyq+acqIT9RLShkrU=
+X-Google-Smtp-Source: AGHT+IG/Wd3NBFQaW1Z7Ldz/b2j9gbxQwxqG1hGJJdXMNtm9EljxmSGJUcudtlpztnDczSYUWi83Xw==
+X-Received: by 2002:a05:6000:24c4:b0:3b7:644f:9ca7 with SMTP id ffacd0b85a97d-3bc694261a0mr2388933f8f.25.1755367324807;
+        Sat, 16 Aug 2025 11:02:04 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3bd736b88besm1080193f8f.67.2025.08.16.11.02.02
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3bd736b88besm1080193f8f.67.2025.08.16.11.02.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Aug 2025 11:02:02 -0700 (PDT)
+        Sat, 16 Aug 2025 11:02:04 -0700 (PDT)
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	Quentin Monnet <qmo@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>
 Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH v1 bpf-next 05/11] bpf: support instructions arrays with constants blinding
-Date: Sat, 16 Aug 2025 18:06:25 +0000
-Message-Id: <20250816180631.952085-6-a.s.protopopov@gmail.com>
+Subject: [PATCH v1 bpf-next 06/11] selftests/bpf: test instructions arrays with blinding
+Date: Sat, 16 Aug 2025 18:06:26 +0000
+Message-Id: <20250816180631.952085-7-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250816180631.952085-1-a.s.protopopov@gmail.com>
 References: <20250816180631.952085-1-a.s.protopopov@gmail.com>
@@ -96,97 +96,123 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When bpf_jit_harden is enabled, all constants in the BPF code are
-blinded to prevent JIT spraying attacks. This happens during JIT
-phase. Adjust all the related instruction arrays accordingly.
+Add a specific test for instructions arrays with blinding enabled.
 
 Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 ---
- kernel/bpf/core.c     | 19 +++++++++++++++++++
- kernel/bpf/verifier.c | 11 ++++++++++-
- 2 files changed, 29 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/bpf_insn_array.c | 92 +++++++++++++++++++
+ 1 file changed, 92 insertions(+)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 5d1650af899d..27e9c30ad6dc 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1482,6 +1482,21 @@ void bpf_jit_prog_release_other(struct bpf_prog *fp, struct bpf_prog *fp_other)
- 	bpf_prog_clone_free(fp_other);
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
+index da329c2e85f2..4fa09c05c272 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
+@@ -287,6 +287,95 @@ static void check_with_functions(void)
+ 	close(map_fd);
  }
  
-+static void adjust_insn_arrays(struct bpf_prog *prog, u32 off, u32 len)
++static int set_bpf_jit_harden(char *level)
 +{
-+	struct bpf_map *map;
-+	int i;
++	char old_level;
++	int err = -1;
++	int fd = -1;
 +
-+	if (len <= 1)
-+		return;
-+
-+	for (i = 0; i < prog->aux->used_map_cnt; i++) {
-+		map = prog->aux->used_maps[i];
-+		if (map->map_type == BPF_MAP_TYPE_INSN_ARRAY)
-+			bpf_insn_array_adjust(map, off, len);
++	fd = open("/proc/sys/net/core/bpf_jit_harden", O_RDWR | O_NONBLOCK);
++        if (fd < 0) {
++		ASSERT_FAIL("open .../bpf_jit_harden returned %d (errno=%d)", fd, errno);
++		return -1;
 +	}
++
++	err = read(fd, &old_level, 1);
++	if (err != 1) {
++		ASSERT_FAIL("read from .../bpf_jit_harden returned %d (errno=%d)", err, errno);
++		err = -1;
++		goto end;
++	}
++
++	lseek(fd, 0, SEEK_SET);
++
++	err = write(fd, level, 1);
++	if (err != 1) {
++		ASSERT_FAIL("write to .../bpf_jit_harden returned %d (errno=%d)", err, errno);
++		err = -1;
++		goto end;
++	}
++
++	err = 0;
++	*level = old_level;
++end:
++	if (fd >= 0)
++		close(fd);
++	return err;
 +}
 +
- struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
++static void check_blindness(void)
++{
++	struct bpf_insn insns[] = {
++		BPF_MOV64_IMM(BPF_REG_0, 4),
++		BPF_MOV64_IMM(BPF_REG_0, 3),
++		BPF_MOV64_IMM(BPF_REG_0, 2),
++		BPF_MOV64_IMM(BPF_REG_0, 1),
++		BPF_EXIT_INSN(),
++	};
++	int prog_fd = -1, map_fd;
++	struct bpf_insn_array_value val = {};
++	char bpf_jit_harden = '@'; /* non-exizsting value */
++	int i;
++
++	map_fd = map_create(BPF_MAP_TYPE_INSN_ARRAY, ARRAY_SIZE(insns));
++	if (!ASSERT_GE(map_fd, 0, "map_create"))
++		return;
++
++	for (i = 0; i < ARRAY_SIZE(insns); i++) {
++		val.xlated_off = i;
++		if (!ASSERT_EQ(bpf_map_update_elem(map_fd, &i, &val, 0), 0, "bpf_map_update_elem"))
++			goto cleanup;
++	}
++
++	bpf_jit_harden = '2';
++	if (set_bpf_jit_harden(&bpf_jit_harden)) {
++		bpf_jit_harden = '@'; /* open, read or write failed => no write was done */
++		goto cleanup;
++	}
++
++	prog_fd = prog_load(insns, ARRAY_SIZE(insns), &map_fd, 1);
++	if (!ASSERT_GE(prog_fd, 0, "bpf(BPF_PROG_LOAD)"))
++		goto cleanup;
++
++	for (i = 0; i < ARRAY_SIZE(insns); i++) {
++		char fmt[32];
++
++		if (!ASSERT_EQ(bpf_map_lookup_elem(map_fd, &i, &val), 0, "bpf_map_lookup_elem"))
++			goto cleanup;
++
++		snprintf(fmt, sizeof(fmt), "val should be equal 3*%d", i);
++		ASSERT_EQ(val.xlated_off, i * 3, fmt);
++	}
++
++cleanup:
++	/* restore the old one */
++	if (bpf_jit_harden != '@')
++		set_bpf_jit_harden(&bpf_jit_harden);
++
++	close(prog_fd);
++	close(map_fd);
++}
++
+ /* Map can be used only by one BPF program */
+ static void check_no_map_reuse(void)
  {
- 	struct bpf_insn insn_buff[16], aux[2];
-@@ -1537,6 +1552,9 @@ struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
- 		clone = tmp;
- 		insn_delta = rewritten - 1;
+@@ -390,6 +479,9 @@ void test_bpf_insn_array(void)
  
-+		/* Instructions arrays must be updated using absolute xlated offsets */
-+		adjust_insn_arrays(clone, prog->aux->subprog_start + i, rewritten);
+ 	if (test__start_subtest("multiple-functions"))
+ 		check_with_functions();
 +
- 		/* Walk new program and skip insns we just inserted. */
- 		insn = clone->insnsi + i + insn_delta;
- 		insn_cnt += insn_delta;
-@@ -1544,6 +1562,7 @@ struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
- 	}
- 
- 	clone->blinded = 1;
-+	clone->len = insn_cnt;
- 	return clone;
++	if (test__start_subtest("blindness"))
++		check_blindness();
  }
- #endif /* CONFIG_BPF_JIT */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e1f7744e132b..863b7114866b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -21539,6 +21539,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 	struct bpf_insn *insn;
- 	void *old_bpf_func;
- 	int err, num_exentries;
-+	int instructions_added = 0;
  
- 	if (env->subprog_cnt <= 1)
- 		return 0;
-@@ -21613,7 +21614,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 		func[i]->aux->func_idx = i;
- 		/* Below members will be freed only at prog->aux */
- 		func[i]->aux->btf = prog->aux->btf;
--		func[i]->aux->subprog_start = subprog_start;
-+		func[i]->aux->subprog_start = subprog_start + instructions_added;
- 		func[i]->aux->func_info = prog->aux->func_info;
- 		func[i]->aux->func_info_cnt = prog->aux->func_info_cnt;
- 		func[i]->aux->poke_tab = prog->aux->poke_tab;
-@@ -21665,7 +21666,15 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 		func[i]->aux->might_sleep = env->subprog_info[i].might_sleep;
- 		if (!i)
- 			func[i]->aux->exception_boundary = env->seen_exception;
-+
-+		/*
-+		 * To properly pass the absolute subprog start to jit
-+		 * all instruction adjustments should be accumulated
-+		 */
-+		instructions_added -= func[i]->len;
- 		func[i] = bpf_int_jit_compile(func[i]);
-+		instructions_added += func[i]->len;
-+
- 		if (!func[i]->jited) {
- 			err = -ENOTSUPP;
- 			goto out_free;
+ /* Check all kinds of operations and related restrictions */
 -- 
 2.34.1
 
