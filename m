@@ -1,116 +1,107 @@
-Return-Path: <bpf+bounces-65920-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65921-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18B56B2B025
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 20:23:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 887C3B2B040
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 20:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B18851B6027E
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 18:24:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 909301B605AC
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 18:26:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391982D24A3;
-	Mon, 18 Aug 2025 18:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 565F33314B6;
+	Mon, 18 Aug 2025 18:26:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Lgk5T4pE"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="X9diEnfv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290C032BF51
-	for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 18:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A323314A2;
+	Mon, 18 Aug 2025 18:26:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755541416; cv=none; b=k9FpAnk/OxpsDgRUF6LlAvh5gtEv7nK39rMupN23xpB0+5jAIZtwkVH8Xbvqgx9XUBqGohEano6Kn9y4AJ+SIRN75eirGXpEn+PqJUxPkaehfaEJtPYaul+jQm4mMG9+R7vUcBBZcfFEGcNzfRb1p0c3TkGPoxM1nARzW2sDUeo=
+	t=1755541585; cv=none; b=CEmekWpdkKH/TjPFxvmV/a/pGD5rdt8TARwiAlFRrqplZ8B59msOl14Mfkh/kKnyHOLP2T1pY5P1+fa+x3B9GKnj2vD0ZC8O58JBW9pCyozbE2CC0j4bjjUojd/wlEwAcU4z8ba4C4PWnHbLtozGk1tdZUudE1B5SrXlUKjkAq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755541416; c=relaxed/simple;
-	bh=o5ANg99cngFK1z2paNVWzduyFXx7OHRbYdzjLYF4sR4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GTFJod18zKhggKLHj8xc55xC76myjM83TsRWG/l+RfP5JpDYPTgevoN8Ikj3V2dT81VjnIekxxbUaM89WYOcsldur+XjJCHAqHlzCoDXZP82wUznyxPZ97XFyYaSktShSiDGXZeLm0aIQLi6R88HDM1Xf6pj8tMrcdv+TF50r24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Lgk5T4pE; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-618896b3ff9so8779110a12.1
-        for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 11:23:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1755541413; x=1756146213; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ZTcdISe83BaeHj593XEWcMz30uuHoXQTWxMDez5msQ=;
-        b=Lgk5T4pEKg9PW67oAiEXu7YPG0XVdrCqw6hVT65qUqUbAKepKakk3N194i12Jd4nFX
-         XD+Cc3V6nf2XcRHrVeO5t2h1tYEKByrCIcSkUwdsz1p/ngCoARtdVc3lJymlF44x/UPj
-         X3cpoIf5xeQOK6S01U0qKotLNYvqimfQDhety4J6mmIlzHyvIlS7hFAPC2Yd15REVpoF
-         3V2sDFzgjpdIVeR7FLdklXBJMyNHdSWrLwrZwt+7Vc/UOps7culDCrgdjS68GOYRg6cz
-         PcqAVK3TLCaEin0Gu7bRN+8Avq/qM6u/pwBm9Qs/DMMw+vmUzC4LDRRD0YgFGKV70MZe
-         f2eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755541413; x=1756146213;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ZTcdISe83BaeHj593XEWcMz30uuHoXQTWxMDez5msQ=;
-        b=hdiCFjLha8SuQ6BJWg5HuE+HFCN/jWgwOyJ935z9xOUk9mi6v3//eIxg3b/s+UcP4q
-         YTnT+VeYQIUyc1+DG5j6IM55WXuZ+Gca9VnFjgrEmH3BBhDrd0vGCCj5e4U7L5r+R9Xu
-         CxucfXDxcbGsLwTCz3BoFDJ62I1cs4LWszH8VyymWFAwh63qAWZ9ICcxzs7c6gfm0v0x
-         bDrDkW6HEhQ73HvVW8ISvMwvsVl53PNw0ung2IJRGo6IP2JWFD/q/SnCi//PxJNtAD2m
-         VVAyBpV86gLiKYe3K1+INnjp5DWbRa8IDIyix79TwJn7hdVFS7juuFukEN3v8t67ir0z
-         Tcvg==
-X-Forwarded-Encrypted: i=1; AJvYcCUfaJXgXBbrEV8idmOkX2JEYXGioWjNVm5zBH4J58zRZ+GRltf6Bb2msx94f02WQZeNi9s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwjFveFQbYVhAQUbw6NVKuW7HEUK1NnAhEqmVPogHg/RMQ5K/5B
-	0VM8ecihZQvg+sR/6KqXI++yxgxgmdY+EwSWXHyQ90SxbfJgyesMUxSN0kBkyb3Rlng=
-X-Gm-Gg: ASbGncucQD5cPX3PZLCXmcGohAfsoO03AYbCUBbng/xFSplORcLLn/dK57dle/bneNM
-	3cv9iHdeHTfcyoDZ/Er/icBrnEI3EP1HV0BeFs0TTpKA1A114GNBi+PgaImKFkcGm6QH2q5dN+U
-	sQF9Vgu432f77Y8gwm2sVEzZ75EFaxOzsYN6mB2/lfeOl1d/eRPQJAiTyCdcr9d/U4eDjixx8Ib
-	Rtpup3udANQkaAhSlpK2G9EKJN0c54gITaLVOfRSE9mpSxamw+n6QPUdiis3MOe6DQECZ3Z3RRI
-	+HzEQQCp+CSZJBJ990d2AnYstXCTHWlFKbwWdsM33Q+233z1R5RS8Mltd/D5RnIbFqWbvJa7XDO
-	ErsiCFljGJrr7Cf8=
-X-Google-Smtp-Source: AGHT+IFmwNWaVTHlBu9YDfORnGsUddH7cG/DT0gI594sr5e5nblhk9BHDysuXmGVTQZbwJZqp1om5Q==
-X-Received: by 2002:a05:6402:26cc:b0:613:5257:6cad with SMTP id 4fb4d7f45d1cf-61a755c29f6mr513323a12.11.1755541413359;
-        Mon, 18 Aug 2025 11:23:33 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:ca])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61a755d99bbsm282571a12.3.2025.08.18.11.23.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Aug 2025 11:23:32 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Nandakumar Edamana <nandakumar@nandakumar.co.in>
-Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,
-  bpf@vger.kernel.org
-Subject: Re: [PATCH v2 bpf-next] bpf: improve the general precision of tnum_mul
-In-Reply-To: <20250815140510.1287598-1-nandakumar@nandakumar.co.in>
-	(Nandakumar Edamana's message of "Fri, 15 Aug 2025 19:35:10 +0530")
-References: <20250815140510.1287598-1-nandakumar@nandakumar.co.in>
-Date: Mon, 18 Aug 2025 20:23:31 +0200
-Message-ID: <87tt24zdy4.fsf@cloudflare.com>
+	s=arc-20240116; t=1755541585; c=relaxed/simple;
+	bh=EgalRbjYn9XvJ6vqxWwAZdqnhgYsrm33nDAWgv9wClU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=akgzklxreDsuEEl7UmQpxY2weo0cVy4CwtrxMNRnM6YuO1uZozJol1FIvVYm6eEcGbnfbl2M4AKhc8F3yx7w3521EjP0IUyNI8HEtWX4cEl0b82Gs9rxLwM02FEgWCgks+DjAYPqJn7gV3tOJAVjtOUrW28K3vjpqnwD/fvyPUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=X9diEnfv; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=O75UIUPO5Nhi6baLItc5aorQTbl3aXRmvPV/kSs4z1U=; b=X9diEnfvb8vsZSK7H4Ybwyad7Z
+	VGXrBAuw2mdZ8xiMQYV7DxC1p7tKM3M5WM/UjU+XMGlCrjrjI0Mq0M2JvEz6MXJ/BXJXw3nLzU4eB
+	F31BmJj5GovtvGO5IMSUv5I5qPzczC99qT8PEQtKonLLVan26mNpujoOC6QIPU+yvJoFIl9SUOf76
+	2hseD7EdBenfHkZApwqQFF0MXHvA3024HDtRdCoDNq+Ckj524lpzzRDJl5aRZcKllFh0tupl83bby
+	fcgTywetRcz6pD8NZawdz1QNwugUBHj9I4e7ncdz+FXNc7WYaaBKRPGbtmb4pGRJIetez3cU3LH64
+	+7DImIsA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uo4Yi-000000078b6-0d8k;
+	Mon, 18 Aug 2025 18:26:16 +0000
+Date: Mon, 18 Aug 2025 19:26:16 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: syzbot <syzbot+1ec0f904ba50d06110b1@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bigeasy@linutronix.de,
+	bpf@vger.kernel.org, brauner@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, eddyz87@gmail.com, edumazet@google.com,
+	haoluo@google.com, jack@suse.cz, jiri@resnulli.us,
+	john.fastabend@gmail.com, jolsa@kernel.org,
+	kerneljasonxing@gmail.com, kpsingh@kernel.org, kuba@kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, martin.lau@linux.dev, netdev@vger.kernel.org,
+	pabeni@redhat.com, sdf@fomichev.me, song@kernel.org,
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+	yonghong.song@linux.dev
+Subject: Re: [syzbot] [mm?] INFO: rcu detected stall in sys_umount (3)
+Message-ID: <20250818182616.GB222315@ZenIV>
+References: <67555b72.050a0220.2477f.0026.GAE@google.com>
+ <68a2f584.050a0220.e29e5.009d.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68a2f584.050a0220.e29e5.009d.GAE@google.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Fri, Aug 15, 2025 at 07:35 PM +0530, Nandakumar Edamana wrote:
+On Mon, Aug 18, 2025 at 02:42:28AM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    8f5ae30d69d7 Linux 6.17-rc1
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1321eba2580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5ac3d8b8abfcb
+> dashboard link: https://syzkaller.appspot.com/bug?extid=1ec0f904ba50d06110b1
+> compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+> userspace arch: arm64
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10cba442580000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10a1eba2580000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/18a2e4bd0c4a/disk-8f5ae30d.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/3b5395881b25/vmlinux-8f5ae30d.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/e875f4e3b7ff/Image-8f5ae30d.gz.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/43186d9e448c/mount_0.gz
+>   fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=174ba442580000)
+> 
+> The issue was bisected to:
+> 
+> commit d15121be7485655129101f3960ae6add40204463
+> Author: Paolo Abeni <pabeni@redhat.com>
+> Date:   Mon May 8 06:17:44 2023 +0000
+> 
+>     Revert "softirq: Let ksoftirqd do its job"
 
-[...]
+Would be interesting to see how it behaves on 
 
-> @@ -155,6 +163,14 @@ struct tnum tnum_intersect(struct tnum a, struct tnum b)
->  	return TNUM(v & ~mu, mu);
->  }
->  
-> +struct tnum tnum_union(struct tnum a, struct tnum b)
-> +{
-> +	u64 v = a.value & b.value;
-> +	u64 mu = (a.value ^ b.value) | a.mask | b.mask;
-> +
-> +	return TNUM(v & ~mu, mu);
-> +}
-> +
-
-Not sure I follow. So if I have two tnums that represent known contants,
-say a=(v=0b1010, m=0) and b=(v=0b0101, m=0), then their union is an
-unknown u=(v=0b0000, m=0b1111)?
-
-Full disclosure - I didn't read through the paper. The routine doesn't
-seem to appear there, though.
+git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #fixes (cda250b0fc83)
 
