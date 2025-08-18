@@ -1,118 +1,152 @@
-Return-Path: <bpf+bounces-65880-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65881-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BF97B2A05E
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 13:30:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05885B2A0E1
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 13:59:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6DD63BA49F
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 11:27:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45F081B202BE
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 11:53:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41C1321436;
-	Mon, 18 Aug 2025 11:25:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2016831B126;
+	Mon, 18 Aug 2025 11:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rumCJebl"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="h2oUcSs1";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Xn1NVHAl"
 X-Original-To: bpf@vger.kernel.org
-Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F1D31A077;
-	Mon, 18 Aug 2025 11:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.246
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC68331B11E;
+	Mon, 18 Aug 2025 11:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755516345; cv=none; b=m0PHXNDvvbjys/hITSVxOf6VeWlHo6U2KhQltOK6EwiEyBfd+3gGC0gv7QB7gbOWzutr5jSIftgEKd+L5jVYxTqwPyJjufTKbdlvv90yfzOtdcHlmRzpQ7/FucoEdnPj55uEkEuhk4qFIyJh9cDjyBofwbeBj/k0STj2mGgwchE=
+	t=1755517934; cv=none; b=mN29VIVPVGTtrempVa+pFk4LnuZdoVnj8r9nTogDlhYRYUdkJ4buBaR0kHPT/bkcMVRJ0TTOPXhdmqJzOlAxTFLYKMnGqGSW9j7E73FxSUKnUYeQGYs9UJQr8NvagaMiguFlvP8V1QZuJj+kLJCcAGOBXI3jZDaX1GHJQbFnBQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755516345; c=relaxed/simple;
-	bh=9JeBBIAj9StZw7MNyVADMvGztIhwJK3T5QdJKS7xiCw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YRl4PtvG3qMkEMZdWfoExQZxgNW5Tjx2DmnepHEMawLzjArSjvIkUSROvhiN/bJQOr9cuq1XG0Qe8Jxu5HxEtCfarIe4l8xs0XP/S2n9GZauNw2HQo2hCVeFdqP1AX8sQ3EI9gt81X2bLmUML8S0PUBZfOqXsUiGIQZ6Zz46uP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=rumCJebl; arc=none smtp.client-ip=198.47.19.246
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllvem-sh03.itg.ti.com ([10.64.41.86])
-	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57IBOkPX3068951;
-	Mon, 18 Aug 2025 06:24:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1755516286;
-	bh=2Gnl+t8xqA3VBiXnOVNnAPd8aYqELmiP16+xtu6161I=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=rumCJeblKnjHBsmNtkm5cskPXw+8BAnUhDXkUIxsEkll7dpBwqcW4yY0G0K1GghKU
-	 YHfskl5qFYs+4YOrtmmPi3+jMKUf97CICzzlKRLxfmhqyHvm8fJG/J9qFqbmAak7mn
-	 CzvGpmd00/qNkmB6XmftFErZd1y/neWPU1sVjfyE=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by fllvem-sh03.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57IBOkxF3978048
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Mon, 18 Aug 2025 06:24:46 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 18
- Aug 2025 06:24:45 -0500
-Received: from fllvem-mr08.itg.ti.com (10.64.41.88) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Mon, 18 Aug 2025 06:24:45 -0500
-Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-	by fllvem-mr08.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57IBOjIt3651384;
-	Mon, 18 Aug 2025 06:24:45 -0500
-Received: from localhost (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
-	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 57IBOi0W028770;
-	Mon, 18 Aug 2025 06:24:44 -0500
-From: Meghana Malladi <m-malladi@ti.com>
-To: <namcao@linutronix.de>, <jacob.e.keller@intel.com>, <m-malladi@ti.com>,
-        <christian.koenig@amd.com>, <sumit.semwal@linaro.org>,
-        <sdf@fomichev.me>, <john.fastabend@gmail.com>, <hawk@kernel.org>,
-        <daniel@iogearbox.net>, <ast@kernel.org>, <pabeni@redhat.com>,
-        <kuba@kernel.org>, <edumazet@google.com>, <davem@davemloft.net>,
-        <andrew+netdev@lunn.ch>
-CC: <linaro-mm-sig@lists.linaro.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-media@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>,
-        Roger Quadros <rogerq@kernel.org>, <danishanwar@ti.com>
-Subject: [PATCH net-next 6/6] net: ti: icssg-prueth: Enable zero copy in XDP features
-Date: Mon, 18 Aug 2025 16:54:24 +0530
-Message-ID: <20250818112424.3068643-7-m-malladi@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250818112424.3068643-1-m-malladi@ti.com>
-References: <20250818112424.3068643-1-m-malladi@ti.com>
+	s=arc-20240116; t=1755517934; c=relaxed/simple;
+	bh=BgEMoriLmYxwTAa7R5ERI/+xqJkVQhPiYVNAlgRqxAo=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=HVLrz/qCmxAvN5Pi5oOm7lXyNHswCCGY7fvwZYOuzCI39kVyokQz8+VuK5UgR00wCYASiavXNkyYXNcpj9xnpCRPFXM9KNwwZO+rf0ugKSWrN/nVCOuFvqFC8dJb133ZEOSVnH7f2JpXEobLfzYI/f6YX5qjOwOeT+Ip8OoNT3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=h2oUcSs1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Xn1NVHAl; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id D1493140019F;
+	Mon, 18 Aug 2025 07:52:10 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-05.internal (MEProxy); Mon, 18 Aug 2025 07:52:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1755517930;
+	 x=1755604330; bh=xdAWM4VoEFpKIci+YeNFUKl++/E12AuQc7lCaC4JGcM=; b=
+	h2oUcSs131J819wJvJTUef53dLSfrK3pHFPlRRldLsqNj9I/hXPeoGtIHI0iT3/y
+	cDYnQVVpuW99OmB7K+lPEFvYdVlGGBNmmq5brTZ1CAlRoGmeryryE1GgmNfXg9uh
+	TgBMuyniCnAQzZ49puTDzar5NmC2cyIQM67Krx8syaWCMDckSSPKeP8gtu49mR+G
+	CScPZBKcukCsHxfgw5eePK/lgh0k5Afs7gCHTtSlDE6Igs8y0RlJdZCC0DWaBMRg
+	3jpdEJ3JKLLqkOvj0mbZeYhRRnHHa/10vtfCvAe6EL/zUe+Hg6IYuunKbU10dpID
+	qk1wvIO+zggkXBgzJra/9g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1755517930; x=
+	1755604330; bh=xdAWM4VoEFpKIci+YeNFUKl++/E12AuQc7lCaC4JGcM=; b=X
+	n1NVHAlgbfDXUlT2I+6XovZZtytwOYYHPOHqmZcI+YdW7j58ItLIEfUJAZ3lVOV6
+	BwkxX93JgbcU+Z1tJZjR7UFzFxrmFtg+ZzAc6fYXpjM3ZltckyQADhlFNe2qJG2J
+	kX+4e0UCLeJGHkp5gxeCB0L+CmHqcEeSK0mK5gspf3CL3JOjNvb3TWJI6GyHs22l
+	s9ycEf9qKB17CHI5RpN3wR1Q4JrHBLbL3zWKAhYwwj+h2Igl2dMGUvwkzO3Nrtiv
+	7V2g2jQ2PzcYqqKPaFq0h+ePlEDqvP1G3YJwsXG2AvIs0h47UXsRBrjfjM14Pef5
+	w0oj60Po2VNhCShuZi7dA==
+X-ME-Sender: <xms:6ROjaOuitNLKajWCXYgTbY8qebcCFPEWU-gG3euwtsq2g5EHyoqrFw>
+    <xme:6ROjaDec4kPycLiFwmKAMf_8STikAe2q1_5SGAwDjQYAQ32OeQyoIArLarw0HxrwE
+    PczG7UIPN7LJrDzVBw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduhedvheegucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
+    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
+    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
+    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepvddupdhmohguvgepshhmthhpohhu
+    thdprhgtphhtthhopehhrghrihhsohhknhesrghmrgiiohhnrdgtohhmpdhrtghpthhtoh
+    eptggrthgrlhhinhdrmhgrrhhinhgrshesrghrmhdrtghomhdprhgtphhtthhopehmrghr
+    khdrrhhuthhlrghnugesrghrmhdrtghomhdprhgtphhtthhopegtlhesghgvnhhtfihord
+    horhhgpdhrtghpthhtohepmhgvmhigohhrsehgmhgrihhlrdgtohhmpdhrtghpthhtohep
+    iihhvghnghhlihhfvghnghdusehhuhgrfigvihdrtghomhdprhgtphhtthhopehpvghtvg
+    hriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:6ROjaFqAG9vVd4hWbW6eNyE7SESzQeaM9w92hMsr4lLEwp7yjsDzFg>
+    <xmx:6ROjaMofJKUARlp42HjoQme1HABCrz4GM1iJYrMnUidh95kfG7D9xA>
+    <xmx:6ROjaDHMlVoyoJbcVzEHbynZIsAzzrbI8zRo0UwXjZ1TdWUZpXVJqQ>
+    <xmx:6ROjaGo6Jrd7CjQbAz9kCTkTcJLtjqJ2mGKByJ8Caslhk4ctJ8mcmA>
+    <xmx:6hOjaDx8XTH3TIRclWvE8wp-hX4Cj7u2C4YXrjNi-XuGmN1mVBnwmWxF>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id EF07E700065; Mon, 18 Aug 2025 07:52:08 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-ThreadId: Awa8eXB9XRs-
+Date: Mon, 18 Aug 2025 13:51:28 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Catalin Marinas" <catalin.marinas@arm.com>
+Cc: "Ankur Arora" <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
+ Linux-Arch <linux-arch@vger.kernel.org>,
+ linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+ "Will Deacon" <will@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Mark Rutland" <mark.rutland@arm.com>, harisokn@amazon.com,
+ "Christoph Lameter (Ampere)" <cl@gentwo.org>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "Kumar Kartikeya Dwivedi" <memxor@gmail.com>, zhenglifeng1@huawei.com,
+ xueshuai@linux.alibaba.com, "Joao Martins" <joao.m.martins@oracle.com>,
+ "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
+ "Konrad Rzeszutek Wilk" <konrad.wilk@oracle.com>,
+ "Rafael J . Wysocki" <rafael@kernel.org>,
+ "Daniel Lezcano" <daniel.lezcano@linaro.org>
+Message-Id: <1ccb0011-d2d2-453f-afcd-dd2967bf572a@app.fastmail.com>
+In-Reply-To: <aJ3d2uoKtDop_gQO@arm.com>
+References: <20250627044805.945491-1-ankur.a.arora@oracle.com>
+ <20250627044805.945491-2-ankur.a.arora@oracle.com> <aJXWyxzkA3x61fKA@arm.com>
+ <877bz98sqb.fsf@oracle.com> <aJy414YufthzC1nv@arm.com>
+ <67b6b738-0f1c-4dd4-817d-95f55ec9272b@app.fastmail.com>
+ <aJ3d2uoKtDop_gQO@arm.com>
+Subject: Re: [PATCH v3 1/5] asm-generic: barrier: Add smp_cond_load_relaxed_timewait()
 Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Content-Transfer-Encoding: 7bit
 
-Enable the zero copy feature flag in xdp_set_features_flag()
-for a given ndev to get the AF-XDP zero copy support running
-for both Tx and Rx.
+On Thu, Aug 14, 2025, at 15:00, Catalin Marinas wrote:
+> On Wed, Aug 13, 2025 at 06:29:37PM +0200, Arnd Bergmann wrote:
+>> On Wed, Aug 13, 2025, at 18:09, Catalin Marinas wrote:
+>> and virtual machines with CPU overcommit.
+>
+> Not sure it helps here. With vCPU overcommit, KVM enables WFE trapping
+> and the event stream no longer has any effect (it's not like it
+> interrupts the host).
 
-Signed-off-by: Meghana Malladi <m-malladi@ti.com>
----
- drivers/net/ethernet/ti/icssg/icssg_prueth.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I would expect a similar overhead for the WFE trapping as for the
+bare-metal hardware case: When the WFE traps, the host has to
+reschedule all guests that are in WFE periodically, while WFET
+with event stream disabled means this can be driven by an accurate
+host timer.
 
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-index 7b5de71056ee..64cb21bb9291 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-@@ -1511,7 +1511,8 @@ static int prueth_netdev_init(struct prueth *prueth,
- 	xdp_set_features_flag(ndev,
- 			      NETDEV_XDP_ACT_BASIC |
- 			      NETDEV_XDP_ACT_REDIRECT |
--			      NETDEV_XDP_ACT_NDO_XMIT);
-+			      NETDEV_XDP_ACT_NDO_XMIT |
-+			      NETDEV_XDP_ACT_XSK_ZEROCOPY);
- 
- 	netif_napi_add(ndev, &emac->napi_rx, icssg_napi_rx_poll);
- 	hrtimer_setup(&emac->rx_hrtimer, &emac_rx_timer_callback, CLOCK_MONOTONIC,
--- 
-2.43.0
+> That said, my worry is that either broken hardware or software rely on
+> the event stream unknowingly, e.g. someone using WFE in a busy loop. And
+> for hardware errata, we've had a few where the wakeup events don't
+> propagate between clusters, though these we can toggle on a case by case
+> basis.
 
+Don't we already support hardware without a functional architected
+timer even with? Those don't use the event stream today even when
+CONFIG_ARM_ARCH_TIMER_EVTSTREAM is enabled.
+
+     Arnd
 
