@@ -1,79 +1,61 @@
-Return-Path: <bpf+bounces-65891-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65892-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42972B2AB75
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 16:48:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA7E8B2AB88
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 16:51:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E41D18A67D5
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 14:40:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAE2B7A7A59
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 14:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8060A3112AE;
-	Mon, 18 Aug 2025 14:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0908521C195;
+	Mon, 18 Aug 2025 14:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mt+7xKYN"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="UnXjeXl8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206393101B1
-	for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 14:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A572153ED
+	for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 14:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755527741; cv=none; b=FPWEcud86rS5qIBInThz2y5eD3Wyj5tXtDnKGbruLCSRmN2YbLSkgk7ICh5CVNKuW8BreKtif4UtZj+r8DFQ9Yjdh2i411SpQ77ARRdrUTGX8amCCCppLO7OcRCK0t/u4lGXzOUieIQ702CTsilpHBzsIOv+dcpVal7QdGwXZBI=
+	t=1755528647; cv=none; b=PX8L26mDN+wdnFDye4NiA9qoUh9V9MzFH+VTRCqgPncuNhwjA4HjCLAw9+WmsrEuk/pFowHVudur2cJYcpC8AY1s1bAIEmpz156AeFrDLi04bwCMQi0eiTCB9OcXq4MNaPnb87Ivja1kmxzyy41kL+CeU60S9oQytB8p2+lxMlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755527741; c=relaxed/simple;
-	bh=HFBo7hdMQ1KDbJoP8ilsLuZLyXy7+SYKfk/dXE1xyz8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XOBMxo9zQH4cL3WFFBFQ5TlVpbvxgYLCPKzUxaqbfQuaKdncrd/D4fEnJFZcAs46JG6M/UuhMDo+ix7Xhatb49yNZUB2l+CsQ11Ppi7TV3Conb1fR0xK+QVhzqIKR/9C1Z/aCGkU7jhiV9tjLCXnbaM2hNMOR99yDAQLh89e6ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mt+7xKYN; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3b9d41c1963so2050567f8f.0
-        for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 07:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755527737; x=1756132537; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y3e5kfEUDKfGYIXxIjzYAU/86sxkzjQ1VNlVdUi79RM=;
-        b=mt+7xKYNjaX64mRi4aYmlIUS2Az2cXBLH8nv1BAFKXj4+Odf+9Zs6S0CBqnFAr7m+H
-         nrKShwYxn90HJ5QZ9Qz9Z5UTXmWSSuCWch/exG4//Kjzqt5p8cSphi+At3wHsG2HeZuB
-         DI0Z09XraA0SiwexS2RtkrziU74qt3UhZK6+1FUbonWo9Qk+U0W5z3TtfuELACfkM0YB
-         EYGhX511MILjmtEDEXRmUqVjvS9/nSe7OkOA08Xj8ZGRu/X8y89mC09S2IGvjsIEJdi2
-         MJq3ZfrzdlXs42SypWk3jz52RTFypVLMzPsLglrRYCIi9mzSXhIJVyIst5FF0OmIOC1F
-         P1jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755527737; x=1756132537;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y3e5kfEUDKfGYIXxIjzYAU/86sxkzjQ1VNlVdUi79RM=;
-        b=rN5k6pED/N59mjKZUwYIL7rJtP448IYy9en6B6QJirl1mog2sUn9Wsl35OiCWAY9Px
-         /19TPPfyyGpZ0Xl+k8Za8YU7YWMrr+sZ1lbq8k0fonkWYczB47S8m91FJUS5gfGxk69y
-         MOmHBw6izXK17I6YUGCyTpPHBPWViuqOxXbi2XTQcJhn5T8lKspiY+ZgBATz9NI+Gm6T
-         g0XSzlQKJpNupQZOxXi3gdAjKhQPW4sbPSsmfO6iJ4Utse7dotY8tP06+JCjtAh3yS8W
-         19Sr6uzqDfHvKd2Qrjl9uNehZAtGDgZa8k8UlUAvo9PliEqusEcjEqBs8iKc8kx0ebcq
-         9/uw==
-X-Gm-Message-State: AOJu0YzNsWi+ERc7TITrkJCvWlawqBtBuifxrYP/wTaT4GLFLXxzI8ak
-	gXqZ79ox1TdDn6ppSabvO/ekmfra1mGM7kJoBRWcuUe8CHHgPT7zAzQJ
-X-Gm-Gg: ASbGncuzzV9FwFl1+lItEogVe1qmvBW560tD3cmEyvnauX+1hlZLvo7Rh4uK9Gun99Z
-	mMvOAyHfQfINa21fxvolohTBLiD9tNmyyIZWdaNFZA8qkeylsVdV4/SRVYqIBJb7tBoYXYQQXSA
-	Vd9yOiSqYMDtw8mo9PTrEu1vFYbO5U/oklzqG4y5CQOqI/wCtvM9SL7OytM2OaSE2XWGhFscGzL
-	zxW6uH8YsMpSNN732P5wvOMktW1zwuOHo2F1cKEIaFCd8tjZiTJLhoMuBABYstT9fPZyEQRiBI+
-	EvbOLH+uV5iVXUnSh9nWI4y2wtp14RMjbBuyWd6+SYm77rozf9wct54pFSfVxRxrysdHfsXIisI
-	53hFcwbdOjTbHbls/hKNA7PVxerEdPtXGa7QL5tIkZZwNNY0OFk2Jvu2TFcgxhlhtl9CmRHU=
-X-Google-Smtp-Source: AGHT+IGd4KB5hN6IAjw7Zw7PYXI04wFRsSFFB1xN3zkVuWTsabwKlquBZCHv4Fnsn+ONVvTIZmyzEw==
-X-Received: by 2002:a05:6000:24c4:b0:3b7:644f:9ca7 with SMTP id ffacd0b85a97d-3bc694261a0mr6819966f8f.25.1755527737051;
-        Mon, 18 Aug 2025 07:35:37 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1126:4:14f1:c189:9748:5e5a? ([2620:10d:c092:500::5:7223])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3bb68079341sm12856749f8f.50.2025.08.18.07.35.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Aug 2025 07:35:36 -0700 (PDT)
-Message-ID: <36c97fc6-eaa9-44dd-a52f-0b6bf5a001d9@gmail.com>
-Date: Mon, 18 Aug 2025 15:35:32 +0100
+	s=arc-20240116; t=1755528647; c=relaxed/simple;
+	bh=9H1J344v3Pc6fnXus5KJLzucRAqVHHf2xcsC9+7dt9I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=CI9UcyiWbx52cb0jfZTn3Bw91BZVxB5Igv6OhIo/+A1utmVoK3YnP3KQdorMft3CiT10LcyUWHwPbydUGxaWNR5BjxClZm0z1XbzLZ0R2OR6dMxk+RigWyOmGMFJwW5K8TN4gPYOfj+mrETsKWDPAlkzWZoVcLuiKTOiajZk5pE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=UnXjeXl8; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=Pi1wHffZyWE9x5oZ4ptrOVZZgsqpLEOiLVbR27jScvM=; b=UnXjeXl84zhaD5Bxb0gvyuzcJ8
+	eS2h7ptzTuP5OqEl+hE8Vv58myi121eN8u3NCfHz5K7m2Cg3Y/g7V1EIbc+LQcBiMdKqyPfk5jBde
+	C0EQWthO0jkwkPl+D5bb4FvvgDqCfjqfWjMU8UqzATpaU23yhd8anhVDlfb8bJNs5mioUTE8WuImd
+	dcgzLmWw4SN6NKC7TemhPNRAhGwkbQrOBPZQaDPgm1Q4VuMZgLOFgJ75f7k32npC0EjKYU0ZvyKbY
+	46Z54DmPSS4UgmWB9f1JdSQnzoEDoGz6E8ADt1DvHvn2NdVG7Adu1VXcwkZybXqhVbB+ER8XE9Z5p
+	TIu3H6Lg==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uo1C7-00007F-13;
+	Mon, 18 Aug 2025 16:50:43 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uo1C6-000DoX-28;
+	Mon, 18 Aug 2025 16:50:42 +0200
+Message-ID: <729e6325-da97-4f01-97b7-3fc966c3fda7@iogearbox.net>
+Date: Mon, 18 Aug 2025 16:50:42 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,176 +63,123 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 mm-new 0/5] mm, bpf: BPF based THP order selection
-To: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
- david@redhat.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com,
- ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org,
- gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com,
- rientjes@google.com
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org
-References: <20250818055510.968-1-laoar.shao@gmail.com>
+Subject: Re: [PATCH] bpftool: add kernel.kptr_restrict hint for no
+ instructions
+To: Quentin Monnet <qmo@kernel.org>, Vincent Li <vincent.mc.li@gmail.com>,
+ bpf@vger.kernel.org
+References: <20250808145133.404799-1-vincent.mc.li@gmail.com>
+ <d9e524a6-6296-4a5a-941e-65cca7d72bcd@kernel.org>
 Content-Language: en-US
-From: Usama Arif <usamaarif642@gmail.com>
-In-Reply-To: <20250818055510.968-1-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <d9e524a6-6296-4a5a-941e-65cca7d72bcd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27736/Mon Aug 18 10:27:28 2025)
 
+On 8/8/25 5:49 PM, Quentin Monnet wrote:
+> Please run ./scripts/get_maintainer.pl and Cc all maintainers for your
+> future submissions, in this case: all BPF maintainers/reviewers.
+> 
+> On 08/08/2025 15:51, Vincent Li wrote:
+>> from bpftool github repo issue [0], when Linux distribution
+>> kernel.kptr_restrict is set to 2, bpftool prog dump jited returns "no
+>> instructions returned", this message can be puzzling to bpftool users
+>> who is not familiar with kernel BPF internal, so add small hint for
+>> bpftool users to check kernel.kptr_restrict setting. Set
+>> kernel.kptr_restrict to expose kernel address to allow bpftool prog
+>> dump jited to dump the jited bpf program instructions.
+>>
+>> [0]: https://github.com/libbpf/bpftool/issues/184
+>>
+>> Signed-off-by: Vincent Li <vincent.mc.li@gmail.com.
+>> ---
+>>   tools/bpf/bpftool/prog.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+>> index 9722d841abc0..7d2337511284 100644
+>> --- a/tools/bpf/bpftool/prog.c
+>> +++ b/tools/bpf/bpftool/prog.c
+>> @@ -714,7 +714,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+>>   
+>>   	if (mode == DUMP_JITED) {
+>>   		if (info->jited_prog_len == 0 || !info->jited_prog_insns) {
+>> -			p_info("no instructions returned");
+>> +			p_info("no instructions returned: set kernel.kptr_restrict to expose kernel addresses");
 
+Can we align this to sth similar as we have further below in that same function?
 
-On 18/08/2025 06:55, Yafang Shao wrote:
-> Background
-> ----------
-> 
-> Our production servers consistently configure THP to "never" due to
-> historical incidents caused by its behavior. Key issues include:
-> - Increased Memory Consumption
->   THP significantly raises overall memory usage, reducing available memory
->   for workloads.
-> 
-> - Latency Spikes
->   Random latency spikes occur due to frequent memory compaction triggered
->   by THP.
-> 
-> - Lack of Fine-Grained Control
->   THP tuning is globally configured, making it unsuitable for containerized
->   environments. When multiple workloads share a host, enabling THP without
->   per-workload control leads to unpredictable behavior.
-> 
-> Due to these issues, administrators avoid switching to madvise or always
-> modes—unless per-workload THP control is implemented.
-> 
-> To address this, we propose BPF-based THP policy for flexible adjustment.
-> Additionally, as David mentioned [0], this mechanism can also serve as a
-> policy prototyping tool (test policies via BPF before upstreaming them).
+   p_err("error retrieving jit dump: no instructions returned or kernel.kptr_restrict set?");
 
-Hi Yafang,
+(I presume the former we'll see for interpreter-only case.)
 
-A few points:
+>>   			return -1;
+>>   		}
+>>   		buf = u64_to_ptr(info->jited_prog_insns);
+> 
+> 
+> Thank you Vincent!
+> 
+> We have the same hint for the xlated dump some 7 lines further in the
+> file. As we discussed off-list, this hint was initially printed for both
+> cases, JITed and xlated dump, since commit 7105e828c087 ("bpf: allow for
+> correlation of maps and helpers in dump") from Daniel, back in 2017. It
+> was kept for the xlated dump only after commit cae73f233923 ("bpftool:
+> use bpf_program__get_prog_info_linear() in prog.c:do_dump()"), I believe
+> by accident.
+> 
+>  From what I understand, the kptr restriction should not be relevant in
+> the case of xlated dump (it does change the information we can print -
+> it prevents us from retrieving __bpf_call_base from ksyms - but should
+> not prevent bpftool from retrieving instructions entirely). Daniel, it's
+> been a while, but do you remember why you printed it for xlated dumps
+> too? If not, we should probably just keep the hint for the JITed case.
 
-The link [0] is mentioned a couple of times in the coverletter, but it doesnt seem
-to be anywhere in the coverletter.
-
-I am probably missing something over here, but the current version won't accomplish
-the usecase you have described at the start of the coverletter and are aiming for, right?
-i.e. THP global policy "never", but get hugepages on an madvise or always basis.
-I think there was a new THP mode introduced in some earlier revision where you can switch to it
-from "never" and then you can use bpf programs with it, but its not in this revision?
-It might be useful to add your specific usecase as a selftest.
-
-Do we have some numbers on what the overhead of calling the bpf program is in the
-pagefault path as its a critical path?
-
-I remember there was a discussion on this in the earlier revisions, and I have mentioned this in patch 1
-as well, but I think making this feature experimental with warnings might not be a great idea.
-It could lead to 2 paths:
-- people don't deploy this in their fleet because its marked as experimental and they dont want
-their machines to break once they upgrade the kernel and this is changed. We will have a difficult
-time improving upon this as this is just going to be used for prototyping and won't be driven by
-production data.
-- people are careless and deploy it in on their production machines, and you get reports that this
-has broken after kernel upgrades (despite being marked as experimental :)).
-This is just my opinion (which can be wrong :)), but I think we should try and have this merged
-as a stable interface that won't change. There might be bugs reported down the line, but I am hoping
-we can get the interface of get_suggested_order right in the first implementation that gets merged? 
-
-
-Thanks!
-Usama> 
-> Proposed Solution
-> -----------------
-> 
-> As suggested by David [0], we introduce a new BPF interface:
-> 
-> /**
->  * @get_suggested_order: Get the suggested THP orders for allocation
->  * @mm: mm_struct associated with the THP allocation
->  * @vma__nullable: vm_area_struct associated with the THP allocation (may be NULL)
->  *                 When NULL, the decision should be based on @mm (i.e., when
->  *                 triggered from an mm-scope hook rather than a VMA-specific
->  *                 context).
->  *                 Must belong to @mm (guaranteed by the caller).
->  * @vma_flags: use these vm_flags instead of @vma->vm_flags (0 if @vma is NULL)
->  * @tva_flags: TVA flags for current @vma (-1 if @vma is NULL)
->  * @orders: Bitmask of requested THP orders for this allocation
->  *          - PMD-mapped allocation if PMD_ORDER is set
->  *          - mTHP allocation otherwise
->  *
->  * Rerurn: Bitmask of suggested THP orders for allocation. The highest
->  *         suggested order will not exceed the highest requested order
->  *         in @orders.
->  */
->  int (*get_suggested_order)(struct mm_struct *mm, struct vm_area_struct *vma__nullable,
-> 			    u64 vma_flags, enum tva_type tva_flags, int orders) __rcu;
-> 
-> This interface:
-> - Supports both use cases (per-workload tuning + policy prototyping).
-> - Can be extended with BPF helpers (e.g., for memory pressure awareness).
-> 
-> This is an experimental feature. To use it, you must enable
-> CONFIG_EXPERIMENTAL_BPF_ORDER_SELECTION.
-> 
-> Warning:
-> - The interface may change
-> - Behavior may differ in future kernel versions
-> - We might remove it in the future
-> 
-> A simple test case is included in Patch #4.
-> 
-> Future work:
-> - Extend it to File THP
-> 
-> Changes:
-> RFC v4->v5:
-> - Add support for vma (David)
-> - Add mTHP support in khugepaged (Zi)
-> - Use bitmask of all allowed orders instead (Zi)
-> - Retrieve the page size and PMD order rather than hardcoding them (Zi)
-> 
-> RFC v3->v4: https://lwn.net/Articles/1031829/
-> - Use a new interface get_suggested_order() (David)
-> - Mark it as experimental (David, Lorenzo)
-> - Code improvement in THP (Usama)
-> - Code improvement in BPF struct ops (Amery)
-> 
-> RFC v2->v3: https://lwn.net/Articles/1024545/
-> - Finer-graind tuning based on madvise or always mode (David, Lorenzo)
-> - Use BPF to write more advanced policies logic (David, Lorenzo)
-> 
-> RFC v1->v2: https://lwn.net/Articles/1021783/
-> The main changes are as follows,
-> - Use struct_ops instead of fmod_ret (Alexei)
-> - Introduce a new THP mode (Johannes)
-> - Introduce new helpers for BPF hook (Zi)
-> - Refine the commit log
-> 
-> RFC v1: https://lwn.net/Articles/1019290/
-> Yafang Shao (5):
->   mm: thp: add support for BPF based THP order selection
->   mm: thp: add a new kfunc bpf_mm_get_mem_cgroup()
->   mm: thp: add a new kfunc bpf_mm_get_task()
->   bpf: mark vma->vm_mm as trusted
->   selftest/bpf: add selftest for BPF based THP order seletection
-> 
->  include/linux/huge_mm.h                       |  15 +
->  include/linux/khugepaged.h                    |  12 +-
->  kernel/bpf/verifier.c                         |   5 +
->  mm/Kconfig                                    |  12 +
->  mm/Makefile                                   |   1 +
->  mm/bpf_thp.c                                  | 269 ++++++++++++++++++
->  mm/huge_memory.c                              |  10 +
->  mm/khugepaged.c                               |  26 +-
->  mm/memory.c                                   |  18 +-
->  tools/testing/selftests/bpf/config            |   3 +
->  .../selftests/bpf/prog_tests/thp_adjust.c     | 224 +++++++++++++++
->  .../selftests/bpf/progs/test_thp_adjust.c     |  76 +++++
->  .../bpf/progs/test_thp_adjust_failure.c       |  25 ++
->  13 files changed, 689 insertions(+), 7 deletions(-)
->  create mode 100644 mm/bpf_thp.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_failure.c
-> 
-
+Indeed been a while - my understanding is that we don't return xlated in
+case of not having the right capabilities or when the program got constant
+blinded so we don't want to expose the latter from the kernel back to user
+space when kptr_restrict is set.
 
