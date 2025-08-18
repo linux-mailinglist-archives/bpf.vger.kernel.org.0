@@ -1,214 +1,132 @@
-Return-Path: <bpf+bounces-65871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8ABDB29E88
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 11:56:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0FC3B29EEF
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 12:20:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 130273B6C1F
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 09:56:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C18B2A0884
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 10:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA52273D77;
-	Mon, 18 Aug 2025 09:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F/Yeo2Wr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2260031578D;
+	Mon, 18 Aug 2025 10:20:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B45C30FF20;
-	Mon, 18 Aug 2025 09:56:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550882701C3;
+	Mon, 18 Aug 2025 10:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755510963; cv=none; b=Cq7Jpd9jEza26dy6cOb1Cfv7BtWm8Alki4WTUokSK2+3jUqkS7NCdGD7sqWEmRpCBQYQPXtvg+YIBPpPsZ76d0ofGqLGp99GgSSanf2ZAIaiA0kSiBOcsm2/MWe9VS97q1j6RhZKhTPG4qEV2XSIhh3ySL4mexgoBoqFnm2/4H8=
+	t=1755512436; cv=none; b=Go0DY2+uQTglUCIjA2L9GI+Ih0YlmKpFpO0kYL2vax7jDevAnCGWZF4em0dtYPeU7jHgcYA2C7tYUrd+qIDvcJbifaMzAva8GW3pZ2j3JutdHLZWkuTfxsTPmsN3jfZtPhOl4dUfXLCdAelcWZmlSGL5+/XoUzKfZMD2zjn1E1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755510963; c=relaxed/simple;
-	bh=1lwTcuQs3PskiizA9ekyNKD+GSvBsWBqRnnJ951KJvk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tA3THg4SThZVUEWxmETf2IVkuaOusCThbrjljSNXXj23/GRzsV37c21ph4KzQPVgYugMT26qq/1VJtmC1cM8UBK2sPnkQ1R468VHJFCgB8XDOqG1yAZ5lQ54MokR9ExNBmusplJI1hmN5z9mP2WLeeou+rFuRxuhzEq8PPJCNjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F/Yeo2Wr; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-45a1b00e4a1so25714825e9.0;
-        Mon, 18 Aug 2025 02:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755510960; x=1756115760; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3oRQru3gew2EIPWLHHj5TTyDNuIZGAGLZO/bmpncjjo=;
-        b=F/Yeo2Wr15HkUN5K35WSqYNRpEBKtA4H1XiXMviH+VWMMsWHw8TDMRFgzz08bcBr/U
-         vH/gxMRn6GMkGLtBf25qi2F98t5mhKn30cm0h/m/zqSKEAk0Ks/Cr8AWKgAWxPlszKqo
-         AqcXFltR/Nzfd0cxZ+6iO73+F/A3LXGv7ah5pkiwxXH+KsnEMnNgfJb2jXoVY34Z46El
-         UQ8iLAe6LcK8g2KaN0j1Bz6CC9nDuDMykNwu5KadAw9MAI/QVfKvg7Id4UUlxl7s9dBL
-         B43csaGdkXOPt906oNFWJJ3UOUv2x+c8B9XbQzl820T0z3D2bD7oMi5SgLjDDmvGWNhr
-         K+xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755510960; x=1756115760;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3oRQru3gew2EIPWLHHj5TTyDNuIZGAGLZO/bmpncjjo=;
-        b=KXrCiCJhFySlcovwe9vEPrWHGyRI+rbl1GuZMVblQh31d6WSqXLiXa6V24H7lAcFaT
-         aTrNHnhD/vALXyInZq1fsFtJ3L+9hrFkS5McQ3R8NbIhKjcNUve5/nGdoWnuJZh8Nf+b
-         AMqmAtOCdYwOnDg2z66IEpy7OxpSbyngCna878aj9YYuxwjDm1cjjgwGbEfU1pUaSExT
-         jbWdJ0AdaqaIqI6R5vKs2r8FND3ppAtCSiKA316rZIlWSOBuwrjlDHUvsi/dO1nAPBJ1
-         9nHcDtOjEQmWlTBxiilRGriDQ8NubfGXQa2KuwAWY1YLKxREQYDvN+YdccYKySB94sZ3
-         ERkw==
-X-Forwarded-Encrypted: i=1; AJvYcCWjJdygD6/bR6GPvHImHO7urX8h5oFGeI5CGMhPXqxkHL03Mguir+h8z1JLxJJ3TUoblOweP/BzqECqxS/J@vger.kernel.org, AJvYcCWkZ+IeO4zq4kMoNhTekuDS/mNOm5FwkiFoV68FEY93GQCb7O7SFtWhSn8KeZ8pYUrgxRQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3dviUO5F2oF8UYTTGLUDSmE+Sl7X/6Yftex7ChAiZ3KvyBvRi
-	B9rgofbu7NEfiwLJ/MFyMy816wyvJfqX6f91MmR/qSh1RcHvmWpA7C/u
-X-Gm-Gg: ASbGncuFkSdJsNk55JLbF50v9zM9WPL91Pv+DIDUE9DjDuthGGD4iBa+nkIb+ceFVM+
-	0bApvG18LwTKdcPXuLIvW+KGAXupY1kI+Fz9MnBIP5vGQB+04lmPs+2/X5bJzvctU5S1tk6ihLq
-	Wcjvy8K379gszXcNyiqJpZoJADPUFJVdCYoAsY6DG9IZTweriQCF7tn4YaDuRny6pTLkA4Z+P7S
-	vKu1JIp3uAtttxT8eByF1inVYWDet36a4/5sd1T4PwsaA5Vuj3uUJOj3SEvkCEjavfHQKh+RPEY
-	mUHFiSWBd6hiIOMvWFeMVbk6hnXBWPr2b5eBtv1bhW3cP92EUaOPSJf2Vbx5WnwFExbfxdXl
-X-Google-Smtp-Source: AGHT+IG+4FJgOk7tgAjcYQmF5w7tpduhFcNyLI9kWl8zL+KJ9jaeTcdUSLs+BUhcG+uffVppdSawmw==
-X-Received: by 2002:a05:600c:4ec9:b0:43d:fa59:af97 with SMTP id 5b1f17b1804b1-45a2186486bmr79029285e9.32.1755510959424;
-        Mon, 18 Aug 2025 02:55:59 -0700 (PDT)
-Received: from krava ([2a02:8308:a00c:e200::31e0])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a2232de40sm123956115e9.26.2025.08.18.02.55.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Aug 2025 02:55:58 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 18 Aug 2025 11:55:56 +0200
-To: chenyuan_fl@163.com
-Cc: yonghong.song@linux.dev, olsajiri@gmail.com,
-	aef2617b-ce03-4830-96a7-39df0c93aaad@kernel.org, andrii@kernel.org,
-	ast@kernel.org, bpf@vger.kernel.org, chenyuan@kylinos.cn,
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, qmo@kernel.org
-Subject: Re: [PATCH v6 2/2] bpftool: Add CET-aware symbol matching for x86_64
- architectures
-Message-ID: <aKL4rB3x8Cd4uUvb@krava>
-References: <74709a08-4536-4c5a-8140-12d8b42e97c0@linux.dev>
- <20250815025227.6204-1-chenyuan_fl@163.com>
- <20250815025227.6204-3-chenyuan_fl@163.com>
+	s=arc-20240116; t=1755512436; c=relaxed/simple;
+	bh=+XhdQ/6Cv07xh5XJuWky6AAJAqEv9jeFuZbvrkyhrmk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NmrConCPHoZ0QvDOSw+17TN7p+GxnCEzaHGp2F2o2azGaVrHbE2NrzxpAjW3CkpY67ui1gw+Mj0LnNxDc8M5mVY8O+s+5BzfjtlIquSmal7c83RQSQTc1oShHK63uT6LwYvQIMg26M7NpIAqlR5C6lTeYx8BYubaEA0s57HUr+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4c57Rd3yS1z9sSd;
+	Mon, 18 Aug 2025 11:57:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id h80lqdebdhir; Mon, 18 Aug 2025 11:57:17 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4c57Rd3CJwz9sRs;
+	Mon, 18 Aug 2025 11:57:17 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 5050A8B764;
+	Mon, 18 Aug 2025 11:57:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id tlZNreI0Ep2e; Mon, 18 Aug 2025 11:57:17 +0200 (CEST)
+Received: from PO20335.idsi0.si.c-s.fr (unknown [10.25.207.160])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 2436D8B763;
+	Mon, 18 Aug 2025 11:57:17 +0200 (CEST)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	Leo Yan <leo.yan@arm.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH RESEND] perf: Completely remove possibility to override MAX_NR_CPUS
+Date: Mon, 18 Aug 2025 11:57:15 +0200
+Message-ID: <b205802edbb6fcc78822f558dff7104e64b29864.1755510867.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250815025227.6204-3-chenyuan_fl@163.com>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1755511036; l=1837; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=+XhdQ/6Cv07xh5XJuWky6AAJAqEv9jeFuZbvrkyhrmk=; b=zdPN0IV1SNTGhsT/B/ZD7T275sgUgqXxPLny2G78OqJ6BvMFbf5LABG+tvEdnb5BCwv3d3520 PCs+mIsM2s9DbHVPxqJ5mL+Z3bGQ2YafBB+1s8Vay76lq2zTo774wof
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 
-On Fri, Aug 15, 2025 at 03:52:27AM +0100, chenyuan_fl@163.com wrote:
-> From: Yuan Chen <chenyuan@kylinos.cn>
-> 
-> Adjust symbol matching logic to account for Control-flow Enforcement
-> Technology (CET) on x86_64 systems. CET prefixes functions with
-> a 4-byte 'endbr' instruction, shifting the actual hook entry point to
-> symbol + 4.
-> 
-> Signed-off-by: Yuan Chen <chenyuan@kylinos.cn>
-> ---
->  tools/bpf/bpftool/link.c | 50 ++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 48 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> index a773e05d5ade..6787971d3167 100644
-> --- a/tools/bpf/bpftool/link.c
-> +++ b/tools/bpf/bpftool/link.c
-> @@ -282,11 +282,52 @@ get_addr_cookie_array(__u64 *addrs, __u64 *cookies, __u32 count)
->  	return data;
->  }
->  
-> +static bool is_x86_ibt_enabled(void)
-> +{
-> +#if defined(__x86_64__)
-> +	struct kernel_config_option options[] = {
-> +		{ "CONFIG_X86_KERNEL_IBT", },
-> +	};
-> +	char *values[ARRAY_SIZE(options)] = { };
-> +	bool ret;
-> +
-> +	if (read_kernel_config(options, ARRAY_SIZE(options), values, NULL))
-> +		return false;
-> +
-> +	ret = !!values[0];
-> +	free(values[0]);
-> +	return ret;
-> +#else
-> +	return false;
-> +#endif
+Commit 21b8732eb447 ("perf tools: Allow overriding MAX_NR_CPUS at
+compile time") added the capability to override MAX_NR_CPUS. At
+that time it was necessary to reduce the huge amount of RAM used
+by static stats variables.
 
-nit, we could store the result to 'static bool enabled' in this function,
-so we would not need to pass is_ibt_enabled arg below, and just call
-is_x86_ibt_enabled directly, but up to you
+But this has been unnecessary since commit 6a1e2c5c2673 ("perf stat:
+Remove a set of shadow stats static variables"), and
+commit e8399d34d568 ("libperf cpumap: Hide/reduce scope of
+MAX_NR_CPUS") broke the build in that case because it failed to
+add the guard around the new definition of MAX_NR_CPUS.
 
-> +}
-> +
-> +static bool
-> +symbol_matches_target(__u64 sym_addr, __u64 target_addr, bool is_ibt_enabled)
-> +{
-> +	if (sym_addr == target_addr)
-> +		return true;
-> +
-> +	/*
-> +	 * On x86_64 architectures with CET (Control-flow Enforcement Technology),
-> +	 * function entry points have a 4-byte 'endbr' instruction prefix.
-> +	 * This causes kprobe hooks to target the address *after* 'endbr'
-> +	 * (symbol address + 4), preserving the CET instruction.
-> +	 * Here we check if the symbol address matches the hook target address
-> +	 * minus 4, indicating a CET-enabled function entry point.
-> +	 */
-> +	if (is_ibt_enabled && sym_addr == target_addr - 4)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  static void
->  show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
->  {
->  	struct addr_cookie *data;
->  	__u32 i, j = 0;
-> +	bool is_ibt_enabled;
->  
->  	jsonw_bool_field(json_wtr, "retprobe",
->  			 info->kprobe_multi.flags & BPF_F_KPROBE_MULTI_RETURN);
-> @@ -306,8 +347,10 @@ show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
->  	if (!dd.sym_count)
->  		goto error;
->  
-> +	is_ibt_enabled = is_x86_ibt_enabled();
->  	for (i = 0; i < dd.sym_count; i++) {
-> -		if (dd.sym_mapping[i].address != data[j].addr)
-> +		if (!symbol_matches_target(dd.sym_mapping[i].address,
-> +					   data[j].addr, is_ibt_enabled))
->  			continue;
->  		jsonw_start_object(json_wtr);
->  		jsonw_uint_field(json_wtr, "addr", dd.sym_mapping[i].address);
-> @@ -719,6 +762,7 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
->  {
->  	struct addr_cookie *data;
->  	__u32 i, j = 0;
-> +	bool is_ibt_enabled;
->  
->  	if (!info->kprobe_multi.count)
->  		return;
-> @@ -742,9 +786,11 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
->  	if (!dd.sym_count)
->  		goto error;
->  
-> +	is_ibt_enabled = is_x86_ibt_enabled();
->  	printf("\n\t%-16s %-16s %s", "addr", "cookie", "func [module]");
->  	for (i = 0; i < dd.sym_count; i++) {
-> -		if (dd.sym_mapping[i].address != data[j].addr)
-> +		if (!symbol_matches_target(dd.sym_mapping[i].address,
-> +					   data[j].addr, is_ibt_enabled))
->  			continue;
->  		printf("\n\t%016lx %-16llx %s",
->  		       dd.sym_mapping[i].address, data[j].cookie, dd.sym_mapping[i].name);
+So cleanup things and remove guards completely to officialise it
+is not necessary anymore to override MAX_NR_CPUS.
 
-I wonder should we display the kprobe attached address instead of symbol
-address in here
+Link: https://lore.kernel.org/all/8c8553387ebf904a9e5a93eaf643cb01164d9fb3.1736188471.git.christophe.leroy@csgroup.eu/
+Fixes: e8399d34d568 ("libperf cpumap: Hide/reduce scope of MAX_NR_CPUS")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ tools/perf/perf.h                        | 2 --
+ tools/perf/util/bpf_skel/kwork_top.bpf.c | 2 --
+ 2 files changed, 4 deletions(-)
 
-otherwise the patchset lgtm
+diff --git a/tools/perf/perf.h b/tools/perf/perf.h
+index 3cb40965549f..e004178472d9 100644
+--- a/tools/perf/perf.h
++++ b/tools/perf/perf.h
+@@ -2,9 +2,7 @@
+ #ifndef _PERF_PERF_H
+ #define _PERF_PERF_H
+ 
+-#ifndef MAX_NR_CPUS
+ #define MAX_NR_CPUS			4096
+-#endif
+ 
+ enum perf_affinity {
+ 	PERF_AFFINITY_SYS = 0,
+diff --git a/tools/perf/util/bpf_skel/kwork_top.bpf.c b/tools/perf/util/bpf_skel/kwork_top.bpf.c
+index 73e32e063030..6673386302e2 100644
+--- a/tools/perf/util/bpf_skel/kwork_top.bpf.c
++++ b/tools/perf/util/bpf_skel/kwork_top.bpf.c
+@@ -18,9 +18,7 @@ enum kwork_class_type {
+ };
+ 
+ #define MAX_ENTRIES     102400
+-#ifndef MAX_NR_CPUS
+ #define MAX_NR_CPUS     4096
+-#endif
+ #define PF_KTHREAD      0x00200000
+ #define MAX_COMMAND_LEN 16
+ 
+-- 
+2.49.0
 
-thanks,
-jirka
 
