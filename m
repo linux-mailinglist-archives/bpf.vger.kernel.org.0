@@ -1,416 +1,207 @@
-Return-Path: <bpf+bounces-65918-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65919-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4530BB2AFD3
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 19:58:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C891AB2AFF4
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 20:05:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A58D61B201ED
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 17:57:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 235127AFBA6
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 18:03:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F9E3115AD;
-	Mon, 18 Aug 2025 17:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD5932BF4C;
+	Mon, 18 Aug 2025 18:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xQbPSFyU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M7jK0HGl"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494DD26E70E
-	for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 17:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7FEE32BF22
+	for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 18:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755539818; cv=none; b=MW2Tv67M39mPmP2J9cj6fWuCJV7W/xYYlhJHJ1orPU97uRIiwvpNHXybj36dtXlK4H83gdZx0QXl+uZM0hZcIjK/8gb7Vrj7yRTIXwRyZ6Sx5+iGVzi/Q5dCwFpQTjRiNLjZHUikVufWHHVkTs25be2e21zAYoOB0+gGcRNbkms=
+	t=1755540273; cv=none; b=TDv3H3NBJqat/GaeQd3WB+0UfU8JJ8bLzcUUZ+DMhDgPJIcM/7sGQwALcLlHYR0TSYyLrdnSKyAWJOTAJIK55EB4dgQgJxfGjG4MZokc9rTkTtgM1k9iNNphRK+3WccrTcFlNQMpp1mfJx9o+TJlqZbBhimuQefsqVVt1l6m1Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755539818; c=relaxed/simple;
-	bh=5IFVYYOA10hZj5x5fW1ppynrfhZ80r/7Mgko/nHbD34=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=eOkqF70d262Bz4RmDpDI3o8MjJctvmtTixVGYMoc1wq3/2HNk9+rq7TW+Jg7k1cgz+Ka/m4CUFJYTQE0HwGL1CjGxANCzwp7fLdBI6iErfxPiSrl3SnWeMRuWeqh6Bgk5PmCX4UlyE34fRxscUrpgSqZjt/ns3HuIPIwKWkMKD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xQbPSFyU; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <979a1ac4-21d3-4384-8ce4-d10f41887088@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755539803;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nArhpjmcZM8qhrZi1pDbMt71jwBsUk8+JY3kgkJWkC4=;
-	b=xQbPSFyU+R2xjxSiPuLH/E4olqLCtTDi4ozujdWsv12w1zvxFnOhQu6pl2iQD+RnGgFjek
-	dLIPDGQPqFlu2XF4IAWIzW95EXD+X0cTIobs63blTYCFfAKdNOsV4ghYmxwYFXBdBI7611
-	Di+zZ5cNuPzk5F7DpTmXIKd3XkeuYeI=
-Date: Mon, 18 Aug 2025 10:56:36 -0700
+	s=arc-20240116; t=1755540273; c=relaxed/simple;
+	bh=6X6ma/9SMEBwS9juJZE4JC5rM9jKbVDFqX9Gb2SFy2A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rSanyyayiOBsnvTzyZ9l9e6BDB1WEDQKmZ4xWT5uil+t7WVmkFn52OY7+i0NK3WGC+OicWrywm7cRLQvZREC2iycVvaHMG7fK3APSLqePE4ZNqsjl8LDdZqi3JcM5JCluXt5U4FWy00pIph/sjJbxj9a3VI7jVond/gS9T/kbqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M7jK0HGl; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3b9d41c1963so2179586f8f.0
+        for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 11:04:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755540270; x=1756145070; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=K8kKROMHCHEvVYRUXu0HCig/D+4kefPLHb+bH8XmyQ0=;
+        b=M7jK0HGlotE8vZ4m7DqKnm54pbS6+vHnuunZjcyOAhYiyYjx1Ho5KVpwX0R44JhZar
+         xOWib5FBYD4JdcQO0M7pGcJRLWMf0pRX2Wqm7TrBukkF0MWeAmZpCnHayxjxqTEXpjje
+         DNYF8H4aJEi8zMiih25LJdCYgXfg7MhQ/1VnTXvxvt0wHLbsYxeJD2ZvLNs1TJn3Af8v
+         XTeo3R8aAcxkEFNxsnSSqfukiac/qr54RpAmYpthkPFxXj65BV/wJs1dvmye0JAv+pPc
+         cHw/ag9SJB7QNsJrp4uikeP2JyecSoVUx3cQXBlh0uv4O1Ed/587vorvCWyi4E/YI1lG
+         6OyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755540270; x=1756145070;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K8kKROMHCHEvVYRUXu0HCig/D+4kefPLHb+bH8XmyQ0=;
+        b=w9ZdVS4GbFimXGgaSm4ysECDSQXA5k5pO1lXoMcdf9EIu2z1CsevhE63sBvtURILRM
+         o3q+79j0V7ZsiGQip2rGC8XAo6WUR7Y/KP0XoMsjCMzEImml+a4gouLsm4OIgKMgQfiI
+         0nXYS8NBkFwFNU70UTG5Z6XERelWIElA6mY+qpJ11ik+pR1IKl5abq1YfT6q3oLcxJTP
+         vVxuxPr1tmUrgQECxed7q9GFlC3zf+Ta9blDw7fmG5qj0U7FaitHq3Ewyd1l2IkMSGWa
+         ptyYKVk/6IYfhc85dBWky9UI25YaZdC3wUEAjWTI2pmcnHt/J9YanLpEY+DahNO/zS44
+         mh7w==
+X-Gm-Message-State: AOJu0Yy2WD4CGUcfQZxGUdJsTPAaQn1bq9RrfSsbXo1Bzkyq6ietxF2B
+	LKYPxkcy8XjKUmEKBE/K7D8aEHYfEn9ZxJIHosihmbAt/viHP8LfqkGZa8+DXQ==
+X-Gm-Gg: ASbGncvw5hxjXBBgY2ZunxJuJi0ymVXbQBbJzATdiyxO/3KlEKzufgivtECF6iWCTl+
+	nvDMJvE6ugXhxyTo7Kf6UvX82BEXhdLcOzEEzmiCxdUT6HqLauXeui15ma6XKZ6urpyWej9jJGd
+	QMwvOQkJpDnTUO/oW43hB7wszYBCS139S+3qBgIpL0lxxxQW8JrcYcsT2RFwV6jciuVWPmVCU5L
+	opWewM2qYSV7yOt0iEnu0MtEIk1JeR2KK39xS8dbY6LAXO2sxyj0MRme5F9w43fWATxizHlgm/z
+	RFIviKilEyxXQYEaVypLx8a/nCN999iZDlNp2+Lhda2GWxaPxDMnPl0fOMCaQ2dnOnxZEe6g+U3
+	XoTpI+O+xVsfohvjnBFfG
+X-Google-Smtp-Source: AGHT+IHn2cxSPkkxXNuri4xKbUHF+CDyzP0GXedYYUwtgNrRo8fYzay83Pmj+6+jqpvpbhnCsm+BLA==
+X-Received: by 2002:a05:6000:400b:b0:3b7:8914:cd94 with SMTP id ffacd0b85a97d-3bc6aa272c6mr7532134f8f.41.1755540269386;
+        Mon, 18 Aug 2025 11:04:29 -0700 (PDT)
+Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a1b78fed0sm102844465e9.1.2025.08.18.11.04.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Aug 2025 11:04:29 -0700 (PDT)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next v2] selftests/bpf: add BPF program dump in veristat
+Date: Mon, 18 Aug 2025 19:04:24 +0100
+Message-ID: <20250818180424.58835-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: "Segmentation fault" of pahole
-To: Alan Maguire <alan.maguire@oracle.com>,
- Changqing Li <changqing.li@windriver.com>, acme@kernel.org,
- dwarves@vger.kernel.org
-References: <24bcc853-533c-42ab-bc37-0c13e0baa217@windriver.com>
- <37030a9d-28d8-4871-8acb-b26c59240710@linux.dev>
- <f1e2dc2b-a88b-4342-8e94-65481ae0cb4f@windriver.com>
- <ec72bbb8-b74d-49d1-bb42-5343feab8e5b@windriver.com>
- <7b071d63-71db-49d4-ab03-2dd7072a28aa@oracle.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Kernel Team <kernel-team@meta.com>, bpf <bpf@vger.kernel.org>
-In-Reply-To: <7b071d63-71db-49d4-ab03-2dd7072a28aa@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 8/18/25 6:56 AM, Alan Maguire wrote:
-> On 14/08/2025 10:42, Changqing Li wrote:
->>
->> On 8/14/25 17:20, Changqing Li wrote:
->>>
->>> On 8/14/25 07:45, Ihor Solodrai wrote:
->>>> CAUTION: This email comes from a non Wind River email account!
->>>> Do not click links or open attachments unless you recognize the
->>>> sender and know the content is safe.
->>>>
->>>> On 8/10/25 6:18 PM, Changqing Li wrote:
->>>>> Hi,  Dear maintainers
->>>>>
->>>>> I met a "Segmentation fault" error of pahole.   It happened when I
->>>>> passed an ELF file without .symtab section.
->>>>> Maybe I passed an  unsupport file, but I think it should not segfault,
->>>>> maybe  a warnning or error message is better.
->>>>>
->>>>>
->>>>> Here is the detailed info:
->>>>> Pahole version:
->>>>> # pahole --version
->>>>> v1.29
->>>>>
->>>>> Reproduce Command:
->>>>> root@intel-x86-64:/~# pahole --btf_features=default -J /boot/
->>>>> vmlinux-6.12.40-yocto-standard
->>>>> pahole[599]: segfault at 8 ip 00007f7c92d819e2 sp 00007f7c799febe0
->>>>> error
->>>>> 6 in libdwarves.so.1.0.0[189e2,7f7c92d72000+1c000] likely on CPU 0
->>>>> (core
->>>>> 0, socket 0)
->>>>> Code: 74 19 ff ff 48 39 dd 75 ef 4c 89 ef e8 67 19 ff ff 49 8b 7c 24 18
->>>>> e8 8d 13 ff ff 49 8b 14 24 49 8b 44 24 08 4c 89 e7 45 31 e4 <48> 89 42
->>>>> 08 48 89 10 e8 42 19 ff ff e9 30 ff ff ff e8 58 0a ff ff
->>>>> Segmentation fault (core dumped)
->>>>>
->>>>> root@intel-x86-64:~# file /boot/vmlinux-6.12.40-yocto-standard
->>>>> /boot/vmlinux-6.12.40-yocto-standard: ELF 64-bit LSB executable,
->>>>> x86-64,
->>>>> version 1 (SYSV), statically linked,
->>>>> BuildID[sha1]=1e73fe48101f07b9d991dc045ab9f9672a0feac0, stripped
->>>>>
->>>>> root@intel-x86-64:/usr/bin# readelf -S /boot/vmlinux-6.12.40-yocto-
->>>>> standard | grep .symtab
->>>>>     [ 4] __ksymtab         PROGBITS         ffffffff82c11e00 01e11e00
->>>>>     [ 5] __ksymtab_gpl     PROGBITS         ffffffff82c24730 01e24730
->>>>>     [ 6] __ksymtab_strings PROGBITS         ffffffff82c397f0 01e397f0
->>>>>
->>>>>
->>>>> (gdb) bt
->>>>> #0  elf_functions__new (elf=<optimized out>) at /usr/src/debug/
->>>>> pahole/1.29/btf_encoder.c:196
->>>>> #1  0x00007ffff7f92a7d in btf_encoder__elf_functions
->>>>> (encoder=encoder@entry=0x7fffd8008dc0) at /usr/src/debug/pahole/1.29/
->>>>> btf_encoder.c:1374
->>>>> #2  0x00007ffff7f94489 in btf_encoder__new (cu=cu@entry=0x7fffd8001e50,
->>>>> detached_filename=<optimized out>, warning: could not convert 'btf'
->>>>> from
->>>>> the host encoding (ANSI_X3.4-1968) to UTF-32.
->>>>> This normally should not happen, please file a bug report.
->>>>> base_btf=0x0,
->>>>>       verbose=<optimized out>, conf_load=conf_load@entry=0x555555565280
->>>>> <conf_load>) at /usr/src/debug/pahole/1.29/btf_encoder.c:2431
->>>>> #3  0x000055555555db49 in pahole_stealer__btf_encode
->>>>> (cu=0x7fffd8001e50,
->>>>> conf_load=0x555555565280 <conf_load>)
->>>>>       at /usr/src/debug/pahole/1.29/pahole.c:3126
->>>>> #4  pahole_stealer (cu=0x7fffd8001e50, conf_load=0x555555565280
->>>>> <conf_load>) at /usr/src/debug/pahole/1.29/pahole.c:3187
->>>>> #5  0x00007ffff7f9d023 in cus__steal_now (cus=<optimized out>,
->>>>> cu=<optimized out>, conf=<optimized out>)
->>>>>       at /usr/src/debug/pahole/1.29/dwarf_loader.c:3266
->>>>> #6  dwarf_loader__worker_thread (arg=0x7fffffffe700) at /usr/src/debug/
->>>>> pahole/1.29/dwarf_loader.c:3672
->>>>> #7  0x00007ffff7dbe722 in start_thread (arg=<optimized out>) at
->>>>> pthread_create.c:448
->>>>> #8  0x00007ffff7e314fc in __GI___clone3 () at ../sysdeps/unix/sysv/
->>>>> linux/x86_64/clone3.S:78
->>>>> (gdb)
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Hi everyone.
+This patch adds support for dumping BPF program instructions directly
+from veristat.
+While it is already possible to inspect BPF program dump using bpftool,
+it requires multiple commands. During active development, it's common
+for developers to use veristat for testing verification. Integrating
+instruction dumping into veristat reduces the need to switch tools and
+simplifies the workflow.
+By making this information more readily accessible, this change aims
+to streamline the BPF development cycle and improve usability for
+developers.
+This implementation leverages bpftool, by running it directly via popen
+to avoid any code duplication and keep veristat simple.
 
-I was able to reproduce the error by feeding pahole a vmlinux with a
-debuglink [1], created with:
-
-     vmlinux=$(realpath ~/kernels/bpf-next/.tmp_vmlinux1)
-     objcopy --only-keep-debug $vmlinux vmlinux.debug
-     objcopy --strip-all --add-gnu-debuglink=vmlinux.debug $vmlinux 
-vmlinux.stripped
-
-With that, I got the following valgrind output:
-
-     $ valgrind ./build/pahole --btf_features=default -J 
-./mbox/vmlinux.stripped
-     ==40680== Memcheck, a memory error detector
-     ==40680== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward 
-et al.
-     ==40680== Using Valgrind-3.25.1 and LibVEX; rerun with -h for 
-copyright info
-     ==40680== Command: ./build/pahole --btf_features=default -J 
-./mbox/vmlinux.stripped
-     ==40680==
-     ==40680== Warning: set address range perms: large range [0x7c20000, 
-0x32e2d000) (defined)
-     ==40680== Thread 2:
-     ==40680== Invalid write of size 8
-     ==40680==    at 0x487D34D: __list_del (list.h:106)
-     ==40680==    by 0x487D384: list_del (list.h:118)
-     ==40680==    by 0x487D6DB: elf_functions__delete (btf_encoder.c:170)
-     ==40680==    by 0x487D77C: elf_functions__new (btf_encoder.c:201)
-     ==40680==    by 0x4880E2A: btf_encoder__elf_functions 
-(btf_encoder.c:1485)
-     ==40680==    by 0x4883558: btf_encoder__new (btf_encoder.c:2450)
-     ==40680==    by 0x4078DD: pahole_stealer__btf_encode (pahole.c:3160)
-     ==40680==    by 0x407B0D: pahole_stealer (pahole.c:3221)
-     ==40680==    by 0x488D2F5: cus__steal_now (dwarf_loader.c:3266)
-     ==40680==    by 0x488DF74: dwarf_loader__worker_thread 
-(dwarf_loader.c:3678)
-     ==40680==    by 0x4A8F723: start_thread (pthread_create.c:448)
-     ==40680==    by 0x4B13613: clone (clone.S:100)
-     ==40680==  Address 0x8 is not stack'd, malloc'd or (recently) free'd
-
-As far as I understand, in principle pahole could support search for a
-file linked via .gnu_debuglink, but that's a separate issue.
-
-Please see a bugfix patch below.
-
-[1] 
-https://manpages.debian.org/unstable/binutils-common/objcopy.1.en.html#add~3
-
-
- From 6104783080709dad0726740615149951109f839e Mon Sep 17 00:00:00 2001
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-Date: Mon, 18 Aug 2025 10:30:16 -0700
-Subject: [PATCH] btf_encoder: fix elf_functions cleanup on error
-
-When elf_functions__new() errors out and jumps to
-elf_functions__delete(), pahole segfaults on attempt to list_del the
-elf_functions instance from a list, to which it was never added.
-
-Fix this by changing elf_functions__delete() to
-elf_functions__clear(), moving list_del and free calls out of it. Then
-clear and free on error, and remove from the list on normal cleanup in
-elf_functions_list__clear().
-
-Closes: 
-https://lore.kernel.org/dwarves/24bcc853-533c-42ab-bc37-0c13e0baa217@windriver.com/
-Reported-by: Changqing Li <changqing.li@windriver.com>
-Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
-  btf_encoder.c | 11 ++++++-----
-  1 file changed, 6 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/veristat.c | 43 +++++++++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 1 deletion(-)
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 0bc2334..631c0b5 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -161,14 +161,12 @@ struct btf_kfunc_set_range {
-  	uint64_t end;
-  };
-
--static inline void elf_functions__delete(struct elf_functions *funcs)
-+static inline void elf_functions__clear(struct elf_functions *funcs)
-  {
-  	for (int i = 0; i < funcs->cnt; i++)
-  		free(funcs->entries[i].alias);
-  	free(funcs->entries);
-  	elf_symtab__delete(funcs->symtab);
--	list_del(&funcs->node);
--	free(funcs);
-  }
-
-  static int elf_functions__collect(struct elf_functions *functions);
-@@ -198,7 +196,8 @@ struct elf_functions *elf_functions__new(Elf *elf)
-  	return funcs;
-
-  out_delete:
--	elf_functions__delete(funcs);
-+	elf_functions__clear(funcs);
-+	free(funcs);
-  	return NULL;
-  }
-
-@@ -209,7 +208,9 @@ static inline void elf_functions_list__clear(struct 
-list_head *elf_functions_lis
-
-  	list_for_each_safe(pos, tmp, elf_functions_list) {
-  		funcs = list_entry(pos, struct elf_functions, node);
--		elf_functions__delete(funcs);
-+		elf_functions__clear(funcs);
-+		list_del(&funcs->node);
-+		free(funcs);
-  	}
-  }
-
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+index d532dd82a3a8..3ba06f532bfa 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -181,6 +181,12 @@ struct var_preset {
+ 	bool applied;
+ };
+ 
++enum dump_mode {
++	NO_DUMP = 0,
++	XLATED,
++	JITED,
++};
++
+ static struct env {
+ 	char **filenames;
+ 	int filename_cnt;
+@@ -227,6 +233,7 @@ static struct env {
+ 	char orig_cgroup[PATH_MAX];
+ 	char stat_cgroup[PATH_MAX];
+ 	int memory_peak_fd;
++	enum dump_mode dump_mode;
+ } env;
+ 
+ static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
+@@ -295,6 +302,7 @@ static const struct argp_option opts[] = {
+ 	  "Force BPF verifier failure on register invariant violation (BPF_F_TEST_REG_INVARIANTS program flag)" },
+ 	{ "top-src-lines", 'S', "N", 0, "Emit N most frequent source code lines" },
+ 	{ "set-global-vars", 'G', "GLOBAL", 0, "Set global variables provided in the expression, for example \"var1 = 1\"" },
++	{ "dump", 'p', "DUMP", 0, "Print BPF program dump" },
+ 	{},
+ };
+ 
+@@ -427,6 +435,16 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+ 			return err;
+ 		}
+ 		break;
++	case 'p':
++		if (strcmp(arg, "jited") == 0) {
++			env.dump_mode = JITED;
++		} else if (strcmp(arg, "xlated") == 0) {
++			env.dump_mode = XLATED;
++		} else {
++			fprintf(stderr, "Unrecognized dump mode '%s'\n", arg);
++			return -EINVAL;
++		}
++		break;
+ 	default:
+ 		return ARGP_ERR_UNKNOWN;
+ 	}
+@@ -1554,6 +1572,26 @@ static int parse_rvalue(const char *val, struct rvalue *rvalue)
+ 	return 0;
+ }
+ 
++static void dump(int prog_fd)
++{
++	char command[512];
++	char buf[1024];
++	FILE *fp;
++
++	snprintf(command, sizeof(command), "bpftool prog dump %s id %d",
++		 env.dump_mode == JITED ? "jited" : "xlated", prog_fd);
++	fp = popen(command, "r");
++	if (!fp) {
++		fprintf(stderr, "Can't run bpftool\n");
++		return;
++	}
++
++	while (fgets(buf, sizeof(buf), fp))
++		printf("%s", buf);
++
++	pclose(fp);
++}
++
+ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf_program *prog)
+ {
+ 	const char *base_filename = basename(strdupa(filename));
+@@ -1630,8 +1668,11 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+ 
+ 	memset(&info, 0, info_len);
+ 	fd = bpf_program__fd(prog);
+-	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0)
++	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0) {
+ 		stats->stats[JITED_SIZE] = info.jited_prog_len;
++		if (env.dump_mode != NO_DUMP)
++			dump(info.id);
++	}
+ 
+ 	parse_verif_log(buf, buf_sz, stats);
+ 
 -- 
 2.50.1
-
-
-
-
->>>>>
->>>>>
->>>>> Command  "pahole --btf_features=default -J /boot/.debug/
->>>>> vmlinux-6.12.40-
->>>>> yocto-standard " works well since /boot/.debug/vmlinux-6.12.40-yocto-
->>>>> standard has  .symtab section.
->>>>> root@intel-x86-64:/usr/bin# file /boot/.debug/vmlinux-6.12.40-yocto-
->>>>> standard
->>>>> /boot/.debug/vmlinux-6.12.40-yocto-standard: ELF 64-bit LSB executable,
->>>>> x86-64, version 1 (SYSV), statically linked,
->>>>> BuildID[sha1]=1e73fe48101f07b9d991dc045ab9f9672a0feac0, with
->>>>> debug_info,
->>>>> not stripped
->>>>>
->>>>> root@intel-x86-64:/usr/bin# readelf -S /boot/.debug/vmlinux-6.12.40-
->>>>> yocto-standard | grep .symtab
->>>>>     [ 4] __ksymtab         NOBITS           ffffffff82c11e00 00001000
->>>>>     [ 5] __ksymtab_gpl     NOBITS           ffffffff82c24730 00001000
->>>>>     [ 6] __ksymtab_strings NOBITS           ffffffff82c397f0 00001000
->>>>>     [49] .symtab           SYMTAB           0000000000000000 154cf200
->>>>>
->>>>
->>>> Hi Changqing Li, thanks for the bug report.
->>>>
->>>> I couldn't reproduce this error with a stripped vmlinux:
->>>>
->>>> $ objcopy --strip-all ~/kernels/bpf-next/.tmp_vmlinux1 vmlinux-strip-all
->>>>
->>>> v1.29 fails with:
->>>> $ ./build/pahole --btf_features=default -J $(realpath vmlinux-strip-all)
->>>> Error creating BTF encoder.
->>>>
->>>> v1.30 fails with:
->>>> $ ./build/pahole --btf_features=default -J $(realpath vmlinux-strip-all)
->>>> pahole: /home/isolodrai/pahole/vmlinux-strip-all: Invalid argument
->>>>
->>>> Different errors are not nice, but at least no segfault.
->>>>
->>>> Could you please share the vmlinux binary that causes the error?
->>>> And also check if you get a segfault on v1.30 too?
->>>>
->>>> Thanks.
->>>>
->>> Hi, Ihor
->>> Thanks for checking this. Here is my retest result:
->>> On version 1.29:
->>> root@intel-x86-64:~# pahole --btf_features=default -J /boot/
->>> vmlinux-6.12.40-yocto-standard
->>> pahole[333]: segfault at 8 ip 00007fd5025179e2 sp 00007fd4e73febe0
->>> error 6 in libdwarves.so.1.0.0[189e2,7fd502508000+1c000] likely on CPU
->>> 0 (core 0, socket 0)
->>> Code: 74 19 ff ff 48 39 dd 75 ef 4c 89 ef e8 67 19 ff ff 49 8b 7c 24
->>> 18 e8 8d 13 ff ff 49 8b 14 24 49 8b 44 24 08 4c 89 e7 45 31 e4 <48> 89
->>> 42 08 48 89 10 e8 42 19 ff ff e9 30 ff ff ff e8 58 0a ff ff
->>> Segmentation fault (core dumped)
->>> root@intel-x86-64:~# cp /boot/vmlinux-6.12.40-yocto-standard /root/
->>> root@intel-x86-64:~# pahole --btf_features=default -J /root/
->>> vmlinux-6.12.40-yocto-standard
->>> Error creating BTF encoder.
->>>
->>> We can see that the same vmlinux-6.12.40-yocto-standard have different
->>> result. After do some debugging,  I found that
->>> /boot/vmlinux-6.12.40-yocto-standard segfault since it has debuginfo
->>> file /boot/.debug/vmlinux-6.12.40-yocto-standard.
->>> after I move .debug to .xxx, it will not segfault.
->>> root@intel-x86-64:/boot# mv .debug/ .xxx
->>> root@intel-x86-64:/boot# pahole --btf_features=default -J /boot/
->>> vmlinux-6.12.40-yocto-standard
->>> Error creating BTF encoder.
->>>
->>> dwfl_module_getdwarf in cus__process_dwflmod return different when
->>> with or without debug,  without .debug, dw=NULL,
->>> with .debug, dw will have a value, then causes the different process.
->>>
->>> On version 1.30
->>> root@intel-x86-64:~# pahole --version
->>> v1.30
->>> root@intel-x86-64:~# pahole --btf_features=default -J /boot/
->>> vmlinux-6.12.40-yocto-standard
->>> pahole[314]: segfault at 8 ip 00007f2b0b6b2bf3 sp 00007f2af05feb20
->>> error 6 in libdwarves.so.1.0.0[18bf3,7f2b0b6a3000+1c000] likely on CPU
->>> 0 (core 0, socket 0)
->>> Code: 33 17 ff ff 48 39 dd 75 ee 4c 89 ef e8 26 17 ff ff 49 8b 7c 24
->>> 18 e8 5c 11 ff ff 49 8b 14 24 49 8b 44 24 08 4c 89 e7 45 31 e4 <48> 89
->>> 42 08 48 89 10 e8 01 17 ff ff e9 2d ff ff ff e8 37 08 ff ff
->>> Segmentation fault (core dumped)
->>> root@intel-x86-64:~# cp /boot/vmlinux-6.12.40-yocto-standard /root/
->>> root@intel-x86-64:~#  pahole --btf_features=default -J /root/
->>> vmlinux-6.12.40-yocto-standard
->>> pahole: /root/vmlinux-6.12.40-yocto-standard: Invalid argument
->>> root@intel-x86-64:~# cd /root
->>> root@intel-x86-64:~# mkdir .debug
->>> root@intel-x86-64:~# cp /boot/.debug/vmlinux-6.12.40-yocto-
->>> standard .debug/
->>> root@intel-x86-64:~# pahole --btf_features=default -J /root/
->>> vmlinux-6.12.40-yocto-standard
->>> pahole[441]: segfault at 8 ip 00007f64a9032bf3 sp 00007f648dffeb20
->>> error 6 in libdwarves.so.1.0.0[18bf3,7f64a9023000+1c000] likely on CPU
->>> 0 (core 0, socket 0)
->>> Code: 33 17 ff ff 48 39 dd 75 ee 4c 89 ef e8 26 17 ff ff 49 8b 7c 24
->>> 18 e8 5c 11 ff ff 49 8b 14 24 49 8b 44 24 08 4c 89 e7 45 31 e4 <48> 89
->>> 42 08 48 89 10 e8 01 17 ff ff e9 2d ff ff ff e8 37 08 ff ff
->>>
->>> Segmentation fault (core dumped)
->>
->> I think this " Invalid argument " change  is caused by this commit:
->>
->> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?
->> id=b4a071d99bb9e7c0d3c6ea7a6835389a4d350ed4
->>
->> encode BTF with DWARF less files is not support for v1.30, so, since  /
->> boot/vmlinux-6.12.40-yocto-standard without debuginfo, it taken as in
->> invalid argument,
->>
->> I think it is  ok,  but maybe more clear reason is better.
->>
-> 
-> Thanks for the report!
-> 
-> With latest pahole (next branch of
-> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/ ) including
-> Arnaldo's change
-> 
-> commit 97bf0a0b0572ec023761da9226b068b59b471de0
-> Author: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Date:   Tue Jul 22 11:22:27 2025 -0300
-> 
->      pahole: Don't fail when encoding BTF on an object with no DWARF info
-> 
-> 
-> I see the following pahole results against a stripped vmlinux:
-> 
-> $ pahole --btf_features=default -J vmlinux.stripped
-> $ echo $?
-> 0
-> 
-> Can you reproduce the segmentation fault with the above pahole? If you
-> can provide a way to get a stripped pahole like the above for me to test
-> with, or provide the kernel .config used to build it, that would be
-> great. Thanks!
-> 
-> Alan
 
 
