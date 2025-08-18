@@ -1,61 +1,79 @@
-Return-Path: <bpf+bounces-65890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65891-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 416E0B2ABB1
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 16:54:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42972B2AB75
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 16:48:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF3247259A8
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 14:32:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E41D18A67D5
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 14:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFFB35A2AC;
-	Mon, 18 Aug 2025 14:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8060A3112AE;
+	Mon, 18 Aug 2025 14:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="L40UnLG2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mt+7xKYN"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E344833EB06
-	for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 14:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206393101B1
+	for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 14:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755527067; cv=none; b=V8YEz0QKUIl+zwdP2g6iUggwIEXY2hUBT2nzAMkTNw4eqIV3tJyf0iEgtQGbq7uvGR7nJGQEYviUY5+wmmYhcd14tI1sqhXGXUTPU9YGCDSOivxtuYE0fdijw9U5sFzV1jCrzQxbLi3XHdkGiDUs4I3x5x1eDIR/d4X+jqFYh4A=
+	t=1755527741; cv=none; b=FPWEcud86rS5qIBInThz2y5eD3Wyj5tXtDnKGbruLCSRmN2YbLSkgk7ICh5CVNKuW8BreKtif4UtZj+r8DFQ9Yjdh2i411SpQ77ARRdrUTGX8amCCCppLO7OcRCK0t/u4lGXzOUieIQ702CTsilpHBzsIOv+dcpVal7QdGwXZBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755527067; c=relaxed/simple;
-	bh=IG7PJ4fPGo0p+i0e4nA2WUH2lNjs90jfvVXSgiEXYjI=;
+	s=arc-20240116; t=1755527741; c=relaxed/simple;
+	bh=HFBo7hdMQ1KDbJoP8ilsLuZLyXy7+SYKfk/dXE1xyz8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZUsD1g6OaiT93ir0SQMcP+HtaRUN0h+koyHOm5YCPcQltxPphm/xCtC8sb+NCrDQWhZ0hvKezZXPiaSJr5QuL2KjF/axHhzEWKLlAWKEP/VMkmgT4yK4oxOPu7CpWqc+x41yDuQidakgpNr5R42HgWwfE2Nu5gtUAMk9QcLGTRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=L40UnLG2; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=ZUcnoMqKDwujBu4dILJuOpgH+8fVT+EqWklIF8D/0Pk=; b=L40UnLG2s7tVmvxpP4jittSXCm
-	KXFkod2faUd3mkaNWjbF0WK9pWM3LBxylT8VRgVoEUAJcviATvlgR8pb31CwDcmKvoJOdVLQWcNfe
-	bEm5nhk3JxO4vz3CyQda5mcNjVS06emUGr6ZSaykMO/3NM3Tn6LOANGmBRrbPgdN85bHQWwN/WEqZ
-	frA0Zq0vwDDL8P0GDgVOWXmAQquPCiKTrWEjp8AQa28zJNLPme/wQ2FGZLqfvN6LsTubLDiBtI7c8
-	GvHCtpiHZ5FPpGKbcUgfxF1nBz+aJ+cSvADffGVSbBFn86YDPuOaRSFbyXkgW8bkb0vPgC5WP5mlT
-	9eZdMZKA==;
-Received: from sslproxy08.your-server.de ([78.47.166.52])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1uo0mV-000MrB-0m;
-	Mon, 18 Aug 2025 16:24:15 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1uo0mB-00049z-22;
-	Mon, 18 Aug 2025 16:23:55 +0200
-Message-ID: <1711ba66-995e-447a-ab1f-eee692ad2d67@iogearbox.net>
-Date: Mon, 18 Aug 2025 16:24:13 +0200
+	 In-Reply-To:Content-Type; b=XOBMxo9zQH4cL3WFFBFQ5TlVpbvxgYLCPKzUxaqbfQuaKdncrd/D4fEnJFZcAs46JG6M/UuhMDo+ix7Xhatb49yNZUB2l+CsQ11Ppi7TV3Conb1fR0xK+QVhzqIKR/9C1Z/aCGkU7jhiV9tjLCXnbaM2hNMOR99yDAQLh89e6ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mt+7xKYN; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3b9d41c1963so2050567f8f.0
+        for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 07:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755527737; x=1756132537; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y3e5kfEUDKfGYIXxIjzYAU/86sxkzjQ1VNlVdUi79RM=;
+        b=mt+7xKYNjaX64mRi4aYmlIUS2Az2cXBLH8nv1BAFKXj4+Odf+9Zs6S0CBqnFAr7m+H
+         nrKShwYxn90HJ5QZ9Qz9Z5UTXmWSSuCWch/exG4//Kjzqt5p8cSphi+At3wHsG2HeZuB
+         DI0Z09XraA0SiwexS2RtkrziU74qt3UhZK6+1FUbonWo9Qk+U0W5z3TtfuELACfkM0YB
+         EYGhX511MILjmtEDEXRmUqVjvS9/nSe7OkOA08Xj8ZGRu/X8y89mC09S2IGvjsIEJdi2
+         MJq3ZfrzdlXs42SypWk3jz52RTFypVLMzPsLglrRYCIi9mzSXhIJVyIst5FF0OmIOC1F
+         P1jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755527737; x=1756132537;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y3e5kfEUDKfGYIXxIjzYAU/86sxkzjQ1VNlVdUi79RM=;
+        b=rN5k6pED/N59mjKZUwYIL7rJtP448IYy9en6B6QJirl1mog2sUn9Wsl35OiCWAY9Px
+         /19TPPfyyGpZ0Xl+k8Za8YU7YWMrr+sZ1lbq8k0fonkWYczB47S8m91FJUS5gfGxk69y
+         MOmHBw6izXK17I6YUGCyTpPHBPWViuqOxXbi2XTQcJhn5T8lKspiY+ZgBATz9NI+Gm6T
+         g0XSzlQKJpNupQZOxXi3gdAjKhQPW4sbPSsmfO6iJ4Utse7dotY8tP06+JCjtAh3yS8W
+         19Sr6uzqDfHvKd2Qrjl9uNehZAtGDgZa8k8UlUAvo9PliEqusEcjEqBs8iKc8kx0ebcq
+         9/uw==
+X-Gm-Message-State: AOJu0YzNsWi+ERc7TITrkJCvWlawqBtBuifxrYP/wTaT4GLFLXxzI8ak
+	gXqZ79ox1TdDn6ppSabvO/ekmfra1mGM7kJoBRWcuUe8CHHgPT7zAzQJ
+X-Gm-Gg: ASbGncuzzV9FwFl1+lItEogVe1qmvBW560tD3cmEyvnauX+1hlZLvo7Rh4uK9Gun99Z
+	mMvOAyHfQfINa21fxvolohTBLiD9tNmyyIZWdaNFZA8qkeylsVdV4/SRVYqIBJb7tBoYXYQQXSA
+	Vd9yOiSqYMDtw8mo9PTrEu1vFYbO5U/oklzqG4y5CQOqI/wCtvM9SL7OytM2OaSE2XWGhFscGzL
+	zxW6uH8YsMpSNN732P5wvOMktW1zwuOHo2F1cKEIaFCd8tjZiTJLhoMuBABYstT9fPZyEQRiBI+
+	EvbOLH+uV5iVXUnSh9nWI4y2wtp14RMjbBuyWd6+SYm77rozf9wct54pFSfVxRxrysdHfsXIisI
+	53hFcwbdOjTbHbls/hKNA7PVxerEdPtXGa7QL5tIkZZwNNY0OFk2Jvu2TFcgxhlhtl9CmRHU=
+X-Google-Smtp-Source: AGHT+IGd4KB5hN6IAjw7Zw7PYXI04wFRsSFFB1xN3zkVuWTsabwKlquBZCHv4Fnsn+ONVvTIZmyzEw==
+X-Received: by 2002:a05:6000:24c4:b0:3b7:644f:9ca7 with SMTP id ffacd0b85a97d-3bc694261a0mr6819966f8f.25.1755527737051;
+        Mon, 18 Aug 2025 07:35:37 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1126:4:14f1:c189:9748:5e5a? ([2620:10d:c092:500::5:7223])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3bb68079341sm12856749f8f.50.2025.08.18.07.35.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Aug 2025 07:35:36 -0700 (PDT)
+Message-ID: <36c97fc6-eaa9-44dd-a52f-0b6bf5a001d9@gmail.com>
+Date: Mon, 18 Aug 2025 15:35:32 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,101 +81,176 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 bpf-next] bpf: improve the general precision of
- tnum_mul
-To: Eduard Zingerman <eddyz87@gmail.com>,
- Nandakumar Edamana <nandakumar@nandakumar.co.in>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
- Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
- Matan Shachnai <m.shachnai@rutgers.edu>,
- Srinivas Narayana <srinivas.narayana@rutgers.edu>,
- Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
-References: <20250815140510.1287598-1-nandakumar@nandakumar.co.in>
- <e7cb82ac838e28620324f70907235d2b8c75262f.camel@gmail.com>
+Subject: Re: [RFC PATCH v5 mm-new 0/5] mm, bpf: BPF based THP order selection
+To: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
+ david@redhat.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com,
+ ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org,
+ gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com,
+ rientjes@google.com
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org
+References: <20250818055510.968-1-laoar.shao@gmail.com>
 Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <e7cb82ac838e28620324f70907235d2b8c75262f.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27736/Mon Aug 18 10:27:28 2025)
+From: Usama Arif <usamaarif642@gmail.com>
+In-Reply-To: <20250818055510.968-1-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-[ also adding Harishankar et al. to Cc, for the patch see :
-   https://patchwork.kernel.org/project/netdevbpf/patch/20250815140510.1287598-1-nandakumar@nandakumar.co.in/
-  ]
 
-On 8/15/25 9:10 PM, Eduard Zingerman wrote:
-> On Fri, 2025-08-15 at 19:35 +0530, Nandakumar Edamana wrote:
->> This commit addresses a challenge explained in an open question ("How
->> can we incorporate correlation in unknown bits across partial
->> products?") left by Harishankar et al. in their paper:
->> https://arxiv.org/abs/2105.05398
->>
->> When LSB(a) is uncertain, we know for sure that it is either 0 or 1,
->> from which we could find two possible partial products and take a
->> union. Experiment shows that applying this technique in long
->> multiplication improves the precision in a significant number of cases
->> (at the cost of losing precision in a relatively lower number of
->> cases).
->>
->> This commit also removes the value-mask decomposition technique
->> employed by Harishankar et al., as its direct incorporation did not
->> result in any improvements for the new algorithm.
->>
->> Signed-off-by: Nandakumar Edamana <nandakumar@nandakumar.co.in>
->> ---
+
+On 18/08/2025 06:55, Yafang Shao wrote:
+> Background
+> ----------
 > 
-> Hi Nandakumar,
+> Our production servers consistently configure THP to "never" due to
+> historical incidents caused by its behavior. Key issues include:
+> - Increased Memory Consumption
+>   THP significantly raises overall memory usage, reducing available memory
+>   for workloads.
 > 
-> Could you please provide a selftest demonstrating a difference in behavior?
-> What technique did you employ to estimate the number of cases when
-> precision is improved vs worsened? If this is some kind of a program
-> doing randomized testing, could you please share a link to it?
+> - Latency Spikes
+>   Random latency spikes occur due to frequent memory compaction triggered
+>   by THP.
 > 
-> Thanks,
-> Eduard
+> - Lack of Fine-Grained Control
+>   THP tuning is globally configured, making it unsuitable for containerized
+>   environments. When multiple workloads share a host, enabling THP without
+>   per-workload control leads to unpredictable behavior.
+> 
+> Due to these issues, administrators avoid switching to madvise or always
+> modes—unless per-workload THP control is implemented.
+> 
+> To address this, we propose BPF-based THP policy for flexible adjustment.
+> Additionally, as David mentioned [0], this mechanism can also serve as a
+> policy prototyping tool (test policies via BPF before upstreaming them).
+
+Hi Yafang,
+
+A few points:
+
+The link [0] is mentioned a couple of times in the coverletter, but it doesnt seem
+to be anywhere in the coverletter.
+
+I am probably missing something over here, but the current version won't accomplish
+the usecase you have described at the start of the coverletter and are aiming for, right?
+i.e. THP global policy "never", but get hugepages on an madvise or always basis.
+I think there was a new THP mode introduced in some earlier revision where you can switch to it
+from "never" and then you can use bpf programs with it, but its not in this revision?
+It might be useful to add your specific usecase as a selftest.
+
+Do we have some numbers on what the overhead of calling the bpf program is in the
+pagefault path as its a critical path?
+
+I remember there was a discussion on this in the earlier revisions, and I have mentioned this in patch 1
+as well, but I think making this feature experimental with warnings might not be a great idea.
+It could lead to 2 paths:
+- people don't deploy this in their fleet because its marked as experimental and they dont want
+their machines to break once they upgrade the kernel and this is changed. We will have a difficult
+time improving upon this as this is just going to be used for prototyping and won't be driven by
+production data.
+- people are careless and deploy it in on their production machines, and you get reports that this
+has broken after kernel upgrades (despite being marked as experimental :)).
+This is just my opinion (which can be wrong :)), but I think we should try and have this merged
+as a stable interface that won't change. There might be bugs reported down the line, but I am hoping
+we can get the interface of get_suggested_order right in the first implementation that gets merged? 
+
+
+Thanks!
+Usama> 
+> Proposed Solution
+> -----------------
+> 
+> As suggested by David [0], we introduce a new BPF interface:
+> 
+> /**
+>  * @get_suggested_order: Get the suggested THP orders for allocation
+>  * @mm: mm_struct associated with the THP allocation
+>  * @vma__nullable: vm_area_struct associated with the THP allocation (may be NULL)
+>  *                 When NULL, the decision should be based on @mm (i.e., when
+>  *                 triggered from an mm-scope hook rather than a VMA-specific
+>  *                 context).
+>  *                 Must belong to @mm (guaranteed by the caller).
+>  * @vma_flags: use these vm_flags instead of @vma->vm_flags (0 if @vma is NULL)
+>  * @tva_flags: TVA flags for current @vma (-1 if @vma is NULL)
+>  * @orders: Bitmask of requested THP orders for this allocation
+>  *          - PMD-mapped allocation if PMD_ORDER is set
+>  *          - mTHP allocation otherwise
+>  *
+>  * Rerurn: Bitmask of suggested THP orders for allocation. The highest
+>  *         suggested order will not exceed the highest requested order
+>  *         in @orders.
+>  */
+>  int (*get_suggested_order)(struct mm_struct *mm, struct vm_area_struct *vma__nullable,
+> 			    u64 vma_flags, enum tva_type tva_flags, int orders) __rcu;
+> 
+> This interface:
+> - Supports both use cases (per-workload tuning + policy prototyping).
+> - Can be extended with BPF helpers (e.g., for memory pressure awareness).
+> 
+> This is an experimental feature. To use it, you must enable
+> CONFIG_EXPERIMENTAL_BPF_ORDER_SELECTION.
+> 
+> Warning:
+> - The interface may change
+> - Behavior may differ in future kernel versions
+> - We might remove it in the future
+> 
+> A simple test case is included in Patch #4.
+> 
+> Future work:
+> - Extend it to File THP
+> 
+> Changes:
+> RFC v4->v5:
+> - Add support for vma (David)
+> - Add mTHP support in khugepaged (Zi)
+> - Use bitmask of all allowed orders instead (Zi)
+> - Retrieve the page size and PMD order rather than hardcoding them (Zi)
+> 
+> RFC v3->v4: https://lwn.net/Articles/1031829/
+> - Use a new interface get_suggested_order() (David)
+> - Mark it as experimental (David, Lorenzo)
+> - Code improvement in THP (Usama)
+> - Code improvement in BPF struct ops (Amery)
+> 
+> RFC v2->v3: https://lwn.net/Articles/1024545/
+> - Finer-graind tuning based on madvise or always mode (David, Lorenzo)
+> - Use BPF to write more advanced policies logic (David, Lorenzo)
+> 
+> RFC v1->v2: https://lwn.net/Articles/1021783/
+> The main changes are as follows,
+> - Use struct_ops instead of fmod_ret (Alexei)
+> - Introduce a new THP mode (Johannes)
+> - Introduce new helpers for BPF hook (Zi)
+> - Refine the commit log
+> 
+> RFC v1: https://lwn.net/Articles/1019290/
+> Yafang Shao (5):
+>   mm: thp: add support for BPF based THP order selection
+>   mm: thp: add a new kfunc bpf_mm_get_mem_cgroup()
+>   mm: thp: add a new kfunc bpf_mm_get_task()
+>   bpf: mark vma->vm_mm as trusted
+>   selftest/bpf: add selftest for BPF based THP order seletection
+> 
+>  include/linux/huge_mm.h                       |  15 +
+>  include/linux/khugepaged.h                    |  12 +-
+>  kernel/bpf/verifier.c                         |   5 +
+>  mm/Kconfig                                    |  12 +
+>  mm/Makefile                                   |   1 +
+>  mm/bpf_thp.c                                  | 269 ++++++++++++++++++
+>  mm/huge_memory.c                              |  10 +
+>  mm/khugepaged.c                               |  26 +-
+>  mm/memory.c                                   |  18 +-
+>  tools/testing/selftests/bpf/config            |   3 +
+>  .../selftests/bpf/prog_tests/thp_adjust.c     | 224 +++++++++++++++
+>  .../selftests/bpf/progs/test_thp_adjust.c     |  76 +++++
+>  .../bpf/progs/test_thp_adjust_failure.c       |  25 ++
+>  13 files changed, 689 insertions(+), 7 deletions(-)
+>  create mode 100644 mm/bpf_thp.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_failure.c
+> 
 
 
