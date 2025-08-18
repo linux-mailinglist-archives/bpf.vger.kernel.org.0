@@ -1,202 +1,214 @@
-Return-Path: <bpf+bounces-65870-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65871-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96EC1B29E4E
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 11:47:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8ABDB29E88
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 11:56:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3603A17B788
-	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 09:42:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 130273B6C1F
+	for <lists+bpf@lfdr.de>; Mon, 18 Aug 2025 09:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FC530E833;
-	Mon, 18 Aug 2025 09:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA52273D77;
+	Mon, 18 Aug 2025 09:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F/Yeo2Wr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B3830EF7C
-	for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 09:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B45C30FF20;
+	Mon, 18 Aug 2025 09:56:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755510151; cv=none; b=iYuFLGjrmC2ccNbiJNks6H2WyKeWn+zYwLCdVkBuYOfZOVxl+VmTWp5fpblf1NjJGz5jKQGpeOpL9FNv8XPonAX8ZOq93u6xPyYAt1QDh1/a86/a4BMsGj3tSg90x7a4v0wOCTIZlY0EGzSx2kRfIwbddIGUqc1GPPOn2Bw8E34=
+	t=1755510963; cv=none; b=Cq7Jpd9jEza26dy6cOb1Cfv7BtWm8Alki4WTUokSK2+3jUqkS7NCdGD7sqWEmRpCBQYQPXtvg+YIBPpPsZ76d0ofGqLGp99GgSSanf2ZAIaiA0kSiBOcsm2/MWe9VS97q1j6RhZKhTPG4qEV2XSIhh3ySL4mexgoBoqFnm2/4H8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755510151; c=relaxed/simple;
-	bh=hlExk0bikRjt6rm84KLuXCDdZhI56FTm0T0tv3xFJDI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=cN3J0MsNq26lmJCgKgpvCT14whm1PexET50/kzsqO9bzpMDouWNPQ2bFhv7g9tSqAwtyLYU/pEZbqRiPjqohNIp6MXXBIh1iFRkNKxdNXn3ceDhZQbg1pcVps3Uw/mXIyIZwBbk9JRyoyppy8VnPV56NXybKriXSzSzOUmwuiLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-88432e3c4ffso423269239f.3
-        for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 02:42:29 -0700 (PDT)
+	s=arc-20240116; t=1755510963; c=relaxed/simple;
+	bh=1lwTcuQs3PskiizA9ekyNKD+GSvBsWBqRnnJ951KJvk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tA3THg4SThZVUEWxmETf2IVkuaOusCThbrjljSNXXj23/GRzsV37c21ph4KzQPVgYugMT26qq/1VJtmC1cM8UBK2sPnkQ1R468VHJFCgB8XDOqG1yAZ5lQ54MokR9ExNBmusplJI1hmN5z9mP2WLeeou+rFuRxuhzEq8PPJCNjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F/Yeo2Wr; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-45a1b00e4a1so25714825e9.0;
+        Mon, 18 Aug 2025 02:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755510960; x=1756115760; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3oRQru3gew2EIPWLHHj5TTyDNuIZGAGLZO/bmpncjjo=;
+        b=F/Yeo2Wr15HkUN5K35WSqYNRpEBKtA4H1XiXMviH+VWMMsWHw8TDMRFgzz08bcBr/U
+         vH/gxMRn6GMkGLtBf25qi2F98t5mhKn30cm0h/m/zqSKEAk0Ks/Cr8AWKgAWxPlszKqo
+         AqcXFltR/Nzfd0cxZ+6iO73+F/A3LXGv7ah5pkiwxXH+KsnEMnNgfJb2jXoVY34Z46El
+         UQ8iLAe6LcK8g2KaN0j1Bz6CC9nDuDMykNwu5KadAw9MAI/QVfKvg7Id4UUlxl7s9dBL
+         B43csaGdkXOPt906oNFWJJ3UOUv2x+c8B9XbQzl820T0z3D2bD7oMi5SgLjDDmvGWNhr
+         K+xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755510148; x=1756114948;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9wGHxTryICtLob43ykIoK53i3l3ypoaoPwteFMzyRHA=;
-        b=NfQBxcfPUuxjZMYxH7BjiTB/ZRpPfWtwbfwfX8C7FGdsI2DHTobVmrvyaA0VtPdy+e
-         6/eJc3QxiHE7ZBdxuTw1vrfomlM+t58yiQ8MIrOUuvJy7I4KBLHLDnHzIEywKn0NGvek
-         xUvpdwH6G+PhbdZCnOd1/uynzqYShwT7oIRJF/WrAHl9LNKIpR/4qgxw/8wT/9KzmpV5
-         x2GY6reg/6EwfR7ayjZqyLUcG57Fxt5ZlO5Dp0zredxeKvQMq4l5/HYyRlpItCqEmwdE
-         IoN8ulhEpSx24S3nOsr5VNd0Q0V1gb+cBCQbKPCnVst8xq0iXpCev7yhoJEfHXrIlXJ7
-         RvNg==
-X-Forwarded-Encrypted: i=1; AJvYcCVBfk/wp5ylwDNlbIrN0MWTWatUJ/KcdYuJPyIDAZxzwZqWSnrAnIwRrbw2sfhkgL3ofdQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyi4h9CwJ1bx0sl5aH+LO7YyljqfTq/HFm1dXQ5OK88hD4MsYyM
-	sy8bIZ/38J1kDwIOy8VjnrKGM+TvUmgB39MkOB6UrHPLimXgk/YgJ7CW94kmQLxoLYnizdtRE3N
-	gRVxolmQDbcXtYIR79tPhN7Mj4klqps9coNy2LAj1DMnZgHSOsGeCAnUJOXI=
-X-Google-Smtp-Source: AGHT+IEy+DhZF0kVCFcwYxkEZCvaNAN8vkbPi0qS1D0Zb3xGehBLux0c/k5Qeuv219SQUXlqM/N0D3HZuKAkgonfrZqKlOKyUmIL
+        d=1e100.net; s=20230601; t=1755510960; x=1756115760;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3oRQru3gew2EIPWLHHj5TTyDNuIZGAGLZO/bmpncjjo=;
+        b=KXrCiCJhFySlcovwe9vEPrWHGyRI+rbl1GuZMVblQh31d6WSqXLiXa6V24H7lAcFaT
+         aTrNHnhD/vALXyInZq1fsFtJ3L+9hrFkS5McQ3R8NbIhKjcNUve5/nGdoWnuJZh8Nf+b
+         AMqmAtOCdYwOnDg2z66IEpy7OxpSbyngCna878aj9YYuxwjDm1cjjgwGbEfU1pUaSExT
+         jbWdJ0AdaqaIqI6R5vKs2r8FND3ppAtCSiKA316rZIlWSOBuwrjlDHUvsi/dO1nAPBJ1
+         9nHcDtOjEQmWlTBxiilRGriDQ8NubfGXQa2KuwAWY1YLKxREQYDvN+YdccYKySB94sZ3
+         ERkw==
+X-Forwarded-Encrypted: i=1; AJvYcCWjJdygD6/bR6GPvHImHO7urX8h5oFGeI5CGMhPXqxkHL03Mguir+h8z1JLxJJ3TUoblOweP/BzqECqxS/J@vger.kernel.org, AJvYcCWkZ+IeO4zq4kMoNhTekuDS/mNOm5FwkiFoV68FEY93GQCb7O7SFtWhSn8KeZ8pYUrgxRQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3dviUO5F2oF8UYTTGLUDSmE+Sl7X/6Yftex7ChAiZ3KvyBvRi
+	B9rgofbu7NEfiwLJ/MFyMy816wyvJfqX6f91MmR/qSh1RcHvmWpA7C/u
+X-Gm-Gg: ASbGncuFkSdJsNk55JLbF50v9zM9WPL91Pv+DIDUE9DjDuthGGD4iBa+nkIb+ceFVM+
+	0bApvG18LwTKdcPXuLIvW+KGAXupY1kI+Fz9MnBIP5vGQB+04lmPs+2/X5bJzvctU5S1tk6ihLq
+	Wcjvy8K379gszXcNyiqJpZoJADPUFJVdCYoAsY6DG9IZTweriQCF7tn4YaDuRny6pTLkA4Z+P7S
+	vKu1JIp3uAtttxT8eByF1inVYWDet36a4/5sd1T4PwsaA5Vuj3uUJOj3SEvkCEjavfHQKh+RPEY
+	mUHFiSWBd6hiIOMvWFeMVbk6hnXBWPr2b5eBtv1bhW3cP92EUaOPSJf2Vbx5WnwFExbfxdXl
+X-Google-Smtp-Source: AGHT+IG+4FJgOk7tgAjcYQmF5w7tpduhFcNyLI9kWl8zL+KJ9jaeTcdUSLs+BUhcG+uffVppdSawmw==
+X-Received: by 2002:a05:600c:4ec9:b0:43d:fa59:af97 with SMTP id 5b1f17b1804b1-45a2186486bmr79029285e9.32.1755510959424;
+        Mon, 18 Aug 2025 02:55:59 -0700 (PDT)
+Received: from krava ([2a02:8308:a00c:e200::31e0])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a2232de40sm123956115e9.26.2025.08.18.02.55.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Aug 2025 02:55:58 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 18 Aug 2025 11:55:56 +0200
+To: chenyuan_fl@163.com
+Cc: yonghong.song@linux.dev, olsajiri@gmail.com,
+	aef2617b-ce03-4830-96a7-39df0c93aaad@kernel.org, andrii@kernel.org,
+	ast@kernel.org, bpf@vger.kernel.org, chenyuan@kylinos.cn,
+	daniel@iogearbox.net, linux-kernel@vger.kernel.org, qmo@kernel.org
+Subject: Re: [PATCH v6 2/2] bpftool: Add CET-aware symbol matching for x86_64
+ architectures
+Message-ID: <aKL4rB3x8Cd4uUvb@krava>
+References: <74709a08-4536-4c5a-8140-12d8b42e97c0@linux.dev>
+ <20250815025227.6204-1-chenyuan_fl@163.com>
+ <20250815025227.6204-3-chenyuan_fl@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:60c5:b0:87c:1d65:3aeb with SMTP id
- ca18e2360f4ac-8843e35ceebmr2227386839f.2.1755510148497; Mon, 18 Aug 2025
- 02:42:28 -0700 (PDT)
-Date: Mon, 18 Aug 2025 02:42:28 -0700
-In-Reply-To: <67555b72.050a0220.2477f.0026.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68a2f584.050a0220.e29e5.009d.GAE@google.com>
-Subject: Re: [syzbot] [mm?] INFO: rcu detected stall in sys_umount (3)
-From: syzbot <syzbot+1ec0f904ba50d06110b1@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bigeasy@linutronix.de, 
-	bpf@vger.kernel.org, brauner@kernel.org, daniel@iogearbox.net, 
-	davem@davemloft.net, eddyz87@gmail.com, edumazet@google.com, 
-	haoluo@google.com, jack@suse.cz, jiri@resnulli.us, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kerneljasonxing@gmail.com, kpsingh@kernel.org, 
-	kuba@kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	pabeni@redhat.com, sdf@fomichev.me, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, viro@zeniv.linux.org.uk, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250815025227.6204-3-chenyuan_fl@163.com>
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Aug 15, 2025 at 03:52:27AM +0100, chenyuan_fl@163.com wrote:
+> From: Yuan Chen <chenyuan@kylinos.cn>
+> 
+> Adjust symbol matching logic to account for Control-flow Enforcement
+> Technology (CET) on x86_64 systems. CET prefixes functions with
+> a 4-byte 'endbr' instruction, shifting the actual hook entry point to
+> symbol + 4.
+> 
+> Signed-off-by: Yuan Chen <chenyuan@kylinos.cn>
+> ---
+>  tools/bpf/bpftool/link.c | 50 ++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 48 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+> index a773e05d5ade..6787971d3167 100644
+> --- a/tools/bpf/bpftool/link.c
+> +++ b/tools/bpf/bpftool/link.c
+> @@ -282,11 +282,52 @@ get_addr_cookie_array(__u64 *addrs, __u64 *cookies, __u32 count)
+>  	return data;
+>  }
+>  
+> +static bool is_x86_ibt_enabled(void)
+> +{
+> +#if defined(__x86_64__)
+> +	struct kernel_config_option options[] = {
+> +		{ "CONFIG_X86_KERNEL_IBT", },
+> +	};
+> +	char *values[ARRAY_SIZE(options)] = { };
+> +	bool ret;
+> +
+> +	if (read_kernel_config(options, ARRAY_SIZE(options), values, NULL))
+> +		return false;
+> +
+> +	ret = !!values[0];
+> +	free(values[0]);
+> +	return ret;
+> +#else
+> +	return false;
+> +#endif
 
-HEAD commit:    8f5ae30d69d7 Linux 6.17-rc1
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1321eba2580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c5ac3d8b8abfcb
-dashboard link: https://syzkaller.appspot.com/bug?extid=1ec0f904ba50d06110b1
-compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10cba442580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10a1eba2580000
+nit, we could store the result to 'static bool enabled' in this function,
+so we would not need to pass is_ibt_enabled arg below, and just call
+is_x86_ibt_enabled directly, but up to you
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/18a2e4bd0c4a/disk-8f5ae30d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3b5395881b25/vmlinux-8f5ae30d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e875f4e3b7ff/Image-8f5ae30d.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/43186d9e448c/mount_0.gz
-  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=174ba442580000)
+> +}
+> +
+> +static bool
+> +symbol_matches_target(__u64 sym_addr, __u64 target_addr, bool is_ibt_enabled)
+> +{
+> +	if (sym_addr == target_addr)
+> +		return true;
+> +
+> +	/*
+> +	 * On x86_64 architectures with CET (Control-flow Enforcement Technology),
+> +	 * function entry points have a 4-byte 'endbr' instruction prefix.
+> +	 * This causes kprobe hooks to target the address *after* 'endbr'
+> +	 * (symbol address + 4), preserving the CET instruction.
+> +	 * Here we check if the symbol address matches the hook target address
+> +	 * minus 4, indicating a CET-enabled function entry point.
+> +	 */
+> +	if (is_ibt_enabled && sym_addr == target_addr - 4)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  static void
+>  show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
+>  {
+>  	struct addr_cookie *data;
+>  	__u32 i, j = 0;
+> +	bool is_ibt_enabled;
+>  
+>  	jsonw_bool_field(json_wtr, "retprobe",
+>  			 info->kprobe_multi.flags & BPF_F_KPROBE_MULTI_RETURN);
+> @@ -306,8 +347,10 @@ show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
+>  	if (!dd.sym_count)
+>  		goto error;
+>  
+> +	is_ibt_enabled = is_x86_ibt_enabled();
+>  	for (i = 0; i < dd.sym_count; i++) {
+> -		if (dd.sym_mapping[i].address != data[j].addr)
+> +		if (!symbol_matches_target(dd.sym_mapping[i].address,
+> +					   data[j].addr, is_ibt_enabled))
+>  			continue;
+>  		jsonw_start_object(json_wtr);
+>  		jsonw_uint_field(json_wtr, "addr", dd.sym_mapping[i].address);
+> @@ -719,6 +762,7 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
+>  {
+>  	struct addr_cookie *data;
+>  	__u32 i, j = 0;
+> +	bool is_ibt_enabled;
+>  
+>  	if (!info->kprobe_multi.count)
+>  		return;
+> @@ -742,9 +786,11 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
+>  	if (!dd.sym_count)
+>  		goto error;
+>  
+> +	is_ibt_enabled = is_x86_ibt_enabled();
+>  	printf("\n\t%-16s %-16s %s", "addr", "cookie", "func [module]");
+>  	for (i = 0; i < dd.sym_count; i++) {
+> -		if (dd.sym_mapping[i].address != data[j].addr)
+> +		if (!symbol_matches_target(dd.sym_mapping[i].address,
+> +					   data[j].addr, is_ibt_enabled))
+>  			continue;
+>  		printf("\n\t%016lx %-16llx %s",
+>  		       dd.sym_mapping[i].address, data[j].cookie, dd.sym_mapping[i].name);
 
-The issue was bisected to:
+I wonder should we display the kprobe attached address instead of symbol
+address in here
 
-commit d15121be7485655129101f3960ae6add40204463
-Author: Paolo Abeni <pabeni@redhat.com>
-Date:   Mon May 8 06:17:44 2023 +0000
+otherwise the patchset lgtm
 
-    Revert "softirq: Let ksoftirqd do its job"
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1066f9f8580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1266f9f8580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1466f9f8580000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1ec0f904ba50d06110b1@syzkaller.appspotmail.com
-Fixes: d15121be7485 ("Revert "softirq: Let ksoftirqd do its job"")
-
-watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [syz-executor:6662]
-Modules linked in:
-irq event stamp: 355416
-hardirqs last  enabled at (355415): [<ffff80008b00487c>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:86 [inline]
-hardirqs last  enabled at (355415): [<ffff80008b00487c>] exit_to_kernel_mode+0xc0/0xf0 arch/arm64/kernel/entry-common.c:96
-hardirqs last disabled at (355416): [<ffff80008b001cbc>] __el1_irq arch/arm64/kernel/entry-common.c:650 [inline]
-hardirqs last disabled at (355416): [<ffff80008b001cbc>] el1_interrupt+0x24/0x54 arch/arm64/kernel/entry-common.c:668
-softirqs last  enabled at (355404): [<ffff8000803d88a0>] softirq_handle_end kernel/softirq.c:425 [inline]
-softirqs last  enabled at (355404): [<ffff8000803d88a0>] handle_softirqs+0xaf8/0xc88 kernel/softirq.c:607
-softirqs last disabled at (355387): [<ffff800080022028>] __do_softirq+0x14/0x20 kernel/softirq.c:613
-CPU: 1 UID: 0 PID: 6662 Comm: syz-executor Not tainted 6.17.0-rc1-syzkaller-g8f5ae30d69d7 #0 PREEMPT 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/30/2025
-pstate: 83400005 (Nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-pc : propagation_source fs/pnode.c:77 [inline]
-pc : change_mnt_propagation+0xec/0x77c fs/pnode.c:114
-lr : propagation_source fs/pnode.c:78 [inline]
-lr : change_mnt_propagation+0x120/0x77c fs/pnode.c:114
-sp : ffff8000a4a07a90
-x29: ffff8000a4a07ac0 x28: dfff800000000000 x27: ffff0000efa88b60
-x26: ffff0000efa88bb0 x25: 1fffe0001df51176 x24: ffff0000efa88b18
-x23: ffff0000f331b238 x22: ffff0000efa88a80 x21: ffff0000efa88a80
-x20: 0000000000040000 x19: ffff0000f3339500 x18: 1fffe000337a0688
-x17: ffff80008f7be000 x16: ffff80008af6de48 x15: 0000000000000002
-x14: 1fffe0001df5116f x13: 0000000000000000 x12: 0000000000000000
-x11: ffff60001df51171 x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : ffff0000f33395b8 x7 : 0000000000000000 x6 : 0000000000000000
-x5 : 0000000000000001 x4 : 0000000000000008 x3 : 0000000000000000
-x2 : 0000000000000008 x1 : 0000000000000001 x0 : 0000000000000000
-Call trace:
- next_peer fs/pnode.c:19 [inline] (P)
- propagation_source fs/pnode.c:77 [inline] (P)
- change_mnt_propagation+0xec/0x77c fs/pnode.c:114 (P)
- umount_tree+0x7e4/0xbbc fs/namespace.c:1872
- do_umount fs/namespace.c:-1 [inline]
- path_umount+0x90c/0x980 fs/namespace.c:2095
- ksys_umount fs/namespace.c:2118 [inline]
- __do_sys_umount fs/namespace.c:2123 [inline]
- __se_sys_umount fs/namespace.c:2121 [inline]
- __arm64_sys_umount+0x128/0x174 fs/namespace.c:2121
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x58/0x180 arch/arm64/kernel/entry-common.c:879
- el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:898
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 6746 Comm: syz-executor Not tainted 6.17.0-rc1-syzkaller-g8f5ae30d69d7 #0 PREEMPT 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/30/2025
-pstate: 83400005 (Nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-pc : cpu_relax arch/arm64/include/asm/vdso/processor.h:12 [inline]
-pc : path_init+0xdc0/0xe98 fs/namei.c:2537
-lr : path_init+0xdc0/0xe98 fs/namei.c:2537
-sp : ffff8000a4247680
-x29: ffff8000a42476e0 x28: dfff800000000000 x27: 1fffe00019832884
-x26: ffff0000cc194420 x25: 0000000000000101 x24: 1ffff00014848f43
-x23: ffff80008f745840 x22: ffff8000a4247a1c x21: 0000000000000100
-x20: ffff8000a42479e0 x19: 000000000004a017 x18: 0000000000000000
-x17: 0000000000000000 x16: ffff80008b007230 x15: 0000000000000001
-x14: 1ffff00011ee8b08 x13: 0000000000000000 x12: 0000000000000000
-x11: ffff700011ee8b09 x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : ffff0000da1e0000 x7 : ffff800080daa4c4 x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff800080da8a84
-x2 : 0000000000000000 x1 : 0000000000000004 x0 : 0000000000000001
-Call trace:
- path_init+0xdc0/0xe98 fs/namei.c:2537 (P)
- path_openat+0x13c/0x2c40 fs/namei.c:4041
- do_filp_open+0x18c/0x36c fs/namei.c:4073
- do_open_execat+0x124/0x4d8 fs/exec.c:783
- alloc_bprm+0x3c/0x548 fs/exec.c:1410
- do_execveat_common+0x168/0x834 fs/exec.c:1811
- do_execve fs/exec.c:1934 [inline]
- __do_sys_execve fs/exec.c:2010 [inline]
- __se_sys_execve fs/exec.c:2005 [inline]
- __arm64_sys_execve+0x9c/0xb4 fs/exec.c:2005
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x58/0x180 arch/arm64/kernel/entry-common.c:879
- el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:898
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+thanks,
+jirka
 
