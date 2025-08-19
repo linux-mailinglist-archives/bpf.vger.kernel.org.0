@@ -1,249 +1,193 @@
-Return-Path: <bpf+bounces-66003-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66004-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BF2EB2C3DC
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 14:39:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EBD0B2C3F2
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 14:41:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 468CF72726A
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 12:33:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6FBE6802D4
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 12:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C96305075;
-	Tue, 19 Aug 2025 12:33:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QPN4g2jf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4553043C7;
+	Tue, 19 Aug 2025 12:35:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10B93043BB
-	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 12:33:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406CB30504E
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 12:35:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755606791; cv=none; b=dB2OL0OSRNDmkIvTtWZNoO4XY0EEL6oRNb8ifqbMcFMTacN5PSlIQc2wevTVkDMywRy4GR0vQr7Rsgz0lKlsi1mSu29dk7hCJfhl5iOZ/pCuPMLs6ayP1YWKUeVI9NsvyGbLKNFgiIjLu9+6udvJMrmr+VTC1mAFHuUeGANg2yw=
+	t=1755606935; cv=none; b=A3fTSgl3rW43bSEV+Libsw5nkmCDFboUH11DqiBuu9hKu5J3rSXAbjlHPF6wBQG0G0eiOjUw1wb0KS7ZYNxxbaiPkZPcdIV8OmekBM8LzrXa5HWvlOYc50gMKloyM8ppeTPZw3tabMwlgAxtv5gZNZcUduMq8MQDM+HeJeAxc8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755606791; c=relaxed/simple;
-	bh=oGIIhDvNcbEz2gNcueZOzpTWLK1v6vHPDTa7Zne8PoA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uZruTEYGjdGhA/smea99G07zw0HsoqcM1gU/OSSL8/X+CyaxXLWkEQXqzJ+JlCKgiw2rq7WcUyd0O4cgRstWY2Do7EkYbmmjV3zQazrzbioOe98Zx3uHbaw7oCJvGDXamgzyRPW1deO9/uuBdC5jBEE1xjd5c6M/9+Neqb67h0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QPN4g2jf; arc=none smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-435de5b2f29so1622508b6e.0
-        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 05:33:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755606789; x=1756211589; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=euK/Sa43pRju1FeMVcXdjmsp+ESnMwlYC5m2uEfodPc=;
-        b=QPN4g2jfoNfjA/6QkC2lUKqBSd+XQYzEZ1JoMEsbDOO5Q8sntgFOv/GaKg2yYBpIkX
-         yW04Wv68xQJo4Hi6ATkjlsT9egBEk/Qo8cgI5nVAqmfC3JzoFGYIjXAxrVU8ppP7/nu9
-         jECpwaWvHAHoS8gHQCVJNm4ybv8EpA+KL244jGVmemPHc4jhUPLGhQhm4jHXP9wwhsho
-         UgGqFexzVifOLTUIpsPy0PTqF5oFKmEcXKMs+R0Coogbn75X+i+RnKu/vzSYsbvE/Wku
-         YSZwFeAuzXMR2R9p4Tlxj40Xix0chgKJki+B2S161KYAq7lMCehdOSLsCxeRIp1efrlP
-         Pz6Q==
+	s=arc-20240116; t=1755606935; c=relaxed/simple;
+	bh=q95Qb+hhBhfnL6Tk2OrDgDDxMo9Sus2kxRpHY53GEjY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=V0aLktC2ZoOKM9L9oWZcaLSXaLaWCbWgV3OQO7b6IghXPq4M63XGfZwT9wpmIiIR4OtaaektORLCeBCMbHSAUY2o8twoPl19mkufDtR2WhyR4Otlqvm0JyYFeD+MT19Ld9CrssGWuDXDwxlyCuKWjbhpdXKmrVbNIEaoBGPIw6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-88432cebd70so1367625839f.0
+        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 05:35:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755606789; x=1756211589;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=euK/Sa43pRju1FeMVcXdjmsp+ESnMwlYC5m2uEfodPc=;
-        b=KXpndojnJPBMq4h+N363ROG2twedQryg9cQDBlzO11qDMSJ8f7CAAZSnmVLOZiz5AI
-         C1Re3CG4dywgxAd3KZFBlPjCALXsG2Nkxag8199aFk9Q4MXUUMLyV1SaFw05HfRuGAa3
-         feCYn6GHk4aR/tvRLilZqXMccXhotV7l75RjFZ+7mtLVi4DCm4UJdGDtsrqpppM+7kMO
-         M609dcYMOTAOAGAAKobk70+XkPxkb5AB2wzE3z1CxbLt/4oRnDEpY3aL5V5fE04KerQA
-         KvBd7MpHWstNwg/1Ex2wZuE+qqhdiUddPpy9a6AoS+E+AJy6rrHa6F9y/OEAWzDbSRax
-         19NQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXRRaCC2O/km77M4o7UVkSXGQOQVvql3Cfqdyc4ohkDvEhoOf+Aq75pqkBVEyy5Q2FHO9w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKGHHJPGQ9kCFT9DvE1GwUAsZQWsO43IAgblqJDK0M4TMbMw+8
-	29waTf+0utHJ/dK1aFGs/bp4h4SbjMg0x8WanTOLIx1iWr3xB9UCOcFGiw/Uo281Qw+s02R1tA0
-	W//AkSDTI0gNlU+/II4zkbzUQt04CdUw=
-X-Gm-Gg: ASbGncvRW735DK3RfvqJj606Y/I29KNF8ON7jTTeCvQ4wEF2cRFWJp4sFVNMb3ITtfa
-	uyM28Jj+OQsZ2/yweDWuP6DXJ8j66+gCGg2qX42x2/Q5BMtfXCCWqdzi81Vfv3UKjC2+6t2FG2K
-	eRHJRT2HD7MXsU03a9qDFUt65RefIUZfKNt2IgNJL8wp3W48hASS81xqD88NLknKNCPDUW7oVBa
-	Gxp1Yg=
-X-Google-Smtp-Source: AGHT+IF3TnzwDKbWVmb0nbU19B6sCvfBoJv+fy7qHe2Grj5VTQW+DyaKaeKUpV05oMJRpppbHIo9Qf/7YXz89cmmuuk=
-X-Received: by 2002:a05:6808:218f:b0:434:b6e:52a0 with SMTP id
- 5614622812f47-436da1e7ea7mr1689680b6e.22.1755606788728; Tue, 19 Aug 2025
- 05:33:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755606933; x=1756211733;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VOvnU9r+K7ZpX4gBu6BS9eomr8G8AbQJhvuYBCN3cBw=;
+        b=NupVWsyYIF3dQjd7pS6PE5E7VICM7Ua7gw6AaJMKaqN4Q4eNT0WOO26MBbFze1hK1P
+         CXQaDq5MgoGcAj0roAQjZ4ClyJ0wNFS+KS0rDlEjrFdnRSMwaIIAnyHnd94jSKg2t2ts
+         5z1ygJzEc4Thz/XpzHAOQuGzlXAkhUrzTUuVVq6+cRg+VpvMOE422FtvnvdP9SZPcZtO
+         BaPtHVJLUiCWhyGDBelwHvSlTHIKbcidqmzL7kX0/qVZXNnIY9KlGYjT0e2K+OSfMUcb
+         TRPLGmxdp6u5PggxGOFC+tCm4s18dphdnwt82BUcLZ/+gDljTqm+BsV7l9PYXcdMl3gw
+         MiVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOpAqRHH19AORzsFzasvHRjCSWBXfKBvV4WXLp7X6uglezQazTtuO4JEswy7HkiVUT2p4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6lDHEbgNWwJsOt9KQZn0YnMluSsyxWjY++BXa7ni7sjL5bpI4
+	2D6/bKzJTpFCcB38ME/LK+GDEo2gh2EKX/2eMsgbYADJ3bXAMzR8zMZcT5XzFxD0AgEmYygFwEN
+	YNpZK0ZXIeenhO+Es52+H2cdPtRJYOj6zM2fJoN15zAnE5XHBNuFINpPOn08=
+X-Google-Smtp-Source: AGHT+IEI/1DKd1RUwxo+QrnTf+jaQy3KAVGbJHEv2V/rviSxbMgiJ0Mk9V4rxJBhkcG+TewcbHNj5I6B0JabnOTGaEDJ6m8PrJzO
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250815082931.875216-1-jianghaoran@kylinos.cn>
-In-Reply-To: <20250815082931.875216-1-jianghaoran@kylinos.cn>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Tue, 19 Aug 2025 20:32:57 +0800
-X-Gm-Features: Ac12FXws3USO7bmtx8j4CoQoQxI-9k1R3TMQL0Aj_uHfyKHkQOQjd7LKqRtoh4w
-Message-ID: <CAEyhmHTv+3FxN5mGvtrNpW5Y=r5gD9wfS3iFUO4UCAzO9cBcPg@mail.gmail.com>
-Subject: Re: [PATCH v2] LoongArch: BPF: Fix incorrect return pointer value in
- the eBPF program
-To: Haoran Jiang <jianghaoran@kylinos.cn>
-Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, kernel@xen0n.name, 
-	chenhuacai@kernel.org, yangtiezhu@loongson.cn, jolsa@kernel.org, 
-	haoluo@google.com, sdf@fomichev.me, kpsingh@kernel.org, 
-	john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org, 
-	eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, 
-	daniel@iogearbox.net, ast@kernel.org, Jinyang He <hejinyang@loongson.cn>
+X-Received: by 2002:a05:6e02:2141:b0:3e5:7f54:dcda with SMTP id
+ e9e14a558f8ab-3e6765c3e5cmr43319725ab.1.1755606933212; Tue, 19 Aug 2025
+ 05:35:33 -0700 (PDT)
+Date: Tue, 19 Aug 2025 05:35:33 -0700
+In-Reply-To: <673fdc18.050a0220.363a1b.012c.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68a46f95.050a0220.e29e5.00c3.GAE@google.com>
+Subject: Re: [syzbot] [mm?] INFO: rcu detected stall in security_file_ioctl (9)
+From: syzbot <syzbot+b6f8640465bdf47ca708@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, brauner@kernel.org, daniel@iogearbox.net, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 15, 2025 at 4:30=E2=80=AFPM Haoran Jiang <jianghaoran@kylinos.c=
-n> wrote:
->
-> In some eBPF programs, the return value is a pointer.
-> When the kernel call an eBPF program (such as struct_ops),
-> it expects a 64-bit address to be returned, but instead a 32-bit value.
->
-> Before applying this patch:
-> ./test_progs -a ns_bpf_qdisc
-> CPU 7 Unable to handle kernel paging request at virtual
-> address 0000000010440158.
->
-> As shown in the following test case,
-> bpf_fifo_dequeue return value is a pointer.
-> progs/bpf_qdisc_fifo.c
->
-> SEC("struct_ops/bpf_fifo_dequeue")
-> struct sk_buff *BPF_PROG(bpf_fifo_dequeue, struct Qdisc *sch)
-> {
->         struct sk_buff *skb =3D NULL;
->         ........
->         skb =3D bpf_kptr_xchg(&skbn->skb, skb);
->         ........
->         return skb;
-> }
->
-> kernel call bpf_fifo_dequeue=EF=BC=9A
-> net/sched/sch_generic.c
->
-> static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
->                                    int *packets)
-> {
->         struct sk_buff *skb =3D NULL;
->         ........
->         skb =3D q->dequeue(q);
->         .........
-> }
-> When accessing the skb, an address exception error will occur.
-> because the value returned by q->dequeue at this point is a 32-bit
-> address rather than a 64-bit address.
->
-> After applying the patch=EF=BC=9A
-> ./test_progs -a ns_bpf_qdisc
-> Warning: sch_htb: quantum of class 10001 is small. Consider r2q change.
-> 213/1   ns_bpf_qdisc/fifo:OK
-> 213/2   ns_bpf_qdisc/fq:OK
-> 213/3   ns_bpf_qdisc/attach to mq:OK
-> 213/4   ns_bpf_qdisc/attach to non root:OK
-> 213/5   ns_bpf_qdisc/incompl_ops:OK
-> 213     ns_bpf_qdisc:OK
-> Summary: 1/5 PASSED, 0 SKIPPED, 0 FAILED
->
-> Fixes: 73c359d1d356 ("LoongArch: BPF: Sign-extend return values")
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
->
-> ----------
-> v2:
-> 1,add emit_slt* helpers
-> 2,Use slt/slld/srad instructions to avoid branch
-> ---
->  arch/loongarch/include/asm/inst.h |  8 ++++++++
->  arch/loongarch/net/bpf_jit.c      | 17 +++++++++++++++--
->  2 files changed, 23 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/a=
-sm/inst.h
-> index 277d2140676b..20f4fc745bea 100644
-> --- a/arch/loongarch/include/asm/inst.h
-> +++ b/arch/loongarch/include/asm/inst.h
-> @@ -92,6 +92,8 @@ enum reg2i6_op {
->  };
->
->  enum reg2i12_op {
-> +       slti_op         =3D 0x08,
-> +       sltui_op        =3D 0x09,
->         addiw_op        =3D 0x0a,
->         addid_op        =3D 0x0b,
->         lu52id_op       =3D 0x0c,
-> @@ -148,6 +150,8 @@ enum reg3_op {
->         addd_op         =3D 0x21,
->         subw_op         =3D 0x22,
->         subd_op         =3D 0x23,
-> +       slt_op          =3D 0x24,
-> +       sltu_op         =3D 0x25,
->         nor_op          =3D 0x28,
->         and_op          =3D 0x29,
->         or_op           =3D 0x2a,
-> @@ -629,6 +633,8 @@ static inline void emit_##NAME(union loongarch_instru=
-ction *insn,   \
->         insn->reg2i12_format.rj =3D rj;                                  =
- \
->  }
->
-> +DEF_EMIT_REG2I12_FORMAT(slti, slti_op)
-> +DEF_EMIT_REG2I12_FORMAT(sltui, sltui_op)
->  DEF_EMIT_REG2I12_FORMAT(addiw, addiw_op)
->  DEF_EMIT_REG2I12_FORMAT(addid, addid_op)
->  DEF_EMIT_REG2I12_FORMAT(lu52id, lu52id_op)
-> @@ -729,6 +735,8 @@ static inline void emit_##NAME(union loongarch_instru=
-ction *insn,   \
->  DEF_EMIT_REG3_FORMAT(addw, addw_op)
->  DEF_EMIT_REG3_FORMAT(addd, addd_op)
->  DEF_EMIT_REG3_FORMAT(subd, subd_op)
-> +DEF_EMIT_REG3_FORMAT(slt, slt_op)
-> +DEF_EMIT_REG3_FORMAT(sltu, sltu_op)
->  DEF_EMIT_REG3_FORMAT(muld, muld_op)
->  DEF_EMIT_REG3_FORMAT(divd, divd_op)
->  DEF_EMIT_REG3_FORMAT(modd, modd_op)
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index abfdb6bb5c38..50067be79c4f 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -229,8 +229,21 @@ static void __build_epilogue(struct jit_ctx *ctx, bo=
-ol is_tail_call)
->         emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, stack_a=
-djust);
->
->         if (!is_tail_call) {
-> -               /* Set return value */
-> -               emit_insn(ctx, addiw, LOONGARCH_GPR_A0, regmap[BPF_REG_0]=
-, 0);
-> +               /*
-> +                *  Set return value
-> +                *  Check if the 64th bit in regmap[BPF_REG_0] is 1. If i=
-t is,
-> +                *  the value in regmap[BPF_REG_0] is a kernel-space addr=
-ess.
-> +
-> +                *  long long val =3D regmap[BPF_REG_0];
-> +                *  int shift =3D 0 < val ? 32 : 0;
-> +                *  return (val << shift) >> shift;
-> +                */
-> +               move_reg(ctx, LOONGARCH_GPR_A0, regmap[BPF_REG_0]);
-> +               emit_insn(ctx, slt, LOONGARCH_GPR_T0, LOONGARCH_GPR_ZERO,=
- LOONGARCH_GPR_A0);
-> +               emit_insn(ctx, sllid, LOONGARCH_GPR_T0, LOONGARCH_GPR_T0,=
- 5);
-> +               emit_insn(ctx, slld, LOONGARCH_GPR_A0, LOONGARCH_GPR_A0, =
-LOONGARCH_GPR_T0);
-> +               emit_insn(ctx, srad, LOONGARCH_GPR_A0, LOONGARCH_GPR_A0, =
-LOONGARCH_GPR_T0);
-> +
+syzbot has found a reproducer for the following issue on:
 
-This change seems wrong to me. Need further investigation.
+HEAD commit:    864e3396976e net: gso: Forbid IPv6 TSO with extensions on ..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=144e26f0580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c321f33e4545e2a1
+dashboard link: https://syzkaller.appspot.com/bug?extid=b6f8640465bdf47ca708
+compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=170a43bc580000
 
->                 /* Return to the caller */
->                 emit_insn(ctx, jirl, LOONGARCH_GPR_ZERO, LOONGARCH_GPR_RA=
-, 0);
->         } else {
-> --
-> 2.43.0
->
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/576f260f8fdb/disk-864e3396.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/90ce2b40a623/vmlinux-864e3396.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e9f2532beed2/bzImage-864e3396.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b6f8640465bdf47ca708@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	1-...!: (3 ticks this GP) idle=3c4c/1/0x4000000000000000 softirq=18260/18260 fqs=0
+rcu: 	(detected by 0, t=10502 jiffies, g=12221, q=404 ncpus=2)
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 6109 Comm: syz.0.22 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2025
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:137 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:161 [inline]
+RIP: 0010:check_region_inline mm/kasan/generic.c:180 [inline]
+RIP: 0010:kasan_check_range+0x29f/0x2c0 mm/kasan/generic.c:189
+Code: f3 49 83 c3 05 eb 07 4d 01 f3 49 83 c3 06 4d 89 dc 4d 85 db 0f 84 44 ff ff ff 4d 01 d1 4d 39 cc 75 11 41 83 e0 07 45 0f be 09 <45> 39 c8 0f 8c 2b ff ff ff 0f b6 d2 e8 a0 ef ff ff 34 01 e9 1c ff
+RSP: 0018:ffffc90000a08ae8 EFLAGS: 00000006
+RAX: 00000000ffffff01 RBX: ffffffffffffffff RCX: ffffffff819e00e1
+RDX: 0000000000000001 RSI: 0000000000000004 RDI: ffffc90000a08b60
+RBP: ffffc90000a08bd0 R08: 0000000000000003 R09: 0000000000000004
+R10: dffffc0000000000 R11: fffff5200014116c R12: fffff5200014116c
+R13: ffffffff99d527c0 R14: fffff5200014116d R15: 1ffff9200014116c
+FS:  00007f17a98396c0(0000) GS:ffff888125d1b000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000200000000600 CR3: 000000006fc8c000 CR4: 00000000003526f0
+Call Trace:
+ <IRQ>
+ instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+ atomic_try_cmpxchg_acquire include/linux/atomic/atomic-instrumented.h:1301 [inline]
+ queued_spin_lock include/asm-generic/qspinlock.h:111 [inline]
+ do_raw_spin_lock+0x121/0x290 kernel/locking/spinlock_debug.c:116
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
+ _raw_spin_lock_irqsave+0xb3/0xf0 kernel/locking/spinlock.c:162
+ debug_object_activate+0xbb/0x420 lib/debugobjects.c:818
+ debug_hrtimer_activate kernel/time/hrtimer.c:445 [inline]
+ debug_activate kernel/time/hrtimer.c:484 [inline]
+ enqueue_hrtimer+0x30/0x3a0 kernel/time/hrtimer.c:1088
+ __run_hrtimer kernel/time/hrtimer.c:1778 [inline]
+ __hrtimer_run_queues+0x656/0xc60 kernel/time/hrtimer.c:1825
+ hrtimer_interrupt+0x45b/0xaa0 kernel/time/hrtimer.c:1887
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1039 [inline]
+ __sysvec_apic_timer_interrupt+0x108/0x410 arch/x86/kernel/apic/apic.c:1056
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1050 [inline]
+ sysvec_apic_timer_interrupt+0xa1/0xc0 arch/x86/kernel/apic/apic.c:1050
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:86 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:104 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:129 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:161 [inline]
+RIP: 0010:check_region_inline mm/kasan/generic.c:180 [inline]
+RIP: 0010:kasan_check_range+0x89/0x2c0 mm/kasan/generic.c:189
+Code: ff df 4f 8d 1c 17 49 ff c8 4d 89 c1 49 c1 e9 03 48 bb 01 00 00 00 00 fc ff df 4d 8d 34 19 4d 89 f4 4d 29 dc 49 83 fc 10 7f 29 <4d> 85 e4 0f 84 41 01 00 00 4c 89 cb 48 f7 d3 4c 01 fb 41 80 3b 00
+RSP: 0018:ffffc90003037910 EFLAGS: 00000283
+RAX: ffffffff8b758901 RBX: dffffc0000000001 RCX: ffffffff8b7589f6
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffffff8c935a00
+RBP: ffffffff8c935a08 R08: ffffffff8c935a07 R09: 1ffffffff1926b40
+R10: dffffc0000000000 R11: fffffbfff1926b40 R12: 0000000000000001
+R13: ffffc90003037aa0 R14: fffffbfff1926b41 R15: 1ffffffff1926b40
+ __asan_memcpy+0x29/0x70 mm/kasan/shadow.c:105
+ vsnprintf+0x386/0xf00 lib/vsprintf.c:2878
+ dynamic_dname+0xfc/0x1b0 fs/d_path.c:308
+ tomoyo_realpath_from_path+0x170/0x5d0 security/tomoyo/realpath.c:258
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_number_perm+0x1e8/0x5a0 security/tomoyo/file.c:723
+ security_file_ioctl+0xcb/0x2d0 security/security.c:2943
+ __do_sys_ioctl fs/ioctl.c:592 [inline]
+ __se_sys_ioctl+0x47/0x170 fs/ioctl.c:584
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f17a898ebe9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f17a9839038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f17a8bb5fa0 RCX: 00007f17a898ebe9
+RDX: 0000200000000600 RSI: 0000000000008933 RDI: 0000000000000003
+RBP: 00007f17a8a11e19 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f17a8bb6038 R14: 00007f17a8bb5fa0 R15: 00007ffccbbdc5c8
+ </TASK>
+rcu: rcu_preempt kthread timer wakeup didn't happen for 10501 jiffies! g12221 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+rcu: 	Possible timer handling issue on cpu=1 timer-softirq=3961
+rcu: rcu_preempt kthread starved for 10502 jiffies! g12221 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=1
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:I stack:27224 pid:16    tgid:16    ppid:2      task_flags:0x208040 flags:0x00004000
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5357 [inline]
+ __schedule+0x1798/0x4cc0 kernel/sched/core.c:6961
+ __schedule_loop kernel/sched/core.c:7043 [inline]
+ schedule+0x165/0x360 kernel/sched/core.c:7058
+ schedule_timeout+0x12b/0x270 kernel/time/sleep_timeout.c:99
+ rcu_gp_fqs_loop+0x301/0x1540 kernel/rcu/tree.c:2083
+ rcu_gp_kthread+0x99/0x390 kernel/rcu/tree.c:2285
+ kthread+0x711/0x8a0 kernel/kthread.c:463
+ ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
