@@ -1,288 +1,224 @@
-Return-Path: <bpf+bounces-65965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65966-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAA4AB2B7D7
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 05:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CFEEB2B841
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 06:08:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA50E16BF3C
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 03:41:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF96D566170
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 04:08:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9A22FDC3A;
-	Tue, 19 Aug 2025 03:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451BC30F551;
+	Tue, 19 Aug 2025 04:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N7Ym0pmI"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zys62qpD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com [209.85.215.194])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9412D2494;
-	Tue, 19 Aug 2025 03:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29847259CA1
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 04:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755574825; cv=none; b=Dnm30I0SjszOsQ+R7PrHl1jGmlUSaG8sRv5WrpWpHzqFsujQUq7g5ffs00muZ9P05TOUECZQK2ILd5CVy/Qmi47lyILbuub3i8otAOkOJ4kfjSFvlzTN6oRnNRLcDPGN94kvUl9xXA/lgd+bP36l9JTSawdiAA01878olrBv8Ks=
+	t=1755576522; cv=none; b=UXaBTW7EL1x6dRlcuTwNcCVZk4ugi4lNrrRww6p2ifrODk1Gmjxa2idpMY+ottc9uSubU092K8wnO9mvcgIlm1xmQFY8BZT7PWvlv2ukRz4L987rs/UW3Y5wJ0OfHh6cLaU1N5tQ834ce2NxNCwm/ofmpCSXDjumi6jeyc650N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755574825; c=relaxed/simple;
-	bh=Yju8yrfKAYNHODJEA8h/x80ZTVJoAlrlqoDz+HFiBUk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kjTHTa5LMo/+20C04Khg3kSsB8rujhJ34LBCcpHGdG+xS2FSzXopXMTWX9ELxLVazV5bxSdv6oeetVnx7SZnc1ZpjqhEDJ/SS9pGgqMZnitOAmPUJo3oRW6TU+9fewmH5HtNLOMaUUgNO41Vuu75gvmMoFM0c1qasTS+cw33ytQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N7Ym0pmI; arc=none smtp.client-ip=209.85.215.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f194.google.com with SMTP id 41be03b00d2f7-b471aaa085aso2764270a12.0;
-        Mon, 18 Aug 2025 20:40:24 -0700 (PDT)
+	s=arc-20240116; t=1755576522; c=relaxed/simple;
+	bh=mqOS5432ysXTn726wxB3qOGmVAshuSniG9nDiWDQ/7w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HHgGS8MydcWgMZd6hS820VU/b60vkygK4eZwJAOKubB7guI2KoE2lXjlu6Km7w+vx3keoB+NssMk57j4BJEq3qIEdBA1E6j+Pwl94OjvFex6TsT3DUe0Fxbn6FC0RBLRpwYf//fiJ6tLsT64wIdFvWqP+I9THERLmSl2uxHMUlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zys62qpD; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4b0bf04716aso149341cf.1
+        for <bpf@vger.kernel.org>; Mon, 18 Aug 2025 21:08:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755574823; x=1756179623; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1755576520; x=1756181320; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=up9OuXnclQEyapPLpqQTS4r+NCar6InDzt6ZL5WdOUY=;
-        b=N7Ym0pmI0ujXu/mLkT+8MlqfF733Nrdb7CfddbEc6rGgD4dOw0cCrl/a3SL6ZKl1Pf
-         gq2Nl5nBpiXLMSEeOw6ManMF/wb6qwM5dptywRs2OJI9iyrOOo+38GWbjMcPtxAnwi+P
-         2+zRu0E2k+5iIhE1T/trztRNDQP1l1J9GMSOcY0TvDffmC209wPTmXrIpU9TXD6cUOve
-         N9ON2Dt/AZPK2NZuZ5QX2n/CLIbLR4+rDJaSPI7HEGQoFOFkdNoWj1eZsqZThmMO+JNg
-         s8uhiinhke4KhHEpp79EL0sXJnoq/HXbhU0ONH0hAK4SmIFedYhO1c8KVJnyNhbHgFfH
-         XwjQ==
+        bh=kNqSNNC+ZFCES/MshdQXARqO1gw350ZAtbqLST4gBOI=;
+        b=zys62qpDsrpJRnfA6rBgEar49qidzoAqCChCpHPiy4c0ibTJc1YQY6fqj0IkenAt/S
+         ZPP90TZU4nRrzbF8etwFKfs6BXyeDKNwhMwAXdbkad+1zFq8xPgdm8XtnI0PHCg/Q7wi
+         Ib4SI2UFefk8z0gjv1C42dgdVMTkNPtOGd96liD2AEJYNV6mXUZs9caPtvBpmDFE2M0E
+         WSs2ch2XU6nYx8YimGnwUKx92holIhn8ViwvlhILK5yLQmCsKTClH/fmLOrRqL3scf8Z
+         j/qxHcgDs3XC9hJ6++nWDwFqlNdjb5galLBAjKV8i92HL9z/pnsmZQtikmJ0P9gNBr4M
+         epcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755574823; x=1756179623;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1755576520; x=1756181320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=up9OuXnclQEyapPLpqQTS4r+NCar6InDzt6ZL5WdOUY=;
-        b=vkO0aATlMv3NkIBQyh6EOOAP18G4gkgNUNKfoSPvdYWCORGjuo2slgn/1wEkggqRrT
-         ahdVQMQlptrgqA4b/D64eYggLo8UNtXGQ0OpJxG7t+lDAuYqnj3lbSWYOxuYI2kN8t8q
-         zP6KogEK/26NJk8qhJx+CGE3QZXLZ7GJlbSjbI0t6hE1Pj+Q2rz6AX0zzitqH+n5oXP7
-         Poy2Jb42CnLAw4pByXbinDvQ2rfLQjy2bXj8xEFjZN2E84hYXjtVcysxhAeTCN4Nfiqd
-         7xcHalAtHVTZsiYldbwr0dW1maYqbxqKmVkZD50R3eQhEzpZ+wzUzUAPD9Dfgy4BdTZT
-         gD/A==
-X-Forwarded-Encrypted: i=1; AJvYcCU/fQsv/YYxjdVBHqXUzUlUVLDWsMNzQ0PNiy7Zu6LV9fRYp6IGiK5nwdFn6h8yIGF9zeQ=@vger.kernel.org, AJvYcCU0tRVl9zI53hg79dEw/3IVxmubJ/fyKa/0gRGZ8vxURMRJZgFc4Nhvt/5ceKgB73JIXZxFeCxYR1Sq+wa/@vger.kernel.org, AJvYcCUY+dg+dJCVh2Eg8t2dWNlkYYs7LRe2Ttz2oopm8WTZ46kE6sc7N5BJlyjhxwBAqzzR5eaAqSEl@vger.kernel.org, AJvYcCV6moY+Gn6AXa/NXuA2si8yebVMLEJF01TFxIxVBCZIdZCHZdwABv4aIsPH670fvkLhNHdu23y3wLbEMFa1Iv70@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqFt4jVFOKJuzKlai/9XRwO1NyeHTi3qKwo7owmj1HPceDdboR
-	hSNME1GbUkikGL7E9pk2NqSJNHX24UumT0oayITC3NtScIzCQwVhgWpV
-X-Gm-Gg: ASbGncvRNv6y72PGhUagcQaM0KaxoHQe9xeHFFOkRgsg0nlexqqH86w/LrlVzG710jM
-	SyyY8VLtozz1koDpdG+N5B6LswjUkfWiMt36+lEJuVHU6hAd7lzgCh7Ff/hVR7IIKr8R3Qs7aB6
-	VCqW0QriPPzqtHzlVqiuQ6q/hNlOh+clMHD1jr1AAeYZOeDVqmkd2j3yAd/g0TjT0RbezvwnBsC
-	ZD27csiJSpWWx7O/rL8LHt6n0bOBxQL45dl8T8CMaF82DtfnykGH9qBaLEZb4Aw3mp/acmPtJhV
-	28xu5NhhZrmNveoceJRQHytlDhTMnzf/IQzULTnw/4Rmo2Z5DUcArIAziyV8BAkTalIOL9EGTSO
-	WkLVCF0yv/vlDXMJc+J0=
-X-Google-Smtp-Source: AGHT+IEC3G8q3IJdu+w6frUU7ChD8y/Lec4gtNmIDyApvzgod1kIF0UO4U1ayRLvDnDouBsTCoY4Yw==
-X-Received: by 2002:a17:902:e5cb:b0:240:3f43:260 with SMTP id d9443c01a7336-245e09cfaefmr12686785ad.17.1755574823362;
-        Mon, 18 Aug 2025 20:40:23 -0700 (PDT)
-Received: from 7940hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e7d0d22b8sm1109804b3a.4.2025.08.18.20.40.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Aug 2025 20:40:22 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: ast@kernel.org
-Cc: daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	hawk@kernel.org,
-	nathan@kernel.org,
-	nick.desaulniers+lkml@gmail.com,
-	morbo@google.com,
-	justinstitt@google.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH bpf-next 3/3] selftests/bpf: add benchmark testing for kprobe-multi-all
-Date: Tue, 19 Aug 2025 11:39:56 +0800
-Message-ID: <20250819033956.59164-4-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250819033956.59164-1-dongml2@chinatelecom.cn>
-References: <20250819033956.59164-1-dongml2@chinatelecom.cn>
+        bh=kNqSNNC+ZFCES/MshdQXARqO1gw350ZAtbqLST4gBOI=;
+        b=A0sQZXqtxUFkbs9Iwjx+sJFFzC286s41AMzuB+M4SGUZf0wDDX/awW8VLltyRdnrlF
+         UjJgJ0QKcvSmy2x6D8ua85YfzjIqxHKpiIP4LDrXuFJdyPCo2sCAnik+MiHRaAedPh6C
+         RpNNX0sYDq1UdL7AKNwCXuNZQdB/QSiZrX3IcpRAWL+jFr8XQES8Lid/BBizF6g0Qepa
+         zl3ptn4lWQ4HUMRkLyWkoQQ1yHXB37BLNYT6b5MquYOJROe2yCTyonSZrmNzIpfkfpSA
+         7xE9uR6dXh32qAoLRUVdshU01SOp5DhNJtN8ZJqQgtBJeXzgApkndF2EynZyZKC3OaBZ
+         /z0g==
+X-Forwarded-Encrypted: i=1; AJvYcCUTERd2BgvW1JviHRQ+EqSyGB8bI+tm+yH0QJSXIQ3LdcbZF1d8DQxSkRICYzwrUiSFtts=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywl2EyBMbg3ARBq7lZDIQrTHd887xSHYeHtnbXmVsAN4TWtuZGt
+	Pw5Jnac2LgsLGYvh364T/PyWYBWz06qtLRte/G+fSBDpCZqg5WxgyFXmNsv0119aKliYfJpJztZ
+	sZy0eSd/MZpCOVOS864NHN5sa9+cS1xZSJSBBZN6F
+X-Gm-Gg: ASbGncvFtAF+PyGfEUrID6ZP/mnvUDqSZMYhFIeLOqWxKd7TnSstPzBLlA+FWqS4cTT
+	T7MCXitRrGNLlTPxTa+o1ykEBbyBqDPLRNOc+oxQULT458Xo9NSzVenFXarGeDHtsKnVQca1Lmt
+	FtFcNuyo9Igo48flEkkDu3cz8hfh5QEghpPcsGHaFk4Nusj5ZCZymhNuvN/A1kAAztbB+tXBJlU
+	mkNKvRUeJiFc1E/l2J6U6Y=
+X-Google-Smtp-Source: AGHT+IFbOGhUADqzf95dASxlMKGD6EvhrQL79SeIVQlkcYOfoGLJstTR7NEg3Eq1GC78cXJ92MVmgcUXRVtBajn4l6U=
+X-Received: by 2002:a05:622a:20e:b0:4a6:907e:61ca with SMTP id
+ d75a77b69052e-4b286426f44mr2557321cf.12.1755576519480; Mon, 18 Aug 2025
+ 21:08:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250818170136.209169-1-roman.gushchin@linux.dev>
+In-Reply-To: <20250818170136.209169-1-roman.gushchin@linux.dev>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 18 Aug 2025 21:08:27 -0700
+X-Gm-Features: Ac12FXx5DzlOVZAr-jbHhyctpcejdOKxZN_ofbcE7rl2HgLn0PJM0Trumx_iDt8
+Message-ID: <CAJuCfpG1+bnFwpc4bxut_5tFtFc-s7+u2YF-suefoXq2-NijJw@mail.gmail.com>
+Subject: Re: [PATCH v1 00/14] mm: BPF OOM
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: linux-mm@kvack.org, bpf@vger.kernel.org, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>, 
+	David Rientjes <rientjes@google.com>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Song Liu <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-For now, the benchmark for kprobe-multi is single, which means there is
-only 1 function is hooked during testing. Add the testing
-"kprobe-multi-all", which will hook all the kernel functions during
-the benchmark. And the "kretprobe-multi-all" is added too.
+On Mon, Aug 18, 2025 at 10:01=E2=80=AFAM Roman Gushchin
+<roman.gushchin@linux.dev> wrote:
+>
+> This patchset adds an ability to customize the out of memory
+> handling using bpf.
+>
+> It focuses on two parts:
+> 1) OOM handling policy,
+> 2) PSI-based OOM invocation.
+>
+> The idea to use bpf for customizing the OOM handling is not new, but
+> unlike the previous proposal [1], which augmented the existing task
+> ranking policy, this one tries to be as generic as possible and
+> leverage the full power of the modern bpf.
+>
+> It provides a generic interface which is called before the existing OOM
+> killer code and allows implementing any policy, e.g. picking a victim
+> task or memory cgroup or potentially even releasing memory in other
+> ways, e.g. deleting tmpfs files (the last one might require some
+> additional but relatively simple changes).
+>
+> The past attempt to implement memory-cgroup aware policy [2] showed
+> that there are multiple opinions on what the best policy is.  As it's
+> highly workload-dependent and specific to a concrete way of organizing
+> workloads, the structure of the cgroup tree etc, a customizable
+> bpf-based implementation is preferable over a in-kernel implementation
+> with a dozen on sysctls.
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- tools/testing/selftests/bpf/bench.c           |  4 ++
- .../selftests/bpf/benchs/bench_trigger.c      | 54 +++++++++++++++++++
- .../selftests/bpf/benchs/run_bench_trigger.sh |  4 +-
- .../selftests/bpf/progs/trigger_bench.c       | 12 +++++
- tools/testing/selftests/bpf/trace_helpers.c   |  3 ++
- 5 files changed, 75 insertions(+), 2 deletions(-)
+s/on/of ?
 
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index ddd73d06a1eb..29dbf937818a 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -510,6 +510,8 @@ extern const struct bench bench_trig_kretprobe;
- extern const struct bench bench_trig_kprobe_multi;
- extern const struct bench bench_trig_kretprobe_multi;
- extern const struct bench bench_trig_fentry;
-+extern const struct bench bench_trig_kprobe_multi_all;
-+extern const struct bench bench_trig_kretprobe_multi_all;
- extern const struct bench bench_trig_fexit;
- extern const struct bench bench_trig_fmodret;
- extern const struct bench bench_trig_tp;
-@@ -578,6 +580,8 @@ static const struct bench *benchs[] = {
- 	&bench_trig_kprobe_multi,
- 	&bench_trig_kretprobe_multi,
- 	&bench_trig_fentry,
-+	&bench_trig_kprobe_multi_all,
-+	&bench_trig_kretprobe_multi_all,
- 	&bench_trig_fexit,
- 	&bench_trig_fmodret,
- 	&bench_trig_tp,
-diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-index 82327657846e..c6634a64a7c0 100644
---- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-@@ -226,6 +226,58 @@ static void trigger_fentry_setup(void)
- 	attach_bpf(ctx.skel->progs.bench_trigger_fentry);
- }
- 
-+static void attach_ksyms_all(struct bpf_program *empty, bool kretprobe)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	char **syms = NULL;
-+	size_t cnt = 0;
-+
-+	if (bpf_get_ksyms(&syms, &cnt, true)) {
-+		printf("failed to get ksyms\n");
-+		exit(1);
-+	}
-+
-+	printf("found %zu ksyms\n", cnt);
-+	opts.syms = (const char **) syms;
-+	opts.cnt = cnt;
-+	opts.retprobe = kretprobe;
-+	/* attach empty to all the kernel functions except bpf_get_numa_node_id. */
-+	if (!bpf_program__attach_kprobe_multi_opts(empty, NULL, &opts)) {
-+		printf("failed to attach bpf_program__attach_kprobe_multi_opts to all\n");
-+		exit(1);
-+	}
-+}
-+
-+static void trigger_kprobe_multi_all_setup(void)
-+{
-+	struct bpf_program *prog, *empty;
-+
-+	setup_ctx();
-+	empty = ctx.skel->progs.bench_kprobe_multi_empty;
-+	prog = ctx.skel->progs.bench_trigger_kprobe_multi;
-+	bpf_program__set_autoload(empty, true);
-+	bpf_program__set_autoload(prog, true);
-+	load_ctx();
-+
-+	attach_ksyms_all(empty, false);
-+	attach_bpf(prog);
-+}
-+
-+static void trigger_kretprobe_multi_all_setup(void)
-+{
-+	struct bpf_program *prog, *empty;
-+
-+	setup_ctx();
-+	empty = ctx.skel->progs.bench_kretprobe_multi_empty;
-+	prog = ctx.skel->progs.bench_trigger_kretprobe_multi;
-+	bpf_program__set_autoload(empty, true);
-+	bpf_program__set_autoload(prog, true);
-+	load_ctx();
-+
-+	attach_ksyms_all(empty, true);
-+	attach_bpf(prog);
-+}
-+
- static void trigger_fexit_setup(void)
- {
- 	setup_ctx();
-@@ -512,6 +564,8 @@ BENCH_TRIG_KERNEL(kretprobe, "kretprobe");
- BENCH_TRIG_KERNEL(kprobe_multi, "kprobe-multi");
- BENCH_TRIG_KERNEL(kretprobe_multi, "kretprobe-multi");
- BENCH_TRIG_KERNEL(fentry, "fentry");
-+BENCH_TRIG_KERNEL(kprobe_multi_all, "kprobe-multi-all");
-+BENCH_TRIG_KERNEL(kretprobe_multi_all, "kretprobe-multi-all");
- BENCH_TRIG_KERNEL(fexit, "fexit");
- BENCH_TRIG_KERNEL(fmodret, "fmodret");
- BENCH_TRIG_KERNEL(tp, "tp");
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh b/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-index a690f5a68b6b..f7573708a0c3 100755
---- a/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-@@ -6,8 +6,8 @@ def_tests=( \
- 	usermode-count kernel-count syscall-count \
- 	fentry fexit fmodret \
- 	rawtp tp \
--	kprobe kprobe-multi \
--	kretprobe kretprobe-multi \
-+	kprobe kprobe-multi kprobe-multi-all \
-+	kretprobe kretprobe-multi kretprobe-multi-all \
- )
- 
- tests=("$@")
-diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
-index 044a6d78923e..3d5f30c29ae3 100644
---- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-+++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-@@ -97,6 +97,12 @@ int bench_trigger_kprobe_multi(void *ctx)
- 	return 0;
- }
- 
-+SEC("?kprobe.multi/bpf_get_numa_node_id")
-+int bench_kprobe_multi_empty(void *ctx)
-+{
-+	return 0;
-+}
-+
- SEC("?kretprobe.multi/bpf_get_numa_node_id")
- int bench_trigger_kretprobe_multi(void *ctx)
- {
-@@ -104,6 +110,12 @@ int bench_trigger_kretprobe_multi(void *ctx)
- 	return 0;
- }
- 
-+SEC("?kretprobe.multi/bpf_get_numa_node_id")
-+int bench_kretprobe_multi_empty(void *ctx)
-+{
-+	return 0;
-+}
-+
- SEC("?fentry/bpf_get_numa_node_id")
- int bench_trigger_fentry(void *ctx)
- {
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 9da9da51b132..78cf1aab09d8 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -575,6 +575,9 @@ static bool skip_entry(char *name)
- 	if (!strcmp(name, "__rcu_read_unlock"))
- 		return true;
- 
-+	if (!strcmp(name, "bpf_get_numa_node_id"))
-+		return true;
-+
- 	return false;
- }
- 
--- 
-2.50.1
 
+>
+> The second part is related to the fundamental question on when to
+> declare the OOM event. It's a trade-off between the risk of
+> unnecessary OOM kills and associated work losses and the risk of
+> infinite trashing and effective soft lockups.  In the last few years
+> several PSI-based userspace solutions were developed (e.g. OOMd [3] or
+> systemd-OOMd [4]). The common idea was to use userspace daemons to
+> implement custom OOM logic as well as rely on PSI monitoring to avoid
+> stalls. In this scenario the userspace daemon was supposed to handle
+> the majority of OOMs, while the in-kernel OOM killer worked as the
+> last resort measure to guarantee that the system would never deadlock
+> on the memory. But this approach creates additional infrastructure
+> churn: userspace OOM daemon is a separate entity which needs to be
+> deployed, updated, monitored. A completely different pipeline needs to
+> be built to monitor both types of OOM events and collect associated
+> logs. A userspace daemon is more restricted in terms on what data is
+> available to it. Implementing a daemon which can work reliably under a
+> heavy memory pressure in the system is also tricky.
+>
+> [1]: https://lwn.net/ml/linux-kernel/20230810081319.65668-1-zhouchuyi@byt=
+edance.com/
+> [2]: https://lore.kernel.org/lkml/20171130152824.1591-1-guro@fb.com/
+> [3]: https://github.com/facebookincubator/oomd
+> [4]: https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd=
+.service.html
+>
+> ----
+>
+> v1:
+>   1) Both OOM and PSI parts are now implemented using bpf struct ops,
+>      providing a path the future extensions (suggested by Kumar Kartikeya=
+ Dwivedi,
+>      Song Liu and Matt Bobrowski)
+>   2) It's possible to create PSI triggers from BPF, no need for an additi=
+onal
+>      userspace agent. (suggested by Suren Baghdasaryan)
+>      Also there is now a callback for the cgroup release event.
+>   3) Added an ability to block on oom_lock instead of bailing out (sugges=
+ted by Michal Hocko)
+>   4) Added bpf_task_is_oom_victim (suggested by Michal Hocko)
+>   5) PSI callbacks are scheduled using a separate workqueue (suggested by=
+ Suren Baghdasaryan)
+>
+> RFC:
+>   https://lwn.net/ml/all/20250428033617.3797686-1-roman.gushchin@linux.de=
+v/
+>
+>
+> Roman Gushchin (14):
+>   mm: introduce bpf struct ops for OOM handling
+>   bpf: mark struct oom_control's memcg field as TRUSTED_OR_NULL
+>   mm: introduce bpf_oom_kill_process() bpf kfunc
+>   mm: introduce bpf kfuncs to deal with memcg pointers
+>   mm: introduce bpf_get_root_mem_cgroup() bpf kfunc
+>   mm: introduce bpf_out_of_memory() bpf kfunc
+>   mm: allow specifying custom oom constraint for bpf triggers
+>   mm: introduce bpf_task_is_oom_victim() kfunc
+>   bpf: selftests: introduce read_cgroup_file() helper
+>   bpf: selftests: bpf OOM handler test
+>   sched: psi: refactor psi_trigger_create()
+>   sched: psi: implement psi trigger handling using bpf
+>   sched: psi: implement bpf_psi_create_trigger() kfunc
+>   bpf: selftests: psi struct ops test
+>
+>  include/linux/bpf_oom.h                       |  49 +++
+>  include/linux/bpf_psi.h                       |  71 ++++
+>  include/linux/memcontrol.h                    |   2 +
+>  include/linux/oom.h                           |  12 +
+>  include/linux/psi.h                           |  15 +-
+>  include/linux/psi_types.h                     |  72 +++-
+>  kernel/bpf/verifier.c                         |   5 +
+>  kernel/cgroup/cgroup.c                        |  14 +-
+>  kernel/sched/bpf_psi.c                        | 337 ++++++++++++++++++
+>  kernel/sched/build_utility.c                  |   4 +
+>  kernel/sched/psi.c                            | 130 +++++--
+>  mm/Makefile                                   |   4 +
+>  mm/bpf_memcontrol.c                           | 166 +++++++++
+>  mm/bpf_oom.c                                  | 157 ++++++++
+>  mm/oom_kill.c                                 | 182 +++++++++-
+>  tools/testing/selftests/bpf/cgroup_helpers.c  |  39 ++
+>  tools/testing/selftests/bpf/cgroup_helpers.h  |   2 +
+>  .../selftests/bpf/prog_tests/test_oom.c       | 229 ++++++++++++
+>  .../selftests/bpf/prog_tests/test_psi.c       | 224 ++++++++++++
+>  tools/testing/selftests/bpf/progs/test_oom.c  | 108 ++++++
+>  tools/testing/selftests/bpf/progs/test_psi.c  |  76 ++++
+>  21 files changed, 1845 insertions(+), 53 deletions(-)
+>  create mode 100644 include/linux/bpf_oom.h
+>  create mode 100644 include/linux/bpf_psi.h
+>  create mode 100644 kernel/sched/bpf_psi.c
+>  create mode 100644 mm/bpf_memcontrol.c
+>  create mode 100644 mm/bpf_oom.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_oom.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_psi.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_oom.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_psi.c
+>
+> --
+> 2.50.1
+>
 
