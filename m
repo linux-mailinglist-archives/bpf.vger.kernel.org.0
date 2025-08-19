@@ -1,107 +1,129 @@
-Return-Path: <bpf+bounces-65988-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E23B2BE80
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 12:08:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D506B2BE96
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 12:13:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 942EA7A13A9
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 10:06:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AE583BE4C5
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 10:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C951131E11F;
-	Tue, 19 Aug 2025 10:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2193218D5;
+	Tue, 19 Aug 2025 10:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="YSM1HVVR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YaYEIpqG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB6131CA79
-	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 10:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9181DC9B5;
+	Tue, 19 Aug 2025 10:09:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755598083; cv=none; b=L07/bsJpzsOhy4pdEFnDCgw0l4VnwpXo+ia8/ClbHQEy9+6bw7L/9mlXHkU9gZRg4w6NfM1Q1gwQGHN2DNwf4Ku1llYFSyuf95blx10A8cknCCqmdzTD/ibvIt+6jepT5Nq2K8ywiO2s5RU6mywBrtbBZSEitj3IxL7IleXu/YY=
+	t=1755598160; cv=none; b=S8cnIN+HrEjlsVwNkRuHfOI0caz279kQ2PO6UEsc1Rj4TXUPdmR4SUeW/DWJ9c48H4uA5UHU2iatFmPN6BWd6x8PHRbviO/XPP+BtwLlBJIjwoqqzeTcn0VPgjJ+H5/kJe40IPXtv4iG1LGQBbuQ6tpWL/gqUXQDgyUCUq9C6Ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755598083; c=relaxed/simple;
-	bh=lfdDwgwmbdoZPKO2L6guIJGA/JQk9g1JYnAbMgcu9lY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=VQnGjffuVmcw0ap/nWoYcAInZ9drqDbAtcS+gJ0E9bh/oim7aKgQJfYMAUabqQMke45iCpVkyhoL8viBiBd39LqZ57VVQWialVp8Q9aaUObkil8IVG1RCCAB0n4Z5V5zyRsbWzzRu7nzCdQBIWVpY7QFsDQ+07l/xW/3wIEtnro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=YSM1HVVR; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-6188b72b7caso6190982a12.2
-        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 03:08:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1755598079; x=1756202879; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lfdDwgwmbdoZPKO2L6guIJGA/JQk9g1JYnAbMgcu9lY=;
-        b=YSM1HVVR2IwClTvxZhYntK4MlOAr3jtZH16NImleFeFnyeOvwtiX3OXvFZgHdM+K3f
-         iOFzXjRm1yxpiq8Ez1LpiJfZ+jsfQUgUaWxYJf+dTlkHww+C47lZTzmmbEuistE7ZO02
-         pkuvCN+b4gGyC4oEsB9eWVlmGlmcqM88PNm9S7FQbffNmpR8dBbVNae/NAYPcTWhRa/f
-         grce0MJ4Tn0Zkl0Dhh2j07e7ADZrBJnIEZ5ryR7zKY4VY32kqFl7d+YBSBvCP+LV2cA0
-         UgZjvFS6Sx5PCCGzOFDlc1J98wk81I45xXc7jd01BhokjjjnpUwpIjWuYqAsuX0n81iO
-         Q7NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755598079; x=1756202879;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lfdDwgwmbdoZPKO2L6guIJGA/JQk9g1JYnAbMgcu9lY=;
-        b=H3q62GqnarIuoKnCWMHMuGiSBHqV4hKx4Xy9XMRMBmVOW7DCqj4TIFQ2CRErGyznn8
-         Nlk+QnMUFk658vVRlYc7/U5IeAs5fxb8hhzOhDMamCcUq5+TYZ9rFCfDI3ZB8d8V6XVf
-         v4Eo5HBAanYXh4UkNlZHbZw81lgMkfp7w2P/+GRWY2xFI1Y8AJA8+6voRpSuKu6qhKU0
-         rSmCJPUGzOXiaBwU2lqxV4474nUwV31pDe/SNXOCCRE64GbydVxak8J5c0tVULixG2f5
-         MIAtTdWt29fbjrKOmrKRPLY4aq8J+GXTrndxYEgiuYRCwedSVSZdHbJ74/SzRYTtZkrI
-         XWTw==
-X-Gm-Message-State: AOJu0YzF7ZtEq9Vx2Ciajr58zwRuy1ar9Fr0JCFVUonmlNJJb/GnNm1v
-	f8DFj6o8yNrGOCTJlPtriA1yG79R0zC5pimppeDghlx3E+Q+EowqLwELz8QHIhOlTqe4vrRlciD
-	8Fgt7
-X-Gm-Gg: ASbGncuqPha9X1ijyecmIi9teQLdpCcN9P3xFUiyCZ0nR618IRIIneWYxa5InXZXbrm
-	aFwEZNxnPGub0TrDjgk2XJMcgHkg6t471V8gFjxhSIUBJEa0OhJi4TaDvlkHNeCEAReiuFRpLAp
-	a0RdD6VXMIjQWKQA+zfE3wGdQPjzL+leKSIHuzSxMEtoBMIKxuqpj9bJ88hUlincLl92aUt3lRT
-	yJEyLC3frIvFiEdYUrb5qs5RqQMHvTiFgsV0ScJK+k9IAXC4oOfPUjeLerMvQMc9/4bFoTyqZLY
-	hmt7wy8BofxDOHEv6zbCKshoNVt/xQ7JES18nQvLmJPG3EvsaY4F1N7mLNCnx/jpiVYPBWKiM2p
-	3RvlNCk8zXrQ4LY8=
-X-Google-Smtp-Source: AGHT+IGwCYDOFfKh5eQnDdJl6GKcu+lBoEyCWS/tcJJzvzPXIE34XsK/D5uXtEjIisAOPggDgVEZ2w==
-X-Received: by 2002:a05:6402:524d:b0:617:dc54:d808 with SMTP id 4fb4d7f45d1cf-61a7e6d99b2mr1459711a12.3.1755598079463;
-        Tue, 19 Aug 2025 03:07:59 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:b3])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61a758c0e6fsm1503523a12.57.2025.08.19.03.07.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Aug 2025 03:07:58 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,  andrii@kernel.org,  arthur@arthurfabre.com,
-  daniel@iogearbox.net,  eddyz87@gmail.com,  edumazet@google.com,
-  kuba@kernel.org,  hawk@kernel.org,  jbrandeburg@cloudflare.com,
-  joannelkoong@gmail.com,  lorenzo@kernel.org,  martin.lau@linux.dev,
-  thoiland@redhat.com,  yan@cloudflare.com,  kernel-team@cloudflare.com,
-  netdev@vger.kernel.org,  sdf@fomichev.me
-Subject: Re: [PATCH bpf-next v7 0/9] Add a dynptr type for skb metadata for
- TC BPF
-In-Reply-To: <175554964898.2904664.15930245053733821413.git-patchwork-notify@kernel.org>
-	(patchwork-bot's message of "Mon, 18 Aug 2025 20:40:48 +0000")
-References: <20250814-skb-metadata-thru-dynptr-v7-0-8a39e636e0fb@cloudflare.com>
-	<175554964898.2904664.15930245053733821413.git-patchwork-notify@kernel.org>
-Date: Tue, 19 Aug 2025 12:07:57 +0200
-Message-ID: <87ldnfzksi.fsf@cloudflare.com>
+	s=arc-20240116; t=1755598160; c=relaxed/simple;
+	bh=KVGjnEavjlxs1ctpfC8ZgFHU/UuaJ9aP52A4mz7tWA8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=d5cFKCR5eyw3DEtKej2aBate8AYWJNriAXPGRABfA1X/NL9Ur49wYr6IkVNAtkZ7236W+uTKTOU7pmV9fbwM8tEy/eFQLzdkrpj9BTgM7CRGQJoltkj/vNcjuWRAJrWfe+IKlYxGhpeJdxcLfyxQ2kP/kq2YWA1mJeSYZia3tcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YaYEIpqG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BED0C4CEF1;
+	Tue, 19 Aug 2025 10:09:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755598160;
+	bh=KVGjnEavjlxs1ctpfC8ZgFHU/UuaJ9aP52A4mz7tWA8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YaYEIpqGz7UItd0y42YWhnOifErwpfrmVPxrHHzC7B9+TphzsFG0jun+BCKr1s52u
+	 tqxJ+DtYLulz+CUn/glYm4Vpw8KBtL8hPvN+b2yvK4UVHkCwUvrs5IG/fNbFqZQ34m
+	 TYyRsl6U4I1IhVo4QMLXf8JIrQV8FgKj6LZnm2R40zFO3o+2k7/yVY75FWRM61Z0RK
+	 Ik85KiMUOwj8iubxcJFpQCVH/FwMD/heRi/9r/fTPkQ879dA1Qv2y0cjytb5ulg/dE
+	 7KNqsTM78fEEez4DKFP1bnQ+oIJB5oC7CJFy9T3+LUJbgA13qzFQjSLpWIorfpU/zl
+	 ReZqc/LpJTwnQ==
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	=?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>,
+	Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	andrii@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net
+Subject: [PATCH] kernfs: don't fail listing extended attributes
+Date: Tue, 19 Aug 2025 12:08:58 +0200
+Message-ID: <20250819-ahndung-abgaben-524a535f8101@brauner>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250819-tonstudio-abgas-7feaac93f501@brauner>
+References: <20250819-tonstudio-abgas-7feaac93f501@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2099; i=brauner@kernel.org; h=from:subject:message-id; bh=KVGjnEavjlxs1ctpfC8ZgFHU/UuaJ9aP52A4mz7tWA8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQs8XX9+/vXVyuuE8HZgbMTryipX7LjbFAoZHu7IPh50 L13H8t+dpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEyk4Rwjw49LznUpt8Tib+Ym TZw8+dr91tlRTz88FYrfb3zG1tSF3Znhr7R+T0/mGtM7YnKbOWbkFL0Tq5Vxqr7v7/1O5X3UkZ3 HuQA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 18, 2025 at 08:40 PM GMT, patchwork-bot+netdevbpf@kernel.org wr=
-ote:
-> This series was applied to bpf/bpf-next.git (master)
-> by Martin KaFai Lau <martin.lau@kernel.org>:
+Userspace doesn't expect a failure to list extended attributes:
 
-Now the real work begins =F0=9F=98=85
+  $ ls -lA /sys/
+  ls: /sys/: No data available
+  ls: /sys/kernel: No data available
+  ls: /sys/power: No data available
+  ls: /sys/class: No data available
+  ls: /sys/devices: No data available
+  ls: /sys/dev: No data available
+  ls: /sys/hypervisor: No data available
+  ls: /sys/fs: No data available
+  ls: /sys/bus: No data available
+  ls: /sys/firmware: No data available
+  ls: /sys/block: No data available
+  ls: /sys/module: No data available
+  total 0
+  drwxr-xr-x   2 root root 0 Jan  1  1970 block
+  drwxr-xr-x  52 root root 0 Jan  1  1970 bus
+  drwxr-xr-x  88 root root 0 Jan  1  1970 class
+  drwxr-xr-x   4 root root 0 Jan  1  1970 dev
+  drwxr-xr-x  11 root root 0 Jan  1  1970 devices
+  drwxr-xr-x   3 root root 0 Jan  1  1970 firmware
+  drwxr-xr-x  10 root root 0 Jan  1  1970 fs
+  drwxr-xr-x   2 root root 0 Jul  2 09:43 hypervisor
+  drwxr-xr-x  14 root root 0 Jan  1  1970 kernel
+  drwxr-xr-x 251 root root 0 Jan  1  1970 module
+  drwxr-xr-x   3 root root 0 Jul  2 09:43 power
+
+Fix it by simply reporting success when no extended attributes are
+available instead of reporting ENODATA.
+
+Fixes: d1f4e9026007 ("kernfs: remove iattr_mutex") # mainline only
+Reported-by: André Draszik <andre.draszik@linaro.org>
+Link: https://lore.kernel.org/78b13bcdae82ade95e88f315682966051f461dde.camel@linaro.org
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+ fs/kernfs/inode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
+index 3c293a5a21b1..457f91c412d4 100644
+--- a/fs/kernfs/inode.c
++++ b/fs/kernfs/inode.c
+@@ -142,9 +142,9 @@ ssize_t kernfs_iop_listxattr(struct dentry *dentry, char *buf, size_t size)
+ 	struct kernfs_node *kn = kernfs_dentry_node(dentry);
+ 	struct kernfs_iattrs *attrs;
+ 
+-	attrs = kernfs_iattrs_noalloc(kn);
++	attrs = kernfs_iattrs(kn);
+ 	if (!attrs)
+-		return -ENODATA;
++		return -ENOMEM;
+ 
+ 	return simple_xattr_list(d_inode(dentry), &attrs->xattrs, buf, size);
+ }
+-- 
+2.47.2
+
 
