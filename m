@@ -1,65 +1,94 @@
-Return-Path: <bpf+bounces-65987-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65988-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18555B2BE7C
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 12:07:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73E23B2BE80
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 12:08:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9269F164160
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 10:06:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 942EA7A13A9
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 10:06:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD4C31AF39;
-	Tue, 19 Aug 2025 10:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C951131E11F;
+	Tue, 19 Aug 2025 10:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OeUekBQh"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="YSM1HVVR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5365214A94;
-	Tue, 19 Aug 2025 10:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB6131CA79
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 10:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755597967; cv=none; b=qr2YLCNC/m5LU1crOM2b3l+bqHc3IpGON7736BiIkfn/A+hBfq2Ka3hZf1fn6XZk8SW49aWzq4UlzTvSjwj/QhzTh4jPMzSBeutov+TDQx//UpjqkjIhG+FCB+BAoULrCZPMBTSqD79K6hCauw+EPWl/elLoEJT2gbr4lgt9FMU=
+	t=1755598083; cv=none; b=L07/bsJpzsOhy4pdEFnDCgw0l4VnwpXo+ia8/ClbHQEy9+6bw7L/9mlXHkU9gZRg4w6NfM1Q1gwQGHN2DNwf4Ku1llYFSyuf95blx10A8cknCCqmdzTD/ibvIt+6jepT5Nq2K8ywiO2s5RU6mywBrtbBZSEitj3IxL7IleXu/YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755597967; c=relaxed/simple;
-	bh=f11Nx1TP9s58QGMUEaL0dUNWCcSlCF3s7K3LOMVa4Sk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FHh9X5+3Yzqclgw7Eg8SfCe8w1/OIvDPKIsVqQOEEr+wry0TW5tEY/M7fy2vh4ofBalMw1tksJt5rEzwswHdDj4vT2up0jouyU22kvvZJmGHunPMJPekKhehSJHzIqaFPsIiVsg/qBqnAUfC79FGKNzrYU9Hia+Xx9qtqBQk+KM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OeUekBQh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32BB8C4CEF1;
-	Tue, 19 Aug 2025 10:06:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755597967;
-	bh=f11Nx1TP9s58QGMUEaL0dUNWCcSlCF3s7K3LOMVa4Sk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OeUekBQhoKymirQThWTQEUSmYYDqL0zpi6B3Ib4UAq3xnwHAWPbwoz0k1VYryWLn0
-	 yD30OJJeQtEwe8gdRIJWv+g1OMyvJBWtCGsSfMmHCzRBrQ5PlIJB6eRKT1u1fO9w/U
-	 G7+zck9mUM9Q2g24o05MB+OX51y7ELkCM/6u4a++l8nCC89xx4v6mlrKDw0/n5njb7
-	 aMXoBPe3YqNdc0Sbl4xL97yIZfpuTZolYVwXU9BcvU63MBWPAbYzSc2q2AAxg9N/oU
-	 9jBt2xBByNtZVpNDjiaEYRhtTqKFGfaJZHGrhhRFquay3tkFoWSqb3u26l8G9cM4X7
-	 x5PorQse9sWKQ==
-Date: Tue, 19 Aug 2025 12:05:58 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: =?utf-8?B?QW5kcsOp?= Draszik <andre.draszik@linaro.org>, 
-	Song Liu <song@kernel.org>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, kernel-team@meta.com, 
-	andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, viro@zeniv.linux.org.uk, jack@suse.cz, kpsingh@kernel.org, 
-	mattbobrowski@google.com, amir73il@gmail.com, gregkh@linuxfoundation.org, tj@kernel.org, 
-	daan.j.demeyer@gmail.com, Will McVicker <willmcvicker@google.com>, 
-	Peter Griffin <peter.griffin@linaro.org>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
-	kernel-team@android.com
-Subject: Re: [PATCH v3 bpf-next 1/4] kernfs: remove iattr_mutex
-Message-ID: <20250819-tonstudio-abgas-7feaac93f501@brauner>
-References: <20250623063854.1896364-1-song@kernel.org>
- <20250623063854.1896364-2-song@kernel.org>
- <78b13bcdae82ade95e88f315682966051f461dde.camel@linaro.org>
- <20250702-hochmoderne-abklatsch-af9c605b57b2@brauner>
- <8f53c544-fd4a-4526-957f-9264a36aead6@siemens.com>
+	s=arc-20240116; t=1755598083; c=relaxed/simple;
+	bh=lfdDwgwmbdoZPKO2L6guIJGA/JQk9g1JYnAbMgcu9lY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=VQnGjffuVmcw0ap/nWoYcAInZ9drqDbAtcS+gJ0E9bh/oim7aKgQJfYMAUabqQMke45iCpVkyhoL8viBiBd39LqZ57VVQWialVp8Q9aaUObkil8IVG1RCCAB0n4Z5V5zyRsbWzzRu7nzCdQBIWVpY7QFsDQ+07l/xW/3wIEtnro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=YSM1HVVR; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-6188b72b7caso6190982a12.2
+        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 03:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1755598079; x=1756202879; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lfdDwgwmbdoZPKO2L6guIJGA/JQk9g1JYnAbMgcu9lY=;
+        b=YSM1HVVR2IwClTvxZhYntK4MlOAr3jtZH16NImleFeFnyeOvwtiX3OXvFZgHdM+K3f
+         iOFzXjRm1yxpiq8Ez1LpiJfZ+jsfQUgUaWxYJf+dTlkHww+C47lZTzmmbEuistE7ZO02
+         pkuvCN+b4gGyC4oEsB9eWVlmGlmcqM88PNm9S7FQbffNmpR8dBbVNae/NAYPcTWhRa/f
+         grce0MJ4Tn0Zkl0Dhh2j07e7ADZrBJnIEZ5ryR7zKY4VY32kqFl7d+YBSBvCP+LV2cA0
+         UgZjvFS6Sx5PCCGzOFDlc1J98wk81I45xXc7jd01BhokjjjnpUwpIjWuYqAsuX0n81iO
+         Q7NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755598079; x=1756202879;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lfdDwgwmbdoZPKO2L6guIJGA/JQk9g1JYnAbMgcu9lY=;
+        b=H3q62GqnarIuoKnCWMHMuGiSBHqV4hKx4Xy9XMRMBmVOW7DCqj4TIFQ2CRErGyznn8
+         Nlk+QnMUFk658vVRlYc7/U5IeAs5fxb8hhzOhDMamCcUq5+TYZ9rFCfDI3ZB8d8V6XVf
+         v4Eo5HBAanYXh4UkNlZHbZw81lgMkfp7w2P/+GRWY2xFI1Y8AJA8+6voRpSuKu6qhKU0
+         rSmCJPUGzOXiaBwU2lqxV4474nUwV31pDe/SNXOCCRE64GbydVxak8J5c0tVULixG2f5
+         MIAtTdWt29fbjrKOmrKRPLY4aq8J+GXTrndxYEgiuYRCwedSVSZdHbJ74/SzRYTtZkrI
+         XWTw==
+X-Gm-Message-State: AOJu0YzF7ZtEq9Vx2Ciajr58zwRuy1ar9Fr0JCFVUonmlNJJb/GnNm1v
+	f8DFj6o8yNrGOCTJlPtriA1yG79R0zC5pimppeDghlx3E+Q+EowqLwELz8QHIhOlTqe4vrRlciD
+	8Fgt7
+X-Gm-Gg: ASbGncuqPha9X1ijyecmIi9teQLdpCcN9P3xFUiyCZ0nR618IRIIneWYxa5InXZXbrm
+	aFwEZNxnPGub0TrDjgk2XJMcgHkg6t471V8gFjxhSIUBJEa0OhJi4TaDvlkHNeCEAReiuFRpLAp
+	a0RdD6VXMIjQWKQA+zfE3wGdQPjzL+leKSIHuzSxMEtoBMIKxuqpj9bJ88hUlincLl92aUt3lRT
+	yJEyLC3frIvFiEdYUrb5qs5RqQMHvTiFgsV0ScJK+k9IAXC4oOfPUjeLerMvQMc9/4bFoTyqZLY
+	hmt7wy8BofxDOHEv6zbCKshoNVt/xQ7JES18nQvLmJPG3EvsaY4F1N7mLNCnx/jpiVYPBWKiM2p
+	3RvlNCk8zXrQ4LY8=
+X-Google-Smtp-Source: AGHT+IGwCYDOFfKh5eQnDdJl6GKcu+lBoEyCWS/tcJJzvzPXIE34XsK/D5uXtEjIisAOPggDgVEZ2w==
+X-Received: by 2002:a05:6402:524d:b0:617:dc54:d808 with SMTP id 4fb4d7f45d1cf-61a7e6d99b2mr1459711a12.3.1755598079463;
+        Tue, 19 Aug 2025 03:07:59 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:b3])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61a758c0e6fsm1503523a12.57.2025.08.19.03.07.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Aug 2025 03:07:58 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,  andrii@kernel.org,  arthur@arthurfabre.com,
+  daniel@iogearbox.net,  eddyz87@gmail.com,  edumazet@google.com,
+  kuba@kernel.org,  hawk@kernel.org,  jbrandeburg@cloudflare.com,
+  joannelkoong@gmail.com,  lorenzo@kernel.org,  martin.lau@linux.dev,
+  thoiland@redhat.com,  yan@cloudflare.com,  kernel-team@cloudflare.com,
+  netdev@vger.kernel.org,  sdf@fomichev.me
+Subject: Re: [PATCH bpf-next v7 0/9] Add a dynptr type for skb metadata for
+ TC BPF
+In-Reply-To: <175554964898.2904664.15930245053733821413.git-patchwork-notify@kernel.org>
+	(patchwork-bot's message of "Mon, 18 Aug 2025 20:40:48 +0000")
+References: <20250814-skb-metadata-thru-dynptr-v7-0-8a39e636e0fb@cloudflare.com>
+	<175554964898.2904664.15930245053733821413.git-patchwork-notify@kernel.org>
+Date: Tue, 19 Aug 2025 12:07:57 +0200
+Message-ID: <87ldnfzksi.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,12 +96,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8f53c544-fd4a-4526-957f-9264a36aead6@siemens.com>
+Content-Transfer-Encoding: quoted-printable
 
-> ...but it looks like v3 was merged as-is in the end, without this fixup.
-> Is there some separate patch in the pipeline, or was this forgotten?
+On Mon, Aug 18, 2025 at 08:40 PM GMT, patchwork-bot+netdevbpf@kernel.org wr=
+ote:
+> This series was applied to bpf/bpf-next.git (master)
+> by Martin KaFai Lau <martin.lau@kernel.org>:
 
-This is a result of the trees diverging which we discussed earlier.
-I sent a fix.
+Now the real work begins =F0=9F=98=85
 
