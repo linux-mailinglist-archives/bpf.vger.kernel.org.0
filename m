@@ -1,609 +1,550 @@
-Return-Path: <bpf+bounces-66024-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66025-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D6F2B2CAA4
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 19:35:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2FD7B2CBB6
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 20:16:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FA09683948
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 17:34:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BA597A889F
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 18:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04097304BC3;
-	Tue, 19 Aug 2025 17:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134A423D7EA;
+	Tue, 19 Aug 2025 18:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="je5Gh0KT";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="BSlfbvv5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jrWR7b9k"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F783002DB;
-	Tue, 19 Aug 2025 17:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755624842; cv=fail; b=nJOJZ4060EOglM/sti3bUSsiJgXJLzo7KYYo6vnwKLVUvrJcca3YoR39UHjOKp6kNO9kLlO73EJ22wNdILNWPKnkCpgIe8EIB8fNOW34qoRHXMAvIyLJTT1bARtI4RBiipPaUJxIamKlJtex1VVIdLiGUnPXvxueVmO6OTbhQ6A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755624842; c=relaxed/simple;
-	bh=pDt7puyrpDuxGibJVktDXzmFq+Vsug6FmNS6dt4IlpE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=AxkRC6GZwI15rQI6mUuLmxtiScQUyL52254r8Q9+/kwzLLe39JRb4nG7QcW5NQAtkuWzQg05iTO8AYbiB8SxBsFH0LWnDd/bdGA+6U01itOB1Ibt+I4BhQ7hdF1tnc18NWtH0TXmqu1dB8teaeIuhwW9toWIDeKGGXrQx++p5zY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=je5Gh0KT; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=BSlfbvv5; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57JDixho024758;
-	Tue, 19 Aug 2025 17:33:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=//W2Fbe8q7mB5vQO7M7gOtP/lbbRNl/Vy0I39qU8IFo=; b=
-	je5Gh0KTT8c5Z18QM53f1vwKraydumEF+bwFHmOM1FIeW+M1Ee0SzJpmDqzl5XR5
-	i2ElJPGL6jqXSjGipPtRBqJJoyjkik1RiisDZAkSxFtG8KdhMLG+YN1AlcK/f/4h
-	G3qZyKrUBSX7oA+aSy+uxDl3guxvijxN64zBWfjukVBhLAleA/5XL0m3eH0wrlle
-	9gIi4/G1iG9CqOttPTlgmubRxa7P1KKVN8E8nyOrx3MpKvbCBTgMJ0+F8LdRrGAr
-	YhbD/I2PVycf1nPq7oCzX8XRlZbzQkKfuWvh1ObNkRfh8+Iwm7Wx0nqKTphktF6G
-	PoTrNekWPvVZY4qAZITCDQ==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48jgdfnuhc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Aug 2025 17:33:52 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 57JGb8r0016767;
-	Tue, 19 Aug 2025 17:33:51 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11on2073.outbound.protection.outlook.com [40.107.223.73])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 48jgear5aw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Aug 2025 17:33:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=eWN4QO3Y59fzTWcKnvzrVes6YE/wkUXADNZsKZin5Dwbtdxj0DE9ZFAyXgylkbrwTuPZt6186xxWEHke9aYYRDCHKQ9uFU1ScNNp9JU9hCt2VGWnUpUT7FgqFHjTn2mNH5DG7JNmBlETeNdCXPujtrOIt6PJWs9RMm+YeyhYM+y0cvoDMLt9mjCClE0cal2s1QX1m0uA4vhkwEtCzww9K2rbV+bptYmPe/KyvyH6g51CZf5y4N9w6pZlTXmt3y36DreGAJPOciDKzyiqOQpPpN0ONLVY5d5DOOewVyjTGo/psCf0vE0bS4EnWIF8RzVbNZAdJRZqPlalUbNyC2d35Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=//W2Fbe8q7mB5vQO7M7gOtP/lbbRNl/Vy0I39qU8IFo=;
- b=XaZHDzHzcT5HAl4UznabjKq59B+0vFByqukNt9uFgX3ak4+SbKBsA3sc09Vo1UEp3mwzlTjD4gCdP00vs2UdSw8rU9CMAWUUTpe0PmZQi/NR7CPgMs8mwu8guk64TsoqdFNrnTYn6aXIhXh9pMRq8f4kTB+4tKwJWTqGQLSNfAeInQGOQX2A52gkW1BUOwsbtNRIXFBFbd1RLvo5fgnvWqLjMHtGz1cV8TtcnyaK76sp7GM7xh/q9hqE2RMJDjG08sKBf7t3IZPaSYXy9sJZHRPZxCD3Q6fzp5wj6lLvkD5b/sNdC7cMdCzRAHPZXVZoc/WPb3Km8BFpPmhOhrrbVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD3A1C84A0
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 18:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1755627372; cv=none; b=fpRFo0O54fbD1Ig9OiP7SHACgLrbLhYDrhBOn35YjA0/hLgw3c9ZgUtjyuFSReuEvH+Nd/MV9TgSpwFJ/BygzdCaPuV5ng6IYfow3vJL9BNAJ3ZcXY0UU51m/gc9ZhE+au0uYy1zE6C7k9WUu3JevCqnTHyP60domT5TwjW0gbY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1755627372; c=relaxed/simple;
+	bh=EpDks8ITvM44WtZGhFFJDLDnRZgAfznZ0cizpFX4p7Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ilYSJDd324ypDhWtLkm9CFfvmw9I8I2ryZLC0RKoGbT4Ivfw2U42PMQY7eMLcRg1jJCYSPeNsyt/ANDis+0hLcc8OOuFrfVqWR4MP+8p5lY/1t/8BNP1E6LE8J/1V5SYg5vcdksC4rk9X0f5pXOxSKo0V/STL3umUTQR31I1ywQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jrWR7b9k; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-45a1b0c52f3so28256075e9.3
+        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 11:16:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=//W2Fbe8q7mB5vQO7M7gOtP/lbbRNl/Vy0I39qU8IFo=;
- b=BSlfbvv5mWLv3najJNWQ651lelyGj+7IFzv1tnNWs2cjYK+Nmq7dmcyYjRFE9oFtSjimb8TC+RIK/6KwqD0fmJvxMQO5l6HEkvTFxile6+DMmEZk18zTeUfUjyC27P3ZbKUeDgIx1yA67A7GcwntchUYIn0IRFWf6nvPiK+/UDE=
-Received: from DS0PR10MB6271.namprd10.prod.outlook.com (2603:10b6:8:d1::15) by
- IA3PR10MB8705.namprd10.prod.outlook.com (2603:10b6:208:583::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9031.24; Tue, 19 Aug 2025 17:33:48 +0000
-Received: from DS0PR10MB6271.namprd10.prod.outlook.com
- ([fe80::940b:88ca:dd2d:6b0c]) by DS0PR10MB6271.namprd10.prod.outlook.com
- ([fe80::940b:88ca:dd2d:6b0c%6]) with mapi id 15.20.9031.023; Tue, 19 Aug 2025
- 17:33:48 +0000
-Message-ID: <ad67ade4-f645-4121-a4ca-40f9ecb988fe@oracle.com>
-Date: Tue, 19 Aug 2025 18:33:40 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: "Segmentation fault" of pahole
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Changqing Li <changqing.li@windriver.com>, dwarves@vger.kernel.org,
-        Kernel Team <kernel-team@meta.com>, bpf <bpf@vger.kernel.org>
-References: <24bcc853-533c-42ab-bc37-0c13e0baa217@windriver.com>
- <37030a9d-28d8-4871-8acb-b26c59240710@linux.dev>
- <f1e2dc2b-a88b-4342-8e94-65481ae0cb4f@windriver.com>
- <ec72bbb8-b74d-49d1-bb42-5343feab8e5b@windriver.com>
- <7b071d63-71db-49d4-ab03-2dd7072a28aa@oracle.com>
- <979a1ac4-21d3-4384-8ce4-d10f41887088@linux.dev> <aKOSqWlQHZM0Icyj@x1>
-Content-Language: en-GB
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <aKOSqWlQHZM0Icyj@x1>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0401.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:cf::7) To DS0PR10MB6271.namprd10.prod.outlook.com
- (2603:10b6:8:d1::15)
+        d=gmail.com; s=20230601; t=1755627368; x=1756232168; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nuGJtTAsTtd0/ObUaFOiD0Paj8xDlcMViOrEXsDuXj4=;
+        b=jrWR7b9kTiwbmJ+gRIay4tEn18pPVUeYmGHeyRjsdbTDV74gzH2UxvzzopeQsN2jJg
+         0NfEzNivBr+UoxoXnuckPdd44so+yBYf26/up06glelPbYtWhsIud+tpMCqbjokBwk6U
+         PTzQB/WgKm8hawkhfqkuPPL6fDweldcKGwL/8C365czY8yST1KUmM+lsjAVdKj296l4+
+         OA4WiUBrp1UksQKqCdk9h3KKwEkXlWxi14Lo3liiszMw3VPk+gPOwiJKcVP7rE58btzR
+         Zu1F0pBO/lZYDHpWPWc8M7foiyNRWPw5kzbbi+phMZ0MRN+bFgBtYF72m9gHZlqU16O4
+         Wctg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755627368; x=1756232168;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nuGJtTAsTtd0/ObUaFOiD0Paj8xDlcMViOrEXsDuXj4=;
+        b=SjfmUBAgtqNPZ97VShK8CEorsXIRYEQmfGFlKog1qCh1svTE/ZE7fTVChHWjBRib3C
+         /oWvVOJqgz/GhF3suqWnfMTFlhJtmu9MNv1SIXjGBbUrxWeIXdAYIXtsnvquWUx7QLGl
+         JZ+reFnYnZRaJs64Tg2kx5+pvxz2VCcowrh3e13+lDq1De6Ckou5X6kQpRqFqUoKmiZr
+         KzammnDU1v5m5Q7DQ1v31a3TB+Oa7cjGg9Sxs4Ofgp9jcpQOuFsU0zspmy0CR8BYpJ5j
+         X3yh4O/TB7+hgRLbkFw9QtO7YOus52NohzocJRUaFBkWliKKVRxoCVpmAclpVqx3J7eB
+         sIrg==
+X-Gm-Message-State: AOJu0YzLU8jnMR9NvOPggvRjpHspN/zaK62y2PRyXdyhOr8Iym31v05Q
+	jsHmzXtx4k1xPnexWYRaFlYlniiFGJfwWyX3HncOHriw/96XvxP40gfO
+X-Gm-Gg: ASbGncsT3YaUl4zDKLfXFDeD1n3pd4uxtAMZA/xTAWxsEBw5FM8PLPsX0UQ8GkJ7QDC
+	b3L5Q1UPO5z1j2IgJcqShvFzLAkogPcGYXfQpNxxSdiTbYQ2F/4ZeDxB7nz+CnspCSSmlSuiShy
+	sH72TVIQUqFTM+S5vHYP5NfHHEsjsmOhQtst7cB1fn+mum4kn4Todw1uvKP5mDVFBI+K1qZ+DIy
+	ATB31INJQz8w/VVcLOd+xDWcFnEcpPeZYXOvkdUmoThTbyNDUzvhlAq2p0QncVNJSwx2HPDXHcd
+	18JTUSewUKwRIL6StYWYdS6i5RHD5yX18ulUBYWiRedTzptOaYqvHgBXjQogIceboOgVASqOnMX
+	SrmT2O6lYtbvhLN76e4pIsVHleSNKCMd/XW64Lp0=
+X-Google-Smtp-Source: AGHT+IEursWnnBafp7olT0TYgqG82PrB6GwXoUpfkMqdlYDXc9m9R2Rde/dyi9rfVWq/7SfkN//gEQ==
+X-Received: by 2002:a05:6000:26ce:b0:3a6:d349:1b52 with SMTP id ffacd0b85a97d-3c32c52bd7dmr10676f8f.21.1755627368099;
+        Tue, 19 Aug 2025 11:16:08 -0700 (PDT)
+Received: from [172.17.139.130] ([163.114.131.192])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c0771c16fasm4624050f8f.35.2025.08.19.11.16.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Aug 2025 11:16:07 -0700 (PDT)
+Message-ID: <7a40bdcc-3905-4fa2-beac-c7612becabb7@gmail.com>
+Date: Tue, 19 Aug 2025 19:13:50 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB6271:EE_|IA3PR10MB8705:EE_
-X-MS-Office365-Filtering-Correlation-Id: d69ad8b9-2d04-4343-3aea-08dddf468e02
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ckttdllIMy90Tk5Gb0w3VWlPNzdreUJMeWx6aXZ4MjVYUmhESVh2OGc2Rkpi?=
- =?utf-8?B?UXk4ZFoxRzBKOVhHMCtPUXZQSUZ5N0pRMEtONzhaeHpxTWNObE9LYzA4dnZQ?=
- =?utf-8?B?STJhYVZzbFZZRlMzZ2NoMXRQcW5PVXZZb041czhTTW9vMWtKb0lTamJwM1Uw?=
- =?utf-8?B?OWFIK3M2L05QYU9xakxmNkVoa2R4ZCtsWUpCYXY0VkJkczcyUWo3clZyUWI1?=
- =?utf-8?B?MUJJd1I5YWtqQStKejRKRkpFWFpGVEYvNkRzazkxa0xOdmd6V1RjTHBEcE9I?=
- =?utf-8?B?bmpmQmlxVlh0Z2ptN3lNSFkrcXhIdHg3eDd1TVkvODF2QUxpc3M3NW5MSy9i?=
- =?utf-8?B?NVlhNFNvc3VRdUlNbnltTkU0bU9OYVhIaWRrVkRDV2RNSWMzRWMySEU0T0x1?=
- =?utf-8?B?TDQ3ZVMwdHc5KzRBRFZ0TUErdXNVY2NxNndxWGk1U2RrNm1PVmdvc1FGS3Bt?=
- =?utf-8?B?bHRKYVNXNmVaeEJPREhDNU9sWUIxSjRoZ01sNldxZ1V5NWI3RlBnbkNPT3M1?=
- =?utf-8?B?U3ZtQTJTYTE2SkxMbGI4R0djOTVnSG5PeHV5VVZweWFjMm9JT2xaYWdGME0x?=
- =?utf-8?B?QUxUR3lTUGk5aHBFV2UxQk1HV1dUZ3QwNGZYMnVYRGpzZVYyWkJSRlpzVjNY?=
- =?utf-8?B?T2hqVEY4dVkzL2xWOFJyS1IxSG4rZm1sQTRxQWxrc2cxZnRnWGZVN1JQQW9n?=
- =?utf-8?B?MDV6TEpJam1MQzJ6ZW8yQll1YXNrSkxpT1dkUUxtU2lkSnpwTE5ublJSdVRr?=
- =?utf-8?B?ZytiZlVYY3RMSklJODQ0RSs2MU42MHJBZy9Wcmh4QTNFMTREdDcvSjJ5bEZ4?=
- =?utf-8?B?aHcwM3ppalliVzdLUG4vOTZwQVZyVVJmT044V0JtaUtWWldiazVRVUJoQlJJ?=
- =?utf-8?B?K3lWK2hIc1dta1kvQ2VPZ2NIVHUvMG4zb3BnOVY4RkwvYk9TTnNWaUJrZUlB?=
- =?utf-8?B?VmJXakExSXNiWXpMS0xNYVBlNXZ2dkdUa3JLWEdycjFhWU5Oc2dDc2M4Ym1h?=
- =?utf-8?B?K1YranpzYUZqdm9vYUVrV1haUkNLQVVQV0ExR1p4ZTlZb0tXcXBoVGtaR3h3?=
- =?utf-8?B?V2dMaENzNmJPVzl0ZC94Wkl6RUUweGgySzBkM29ieWhCeW56YThka0hpSGJZ?=
- =?utf-8?B?ai9UVldLbnRCZy9EcTlaTU0vWEFIdWE5OWZ4TlBGd1pvcTFoWU9CTThPTFds?=
- =?utf-8?B?NTd3UTJnbm1YbUpwbVRZMzhBNUQ1WmYzU3ZldTduZHVPRVBiSWIySC9zT2hC?=
- =?utf-8?B?UUozMjhRMlFaWDZLYWE2UTE5d2s4dit6eldEc2pXbFFtMEQxdWVhWFgzQ2Vl?=
- =?utf-8?B?OHZSWVhiL3F6bndBakp6VVNXQ3paSHVGRzFGanZldWRiSDlQckNyUU1Ld1VW?=
- =?utf-8?B?YVJKbDErZXpRMExzQzV6NUpwcHVHNVRYVzNncjVlMHcyL3hXZTExaVl3UjA3?=
- =?utf-8?B?ZzVtQ2N1WUpCdDFncVFEWWRzNC8yRkdDZlpXNkZzTTc4bnQyTWZacXhUQ0tU?=
- =?utf-8?B?SWRlanhyMWJWU1dvcWUrVlBla29majM1NzJuNXVFTk8vRnNaRy9iUTJ0MkNq?=
- =?utf-8?B?bmx1RlBYeDEwZSsyUU5QYkovQVR5ZWcyNjNaK2gwc3JYejBpaFJkdWs5WkFq?=
- =?utf-8?B?V1dUYnhHZW42dVJoVkg2OENzTThXK2doc1laWkpsZVZBQnUyQzQrSEFMSFla?=
- =?utf-8?B?OXFRMTVFNUVRMC83R1VxaEJ3dzRVd1E3UDdmVmN6RWlNSlhMRWh6blE0ZWdp?=
- =?utf-8?B?UThyVi9kd1Rtb2xvaDQ2THRDZTk4Y1N3OVZaelcxb05DKzhOT2xUNldDazhY?=
- =?utf-8?B?Yml3Q1I4ekNrQ2o3ckZaTzFLb0h5VU9talRSUm1uemowSXhWa2Fwemhlc3By?=
- =?utf-8?Q?zB/infBA8seCq?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB6271.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bG1POGU1WllFUTRiUUVJSmNSUWxmNHA5ZHc5OTMvMGJjRHlWWDY5a0FyTUc0?=
- =?utf-8?B?ZklXRERNaUZSM2hHZ29XZGVGeCt0ME5HVHI0c1czUGFXU1dDK1Z6a2lwK2Q1?=
- =?utf-8?B?VWdqWDJ6Z01SUWFmZWNkTXhqQUV0YUlUT2NFelpvRUpTbjFCaS8xUTBGMkxF?=
- =?utf-8?B?MWhrbDlCZ1BiRTlpTU0wMUY3Y2VSWENGeVF0TTk3cmJTZ2U3VzUrMUU3N2Jw?=
- =?utf-8?B?Q2V3bzczVDBUaGt3d0RiN2NpMVVOZGhFYm1wTkVydW5ZbHYwejFWZ2FnYlhq?=
- =?utf-8?B?bUVyWUN3Zm9rekNDbnpTbjNaVlhQdUV4dU5OMm9ObUdHK1N4ZlNUODlGMTNh?=
- =?utf-8?B?NEpiR3JNMytzSU54T0lRdlZpYzF2RjdLbkNpRnZoWmFUaTVLZVNjSjRoU2dL?=
- =?utf-8?B?QWRLcEZVdmt4dnZSZzhTNC9FYXltSDJWanBhWGszZWdQc3ZnaHc4Q3BqZW5u?=
- =?utf-8?B?NDJMTjNMTXlTTjd5L2FhMzZNei8wZVROQW81b0dqdHdwSW9TaWVPNlNQS056?=
- =?utf-8?B?SEZtMUcySVVER3dsb0J3YngxMnpCcHZkU3lQRGhVV2ZPTENtUXZwWmt4REk5?=
- =?utf-8?B?U0Q5TUVMRE9iR0J2eXdmdVhxZUpaVStNTm8rM1dOU0dxNnNPQXkwUDhjdE9U?=
- =?utf-8?B?bU1ONjllSU1ScGxwV2hXNUkwK0RyOE1iZjk5aEZhckZVcThkUjlaRDdOYjZq?=
- =?utf-8?B?dzcrbTA0TzVtMEVSRWNpODl0WVYralJXOWVzTFZGMnRlSHZmWTJHTEdqdEd2?=
- =?utf-8?B?V1dpSHo1SEdncXo5K3lyUWFER0ZuTVJrUUZYd3cvRjRydFRXQmhnZjJ4a0FQ?=
- =?utf-8?B?dFJNdkd1NW5ZR0R4OHZUWE5Hc1FoSFFyR29xdmZZbVlnYnlBSUl3cllRMTdn?=
- =?utf-8?B?SENoWjNzL3NQSFQ3SEhRSTNaamo2c0UwT20ydE51Nm5SdjZpa2U1eXhXWXpm?=
- =?utf-8?B?R2o4bFJZeDUvcUhDeXZ0WExNYUp6STdmUzZRUWVhcTF3S3V0YVNNNzY4OTFB?=
- =?utf-8?B?QnFzckhJWlBmby84UXgwNkdRSjFscmJZQ0EzM05BaE9lZ3JpbVRKdFQ0b0lJ?=
- =?utf-8?B?bFNlTWxrQnBrcUIrWU5VQ2R6VExUY3kreFJZQ2NaYnNLVkp1SlM5S0hjc2lD?=
- =?utf-8?B?WkprREJhYzI2N1hGKzkveDNyaFp3dkF2eFRXMTA0K3BwK1RqWllLTVNCZFFv?=
- =?utf-8?B?VTRKZUlvYllVZE83M0JKYkpndnVMcnBRWmM2TnJuSVBocVRtcWc0WW16VmRI?=
- =?utf-8?B?cGVjZ1JkVThER0hFQmlUelV3VHhBUlZhM3ZLWGNvejAxNk5UaGErS3hBRW9F?=
- =?utf-8?B?eEZLbkUxbVBLK2MweHZhRERNa1oxUEJUcEpFSGd2cnIzWG1RdjRKdVp1L1Vv?=
- =?utf-8?B?c2NacTc2allXajBLSU1HZlNJR1g4YysvbFgvUS9qVWQ1MUlxUXlNRXhJOW4y?=
- =?utf-8?B?VWZiNGF0dEdyenIva1dxYWhYRXhGbFdnZ2Vic0NzNGdFZlZQV2pidTlHeEhw?=
- =?utf-8?B?MWw2RjVwNHFGNWtwZUhmb1I1MnpXT0ZiYXFzanVmcVRGNS9GUlhTMCtLZ0FL?=
- =?utf-8?B?QUozQ2lHRHJ6Z24vd2MrNHRQQVdhaGVRUU85WUtKdTRHdmVoSUZUL2JKTGdG?=
- =?utf-8?B?SGw5OFR6NjRHVFdsVHhoTG9oNFRmL3pnc3lWeGw0dUJ1NGEyK0ZxR0lTMFZC?=
- =?utf-8?B?bTFFQnhtT0pSbndGUzFsbTIram9iTkhhOVg4ZXdJeC9JWW5kbmRCbFVwem9i?=
- =?utf-8?B?dEtvd2dIQlUydkFGSmtKWHd3TUdmRExwcHBTVHpKQWZpTjhmUWF0VG1ZMHN0?=
- =?utf-8?B?eTJvTnoveGR0TnJOaEQ4aXd6VUdoWXQ3WTRTSVVzSjNJcSs0cTRkS1RiNUU5?=
- =?utf-8?B?ci81dXBYYlo2dEd4UjNHbldkWGR2N1djUkYwRllJbEMzMjJDTmJnQlUzQTI2?=
- =?utf-8?B?ZmpyMTc0UkE1YkFzU3AyOGIveXppTEJ3Ym1lOXovZWN0V3kxVUp2ZXJ5WHJw?=
- =?utf-8?B?VEVWN1NxeXRwM3hFclJ5MWlQRUw2Q25IU3ZsVUNjc3VuSXFXaVdGallNeU8w?=
- =?utf-8?B?Y2t5dFFhSmpJRlFHaXkyOTZRSVJjK0FuYTdQS21DSzNTWDZlRS9zdWpDbnNH?=
- =?utf-8?B?S052VHJnNlZrNWNQaGtNQnVtc1ZRNHBzZDdINWxuVlhUTVBSSTYzZWlIR2tX?=
- =?utf-8?B?YlE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	Hdv01ScCEw/2bRNXB3Kc38N18emDh/1bDH2ggxAd7NL2tnjuVUFozv4VpywwanrO6D4659F5MPxg8bUplMJl3zDjZnSSA75Q+0C8oSR1LilsaZqnjQkdL8rm52uLbJLnO9cWCNV/U4YJHAmJ1K9L+FwjEwSxmH/3HADZApZ/c9OpFkIoAwpvqLlhldYVNUbTp+fsJxElqWPv9xorIEkTFKn2lge4qeTn8bfo+DnfJR0graumwuFpVD1Vg8zg/YCBH9bZbArIv1yT8zTI/2ksIovFkpqK5NUwWLpz3V7F78FmDU4tPsZtW3CqW8HZukwd/RApECZJINTeyzTsPQIxbGXM9KLLhRMa/exV7BK4IK7bvaakj2fjEgteyAfd9MJQui22hh3f2J4cuzH5K2KIwZHyTCa/jgmBC9MZb5aIOHZqYnKSPyT2r17qokeXj69382EM/kuxVczqTztFcgPOgKtyeUboQZRsgq9FTkaz9ZuH/7A7vRa1kCBaSI+YU2Cvlqf3c+PVQHsZSNmkUNnKNQIZ4aXFgYUcYTPxehBCSD+k0jAZNQ+l5+6pGT233KVXRePpRqkSSYg3yDCoTx8m90qka4IYL+Sm1hvm8kI9pKs=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d69ad8b9-2d04-4343-3aea-08dddf468e02
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB6271.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2025 17:33:48.2298
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9GyGfyJyz71pKM7S9lTGY4gQtvvhOv08QoQ4WJO2wsAjTslwKOQq4Xa9wfMQi5dzrPm6F5l+TCX4khFkpsYKOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA3PR10MB8705
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-19_02,2025-08-14_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- phishscore=0 suspectscore=0 mlxscore=0 bulkscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2507300000 definitions=main-2508190163
-X-Proofpoint-ORIG-GUID: bjTRugIJ-HLOz9NnhYqM6ToSlY1ynA9K
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODE5MDE2MiBTYWx0ZWRfXx14hVvy3gG1G
- cBm9TWpn6PSsc1sQXlaFfMdxOCeQWFJmnGQiVORIQ3EMQCRiSVwOf2xenm97IQVaRhV1aPSUXJ7
- qyvf03/F/sUyId2NkC5DT9LMiR6szUWYE4vRjOY3mzp82Oj8k89/gU0q+JXdnYvSUMsaNtaSZrC
- UEGc0cPxU4U6dHqPeLH5/pUfxpTsAf1qXvHkE0ps5VnPheuon4ZhR7odH0p2IgcK4yUQZ4S7gfC
- jve6QEZTnz9NlK1mttxDwcHj+IZM1GuSISMSdOXtfGLHSPNBXvchywX8rZuIQ+bM2PYfiTgmnVF
- 6QMnSYRxVsjqT+SdXiOYWsW8jIWIcZcm025nYmbvBTv0LbPuRH/u5vG7aepAwiAtdFrTpRI/5Mp
- gfuJYfi3XaBzPpsklSsxoVhrbLlBk/nxlK9RYN7myCk/9nAwhbuDcXqKqHS15XMokGQjDVAg
-X-Proofpoint-GUID: bjTRugIJ-HLOz9NnhYqM6ToSlY1ynA9K
-X-Authority-Analysis: v=2.4 cv=OK4n3TaB c=1 sm=1 tr=0 ts=68a4b580 cx=c_pps
- a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=2OwXVqhp2XgA:10 a=GoEa3M9JfhUA:10 a=xNf9USuDAAAA:8 a=VwQbUJbxAAAA:8
- a=t7CeM3EgAAAA:8 a=20KFwNOVAAAA:8 a=yCU7vmp8-8xzMnqFVVUA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=TlN9_QlMJ3UA:10 a=FdTzh2GWekK77mhwV6Dw:22
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 3/4] bpf: task work scheduling kfuncs
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250815192156.272445-1-mykyta.yatsenko5@gmail.com>
+ <20250815192156.272445-4-mykyta.yatsenko5@gmail.com>
+ <CAP01T751FPiuZv5yBMeHSAmFmywc7L3iY=jYLb992YOp_94pRQ@mail.gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAP01T751FPiuZv5yBMeHSAmFmywc7L3iY=jYLb992YOp_94pRQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 18/08/2025 21:52, Arnaldo Carvalho de Melo wrote:
-> On Mon, Aug 18, 2025 at 10:56:36AM -0700, Ihor Solodrai wrote:
->> On 8/18/25 6:56 AM, Alan Maguire wrote:
->>> On 14/08/2025 10:42, Changqing Li wrote:
->>>>
->>>> On 8/14/25 17:20, Changqing Li wrote:
->>>>>
->>>>> On 8/14/25 07:45, Ihor Solodrai wrote:
->>>>>> CAUTION: This email comes from a non Wind River email account!
->>>>>> Do not click links or open attachments unless you recognize the
->>>>>> sender and know the content is safe.
->>>>>>
->>>>>> On 8/10/25 6:18 PM, Changqing Li wrote:
->>>>>>> Hi,  Dear maintainers
->>>>>>>
->>>>>>> I met a "Segmentation fault" error of pahole.   It happened when I
->>>>>>> passed an ELF file without .symtab section.
->>>>>>> Maybe I passed an  unsupport file, but I think it should not segfault,
->>>>>>> maybe  a warnning or error message is better.
->>>>>>>
->>>>>>>
->>>>>>> Here is the detailed info:
->>>>>>> Pahole version:
->>>>>>> # pahole --version
->>>>>>> v1.29
->>>>>>>
->>>>>>> Reproduce Command:
->>>>>>> root@intel-x86-64:/~# pahole --btf_features=default -J /boot/
->>>>>>> vmlinux-6.12.40-yocto-standard
->>>>>>> pahole[599]: segfault at 8 ip 00007f7c92d819e2 sp 00007f7c799febe0
->>>>>>> error
->>>>>>> 6 in libdwarves.so.1.0.0[189e2,7f7c92d72000+1c000] likely on CPU 0
->>>>>>> (core
->>>>>>> 0, socket 0)
->>>>>>> Code: 74 19 ff ff 48 39 dd 75 ef 4c 89 ef e8 67 19 ff ff 49 8b 7c 24 18
->>>>>>> e8 8d 13 ff ff 49 8b 14 24 49 8b 44 24 08 4c 89 e7 45 31 e4 <48> 89 42
->>>>>>> 08 48 89 10 e8 42 19 ff ff e9 30 ff ff ff e8 58 0a ff ff
->>>>>>> Segmentation fault (core dumped)
->>>>>>>
->>>>>>> root@intel-x86-64:~# file /boot/vmlinux-6.12.40-yocto-standard
->>>>>>> /boot/vmlinux-6.12.40-yocto-standard: ELF 64-bit LSB executable,
->>>>>>> x86-64,
->>>>>>> version 1 (SYSV), statically linked,
->>>>>>> BuildID[sha1]=1e73fe48101f07b9d991dc045ab9f9672a0feac0, stripped
->>>>>>>
->>>>>>> root@intel-x86-64:/usr/bin# readelf -S /boot/vmlinux-6.12.40-yocto-
->>>>>>> standard | grep .symtab
->>>>>>>     [ 4] __ksymtab         PROGBITS         ffffffff82c11e00 01e11e00
->>>>>>>     [ 5] __ksymtab_gpl     PROGBITS         ffffffff82c24730 01e24730
->>>>>>>     [ 6] __ksymtab_strings PROGBITS         ffffffff82c397f0 01e397f0
->>>>>>>
->>>>>>>
->>>>>>> (gdb) bt
->>>>>>> #0  elf_functions__new (elf=<optimized out>) at /usr/src/debug/
->>>>>>> pahole/1.29/btf_encoder.c:196
->>>>>>> #1  0x00007ffff7f92a7d in btf_encoder__elf_functions
->>>>>>> (encoder=encoder@entry=0x7fffd8008dc0) at /usr/src/debug/pahole/1.29/
->>>>>>> btf_encoder.c:1374
->>>>>>> #2  0x00007ffff7f94489 in btf_encoder__new (cu=cu@entry=0x7fffd8001e50,
->>>>>>> detached_filename=<optimized out>, warning: could not convert 'btf'
->>>>>>> from
->>>>>>> the host encoding (ANSI_X3.4-1968) to UTF-32.
->>>>>>> This normally should not happen, please file a bug report.
->>>>>>> base_btf=0x0,
->>>>>>>       verbose=<optimized out>, conf_load=conf_load@entry=0x555555565280
->>>>>>> <conf_load>) at /usr/src/debug/pahole/1.29/btf_encoder.c:2431
->>>>>>> #3  0x000055555555db49 in pahole_stealer__btf_encode
->>>>>>> (cu=0x7fffd8001e50,
->>>>>>> conf_load=0x555555565280 <conf_load>)
->>>>>>>       at /usr/src/debug/pahole/1.29/pahole.c:3126
->>>>>>> #4  pahole_stealer (cu=0x7fffd8001e50, conf_load=0x555555565280
->>>>>>> <conf_load>) at /usr/src/debug/pahole/1.29/pahole.c:3187
->>>>>>> #5  0x00007ffff7f9d023 in cus__steal_now (cus=<optimized out>,
->>>>>>> cu=<optimized out>, conf=<optimized out>)
->>>>>>>       at /usr/src/debug/pahole/1.29/dwarf_loader.c:3266
->>>>>>> #6  dwarf_loader__worker_thread (arg=0x7fffffffe700) at /usr/src/debug/
->>>>>>> pahole/1.29/dwarf_loader.c:3672
->>>>>>> #7  0x00007ffff7dbe722 in start_thread (arg=<optimized out>) at
->>>>>>> pthread_create.c:448
->>>>>>> #8  0x00007ffff7e314fc in __GI___clone3 () at ../sysdeps/unix/sysv/
->>>>>>> linux/x86_64/clone3.S:78
->>>>>>> (gdb)
+On 8/19/25 15:18, Kumar Kartikeya Dwivedi wrote:
+> On Fri, 15 Aug 2025 at 21:22, Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
 >>
->> Hi everyone.
+>> Implementation of the bpf_task_work_schedule kfuncs.
 >>
->> I was able to reproduce the error by feeding pahole a vmlinux with a
->> debuglink [1], created with:
+>> Main components:
+>>   * struct bpf_task_work_context – Metadata and state management per task
+>> work.
+>>   * enum bpf_task_work_state – A state machine to serialize work
+>>   scheduling and execution.
+>>   * bpf_task_work_schedule() – The central helper that initiates
+>> scheduling.
+>>   * bpf_task_work_acquire() - Attempts to take ownership of the context,
+>>   pointed by passed struct bpf_task_work, allocates new context if none
+>>   exists yet.
+>>   * bpf_task_work_callback() – Invoked when the actual task_work runs.
+>>   * bpf_task_work_irq() – An intermediate step (runs in softirq context)
+>> to enqueue task work.
+>>   * bpf_task_work_cancel_and_free() – Cleanup for deleted BPF map entries.
+> Can you elaborate on why the bouncing through irq_work context is necessary?
+> I think we should have this info in the commit log.
+> Is it to avoid deadlocks with task_work locks and/or task->pi_lock?
+yes, mainly to avoid locks in NMI.
+>
+>> Flow of successful task work scheduling
+>>   1) bpf_task_work_schedule_* is called from BPF code.
+>>   2) Transition state from STANDBY to PENDING, marks context is owned by
+>>   this task work scheduler
+>>   3) irq_work_queue() schedules bpf_task_work_irq().
+>>   4) Transition state from PENDING to SCHEDULING.
+>>   4) bpf_task_work_irq() attempts task_work_add(). If successful, state
+>>   transitions to SCHEDULED.
+>>   5) Task work calls bpf_task_work_callback(), which transition state to
+>>   RUNNING.
+>>   6) BPF callback is executed
+>>   7) Context is cleaned up, refcounts released, context state set back to
+>>   STANDBY.
 >>
->>     vmlinux=$(realpath ~/kernels/bpf-next/.tmp_vmlinux1)
->>     objcopy --only-keep-debug $vmlinux vmlinux.debug
->>     objcopy --strip-all --add-gnu-debuglink=vmlinux.debug $vmlinux
->> vmlinux.stripped
+>> bpf_task_work_context handling
+>> The context pointer is stored in bpf_task_work ctx field (u64) but
+>> treated as an __rcu pointer via casts.
+>> bpf_task_work_acquire() publishes new bpf_task_work_context by cmpxchg
+>> with RCU initializer.
+>> Read under the RCU lock only in bpf_task_work_acquire() when ownership
+>> is contended.
+>> Upon deleting map value, bpf_task_work_cancel_and_free() is detaching
+>> context pointer from struct bpf_task_work and releases resources
+>> if scheduler does not own the context or can be canceled (state ==
+>> STANDBY or state == SCHEDULED and callback canceled). If task work
+>> scheduler owns the context, its state is set to FREED and scheduler is
+>> expected to cleanup on the next state transition.
 >>
->> With that, I got the following valgrind output:
->>
->>     $ valgrind ./build/pahole --btf_features=default -J
->> ./mbox/vmlinux.stripped
->>     ==40680== Memcheck, a memory error detector
->>     ==40680== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et
->> al.
->>     ==40680== Using Valgrind-3.25.1 and LibVEX; rerun with -h for copyright
->> info
->>     ==40680== Command: ./build/pahole --btf_features=default -J
->> ./mbox/vmlinux.stripped
->>     ==40680==
->>     ==40680== Warning: set address range perms: large range [0x7c20000,
->> 0x32e2d000) (defined)
->>     ==40680== Thread 2:
->>     ==40680== Invalid write of size 8
->>     ==40680==    at 0x487D34D: __list_del (list.h:106)
->>     ==40680==    by 0x487D384: list_del (list.h:118)
->>     ==40680==    by 0x487D6DB: elf_functions__delete (btf_encoder.c:170)
->>     ==40680==    by 0x487D77C: elf_functions__new (btf_encoder.c:201)
->>     ==40680==    by 0x4880E2A: btf_encoder__elf_functions
->> (btf_encoder.c:1485)
->>     ==40680==    by 0x4883558: btf_encoder__new (btf_encoder.c:2450)
->>     ==40680==    by 0x4078DD: pahole_stealer__btf_encode (pahole.c:3160)
->>     ==40680==    by 0x407B0D: pahole_stealer (pahole.c:3221)
->>     ==40680==    by 0x488D2F5: cus__steal_now (dwarf_loader.c:3266)
->>     ==40680==    by 0x488DF74: dwarf_loader__worker_thread
->> (dwarf_loader.c:3678)
->>     ==40680==    by 0x4A8F723: start_thread (pthread_create.c:448)
->>     ==40680==    by 0x4B13613: clone (clone.S:100)
->>     ==40680==  Address 0x8 is not stack'd, malloc'd or (recently) free'd
->>
->> As far as I understand, in principle pahole could support search for a
->> file linked via .gnu_debuglink, but that's a separate issue.
-> 
-> Agreed.
->  
->> Please see a bugfix patch below.
->>
->> [1]
->> https://manpages.debian.org/unstable/binutils-common/objcopy.1.en.html#add~3
->>
->>
->> From 6104783080709dad0726740615149951109f839e Mon Sep 17 00:00:00 2001
->> From: Ihor Solodrai <ihor.solodrai@linux.dev>
->> Date: Mon, 18 Aug 2025 10:30:16 -0700
->> Subject: [PATCH] btf_encoder: fix elf_functions cleanup on error
->>
->> When elf_functions__new() errors out and jumps to
->> elf_functions__delete(), pahole segfaults on attempt to list_del the
->> elf_functions instance from a list, to which it was never added.
->>
->> Fix this by changing elf_functions__delete() to
->> elf_functions__clear(), moving list_del and free calls out of it. Then
->> clear and free on error, and remove from the list on normal cleanup in
->> elf_functions_list__clear().
-> 
-> I think we should still call it __delete() to have a counterpart to
-> __new() and just remove that removal from the list from the __delete().
-> 
-> Apart from that, it looks to address a bug, so with the above changed:
-> 
-> Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> 
-
-Thanks for the fix Ihor!
-
-Sorry to bikeshed this but how about using funcs->elf as a proxy for
-determining if we have elf function info to add to the list, so we could
-then fix elf_functions__delete() to guard the list_del():
-
-	if (funcs->elf)
-		list_del(&funcs->node);
-
-
-we'd just then need to tweak
-
--	funcs->elf = elf;
-        err = elf_functions__collect(funcs);
-	if (err < 0)
-                goto out_delete;
-+	funcs->elf = elf;
-
-Would that work?
-
-> - Arnaldo
->  
->> Closes: https://lore.kernel.org/dwarves/24bcc853-533c-42ab-bc37-0c13e0baa217@windriver.com/
->> Reported-by: Changqing Li <changqing.li@windriver.com>
->> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
->>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 >> ---
->>  btf_encoder.c | 11 ++++++-----
->>  1 file changed, 6 insertions(+), 5 deletions(-)
+> This is much better now, with clear ownership between free path and
+> scheduling path, I mostly have a few more comments on the current
+> implementation, plus one potential bug.
+>
+> However, the more time I spend on this, the more I feel we should
+> unify all this with the two other bpf async work execution mechanisms
+> (timers and wq), and simplify and deduplicate a lot of this under the
+> serialized async->lock. I know NMI execution is probably critical for
+> this primitive, but we can replace async->lock with rqspinlock to
+> address that, so that it becomes safe to serialize in any context.
+> Apart from that, I don't see anything that would negate reworking all
+> this as a case of BPF_TASK_WORK for bpf_async_kern, modulo internal
+> task_work locks that have trouble with NMI execution (see later
+> comments).
+>
+> I also feel like it would be cleaner if we split the API into 3 steps:
+> init(), set_callback(), schedule() like the other cases, I don't see
+> why we necessarily need to diverge, and it simplifies some of the
+> logic in schedule().
+> Once every state update is protected by a lock, all of the state
+> transitions are done automatically and a lot of the extra races are
+> eliminated.
+>
+> I think we should discuss whether this was considered and why you
+> discarded this approach, otherwise the code is pretty complex, with
+> little upside.
+> Maybe I'm missing something obvious and you'd know more since you've
+> thought about all this longer.
+As for API, I think having 1 function for scheduling callback is cleaner
+then having 3 which are always called in the same order anyway. Most of 
+the complexity
+comes from synchronization, not logic, so not having to do the same 
+synchronization in
+init(), set_callback() and schedule() seems like a benefit to me.
+Let me check if using rqspinlock going to make things simpler. We still 
+need states to at least know if cancellation is possible and to flag 
+deletion to scheduler, but using a lock will make code easier to 
+understand.
+>
+>>   kernel/bpf/helpers.c | 270 +++++++++++++++++++++++++++++++++++++++++--
+>>   1 file changed, 260 insertions(+), 10 deletions(-)
 >>
->> diff --git a/btf_encoder.c b/btf_encoder.c
->> index 0bc2334..631c0b5 100644
->> --- a/btf_encoder.c
->> +++ b/btf_encoder.c
->> @@ -161,14 +161,12 @@ struct btf_kfunc_set_range {
->>  	uint64_t end;
->>  };
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index d2f88a9bc47b..346ae8fd3ada 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -25,6 +25,8 @@
+>>   #include <linux/kasan.h>
+>>   #include <linux/bpf_verifier.h>
+>>   #include <linux/uaccess.h>
+>> +#include <linux/task_work.h>
+>> +#include <linux/irq_work.h>
 >>
->> -static inline void elf_functions__delete(struct elf_functions *funcs)
->> +static inline void elf_functions__clear(struct elf_functions *funcs)
->>  {
->>  	for (int i = 0; i < funcs->cnt; i++)
->>  		free(funcs->entries[i].alias);
->>  	free(funcs->entries);
->>  	elf_symtab__delete(funcs->symtab);
->> -	list_del(&funcs->node);
->> -	free(funcs);
->>  }
+>>   #include "../../lib/kstrtox.h"
 >>
->>  static int elf_functions__collect(struct elf_functions *functions);
->> @@ -198,7 +196,8 @@ struct elf_functions *elf_functions__new(Elf *elf)
->>  	return funcs;
+>> @@ -3701,6 +3703,226 @@ __bpf_kfunc int bpf_strstr(const char *s1__ign, const char *s2__ign)
 >>
->>  out_delete:
->> -	elf_functions__delete(funcs);
->> +	elf_functions__clear(funcs);
->> +	free(funcs);
->>  	return NULL;
->>  }
+>>   typedef void (*bpf_task_work_callback_t)(struct bpf_map *map, void *key, void *value);
 >>
->> @@ -209,7 +208,9 @@ static inline void elf_functions_list__clear(struct
->> list_head *elf_functions_lis
+>> +enum bpf_task_work_state {
+>> +       /* bpf_task_work is ready to be used */
+>> +       BPF_TW_STANDBY = 0,
+>> +       /* irq work scheduling in progress */
+>> +       BPF_TW_PENDING,
+>> +       /* task work scheduling in progress */
+>> +       BPF_TW_SCHEDULING,
+>> +       /* task work is scheduled successfully */
+>> +       BPF_TW_SCHEDULED,
+>> +       /* callback is running */
+>> +       BPF_TW_RUNNING,
+>> +       /* associated BPF map value is deleted */
+>> +       BPF_TW_FREED,
+>> +};
+>> +
+>> +struct bpf_task_work_context {
+>> +       /* the map and map value associated with this context */
+>> +       struct bpf_map *map;
+>> +       void *map_val;
+>> +       /* bpf_prog that schedules task work */
+>> +       struct bpf_prog *prog;
+>> +       /* task for which callback is scheduled */
+>> +       struct task_struct *task;
+>> +       enum task_work_notify_mode mode;
+>> +       enum bpf_task_work_state state;
+>> +       bpf_task_work_callback_t callback_fn;
+>> +       struct callback_head work;
+>> +       struct irq_work irq_work;
+>> +       struct rcu_head rcu;
+>> +} __aligned(8);
+>> +
+>> +static struct bpf_task_work_context *bpf_task_work_context_alloc(void)
+>> +{
+>> +       struct bpf_task_work_context *ctx;
+>> +
+>> +       ctx = bpf_mem_alloc(&bpf_global_ma, sizeof(struct bpf_task_work_context));
+>> +       if (ctx)
+>> +               memset(ctx, 0, sizeof(*ctx));
+>> +       return ctx;
+>> +}
+>> +
+>> +static void bpf_task_work_context_free(struct rcu_head *rcu)
+>> +{
+>> +       struct bpf_task_work_context *ctx = container_of(rcu, struct bpf_task_work_context, rcu);
+>> +       /* bpf_mem_free expects migration to be disabled */
+>> +       migrate_disable();
+>> +       bpf_mem_free(&bpf_global_ma, ctx);
+>> +       migrate_enable();
+>> +}
+>> +
+>> +static bool task_work_match(struct callback_head *head, void *data)
+>> +{
+>> +       struct bpf_task_work_context *ctx = container_of(head, struct bpf_task_work_context, work);
+>> +
+>> +       return ctx == data;
+>> +}
+>> +
+>> +static void bpf_task_work_context_reset(struct bpf_task_work_context *ctx)
+>> +{
+>> +       bpf_prog_put(ctx->prog);
+>> +       bpf_task_release(ctx->task);
+>> +}
+>> +
+>> +static void bpf_task_work_callback(struct callback_head *cb)
+>> +{
+>> +       enum bpf_task_work_state state;
+>> +       struct bpf_task_work_context *ctx;
+>> +       u32 idx;
+>> +       void *key;
+>> +
+>> +       ctx = container_of(cb, struct bpf_task_work_context, work);
+>> +
+>> +       /*
+>> +        * Read lock is needed to protect map key and value access below, it has to be done before
+>> +        * the state transition
+>> +        */
+>> +       rcu_read_lock_trace();
+>> +       /*
+>> +        * This callback may start running before bpf_task_work_irq() switched the state to
+>> +        * SCHEDULED so handle both transition variants SCHEDULING|SCHEDULED -> RUNNING.
+>> +        */
+>> +       state = cmpxchg(&ctx->state, BPF_TW_SCHEDULING, BPF_TW_RUNNING);
+>> +       if (state == BPF_TW_SCHEDULED)
+> ... and let's say we have concurrent cancel_and_free here, we mark
+> state BPF_TW_FREED.
+>
+>> +               state = cmpxchg(&ctx->state, BPF_TW_SCHEDULED, BPF_TW_RUNNING);
+>> +       if (state == BPF_TW_FREED) {
+> ... and notice it here now ...
+>
+>> +               rcu_read_unlock_trace();
+>> +               bpf_task_work_context_reset(ctx);
+>> +               call_rcu_tasks_trace(&ctx->rcu, bpf_task_work_context_free);
+> ... then I presume this is ok, because the cancel of tw in
+> cancel_and_free will fail?
+yes, if cancellation succeeds, callback will not be called.
+If it fails, cancel_and_free does not do anything, except changing
+the state and callback does the cleanup.
+> Maybe add a comment here that it's interlocked with the free path.
+>
+>> +               return;
+>> +       }
+>> +
+>> +       key = (void *)map_key_from_value(ctx->map, ctx->map_val, &idx);
+>> +       migrate_disable();
+>> +       ctx->callback_fn(ctx->map, key, ctx->map_val);
+>> +       migrate_enable();
+>> +       rcu_read_unlock_trace();
+>> +       /* State is running or freed, either way reset. */
+>> +       bpf_task_work_context_reset(ctx);
+>> +       state = cmpxchg(&ctx->state, BPF_TW_RUNNING, BPF_TW_STANDBY);
+>> +       if (state == BPF_TW_FREED)
+>> +               call_rcu_tasks_trace(&ctx->rcu, bpf_task_work_context_free);
+>> +}
+>> +
+>> +static void bpf_task_work_irq(struct irq_work *irq_work)
+>> +{
+>> +       struct bpf_task_work_context *ctx;
+>> +       enum bpf_task_work_state state;
+>> +       int err;
+>> +
+>> +       ctx = container_of(irq_work, struct bpf_task_work_context, irq_work);
+>> +
+>> +       state = cmpxchg(&ctx->state, BPF_TW_PENDING, BPF_TW_SCHEDULING);
+>> +       if (state == BPF_TW_FREED)
+>> +               goto free_context;
+>> +
+>> +       err = task_work_add(ctx->task, &ctx->work, ctx->mode);
+>> +       if (err) {
+>> +               bpf_task_work_context_reset(ctx);
+>> +               state = cmpxchg(&ctx->state, BPF_TW_SCHEDULING, BPF_TW_STANDBY);
+>> +               if (state == BPF_TW_FREED)
+>> +                       call_rcu_tasks_trace(&ctx->rcu, bpf_task_work_context_free);
+>> +               return;
+>> +       }
+>> +       state = cmpxchg(&ctx->state, BPF_TW_SCHEDULING, BPF_TW_SCHEDULED);
+>> +       if (state == BPF_TW_FREED && task_work_cancel_match(ctx->task, task_work_match, ctx))
+>> +               goto free_context; /* successful cancellation, release and free ctx */
+>> +       return;
+>> +
+>> +free_context:
+>> +       bpf_task_work_context_reset(ctx);
+>> +       call_rcu_tasks_trace(&ctx->rcu, bpf_task_work_context_free);
+>> +}
+>> +
+>> +static struct bpf_task_work_context *bpf_task_work_context_acquire(struct bpf_task_work *tw,
+>> +                                                                  struct bpf_map *map)
+>> +{
+>> +       struct bpf_task_work_context *ctx, *old_ctx;
+>> +       enum bpf_task_work_state state;
+>> +       struct bpf_task_work_context __force __rcu **ppc =
+>> +               (struct bpf_task_work_context __force __rcu **)&tw->ctx;
+>> +
+>> +       /* ctx pointer is RCU protected */
+>> +       rcu_read_lock_trace();
+>> +       ctx = rcu_dereference(*ppc);
+>> +       if (!ctx) {
+>> +               ctx = bpf_task_work_context_alloc();
+>> +               if (!ctx) {
+>> +                       rcu_read_unlock_trace();
+>> +                       return ERR_PTR(-ENOMEM);
+>> +               }
+>> +               old_ctx = unrcu_pointer(cmpxchg(ppc, NULL, RCU_INITIALIZER(ctx)));
+>> +               /*
+>> +                * If ctx is set by another CPU, release allocated memory.
+>> +                * Do not fail, though, attempt stealing the work
+>> +                */
+>> +               if (old_ctx) {
+>> +                       bpf_mem_free(&bpf_global_ma, ctx);
+>> +                       ctx = old_ctx;
+>> +               }
+>> +       }
+>> +       state = cmpxchg(&ctx->state, BPF_TW_STANDBY, BPF_TW_PENDING);
+>> +       /*
+>> +        * We can unlock RCU, because task work scheduler (this codepath)
+>> +        * now owns the ctx or returning an error
+>> +        */
+>> +       rcu_read_unlock_trace();
+>> +       if (state != BPF_TW_STANDBY)
+>> +               return ERR_PTR(-EBUSY);
+>> +       return ctx;
+>> +}
+>> +
+>> +static int bpf_task_work_schedule(struct task_struct *task, struct bpf_task_work *tw,
+>> +                                 struct bpf_map *map, bpf_task_work_callback_t callback_fn,
+>> +                                 struct bpf_prog_aux *aux, enum task_work_notify_mode mode)
+>> +{
+>> +       struct bpf_prog *prog;
+>> +       struct bpf_task_work_context *ctx = NULL;
+>> +       int err;
+>> +
+>> +       BTF_TYPE_EMIT(struct bpf_task_work);
+>> +
+>> +       prog = bpf_prog_inc_not_zero(aux->prog);
+>> +       if (IS_ERR(prog))
+>> +               return -EBADF;
+>> +
+>> +       if (!atomic64_read(&map->usercnt)) {
+>> +               err = -EBADF;
+>> +               goto release_prog;
+>> +       }
+> Please add a comment on why lack of ordering between load of usercnt
+> and load of tw->ctx is safe, in presence of a parallel usercnt
+> dec_and_test and ctx xchg.
+> See __bpf_async_init for similar race.
+I think I see what you mean, let me double check this.
+>
+>> +       task = bpf_task_acquire(task);
+>> +       if (!task) {
+>> +               err = -EPERM;
+>> +               goto release_prog;
+>> +       }
+>> +       ctx = bpf_task_work_context_acquire(tw, map);
+>> +       if (IS_ERR(ctx)) {
+>> +               err = PTR_ERR(ctx);
+>> +               goto release_all;
+>> +       }
+>> +
+>> +       ctx->task = task;
+>> +       ctx->callback_fn = callback_fn;
+>> +       ctx->prog = prog;
+>> +       ctx->mode = mode;
+>> +       ctx->map = map;
+>> +       ctx->map_val = (void *)tw - map->record->task_work_off;
+>> +       init_irq_work(&ctx->irq_work, bpf_task_work_irq);
+>> +       init_task_work(&ctx->work, bpf_task_work_callback);
+>> +
+>> +       irq_work_queue(&ctx->irq_work);
+>> +
+>> +       return 0;
+>> +
+>> +release_all:
+>> +       bpf_task_release(task);
+>> +release_prog:
+>> +       bpf_prog_put(prog);
+>> +       return err;
+>> +}
+>> +
+>>   /**
+>>    * bpf_task_work_schedule_signal - Schedule BPF callback using task_work_add with TWA_SIGNAL mode
+>>    * @task: Task struct for which callback should be scheduled
+>> @@ -3711,13 +3933,11 @@ typedef void (*bpf_task_work_callback_t)(struct bpf_map *map, void *key, void *v
+>>    *
+>>    * Return: 0 if task work has been scheduled successfully, negative error code otherwise
+>>    */
+>> -__bpf_kfunc int bpf_task_work_schedule_signal(struct task_struct *task,
+>> -                                             struct bpf_task_work *tw,
+>> +__bpf_kfunc int bpf_task_work_schedule_signal(struct task_struct *task, struct bpf_task_work *tw,
+>>                                                struct bpf_map *map__map,
+>> -                                             bpf_task_work_callback_t callback,
+>> -                                             void *aux__prog)
+>> +                                             bpf_task_work_callback_t callback, void *aux__prog)
+>>   {
+>> -       return 0;
+>> +       return bpf_task_work_schedule(task, tw, map__map, callback, aux__prog, TWA_SIGNAL);
+>>   }
 >>
->>  	list_for_each_safe(pos, tmp, elf_functions_list) {
->>  		funcs = list_entry(pos, struct elf_functions, node);
->> -		elf_functions__delete(funcs);
->> +		elf_functions__clear(funcs);
->> +		list_del(&funcs->node);
->> +		free(funcs);
->>  	}
->>  }
+>>   /**
+>> @@ -3731,19 +3951,47 @@ __bpf_kfunc int bpf_task_work_schedule_signal(struct task_struct *task,
+>>    *
+>>    * Return: 0 if task work has been scheduled successfully, negative error code otherwise
+>>    */
+>> -__bpf_kfunc int bpf_task_work_schedule_resume(struct task_struct *task,
+>> -                                             struct bpf_task_work *tw,
+>> +__bpf_kfunc int bpf_task_work_schedule_resume(struct task_struct *task, struct bpf_task_work *tw,
+>>                                                struct bpf_map *map__map,
+>> -                                             bpf_task_work_callback_t callback,
+>> -                                             void *aux__prog)
+>> +                                             bpf_task_work_callback_t callback, void *aux__prog)
+>>   {
+>> -       return 0;
+>> +       enum task_work_notify_mode mode;
+>> +
+>> +       mode = task == current && in_nmi() ? TWA_NMI_CURRENT : TWA_RESUME;
+>> +       return bpf_task_work_schedule(task, tw, map__map, callback, aux__prog, mode);
+>>   }
 >>
->> -- 
+>>   __bpf_kfunc_end_defs();
+>>
+>>   void bpf_task_work_cancel_and_free(void *val)
+>>   {
+>> +       struct bpf_task_work *tw = val;
+>> +       struct bpf_task_work_context *ctx;
+>> +       enum bpf_task_work_state state;
+>> +
+>> +       /* No need do rcu_read_lock as no other codepath can reset this pointer */
+>> +       ctx = unrcu_pointer(xchg((struct bpf_task_work_context __force __rcu **)&tw->ctx, NULL));
+>> +       if (!ctx)
+>> +               return;
+>> +       state = xchg(&ctx->state, BPF_TW_FREED);
+>> +
+>> +       switch (state) {
+>> +       case BPF_TW_SCHEDULED:
+>> +               /* If we can't cancel task work, rely on task work callback to free the context */
+>> +               if (!task_work_cancel_match(ctx->task, task_work_match, ctx))
+> This part looks broken to me.
+> You are calling this path
+> (update->obj_free_fields->cancel_and_free->cancel_and_match) in
+> possibly NMI context.
+> Which means we can deadlock if we hit the NMI context prog in the
+> middle of task->pi_lock critical section.
+> That's taken in task_work functions
+> The task_work_cancel_match takes the pi_lock.
+Good point, thanks. I think this could be solved in 2 ways:
+  * Don't cancel, rely on callback dropping the work
+  * Cancel in another irq_work
+I'll probably go with the second one.
+>
+>> +                       break;
+>> +               bpf_task_work_context_reset(ctx);
+>> +               fallthrough;
+>> +       case BPF_TW_STANDBY:
+>> +               call_rcu_tasks_trace(&ctx->rcu, bpf_task_work_context_free);
+>> +               break;
+>> +       /* In all below cases scheduling logic should detect context state change and cleanup */
+>> +       case BPF_TW_SCHEDULING:
+>> +       case BPF_TW_PENDING:
+>> +       case BPF_TW_RUNNING:
+>> +       default:
+>> +               break;
+>> +       }
+>>   }
+>>
+>>   BTF_KFUNCS_START(generic_btf_ids)
+>> @@ -3769,6 +4017,8 @@ BTF_ID_FLAGS(func, bpf_rbtree_first, KF_RET_NULL)
+>>   BTF_ID_FLAGS(func, bpf_rbtree_root, KF_RET_NULL)
+>>   BTF_ID_FLAGS(func, bpf_rbtree_left, KF_RET_NULL)
+>>   BTF_ID_FLAGS(func, bpf_rbtree_right, KF_RET_NULL)
+>> +BTF_ID_FLAGS(func, bpf_task_work_schedule_signal, KF_TRUSTED_ARGS)
+>> +BTF_ID_FLAGS(func, bpf_task_work_schedule_resume, KF_TRUSTED_ARGS)
+>>
+>>   #ifdef CONFIG_CGROUPS
+>>   BTF_ID_FLAGS(func, bpf_cgroup_acquire, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
+>> --
 >> 2.50.1
 >>
->>
->>
->>
->>>>>>>
->>>>>>>
->>>>>>> Command  "pahole --btf_features=default -J /boot/.debug/
->>>>>>> vmlinux-6.12.40-
->>>>>>> yocto-standard " works well since /boot/.debug/vmlinux-6.12.40-yocto-
->>>>>>> standard has  .symtab section.
->>>>>>> root@intel-x86-64:/usr/bin# file /boot/.debug/vmlinux-6.12.40-yocto-
->>>>>>> standard
->>>>>>> /boot/.debug/vmlinux-6.12.40-yocto-standard: ELF 64-bit LSB executable,
->>>>>>> x86-64, version 1 (SYSV), statically linked,
->>>>>>> BuildID[sha1]=1e73fe48101f07b9d991dc045ab9f9672a0feac0, with
->>>>>>> debug_info,
->>>>>>> not stripped
->>>>>>>
->>>>>>> root@intel-x86-64:/usr/bin# readelf -S /boot/.debug/vmlinux-6.12.40-
->>>>>>> yocto-standard | grep .symtab
->>>>>>>     [ 4] __ksymtab         NOBITS           ffffffff82c11e00 00001000
->>>>>>>     [ 5] __ksymtab_gpl     NOBITS           ffffffff82c24730 00001000
->>>>>>>     [ 6] __ksymtab_strings NOBITS           ffffffff82c397f0 00001000
->>>>>>>     [49] .symtab           SYMTAB           0000000000000000 154cf200
->>>>>>>
->>>>>>
->>>>>> Hi Changqing Li, thanks for the bug report.
->>>>>>
->>>>>> I couldn't reproduce this error with a stripped vmlinux:
->>>>>>
->>>>>> $ objcopy --strip-all ~/kernels/bpf-next/.tmp_vmlinux1 vmlinux-strip-all
->>>>>>
->>>>>> v1.29 fails with:
->>>>>> $ ./build/pahole --btf_features=default -J $(realpath vmlinux-strip-all)
->>>>>> Error creating BTF encoder.
->>>>>>
->>>>>> v1.30 fails with:
->>>>>> $ ./build/pahole --btf_features=default -J $(realpath vmlinux-strip-all)
->>>>>> pahole: /home/isolodrai/pahole/vmlinux-strip-all: Invalid argument
->>>>>>
->>>>>> Different errors are not nice, but at least no segfault.
->>>>>>
->>>>>> Could you please share the vmlinux binary that causes the error?
->>>>>> And also check if you get a segfault on v1.30 too?
->>>>>>
->>>>>> Thanks.
->>>>>>
->>>>> Hi, Ihor
->>>>> Thanks for checking this. Here is my retest result:
->>>>> On version 1.29:
->>>>> root@intel-x86-64:~# pahole --btf_features=default -J /boot/
->>>>> vmlinux-6.12.40-yocto-standard
->>>>> pahole[333]: segfault at 8 ip 00007fd5025179e2 sp 00007fd4e73febe0
->>>>> error 6 in libdwarves.so.1.0.0[189e2,7fd502508000+1c000] likely on CPU
->>>>> 0 (core 0, socket 0)
->>>>> Code: 74 19 ff ff 48 39 dd 75 ef 4c 89 ef e8 67 19 ff ff 49 8b 7c 24
->>>>> 18 e8 8d 13 ff ff 49 8b 14 24 49 8b 44 24 08 4c 89 e7 45 31 e4 <48> 89
->>>>> 42 08 48 89 10 e8 42 19 ff ff e9 30 ff ff ff e8 58 0a ff ff
->>>>> Segmentation fault (core dumped)
->>>>> root@intel-x86-64:~# cp /boot/vmlinux-6.12.40-yocto-standard /root/
->>>>> root@intel-x86-64:~# pahole --btf_features=default -J /root/
->>>>> vmlinux-6.12.40-yocto-standard
->>>>> Error creating BTF encoder.
->>>>>
->>>>> We can see that the same vmlinux-6.12.40-yocto-standard have different
->>>>> result. After do some debugging,  I found that
->>>>> /boot/vmlinux-6.12.40-yocto-standard segfault since it has debuginfo
->>>>> file /boot/.debug/vmlinux-6.12.40-yocto-standard.
->>>>> after I move .debug to .xxx, it will not segfault.
->>>>> root@intel-x86-64:/boot# mv .debug/ .xxx
->>>>> root@intel-x86-64:/boot# pahole --btf_features=default -J /boot/
->>>>> vmlinux-6.12.40-yocto-standard
->>>>> Error creating BTF encoder.
->>>>>
->>>>> dwfl_module_getdwarf in cus__process_dwflmod return different when
->>>>> with or without debug,  without .debug, dw=NULL,
->>>>> with .debug, dw will have a value, then causes the different process.
->>>>>
->>>>> On version 1.30
->>>>> root@intel-x86-64:~# pahole --version
->>>>> v1.30
->>>>> root@intel-x86-64:~# pahole --btf_features=default -J /boot/
->>>>> vmlinux-6.12.40-yocto-standard
->>>>> pahole[314]: segfault at 8 ip 00007f2b0b6b2bf3 sp 00007f2af05feb20
->>>>> error 6 in libdwarves.so.1.0.0[18bf3,7f2b0b6a3000+1c000] likely on CPU
->>>>> 0 (core 0, socket 0)
->>>>> Code: 33 17 ff ff 48 39 dd 75 ee 4c 89 ef e8 26 17 ff ff 49 8b 7c 24
->>>>> 18 e8 5c 11 ff ff 49 8b 14 24 49 8b 44 24 08 4c 89 e7 45 31 e4 <48> 89
->>>>> 42 08 48 89 10 e8 01 17 ff ff e9 2d ff ff ff e8 37 08 ff ff
->>>>> Segmentation fault (core dumped)
->>>>> root@intel-x86-64:~# cp /boot/vmlinux-6.12.40-yocto-standard /root/
->>>>> root@intel-x86-64:~#  pahole --btf_features=default -J /root/
->>>>> vmlinux-6.12.40-yocto-standard
->>>>> pahole: /root/vmlinux-6.12.40-yocto-standard: Invalid argument
->>>>> root@intel-x86-64:~# cd /root
->>>>> root@intel-x86-64:~# mkdir .debug
->>>>> root@intel-x86-64:~# cp /boot/.debug/vmlinux-6.12.40-yocto-
->>>>> standard .debug/
->>>>> root@intel-x86-64:~# pahole --btf_features=default -J /root/
->>>>> vmlinux-6.12.40-yocto-standard
->>>>> pahole[441]: segfault at 8 ip 00007f64a9032bf3 sp 00007f648dffeb20
->>>>> error 6 in libdwarves.so.1.0.0[18bf3,7f64a9023000+1c000] likely on CPU
->>>>> 0 (core 0, socket 0)
->>>>> Code: 33 17 ff ff 48 39 dd 75 ee 4c 89 ef e8 26 17 ff ff 49 8b 7c 24
->>>>> 18 e8 5c 11 ff ff 49 8b 14 24 49 8b 44 24 08 4c 89 e7 45 31 e4 <48> 89
->>>>> 42 08 48 89 10 e8 01 17 ff ff e9 2d ff ff ff e8 37 08 ff ff
->>>>>
->>>>> Segmentation fault (core dumped)
->>>>
->>>> I think this " Invalid argument " change  is caused by this commit:
->>>>
->>>> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?
->>>> id=b4a071d99bb9e7c0d3c6ea7a6835389a4d350ed4
->>>>
->>>> encode BTF with DWARF less files is not support for v1.30, so, since  /
->>>> boot/vmlinux-6.12.40-yocto-standard without debuginfo, it taken as in
->>>> invalid argument,
->>>>
->>>> I think it is  ok,  but maybe more clear reason is better.
->>>>
->>>
->>> Thanks for the report!
->>>
->>> With latest pahole (next branch of
->>> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/ ) including
->>> Arnaldo's change
->>>
->>> commit 97bf0a0b0572ec023761da9226b068b59b471de0
->>> Author: Arnaldo Carvalho de Melo <acme@kernel.org>
->>> Date:   Tue Jul 22 11:22:27 2025 -0300
->>>
->>>      pahole: Don't fail when encoding BTF on an object with no DWARF info
->>>
->>>
->>> I see the following pahole results against a stripped vmlinux:
->>>
->>> $ pahole --btf_features=default -J vmlinux.stripped
->>> $ echo $?
->>> 0
->>>
->>> Can you reproduce the segmentation fault with the above pahole? If you
->>> can provide a way to get a stripped pahole like the above for me to test
->>> with, or provide the kernel .config used to build it, that would be
->>> great. Thanks!
->>>
->>> Alan
-> 
 
 
