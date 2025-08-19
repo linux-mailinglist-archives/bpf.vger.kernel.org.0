@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-65993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1B53B2BF34
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 12:45:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBB1EB2BFB2
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 13:02:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A63D7A5BCB
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 10:43:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BE9F172AB0
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 11:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 499E1322C84;
-	Tue, 19 Aug 2025 10:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62417322C70;
+	Tue, 19 Aug 2025 11:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dJ0BtviM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B5/3vufQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11FB8224B1B
-	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 10:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD983112DF
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 11:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755600298; cv=none; b=EY+uJSTBZb91ZXq0UjZHxE74nM+MdAWFAgAKDGL6TUdgH41JOSbnfv4jrOyOoL0zu9hEfQW9oT7b8RB4jh2MXnjwm5Ov5VChpEZUuQCNiqedYBFmAvIVAK0LXGecMN9LubGNN/tXh5tOPuqGQTlu2QGHxbJ1XZ7Fy+8iDSrRS6M=
+	t=1755601247; cv=none; b=mJJ0wAWR+XuxYWEbqaOLpT3Ts2QjpzuVZ2hc8x5u+0XSBkKhWvAVhoznHbg2xfWG2RDe2dXlFXzhbtbMyihhwFGkfN50Xs9o4m06Cg9TP3IQDCYJgGIjUE1CTZG7AKgko37kWP6rqGQv4Y7Mc3UCgfKeEbEIgnIX3g+8V0ClKgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755600298; c=relaxed/simple;
-	bh=AWaSFBGzsVBGHMUEwoh4kn4DPt9GNn+Sl9obPW9o+Us=;
+	s=arc-20240116; t=1755601247; c=relaxed/simple;
+	bh=skZ7RCZrnorJ/EZMG1jjvXPiC3m48ieEzKfmHv773sc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=akGqKTk3N+679paseeBASba5qNR+Pa5Rqg61QUp8jqn/DwfdwCRde+rNwjZuI1QeCi7+UigN1/PkB9zZmJTs914yHPPwImQRMhTsDnNWYAiMQaoFX/AMHC8Z8ejU17Uj+aaIAHwyErnd/darvOheALEj+808Eqa1QuNuFbXQJUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dJ0BtviM; arc=none smtp.client-ip=209.85.221.49
+	 In-Reply-To:Content-Type; b=D11YtnLy6Etm979Di6BFh94Ku5MJCSRYxg3uHL+y3hW+eRsWt3ey2Jrincdb5v4DoF+KPgoG29wWyHep0EWuJEZFGcqvpF1oejwPGrTgDBPGHrCmXDY8AWod6G8bj9Kj8EE/EwEtvOl3cU3AgFlqZtQ4lXxQ2DeuL79Vxz/YtZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B5/3vufQ; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3bea24519c0so1108769f8f.1
-        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 03:44:56 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3b9dc5c8ee7so3352440f8f.1
+        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 04:00:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755600295; x=1756205095; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1755601244; x=1756206044; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gMaZ3A2hVT9tVgIVgNmHrlX+dceLWmSqJc0nzB1+rP8=;
-        b=dJ0BtviMGaoDds3pVgvTiJDTAQFysnT1A/3GbRpFdgQUSwylfvWO0O/IZWQiw/+P4x
-         gg/wvMmjR/VyHCfnnYwbrLVYJYI1d9haHRcnCm1EQ1tPRnsVPXSQT6u3zUJW0PKLPG9+
-         HecUym2hAKY/0qpymr4kGqTYcB6LVfZnaJh8qvctezAJ8FdLWMYwspoHOH2uVFAvvheD
-         iwX4D2TJfKP7e40E1JVbHYl3U/+bDoI7mxbzkUyH3Ftfjf3N4AfEb03wCEsIkKPwwLlu
-         VSmx8KP8J3tsdmNK4o9Y6nLAyM0ioJw5hZ1CqmUcPjbY2Q/A1SsrGF4aziBKm7EwqYMq
-         zgKw==
+        bh=IwlzGXS3yBaMGKgzmo/tSpbKvn71vB/A5Lx9lZogcyQ=;
+        b=B5/3vufQOADIlq+3k1D0PNETdVx4fCmg+bZHptOw4qYB5oOHwoSRjXg2MWPLEihYvJ
+         ndvtgQhTPpAeZ0djRRuvGr5q8k1Z0879jZOPNbOGhAgcARcN2qPZpSZAvA2OcKKqcxNX
+         fQhxPaBddfqr/TX6jqXWNhEmM21hm0G8gGNbXV7N96qyyF9WAZCE19MejhF+ut4Vvczs
+         zFvkYSLygsGFUn+WNwHTbooqqectcD9g+7+NANdkcXePVLoJD7HQPkTW0/qMGJ4TBzLx
+         p9CU26J82HBxoLSxQDdaOIsbN9tCX0zY3byzyVCYhOFwb2Uy517IWo8vMCV2Dxi63GVs
+         SH6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755600295; x=1756205095;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1755601244; x=1756206044;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMaZ3A2hVT9tVgIVgNmHrlX+dceLWmSqJc0nzB1+rP8=;
-        b=nrgaA4x84OEwUoCvWjuiyqoDuiFY49zON0S3ry8rDaJKF5PAC/S+64ycnhRfOAzQA1
-         Bpy8qr7dq80Ff5Hv1y7IzPWnxyg/2n8n3UQm6PICkGXT9Bg2a4TMBmAt0U0AhDERSWph
-         yQZXOd265K/67md6abdfoggW/mRmSN4Rqij3RfyqpXiH4k8P4IpIQCy9n+33NgTvkjbg
-         ZTR2FcJUZ11idVclTqms9LfZNYlDBr7MUdB4oq4VDu4J8o4KsrtQrHcHyaXcopNKTjGd
-         oneMBuN7wqo5AQxmOhHOaT9cP8DrGSNg34H8C6YySqQYti38vlxpYipofZGEk+SnBvj4
-         67xw==
-X-Forwarded-Encrypted: i=1; AJvYcCXiEYTd4KbHtNQtTQftfg0ttKg4LqfPeLd9JCXyUoJJZvhJUrCzjuFG5V9laawRsuXX3aY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbO707FOIfseqWAc/IM0A7mSqG7en7qGwt0gh0QxX5NrU5oaR8
-	+w5MjMqtyAs3hHNyhdJeJACOHxzJvbZO1FswxZrmSAjw1+QyY0zLeOPn
-X-Gm-Gg: ASbGncuSnFj2v5MRHHj9jIzmD31ngucW3fRhATCFBurWODh7DeehdxSq9eWnAbwsexf
-	b0GxvhqTDkX6A7z1xdHhi5yg68oAWlLsc0j6R1htFAiUpdRfceHEB+SmcAz7yP2VQQx9eHPeB1y
-	uzIeqtBginexTQn9xN7zXXHpPUWlSQA+QK34YAzSLDiBSyf84uDT6Lqdr+sMa7Xye5hsCkYZA3I
-	br/QVDarhWwrWElimcEZFugZbaHWl0ryr/ZcBujTdE6vRDldH1lNeiivp3QBgAjf8fTI4WF4/iX
-	MqP6l8A3zsQUNLfCx2S9+Vqqq8WAVn2fZU9vcH6NVCXvOoKQQuPHsuL88Deiu3SgyTXjHeqPHQT
-	BrHdmpujwymz0OGESSzVgVZkYX0XgGotTpYEZh+aCfBxscyNmZdvGDocd7l32ZhsTJi0lFc0=
-X-Google-Smtp-Source: AGHT+IHdKswvM0sTBgUmTLXm9h0m3Bc+fhe+XtbKt+QKbkIQIKsCxnlYFb6o6RmzK4zKcJOPeYGaGw==
-X-Received: by 2002:a05:6000:2dc3:b0:3a5:8991:64b7 with SMTP id ffacd0b85a97d-3c133c6de96mr1675962f8f.26.1755600294982;
-        Tue, 19 Aug 2025 03:44:54 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1126:4:1449:d619:96c0:8e08? ([2620:10d:c092:500::4:ba2b])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a1c6cd044sm220915995e9.9.2025.08.19.03.44.53
+        bh=IwlzGXS3yBaMGKgzmo/tSpbKvn71vB/A5Lx9lZogcyQ=;
+        b=HY/QAQy0NVAj8QTAO1NnJlYgooda4Jyg5RHxTuS+sFLUxNdyk3/VVCJ4X7XsnA6tC6
+         bLwDdIvJ29jR8T9YPPyY2Nl2ws98VBxriO/gOj71ooF70VT4E5bGG0y6YNUouargfu6w
+         Fh3fYCOJE6K7TOw4kWhCILgMimoMrZggZ0vqorUO3B9e02NU5lWPVm6d7awQJsaawQRA
+         a3VHOZJX+lIvggUfv+/M+AMnU16RTff1Drn1q3NlJDOjbfn+m4GxfMEawFK28lFOpauD
+         qPR+gUb/kJq99yKIAdQmUEev6swnHva5vlpM9s5r00lvj5juwkIt3YlRQvodU/eatbPC
+         LLtg==
+X-Forwarded-Encrypted: i=1; AJvYcCX3vQ8Fby3nWfASlGdvvCXEm1iW7f2hpIVdrwLP3iYG8v5lOY0DuIBiGiQuAbGOxIr8MwQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzwwMss0uza6i8Pki0Ao3Ts2uG9UK49qqA+/N2fQ7O9naDF008i
+	E0CsuazIfkwoBm26sjKxfk1hUIqAzxyxsbrSH24+9XvRC9+rWgsose7v
+X-Gm-Gg: ASbGncvUHg/gXou3VcVf9qIE8RbJAhlBreVGZqCzj4E2iMNNXQyfJ8GfHhb0wOsykzV
+	XMGfYynMJJQEzRW77RN1u8sSMSxK7qopeKZ9W4tLUFPMZwr5SQGWEDH70fr5eBtGGIbF4zmQVo2
+	RnuGH5QQiwXiEatDlpJil0sfkUKR/r3sqmJdj3XIK/znjXAHnqPVJ8fnb99FIv1hfmso2Kv/sO8
+	0vEE4VY3H2MkVMymHRyzwi35zQsAV5+rNkXLO00H96UPQqayT+6FsDamqftJw1bga6ZnFdkbhyW
+	h7Ek7cD9OKMSWwATK073hzjXFAB6/rB3HLVOFfBj1kk1YU5i1Y5o+9kfnnyTjTBfoFpaiH29d8C
+	yi6TM+n5uiwMp38QNolfCMJeqKQgnHZjavkC8gJIB2Av50asKyzczgis55Npo37B1Ka34QA==
+X-Google-Smtp-Source: AGHT+IHIZvDAGj/RBHRNyf2Xj+LMpfP2h20vccoLmf1fRB12TF5b/18WNRYf7xPvLj1bP45GygRVEA==
+X-Received: by 2002:a05:6000:4305:b0:3b7:8338:d219 with SMTP id ffacd0b85a97d-3c0dffac794mr1751653f8f.3.1755601244113;
+        Tue, 19 Aug 2025 04:00:44 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1126:4:4794:3655:9535:baee? ([2620:10d:c092:500::4:853d])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c074d4393csm3262226f8f.17.2025.08.19.04.00.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Aug 2025 03:44:54 -0700 (PDT)
-Message-ID: <a24d632d-4b11-4c88-9ed0-26fa12a0fce4@gmail.com>
-Date: Tue, 19 Aug 2025 11:44:51 +0100
+        Tue, 19 Aug 2025 04:00:43 -0700 (PDT)
+Message-ID: <2e84d77d-60e0-46cf-b755-4625db2df0fc@gmail.com>
+Date: Tue, 19 Aug 2025 12:00:42 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,143 +82,139 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 mm-new 0/5] mm, bpf: BPF based THP order selection
-Content-Language: en-GB
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com,
- baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
- dev.jain@arm.com, hannes@cmpxchg.org, gutierrez.asier@huawei-partners.com,
- willy@infradead.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, ameryhung@gmail.com, rientjes@google.com,
- bpf@vger.kernel.org, linux-mm@kvack.org
-References: <20250818055510.968-1-laoar.shao@gmail.com>
- <36c97fc6-eaa9-44dd-a52f-0b6bf5a001d9@gmail.com>
- <CALOAHbAQ=51mfszBN+Bvb9z+ZDyTBuCW_s0EKi+5rDghFvRZzg@mail.gmail.com>
-From: Usama Arif <usamaarif642@gmail.com>
-In-Reply-To: <CALOAHbAQ=51mfszBN+Bvb9z+ZDyTBuCW_s0EKi+5rDghFvRZzg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: add BPF program dump in
+ veristat
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250818180424.58835-1-mykyta.yatsenko5@gmail.com>
+ <4f5238d786e4393184b27abb58bcb5a87852819b.camel@gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <4f5238d786e4393184b27abb58bcb5a87852819b.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-
-On 19/08/2025 03:41, Yafang Shao wrote:
-> On Mon, Aug 18, 2025 at 10:35 PM Usama Arif <usamaarif642@gmail.com> wrote:
->>
->>
->>
->> On 18/08/2025 06:55, Yafang Shao wrote:
->>> Background
->>> ----------
->>>
->>> Our production servers consistently configure THP to "never" due to
->>> historical incidents caused by its behavior. Key issues include:
->>> - Increased Memory Consumption
->>>   THP significantly raises overall memory usage, reducing available memory
->>>   for workloads.
->>>
->>> - Latency Spikes
->>>   Random latency spikes occur due to frequent memory compaction triggered
->>>   by THP.
->>>
->>> - Lack of Fine-Grained Control
->>>   THP tuning is globally configured, making it unsuitable for containerized
->>>   environments. When multiple workloads share a host, enabling THP without
->>>   per-workload control leads to unpredictable behavior.
->>>
->>> Due to these issues, administrators avoid switching to madvise or always
->>> modes—unless per-workload THP control is implemented.
->>>
->>> To address this, we propose BPF-based THP policy for flexible adjustment.
->>> Additionally, as David mentioned [0], this mechanism can also serve as a
->>> policy prototyping tool (test policies via BPF before upstreaming them).
->>
->> Hi Yafang,
->>
->> A few points:
->>
->> The link [0] is mentioned a couple of times in the coverletter, but it doesnt seem
->> to be anywhere in the coverletter.
-> 
-> Oops, my bad.
-> 
->>
->> I am probably missing something over here, but the current version won't accomplish
->> the usecase you have described at the start of the coverletter and are aiming for, right?
->> i.e. THP global policy "never", but get hugepages on an madvise or always basis.
-> 
-> In "never" mode, THP allocation is entirely disabled (except via
-> MADV_COLLAPSE). However, we can achieve the same behavior—and
-> more—using a BPF program, even in "madvise" or "always" mode. Instead
-> of introducing a new THP mode, we dynamically enforce policy via BPF.
-> 
-> Deployment Steps in our production servers:
-> 
-> 1. Initial Setup:
-> - Set THP mode to "never" (disabling THP by default).
-> - Attach the BPF program and pin the BPF maps and links.
-> - Pinning ensures persistence (like a kernel module), preventing
-> disruption under system pressure.
-> - A THP whitelist map tracks allowed cgroups (initially empty → no THP
-> allocations).
-> 
-> 2. Enable THP Control:
-> - Switch THP mode to "always" or "madvise" (BPF now governs actual allocations).
-
-
-Ah ok, so I was missing this part. With this solution you will still have to change
-the system policy to madvise or always, and then basically disable THP for everyone apart
-from the cgroups that want it?
-
-> 
-> 3. Dynamic Management:
-> - To permit THP for a cgroup, add its ID to the whitelist map.
-> - To revoke permission, remove the cgroup ID from the map.
-> - The BPF program can be updated live (policy adjustments require no
-> task interruption).
-> 
->> I think there was a new THP mode introduced in some earlier revision where you can switch to it
->> from "never" and then you can use bpf programs with it, but its not in this revision?
->> It might be useful to add your specific usecase as a selftest.
->>
->> Do we have some numbers on what the overhead of calling the bpf program is in the
->> pagefault path as its a critical path?
-> 
-> In our current implementation, THP allocation occurs during the page
-> fault path. As such, I have not yet evaluated performance for this
-> specific case.
-> The overhead is expected to be workload-dependent, primarily influenced by:
-> - Memory availability: The presence (or absence) of higher-order free pages
-> - System pressure: Contention for memory compaction, NUMA balancing,
-> or direct reclaim
-> 
-
-Yes, I think might be worth seeing if perf indicates that you are spending more time
-in __handle_mm_fault with this series + bpf program attached compared to without?
-
->>
->> I remember there was a discussion on this in the earlier revisions, and I have mentioned this in patch 1
->> as well, but I think making this feature experimental with warnings might not be a great idea.
-> 
-> The experimental status of this feature was requested by David and
-> Lorenzo, who likely have specific technical considerations behind this
-> requirement.
-> 
->> It could lead to 2 paths:
->> - people don't deploy this in their fleet because its marked as experimental and they dont want
->> their machines to break once they upgrade the kernel and this is changed. We will have a difficult
->> time improving upon this as this is just going to be used for prototyping and won't be driven by
->> production data.
->> - people are careless and deploy it in on their production machines, and you get reports that this
->> has broken after kernel upgrades (despite being marked as experimental :)).
->> This is just my opinion (which can be wrong :)), but I think we should try and have this merged
->> as a stable interface that won't change. There might be bugs reported down the line, but I am hoping
->> we can get the interface of get_suggested_order right in the first implementation that gets merged?
-> 
-> We may eventually remove the experimental status or deprecate this
-> feature entirely, depending on its adoption. However, the first
-> critical step is to make it available for broader usage and
-> evaluation.
-> 
+On 8/19/25 01:18, Eduard Zingerman wrote:
+> On Mon, 2025-08-18 at 19:04 +0100, Mykyta Yatsenko wrote:
+>
+> [...]
+>
+>> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+>> index d532dd82a3a8..3ba06f532bfa 100644
+>> --- a/tools/testing/selftests/bpf/veristat.c
+>> +++ b/tools/testing/selftests/bpf/veristat.c
+>> @@ -181,6 +181,12 @@ struct var_preset {
+>>   	bool applied;
+>>   };
+>>   
+>> +enum dump_mode {
+>> +	NO_DUMP = 0,
+>> +	XLATED,
+>> +	JITED,
+>> +};
+>> +
+>>   static struct env {
+>>   	char **filenames;
+>>   	int filename_cnt;
+>> @@ -227,6 +233,7 @@ static struct env {
+>>   	char orig_cgroup[PATH_MAX];
+>>   	char stat_cgroup[PATH_MAX];
+>>   	int memory_peak_fd;
+>> +	enum dump_mode dump_mode;
+>>   } env;
+>>   
+>>   static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
+>> @@ -295,6 +302,7 @@ static const struct argp_option opts[] = {
+>>   	  "Force BPF verifier failure on register invariant violation (BPF_F_TEST_REG_INVARIANTS program flag)" },
+>>   	{ "top-src-lines", 'S', "N", 0, "Emit N most frequent source code lines" },
+>>   	{ "set-global-vars", 'G', "GLOBAL", 0, "Set global variables provided in the expression, for example \"var1 = 1\"" },
+>> +	{ "dump", 'p', "DUMP", 0, "Print BPF program dump" },
+> Nit: describe that it should be either '-p xlated' or '-p jited'?
+>
+>>   	{},
+>>   };
+>>   
+>> @@ -427,6 +435,16 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+>>   			return err;
+>>   		}
+>>   		break;
+>> +	case 'p':
+>> +		if (strcmp(arg, "jited") == 0) {
+>> +			env.dump_mode = JITED;
+>> +		} else if (strcmp(arg, "xlated") == 0) {
+>> +			env.dump_mode = XLATED;
+>> +		} else {
+>> +			fprintf(stderr, "Unrecognized dump mode '%s'\n", arg);
+>> +			return -EINVAL;
+>> +		}
+>> +		break;
+>>   	default:
+>>   		return ARGP_ERR_UNKNOWN;
+>>   	}
+>> @@ -1554,6 +1572,26 @@ static int parse_rvalue(const char *val, struct rvalue *rvalue)
+>>   	return 0;
+>>   }
+>>   
+>> +static void dump(int prog_fd)
+>                      ^^^^^^^^^^^
+> 		    Nit: prog_id
+>
+>> +{
+>> +	char command[512];
+>> +	char buf[1024];
+>> +	FILE *fp;
+>> +
+>> +	snprintf(command, sizeof(command), "bpftool prog dump %s id %d",
+>> +		 env.dump_mode == JITED ? "jited" : "xlated", prog_fd);
+>> +	fp = popen(command, "r");
+> Silly question, would it be sufficient to just do "system()" and forgo
+> the loop below?
+yes, I guess it will be the same result.
+>
+>> +	if (!fp) {
+>> +		fprintf(stderr, "Can't run bpftool\n");
+>> +		return;
+>> +	}
+>> +
+> Could you please insert some header (program name)/footer (newline)?
+yes, sounds like a good idea.
+>
+>> +	while (fgets(buf, sizeof(buf), fp))
+>> +		printf("%s", buf);
+>> +
+>> +	pclose(fp);
+>> +}
+>> +
+>>   static int process_prog(const char *filename, struct bpf_object *obj, struct bpf_program *prog)
+>>   {
+>>   	const char *base_filename = basename(strdupa(filename));
+>> @@ -1630,8 +1668,11 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+>>   
+>>   	memset(&info, 0, info_len);
+>>   	fd = bpf_program__fd(prog);
+>> -	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0)
+>> +	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0) {
+>>   		stats->stats[JITED_SIZE] = info.jited_prog_len;
+>> +		if (env.dump_mode != NO_DUMP)
+>> +			dump(info.id);
+>> +	}
+>>   
+>>   	parse_verif_log(buf, buf_sz, stats);
+>>   
+> Note: below this hunk there is the following code:
+>
+>            if (env.verbose) {
+>                    printf(format: "PROCESSING %s/%s, DURATION US: %ld, VERDICT: %s, VERIFIER LOG:\n%s\n",
+>                           filename, prog_name, stats->stats[DURATION],
+>                           err ? "failure" : "success", buf);
+>            }
+>
+> It looks a bit strange, that program is printed before the above
+> header is printed.
+The header is printed with the verifier log. I think dump should go 
+before it, probably with its own header,
+as its probably not often used along with log.
 
 
