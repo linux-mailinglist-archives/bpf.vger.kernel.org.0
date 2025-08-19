@@ -1,206 +1,249 @@
-Return-Path: <bpf+bounces-66002-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66003-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77E8BB2C3CF
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 14:38:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BF2EB2C3DC
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 14:39:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08DED188E0B6
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 12:33:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 468CF72726A
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 12:33:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1B633CE9D;
-	Tue, 19 Aug 2025 12:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C96305075;
+	Tue, 19 Aug 2025 12:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hYe++qOC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QPN4g2jf"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31EE3043BD;
-	Tue, 19 Aug 2025 12:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10B93043BB
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 12:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755606753; cv=none; b=NrQSfSzpKMOizV64ZcZO/HixR0sIf4xqQlJVhYUwCLoJOkYmSukAYB8buvCchUBSUArvzJCyKDhF8gflnlpKDBNLhUOmx1z0zlHq3DAxpJAb/ATn0ke9cS2RHhh67iT72YLfpco9Yl6qQwSgRFOFZgNo/80UXzAo36aoykHGx30=
+	t=1755606791; cv=none; b=dB2OL0OSRNDmkIvTtWZNoO4XY0EEL6oRNb8ifqbMcFMTacN5PSlIQc2wevTVkDMywRy4GR0vQr7Rsgz0lKlsi1mSu29dk7hCJfhl5iOZ/pCuPMLs6ayP1YWKUeVI9NsvyGbLKNFgiIjLu9+6udvJMrmr+VTC1mAFHuUeGANg2yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755606753; c=relaxed/simple;
-	bh=UfjgA3IAcFiZGVMggjC3pZmukJrsoIJSLjL4mh7uIGg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YXup0QwnZmp1hIoW+1+fJiCcbiaX08R3aJIXsCI6BKqkd1upCrA36nWLrBuGdz80YQ92kASL1GPYuJ3483ZOkhoUyD+lXgMZjjh4eKNHf8Iz7zsdE6fpr5RXnTqAyh7EmWkWIoJt31HO/7OBKJyCtAtNVzgEcnuV+bnaTT2+Zfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hYe++qOC; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=qRXOWTnqCwu5OR7JWEvk9coM3l6zsXKqglM2duNSOxU=; b=hYe++qOCqjGN5b/OJJNt5KbA7N
-	Hdq9mxFrZIGs2tdbLCdw1ggouzJYVsTzVnLZPeYsavQ6Zj/QQj1A8vq0YURfZg7pO6fyWfxyVPEE1
-	7yyYdJHFOqivIFqLZuy1tXEo9TlVx7Ly5jXIMck6flKykLsoq9LaQx7SiVakwDvIaeg1utM3/l5gl
-	pLswRlLjP1AnZZZQv4nDiEm+vYxVeiiWDnQxNhITnLyc+CwU4Oqnhc9D9hTGFsvWJ5fyoJZbWd//X
-	dFJdKzdi6HQodR69HeEpJqNXECJ0/Jm+cnx5BRpKXdz/3PLG6ohhpRImKO5T8gqf1R6P02FJG+ONB
-	6JKDVi+w==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uoLVe-000000058SO-35z3;
-	Tue, 19 Aug 2025 12:32:15 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id E82BF30036F; Tue, 19 Aug 2025 14:32:14 +0200 (CEST)
-Date: Tue, 19 Aug 2025 14:32:14 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, simona.vetter@ffwll.ch,
-	tzimmermann@suse.de, jani.nikula@intel.com,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] sched: make migrate_enable/migrate_disable inline
-Message-ID: <20250819123214.GH4067720@noisy.programming.kicks-ass.net>
-References: <20250819015832.11435-1-dongml2@chinatelecom.cn>
- <20250819015832.11435-3-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1755606791; c=relaxed/simple;
+	bh=oGIIhDvNcbEz2gNcueZOzpTWLK1v6vHPDTa7Zne8PoA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uZruTEYGjdGhA/smea99G07zw0HsoqcM1gU/OSSL8/X+CyaxXLWkEQXqzJ+JlCKgiw2rq7WcUyd0O4cgRstWY2Do7EkYbmmjV3zQazrzbioOe98Zx3uHbaw7oCJvGDXamgzyRPW1deO9/uuBdC5jBEE1xjd5c6M/9+Neqb67h0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QPN4g2jf; arc=none smtp.client-ip=209.85.167.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-435de5b2f29so1622508b6e.0
+        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 05:33:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755606789; x=1756211589; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=euK/Sa43pRju1FeMVcXdjmsp+ESnMwlYC5m2uEfodPc=;
+        b=QPN4g2jfoNfjA/6QkC2lUKqBSd+XQYzEZ1JoMEsbDOO5Q8sntgFOv/GaKg2yYBpIkX
+         yW04Wv68xQJo4Hi6ATkjlsT9egBEk/Qo8cgI5nVAqmfC3JzoFGYIjXAxrVU8ppP7/nu9
+         jECpwaWvHAHoS8gHQCVJNm4ybv8EpA+KL244jGVmemPHc4jhUPLGhQhm4jHXP9wwhsho
+         UgGqFexzVifOLTUIpsPy0PTqF5oFKmEcXKMs+R0Coogbn75X+i+RnKu/vzSYsbvE/Wku
+         YSZwFeAuzXMR2R9p4Tlxj40Xix0chgKJki+B2S161KYAq7lMCehdOSLsCxeRIp1efrlP
+         Pz6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755606789; x=1756211589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=euK/Sa43pRju1FeMVcXdjmsp+ESnMwlYC5m2uEfodPc=;
+        b=KXpndojnJPBMq4h+N363ROG2twedQryg9cQDBlzO11qDMSJ8f7CAAZSnmVLOZiz5AI
+         C1Re3CG4dywgxAd3KZFBlPjCALXsG2Nkxag8199aFk9Q4MXUUMLyV1SaFw05HfRuGAa3
+         feCYn6GHk4aR/tvRLilZqXMccXhotV7l75RjFZ+7mtLVi4DCm4UJdGDtsrqpppM+7kMO
+         M609dcYMOTAOAGAAKobk70+XkPxkb5AB2wzE3z1CxbLt/4oRnDEpY3aL5V5fE04KerQA
+         KvBd7MpHWstNwg/1Ex2wZuE+qqhdiUddPpy9a6AoS+E+AJy6rrHa6F9y/OEAWzDbSRax
+         19NQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXRRaCC2O/km77M4o7UVkSXGQOQVvql3Cfqdyc4ohkDvEhoOf+Aq75pqkBVEyy5Q2FHO9w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKGHHJPGQ9kCFT9DvE1GwUAsZQWsO43IAgblqJDK0M4TMbMw+8
+	29waTf+0utHJ/dK1aFGs/bp4h4SbjMg0x8WanTOLIx1iWr3xB9UCOcFGiw/Uo281Qw+s02R1tA0
+	W//AkSDTI0gNlU+/II4zkbzUQt04CdUw=
+X-Gm-Gg: ASbGncvRW735DK3RfvqJj606Y/I29KNF8ON7jTTeCvQ4wEF2cRFWJp4sFVNMb3ITtfa
+	uyM28Jj+OQsZ2/yweDWuP6DXJ8j66+gCGg2qX42x2/Q5BMtfXCCWqdzi81Vfv3UKjC2+6t2FG2K
+	eRHJRT2HD7MXsU03a9qDFUt65RefIUZfKNt2IgNJL8wp3W48hASS81xqD88NLknKNCPDUW7oVBa
+	Gxp1Yg=
+X-Google-Smtp-Source: AGHT+IF3TnzwDKbWVmb0nbU19B6sCvfBoJv+fy7qHe2Grj5VTQW+DyaKaeKUpV05oMJRpppbHIo9Qf/7YXz89cmmuuk=
+X-Received: by 2002:a05:6808:218f:b0:434:b6e:52a0 with SMTP id
+ 5614622812f47-436da1e7ea7mr1689680b6e.22.1755606788728; Tue, 19 Aug 2025
+ 05:33:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250819015832.11435-3-dongml2@chinatelecom.cn>
+References: <20250815082931.875216-1-jianghaoran@kylinos.cn>
+In-Reply-To: <20250815082931.875216-1-jianghaoran@kylinos.cn>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Tue, 19 Aug 2025 20:32:57 +0800
+X-Gm-Features: Ac12FXws3USO7bmtx8j4CoQoQxI-9k1R3TMQL0Aj_uHfyKHkQOQjd7LKqRtoh4w
+Message-ID: <CAEyhmHTv+3FxN5mGvtrNpW5Y=r5gD9wfS3iFUO4UCAzO9cBcPg@mail.gmail.com>
+Subject: Re: [PATCH v2] LoongArch: BPF: Fix incorrect return pointer value in
+ the eBPF program
+To: Haoran Jiang <jianghaoran@kylinos.cn>
+Cc: loongarch@lists.linux.dev, bpf@vger.kernel.org, kernel@xen0n.name, 
+	chenhuacai@kernel.org, yangtiezhu@loongson.cn, jolsa@kernel.org, 
+	haoluo@google.com, sdf@fomichev.me, kpsingh@kernel.org, 
+	john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org, 
+	eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, 
+	daniel@iogearbox.net, ast@kernel.org, Jinyang He <hejinyang@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 19, 2025 at 09:58:31AM +0800, Menglong Dong wrote:
+On Fri, Aug 15, 2025 at 4:30=E2=80=AFPM Haoran Jiang <jianghaoran@kylinos.c=
+n> wrote:
+>
+> In some eBPF programs, the return value is a pointer.
+> When the kernel call an eBPF program (such as struct_ops),
+> it expects a 64-bit address to be returned, but instead a 32-bit value.
+>
+> Before applying this patch:
+> ./test_progs -a ns_bpf_qdisc
+> CPU 7 Unable to handle kernel paging request at virtual
+> address 0000000010440158.
+>
+> As shown in the following test case,
+> bpf_fifo_dequeue return value is a pointer.
+> progs/bpf_qdisc_fifo.c
+>
+> SEC("struct_ops/bpf_fifo_dequeue")
+> struct sk_buff *BPF_PROG(bpf_fifo_dequeue, struct Qdisc *sch)
+> {
+>         struct sk_buff *skb =3D NULL;
+>         ........
+>         skb =3D bpf_kptr_xchg(&skbn->skb, skb);
+>         ........
+>         return skb;
+> }
+>
+> kernel call bpf_fifo_dequeue=EF=BC=9A
+> net/sched/sch_generic.c
+>
+> static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
+>                                    int *packets)
+> {
+>         struct sk_buff *skb =3D NULL;
+>         ........
+>         skb =3D q->dequeue(q);
+>         .........
+> }
+> When accessing the skb, an address exception error will occur.
+> because the value returned by q->dequeue at this point is a 32-bit
+> address rather than a 64-bit address.
+>
+> After applying the patch=EF=BC=9A
+> ./test_progs -a ns_bpf_qdisc
+> Warning: sch_htb: quantum of class 10001 is small. Consider r2q change.
+> 213/1   ns_bpf_qdisc/fifo:OK
+> 213/2   ns_bpf_qdisc/fq:OK
+> 213/3   ns_bpf_qdisc/attach to mq:OK
+> 213/4   ns_bpf_qdisc/attach to non root:OK
+> 213/5   ns_bpf_qdisc/incompl_ops:OK
+> 213     ns_bpf_qdisc:OK
+> Summary: 1/5 PASSED, 0 SKIPPED, 0 FAILED
+>
+> Fixes: 73c359d1d356 ("LoongArch: BPF: Sign-extend return values")
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
+>
+> ----------
+> v2:
+> 1,add emit_slt* helpers
+> 2,Use slt/slld/srad instructions to avoid branch
+> ---
+>  arch/loongarch/include/asm/inst.h |  8 ++++++++
+>  arch/loongarch/net/bpf_jit.c      | 17 +++++++++++++++--
+>  2 files changed, 23 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/a=
+sm/inst.h
+> index 277d2140676b..20f4fc745bea 100644
+> --- a/arch/loongarch/include/asm/inst.h
+> +++ b/arch/loongarch/include/asm/inst.h
+> @@ -92,6 +92,8 @@ enum reg2i6_op {
+>  };
+>
+>  enum reg2i12_op {
+> +       slti_op         =3D 0x08,
+> +       sltui_op        =3D 0x09,
+>         addiw_op        =3D 0x0a,
+>         addid_op        =3D 0x0b,
+>         lu52id_op       =3D 0x0c,
+> @@ -148,6 +150,8 @@ enum reg3_op {
+>         addd_op         =3D 0x21,
+>         subw_op         =3D 0x22,
+>         subd_op         =3D 0x23,
+> +       slt_op          =3D 0x24,
+> +       sltu_op         =3D 0x25,
+>         nor_op          =3D 0x28,
+>         and_op          =3D 0x29,
+>         or_op           =3D 0x2a,
+> @@ -629,6 +633,8 @@ static inline void emit_##NAME(union loongarch_instru=
+ction *insn,   \
+>         insn->reg2i12_format.rj =3D rj;                                  =
+ \
+>  }
+>
+> +DEF_EMIT_REG2I12_FORMAT(slti, slti_op)
+> +DEF_EMIT_REG2I12_FORMAT(sltui, sltui_op)
+>  DEF_EMIT_REG2I12_FORMAT(addiw, addiw_op)
+>  DEF_EMIT_REG2I12_FORMAT(addid, addid_op)
+>  DEF_EMIT_REG2I12_FORMAT(lu52id, lu52id_op)
+> @@ -729,6 +735,8 @@ static inline void emit_##NAME(union loongarch_instru=
+ction *insn,   \
+>  DEF_EMIT_REG3_FORMAT(addw, addw_op)
+>  DEF_EMIT_REG3_FORMAT(addd, addd_op)
+>  DEF_EMIT_REG3_FORMAT(subd, subd_op)
+> +DEF_EMIT_REG3_FORMAT(slt, slt_op)
+> +DEF_EMIT_REG3_FORMAT(sltu, sltu_op)
+>  DEF_EMIT_REG3_FORMAT(muld, muld_op)
+>  DEF_EMIT_REG3_FORMAT(divd, divd_op)
+>  DEF_EMIT_REG3_FORMAT(modd, modd_op)
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index abfdb6bb5c38..50067be79c4f 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -229,8 +229,21 @@ static void __build_epilogue(struct jit_ctx *ctx, bo=
+ol is_tail_call)
+>         emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, stack_a=
+djust);
+>
+>         if (!is_tail_call) {
+> -               /* Set return value */
+> -               emit_insn(ctx, addiw, LOONGARCH_GPR_A0, regmap[BPF_REG_0]=
+, 0);
+> +               /*
+> +                *  Set return value
+> +                *  Check if the 64th bit in regmap[BPF_REG_0] is 1. If i=
+t is,
+> +                *  the value in regmap[BPF_REG_0] is a kernel-space addr=
+ess.
+> +
+> +                *  long long val =3D regmap[BPF_REG_0];
+> +                *  int shift =3D 0 < val ? 32 : 0;
+> +                *  return (val << shift) >> shift;
+> +                */
+> +               move_reg(ctx, LOONGARCH_GPR_A0, regmap[BPF_REG_0]);
+> +               emit_insn(ctx, slt, LOONGARCH_GPR_T0, LOONGARCH_GPR_ZERO,=
+ LOONGARCH_GPR_A0);
+> +               emit_insn(ctx, sllid, LOONGARCH_GPR_T0, LOONGARCH_GPR_T0,=
+ 5);
+> +               emit_insn(ctx, slld, LOONGARCH_GPR_A0, LOONGARCH_GPR_A0, =
+LOONGARCH_GPR_T0);
+> +               emit_insn(ctx, srad, LOONGARCH_GPR_A0, LOONGARCH_GPR_A0, =
+LOONGARCH_GPR_T0);
+> +
 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index be00629f0ba4..00383fed9f63 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -119,6 +119,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
->  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_compute_energy_tp);
->  
->  DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
-> +EXPORT_SYMBOL_GPL(runqueues);
+This change seems wrong to me. Need further investigation.
 
-Oh no, absolutely not.
-
-You never, ever, export a variable, and certainly not this one.
-
-How about something like so?
-
-I tried 'clever' things with export inline, but the compiler hates me,
-so the below is the best I could make work.
-
----
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2315,6 +2315,7 @@ static __always_inline void alloc_tag_re
- #define alloc_tag_restore(_tag, _old)		do {} while (0)
- #endif
- 
-+#ifndef MODULE
- #ifndef COMPILE_OFFSETS
- 
- extern void __migrate_enable(void);
-@@ -2328,7 +2329,7 @@ DECLARE_PER_CPU_SHARED_ALIGNED(struct rq
- #define this_rq_raw() PERCPU_PTR(&runqueues)
- #endif
- 
--static inline void migrate_enable(void)
-+static inline void _migrate_enable(void)
- {
- 	struct task_struct *p = current;
- 
-@@ -2363,7 +2364,7 @@ static inline void migrate_enable(void)
- 	(*(unsigned int *)((void *)this_rq_raw() + RQ_nr_pinned))--;
- }
- 
--static inline void migrate_disable(void)
-+static inline void _migrate_disable(void)
- {
- 	struct task_struct *p = current;
- 
-@@ -2382,10 +2383,30 @@ static inline void migrate_disable(void)
- 	(*(unsigned int *)((void *)this_rq_raw() + RQ_nr_pinned))++;
- 	p->migration_disabled = 1;
- }
--#else
--static inline void migrate_disable(void) { }
--static inline void migrate_enable(void) { }
--#endif
-+#else /* !COMPILE_OFFSETS */
-+static inline void _migrate_disable(void) { }
-+static inline void _migrate_enable(void) { }
-+#endif /* !COMPILE_OFFSETS */
-+
-+#ifndef CREATE_MIGRATE_DISABLE
-+static inline void migrate_disable(void)
-+{
-+	_migrate_disable();
-+}
-+
-+static inline void migrate_enable(void)
-+{
-+	_migrate_enable();
-+}
-+#else /* CREATE_MIGRATE_DISABLE */
-+extern void migrate_disable(void);
-+extern void migrate_enable(void);
-+#endif /* CREATE_MIGRATE_DISABLE */
-+
-+#else /* !MODULE */
-+extern void migrate_disable(void);
-+extern void migrate_enable(void);
-+#endif /* !MODULE */
- 
- DEFINE_LOCK_GUARD_0(migrate, migrate_disable(), migrate_enable())
- 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7,6 +7,9 @@
-  *  Copyright (C) 1991-2002  Linus Torvalds
-  *  Copyright (C) 1998-2024  Ingo Molnar, Red Hat
-  */
-+#define CREATE_MIGRATE_DISABLE
-+#include <linux/sched.h>
-+
- #include <linux/highmem.h>
- #include <linux/hrtimer_api.h>
- #include <linux/ktime_api.h>
-@@ -119,7 +122,6 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_updat
- EXPORT_TRACEPOINT_SYMBOL_GPL(sched_compute_energy_tp);
- 
- DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
--EXPORT_SYMBOL_GPL(runqueues);
- 
- #ifdef CONFIG_SCHED_PROXY_EXEC
- DEFINE_STATIC_KEY_TRUE(__sched_proxy_exec);
-@@ -2382,6 +2384,11 @@ static void migrate_disable_switch(struc
- 	__do_set_cpus_allowed(p, &ac);
- }
- 
-+void migrate_disable(void)
-+{
-+	_migrate_disable();
-+}
-+
- void __migrate_enable(void)
- {
- 	struct task_struct *p = current;
-@@ -2392,7 +2399,11 @@ void __migrate_enable(void)
- 
- 	__set_cpus_allowed_ptr(p, &ac);
- }
--EXPORT_SYMBOL_GPL(__migrate_enable);
-+
-+void migrate_enable(void)
-+{
-+	_migrate_enable();
-+}
- 
- static inline bool rq_has_pinned_tasks(struct rq *rq)
- {
+>                 /* Return to the caller */
+>                 emit_insn(ctx, jirl, LOONGARCH_GPR_ZERO, LOONGARCH_GPR_RA=
+, 0);
+>         } else {
+> --
+> 2.43.0
+>
 
