@@ -1,341 +1,245 @@
-Return-Path: <bpf+bounces-65936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65937-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55259B2B5BB
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 03:13:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB993B2B5E4
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 03:25:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FEF3525071
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 01:13:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEFB45238AB
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 01:25:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59461B4247;
-	Tue, 19 Aug 2025 01:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10891DF258;
+	Tue, 19 Aug 2025 01:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mgWftAXA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PG9ailPi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8E13AC3B;
-	Tue, 19 Aug 2025 01:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619C419ABC6
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 01:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755566007; cv=none; b=WFSujAmntg1n9AL9+V8mVpYEL3LBtAFnGW/0hoYj1HLfDUmzo0BLyDtumzGnIeFrtDFkILn/t2GXKk2Jeckzz3X477VcXubv+91xy+kwey7iF9+e+C1kOYanF8y8WkwBWCJqK3t/Dhl6CUOWJQnTcumnJHd1JYUQ2idZHEMSzQg=
+	t=1755566712; cv=none; b=cKn0EP/KM15I0rlI2h5Oelo5lNqUDrnnJFgjWkiLDIbiOe1EgHSH0ZKcJWD9ZBHqQvXsev610Rru9+nZS0EPuv8KA9RunB+Dw2nwvEKVxf8V4mKhShEij/JAa/35qYL6k74ETqF+nY8U5vy5ph+NyycX2g634BeKpfNuqWN+umo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755566007; c=relaxed/simple;
-	bh=hdOQqsasSh7KKyV0xjXFZbTglkh55+aQ+Ce3husZ6I0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DeM0Hpl1QSu3m0X6AUs7skSXlYF4o0TnDWsarw2q9sXcjul3TQ0Eyur6iHRuEaU2CCrEqeec4MgyU9TBW7EzbILNUB2mgsr3F3dlkgIH9zNmHlOes1Tp05yvlPXnTK4pzZwxj5tOqrzgtv9iV8iT8Euyvd2aOTbq3k+/hW1pzBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mgWftAXA; arc=none smtp.client-ip=209.85.128.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-71d603b60cbso38134077b3.1;
-        Mon, 18 Aug 2025 18:13:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755566005; x=1756170805; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dD4BWjNIESViuGlKjroiVDn6mSOfuxrlLXoxyS7+rjw=;
-        b=mgWftAXAK8PQclm1owBNMYDgD/6IO0khVfPTBVltsFXiOvPz461gW1J+ClKLejpyiM
-         2MT+eEmp+bMHDnq9zHHKL8C2OcDwMoH8J0ceeA/J7jQk3/OyskV6m+28eLpwz8b6NdiP
-         dsni88Df9hb/pzKuqhJTDGKVBAUsjz+vVciOkZ/yM9FToVTiLr/T2ceIUnY4j/VPQNeT
-         W1hBA5Am4hs4XL2JOIvTxfkGKdrz0m/+kTK1E0X4pyeI0n7E3McgYuKdrceBAWjRynuV
-         ymhCscUgPqU5Gwmy/8idoUGbOpDTWICneQh2/KN+STsS0qcfu2+lkXiaL0t2Fz+1QElJ
-         JzMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755566005; x=1756170805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dD4BWjNIESViuGlKjroiVDn6mSOfuxrlLXoxyS7+rjw=;
-        b=uv4d9c4supG3iMtoXSWr3lsz+tmi5TyENstFkiaRlNPQym+9lEawCQFI4eYazs3zzz
-         NWuxsGojwgDbaRTfyQvSUNY08gmKMVK1jKzS4Jyg154oKF4UYfwUGqVDOW8ZsflVSZ5n
-         j+fgBZ8MRlJxtL2L5LJxq+192ytPNspOrSHKFTbhHWUFwroV6RYHIbRqwuyfYXxGZa+q
-         y3KZrJi5Lx7ZYa/nhqR0xdHwvDienHAy8v6YAgDFqkalwxfOd2eMZaV2VmjaPSxLASll
-         B7xNWOyt61qbmsCTXBimlEqm9Ni9Wi1l87bh7gZ98SMIuFhS96vU3VqI2vvcbQl4lo4R
-         UtSA==
-X-Forwarded-Encrypted: i=1; AJvYcCU35i2QceE/d7NketHvceFFSQ4Jo3XBSyM/ceLeHLfs36rORdeErX6j4mKuM+FI1+gkyU+RZdHgW6CIVVtV@vger.kernel.org, AJvYcCVgvS0xKSEuovIJNmfT0SmJRVWiWRugvYEqsPhGl1HOnpnT3O5kWPqjH+lFbWA3o0P1WezFdZRyya+Hsl4P9XY1Fule@vger.kernel.org, AJvYcCX4+DmWRG0NskHB5WXMzPhKmH+nvlUcDyraKPEMGiL3c2GJ4rXpZzKjIoogAZkZAV9Jmhw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx515L/WcLxAmPnEnFaVxiQA+43b/J4dqvJ9c7BzOFyx1nxKFam
-	vkc1Fb7iz7mZKmrLGr8iybYxuAXZPFxlD2dy5O+R4m3Q5GBtfCN5zKM/EVkv3uuegLoV5cpf9Sg
-	w7xCL172p8bWZ7bDxEk+XQ/nj5VSscp99PTwee2M=
-X-Gm-Gg: ASbGncsoBJIQkzd2CGrLjYLp8/zJqS+QVHa5+1DDKBAJPUexnd3QD1RfsNqPyHlhxgD
-	12XmpaGuKPr/jQ+OsLkHv2QSvSz+OO8xPs7wm0wz2vAZ2jiz3DWQi1A1H7zxn3ndbpAUWJjQlIh
-	gyhc7DnJlarvGrzPJ+ERQ9StEIPGQh6OY7WM1zBVlAM0xUVqTHPiTEJN6cj9po2jQ7qB/t/w+eX
-	8+gjb4=
-X-Google-Smtp-Source: AGHT+IHe1NZO10mZpBh5zHiF0fdB4RQnjhSDCzgjhVWxvO+i7ovwuxfWG6loHdMNHsSSUYPCmiXIx3yvOamHxWBs2Q4=
-X-Received: by 2002:a05:690c:34ca:b0:70e:2d3d:ace6 with SMTP id
- 00721157ae682-71f9d51acf6mr10297447b3.15.1755566004581; Mon, 18 Aug 2025
- 18:13:24 -0700 (PDT)
+	s=arc-20240116; t=1755566712; c=relaxed/simple;
+	bh=6CJJ6glKb09wLnkZzZcn6pAyyu1DbltBRoYOpiLChRQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GViiWGbFiULZiV+XeBDO1pluwA87whF9RcCvu56fhG5ISAK+gFQnGj6XjFHX01AnqEdcu5DVvSjZxaDGvkU1lHAUQefjfgp+D40gzd4ESLcMfvrQ67ULO5J93IjzL5twmNXdPF5Hz/Uh413cTuOr2At006O9QHpBMHtgJWZTG1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PG9ailPi; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1755566708;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=jKzMHX0lq5LdXuM9uxzOs7TA2ASb/+cUjydn2ohzv+w=;
+	b=PG9ailPiqA/qA450DWyD/JGFRTKFfm4u/fpLD8kO086k1YSZ7Bp3bqPSDL5xW+w2SCpc6g
+	Bv9+Mp20Q2zo3AnyO61FnwWMKV3cb0iTxD7jR8VcfI/MX1PoV8so+/bz1oBaLGLXTGcL3n
+	aK8ehuuUDuBlTXN1ZWNbO9srz9jAmQQ=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-529-PKaA9DXgMb2W18P1ryrguA-1; Mon,
+ 18 Aug 2025 21:25:04 -0400
+X-MC-Unique: PKaA9DXgMb2W18P1ryrguA-1
+X-Mimecast-MFC-AGG-ID: PKaA9DXgMb2W18P1ryrguA_1755566702
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B49D118004A7;
+	Tue, 19 Aug 2025 01:25:01 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.72.112.36])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 96DB3180028A;
+	Tue, 19 Aug 2025 01:24:48 +0000 (UTC)
+From: Pingfan Liu <piliu@redhat.com>
+To: 
+Cc: Pingfan Liu <piliu@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Jeremy Linton <jeremy.linton@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Philipp Rudo <prudo@redhat.com>,
+	Viktor Malik <vmalik@redhat.com>,
+	Jan Hendrik Farr <kernel@jfarr.cc>,
+	Baoquan He <bhe@redhat.com>,
+	Dave Young <dyoung@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	kexec@lists.infradead.org,
+	bpf@vger.kernel.org,
+	systemd-devel@lists.freedesktop.org
+Subject: [PATCHv5 00/12] kexec: Use BPF lskel to enable kexec to load PE format boot image
+Date: Tue, 19 Aug 2025 09:24:16 +0800
+Message-ID: <20250819012428.6217-1-piliu@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250817024607.296117-1-dongml2@chinatelecom.cn>
- <20250817024607.296117-2-dongml2@chinatelecom.cn> <aKMuENl9omxi6OwJ@krava>
-In-Reply-To: <aKMuENl9omxi6OwJ@krava>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Tue, 19 Aug 2025 09:13:13 +0800
-X-Gm-Features: Ac12FXzedCQscV8F_WS_bGxIdxrnM2SNFKpGvF4Rw4VUd_trw8GrczRmTZNBXp8
-Message-ID: <CADxym3a+nsh06V_fRtdj5bQaPzvRxdhTFF560ohwW8iCghSb-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/4] fprobe: use rhltable for fprobe_ip_table
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: mhiramat@kernel.org, rostedt@goodmis.org, mathieu.desnoyers@efficios.com, 
-	hca@linux.ibm.com, revest@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-On Mon, Aug 18, 2025 at 9:43=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Sun, Aug 17, 2025 at 10:46:02AM +0800, Menglong Dong wrote:
->
-> SNIP
->
-> > +/* Node insertion and deletion requires the fprobe_mutex */
-> > +static int insert_fprobe_node(struct fprobe_hlist_node *node)
-> > +{
-> >       lockdep_assert_held(&fprobe_mutex);
-> >
-> > -     next =3D find_first_fprobe_node(ip);
-> > -     if (next) {
-> > -             hlist_add_before_rcu(&node->hlist, &next->hlist);
-> > -             return;
-> > -     }
-> > -     head =3D &fprobe_ip_table[hash_ptr((void *)ip, FPROBE_IP_HASH_BIT=
-S)];
-> > -     hlist_add_head_rcu(&node->hlist, head);
-> > +     return rhltable_insert(&fprobe_ip_table, &node->hlist, fprobe_rht=
-_params);
-> >  }
-> >
-> >  /* Return true if there are synonims */
-> > @@ -92,9 +92,11 @@ static bool delete_fprobe_node(struct fprobe_hlist_n=
-ode *node)
-> >       /* Avoid double deleting */
-> >       if (READ_ONCE(node->fp) !=3D NULL) {
-> >               WRITE_ONCE(node->fp, NULL);
-> > -             hlist_del_rcu(&node->hlist);
-> > +             rhltable_remove(&fprobe_ip_table, &node->hlist,
-> > +                             fprobe_rht_params);
-> >       }
-> > -     return !!find_first_fprobe_node(node->addr);
-> > +     return !!rhltable_lookup(&fprobe_ip_table, &node->addr,
-> > +                              fprobe_rht_params);
->
-> I think rhltable_lookup needs rcu lock
+Cc systemd-devel@lists.freedesktop.org so any UKI expert can comment
 
-Hi, this is the write side part, which is protected by fprobe_mutex.
-Do we need to use rcu_read_lock() in the write side when accessing
-the protected list?
+*** Review the history ***
 
->
-> >  }
-> >
-> >  /* Check existence of the fprobe */
-> > @@ -249,9 +251,10 @@ static inline int __fprobe_kprobe_handler(unsigned=
- long ip, unsigned long parent
-> >  static int fprobe_entry(struct ftrace_graph_ent *trace, struct fgraph_=
-ops *gops,
-> >                       struct ftrace_regs *fregs)
-> >  {
-> > -     struct fprobe_hlist_node *node, *first;
-> >       unsigned long *fgraph_data =3D NULL;
-> >       unsigned long func =3D trace->func;
-> > +     struct fprobe_hlist_node *node;
-> > +     struct rhlist_head *head, *pos;
-> >       unsigned long ret_ip;
-> >       int reserved_words;
-> >       struct fprobe *fp;
-> > @@ -260,14 +263,11 @@ static int fprobe_entry(struct ftrace_graph_ent *=
-trace, struct fgraph_ops *gops,
-> >       if (WARN_ON_ONCE(!fregs))
-> >               return 0;
-> >
-> > -     first =3D node =3D find_first_fprobe_node(func);
-> > -     if (unlikely(!first))
-> > -             return 0;
-> > -
-> > +     head =3D rhltable_lookup(&fprobe_ip_table, &func, fprobe_rht_para=
-ms);
+Nowadays UEFI PE bootable image is more and more popular on the distribution.
+But it is still an open issue to load that kind of image by kexec with IMA enabled
 
-The whole function graphic handler is protected by preempt_disable,
-which indicates rcu_read_lock. So we don't need to use rcu_read_lock()
-here again:
+There are several approaches to reslove this issue, but none of them are
+accepted in upstream till now.
 
-https://lore.kernel.org/bpf/20250816235023.4dabfbc13a46a859de61cf4d@kernel.=
-org/
+The summary of those approaches:
+  -1. UEFI service emulator for UEFI stub
+  -2. PE format parser in kernel
 
-Thanks!
-Menglong Dong
+For the first one, I have tried a purgatory-style emulator [1]. But it
+confronts the hardware scaling trouble.  For the second one, there are two
+choices, one is to implement it inside the kernel, the other is inside the user
+space.  Both zboot-format [2] and UKI-format [3] parsers are rejected due to
+the concern that the variant format parsers will inflate the kernel code.  And
+finally, we have these kinds of parsers in the user space 'kexec-tools'.
 
->
-> ditto
->
-> jirka
->
->
-> >       reserved_words =3D 0;
-> > -     hlist_for_each_entry_from_rcu(node, hlist) {
-> > +     rhl_for_each_entry_rcu(node, pos, head, hlist) {
-> >               if (node->addr !=3D func)
-> > -                     break;
-> > +                     continue;
-> >               fp =3D READ_ONCE(node->fp);
-> >               if (!fp || !fp->exit_handler)
-> >                       continue;
-> > @@ -278,13 +278,12 @@ static int fprobe_entry(struct ftrace_graph_ent *=
-trace, struct fgraph_ops *gops,
-> >               reserved_words +=3D
-> >                       FPROBE_HEADER_SIZE_IN_LONG + SIZE_IN_LONG(fp->ent=
-ry_data_size);
-> >       }
-> > -     node =3D first;
-> >       if (reserved_words) {
-> >               fgraph_data =3D fgraph_reserve_data(gops->idx, reserved_w=
-ords * sizeof(long));
-> >               if (unlikely(!fgraph_data)) {
-> > -                     hlist_for_each_entry_from_rcu(node, hlist) {
-> > +                     rhl_for_each_entry_rcu(node, pos, head, hlist) {
-> >                               if (node->addr !=3D func)
-> > -                                     break;
-> > +                                     continue;
-> >                               fp =3D READ_ONCE(node->fp);
-> >                               if (fp && !fprobe_disabled(fp))
-> >                                       fp->nmissed++;
-> > @@ -299,12 +298,12 @@ static int fprobe_entry(struct ftrace_graph_ent *=
-trace, struct fgraph_ops *gops,
-> >        */
-> >       ret_ip =3D ftrace_regs_get_return_address(fregs);
-> >       used =3D 0;
-> > -     hlist_for_each_entry_from_rcu(node, hlist) {
-> > +     rhl_for_each_entry_rcu(node, pos, head, hlist) {
-> >               int data_size;
-> >               void *data;
-> >
-> >               if (node->addr !=3D func)
-> > -                     break;
-> > +                     continue;
-> >               fp =3D READ_ONCE(node->fp);
-> >               if (!fp || fprobe_disabled(fp))
-> >                       continue;
-> > @@ -448,25 +447,21 @@ static int fprobe_addr_list_add(struct fprobe_add=
-r_list *alist, unsigned long ad
-> >       return 0;
-> >  }
-> >
-> > -static void fprobe_remove_node_in_module(struct module *mod, struct hl=
-ist_head *head,
-> > -                                     struct fprobe_addr_list *alist)
-> > +static void fprobe_remove_node_in_module(struct module *mod, struct fp=
-robe_hlist_node *node,
-> > +                                      struct fprobe_addr_list *alist)
-> >  {
-> > -     struct fprobe_hlist_node *node;
-> >       int ret =3D 0;
-> >
-> > -     hlist_for_each_entry_rcu(node, head, hlist,
-> > -                              lockdep_is_held(&fprobe_mutex)) {
-> > -             if (!within_module(node->addr, mod))
-> > -                     continue;
-> > -             if (delete_fprobe_node(node))
-> > -                     continue;
-> > -             /*
-> > -              * If failed to update alist, just continue to update hli=
-st.
-> > -              * Therefore, at list user handler will not hit anymore.
-> > -              */
-> > -             if (!ret)
-> > -                     ret =3D fprobe_addr_list_add(alist, node->addr);
-> > -     }
-> > +     if (!within_module(node->addr, mod))
-> > +             return;
-> > +     if (delete_fprobe_node(node))
-> > +             return;
-> > +     /*
-> > +      * If failed to update alist, just continue to update hlist.
-> > +      * Therefore, at list user handler will not hit anymore.
-> > +      */
-> > +     if (!ret)
-> > +             ret =3D fprobe_addr_list_add(alist, node->addr);
-> >  }
-> >
-> >  /* Handle module unloading to manage fprobe_ip_table. */
-> > @@ -474,8 +469,9 @@ static int fprobe_module_callback(struct notifier_b=
-lock *nb,
-> >                                 unsigned long val, void *data)
-> >  {
-> >       struct fprobe_addr_list alist =3D {.size =3D FPROBE_IPS_BATCH_INI=
-T};
-> > +     struct fprobe_hlist_node *node;
-> > +     struct rhashtable_iter iter;
-> >       struct module *mod =3D data;
-> > -     int i;
-> >
-> >       if (val !=3D MODULE_STATE_GOING)
-> >               return NOTIFY_DONE;
-> > @@ -486,8 +482,16 @@ static int fprobe_module_callback(struct notifier_=
-block *nb,
-> >               return NOTIFY_DONE;
-> >
-> >       mutex_lock(&fprobe_mutex);
-> > -     for (i =3D 0; i < FPROBE_IP_TABLE_SIZE; i++)
-> > -             fprobe_remove_node_in_module(mod, &fprobe_ip_table[i], &a=
-list);
-> > +     rhltable_walk_enter(&fprobe_ip_table, &iter);
-> > +     do {
-> > +             rhashtable_walk_start(&iter);
-> > +
-> > +             while ((node =3D rhashtable_walk_next(&iter)) && !IS_ERR(=
-node))
-> > +                     fprobe_remove_node_in_module(mod, node, &alist);
-> > +
-> > +             rhashtable_walk_stop(&iter);
-> > +     } while (node =3D=3D ERR_PTR(-EAGAIN));
-> > +     rhashtable_walk_exit(&iter);
-> >
-> >       if (alist.index < alist.size && alist.index > 0)
-> >               ftrace_set_filter_ips(&fprobe_graph_ops.ops,
-> > @@ -727,8 +731,16 @@ int register_fprobe_ips(struct fprobe *fp, unsigne=
-d long *addrs, int num)
-> >       ret =3D fprobe_graph_add_ips(addrs, num);
-> >       if (!ret) {
-> >               add_fprobe_hash(fp);
-> > -             for (i =3D 0; i < hlist_array->size; i++)
-> > -                     insert_fprobe_node(&hlist_array->array[i]);
-> > +             for (i =3D 0; i < hlist_array->size; i++) {
-> > +                     ret =3D insert_fprobe_node(&hlist_array->array[i]=
-);
-> > +                     if (ret)
-> > +                             break;
-> > +             }
-> > +             /* fallback on insert error */
-> > +             if (ret) {
-> > +                     for (i--; i >=3D 0; i--)
-> > +                             delete_fprobe_node(&hlist_array->array[i]=
-);
-> > +             }
-> >       }
-> >       mutex_unlock(&fprobe_mutex);
-> >
-> > @@ -824,3 +836,10 @@ int unregister_fprobe(struct fprobe *fp)
-> >       return ret;
-> >  }
-> >  EXPORT_SYMBOL_GPL(unregister_fprobe);
-> > +
-> > +static int __init fprobe_initcall(void)
-> > +{
-> > +     rhltable_init(&fprobe_ip_table, &fprobe_rht_params);
-> > +     return 0;
-> > +}
-> > +late_initcall(fprobe_initcall);
-> > --
-> > 2.50.1
-> >
-> >
+
+*** The approach in this series ***
+
+This approach allows the various PE boot image to be parsed in the bpf-prog,
+as a result, the kexec kernel code to remain relatively stable.
+
+Benefits
+And it abstracts architecture independent part and 
+the API is limitted 
+
+To protect against malicious attacks on the BPF loader in user space, it
+employs BPF lskel to load and execute BPF programs from within the
+kernel.
+
+Each type of PE image contains a dedicated section '.bpf', which stores
+the bpf-prog designed to parse the format.  This ensures that the PE's
+signature also protects the integrity of the '.bpf' section.
+
+
+The parsing process operates as a pipeline. The current BPF program
+parser attaches to bpf_handle_pefile() and detaches at the end of the
+current stage via disarm_bpf_prog(). The results parsed by the current
+BPF program are buffered in the kernel through prepare_nested_pe() and
+then delivered to the next stage. For each stage of the pipeline, the
+BPF bytecode is stored in the '.bpf' section of the PE file. That means
+a vmlinuz.efi embeded in UKI format can be handled.
+
+
+Special thanks to Philipp Rudo, who spent significant time evaluating
+the practicality of my solution, and to Viktor Malik, who guided me
+toward using BPF light skeleton to prevent malicious attacks from user
+space.
+
+*** Test result ***
+Configured with RHEL kernel debug file, which turns on most of locking,
+memory debug option, I have not seen any warning or bug for 1000 times.
+
+Test approach:
+-1. compile kernel
+-2. get the zboot image with bpf-prog by 'make -C tools/kexec zboot'
+-3. compile kexec-tools from https://github.com/pfliu/kexec-tools/pull/new/pe_bpf
+
+The rest process is the common convention to use kexec.
+
+
+[1]: https://lore.kernel.org/lkml/20240819145417.23367-1-piliu@redhat.com/T/
+[2]: https://lore.kernel.org/kexec/20230306030305.15595-1-kernelfans@gmail.com/
+[3]: https://lore.kernel.org/lkml/20230911052535.335770-1-kernel@jfarr.cc/
+[4]: https://lore.kernel.org/linux-arm-kernel/20230921133703.39042-2-kernelfans@gmail.com/T/
+
+v4 -> v5
+  - rebased onto Linux 6.17-rc2
+  - [1/12], use a separate CONFIG_KEEP_COMPRESSOR to decide the section
+    of decompressor method
+  - [10/12], add Catalin's acked-by (Thanks Catalin!)
+
+v3 -> v4
+  - Use dynamic allocator in decompression ([4/12])
+  - Fix issue caused by Identical Code Folding ([5/12])
+  - Integrate the image generator tool in the kernel tree ([11,12/12])
+  - Address the issue according to Philipp's comments in v3 reviewing.
+    Thanks Philipp!
+
+RFCv2 -> v3
+  - move the introduced bpf kfuncs to kernel/bpf/* and mark them sleepable
+  - use listener and publisher model to implement bpf_copy_to_kernel()
+  - keep each introduced kfunc under the control of memcg
+
+RFCv1 -> RFCv2
+  - Use bpf kfunc instead of helper
+  - Use C source code to generate the light skeleton file
+
+
+*** BLURB HERE ***
+
+Pingfan Liu (12):
+  kexec_file: Make kexec_image_load_default global visible
+  lib/decompress: Keep decompressor when CONFIG_KEEP_COMPRESSOR
+  bpf: Introduce bpf_copy_to_kernel() to buffer the content from bpf-prog
+  bpf: Introduce decompressor kfunc
+  kexec: Introduce kexec_pe_image to parse and load PE file
+  kexec: Integrate with the introduced bpf kfuncs
+  kexec: Introduce a bpf-prog lskel to parse PE file
+  kexec: Factor out routine to find a symbol in ELF
+  kexec: Integrate bpf light skeleton to load zboot image
+  arm64/kexec: Add PE image format support
+  tools/kexec: Introduce a bpf-prog to parse zboot image format
+  tools/kexec: Add a zboot image building tool
+
+ arch/arm64/Kconfig                           |   1 +
+ arch/arm64/include/asm/kexec.h               |   1 +
+ arch/arm64/kernel/machine_kexec_file.c       |   3 +
+ include/linux/bpf.h                          |  42 ++
+ include/linux/decompress/mm.h                |   7 +
+ include/linux/kexec.h                        |  10 +
+ kernel/Kconfig.kexec                         |   9 +
+ kernel/Makefile                              |   2 +
+ kernel/bpf/Makefile                          |   3 +
+ kernel/bpf/helpers.c                         | 230 +++++++++
+ kernel/bpf/helpers_carrier.c                 | 215 +++++++++
+ kernel/kexec_bpf/Makefile                    |  71 +++
+ kernel/kexec_bpf/kexec_pe_parser_bpf.c       |  67 +++
+ kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h | 147 ++++++
+ kernel/kexec_file.c                          |  88 ++--
+ kernel/kexec_pe_image.c                      | 463 +++++++++++++++++++
+ lib/Kconfig                                  |   3 +
+ lib/decompress.c                             |   6 +-
+ tools/kexec/Makefile                         |  90 ++++
+ tools/kexec/pe.h                             | 177 +++++++
+ tools/kexec/zboot_image_builder.c            | 280 +++++++++++
+ tools/kexec/zboot_parser_bpf.c               | 158 +++++++
+ 22 files changed, 2029 insertions(+), 44 deletions(-)
+ create mode 100644 kernel/bpf/helpers_carrier.c
+ create mode 100644 kernel/kexec_bpf/Makefile
+ create mode 100644 kernel/kexec_bpf/kexec_pe_parser_bpf.c
+ create mode 100644 kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h
+ create mode 100644 kernel/kexec_pe_image.c
+ create mode 100644 tools/kexec/Makefile
+ create mode 100644 tools/kexec/pe.h
+ create mode 100644 tools/kexec/zboot_image_builder.c
+ create mode 100644 tools/kexec/zboot_parser_bpf.c
+
+
+base-commit: c17b750b3ad9f45f2b6f7e6f7f4679844244f0b9
+-- 
+2.49.0
+
 
