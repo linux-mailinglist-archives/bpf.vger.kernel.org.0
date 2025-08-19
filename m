@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-65944-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65945-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDF7BB2B5F4
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 03:27:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C50D6B2B5F5
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 03:27:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 89EE94E2398
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 01:27:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A50EC525202
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 01:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207E31E5714;
-	Tue, 19 Aug 2025 01:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56491E98F3;
+	Tue, 19 Aug 2025 01:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FAH2ulA8"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kz4+FOUf"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0018A1DF246
-	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 01:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB8C1E32C6
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 01:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755566805; cv=none; b=tu9cafR6OCdhcN77DrOweZqPag3dfi9Eak18gnTNlQBol0qQ8QpAhDaKwXZxHI6kTMtxEZH07ZSkVGzNtH6XF8iuJjxilsE90vmjDwhNfF76kb+z9PizVNMw1fpAmyUj2sSRCt0nVs0gKfDfl/iABlEvsuYZzyx3l1gIDaGlaEE=
+	t=1755566816; cv=none; b=X/6rwwmRDuLPOxV9MUWmoEFkDD/iXFKGRGoBlds3iXofWkM+oD59afFsV24vT/FTbxZeyn6jKtRnigGIwPBjgfpR3Lp4gWKuxMKhnhcD2h82odSuiB5zOIzcRNzMJxbUz6RlweBeNh5a+raSuLcwy3aE5bkqsrgsO4X5w1/YV5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755566805; c=relaxed/simple;
-	bh=YpRmHEN6kZBAR8+FgW+yTPjHogndhUSC+gu5L9y0JB8=;
+	s=arc-20240116; t=1755566816; c=relaxed/simple;
+	bh=cKYFlLMWDrc2r16uK5QSNDmWyYZHcgzGXNqUtgqGeyU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aod+RANuCIWGNnFPmq+lhxKwl7aB3e1efFXWWgNhJIWYBOBAcWq4KhNtRLMjAbns1uNDyby6Fg82DiF899+QGqpw7rlA2FN4G95+rPVTznbRw57/806D0VZIdwCFv6eXGKzNWkGDK2Co9uG6hoTTb4d4mmaTmxubAyxlm1Wqpug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FAH2ulA8; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=ZgAcnEUs3xe8gd5uHsTvx75aaPMp02XlyExxxtbJjHluYgXM85nZZJp2K9aB6JKzuIzG0b+9JRyAkbpX5XUlNRPNX9cty5tXhcmMsEoloLekrqPhEdRNxbgPk9ywnoHQ0120X0bHiEiV2muZEkfqidmXGTNMpZUSDtcPZyQcazY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Kz4+FOUf; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1755566802;
+	s=mimecast20190719; t=1755566813;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=i91G6xnOEPtmJnKGMlE0OlhzWCcAEPapIDKfcD7ZFMw=;
-	b=FAH2ulA8JG1dxdpfz3OsfCoI0NlrV9Tdcyo9VBM3NWeUIV4fHHJKIOJZ+aFi73+q4H1Jxs
-	vdCly4ardKjssdcvKIdLFS+3ZxlS4C1Ubdr6picKHefVawaBofcn8l5oJLLMdhGUTraKsZ
-	SRfSTEwohYXWiYg4As4qRir4J2Bnd1s=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=lS0KhibryFMyN1QylEfnZ945a0b2l+vbar/NBul3um8=;
+	b=Kz4+FOUfXVj+enPY3sSrySRWzdMyuqo90N38Rdl5UkQF1o9zsp8j473CsL74+O/u7jJzpL
+	scY9EdW34K9tkwNfiQjC4ocx1Qnl2Ms3UFQiVzmc0H+TvnoHEQhjzZ2fSk7F824KeUlMKx
+	ADEin+VsQI7x/tK1fpwCMx86j9Tbh5Y=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-663-LaiKg2KKNiOYpgSXj4o-lA-1; Mon,
- 18 Aug 2025 21:26:38 -0400
-X-MC-Unique: LaiKg2KKNiOYpgSXj4o-lA-1
-X-Mimecast-MFC-AGG-ID: LaiKg2KKNiOYpgSXj4o-lA_1755566795
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-447-vg9rBuIwMUW17YqGsEL8lw-1; Mon,
+ 18 Aug 2025 21:26:50 -0400
+X-MC-Unique: vg9rBuIwMUW17YqGsEL8lw-1
+X-Mimecast-MFC-AGG-ID: vg9rBuIwMUW17YqGsEL8lw_1755566808
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B8D8C195608A;
-	Tue, 19 Aug 2025 01:26:35 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E4B39180048E;
+	Tue, 19 Aug 2025 01:26:47 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.72.112.36])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 28CED180028D;
-	Tue, 19 Aug 2025 01:26:22 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9EF94180028A;
+	Tue, 19 Aug 2025 01:26:36 +0000 (UTC)
 From: Pingfan Liu <piliu@redhat.com>
 To: kexec@lists.infradead.org
 Cc: Pingfan Liu <piliu@redhat.com>,
@@ -83,9 +83,9 @@ Cc: Pingfan Liu <piliu@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	bpf@vger.kernel.org,
 	systemd-devel@lists.freedesktop.org
-Subject: [PATCHv5 07/12] kexec: Introduce a bpf-prog lskel to parse PE file
-Date: Tue, 19 Aug 2025 09:24:23 +0800
-Message-ID: <20250819012428.6217-8-piliu@redhat.com>
+Subject: [PATCHv5 08/12] kexec: Factor out routine to find a symbol in ELF
+Date: Tue, 19 Aug 2025 09:24:24 +0800
+Message-ID: <20250819012428.6217-9-piliu@redhat.com>
 In-Reply-To: <20250819012428.6217-1-piliu@redhat.com>
 References: <20250819012428.6217-1-piliu@redhat.com>
 Precedence: bulk
@@ -97,635 +97,152 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-Analague to kernel/bpf/preload/iterators/Makefile,
-this Makefile is not invoked by the Kbuild system. It needs to be
-invoked manually when kexec_pe_parser_bpf.c is changed so that
-kexec_pe_parser_bpf.lskel.h can be re-generated by the command "bpftool
-gen skeleton -L kexec_pe_parser_bpf.o".
-
-kexec_pe_parser_bpf.lskel.h is used directly by the kernel kexec code in
-later patch. For this patch, there are bpf bytecode contained in
-opts_data[] and opts_insn[] in kexec_pe_parser_bpf.lskel.h, but in the
-following patch, they will be removed and only the function API in
-kexec_pe_parser_bpf.lskel.h left.
-
-As exposed in kexec_pe_parser_bpf.lskel.h, the interface between
-bpf-prog and the kernel are constituted by:
-
-four maps:
-                struct bpf_map_desc ringbuf_1;
-                struct bpf_map_desc ringbuf_2;
-                struct bpf_map_desc ringbuf_3;
-                struct bpf_map_desc ringbuf_4;
-four sections:
-                struct bpf_map_desc rodata;
-                struct bpf_map_desc data;
-                struct bpf_map_desc bss;
-                struct bpf_map_desc rodata_str1_1;
-
-two progs:
-        SEC("fentry.s/bpf_handle_pefile")
-        SEC("fentry.s/bpf_post_handle_pefile")
-
-They are fixed and provided for all kinds of bpf-prog which interacts
-with the kexec kernel component.
+The routine to search a symbol in ELF can be shared, so split it out.
 
 Signed-off-by: Pingfan Liu <piliu@redhat.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Baoquan He <bhe@redhat.com>
 Cc: Dave Young <dyoung@redhat.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Philipp Rudo <prudo@redhat.com>
-Cc: bpf@vger.kernel.org
 To: kexec@lists.infradead.org
 ---
- kernel/kexec_bpf/Makefile                    |  63 +++
- kernel/kexec_bpf/kexec_pe_parser_bpf.c       |  67 +++
- kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h | 431 +++++++++++++++++++
- 3 files changed, 561 insertions(+)
- create mode 100644 kernel/kexec_bpf/Makefile
- create mode 100644 kernel/kexec_bpf/kexec_pe_parser_bpf.c
- create mode 100644 kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h
+ include/linux/kexec.h |  8 ++++
+ kernel/kexec_file.c   | 86 +++++++++++++++++++++++--------------------
+ 2 files changed, 54 insertions(+), 40 deletions(-)
 
-diff --git a/kernel/kexec_bpf/Makefile b/kernel/kexec_bpf/Makefile
-new file mode 100644
-index 0000000000000..0c9db6d94a604
---- /dev/null
-+++ b/kernel/kexec_bpf/Makefile
-@@ -0,0 +1,63 @@
-+# SPDX-License-Identifier: GPL-2.0
-+OUTPUT := .output
-+CLANG ?= clang
-+LLC ?= llc
-+LLVM_STRIP ?= llvm-strip
-+DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
-+BPFTOOL ?= $(DEFAULT_BPFTOOL)
-+LIBBPF_SRC := $(abspath ../../tools/lib/bpf)
-+BPFOBJ := $(OUTPUT)/libbpf.a
-+BPF_INCLUDE := $(OUTPUT)
-+INCLUDES := -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../tools/lib)        \
-+       -I$(abspath ../../tools/include/uapi)
-+CFLAGS := -g -Wall
+diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+index 8f7322c932fb5..2998d8da09d86 100644
+--- a/include/linux/kexec.h
++++ b/include/linux/kexec.h
+@@ -23,6 +23,10 @@
+ #include <uapi/linux/kexec.h>
+ #include <linux/verification.h>
+ 
++#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
++#include <linux/module.h>
++#endif
 +
-+srctree := $(patsubst %/kernel/kexec_bpf,%,$(CURDIR))
-+VMLINUX = $(srctree)/vmlinux
+ extern note_buf_t __percpu *crash_notes;
+ 
+ #ifdef CONFIG_CRASH_DUMP
+@@ -550,6 +554,10 @@ void set_kexec_sig_enforced(void);
+ static inline void set_kexec_sig_enforced(void) {}
+ #endif
+ 
++#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
++const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name);
++#endif
 +
-+abs_out := $(abspath $(OUTPUT))
-+ifeq ($(V),1)
-+Q =
-+msg =
-+else
-+Q = @
-+msg = @printf '  %-8s %s%s\n' "$(1)" "$(notdir $(2))" "$(if $(3), $(3))";
-+MAKEFLAGS += --no-print-directory
-+submake_extras := feature_display=0
-+endif
-+
-+.DELETE_ON_ERROR:
-+
-+.PHONY: all clean
-+
-+all: kexec_pe_parser_bpf.lskel.h
-+
-+clean:
-+	$(call msg,CLEAN)
-+	$(Q)rm -rf $(OUTPUT) kexec_pe_parser_bpf.lskel.h
-+
-+kexec_pe_parser_bpf.lskel.h: $(OUTPUT)/kexec_pe_parser_bpf.o | $(BPFTOOL)
-+	$(call msg,GEN-SKEL,$@)
-+	$(Q)$(BPFTOOL) gen skeleton -L $< > $@
-+
-+$(OUTPUT)/vmlinux.h: $(VMLINUX) $(BPFOBJ) | $(OUTPUT)
-+	@$(BPFTOOL) btf dump file $(VMLINUX) format c > $(OUTPUT)/vmlinux.h
-+
-+
-+$(OUTPUT)/kexec_pe_parser_bpf.o: kexec_pe_parser_bpf.c $(BPFOBJ) | $(OUTPUT)
-+	$(call msg,BPF,$@)
-+	$(Q)$(CLANG) -g -O2 -target bpf $(INCLUDES)			      \
-+		 -c $(filter %.c,$^) -o $@ &&				      \
-+	$(LLVM_STRIP) -g $@
-+
-+$(OUTPUT):
-+	$(call msg,MKDIR,$@)
-+	$(Q)mkdir -p $(OUTPUT)
-+
-+$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPUT)
-+	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)			       \
-+		    OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
-+
-+$(DEFAULT_BPFTOOL):
-+	$(Q)$(MAKE) $(submake_extras) -C ../../tools/bpf/bpftool			      \
-+		    prefix= OUTPUT=$(abs_out)/ DESTDIR=$(abs_out) install
-diff --git a/kernel/kexec_bpf/kexec_pe_parser_bpf.c b/kernel/kexec_bpf/kexec_pe_parser_bpf.c
-new file mode 100644
-index 0000000000000..7d524459806e2
---- /dev/null
-+++ b/kernel/kexec_bpf/kexec_pe_parser_bpf.c
-@@ -0,0 +1,67 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+/*
-+ * The ringbufs can have different capacity. But only four ringbuf are provided.
-+ */
-+#define RINGBUF1_SIZE	4
-+#define RINGBUF2_SIZE	4
-+#define RINGBUF3_SIZE	4
-+#define RINGBUF4_SIZE	4
-+
-+#define KEXEC_RES_KERNEL_NAME "kexec:kernel"
-+#define KEXEC_RES_INITRD_NAME "kexec:initrd"
-+#define KEXEC_RES_CMDLINE_NAME "kexec:cmdline"
-+
-+/* ringbuf is safe since the user space has no write access to them */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, RINGBUF1_SIZE);
-+} ringbuf_1 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, RINGBUF2_SIZE);
-+} ringbuf_2 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, RINGBUF3_SIZE);
-+} ringbuf_3 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, RINGBUF4_SIZE);
-+} ringbuf_4 SEC(".maps");
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+/*
-+ * This function ensures that the sections .rodata, .data .bss and .rodata.str1.1
-+ * are created for a bpf prog.
-+ */
-+__attribute__((used)) static int dummy(void)
+ #endif /* !defined(__ASSEBMLY__) */
+ 
+ #endif /* LINUX_KEXEC_H */
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index 4780d8aae24e7..137049e7e2410 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -880,6 +880,51 @@ static int kexec_calculate_store_digests(struct kimage *image)
+ 	return ret;
+ }
+ 
++#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
++const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name)
 +{
-+	static const char res_kernel[16] __attribute__((used, section(".rodata"))) = KEXEC_RES_KERNEL_NAME;
-+	static char local_name[16] __attribute__((used, section(".data"))) = KEXEC_RES_CMDLINE_NAME;
-+	static char res_cmdline[16] __attribute__((used, section(".bss")));
++	const Elf_Shdr *sechdrs;
++	const Elf_Sym *syms;
++	const char *strtab;
++	int i, k;
 +
-+	__builtin_memcpy(local_name, KEXEC_RES_INITRD_NAME, 16);
-+	return __builtin_memcmp(local_name, res_kernel, 4);
-+}
++	sechdrs = (void *)ehdr + ehdr->e_shoff;
 +
-+SEC("fentry.s/bpf_handle_pefile")
-+__attribute__((used)) int BPF_PROG(parse_pe, struct kexec_context *context)
-+{
-+	return 0;
-+}
++	for (i = 0; i < ehdr->e_shnum; i++) {
++		if (sechdrs[i].sh_type != SHT_SYMTAB)
++			continue;
 +
-+SEC("fentry.s/bpf_post_handle_pefile")
-+__attribute__((used)) int BPF_PROG(post_parse_pe, struct kexec_context *context)
-+{
-+	return 0;
-+}
-diff --git a/kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h b/kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h
-new file mode 100644
-index 0000000000000..34c7aabde66f0
---- /dev/null
-+++ b/kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h
-@@ -0,0 +1,431 @@
-+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-+/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */
-+#ifndef __KEXEC_PE_PARSER_BPF_SKEL_H__
-+#define __KEXEC_PE_PARSER_BPF_SKEL_H__
++		if (sechdrs[i].sh_link >= ehdr->e_shnum)
++			/* Invalid strtab section number */
++			continue;
++		strtab = (void *)ehdr + sechdrs[sechdrs[i].sh_link].sh_offset;
++		syms = (void *)ehdr + sechdrs[i].sh_offset;
 +
-+#include <bpf/skel_internal.h>
++		/* Go through symbols for a match */
++		for (k = 0; k < sechdrs[i].sh_size/sizeof(Elf_Sym); k++) {
++			if (ELF_ST_BIND(syms[k].st_info) != STB_GLOBAL)
++				continue;
 +
-+struct kexec_pe_parser_bpf {
-+	struct bpf_loader_ctx ctx;
-+	struct {
-+		struct bpf_map_desc ringbuf_1;
-+		struct bpf_map_desc ringbuf_2;
-+		struct bpf_map_desc ringbuf_3;
-+		struct bpf_map_desc ringbuf_4;
-+		struct bpf_map_desc rodata;
-+		struct bpf_map_desc data;
-+		struct bpf_map_desc bss;
-+		struct bpf_map_desc rodata_str1_1;
-+	} maps;
-+	struct {
-+		struct bpf_prog_desc parse_pe;
-+		struct bpf_prog_desc post_parse_pe;
-+	} progs;
-+	struct {
-+		int parse_pe_fd;
-+		int post_parse_pe_fd;
-+	} links;
-+};
++			if (strcmp(strtab + syms[k].st_name, name) != 0)
++				continue;
 +
-+static inline int
-+kexec_pe_parser_bpf__parse_pe__attach(struct kexec_pe_parser_bpf *skel)
-+{
-+	int prog_fd = skel->progs.parse_pe.prog_fd;
-+	int fd = skel_raw_tracepoint_open(NULL, prog_fd);
++			if (syms[k].st_shndx == SHN_UNDEF ||
++			    syms[k].st_shndx >= ehdr->e_shnum) {
++				pr_debug("Symbol: %s has bad section index %d.\n",
++						name, syms[k].st_shndx);
++				return NULL;
++			}
 +
-+	if (fd > 0)
-+		skel->links.parse_pe_fd = fd;
-+	return fd;
-+}
++			/* Found the symbol we are looking for */
++			return &syms[k];
++		}
++	}
 +
-+static inline int
-+kexec_pe_parser_bpf__post_parse_pe__attach(struct kexec_pe_parser_bpf *skel)
-+{
-+	int prog_fd = skel->progs.post_parse_pe.prog_fd;
-+	int fd = skel_raw_tracepoint_open(NULL, prog_fd);
-+
-+	if (fd > 0)
-+		skel->links.post_parse_pe_fd = fd;
-+	return fd;
-+}
-+
-+static inline int
-+kexec_pe_parser_bpf__attach(struct kexec_pe_parser_bpf *skel)
-+{
-+	int ret = 0;
-+
-+	ret = ret < 0 ? ret : kexec_pe_parser_bpf__parse_pe__attach(skel);
-+	ret = ret < 0 ? ret : kexec_pe_parser_bpf__post_parse_pe__attach(skel);
-+	return ret < 0 ? ret : 0;
-+}
-+
-+static inline void
-+kexec_pe_parser_bpf__detach(struct kexec_pe_parser_bpf *skel)
-+{
-+	skel_closenz(skel->links.parse_pe_fd);
-+	skel_closenz(skel->links.post_parse_pe_fd);
-+}
-+static void
-+kexec_pe_parser_bpf__destroy(struct kexec_pe_parser_bpf *skel)
-+{
-+	if (!skel)
-+		return;
-+	kexec_pe_parser_bpf__detach(skel);
-+	skel_closenz(skel->progs.parse_pe.prog_fd);
-+	skel_closenz(skel->progs.post_parse_pe.prog_fd);
-+	skel_closenz(skel->maps.ringbuf_1.map_fd);
-+	skel_closenz(skel->maps.ringbuf_2.map_fd);
-+	skel_closenz(skel->maps.ringbuf_3.map_fd);
-+	skel_closenz(skel->maps.ringbuf_4.map_fd);
-+	skel_closenz(skel->maps.rodata.map_fd);
-+	skel_closenz(skel->maps.data.map_fd);
-+	skel_closenz(skel->maps.bss.map_fd);
-+	skel_closenz(skel->maps.rodata_str1_1.map_fd);
-+	skel_free(skel);
-+}
-+static inline struct kexec_pe_parser_bpf *
-+kexec_pe_parser_bpf__open(void)
-+{
-+	struct kexec_pe_parser_bpf *skel;
-+
-+	skel = skel_alloc(sizeof(*skel));
-+	if (!skel)
-+		goto cleanup;
-+	skel->ctx.sz = (void *)&skel->links - (void *)skel;
-+	return skel;
-+cleanup:
-+	kexec_pe_parser_bpf__destroy(skel);
 +	return NULL;
 +}
 +
-+static inline int
-+kexec_pe_parser_bpf__load(struct kexec_pe_parser_bpf *skel)
-+{
-+	struct bpf_load_and_run_opts opts = {};
-+	int err;
-+	static const char opts_data[] __attribute__((__aligned__(8))) = "\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x9f\xeb\x01\0\
-+\x18\0\0\0\0\0\0\0\x04\x03\0\0\x04\x03\0\0\x95\x02\0\0\0\0\0\0\0\0\0\x02\x03\0\
-+\0\0\x01\0\0\0\0\0\0\x01\x04\0\0\0\x20\0\0\x01\0\0\0\0\0\0\0\x03\0\0\0\0\x02\0\
-+\0\0\x04\0\0\0\x1b\0\0\0\x05\0\0\0\0\0\0\x01\x04\0\0\0\x20\0\0\0\0\0\0\0\0\0\0\
-+\x02\x06\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\0\x02\0\0\0\x04\0\0\0\x04\0\0\0\0\0\0\0\
-+\x02\0\0\x04\x10\0\0\0\x19\0\0\0\x01\0\0\0\0\0\0\0\x1e\0\0\0\x05\0\0\0\x40\0\0\
-+\0\x2a\0\0\0\0\0\0\x0e\x07\0\0\0\x01\0\0\0\0\0\0\0\x02\0\0\x04\x10\0\0\0\x19\0\
-+\0\0\x01\0\0\0\0\0\0\0\x1e\0\0\0\x05\0\0\0\x40\0\0\0\x34\0\0\0\0\0\0\x0e\x09\0\
-+\0\0\x01\0\0\0\0\0\0\0\x02\0\0\x04\x10\0\0\0\x19\0\0\0\x01\0\0\0\0\0\0\0\x1e\0\
-+\0\0\x05\0\0\0\x40\0\0\0\x3e\0\0\0\0\0\0\x0e\x0b\0\0\0\x01\0\0\0\0\0\0\0\x02\0\
-+\0\x04\x10\0\0\0\x19\0\0\0\x01\0\0\0\0\0\0\0\x1e\0\0\0\x05\0\0\0\x40\0\0\0\x48\
-+\0\0\0\0\0\0\x0e\x0d\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\x0d\x02\0\0\0\x52\0\0\0\0\0\
-+\0\x0c\x0f\0\0\0\0\0\0\0\0\0\0\x02\x12\0\0\0\x2d\x01\0\0\0\0\0\x01\x08\0\0\0\
-+\x40\0\0\0\0\0\0\0\x01\0\0\x0d\x02\0\0\0\x40\x01\0\0\x11\0\0\0\x44\x01\0\0\x01\
-+\0\0\x0c\x13\0\0\0\0\0\0\0\x01\0\0\x0d\x02\0\0\0\x40\x01\0\0\x11\0\0\0\xb4\x01\
-+\0\0\x01\0\0\x0c\x15\0\0\0\x33\x02\0\0\0\0\0\x01\x01\0\0\0\x08\0\0\x01\0\0\0\0\
-+\0\0\0\x03\0\0\0\0\x17\0\0\0\x04\0\0\0\x04\0\0\0\x38\x02\0\0\0\0\0\x0e\x18\0\0\
-+\0\x01\0\0\0\0\0\0\0\0\0\0\x0a\x17\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\0\x1a\0\0\0\
-+\x04\0\0\0\x10\0\0\0\x40\x02\0\0\0\0\0\x0e\x1b\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\
-+\0\0\0\0\x17\0\0\0\x04\0\0\0\x10\0\0\0\x51\x02\0\0\0\0\0\x0e\x1d\0\0\0\0\0\0\0\
-+\x62\x02\0\0\0\0\0\x0e\x1d\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\0\x17\0\0\0\
-+\x04\0\0\0\x0d\0\0\0\x74\x02\0\0\x01\0\0\x0f\x10\0\0\0\x1f\0\0\0\0\0\0\0\x10\0\
-+\0\0\x79\x02\0\0\x01\0\0\x0f\x10\0\0\0\x1e\0\0\0\0\0\0\0\x10\0\0\0\x7f\x02\0\0\
-+\x04\0\0\x0f\x40\0\0\0\x08\0\0\0\0\0\0\0\x10\0\0\0\x0a\0\0\0\x10\0\0\0\x10\0\0\
-+\0\x0c\0\0\0\x20\0\0\0\x10\0\0\0\x0e\0\0\0\x30\0\0\0\x10\0\0\0\x85\x02\0\0\x01\
-+\0\0\x0f\x10\0\0\0\x1c\0\0\0\0\0\0\0\x10\0\0\0\x8d\x02\0\0\x01\0\0\x0f\x04\0\0\
-+\0\x19\0\0\0\0\0\0\0\x04\0\0\0\0\x69\x6e\x74\0\x5f\x5f\x41\x52\x52\x41\x59\x5f\
-+\x53\x49\x5a\x45\x5f\x54\x59\x50\x45\x5f\x5f\0\x74\x79\x70\x65\0\x6d\x61\x78\
-+\x5f\x65\x6e\x74\x72\x69\x65\x73\0\x72\x69\x6e\x67\x62\x75\x66\x5f\x31\0\x72\
-+\x69\x6e\x67\x62\x75\x66\x5f\x32\0\x72\x69\x6e\x67\x62\x75\x66\x5f\x33\0\x72\
-+\x69\x6e\x67\x62\x75\x66\x5f\x34\0\x64\x75\x6d\x6d\x79\0\x2e\x74\x65\x78\x74\0\
-+\x2f\x68\x6f\x6d\x65\x2f\x6c\x69\x6e\x75\x78\x2f\x6b\x65\x72\x6e\x65\x6c\x2f\
-+\x6b\x65\x78\x65\x63\x5f\x62\x70\x66\x2f\x6b\x65\x78\x65\x63\x5f\x70\x65\x5f\
-+\x70\x61\x72\x73\x65\x72\x5f\x62\x70\x66\x2e\x63\0\x5f\x5f\x61\x74\x74\x72\x69\
-+\x62\x75\x74\x65\x5f\x5f\x28\x28\x75\x73\x65\x64\x29\x29\x20\x73\x74\x61\x74\
-+\x69\x63\x20\x69\x6e\x74\x20\x64\x75\x6d\x6d\x79\x28\x76\x6f\x69\x64\x29\0\x09\
-+\x5f\x5f\x62\x75\x69\x6c\x74\x69\x6e\x5f\x6d\x65\x6d\x63\x70\x79\x28\x6c\x6f\
-+\x63\x61\x6c\x5f\x6e\x61\x6d\x65\x2c\x20\x4b\x45\x58\x45\x43\x5f\x52\x45\x53\
-+\x5f\x49\x4e\x49\x54\x52\x44\x5f\x4e\x41\x4d\x45\x2c\x20\x31\x36\x29\x3b\0\x09\
-+\x72\x65\x74\x75\x72\x6e\x20\x5f\x5f\x62\x75\x69\x6c\x74\x69\x6e\x5f\x6d\x65\
-+\x6d\x63\x6d\x70\x28\x6c\x6f\x63\x61\x6c\x5f\x6e\x61\x6d\x65\x2c\x20\x72\x65\
-+\x73\x5f\x6b\x65\x72\x6e\x65\x6c\x2c\x20\x34\x29\x3b\0\x75\x6e\x73\x69\x67\x6e\
-+\x65\x64\x20\x6c\x6f\x6e\x67\x20\x6c\x6f\x6e\x67\0\x63\x74\x78\0\x70\x61\x72\
-+\x73\x65\x5f\x70\x65\0\x66\x65\x6e\x74\x72\x79\x2e\x73\x2f\x62\x70\x66\x5f\x68\
-+\x61\x6e\x64\x6c\x65\x5f\x70\x65\x66\x69\x6c\x65\0\x5f\x5f\x61\x74\x74\x72\x69\
-+\x62\x75\x74\x65\x5f\x5f\x28\x28\x75\x73\x65\x64\x29\x29\x20\x69\x6e\x74\x20\
-+\x42\x50\x46\x5f\x50\x52\x4f\x47\x28\x70\x61\x72\x73\x65\x5f\x70\x65\x2c\x20\
-+\x73\x74\x72\x75\x63\x74\x20\x6b\x65\x78\x65\x63\x5f\x63\x6f\x6e\x74\x65\x78\
-+\x74\x20\x2a\x63\x6f\x6e\x74\x65\x78\x74\x29\0\x70\x6f\x73\x74\x5f\x70\x61\x72\
-+\x73\x65\x5f\x70\x65\0\x66\x65\x6e\x74\x72\x79\x2e\x73\x2f\x62\x70\x66\x5f\x70\
-+\x6f\x73\x74\x5f\x68\x61\x6e\x64\x6c\x65\x5f\x70\x65\x66\x69\x6c\x65\0\x5f\x5f\
-+\x61\x74\x74\x72\x69\x62\x75\x74\x65\x5f\x5f\x28\x28\x75\x73\x65\x64\x29\x29\
-+\x20\x69\x6e\x74\x20\x42\x50\x46\x5f\x50\x52\x4f\x47\x28\x70\x6f\x73\x74\x5f\
-+\x70\x61\x72\x73\x65\x5f\x70\x65\x2c\x20\x73\x74\x72\x75\x63\x74\x20\x6b\x65\
-+\x78\x65\x63\x5f\x63\x6f\x6e\x74\x65\x78\x74\x20\x2a\x63\x6f\x6e\x74\x65\x78\
-+\x74\x29\0\x63\x68\x61\x72\0\x4c\x49\x43\x45\x4e\x53\x45\0\x64\x75\x6d\x6d\x79\
-+\x2e\x72\x65\x73\x5f\x6b\x65\x72\x6e\x65\x6c\0\x64\x75\x6d\x6d\x79\x2e\x6c\x6f\
-+\x63\x61\x6c\x5f\x6e\x61\x6d\x65\0\x64\x75\x6d\x6d\x79\x2e\x72\x65\x73\x5f\x63\
-+\x6d\x64\x6c\x69\x6e\x65\0\x2e\x62\x73\x73\0\x2e\x64\x61\x74\x61\0\x2e\x6d\x61\
-+\x70\x73\0\x2e\x72\x6f\x64\x61\x74\x61\0\x6c\x69\x63\x65\x6e\x73\x65\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xb1\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x1b\
-+\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x72\x69\x6e\x67\x62\
-+\x75\x66\x5f\x31\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\x1b\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x72\x69\
-+\x6e\x67\x62\x75\x66\x5f\x32\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\x1b\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\x72\x69\x6e\x67\x62\x75\x66\x5f\x33\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x1b\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\x72\x69\x6e\x67\x62\x75\x66\x5f\x34\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\0\x04\0\0\0\x10\0\0\0\x01\0\0\
-+\0\x80\0\0\0\0\0\0\0\0\0\0\0\x6b\x65\x78\x65\x63\x5f\x70\x65\x2e\x72\x6f\x64\
-+\x61\x74\x61\0\0\0\0\0\0\0\0\0\0\0\0\0\x24\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x6b\
-+\x65\x78\x65\x63\x3a\x6b\x65\x72\x6e\x65\x6c\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\
-+\0\x04\0\0\0\x10\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x6b\x65\x78\x65\x63\
-+\x5f\x70\x65\x2e\x64\x61\x74\x61\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x22\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\x6b\x65\x78\x65\x63\x3a\x63\x6d\x64\x6c\x69\x6e\x65\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\x02\0\0\0\x04\0\0\0\x10\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x6b\x65\x78\
-+\x65\x63\x5f\x70\x65\x2e\x62\x73\x73\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x21\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\0\x04\0\0\0\
-+\x0d\0\0\0\x01\0\0\0\x80\0\0\0\0\0\0\0\0\0\0\0\x2e\x72\x6f\x64\x61\x74\x61\x2e\
-+\x73\x74\x72\x31\x2e\x31\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\x6b\x65\x78\x65\x63\x3a\x69\x6e\x69\x74\x72\x64\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\x47\x50\x4c\0\0\0\0\0\xb4\0\0\0\0\0\0\0\x95\0\0\0\0\0\0\0\0\0\0\0\x14\0\0\0\
-+\0\0\0\0\x5e\0\0\0\x68\x01\0\0\x1b\xe8\0\0\x1a\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\x70\x61\x72\
-+\x73\x65\x5f\x70\x65\0\0\0\0\0\0\0\0\0\0\0\0\x18\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\
-+\0\0\0\0\0\x01\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\0\0\x62\x70\x66\x5f\x68\x61\
-+\x6e\x64\x6c\x65\x5f\x70\x65\x66\x69\x6c\x65\0\0\0\0\0\0\0\x47\x50\x4c\0\0\0\0\
-+\0\xb4\0\0\0\0\0\0\0\x95\0\0\0\0\0\0\0\0\0\0\0\x16\0\0\0\0\0\0\0\x5e\0\0\0\xe2\
-+\x01\0\0\x1b\0\x01\0\x1a\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\x70\x6f\x73\x74\x5f\x70\x61\x72\
-+\x73\x65\x5f\x70\x65\0\0\0\0\0\0\0\x18\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\
-+\x01\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\0\0\x62\x70\x66\x5f\x70\x6f\x73\x74\
-+\x5f\x68\x61\x6e\x64\x6c\x65\x5f\x70\x65\x66\x69\x6c\x65\0\0";
-+	static const char opts_insn[] __attribute__((__aligned__(8))) = "\
-+\xbf\x16\0\0\0\0\0\0\xbf\xa1\0\0\0\0\0\0\x07\x01\0\0\x78\xff\xff\xff\xb7\x02\0\
-+\0\x88\0\0\0\xb7\x03\0\0\0\0\0\0\x85\0\0\0\x71\0\0\0\x05\0\x41\0\0\0\0\0\x61\
-+\xa1\x78\xff\0\0\0\0\xd5\x01\x01\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x61\xa1\x7c\xff\
-+\0\0\0\0\xd5\x01\x01\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x61\xa1\x80\xff\0\0\0\0\xd5\
-+\x01\x01\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x61\xa1\x84\xff\0\0\0\0\xd5\x01\x01\0\0\
-+\0\0\0\x85\0\0\0\xa8\0\0\0\x61\xa1\x88\xff\0\0\0\0\xd5\x01\x01\0\0\0\0\0\x85\0\
-+\0\0\xa8\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x61\x01\0\0\0\0\0\0\xd5\x01\
-+\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x18\x60\0\0\0\0\0\0\0\0\
-+\0\0\x04\0\0\0\x61\x01\0\0\0\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\
-+\x85\0\0\0\xa8\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x08\0\0\0\x61\x01\0\0\0\0\0\0\
-+\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x18\x60\0\0\0\0\
-+\0\0\0\0\0\0\x0c\0\0\0\x61\x01\0\0\0\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\
-+\0\0\0\x85\0\0\0\xa8\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\x61\x01\0\0\0\
-+\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x18\x60\0\
-+\0\0\0\0\0\0\0\0\0\x14\0\0\0\x61\x01\0\0\0\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\
-+\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x18\0\0\0\x61\x01\
-+\0\0\0\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x18\
-+\x60\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\x61\x01\0\0\0\0\0\0\xd5\x01\x02\0\0\0\0\0\
-+\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xbf\x70\0\0\0\0\0\0\x95\0\0\0\0\0\0\0\
-+\x61\x60\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xd0\x0a\0\0\x63\x01\0\0\0\0\
-+\0\0\x61\x60\x0c\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xcc\x0a\0\0\x63\x01\0\0\
-+\0\0\0\0\x79\x60\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xc0\x0a\0\0\x7b\x01\
-+\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x05\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
-+\xb8\x0a\0\0\x7b\x01\0\0\0\0\0\0\xb7\x01\0\0\x12\0\0\0\x18\x62\0\0\0\0\0\0\0\0\
-+\0\0\xb8\x0a\0\0\xb7\x03\0\0\x1c\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\
-+\xc5\x07\xa7\xff\0\0\0\0\x63\x7a\x78\xff\0\0\0\0\x61\x60\x1c\0\0\0\0\0\x15\0\
-+\x03\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xe4\x0a\0\0\x63\x01\0\0\0\0\0\0\xb7\
-+\x01\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\xd8\x0a\0\0\xb7\x03\0\0\x48\0\0\0\
-+\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x9a\xff\0\0\0\0\x18\x61\0\0\0\
-+\0\0\0\0\0\0\0\0\0\0\0\x63\x71\0\0\0\0\0\0\x61\x60\x2c\0\0\0\0\0\x15\0\x03\0\0\
-+\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x2c\x0b\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\
-+\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x20\x0b\0\0\xb7\x03\0\0\x48\0\0\0\x85\0\0\
-+\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x8b\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\
-+\0\0\0\x04\0\0\0\x63\x71\0\0\0\0\0\0\x61\x60\x3c\0\0\0\0\0\x15\0\x03\0\0\0\0\0\
-+\x18\x61\0\0\0\0\0\0\0\0\0\0\x74\x0b\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\0\0\0\
-+\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x68\x0b\0\0\xb7\x03\0\0\x48\0\0\0\x85\0\0\0\xa6\
-+\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x7c\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
-+\x08\0\0\0\x63\x71\0\0\0\0\0\0\x61\x60\x4c\0\0\0\0\0\x15\0\x03\0\0\0\0\0\x18\
-+\x61\0\0\0\0\0\0\0\0\0\0\xbc\x0b\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\0\0\0\0\
-+\x18\x62\0\0\0\0\0\0\0\0\0\0\xb0\x0b\0\0\xb7\x03\0\0\x48\0\0\0\x85\0\0\0\xa6\0\
-+\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x6d\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
-+\x0c\0\0\0\x63\x71\0\0\0\0\0\0\x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\
-+\0\0\x28\x0c\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x5c\0\0\0\0\0\x15\0\x03\0\0\0\0\0\
-+\x18\x61\0\0\0\0\0\0\0\0\0\0\x04\x0c\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\0\0\0\
-+\0\x18\x62\0\0\0\0\0\0\0\0\0\0\xf8\x0b\0\0\xb7\x03\0\0\x48\0\0\0\x85\0\0\0\xa6\
-+\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x5a\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
-+\x10\0\0\0\x63\x71\0\0\0\0\0\0\x79\x63\x60\0\0\0\0\0\x15\x03\x08\0\0\0\0\0\x18\
-+\x61\0\0\0\0\0\0\0\0\0\0\x40\x0c\0\0\xb7\x02\0\0\x10\0\0\0\x61\x60\x04\0\0\0\0\
-+\0\x45\0\x02\0\x01\0\0\0\x85\0\0\0\x94\0\0\0\x05\0\x01\0\0\0\0\0\x85\0\0\0\x71\
-+\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\
-+\0\0\0\0\0\0\0\x58\x0c\0\0\x63\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x50\
-+\x0c\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x60\x0c\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\
-+\0\0\0\0\0\0\0\0\0\x40\x0c\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x68\x0c\0\0\x7b\x01\
-+\0\0\0\0\0\0\xb7\x01\0\0\x02\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x58\x0c\0\0\xb7\
-+\x03\0\0\x20\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x36\xff\0\0\
-+\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\
-+\0\0\0\0\0\0\x78\x0c\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\x16\0\0\0\x18\x62\0\0\
-+\0\0\0\0\0\0\0\0\x78\x0c\0\0\xb7\x03\0\0\x04\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\
-+\0\0\0\0\0\0\xc5\x07\x29\xff\0\0\0\0\x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\
-+\0\0\0\0\0\xb0\x0c\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x6c\0\0\0\0\0\x15\0\x03\0\0\
-+\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x8c\x0c\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\
-+\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x80\x0c\0\0\xb7\x03\0\0\x48\0\0\0\x85\0\0\
-+\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x19\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\
-+\0\0\0\x14\0\0\0\x63\x71\0\0\0\0\0\0\x79\x63\x70\0\0\0\0\0\x15\x03\x08\0\0\0\0\
-+\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xc8\x0c\0\0\xb7\x02\0\0\x10\0\0\0\x61\x60\x04\0\
-+\0\0\0\0\x45\0\x02\0\x01\0\0\0\x85\0\0\0\x94\0\0\0\x05\0\x01\0\0\0\0\0\x85\0\0\
-+\0\x71\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x14\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\
-+\0\0\0\0\0\0\0\0\0\0\xe0\x0c\0\0\x63\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\
-+\0\xd8\x0c\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xe8\x0c\0\0\x7b\x01\0\0\0\0\0\0\x18\
-+\x60\0\0\0\0\0\0\0\0\0\0\xc8\x0c\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xf0\x0c\0\0\
-+\x7b\x01\0\0\0\0\0\0\xb7\x01\0\0\x02\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\xe0\x0c\
-+\0\0\xb7\x03\0\0\x20\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\xf5\
-+\xfe\0\0\0\0\x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x30\x0d\0\0\
-+\x63\x01\0\0\0\0\0\0\x61\x60\x7c\0\0\0\0\0\x15\0\x03\0\0\0\0\0\x18\x61\0\0\0\0\
-+\0\0\0\0\0\0\x0c\x0d\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\0\0\0\0\x18\x62\0\0\0\
-+\0\0\0\0\0\0\0\0\x0d\0\0\xb7\x03\0\0\x48\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\
-+\0\0\0\0\xc5\x07\xe5\xfe\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x18\0\0\0\x63\x71\
-+\0\0\0\0\0\0\x79\x63\x80\0\0\0\0\0\x15\x03\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\
-+\0\0\0\x48\x0d\0\0\xb7\x02\0\0\x10\0\0\0\x61\x60\x04\0\0\0\0\0\x45\0\x02\0\x01\
-+\0\0\0\x85\0\0\0\x94\0\0\0\x05\0\x01\0\0\0\0\0\x85\0\0\0\x71\0\0\0\x18\x62\0\0\
-+\0\0\0\0\0\0\0\0\x18\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x60\
-+\x0d\0\0\x63\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x58\x0d\0\0\x18\x61\0\
-+\0\0\0\0\0\0\0\0\0\x68\x0d\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\
-+\x48\x0d\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x70\x0d\0\0\x7b\x01\0\0\0\0\0\0\xb7\
-+\x01\0\0\x02\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x60\x0d\0\0\xb7\x03\0\0\x20\0\0\
-+\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\xc1\xfe\0\0\0\0\x61\x60\x8c\
-+\0\0\0\0\0\x15\0\x03\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x8c\x0d\0\0\x63\x01\
-+\0\0\0\0\0\0\xb7\x01\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x80\x0d\0\0\xb7\
-+\x03\0\0\x48\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\xb5\xfe\0\0\
-+\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\x63\x71\0\0\0\0\0\0\x79\x63\x90\0\0\
-+\0\0\0\x15\x03\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xc8\x0d\0\0\xb7\x02\0\
-+\0\x0d\0\0\0\x61\x60\x04\0\0\0\0\0\x45\0\x02\0\x01\0\0\0\x85\0\0\0\x94\0\0\0\
-+\x05\0\x01\0\0\0\0\0\x85\0\0\0\x71\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\
-+\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xe0\x0d\0\0\x63\x01\0\0\0\0\0\
-+\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xd8\x0d\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xe8\x0d\
-+\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xc8\x0d\0\0\x18\x61\0\0\0\
-+\0\0\0\0\0\0\0\xf0\x0d\0\0\x7b\x01\0\0\0\0\0\0\xb7\x01\0\0\x02\0\0\0\x18\x62\0\
-+\0\0\0\0\0\0\0\0\0\xe0\x0d\0\0\xb7\x03\0\0\x20\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\
-+\x07\0\0\0\0\0\0\xc5\x07\x91\xfe\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x1c\0\0\0\
-+\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\0\x0e\0\0\x63\x01\0\0\0\0\0\0\
-+\xb7\x01\0\0\x16\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\0\x0e\0\0\xb7\x03\0\0\x04\0\
-+\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x84\xfe\0\0\0\0\x18\x60\0\
-+\0\0\0\0\0\0\0\0\0\x08\x0e\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x48\x0e\0\0\x7b\x01\
-+\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\x0e\0\0\x18\x61\0\0\0\0\0\0\0\0\0\
-+\0\x40\x0e\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x20\x0e\0\0\x18\
-+\x61\0\0\0\0\0\0\0\0\0\0\x88\x0e\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\
-+\0\0\0\x28\x0e\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x98\x0e\0\0\x7b\x01\0\0\0\0\0\0\
-+\x18\x60\0\0\0\0\0\0\0\0\0\0\x38\x0e\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xb8\x0e\0\
-+\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\
-+\0\0\0\0\xb0\x0e\0\0\x7b\x01\0\0\0\0\0\0\x61\x60\x08\0\0\0\0\0\x18\x61\0\0\0\0\
-+\0\0\0\0\0\0\x50\x0e\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x0c\0\0\0\0\0\x18\x61\0\0\
-+\0\0\0\0\0\0\0\0\x54\x0e\0\0\x63\x01\0\0\0\0\0\0\x79\x60\x10\0\0\0\0\0\x18\x61\
-+\0\0\0\0\0\0\0\0\0\0\x58\x0e\0\0\x7b\x01\0\0\0\0\0\0\x61\xa0\x78\xff\0\0\0\0\
-+\x18\x61\0\0\0\0\0\0\0\0\0\0\x80\x0e\0\0\x63\x01\0\0\0\0\0\0\x18\x61\0\0\0\0\0\
-+\0\0\0\0\0\xc8\x0e\0\0\xb7\x02\0\0\x12\0\0\0\xb7\x03\0\0\x0c\0\0\0\xb7\x04\0\0\
-+\0\0\0\0\x85\0\0\0\xa7\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x4e\xfe\0\0\0\0\x18\
-+\x60\0\0\0\0\0\0\0\0\0\0\x38\x0e\0\0\x63\x70\x6c\0\0\0\0\0\x77\x07\0\0\x20\0\0\
-+\0\x63\x70\x70\0\0\0\0\0\xb7\x01\0\0\x05\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x38\
-+\x0e\0\0\xb7\x03\0\0\x8c\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\x18\x60\
-+\0\0\0\0\0\0\0\0\0\0\xa8\x0e\0\0\x61\x01\0\0\0\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\
-+\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xc5\x07\x3c\xfe\0\0\0\0\x63\x7a\x80\xff\0\
-+\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xe0\x0e\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x20\
-+\x0f\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xe8\x0e\0\0\x18\x61\0\
-+\0\0\0\0\0\0\0\0\0\x18\x0f\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\
-+\xf8\x0e\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x60\x0f\0\0\x7b\x01\0\0\0\0\0\0\x18\
-+\x60\0\0\0\0\0\0\0\0\0\0\0\x0f\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x70\x0f\0\0\x7b\
-+\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\x0f\0\0\x18\x61\0\0\0\0\0\0\0\
-+\0\0\0\x90\x0f\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x18\
-+\x61\0\0\0\0\0\0\0\0\0\0\x88\x0f\0\0\x7b\x01\0\0\0\0\0\0\x61\x60\x08\0\0\0\0\0\
-+\x18\x61\0\0\0\0\0\0\0\0\0\0\x28\x0f\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x0c\0\0\0\
-+\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x2c\x0f\0\0\x63\x01\0\0\0\0\0\0\x79\x60\x10\0\
-+\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x30\x0f\0\0\x7b\x01\0\0\0\0\0\0\x61\xa0\
-+\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x58\x0f\0\0\x63\x01\0\0\0\0\0\0\
-+\x18\x61\0\0\0\0\0\0\0\0\0\0\xa0\x0f\0\0\xb7\x02\0\0\x17\0\0\0\xb7\x03\0\0\x0c\
-+\0\0\0\xb7\x04\0\0\0\0\0\0\x85\0\0\0\xa7\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x05\
-+\xfe\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\x0f\0\0\x63\x70\x6c\0\0\0\0\0\x77\
-+\x07\0\0\x20\0\0\0\x63\x70\x70\0\0\0\0\0\xb7\x01\0\0\x05\0\0\0\x18\x62\0\0\0\0\
-+\0\0\0\0\0\0\x10\x0f\0\0\xb7\x03\0\0\x8c\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\
-+\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x80\x0f\0\0\x61\x01\0\0\0\0\0\0\xd5\x01\
-+\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xc5\x07\xf3\xfd\0\0\0\0\
-+\x63\x7a\x84\xff\0\0\0\0\x61\xa1\x78\xff\0\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\
-+\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x61\xa0\x80\xff\0\0\0\0\x63\x06\x98\0\0\0\0\0\
-+\x61\xa0\x84\xff\0\0\0\0\x63\x06\x9c\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\0\0\
-+\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x18\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x04\
-+\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x28\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
-+\x08\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x38\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\
-+\0\x0c\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x48\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\
-+\0\0\x10\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x58\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\
-+\0\0\0\x14\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x68\0\0\0\0\0\x18\x61\0\0\0\0\0\0\
-+\0\0\0\0\x18\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x78\0\0\0\0\0\x18\x61\0\0\0\0\0\
-+\0\0\0\0\0\x1c\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x88\0\0\0\0\0\xb7\0\0\0\0\0\0\
-+\0\x95\0\0\0\0\0\0\0";
-+
-+	opts.ctx = (struct bpf_loader_ctx *)skel;
-+	opts.data_sz = sizeof(opts_data) - 1;
-+	opts.data = (void *)opts_data;
-+	opts.insns_sz = sizeof(opts_insn) - 1;
-+	opts.insns = (void *)opts_insn;
-+
-+	err = bpf_load_and_run(&opts);
-+	if (err < 0)
-+		return err;
-+	return 0;
-+}
-+
-+static inline struct kexec_pe_parser_bpf *
-+kexec_pe_parser_bpf__open_and_load(void)
-+{
-+	struct kexec_pe_parser_bpf *skel;
-+
-+	skel = kexec_pe_parser_bpf__open();
-+	if (!skel)
-+		return NULL;
-+	if (kexec_pe_parser_bpf__load(skel)) {
-+		kexec_pe_parser_bpf__destroy(skel);
-+		return NULL;
-+	}
-+	return skel;
-+}
-+
-+__attribute__((unused)) static void
-+kexec_pe_parser_bpf__assert(struct kexec_pe_parser_bpf *s __attribute__((unused)))
-+{
-+#ifdef __cplusplus
-+#define _Static_assert static_assert
 +#endif
-+#ifdef __cplusplus
-+#undef _Static_assert
-+#endif
-+}
 +
-+#endif /* __KEXEC_PE_PARSER_BPF_SKEL_H__ */
+ #ifdef CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY
+ /*
+  * kexec_purgatory_setup_kbuf - prepare buffer to load purgatory.
+@@ -1137,49 +1182,10 @@ int kexec_load_purgatory(struct kimage *image, struct kexec_buf *kbuf)
+ static const Elf_Sym *kexec_purgatory_find_symbol(struct purgatory_info *pi,
+ 						  const char *name)
+ {
+-	const Elf_Shdr *sechdrs;
+-	const Elf_Ehdr *ehdr;
+-	const Elf_Sym *syms;
+-	const char *strtab;
+-	int i, k;
+-
+ 	if (!pi->ehdr)
+ 		return NULL;
+ 
+-	ehdr = pi->ehdr;
+-	sechdrs = (void *)ehdr + ehdr->e_shoff;
+-
+-	for (i = 0; i < ehdr->e_shnum; i++) {
+-		if (sechdrs[i].sh_type != SHT_SYMTAB)
+-			continue;
+-
+-		if (sechdrs[i].sh_link >= ehdr->e_shnum)
+-			/* Invalid strtab section number */
+-			continue;
+-		strtab = (void *)ehdr + sechdrs[sechdrs[i].sh_link].sh_offset;
+-		syms = (void *)ehdr + sechdrs[i].sh_offset;
+-
+-		/* Go through symbols for a match */
+-		for (k = 0; k < sechdrs[i].sh_size/sizeof(Elf_Sym); k++) {
+-			if (ELF_ST_BIND(syms[k].st_info) != STB_GLOBAL)
+-				continue;
+-
+-			if (strcmp(strtab + syms[k].st_name, name) != 0)
+-				continue;
+-
+-			if (syms[k].st_shndx == SHN_UNDEF ||
+-			    syms[k].st_shndx >= ehdr->e_shnum) {
+-				pr_debug("Symbol: %s has bad section index %d.\n",
+-						name, syms[k].st_shndx);
+-				return NULL;
+-			}
+-
+-			/* Found the symbol we are looking for */
+-			return &syms[k];
+-		}
+-	}
+-
+-	return NULL;
++	return elf_find_symbol(pi->ehdr, name);
+ }
+ 
+ void *kexec_purgatory_get_symbol_addr(struct kimage *image, const char *name)
 -- 
 2.49.0
 
