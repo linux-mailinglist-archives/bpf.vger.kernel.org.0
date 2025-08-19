@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-65972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-65973-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1262DB2BB82
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 10:15:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2C4B2BBA1
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 10:20:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27C223B20C5
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 08:13:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20B4A19607AF
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 08:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E113101CE;
-	Tue, 19 Aug 2025 08:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F82A311945;
+	Tue, 19 Aug 2025 08:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Vhk6tMzV"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="cAnGpEp9"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 123912B9B9
-	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 08:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355E7311596
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 08:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755591184; cv=none; b=uwVEi9nIDTUmDESc6GSInlfyBjySdFUB3P85TlkerTXssHWt/5zLq6B06ooKA0sn+xziLVdfTbnIpOtaa3NiMUbnEigV43lSVxmio/OqY+ZlgXMaU4waWdRjagsimp6crLxb55326zaoUwit3PbfNj1DR4NoYQyY43nOFz6rpXw=
+	t=1755591582; cv=none; b=B/L7Z3MS7UzxKWKJmj1jZRGrgub/UkCvT07Jst4LHeQjjh+DVmRBfNx3npa/GZd7z3JoHnLnwB0QLXozKLowJZ1VRs4vnSWkxf9PWcK7ueQJ/+itofAgaWA/EAoNWWKmqPocUy0Je3xfQzHy6/vz04Xd0b+SemkMIpzrXEK9CF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755591184; c=relaxed/simple;
-	bh=y5/HhQvDWfVC7GS1x3bKB/drD+lrq4gxjTg7g50r1FA=;
+	s=arc-20240116; t=1755591582; c=relaxed/simple;
+	bh=fvHHYWPNP70kUZAs0cimwsolvowUG9Y/bnCEl6eKqGY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F0DRIGrvGkMZ/N45XCrOV4QRj6cdHnY4XxLlJ0Sw9wuzpWCInJzQePZFy1k3YTf0vMwI3WVreLAvku9lUat8K6mtiNtaQnCHURlErml4HLDJ/1mOa1Pt+qOe4xoSkJx81WcnJ4OiOsm465pDLEleNxsxHnVSjygkwB82CRpFajg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Vhk6tMzV; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=Y9WLdtxDgDWq7n0YMzYb4/NGWGxSbp/x40A8lHKnncylzsRHM293fpXM1CI8QkRoURS+caxWLWZNABqh39IKNKzjlUleJIuHj2u86fKIUv+0RSpcqGXehHQdlPefKFopyy4jZVA91ftJDEltcZFPsQMpVhwSWyTbB+CDreP+Srg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=cAnGpEp9; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=XpFXcIWHPE9JlvlUPYH6ZWOzcWLNGd8ltyGQYcIozxE=; b=Vhk6tMzVVsBHMQJnnAf5fsfDpR
-	S3R0TIlCEgEtSDmIMqiCEJhJbVqu4jLreh2EcKgTWnxO3mytYRQQewBTBEEyIkD4iIWJxHSjKeb5n
-	Sc0mIACGVk9CyPJqjujcs0G7++mbuK4WzdyBaCa6l9C534BXhX1mKGcDJIjEZOkM/zRa2l9ErwGoG
-	/fq+dG11mdkOcu4ccGfI3gIK7YJ/ryB5tSaulDya3YgpZE+vtRvwhDK6fCPPJiYzGMVnE/Su3VkoS
-	zY2K93is4T6VicQrSOaIoObYTv9JyRKfvKiOOOQqHrkccYtueBbOI8LfZwvK003kI3Cns/0snHDDJ
-	S1N95BTA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
+	bh=Oe6ITaXV+bcTcuV8jn2LqN8x2Q8+p1ZkJ4tqvtE1cNs=; b=cAnGpEp9jvUxOe8IZfiTPYLPDu
+	QNxJmCrQgwAZ+Qoe2fofgDJGTPfdAOj8KCW99eSDriGT93ntd+qk7+f3jnzaXXC0/Ma8UnOwU9fBz
+	Tuq6K6qMf/Uuw0SqO7QmNzx3U/9dD3a/9XS9EmUtNtjayEZVnuFvG3fUHvccUIZzkOw5pUVM76+L7
+	K/MM3YJgPRBV9tPREAWdo/3XL/h14HTUIl1A5eRiDHAT9XpHmit72XhWKARPXtFAFapDicuBL4g9Q
+	zQ/i+35/x9Vc4foKjBdKWOByeUF81nE+TJDyTt4PhvXrqEMrpmkJgGFwGQWqKVDXKv35XxnOoLmJn
+	EOSHtDaQ==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uoHSh-000MKP-0W;
-	Tue, 19 Aug 2025 10:12:55 +0200
+	id 1uoHZB-000Nt7-13;
+	Tue, 19 Aug 2025 10:19:37 +0200
 Received: from localhost ([127.0.0.1])
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uoHSf-0002jA-1o;
-	Tue, 19 Aug 2025 10:12:54 +0200
-Message-ID: <65c52407-1993-4906-8e13-2d74932ee82e@iogearbox.net>
-Date: Tue, 19 Aug 2025 10:12:53 +0200
+	id 1uoHZA-000MGh-1I;
+	Tue, 19 Aug 2025 10:19:36 +0200
+Message-ID: <66a37816-3171-4689-b29a-ddebff034501@iogearbox.net>
+Date: Tue, 19 Aug 2025 10:19:36 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,17 +63,13 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpftool: add kernel.kptr_restrict hint for no
- instructions
-To: Vincent Li <vincent.mc.li@gmail.com>, bpf@vger.kernel.org
-Cc: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>
-References: <20250818165113.15982-1-vincent.mc.li@gmail.com>
+Subject: Re: [PATCH bpf-next] s390/bpf: Use direct calls and jumps where
+ possible
+To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>
+References: <20250814124314.185516-1-iii@linux.ibm.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -119,26 +115,46 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250818165113.15982-1-vincent.mc.li@gmail.com>
+In-Reply-To: <20250814124314.185516-1-iii@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27736/Mon Aug 18 10:27:28 2025)
 
-On 8/18/25 6:51 PM, Vincent Li wrote:
-> from bpftool github repo issue [0], when Linux distribution
-> kernel.kptr_restrict is set to 2, bpftool prog dump jited returns "no
-> instructions returned", this message can be puzzling to bpftool users
-> who is not familiar with kernel BPF internal, so add small hint for
-> bpftool users to check kernel.kptr_restrict setting. Set
-> kernel.kptr_restrict to expose kernel address to allow bpftool prog
-> dump jited to dump the jited bpf program instructions.
+On 8/14/25 2:42 PM, Ilya Leoshkevich wrote:
+> After the V!=R rework (commit c98d2ecae08f ("s390/mm: Uncouple physical
+> vs virtual address spaces")), all kernel code and related data are
+> allocated within a 4G region, making it possible to use relative
+> addressing in BPF code more extensively.
 > 
-> [0]: https://github.com/libbpf/bpftool/issues/184
+> Convert as many indirect calls and jumps to direct calls as possible,
+> namely:
 > 
-> Signed-off-by: Vincent Li <vincent.mc.li@gmail.com.
+> * BPF_CALL
+> * __bpf_tramp_enter()
+> * __bpf_tramp_exit()
+> * __bpf_prog_enter()
+> * __bpf_prog_exit()
+> * fentry
+> * fmod_ret
+> * fexit
+> * BPF_TRAMP_F_CALL_ORIG without BPF_TRAMP_F_ORIG_STACK
+> * Trampoline returns without BPF_TRAMP_F_SKIP_FRAME and
+>    BPF_TRAMP_F_ORIG_STACK
+> 
+> The following indirect calls and jumps remain:
+> 
+> * Prog returns
+> * Trampoline returns with BPF_TRAMP_F_SKIP_FRAME or
+>    BPF_TRAMP_F_ORIG_STACK
+> * BPF_TAIL_CALL
+> * BPF_TRAMP_F_CALL_ORIG with BPF_TRAMP_F_ORIG_STACK
+> 
+> As a result, only one usage of call_r1() remains, so inline it.
+> 
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-I fixed up the email typo and rewrote the commit message a bit when applying
-to bpf-next.
+This needs a rebase against bpf-next now after your tail call counter series
+landed, so please send a v2.
 
 Thanks,
 Daniel
