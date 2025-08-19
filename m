@@ -1,113 +1,104 @@
-Return-Path: <bpf+bounces-66012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48FBFB2C57A
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 15:26:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0771B2C63C
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 15:54:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C15B7AC4B2
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 13:24:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48186726491
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 13:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8803C224247;
-	Tue, 19 Aug 2025 13:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ikoAqHUs";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="407GAP/D"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5CF341ACD;
+	Tue, 19 Aug 2025 13:50:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F162EB855;
-	Tue, 19 Aug 2025 13:26:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2BA322DD7
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 13:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755609973; cv=none; b=mTqrhhGmEwPQLAE58ShQy6vW62zHdy8z2VpvlgD2ey4jJ9t+4pFTiQOcHobsHzIwyk6YTBjXL0e4L5mUFwdJCWgBb2JpI+GCr4W6dDptDmOvzvqFJMVs8p3QN/3pVJpNCquPi9POnuJfzSCc+QN43ir/P76SHi+vB3a+bYZwot0=
+	t=1755611423; cv=none; b=eAmcdFt66Xj588t0nYIOUypWLdyv+xKARcRPBRsNsU3t2BxO8l9TGUsHJ25859AO9WuNpuxE2SietP/S+rlmFPsauRVpDVez/HvfFaDx2A+BkpsSxGj5JKvajaQNcDPtzptp4ujOEUNJiqH1D5h25763UDoiHajedIgjedu9Dis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755609973; c=relaxed/simple;
-	bh=11EcSOl8r9sOnuqSlNW5+DwXH08T+2O1JfV8KXSS93c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BXNjd/yiVPDkASUhB5/wcI39XliMgbUTqTtIrR3DzJqhytyLVJRp1vRzjsNzmve6jjKdD+Uzjo5Ax73zzOQV9if1nwGRCH+9cFf6btiHRi+8tWhneL09gEG/2giuwAgmENbIIfsa8bneAt7T0G7+MAuFIm0qiDoNrtn5gdGEyxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ikoAqHUs; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=407GAP/D; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 19 Aug 2025 15:26:08 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1755609969;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eKgAKgDD4BgUO6EcawFhOqTDYO3Qs5T6BmZZDdDiLFY=;
-	b=ikoAqHUsBHABRb3ZhZuBCW4UUl7aRhUvUxJUsncQtyZMiJgnkYvhY2IgSCkgxM9UX7Z6ps
-	ePclUUwdCBf/Vi1qs7dXCsN5UYKjYB6+iAkOLgoYn/GP+5Y+/8wXXtPdx5EgDVvjgkk5Xy
-	TEKfDxWOTjRSY4tP11IX0sYuwaL0+nbdWvD+0zhBGuYIttn/Sdm9orvSlewE5gz7s6RQKA
-	J2cxGV7UvnuN8GL3zNPv2RonQn0ApuIFdrczsMNmClNfZXk3J3GrWEnvC1FeKWemuP2npe
-	ocxwGWRbSLYurqzNn7iQOCiNDF0MaiyzEn89qVJviC5XSeKg5WWWPWHoRBeeiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1755609969;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eKgAKgDD4BgUO6EcawFhOqTDYO3Qs5T6BmZZDdDiLFY=;
-	b=407GAP/DHT70dDA6OZmcIM3mLG5uM9M39sw2IGu+aHsDau9Ex0rZiBokBJ8gSEmtxbvakT
-	JWW/1fwY4NN72qDw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Yafang Shao <laoar.shao@gmail.com>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	horms@kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Thomas Graf <tgraf@suug.ch>,
-	Paul McKenney <paulmck@kernel.org>,
-	"open list:BPF [RINGBUF]" <bpf@vger.kernel.org>,
-	Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCH] net/cls_cgroup: Fix task_get_classid() during qdisc run
-Message-ID: <20250819132608.ofNuEof6@linutronix.de>
-References: <20250819093737.60688-1-laoar.shao@gmail.com>
- <7d2f3767-64c5-4efa-862b-f463751a03bb@iogearbox.net>
+	s=arc-20240116; t=1755611423; c=relaxed/simple;
+	bh=qUd78w5HqrhKX6ARFrGvyF+FpiEPI8H1+G4pb/MMhKc=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=IbEsnVS2oD2XbowO1bC9mMHA+rCyvhQEJEambAY6u/1m/VCb75RRX+ko0dTjq2N5D74BU+HjJ4CDdMJsZl862+DBcf22oJ8M8yIPVJdgokrDzTHmv3rq4e6PT0xB3dabpGKPLRNFaAgBvsx79jiewuNvPrc5mQNA1p4pHX/H6sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8Bx3tIXgaRokWkAAA--.760S3;
+	Tue, 19 Aug 2025 21:50:15 +0800 (CST)
+Received: from [10.130.10.66] (unknown [113.200.148.30])
+	by front1 (Coremail) with SMTP id qMiowJBxTMEVgaRo42JYAA--.20527S3;
+	Tue, 19 Aug 2025 21:50:13 +0800 (CST)
+Subject: Re: [PATCH v2] LoongArch: BPF: Fix incorrect return pointer value in
+ the eBPF program
+To: Huacai Chen <chenhuacai@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>
+Cc: Haoran Jiang <jianghaoran@kylinos.cn>, loongarch@lists.linux.dev,
+ bpf@vger.kernel.org, kernel@xen0n.name, hengqi.chen@gmail.com,
+ jolsa@kernel.org, haoluo@google.com, sdf@fomichev.me, kpsingh@kernel.org,
+ john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org,
+ eddyz87@gmail.com, martin.lau@linux.dev, andrii@kernel.org, ast@kernel.org,
+ Jinyang He <hejinyang@loongson.cn>
+References: <20250815082931.875216-1-jianghaoran@kylinos.cn>
+ <720482db-17de-4831-b64a-0ae3fd7fa5a5@iogearbox.net>
+ <CAAhV-H5GxL159jSD1V6G7JZVXasESVFr02Jj=h+mYUU2374N6g@mail.gmail.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <715bff59-64e4-2bc4-038e-e4595ad3dcff@loongson.cn>
+Date: Tue, 19 Aug 2025 21:50:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <7d2f3767-64c5-4efa-862b-f463751a03bb@iogearbox.net>
+In-Reply-To: <CAAhV-H5GxL159jSD1V6G7JZVXasESVFr02Jj=h+mYUU2374N6g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowJBxTMEVgaRo42JYAA--.20527S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrurWfJw45AF1fAw18Cry7XFc_yoWxKFc_Ca
+	4Uu34kC34kZF4UAF1DKan0vFWDXan5Kr1ktrW8JrZrZF95XF98Ar42grn2y3y7XFZ5tan7
+	ur909rWavr9F9osvyTuYvTs0mTUanT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbDkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0
+	oVCq3wAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa02
+	0Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1l
+	Yx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI
+	0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC2
+	0s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr
+	0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0E
+	wIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
+	WxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAI
+	cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8loGPUUUUU==
 
-On 2025-08-19 14:42:07 [+0200], Daniel Borkmann wrote:
-> > --- a/include/net/cls_cgroup.h
-> > +++ b/include/net/cls_cgroup.h
-> > @@ -63,7 +63,7 @@ static inline u32 task_get_classid(const struct sk_bu=
-ff *skb)
-> >   	 * calls by looking at the number of nested bh disable calls because
-> >   	 * softirqs always disables bh.
-> >   	 */
-> > -	if (in_serving_softirq()) {
-> > +	if (in_softirq()) {
-> >   		struct sock *sk =3D skb_to_full_sk(skb);
-> >   		/* If there is an sock_cgroup_classid we'll use that. */
-=E2=80=A6
-> Looking at in_softirq(), the comment says "the following macros are depre=
-cated and
-> should not be used in new code", see commit 15115830c887 ("preempt: Clean=
-up the
-> macro maze a bit"). Maybe Sebastian or Paul has input on whether in_softi=
-rq() is
-> still supposed to be used.
+On 2025/8/19 下午5:06, Huacai Chen wrote:
+> On Tue, Aug 19, 2025 at 4:24 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> On 8/15/25 10:29 AM, Haoran Jiang wrote:
+>>> In some eBPF programs, the return value is a pointer.
+>>> When the kernel call an eBPF program (such as struct_ops),
+>>> it expects a 64-bit address to be returned, but instead a 32-bit value.
 
-it listed in the deprecated section so I would tend to suggest
-softirq_count(). But then in_softirq() kind of describes what is done
-while the other two (in_irq, in_interrupt) were ambiguous and people
-often mixed them up.
-Let me poke someone and then we maybe commit to clean up so leave the
-limbo state.
+...
 
-> Thanks,
-> Daniel
+>> Huacai, are you routing the fix or want us to route via bpf tree?
+> I will take it, but I'm waiting Tiezhu's Ack now.
 
-Sebastian
+This version has problem, with this patch, many test cases failed
+when executing "sudo modprobe test_bpf", the root cause is related
+with the instruction "sra.d", I will give a detail reply tomorrow.
+
+Thanks,
+Tiezhu
+
 
