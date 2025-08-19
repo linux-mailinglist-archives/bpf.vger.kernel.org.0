@@ -1,171 +1,152 @@
-Return-Path: <bpf+bounces-66043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A127EB2CE6C
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 23:16:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E518B2CE97
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 23:34:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 905351B61FE8
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 21:16:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B91DF1BA8701
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 21:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5583126D4C0;
-	Tue, 19 Aug 2025 21:15:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58815322DD7;
+	Tue, 19 Aug 2025 21:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GGuM87G9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uIGyaKcK"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0488D2EB873
-	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 21:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7AC9284884;
+	Tue, 19 Aug 2025 21:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755638155; cv=none; b=HaUIb6suyOOV7botLIlULNW0Wix7i1YdmaYzghD0X1ZcFpA6PdMksuQaqh786zjsWe3zAhmnBcp6jMmikBzlJKCJJ6FkFw0oZBTLHRv1yLOrp+u3Kx9XeGJmmgLP4QuXwgk2LxDFebE4pJtFyRT0OuHNDERGlWa7o7BWQlGdfoU=
+	t=1755639252; cv=none; b=umkvotfoo77p5e+TZqru1ipdIJ8m+LsbsiV9inZBdG4BJNaa5OQCI6DL1mnS186o/mObIyehh1xuTuzvNUcdlgDtp2lWeOVnmgzsUHYOoBIHrlOIpYVfXWMz4jbrNxPqrE9WtWG45UuhY1utGnU2DxK3qJpz1FKYE3JRR5Sg1T0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755638155; c=relaxed/simple;
-	bh=Kcmtw1SZqqnrUX4Pm9hd7A8p6P84NFZYeq3s6aCruOU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MVszwqEkLXzA2gRe249QfzuP5hz8lQ1RHRQAsOvL5OL/dEB/U3TjIdz6zuoeRMxiMXc6QJMWaCodzsWj7UOyFPD+5BBSjNFRh/Jkm8LIppEWHYFc2RLWTuMP5UpG1mJS1+LdVvomz+ubjNX9iKmEg8Yd8zmuesN70dWSXX2Rq5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GGuM87G9; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3d8fe484-2889-4367-9405-91aeee7d2ef0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755638142;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ShCNXUlDFKixmBPum6gITWmou0RkPrZF8Uv21LjgDng=;
-	b=GGuM87G9FuFa6XPQEfZh+gmLc5qCa33Tgu+LhABXESCl1slLrMjWOBKvH3sNrVHhUzJXCq
-	URIlYCVxK5AG6tLDvKladglvQpdtbzMtpj4vmeZFpKjnPjqTYElqCqHn+bDe7uPnPjCDXf
-	Zge4zQdhfeR7ncN/KnPr8T9UYtouhIc=
-Date: Tue, 19 Aug 2025 14:15:08 -0700
+	s=arc-20240116; t=1755639252; c=relaxed/simple;
+	bh=+53NlAraJtyCL2JPoFwrL3tKiDe+tcXrwxWmFSyzC0I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UpuHcL4Dz4H4m4wy1AZLQQ5tJYQDOxe4yBYfNAzuuwv2PZAyAhRlMg3y2jA4TwOAH7Yvt6Yc5deWGe0iDCndXDOUKsA9Ewll0EpI03+ab9rXmJT35qyuU6rE3QBajWwbzc0+G13uqWyEh4bPA68BH0ubGBwgaKZq03yZPs1JIDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uIGyaKcK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 622E9C4CEF1;
+	Tue, 19 Aug 2025 21:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755639252;
+	bh=+53NlAraJtyCL2JPoFwrL3tKiDe+tcXrwxWmFSyzC0I=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=uIGyaKcKFSbNin7d3UJavzxL+Dd4r9YEgfYw9z1CVEqOAiase1Tw4oI8RtjMLDGyP
+	 muJm+FaieCPMdhXXD4OIJbxIsjSwanBzA7yWsb8hoVivNptQYKJvQyOWtoccNINGA4
+	 PmWiY4z0SpE7BxLgpXGy2EJj26oNmBYyL9p4yK25MJI6gzhX5xkDEBdoe9s0kdSmvX
+	 i7UcpOvnC9nA0ws5E/RzsUzw4I4bB1qtzdI1XY/plvVWGNM+uuSEHg9IODxB3QSzDW
+	 EMOn0kelK5te368Zp7qBEQVh5tqrBVw2e1t+9bKaEYOqAaxsZju6woDXrTaGSx3/l+
+	 vsizuYNJ7RD6g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 1D9B5CE086D; Tue, 19 Aug 2025 14:34:12 -0700 (PDT)
+Date: Tue, 19 Aug 2025 14:34:12 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/7] rcu: add rcu_migrate_enable and
+ rcu_migrate_disable
+Message-ID: <0b46c80c-280b-4db8-957e-9dd5695e1f25@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250815061824.765906-1-dongml2@chinatelecom.cn>
+ <20250815061824.765906-2-dongml2@chinatelecom.cn>
+ <CAADnVQKA98hBSsb02djL-zMsaXQDCjn4Ytck+WP3SWfvgXqDYg@mail.gmail.com>
+ <eb93f12d-2232-4b7e-a7c6-71082a69f1f6@paulmck-laptop>
+ <CADxym3bkqdXScTBvQMOb-JTDZTmAqdm_m_we4Rds6W=rgByauQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next RESEND v4 1/2] bpf: refactor max_depth
- computation in bpf_get_stack()
-To: Arnaud Lecomte <contact@arnaud-lcm.com>, yonghong.song@linux.dev
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- linux-kernel@vger.kernel.org, sdf@fomichev.me,
- syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com, song@kernel.org
-References: <20250819162652.8776-1-contact@arnaud-lcm.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250819162652.8776-1-contact@arnaud-lcm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADxym3bkqdXScTBvQMOb-JTDZTmAqdm_m_we4Rds6W=rgByauQ@mail.gmail.com>
 
-On 8/19/25 9:26 AM, Arnaud Lecomte wrote:
-> A new helper function stack_map_calculate_max_depth() that
-> computes the max depth for a stackmap.
+On Sun, Aug 17, 2025 at 10:01:23AM +0800, Menglong Dong wrote:
+> On Fri, Aug 15, 2025 at 11:31 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Fri, Aug 15, 2025 at 04:02:14PM +0300, Alexei Starovoitov wrote:
+> > > On Fri, Aug 15, 2025 at 9:18 AM Menglong Dong <menglong8.dong@gmail.com> wrote:
+> > > >
+> > > > migrate_disable() is called to disable migration in the kernel, and it is
+> > > > used togather with rcu_read_lock() oftenly.
+> > > >
+> > > > However, with PREEMPT_RCU disabled, it's unnecessary, as rcu_read_lock()
+> > > > will disable preemption, which will also disable migration.
+> > > >
+> > > > Introduce rcu_migrate_enable() and rcu_migrate_disable(), which will do
+> > > > the migration enable and disable only when the rcu_read_lock() can't do
+> > > > it.
+> > > >
+> > > > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > > > ---
+> > > >  include/linux/rcupdate.h | 18 ++++++++++++++++++
+> > > >  1 file changed, 18 insertions(+)
+> > > >
+> > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > > > index 120536f4c6eb..0d9dbd90d025 100644
+> > > > --- a/include/linux/rcupdate.h
+> > > > +++ b/include/linux/rcupdate.h
+> > > > @@ -72,6 +72,16 @@ static inline bool same_state_synchronize_rcu(unsigned long oldstate1, unsigned
+> > > >  void __rcu_read_lock(void);
+> > > >  void __rcu_read_unlock(void);
+> > > >
+> > > > +static inline void rcu_migrate_enable(void)
+> > > > +{
+> > > > +       migrate_enable();
+> > > > +}
+> > >
+> > > Interesting idea.
+> > > I think it has to be combined with rcu_read_lock(), since this api
+> > > makes sense only when used together.
+> > >
+> > > rcu_read_lock_dont_migrate() ?
+> > >
+> > > It will do rcu_read_lock() + migrate_disalbe() in PREEMPT_RCU
+> > > and rcu_read_lock() + preempt_disable() otherwise?
+> >
+> > That could easily be provided.  Or just make one, and if it starts
+> > having enough use cases, it could be pulled into RCU proper.
 > 
-> Changes in v2:
->   - Removed the checking 'map_size % map_elem_size' from
->     stack_map_calculate_max_depth
->   - Changed stack_map_calculate_max_depth params name to be more generic
+> Hi, do you mean that we should start with a single
+> use case? In this series, I started it with the BPF
+> subsystem. Most of the situations are similar, which will
+> call rcu_read_lock+migrate_disable and run bpf prog.
+
+Other than my wanting more compact code, what you did in your patch
+series is fine.
+
+							Thanx, Paul
+
+> > > Also I'm not sure we can rely on rcu_read_lock()
+> > > disabling preemption in all !PREEMPT_RCU cases.
+> > > iirc it's more nuanced than that.
+> >
+> > For once, something about RCU is non-nuanced.  But don't worry, it won't
+> > happen again.  ;-)
+> >
+> > In all !PREEMPT_RCU, preemption must be disabled across all RCU read-side
+> > critical sections in order for RCU to work correctly.
 > 
-> Changes in v3:
->   - Changed map size param to size in max depth helper
+> Great! I worried about this part too.
 > 
-> Changes in v4:
->   - Fixed indentation in max depth helper for args
+> Thanks!
+> Menglong Dong
 > 
-> Link to v3: https://lore.kernel.org/all/09dc40eb-a84e-472a-8a68-36a2b1835308@linux.dev/
-> 
-> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->   kernel/bpf/stackmap.c | 30 ++++++++++++++++++++++++------
->   1 file changed, 24 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 3615c06b7dfa..b9cc6c72a2a5 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -42,6 +42,27 @@ static inline int stack_map_data_size(struct bpf_map *map)
->   		sizeof(struct bpf_stack_build_id) : sizeof(u64);
->   }
->   
-> +/**
-> + * stack_map_calculate_max_depth - Calculate maximum allowed stack trace depth
-> + * @size:  Size of the buffer/map value in bytes
-> + * @elem_size:  Size of each stack trace element
-> + * @flags:  BPF stack trace flags (BPF_F_USER_STACK, BPF_F_USER_BUILD_ID, ...)
-> + *
-> + * Return: Maximum number of stack trace entries that can be safely stored
-> + */
-> +static u32 stack_map_calculate_max_depth(u32 size, u32 elem_size, u64 flags)
-> +{
-> +	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
-> +	u32 max_depth;
-> +
-> +	max_depth = size / elem_size;
-> +	max_depth += skip;
-> +	if (max_depth > sysctl_perf_event_max_stack)
-> +		return sysctl_perf_event_max_stack;
-
-hmm... this looks a bit suspicious. Is it possible that 
-sysctl_perf_event_max_stack is being changed to a larger value in parallel?
-
-> +
-> +	return max_depth;
-> +}
-> +
->   static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
->   {
->   	u64 elem_size = sizeof(struct stack_map_bucket) +
-> @@ -406,7 +427,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->   			    struct perf_callchain_entry *trace_in,
->   			    void *buf, u32 size, u64 flags, bool may_fault)
->   {
-> -	u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
-> +	u32 trace_nr, copy_len, elem_size, max_depth;
->   	bool user_build_id = flags & BPF_F_USER_BUILD_ID;
->   	bool crosstask = task && task != current;
->   	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
-> @@ -438,10 +459,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->   		goto clear;
->   	}
->   
-> -	num_elem = size / elem_size;
-> -	max_depth = num_elem + skip;
-> -	if (sysctl_perf_event_max_stack < max_depth)
-> -		max_depth = sysctl_perf_event_max_stack;
-> +	max_depth = stack_map_calculate_max_depth(size, elem_size, flags);
->   
->   	if (may_fault)
->   		rcu_read_lock(); /* need RCU for perf's callchain below */
-> @@ -461,7 +479,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->   	}
->   
->   	trace_nr = trace->nr - skip;
-> -	trace_nr = (trace_nr <= num_elem) ? trace_nr : num_elem;
-
-I suspect it was fine because trace_nr was still bounded by num_elem.
-
-> +	trace_nr = min(trace_nr, max_depth - skip);
-
-but now the min() is also based on max_depth which could be 
-sysctl_perf_event_max_stack.
-
-beside, if I read it correctly, in "max_depth - skip", the max_depth could also 
-be less than skip. I assume trace->nr is bound by max_depth, so should be less 
-of a problem but still a bit unintuitive to read.
-
->   	copy_len = trace_nr * elem_size;
->   
->   	ips = trace->ip + skip;
-
+> >
+> >                                                         Thanx, Paul
 
