@@ -1,152 +1,122 @@
-Return-Path: <bpf+bounces-66044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E518B2CE97
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 23:34:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FFADB2CEB5
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 23:51:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B91DF1BA8701
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 21:34:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7A721C265E2
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 21:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58815322DD7;
-	Tue, 19 Aug 2025 21:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903912BE634;
+	Tue, 19 Aug 2025 21:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uIGyaKcK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LWTLHEYg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7AC9284884;
-	Tue, 19 Aug 2025 21:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884A37FBAC
+	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 21:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755639252; cv=none; b=umkvotfoo77p5e+TZqru1ipdIJ8m+LsbsiV9inZBdG4BJNaa5OQCI6DL1mnS186o/mObIyehh1xuTuzvNUcdlgDtp2lWeOVnmgzsUHYOoBIHrlOIpYVfXWMz4jbrNxPqrE9WtWG45UuhY1utGnU2DxK3qJpz1FKYE3JRR5Sg1T0=
+	t=1755640287; cv=none; b=XK4grqFEVThuubf57mytAJ1oDjqWGasnVufCWsEX3GBRY/hSxB3+gG2GYtqLPiBf3ufKVhyLfjwfCYbJVxoVIkE9TRU1C++9+fBUCDgeN136VcWx2uByfzWGxbXWJtNeAg5kpiBCTo8bbsIPZav5HoAtChJHeF8px2XRBu09eh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755639252; c=relaxed/simple;
-	bh=+53NlAraJtyCL2JPoFwrL3tKiDe+tcXrwxWmFSyzC0I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UpuHcL4Dz4H4m4wy1AZLQQ5tJYQDOxe4yBYfNAzuuwv2PZAyAhRlMg3y2jA4TwOAH7Yvt6Yc5deWGe0iDCndXDOUKsA9Ewll0EpI03+ab9rXmJT35qyuU6rE3QBajWwbzc0+G13uqWyEh4bPA68BH0ubGBwgaKZq03yZPs1JIDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uIGyaKcK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 622E9C4CEF1;
-	Tue, 19 Aug 2025 21:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755639252;
-	bh=+53NlAraJtyCL2JPoFwrL3tKiDe+tcXrwxWmFSyzC0I=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=uIGyaKcKFSbNin7d3UJavzxL+Dd4r9YEgfYw9z1CVEqOAiase1Tw4oI8RtjMLDGyP
-	 muJm+FaieCPMdhXXD4OIJbxIsjSwanBzA7yWsb8hoVivNptQYKJvQyOWtoccNINGA4
-	 PmWiY4z0SpE7BxLgpXGy2EJj26oNmBYyL9p4yK25MJI6gzhX5xkDEBdoe9s0kdSmvX
-	 i7UcpOvnC9nA0ws5E/RzsUzw4I4bB1qtzdI1XY/plvVWGNM+uuSEHg9IODxB3QSzDW
-	 EMOn0kelK5te368Zp7qBEQVh5tqrBVw2e1t+9bKaEYOqAaxsZju6woDXrTaGSx3/l+
-	 vsizuYNJ7RD6g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1D9B5CE086D; Tue, 19 Aug 2025 14:34:12 -0700 (PDT)
-Date: Tue, 19 Aug 2025 14:34:12 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/7] rcu: add rcu_migrate_enable and
- rcu_migrate_disable
-Message-ID: <0b46c80c-280b-4db8-957e-9dd5695e1f25@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250815061824.765906-1-dongml2@chinatelecom.cn>
- <20250815061824.765906-2-dongml2@chinatelecom.cn>
- <CAADnVQKA98hBSsb02djL-zMsaXQDCjn4Ytck+WP3SWfvgXqDYg@mail.gmail.com>
- <eb93f12d-2232-4b7e-a7c6-71082a69f1f6@paulmck-laptop>
- <CADxym3bkqdXScTBvQMOb-JTDZTmAqdm_m_we4Rds6W=rgByauQ@mail.gmail.com>
+	s=arc-20240116; t=1755640287; c=relaxed/simple;
+	bh=GVxI9+luJ3DExn1h9rvBRgP1AthzHOkxa2B6/NLHs/o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gUuGWlIS4PEHaYbBN6noQyheVdZq8Kchvlm05CIzhCMAoVNx5lXi1biChJfWq73Hq/stRxgdCtsN5aV4Qdmu6mVybAcpubZFtV0Mmq6lLIIbk6Z9R1QfJGzFdvlG+m36DiZ0/mle5BVfjfGZzUGt2y7KDPMmkNcWHFHgfTiYm+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LWTLHEYg; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-45a1b05fe23so35976195e9.1
+        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 14:51:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755640284; x=1756245084; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PHKM5+ozAkRPopxKG9hAAh5WpqV2sFtyfI75BRb+oes=;
+        b=LWTLHEYgdxkJkN7R1NbgKpExK6dv1w+0vmkM0pvq2ZXOIvC/FQFNQ9KVLPxTHTOsl0
+         2uQlr5jI6hVq2QvDvuqxHm7TMMY9KFaJ9ANHb8zr7y3YQhugdHSzXv3X8UGArewGJcNT
+         EoMKbkN+bkzStw8cjNUrj5MAbP4FQoUd5A3L2UN27+Lj/EWFh/EkG76vA2M8agFj3/es
+         5mDTgW+v1wdzxOojLLBu5liohgpzHjvBMc4AL8sQ6JdFgHamchzwQMOj5gUwe44o8tD+
+         JAuiMR7Hn0jWS8lEl4/Eln6J5OMjLQebeoYGoIR14eW6TAjHJfUhHenCK+t5q1btLN2m
+         Mn2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755640284; x=1756245084;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PHKM5+ozAkRPopxKG9hAAh5WpqV2sFtyfI75BRb+oes=;
+        b=M7XmtTeZUGA+iOZGRciSPwoUotv6aRwEHrbDXih5YxY64Ity/tuaM+lYmnm1FcwAAS
+         MuxE8rgNqTX8CbdPkrtBf3XCu4/pK1EOqbyNQkCnTmXbsiqsa7Kvd80cfo/GljZLKoHh
+         KToyDxjO/H37zgGxJ6arbQ2Ko/4a+JVJ+qn8/pL/Q408YHlWFPiGtys2Rx9y3fsvHZjC
+         vbIc7lyNQTb9DLwcp5q87MoYa6c01PdUqapZxGPz7bp1ilGa1XOiuR5v5sL7PssIBQEo
+         0z8QGHXi7eUBYOEGO+kcAI6ACxqPHNQAc+t/hKw4knLHlWtetAfdRLT9IlQKKltvOPmP
+         5HlA==
+X-Gm-Message-State: AOJu0YydWHoLmx/kzkPc41EVFQQEaMTUjvkuMFeWFEo+yzew0ZmWR7P2
+	4zsJxQFVwSZIAilSv171dseD4ARpW+6IVHev3R17ndIgcmw5Z1MB72P7e2cOeg==
+X-Gm-Gg: ASbGnctdQtfSs5BrsLWqdb4HXnEANM2yB92VX21YB2T3daLN/utHCajfGWRrBnmwKvR
+	TmSX6tc3iOWj23b9EGlL8udgpSMn64Aa64jwcWL4eZV27NFiJmzqeC7/f53pO+4hFrrDRB9D2NJ
+	A8Xo/B/tYTLFlhOQF0JELj72s+PdXHeDG2yLhJsROCKimUFzUsxyIsBsJIbB6/mM43LBsQUFmAQ
+	ZqVQJxfBsX2aOEytCBgEX1GkZkTv6WqJPzfC6WnBvmY+M7qcGG93/1n6n1OcemB5+ECIgDyZuTI
+	Z/GvY9r8B4fe8dB5PbJN5/MWjOQVutgLF3jiIK6gDnpokEP5Ks4EM4x2o9OP8ujR/ZT9yWB21UV
+	af4fEGywZkijpsefUEbgl
+X-Google-Smtp-Source: AGHT+IEcYPTiZ2yN8xhdMlUPAqZ0oIER1bj/HMo4Ru9hCVDl6VPZc9YiE/3tVqbXJSj48uwN1E/oOQ==
+X-Received: by 2002:a05:6000:24c1:b0:3a4:eda1:6c39 with SMTP id ffacd0b85a97d-3c32c52bc28mr327114f8f.13.1755640283572;
+        Tue, 19 Aug 2025 14:51:23 -0700 (PDT)
+Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c074d43993sm5233702f8f.20.2025.08.19.14.51.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Aug 2025 14:51:23 -0700 (PDT)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next] libbpf: export bpf_object__prepare symbol
+Date: Tue, 19 Aug 2025 22:51:19 +0100
+Message-ID: <20250819215119.37795-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADxym3bkqdXScTBvQMOb-JTDZTmAqdm_m_we4Rds6W=rgByauQ@mail.gmail.com>
 
-On Sun, Aug 17, 2025 at 10:01:23AM +0800, Menglong Dong wrote:
-> On Fri, Aug 15, 2025 at 11:31 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Aug 15, 2025 at 04:02:14PM +0300, Alexei Starovoitov wrote:
-> > > On Fri, Aug 15, 2025 at 9:18 AM Menglong Dong <menglong8.dong@gmail.com> wrote:
-> > > >
-> > > > migrate_disable() is called to disable migration in the kernel, and it is
-> > > > used togather with rcu_read_lock() oftenly.
-> > > >
-> > > > However, with PREEMPT_RCU disabled, it's unnecessary, as rcu_read_lock()
-> > > > will disable preemption, which will also disable migration.
-> > > >
-> > > > Introduce rcu_migrate_enable() and rcu_migrate_disable(), which will do
-> > > > the migration enable and disable only when the rcu_read_lock() can't do
-> > > > it.
-> > > >
-> > > > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> > > > ---
-> > > >  include/linux/rcupdate.h | 18 ++++++++++++++++++
-> > > >  1 file changed, 18 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > > > index 120536f4c6eb..0d9dbd90d025 100644
-> > > > --- a/include/linux/rcupdate.h
-> > > > +++ b/include/linux/rcupdate.h
-> > > > @@ -72,6 +72,16 @@ static inline bool same_state_synchronize_rcu(unsigned long oldstate1, unsigned
-> > > >  void __rcu_read_lock(void);
-> > > >  void __rcu_read_unlock(void);
-> > > >
-> > > > +static inline void rcu_migrate_enable(void)
-> > > > +{
-> > > > +       migrate_enable();
-> > > > +}
-> > >
-> > > Interesting idea.
-> > > I think it has to be combined with rcu_read_lock(), since this api
-> > > makes sense only when used together.
-> > >
-> > > rcu_read_lock_dont_migrate() ?
-> > >
-> > > It will do rcu_read_lock() + migrate_disalbe() in PREEMPT_RCU
-> > > and rcu_read_lock() + preempt_disable() otherwise?
-> >
-> > That could easily be provided.  Or just make one, and if it starts
-> > having enough use cases, it could be pulled into RCU proper.
-> 
-> Hi, do you mean that we should start with a single
-> use case? In this series, I started it with the BPF
-> subsystem. Most of the situations are similar, which will
-> call rcu_read_lock+migrate_disable and run bpf prog.
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Other than my wanting more compact code, what you did in your patch
-series is fine.
+Add missing LIBBPF_API macro for bpf_object__prepare function to enable
+its export.
 
-							Thanx, Paul
+Fixes: 1315c28ed809 ("libbpf: Split bpf object load into prepare/load")
 
-> > > Also I'm not sure we can rely on rcu_read_lock()
-> > > disabling preemption in all !PREEMPT_RCU cases.
-> > > iirc it's more nuanced than that.
-> >
-> > For once, something about RCU is non-nuanced.  But don't worry, it won't
-> > happen again.  ;-)
-> >
-> > In all !PREEMPT_RCU, preemption must be disabled across all RCU read-side
-> > critical sections in order for RCU to work correctly.
-> 
-> Great! I worried about this part too.
-> 
-> Thanks!
-> Menglong Dong
-> 
-> >
-> >                                                         Thanx, Paul
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/lib/bpf/libbpf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 455a957cb702..2b86e21190d3 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -252,7 +252,7 @@ bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
+  * @return 0, on success; negative error code, otherwise, error code is
+  * stored in errno
+  */
+-int bpf_object__prepare(struct bpf_object *obj);
++LIBBPF_API int bpf_object__prepare(struct bpf_object *obj);
+ 
+ /**
+  * @brief **bpf_object__load()** loads BPF object into kernel.
+-- 
+2.50.1
+
 
