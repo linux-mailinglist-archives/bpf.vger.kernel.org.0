@@ -1,95 +1,71 @@
-Return-Path: <bpf+bounces-66027-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66028-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FF61B2CC81
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 20:55:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ACF7B2CCD1
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 21:15:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A07E63BD3B4
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 18:55:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B9AE5E3AE3
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 19:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1762D31E119;
-	Tue, 19 Aug 2025 18:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CD52673AA;
+	Tue, 19 Aug 2025 19:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iAKy9ljF"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qpenKYZE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7BB3218CF
-	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 18:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC6C38F91;
+	Tue, 19 Aug 2025 19:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755629712; cv=none; b=dgufEk1IvzBh9bUWqDVUdGHbIbqj1kOiwBz+9XvLPYa62+LPn8y53orfXpX87tym+P5B1CUjBiWIAojQkJTGs+NOkL3p0xn0dgLJ6zQv5016eMxxiqXvpG57IKwy0fMZ0xlSTU22SFVDNBo7xEscXTRhPjSRJK1Zr5klpkAeo34=
+	t=1755630930; cv=none; b=qffUGmfb+YgLvjK32ZKY6a/DoaUSOM2SuKgGOGThST/Nd69kLHzg6E5LEF1vRd3GXaUbsMLZFjRUvKqOdq19/YGqe6TBbCWv29El2R4I9J4q59NttBU6I8G3fGr+e41duzhDsEk/nJjn5lSpOejdH9r8hkEw0L2xgXHlnP6QmDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755629712; c=relaxed/simple;
-	bh=N0364bt9jMRC3C6+N0XTj3sLdDMekTNts+hQ0L3+ZhA=;
+	s=arc-20240116; t=1755630930; c=relaxed/simple;
+	bh=PUZdeGnRFsTuyNHfojrHWrLzNY8h7sktC9CzuuJMMGE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EKN12Gw8yauOY3IrEiF7XbFbKgyyHCV2rzO+RQm9bOEXakvIhawxKXNAViuqflsq9+vEdEUzNROtJ+xniyrbjicFLiWskQZrhMWGh4md4rdW/rWGio2ttMmXMlvy4KIqBdnEZ+TYUXMEU+E0E3DphoG2kd2njEuvgFRlaNVx864=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iAKy9ljF; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1755629711; x=1787165711;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=N0364bt9jMRC3C6+N0XTj3sLdDMekTNts+hQ0L3+ZhA=;
-  b=iAKy9ljFzzCfVfJndE+50DJI/vdEfb47rHBLTNV4gD3Zp+InTD3Nsney
-   jxF4ziA4Vuk78xLgT9Ly8F8lmrbVIpiyrWU5QZDqBifZUwH15qXuyC3Hr
-   StBUsdLKd1PzwmCmQxl+TgN8vXWxIduCKrI2q07YwhGNStTaLn8r5Dkqr
-   cfLlWzCYucaHgn/IkmIhwKqX8K4W1oZYoIWYdhLfgqIOHeTnKJXTW36GI
-   jglVtxTRu505LAv60a6C+QzvSFByQntnne7w7wZ6jrdwg3ZqK3+Ln4oMg
-   CQfABSdnQ/MQjXrnbpc/reRVS5oFhtTkHxpzohERg280WxYgZIPG7mrlF
-   A==;
-X-CSE-ConnectionGUID: ySos+5MGT8e41IJGjSUCZg==
-X-CSE-MsgGUID: rpQ3yEhFQiywjRwNFbFDPg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11527"; a="83313106"
-X-IronPort-AV: E=Sophos;i="6.17,302,1747724400"; 
-   d="scan'208";a="83313106"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2025 11:55:10 -0700
-X-CSE-ConnectionGUID: 0/ig0LXNStKG9JH+moRfMg==
-X-CSE-MsgGUID: fmte1CfuQNaazIakoZsu7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,302,1747724400"; 
-   d="scan'208";a="198785908"
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 19 Aug 2025 11:55:04 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uoRU5-000HIT-06;
-	Tue, 19 Aug 2025 18:55:01 +0000
-Date: Wed, 20 Aug 2025 02:54:38 +0800
-From: kernel test robot <lkp@intel.com>
-To: Pingfan Liu <piliu@redhat.com>, linux-arm-kernel@lists.infradead.org
-Cc: Paul Gazzillo <paul@pgazz.com>,
-	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-	oe-kbuild-all@lists.linux.dev, Pingfan Liu <piliu@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=NorNOhSf98+IpaJzChpIzVLfeFWJcG2+ACAEKriyXnDadjGJhpw1Ae1mT+ofvGWJ5WSJGYSY5ILm9/uZHyXEYvhkNORNJ+7USDJ3kpa4J8g8bNelT/8mXpPYmb2r3ZCpwtCGrG6GPFWAB/tmr2d6xa4rlLK/kIPzZ5hQRDKmUio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=qpenKYZE; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=yzBy5xGZO8xEeMDkcKh9IUr70uttd4I0McN2kTShxz8=; b=qpenKYZEkUwE3cC0+3m1ybjAkc
+	0C0w9sAxkg/W6A12dcXXl+P3/6JcZUJxYbfD1NGT0Y5c1bzirS7RxuGS3CLinssXT4lC458VgF3G3
+	65XdweZ0CHneOBTHPjoWfgz/jnK6HprZalDZeLtkD/R2H2LYrN3SdCalki1aQWLiG9FQE1tNBrGJK
+	JH78+qXwUXUKL3S1TOwcUYsHYNM+7pzWTGQiQUaZ6QylZDb0jI+ptSJgtP0GhGgPDknJwPCEjQE9d
+	yVkKdFhfSDVNeDMIa/8rYJLTwjqLgCnV9ACsRXq59CZTx8RaS21F/VdAuy3sDmfrQYKw684hZjLu/
+	qcNoW9Gw==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uoRng-0000000AcyQ-0Kbu;
+	Tue, 19 Aug 2025 19:15:16 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 6982E30036F; Tue, 19 Aug 2025 21:15:15 +0200 (CEST)
+Date: Tue, 19 Aug 2025 21:15:15 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jeremy Linton <jeremy.linton@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Philipp Rudo <prudo@redhat.com>, Viktor Malik <vmalik@redhat.com>,
-	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>,
-	Dave Young <dyoung@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	kexec@lists.infradead.org, bpf@vger.kernel.org,
-	systemd-devel@lists.freedesktop.org
-Subject: Re: [PATCHv5 10/12] arm64/kexec: Add PE image format support
-Message-ID: <202508200238.hckz21nw-lkp@intel.com>
-References: <20250819012428.6217-11-piliu@redhat.com>
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	David Laight <David.Laight@aculab.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCHv6 perf/core 10/22] uprobes/x86: Add support to optimize
+ uprobes
+Message-ID: <20250819191515.GM3289052@noisy.programming.kicks-ass.net>
+References: <20250720112133.244369-1-jolsa@kernel.org>
+ <20250720112133.244369-11-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,34 +74,104 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250819012428.6217-11-piliu@redhat.com>
+In-Reply-To: <20250720112133.244369-11-jolsa@kernel.org>
 
-Hi Pingfan,
+On Sun, Jul 20, 2025 at 01:21:20PM +0200, Jiri Olsa wrote:
 
-kernel test robot noticed the following build warnings:
+> +static bool __is_optimized(uprobe_opcode_t *insn, unsigned long vaddr)
+> +{
+> +	struct __packed __arch_relative_insn {
+> +		u8 op;
+> +		s32 raddr;
+> +	} *call = (struct __arch_relative_insn *) insn;
 
-[auto build test WARNING on c17b750b3ad9f45f2b6f7e6f7f4679844244f0b9]
+Not something you need to clean up now I suppose, but we could do with
+unifying this thing. we have a bunch of instances around.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Pingfan-Liu/kexec_file-Make-kexec_image_load_default-global-visible/20250819-093420
-base:   c17b750b3ad9f45f2b6f7e6f7f4679844244f0b9
-patch link:    https://lore.kernel.org/r/20250819012428.6217-11-piliu%40redhat.com
-patch subject: [PATCHv5 10/12] arm64/kexec: Add PE image format support
-config: arm64-kismet-CONFIG_KEXEC_PE_IMAGE-CONFIG_ARCH_SELECTS_KEXEC_FILE-0-0 (https://download.01.org/0day-ci/archive/20250820/202508200238.hckz21nw-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20250820/202508200238.hckz21nw-lkp@intel.com/reproduce)
+> +
+> +	if (!is_call_insn(insn))
+> +		return false;
+> +	return __in_uprobe_trampoline(vaddr + 5 + call->raddr);
+> +}
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202508200238.hckz21nw-lkp@intel.com/
+> +void arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
+> +{
+> +	struct mm_struct *mm = current->mm;
+> +	uprobe_opcode_t insn[5];
+> +
+> +	/*
+> +	 * Do not optimize if shadow stack is enabled, the return address hijack
+> +	 * code in arch_uretprobe_hijack_return_addr updates wrong frame when
+> +	 * the entry uprobe is optimized and the shadow stack crashes the app.
+> +	 */
+> +	if (shstk_is_enabled())
+> +		return;
 
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for KEXEC_PE_IMAGE when selected by ARCH_SELECTS_KEXEC_FILE
-   WARNING: unmet direct dependencies detected for KEXEC_PE_IMAGE
-     Depends on [n]: KEXEC_FILE [=y] && DEBUG_INFO_BTF [=n] && BPF_SYSCALL [=y]
-     Selected by [y]:
-     - ARCH_SELECTS_KEXEC_FILE [=y] && KEXEC_FILE [=y]
+Kernel should be able to fix up userspace shadow stack just fine.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +	if (!should_optimize(auprobe))
+> +		return;
+> +
+> +	mmap_write_lock(mm);
+> +
+> +	/*
+> +	 * Check if some other thread already optimized the uprobe for us,
+> +	 * if it's the case just go away silently.
+> +	 */
+> +	if (copy_from_vaddr(mm, vaddr, &insn, 5))
+> +		goto unlock;
+> +	if (!is_swbp_insn((uprobe_opcode_t*) &insn))
+> +		goto unlock;
+> +
+> +	/*
+> +	 * If we fail to optimize the uprobe we set the fail bit so the
+> +	 * above should_optimize will fail from now on.
+> +	 */
+> +	if (__arch_uprobe_optimize(auprobe, mm, vaddr))
+> +		set_bit(ARCH_UPROBE_FLAG_OPTIMIZE_FAIL, &auprobe->flags);
+> +
+> +unlock:
+> +	mmap_write_unlock(mm);
+> +}
+> +
+> +static bool can_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
+> +{
+> +	if (memcmp(&auprobe->insn, x86_nops[5], 5))
+> +		return false;
+> +	/* We can't do cross page atomic writes yet. */
+> +	return PAGE_SIZE - (vaddr & ~PAGE_MASK) >= 5;
+> +}
+
+This seems needlessly restrictive. Something like:
+
+is_nop5(const char *buf)
+{
+	struct insn insn;
+
+	ret = insn_decode_kernel(&insn, buf)
+	if (ret < 0)
+		return false;
+
+	if (insn.length != 5)
+		return false;
+
+	if (insn.opcode[0] != 0x0f ||
+	    insn.opcode[1] != 0x1f)
+	    	return false;
+
+	return true;
+}
+
+Should do I suppose. Anyway, I think something like:
+
+  f0 0f 1f 44 00 00	lock nopl 0(%eax, %eax, 1)
+
+is a valid NOP5 at +1 and will 'optimize' and result in:
+
+  f0 e8 disp32		lock call disp32
+
+which will #UD.
+
+But this is nearly unfixable. Just doing my best to find weirdo cases
+;-)
 
