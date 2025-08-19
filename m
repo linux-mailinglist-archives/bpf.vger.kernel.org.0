@@ -1,88 +1,77 @@
-Return-Path: <bpf+bounces-66000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33746B2C0D2
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 13:46:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40FDBB2C277
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 13:59:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2EB31BC733A
-	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 11:44:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91F6D5A4E66
+	for <lists+bpf@lfdr.de>; Tue, 19 Aug 2025 11:59:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08FE32BF55;
-	Tue, 19 Aug 2025 11:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77060335BA5;
+	Tue, 19 Aug 2025 11:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V2D75BiT"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y78WrFOo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D029C32BF3B
-	for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 11:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62311AE844;
+	Tue, 19 Aug 2025 11:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755603828; cv=none; b=SWOBPdKEd3oQBhxBcbce83UzRmsnmGmSBm8giYnW7daALsoZeOu5OT0fzyNJSmq+3yed/vEMAc9ElBJ3+HGZLPZjtv0V/2DkaL+q9dZE+ur/XMooarpL+MwxHMBa0OmBhyWib973V6LPLBi94jEyGGtS0TI26GuCQnMwxrygFQo=
+	t=1755604573; cv=none; b=CMS6Ax/CpT0phvVq7IhXBEFga0qE9NcXWmV+N5XmhArYIyNk9jgpFlGiMk65HECsSX6bREvHyQmJgDoMZvHwtrmTGH4Z43igwakwAFbPCEUgUURGzxspo1wOsHT9t6SoCrQ8yqPl3CSnjOf+UhOqy8A8XS2BakKxMgkLg0+Nd9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755603828; c=relaxed/simple;
-	bh=dkqCUznKgep3cOyVvACShFWjBJMXeAixkxK5IioNqbk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=socU5ABhq6IlBTcgpIJxIQ1N0VOtPRk+Xhont8LBWMprICH7l6f5+PcojOnjHdHOj73I9Kglrw4kOmzdTydrK/nNDsoLXMstGrojoApguiYKorsRUwNC+iyYiIAZbKkMjEE8hL/Jpm1an3Vv6hSHPN7uW+tGAxNIQxOYFQcqG60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V2D75BiT; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3b9e4193083so4701743f8f.3
-        for <bpf@vger.kernel.org>; Tue, 19 Aug 2025 04:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755603825; x=1756208625; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/nbboTrM7JfxgzftW4IvVRhQ8xn7Vbb+d0BAmWTLtN4=;
-        b=V2D75BiTZDsH0me5SRvx7ODHEpAb6ZwpwRMN6eXLcTecbRYZBkiZr54rd005O3a7A4
-         KtIIR5XcTcwCvPQOPFM26KBi39Abz+aH5AWFhoe53ARIs61K3oHDT794J4VHKFgpmEmt
-         0ZX/h2MKCqMfjTushw/CP+L8J+tkxq1plxWPPbH3G7n6kShYaGIn7iEgP88vej2BMvkY
-         s/q6wFYyjXrZ63rOXSfXgMfAf1yvAgHKiuG2KScNg+LAyvNJkzDWZ5r42gvcrro961V9
-         bIP3jxXc9/Nr0e2vrMlrgFHb9Q3w5LuDQFZmni+WWIx8/GG3Rz/lhSZsMl2VP38Re4kr
-         YbxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755603825; x=1756208625;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/nbboTrM7JfxgzftW4IvVRhQ8xn7Vbb+d0BAmWTLtN4=;
-        b=XySLykk0RDtZCJI+NvHVBLroNb77gLHHW0KJwu++Kkuj3VcWdgRDQgsYp7//bn9ncw
-         N71Tlk1uF4NRPpoJA0HTzEMuigOU+D2JQbbQ4cH12ks0ynuFsqMa9dZ2SPsfyL7ktFgW
-         E96vOvLNZF4oKkTfXZosHJ442YUBWP46fMO48jHzQjfaAwNEIrV/pYqWozBqmw+Z78g/
-         3sJVc1sd6PttVfpAnHN8bdmidNPuGn9/FFlNRQBdDAaFs2+VQLo6Ew5lxSKMgFz6Vd5y
-         DIkdboTn7xJr6mMfLfUZatkKxVZfdGTk2GpkihzFdJ/C7MvZOrVhqb9iAgK7O1P64Akz
-         FxDQ==
-X-Gm-Message-State: AOJu0YyqFT3brmyysmi5YG/3q5leYVcMBL+y/ubs/qjl311DmHyUH4Fw
-	wBirHNNRf2TysqeBUtuwz6QtNUzajl0NgWvwempuxCXswTeINvjpDESPABJ4Gw==
-X-Gm-Gg: ASbGncvkLtg02bolTblMNh7xJlnrZ7azjkXUOWuew+Qi3DgLL3RwUzAZFsxhLe053B/
-	DMNm8Fsqt6Ro23bPn4q00k67mY/dqz7u6AgATRZs6+Eonf+p9oOajUL9aA6Q9eYcUV6ANOlP65L
-	HtvAcuz5LZAau6rA4T4OyrtiUZFttHbkgewFlwTlSRRZHrSpkJ/PCZTFIGMMEA3FcwYfiRBICuT
-	Ho9cZqhT89QDk+OIkda7X1xZZcFiQ9LrsAp+WiQJxDNlzc/WyVRPre+KAfJ6QQ1+iZFsLKuHIpM
-	pg+8Kg3SuTj/dFqFueU9jFiDOOxWUHnAG3Y4aenFE9PMxdqgZcRnIvrLrfOMVNs2UhZyAyMUuy5
-	WZQ==
-X-Google-Smtp-Source: AGHT+IHi/dEdJLBecJgheighRIzOTukGR5jeqyITHgHn0KmZUGh/1UYEiKKL9SaOP+RCuC2Nvj4ykQ==
-X-Received: by 2002:a05:6000:4284:b0:3bb:2fb3:9c7e with SMTP id ffacd0b85a97d-3c0e2c89fbcmr1729720f8f.21.1755603824800;
-        Tue, 19 Aug 2025 04:43:44 -0700 (PDT)
-Received: from localhost ([2620:10d:c092:500::4:853d])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c0771c1a12sm3342200f8f.34.2025.08.19.04.43.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Aug 2025 04:43:44 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+	s=arc-20240116; t=1755604573; c=relaxed/simple;
+	bh=cEVnPyO6O8Vaxm9l2V/iU2h7Vv2NpjNTZWMap4RcFBU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ClpfGmJ2L3p8VQw2Xseazu/rfKXXDbkfKdei2enYs3bR35vxqkSeai9BoPZE9y/VwFxIloWxynwn4coBwN2zdj5hO7ddJJU1cJutED1J/jEV0eD4zIa/eP+jhFHkNiMAKiKbAzGrGeZVHh3nDo6z7hhRpOOVG7u/TO+EFKUcj9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y78WrFOo; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1755604571; x=1787140571;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cEVnPyO6O8Vaxm9l2V/iU2h7Vv2NpjNTZWMap4RcFBU=;
+  b=Y78WrFOoViKmyXUWkgz9sBmsthcnvw3RDwbvyqRQLclX3GsdhX0mM+wD
+   m4P5/X4XLbIIszEiunM34aeBdzxOYKArtcORQZn1DLjithcxCNO9gxZR3
+   O/FK2drF2arvcigWwoeSE629C6RESrcFGOHjVmOmRioS5FWFHomzCCNvh
+   SilFq55r91pT/MAynIQpxklMX8MhtWMjWsSDygjaQbu4TwyoS9e66i2Pf
+   3Vg9V4TEZWchJXD+0X8KjWXl83cGLF+BWo1sgfkSxnZl+Rpa/AfPoxnje
+   OD/oGenV7Vc5IEINIVRWIEK3zUQXsw41yAMtQOsAXLjeABDlAODRAfTLq
+   w==;
+X-CSE-ConnectionGUID: 92+zy3+NR86c9NZmOGIMeA==
+X-CSE-MsgGUID: D1VwLatcQGG4ITCCsk9/yQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11526"; a="57947313"
+X-IronPort-AV: E=Sophos;i="6.17,300,1747724400"; 
+   d="scan'208";a="57947313"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2025 04:56:10 -0700
+X-CSE-ConnectionGUID: xh+MSlMAQ+m5X2GPSDhzew==
+X-CSE-MsgGUID: LI8GxQfXQ32l8hsHDtW4IA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,300,1747724400"; 
+   d="scan'208";a="172070861"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by orviesa003.jf.intel.com with ESMTP; 19 Aug 2025 04:56:07 -0700
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
-	andrii@kernel.org,
 	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v3] selftests/bpf: add BPF program dump in veristat
-Date: Tue, 19 Aug 2025 12:43:40 +0100
-Message-ID: <20250819114340.382238-1-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.50.1
+	andrii@kernel.org
+Cc: netdev@vger.kernel.org,
+	magnus.karlsson@intel.com,
+	stfomichev@gmail.com,
+	aleksander.lobakin@intel.com,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Eryk Kubanski <e.kubanski@partner.samsung.com>
+Subject: [PATCH v5 bpf] xsk: fix immature cq descriptor production
+Date: Tue, 19 Aug 2025 13:55:18 +0200
+Message-Id: <20250819115518.2240942-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,108 +80,298 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+Eryk reported an issue that I have put under Closes: tag, related to
+umem addrs being prematurely produced onto pool's completion queue.
+Let us make the skb's destructor responsible for producing all addrs
+that given skb used.
 
-This patch adds support for dumping BPF program instructions directly
-from veristat.
-While it is already possible to inspect BPF program dump using bpftool,
-it requires multiple commands. During active development, it's common
-for developers to use veristat for testing verification. Integrating
-instruction dumping into veristat reduces the need to switch tools and
-simplifies the workflow.
-By making this information more readily accessible, this change aims
-to streamline the BPF development cycle and improve usability for
-developers.
-This implementation leverages bpftool, by running it directly via popen
-to avoid any code duplication and keep veristat simple.
+Introduce struct xsk_addrs which will carry descriptor count with array
+of addresses taken from processed descriptors that will be carried via
+skb_shared_info::destructor_arg. This way we can refer to it within
+xsk_destruct_skb(). In order to mitigate the overhead that will be
+coming from memory allocations, let us introduce kmem_cache of
+xsk_addrs. There will be a single kmem_cache for xsk generic xmit on the
+system.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+Commit from fixes tag introduced the buggy behavior, it was not broken
+from day 1, but rather when xsk multi-buffer got introduced.
+
+Fixes: b7f72a30e9ac ("xsk: introduce wrappers and helpers for supporting multi-buffer in Tx path")
+Reported-by: Eryk Kubanski <e.kubanski@partner.samsung.com>
+Closes: https://lore.kernel.org/netdev/20250530103456.53564-1-e.kubanski@partner.samsung.com/
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 ---
- tools/testing/selftests/bpf/veristat.c | 34 +++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index d532dd82a3a8..a4ecbc12953e 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -181,6 +181,12 @@ struct var_preset {
- 	bool applied;
- };
+v1:
+https://lore.kernel.org/bpf/20250702101648.1942562-1-maciej.fijalkowski@intel.com/
+v2:
+https://lore.kernel.org/bpf/20250705135512.1963216-1-maciej.fijalkowski@intel.com/
+v3:
+https://lore.kernel.org/bpf/20250806154127.2161434-1-maciej.fijalkowski@intel.com/
+v4:
+https://lore.kernel.org/bpf/20250813171210.2205259-1-maciej.fijalkowski@intel.com/
+
+v1->v2:
+* store addrs in array carried via destructor_arg instead having them
+  stored in skb headroom; cleaner and less hacky approach;
+v2->v3:
+* use kmem_cache for xsk_addrs allocation (Stan/Olek)
+* set err when xsk_addrs allocation fails (Dan)
+* change xsk_addrs layout to avoid holes
+* free xsk_addrs on error path
+* rebase
+v3->v4:
+* have kmem_cache as percpu vars
+* don't drop unnecessary braces (unrelated) (Stan)
+* use idx + i in xskq_prod_write_addr (Stan)
+* alloc kmem_cache on bind (Stan)
+* keep num_descs as first member in xsk_addrs (Magnus)
+* add ack from Magnus
+v4->v5:
+* have a single kmem_cache per xsk subsystem (Stan)
+
+---
+ net/xdp/xsk.c       | 91 +++++++++++++++++++++++++++++++++++++--------
+ net/xdp/xsk_queue.h | 12 ++++++
+ 2 files changed, 87 insertions(+), 16 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 9c3acecc14b1..012991de9df2 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -36,6 +36,13 @@
+ #define TX_BATCH_SIZE 32
+ #define MAX_PER_SOCKET_BUDGET 32
  
-+enum dump_mode {
-+	NO_DUMP = 0,
-+	XLATED,
-+	JITED,
++struct xsk_addrs {
++	u32 num_descs;
++	u64 addrs[MAX_SKB_FRAGS + 1];
 +};
 +
- static struct env {
- 	char **filenames;
- 	int filename_cnt;
-@@ -227,6 +233,7 @@ static struct env {
- 	char orig_cgroup[PATH_MAX];
- 	char stat_cgroup[PATH_MAX];
- 	int memory_peak_fd;
-+	enum dump_mode dump_mode;
- } env;
++static struct kmem_cache *xsk_tx_generic_cache;
++
+ void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
+ {
+ 	if (pool->cached_need_wakeup & XDP_WAKEUP_RX)
+@@ -532,25 +539,39 @@ static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
+ 	return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
+ }
  
- static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
-@@ -295,6 +302,7 @@ static const struct argp_option opts[] = {
- 	  "Force BPF verifier failure on register invariant violation (BPF_F_TEST_REG_INVARIANTS program flag)" },
- 	{ "top-src-lines", 'S', "N", 0, "Emit N most frequent source code lines" },
- 	{ "set-global-vars", 'G', "GLOBAL", 0, "Set global variables provided in the expression, for example \"var1 = 1\"" },
-+	{ "dump", 'p', "DUMP_MODE", 0, "Print BPF program dump (xlated, jited)" },
- 	{},
- };
+-static int xsk_cq_reserve_addr_locked(struct xsk_buff_pool *pool, u64 addr)
++static int xsk_cq_reserve_locked(struct xsk_buff_pool *pool)
+ {
+ 	unsigned long flags;
+ 	int ret;
  
-@@ -427,6 +435,16 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
- 			return err;
- 		}
- 		break;
-+	case 'p':
-+		if (strcmp(arg, "jited") == 0) {
-+			env.dump_mode = JITED;
-+		} else if (strcmp(arg, "xlated") == 0) {
-+			env.dump_mode = XLATED;
-+		} else {
-+			fprintf(stderr, "Unrecognized dump mode '%s'\n", arg);
-+			return -EINVAL;
-+		}
-+		break;
- 	default:
- 		return ARGP_ERR_UNKNOWN;
+ 	spin_lock_irqsave(&pool->cq_lock, flags);
+-	ret = xskq_prod_reserve_addr(pool->cq, addr);
++	ret = xskq_prod_reserve(pool->cq);
+ 	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ 
+ 	return ret;
+ }
+ 
+-static void xsk_cq_submit_locked(struct xsk_buff_pool *pool, u32 n)
++static void xsk_cq_submit_addr_locked(struct xdp_sock *xs,
++				      struct sk_buff *skb)
+ {
++	struct xsk_buff_pool *pool = xs->pool;
++	struct xsk_addrs *xsk_addrs;
+ 	unsigned long flags;
++	u32 num_desc, i;
++	u32 idx;
++
++	xsk_addrs = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
++	num_desc = xsk_addrs->num_descs;
+ 
+ 	spin_lock_irqsave(&pool->cq_lock, flags);
+-	xskq_prod_submit_n(pool->cq, n);
++	idx = xskq_get_prod(pool->cq);
++
++	for (i = 0; i < num_desc; i++)
++		xskq_prod_write_addr(pool->cq, idx + i, xsk_addrs->addrs[i]);
++	xskq_prod_submit_n(pool->cq, num_desc);
++
+ 	spin_unlock_irqrestore(&pool->cq_lock, flags);
++	kmem_cache_free(xsk_tx_generic_cache, xsk_addrs);
+ }
+ 
+ static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
+@@ -562,11 +583,6 @@ static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
+ 	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ }
+ 
+-static u32 xsk_get_num_desc(struct sk_buff *skb)
+-{
+-	return skb ? (long)skb_shinfo(skb)->destructor_arg : 0;
+-}
+-
+ static void xsk_destruct_skb(struct sk_buff *skb)
+ {
+ 	struct xsk_tx_metadata_compl *compl = &skb_shinfo(skb)->xsk_meta;
+@@ -576,21 +592,37 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ 		*compl->tx_timestamp = ktime_get_tai_fast_ns();
  	}
-@@ -1554,6 +1572,17 @@ static int parse_rvalue(const char *val, struct rvalue *rvalue)
+ 
+-	xsk_cq_submit_locked(xdp_sk(skb->sk)->pool, xsk_get_num_desc(skb));
++	xsk_cq_submit_addr_locked(xdp_sk(skb->sk), skb);
+ 	sock_wfree(skb);
+ }
+ 
+-static void xsk_set_destructor_arg(struct sk_buff *skb)
++static u32 xsk_get_num_desc(struct sk_buff *skb)
+ {
+-	long num = xsk_get_num_desc(xdp_sk(skb->sk)->skb) + 1;
++	struct xsk_addrs *addrs;
+ 
+-	skb_shinfo(skb)->destructor_arg = (void *)num;
++	addrs = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
++	return addrs->num_descs;
++}
++
++static void xsk_set_destructor_arg(struct sk_buff *skb, struct xsk_addrs *addrs)
++{
++	skb_shinfo(skb)->destructor_arg = (void *)addrs;
++}
++
++static void xsk_inc_skb_descs(struct sk_buff *skb)
++{
++	struct xsk_addrs *addrs;
++
++	addrs = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
++	addrs->num_descs++;
+ }
+ 
+ static void xsk_consume_skb(struct sk_buff *skb)
+ {
+ 	struct xdp_sock *xs = xdp_sk(skb->sk);
+ 
++	kmem_cache_free(xsk_tx_generic_cache,
++			(struct xsk_addrs *)skb_shinfo(skb)->destructor_arg);
+ 	skb->destructor = sock_wfree;
+ 	xsk_cq_cancel_locked(xs->pool, xsk_get_num_desc(skb));
+ 	/* Free skb without triggering the perf drop trace */
+@@ -609,6 +641,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ {
+ 	struct xsk_buff_pool *pool = xs->pool;
+ 	u32 hr, len, ts, offset, copy, copied;
++	struct xsk_addrs *addrs = NULL;
+ 	struct sk_buff *skb = xs->skb;
+ 	struct page *page;
+ 	void *buffer;
+@@ -623,6 +656,12 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 			return ERR_PTR(err);
+ 
+ 		skb_reserve(skb, hr);
++
++		addrs = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
++		if (!addrs)
++			return ERR_PTR(-ENOMEM);
++
++		xsk_set_destructor_arg(skb, addrs);
+ 	}
+ 
+ 	addr = desc->addr;
+@@ -662,6 +701,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ {
+ 	struct xsk_tx_metadata *meta = NULL;
+ 	struct net_device *dev = xs->dev;
++	struct xsk_addrs *addrs = NULL;
+ 	struct sk_buff *skb = xs->skb;
+ 	bool first_frag = false;
+ 	int err;
+@@ -694,6 +734,15 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 			err = skb_store_bits(skb, 0, buffer, len);
+ 			if (unlikely(err))
+ 				goto free_err;
++
++			addrs = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
++			if (!addrs) {
++				err = -ENOMEM;
++				goto free_err;
++			}
++
++			xsk_set_destructor_arg(skb, addrs);
++
+ 		} else {
+ 			int nr_frags = skb_shinfo(skb)->nr_frags;
+ 			struct page *page;
+@@ -759,7 +808,9 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 	skb->mark = READ_ONCE(xs->sk.sk_mark);
+ 	skb->destructor = xsk_destruct_skb;
+ 	xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
+-	xsk_set_destructor_arg(skb);
++
++	addrs = (struct xsk_addrs *)skb_shinfo(skb)->destructor_arg;
++	addrs->addrs[addrs->num_descs++] = desc->addr;
+ 
+ 	return skb;
+ 
+@@ -769,7 +820,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 
+ 	if (err == -EOVERFLOW) {
+ 		/* Drop the packet */
+-		xsk_set_destructor_arg(xs->skb);
++		xsk_inc_skb_descs(xs->skb);
+ 		xsk_drop_skb(xs->skb);
+ 		xskq_cons_release(xs->tx);
+ 	} else {
+@@ -812,7 +863,7 @@ static int __xsk_generic_xmit(struct sock *sk)
+ 		 * if there is space in it. This avoids having to implement
+ 		 * any buffering in the Tx path.
+ 		 */
+-		err = xsk_cq_reserve_addr_locked(xs->pool, desc.addr);
++		err = xsk_cq_reserve_locked(xs->pool);
+ 		if (err) {
+ 			err = -EAGAIN;
+ 			goto out;
+@@ -1815,6 +1866,14 @@ static int __init xsk_init(void)
+ 	if (err)
+ 		goto out_pernet;
+ 
++	xsk_tx_generic_cache = kmem_cache_create("xsk_generic_xmit_cache",
++						 sizeof(struct xsk_addrs), 0,
++						 SLAB_HWCACHE_ALIGN, NULL);
++	if (!xsk_tx_generic_cache) {
++		err = -ENOMEM;
++		goto out_pernet;
++	}
++
+ 	return 0;
+ 
+ out_pernet:
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index 46d87e961ad6..f16f390370dc 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -344,6 +344,11 @@ static inline u32 xskq_cons_present_entries(struct xsk_queue *q)
+ 
+ /* Functions for producers */
+ 
++static inline u32 xskq_get_prod(struct xsk_queue *q)
++{
++	return READ_ONCE(q->ring->producer);
++}
++
+ static inline u32 xskq_prod_nb_free(struct xsk_queue *q, u32 max)
+ {
+ 	u32 free_entries = q->nentries - (q->cached_prod - q->cached_cons);
+@@ -390,6 +395,13 @@ static inline int xskq_prod_reserve_addr(struct xsk_queue *q, u64 addr)
  	return 0;
  }
  
-+static void dump(__u32 prog_id, const char *prog_name)
++static inline void xskq_prod_write_addr(struct xsk_queue *q, u32 idx, u64 addr)
 +{
-+	char command[64];
++	struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
 +
-+	snprintf(command, sizeof(command), "bpftool prog dump %s id %u",
-+		 env.dump_mode == JITED ? "jited" : "xlated", prog_id);
-+	printf("Prog's '%s' dump:\n", prog_name);
-+	system(command);
-+	printf("\n");
++	ring->desc[idx & q->ring_mask] = addr;
 +}
 +
- static int process_prog(const char *filename, struct bpf_object *obj, struct bpf_program *prog)
+ static inline void xskq_prod_write_addr_batch(struct xsk_queue *q, struct xdp_desc *descs,
+ 					      u32 nb_entries)
  {
- 	const char *base_filename = basename(strdupa(filename));
-@@ -1630,8 +1659,11 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
- 
- 	memset(&info, 0, info_len);
- 	fd = bpf_program__fd(prog);
--	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0)
-+	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0) {
- 		stats->stats[JITED_SIZE] = info.jited_prog_len;
-+		if (env.dump_mode != NO_DUMP)
-+			dump(info.id, prog_name);
-+	}
- 
- 	parse_verif_log(buf, buf_sz, stats);
- 
 -- 
-2.50.1
+2.34.1
 
 
