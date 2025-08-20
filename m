@@ -1,152 +1,161 @@
-Return-Path: <bpf+bounces-66122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA769B2E84E
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 00:48:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B605AB2E857
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 00:52:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C8767A4692
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 22:46:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B2661BC15AD
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 22:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23382D979E;
-	Wed, 20 Aug 2025 22:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AED2DBF49;
+	Wed, 20 Aug 2025 22:50:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E2Pcsw1B"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nB9asYOT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33E92D0C8A;
-	Wed, 20 Aug 2025 22:47:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F57244693
+	for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 22:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755730066; cv=none; b=DjM4d4T733XwtNtck39T55CH/N9SAFiu7O8ay3vW9c5bp4yODOuiQ8rIoNwmAUVp8DtaO7cO8K2B5oav1TGlGUuEo9nuPAzxpqz2fhs7K7lBKyyF8rOQrb0sCIG/AmJkp02PwBYUpJ39qFCx8RtmsGECiwW7uAg9pT0sJ27qHR8=
+	t=1755730207; cv=none; b=t8ZYZXPxgcJ+guGOPoMbqbPZxJISVnWP1UMfaOVXFRyGPRhTVhzHSZCEA+Ioy50xBlkg0oJE54KG/tXsKzd3ln0VVia338YFmaIjrn7Ay2M9G/2h5lcrgoIlO4zRE6pfEAmy+CDyQAhWoeHPKRP91sJNlKR3tVnFqaH9MWoFs9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755730066; c=relaxed/simple;
-	bh=aKHlxeIJj0NhWL5rFj8SAJiHfOeC64OVey16cOjjDKI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fpyhxQVc5q+FDGpaZq6h5x3SjJk7NHO1ghmNdjHK5B61NfNdZbZSLsdxBiaW4S/X5Yvvnn7PiWyBO9RVBWCX2rXbcpBfPsJxlJffpcCWr1qgXBaANBGLlR6z34XxvOe4LGld70Mjm7qOGd2Us6Z5CR8I0fhPg6VtI675prpvjaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E2Pcsw1B; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-24458242b33so3674965ad.3;
-        Wed, 20 Aug 2025 15:47:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755730064; x=1756334864; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CxmSUEH8XUSKiQrWMIiadQU2ELcXoRKtyFDMxUyNAvc=;
-        b=E2Pcsw1BqHvWTEXpS7whBjZ/U9SZLDI6RCDM2qdC2D8zQFHsawh0I6FTheJakR+9PC
-         bs+2JA5CkjLH92YVnKFCQlVjUVQnPpMrr5UcGjpblH9TOGLHRQyxKjTNrrdLawHAr3Nu
-         q9gD/hwnYq3/bI8oolo7QyJW4bh7Ltc6w3Qwczq2yO4oGq6XFyxz09pcuF6gPh2QzfmZ
-         YjH/LICDUabWkb+giyuM5l3q/esLIzFrW6iAe416YjjgoS8HjUktCz+ais5tcTvYn+J9
-         ztOOVg9481vZyQwR8lgF6Uablo1Kh52gg5Bs7CZrwRwqQbFMgLjR7qTtA4/ixRE54lQn
-         jXYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755730064; x=1756334864;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CxmSUEH8XUSKiQrWMIiadQU2ELcXoRKtyFDMxUyNAvc=;
-        b=jnEINlJg2ii4+roTtTRpdEnE/Q6d7vA8LTyoBe81teLatS8dVVCWwWlIvwsu4hHYXI
-         FF2w2KZfEhxto2CPshEBZg45w3eCUG21LUy/qNW512aQT8sbFS5XEMdAtoSle7yxf7Ps
-         J4Q+FP5O3YfBkHjuH/fg1wyAYH0qTaITi2/lC8+//s2/d6unBJh/sGSdCnV0VU7M92aG
-         YJgU97FyaQ5oe9CLAhm8oPj030sNErQLk291MJ+Iv/G1vB8Uq6TurjITcnLzcpyxsIuW
-         HLQNJ3C8rSgljrwzpwdPPLpjUkNC3wAJnr57czqrRpmXjHeBJS0OPb6MgdUGDBb8zIE0
-         KCqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ7xjjhizhfp6lIvotk0Dx2vC96T9QeQTa8oz+oaB3PDaGL+m/Grs2acbJbgj9UXViN7eygvfb1UhS7BXvku2l@vger.kernel.org, AJvYcCWiYrBs5RrL+i6HMhsrw2VjbWrKURdy+BSzN7OGXUB8tBi5MTWmt/nepiz5i5XIbkE0d8I=@vger.kernel.org, AJvYcCXMVeeK0dTdgr4KkhPdEICnbYnYzidEDOPDFMQRxzT82LkybeRDpHkCbsA+6x2mKSU/f3EHtgydmlci1g38@vger.kernel.org, AJvYcCXbSfyi+9HbkIa+KbMxGrcllKPt8OgSsFuNzPpsXwHawXkkRBPoLe0eJ5f7fzzB9UVeXlgcr/P4@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrAAcnn4+YOjzOeX4H0nnxmbTV8BLqUO1z5I6IStiET3L3rr5p
-	ergEyhoxuEmz5Rs78ifm1EDJiB0kNCTnov9wh4srtEwH0J/yfAM/4gvyKDUuqsB8zKRFwTgo9az
-	wX5Qlba4xt+wUEJCU5N0wGdPd0QAcp3Y=
-X-Gm-Gg: ASbGncsg9x7k8yWRpq0nGBkGlm2CatnZQWpBt3vFOX0eGS4CaamMQ97XcV9xUxgZLJ9
-	QP/5HdG16rKVuJrjwfnn1Ktf2nPoZW3MdmMNNgQQh9foMIrfUbKK8g38u/yzooNyXX/86+NiW0X
-	lSXGgmIPDC2cVZXK0vD+oqskieaGgioaOVNfV2OCOMh78ia7oZf2QL9+fnHbp95a51V2MDQfQOl
-	WE8PID7rEARuR5fIXlo05WKxcV8PbYyJePPU3+rZEnN
-X-Google-Smtp-Source: AGHT+IGfXE/LPyy5OpwjdvIBYFagxDqu+JLxgJsnoM4MRvNr7cBY/jRWzrvpmvFodOiN1fufMP+/m2v1odbFJOTclS0=
-X-Received: by 2002:a17:902:e884:b0:23f:f707:f97e with SMTP id
- d9443c01a7336-245fec04067mr6138445ad.17.1755730063826; Wed, 20 Aug 2025
- 15:47:43 -0700 (PDT)
+	s=arc-20240116; t=1755730207; c=relaxed/simple;
+	bh=eCL8GsLf3uYEog+ER630EOsJ52icnZjOcTqvUQPw3lY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Bwth8ZgJ0Mww6EwVENtKHMxaWKKyY9fUKWTW5Ki8jZFVcFz7d6kngeF7XGa0BrKRK8lMxI5dBjFFSe9cOR1KjaneuDx5+RDnQtwbS2ORxiNxKECcdb+dUXrc+gTEhMuiSgNpKFgYwff3/KvIYxN1s/hVYAvDi2P7EFT9rVU4Z4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nB9asYOT; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755730200;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UsdDNWT0aPaFWkXNVMSJrwjwzzlXY8/IesqRJaJrUFg=;
+	b=nB9asYOTay3SplClMlGUjqJrUlNm40iBpD5ePjlHlcko7ltyfZdyC8gCY3jD40zA+3I/ZU
+	UINeNtc0dBEbM/WktZuxCAHr4Af/b1uEbFb0lAqxvpNyZU8B1+B1tmnxpcRHvi2ZRfyOR/
+	NZWzYbGQCeZ/LrkD4Df+fjs3Ag8mOic=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: linux-mm@kvack.org,  bpf@vger.kernel.org,  Suren Baghdasaryan
+ <surenb@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Michal Hocko
+ <mhocko@suse.com>,  David Rientjes <rientjes@google.com>,  Matt Bobrowski
+ <mattbobrowski@google.com>,  Song Liu <song@kernel.org>,  Alexei
+ Starovoitov <ast@kernel.org>,  Andrew Morton <akpm@linux-foundation.org>,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 10/14] bpf: selftests: bpf OOM handler test
+In-Reply-To: <CAP01T75_ArZiy9AB6TwNZCxKJKw+2yg58xz1ubTGZr4ynVt+Mg@mail.gmail.com>
+	(Kumar Kartikeya Dwivedi's message of "Wed, 20 Aug 2025 11:33:42
+	+0200")
+References: <20250818170136.209169-1-roman.gushchin@linux.dev>
+	<20250818170136.209169-11-roman.gushchin@linux.dev>
+	<CAP01T75_ArZiy9AB6TwNZCxKJKw+2yg58xz1ubTGZr4ynVt+Mg@mail.gmail.com>
+Date: Wed, 20 Aug 2025 15:49:53 -0700
+Message-ID: <878qjdobfy.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250819033956.59164-1-dongml2@chinatelecom.cn> <20250819033956.59164-3-dongml2@chinatelecom.cn>
-In-Reply-To: <20250819033956.59164-3-dongml2@chinatelecom.cn>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 20 Aug 2025 15:47:29 -0700
-X-Gm-Features: Ac12FXxwNFYx3X1C5Pu9tp-WySpazWQxJmdHRR6C2ikj-hLBBFxY7DT7gZK46Co
-Message-ID: <CAEf4BzZBztC69GFDuA4YJHPmWOXuq3+tSNMspPNA3tksGaEi=A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: skip recursive functions for kprobe_multi
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
-	shuah@kernel.org, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org, 
-	nathan@kernel.org, nick.desaulniers+lkml@gmail.com, morbo@google.com, 
-	justinstitt@google.com, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Aug 18, 2025 at 8:40=E2=80=AFPM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+
+> On Mon, 18 Aug 2025 at 19:02, Roman Gushchin <roman.gushchin@linux.dev> wrote:
+>>
+>> Implement a pseudo-realistic test for the OOM handling
+>> functionality.
+>>
+>> The OOM handling policy which is implemented in bpf is to
+>> kill all tasks belonging to the biggest leaf cgroup, which
+>> doesn't contain unkillable tasks (tasks with oom_score_adj
+>> set to -1000). Pagecache size is excluded from the accounting.
+>>
+>> The test creates a hierarchy of memory cgroups, causes an
+>> OOM at the top level, checks that the expected process will be
+>> killed and checks memcg's oom statistics.
+>>
+>> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+>> ---
+>>  [...]
+>> +
+>> +/*
+>> + * Find the largest leaf cgroup (ignoring page cache) without unkillable tasks
+>> + * and kill all belonging tasks.
+>> + */
+>> +SEC("struct_ops.s/handle_out_of_memory")
+>> +int BPF_PROG(test_out_of_memory, struct oom_control *oc)
+>> +{
+>> +       struct task_struct *task;
+>> +       struct mem_cgroup *root_memcg = oc->memcg;
+>> +       struct mem_cgroup *memcg, *victim = NULL;
+>> +       struct cgroup_subsys_state *css_pos;
+>> +       unsigned long usage, max_usage = 0;
+>> +       unsigned long pagecache = 0;
+>> +       int ret = 0;
+>> +
+>> +       if (root_memcg)
+>> +               root_memcg = bpf_get_mem_cgroup(&root_memcg->css);
+>> +       else
+>> +               root_memcg = bpf_get_root_mem_cgroup();
+>> +
+>> +       if (!root_memcg)
+>> +               return 0;
+>> +
+>> +       bpf_rcu_read_lock();
+>> +       bpf_for_each(css, css_pos, &root_memcg->css, BPF_CGROUP_ITER_DESCENDANTS_POST) {
+>> +               if (css_pos->cgroup->nr_descendants + css_pos->cgroup->nr_dying_descendants)
+>> +                       continue;
+>> +
+>> +               memcg = bpf_get_mem_cgroup(css_pos);
+>> +               if (!memcg)
+>> +                       continue;
+>> +
+>> +               usage = bpf_mem_cgroup_usage(memcg);
+>> +               pagecache = bpf_mem_cgroup_page_state(memcg, NR_FILE_PAGES);
+>> +
+>> +               if (usage > pagecache)
+>> +                       usage -= pagecache;
+>> +               else
+>> +                       usage = 0;
+>> +
+>> +               if ((usage > max_usage) && mem_cgroup_killable(memcg)) {
+>> +                       max_usage = usage;
+>> +                       if (victim)
+>> +                               bpf_put_mem_cgroup(victim);
+>> +                       victim = bpf_get_mem_cgroup(&memcg->css);
+>> +               }
+>> +
+>> +               bpf_put_mem_cgroup(memcg);
+>> +       }
+>> +       bpf_rcu_read_unlock();
+>> +
+>> +       if (!victim)
+>> +               goto exit;
+>> +
+>> +       bpf_for_each(css_task, task, &victim->css, CSS_TASK_ITER_PROCS) {
+>> +               struct task_struct *t = bpf_task_acquire(task);
+>> +
+>> +               if (t) {
+>> +                       if (!bpf_task_is_oom_victim(task))
+>> +                               bpf_oom_kill_process(oc, task, "bpf oom test");
 >
-> Some functions is recursive for the kprobe_multi and impact the benchmark
-> results. So just skip them.
->
-> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> ---
->  tools/testing/selftests/bpf/trace_helpers.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/=
-selftests/bpf/trace_helpers.c
-> index d24baf244d1f..9da9da51b132 100644
-> --- a/tools/testing/selftests/bpf/trace_helpers.c
-> +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> @@ -559,6 +559,22 @@ static bool skip_entry(char *name)
->         if (!strncmp(name, "__ftrace_invalid_address__",
->                      sizeof("__ftrace_invalid_address__") - 1))
->                 return true;
-> +
-> +       if (!strcmp(name, "migrate_disable"))
-> +               return true;
-> +       if (!strcmp(name, "migrate_enable"))
-> +               return true;
-> +       if (!strcmp(name, "rcu_read_unlock_strict"))
-> +               return true;
-> +       if (!strcmp(name, "preempt_count_add"))
-> +               return true;
-> +       if (!strcmp(name, "preempt_count_sub"))
-> +               return true;
-> +       if (!strcmp(name, "__rcu_read_lock"))
-> +               return true;
-> +       if (!strcmp(name, "__rcu_read_unlock"))
-> +               return true;
-> +
+> Is there a scenario where we want to invoke bpf_oom_kill_process when
+> the task is not an oom victim?
 
-static const char *trace_blacklist[] =3D {
-    "migrate_disable",
-    "migrate_enable",
-    ...
-};
+Not really, but...
 
-it's not like it's one or two functions where copy-pasting strcmp might be =
-fine
+> Would it be better to subsume this check in the kfunc itself?
 
-pw-bot: cr
-
-
->         return false;
->  }
->
-> --
-> 2.50.1
->
+bpf_task_is_oom_victim() is useful by itself, because if we see
+a task which is about to be killed, we can likely simple bail out.
+Let me adjust the test to reflect it.
 
