@@ -1,155 +1,153 @@
-Return-Path: <bpf+bounces-66067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66068-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB5CBB2D839
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 11:31:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1911B2D875
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 11:36:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60B4A3AEDBB
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 09:27:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64EF61C42FCA
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 09:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC3432E267B;
-	Wed, 20 Aug 2025 09:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFC02DC34F;
+	Wed, 20 Aug 2025 09:25:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nJt+39o+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fbjyb493"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575DC2E22A9;
-	Wed, 20 Aug 2025 09:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B87C23A9AD;
+	Wed, 20 Aug 2025 09:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755681765; cv=none; b=XYxF+B97Z2QOa8pQonLFzROZqnN8OlGU5vD2ITUUnYlW/2+J7Fh9yYuwWj2pIobS4vVq5NCaNnDHAPB+0gI3IwiU4VwZDVR7JyVX49njNrFqn8hWyvtr1TK5DEqN4TIKw87q+G3qa23MygavkuX086vIXECUrY3hx4ityMCz7eQ=
+	t=1755681943; cv=none; b=UBQU8Y2YCq68KOU/8HgVixOPpCro2TcH8lZPwuSUy1AFk/35vDUD1IL/StpyISXZRFiRy1puTcG1GLbNxRr+OEQcBO3vmjLeKe6r2p5d/RgDX7frgBGus/5S/kQbAR404gYagjuXXVqLFj4C8/WyUa/vS6vfqqJxtFxCOY22heE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755681765; c=relaxed/simple;
-	bh=eJ6WjgKVIsIOpyGHdORuYVWkUx9KS1agfZtjGvIXQfI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=kD1BQ8oAqNnY7Ic0K0l9yHBLTF9ccsinfgTPJG95vjAZ6flk0PcuYEgfzXIFIDfZGr6gJi93HYAvP6OxkGdBPUMBNx3KL7X1YDTFVWLqkEGnauQpiInw6S65sstAToZ+hrJfFmsddvsBi9tpr3CTr9UreIkGdGEBCbaIX/YCj8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nJt+39o+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D037CC113D0;
-	Wed, 20 Aug 2025 09:22:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755681764;
-	bh=eJ6WjgKVIsIOpyGHdORuYVWkUx9KS1agfZtjGvIXQfI=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=nJt+39o+SEWLX9UKy60e4bd30oOCM4NFAM/2GxSQDWiStm9v7FtKgwBqXS9D2PCLS
-	 NlOiGdUNpp7I6oBXrXhY+Lpjr61f2mG0uISoztei9YIqByI8qb8A6AUPiW1vNOveA+
-	 kc7wmwttUj1I7bd2685oQwQbDN84aLcZR+F2OeSD31sPJlw1WdsBXfFGSdh9yioqrg
-	 5oB6jMIE6FyPM+WqKtplyfrAaCBx7JCwsxysX1UixX8YZETpNv6wnCKtWRNtqME/4a
-	 wqhelVPkJOfnuMThueMuf5tvF7fyfPREmJJmgI/4fyQOvTTu7QecowiCYkWBTh8PN7
-	 UQhXeJjPjSEnA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0C61CA0EED;
-	Wed, 20 Aug 2025 09:22:44 +0000 (UTC)
-From: Cryolitia PukNgae via B4 Relay <devnull+cryolitia.uniontech.com@kernel.org>
-Date: Wed, 20 Aug 2025 17:22:42 +0800
-Subject: [PATCH] libbpf: add documentation to version and error API
- functions
+	s=arc-20240116; t=1755681943; c=relaxed/simple;
+	bh=FQDOmH3hqx2lJBQXg/eBAyjvvUxL+CHcLyrtVGjwuSQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lfK3NHgsELXyz36x6AtyH4864c3WuJbp4GlkaD9M05GoFH+ZD0vgzgYDnzSP2irkYLmBpIk97YzGd8TZuGVuS4mAuRtDSyWreQnETMC5ZpB4xQNqr+qUYOJetP+LGJgHvFVqi3Pr7l7N9kbHoH5G8AUbPeE2I4erSyvCHj4hwBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fbjyb493; arc=none smtp.client-ip=209.85.208.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-6188b794743so9707079a12.3;
+        Wed, 20 Aug 2025 02:25:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755681940; x=1756286740; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TXaugHPMoplpDsoBjFEcdde60xwXGr2k9rLptADyPcg=;
+        b=Fbjyb493jAmHzpWd/p1cLSoWqrhOeNA7vUZqspymbiTyQvTV+KNPKoPvEVWOosqQvY
+         oLC+r3YToGeuUomhdI/wyCMXuszj6Nei3ToHO7cCuQn8RLA9eSvHldz9PAMXdBI1liZN
+         MUm3VUW+gt8v+I1WehbUwjeVH27v2v+haMiirihqXR9xm/KQyy07vfu4kHIS7iU4tVut
+         zYCwPafQlr/1YUyTVYADXpTqhiZtLkt84bzPkL5PlGmyXPqya1M/irEkidHGI1YRxUvi
+         Q+vb2fGSIW6/T4HRwP0meiGiJxVN3rW0ykD9DzSW5VHxO7r8ykpZV8FwTUV8FUbyQI5U
+         z/Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755681940; x=1756286740;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TXaugHPMoplpDsoBjFEcdde60xwXGr2k9rLptADyPcg=;
+        b=UASfAsos2fcwvlV9MALNP+Yos0CChZBGlhPHNtlJ3JxESirI72VkJIM5cRdwLL57qs
+         qCrfNmQXspbYP0nXuoENBMnG6z5RSZF04/gQgN8ytC7Rnr3ll/a2kcIfwwGXNorIZcjE
+         Q2ro+3BxCX0rvt0+pW7gAuirbt2JVG7TrKhPjcKt7tcSsHMcWZHYkoW8QHtb+nWq2Co/
+         EQ4glXFdRoLO+CjrTDCrXxWay2+e7C9VVafBXKK9vlbFkfDNntRiloSls3rdoIFIVuXw
+         GmAI2gZ/WLnlPVIW+FJQU5L/XRndEZBVXVri75dLqFqUcGu6sYUSBlSnGxmjQeOsHxeQ
+         chtA==
+X-Forwarded-Encrypted: i=1; AJvYcCUxOzhG5VjgwKs528EwjjjHs/yVxY6zfrh2hLQZBrlccRGwjwO+68xq1NMMqvsXH4t9Qi9YUfmxG0Swkz4j@vger.kernel.org, AJvYcCVNrz/r1S8TWre04VBA1uFPQfmbXlppyp8J/kFV4OdibswZFF7kLADEmMIGupHy4Pi5j4Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZfZ98BV+RFiT8NR4z562UPYFAvPpiObazlCats98aPM2iKVx1
+	86wzrkVJZcJC1vTYTBjbxaQVsgSfck8+kp5iV9mZAcp6z6OH1oFfCiVoumQKHVA/Nr9NC8UgEq8
+	cdUdhtjKKLbbCucYXeTs/4EE1F5K1pRE=
+X-Gm-Gg: ASbGncuWQm+fsPpRc4qgZN9tDlMKMrMjP4P0ZxtmUeLgkzR+GyIQLOJkSv6qsARSUxV
+	f8BN8rnBQEdYJvh5prjHeJZOgr6+VbP/EhNb9BE3hoWRhEBaCSLG2wBJPjBPMB2JLRCMCOHYbyn
+	674omr3nP+vrPqS7gTMABipVSMnA9lS6+k7UqWB4xTyPLvY+yylNlfaZsSAXKQ8M7pfZh1E1jOI
+	lZeDNWTktJ+vg+W4bNN
+X-Google-Smtp-Source: AGHT+IH5r/oUOPIaZVKzeJ3UawFBydND2m/Zr4Z8FjLc2Sf4IdgmOgYNeZoUcGG6NZupv1UlJJ+OmXXFf9P7zfIG2lQ=
+X-Received: by 2002:a05:6402:42d3:b0:61a:8966:ced6 with SMTP id
+ 4fb4d7f45d1cf-61a9782505bmr1832376a12.35.1755681939804; Wed, 20 Aug 2025
+ 02:25:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250820-libbpf-doc-1-v1-1-13841f25a134@uniontech.com>
-X-B4-Tracking: v=1; b=H4sIAOGTpWgC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI1MDCyMD3ZzMpKSCNN2U/GRdQ10DkyQDU9M0gzRLc3MloJaCotS0zAqwcdG
- xtbUAPRJMcF4AAAA=
-X-Change-ID: 20250820-libbpf-doc-1-04b055f0f977
-To: Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- niecheng1@uniontech.com, guanwentao@uniontech.com, zhanjun@uniontech.com, 
- yt.xyxx@gmail.com, Cryolitia PukNgae <cryolitia@uniontech.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1755681763; l=1980;
- i=cryolitia@uniontech.com; s=20250730; h=from:subject:message-id;
- bh=HqKLuwaahaE8X4oGAqmIDONf3wOJcCZcDPM6er4Q6CA=;
- b=0bW0OAnjBtipT/YwZfM4duneD+8q120OUp8cSpQzdLcmOJMiwfT5AOVOgCxEigeXOxBG86m7X
- Hyt2KCsq0ULCukJESeDbbYtyGLx7v6rbAgfb40kpGMkJwg4fhDAHLj/
-X-Developer-Key: i=cryolitia@uniontech.com; a=ed25519;
- pk=tZ+U+kQkT45GRGewbMSB4VPmvpD+KkHC/Wv3rMOn/PU=
-X-Endpoint-Received: by B4 Relay for cryolitia@uniontech.com/20250730 with
- auth_id=474
-X-Original-From: Cryolitia PukNgae <cryolitia@uniontech.com>
-Reply-To: cryolitia@uniontech.com
+References: <20250818170136.209169-1-roman.gushchin@linux.dev> <20250818170136.209169-6-roman.gushchin@linux.dev>
+In-Reply-To: <20250818170136.209169-6-roman.gushchin@linux.dev>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 20 Aug 2025 11:25:02 +0200
+X-Gm-Features: Ac12FXxpl9gi1KUaEwzxMMmXIWzdn3euZF0dat5BG2FZFZDhN6aQnB8C060Jz44
+Message-ID: <CAP01T772oh8t05Pth2eWFzfSGVWDuW6kujRVSYQEreqZy==nOQ@mail.gmail.com>
+Subject: Re: [PATCH v1 05/14] mm: introduce bpf_get_root_mem_cgroup() bpf kfunc
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: linux-mm@kvack.org, bpf@vger.kernel.org, 
+	Suren Baghdasaryan <surenb@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>, 
+	David Rientjes <rientjes@google.com>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Cryolitia PukNgae <cryolitia@uniontech.com>
+On Mon, 18 Aug 2025 at 19:02, Roman Gushchin <roman.gushchin@linux.dev> wrote:
+>
+> Introduce a bpf kfunc to get a trusted pointer to the root memory
+> cgroup. It's very handy to traverse the full memcg tree, e.g.
+> for handling a system-wide OOM.
+>
+> It's possible to obtain this pointer by traversing the memcg tree
+> up from any known memcg, but it's sub-optimal and makes bpf programs
+> more complex and less efficient.
+>
+> bpf_get_root_mem_cgroup() has a KF_ACQUIRE | KF_RET_NULL semantics,
+> however in reality it's not necessarily to bump the corresponding
+> reference counter - root memory cgroup is immortal, reference counting
+> is skipped, see css_get(). Once set, root_mem_cgroup is always a valid
+> memcg pointer. It's safe to call bpf_put_mem_cgroup() for the pointer
+> obtained with bpf_get_root_mem_cgroup(), it's effectively a no-op.
+>
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+> ---
+>  mm/bpf_memcontrol.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>
+> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
+> index 66f2a359af7e..a8faa561bcba 100644
+> --- a/mm/bpf_memcontrol.c
+> +++ b/mm/bpf_memcontrol.c
+> @@ -10,6 +10,20 @@
+>
+>  __bpf_kfunc_start_defs();
+>
+> +/**
+> + * bpf_get_root_mem_cgroup - Returns a pointer to the root memory cgroup
+> + *
+> + * The function has KF_ACQUIRE semantics, even though the root memory
+> + * cgroup is never destroyed after being created and doesn't require
+> + * reference counting. And it's perfectly safe to pass it to
+> + * bpf_put_mem_cgroup()
+> + */
+> +__bpf_kfunc struct mem_cgroup *bpf_get_root_mem_cgroup(void)
+> +{
+> +       /* css_get() is not needed */
+> +       return root_mem_cgroup;
+> +}
+> +
+>  /**
+>   * bpf_get_mem_cgroup - Get a reference to a memory cgroup
+>   * @css: pointer to the css structure
+> @@ -122,6 +136,7 @@ __bpf_kfunc void bpf_mem_cgroup_flush_stats(struct mem_cgroup *memcg)
+>  __bpf_kfunc_end_defs();
+>
+>  BTF_KFUNCS_START(bpf_memcontrol_kfuncs)
+> +BTF_ID_FLAGS(func, bpf_get_root_mem_cgroup, KF_ACQUIRE | KF_RET_NULL)
 
-This adds documentation for the following API functions:
-- libbpf_major_version()
-- libbpf_minor_version()
-- libbpf_version_string()
-- libbpf_strerror()
+Same suggestion here (re: trusted args).
 
-Signed-off-by: Cryolitia PukNgae <cryolitia@uniontech.com>
----
- tools/lib/bpf/libbpf.h | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 455a957cb702cab53266ea948fec061f3b65c9ee..3b809cd08f01ce1576ac822fb89cfd589b9f0d44 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -24,8 +24,25 @@
- extern "C" {
- #endif
- 
-+/**
-+ * @brief **libbpf_major_version()** provides the major version of libbpf.
-+ * @return An integer, the major version number
-+ */
- LIBBPF_API __u32 libbpf_major_version(void);
-+
-+/**
-+ * @brief **libbpf_minor_version()** provides the minor version of libbpf.
-+ * @return An integer, the minor version number
-+ */
- LIBBPF_API __u32 libbpf_minor_version(void);
-+
-+/**
-+ * @brief **libbpf_version_string()** provides the version of libbpf in a
-+ * human-readable form, e.g., "v1.7".
-+ * @return Pointer to a static string containing the version
-+ *
-+ * The format is *not* a part of a stable API and may change in the future.
-+ */
- LIBBPF_API const char *libbpf_version_string(void);
- 
- enum libbpf_errno {
-@@ -49,6 +66,14 @@ enum libbpf_errno {
- 	__LIBBPF_ERRNO__END,
- };
- 
-+/**
-+ * @brief **libbpf_strerror()** converts the provided error code into a
-+ * human-readable string.
-+ * @param err The error code to convert
-+ * @param buf Pointer to a buffer where the error message will be stored
-+ * @param size The number of bytes in the buffer
-+ * @return 0, on success; negative error code, otherwise
-+ */
- LIBBPF_API int libbpf_strerror(int err, char *buf, size_t size);
- 
- /**
-
----
-base-commit: b19a97d57c15643494ac8bfaaa35e3ee472d41da
-change-id: 20250820-libbpf-doc-1-04b055f0f977
-
-Best regards,
--- 
-Cryolitia PukNgae <cryolitia@uniontech.com>
-
-
+>  BTF_ID_FLAGS(func, bpf_get_mem_cgroup, KF_ACQUIRE | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_put_mem_cgroup, KF_RELEASE)
+>
+> --
+> 2.50.1
+>
 
