@@ -1,241 +1,433 @@
-Return-Path: <bpf+bounces-66102-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F283B2E4A0
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 20:05:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88206B2E50D
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 20:33:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86C86A27642
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 18:04:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A38F5E3F52
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 18:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5F027A44D;
-	Wed, 20 Aug 2025 18:04:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A91C273803;
+	Wed, 20 Aug 2025 18:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DXVoU+C9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OggKacs/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CF125A347;
-	Wed, 20 Aug 2025 18:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755713057; cv=fail; b=Aj9RJzQSOFfaxPW3R9QF7xR8JlykWeQuBMkph7XJdWqMiipVFBc7U1IRCihlyx7rkfftbQnoyOgXUSvEklPiYT8qTN60AKYo84k6c+5bvqq83uRejlZbmY6wNQVUbpK0w6whDpdT5eyw3YOgXQ3g6SwD7+MsvjA7ose9essWwUA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755713057; c=relaxed/simple;
-	bh=kalWnHq5yyYRtwAOnWyTDBhCG1BmjKNJT5TUb9MBIX4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=jq95DNujYyIfYTthiLAf88yMiH6g/jveGe7wbwJHsj9l8gXQUOh2l+F8Phms6BV4xG6KkkTKuvtoji3Ve1z71FL0WUSQT3T8D9escWazB3EiiWTm+MWSKn3Vielek0UOS0evw1Qe/cwQZRJnWwR7exUQ4MG4d6QBnJkpPzwBfDM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DXVoU+C9; arc=fail smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1755713055; x=1787249055;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=kalWnHq5yyYRtwAOnWyTDBhCG1BmjKNJT5TUb9MBIX4=;
-  b=DXVoU+C933HSSplMXm+h6T70Z7cWhOIjZM9rvs4rSiw6vvR0VVK/711o
-   8NQUQikqLhufnV72+ao5bSb0m2S7C2bjyL/fcS2GLRFTRj/GfYEhkWobo
-   s1fXsckZZ1xNgHY9dHgQDdh80LE6WcfvjAG2/f/MaL3KL/tUbQ5iKG6K9
-   ohc0HOfCWJm2bTLzEmpW0DnyaAtU91F1K+dnMMEy0FjqwzGJP8VCE2eus
-   FwFObCvhIk0/Lp+bLw1XSbP1dRFnYrPF/epZxsdAtjtfQrgsa1YLBg+n1
-   7yNFJa+saoz8OpXWIDkLJsv4cD0DBs73arzR7DY9/PTlG6fHt60q8s6aI
-   g==;
-X-CSE-ConnectionGUID: UlJFKN5ORey3oBNyO7qnLQ==
-X-CSE-MsgGUID: Yacs0B8RSZCI/yCwfkT33w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11527"; a="45564963"
-X-IronPort-AV: E=Sophos;i="6.17,306,1747724400"; 
-   d="scan'208";a="45564963"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2025 11:04:14 -0700
-X-CSE-ConnectionGUID: 9TFNv1lCR1+bWuyzdO1YMQ==
-X-CSE-MsgGUID: /IAQbvWyTxaquVRBJUagBA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,306,1747724400"; 
-   d="scan'208";a="167402160"
-Received: from fmsmsx903.amr.corp.intel.com ([10.18.126.92])
-  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2025 11:04:14 -0700
-Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
- fmsmsx903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.17; Wed, 20 Aug 2025 11:04:13 -0700
-Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
- FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.17 via Frontend Transport; Wed, 20 Aug 2025 11:04:13 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (40.107.102.73)
- by edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.17; Wed, 20 Aug 2025 11:04:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=kplkwxTEOGztICf0q8I8ySpr+og6g9iDuBpLkgmHqKyqDd1mHyuQaxB8kBF8exh8oBZq+aIMGDUFjP1N9GDP3pCa654ouOVPB2yCYGyQOVyrac0KMyy2tSJLJnR2lR7HPjPpcSDhcl3d2Q02UXVa55T6E6nsDZDHt74peLnGC3Py9FB4bbwDDU3Olm1mFpIdS72usPPhumvOwi+H6TzDoX1+HNrWrqu3Ntn0ixoM6aEPgZXbxq9PGtwP3RNPTmoGV5s4Zt669nY1GyvvGGL6wSSh30Q/emMu3isZ/GxeOcgg59WKsTOfVD19vI1aDWvLM5Kj9aX4ZECBwpyxk/qrag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kalWnHq5yyYRtwAOnWyTDBhCG1BmjKNJT5TUb9MBIX4=;
- b=oLbHSIJchZCefMbsPNEEql1ZDPPKt9ZNsNo7Sc7i0QDKW2TYm+06JM1VPibZu+VLSg/MF80SxlRJknEYMiDJqPEIcfRNnptqmeTwfnJl+D20yxOA1PpW0EyXcy1kSbeVhhfBgYxD9aJ5nVXHAUaTakLrUGoOulwrshGuNkkHuHEkkIrspdqY/ROIYHWA4i7J4xGvSzn52ao669yePlpBy+gDcv8EgN1vNw9dpooDeRqi1hy8KBChnXytXs0NKR+xE8HPytfkunjy5t13UipUzTCcVGu+bIfdcUeWFtEz6vP+ximVLuNIEd+UVW68cq/7FEjdX6b36hwcYX8QN6fQyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by CO1PR11MB4772.namprd11.prod.outlook.com (2603:10b6:303:97::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9052.14; Wed, 20 Aug
- 2025 18:04:11 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::edb2:a242:e0b8:5ac9]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::edb2:a242:e0b8:5ac9%5]) with mapi id 15.20.9031.023; Wed, 20 Aug 2025
- 18:04:10 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "peterz@infradead.org" <peterz@infradead.org>
-CC: "songliubraving@fb.com" <songliubraving@fb.com>, "alan.maguire@oracle.com"
-	<alan.maguire@oracle.com>, "mhiramat@kernel.org" <mhiramat@kernel.org>,
-	"andrii@kernel.org" <andrii@kernel.org>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "mingo@kernel.org" <mingo@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>, "David.Laight@aculab.com"
-	<David.Laight@aculab.com>, "yhs@fb.com" <yhs@fb.com>, "oleg@redhat.com"
-	<oleg@redhat.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"thomas@t-8ch.de" <thomas@t-8ch.de>, "jolsa@kernel.org" <jolsa@kernel.org>,
-	"haoluo@google.com" <haoluo@google.com>, "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCHv6 perf/core 10/22] uprobes/x86: Add support to optimize
- uprobes
-Thread-Topic: [PATCHv6 perf/core 10/22] uprobes/x86: Add support to optimize
- uprobes
-Thread-Index: AQHcEc5LWQgc1WQMikmopLJo2+WQ07RrstqAgAAUyoCAAAPpgIAABMyAgAAFsgA=
-Date: Wed, 20 Aug 2025 18:04:10 +0000
-Message-ID: <447af60b944e0f7a8ddf012973029430af834b2e.camel@intel.com>
-References: <20250720112133.244369-1-jolsa@kernel.org>
-	 <20250720112133.244369-11-jolsa@kernel.org>
-	 <20250819191515.GM3289052@noisy.programming.kicks-ass.net>
-	 <20250820123033.GL3245006@noisy.programming.kicks-ass.net>
-	 <9ece46a40ae89925312398780c3bc3518f229aff.camel@intel.com>
-	 <20250820171237.GL4067720@noisy.programming.kicks-ass.net>
-	 <62574323ba73b0fec42a106ccc29f707b5696094.camel@intel.com>
-	 <20250820174347.GM3245006@noisy.programming.kicks-ass.net>
-In-Reply-To: <20250820174347.GM3245006@noisy.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CO1PR11MB4772:EE_
-x-ms-office365-filtering-correlation-id: b4fab206-68be-4aab-55c0-08dde013f701
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016|38070700018;
-x-microsoft-antispam-message-info: =?utf-8?B?WGVhSmxvMm1IRGdyaHJ2TGpsS3J4c05SL3EzQjh1THJDdXhvUFV0aUNwZ2Mv?=
- =?utf-8?B?clI1eWpVQ0ZrckhFUWV3MFJJWmxvV1Zlc3d0K0lHc24vNStIeDRsVUIwK00x?=
- =?utf-8?B?K21LZUVMZ1NaZW9WUk9xaFZmMG1aZ1cyWEdxMU4ranlBUzFMS0FoVEVEUHJQ?=
- =?utf-8?B?ZmQ0M2U4ZjBTN0NKdFlscUxtSExBQ24wYzIrWk9FUzBuOVdaZlNUL3llRDlh?=
- =?utf-8?B?MkR6UHczOXc5SzM0NDloS0lhL0ZHUWxIczIyeTNCRllqdmEyWm9BZG5sd3Vs?=
- =?utf-8?B?SUpqSEhZQXJlbzlIQ0c2OTgyakZ1QXBSaDdGdGd2ejZUVzA1Q0dzaVVjemZm?=
- =?utf-8?B?SkJoRzk1cW9jRGM2cjVTRWZkSFU3SUFzWVpxbDZpa05LQU5DeC9uL1VJM0dm?=
- =?utf-8?B?QXdydGU0Skh4SjUyY2pMVDlkMHNkZzYzS0hpZUh3WGxiaFRiUXFyVnFiUmJ4?=
- =?utf-8?B?WVhkWWE0RWgyVEN3UW44MEFtSUJDVkJqa1RyUWpDRmRlVjZjZVh3MVByTDBC?=
- =?utf-8?B?eW5hb2w4Q0V1aWVFcStQNGMvV2Q1eFlsS1dLVjZOMXo2V0NWMDNjbzRIdmdQ?=
- =?utf-8?B?Q2N2MWhNVDhoY0RLeFN6akRVOGhhOE1PbFFQaUt4T05xSnhkUVN1UDRwUEZr?=
- =?utf-8?B?WUV3dlZtRE55alBkQjA4eWNZU0dWUy8xS0FvOEdUL1BMTk9sTHNhT3FmK09h?=
- =?utf-8?B?Y1VaOE16SlJJRzN6MWpOUlUzUVFNdjltdVhBNldITnV1S0RvOXVHNlIyQzJo?=
- =?utf-8?B?b0ZhcldncVkyemJHbWlxOXJlYkMxejBiNHZJZy9LVGxMT1RlQnNXa09HSG5h?=
- =?utf-8?B?cWxUU0VUSzJkYkd3K253K2p0ZkhVeE83eGxpZzBtQWwrSktwd3FXZ1pka3kx?=
- =?utf-8?B?aHBUZGYrMmpQOHlGdncwNVlxc0l1Q2Z4cWE4enprczJJaUdmQVljNnJ6VTd4?=
- =?utf-8?B?N2xBNEI4cUE4K0JLcjdjSmJzZ0twbHJ6eHBHTXJabEpBYnpQUTYwakZEWSsy?=
- =?utf-8?B?NVozcEcvRlJYcnhlUlFuVkdCa1JrdHJJbTVTUkVzc2haM2xmVjZCbXpSNE1H?=
- =?utf-8?B?M1MycGxUR25ERnB4OTdONnk1eXpoMi94T2Y2cSttQXg5RDBMNFJVT0FpeXhu?=
- =?utf-8?B?SFhsdzhxM1FBazRKZFN6RWxDMG15Yll0VS9ydTNNR1ZjQUpJY3JsOFVFZVlX?=
- =?utf-8?B?cnVtbk9qUk5tSHNyaENYMWV4TGFqL3JocWVTR2hzV08vWEdjenhOUTVrNHkw?=
- =?utf-8?B?dTNxMXUyM2xpd3VoRUhwMGdWWnI1blY0V1VtbEprZ2pKSVhZdGgxSStwV0Jy?=
- =?utf-8?B?SUVtalB5WUMyUUJwR1h2QXF1b2g2bFJyUnJHTTlIeXhRVU50clhZRHMzWVM3?=
- =?utf-8?B?aVgrOWZHWE16cC9lNlRaUEJub2wxeVp2dWlYVWZhYWJmRnRmNHZoM1V2WHBK?=
- =?utf-8?B?Yjg1Mk1KTHl1aGtnV21McHN2cmhKbHVpUVBaa044M0llQWtvR2ZtL1FkRks3?=
- =?utf-8?B?ZFE1WC9pMnZNN1FRcVpTOWZFZzUyaUhPMnprTEkvVndTVk5KWG0rQnZiOXBU?=
- =?utf-8?B?cjI3bWNMa0JwQ1RVYThIY21Udnp2NjZqeDN3RlBFdnFJVXZqK2tFcVh1dEhs?=
- =?utf-8?B?M1I3VEpVOEpJakNvWWMyOVRYNm1Tb0FuYzVPL2VoUlZwK2dJK3VYT0pUbFlq?=
- =?utf-8?B?TkZLT2E1NGdYQ1hLTkJPamJhem9Cb3R3cGZ3OWdvNkdoZ1BPM1JqSE9ZWURv?=
- =?utf-8?B?ZUY0cDREZ21xTUlkSkdRLzFuNjVCSi9ubkhFaG5QT0hvVW82eDUxclNHeWVJ?=
- =?utf-8?B?L0xvSW8xYzRwZk1UTHJqRnlFWWVickxYUDZmcm8wcHBUdWxsMGtzeGdiaXA4?=
- =?utf-8?B?TmljQktiaGZMZ1hlcUJwa2VIWVg4Z3IwNWRnaitVdmc0QlpqTm1pTFFyMW1T?=
- =?utf-8?B?dnU5Y0NQR3h1MG8wU2tJVEdSdXgra2gvSWNJTjdnSmNCUXIwUEVFWUxFb08v?=
- =?utf-8?B?VkxON1FDaXhRPT0=?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bVMySmh0cUZyam9ObTRienRmZVIvSlVPd0RtelV6c2llRTc3TzA0OG90Q2Va?=
- =?utf-8?B?dHNMV1Y3by9jNE9YWnRGRDhDYjJ2VnBIRC9ZOWllVG1xbmhHUXZuOGcxWXNz?=
- =?utf-8?B?NDJlR29JQ2Rmb3lTeWY1dGFteHFkWHdDejZKZGkxV1Z1OGl4Y01PNXJ1QzdE?=
- =?utf-8?B?eWI1UHdKMDhPdXpGYmVyN0xpNUZTTzNhYnZ5OEc0VVZvdCszZEJxMU5ZYkxm?=
- =?utf-8?B?eWhFTzdJYlBQaWZuVU9WSFUvQXJBNWkwWnVaSVdSa2prUkNHaldDUHRkSTVI?=
- =?utf-8?B?U1BSbFZhSVRoTEJuY0w3WUhHcGdhNVhqc1hqOWx0MlkwaFZqWi9YQ1ZpTy9Y?=
- =?utf-8?B?SXFwTHBTbUxzU0Vra3Vtck9jMWp4YjVzNDRZdDdkYXdFdkE0K1NqZ1N0K0t2?=
- =?utf-8?B?WCtPTVVvbStVcHVTMWtpWVBmWVZ6ZjNVVFNseWNXNndMU241OW1CTlRpUGZi?=
- =?utf-8?B?dnhUN3JJTUU2SGxNek5LT1ErbTEzUmhHM0ZQNUk2QnJ1TFA0R0NmT2ZDWUQ4?=
- =?utf-8?B?NnIzaVNNS2NsOUV3UE0zZ2w2Z2hpSEtKcC9ZalNORENXQ3dxRCt4SmNUZitQ?=
- =?utf-8?B?ekxSWlUzczBTVDRKSmV3TjYxMG5VT0ErSG9MdnprTHh5OTM4aHZ4bFNicnBI?=
- =?utf-8?B?UXZnSDJrNFBCaS82Ui8wN1JVTkNPNXBJaDJzTWRRTFQ4SWpudm5GRzRvZTRt?=
- =?utf-8?B?NnNaTE5ndW0zT3ZKTmR6TkFNUFRGSGRxY3ZOSzVDVEdmaWpMeWpLTFhRdHJ0?=
- =?utf-8?B?RnZraFYwUjZEclN2dnphZ1g0QUtDQnM0Wm1TdXJqTUFBSWRneDZsaXl6ek1P?=
- =?utf-8?B?KzRXbXRNUHNlTVlYSnhudUdydXpZc0FmVVFpVEdLbC9XaStEZkgrRVFGOEtM?=
- =?utf-8?B?bEVVajUzZ0FHbUdLZkJNN0habDZYb3ZURzVtSGw0bmJINWtYRGM4SmZrUCs4?=
- =?utf-8?B?VXprdUNrdk5sdFlvenJpNFg5c2p0clN4L3FYZzVsVmJaYjVVNXlhV0Nzemh6?=
- =?utf-8?B?RFNDK3oweHRwMmFUbk1oS1h1Z3BZeTEyTWJFdkM5blF1cXFpdk5aSDMzYUFH?=
- =?utf-8?B?c1ZlK1ZpTUk5SG1Oc0p0em1kcnhRbkZ0Q0kyQThOdUFDRjVBYXhHVndDQ1R1?=
- =?utf-8?B?Nnh6NGJxNnJ0ZnpHWTRKUzR3Q2piWXFOb3YrNTZKWkJmVWJ1V2xyUlJkcFpO?=
- =?utf-8?B?eTRBdjRSUnhVMnNVUHpsbjdOUmtBWnhYZ0YyMTd2S3pCR3dwVDJ3cXMvRHcz?=
- =?utf-8?B?L3c3MHgwUDQ0U1NpWjdiNHdKQVBQY0psV0lBazZyWWNIcVVtQlI5Y05mdm9i?=
- =?utf-8?B?ZGEyVkxkcHcwTGtxL2lmbWVXWFhVUGZ6RWhCUXlRN2czMWFBcW4weHNLMXRZ?=
- =?utf-8?B?OVE3dUc5cWFrWkZ0cGMxUU5yZVlDSTI2enV2ZklMVi9BT2JOWFhnT0NydTlh?=
- =?utf-8?B?bklSZFVrWXRFM2lJZFJKWUFjRnAzYmw4VllmdTQ5ckVPLzZPVnh4SFpIY2tC?=
- =?utf-8?B?cGlsZ2NPVGlkT2NlTFRRL2xBM1NVazRRaVlRcG5sYWtJNkxadTVmNFY4WlRR?=
- =?utf-8?B?OEMrejZRQWM2ZGluSnVwaThEdlFGLy94UmdWTWFURmkraWxWYlZaeWtjTmsw?=
- =?utf-8?B?WmN2bGw2UHdkVlpVTytIUVk2MUxZWkJacTB6VXRjTnE4SENSeHM3MnUyTnBJ?=
- =?utf-8?B?UklkT29LbExWRDNWbk1xM1BzM0t0VXRpMG5pWm1Cc1R3N0ZzT3BFZjlFb0ZT?=
- =?utf-8?B?cW9NYkdyQ3hyV1RiNWQ4aTVTYzhGaklnMXR1Nll3YnJjeXZzZ0R0c3V3aVVz?=
- =?utf-8?B?dzkwMzAwOUp1ZTliM24wWmFQY1htOGZuUno2OGpHeGdnR20vZ3lWVkZIM2Nm?=
- =?utf-8?B?NEVkeXFMNjlyTnFYL0x6clpEMVYraGE3RkxIcjBLTTlnU3pwaFpUSGc4WGVp?=
- =?utf-8?B?Zk1RdzJYQnZKVS9GMmUzQjJrTmQ1OVlCZkhxTWQxY1FzZUxSR1ZIdndBcVVT?=
- =?utf-8?B?MTNhbFpNU3NrRW5NNkxBMklvR2ZyaWtFd2pYaUVWRXpWaFlBSTB2am1kNjQ3?=
- =?utf-8?B?Z1hWektMM2paS2FBNkpnM0k3bXMxSzdqTk0rdllzb25DT0tFampDbC9Tb1M0?=
- =?utf-8?B?dlcySGtrS1QxU2dKOGxBdUZSNDhQU3JHV09mNDI2bDZKbFpjL1dVOUZQcHhW?=
- =?utf-8?B?NEE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <773C442DBE82B44FACC5C1FA30C9F531@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF0C24EA90
+	for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 18:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1755714801; cv=none; b=EoZrazHF10AoPsvNdkM3/bFJquVadG4SzITG9pdSrGxNXlV+2B2MppbPdsa5f/VZ2ZfSn3I2DLGER+vpc0VCXKAPk3qG0deLR6kpuXYZ5NCsGRKLfLZtLmo4+MuZQMQm5kypdtIL3meZHKutvUR+qD9mBoCUKmDWo8zf4su/VvQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1755714801; c=relaxed/simple;
+	bh=wTrSX4NUpEVg3bMnooB+V0WZZ2pYZI/FYLy4TXO8vqM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hgdPsnUZ8JgkAQF/81kOld/njtz8veqMwJEgYSTgLujZ7E4c6bY3doNvg1qWCabO9EVg6oX9iS4z31KkFbZ7igqbI/EazjQuPfTT6WBObtWWaDhdzXwbLvI04iqacywqNFlzgqAAcNjHTuVNy5mhwsYi7e0ixnxavOcJJbOHUpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OggKacs/; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-324e3a0482dso179953a91.2
+        for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 11:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755714798; x=1756319598; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gsQOzqrLO4R4zyG+J42cXUvN/yKvkkXg4uZo/iGma6s=;
+        b=OggKacs/YY/YhjD9h+3okfqY7nI/5E/P7A6fSOlV2Jr8d7Fgw5oxEJJpudqIDKLiFO
+         p0AI5cHbo3yEui1zbr1Hbh5TppF6vDeDYMc1QBPMRVvBljflJ8qtT0+c75soZaoBlAw2
+         kTG4Jzrvdeg7O02DyXmTfEB8VGdrKKTzNP7UdpDOG4qYf0ebNWnhCdkMuwVGChqjfeK6
+         O5YRqWVk50OQj8XLH/IrjKA0tCNboVtcYUeMU59briPkRh7U7tRFaMCZO1x8QBDhnErr
+         6J3JLbXURV7WsVYLYyHAiC2aUXNgbTs1k0W9lQGhRwb87AmpyAElLTTbK+ITYKDudx2u
+         9PyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755714798; x=1756319598;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gsQOzqrLO4R4zyG+J42cXUvN/yKvkkXg4uZo/iGma6s=;
+        b=JgIO7BA3fAMSbqOTNqe+LprVjFdOSCTcBnTXjlvCuHTxnhBX4TX1Z/KRENDN7STqoD
+         SbCFGQyy810D8ylxFAVlBrKyEpZ7KTEBCAbS33ff+twXhL7wXYkVMrcrYP4+Kf62MVRx
+         dPWb5Nh1OB01KJmwGhoToRhR/jWaooFY6ZBevXva3Y1R/JGHlje+rTSZto59JdqJJcn0
+         iOAjnq6l1zP+Xm4+mb2YBKGHqXNtRlMoXfkWzQi3vSv69XwSTN7VhZ9H+WVB+sPV/b2q
+         2myiMXXEmjCX9bvQY/NIiesSdfmkY93QMDsteApNboUxA+LbS+e9vqfVlBBObKk1XCmv
+         lxIA==
+X-Forwarded-Encrypted: i=1; AJvYcCUDXwqVmuDDKTfQNpwRzszdQH5grZM426Gy7jgBKTFzm5X441p0ogonTzXWj8ihLYd69/E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxILhLR2pB/ZHhlVkGaeHg0Z3GVzq3YDWgltjV1SMejW7xF5AF1
+	pB3ca/jR+9OdEVIlIA8btAndsG4En7yNXILGQVy7D3w7kyrGb7KI3KQX8Fe85nlxyBF+HWRFJUa
+	eyO74qV8yG9FmycoemzOHkUBEr7aYTcadiA==
+X-Gm-Gg: ASbGnctEH87gN/dBJayOCxCf36z1HGOlTCXw/+aCgAN2g9cDRzsf//UYYNI0QNMwVvW
+	SRGPZrn8PfgzGI1Jny7N7UBYvY3iAL4Rb1A4NmqeX7zZTYUWNci4hfj7eOvaW44qSb8z8z7EcO3
+	c9Z/pMtxhINh3lLUpeSx7jXHko8rXSMki9MWLik9e8MklvccoYMu5QaU2OCvDAF5CXUQ7v91+sQ
+	76/kBfIH6kJBgp9baek9+eqL6H+5RF4uA==
+X-Google-Smtp-Source: AGHT+IGMccKESFUd0FiLuZa/DSlzzTquJJPXSBYxqMiI8A54GxQAvPnt0Jn0epyVooYry3kaFeWpZibJ6C+Dq4X7piE=
+X-Received: by 2002:a17:90b:2e0b:b0:31e:3bbc:e9e6 with SMTP id
+ 98e67ed59e1d1-324e1423f77mr5505161a91.19.1755714798284; Wed, 20 Aug 2025
+ 11:33:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4fab206-68be-4aab-55c0-08dde013f701
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Aug 2025 18:04:10.9165
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d27JhJKqQcRBacrNh4ErkGgVoPrkOHFMaB4xDc9hU/oJiNojwqCcsNzJNbrAMZolJOWmGzc30Ole0Vy9FqGHVBJcaxSOapu6FdHEJy6iR6k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4772
-X-OriginatorOrg: intel.com
+References: <20250815192156.272445-1-mykyta.yatsenko5@gmail.com>
+ <20250815192156.272445-4-mykyta.yatsenko5@gmail.com> <CAP01T751FPiuZv5yBMeHSAmFmywc7L3iY=jYLb992YOp_94pRQ@mail.gmail.com>
+ <7a40bdcc-3905-4fa2-beac-c7612becabb7@gmail.com> <CAP01T74vkbS6yszqe4GjECJq=j5-V7ADde7D6wnTfw=zN8zJyw@mail.gmail.com>
+ <CAEf4BzZPcawkrrdd2OoKLT-BWzCYsEpNxw52RKa6dL1B=xvdoA@mail.gmail.com> <CAP01T74gKna6WrgZvkoBBmwsbhrqrv4azeKwfk=frQasc9eaXQ@mail.gmail.com>
+In-Reply-To: <CAP01T74gKna6WrgZvkoBBmwsbhrqrv4azeKwfk=frQasc9eaXQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 20 Aug 2025 11:33:03 -0700
+X-Gm-Features: Ac12FXy7FT7o6c4qCf7MNIsyOEU3m4HB4HfNgOO3kN-QhJLtfqaB9Ormn7HsmAU
+Message-ID: <CAEf4BzZadH9NYkYSrgUvZAynBuG=t2TayhFPxzFzbWHsP8HCUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] bpf: task work scheduling kfuncs
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
+	eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gV2VkLCAyMDI1LTA4LTIwIGF0IDE5OjQzICswMjAwLCBQZXRlciBaaWpsc3RyYSB3cm90ZToN
-Cj4gWWVzLiBCdXQgc3VwcG9ydGluZyB0aGUgc2hzdGsgaXNuJ3QgaGFyZCAoYXMgcGVyIHRoaXMg
-cGF0Y2gpLCBpdCBleGFjdGx5DQo+IG1hdGNoZXMgd2hhdCBpdCBhbHJlYWR5IGRvZXMgdG8gdGhl
-IG5vcm1hbCBzdGFjay4gU28gSSBkb24ndCBzZWUgYQ0KPiByZWFzb24gbm90IHRvIGRvIGl0Lg0K
-DQpUaGFua3MgZm9yIGV4cGxhaW5pbmcsIGFuZCBzb3JyeSBmb3IgYmVpbmcgc2xvdy4gR29pbmcg
-dG8gYmxhbWUgdGhpcyBoZWFkIGNvbGQuDQoNCj4gDQo+IEFueXdheSwgSSdtIG5vdCBhIGh1Z2Ug
-ZmFuIG9mIGFueSBvZiB0aGlzLiBJIHN1c3BlY3QgRlJFRCB3aWxsIG1ha2UgYWxsDQo+IHRoaXMg
-ZmFuY3kgY29kZSB0b3RhbGx5IGlycmVsZXZhbnQuIEJ1dCB1bnRpbCBwZW9wbGUgaGF2ZSBGUkVE
-IGVuYWJsZWQNCj4gaGFyZHdhcmUgaW4gbGFyZ2UgcXVhbnRpdGllcywgSSBzdXBwb3NlIHRoaXMg
-aGFzIGEgdXNlLg0KDQpJdCBkb2Vzbid0IHNvdW5kIHRvbyB1bmJvdW5kZWQgYW5kIEkgZ3Vlc3Mg
-YXMgbG9uZyBhcyBpdCdzIGp1c3QgYW4gb3B0aW1pemF0aW9uDQp3ZSBjYW4gYWx3YXlzIGJhY2sg
-aXQgb3V0IGlmIHNvbWVvbmUgZmluZHMgYSB3YXkgdG8gYWJ1c2UgaXQuDQo=
+On Wed, Aug 20, 2025 at 9:12=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Tue, 19 Aug 2025 at 22:49, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
+ wrote:
+> >
+> > On Tue, Aug 19, 2025 at 12:28=E2=80=AFPM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > On Tue, 19 Aug 2025 at 20:16, Mykyta Yatsenko
+> > > <mykyta.yatsenko5@gmail.com> wrote:
+> > > >
+> > > > On 8/19/25 15:18, Kumar Kartikeya Dwivedi wrote:
+> > > > > On Fri, 15 Aug 2025 at 21:22, Mykyta Yatsenko
+> > > > > <mykyta.yatsenko5@gmail.com> wrote:
+> > > > >> From: Mykyta Yatsenko <yatsenko@meta.com>
+> > > > >>
+> > > > >> Implementation of the bpf_task_work_schedule kfuncs.
+> > > > >>
+> > > > >> Main components:
+> > > > >>   * struct bpf_task_work_context =E2=80=93 Metadata and state ma=
+nagement per task
+> > > > >> work.
+> > > > >>   * enum bpf_task_work_state =E2=80=93 A state machine to serial=
+ize work
+> > > > >>   scheduling and execution.
+> > > > >>   * bpf_task_work_schedule() =E2=80=93 The central helper that i=
+nitiates
+> > > > >> scheduling.
+> > > > >>   * bpf_task_work_acquire() - Attempts to take ownership of the =
+context,
+> > > > >>   pointed by passed struct bpf_task_work, allocates new context =
+if none
+> > > > >>   exists yet.
+> > > > >>   * bpf_task_work_callback() =E2=80=93 Invoked when the actual t=
+ask_work runs.
+> > > > >>   * bpf_task_work_irq() =E2=80=93 An intermediate step (runs in =
+softirq context)
+> > > > >> to enqueue task work.
+> > > > >>   * bpf_task_work_cancel_and_free() =E2=80=93 Cleanup for delete=
+d BPF map entries.
+> > > > > Can you elaborate on why the bouncing through irq_work context is=
+ necessary?
+> > > > > I think we should have this info in the commit log.
+> > > > > Is it to avoid deadlocks with task_work locks and/or task->pi_loc=
+k?
+> > > > yes, mainly to avoid locks in NMI.
+> > > > >
+> > > > >> Flow of successful task work scheduling
+> > > > >>   1) bpf_task_work_schedule_* is called from BPF code.
+> > > > >>   2) Transition state from STANDBY to PENDING, marks context is =
+owned by
+> > > > >>   this task work scheduler
+> > > > >>   3) irq_work_queue() schedules bpf_task_work_irq().
+> > > > >>   4) Transition state from PENDING to SCHEDULING.
+> > > > >>   4) bpf_task_work_irq() attempts task_work_add(). If successful=
+, state
+> > > > >>   transitions to SCHEDULED.
+> > > > >>   5) Task work calls bpf_task_work_callback(), which transition =
+state to
+> > > > >>   RUNNING.
+> > > > >>   6) BPF callback is executed
+> > > > >>   7) Context is cleaned up, refcounts released, context state se=
+t back to
+> > > > >>   STANDBY.
+> > > > >>
+> > > > >> bpf_task_work_context handling
+> > > > >> The context pointer is stored in bpf_task_work ctx field (u64) b=
+ut
+> > > > >> treated as an __rcu pointer via casts.
+> > > > >> bpf_task_work_acquire() publishes new bpf_task_work_context by c=
+mpxchg
+> > > > >> with RCU initializer.
+> > > > >> Read under the RCU lock only in bpf_task_work_acquire() when own=
+ership
+> > > > >> is contended.
+> > > > >> Upon deleting map value, bpf_task_work_cancel_and_free() is deta=
+ching
+> > > > >> context pointer from struct bpf_task_work and releases resources
+> > > > >> if scheduler does not own the context or can be canceled (state =
+=3D=3D
+> > > > >> STANDBY or state =3D=3D SCHEDULED and callback canceled). If tas=
+k work
+> > > > >> scheduler owns the context, its state is set to FREED and schedu=
+ler is
+> > > > >> expected to cleanup on the next state transition.
+> > > > >>
+> > > > >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> > > > >> ---
+> > > > > This is much better now, with clear ownership between free path a=
+nd
+> > > > > scheduling path, I mostly have a few more comments on the current
+> > > > > implementation, plus one potential bug.
+> > > > >
+> > > > > However, the more time I spend on this, the more I feel we should
+> > > > > unify all this with the two other bpf async work execution mechan=
+isms
+> > > > > (timers and wq), and simplify and deduplicate a lot of this under=
+ the
+> > > > > serialized async->lock. I know NMI execution is probably critical=
+ for
+> > > > > this primitive, but we can replace async->lock with rqspinlock to
+> > > > > address that, so that it becomes safe to serialize in any context=
+.
+> > > > > Apart from that, I don't see anything that would negate reworking=
+ all
+> > > > > this as a case of BPF_TASK_WORK for bpf_async_kern, modulo intern=
+al
+> > > > > task_work locks that have trouble with NMI execution (see later
+> > > > > comments).
+> > > > >
+> > > > > I also feel like it would be cleaner if we split the API into 3 s=
+teps:
+> > > > > init(), set_callback(), schedule() like the other cases, I don't =
+see
+> > > > > why we necessarily need to diverge, and it simplifies some of the
+> > > > > logic in schedule().
+> > > > > Once every state update is protected by a lock, all of the state
+> > > > > transitions are done automatically and a lot of the extra races a=
+re
+> > > > > eliminated.
+> > > > >
+> > > > > I think we should discuss whether this was considered and why you
+> > > > > discarded this approach, otherwise the code is pretty complex, wi=
+th
+> > > > > little upside.
+> > > > > Maybe I'm missing something obvious and you'd know more since you=
+'ve
+> > > > > thought about all this longer.
+> > > > As for API, I think having 1 function for scheduling callback is cl=
+eaner
+> > > > then having 3 which are always called in the same order anyway. Mos=
+t of
+> > > > the complexity
+> > > > comes from synchronization, not logic, so not having to do the same
+> > > > synchronization in
+> > > > init(), set_callback() and schedule() seems like a benefit to me.
+> > >
+> > > Well, if you were to reuse bpf_async_kern, all of that extra logic is
+> > > already taken care of, or can be easily shared.
+> > > If you look closely you'll see that a lot of what you're doing is a
+> > > repetition of what timers and bpf_wq have.
+> > >
+> > > > Let me check if using rqspinlock going to make things simpler. We s=
+till
+> > > > need states to at least know if cancellation is possible and to fla=
+g
+> > > > deletion to scheduler, but using a lock will make code easier to
+> > > > understand.
+> > >
+> > > Yeah I think for all of this using lockless updates is not really
+> > > worth it, let's just serialize using a lock.
+> >
+> > I don't think it's "just serialize".
+> >
+> > __bpf_async_init and __bpf_async_set_callback currently have `if
+> > (in_nmi()) return -EOPNOTSUPP;`, because of `bpf_map_kmalloc_node`
+> > (solvable with bpf_mem_alloc, not a big deal) and then unconditional
+> > `__bpf_spin_lock_irqsave(&async->lock);` (and maybe some other things
+> > that can't be done in NMI).
+> >
+> > We can't just replace __bpf_spin_lock_irqsave with rqspinlock, because
+> > the latter can fail. So the simplicity of unconditional locking is
+> > gone. We'd need to deal with the possibility of lock failing. It's
+> > probably not that straightforward in the case of
+> > __bpf_async_cancel_and_free.
+>
+> We discussed converting async_cb to rqspinlock last time, the hold up
+> was __bpf_async_cancel_and_free, every other case can propagate error
+> upwards since they're already fallible.
+>
+> The only reason I didn't move ahead was there was no apparent use case
+> for timer usage in NMI (to me at least).
+
+Scheduling some time-delayed action from perf_event/kprobe (with both
+could be in NMI) seems like a reasonable thing to expect to work. So
+I'd say there is a need for NMI support even without task_work.
+
+>
+> But I don't see why it's less simpler in other cases, you need to
+> return an error in case you fail to take the lock (which should not
+> occur in correct usage), yes, but once you take the lock nobody
+> is touching the object anymore. And all those paths are already
+
+Either you are oversimplifying or I'm over complicating.. :) Even when
+BPF program started the process to schedule task work, which is
+multi-step process (STANDBY -> PENDING -> SCHEDULING/SCHEDULED ->
+RUNNING -> STANDBY), at each step you need to take lock. Meanwhile,
+nothing prevents other BPF program executions to try (and successfully
+do) take the same lock (that might be logical bug, or just how user
+decided to handle, or rather disregard, locking). While it holds it,
+callback might start running, it would need to take lock and won't be
+for some time. Maybe that time is short and we won't run into
+EDEADLOCK, but maybe it's not (and yes, that wouldn't be expected, but
+it's not impossible either).
+
+Similarly with cancel_and_free. That can be triggered by delete/update
+which can happen simultaneously on multiple CPUs.
+
+But even thinking through and proving that lock in cancel_and_free
+will definitely be successfully taking (while interface itself screams
+at you that it might not), is complication enough that I'd rather not
+have to think through and deal with.
+
+So I still maintain that atomic state transitions is a simpler model
+to prove is working as expected and reliably.
+
+When you think about it, it's really a linear transition through a few
+stages (STANDBY -> PENDING -> ... -> RUNNING -> STANDBY), with the
+only "interesting" interaction that we can go to FREED at any stage.
+But when we do go to FREED, all participating parties know
+deterministically where we were and who's responsible for clean up.
+
+So in summary, I think it's good for you to try to switch timer and wq
+to rqspinlock and work out all the kinds, but I'd prefer not to block
+task_work on this work and proceed with state machine approach.
+
+
+> fallible, so it's an extra error condition.
+>
+> It is possible to then focus our effort on understanding failure modes
+> where __bpf_async_cancel_and_free's lock acquisition can fail, the
+> last time I looked it wasn't possible (otherwise we already have a bug
+> with the existing spin lock).
+>
+> That said, BPF timers cannot be invoked in NMI, and irqsave provides
+> interrupt exclusion. We exclude usage of maps with timers in programs
+> that may run in NMI context. Things will be different once that restricti=
+on is
+> lifted for task_work, but it just means if the lock acquisition is failin=
+g on a
+> single lock, a lower context we interrupted is holding it, which means
+> it won the claim to free the object and we don't need to do anything.
+> Since we have a single lock the cases we need to actively worry about
+> are the reentrant ones.
+>
+> I can imagine a task context program updating an array map element,
+> which invoked bpf_obj_free_fields, and then a perf program attempting
+> to do the same thing on the same element from an NMI. Fine, the lock
+> acquisition in free will fail, but we understand why it's ok to give up t=
+he
+> free in such a case.
+>
+
+This "fine to give up free" doesn't sound neither obvious, nor simple,
+and will require no less thinking and care than what you'd need to
+understand that state machine we discussed for task_work, IMO.
+
+> >
+> > On the other hand, state machine with cmpxchg means there is always
+> > forward progress and there is always determinism of what was the last
+> > reached state before we went to FREED state, which means we will know
+> > who needs to cancel callback (if at all), and who is responsible for
+> > freeing resources.
+>
+> There is forward progress regardless (now), but with a lockless state
+> machine, every state transition needs to consider various edges which
+> may have been concurrently activated by some other racing invocation.
+> You don't have such concerns with a lock. At least to me, I don't see
+
+We still do have concurrency, lock doesn't magically solve that for
+us. While you are cancelling/freeing callback might be running or is
+about to run and you can't really cancel it. All that still would need
+to be handled and thought through.
+
+> how the latter is worse than the former, it's less cases to think
+> about and deal with in the code.
+> E.g. all these "state =3D=3D BPF_TW_FREED" would go away at various place=
+s
+> in the middle of various operations.
+
+I don't think so, see above. You are oversimplifying. But again,
+please try to do this conversion for timer and wq, it's worthwhile to
+do regardless of task_work.
+
+>
+> To me after looking at this code the second time, there seems to be
+> little benefit. Things would be different if multiple concurrent
+> schedule() calls on the same map value was a real use case, such that
+> lock contention would quickly become a performance bottleneck, but I
+> don't think that's true.
+>
+> >
+> > I'm actually wondering if this state machine approach could/should be
+> > adopted for bpf_async_cb?.. I wouldn't start there, though, and rather
+> > finish task_work_add integration before trying to generalize.
+>
+> Maybe it's just me, but I feel like it's additional complexity that's
+> not giving us much benefit.
+>
+> There are enough things to worry about even when holding a lock and
+> excluding NMI, as seen with various bugs over the years.
+> E.g. git log --oneline --grep=3D"Fixes: b00628b1c7d5 (\"bpf: Introduce
+> bpf timers.\")"
+>
+> It is impossible to say that we can get it right with all this in the
+> 1st attempt, even if we hold a fallible lock to avoid deadlocks, or we
+> switch to this state machine approach.
+> The best we can do is to at least minimize the set of cases we have to
+> worry about.
+>
+> [
+>    As an aside, if we intend on keeping the door open on
+> consolidation, we probably should at least mirror the API surface.
+>    Maybe we made a mistake with init+set_callback+kick style split in
+> existing APIs, but it might be easier for people to understand that
+> all async primitives mostly follow this look and feel.
+>    It wouldn't be the end of the world, but there's an argument to be
+> made for consistency.
+> ]
+
+I don't see why we can't consolidate internals of all these async
+callbacks while maintaining a user-facing API that makes most sense
+for each specific case. For task_work (and yes, I think for timers it
+would make more sense as well), we are talking about a single
+conceptual operation: just schedule a callback. So it makes sense to
+have a single kfunc that expresses that.
+
+Having a split into init, set_callback, kick is unnecessary and
+cumbersome. It also adds additional mental overhead to think about
+interleave of those three invocations from two or more concurrent BPF
+programs (I'm not saying it doesn't work correctly in current
+implementation, but it's another thing to think about in three
+helpers/kfuncs, rather than in just one: that you can't have init done
+by prog A, set_callback by prog B, and kick off be either prog A or B,
+or even some other C program execution).
+
+I'm guessing we modeled timer in such a way because we tried to stick
+to kernel-internal API (and maybe we were trying to fit into 5
+argument limitations, not sure). This makes sense internally in the
+kernel, where you have different ways to init timer struct, different
+ways to set or update expiration, etc, etc. This is not the case for
+the BPF-side API of timer (but what's done is done, we can't just undo
+it).
+
+And for task_work_add(), even kernel-internal API is a singular
+function, which makes most sense, so I'd like to stick to that
+simplicity.
 
