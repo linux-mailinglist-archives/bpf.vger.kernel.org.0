@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-66070-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66071-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF67B2D8AD
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 11:41:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5CB3B2D8BA
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 11:43:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E331A05EF5
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 09:36:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E766F1C47AE1
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 09:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148CF2DECA3;
-	Wed, 20 Aug 2025 09:34:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405012DECC0;
+	Wed, 20 Aug 2025 09:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RFI6vjsp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f3/vUVAf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B572DC33B;
-	Wed, 20 Aug 2025 09:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF7D27877B;
+	Wed, 20 Aug 2025 09:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755682463; cv=none; b=WjQW5xeHrnafofjVzCGbXJ0oeUSifisOJ7PS5rmphc76l30fY5VoGJJfFdInWmxvU3G9JgTQV4QawDrS8lK895c53cEZp1YybzH0rXgL3FbGyjvtyDjBmclPqtVA48HGK1I935fikaK0U9MKMCsedz3zs0BD/CxPljpzcIHsQOU=
+	t=1755682519; cv=none; b=YnuH6nWIB7yCs8mIIoxs5Y+erY8Q814QTlmnsE+z8VGx2gKteLYKCCcu//j6vVUe/LODL/vCxRzLfZhsdpn849sAnrjcrA7vNF3ikHPGrvlC5AQ/LvqRPCHxRLCKvF368neJ8SBLDX7w864Rws60yqBFMDtIuRQ/hDAX2JGOkVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755682463; c=relaxed/simple;
-	bh=KloKk+LlM5R3ZZr/Lsq5FB4BIuavstY9uH6J2ZRflaE=;
+	s=arc-20240116; t=1755682519; c=relaxed/simple;
+	bh=5GwCI12CU1GJTHyQ3tDi8JEL/+TYDbAU4gqgrpA0C0U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KIOPC4HImINbr18GQdFecOhYchAmFpBd4ESuan/7AdomVQu1zfRij4n7Rblpv7iVxQRWBmZ4SHcSjOb8WDJnA1YLGguDg7N56bVWhN5dFqPkDkFMmOaxLexO3sPLiGAC0q2jzNgMqEL44VRik22gIpcEdRPhcrBmwS3E6LLs6TM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RFI6vjsp; arc=none smtp.client-ip=209.85.208.68
+	 To:Cc:Content-Type; b=LmhYhrNN8r4z3BR2LBJ0aRfcybnM9RpBaS6oN2Id3m6qT5quwimREASVX1NO9+1hP+/nJ1t64AwRdte10X7Pq/ZijcN11jNJhKdBesV7I+FMOadeKuOfddwsuokWadKRdiOCnb1zK11WEQLNyWhnm/t4zjPT5sUrJrvbBGDtk18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f3/vUVAf; arc=none smtp.client-ip=209.85.208.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-61aa702c9ebso60105a12.3;
-        Wed, 20 Aug 2025 02:34:21 -0700 (PDT)
+Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-6188b5b11b2so7705500a12.0;
+        Wed, 20 Aug 2025 02:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755682460; x=1756287260; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755682516; x=1756287316; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=z79weBAoziwk7d5gCcPuETF5kep03u8b8tRTqrPor8s=;
-        b=RFI6vjspXQi486V4Apq0imFKtJokM/9QkTeLrhbYw5mzcsfqKaWMK9CYDAoUdzXXxK
-         nTbWbUfkUqNVLB4NhhvVzOVkLbLhkZBZtCy+wXCDHfqLss7oLFvjcIT/7Qs9erJLB/6r
-         O8Mlkip7oIwjUupMGh1kRBG9xDT9YtC0JNXfic+CDvS0K3jIaPARtmoQPSip+LlIRGT1
-         br8GyC42Gfuqy1p0LAFAzEB0SVwFHZTCSjuxVrzff5aGncBTrzU6CJlSu50vRgQC9JJN
-         /rYKut8xKtE/iTcti+S5XVYor8Ipd7H8HC+0/gRl0qQNq9yDdJRgAWldTJ8bMz8Glz/y
-         dWHA==
+        bh=wNVeEm5XhdBpT7eUdLFg7DGJnmMc3Txy3EfKiydyTJk=;
+        b=f3/vUVAfiyQZCOCG7yiptF9fQv3MF7gHzcJUUoS9f2Sw6Ypj937NjPPZAyyviWvZpd
+         ASOvyaGPb0dELD8TlGpPXMTKPhlvMuMQk+kSyXsa0nQ/mP7g7NC/sHad2z/oo6e0Zk8C
+         DRkIW9wR1AjF5GiXn0JB5kGd/h8fuCVbZyTf9TFyGnjJGQeLWO8NURAWZbEFD0unMwoV
+         c/kgimPHDGprH+gRsxVoU9FFwknJMa0npw1/AHxZhQhf/VxPI7X/YLnlQfQWP4OZI8mq
+         bkNHcZpzOSMqIIp2LkwCSsOkN3gJhhIC7ReYOs287hEEGjf3AwPB5ARCDzV0LO/99A4d
+         DkKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755682460; x=1756287260;
+        d=1e100.net; s=20230601; t=1755682516; x=1756287316;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=z79weBAoziwk7d5gCcPuETF5kep03u8b8tRTqrPor8s=;
-        b=Q7jJD48M/sSl0a03xg9OT6NJ450TvuwX4zu3iuusv4KXbk0FWnaxkvzrrW9ZQ9LAGL
-         IeNodjhPc2rgqlwlvNc6B5egJVmHh+wYRQsKqAC3YHfQ4HSSk3Fd8JSrGjqoQBi89dLJ
-         nl6FubB9AbgogtD6IxpnhuALR6rAoNsfQfgg3ym0Fp8aXEnCLbh4PXaRDnYROBh4OInz
-         fB5n/Auz4r5VhqRgP9cDe2Ayt+mq5q/2p2Yp7GDbi/eYXHglpEP++986mco/asTIn5H8
-         Aw2xQI8mf5sLHHS3jDpplArHqqRg0hTTSbqO40/QLFC0jGPPSEEVlY2JuS3MTDEdbl2k
-         6Bag==
-X-Forwarded-Encrypted: i=1; AJvYcCU5wvJjiQZHzyPHFCzGD0KXXrpZm6pE5QmGJBgz24AIvwXZjI3T4KQaAl0JqXUeg2vdBCxrtJK3m7h+B8gj@vger.kernel.org, AJvYcCXHwEsReMXyol6BUixq/GhTAtKO0AKiLJHRUG4fDh/8b0MTleP0PBxUaJiB5/mWMVgjIgs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTxy9MCpNffAVE1mnPFImpe5FZ8BjiDo1WpLrXZDKWSm9M3H7r
-	buU4be9vBUpKO991WhTCO1Bp/77BKImxvifguk7y6vqMwtCfQqd2uK2I57B3VaGnDpd7+vfyC9B
-	vwsUot089iwpqIQ9e5Y4q73JuicoLQfg=
-X-Gm-Gg: ASbGncsVlwnlXaBkUH6E39K3B2r0ajycb8cKDsHA2WAffJ5nhYlvDrcrRuteIZNIkzg
-	KPOvxS7BTejrZh5RU3EjyYOEO7bHMGKU8kvpxB5NVTHYelLgm1SpiUVGpie0uUPu+mYmKpWmUcv
-	/vupmSypdtoSc6MSov6vYlmrcZHFdPpxEbJQ9BMvBXjzNE8g5pAy/UuJAsEKFB4Z0QwWSqSNu+w
-	/dqM0NfRg==
-X-Google-Smtp-Source: AGHT+IF7Z5HBgUuHRtZlDrk58pIlZKtqCG8u6CXuofJUTADQqbgEbDss+NhRKT3L0lSiXhbMysoUuPReH3dWOu/K2ZQ=
-X-Received: by 2002:a05:6402:28cd:b0:615:5cc1:3453 with SMTP id
- 4fb4d7f45d1cf-61a97557064mr1873977a12.9.1755682459448; Wed, 20 Aug 2025
- 02:34:19 -0700 (PDT)
+        bh=wNVeEm5XhdBpT7eUdLFg7DGJnmMc3Txy3EfKiydyTJk=;
+        b=AWDTTlissKVygJXlhCufxXFMQPjK4C33zb6VCP0SG0bYS92OClBGm/YvZjAhzKni3G
+         uZLlrLLYUOZTPNaFjA389Wcmg3CIJ8N1IclY38FCuH77QHtS7x10HNX3WcvVB2u9Rk5q
+         si+ka0ocRCCgCJhsErcL908w1BppqDBz1DOiZ1NetNhpBkBb42TGUtfz7phEswZSGqbU
+         moYTc48l9B8Rq1oF9UGRFpK3KeQQvbwkV9n+uh67egLL7Uaog6dV5ct8oqoSzJjYVgG8
+         YUtJPowSUlPCfKvKIq5XlJeCLaMtwWEV8/TFod7HtTy2nXdwAlSZ/tOxw+4ydP18l8si
+         T5tA==
+X-Forwarded-Encrypted: i=1; AJvYcCVlyP+7YCbqfwsCQxLvmxSONrtJVTJXOg5cdiY6rCq9HyPRki9eOn6Z7Mo7NTWuqxoWTdkzia719/elx/Ov@vger.kernel.org, AJvYcCWM7rjTJn7w13RGm3xP+dCOcClKOhX7/tFLs8fRYM64DhsM0kSFgmXt6MnP3SkHlJXcgzk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyEo2ZSnjpCKL4Od2r3U/K3FA+NeHHLglaP/XmjcC4iHq29Abae
+	0CRyX3cGygv++BetIW5I02lDqUT426XdmrjleAem1pO/6iUHbq0bZPaIxwh61CakGtAGueFfFF8
+	u6F6/XW6BrXmqctv8X0FZMMDJecfxUWg=
+X-Gm-Gg: ASbGnctXqA3tE8Zs9DP9HnFbrYGdqT5dHz+oXcjZohc151uD5/SHTLstGL6CffaWB3X
+	t5VHL8mYIhb4/VDGX9rkS3BaU77jN//p7+oeCFXTgiKJztWogkW/D95mAqnHnnWuwrc10k7psbR
+	uYpM/Opaggm3GV7UfhXyrpqMrZhqdQEfmYbo9w6QgAJy+Don6loKc07elwgthZcf04P5c6NUbC0
+	pe1OxGquO/Bdo6HGssb
+X-Google-Smtp-Source: AGHT+IHBth0y2AoBjyW+FSstnXpJk7GFg8YiBsBpirEqa2CurHSrua29TJ4cbd0mGJpW+ZWyp820YdytDUDw2fC5XFs=
+X-Received: by 2002:a05:6402:524c:b0:615:274e:6509 with SMTP id
+ 4fb4d7f45d1cf-61a9754e59emr1633953a12.9.1755682516017; Wed, 20 Aug 2025
+ 02:35:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250818170136.209169-1-roman.gushchin@linux.dev> <20250818170136.209169-11-roman.gushchin@linux.dev>
-In-Reply-To: <20250818170136.209169-11-roman.gushchin@linux.dev>
+References: <20250818170136.209169-1-roman.gushchin@linux.dev> <20250818170136.209169-7-roman.gushchin@linux.dev>
+In-Reply-To: <20250818170136.209169-7-roman.gushchin@linux.dev>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 20 Aug 2025 11:33:42 +0200
-X-Gm-Features: Ac12FXxwG_eiUHr_rNpX2v397tG-VV8CGyGn-PqOmB_AUl8RqPT5ZQXR7dMaoo0
-Message-ID: <CAP01T75_ArZiy9AB6TwNZCxKJKw+2yg58xz1ubTGZr4ynVt+Mg@mail.gmail.com>
-Subject: Re: [PATCH v1 10/14] bpf: selftests: bpf OOM handler test
+Date: Wed, 20 Aug 2025 11:34:39 +0200
+X-Gm-Features: Ac12FXxn2NcyTwhNtOzVYKNCNtBqfk-dMrPX2NDgw7posh_y0GfGmoA2HZDRcuA
+Message-ID: <CAP01T777JF7wvHDaQ-Bz-Vp_dFM=NXvpAK0RY7kLjs2amEd85Q@mail.gmail.com>
+Subject: Re: [PATCH v1 06/14] mm: introduce bpf_out_of_memory() bpf kfunc
 To: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: linux-mm@kvack.org, bpf@vger.kernel.org, 
 	Suren Baghdasaryan <surenb@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>, 
@@ -91,104 +91,98 @@ Content-Type: text/plain; charset="UTF-8"
 
 On Mon, 18 Aug 2025 at 19:02, Roman Gushchin <roman.gushchin@linux.dev> wrote:
 >
-> Implement a pseudo-realistic test for the OOM handling
-> functionality.
+> Introduce bpf_out_of_memory() bpf kfunc, which allows to declare
+> an out of memory events and trigger the corresponding kernel OOM
+> handling mechanism.
 >
-> The OOM handling policy which is implemented in bpf is to
-> kill all tasks belonging to the biggest leaf cgroup, which
-> doesn't contain unkillable tasks (tasks with oom_score_adj
-> set to -1000). Pagecache size is excluded from the accounting.
+> It takes a trusted memcg pointer (or NULL for system-wide OOMs)
+> as an argument, as well as the page order.
 >
-> The test creates a hierarchy of memory cgroups, causes an
-> OOM at the top level, checks that the expected process will be
-> killed and checks memcg's oom statistics.
+> If the wait_on_oom_lock argument is not set, only one OOM can be
+> declared and handled in the system at once, so if the function is
+> called in parallel to another OOM handling, it bails out with -EBUSY.
+> This mode is suited for global OOM's: any concurrent OOMs will likely
+> do the job and release some memory. In a blocking mode (which is
+> suited for memcg OOMs) the execution will wait on the oom_lock mutex.
+>
+> The function is declared as sleepable. It guarantees that it won't
+> be called from an atomic context. It's required by the OOM handling
+> code, which is not guaranteed to work in a non-blocking context.
+>
+> Handling of a memcg OOM almost always requires taking of the
+> css_set_lock spinlock. The fact that bpf_out_of_memory() is sleepable
+> also guarantees that it can't be called with acquired css_set_lock,
+> so the kernel can't deadlock on it.
 >
 > Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
 > ---
->  [...]
-> +
-> +/*
-> + * Find the largest leaf cgroup (ignoring page cache) without unkillable tasks
-> + * and kill all belonging tasks.
+>  mm/oom_kill.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 25fc5e744e27..df409f0fac45 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -1324,10 +1324,55 @@ __bpf_kfunc int bpf_oom_kill_process(struct oom_control *oc,
+>         return 0;
+>  }
+>
+> +/**
+> + * bpf_out_of_memory - declare Out Of Memory state and invoke OOM killer
+> + * @memcg__nullable: memcg or NULL for system-wide OOMs
+> + * @order: order of page which wasn't allocated
+> + * @wait_on_oom_lock: if true, block on oom_lock
+> + * @constraint_text__nullable: custom constraint description for the OOM report
+> + *
+> + * Declares the Out Of Memory state and invokes the OOM killer.
+> + *
+> + * OOM handlers are synchronized using the oom_lock mutex. If wait_on_oom_lock
+> + * is true, the function will wait on it. Otherwise it bails out with -EBUSY
+> + * if oom_lock is contended.
+> + *
+> + * Generally it's advised to pass wait_on_oom_lock=true for global OOMs
+> + * and wait_on_oom_lock=false for memcg-scoped OOMs.
+> + *
+> + * Returns 1 if the forward progress was achieved and some memory was freed.
+> + * Returns a negative value if an error has been occurred.
 > + */
-> +SEC("struct_ops.s/handle_out_of_memory")
-> +int BPF_PROG(test_out_of_memory, struct oom_control *oc)
+> +__bpf_kfunc int bpf_out_of_memory(struct mem_cgroup *memcg__nullable,
+> +                                 int order, bool wait_on_oom_lock)
+
+I think this bool should be a u64 flags instead, just to make it
+easier to extend behavior in the future.
+
 > +{
-> +       struct task_struct *task;
-> +       struct mem_cgroup *root_memcg = oc->memcg;
-> +       struct mem_cgroup *memcg, *victim = NULL;
-> +       struct cgroup_subsys_state *css_pos;
-> +       unsigned long usage, max_usage = 0;
-> +       unsigned long pagecache = 0;
-> +       int ret = 0;
+> +       struct oom_control oc = {
+> +               .memcg = memcg__nullable,
+> +               .order = order,
+> +       };
+> +       int ret;
 > +
-> +       if (root_memcg)
-> +               root_memcg = bpf_get_mem_cgroup(&root_memcg->css);
-> +       else
-> +               root_memcg = bpf_get_root_mem_cgroup();
+> +       if (oc.order < 0 || oc.order > MAX_PAGE_ORDER)
+> +               return -EINVAL;
 > +
-> +       if (!root_memcg)
-> +               return 0;
+> +       if (wait_on_oom_lock) {
+> +               ret = mutex_lock_killable(&oom_lock);
+> +               if (ret)
+> +                       return ret;
+> +       } else if (!mutex_trylock(&oom_lock))
+> +               return -EBUSY;
 > +
-> +       bpf_rcu_read_lock();
-> +       bpf_for_each(css, css_pos, &root_memcg->css, BPF_CGROUP_ITER_DESCENDANTS_POST) {
-> +               if (css_pos->cgroup->nr_descendants + css_pos->cgroup->nr_dying_descendants)
-> +                       continue;
+> +       ret = out_of_memory(&oc);
 > +
-> +               memcg = bpf_get_mem_cgroup(css_pos);
-> +               if (!memcg)
-> +                       continue;
-> +
-> +               usage = bpf_mem_cgroup_usage(memcg);
-> +               pagecache = bpf_mem_cgroup_page_state(memcg, NR_FILE_PAGES);
-> +
-> +               if (usage > pagecache)
-> +                       usage -= pagecache;
-> +               else
-> +                       usage = 0;
-> +
-> +               if ((usage > max_usage) && mem_cgroup_killable(memcg)) {
-> +                       max_usage = usage;
-> +                       if (victim)
-> +                               bpf_put_mem_cgroup(victim);
-> +                       victim = bpf_get_mem_cgroup(&memcg->css);
-> +               }
-> +
-> +               bpf_put_mem_cgroup(memcg);
-> +       }
-> +       bpf_rcu_read_unlock();
-> +
-> +       if (!victim)
-> +               goto exit;
-> +
-> +       bpf_for_each(css_task, task, &victim->css, CSS_TASK_ITER_PROCS) {
-> +               struct task_struct *t = bpf_task_acquire(task);
-> +
-> +               if (t) {
-> +                       if (!bpf_task_is_oom_victim(task))
-> +                               bpf_oom_kill_process(oc, task, "bpf oom test");
-
-Is there a scenario where we want to invoke bpf_oom_kill_process when
-the task is not an oom victim?
-Would it be better to subsume this check in the kfunc itself?
-
-> +                       bpf_task_release(t);
-> +                       ret = 1;
-> +               }
-> +       }
-> +
-> +       bpf_put_mem_cgroup(victim);
-> +exit:
-> +       bpf_put_mem_cgroup(root_memcg);
-> +
+> +       mutex_unlock(&oom_lock);
 > +       return ret;
 > +}
 > +
-> +SEC(".struct_ops.link")
-> +struct bpf_oom_ops test_bpf_oom = {
-> +       .name = "bpf_test_policy",
-> +       .handle_out_of_memory = (void *)test_out_of_memory,
-> +};
+>  __bpf_kfunc_end_defs();
+>
+>  BTF_KFUNCS_START(bpf_oom_kfuncs)
+>  BTF_ID_FLAGS(func, bpf_oom_kill_process, KF_SLEEPABLE | KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_out_of_memory, KF_SLEEPABLE | KF_TRUSTED_ARGS)
+>  BTF_KFUNCS_END(bpf_oom_kfuncs)
+>
+>  static const struct btf_kfunc_id_set bpf_oom_kfunc_set = {
 > --
 > 2.50.1
 >
