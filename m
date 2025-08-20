@@ -1,138 +1,151 @@
-Return-Path: <bpf+bounces-66125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 333F9B2E866
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 01:00:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D793EB2E869
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 01:01:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 996C27AD243
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 22:58:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F33231C85995
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 23:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7388A2DC341;
-	Wed, 20 Aug 2025 23:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6DC28368A;
+	Wed, 20 Aug 2025 23:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U7l0i6CL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N8tAijK0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1111A2356CE
-	for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 23:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66FA9B663;
+	Wed, 20 Aug 2025 23:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755730807; cv=none; b=ZEGSY3lFu5OiBKrEaiV/8/O1jQCud5LOki5lK7EagVnfi3dJhOFqmTGoPXmPrfmtLVJ2L153d9IgdMneOdY9Y5Sg0DZ40381VqSyp1K03jnDnsl2iImXFz2XzPgL1RH3zUe6q7BnqzwHXEJS3ufevLOXJAMz80/Vpb7DFrzMzG4=
+	t=1755730853; cv=none; b=i/eE6FVM67UnE1rTmp6fh/5+Lt75N/4op9fX/85kamu+1PjllhFkUvrXlQFRSCX2sqI2iv6TvPWcShGbbz9NeJH4KWJVgBeidxoG6GEZbEhpGtY4e/OQDy85vB+mx7EsK6E1pwBxeyh13muIsz+SdG23ecR64QZUt+H5wqv5I9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755730807; c=relaxed/simple;
-	bh=x4K0iLjGZFeXuNimOGdOcEHhd2/2bbTeCrm3B72xoOk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=RvEe8aWh7S97i1NBT4NkdkIDTig4gwwzRlBXWVY9gbEGzh1TP1K89Bu/14stul8uIDncjrH3AAQgkfxbjFWzvOCegBZQOBeYseLSu7MJvLeck9/iIdGob2GLzzyMf1nha7W7KyvnBCsaNeaTqMXuoefyJ+TE0LqtrA24FOVf3iQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U7l0i6CL; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755730800;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LwMfKt/z+b32Yog71y0IpHQR50ir1+SPpvMPlDiQyXM=;
-	b=U7l0i6CLs6K5elGR2S9r3KYV+KT3KbqTIrQKQ4wXxtsjxNCdZjVBOTgvSdznS3eWHzCcNj
-	yoXFsMF3+BeByV5AOH6oeYMWD8+Xc9fai/nBhrUKeCusI2O3ZuyRhw20Hzssg7XDCT743J
-	cS0Oxf9asNw/vgky++prC0R8zDSg+4M=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: linux-mm@kvack.org,  bpf@vger.kernel.org,  Suren Baghdasaryan
- <surenb@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Michal Hocko
- <mhocko@suse.com>,  David Rientjes <rientjes@google.com>,  Matt Bobrowski
- <mattbobrowski@google.com>,  Song Liu <song@kernel.org>,  Alexei
- Starovoitov <ast@kernel.org>,  Andrew Morton <akpm@linux-foundation.org>,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 06/14] mm: introduce bpf_out_of_memory() bpf kfunc
-In-Reply-To: <CAP01T777JF7wvHDaQ-Bz-Vp_dFM=NXvpAK0RY7kLjs2amEd85Q@mail.gmail.com>
-	(Kumar Kartikeya Dwivedi's message of "Wed, 20 Aug 2025 11:34:39
-	+0200")
-References: <20250818170136.209169-1-roman.gushchin@linux.dev>
-	<20250818170136.209169-7-roman.gushchin@linux.dev>
-	<CAP01T777JF7wvHDaQ-Bz-Vp_dFM=NXvpAK0RY7kLjs2amEd85Q@mail.gmail.com>
-Date: Wed, 20 Aug 2025 15:59:53 -0700
-Message-ID: <87349loaza.fsf@linux.dev>
+	s=arc-20240116; t=1755730853; c=relaxed/simple;
+	bh=bMfyf9iVf/cf+1o6utDBJC5HItQLR/IqvY5qn8OOD0M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LSsE7G4+rvOKznErNm30X0kGirpI1WrVv3NIMLcoCiMKTj4UbWGCBPEO4AMkYxtLcq5WY1lxA6zwC5SFDmMUE26b0cpcLBMoHAV+lA/Yo+dQWYAjMefQCDesG05OzUsVGJrfDzEq8Z/aMpsI8zQUgXG6hL03IOMbtnoRPwvho3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N8tAijK0; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-32326e20aadso524617a91.2;
+        Wed, 20 Aug 2025 16:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755730851; x=1756335651; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yy3TEEW6DyAgwAJ9w2TLPrA9qanabyqXypgQkM1LVG8=;
+        b=N8tAijK0sdNbCve1hPW8vzFbeZSm/bAJIAAgxgxd+HP0+9VdGgs2Wnp8xFXYyi8SLD
+         i3kQ5yUTkNbQmbxMb2RPQKhcJwSQJO7vDEJttwv0qsXFXQJM7Tw+kOL0gkhcTeRn9atq
+         h8Mb5eYKFsCZrhGpOKIZg04ZhqsJ80N1KsLlwrSBSYs8MYyQ4nLMK2vMqDnLyla4asvw
+         0pEod4ab0dJxwgksc1pbpLDRMdGKUnKD3TN+gtCOPJFhfle8xJGIM5MFAok0F7nPLUn1
+         J0vvpS0/fMqfmlnNghFghUakG7VsIxOfm9KLbtm41iCuCeoNFCRUVLq2dB48xtoHomQX
+         CudA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755730851; x=1756335651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yy3TEEW6DyAgwAJ9w2TLPrA9qanabyqXypgQkM1LVG8=;
+        b=EkSEtsw5KOC2WPinZ5rdwaQBD3V+fwyvSyjjmrCIqz8y952X6SQ1cm76NYcDmGjLC9
+         OGrqATIOgknEET7CAxBSX32Jql9HasRxfP4LOWsrsrhi+LeTOBOLpgRhFXcxiL52PaSD
+         ZDzKfDNOl4vLSteNAe2jjMmc7kx+hFLgFpsWSr0uHI8a/kPLVz53CfJjzqyQNUKh41Db
+         61XberD0qoMwwGoUQJOEE0YgtEEErEJP9xrCN11Y9/UwzQZdyBarU1yRTTQSTL+HnCz0
+         w7im0svwg2zXMmicAOozw5IIb7nq2mub4w4HPuvVROSCo5JF3gTSEF5MaI9mTDEuvojW
+         mW8w==
+X-Forwarded-Encrypted: i=1; AJvYcCU3kghWQqYYImtw26cHXH10mxnzdLT37FODI/366r+e30YWfaOytXMbs2RJZkDFl1HSkMg=@vger.kernel.org, AJvYcCXH6C8SPuLM6jw17Ha5vBP0Z0VkUsiIv97H8SgDL4R21sMgl+bDF1WVCcwzOyzIceaAylOyT+wZpshGylV1@vger.kernel.org, AJvYcCXlQDGWssLCZZVjyy3ZRwd1fHL1SGWqLcEpoRbkrQzu/fEm4C51agWD8HMPiiIba2WSu7QZhaVEU9XpAQekdajJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxwBjMslQml+a4gfeHbg1NAbnq+z37Sx2k93bOXzI82bnmzZaN
+	fPW5sBQ00mitWXEMq8HtjiP0CKBQInsYKwHJqUG6aM1J7ZGuyoTaBz/PIkDL7qF0N4IF6nsNa3Y
+	XBWQAPTKOd4dD4hq8ctBygyZBPoTZgro=
+X-Gm-Gg: ASbGncvc7ehmT6A1ClumGQGlmOq80mDdqDBLAgw0QPCeiRkbGS7MVFAAPPGpLWa7Rmv
+	rdWJKYN/wxmu2qI/QYCuhKPzuzoC4qVr6K0LhDgDNh3tLZONsZPuBCIme7yUIv+dWuYe8sqVuAj
+	qS9BHJKukqDw0/vsTphjmZKbCTT5uVklkaJD7MCImbRm9DwYkJqfXbc/YmY+y7q86kCZCWAoO1P
+	BazSmU3UtCIe0oHtjqF/SA2JseVINiYcA==
+X-Google-Smtp-Source: AGHT+IGzxLNjy0xPzf8DTHy1HiLkiKCaSnhujZsN9KWtZwpW8eiuq/zIzw6FfF2QvgpAlwGfy1pRHWxJ+Pu5W6pqz24=
+X-Received: by 2002:a17:90b:48d2:b0:31f:20d4:9966 with SMTP id
+ 98e67ed59e1d1-324ed12f411mr748453a91.17.1755730851512; Wed, 20 Aug 2025
+ 16:00:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+References: <20250806092458.111972-1-phoenix500526@163.com>
+ <20250806092458.111972-3-phoenix500526@163.com> <f5d8d886-1de3-4521-917a-e98b645b987e@linux.dev>
+ <30d8fcac.2669.19882763de2.Coremail.phoenix500526@163.com>
+ <e7ba3f7f-38b8-4c06-8aff-ef1fb8d04d86@linux.dev> <310495cd.19eb.19893314d03.Coremail.phoenix500526@163.com>
+ <0f6d16c1-0e85-4709-9846-3a993a9f041b@linux.dev> <65e51538.57aa.1989d162bb8.Coremail.phoenix500526@163.com>
+ <2559a8cd-b439-43fc-96e4-d5f2941ca4d8@linux.dev> <3fbb9319.20c8.198a1410186.Coremail.phoenix500526@163.com>
+ <6c444d7d-524d-4bc8-bda6-0440af621ebe@linux.dev> <46f4c341.1dea.198b845a4b0.Coremail.phoenix500526@163.com>
+ <7495eeb9-777b-4b9e-8312-c6654268d6ec@linux.dev>
+In-Reply-To: <7495eeb9-777b-4b9e-8312-c6654268d6ec@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 20 Aug 2025 16:00:35 -0700
+X-Gm-Features: Ac12FXwHBBpnEOB-6GW2sDAuquK0ygspyIoOWqSdoaWGhvsu8UGlxD4KfsvRK0c
+Message-ID: <CAEf4Bzbpu9PM6GHV6ewE_hJJ7=94Rn1ZYq5QWVnpoH6_LRQDCw@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] selftests/bpf: Force -O2 for USDT selftests to
+ cover SIB handling logic
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: =?UTF-8?B?6LW15L2z54Kc?= <phoenix500526@163.com>, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
-
-> On Mon, 18 Aug 2025 at 19:02, Roman Gushchin <roman.gushchin@linux.dev> wrote:
->>
->> Introduce bpf_out_of_memory() bpf kfunc, which allows to declare
->> an out of memory events and trigger the corresponding kernel OOM
->> handling mechanism.
->>
->> It takes a trusted memcg pointer (or NULL for system-wide OOMs)
->> as an argument, as well as the page order.
->>
->> If the wait_on_oom_lock argument is not set, only one OOM can be
->> declared and handled in the system at once, so if the function is
->> called in parallel to another OOM handling, it bails out with -EBUSY.
->> This mode is suited for global OOM's: any concurrent OOMs will likely
->> do the job and release some memory. In a blocking mode (which is
->> suited for memcg OOMs) the execution will wait on the oom_lock mutex.
->>
->> The function is declared as sleepable. It guarantees that it won't
->> be called from an atomic context. It's required by the OOM handling
->> code, which is not guaranteed to work in a non-blocking context.
->>
->> Handling of a memcg OOM almost always requires taking of the
->> css_set_lock spinlock. The fact that bpf_out_of_memory() is sleepable
->> also guarantees that it can't be called with acquired css_set_lock,
->> so the kernel can't deadlock on it.
->>
->> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
->> ---
->>  mm/oom_kill.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 45 insertions(+)
->>
->> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
->> index 25fc5e744e27..df409f0fac45 100644
->> --- a/mm/oom_kill.c
->> +++ b/mm/oom_kill.c
->> @@ -1324,10 +1324,55 @@ __bpf_kfunc int bpf_oom_kill_process(struct oom_control *oc,
->>         return 0;
->>  }
->>
->> +/**
->> + * bpf_out_of_memory - declare Out Of Memory state and invoke OOM killer
->> + * @memcg__nullable: memcg or NULL for system-wide OOMs
->> + * @order: order of page which wasn't allocated
->> + * @wait_on_oom_lock: if true, block on oom_lock
->> + * @constraint_text__nullable: custom constraint description for the OOM report
->> + *
->> + * Declares the Out Of Memory state and invokes the OOM killer.
->> + *
->> + * OOM handlers are synchronized using the oom_lock mutex. If wait_on_oom_lock
->> + * is true, the function will wait on it. Otherwise it bails out with -EBUSY
->> + * if oom_lock is contended.
->> + *
->> + * Generally it's advised to pass wait_on_oom_lock=true for global OOMs
->> + * and wait_on_oom_lock=false for memcg-scoped OOMs.
->> + *
->> + * Returns 1 if the forward progress was achieved and some memory was freed.
->> + * Returns a negative value if an error has been occurred.
->> + */
->> +__bpf_kfunc int bpf_out_of_memory(struct mem_cgroup *memcg__nullable,
->> +                                 int order, bool wait_on_oom_lock)
+On Mon, Aug 18, 2025 at 10:35=E2=80=AFAM Yonghong Song <yonghong.song@linux=
+.dev> wrote:
 >
-> I think this bool should be a u64 flags instead, just to make it
-> easier to extend behavior in the future.
+>
+>
+> On 8/17/25 6:43 AM, =E8=B5=B5=E4=BD=B3=E7=82=9C wrote:
+> >
+> >
+> >
+> >
+> >
+> >
+> > Hi, Yonghong. I've already filed an issue[1] in GCC  community.
+> >
+> >
+> > Accroding to the discussion, it's not a gcc bug but may be a systemtap =
+bug.
+> > I don't know how to report this bug to systemtap, but I found that the
+> > libbpf/usdt have the same problem. I've filed an issue in libbpf/usdt r=
+epo[2].
+> >
+> > I also have some ideas about it. I wrote it down in the issue[2] commen=
+t.
+> > May be we can discuss there.
+> >
+> > [1]. https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D121569
+> > [2]. https://github.com/libbpf/usdt/issues/13
+>
+> Thanks for filing an issue on gcc and getting some feedback/suggestions
+> from gcc community.
+>
+> Currently, libbpf/usdt does not suport format like '-1@ti(%rip)'. If we d=
+o
 
-I like it, will change in the next version.
+Exactly, it doesn't. I haven't yet ran into a case where real-world
+applications would use such an argument format, so there was no
+incentive in trying to support it.
 
-Thanks for the idea and also for reviewing the series!
+Was this issue discovered as part of testing on some real world
+application, or it's mostly through testing on synthetic cases?
+
+> intend to implement this. libbpf/usdt can reject that if 'ti' is a
+> static variable. libbpf can provide some hints about how to make it
+> work (see above [1] and [2]). Then, it would be user's reponsibility to
+> change code so libbpf can support it.
+>
+> >
+> >
+> >
+
+[...]
 
