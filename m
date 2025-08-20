@@ -1,161 +1,180 @@
-Return-Path: <bpf+bounces-66123-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66124-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B605AB2E857
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 00:52:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 026C4B2E85D
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 00:54:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B2661BC15AD
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 22:50:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B58497A7DF5
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 22:52:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AED2DBF49;
-	Wed, 20 Aug 2025 22:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0102DBF51;
+	Wed, 20 Aug 2025 22:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nB9asYOT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gl4lgZFL"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F57244693
-	for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 22:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EAF12BE7B4;
+	Wed, 20 Aug 2025 22:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755730207; cv=none; b=t8ZYZXPxgcJ+guGOPoMbqbPZxJISVnWP1UMfaOVXFRyGPRhTVhzHSZCEA+Ioy50xBlkg0oJE54KG/tXsKzd3ln0VVia338YFmaIjrn7Ay2M9G/2h5lcrgoIlO4zRE6pfEAmy+CDyQAhWoeHPKRP91sJNlKR3tVnFqaH9MWoFs9k=
+	t=1755730454; cv=none; b=GGGvQrvuw28SOWYkv3kssEii58/61csq+NctZNDpDretb6HtgkN1+638eg3Tp98yl9mlFTUSqq8QusJm8l3MSj7ZgF1Xl26vVQtB6ISTVYRZjcprm+6Rj7nyc8obXXFgKgXwwKHZO7D0GVhI6WZ1c/4FV7ueawejpsGeP2Df0fA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755730207; c=relaxed/simple;
-	bh=eCL8GsLf3uYEog+ER630EOsJ52icnZjOcTqvUQPw3lY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Bwth8ZgJ0Mww6EwVENtKHMxaWKKyY9fUKWTW5Ki8jZFVcFz7d6kngeF7XGa0BrKRK8lMxI5dBjFFSe9cOR1KjaneuDx5+RDnQtwbS2ORxiNxKECcdb+dUXrc+gTEhMuiSgNpKFgYwff3/KvIYxN1s/hVYAvDi2P7EFT9rVU4Z4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nB9asYOT; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755730200;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UsdDNWT0aPaFWkXNVMSJrwjwzzlXY8/IesqRJaJrUFg=;
-	b=nB9asYOTay3SplClMlGUjqJrUlNm40iBpD5ePjlHlcko7ltyfZdyC8gCY3jD40zA+3I/ZU
-	UINeNtc0dBEbM/WktZuxCAHr4Af/b1uEbFb0lAqxvpNyZU8B1+B1tmnxpcRHvi2ZRfyOR/
-	NZWzYbGQCeZ/LrkD4Df+fjs3Ag8mOic=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: linux-mm@kvack.org,  bpf@vger.kernel.org,  Suren Baghdasaryan
- <surenb@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Michal Hocko
- <mhocko@suse.com>,  David Rientjes <rientjes@google.com>,  Matt Bobrowski
- <mattbobrowski@google.com>,  Song Liu <song@kernel.org>,  Alexei
- Starovoitov <ast@kernel.org>,  Andrew Morton <akpm@linux-foundation.org>,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 10/14] bpf: selftests: bpf OOM handler test
-In-Reply-To: <CAP01T75_ArZiy9AB6TwNZCxKJKw+2yg58xz1ubTGZr4ynVt+Mg@mail.gmail.com>
-	(Kumar Kartikeya Dwivedi's message of "Wed, 20 Aug 2025 11:33:42
-	+0200")
-References: <20250818170136.209169-1-roman.gushchin@linux.dev>
-	<20250818170136.209169-11-roman.gushchin@linux.dev>
-	<CAP01T75_ArZiy9AB6TwNZCxKJKw+2yg58xz1ubTGZr4ynVt+Mg@mail.gmail.com>
-Date: Wed, 20 Aug 2025 15:49:53 -0700
-Message-ID: <878qjdobfy.fsf@linux.dev>
+	s=arc-20240116; t=1755730454; c=relaxed/simple;
+	bh=nxwUi+vma0gxF8jaxzpDP96ejlHXfqlhgoCKUq98E+A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cefHX90kP48RIkfLOofVXu8f3C9yWI37PLNwEmkbXTeoxTMc0/tAoWb5ks8qRAifLIQQAA1vA5cCbDpjzCkOch+BYIDrNVHYnBC1w7FTOwjHFkVHnTw5tXaGVHp8PBPKVSMJVgmgXSEcIiygUwFvi1qBb63pLDdR9ZUAIJ6Nb7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gl4lgZFL; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-24458195495so2347255ad.2;
+        Wed, 20 Aug 2025 15:54:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755730452; x=1756335252; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+v+ZtPegRwXYIddqayc8WLX+z8QS5ISVjLMRUJjSTvY=;
+        b=Gl4lgZFLd8UZJLLzdgsc7Lm9oSD9cB2Nq1TMfGgf0VYsDli+ioPZ9GePdnkzgxpYN+
+         KQpPsTM24kviqo2lWZnnvw6djFl6914vsnZ6ibNjHJBv4K5+3JdF2bT9ebwBpuYvJ8DL
+         luCJ7tM+otHos3/ZIYzOljeex3CCHEX7ta/ypp+cTQeDc81LF8br6x3jw9GqjUTPsdbW
+         UarDWnCxU+XWoNq+9/UO/1pcq2UzJPSTJyt2K8OQzeLZ+zqDoIPq1iixoDf/kWjD42Hm
+         q4n3c0uV0JmcYaSf4A3lO19QriqqGjc3HN8APeaXq6gijOHkdLlk47xRYUeTyF7so2Vt
+         VEWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755730452; x=1756335252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+v+ZtPegRwXYIddqayc8WLX+z8QS5ISVjLMRUJjSTvY=;
+        b=dJ8Z5rmLeq9ggBLEcslqPB2uRCdlMpp5ElgVE/XmzkWryyUuvWCTjTn4MFzM1MsY2N
+         bcwvttNzcWLjw8rCmSBQnH5XQ+a0utu2a49FyKsuFYecWBEzXHaYzszisj0ItVG+JwTE
+         OlJ7VYQYcIPhcUeRVTeZ9lzwnB1vahXN04GKflCUGgmNENyJFtIq6wIARMHuNCvnd+ck
+         afasYG/oAZu9d/RN7mt80XnwBeLWjNUpdvYrqiiOjJOc4HG3+C6yAw8FBQAF6QLQcv47
+         KlPaGfIIYyn/TNeOywicQx4CMcUJh6rBAyM4xBS6+pE1/kQ/hNajDovsFHtv+x2rRkLK
+         01Dw==
+X-Forwarded-Encrypted: i=1; AJvYcCUdO2mwOfxkfgOmOoAafvQeQRk6sq2BC3pzaXsuf1/8BkSty5x/TUzgzMZ/7w69GgwMmBlcoQLmGcEelyOCpNVi@vger.kernel.org, AJvYcCUyFEWEHFs5mFaQHFlKgcrIrnYFUrkkHwCcwOKJW0krhvOBCPl/TWE4TVENUFKB0iNTKie9Bz3a@vger.kernel.org, AJvYcCWU1VBGOd42PwdN97lA1ZCiZAi+bCTj1x6T0MIAedFDfP6J7WqntDnCsg5dJR/c0CRDu4PgU1J/M2NmBHG2@vger.kernel.org, AJvYcCX++T3zdAyDA8fI0oqldnw+eyLsZcNE2nviMY8WXChY+iApo9WNkTIi2tIRW3E2ExBGvok=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxbBmo9drmYq2F3dNnJxXEypGSQf7HQOjFbDELuHU1SDerAX853
+	Xsv2d35qBYF1Qpkx6mtolb0E03eIkVaOIbTT3OCVgWG6HtXxZ0s8OhiFImTph0LvlVsplsaykgJ
+	WwvO3OJp4VsSiWqC3e30uNq2oBdN9Pq4=
+X-Gm-Gg: ASbGnctenCypYglXvIBLM9TjVQ/QyGKnCAEN2dHHw8LeWxn0lTqHAVke9h51LN2q2Fg
+	GdR2ZnvAz6uxq5dRPi/xMC9ZyKysEWn8an2e8BkLMylW48yx+JkVGUhXE9NcQHWMV3kPhB+f4cG
+	PWCsbEc57zMuPZGh/sjsZ/m4ak0zu1zrZllQ6dBNXDtAiWT6fE2dGNWqVfPGIOiG6rLrevl8slG
+	asU/bgA7rOtUYpnxHwDUK9kdRpT1m1/80cCQowSKfDc
+X-Google-Smtp-Source: AGHT+IHsYq1/G3bkWo2LTB+Wjq6BjQc3MS0ahLPsXURmjYsCiKDmAvwNrGYkktwC5RFWrRVV25fqel2mh6B7rbrx6mk=
+X-Received: by 2002:a17:902:f68b:b0:240:2145:e51f with SMTP id
+ d9443c01a7336-245febe11dcmr6286575ad.3.1755730452431; Wed, 20 Aug 2025
+ 15:54:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+References: <20250819033956.59164-1-dongml2@chinatelecom.cn> <20250819033956.59164-4-dongml2@chinatelecom.cn>
+In-Reply-To: <20250819033956.59164-4-dongml2@chinatelecom.cn>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 20 Aug 2025 15:53:56 -0700
+X-Gm-Features: Ac12FXx-fO5PKvBgzD_sLr5b2q6BW5ewlWVsvn9PgVglGjlHt1qy_PlT4iHOnWc
+Message-ID: <CAEf4BzZOC6Zyo9sikPJH+0Xz=aCbx=dBM_RksYZMaZM4ndR+OA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add benchmark testing for kprobe-multi-all
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, 
+	shuah@kernel.org, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org, 
+	nathan@kernel.org, nick.desaulniers+lkml@gmail.com, morbo@google.com, 
+	justinstitt@google.com, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
-
-> On Mon, 18 Aug 2025 at 19:02, Roman Gushchin <roman.gushchin@linux.dev> wrote:
->>
->> Implement a pseudo-realistic test for the OOM handling
->> functionality.
->>
->> The OOM handling policy which is implemented in bpf is to
->> kill all tasks belonging to the biggest leaf cgroup, which
->> doesn't contain unkillable tasks (tasks with oom_score_adj
->> set to -1000). Pagecache size is excluded from the accounting.
->>
->> The test creates a hierarchy of memory cgroups, causes an
->> OOM at the top level, checks that the expected process will be
->> killed and checks memcg's oom statistics.
->>
->> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
->> ---
->>  [...]
->> +
->> +/*
->> + * Find the largest leaf cgroup (ignoring page cache) without unkillable tasks
->> + * and kill all belonging tasks.
->> + */
->> +SEC("struct_ops.s/handle_out_of_memory")
->> +int BPF_PROG(test_out_of_memory, struct oom_control *oc)
->> +{
->> +       struct task_struct *task;
->> +       struct mem_cgroup *root_memcg = oc->memcg;
->> +       struct mem_cgroup *memcg, *victim = NULL;
->> +       struct cgroup_subsys_state *css_pos;
->> +       unsigned long usage, max_usage = 0;
->> +       unsigned long pagecache = 0;
->> +       int ret = 0;
->> +
->> +       if (root_memcg)
->> +               root_memcg = bpf_get_mem_cgroup(&root_memcg->css);
->> +       else
->> +               root_memcg = bpf_get_root_mem_cgroup();
->> +
->> +       if (!root_memcg)
->> +               return 0;
->> +
->> +       bpf_rcu_read_lock();
->> +       bpf_for_each(css, css_pos, &root_memcg->css, BPF_CGROUP_ITER_DESCENDANTS_POST) {
->> +               if (css_pos->cgroup->nr_descendants + css_pos->cgroup->nr_dying_descendants)
->> +                       continue;
->> +
->> +               memcg = bpf_get_mem_cgroup(css_pos);
->> +               if (!memcg)
->> +                       continue;
->> +
->> +               usage = bpf_mem_cgroup_usage(memcg);
->> +               pagecache = bpf_mem_cgroup_page_state(memcg, NR_FILE_PAGES);
->> +
->> +               if (usage > pagecache)
->> +                       usage -= pagecache;
->> +               else
->> +                       usage = 0;
->> +
->> +               if ((usage > max_usage) && mem_cgroup_killable(memcg)) {
->> +                       max_usage = usage;
->> +                       if (victim)
->> +                               bpf_put_mem_cgroup(victim);
->> +                       victim = bpf_get_mem_cgroup(&memcg->css);
->> +               }
->> +
->> +               bpf_put_mem_cgroup(memcg);
->> +       }
->> +       bpf_rcu_read_unlock();
->> +
->> +       if (!victim)
->> +               goto exit;
->> +
->> +       bpf_for_each(css_task, task, &victim->css, CSS_TASK_ITER_PROCS) {
->> +               struct task_struct *t = bpf_task_acquire(task);
->> +
->> +               if (t) {
->> +                       if (!bpf_task_is_oom_victim(task))
->> +                               bpf_oom_kill_process(oc, task, "bpf oom test");
+On Mon, Aug 18, 2025 at 8:40=E2=80=AFPM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
 >
-> Is there a scenario where we want to invoke bpf_oom_kill_process when
-> the task is not an oom victim?
+> For now, the benchmark for kprobe-multi is single, which means there is
+> only 1 function is hooked during testing. Add the testing
+> "kprobe-multi-all", which will hook all the kernel functions during
+> the benchmark. And the "kretprobe-multi-all" is added too.
+>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> ---
+>  tools/testing/selftests/bpf/bench.c           |  4 ++
+>  .../selftests/bpf/benchs/bench_trigger.c      | 54 +++++++++++++++++++
+>  .../selftests/bpf/benchs/run_bench_trigger.sh |  4 +-
+>  .../selftests/bpf/progs/trigger_bench.c       | 12 +++++
+>  tools/testing/selftests/bpf/trace_helpers.c   |  3 ++
+>  5 files changed, 75 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftest=
+s/bpf/bench.c
+> index ddd73d06a1eb..29dbf937818a 100644
+> --- a/tools/testing/selftests/bpf/bench.c
+> +++ b/tools/testing/selftests/bpf/bench.c
+> @@ -510,6 +510,8 @@ extern const struct bench bench_trig_kretprobe;
+>  extern const struct bench bench_trig_kprobe_multi;
+>  extern const struct bench bench_trig_kretprobe_multi;
+>  extern const struct bench bench_trig_fentry;
+> +extern const struct bench bench_trig_kprobe_multi_all;
+> +extern const struct bench bench_trig_kretprobe_multi_all;
+>  extern const struct bench bench_trig_fexit;
+>  extern const struct bench bench_trig_fmodret;
+>  extern const struct bench bench_trig_tp;
+> @@ -578,6 +580,8 @@ static const struct bench *benchs[] =3D {
+>         &bench_trig_kprobe_multi,
+>         &bench_trig_kretprobe_multi,
+>         &bench_trig_fentry,
+> +       &bench_trig_kprobe_multi_all,
+> +       &bench_trig_kretprobe_multi_all,
+>         &bench_trig_fexit,
+>         &bench_trig_fmodret,
+>         &bench_trig_tp,
+> diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/t=
+esting/selftests/bpf/benchs/bench_trigger.c
+> index 82327657846e..c6634a64a7c0 100644
+> --- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
+> +++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+> @@ -226,6 +226,58 @@ static void trigger_fentry_setup(void)
+>         attach_bpf(ctx.skel->progs.bench_trigger_fentry);
+>  }
+>
+> +static void attach_ksyms_all(struct bpf_program *empty, bool kretprobe)
+> +{
+> +       LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
+> +       char **syms =3D NULL;
+> +       size_t cnt =3D 0;
+> +
+> +       if (bpf_get_ksyms(&syms, &cnt, true)) {
+> +               printf("failed to get ksyms\n");
 
-Not really, but...
+we seem to be using fprintf(stderr, "...") for emitting errors like
+this (at least in some benchmarks, and it makes sense to me). Do the
+same?
 
-> Would it be better to subsume this check in the kfunc itself?
+> +               exit(1);
+> +       }
+> +
+> +       printf("found %zu ksyms\n", cnt);
 
-bpf_task_is_oom_victim() is useful by itself, because if we see
-a task which is about to be killed, we can likely simple bail out.
-Let me adjust the test to reflect it.
+stray debug output?
+
+> +       opts.syms =3D (const char **) syms;
+> +       opts.cnt =3D cnt;
+> +       opts.retprobe =3D kretprobe;
+> +       /* attach empty to all the kernel functions except bpf_get_numa_n=
+ode_id. */
+> +       if (!bpf_program__attach_kprobe_multi_opts(empty, NULL, &opts)) {
+> +               printf("failed to attach bpf_program__attach_kprobe_multi=
+_opts to all\n");
+> +               exit(1);
+> +       }
+> +}
+> +
+
+[...]
 
