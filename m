@@ -1,112 +1,92 @@
-Return-Path: <bpf+bounces-66086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA5AB2DD4B
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 15:06:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CBFFB2DD5C
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 15:10:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C24C33A3F80
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 13:02:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 400E07BB36D
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 13:08:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E2D31B125;
-	Wed, 20 Aug 2025 13:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD0831AF25;
+	Wed, 20 Aug 2025 13:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ooAHkEmp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o8IZLliP"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A20353356;
-	Wed, 20 Aug 2025 13:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4413E242D9E
+	for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 13:09:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755694905; cv=none; b=fnBgYBwtQ/GdLQdLhnYg/zWAQcjSv3ehFiqd41z9xAtL9ljf8bRy06JV97c7hF4/BZT5ElQi8CvD6DY4kolZ6WRcuih3J4WR/KkQxKoiVbwlubt7xJMnHr/RZ7ZQbDSWenIXRmUoEH1MvkfxqOMiIBMvxrWu9Qbw7dkVUYFcAXk=
+	t=1755695397; cv=none; b=YCYwoVvRFnW6MAx3BKchCyDA0IEiuBVhHZPyFSpf/5nioHyZlZkkznITYv3UHD66KhrYgLY5upr9H8dKwJ3WBgSg6pcxLlKmB35yVfuEVrNBOThWMZf68/5m+61RlE09VVC3HQwrJ3M72oS8wO84Uae7F8KCrlsDypezELkvfzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755694905; c=relaxed/simple;
-	bh=g36MSWA1OAlVnR4SJzdNbofVqN8PUVWp9m6DJUGvgtQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WBPDfaate9bm4E00N/0KfVjQcK/r/rG1jMP7PJi6KxoURoEbvGUiaU14iJ95KthG0X29G5EoBxKfpANvub+LeU5xHIqtDSkWUNWQvFRdRctkNgJe4N3c2V5zGvCJdgmJgcY4F9Umlwl3as4DYDy3btJ4CI7iSeT1UKa1DXahTQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ooAHkEmp; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ixek98LEZnM0KSSeL6np3Op3Uh5zqqT3bdR/KDtVEn0=; b=ooAHkEmpqDbcTlSl4I28Zd3Dvp
-	b82ZivBUUcty6PbgdnZw2d9Bgz9UsEe64HK1J5U6csRVaxTnwkcJs7ZPoTSZE0W/Pz2Ng4t9Je0X+
-	WYUDtrqyJgfLF310ns9C+vq0gOv+udFGQO/wguix4Gah8IdSKI3316zJu1vDzi5NeXLFjWx4x3rW4
-	sWRrw6jg/YHUlH7+rV8cWRW1vxWka2hGHsjv7LMbgAr1Cxqn5tp/u5KNJBfgan0DFi1+dSolxTo2F
-	7d1rTZKQHYGbN90viwsh7XoFEKozP/P+AtGGWDOeGCJVS5J+oo+2IgMMB9gmpyFTfnPgLJ2hOllNT
-	nHvZJvHA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uoiRb-00000006exZ-035E;
-	Wed, 20 Aug 2025 13:01:35 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id AD216300385; Wed, 20 Aug 2025 15:01:34 +0200 (CEST)
-Date: Wed, 20 Aug 2025 15:01:34 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv6 perf/core 10/22] uprobes/x86: Add support to optimize
- uprobes
-Message-ID: <20250820130134.GK4067720@noisy.programming.kicks-ass.net>
-References: <20250720112133.244369-1-jolsa@kernel.org>
- <20250720112133.244369-11-jolsa@kernel.org>
- <20250819191515.GM3289052@noisy.programming.kicks-ass.net>
- <aKW9Q0cOhNL0XV0R@krava>
+	s=arc-20240116; t=1755695397; c=relaxed/simple;
+	bh=pgYVT+usj7afLqSXiRRncQqVtAW6r6s/9qQ5sFpEqVY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=loBTlLQnzukKuHRlXGUhKtj7q7X+9YfXkuSNM19PP/XQ+yBRjmTVU1CbPFKtKCqRHjlFnasOZOqgx6ljrhB0XAyuj9ABwKXqD7PGhd0Wl+ax78NuiXPSEeOg3OB/zuu+7bEdYRdKHVx8rbFGg/mGNjQDZL/zSBAycT95LPfMnh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o8IZLliP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB1A5C4CEEB;
+	Wed, 20 Aug 2025 13:09:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755695396;
+	bh=pgYVT+usj7afLqSXiRRncQqVtAW6r6s/9qQ5sFpEqVY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=o8IZLliPVGDfJksPQhbO/9VvcwSra7IJWyKvZ6gxzog0jRWsIlQyK+N6286ZnDatK
+	 Mgy0kX4dCXGqdCBvpMz3CMm4kkYzlKr+SGglI3fyffpOCvNB2G2Tcu7iUHv6TH/nBJ
+	 G3a5IqxOG5JA31wAZDpaRgeK2Q3YDnH7VHZbpgACJuzt4M/oZp/NnTAvxhnsXXKxwq
+	 E8RvZYzbs79vDmdwsLtQxwRzpbbw36fCNMI8Y5hRpEJi67Jhb5EZULqQ8BnsGD6hiZ
+	 xiqw9OKrpmfy/8A1NMgPFy2KP1InM6QLWEZBPPpIPXp3zgoE4qq0ViAQxacOEDxFbV
+	 31IqsfI1ZI6/w==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 71AA9383BF4E;
+	Wed, 20 Aug 2025 13:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aKW9Q0cOhNL0XV0R@krava>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] libbpf: export bpf_object__prepare symbol
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175569540626.229552.2531878236327571333.git-patchwork-notify@kernel.org>
+Date: Wed, 20 Aug 2025 13:10:06 +0000
+References: <20250819215119.37795-1-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250819215119.37795-1-mykyta.yatsenko5@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ eddyz87@gmail.com, yatsenko@meta.com
 
-On Wed, Aug 20, 2025 at 02:19:15PM +0200, Jiri Olsa wrote:
+Hello:
 
-> > This seems needlessly restrictive. Something like:
-> > 
-> > is_nop5(const char *buf)
-> > {
-> > 	struct insn insn;
-> > 
-> > 	ret = insn_decode_kernel(&insn, buf)
-> > 	if (ret < 0)
-> > 		return false;
-> > 
-> > 	if (insn.length != 5)
-> > 		return false;
-> > 
-> > 	if (insn.opcode[0] != 0x0f ||
-> > 	    insn.opcode[1] != 0x1f)
-> > 	    	return false;
-> > 
-> > 	return true;
-> > }
-> > 
-> > Should do I suppose.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Tue, 19 Aug 2025 22:51:19 +0100 you wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 > 
-> ok, looks good, should I respin with this, or is follow up ok?
+> Add missing LIBBPF_API macro for bpf_object__prepare function to enable
+> its export.
+> 
+> Fixes: 1315c28ed809 ("libbpf: Split bpf object load into prepare/load")
+> 
+> [...]
 
-I cleaned up already; I pushed out these patches to queue/perf/core and
-added a few of my own.
+Here is the summary with links:
+  - [bpf-next] libbpf: export bpf_object__prepare symbol
+    https://git.kernel.org/bpf/bpf-next/c/2693227c1150
 
-I will need to write better Changelogs, and post them, but I need to run
-some errants first.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
