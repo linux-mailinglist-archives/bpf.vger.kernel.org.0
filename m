@@ -1,174 +1,295 @@
-Return-Path: <bpf+bounces-66129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE993B2E8A6
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 01:27:22 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E4DB2E8AF
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 01:33:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5FDF189A834
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 23:26:42 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A89C54E4349
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 23:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 006562DEA8F;
-	Wed, 20 Aug 2025 23:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F41B2E11CA;
+	Wed, 20 Aug 2025 23:33:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nst3Rw/+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QihiG2Dj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1A2280312;
-	Wed, 20 Aug 2025 23:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D481D86DC;
+	Wed, 20 Aug 2025 23:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755732375; cv=none; b=I2n2xmZ4j42bFu8PTOTDgIEIfgru+VnrbMcLjYEid5mMFYu5EqkR/n7my+OLONbyYeE3DL15VxTOm7sRjW0O9UT6SvkHE+JXGrXlOg6lSq2Srv63Zv/ZWm7IjmuJv2+Oj3xtJdshJiRLpA600BeGgaQ7JXT2l4DtYqDqrDqsCG0=
+	t=1755732828; cv=none; b=SQN0G8wuZcRLqnMbmW/r2WX59DlZgibaO7QG2qirzuuJaomQuXKznU6aNEHRhBVOacMJAUos765V3uY5xAeccg+0iAFikuQrheFqblIYB08El5SJShAUK4fsMaIbLqEMtmei+4XsQUt6JVXQ5kAO8MIL3Vs0K38C34kbN4xQFQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755732375; c=relaxed/simple;
-	bh=b10TlkvbmvDi0x4GzXCIZCojhHmwVxsqmwh3eQrGkO4=;
+	s=arc-20240116; t=1755732828; c=relaxed/simple;
+	bh=v94pCC9AMCpWFZn/le19ZZsTjIY7F3cpj6xBEnOfLCo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J5KkYP/CKcTuGQm+4NhGcPOXg3c9ec18Q2bS+DVqUILs6VwkxDy6M/VC8Rooug44ugCSHPfEt2QzZRPN8W8/kL0zIySOgOJ6HBLFAV2WUC8KNiFpX6BIhjQDQpZ/TesCRfrWoRsy9kkQVkySixCzOWxz3bwR4NIBivNj4yfFkyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nst3Rw/+; arc=none smtp.client-ip=209.85.215.173
+	 To:Cc:Content-Type; b=Wa+5p38YwUVFgzZ6Snq9VU5YBvafCYLJ0h7wTjtgsqNNPSUKjqPum5esS0vnbKyaow2ZgbD3cfoniOCm2pikR4nQiFo21KgERMD3lTLxi1zeoenCZoAqkEqdHxq0Rjz9o1sx9H/YqsCsNsBs8I6k/RT+tHmvuUGqogBCkXQAa18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QihiG2Dj; arc=none smtp.client-ip=209.85.218.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b4717330f9eso254414a12.1;
-        Wed, 20 Aug 2025 16:26:13 -0700 (PDT)
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-afcb72d5409so59448266b.0;
+        Wed, 20 Aug 2025 16:33:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755732373; x=1756337173; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FWAYEZlnzW0EYER//uhfeVSUakJM7nTK+2ZKfTrr0DI=;
-        b=Nst3Rw/+T6oFNpI3qKD3csAj0gMnSh2ROVgq2JXK0BeBmWQL+tVUdD6Zu75TXi2rTN
-         NPy7eiVP2uLLt8FWjPzgeYw07umC6QpiO3QIMyI8Pkth3qoE0obBv4br1/51b6jcY+8v
-         DjeUggTBsK5g1uS/xdPQOEGTQdTQzyyxJ0EIYe1F7zuYURvNZlnWq200rM49b3qc81AJ
-         wXPSGuwMBdB8qdXjBguFMhUTlnjjdHiDbSPsI9nlVsGDnHrXem/8/3fmt4Edgw6z0sjl
-         Q0uRuNg8gQo20t8RXoD7CAO11F9dqckBZ7mOP3kZTGF4s2lezCuhKZ5/p5wFjI3gZMO+
-         bEvQ==
+        d=gmail.com; s=20230601; t=1755732824; x=1756337624; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eMa5hDCcy00DzZK+4d6bk0F5shIXQnXC8ZXi1NtBu6Y=;
+        b=QihiG2Djz06KlnnULcgVkTSYU3airVuR9ScY0Thd+h1eWRh1nXvietBkrTovdzabp+
+         WWBzQZxAmeMCCBSaYct0/A4sS1VuL/BkHy/EZrI8i7Ld2sY3DKQcsK2rhsyqPcT4c+FY
+         Xj/C+VnEAd52PDZ5krtmq8rAxcLRIHDmvzEdMRtjGbfoJ7MYFJbzLH3N+Ac8RhQ471Ux
+         zCJmvewhlMtK3CceW4YlbjStq/AQvHbcJxXZ7Z+2oasWirXe+2yDugCrtTJOfYdZWS+A
+         qWeKo/eiEwPNgzp1SOu3P10veMIZTVtl9c7BwfMqa+2LXQwcJI9KW6Rp0MNCdBUhx9+b
+         hhLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755732373; x=1756337173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FWAYEZlnzW0EYER//uhfeVSUakJM7nTK+2ZKfTrr0DI=;
-        b=VQiZiwTBK82GY8XzWSIL2o5hX+itOjK3anM2U+ClR4T7ZGhA3wy0R3BU3tF4ZhFyGy
-         +tiRwLQSzsb9Plc7NnSKz16h3LzLIyGTq1A8zpu2MWfTZwXf+qKzi5idYZ38kVGF4qUB
-         bDWi3wEcyxD8VrMwhGJw4yQke1JpuV3I0FZxWq7x46JYgLPnUeNl+7NDV3umKbE5jQU6
-         +dNA5l0kuVM+sDvtDuZamDXkmiSjcO4O/bIiFvrf9obifjJ5x0J48I+ZI67UGLdStqi8
-         4EsSedU+qMTFF6z5eH7+id3TptLcbz3U5TNdu6+YzCScJ3HylmtvBrGuU1d6wOLdgHus
-         jttQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVkkNaqJq4SyQbnKITSEbTH8sqyU2rkqQMIWa4DpFImnrVrTfCYBpEkpRuDdBb85heAI3WUCuGmJHIZ41KM@vger.kernel.org, AJvYcCWQaqxA5Ekka3njDh3zyYJxGR4WLquzZeytaof63rAF991g6m0Q+2PXWsm2F8UbJzzUwPw=@vger.kernel.org, AJvYcCXm4SdfYe4Zj2zP7rdf2WFfStq7tu0LTilxui9j9z/qvYRTp8lvapPHL6N8eJtDi3Z4qr6+fnGetjdxJhRzpveh@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUvZoD8dpLMN35V+2VvNYr/L2RBgQ1YyUigrUryxjd0k2vkops
-	P9x59lH+AC7R2u3Op50ZGHkF6IQzw5roWo3W2NK7dvAUF6qLXH+J8tCNDBlP1gQJ7sLGuR48ach
-	HBmYtK3g7r6Dl9FNu8+N2F7pp6z4CzPvBkFwq
-X-Gm-Gg: ASbGncsMTsZ+zURsydZcdLXRTw2GCDp8HkygGxHDuPYSifVB8qi4nYvAahUzSs7lWAR
-	FMQqqedam6VIP03t3ov6SuDaNmMGmNPtuhiJdlnGoSCYTLLM+wx3cshr/QFb5GUMGjDLYAz1eD4
-	D09MASySZkoG8TO/L8BJKJbSe0pv5bxpTs7EhkaugfIDRlxUxxGK8VBg4evMzaliMSiL/pOI1YZ
-	kjFWyEe1L28lMcZnS/C4Fs=
-X-Google-Smtp-Source: AGHT+IF5tSFWnEet2TpRRgscQg+yziokErCe/YK3oBy3u6xnr0YYp6+tCU9SMfzbRjVSuDSsd12nsV7ZaIlENScMPEQ=
-X-Received: by 2002:a17:902:db0a:b0:242:c66f:9f87 with SMTP id
- d9443c01a7336-245ff87a0acmr5688245ad.51.1755732373203; Wed, 20 Aug 2025
- 16:26:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755732824; x=1756337624;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eMa5hDCcy00DzZK+4d6bk0F5shIXQnXC8ZXi1NtBu6Y=;
+        b=EnF85c+DSvhfBFcPAiLERT1K8hqI9FBCTB1NTg1sE0GzvlUX6XMdF6zFfmVyY4gad8
+         6hpfO66VnGnE28pOwUjp2l5UYoaakdX+wMuSe+hi7M6F1Wo+eKeojeG6MBfpjt6Qz2Zj
+         TkwN3i/UU3qz88ODrmO/DVnTrONwH+rTSY627Gv+s3GcoAKcym2O8YiGlaLeCc+My/dM
+         /hbXBPhKbzlmnn6g+HLSZ/ZbqMYz8LPHOEy4d93AkkGRx9MgQVTXbi6YmDaulev7cii1
+         54WtujwoW1lebmtiwVR0gBqA9vYP4oQEhfl8k7uzQijXaCjlulIWdd/bAWFicpxGCPT4
+         CWzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUQh61KSlMpFOXmTEfEJzPhYDV2+iE4mPiXDE7DAS+TZcpdZcAg1LFruH441WS0hUoOhtZMArRAllyMWPA@vger.kernel.org, AJvYcCVnuot4Sa8OAOa3FD0ehghmGjFmoxyrW6mNMFX64wVv2GdTPnkp1I0lVgZJ2jjbn1VzrlU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbxT31g2Hljr8w0GjQW4LmENH1nEqXRUgHqRI38gh+JB1Al65P
+	v6ikHjUAmAc5GwAJDMbMEUx6yTvBoWzolIdFBlhjVR605IwOPkIKdFeFQAZx6YIZRZy5vtt46tX
+	LGsTTzN6SNuoHHOCg4lX0VoOiPtauFckkArag
+X-Gm-Gg: ASbGncvKyJ53uBffpY5/4bK2lGbTTBGGBxiSMEbFgH2lF4CTP/1f0WiKcASrJdda9/B
+	bg4kFoJqZ9hTqqi76BoIlyOmO6iE0m8WqwYoJ9TWCwVNpwPgKR5uY3a95tj2RvFKi81Kl/C95+i
+	YMGympDfW+pehYXxOAbRCuNZOBT+auJ/MvQTXEbmh687Xy9DB2unCH2fF7jBwRhVDpWaKvizdEp
+	El2TK+n
+X-Google-Smtp-Source: AGHT+IGy7pBJhS/s9zgv7RuaStEj5/bZcNiNoBaaY+sPnjxw6k583h9j3V73e3aXVyd/P0UyTYZWXtPFmoKmmEG7bjc=
+X-Received: by 2002:a17:907:3f2a:b0:ae3:f903:e41 with SMTP id
+ a640c23a62f3a-afe07e4b6d3mr52682066b.54.1755732824430; Wed, 20 Aug 2025
+ 16:33:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250818074632.433008-1-phoenix500526@163.com> <20250818074632.433008-4-phoenix500526@163.com>
-In-Reply-To: <20250818074632.433008-4-phoenix500526@163.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 20 Aug 2025 16:25:58 -0700
-X-Gm-Features: Ac12FXwtZhwDSYveEhsotjsmijdZwetMC94VSjNrj0mw_p3WWFPrhZB7PFhmnGw
-Message-ID: <CAEf4BzaGUhYmUyVZbO18fMYaWphPu6btuHomqx-D2Fk_BD__rw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v11 3/3] selftests/bpf: make usdt_o1 reliably
- generate SIB USDT arg spec
-To: Jiawei Zhao <phoenix500526@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	yonghong.song@linux.dev, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20250818170136.209169-1-roman.gushchin@linux.dev>
+ <20250818170136.209169-5-roman.gushchin@linux.dev> <CAP01T77yTb69hhi0CtDp9afVzO3T0fyPqhBF7By-iYYy__uOjA@mail.gmail.com>
+ <87y0rdobq1.fsf@linux.dev>
+In-Reply-To: <87y0rdobq1.fsf@linux.dev>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 21 Aug 2025 01:33:07 +0200
+X-Gm-Features: Ac12FXyVgUuTqfIxaQ6U-WHmd3Kj3yK2MQ1qHDQGthNBax58JBZkGn_b0uDcmcY
+Message-ID: <CAP01T76t3V_7PDoKJZ04cLfLYmUyAgJ54uyGpQGduWhXrQkXfA@mail.gmail.com>
+Subject: Re: [PATCH v1 04/14] mm: introduce bpf kfuncs to deal with memcg pointers
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: linux-mm@kvack.org, bpf@vger.kernel.org, 
+	Suren Baghdasaryan <surenb@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>, 
+	David Rientjes <rientjes@google.com>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 18, 2025 at 12:46=E2=80=AFAM Jiawei Zhao <phoenix500526@163.com=
-> wrote:
+On Thu, 21 Aug 2025 at 00:43, Roman Gushchin <roman.gushchin@linux.dev> wrote:
 >
-> usdt_o1 is intended to exercise the SIB (Scale-Index-Base) argument
-> handling in libbpf's USDT path. With GCC 13 this reliably produced a
-> SIB-form argument (e.g. 8@(%rdx,%rax,8)), but with newer GCC (e.g. 15)
-> the compiler frequently optimizes the probe argument into a plain
-> register (e.g. 8@%rax) or a stack slot, so the test stops covering the
-> SIB code path and becomes flaky across toolchains.
+> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 >
-> Force a SIB memory operand in the probe by:
-> * placing the base pointer into %rdx and the index into %rax using an
->   empty inline asm with output constraints ("=3Dd", "=3Da") and matching
->   inputs
-> * immediately passing base[idx] to STAP_PROBE1.
-> * only enable on x86 platform.
+> > On Mon, 18 Aug 2025 at 19:02, Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> >>
+> >> To effectively operate with memory cgroups in bpf there is a need
+> >> to convert css pointers to memcg pointers. A simple container_of
+> >> cast which is used in the kernel code can't be used in bpf because
+> >> from the verifier's point of view that's a out-of-bounds memory access.
+> >>
+> >> Introduce helper get/put kfuncs which can be used to get
+> >> a refcounted memcg pointer from the css pointer:
+> >>   - bpf_get_mem_cgroup,
+> >>   - bpf_put_mem_cgroup.
+> >>
+> >> bpf_get_mem_cgroup() can take both memcg's css and the corresponding
+> >> cgroup's "self" css. It allows it to be used with the existing cgroup
+> >> iterator which iterates over cgroup tree, not memcg tree.
+> >>
+> >> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+> >> ---
+> >>  include/linux/memcontrol.h |   2 +
+> >>  mm/Makefile                |   1 +
+> >>  mm/bpf_memcontrol.c        | 151 +++++++++++++++++++++++++++++++++++++
+> >>  3 files changed, 154 insertions(+)
+> >>  create mode 100644 mm/bpf_memcontrol.c
+> >>
+> >> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> >> index 87b6688f124a..785a064000cd 100644
+> >> --- a/include/linux/memcontrol.h
+> >> +++ b/include/linux/memcontrol.h
+> >> @@ -932,6 +932,8 @@ static inline void mod_memcg_page_state(struct page *page,
+> >>         rcu_read_unlock();
+> >>  }
+> >>
+> >> +unsigned long memcg_events(struct mem_cgroup *memcg, int event);
+> >> +unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap);
+> >>  unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx);
+> >>  unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx);
+> >>  unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+> >> diff --git a/mm/Makefile b/mm/Makefile
+> >> index a714aba03759..c397af904a87 100644
+> >> --- a/mm/Makefile
+> >> +++ b/mm/Makefile
+> >> @@ -107,6 +107,7 @@ obj-$(CONFIG_MEMCG) += swap_cgroup.o
+> >>  endif
+> >>  ifdef CONFIG_BPF_SYSCALL
+> >>  obj-y += bpf_oom.o
+> >> +obj-$(CONFIG_MEMCG) += bpf_memcontrol.o
+> >>  endif
+> >>  obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
+> >>  obj-$(CONFIG_GUP_TEST) += gup_test.o
+> >> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
+> >> new file mode 100644
+> >> index 000000000000..66f2a359af7e
+> >> --- /dev/null
+> >> +++ b/mm/bpf_memcontrol.c
+> >> @@ -0,0 +1,151 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-or-later
+> >> +/*
+> >> + * Memory Controller-related BPF kfuncs and auxiliary code
+> >> + *
+> >> + * Author: Roman Gushchin <roman.gushchin@linux.dev>
+> >> + */
+> >> +
+> >> +#include <linux/memcontrol.h>
+> >> +#include <linux/bpf.h>
+> >> +
+> >> +__bpf_kfunc_start_defs();
+> >> +
+> >> +/**
+> >> + * bpf_get_mem_cgroup - Get a reference to a memory cgroup
+> >> + * @css: pointer to the css structure
+> >> + *
+> >> + * Returns a pointer to a mem_cgroup structure after bumping
+> >> + * the corresponding css's reference counter.
+> >> + *
+> >> + * It's fine to pass a css which belongs to any cgroup controller,
+> >> + * e.g. unified hierarchy's main css.
+> >> + *
+> >> + * Implements KF_ACQUIRE semantics.
+> >> + */
+> >> +__bpf_kfunc struct mem_cgroup *
+> >> +bpf_get_mem_cgroup(struct cgroup_subsys_state *css)
+> >> +{
+> >> +       struct mem_cgroup *memcg = NULL;
+> >> +       bool rcu_unlock = false;
+> >> +
+> >> +       if (!root_mem_cgroup)
+> >> +               return NULL;
+> >> +
+> >> +       if (root_mem_cgroup->css.ss != css->ss) {
+> >> +               struct cgroup *cgroup = css->cgroup;
+> >> +               int ssid = root_mem_cgroup->css.ss->id;
+> >> +
+> >> +               rcu_read_lock();
+> >> +               rcu_unlock = true;
+> >> +               css = rcu_dereference_raw(cgroup->subsys[ssid]);
+> >> +       }
+> >> +
+> >> +       if (css && css_tryget(css))
+> >> +               memcg = container_of(css, struct mem_cgroup, css);
+> >> +
+> >> +       if (rcu_unlock)
+> >> +               rcu_read_unlock();
+> >> +
+> >> +       return memcg;
+> >> +}
+> >> +
+> >> +/**
+> >> + * bpf_put_mem_cgroup - Put a reference to a memory cgroup
+> >> + * @memcg: memory cgroup to release
+> >> + *
+> >> + * Releases a previously acquired memcg reference.
+> >> + * Implements KF_RELEASE semantics.
+> >> + */
+> >> +__bpf_kfunc void bpf_put_mem_cgroup(struct mem_cgroup *memcg)
+> >> +{
+> >> +       css_put(&memcg->css);
+> >> +}
+> >> +
+> >> +/**
+> >> + * bpf_mem_cgroup_events - Read memory cgroup's event counter
+> >> + * @memcg: memory cgroup
+> >> + * @event: event idx
+> >> + *
+> >> + * Allows to read memory cgroup event counters.
+> >> + */
+> >> +__bpf_kfunc unsigned long bpf_mem_cgroup_events(struct mem_cgroup *memcg, int event)
+> >> +{
+> >> +
+> >> +       if (event < 0 || event >= NR_VM_EVENT_ITEMS)
+> >> +               return (unsigned long)-1;
+> >> +
+> >> +       return memcg_events(memcg, event);
+> >> +}
+> >> +
+> >> +/**
+> >> + * bpf_mem_cgroup_usage - Read memory cgroup's usage
+> >> + * @memcg: memory cgroup
+> >> + *
+> >> + * Returns current memory cgroup size in bytes.
+> >> + */
+> >> +__bpf_kfunc unsigned long bpf_mem_cgroup_usage(struct mem_cgroup *memcg)
+> >> +{
+> >> +       return page_counter_read(&memcg->memory);
+> >> +}
+> >> +
+> >> +/**
+> >> + * bpf_mem_cgroup_events - Read memory cgroup's page state counter
+> >> + * @memcg: memory cgroup
+> >> + * @event: event idx
+> >> + *
+> >> + * Allows to read memory cgroup statistics.
+> >> + */
+> >> +__bpf_kfunc unsigned long bpf_mem_cgroup_page_state(struct mem_cgroup *memcg, int idx)
+> >> +{
+> >> +       if (idx < 0 || idx >= MEMCG_NR_STAT)
+> >> +               return (unsigned long)-1;
+> >> +
+> >> +       return memcg_page_state(memcg, idx);
+> >> +}
+> >> +
+> >> +/**
+> >> + * bpf_mem_cgroup_flush_stats - Flush memory cgroup's statistics
+> >> + * @memcg: memory cgroup
+> >> + *
+> >> + * Propagate memory cgroup's statistics up the cgroup tree.
+> >> + *
+> >> + * Note, that this function uses the rate-limited version of
+> >> + * mem_cgroup_flush_stats() to avoid hurting the system-wide
+> >> + * performance. So bpf_mem_cgroup_flush_stats() guarantees only
+> >> + * that statistics is not stale beyond 2*FLUSH_TIME.
+> >> + */
+> >> +__bpf_kfunc void bpf_mem_cgroup_flush_stats(struct mem_cgroup *memcg)
+> >> +{
+> >> +       mem_cgroup_flush_stats_ratelimited(memcg);
+> >> +}
+> >> +
+> >> +__bpf_kfunc_end_defs();
+> >> +
+> >> +BTF_KFUNCS_START(bpf_memcontrol_kfuncs)
+> >> +BTF_ID_FLAGS(func, bpf_get_mem_cgroup, KF_ACQUIRE | KF_RET_NULL)
+> >
+> > I think you could set KF_TRUSTED_ARGS for this as well.
 >
-> This makes the compiler encode the operand as SIB (base + index8),
-> which in .note.stapsdt shows up as 8@(%rdx,%rax,8) regardless of GCC
-> version. A memory clobber and noinline prevent reordering/re-allocation
-> around the probe site.
->
-> This change is x86_64-specific and does not alter program semantics; it
-> only stabilizes the USDT argument shape so the test consistently
-> validates SIB handling. Clang historically prefers stack temporaries for
-> such operands, but the selftests build with GCC, and this keeps behavior
-> stable across GCC versions without introducing a separate .S file.
->
-> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
-> ---
->  .../testing/selftests/bpf/prog_tests/usdt_o1.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
->
+> Not really. The intended use case is to iterate over the cgroup tree,
+> which gives non-trusted css pointers:
+>         bpf_for_each(css, css_pos, &root_memcg->css, BPF_CGROUP_ITER_DESCENDANTS_POST) {
+>                 memcg = bpf_get_mem_cgroup(css_pos);
+>         }
 
-See the suggestion on the previous patch. sdt.h has STAP_PROBE_ASM()
-macro that allows to trigger USDTs from asm block. I have never used
-it, but this looks like a perfect opportunity to make use of it. Can
-you please give it a try?
+Then I assume they're at least RCU protected? You could relax it from
+trusted to KF_RCU (since I see css_tryget internally).
+Otherwise the default behavior is unconstrained (any ptr matching that
+type obtained from random walks --- which is something to fix, but
+until then we have to actively mark for taking safe arguments).
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt_o1.c b/tools/tes=
-ting/selftests/bpf/prog_tests/usdt_o1.c
-> index 706168e804cb..6c04519b3757 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/usdt_o1.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/usdt_o1.c
-> @@ -18,11 +18,19 @@
->  int lets_test_this(int);
->  static volatile __u64 array[1] =3D {test_value};
 >
-> -static __always_inline void trigger_func(void)
-> +static noinline void trigger_func(void)
->  {
-> +#if defined(__x86_64__) || defined(__i386__)
->         /* Base address + offset + (index * scale) */
-> -       for (volatile int i =3D 0; i <=3D 0; i++)
-> -               STAP_PROBE1(test, usdt1, array[i]);
-> +       /* Force SIB addressing with inline assembly */
-> +       const __u64 *base;
-> +       __u32 idx;
-> +       /* binding base to %rdx and idx to %rax */
-> +       asm volatile("" : "=3Dd"(base), "=3Da"(idx) : "0"(array), "1"((__=
-u32)0) : "memory");
-> +       STAP_PROBE1(test, usdt1, base[idx]);
-> +#else
-> +       STAP_PROBE1(test, usdt1, array[0]);
-> +#endif
->  }
->
->  static void basic_sib_usdt(void)
-> @@ -66,5 +74,9 @@ static void basic_sib_usdt(void)
->
->  void test_usdt_o1(void)
->  {
-> +#if !defined(__x86_64__) && !defined(__i386__)
-> +       test__skip();
-> +       return;
-> +#endif
->         basic_sib_usdt();
->  }
-> --
-> 2.43.0
->
+> Thanks
 
