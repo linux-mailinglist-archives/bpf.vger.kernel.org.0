@@ -1,433 +1,390 @@
-Return-Path: <bpf+bounces-66103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88206B2E50D
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 20:33:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A598B2E5AE
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 21:35:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A38F5E3F52
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 18:33:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB2025E2D0D
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 19:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A91C273803;
-	Wed, 20 Aug 2025 18:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FFF284B38;
+	Wed, 20 Aug 2025 19:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OggKacs/"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q+sL2jbd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF0C24EA90
-	for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 18:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0B52566D9
+	for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 19:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755714801; cv=none; b=EoZrazHF10AoPsvNdkM3/bFJquVadG4SzITG9pdSrGxNXlV+2B2MppbPdsa5f/VZ2ZfSn3I2DLGER+vpc0VCXKAPk3qG0deLR6kpuXYZ5NCsGRKLfLZtLmo4+MuZQMQm5kypdtIL3meZHKutvUR+qD9mBoCUKmDWo8zf4su/VvQ=
+	t=1755718513; cv=none; b=SZ6JTNLcDE6L+hjbPdvsLh9SuG6I76cXSuLrrhtz1BP3L3dfAeKqWuFNPNLfaMkYKRS1aqs8gNjmAu0bv68nptyrXhqmxzzLKn6j9xy+fUiIq5GA+oLlBk/KeiQLz52dv6E4KVxWbSxsdUtL+6Egnse+QxLA1JIRniEQ5VTHyVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755714801; c=relaxed/simple;
-	bh=wTrSX4NUpEVg3bMnooB+V0WZZ2pYZI/FYLy4TXO8vqM=;
+	s=arc-20240116; t=1755718513; c=relaxed/simple;
+	bh=724Pm1JzuyehnhHNNGfp0UqBoyTRlg3w1zTn+Nadb4c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hgdPsnUZ8JgkAQF/81kOld/njtz8veqMwJEgYSTgLujZ7E4c6bY3doNvg1qWCabO9EVg6oX9iS4z31KkFbZ7igqbI/EazjQuPfTT6WBObtWWaDhdzXwbLvI04iqacywqNFlzgqAAcNjHTuVNy5mhwsYi7e0ixnxavOcJJbOHUpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OggKacs/; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-324e3a0482dso179953a91.2
-        for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 11:33:19 -0700 (PDT)
+	 To:Cc:Content-Type; b=aFUgW2GsvazCKpGyzF5JIIE2gsa/eS8TVYnxlwPHaGxQnQrr0yJk5+Wyta2+lBPSbtz544amgjQQlyzOkBVgcilGG7G0Hvs8rjrZeA++bKFubhZI7W3EF+5i/PmSCClGR5N1jSSGMUYSSVuRqrvIBkqWhcJ0LimsZXIzYa3EgGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q+sL2jbd; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4b29b714f8cso5031cf.1
+        for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 12:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755714798; x=1756319598; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1755718510; x=1756323310; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gsQOzqrLO4R4zyG+J42cXUvN/yKvkkXg4uZo/iGma6s=;
-        b=OggKacs/YY/YhjD9h+3okfqY7nI/5E/P7A6fSOlV2Jr8d7Fgw5oxEJJpudqIDKLiFO
-         p0AI5cHbo3yEui1zbr1Hbh5TppF6vDeDYMc1QBPMRVvBljflJ8qtT0+c75soZaoBlAw2
-         kTG4Jzrvdeg7O02DyXmTfEB8VGdrKKTzNP7UdpDOG4qYf0ebNWnhCdkMuwVGChqjfeK6
-         O5YRqWVk50OQj8XLH/IrjKA0tCNboVtcYUeMU59briPkRh7U7tRFaMCZO1x8QBDhnErr
-         6J3JLbXURV7WsVYLYyHAiC2aUXNgbTs1k0W9lQGhRwb87AmpyAElLTTbK+ITYKDudx2u
-         9PyQ==
+        bh=Evl1Qwbb+l1iM9nDGqJDyJclUZR7xH02IVWIEnkyQLs=;
+        b=Q+sL2jbdrz33Y981fRtFAYIweXzTVfrhsXkrcObAnHQE8GOuP5jCXdvbqcm+a+Oo65
+         3SYCXp+hwpCEdTJMKA0S54fZbna9LcD4J+DVCIkK8DEyDGR4H/nLrsFrtIPF7QFDNqSG
+         zk/MimBFZ/5JVGrlFwM/8nVaQYu5/7bQ3Fe9zBSPQygePXOBL4CBdnnEk5mmN1S8t+An
+         WTFdfGQeYN6czdXPtkC7xgv8xaFLr0l5r/OcWh0VVE3BIPAmWzAhEGqyiUfSUsuD86M3
+         FgALKV+/9EWwG66rd5h5l5momdlGx4PgfprgWCfy9Z6quOp3kyJbYln15qA2f/yQpi61
+         PDDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755714798; x=1756319598;
+        d=1e100.net; s=20230601; t=1755718510; x=1756323310;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gsQOzqrLO4R4zyG+J42cXUvN/yKvkkXg4uZo/iGma6s=;
-        b=JgIO7BA3fAMSbqOTNqe+LprVjFdOSCTcBnTXjlvCuHTxnhBX4TX1Z/KRENDN7STqoD
-         SbCFGQyy810D8ylxFAVlBrKyEpZ7KTEBCAbS33ff+twXhL7wXYkVMrcrYP4+Kf62MVRx
-         dPWb5Nh1OB01KJmwGhoToRhR/jWaooFY6ZBevXva3Y1R/JGHlje+rTSZto59JdqJJcn0
-         iOAjnq6l1zP+Xm4+mb2YBKGHqXNtRlMoXfkWzQi3vSv69XwSTN7VhZ9H+WVB+sPV/b2q
-         2myiMXXEmjCX9bvQY/NIiesSdfmkY93QMDsteApNboUxA+LbS+e9vqfVlBBObKk1XCmv
-         lxIA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDXwqVmuDDKTfQNpwRzszdQH5grZM426Gy7jgBKTFzm5X441p0ogonTzXWj8ihLYd69/E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxILhLR2pB/ZHhlVkGaeHg0Z3GVzq3YDWgltjV1SMejW7xF5AF1
-	pB3ca/jR+9OdEVIlIA8btAndsG4En7yNXILGQVy7D3w7kyrGb7KI3KQX8Fe85nlxyBF+HWRFJUa
-	eyO74qV8yG9FmycoemzOHkUBEr7aYTcadiA==
-X-Gm-Gg: ASbGnctEH87gN/dBJayOCxCf36z1HGOlTCXw/+aCgAN2g9cDRzsf//UYYNI0QNMwVvW
-	SRGPZrn8PfgzGI1Jny7N7UBYvY3iAL4Rb1A4NmqeX7zZTYUWNci4hfj7eOvaW44qSb8z8z7EcO3
-	c9Z/pMtxhINh3lLUpeSx7jXHko8rXSMki9MWLik9e8MklvccoYMu5QaU2OCvDAF5CXUQ7v91+sQ
-	76/kBfIH6kJBgp9baek9+eqL6H+5RF4uA==
-X-Google-Smtp-Source: AGHT+IGMccKESFUd0FiLuZa/DSlzzTquJJPXSBYxqMiI8A54GxQAvPnt0Jn0epyVooYry3kaFeWpZibJ6C+Dq4X7piE=
-X-Received: by 2002:a17:90b:2e0b:b0:31e:3bbc:e9e6 with SMTP id
- 98e67ed59e1d1-324e1423f77mr5505161a91.19.1755714798284; Wed, 20 Aug 2025
- 11:33:18 -0700 (PDT)
+        bh=Evl1Qwbb+l1iM9nDGqJDyJclUZR7xH02IVWIEnkyQLs=;
+        b=OwKGFYYtIF0Rpp5DoVV/h8aDlNNY56ZbWpN/5qVwcSYB0sY6dNq/VHcSnH3FVS2dwg
+         o+KvcY5ogUQ7XobuuOnoud65bOiaM81u50KjV6o5kfF8S5JWduT5ZwUhUgph1bjwHZLb
+         +LQ5OzyYLrkPB4oBX0sodmnMeUXdVV5CdUErXKzIGvyAQLIKEmJkLtSmkeHq/+aif/Ya
+         sTe+3ghIv+AjzHMCJDl4SB9+R24png095eMYW1MM7m8ruf2K6/p4c2kOHqAo4JEAbqhv
+         gQ9/sKoVFxLauq3u7uDie8LqDbd3DqESx3ljPZnJu+B6+SoF5Q7vEqo+swoUcC6ZLyhm
+         MF5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUvf42gQsxxdbaZSmPWOMrIu7+ptxIRrCRKHg21UbkBSrUxkyK9/T4ud9OQGPtFe9ZYbMc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPkjyrR7+cpGuJBxiTsiexR+APLsLqpMlHLw8i5zUDJ7reYZem
+	LkKdt4JcoGpNPjiDzxKjXiKQC/uDnVlLlvTfws7IKFAkIaKQX1lLQPBojuxBxHYxiwaFw8VKksX
+	adHpLfHKS7ExSNZYqN9AOpCEVwpdgmUfDkN5YUJ9oxMGzWV7kbzTHaypsDfs=
+X-Gm-Gg: ASbGncvWELeCWa9soSXVuEVEwbThCyG7Nqnpnrtzpbc1WTyi7Mh/eBeuIZdScjMRDpH
+	v58GUCowgAPkvt5QzpsAzCk4POcfuGybVyt1B8ObYg7LMk8ybKMOAZJg97pFlS/zdrrcHR/QjUq
+	PjlLJmk24fCbNPguWok2Ea2Zhvlekaf8iL/3/A51H9p01UzoH2z4VDrhSnfxODEYPtN3ufbOwbN
+	O/JUTOBSXOf3CcZXbckyck3xGbnatenby2tb/yz/aLU
+X-Google-Smtp-Source: AGHT+IHSq8YXOQCNZxVS8duDt8m8HWxXwke/qw5jSQBhWJsNAWDqDV4rrLkFdrONxwsGMw/pL8xCe6+zvaHaKX8Q7x8=
+X-Received: by 2002:ac8:580f:0:b0:4a7:179e:5fec with SMTP id
+ d75a77b69052e-4b29e713c4bmr816881cf.15.1755718509381; Wed, 20 Aug 2025
+ 12:35:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250815192156.272445-1-mykyta.yatsenko5@gmail.com>
- <20250815192156.272445-4-mykyta.yatsenko5@gmail.com> <CAP01T751FPiuZv5yBMeHSAmFmywc7L3iY=jYLb992YOp_94pRQ@mail.gmail.com>
- <7a40bdcc-3905-4fa2-beac-c7612becabb7@gmail.com> <CAP01T74vkbS6yszqe4GjECJq=j5-V7ADde7D6wnTfw=zN8zJyw@mail.gmail.com>
- <CAEf4BzZPcawkrrdd2OoKLT-BWzCYsEpNxw52RKa6dL1B=xvdoA@mail.gmail.com> <CAP01T74gKna6WrgZvkoBBmwsbhrqrv4azeKwfk=frQasc9eaXQ@mail.gmail.com>
-In-Reply-To: <CAP01T74gKna6WrgZvkoBBmwsbhrqrv4azeKwfk=frQasc9eaXQ@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 20 Aug 2025 11:33:03 -0700
-X-Gm-Features: Ac12FXy7FT7o6c4qCf7MNIsyOEU3m4HB4HfNgOO3kN-QhJLtfqaB9Ormn7HsmAU
-Message-ID: <CAEf4BzZadH9NYkYSrgUvZAynBuG=t2TayhFPxzFzbWHsP8HCUw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] bpf: task work scheduling kfuncs
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
-	eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250818170136.209169-1-roman.gushchin@linux.dev>
+ <20250818170136.209169-2-roman.gushchin@linux.dev> <CAJuCfpF2akVnbZgPoDAXea2joJ1DWvBTHC7wGzEJcYX9xF9dSA@mail.gmail.com>
+ <878qjf13gx.fsf@linux.dev>
+In-Reply-To: <878qjf13gx.fsf@linux.dev>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Wed, 20 Aug 2025 12:34:56 -0700
+X-Gm-Features: Ac12FXy0lLRyFMPJP_Lri92PhEXXz9hvWGFjTmk5AjGe4AK2YQX_GDPqa3zp-wA
+Message-ID: <CAJuCfpFT1oo0+9f_XQa29UeZseLNNbwc19pLbG0MOthgxrtVuQ@mail.gmail.com>
+Subject: Re: [PATCH v1 01/14] mm: introduce bpf struct ops for OOM handling
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: linux-mm@kvack.org, bpf@vger.kernel.org, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>, 
+	David Rientjes <rientjes@google.com>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Song Liu <song@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 20, 2025 at 9:12=E2=80=AFAM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Tue, Aug 19, 2025 at 1:06=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
 >
-> On Tue, 19 Aug 2025 at 22:49, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
- wrote:
+> Suren Baghdasaryan <surenb@google.com> writes:
+>
+> > On Mon, Aug 18, 2025 at 10:01=E2=80=AFAM Roman Gushchin
+> > <roman.gushchin@linux.dev> wrote:
+> >>
+> >> Introduce a bpf struct ops for implementing custom OOM handling polici=
+es.
+> >>
+> >> The struct ops provides the bpf_handle_out_of_memory() callback,
+> >> which expected to return 1 if it was able to free some memory and 0
+> >> otherwise.
+> >>
+> >> In the latter case it's guaranteed that the in-kernel OOM killer will
+> >> be invoked. Otherwise the kernel also checks the bpf_memory_freed
+> >> field of the oom_control structure, which is expected to be set by
+> >> kfuncs suitable for releasing memory. It's a safety mechanism which
+> >> prevents a bpf program to claim forward progress without actually
+> >> releasing memory. The callback program is sleepable to enable using
+> >> iterators, e.g. cgroup iterators.
+> >>
+> >> The callback receives struct oom_control as an argument, so it can
+> >> easily filter out OOM's it doesn't want to handle, e.g. global vs
+> >> memcg OOM's.
+> >>
+> >> The callback is executed just before the kernel victim task selection
+> >> algorithm, so all heuristics and sysctls like panic on oom,
+> >> sysctl_oom_kill_allocating_task and sysctl_oom_kill_allocating_task
+> >> are respected.
+> >>
+> >> The struct ops also has the name field, which allows to define a
+> >> custom name for the implemented policy. It's printed in the OOM report
+> >> in the oom_policy=3D<policy> format. "default" is printed if bpf is no=
+t
+> >> used or policy name is not specified.
+> >>
+> >> [  112.696676] test_progs invoked oom-killer: gfp_mask=3D0xcc0(GFP_KER=
+NEL), order=3D0, oom_score_adj=3D0
+> >>                oom_policy=3Dbpf_test_policy
+> >> [  112.698160] CPU: 1 UID: 0 PID: 660 Comm: test_progs Not tainted 6.1=
+6.0-00015-gf09eb0d6badc #102 PREEMPT(full)
+> >> [  112.698165] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), =
+BIOS 1.17.0-5.fc42 04/01/2014
+> >> [  112.698167] Call Trace:
+> >> [  112.698177]  <TASK>
+> >> [  112.698182]  dump_stack_lvl+0x4d/0x70
+> >> [  112.698192]  dump_header+0x59/0x1c6
+> >> [  112.698199]  oom_kill_process.cold+0x8/0xef
+> >> [  112.698206]  bpf_oom_kill_process+0x59/0xb0
+> >> [  112.698216]  bpf_prog_7ecad0f36a167fd7_test_out_of_memory+0x2be/0x3=
+13
+> >> [  112.698229]  bpf__bpf_oom_ops_handle_out_of_memory+0x47/0xaf
+> >> [  112.698236]  ? srso_alias_return_thunk+0x5/0xfbef5
+> >> [  112.698240]  bpf_handle_oom+0x11a/0x1e0
+> >> [  112.698250]  out_of_memory+0xab/0x5c0
+> >> [  112.698258]  mem_cgroup_out_of_memory+0xbc/0x110
+> >> [  112.698274]  try_charge_memcg+0x4b5/0x7e0
+> >> [  112.698288]  charge_memcg+0x2f/0xc0
+> >> [  112.698293]  __mem_cgroup_charge+0x30/0xc0
+> >> [  112.698299]  do_anonymous_page+0x40f/0xa50
+> >> [  112.698311]  __handle_mm_fault+0xbba/0x1140
+> >> [  112.698317]  ? srso_alias_return_thunk+0x5/0xfbef5
+> >> [  112.698335]  handle_mm_fault+0xe6/0x370
+> >> [  112.698343]  do_user_addr_fault+0x211/0x6a0
+> >> [  112.698354]  exc_page_fault+0x75/0x1d0
+> >> [  112.698363]  asm_exc_page_fault+0x26/0x30
+> >> [  112.698366] RIP: 0033:0x7fa97236db00
+> >>
+> >> It's possible to load multiple bpf struct programs. In the case of
+> >> oom, they will be executed one by one in the same order they been
+> >> loaded until one of them returns 1 and bpf_memory_freed is set to 1
+> >> - an indication that the memory was freed. This allows to have
+> >> multiple bpf programs to focus on different types of OOM's - e.g.
+> >> one program can only handle memcg OOM's in one memory cgroup.
+> >> But the filtering is done in bpf - so it's fully flexible.
+> >>
+> >> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+> >> ---
+> >>  include/linux/bpf_oom.h |  49 +++++++++++++
+> >>  include/linux/oom.h     |   8 ++
+> >>  mm/Makefile             |   3 +
+> >>  mm/bpf_oom.c            | 157 +++++++++++++++++++++++++++++++++++++++=
++
+> >>  mm/oom_kill.c           |  22 +++++-
+> >>  5 files changed, 237 insertions(+), 2 deletions(-)
+> >>  create mode 100644 include/linux/bpf_oom.h
+> >>  create mode 100644 mm/bpf_oom.c
+> >>
+> >> diff --git a/include/linux/bpf_oom.h b/include/linux/bpf_oom.h
+> >> new file mode 100644
+> >> index 000000000000..29cb5ea41d97
+> >> --- /dev/null
+> >> +++ b/include/linux/bpf_oom.h
+> >> @@ -0,0 +1,49 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0+ */
+> >> +
+> >> +#ifndef __BPF_OOM_H
+> >> +#define __BPF_OOM_H
+> >> +
+> >> +struct bpf_oom;
+> >> +struct oom_control;
+> >> +
+> >> +#define BPF_OOM_NAME_MAX_LEN 64
+> >> +
+> >> +struct bpf_oom_ops {
+> >> +       /**
+> >> +        * @handle_out_of_memory: Out of memory bpf handler, called be=
+fore
+> >> +        * the in-kernel OOM killer.
+> >> +        * @oc: OOM control structure
+> >> +        *
+> >> +        * Should return 1 if some memory was freed up, otherwise
+> >> +        * the in-kernel OOM killer is invoked.
+> >> +        */
+> >> +       int (*handle_out_of_memory)(struct oom_control *oc);
+> >> +
+> >> +       /**
+> >> +        * @name: BPF OOM policy name
+> >> +        */
+> >> +       char name[BPF_OOM_NAME_MAX_LEN];
 > >
-> > On Tue, Aug 19, 2025 at 12:28=E2=80=AFPM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > On Tue, 19 Aug 2025 at 20:16, Mykyta Yatsenko
-> > > <mykyta.yatsenko5@gmail.com> wrote:
-> > > >
-> > > > On 8/19/25 15:18, Kumar Kartikeya Dwivedi wrote:
-> > > > > On Fri, 15 Aug 2025 at 21:22, Mykyta Yatsenko
-> > > > > <mykyta.yatsenko5@gmail.com> wrote:
-> > > > >> From: Mykyta Yatsenko <yatsenko@meta.com>
-> > > > >>
-> > > > >> Implementation of the bpf_task_work_schedule kfuncs.
-> > > > >>
-> > > > >> Main components:
-> > > > >>   * struct bpf_task_work_context =E2=80=93 Metadata and state ma=
-nagement per task
-> > > > >> work.
-> > > > >>   * enum bpf_task_work_state =E2=80=93 A state machine to serial=
-ize work
-> > > > >>   scheduling and execution.
-> > > > >>   * bpf_task_work_schedule() =E2=80=93 The central helper that i=
-nitiates
-> > > > >> scheduling.
-> > > > >>   * bpf_task_work_acquire() - Attempts to take ownership of the =
-context,
-> > > > >>   pointed by passed struct bpf_task_work, allocates new context =
-if none
-> > > > >>   exists yet.
-> > > > >>   * bpf_task_work_callback() =E2=80=93 Invoked when the actual t=
-ask_work runs.
-> > > > >>   * bpf_task_work_irq() =E2=80=93 An intermediate step (runs in =
-softirq context)
-> > > > >> to enqueue task work.
-> > > > >>   * bpf_task_work_cancel_and_free() =E2=80=93 Cleanup for delete=
-d BPF map entries.
-> > > > > Can you elaborate on why the bouncing through irq_work context is=
- necessary?
-> > > > > I think we should have this info in the commit log.
-> > > > > Is it to avoid deadlocks with task_work locks and/or task->pi_loc=
-k?
-> > > > yes, mainly to avoid locks in NMI.
-> > > > >
-> > > > >> Flow of successful task work scheduling
-> > > > >>   1) bpf_task_work_schedule_* is called from BPF code.
-> > > > >>   2) Transition state from STANDBY to PENDING, marks context is =
-owned by
-> > > > >>   this task work scheduler
-> > > > >>   3) irq_work_queue() schedules bpf_task_work_irq().
-> > > > >>   4) Transition state from PENDING to SCHEDULING.
-> > > > >>   4) bpf_task_work_irq() attempts task_work_add(). If successful=
-, state
-> > > > >>   transitions to SCHEDULED.
-> > > > >>   5) Task work calls bpf_task_work_callback(), which transition =
-state to
-> > > > >>   RUNNING.
-> > > > >>   6) BPF callback is executed
-> > > > >>   7) Context is cleaned up, refcounts released, context state se=
-t back to
-> > > > >>   STANDBY.
-> > > > >>
-> > > > >> bpf_task_work_context handling
-> > > > >> The context pointer is stored in bpf_task_work ctx field (u64) b=
-ut
-> > > > >> treated as an __rcu pointer via casts.
-> > > > >> bpf_task_work_acquire() publishes new bpf_task_work_context by c=
-mpxchg
-> > > > >> with RCU initializer.
-> > > > >> Read under the RCU lock only in bpf_task_work_acquire() when own=
-ership
-> > > > >> is contended.
-> > > > >> Upon deleting map value, bpf_task_work_cancel_and_free() is deta=
-ching
-> > > > >> context pointer from struct bpf_task_work and releases resources
-> > > > >> if scheduler does not own the context or can be canceled (state =
-=3D=3D
-> > > > >> STANDBY or state =3D=3D SCHEDULED and callback canceled). If tas=
-k work
-> > > > >> scheduler owns the context, its state is set to FREED and schedu=
-ler is
-> > > > >> expected to cleanup on the next state transition.
-> > > > >>
-> > > > >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> > > > >> ---
-> > > > > This is much better now, with clear ownership between free path a=
-nd
-> > > > > scheduling path, I mostly have a few more comments on the current
-> > > > > implementation, plus one potential bug.
-> > > > >
-> > > > > However, the more time I spend on this, the more I feel we should
-> > > > > unify all this with the two other bpf async work execution mechan=
-isms
-> > > > > (timers and wq), and simplify and deduplicate a lot of this under=
- the
-> > > > > serialized async->lock. I know NMI execution is probably critical=
- for
-> > > > > this primitive, but we can replace async->lock with rqspinlock to
-> > > > > address that, so that it becomes safe to serialize in any context=
-.
-> > > > > Apart from that, I don't see anything that would negate reworking=
- all
-> > > > > this as a case of BPF_TASK_WORK for bpf_async_kern, modulo intern=
-al
-> > > > > task_work locks that have trouble with NMI execution (see later
-> > > > > comments).
-> > > > >
-> > > > > I also feel like it would be cleaner if we split the API into 3 s=
-teps:
-> > > > > init(), set_callback(), schedule() like the other cases, I don't =
-see
-> > > > > why we necessarily need to diverge, and it simplifies some of the
-> > > > > logic in schedule().
-> > > > > Once every state update is protected by a lock, all of the state
-> > > > > transitions are done automatically and a lot of the extra races a=
-re
-> > > > > eliminated.
-> > > > >
-> > > > > I think we should discuss whether this was considered and why you
-> > > > > discarded this approach, otherwise the code is pretty complex, wi=
-th
-> > > > > little upside.
-> > > > > Maybe I'm missing something obvious and you'd know more since you=
-'ve
-> > > > > thought about all this longer.
-> > > > As for API, I think having 1 function for scheduling callback is cl=
-eaner
-> > > > then having 3 which are always called in the same order anyway. Mos=
-t of
-> > > > the complexity
-> > > > comes from synchronization, not logic, so not having to do the same
-> > > > synchronization in
-> > > > init(), set_callback() and schedule() seems like a benefit to me.
-> > >
-> > > Well, if you were to reuse bpf_async_kern, all of that extra logic is
-> > > already taken care of, or can be easily shared.
-> > > If you look closely you'll see that a lot of what you're doing is a
-> > > repetition of what timers and bpf_wq have.
-> > >
-> > > > Let me check if using rqspinlock going to make things simpler. We s=
-till
-> > > > need states to at least know if cancellation is possible and to fla=
-g
-> > > > deletion to scheduler, but using a lock will make code easier to
-> > > > understand.
-> > >
-> > > Yeah I think for all of this using lockless updates is not really
-> > > worth it, let's just serialize using a lock.
-> >
-> > I don't think it's "just serialize".
-> >
-> > __bpf_async_init and __bpf_async_set_callback currently have `if
-> > (in_nmi()) return -EOPNOTSUPP;`, because of `bpf_map_kmalloc_node`
-> > (solvable with bpf_mem_alloc, not a big deal) and then unconditional
-> > `__bpf_spin_lock_irqsave(&async->lock);` (and maybe some other things
-> > that can't be done in NMI).
-> >
-> > We can't just replace __bpf_spin_lock_irqsave with rqspinlock, because
-> > the latter can fail. So the simplicity of unconditional locking is
-> > gone. We'd need to deal with the possibility of lock failing. It's
-> > probably not that straightforward in the case of
-> > __bpf_async_cancel_and_free.
+> > Why should the name be a part of ops structure? IMO it's not an
+> > attribute of the operations but rather of the oom handler which is
+> > represented by bpf_oom here.
 >
-> We discussed converting async_cb to rqspinlock last time, the hold up
-> was __bpf_async_cancel_and_free, every other case can propagate error
-> upwards since they're already fallible.
+> The ops structure describes a user-defined oom policy. Currently
+> it's just one handler and the policy name. Later additional handlers
+> can be added, e.g. a handler to control the dmesg output.
 >
-> The only reason I didn't move ahead was there was no apparent use case
-> for timer usage in NMI (to me at least).
+> bpf_oom is an implementation detail: it's basically an extension
+> to struct bpf_oom_ops which contains "private" fields required
+> for the internal machinery.
 
-Scheduling some time-delayed action from perf_event/kprobe (with both
-could be in NMI) seems like a reasonable thing to expect to work. So
-I'd say there is a need for NMI support even without task_work.
+Ok. I hope we can come up with some more descriptive naming but I
+can't think of something good ATM.
 
->
-> But I don't see why it's less simpler in other cases, you need to
-> return an error in case you fail to take the lock (which should not
-> occur in correct usage), yes, but once you take the lock nobody
-> is touching the object anymore. And all those paths are already
-
-Either you are oversimplifying or I'm over complicating.. :) Even when
-BPF program started the process to schedule task work, which is
-multi-step process (STANDBY -> PENDING -> SCHEDULING/SCHEDULED ->
-RUNNING -> STANDBY), at each step you need to take lock. Meanwhile,
-nothing prevents other BPF program executions to try (and successfully
-do) take the same lock (that might be logical bug, or just how user
-decided to handle, or rather disregard, locking). While it holds it,
-callback might start running, it would need to take lock and won't be
-for some time. Maybe that time is short and we won't run into
-EDEADLOCK, but maybe it's not (and yes, that wouldn't be expected, but
-it's not impossible either).
-
-Similarly with cancel_and_free. That can be triggered by delete/update
-which can happen simultaneously on multiple CPUs.
-
-But even thinking through and proving that lock in cancel_and_free
-will definitely be successfully taking (while interface itself screams
-at you that it might not), is complication enough that I'd rather not
-have to think through and deal with.
-
-So I still maintain that atomic state transitions is a simpler model
-to prove is working as expected and reliably.
-
-When you think about it, it's really a linear transition through a few
-stages (STANDBY -> PENDING -> ... -> RUNNING -> STANDBY), with the
-only "interesting" interaction that we can go to FREED at any stage.
-But when we do go to FREED, all participating parties know
-deterministically where we were and who's responsible for clean up.
-
-So in summary, I think it's good for you to try to switch timer and wq
-to rqspinlock and work out all the kinds, but I'd prefer not to block
-task_work on this work and proceed with state machine approach.
-
-
-> fallible, so it's an extra error condition.
->
-> It is possible to then focus our effort on understanding failure modes
-> where __bpf_async_cancel_and_free's lock acquisition can fail, the
-> last time I looked it wasn't possible (otherwise we already have a bug
-> with the existing spin lock).
->
-> That said, BPF timers cannot be invoked in NMI, and irqsave provides
-> interrupt exclusion. We exclude usage of maps with timers in programs
-> that may run in NMI context. Things will be different once that restricti=
-on is
-> lifted for task_work, but it just means if the lock acquisition is failin=
-g on a
-> single lock, a lower context we interrupted is holding it, which means
-> it won the claim to free the object and we don't need to do anything.
-> Since we have a single lock the cases we need to actively worry about
-> are the reentrant ones.
->
-> I can imagine a task context program updating an array map element,
-> which invoked bpf_obj_free_fields, and then a perf program attempting
-> to do the same thing on the same element from an NMI. Fine, the lock
-> acquisition in free will fail, but we understand why it's ok to give up t=
-he
-> free in such a case.
->
-
-This "fine to give up free" doesn't sound neither obvious, nor simple,
-and will require no less thinking and care than what you'd need to
-understand that state machine we discussed for task_work, IMO.
-
-> >
-> > On the other hand, state machine with cmpxchg means there is always
-> > forward progress and there is always determinism of what was the last
-> > reached state before we went to FREED state, which means we will know
-> > who needs to cancel callback (if at all), and who is responsible for
-> > freeing resources.
->
-> There is forward progress regardless (now), but with a lockless state
-> machine, every state transition needs to consider various edges which
-> may have been concurrently activated by some other racing invocation.
-> You don't have such concerns with a lock. At least to me, I don't see
-
-We still do have concurrency, lock doesn't magically solve that for
-us. While you are cancelling/freeing callback might be running or is
-about to run and you can't really cancel it. All that still would need
-to be handled and thought through.
-
-> how the latter is worse than the former, it's less cases to think
-> about and deal with in the code.
-> E.g. all these "state =3D=3D BPF_TW_FREED" would go away at various place=
-s
-> in the middle of various operations.
-
-I don't think so, see above. You are oversimplifying. But again,
-please try to do this conversion for timer and wq, it's worthwhile to
-do regardless of task_work.
-
->
-> To me after looking at this code the second time, there seems to be
-> little benefit. Things would be different if multiple concurrent
-> schedule() calls on the same map value was a real use case, such that
-> lock contention would quickly become a performance bottleneck, but I
-> don't think that's true.
 >
 > >
-> > I'm actually wondering if this state machine approach could/should be
-> > adopted for bpf_async_cb?.. I wouldn't start there, though, and rather
-> > finish task_work_add integration before trying to generalize.
+> >> +
+> >> +       /* Private */
+> >> +       struct bpf_oom *bpf_oom;
+> >> +};
+> >> +
+> >> +#ifdef CONFIG_BPF_SYSCALL
+> >> +/**
+> >> + * @bpf_handle_oom: handle out of memory using bpf programs
+> >> + * @oc: OOM control structure
+> >> + *
+> >> + * Returns true if a bpf oom program was executed, returned 1
+> >> + * and some memory was actually freed.
+> >
+> > The above comment is unclear, please clarify.
 >
-> Maybe it's just me, but I feel like it's additional complexity that's
-> not giving us much benefit.
+> Fixed, thanks.
 >
-> There are enough things to worry about even when holding a lock and
-> excluding NMI, as seen with various bugs over the years.
-> E.g. git log --oneline --grep=3D"Fixes: b00628b1c7d5 (\"bpf: Introduce
-> bpf timers.\")"
+> /**
+>  * @bpf_handle_oom: handle out of memory condition using bpf
+>  * @oc: OOM control structure
+>  *
+>  * Returns true if some memory was freed.
+>  */
+> bool bpf_handle_oom(struct oom_control *oc);
 >
-> It is impossible to say that we can get it right with all this in the
-> 1st attempt, even if we hold a fallible lock to avoid deadlocks, or we
-> switch to this state machine approach.
-> The best we can do is to at least minimize the set of cases we have to
-> worry about.
 >
-> [
->    As an aside, if we intend on keeping the door open on
-> consolidation, we probably should at least mirror the API surface.
->    Maybe we made a mistake with init+set_callback+kick style split in
-> existing APIs, but it might be easier for people to understand that
-> all async primitives mostly follow this look and feel.
->    It wouldn't be the end of the world, but there's an argument to be
-> made for consistency.
-> ]
+> >
+> >> + */
+> >> +bool bpf_handle_oom(struct oom_control *oc);
+> >> +
+> >> +#else /* CONFIG_BPF_SYSCALL */
+> >> +static inline bool bpf_handle_oom(struct oom_control *oc)
+> >> +{
+> >> +       return false;
+> >> +}
+> >> +
+> >> +#endif /* CONFIG_BPF_SYSCALL */
+> >> +
+> >> +#endif /* __BPF_OOM_H */
+> >> diff --git a/include/linux/oom.h b/include/linux/oom.h
+> >> index 1e0fc6931ce9..ef453309b7ea 100644
+> >> --- a/include/linux/oom.h
+> >> +++ b/include/linux/oom.h
+> >> @@ -51,6 +51,14 @@ struct oom_control {
+> >>
+> >>         /* Used to print the constraint info. */
+> >>         enum oom_constraint constraint;
+> >> +
+> >> +#ifdef CONFIG_BPF_SYSCALL
+> >> +       /* Used by the bpf oom implementation to mark the forward prog=
+ress */
+> >> +       bool bpf_memory_freed;
+> >> +
+> >> +       /* Policy name */
+> >> +       const char *bpf_policy_name;
+> >> +#endif
+> >>  };
+> >>
+> >>  extern struct mutex oom_lock;
+> >> diff --git a/mm/Makefile b/mm/Makefile
+> >> index 1a7a11d4933d..a714aba03759 100644
+> >> --- a/mm/Makefile
+> >> +++ b/mm/Makefile
+> >> @@ -105,6 +105,9 @@ obj-$(CONFIG_MEMCG) +=3D memcontrol.o vmpressure.o
+> >>  ifdef CONFIG_SWAP
+> >>  obj-$(CONFIG_MEMCG) +=3D swap_cgroup.o
+> >>  endif
+> >> +ifdef CONFIG_BPF_SYSCALL
+> >> +obj-y +=3D bpf_oom.o
+> >> +endif
+> >>  obj-$(CONFIG_CGROUP_HUGETLB) +=3D hugetlb_cgroup.o
+> >>  obj-$(CONFIG_GUP_TEST) +=3D gup_test.o
+> >>  obj-$(CONFIG_DMAPOOL_TEST) +=3D dmapool_test.o
+> >> diff --git a/mm/bpf_oom.c b/mm/bpf_oom.c
+> >> new file mode 100644
+> >> index 000000000000..47633046819c
+> >> --- /dev/null
+> >> +++ b/mm/bpf_oom.c
+> >> @@ -0,0 +1,157 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-or-later
+> >> +/*
+> >> + * BPF-driven OOM killer customization
+> >> + *
+> >> + * Author: Roman Gushchin <roman.gushchin@linux.dev>
+> >> + */
+> >> +
+> >> +#include <linux/bpf.h>
+> >> +#include <linux/oom.h>
+> >> +#include <linux/bpf_oom.h>
+> >> +#include <linux/srcu.h>
+> >> +
+> >> +DEFINE_STATIC_SRCU(bpf_oom_srcu);
+> >> +static DEFINE_SPINLOCK(bpf_oom_lock);
+> >> +static LIST_HEAD(bpf_oom_handlers);
+> >> +
+> >> +struct bpf_oom {
+> >
+> > Perhaps bpf_oom_handler ? Then bpf_oom_ops->bpf_oom could be called
+> > bpf_oom_ops->handler.
+>
+> I don't think it's a handler, it's more like a private part
+> of bpf_oom_ops. Maybe bpf_oom_impl? Idk
 
-I don't see why we can't consolidate internals of all these async
-callbacks while maintaining a user-facing API that makes most sense
-for each specific case. For task_work (and yes, I think for timers it
-would make more sense as well), we are talking about a single
-conceptual operation: just schedule a callback. So it makes sense to
-have a single kfunc that expresses that.
+Yeah, we need to come up with some nomenclature and name these structs
+accordingly. In my mind ops means a structure that contains only
+operations, so current naming does not sit well but maybe that's just
+me...
 
-Having a split into init, set_callback, kick is unnecessary and
-cumbersome. It also adds additional mental overhead to think about
-interleave of those three invocations from two or more concurrent BPF
-programs (I'm not saying it doesn't work correctly in current
-implementation, but it's another thing to think about in three
-helpers/kfuncs, rather than in just one: that you can't have init done
-by prog A, set_callback by prog B, and kick off be either prog A or B,
-or even some other C program execution).
+>
+> >
+> >
+> >> +       struct bpf_oom_ops *ops;
+> >> +       struct list_head node;
+> >> +       struct srcu_struct srcu;
+> >> +};
+> >> +
+> >> +bool bpf_handle_oom(struct oom_control *oc)
+> >> +{
+> >> +       struct bpf_oom_ops *ops;
+> >> +       struct bpf_oom *bpf_oom;
+> >> +       int list_idx, idx, ret =3D 0;
+> >> +
+> >> +       oc->bpf_memory_freed =3D false;
+> >> +
+> >> +       list_idx =3D srcu_read_lock(&bpf_oom_srcu);
+> >> +       list_for_each_entry_srcu(bpf_oom, &bpf_oom_handlers, node, fal=
+se) {
+> >> +               ops =3D READ_ONCE(bpf_oom->ops);
+> >> +               if (!ops || !ops->handle_out_of_memory)
+> >> +                       continue;
+> >> +               idx =3D srcu_read_lock(&bpf_oom->srcu);
+> >> +               oc->bpf_policy_name =3D ops->name[0] ? &ops->name[0] :
+> >> +                       "bpf_defined_policy";
+> >> +               ret =3D ops->handle_out_of_memory(oc);
+> >> +               oc->bpf_policy_name =3D NULL;
+> >> +               srcu_read_unlock(&bpf_oom->srcu, idx);
+> >> +
+> >> +               if (ret && oc->bpf_memory_freed)
+> >
+> > IIUC ret and oc->bpf_memory_freed seem to reflect the same state:
+> > handler successfully freed some memory. Could you please clarify when
+> > they differ?
+>
+> The idea here is to provide an additional safety measure:
+> if the bpf program simple returns 1 without doing anything,
+> the system won't deadlock.
+>
+> oc->bpf_memory_freed is set by the bpf_oom_kill_process() helper
+> (and potentially some other helpers in the future, e.g.
+> bpf_oom_rm_tmpfs_file()) and can't be modified by the bpf
+> program directly.
 
-I'm guessing we modeled timer in such a way because we tried to stick
-to kernel-internal API (and maybe we were trying to fit into 5
-argument limitations, not sure). This makes sense internally in the
-kernel, where you have different ways to init timer struct, different
-ways to set or update expiration, etc, etc. This is not the case for
-the BPF-side API of timer (but what's done is done, we can't just undo
-it).
-
-And for task_work_add(), even kernel-internal API is a singular
-function, which makes most sense, so I'd like to stick to that
-simplicity.
+I see. Then maybe we use only oc->bpf_memory_freed and
+handle_out_of_memory() does not return anything?
 
