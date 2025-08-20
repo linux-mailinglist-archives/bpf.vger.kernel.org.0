@@ -1,177 +1,182 @@
-Return-Path: <bpf+bounces-66077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8A9AB2DAEF
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 13:29:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93DDBB2DB26
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 13:36:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55F0E7BB179
-	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 11:28:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3654C5C78A3
+	for <lists+bpf@lfdr.de>; Wed, 20 Aug 2025 11:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128072E3B0D;
-	Wed, 20 Aug 2025 11:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE032E54B6;
+	Wed, 20 Aug 2025 11:34:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dt25tUS0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6HzyjQd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00102BEC22;
-	Wed, 20 Aug 2025 11:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBFE02E7179
+	for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 11:34:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755689366; cv=none; b=PAs1fhmFGFuJGMeQYQGz2ONYUnKvJ/ygcGa3IENPnzq91G+eqqCGuDz5K3eS5tsZVaa0fKQ5oHfmBoTBQcFrG8k4zTdN7n3U5ACTdjFxTy1mq36sMLyoNAEARIYmQIEfxp5OTitijK5ZzSXIHVBvbvcCHOsO4URzqFFdGHcQM+k=
+	t=1755689659; cv=none; b=V/NGpAqUqZyJkEkF42Bu4gao2tGbWYhBz4oq8AcBq73k7t3pcw22z7zsjvZjzJNyiLGmfygNIPCupM9W8mPc0D9j2ZdVKpW11R5ud7bWZ5u6NIaw47SGfczpAnYSAEkTpLDMfpIjDqMgeBazAtL7zwckUy3D2jqV/rthr2habgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755689366; c=relaxed/simple;
-	bh=Jsb4n0u5pdla5ypr6UnYHFRMfmkZIPMBUQ2dB9p1JlU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CDKIH3kLDRZZz12uw/sqgtSC83e96Vwb6jxl2jWDjAvbASWb7aJFcTOZsw1DPil48sTs1YOKnz3+uHCQLJz+CX2IsKhzePFZgPa6tKyPCeOYowyPbISyZx7DWaaBK1JRw4wED0otnuU48nkxmhd/6FiIWmQmEZALo10JLZzF2ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dt25tUS0; arc=none smtp.client-ip=209.85.218.67
+	s=arc-20240116; t=1755689659; c=relaxed/simple;
+	bh=d2CMTsFOfospJM6Ts49dEKniaIoVRgIPj7W278GzAJ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GPXdhkxZDUolkndymrN7o8auBkHeEl5sKZ28VuSqWpvgOoskas9aOvZy8898exluCvJhFvJ+IyA/R8YYgagcHBrpMWmiccUtJxc4tkE17ykDDvtFd+LyiworRpEDgCTOoUhEYl3kt9VzUReTZnfU4pncJsFRk0EByZP5SsDtWOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6HzyjQd; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-afcb73621fcso759318866b.0;
-        Wed, 20 Aug 2025 04:29:24 -0700 (PDT)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-45a1b05ac1eso33380525e9.1
+        for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 04:34:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755689363; x=1756294163; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=upjI12z9EKSOogPe3mu03H4QB6bxTGw3qKQDwah+3Jk=;
-        b=dt25tUS00eHmbYL1fUR6nZZBVziKjRxQM89ppGNQV1uHFPZuyjAePiyFu81aSApsp4
-         98hcTS7YZ7+JbGNhL6cm+vgBLQr3rjyBwMCot1EEKMCyDFGC7WUIL0INPAbYd3ig5mDg
-         udaoDgljojpYpwRMOk/3K2UXjR39MJOHBEaOfOsrwaXju2bumBjDx/Vcn192a5KqhNG9
-         coy+N9nT1OoUIY+qBUzrR9gtXO+bmvg2gBTwYY/Y3Itz/CW6iEhTVPWBESZiZXQ3PxRm
-         gmZtG6O9gx6ipFGFh0BDBdEIKouM6143QE+Dj4nrodvudJ81MU2E5xF0hvhR80kuasYL
-         Ew+w==
+        d=gmail.com; s=20230601; t=1755689656; x=1756294456; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uXH+qPEUNUSeKVkwKxdBzrKxeCxplvf+HtayDB2icuw=;
+        b=O6HzyjQdg8A2Bwk0L40CRnfwu5dhvnnOxHYv7ZasQvdap+XHRRip2j2fHgNm0kj54v
+         gNnyIoDbMWcUIYadknN3n3a8yhoG3qV+PIHJvTzYSntsTrhXigtrjoomhrj/W4jau4fc
+         K2pEEEfb53fBtLJSrW48i6EPlieHUZyBcGok5uGK0O9Rbq4TCRuA4OS+JbMEUan4G93G
+         IMulnbbcLRyJqousIUXNXasrx3A+VBv/Vz3oSKey4VucGCH3qgdDroky9aKIW96xefa3
+         N6lV2271paEzTKlvRUOC9ABycInGpCg2YdzKngKk3ng9QkuEX3XRMUHJ1txAIHzHHSwd
+         i62w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755689363; x=1756294163;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=upjI12z9EKSOogPe3mu03H4QB6bxTGw3qKQDwah+3Jk=;
-        b=kpWeReF5h8lJkud/L2E02mhdfx/l/SgDZt6nIKlEJWEgjEX4ML5J+wP6UlImBbb/A1
-         U9dUAk+SU13lvvr0KykBwxzpCbvpmwBg9s2DFoY12f5SD3r7GFuxrd05RmtxLe5SwUuH
-         kNLCyHqegw9TKv2GmieKPzGMiGzl9r11WU7PLXmc3evOEs17wvtwlNsULp2XpxWpkMCt
-         IoWxX6G3aDRlNqcXH35sVM2DKjmlZpwGx0wVSkkgilTj39zn+YdTHsQzC4+BXsJTIPrn
-         W0FU30S8/KIQKOU66On8L2MrggGhLEuXFq58UZ8L8k8ftwMJQRiNjCTmCNgSaM5WMJat
-         zY6g==
-X-Forwarded-Encrypted: i=1; AJvYcCW0crhNJ8eYyKcnpdFNsmGPNMoE6X6HV0my03rILT6Plm+LLPlHEH46PKi/ZhuSjt8jYcY=@vger.kernel.org, AJvYcCWux+voe7fALdvd76StqN79JiEK5znCcKan/ofzi0l+1WTpJpGGtyB0p4UGTz1J77IALT5FZG1AkbLTMIkh@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5DgJiMRooEelUCurT4ZA4PJC8iYklr/9YC5ExXO9WT0UdHAbd
-	nz5O3KI2uu+VLTkTqTfWZjimF1SPPx88vJ5xJShQuiFw8RfcbB2uGpPQSSgKqYcvck96Nq5T1CV
-	kJAx4QUFqXjdjt2XmRb2ytPwSsdODUkY=
-X-Gm-Gg: ASbGncvwgbfwIBOAz0eSeSGv3hTyxu8Z71iG+1XxEYakR41oRjdgDKe/CeqfhUBnand
-	BpfsgCna4GTijdaB2E57s7eZyWJXYRGoOwXOHsYmVqWTTjYr183swHKQvSuzc1I3fhlgOEyEfdq
-	ZEBGhJN7/4zQDcdfDhBHG6Z2Jc+O1bWwNxau7IEWlSo8AT4TJ1RDibNJ4NWbsw5pOn8I89+L5br
-	Cgy6NqGE8rXcis//kIJqaqRJMhh
-X-Google-Smtp-Source: AGHT+IHKR4WT5Ll3zM9CQe9O0PlIb3Q7/p2qJgWorUSCzbLQuFfLo3z+C+RdY7BU9glE+sZqnURywScSjdBODs3VOHc=
-X-Received: by 2002:a17:907:e913:b0:ae6:a8c1:c633 with SMTP id
- a640c23a62f3a-afdf026893bmr188656266b.34.1755689362625; Wed, 20 Aug 2025
- 04:29:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755689656; x=1756294456;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uXH+qPEUNUSeKVkwKxdBzrKxeCxplvf+HtayDB2icuw=;
+        b=uo6MBl2gnajYmMVQU9BWnMnS3RDuagAUrzu3DViftbGzX/RXjygnqLPIci0XfKLaDs
+         2+KwBuk0iXqPwZ0fa47My9POboBdZeW+UsB+eEoqjLxx+vu0R6Jl/lhKMvSaPAtalQqK
+         rVC0wh59mAHkSIteCT2m1PtheuULzZvZQghAZy+Gzg3BMr8oTGkyohvHOn4x0qwQrrE2
+         wdJn1VTq+FSHWL0RrJkMa1PykllTg/HoU5fSbSVRmVAuuZuLN9I8E4iNQxiSbRrB7l1I
+         kzIuCST6zONQH99Onh7Le4y/sWHVOwbGNl2seDarjXmR4Jy68h/eR9XS+gKtwwjanxIy
+         UGnA==
+X-Forwarded-Encrypted: i=1; AJvYcCU7e8Qs0+gRskePXiQ9RCOnqJc7tYUwLv4B0Ctr3g26ujhWYZr10iQnwmB3crVHqnTBotk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfZMs+wl3FxGxXaP3d3L60C0kfcnnVsCLQXiCIq7sSN6aTru+K
+	g7KxDAs5ahjdI7qEqORaXxy7/tDJQN9nuUDi1g8rmQiOIgiEb9Dyn8ce
+X-Gm-Gg: ASbGncuZDSTrHWMUtnOKTh64lSQarFIDL5GqGxRwVF7KYsHAOqC2f8jxUhT4XkU3joe
+	C4M2abWe+rebJXYGZJG2WTnqVdPlzMwugxzSkroAsg0Upd7VhHi1N7bVjz5jrVoMXuoucTwPFUo
+	R/wlrRhx60/RGoNS3dKXspkmat2MQS9eRGy+g1t5gBtIDKTVVMUFzOMaC3MT9PgPgqQA+ocspge
+	jxsYdziJ8IbWnsrEcLtY169NNlyEzPLKX/ARKHGJSqJ69H2IHyc3clFL30hAxEnUkVebENnRKNq
+	K3z705Y+h0j3DWHoWH/oD/CBdCFQ2ZrT3RTPn9dF/I1GWsGMPJUDn7Kn1xgwge+RYJK9TnHCzHc
+	JfI99qf+UYJnygY93RjUMnJggdMoiqt1sUPII46+Mo8m25xbOzyrSq7vG3AY4FJcUAbMrF8N3LB
+	0Q3TcoFU2FlnFnbZnUu4vjLZwUFMLvC70=
+X-Google-Smtp-Source: AGHT+IECunXqBGlVdSyROfRgJ5fukZidvqWlPfHSoea9nFU4IDulE/wYai8mTkzdV1RYKNEodU61Fw==
+X-Received: by 2002:a05:6000:2481:b0:3b7:8268:8335 with SMTP id ffacd0b85a97d-3c32fb2fe1emr1793826f8f.42.1755689655922;
+        Wed, 20 Aug 2025 04:34:15 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e0086dd4a301ba288fd.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:86dd:4a30:1ba2:88fd])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c0771c1677sm7546278f8f.39.2025.08.20.04.34.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Aug 2025 04:34:15 -0700 (PDT)
+Date: Wed, 20 Aug 2025 13:34:13 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: syzbot ci <syzbot+ci59254af1cb47328a@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, eddyz87@gmail.com, shung-hsi.yu@suse.com,
+	yonghong.song@linux.dev, syzbot@lists.linux.dev,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot ci] Re: bpf: Use tnums for JEQ/JNE is_branch_taken logic
+Message-ID: <aKWytdZ8mRegBE0H@mail.gmail.com>
+References: <ba9baf9f73d51d9bce9ef13778bd39408d67db79.1755098817.git.paul.chaignon@gmail.com>
+ <689eeec8.050a0220.e29e5.000f.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250818170136.209169-1-roman.gushchin@linux.dev> <20250818170136.209169-2-roman.gushchin@linux.dev>
-In-Reply-To: <20250818170136.209169-2-roman.gushchin@linux.dev>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 20 Aug 2025 13:28:46 +0200
-X-Gm-Features: Ac12FXwIsXWjctJQDIgLXvBtGEjb-bEMufXtBQBLDBmPn-VgQIIHSI30bz2R0xw
-Message-ID: <CAP01T76AUkN_v425s5DjCyOg_xxFGQ=P1jGBDv6XkbL5wwetHA@mail.gmail.com>
-Subject: Re: [PATCH v1 01/14] mm: introduce bpf struct ops for OOM handling
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: linux-mm@kvack.org, bpf@vger.kernel.org, 
-	Suren Baghdasaryan <surenb@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>, 
-	David Rientjes <rientjes@google.com>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <689eeec8.050a0220.e29e5.000f.GAE@google.com>
 
-On Mon, 18 Aug 2025 at 19:01, Roman Gushchin <roman.gushchin@linux.dev> wrote:
->
-> Introduce a bpf struct ops for implementing custom OOM handling policies.
->
-> The struct ops provides the bpf_handle_out_of_memory() callback,
-> which expected to return 1 if it was able to free some memory and 0
-> otherwise.
->
-> In the latter case it's guaranteed that the in-kernel OOM killer will
-> be invoked. Otherwise the kernel also checks the bpf_memory_freed
-> field of the oom_control structure, which is expected to be set by
-> kfuncs suitable for releasing memory. It's a safety mechanism which
-> prevents a bpf program to claim forward progress without actually
-> releasing memory. The callback program is sleepable to enable using
-> iterators, e.g. cgroup iterators.
->
-> The callback receives struct oom_control as an argument, so it can
-> easily filter out OOM's it doesn't want to handle, e.g. global vs
-> memcg OOM's.
->
-> The callback is executed just before the kernel victim task selection
-> algorithm, so all heuristics and sysctls like panic on oom,
-> sysctl_oom_kill_allocating_task and sysctl_oom_kill_allocating_task
-> are respected.
->
-> The struct ops also has the name field, which allows to define a
-> custom name for the implemented policy. It's printed in the OOM report
-> in the oom_policy=<policy> format. "default" is printed if bpf is not
-> used or policy name is not specified.
->
-> [  112.696676] test_progs invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
->                oom_policy=bpf_test_policy
-> [  112.698160] CPU: 1 UID: 0 PID: 660 Comm: test_progs Not tainted 6.16.0-00015-gf09eb0d6badc #102 PREEMPT(full)
-> [  112.698165] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.17.0-5.fc42 04/01/2014
-> [  112.698167] Call Trace:
-> [  112.698177]  <TASK>
-> [  112.698182]  dump_stack_lvl+0x4d/0x70
-> [  112.698192]  dump_header+0x59/0x1c6
-> [  112.698199]  oom_kill_process.cold+0x8/0xef
-> [  112.698206]  bpf_oom_kill_process+0x59/0xb0
-> [  112.698216]  bpf_prog_7ecad0f36a167fd7_test_out_of_memory+0x2be/0x313
-> [  112.698229]  bpf__bpf_oom_ops_handle_out_of_memory+0x47/0xaf
-> [  112.698236]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [  112.698240]  bpf_handle_oom+0x11a/0x1e0
-> [  112.698250]  out_of_memory+0xab/0x5c0
-> [  112.698258]  mem_cgroup_out_of_memory+0xbc/0x110
-> [  112.698274]  try_charge_memcg+0x4b5/0x7e0
-> [  112.698288]  charge_memcg+0x2f/0xc0
-> [  112.698293]  __mem_cgroup_charge+0x30/0xc0
-> [  112.698299]  do_anonymous_page+0x40f/0xa50
-> [  112.698311]  __handle_mm_fault+0xbba/0x1140
-> [  112.698317]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [  112.698335]  handle_mm_fault+0xe6/0x370
-> [  112.698343]  do_user_addr_fault+0x211/0x6a0
-> [  112.698354]  exc_page_fault+0x75/0x1d0
-> [  112.698363]  asm_exc_page_fault+0x26/0x30
-> [  112.698366] RIP: 0033:0x7fa97236db00
->
-> It's possible to load multiple bpf struct programs. In the case of
-> oom, they will be executed one by one in the same order they been
-> loaded until one of them returns 1 and bpf_memory_freed is set to 1
-> - an indication that the memory was freed. This allows to have
-> multiple bpf programs to focus on different types of OOM's - e.g.
-> one program can only handle memcg OOM's in one memory cgroup.
-> But the filtering is done in bpf - so it's fully flexible.
+On Fri, Aug 15, 2025 at 01:24:40AM -0700, syzbot ci wrote:
+> syzbot ci has tested the following series
+> 
+> [v1] bpf: Use tnums for JEQ/JNE is_branch_taken logic
+> https://lore.kernel.org/all/ba9baf9f73d51d9bce9ef13778bd39408d67db79.1755098817.git.paul.chaignon@gmail.com
+> * [PATCH bpf-next 1/2] bpf: Use tnums for JEQ/JNE is_branch_taken logic
+> * [PATCH bpf-next 2/2] selftests/bpf: Tests for is_scalar_branch_taken tnum logic
+> 
+> and found the following issue:
+> WARNING in reg_bounds_sanity_check
+> 
+> Full report is available here:
+> https://ci.syzbot.org/series/fd950b40-1da8-44b1-bd12-4366e4a354b1
+> 
+> ***
+> 
+> WARNING in reg_bounds_sanity_check
+> 
+> tree:      bpf-next
+> URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> base:      07866544e410e4c895a729971e4164861b41fad5
+> arch:      amd64
+> compiler:  Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+> config:    https://ci.syzbot.org/builds/c4af872a-9b42-4821-a832-941921acc063/config
+> C repro:   https://ci.syzbot.org/findings/8dfae15e-cda5-4fa6-8f95-aab106ebd860/c_repro
+> syz repro: https://ci.syzbot.org/findings/8dfae15e-cda5-4fa6-8f95-aab106ebd860/syz_repro
+> 
+> verifier bug: REG INVARIANTS VIOLATION (true_reg1): range bounds violation u64=[0xffffdfcd, 0xffffffffffffdfcc] s64=[0x80000000ffffdfcd, 0x7fffffffffffdfcc] u32=[0xffffdfcd, 0xffffdfcc] s32=[0xffffdfcd, 0xffffdfcc] var_off=(0xffffdfcc, 0xffffffff00000000)
 
-I think a natural question here is ordering. Is this ability to have
-multiple OOM programs critical right now?
-How is it decided who gets to run before the other? Is it based on
-order of attachment (which can be non-deterministic)?
-There was a lot of discussion on something similar for tc progs, and
-we went with specific flags that capture partial ordering constraints
-(instead of priorities that may collide).
-https://lore.kernel.org/all/20230719140858.13224-2-daniel@iogearbox.net
-It would be nice if we can find a way of making this consistent.
+My is_branch_taken patch fixes some invariant violations. The test from
+the second patch is even adapted from a syzkaller reproduction manually
+extracted from logs at [1]. Ironically, by improving the branch
+detection, we can also sometimes degrade state pruning (as discussed in
+the first patch) which causes the exploration of new branches.
 
-Another option is to exclude the multiple attachment bit from the
-initial version and do this as a follow up, since it probably requires
-more discussion.
+All that to say the current syzkaller repro is not directly caused by
+my patch. It simply causes a new branch to be explored, and there is a
+different kind of invariant violation on that branch. The full (sk_skb)
+program is below [2], but the end of verifier logs are enough to
+understand what's happening:
 
->
-> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-> ---
+    12: (2f) r5 *= r6                  ; R5_w=scalar(smax=0x7ffffffffffffffc,umax=0xfffffffffffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0; 0xfffffffffffffffc)) R6_w=0x9fe719f2
+    13: (65) if r7 s> 0x1 goto pc-7    ; R7_w=scalar(id=67,smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 0x1))
+    14: (07) r7 += -8243               ; R7=scalar(smin=smin32=-8243,smax=smax32=-8242,umin=0xffffffffffffdfcd,umax=0xffffffffffffdfce,umin32=0xffffdfcd,umax32=0xffffdfce,var_off=(0xffffffffffffdfcc; 0x3))
+    15: (1e) if w5 == w7 goto pc+0
+    verifier bug: REG INVARIANTS VIOLATION (true_reg1): range bounds violation u64=[0xffffdfcd, 0xffffffffffffdfcc] s64=[0x80000000ffffdfcd, 0x7fffffffffffdfcc] u32=[0xffffdfcd, 0xffffdfcc] s32=[0xffffdfcd, 0xffffdfcc] var_off=(0xffffdfcc, 0xffffffff00000000)
 
-> [...]
+The invariant violation follows the same pattern as usual: the verifier
+walks a dead branch, uses it to improve ranges, and ends up with
+inconsistent ranges. In this case, the u32 min value is larger than the
+u32 max value. We can notice that the condition at instruction 15 is
+always false because, if w5 and w7 were equal, the intersection of their
+tnums would give us a constant (0xffffdfcc) that isn't within R7's u32
+range. Hence, w5 and w7 can't be equal.
+
+I have a patch to potentially fix this, but I'm still testing it and
+would prefer to send it separately as it doesn't really relate to my
+current patchset.
+
+1 - https://syzkaller.appspot.com/bug?extid=c711ce17dd78e5d4fdcf
+2 - syzkaller program:
+
+    r5 = *(u32 *)(r1 +112)
+    r3 = *(u32 *)(r1 +108)
+    r0 = r10
+    r0 += 85328110
+    if w3 != w0 goto +1
+    if w5 == 0x0 goto +0
+    r6 = *(u16 *)(r1 +62)
+    r7 = r0
+    if w5 > 0x2007ff0f goto +7
+    r6 <<= 32
+    w6 -= 1612244494
+    r0 = r5
+    r5 *= r6
+    if r7 s> 0x1 goto -7
+    r7 += -8243
+    if w5 == w7 goto +0
+    r4 = r5
+    r4 += -458748
+    if r3 < r4 goto +1
+    exit
+    if r0 == 0x0 goto +0
+
+[...]
 
