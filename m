@@ -1,128 +1,192 @@
-Return-Path: <bpf+bounces-66192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66197-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C0BDB2F6EE
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 13:42:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25BE8B2F7D5
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 14:24:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 952861BA7A80
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 11:42:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFF39603ACD
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 12:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B63A30F545;
-	Thu, 21 Aug 2025 11:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B392DE6FE;
+	Thu, 21 Aug 2025 12:22:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="thnjZZX4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Jy56pvHo"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8682253A1;
-	Thu, 21 Aug 2025 11:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7C71E25EB
+	for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 12:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755776510; cv=none; b=imoJmaKMporvIzGbhojdUZfbSZPvcC4j66jhcc1n73rrz2SYO6PdZELvC6JvSVAxHFpz6QW1jR1QTCbW6osD5+KwmcBPpWapPLIJ+/7yMEtSm6E7cydR6BYeT7z+7r+bcgDK7InEFrx4/H6N3ZoEE7VtueAzVRx+XyxEds6iLiE=
+	t=1755778945; cv=none; b=mp6uJqUD7TgN4YXpwVeCvk28UwF8gEIajrO1la4Rd33UptjRL0sdmVCRmwjxJhCighK+Q20mrTd+ek1jGTlr2/L+sL08WXc7ZKRhVMeFOfBIcqRMH1YRhmkIBVGO/qoijm0qgR1G1iFtCGCU0ShhFPub4u0T/j1eBsYxLqss5lI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755776510; c=relaxed/simple;
-	bh=UlimAOmq4oBwLMElEItrHUAt5oszOCegMRpxWXdd0K0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YmsAxMjP/OHHaScujhABi/L274obWLypVjRTY71T9Zh46DgsLf+BfJi00urz+2fMKB6vTQYPpSkMDcay2xOR+rfedOkfgLPVQEKdQ+FPHhXqM9kmkpcGmWorIqRNNaAeRjIUGFCQmDSwyuqqbEv82vAxyx31zWUhh390sGccINY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=thnjZZX4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38C06C4CEEB;
-	Thu, 21 Aug 2025 11:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755776510;
-	bh=UlimAOmq4oBwLMElEItrHUAt5oszOCegMRpxWXdd0K0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=thnjZZX4M0j7D4VmGOdSAk4KMpbTymEJH6+vygU/eBOW/Y5XYrXKRwSNocQ79AAZI
-	 tNhfBxJBg3G399FlkyAZ/Ys1Bo9gr/jB3Qu1sgyEb9UmH4JMEjURK6QU2K9i5d2Sca
-	 CsI+KJNhsS6Pb0//+QqvQ+3uJ/s0bZNjs/6gsL4MoosfUOx8Ui7FqkBETdNbrMZIri
-	 nQe43p3CezaEVWHZIX0WFvZ1UnS364zDzdrB6MWPfw1dUY/vS7sHvGhuGulKKPo9mU
-	 PwZysvqIDGD1ktFoRYGUtZXVjWwjBcv6C30C0iu93nENDITwWGqArAEE51VdZ3egsn
-	 jE0YeLbweXzWA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D5A27CE0A48; Thu, 21 Aug 2025 04:41:49 -0700 (PDT)
-Date: Thu, 21 Aug 2025 04:41:49 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: ast@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joelagnelf@nvidia.com, josh@joshtriplett.org, boqun.feng@gmail.com,
-	urezki@gmail.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, daniel@iogearbox.net,
-	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/7] rcu: add rcu_read_lock_dont_migrate()
-Message-ID: <a9745beb-133a-447d-80ea-b7322676b3ed@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250821090609.42508-1-dongml2@chinatelecom.cn>
- <20250821090609.42508-2-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1755778945; c=relaxed/simple;
+	bh=fSEsQ/Vk6OMQpZkWmTwVJ6fm0yCcKERCKkZiq1OYf8A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q10zZ4xEITQVuZLcHEBKwxAtyJr44KqDxhBzoUDxVgnl9aeQx8PmOSfcrthll9mXxAoMFUehVf1PFb5c68Zfa0TkhdSuYt1uy4rAoN4PEv2BB7/RREgMnShZonBB9P/J6RLjzw8a5igAojou6tVQqmM25JpB8efF6NvFe4JKfh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Jy56pvHo; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4b134f1c451so11775501cf.1
+        for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 05:22:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1755778943; x=1756383743; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aKSsjvve/1RAj60Dban8ij17MQ++dGwNHw+gQ1QKQpM=;
+        b=Jy56pvHopgVB4QlSdjncvHSNwKJIyH1Jqn/VU5MfuBNlaMxR6MMS7f7be0iKp1yM7c
+         T6Ls3h8VJB4p01WMuTKeD6HeNMThCfAMaA2ivjdV6j8t/BGNexZq3mnxToSNjuH7GTI4
+         SeLLsuPpAtVImwsQjvgfTndynLEWkirbKbaumcFNAm3SyDyx/XiED9J7Tz7rjV2ZUW+b
+         v99L+FAGWOeWKJCBJV3SaoPXXlhVhMeId6KlRjikRNNrp/CIt/k3tQtwPQDh9L+paFCu
+         EwvrZ30mwznm7mMpk64rcAnch23ynjVuKA8/9SVMMA8HX9MJ3FMbE9NQ2HVfvvcMvuSn
+         3qPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755778943; x=1756383743;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aKSsjvve/1RAj60Dban8ij17MQ++dGwNHw+gQ1QKQpM=;
+        b=hPs5ruZu4vH+iNVVcP5la4YbI19YLSLgVH0mw+nZb3b0+QqAJYZDhZtChgtkNy39YI
+         2VixCssQsvxlydeXtyaisE9+SD2HE9a5KmtJAvdhFG1EhmXeNPj25lhZcc/NbUBoLy+W
+         vLy1gqBHMcbGf3g4rsMTdmjL/dZn5jxKEdLnc8JOPU+3umf+i3gEfJ6c2RQ8dHOgS93H
+         NgsMGkBjIrfsW6/EToCA1Xpew76IVfJGvjkJ4gf+exwZOJAM1asAMLd0bCvCWwIS5ivE
+         TXqHREVEZnUGK+4z6aLlUX6EnjObI4p7GoEAiWyT+1hyFh/SW1Ou10MsoYGEjHc/JUxc
+         5Pug==
+X-Forwarded-Encrypted: i=1; AJvYcCVmPkG2Q4GsVgbiyvXqxIDQb0mxpu/OklR+aXAxq0jVLCuhVPW9afRsxJwPdwymhKLj0mo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGeMGO5IPVx3Gsb1+BLSXh41KetkTXJCk2nyBDyr+pjeFSOupJ
+	w+T0c+qcRu0cQEbYIBz5iwq6y/wbOK+S3oyIYuBjM/fhxR/+FWlhs0w5DTNTATgTtYaB8Zbmsol
+	HcXgY6AevsKEU4QdOJbCA3krSmtpN6tqbgXFHvJWG
+X-Gm-Gg: ASbGnctJGwrQs1JJ3fJnYE9l5yfTOPtV7y1sIhrLY+ommRrg6xsyLrBdl9S0xRrrLI+
+	UJooMEH5ICBkPuVehlDTcPuV9oCmpENUZTNEu1zqPwE+WLYzUmlmXuIB7xRFWy3gcqXLKGpw6bn
+	53BjqQzkjQOuHs+VwnzfGCsBJJChj9MkEs8PfxYTL+DVmqQzhksINmee+RWdiniPD99LHsfiiub
+	sE83oSQr6ueep1NwSlSkpYElw==
+X-Google-Smtp-Source: AGHT+IFXwsqHTBSwwL4QWrFjnAqYGYGRHHfnn0fyyJIeQ/rD+n3E/hb0G9BvZiYOX886SM/9LiSsdHBY2287j79joNs=
+X-Received: by 2002:a05:622a:191c:b0:4b2:9620:33b3 with SMTP id
+ d75a77b69052e-4b29fa5cbfcmr20179561cf.34.1755778942207; Thu, 21 Aug 2025
+ 05:22:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250821090609.42508-2-dongml2@chinatelecom.cn>
+References: <20250815083930.10547-1-chia-yu.chang@nokia-bell-labs.com> <20250815083930.10547-7-chia-yu.chang@nokia-bell-labs.com>
+In-Reply-To: <20250815083930.10547-7-chia-yu.chang@nokia-bell-labs.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 21 Aug 2025 05:22:10 -0700
+X-Gm-Features: Ac12FXwJLwuIZZV7IiiWgI7Ni_b_-fkA-MWf7lHGDVGOEcjIPXX_K_j__DXPqFs
+Message-ID: <CANn89iKAUB4JOoHDPrxsRDeBTXPEF8Fu4ab2O_w2QTnRNXJvzg@mail.gmail.com>
+Subject: Re: [PATCH v15 net-next 06/14] tcp: accecn: AccECN negotiation
+To: chia-yu.chang@nokia-bell-labs.com
+Cc: pabeni@redhat.com, linux-doc@vger.kernel.org, corbet@lwn.net, 
+	horms@kernel.org, dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com, 
+	kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com, 
+	jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch, 
+	donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
+	shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
+	ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com, 
+	g.white@cablelabs.com, ingemar.s.johansson@ericsson.com, 
+	mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at, 
+	Jason_Livingood@comcast.com, vidhi_goel@apple.com, 
+	Olivier Tilmans <olivier.tilmans@nokia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 21, 2025 at 05:06:03PM +0800, Menglong Dong wrote:
-> migrate_disable() is called to disable migration in the kernel, and it is
-> often used together with rcu_read_lock().
-> 
-> However, with PREEMPT_RCU disabled, it's unnecessary, as rcu_read_lock()
-> will always disable preemption, which will also disable migration.
-> 
-> Introduce rcu_read_lock_dont_migrate() and rcu_read_unlock_migrate(),
-> which will do the migration enable and disable only when PREEMPT_RCU.
-> 
-> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+On Fri, Aug 15, 2025 at 1:39=E2=80=AFAM <chia-yu.chang@nokia-bell-labs.com>=
+ wrote:
+>
+> From: Ilpo J=C3=A4rvinen <ij@kernel.org>
+>
+> Accurate ECN negotiation parts based on the specification:
+>   https://tools.ietf.org/id/draft-ietf-tcpm-accurate-ecn-28.txt
+>
+> Accurate ECN is negotiated using ECE, CWR and AE flags in the
+> TCP header. TCP falls back into using RFC3168 ECN if one of the
+> ends supports only RFC3168-style ECN.
+>
+> The AccECN negotiation includes reflecting IP ECN field value
+> seen in SYN and SYNACK back using the same bits as negotiation
+> to allow responding to SYN CE marks and to detect ECN field
+> mangling. CE marks should not occur currently because SYN=3D1
+> segments are sent with Non-ECT in IP ECN field (but proposal
+> exists to remove this restriction).
+>
+> Reflecting SYN IP ECN field in SYNACK is relatively simple.
+> Reflecting SYNACK IP ECN field in the final/third ACK of
+> the handshake is more challenging. Linux TCP code is not well
+> prepared for using the final/third ACK a signalling channel
+> which makes things somewhat complicated here.
+>
+> tcp_ecn sysctl can be used to select the highest ECN variant
+> (Accurate ECN, ECN, No ECN) that is attemped to be negotiated and
+> requested for incoming connection and outgoing connection:
+> TCP_ECN_IN_NOECN_OUT_NOECN, TCP_ECN_IN_ECN_OUT_ECN,
+> TCP_ECN_IN_ECN_OUT_NOECN, TCP_ECN_IN_ACCECN_OUT_ACCECN,
+> TCP_ECN_IN_ACCECN_OUT_ECN, and TCP_ECN_IN_ACCECN_OUT_NOECN.
+>
+> After this patch, the size of tcp_request_sock remains unchanged
+> and no new holes are added. Below are the pahole outcomes before
+> and after this patch:
+>
+>
 
-Much better!
+> Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
+> Co-developed-by: Olivier Tilmans <olivier.tilmans@nokia.com>
+> Signed-off-by: Olivier Tilmans <olivier.tilmans@nokia.com>
+> Co-developed-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> Acked-by: Paolo Abeni <pabeni@redhat.com>
+>
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-> ---
-> v3:
-> - make rcu_read_lock_dont_migrate() more compact
-> 
-> v2:
-> - introduce rcu_read_lock_dont_migrate() instead of rcu_migrate_disable()
-> ---
->  include/linux/rcupdate.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 120536f4c6eb..9691ca380a4f 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -962,6 +962,20 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
->  	preempt_enable_notrace();
+> +       if (tp->ecn_flags & TCP_ECN_MODE_ACCECN) {
+> +               TCP_SKB_CB(skb)->tcp_flags &=3D ~TCPHDR_ACE;
+> +               TCP_SKB_CB(skb)->tcp_flags |=3D
+> +                       tcp_accecn_reflector_flags(tp->syn_ect_rcv);
+> +               tp->syn_ect_snt =3D inet_sk(sk)->tos & INET_ECN_MASK;
+> +       }
 >  }
->  
-> +static __always_inline void rcu_read_lock_dont_migrate(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_PREEMPT_RCU))
-> +		migrate_disable();
-> +	rcu_read_lock();
-> +}
+>
+>  /* Packet ECN state for a SYN.  */
+> @@ -125,8 +377,20 @@ static inline void tcp_ecn_send_syn(struct sock *sk,=
+ struct sk_buff *skb)
+>  {
+>         struct tcp_sock *tp =3D tcp_sk(sk);
+>         bool bpf_needs_ecn =3D tcp_bpf_ca_needs_ecn(sk);
+> -       bool use_ecn =3D READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_ecn) =3D=
+=3D 1 ||
+> -               tcp_ca_needs_ecn(sk) || bpf_needs_ecn;
+> +       bool use_ecn, use_accecn;
+> +       u8 tcp_ecn =3D READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_ecn);
 > +
-> +static inline void rcu_read_unlock_migrate(void)
-> +{
-> +	rcu_read_unlock();
-> +	if (IS_ENABLED(CONFIG_PREEMPT_RCU))
-> +		migrate_enable();
-> +}
-> +
->  /**
->   * RCU_INIT_POINTER() - initialize an RCU protected pointer
->   * @p: The pointer to be initialized.
-> -- 
-> 2.50.1
-> 
+> +       /* +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
+> +        * | tcp_ecn values |    Outgoing connections   |
+> +        * +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
+> +        * |     0,2,5      |     Do not request ECN    |
+> +        * |      1,4       |   Request ECN connection  |
+> +        * |       3        | Request AccECN connection |
+> +        * +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
+> +        */
+
+You have nice macros, maybe use them ?
+
+      TCP_ECN_IN_NOECN_OUT_NOECN =3D 0,
+       TCP_ECN_IN_ECN_OUT_ECN =3D 1,
+       TCP_ECN_IN_ECN_OUT_NOECN =3D 2,
+       TCP_ECN_IN_ACCECN_OUT_ACCECN =3D 3,
+       TCP_ECN_IN_ACCECN_OUT_ECN =3D 4,
+       TCP_ECN_IN_ACCECN_OUT_NOECN =3D 5,
+
+This can be done later, no need to respin.
+
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
