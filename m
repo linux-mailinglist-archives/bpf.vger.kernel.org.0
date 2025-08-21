@@ -1,176 +1,115 @@
-Return-Path: <bpf+bounces-66156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66157-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E1AEB2F174
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 10:25:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E17CAB2F300
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 10:56:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71F343B53BA
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 08:21:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E92021C26DCA
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 08:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BFC2F7475;
-	Thu, 21 Aug 2025 08:17:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D28F2ED848;
+	Thu, 21 Aug 2025 08:53:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UO+N5AYi"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gZ6ZQ8CL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C352EBDC9;
-	Thu, 21 Aug 2025 08:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5072ECEBF
+	for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 08:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755764225; cv=none; b=BFMn8j6j4QoTOUhS0a1iCtZhDmIbXuDrpTepUvn9am22lh+/G6wxsBh1l6T5+Cdyocxpxk03uEWMpY7fHxcTUErCOGYYnKmN7E0mvDtbjclD/PzjpYhykDNtWcy4N08V5as1nl96i+jF0iFtSRX4bpkbZJntGevaGRwZyu5Zb8k=
+	t=1755766433; cv=none; b=KjLkjpQ56iI9iBzmtVQpYK5zoErbe/rG1989AwNZ1O6GVaYTSEYGk7KW80u3BFGW0Vo3PouZLMj5r608rsGGnYIa5OxSj1LDAdyRLIkU+D7T60w6ENok6fldr/7KZ4WOpJIu6OjkX0OXwG6niQFBAs5Nsh6q8Wzaj6AkMit5mlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755764225; c=relaxed/simple;
-	bh=FF6CTJItuLQX4L+saUiPgdc0K549DCILUpiRkhl6c30=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OjMO4dDNqNrMTHyLchOeALEVePMwsFx+YseCbHcm2aqO/QZsAVxyvMzF5Fo1MX8DJBkctNQlr8qojiVFZxxsSJmxhEwEXy+IBvrMep9ICWnysqwqMjnDVHY0yYcQW4L+NFvmV0NOr4p0CZxpO6lHoj8lGE2gpcaUakqBgZLQTZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UO+N5AYi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A097CC2BCB2;
-	Thu, 21 Aug 2025 08:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755764224;
-	bh=FF6CTJItuLQX4L+saUiPgdc0K549DCILUpiRkhl6c30=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UO+N5AYimlPSluyn9jignm2yFluYaxYo4hv+xK5XBUjRqTbFv2mm+O/vrWeqRrzDd
-	 jang/PKy/YXZKXzq0dpCCLXb3YGrW+tZLoDDLd2b+9VVPKQGiz2uN/hvJRBxfodbRq
-	 Bbqp0/X9lPIC90wUh90ssGmarYxC2xYu11hoO97SWXR79bCEkYcJVc8eACmEiAZT9w
-	 GwcApCoP1oOKmALsC2Q39PAoh5SsSVrqevYvnt9fuFDsz1L+fLxYCxsxldpY4MxQZR
-	 s2UyLmrFOXlCpPdf/gwvkoLBNBeU/Fa0iWGBRFiA/yeAq2K+qYvPHh/l8eKmnM/XcF
-	 PUNmBYVep4mWg==
-Received: from mchehab by mail.kernel.org with local (Exim 4.98.2)
-	(envelope-from <mchehab+huawei@kernel.org>)
-	id 1up0Tm-0000000BLgr-3luW;
-	Thu, 21 Aug 2025 10:17:02 +0200
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-	"Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Andreas Hindborg <mchehab+huawei@kernel.org>,
-	Benno Lossin <mchehab+huawei@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Danilo Krummrich <mchehab+huawei@kernel.org>,
-	Gary Guo <gary@garyguo.net>,
-	Miguel Ojeda <mchehab+huawei@kernel.org>,
-	Trevor Gross <tmgross@umich.edu>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rust-for-linux@vger.kernel.org
-Subject: [PATCH v2 13/14] scripts: sphinx-pre-install: fix PDF dependencies for gentoo
-Date: Thu, 21 Aug 2025 10:16:49 +0200
-Message-ID: <1ccbac9fd1f4e598dda82e775b64768ec3696248.1755763127.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <cover.1755763127.git.mchehab+huawei@kernel.org>
-References: <cover.1755763127.git.mchehab+huawei@kernel.org>
+	s=arc-20240116; t=1755766433; c=relaxed/simple;
+	bh=aBhzP6d3YQDrwI7ND5rpwO6HjIyfUepP/sZomCKrjm8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c1JDOoQCfJNMpoV429LgJJrn0y7zEXNUkndiNtnZW0BmSnJl8p91P6YdkVwvDcuO6TqZv5NaCpiO06q+/yz8PYHy04ZLqRQ3anqOx9/34G4PLgrwKUnV5gNnic92bq6KjvERS3Gtgd9Hnl9h4Z4REHcqUsSUGvPjmdd+kk5W3/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gZ6ZQ8CL; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4b297962b9cso6994671cf.2
+        for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 01:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1755766430; x=1756371230; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aBhzP6d3YQDrwI7ND5rpwO6HjIyfUepP/sZomCKrjm8=;
+        b=gZ6ZQ8CLB54J23MX/pt7FqW269gE8bsMDwn21mPtLT1bevECMXpZpl21m1w6brOzBu
+         oD6kz2uLAhFXuUSa1JYnGDvF9Zlm3WtzvlcetMDIrjNtJ0N8w6WeE4ioy+2F2bq4Mwg8
+         FsI+nj+q/zSl48nemYBRa4/Z8uUOB7/vrRKfzt5bkWvrb04M0tqPX1r4prY/Iss0AMs+
+         6T5MhmhMbywueAOuCjOS4vHAwZDOcrkq2nm2esudyoTgS0uBf2DfYxynGv6Dw7XH8VG2
+         CVzWYtowqIDYUI+LP/UQOdn6KpiezjhugF9HtEkJ3YEULL2oQ0eXqKeg08ILMfKcLP/U
+         rXhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755766430; x=1756371230;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aBhzP6d3YQDrwI7ND5rpwO6HjIyfUepP/sZomCKrjm8=;
+        b=iNo7Lhquekozp8J/pgBCQ/yCRGabOTK8NB1Iwvj3Goiwpv9xKEtpfZg1PgH9PIROCG
+         BHBtSsnFQe2ovZthE37u2G2gpEoQ56xgxUEXS9gdPGUP8Z8yOcLeWdeTSppT2k2T3rDX
+         ohV9VEzBR/7eaGMF9623LKFCbf7pKB7hl0Eln5srfXDoMoIf7WcT7PEHUkEVqzcXtqQ5
+         hiJcJVs1ecgEcbiUrXX7PZbV/+9lsDmyEOAD9R4Fw+JSos6XUCoeBQVvmCYRTvSxzhLV
+         CcIqYo/czZNOU8cfiDMoIsvnKyEpXIcfTgdpzDp5tqcZJnhqvheqJB/j4Spxt0vyzTh7
+         O0JA==
+X-Forwarded-Encrypted: i=1; AJvYcCXa2IeSN+Tqs8wrxOSeEKtuMK792NJ1xFsNbcKCCOxnbwMnKZTBAj2p7I7Ik/jQcgMcfq0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywtl9sxSpCK91rH/eHnX495ZVmnGQgf8MjjsoaZCjKGSpFAhNbj
+	iDhBr0QGtdU1P9q1zVS8XfWbsfW+CTU+NtGfqlfmtzSUhPzS5y4WioW2EOYwBg0DSk7T8iA6W00
+	oBHLImu2jSlzffCog27zyLWxzb6e67BDDVrOik2+9
+X-Gm-Gg: ASbGncsJemTGpASV4oaGgsTGKTkzeRtNYRU8VTLUDEWsGsno3ZZxeOcmtzeMqGoTMfi
+	5UOT7sFzmlh1iKYLcw5FWVTPW62YxVDWJuaXyw9Bo+FHiI1Zz3pa8ZyuNRnUuKI7zHL5VsdRb0x
+	ave6QedBrEiS92T6luV+OLTpeBXd41FlmCRHoNPSUELhIaLn97ifvMqTIX7nKSVT7tOBrsqM2mc
+	FrxewCr9iZYFkMLRU75mT3Sjg==
+X-Google-Smtp-Source: AGHT+IFv/PtcOPUQj2eIhfJGxSY/JvZ2K28lWNXCVsP0qeHLxlQhiCXLQmPIYrOD4LLNF/m/ke6DWecfHMX5teVadAA=
+X-Received: by 2002:a05:622a:1115:b0:4b0:6836:6efa with SMTP id
+ d75a77b69052e-4b29fa33f1cmr12068061cf.17.1755766430147; Thu, 21 Aug 2025
+ 01:53:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+References: <20250815083930.10547-1-chia-yu.chang@nokia-bell-labs.com> <20250815083930.10547-5-chia-yu.chang@nokia-bell-labs.com>
+In-Reply-To: <20250815083930.10547-5-chia-yu.chang@nokia-bell-labs.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 21 Aug 2025 01:53:39 -0700
+X-Gm-Features: Ac12FXyHsFmM4Y6s9A4jizpJZU8-dSIL1pxwxTNu7e_RRTYEAUIKywp1b0fLC34
+Message-ID: <CANn89iJn24y7pfqOL9unDK2WX9wjVwTRXjsY0ABdHtxQzexS_Q@mail.gmail.com>
+Subject: Re: [PATCH v15 net-next 04/14] tcp: ecn functions in separated
+ include file
+To: chia-yu.chang@nokia-bell-labs.com
+Cc: pabeni@redhat.com, linux-doc@vger.kernel.org, corbet@lwn.net, 
+	horms@kernel.org, dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com, 
+	kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com, 
+	jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch, 
+	donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
+	shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
+	ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com, 
+	g.white@cablelabs.com, ingemar.s.johansson@ericsson.com, 
+	mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at, 
+	Jason_Livingood@comcast.com, vidhi_goel@apple.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Package fonts are wrong. Fix it. With that, most PDF files
-now builds.
+On Fri, Aug 15, 2025 at 1:39=E2=80=AFAM <chia-yu.chang@nokia-bell-labs.com>=
+ wrote:
+>
+> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+>
+> The following patches will modify ECN helpers and add AccECN herlpers,
+> and this patch moves the existing ones into a separated include file.
+>
+> No functional changes.
+>
+> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> Acked-by: Paolo Abeni <pabeni@redhat.com>
 
-  PDF docs:
-  ---------
-      PASSED: dev-tools: pdf/dev-tools.pdf
-      PASSED: tools: pdf/tools.pdf
-      PASSED: filesystems: pdf/filesystems.pdf
-      PASSED: w1: pdf/w1.pdf
-      PASSED: maintainer: pdf/maintainer.pdf
-      PASSED: process: pdf/process.pdf
-      PASSED: isdn: pdf/isdn.pdf
-      PASSED: fault-injection: pdf/fault-injection.pdf
-      PASSED: iio: pdf/iio.pdf
-      PASSED: scheduler: pdf/scheduler.pdf
-      PASSED: staging: pdf/staging.pdf
-      PASSED: fpga: pdf/fpga.pdf
-      PASSED: power: pdf/power.pdf
-      PASSED: leds: pdf/leds.pdf
-      PASSED: edac: pdf/edac.pdf
-      PASSED: PCI: pdf/PCI.pdf
-      PASSED: firmware-guide: pdf/firmware-guide.pdf
-      PASSED: cpu-freq: pdf/cpu-freq.pdf
-      PASSED: mhi: pdf/mhi.pdf
-      PASSED: wmi: pdf/wmi.pdf
-      PASSED: timers: pdf/timers.pdf
-      PASSED: accel: pdf/accel.pdf
-      PASSED: hid: pdf/hid.pdf
-      FAILED: userspace-api: Build failed (FAILED)
-      PASSED: spi: pdf/spi.pdf
-      PASSED: networking: pdf/networking.pdf
-      PASSED: virt: pdf/virt.pdf
-      PASSED: nvme: pdf/nvme.pdf
-      FAILED: translations: Build failed (FAILED)
-      PASSED: input: pdf/input.pdf
-      PASSED: tee: pdf/tee.pdf
-      PASSED: doc-guide: pdf/doc-guide.pdf
-      PASSED: cdrom: pdf/cdrom.pdf
-      FAILED: gpu: Build failed (FAILED)
-      FAILED: i2c: Build failed (FAILED)
-      FAILED: RCU: Build failed (FAILED)
-      PASSED: watchdog: pdf/watchdog.pdf
-      PASSED: usb: pdf/usb.pdf
-      PASSED: rust: pdf/rust.pdf
-      PASSED: crypto: pdf/crypto.pdf
-      PASSED: kbuild: pdf/kbuild.pdf
-      PASSED: livepatch: pdf/livepatch.pdf
-      PASSED: mm: pdf/mm.pdf
-      PASSED: locking: pdf/locking.pdf
-      PASSED: infiniband: pdf/infiniband.pdf
-      PASSED: driver-api: pdf/driver-api.pdf
-      PASSED: bpf: pdf/bpf.pdf
-      PASSED: devicetree: pdf/devicetree.pdf
-      PASSED: block: pdf/block.pdf
-      PASSED: target: pdf/target.pdf
-      FAILED: arch: Build failed (FAILED)
-      PASSED: pcmcia: pdf/pcmcia.pdf
-      PASSED: scsi: pdf/scsi.pdf
-      PASSED: netlabel: pdf/netlabel.pdf
-      PASSED: sound: pdf/sound.pdf
-      PASSED: security: pdf/security.pdf
-      PASSED: accounting: pdf/accounting.pdf
-      PASSED: admin-guide: pdf/admin-guide.pdf
-      FAILED: core-api: Build failed (FAILED)
-      PASSED: fb: pdf/fb.pdf
-      PASSED: peci: pdf/peci.pdf
-      PASSED: trace: pdf/trace.pdf
-      PASSED: misc-devices: pdf/misc-devices.pdf
-      PASSED: kernel-hacking: pdf/kernel-hacking.pdf
-      PASSED: hwmon: pdf/hwmon.pdf
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- scripts/sphinx-pre-install | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
-index 758a84ae6347..c46d7b76f93c 100755
---- a/scripts/sphinx-pre-install
-+++ b/scripts/sphinx-pre-install
-@@ -1069,10 +1069,10 @@ class SphinxDependencyChecker(MissingCheckers):
-         Provide package installation hints for Gentoo.
-         """
-         texlive_deps = [
-+            "dev-texlive/texlive-fontsrecommended",
-             "dev-texlive/texlive-latexextra",
-             "dev-texlive/texlive-xetex",
-             "media-fonts/dejavu",
--            "media-fonts/lm",
-         ]
- 
-         progs = {
--- 
-2.50.1
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
