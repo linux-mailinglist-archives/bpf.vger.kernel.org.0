@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-66152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66155-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCAD1B2F17B
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 10:25:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 922AFB2F185
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 10:27:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D55296003A2
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 08:21:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 596CA1BC257A
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 08:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606152EBDFF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF4D2ECE98;
 	Thu, 21 Aug 2025 08:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k7Rz1CGb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hbcPYVYk"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E612EB5CC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F172EB87A;
 	Thu, 21 Aug 2025 08:17:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755764224; cv=none; b=beqeqj5JNj6ZsMrpANutEy9MJuR5v64bHky4XifJCC1lgJkWx3IY7TW4l4enH/XzEcYFVa9IaBCNCRDlGQ2ogKLZo/oG3GyGpwmTkVY1Gfng+dG8bWKim1wylw7VNdGfk/IdyiuRj3OKkC/PSJXbHx0g71vO6Uh6EdcQ/eBxoWc=
+	t=1755764225; cv=none; b=c0nquIv2ufpgujtO2jo5D0/S17Tur9iUP0o1rVRFXApyCB2v8HMRBM4AX/b0JgEKASmELZDvBTu3Q34F4MGN+CqCuRW7ht/cBIirnlDiKY/hwsevobwWPq+xMLOaLk7XYtXlNJEvUtZuJxW3PJ1vX/lOh8EfYer2L3QNzmDFEws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755764224; c=relaxed/simple;
-	bh=pCs2a5GtHIUVqWsvAf6JbIDTiB41Hz/jWLA7wnaYB14=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q+YLi+wlh3SJeyA0HwY2XmlhO+hSAbwPSKA/8yZPdYp9y4JzB48y+wECewKC2V0RTTlMcYUC/ZtprHKs1W2wgsjoxZoOpBNZpiBgJVZT7jw6RrCH6UgtvunQpTF7p5hTRkRp5xB2jM+sdHvYfRCZwyuFKT2IjS4MZva77YIBtuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k7Rz1CGb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F032C4CEED;
+	s=arc-20240116; t=1755764225; c=relaxed/simple;
+	bh=U/g86Ig1pMFruBqlvyzjZIHjO9UsMDLq3GNFDgoQFww=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=FjuKvPhN7LMJKrv4+ibRZpeCET6OJv14nummYVCpQjRXLMwDyCt0Erv8Y+VNPdryM2imVzB4KGfqIT6E87FN5SQv5FPnfo8SpPOZ9Yn+qyvbJ2cBCQShLzLV1fuItRpbkO1NDAZZn3o8/KZ39fzMBCHN8ak6W/bWTjWW5SxgNzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hbcPYVYk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FEFFC19425;
 	Thu, 21 Aug 2025 08:17:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1755764224;
-	bh=pCs2a5GtHIUVqWsvAf6JbIDTiB41Hz/jWLA7wnaYB14=;
-	h=From:To:Cc:Subject:Date:From;
-	b=k7Rz1CGbqlTAdaRCI72izKdN48N5xxD+9hPKBsJpD4AOKeaHyx8wkhLe1FLGypxsz
-	 TKJlTJPc2ngIpap1JM6HttsPDDrxWhQRbLW9tq6DOCiKjIsQaNd2U5F75Ww4ts+5XL
-	 14XxrLyZfbuGJBPREYO9vXC3z5Dzi5CE+I+MNrNd0iFC4haHGMGGWDkzhPjKxzRJSx
-	 esZIMmQlFhfNHaTLnDkTW9tqOZNStnc3mLQ4O77UbvW17orF5gJmu1QgPGEBNA9zso
-	 XjxGx525edh/DsKXwmM+cyfQIKJUxND2tc8+OeDFE1FQM+Ir6oC4z4Riz9VUjAFkez
-	 KyyzsIkFlO9+g==
+	bh=U/g86Ig1pMFruBqlvyzjZIHjO9UsMDLq3GNFDgoQFww=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hbcPYVYk/bgbxrIyOb7d4rAk1nc+g7NuhoqJ9mZH6AktqL52ZWq04L/TltiU6QefM
+	 v/2Gq6yzCNknp77Fgli9s0mAU75edAZ5zRr07CUbMUJDU0iT0GSQ+yvpIa7Kx/aOqW
+	 +FgEXnTeju3e4/CRVuFL4aT7GZwBU0ZFmGDluaCGvFIwIkGu39NiH7F2wy7zTitNmr
+	 Ynl+hN2c5TB7nvQJOixdAEg2if3xuEQwwp/R+FWKQKdkQ93tkeKWsfZ2A1g2FONIxE
+	 biwqHy8zXJySrlP5K2n88+bUSxaoWlez/QkKMNrpL8OMR+qhXDVZh/WCkuAxS9jpGc
+	 0UIqj7SEQyDjA==
 Received: from mchehab by mail.kernel.org with local (Exim 4.98.2)
 	(envelope-from <mchehab+huawei@kernel.org>)
-	id 1up0Tm-0000000BLg2-2IUN;
+	id 1up0Tm-0000000BLgX-3C09;
 	Thu, 21 Aug 2025 10:17:02 +0200
 From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To: Jonathan Corbet <corbet@lwn.net>,
 	Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-	linux-kernel@vger.kernel.org,
 	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	"Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
 	Alex Gaynor <alex.gaynor@gmail.com>,
 	Alice Ryhl <aliceryhl@google.com>,
 	Andreas Hindborg <mchehab+huawei@kernel.org>,
@@ -61,91 +61,149 @@ Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
 	Miguel Ojeda <mchehab+huawei@kernel.org>,
 	Trevor Gross <tmgross@umich.edu>,
 	bpf@vger.kernel.org,
-	rust-for-linux@vger.kernel.org
-Subject: [PATCH v2 00/14] Fix PDF doc builds on major distros
-Date: Thu, 21 Aug 2025 10:16:36 +0200
-Message-ID: <cover.1755763127.git.mchehab+huawei@kernel.org>
+	linux-kernel@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH v2 08/14] scripts: sphinx-pre-install: fix PDF build issues on Ubuntu
+Date: Thu, 21 Aug 2025 10:16:44 +0200
+Message-ID: <b5e2e0df68b377b148fdbdd721f6c1cbefe6f861.1755763127.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <cover.1755763127.git.mchehab+huawei@kernel.org>
+References: <cover.1755763127.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Hi Jon,
+PDF output with current Debian-based distros require other
+packages for it to work. The main one is pzdr.tfm. Without
+that, \sphinxhyphen{} won't work, affecting multiple docs.
 
-Here it is the second version of the PDF series. I opted to split one of
-the patches in 3, to have a clearer changelog and description.
+For CJK, tex-gyre is required.
 
-Also, archlinux LXC image download started working again, so I added
-an extra patch addressing texlive packae dependencies.
+Add the missing packages to the list.
 
-This series is taking me a way more time than antecipated.
+After the change, all PDF files build on latest Ubuntu:
 
-This series as 3 goals:
+Ubuntu 25.04:
+-------------
+    PASSED: OS detection: Ubuntu 25.04
+    SKIPPED (Sphinx Sphinx 8.1.3): System packages
+    SKIPPED (Sphinx already installed either as venv or as native package): Sphinx on venv
+    SKIPPED (Sphinx already installed either as venv or as native package): Sphinx package
+    PASSED: Clean documentation: Build time: 0:00, return code: 0
+    PASSED: Build HTML documentation: Build time: 3:28, return code: 0
+    PASSED: Build PDF documentation: Build time: 11:08, return code: 0
 
-1. Fix a pre-Sphinx 1.7 PDF variable that got renamed, but
-   our Makefile still uses the old one that is not supported
-   since Sphinx 1.7;
+  PDF docs:
+  ---------
+      PASSED: dev-tools: pdf/dev-tools.pdf
+      PASSED: tools: pdf/tools.pdf
+      PASSED: filesystems: pdf/filesystems.pdf
+      PASSED: w1: pdf/w1.pdf
+      PASSED: maintainer: pdf/maintainer.pdf
+      PASSED: process: pdf/process.pdf
+      PASSED: isdn: pdf/isdn.pdf
+      PASSED: fault-injection: pdf/fault-injection.pdf
+      PASSED: iio: pdf/iio.pdf
+      PASSED: scheduler: pdf/scheduler.pdf
+      PASSED: staging: pdf/staging.pdf
+      PASSED: fpga: pdf/fpga.pdf
+      PASSED: power: pdf/power.pdf
+      PASSED: leds: pdf/leds.pdf
+      PASSED: edac: pdf/edac.pdf
+      PASSED: PCI: pdf/PCI.pdf
+      PASSED: firmware-guide: pdf/firmware-guide.pdf
+      PASSED: cpu-freq: pdf/cpu-freq.pdf
+      PASSED: mhi: pdf/mhi.pdf
+      PASSED: wmi: pdf/wmi.pdf
+      PASSED: timers: pdf/timers.pdf
+      PASSED: accel: pdf/accel.pdf
+      PASSED: hid: pdf/hid.pdf
+      PASSED: userspace-api: pdf/userspace-api.pdf
+      PASSED: spi: pdf/spi.pdf
+      PASSED: networking: pdf/networking.pdf
+      PASSED: virt: pdf/virt.pdf
+      PASSED: nvme: pdf/nvme.pdf
+      PASSED: translations: pdf/translations.pdf
+      PASSED: input: pdf/input.pdf
+      PASSED: tee: pdf/tee.pdf
+      PASSED: doc-guide: pdf/doc-guide.pdf
+      PASSED: cdrom: pdf/cdrom.pdf
+      PASSED: gpu: pdf/gpu.pdf
+      PASSED: i2c: pdf/i2c.pdf
+      PASSED: RCU: pdf/RCU.pdf
+      PASSED: watchdog: pdf/watchdog.pdf
+      PASSED: usb: pdf/usb.pdf
+      PASSED: rust: pdf/rust.pdf
+      PASSED: crypto: pdf/crypto.pdf
+      PASSED: kbuild: pdf/kbuild.pdf
+      PASSED: livepatch: pdf/livepatch.pdf
+      PASSED: mm: pdf/mm.pdf
+      PASSED: locking: pdf/locking.pdf
+      PASSED: infiniband: pdf/infiniband.pdf
+      PASSED: driver-api: pdf/driver-api.pdf
+      PASSED: bpf: pdf/bpf.pdf
+      PASSED: devicetree: pdf/devicetree.pdf
+      PASSED: block: pdf/block.pdf
+      PASSED: target: pdf/target.pdf
+      PASSED: arch: pdf/arch.pdf
+      PASSED: pcmcia: pdf/pcmcia.pdf
+      PASSED: scsi: pdf/scsi.pdf
+      PASSED: netlabel: pdf/netlabel.pdf
+      PASSED: sound: pdf/sound.pdf
+      PASSED: security: pdf/security.pdf
+      PASSED: accounting: pdf/accounting.pdf
+      PASSED: admin-guide: pdf/admin-guide.pdf
+      PASSED: core-api: pdf/core-api.pdf
+      PASSED: fb: pdf/fb.pdf
+      PASSED: peci: pdf/peci.pdf
+      PASSED: trace: pdf/trace.pdf
+      PASSED: misc-devices: pdf/misc-devices.pdf
+      PASSED: kernel-hacking: pdf/kernel-hacking.pdf
+      PASSED: hwmon: pdf/hwmon.pdf
 
-2. Fix broken or incomplete texlive dependencies on several
-   distros;
-
-4. "modernize" conf.py to solve font conflicts related to UTF-8
-   and non-UTF fonts from [T1]{fontenc}  LaTeX package.
-
-   Using fontenc with xelatex is problematic, as documented at
-
-	https://www.sphinx-doc.org/en/master/latex.html
-
-Please notice that:
-
-- It doesn't pretend to fix all  PDF issues. It focus only at the
-  above;
-- there are still distros where PDF builds fail either partially
-  or as a hole. On my checks, those are due to problematic
-  texlive packages shipped on such distros;
-- it doesn't touch/address/alter anyhing related to kfigure.py.
-  as such, it doesn't touch/change/improve/drop anything with
-  regards ImageMagick and/or Inkscape.
-
-I think we need a separate series addressing kfigure.py:
-it currently breaks if either input or output has a char > 127,
-meaning that PDF output there may eventually break.
-
+Reported-by: Akira Yokosawa <akiyks@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
-v2:
-  - one of the conf.py packages were split to help reviewers
-    to check the actual changes;
-  - added an extra sphinx-pre-install patch for ArchLinux.
+ scripts/sphinx-pre-install | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Mauro Carvalho Chehab (14):
-  docs: Makefile: Fix LaTeX paper size settings
-  docs: conf.py: better handle latex documents
-  docs: conf.py: fix doc name with SPHINXDIRS
-  docs: conf.py: rename some vars at latex_documents logic
-  docs: conf.py: use dedent and r-strings for LaTeX macros
-  docs: conf.py: fix some troubles for LaTeX output
-  docs: conf.py: extra cleanups and fixes
-  scripts: sphinx-pre-install: fix PDF build issues on Ubuntu
-  scripts: sphinx-pre-install: add missing gentoo pdf dependencies
-  scripts: sphinx-pre-install: fix PDF dependencies for openSuse
-  scripts: sphinx-pre-install: fix dependencies for OpenMandriva
-  scripts: sphinx-pre-install: fix pdf dependencies for Mageia 9
-  scripts: sphinx-pre-install: fix PDF dependencies for gentoo
-  scripts/sphinx-pre-install: fix Archlinux PDF dependencies
-
- Documentation/Makefile     |   4 +-
- Documentation/conf.py      | 106 ++++++++++++++++++++++---------------
- scripts/sphinx-pre-install |  46 ++++++++++++----
- 3 files changed, 101 insertions(+), 55 deletions(-)
-
+diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
+index b8474848df4e..b24a6f91ec0a 100755
+--- a/scripts/sphinx-pre-install
++++ b/scripts/sphinx-pre-install
+@@ -764,9 +764,6 @@ class SphinxDependencyChecker(MissingCheckers):
+ 
+         if self.pdf:
+             pdf_pkgs = {
+-                "texlive-lang-chinese": [
+-                    "/usr/share/texlive/texmf-dist/tex/latex/ctex/ctexhook.sty",
+-                ],
+                 "fonts-dejavu": [
+                     "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+                 ],
+@@ -775,6 +772,15 @@ class SphinxDependencyChecker(MissingCheckers):
+                     "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+                     "/usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc",
+                 ],
++                "tex-gyre": [
++                    "/usr/share/texmf/tex/latex/tex-gyre/tgtermes.sty"
++                ],
++                "texlive-fonts-recommended": [
++                    "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm",
++                ],
++                "texlive-lang-chinese": [
++                    "/usr/share/texlive/texmf-dist/tex/latex/ctex/ctexhook.sty",
++                ],
+             }
+ 
+             for package, files in pdf_pkgs.items():
 -- 
 2.50.1
-
 
 
