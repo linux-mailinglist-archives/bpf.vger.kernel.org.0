@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-66161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 744ADB2F350
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 11:07:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67D64B2F35F
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 11:10:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D1377AD71E
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 09:05:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FAAB5E735D
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 09:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28EB52EE60E;
-	Thu, 21 Aug 2025 09:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29242EF669;
+	Thu, 21 Aug 2025 09:06:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dg8cLrXb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DfoGFXys"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com [209.85.210.195])
+Received: from mail-pj1-f67.google.com (mail-pj1-f67.google.com [209.85.216.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2FE2D6E53;
-	Thu, 21 Aug 2025 09:06:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1522EE616;
+	Thu, 21 Aug 2025 09:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755767196; cv=none; b=jCpa5PpAlvuKqYtyzbiHIeXnN/ix4pOmn5GtU/uthWaXCYZ04jhD8g/6IsuPGSBGj30vbDLk6xTDfPidipji7LNEThmMskesTI5IsMk4pcDuhU5Huo2egqLO+A7jPPAE3lPcvQXYfrpGJYoHx1pEJAXJcrmj3+y0Dkdboh7jXcw=
+	t=1755767203; cv=none; b=iAb4aspZGIKzVRgXro+QyYXrxAkJLDjrRBwQee981+OEv87CTTLlUn1Wi5RqVLcaIMSo6nV5H/9rm6K1mLEMGkCKDSC2kHBMTTPDycbz1L6WaZXToveEtSgQ4pMnndSxHiCR3tcJl8JKURtru/mNfDNMaPnwnXTN4vCVLL9gfzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755767196; c=relaxed/simple;
-	bh=bTIHaC7j+7J/bMwGU/BkRIOcDtOKJIMEeRQy/KliUC4=;
+	s=arc-20240116; t=1755767203; c=relaxed/simple;
+	bh=Ta+KXGP5P/G/yZ89XMbuCBtvz/po1cUgAXq+JKoB+A8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KLd5xaxcjxS7SfToPEa8Gp04UQmMgGsdRGVO4oaeoBnSI38yvEFXqKH8lrsnMKDFNlC7xO46c7hUPoSe7g/f/aqp7e+60jkmma4wLFkKOOGEGxKyINE6+QnCNUt96Td560tiqZUkbG1OkUk4FUkEiCSZcZL1aLWcbPgbmaL7si4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dg8cLrXb; arc=none smtp.client-ip=209.85.210.195
+	 MIME-Version; b=HXMD+yNMP/wg4DiVihXK4ujLnjXuYq/DrawaPZyeyxO6G7wqeZ+l6HfgKEMiRRcmcOPLIrImDJUqhlIYiw+a2IkmQWRep3N5Tpu+2PffLy4S0oC7KLn7cYeesRrVChx4BWAi20aludfLWLXdxZVvcaa0rAr7GTrpzrX3XT5JFT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DfoGFXys; arc=none smtp.client-ip=209.85.216.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f195.google.com with SMTP id d2e1a72fcca58-76e2ebe86ecso991800b3a.3;
-        Thu, 21 Aug 2025 02:06:35 -0700 (PDT)
+Received: by mail-pj1-f67.google.com with SMTP id 98e67ed59e1d1-32326bd4f4dso630106a91.1;
+        Thu, 21 Aug 2025 02:06:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755767194; x=1756371994; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755767201; x=1756372001; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XuCltBuqWN/DSCHw6nPVx35dtf5n5wtufyyXilS2WWQ=;
-        b=dg8cLrXb88fj0GD0nLVyeZoh1ISA3k/YSAX8pigBKV9P5z072mKEkNIWlQsKwsxzh4
-         sd81YDEk0Zvy/UPrIC5S77noRdQeM37Xy2OnXECQNVqdzaJgzmaNy18qS1H6giBujD2Z
-         OeL7piz4QwvHiRw2UUvK11cxooGG9NZiLAOFAOAvlZLdJ/Q+JsbhitqEv5foklpfmylY
-         5VodKGDCrmTZjewURCi9IX2GrCYA1HPuubTn9WdGcAeNCLV2lmwNCkPh2DP/gQpPaEEX
-         mc3xTBdKSRqKfn/uPy4TkNdU8z9FWo7eKkuRDy726XebXI1xf6KFaYQAxf1FBDtfR9mP
-         FR6g==
+        bh=9QVMhbhOtLzLkzu3HrcXzL+1NJ3SqUwSRILS3h61pRg=;
+        b=DfoGFXysZDZZnLuHGedmbGJZi2uHWauEQ28ju98ABZjHIJwBBtuoxX1ngO19WZsjM1
+         uyY4neEwz+7OU0a3JmFuKWMoBQ5b8QTxpCUPZKD/mFCeXmicI+i0UGsHz/1t+qdAZnte
+         yG8/UV6/tLKUWhjzB1n0h4Qlq6JUc3jIY30SIlHgjjAFXAaeb6wLB5KJ9ChnhvtWAdT2
+         Q7DUSVFPLcM7911jhl95c+pFSJP8tNGIME0qRbyPB8LDy6VL8SVLQTcm0R2DvGksn8t5
+         MMpY/8fFTyrc7jl9diSuyj0IKwDm1Jz4+vwnzRkFpXqWTs3KfOaqaCsQ6nYc4xPcwqZc
+         N1Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755767194; x=1756371994;
+        d=1e100.net; s=20230601; t=1755767201; x=1756372001;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XuCltBuqWN/DSCHw6nPVx35dtf5n5wtufyyXilS2WWQ=;
-        b=xDufCYeQczNX0YHkQ22AhRa10WkZ9hwTIXqZ9d+h0PoGee1EuQ40QRCsbquBD30ln7
-         3QQ+jasBTo8bOjW2XjzKexiuqIyfs2+xkxKrcZZ+vAjME6GojEBycgYxxWEOZsgPTtPF
-         CEybN1p35Vg3hYX6AHPF8s8/+m8hl+aZbYv1ZUfBrD+qdSGyx7rwvBLuKznuwbEubNLQ
-         +GYj5buKMO5Y9EFqoZaXZWBdeF17VN+DF4Tso2qUmDPPeTY+eB9mq572d6r0syTRsCtu
-         Cx5Wwl7yGLFI/ympQ7ZPnSsx8WwKBfE3GJuPz3uotwUR6rIuBIQoCywfIAL2Yfg+AkJ5
-         lrMg==
-X-Forwarded-Encrypted: i=1; AJvYcCVjRRGpXpxaa7mHAv0SH46VcPVHj8YV2ONdqLwQMqpiawZylQizJXWiUZ5+Nh/6xhg9glo=@vger.kernel.org, AJvYcCVksyFx3wy/ZMCeNw9Q8QolEV+5WPN9V56pL43ais+mtZ98BplS9CxOLGIjMVeSoeUCcxzj@vger.kernel.org, AJvYcCX+ObHcdWrWeFjDrmFxWi5glyGEfAv55EgIMLAC6GvYQ1p6LKRBUNU6xOrDpkPwH+Qpy/LIgcfRwLQcdfzq@vger.kernel.org
-X-Gm-Message-State: AOJu0YzECJ7WcPHpc2SJjvsfpzebveq+4IQTH0pRpNc9no9+bbOkxA8L
-	742QnK3ZlrReOSGnSHne58+mkW6TepkY7wZhpq2wenVViAhFOLCjNrbf
-X-Gm-Gg: ASbGncvzfEDNPCjJcSyjWKXolXKczfHzIOTYo6C90abE2Gf5XmGxey4RzxmeivasqyG
-	KakCMyIUn+P9wVMRnCvhb8Yu7j7xKSjdRZ3GDkbCOZz8LfbiHKuEeAxW2F5QMA+WH5KLs6nBt2b
-	Tgju+d+jnO3og6yyCr3h40He34I9j6/WhK4IyAUqmmACKhIFn1nQEzYFFrgjm24gREWENr4Pc8p
-	J/IbVzxtL4n0dXCIBjtmGZuFaMYoaGejnOLWwtQgiKw6w0N4wiQTB7OS9xYEA3nF4qx3gwYmfrY
-	NvOpJSXDjPyL44Qr3Gi1lkTkcu25krC4lT85SSEqHAAXRphXIo0KabMjK8VVH/PYsN8z9LWBODr
-	sb8HDanJ41MBKU4PUp6BEVFw=
-X-Google-Smtp-Source: AGHT+IEvGma+2JUsOCtxjSXnlbSq374x1K7erjquy/3NUbEf1gradL10rCdgT7ko5FE78MonWWLHBA==
-X-Received: by 2002:a05:6a00:928d:b0:769:93fb:210a with SMTP id d2e1a72fcca58-76ea324adfbmr2504056b3a.21.1755767194490;
-        Thu, 21 Aug 2025 02:06:34 -0700 (PDT)
+        bh=9QVMhbhOtLzLkzu3HrcXzL+1NJ3SqUwSRILS3h61pRg=;
+        b=TTMNVMgTIK76qJYDhFambL2alLFUfkHQFUjF5h7rljwTlC6QxZivxrnXK4QF8eY+yT
+         AfJt2nOjgHxs9NPU0N1tBB97PxWTs9uTrQp+bAZa1SPOhOzFygoaXkvUJMhMr4IuZRz+
+         T5Vfrgdd8FE0J2VEAt8MS9fpKL0kGHL7RGbj9RZxPimI41uGnQHUWzB+ayC2e42nXeHh
+         TKg98GYz0lYhVg10QyzLrTgMydGeQo4gaNpM+8YF31+RjxNqA5r0ywPpK2iasZYRaHhp
+         V300bPfAN3S2i7z5afa4jHf+uBfien7s6anBAnZTKpORIUijhzlCy4g+7xibA22GGGY5
+         Y3PQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUi5cnrRoqxICxFfn5XBPHM69cxkU88yJfUQAPlao+91QDYetSHV1QhPoiD5vA68pW/lN4=@vger.kernel.org, AJvYcCW0C2xo9QSkXe83munmGSo3lkoeOGM3VixV3bIXHiuuLlHMj8piGqsYkIo40BsB1p9Bui8b@vger.kernel.org, AJvYcCXmxXehteNUF/ctzJJz/2y+MCs6I3BmnI16kCgHtl4kBOLRUf/vk0yTWYdgQqQFwiUjCSsibkXsj5QLoCV9@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4CgBVXX9PuSrKPOYMiXJelLhX+8FIXFDgZQ0M3mdNbE6pG10g
+	phnKOnuYakbcHJxkuLANyvy5TNRJWWsehId7xfEo/Rmqx15vLaIp9cd8
+X-Gm-Gg: ASbGncu7Jpsb7Gs/tv4XHA2mtgTuvFKUc9YyGn5wHOdXR/hyYJ5WCM/ZTNhQ6+dHaLS
+	YTdI3ZoZ6BSSRmqvN2rR4FadEbgWQ8KXADv1+bR+fkUJ/6nVqcqXSKkDKOmqRd8TqY92sM3J3OL
+	KWwxJ+CP3QheqgHycsXMLz7D3rNqZCHAqtzmf5usarojgm3aBxs+z7mGy2SsJxU7Y2zgNsTtzG/
+	0aFKnHw+AJ384LdBtBtDOtemflB6i+WaWoq34KYH7onW/y6d973px3eqPQaA5A/KefJ15yWnVDa
+	B8YheDslBwbxVwTNMyKoxuONBA0YzHKZ24Hb7XrH9cKbn3lBogfQ4h/4jaVbc8u7wT8fDp/TMaJ
+	RJd/9s39ENlTBzciejiPoEzKtG/TcvWj46Q==
+X-Google-Smtp-Source: AGHT+IHQaq8GeJuFXhkTC5l/8f8O+joWaAvZZ7nHcCehzsCAPrzZWRziMF5VtxqCODLpV0qfOtCVzw==
+X-Received: by 2002:a17:90b:3c08:b0:311:be43:f09a with SMTP id 98e67ed59e1d1-324ef3c6639mr1985454a91.9.1755767201325;
+        Thu, 21 Aug 2025 02:06:41 -0700 (PDT)
 Received: from 7940hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76ea0c16351sm1708937b3a.14.2025.08.21.02.06.27
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76ea0c16351sm1708937b3a.14.2025.08.21.02.06.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Aug 2025 02:06:34 -0700 (PDT)
+        Thu, 21 Aug 2025 02:06:41 -0700 (PDT)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: ast@kernel.org,
@@ -101,9 +101,9 @@ Cc: frederic@kernel.org,
 	rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v3 2/7] bpf: use rcu_read_lock_dont_migrate() for bpf_cgrp_storage_free()
-Date: Thu, 21 Aug 2025 17:06:04 +0800
-Message-ID: <20250821090609.42508-3-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next v3 3/7] bpf: use rcu_read_lock_dont_migrate() for bpf_inode_storage_free()
+Date: Thu, 21 Aug 2025 17:06:05 +0800
+Message-ID: <20250821090609.42508-4-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250821090609.42508-1-dongml2@chinatelecom.cn>
 References: <20250821090609.42508-1-dongml2@chinatelecom.cn>
@@ -116,7 +116,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Use rcu_read_lock_dont_migrate() and rcu_read_unlock_migrate() in
-bpf_cgrp_storage_free to obtain better performance when PREEMPT_RCU is
+bpf_inode_storage_free to obtain better performance when PREEMPT_RCU is
 not enabled.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
@@ -124,33 +124,33 @@ Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 v2:
 - use rcu_read_lock_dont_migrate() instead of rcu_migrate_disable()
 ---
- kernel/bpf/bpf_cgrp_storage.c | 6 ++----
+ kernel/bpf/bpf_inode_storage.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
-index 148da8f7ff36..0687a760974a 100644
---- a/kernel/bpf/bpf_cgrp_storage.c
-+++ b/kernel/bpf/bpf_cgrp_storage.c
-@@ -45,8 +45,7 @@ void bpf_cgrp_storage_free(struct cgroup *cgroup)
- {
- 	struct bpf_local_storage *local_storage;
+diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+index 15a3eb9b02d9..e54cce2b9175 100644
+--- a/kernel/bpf/bpf_inode_storage.c
++++ b/kernel/bpf/bpf_inode_storage.c
+@@ -62,8 +62,7 @@ void bpf_inode_storage_free(struct inode *inode)
+ 	if (!bsb)
+ 		return;
  
 -	migrate_disable();
 -	rcu_read_lock();
 +	rcu_read_lock_dont_migrate();
- 	local_storage = rcu_dereference(cgroup->bpf_cgrp_storage);
+ 
+ 	local_storage = rcu_dereference(bsb->storage);
  	if (!local_storage)
- 		goto out;
-@@ -55,8 +54,7 @@ void bpf_cgrp_storage_free(struct cgroup *cgroup)
+@@ -71,8 +70,7 @@ void bpf_inode_storage_free(struct inode *inode)
+ 
  	bpf_local_storage_destroy(local_storage);
- 	bpf_cgrp_storage_unlock();
  out:
 -	rcu_read_unlock();
 -	migrate_enable();
 +	rcu_read_unlock_migrate();
  }
  
- static struct bpf_local_storage_data *
+ static void *bpf_fd_inode_storage_lookup_elem(struct bpf_map *map, void *key)
 -- 
 2.50.1
 
