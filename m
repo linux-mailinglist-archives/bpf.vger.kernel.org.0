@@ -1,87 +1,88 @@
-Return-Path: <bpf+bounces-66197-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66198-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25BE8B2F7D5
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 14:24:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 746C4B2F7E0
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 14:25:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFF39603ACD
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 12:22:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0D4B3B5468
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 12:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B392DE6FE;
-	Thu, 21 Aug 2025 12:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132BE2E0916;
+	Thu, 21 Aug 2025 12:24:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Jy56pvHo"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1d0O64rI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7C71E25EB
-	for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 12:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2AE2853E2
+	for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 12:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755778945; cv=none; b=mp6uJqUD7TgN4YXpwVeCvk28UwF8gEIajrO1la4Rd33UptjRL0sdmVCRmwjxJhCighK+Q20mrTd+ek1jGTlr2/L+sL08WXc7ZKRhVMeFOfBIcqRMH1YRhmkIBVGO/qoijm0qgR1G1iFtCGCU0ShhFPub4u0T/j1eBsYxLqss5lI=
+	t=1755779069; cv=none; b=hmfpxcmuzovYvi5NT7wXqQqjgX8IG6QT0Dwxwv5tEA9U1VgRHgqxGfF4l23O7+duiRQND4TOJxbOh2CwdTlNfwpsByEo87I0osYSCot8d5xst/dqmTvnW6BVG808qkHkNBf7akdznirkntZVEMFPaakr1FbPpzy9A1aijHm0bvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755778945; c=relaxed/simple;
-	bh=fSEsQ/Vk6OMQpZkWmTwVJ6fm0yCcKERCKkZiq1OYf8A=;
+	s=arc-20240116; t=1755779069; c=relaxed/simple;
+	bh=f1AbBbvLlmetpbm2cknoVOkum8sEWbncoukC/4LrwuI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q10zZ4xEITQVuZLcHEBKwxAtyJr44KqDxhBzoUDxVgnl9aeQx8PmOSfcrthll9mXxAoMFUehVf1PFb5c68Zfa0TkhdSuYt1uy4rAoN4PEv2BB7/RREgMnShZonBB9P/J6RLjzw8a5igAojou6tVQqmM25JpB8efF6NvFe4JKfh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Jy56pvHo; arc=none smtp.client-ip=209.85.160.179
+	 To:Cc:Content-Type; b=dTuk15QGlSESUBk9gL0XevWO9SfWVtvgM8ud1sayH9N2xMw7gmdUUTOsw8G48WH61unmE/JN2pVBIWCvlkAOuApzylYaQrk5/VfYy1IFrkIVpUc3PNJKp32iO+FLoszPqsqz1yfEI+sX+1CZl3IEbECYJKnZ0PbDykGSFaIP8js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1d0O64rI; arc=none smtp.client-ip=209.85.160.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4b134f1c451so11775501cf.1
-        for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 05:22:23 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4b2979628f9so11011381cf.2
+        for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 05:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755778943; x=1756383743; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1755779067; x=1756383867; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aKSsjvve/1RAj60Dban8ij17MQ++dGwNHw+gQ1QKQpM=;
-        b=Jy56pvHopgVB4QlSdjncvHSNwKJIyH1Jqn/VU5MfuBNlaMxR6MMS7f7be0iKp1yM7c
-         T6Ls3h8VJB4p01WMuTKeD6HeNMThCfAMaA2ivjdV6j8t/BGNexZq3mnxToSNjuH7GTI4
-         SeLLsuPpAtVImwsQjvgfTndynLEWkirbKbaumcFNAm3SyDyx/XiED9J7Tz7rjV2ZUW+b
-         v99L+FAGWOeWKJCBJV3SaoPXXlhVhMeId6KlRjikRNNrp/CIt/k3tQtwPQDh9L+paFCu
-         EwvrZ30mwznm7mMpk64rcAnch23ynjVuKA8/9SVMMA8HX9MJ3FMbE9NQ2HVfvvcMvuSn
-         3qPA==
+        bh=f1AbBbvLlmetpbm2cknoVOkum8sEWbncoukC/4LrwuI=;
+        b=1d0O64rICsWpfp1eb4Q5gc2LxsR6uLVDSPIZcm8PyqVlfeafi0vD4fErSm4wlrEwGY
+         /1C5qgn34lKV/0q8/M2nkGtaLrphZRFmZJxRp1sq+trcmeasboSJlozEWSfuMVj5v2ln
+         pS9wSyf7yCWv01yYzqo27s37v/XmdSFrHvIcVpyVn6NtPjWJRsReafak0htJaHRKJe6N
+         il5/tD0mWSvOwIaTSwHaqHL+w1QjF5BxZScQ8x4Z4m2EzA9dpcH93fFQfASCSCdWVMDS
+         eis4A4mS+ZKuiweh7NLa8za4Hc1zI02G+ScsdFmibuMenFxbz/1Z008uPaI5wDi9Sex0
+         QTEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755778943; x=1756383743;
+        d=1e100.net; s=20230601; t=1755779067; x=1756383867;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aKSsjvve/1RAj60Dban8ij17MQ++dGwNHw+gQ1QKQpM=;
-        b=hPs5ruZu4vH+iNVVcP5la4YbI19YLSLgVH0mw+nZb3b0+QqAJYZDhZtChgtkNy39YI
-         2VixCssQsvxlydeXtyaisE9+SD2HE9a5KmtJAvdhFG1EhmXeNPj25lhZcc/NbUBoLy+W
-         vLy1gqBHMcbGf3g4rsMTdmjL/dZn5jxKEdLnc8JOPU+3umf+i3gEfJ6c2RQ8dHOgS93H
-         NgsMGkBjIrfsW6/EToCA1Xpew76IVfJGvjkJ4gf+exwZOJAM1asAMLd0bCvCWwIS5ivE
-         TXqHREVEZnUGK+4z6aLlUX6EnjObI4p7GoEAiWyT+1hyFh/SW1Ou10MsoYGEjHc/JUxc
-         5Pug==
-X-Forwarded-Encrypted: i=1; AJvYcCVmPkG2Q4GsVgbiyvXqxIDQb0mxpu/OklR+aXAxq0jVLCuhVPW9afRsxJwPdwymhKLj0mo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGeMGO5IPVx3Gsb1+BLSXh41KetkTXJCk2nyBDyr+pjeFSOupJ
-	w+T0c+qcRu0cQEbYIBz5iwq6y/wbOK+S3oyIYuBjM/fhxR/+FWlhs0w5DTNTATgTtYaB8Zbmsol
-	HcXgY6AevsKEU4QdOJbCA3krSmtpN6tqbgXFHvJWG
-X-Gm-Gg: ASbGnctJGwrQs1JJ3fJnYE9l5yfTOPtV7y1sIhrLY+ommRrg6xsyLrBdl9S0xRrrLI+
-	UJooMEH5ICBkPuVehlDTcPuV9oCmpENUZTNEu1zqPwE+WLYzUmlmXuIB7xRFWy3gcqXLKGpw6bn
-	53BjqQzkjQOuHs+VwnzfGCsBJJChj9MkEs8PfxYTL+DVmqQzhksINmee+RWdiniPD99LHsfiiub
-	sE83oSQr6ueep1NwSlSkpYElw==
-X-Google-Smtp-Source: AGHT+IFXwsqHTBSwwL4QWrFjnAqYGYGRHHfnn0fyyJIeQ/rD+n3E/hb0G9BvZiYOX886SM/9LiSsdHBY2287j79joNs=
-X-Received: by 2002:a05:622a:191c:b0:4b2:9620:33b3 with SMTP id
- d75a77b69052e-4b29fa5cbfcmr20179561cf.34.1755778942207; Thu, 21 Aug 2025
- 05:22:22 -0700 (PDT)
+        bh=f1AbBbvLlmetpbm2cknoVOkum8sEWbncoukC/4LrwuI=;
+        b=wQOLCICxjFiUuIh/ebPCHYwzPt1ZYHOZozOPQeM0KQ/z7iTnrSWG+lLXSv0RDgK3a/
+         NGwrmJF/5d5mVHQjBuTZ0v+j4S+SBVYVRbEbGiFI/aVk2X+Ld3zcthxXII6npk0wSOPr
+         q4o/FL88tVk7x30IhnkH3J3ulLxLqaqd/fbmNqZh5WElQBsEEJs3TYy9o5h5KcWHsPD8
+         ZbVBqB6oG1j7OaCeuwX795bu2ddTPu22fPIgyGyvxlWLVDg0ecVIBV75S7xHMHFRk39O
+         1331Y3/Haj6Ar81kJnJfLV7LufA0mKQZ6/GgnmKqCXFbM0x8KKHFfw0i3tolvqFtjMEw
+         KjEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU4R7mMjz1C9JYbsTTCnV8yq11ffejl4BQkN/CKviv+Q7IEOppQEJt1aPbjoSzhPAMZG3U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwblPZeIjXv/Jg3VtORKJWOIBE11a33lS9rujLOBDzccSkJ41J
+	+xIgGIpv3IRE4nQJ2dh3CQjkr0kcgZru1hkTdrP3Q2zRGXLK0xqYDEyJAMmat4tBqa22RMkesH4
+	ZLdhi2dhoNE740tBQEiVti1v5xIAJjNwIwgZ7Zuj4XccKlWL8tDRbIP3h
+X-Gm-Gg: ASbGncuvWF+gc0VkFwppLslKAsUXpsg7DuUZja+KSgKg5j3wfn/s/RfoGMPYG/o/EuO
+	f1PyCzMZXziiqGkCN3i6fewWKUfwBmhFTQqWvmTZ7Swh43Ano17I6nDGQ4T3r7G1SoEgWtwB2Yk
+	pYHBYh7l8JqWLk0uOaUXLmELi7AbWCgteg7zIxL/FO0GQ+aJUi9Tg2Alb5EVoiWNez1mBZcY2wW
+	zVav/GXzq4lvzWzZeZIsZ6D6Q==
+X-Google-Smtp-Source: AGHT+IE9nHthnuO3iyaaTFTophq+5yluqv4flsuTIbWyobQg+AKCHWYdoAelc0nDHS8WwCDQgE8Y49CEmLBBB7iUtng=
+X-Received: by 2002:a05:622a:5e17:b0:4b2:8ac5:25aa with SMTP id
+ d75a77b69052e-4b29ffc2c09mr20057031cf.83.1755779066699; Thu, 21 Aug 2025
+ 05:24:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250815083930.10547-1-chia-yu.chang@nokia-bell-labs.com> <20250815083930.10547-7-chia-yu.chang@nokia-bell-labs.com>
-In-Reply-To: <20250815083930.10547-7-chia-yu.chang@nokia-bell-labs.com>
+References: <20250815083930.10547-1-chia-yu.chang@nokia-bell-labs.com> <20250815083930.10547-9-chia-yu.chang@nokia-bell-labs.com>
+In-Reply-To: <20250815083930.10547-9-chia-yu.chang@nokia-bell-labs.com>
 From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 21 Aug 2025 05:22:10 -0700
-X-Gm-Features: Ac12FXwJLwuIZZV7IiiWgI7Ni_b_-fkA-MWf7lHGDVGOEcjIPXX_K_j__DXPqFs
-Message-ID: <CANn89iKAUB4JOoHDPrxsRDeBTXPEF8Fu4ab2O_w2QTnRNXJvzg@mail.gmail.com>
-Subject: Re: [PATCH v15 net-next 06/14] tcp: accecn: AccECN negotiation
+Date: Thu, 21 Aug 2025 05:24:15 -0700
+X-Gm-Features: Ac12FXz4ItLodbd6ls4z56PUPr7M6ZV9VCYXJm2RKx6YiZF5T39E5oM6J1bp_oU
+Message-ID: <CANn89iKvwM4EFwzuLXOr8OzddQto_rPfdBHUMLzS=xxG3USzTg@mail.gmail.com>
+Subject: Re: [PATCH v15 net-next 08/14] tcp: accecn: AccECN needs to know
+ delivered bytes
 To: chia-yu.chang@nokia-bell-labs.com
 Cc: pabeni@redhat.com, linux-doc@vger.kernel.org, corbet@lwn.net, 
 	horms@kernel.org, dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org, 
@@ -93,8 +94,7 @@ Cc: pabeni@redhat.com, linux-doc@vger.kernel.org, corbet@lwn.net,
 	ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com, 
 	g.white@cablelabs.com, ingemar.s.johansson@ericsson.com, 
 	mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at, 
-	Jason_Livingood@comcast.com, vidhi_goel@apple.com, 
-	Olivier Tilmans <olivier.tilmans@nokia.com>
+	Jason_Livingood@comcast.com, vidhi_goel@apple.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -103,90 +103,21 @@ On Fri, Aug 15, 2025 at 1:39=E2=80=AFAM <chia-yu.chang@nokia-bell-labs.com>=
 >
 > From: Ilpo J=C3=A4rvinen <ij@kernel.org>
 >
-> Accurate ECN negotiation parts based on the specification:
->   https://tools.ietf.org/id/draft-ietf-tcpm-accurate-ecn-28.txt
+> AccECN byte counter estimation requires delivered bytes
+> which can be calculated while processing SACK blocks and
+> cumulative ACK. The delivered bytes will be used to estimate
+> the byte counters between AccECN option (on ACKs w/o the
+> option).
 >
-> Accurate ECN is negotiated using ECE, CWR and AE flags in the
-> TCP header. TCP falls back into using RFC3168 ECN if one of the
-> ends supports only RFC3168-style ECN.
->
-> The AccECN negotiation includes reflecting IP ECN field value
-> seen in SYN and SYNACK back using the same bits as negotiation
-> to allow responding to SYN CE marks and to detect ECN field
-> mangling. CE marks should not occur currently because SYN=3D1
-> segments are sent with Non-ECT in IP ECN field (but proposal
-> exists to remove this restriction).
->
-> Reflecting SYN IP ECN field in SYNACK is relatively simple.
-> Reflecting SYNACK IP ECN field in the final/third ACK of
-> the handshake is more challenging. Linux TCP code is not well
-> prepared for using the final/third ACK a signalling channel
-> which makes things somewhat complicated here.
->
-> tcp_ecn sysctl can be used to select the highest ECN variant
-> (Accurate ECN, ECN, No ECN) that is attemped to be negotiated and
-> requested for incoming connection and outgoing connection:
-> TCP_ECN_IN_NOECN_OUT_NOECN, TCP_ECN_IN_ECN_OUT_ECN,
-> TCP_ECN_IN_ECN_OUT_NOECN, TCP_ECN_IN_ACCECN_OUT_ACCECN,
-> TCP_ECN_IN_ACCECN_OUT_ECN, and TCP_ECN_IN_ACCECN_OUT_NOECN.
->
-> After this patch, the size of tcp_request_sock remains unchanged
-> and no new holes are added. Below are the pahole outcomes before
-> and after this patch:
->
->
+> Non-SACK calculation is quite annoying, inaccurate, and
+> likely bogus.
 
+Does it mean AccECN depends on SACK ?
+
+>
 > Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
-> Co-developed-by: Olivier Tilmans <olivier.tilmans@nokia.com>
-> Signed-off-by: Olivier Tilmans <olivier.tilmans@nokia.com>
-> Co-developed-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 > Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 > Acked-by: Paolo Abeni <pabeni@redhat.com>
->
-
-
-> +       if (tp->ecn_flags & TCP_ECN_MODE_ACCECN) {
-> +               TCP_SKB_CB(skb)->tcp_flags &=3D ~TCPHDR_ACE;
-> +               TCP_SKB_CB(skb)->tcp_flags |=3D
-> +                       tcp_accecn_reflector_flags(tp->syn_ect_rcv);
-> +               tp->syn_ect_snt =3D inet_sk(sk)->tos & INET_ECN_MASK;
-> +       }
->  }
->
->  /* Packet ECN state for a SYN.  */
-> @@ -125,8 +377,20 @@ static inline void tcp_ecn_send_syn(struct sock *sk,=
- struct sk_buff *skb)
->  {
->         struct tcp_sock *tp =3D tcp_sk(sk);
->         bool bpf_needs_ecn =3D tcp_bpf_ca_needs_ecn(sk);
-> -       bool use_ecn =3D READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_ecn) =3D=
-=3D 1 ||
-> -               tcp_ca_needs_ecn(sk) || bpf_needs_ecn;
-> +       bool use_ecn, use_accecn;
-> +       u8 tcp_ecn =3D READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_ecn);
-> +
-> +       /* +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
-> +        * | tcp_ecn values |    Outgoing connections   |
-> +        * +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
-> +        * |     0,2,5      |     Do not request ECN    |
-> +        * |      1,4       |   Request ECN connection  |
-> +        * |       3        | Request AccECN connection |
-> +        * +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
-> +        */
-
-You have nice macros, maybe use them ?
-
-      TCP_ECN_IN_NOECN_OUT_NOECN =3D 0,
-       TCP_ECN_IN_ECN_OUT_ECN =3D 1,
-       TCP_ECN_IN_ECN_OUT_NOECN =3D 2,
-       TCP_ECN_IN_ACCECN_OUT_ACCECN =3D 3,
-       TCP_ECN_IN_ACCECN_OUT_ECN =3D 4,
-       TCP_ECN_IN_ACCECN_OUT_NOECN =3D 5,
-
-This can be done later, no need to respin.
 
 Reviewed-by: Eric Dumazet <edumazet@google.com>
 
