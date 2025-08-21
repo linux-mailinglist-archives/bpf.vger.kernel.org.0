@@ -1,65 +1,91 @@
-Return-Path: <bpf+bounces-66239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E5D7B2FFBB
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 18:14:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A074B30018
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 18:33:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D70917C155
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 16:09:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 284251C218BC
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 16:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38282BE65E;
-	Thu, 21 Aug 2025 16:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661DD2DCF71;
+	Thu, 21 Aug 2025 16:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KqXNzCW2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cNiU7wJo"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A59E2BE647
-	for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 16:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46EAC2E1F01;
+	Thu, 21 Aug 2025 16:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755792553; cv=none; b=rESrTxd4i38C/3RpEf4HrTmA9gZOtZLO4swQHghWhGSIt4c4vhmogsB1JqWvHx7scb9qilEWGOc5bye2WGAIuk0+qAaVIKO4NR/J0Ut+WvSFTANgJPWrmdojzw32XSVTgjvvDEaHYWOliqwNU/bwg7Q7XDw2O6j1AlxPb3Z4N24=
+	t=1755793566; cv=none; b=UoqsA6ONEUjKOkyjIk2rpnLw8OebGtJVYVA/4/T3qTQUsI6ICmYhm9wt2LvRv/j5rc9sElp4CfcRfRqnMV0paSjSb957oPCqJKE5A+v/opob7uKJbE/7RxlvY10ir+o4wgG+Dkh7CyrHpiN6fSuQt178dwXM+t4zNWE0NkG3+Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755792553; c=relaxed/simple;
-	bh=c7ZwdK4GFEK6aXMOXT8GefYCqLVKnNMK/+HoMU43No8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ThW9E4AIMlUYnFJ52OF08LWUU3YkhOwzqDgMfeYoGGMbQ1EErvXq9ywDxhKpP0J1mKZwlL+R5raN1Fs9FreKhbm069/0XUgnConZD1JQPy8TKuXoUsue8WMHfZ+6GTUJyZKYB9e7M5F/KfpaU2MYmKu/hMMMl97yzDwVk/p3rm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KqXNzCW2; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755792548;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q7j/qo2mvByyx5qKnfPKdjLrox00rBRImgwRywxd+Bg=;
-	b=KqXNzCW2pFOOk6fOy/7QQ1aIJfLvGnrYHNpCC3rR/2rKmnLgreOxZhd6oFP80V1rYZkpBJ
-	PIqmwp58pRvDz/cydRXjGcGb7exMJljAj9fvvt8frV/UThNNIbhmRjCdrd9+exzrytYqo1
-	7eIeCeNDQu8PlBtjwrZrAkUsZ/QHyQI=
-From: Leon Hwang <leon.hwang@linux.dev>
+	s=arc-20240116; t=1755793566; c=relaxed/simple;
+	bh=39w/P912HxxRO2J7nfqfTL97c1JDkPmOEVExc2gBAS8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eXOjGV23KREABxgSO44oh+MzyQoX1H7baDNZFQpDhA5JEkkhpOpAIOofC1LcblQs23DKQY35hGQIYcrZ42bmJRXgPLsa/QsoCHBBtj1YeluqTMA2sttiJ5kuDU+W+DOQO+otXdfF7at4Mh4OYMb9CtN5iCMcRou5NRSGWHh39HM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cNiU7wJo; arc=none smtp.client-ip=209.85.218.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-afcb78fb04cso162585466b.1;
+        Thu, 21 Aug 2025 09:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755793562; x=1756398362; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2d2a7EPRfILJGAfQnbkIn0Fn1zUwbQ5I9lTA8AtYmE8=;
+        b=cNiU7wJo/LWxr75VaW3QTRBz1tUv11kRgyxSwUzVTgmQROTpWU221atBLr+uSYwmH9
+         DC+3gCDP3g7U4NxMxgWPY/sratck8ldJZ7tM0KiOr6SPHYXNFgKucxX/yDb4D1zK2pcR
+         YwN1X4wV6K2xId+Ke2VgPK1rjho/D8XQ+J0wZJjyiQOYlJWHgxOoixtxmBcU+6DvP6y8
+         xV6zuPF0jR2/MdwUNifuUXEyyJdvTN6ud3ULeWGr+wLoqyHfU+c/J4/NaodTCTIY72sA
+         PGmky/0HdRc04ZjLSsI97wiJhk+i+RLvm9vd/yCv8SBdcd6ktzYOclRLxqf63WmkaGsi
+         xaOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755793562; x=1756398362;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2d2a7EPRfILJGAfQnbkIn0Fn1zUwbQ5I9lTA8AtYmE8=;
+        b=YyYknAmoHSFGbrxHgu4tztpgJq4+FFx8RJpA/Q/EFaj5T+N/g85/uE8yiF6t2YBcQQ
+         PjfruGMjpfYLzdKA+FKawyJaUXFO3U/c0lm4KffQY0Nd+Xx09FKPwakqZccahhpIaEPr
+         SIGaGAAS0jQuJqzx2UpkpiQeeoPmm7ZbZRUa5F5k8MQQaLBoc5LbXgQjCrHgVcHkdagF
+         mW3EeoW4v4djusbjdIXdHWEGrE59S52saf/3xV2dffd3VoWEwtJAQA669m4sV/eAArQr
+         t/rJDizIgz8jlD9tkCDXaInBoFWk9H04XpXQXtq8ICflMJgwQ9ohffB5onrFj/eurFpt
+         hDvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXXwPSFCoK+C2bwS7uXXZNe1YeE4UTdllaFx2I3EIhSIHtvukLezwt+7DiIwtyCDCwstbXeT+0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxLScSayN/Da/H1eo3hZaSyInHQ2R3jfrTCdIGkRNBYf7XeO29d
+	IRvZAzpct1YKJ3T/xs2QwG6kDwNmrdmghEIgVsBfVOkPHs0NeERwMoD6OI1B/MiC
+X-Gm-Gg: ASbGncuE9uXKU1d2shHPUEo4e22ObfKdxYfBi/PpZHSjBsDGelTGIItRdN8hFpSWxjr
+	LdH1cmTEQ+haAnhmJH3rOhRz+iEi2E8e/rCVZkPR6w5xIuyp3gwKvP4PiU8vYaGVjOSY5mhrNsV
+	swXAnFZX/ps3pqB6E/6NFv33wTnQNx08vrMwkyGbTMJ2e02w4DZjD0sO4yhWetNMnUdS1CHkxtu
+	gP2T/sTiUXKJavvWqu5s0R6O7rpvk8zsHEGHxhvR3xIZxZkz10rD7CXsQZqlSnBQYqtZKaQOXv2
+	wAfvdFDg5Dt2tvTrhKKtuI0st7L1Y76DCM5LzoYqNFmXp31qYCz7cxI8gkHTvo2c/VQMpkk7uLh
+	UjnviZASkj9JSOINIJOra7/tsjzmB01juf9tDsM+chjgJ
+X-Google-Smtp-Source: AGHT+IGxON9wvgiVHgSgxXlXHvG1m6SjImvCEc6HOjqCGZZUTyigIlJeDjmsSSSXSxHgXK9lb7PWlA==
+X-Received: by 2002:a17:907:9726:b0:af6:361a:eac0 with SMTP id a640c23a62f3a-afe07b9cecamr300165066b.32.1755793561785;
+        Thu, 21 Aug 2025 09:26:01 -0700 (PDT)
+Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-afded2bc305sm411507866b.18.2025.08.21.09.26.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Aug 2025 09:26:01 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	olsajiri@gmail.com,
-	yonghong.song@linux.dev,
-	song@kernel.org,
-	eddyz87@gmail.com,
-	dxu@dxuuu.xyz,
-	deso@posteo.net,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v3 6/6] selftests/bpf: Add cases to test BPF_F_CPU flag
-Date: Fri, 22 Aug 2025 00:08:17 +0800
-Message-ID: <20250821160817.70285-7-leon.hwang@linux.dev>
-In-Reply-To: <20250821160817.70285-1-leon.hwang@linux.dev>
-References: <20250821160817.70285-1-leon.hwang@linux.dev>
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	stable@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf v1] bpf: Drop rqspinlock usage in ringbuf
+Date: Thu, 21 Aug 2025 16:26:00 +0000
+Message-ID: <20250821162600.1627359-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,321 +93,84 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Add test coverage for the new BPF_F_CPU flag support in percpu maps. The
-following APIs are exercised:
+We noticed potential lock ups and delays in progs running in NMI context
+with the rqspinlock changes, which suggests more improvements need to be
+made before we can support ring buffer updates in such a context safely.
+Revert the change for now.
 
-* bpf_map_update_batch()
-* bpf_map_lookup_batch()
-* bpf_map_update_elem()
-* bpf_map__update_elem()
-* bpf_map_lookup_elem_flags()
-* bpf_map__lookup_elem()
-
-cd tools/testing/selftests/bpf/
-./test_progs -t percpu_alloc
-253/13  percpu_alloc/cpu_flag_percpu_array:OK
-253/14  percpu_alloc/cpu_flag_percpu_hash:OK
-253/15  percpu_alloc/cpu_flag_lru_percpu_hash:OK
-253/16  percpu_alloc/cpu_flag_percpu_cgroup_storage:OK
-253     percpu_alloc:OK
-Summary: 1/16 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+Reported-by: Josef Bacik <josef@toxicpanda.com>
+Cc: stable@vger.kernel.org
+Fixes: a650d38915c1 ("bpf: Convert ringbuf map to rqspinlock")
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- .../selftests/bpf/prog_tests/percpu_alloc.c   | 224 ++++++++++++++++++
- .../selftests/bpf/progs/percpu_alloc_array.c  |  32 +++
- 2 files changed, 256 insertions(+)
+ kernel/bpf/ringbuf.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-index 343da65864d6d..98b6e8cc7ae60 100644
---- a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include "cgroup_helpers.h"
- #include "percpu_alloc_array.skel.h"
- #include "percpu_alloc_cgrp_local_storage.skel.h"
- #include "percpu_alloc_fail.skel.h"
-@@ -115,6 +116,221 @@ static void test_failure(void) {
- 	RUN_TESTS(percpu_alloc_fail);
- }
- 
-+static void test_percpu_map_op_cpu_flag(struct bpf_map *map, void *keys, size_t key_sz,
-+					u32 max_entries, bool test_batch)
-+{
-+	int i, j, cpu, map_fd, value_size, nr_cpus, err;
-+	u64 *values = NULL, batch = 0, flags;
-+	const u64 value = 0xDEADC0DE;
-+	size_t value_sz = sizeof(u64);
-+	u32 count;
-+	LIBBPF_OPTS(bpf_map_batch_opts, batch_opts);
-+
-+	nr_cpus = libbpf_num_possible_cpus();
-+	if (!ASSERT_GT(nr_cpus, 0, "libbpf_num_possible_cpus"))
-+		return;
-+
-+	value_size = value_sz * nr_cpus;
-+	values = calloc(max_entries, value_size);
-+	if (!ASSERT_OK_PTR(values, "calloc values"))
-+		goto out;
-+	memset(values, 0, value_size * max_entries);
-+
-+	map_fd = bpf_map__fd(map);
-+	flags = (u64)nr_cpus << 32 | BPF_F_CPU;
-+	err = bpf_map_update_elem(map_fd, keys, values, flags);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map_update_elem_opts -ERANGE"))
-+		goto out;
-+
-+	err = bpf_map__update_elem(map, keys, key_sz, values, value_sz, flags);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map__update_elem_opts -ERANGE"))
-+		goto out;
-+
-+	err = bpf_map_lookup_elem_flags(map_fd, keys, values, flags);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map_lookup_elem_opts -ERANGE"))
-+		goto out;
-+
-+	err = bpf_map__lookup_elem(map, keys, key_sz, values, value_sz, flags);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map__lookup_elem_opts -ERANGE"))
-+		goto out;
-+
-+	for (cpu = 0; cpu < nr_cpus; cpu++) {
-+		/* clear value on all cpus */
-+		values[0] = 0;
-+		flags = BPF_F_ALL_CPUS;
-+		for (i = 0; i < max_entries; i++) {
-+			err = bpf_map__update_elem(map, keys + i * key_sz, key_sz, values,
-+						   value_sz, flags);
-+			if (!ASSERT_OK(err, "bpf_map__update_elem"))
-+				goto out;
-+		}
-+
-+		/* update value on specified cpu */
-+		for (i = 0; i < max_entries; i++) {
-+			values[0] = value;
-+			flags = (u64)cpu << 32 | BPF_F_CPU;
-+			err = bpf_map__update_elem(map, keys + i * key_sz, key_sz, values,
-+						   value_sz, flags);
-+			if (!ASSERT_OK(err, "bpf_map__update_elem specified cpu"))
-+				goto out;
-+
-+			/* lookup then check value on CPUs */
-+			for (j = 0; j < nr_cpus; j++) {
-+				flags = (u64)j << 32 | BPF_F_CPU;
-+				err = bpf_map__lookup_elem(map, keys + i * key_sz, key_sz, values,
-+							   value_sz, flags);
-+				if (!ASSERT_OK(err, "bpf_map__lookup_elem specified cpu"))
-+					goto out;
-+				if (!ASSERT_EQ(values[0], j != cpu ? 0 : value,
-+					       "bpf_map__lookup_elem value on specified cpu"))
-+					goto out;
-+			}
-+		}
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index 719d73299397..1499d8caa9a3 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -11,7 +11,6 @@
+ #include <linux/kmemleak.h>
+ #include <uapi/linux/btf.h>
+ #include <linux/btf_ids.h>
+-#include <asm/rqspinlock.h>
+
+ #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
+
+@@ -30,7 +29,7 @@ struct bpf_ringbuf {
+ 	u64 mask;
+ 	struct page **pages;
+ 	int nr_pages;
+-	rqspinlock_t spinlock ____cacheline_aligned_in_smp;
++	raw_spinlock_t spinlock ____cacheline_aligned_in_smp;
+ 	/* For user-space producer ring buffers, an atomic_t busy bit is used
+ 	 * to synchronize access to the ring buffers in the kernel, rather than
+ 	 * the spinlock that is used for kernel-producer ring buffers. This is
+@@ -174,7 +173,7 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node)
+ 	if (!rb)
+ 		return NULL;
+
+-	raw_res_spin_lock_init(&rb->spinlock);
++	raw_spin_lock_init(&rb->spinlock);
+ 	atomic_set(&rb->busy, 0);
+ 	init_waitqueue_head(&rb->waitq);
+ 	init_irq_work(&rb->work, bpf_ringbuf_notify);
+@@ -417,8 +416,12 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+
+ 	cons_pos = smp_load_acquire(&rb->consumer_pos);
+
+-	if (raw_res_spin_lock_irqsave(&rb->spinlock, flags))
+-		return NULL;
++	if (in_nmi()) {
++		if (!raw_spin_trylock_irqsave(&rb->spinlock, flags))
++			return NULL;
++	} else {
++		raw_spin_lock_irqsave(&rb->spinlock, flags);
 +	}
-+
-+	if (!test_batch)
-+		goto out;
-+
-+	batch_opts.elem_flags = (u64)nr_cpus << 32 | BPF_F_CPU;
-+	err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map_update_batch -ERANGE"))
-+		goto out;
-+
-+	for (cpu = 0; cpu < nr_cpus; cpu++) {
-+		memset(values, 0, max_entries * value_size);
-+
-+		/* clear values across all CPUs */
-+		batch_opts.elem_flags = BPF_F_ALL_CPUS;
-+		err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
-+		if (!ASSERT_OK(err, "bpf_map_update_batch all cpus"))
-+			goto out;
-+
-+		/* update values on specified CPU */
-+		for (i = 0; i < max_entries; i++)
-+			values[i] = value;
-+
-+		batch_opts.elem_flags = (u64)cpu << 32 | BPF_F_CPU;
-+		err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &batch_opts);
-+		if (!ASSERT_OK(err, "bpf_map_update_batch specified cpu"))
-+			goto out;
-+
-+		/* lookup values on specified CPU */
-+		memset(values, 0, max_entries * value_sz);
-+		err = bpf_map_lookup_batch(map_fd, NULL, &batch, keys, values, &count, &batch_opts);
-+		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch specified cpu"))
-+			goto out;
-+
-+		for (i = 0; i < max_entries; i++)
-+			if (!ASSERT_EQ(values[i], value, "value on specified cpu"))
-+				goto out;
-+
-+		/* lookup values from all CPUs */
-+		batch_opts.elem_flags = 0;
-+		memset(values, 0, max_entries * value_size);
-+		err = bpf_map_lookup_batch(map_fd, NULL, &batch, keys, values, &count, &batch_opts);
-+		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch all cpus"))
-+			goto out;
-+
-+		for (i = 0; i < max_entries; i++) {
-+			for (j = 0; j < nr_cpus; j++) {
-+				if (!ASSERT_EQ(values[i*nr_cpus + j], j != cpu ? 0 : value,
-+					       "value on specified cpu"))
-+					goto out;
-+			}
-+		}
-+	}
-+
-+out:
-+	if (values)
-+		free(values);
-+}
-+
-+static void test_percpu_map_cpu_flag(enum bpf_map_type map_type)
-+{
-+	struct percpu_alloc_array *skel;
-+	size_t key_sz = sizeof(int);
-+	int *keys = NULL, i, err;
-+	struct bpf_map *map;
-+	u32 max_entries;
-+
-+	skel = percpu_alloc_array__open();
-+	if (!ASSERT_OK_PTR(skel, "percpu_alloc_array__open"))
-+		return;
-+
-+	map = skel->maps.percpu;
-+	bpf_map__set_type(map, map_type);
-+
-+	err = percpu_alloc_array__load(skel);
-+	if (!ASSERT_OK(err, "test_percpu_alloc__load"))
-+		goto out;
-+
-+	max_entries = bpf_map__max_entries(map);
-+	keys = calloc(max_entries, key_sz);
-+	if (!ASSERT_OK_PTR(keys, "calloc keys"))
-+		goto out;
-+
-+	for (i = 0; i < max_entries; i++)
-+		keys[i] = i;
-+
-+	test_percpu_map_op_cpu_flag(map, keys, key_sz, max_entries, true);
-+out:
-+	if (keys)
-+		free(keys);
-+	percpu_alloc_array__destroy(skel);
-+}
-+
-+static void test_percpu_array_cpu_flag(void)
-+{
-+	test_percpu_map_cpu_flag(BPF_MAP_TYPE_PERCPU_ARRAY);
-+}
-+
-+static void test_percpu_hash_cpu_flag(void)
-+{
-+	test_percpu_map_cpu_flag(BPF_MAP_TYPE_PERCPU_HASH);
-+}
-+
-+static void test_lru_percpu_hash_cpu_flag(void)
-+{
-+	test_percpu_map_cpu_flag(BPF_MAP_TYPE_LRU_PERCPU_HASH);
-+}
-+
-+static void test_percpu_cgroup_storage_cpu_flag(void)
-+{
-+	struct bpf_cgroup_storage_key key;
-+	struct percpu_alloc_array *skel;
-+	int cgroup = -1, prog_fd, err;
-+	struct bpf_map *map;
-+
-+	skel = percpu_alloc_array__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "percpu_alloc_array__open_and_load"))
-+		return;
-+
-+	cgroup = create_and_get_cgroup("/cg_percpu");
-+	if (!ASSERT_GE(cgroup, 0, "create_and_get_cgroup"))
-+		goto out;
-+
-+	err = join_cgroup("/cg_percpu");
-+	if (!ASSERT_OK(err, "join_cgroup"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(skel->progs.cgroup_egress);
-+	err = bpf_prog_attach(prog_fd, cgroup, BPF_CGROUP_INET_EGRESS, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto out;
-+
-+	map = skel->maps.percpu_cgroup_storage;
-+	err = bpf_map_get_next_key(bpf_map__fd(map), NULL, &key);
-+	if (!ASSERT_OK(err, "bpf_map_get_next_key"))
-+		goto out;
-+
-+	test_percpu_map_op_cpu_flag(map, &key, sizeof(key), 1, false);
-+out:
-+	bpf_prog_detach2(-1, cgroup, BPF_CGROUP_INET_EGRESS);
-+	close(cgroup);
-+	cleanup_cgroup_environment();
-+	percpu_alloc_array__destroy(skel);
-+}
-+
- void test_percpu_alloc(void)
- {
- 	if (test__start_subtest("array"))
-@@ -125,4 +341,12 @@ void test_percpu_alloc(void)
- 		test_cgrp_local_storage();
- 	if (test__start_subtest("failure_tests"))
- 		test_failure();
-+	if (test__start_subtest("cpu_flag_percpu_array"))
-+		test_percpu_array_cpu_flag();
-+	if (test__start_subtest("cpu_flag_percpu_hash"))
-+		test_percpu_hash_cpu_flag();
-+	if (test__start_subtest("cpu_flag_lru_percpu_hash"))
-+		test_lru_percpu_hash_cpu_flag();
-+	if (test__start_subtest("cpu_flag_percpu_cgroup_storage"))
-+		test_percpu_cgroup_storage_cpu_flag();
+
+ 	pend_pos = rb->pending_pos;
+ 	prod_pos = rb->producer_pos;
+@@ -443,7 +446,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+ 	 */
+ 	if (new_prod_pos - cons_pos > rb->mask ||
+ 	    new_prod_pos - pend_pos > rb->mask) {
+-		raw_res_spin_unlock_irqrestore(&rb->spinlock, flags);
++		raw_spin_unlock_irqrestore(&rb->spinlock, flags);
+ 		return NULL;
+ 	}
+
+@@ -455,7 +458,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+ 	/* pairs with consumer's smp_load_acquire() */
+ 	smp_store_release(&rb->producer_pos, new_prod_pos);
+
+-	raw_res_spin_unlock_irqrestore(&rb->spinlock, flags);
++	raw_spin_unlock_irqrestore(&rb->spinlock, flags);
+
+ 	return (void *)hdr + BPF_RINGBUF_HDR_SZ;
  }
-diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_array.c b/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-index 37c2d2608ec0b..427301909c349 100644
---- a/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-+++ b/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-@@ -187,4 +187,36 @@ int BPF_PROG(test_array_map_10)
- 	return 0;
- }
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 2);
-+	__type(key, int);
-+	__type(value, u64);
-+} percpu SEC(".maps");
-+
-+SEC("?fentry/bpf_fentry_test1")
-+int BPF_PROG(test_percpu_array, int x)
-+{
-+	u64 value = 0xDEADC0DE;
-+	int key = 0;
-+
-+	bpf_map_update_elem(&percpu, &key, &value, BPF_ANY);
-+	return 0;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
-+	__type(key, struct bpf_cgroup_storage_key);
-+	__type(value, u64);
-+} percpu_cgroup_storage SEC(".maps");
-+
-+SEC("cgroup_skb/egress")
-+int cgroup_egress(struct __sk_buff *skb)
-+{
-+	u64 *val = bpf_get_local_storage(&percpu_cgroup_storage, 0);
-+
-+	__sync_fetch_and_add(val, 1);
-+	return 1;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.50.1
+--
+2.50.0
 
 
