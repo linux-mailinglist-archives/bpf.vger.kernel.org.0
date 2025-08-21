@@ -1,124 +1,152 @@
-Return-Path: <bpf+bounces-66158-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66159-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F774B2F321
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 11:02:08 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3185EB2F347
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 11:07:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E9173AFAE0
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 08:57:43 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2B7324E5BE1
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 09:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80EBE2ED87F;
-	Thu, 21 Aug 2025 08:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F882D47E6;
+	Thu, 21 Aug 2025 09:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="34LPbofN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E0UHY8Ie"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com [209.85.215.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D8E15853B
-	for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 08:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5652D3EC5;
+	Thu, 21 Aug 2025 09:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755766654; cv=none; b=pXRgkXsFOhWVz/gwm0v4btWfitrFsS/12jJm9hk+/cPX1J4U3rNFyqAFNVvf58t/ScfvkNIiJNK/n7JtmrOQAiPx/9r8MlDi7XXoUecf5Htwn7hMCR5HmLv+Admq6+xL8w65LdGCIYlU7Di30V3Kgx1dtlQ2bnquSkms0AGX920=
+	t=1755767182; cv=none; b=aM7EY8hicg2RVkkSjI5PX4IdpTsmuP/PeWMeRN2WXuyH6uzB8HeCfv6XQsPgcJY0IJ8UVrUyOz44SnVISzR8jXvltkDEcxX5eEpjxjWCw6uZ4WiAEvUKz5lZFwr0TvVh8sTK1s1Nhk3YTum53rrFoUFx7J1G7UWc9kIWf3pSOZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755766654; c=relaxed/simple;
-	bh=wVT5bcYYu2qAxq7+XV3bkPlP+gOJjAhgpOYa9K1uOUs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aEduRG60IW4A1oTfOdoZMWFjAPo/8i9JShHwJjGWtsPph3L9GZBzQACCXyMB7Doww0hSzXp84g7baeX4OTrUG0s8XVoSgP1EmqGoCJoo1xT/veN3gRJB3WDF26i29kFDLNNRcamQSawrmgy0ACd3lNP0/RXskHdL9OjkDVutMyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=34LPbofN; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4b134a96ea9so6618131cf.1
-        for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 01:57:31 -0700 (PDT)
+	s=arc-20240116; t=1755767182; c=relaxed/simple;
+	bh=CWvDJIPKwSYAc3I/iU5AMVzam57FNsHXYwslc4ZapCk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kEqb4D4OE2YgDRcLehqFvzjZmd7aT4ZeWJtAkH08Rz1PPyFcPROmUsk3lqEMLhED6uZ9zCr8W+mj76iz0vT06UR7y8iQC8uOS5UQbt8htB0vjRiSiRCPQ+GpdKuERU0D2Ppo/6CFc2b4H0EOYLdfGem9BF/lGLBrTqnZEcQlaHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E0UHY8Ie; arc=none smtp.client-ip=209.85.215.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f195.google.com with SMTP id 41be03b00d2f7-b47174beb13so480972a12.2;
+        Thu, 21 Aug 2025 02:06:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755766650; x=1756371450; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wVT5bcYYu2qAxq7+XV3bkPlP+gOJjAhgpOYa9K1uOUs=;
-        b=34LPbofN4P393q4BdsajQS+Dcf/7YiXG5o8TTfwaN2xa2Aj05qogAbxjT0AKPYkQ/Y
-         9waoL9h0FffDGh9T+d6mnHq2Ki7OvZ13kVeIW0UkZakjsSkicWs39EJTrq6q39FCWepH
-         KJ225+pQTIa7n36CaHDZBUo9rRrshfYFezAivhxyjvUPFEdXTFYKpDj7LBsI2207TGG9
-         lBw7adFPKXbngAv+misegPBO/2f/FSqyk7AATVNopXqWf8nA7iq4VqWTBram7bKZ228T
-         InQV5OcTf4fn4GMMv89cI1VaJQ2TL0Wf+wAL+fRPA6mYEdpFWISIXyhHvRWlfXlis0bl
-         xZig==
+        d=gmail.com; s=20230601; t=1755767181; x=1756371981; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XqMdeJJbrpD0AVCVJ79rjQ2osDfxBTgvdS90ysElm0o=;
+        b=E0UHY8Ie32eLQ7arkYIenYz6GVAnXSSUVcB83TqUOJ3nt1zlLvXXTiy4sceW73jB9s
+         yuU3+RE9wpyFvtZYVOHfA7Ig08F7Yy0eEeA1ObKiC5rXy/X42Tzn+u2nVn1dPRxeYKA4
+         lPGgAp/+CCiFbG90Nb1o7Zk9mhIfJG1HYXxg5wuy6YyAJQ7TsrdMQ2KPmBs7JgOpI6+u
+         ZeUdxrFbToLNKNh9gDhtOaoRzZeFXKl6H+K61oc/D1ZYiFbBbVyGKa5mfhUEmqWfn+vX
+         sWcUC0pjp2XrHsVZwhaE5j4VtpO6qSqMoDukbu7swr3gTmuIEpoBl/REuFOBID0CqTVL
+         LhTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755766650; x=1756371450;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wVT5bcYYu2qAxq7+XV3bkPlP+gOJjAhgpOYa9K1uOUs=;
-        b=LkklchEEA/GcinvEPnEEbL59VjKSPOhs5a6xsajD05kqNv9GP+99DiT4OFDR5zPzpv
-         9DwJaDT+Zv5SpGKJH7SuLPzHIBXUiPKq7KVXzuJ86DBvEKzmQD1P3M42GYGGVaPs5X9A
-         mYqGkZcsCWO8WfZzxffVavpCs+wN5z1aIaFoXeWGkz/lggtwfEWaHL3nrfNq3II8Uk74
-         QE6Nii+xrohSTJSwPhwHfDAbpBp1apJwIjtQuhRdSvM692urDrt7awCbg3cDqE3X6tLo
-         4lW6pO9t4L+f2LMa/+PcZUOH0yNjw9IVove20DJFig4skFPxJyOlbyu0h0jpolYobet2
-         41lQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUfgDiDGkGcGHA4SBKtleKA/HAtzgrt3hez5/8FcvKv6o2Hb+U2AmHB1niZJam0Re7mCak=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9YaZuW5/D7DZIiluJxMq2QXEKrLLhFFreut20k4Gs+LTp/ZJS
-	3Ps65ZBVvI7VSNZ3jqruTKiKIRLiLmtk/EpbRyulwoUr2Z5xPjQysF7x9LuLAcZcDbzLNNq6Ubc
-	Ta13jqlA2ElqB+0yrBuDqyDN8mPQgLQgZ2Na3JTuL
-X-Gm-Gg: ASbGnctLFIG5zCkD9WOkIGwN3TvAk0jKxzjQveEYYKfNyjSHSuvc+j4fi/5rT2sy1Pp
-	3YzJAJT7h5Dw8WOii9vUAqD3mAO8Zuy6KUOdnHBdhU0ZVMjQwOs+n/eV/dJ3Nvv2CVmHpWv6jHO
-	iPa2FZly0MR/qUjhHCA8wSjxTzi2L8hKANkCEHBqxUyO8mNqF5uu8J/YSMgrXTOnxIm+z+eZn+n
-	VUjesSg6voB7p6gLZ2TNkrAOg==
-X-Google-Smtp-Source: AGHT+IHFkVfP6J3M/7hhl54OhQNkRmBSxPwdT/1PDEOLJvFDH72XGIwIh7eQr1CXffsV0ym4huij21JS8QYACP49XxI=
-X-Received: by 2002:a05:622a:1a08:b0:4b0:b7cf:8cde with SMTP id
- d75a77b69052e-4b29fa3c3femr16301551cf.21.1755766650133; Thu, 21 Aug 2025
- 01:57:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755767181; x=1756371981;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XqMdeJJbrpD0AVCVJ79rjQ2osDfxBTgvdS90ysElm0o=;
+        b=TO5Gv96UKxlsESfKwe+yAbXwDbR0h6z/bLOKQA1wm54mFEmrI7pdHACs6AJigvIp+B
+         bBKag0mY1FiZ+NZycgnW8q+zOJbHP42bI+Crvqr7aGQNoQGR2ksH6o7YqEbXJM0q3eVN
+         6F7X1j4RBYjnoUJqWUs8VthCc38XMdTLiqZJ41w2B+YK4w6yTZDOezanBgxcn8+OIIZX
+         fGgjNGW2w2gUZ4o3Cvh8B2UIz3HHF4/ocdzx88yxyCGblz+klm8q/jLZv/ozSFS/32rY
+         HJrMbjk9A+HYsyFOTJpsMfgVJ76TQ1J7eBFuo4RTrNUb+gHuwH5yzQSFwb+9QmcpoD83
+         5FZw==
+X-Forwarded-Encrypted: i=1; AJvYcCUnqfuXBv+QMx6hBc0qCbf32EC2obRzTqYZkCkAdbWJORus3YwAmDnECMLzr7ewJJOoBEW+@vger.kernel.org, AJvYcCVerA4WMZENqBMnPo/zHOkaROwu/uFSCbwHCYireZmaxATjAl14GgcdxPymJP7jbpsWFug8NSOKo1hC2bYL@vger.kernel.org, AJvYcCXCYM6MS9lkAupxrha5rTCuyEVDYZBx/J/+R5YsrVGBrYFdUEAdOQF97VNgYtBi6fTW1Pc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqSJ3Sp+qhYSdNDY45GiHF9bLAf43MEpMfS/zeqAjZpQeruiUy
+	PAUi7Ft0G8E8Kz/RTa9Q6ACt36SJxA6WMI8iPEgBKOnUvcTVPBYhXXwQ
+X-Gm-Gg: ASbGncvQ4El96dgawv495Ylhj8CfeJCV1gc2p947+PorcB7Nzjt+ZglFiIz8hCoMJ0D
+	duPnJIeZ+wz12X0/2Wa1X+BvnPrpKsPtIrV/PSODbhnVzubs0fW0le9j+ZX5uWwsB5rnb3wr3mT
+	AhB/LQ2w1ptxw7iNQhgJGl6z3Ghks43R8Z+KhNZtLZM/S4FhSRnxxdDFbn/qhBwDqDi7axnN7Y2
+	FScOtkwuxagDZqmpTbCHr3n+PTTABbIKVntYjAdiDGeR0lwa+slPJgZ0XkhbQCPeaDQfyTm8ghl
+	C7aS8+0/HN6W92ROWUb5Zaxd7iNpCY7wp8UODgUcyUXYvXzGOlhbXZkkEUM9h545A20foqm4RIr
+	YYvHqyLLHelWDpmu8d4N5gcA=
+X-Google-Smtp-Source: AGHT+IEU/wyCIPTqv+83NxN65l3fl6dWH/C0mzpj+SCMnR4IGW9wGSGl3VEMsY/8yw0es3qIZu7Hlg==
+X-Received: by 2002:a17:90b:5443:b0:313:1c7b:fc62 with SMTP id 98e67ed59e1d1-324ed1bef50mr2369697a91.22.1755767180600;
+        Thu, 21 Aug 2025 02:06:20 -0700 (PDT)
+Received: from 7940hx ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76ea0c16351sm1708937b3a.14.2025.08.21.02.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Aug 2025 02:06:20 -0700 (PDT)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: ast@kernel.org,
+	paulmck@kernel.org
+Cc: frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joelagnelf@nvidia.com,
+	josh@joshtriplett.org,
+	boqun.feng@gmail.com,
+	urezki@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang@linux.dev,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/7] bpf: introduce and use rcu_read_lock_dont_migrate
+Date: Thu, 21 Aug 2025 17:06:02 +0800
+Message-ID: <20250821090609.42508-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250815083930.10547-1-chia-yu.chang@nokia-bell-labs.com> <20250815083930.10547-8-chia-yu.chang@nokia-bell-labs.com>
-In-Reply-To: <20250815083930.10547-8-chia-yu.chang@nokia-bell-labs.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 21 Aug 2025 01:57:19 -0700
-X-Gm-Features: Ac12FXxEjL-42H9O9a-b_qJb1E8Dwb5jTLFUbV4y5evL7fDRVFtenhZTNyo0XGw
-Message-ID: <CANn89iKhAKsoZX-=LkMNTjghoyuZ5r1rT=Pvu=wua4M=DPSWBA@mail.gmail.com>
-Subject: Re: [PATCH v15 net-next 07/14] tcp: accecn: add AccECN rx byte counters
-To: chia-yu.chang@nokia-bell-labs.com
-Cc: pabeni@redhat.com, linux-doc@vger.kernel.org, corbet@lwn.net, 
-	horms@kernel.org, dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com, 
-	kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com, 
-	jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch, 
-	donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
-	shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
-	ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com, 
-	g.white@cablelabs.com, ingemar.s.johansson@ericsson.com, 
-	mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at, 
-	Jason_Livingood@comcast.com, vidhi_goel@apple.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Aug 15, 2025 at 1:39=E2=80=AFAM <chia-yu.chang@nokia-bell-labs.com>=
- wrote:
->
-> From: Ilpo J=C3=A4rvinen <ij@kernel.org>
->
-> These three byte counters track IP ECN field payload byte sums for
-> all arriving (acceptable) packets for ECT0, ECT1, and CE. The
-> AccECN option (added by a later patch in the series) echoes these
-> counters back to sender side; therefore, it is placed within the
-> group of tcp_sock_write_txrx.
->
-> Below are the pahole outcomes before and after this patch, in which
-> the group size of tcp_sock_write_txrx is increased from 95 + 4 to
-> 107 + 4 and an extra 4-byte hole is created but will be exploited
-> in later patches:
->
->
-> Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
-> Signed-off-by: Neal Cardwell <ncardwell@google.com>
-> Co-developed-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
->
+migrate_disable() and rcu_read_lock() are used to together in many case in
+bpf. However, when PREEMPT_RCU is not enabled, rcu_read_lock() will
+disable preemption, which indicate migrate_disable(), so we don't need to
+call it in this case.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+In this series, we introduce rcu_read_lock_dont_migrate and
+rcu_read_unlock_migrate, which will call migrate_disable and
+migrate_enable only when PREEMPT_RCU enabled. And use
+rcu_read_lock_dont_migrate in bpf subsystem.
+
+Changes since V2:
+* make rcu_read_lock_dont_migrate() more compatible by using IS_ENABLED()
+
+Changes since V1:
+* introduce rcu_read_lock_dont_migrate() instead of
+  rcu_migrate_disable() + rcu_read_lock()
+
+Menglong Dong (7):
+  rcu: add rcu_read_lock_dont_migrate()
+  bpf: use rcu_read_lock_dont_migrate() for bpf_cgrp_storage_free()
+  bpf: use rcu_read_lock_dont_migrate() for bpf_inode_storage_free()
+  bpf: use rcu_read_lock_dont_migrate() for bpf_iter_run_prog()
+  bpf: use rcu_read_lock_dont_migrate() for bpf_task_storage_free()
+  bpf: use rcu_read_lock_dont_migrate() for bpf_prog_run_array_cg()
+  bpf: use rcu_read_lock_dont_migrate() for trampoline.c
+
+ include/linux/rcupdate.h       | 14 ++++++++++++++
+ kernel/bpf/bpf_cgrp_storage.c  |  6 ++----
+ kernel/bpf/bpf_inode_storage.c |  6 ++----
+ kernel/bpf/bpf_iter.c          |  6 ++----
+ kernel/bpf/bpf_task_storage.c  |  6 ++----
+ kernel/bpf/cgroup.c            |  6 ++----
+ kernel/bpf/trampoline.c        | 18 ++++++------------
+ 7 files changed, 30 insertions(+), 32 deletions(-)
+
+-- 
+2.50.1
+
 
