@@ -1,68 +1,68 @@
-Return-Path: <bpf+bounces-66182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66180-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28CFEB2F563
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 12:33:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46078B2F568
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 12:34:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 724AE584C84
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 10:33:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 435E73AA6CD
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 10:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348CB305060;
-	Thu, 21 Aug 2025 10:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F022D30506F;
+	Thu, 21 Aug 2025 10:33:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="a3XNRWVO"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VgkvAxla"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183542FAC0E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39CF30505C
 	for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 10:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755772401; cv=none; b=RhxCLM/T/UY5/mWKyfQNFLd2SevrK4M7/2irPFahvht1277IcM+K6SEKlEkkFuyO6S4ZkBwMGlSkGcl4RnUGidrcUGH9lJLlE88kc8BuqqGAVFgGmiqiVPLKWNjG18O/VVz3Nx+pteo7B/7ZrzXukB8E0+3cEy/PNzhB+RP8NZE=
+	t=1755772400; cv=none; b=qNcBYOwLMAryttgHmWxnB4lR0wY6Jrl+EX3EsD0pCe7GHZTTawepz6pFkprXWCpjjkhmOK3LeGpE5tZO36BwdkE5Oxmcz6Sj+Ww4oTeTs4qqup9MBDPSB0ktMU+kgfFIPa9FJf/ZNZT5FWE998AnDxvXysHXjjkKaXjbsAJPOY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755772401; c=relaxed/simple;
-	bh=IbRllNalbIR18N/Ppz1MwdGO1bLLa61BKUNIphaVaPU=;
+	s=arc-20240116; t=1755772400; c=relaxed/simple;
+	bh=nO4e/V8UoYqpDBy3mJgmu2gIFTb+5gtsvb8Eay5OXhw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WBf9w/plsShKIvgFIJ/Pkj/iCm7PGbbnSQQ+3FvE/lPEaZPWL2al9rpZe9cllyWUDyC6HzOOdZ8srjSTbK1GHTEe3q4CuSNGLA4hLqYrY5eQlgPVvsKokPIzeDnw1e6buHJKG2wHmBlKim370Z3AwxgxyNIrtXBFaG/L1B+L6A4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=a3XNRWVO; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=qdTiCBiLSo5GL3sWEDSzKAO6ZOND3F6WcPIWUhMChB4m0EbBXY1pUkwAQ4TmUPzSc3RLIINDeN/+LjHLHSOjZ+UeFBFhS3Xf+U+1XzrIVg8BX+DFSGg0IZohEAHvBs1cZYpRBL5ECiqpmPX9BgPWtu7OnAoeKCPwwxu9q2P4GRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VgkvAxla; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57L8CWfp002071;
-	Thu, 21 Aug 2025 10:33:04 GMT
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57L9oUmd011916;
+	Thu, 21 Aug 2025 10:33:05 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=TMTnHwpxV93AUbG0Q
-	s1kr0lEkX5duA/99dMizA1YMWM=; b=a3XNRWVOwkoxMJlPDs7lwm7+6W66OC0jd
-	U92mqNWpa0iLEGCvMBqqzM9zseqwnw2jcLHcM6jJ2hbmMi86utvtv3si6n2Hiqin
-	D/i4qJ/Zpvc1EtUgCsVe5DvmodBPvVof3KqlYPn1FX9Ty5cm1b3YarS9MJrht5/6
-	gUYUozRLmCxK1liUuCKmA3KUmVD7Vfq7nmWuZeEWV8407ih2ZsjyQ6Tt6ipAFtk1
-	FW1HZqGYF6lJukbCx9K2Kvf3SJOZWJGM5wVVkHFHtjO5dOUB1dtLOgPO3tme6GCD
-	HGraMrp129Oq9moMeD7roB0Cmt1erEiX1yXDOMsVW0Og4+7DIxvNg==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48n38w7xub-1
+	:mime-version:references:subject:to; s=pp1; bh=rqFuGx/0ZH3rXpGfl
+	yTMAyrq2Z0nX9dxJzh9a3XFoQc=; b=VgkvAxlaTmRu4SGEndt7UggFOh8cC58yX
+	xA/wEwnYeetJIu0VlXrGWhGPg0fFValPDUah9rHuJ4Yi02oSRPlvqct2YiRE+rzZ
+	k+wDRXn9liTSEKLgjFwKydlRuxnQKGUCIiOof4tFTmNrofcN/hOs5I0ELr4XS+7Z
+	3BYEgSEfLajwTX03SXBfAXdZXrxBslHQEJnbCSgDnk9/2LkGcrtSabX/Ff8mPS2k
+	wwaE3eFHFfPQ6FmFM1EMuCwWcsygC0k60Qzxk+8JTqZ57+dq9SQhJRmiFmgDkWWy
+	4b671Xj0YeTY6236b7MnaZTaMV5uVFVo9zKUNOv/gFXWwmR+aY+xw==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48n38vqym6-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Aug 2025 10:33:04 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57L6n7iM032003;
-	Thu, 21 Aug 2025 10:33:03 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 48my5y7v71-1
+	Thu, 21 Aug 2025 10:33:05 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57L6hRWQ026652;
+	Thu, 21 Aug 2025 10:33:04 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 48my4w7vqa-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Aug 2025 10:33:03 +0000
+	Thu, 21 Aug 2025 10:33:04 +0000
 Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57LAWxwS43844078
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57LAX06F19923362
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Thu, 21 Aug 2025 10:33:00 GMT
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DC4C120049;
-	Thu, 21 Aug 2025 10:32:59 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 642F320040;
+	Thu, 21 Aug 2025 10:33:00 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7FE3920040;
+	by IMSVA (Postfix) with ESMTP id ECF762004B;
 	Thu, 21 Aug 2025 10:32:59 +0000 (GMT)
 Received: from heavy.ibm.com (unknown [9.111.21.94])
 	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -75,9 +75,9 @@ Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next 1/5] s390/bpf: Add s390 JIT support for timed may_goto
-Date: Thu, 21 Aug 2025 12:23:37 +0200
-Message-ID: <20250821103256.291412-2-iii@linux.ibm.com>
+Subject: [PATCH bpf-next 2/5] selftests/bpf: Add a missing newline to the "bad arch spec" message
+Date: Thu, 21 Aug 2025 12:23:38 +0200
+Message-ID: <20250821103256.291412-3-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250821103256.291412-1-iii@linux.ibm.com>
 References: <20250821103256.291412-1-iii@linux.ibm.com>
@@ -89,155 +89,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODE5MDIyMiBTYWx0ZWRfXwrACYDZgObmW
- dUZBLEkpfy6GajJ3mJCFZvO5CVRy19HYD3GVd22g9riEJuAdx/r9tQb+Q+Dx7zDFNNKsMc8cXvk
- Zl1zkZkjiWt15pOZcVcHZ5FEeW9U2ARyehpS3IHJXxgADg3MausA7w7W0p2IkKYNOXxVVmjL4LT
- Yncy0svgLbJTv1hHvyFbSL4oLhqR1KOY8/zDEoQOhxI4qBSt+jUrqw9V1ggQvOPQOJzpA+yTx+R
- pDoB0NdSWy/K0+aD7QqS5fIAkBYUhk5gGJq/8UiD1N8uZ3odTzfNVZ80egwCLVdYnb8QsaFMe2Y
- +JF/jHrFdws++OV2VYtmUzBPQIkBz7wLaTvr9/VmO9hJjEKpMabQ5CJ1gOOSRDlVuNU8lnd/WdH
- 6bwcOhwKsNX+05cyOXs8Ds0v4F+N+w==
-X-Authority-Analysis: v=2.4 cv=H62CA+Yi c=1 sm=1 tr=0 ts=68a6f5e0 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=2OwXVqhp2XgA:10 a=VnNF1IyMAAAA:8 a=HY55ynAoVbFXyHn9r_EA:9
-X-Proofpoint-ORIG-GUID: OLKs1-nH0GelGhnDqy35dhIiQDHeUeJO
-X-Proofpoint-GUID: OLKs1-nH0GelGhnDqy35dhIiQDHeUeJO
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODE5MDIyMiBTYWx0ZWRfX1EOq7L7vx9rN
+ LTIIcfJoGIfvYz5bR2AfC7CV+pIVdJmhIaLYUBuPqMXSjCJ9IQx9wcUPYeSOHm/ukBHJmYOaHLO
+ EpSE7JtUz8pwUzDZQObVKyJHGstjkWVSaRi+wuAUtrF3iMGHA0Z78tyKUweNPimVxas7RaBlci9
+ 5ZfhuJZSzlauoblIYCksw5GAJZMv2FPOvPXO4FTYOA8A1kHj02Un+2t4ODo4ba4AnC2lnTDFW7d
+ AAZW7BytSFvIURi+1yNZbPO5lh9wlolB5FJV1sLeiRAR1Vowo61ww+me1WzCXFt4Ze1LJ1eLcu3
+ s0JvO6oweWh8z84HtY8xYLwO1wlBAbmEMj5Ip/qLRxWGtCPBLO1H25tMYzcpcJlEmVHbC8WS2uw
+ 5R75f77IQuOR/Vf2qi5YdnaRJmbwQQ==
+X-Proofpoint-ORIG-GUID: 5-QYN79skwiU-bOfhsVbIyPpfcpwP6B4
+X-Authority-Analysis: v=2.4 cv=T9nVj/KQ c=1 sm=1 tr=0 ts=68a6f5e1 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=2OwXVqhp2XgA:10 a=VnNF1IyMAAAA:8 a=BanrIxYR2-2DRMV5ylIA:9
+X-Proofpoint-GUID: 5-QYN79skwiU-bOfhsVbIyPpfcpwP6B4
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-08-21_02,2025-08-20_03,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 suspectscore=0 bulkscore=0 adultscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 impostorscore=0
- lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2508110000
- definitions=main-2508190222
+ impostorscore=0 malwarescore=0 phishscore=0 spamscore=0 clxscore=1015
+ bulkscore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2508110000 definitions=main-2508190222
 
-The verifier provides an architecture-independent implementation of the
-may_goto instruction, which is currently used on s390x, but it has a
-downside: there is no way to prevent progs using it from running for a
-very long time.
+Fix error messages like this one:
 
-The solution to this problem is an alternative timed implementation,
-which requires architecture-specific bits. Its availability is signaled
-to the verifier by bpf_jit_supports_timed_may_goto() returning true.
-
-The verifier then emits a call to arch_bpf_timed_may_goto() using a
-non-standard calling convention. This function must act as a trampoline
-for bpf_check_timed_may_goto().
-
-Implement bpf_jit_supports_timed_may_goto(), account for the special
-calling convention in the BPF_CALL implementation, and implement
-arch_bpf_timed_may_goto().
+  parse_test_spec:FAIL:569 bad arch spec: 's390x'process_subtest:FAIL:1153 Can't parse test spec for program 'may_goto_simple'
 
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/s390/net/Makefile             |  2 +-
- arch/s390/net/bpf_jit_comp.c       | 25 ++++++++++++++---
- arch/s390/net/bpf_timed_may_goto.S | 45 ++++++++++++++++++++++++++++++
- 3 files changed, 67 insertions(+), 5 deletions(-)
- create mode 100644 arch/s390/net/bpf_timed_may_goto.S
+ tools/testing/selftests/bpf/test_loader.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/s390/net/Makefile b/arch/s390/net/Makefile
-index 8cab6deb0403..9275cf63192a 100644
---- a/arch/s390/net/Makefile
-+++ b/arch/s390/net/Makefile
-@@ -2,5 +2,5 @@
- #
- # Arch-specific network modules
- #
--obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o
-+obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o bpf_timed_may_goto.o
- obj-$(CONFIG_HAVE_PNETID) += pnet.o
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index fd45f03a213c..8b57d8532f36 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -1806,10 +1806,22 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+index 78423cf89e01..e1987d1959fd 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -566,7 +566,7 @@ static int parse_test_spec(struct test_loader *tester,
+ 			} else if (strcmp(val, "RISCV64") == 0) {
+ 				arch = ARCH_RISCV64;
+ 			} else {
+-				PRINT_FAIL("bad arch spec: '%s'", val);
++				PRINT_FAIL("bad arch spec: '%s'\n", val);
+ 				err = -EINVAL;
+ 				goto cleanup;
  			}
- 		}
- 
--		/* brasl %r14,func */
--		EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14, (void *)func);
--		/* lgr %b0,%r2: load return value into %b0 */
--		EMIT4(0xb9040000, BPF_REG_0, REG_2);
-+		if ((void *)func == arch_bpf_timed_may_goto) {
-+			/*
-+			 * arch_bpf_timed_may_goto() has a special ABI: the
-+			 * parameters are in BPF_REG_AX and BPF_REG_10; the
-+			 * return value is in BPF_REG_AX; and all GPRs except
-+			 * REG_W0, REG_W1, and BPF_REG_AX are callee-saved.
-+			 */
-+
-+			/* brasl %r0,func */
-+			EMIT6_PCREL_RILB_PTR(0xc0050000, REG_0, (void *)func);
-+		} else {
-+			/* brasl %r14,func */
-+			EMIT6_PCREL_RILB_PTR(0xc0050000, REG_14, (void *)func);
-+			/* lgr %b0,%r2: load return value into %b0 */
-+			EMIT4(0xb9040000, BPF_REG_0, REG_2);
-+		}
- 
- 		/*
- 		 * Copy the potentially updated tail call counter back.
-@@ -2993,3 +3005,8 @@ void arch_bpf_stack_walk(bool (*consume_fn)(void *, u64, u64, u64),
- 		prev_addr = addr;
- 	}
- }
-+
-+bool bpf_jit_supports_timed_may_goto(void)
-+{
-+	return true;
-+}
-diff --git a/arch/s390/net/bpf_timed_may_goto.S b/arch/s390/net/bpf_timed_may_goto.S
-new file mode 100644
-index 000000000000..06f567a460d7
---- /dev/null
-+++ b/arch/s390/net/bpf_timed_may_goto.S
-@@ -0,0 +1,45 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#include <linux/export.h>
-+#include <linux/linkage.h>
-+#include <asm/asm-offsets.h>
-+#include <asm/nospec-insn.h>
-+
-+#define R2_OFF 0
-+#define R5_OFF (R2_OFF + (5 - 2 + 1) * 8)
-+#define R14_OFF (R5_OFF + 8)
-+#define RETADDR_OFF (R14_OFF + 8)
-+#define R15_OFF (RETADDR_OFF + 8)
-+#define BACKCHAIN_OFF (R15_OFF + 8)
-+#define FRAME_SIZE (BACKCHAIN_OFF + 8)
-+#define FRAME_OFF (STACK_FRAME_OVERHEAD - FRAME_SIZE)
-+#if (FRAME_OFF + BACKCHAIN_OFF) != __SF_BACKCHAIN
-+#error Stack frame layout calculation is broken
-+#endif
-+
-+	GEN_BR_THUNK %r1
-+
-+SYM_FUNC_START(arch_bpf_timed_may_goto)
-+	/*
-+	 * This function has a special ABI: the parameters are in %r12 and
-+	 * %r13; the return value is in %r12; all GPRs except %r0, %r1, and
-+	 * %r12 are callee-saved; and the return address is in %r0.
-+	 */
-+	stmg %r2,%r5,FRAME_OFF+R2_OFF(%r15)
-+	stg %r14,FRAME_OFF+R14_OFF(%r15)
-+	stg %r0,FRAME_OFF+RETADDR_OFF(%r15)
-+	stg %r15,FRAME_OFF+R15_OFF(%r15)
-+	lgr %r1,%r15
-+	lay %r15,-FRAME_SIZE(%r15)
-+	stg %r1,__SF_BACKCHAIN(%r15)
-+
-+	lay %r2,0(%r12,%r13)
-+	brasl %r14,bpf_check_timed_may_goto
-+	lgr %r12,%r2
-+
-+	lg %r15,FRAME_SIZE+FRAME_OFF+R15_OFF(%r15)
-+	lmg %r2,%r5,FRAME_OFF+R2_OFF(%r15)
-+	lg %r14,FRAME_OFF+R14_OFF(%r15)
-+	lg %r1,FRAME_OFF+RETADDR_OFF(%r15)
-+	BR_EX %r1
-+SYM_FUNC_END(arch_bpf_timed_may_goto)
 -- 
 2.50.1
 
