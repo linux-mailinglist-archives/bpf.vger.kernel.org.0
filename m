@@ -1,120 +1,151 @@
-Return-Path: <bpf+bounces-66151-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66152-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD2FB2EDAE
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 07:47:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCAD1B2F17B
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 10:25:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEC0917A202
-	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 05:47:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D55296003A2
+	for <lists+bpf@lfdr.de>; Thu, 21 Aug 2025 08:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7263C223337;
-	Thu, 21 Aug 2025 05:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606152EBDFF;
+	Thu, 21 Aug 2025 08:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nb1xk394"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k7Rz1CGb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6DD19EED3
-	for <bpf@vger.kernel.org>; Thu, 21 Aug 2025 05:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E612EB5CC;
+	Thu, 21 Aug 2025 08:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755755229; cv=none; b=PKEbRvmzKXfIBokSi3UqK3ZLbzAq3uJpyE+8UVb9oCaVcNoL7PtSYsYg/0lDivlT8rZwxI/C/lT+DRXd2PjYxkCguSc5mRBESV8v+kT87cFUNtmtF5Jn2GbHebfBdj9PQtTFrb82DOk+GwJfMo4A15FeZbig/Pm/tpfS3azFlpU=
+	t=1755764224; cv=none; b=beqeqj5JNj6ZsMrpANutEy9MJuR5v64bHky4XifJCC1lgJkWx3IY7TW4l4enH/XzEcYFVa9IaBCNCRDlGQ2ogKLZo/oG3GyGpwmTkVY1Gfng+dG8bWKim1wylw7VNdGfk/IdyiuRj3OKkC/PSJXbHx0g71vO6Uh6EdcQ/eBxoWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755755229; c=relaxed/simple;
-	bh=8zLVz2t/vhXsH1xW9JY5STCx7n8IC1DUJfDaNLJnvvM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jaUpeZ5q9rrHmIu9vE9oX2tols2dp/J/KITCxrdV/zJjGspamDBiBZWI3Cn/0JPZ93wd9vRWmJEgwMj6AqZAtQL5700y12GQ+d9c8F7L8TZaohNeXAdaiG1rY9pq+el2KzeO96WTj90SEoAmGphtk+cnmwUBNjw+iBmCmjtX9rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nb1xk394; arc=none smtp.client-ip=209.85.217.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-50f88eea7f0so206086137.1
-        for <bpf@vger.kernel.org>; Wed, 20 Aug 2025 22:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755755226; x=1756360026; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8zLVz2t/vhXsH1xW9JY5STCx7n8IC1DUJfDaNLJnvvM=;
-        b=nb1xk3943g75JB6CPuaPRO5uNddhT3OYBecHrTToyORkMKbX8nJtTTW94EuFqHSBDL
-         BE1y/fbI2y7qr6tbvx0ZbWGbvxWZsd5KRSsGsMh+IHbfi5QcE8NA5Cj+H9z5BVJcYpzC
-         m68cYq8q9rjLGAt9Xcd8uFdhzxHI198AvrDsss5/nlkPl17abYZfvvX0NO9CFYlifj5M
-         4I3ywbOW7V6PrNg/JsFKULKKfHifv44YNiy5JiPVYa30HNXdoWFh4bes3K2pznlRt3yP
-         QIWfCX6Q8IWeLDNANciVc92u7TSbgFpTOP6DGJOaC12ZxbUaQtNOmAc5C04+OgbNn0zD
-         QGxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755755226; x=1756360026;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8zLVz2t/vhXsH1xW9JY5STCx7n8IC1DUJfDaNLJnvvM=;
-        b=onAgqKV3tv6Z/UVYUhzbX+5/iZghPDAm8WYm82R7t1YhUZeO1yCpx/d1MbD5bd3je0
-         CifZBeS5u0bMCGUES/92AySjaEqU+pEP/HRQwRQeVisRNB6+8ujj0St5eHwdukN3rnyq
-         gJp9iHkVoZwMmWrwv/jZ08q547pZuziL8Rn2lnYS79cfXmAM5CUwBoStIGGUT3UyPHlj
-         d3sL3wtVzpHB7WvJH91Zfv/hs1bzarnulwx6Ys2dN/JfNcHmfb7z2bIyuyryh5/Ue53r
-         BLBhJfnxBb7F8VP2gPArxDXyIAmKSzFiWLrX099rx3IiD6IMc7ZeQb36WQigDJYWLOCX
-         bhXg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPHxYF1qv0EcJPX9EVaQqVsEGP3MPtT6vlNkCMNolMiAUsxRkECnILx0PYzEy/EpkHB78=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzePeja94+jGcpjQgUl+foLQDunqrvJ0J4NzufmqPPrvaSlBcjJ
-	8Xt77+cSsowl3Z6hOpHozI0+rqqwvUMC5fR1k2g8Ne9AgRVFypXdMd0QyOQE2WaSakqGKVYqvx2
-	1ofPcU5Ugq2MmnvQMvE7NLCPvChy87FE=
-X-Gm-Gg: ASbGncsM6RxF+Zlbtl97nNhqAcmDzvTPC4neFLKNgUGSYv/ZIl3tKR7BRaPfaJo2woU
-	338BhxTVVm/XyBNcsWfR1nT23Ff9T76fCxdNBI354eR/MOwH9NLaL56Ip4bHMuH7RTLxOderGCY
-	0zHMlArF6wlhV9NWTBNiNVHi6Rn6dVfEOyldmz2QvN0BWO3SfHHNCpAv3EBGFN5USWoQUeaxUB2
-	/CB2VA0MBdDTpFhE80zrTFLafAtAp06hsoa0El4
-X-Google-Smtp-Source: AGHT+IFj2Veoy3hxf/RcXyKheieQmzSGmGpw5CKZ5QtExLdJ7nB2UcH40tqIJraQ+AxbxH+xvRyTtdhl3nxIswJ++rg=
-X-Received: by 2002:a05:6102:3ed5:b0:4bb:eb4a:f9ec with SMTP id
- ada2fe7eead31-51be0c333f2mr372438137.16.1755755225986; Wed, 20 Aug 2025
- 22:47:05 -0700 (PDT)
+	s=arc-20240116; t=1755764224; c=relaxed/simple;
+	bh=pCs2a5GtHIUVqWsvAf6JbIDTiB41Hz/jWLA7wnaYB14=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q+YLi+wlh3SJeyA0HwY2XmlhO+hSAbwPSKA/8yZPdYp9y4JzB48y+wECewKC2V0RTTlMcYUC/ZtprHKs1W2wgsjoxZoOpBNZpiBgJVZT7jw6RrCH6UgtvunQpTF7p5hTRkRp5xB2jM+sdHvYfRCZwyuFKT2IjS4MZva77YIBtuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k7Rz1CGb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F032C4CEED;
+	Thu, 21 Aug 2025 08:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755764224;
+	bh=pCs2a5GtHIUVqWsvAf6JbIDTiB41Hz/jWLA7wnaYB14=;
+	h=From:To:Cc:Subject:Date:From;
+	b=k7Rz1CGbqlTAdaRCI72izKdN48N5xxD+9hPKBsJpD4AOKeaHyx8wkhLe1FLGypxsz
+	 TKJlTJPc2ngIpap1JM6HttsPDDrxWhQRbLW9tq6DOCiKjIsQaNd2U5F75Ww4ts+5XL
+	 14XxrLyZfbuGJBPREYO9vXC3z5Dzi5CE+I+MNrNd0iFC4haHGMGGWDkzhPjKxzRJSx
+	 esZIMmQlFhfNHaTLnDkTW9tqOZNStnc3mLQ4O77UbvW17orF5gJmu1QgPGEBNA9zso
+	 XjxGx525edh/DsKXwmM+cyfQIKJUxND2tc8+OeDFE1FQM+Ir6oC4z4Riz9VUjAFkez
+	 KyyzsIkFlO9+g==
+Received: from mchehab by mail.kernel.org with local (Exim 4.98.2)
+	(envelope-from <mchehab+huawei@kernel.org>)
+	id 1up0Tm-0000000BLg2-2IUN;
+	Thu, 21 Aug 2025 10:17:02 +0200
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Andreas Hindborg <mchehab+huawei@kernel.org>,
+	Benno Lossin <mchehab+huawei@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Danilo Krummrich <mchehab+huawei@kernel.org>,
+	Gary Guo <gary@garyguo.net>,
+	Miguel Ojeda <mchehab+huawei@kernel.org>,
+	Trevor Gross <tmgross@umich.edu>,
+	bpf@vger.kernel.org,
+	rust-for-linux@vger.kernel.org
+Subject: [PATCH v2 00/14] Fix PDF doc builds on major distros
+Date: Thu, 21 Aug 2025 10:16:36 +0200
+Message-ID: <cover.1755763127.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0ba41cd7-adc0-4c65-b1e0-defd8ebc2d64@nandakumar.co.in> <c1296815-67f5-4f31-99fe-b9a86bb7a117@nandakumar.co.in>
-In-Reply-To: <c1296815-67f5-4f31-99fe-b9a86bb7a117@nandakumar.co.in>
-From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
-Date: Thu, 21 Aug 2025 01:46:54 -0400
-X-Gm-Features: Ac12FXy-2T8nhySWNuCbmN9Qx7Mwi3Dq6-T3SmzhxUAdVJ6_CJJX85-xDQ9ApZs
-Message-ID: <CAM=Ch04WBnb2=okJmTqqbyFGzhiFA4DKTCeF3+HH-=8wz=PYvQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: improve the general precision of tnum_mul
-To: Nandakumar Edamana <nandakumar@nandakumar.co.in>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-On Wed, Aug 20, 2025 at 3:48=E2=80=AFAM Nandakumar Edamana
-<nandakumar@nandakumar.co.in> wrote:
->
-> On 20/08/25 11:45, Harishankar Vishwanathan wrote:
+Hi Jon,
 
-[...]
+Here it is the second version of the PDF series. I opted to split one of
+the patches in 3, to have a clearer changelog and description.
 
-> > If I understand the idea correctly, when the multiplier's (i.e. tnum a)=
- bit is
-> > unknown, it can either be 0 or 1. If it is 0, then we add nothing to
-> > accumulator, i.e. TNUM(0, 0). If it is 1, we can add b to the accumulat=
-or
-> > (appropriately shifted). The main idea is to take the union of these tw=
-o
-> > possible partial products, and add that to the accumulator. If so, coul=
-d we also
-> > do the following?
-> >
-> > acc =3D tnum_add(acc, tnum_union(TNUM(0, 0), b));
->
-> But tnum_union(TNUM(0, 0), b) would introduce a concrete 0 to the set,
-> right?
+Also, archlinux LXC image download started working again, so I added
+an extra patch addressing texlive packae dependencies.
 
-That makes sense, the above would be imprecise.
+This series is taking me a way more time than antecipated.
 
-[...]
+This series as 3 goals:
 
-Best,
-Harishankar Vishwanathan
+1. Fix a pre-Sphinx 1.7 PDF variable that got renamed, but
+   our Makefile still uses the old one that is not supported
+   since Sphinx 1.7;
+
+2. Fix broken or incomplete texlive dependencies on several
+   distros;
+
+4. "modernize" conf.py to solve font conflicts related to UTF-8
+   and non-UTF fonts from [T1]{fontenc}  LaTeX package.
+
+   Using fontenc with xelatex is problematic, as documented at
+
+	https://www.sphinx-doc.org/en/master/latex.html
+
+Please notice that:
+
+- It doesn't pretend to fix all  PDF issues. It focus only at the
+  above;
+- there are still distros where PDF builds fail either partially
+  or as a hole. On my checks, those are due to problematic
+  texlive packages shipped on such distros;
+- it doesn't touch/address/alter anyhing related to kfigure.py.
+  as such, it doesn't touch/change/improve/drop anything with
+  regards ImageMagick and/or Inkscape.
+
+I think we need a separate series addressing kfigure.py:
+it currently breaks if either input or output has a char > 127,
+meaning that PDF output there may eventually break.
+
+---
+v2:
+  - one of the conf.py packages were split to help reviewers
+    to check the actual changes;
+  - added an extra sphinx-pre-install patch for ArchLinux.
+
+Mauro Carvalho Chehab (14):
+  docs: Makefile: Fix LaTeX paper size settings
+  docs: conf.py: better handle latex documents
+  docs: conf.py: fix doc name with SPHINXDIRS
+  docs: conf.py: rename some vars at latex_documents logic
+  docs: conf.py: use dedent and r-strings for LaTeX macros
+  docs: conf.py: fix some troubles for LaTeX output
+  docs: conf.py: extra cleanups and fixes
+  scripts: sphinx-pre-install: fix PDF build issues on Ubuntu
+  scripts: sphinx-pre-install: add missing gentoo pdf dependencies
+  scripts: sphinx-pre-install: fix PDF dependencies for openSuse
+  scripts: sphinx-pre-install: fix dependencies for OpenMandriva
+  scripts: sphinx-pre-install: fix pdf dependencies for Mageia 9
+  scripts: sphinx-pre-install: fix PDF dependencies for gentoo
+  scripts/sphinx-pre-install: fix Archlinux PDF dependencies
+
+ Documentation/Makefile     |   4 +-
+ Documentation/conf.py      | 106 ++++++++++++++++++++++---------------
+ scripts/sphinx-pre-install |  46 ++++++++++++----
+ 3 files changed, 101 insertions(+), 55 deletions(-)
+
+-- 
+2.50.1
+
+
 
