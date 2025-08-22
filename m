@@ -1,188 +1,74 @@
-Return-Path: <bpf+bounces-66293-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66294-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEBE2B32101
-	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 19:05:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E74BB32125
+	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 19:09:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 365BB7B468A
-	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 17:03:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0A7EB042CE
+	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 17:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55635313559;
-	Fri, 22 Aug 2025 17:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163883128C6;
+	Fri, 22 Aug 2025 17:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nandakumar.co.in header.i=@nandakumar.co.in header.b="XWMHU+3X"
+	dkim=pass (2048-bit key) header.d=nandakumar.co.in header.i=@nandakumar.co.in header.b="KUeoQexD"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx2.nandakumar.co.in (mx2.nandakumar.co.in [51.79.255.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F36313524
-	for <bpf@vger.kernel.org>; Fri, 22 Aug 2025 17:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE42312802
+	for <bpf@vger.kernel.org>; Fri, 22 Aug 2025 17:07:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.79.255.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755882284; cv=none; b=tZmh8rgZlH1aUPEwow34+Ni4HqzFvalRjmZwGu/MFWqnSIgmmNqTZNoC+V+T+cShG2UFpXwl216eTHiEPR03SXsCWTs9RfGnhpMWYZyFJ38Z7onZ3tW0w9/TKR/1hqHkMyXfII2JAPXwFiB/9p+kIu8iUFHdpBPXONvHVHyXd5s=
+	t=1755882478; cv=none; b=g/0fq5FcozZxCeSrkEgDSW/yGbQ4NCI9rAUNn1QL+MYJgggUC5DlpJVe61qquIJLzTSRLdH4EKdgg68rWXL3nV9UwtfgWu4FEZ2ebnP9N/+HHxM+YGRoswo7fxMSYkTTj1yUYW33iH/jhzx+OA5D96m7RdM1KHR0UD04LT8Y8II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755882284; c=relaxed/simple;
-	bh=nQj6i4H9eR+p4aihvBOjbJ2gsiDJiKH/1QkfpCn+jKo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=U3OmAE/uUlZqOW9wDQJH+bjD1uYbcc4TdI5wWPRXwCpnCVUbPwyAfosBsenGxz2Z2DELj74SPt6B/v4gm+y0JNTegwQW765gKUjYoHaqtMpBN295LCDDcc97zgxr8mEwVbzRVPdMIS4sufKeSqvvk6xcMf/hDqLabHXYhwoHdC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nandakumar.co.in; spf=pass smtp.mailfrom=nandakumar.co.in; dkim=pass (2048-bit key) header.d=nandakumar.co.in header.i=@nandakumar.co.in header.b=XWMHU+3X; arc=none smtp.client-ip=51.79.255.56
+	s=arc-20240116; t=1755882478; c=relaxed/simple;
+	bh=YwYmK0uEautm5jZ5vIrEXR/ozNJ9caRKMMIoKG5ox94=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q+C7tyzuKzFjIA7MYDLjNT0AXwcAo7ITQN+5tyAuNHops++qXymVorivMUSxawPUUBtZd2pTTQiXQZxu4SNsjFzPwd7hg+J80+4n8NGyJwMYyRx9PuOv8BoCnuFV5YgHHqVfzYY3NH316UkC7AJWmEpmYEhl8jBu/V0V2/EM2Pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nandakumar.co.in; spf=pass smtp.mailfrom=nandakumar.co.in; dkim=pass (2048-bit key) header.d=nandakumar.co.in header.i=@nandakumar.co.in header.b=KUeoQexD; arc=none smtp.client-ip=51.79.255.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nandakumar.co.in
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nandakumar.co.in
-Received: from localhost.localdomain (unknown [49.47.192.36])
-	by mx2.nandakumar.co.in (Postfix) with ESMTPSA id 56EC944C93;
-	Fri, 22 Aug 2025 17:04:39 +0000 (UTC)
+Received: from [192.168.29.2] (unknown [49.47.192.36])
+	by mx2.nandakumar.co.in (Postfix) with ESMTPSA id B4B7144C87;
+	Fri, 22 Aug 2025 17:07:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nandakumar.co.in;
-	s=feb22; t=1755882279;
-	bh=nQj6i4H9eR+p4aihvBOjbJ2gsiDJiKH/1QkfpCn+jKo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XWMHU+3XvoyLLDr8N3pNSskWYfWa+aWAf55KseAKizzJssDsG95RO/DvBsGjhTRF8
-	 7njyZRoTMGFr/SEng8KxMNm09PDLsdhx15qd10MLE3QH1SLlBkCf/TfjduCJr/neON
-	 XQBZtO1YD0UY6AZ4EjGCJTzVXcMmERlxweB6ry22Cg8pVpl7MtZdFCO0QHF2/5XdIr
-	 uvyte/FQkSu/OdLmvxXqTN63sHluv8htSP2swM5nAVEwvEl99vOKW916m48zFdG8CY
-	 Xj77sGSFgSqzqZtv0ZZKmmtXQNieGK1/gpK5F/W6u6eZoqDe3ofxJQcmeyHmr3tM3y
-	 oaXO3aifOTqag==
-From: Nandakumar Edamana <nandakumar@nandakumar.co.in>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
-	Nandakumar Edamana <nandakumar@nandakumar.co.in>
-Subject: [PATCH 2/2] bpf: add selftest to check the verifier's abstract multiplication
-Date: Fri, 22 Aug 2025 22:34:07 +0530
-Message-Id: <20250822170407.2053504-2-nandakumar@nandakumar.co.in>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250822170407.2053504-1-nandakumar@nandakumar.co.in>
-References: <20250822170407.2053504-1-nandakumar@nandakumar.co.in>
+	s=feb22; t=1755882475;
+	bh=YwYmK0uEautm5jZ5vIrEXR/ozNJ9caRKMMIoKG5ox94=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KUeoQexDavhNwGSmvSHajvUBFYmIE0ybEVTT1thJubD8mstLJxlqcZGYSYLBYjBxd
+	 uyBXLNGHaQ5DcgO5+5S7sLW//1Cmol66aAaHWRWPh6xKZii/AKtchHPoTj6mZoam83
+	 qjLy+A21ohtIFHSQsTyUFRPU08DKXY5JPY+zwu3K3tXYdML/MQinVOo/70jEYYogfV
+	 fZKBpVtblvYEodSrPW/JdSu7K0bnpG2hbChhe0t758p8Xad9YjqSWEiPYJ9hG6SL+4
+	 HBg1C2YyEbKaLvQmVYwlcP52dvMpQmh6W7X9bc8rijrlmlgJmqXwYnw/AnJPSREfJS
+	 kZuzWGlUsDruQ==
+Message-ID: <d954d054-965b-4cd9-a336-95170f9ac096@nandakumar.co.in>
+Date: Fri, 22 Aug 2025 22:37:46 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] bpf: improve the general precision of tnum_mul
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Jakub Sitnicki <jakub@cloudflare.com>,
+ Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+References: <20250822170407.2053504-1-nandakumar@nandakumar.co.in>
+Content-Language: en-US
+From: Nandakumar Edamana <nandakumar@nandakumar.co.in>
+In-Reply-To: <20250822170407.2053504-1-nandakumar@nandakumar.co.in>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This commit adds selftest to test the abstract multiplication
-technique(s) used by the verifier, following the recent improvement in
-tnum multiplication (tnum_mul). One of the newly added programs,
-verifier_mul/mul_precise, results in a false positive with the old
-tnum_mul, while the program passes with the latest one.
+Sent with an incorrect subject line. Please ignore.
 
-Signed-off-by: Nandakumar Edamana <nandakumar@nandakumar.co.in>
----
- .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../selftests/bpf/progs/verifier_mul.c        | 75 +++++++++++++++++++
- 2 files changed, 77 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_mul.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 77ec95d4ffaa..e35c216dbaf2 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -59,6 +59,7 @@
- #include "verifier_meta_access.skel.h"
- #include "verifier_movsx.skel.h"
- #include "verifier_mtu.skel.h"
-+#include "verifier_mul.skel.h"
- #include "verifier_netfilter_ctx.skel.h"
- #include "verifier_netfilter_retcode.skel.h"
- #include "verifier_bpf_fastcall.skel.h"
-@@ -194,6 +195,7 @@ void test_verifier_may_goto_1(void)           { RUN(verifier_may_goto_1); }
- void test_verifier_may_goto_2(void)           { RUN(verifier_may_goto_2); }
- void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
- void test_verifier_movsx(void)                 { RUN(verifier_movsx); }
-+void test_verifier_mul(void)                  { RUN(verifier_mul); }
- void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
- void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
- void test_verifier_bpf_fastcall(void)         { RUN(verifier_bpf_fastcall); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_mul.c b/tools/testing/selftests/bpf/progs/verifier_mul.c
-new file mode 100644
-index 000000000000..e7ccf19c7461
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_mul.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Nandakumar Edamana */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+
-+/* The programs here are meant to test the abstract multiplication
-+ * technique(s) used by the verifier. Using assembly to prevent
-+ * compiler optimizations.
-+ */
-+
-+SEC("fentry/bpf_fentry_test1")
-+void BPF_PROG(mul_0, int x)
-+{
-+	asm volatile ("\
-+	call %[bpf_get_prandom_u32];\
-+	r0 *= 0;\
-+	if r0 != 0 goto l0_%=;\
-+	r0 = 0;\
-+	goto l1_%=;\
-+l0_%=:\
-+	r0 = 1;\
-+l1_%=:\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+__failure __msg("At program exit the register R0 has smin=1 smax=1 should have been in [0, 0]")
-+void BPF_PROG(mul_uncertain, int x)
-+{
-+	asm volatile ("\
-+	call %[bpf_get_prandom_u32];\
-+	r0 *= 0x3;\
-+	if r0 != 0 goto l0_%=;\
-+	r0 = 0;\
-+	goto l1_%=;\
-+l0_%=:\
-+	r0 = 1;\
-+l1_%=:\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+void BPF_PROG(mul_precise, int x)
-+{
-+	/* First, force the verifier to be uncertain about the value:
-+	 *     unsigned int a = (bpf_get_prandom_u32() & 0x2) | 0x1;
-+	 *
-+	 * Assuming the verifier is using tnum, a must be tnum{.v=0x1, .m=0x2}.
-+	 * Then a * 0x3 would be m0m1 (m for uncertain). Added imprecision
-+	 * would cause the following to fail, because the required return value
-+	 * is 0:
-+	 *     return (a * 0x3) & 0x4);
-+	 */
-+	asm volatile ("\
-+	call %[bpf_get_prandom_u32];\
-+	r0 &= 0x2;\
-+	r0 |= 0x1;\
-+	r0 *= 0x3;\
-+	r0 &= 0x4;\
-+	if r0 != 0 goto l0_%=;\
-+	r0 = 0;\
-+	goto l1_%=;\
-+l0_%=:\
-+	r0 = 1;\
-+l1_%=:\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
 -- 
-2.39.5
+Nandakumar Edamana
 
 
