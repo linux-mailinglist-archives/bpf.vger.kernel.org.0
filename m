@@ -1,63 +1,54 @@
-Return-Path: <bpf+bounces-66280-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EE2DB31B50
-	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 16:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58574B31E4E
+	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 17:23:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 335826234AC
-	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 14:20:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 474A95C248E
+	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 15:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590FA2FE58E;
-	Fri, 22 Aug 2025 14:18:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D882F28689C;
+	Fri, 22 Aug 2025 15:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U+nGpRn0"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="f3uNMi9/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F143305E33
-	for <bpf@vger.kernel.org>; Fri, 22 Aug 2025 14:18:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2080C220685;
+	Fri, 22 Aug 2025 15:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755872287; cv=none; b=HiDXN3BH1n2htIXzmmdAUbHOdBksvz5MbrxsV3Kc/1A+rgC5pgqsXFn61GpMsw73V6dXAOEJAyRvjCOZWtuLsU4ACVz5wpAYk2jHczmAb3VvaLZRKj3PfsAXahTFNDZdU61WF2EpFvUIH5FpuNT/sg+pfRW8is1uJZrRVZM8OLI=
+	t=1755875810; cv=none; b=LjTBvVM+CdU6L669nYDoN0EDxhYE9ZExzaw+JH4GW2F477CMKrjQqWtOFL0dcL7qcvgXc7HPbWy+K09wdnXLf5N4xVHaY4q9eRxALOS9f/glcOOxdZJZ4ih7H20Xb5KhmVgnpYV6TI2RH/lRc4W5zNLk4FhbHoH8AeaQNZ0sDRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755872287; c=relaxed/simple;
-	bh=yNJ8nzzSD8lQpxxi1a9wIDly578kF/XGGP+AZzy3glY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Jn+Ib61qlaaKBWOVU5Os7V5Vd2auIF3e3UO/dbP4jrXhl1xccYJYIs3WkZAz3FZokP73sDM1YF+pyZZ5e95YO+JFm4M7MgxCWbMR81IPEmBegmPqXkp0o0EXaAGRKZnx3Z0goHMChsM6K3fyRlSqBlH6y3C5cXTGVNUKyJGolGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U+nGpRn0; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755872282;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vwmTM1PbDQhAjmWrZJwYLyWQa/PmeXkFO832FSSkEKg=;
-	b=U+nGpRn0PCqKbJqWVgSC01ZgiVQOYumgOZNadeXVn+v/iCwg11qTIlyTDQEHRuR/pRlf8V
-	vmr0XLaa7aUvyu0VAgPL5zXggImaL3avgT4U+L7gsMSYu+LbkMSQKPt8A0kW9Lx1+LtSJV
-	8d6ZEDa42ITgsZUVkRiQ75llOa4cZUE=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
+	s=arc-20240116; t=1755875810; c=relaxed/simple;
+	bh=iK5wmQ+I3f5LF6dC/zmfN2jK4nfPtOFSHgDRkBZDTaw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IEzERwDKce4uglTVrNdJDcSF60k6W6sZvpfzkvDvLjkwJlEZ6NeYuj8fLLE2p+WcTWbH6pZpj5QmpmIc3PcC3whznvLw+n0/3h8z+pZA+fuS+8BM/HclAmKbz377BHh6awDYbHjcxvdfvu4rI5JdoQ0x2vm3srJ3jNZfwCt3m4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=f3uNMi9/; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=yl
+	NXVlM9P4p/ikkluSZ10FXnbiODjfo2rjCRu5OPDIM=; b=f3uNMi9/IHszBhZuUt
+	pxCtUszp1u+tUdwgiyeUfhaxKdH2H83Rzc89BQXIYYJDDQgYUsUvu4Evchmacn67
+	WQUi+Of/BRq4MvAw7lmNQg5QvymrayBQGkK9AsgXt9EOFiny6Qjfh1FjQr1LaIRZ
+	jDlKyvKtMzjWoS5hHiL7+SN1k=
+Received: from phoenix.. (unknown [])
+	by gzsmtp3 (Coremail) with SMTP id PigvCgBHTfm8iahoidrHAA--.29756S2;
+	Fri, 22 Aug 2025 23:16:14 +0800 (CST)
+From: Jiawei Zhao <phoenix500526@163.com>
+To: ast@kernel.org
+Cc: daniel@iogearbox.net,
 	andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
 	yonghong.song@linux.dev,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add case to test bpf_in_interrupt kfunc
-Date: Fri, 22 Aug 2025 22:17:21 +0800
-Message-ID: <20250822141722.25318-3-leon.hwang@linux.dev>
-In-Reply-To: <20250822141722.25318-1-leon.hwang@linux.dev>
-References: <20250822141722.25318-1-leon.hwang@linux.dev>
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v13 0/2] libbpf: fix USDT SIB argument handling causing unrecognized register error
+Date: Fri, 22 Aug 2025 15:16:09 +0000
+Message-ID: <20250822151611.1084244-1-phoenix500526@163.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,36 +56,96 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:PigvCgBHTfm8iahoidrHAA--.29756S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWw4ktFy5Zr1xJr4UGF1UGFg_yoW5Cr1rpF
+	WrGws8trWDtas7GFsxXr47tw43Wan5GFWUJFn2qw1Yvr4rGFnrJrWxKw15GrnxGa97X34Y
+	vF4qyFZ8Gas5AaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07joGQDUUUUU=
+X-CM-SenderInfo: pskrv0dl0viiqvswqiywtou0bp/1tbiFB2xiGioZ+eKnAABsn
 
- cd tools/testing/selftests/bpf
- ./test_progs -t irq
- #143/29  irq/in_interrupt:OK
- #143     irq:OK
- Summary: 1/34 PASSED, 0 SKIPPED, 0 FAILED
+When using GCC on x86-64 to compile an usdt prog with -O1 or higher
+optimization, the compiler will generate SIB addressing mode for global
+array and PC-relative addressing mode for global variable,
+e.g. "1@-96(%rbp,%rax,8)" and "-1@4+t1(%rip)".
 
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- tools/testing/selftests/bpf/progs/irq.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+The current USDT implementation in libbpf cannot parse these two formats,
+causing `bpf_program__attach_usdt()` to fail with -ENOENT
+(unrecognized register).
 
-diff --git a/tools/testing/selftests/bpf/progs/irq.c b/tools/testing/selftests/bpf/progs/irq.c
-index 74d912b22de90..65a796fd1d615 100644
---- a/tools/testing/selftests/bpf/progs/irq.c
-+++ b/tools/testing/selftests/bpf/progs/irq.c
-@@ -563,4 +563,11 @@ int irq_wrong_kfunc_class_2(struct __sk_buff *ctx)
- 	return 0;
- }
- 
-+SEC("?tc")
-+__success
-+int in_interrupt(struct __sk_buff *ctx)
-+{
-+	return bpf_in_interrupt();
-+}
-+
- char _license[] SEC("license") = "GPL";
+This patch series adds support for SIB addressing mode in USDT probes.
+The main changes include:
+- add correct handling logic for SIB-addressed arguments in
+  `parse_usdt_arg`.
+- add an usdt_o2 test case to cover SIB addressing mode.
+
+Testing shows that the SIB probe correctly generates 8@(%rcx,%rax,8) 
+argument spec and passes all validation checks.
+
+The modification history of this patch series:
+Change since v1:
+- refactor the code to make it more readable
+- modify the commit message to explain why and how
+
+Change since v2:
+- fix the `scale` uninitialized error
+
+Change since v3:
+- force -O2 optimization for usdt.test.o to generate SIB addressing usdt
+  and pass all test cases.
+
+Change since v4:
+- split the patch into two parts, one for the fix and the other for the
+  test
+
+Change since v5:
+- Only enable optimization for x86 architecture to generate SIB addressing
+  usdt argument spec.
+
+Change since v6:
+- Add an usdt_o2 test case to cover SIB addressing mode.
+- Reinstate the usdt.c test case.
+
+Change since v7:
+- Refactor modifications to __bpf_usdt_arg_spec to avoid increasing its size,
+  achieving better compatibility
+- Fix some minor code style issues
+- Refactor the usdt_o2 test case, removing semaphore and adding GCC attribute
+  to force -O2 optimization
+
+Change since v8:
+- Refactor the usdt_o2 test case, using assembly to force SIB addressing mode.
+
+Change since v9:
+- Only enable the usdt_o2 test case on x86_64 and i386 architectures since the
+  SIB addressing mode is only supported on x86_64 and i386.
+
+Change since v10:
+- Replace `__attribute__((optimize("O2")))` with `#pragma GCC optimize("O1")`
+  to fix the issue where the optimized compilation condition works improperly. 
+- Renamed test case usdt_o2 and relevant files name to usdt_o1 in that O1
+  level optimization is enough to generate SIB addressing usdt argument spec.
+
+Change since v11:
+- Replace `STAP_PROBE1` with `STAP_PROBE_ASM`
+- Use bit fields instead of bit shifting operations
+- Merge the usdt_o1 test case into the usdt test case
+
+Change since v12:
+- This patch is same with the v12 but with a new version number.
+
+Jiawei Zhao (2):
+  libbpf: fix USDT SIB argument handling causing unrecognized register
+    error
+  selftests/bpf: Enrich subtest_basic_usdt case in selftests to cover
+    SIB handling logic
+
+ tools/lib/bpf/usdt.bpf.h                      | 47 ++++++++++++++-
+ tools/lib/bpf/usdt.c                          | 58 +++++++++++++++++--
+ tools/testing/selftests/bpf/prog_tests/usdt.c | 44 +++++++++++++-
+ tools/testing/selftests/bpf/progs/test_usdt.c | 30 ++++++++++
+ 4 files changed, 170 insertions(+), 9 deletions(-)
+
 -- 
-2.50.1
+2.43.0
 
 
