@@ -1,312 +1,299 @@
-Return-Path: <bpf+bounces-66325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B5BAB324FF
-	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 00:20:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88775B32522
+	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 00:43:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EADA626CC1
-	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 22:20:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A23A622F39
+	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 22:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA2827CB35;
-	Fri, 22 Aug 2025 22:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7842D7817;
+	Fri, 22 Aug 2025 22:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k3kUoOFo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nbuAsOE8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39CC23505F
-	for <bpf@vger.kernel.org>; Fri, 22 Aug 2025 22:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BDAC8248B;
+	Fri, 22 Aug 2025 22:43:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755901223; cv=none; b=VREkR0qgo5+x++Gmm4nV/Sl96ciTBz3k5FwRAr5w/2ilR3M7xfDM8oG52sY1TmM0FhK9zp5wHKYy1v42Tkjlv0rgR5UT032yHFx4wZnRmXBgN0HznleFhvaabbDnsDU1YJJrMKhmrschp99z42ULpAeQDAfHN/EZOvJ9zKJJ5IU=
+	t=1755902602; cv=none; b=qaRkO5U3J1Q9PjfTGjPSWe+Xh7wifwYX2h4Kg/Hd9cTMiqZ9jnGp6EwA3KGgt9JkV+mWtJuA2N2pKI2h01RRugMySwWjERipYSCvcuHnj1ERz2tzxe2JWSbjlpLQDZRz9gLMW4Bglz9M7x2WkcVvxkhRWN6f9dss57aZxCUlD/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755901223; c=relaxed/simple;
-	bh=NuoLpZ4XkUr1ci3XN+VNi6oxsJ/kErnqgGjwXv6XLlo=;
+	s=arc-20240116; t=1755902602; c=relaxed/simple;
+	bh=vMzq3+B9ubZ2mmOZzZaAGpF5kBREOwvbnK1Avyf3pgk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FHIjRkne1XIdpL8uV5G/2z1mJLlvP2HU+J5FzqmuzDTTw32lZpKChY/S5bPmdJJA/V0vI45MQyn4UCIxXE7wjY1CZaC8GDipbuVQq12YsNAZA7vbYeT1Ogn3/uZ8/H+TjwDLcCDOeUMFeyyg/aAagtb1uIzZ1yDJrHtMMJ5EGz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k3kUoOFo; arc=none smtp.client-ip=209.85.215.182
+	 To:Cc:Content-Type; b=ZsreWG8C2c9B4MhALUrGYw/GeH8ppENGUYa6+9EiX6VHF25qZYdkZVp2sAanunpo/Spm+E7USkCJj5Rpu/5L5SAtDZ1ZZPlXNERMODVr7nqCJ/lAOX3j0bUGw2ohniONYkZqH/y9LMOxz9Kb/XVxgODZ53xYx+7BrLt/HX89Q7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nbuAsOE8; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b47174aec0eso1670538a12.2
-        for <bpf@vger.kernel.org>; Fri, 22 Aug 2025 15:20:20 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b474e8d6d01so1723462a12.0;
+        Fri, 22 Aug 2025 15:43:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755901220; x=1756506020; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755902600; x=1756507400; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D1Ic7nY9iixCEF6hcBrmFZrQYG2PocTsGrlqQKwq+ws=;
-        b=k3kUoOFoGPfDP6gzDrGAjOLXQfV7FZV7C2qJS615reE+4AFGuIbH/Cm6JbspWsz4EJ
-         Hs1hqEWNLtmocQPGUIVA322yXzvykpO4O52Cg3D6YmXdgEcI+DY88NNxqdMWH65Nbi03
-         ntNT/2dI30hnI57aNRP51VdVwHnBnsgnXjEJiHHxxxnvs+5W9/MS4hnIiMtVRoYl4ULw
-         0pYRp3LbYQYzgGBpK5L2FutYDeO00Yn/dhRu+DXzJbOeEYHzyiSB2+VMYCpqOVOxga7e
-         h6zIkYcGBtsntPGT8oyp3cMrp9K+dbdrHJazkvJpRGFoc3F5vooGsyPaHXOXwDp0D1yl
-         P8iw==
+        bh=VK1lbya6KoH6V7JAq8ojM6FRGpePfBbrYyV4HKtjK8o=;
+        b=nbuAsOE8WphHva85H6sHvhufElYSgeiJ+6xsuXiGhZ3wrsisrRcdO4HD8C1+GrIJ11
+         zOlEAMgHj/GuMAzEuRz+PhjlA/ZUKpjHJIN/ZqmC7XCaw4/lwj/kg94axBLMhLcTAMwB
+         sPPb/p8afG1ITx3iyMN3ap+sugk8Omw+oxfEPjtiG0nxkvPVUiWUXZmPUbhMjRiq5G31
+         m8Oz3IMdzD/88dYaKRAHkhcQ+UdsF6+n7NLL/RR1zmlvvjLEOuuVF4YPmZKgP180vFfc
+         J55WDn+TBQZyzZQOWYWFvPwZTDzIMOGBsQ4sSX31erXMCpoBFAm+JzD7OXgTsc8GrfcU
+         ZSwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755901220; x=1756506020;
+        d=1e100.net; s=20230601; t=1755902600; x=1756507400;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=D1Ic7nY9iixCEF6hcBrmFZrQYG2PocTsGrlqQKwq+ws=;
-        b=IymHx3ZmkbrRcQBH4r8Se020sp/ZpXx9cLOUsjEddlPS129hHs9Nfd1wNAZrL8yrmv
-         aBu51tNl+LfQNv01twrLPj/ToNBo/yI+0PQ2PKohRL99gNa1xO3S/KQjf2XRxNy724Nt
-         uGIeE3EgPv1dZ1ryC/VVqnPLQR9uPgehs4XsvcjHwWYchdt6VsnMpLu4+f0304W3+3pl
-         ETY8ogCX49EUG6g09MsTS5FaWaEDrmagzkh6A/eaRKoGQ6uCi/fKL3Z2WRHgJaxAg9aF
-         VB5WuagiRGUXq8zRYK3dMReHHkOJDPkn7m8s6XChHzbqQ6FcbAF3/CXW3+7X423X9dX6
-         qzTg==
-X-Gm-Message-State: AOJu0YwGUN8AhQr+lsLSPSBf6R9kxTnSNMlzcF2lCTi2uj241mbXTYDM
-	FwifdSi4UhTri00FVtwPJyl6rbGzd1oyqV6csxenVVUinVvrUiyJ/1ojUhh8tVrUDWLzbiVnQ+O
-	UtERrNbNM97mx4ekR/39eOxbl/0wjr6M=
-X-Gm-Gg: ASbGncvZTYHuOtxI/dTy1lIllvD5VahJUydjYT6EDutuyDrZknOBFNyhvBaJMwkdUTK
-	TEl3o+PZEgx3VfkcQFxmKUoVoLFuGRVCTIY2jl+QPUF9WlqP/PBgi8Gt+ygK4FiI2Ft6c4R+RJC
-	cHKMNcnnyoeQThVxOCG1KUPzL8R4ofdzkBEUur88oCheRycBLMClwLlB3OelCxlVC9SoC2Snn2J
-	Mqpki3aAHy5TYuJXSmPNm0=
-X-Google-Smtp-Source: AGHT+IGoGMaIRM7TJjQwULdMr0LZH8BeBjF+1bmsshwNzD2dDmOLAzoDEcc7f0Z6aiuFXL7FIsGlFZr6SwKU2HONteE=
-X-Received: by 2002:a17:902:e84a:b0:234:b41e:37a4 with SMTP id
- d9443c01a7336-2462ede2880mr71219945ad.6.1755901219927; Fri, 22 Aug 2025
- 15:20:19 -0700 (PDT)
+        bh=VK1lbya6KoH6V7JAq8ojM6FRGpePfBbrYyV4HKtjK8o=;
+        b=aswdlHCdiONqjOFLXZXuQe+fMVLuWvvuoH0qCpB4nX8YAbZ8QONJ9lgLa7sFzGDdge
+         mqjrSo42c2xhRuz0HwY93mlrzG4IDCpnRjZVeVzDZTPQW9gJv9oP6SEL+LamVPfdgQZj
+         rBntQ5M31v2T7W8WtUSmWEbKAfQBzqLbEnLUqMJ0tQmQoX+Gk9VLBOmOws0zpWhyjbyN
+         e7Jxcszz1ffF5M0+XH3dglWRlHaKOIlME+Ybfek9LOLTRL1QoWMSqNC4mWSTO438SgYJ
+         qZx+xEGkwQqknRKTRdKQkH4LpGJYs+MnqpoFLTezaaO4S4FpDzJJiupv7DghCgkauVjt
+         rhJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUm9KUyMivd3VPUrozt0o7Nv+kNNlKqyydHluojlqNqCZrB3YigUTvpf1d+vwALFvpTMP4=@vger.kernel.org, AJvYcCWOQqRGaPCI4KzSOIKzyrk6peeoIH1srskHRqaLn8BRgSm1UNhuG2YmsaXq+4NZlqXQZS39wUMAmjKVfDWc@vger.kernel.org, AJvYcCX4jvjsLjXLB5Gs3Xp9nmXCbKtuUHbK23vxjEzGBZYMLF8BZstJITLfLixTWzqifN8M6DrYlL1ryec2oXpeLbLw@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzpbtzj+to5Z7SOhIDpWHrh9dWIVTHpJIIVZJn+3kZ3GBTgbv3C
+	JK/LDroocrTyrQbazR84iUXu5gLjs+RdcPiDbVsxMASABb1HJKzEa3plcUjTzXU9sLmQs+O2cg3
+	c2RyQZhaqD1EoOZDwKOBRGuVplTpSrws=
+X-Gm-Gg: ASbGncvDpf8IE0Sf6QSgTVFEx9E2jX2crmyCPjwNZcssQ+BCbid8ET5SbHsgNkjm09L
+	YfNPC/h0wGPZ2Z1T0ThO1zwFo04s6eD4hHwdayIRtN2tX+vxMLr8zJZxUF9RKFPVnuY8L9dkAs/
+	o0W7Df6vVTwWyPj4LrgGYMPk841D5JQMvGVSaaWYnKEmTuLE6owmP4qdS1UrPaCpEUFg+VCBpuJ
+	275upiPU08nUeVx/TZBIVM=
+X-Google-Smtp-Source: AGHT+IE6/vTbooKfLf8kh+m4wm3vpWU0kf++qkaOeIf6RA1rKvHK+PMo1MsRZcM6zftXBaoXzDimbRnf/P/UsUxGlc0=
+X-Received: by 2002:a17:90b:2ccd:b0:321:4760:c65a with SMTP id
+ 98e67ed59e1d1-32517d1e054mr6004941a91.27.1755902600320; Fri, 22 Aug 2025
+ 15:43:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250821160817.70285-1-leon.hwang@linux.dev> <20250821160817.70285-6-leon.hwang@linux.dev>
-In-Reply-To: <20250821160817.70285-6-leon.hwang@linux.dev>
+References: <20250822151611.1084244-1-phoenix500526@163.com> <20250822151611.1084244-2-phoenix500526@163.com>
+In-Reply-To: <20250822151611.1084244-2-phoenix500526@163.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 22 Aug 2025 15:20:05 -0700
-X-Gm-Features: Ac12FXzc4EVHuJ7o0hvQjk8monFq5Y9Wuzwo9j1SmElFU48yVrVp8bFBlGQnoRQ
-Message-ID: <CAEf4BzbcAnmHd42gVXJHPJWczYPQ3Vq6t9E+VT-m7UNLzLmidQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/6] libbpf: Support BPF_F_CPU for percpu maps
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, olsajiri@gmail.com, yonghong.song@linux.dev, 
-	song@kernel.org, eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net, 
-	kernel-patches-bot@fb.com
+Date: Fri, 22 Aug 2025 15:43:06 -0700
+X-Gm-Features: Ac12FXyQNkHYmcbQ-ISYNAS-d6YGlVmunznK9bMY-22ab-q11Un65y8Nrqqva20
+Message-ID: <CAEf4BzZWd2zUC=U6uGJFF3EMZ7zWGLweQAG3CJWTeHy-5yFEPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v13 1/2] libbpf: fix USDT SIB argument handling
+ causing unrecognized register error
+To: Jiawei Zhao <phoenix500526@163.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	yonghong.song@linux.dev, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 21, 2025 at 9:09=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
+On Fri, Aug 22, 2025 at 8:16=E2=80=AFAM Jiawei Zhao <phoenix500526@163.com>=
+ wrote:
 >
-> Add libbpf support for the BPF_F_CPU flag for percpu maps by embedding th=
-e
-> cpu info into the high 32 bits of:
+> On x86-64, USDT arguments can be specified using Scale-Index-Base (SIB)
+> addressing, e.g. "1@-96(%rbp,%rax,8)". The current USDT implementation
+> in libbpf cannot parse this format, causing `bpf_program__attach_usdt()`
+> to fail with -ENOENT (unrecognized register).
 >
-> 1. **flags**: bpf_map_lookup_elem_flags(), bpf_map__lookup_elem(),
->    bpf_map_update_elem() and bpf_map__update_elem()
-> 2. **opts->elem_flags**: bpf_map_lookup_batch() and
->    bpf_map_update_batch()
+> This patch fixes this by implementing the necessary changes:
+> - add correct handling for SIB-addressed arguments in `bpf_usdt_arg`.
+> - add adaptive support to `__bpf_usdt_arg_type` and
+>   `__bpf_usdt_arg_spec` to represent SIB addressing parameters.
 >
-> And the flag can be BPF_F_ALL_CPUS, but cannot be
-> 'BPF_F_CPU | BPF_F_ALL_CPUS'.
->
-> Behavior:
->
-> * If the flag is BPF_F_ALL_CPUS, the update is applied across all CPUs.
-> * If the flag is BPF_F_CPU, it updates value only to the specified CPU.
-> * If the flag is BPF_F_CPU, lookup value only from the specified CPU.
-> * lookup does not support BPF_F_ALL_CPUS.
->
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
 > ---
->  tools/lib/bpf/bpf.h    |  8 ++++++++
->  tools/lib/bpf/libbpf.c | 25 +++++++++++++++++++------
->  tools/lib/bpf/libbpf.h | 21 ++++++++-------------
->  3 files changed, 35 insertions(+), 19 deletions(-)
+>  tools/lib/bpf/usdt.bpf.h | 47 ++++++++++++++++++++++++++++++--
+>  tools/lib/bpf/usdt.c     | 58 ++++++++++++++++++++++++++++++++++++----
+>  2 files changed, 98 insertions(+), 7 deletions(-)
 >
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 7252150e7ad35..28acb15e982b3 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -286,6 +286,14 @@ LIBBPF_API int bpf_map_lookup_and_delete_batch(int f=
-d, void *in_batch,
->   *    Update spin_lock-ed map elements. This must be
->   *    specified if the map value contains a spinlock.
->   *
-> + * **BPF_F_CPU**
-> + *    As for percpu maps, update value on the specified CPU. And the cpu
-> + *    info is embedded into the high 32 bits of **opts->elem_flags**.
-> + *
-> + * **BPF_F_ALL_CPUS**
-> + *    As for percpu maps, update value across all CPUs. This flag cannot
-> + *    be used with BPF_F_CPU at the same time.
-> + *
->   * @param fd BPF map file descriptor
->   * @param keys pointer to an array of *count* keys
->   * @param values pointer to an array of *count* values
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index fe4fc5438678c..c949281984880 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10603,7 +10603,7 @@ bpf_object__find_map_fd_by_name(const struct bpf_=
-object *obj, const char *name)
->  }
+> diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
+> index 2a7865c8e3fe..263168d57286 100644
+> --- a/tools/lib/bpf/usdt.bpf.h
+> +++ b/tools/lib/bpf/usdt.bpf.h
+> @@ -4,6 +4,7 @@
+>  #define __USDT_BPF_H__
 >
->  static int validate_map_op(const struct bpf_map *map, size_t key_sz,
-> -                          size_t value_sz, bool check_value_sz)
-> +                          size_t value_sz, bool check_value_sz, __u64 fl=
-ags)
+>  #include <linux/errno.h>
+> +#include <asm/byteorder.h>
+>  #include "bpf_helpers.h"
+>  #include "bpf_tracing.h"
+>
+> @@ -34,13 +35,34 @@ enum __bpf_usdt_arg_type {
+>         BPF_USDT_ARG_CONST,
+>         BPF_USDT_ARG_REG,
+>         BPF_USDT_ARG_REG_DEREF,
+> +       BPF_USDT_ARG_SIB,
+>  };
+>
+> +/*
+> + * This struct layout is designed specifically to be backwards/forward
+> + * compatible between libbpf versions for ARG_CONST, ARG_REG, and
+> + * ARG_REG_DEREF modes. ARG_SIB requires libbpf v1.7+.
+> + */
+>  struct __bpf_usdt_arg_spec {
+>         /* u64 scalar interpreted depending on arg_type, see below */
+>         __u64 val_off;
+>         /* arg location case, see bpf_usdt_arg() for details */
+> -       enum __bpf_usdt_arg_type arg_type;
+> +       enum __bpf_usdt_arg_type arg_type: 8;
+
+this needs to be inside the #if/#elif/#else, I believe. When it
+previously was a 4 byte field, BPF_USDT_ARG_REG =3D 1 would be `0x01,
+0x00, 0x00, 0x00` in memory on little endian and `0x00, 0x00, 0x00,
+0x01` on big endian. So you need to reorder it such that on big endian
+it's the last field.
+
+pw-bot: cr
+
+
+> +#if defined(__LITTLE_ENDIAN_BITFIELD)
+
+I'm not sure whether compiler itself defines __LITTLE_ENDIAN_BITFIELD.
+Throughout libbpf we use #if __BYTE_ORDER__ =3D=3D
+__ORDER_LITTLE_ENDIAN__, let's do that here as well?
+
+> +       /* index register offset within struct pt_regs (high 12 bits) */
+> +       __u16   idx_reg_off: 12,
+> +       /* scale factor for index register (1, 2, 4, or 8) (low 4 bits) *=
+/
+> +               scale: 4;
+
+nit: don't do comma-separated bitfields. compiler will combine them as
+necessary, even if they are declared as separate fields. so just:
+
+#if __BYTE_ORDER__ =3D=3D __ORDER_LITTLE_ENDIAN__
+enum __bpf_usdt_arg_type arg_type: 8;
+__u16 idx_reg_off: 12;
+__u16 idx_reg_shift: 4;
+__u8 __reserved: 8;
+#else
+__u8 __reserved: 8;
+__u16 idx_reg_off: 12;
+__u16 idx_reg_shift: 4;
+enum __bpf_usdt_arg_type arg_type: 8;
+#endif
+
+
+Note that we don't need to change order of idx_reg_off and
+idx_reg_shift, as they are new additions (and they don't have to be
+consistent between big and little endian)
+
+> +#elif defined(__BIG_ENDIAN_BITFIELD)
+> +       /* scale factor for index register (1, 2, 4, or 8) (high 4 bits) =
+*/
+> +       __u16   scale: 4,
+> +       /* index register offset within struct pt_regs (low 12 bits) */
+> +               idx_reg_off: 12;
+> +#else
+> +#error "Please fix <asm/byteorder.h>"
+> +#endif
+
+let's drop the fix suggestion, isn't asm/byteorder.h kernel-specific
+header?.. I'm fine assuming only big or little endian system
+
+> +       /* reserved for future use, keeps reg_off offset stable */
+> +       __u8 reserved;
+>         /* offset of referenced register within struct pt_regs */
+>         short reg_off;
+>         /* whether arg should be interpreted as signed value */
+> @@ -149,7 +171,7 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, =
+long *res)
 >  {
->         if (!map_is_created(map)) /* map is not yet created */
->                 return -ENOENT;
-> @@ -10630,6 +10630,19 @@ static int validate_map_op(const struct bpf_map =
-*map, size_t key_sz,
->                 int num_cpu =3D libbpf_num_possible_cpus();
->                 size_t elem_sz =3D roundup(map->def.value_size, 8);
+>         struct __bpf_usdt_spec *spec;
+>         struct __bpf_usdt_arg_spec *arg_spec;
+> -       unsigned long val;
+> +       unsigned long val, idx;
+>         int err, spec_id;
 >
-> +               if (flags & (BPF_F_CPU | BPF_F_ALL_CPUS)) {
-> +                       if ((flags & BPF_F_CPU) && (flags & BPF_F_ALL_CPU=
-S))
-> +                               return -EINVAL;
-> +                       if ((flags >> 32) >=3D num_cpu)
-> +                               return -ERANGE;
+>         *res =3D 0;
+> @@ -202,6 +224,27 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num,=
+ long *res)
+>                         return err;
+>  #if __BYTE_ORDER__ =3D=3D __ORDER_BIG_ENDIAN__
+>                 val >>=3D arg_spec->arg_bitshift;
+> +#endif
+> +               break;
+> +       case BPF_USDT_ARG_SIB:
+> +               /* Arg is in memory addressed by SIB (Scale-Index-Base) m=
+ode
+> +                * (e.g., "-1@-96(%rbp,%rax,8)" in USDT arg spec). We fir=
+st
+> +                * fetch the base register contents and the index registe=
+r
+> +                * contents from pt_regs. Then we calculate the final add=
+ress
+> +                * as base + (index * scale) + offset, and do a user-spac=
+e
+> +                * probe read to fetch the argument value.
+> +                */
+> +               err =3D bpf_probe_read_kernel(&val, sizeof(val), (void *)=
+ctx + arg_spec->reg_off);
+> +               if (err)
+> +                       return err;
+> +               err =3D bpf_probe_read_kernel(&idx, sizeof(idx), (void *)=
+ctx + arg_spec->idx_reg_off);
+> +               if (err)
+> +                       return err;
+> +               err =3D bpf_probe_read_user(&val, sizeof(val), (void *)(v=
+al + (idx * arg_spec->scale) + arg_spec->val_off));
 
-The idea of validate_map_op() is to make it easier for users to
-understand what's wrong with how they deal with the map, rather than
-just getting indiscriminate -EINVAL from the kernel.
+hm.. I thought we discussed recording the number of bits to shift by,
+no? It's not too big of a deal, we can afford 4 bits (instead of 2
+that would be enough for bit shift), but any specific reason you
+prefer multiplication here?
 
-Point being: add human-readable pr_warn() explanations for all the new
-conditions you are detecting, otherwise it's just meaningless.
+> +               if (err)
+> +                       return err;
+> +#if __BYTE_ORDER__ =3D=3D __ORDER_BIG_ENDIAN__
+> +               val >>=3D arg_spec->arg_bitshift;
+>  #endif
+>                 break;
+>         default:
 
-> +                       if (value_sz !=3D elem_sz) {
-> +                               pr_warn("map '%s': unexpected value size =
-%zu provided for per-CPU map, expected %zu\n",
-> +                                       map->name, value_sz, elem_sz);
-> +                               return -EINVAL;
-> +                       }
-> +                       break;
-> +               }
+[...]
+
+> -       if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n", arg_sz, &off, r=
+eg_name, &len) =3D=3D 3) {
+> +               reg_off =3D calc_pt_regs_off(reg_name);
+> +               if (reg_off < 0)
+> +                       return reg_off;
+> +               arg->reg_off =3D reg_off;
 > +
->                 if (value_sz !=3D num_cpu * elem_sz) {
->                         pr_warn("map '%s': unexpected value size %zu prov=
-ided for per-CPU map, expected %d * %zu =3D %zd\n",
->                                 map->name, value_sz, num_cpu, elem_sz, nu=
-m_cpu * elem_sz);
-> @@ -10654,7 +10667,7 @@ int bpf_map__lookup_elem(const struct bpf_map *ma=
-p,
->  {
->         int err;
->
-> -       err =3D validate_map_op(map, key_sz, value_sz, true);
-> +       err =3D validate_map_op(map, key_sz, value_sz, true, flags);
->         if (err)
->                 return libbpf_err(err);
->
-> @@ -10667,7 +10680,7 @@ int bpf_map__update_elem(const struct bpf_map *ma=
-p,
->  {
->         int err;
->
-> -       err =3D validate_map_op(map, key_sz, value_sz, true);
-> +       err =3D validate_map_op(map, key_sz, value_sz, true, flags);
->         if (err)
->                 return libbpf_err(err);
->
-> @@ -10679,7 +10692,7 @@ int bpf_map__delete_elem(const struct bpf_map *ma=
-p,
->  {
->         int err;
->
-> -       err =3D validate_map_op(map, key_sz, 0, false /* check_value_sz *=
-/);
-> +       err =3D validate_map_op(map, key_sz, 0, false /* check_value_sz *=
-/, 0);
+> +               idx_reg_off =3D calc_pt_regs_off(idx_reg_name);
+> +               if (idx_reg_off < 0)
+> +                       return idx_reg_off;
+> +               /* validate scale factor and set fields directly */
+> +               if (scale !=3D 1 && scale !=3D 2 && scale !=3D 4 && scale=
+ !=3D 8) {
+> +                       pr_warn("usdt: invalid SIB scale %d, expected 1,2=
+,4,8; defaulting to 1\n", scale);
 
-hard-coded 0 instead of flags, why?
+"defaulting to 1" is very confusing, why? (and please use spaces after comm=
+a)
 
->         if (err)
->                 return libbpf_err(err);
+> +                       return -EINVAL;
+> +               }
+> +               arg->idx_reg_off =3D idx_reg_off;
+> +               arg->scale =3D scale;
+> +       } else if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n",
+> +                               arg_sz, &off, reg_name, &len) =3D=3D 3) {
+>                 /* Memory dereference case, e.g., -4@-20(%rbp) */
+>                 arg->arg_type =3D USDT_ARG_REG_DEREF;
+>                 arg->val_off =3D off;
+> @@ -1306,6 +1353,7 @@ static int parse_usdt_arg(const char *arg_str, int =
+arg_num, struct usdt_arg_spec
+>         } else if (sscanf(arg_str, " %d @ %%%15s %n", arg_sz, reg_name, &=
+len) =3D=3D 2) {
+>                 /* Register read case, e.g., -4@%eax */
+>                 arg->arg_type =3D USDT_ARG_REG;
+> +               /* register read has no memory offset */
+>                 arg->val_off =3D 0;
 >
-> @@ -10692,7 +10705,7 @@ int bpf_map__lookup_and_delete_elem(const struct =
-bpf_map *map,
->  {
->         int err;
->
-> -       err =3D validate_map_op(map, key_sz, value_sz, true);
-> +       err =3D validate_map_op(map, key_sz, value_sz, true, 0);
-
-same about flags
-
->         if (err)
->                 return libbpf_err(err);
->
-> @@ -10704,7 +10717,7 @@ int bpf_map__get_next_key(const struct bpf_map *m=
-ap,
->  {
->         int err;
->
-> -       err =3D validate_map_op(map, key_sz, 0, false /* check_value_sz *=
-/);
-> +       err =3D validate_map_op(map, key_sz, 0, false /* check_value_sz *=
-/, 0);
->         if (err)
->                 return libbpf_err(err);
->
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 2e91148d9b44d..6a972a8d060c3 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -1196,12 +1196,13 @@ LIBBPF_API struct bpf_map *bpf_map__inner_map(str=
-uct bpf_map *map);
->   * @param key_sz size in bytes of key data, needs to match BPF map defin=
-ition's **key_size**
->   * @param value pointer to memory in which looked up value will be store=
-d
->   * @param value_sz size in byte of value data memory; it has to match BP=
-F map
-> - * definition's **value_size**. For per-CPU BPF maps value size has to b=
-e
-> - * a product of BPF map value size and number of possible CPUs in the sy=
-stem
-> - * (could be fetched with **libbpf_num_possible_cpus()**). Note also tha=
-t for
-> - * per-CPU values value size has to be aligned up to closest 8 bytes for
-> - * alignment reasons, so expected size is: `round_up(value_size, 8)
-> - * * libbpf_num_possible_cpus()`.
-> + * definition's **value_size**. For per-CPU BPF maps, value size can be
-> + * definition's **value_size** if **BPF_F_CPU** or **BPF_F_ALL_CPUS** is
-> + * specified in **flags**, otherwise a product of BPF map value size and=
- number
-> + * of possible CPUs in the system (could be fetched with
-> + * **libbpf_num_possible_cpus()**). Note else that for per-CPU values va=
-lue
-> + * size has to be aligned up to closest 8 bytes for alignment reasons, s=
-o
-
-nit: aligned up for alignment reasons... drop "for alignment reasons", I gu=
-ess?
-
-> + * expected size is: `round_up(value_size, 8) * libbpf_num_possible_cpus=
-()`.
->   * @flags extra flags passed to kernel for this operation
->   * @return 0, on success; negative error, otherwise
->   *
-> @@ -1219,13 +1220,7 @@ LIBBPF_API int bpf_map__lookup_elem(const struct b=
-pf_map *map,
->   * @param key pointer to memory containing bytes of the key
->   * @param key_sz size in bytes of key data, needs to match BPF map defin=
-ition's **key_size**
->   * @param value pointer to memory containing bytes of the value
-> - * @param value_sz size in byte of value data memory; it has to match BP=
-F map
-> - * definition's **value_size**. For per-CPU BPF maps value size has to b=
-e
-> - * a product of BPF map value size and number of possible CPUs in the sy=
-stem
-> - * (could be fetched with **libbpf_num_possible_cpus()**). Note also tha=
-t for
-> - * per-CPU values value size has to be aligned up to closest 8 bytes for
-> - * alignment reasons, so expected size is: `round_up(value_size, 8)
-> - * * libbpf_num_possible_cpus()`.
-> + * @param value_sz refer to **bpf_map__lookup_elem**'s description.'
->   * @flags extra flags passed to kernel for this operation
->   * @return 0, on success; negative error, otherwise
->   *
+>                 reg_off =3D calc_pt_regs_off(reg_name);
 > --
-> 2.50.1
+> 2.43.0
 >
 
