@@ -1,208 +1,130 @@
-Return-Path: <bpf+bounces-66327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66328-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 469DBB32541
-	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 01:00:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B308BB32575
+	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 01:49:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC736B20A45
-	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 23:00:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DF9C1CE8755
+	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 23:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4AF42C029C;
-	Fri, 22 Aug 2025 23:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D952877E6;
+	Fri, 22 Aug 2025 23:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VRXt+UUD"
+	dkim=pass (2048-bit key) header.d=nandakumar.co.in header.i=@nandakumar.co.in header.b="qSRAJSCA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx2.nandakumar.co.in (mx2.nandakumar.co.in [51.79.255.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB732797AC;
-	Fri, 22 Aug 2025 23:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A61FE1B041A
+	for <bpf@vger.kernel.org>; Fri, 22 Aug 2025 23:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.79.255.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755903606; cv=none; b=FjktOheJ4UiGJ3VIyDMn5SW+5FlC8z6CIZ4iVSu+7nwKyZMOpH4h2UK5dFxmxQMckH6jiNLYACe/L6mvn2hU9NuVkiofSghB/MgXy9M1SMhsRjymAvcyk7zkV5PmCzY6jQzU/QkA2/Tg+BE8bmzjOwxONVltyiIG3B/7Z4WvCoI=
+	t=1755906544; cv=none; b=nDD1f8hFlprSRSpm3vFjA8THhpgnQGplQ32Gw2kKXx5Rf+s0DjPvj5mnqcnuQLSX1RVkgoYVhmBf618E7DlsAN3b0b7Rk7NHjI8tiouBD9N+3vXzTQKtWDV/oxU7m1LuaxBGMkBX0en5jWcAy37bdkphNEatfzfJj7cV2EJm/rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755903606; c=relaxed/simple;
-	bh=RQBTAWa7/zZaMjjOVogsk1LWK3BF/Y6qUKRtHaI40VA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VLnFHKStSqelOfSXxsFn/veAzrVDcLypVich8hNRLqm01Z0aB96/QgbzO1jrLEfSxVmIYxSCTPHH/pN3HVViIc2SoZxxZ7e6wFndtd++v5r0o7DN/LXlHxQd5fPrI46DbZFmFrMAwzKNVGc6voimyWNV0zG1IRVuz3ZheIHrg/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VRXt+UUD; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-32326e09f58so3026009a91.2;
-        Fri, 22 Aug 2025 16:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755903604; x=1756508404; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eRqBILFh71E6oZk7P8W+ymw5GiuNqA07nCiBpT2091M=;
-        b=VRXt+UUDeVHIQAvxcf66b1rGB2O44cIn6vdMmIg6f2/B7vBT+ga03DWHeaEmd/sZWM
-         Chp8AjDBQdtSmKHEQjupeWJRs78WntG+hbPHJFVmlT2IwUs6IxzZnQ4ap259C/zZ+QI6
-         4cimKrjdo6ddL/PmU1yCRN2cL1XfFH6Jp9/caGtUGcGAHdb4Lq1T5bMHqSr23lrsDoFX
-         YMLWNi+aeBsfOajYe5ZIGbo8BdlUiSArnkp5XcG/DfvJndl07/K1J6AZIC/6WuUnKw2p
-         d5KJDV5bN7osCnMhOx+4Fc8WTUfuL/pgQqkQRYCM/42X1odtifQyb3blwpMltlcbl4RD
-         Ab4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755903604; x=1756508404;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eRqBILFh71E6oZk7P8W+ymw5GiuNqA07nCiBpT2091M=;
-        b=tXd+rebQC/8/RgSaR+Q65aXawe0bD60MpHh4gGlmY//77a+X305uNnF1eo+jmisEJn
-         88MsoxB8IF8OSpofLFNxbqWt87W6X9krlmgUxbRmmTkz810itsmPXmBArQztVh29oaeK
-         l6ZYZ0o1+8/k7pxGQY1ViMdnqVZfd2tfLmFZdsXJoFnnkTyZ1ADrgQe2XJSXTbUUicl0
-         Js0/cNC/KrzXn/rhk0DuF0mNvASJYrX48bsOvpTAAyvC1oY7jjuWPYaKMLdavC9grZCh
-         c3667iwy8HfwGyezx1bWGoBv4Ml0Zj20jJgheB5qrFZf+nU8xJxujZWnJiw0SFgLqkpU
-         e92g==
-X-Forwarded-Encrypted: i=1; AJvYcCUdQ9ibWUn7C/w28yvQzy0Pc4/oR3Zpa3AkNgtdSQ8QoR5QeeESye2oo9J4KRkVXW76WcE=@vger.kernel.org, AJvYcCVj+tBk7Gq0jNJrNUVvsePNYzwmHgt0DW2iXQgD2A6F3XQQYcvP0qOKY9JfrJyAXcM6tT7FMLYBHmKcZgrP@vger.kernel.org, AJvYcCWa1etsdPfqSRJLgT7egAtIo5ClQIEZ0+sE3aW2v2GPqJZVW14tNIIG049rOR5R2fnQLc+IRkmbMolE9Q+l4SsS@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3X6sujxo9YBZEicYuMt23LaXZ2FRUmecGNx/vmDxcrQvXRH8m
-	Y1G0K9utyDyfa3cBOUmTRTBikOQI/5r2OXIntB/6/sCXjnn/2Hk6lD2ydQ18XY28T5+ZYSCCFRn
-	fRr0rl+bErZpM+nQkPtckWwm8tau0ze0=
-X-Gm-Gg: ASbGnculShRdmH03htD7vzbDwcz0TjJqGpRkxBkN5f988b5LYH8MOameQfqasnauSpp
-	uFGKwR7U0HKWErIQxhKpVluht7AdQZmWE4pVtEPV3wC4pqtJ5etAltfjb8yD/krtV2/VCe+w9K6
-	ijnZHe0dnVICx0NswopswCwjM6O4W+EzZNe897wpvm8FYmXgx1yKLoQMvSv/qLgLx9bkyviRqLE
-	iiNY5jxdhw7lZHbyTODZLCL0lBWK7cc0w==
-X-Google-Smtp-Source: AGHT+IEF+kXC47NlAMlK1pq6XMLjE4SA8r/ZFICtp5MSHTu7pEKM+rrHug9J0RXy7qJ6gZvU7YCQJCkSJ8mEOtItIFE=
-X-Received: by 2002:a17:90b:3948:b0:325:46f4:4f6e with SMTP id
- 98e67ed59e1d1-32546f450b5mr2234589a91.32.1755903603906; Fri, 22 Aug 2025
- 16:00:03 -0700 (PDT)
+	s=arc-20240116; t=1755906544; c=relaxed/simple;
+	bh=AssGBvnGXD5Vk2qj1KDrxitnt5zTWdqc2iZ2zMJzNnw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nX1VvsUefLxMV3YkzpMlFK6MLxRgYAavwG7IH0UXRHQd7oJBph9XXzhGrRPbt7JWz5o6n5TFYoYh678sBsc/aZURKOBufGePO0J3TWmSP/HbLbsMJfDpl0Df/Ga7xY+Jy0q/1wdUt4EgVVcMG5sqYgmbLdvk036U4IDpDZDMKHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nandakumar.co.in; spf=pass smtp.mailfrom=nandakumar.co.in; dkim=pass (2048-bit key) header.d=nandakumar.co.in header.i=@nandakumar.co.in header.b=qSRAJSCA; arc=none smtp.client-ip=51.79.255.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nandakumar.co.in
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nandakumar.co.in
+Received: from [192.168.29.2] (unknown [49.47.193.92])
+	by mx2.nandakumar.co.in (Postfix) with ESMTPSA id B903944CA7;
+	Fri, 22 Aug 2025 23:48:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nandakumar.co.in;
+	s=feb22; t=1755906538;
+	bh=AssGBvnGXD5Vk2qj1KDrxitnt5zTWdqc2iZ2zMJzNnw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qSRAJSCACU9hNmSyliT2/tdPgflalSfWk4Yn65s5RRAl5u1jHkTBFaYTeMSu8dZdq
+	 bWjsPGfA/QekRq2cxubDsFBEWs9AhaUC2QdcW5yzv3q9ubJwfoLycgQkmAaYwWnByO
+	 QoKa58SsOzBzP3o9U4knWU59/X53NbHzOqHnPT8U8JmnF66dHaxBU0Lps+AerwiaTi
+	 RSITWx7hKdJm2KlUDeBLtK9t4Fc6JSNWEYIuDSZDN7On+b0/BUDA5J70yWpHv8j3Ji
+	 TV9539UBJV4EJHux9DbSVHhizkx7qlCKj6q07kUpVNL42/gbUt0CeQtc68mzEXosvU
+	 WXh4Wi1aZ5GIw==
+Message-ID: <116ef3d2-51a5-444c-ad51-126043649226@nandakumar.co.in>
+Date: Sat, 23 Aug 2025 05:18:50 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250822151611.1084244-1-phoenix500526@163.com> <20250822151611.1084244-3-phoenix500526@163.com>
-In-Reply-To: <20250822151611.1084244-3-phoenix500526@163.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 22 Aug 2025 15:59:49 -0700
-X-Gm-Features: Ac12FXzQSS_BEQWkLsyqK8iVyXo8TDRMoInI6GshC7OmqgArfuJspIFfHAMvXkg
-Message-ID: <CAEf4Bzbs3hV_Q47+d93tTX13WkrpkpOb4=U04mZCjHyZg4aVdw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v13 2/2] selftests/bpf: Enrich subtest_basic_usdt
- case in selftests to cover SIB handling logic
-To: Jiawei Zhao <phoenix500526@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	yonghong.song@linux.dev, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 bpf-next 1/2] bpf: improve the general precision of
+ tnum_mul
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Jakub Sitnicki <jakub@cloudflare.com>,
+ Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+References: <20250822170821.2053848-1-nandakumar@nandakumar.co.in>
+ <8834d8df16f050ec9e906a850c894b481dfa022c.camel@gmail.com>
+Content-Language: en-US
+From: Nandakumar Edamana <nandakumar@nandakumar.co.in>
+In-Reply-To: <8834d8df16f050ec9e906a850c894b481dfa022c.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Aug 22, 2025 at 8:16=E2=80=AFAM Jiawei Zhao <phoenix500526@163.com>=
- wrote:
+On 23/08/25 03:20, Eduard Zingerman wrote:
+> It is not practical to do such sum tree exploration, of course,
+> but I stumbled upon the following simple optimization:
 >
-> When using GCC on x86-64 to compile an usdt prog with -O1 or higher
-> optimization, the compiler will generate SIB addressing mode for global
-> array and PC-relative addressing mode for global variable,
-> e.g. "1@-96(%rbp,%rax,8)" and "-1@4+t1(%rip)".
+>    @@ -17,7 +17,7 @@ struct tnum tnum_union(struct tnum a, struct tnum b)
+>            return TNUM(v & ~mu, mu);
+>     }
+>     
+>    -struct tnum tnum_mul_new(struct tnum a, struct tnum b)
+>    +struct tnum __tnum_mul_new(struct tnum a, struct tnum b)
+>     {
+>            struct tnum acc = TNUM(0, 0);
+>     
+>    @@ -43,6 +43,14 @@ struct tnum tnum_mul_new(struct tnum a, struct tnum b)
+>            return acc;
+>     }
+>     
+>    +struct tnum tnum_mul_new(struct tnum a, struct tnum b)
+>    +{
+>    +       struct tnum ab = __tnum_mul_new(a, b);
+>    +       struct tnum ba = __tnum_mul_new(b, a);
+>    +
+>    +       return __builtin_popcountl(ab.mask) < __builtin_popcountl(ba.mask) ? ab : ba;
+>    +}
+>    +
 >
-> In this patch:
-> - enrich subtest_basic_usdt test case to cover SIB addressing usdt argume=
-nt spec
->   handling logic
+> For the 8-bit case I get the following stats (using the same [1] as
+> before):
 >
-> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/usdt.c | 44 ++++++++++++++++++-
->  tools/testing/selftests/bpf/progs/test_usdt.c | 30 +++++++++++++
->  2 files changed, 72 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testin=
-g/selftests/bpf/prog_tests/usdt.c
-> index 9057e983cc54..c04b416aa4a8 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
-> @@ -25,6 +25,10 @@ unsigned short test_usdt0_semaphore SEC(".probes");
->  unsigned short test_usdt3_semaphore SEC(".probes");
->  unsigned short test_usdt12_semaphore SEC(".probes");
->
-> +#if ((defined(__x86_64__) || defined(__i386__)) && defined(__GNUC__) && =
-!defined(__clang__))
+>    Patch as-is                 Patch with above modification
+>    -----------                 -----------------------------
+>    Tnums  : 6560
+>    New win: 30086328    70 %   31282549    73 %
+>    Old win: 1463809      3 %   907850       2 %
+>    Same   : 11483463    27 %   10843201    25 %
+IIUC, this is same as what my test program [1] does with the 
+`--commutative` option, and yes, it improves the precision slightly. 
+There is one more possibility: run both the new tnum_mul() and the old 
+tnum_mul(), and then pick the best one (still doesn't become optimal, 
+based on experiments).
+> Looks a bit ugly, though.
+> Wdyt?
 
-does clang define __GNUC__ as well? otherwise why !define(__clang__) ?
+Well, I was afraid of the same and that's why it wasn't included in the 
+patch.
 
-> +unsigned short test_usdt_sib_semaphore SEC(".probes");
-> +#endif
-> +
->  static void __always_inline trigger_func(int x) {
->         long y =3D 42;
->
-> @@ -40,12 +44,29 @@ static void __always_inline trigger_func(int x) {
->         }
->  }
->
-> +#if ((defined(__x86_64__) || defined(__i386__)) && defined(__GNUC__) && =
-!defined(__clang__))
-> +static __attribute__((optimize("O1"))) void trigger_sib_spec(void)
+It is clear that picking the best like this doesn't make it unsound. If 
+my understanding is correct, tnum_mul is not something that is called 
+very often in usual cases. So it shouldn't affect performance either. 
+Then it boils down to the beauty of it. I personally don't think 
+`best(a*b, b*a)` is ugly. What about `best(oldprod, newprod)`, where 
+oldprod and newprod are each found like this, using the old tnum_mul and 
+the new tnum_mul respectively?
 
-you use assembly directly, so optimize() should be irrelevant, no?
+[1] https://github.com/nandedamana/improved-tnum-mul
 
-So we can make this non-GCC specific, right?
+-- 
+Nandakumar
 
-> +{
-> +       /* Base address + offset + (index * scale) */
-> +       /* Force SIB addressing with inline assembly */
-> +       asm volatile(
-> +               "# probe point with memory access\n"
-> +               STAP_PROBE_ASM(test, usdt_sib, -2@(%%rdx,%%rax,2))
-
-is it guaranteed that nums address will end up in rdx and a in rax?...
-
-I'd feel more comfortable if you explicitly set up rdx and rax in
-assembly, then add USDT with STAP_PROBE_ASM. That should be possible
-with embedded assembly, no?
-
-> +               "# end probe point"
-
-why these unnecessary comments embedded in the assembly?...
-
-> +               :
-> +               : "d"(nums), "a"(0)
-> +               : "memory"
-> +       );
-> +}
-
-[...]
-
-> +
-> +int usdt_sib_called;
-> +u64 usdt_sib_cookie;
-> +int usdt_sib_arg_cnt;
-> +int usdt_sib_arg_ret;
-> +u64 usdt_sib_arg;
-> +int usdt_sib_arg_size;
-> +
-> +// Note: usdt_sib is only tested on x86-related architectures, so it req=
-uires
-> +// manual attach since auto-attach will panic tests under other architec=
-tures
-
-don't use c++ style comments
-
-> +SEC("usdt")
-> +int usdt_sib(struct pt_regs *ctx)
-> +{
-> +       long tmp;
-> +
-> +       if (my_pid !=3D (bpf_get_current_pid_tgid() >> 32))
-> +               return 0;
-> +
-> +       __sync_fetch_and_add(&usdt_sib_called, 1);
-> +
-> +       usdt_sib_cookie =3D bpf_usdt_cookie(ctx);
-> +       usdt_sib_arg_cnt =3D bpf_usdt_arg_cnt(ctx);
-> +
-> +       usdt_sib_arg_ret =3D bpf_usdt_arg(ctx, 0, &tmp);
-> +       usdt_sib_arg =3D (short)tmp;
-> +       usdt_sib_arg_size =3D bpf_usdt_arg_size(ctx, 0);
-> +
-> +       return 0;
-> +}
-> +
->  char _license[] SEC("license") =3D "GPL";
-> --
-> 2.43.0
->
 
