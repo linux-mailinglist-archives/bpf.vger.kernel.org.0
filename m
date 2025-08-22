@@ -1,145 +1,95 @@
-Return-Path: <bpf+bounces-66301-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66302-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCFFDB3225F
-	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 20:43:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41454B3226C
+	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 20:51:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 972B3B2170F
-	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 18:43:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31FBD1CE7B59
+	for <lists+bpf@lfdr.de>; Fri, 22 Aug 2025 18:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0397E2BEC2C;
-	Fri, 22 Aug 2025 18:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6C22BF015;
+	Fri, 22 Aug 2025 18:49:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YIdmWRBq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tAUSxG6/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AB972BDC03
-	for <bpf@vger.kernel.org>; Fri, 22 Aug 2025 18:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0854719D07A;
+	Fri, 22 Aug 2025 18:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755888219; cv=none; b=EUNahK5+HVMLux/e7bUFMegg+DiZS5E9CBetFR/M22w45sbrr2OS7GehQPP9JLB5+Ib/+QHg3zKYOn2n4uFZk9quTggKiY6r6yKthc2J9rN+tXqviOHRQ9LLofe2UBCs48NjTEYk5sE74aoTiL1bYMzO7PnBMuRhyZ45V5i9M3M=
+	t=1755888598; cv=none; b=GGTe1EcKGBZ71DSa49hvsa5/WpaubfYn0RUOhaeaeHz5Myohlm8Zsc1eAyiq0HzfkcKjCRLeEFnCuwhryrzk+DEAXMGmdeT/JZkkVRkmMvsWTKPyVt1z/gUijW5y1OpktqgQpQebZ1Tey6nREMvfaB1ZAbyP1sb74dBT4rJUNqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755888219; c=relaxed/simple;
-	bh=dxkVD+b4M1nrUZ2Whc+sjYjTzOsWbtuFCZNW0FlJnoI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hW0CV3w0lzlBcKzIDqTKh1Uofvz482e6mOCvXpj5OtGCEztvHKAN86eATVIwHo8FqZwIYgg63MJFaLEnQvA8/AwViKrfiMgyhT/yGaUFqIJ094y5APaXvWoDM/nPqfvdW5CBu1MU8TKhkpvOE/MdYmI4TLMXWG/HKi6WKG8X5TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YIdmWRBq; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-32326793a85so1677445a91.1
-        for <bpf@vger.kernel.org>; Fri, 22 Aug 2025 11:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755888215; x=1756493015; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4yrP3A2wc1sdHVj0Mjd5Q9CFRSUAOQeMpXsZFVELhAE=;
-        b=YIdmWRBqVRn10i9HjhHYMM6uHLfnPvNzNACp4qurdL6XfT2g+zRkDqsOQEBkLHjc/B
-         MpHFkRsjwtnas+axbbhKo2DZKnu4RDxQPR3zBVHXjCgKf2NNL2KCQyhfRB/0wKDZL8Ds
-         J3f8y2tQDDlzSUVHub9WagTGGbm/AXGj2ZovIuqszmpOkN09y0aSVD1mTQMHALopx/wi
-         QQSSClDFXZRRxuhsffPNV+jeYAm01qDW08Dcshwzf0VTKKSjGUTpwkG+qUyZHqa7b9sD
-         BQ5/g9+Wct5HYtsdjOftdX+Jj0qxXB7BOa0eYyryyjPbEzwSTxct30C246eeFjNItbwq
-         lALA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755888215; x=1756493015;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4yrP3A2wc1sdHVj0Mjd5Q9CFRSUAOQeMpXsZFVELhAE=;
-        b=PgKFeBCgILpzBklLOoOIaI9E7J3tf0w6sMbrf55fZ5MYNLO8eQFVw2mGI4vzXumlay
-         VXSjOxnfLSW5CrSvUlEeZQSDGXkSO0Fu/2If6q/+sHMCgt0TRsU8ATFQH+Xmu5DNBtie
-         niFNFLTUAVbC6QghXsyCiUrkbszRrp8drM2HvAa1aZfJg43225+nN1hYZb6AvNKYT1Jz
-         W8PukT0l9sclLwCDULYVqCLSyHV9gI7MXk2X2jkAcAsqJtgaClCEIeErep31Rxw5+NEu
-         KozPl9x+reJc3sVGWLDHu5ybepBCT/9mRfxk5SO+cjX4DBJMle3ciZD5q3EkuqsfJpbf
-         57mw==
-X-Forwarded-Encrypted: i=1; AJvYcCUnMnyVozjPU6q+Xs/0Y2BptqN+HbzhQryP2/kYwAH8rJoXk+JuInB2ziy6/UciNgtQ1Ko=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2jMx/udajtvq2Q1fLvPm4c9YPIO6/Ww+8CqjsSI0Og5w+dG9z
-	qCIuLLV74OML1w0Ym7e0xXNK6Eunfjj4ZMLjFccFtLVQnYcO4w2tz2LeeI15VSp6K5ufhx45zk7
-	NGqrcNIKn3rCy4Eik5pWkR0Oo2SKwTSs=
-X-Gm-Gg: ASbGnctzMnjPBcC8iQRipEZVgbPvJVsvCx4YWC3Gtc2qazAOlPQeCxys0s/KHF7Tzi0
-	R4+ZrIJ5ARPgAIbh9GdEeo3YW3dEXO9v7A3kok5cdFuIReDQCNl39yJx6SC6q6EPbYPew62yQ1e
-	LzVnzmGA/rylcAhCkpAn0dccYodHhyP++LU7dB3c7Hs9OyWPI3FsSAGN6CRIvkRgaegaj+Mu/RA
-	7tTFjQnja/fvx3TYcX5qVk=
-X-Google-Smtp-Source: AGHT+IEUXODzWS3pCnGwThbAnGSrXVApyosNmeapYZtj6MDSpkysw2w1jLflsuKy2DvUUmRQ0vvEUuK351S2Mcttzog=
-X-Received: by 2002:a17:90b:3f88:b0:31c:36f5:d95 with SMTP id
- 98e67ed59e1d1-32515e2b881mr4766831a91.2.1755888215349; Fri, 22 Aug 2025
- 11:43:35 -0700 (PDT)
+	s=arc-20240116; t=1755888598; c=relaxed/simple;
+	bh=8JkCMpeRbDU50O8SsxDiQ1LyoPtXp+L6eRK0J6ivPV4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=VLRVBWnNn76fx1QOrfJS8oEqXMYqks+7C3w0W6GPbxVnsQ0casYuoxCthdqcw2xofu9bsp5zxzyWD5NTnjTMX1mv33R0y7mRUbw+udVeGK+9gb2xMqfhBLppxdDKXi0j3UK0LmQdjnH/17blCrUxbVbC6m0Pgi9drCsFTUpjjOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tAUSxG6/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA588C4CEED;
+	Fri, 22 Aug 2025 18:49:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755888597;
+	bh=8JkCMpeRbDU50O8SsxDiQ1LyoPtXp+L6eRK0J6ivPV4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=tAUSxG6/PnOloJdyGjE4WnN5Fft+qrLBqU/aAl25yhxR2xYogF4eF47Fve07YpM8y
+	 Wj1kpUb1EReb+dZ4L3b9IK7vlAeuDBcabVknoRLy/PV+ZNx03UoIXHVUAFDfKHBhkc
+	 WjgIYCfBhBrz8HxR8ljGgWmZ7/7H1eUDOCwDouGzKCwu1VY1XzTpVr6vI9z2MYJUFJ
+	 sQtKS/C1nVcHopLR2ZxbCSAd4Qj5TdFsEnAPB5OqDATT5oxceHYPfVTyJ5M9voTnyB
+	 uPhAFuqhQCx1j6Qr/gXpbMANW2QzwR4XWmTqtABc13HvGOphdPPjzfXKeGqmoCEMYh
+	 Z/naFqhzE9bHA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB0C9383BF69;
+	Fri, 22 Aug 2025 18:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250819111953.3197428-1-chenhuacai@loongson.cn>
-In-Reply-To: <20250819111953.3197428-1-chenhuacai@loongson.cn>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 22 Aug 2025 11:43:19 -0700
-X-Gm-Features: Ac12FXzrYOzfj7i2cMKRVyTzQec3hNJbudkkDPYSdzi9TGgGm2mcwIbyXDmRGsw
-Message-ID: <CAEf4BzajrMOkdOX5fn=bzWVTLbObPM9=_4Nh9rm5oc_4377Pfw@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: BPF: Fix uninitialized symbol 'retval_off'
-To: Huacai Chen <chenhuacai@loongson.cn>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>, Hengqi Chen <hengqi.chen@gmail.com>, 
-	Huacai Chen <chenhuacai@gmail.com>, George Guo <guodongtai@kylinos.cn>, 
-	Chenghao Duan <duanchenghao@kylinos.cn>, loongarch@lists.linux.dev, 
-	kernel test robot <lkp@intel.com>, Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: Remove preempt_disable in
+ bpf_try_get_buffers
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175588860676.1932482.18282150821754176033.git-patchwork-notify@kernel.org>
+Date: Fri, 22 Aug 2025 18:50:06 +0000
+References: <20250819125638.2544715-1-chen.dylane@linux.dev>
+In-Reply-To: <20250819125638.2544715-1-chen.dylane@linux.dev>
+To: Tao Chen <chen.dylane@linux.dev>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Tue, Aug 19, 2025 at 4:21=E2=80=AFAM Huacai Chen <chenhuacai@loongson.cn=
-> wrote:
->
-> In __arch_prepare_bpf_trampoline(), retval_off is meaningful only when
-> save_ret is not 0, so the current logic is correct. But it may cause a
-> build warning:
->
-> arch/loongarch/net/bpf_jit.c:1547 __arch_prepare_bpf_trampoline() error: =
-uninitialized symbol 'retval_off'.
->
-> So initialize retval_off unconditionally to fix it.
->
-> Fixes: f9b6b41f0cf3 ("LoongArch: BPF: Add basic bpf trampoline support")
-> Closes: https://lore.kernel.org/r/202508191020.PBBh07cK-lkp@intel.com/
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Tue, 19 Aug 2025 20:56:38 +0800 you wrote:
+> Now BPF program will run with migration disabled, so it is safe
+> to access this_cpu_inc_return(bpf_bprintf_nest_level).
+> 
+> Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 > ---
->  arch/loongarch/net/bpf_jit.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->
+>  kernel/bpf/helpers.c | 3 ---
+>  1 file changed, 3 deletions(-)
 
-Is this something that should go through loongarch-specific tree?
+Here is the summary with links:
+  - [bpf-next] bpf: Remove preempt_disable in bpf_try_get_buffers
+    https://git.kernel.org/bpf/bpf-next/c/4223bf833c84
 
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index abfdb6bb5c38..a73f6ea4ed4a 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -1504,11 +1504,10 @@ static int __arch_prepare_bpf_trampoline(struct j=
-it_ctx *ctx, struct bpf_tramp_i
->         stack_size +=3D 16;
->
->         save_ret =3D flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FEN=
-TRY_RET);
-> -       if (save_ret) {
-> -               /* Save BPF R0 and A0 */
-> -               stack_size +=3D 16;
-> -               retval_off =3D stack_size;
-> -       }
-> +       if (save_ret)
-> +               stack_size +=3D 16; /* Save BPF R0 and A0 */
-> +
-> +       retval_off =3D stack_size;
->
->         /* Room of trampoline frame to store args */
->         nargs =3D m->nr_args;
-> --
-> 2.47.3
->
->
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
