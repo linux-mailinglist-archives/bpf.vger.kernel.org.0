@@ -1,161 +1,165 @@
-Return-Path: <bpf+bounces-66367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D00C9B329A9
-	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 17:39:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 585ABB32B17
+	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 18:49:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5904A7A38B1
-	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 15:37:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12E4C3B38EF
+	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 16:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C642E7F39;
-	Sat, 23 Aug 2025 15:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40460228C9D;
+	Sat, 23 Aug 2025 16:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dtuglmsZ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pp0P7H8d"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F4F2E7BDC;
-	Sat, 23 Aug 2025 15:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4799D1F76A5
+	for <bpf@vger.kernel.org>; Sat, 23 Aug 2025 16:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755963536; cv=none; b=Gv+6yWjFxus0d0BK2NAtBLztwMT2mCYPpWObnieY5Jg1bDMUXSquxs0RciiXtdngeLcOpyylVg2LEtPb/1NJ3MiJbYTYWD8QMcwXqj3U8zjRbVh+oaR68Ijti9gXZpReeeDEaqSL2trsAeTpRuSSp7lCKT48tCBaI+dA+VtEfr8=
+	t=1755967764; cv=none; b=kTblnOXbwKyJ4ma3C+iOgUEuZSPVw0R01PtrBn3qSzte+gT467bnvRw351oxZAe2IeKnlTbP+DC5dizE3a3xuUyNj/ODoX9uiu2JrRO07LFnCWwouZ6x+5u9Cj48hkrzU5UNX5hbLNpspN6KUJrBgzkf+K0ptd6pxTnZwCAjIfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755963536; c=relaxed/simple;
-	bh=2CKFaXXEg2LYAIZZ/UOO6SOKp9zzgRvKhyBppqFbZxA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IxkBxIjJwrhmCWox4h7EzLdeT3FPksvrLk0x4iDH7hCuLsdtk+Fwt8BaWt0A1VnZjQNNtJknurVsIQRiZGvMAvOlbERuuMQEeg/qc1yunor8En0SnMeWZQ+d4xV5H9BaEq8KF5Y9Yv7Ng0/6HHfuJsiqHlpJ5jCKk3AH/OwNHXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dtuglmsZ; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1755963535; x=1787499535;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2CKFaXXEg2LYAIZZ/UOO6SOKp9zzgRvKhyBppqFbZxA=;
-  b=dtuglmsZ4ghXk+nfKeCQIRZE9gWaWLjqDhrjdGmGSS5kUE9K/S5moBHN
-   ckWCok+PlFsl2Xz7V61ZxRyM70Lr4q1Vl7OXU4/imjSQ6Tgs4ddxJTFPZ
-   eFwtSqMDby+pz7i2C1D6+D/iOnAgsokS/GjC2fJzm8PvLr3eucRZ4ByE+
-   dhyeBvuES6D6Ku2NNLRY85UR2d06VBobcLvtk/eC7HyVcE+vhK4V3rGjM
-   Q8PQUtIWZxehxsdYWzi/tIDP3ovuTfnatXTlYZm8KBW2uAS4DIgdYoyKE
-   PdgzVOO3ARBh9gSBNnO4Rq4wAYOwnQ7aH/TXIZ35GmR1iUQaje16y9sUo
-   Q==;
-X-CSE-ConnectionGUID: FnH8i//5QtSoORDvWQp/Hg==
-X-CSE-MsgGUID: O2okVptrR2+AVUwkIh3Ycg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="57262174"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="57262174"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2025 08:38:53 -0700
-X-CSE-ConnectionGUID: Wes7r59DTYKOEuQgrvtJNA==
-X-CSE-MsgGUID: NoleGkrySXu7qGfTOn6smQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="168164859"
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by orviesa010.jf.intel.com with ESMTP; 23 Aug 2025 08:38:49 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1upqKM-000MNn-0p;
-	Sat, 23 Aug 2025 15:38:46 +0000
-Date: Sat, 23 Aug 2025 23:38:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kuniyuki Iwashima <kuniyu@google.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>
-Cc: oe-kbuild-all@lists.linux.dev,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Neal Cardwell <ncardwell@google.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Mina Almasry <almasrymina@google.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v1 bpf-next/net 6/8] bpf: Introduce SK_BPF_MEMCG_FLAGS
- and SK_BPF_MEMCG_SOCK_ISOLATED.
-Message-ID: <202508232331.rxOqu50j-lkp@intel.com>
-References: <20250822221846.744252-7-kuniyu@google.com>
+	s=arc-20240116; t=1755967764; c=relaxed/simple;
+	bh=8YpxJPRMsJBkynas/VbqXASvJV+LVskvWZ5lioILCQw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H91kckXE8/oTDgtczImZo2T72fDl56C48c3Nj+PWFDVVlqqNNE+I/rEh6/wix1LTq0s9asLcrtIcCORz/W6VkPH4Sr0x6xrW8k+pr6/LC9OQJQT5oS5jpIDR3JYVThVehLzOIWTD9LVylZNg6icuK7RMK3SjibeOw8BNgb1T/+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pp0P7H8d; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-246257e49c8so125555ad.0
+        for <bpf@vger.kernel.org>; Sat, 23 Aug 2025 09:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1755967762; x=1756572562; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8YpxJPRMsJBkynas/VbqXASvJV+LVskvWZ5lioILCQw=;
+        b=pp0P7H8dG/khRsKBG3fY035Vq/ukNYIfFWKuBVC/kDd2lyjs/z4sIDMFfPOwdubAVx
+         yx4JVCdlp8ExSYDzyMeFLFBVBYxj8uyZBAlvryFxeQeVro+4l3so+DZo2HNJlK5zPHh3
+         qz1glcaq0X2ph+FuV8s5XUKFYDttu9cEBuYw8IzdGZhMbWu49yrlq6sdDPUy1Bt4hgIc
+         PGl6km7+A6WaC9VGX9PWEztmVlCwYzzbUj7iabyCl1wmJh4C8XJR5tHRIUN4SDd58CPL
+         7EZMPYR59jGltEHVgwY+rdiRHpqjfjTNFtAUAp4nW16AyI9vl9AIjBkw4lP2J4uRMhrm
+         sM3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755967762; x=1756572562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8YpxJPRMsJBkynas/VbqXASvJV+LVskvWZ5lioILCQw=;
+        b=xKXHep/BF2A7flchcHucUj7sgk66t4L1HTJcjrQmgZj3T+Ks+tdGUy+jDc7Q13MAsL
+         FUmZldlGiT9qCeX6rkDRefOtOlWP9Y36FI2fWEgoSbWtx1SotClxEnrunEcuHKY97vMH
+         2a+XRV4xqVT6Y5YRgE0fjCKMzSZARYnG9Z/wKL5wcU/OLHe1j0t+mkujNem/XwibC/gq
+         lQTXh3g6Oq+m5Vz3HhRN5OrJf+PRoXzbM+Zdpi/Y71zD47YsnH71UZKNjJa5GvBInu0j
+         RF4txRdcD90eTRXP99ISoYKaCWnxtfwj7DttvJ2J9sDkUCIO7t+bXpOxbJfbc54b1nKT
+         kTXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVvpGtPoG23m9M7eVhD6qy0NlFCuXlaLylWsYJd4EmiPdPF+XfSfGCeAP7UkJrKarJe7UY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzkGon+ARQX4ssYFcTXiMjOse7keUbswgXNeRbOAED5sw7mRQRZ
+	E0uxRnvSEMblbxzUao7tKMaQYFsJBH4hmhjPmlFA2Y13mtECp4c8KPksN57u3Pt9kl1WFDeeW5d
+	3aAKumLLyw76Lel+Sw8O5994sdG1cluNKkvPjZrOP
+X-Gm-Gg: ASbGncuFzg2S0w9Ep4DFursrNAapVyfQ/oCi9/6HaZ3fAkHYYAMI946HKpUYjPlfZq4
+	sIqAmM5HH9tyFRyp58xZx2ERvLgwdCbk9CzrOSIT6UTb34rvQQmd2ZohE3sutcVHOClCXAw9sh8
+	TmXm4dD7GpBb5zB7YE4FLocxZR+ELkNMC4F+oz8cfizydhtGIeNnLLDtdtWylfd/Qf48vJE2y+8
+	1vOSNOgWPGDBA==
+X-Google-Smtp-Source: AGHT+IGGKzyig0sJhIDWW/nSQxj4OQzvDA0OPRGfLHvzMGNVvjSyeTmmkEB5lOEbZ5yCPiIdJ8wlqYpa3Scf59bznr8=
+X-Received: by 2002:a17:903:2f82:b0:240:520b:3cbc with SMTP id
+ d9443c01a7336-2466fa251e2mr2803115ad.14.1755967761957; Sat, 23 Aug 2025
+ 09:49:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250822221846.744252-7-kuniyu@google.com>
+References: <87ldnacz33.fsf@gentoo.org> <87cy8mcyy4.fsf@gentoo.org>
+In-Reply-To: <87cy8mcyy4.fsf@gentoo.org>
+From: Ian Rogers <irogers@google.com>
+Date: Sat, 23 Aug 2025 09:49:10 -0700
+X-Gm-Features: Ac12FXx_I9TlyYoS8Acvvq3h2swrT6lD-bRfYeprBApJYtrL-ohu-WwZy8Q9SnA
+Message-ID: <CAP-5=fV+-VZ+SsGL1SJGYMEv-gwkv1AKk_6MZJ4tLBrCXFnMQA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/19] Support dynamic opening of capstone/llvm remove BUILD_NONDISTRO
+To: Sam James <sam@gentoo.org>
+Cc: acme@kernel.org, adityag@linux.ibm.com, adrian.hunter@intel.com, 
+	ak@linux.intel.com, alexander.shishkin@linux.intel.com, amadio@gentoo.org, 
+	atrajeev@linux.vnet.ibm.com, bpf@vger.kernel.org, chaitanyas.prakash@arm.com, 
+	changbin.du@huawei.com, charlie@rivosinc.com, dvyukov@google.com, 
+	james.clark@linaro.org, jolsa@kernel.org, justinstitt@google.com, 
+	kan.liang@linux.intel.com, kjain@linux.ibm.com, lihuafei1@huawei.com, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	llvm@lists.linux.dev, mark.rutland@arm.com, mhiramat@kernel.org, 
+	mingo@redhat.com, morbo@google.com, namhyung@kernel.org, nathan@kernel.org, 
+	nick.desaulniers+lkml@gmail.com, peterz@infradead.org, sesse@google.com, 
+	song@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Kuniyuki,
+On Fri, Aug 22, 2025 at 11:52=E2=80=AFPM Sam James <sam@gentoo.org> wrote:
+>
+> > A few months ago, objdump was the only way to get
+> > source line support [0]. Is that still the case?
+>
+> ... or is this perhaps handled by "[PATCH v5 18/19] perf srcline:
+> Fallback between addr2line implementations", in which case, shouldn't
+> that really land first so people can try the LLVM impl and use the
+> binutils one if it fails?
 
-kernel test robot noticed the following build errors:
+So my opinion, BUILD_NON_DISTRO isn't supported and the code behind it
+should go away. Please don't do anything to the contrary or enable it
+for your distribution - this was supposed to be implied by the name.
+The forking and running addr2line gets around the license issue that
+is GPLv3* but comes with a performance overhead. It also has a
+maintenance overhead supporting llvm and binutil addr2line, when the
+addr2line output changes things break, etc. (LLVM has been evolving
+their output but I'm not aware of it breaking things yet). We should
+(imo) delete the forking and running addr2line support, it fits the
+billing of something we can do when capstone and libLLVM support
+aren't there but the code is a hot mess and we don't do exhaustive
+testing against the many addr2line flavors, the best case is buyer
+beware. Capstone is derived from libLLVM, I'm not sure it makes sense
+having 2 libraries for this stuff. There's libLLVM but what it
+provides through a C API is a mess requiring the C++ shimming. Tbh, I
+think most of what these libraries provide we should just get over
+ourselves and provide in perf itself. For example, does it make sense
+to be trying to add type annotations to objdump output, to just update
+objdump or have a disassembler library where we can annotate things as
+we see fit? Library bindings don't break when text output formats get
+tweaked. Given we're doing so much dwarf processing, do we need a
+library for that or should that just be in-house? We can side step
+most of this mess by starting again in python as is being shown in the
+textual changes that bring with it stuff like console flame graphs:
+https://lore.kernel.org/lkml/CAP-5=3DfU=3Dz8kcY4zjezoxSwYf9vczYzHztiMSBvJxd=
+wwBPVWv2Q@mail.gmail.com/
+So I think long term we make the perf tool minimal with minimal
+dependencies (ie no addr2line, libLLVM, etc.), we work on having nice
+stuff in the python stuff where we can reuse or build new libraries
+for addr2line, objdump-ing, etc. Use >1 thread, use asyncio, etc.
 
-[auto build test ERROR on bpf-next/net]
+For where we are now, ie no python stuff, BUILD_NON_DISTRO should go
+away as nobody is maintaining it and hasn't for 2 years (what happens
+when libbfd and libiberty change?). We should focus on making the best
+of what we have via libraries/tools that are supported - while not
+forcing the libraries to be there or making the perf binary massive by
+dragging in say libLLVM. The patch series pushes in that direction and
+I commend it to the reader.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kuniyuki-Iwashima/tcp-Save-lock_sock-for-memcg-in-inet_csk_accept/20250823-062322
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
-patch link:    https://lore.kernel.org/r/20250822221846.744252-7-kuniyu%40google.com
-patch subject: [PATCH v1 bpf-next/net 6/8] bpf: Introduce SK_BPF_MEMCG_FLAGS and SK_BPF_MEMCG_SOCK_ISOLATED.
-config: arc-randconfig-002-20250823 (https://download.01.org/0day-ci/archive/20250823/202508232331.rxOqu50j-lkp@intel.com/config)
-compiler: arc-linux-gcc (GCC) 12.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250823/202508232331.rxOqu50j-lkp@intel.com/reproduce)
+No, reordering the patches to compare performance of binutils doesn't
+make sense, just build with and without the patch series if you want
+to do this, but also don't do this as BUILD_NON_DISTRO should go away.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202508232331.rxOqu50j-lkp@intel.com/
+Thanks,
+Ian
 
-All errors (new ones prefixed by >>):
-
-   net/core/filter.c: In function 'sk_bpf_set_get_memcg_flags':
->> net/core/filter.c:5290:9: error: implicit declaration of function 'mem_cgroup_sk_set_flags'; did you mean 'mem_cgroup_sk_get_flags'? [-Werror=implicit-function-declaration]
-    5290 |         mem_cgroup_sk_set_flags(sk, *optval);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~
-         |         mem_cgroup_sk_get_flags
-   cc1: some warnings being treated as errors
-
-
-vim +5290 net/core/filter.c
-
-  5269	
-  5270	static int sk_bpf_set_get_memcg_flags(struct sock *sk, int *optval, bool getopt)
-  5271	{
-  5272		if (!mem_cgroup_sk_enabled(sk))
-  5273			return -EOPNOTSUPP;
-  5274	
-  5275		if (getopt) {
-  5276			*optval = mem_cgroup_sk_get_flags(sk);
-  5277			return 0;
-  5278		}
-  5279	
-  5280		/* Don't allow once sk has been published to userspace.
-  5281		 * INET_CREATE is called without lock_sock() but with sk_socket
-  5282		 * INET_ACCEPT is called with lock_sock() but without sk_socket
-  5283		 */
-  5284		if (sock_owned_by_user_nocheck(sk) && sk->sk_socket)
-  5285			return -EBUSY;
-  5286	
-  5287		if (*optval <= 0 || *optval >= SK_BPF_MEMCG_FLAG_MAX)
-  5288			return -EINVAL;
-  5289	
-> 5290		mem_cgroup_sk_set_flags(sk, *optval);
-  5291	
-  5292		return 0;
-  5293	}
-  5294	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+* (As I understand the issue IANAL) GPLv3 and GPLv2 can't be linked
+together. Why not just use GPLv3? A major issue for me is that GPLv3
+adds a requirement for =E2=80=9CInstallation Information=E2=80=9D to be pro=
+vided,
+which means placing a binary in a cryptographically signed OS
+partition you'd need to reveal the signing key which defeats the
+purpose of signing the partition to ensure you aren't hacked. I like
+open source and using the code, I don't want to be hacked by giving to
+the hackers my signing keys.
 
