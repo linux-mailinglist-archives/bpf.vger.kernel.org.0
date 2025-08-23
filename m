@@ -1,161 +1,161 @@
-Return-Path: <bpf+bounces-66366-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66367-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FCECB3293C
-	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 16:38:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D00C9B329A9
+	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 17:39:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EEA21BC25C6
-	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 14:39:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5904A7A38B1
+	for <lists+bpf@lfdr.de>; Sat, 23 Aug 2025 15:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1A925E44B;
-	Sat, 23 Aug 2025 14:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C642E7F39;
+	Sat, 23 Aug 2025 15:38:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dtuglmsZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4971448D5;
-	Sat, 23 Aug 2025 14:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F4F2E7BDC;
+	Sat, 23 Aug 2025 15:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755959917; cv=none; b=WvBKFwi4rSKED7Yx+jOk5Jjhl70frA+K9ZmwrvpgJN7JXmsDF36/3zD3BNfvBA6sIfqlxC9mFvdT/2Go1GI29qrxQcbdQKJMx69swV3C1IVs8rhhCVKp6trNhd2bIAY26Rv7NmwK2wI8pfYNOsaoze7HKVv02MfIdCwZgFbIcuA=
+	t=1755963536; cv=none; b=Gv+6yWjFxus0d0BK2NAtBLztwMT2mCYPpWObnieY5Jg1bDMUXSquxs0RciiXtdngeLcOpyylVg2LEtPb/1NJ3MiJbYTYWD8QMcwXqj3U8zjRbVh+oaR68Ijti9gXZpReeeDEaqSL2trsAeTpRuSSp7lCKT48tCBaI+dA+VtEfr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755959917; c=relaxed/simple;
-	bh=Nh6YA7zHVUidyfs1irsqbpNd4HNN14VNgJLyf2nJm94=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mWik5lzqcZYVIsRJyozDDScIJucinBO6NBQWBb7YeBLKEmBPj7ao0Ib63UswTiWNd4x/vzCrBfrnMiwlro0lRe7YpzdGu6Suel2lRcOuvQA9RoewcKZvPm3Ue1nuF1UMOSBiw3BrMPiYDDQCZkulOQYExQFSxUS9ilT9rnZSl7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c8KRr54xmzYQvZp;
-	Sat, 23 Aug 2025 22:38:32 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 3F99D1A0FCF;
-	Sat, 23 Aug 2025 22:38:31 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP3 (Coremail) with SMTP id _Ch0CgAXsmll0qlo2m8jAA--.52530S2;
-	Sat, 23 Aug 2025 22:38:31 +0800 (CST)
-Message-ID: <1af26519-6113-43fa-b220-8beb2059b4d3@huaweicloud.com>
-Date: Sat, 23 Aug 2025 22:38:29 +0800
+	s=arc-20240116; t=1755963536; c=relaxed/simple;
+	bh=2CKFaXXEg2LYAIZZ/UOO6SOKp9zzgRvKhyBppqFbZxA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IxkBxIjJwrhmCWox4h7EzLdeT3FPksvrLk0x4iDH7hCuLsdtk+Fwt8BaWt0A1VnZjQNNtJknurVsIQRiZGvMAvOlbERuuMQEeg/qc1yunor8En0SnMeWZQ+d4xV5H9BaEq8KF5Y9Yv7Ng0/6HHfuJsiqHlpJ5jCKk3AH/OwNHXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dtuglmsZ; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1755963535; x=1787499535;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2CKFaXXEg2LYAIZZ/UOO6SOKp9zzgRvKhyBppqFbZxA=;
+  b=dtuglmsZ4ghXk+nfKeCQIRZE9gWaWLjqDhrjdGmGSS5kUE9K/S5moBHN
+   ckWCok+PlFsl2Xz7V61ZxRyM70Lr4q1Vl7OXU4/imjSQ6Tgs4ddxJTFPZ
+   eFwtSqMDby+pz7i2C1D6+D/iOnAgsokS/GjC2fJzm8PvLr3eucRZ4ByE+
+   dhyeBvuES6D6Ku2NNLRY85UR2d06VBobcLvtk/eC7HyVcE+vhK4V3rGjM
+   Q8PQUtIWZxehxsdYWzi/tIDP3ovuTfnatXTlYZm8KBW2uAS4DIgdYoyKE
+   PdgzVOO3ARBh9gSBNnO4Rq4wAYOwnQ7aH/TXIZ35GmR1iUQaje16y9sUo
+   Q==;
+X-CSE-ConnectionGUID: FnH8i//5QtSoORDvWQp/Hg==
+X-CSE-MsgGUID: O2okVptrR2+AVUwkIh3Ycg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="57262174"
+X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
+   d="scan'208";a="57262174"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2025 08:38:53 -0700
+X-CSE-ConnectionGUID: Wes7r59DTYKOEuQgrvtJNA==
+X-CSE-MsgGUID: NoleGkrySXu7qGfTOn6smQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
+   d="scan'208";a="168164859"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by orviesa010.jf.intel.com with ESMTP; 23 Aug 2025 08:38:49 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1upqKM-000MNn-0p;
+	Sat, 23 Aug 2025 15:38:46 +0000
+Date: Sat, 23 Aug 2025 23:38:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kuniyuki Iwashima <kuniyu@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>
+Cc: oe-kbuild-all@lists.linux.dev,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Neal Cardwell <ncardwell@google.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Mina Almasry <almasrymina@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v1 bpf-next/net 6/8] bpf: Introduce SK_BPF_MEMCG_FLAGS
+ and SK_BPF_MEMCG_SOCK_ISOLATED.
+Message-ID: <202508232331.rxOqu50j-lkp@intel.com>
+References: <20250822221846.744252-7-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/4] libbpf: ringbuf: Add overwrite ring buffer
- process
-Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Willem de Bruijn <willemb@google.com>, Jason Xing
- <kerneljasonxing@gmail.com>, Paul Chaignon <paul.chaignon@gmail.com>,
- Tao Chen <chen.dylane@linux.dev>, Kumar Kartikeya Dwivedi
- <memxor@gmail.com>, Martin Kelly <martin.kelly@crowdstrike.com>
-References: <20250804022101.2171981-1-xukuohai@huaweicloud.com>
- <20250804022101.2171981-3-xukuohai@huaweicloud.com>
- <CAEf4Bzaq5drHWChXoRBnrmkb6reAsSVj8r=uByFSup31FMA7hw@mail.gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <CAEf4Bzaq5drHWChXoRBnrmkb6reAsSVj8r=uByFSup31FMA7hw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgAXsmll0qlo2m8jAA--.52530S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw15tw15ury5Ary5XFykAFb_yoW5Ww48pF
-	y5Kw45KrnrZr12kwn3X3WIgFyrCan7AryUKr4IyF18ArnIqF13WFWj9F4Y9F13ZrZ3Kw1j
-	yrWDuas2kryUCwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250822221846.744252-7-kuniyu@google.com>
 
-On 8/23/2025 5:23 AM, Andrii Nakryiko wrote:
-> On Sun, Aug 3, 2025 at 7:27 PM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
->>
->> From: Xu Kuohai <xukuohai@huawei.com>
->>
->> In overwrite mode, the producer does not wait for the consumer, so the
->> consumer is responsible for handling conflicts. An optimistic method
->> is used to resolve the conflicts: the consumer first reads consumer_pos,
->> producer_pos and overwrite_pos, then calculates a read window and copies
->> data in the window from the ring buffer. After copying, it checks the
->> positions to decide if the data in the copy window have been overwritten
->> by be the producer. If so, it discards the copy and tries again. Once
->> success, the consumer processes the events in the copy.
->>
-> 
-> I don't mind adding BPF_F_OVERWRITE mode to BPF ringbuf (it seems like
-> this will work fine) itself, but I don't think retrofitting it to this
-> callback-based libbpf-side API is a good fit.
-> 
-> For one, I don't like that extra memory copy and potentially a huge
-> allocation that you do. I think for some use cases user logic might be
-> totally fine with using ringbuf memory directly, even if it can be
-> overwritten at any point. So it would be unfair to penalize
-> sophisticated users for such cases. Even if not, I'd say allocating
-> just enough to hold the record would be a better approach.
-> 
-> Another downside is that the user doesn't really have much visibility
-> right now into whether any samples were overwritten.
-> 
-> I've been mulling over the idea of adding an iterator-like API for BPF
-> ringbuf on the libbpf side for a while now. I'm still debating some
-> API nuances with Eduard, but I think we'll end up adding something
-> pretty soon. Iterator-based API seems like a much better fit for
-> overwritable mode here.
-> 
-> But all that is not really overwrite-specific and is broader, so I
-> think we can proceed with finalizing kernel-side details of overwrite
-> and not block on libbpf side of things for now, though.
->
+Hi Kuniyuki,
 
-Sounds great! Looking forward to the new iterator-based API. Clearly, no
-memory allocation or a samll allocation is better than a huge allocation.
-I'll focus on the kernel side before the new API is introduced.
+kernel test robot noticed the following build errors:
 
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> ---
->>   tools/lib/bpf/ringbuf.c | 103 +++++++++++++++++++++++++++++++++++++++-
->>   1 file changed, 102 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
->> index 9702b70da444..9c072af675ff 100644
->> --- a/tools/lib/bpf/ringbuf.c
->> +++ b/tools/lib/bpf/ringbuf.c
->> @@ -27,10 +27,13 @@ struct ring {
->>          ring_buffer_sample_fn sample_cb;
->>          void *ctx;
->>          void *data;
->> +       void *read_buffer;
->>          unsigned long *consumer_pos;
->>          unsigned long *producer_pos;
->> +       unsigned long *overwrite_pos;
->>          unsigned long mask;
->>          int map_fd;
->> +       bool overwrite_mode;
->>   };
-> 
-> [...]
+[auto build test ERROR on bpf-next/net]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Kuniyuki-Iwashima/tcp-Save-lock_sock-for-memcg-in-inet_csk_accept/20250823-062322
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
+patch link:    https://lore.kernel.org/r/20250822221846.744252-7-kuniyu%40google.com
+patch subject: [PATCH v1 bpf-next/net 6/8] bpf: Introduce SK_BPF_MEMCG_FLAGS and SK_BPF_MEMCG_SOCK_ISOLATED.
+config: arc-randconfig-002-20250823 (https://download.01.org/0day-ci/archive/20250823/202508232331.rxOqu50j-lkp@intel.com/config)
+compiler: arc-linux-gcc (GCC) 12.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250823/202508232331.rxOqu50j-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508232331.rxOqu50j-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   net/core/filter.c: In function 'sk_bpf_set_get_memcg_flags':
+>> net/core/filter.c:5290:9: error: implicit declaration of function 'mem_cgroup_sk_set_flags'; did you mean 'mem_cgroup_sk_get_flags'? [-Werror=implicit-function-declaration]
+    5290 |         mem_cgroup_sk_set_flags(sk, *optval);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~
+         |         mem_cgroup_sk_get_flags
+   cc1: some warnings being treated as errors
+
+
+vim +5290 net/core/filter.c
+
+  5269	
+  5270	static int sk_bpf_set_get_memcg_flags(struct sock *sk, int *optval, bool getopt)
+  5271	{
+  5272		if (!mem_cgroup_sk_enabled(sk))
+  5273			return -EOPNOTSUPP;
+  5274	
+  5275		if (getopt) {
+  5276			*optval = mem_cgroup_sk_get_flags(sk);
+  5277			return 0;
+  5278		}
+  5279	
+  5280		/* Don't allow once sk has been published to userspace.
+  5281		 * INET_CREATE is called without lock_sock() but with sk_socket
+  5282		 * INET_ACCEPT is called with lock_sock() but without sk_socket
+  5283		 */
+  5284		if (sock_owned_by_user_nocheck(sk) && sk->sk_socket)
+  5285			return -EBUSY;
+  5286	
+  5287		if (*optval <= 0 || *optval >= SK_BPF_MEMCG_FLAG_MAX)
+  5288			return -EINVAL;
+  5289	
+> 5290		mem_cgroup_sk_set_flags(sk, *optval);
+  5291	
+  5292		return 0;
+  5293	}
+  5294	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
