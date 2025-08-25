@@ -1,135 +1,151 @@
-Return-Path: <bpf+bounces-66436-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66437-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78A2BB34AEA
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 21:32:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76F5DB34AFD
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 21:39:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 327773BC54B
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 19:32:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 074EC17B9A8
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 19:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3754283159;
-	Mon, 25 Aug 2025 19:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746D7284686;
+	Mon, 25 Aug 2025 19:39:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bZI6a1ou"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TPvv8eL1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E511F1DE4F6;
-	Mon, 25 Aug 2025 19:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B1C169AE6;
+	Mon, 25 Aug 2025 19:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756150355; cv=none; b=DGJ0CJa5ssQlGu9yncQ1KQvIN9LERwQfJQgOGQASYSbpTaWI2mGOhxxlOBXnOErkKd+JcuhU4Dl3JfA+rbdsv34hAzcbEIv7mcRZRLbxTXNecPg0XzleddMKQNSb9PB0ATfiXekhFVL+zaEshazVG7NKl6L/0QYRRb9gKQavpAg=
+	t=1756150763; cv=none; b=PlZ0bcIdVfz5iLEiNmO7zExjeNh+CkpIeZmPCGGEuohgTvA6mFOp15Iyr8Mx9pZmfqFOo4KyBubtPYH+oH8plmZmiSPLY1+m8ISu+SfpnhMXcB7rjWvG6lJper36Bto8AVHRkCS0LK1ysxbjVeIJIB8qsL9j8gNJRgN8bjI4TtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756150355; c=relaxed/simple;
-	bh=v7m8S0eg4GCGM1ZCOPqJayGySDtuCRUe/QjHb6E9nEw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QHePUnldMr8o3KO6LYSALdF9g7sOvfg0VOTIUoPuFktQfhtDV9pTTtQR7zqLuQ6tYbGl7pHFoStKKDMl8zMS4esLne1qUI1jLWy2J5n6CXYJbuKkpq+XQYhgd0HlKMStW3r/jdTxB12tJz8zzbfwPTIFb1vH11PcCfGHeBUc4/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bZI6a1ou; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1756150763; c=relaxed/simple;
+	bh=Cn6/HZnCTFo02lLWmt25HP9iNxs2Iqsw3oAhOtx1NVI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lVKK6465GKQB2h6F054pzcRAynQb8y4kkvb8e43OILkL+sGFDlSFl25xFbIIgs4GjN3Pzjuoz7eyiAJ8rTQLIBEIdJn4oIsorMK8PTzkTZYZSEX/xmm5iN1ChPg1kwGvG0zsFj4IJP+l6WNWKiWgj6cnD8xsn6Zv22hCvDtv2NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TPvv8eL1; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-246fc803b90so8306385ad.3;
-        Mon, 25 Aug 2025 12:32:33 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-76e6cbb991aso4168828b3a.1;
+        Mon, 25 Aug 2025 12:39:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756150353; x=1756755153; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=v7m8S0eg4GCGM1ZCOPqJayGySDtuCRUe/QjHb6E9nEw=;
-        b=bZI6a1ou+UsEv0cMtojan1YE/UKLef1fxNLxfOWLQq1XyveCPFMmafe3z5liVxQfSt
-         cmeyVvnOgwNo+9nWbtydYQ/NDJPig25A0E7zz+eD1WENeksNchrBFsNNZRr51IMFMkLd
-         0S41kZRaVnR4d4l+3xhsE7DZrQ/Bx/muBWj1+XTW4hb+yAu52Xdcc3ywramJ0ERoMPLb
-         CN8nmZkVKI0Edz/aBof/gPbzhZV/qX+xNwlJIOTXVJVmxA1kjmvNS0ZrbPpBjeoLMO/c
-         ysrUL8K+GdOW0p290TStMVp3SNIqisWWrdw294AE1h2DDPoXlCXg0cRxmE4pZUs5EUm0
-         QRXg==
+        d=gmail.com; s=20230601; t=1756150761; x=1756755561; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=o8W4J+U5EAw2EOUUiz5ymEbsjA13ntkTZm7s0USFxlY=;
+        b=TPvv8eL1wF/t++QRSKlrfNpndFFYB56J1oXVUkQGLuE911kl3pieWcQGidgA3+YaMt
+         T6gy8fYSVGpcZSeGVINTuUPDERvLlLJuP8APCyEzT87Pvy+wpFSa4NbeDzHRLh8XRRwB
+         5NW86kkgHJGul07A2fLzA8l43iyedaqiCpIUIanjUFTatv42ZyftFNS0lU3V5G+Q8cbN
+         Sof+Xj8yPiIO9KWoffu2+Hvinmx09nbCF4vL3TzQbuuoDAWBSeuNVMgMJEWXS/+pcjBw
+         Fvl9fHxmjifr5UGjisNHjDzxepqk80UH/bxKw7opELvQJms4NG/lK235BAlWByU6qHpx
+         8rOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756150353; x=1756755153;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v7m8S0eg4GCGM1ZCOPqJayGySDtuCRUe/QjHb6E9nEw=;
-        b=dXHz9QqOksqXpUyMtBzDalCgjdskfJtRBD1ZIVh4jS2OBScwaT6ougdJ0vALqI5IZJ
-         67Rj7mNPzObHlR3GoAnI9McNinK4L1X9TEBGun6hPrNIr/Ou5EEOWD7m7hw8rikSMDtG
-         p9KK0TgmBIYyW+ecQTfEgSJXrxVOW5qiRyMoGK5EZhJ0Zezxw5/wXtfk4MeZsU+GuR1o
-         s/qr5krRfB1NwdaEcc/ogBcxCBP7upROZ5QCSNiMpN1Rw58RlDkzsjKoD4mVGPCvv1y6
-         paFRgjtPBqj5gCkejj1DFWH2VxjzRGCmoXiZcEU3JGVYsSy+avt9U3tlI7F7KXA8s33I
-         4WGA==
-X-Forwarded-Encrypted: i=1; AJvYcCVN9MzVgqKNQrBCGKZrwpokpn0lIurAYWTdz4tNl9RM/L3oxeTwTJIwZbCHRyebaN9sYzI=@vger.kernel.org, AJvYcCVwEBRbPWv+aVsbZiK5Bh+5gZ8l2GX9aTLLxqtlbOR0r7xLZW7LqGKU2LUDHfxVjSlhzGPILNZx0LeJgPvv@vger.kernel.org, AJvYcCXY6bzayofTddAvYEtXnNU4aLMFprIAuOOXLd78G/LIlka42ybFQFMyM6A8dNaWsZlzv+fIFhvjIP4PkrWvMeuY@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBwowBmywwYkq50ovH14i8NIL8f+36GkUGE3UkTTsP+2zONY7T
-	WoymAGjDS8uDWY9CVwRrjKlWHzaZIvtfNiNCOF3ja7boVgTaYZoPjXsx
-X-Gm-Gg: ASbGncvTlk3Oo8Ymltxba09CKqaR+Y36x3D+0XtsSpf42xvhkz+lZisVDKikFIJgimq
-	o9wWET28ADlHxOTk3EXPWqTwKxwJmLcbQ+bIsNeCjLCLP4DKukle2X7HE0RBWVGjV7EKbxSBSrR
-	5lM/zyE50T2es7Zluc6nwEgJ/rkGjHMivpVwH/fULWfHs2UXtVUvCuBJoicAEtuTNzdlaO0OWMJ
-	XpULN8cgVk3FDp0IqEImU//9zyDyD5R1hL+uyewKO8q6tYs785r79X/ZtHac1TW7lh8CRC7F94B
-	wi88ccx8/X0ZrjZRh5ndcuUbv1iByuWp/DBEqcA6ezgfmEwsQwQsl1yesJNwpyUC09RSitQGovS
-	+80X6aZxA61LbKtZSMncRnYWjx7EB
-X-Google-Smtp-Source: AGHT+IF92G0qyzJQkmKboodWp3QcUrjLvyXbP81XhzGjglNuFKNhx0ff88z+lL7L63eF9UrbT3AfGg==
-X-Received: by 2002:a17:902:e783:b0:246:d98e:630 with SMTP id d9443c01a7336-246d98e09c1mr51362495ad.44.1756150353021;
-        Mon, 25 Aug 2025 12:32:33 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::247? ([2620:10d:c090:600::1:9c06])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24668861220sm75758765ad.96.2025.08.25.12.32.30
+        d=1e100.net; s=20230601; t=1756150761; x=1756755561;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o8W4J+U5EAw2EOUUiz5ymEbsjA13ntkTZm7s0USFxlY=;
+        b=r7OU3dEEFI/rE69raZFGelU9JOXavTKAmv53RfFpNomnytgPggre37RUyzgTnre1U4
+         fS/q+6gWJsKh8CowV6pqtDiMNjocNXBWH38Rnfu3F9dWK0VTrVwpXN/DwkehI0IbIA6k
+         XT7zj8uuKmF57Mk9K0NSg2jAK0fL7B1/o21SvmSr+Vyx8eiT0zVu1JlbhuTg3tVCawEk
+         Z2A5dNRj5ytuZ8KSgrYaBJURcOGNkyneugHRJJiFAPYVyQCj/eAIllgI6XlSp7P4PtWI
+         zqmLqLmP/6FLevRnVkh+b5va+iiMvEwX2QBoeKRCJh6SonB2FGiEcUWloMrvncXcn9xu
+         L5nQ==
+X-Gm-Message-State: AOJu0Yzj0xkC4Gn0X16A5ZXtNWnOFu++6TtXaqGyZ1o/uBd5qlW7Jhzy
+	0EqhigCeiCyaztrt5Sj0El8JQmQmjj8XMdnpuqZrBwZYN54ZpoQNuESEFxyExA==
+X-Gm-Gg: ASbGncu0TeERaDT1ItsPBIEZdZP2cw0jlvUhz57PJEbSkVOaJOAdb/5NzsWptml30W3
+	ggXNv48IpEgntu4OKDxO31Kt/oVynbTxGTxqCnmjIfaa5MCwOSOW59QM25CyAIvGGcH2mifTZcu
+	35ui8CbSF+EcFAIpijTAgGqVJJvDbdQFQVzcfJ9EivOIHJEDLvSCRQanEw4lgfmQlBkr2kQVwb6
+	0Hug2FDyZ6CTQ0CFqYRtGl3tDK/4zKNPuHiLZzXIb22Sqhjlr1U4D9EII3yKVErpv2ICgwmP4dm
+	3s975hidzJKSdSBMSrGL7e6qESgtDUMh1DkoaIWcnUOOweqQThrmrARMIaNfqObMEJzAgSA5EAu
+	Jp0bZ8VhQ2XMUA7piQ+2nthRV
+X-Google-Smtp-Source: AGHT+IHuS1nL2P//sJJC0fBa2vNYfsxP1MtM2LcOCvaf4K9Jo6sx9SmBRECW48ZlfXL8V9ET+Wo7wA==
+X-Received: by 2002:a05:6a00:4b55:b0:76b:fab4:6456 with SMTP id d2e1a72fcca58-7702fadbb34mr16270092b3a.21.1756150760590;
+        Mon, 25 Aug 2025 12:39:20 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:73::])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-771f045b687sm1408383b3a.109.2025.08.25.12.39.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 12:32:32 -0700 (PDT)
-Message-ID: <139bf7d77750fdf04d26e1a77c0955466c9a4827.camel@gmail.com>
-Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Add socket filter attach test
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: KaFai Wan <kafai.wan@linux.dev>, puranjay@kernel.org, 
-	xukuohai@huaweicloud.com, ast@kernel.org, daniel@iogearbox.net, 
-	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, 	yonghong.song@linux.dev, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, 	jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, mrpre@163.com, 	linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, 	linux-kselftest@vger.kernel.org
-Date: Mon, 25 Aug 2025 12:32:29 -0700
-In-Reply-To: <CANk7y0gVNwX70ur0KkZKNkSDq7RH1xs5=dOHx_UCOErbwc7zhA@mail.gmail.com>
-References: <20250813152958.3107403-1-kafai.wan@linux.dev>
-	 <20250813152958.3107403-3-kafai.wan@linux.dev>
-	 <eb6f9ba4acccc7685596a8f1b282667a43d51ca8.camel@gmail.com>
-	 <CANk7y0hQWOL3OW8Ok4e-kp7Brn5Zq6H5+EfS=mVtoVd+AUxZmA@mail.gmail.com>
-	 <35c18502a4870d8a833c1c9af20b85ca3f8a0ff6.camel@gmail.com>
-	 <CANk7y0gVNwX70ur0KkZKNkSDq7RH1xs5=dOHx_UCOErbwc7zhA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        Mon, 25 Aug 2025 12:39:19 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kuba@kernel.org,
+	martin.lau@kernel.org,
+	mohsin.bashr@gmail.com,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	maciej.fijalkowski@intel.com,
+	kernel-team@meta.com
+Subject: [RFC bpf-next v1 0/7] Add kfunc bpf_xdp_pull_data
+Date: Mon, 25 Aug 2025 12:39:11 -0700
+Message-ID: <20250825193918.3445531-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2025-08-25 at 21:27 +0200, Puranjay Mohan wrote:
+Hi all,
 
-[...]
+This patchset introduces a new kfunc bpf_xdp_pull_data() to allow
+pulling nonlinear xdp data. This may be useful when a driver places
+headers in fragments. When an xdp program would like to keep parsing
+packet headers using direct packet access, it can call
+bpf_xdp_pull_data() to make the header available in the linear data
+area. The kfunc can also be used to decapsulate the header in the
+nonlinear data, as currently there is no easy way to do this.
 
-> Hi Eduard,
->=20
-> You were right, I have verified that the program is hitting the 0xfff
-> boundary while doing the call to bpf_skb_load_helper_32
-> While jiting this call, emit_a32_mov_i(tmp[1], func, ctx); is called,
-> where this issue it triggered.
->=20
-> The offset in imm_offset() is calculated as:
-> ctx->offsets[ctx->prog->len - 1] * 4 + ctx->prologue_bytes +
-> ctx->epilogue_bytes + imm_i * 4
->=20
-> For this program, ctx->offsets[ctx->prog->len - 1] * 4 itself is
-> 0x1400 which is above 0xfff boundary.
-> So, this is not a bug and expected behaviour with the current
-> implementation of the JIT.
->=20
-> For now, we can merge this and later I will try to improve the JIT so
-> it works for bigger programs.
+This patchset also tries to fix an issue in the mlx5e driver. The driver
+curretly assumes the packet layout to be unchanged after xdp program
+runs and may generate packet with corrupted data or trigger kernel warning
+if xdp programs calls layout-changing kfunc such as bpf_xdp_adjust_tail(),
+bpf_xdp_adjust_head() or bpf_xdp_pull_data() introduced in this set.
 
-Hi Puranjay,
+Tested with the added bpf selftest using bpf test_run and also on
+mlx5e with the tools/testing/selftests/drivers/net/xdp.py. mlx5e with
+striding RQ will produce xdp_buff with empty linear data.
+xdp.test_xdp_native_pass_mb would fail to parse the header before this
+patchset.
 
-Thank you for checking this!
-What do you think about this test case, do we need it in the suite?
+Grateful for any feedback (especially the driver part).
 
-Best regards,
-Eduard
+Thanks!
+Amery
+
+Amery Hung (7):
+  net/mlx5e: Fix generating skb from nonlinear xdp_buff
+  bpf: Allow bpf_xdp_shrink_data to shrink a frag from head and tail
+  bpf: Support pulling non-linear xdp data
+  bpf: Clear packet pointers after changing packet data in kfuncs
+  bpf: Support specifying linear xdp packet data size in test_run
+  selftests/bpf: Test bpf_xdp_pull_data
+  selftests: drv-net: Pull data before parsing headers
+
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 59 ++++++++----
+ include/net/xdp_sock_drv.h                    | 21 +++-
+ kernel/bpf/verifier.c                         | 13 +++
+ net/bpf/test_run.c                            |  9 +-
+ net/core/filter.c                             | 81 +++++++++++++---
+ .../bpf/prog_tests/xdp_context_test_run.c     |  4 +-
+ .../selftests/bpf/prog_tests/xdp_pull_data.c  | 96 +++++++++++++++++++
+ .../selftests/bpf/progs/test_xdp_pull_data.c  | 36 +++++++
+ .../selftests/net/lib/xdp_native.bpf.c        | 90 ++++++++++++++---
+ 9 files changed, 356 insertions(+), 53 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_pull_data.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_pull_data.c
+
+-- 
+2.47.3
+
 
