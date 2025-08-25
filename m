@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-66449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14F45B34C2E
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 22:42:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE67DB34C30
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 22:42:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 866BD3A6F16
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 20:42:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E1D57B5C79
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 20:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D998E28F935;
-	Mon, 25 Aug 2025 20:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2FC299AAB;
+	Mon, 25 Aug 2025 20:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BGN0I/DL"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pHaTT4au"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0602E28688E
-	for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 20:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C42D28B7CC
+	for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 20:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756154524; cv=none; b=CswZ3d30Ejw/0Rur/SXFnSeN0y1oMqpHlzD2E0cnZUhnSUG/Ltngq70kZJ+dhL0dC+OMyDJpUtYh+2knaHZUSY8sua221DM2K/Eiokv/XBFB3O+GEqep5T/s5xXS8RfrDl2L6zTv06Ukbem24C0+39b78Wd9VVLQGIc1eI/XZbA=
+	t=1756154525; cv=none; b=mwHppvo658IKYpFkCgTdQ2wVlPdsdOePfa0vOV/hApa95Np4JnQz+QJsrcLL5/y0S/3T3LCCUf6IbjL3nlq/EYdHZsgnmKbY5dnee9sZxu6CsKHt4i+cdoK4MxdR8kdka6jNGC9p+m1JqbGqz4oX06pBYnrVYi7CUjj3yDPpLes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756154524; c=relaxed/simple;
-	bh=t2uXTk1pLS4Luy02/pc3SHMEGWcheHdWampW0KCSalc=;
+	s=arc-20240116; t=1756154525; c=relaxed/simple;
+	bh=J3njKZlv/So4BVesWI9Zm874Ux0hO6FiKyP4hZpJSPQ=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=LiYxQILFm3opWR17nRACQbkpUqSfGzHjug7ojwmVCi/d26P6EsqpNtNPKdVJ4o1kl37wQfdX3+aEiitUJ5ZP5/q3LFepmApjZGGxIBRjjOluIddqrkWAgX8JmMmkKUQOMdfpZv9IWhEE3n8YYifehTT9Yygla9wthq1a04AUt1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BGN0I/DL; arc=none smtp.client-ip=209.85.216.73
+	 To:Cc:Content-Type; b=Mnew5jjcpXnWzBsndHYKQpnqVLo76MmpyghPwIjKWmvc3mHm2/jVAs0OfTK7GxKuvAaCy27vZpYijV5IayB4hRcBY1p7vGGhymWgUA1X2+BPHRXgZY+3flyhnh0nhr1qHxp+KhCM8ZvE+8XMeX6b9HErelUAHXLFXxudUJOMlGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pHaTT4au; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-3235e45b815so5539864a91.0
-        for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 13:42:02 -0700 (PDT)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-2463648439eso50536545ad.1
+        for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 13:42:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756154522; x=1756759322; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1756154524; x=1756759324; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8s/Fp0h6Ws4XXS2Nev/K+fGf/GQcJRH3EpbZihsvQOw=;
-        b=BGN0I/DLO7PY0DX3toGVM65UG8HD8QCtGV2WlVrU1vfIDpPa0TwbUKVD+Z4xwRwynZ
-         CQUxGouwbIAaLdRrAXpnJb0SuU8FShPt/rjtRxuBVeWo8Atp4+238ElWU9vLqMD2DflP
-         eppkjaQ+4gFN9KoQvMZGPm3Xr28Miw6iATjJElqrO8TPXXuNKiHZ3PW7uV3lKz/rXa1B
-         NniQ9f/Vq6+WkMfoL6asxlblM3SwhacAREPwVloL63KQED+pq0Kz/KMEGTEFYgKpcAct
-         blKob2+vDC26EqQ+PdOqQl3HPOTk/aQ1Y643I384keHqAv2AustvVWmtA3kWJhtFG4br
-         3r3w==
+        bh=5AaaCWRjbVKrGh3SwvTm7gVupDxknnn0Hxflr0DZ2h4=;
+        b=pHaTT4auGNucNYZg4l5kAYxtd67aYt5JMt3+UUffMIlMXdzkoRhHY1QhiB5UdBgPo+
+         sEyZyaGoNFJ9R70v8cDLy4SCKf0Be7xRLNgh+zCofL2ClZyhR4ETKXQJGJvRzVzKivJw
+         57ja57OdAdXK+/4Ts+2rlLgA8e3UeGilXc/a1j9FE71JvxEwlnjxj3dO15SloefU5IHF
+         rX8L/NJ1NsEhd6wMkmJM8wn6RXkrRwMBUK9Zbmc5UXNBI2elTuSY99HY53JNOOBU7UeN
+         6/OK3ecNEWYLCQTCe+RRsqhu/bzYcGwoJBtaR6IvENn77CeOKOvQn7oiPWD88K3P9F+0
+         udjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756154522; x=1756759322;
+        d=1e100.net; s=20230601; t=1756154524; x=1756759324;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8s/Fp0h6Ws4XXS2Nev/K+fGf/GQcJRH3EpbZihsvQOw=;
-        b=dnUAjcv2WUq1Bk9kaz00f9xwsed5xcP5DPFL4eXUkvmkJtaa4SEZjKhDUYuq5nCwHP
-         vOhdPJgysSzV6i2H9EDiQGdQig1Oqcr7m9lgZeCf65GmB4Jjh6A2jERX9rvUUeIZadA8
-         01ayBgjFlRjbecKSIoAsghqDqpc88DOo6sbs/+nvDCdoprBw/qUpFjgGmSsZqG+5Ogk+
-         r6JI87lua1p3L9CBQSPDdMATRzS50TsKOtTnPtV/cp1nxu4zNx1wVWmuNm2UZZOsMQAX
-         ihyWK4KfC0o51WvGCVxst2wA8pgVbkJM4lQy7zpAV8pYwGClX+/lJwSNNRrL9HumqgOv
-         fnYA==
-X-Forwarded-Encrypted: i=1; AJvYcCXHJksgY+ek94AjbRo0DOF+UeUMlXVE47WTCmojp4/zMY1HttERpyO+iuJ0Qs0fJcshZSU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzo3bRAPSkAowB1e1ceHJIep9v7Ta0BF/eydGAUnFayJKClVyjR
-	fq34PuqBYgU1AT96Zrh62kpa3/2ZbPWOVB2D1az8XG9+FlzjC3LtiHnZUBCH1g9yHEHDqXjz8Q+
-	3ywt4Tg==
-X-Google-Smtp-Source: AGHT+IGKPOJ1kPotMBKzomItY0iv6NMql78VPepoyC7NHrIwNmN5RQa9Lb5rcEzUheY9DbdxBCgLEDSouHM=
-X-Received: from pjzz12.prod.google.com ([2002:a17:90b:58ec:b0:324:eb0d:70e8])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:3905:b0:323:7e80:881a
- with SMTP id 98e67ed59e1d1-32518b82606mr19378190a91.37.1756154522239; Mon, 25
- Aug 2025 13:42:02 -0700 (PDT)
-Date: Mon, 25 Aug 2025 20:41:24 +0000
+        bh=5AaaCWRjbVKrGh3SwvTm7gVupDxknnn0Hxflr0DZ2h4=;
+        b=qR6pqXZ3z7KL1w9RBhA4djb/uAIKMA3ZoqTYSwo5quUlvqhGBLX+2+wbgcyiIRpJam
+         5kRWUEBAG4JMoNaEiWkPJjeZK+V9XiZ6sP9n3DcpoTXA3582EzvvuuUE3IO5+NT/PsvJ
+         oDqm1ZUe+GhJur+AUMsYDZiEZ/eLwmHS14XOrCD6dz1qCQthWaIBu4NCgTqBF0RBtITR
+         +WtwEXolGM/LZDw7yzQUrw/Zt7Lc9o+rztZ9fuUeHtsQvF0ZU+xXnNf4hDKjztjd+dSO
+         uineCll9xGhxIjOSkmOmvW8F3HIhVy1xvgTSdf1GhhuVwophf0SncQ6x//HB4dr6uuj/
+         AJ9A==
+X-Forwarded-Encrypted: i=1; AJvYcCVrd3aI7AJYVAvnIpjsJ1ejUo7xCw9O4DH0M4YcA8zSREaph9EdDgxZUwmScEP8IO6qDg4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4Jk/fNekDQoG27kDI/1SHvvhcNLvfvBwIEYJmFVIF9MO8nWnn
+	2wUT4aFQzXn121W/W4qmcj+idFmvhcLYvxP9gMoM/vuUZ78h5GuR0p2+K469dz3bmCZbvlNMlU9
+	UiS4YXQ==
+X-Google-Smtp-Source: AGHT+IGW6xrxq+kjqgyWIG0bFyarROscv+BxqMHvkCBiHMbNLz5LFNxrZBHx+/nInqlV6plTyCmb2B4rtyM=
+X-Received: from pjx15.prod.google.com ([2002:a17:90b:568f:b0:327:41f6:db15])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:db0c:b0:240:a430:91d
+ with SMTP id d9443c01a7336-2462edee7b2mr150730315ad.10.1756154523661; Mon, 25
+ Aug 2025 13:42:03 -0700 (PDT)
+Date: Mon, 25 Aug 2025 20:41:25 +0000
 In-Reply-To: <20250825204158.2414402-1-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250825204158.2414402-1-kuniyu@google.com>
 X-Mailer: git-send-email 2.51.0.261.g7ce5a0a67e-goog
-Message-ID: <20250825204158.2414402-2-kuniyu@google.com>
-Subject: [PATCH v2 bpf-next/net 1/8] tcp: Save lock_sock() for memcg in inet_csk_accept().
+Message-ID: <20250825204158.2414402-3-kuniyu@google.com>
+Subject: [PATCH v2 bpf-next/net 2/8] bpf: Add a bpf hook in __inet_accept().
 From: Kuniyuki Iwashima <kuniyu@google.com>
 To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
@@ -89,102 +89,159 @@ Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.
 	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-If memcg is enabled, accept() acquires lock_sock() twice for each new
-TCP/MPTCP socket in inet_csk_accept() and __inet_accept().
+We will store a flag in sk->sk_memcg by bpf_setsockopt().
 
-Let's move memcg operations from inet_csk_accept() to __inet_accept().
+For a new child socket, memcg is not allocated until accept(),
+and the child's sk_memcg is not always the parent's one.
 
-This makes easier to add a BPF hook that covers sk_prot.memory_allocated
-users (TCP, MPTCP, SCTP) in a single place.
+For details, see commit e876ecc67db8 ("cgroup: memcg: net: do not
+associate sock with unrelated cgroup") and commit d752a4986532
+("net: memcg: late association of sock to memcg").
 
-Two notes:
+Let's add a new hook for BPF_PROG_TYPE_CGROUP_SOCK in
+__inet_accept().
 
-1)
-SCTP somehow allocates a new socket by sk_alloc() in sk->sk_prot->accept()
-and clones fields manually, instead of using sk_clone_lock().
-
-For SCTP, mem_cgroup_sk_alloc() has been called before __inet_accept(),
-so I added the protocol tests in __inet_accept(), but this can be removed
-once SCTP uses sk_clone_lock().
-
-2)
-The single if block is separated into two because we will add a new bpf
-hook between the blocks, where a bpf prog can add a flag in sk->sk_memcg.
+This hook does not fail by not supporting bpf_set_retval().
 
 Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
 ---
- net/ipv4/af_inet.c              | 22 ++++++++++++++++++++++
- net/ipv4/inet_connection_sock.c | 25 -------------------------
- 2 files changed, 22 insertions(+), 25 deletions(-)
+v2: Define BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT() when CONFIG_CGROUP_BPF=n
+---
+ include/linux/bpf-cgroup-defs.h | 1 +
+ include/linux/bpf-cgroup.h      | 5 +++++
+ include/uapi/linux/bpf.h        | 1 +
+ kernel/bpf/cgroup.c             | 2 ++
+ kernel/bpf/syscall.c            | 3 +++
+ net/ipv4/af_inet.c              | 2 ++
+ tools/include/uapi/linux/bpf.h  | 1 +
+ 7 files changed, 15 insertions(+)
 
+diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
+index c9e6b26abab6..c9053fdbda5e 100644
+--- a/include/linux/bpf-cgroup-defs.h
++++ b/include/linux/bpf-cgroup-defs.h
+@@ -47,6 +47,7 @@ enum cgroup_bpf_attach_type {
+ 	CGROUP_INET6_GETSOCKNAME,
+ 	CGROUP_UNIX_GETSOCKNAME,
+ 	CGROUP_INET_SOCK_RELEASE,
++	CGROUP_INET_SOCK_ACCEPT,
+ 	CGROUP_LSM_START,
+ 	CGROUP_LSM_END = CGROUP_LSM_START + CGROUP_LSM_NUM - 1,
+ 	MAX_CGROUP_BPF_ATTACH_TYPE
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index aedf573bdb42..88b8ab8621e2 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -67,6 +67,7 @@ to_cgroup_bpf_attach_type(enum bpf_attach_type attach_type)
+ 	CGROUP_ATYPE(CGROUP_INET6_GETSOCKNAME);
+ 	CGROUP_ATYPE(CGROUP_UNIX_GETSOCKNAME);
+ 	CGROUP_ATYPE(CGROUP_INET_SOCK_RELEASE);
++	CGROUP_ATYPE(CGROUP_INET_SOCK_ACCEPT);
+ 	default:
+ 		return CGROUP_BPF_ATTACH_TYPE_INVALID;
+ 	}
+@@ -225,6 +226,9 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK(sk)				       \
+ 	BPF_CGROUP_RUN_SK_PROG(sk, CGROUP_INET_SOCK_CREATE)
+ 
++#define BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT(sk)			       \
++	BPF_CGROUP_RUN_SK_PROG(sk, CGROUP_INET_SOCK_ACCEPT)
++
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK_RELEASE(sk)			       \
+ 	BPF_CGROUP_RUN_SK_PROG(sk, CGROUP_INET_SOCK_RELEASE)
+ 
+@@ -482,6 +486,7 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
+ #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk,skb) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET_EGRESS(sk,skb) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK(sk) ({ 0; })
++#define BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT(sk) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK_RELEASE(sk) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, uaddrlen, atype, flags) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk) ({ 0; })
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 233de8677382..80df246d4741 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1133,6 +1133,7 @@ enum bpf_attach_type {
+ 	BPF_NETKIT_PEER,
+ 	BPF_TRACE_KPROBE_SESSION,
+ 	BPF_TRACE_UPROBE_SESSION,
++	BPF_CGROUP_INET_SOCK_ACCEPT,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
+ 
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 180b630279b9..dee9ae0c2a9a 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -2724,6 +2724,7 @@ cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		switch (prog->expected_attach_type) {
+ 		case BPF_CGROUP_INET_INGRESS:
+ 		case BPF_CGROUP_INET_EGRESS:
++		case BPF_CGROUP_INET_SOCK_ACCEPT:
+ 		case BPF_CGROUP_SOCK_OPS:
+ 		case BPF_CGROUP_UDP4_RECVMSG:
+ 		case BPF_CGROUP_UDP6_RECVMSG:
+@@ -2742,6 +2743,7 @@ cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		switch (prog->expected_attach_type) {
+ 		case BPF_CGROUP_INET_INGRESS:
+ 		case BPF_CGROUP_INET_EGRESS:
++		case BPF_CGROUP_INET_SOCK_ACCEPT:
+ 		case BPF_CGROUP_SOCK_OPS:
+ 		case BPF_CGROUP_UDP4_RECVMSG:
+ 		case BPF_CGROUP_UDP6_RECVMSG:
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0fbfa8532c39..23a801da230c 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2640,6 +2640,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+ 	case BPF_PROG_TYPE_CGROUP_SOCK:
+ 		switch (expected_attach_type) {
+ 		case BPF_CGROUP_INET_SOCK_CREATE:
++		case BPF_CGROUP_INET_SOCK_ACCEPT:
+ 		case BPF_CGROUP_INET_SOCK_RELEASE:
+ 		case BPF_CGROUP_INET4_POST_BIND:
+ 		case BPF_CGROUP_INET6_POST_BIND:
+@@ -4194,6 +4195,7 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+ 	case BPF_CGROUP_INET_EGRESS:
+ 		return BPF_PROG_TYPE_CGROUP_SKB;
+ 	case BPF_CGROUP_INET_SOCK_CREATE:
++	case BPF_CGROUP_INET_SOCK_ACCEPT:
+ 	case BPF_CGROUP_INET_SOCK_RELEASE:
+ 	case BPF_CGROUP_INET4_POST_BIND:
+ 	case BPF_CGROUP_INET6_POST_BIND:
+@@ -4515,6 +4517,7 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 	case BPF_CGROUP_INET_INGRESS:
+ 	case BPF_CGROUP_INET_EGRESS:
+ 	case BPF_CGROUP_INET_SOCK_CREATE:
++	case BPF_CGROUP_INET_SOCK_ACCEPT:
+ 	case BPF_CGROUP_INET_SOCK_RELEASE:
+ 	case BPF_CGROUP_INET4_BIND:
+ 	case BPF_CGROUP_INET6_BIND:
 diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 76e38092cd8a..ae83ecda3983 100644
+index ae83ecda3983..ab613abdfaa4 100644
 --- a/net/ipv4/af_inet.c
 +++ b/net/ipv4/af_inet.c
-@@ -753,6 +753,28 @@ EXPORT_SYMBOL(inet_stream_connect);
+@@ -763,6 +763,8 @@ void __inet_accept(struct socket *sock, struct socket *newsock, struct sock *new
+ 		kmem_cache_charge(newsk, gfp);
+ 	}
  
- void __inet_accept(struct socket *sock, struct socket *newsock, struct sock *newsk)
- {
-+	gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
++	BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT(newsk);
 +
-+	/* TODO: use sk_clone_lock() in SCTP and remove protocol checks */
-+	if (mem_cgroup_sockets_enabled &&
-+	    (!IS_ENABLED(CONFIG_IP_SCTP) ||
-+	     sk_is_tcp(newsk) || sk_is_mptcp(newsk))) {
-+		mem_cgroup_sk_alloc(newsk);
-+		kmem_cache_charge(newsk, gfp);
-+	}
-+
-+	if (mem_cgroup_sk_enabled(newsk)) {
-+		int amt;
-+
-+		/* The socket has not been accepted yet, no need
-+		 * to look at newsk->sk_wmem_queued.
-+		 */
-+		amt = sk_mem_pages(newsk->sk_forward_alloc +
-+				   atomic_read(&newsk->sk_rmem_alloc));
-+		if (amt)
-+			mem_cgroup_sk_charge(newsk, amt, gfp);
-+	}
-+
- 	sock_rps_record_flow(newsk);
- 	WARN_ON(!((1 << newsk->sk_state) &
- 		  (TCPF_ESTABLISHED | TCPF_SYN_RECV |
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index 0ef1eacd539d..ed10b959a906 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -708,31 +708,6 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
+ 	if (mem_cgroup_sk_enabled(newsk)) {
+ 		int amt;
  
- 	release_sock(sk);
- 
--	if (mem_cgroup_sockets_enabled) {
--		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
--		int amt = 0;
--
--		/* atomically get the memory usage, set and charge the
--		 * newsk->sk_memcg.
--		 */
--		lock_sock(newsk);
--
--		mem_cgroup_sk_alloc(newsk);
--		if (mem_cgroup_from_sk(newsk)) {
--			/* The socket has not been accepted yet, no need
--			 * to look at newsk->sk_wmem_queued.
--			 */
--			amt = sk_mem_pages(newsk->sk_forward_alloc +
--					   atomic_read(&newsk->sk_rmem_alloc));
--		}
--
--		if (amt)
--			mem_cgroup_sk_charge(newsk, amt, gfp);
--		kmem_cache_charge(newsk, gfp);
--
--		release_sock(newsk);
--	}
--
- 	if (req)
- 		reqsk_put(req);
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 233de8677382..80df246d4741 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1133,6 +1133,7 @@ enum bpf_attach_type {
+ 	BPF_NETKIT_PEER,
+ 	BPF_TRACE_KPROBE_SESSION,
+ 	BPF_TRACE_UPROBE_SESSION,
++	BPF_CGROUP_INET_SOCK_ACCEPT,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
  
 -- 
 2.51.0.261.g7ce5a0a67e-goog
