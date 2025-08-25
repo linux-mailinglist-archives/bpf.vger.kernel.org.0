@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-66422-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 481D9B349C2
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2142CB349C1
 	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 20:08:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7DD71B2520A
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 18:08:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 905243B30FC
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 18:08:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B0B30DED4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF3030DEBC;
 	Mon, 25 Aug 2025 18:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QJ3pXdrA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DAFFkQgS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B64309DAA;
-	Mon, 25 Aug 2025 18:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16EE6309DA8;
+	Mon, 25 Aug 2025 18:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756145268; cv=none; b=RiG91+9nYiWhJ9XhGkttx5QnzW7ZjmbY3mEOqf37Xtm13Rdvx6Sae4G7Dqh6jwvZ40XPvWu9G/jq2HhZCPVq02WBdTqIlan+2V0GnJE4h9SI6MR3vqZcjfbXW13fJ3KTD4UtKof08fvnWcWtLisS9SdfOicwJqVFGDiNKv28Xsc=
+	t=1756145268; cv=none; b=fiLDbHSmgDcM/7AOcKWTClf+joVZKI7bjBuPzdTJtrn7rROMPyP36ipiIpWMberx15bCEP8lXB1zsscGEI/33ZEu/viGCi3x0en7+SRAoN2/9kYunVTHg0g5aKMNWUTc+u1oGntWPmKFR1ybTLHqtT9/72x1PFClqKh2MZPo1Bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756145268; c=relaxed/simple;
-	bh=CaWPYtnuxMn+9lxdbGHUKRlw7zTyxsoiVJ8Bkz7tB84=;
+	bh=cicgIACeNunPciW2Nm3VMlzXBeZ+cA/Dj1YFg0muSek=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=DmmDr7jBselrJHbR+1soRrjw4+6S38ktJALsYsoSvgBjvmRwstbmQ8OSUwnMUnYCUwV6VeVoWECJboYj4JIfUzzEhHV526e8aHlwx48Z4OT2HSHH8SkuCsstg5/N2RfoOxXCZrBt/Q7T5jydo+tWbUKJ80hYpufNUnmphJB0wmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QJ3pXdrA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A727BC4CEF1;
+	 Content-Type; b=LwvPhpeMPpC+e5U+fi2t352LNFFiidImcumfc2uokfIO6KroZVhgFMVIgVdMTyZyll2p3ufzm7vv2fjD1J+a95KEAnbN2o0pUnBGRYdMQI4ZLulVAnkjZpu/pAttP32yZ9cTgabSx+qlWkZGsXuR6dgJFQNQd1DdcV7KA7bdzRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DAFFkQgS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE0B2C116C6;
 	Mon, 25 Aug 2025 18:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756145267;
-	bh=CaWPYtnuxMn+9lxdbGHUKRlw7zTyxsoiVJ8Bkz7tB84=;
+	bh=cicgIACeNunPciW2Nm3VMlzXBeZ+cA/Dj1YFg0muSek=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=QJ3pXdrA1g0P26dYpdpCkGOBj7R/aw8HHUZZzaLSsuaK6vPKLMx6UAzNx2Q0PX22R
-	 Kmm+3gDzn8nsmhERG5zgiTUioqYlGtIzfvmEiLEuO062s+JtcDWq8FyChpmbZa7tjs
-	 HXDKSKDhuY9xXa1tmoJiTjQNw7tup8FiiM/wYTcYuS1UgtHzE0jPN7SQ1HnOxzUEiX
-	 rLgjWxtYCV49Fx4zeH5Ul6/J6TIq+Ew/LCDn/wElFw2bJpPv5kJ2fSqqbXknbd/mBK
-	 /EiyKoyDLbfliSeR2/kZfLeb80vW5uRsGSI3TH8zskUVmAS388qiEDyAgB79JuyTwm
-	 3y1L6t82U3IOw==
+	b=DAFFkQgSB8h5y7DVQWQBEPxzye++5BWN0ARpgWdPXVyualqkGxAf9z2QfcnNGZ5t+
+	 MFqhbWyM1DLwAEY08scuxtwYyqeL2d6BF/6uth8BU1DIJi5mpp38+SgsT25cK6eDvW
+	 0VOwNGybNRQnkgX0K0/fT8Ci7Fdafg30je8Wj/npU33/QXObsNscAt83mZhR/HZdNG
+	 frbcjVqu8OK7Micw1tqzoaYXLvzQfCDqJRhgiP/JclPEecv7TmSCbLrLFb6x4y0tiA
+	 5c2WmzFTsiXpyIEQGHhUzSxNxF9n0UumMQ9VffOf0JuQ2u2W7Cvw7HXU5NqXFKWrI8
+	 Z8uTHw08yLvkQ==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1uqbbt-00000002n3A-2xbJ;
+	id 1uqbbt-00000002n3e-3dRY;
 	Mon, 25 Aug 2025 14:08:01 -0400
-Message-ID: <20250825180801.557674656@kernel.org>
+Message-ID: <20250825180801.727927527@kernel.org>
 User-Agent: quilt/0.68
-Date: Mon, 25 Aug 2025 14:06:39 -0400
+Date: Mon, 25 Aug 2025 14:06:40 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -72,7 +72,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Jens Axboe <axboe@kernel.dk>,
  Florian Weimer <fweimer@redhat.com>,
  Sam James <sam@gentoo.org>
-Subject: [PATCH v15 1/8] unwind deferred: Add unwind_user_get_cookie() API
+Subject: [PATCH v15 2/8] perf: Support deferred user callchains
 References: <20250825180638.877627656@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -82,74 +82,441 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-From: Steven Rostedt <rostedt@goodmis.org>
+From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Add the function unwind_user_get_cookie() API that allows a subsystem to
-retrieve the current context cookie. This can be used by perf to attach a
-cookie to its task deferred unwinding code that doesn't use the deferred
-unwind logic.
+If the user fault unwind is available (the one that will be used for
+sframes), have perf be able to utilize it. Currently all user stack
+traces are done at the request site. This mostly happens in interrupt or
+NMI context where user space is only accessible if it is currently present
+in memory. It is possible that the user stack was swapped out and is not
+present, but mostly the use of sframes will require faulting in user pages
+which will not be possible from interrupt context. Instead, add a frame
+work that will delay the reading of the user space stack until the task
+goes back to user space where faulting in pages is possible. This is also
+advantageous as the user space stack doesn't change while in the kernel,
+and this will also remove duplicate entries of user space stacks for a
+long running system call being profiled.
 
+A new perf context is created called PERF_CONTEXT_USER_DEFERRED. It is
+added to the kernel callchain, usually when an interrupt or NMI is
+triggered (but can be added to any callchain). When a deferred unwind is
+required, a new task_work is triggered (pending_unwind_work) on the task.
+The callchain that is done immediately for the kernel is appended with the
+PERF_CONTEXT_USER_DEFERRED.
+
+When the task exits to user space and the task_work handler is triggered,
+it will execute the user stack unwinding and record the user stack trace.
+This user stack trace will go into a new perf type called
+PERF_RECORD_CALLCHAIN_DEFERRED.  The perf user space will need to attach
+this stack trace to each of the previous kernel callchains for that task
+with the PERF_CONTEXT_USER_DEFERRED context in them.
+
+As the struct unwind_stacktrace has its entries as "unsigned long", and it
+is used to copy directly into struct perf_callchain_entry which its "ip"
+field is defined as u64, currently only deferred callchains are allowed
+for 64bit architectures. This could change in the future if there is a
+demand for it for 32 bit architectures.
+
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Co-developed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/unwind_deferred.h |  5 +++++
- kernel/unwind/deferred.c        | 21 +++++++++++++++++++++
- 2 files changed, 26 insertions(+)
+Changes since v14: https://lore.kernel.org/20250718164324.087851036@kernel.org
 
-diff --git a/include/linux/unwind_deferred.h b/include/linux/unwind_deferred.h
-index 26122d00708a..ce507495972c 100644
---- a/include/linux/unwind_deferred.h
-+++ b/include/linux/unwind_deferred.h
-@@ -41,6 +41,8 @@ void unwind_deferred_cancel(struct unwind_work *work);
+- Added "cookie" to struct perf_callchain_deferred_event to allow this
+  commit to work with the parsing of the user space perf changes.
+
+ include/linux/perf_event.h            |   7 +-
+ include/uapi/linux/perf_event.h       |  20 +++-
+ kernel/bpf/stackmap.c                 |   4 +-
+ kernel/events/callchain.c             |  11 +-
+ kernel/events/core.c                  | 156 +++++++++++++++++++++++++-
+ tools/include/uapi/linux/perf_event.h |  20 +++-
+ 6 files changed, 210 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index fd1d91017b99..1527afa952f7 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -53,6 +53,7 @@
+ #include <linux/security.h>
+ #include <linux/static_call.h>
+ #include <linux/lockdep.h>
++#include <linux/unwind_deferred.h>
  
- void unwind_deferred_task_exit(struct task_struct *task);
+ #include <asm/local.h>
  
-+u64 unwind_user_get_cookie(void);
+@@ -880,6 +881,10 @@ struct perf_event {
+ 	struct callback_head		pending_task;
+ 	unsigned int			pending_work;
+ 
++	unsigned int			pending_unwind_callback;
++	struct callback_head		pending_unwind_work;
++	struct rcuwait			pending_unwind_wait;
 +
- static __always_inline void unwind_reset_info(void)
+ 	atomic_t			event_limit;
+ 
+ 	/* address range filters */
+@@ -1720,7 +1725,7 @@ extern void perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct p
+ extern void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs);
+ extern struct perf_callchain_entry *
+ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
+-		   u32 max_stack, bool crosstask, bool add_mark);
++		   u32 max_stack, bool crosstask, bool add_mark, bool defer_user);
+ extern int get_callchain_buffers(int max_stack);
+ extern void put_callchain_buffers(void);
+ extern struct perf_callchain_entry *get_callchain_entry(int *rctx);
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index 78a362b80027..20b8f890113b 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -463,7 +463,8 @@ struct perf_event_attr {
+ 				inherit_thread :  1, /* children only inherit if cloned with CLONE_THREAD */
+ 				remove_on_exec :  1, /* event is removed from task on exec */
+ 				sigtrap        :  1, /* send synchronous SIGTRAP on event */
+-				__reserved_1   : 26;
++				defer_callchain:  1, /* generate PERF_RECORD_CALLCHAIN_DEFERRED records */
++				__reserved_1   : 25;
+ 
+ 	union {
+ 		__u32		wakeup_events;	  /* wake up every n events */
+@@ -1239,6 +1240,22 @@ enum perf_event_type {
+ 	 */
+ 	PERF_RECORD_AUX_OUTPUT_HW_ID		= 21,
+ 
++	/*
++	 * This user callchain capture was deferred until shortly before
++	 * returning to user space.  Previous samples would have kernel
++	 * callchains only and they need to be stitched with this to make full
++	 * callchains.
++	 *
++	 * struct {
++	 *	struct perf_event_header	header;
++	 *	u64				cookie;
++	 *	u64				nr;
++	 *	u64				ips[nr];
++	 *	struct sample_id		sample_id;
++	 * };
++	 */
++	PERF_RECORD_CALLCHAIN_DEFERRED		= 22,
++
+ 	PERF_RECORD_MAX,			/* non-ABI */
+ };
+ 
+@@ -1269,6 +1286,7 @@ enum perf_callchain_context {
+ 	PERF_CONTEXT_HV				= (__u64)-32,
+ 	PERF_CONTEXT_KERNEL			= (__u64)-128,
+ 	PERF_CONTEXT_USER			= (__u64)-512,
++	PERF_CONTEXT_USER_DEFERRED		= (__u64)-640,
+ 
+ 	PERF_CONTEXT_GUEST			= (__u64)-2048,
+ 	PERF_CONTEXT_GUEST_KERNEL		= (__u64)-2176,
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index ec3a57a5fba1..339f7cbbcf36 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -315,7 +315,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+ 		max_depth = sysctl_perf_event_max_stack;
+ 
+ 	trace = get_perf_callchain(regs, kernel, user, max_depth,
+-				   false, false);
++				   false, false, false);
+ 
+ 	if (unlikely(!trace))
+ 		/* couldn't fetch the stack trace */
+@@ -452,7 +452,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 		trace = get_callchain_entry_for_task(task, max_depth);
+ 	else
+ 		trace = get_perf_callchain(regs, kernel, user, max_depth,
+-					   crosstask, false);
++					   crosstask, false, false);
+ 
+ 	if (unlikely(!trace) || trace->nr < skip) {
+ 		if (may_fault)
+diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
+index 808c0d7a31fa..d0e0da66a164 100644
+--- a/kernel/events/callchain.c
++++ b/kernel/events/callchain.c
+@@ -218,7 +218,7 @@ static void fixup_uretprobe_trampoline_entries(struct perf_callchain_entry *entr
+ 
+ struct perf_callchain_entry *
+ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
+-		   u32 max_stack, bool crosstask, bool add_mark)
++		   u32 max_stack, bool crosstask, bool add_mark, bool defer_user)
  {
- 	struct unwind_task_info *info = &current->unwind_info;
-@@ -76,6 +78,9 @@ static inline void unwind_deferred_cancel(struct unwind_work *work) {}
- static inline void unwind_deferred_task_exit(struct task_struct *task) {}
- static inline void unwind_reset_info(void) {}
+ 	struct perf_callchain_entry *entry;
+ 	struct perf_callchain_entry_ctx ctx;
+@@ -251,6 +251,15 @@ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
+ 			regs = task_pt_regs(current);
+ 		}
  
-+/* Must be non-zero */
-+static inline u64 unwind_user_get_cookie(void) { return (u64)-1; }
++		if (defer_user) {
++			/*
++			 * Foretell the coming of PERF_RECORD_CALLCHAIN_DEFERRED
++			 * which can be stitched to this one.
++			 */
++			perf_callchain_store_context(&ctx, PERF_CONTEXT_USER_DEFERRED);
++			goto exit_put;
++		}
 +
- #endif /* !CONFIG_UNWIND_USER */
+ 		if (add_mark)
+ 			perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
  
- #endif /* _LINUX_UNWIND_USER_DEFERRED_H */
-diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
-index dc6040aae3ee..90f90e30000a 100644
---- a/kernel/unwind/deferred.c
-+++ b/kernel/unwind/deferred.c
-@@ -94,6 +94,27 @@ static u64 get_cookie(struct unwind_task_info *info)
- 	return info->id.id;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 28de3baff792..37e684edbc8a 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -5582,6 +5582,95 @@ static bool exclusive_event_installable(struct perf_event *event,
+ 	return true;
  }
  
-+/**
-+ * unwind_user_get_cookie - Get the current user context cookie
-+ *
-+ * This is used to get a unique context cookie for the current task.
-+ * Every time a task enters the kernel it has a new context. If
-+ * a subsystem needs to have a unique identifier for that context for
-+ * the current task, it can call this function to retrieve a unique
-+ * cookie for that task context.
-+ *
-+ * Returns: A unque identifier for the current task user context.
-+ */
-+u64 unwind_user_get_cookie(void)
++static void perf_pending_unwind_sync(struct perf_event *event)
 +{
-+	struct unwind_task_info *info = &current->unwind_info;
++	might_sleep();
 +
-+	guard(irqsave)();
-+	/* Make sure to clear the info->id.id when exiting the kernel */
-+	set_bit(UNWIND_USED_BIT, &info->unwind_mask);
-+	return get_cookie(info);
++	if (!event->pending_unwind_callback)
++		return;
++
++	/*
++	 * If the task is queued to the current task's queue, we
++	 * obviously can't wait for it to complete. Simply cancel it.
++	 */
++	if (task_work_cancel(current, &event->pending_unwind_work)) {
++		event->pending_unwind_callback = 0;
++		local_dec(&event->ctx->nr_no_switch_fast);
++		return;
++	}
++
++	/*
++	 * All accesses related to the event are within the same RCU section in
++	 * perf_event_callchain_deferred(). The RCU grace period before the
++	 * event is freed will make sure all those accesses are complete by then.
++	 */
++	rcuwait_wait_event(&event->pending_unwind_wait, !event->pending_unwind_callback, TASK_UNINTERRUPTIBLE);
 +}
 +
- /**
-  * unwind_user_faultable - Produce a user stacktrace in faultable context
-  * @trace: The descriptor that will store the user stacktrace
++struct perf_callchain_deferred_event {
++	struct perf_event_header	header;
++	u64				cookie;
++	u64				nr;
++	u64				ips[];
++};
++
++static void perf_event_callchain_deferred(struct callback_head *work)
++{
++	struct perf_event *event = container_of(work, struct perf_event, pending_unwind_work);
++	struct perf_callchain_deferred_event deferred_event;
++	u64 callchain_context = PERF_CONTEXT_USER;
++	struct unwind_stacktrace trace;
++	struct perf_output_handle handle;
++	struct perf_sample_data data;
++	u64 nr;
++
++	if (!event->pending_unwind_callback)
++		return;
++
++	if (unwind_user_faultable(&trace) < 0)
++		goto out;
++
++	/*
++	 * All accesses to the event must belong to the same implicit RCU
++	 * read-side critical section as the ->pending_unwind_callback reset.
++	 * See comment in perf_pending_unwind_sync().
++	 */
++	guard(rcu)();
++
++	if (current->flags & (PF_KTHREAD | PF_USER_WORKER))
++		goto out;
++
++	nr = trace.nr + 1 ; /* '+1' == callchain_context */
++
++	deferred_event.header.type = PERF_RECORD_CALLCHAIN_DEFERRED;
++	deferred_event.header.misc = PERF_RECORD_MISC_USER;
++	deferred_event.header.size = sizeof(deferred_event) + (nr * sizeof(u64));
++
++	deferred_event.nr = nr;
++	deferred_event.cookie = unwind_user_get_cookie();
++
++	perf_event_header__init_id(&deferred_event.header, &data, event);
++
++	if (perf_output_begin(&handle, &data, event, deferred_event.header.size))
++		goto out;
++
++	perf_output_put(&handle, deferred_event);
++	perf_output_put(&handle, callchain_context);
++	/* trace.entries[] are not guaranteed to be 64bit */
++	for (int i = 0; i < trace.nr; i++) {
++		u64 entry = trace.entries[i];
++		perf_output_put(&handle, entry);
++	}
++	perf_event__output_id_sample(event, &handle, &data);
++
++	perf_output_end(&handle);
++
++out:
++	event->pending_unwind_callback = 0;
++	local_dec(&event->ctx->nr_no_switch_fast);
++	rcuwait_wake_up(&event->pending_unwind_wait);
++}
++
+ static void perf_free_addr_filters(struct perf_event *event);
+ 
+ /* vs perf_event_alloc() error */
+@@ -5649,6 +5738,7 @@ static void _free_event(struct perf_event *event)
+ {
+ 	irq_work_sync(&event->pending_irq);
+ 	irq_work_sync(&event->pending_disable_irq);
++	perf_pending_unwind_sync(event);
+ 
+ 	unaccount_event(event);
+ 
+@@ -8194,6 +8284,46 @@ static u64 perf_get_page_size(unsigned long addr)
+ 
+ static struct perf_callchain_entry __empty_callchain = { .nr = 0, };
+ 
++/*
++ * Returns:
++*     > 0 : if already queued.
++ *      0 : if it performed the queuing
++ *    < 0 : if it did not get queued.
++ */
++static int deferred_request(struct perf_event *event)
++{
++	struct callback_head *work = &event->pending_unwind_work;
++	int pending;
++	int ret;
++
++	/* Only defer for task events */
++	if (!event->ctx->task)
++		return -EINVAL;
++
++	if ((current->flags & (PF_KTHREAD | PF_USER_WORKER)) ||
++	    !user_mode(task_pt_regs(current)))
++		return -EINVAL;
++
++	guard(irqsave)();
++
++	/* callback already pending? */
++	pending = READ_ONCE(event->pending_unwind_callback);
++	if (pending)
++		return 1;
++
++	/* Claim the work unless an NMI just now swooped in to do so. */
++	if (!try_cmpxchg(&event->pending_unwind_callback, &pending, 1))
++		return 1;
++
++	/* The work has been claimed, now schedule it. */
++	ret = task_work_add(current, work, TWA_RESUME);
++	if (WARN_ON_ONCE(ret)) {
++		WRITE_ONCE(event->pending_unwind_callback, 0);
++		return ret;
++	}
++	return 0;
++}
++
+ struct perf_callchain_entry *
+ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+ {
+@@ -8204,6 +8334,9 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+ 	bool crosstask = event->ctx->task && event->ctx->task != current;
+ 	const u32 max_stack = event->attr.sample_max_stack;
+ 	struct perf_callchain_entry *callchain;
++	/* perf currently only supports deferred in 64bit */
++	bool defer_user = IS_ENABLED(CONFIG_UNWIND_USER) && user &&
++			  event->attr.defer_callchain;
+ 
+ 	if (!current->mm)
+ 		user = false;
+@@ -8211,8 +8344,21 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+ 	if (!kernel && !user)
+ 		return &__empty_callchain;
+ 
+-	callchain = get_perf_callchain(regs, kernel, user,
+-				       max_stack, crosstask, true);
++	/* Disallow cross-task callchains. */
++	if (event->ctx->task && event->ctx->task != current)
++		return &__empty_callchain;
++
++	if (defer_user) {
++		int ret = deferred_request(event);
++		if (!ret)
++			local_inc(&event->ctx->nr_no_switch_fast);
++		else if (ret < 0)
++			defer_user = false;
++	}
++
++	callchain = get_perf_callchain(regs, kernel, user, max_stack,
++				       crosstask, true, defer_user);
++
+ 	return callchain ?: &__empty_callchain;
+ }
+ 
+@@ -12882,6 +13028,8 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+ 	event->pending_disable_irq = IRQ_WORK_INIT_HARD(perf_pending_disable);
+ 	init_task_work(&event->pending_task, perf_pending_task);
+ 
++	rcuwait_init(&event->pending_unwind_wait);
++
+ 	mutex_init(&event->mmap_mutex);
+ 	raw_spin_lock_init(&event->addr_filters.lock);
+ 
+@@ -13050,6 +13198,10 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
++	if (event->attr.defer_callchain)
++		init_task_work(&event->pending_unwind_work,
++			       perf_event_callchain_deferred);
++
+ 	/* symmetric to unaccount_event() in _free_event() */
+ 	account_event(event);
+ 
+diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
+index 78a362b80027..20b8f890113b 100644
+--- a/tools/include/uapi/linux/perf_event.h
++++ b/tools/include/uapi/linux/perf_event.h
+@@ -463,7 +463,8 @@ struct perf_event_attr {
+ 				inherit_thread :  1, /* children only inherit if cloned with CLONE_THREAD */
+ 				remove_on_exec :  1, /* event is removed from task on exec */
+ 				sigtrap        :  1, /* send synchronous SIGTRAP on event */
+-				__reserved_1   : 26;
++				defer_callchain:  1, /* generate PERF_RECORD_CALLCHAIN_DEFERRED records */
++				__reserved_1   : 25;
+ 
+ 	union {
+ 		__u32		wakeup_events;	  /* wake up every n events */
+@@ -1239,6 +1240,22 @@ enum perf_event_type {
+ 	 */
+ 	PERF_RECORD_AUX_OUTPUT_HW_ID		= 21,
+ 
++	/*
++	 * This user callchain capture was deferred until shortly before
++	 * returning to user space.  Previous samples would have kernel
++	 * callchains only and they need to be stitched with this to make full
++	 * callchains.
++	 *
++	 * struct {
++	 *	struct perf_event_header	header;
++	 *	u64				cookie;
++	 *	u64				nr;
++	 *	u64				ips[nr];
++	 *	struct sample_id		sample_id;
++	 * };
++	 */
++	PERF_RECORD_CALLCHAIN_DEFERRED		= 22,
++
+ 	PERF_RECORD_MAX,			/* non-ABI */
+ };
+ 
+@@ -1269,6 +1286,7 @@ enum perf_callchain_context {
+ 	PERF_CONTEXT_HV				= (__u64)-32,
+ 	PERF_CONTEXT_KERNEL			= (__u64)-128,
+ 	PERF_CONTEXT_USER			= (__u64)-512,
++	PERF_CONTEXT_USER_DEFERRED		= (__u64)-640,
+ 
+ 	PERF_CONTEXT_GUEST			= (__u64)-2048,
+ 	PERF_CONTEXT_GUEST_KERNEL		= (__u64)-2176,
 -- 
 2.50.1
 
