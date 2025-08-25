@@ -1,52 +1,53 @@
-Return-Path: <bpf+bounces-66420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B561B349BF
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 20:07:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 481D9B349C2
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 20:08:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E25122A2A95
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 18:07:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7DD71B2520A
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 18:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4788330AAC5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B0B30DED4;
 	Mon, 25 Aug 2025 18:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZaNFXEl4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QJ3pXdrA"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE962E1EF8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B64309DAA;
 	Mon, 25 Aug 2025 18:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756145267; cv=none; b=pvreKTTA4jqOJiE/G7JTXKCa8UBfON0BXDBA0btynZ1HRbsp2bf1uMFmYxDwPkyLnmQdtccbrtEdtAGIZ3IMqdAxn9Da+DzIMN4101MR0pPzHMZl54/JKYch8elK0P9UhHy5q/IWhICDTBD0pdx4mKrTsW1dFtRkmiPPDITlROU=
+	t=1756145268; cv=none; b=RiG91+9nYiWhJ9XhGkttx5QnzW7ZjmbY3mEOqf37Xtm13Rdvx6Sae4G7Dqh6jwvZ40XPvWu9G/jq2HhZCPVq02WBdTqIlan+2V0GnJE4h9SI6MR3vqZcjfbXW13fJ3KTD4UtKof08fvnWcWtLisS9SdfOicwJqVFGDiNKv28Xsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756145267; c=relaxed/simple;
-	bh=0FjaHJEeu8OC+uKc6tIBQ9qXWiuDw10dTkSnPT1smBM=;
-	h=Message-ID:Date:From:To:Cc:Subject; b=eAYFfGqxejbQahEC9lcnCxdpoDIlr7jWzoGalKoueKlJljM7n1Y5dXeQuGUETdPENPVfwHHXULrc1/74Au8ZlgSSQ/wwHyH8IMboED8y/5MaMU9aFqdPoMARMnpG5PRrXqxUG6szp5cwNyTvmWjjap4svxskulSZCHbB+G89010=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZaNFXEl4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B162C4CEED;
+	s=arc-20240116; t=1756145268; c=relaxed/simple;
+	bh=CaWPYtnuxMn+9lxdbGHUKRlw7zTyxsoiVJ8Bkz7tB84=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=DmmDr7jBselrJHbR+1soRrjw4+6S38ktJALsYsoSvgBjvmRwstbmQ8OSUwnMUnYCUwV6VeVoWECJboYj4JIfUzzEhHV526e8aHlwx48Z4OT2HSHH8SkuCsstg5/N2RfoOxXCZrBt/Q7T5jydo+tWbUKJ80hYpufNUnmphJB0wmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QJ3pXdrA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A727BC4CEF1;
 	Mon, 25 Aug 2025 18:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756145267;
-	bh=0FjaHJEeu8OC+uKc6tIBQ9qXWiuDw10dTkSnPT1smBM=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ZaNFXEl4XBvKbfhivQ87H3Cy74zCosWse1EFKgvLlz5l99E9P1xwmDEM2OEwTeZY/
-	 G9mfdcykGQP8qBZndgN1cXJD5TKF2iLqSWo+UEEtWpJ0p9k5OWud7ZbRSdPDdUR+xS
-	 EQraoO2RrCQ4q9nsocticSsL0WF4lZkmHkjY80QgiHQugY5+v1NOeh2EFOUthJ7doK
-	 N/4/fm3Zp4YgWcgkC6LVEC6PAMz1P3NzHtQkTbj+jZrooS1sQ18AgY0z4DeNrkAENr
-	 5uxet4tzr4wjNJhiuMlZ15+LVrrgnXmxQ9jXc86FjZiYT+JLrrKhveBI5L3t+FbO7O
-	 iex0WflY1GfKQ==
+	bh=CaWPYtnuxMn+9lxdbGHUKRlw7zTyxsoiVJ8Bkz7tB84=;
+	h=Date:From:To:Cc:Subject:References:From;
+	b=QJ3pXdrA1g0P26dYpdpCkGOBj7R/aw8HHUZZzaLSsuaK6vPKLMx6UAzNx2Q0PX22R
+	 Kmm+3gDzn8nsmhERG5zgiTUioqYlGtIzfvmEiLEuO062s+JtcDWq8FyChpmbZa7tjs
+	 HXDKSKDhuY9xXa1tmoJiTjQNw7tup8FiiM/wYTcYuS1UgtHzE0jPN7SQ1HnOxzUEiX
+	 rLgjWxtYCV49Fx4zeH5Ul6/J6TIq+Ew/LCDn/wElFw2bJpPv5kJ2fSqqbXknbd/mBK
+	 /EiyKoyDLbfliSeR2/kZfLeb80vW5uRsGSI3TH8zskUVmAS388qiEDyAgB79JuyTwm
+	 3y1L6t82U3IOw==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1uqbbt-00000002n2e-2DVB;
+	id 1uqbbt-00000002n3A-2xbJ;
 	Mon, 25 Aug 2025 14:08:01 -0400
-Message-ID: <20250825180638.877627656@kernel.org>
+Message-ID: <20250825180801.557674656@kernel.org>
 User-Agent: quilt/0.68
-Date: Mon, 25 Aug 2025 14:06:38 -0400
+Date: Mon, 25 Aug 2025 14:06:39 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -71,112 +72,86 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Jens Axboe <axboe@kernel.dk>,
  Florian Weimer <fweimer@redhat.com>,
  Sam James <sam@gentoo.org>
-Subject: [PATCH v15 0/8] perf: Support the deferred unwinding infrastructure
+Subject: [PATCH v15 1/8] unwind deferred: Add unwind_user_get_cookie() API
+References: <20250825180638.877627656@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+From: Steven Rostedt <rostedt@goodmis.org>
+
+Add the function unwind_user_get_cookie() API that allows a subsystem to
+retrieve the current context cookie. This can be used by perf to attach a
+cookie to its task deferred unwinding code that doesn't use the deferred
+unwind logic.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ include/linux/unwind_deferred.h |  5 +++++
+ kernel/unwind/deferred.c        | 21 +++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
+
+diff --git a/include/linux/unwind_deferred.h b/include/linux/unwind_deferred.h
+index 26122d00708a..ce507495972c 100644
+--- a/include/linux/unwind_deferred.h
++++ b/include/linux/unwind_deferred.h
+@@ -41,6 +41,8 @@ void unwind_deferred_cancel(struct unwind_work *work);
+ 
+ void unwind_deferred_task_exit(struct task_struct *task);
+ 
++u64 unwind_user_get_cookie(void);
++
+ static __always_inline void unwind_reset_info(void)
+ {
+ 	struct unwind_task_info *info = &current->unwind_info;
+@@ -76,6 +78,9 @@ static inline void unwind_deferred_cancel(struct unwind_work *work) {}
+ static inline void unwind_deferred_task_exit(struct task_struct *task) {}
+ static inline void unwind_reset_info(void) {}
+ 
++/* Must be non-zero */
++static inline u64 unwind_user_get_cookie(void) { return (u64)-1; }
++
+ #endif /* !CONFIG_UNWIND_USER */
+ 
+ #endif /* _LINUX_UNWIND_USER_DEFERRED_H */
+diff --git a/kernel/unwind/deferred.c b/kernel/unwind/deferred.c
+index dc6040aae3ee..90f90e30000a 100644
+--- a/kernel/unwind/deferred.c
++++ b/kernel/unwind/deferred.c
+@@ -94,6 +94,27 @@ static u64 get_cookie(struct unwind_task_info *info)
+ 	return info->id.id;
+ }
+ 
++/**
++ * unwind_user_get_cookie - Get the current user context cookie
++ *
++ * This is used to get a unique context cookie for the current task.
++ * Every time a task enters the kernel it has a new context. If
++ * a subsystem needs to have a unique identifier for that context for
++ * the current task, it can call this function to retrieve a unique
++ * cookie for that task context.
++ *
++ * Returns: A unque identifier for the current task user context.
++ */
++u64 unwind_user_get_cookie(void)
++{
++	struct unwind_task_info *info = &current->unwind_info;
++
++	guard(irqsave)();
++	/* Make sure to clear the info->id.id when exiting the kernel */
++	set_bit(UNWIND_USED_BIT, &info->unwind_mask);
++	return get_cookie(info);
++}
++
+ /**
+  * unwind_user_faultable - Produce a user stacktrace in faultable context
+  * @trace: The descriptor that will store the user stacktrace
+-- 
+2.50.1
 
 
-This patch is based off of:  https://lore.kernel.org/linux-trace-kernel/20250820180338.701352023@kernel.org
-And requires these patches to be enabled: https://lore.kernel.org/linux-trace-kernel/20250820190546.172023727@kernel.org/
-
-To run this series, you can checkout this repo that has this series as well as the above:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git  unwind/perf-test
-
-This series implements the perf interface to use deferred user space stack
-tracing.
-
-The first 4 patches implement the kernel side of perf to do the deferred stack
-tracing, and the last 4 patches implement the perf user space side to read
-this new interface.
-
-Patch 1 adds a new API interface to the user unwinder logic to allow perf to
-get the current context cookie for it's task event tracing. Perf's task event
-tracing maps a single task per perf event buffer and it follows the task
-around, so it only needs to implement its own task_work to do the deferred
-stack trace. Because it can still suffer not knowing which user stack trace
-belongs to which kernel stack due to dropped events, having the cookie to
-create a unique identifier for each user space stack trace to know which
-kernel stack to append it to is useful.
-
-Patch 2 adds the per task deferred stack traces to perf. It adds a new event
-type called PERF_RECORD_CALLCHAIN_DEFERRED that is recorded when a task is
-about to go back to user space and happens in a location that pages may be
-faulted in. It also adds a new callchain context called PERF_CONTEXT_USER_DEFERRED
-that is used as a place holder in a kernel callchain to append the deferred
-user space stack trace to.
-
-Patch 3 adds the user stack trace context cookie in the kernel callchain right
-after the PERF_CONTEXT_USER_DEFERRED context so that the user space side can
-map the request to the deferred user space stack trace.
-
-Patch 4 adds support for the per CPU perf events that will allow the kernel to
-associate each of the per CPU perf event buffers to a single application. This
-is needed so that when a request for a deferred stack trace happens on a task
-that then migrates to another CPU, it will know which CPU buffer to use to
-record the stack trace on. It is possible to have more than one perf user tool
-running and a request made by one perf tool should have the deferred trace go
-to the same perf tool's perf CPU event buffer. A global list of all the
-descriptors representing each perf tool that is using deferred stack tracing
-is created to manage this.
-
-The last 4 patches implement the perf user space tooling side of this.
-
-Changes since v14: https://lore.kernel.org/linux-trace-kernel/20250718164119.089692174@kernel.org/
-
-- Moved the clean up patches into their own series (mentioned at the beginning)
-
-- Added unwind_user_get_cookie() API to allow the task events to add cookies
-  to differentiate which user stack belongs to which kernel stack in the event
-  of dropped events.
-
-- Save the cookie in the kernel callchain right after the PERF_CONTEXT_USER_DEFERRED
-
-- Have the perf user space tooling match the cookies as well as the TID
-  between the request and the user stack recording, to know which kernel stack
-  gets the user space trace appended to it based on its context cookie.
-
-Josh Poimboeuf (1):
-      perf: Support deferred user callchains
-
-Namhyung Kim (4):
-      perf tools: Minimal CALLCHAIN_DEFERRED support
-      perf record: Enable defer_callchain for user callchains
-      perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
-      perf tools: Merge deferred user callchains
-
-Steven Rostedt (3):
-      unwind deferred: Add unwind_user_get_cookie() API
-      perf: Have the deferred request record the user context cookie
-      perf: Support deferred user callchains for per CPU events
-
-----
- include/linux/perf_event.h                |  11 +-
- include/linux/unwind_deferred.h           |   5 +
- include/uapi/linux/perf_event.h           |  25 +-
- kernel/bpf/stackmap.c                     |   4 +-
- kernel/events/callchain.c                 |  14 +-
- kernel/events/core.c                      | 421 +++++++++++++++++++++++++++++-
- kernel/unwind/deferred.c                  |  21 ++
- tools/include/uapi/linux/perf_event.h     |  25 +-
- tools/lib/perf/include/perf/event.h       |   8 +
- tools/perf/Documentation/perf-script.txt  |   5 +
- tools/perf/builtin-script.c               |  92 +++++++
- tools/perf/util/callchain.c               |  24 ++
- tools/perf/util/callchain.h               |   3 +
- tools/perf/util/event.c                   |   1 +
- tools/perf/util/evlist.c                  |   1 +
- tools/perf/util/evlist.h                  |   1 +
- tools/perf/util/evsel.c                   |  42 +++
- tools/perf/util/evsel.h                   |   1 +
- tools/perf/util/machine.c                 |   1 +
- tools/perf/util/perf_event_attr_fprintf.c |   1 +
- tools/perf/util/sample.h                  |   4 +-
- tools/perf/util/session.c                 |  80 ++++++
- tools/perf/util/tool.c                    |   2 +
- tools/perf/util/tool.h                    |   4 +-
- 24 files changed, 786 insertions(+), 10 deletions(-)
 
