@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-66393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66395-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85A66B34283
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 16:02:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E26F8B34290
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 16:03:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E1A3163371
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 13:59:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDBC718846F6
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 14:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD6392ED15A;
-	Mon, 25 Aug 2025 13:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FE62FABE4;
+	Mon, 25 Aug 2025 13:54:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JEdQbXfZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WJWqJ1JY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29AD92F6175;
-	Mon, 25 Aug 2025 13:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737002F6590;
+	Mon, 25 Aug 2025 13:54:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756130077; cv=none; b=qJglJT0nf71iwn1tik0iReL53NGda+Op6MRc0tkzkzEf6rLDUNww9pZS+o9FZDB7l0pegRbelhbsIqly3jOpMsROWLJVTJwcgqLKcYKKciFRnhUU9iQz32GcME5RGIGJW4/xf5HqQAdg82PFCbxh3dUn6gLBKxN1aaIGq4YM2Xo=
+	t=1756130084; cv=none; b=RWBMQOZbOIpSFG8C7jihY5UAAfREFgZkq9oUpeMp0qzTtdcbhm+fSejQ1e9IoQPdlt5wmyInDeLJ45kztjHXP8JQ4sC1dcuPv0nhn5oEvIzjzhhBThVYbVcZUj4EK43+4omcYsvTmCkZkXt/3vXkdkpik4ibj3VuyGquP/KlU+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756130077; c=relaxed/simple;
-	bh=r/CnjyK6JcjnzXT6Er6xjcWR9Eg3aplP19hMPGnsYlo=;
+	s=arc-20240116; t=1756130084; c=relaxed/simple;
+	bh=kFg+tCEIlydflIVsi2gxKFGGbuHzxQQOn/hdpz0x3G0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cdNFtDp+U5LAtRX8pyF913pjFJJ9STP2BqF+PCNgF2+FMJaF4D1uChwfJF72Q86tmcPqQ1yUU5d4a7rNBSgAQ6jtXXzia0xFmZeJxo4dkhPmGvn3jC4HwBhY7FAuwtTq+MutcsGwMXRaJ1VYiJ+p582BUoJzs0fYEw0k+96oCio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JEdQbXfZ; arc=none smtp.client-ip=209.85.210.173
+	 MIME-Version; b=JiHIvqxZHLZfsTAhQKOYYeZ5HA1wMVyTJCxdFxM/ZrU/b8b9gr4D1JxX+CLUJkPO6AZmSq2GLIjLR7wKbxdirdH6oxj6zvRy/SW+7rj9FbZaS7U6QnsiefRWpplqKxnFWLymfsqek9HzAL2fwn+ffUOMl/QuNj26l+YJvb58GaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WJWqJ1JY; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-77031d4638bso2414903b3a.1;
-        Mon, 25 Aug 2025 06:54:31 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-771e15ce64eso718656b3a.0;
+        Mon, 25 Aug 2025 06:54:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756130071; x=1756734871; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756130075; x=1756734875; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D9sEJl8/V+2EB7tvnEAILgSgzPFoLkgVuF6utZLbXHg=;
-        b=JEdQbXfZjXaslPwQdMYidfFwmUCC+uH8mBNhh2eItC++pMuO4dntQ6kJ9qZITAoYoY
-         H4kmNzl11BWnDLMhTWGAFYdAgTfbzqEMAaG0AVYAwr2NfeyEltIZcmHfFI2XKfNJGbzb
-         TS1d22oP8PyvXFoULu/6ks+Iretw662kDdFYYMDHvU83n/IXZZ/tD3vM2p8t+DPXQ1Wi
-         /YfjX3ZSCWNnMSAiCLtWpPXYhS3gx7ZMB+DS17kZz7sYQxowudoBdXy8rsckRPz+3XjZ
-         chV/25+SNnYrbDnNBLSeDMJrNtFbRVJLpgYUxI0zIxA7dzMB+t3RuZrzaJ0RKEC/cg8T
-         Q5Vw==
+        bh=1IpxXj9uN8jIjZtSkBwdAr9Z8HOf1T5NLRXLi3Mh90M=;
+        b=WJWqJ1JYuBjQbcys6Tu+U6M3bGLS/IxguWB0Q+qOAE6GR5XziKt30JpGg8bEcD8lLT
+         fN45khxYZjr0dkJ2AKybWsAc/gldwAJqM/O2FX4Mm6gbyuuYTM07MwtGYgu9Sl41fGaO
+         nCz0WMqFkT/qkgHYY/T/0xhgDBdwKAhtfZs9ug8zyEfFvhsYuNq8SOJoV5MbA/dOsP5a
+         3VQXisp3Gj1AoVV7MrN1ksxegRBaMx3ZJqppaKnR6O3oKm/0teCBonr6dJxwToTMnrA0
+         eJH17NlX7GGaluAC/h6UHNXgyuYTfli5VaVRVEHzvQrACZDtdiEcrXmaI3rRkW5SR420
+         qNKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756130071; x=1756734871;
+        d=1e100.net; s=20230601; t=1756130075; x=1756734875;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=D9sEJl8/V+2EB7tvnEAILgSgzPFoLkgVuF6utZLbXHg=;
-        b=wxVNVPaMcyEcsq184lbBdUJjLCxSd0/UlDjzD88LtSHmYjjkNt3ZEHE6tbnm11OQdm
-         KpyxmuH7UkbNQgxr6TsSB+zS/s+vt99rQSd/yvskYyTkJfaV/Fi575c58esUkGE1vIN+
-         nlru1mrxjAM6ZqJXmYKD60CuM040e47BHyKlKRh9D8/smI93/JJ3IL1jKvb3zWSbuVOM
-         L0wToHH1IVJLlUjsedQDyAuSjollNwYqDZNZyP94sMfG42FqgdFa97F66wgJaDWpXdLu
-         cHDs4qFHu25APdVUcwwwe27MdckA7f9ZxPPJdsVKMEtkpuHPbddSKFyMazkyMrioZSc1
-         YcBA==
-X-Forwarded-Encrypted: i=1; AJvYcCXEaYbHF39iXmA4abwuc3c8JmtYbsZ8ZSNZSoPt1ksPzzBzhGGQ5+Tz4fVd3fwrr14APqrlbQQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/fJZ97cn0/RAcn3EXi9fQgR9SwjoStTOc/G0CCI9clXmg56bD
-	ANhiKRa4w+6NXGrJVq2PXt/UFRPJriB+cEhLcqLuLiXZ9uNKm4cQxAFd
-X-Gm-Gg: ASbGncui7Vgmb0agpdPFwCWJ+CLNnl9MHwO1Ene4fSqthvUTKxgLxK23Q7r5Dgfp4PP
-	gfdfOvf4dWmmM3eFCGbE23k+kdD+FiiIjRf3PpXYd0qhNWW06SxyvSPoRsq2nJd3mU0xQSiJjY8
-	9ZxjXyIUNnBFbjh9LaGtJqNfaL1MopbrsK0MVA8ChHzdtlSqP2tMiW9+ZHhDFw3miiA8nylvQrB
-	MpSqjDdtNg3cOnyzSPxXQBfXLwITNnFcYjFhpJ8OzDG+7E9kZWlWbjenUm2rDaDwuNi/XsBUErZ
-	fqOR2jT0CyaukXe/W0gydlern/IoFpAwHwOGmZ+OWmS1L4M4B6PfVhWEx9hHCC3G6xW9A9Er/Ay
-	FJ8f1H0tfb7z3N16i4reSMZvwLujOLg7xH87UJNMrcRU2eFwnW7OXNFkKGZI=
-X-Google-Smtp-Source: AGHT+IHP05yM46Nx5E6GSCjGNdOH41cXv0vvQ9crGzjV8uNAFzPtkP1RNRjkm8PKPwf2T80/TSmI+w==
-X-Received: by 2002:a05:6a20:5483:b0:23d:ac50:3342 with SMTP id adf61e73a8af0-24340d7bf8emr17932964637.38.1756130070686;
-        Mon, 25 Aug 2025 06:54:30 -0700 (PDT)
+        bh=1IpxXj9uN8jIjZtSkBwdAr9Z8HOf1T5NLRXLi3Mh90M=;
+        b=TIUJoQJMogR5V7MY+VYLG9XE2f0vzRyWZb1LXkkyvFL7vo470q6NYu2aaeHECx4V4x
+         FMMKmRqW17ZcLMMpbb9Ekd5H84E/WywSbE8uHnDftU+Mpq+YCBKXTTQ7GQ6VCN+LPZdd
+         dgiXa6gArJqWu72zxlGg47DRt6WqsonyzoeEakyYhRavMNlfTHMDptACJBluiOo3HON2
+         pJ3xlyF+sJAqBHoGY/yIqBTUW859/QVFY4Q82m3+tlDoWWxWn0W1iRVoLxuSOCksm2h8
+         j50zb5dtBR+fCWvAhtb0cssiBXsjndV3SKk7wGEGRnW9B7S/VH1UM7fy+M34D+THPmVI
+         24yg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8LXfW4m329WBg1XGjahHY+QWY3Ub3pqfFN9b3dyD4cxXZ378bAuWLvkcFEAhLqt5+Z3VHk8E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxklHAI3RPdaYFGluANbkpXNXlgMk6SU1GmIF0erMngO/xPrpwS
+	KiIqd/5LcCgu/w3z+WcbpTujQwJxCFwKson6Kset9AkWQr8Ujpx/N7Lg
+X-Gm-Gg: ASbGnctef+XvYGiS1108QTXAfnPZmxKKnFkNm162Q87/RCx8A6EWcXGHVXRmVfR3mTL
+	VHxUAKa8Gj+po/1ZIHMXO4sSAjDuRu+CRaPcQHkUahSCDkhpMMMgj/UFs7DauASWt5WA+k9RetV
+	hcbcLVcVyVEzzvg0sJmsiRhr1CSn3IWQGtKPooiTHxOgPa2Xq4tfK0t1KNACWOehV1Icrxi3EII
+	tFbeQpeO9NZZsL5x+LWd79xNfZBAZKVx8GASB1kGBYNSoe8h/G81x59xtWjAVqBDYsRC8p9t3Wb
+	wMU5vpd3bpujwY2igptOBwOvZZkHBtzZvP2COA2OMIdz9IR3gElWARyLWur9FFZzWUia7/52pVV
+	cPE5vrepwZgY6uS7N0Q3CTB25YnEfyXLQJaHFEQx8vaxB3b2yt8h9UhJqPhM=
+X-Google-Smtp-Source: AGHT+IGyMHcEmodoL81gmrxTZS7/CrfyEjoBaCmtTVnDg0fttVacLrEP8T03Anec8PPSFh2tYOpuwA==
+X-Received: by 2002:a05:6a20:5483:b0:240:265f:4eb0 with SMTP id adf61e73a8af0-24340ad1f7bmr15924206637.4.1756130074977;
+        Mon, 25 Aug 2025 06:54:34 -0700 (PDT)
 Received: from KERNELXING-MC1.tencent.com ([111.201.28.60])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4a8b7b301csm3374073a12.35.2025.08.25.06.54.26
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4a8b7b301csm3374073a12.35.2025.08.25.06.54.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 06:54:30 -0700 (PDT)
+        Mon, 25 Aug 2025 06:54:34 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -92,9 +92,9 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next v2 5/9] xsk: add xsk_alloc_batch_skb() to build skbs in batch
-Date: Mon, 25 Aug 2025 21:53:38 +0800
-Message-Id: <20250825135342.53110-6-kerneljasonxing@gmail.com>
+Subject: [PATCH net-next v2 6/9] xsk: add direct xmit in batch function
+Date: Mon, 25 Aug 2025 21:53:39 +0800
+Message-Id: <20250825135342.53110-7-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250825135342.53110-1-kerneljasonxing@gmail.com>
 References: <20250825135342.53110-1-kerneljasonxing@gmail.com>
@@ -108,175 +108,65 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-Support allocating and building skbs in batch.
+Add batch xmit logic.
 
-This patch uses kmem_cache_alloc_bulk() to complete the batch allocation
-which relies on the global common cache 'net_hotdata.skbuff_cache'. Use
-a xsk standalone skb cache (namely, xs->skb_cache) to store skbs instead
-of resorting to napi_alloc_cache that was designed for softirq condition.
-In case that memory shortage occurs, to avoid frequently allocating
-skbs and then freeing part of them, using the allocated skbs from cache
-in a reversed order (like from 10, 9, ..., 2, 1, 0) solves the issue.
+Only grabbing the lock and disable bottom half once and sent all
+the aggregated packets in one loop.
 
-After allocating memory for each of skbs, in a 'for' loop, the patch
-borrows part of __allocate_skb() to initializing skb and then calls
-xsk_build_skb() to complete the rest of whole process, like copying data
-and stuff.
-
-Considering passing no fclone flag during allocation period, in terms of
-freeing process, napi_consume_skb() in the tx completion would put the
-skb into different and global cache 'net_hotdata.skbuff_cache' that
-implements the deferred freeing skb feature to avoid freeing skb one
-by one.
+Since previous patch puts descriptors in xs->skb_cache in a reversed
+order, this patch sends each skb out from start to end when 'start' is
+not smaller than 'end'.
 
 Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
- include/net/xdp_sock.h |   3 ++
- net/core/skbuff.c      | 103 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 106 insertions(+)
+ include/linux/netdevice.h |  3 +++
+ net/core/dev.c            | 19 +++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index cbba880c27c3..b533317409df 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -92,6 +92,7 @@ struct xdp_sock {
- 	struct xsk_queue *cq_tmp; /* Only as tmp storage before bind */
- 	struct sk_buff **skb_cache;
- 	struct xdp_desc *desc_batch;
-+	unsigned int skb_count;
- };
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 5e5de4b0a433..8e2688e3f2e4 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3352,6 +3352,9 @@ u16 dev_pick_tx_zero(struct net_device *dev, struct sk_buff *skb,
  
- /*
-@@ -127,6 +128,8 @@ struct xsk_tx_metadata_ops {
- struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 			      struct sk_buff *allocated_skb,
- 			      struct xdp_desc *desc);
-+int xsk_alloc_batch_skb(struct xdp_sock *xs, u32 nb_pkts, u32 nb_descs,
-+			int *consumed, int *start, int *end);
- #ifdef CONFIG_XDP_SOCKETS
+ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev);
+ int __dev_direct_xmit(struct sk_buff *skb, u16 queue_id);
++int xsk_direct_xmit_batch(struct sk_buff **skbs, struct net_device *dev,
++			  struct netdev_queue *txq, int *cur,
++			  int start, int end);
  
- int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index ee0274417948..c9071e56d133 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -80,6 +80,8 @@
- #include <net/mctp.h>
- #include <net/page_pool/helpers.h>
- #include <net/dropreason.h>
-+#include <net/xdp_sock.h>
-+#include <net/xsk_buff_pool.h>
- 
- #include <linux/uaccess.h>
- #include <trace/events/skb.h>
-@@ -614,6 +616,107 @@ static void *kmalloc_reserve(unsigned int *size, gfp_t flags, int node,
- 	return obj;
+ static inline int dev_queue_xmit(struct sk_buff *skb)
+ {
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 68dc47d7e700..a5a6b9a199e9 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4742,6 +4742,25 @@ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
  }
+ EXPORT_SYMBOL(__dev_queue_xmit);
  
-+int xsk_alloc_batch_skb(struct xdp_sock *xs, u32 nb_pkts, u32 nb_descs,
-+			int *consumed, int *start, int *end)
++int xsk_direct_xmit_batch(struct sk_buff **skbs, struct net_device *dev,
++			  struct netdev_queue *txq, int *cur,
++			  int start, int end)
 +{
-+	struct xdp_desc *descs = xs->desc_batch;
-+	struct sk_buff **skbs = xs->skb_cache;
-+	gfp_t gfp_mask = xs->sk.sk_allocation;
-+	struct net_device *dev = xs->dev;
-+	int node = NUMA_NO_NODE;
-+	struct sk_buff *skb;
-+	u32 i = 0, j = 0;
-+	bool pfmemalloc;
-+	u32 base_len;
-+	int err = 0;
-+	u8 *data;
++	int ret = NETDEV_TX_BUSY;
 +
-+	base_len = max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
-+	if (!(dev->priv_flags & IFF_TX_SKB_NO_LINEAR))
-+		base_len += dev->needed_tailroom;
-+
-+	if (xs->skb_count >= nb_pkts)
-+		goto build;
-+
-+	if (xs->skb) {
-+		i = 1;
-+		xs->skb_count++;
-+	}
-+
-+	xs->skb_count += kmem_cache_alloc_bulk(net_hotdata.skbuff_cache,
-+					       gfp_mask, nb_pkts - xs->skb_count,
-+					       (void **)&skbs[xs->skb_count]);
-+	if (xs->skb_count < nb_pkts)
-+		nb_pkts = xs->skb_count;
-+
-+build:
-+	for (i = 0, j = 0; j < nb_descs; j++) {
-+		if (!xs->skb) {
-+			u32 size = base_len + descs[j].len;
-+
-+			/* In case we don't have enough allocated skbs */
-+			if (i >= nb_pkts) {
-+				err = -EAGAIN;
-+				break;
-+			}
-+
-+			if (sk_wmem_alloc_get(&xs->sk) > READ_ONCE(xs->sk.sk_sndbuf)) {
-+				err = -EAGAIN;
-+				break;
-+			}
-+
-+			skb = skbs[xs->skb_count - 1 - i];
-+
-+			prefetchw(skb);
-+			/* We do our best to align skb_shared_info on a separate cache
-+			 * line. It usually works because kmalloc(X > SMP_CACHE_BYTES) gives
-+			 * aligned memory blocks, unless SLUB/SLAB debug is enabled.
-+			 * Both skb->head and skb_shared_info are cache line aligned.
-+			 */
-+			data = kmalloc_reserve(&size, gfp_mask, node, &pfmemalloc);
-+			if (unlikely(!data)) {
-+				err = -ENOBUFS;
-+				break;
-+			}
-+			/* kmalloc_size_roundup() might give us more room than requested.
-+			 * Put skb_shared_info exactly at the end of allocated zone,
-+			 * to allow max possible filling before reallocation.
-+			 */
-+			prefetchw(data + SKB_WITH_OVERHEAD(size));
-+
-+			memset(skb, 0, offsetof(struct sk_buff, tail));
-+			__build_skb_around(skb, data, size);
-+			skb->pfmemalloc = pfmemalloc;
-+			skb_set_owner_w(skb, &xs->sk);
-+		} else if (unlikely(i == 0)) {
-+			/* We have a skb in cache that is left last time */
-+			kmem_cache_free(net_hotdata.skbuff_cache, skbs[xs->skb_count - 1]);
-+			skbs[xs->skb_count - 1] = xs->skb;
-+		}
-+
-+		skb = xsk_build_skb(xs, skb, &descs[j]);
-+		if (IS_ERR(skb)) {
-+			err = PTR_ERR(skb);
++	local_bh_disable();
++	HARD_TX_LOCK(dev, txq, smp_processor_id());
++	for (*cur = start; *cur >= end; (*cur)--) {
++		ret = netdev_start_xmit(skbs[*cur], dev, txq, false);
++		if (ret != NETDEV_TX_OK)
 +			break;
-+		}
-+
-+		if (xp_mb_desc(&descs[j])) {
-+			xs->skb = skb;
-+			continue;
-+		}
-+
-+		xs->skb = NULL;
-+		i++;
 +	}
++	HARD_TX_UNLOCK(dev, txq);
++	local_bh_enable();
 +
-+	*consumed = j;
-+	*start = xs->skb_count - 1;
-+	*end = xs->skb_count - i;
-+	xs->skb_count -= i;
-+
-+	return err;
++	return ret;
 +}
 +
- /* 	Allocate a new skbuff. We do this ourselves so we can fill in a few
-  *	'private' fields and also do memory statistics to find all the
-  *	[BEEP] leaks.
+ int __dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+ {
+ 	struct net_device *dev = skb->dev;
 -- 
 2.41.3
 
