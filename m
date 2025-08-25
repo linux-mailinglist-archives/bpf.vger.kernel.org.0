@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-66441-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66442-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F222B34B04
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 21:40:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C8C8B34B07
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 21:40:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8345117C872
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 19:39:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE4D217C8F4
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 19:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6D75287250;
-	Mon, 25 Aug 2025 19:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D1AA28751B;
+	Mon, 25 Aug 2025 19:39:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IryV4uIs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OhAbIW19"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9EFE285C8A;
-	Mon, 25 Aug 2025 19:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29CCF28688C;
+	Mon, 25 Aug 2025 19:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756150767; cv=none; b=XlHQIiA/+P2u24O39jeJntX6JY4t5l5r9URb8metU006RFHuIQ3lny7JxA5OCm+q+bLb4jQ6Hvd5MFd1A9d4/pCAJKVmKl3IuFaeWxCJohGm11fuM6gzYLjBThK5RSSv37fn1f0SAHxTJ2X7N0eFuGFRANQI6ZgRZ7u1c2y6RwA=
+	t=1756150768; cv=none; b=rd1hEI/LE57V+63QH3YjJLMZZzU0SjrECGRLKeSwovta9ggPG1B7Lral6nHA6MzSqEgwGMStUmXGRssv+IhJExDiYwcTNzYPvcTVS/7I3jELF/sxPL9lJ4+BpctnfSMjx8KpoUEKLrYrtSrDYLDglfa3VfOqkt7eV07Hfn6yCFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756150767; c=relaxed/simple;
-	bh=3tV2X4fe06M/e2lh38AA/Ijrr/C4DFAZt9h6+wi1/7A=;
+	s=arc-20240116; t=1756150768; c=relaxed/simple;
+	bh=LdaMV1zM5sLcfZna5vbVGHTEiv59pyyxWvgREEICnfU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D6XT3t/uDcbLLOi2lmGKGkAKSHanpHhT1lXPKhg+b2Ej9n3zmUDHqT+o9H9Q00IVq6/ehDB2Kievq/LbUzloUbx9DL+BNtgKbLHPFUP2txs7j7ewbEO6LzVBRG95twbwuzBqvIa2Cwz6eRYCfSLLv+1KgQ2hsyhVos0dFfr74nY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IryV4uIs; arc=none smtp.client-ip=209.85.210.177
+	 MIME-Version; b=Y0KQqwwQmlZXieOPvwbQXhpGEKQ03c/TQeRmysyp+pkePmMjs0S/BhTpG0FZISYoZAK2IC3g/dW/TqRXqK3JyXXfza8X1GPvvCDxscLKRgfY7+GetwTfwNoKuY/1PkEMAYBNovg8q2Mqzy2x5euZAZNg8n86BMDRVpTOfeWDeHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OhAbIW19; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-76e2e89e89fso6361884b3a.1;
-        Mon, 25 Aug 2025 12:39:25 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7718408baf7so1674716b3a.3;
+        Mon, 25 Aug 2025 12:39:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756150765; x=1756755565; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756150766; x=1756755566; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MdNOODv0wHpZQI55O4R2DVqRONn5BAonH3tbXsVNpOA=;
-        b=IryV4uIsQKPJ+94FAZJzcXxJUsV3KL9D3Bz63WkMX4Y8kS1MOSgpflKCfAJu+6JU2P
-         tn62A0WElUo/meplH3ayB5gb7iXm35msCAEmuEAm75Eh4r7gBupDODrTN+wrlpmkHFP3
-         qwtElWk8I133zLTPRVUFT5MlpGkCx3rbp1m1NDMfi2aA8D+qXrsJyPa4dcr6+3gRxc9+
-         7d0qdBzEjA2kWfYlNph6lA0lV7m70cgK5em9HZtY30v/3Cy9vxo2d8IxFVgaUzopvlF7
-         BCwFJI86DyQhEc5c0zrv70B1vDu8fRi8ybT88mG5ZMY/c3jZSnyU1B7VpliaYMGeFsd/
-         lcBg==
+        bh=DSxe6qfE1MYAKSnf2YkWYvthJRajo5d7tk0VRwbMl9w=;
+        b=OhAbIW19JUmXSZoxOTFFM1hfnCeQ9TxatYopFZtKrHUqkzaoM28tG84oOVhjkeUxk4
+         duXBhwBSc2LJ8Ev67PVwX6jteLgmRj8Khkj2Wzrkcepv2GSIfDyuUoeMifhTUkBSM85H
+         5yeTy1oeHDWEqvydpTofGc2ZXZGcMNd28a1fGnetD/9JXjMPBCZnTNMtVVXtITtIR51l
+         jKGYOmAJG2MorGzoojFFX2uVbTRUFJnw0Blub35k0ABJOptTiK+BANUrQg9H3JwF/c3R
+         dzaXUROQmKCzIARHKjhsbhnmNhXFCNqLOdF5RFcLJm/x/URMgELJ2VPfVZZVqEc0TRoA
+         aToA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756150765; x=1756755565;
+        d=1e100.net; s=20230601; t=1756150766; x=1756755566;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MdNOODv0wHpZQI55O4R2DVqRONn5BAonH3tbXsVNpOA=;
-        b=w+SkxelSn9rI800tnwEaBtoND28oB/GeEOq0JSXXeU0iP2U1aPpDPDk5GVzOCr6atk
-         Q/tVquvDA5rV13xWAEMPITdWIFPpzFSwHDe/gXTuvm6KZHu5dHGodVzZ52CGbePRZv8e
-         PT2GqgdsxkZ7Bu0HKLR1hgeBaZabNtrzBtRKx/q0yg1ildC+isjn8XzKEGA9r5Oxd/q/
-         VdBhotOHu8b9VLG67a1OGkG78DD91bZSxS0W4lTHDZVloOquEDUytTa4g4L5cJAXA7gr
-         Zks4Ix4R6Yt71MBTFOqLsArX5ejGvEAToSChqnxX07Kx1qkWQBXiA28cakNi0HeugeaA
-         ZVmA==
-X-Gm-Message-State: AOJu0YwVuf0wHHm6LQaBwbjP1I/f9u4SNSRA1AdulGZVL7WZ3sE4zmUZ
-	c9c92DrXdgH/3zOhdO5BlQwWe9VYioA+TRhJjfdi42RfCJrS0hg7YN2YvcFSpA==
-X-Gm-Gg: ASbGnctC+rnO2pWg/9ARWgUVD3LE7N8nimt52ceneCr0OiCYGkNEMTuRySo1aztaX2+
-	dCAJsMifKBcF2o7HlonXmexPbNJ8B/exeqiOCwck1Jc7CHgAmLJ4ulCCJakElx4uYZ+Dz0Cv6Du
-	F8ApIjjy8X5e5+tDGl5R1Sc6kpjtJ5FEkFib/UZaTYtKM52R8Dqq9lsrHdnybumlf+CpcjQZSLY
-	QBN3OQnJVSA6zUziuuGjs5RuChHEYcYqRwfMkBwOxNwrqXxjel/fgWl5QSwBYQYKItFFOo0sTnX
-	axlXc6Yqj+BlHoOScSfjB59VHmLF94orDacxcUZSJZ3Q9izCHRcYzbX25N3gvnKMKyJnOqtmJGI
-	y0MZll5RU5sADEQ==
-X-Google-Smtp-Source: AGHT+IG5lxEtI8q6eYUdnI+o3n08SRrDR/PM6lGmMvJK6f5s/SOAelACYoD4YHaqJkSEoLXF1/tuCg==
-X-Received: by 2002:a17:902:fc46:b0:246:c0a2:3bc8 with SMTP id d9443c01a7336-246c0a2421emr61856205ad.23.1756150765152;
-        Mon, 25 Aug 2025 12:39:25 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:11::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2466877a02bsm75893515ad.2.2025.08.25.12.39.24
+        bh=DSxe6qfE1MYAKSnf2YkWYvthJRajo5d7tk0VRwbMl9w=;
+        b=TnBwfOe1Kv54D847Kcnns7UyYi5D75dcIbO89hWMOZpugQcuDHpFwSNtRoC5n+2am3
+         VtOgYwS/Mc36a3WeCJCGLw8O8iY6LCDao+gA6kjbaMBRCCj6lmqPtA4Kc0Yo9NsxK/9r
+         OV8MffHpKntanRCMYByP1AoaqSqkMhuOQ3XgCTVXryAc+2oyQHdZTt1dmbp9umqadCKa
+         4ls2FWV0CoIozzZ544dkEzkyRlsG8HiPnnESRhrwJCQlJfO2EPP2OyRTwCw5OaFjn4NS
+         KR8p8A2E3+/TheWnfs7mjuXgnZ9DoGqqmqLN8ePgTXjF7x8b9geNCpMekknhI/YTCPhB
+         bsTw==
+X-Gm-Message-State: AOJu0YwJf9V/af13zPaZnIeyTeY36sREGJM1RDCVPTOmHfRWXHt6Xc8r
+	vdtilSYVwKwhtgFwPRu0OxVf3gAzsIULgnEHm1Kz64nywhrA88/qYk9oz5Vd1w==
+X-Gm-Gg: ASbGncsakoVrglXkxdI5XzDNjU+mFao5qwlRo3ow5Uzm79tHV/DvrEMxvrYBGNpxMhe
+	1nbYupG9dwhoObl0MCBP/3NworwX3wZ7DwRu83heQddNoW3u2i/dDbjiIX6XChJc9/olJh5LttT
+	8nUP2sIbUMUX41R6yZdvXfk8ywCj4CeitlDW8H3DedNFsqQYk/OBTH04Vqr4s5t63xFXMUIucX/
+	nJMyqje6qpURITMCCCBfEwJ+HyMjXqoT583TXWz0Ze/evcIEE4wd3nAKAiE2iLJHeTiD4cT84tq
+	UEpOJDI5sGtlFqkpQFu8F8jBdTXaIsLpRgdYcpI/t3Os5KKtOcQ6lJzxBVB8KxZRv0pr8Tz+ERc
+	ByFZ8uJV+3EiAFFvcfL/+mDAM
+X-Google-Smtp-Source: AGHT+IEwNfUdpBf9cdC7zdFGrJ6teRclVINdICzyA4qkIIzIlsp5wOBIY/ULXs7FsNZnUXr1mHKxMQ==
+X-Received: by 2002:a05:6a00:a8c:b0:749:ad1:ac8a with SMTP id d2e1a72fcca58-7702fa49552mr14847659b3a.11.1756150766242;
+        Mon, 25 Aug 2025 12:39:26 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:5f::])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770401ecc51sm8406843b3a.75.2025.08.25.12.39.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 12:39:24 -0700 (PDT)
+        Mon, 25 Aug 2025 12:39:25 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -86,9 +86,9 @@ Cc: netdev@vger.kernel.org,
 	mbloch@nvidia.com,
 	maciej.fijalkowski@intel.com,
 	kernel-team@meta.com
-Subject: [RFC bpf-next v1 4/7] bpf: Clear packet pointers after changing packet data in kfuncs
-Date: Mon, 25 Aug 2025 12:39:15 -0700
-Message-ID: <20250825193918.3445531-5-ameryhung@gmail.com>
+Subject: [RFC bpf-next v1 5/7] bpf: Support specifying linear xdp packet data size in test_run
+Date: Mon, 25 Aug 2025 12:39:16 -0700
+Message-ID: <20250825193918.3445531-6-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250825193918.3445531-1-ameryhung@gmail.com>
 References: <20250825193918.3445531-1-ameryhung@gmail.com>
@@ -100,71 +100,88 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-bpf_xdp_pull_data() may change packet data and therefore packet pointers
-need to be invalidated. Add bpf_xdp_pull_data() to the special kfunc
-list instead of introducing a new KF_ flag until there are more kfuncs
-changing packet data.
+To test bpf_xdp_pull_data(), an xdp packet containing fragments as well
+as free linear data area after xdp->data_end needs to be created.
+However, bpf_prog_test_run_xdp() always fills the linear area with
+data_in before creating fragments, leaving no space to pull data. This
+patch will allow users to specify the linear data size through
+ctx->data_end.
+
+Currently, ctx_in->data_end must match data_size_in and will not be the
+final ctx->data_end seen by xdp programs. This is because ctx->data_end
+is populated according to the xdp_buff passed to test_run. The linear
+data area available in an xdp_buff, max_data_sz, is alawys filled up
+before copying data_in into fragments.
+
+This patch will allow users to specify the size of data that goes into
+the linear area. When ctx_in->data_end is different from data_size_in,
+only ctx_in->data_end bytes of data will be put into the linear area when
+creating the xdp_buff.
+
+While ctx_in->data_end will be allowed to be different from data_size_in,
+it cannot be larger than the data_size_in as there will be no data to
+copy from user space. If it is larger than the maximum linear data area
+size, the layout suggested by the user will not be honored. Data beyond
+max_data_sz bytes will still be copied into fragments.
 
 Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
- kernel/bpf/verifier.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ net/bpf/test_run.c                                       | 9 +++++----
+ .../selftests/bpf/prog_tests/xdp_context_test_run.c      | 4 +---
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 4e47992361ea..80c64b42596c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12235,6 +12235,7 @@ enum special_kfunc_type {
- 	KF_bpf_dynptr_from_skb,
- 	KF_bpf_dynptr_from_xdp,
- 	KF_bpf_dynptr_from_skb_meta,
-+	KF_bpf_xdp_pull_data,
- 	KF_bpf_dynptr_slice,
- 	KF_bpf_dynptr_slice_rdwr,
- 	KF_bpf_dynptr_clone,
-@@ -12285,10 +12286,12 @@ BTF_ID(func, bpf_rbtree_right)
- BTF_ID(func, bpf_dynptr_from_skb)
- BTF_ID(func, bpf_dynptr_from_xdp)
- BTF_ID(func, bpf_dynptr_from_skb_meta)
-+BTF_ID(func, bpf_xdp_pull_data)
- #else
- BTF_ID_UNUSED
- BTF_ID_UNUSED
- BTF_ID_UNUSED
-+BTF_ID_UNUSED
- #endif
- BTF_ID(func, bpf_dynptr_slice)
- BTF_ID(func, bpf_dynptr_slice_rdwr)
-@@ -12358,6 +12361,11 @@ static bool is_kfunc_bpf_preempt_enable(struct bpf_kfunc_call_arg_meta *meta)
- 	return meta->func_id == special_kfunc_list[KF_bpf_preempt_enable];
- }
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 4a862d605386..1a0d0bc35ad5 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -1207,8 +1207,8 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+ {
+ 	bool do_live = (kattr->test.flags & BPF_F_TEST_XDP_LIVE_FRAMES);
+ 	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
++	u32 retval = 0, duration, max_data_sz, data_sz;
+ 	u32 batch_size = kattr->test.batch_size;
+-	u32 retval = 0, duration, max_data_sz;
+ 	u32 size = kattr->test.data_size_in;
+ 	u32 headroom = XDP_PACKET_HEADROOM;
+ 	u32 repeat = kattr->test.repeat;
+@@ -1246,7 +1246,7 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
  
-+static bool is_kfunc_pkt_changing(struct bpf_kfunc_call_arg_meta *meta)
-+{
-+	return meta->func_id == special_kfunc_list[KF_bpf_xdp_pull_data];
-+}
-+
- static enum kfunc_ptr_arg_type
- get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 		       struct bpf_kfunc_call_arg_meta *meta,
-@@ -14077,6 +14085,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		}
+ 	if (ctx) {
+ 		/* There can't be user provided data before the meta data */
+-		if (ctx->data_meta || ctx->data_end != size ||
++		if (ctx->data_meta || ctx->data_end > size ||
+ 		    ctx->data > ctx->data_end ||
+ 		    unlikely(xdp_metalen_invalid(ctx->data)) ||
+ 		    (do_live && (kattr->test.data_out || kattr->test.ctx_out)))
+@@ -1256,11 +1256,12 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
  	}
  
-+	if (is_kfunc_pkt_changing(&meta))
-+		clear_all_pkt_pointers(env);
-+
- 	nargs = btf_type_vlen(meta.func_proto);
- 	args = (const struct btf_param *)(meta.func_proto + 1);
- 	for (i = 0; i < nargs; i++) {
-@@ -17794,6 +17805,8 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
- 			 */
- 			if (ret == 0 && is_kfunc_sleepable(&meta))
- 				mark_subprog_might_sleep(env, t);
-+			if (ret == 0 && is_kfunc_pkt_changing(&meta))
-+				mark_subprog_changes_pkt_data(env, t);
- 		}
- 		return visit_func_call_insn(t, insns, env, insn->src_reg == BPF_PSEUDO_CALL);
+ 	max_data_sz = PAGE_SIZE - headroom - tailroom;
+-	if (size > max_data_sz) {
++	data_sz = (ctx && ctx->data_end < max_data_sz) ? ctx->data_end : max_data_sz;
++	if (size > data_sz) {
+ 		/* disallow live data mode for jumbo frames */
+ 		if (do_live)
+ 			goto free_ctx;
+-		size = max_data_sz;
++		size = data_sz;
+ 	}
+ 
+ 	data = bpf_test_init(kattr, size, max_data_sz, headroom, tailroom);
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+index 46e0730174ed..178292d1251a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+@@ -97,9 +97,7 @@ void test_xdp_context_test_run(void)
+ 	/* Meta data must be 255 bytes or smaller */
+ 	test_xdp_context_error(prog_fd, opts, 0, 256, sizeof(data), 0, 0, 0);
+ 
+-	/* Total size of data must match data_end - data_meta */
+-	test_xdp_context_error(prog_fd, opts, 0, sizeof(__u32),
+-			       sizeof(data) - 1, 0, 0, 0);
++	/* Total size of data must be data_end - data_meta or larger */
+ 	test_xdp_context_error(prog_fd, opts, 0, sizeof(__u32),
+ 			       sizeof(data) + 1, 0, 0, 0);
  
 -- 
 2.47.3
