@@ -1,117 +1,129 @@
-Return-Path: <bpf+bounces-66407-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66405-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1F05B34810
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 18:58:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5063B34809
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 18:57:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 393F27AE8C6
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 16:56:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74EBC480999
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 16:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514D33019A7;
-	Mon, 25 Aug 2025 16:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D029302771;
+	Mon, 25 Aug 2025 16:57:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="baiFo9bD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="boxD0QEZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88002F0694;
-	Mon, 25 Aug 2025 16:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8626C302741
+	for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 16:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756141045; cv=none; b=HlkB2MPlvxNwLB3pAkJoPbQ9YjTqqS1Mg/C0Fz06FVhVXIp5XEjTx6OC3jzAE8XoPhrXC+IB3Tmjliypz2RTX4rxgI7YBQlrKsLJBk/UNu6w1+9k388qj2Jx1A7PjG0O/VRzPk1uNG+PrQ3U8Y6RV2aevie4N83uIijhIQVbP5E=
+	t=1756141026; cv=none; b=WVXwaTybsYbZwxmcJnwFA6WjeS6xAopfTSSbijlqequFurbc7gjFqVk9RtWHtkhPXBvDglqsU7OXWfS9cAYMNK2QHsH72mohEOUQnjKxTMdwnx9Mk8fxIu6DiEJTlC1ylHWxmH1BnSXXQ2F3JyxPlblv9resjTwX49Z2+VvgwV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756141045; c=relaxed/simple;
-	bh=sEe2Kjb73cyMrklNt7i9Cp03Sqbobdi1D7T+QgIjmDk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eG4WWNZL42f4yZ6UFNA2pmX4iURB+iuWONkRl0XEDssLPzwym+pRLu9eg6vUYB+UiEfpK0ayjP+XDnLxxOiC10IhOiAbo9kI4sJ7eiEeuZ2QZlZ5A/6GH+SORPBOiP7P5jiwFQlFuxCm0y5edpkya2ximPU29iIF/Sv7fTA3DME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=baiFo9bD; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1756141044; x=1787677044;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sEe2Kjb73cyMrklNt7i9Cp03Sqbobdi1D7T+QgIjmDk=;
-  b=baiFo9bDUG8zCllqXePc694tKZAcii/TQRg2MTkdbPkIFC8s0dVSTfvB
-   +0ZDx7SqAJMj0SKevOGRrsqZ6j6H/VEqyf9UFmsVN1EqIVM+ZAlTf45Em
-   HRZ4l+fghW7YIVhwCZCN84lOZvCYoPeVWoRbk5Pv+JLEwFOhLJWRL/0+t
-   NGs3I9BGkcbVv84gSEVHufOmB7ydPGjIQ+XfMN9fKTsWsq4owzxZ/prVC
-   KCJHZuMtJCC9MyRHkI/PfAfYP7rs+NZma+EjbzVbN/CVnKlqpGez5hNdQ
-   hBw/ua8QLRFu4D9HBhTADJecko7qnKK0fDwja4L+/gomABnDdK++ybJMf
-   w==;
-X-CSE-ConnectionGUID: D3Mi36EjRbWoXe7XzRyApQ==
-X-CSE-MsgGUID: V26QtKM/TK6NFgvdz3UOWg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="62186815"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="62186815"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2025 09:57:23 -0700
-X-CSE-ConnectionGUID: QJvU2XXuQtmQ6GJE7DHYVg==
-X-CSE-MsgGUID: TgJFq6KJTFiNM3UGwwHrzA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,213,1751266800"; 
-   d="scan'208";a="173744658"
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by orviesa004.jf.intel.com with ESMTP; 25 Aug 2025 09:57:19 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uqaVQ-000Nrr-1p;
-	Mon, 25 Aug 2025 16:57:16 +0000
-Date: Tue, 26 Aug 2025 00:56:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	bjorn@kernel.org, magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-	sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
-	hawk@kernel.org, john.fastabend@gmail.com, horms@kernel.org,
-	andrew+netdev@lunn.ch
-Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next v2 5/9] xsk: add xsk_alloc_batch_skb() to build
- skbs in batch
-Message-ID: <202508260022.JtJJJkAw-lkp@intel.com>
-References: <20250825135342.53110-6-kerneljasonxing@gmail.com>
+	s=arc-20240116; t=1756141026; c=relaxed/simple;
+	bh=XrVsn9DELz9y/e9xbywSPHczCME3hJmqCLpf0h3A7Nk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=FkyRBrhUBM6n6pCh9BVyr7V1Wr0bB1IYmjdYTq+/O7ySmvoozhwLWmgpm1ZCwVFHepbUnyC0COcdekD3bHzz2j4f8CVrKsgOi6g37Ol+Ql4LUCU+Bv/ZuswfO7rOy7sVQZU/MkSBl4Bojwd3UX/9sOtB1pS74r+aIm1iuYG2HVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=boxD0QEZ; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-76e2eb6ce24so3547715b3a.3
+        for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 09:57:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756141024; x=1756745824; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Kzx6ult7AB9nPxzDnEVuF5a6hHvnRYg2lUWdYF5qbBA=;
+        b=boxD0QEZEb0yH3L7xuFpkgx7b7Q2yrTQA2YfVov459OyEU2ANRs3fKHiZARHwiHsFo
+         CqUT+YFJgAU7oByagk27tF53WVfvWbO/yvwuCHcs1Ud3u0EFVhlfL35YAqsJu/fqQ+mo
+         LAxbOl2N+kJAEM3myUGo5wgUT3Au3xwarHc2Tjh19R4kydKGdmyMuvhAiSbYTLGlUCGI
+         TxDv9SjPTs7Bt6UyAXaU9jbO3ItciMqA6JG0dQy9ABWjGAtLBuVzXcJlOnWkWW+sFoaR
+         IYx9mzsPu1oQP+opTHmmeSSZSRJwkVE8w8XKfD5yPuXOog2GgqsmkA2CPS592WpkzJDW
+         Ovvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756141024; x=1756745824;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kzx6ult7AB9nPxzDnEVuF5a6hHvnRYg2lUWdYF5qbBA=;
+        b=sNplIMn0aqkBzwvi0MPwmpQaD/8TkBbSx2bf45ktDv6BTae/he7oF9s4yq+0slMqOq
+         p1Ah4W2fOudEcli9QIuKbboyrwlIewiFk4CSEXBQh+kjRLL9bDq0hTHXry3MtdKevQAR
+         41TCRr7ZnHcB4HofY5EV9LDQCD9gC/9aG79HNF8w0LnBtAU+s6/T9fqLmW7QKoZwIvt8
+         KituD4kc2PXHWf5rx8aiJkVewCj153N9Ujvm99sWHmiKlDbOX5NYINZ1YhQxwinH9Hbj
+         mIvfRJgNG14Wmk11l8cymp1TVpu1jnFls0nk+AZRdDQSxrKxfq29878LA/1KesEappYG
+         hXHA==
+X-Gm-Message-State: AOJu0YxThvMTUyMrE4tFAzwttA6VpWnyTh1j8vhNLKAYBUYjSB20OB1T
+	McNxj+jZGYFGBEd/L6tSQ5UH80H5FpwIJh8PtAaGqwzx6OVyjR1F0eZ/
+X-Gm-Gg: ASbGnctM91HYfN4P6O2vKrsjssQdtE4YOTn7nfivZgiV3CfqN4C6KLBFWkfgjvU2sa2
+	oclAUkYGSUXwoNrlRR6lpTv7Pdx/gu82gST2XTsVhinKx6WXTaAKCHaPJc4iKJY6YUCd5yT0bkU
+	HjXgVHuhNRTkvjQtznhd+vJwG72+WcQyircW3obPvieKt3ypnnv1bY21qWMoQJCFfJnkLau3uTP
+	qmd7EBcbSyxr5ivZomJlmO+gl4XP0HtgCxiyehH3CstfiKGzx5rByhiIzz2CBE80ElR86ykGoS6
+	yGwAgZbVSfHpp4cvImjcjaALZJH9Vbx5Fd9otId5aE7oYuvJFnyXY1zQ6QXqAorxNJTgFSOaykQ
+	Tolic1yuaf37+uEtRGiUihCNaYrCU
+X-Google-Smtp-Source: AGHT+IFFR5y4JdtzoqwMxsgjkANK77BZHBmK4SjpgTdpWdR3HpCa5wHYqF7+mAfoJNNQWoZJSkODaw==
+X-Received: by 2002:a05:6a20:2585:b0:240:ed9:dd0a with SMTP id adf61e73a8af0-24340d11bf2mr18167699637.35.1756141023740;
+        Mon, 25 Aug 2025 09:57:03 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:14a::947? ([2620:10d:c090:600::1:48d8])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-771e159b157sm3408790b3a.25.2025.08.25.09.57.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Aug 2025 09:57:03 -0700 (PDT)
+Message-ID: <af62c4eb4a098ede717767376321520bc8537826.camel@gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/2] bpf: improve the general precision of
+ tnum_mul
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Nandakumar Edamana <nandakumar@nandakumar.co.in>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann	 <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Jakub Sitnicki	 <jakub@cloudflare.com>, Harishankar Vishwanathan	
+ <harishankar.vishwanathan@gmail.com>
+Date: Mon, 25 Aug 2025 09:57:00 -0700
+In-Reply-To: <176c9fbe-2d0e-467e-86b2-358ec7a9d7cb@nandakumar.co.in>
+References: <20250822170821.2053848-1-nandakumar@nandakumar.co.in>
+	 <8834d8df16f050ec9e906a850c894b481dfa022c.camel@gmail.com>
+	 <116ef3d2-51a5-444c-ad51-126043649226@nandakumar.co.in>
+	 <0ed1ad1d73d2c4468b3a02b3034b7dfd6e693d66.camel@gmail.com>
+	 <132d5874-9a1f-496f-a08c-02b99918aa59@nandakumar.co.in>
+	 <5d15719140555e1213192aee9078efbd3ee43507.camel@gmail.com>
+	 <176c9fbe-2d0e-467e-86b2-358ec7a9d7cb@nandakumar.co.in>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250825135342.53110-6-kerneljasonxing@gmail.com>
 
-Hi Jason,
+On Mon, 2025-08-25 at 22:26 +0530, Nandakumar Edamana wrote:
+> On 25/08/25 21:54, Eduard Zingerman wrote:
+> > On Mon, 2025-08-25 at 09:46 +0530, Nandakumar Edamana wrote:
+> > > Status as of now:
+> > >=20
+> > > DECIDED:
+> > >=20
+> > > 1. Replace the current outer comment for the new tnum_mul() with a
+> > >   =C2=A0 =C2=A0cleaner explanation and the example from the README of=
+ the test
+> > >   =C2=A0 =C2=A0program.
+> > >=20
+> > > 2. (Related to PATCH 2/2) Drop the trivial tests.
+> > >=20
+> > > UNDECIDED:
+> > >=20
+> > > Instead of just doing tnum_mul(a, b),
+> > >=20
+> > > a) whether to do best(tnum_mul(a, b), tnum_mul(b, a))
+> > > b) whether to do best(best(tnum_mul(a, b), tnum_mul(b, a)),
+> > >   =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 best(tnum_mul_old(a, b), tnum_mul_old(b, a)))
+> > I'd drop both undecided points.
+> Shall I send v5 with the decided changes then?
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Jason-Xing/xsk-introduce-XDP_GENERIC_XMIT_BATCH-setsockopt/20250825-220610
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20250825135342.53110-6-kerneljasonxing%40gmail.com
-patch subject: [PATCH net-next v2 5/9] xsk: add xsk_alloc_batch_skb() to build skbs in batch
-config: i386-buildonly-randconfig-001-20250825 (https://download.01.org/0day-ci/archive/20250826/202508260022.JtJJJkAw-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250826/202508260022.JtJJJkAw-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202508260022.JtJJJkAw-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   ld: net/core/skbuff.o: in function `xsk_alloc_batch_skb':
->> skbuff.c:(.text+0x7e69): undefined reference to `xsk_build_skb'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Yes, please do.
 
