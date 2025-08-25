@@ -1,162 +1,103 @@
-Return-Path: <bpf+bounces-66418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87748B3496B
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 19:56:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99DF9B34971
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 19:57:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30713188B620
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 17:56:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74D85165492
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 17:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF44306D35;
-	Mon, 25 Aug 2025 17:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC2F303CB7;
+	Mon, 25 Aug 2025 17:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XIeNjfNj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nF9yWOVO"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6EC23FC49;
-	Mon, 25 Aug 2025 17:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E33306D35
+	for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 17:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756144566; cv=none; b=b83Q2hBpnkhwxfNzRMCs6V3kCQpMHmWr4RU5SO7mwYUOMtUpM4MtU1YWAXYK0EUWf1ps+rf4RnevBJ+GQAS6p2OtIH5N9+3UVVBuIEv8UW8amhKDfhBi2iYG5RQ3Pmat/SgqWhCM8kKFGasj26+AwRZU/A80ZM4T11MZIAsqukA=
+	t=1756144666; cv=none; b=pl3qVm8cTGwpp0CrIZBxvEjsK1JWqmth8nqAH5K0lJy+qyJ71EUwrFaP6M7H8a0UEWbhdIj+AjWQMHBAbuC6qOLbJP/vuSa0XHTq39XXGQ+k8zjwUj02YjoutxyhQA19vovxlVS1HkIBPvitwmz0gzLWV0fnUioOMgXm9Iy6HRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756144566; c=relaxed/simple;
-	bh=Sqcd8MEqSlMASqnsEkumIOPR2m+rpUpw+A+V+vT4TsQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DKbPNn0w9eXJbwWFCnT/WT1Fn4gh2jNi4WKDZkMg8tlWU87Hs7Q5rGfvjdwqqBUeLjZVCrbxxUJO5QVUTHU6le/qGGOYkJQ1jpFaw/J9d9mjRD9n/UZu03thT2SDsEs6yIodxt/22CvAADijt89bJ7WCspNE8XSRiNKQLg/dDOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XIeNjfNj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89FF2C4CEED;
-	Mon, 25 Aug 2025 17:56:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756144565;
-	bh=Sqcd8MEqSlMASqnsEkumIOPR2m+rpUpw+A+V+vT4TsQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XIeNjfNj00zeKgf0Og7lA2loxROwUE3fH6uOMDJ3K+jDI83IgjRxdaOjzu7ljogBP
-	 J6Px4d+nA+xR9ahivgOI9TcsYxAEG/3h+8ZXoUg5b+e8MJSYLZ5Fobb2m4nvFq2PQ9
-	 OTCZ6DfeEgM5dHrvrKr2n6BQRyg02zOA3ld/PkEks+akE61w+fZHRv0vhb4mjTu7/f
-	 ++Gp+qHy2gd0W5MZSepJs4JrSjM0UjjP9PQ3XVqx6de++TjWiaeOa17UVx3C93JmgU
-	 if6kvhKq28ZUDUW2qbTNJrWLhAlPH1eYrl8lSaN5MpCEzs68Q4icvOZlR55xUVI5rG
-	 vmYA4uQgtTmEg==
-Date: Mon, 25 Aug 2025 10:56:05 -0700
-From: Kees Cook <kees@kernel.org>
-To: Wake Liu <wakel@google.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
-	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] selftests/seccomp: improve backwards compatibility for
- older kernels
-Message-ID: <202508251051.E222C34D2F@keescook>
-References: <20250807174613.1895006-1-wakel@google.com>
+	s=arc-20240116; t=1756144666; c=relaxed/simple;
+	bh=rZ1gVlHVC2LtswozWTAknTdiVP4jlIX2acbTjgdNq2E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k33y6J98IaMrd5ZYiuhfiKaSSGTddy9WNy3Kg75fYo1NeqmMNB+nRYHa9eFQm6MTrv0O4xRrabgDC8kMh+OJAmy5DyR2UhzPwBncWDQIBKTT0v3flHUpjsTMZzJj6kbqpMCQs/I6/nFZcHFlqwwSj3bvKQqYp7ml6kyzkRRYtVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nF9yWOVO; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <daa73a77-3366-45b4-a770-fde87d4f50d8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756144661;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UunViqkcj2OvVIMREzKdT5BwO3vN56/qvu8uu6ah+VY=;
+	b=nF9yWOVOcjDUmy/9Stb1563tEnFTyokVcKO+F8ZJrE/RvCdzkPIS7zwjdoCGn+RM6z2iVG
+	f5wMT6PYQ274/eOGhHOBEG75LOSupJs0EJ5URR9pH6xXJSl2Re507b7M9IuFA0WMsKaqU4
+	TM/5FhPj/52an7N21WrqkIeJSkdns80=
+Date: Mon, 25 Aug 2025 10:57:30 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250807174613.1895006-1-wakel@google.com>
+Subject: Re: [PATCH v1 bpf-next/net 2/8] bpf: Add a bpf hook in
+ __inet_accept().
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>,
+ Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima
+ <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250822221846.744252-1-kuniyu@google.com>
+ <20250822221846.744252-3-kuniyu@google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250822221846.744252-3-kuniyu@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Aug 08, 2025 at 01:46:13AM +0800, Wake Liu wrote:
-> This commit introduces checks for kernel version and seccomp filter flag
-> support to the seccomp selftests. It also includes conditional header
-> inclusions using __GLIBC_PREREQ.
-> 
-> Some tests were gated by kernel version, and adjustments were made for
-> flags introduced after kernel 5.4. This ensures the selftests can run
-> and pass correctly on kernel versions 5.4 and later, preventing failures
-> due to features not present in older kernels.
-> 
-> The use of __GLIBC_PREREQ ensures proper compilation and functionality
-> across different glibc versions in a mainline Linux kernel context.
-> While it might appear redundant in specific build environments due to
-> global overrides, it is crucial for upstream correctness and portability.
-> 
-> Signed-off-by: Wake Liu <wakel@google.com>
-> ---
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 108 ++++++++++++++++--
->  1 file changed, 99 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index 61acbd45ffaa..9b660cff5a4a 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -13,12 +13,14 @@
->   * we need to use the kernel's siginfo.h file and trick glibc
->   * into accepting it.
->   */
-> +#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
->  #if !__GLIBC_PREREQ(2, 26)
->  # include <asm/siginfo.h>
->  # define __have_siginfo_t 1
->  # define __have_sigval_t 1
->  # define __have_sigevent_t 1
->  #endif
-> +#endif
->  
->  #include <errno.h>
->  #include <linux/filter.h>
-> @@ -300,6 +302,26 @@ int seccomp(unsigned int op, unsigned int flags, void *args)
->  }
->  #endif
->  
-> +int seccomp_flag_supported(int flag)
-> +{
-> +	/*
-> +	 * Probes if a seccomp filter flag is supported by the kernel.
-> +	 *
-> +	 * When an unsupported flag is passed to seccomp(SECCOMP_SET_MODE_FILTER, ...),
-> +	 * the kernel returns EINVAL.
-> +	 *
-> +	 * When a supported flag is passed, the kernel proceeds to validate the
-> +	 * filter program pointer. By passing NULL for the filter program,
-> +	 * the kernel attempts to dereference a bad address, resulting in EFAULT.
-> +	 *
-> +	 * Therefore, checking for EFAULT indicates that the flag itself was
-> +	 * recognized and supported by the kernel.
-> +	 */
-> +	if (seccomp(SECCOMP_SET_MODE_FILTER, flag, NULL) == -1 && errno == EFAULT)
-> +		return 1;
-> +	return 0;
-> +}
-
-I like this!
-
+On 8/22/25 3:17 PM, Kuniyuki Iwashima wrote:
+> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+> index ae83ecda3983..ab613abdfaa4 100644
+> --- a/net/ipv4/af_inet.c
+> +++ b/net/ipv4/af_inet.c
+> @@ -763,6 +763,8 @@ void __inet_accept(struct socket *sock, struct socket *newsock, struct sock *new
+>   		kmem_cache_charge(newsk, gfp);
+>   	}
+>   
+> +	BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT(newsk);
 > +
->  #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
->  #define syscall_arg(_n) (offsetof(struct seccomp_data, args[_n]))
->  #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-> @@ -2436,13 +2458,12 @@ TEST(detect_seccomp_filter_flags)
->  		ASSERT_NE(ENOSYS, errno) {
->  			TH_LOG("Kernel does not support seccomp syscall!");
->  		}
-> -		EXPECT_EQ(-1, ret);
-> -		EXPECT_EQ(EFAULT, errno) {
-> -			TH_LOG("Failed to detect that a known-good filter flag (0x%X) is supported!",
-> -			       flag);
-> -		}
->  
-> -		all_flags |= flag;
-> +		if (seccomp_flag_supported(flag))
-> +			all_flags |= flag;
-> +		else
-> +			TH_LOG("Filter flag (0x%X) is not found to be supported!",
-> +			       flag);
+>   	if (mem_cgroup_sk_enabled(newsk)) {
+>   		int amt;
+>   
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 233de8677382..80df246d4741 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1133,6 +1133,7 @@ enum bpf_attach_type {
+>   	BPF_NETKIT_PEER,
+>   	BPF_TRACE_KPROBE_SESSION,
+>   	BPF_TRACE_UPROBE_SESSION,
+> +	BPF_CGROUP_INET_SOCK_ACCEPT,
 
-So I've pushed back on "backward compatible" changes to this selftest
-because I want it to be validating the _latest_ seccomp. This allows for
-expected flags to be missing.
+Instead of adding another hook, can the SK_BPF_MEMCG_SOCK_ISOLATED bit be 
+inherited from the listener?
 
-Is there perhaps a way that the backward compat checking could be a
-commandline flag or something? That way by default it looks strictly the
-more current seccomp features.
-
--Kees
-
--- 
-Kees Cook
 
