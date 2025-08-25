@@ -1,277 +1,204 @@
-Return-Path: <bpf+bounces-66444-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDEE6B34B0C
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 21:41:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2079FB34B86
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 22:08:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74FB73BB88F
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 19:40:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80177242517
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 20:08:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A4628A3EF;
-	Mon, 25 Aug 2025 19:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DfxzdIlm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2129C286417;
+	Mon, 25 Aug 2025 20:07:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75306287516;
-	Mon, 25 Aug 2025 19:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91979285C8F;
+	Mon, 25 Aug 2025 20:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756150771; cv=none; b=FZQrbyCf/WtYgEy4oqdvEwPtGexx+sqZNQwOEBCU2fOS9TdJhKuz59FUkdWYhix8RlCWZfQ+t/iQynWUlHpElOInGKT9ht+jq7b3NCSnzPHUbOEKXMiz8WJHa6aAwUIFFWEmfnYt3m1zeXlg0hXtX2a8ckbcqx2tG/upE00svCA=
+	t=1756152436; cv=none; b=pxrNWNUUSfjVTXjVSVB/8gPbMSnyFziltDwDYN+wUWsW8m+JeS1vK8zadO4hUkV4mR16gt8NK/7JcURLiQpNnhz7QL4YN+Pv60vGgPEP9Dw7ShdB2Vlf2e2/p4/qLeR7bX4kHHlrbYhXgM/7FPFORJAycVft5bLo/FXx00Qx4zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756150771; c=relaxed/simple;
-	bh=CHuuwPMnvmoCAujfhGM2B374FKr5bpJINN2Jn4vtZRg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SwTVXItkf7dKvcjnug9dUUh5o72NeMokksErOGBQaoahIfOZyResN9iKWD1OzYzOU8/8MJMXkpdkMdOG0WoogkaxTIoNwL/pgUKkOYL8+p8EGByjeWBKlrY2ekQacjq/PC08/uZJdM+r1gmpOWlrebXqvU/ZSPsnlIk1HlnDEwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DfxzdIlm; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-323266d6f57so5049872a91.0;
-        Mon, 25 Aug 2025 12:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756150769; x=1756755569; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f4M9wArd94I6r74Yvpe66WNkmokzrNuVmc5Js2OfZVY=;
-        b=DfxzdIlmvbbcMaWmV5lls0OQRK5Etkhu+WvmRQm+/3ubuQXzE9tEGG/XJUgjA1Wtd5
-         kN0BX7RNBLOLMDHnv90J+t7ZosRXTuhLhVaThPTe2qo3UZWOekFx8E7vkryWvytPGB81
-         mF1840c+ZsdhA3VwHRXpfveXoGe7LBBWuZVZ39TFxMqbSDFviXz7OLl1VuVX5BPmBEQi
-         /sbu8T4/tQKw7EP7k8GYcYNtQfP2yMQ/H2ObeDn1Zq8iSGtEX+FofL/YqaBYBpvi6qwm
-         5lFmzyJodNkjf8QhODFp8iRlZrhmgqovYWdkNbmgA7il4gdUUyBTV2PJHSoemzwRIRs5
-         SGRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756150769; x=1756755569;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f4M9wArd94I6r74Yvpe66WNkmokzrNuVmc5Js2OfZVY=;
-        b=s1bmh/uL+AP8Mxq7+ESJkbAigeE29MpAVbCeacokKTg51vyeisAbEdup+uBaWmEGYO
-         DE3SORmCD1BaWqQvI3/UQqZJVuSjqW6oQWG12nRJ12yci8Ft+AOjHoWHZguz3owi6IyI
-         M//GJcDv8cXbMF7pPq4sopx1n/9zJzR6/y65yZW5oEjFLflcTvGi1A0PtQn9fd2c+02J
-         ggAeA0wR7k/yrXvbAZ1UCze4nYvPZo3X1fWYqw9ywVrbZv1bur6i1w6F6zQIKVo+Gf8M
-         5xH7WYZHmumJdzGtxRmISN2T9zwMhl+BptMTHSWJUN0rZxzxiOZbYPbNYbjZR+76XCvp
-         dFag==
-X-Gm-Message-State: AOJu0YyNa3oSv+iYbcvnVcR8yWPLbg3TLyU3ct78Ik5Y+mbumWJ/0Nyd
-	fbQhmlayCdgmZnuKV8EPbmqytJpDNApLatLnmKjCbeuk8wLLdyd4ufDncF9PJQ==
-X-Gm-Gg: ASbGncuim5oWosXC02LKBNa+PoODUTR+yix57GGQZsLjJBqtoLWVmdu2kuNQqA/Vn1M
-	lK2Kfjjr5i+tKH2EF/gPXEP2jF4CveAXw8BpDv+vb7LlyRUjWW+de2B5wldZpy+Em5DfQuOXS7H
-	u7eKpBGAlonBME/lvkOxP+KOIPa1lAUIeF/Vj2cPrWKoSAPCOEtZzrNF1+j5+HIwL8OeIpNww12
-	Noqp3oF1kACl8nkPwDrxhgz7dWS/VT/wz+rcdPRAmsa07REfYTQLm7q+PxnUsdeguExDvD1pa8A
-	75YIgRvROxL5FsZxv92vTIXC7QHELvBcrUk/njLL1GGAEFgrkJyhEg0O4DcXaMsMxzlbya4dooZ
-	EvmYk0cqGG7Fevg==
-X-Google-Smtp-Source: AGHT+IHGDc9MYBo7/23AbngNlYRYIZFTAl5+SnuwW9s10isFdxvgX1AyasPS1CjSsVOkqHBN6quFyQ==
-X-Received: by 2002:a17:90b:4a46:b0:325:2e4e:5f66 with SMTP id 98e67ed59e1d1-3252e4e60ebmr15397819a91.26.1756150768560;
-        Mon, 25 Aug 2025 12:39:28 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:55::])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3254af4c347sm7713417a91.18.2025.08.25.12.39.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 12:39:28 -0700 (PDT)
-From: Amery Hung <ameryhung@gmail.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kuba@kernel.org,
-	martin.lau@kernel.org,
-	mohsin.bashr@gmail.com,
-	saeedm@nvidia.com,
-	tariqt@nvidia.com,
-	mbloch@nvidia.com,
-	maciej.fijalkowski@intel.com,
-	kernel-team@meta.com
-Subject: [RFC bpf-next v1 7/7] selftests: drv-net: Pull data before parsing headers
-Date: Mon, 25 Aug 2025 12:39:18 -0700
-Message-ID: <20250825193918.3445531-8-ameryhung@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250825193918.3445531-1-ameryhung@gmail.com>
-References: <20250825193918.3445531-1-ameryhung@gmail.com>
+	s=arc-20240116; t=1756152436; c=relaxed/simple;
+	bh=YCRhxx3RdlApPSKFaF9dmlJcjWTwvnvYlnLGiNohuss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XLBP8IRAjHX52kpbmH9ASi4ZE2NDY8Yfeg79f2FikUAr2yhRYHocaIyD0PMFg3VYK6a8PO9jIp223XW4eYtJg+tVRJfdKex2g60EvVy8pXmFhDB0gpO2xg16GlCRuxkCCesLjNHs34X9AOz/6fRDB/Gzo0BYEHQmglc2iGYQ+4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from [IPV6:2a02:8084:255b:aa00:5463:d190:b7cc:eed1] (unknown [IPv6:2a02:8084:255b:aa00:5463:d190:b7cc:eed1])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 8D1D340099;
+	Mon, 25 Aug 2025 20:07:11 +0000 (UTC)
+Authentication-Results: Plesk;
+        spf=pass (sender IP is 2a02:8084:255b:aa00:5463:d190:b7cc:eed1) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=[IPV6:2a02:8084:255b:aa00:5463:d190:b7cc:eed1]
+Received-SPF: pass (Plesk: connection is authenticated)
+Message-ID: <0165bf55-4a46-4e75-91df-644b0281b247@arnaud-lcm.com>
+Date: Mon, 25 Aug 2025 21:07:10 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next RESEND v4 1/2] bpf: refactor max_depth
+ computation in bpf_get_stack()
+To: Yonghong Song <yonghong.song@linux.dev>,
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, sdf@fomichev.me,
+ syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+ syzkaller-bugs@googlegroups.com, song@kernel.org
+References: <20250819162652.8776-1-contact@arnaud-lcm.com>
+ <3d8fe484-2889-4367-9405-91aeee7d2ef0@linux.dev>
+ <b15c8986-b407-4ae1-9e02-672c1cf9013f@arnaud-lcm.com>
+ <43b9d0ff-9922-490a-ac6b-7e8e7baa2247@linux.dev>
+Content-Language: en-US
+From: "Lecomte, Arnaud" <contact@arnaud-lcm.com>
+In-Reply-To: <43b9d0ff-9922-490a-ac6b-7e8e7baa2247@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-PPP-Message-ID: <175615243259.32519.10645825439471745222@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
-It is possible for drivers to generate xdp packets with data residing
-entirely in fragments. To keep parsing headers using direcy packet
-access, call bpf_xdp_pull_data() to pull headers into the linear data
-area.
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
----
- .../selftests/net/lib/xdp_native.bpf.c        | 90 +++++++++++++++----
- 1 file changed, 75 insertions(+), 15 deletions(-)
-
-diff --git a/tools/testing/selftests/net/lib/xdp_native.bpf.c b/tools/testing/selftests/net/lib/xdp_native.bpf.c
-index 521ba38f2ddd..68b2a08055ce 100644
---- a/tools/testing/selftests/net/lib/xdp_native.bpf.c
-+++ b/tools/testing/selftests/net/lib/xdp_native.bpf.c
-@@ -14,6 +14,9 @@
- #define MAX_PAYLOAD_LEN 5000
- #define MAX_HDR_LEN 64
- 
-+extern int bpf_xdp_pull_data(struct xdp_md *xdp, __u32 len,
-+			     __u64 flags) __ksym __weak;
-+
- enum {
- 	XDP_MODE = 0,
- 	XDP_PORT = 1,
-@@ -68,30 +71,57 @@ static void record_stats(struct xdp_md *ctx, __u32 stat_type)
- 
- static struct udphdr *filter_udphdr(struct xdp_md *ctx, __u16 port)
- {
--	void *data_end = (void *)(long)ctx->data_end;
--	void *data = (void *)(long)ctx->data;
- 	struct udphdr *udph = NULL;
--	struct ethhdr *eth = data;
-+	void *data, *data_end;
-+	struct ethhdr *eth;
-+	int err;
-+
-+	err = bpf_xdp_pull_data(ctx, sizeof(*eth), 0);
-+	if (err)
-+		return NULL;
-+
-+	data_end = (void *)(long)ctx->data_end;
-+	data = eth = (void *)(long)ctx->data;
- 
- 	if (data + sizeof(*eth) > data_end)
- 		return NULL;
- 
- 	if (eth->h_proto == bpf_htons(ETH_P_IP)) {
--		struct iphdr *iph = data + sizeof(*eth);
-+		struct iphdr *iph;
-+
-+		err = bpf_xdp_pull_data(ctx, sizeof(*eth) + sizeof(*iph) +
-+					     sizeof(*udph), 0);
-+		if (err)
-+			return NULL;
-+
-+		data_end = (void *)(long)ctx->data_end;
-+		data = (void *)(long)ctx->data;
-+
-+		iph = data + sizeof(*eth);
- 
- 		if (iph + 1 > (struct iphdr *)data_end ||
- 		    iph->protocol != IPPROTO_UDP)
- 			return NULL;
- 
--		udph = (void *)eth + sizeof(*iph) + sizeof(*eth);
--	} else if (eth->h_proto  == bpf_htons(ETH_P_IPV6)) {
--		struct ipv6hdr *ipv6h = data + sizeof(*eth);
-+		udph = data + sizeof(*iph) + sizeof(*eth);
-+	} else if (eth->h_proto == bpf_htons(ETH_P_IPV6)) {
-+		struct ipv6hdr *ipv6h;
-+
-+		err = bpf_xdp_pull_data(ctx, sizeof(*eth) + sizeof(*ipv6h) +
-+					     sizeof(*udph), 0);
-+		if (err)
-+			return NULL;
-+
-+		data_end = (void *)(long)ctx->data_end;
-+		data = (void *)(long)ctx->data;
-+
-+		ipv6h = data + sizeof(*eth);
- 
- 		if (ipv6h + 1 > (struct ipv6hdr *)data_end ||
- 		    ipv6h->nexthdr != IPPROTO_UDP)
- 			return NULL;
- 
--		udph = (void *)eth + sizeof(*ipv6h) + sizeof(*eth);
-+		udph = data + sizeof(*ipv6h) + sizeof(*eth);
- 	} else {
- 		return NULL;
- 	}
-@@ -145,17 +175,34 @@ static void swap_machdr(void *data)
- 
- static int xdp_mode_tx_handler(struct xdp_md *ctx, __u16 port)
- {
--	void *data_end = (void *)(long)ctx->data_end;
--	void *data = (void *)(long)ctx->data;
- 	struct udphdr *udph = NULL;
--	struct ethhdr *eth = data;
-+	void *data, *data_end;
-+	struct ethhdr *eth;
-+	int err;
-+
-+	err = bpf_xdp_pull_data(ctx, sizeof(*eth), 0);
-+	if (err)
-+		return XDP_PASS;
-+
-+	data_end = (void *)(long)ctx->data_end;
-+	data = eth = (void *)(long)ctx->data;
- 
- 	if (data + sizeof(*eth) > data_end)
- 		return XDP_PASS;
- 
- 	if (eth->h_proto == bpf_htons(ETH_P_IP)) {
--		struct iphdr *iph = data + sizeof(*eth);
--		__be32 tmp_ip = iph->saddr;
-+		struct iphdr *iph;
-+		__be32 tmp_ip;
-+
-+		err = bpf_xdp_pull_data(ctx, sizeof(*eth) + sizeof(*iph) +
-+					     sizeof(*udph), 0);
-+		if (err)
-+			return XDP_PASS;
-+
-+		data_end = (void *)(long)ctx->data_end;
-+		data = (void *)(long)ctx->data;
-+
-+		iph = data + sizeof(*eth);
- 
- 		if (iph + 1 > (struct iphdr *)data_end ||
- 		    iph->protocol != IPPROTO_UDP)
-@@ -169,8 +216,10 @@ static int xdp_mode_tx_handler(struct xdp_md *ctx, __u16 port)
- 			return XDP_PASS;
- 
- 		record_stats(ctx, STATS_RX);
-+		eth = data;
- 		swap_machdr((void *)eth);
- 
-+		tmp_ip = iph->saddr;
- 		iph->saddr = iph->daddr;
- 		iph->daddr = tmp_ip;
- 
-@@ -178,9 +227,19 @@ static int xdp_mode_tx_handler(struct xdp_md *ctx, __u16 port)
- 
- 		return XDP_TX;
- 
--	} else if (eth->h_proto  == bpf_htons(ETH_P_IPV6)) {
--		struct ipv6hdr *ipv6h = data + sizeof(*eth);
-+	} else if (eth->h_proto == bpf_htons(ETH_P_IPV6)) {
- 		struct in6_addr tmp_ipv6;
-+		struct ipv6hdr *ipv6h;
-+
-+		err = bpf_xdp_pull_data(ctx, sizeof(*eth) + sizeof(*ipv6h) +
-+					     sizeof(*udph), 0);
-+		if (err)
-+			return XDP_PASS;
-+
-+		data_end = (void *)(long)ctx->data_end;
-+		data = (void *)(long)ctx->data;
-+
-+		ipv6h = data + sizeof(*eth);
- 
- 		if (ipv6h + 1 > (struct ipv6hdr *)data_end ||
- 		    ipv6h->nexthdr != IPPROTO_UDP)
-@@ -194,6 +253,7 @@ static int xdp_mode_tx_handler(struct xdp_md *ctx, __u16 port)
- 			return XDP_PASS;
- 
- 		record_stats(ctx, STATS_RX);
-+		eth = data;
- 		swap_machdr((void *)eth);
- 
- 		__builtin_memcpy(&tmp_ipv6, &ipv6h->saddr, sizeof(tmp_ipv6));
--- 
-2.47.3
-
+On 25/08/2025 19:27, Yonghong Song wrote:
+>
+>
+> On 8/25/25 9:39 AM, Lecomte, Arnaud wrote:
+>>
+>> On 19/08/2025 22:15, Martin KaFai Lau wrote:
+>>> On 8/19/25 9:26 AM, Arnaud Lecomte wrote:
+>>>> A new helper function stack_map_calculate_max_depth() that
+>>>> computes the max depth for a stackmap.
+>>>>
+>>>> Changes in v2:
+>>>>   - Removed the checking 'map_size % map_elem_size' from
+>>>>     stack_map_calculate_max_depth
+>>>>   - Changed stack_map_calculate_max_depth params name to be more 
+>>>> generic
+>>>>
+>>>> Changes in v3:
+>>>>   - Changed map size param to size in max depth helper
+>>>>
+>>>> Changes in v4:
+>>>>   - Fixed indentation in max depth helper for args
+>>>>
+>>>> Link to v3: 
+>>>> https://lore.kernel.org/all/09dc40eb-a84e-472a-8a68-36a2b1835308@linux.dev/
+>>>>
+>>>> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+>>>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>>>> ---
+>>>>   kernel/bpf/stackmap.c | 30 ++++++++++++++++++++++++------
+>>>>   1 file changed, 24 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+>>>> index 3615c06b7dfa..b9cc6c72a2a5 100644
+>>>> --- a/kernel/bpf/stackmap.c
+>>>> +++ b/kernel/bpf/stackmap.c
+>>>> @@ -42,6 +42,27 @@ static inline int stack_map_data_size(struct 
+>>>> bpf_map *map)
+>>>>           sizeof(struct bpf_stack_build_id) : sizeof(u64);
+>>>>   }
+>>>>   +/**
+>>>> + * stack_map_calculate_max_depth - Calculate maximum allowed stack 
+>>>> trace depth
+>>>> + * @size:  Size of the buffer/map value in bytes
+>>>> + * @elem_size:  Size of each stack trace element
+>>>> + * @flags:  BPF stack trace flags (BPF_F_USER_STACK, 
+>>>> BPF_F_USER_BUILD_ID, ...)
+>>>> + *
+>>>> + * Return: Maximum number of stack trace entries that can be 
+>>>> safely stored
+>>>> + */
+>>>> +static u32 stack_map_calculate_max_depth(u32 size, u32 elem_size, 
+>>>> u64 flags)
+>>>> +{
+>>>> +    u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+>>>> +    u32 max_depth;
+>>>> +
+>>>> +    max_depth = size / elem_size;
+>>>> +    max_depth += skip;
+>>>> +    if (max_depth > sysctl_perf_event_max_stack)
+>>>> +        return sysctl_perf_event_max_stack;
+>>>
+>>> hmm... this looks a bit suspicious. Is it possible that 
+>>> sysctl_perf_event_max_stack is being changed to a larger value in 
+>>> parallel?
+>>>
+>> Hi Martin, this is a valid concern as sysctl_perf_event_max_stack can 
+>> be modified at runtime through /proc/sys/kernel/perf_event_max_stack.
+>> What we could maybe do instead is to create a copy: u32 current_max = 
+>> READ_ONCE(sysctl_perf_event_max_stack);
+>> Any thoughts on this ?
+>
+> There is no need to have READ_ONCE. Jut do
+>     int curr_sysctl_max_stack = sysctl_perf_event_max_stack;
+>     if (max_depth > curr_sysctl_max_stack)
+>       return curr_sysctl_max_stack;
+>
+> Because of the above change, the patch is not a refactoring change any 
+> more.
+>
+Why would you not consider it as a refactoring change anymore ?
+>>
+>>>> +
+>>>> +    return max_depth;
+>>>> +}
+>>>> +
+>>>>   static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+>>>>   {
+>>>>       u64 elem_size = sizeof(struct stack_map_bucket) +
+>>>> @@ -406,7 +427,7 @@ static long __bpf_get_stack(struct pt_regs 
+>>>> *regs, struct task_struct *task,
+>>>>                   struct perf_callchain_entry *trace_in,
+>>>>                   void *buf, u32 size, u64 flags, bool may_fault)
+>>>>   {
+>>>> -    u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
+>>>> +    u32 trace_nr, copy_len, elem_size, max_depth;
+>>>>       bool user_build_id = flags & BPF_F_USER_BUILD_ID;
+>>>>       bool crosstask = task && task != current;
+>>>>       u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+>>>> @@ -438,10 +459,7 @@ static long __bpf_get_stack(struct pt_regs 
+>>>> *regs, struct task_struct *task,
+>>>>           goto clear;
+>>>>       }
+>>>>   -    num_elem = size / elem_size;
+>>>> -    max_depth = num_elem + skip;
+>>>> -    if (sysctl_perf_event_max_stack < max_depth)
+>>>> -        max_depth = sysctl_perf_event_max_stack;
+>>>> +    max_depth = stack_map_calculate_max_depth(size, elem_size, 
+>>>> flags);
+>>>>         if (may_fault)
+>>>>           rcu_read_lock(); /* need RCU for perf's callchain below */
+>>>> @@ -461,7 +479,7 @@ static long __bpf_get_stack(struct pt_regs 
+>>>> *regs, struct task_struct *task,
+>>>>       }
+>>>>         trace_nr = trace->nr - skip;
+>>>> -    trace_nr = (trace_nr <= num_elem) ? trace_nr : num_elem;
+>>>
+>>> I suspect it was fine because trace_nr was still bounded by num_elem.
+>>>
+>> We should bring back the num_elem bound as an additional safe net.
+>>>> +    trace_nr = min(trace_nr, max_depth - skip);
+>>>
+>>> but now the min() is also based on max_depth which could be 
+>>> sysctl_perf_event_max_stack.
+>>>
+>>> beside, if I read it correctly, in "max_depth - skip", the max_depth 
+>>> could also be less than skip. I assume trace->nr is bound by 
+>>> max_depth, so should be less of a problem but still a bit 
+>>> unintuitive to read.
+>>>
+>>>>       copy_len = trace_nr * elem_size;
+>>>>         ips = trace->ip + skip;
+>>>
+>
+>
 
