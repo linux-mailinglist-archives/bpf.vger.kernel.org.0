@@ -1,120 +1,153 @@
-Return-Path: <bpf+bounces-66412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7E4CB348FE
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 19:38:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BA9B348FF
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 19:38:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B20475E7AA3
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 17:37:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EC73188EF15
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 17:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1081F301000;
-	Mon, 25 Aug 2025 17:34:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D367308F30;
+	Mon, 25 Aug 2025 17:34:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XbG3g0F6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HIcIdbEx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DF2304993
-	for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 17:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C01308F2A;
+	Mon, 25 Aug 2025 17:34:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756143253; cv=none; b=sdx/gPLbheN/6VQHvN6mMpqiJK5GDeX41ZplW4d6octTLdeNmgR3HyK8KuBsM44d5dBlLuVUjnLjzUvVl14B448s/+yrbcqy5ZNjxvJtrtHwo7T+KPrBqNmym3KQ5b6SNwzbqJt3fROVwqg0HWfYlg04XI4Id4YmuDqMj1YPNN8=
+	t=1756143299; cv=none; b=mfptOkwcT1l19h08kq/zm4QBxrjOZe3kbLNrV/9kwccu8uFOFGQ/qkAi+GAtZ/ERzIBp7vWbd43dCU4dnN46VE5eAHWvUmS0xZFBQaf7YgemmL3Kc0yGlK8QATl03J0CaKsqaRyxgTVCQkTgRhFPyJmVxJeyk09am1UcMN5yVpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756143253; c=relaxed/simple;
-	bh=qALHTb18fItlePsZkOFxJcOziMRbpSgNg6bp8um0nrU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZHAxb1tKYEjvkr/N6Ftft/4pFLfhCl/naHk5OyowbjN3nFlCpyKnPFI+60pFAu+2Eva6T/R1ApouAC41hGEo+Jo9rgygOdu4JnO1vjGl09dldgg9P7x5anYNdmZHzHD8ALTW4ON/tLDpT0UJRg6l0HoqqsYl3Ff5VHr9Ym9a01Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XbG3g0F6; arc=none smtp.client-ip=209.85.216.43
+	s=arc-20240116; t=1756143299; c=relaxed/simple;
+	bh=BF4TDhqQMFX1tdUCUnTsWrwYS2QKh698szOx84ZHXrU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kh+buXs8+3ziU2+yR5lX02r6unyy4linYdYYeYQw2AkCXQKHLg+vgb7MD678TO8VahaONcAoqF/eIUfXzikRGCZMW+W+vebXGNbdWtpImhK9CWHrkrhS2fBmnxr3Wbju3Bog1dJ4K+Av3jSmZ/WolvJTqtdhAFwIgZAAKOBoq6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HIcIdbEx; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-323266d6f57so4903321a91.0
-        for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 10:34:11 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-77031d4638bso2688336b3a.1;
+        Mon, 25 Aug 2025 10:34:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756143251; x=1756748051; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qALHTb18fItlePsZkOFxJcOziMRbpSgNg6bp8um0nrU=;
-        b=XbG3g0F6ZljuEoCgTRZHngMfp1vp+c0qF8TWG8rPXCR9pYzM3IOF0a+I8rXmwgjw4W
-         Cxe0ohsQjQMDe4LB8xzBh8EfTah5oZIX5+e+5/ZFpcvUjCvZX2iFdKOOyQlDFU1KlF3F
-         3tS2UMGCIvZhv3bX63GZ3suqD9lgxFx4VKnoMT40HrNUkwsLG7frFJMm5t3SFs+p//xy
-         PZwLkOY+nJSt453EnTSRTRwcEWopFrCWudCFhk17fC10JWf+XlqvaOzz0+LAh/sdS9xZ
-         +i4/B/FxZkUfW1DVglWMDY+PfVzy9EZh9OPADmzVZWgmLl0WNYVT7JP60OaxjLx/D+HJ
-         XCAw==
+        d=gmail.com; s=20230601; t=1756143297; x=1756748097; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4uw/9uBbQYYP/tm1pCiHdt2MwBK9JCxPJmXEEuez5M8=;
+        b=HIcIdbExAtIxGUnCdiuSq6cEJABSaji2UpmlJ8hhwZtC1Yt6D7+wKpT/qauBSMn/0V
+         zqlV+JML8tntt4gNJQ71GpxYxHjF05jUTeQ/qdCGAOLBXrP+2SHC3EeAYKMBcXDHwTSh
+         qO9UzzOw19sGS8Tabb5Kvg7nNnb2bv4rTylcblKyXOG1n0kG9OCSD1s1hNLenX/WaeV+
+         YwMqojQSJVTZNN0CdoUo2IzSVtQVHa+TXWl56UCaTPzFgQuYomQvfl9tQYpdBCjnU6LL
+         L0iZa0XMiKpIJhLwEW8NSBV8d1LnrHrvahO7fIaBla1czvMzkL3EHEYQsfGTevctZpU1
+         uQ1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756143251; x=1756748051;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qALHTb18fItlePsZkOFxJcOziMRbpSgNg6bp8um0nrU=;
-        b=Gi1eoSgx4M0bb/UO9/Epwpao98AVH3+LobOHkXfLxMFNq+PUDxdfA25Sars0KqsLjC
-         vnCbrnHojF2hPh/ZM/O0Xh1idmW5fLkxPfUEPU638kprEt0/YYSBAf6lMDmHlnR91AMt
-         9rEH/CFuidmrTV6m1gWOYKOBBFcqBLgUCFVF4cZPt7mFp5qvdSP8tZIoW1eYy3AT73GV
-         cEHLLD4RCMYBTiFiIEK0xkjlEgVHjTnQn52WtGf0chTsa0AdVvlhbD/ytdGRegGvQ12U
-         L6SXKzuz7DW/OvcUFp8lu6INvijavSw2pmqnEMt4APvRV8f885d0CSGb2AfAwLaPgN+p
-         0Psw==
-X-Gm-Message-State: AOJu0YxlZE2rdYnBe/ZxRtedGmUNx/W/BnOeJAJwdknUzNFvFRxxJdcd
-	zSpt+3aMEm2pN0Z/U2cTVOi2pqYjFVi4HSJuvs7iY0MZMkTbq1j4yI1w
-X-Gm-Gg: ASbGncv+8crwWj9Nx4pWbGb3yqOOx9V30+l55ZWB/awpPVgFZ3T8VID6JJ6dGEzrskf
-	b9it0XTYkuMiTJiWLBm5d4lVTij8pSmGKa4UzOprNAczsz3wEHPl+n8cHA6I9Yv6nGo7hEBAIoA
-	7/fRvybYVgHbSPyKLgf+JfJojGdeKJvi4qBucPrhGZHjxNw/3V+0rHxiMzbNagaHwl0P8ReIeei
-	jT39ICBLooG4oKkt+cX+2tQCKINlY6c+2LQ4oLWoCCR2KhktwUN87LIMkUoVUD0y8jfa2agQXAU
-	vDw2yaFTDliH1gOzyRTGya2F8IBMQ4WYZU0agkASvhw6sahhKihx6limsXnDcS6a9McJaSIwNpm
-	oVDoP1l1pbCqCGO50lPbjGgj83qTy
-X-Google-Smtp-Source: AGHT+IGoy5PzmxkyWjoAW31AufnKvCk7HMXsIhR9+/WlWsYtoWNTkg/aeIs5mEZw6IKE+0O4rt8/PQ==
-X-Received: by 2002:a17:90b:5806:b0:323:7e81:7faa with SMTP id 98e67ed59e1d1-32518b825a6mr15496453a91.36.1756143251260;
-        Mon, 25 Aug 2025 10:34:11 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::947? ([2620:10d:c090:600::1:48d8])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3254aa7c48dsm7690580a91.31.2025.08.25.10.34.09
+        d=1e100.net; s=20230601; t=1756143297; x=1756748097;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4uw/9uBbQYYP/tm1pCiHdt2MwBK9JCxPJmXEEuez5M8=;
+        b=YlG2dhDIdW+yHZTUVdzMlGW6riFEoTkTIUBCwOMyRki5/iImZ7ybmL6I1JbgZa4zqs
+         FX6fAnwbfBh/3CgGVjjt3HJxG4o2oHVGd+f117zlTCLTiaw0wrOcFTD1jwVoRXfHI7ca
+         VOe0v1FucHqztIbdKIyLUZzGggX7JyCCOrVmU8jNfWWnrsJg90rWEZw6iGgEqhbL+0W7
+         E/o9V4+5wHeO2+07xfiXo3hmS286MpJJXuYOvmizC0vnJpveOyXJCPD4zduuGFVlrAAP
+         FFirDODaP5geRqr3j4mydYAIGcT6UUC81WULokTBOe3RmvjivBWudNSRV/dy64ohNCZN
+         r3FQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUosSXW985yv2hNoFwxdRAmZjYtTKIJXzLu1HA9K+DLwvcSTMJSwDAsSSgZ767p1mSr8uC5jKBQ@vger.kernel.org, AJvYcCW0G2rhreKZJdBukBB45AzVvNum9f1XxhWMw811w6lADD274tQt9qMKQyyTyW3CLoiTNIA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwY58ByLEp0TLzPX6TuGDRNL3Qd6oiyviD50kO7ra7kPRqkzPp8
+	BPwOxfKzqRVxSIQ0nw22piRw3GxWJSojr2w2WEeKBlTZIkoAA5z15N4=
+X-Gm-Gg: ASbGncspGBN1OUFs3tnswYvJHMl2S1TrJ52/H550FxP149b3VC/41KijbmOCxftRthZ
+	epXQ0dUUyskWSLm0adHTCQ3CLU2vACzL6VFGvMheGWKbfIiLUX/GSG9Mi35zmv9jTznWHcJkBj3
+	EXj3w3e1H8+0pEKnLnZgabr21TGI1VFHruadG1Y/HBsT2lXLb9AopNneOFN2Cb++nQV+sMvRKP9
+	MNBi8D0JNu67NIzObWGrzCipGyVrJIkoxH4ZesD1kp8c/6A5+75gKOC9m1/Wpb1qTN6W2AaE8WA
+	P0khLWt6SsosjUpiBTopbym76mzYujCtEN2OwdohshJb4mCiM7nKJbyzBCZ32QtxEI7CjRs0dDp
+	O8A1Hl5QUZaLTY4xdc7aSK1TfX6FwAlcNf7aohhjpb9I3v1fTDIBB2DmT3ZIYblXiE0tzCUsn5s
+	HKTT5PMSpnCqOMfjanIncSAQDptS0dQQvL0XuTPZXJmkVrT6aNzRBcVYL4btvlLIDGa834ZwU3d
+	YIG
+X-Google-Smtp-Source: AGHT+IHwjdEj2wwT3CsUO4ccxosQQa8SCF4RTlUhjsBv1awtfLMaX9E3sw8/pqIj3XMXYO5tQdCRsw==
+X-Received: by 2002:a05:6a00:2d97:b0:770:5031:180b with SMTP id d2e1a72fcca58-77050311f1fmr8053956b3a.21.1756143296649;
+        Mon, 25 Aug 2025 10:34:56 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-771ead8f278sm2200781b3a.14.2025.08.25.10.34.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 10:34:10 -0700 (PDT)
-Message-ID: <1b4fcf8f76024e7fa547d592db4e178af4fd3037.camel@gmail.com>
-Subject: Re: [PATCH v5 bpf-next 1/2] bpf: improve the general precision of
- tnum_mul
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Nandakumar Edamana <nandakumar@nandakumar.co.in>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann	 <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Jakub Sitnicki	 <jakub@cloudflare.com>, Harishankar Vishwanathan	
- <harishankar.vishwanathan@gmail.com>
-Date: Mon, 25 Aug 2025 10:34:09 -0700
-In-Reply-To: <20250825172946.2141497-1-nandakumar@nandakumar.co.in>
-References: <20250825172946.2141497-1-nandakumar@nandakumar.co.in>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        Mon, 25 Aug 2025 10:34:56 -0700 (PDT)
+Date: Mon, 25 Aug 2025 10:34:55 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+	sdf@fomichev.me, ast@kernel.org, daniel@iogearbox.net,
+	hawk@kernel.org, john.fastabend@gmail.com, horms@kernel.org,
+	andrew+netdev@lunn.ch, bpf@vger.kernel.org, netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: Re: [PATCH net-next v2 6/9] xsk: add direct xmit in batch function
+Message-ID: <aKyev6DadDuL3Xlo@mini-arch>
+References: <20250825135342.53110-1-kerneljasonxing@gmail.com>
+ <20250825135342.53110-7-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250825135342.53110-7-kerneljasonxing@gmail.com>
 
-On Mon, 2025-08-25 at 22:59 +0530, Nandakumar Edamana wrote:
-> This commit addresses a challenge explained in an open question ("How
-> can we incorporate correlation in unknown bits across partial
-> products?") left by Harishankar et al. in their paper:
-> https://arxiv.org/abs/2105.05398
->=20
-> When LSB(a) is uncertain, we know for sure that it is either 0 or 1,
-> from which we could find two possible partial products and take a
-> union. Experiment shows that applying this technique in long
-> multiplication improves the precision in a significant number of cases
-> (at the cost of losing precision in a relatively lower number of
-> cases).
->=20
-> This commit also removes the value-mask decomposition technique
-> employed by Harishankar et al., as its direct incorporation did not
-> result in any improvements for the new algorithm.
->=20
-> Signed-off-by: Nandakumar Edamana <nandakumar@nandakumar.co.in>
+On 08/25, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+> 
+> Add batch xmit logic.
+> 
+> Only grabbing the lock and disable bottom half once and sent all
+> the aggregated packets in one loop.
+> 
+> Since previous patch puts descriptors in xs->skb_cache in a reversed
+> order, this patch sends each skb out from start to end when 'start' is
+> not smaller than 'end'.
+> 
+> Signed-off-by: Jason Xing <kernelxing@tencent.com>
 > ---
+>  include/linux/netdevice.h |  3 +++
+>  net/core/dev.c            | 19 +++++++++++++++++++
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 5e5de4b0a433..8e2688e3f2e4 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -3352,6 +3352,9 @@ u16 dev_pick_tx_zero(struct net_device *dev, struct sk_buff *skb,
+>  
+>  int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev);
+>  int __dev_direct_xmit(struct sk_buff *skb, u16 queue_id);
+> +int xsk_direct_xmit_batch(struct sk_buff **skbs, struct net_device *dev,
+> +			  struct netdev_queue *txq, int *cur,
+> +			  int start, int end);
+>  
+>  static inline int dev_queue_xmit(struct sk_buff *skb)
+>  {
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 68dc47d7e700..a5a6b9a199e9 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4742,6 +4742,25 @@ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>  }
+>  EXPORT_SYMBOL(__dev_queue_xmit);
+>  
+> +int xsk_direct_xmit_batch(struct sk_buff **skbs, struct net_device *dev,
+> +			  struct netdev_queue *txq, int *cur,
+> +			  int start, int end)
+> +{
+> +	int ret = NETDEV_TX_BUSY;
+> +
+> +	local_bh_disable();
+> +	HARD_TX_LOCK(dev, txq, smp_processor_id());
+> +	for (*cur = start; *cur >= end; (*cur)--) {
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-
-[...]
+skbs support chaining (via list member), any reason not to use that for
+batching purposes?
 
