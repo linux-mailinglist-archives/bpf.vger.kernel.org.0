@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-66401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D21FBB3464E
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 17:51:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 272D7B34739
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 18:24:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D73F11A88195
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 15:52:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F180D1A8881F
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 16:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70F32E7F0A;
-	Mon, 25 Aug 2025 15:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A288A3002C7;
+	Mon, 25 Aug 2025 16:24:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/h56Dpj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aeQ2uEn8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4B719066B
-	for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 15:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10BD2FF64F
+	for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 16:24:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756137104; cv=none; b=rG8R6N+nd2dmfjHjfUFQvxbamjmN7r2KYOobPajgAr1qpuHzV3rBLXvVqMHgxoFoSF7IhX1bYr/TuSwKEFRoHPRUb0aR4AHU+0xTvm10vusNVxOOJ4yd4mFBcg0arzedrrLyGYj+GBF4RinFpxn1K7PyzHyscmnAiN3BuHh74Tw=
+	t=1756139067; cv=none; b=H6+dTWIcZvVVhN50A4Gadhf7Achyl310h/LI2tZkqe3lAI1qFoWyxZRZAmxyUHRY3Shk7H+cID/RvDLxc7kk6pPAcmHYbYxOCeAWymAtLrginW+KwRpkaI0yHT1F7OwfgLWbUVn3K//dEUVzUAOq2EtHCNyAXICJOI2PGSVt3EE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756137104; c=relaxed/simple;
-	bh=pk7MZD8oFChF9fXO47sJ395MTefbYn55n1Rk4YX+qiU=;
+	s=arc-20240116; t=1756139067; c=relaxed/simple;
+	bh=cScOO7BLGJ9pGCAb4W+aUT+sRDk6URJxkVs8G4qUTrk=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=H9kelfdrJcxkqlxRR6caju1jrTarzS0URq720CcvLkXH4FM9l1R4RAojsuGcCjBy0T/5ck0jkdI3P6/SvIjMBy56MlViGgZwh92Iw+O97F2mRmEBoN2nBxIPnPZWWdcO6pDww5LPeOgQvP95yVwUanTjsEQgOe96Dr1bk5SVWGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j/h56Dpj; arc=none smtp.client-ip=209.85.216.48
+	 Content-Type:MIME-Version; b=kujAN0trIRDIkizE7PdB+WvSnqhx/mbLxpH/xDU7vT3z1Xz0dW3TGvnl//lNzkMvyHPipK1aPLT0B6te1/Yah9y1IVcdsdrBDsggLJ1FqQ8B76u6VoNZdXEeS+MJc5Sj1YsatVz6CLbXMUHF1BPi5QZ3VSR69p8act7h4cNGAbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aeQ2uEn8; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3258cdb7253so1530644a91.3
-        for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 08:51:42 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-771e15ce64eso878977b3a.0
+        for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 09:24:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756137102; x=1756741902; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756139065; x=1756743865; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=pk7MZD8oFChF9fXO47sJ395MTefbYn55n1Rk4YX+qiU=;
-        b=j/h56DpjTsp3TKl7NXhia/KQFGeBVt+Uvjptet1u/Odicunutk7H6e6lujrP7fKbs+
-         37FhyhNMSzzlAsmbrRIG0YkhOo9R9Cf0pJfdHIvZpzgJvd04t1KBHRAQwEi93M4viB/m
-         VVjD/3IiUMddgf2TNHTjgvyh7WaPJ1aplcRGD76tc7b+3jbT08jOXAyOmzGIaOu5zttC
-         uu8Yuv6n1dD2GaKeQJNsNFi3o8hcbNqvYTdWSyBSok5TWSuSliIA7b0Dc/wjfFs4UZxQ
-         REVQTKEZc4PneDftYZdA2PuUnnTmAQULJ6Hgdirl+PNFahbN/m8FbgsLz+Enx3jHuG9l
-         OPEw==
+        bh=iBQiZLO7GqI3grb9fCCkYuBlOig0hVje3gQbNQlq8n8=;
+        b=aeQ2uEn8m/9Cm8CmlLUcvbNOIrS2jDryvSimQFVsNMpQ9sIKB6akEVcIXObjzRLVSB
+         vm6NnJP5Adm4yNt+E1rJqkjRh7ntcVx8Uc7aG4r0vWGOKenijNxjZquxm7Vmj4YCMuKA
+         7ZKBS+th1iFGSLQlIGymmHKSduKSAzEEPSwI5PvpbHkaxDAntBhyEULho8u3VKkPi+Yd
+         8ncPN43qodfY2GHKAG98/18FdZCnJhe67XYnpj7PdAeqrg4KeRhcC4GMmPkwats1ZCOq
+         EhVxiLQKMoNWABJrVS+Ti3ioR4Rifrzfnvt1GIJ4gBmFtB7WqbQvRCmOQoiWgBu34W+N
+         uCgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756137102; x=1756741902;
+        d=1e100.net; s=20230601; t=1756139065; x=1756743865;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pk7MZD8oFChF9fXO47sJ395MTefbYn55n1Rk4YX+qiU=;
-        b=H6f+SRletmYEOUc38yuN9uvqrFZ+ijFvihzXEAbAjCGuJHZ+t3cZOfCzWUt+S6wpGT
-         5NqCaIl6n7hbHgYOQNuDIPf9Z8O9xmb+q+C9euh7j5aiAe3QNgwthM/S1ljPc9JPlF9o
-         3kTED/RK7x5OjbElvHmGN2+N92HbCUHuc28Vl8msGAMS9bXs5UguE89AAomQ5NjnMkLC
-         TokHZgpb9uarIFikB/6nqHE0pqyFGTfzQ9f4ph2aygHSl9bP0Le+sVvkKafROxsqZFtD
-         hprGL+LZ5MoI6TfraJMEfN45b0hqseACwwKyunDlIcLBfrpwjbPvYCSlfatpWWxvkQWi
-         c1dA==
-X-Gm-Message-State: AOJu0YwWklZd4zgfXefL7N27k7+E6Y8IDqEzKcki3uPVHg3tApMUc0zR
-	vuDuYxfx4aF9lvbXOL7thxrPRMZ59r2a9bBrx9nEK7rOReiSws1XwWb7
-X-Gm-Gg: ASbGncsivFZBT7N6RURSZgfLCHawbsgqrLHTGSK8GvePM+4opRXHnRYTPFvRm0iuaup
-	x/Sa47bazWuO5OykpWufPxD67oiec9VoHWkpHvQxSUaCbY1zbbZ5zwZIc5j//HdW95lnNgC2f6Y
-	FkCLjB+TkdONffXa+Ca+dL+s2pojYRITcnsTzhsuLANlWG6IwHyjIuBCSSkbrhKszEmgSTccfBJ
-	MCPiI5PY4Xh6dqK+XzQTK4zXoIRNmf5FamPiZDXnpISrrGMMMguazOaF57UC16Sitp+nPZ8JPCn
-	mMjVCS8xBx9R8LjFSodvWDfzVwOMXVNkODxyh77mWXbNkQgnVC7nGS5CLLkUro4n4gRyq6FCGSU
-	rpn1j2FxW8evqC3yUzlDDFURGszIO
-X-Google-Smtp-Source: AGHT+IFxGHaydtrjvsWsf0RyZWCVsQfFMCI4lK2fB7stFAzvlPzc491ID77WqKdXhybeBDCydh6KBg==
-X-Received: by 2002:a17:90b:258c:b0:321:2407:3cec with SMTP id 98e67ed59e1d1-32515efa504mr19181382a91.16.1756137102275;
-        Mon, 25 Aug 2025 08:51:42 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::247? ([2620:10d:c090:600::1:283a])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3254af5f24asm7383435a91.21.2025.08.25.08.51.40
+        bh=iBQiZLO7GqI3grb9fCCkYuBlOig0hVje3gQbNQlq8n8=;
+        b=Jt0jH++rnsSOERZGUlJmA6SE7dOJveEuImsH4URUFFjv9sIjqLn9hXwD8A51Lnzaup
+         p9c7RzjVLtPOlMsDesXFxDTD7Lumtkwrhif7SsTzFq3Zob4km0jEHHfoZqq0zYCF6hMV
+         pRSK8Kb5/lMi/yIDmuHfYljhjDdlwCenpIic06x7AkSv/QCp4YtJ5D7k8EGX7tzstTJV
+         Ey0ytv2aT/N/qYDX18Da5bOoVuFqD480ZKGXVxVgGrZRt4yIxnml/SFI1Pm15KGV4Gbz
+         m+z4jM0hQ5RRO5poroY/fb8eqvDklork7Ii6DDDJd/bXnVTedVj3mqBkA7wyJLMYNUGJ
+         Vb4w==
+X-Gm-Message-State: AOJu0YzyxuHKGPTqLTIf/g9Nw9XgCZk5AtE/sfGivcCQ5qJKUy8SCw3e
+	m3emNMO14qd67E9gg35V8tWsWIvaa5j9rn9E8W2Rrq69nHjQk6AyA624JiVSodM4
+X-Gm-Gg: ASbGncvohUQXNbL/GcLpumZrznN/FCzCjgkZHakI4cKI+5bkjTud4HJpZdc0uh/mu8F
+	F4AlRaHCXM1b6ZcOyGcz80ewnuljWTMq0yXC+EUi2dcr+R9uTIwF17lDh0guuwZ/fwiQE8G52W6
+	4kWh7fIzOGvZ9DULB2ylbGCmxO3JVwl4t2+YilOiI5moCLwcJBCX3R8eN5QNMud0rjsW+nakxO4
+	0yLmgoTvrTriMDN5rHWxUsyZlkHAl5IfWeJ97fEFaG188FW3Pijm/RFQ0Vu/713twfGJjARDBC1
+	ZBAl1EhQxaLLAqNMfheI+psB1roVAPrBeMqHZHVsS1ThBsiCEznicYmpr1Kr1H3Z1aB9gAh9xFr
+	xeKN//O1RoiSiHppSgvhlVixphXes
+X-Google-Smtp-Source: AGHT+IHnEnwMKsLAxXWd7xDvkck/9co5BRmPK0PGqFOR8DJAD98b2t06TB0Iybs5uzytzNqfHFUXww==
+X-Received: by 2002:a05:6a00:3e0d:b0:771:ec91:4b92 with SMTP id d2e1a72fcca58-771ec919de4mr2737131b3a.18.1756139064922;
+        Mon, 25 Aug 2025 09:24:24 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:14a::947? ([2620:10d:c090:600::1:48d8])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770536cd341sm5422343b3a.72.2025.08.25.09.24.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 08:51:41 -0700 (PDT)
-Message-ID: <1c293ea48cfb4a0852570517b9daf155a2a3bde4.camel@gmail.com>
+        Mon, 25 Aug 2025 09:24:24 -0700 (PDT)
+Message-ID: <5d15719140555e1213192aee9078efbd3ee43507.camel@gmail.com>
 Subject: Re: [PATCH v4 bpf-next 1/2] bpf: improve the general precision of
  tnum_mul
 From: Eduard Zingerman <eddyz87@gmail.com>
@@ -81,12 +81,13 @@ Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
  Borkmann	 <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
  Jakub Sitnicki	 <jakub@cloudflare.com>, Harishankar Vishwanathan	
  <harishankar.vishwanathan@gmail.com>
-Date: Mon, 25 Aug 2025 08:51:39 -0700
-In-Reply-To: <0ed1ad1d73d2c4468b3a02b3034b7dfd6e693d66.camel@gmail.com>
+Date: Mon, 25 Aug 2025 09:24:22 -0700
+In-Reply-To: <132d5874-9a1f-496f-a08c-02b99918aa59@nandakumar.co.in>
 References: <20250822170821.2053848-1-nandakumar@nandakumar.co.in>
-		 <8834d8df16f050ec9e906a850c894b481dfa022c.camel@gmail.com>
-		 <116ef3d2-51a5-444c-ad51-126043649226@nandakumar.co.in>
+	 <8834d8df16f050ec9e906a850c894b481dfa022c.camel@gmail.com>
+	 <116ef3d2-51a5-444c-ad51-126043649226@nandakumar.co.in>
 	 <0ed1ad1d73d2c4468b3a02b3034b7dfd6e693d66.camel@gmail.com>
+	 <132d5874-9a1f-496f-a08c-02b99918aa59@nandakumar.co.in>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -97,20 +98,26 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Fri, 2025-08-22 at 16:56 -0700, Eduard Zingerman wrote:
-> On Sat, 2025-08-23 at 05:18 +0530, Nandakumar Edamana wrote:
+On Mon, 2025-08-25 at 09:46 +0530, Nandakumar Edamana wrote:
+> Status as of now:
 >=20
-> [...]
+> DECIDED:
 >=20
-> > I personally don't think `best(a*b, b*a)` is ugly. What about
-> > `best(oldprod, newprod)`, where oldprod and newprod are each found
-> > like this, using the old tnum_mul and the new tnum_mul respectively?
+> 1. Replace the current outer comment for the new tnum_mul() with a
+>  =C2=A0 =C2=A0cleaner explanation and the example from the README of the =
+test
+>  =C2=A0 =C2=A0program.
 >=20
-> Hm, given that both are correct if we go for a hybrid approach we can
-> peek known bits from both.
+> 2. (Related to PATCH 2/2) Drop the trivial tests.
+>=20
+> UNDECIDED:
+>=20
+> Instead of just doing tnum_mul(a, b),
+>=20
+> a) whether to do best(tnum_mul(a, b), tnum_mul(b, a))
+> b) whether to do best(best(tnum_mul(a, b), tnum_mul(b, a)),
+>  =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 best(tnum_mul_old(a, b), tnum_mul_old(b, a)))
 
-Thinking it over the weekend, I tend to agree with Harishankar.
-Few percent improvement does not merit complications with best part
-selection or maintaining two algorithms for multiplication.
-I'd stick with the new algorithm as in the current patch.
+I'd drop both undecided points.
 
