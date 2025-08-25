@@ -1,123 +1,182 @@
-Return-Path: <bpf+bounces-66402-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66403-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 272D7B34739
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 18:24:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAF9BB347B4
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 18:39:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F180D1A8881F
-	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 16:24:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B4BA1792DE
+	for <lists+bpf@lfdr.de>; Mon, 25 Aug 2025 16:39:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A288A3002C7;
-	Mon, 25 Aug 2025 16:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aeQ2uEn8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314FA301008;
+	Mon, 25 Aug 2025 16:39:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10BD2FF64F
-	for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 16:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9C02FE58F;
+	Mon, 25 Aug 2025 16:39:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756139067; cv=none; b=H6+dTWIcZvVVhN50A4Gadhf7Achyl310h/LI2tZkqe3lAI1qFoWyxZRZAmxyUHRY3Shk7H+cID/RvDLxc7kk6pPAcmHYbYxOCeAWymAtLrginW+KwRpkaI0yHT1F7OwfgLWbUVn3K//dEUVzUAOq2EtHCNyAXICJOI2PGSVt3EE=
+	t=1756139982; cv=none; b=B+YUKoCDrs+AEpuzClAz4TicAWeNycm/JWsiLqF70/WqXM13ipiG+XsoHrzdMSj/0P2AHmq2h/xXJK+Cj/n1GBewt9zwlHNUk5VbxC8qVd6w3VVboiwNSgioNS6OEwvpM6+EQWtaDS/1G5cJN7snPU5thN6ImggbcFr+y0g70sk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756139067; c=relaxed/simple;
-	bh=cScOO7BLGJ9pGCAb4W+aUT+sRDk6URJxkVs8G4qUTrk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kujAN0trIRDIkizE7PdB+WvSnqhx/mbLxpH/xDU7vT3z1Xz0dW3TGvnl//lNzkMvyHPipK1aPLT0B6te1/Yah9y1IVcdsdrBDsggLJ1FqQ8B76u6VoNZdXEeS+MJc5Sj1YsatVz6CLbXMUHF1BPi5QZ3VSR69p8act7h4cNGAbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aeQ2uEn8; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-771e15ce64eso878977b3a.0
-        for <bpf@vger.kernel.org>; Mon, 25 Aug 2025 09:24:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756139065; x=1756743865; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=iBQiZLO7GqI3grb9fCCkYuBlOig0hVje3gQbNQlq8n8=;
-        b=aeQ2uEn8m/9Cm8CmlLUcvbNOIrS2jDryvSimQFVsNMpQ9sIKB6akEVcIXObjzRLVSB
-         vm6NnJP5Adm4yNt+E1rJqkjRh7ntcVx8Uc7aG4r0vWGOKenijNxjZquxm7Vmj4YCMuKA
-         7ZKBS+th1iFGSLQlIGymmHKSduKSAzEEPSwI5PvpbHkaxDAntBhyEULho8u3VKkPi+Yd
-         8ncPN43qodfY2GHKAG98/18FdZCnJhe67XYnpj7PdAeqrg4KeRhcC4GMmPkwats1ZCOq
-         EhVxiLQKMoNWABJrVS+Ti3ioR4Rifrzfnvt1GIJ4gBmFtB7WqbQvRCmOQoiWgBu34W+N
-         uCgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756139065; x=1756743865;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iBQiZLO7GqI3grb9fCCkYuBlOig0hVje3gQbNQlq8n8=;
-        b=Jt0jH++rnsSOERZGUlJmA6SE7dOJveEuImsH4URUFFjv9sIjqLn9hXwD8A51Lnzaup
-         p9c7RzjVLtPOlMsDesXFxDTD7Lumtkwrhif7SsTzFq3Zob4km0jEHHfoZqq0zYCF6hMV
-         pRSK8Kb5/lMi/yIDmuHfYljhjDdlwCenpIic06x7AkSv/QCp4YtJ5D7k8EGX7tzstTJV
-         Ey0ytv2aT/N/qYDX18Da5bOoVuFqD480ZKGXVxVgGrZRt4yIxnml/SFI1Pm15KGV4Gbz
-         m+z4jM0hQ5RRO5poroY/fb8eqvDklork7Ii6DDDJd/bXnVTedVj3mqBkA7wyJLMYNUGJ
-         Vb4w==
-X-Gm-Message-State: AOJu0YzyxuHKGPTqLTIf/g9Nw9XgCZk5AtE/sfGivcCQ5qJKUy8SCw3e
-	m3emNMO14qd67E9gg35V8tWsWIvaa5j9rn9E8W2Rrq69nHjQk6AyA624JiVSodM4
-X-Gm-Gg: ASbGncvohUQXNbL/GcLpumZrznN/FCzCjgkZHakI4cKI+5bkjTud4HJpZdc0uh/mu8F
-	F4AlRaHCXM1b6ZcOyGcz80ewnuljWTMq0yXC+EUi2dcr+R9uTIwF17lDh0guuwZ/fwiQE8G52W6
-	4kWh7fIzOGvZ9DULB2ylbGCmxO3JVwl4t2+YilOiI5moCLwcJBCX3R8eN5QNMud0rjsW+nakxO4
-	0yLmgoTvrTriMDN5rHWxUsyZlkHAl5IfWeJ97fEFaG188FW3Pijm/RFQ0Vu/713twfGJjARDBC1
-	ZBAl1EhQxaLLAqNMfheI+psB1roVAPrBeMqHZHVsS1ThBsiCEznicYmpr1Kr1H3Z1aB9gAh9xFr
-	xeKN//O1RoiSiHppSgvhlVixphXes
-X-Google-Smtp-Source: AGHT+IHnEnwMKsLAxXWd7xDvkck/9co5BRmPK0PGqFOR8DJAD98b2t06TB0Iybs5uzytzNqfHFUXww==
-X-Received: by 2002:a05:6a00:3e0d:b0:771:ec91:4b92 with SMTP id d2e1a72fcca58-771ec919de4mr2737131b3a.18.1756139064922;
-        Mon, 25 Aug 2025 09:24:24 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:14a::947? ([2620:10d:c090:600::1:48d8])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770536cd341sm5422343b3a.72.2025.08.25.09.24.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 09:24:24 -0700 (PDT)
-Message-ID: <5d15719140555e1213192aee9078efbd3ee43507.camel@gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/2] bpf: improve the general precision of
- tnum_mul
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Nandakumar Edamana <nandakumar@nandakumar.co.in>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann	 <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Jakub Sitnicki	 <jakub@cloudflare.com>, Harishankar Vishwanathan	
- <harishankar.vishwanathan@gmail.com>
-Date: Mon, 25 Aug 2025 09:24:22 -0700
-In-Reply-To: <132d5874-9a1f-496f-a08c-02b99918aa59@nandakumar.co.in>
-References: <20250822170821.2053848-1-nandakumar@nandakumar.co.in>
-	 <8834d8df16f050ec9e906a850c894b481dfa022c.camel@gmail.com>
-	 <116ef3d2-51a5-444c-ad51-126043649226@nandakumar.co.in>
-	 <0ed1ad1d73d2c4468b3a02b3034b7dfd6e693d66.camel@gmail.com>
-	 <132d5874-9a1f-496f-a08c-02b99918aa59@nandakumar.co.in>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1756139982; c=relaxed/simple;
+	bh=F3qCyhsjaviup5ygBJcuz8aUOr/seEJq9d+yePUzDP8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mrhdcs23adwLS2rBlVyq7A1bUVcljpGqKoi73v3AyWED0lGb+Mx47mWFYoVmdoU8ztpyQrIpmcaun38sRTjUhOm/gxtZZWRfoYdoIr5HVvmP+2pEVQ3gWH90U8xIrpRy+OQ4LCbUvhsVc0cJ5qAKpxVqTjDjpZNra9lKL9/WNm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from [10.17.113.181] (unknown [15.248.3.85])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 81D85413A7;
+	Mon, 25 Aug 2025 16:39:29 +0000 (UTC)
+Authentication-Results: Plesk;
+        spf=pass (sender IP is 15.248.3.85) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=[10.17.113.181]
+Received-SPF: pass (Plesk: connection is authenticated)
+Message-ID: <b15c8986-b407-4ae1-9e02-672c1cf9013f@arnaud-lcm.com>
+Date: Mon, 25 Aug 2025 17:39:28 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next RESEND v4 1/2] bpf: refactor max_depth
+ computation in bpf_get_stack()
+To: Martin KaFai Lau <martin.lau@linux.dev>, yonghong.song@linux.dev
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, sdf@fomichev.me,
+ syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+ syzkaller-bugs@googlegroups.com, song@kernel.org
+References: <20250819162652.8776-1-contact@arnaud-lcm.com>
+ <3d8fe484-2889-4367-9405-91aeee7d2ef0@linux.dev>
+Content-Language: en-US
+From: "Lecomte, Arnaud" <contact@arnaud-lcm.com>
+In-Reply-To: <3d8fe484-2889-4367-9405-91aeee7d2ef0@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-PPP-Message-ID: <175613997037.23104.10940002931951082170@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
-On Mon, 2025-08-25 at 09:46 +0530, Nandakumar Edamana wrote:
-> Status as of now:
->=20
-> DECIDED:
->=20
-> 1. Replace the current outer comment for the new tnum_mul() with a
->  =C2=A0 =C2=A0cleaner explanation and the example from the README of the =
-test
->  =C2=A0 =C2=A0program.
->=20
-> 2. (Related to PATCH 2/2) Drop the trivial tests.
->=20
-> UNDECIDED:
->=20
-> Instead of just doing tnum_mul(a, b),
->=20
-> a) whether to do best(tnum_mul(a, b), tnum_mul(b, a))
-> b) whether to do best(best(tnum_mul(a, b), tnum_mul(b, a)),
->  =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 best(tnum_mul_old(a, b), tnum_mul_old(b, a)))
 
-I'd drop both undecided points.
+On 19/08/2025 22:15, Martin KaFai Lau wrote:
+> On 8/19/25 9:26 AM, Arnaud Lecomte wrote:
+>> A new helper function stack_map_calculate_max_depth() that
+>> computes the max depth for a stackmap.
+>>
+>> Changes in v2:
+>>   - Removed the checking 'map_size % map_elem_size' from
+>>     stack_map_calculate_max_depth
+>>   - Changed stack_map_calculate_max_depth params name to be more generic
+>>
+>> Changes in v3:
+>>   - Changed map size param to size in max depth helper
+>>
+>> Changes in v4:
+>>   - Fixed indentation in max depth helper for args
+>>
+>> Link to v3: 
+>> https://lore.kernel.org/all/09dc40eb-a84e-472a-8a68-36a2b1835308@linux.dev/
+>>
+>> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   kernel/bpf/stackmap.c | 30 ++++++++++++++++++++++++------
+>>   1 file changed, 24 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+>> index 3615c06b7dfa..b9cc6c72a2a5 100644
+>> --- a/kernel/bpf/stackmap.c
+>> +++ b/kernel/bpf/stackmap.c
+>> @@ -42,6 +42,27 @@ static inline int stack_map_data_size(struct 
+>> bpf_map *map)
+>>           sizeof(struct bpf_stack_build_id) : sizeof(u64);
+>>   }
+>>   +/**
+>> + * stack_map_calculate_max_depth - Calculate maximum allowed stack 
+>> trace depth
+>> + * @size:  Size of the buffer/map value in bytes
+>> + * @elem_size:  Size of each stack trace element
+>> + * @flags:  BPF stack trace flags (BPF_F_USER_STACK, 
+>> BPF_F_USER_BUILD_ID, ...)
+>> + *
+>> + * Return: Maximum number of stack trace entries that can be safely 
+>> stored
+>> + */
+>> +static u32 stack_map_calculate_max_depth(u32 size, u32 elem_size, 
+>> u64 flags)
+>> +{
+>> +    u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+>> +    u32 max_depth;
+>> +
+>> +    max_depth = size / elem_size;
+>> +    max_depth += skip;
+>> +    if (max_depth > sysctl_perf_event_max_stack)
+>> +        return sysctl_perf_event_max_stack;
+>
+> hmm... this looks a bit suspicious. Is it possible that 
+> sysctl_perf_event_max_stack is being changed to a larger value in 
+> parallel?
+>
+Hi Martin, this is a valid concern as sysctl_perf_event_max_stack can be 
+modified at runtime through /proc/sys/kernel/perf_event_max_stack.
+What we could maybe do instead is to create a copy: u32 current_max = 
+READ_ONCE(sysctl_perf_event_max_stack);
+Any thoughts on this ?
+
+>> +
+>> +    return max_depth;
+>> +}
+>> +
+>>   static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+>>   {
+>>       u64 elem_size = sizeof(struct stack_map_bucket) +
+>> @@ -406,7 +427,7 @@ static long __bpf_get_stack(struct pt_regs *regs, 
+>> struct task_struct *task,
+>>                   struct perf_callchain_entry *trace_in,
+>>                   void *buf, u32 size, u64 flags, bool may_fault)
+>>   {
+>> -    u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
+>> +    u32 trace_nr, copy_len, elem_size, max_depth;
+>>       bool user_build_id = flags & BPF_F_USER_BUILD_ID;
+>>       bool crosstask = task && task != current;
+>>       u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+>> @@ -438,10 +459,7 @@ static long __bpf_get_stack(struct pt_regs 
+>> *regs, struct task_struct *task,
+>>           goto clear;
+>>       }
+>>   -    num_elem = size / elem_size;
+>> -    max_depth = num_elem + skip;
+>> -    if (sysctl_perf_event_max_stack < max_depth)
+>> -        max_depth = sysctl_perf_event_max_stack;
+>> +    max_depth = stack_map_calculate_max_depth(size, elem_size, flags);
+>>         if (may_fault)
+>>           rcu_read_lock(); /* need RCU for perf's callchain below */
+>> @@ -461,7 +479,7 @@ static long __bpf_get_stack(struct pt_regs *regs, 
+>> struct task_struct *task,
+>>       }
+>>         trace_nr = trace->nr - skip;
+>> -    trace_nr = (trace_nr <= num_elem) ? trace_nr : num_elem;
+>
+> I suspect it was fine because trace_nr was still bounded by num_elem.
+>
+We should bring back the num_elem bound as an additional safe net.
+>> +    trace_nr = min(trace_nr, max_depth - skip);
+>
+> but now the min() is also based on max_depth which could be 
+> sysctl_perf_event_max_stack.
+>
+> beside, if I read it correctly, in "max_depth - skip", the max_depth 
+> could also be less than skip. I assume trace->nr is bound by 
+> max_depth, so should be less of a problem but still a bit unintuitive 
+> to read.
+>
+>>       copy_len = trace_nr * elem_size;
+>>         ips = trace->ip + skip;
+>
 
