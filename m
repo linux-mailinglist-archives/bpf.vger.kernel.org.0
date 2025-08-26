@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-66536-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66537-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FEE1B35D15
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 13:41:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB79BB35D6D
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 13:44:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48136188D88F
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 11:35:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD8E87C60B0
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 11:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33AE633EB19;
-	Tue, 26 Aug 2025 11:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605ED321456;
+	Tue, 26 Aug 2025 11:43:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Yl1bp9qe"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="gYocx37o"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91A64322C98
-	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 11:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DF41FECAB;
+	Tue, 26 Aug 2025 11:43:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756208007; cv=none; b=F84IYAQzUrBvG9E+yFv02l9xaOgc8YDcCz222L7ChBtNGwxeu7+sfzH0k/CtYqzGE7VdAczb+qF0cBNcmMSiNlpUzuss/w3IcPCAszXV/DWdHeEuXf+aPrUvWq+XVT805UviMYqP6m4D+zJKQcBml4gOwxkDtajpiwx3GDeiZCY=
+	t=1756208638; cv=none; b=V86bg6eRIiod1npZoJ3ZUZ4FjX1UEa6AbrYr6e7wO6UO5DG1Y5CU796eG9tyEtUEu++AtxqguU76KgfqD5a8Hx+h5ZMlW6U7n+uBMYQ/yFxSLA9bQVrCq4qptKHqJwDtpEio1L9Eiuwf1+zLqQsliaDXfnAa3+6qZmamqt8EQCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756208007; c=relaxed/simple;
-	bh=jpwGgiZ4P9laxrMv2wjcsvFdGnZ5RJE5K4EShA8/MrE=;
+	s=arc-20240116; t=1756208638; c=relaxed/simple;
+	bh=x6wDSn3aYoQdGVEQeWvRswzf7rItfR8juO8dPyAS2Js=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UEnpmlelJA1MpWzrP2B9O92qqw6LLIQLhgCd3blBF9XR0HviQddpSskfpo351LVYyjLBIrRJq4rQDn8p3EIfAnFWwiBgZ4BbfQiKZ0vEKgg8wmH0nZa58Hp964lozSl/nSbqEFlIEimCIwJYGakveayXgXo7Wr8ovdWli/H4nfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Yl1bp9qe; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=jsC0cX/AGIxAxl4sqvJ/xR9NP5gYBISx4YCkjQVRDi5ZxdeMFAqQlShh0lrnX8PPtWLjAan1O5xxffRbu8lwf/5jLbf+i/BnNRp4Y0/VIdo7Op7uejiNvqDzV5w26d/tq1MEV//jzrcqnGGF3RcQKdnRmb3a0YGrvdCdhBK+QCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=gYocx37o; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=+pMQoSJsX4fiGn1WQCgC8CB2Bu4du9aKkLwYIXQOe2M=; b=Yl1bp9qemlItTvbrsAb8Lw4owp
-	Ck4JBJnBxzEqZ/RdZCkRleSQcWOqs5/yrCM4Cs2pzofEItjjt5jv3RzRyeGCQ5n5YJ/Z5pT90uXZs
-	/nfUKEwrL/TmdmOGiCYMSMR6+3erUBKFVYo7KUoN76IkPUob3pUBAvMBV/cU/5C+A58PytSiWIkoD
-	fGnwqWi6aq9bWuE+gsNBgSvFiz79+mSkw88aLZu5Y8j6D9t5gJe3lyhNVJPlprFT+MJAts1oGa2Kf
-	u+bIf5UgJmPkEQsHf4BwrNhYnoRTuitPn4ELOjIoSIcnkUcPX84fM3ZFL4Doqru9BchvRPLvbTCKA
-	G95hXNEA==;
+	bh=key31R/F1NonX5cBG1ersPQnxbHMF3NVMU+tmAuVfYM=; b=gYocx37oVLw8AwJiVP2Zpio6cJ
+	F662+ayEz7EAjsT1C5ZvA5xluOY1JBCDM9pbe50xiEy+tDMD+VLHX2v1+CK0SeoX+VxASxB18fByV
+	aKb6BqHI6iLfdibvZHZ7pvlGiWllTuNes/EpIn4ae9sFUxBE/aK5IDnPjLlY2A1xtO07x1FKP8Vwb
+	1iK3W7yoD4uCUfDIv4auNFCdRS+7hfsTPC8t/bMgGwTK3skzRy+CluEehwXg/dqqUGQBHkpuhOLlE
+	/c8oEr4AyugnDs0eNZG7aFcFtl9yhHL/XOFqI/4kJ+5SJJTXIJR69GV5d2mt3QWTQ1dQBIg5jraJD
+	VH61WOIg==;
 Received: from sslproxy07.your-server.de ([78.47.199.104])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uqrvP-0001BZ-2t;
-	Tue, 26 Aug 2025 13:33:15 +0200
+	id 1uqs5i-0002Lk-01;
+	Tue, 26 Aug 2025 13:43:53 +0200
 Received: from localhost ([127.0.0.1])
 	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uqrvO-0000xY-2q;
-	Tue, 26 Aug 2025 13:33:15 +0200
-Message-ID: <f868340c-eb9a-4757-9ddf-ae08899bb263@iogearbox.net>
-Date: Tue, 26 Aug 2025 13:33:14 +0200
+	id 1uqs5g-000JHu-2F;
+	Tue, 26 Aug 2025 13:43:53 +0200
+Message-ID: <7ff59e6c-b061-41ef-bdc8-8eaffe15aff9@iogearbox.net>
+Date: Tue, 26 Aug 2025 13:43:52 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,15 +63,13 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 bpf-next 1/2] bpf: Improve the general precision of
- tnum_mul
-To: Nandakumar Edamana <nandakumar@nandakumar.co.in>,
- alexei.starovoitov@gmail.com
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Jakub Sitnicki <jakub@cloudflare.com>,
- Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
-References: <20250826034524.2159515-1-nandakumar@nandakumar.co.in>
+Subject: Re: [PATCH] bpf: Replace kvfree with kfree for kzalloc memory
+To: Feng Yang <yangfeng59949@163.com>, ast@kernel.org,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250826073920.1215368-1-yangfeng59949@163.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -117,31 +115,45 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250826034524.2159515-1-nandakumar@nandakumar.co.in>
+In-Reply-To: <20250826073920.1215368-1-yangfeng59949@163.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.7/27744/Tue Aug 26 10:26:45 2025)
 
-On 8/26/25 5:45 AM, Nandakumar Edamana wrote:
-> Drop the value-mask decomposition technique and adopt straightforward
-> long-multiplication with a twist: when LSB(a) is uncertain, find the
-> two partial products (for LSB(a) = known 0 and LSB(a) = known 1) and
-> take a union.
+On 8/26/25 9:39 AM, Feng Yang wrote:
+> From: Feng Yang <yangfeng@kylinos.cn>
 > 
-> Experiment shows that applying this technique in long multiplication
-> improves the precision in a significant number of cases (at the cost
-> of losing precision in a relatively lower number of cases).
+> Refer to https://lore.kernel.org/bpf/20250811123949.552885-1-rongqianfeng@vivo.com to replace the remaining part.
+
+Please make this a proper commit message instead of just posting a lore link.
+$subj should be [PATCH bpf-next].
+
+> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+> ---
+>   kernel/bpf/verifier.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Signed-off-by: Nandakumar Edamana <nandakumar@nandakumar.co.in>
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Reviewed-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 5c9dd16b2c56..b9394f8fac0e 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -2021,7 +2021,7 @@ static void free_backedges(struct bpf_scc_visit *visit)
+>   	for (backedge = visit->backedges; backedge; backedge = next) {
+>   		free_verifier_state(&backedge->state, false);
+>   		next = backedge->next;
+> -		kvfree(backedge);
+> +		kfree(backedge);
+>   	}
+>   	visit->backedges = NULL;
+>   }
+> @@ -19651,7 +19651,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+>   	err = maybe_enter_scc(env, new);
+>   	if (err) {
+>   		free_verifier_state(new, false);
+> -		kvfree(new_sl);
+> +		kfree(new_sl);
+>   		return err;
+>   	}
+>   
 
-Hari, are you okay if we also add a ...
-
-Tested-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com> # Agni
-
-... to indicate in the commit log that you also ran the code through Agni?
-
-Thanks,
-Daniel
 
