@@ -1,185 +1,143 @@
-Return-Path: <bpf+bounces-66597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 418FCB37458
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 23:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04C24B37466
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 23:25:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D0342042C9
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 21:24:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32514207C38
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 21:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A932F99A5;
-	Tue, 26 Aug 2025 21:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2964B2FAC0B;
+	Tue, 26 Aug 2025 21:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cAMkZsph"
 X-Original-To: bpf@vger.kernel.org
-Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5E228151E;
-	Tue, 26 Aug 2025 21:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47EDB2F83B7
+	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 21:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756243446; cv=none; b=kIkniDH1jkuoAy8Jg2297J/qel3lgqMW2H1lvAXtnHDTDsw1EPudpU8qBhMy21xEcLrVvya0mgMrpGCTGVuiaP3hzYy4LFHPn5GPjh54vx6b0h0U1X8Hh3zfTytbQNs3KYs7WMmRQNOwy5Ty9KBNamvRi+dqAOMTCeBNI0uXzvw=
+	t=1756243493; cv=none; b=iNjvPlXl0VcoNG3ptcDpPOE5+mQC+8ElIZB0q8gqlCsx31T8F92mXKsQh10oCLN+YJpnsYQyQrlpQN4fyAT8RuecmtyOWBZTxfy3azAWPdcere3mU1RYwKLmq/u+eMO5z6jYspOQ1hHUse0lbep9Il3qFbOCW884v7sWEtlNgtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756243446; c=relaxed/simple;
-	bh=tcKlRdf0OBEu2+100IjXjkXwwlpLL819tePWH4aHQLI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Yq0Ts1tZMdKiERLTaoyOyTen7/cTraVy0GZPvkBMwEvewyoNvjBoQvZ8bjw9Qgf4RAECg7aLoNrueytyJkQ1lVrQ14rf/8jqSt+pcvuCwTxLBD6QImFZvXYS+2xjsjc68uUeWsUzxLarKsqbrhx9jIjzKA6H+QgBL8uPNEsYbvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
-Received: from arnaudlcm-X570-UD.. (unknown [IPv6:2a02:8084:255b:aa00:df1d:d28e:21a2:5325])
-	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 1943940091;
-	Tue, 26 Aug 2025 21:24:01 +0000 (UTC)
-Authentication-Results: Plesk;
-	spf=pass (sender IP is 2a02:8084:255b:aa00:df1d:d28e:21a2:5325) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=arnaudlcm-X570-UD..
-Received-SPF: pass (Plesk: connection is authenticated)
-From: Arnaud Lecomte <contact@arnaud-lcm.com>
-To: song@kernel.org,
-	yonghong.song@linux.dev,
-	martin.lau@linux.dev
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	sdf@fomichev.me,
-	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	Arnaud Lecomte <contact@arnaud-lcm.com>
-Subject: [PATCH bpf-next v5 2/2] bpf: fix stackmap overflow check in
- __bpf_get_stackid()
-Date: Tue, 26 Aug 2025 22:23:52 +0100
-Message-ID: <20250826212352.143299-1-contact@arnaud-lcm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250826212229.143230-1-contact@arnaud-lcm.com>
-References: <20250826212229.143230-1-contact@arnaud-lcm.com>
+	s=arc-20240116; t=1756243493; c=relaxed/simple;
+	bh=VIiyrSqLG+vgF73thMJ1FZqyyfPAKoDCgtbBzE29VtQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s/rNO9/yQV1qNlXJy+2H4LcD7yiDAxSFSrEiIz2DWR4Lrmsz5OcCtWBW+vnj6inA3t4wYbrStgQAe1oWeTuWHecytA6oZd2uQIT4/gQhPIk5QDJuAqE8wn9kT33j2tzDOlGOK8RLjVqf4wQkQ9N/XrwL+ZGC3fijod+VeVJBxNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cAMkZsph; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2487104b9c6so10692595ad.0
+        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 14:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1756243491; x=1756848291; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9B1276hphs7ULbe2JVDIArBKHCuzM07N66UKV8tf9VA=;
+        b=cAMkZsphPBTJVAXWNFOed6eLXkliXPB+GrOvoRO6NsCsGM6bGGNv4H4aZDtoVC1gKJ
+         +0zFejcTE1nuRdqV+8CtLKBsVdnrfNK9uT08bbK7V52OH/I6ZlwnKAqVpPAVS2w8FOYP
+         xbdyzG/KtBYGrPDmwACVrrk7xT9c5O8dBN3LgP+KjO/0ZGv6J9AMvObmSxH7Z5jnK5Br
+         ZGdFklt79nCOB3EPMOIbXnKOUMa/eTEt0/NY+WZDr3jTuECzNrEkwVaj2J5W8x+SXThe
+         8ljXREKm2V0c1m1latDLSLMZjjE1Ixyzqlt4J8A/I+W6LvTA67+pwZTrKhDYhk8lgjuw
+         e1KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756243491; x=1756848291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9B1276hphs7ULbe2JVDIArBKHCuzM07N66UKV8tf9VA=;
+        b=L/oH0YmncpF1SSm9p+tnEo5pKvjcp5QaSDM1UuwrtWwjT/LYOgy2PD3n42PxF0qD+h
+         M077fEzbbMvZWqdEjvUe1a4uKinC9yXE4e0Q9/wTjZiCV5RbcFUhejuyApOl6s1pI/aV
+         SiA32GrdCKeH5mTBoGl6qvlRfeXUhvlYz3san1p4oB8qbMQWh/QEHY2HjWoF2l5Nyvmp
+         7hWUIn6RiAnuc8j8iofnWbVRVU5xu0/rZo+pBfdHaAaHpgep0l10tdYQ2Q8M8LH1YHFj
+         kdF7PAFioGqcS34OeiwkEZL6ERPBj+wxdRzuX1T6uyS2SeDUOqId8SMEOSI/tcmp+BJr
+         O7JA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxSXu04oxRJrQQzzXFT14Y7og7zA7RokVtBAR4/RCoovFK3wbagPODYP0+QXCbyhOUxfQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxP8R6JHtRxPLy6WaD8JYyxtXv8iAqQLP1S6Du7fSjPP/oDFHsF
+	VC1WAW6G2NqPNofUS2wCofh8Cd38I3Y+OZSEp4AebcRxQ3g6UGpoVClKCZ1jwqNBS/XzCLaWi7W
+	DqfSxHnVKsCVJjvR0xRiX4Q4FtbV7B+m+GAIBsYS/
+X-Gm-Gg: ASbGncvW/lsRMxnQcSfLKeuQ9pFDpGQc/esiwisigtjuQtMqVx3AloNMPfn+RXQvjmh
+	rtd1Yy4Y3Gfyy+rqgmmxqmM5N9yzRTLad0iGoe1nBQ8bVGj81RN2Tv5mO/CMCzZY7acKnMTQiOu
+	vu+LdhsaRgEz5KLlb2FVV0NH9Hsk1ZNRyQ4Boh03ZnyUwFROSzh+CJkqpa8A+TqUEKhsURvOdVB
+	QzOOHJvBk6+9DJ3WjquXwqChTh2/+hRR3b6Y841eruNdWIKCy3bWwrZCOKv9jhcEPyVgYVQ8xc=
+X-Google-Smtp-Source: AGHT+IHLq1gemrW5FOQ8J+SVgDRvPZuS0+b2YwjoTLEqHXZr1nwf9zJN1MoCpZ8aamhKtFNsfhiLrSrW21/GXm2U0hI=
+X-Received: by 2002:a17:902:f707:b0:246:115a:e5e6 with SMTP id
+ d9443c01a7336-2462ef4962cmr239367055ad.42.1756243491292; Tue, 26 Aug 2025
+ 14:24:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <175624344201.31674.16241940723371382857@Plesk>
-X-PPP-Vhost: arnaud-lcm.com
+References: <20250826183940.3310118-1-kuniyu@google.com> <20250826183940.3310118-3-kuniyu@google.com>
+ <aK4g640zGakSxlD9@mini-arch>
+In-Reply-To: <aK4g640zGakSxlD9@mini-arch>
+From: Kuniyuki Iwashima <kuniyu@google.com>
+Date: Tue, 26 Aug 2025 14:24:40 -0700
+X-Gm-Features: Ac12FXxWrzjfG9SW-BvA8V57F_LVNX5ynmGN74H44sYRyRW6GLwLkog3Eu0eOUc
+Message-ID: <CAAVpQUARxRTbmFiNE5GuO03qQAikddhT=BLcTWJVHvwK_Yq=Pg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next/net 2/5] bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stackid()
-when copying stack trace data. The issue occurs when the perf trace
- contains more stack entries than the stack map bucket can hold,
- leading to an out-of-bounds write in the bucket's data array.
+On Tue, Aug 26, 2025 at 2:02=E2=80=AFPM Stanislav Fomichev <stfomichev@gmai=
+l.com> wrote:
+>
+> On 08/26, Kuniyuki Iwashima wrote:
+> > We will store a flag in sk->sk_memcg by bpf_setsockopt() during
+> > socket() or before sk->sk_memcg is set in accept().
+> >
+> > BPF_CGROUP_INET_SOCK_CREATE is invoked by __cgroup_bpf_run_filter_sk()
+> > that passes a pointer to struct sock to the bpf prog as void *ctx.
+> >
+> > But there are no bpf_func_proto for bpf_setsockopt() that receives
+> > the ctx as a pointer to struct sock.
+> >
+> > Let's add a new bpf_setsockopt() variant for BPF_CGROUP_INET_SOCK_CREAT=
+E.
+>
+> [..]
+>
+> > Note that inet_create() is not under lock_sock().
+>
+> Does anything prevent us from grabbing the lock before running
+> SOCK_CREATE progs? This is not the fast path, so should be ok?
+> Will make it easier to reason about socket options (where all paths
+> are locked). We do similar things for sock_addr progs in
+> BPF_CGROUP_RUN_SA_PROG_LOCK.
 
-Changes in v2:
- - Fixed max_depth names across get stack id
+We can do that, but the reasoning here is exactly same with
+how we allow unlocked setsockopt() for LSM hooks.  Also, SA_
+prog actually needs lock_sock() to prevent sk->{addr fields} from
+being changed concurrently.
 
-Changes in v4:
- - Removed unnecessary empty line in __bpf_get_stackid
-
-Link to v4: https://lore.kernel.org/all/20250813205506.168069-1-contact@arnaud-lcm.com/
-
-Reported-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=c9b724fbb41cf2538b7b
-Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- kernel/bpf/stackmap.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 796cc105eacb..ef8269ab8d6f 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -247,7 +247,7 @@ get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
- }
- 
- static long __bpf_get_stackid(struct bpf_map *map,
--			      struct perf_callchain_entry *trace, u64 flags)
-+			      struct perf_callchain_entry *trace, u64 flags, u32 max_depth)
- {
- 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
- 	struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
-@@ -263,6 +263,8 @@ static long __bpf_get_stackid(struct bpf_map *map,
- 
- 	trace_nr = trace->nr - skip;
- 	trace_len = trace_nr * sizeof(u64);
-+	trace_nr = min(trace_nr, max_depth - skip);
-+
- 	ips = trace->ip + skip;
- 	hash = jhash2((u32 *)ips, trace_len / sizeof(u32), 0);
- 	id = hash & (smap->n_buckets - 1);
-@@ -322,19 +324,17 @@ static long __bpf_get_stackid(struct bpf_map *map,
- BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 	   u64, flags)
- {
--	u32 max_depth = map->value_size / stack_map_data_size(map);
--	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
-+	u32 elem_size = stack_map_data_size(map);
- 	bool user = flags & BPF_F_USER_STACK;
- 	struct perf_callchain_entry *trace;
- 	bool kernel = !user;
-+	u32 max_depth;
- 
- 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
- 			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
- 		return -EINVAL;
- 
--	max_depth += skip;
--	if (max_depth > sysctl_perf_event_max_stack)
--		max_depth = sysctl_perf_event_max_stack;
-+	max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
- 
- 	trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
- 				   false, false);
-@@ -343,7 +343,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 		/* couldn't fetch the stack trace */
- 		return -EFAULT;
- 
--	return __bpf_get_stackid(map, trace, flags);
-+	return __bpf_get_stackid(map, trace, flags, max_depth);
- }
- 
- const struct bpf_func_proto bpf_get_stackid_proto = {
-@@ -375,6 +375,7 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
- 	bool kernel, user;
- 	__u64 nr_kernel;
- 	int ret;
-+	u32 elem_size, max_depth;
- 
- 	/* perf_sample_data doesn't have callchain, use bpf_get_stackid */
- 	if (!(event->attr.sample_type & PERF_SAMPLE_CALLCHAIN))
-@@ -393,12 +394,13 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
- 		return -EFAULT;
- 
- 	nr_kernel = count_kernel_ip(trace);
--
-+	elem_size = stack_map_data_size(map);
- 	if (kernel) {
- 		__u64 nr = trace->nr;
- 
- 		trace->nr = nr_kernel;
--		ret = __bpf_get_stackid(map, trace, flags);
-+		max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
-+		ret = __bpf_get_stackid(map, trace, flags, max_depth);
- 
- 		/* restore nr */
- 		trace->nr = nr;
-@@ -410,7 +412,8 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
- 			return -EFAULT;
- 
- 		flags = (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
--		ret = __bpf_get_stackid(map, trace, flags);
-+		max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
-+		ret = __bpf_get_stackid(map, trace, flags, max_depth);
- 	}
- 	return ret;
- }
--- 
-2.43.0
-
+---8<---
+/* List of LSM hooks that trigger while the socket is _not_ locked,
+ * but it's ok to call bpf_{g,s}etsockopt because the socket is still
+ * in the early init phase.
+ */
+BTF_SET_START(bpf_lsm_unlocked_sockopt_hooks)
+#ifdef CONFIG_SECURITY_NETWORK
+BTF_ID(func, bpf_lsm_socket_post_create)
+BTF_ID(func, bpf_lsm_socket_socketpair)
+#endif
+BTF_SET_END(bpf_lsm_unlocked_sockopt_hooks)
+---8<---
 
