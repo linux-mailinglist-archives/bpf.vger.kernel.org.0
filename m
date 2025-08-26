@@ -1,134 +1,261 @@
-Return-Path: <bpf+bounces-66574-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66575-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD66AB370B7
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 18:48:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6F5AB370BC
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 18:51:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 362BB360035
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 16:48:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BDD07C25B8
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 16:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3843128B7CC;
-	Tue, 26 Aug 2025 16:48:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E8F2D3A72;
+	Tue, 26 Aug 2025 16:51:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eMT7G2t4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GZ5oM5Jn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D198275865
-	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 16:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74662750E6
+	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 16:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756226885; cv=none; b=bZX9g7UzhKlgUQGh9LEAxtkdNA96+mQsW2JM3p5fD+ITI1qMJrWEm5qbwHq2uXLXQKil+c4qXu1TD5FN4ES4EUbbHCAl8NgC4IxVZnHwmulLbFJyn0ROuNwLDQafPruy9ggomFCkLGr2LfPhqv6BfDsRWQmP9s7rWRyUIV2ZyHo=
+	t=1756227101; cv=none; b=paLzGlmIKWkNnqDwOB891coTkFUpIpixt/2/Cso1xQncGYKdVeBeP+bwumY6Ov2gzyZcITjoCOJBELtXu3TIAORyk5RrYsjRIoVZfEBlDddMK4OLjioY/pewQF71i2j9nQBOs8rHonfZm6jHzhJ9v9YzRy/xyzNzqMqOtj+uCxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756226885; c=relaxed/simple;
-	bh=pa5/azMV0KDV86EaTjOT74w7HGE3cS45g1e+bibKKr8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FchUVV7zqibg/b3wuB9rFIYhpmci3XSIYtp0ypZamoGYlj87gvPlTDJGM95qRLjS6wmetz+j1fKMD7nuQKKpGFbiUXkEBRI/095lcZa5ocpZDczmccQ4Sd4GDrp0SSc6/V3XVMtBwsk0gS9o6ZPWIDbZah48/qp2FeAx5rPd31c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eMT7G2t4; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-246ef40cf93so18170655ad.0
-        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 09:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756226884; x=1756831684; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NDEMBDGfkYne0k4p2x1D4pGF2lS2f7gO4jnCzN6lv1k=;
-        b=eMT7G2t4O9E4AYL7Jg77H5nbS0JytAaiw+kXYKmpLvUIXoBAqGNb2T8xz9CTnPy3Sd
-         +ZAlQYMyzY1NMIOZYnLzg6bD5CoDJr18OkjPUToQfFOwGIvIAAzRUgP2RN4mK9yba/JJ
-         G0NAk+kR85+7X9f/fZW6fqe18q2odWIXVJAm7cMKgp9reLIcu+fNqdKdLYxIozYDlfmQ
-         +yq4U1aUy9FJvkw8mWs6gQZa/FothQxLwKVCx2LYQyxRJVVHnHy8wbRyuVuslCL4bgkl
-         MME2rgO310axjZ2lsMJvyf80nUiRx5EcGKctyjQtAgEyoRi52Gcjwq1h3jxx8yNO6cKK
-         KxhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756226884; x=1756831684;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NDEMBDGfkYne0k4p2x1D4pGF2lS2f7gO4jnCzN6lv1k=;
-        b=DCtSqXHgaz73GjppMVOhyioTg39k0wUQRLgWZvLiDb9xk4YrSlj+SqwVtU9XWTFdHD
-         nQAJe5zjVAWYlUca9aGNbiSruP0CGzyKG/2615GDMkX4lew5n6O77qmq1kju4G9i5XcL
-         ZkcJSncb1lOBe3NXPoDtxD3mm9CjAXiJN0NrnGrIqf073AsoaQDP8q0ATUiWtkHOLyqg
-         bctJb/8rjI8RGNiLdx50Um6jc6d7QIN4+jWlYuFdkQrBryjnLjq+gyQdkOOkDp2Y5JpM
-         At7+zxrIm5lzCuUVMS7FsGjplHvV7hDphzSiNBY3sN4XUlmqkNI8iF96+bg/QsxpcJ9b
-         PKNw==
-X-Gm-Message-State: AOJu0YyQGQXLRsRiRbk+5z22anLyVNLfEnCYuMOyk2gSHXQl6mzapM0l
-	Nh1LrCmmfTg0+o1MPwXWitxkGLyY+6mE9P/T5bGw60u6O+mTO8vhfIm7Wmx69DP+
-X-Gm-Gg: ASbGncsVtkLoElOTrPaFJfUfkMybexyOrFuEojMLnT5MvTKvASpg8VBF1dxdWA7NnMW
-	Mww6JUW08mEQcOWPiei+H4EMLTkGWe2es3HNFpkbu6o+tjCCq3wWCfikl/LIyWBAPWteyM7T1U3
-	9gbxX9/dl4L+nc6hd2//K8SoJukWa3JgNbv09+sNTz2PH4b7uyfVScAHGTzN2oftT42VOvyDUxM
-	uDAxk25DNr/G9v3+DdMH8lXjGli4NNYBfT+FNfbvkjtaDuJXZUlzysFiKEkWLp+oV24mQyhLFa5
-	/kbRVpy2QsBXxAMo5BBLaZYA/DfiohvCXYPQOi2UISZQ7Z4UxIE7Y3W6RYR8pQFT+pDBiooyFjQ
-	I0KtgOiVrZGVl0nlZ2kA=
-X-Google-Smtp-Source: AGHT+IE99fJPgAX139hyymiIJLtLqekqFJVHyVCxzi+DlZeSkCsaolQkhttVepx6dpAaKyFSYLhYPw==
-X-Received: by 2002:a17:902:c406:b0:248:79d4:93b6 with SMTP id d9443c01a7336-24879d49805mr24898715ad.47.1756226883706;
-        Tue, 26 Aug 2025 09:48:03 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2466889f188sm100572215ad.146.2025.08.26.09.48.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 09:48:03 -0700 (PDT)
-Message-ID: <d92ec2c0eefbdf2e5bce1309b3673f1113d602d3.camel@gmail.com>
-Subject: Re: [PATCH v1 bpf-next 10/11] libbpf: support llvm-generated
- indirect jumps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko	 <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>,
- Daniel Borkmann	 <daniel@iogearbox.net>, Quentin Monnet <qmo@kernel.org>,
- Yonghong Song	 <yonghong.song@linux.dev>
-Date: Tue, 26 Aug 2025 09:47:56 -0700
-In-Reply-To: <aK3mAGopUQX6T2z4@mail.gmail.com>
-References: <20250816180631.952085-1-a.s.protopopov@gmail.com>
-	 <20250816180631.952085-11-a.s.protopopov@gmail.com>
-	 <69306a9742679ae8439fab4b415e3ca86683e61d.camel@gmail.com>
-	 <aK3dnUhX2aYw6//s@mail.gmail.com> <aK3mAGopUQX6T2z4@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1756227101; c=relaxed/simple;
+	bh=er1lq/dzsrmFZwsv2XyfdQy2+0Y7HeZOJLs86tFN+BE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JfeszKfV/Ps7Ci0PkHbcEWzUkT8ItqKYiPtPrHqMnVXmjF89hxEsXNi87kuoJW/lm3i3Dw62KFE+tpj4KtwwsydDZ2xy00ROe4eeZF3QBZ8jeDXTo2GTRI913dKjgssWhj/m+qiu+1jei1cPY9HK77uER8RwXdfAIjbfYMuY5ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GZ5oM5Jn; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d438bf3a-a9c9-4d34-b814-63f2e9bb3a85@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756227096;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qnzpS995oSOSAmi/9OR2XBD5gzrE04xt0mbKyF2sQXU=;
+	b=GZ5oM5JnBURFXQr6PfYeyqv3JcusbV4mlcSjz/z3d+E2E2iRcqUy3EcwG7jLGSkJylG4t1
+	GlqPh0K3FekjPeIlrW44T8vStlPQhGUNYV+6OcLpa5SP0UwSPDGfXOLc46Nr6k6TIeJzNQ
+	tYEz1DfuwUbulkj+hrRAUy16k3ooCa0=
+Date: Tue, 26 Aug 2025 09:51:08 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v15 2/2] selftests/bpf: Enrich subtest_basic_usdt
+ case in selftests to cover SIB handling logic
+Content-Language: en-GB
+To: Jiawei Zhao <phoenix500526@163.com>, ast@kernel.org
+Cc: daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250823071839.1191350-1-phoenix500526@163.com>
+ <20250823071839.1191350-3-phoenix500526@163.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20250823071839.1191350-3-phoenix500526@163.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 2025-08-26 at 16:51 +0000, Anton Protopopov wrote:
 
-[...]
 
-> Just in case, this chunk is
->=20
-> @@ -6418,6 +6524,17 @@ bpf_object__append_subprog_code(struct bpf_object =
-*obj, struct bpf_program *main
->         err =3D append_subprog_relos(main_prog, subprog);
->         if (err)
->                 return err;
+On 8/23/25 12:18 AM, Jiawei Zhao wrote:
+> When using GCC on x86-64 to compile an usdt prog with -O1 or higher
+> optimization, the compiler will generate SIB addressing mode for global
+> array and PC-relative addressing mode for global variable,
+> e.g. "1@-96(%rbp,%rax,8)" and "-1@4+t1(%rip)".
+
+You can remove "-1@t+t1(%rip)" which is not relavent to this patch.
+
+Also, please also mention usage of STAP_PROBE_ASM so the test works
+for both gcc and clang.
+
+I tested the patch with gcc/clang for x86_64 and it works fine.
+I didn't test 32-bit x86 arch.
+
+>
+> In this patch:
+> - enrich subtest_basic_usdt test case to cover SIB addressing usdt argument spec
+>    handling logic
+>
+> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
+> ---
+>   tools/testing/selftests/bpf/prog_tests/usdt.c | 62 ++++++++++++++++++-
+>   tools/testing/selftests/bpf/progs/test_usdt.c | 32 ++++++++++
+>   2 files changed, 92 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testing/selftests/bpf/prog_tests/usdt.c
+> index 9057e983cc54..4b264f7d3324 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
+> @@ -10,6 +10,26 @@
+>   
+>   int lets_test_this(int);
+>   
+> +#if defined(__x86_64__) || defined(__i386__)
+> +/*
+> + * SIB (Scale-Index-Base) addressing format:
+> + *   "size@(base_reg, index_reg, scale)"
+> + * - 'size' is the size in bytes of the array element, and its sign indicates
+> + *		whether the type is signed (negative) or unsigned (positive).
+> + * - 'base_reg' is the register holding the base address, normally rdx or edx
+> + * - 'index_reg' is the register holding the index, normally rax or eax
+> + * - 'scale' is the scaling factor (typically 1, 2, 4, or 8), which matches the
+> + *		size of the element type.
+> + *
+> + * For example, for an array of 'short' (signed 2-byte elements), the SIB spec would be:
+> + *	- size: -2 (negative because 'short' is signed)
+> + *	- scale: 2 (since sizeof(short) == 2)
+> + *	The resulting SIB format: "-2@(%%rdx,%%rax,2)"
+> + */
+> +static volatile short array[] = {-1, -2, -3, -4};
+> +#define USDT_SIB_ARG_SPEC -2@(%%rdx,%%rax,2)
+> +#endif
 > +
-> +       /* Save subprogram offsets */
-> +       if (main_prog->subprog_cnt =3D=3D ARRAY_SIZE(main_prog->subprog_s=
-ec_off)) {
-> +               pr_warn("prog '%s': number of subprogs exceeds %zu\n",
-> +                       main_prog->name, ARRAY_SIZE(main_prog->subprog_se=
-c_off));
-> +               return -E2BIG;
-> +       }
-> +       main_prog->subprog_sec_off[main_prog->subprog_cnt] =3D subprog->s=
-ec_insn_off;
-> +       main_prog->subprog_off[main_prog->subprog_cnt] =3D subprog->sub_i=
-nsn_off;
-> +       main_prog->subprog_cnt +=3D 1;
+>   static volatile int idx = 2;
+>   static volatile __u64 bla = 0xFEDCBA9876543210ULL;
+>   static volatile short nums[] = {-1, -2, -3, -4};
+> @@ -25,6 +45,10 @@ unsigned short test_usdt0_semaphore SEC(".probes");
+>   unsigned short test_usdt3_semaphore SEC(".probes");
+>   unsigned short test_usdt12_semaphore SEC(".probes");
+>   
+> +#if defined(__x86_64__) || defined(__i386__)
+> +unsigned short test_usdt_sib_semaphore SEC(".probes");
+> +#endif
 > +
->         return 0;
->  }
->=20
-> (In v2 it will either change to realloc vs. static allocation, or disappe=
-ar.)
+>   static void __always_inline trigger_func(int x) {
+>   	long y = 42;
+>   
+> @@ -40,12 +64,27 @@ static void __always_inline trigger_func(int x) {
+>   	}
+>   }
+>   
+> +#if defined(__x86_64__) || defined(__i386__)
+> +static void trigger_sib_spec(void)
+> +{
+> +	/* Base address + offset + (index * scale) */
+> +	/* Force SIB addressing with inline assembly */
+> +	asm volatile(
+> +		STAP_PROBE_ASM(test, usdt_sib, USDT_SIB_ARG_SPEC)
+> +		:
+> +		: "d"(array), "a"(0)
+> +		: "memory"
+> +	);
+> +}
+> +#endif
+> +
+>   static void subtest_basic_usdt(void)
+>   {
+>   	LIBBPF_OPTS(bpf_usdt_opts, opts);
+>   	struct test_usdt *skel;
+>   	struct test_usdt__bss *bss;
+>   	int err, i;
+> +	const __u64 expected_cookie = 0xcafedeadbeeffeed;
+>   
+>   	skel = test_usdt__open_and_load();
+>   	if (!ASSERT_OK_PTR(skel, "skel_open"))
+> @@ -59,20 +98,29 @@ static void subtest_basic_usdt(void)
+>   		goto cleanup;
+>   
+>   	/* usdt0 won't be auto-attached */
+> -	opts.usdt_cookie = 0xcafedeadbeeffeed;
+> +	opts.usdt_cookie = expected_cookie;
+>   	skel->links.usdt0 = bpf_program__attach_usdt(skel->progs.usdt0,
+>   						     0 /*self*/, "/proc/self/exe",
+>   						     "test", "usdt0", &opts);
+>   	if (!ASSERT_OK_PTR(skel->links.usdt0, "usdt0_link"))
+>   		goto cleanup;
+>   
+> +#if defined(__x86_64__) || defined(__i386__)
+> +	opts.usdt_cookie = expected_cookie;
+> +	skel->links.usdt_sib = bpf_program__attach_usdt(skel->progs.usdt_sib,
+> +								0 /*self*/, "/proc/self/exe",
+> +								"test", "usdt_sib", &opts);
 
-Thank you, filtered out whitespace changes when reading the patch yesterday=
-.
+formate issue in the above?
+
+> +	if (!ASSERT_OK_PTR(skel->links.usdt_sib, "usdt_sib_link"))
+> +		goto cleanup;
+> +#endif
+> +
+>   	trigger_func(1);
+>   
+>   	ASSERT_EQ(bss->usdt0_called, 1, "usdt0_called");
+>   	ASSERT_EQ(bss->usdt3_called, 1, "usdt3_called");
+>   	ASSERT_EQ(bss->usdt12_called, 1, "usdt12_called");
+>   
+> -	ASSERT_EQ(bss->usdt0_cookie, 0xcafedeadbeeffeed, "usdt0_cookie");
+> +	ASSERT_EQ(bss->usdt0_cookie, expected_cookie, "usdt0_cookie");
+>   	ASSERT_EQ(bss->usdt0_arg_cnt, 0, "usdt0_arg_cnt");
+>   	ASSERT_EQ(bss->usdt0_arg_ret, -ENOENT, "usdt0_arg_ret");
+>   	ASSERT_EQ(bss->usdt0_arg_size, -ENOENT, "usdt0_arg_size");
+> @@ -156,6 +204,16 @@ static void subtest_basic_usdt(void)
+>   	ASSERT_EQ(bss->usdt3_args[1], 42, "usdt3_arg2");
+>   	ASSERT_EQ(bss->usdt3_args[2], (uintptr_t)&bla, "usdt3_arg3");
+>   
+> +#if defined(__x86_64__) || defined(__i386__)
+> +	trigger_sib_spec();
+> +	ASSERT_EQ(bss->usdt_sib_called, 1, "usdt_sib_called");
+> +	ASSERT_EQ(bss->usdt_sib_cookie, expected_cookie, "usdt_sib_cookie");
+> +	ASSERT_EQ(bss->usdt_sib_arg_cnt, 1, "usdt_sib_arg_cnt");
+> +	ASSERT_EQ(bss->usdt_sib_arg, nums[0], "usdt_sib_arg");
+> +	ASSERT_EQ(bss->usdt_sib_arg_ret, 0, "usdt_sib_arg_ret");
+> +	ASSERT_EQ(bss->usdt_sib_arg_size, sizeof(nums[0]), "usdt_sib_arg_size");
+> +#endif
+> +
+>   cleanup:
+>   	test_usdt__destroy(skel);
+>   }
+> diff --git a/tools/testing/selftests/bpf/progs/test_usdt.c b/tools/testing/selftests/bpf/progs/test_usdt.c
+> index 096488f47fbc..63db72253316 100644
+> --- a/tools/testing/selftests/bpf/progs/test_usdt.c
+> +++ b/tools/testing/selftests/bpf/progs/test_usdt.c
+> @@ -107,4 +107,36 @@ int BPF_USDT(usdt12, int a1, int a2, long a3, long a4, unsigned a5,
+>   	return 0;
+>   }
+>   
+> +
+> +int usdt_sib_called;
+> +u64 usdt_sib_cookie;
+> +int usdt_sib_arg_cnt;
+> +int usdt_sib_arg_ret;
+> +u64 usdt_sib_arg;
+> +int usdt_sib_arg_size;
+> +
+> +/*
+> + * usdt_sib is only tested on x86-related architectures, so it requires
+> + * manual attach since auto-attach will panic tests under other architectures
+> + */
+> +SEC("usdt")
+> +int usdt_sib(struct pt_regs *ctx)
+> +{
+> +	long tmp;
+> +
+> +	if (my_pid != (bpf_get_current_pid_tgid() >> 32))
+> +		return 0;
+> +
+> +	__sync_fetch_and_add(&usdt_sib_called, 1);
+> +
+> +	usdt_sib_cookie = bpf_usdt_cookie(ctx);
+> +	usdt_sib_arg_cnt = bpf_usdt_arg_cnt(ctx);
+> +
+> +	usdt_sib_arg_ret = bpf_usdt_arg(ctx, 0, &tmp);
+> +	usdt_sib_arg = (short)tmp;
+
+Maybe change usdt_sib_arg type as short?
+
+> +	usdt_sib_arg_size = bpf_usdt_arg_size(ctx, 0);
+> +
+> +	return 0;
+> +}
+> +
+>   char _license[] SEC("license") = "GPL";
+
 
