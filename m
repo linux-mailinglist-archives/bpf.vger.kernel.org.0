@@ -1,87 +1,88 @@
-Return-Path: <bpf+bounces-66480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66481-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BEE8B34FF2
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 02:07:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6669B35008
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 02:12:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 471725E0DA4
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 00:07:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 590DA16A4A5
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 00:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8184E39FD9;
-	Tue, 26 Aug 2025 00:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7E7214A0B5;
+	Tue, 26 Aug 2025 00:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="muVQpLT3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FkxLB3gj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2EEEEBA;
-	Tue, 26 Aug 2025 00:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD3938DEC;
+	Tue, 26 Aug 2025 00:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756166851; cv=none; b=Hyu9PcELAjbHE88d4b44n2ElC9E8IjSynRGEk2RDZhXvtCMRmBGl5i7Gq/wz+0N6su/Vg3KKRX0s8xFInM2edxpkFKxRZ9Sbh/NToMeJCQDoZkkAhz482Mvh7fUye2uDm38a3gD3GfVvVwVj4tedrgwtUw7q7GJq9tpzLTxBABw=
+	t=1756167087; cv=none; b=NY7bTW4dS0sc/rUk4v5WJkqAOyIosCizrFloDTvCp0vVnzFfbltaMY8p+7R2IvIoDAVspTb8EmA7PyMOyP3741CdvfrdtwvmBD+tCioHmKLySmn5te07TrHyIuxRUFKBENJuYk8VTyW6VUKpJJaUGvqrF0SV83H55G/maMCriUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756166851; c=relaxed/simple;
-	bh=Y6gaNpfNuDRzUZAQiAlFVnkY/fGkjUty0HhGf0vkfEI=;
+	s=arc-20240116; t=1756167087; c=relaxed/simple;
+	bh=yRUOkAV+jE3BgB9eUA3z2aiZgVmYsWZlzqeDqZiKH/A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fQK94vS2f9BXpE+xR2aGYPp3PZTwrGVymNe7G8cvqoj+QYCFivrPdbx9JFLankCCw2G/Jw5VEL6OfKEQFsKXsFQocohvYoCuUW+/jYnS4m22N/k41j6LwliTPCip/W7UZwuKSnrU299R3cYJnrkF0t7XDA4U6S6SWdYamTenK6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=muVQpLT3; arc=none smtp.client-ip=209.85.166.176
+	 To:Cc:Content-Type; b=RITUP2/aeaBSD7HDnfb5rN6eCl56ImecSl8GLis2dCZ3ahICUtXurBIQlMEJK2OEAySjq1q05nV9g36jeXbC/PPKhsIwkPHuri68Q5btJzZTvutoynV1IwQXeApOBGTDlZq5h8fgM55yKjLRpZ0xARbFRlr7GXIaHjKmv/rl2Kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FkxLB3gj; arc=none smtp.client-ip=209.85.166.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3e571d40088so44728535ab.1;
-        Mon, 25 Aug 2025 17:07:29 -0700 (PDT)
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3e7c238bc0eso19487245ab.3;
+        Mon, 25 Aug 2025 17:11:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756166848; x=1756771648; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756167085; x=1756771885; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fDnbcBKHwzf4YU7lb+X8La56cHhZAo1Sl2fAPTDozPE=;
-        b=muVQpLT38MVhyHpcULZm5JZr+3kIpjQALaqOUoa1DBKVX8o5wIM8n2knQIVZ95MGh0
-         hApWYFRm3ZRrsEHmbI+WT3LvJ8IUt/vVA9oblem5uZeSKL8NuJzhmhdIlL9A3nc+cO1+
-         S6VgctkCXdoRlHFTTVYXrzTGHLe0tNvXfOgYnq+mlRXxSo70vfctI0kCiVWbhH+0X5Nc
-         oTytFApkm7wF5ikKDJs4KxIDwZ1LofhN4KFD52QzhOnJoWHryfkRI6yTmKvdZhTac2sX
-         VisyLmmnIhJ2BcI6T2+lp9w4byMPwwtw0+vDeud6MWAiY75vSsyYcUiz2U6mCV3Ps0YS
-         jpKQ==
+        bh=yRUOkAV+jE3BgB9eUA3z2aiZgVmYsWZlzqeDqZiKH/A=;
+        b=FkxLB3gj5nFPzdIxHx5hnG6A9mKRUwSKAfKJ1Che0IaRiWGp/9rpBr1Qadh62eSwVi
+         U2Zn6rrO+Mno7tCQl9/VKgj20YUu1ozl99bTuiCt6tteuepa5hy0UMrzevghQmRM685D
+         Dw2WC44SEmoX0eaHxODrZTkbSDE+4pDnnjfU8IUguXO1aiNeNNBvNPhJWE281HLwTkyc
+         WtyuaIQVHHRdj+AP+nxeG6Yriurve8UZr5dwlTbfZIAsu8fAGJ8aMNthKp4R1m9+gzU7
+         VZCHgeIZtAyAE5/hP8fm6Bo51h0GOIhp5A9mngT8wIiDKSc8Nq1Zt+EZcGTQrKyX/XRW
+         IrAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756166848; x=1756771648;
+        d=1e100.net; s=20230601; t=1756167085; x=1756771885;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fDnbcBKHwzf4YU7lb+X8La56cHhZAo1Sl2fAPTDozPE=;
-        b=w8XokLDbh3GCBKVBym2D2AHSMm1VSpJcd0iv3s54oe9b3pDLBF90U9uCxAltamkRzR
-         8jisnIpD++cvBgazDrS/anOtwOuzT/EGZRJXEh7AZgl+gEAqGpUmKaLz3tbBrT0/5NJU
-         DqFJC7l+Bwazpx4/wP5s/OUCpMhnKCRgAPuQtE+EtXb0r6jwjEf3hbo0xeRm/I7Pklco
-         uV3qpq1cPBYkzPDel9SMK9fACFX7eg51zP1PzyU+j+lw44xhQTMZnrLNxCTjdYiZT6TJ
-         kQBkbZOO48msNeroB+FHCDwPCKFJLFsAHkURsqwBMEkn75Ynrp21VqdmYvj0B2/4huey
-         GR4A==
-X-Forwarded-Encrypted: i=1; AJvYcCXfFBQOdaGaR61/J5quqZUS/vk/WXgp5zkEcwLfGvTmlstISj81HfhGG0z0k3jWSXeohSg=@vger.kernel.org, AJvYcCXsCSHUITcHn+nAb3mGhpxBGfY95iau9I3PkYAmuLW/B7Dn0GEGr1ujDWJDvV+rTGVEuZUnmV0Y@vger.kernel.org
-X-Gm-Message-State: AOJu0YxR2/eXP5xx7dRvjqjaQPxsYLFHZ/+KkpYfuM3WeJ26N7r+I8zx
-	0CTc9phrxS2fKNk8PZAHnIS9Ws+FowWx+vRGT2/EkUCpmvLrntrYBZmyZBNUmK3cKb5CooLZAJR
-	FaT19KCmM1MyMU+A/w5d4ZSMWLA6Qhps=
-X-Gm-Gg: ASbGncu9Jrtk9zaRDOdsSBDUKMig6xbAvCpMdiMunSX/etwrgGyHeq5CQE28raj2K/o
-	KAiK44wCWGg8cdhBwobJNsf6pEC9W61yhUylHYhv0HdIahZEqWgiZ0pBQFkSDhhSWy2XEshMvmg
-	lvUK+Bs90G//V/l/x8OyZoO46ERQHBTjF3RVqJalCffQq0TFE0VsyaKOzPHnSIaKiNhNEWZllqG
-	8v4fAK08g0aznhm6Q==
-X-Google-Smtp-Source: AGHT+IFnaemvY7xRqPsoM51/xdink5BfR4wOjRde1FQcTcQ8greAI/sK/dxbCHYqljkX83DIkltY7zjaiIsBe+c47wk=
-X-Received: by 2002:a05:6e02:3c03:b0:3e5:4b2e:3aeb with SMTP id
- e9e14a558f8ab-3e91fc22de2mr212848045ab.5.1756166848519; Mon, 25 Aug 2025
- 17:07:28 -0700 (PDT)
+        bh=yRUOkAV+jE3BgB9eUA3z2aiZgVmYsWZlzqeDqZiKH/A=;
+        b=j+bJcplMFUvhPf3uYVPmwZVzG7XVBPq+IwMx+cdEFdEfPuywuRNNynJwOXRgVFB3li
+         UyxH3y+mN2xfBRcdMeiW/iC/d7DCaxDScGyKqJnXjFNCynyvB2BJdsKGC0t7ba0dWB2+
+         NfigY+TsIKFbj3NLJKR0Qh4ltJxGBs8g1PjeC3x+D4TvjRXn4avMEZ4a0DTHe8YaOWkV
+         q290pgsU1tIjxjPg1rHbfyMb/dQNPipGEyrygqccq7uRYiLqtlZRl0XGG6NEr890ofcw
+         itIjCNOaRgkJqL/6XMBH31qV65lEwIfUoxd3FqJlqAymQo/X9uUEtswx6ujroHJN3mSq
+         Ry+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV705CMH6u00En+BObmhHNaQbAn9QAMcr3beptmnLcCoQOMNeHtKch0cXHQsQ2GUn1UTb4=@vger.kernel.org, AJvYcCWYfBVlokQRlZ6lwn0MrkqUW5C5/aMsz335SKswjWh6FhsRFouaTQ5ofFXFpgV0ORXLqyZKioeb@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9CeDt9ZIn1tB0rpeRjd2LuXnRrj9JUk3EzwLL3ab0MnAIB+wa
+	e+eGKV3kiHuGOMFeTwlYsBzdX52sXF9XjIdIGxA0p5kuhvlOKaTyBJ8z/fPpHF4M1rHaraHiRkP
+	D0mUbmnup7MAcGhtkRbfMehCY8m0l/7Y=
+X-Gm-Gg: ASbGncv456zpO1dqOR6QLXjAoR3lshG5tdkzEmGdxQkR3Jh0txojXhXKObeXnrq6Zmu
+	91ZW3O0dFaFAFkkw64rpxIuyjaZ06FhRybZcpC91qn6Tmq7P81SPHeaa6MwLaney1ctaqqnvCW5
+	DSQ5Rj/q4WgB2gBb+40AY7maRaJIOKUVmwgFEf00JtSyIv8G0r0xV4ov7Eu4vA3MX1swyuKqv/r
+	a1Bj8UWTVdc6+mMhQ==
+X-Google-Smtp-Source: AGHT+IEYRL7PeaWKLreW+WH+hP9Z1KOFupmYb770pN08nvCcv0o7HZkypWOC3E8YAJtN2dFlmizYUISSivy+cADrfuQ=
+X-Received: by 2002:a05:6e02:4414:10b0:3e9:eec4:9b69 with SMTP id
+ e9e14a558f8ab-3e9eec49e75mr113137745ab.32.1756167084878; Mon, 25 Aug 2025
+ 17:11:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250825135342.53110-1-kerneljasonxing@gmail.com> <aKzSaA73Kq3mZ+Mp@boxer>
-In-Reply-To: <aKzSaA73Kq3mZ+Mp@boxer>
+References: <20250825135342.53110-1-kerneljasonxing@gmail.com>
+ <20250825135342.53110-3-kerneljasonxing@gmail.com> <aKzTPW4fQ11fqb+b@boxer>
+In-Reply-To: <aKzTPW4fQ11fqb+b@boxer>
 From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 26 Aug 2025 08:06:52 +0800
-X-Gm-Features: Ac12FXzcRpzZOwldkyMh2_KYUR0eVk-ZIOiJRcG-vQv4Mj08cfLE9BLrrii6saU
-Message-ID: <CAL+tcoBZN-k2pM1Dp65SGKMhkJm=7kQY+-97WguR-E=KW3Nhxg@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 0/9] xsk: improvement performance in copy mode
+Date: Tue, 26 Aug 2025 08:10:48 +0800
+X-Gm-Features: Ac12FXwr0O9nXSqhuu5dgAKn2exjFm09Oe5vFU4xod2Ufs_nq-Y_VsblHuGiCuE
+Message-ID: <CAL+tcoA-Y0J14U2b4irzqY+-jAcUCVZvEizLACJfZANb85XzNQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 2/9] xsk: add descs parameter in xskq_cons_read_desc_batch()
 To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
 	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
@@ -92,121 +93,27 @@ Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 26, 2025 at 5:15=E2=80=AFAM Maciej Fijalkowski
+On Tue, Aug 26, 2025 at 5:19=E2=80=AFAM Maciej Fijalkowski
 <maciej.fijalkowski@intel.com> wrote:
 >
-> On Mon, Aug 25, 2025 at 09:53:33PM +0800, Jason Xing wrote:
+> On Mon, Aug 25, 2025 at 09:53:35PM +0800, Jason Xing wrote:
 > > From: Jason Xing <kernelxing@tencent.com>
 > >
-> > Like in VM using virtio_net, there are not that many machines supportin=
-g
-> > advanced functions like multi buffer and zerocopy. Using xsk copy mode
-> > becomes a default choice.
+> > Add a new parameter to let generic xmit call this interface in the
+> > subsequent patches.
+> >
+> > Prior to this patch, pool->tx_descs in xskq_cons_read_desc_batch() is
+> > only used to store a small number of descs in zerocopy mode. Later
+> > another similar cache named xs->desc_batch will be used in copy mode.
+> > So adjust the parameter for copy mode.
 >
-> Are you saying that lack of multi-buffer support in xsk zc virtio_net's
-> support stops you from using zc in your setup? or is it something else?
+> Explain why you couldn't reuse tx_descs as-is. Pool can not work both in
+> copy and zero-copy modes at the same time so I don't see the reason why
+> you couldn't reuse this for your needs?
 
-In the VM env, if we want to use those advanced features, we need to
-make sure the host provides related flags/features in turn. So it has
-nothing to do with the guest kernel. In many big clouds, it's not easy
-to upgrade the kernel which means there are many VMs that don't
-support multi-buffer.
+Oh, right, spot on. I can reuse them instead of creating similar
+wheels. Let me try this way.
 
-I will override the commit message with the above description.
-
->
-> >
-> > Zerocopy mode has a good feature named multi buffer while copy mode
-> > has to transmit skb one by one like normal flows. The latter becomes a
-> > half bypass mechanism to some extent compared to thorough bypass plan
-> > like DPDK. To avoid much consumption in kernel as much as possible,
-> > then bulk/batch xmit plan is proposed. The thought of batch xmit is
-> > to aggregate packets in a certain small group like GSO/GRO and then
-> > read/allocate/build/send them in different loops.
-> >
-> > Experiments:
-> > 1) Tested on virtio_net on Tencent Cloud.
-> > copy mode:     767,743 pps
-> > batch mode:  1,055,201 pps (+37.4%)
-> > xmit.more:     940,398 pps (+22.4%)
-> > Side note:
-> > 1) another interesting test is if we test with another thread
-> > competing the same queue, a 28% increase (from 405,466 pps to 52,1076 p=
-ps)
->
-> wrong comma - 521,076
-
-Will correct it.
-
->
-> > can be observed.
-> > 2) xmit 'more' item is built on top of batch mode. The number can sligh=
-tly
-> > decrease according to different implementations in host.
-> >
-> > 2) Tested on i40e at 10Gb/sec.
-> > copy mode:   1,109,754 pps
-> > batch mode:  2,393,498 pps (+115.6%)
-> > xmit.more:   3,024,110 pps (+172.5%)
-> > zc mode:    14,879,414 pps
-> >
-> > [2]: ./xdpsock -i eth1 -t  -S -s 64
->
-> Have you tested jumbo frames? Did you run xskxceiver tests?
-
-Not yet, I can test them in the following days.
-
->
-> IMHO this should be sent as RFC. In some further patch you're saying you
-> were not sure about some certain thing, so let us discuss it and overall
-> approach.
->
-> Besides, please work on top of the recent fix that got accepted:
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commi=
-t/?id=3Ddd9de524183a1ca0a3c0317a083e8892e0f0eaea
-
-Got it :)
-
->
-> >
-> > It's worth mentioning batch process might bring high latency in certain
-> > cases like shortage of memroy. So I didn't turn it as the default
->
-> memory
->
-> > feature for copy mode. The recommended value is 32.
-> >
-> > ---
-> > V2
-> > Link: https://lore.kernel.org/all/20250811131236.56206-1-kerneljasonxin=
-g@gmail.com/
-> > 1. add xmit.more sub-feature (Jesper)
-> > 2. add kmem_cache_alloc_bulk (Jesper and Maciej)
-> >
-> > Jason Xing (9):
-> >   xsk: introduce XDP_GENERIC_XMIT_BATCH setsockopt
-> >   xsk: add descs parameter in xskq_cons_read_desc_batch()
-> >   xsk: introduce locked version of xskq_prod_write_addr_batch
-> >   xsk: extend xsk_build_skb() to support passing an already allocated
-> >     skb
-> >   xsk: add xsk_alloc_batch_skb() to build skbs in batch
-> >   xsk: add direct xmit in batch function
-> >   xsk: support batch xmit main logic
-> >   xsk: support generic batch xmit in copy mode
-> >   xsk: support dynamic xmit.more control for batch xmit
-> >
-> >  Documentation/networking/af_xdp.rst |  11 ++
-> >  include/linux/netdevice.h           |   3 +
-> >  include/net/xdp_sock.h              |  10 ++
-> >  include/uapi/linux/if_xdp.h         |   1 +
-> >  net/core/dev.c                      |  21 +++
-> >  net/core/skbuff.c                   | 103 ++++++++++++++
-> >  net/xdp/xsk.c                       | 200 ++++++++++++++++++++++++++--
-> >  net/xdp/xsk_queue.h                 |  29 +++-
-> >  tools/include/uapi/linux/if_xdp.h   |   1 +
-> >  9 files changed, 360 insertions(+), 19 deletions(-)
-> >
-> > --
-> > 2.41.3
-> >
+Thanks,
+Jason
 
