@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-66513-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66514-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AA31B35575
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 09:23:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A6DFB35578
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 09:24:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D205E05D7
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 07:23:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E8C61B65BDD
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 07:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3568F3009C2;
-	Tue, 26 Aug 2025 07:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FD72FE567;
+	Tue, 26 Aug 2025 07:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H41YRJoE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="modqTOge"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 708B43002B1;
-	Tue, 26 Aug 2025 07:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8489C3009FD;
+	Tue, 26 Aug 2025 07:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756192845; cv=none; b=c+xOM0yBodo+3a0TA6hkLc8f1qX3rfa8GfaIpohWw9n46dslz9idiPS6cOqTnQFA92M9HkaW7LEdBSVKFwF1Fd56O9OQnvxiEkyQtcTjdNTVxpAwQyo1J16Hr/RiPC/obRP+oq3yr8znMGjj7X5fDb0xSQBkCOeDDG7+YipoFk8=
+	t=1756192858; cv=none; b=l1m3PlmkIItQAdzgE7zbf3JHzg29sl0RG9lJYd4o8LtY20eTZR/OUKpTUkr2D6o5t98uQTlDr3avP8xs/VJ8y2/w8Ze+GPrtuOZvTMzL8oiYyWFNa9u0Rq0V6iI+ZeFbXPug5GJywsdf4POLCgZ06JIExTGX42NUveYmemDoPRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756192845; c=relaxed/simple;
-	bh=oxgvlujZDViPWKc6pFJkHO6LZ/yeKPwRf4pAWw/xvmA=;
+	s=arc-20240116; t=1756192858; c=relaxed/simple;
+	bh=rX8e9NsQYk4BL/Ik+7nAY1xej8+yPJZtHsuQYW2oEdM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BYgYj0tvtkCKJxj7GSTjWdCNG2j6GAwaMsMgfZptDYaxbogPVdnqmRi7mmEInHnjKXeQmPbYom4oWyHjBO2/DCezzimaVceMOGRL5pSLlCirYRQrVM1tigB1CfQKqSwTCKVDNKv3u4I5EJpuUP50s4dUp6h78U42VfUgRTD8fSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H41YRJoE; arc=none smtp.client-ip=209.85.210.181
+	 MIME-Version; b=dkt6kmhv4Nue3KD0cECDVzOw9FZDzxIwBZ3JG5YRNheEtQSoFWsXsA3DaXW0TgW7NxlBcWFvQgmP3bTzIMASOLH4emVmU2atXkHTu7sOHSoNbmEd2hQ+Yxx9p5+FiUd5t82pAXQbeAkhl7So1w6mI4ZdIzWLp67zchksYT4/Ino=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=modqTOge; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-76e2e6038cfso5869125b3a.0;
-        Tue, 26 Aug 2025 00:20:43 -0700 (PDT)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-77057266cb8so1666165b3a.0;
+        Tue, 26 Aug 2025 00:20:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756192843; x=1756797643; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756192856; x=1756797656; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sviwpOLmfQUsJA0/Zn7lWOZM8N8qF/XZa2OLJ+sIYYU=;
-        b=H41YRJoEOrZE1b+eV4VlXAzFf1VqyBfRfC5ZigbZ2CUM5oQdzM+ttmQt7+N7g09H6j
-         CjJdN9LeGPCbDqf1YLAUXx5xlIrKMi17hti30CuuvxFfIl4rMnlF4zrE1xay4T0XxSwE
-         3v7vBC7YvfEhcaDqWddUxHLfV92hoaBf5lAZGRToghZb0wt6CpWkqW2gW9IfdE5QqZC4
-         E5JMf0FkJvamqTQzsBTApx7dnswp1HVE+pxHkriiwCmcsgQxO7lImIybmtK67WRg+Qmw
-         IV4BXpVGzK6PlQtf2ZDwbfb5ZcbdppCgu4O8ffIEKFk7eBtQWXpnG8eU6UDhKNAATxdR
-         iogg==
+        bh=hFHLpr6FcX/Wx3J31OLqW186GX8K2s1j2kcuC3aNVeM=;
+        b=modqTOgeeFym9OUW9c8trEX7/C2Wg3eXgFx4Zyp/Htu9i/fiscxWqTJ5a2X6CQF8VC
+         /799dlc9prqaMYLvquwg8BTsIKSGuy5Q3nGWQVZm8HkK5ftZPLODCMH1lu7cFdAT2DKm
+         AejTZa2VCqKlqV+rTSylcCz+BPj329l0HuUkMsdYP+HxWQbUM599I6SdGG3YDhio/CIj
+         Rn21k4W17+VOsuLabFGCs4muk6CPy2TfXLk1GbSnikrvtsaxi/RdT06Y8cAxuyLtT475
+         dSPAZWp3Xj0uxBPXdz1+b18QJj/Hq1J3TY2CUrtfdkIcTcUL+4V8yoiKdUlbM8lSCXb7
+         DzdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756192843; x=1756797643;
+        d=1e100.net; s=20230601; t=1756192856; x=1756797656;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sviwpOLmfQUsJA0/Zn7lWOZM8N8qF/XZa2OLJ+sIYYU=;
-        b=mTxiNCpYvXC2OrVnJcdYcvG01I+qGYIXCXn+7dajA/RM0wMJ/zkwrXI2QjwEeBPnNu
-         +L+Mgj1oYypLjpLT1K5nb5Yy9EIZxMjuzLwMQBLDuGr2r/ejtihk+RnKKS3C6wr6rSo1
-         OOvlIPXi+DZDmkaCMCCqHOU0lBuW//vk3vLPdkMTgS8qHmDi6DVVqDP/ecDk2t9JokEE
-         mregPpjkOKiEVrsAdXdhV0r7Zh4R8n+Izfxpb01YQsg1xPlqeyPMX3meOmgWeFQo4viV
-         ecff9Wh6HhViHIULXFn8dHKCVSW7Tr5Gw1ybGUJXGY8LVo7MHnj6KRd12Ymmt9eBObVI
-         w0fg==
-X-Forwarded-Encrypted: i=1; AJvYcCUXVHUPtvLg3fk8QmPCOL3wJrXdOexJq9vCCGEsSrBHxvnshCvYIovQpWbvzKsxPd4pr/LcKW5JEZ4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqGXg75PoKYt1AhOcIi+Y292twD2HbXFKB58wHn7PTwE79lJgY
-	f+nP8hImnKTiK11hYTCG0/M0OVLKR4lLY9VFCZxI9TupEm4EiRxOLXef
-X-Gm-Gg: ASbGnctXmg+IewNbuvHkPyj5EJJJ4ehRD1VDMApbT2iy/veGMMPkE/ZwiNxIm7SGfL+
-	bfJRLaZ4dcFy92XHcIlg4sZw8oYlS9EWYZLgbgb92p4AEGCQKytbVc+PLgdNb1UXMtn7Q05JuCx
-	Bs4pgoWrBExOkj/uZ5qtwkme9mWOth0JgGzul6uwNwOPa4pnXW9qfs6pjUtL8KvLbEEqlWKPJTi
-	zyalxNCNPoGYjR099mS1r8gvx2W9+odZFusRw+wIEyiY+GZwySM/rBE2VtdZrSbfum+p2OgesN5
-	AIegr+xHZiMORQk9XyzYSi4fHOV8E7m6xPZ/8Nw73p/QCAX31ODA3fyG5APjq77eQeAH7Kq9HUK
-	+KEKCzP8vzRicZtnB8ldQ11e4cj6UAamImF7oYpDpgtO62TRjIaR5shs+Y4D7hDt4rrjUotagxS
-	Tjh4g=
-X-Google-Smtp-Source: AGHT+IFc/ProjGMVXcqa10X9CPlhCGT8IYwac5NyD5RvTObGqB9z0r+zsVy5MTfrS6xNwZ7PMnWYPw==
-X-Received: by 2002:a05:6a00:a17:b0:771:e8fd:a82a with SMTP id d2e1a72fcca58-771e8fdaaa5mr5802935b3a.23.1756192842605;
-        Tue, 26 Aug 2025 00:20:42 -0700 (PDT)
+        bh=hFHLpr6FcX/Wx3J31OLqW186GX8K2s1j2kcuC3aNVeM=;
+        b=PYQNUIKfGD4Hce8k+wJocf0QCC+8OIC4Cr90bQ4swR+EHrYeNrq2XRHkeT8EI27HAw
+         +TxA/JG6LcViRDEwMuGlIZU/McdFPaPszUEH5VhEh/vcTTb8r6RiDwqHe+AM09OWNQQk
+         5D+YBtwiDVUHNt/r0o1r1F6th+Qu9+yt9JAwPpJdBGaqI8fHkCjbHobfndmX6z43c1ZK
+         soghoK386r7qz3Jkjr9qz7S1noe5bP+qdWKTirBTfU4mJdGvYh5KbSuje3ipeOmE70Wz
+         RGZZ7T3MBSHi4G517PZ1rveXUhEF3xOr1C+YhZoilJARrsdmC0D0ik9o1oerXRNu54KH
+         HHuw==
+X-Forwarded-Encrypted: i=1; AJvYcCVlWb10e/IKil5n48+LztaCheTfPJ5NuRv0zluCuGhh8C1TptOl1DYF2AbnWWRUS8jxHYe4mgZSJkY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy46VMp5uDeTWJaUOrOuy/C7rBKAnYJghhR6XRAgXv90R86UF+o
+	PPWtlNPa9fXyL4jwUG03oqOvJ/rTr5yT/HpMMLMBxmWBhxqKxCu1Sqpx
+X-Gm-Gg: ASbGncsYdXMCNeIhiTgmmmqeRp2ZIBPWFZ2SAEZyONcvgaaS1XI+GkJu5lGUSg0lig0
+	bIvBpwRftbDJLKLkUzQQ7GvG8qxbdp1oa0298wSkkLjUTd1dPcLt6mq/tn7W4SfPew4JzqDShcn
+	dSg+NziYtOZY9op0eXwyUwDP6SNZALRpR/001ozqsDDGC66k2Hk8HNq7XCTIb3gwiSX5UcBvnT8
+	hU8GcamN91LltdWMxLWKAYaaiQ+m2LVJ1hu3be0cdl8XOFLnkCnlIfUZHrMEpKjlr/X2IlJ69R5
+	HPrqKwUidLHWn0K5z+tnWGZBZpe8z3sTHOWLyuCgWzQOtGYhq7KWNk7KLrDkubrc/N+eZn8isyd
+	p0Yz3/2E2vALJURjNQnRRlyltFO4upB9DzxH2OgDcbWgYTKtite7K5+yUIuEoXEojes33jZFpQl
+	fBfJc=
+X-Google-Smtp-Source: AGHT+IEmmZ+P2cW6+dn1oHu17l4+iy2IHTfCaLsUk4rpmP0+qhz3tPhrdJeYge0DcysCptQ8/nMPPw==
+X-Received: by 2002:a05:6a20:160f:b0:243:6dd0:9bf with SMTP id adf61e73a8af0-2436dd02547mr9068214637.53.1756192855650;
+        Tue, 26 Aug 2025 00:20:55 -0700 (PDT)
 Received: from localhost.localdomain ([101.82.213.56])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770401ecc51sm9686052b3a.75.2025.08.26.00.20.29
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770401ecc51sm9686052b3a.75.2025.08.26.00.20.43
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 26 Aug 2025 00:20:42 -0700 (PDT)
+        Tue, 26 Aug 2025 00:20:55 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: akpm@linux-foundation.org,
 	david@redhat.com,
@@ -98,9 +98,9 @@ Cc: bpf@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-doc@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v6 mm-new 03/10] mm: thp: add a new kfunc bpf_mm_get_task()
-Date: Tue, 26 Aug 2025 15:19:41 +0800
-Message-Id: <20250826071948.2618-4-laoar.shao@gmail.com>
+Subject: [PATCH v6 mm-new 04/10] bpf: mark vma->vm_mm as trusted
+Date: Tue, 26 Aug 2025 15:19:42 +0800
+Message-Id: <20250826071948.2618-5-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20250826071948.2618-1-laoar.shao@gmail.com>
 References: <20250826071948.2618-1-laoar.shao@gmail.com>
@@ -112,65 +112,39 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We will utilize this new kfunc bpf_mm_get_task() to retrieve the
-associated task_struct from the given @mm. The obtained task_struct must
-be released by calling bpf_task_release() as a paired operation.
+Every VMA must have an associated mm_struct, and it is safe to access
+outside of RCU. Thus, we can mark it as trusted. With this change, BPF
+helpers can safely access vma->vm_mm to retrieve the associated task
+from the VMA.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- mm/bpf_thp.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ kernel/bpf/verifier.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/mm/bpf_thp.c b/mm/bpf_thp.c
-index b757e8f425fd..46b3bc96359e 100644
---- a/mm/bpf_thp.c
-+++ b/mm/bpf_thp.c
-@@ -205,11 +205,45 @@ __bpf_kfunc void bpf_put_mem_cgroup(struct mem_cgroup *memcg)
- #endif
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c4f69a9e9af6..984ffbca5cbe 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7154,6 +7154,10 @@ BTF_TYPE_SAFE_TRUSTED(struct file) {
+ 	struct inode *f_inode;
+ };
+ 
++BTF_TYPE_SAFE_TRUSTED(struct vm_area_struct) {
++	struct mm_struct *vm_mm;
++};
++
+ BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct dentry) {
+ 	struct inode *d_inode;
+ };
+@@ -7193,6 +7197,7 @@ static bool type_is_trusted(struct bpf_verifier_env *env,
+ 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct bpf_iter__task));
+ 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct linux_binprm));
+ 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct file));
++	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct vm_area_struct));
+ 
+ 	return btf_nested_type_is_trusted(&env->log, reg, field_name, btf_id, "__safe_trusted");
  }
- 
-+/**
-+ * bpf_mm_get_task - Get the task struct associated with a mm_struct.
-+ * @mm: The mm_struct to query
-+ *
-+ * The obtained task_struct must be released by calling bpf_task_release().
-+ *
-+ * Return: The associated task_struct on success, or NULL on failure. Note that
-+ * this function depends on CONFIG_MEMCG being enabled - it will always return
-+ * NULL if CONFIG_MEMCG is not configured.
-+ */
-+__bpf_kfunc struct task_struct *bpf_mm_get_task(struct mm_struct *mm)
-+{
-+#ifdef CONFIG_MEMCG
-+	struct task_struct *task;
-+
-+	if (!mm)
-+		return NULL;
-+	rcu_read_lock();
-+	task = rcu_dereference(mm->owner);
-+	if (!task)
-+		goto out;
-+	if (!refcount_inc_not_zero(&task->rcu_users))
-+		goto out;
-+
-+	rcu_read_unlock();
-+	return task;
-+
-+out:
-+	rcu_read_unlock();
-+#endif
-+	return NULL;
-+}
-+
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(bpf_thp_ids)
- BTF_ID_FLAGS(func, bpf_mm_get_mem_cgroup, KF_TRUSTED_ARGS | KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_put_mem_cgroup, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_mm_get_task, KF_TRUSTED_ARGS | KF_ACQUIRE | KF_RET_NULL)
- BTF_KFUNCS_END(bpf_thp_ids)
- 
- static const struct btf_kfunc_id_set bpf_thp_set = {
 -- 
 2.47.3
 
