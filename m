@@ -1,175 +1,135 @@
-Return-Path: <bpf+bounces-66601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 680D7B374D2
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 00:18:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFAC8B374E3
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 00:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 227DE7C8553
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 22:18:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B28ED1787FE
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 22:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F9A23D2BF;
-	Tue, 26 Aug 2025 22:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC35327D786;
+	Tue, 26 Aug 2025 22:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C8VyVtJq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AwiZzJom"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545D21EDA0B
-	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 22:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDE71E89C
+	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 22:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756246698; cv=none; b=VLD5IFDoEnNHkkhP/90tURZMhhuXkQ4d16XxerY5TXXUJkwRLsIaz2I3gWANh3aJKVzLklJ6T9RDJ1V1LgI5ywADavzkEABrMdhmM20biarO5Yfw+f4yjBtfZxolMNGv8ey0fw8PeBSvzK3i7pa9drvorRoDmynDMQ2+pywyRas=
+	t=1756247504; cv=none; b=pi5pskdng852dKj6U9CuieMNxGyGMTdrKToHF2op+/lkNf5Y3mchhFVGHL8PJf4mGY6IIrqYgvIcNeVQrW2MpzxnNGCWf0JBEUu4hJ0hSQrJW1IpZol8SqnGGW6D2XJ8VSQVLBpTqX45SUM5uqpQJ72JTYLSFnxDCA2OGuupz+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756246698; c=relaxed/simple;
-	bh=HajCK9rq2UsPyOmvD6Bk+8IHWTHmOkXRRX1rEQVglvI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=If1MaokyJUKCOEWecYSKXG0gEAtjCvXtMb5gzcHkSPl02hq77MedDMxdRiXgq+YNIOha1XrRCSD0KDINwyDl2DZvsqB/TwE8UHaiiuvPZ6Uzd8pNulFmXVomp7hJ/1LImIfGuLn4R5yeOqxYqtwR0RVYWApNdNMELRmnMoCFeFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C8VyVtJq; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1756247504; c=relaxed/simple;
+	bh=RfkwD//fVbtKN7T1ul50BnBezHKseZI9B1xnIT5rEyI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fbEFpVXus33gTQRaVSXiuHdv7zkEG8KYMN4ca/+qeK4UCPmrPiTDUb1vunIg4U3t4v9SSyKUfnoPKiOuF1f8TaB0NWJLlEvsM9ne6QecdRl0svRWrSKFKWSiUbtENw4mySkHJCiLZgh+baeUoBFXK67SwAdlMWZ6wvr+c0Gh9mw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AwiZzJom; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3cc95b0cc21so83267f8f.0
-        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 15:18:16 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2469e32f7c1so22990195ad.2
+        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 15:31:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756246694; x=1756851494; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uPXPAncY9llhWccSMUMKLVcgc/GIx1o1QinPMNVDeBc=;
-        b=C8VyVtJq9f6Z18ZaWxoZMsI6D/lErUUvH/GaTqEUUgt0wcwUH2dn74k7XNff7YeFEi
-         VZESnd1UxWQRrzIBfnKXlSHWXkz8/jxvt+/Loy3Owz3f8yCcO1bBWTmFOdq041SUB6Kx
-         xT9S+umiI5q+EknxMa8KWOK6zfHsqCJ2TOuUdzWoH+ScaSyok2QeK84O7sYmOhPLxxJC
-         R3tRuL8aC0+8E2j+qqqxehscfRBmjV3lZdcQPOeOLVK7U+0/GnV8fYtgDtwb2+N7zFcW
-         NYxVVI0U7eK393BGjveRYs53UNKdGGUG58K1/+pQPD4f44azHyE+nLainXnj2saLNQvv
-         EfXQ==
+        d=gmail.com; s=20230601; t=1756247502; x=1756852302; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bqiWc8IUMM7QXsjsuI2jDP/jXsEvh1Kiir9ntnJEqMU=;
+        b=AwiZzJomh87bLr4R0hbdte/FqnN1iKG66AOKx6bDP94LOps4CWk3wDmUwWfCVyK45r
+         JI/JRKjhSfo19xuj7AU9Q8RxkRgmsF2AcJLGLW1kM/sYC+rPPpN+gPvdLfVUqjNd20MV
+         wAvistys/1D660fYHRpo+lk+s/4IYB8VyTFxiGKYoumN+COvKsdx0cy+mH3qmXTwm3uv
+         wuJmy0xPFohI4oovs0it9gZ5u6yP/BnEyfQUUxWewwRf0Zx9qfwfUO9ne2GxrdNaJb7D
+         4tknm6VqpPNNP06TyfQoSsDdHPnDL9uIyCa4WcDUCnahbSKhn0GsISOxd4r58mBLQD3T
+         IR7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756246694; x=1756851494;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uPXPAncY9llhWccSMUMKLVcgc/GIx1o1QinPMNVDeBc=;
-        b=Vk+e1OcJp2WtXQ9ayDN92DUgiHu8LWzA06tneUf19EV8+5TGkKjjlBgp7Ep/F5/MUl
-         CBj1LZ6CJpAFVY5T2jEOYjH5jc6DRNWoT9qa8CY+ZztUAhzykFpFvWKQ0s/7b3cqgosg
-         TDtWLVTUmSPKvEeCPhXjGDPNhuohy+GYmjQ689UAjOZ31AdQqDXmIcXDlYriwpdgniGD
-         uB/D1mfHg6xTZbKrGzMpZr66Tif31/F2KBIL92PS1In5TlCWodARXxisgLObAaOXRMOO
-         B0KiDRcxqWi0cvyFEngbVrsSXp07ujRbLaT+LDrTAy38ssrUpTt5u2iGAJRfwQNYf+0z
-         j0SQ==
-X-Gm-Message-State: AOJu0Ywpx1mTrB3jQBYDvE57zsJMXlJRYr+JF6FN//igRl5DaBMHbB4j
-	5yUuSq6RwdX8A5/HsKzj/qHi1l+Uk77qx+a3ARpE1fAOvZR45F5cwlSCf7aPKgNu1FXhEeSLuG1
-	usrMvs4+vAMpyfsT8jaL/8L4CdOHdEDQ=
-X-Gm-Gg: ASbGnct8PX6UtDx+k01w5EoEpcHE8gpjYCMl9UegqD4iwdMN9Z8RhQplZdUpTL9AnEx
-	mXaijv7eFoF5Uwlnjk7mpdKrxfv+Givv17rXJ/aeLMs6HoETwujoxIek6wwMr5fmIhhX8kLTtW/
-	xxsKszRy8/suC9K9mMKVDejuhDgwIN+Rf2FOL1iVJ6ll4QM2aXmbZV4TTIDomFdsDyolfK0dS/W
-	t7/LNleDjjAgb+9hQhKN/LVpYk/TMg5JtNTrQLHW0eyyGQ=
-X-Google-Smtp-Source: AGHT+IH+tei4P7734cqANm+2NbFTbMWhjwyElY0TVFDFsYkscEOxiOIxednD+ESHixp6t4pFqM/MI44yHnpJyD00Skg=
-X-Received: by 2002:a05:6000:3102:b0:3c9:b8b7:ea40 with SMTP id
- ffacd0b85a97d-3c9b8b7ecf2mr6833516f8f.38.1756246694283; Tue, 26 Aug 2025
- 15:18:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1756247502; x=1756852302;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bqiWc8IUMM7QXsjsuI2jDP/jXsEvh1Kiir9ntnJEqMU=;
+        b=MLcyWEZ2pl5E0R7edxqZ50ul57QjzxaK9VmAYpgg9K/pTKPa7jRYytpjtR5PWI4yTa
+         +jFttV+IJnyQJVP3lUWdVqJF7rL3MyJwf9owllYEA6y/Nfu/734/8pQMO2DuqOOv7xE9
+         Gj316FesazCxT50lRD2gJJP1syuYJ3YhWmlgNtbY4VStERyoFYBMX86/Dmq020cPdNgO
+         1YXEmBonPyxsCz8RqPmcv2+b1L1/hq2gWQLGr4Hbnvho8RdEWkhia2pmfbb19F+PyYH4
+         0Fd91v54mQ+JGK1RGLyVdmVoIbMkxtsaUZIlz2h+6VIeoDBd5LdsSdPMfbM3h7osR/SY
+         Y9Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCWogON/rfwSVypgt4WqyiTMLWd1U7bVk6QjBcwPtLYtw/COKvkk+1EG0rKZTBumhmtzok8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqoT5msJEb4OVztEjXASPIIFyRWaz92WaN5rMB3esaN06Kf4v0
+	gVE4QrGGxrfo2tWklHr7TTaKqrdfjaZFEVuRAWVObE22UiSqdozigFd9
+X-Gm-Gg: ASbGncuqrFW0svzKDTpODIefCiHl+p0/XE83lQcf9iOFJ+41i7XwausYzTcGYNYRSQB
+	BZv9Q8MG3T9frXRmNTD/QQ+wbtTS55h21NMQrDfPKXtfLonm4350FHwGWWXBWnXfL6Ep/Q3lGPz
+	pC4OeADzqm+SAaPM7cOVz4AIlRWhrCnfqgNVWu9Pbw4X1yuunltoLAGBnmeth7M/+xAmM58C+Fq
+	OZ05CA+LzCO7ysOlUUU9ew/XUv+//ct3HsGvWJaLwL0zLdB0fbRLIcRnGG350SyIcxc07iMicoW
+	P63rgDH02RsQd8zOlecRnBFYVRz3QcpVqLPtaBV2GoMFCU5qPvLbl+qFeMvLHCqnig+siD6WLHh
+	JMo7PrAtJxBw4HW3RGPEy9K0o9u9GTw==
+X-Google-Smtp-Source: AGHT+IFc+YHkeHCTo7+ENs+3yDmq/Dh3eNpTbtHM6c60IofEymn2UR5UelBSEb9kgLrO3VliYS/DWg==
+X-Received: by 2002:a17:903:4b4b:b0:248:9348:965e with SMTP id d9443c01a7336-248934897bemr12700135ad.9.1756247502083;
+        Tue, 26 Aug 2025 15:31:42 -0700 (PDT)
+Received: from [192.168.28.36] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2466885f2c1sm105348805ad.73.2025.08.26.15.31.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Aug 2025 15:31:41 -0700 (PDT)
+Message-ID: <10876516b0da85f1d167920a76616b191a4f894d.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add case to test
+ bpf_in_interrupt kfunc
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, 	song@kernel.org, yonghong.song@linux.dev,
+ kernel-patches-bot@fb.com
+Date: Tue, 26 Aug 2025 15:31:36 -0700
+In-Reply-To: <312530ee-3f80-4f07-a533-7341bc1d09a8@linux.dev>
+References: <20250825131502.54269-1-leon.hwang@linux.dev>
+	 <20250825131502.54269-3-leon.hwang@linux.dev>
+	 <c37eb846e94c11b74301a699b64037e9d247ba9e.camel@gmail.com>
+	 <312530ee-3f80-4f07-a533-7341bc1d09a8@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250825131502.54269-1-leon.hwang@linux.dev> <20250825131502.54269-2-leon.hwang@linux.dev>
- <CAADnVQLdmjApwAbrGca2VLQ-SK-3EdQTyd0prEy0BQGrW4Fr6A@mail.gmail.com> <d7ca66b9-c8a5-47c4-9feb-d7814efcce0a@linux.dev>
-In-Reply-To: <d7ca66b9-c8a5-47c4-9feb-d7814efcce0a@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 26 Aug 2025 15:18:02 -0700
-X-Gm-Features: Ac12FXxz3DgVMWX9OGjfI5qMJqGqf0YdbSkWl0JVk2WoOJompJHLgRnltejDMRQ
-Message-ID: <CAADnVQKkEk=uZ6LBW2yXSAB2huYwpeOdDggaUAzd74_bs_6dcQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Introduce bpf_in_interrupt kfunc
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 25, 2025 at 8:00=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
->
->
->
-> On 25/8/25 23:17, Alexei Starovoitov wrote:
-> > On Mon, Aug 25, 2025 at 6:15=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
-v> wrote:
-> >>
-> >> Filtering pid_tgid is meaningless when the current task is preempted b=
-y
-> >> an interrupt.
-> >>
-> >> To address this, introduce the bpf_in_interrupt kfunc, which allows BP=
-F
-> >> programs to determine whether they are executing in interrupt context.
-> >>
-> >> This enables programs to avoid applying pid_tgid filtering when runnin=
-g
-> >> in such contexts.
-> >>
-> >> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> >> ---
-> >>  kernel/bpf/helpers.c  |  9 +++++++++
-> >>  kernel/bpf/verifier.c | 11 +++++++++++
-> >>  2 files changed, 20 insertions(+)
-> >>
-> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >> index 401b4932cc49f..38991b7b4a9e9 100644
-> >> --- a/kernel/bpf/helpers.c
-> >> +++ b/kernel/bpf/helpers.c
-> >> @@ -3711,6 +3711,14 @@ __bpf_kfunc int bpf_strstr(const char *s1__ign,=
- const char *s2__ign)
-> >>         return bpf_strnstr(s1__ign, s2__ign, XATTR_SIZE_MAX);
-> >>  }
-> >>
-> >> +/**
-> >> + * bpf_in_interrupt - Check whether it's in interrupt context
-> >> + */
-> >> +__bpf_kfunc int bpf_in_interrupt(void)
-> >> +{
-> >> +       return in_interrupt();
-> >> +}
-> >
-> > It doesn't scale. Next thing people will ask for hard vs soft irq.
-> >
->
-> How about adding a 'flags'?
->
-> Here are the values for 'flags':
->
-> * 0: return in_interrupt();
-> * 1(NMI): return in_nmi();
-> * 2(HARDIRQ): return in_hardirq();
-> * 3(SOFTIRQ): return in_softirq();
+On Tue, 2025-08-26 at 11:05 +0800, Leon Hwang wrote:
 
-That's an option, but before we argue whether to do as one kfunc with enum
-vs N kfuncs let's explore bpf only option that doesn't involve changing
-the kernel.
+[...]
 
-> >> +#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
-> >> +               insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_0, (u32)(unsigne=
-d long)&__preempt_count);
-> >
-> > I think bpf_per_cpu_ptr() should already be able to read that per cpu v=
-ar.
-> >
->
-> Correct. bpf_per_cpu_ptr() and bpf_this_cpu_ptr() are helpful to read it.
+> > > diff --git a/tools/testing/selftests/bpf/progs/irq.c b/tools/testing/=
+selftests/bpf/progs/irq.c
+> > > index 74d912b22de90..65a796fd1d615 100644
+> > > --- a/tools/testing/selftests/bpf/progs/irq.c
+> > > +++ b/tools/testing/selftests/bpf/progs/irq.c
+> > > @@ -563,4 +563,11 @@ int irq_wrong_kfunc_class_2(struct __sk_buff *ct=
+x)
+> > >  	return 0;
+> > >  }
+> > > =20
+> > > +SEC("?tc")
+> > > +__success
+> >=20
+> > Could you please extend this test to verify generated x86 assembly
+> > code? (see __arch_x86_64 and __jited macro usage in verifier_tailcall_j=
+it.c).
+>=20
+> I=E2=80=99ll try to extend it, depending on the specific x86 implementati=
+on.
+>=20
+> > Also, is it necessary to extend this test to actually verify returned
+> > value?
+>=20
+> Not necessary =E2=80=94 let=E2=80=99s just return 0 here.
 
-Can you add them as static inline functions to bpf_experimental.h
-and a selftest to make sure it's all working?
-At least for x86 and !PREEMPT_RT.
-Like:
-bool bpf_in_interrupt()
-{
-  bpf_this_cpu_ptr(...preempt_count..) &  (NMI_MASK | HARDIRQ_MASK |
-SOFTIRQ_MASK);
-}
+I mean a bit more broadly, make the bpf program run in an interrupt
+and outside of the interrupt context and check the return value.
+If it is a small wrapper around existing kernel function probably not
+worth it, but you are adding custom logic with inlining.
 
-Of course, there is a danger that kernel implementation might
-diverge from bpf-only bit, but it's a risk we're taking all the time.
+Basically same thing Alexei asked in the sibling thread.
 
