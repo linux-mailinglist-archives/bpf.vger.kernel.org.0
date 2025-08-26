@@ -1,122 +1,332 @@
-Return-Path: <bpf+bounces-66509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFFA6B35507
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 09:08:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C115B3555C
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 09:22:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F0121B63892
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 07:08:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0B153AECA3
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 07:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED37D23D2BF;
-	Tue, 26 Aug 2025 07:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455DE2F7478;
+	Tue, 26 Aug 2025 07:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWy6iHph"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75E82877C0
-	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 07:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1041B2D0629;
+	Tue, 26 Aug 2025 07:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756192104; cv=none; b=pBPIJYQuO+VTgD5KGtsmUrBD7yyqomhfAWr6wBvZ9ZJEsCjp9nOBixaihi0qd0qDxh7BdjP80FCBpy3UEZvycAOUIvX5ZNefopxkpcfLAW+nEZptPpSj8Kix7+COMJ9/31oD9mX73ARZjMoZE4m9wgEMOm1EfduS/mIwejpwCps=
+	t=1756192809; cv=none; b=B7XJbS1zOIpTVeWV4Yt2EZTUsSDC4Gww1VsPX33htvrPl2SPoMU3eN+q8DqX1UwmQtpHUVrzhOB+eUwCkBh7JOByTqxlqpzXeXpLLFwW+8iK+LHa0Ihw4+zpe2/ROpGn4U3ugwmV/yelIu3Xzf/WyKsmHjTiNvIoVrXpHAwYF7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756192104; c=relaxed/simple;
-	bh=OVE9hGqVcrmr2QU6izD836shHsGG1g38C4ChzAfeGaI=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=YlXhrEmoVU1bcwU2wgExyzY+jWzgimPG0Wy16tNfiBiPp4O2CtPDA5UfVwVEYtPAzQvjAPns/67IUxE+bz05oheUi7cJrTuWGRG+h4pbrF3BmrDB8rwFVJ76yBw4cUbSBjacuwFAc8x4JMBYlYA6hKMStWFmHbJEGDM9kEopsvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8Dxvr9iXa1oEEMDAA--.5298S3;
-	Tue, 26 Aug 2025 15:08:18 +0800 (CST)
-Received: from [10.130.10.66] (unknown [113.200.148.30])
-	by front1 (Coremail) with SMTP id qMiowJAxfcFfXa1oQ3RpAA--.11172S3;
-	Tue, 26 Aug 2025 15:08:15 +0800 (CST)
-Subject: Re: [PATCH] LoongArch: BPF: Fix uninitialized symbol 'retval_off'
-To: Huacai Chen <chenhuacai@loongson.cn>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>
-Cc: bpf@vger.kernel.org, Hengqi Chen <hengqi.chen@gmail.com>,
- Huacai Chen <chenhuacai@gmail.com>, George Guo <guodongtai@kylinos.cn>,
- Chenghao Duan <duanchenghao@kylinos.cn>, loongarch@lists.linux.dev,
- kernel test robot <lkp@intel.com>, Dan Carpenter <dan.carpenter@linaro.org>
-References: <20250819111953.3197428-1-chenhuacai@loongson.cn>
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <1378057e-4fc1-2bcd-4d60-1a10bd98e5bb@loongson.cn>
-Date: Tue, 26 Aug 2025 15:07:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1756192809; c=relaxed/simple;
+	bh=fSCDY3o6Up3bUD+HLjZxKCdcxMBo8o5mMIJCE8ADBV0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Q/qQax+E4TYhyxD8q20FW845Jgo/BfXHmhS0URMCy+o5qVOtoFp6VpC1UUEAQcOZo/YWxi9JPddB2TL/P5RSlmBksDyKYIH9pjKbgJ4tfofO7o20VayOOj9nDXJOV9c1szsZNdm1r3huHu7Rv71/ipY/5pCMy0lNLr0UickzzrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jWy6iHph; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b49d6f8f347so2244083a12.0;
+        Tue, 26 Aug 2025 00:20:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756192807; x=1756797607; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MvSNIEmsBO/S1uWXAujiQsWnGsOXId7wmCU3A+Uy2og=;
+        b=jWy6iHphxZW92wYBpa1Eg4YwLDzH5bNrEfHhjog+EabkRYm12kGIo4it49v609nj7M
+         wxLO+bdpIx/A9or6MgeU4HYLnKCoBxO3kRnUD5qmlif8/efc37UeJWW6mNIEbEc0kS5m
+         SZlU8BUoMJyoEnvs+w1YptOWLg6Ehz9ZZNxsCjP6sDlDdjtLXYtFq3Cv7rdJ3nWxoHMD
+         eFIjbcywoPp9WEP7MQ1rt4Hm/L2bAg/r+xdWjiOvMD5JuIV7s8a3PYwHqsDXFmAJj8OZ
+         a0tE33Mq5lIFTsSdZVuvyWbgY/XnjjrKO6mzU52xlEV9BxvBqEBshNROcdh/zxcPz+1l
+         wnqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756192807; x=1756797607;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MvSNIEmsBO/S1uWXAujiQsWnGsOXId7wmCU3A+Uy2og=;
+        b=lgcf4WEyh3C1rZRMlOy+XKxAnOlbeWIXF0dJbxE1s0r1/6cJYRBaUAzfasdY9GddYT
+         FUlS4FE86xW+6BBWcDHLXwhwv/D3lSCc6a4mY9sGUhIln+aQcGz3ZHN6Xf02pJoGG+6b
+         v6m1B5cjccjkc49+VuBj5V/ACo/5cdsLntmyp9yd4j27OHHtGFfwnQmv39FFk2n8fWRD
+         Yrbq5DAitaYmDscGQqTpHoRmWwcJeSCS0TKWQGiy/33V19VsRFrsyRblpbFxUeJyMUwm
+         SCp7DJ58QmoXld7dne7P88U5xzSg4V3hvJvqj92OsSAR10AU48P6KqZ8beIk+Z99jUcS
+         GUjw==
+X-Forwarded-Encrypted: i=1; AJvYcCVnths13IE4L5Pjswbtuqwwi7B46uostzWngPEt/eAyVmuJEiJv8PwevxFB9ssruv4W32S0z3uK1r4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwNM3mmVKlNggpE6M80AtiJmT9cqM6izV/Ypqjlhaus0PVkJ3aK
+	/I08bybeY/vNzIfL3TxNH3CRlq+1EOdQBAO5rl86dsYGCnQXMQQI0n6X
+X-Gm-Gg: ASbGncsSpy0T3KPFS9JeDButITN4rtVxrckcRJh+CzXbSHl2qvG0H2y9d4MjUbKTt+O
+	VB2mwJ9mfFpOqRjHFPBSwmhI104Pr4uvEwlZLzw6ftBCvlLc2pD2C9OcIWg8xHGmfzXJSbdBPpX
+	S4uMOgoQIEtvV/FFzy45TyLAVQoARI9VKDqQWGbiKcaUInXh2koPN0us0WWLiBi7TgBU4mR2ZxD
+	RBP+h6q3WLVid1YcfAb6vdPe8ukiNFseqWaBd/gQUToY8obwu+5KUwS4iavCJ2s5N5cuJdh8VTR
+	C3HN/Q4szbZq9nLqyC7Zys/z+9RZ/PSA/gotM5spHKFxAL7yjfvB15uWh0kFf+z0ZfwY0LtuyM2
+	iHzQjveskg4ir4psY/Pgj/lf31wp+aZQABMrwP36c92IU3xRUy2SnwS/haJK7TcoXtimGw6vPuR
+	+LuYQ=
+X-Google-Smtp-Source: AGHT+IHJJhanwvW5EbqwEOoFAkZdDHlluG/q6CqoQ9rDCm4qZgtWZOtyBmLarDVC5avUWvJXYxUL7w==
+X-Received: by 2002:a05:6a20:4325:b0:243:15b9:7655 with SMTP id adf61e73a8af0-24340d2288cmr21351592637.47.1756192807103;
+        Tue, 26 Aug 2025 00:20:07 -0700 (PDT)
+Received: from localhost.localdomain ([101.82.213.56])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770401ecc51sm9686052b3a.75.2025.08.26.00.19.56
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 26 Aug 2025 00:20:06 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: akpm@linux-foundation.org,
+	david@redhat.com,
+	ziy@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	npache@redhat.com,
+	ryan.roberts@arm.com,
+	dev.jain@arm.com,
+	hannes@cmpxchg.org,
+	usamaarif642@gmail.com,
+	gutierrez.asier@huawei-partners.com,
+	willy@infradead.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	ameryhung@gmail.com,
+	rientjes@google.com,
+	corbet@lwn.net
+Cc: bpf@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-doc@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v6 mm-new 00/10] mm, bpf: BPF based THP order selection
+Date: Tue, 26 Aug 2025 15:19:38 +0800
+Message-Id: <20250826071948.2618-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20250819111953.3197428-1-chenhuacai@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJAxfcFfXa1oQ3RpAA--.11172S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7AFW7Jr15CFWDGrWktFy3ZFc_yoW8Wr13pr
-	ZrZrnIyF48Wry2qa9rX3yrXrn0qr4DGrnxWF1YyFyrCay5Xw1vvr1rGa98WFyjy39Yvw10
-	qrs0krnIk3ZrAacCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUPYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
-	x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1D
-	McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7
-	I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCF
-	x2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r
-	1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij
-	64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-	0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF
-	0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jFApnUUUUU=
 
-On 2025/8/19 下午7:19, Huacai Chen wrote:
-> In __arch_prepare_bpf_trampoline(), retval_off is meaningful only when
-> save_ret is not 0, so the current logic is correct. But it may cause a
-> build warning:
-> 
-> arch/loongarch/net/bpf_jit.c:1547 __arch_prepare_bpf_trampoline() error: uninitialized symbol 'retval_off'.
-> 
-> So initialize retval_off unconditionally to fix it.
-> 
-> Fixes: f9b6b41f0cf3 ("LoongArch: BPF: Add basic bpf trampoline support")
-> Closes: https://lore.kernel.org/r/202508191020.PBBh07cK-lkp@intel.com/
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
->   arch/loongarch/net/bpf_jit.c | 9 ++++-----
->   1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index abfdb6bb5c38..a73f6ea4ed4a 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -1504,11 +1504,10 @@ static int __arch_prepare_bpf_trampoline(struct jit_ctx *ctx, struct bpf_tramp_i
->   	stack_size += 16;
->   
->   	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
-> -	if (save_ret) {
-> -		/* Save BPF R0 and A0 */
-> -		stack_size += 16;
-> -		retval_off = stack_size;
-> -	}
-> +	if (save_ret)
-> +		stack_size += 16; /* Save BPF R0 and A0 */
-> +
-> +	retval_off = stack_size;
+Background
+==========
 
-Just init retval_off as 0 at the beginning of this function?
-What is the difference? which is better?
+Our production servers consistently configure THP to "never" due to
+historical incidents caused by its behavior. Key issues include:
+- Increased Memory Consumption
+  THP significantly raises overall memory usage, reducing available memory
+  for workloads.
 
-Thanks,
-Tiezhu
+- Latency Spikes
+  Random latency spikes occur due to frequent memory compaction triggered
+  by THP.
+
+- Lack of Fine-Grained Control
+  THP tuning is globally configured, making it unsuitable for containerized
+  environments. When multiple workloads share a host, enabling THP without
+  per-workload control leads to unpredictable behavior.
+
+Due to these issues, administrators avoid switching to madvise or always
+modes—unless per-workload THP control is implemented.
+
+To address this, we propose BPF-based THP policy for flexible adjustment.
+Additionally, as David mentioned [0], this mechanism can also serve as a
+policy prototyping tool (test policies via BPF before upstreaming them).
+
+Proposed Solution
+=================
+
+As suggested by David [0], we introduce a new BPF interface:
+
+/**
+ * @get_suggested_order: Get the suggested THP orders for allocation
+ * @mm: mm_struct associated with the THP allocation
+ * @vma__nullable: vm_area_struct associated with the THP allocation (may be NULL)
+ *                 When NULL, the decision should be based on @mm (i.e., when
+ *                 triggered from an mm-scope hook rather than a VMA-specific
+ *                 context).
+ *                 Must belong to @mm (guaranteed by the caller).
+ * @vma_flags: use these vm_flags instead of @vma->vm_flags (0 if @vma is NULL)
+ * @tva_flags: TVA flags for current @vma (-1 if @vma is NULL)
+ * @orders: Bitmask of requested THP orders for this allocation
+ *          - PMD-mapped allocation if PMD_ORDER is set
+ *          - mTHP allocation otherwise
+ *
+ * Rerurn: Bitmask of suggested THP orders for allocation. The highest
+ *         suggested order will not exceed the highest requested order
+ *         in @orders.
+ */
+ int (*get_suggested_order)(struct mm_struct *mm, struct vm_area_struct *vma__nullable,
+                            u64 vma_flags, enum tva_type tva_flags, int orders) __rcu;
+
+This interface:
+- Supports both use cases (per-workload tuning + policy prototyping).
+- Can be extended with BPF helpers (e.g., for memory pressure awareness).
+
+This is an experimental feature. To use it, you must enable
+CONFIG_EXPERIMENTAL_BPF_ORDER_SELECTION.
+
+Warning:
+- The interface may change
+- Behavior may differ in future kernel versions
+- We might remove it in the future
+
+
+Selftests
+=========
+
+BPF selftests
+-------------
+
+Patch #5: Implements a basic BPF THP policy that restricts THP allocation
+          via khugepaged to tasks within a specified memory cgroup.
+Patch #6: Contains test cases validating the khugepaged fork behavior.
+Patch #7: Provides tests for dynamic BPF program updates and replacement.
+Patch #8: Includes negative tests for invalid BPF helper usage, verifying
+          proper verification by the BPF verifier.
+
+Currently, several dependency patches reside in mm-new but haven't been
+merged into bpf-next:
+  mm: add bitmap mm->flags field
+  mm/huge_memory: convert "tva_flags" to "enum tva_type"
+  mm: convert core mm to mm_flags_*() accessors
+
+To enable BPF CI testing, these dependencies were manually applied to
+bpf-next [1]. All selftests in this series pass successfully. The observed
+CI failures are unrelated to these changes.
+
+Performance Evaluation
+----------------------
+
+As suggested by Usama [2], performance impact was measured given the page
+fault handler modifications. The standard `perf bench mem memset` benchmark
+was employed to assess page fault performance.
+
+Testing was conducted on an AMD EPYC 7W83 64-Core Processor (single NUMA
+node). Due to variance between individual test runs, a script executed
+10000 iterations to calculate meaningful averages and standard deviations.
+
+The results across three configurations show negligible performance impact:
+- Baseline (without this patch series)
+- With patch series but no BPF program attached
+- With patch series and BPF program attached
+
+The result are as follows,
+
+  Number of runs: 10,000
+  Average throughput: 40-41 GB/sec
+  Standard deviation: 7-8 GB/sec
+
+Production verification
+-----------------------
+
+We have successfully deployed a variant of this approach across numerous
+Kubernetes production servers. The implementation enables THP for specific
+workloads (such as applications utilizing ZGC [3]) while disabling it for
+others. This selective deployment has operated flawlessly, with no
+regression reports to date.
+
+For ZGC-based applications, our verification demonstrates that shmem THP
+delivers significant improvements:
+- Reduced CPU utilization
+- Lower average latencies
+
+Future work
+===========
+
+Based on our validation with production workloads, we observed mixed
+results with XFS large folios (also known as File THP):
+
+- Performance Benefits
+  Some workloads demonstrated significant improvements with XFS large
+  folios enabled
+- Performance Regression
+  Some workloads experienced degradation when using XFS large folios
+
+These results demonstrate that File THP, similar to anonymous THP, requires
+a more granular approach instead of a uniform implementation.
+
+We will extend the BPF-based order selection mechanism to support File THP
+allocation policies.
+
+Link: https://lwn.net/ml/all/9bc57721-5287-416c-aa30-46932d605f63@redhat.com/ [0] 
+Link: https://github.com/kernel-patches/bpf/pull/9561 [1]
+Link: https://lwn.net/ml/all/a24d632d-4b11-4c88-9ed0-26fa12a0fce4@gmail.com/ [2]
+Link: https://wiki.openjdk.org/display/zgc/Main#Main-EnablingTransparentHugePagesOnLinux [3]
+
+Changes:
+=======
+
+RFC v5-> v6:
+- Code improvement around the RCU usage (Usama)
+- Add selftests for khugepaged fork (Usama)
+- Add performance data for page fault (Usama)
+- Remove the RFC tag
+
+RFC v4->v5: https://lwn.net/Articles/1034265/
+- Add support for vma (David)
+- Add mTHP support in khugepaged (Zi)
+- Use bitmask of all allowed orders instead (Zi)
+- Retrieve the page size and PMD order rather than hardcoding them (Zi)
+
+RFC v3->v4: https://lwn.net/Articles/1031829/
+- Use a new interface get_suggested_order() (David)
+- Mark it as experimental (David, Lorenzo)
+- Code improvement in THP (Usama)
+- Code improvement in BPF struct ops (Amery)
+
+RFC v2->v3: https://lwn.net/Articles/1024545/
+- Finer-graind tuning based on madvise or always mode (David, Lorenzo)
+- Use BPF to write more advanced policies logic (David, Lorenzo)
+
+RFC v1->v2: https://lwn.net/Articles/1021783/
+The main changes are as follows,
+- Use struct_ops instead of fmod_ret (Alexei)
+- Introduce a new THP mode (Johannes)
+- Introduce new helpers for BPF hook (Zi)
+- Refine the commit log
+
+RFC v1: https://lwn.net/Articles/1019290/
+
+Yafang Shao (10):
+  mm: thp: add support for BPF based THP order selection
+  mm: thp: add a new kfunc bpf_mm_get_mem_cgroup()
+  mm: thp: add a new kfunc bpf_mm_get_task()
+  bpf: mark vma->vm_mm as trusted
+  selftests/bpf: add a simple BPF based THP policy
+  selftests/bpf: add test case for khugepaged fork
+  selftests/bpf: add test case to update thp policy
+  selftests/bpf: add test cases for invalid thp_adjust usage
+  Documentation: add BPF-based THP adjustment documentation
+  MAINTAINERS: add entry for BPF-based THP adjustment
+
+ Documentation/admin-guide/mm/transhuge.rst    |  47 +++
+ MAINTAINERS                                   |  10 +
+ include/linux/huge_mm.h                       |  15 +
+ include/linux/khugepaged.h                    |  12 +-
+ kernel/bpf/verifier.c                         |   5 +
+ mm/Kconfig                                    |  12 +
+ mm/Makefile                                   |   1 +
+ mm/bpf_thp.c                                  | 269 ++++++++++++++
+ mm/huge_memory.c                              |  10 +
+ mm/khugepaged.c                               |  26 +-
+ mm/memory.c                                   |  18 +-
+ tools/testing/selftests/bpf/config            |   3 +
+ .../selftests/bpf/prog_tests/thp_adjust.c     | 343 ++++++++++++++++++
+ .../selftests/bpf/progs/test_thp_adjust.c     | 115 ++++++
+ .../bpf/progs/test_thp_adjust_trusted_vma.c   |  27 ++
+ .../progs/test_thp_adjust_unreleased_memcg.c  |  24 ++
+ .../progs/test_thp_adjust_unreleased_task.c   |  25 ++
+ 17 files changed, 955 insertions(+), 7 deletions(-)
+ create mode 100644 mm/bpf_thp.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_trusted_vma.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_unreleased_memcg.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_unreleased_task.c
+
+-- 
+2.47.3
 
 
