@@ -1,301 +1,122 @@
-Return-Path: <bpf+bounces-66508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F2C8B354C5
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 08:51:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFFA6B35507
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 09:08:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F2BC1B61F1A
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 06:51:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F0121B63892
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 07:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA212F60A5;
-	Tue, 26 Aug 2025 06:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED37D23D2BF;
+	Tue, 26 Aug 2025 07:08:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069571F03EF;
-	Tue, 26 Aug 2025 06:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75E82877C0
+	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 07:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756191071; cv=none; b=M3zvrKyb6vSKou5qI/v6Gt2uFVmxpOpi3LXTCLIGrZ9jF8vjfvecgheYWfMXmztx3UsvI8ZdQOPbIUp8SdGLOs0vPsrVCX5AKoFgLnNGtr4QcH/ypByV6q0+Ff0wBplS7nKgFOZjWpOTv7ay4V1/CTCNqg/G2zuIVKcJUUocWUI=
+	t=1756192104; cv=none; b=pBPIJYQuO+VTgD5KGtsmUrBD7yyqomhfAWr6wBvZ9ZJEsCjp9nOBixaihi0qd0qDxh7BdjP80FCBpy3UEZvycAOUIvX5ZNefopxkpcfLAW+nEZptPpSj8Kix7+COMJ9/31oD9mX73ARZjMoZE4m9wgEMOm1EfduS/mIwejpwCps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756191071; c=relaxed/simple;
-	bh=Dhcw2LVk+CjWFnJza20NnRyE5UvD3ExPFBohI1uSXPE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CyFssjOY7grf7XPD18vLSVjikBJTomnWtkXdVToB82CcL2mAO1fkyvsrCMaSamrfKa367WQRfPfyCKg8+Vw2ZDwYdf94PPnfg/fhxffWkempwD1GW+O9Pxhm4XNIahnWQdeALKeWcY/kKmkwHZC/nSLWptI/J5s0oWlcEL3qMEI=
+	s=arc-20240116; t=1756192104; c=relaxed/simple;
+	bh=OVE9hGqVcrmr2QU6izD836shHsGG1g38C4ChzAfeGaI=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=YlXhrEmoVU1bcwU2wgExyzY+jWzgimPG0Wy16tNfiBiPp4O2CtPDA5UfVwVEYtPAzQvjAPns/67IUxE+bz05oheUi7cJrTuWGRG+h4pbrF3BmrDB8rwFVJ76yBw4cUbSBjacuwFAc8x4JMBYlYA6hKMStWFmHbJEGDM9kEopsvg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8Dxfb9TWa1owUEDAA--.5188S3;
-	Tue, 26 Aug 2025 14:50:59 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by front1 (Coremail) with SMTP id qMiowJCxH8JRWa1oQG1pAA--.11176S2;
-	Tue, 26 Aug 2025 14:50:58 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8Dxvr9iXa1oEEMDAA--.5298S3;
+	Tue, 26 Aug 2025 15:08:18 +0800 (CST)
+Received: from [10.130.10.66] (unknown [113.200.148.30])
+	by front1 (Coremail) with SMTP id qMiowJAxfcFfXa1oQ3RpAA--.11172S3;
+	Tue, 26 Aug 2025 15:08:15 +0800 (CST)
+Subject: Re: [PATCH] LoongArch: BPF: Fix uninitialized symbol 'retval_off'
+To: Huacai Chen <chenhuacai@loongson.cn>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>
+Cc: bpf@vger.kernel.org, Hengqi Chen <hengqi.chen@gmail.com>,
+ Huacai Chen <chenhuacai@gmail.com>, George Guo <guodongtai@kylinos.cn>,
+ Chenghao Duan <duanchenghao@kylinos.cn>, loongarch@lists.linux.dev,
+ kernel test robot <lkp@intel.com>, Dan Carpenter <dan.carpenter@linaro.org>
+References: <20250819111953.3197428-1-chenhuacai@loongson.cn>
 From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: Remove entries from config.{arch} already present in config
-Date: Tue, 26 Aug 2025 14:50:57 +0800
-Message-ID: <20250826065057.11415-1-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+Message-ID: <1378057e-4fc1-2bcd-4d60-1a10bd98e5bb@loongson.cn>
+Date: Tue, 26 Aug 2025 15:07:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20250819111953.3197428-1-chenhuacai@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJCxH8JRWa1oQG1pAA--.11176S2
+X-CM-TRANSID:qMiowJAxfcFfXa1oQ3RpAA--.11172S3
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Jr4fuF4xGryDCrWrWF13WrX_yoW3Wr43pw
-	18Jw48tF18JF15ArWxCrWDGFZ8tFnrJFW7Gr13Jr15Zw18J3yxJr4xKF4UJrZ8WFZxXr4r
-	Aas3KF13ZF4UJ3cCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoW7AFW7Jr15CFWDGrWktFy3ZFc_yoW8Wr13pr
+	ZrZrnIyF48Wry2qa9rX3yrXrn0qr4DGrnxWF1YyFyrCay5Xw1vvr1rGa98WFyjy39Yvw10
+	qrs0krnIk3ZrAacCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
 	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	0xBIdaVrnRJUUUPYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
 	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
 	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AK
-	xVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcCD7UUUUU
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
+	x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1D
+	McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7
+	I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCF
+	x2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r
+	1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij
+	64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+	0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF
+	0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jFApnUUUUU=
 
-`config.{arch}` had entries already present in `config`.
+On 2025/8/19 下午7:19, Huacai Chen wrote:
+> In __arch_prepare_bpf_trampoline(), retval_off is meaningful only when
+> save_ret is not 0, so the current logic is correct. But it may cause a
+> build warning:
+> 
+> arch/loongarch/net/bpf_jit.c:1547 __arch_prepare_bpf_trampoline() error: uninitialized symbol 'retval_off'.
+> 
+> So initialize retval_off unconditionally to fix it.
+> 
+> Fixes: f9b6b41f0cf3 ("LoongArch: BPF: Add basic bpf trampoline support")
+> Closes: https://lore.kernel.org/r/202508191020.PBBh07cK-lkp@intel.com/
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> ---
+>   arch/loongarch/net/bpf_jit.c | 9 ++++-----
+>   1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+> index abfdb6bb5c38..a73f6ea4ed4a 100644
+> --- a/arch/loongarch/net/bpf_jit.c
+> +++ b/arch/loongarch/net/bpf_jit.c
+> @@ -1504,11 +1504,10 @@ static int __arch_prepare_bpf_trampoline(struct jit_ctx *ctx, struct bpf_tramp_i
+>   	stack_size += 16;
+>   
+>   	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
+> -	if (save_ret) {
+> -		/* Save BPF R0 and A0 */
+> -		stack_size += 16;
+> -		retval_off = stack_size;
+> -	}
+> +	if (save_ret)
+> +		stack_size += 16; /* Save BPF R0 and A0 */
+> +
+> +	retval_off = stack_size;
 
-When generating the config used by vmtest, concatenate the `config` file
-with the `config.{arch}` one, making those entries duplicated, so remove
-those duplications.
+Just init retval_off as 0 at the beginning of this function?
+What is the difference? which is better?
 
-Use the following command to get the differences:
-
-  $ comm -1 -2  <(sort tools/testing/selftests/bpf/config.x86_64) <(sort tools/testing/selftests/bpf/config)
-  $ comm -1 -2  <(sort tools/testing/selftests/bpf/config.aarch64) <(sort tools/testing/selftests/bpf/config)
-  $ comm -1 -2  <(sort tools/testing/selftests/bpf/config.riscv64) <(sort tools/testing/selftests/bpf/config)
-  $ comm -1 -2  <(sort tools/testing/selftests/bpf/config.ppc64el) <(sort tools/testing/selftests/bpf/config)
-  $ comm -1 -2  <(sort tools/testing/selftests/bpf/config.s390x) <(sort tools/testing/selftests/bpf/config)
-
-This is similar with commit 7a42af4b94f1 ("selftests/bpf: Remove entries
-from config.s390x already present in config").
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- tools/testing/selftests/bpf/config.aarch64 | 12 ------------
- tools/testing/selftests/bpf/config.ppc64el |  1 -
- tools/testing/selftests/bpf/config.riscv64 |  1 -
- tools/testing/selftests/bpf/config.s390x   | 11 -----------
- tools/testing/selftests/bpf/config.x86_64  |  5 -----
- 5 files changed, 30 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/config.aarch64 b/tools/testing/selftests/bpf/config.aarch64
-index e1495a4bbc99..7efad36ceb26 100644
---- a/tools/testing/selftests/bpf/config.aarch64
-+++ b/tools/testing/selftests/bpf/config.aarch64
-@@ -31,10 +31,7 @@ CONFIG_COMPAT=y
- CONFIG_CPUSETS=y
- CONFIG_CRASH_DUMP=y
- CONFIG_CRYPTO_USER_API_RNG=y
--CONFIG_CRYPTO_USER_API_SKCIPHER=y
- CONFIG_DEBUG_ATOMIC_SLEEP=y
--CONFIG_DEBUG_INFO_BTF=y
--CONFIG_DEBUG_INFO_DWARF4=y
- CONFIG_DEBUG_INFO_REDUCED=n
- CONFIG_DEBUG_LIST=y
- CONFIG_DEBUG_LOCKDEP=y
-@@ -46,7 +43,6 @@ CONFIG_DETECT_HUNG_TASK=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_DEVTMPFS=y
- CONFIG_DRM=y
--CONFIG_DUMMY=y
- CONFIG_EXPERT=y
- CONFIG_EXT4_FS_POSIX_ACL=y
- CONFIG_EXT4_FS_SECURITY=y
-@@ -70,13 +66,11 @@ CONFIG_HZ_100=y
- CONFIG_IDLE_PAGE_TRACKING=y
- CONFIG_IKHEADERS=y
- CONFIG_INET6_ESP=y
--CONFIG_INET_ESP=y
- CONFIG_INET=y
- CONFIG_INPUT_EVDEV=y
- CONFIG_IP_ADVANCED_ROUTER=y
- CONFIG_IP_MULTICAST=y
- CONFIG_IP_MULTIPLE_TABLES=y
--CONFIG_IP_NF_IPTABLES=y
- CONFIG_IPV6_SEG6_LWTUNNEL=y
- CONFIG_IPVLAN=y
- CONFIG_JUMP_LABEL=y
-@@ -97,22 +91,18 @@ CONFIG_MEMORY_HOTPLUG=y
- CONFIG_MEMORY_HOTREMOVE=y
- CONFIG_NAMESPACES=y
- CONFIG_NET_ACT_BPF=y
--CONFIG_NET_ACT_GACT=y
- CONFIG_NETDEVICES=y
- CONFIG_NETFILTER_XT_MATCH_BPF=y
- CONFIG_NETFILTER_XT_TARGET_MARK=y
- CONFIG_NET_KEY=y
--CONFIG_NET_SCH_FQ=y
- CONFIG_NET_VRF=y
- CONFIG_NET=y
--CONFIG_NF_TABLES=y
- CONFIG_NLMON=y
- CONFIG_NO_HZ_IDLE=y
- CONFIG_NR_CPUS=256
- CONFIG_NUMA=y
- CONFIG_OVERLAY_FS=y
- CONFIG_PACKET_DIAG=y
--CONFIG_PACKET=y
- CONFIG_PANIC_ON_OOPS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_PCI_HOST_GENERIC=y
-@@ -149,7 +139,6 @@ CONFIG_TASK_XACCT=y
- CONFIG_TCG_TIS=y
- CONFIG_TCG_TPM=y
- CONFIG_TCP_CONG_ADVANCED=y
--CONFIG_TCP_CONG_DCTCP=y
- CONFIG_TLS=y
- CONFIG_TMPFS_POSIX_ACL=y
- CONFIG_TMPFS=y
-@@ -161,6 +150,5 @@ CONFIG_UPROBES=y
- CONFIG_USER_NS=y
- CONFIG_VETH=y
- CONFIG_VLAN_8021Q=y
--CONFIG_VSOCKETS=y
- CONFIG_VSOCKETS_LOOPBACK=y
- CONFIG_XFRM_USER=y
-diff --git a/tools/testing/selftests/bpf/config.ppc64el b/tools/testing/selftests/bpf/config.ppc64el
-index 9acf389dc4ce..b53afb5e0b71 100644
---- a/tools/testing/selftests/bpf/config.ppc64el
-+++ b/tools/testing/selftests/bpf/config.ppc64el
-@@ -54,7 +54,6 @@ CONFIG_NET=y
- CONFIG_NO_HZ_IDLE=y
- CONFIG_NONPORTABLE=y
- CONFIG_NR_CPUS=256
--CONFIG_PACKET=y
- CONFIG_PANIC_ON_OOPS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_PCI_HOST_GENERIC=y
-diff --git a/tools/testing/selftests/bpf/config.riscv64 b/tools/testing/selftests/bpf/config.riscv64
-index bb7043a80e1a..7bee24a79a71 100644
---- a/tools/testing/selftests/bpf/config.riscv64
-+++ b/tools/testing/selftests/bpf/config.riscv64
-@@ -48,7 +48,6 @@ CONFIG_NET_VRF=y
- CONFIG_NONPORTABLE=y
- CONFIG_NO_HZ_IDLE=y
- CONFIG_NR_CPUS=256
--CONFIG_PACKET=y
- CONFIG_PANIC_ON_OOPS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_PCI=y
-diff --git a/tools/testing/selftests/bpf/config.s390x b/tools/testing/selftests/bpf/config.s390x
-index 26c3bc2ce11d..db61878148e4 100644
---- a/tools/testing/selftests/bpf/config.s390x
-+++ b/tools/testing/selftests/bpf/config.s390x
-@@ -22,10 +22,7 @@ CONFIG_CHECKPOINT_RESTORE=y
- CONFIG_CPUSETS=y
- CONFIG_CRASH_DUMP=y
- CONFIG_CRYPTO_USER_API_RNG=y
--CONFIG_CRYPTO_USER_API_SKCIPHER=y
- CONFIG_DEBUG_ATOMIC_SLEEP=y
--CONFIG_DEBUG_INFO_BTF=y
--CONFIG_DEBUG_INFO_DWARF4=y
- CONFIG_DEBUG_LIST=y
- CONFIG_DEBUG_LOCKDEP=y
- CONFIG_DEBUG_NOTIFIERS=y
-@@ -56,11 +53,9 @@ CONFIG_IDLE_PAGE_TRACKING=y
- CONFIG_IKHEADERS=y
- CONFIG_INET6_ESP=y
- CONFIG_INET=y
--CONFIG_INET_ESP=y
- CONFIG_IP_ADVANCED_ROUTER=y
- CONFIG_IP_MULTICAST=y
- CONFIG_IP_MULTIPLE_TABLES=y
--CONFIG_IP_NF_IPTABLES=y
- CONFIG_IPV6_SEG6_LWTUNNEL=y
- CONFIG_IPVLAN=y
- CONFIG_JUMP_LABEL=y
-@@ -83,18 +78,14 @@ CONFIG_MEMORY_HOTREMOVE=y
- CONFIG_NAMESPACES=y
- CONFIG_NET=y
- CONFIG_NET_ACT_BPF=y
--CONFIG_NET_ACT_GACT=y
- CONFIG_NET_KEY=y
--CONFIG_NET_SCH_FQ=y
- CONFIG_NET_VRF=y
- CONFIG_NETDEVICES=y
- CONFIG_NETFILTER_XT_MATCH_BPF=y
- CONFIG_NETFILTER_XT_TARGET_MARK=y
--CONFIG_NF_TABLES=y
- CONFIG_NO_HZ_IDLE=y
- CONFIG_NR_CPUS=256
- CONFIG_NUMA=y
--CONFIG_PACKET=y
- CONFIG_PANIC_ON_OOPS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_PCI=y
-@@ -119,7 +110,6 @@ CONFIG_TASK_IO_ACCOUNTING=y
- CONFIG_TASK_XACCT=y
- CONFIG_TASKSTATS=y
- CONFIG_TCP_CONG_ADVANCED=y
--CONFIG_TCP_CONG_DCTCP=y
- CONFIG_TLS=y
- CONFIG_TMPFS=y
- CONFIG_TMPFS_POSIX_ACL=y
-@@ -131,6 +121,5 @@ CONFIG_UPROBES=y
- CONFIG_USER_NS=y
- CONFIG_VETH=y
- CONFIG_VLAN_8021Q=y
--CONFIG_VSOCKETS=y
- CONFIG_VSOCKETS_LOOPBACK=y
- CONFIG_XFRM_USER=y
-diff --git a/tools/testing/selftests/bpf/config.x86_64 b/tools/testing/selftests/bpf/config.x86_64
-index 5e713ef7caa3..42ad817b00ae 100644
---- a/tools/testing/selftests/bpf/config.x86_64
-+++ b/tools/testing/selftests/bpf/config.x86_64
-@@ -44,7 +44,6 @@ CONFIG_CRYPTO_SEQIV=y
- CONFIG_CRYPTO_XXHASH=y
- CONFIG_DCB=y
- CONFIG_DEBUG_ATOMIC_SLEEP=y
--CONFIG_DEBUG_INFO_BTF=y
- CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_DEBUG_MEMORY_INIT=y
- CONFIG_DEFAULT_FQ_CODEL=y
-@@ -104,12 +103,10 @@ CONFIG_HZ_1000=y
- CONFIG_INET=y
- CONFIG_INPUT_EVDEV=y
- CONFIG_INTEL_POWERCLAMP=y
--CONFIG_IP6_NF_IPTABLES=y
- CONFIG_IP_ADVANCED_ROUTER=y
- CONFIG_IP_MROUTE=y
- CONFIG_IP_MULTICAST=y
- CONFIG_IP_MULTIPLE_TABLES=y
--CONFIG_IP_NF_IPTABLES=y
- CONFIG_IP_PIMSM_V1=y
- CONFIG_IP_PIMSM_V2=y
- CONFIG_IP_ROUTE_MULTIPATH=y
-@@ -162,7 +159,6 @@ CONFIG_NUMA=y
- CONFIG_NUMA_BALANCING=y
- CONFIG_NVMEM=y
- CONFIG_OSF_PARTITION=y
--CONFIG_PACKET=y
- CONFIG_PANIC_ON_OOPS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_PCI=y
-@@ -220,7 +216,6 @@ CONFIG_VALIDATE_FS_PARSER=y
- CONFIG_VETH=y
- CONFIG_VIRT_DRIVERS=y
- CONFIG_VLAN_8021Q=y
--CONFIG_VSOCKETS=y
- CONFIG_VSOCKETS_LOOPBACK=y
- CONFIG_X86_ACPI_CPUFREQ=y
- CONFIG_X86_CPUID=y
--- 
-2.42.0
+Thanks,
+Tiezhu
 
 
