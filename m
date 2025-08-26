@@ -1,281 +1,116 @@
-Return-Path: <bpf+bounces-66526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E2EEB3565E
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 10:06:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2C62B3567C
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 10:14:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03D0118971A0
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 08:06:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A21120092B
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 08:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AAE42F8BD6;
-	Tue, 26 Aug 2025 08:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE5D2F7453;
+	Tue, 26 Aug 2025 08:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q4HwOVcs"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bVuMTRfv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A14A2853FA;
-	Tue, 26 Aug 2025 08:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426922F7443
+	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 08:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756195500; cv=none; b=nj0vzpjKDttKTIWAI7D16FIqJYFaKfg8btRYeSIzSES8rc1DcnoWJHt7t7Z8nONldlsYij8PQ0UyoocCAYMhYBrWFwH/yV8MxlGzk4NcaMA7UGVoBS2Bp4mAW+nLMFwh1HQkmJsoNjz2aTCWBuAOf6hUC1QpZb9ypFTSxMNZqCU=
+	t=1756196055; cv=none; b=FGRRkGQh1NCoGymPxoGtcQ05rMxxWGfIiqvUzqrSA8FT3rXuAE2z9i5uTi+OnjcteiZ2NoVuzbasf3yfBAotJvf50X+pvOh+UuMIpFbioPVTSfpSLTdoO9HxK/mtNaZ74Nre+/O5LMMS6sW94cbrtJdlOhnehpX+wXEo6HzAiE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756195500; c=relaxed/simple;
-	bh=mc4HjBQoj+cY0K8gVaUwo6cJ18WjLYLy5NvRmtEby7w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MdUhEaKCM9wkPUGCCh8UcfTXXrblOVmmzOFibIL8pOF4XsXq7wzK/yfUe5ly8DZeYwm2ct8WVncwZ5hjsW83rgwZNYLg/7coMCWP4fiZr62wsKBbO+9MLh93/NtTinF3G1mZWKCuuoBjy+nbQ3Co5jpU1efvGK6eBc0b+rgveTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q4HwOVcs; arc=none smtp.client-ip=209.85.214.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-24687a76debso23092885ad.0;
-        Tue, 26 Aug 2025 01:04:58 -0700 (PDT)
+	s=arc-20240116; t=1756196055; c=relaxed/simple;
+	bh=h9u7C3pqJnM4zMdMnReRGZ/HSmB+17GO3ew7kK7JkGo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bqfwff1yxgvIGRlJ/sQUgICWDI/fbe3SMkaByU7SGlAxF04HJ0zf0/4i0nnlK1b4x+lNv+VuNzk74ecIMHLBCryUj3bkM6ENB1ufm9eTiCSnSSVXmcAHiuDSksu7/3o2BV13W7YMHeQiyWcqg9wKQ1eie41Iold6hk7EmoXx/Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bVuMTRfv; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-45a1b0c8867so43466375e9.3
+        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 01:14:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756195498; x=1756800298; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ANo5cUf5hg9N0r5c+hXAraC/9ocQ00QIvjoPiGNkd94=;
-        b=Q4HwOVcs/A5NLavNVwzY1aOAIeBqBiivVxGwf+/uGABDByfdfNp7PJxkS3A+5vBjL9
-         azBM105KVRIBBEuE4iQnUL7F35sy4vJ2W3ygRBi9V7HDTotMN7jExSYWCf+PMLlVzb4I
-         bYgVUuBVuZyX2Rp36kEKZiEaUuzrYTFC7p3Xb28rYLpajAjmgHmdFEMJe6UXNe7rdyA4
-         spi43yquuQghdMzL0XOg0r2mHWtCK8dubKPGxgnjGq4YiKOeR6ts4LiTc5kVQXqprpjq
-         Y7lmD6YGkOPWL0elFHeuXckYXF+LDwysmgbVmxjQ4ZOEdjAG0AU2Dxti2/YX1+BxTvZJ
-         BPzQ==
+        d=linaro.org; s=google; t=1756196051; x=1756800851; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=htJocjFCbY0wQ75QkTSmsj/N5xHgBbkFNdLz93b0Td0=;
+        b=bVuMTRfvNT6Nd/XoPZDgckoqxjbbpew+NVXLtXdZQtL8tDZcMf67niLfrMFEdzBIPv
+         Jw+vL79zNlvW3QSxbwGf65HfhVRbhS9KuOi+6AlJrEgBerEJqfKTDcmsPvf4WgRzBnEh
+         YDMcx3xqAhFBxt8nJQWqI5BRQLRAw2Brd2HAfNIkMQmOuTICknMY0NDYXNPfzGguGhoo
+         6zHduYFlfw67yd6D0bCD+g6GdnaDBQIePWFOAiDD4FhU9ctet1iDGQLvsTmU4QgZ6I1i
+         XBuwrh1HYHvh9zEuVuj8i1x5t13IRaAicmNi2m3U3ogjiG3wXzVFr6UqM+y94oo2jO5U
+         Ac6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756195498; x=1756800298;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ANo5cUf5hg9N0r5c+hXAraC/9ocQ00QIvjoPiGNkd94=;
-        b=hn9GJIndgDeulcFPLzCQhNda5uqFsB6pLYcUOMlt2Jr5/9U30Xib7T+EQYEsKjyj1y
-         6GE0Kad4CjG0nRAIJRl0ZeKjzV5PWQXs7A9WmM9s4ah11gwRh0SjzUsNKV3xUZDmhGCz
-         SGDL3nEQaBEuofZ0gHWfB+zFwDWYBpfdpn4raIkzRHaeRlKFaWk10actIZxkWXk0Y44n
-         P3G9G+nvzVxNamELzgOXkMIHN4/SXrmG9tpgRODbXBrb2WUrEXQSpSIeer13Vt/FMNJz
-         ihQQyA1VXzh114asJur5JzxDrKaujV1jkUxCnI0M6nQCOprMQxfcBtl7HeGm9MEjEXCi
-         W9ig==
-X-Forwarded-Encrypted: i=1; AJvYcCVG3jNmOE1ZEr3aUsEkuUUO/1kJ0ha32Ln3IEzDbbS7Z3BhREhIyy5G10tsKF/suqpOMCU=@vger.kernel.org, AJvYcCVHY/ef9J3cp3cdCz8a1aF6Bb0ue97yraNhIT+BxZde1WRhW1ZfDpOw17XerOu/9T3XQav/i50RheUCP9em@vger.kernel.org, AJvYcCWKALxbRwV3Z2qg1bQw9S/jNYy7M8drsJyRhgDqJ7YSdVbscKgUetR0IuPIqPwPQT2lrii4l7Hd/oNzEh0EW4GM@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIuTofss3/3SaHkLMruh9ujM6iy94Ku3MdSiRvUlkeYn6pPEk+
-	lHJPGG8aaQiaCYhYDJtbptKAHy8WbNTd4X4jl1ps4GR85PgDSk0aR0R0
-X-Gm-Gg: ASbGnctbbrARjooUlO9FgWV6fM/EJrGi6VUP6KxZFcayKopa7ORQtjp+QtN0gZrWqzP
-	59JyvHq8KmZeJZfnbEJwEZD82OmafhEt/38cja/l7CMHv4wQgDLIvwA78yXuO6LXTUZlbRuHGoR
-	2OzfJEIPIW6K7lObiayUelWyd8epfY2M5ly6R5LLysVr1eo1BcfhOSdBUmXPZjlYnYt1gFmflD3
-	OwMk4Uwll4pwpfVCoHtbdGErfWjoPqMSTCb2TpsfQt0+OZrqbaei/tF4C+Q3E9x/6aUGj2bV6qz
-	rpEWIOBWzUKgeKiQ5nHpci4MdAXY30mh1Cgk9t9pfyS2jiTuXU/u0sN6vZiT9SVfRS6pU6VzHYn
-	MH1N75VZR34hBGkDoBbBwD50sw2xtPh6nEA==
-X-Google-Smtp-Source: AGHT+IHLWEMFd/v9ow3xzQkAWja8OQHfuqE+Z3SsxYR3vrdyWDSIGD1g1wUGWFc0myCS2X1LrXQOTg==
-X-Received: by 2002:a17:902:e54c:b0:215:6c5f:d142 with SMTP id d9443c01a7336-248753a271amr6505305ad.20.1756195497679;
-        Tue, 26 Aug 2025 01:04:57 -0700 (PDT)
-Received: from 7940hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2466888037fsm88829485ad.125.2025.08.26.01.04.52
+        d=1e100.net; s=20230601; t=1756196051; x=1756800851;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=htJocjFCbY0wQ75QkTSmsj/N5xHgBbkFNdLz93b0Td0=;
+        b=JRnoeYHVB3IfavA5jTe8BMdAyX+53fNnQbK3OzPo3QMiKZHusjGGigfNYYv0wWI0Vl
+         1lVWKae2Rd7+RtBfhjK7Sx3rKng2vYOMqyT7a4h08+Yw4kX+9yagil4T7YbbzpTtukub
+         VAFsNXRvVfy+ANw2IJ53eIqFSL+AAWJerOa77VElmxv5n0zUf4t/t2W+i3cOcHe4nXrO
+         nxtqr8wtZ7hvIg4pDB8rSUvXKjjf4euoSTss5GoouAB6zV+bF/qGH2er0bKcLwAfeFkj
+         xk854/SpFNOXY/N3voP7Oluo7VS6FgGNJ26VFCoglfuCueEgMaFHDUfxNcn7uEvyJKy0
+         +45w==
+X-Gm-Message-State: AOJu0YzPqSrnEbvLMGgtE+AGp7Oo12fujUzZZGr+vMVTyBAvzBJhIYna
+	y8ZOov29HpB3M21yOdup8wFV4BM82XndeAHm4sRO/GRz2RNqbXB8XFTYWkD3NCyPvlk=
+X-Gm-Gg: ASbGncvcjA1PdJ+Xw0Y80n+Yre5+1RiX3FcDpF5/kFMuLKHCpbwDKF4Ep4VfWyQhCyi
+	pBkvaxx3UuEeaqKrxhU6Bs/kRPy7gunWXY+3z1K+jXQo/8nH9HQsIv+ob5Wb7DoC7L/OH0veUZU
+	kkSzMhU1mDwuCqOW+oxERDepoBjP0XpAx0Rm7oRqHCVRFAMTN57yBjbvG68o5bi7r8bsuHKK/mm
+	GYIUDRbWQ70K1aeTWhsUL+ifUV8l93yJ0mAyjwROcT4a1VII+i61RPskwJRZkhnwDAqBHjuuwk3
+	+3FaRQBPdgSfGGxFhaINQ7QcIEU6AQaClv2CVx/2p/xx00csRSKTD45FtqEj9/jGLkSVHrB1gha
+	v12dftwsjy2HSLSyrTh7dHPZTaxk=
+X-Google-Smtp-Source: AGHT+IEbKxCrV/crYXvaOYg+DOzSnDljX8XhhperEq+dcEo354TQCGi1v3zOaG9kMQNx5o6N4Me2oQ==
+X-Received: by 2002:a5d:5f8e:0:b0:3c8:443:4066 with SMTP id ffacd0b85a97d-3c804434575mr6485502f8f.61.1756196051410;
+        Tue, 26 Aug 2025 01:14:11 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3ca8f2811d9sm4480136f8f.20.2025.08.26.01.14.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 01:04:56 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: andrii@kernel.org
-Cc: eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	yikai.lin@vivo.com,
-	memxor@gmail.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: add benchmark testing for kprobe-multi-all
-Date: Tue, 26 Aug 2025 16:04:30 +0800
-Message-ID: <20250826080430.79043-4-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250826080430.79043-1-dongml2@chinatelecom.cn>
-References: <20250826080430.79043-1-dongml2@chinatelecom.cn>
+        Tue, 26 Aug 2025 01:14:10 -0700 (PDT)
+Date: Tue, 26 Aug 2025 11:14:07 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, netdev@vger.kernel.org,
+	magnus.karlsson@intel.com, stfomichev@gmail.com,
+	aleksander.lobakin@intel.com,
+	Eryk Kubanski <e.kubanski@partner.samsung.com>
+Subject: Re: [PATCH v6 bpf] xsk: fix immature cq descriptor production
+Message-ID: <aK1sz42QLX42u6Eo@stanley.mountain>
+References: <20250820154416.2248012-1-maciej.fijalkowski@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250820154416.2248012-1-maciej.fijalkowski@intel.com>
 
-For now, the benchmark for kprobe-multi is single, which means there is
-only 1 function is hooked during testing. Add the testing
-"kprobe-multi-all", which will hook all the kernel functions during
-the benchmark. And the "kretprobe-multi-all" is added too.
+On Wed, Aug 20, 2025 at 05:44:16PM +0200, Maciej Fijalkowski wrote:
+>  			return ERR_PTR(err);
+>  
+>  		skb_reserve(skb, hr);
+> +
+> +		addrs = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
+> +		if (!addrs) {
+> +			kfree(skb);
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
-v2:
-- use fprintf() instead of printf()
----
- tools/testing/selftests/bpf/bench.c           |  4 ++
- .../selftests/bpf/benchs/bench_trigger.c      | 53 +++++++++++++++++++
- .../selftests/bpf/benchs/run_bench_trigger.sh |  4 +-
- .../selftests/bpf/progs/trigger_bench.c       | 12 +++++
- tools/testing/selftests/bpf/trace_helpers.c   |  1 +
- 5 files changed, 72 insertions(+), 2 deletions(-)
+This needs to be kfree_skb(skb);
 
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index ddd73d06a1eb..29dbf937818a 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -510,6 +510,8 @@ extern const struct bench bench_trig_kretprobe;
- extern const struct bench bench_trig_kprobe_multi;
- extern const struct bench bench_trig_kretprobe_multi;
- extern const struct bench bench_trig_fentry;
-+extern const struct bench bench_trig_kprobe_multi_all;
-+extern const struct bench bench_trig_kretprobe_multi_all;
- extern const struct bench bench_trig_fexit;
- extern const struct bench bench_trig_fmodret;
- extern const struct bench bench_trig_tp;
-@@ -578,6 +580,8 @@ static const struct bench *benchs[] = {
- 	&bench_trig_kprobe_multi,
- 	&bench_trig_kretprobe_multi,
- 	&bench_trig_fentry,
-+	&bench_trig_kprobe_multi_all,
-+	&bench_trig_kretprobe_multi_all,
- 	&bench_trig_fexit,
- 	&bench_trig_fmodret,
- 	&bench_trig_tp,
-diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-index 82327657846e..b483c6f64444 100644
---- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-@@ -226,6 +226,57 @@ static void trigger_fentry_setup(void)
- 	attach_bpf(ctx.skel->progs.bench_trigger_fentry);
- }
- 
-+static void attach_ksyms_all(struct bpf_program *empty, bool kretprobe)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	char **syms = NULL;
-+	size_t cnt = 0;
-+
-+	if (bpf_get_ksyms(&syms, &cnt, true)) {
-+		fprintf(stderr, "failed to get ksyms\n");
-+		exit(1);
-+	}
-+
-+	opts.syms = (const char **) syms;
-+	opts.cnt = cnt;
-+	opts.retprobe = kretprobe;
-+	/* attach empty to all the kernel functions except bpf_get_numa_node_id. */
-+	if (!bpf_program__attach_kprobe_multi_opts(empty, NULL, &opts)) {
-+		fprintf(stderr, "failed to attach bpf_program__attach_kprobe_multi_opts to all\n");
-+		exit(1);
-+	}
-+}
-+
-+static void trigger_kprobe_multi_all_setup(void)
-+{
-+	struct bpf_program *prog, *empty;
-+
-+	setup_ctx();
-+	empty = ctx.skel->progs.bench_kprobe_multi_empty;
-+	prog = ctx.skel->progs.bench_trigger_kprobe_multi;
-+	bpf_program__set_autoload(empty, true);
-+	bpf_program__set_autoload(prog, true);
-+	load_ctx();
-+
-+	attach_ksyms_all(empty, false);
-+	attach_bpf(prog);
-+}
-+
-+static void trigger_kretprobe_multi_all_setup(void)
-+{
-+	struct bpf_program *prog, *empty;
-+
-+	setup_ctx();
-+	empty = ctx.skel->progs.bench_kretprobe_multi_empty;
-+	prog = ctx.skel->progs.bench_trigger_kretprobe_multi;
-+	bpf_program__set_autoload(empty, true);
-+	bpf_program__set_autoload(prog, true);
-+	load_ctx();
-+
-+	attach_ksyms_all(empty, true);
-+	attach_bpf(prog);
-+}
-+
- static void trigger_fexit_setup(void)
- {
- 	setup_ctx();
-@@ -512,6 +563,8 @@ BENCH_TRIG_KERNEL(kretprobe, "kretprobe");
- BENCH_TRIG_KERNEL(kprobe_multi, "kprobe-multi");
- BENCH_TRIG_KERNEL(kretprobe_multi, "kretprobe-multi");
- BENCH_TRIG_KERNEL(fentry, "fentry");
-+BENCH_TRIG_KERNEL(kprobe_multi_all, "kprobe-multi-all");
-+BENCH_TRIG_KERNEL(kretprobe_multi_all, "kretprobe-multi-all");
- BENCH_TRIG_KERNEL(fexit, "fexit");
- BENCH_TRIG_KERNEL(fmodret, "fmodret");
- BENCH_TRIG_KERNEL(tp, "tp");
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh b/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-index a690f5a68b6b..f7573708a0c3 100755
---- a/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-@@ -6,8 +6,8 @@ def_tests=( \
- 	usermode-count kernel-count syscall-count \
- 	fentry fexit fmodret \
- 	rawtp tp \
--	kprobe kprobe-multi \
--	kretprobe kretprobe-multi \
-+	kprobe kprobe-multi kprobe-multi-all \
-+	kretprobe kretprobe-multi kretprobe-multi-all \
- )
- 
- tests=("$@")
-diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
-index 044a6d78923e..3d5f30c29ae3 100644
---- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-+++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-@@ -97,6 +97,12 @@ int bench_trigger_kprobe_multi(void *ctx)
- 	return 0;
- }
- 
-+SEC("?kprobe.multi/bpf_get_numa_node_id")
-+int bench_kprobe_multi_empty(void *ctx)
-+{
-+	return 0;
-+}
-+
- SEC("?kretprobe.multi/bpf_get_numa_node_id")
- int bench_trigger_kretprobe_multi(void *ctx)
- {
-@@ -104,6 +110,12 @@ int bench_trigger_kretprobe_multi(void *ctx)
- 	return 0;
- }
- 
-+SEC("?kretprobe.multi/bpf_get_numa_node_id")
-+int bench_kretprobe_multi_empty(void *ctx)
-+{
-+	return 0;
-+}
-+
- SEC("?fentry/bpf_get_numa_node_id")
- int bench_trigger_fentry(void *ctx)
- {
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 9577979bd84d..171987627f3a 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -549,6 +549,7 @@ static const char * const trace_blacklist[] = {
- 	"preempt_count_sub",
- 	"__rcu_read_lock",
- 	"__rcu_read_unlock",
-+	"bpf_get_numa_node_id",
- };
- 
- static bool skip_entry(char *name)
--- 
-2.51.0
+regards,
+dan carpenter
 
+> +			return ERR_PTR(-ENOMEM);
+> +		}
+> +
+> +		xsk_set_destructor_arg(skb, addrs);
+>  	}
+>  
+>  	addr = desc->addr;
 
