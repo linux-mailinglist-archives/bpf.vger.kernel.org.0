@@ -1,136 +1,178 @@
-Return-Path: <bpf+bounces-66607-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66608-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79020B37544
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 01:10:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30A52B37584
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 01:27:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B44D1BA1C80
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 23:10:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21F2B1BA207D
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 23:27:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F6C2FE054;
-	Tue, 26 Aug 2025 23:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361FC30748C;
+	Tue, 26 Aug 2025 23:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3lbifus4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RiiwNQrG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9730A2BE7DD
-	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 23:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2B01F2382;
+	Tue, 26 Aug 2025 23:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756249819; cv=none; b=JCgJVv66gdyC2VtSpGtmdwQgf1w7H7bNlV8syJTxcm1O7Gm/O2JwGd1JrtfjnAWYgED1n6G34CmBaF9cjnY70l6VkdaJqUDb21vopK2lOxlbta4JJfH3eoFqJmjo7XY95BbfgNLNxRern1a9ckO2abOLRe0A9bfVRwV4Ds6Rxb8=
+	t=1756250841; cv=none; b=s4nl8uX3ZJe62PD3BJtSaXfB8DCLlKLsvQtx2xHQstmznobb5UZgDGYqkSvpALcm46t8oj6Z1YzbMjvBn43Pc97iHe3GijBTgxMwnFL4DdNhpCK6UdlMCBKOKJQnGOEueP2btrHX/R/f2W4qAubF8m++NaUCqvKz9tKSkFddbt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756249819; c=relaxed/simple;
-	bh=HzHR1FIpZ+Ah0OX76qvjupuPRN2VYosMVQ84TKC+cRM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OO3m31mckmifk9/T96V9OY1mfU17j8J2WUGkBQA3xcivFbSlQDVQC8Iphj+RQHMw/cvWViXc0FdWRiJa/3RMi7ix9sEPcmiWeNPvKtUz5Uo8Xb8pkmIgXDoNF9zKv6R3v9AAnRQlTp90shuIUGiod5isKA1DqYz5kw5mbZmn3jM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3lbifus4; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2487a60d649so11619005ad.2
-        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 16:10:17 -0700 (PDT)
+	s=arc-20240116; t=1756250841; c=relaxed/simple;
+	bh=YqpZF0H5BKgoOr4E+576H5jlNQDB9O+lyTKYsc74AhY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mTB6G3KC677dSNc/rwENRIjP7jX5AXC+yf4mzNnvnMrmDA7Q89zXzmB+LoN+wA+yI4lkwnHS7OS6AKVDn5yzZPgPlZllcBm+kFVJFkn8O+NczXdMhKxb0Xo68UZFrGLUP57Cf9C8IwSQbdzylnJTRmp3wWvhS5zeB941yzHesB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RiiwNQrG; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-71d603cebd9so67372477b3.1;
+        Tue, 26 Aug 2025 16:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756249817; x=1756854617; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NFHzS9Vz2qI33T641gBuN81YJ0ykJAgwplIKTWI5uc8=;
-        b=3lbifus4lU2TGD3J3ffIv1JhCMwWka8tmJbSaYY3LB98V9I1g3GAlnkgmBoSsE3Rzs
-         yFxigLVtvboW8Cq+XPF+HxQaZIQCxOjx00AYTqXAbhmiXTLKGuuy6yQCq6I1wTnnnbc4
-         e19rdz5Efof1IZykT8xZFlGFQDuMY42LfG9+ZpC887hMbIZDrpKojJ87boO67zn608WE
-         Wd3o/qbOyx12Ro/8oaVrprQHdcnF4rCA1QDEsfW+nviE1lU9Dq5em9/SC3G0mvyA7KkW
-         DCC8pUuwoOQN0AKPbe/MUka8zEmuHlVMqJjVbA/bbVrotrw4/Z7wCSh4dr2o1Hpb7hN+
-         UUww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756249817; x=1756854617;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20230601; t=1756250839; x=1756855639; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NFHzS9Vz2qI33T641gBuN81YJ0ykJAgwplIKTWI5uc8=;
-        b=QXu/zbFiZbwlCGfiGE7DaiUitEQgjc5BCsgbOodLUS1Za/55HIRvPlGI0oGtUuKmid
-         nW5sqwLS3/Z2+THGjeDFB4UM6pezwvQk9XRs4zoe4MtnLgS6jvFRQ0Nel4dZxR1WiO8F
-         zHk2v+egcBbCpjTBrFiV19Z2DjAKyyamPJRw/iHF4POM3JwxvDkU+3FV1smENDAkq0la
-         om5+UUeZlTic5axFfrd4+pPjP6j+a/9SsPG2xXVhb95gSyKxMTRyYDPl5u3dZYhuqPJM
-         8KJh9QrFfv3SkOfwSfG4bSCLhJc+/7jCXIY0+pi+VgGDZkN8OF3sQ260fvGQljaiaEer
-         AzDw==
-X-Forwarded-Encrypted: i=1; AJvYcCVhVK865IMvFlKXio/EbOlaZ2QCOCJlu3KUFKV9JibWsgZXqOR7LFYwR2GdAgF73Anm3n0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQCHrwthEHZQBSDIXCKCZRbt87UG6nmM3FZDrvE667UPYygu7i
-	F4dYf35jfR96MknaDwr6dRvsOR1IxLozKC9hKrlRogs/w717E7xeYmHZBmMI8hTIwFVQ+LO4W6/
-	8P0CIiYk7DBLi1wI5z0GlbGFKA6uwi/cDTby5K+wB
-X-Gm-Gg: ASbGncsfxRqmm7Sx2/pmh672T7KOFm3/8Y6fis5Adn4c3JM5FDUgxAUyJl2YpK7hIIo
-	wellc3LGd5/jc+JUx3cOuQFXRb9+XS4lDjC6CqjU4tVDgPcGzHsXubXjU1jNPdoUP/XFCRtaRwz
-	Sz9X1+YKexSc2VWUj7yEI9nMpKqsH8OzW1F/LWQ+E4pMzwPWzpMPUclcGgRKUtB881GAna9gcaw
-	p0pbVmQtWItZbAZxJYx9VSiY+BErsH58zyCQ6kHLu6zOksLDr+cxPN3PkiDV+ADeplgYCG+OWo=
-X-Google-Smtp-Source: AGHT+IGn57sOU6swdYsx/QCrjhxq0MqZLxuckGMve65sULjrNihbiqrOdTIv5dqJ+0z/cHjZlaY5GmZUPCfXi3CBib8=
-X-Received: by 2002:a17:903:19e7:b0:246:688c:7f64 with SMTP id
- d9443c01a7336-246688c832fmr177995805ad.41.1756249816687; Tue, 26 Aug 2025
- 16:10:16 -0700 (PDT)
+        bh=QRxd/UONu/TxowmunJ9/kcrGECFWZAfk75E2ggirveM=;
+        b=RiiwNQrGA/QVTvKI1Wgd2ECZK5sxyxKBgXqyshOB2Tge2TItgwL6krT3nsPhubIslP
+         lgQ7qLnr4FHkQvS9q/WPF+zoCyqTFKZmhlHFL2yOX6ovGKP2Vq+BzaAOVfwz5gG1kCdx
+         LohUg4AQD3dasM2D6zkGKVWsABhk3kbJPF1N5q+LEwjEbSC+SI2piYLdOX22ys3+NV7Y
+         kdzdXgCEsMwlgFBPdbXFTA1Us0o/8BJfxydtdol4OKA5lJ1Ijvd99XRVivOknoI0OuWL
+         TFekJlrRhomQwRn0H5hE+2KjfKJpVm68jsd2B/gbLUPv+dNgYm8dY+n+gjd4p78k4JZF
+         aFCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756250839; x=1756855639;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QRxd/UONu/TxowmunJ9/kcrGECFWZAfk75E2ggirveM=;
+        b=VoEs/5E7UBXd4MsWukQsBiUHoJRyT518cGcQmEDz1RO1y4YeqSarJJ3hjOWsSDXCIx
+         KKXl1FYzwnsJ1n3GAeU/wS9d+4jQd3UJ+VWYv/q0rL6MoOLB/houK9nL9XAU3nk82Ul2
+         uMPjhZU9Zgwebq/sibrQ7aBpPsGjT0H/KMYDm098ozLoVp0apZGOBG7cfv9jStiEQCx+
+         xr1S2WUKJFWgiso3MtnenbC3thjodM8AKJrwnvitTBQDyZ8xAZDq2H7K9vBwIs6Qku4K
+         TV+tFvyJXZQNera3ST6ttfPBZTrwGJd1AnEgRCG+hkH4kDYAMSd64LpxNLDIOF5Y2iZb
+         wKgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUjp5w9yHtVDgN9uc7S/KzBNK8gzqCVS0lhlAErUiGapSGvkbwCQHeXM3QVlQymJVrQvZ0=@vger.kernel.org, AJvYcCWSKMg8Rqt2w726L3pF1ML12TO5bzcKwik1fvSaiun6rmXSJHPpdU6QmekO6yP97pbfMcaALvLr30ywU6/gW2kc@vger.kernel.org, AJvYcCXGFPjodoc6/aXrSwRPSKD93vmHhH+fCO1DTFiuAmTs3zfrj3Pr5SBRCVdBlgjkMMnSijzMeNS+ug==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYI5xvWWOXd7htGPOYWQDMo+bDfuVE7wlIFVtCwpTCJO7+x3xP
+	VlFKz4nz1QkTHCACJMEa/4aZiZFmL/OcKHgW0aH8WI3md5UvonM9hDMh
+X-Gm-Gg: ASbGncuvG/jgANc/c3J1F1iFugxZm2XCh/AHlINVUu4pvIBaBMjEMW74MV+WW83jZfe
+	KW+OkvS4DGpSMfh8jXgvWzz5kYkPrIU7d6TBGbxOJoB+IXjgJL5C9ol9szHRYLukNmmqyynWjGF
+	T7lHlEFgDxkeifBtAx0bRDq7wj0Bl5zWYsAPPOH5+gxXWSq6aZKztKSUv2GmbvuhH5wm1pM4Yno
+	BaxLuGwwv6/nYQfktU6sgJs88xOIu2KQgV7q94MCkIg2a/NFJwpZ2f7bcZAfI4mQZs6kcKQJJpr
+	D9nz3nOm7ljL8h5cf+7ygFFBH3DZKt0X13p2Y07/rbegnvtxeNGGDyitcRo+2xvtzTawztb52Fa
+	lLo6YLmpOQ6VV13e4skJ325vKYg==
+X-Google-Smtp-Source: AGHT+IFw3BlR2Hf8WSyUz5irV6lWRXvSHxBFpWDj313UXZZMH8r/Cja7Q5XA12Zq/MQgR04f9fhENg==
+X-Received: by 2002:a05:690c:368d:b0:71c:1754:26a5 with SMTP id 00721157ae682-71fdc52ffb2mr205251567b3.30.1756250839051;
+        Tue, 26 Aug 2025 16:27:19 -0700 (PDT)
+Received: from [10.2.0.2] ([146.70.98.190])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7212005f70dsm11426677b3.40.2025.08.26.16.27.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Aug 2025 16:27:18 -0700 (PDT)
+Message-ID: <0e78be6f-ef48-4fcc-b0c7-48bc14fdfc7f@gmail.com>
+Date: Wed, 27 Aug 2025 00:27:08 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a8ebb0c6-5f67-411a-8513-a82c083abd8c@linux.dev>
- <20250826002410.2608702-1-kuniyu@google.com> <2bac5d14-6927-4915-b1a8-e6301603e663@linux.dev>
- <CAAVpQUC-5r+nbB=Uhio0WOEDV7dMcuUM-tF=auAV_rvAWH5s0g@mail.gmail.com> <93ddc9c9-e087-4a8d-a76c-8a081cf3f1ac@linux.dev>
-In-Reply-To: <93ddc9c9-e087-4a8d-a76c-8a081cf3f1ac@linux.dev>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Tue, 26 Aug 2025 16:10:05 -0700
-X-Gm-Features: Ac12FXzqS7J_KCoPi7cmkEec0GJrW4e6XliBpPlO8EvOCw7H9usNDhXkpymiyVk
-Message-ID: <CAAVpQUB18FOE3iJWt4kAUexEb9ND9An2xn=0Qz=5W6YeWGgi9Q@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next/net 2/8] bpf: Add a bpf hook in __inet_accept().
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: almasrymina@google.com, andrii@kernel.org, ast@kernel.org, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, 
-	edumazet@google.com, hannes@cmpxchg.org, john.fastabend@gmail.com, 
-	kuba@kernel.org, kuni1840@gmail.com, mhocko@kernel.org, ncardwell@google.com, 
-	netdev@vger.kernel.org, pabeni@redhat.com, roman.gushchin@linux.dev, 
-	sdf@fomichev.me, shakeel.butt@linux.dev, willemb@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, tixxdz@opendz.org
+References: <20250818090424.90458-1-tixxdz@gmail.com>
+ <356xekrj6vqsmtcvbd3rnh7vg6ey7l6sd6f4v3dv4jxidxfd6m@cepwozvwucda>
+Content-Language: en-US
+From: Djalal Harouni <tixxdz@gmail.com>
+In-Reply-To: <356xekrj6vqsmtcvbd3rnh7vg6ey7l6sd6f4v3dv4jxidxfd6m@cepwozvwucda>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 26, 2025 at 3:02=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
-> On 8/26/25 2:08 PM, Kuniyuki Iwashima wrote:
-> >> ... need a way to disallow this SK_BPF_MEMCG_SOCK_ISOLATED bit being c=
-hanged
-> >> once the socket fd is visible to the user. The current approach is to =
-use the
-> >> observation in the owned_by_user and sk->sk_socket in the create and a=
-ccept
-> >> hook. [ unrelated, I am not sure about the owned_by_user check conside=
-ring
-> >> sol_socket_sockopt can be called from bh ].
-> >
-> > [ my expectation was bh checks sock_owned_by_user() before
-> >    processing packets and entering where bpf_setsockopt() can
-> >    be called ]
->
-> hmm... so if a bpf prog is run in bh, owned_by_user should be false and t=
-he bh
-> bpf prog can continue to do the bpf_setsockopt(SK_BPF_MEMCG_FLAGS). I was
-> looking at this comment in v1 and v2, "Don't allow once sk has been publi=
-shed to
-> userspace.". Regardless, it seems that v3 allows other bpf hooks to do th=
-e
-> bpf_setsockopt(SK_BPF_MEMCG_FLAGS)?, so not sure if this point is still r=
-elevant.
+Hi Michal,
 
-In v3, it's nuanced to limit hooks with sk->sk_memcg
-to unlocked hooks, socket(2), but if there is unlocked place
-with non-NULL sk_memcg in _bh context, we will sill need to
-use setsockopt_proto.
+On 8/26/25 15:18, Michal Koutný wrote:
+> Hi Djalal.
+> 
+> On Mon, Aug 18, 2025 at 10:04:21AM +0100, Djalal Harouni <tixxdz@gmail.com> wrote:
+>> This patch series add support to write cgroup interfaces from BPF.
+>>
+>> It is useful to freeze a cgroup hierarchy on suspicious activity for
+>> a more thorough analysis before killing it. Planned users of this
+>> feature are: systemd and BPF tools where the cgroup hierarchy could
+>> be a system service, user session, k8s pod or a container.
+> 
+> Could you please give more specific example of the "suspicious
+> activity"? The last time (v1) it was referring to LSM hooks where such
+> asynchronous approach wasn't ideal.
 
-sk_clone_lock() and reuseport_migrate_sock() in inet_csk_listen_stop()
-are the only places where we don't check sock_owned_by_user().
+It solves the case perfectly, you detect something you fail the
+security hook return -EPERM and optionally freeze the cgroup,
+snapshot the runtime state.
 
-sk_clone_lock ()'s path is fine as sk_memcg is NULL until accept(),
-and sk_reuseport_func_proto() doesn't allow setsockopt() for now
-(error-prone to future changes), but I may be missing something.
+Oh I thought the attached example is an obvious one, customers want to
+restrict bpf() usage per cgroup specific container/pod, so when
+we detect bpf() that's not per allowed cgroup we fail it and freeze
+it.
+
+Take this and build on top, detect bash/shell exec or any other new
+dropped binaries, fail and freeze the exec early at linux_bprm object
+checks.
+
+
+> Also why couldn't all these tools execute the cgroup actions themselves
+> through traditional userspace API?
+
+- Freezing at BPF is obviously better, less race since you don't need
+   access to the corresponding cgroup fs and namespace. Not all tools run
+   as supervisor/container manager.
+- The bpf_send_signal in some cases is not enough, what if you race with
+   a task clone as an example? however freezing the cgroup hierarchy or
+   the one above is a catch all...
+
+
+> One more point (for possible interference with lifecycles) -- what is
+> the relation between cgroup in which the BPF code "runs" and cgroup
+> that's target of the operation? (I hope this isn't supposed to run from
+> BPF without process context.)
+
+The feature is supposed to be used by sleepable BPF programs, I don't
+think we need extra checks here?
+
+It could be that this BPF code runs in a process that is under
+pod-x/container-y/cgroup-z/  and maybe you want to freeze "cgroup-z"
+or "container-y" and so on... or in case of delegated hierarchies,
+freezing the parent is a catch all.
+
+
+>   
+>> Todo:
+>> * Limit size of data to be written.
+>> * Further tests.
+>> * Add cgroup kill support.
+> 
+> I'm missing the retrieval of freeze result in this plan :) cgroup kill
+
+Indeed you are right a small kfunc to read back, yes ;) !
+
+> would be simpler for PoC (and maybe even sufficient for your use case?).
+> 
+
+I think both are useful cases.
+
+Thank you!
+
+
+> Regards,
+> Michal
+
 
