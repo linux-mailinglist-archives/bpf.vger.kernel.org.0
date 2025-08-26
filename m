@@ -1,194 +1,135 @@
-Return-Path: <bpf+bounces-66522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66523-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D38CAB355EA
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 09:42:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC9B0B3564F
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 10:05:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A48E91B653E0
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 07:43:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0561244031
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 08:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F502F39D7;
-	Tue, 26 Aug 2025 07:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40EEA2F530E;
+	Tue, 26 Aug 2025 08:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iM/ajq/g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RrkuHSuD"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com [209.85.215.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5940F21B9CD
-	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 07:42:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F76286D40;
+	Tue, 26 Aug 2025 08:04:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756194160; cv=none; b=mgEWWLnQA80AEmTR6wGUIQ7xV1pO13DpqQuF/y9O1aOWs25HtwjkjfZ1RkDPAkHrubhInG3Gb2JK3Vw7AQ7VcvcSIKdlAnElfE+E+1jarmjCLVst8Fzzgk08B8EZvA5b2h2fRsTBlrlbGpKenbiMdBxSf8g9KZaIKsNYeENcNS8=
+	t=1756195482; cv=none; b=MhabYbxUwE+G01Q5PW12bj895Ec2T6SmK/a3yDK+JJ+bbi9qF8Z94epE3KhqegNde5JveeCqYlWYMesXFwPCwivzT1A2Ac2mEGHYTDYnqDIp95a2GUDPyj80P9+0lFgQEWp/ZxANqhbJZfzgs7+UVGP6XLLgBQcBbwT1wb3jwLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756194160; c=relaxed/simple;
-	bh=fOpNnm9TPDvkBhb5WU5Fcf0z+ahPPe3KFXcJMRobyW0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KaTF4pKGAobNsp5MGk9p4WVLq6VM9IuDEUy7kJ6Swc8SvCrG+64gp1xlL7+/J3EUbwe06v3SyjbRn3dS3gFW0ul5fwPN1lCEZ9dNwJbC9wBcX8VKS4v1Z8RfCkXjTQ9I8SrKa9gefC4pNHwJlC5Lkl/rIdCzdBxmu1nvI3968Jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iM/ajq/g; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756194156;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Z7i9YDbg96XPkSuor69lux2weqUhbZRVG7R4LIN4byE=;
-	b=iM/ajq/geB/t4xXQEewZwBE22hBRkeIBFyUcfbwzjUSEco+EEN+fjbeaJICBKHz43TEVpm
-	Q1yoatk1R46PVdWbPAl5Lu7zKm+3BOCP+rCO8FNb+ADBO8vFExgc9vUqm6fg/PfWOc9FWN
-	9KBqde0m3n2w2SK35qrZW9iVUDPo3uw=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-679-7oj2b0cBMK65TJx6FO_NBQ-1; Tue, 26 Aug 2025 03:42:34 -0400
-X-MC-Unique: 7oj2b0cBMK65TJx6FO_NBQ-1
-X-Mimecast-MFC-AGG-ID: 7oj2b0cBMK65TJx6FO_NBQ_1756194153
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-afe81959c3cso220966466b.2
-        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 00:42:33 -0700 (PDT)
+	s=arc-20240116; t=1756195482; c=relaxed/simple;
+	bh=itapDEk7hJq4kaK5uNPmqncQ17jlID1ipjvCF53tqtY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qkCFROehRNv58W0qNSgLCiVXMZnf5R3AOBM9/k+VXiwpSaQ938LepzFlVO5R24nsw0u1PN2hUScDW3hIF6uiCfALJmevSsdOup+rK4NmKjBSCEST2ucJ7heHteVfFQakpVxd5aDxm/qOkuzg8fyH7Xf8VwzCoMg2X9O91+ipJ/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RrkuHSuD; arc=none smtp.client-ip=209.85.215.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f193.google.com with SMTP id 41be03b00d2f7-b4c29d2ea05so945236a12.0;
+        Tue, 26 Aug 2025 01:04:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756195480; x=1756800280; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s45MwIcECjk3z7eF/b3NhXLy4QyYeWkCmtUvb4S3n/E=;
+        b=RrkuHSuD2L5iMHvomiG8I4MbihdMMoGcskBWfLlpQb4xYXdBDgEM56TpRFxlLYeXoA
+         UfRjihvrRkkhP2nbAOmr9AxK5XVQHs0C5j3QSsvxBraIDK59YVRkO3XZFm2cQO28GkOG
+         JvLv2O+mrUs5YWfoWZyBxE7Y0Kj2pO7LP3Df06sclGjU0bOTuzpDfg1h/yvPEXkoHC+7
+         6rPThyzlFQnk6PUouXKN14SLQ3o6PWiyeiSRVdaS4r8I+FNlTwx5y2lp8n8L5n7P+/Cu
+         mFuFaRPqtP1naGkpQhP9v9GiBGKcDOVI/Nk0byeWyVXCoB6219UE37fHeRgkLBlFLI28
+         5X8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756194153; x=1756798953;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1756195480; x=1756800280;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Z7i9YDbg96XPkSuor69lux2weqUhbZRVG7R4LIN4byE=;
-        b=LfBs2q3N+H02UHC3yDZnN7dOfgSM8EF7Hpynvh9E0JwarEKlf2WEAo1QAUzc1DvGdE
-         UEasrMiB/+CZDl3LI1x4c+ZyGLB4fe1GtwCS4RZXqMLLEN9//ogsFG6JW7iR6LgTFTkS
-         j0PwmEDw8KX57ObSm2k6uwT9FJ0oZhBTusvkDrc44dj619O3ic0fEiVWo4qzR8Wlhp3K
-         uufOjhA4ywsDFMVdkhxVGDAKXFrdfu1V/Gn2gXJA0/TwDlQx5pnynAkCaWYWDXLKhUtp
-         EDyIbcyBSbG2OcN4L33h2grAtrX5uWtOCsgdBnASPdMUw3MmiRNuZI3G/gA0LNaF3VYH
-         FghA==
-X-Gm-Message-State: AOJu0YyLZGTrWqWERLd5qs9BJSBPKMrJDZGYsupmIkVBTmQGxcTmCvmp
-	FgEpSd+s7l43XeqCUoen3dheJG4uyiDvl+MQ+yPIGEkP4r7JlZ/cxFJzxqvZxdIukmde1P3oVya
-	P1ffUnzumDpos0Al58fuaZ0fNjCd0pi/bhEyLGq7GLMszwjilH0iCdA==
-X-Gm-Gg: ASbGncuvnKVgYM6E4yCdZlnirhvZKMNYY9CTKw0VcZYYs89LcuR/y9gnfHM2lV5/Brk
-	8eMCnUdthTcB4hi88SJQI6bZrSdGttWdl0p0lJ/yn+Nz2VjK2hMqeBkJb10iOe6q6EaMZB20YVm
-	HcN8jFutO7N+WdpubT5w0cOxRQuuT3ysnCghKFTbN5QIS93elarNO0Ok8WNR2FZHmExNlZY6NLN
-	BUrpxpOjOWRfOGDfXxrO2mEl++UFHPcmdT1n6iCqcaXhoJ5AC6EJzLaQ7D+m7Bsg4QFre8ZkvxD
-	PTYiCLAzfrYgVM63JqiCHXkXSM2YRWZZ3r43VIhQxLX1Ex0TF8MHRs2HmO+yAJkPOXexU9E1MQ=
-	=
-X-Received: by 2002:a17:907:3f08:b0:ae6:f163:5d75 with SMTP id a640c23a62f3a-afe28ffbfcemr1407482566b.11.1756194152793;
-        Tue, 26 Aug 2025 00:42:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFlXdN5Emxb0ONjeXO0an5VSsBo5+DtdMvl/wre4Bq+MCj3yWiGfw8uKRt2GgJjy2gdrHrI8A==
-X-Received: by 2002:a17:907:3f08:b0:ae6:f163:5d75 with SMTP id a640c23a62f3a-afe28ffbfcemr1407477966b.11.1756194152305;
-        Tue, 26 Aug 2025 00:42:32 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-afe75109c4bsm458246966b.70.2025.08.26.00.42.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Aug 2025 00:42:31 -0700 (PDT)
-Message-ID: <d8f723c4-4cb0-431d-9df2-ba4ec74c7b43@redhat.com>
-Date: Tue, 26 Aug 2025 09:42:30 +0200
+        bh=s45MwIcECjk3z7eF/b3NhXLy4QyYeWkCmtUvb4S3n/E=;
+        b=ujmMhn0o/C0jyUfQARS+NEmudfVPd8J++VA7oREVeT/2HDJNG/qfkk5jM4LriwvUTS
+         LzdvjoCHykru7fUxvwFtpt8hZBDc8TxJTxgPP1OmvHZbwSpSKc7EKVUT6Ls/Qx0grPYo
+         BAI1Ywf8EJunRZfOXZ3eEWqVa2aKCFbpm9Fqwq3j4kpxoTD9RztUI3l+uePGTMqAsuQE
+         /vAhJ+whRXCCYuzYpMHbV/WHRbwZtAQyA/dJJJBH6oBFCkDv/4AXPHDJN4f467FytNMp
+         ks1Zoh+ZfvXNDhbSoOc4DDiuNobiGgiyPZU2VNxDZjkHVaYwa9gIkZ93ZhXFceZfeRTX
+         Z+Jg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7leCSGcPVyICCcmkE7wwR3klZ2nbGCcK5RQkJ/iymQMfodFhiquKMmuv/TYLpz/LdKk9kwtAWgxNQoBcg@vger.kernel.org, AJvYcCWwQ9fBWaBDCCdbikIjPovbb6CrjiSZ279X9iWdNSglrVNOdHuKG1pFqu8R2GPU4vdiyhCBpzP0/HfU7FezsbYs@vger.kernel.org, AJvYcCXzPvNbw2F7dAHHoPRNWALtefz/YG+Vc4W+2Odffgz4y39mxvOCcBSeeSSiXsy760tEG7Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy85Z2u5X6f2AjNNksuT7cQ0Ma1b0zmT9QPHaUc/WFTe+3SZuDE
+	Ck+9ajZhxBK0rbVJ4Y0zRnyH0jWU0RR/ZmKjn/PEJWWdGKIS9HjrY12k
+X-Gm-Gg: ASbGnctsMSO96FlUxCsEnTDnjqu34LrC2hWkKbMlQsvRlpRmpUXhVfMUOaNrYqyjZlx
+	LntorWDAHsqIF6kAB2cHSCnerWfDZtuZ4FXyBRQxDjWvqomdgcG2yaqDrtcr6VZZhe4x/gMOs3T
+	jgSFMfWG7vuNO4GB3p1pt46qkqRSHAt9dVZzFAm1pr3e8ravJgkGO5Tgks3TXsnXTd0Tpzr/YNZ
+	cvQCN4Gsps4pmyU7m41KoTyID0AjFVfQCwif1acnuDj67z/lYPlJJgeIUEb/G59PaJf2oTboO7K
+	JR9FNrPtxl6wJoZdLcOIHFjyBbI98kvlbRdtQu0gvJxIGNcNqnBMUq+Bs3sCUf22NyLN5n4Piuh
+	aWrc7dv7rDJahukT2RRgPLsg=
+X-Google-Smtp-Source: AGHT+IEe8ChMYgHFU42b04PAkJGRSuKMS+QCz2VEjQBaASmKEPHX/xzTD+o+WlaFMWMHDrnuGq5G3w==
+X-Received: by 2002:a17:903:1b0c:b0:240:6fc0:3421 with SMTP id d9443c01a7336-248753a27acmr8209325ad.3.1756195480458;
+        Tue, 26 Aug 2025 01:04:40 -0700 (PDT)
+Received: from 7940hx ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2466888037fsm88829485ad.125.2025.08.26.01.04.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Aug 2025 01:04:39 -0700 (PDT)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: andrii@kernel.org
+Cc: eddyz87@gmail.com,
+	mykolal@fb.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	yikai.lin@vivo.com,
+	memxor@gmail.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/3] selftests/bpf: benchmark all symbols for kprobe-multi
+Date: Tue, 26 Aug 2025 16:04:27 +0800
+Message-ID: <20250826080430.79043-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 mm-new 00/10] mm, bpf: BPF based THP order selection
-To: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
- ziy@nvidia.com, baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
- dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com,
- gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com,
- rientjes@google.com, corbet@lwn.net
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org
-References: <20250826071948.2618-1-laoar.shao@gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20250826071948.2618-1-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 26.08.25 09:19, Yafang Shao wrote:
-> Background
-> ==========
-> 
-> Our production servers consistently configure THP to "never" due to
-> historical incidents caused by its behavior. Key issues include:
-> - Increased Memory Consumption
->    THP significantly raises overall memory usage, reducing available memory
->    for workloads.
-> 
-> - Latency Spikes
->    Random latency spikes occur due to frequent memory compaction triggered
->    by THP.
-> 
-> - Lack of Fine-Grained Control
->    THP tuning is globally configured, making it unsuitable for containerized
->    environments. When multiple workloads share a host, enabling THP without
->    per-workload control leads to unpredictable behavior.
-> 
-> Due to these issues, administrators avoid switching to madvise or always
-> modes—unless per-workload THP control is implemented.
-> 
-> To address this, we propose BPF-based THP policy for flexible adjustment.
-> Additionally, as David mentioned [0], this mechanism can also serve as a
-> policy prototyping tool (test policies via BPF before upstreaming them).
+Add the benchmark testcase "kprobe-multi-all", which will hook all the
+kernel functions during the testing.
 
-There is a lot going on and most reviewers (including me) are fairly 
-busy right now, so getting more detailed review could take a while.
+This series is separated out from [1].
 
-This topic sounds like a good candidate for the bi-weekly MM alignment 
-session.
+Changes since V1:
+* introduce trace_blacklist instead of copy-pasting strcmp in the 2nd
+  patch
+* use fprintf() instead of printf() in 3rd patch
 
-Would you be interested in presenting the current bpf interface, how to 
-use it,  drawbacks, todos, ... in that forum?
+Link: https://lore.kernel.org/bpf/20250817024607.296117-1-dongml2@chinatelecom.cn/ [1]
+Menglong Dong (3):
+  selftests/bpf: move get_ksyms and get_addrs to trace_helpers.c
+  selftests/bpf: skip recursive functions for kprobe_multi
+  selftests/bpf: add benchmark testing for kprobe-multi-all
 
-David Rientjes, who organizes this meeting, is already on Cc.
+ tools/testing/selftests/bpf/bench.c           |   4 +
+ .../selftests/bpf/benchs/bench_trigger.c      |  53 ++++
+ .../selftests/bpf/benchs/run_bench_trigger.sh |   4 +-
+ .../bpf/prog_tests/kprobe_multi_test.c        | 220 +---------------
+ .../selftests/bpf/progs/trigger_bench.c       |  12 +
+ tools/testing/selftests/bpf/trace_helpers.c   | 234 ++++++++++++++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   3 +
+ 7 files changed, 311 insertions(+), 219 deletions(-)
 
 -- 
-Cheers
-
-David / dhildenb
+2.51.0
 
 
