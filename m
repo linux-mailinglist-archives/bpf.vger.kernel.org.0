@@ -1,135 +1,271 @@
-Return-Path: <bpf+bounces-66602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFAC8B374E3
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 00:31:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73BAFB37508
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 00:50:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B28ED1787FE
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 22:31:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34BE92A817F
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 22:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC35327D786;
-	Tue, 26 Aug 2025 22:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D271286422;
+	Tue, 26 Aug 2025 22:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AwiZzJom"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YlBETZRU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDE71E89C
-	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 22:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E2F30CDB4
+	for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 22:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756247504; cv=none; b=pi5pskdng852dKj6U9CuieMNxGyGMTdrKToHF2op+/lkNf5Y3mchhFVGHL8PJf4mGY6IIrqYgvIcNeVQrW2MpzxnNGCWf0JBEUu4hJ0hSQrJW1IpZol8SqnGGW6D2XJ8VSQVLBpTqX45SUM5uqpQJ72JTYLSFnxDCA2OGuupz+E=
+	t=1756248643; cv=none; b=pov6AHWxmjflyz7Hf9IIfYUEsmDeGKrtRtN18TYzjI+9smIqGeYiBwr9wGxBduQ226DyGEEzAW4QwTaAOJt4xUhUMkDjC2LPCJFxIVBz/wKrQPBXYB23m3fP1QLletLLg3Q8pyC7HUHr19L3cfeXON17YQPTz7s8Dtg24DSIdKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756247504; c=relaxed/simple;
-	bh=RfkwD//fVbtKN7T1ul50BnBezHKseZI9B1xnIT5rEyI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fbEFpVXus33gTQRaVSXiuHdv7zkEG8KYMN4ca/+qeK4UCPmrPiTDUb1vunIg4U3t4v9SSyKUfnoPKiOuF1f8TaB0NWJLlEvsM9ne6QecdRl0svRWrSKFKWSiUbtENw4mySkHJCiLZgh+baeUoBFXK67SwAdlMWZ6wvr+c0Gh9mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AwiZzJom; arc=none smtp.client-ip=209.85.214.178
+	s=arc-20240116; t=1756248643; c=relaxed/simple;
+	bh=x4Z/MNZBt8pE0UVLfffWJIO5ftTtu9TKw7ROB+5OjUU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GMjOMWZFlqG5v7CyHSNNCl4QNgis4AuLxmYshbd/i9ftnxUA9I9idetYAMLPCMj6ww1WVq1/fIey15awkw9DUZKmGwaLB3t63v6YEyWOji7m53mWW2k1Gqd7i5KdqSB7xU6cwK0pwBRizA+U/o0XjuY1ZwYsrMyF2yfaiyPOH5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YlBETZRU; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2469e32f7c1so22990195ad.2
-        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 15:31:42 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3256986ca60so3875324a91.1
+        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 15:50:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756247502; x=1756852302; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=bqiWc8IUMM7QXsjsuI2jDP/jXsEvh1Kiir9ntnJEqMU=;
-        b=AwiZzJomh87bLr4R0hbdte/FqnN1iKG66AOKx6bDP94LOps4CWk3wDmUwWfCVyK45r
-         JI/JRKjhSfo19xuj7AU9Q8RxkRgmsF2AcJLGLW1kM/sYC+rPPpN+gPvdLfVUqjNd20MV
-         wAvistys/1D660fYHRpo+lk+s/4IYB8VyTFxiGKYoumN+COvKsdx0cy+mH3qmXTwm3uv
-         wuJmy0xPFohI4oovs0it9gZ5u6yP/BnEyfQUUxWewwRf0Zx9qfwfUO9ne2GxrdNaJb7D
-         4tknm6VqpPNNP06TyfQoSsDdHPnDL9uIyCa4WcDUCnahbSKhn0GsISOxd4r58mBLQD3T
-         IR7w==
+        d=gmail.com; s=20230601; t=1756248641; x=1756853441; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LvufJfIrQIUSEjFqSH9XKLj1HoabUiTxKvUW7VEO5og=;
+        b=YlBETZRU4kQ0i5hX7C7wcstcKo8oFYYjlIQJvkEZunu9ExLBTe/yQzsb5Bqmzj3kbJ
+         YY7UCDgYqWt/d7t3v6dtttWm3voKbDfIYzN9ADePxG01lXIS5LH1P/aljzWoKqFjYn3a
+         mX/ZtWJaqRyXAsY1xN/fdxFgpMZjP41Z0jjnn1ub4iCPBgYWcJOwWIy7Wv63eDwSlEBN
+         x+657sq6ckHU61qA9ZDtqF2u3TpeZcmlx8XtK8uLGETp7yiHqEQbcW1U8aigVCz5dJNk
+         eVHAzjb7YR+KFASTB3bzcnvxj8clrLI8yQBVL2sEocHQaga6raa5Jk7fqX2f9R76onxx
+         dyhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756247502; x=1756852302;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bqiWc8IUMM7QXsjsuI2jDP/jXsEvh1Kiir9ntnJEqMU=;
-        b=MLcyWEZ2pl5E0R7edxqZ50ul57QjzxaK9VmAYpgg9K/pTKPa7jRYytpjtR5PWI4yTa
-         +jFttV+IJnyQJVP3lUWdVqJF7rL3MyJwf9owllYEA6y/Nfu/734/8pQMO2DuqOOv7xE9
-         Gj316FesazCxT50lRD2gJJP1syuYJ3YhWmlgNtbY4VStERyoFYBMX86/Dmq020cPdNgO
-         1YXEmBonPyxsCz8RqPmcv2+b1L1/hq2gWQLGr4Hbnvho8RdEWkhia2pmfbb19F+PyYH4
-         0Fd91v54mQ+JGK1RGLyVdmVoIbMkxtsaUZIlz2h+6VIeoDBd5LdsSdPMfbM3h7osR/SY
-         Y9Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCWogON/rfwSVypgt4WqyiTMLWd1U7bVk6QjBcwPtLYtw/COKvkk+1EG0rKZTBumhmtzok8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzqoT5msJEb4OVztEjXASPIIFyRWaz92WaN5rMB3esaN06Kf4v0
-	gVE4QrGGxrfo2tWklHr7TTaKqrdfjaZFEVuRAWVObE22UiSqdozigFd9
-X-Gm-Gg: ASbGncuqrFW0svzKDTpODIefCiHl+p0/XE83lQcf9iOFJ+41i7XwausYzTcGYNYRSQB
-	BZv9Q8MG3T9frXRmNTD/QQ+wbtTS55h21NMQrDfPKXtfLonm4350FHwGWWXBWnXfL6Ep/Q3lGPz
-	pC4OeADzqm+SAaPM7cOVz4AIlRWhrCnfqgNVWu9Pbw4X1yuunltoLAGBnmeth7M/+xAmM58C+Fq
-	OZ05CA+LzCO7ysOlUUU9ew/XUv+//ct3HsGvWJaLwL0zLdB0fbRLIcRnGG350SyIcxc07iMicoW
-	P63rgDH02RsQd8zOlecRnBFYVRz3QcpVqLPtaBV2GoMFCU5qPvLbl+qFeMvLHCqnig+siD6WLHh
-	JMo7PrAtJxBw4HW3RGPEy9K0o9u9GTw==
-X-Google-Smtp-Source: AGHT+IFc+YHkeHCTo7+ENs+3yDmq/Dh3eNpTbtHM6c60IofEymn2UR5UelBSEb9kgLrO3VliYS/DWg==
-X-Received: by 2002:a17:903:4b4b:b0:248:9348:965e with SMTP id d9443c01a7336-248934897bemr12700135ad.9.1756247502083;
-        Tue, 26 Aug 2025 15:31:42 -0700 (PDT)
-Received: from [192.168.28.36] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2466885f2c1sm105348805ad.73.2025.08.26.15.31.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 15:31:41 -0700 (PDT)
-Message-ID: <10876516b0da85f1d167920a76616b191a4f894d.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add case to test
- bpf_in_interrupt kfunc
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, 	song@kernel.org, yonghong.song@linux.dev,
- kernel-patches-bot@fb.com
-Date: Tue, 26 Aug 2025 15:31:36 -0700
-In-Reply-To: <312530ee-3f80-4f07-a533-7341bc1d09a8@linux.dev>
-References: <20250825131502.54269-1-leon.hwang@linux.dev>
-	 <20250825131502.54269-3-leon.hwang@linux.dev>
-	 <c37eb846e94c11b74301a699b64037e9d247ba9e.camel@gmail.com>
-	 <312530ee-3f80-4f07-a533-7341bc1d09a8@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1756248641; x=1756853441;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LvufJfIrQIUSEjFqSH9XKLj1HoabUiTxKvUW7VEO5og=;
+        b=cEAmTbJ2PsjTiPBOvBgm5DeErwIsf/Kk4VJz2xaMs3n0rGy76dbSktuhvfE8Wz41lR
+         3KKTBjKLBXVjoXtto9+uI+IoZ/GkvSzx07ysWSPJCEgAGx1WdfGCpv59K+POt6e130ce
+         O/Png9IUtwqdYkgV6N1gUGbDBWinCWl5cMwrFl6poHTUtKrlPgS3KbepW1hQGefJD+wW
+         9GVnKJt2B1qgIX2Xk+nHOKgcrSXWHnAQGLN+lSndT+RWA0j0qp6PAhdjS7bdgKkaNVPe
+         rQpbd+sqJMOPBg/R6MKDjh+FKeH+VC7N/EWgCdkHs+nIX6+WhHbbMuonUn5/c9I7XtZA
+         51cw==
+X-Gm-Message-State: AOJu0YxN9jwi2OkaCEfcvPqhXyhvlbZdaFofZkj8PoLvNb/4c7LeR4MT
+	S/+EZkKTGCMLZIfSz0gOBemnn0QJaM0dN2cQ+fNTeoxwTebUi4l4xvuPntX7dtCTUMS/rPFNbP+
+	nqWwan25tvPl0S3JU/4GgQkMq20lLCCM=
+X-Gm-Gg: ASbGnctD8tvGevLiacCDec16DhddUW8n4xAKXbYlORyo3nYzPnPI/x+1MNlZFTvxvaZ
+	/+JHl4gFHjbGKesFOny6MPybshWgyTBknfNNph2CscBkJYTQKnjmSp63bDF5B5THk6wQTWXz9Qm
+	7UkQe6rIOVM/feFo9qkHzDlqWzWbHGrxpPfpfp5JYgdvXRhc0dhiZGzUvAi+l/coNZqKYznzX5C
+	tE95rwVEwcZW4cxfrZ2u3d8dTlqu4OYmA==
+X-Google-Smtp-Source: AGHT+IEQSi7m4g0JmE69p6Z9YWwkt4VUVn9XW8CkIqMY6WaiOIJI6nthZrWEWlDfd+a4+q64BBCzJAMO3D/SEivNG+c=
+X-Received: by 2002:a17:90b:1d06:b0:321:2f06:d3ab with SMTP id
+ 98e67ed59e1d1-32515eab619mr22807108a91.21.1756248640733; Tue, 26 Aug 2025
+ 15:50:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250821160817.70285-1-leon.hwang@linux.dev> <20250821160817.70285-6-leon.hwang@linux.dev>
+ <CAEf4BzbcAnmHd42gVXJHPJWczYPQ3Vq6t9E+VT-m7UNLzLmidQ@mail.gmail.com> <DCCGXF27DYLC.1J21FLM3YZZ1A@linux.dev>
+In-Reply-To: <DCCGXF27DYLC.1J21FLM3YZZ1A@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 26 Aug 2025 15:50:26 -0700
+X-Gm-Features: Ac12FXwP_vXY4e1Y6_qiIpVw_tfIA1CfXy7h5G680PCHoZow07ArBguIUcSfBNs
+Message-ID: <CAEf4BzaxYceShq6fV2V5sf9+dEBt_gQM75R0DwYcV2GHGxgEQQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 5/6] libbpf: Support BPF_F_CPU for percpu maps
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, olsajiri@gmail.com, yonghong.song@linux.dev, 
+	song@kernel.org, eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net, 
+	kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2025-08-26 at 11:05 +0800, Leon Hwang wrote:
+On Tue, Aug 26, 2025 at 8:35=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
+rote:
+>
+> On Sat Aug 23, 2025 at 6:20 AM +08, Andrii Nakryiko wrote:
+> > On Thu, Aug 21, 2025 at 9:09=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
+v> wrote:
+> >>
+>
+> [...]
+>
+> >> @@ -10630,6 +10630,19 @@ static int validate_map_op(const struct bpf_m=
+ap *map, size_t key_sz,
+> >>                 int num_cpu =3D libbpf_num_possible_cpus();
+> >>                 size_t elem_sz =3D roundup(map->def.value_size, 8);
+> >>
+> >> +               if (flags & (BPF_F_CPU | BPF_F_ALL_CPUS)) {
+> >> +                       if ((flags & BPF_F_CPU) && (flags & BPF_F_ALL_=
+CPUS))
+> >> +                               return -EINVAL;
+> >> +                       if ((flags >> 32) >=3D num_cpu)
+> >> +                               return -ERANGE;
+> >
+> > The idea of validate_map_op() is to make it easier for users to
+> > understand what's wrong with how they deal with the map, rather than
+> > just getting indiscriminate -EINVAL from the kernel.
+> >
+> > Point being: add human-readable pr_warn() explanations for all the new
+> > conditions you are detecting, otherwise it's just meaningless.
+> >
+>
+> Ack.
+>
+> I'll add these pr_warn() explanations in next revision.
+>
+> >> +                       if (value_sz !=3D elem_sz) {
+> >> +                               pr_warn("map '%s': unexpected value si=
+ze %zu provided for per-CPU map, expected %zu\n",
+> >> +                                       map->name, value_sz, elem_sz);
+> >> +                               return -EINVAL;
+> >> +                       }
+> >> +                       break;
+> >> +               }
+> >> +
+> >>                 if (value_sz !=3D num_cpu * elem_sz) {
+> >>                         pr_warn("map '%s': unexpected value size %zu p=
+rovided for per-CPU map, expected %d * %zu =3D %zd\n",
+> >>                                 map->name, value_sz, num_cpu, elem_sz,=
+ num_cpu * elem_sz);
+> >> @@ -10654,7 +10667,7 @@ int bpf_map__lookup_elem(const struct bpf_map =
+*map,
+> >>  {
+> >>         int err;
+> >>
+> >> -       err =3D validate_map_op(map, key_sz, value_sz, true);
+> >> +       err =3D validate_map_op(map, key_sz, value_sz, true, flags);
+> >>         if (err)
+> >>                 return libbpf_err(err);
+> >>
+> >> @@ -10667,7 +10680,7 @@ int bpf_map__update_elem(const struct bpf_map =
+*map,
+> >>  {
+> >>         int err;
+> >>
+> >> -       err =3D validate_map_op(map, key_sz, value_sz, true);
+> >> +       err =3D validate_map_op(map, key_sz, value_sz, true, flags);
+> >>         if (err)
+> >>                 return libbpf_err(err);
+> >>
+> >> @@ -10679,7 +10692,7 @@ int bpf_map__delete_elem(const struct bpf_map =
+*map,
+> >>  {
+> >>         int err;
+> >>
+> >> -       err =3D validate_map_op(map, key_sz, 0, false /* check_value_s=
+z */);
+> >> +       err =3D validate_map_op(map, key_sz, 0, false /* check_value_s=
+z */, 0);
+> >
+> > hard-coded 0 instead of flags, why?
+> >
+>
+> It should be flags.
+>
+> However, delete op does not support the introduced cpu flags.
+>
+> I think it's OK to use 0 here.
+>
+> >>         if (err)
+> >>                 return libbpf_err(err);
+> >>
+> >> @@ -10692,7 +10705,7 @@ int bpf_map__lookup_and_delete_elem(const stru=
+ct bpf_map *map,
+> >>  {
+> >>         int err;
+> >>
+> >> -       err =3D validate_map_op(map, key_sz, value_sz, true);
+> >> +       err =3D validate_map_op(map, key_sz, value_sz, true, 0);
+> >
+> > same about flags
+> >
+>
+> Ack.
+>
+> >>         if (err)
+> >>                 return libbpf_err(err);
+> >>
+> >> @@ -10704,7 +10717,7 @@ int bpf_map__get_next_key(const struct bpf_map=
+ *map,
+> >>  {
+> >>         int err;
+> >>
+> >> -       err =3D validate_map_op(map, key_sz, 0, false /* check_value_s=
+z */);
+> >> +       err =3D validate_map_op(map, key_sz, 0, false /* check_value_s=
+z */, 0);
+> >>         if (err)
+> >>                 return libbpf_err(err);
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> >> index 2e91148d9b44d..6a972a8d060c3 100644
+> >> --- a/tools/lib/bpf/libbpf.h
+> >> +++ b/tools/lib/bpf/libbpf.h
+> >> @@ -1196,12 +1196,13 @@ LIBBPF_API struct bpf_map *bpf_map__inner_map(=
+struct bpf_map *map);
+> >>   * @param key_sz size in bytes of key data, needs to match BPF map de=
+finition's **key_size**
+> >>   * @param value pointer to memory in which looked up value will be st=
+ored
+> >>   * @param value_sz size in byte of value data memory; it has to match=
+ BPF map
+> >> - * definition's **value_size**. For per-CPU BPF maps value size has t=
+o be
+> >> - * a product of BPF map value size and number of possible CPUs in the=
+ system
+> >> - * (could be fetched with **libbpf_num_possible_cpus()**). Note also =
+that for
+> >> - * per-CPU values value size has to be aligned up to closest 8 bytes =
+for
+> >> - * alignment reasons, so expected size is: `round_up(value_size, 8)
+> >> - * * libbpf_num_possible_cpus()`.
+> >> + * definition's **value_size**. For per-CPU BPF maps, value size can =
+be
+> >> + * definition's **value_size** if **BPF_F_CPU** or **BPF_F_ALL_CPUS**=
+ is
+> >> + * specified in **flags**, otherwise a product of BPF map value size =
+and number
+> >> + * of possible CPUs in the system (could be fetched with
+> >> + * **libbpf_num_possible_cpus()**). Note else that for per-CPU values=
+ value
+> >> + * size has to be aligned up to closest 8 bytes for alignment reasons=
+, so
+> >
+> > nit: aligned up for alignment reasons... drop "for alignment reasons", =
+I guess?
+> >
+>
+> It is "for alignment reasons", because percpu maps use bpf_long_memcpy()
+> to copy data.
+>
 
-[...]
+my complaint is just wording, if you say "aligned up" it implies that
+there is some alignment reason. So I'd just say "size has to be
+aligned up to 8 bytes." and be done with it
 
-> > > diff --git a/tools/testing/selftests/bpf/progs/irq.c b/tools/testing/=
-selftests/bpf/progs/irq.c
-> > > index 74d912b22de90..65a796fd1d615 100644
-> > > --- a/tools/testing/selftests/bpf/progs/irq.c
-> > > +++ b/tools/testing/selftests/bpf/progs/irq.c
-> > > @@ -563,4 +563,11 @@ int irq_wrong_kfunc_class_2(struct __sk_buff *ct=
-x)
-> > >  	return 0;
-> > >  }
-> > > =20
-> > > +SEC("?tc")
-> > > +__success
-> >=20
-> > Could you please extend this test to verify generated x86 assembly
-> > code? (see __arch_x86_64 and __jited macro usage in verifier_tailcall_j=
-it.c).
->=20
-> I=E2=80=99ll try to extend it, depending on the specific x86 implementati=
-on.
->=20
-> > Also, is it necessary to extend this test to actually verify returned
-> > value?
->=20
-> Not necessary =E2=80=94 let=E2=80=99s just return 0 here.
-
-I mean a bit more broadly, make the bpf program run in an interrupt
-and outside of the interrupt context and check the return value.
-If it is a small wrapper around existing kernel function probably not
-worth it, but you are adding custom logic with inlining.
-
-Basically same thing Alexei asked in the sibling thread.
+> static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
+> {
+>         const long *lsrc =3D src;
+>         long *ldst =3D dst;
+>
+>         size /=3D sizeof(long);
+>         while (size--)
+>                 data_race(*ldst++ =3D *lsrc++);
+> }
+>
+> Thanks,
+> Leon
+>
+> [...]
 
