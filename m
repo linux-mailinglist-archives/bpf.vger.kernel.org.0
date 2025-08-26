@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-66519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E91A3B3558A
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 09:25:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28AB1B35587
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 09:24:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2858B1895B1B
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 07:25:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECE7117CAE5
+	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 07:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08532D0C63;
-	Tue, 26 Aug 2025 07:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC0B2F6589;
+	Tue, 26 Aug 2025 07:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WnN8OSzx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TInW23W0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D5928A1F1;
-	Tue, 26 Aug 2025 07:21:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C124284678;
+	Tue, 26 Aug 2025 07:22:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756192912; cv=none; b=PSFcu/1LQdAbYDWPjpfHBleJ/Qivefwotq5WC3s71HM0J0ulIZbBOh5d8+tXjec4JT1CR9sVZjDu0J7g4rrZM8Jyw5ovvuM9HjlzV/wB8hhoB/4b1LPxb5pHNzdhKMdZS7YsfW1z9EspTxFvhYuAMj0IEKl34k4KPAqGgCo1jnc=
+	t=1756192923; cv=none; b=G8nHSwXf3kQXbkf1pFH9lwAIoREAZsjr/GKtZg2lgjLXqwicM3IE5PtyDNnupq3YHrJIR7tGjZx28nUbaEXyorFR0m8Ich3LB284eHTckasMR8aN0JhNXbYta/wpBEuElm8JUbglQn7gHxoCjVDm8DgPYx6LGcOlHebObo8bAPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756192912; c=relaxed/simple;
-	bh=3DRVri6R6o8lkzsMBbKU5fHO/R7iLByDPyAx0y1tlA0=;
+	s=arc-20240116; t=1756192923; c=relaxed/simple;
+	bh=mU2bzFJoqM7Sr6cE941TbbsOfyo+P5lzg61rKDAVbtk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kDafFuDEflh7ynMu3zfrz2UuptH1oSnZ/nm4yYr/brfPT/CSjC54GNLxHoTA8wxdPZwzRKTA2caj4nFYcIDq1kltnGN8pUKeM7L8qk23xmN/mrxA94Hrzqthmo7xuQvAY9XG3Xvglfobii6JFbp+c+i4pPuUJFhB8qpm4JUArUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WnN8OSzx; arc=none smtp.client-ip=209.85.210.179
+	 MIME-Version; b=sFVYYErcI98HjeFt3IYeCzP4T6MRoCdA/tE6TZedM0qk/bntmhu34SuQ6vgZrdE+tEG8707RlQJgbAa2cq3nij0WbjVhSVL7JG96K9CADyAtORRsedi43qzqFSNd46TCvmpk/2js0PkaFcNUuOWRuqsZYVhLM7pswL5Ol/oi7d4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TInW23W0; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7704f3c46ceso1944309b3a.2;
-        Tue, 26 Aug 2025 00:21:50 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-771f3f89952so659156b3a.0;
+        Tue, 26 Aug 2025 00:22:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756192910; x=1756797710; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756192921; x=1756797721; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t13H33qD8qLpbmeE54fNLyxvfIEhKYRpPw50c6x9IkI=;
-        b=WnN8OSzxf5Pv9068TPdExQSJ4GAG7rDopM0K8bLN6Wmfl5sWCZXQ0zJpTKyiyxs8dd
-         BfvAl0JLlHfR3HH/Sv9ANGPAgDeQskTJsvdYdPfcn7AbokoNOFaWwL+jIxathGuwVKdo
-         FbZ5tgaZFBB/YXqrSJXgQjQT4lJjlslMH3+h7n9/CvtHjIuWBR6+7HcqFXCDfPExbRZU
-         F4JIDDQAfLf71/0RMA62lNBhwjEiMgNrqydJ1cChuxY8iG/itLLo5ckK2yZcgxZ2YATj
-         gyTL+2CEtxIZq7lXFfg1sWwyhBUGK/URy1K1wLIU5a3Ii9IJX5pEyeYMhQN6s6hDGpbC
-         pY1Q==
+        bh=Wbac2bbB4Agf6ejMhEQ8dWLbxrMb1NMiLXWF/bBnvXI=;
+        b=TInW23W0XwWB9wuHqLK7puBRDmHhiDjcWHUSb6e/vBWJTj/SMOGt2aEeZ7K/5GFdjv
+         L5sBKcmoC/pVG6owKZlyxwgJu/aEemNj7/O9uAznoMIrDOZrIm7mBafZgzzTx2StSf43
+         FrU0rOIZZRp3sE15RtSuh0uchRoudnvX0kRA8f504M/YYE4P2u3QX5PcOetSPgn3XNOa
+         uuAQs/u46uMkrfNa9amcLIfvjPzXDrE2STxgFuoHBnnWkui+mafFHnqVm8TT2tTiWdFR
+         gNmSvAQ6S0pVuh+0lLwXTJMS9k28zEVxFbWYkNfe+fW6HXYJx3JVXH/V4zdGS5rTO1I8
+         gFXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756192910; x=1756797710;
+        d=1e100.net; s=20230601; t=1756192921; x=1756797721;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t13H33qD8qLpbmeE54fNLyxvfIEhKYRpPw50c6x9IkI=;
-        b=NvuiDQcaw4Yo5ncyzJ1KF/rzYPv3+OgErEIIhPqMh4CtDHIShEb447MkfY25vbJotg
-         f5FXwmx+y5+I7tOaCEZPkO7qE2Jzb8Y685nYN/1VzSKKrZXXzy3ehFy+uv+oiD9R6vzC
-         nXNFlFmLiamKir9mA73CTNARA+/aNyCmybvWibPlvxWHJszHFgeYAgAYxLTUBlDikBFP
-         2+/jxlKK0KdXFExPAfBpt0mKOK4el+oLXlbagDPi4L3bBuhPwNLv0S3VtgsSL53tos2F
-         d4i50hj+A7AdZ+UrkAFwCeuQKUL4SheBx/Vs33t+w57Bipa4+eHmpEBCVe8qwdxo/o1w
-         BM+A==
-X-Forwarded-Encrypted: i=1; AJvYcCW8K3fYS9NzfFkOGgnJ6vmjcgAuAqQNdq7UL/uii549JoxccC8KvgYHcNI7PClEgP6QqyVddhPIoqk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy3rpvd/2gEfB/9FfpNoov3D6H+KN31smeQM8TMzcd1npVdNwdp
-	z43JsyY4hcE66FBlpLjKWvAbORSfpTcDBGjbQ41wbrsW+sb85om2nSZy
-X-Gm-Gg: ASbGncs3PdT2XyqaUAHAMzRZAgfwJcyOn71hfBuDYa6ELwYRZwW5gyqWeD0o74N3kV0
-	n6K6AjjbWJ0e/ui/vp5SDUee8i4DOSIl2QCr2mu9kWeT7w9AlvPuJSiaKXunOC3PNjmoHbsbj+z
-	Ob2kgz5khoRQctjJvXtVbOK4C+73a2bUrzlUaMqqMkh9WO3FF6pswZ/Xhr/JlEG8S7qcGZ8vfGu
-	rVsuQ5m1nDRbs7gajPJOAkDdJuZRl2VSuQ6Ulaz2PCN7Vu1elFDQid+ZCVqjxM1MEFQUvEVYNSQ
-	4IJD84XSQKBQD9CXqR9yIxtugjVvlMwIJxOu698UYjo84KaBiWf1MTq956N8Q5vigwe65283cng
-	SoHrCvrOYkdsCwi+CIOEu8YtH1Sj8Lyw4AiqZJjoH221OkLwixN1cluCAG8rhOKEyNUxAx5QgTN
-	x9DCk=
-X-Google-Smtp-Source: AGHT+IEu2b0RM+dE+zHiTagKiYCBPegaYQagDUGzf74IowO/NX6e+8Qmik0yxURJXoig5rjUT1KdPg==
-X-Received: by 2002:a05:6a20:a110:b0:240:763:797e with SMTP id adf61e73a8af0-24340b8a6a0mr22053427637.25.1756192910180;
-        Tue, 26 Aug 2025 00:21:50 -0700 (PDT)
+        bh=Wbac2bbB4Agf6ejMhEQ8dWLbxrMb1NMiLXWF/bBnvXI=;
+        b=kLOs4S2IKq2etjSSANtGUfUR8yhSrzf5/yy9aImO3rs6ggVb17Bq+bVgtonMxKSxQP
+         89qSKngJi3mnUFbaum/GKF3MfWjS/N3p7TiG7VH56NWfKzQ03j4rt2P9e5DCttrV7idw
+         9jDiB2/d7qAZTDji7fADpsQnltZ3JbU2hLubqJL+xkPplXY0R7ZWQ1c5n/08+YC2kbTm
+         R7nkWSqc9mJEQCgLuM+FqAF97tYUlhJTnG3Fmy43akWdWhusGsS918YBRMND4u2gF+eA
+         ZsQ4Ms3pPZ2rXZxAOOZ9p0KA2taf1DBgyYuX3EfdmOE3axOhFOpFyyqeNqUPpwVIasjt
+         QqNg==
+X-Forwarded-Encrypted: i=1; AJvYcCWATJeGnAF9OrRL3ODqFszVGoHZffyP8JEyOu+BSZJu41epiSYIrE/oZP8iBXj+Nbsx3aG05ROhguE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/OFSmwn+2OJM/FSLc/k29sQiXEeTLTqvi13K+RvNKGykasNIQ
+	kX1uOKMTOx641w+FYX5M41GKbSVGuavyjqSJlPb3fuc0fMzz8kO6ziBT
+X-Gm-Gg: ASbGncsfQ1L+qIRLChAQQ1BKdJxNZCoZV8T3Mz5fdJ1GBGN+LRxBJAElYd+DKLtpNw8
+	iiKi87IIEsKIdItdBje0ab5gmB0xTVWlHz5oJloME7Wsl+aEyszCpnbnMubJGtJr3XXMWVO26ce
+	PGu3Wl0rGM2JzP2CbG9mDDIaSakwvdrAhmJWBxb/l+VYx6PxKtZMtAm2xX7ju4QhxtQZvB0Xnhz
+	ZAyz7H6oMs0aaUYs8+6JPHjID/SCo7JQWwthHbaVwq+pO1xCsmZ6s1zfj5YsPm2JaWeolMy1FZ2
+	RH4EATYCcNommaN3KCYoSmXO0NFF8xqfUA7/MfrCEluLN6JBzUV1E/RZVgvclNpjHnf+bxmw3Xu
+	Liny9DXAHOfZMIZ9MXi+dyo+mKw8dTMOs7+BnlyPL3mlQzjAqPidMV9A92T1i5Ua23GHvgqOvM2
+	jcFqnOEg7h30XRCA==
+X-Google-Smtp-Source: AGHT+IHDKkxVACQPZ2nUxU4qBHmNtw5UPdoF1DrAv6TDPleHClAcC9RQjauPOEwrVtJF+n2mv+hsyg==
+X-Received: by 2002:a05:6a00:3d47:b0:76e:99fc:db91 with SMTP id d2e1a72fcca58-771fc292f2dmr715991b3a.3.1756192920839;
+        Tue, 26 Aug 2025 00:22:00 -0700 (PDT)
 Received: from localhost.localdomain ([101.82.213.56])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770401ecc51sm9686052b3a.75.2025.08.26.00.21.38
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770401ecc51sm9686052b3a.75.2025.08.26.00.21.51
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 26 Aug 2025 00:21:49 -0700 (PDT)
+        Tue, 26 Aug 2025 00:22:00 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: akpm@linux-foundation.org,
 	david@redhat.com,
@@ -98,9 +98,9 @@ Cc: bpf@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-doc@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v6 mm-new 09/10] Documentation: add BPF-based THP adjustment documentation
-Date: Tue, 26 Aug 2025 15:19:47 +0800
-Message-Id: <20250826071948.2618-10-laoar.shao@gmail.com>
+Subject: [PATCH v6 mm-new 10/10] MAINTAINERS: add entry for BPF-based THP adjustment
+Date: Tue, 26 Aug 2025 15:19:48 +0800
+Message-Id: <20250826071948.2618-11-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20250826071948.2618-1-laoar.shao@gmail.com>
 References: <20250826071948.2618-1-laoar.shao@gmail.com>
@@ -112,68 +112,44 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add the documentation.
+Add maintainership entry for the experimental BPF-driven THP adjustment
+feature. This experimental component may be removed in future releases.
+I will help with maintenance tasks for this feature during its development
+lifecycle.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- Documentation/admin-guide/mm/transhuge.rst | 47 ++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ MAINTAINERS | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
-index a16a04841b96..1725b89426a9 100644
---- a/Documentation/admin-guide/mm/transhuge.rst
-+++ b/Documentation/admin-guide/mm/transhuge.rst
-@@ -734,3 +734,50 @@ support enabled just fine as always. No difference can be noted in
- hugetlbfs other than there will be less overall fragmentation. All
- usual features belonging to hugetlbfs are preserved and
- unaffected. libhugetlbfs will also work fine as usual.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 390829ae9803..71d0f7c58ce8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16239,6 +16239,7 @@ F:	Documentation/admin-guide/mm/transhuge.rst
+ F:	include/linux/huge_mm.h
+ F:	include/linux/khugepaged.h
+ F:	include/trace/events/huge_memory.h
++F:	mm/bpf_thp.c
+ F:	mm/huge_memory.c
+ F:	mm/khugepaged.c
+ F:	mm/mm_slot.h
+@@ -16246,6 +16247,15 @@ F:	tools/testing/selftests/mm/khugepaged.c
+ F:	tools/testing/selftests/mm/split_huge_page_test.c
+ F:	tools/testing/selftests/mm/transhuge-stress.c
+ 
++MEMORY MANAGEMENT - THP WITH BPF SUPPORT
++M:	Yafang Shao <laoar.shao@gmail.com>
++L:	bpf@vger.kernel.org
++L:	linux-mm@kvack.org
++S:	Maintained
++F:	mm/bpf_thp.c
++F:	tools/testing/selftests/bpf/prog_tests/thp_adjust.c
++F:	tools/testing/selftests/bpf/progs/test_thp_adjust*
 +
-+BPF-based THP adjustment
-+========================
-+
-+Overview
-+--------
-+
-+When the system is configured with "always" or "madvise" THP mode, a BPF program
-+can be used to adjust THP allocation policies dynamically. This enables
-+fine-grained control over THP decisions based on various factors including
-+workload identity, allocation context, and system memory pressure.
-+
-+Program Interface
-+-----------------
-+
-+This feature implements a struct_ops BPF program with the following interface::
-+
-+  int (*get_suggested_order)(struct mm_struct *mm,
-+                             struct vm_area_struct *vma__nullable,
-+                             u64 vma_flags, enum tva_type tva_flags, int orders)
-+
-+Parameters::
-+
-+  @mm:  mm_struct associated with the THP allocation
-+  @vma__nullable: vm_area_struct associated with the THP allocation (may be NULL)
-+                  When NULL, the decision should be based on @mm (i.e., when
-+                  triggered from an mm-scope hook rather than a VMA-specific
-+                  context)
-+                  Must belong to @mm (guaranteed by the caller).
-+  @vma_flags: use these vm_flags instead of @vma->vm_flags (0 if @vma is NULL)
-+  @tva_flags: TVA flags for current @vma (-1 if @vma is NULL)
-+  @orders: Bitmask of requested THP orders for this allocation
-+           - PMD-mapped allocation if PMD_ORDER is set
-+           - mTHP allocation otherwise
-+
-+Return value::
-+
-+  Bitmask of suggested THP orders for allocation. The highest suggested order
-+  will not exceed the highest requested order in @orders.
-+
-+Implementation Notes
-+--------------------
-+
-+This is currently an experimental feature.
-+CONFIG_EXPERIMENTAL_BPF_ORDER_SELECTION must be enabled to use it.
-+Only one BPF program can be attached at a time, but the program can be updated
-+dynamically to adjust policies without requiring affected tasks to be restarted.
+ MEMORY MANAGEMENT - USERFAULTFD
+ M:	Andrew Morton <akpm@linux-foundation.org>
+ R:	Peter Xu <peterx@redhat.com>
 -- 
 2.47.3
 
