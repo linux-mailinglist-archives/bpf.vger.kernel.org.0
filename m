@@ -1,241 +1,282 @@
-Return-Path: <bpf+bounces-66654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 887ABB3811B
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 13:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74E7BB381A3
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 13:45:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8907E1BA2AE4
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 11:33:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A93D81BA67F9
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 11:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219842F0C5E;
-	Wed, 27 Aug 2025 11:32:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA44535FC3D;
+	Wed, 27 Aug 2025 11:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HVPY0WnK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OzLbmb7I"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D04B298CAB
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 11:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7876935FC2E;
+	Wed, 27 Aug 2025 11:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756294377; cv=none; b=Ylp2aNrj1TB2uCvXsAD566ysMh/i+dHKPBWMNK41HIvJo63fb/ivDQHm7sQF/i79VSC45h8b/mwD1nC6E0aL3wd50wlZtkzONfhOJovdP2WwAWWIxIuwm18GzyWovqJJyHT8oQSoNDGSu5Gg9sgHEaPTh9qn3QwUpjNIAci+MvY=
+	t=1756294835; cv=none; b=fK+CWRhEwbS0rTFI4ZD7E7XL7R8oQsglA0/wGAp4u2QvHrlfidj1u+063mj/5qkQPekTPjg5CD8nKiKqGzZXOfcWB1MGX70AnvyfTq0s9lUT9dHR3eaG1ss7ysNwSHtHR1GJdxk6ZXsM8DtTMxbx8coNlVMKUZ0dqP3D4ec7K0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756294377; c=relaxed/simple;
-	bh=Xfo80+O/z3FQZrLoxr9SlVVuBcxg+OPeXvuWJb0CoEM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=edYGH8CBcxvthaDAM3BxQbmxRahHjs2o7h1+E/v25Cj8WOrXAL//yOoa8fMkZpD5ffymHRJUNYKOoonWdcfHoI2qz2Io+P+b37UtewnmIrsrr2MsQC205xvY6wSzccZhKHAMCfSKwTAQlzwUAIa1d7XUewOFqiXYV5JGec18/8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HVPY0WnK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41F00C116C6;
-	Wed, 27 Aug 2025 11:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756294377;
-	bh=Xfo80+O/z3FQZrLoxr9SlVVuBcxg+OPeXvuWJb0CoEM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HVPY0WnK1MDwF1P0d8nTOK/SpDK8I5aUm3MfQcxXlbK/3OIA3yC9akyS9tRUNNZQN
-	 2koYr94L/IGwhfmo+PO/z4gXwCTMxyjswigzBXEvbxH8qPqduc1Ns0uGUIi+SaWh0L
-	 f3hThHAtb0tgcFuu6gNhsJiNq5kZWeS6OSpZb7978957K0jaJTiBXmGADB34N9TMA5
-	 PATqmAR/dsmsCwh/lRsC2hO+TVGX1aideQZyudmCW1WrZVNGtWrsRbBC9rkhIe+S/3
-	 V2ahrGRtc0XMJWm31AJf97/ATemzcxQvKGHSIocU7+Tb5xcxvxuO6kjUOLsu6NnzTx
-	 0Z8+/ck0PBZUw==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf@vger.kernel.org
-Cc: Xu Kuohai <xukuohai@huawei.com>
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Enable timed may_goto tests for arm64
-Date: Wed, 27 Aug 2025 11:32:44 +0000
-Message-ID: <20250827113245.52629-3-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250827113245.52629-1-puranjay@kernel.org>
-References: <20250827113245.52629-1-puranjay@kernel.org>
+	s=arc-20240116; t=1756294835; c=relaxed/simple;
+	bh=Fk6GDvLmkCDGrIsjIvWcI3MTNYRmrykY6dKZ5Wy6aO4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sbTRdR3OOX2O3n8npT+RiDwayMhRe5ka4LpP7M/rZT5MDD6hJYDRmwXycVgHyCs6TdF8jeFEk3a8Qzwhke0grlgflM0CvT6ZeHJV+OQfAhw2W0tM+FYx81e0hyf7/eig0Ow3VhmhMkf+5G4XAoJ+9SEFn9q9s9stjoQWXiUXn9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OzLbmb7I; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-70a88de7d4fso57985896d6.0;
+        Wed, 27 Aug 2025 04:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756294832; x=1756899632; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XeoM2pRAda8SuuPICRFUFFSQ54mI0ws6ytKPaFfrQVE=;
+        b=OzLbmb7I2ZWHthlpMRX+ZJcEYakiSDApbeAbhpetM2xXjFcQawlfbCRXMlUR6AHUgD
+         kxrhUUvU1rJdFQbV7WnYg/fs4JEnz57lYYpaOpsfhwr608N9Pl9SphsAUsVZCbEgj0FG
+         qCJAuTRhs7K+R7QbkKjW8tJrs6Iyi5dG5n3gNeal/EUQSND6DhKRRygiUe7LnaYObcoW
+         hY4eLBYhmWaf3CFmqImY99psAGjzT+YdhDYzcXh7Hk75R+DxkBRTh0b4HjDoOAd0XCo6
+         qLb4A4BHZ7VR3eHntyQdPv6FgJs9q4Li7B0UhT6GSg1r8wqoYprYufwi7Op3i8MFWAos
+         XjRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756294832; x=1756899632;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XeoM2pRAda8SuuPICRFUFFSQ54mI0ws6ytKPaFfrQVE=;
+        b=wxwJrhTfnURpnn5PuMHXfDvHnL0uOjWeAfi/jSJtIzVUTqt1i4DwmjWgQbchwQt2qy
+         JFLcXpyJqCa2YKGOfc0WtmTpd4xjSoTeM/cZXn9stpyEG3lliswQFTVfddVSpeBqYKwB
+         zELOv42BIXEbsZO7pb3n9v5/tIC2akYISXglwLeIepaoMjDtWh0YsH+y3uPNaPSq9dFv
+         b4b85YJ7gB8Mkgcc9Fv22+hNFPd1IwrDgW6MgZ1SIpeX9hLYfsodsAx5QvHrml8doAMA
+         h9pX2W7ldgSpcgh/wXdAW7zt99w/au2emRrkqlFi7MLyYUxV8HmsbCb1dX/JQAO7csWf
+         1YjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUr7iA3WQMUDgI/spLLWI/fdvjQasR9hz+6UTOc5RAzhe5/dfJRf+j4H0O/+Z4jxvizdRA=@vger.kernel.org, AJvYcCWaGdtk8c2Xq75PjYmd/ja2wXMwiACq6HCsfswajclAjFDm43dtx8cN+DX6EkUcnSIiv89xHI/JeU6J@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7Jt1vfICW0mj7xWDdcfrlFmFcuq1NeLMg0MYhJZy/s8XDaNXG
+	PCVb+VDTESYhL+CpAeNlDcBHkm50It+wXPOU0Y9RCz8erqbfy0oKnc9/vqVkrBCrtrBQ2Fr15Uj
+	NPKG5shE/l2bXX4Lql1oeVpSOp51qwco=
+X-Gm-Gg: ASbGncvBLvHyt72+l/OSbZbr5hN0i/omzhewTbhWhVMSzc07StV5sxuzcsVPHtM4tBE
+	qjORn59dFOxI/7NggtWHs0OsCbq8dm14h8FgcArLEImHyVF3E7z+gJeNCFm2eY2NvgRwaAYfi6D
+	uQogIiB/IKITvR2y3XyWCEYsHl6Mbu+dBG77ljTAf7cU+M3eZtAutNpiVmFR1EhJ1Dq69aogkFH
+	u66qmtBObB9TKRxOWBEQystRT9EBpIvosC8QEGgcuY2XDSmgmc=
+X-Google-Smtp-Source: AGHT+IELLrqV3R85XBc6agU/7DzAWxsj82fvVPd+3fVYozs8/RRKK8VEk3bA7WWCc4E5Pk4l/H0YX2Fkq99QBUTmqQk=
+X-Received: by 2002:ad4:5cab:0:b0:708:1296:c5ab with SMTP id
+ 6a1803df08f44-70d971e4042mr226760146d6.34.1756294832315; Wed, 27 Aug 2025
+ 04:40:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250826071948.2618-2-laoar.shao@gmail.com> <202508271009.5neOZ0OG-lkp@intel.com>
+In-Reply-To: <202508271009.5neOZ0OG-lkp@intel.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 27 Aug 2025 19:39:55 +0800
+X-Gm-Features: Ac12FXwZr66D7NPE9H9ynH6vKXzl7w2VfiSW67LSXeqGM2TeN__rIRX4dJec3k8
+Message-ID: <CALOAHbCtE-Sjeja3gzGwooWcikGWetPj8k6wqk52_c0hEo5ZKQ@mail.gmail.com>
+Subject: Re: [PATCH v6 mm-new 01/10] mm: thp: add support for BPF based THP
+ order selection
+To: kernel test robot <lkp@intel.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com, 
+	dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com, 
+	gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com, 
+	rientjes@google.com, corbet@lwn.net, oe-kbuild-all@lists.linux.dev, 
+	bpf@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As arm64 JIT now supports timed may_goto instruction, make sure all
-relevant tests run on this architecture. Some tests were enabled and
-other required modifications to work properly on arm64.
+On Wed, Aug 27, 2025 at 10:58=E2=80=AFAM kernel test robot <lkp@intel.com> =
+wrote:
+>
+> Hi Yafang,
+>
+> kernel test robot noticed the following build warnings:
+>
+> [auto build test WARNING on akpm-mm/mm-everything]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/mm-thp=
+-add-support-for-BPF-based-THP-order-selection/20250826-152415
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-ev=
+erything
+> patch link:    https://lore.kernel.org/r/20250826071948.2618-2-laoar.shao=
+%40gmail.com
+> patch subject: [PATCH v6 mm-new 01/10] mm: thp: add support for BPF based=
+ THP order selection
+> config: loongarch-randconfig-r113-20250827 (https://download.01.org/0day-=
+ci/archive/20250827/202508271009.5neOZ0OG-lkp@intel.com/config)
+> compiler: clang version 18.1.8 (https://github.com/llvm/llvm-project 3b5b=
+5c1ec4a3095ab096dd780e84d7ab81f3d7ff)
+> reproduce: (https://download.01.org/0day-ci/archive/20250827/202508271009=
+.5neOZ0OG-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202508271009.5neOZ0OG-lkp=
+@intel.com/
 
- $ ./test_progs -a "stream*","*may_goto*",verifier_bpf_fastcall
+Thanks for the report .
+It seems this sparse warning can be fixed with the below additional
+change, would you please test it again?
 
- #404     stream_errors:OK
- [...]
- #406/2   stream_success/stream_cond_break:OK
- [...]
- #494/23  verifier_bpf_fastcall/may_goto_interaction_x86_64:SKIP
- #494/24  verifier_bpf_fastcall/may_goto_interaction_arm64:OK
- [...]
- #539/1   verifier_may_goto_1/may_goto 0:OK
- #539/2   verifier_may_goto_1/batch 2 of may_goto 0:OK
- #539/3   verifier_may_goto_1/may_goto batch with offsets 2/1/0:OK
- #539/4   verifier_may_goto_1/may_goto batch with offsets 2/0:OK
- #539     verifier_may_goto_1:OK
- #540/1   verifier_may_goto_2/C code with may_goto 0:OK
- #540     verifier_may_goto_2:OK
- Summary: 7/16 PASSED, 25 SKIPPED, 0 FAILED
+diff --git a/mm/bpf_thp.c b/mm/bpf_thp.c
+index 46b3bc96359e..b2f97f9e930d 100644
+--- a/mm/bpf_thp.c
++++ b/mm/bpf_thp.c
+@@ -5,27 +5,32 @@
+ #include <linux/huge_mm.h>
+ #include <linux/khugepaged.h>
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Acked-by: Xu Kuohai <xukuohai@huawei.com>
----
- .../testing/selftests/bpf/prog_tests/stream.c |  2 +-
- .../bpf/progs/verifier_bpf_fastcall.c         | 27 +++++++++------
- .../selftests/bpf/progs/verifier_may_goto_1.c | 34 ++++---------------
- 3 files changed, 23 insertions(+), 40 deletions(-)
++/**
++ * @get_suggested_order: Get the suggested THP orders for allocation
++ * @mm: mm_struct associated with the THP allocation
++ * @vma__nullable: vm_area_struct associated with the THP allocation
+(may be NULL)
++ *                 When NULL, the decision should be based on @mm (i.e., w=
+hen
++ *                 triggered from an mm-scope hook rather than a VMA-speci=
+fic
++ *                 context).
++ *                 Must belong to @mm (guaranteed by the caller).
++ * @vma_flags: use these vm_flags instead of @vma->vm_flags (0 if @vma is =
+NULL)
++ * @tva_flags: TVA flags for current @vma (-1 if @vma is NULL)
++ * @orders: Bitmask of requested THP orders for this allocation
++ *          - PMD-mapped allocation if PMD_ORDER is set
++ *          - mTHP allocation otherwise
++ *
++ * Rerurn: Bitmask of suggested THP orders for allocation. The highest
++ *         suggested order will not exceed the highest requested order
++ *         in @orders.
++ */
++typedef int suggested_order_fn_t(struct mm_struct *mm,
++                                struct vm_area_struct *vma__nullable,
++                                u64 vma_flags,
++                                enum tva_type tva_flags,
++                                int orders);
++
+ struct bpf_thp_ops {
+-       /**
+-        * @get_suggested_order: Get the suggested THP orders for allocatio=
+n
+-        * @mm: mm_struct associated with the THP allocation
+-        * @vma__nullable: vm_area_struct associated with the THP
+allocation (may be NULL)
+-        *                 When NULL, the decision should be based on
+@mm (i.e., when
+-        *                 triggered from an mm-scope hook rather than
+a VMA-specific
+-        *                 context).
+-        *                 Must belong to @mm (guaranteed by the caller).
+-        * @vma_flags: use these vm_flags instead of @vma->vm_flags (0
+if @vma is NULL)
+-        * @tva_flags: TVA flags for current @vma (-1 if @vma is NULL)
+-        * @orders: Bitmask of requested THP orders for this allocation
+-        *          - PMD-mapped allocation if PMD_ORDER is set
+-        *          - mTHP allocation otherwise
+-        *
+-        * Rerurn: Bitmask of suggested THP orders for allocation. The high=
+est
+-        *         suggested order will not exceed the highest requested or=
+der
+-        *         in @orders.
+-        */
+-       int (*get_suggested_order)(struct mm_struct *mm, struct
+vm_area_struct *vma__nullable,
+-                                  u64 vma_flags, enum tva_type
+tva_flags, int orders) __rcu;
++       suggested_order_fn_t __rcu *get_suggested_order;
+ };
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/stream.c b/tools/testing/selftests/bpf/prog_tests/stream.c
-index 36a1a1ebde692..9d0e5d93edee7 100644
---- a/tools/testing/selftests/bpf/prog_tests/stream.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stream.c
-@@ -77,7 +77,7 @@ void test_stream_errors(void)
- 		ASSERT_OK(ret, "ret");
- 		ASSERT_OK(opts.retval, "retval");
- 
--#if !defined(__x86_64__) && !defined(__s390x__)
-+#if !defined(__x86_64__) && !defined(__s390x__) && !defined(__aarch64__)
- 		ASSERT_TRUE(1, "Timed may_goto unsupported, skip.");
- 		if (i == 0) {
- 			ret = bpf_prog_stream_read(prog_fd, 2, buf, sizeof(buf), &ropts);
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
-index c258b0722e045..fb4fa465d67c6 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
-@@ -660,19 +660,24 @@ __naked void may_goto_interaction_x86_64(void)
- 
- SEC("raw_tp")
- __arch_arm64
--__log_level(4) __msg("stack depth 16")
--/* may_goto counter at -16 */
--__xlated("0: *(u64 *)(r10 -16) =")
--__xlated("1: r1 = 1")
--__xlated("2: call bpf_get_smp_processor_id")
-+__log_level(4) __msg("stack depth 24")
-+/* may_goto counter at -24 */
-+__xlated("0: *(u64 *)(r10 -24) =")
-+/* may_goto timestamp at -16 */
-+__xlated("1: *(u64 *)(r10 -16) =")
-+__xlated("2: r1 = 1")
-+__xlated("3: call bpf_get_smp_processor_id")
- /* may_goto expansion starts */
--__xlated("3: r11 = *(u64 *)(r10 -16)")
--__xlated("4: if r11 == 0x0 goto pc+3")
--__xlated("5: r11 -= 1")
--__xlated("6: *(u64 *)(r10 -16) = r11")
-+__xlated("4: r11 = *(u64 *)(r10 -24)")
-+__xlated("5: if r11 == 0x0 goto pc+6")
-+__xlated("6: r11 -= 1")
-+__xlated("7: if r11 != 0x0 goto pc+2")
-+__xlated("8: r11 = -24")
-+__xlated("9: call unknown")
-+__xlated("10: *(u64 *)(r10 -24) = r11")
- /* may_goto expansion ends */
--__xlated("7: *(u64 *)(r10 -8) = r1")
--__xlated("8: exit")
-+__xlated("11: *(u64 *)(r10 -8) = r1")
-+__xlated("12: exit")
- __success
- __naked void may_goto_interaction_arm64(void)
+ static struct bpf_thp_ops bpf_thp;
+@@ -34,8 +39,7 @@ static DEFINE_SPINLOCK(thp_ops_lock);
+ int get_suggested_order(struct mm_struct *mm, struct vm_area_struct
+*vma__nullable,
+                        u64 vma_flags, enum tva_type tva_flags, int orders)
  {
-diff --git a/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c b/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c
-index cc1063863569d..6d1edaef92138 100644
---- a/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c
-@@ -10,6 +10,7 @@ SEC("raw_tp")
- __description("may_goto 0")
- __arch_x86_64
- __arch_s390x
-+__arch_arm64
- __xlated("0: r0 = 1")
- __xlated("1: exit")
- __success
-@@ -29,6 +30,7 @@ SEC("raw_tp")
- __description("batch 2 of may_goto 0")
- __arch_x86_64
- __arch_s390x
-+__arch_arm64
- __xlated("0: r0 = 1")
- __xlated("1: exit")
- __success
-@@ -50,6 +52,7 @@ SEC("raw_tp")
- __description("may_goto batch with offsets 2/1/0")
- __arch_x86_64
- __arch_s390x
-+__arch_arm64
- __xlated("0: r0 = 1")
- __xlated("1: exit")
- __success
-@@ -72,9 +75,10 @@ __naked void may_goto_batch_1(void)
+-       int (*bpf_suggested_order)(struct mm_struct *mm, struct
+vm_area_struct *vma__nullable,
+-                                  u64 vma_flags, enum tva_type
+tva_flags, int orders);
++       suggested_order_fn_t *bpf_suggested_order;
+        int suggested_orders =3D orders;
+
+        /* No BPF program is attached */
+@@ -106,10 +110,12 @@ static int bpf_thp_reg(void *kdata, struct bpf_link *=
+link)
+
+ static void bpf_thp_unreg(void *kdata, struct bpf_link *link)
+ {
++       suggested_order_fn_t *old_fn;
++
+        spin_lock(&thp_ops_lock);
+        clear_bit(TRANSPARENT_HUGEPAGE_BPF_ATTACHED,
+&transparent_hugepage_flags);
+-       WARN_ON_ONCE(!rcu_access_pointer(bpf_thp.get_suggested_order));
+-       rcu_replace_pointer(bpf_thp.get_suggested_order, NULL,
+lockdep_is_held(&thp_ops_lock));
++       old_fn =3D rcu_replace_pointer(bpf_thp.get_suggested_order,
+NULL, lockdep_is_held(&thp_ops_lock));
++       WARN_ON_ONCE(!old_fn);
+        spin_unlock(&thp_ops_lock);
+
+        synchronize_rcu();
+@@ -117,8 +123,9 @@ static void bpf_thp_unreg(void *kdata, struct
+bpf_link *link)
+
+ static int bpf_thp_update(void *kdata, void *old_kdata, struct bpf_link *l=
+ink)
+ {
+-       struct bpf_thp_ops *ops =3D kdata;
++       suggested_order_fn_t *old_fn, *new_fn;
+        struct bpf_thp_ops *old =3D old_kdata;
++       struct bpf_thp_ops *ops =3D kdata;
+        int ret =3D 0;
+
+        if (!ops || !old)
+@@ -130,9 +137,10 @@ static int bpf_thp_update(void *kdata, void
+*old_kdata, struct bpf_link *link)
+                ret =3D -ENOENT;
+                goto out;
+        }
+-       WARN_ON_ONCE(!rcu_access_pointer(bpf_thp.get_suggested_order));
+-       rcu_replace_pointer(bpf_thp.get_suggested_order,
+ops->get_suggested_order,
+-                           lockdep_is_held(&thp_ops_lock));
++
++       new_fn =3D rcu_dereference(ops->get_suggested_order);
++       old_fn =3D rcu_replace_pointer(bpf_thp.get_suggested_order,
+new_fn, lockdep_is_held(&thp_ops_lock));
++       WARN_ON_ONCE(!old_fn || !new_fn);
+
+ out:
+        spin_unlock(&thp_ops_lock);
+@@ -159,7 +167,7 @@ static int suggested_order(struct mm_struct *mm,
+struct vm_area_struct *vma__nul
  }
- 
- SEC("raw_tp")
--__description("may_goto batch with offsets 2/0 - x86_64 and s390x")
-+__description("may_goto batch with offsets 2/0")
- __arch_x86_64
- __arch_s390x
-+__arch_arm64
- __xlated("0: *(u64 *)(r10 -16) = 65535")
- __xlated("1: *(u64 *)(r10 -8) = 0")
- __xlated("2: r11 = *(u64 *)(r10 -16)")
-@@ -88,33 +92,7 @@ __xlated("9: r0 = 1")
- __xlated("10: r0 = 2")
- __xlated("11: exit")
- __success
--__naked void may_goto_batch_2_x86_64_s390x(void)
--{
--	asm volatile (
--	".8byte %[may_goto1];"
--	".8byte %[may_goto3];"
--	"r0 = 1;"
--	"r0 = 2;"
--	"exit;"
--	:
--	: __imm_insn(may_goto1, BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, 2 /* offset */, 0)),
--	  __imm_insn(may_goto3, BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, 0 /* offset */, 0))
--	: __clobber_all);
--}
--
--SEC("raw_tp")
--__description("may_goto batch with offsets 2/0 - arm64")
--__arch_arm64
--__xlated("0: *(u64 *)(r10 -8) = 8388608")
--__xlated("1: r11 = *(u64 *)(r10 -8)")
--__xlated("2: if r11 == 0x0 goto pc+3")
--__xlated("3: r11 -= 1")
--__xlated("4: *(u64 *)(r10 -8) = r11")
--__xlated("5: r0 = 1")
--__xlated("6: r0 = 2")
--__xlated("7: exit")
--__success
--__naked void may_goto_batch_2_arm64(void)
-+__naked void may_goto_batch_2(void)
- {
- 	asm volatile (
- 	".8byte %[may_goto1];"
--- 
-2.47.3
 
+ static struct bpf_thp_ops __bpf_thp_ops =3D {
+-       .get_suggested_order =3D suggested_order,
++       .get_suggested_order =3D (suggested_order_fn_t __rcu *)suggested_or=
+der,
+ };
+
+ static struct bpf_struct_ops bpf_bpf_thp_ops =3D {
+
+
+--
+Regards
+
+Yafang
 
