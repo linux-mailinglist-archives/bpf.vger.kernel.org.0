@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-66720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 471A5B38AE7
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD045B38AF7
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E99F1C21E33
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:26:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE407189C2DA
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDB603081C1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAFE3081C7;
 	Wed, 27 Aug 2025 20:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZN3lC9as"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wf4MHHj+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7DD304BCA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5030130749E;
 	Wed, 27 Aug 2025 20:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756326263; cv=none; b=nG7RLxE01iWFoKd05O5sDb6D476wKIJDVwfnRxoQ1skon3o8GZsFhJMayH0OlC8eiRUBnxURNEaWgGqr6Qs6vpwfH5feiP6lK5NKJ0mQ8J1eDtnRqdepmkSfScLk3ITxop7Pumq3sXqAbRbzeZk8CEm+SR26DGkP7YjfDg+CTHE=
+	t=1756326263; cv=none; b=FZ70ei8u+nKKpRKOOzjSKt1dNcrVBQs1Z05wNfKmBXWd2JYBd5c+zxiJaBi0cmWYLIEk/JtLl79eDRIxAUKEwbHP6q2/BUTAH7g4DDzotO9uFTq4D1yckVmBwxK+BK3+BLxsvT1NixaH12hvn+znK3sVaLYXFKcmKwVuCBkMRTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756326263; c=relaxed/simple;
-	bh=B0Z0hge9MApW75b17usDdRxmkX5DdtylXDH/jRh6dj4=;
+	bh=EcoepKxpaib08JEAUBe/rbQ989EbwLD/UsSh+4p+mfQ=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=XP6RvX0mZOd/PRqlDUB1qxJ90VgOyBc/th99xOpVOi6JtdAv87GMwdpSDSLwH4BamNGQSkavMhgQ+qSXfWSWSb15IUbgpqce+ZCFi9bZHBpwitwlcPafGGj+4hsj7Usg9Dgo9RbuIxZrIqQmJV3Upu6HKus+PY5aajhBp5CUCio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZN3lC9as; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 056A3C4CEEB;
+	 Content-Type; b=J0EsRSQk/CWNAXGTkX9LYHsfRkZJQTHFTSpb/VQr0Q4Md0vf3TkgF83UMxNxnr7X/qh97r3/bc8mG4335XHL2D1znEyQrll+N4llljCx+6Emqc46DxKWMjyTyMJSOsZ6ixncqEocjnmoGlroQbPWVI1QYVuPmXlTj04BYcHD/T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wf4MHHj+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A4E5C4CEFC;
 	Wed, 27 Aug 2025 20:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756326263;
-	bh=B0Z0hge9MApW75b17usDdRxmkX5DdtylXDH/jRh6dj4=;
+	bh=EcoepKxpaib08JEAUBe/rbQ989EbwLD/UsSh+4p+mfQ=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=ZN3lC9as6z85Vu96b7dlCuCAB68Zp7ESIARXwCw6Qk6Egz6iQngzm/NVUtj9oiw+3
-	 gcJumShNdJqQe11PveT1f2+ySFHwh7Y5+ma/HYdCIa/ii6zvN3+JaY/t1utHDCQKe3
-	 SZU+ndOIQHieK6fIV7riyaEduBWJn4wpmx4ghCyX+GhqkuNJJbKA1tL4OFLTLVLqSv
-	 uQq2CFUgaVlgYKZfk3/6lEtKw8lO6hrVWIRIILBWjgiMtfFuLwYEaGDFzsthBBh7zy
-	 qHke4zqDC1XCgt+Nne0U1MnQc40HHb9ZykLKVDZxt8c2XRil2dW/Tvq9JiG/ykPVAo
-	 w4YN0JySoTXHA==
+	b=Wf4MHHj+LWL/MisFVeOoKZQSxnXZ+RqIQMsWDbhQskReHP8F+zA39h4Cn/Ds5csKA
+	 wiGC7dJQ3totPlHqfNY0XtNy+5iY7kd4TIDCRQjt2zcJVCRbeCm2gwaZyYymzXHC10
+	 AhIrfoNG5Xk9HekU2Vdn94uoweDozhMVk33FDvZMf5XEAvK3tn36VFIcjLi2HmNaVZ
+	 82KZlUCbNbQQxlFiVF4+r3PVUoKGfXI7ljKTPqKT2Gy+v479mhDUUGMzur05KFlAB8
+	 LPM0n96cDXAQUyZSebvsZNRP6ZkFYHQWPDAM8cKE7yqyUqRS2YzOAAVxltzr/3QdA6
+	 eE93pqNLjQAjQ==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1urMhF-00000003l0o-3tCK;
-	Wed, 27 Aug 2025 16:24:41 -0400
-Message-ID: <20250827202441.776912299@kernel.org>
+	id 1urMhG-00000003l1K-0OTE;
+	Wed, 27 Aug 2025 16:24:42 -0400
+Message-ID: <20250827202441.946968550@kernel.org>
 User-Agent: quilt/0.68
-Date: Wed, 27 Aug 2025 16:15:58 -0400
+Date: Wed, 27 Aug 2025 16:15:59 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -73,7 +73,8 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Sam James <sam@gentoo.org>,
  Kees Cook <kees@kernel.org>,
  "Carlos O'Donell" <codonell@redhat.com>
-Subject: [PATCH v10 10/11] unwind_user/sframe: Add .sframe validation option
+Subject: [PATCH v10 11/11] [DO NOT APPLY]unwind_user/sframe: Add prctl() interface for registering .sframe
+ sections
 References: <20250827201548.448472904@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -85,160 +86,72 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Add a debug feature to validate all .sframe sections when first loading
-the file rather than on demand.
+The kernel doesn't have direct visibility to the ELF contents of shared
+libraries.  Add some prctl() interfaces which allow glibc to tell the
+kernel where to find .sframe sections.
+
+[
+  This adds an interface for prctl() for testing loading of sframes for
+  libraries. But this interface should really be a system call. This patch
+  is for testing purposes only and should not be applied to mainline.
+]
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- arch/Kconfig           | 19 +++++++++
- kernel/unwind/sframe.c | 96 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 115 insertions(+)
+ include/uapi/linux/prctl.h | 6 +++++-
+ kernel/sys.c               | 9 +++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 277b87af949f..918ebe3c5a85 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -455,6 +455,25 @@ config HAVE_UNWIND_USER_SFRAME
- 	bool
- 	select UNWIND_USER
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index ed3aed264aeb..b807baa8a53b 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -358,7 +358,7 @@ struct prctl_mm_map {
+  * configuration.  All bits may be locked via this call, including
+  * undefined bits.
+  */
+-#define PR_LOCK_SHADOW_STACK_STATUS      76
++#define PR_LOCK_SHADOW_STACK_STATUS	76
  
-+config SFRAME_VALIDATION
-+	bool "Enable .sframe section debugging"
-+	depends on HAVE_UNWIND_USER_SFRAME
-+	depends on DYNAMIC_DEBUG
-+	help
-+	  When adding an .sframe section for a task, validate the entire
-+	  section immediately rather than on demand.
-+
-+	  This is a debug feature which is helpful for rooting out .sframe
-+	  section issues.  If the .sframe section is corrupt, it will fail to
-+	  load immediately, with more information provided in dynamic printks.
-+
-+	  This has a significant page cache footprint due to its reading of the
-+	  entire .sframe section for every loaded executable and shared
-+	  library.  Also, it's done for all processes, even those which don't
-+	  get stack traced by the kernel.  Not recommended for general use.
-+
-+	  If unsure, say N.
-+
- config HAVE_PERF_REGS
- 	bool
- 	help
-diff --git a/kernel/unwind/sframe.c b/kernel/unwind/sframe.c
-index 66d3ba3c8389..79ff3c0fc11f 100644
---- a/kernel/unwind/sframe.c
-+++ b/kernel/unwind/sframe.c
-@@ -319,6 +319,98 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
- 	return ret;
- }
+ /*
+  * Controls the mode of timer_create() for CRIU restore operations.
+@@ -376,4 +376,8 @@ struct prctl_mm_map {
+ # define PR_FUTEX_HASH_SET_SLOTS	1
+ # define PR_FUTEX_HASH_GET_SLOTS	2
  
-+#ifdef CONFIG_SFRAME_VALIDATION
++/* SFRAME management */
++#define PR_ADD_SFRAME			79
++#define PR_REMOVE_SFRAME		80
 +
-+static int safe_read_fde(struct sframe_section *sec,
-+			 unsigned int fde_num, struct sframe_fde *fde)
-+{
-+	int ret;
-+
-+	if (!user_read_access_begin((void __user *)sec->sframe_start,
-+				    sec->sframe_end - sec->sframe_start))
-+		return -EFAULT;
-+	ret = __read_fde(sec, fde_num, fde);
-+	user_read_access_end();
-+	return ret;
-+}
-+
-+static int safe_read_fre(struct sframe_section *sec,
-+			 struct sframe_fde *fde, unsigned long fre_addr,
-+			 struct sframe_fre *fre)
-+{
-+	int ret;
-+
-+	if (!user_read_access_begin((void __user *)sec->sframe_start,
-+				    sec->sframe_end - sec->sframe_start))
-+		return -EFAULT;
-+	ret = __read_fre(sec, fde, fre_addr, fre);
-+	user_read_access_end();
-+	return ret;
-+}
-+
-+static int sframe_validate_section(struct sframe_section *sec)
-+{
-+	unsigned long prev_ip = 0;
-+	unsigned int i;
-+
-+	for (i = 0; i < sec->num_fdes; i++) {
-+		struct sframe_fre *fre, *prev_fre = NULL;
-+		unsigned long ip, fre_addr;
-+		struct sframe_fde fde;
-+		struct sframe_fre fres[2];
-+		bool which = false;
-+		unsigned int j;
-+		int ret;
-+
-+		ret = safe_read_fde(sec, i, &fde);
-+		if (ret)
-+			return ret;
-+
-+		ip = sec->sframe_start + fde.start_addr;
-+		if (ip <= prev_ip) {
-+			dbg_sec("fde %u not sorted\n", i);
-+			return -EFAULT;
-+		}
-+		prev_ip = ip;
-+
-+		fre_addr = sec->fres_start + fde.fres_off;
-+		for (j = 0; j < fde.fres_num; j++) {
-+			int ret;
-+
-+			fre = which ? fres : fres + 1;
-+			which = !which;
-+
-+			ret = safe_read_fre(sec, &fde, fre_addr, fre);
-+			if (ret) {
-+				dbg_sec("fde %u: __read_fre(%u) failed\n", i, j);
-+				dbg_sec("FDE: start_addr:0x%x func_size:0x%x fres_off:0x%x fres_num:%d info:%u rep_size:%u\n",
-+					fde.start_addr, fde.func_size,
-+					fde.fres_off, fde.fres_num,
-+					fde.info, fde.rep_size);
-+				return ret;
-+			}
-+
-+			fre_addr += fre->size;
-+
-+			if (prev_fre && fre->ip_off <= prev_fre->ip_off) {
-+				dbg_sec("fde %u: fre %u not sorted\n", i, j);
-+				return -EFAULT;
-+			}
-+
-+			prev_fre = fre;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+#else /*  !CONFIG_SFRAME_VALIDATION */
-+
-+static int sframe_validate_section(struct sframe_section *sec) { return 0; }
-+
-+#endif /* !CONFIG_SFRAME_VALIDATION */
-+
-+
- static void free_section(struct sframe_section *sec)
- {
- 	dbg_free(sec);
-@@ -427,6 +519,10 @@ int sframe_add_section(unsigned long sframe_start, unsigned long sframe_end,
- 		goto err_free;
- 	}
+ #endif /* _LINUX_PRCTL_H */
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 1e28b40053ce..e6ce79a3a7aa 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -65,6 +65,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/uidgid.h>
+ #include <linux/cred.h>
++#include <linux/sframe.h>
  
-+	ret = sframe_validate_section(sec);
-+	if (ret)
-+		goto err_free;
-+
- 	ret = mtree_insert_range(sframe_mt, sec->text_start, sec->text_end, sec, GFP_KERNEL);
- 	if (ret) {
- 		dbg_sec("mtree_insert_range failed: text=%lx-%lx\n",
+ #include <linux/nospec.h>
+ 
+@@ -2805,6 +2806,14 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 	case PR_FUTEX_HASH:
+ 		error = futex_hash_prctl(arg2, arg3, arg4);
+ 		break;
++	case PR_ADD_SFRAME:
++		error = sframe_add_section(arg2, arg3, arg4, arg5);
++		break;
++	case PR_REMOVE_SFRAME:
++		if (arg3 || arg4 || arg5)
++			return -EINVAL;
++		error = sframe_remove_section(arg2);
++		break;
+ 	default:
+ 		trace_task_prctl_unknown(option, arg2, arg3, arg4, arg5);
+ 		error = -EINVAL;
 -- 
 2.50.1
 
