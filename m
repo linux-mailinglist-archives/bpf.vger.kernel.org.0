@@ -1,112 +1,103 @@
-Return-Path: <bpf+bounces-66609-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66610-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1226B375A6
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 01:50:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD70BB375C5
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 02:00:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D15CD1B66A10
-	for <lists+bpf@lfdr.de>; Tue, 26 Aug 2025 23:50:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F14021B67313
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 00:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4B9305E3B;
-	Tue, 26 Aug 2025 23:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A8A2C236D;
+	Wed, 27 Aug 2025 00:00:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bzVw4Auq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pZ0EFLsp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638482AE90;
-	Tue, 26 Aug 2025 23:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B51B01F2382
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 00:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756252205; cv=none; b=pd7jCoyKbL49J3FI5CdYGC25UzqxEZz3USrIrcGyZKt6NjngNZaUnDsqZ8ltiHS0cjUiCvyoOmNzKG6R20ZI3AcF0myRz5wsL9xz8s/CQxP73H6sRy5zvIztHaO7xbtG17gUjVcXSTLj9S3dDhJMYlcSKLhO/oGxC0MRpPuxWZM=
+	t=1756252805; cv=none; b=JI3nCMHcrIU+K+ApKAAuyqZGdYpqU0oYEA7YXeFsqoI8a/kN1laHqM6QGK6bZv7rDTkSHakfrYlS2PYDHp1QsAn9o6syYoN3a6mFwDbnHRqNKMXfRz6HqZOUFlUMGckp/jwrxnLoJcFl/r6RJ9DWJgj5hxMwoCj+ymIJ6obbQ/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756252205; c=relaxed/simple;
-	bh=yp0sPi7ensv+tk3ak4LFv+iFDvcNLyplFQW9UDpUncA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oXPGKaYpitz8wxR3T9MQviXWY04MQcT3YIO8q4rAwUi/VwNWFzWqnWOtLUbBpaDCcjnml5GViVTebnrihGx+Cvcruia8RYWRIfxHoj758jmjw8bZKGDW4ywehsZBUCjRaP7MekMqZwaxPC8xdFXRNsT7uDBPVDWOeD8ApYeX1w8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bzVw4Auq; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45a1abf5466so2404175e9.0;
-        Tue, 26 Aug 2025 16:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756252202; x=1756857002; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k/4a8LhXaZFfcU7YpzkKktV2M/qUnbxvgob32Os+YRE=;
-        b=bzVw4AuqXtDoOQbmYIBh0Jl4Xj3u3nZXaVICcLyIuYGqQxY0YSsIBtjRB+pBFyHYI7
-         Ac2rd/k26O4o7CoNeYHvR43KtfwqqNWJj9sPYHAnNFpRu4WBQxdDrSOjv+ukIthzbZf5
-         xufGdsivnKeS/noxhPOPtkCh7SYI95Dp9ZONC0UX9PSAkdqE98rg8OyY3JhwgXBu/mBx
-         qnwrjHat5zIcWxxTdA60mCG/WMD51Gh3vnccVDUXqpHqDq3WIhmZqzY+KZ6KcbS/Dytc
-         n4MdpIrV9AcisXpXzm7yQtm3G3e96AmUDqwq9qoBzaOsA8+uyvvN8o3AdYYKk4iWVfjj
-         gH6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756252202; x=1756857002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k/4a8LhXaZFfcU7YpzkKktV2M/qUnbxvgob32Os+YRE=;
-        b=EnlNBpAZD0UPPm1xEHhsw1xzZngMOF0JSP3T9kHohUG8x987QObqWsWvA8rG7X58j/
-         Apc11YViydpzykHuO1byVUNCk1L0eHU8Qr0G5SyMBM2Y/N2/jKV0WDmU/H6pbqEa4IiP
-         TsOuHvvmm3Es4HzkoC/DZkgcJVOymHTkgAUMD2dPcDdUaTOvPiV6fTk0FsBX2TFHMqBa
-         967f1F7NGH1FBa/60qIyrIPQUiDNsDn4U67e8XBrmFcpPLT1qbO3keNOL5fqnje/68AF
-         Z3+8cva4MPCza/sBHqzPfkiwc/112ZVlrjTVtWVTp7bjoKQtU5hHfykk6fUg/Nz2FKsX
-         NefQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUIp4XwIj0/XaBleQiRn2bR5spszxesG2lpoUbM5MsnVh0xfU2b3JFd0nG9Lfx3+rV1J98=@vger.kernel.org, AJvYcCUzil6GIspYYL+yOqceVs2wucFibNsQnIgIf/6innZ6GObY9O8dLhDbc9eNiKoOkaITxPhJdsw0V7wgc3TS@vger.kernel.org, AJvYcCX8Z6QkzP5UGDSICjIofW4282JOZIgq5R4c0C/sMPhcrRU3RTuDfRFO7DtOj8PvDW2mw9Ua5Hyl@vger.kernel.org, AJvYcCXgAznOR84GRkNq+b/DRIE9ouIl1E2681uZqpRjr+BwwjjDyzw2bG0FjdorjzEJapH/jQ/ppmEaJpSxq1Rba3gx@vger.kernel.org
-X-Gm-Message-State: AOJu0YytObeAB2/RcMBpecdglSE61GRr+xxfhSx/QF6BN/cPVKTnoXga
-	KRg/3qkAXSzhu0CFG9kKJFYykWhC3ppxfRvhEAsMgcSLwZYdLOOW0gByiFywHunminplJOEmpcc
-	o0GSqHk5Qsn9f4F/ORawrAl/xb+6a5n0=
-X-Gm-Gg: ASbGncuQ8sqIYOZZcCBAYQUyagZRhf3k0Gk5quqb+5YJhUouljcYAWbjtc5tC8N3zmm
-	Y3yZJzM/5+Oo0YJyzuOxIogtfeU48hmnUKl56qa7kJF+yG7+QL0oBr0XV9mMiy35k2YDM5N2sNe
-	spThwKgmsJ4PvWipcUdHR/IchCj1PhDkEyxbVEQp6D2YPicceMsPn9etSgOeveyYxks+oaHmOdb
-	zmVOcOhlgY2CAEhp2MHZgBIBY9535+4mZIhHlCxTS4lwhc=
-X-Google-Smtp-Source: AGHT+IGOef4BkFmgq9uqxMXYnUDjhEW8H9g/OL+f3GTmv1InuyS+566WxiHJhas/C0bhDuk4CyPbcBTUnih/0vHqLiY=
-X-Received: by 2002:a05:600c:474e:b0:453:6c45:ce14 with SMTP id
- 5b1f17b1804b1-45b6b045954mr13042075e9.4.1756252201513; Tue, 26 Aug 2025
- 16:50:01 -0700 (PDT)
+	s=arc-20240116; t=1756252805; c=relaxed/simple;
+	bh=6qguICLpHbdA2walQDADjnbabUmIFTlrxeLoHRtxrxU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=PldgCGkJuLpWMW8faoGEnMcfTJ3l42eDccAC3fkVHSS8YabaHlVT2RDQ2K9MSLop1w0cigsrnMv1IK/Jf7hKiyBkPG/trZib85om2+nJQMokghddhHlidpcSYOUtWHSboZBmsqCh2rPt6eMAogR7ybsN+5rVU29vGel2WDAF8+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pZ0EFLsp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27711C4CEF1;
+	Wed, 27 Aug 2025 00:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756252805;
+	bh=6qguICLpHbdA2walQDADjnbabUmIFTlrxeLoHRtxrxU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=pZ0EFLsph2/0NABJzIDmu0coZahA+kQMA4bsqI+yF0IGgQMkJZ2WYf3Zn1hyiW9mb
+	 KDkqOLj43Z73f9q7YLT9v4gozYMIHQdQuJXEhDqcdrN1m2vW44+B6q1P4ZJ+LgaYcg
+	 rpYIvLrHSyCU+ICzsffl1Sx2c3l/tHIBcIkDJJchqfE00D9RrQ6jWkCmIb4m0zbEww
+	 7FvJChfqrOfppk6BqIVehtHK33giadJ5bS9oMHMmjRiVQ14w16KV+se9Ksy/K4JOor
+	 4UvcLKl39GXCYn3dIP5gLikRWMMaueYB5HrUEOpaknDekkSEQ/x9Zdh1OAEuaxMBlt
+	 JstRQ64qYOqlQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB3F0383BF70;
+	Wed, 27 Aug 2025 00:00:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250826131158.171530-1-matt@readmodwrite.com>
-In-Reply-To: <20250826131158.171530-1-matt@readmodwrite.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 26 Aug 2025 16:49:50 -0700
-X-Gm-Features: Ac12FXy2S8MJX84UFWWWSnzeF83x3Sm34xHiKgTplshGBttG4YFKeH0bi0meFek
-Message-ID: <CAADnVQ+=bYcR6whXxEPst4a4n1eKeDXp4tO8Q2wEx_6GbwqMFg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4] selftests/bpf: Add LPM trie microbenchmarks
-To: Matt Fleming <matt@readmodwrite.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	kernel-team <kernel-team@cloudflare.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Network Development <netdev@vger.kernel.org>, 
-	Matt Fleming <mfleming@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/5] s390/bpf: Add s390 JIT support for timed
+ may_goto
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175625281280.143338.15751749670685057893.git-patchwork-notify@kernel.org>
+Date: Wed, 27 Aug 2025 00:00:12 +0000
+References: <20250821113339.292434-1-iii@linux.ibm.com>
+In-Reply-To: <20250821113339.292434-1-iii@linux.ibm.com>
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
+ agordeev@linux.ibm.com
 
-On Tue, Aug 26, 2025 at 6:12=E2=80=AFAM Matt Fleming <matt@readmodwrite.com=
-> wrote:
->
-> +static int baseline(__u32 index, __u32 *unused)
-> +{
-> +       struct trie_key key;
-> +       __s64 blackbox;
-> +
-> +       generate_key(&key);
-> +       /* Avoid compiler optimizing out the modulo */
-> +       barrier_var(blackbox);
-> +       blackbox =3D READ_ONCE(key.data);
+Hello:
 
-Overall looks good, but gcc-bpf found an actual issue.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-pw-bot: cr
+On Thu, 21 Aug 2025 13:25:54 +0200 you wrote:
+> v1: https://lore.kernel.org/bpf/20250821103256.291412-1-iii@linux.ibm.com/
+> v1 -> v2: Fix test_stream_errors (caught by CI).
+> 
+> Hi,
+> 
+> This series adds timed may_goto implementation to the s390x JIT.
+> Patch 1 is the implementation itself, patches 2-5 are the associated
+> test changes.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2,1/5] s390/bpf: Add s390 JIT support for timed may_goto
+    https://git.kernel.org/bpf/bpf-next/c/b8efa810c1db
+  - [bpf-next,v2,2/5] selftests/bpf: Add a missing newline to the "bad arch spec" message
+    https://git.kernel.org/bpf/bpf-next/c/b68dfcc12a32
+  - [bpf-next,v2,3/5] selftests/bpf: Add __arch_s390x macro
+    https://git.kernel.org/bpf/bpf-next/c/1e4e6b9e260d
+  - [bpf-next,v2,4/5] selftests/bpf: Enable timed may_goto verifier tests on s390x
+    https://git.kernel.org/bpf/bpf-next/c/7197dbcba230
+  - [bpf-next,v2,5/5] selftests/bpf: Remove may_goto tests from DENYLIST.s390x
+    https://git.kernel.org/bpf/bpf-next/c/21bce5694054
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
