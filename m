@@ -1,149 +1,100 @@
-Return-Path: <bpf+bounces-66618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5817B37863
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 04:58:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDF59B37867
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 04:59:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75DC65E8355
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 02:58:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1B047A5F27
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 02:57:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56232304BDB;
-	Wed, 27 Aug 2025 02:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F76A304BB2;
+	Wed, 27 Aug 2025 02:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jLTv8qKg"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wutdG5GW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B6A30277F;
-	Wed, 27 Aug 2025 02:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F28259CB3
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 02:58:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756263498; cv=none; b=eCmgoiIBk+qAvrTnW0E3JUklqjGrb6TEGxYyu8b6RXoF7JdT4OkHHP2V6a45ADLnmkCMY82ViFQKl4HTM3h9NaZNMMlhkUcXkgm16Qx/FDvpTupClKPYA+PlyDFLd0c8R+aOVH0r+hsUeVp+Hhw1srmYvfpZ1IXyc4WxZOaGYGw=
+	t=1756263535; cv=none; b=kIsfGNsl1oZXdQbwc8TH9CChL96zsCo8QBYY94CVOEvqsKBf7dXJ7YW1rsCFyrlKlWfjWWEGtspmefsEVM3CjfJu/cmaPduKxs/7G7FWmdybwKdNV4lSg1u3C8NKmCKzA/M6fs6Gms0jLic//VYtfAXBXG9I/UhuLrhyW4oGY3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756263498; c=relaxed/simple;
-	bh=fVClkvmIX03IY/vlxWeO8DaGfhbAKH3eW2FVqRDCbbg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JOnS125Y6D/r6IRl5ABltJ2NYe6Xf/gRUcQ2hHfG6Y9Sx7JPuU7E/eWvoljnLbgdI82gsrZphxVMNXhDnF9fVrXQ5KCBJPjbZetfq9nubOWVbIdNELfqTQR0xb7MAg61hRkOi77S4jf9jDfUZ9ONVTxnQhF99uZ/bUYOyfQ7p3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jLTv8qKg; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-45a1b0cbbbaso55163525e9.3;
-        Tue, 26 Aug 2025 19:58:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756263493; x=1756868293; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R7HWX5shL+lSFP4hb4DhlB5G29uSLpNosEFj6BYC/Hs=;
-        b=jLTv8qKguox3dxsWZmcfjB/9D/Ids5trLmOySNn9M2VRImweVOHjacQbQNx6dUuT1l
-         hivY84/IYI5inpndEOlPYYa7/PZkB+42k93SZaSp/TrPcqnzmLtT1221FP1XUHe1kYZw
-         YCRYdvSonIrvpzzGL0GAnPjDaMud2BfuwbqVlJSoPs2tNhTV4NVHGraFKGoeY2UrOYK1
-         lLJicRDC7eTcSIgKO8dgKUQZsI28YEBA7Ud/zCVNsZ1mFKZAimGraNa9qhB6x2fin4f+
-         9/WvytSfJPQ/UU2PY9Ao83gJ1ttEqKZffsOtIIfs9GLujczsJg/5q9cThxUmg6RMXx2b
-         nQfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756263493; x=1756868293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R7HWX5shL+lSFP4hb4DhlB5G29uSLpNosEFj6BYC/Hs=;
-        b=jBgE495LdJZMnnl+EiuT2kk4uVT9T7WG7EAZF+4EENRfQSgiO1JJzJYiZ+JXxB0cFJ
-         6bTYEv3VKC5/7TntZgG+ia+BKTgI3xJAUeOZNWavc7awxeoaC9M4bAE7kOUt5an417QQ
-         9T9u/PYI94d3X7Wq+Fw3+IG1QnrnNZPTDB7eItaZm+djDpnaaWvS70e3w9AmQrLxd1vW
-         1WnrVbzgAYMmcRKNUqRqj8o2dYbLQ8jRxULLWD6WajkmjmRC/w/CNziTG/x1kSjniy2I
-         NQtiB6NiyI/rDoYWF/zXa/g4MgDprXGe0eYBFR96awtTjysFoQiCiZLpxtuoGoiCwKs1
-         dXKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVkqFa5UNu4KbBzAo/BSIKvgGyHyDwcDEExHOk6fWBJYbnSjs+tZqQEm9a8+76VYT1t304=@vger.kernel.org, AJvYcCXSGv7uy8dD4eMKS8jnU3XRfItjLRq/A1GXN22Rd5K8V8qIPGhu3YtPWXZ09ZRWKSPDDWM4sEyxvlAWn7a4@vger.kernel.org
-X-Gm-Message-State: AOJu0YzydaCiCQwCvgkGvfZQgh7d2knl+VY2m9Q2046kdTnXpyDZL+pP
-	tlqciW8GmqiIBzomHsGHQZ9SucM0Qslemd6R0TO8phBR8x9bu13NQI0hrqVVmnkgiGqCK2hTTHo
-	JTtd0ISiGBgjgFfx5WLhSmk9/5aj4vtA=
-X-Gm-Gg: ASbGnctux1LHH17SxhmX/HysSok28gMA5m74Vqz1Ofm7/ylgsm7gXFNO24QAAyDc+RK
-	l1/YtnrBPS43jwxOOgpTY4fDaGAG1wcz/Y2ppfFy4wpDpI2CVYsX7Jl/EdS8Bj9GRfRysAOQrPz
-	Cj5PI2D5CHE8/r5OTmlqlwyczQ8+ctM2KnKaQjpv8LpbH3bWvhKzm/BGdGSiRvKMyjY4TxwZlXj
-	zywpC8Zf/juQyBIRiPtDW7rvT8xrgyQipsjRLqOkWkZvlU=
-X-Google-Smtp-Source: AGHT+IEFqnTqZ5Kp38zIbC41kgZiyM4ofvxc3raq5XPiTE+SFaBxmOSIXkbiM6EhK+HWWSQHQbkaqnW7oD31MR2KeDA=
-X-Received: by 2002:a05:600c:c4a6:b0:45a:269f:3a29 with SMTP id
- 5b1f17b1804b1-45b688bc0b2mr29188825e9.12.1756263493422; Tue, 26 Aug 2025
- 19:58:13 -0700 (PDT)
+	s=arc-20240116; t=1756263535; c=relaxed/simple;
+	bh=vqG7ouXav2ngCAr1JLyQjzcxAMdqNOzomPMiTEQrOFw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QHyd2M/HIuE8M93OQqlbZsTcVFIqMSSPqFHWQVVfL0xhNk9WQ0vnwUIh5U+5ZbufceR1CTrAeOo671Mar4Yr6PhWW/TXXhKRvDQRk52z2567ROSW1M+1hTJKCUOXULTefxDxAZnd3ZRQtjkemIXO1ZoK55721L2Pa9y4Nm7V/s4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wutdG5GW; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8dcc144e-3142-4e0d-a852-155781e41eb4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756263530;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jZZMIAYYTeVSb9zhtAvnomw5E/mCjgCodHITY7yc5mE=;
+	b=wutdG5GW7YGJRHBfJOdIuaNZ9AvIzOEzKikK4i0IY/M9OTOq+KIFx0Yqhf+prqeiMMPATT
+	GBv4uDi55843zr9towFnCHtqRHfnKhqsaP/mNr02ZKTaDpQ1u/EZMXQxN6Zt0xD87l0S6X
+	wZggHVTOIlqPeqUU3KPM+KVRNAQR3Uo=
+Date: Wed, 27 Aug 2025 10:58:43 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250821093807.49750-1-dongml2@chinatelecom.cn> <20250821093807.49750-3-dongml2@chinatelecom.cn>
-In-Reply-To: <20250821093807.49750-3-dongml2@chinatelecom.cn>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 26 Aug 2025 19:58:02 -0700
-X-Gm-Features: Ac12FXw0emCj52PCXZBLE1wQayRlPDGC945m2fbkx2k5tZFAf89Lg-iXiSIxbP8
-Message-ID: <CAADnVQL0oWnQM2AJh=yzNtRmH2Mx=B-hM2xsvgEx2uqLEBQ5Dw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] sched: make migrate_enable/migrate_disable inline
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Benjamin Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	tzimmermann@suse.de, simona.vetter@ffwll.ch, 
-	Jani Nikula <jani.nikula@intel.com>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [BUG] Deadlock triggered by bpfsnoop funcgraph feature
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jiri Olsa <jolsa@kernel.org>
+References: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
+ <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Aug 21, 2025 at 2:38=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> +
-> +#ifndef CREATE_MIGRATE_DISABLE
-> +static inline void migrate_disable(void)
-> +{
-> +       __migrate_disable();
-> +}
-> +
-> +static inline void migrate_enable(void)
-> +{
-> +       __migrate_enable();
-> +}
-> +#else /* CREATE_MIGRATE_DISABLE */
-> +extern void migrate_disable(void);
-> +extern void migrate_enable(void);
-> +#endif /* CREATE_MIGRATE_DISABLE */
 
-I think the explanation from the commit log is better to be
-copy pasted here as a comment, since the need for the macro
-is quite hard to understand.
 
-> +
-> +#else /* MODULE */
-> +extern void migrate_disable(void);
-> +extern void migrate_enable(void);
-> +#endif /* MODULE */
-> +
+On 27/8/25 10:23, Alexei Starovoitov wrote:
+> On Tue, Aug 26, 2025 at 7:13 PM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>
+>> Hi,
+>>
+>> I’ve encountered a reproducible deadlock while developing the funcgraph
+>> feature for bpfsnoop [0].
+> 
+> debug it pls.
 
-...
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index be00629f0ba4..58164a69449d 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7,6 +7,8 @@
->   *  Copyright (C) 1991-2002  Linus Torvalds
->   *  Copyright (C) 1998-2024  Ingo Molnar, Red Hat
->   */
-> +#define CREATE_MIGRATE_DISABLE
-> +#include <linux/sched.h>
+It’s quite difficult for me. I’ve tried debugging it but didn’t succeed.
 
-Also how about calling it
-#define INSTANTIATE_EXPORTED_MIGRATE_DISABLE
+> Sounds like you're implying that the root cause is in bpf,
+> but why do you think so?
+> 
+> You're attaching to things that shouldn't be attached to.
+> Like rcu_lockdep_current_cpu_online()
+> so effectively you're recursing in that lockdep code.
+> See big lock there. It will dead lock for sure.
 
-When I asked AI what "instantiate exported migrate_disable"
-means it guessed it nicely :)
-while "create migrate_disable" had a vague answer.
+If a function that acquires a lock can be traced by a tracing program,
+bpfsnoop’s funcgraph will attempt to trace it as well. In such cases, a
+deadlock is highly likely to occur.
+
+With bpfsnoop I try my best to avoid such deadlock issues. But what
+about other bpf tracing tools? If they don’t handle this properly, the
+kernel is very likely to crash.
+
+Thanks,
+Leon
+
 
