@@ -1,139 +1,169 @@
-Return-Path: <bpf+bounces-66683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 618E6B387AB
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 18:22:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3C82B387ED
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 18:45:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 052B13A9FDD
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 16:22:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31B5C1BA27F5
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 16:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62FF52417DE;
-	Wed, 27 Aug 2025 16:22:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4900A22E004;
+	Wed, 27 Aug 2025 16:45:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KGuHaasj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n6j78a2g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C9CB21ADA4;
-	Wed, 27 Aug 2025 16:22:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A8F17F4F6
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 16:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756311725; cv=none; b=PlSxlVB9xfU+W1GuYISAFfMCHMvQ7+uaX77XzLgt2R7pofs/aSHfBWvwgUCgZKa9IdKKXFiFewuoRlYFRowRNRYYLzKNaKmdWVlrm/UM6K43P/uGSpJLcBwzrrR/ewbPDhCza8+jyHmZUiXy25UfvGL5+oVHBubW7lAKuUitvfQ=
+	t=1756313128; cv=none; b=nRyFudQojPXrq6fgOSz5lu6w/4m/4FmMDQL3AoNIKwSTP4fAyMDALx+T3OTthzKyZtRJqmSWpOlRnFLbOCY5QGvnt4ro8VqJRjwyTf8U+vogvQQM1XkjHUf4m+hRb2Ja7YFIjQBcffBLgDKOhrN+ydSS0fPt4YlgshgdqDEJ3gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756311725; c=relaxed/simple;
-	bh=jCxCe7NfFgfjNDubdChvfWyemaO1MU4Akx1GvD0fAs0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HE/SPlMxbk3qjqr+9kl/PfELEx7It1rgI6/N7bEeUpDkySQkwMwgTAA3R+dxSlimH3g2Z88RE5J7IP/WCh9W5IYwWPpcmAXX+4ps/zh0nMIXK8Nn8XtGMmDjjZdQTNFsODWEhTIzlA5J8f0AOabvXBvioQUkBnWowBlF8OQgSCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KGuHaasj; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3cbe70a7923so1295632f8f.2;
-        Wed, 27 Aug 2025 09:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756311722; x=1756916522; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2D3AJk4D2c4vynhddacA8LBhopdWO4yfWWNEYOAts+o=;
-        b=KGuHaasjy751FjsmNLMdZU3Im4Zd/7xajWs5TdBEh3XJUptSGv3joA3i4cd3jWRLX9
-         5aB3VjiTFjKjsh071RZ3VtwOIIwSNSYPMgtpPY09Us+iMaFYNab/OJ0jpf8SqwT45QpQ
-         an0xE4fvo7LHTcoKRLssv/eDZmswlrbIyqkDe0sQN04f0XS8O/5/hR8D1/gtXYGVV/KT
-         xOAlh8kr+d+4SSE6ciXo0n2bHlCdqNK00ZAXki/eyjGom09cmrdIOi3jVJjTC58kIlTs
-         yZoih0fFyLiYboVrU6J07wqf9ib6V7v8ixAthedfRVZKCAmx3feabvOLt3mAAEV7MJFC
-         T0Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756311722; x=1756916522;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2D3AJk4D2c4vynhddacA8LBhopdWO4yfWWNEYOAts+o=;
-        b=RwtkuK6STsxg1+GQj5BQs0WFzRm+MsV+EHeJBvTsaMIbmLwXiWqjezZftkFZHd3R+C
-         lFfHVWdPaBuXe8OaOm2D7o0KMqX1wLrg4k+84RWlRe+HidqS5zl3D76ryVkzLVCIcmTz
-         sjXhWXvIu8CwzljJWuvtnffJJzGvn883Bj2y6nWD3k0PxxZBG/HYI3KQQTmo1VOCde+H
-         NtgZgqQAamtG+ql2dnrLGnunuy2kXrdLMEm01486m60RVNR/M7I1OLEjlzna5gc/Q3ff
-         OLc7JaCBjKJTR111IUBHOUh00llu0x4TTWa6iBl9UqEgsNnqPOmAXHdmQ/Lj8iZASrbN
-         RfUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVi1eSikhc9V7qbxreRa8jqSs+ellf1ufbnqls8mbZM0ZGvS5GhxAod+fPXIqMfpZhhGdGqIQ1wwfYMstH7@vger.kernel.org, AJvYcCWKbDr+ioj2Q80H12dQK+wtjYUNfNXMh5bnEoxCtb3/382zqn5kr+K2s8uEgkq3xMXHKTE=@vger.kernel.org, AJvYcCWPDfq5Te4AeSv4911MlPS+6y3iCBpEuRwUdiFWNcySueQ5Qf1WVafk+vVzlGz18+4LKz0dKQW1TP8iJr3k0zAZ1XOY@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1Lhs8/mqP77gBb+NghirVzwaC4npcaRYkWlLvftY23WAS4IZi
-	cofg80UNzJ2nGR9HlDONa8K0LQug1IEdxrSLaWO5fOSYnAshpqV9avYWj1cD1Ti93RJav00B9NH
-	8KJ68bBp5i55vvGcSAl8LZ8UM2baYPTw=
-X-Gm-Gg: ASbGncvUiX1RIDTTbEFaX17Y3zr5KiZ4owASdzNuo2EV/EgY8D+DDZ4T7F3H0w2RMiD
-	CgiJSos2gvqc8LubvIH3wrlM6d9OP6OhD+PpItP8mKIh15PCk2heU8ayrk9gJbJQLeB1jScBmA1
-	LLQlxB7xZLgOr/da0yUESI9qHupyIr683fHwPbax9Gg6mYhK2Fwd3+ofnd6Fyq53rmjFeYvfGKi
-	b3yFnAhiTZA49TXIJTs0ZFYWd55WZwISg==
-X-Google-Smtp-Source: AGHT+IFiweMNZe1Ue2jbWG+XrQZJD1Hhj87E+pj9VWnLFhG+6/ADwNhXG1QOFlSsoFq5TJR5UJpZyImKjFyDkhZ90UU=
-X-Received: by 2002:a5d:5d06:0:b0:3cb:6ce9:75f9 with SMTP id
- ffacd0b85a97d-3cb6ce9788cmr6102232f8f.38.1756311721614; Wed, 27 Aug 2025
- 09:22:01 -0700 (PDT)
+	s=arc-20240116; t=1756313128; c=relaxed/simple;
+	bh=+GazPPqFc6RrIIXrvA8BNxzf8qh2Xf6JDrZLYOYpwhQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p7aaTK0+V5r+w9KHpMbx/oYFbmW0OfUsaywxb43L+p4SJRH0x3IhoeFqwQy+QmFmwAh79V1NOB7kV8tJNdRQmiBHL9pVXMcIj6YX0WBCmtq67NEP16QIZL70jNKwZGNByL2LI8DDLyEGJw5DRNcc4KlMAqRCZ7sR5mdYbJfgSi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n6j78a2g; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756313121;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2FkRlhiRvGBSiFCUrNDFJt9G0SpZy+QyM11Xpve/gWE=;
+	b=n6j78a2gU/IQfAqRtdCEUpUqfZLL8VLjiMtLb+DiV1rULTbBIs8laiGqwfvXqrlprB7YML
+	bpi3zhhc69JVdK11jmkgwAUeM7fKE5Vnh6DAo+cW1ioA3w9wBNpglB0D1jk1PPOPsvEOij
+	i8EA5MgKuYGYTMtfdzKVOTYMa4gW8G8=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	jolsa@kernel.org,
+	yonghong.song@linux.dev,
+	song@kernel.org,
+	eddyz87@gmail.com,
+	dxu@dxuuu.xyz,
+	deso@posteo.net,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v4 0/7] bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu maps
+Date: Thu, 28 Aug 2025 00:45:02 +0800
+Message-ID: <20250827164509.7401-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250827123814.60217-1-dongml2@chinatelecom.cn>
-In-Reply-To: <20250827123814.60217-1-dongml2@chinatelecom.cn>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 27 Aug 2025 09:21:49 -0700
-X-Gm-Features: Ac12FXw1kFNZOu-9q7VTAHMguHUr8GQYIcnv17oOnH_FM8KnK8-h2dDeHlH0dXY
-Message-ID: <CAADnVQLBwjVhKFptO1_CEC9q1ugT1Cy2SiG5XgtD+kr7BTrr_A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: remove unnecessary rcu_read_lock in kprobe_multi_link_prog_run
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Aug 27, 2025 at 5:38=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> Preemption is disabled in ftrace graph, which indicate rcu_read_lock. So
-> the rcu_read_lock is not needed in fprobe_entry(), and it is not needed
-> in kprobe_multi_link_prog_run() neither.
+This patch set introduces the BPF_F_CPU and BPF_F_ALL_CPUS flags for
+percpu maps, as the requirement of BPF_F_ALL_CPUS flag for percpu_array
+maps was discussed in the thread of
+"[PATCH bpf-next v3 0/4] bpf: Introduce global percpu data"[1].
 
-kprobe_busy_begin() doing preempt_disable() is an implementation
-detail that might change.
-Having explicit rcu_read_lock() doesn't hurt.
-It's a nop anyway in PREEMPT_NONE.
+The goal of BPF_F_ALL_CPUS flag is to reduce data caching overhead in light
+skeletons by allowing a single value to be reused to update values across all
+CPUs. This avoids the M:N problem where M cached values are used to update a
+map on N CPUs kernel.
 
-pw-bot: cr
+The BPF_F_CPU flag is accompanied by *flags*-embedded cpu info, which
+specifies the target CPU for the operation:
 
-> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> ---
->  kernel/trace/bpf_trace.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 606007c387c5..0e79fa84a634 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2741,12 +2741,10 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_mult=
-i_link *link,
->                 goto out;
->         }
->
-> -       rcu_read_lock();
->         regs =3D ftrace_partial_regs(fregs, bpf_kprobe_multi_pt_regs_ptr(=
-));
->         old_run_ctx =3D bpf_set_run_ctx(&run_ctx.session_ctx.run_ctx);
->         err =3D bpf_prog_run(link->link.prog, regs);
->         bpf_reset_run_ctx(old_run_ctx);
-> -       rcu_read_unlock();
->
->   out:
->         __this_cpu_dec(bpf_prog_active);
-> --
-> 2.51.0
->
+* For lookup operations: the flag field alongside cpu info enable querying
+  a value on the specified CPU.
+* For update operations: the flag field alongside cpu info enable
+  updating value for specified CPU.
+
+Links:
+[1] https://lore.kernel.org/bpf/20250526162146.24429-1-leon.hwang@linux.dev/
+
+Changes:
+v3 -> v4:
+* Address comments from Andrii:
+  * Remove unnecessary map_type check in bpf_map_value_size().
+  * Reduce code churn.
+  * Remove unnecessary do_delete check in
+    __htab_map_lookup_and_delete_batch().
+  * Introduce bpf_percpu_copy_to_user() and bpf_percpu_copy_from_user().
+  * Rename check_map_flags() to bpf_map_check_op_flags() with
+    extra_flags_mask.
+  * Add human-readable pr_warn() explanations in validate_map_op().
+  * Use flags in bpf_map__delete_elem() and
+    bpf_map__lookup_and_delete_elem().
+  * Drop "for alignment reasons".
+v3 link: https://lore.kernel.org/bpf/20250821160817.70285-1-leon.hwang@linux.dev/
+
+v2 -> v3:
+* Address comments from Alexei:
+  * Use BPF_F_ALL_CPUS instead of BPF_ALL_CPUS magic.
+  * Introduce these two cpu flags for all percpu maps.
+* Address comments from Jiri:
+  * Reduce some unnecessary u32 cast.
+  * Refactor more generic map flags check function.
+  * A code style issue.
+v2 link: https://lore.kernel.org/bpf/20250805163017.17015-1-leon.hwang@linux.dev/
+
+v1 -> v2:
+* Address comments from Andrii:
+  * Embed cpu info as high 32 bits of *flags* totally.
+  * Use ERANGE instead of E2BIG.
+  * Few format issues.
+
+RFC v2 -> v1:
+* Address comments from Andrii:
+  * Use '&=' and '|='.
+  * Replace 'reuse_value' with simpler and less duplication code.
+  * Replace 'ASSERT_FALSE' with two 'ASSERT_OK_PTR's in self test.
+
+RFC v1 -> RFC v2:
+* Address comments from Andrii:
+  * Embed cpu to flags on kernel side.
+  * Change BPF_ALL_CPU macro to BPF_ALL_CPUS enum.
+  * Copy/update element within RCU protection.
+  * Update bpf_map_value_size() including BPF_F_CPU case.
+  * Use zero as default value to get cpu option.
+  * Update documents of APIs to be generic.
+  * Add size_t:0 to opts definitions.
+  * Update validate_map_op() including BPF_F_CPU case.
+  * Use LIBBPF_OPTS instead of DECLARE_LIBBPF_OPTS.
+
+Leon Hwang (7):
+  bpf: Introduce internal bpf_map_check_op_flags helper function
+  bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags
+  bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu_array
+    maps
+  bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu_hash and
+    lru_percpu_hash maps
+  bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for
+    percpu_cgroup_storage maps
+  libbpf: Support BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu maps
+  selftests/bpf: Add cases to test BPF_F_CPU and BPF_F_ALL_CPUS flags
+
+ include/linux/bpf-cgroup.h                    |   5 +-
+ include/linux/bpf.h                           | 126 +++++++++-
+ include/uapi/linux/bpf.h                      |   2 +
+ kernel/bpf/arraymap.c                         |  28 +--
+ kernel/bpf/hashtab.c                          |  95 +++++---
+ kernel/bpf/local_storage.c                    |  42 ++--
+ kernel/bpf/syscall.c                          |  64 +++--
+ tools/include/uapi/linux/bpf.h                |   2 +
+ tools/lib/bpf/bpf.h                           |   8 +
+ tools/lib/bpf/libbpf.c                        |  33 ++-
+ tools/lib/bpf/libbpf.h                        |  21 +-
+ .../selftests/bpf/prog_tests/percpu_alloc.c   | 224 ++++++++++++++++++
+ .../selftests/bpf/progs/percpu_alloc_array.c  |  32 +++
+ 13 files changed, 549 insertions(+), 133 deletions(-)
+
+--
+2.50.1
+
 
