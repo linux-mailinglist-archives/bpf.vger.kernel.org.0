@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-66717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35B51B38AE3
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:25:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC05B38AE5
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:26:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8523A208892
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:25:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0B36683C3D
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F76A3081A3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47556305E2E;
 	Wed, 27 Aug 2025 20:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hXf2X4nI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AUnynYLK"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA78C3009F8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23042FFDE6;
 	Wed, 27 Aug 2025 20:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756326262; cv=none; b=fPnj56giJNARcXvfZquMdqr20vcnWmgk9stw0VTSI2jJoJ9V6tnz4q38ukzqokvJd0W9Q9QvaYVh8+dReCj0CiBzgxn4NMTDMyhnnT1bFEdQjVo8I5bhWVCa5Iu/orMFpdbCr4lKFARktgCr/w/yWUDX2gs+bYbXThfX9BwFkDw=
+	t=1756326262; cv=none; b=lwfyMSPUAc25+6pN7hoawDVz4fIatqxK5U0cSIkz9ogev3C9SIai0gJstxNSzxsPeLz6bNfGGLZbFVsl95G0mlmzvdMsl4g3Af0hcLXna1NsTs6vE/8voDhEH3rjXPZM6f++fxK7jJwJsCE5ywEQlKZgN+wd0eUOmfacRBD1Xps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756326262; c=relaxed/simple;
-	bh=vircrvv7Zq8GxATMbia1gUCQK1TDM+Rw9iJ5FVuaMNc=;
+	bh=GYS2jS3IBb5LImBXp+CSuVflYR2klNpfl1fOuznBhsg=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=ICLclZtTx5QHSplsJ+axJHRBH6WGuyp6qeBM9yQf3lBs8MS7st6f990vlfwSrLaNQK1V7LjUheDHm4VKDsaIvzM8bfY9enESZ5fIXEU69aQnfdBjxyLy+z2W9NAaj+kBZGOTHy6ZsEV4jsAWE/DMNsW9zTTRKr2lv3GT5rKwD4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hXf2X4nI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5978EC116C6;
+	 Content-Type; b=RpN7/tPBPRdK0yX3S6ljmmoeVdRmJJs9Ci8TALo8DjF4xKd9wb8PV7zUSWksycXRORVJ6f6e7iNAN4nUBR788QKw/TnULyHRCdgaRpzyeWLI4pZWI556J8J8kNO09wfMRddN78aON9yxdxgZzve/SmuRoMxQwYoZWSfIgY1sW9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AUnynYLK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80217C4AF11;
 	Wed, 27 Aug 2025 20:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756326262;
-	bh=vircrvv7Zq8GxATMbia1gUCQK1TDM+Rw9iJ5FVuaMNc=;
+	bh=GYS2jS3IBb5LImBXp+CSuVflYR2klNpfl1fOuznBhsg=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=hXf2X4nI3wC4VendwY6X1JKrPGLSBB1jukfIHjsjm9Z1r4Yy+IB1srFg/yMjjzTfJ
-	 17u4cLmAijsGKbk1iWpVcwtfpoLm4YXitZWYS2Um1EpJ8RLDCnKqQ2unr4f/lS+DYW
-	 Xyc2tzRML81yHvkKHyIcFHcKTtdg3fENSV9fqL/yBEPcGo/qtfBlkFAxcnCeW+Ja7V
-	 TyFTkMMCYoKkpBzpo/KoOPzF/yGx6a6OT1zfk/nGrQ5Qt386eEzDASjUQ0QvtnoPH9
-	 gTCZQcXJ13J8wG/iSc5T7/FjTx3Fig5BIyLPwlCLsRB8F2As1+2/7M2t705A5R/Cp4
-	 uEv44BvW0pJ+g==
+	b=AUnynYLKZF9uvt/IlSpeh0nx9uXnCQT2RtJg768NNQwKvOey+8g+JRoo8GWxUGp9Z
+	 /WJZctxLCDpo+nQ3OMKMS/ephUxLM/bfNKz+BG6sePOmNdBQnCK7XTewS6g3jXgre1
+	 /rZ17lAyXA9O6OEh5C7uhPqDO6bxImpRYC/XkCSmUWAp1CSN+QUPjtjnHy2xvexGfa
+	 PkGEJJsgrAxUylLKm34T7IQhbpCpRDLM+PUQbp4sc3aKwp3wjVPYoz3ZrJsF7SIMl+
+	 IW2RpHe4H3esKRKTtT6un6pJnETyF9ALAXtdeJnYn1OWmibHbVjBOnR2/r/8MYfm24
+	 BtLkf0W8ikooQ==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1urMhF-00000003kyp-1576;
+	id 1urMhF-00000003kzK-1lhq;
 	Wed, 27 Aug 2025 16:24:41 -0400
-Message-ID: <20250827202441.115677905@kernel.org>
+Message-ID: <20250827202441.276817748@kernel.org>
 User-Agent: quilt/0.68
-Date: Wed, 27 Aug 2025 16:15:54 -0400
+Date: Wed, 27 Aug 2025 16:15:55 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -73,7 +73,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Sam James <sam@gentoo.org>,
  Kees Cook <kees@kernel.org>,
  "Carlos O'Donell" <codonell@redhat.com>
-Subject: [PATCH v10 06/11] unwind_user/sframe: Wire up unwind_user to sframe
+Subject: [PATCH v10 07/11] unwind_user/sframe/x86: Enable sframe unwinding on x86
 References: <20250827201548.448472904@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -85,138 +85,28 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Now that the sframe infrastructure is fully in place, make it work by
-hooking it up to the unwind_user interface.
+The x86 sframe 2.0 implementation works fairly well, starting with
+binutils 2.41 (though some bugs are getting fixed in later versions).
+Enable it.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v9: https://lore.kernel.org/20250717012936.619600891@kernel.org
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-- Update the changes to unwind/user.c to handle passing a const
-  unwind_user_frame pointer.
-
- arch/Kconfig                      |  1 +
- include/linux/unwind_user_types.h |  4 ++-
- kernel/unwind/user.c              | 41 +++++++++++++++++++++++++++++--
- 3 files changed, 43 insertions(+), 3 deletions(-)
-
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 69fcabf53088..277b87af949f 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -453,6 +453,7 @@ config HAVE_UNWIND_USER_FP
- 
- config HAVE_UNWIND_USER_SFRAME
- 	bool
-+	select UNWIND_USER
- 
- config HAVE_PERF_REGS
- 	bool
-diff --git a/include/linux/unwind_user_types.h b/include/linux/unwind_user_types.h
-index a449f15be890..d30e8495eaa9 100644
---- a/include/linux/unwind_user_types.h
-+++ b/include/linux/unwind_user_types.h
-@@ -9,7 +9,8 @@
-  * available.
-  */
- enum unwind_user_type_bits {
--	UNWIND_USER_TYPE_FP_BIT =		0,
-+	UNWIND_USER_TYPE_SFRAME_BIT =		0,
-+	UNWIND_USER_TYPE_FP_BIT =		1,
- 
- 	NR_UNWIND_USER_TYPE_BITS,
- };
-@@ -17,6 +18,7 @@ enum unwind_user_type_bits {
- enum unwind_user_type {
- 	/* Type "none" for the start of stack walk iteration. */
- 	UNWIND_USER_TYPE_NONE =			0,
-+	UNWIND_USER_TYPE_SFRAME =		BIT(UNWIND_USER_TYPE_SFRAME_BIT),
- 	UNWIND_USER_TYPE_FP =			BIT(UNWIND_USER_TYPE_FP_BIT),
- };
- 
-diff --git a/kernel/unwind/user.c b/kernel/unwind/user.c
-index 97a8415e3216..9d34c7659f90 100644
---- a/kernel/unwind/user.c
-+++ b/kernel/unwind/user.c
-@@ -7,17 +7,24 @@
- #include <linux/sched/task_stack.h>
- #include <linux/unwind_user.h>
- #include <linux/uaccess.h>
-+#include <linux/sframe.h>
- 
- static const struct unwind_user_frame fp_frame = {
- 	ARCH_INIT_USER_FP_FRAME
- };
- 
-+static const struct unwind_user_frame *get_fp_frame(struct pt_regs *regs)
-+{
-+	return &fp_frame;
-+}
-+
- #define for_each_user_frame(state) \
- 	for (unwind_user_start(state); !(state)->done; unwind_user_next(state))
- 
--static int unwind_user_next_fp(struct unwind_user_state *state)
-+static int unwind_user_next_common(struct unwind_user_state *state,
-+				   const struct unwind_user_frame *frame,
-+				   struct pt_regs *regs)
- {
--	const struct unwind_user_frame *frame = &fp_frame;
- 	unsigned long cfa, fp, ra;
- 	unsigned int shift;
- 
-@@ -55,6 +62,24 @@ static int unwind_user_next_fp(struct unwind_user_state *state)
- 	return 0;
- }
- 
-+static int unwind_user_next_sframe(struct unwind_user_state *state)
-+{
-+	struct unwind_user_frame _frame, *frame;
-+
-+	/* sframe expects the frame to be local storage */
-+	frame = &_frame;
-+	if (sframe_find(state->ip, frame))
-+		return -ENOENT;
-+	return unwind_user_next_common(state, frame, task_pt_regs(current));
-+}
-+
-+static int unwind_user_next_fp(struct unwind_user_state *state)
-+{
-+	struct pt_regs *regs = task_pt_regs(current);
-+
-+	return unwind_user_next_common(state, get_fp_frame(regs), regs);
-+}
-+
- static int unwind_user_next(struct unwind_user_state *state)
- {
- 	unsigned long iter_mask = state->available_types;
-@@ -68,6 +93,16 @@ static int unwind_user_next(struct unwind_user_state *state)
- 
- 		state->current_type = type;
- 		switch (type) {
-+		case UNWIND_USER_TYPE_SFRAME:
-+			switch (unwind_user_next_sframe(state)) {
-+			case 0:
-+				return 0;
-+			case -ENOENT:
-+				continue;	/* Try next method. */
-+			default:
-+				state->done = true;
-+			}
-+			break;
- 		case UNWIND_USER_TYPE_FP:
- 			if (!unwind_user_next_fp(state))
- 				return 0;
-@@ -96,6 +131,8 @@ static int unwind_user_start(struct unwind_user_state *state)
- 		return -EINVAL;
- 	}
- 
-+	if (current_has_sframe())
-+		state->available_types |= UNWIND_USER_TYPE_SFRAME;
- 	if (IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP))
- 		state->available_types |= UNWIND_USER_TYPE_FP;
- 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 8f94c58d4de8..c3518f145f0d 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -300,6 +300,7 @@ config X86
+ 	select HAVE_UACCESS_VALIDATION		if HAVE_OBJTOOL
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+ 	select HAVE_UNWIND_USER_FP		if X86_64
++	select HAVE_UNWIND_USER_SFRAME		if X86_64
+ 	select HAVE_USER_RETURN_NOTIFIER
+ 	select HAVE_GENERIC_VDSO
+ 	select VDSO_GETRANDOM			if X86_64
 -- 
 2.50.1
 
