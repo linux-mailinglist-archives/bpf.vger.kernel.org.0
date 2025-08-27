@@ -1,197 +1,140 @@
-Return-Path: <bpf+bounces-66696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEC08B388B1
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 19:32:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 375E7B38989
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:29:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7313317BCE6
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 17:32:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F0455E82AC
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 18:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8B4273D68;
-	Wed, 27 Aug 2025 17:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3D42D9ED0;
+	Wed, 27 Aug 2025 18:28:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FZ63lnOK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="br5GY858"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D05443147
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 17:32:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE1F4438B
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 18:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756315968; cv=none; b=qsyGkebvaE2T7lemtYZPwbiEVwVYyDJoFjfNnoL6EJUxwO6OVFpOwjSzURL6nU7l4OBWZk8B1W9wLj9rMdstQ7HCbTS7GsSzyRbUGwVaM9MnkFMkam7bcBQySihuSQVd+20uKQDISZAZwI4/hCbWrUJd3bp51QoGYFz3iO8hwrQ=
+	t=1756319332; cv=none; b=bMWNr0oISOBtj++qPTTma722EcBSsNTh31ckIfM3Mn3oIZvzPjBnOOmRnkPbPylaEXHoLlEKPwhSzTwZDAd7CNeWHJO6eksjoAob4x4Mry42Gu2YUjmV5JOwo3le5PyTi7fo/8KXqMPWvm9wtUuWJ6JF8AY7gBChdQnsDPPZG6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756315968; c=relaxed/simple;
-	bh=iyjWZsBRFoBZkK7gjxcfZKvk3y+w5D9IB7L2nC+7/b0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TWjxNwq1CRixAAX23u//D/u++4TNiY2MJVlpHlpKeL3xLp3zuLY7KKhg4Uo3FNIaMx5lL/5CnoticwAeES+/J0isVr7945nFH5SXp65NvFpjB9Q0c+5+AejWKgmiwLJl+HXaP29DlV27kdFiq8ZUKuFA0vFL38qRpYB5ifiYa3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FZ63lnOK; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-3252c3b048cso100115a91.2
-        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 10:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756315966; x=1756920766; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fKdzdSJ2+6CguLmx5dstHuYI1DNsaxa2Jgs8y/aBmDc=;
-        b=FZ63lnOKv3C9gEaQte7bDTvWSce58Tq4rPSAYgc4TK9K/npm7aXL0YK5E0u8G0HlP4
-         QV+kCGnaVGgJAvKC89LgB7whGVGVGb9XlveNdTB1I0qArof9yIOAqizbGQgjEwW80pCu
-         Iv197huHjqzR+QTPKUeIQHHypzYKdI6UhbTYcWwlHIUXbeX+gJGGhPX8RI6oKDNs9BUX
-         SibBNMLm+vEzT3g1KbwPg1n9iCwnovPMJz9QT97jWoHuMVljxvHfiWqULQgGeChIM34s
-         yHzawbodEIKMi/hQMBz5R79lJdh8BnsLzSSPTIUGZ6K/PfDU13BdP9XqCNB9+n9nOdak
-         +1NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756315966; x=1756920766;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fKdzdSJ2+6CguLmx5dstHuYI1DNsaxa2Jgs8y/aBmDc=;
-        b=L0k6q12N/GpJ7DE/PfXyFuPSptUn6fOTL6GFc9A0fLTJU/2XFLOMfvEWELlWfffI7v
-         Ud0w+Me/WhQBVOTZCYTpP5uO+X05YBiBfM8HSAqk19POVZq2f+X3a6ch+skJ3piNVO62
-         C5aBgZzUC7nSCbk+re9qgYf6pn3d8ElgttMjogtm8a6OQB/42fS2oySwEAvogInkKhFm
-         +A3IginOmvvxDuKHcoMC1Yy1l5zgkEc2NOhHWElmK3Mt3U2wq/9wUFeUXsObsf7ru6KG
-         7psb+yHqEVuyLr2yvIHjIjvYK5SPYmfk2Kuz8Cxz11sD1pe6NzAUINxyUf7oM5Eyr8+P
-         DMBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFvDujfTRmi5hyc1ee3e6pd5KW0IxIZ07Ng4EtB9ri0m+SqLMhlmEnt3Af1XE2D82imiA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwaKSFsC4GTZNsGJc+Wf0W8hKxdINWyIYoN9nqmQBux9L8FQ7Su
-	3zLCuUBXYCeuCAZeGhx7CEDVcSBugYz5GENhNodco8CkfRTWlLdK85R9/V5TPnlf2MLCoOdmDmZ
-	80WqRqf8vNi4LzufU485BVIR+O98YQ6f+sg==
-X-Gm-Gg: ASbGncu1SxE0/E+ZmfIuyT4GQ+h4a7VJKVXULhUCU53jEmSj03SkXNpmqdFdwYaiBmz
-	oY6PV7ebyHr1Bv7WeM1E5dTJz4Xj08KQKGraOZx29nk/vnMjcOD+cyl2yVLjRof+uHdolYSJeWr
-	6zmlgWED9icLR+EoYrvcVahzCEXEtjGWtzuBOZ6dsQS3sMFrNhQNn7q1OY1Wxvt6MSK68JitKjb
-	Zgz4hDmua8LL1/bNQ03Oxo=
-X-Google-Smtp-Source: AGHT+IF+wH9AS2jaRwRxERAkPGTMCocoUzcmgq0sRetDrbl0x9okS4CKl+4fxZ4jX6V8hPuqDcloQfn7IIBKyC37Kr0=
-X-Received: by 2002:a17:90b:384c:b0:31e:d9f0:9b96 with SMTP id
- 98e67ed59e1d1-32515ef8acbmr26439129a91.14.1756315966312; Wed, 27 Aug 2025
- 10:32:46 -0700 (PDT)
+	s=arc-20240116; t=1756319332; c=relaxed/simple;
+	bh=41wqfGoUvCOSCwBnkrsV8Al8LdILnHJRjtaAseQQoqo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=LWa4grpDJiQ4f6L4ebJ7JTXvj5ip3WoT74Lf/YqaulFZWxCWnPuT4PRQBVnZ21DVpPFNPlA9Eq1lnt5mv5usJDudHZSAQCK4OxqGhaRbvE5/PDfYjqrYqPpZC8g9rass5CRoEdEXSSLMvX8eB+KxJBTK7GrEPDbz7znHw0L+aKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=br5GY858; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756319318;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=41wqfGoUvCOSCwBnkrsV8Al8LdILnHJRjtaAseQQoqo=;
+	b=br5GY858419c2v32Z6PeVsAhcd4ny8W0OEjE7Dz2x7cAsMc4ZJqVzZvOCCMyBwrVrq+YF8
+	LxtKzhK/A0nyt058rLDOO4MiQNGNYNdOd9QpQpuCYwX7sheyCWlUSVTAg9zJcoXx62I2wk
+	s52wIEOFyTcYY/DopaL8X/Ux9zKB0kU=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,  Kumar Kartikeya Dwivedi
+ <memxor@gmail.com>,  linux-mm <linux-mm@kvack.org>,  bpf
+ <bpf@vger.kernel.org>,  Suren Baghdasaryan <surenb@google.com>,  Johannes
+ Weiner <hannes@cmpxchg.org>,  Michal Hocko <mhocko@suse.com>,  David
+ Rientjes <rientjes@google.com>,  Matt Bobrowski
+ <mattbobrowski@google.com>,  Song Liu <song@kernel.org>,  Alexei
+ Starovoitov <ast@kernel.org>,  Andrew Morton <akpm@linux-foundation.org>,
+  LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 01/14] mm: introduce bpf struct ops for OOM handling
+In-Reply-To: <CAADnVQ+LGbXXHHTbBB9b-RjAXO4B6=3Z=G0=7ToZVuH61OONWA@mail.gmail.com>
+	(Alexei Starovoitov's message of "Tue, 26 Aug 2025 12:52:26 -0700")
+References: <20250818170136.209169-1-roman.gushchin@linux.dev>
+	<20250818170136.209169-2-roman.gushchin@linux.dev>
+	<CAP01T76AUkN_v425s5DjCyOg_xxFGQ=P1jGBDv6XkbL5wwetHA@mail.gmail.com>
+	<87ms7tldwo.fsf@linux.dev>
+	<1f2711b1-d809-4063-804b-7b2a3c8d933e@linux.dev>
+	<87wm6rwd4d.fsf@linux.dev>
+	<ef890e96-5c2a-4023-bcb2-7ffd799155be@linux.dev>
+	<CAADnVQ+LGbXXHHTbBB9b-RjAXO4B6=3Z=G0=7ToZVuH61OONWA@mail.gmail.com>
+Date: Wed, 27 Aug 2025 11:28:29 -0700
+Message-ID: <87cy8gty9e.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250827130519.411700-1-iii@linux.ibm.com> <20250827130519.411700-2-iii@linux.ibm.com>
-In-Reply-To: <20250827130519.411700-2-iii@linux.ibm.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 27 Aug 2025 10:32:33 -0700
-X-Gm-Features: Ac12FXy5S0Rj49y3O15cuFuCPVqUfjE1Gr0yXWjmthcauTgXTFZeTYdZRtV0xsk
-Message-ID: <CAEf4BzZgf4vRWnse6N1X_h4X6XPuax_iMxiJ5x=kwLyJzz8x-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] selftests/bpf: Annotate
- bpf_obj_new_impl() with __must_check
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Aug 27, 2025 at 6:05=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.com=
-> wrote:
->
-> The verifier requires that pointers returned by bpf_obj_new_impl() are
-> either dropped or stored in a map. Therefore programs that do not use
-> its return values will fail to load. Make the compiler point out these
-> issues. Adjust selftests that check that the verifier does indeed spot
-> these bugs.
->
-> Link: https://lore.kernel.org/bpf/CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=3DBjB=
-JWLAtpgOP9CKRw@mail.gmail.com/
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  tools/lib/bpf/bpf_helpers.h                          | 4 ++++
->  tools/testing/selftests/bpf/bpf_experimental.h       | 2 +-
->  tools/testing/selftests/bpf/progs/linked_list_fail.c | 8 ++++----
->  3 files changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index 80c028540656..e1496a328e3f 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -69,6 +69,10 @@
->   */
->  #define __hidden __attribute__((visibility("hidden")))
->
-> +#ifndef __must_check
-> +#define __must_check __attribute__((__warn_unused_result__))
-> +#endif
-> +
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-do we need to add this to libbpf UAPI? let's put it in selftests
-header somewhere instead?
+> On Tue, Aug 26, 2025 at 11:01=E2=80=AFAM Martin KaFai Lau <martin.lau@lin=
+ux.dev> wrote:
+>>
+>> On 8/25/25 10:00 AM, Roman Gushchin wrote:
+>> > Martin KaFai Lau <martin.lau@linux.dev> writes:
+>> >
+>> >> On 8/20/25 5:24 PM, Roman Gushchin wrote:
+>> >>>> How is it decided who gets to run before the other? Is it based on
+>> >>>> order of attachment (which can be non-deterministic)?
+>> >>> Yeah, now it's the order of attachment.
+>> >>>
+>> >>>> There was a lot of discussion on something similar for tc progs, and
+>> >>>> we went with specific flags that capture partial ordering constrain=
+ts
+>> >>>> (instead of priorities that may collide).
+>> >>>> https://lore.kernel.org/all/20230719140858.13224-2-daniel@iogearbox=
+.net
+>> >>>> It would be nice if we can find a way of making this consistent.
+>> >>
+>> >> +1
+>> >>
+>> >> The cgroup bpf prog has recently added the mprog api support also. If
+>> >> the simple order of attachment is not enough and needs to have
+>> >> specific ordering, we should make the bpf struct_ops support the same
+>> >> mprog api instead of asking each subsystem creating its own.
+>> >>
+>> >> fyi, another need for struct_ops ordering is to upgrade the
+>> >> BPF_PROG_TYPE_SOCK_OPS api to struct_ops for easier extension in the
+>> >> future. Slide 13 in
+>> >> https://drive.google.com/file/d/1wjKZth6T0llLJ_ONPAL_6Q_jbxbAjByp/view
+>> >
+>> > Does it mean it's better now to keep it simple in the context of oom
+>> > patches with the plan to later reuse the generic struct_ops
+>> > infrastructure?
+>> >
+>> > Honestly, I believe that the simple order of attachment should be
+>> > good enough for quite a while, so I'd not over-complicate this,
+>> > unless it's not fixable later.
+>>
+>> I think the simple attachment ordering is fine. Presumably the current l=
+ink list
+>> in patch 1 can be replaced by the mprog in the future. Other experts can=
+ chime
+>> in if I have missed things.
+>
+> I don't think the proposed approach of:
+> list_for_each_entry_srcu(bpf_oom, &bpf_oom_handlers, node, false) {
+> is extensible without breaking things.
+> Sooner or later people will want bpf-oom handlers to be per
+> container, so we have to think upfront how to do it.
+> I would start with one bpf-oom prog per memcg and extend with mprog later.
+> Effectively placing 'struct bpf_oom_ops *' into oc->memcg,
+> and having one global bpf_oom_ops when oc->memcg =3D=3D NULL.
+> I'm sure other designs are possible, but lets make sure container scope
+> is designed from the beginning.
+> mprog-like multi prog behavior per container can be added later.
 
->  /* When utilizing vmlinux.h with BPF CO-RE, user BPF programs can't incl=
-ude
->   * any system-level headers (such as stddef.h, linux/version.h, etc), an=
-d
->   * commonly-used macros like NULL and KERNEL_VERSION aren't available th=
-rough
-> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
-ng/selftests/bpf/bpf_experimental.h
-> index da7e230f2781..e5ef4792da42 100644
-> --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> @@ -20,7 +20,7 @@
->   *     A pointer to an object of the type corresponding to the passed in
->   *     'local_type_id', or NULL on failure.
->   */
-> -extern void *bpf_obj_new_impl(__u64 local_type_id, void *meta) __ksym;
-> +extern __must_check void *bpf_obj_new_impl(__u64 local_type_id, void *me=
-ta) __ksym;
+Sounds good to me, will implement something like this in the next version.
 
-bpf_obj_new_impl will generally come from vmlinux.h nowadays, and that
-one won't have __must_check annotation, is that a problem?
-
->
->  /* Convenience macro to wrap over bpf_obj_new_impl */
->  #define bpf_obj_new(type) ((type *)bpf_obj_new_impl(bpf_core_type_id_loc=
-al(type), NULL))
-> diff --git a/tools/testing/selftests/bpf/progs/linked_list_fail.c b/tools=
-/testing/selftests/bpf/progs/linked_list_fail.c
-> index 6438982b928b..84883f04d58b 100644
-> --- a/tools/testing/selftests/bpf/progs/linked_list_fail.c
-> +++ b/tools/testing/selftests/bpf/progs/linked_list_fail.c
-> @@ -212,14 +212,14 @@ int map_compat_raw_tp_w(void *ctx)
->  SEC("?tc")
->  int obj_type_id_oor(void *ctx)
->  {
-> -       bpf_obj_new_impl(~0UL, NULL);
-> +       (void)bpf_obj_new_impl(~0UL, NULL);
->         return 0;
->  }
->
->  SEC("?tc")
->  int obj_new_no_composite(void *ctx)
->  {
-> -       bpf_obj_new_impl(bpf_core_type_id_local(int), (void *)42);
-> +       (void)bpf_obj_new_impl(bpf_core_type_id_local(int), (void *)42);
->         return 0;
->  }
->
-> @@ -227,7 +227,7 @@ SEC("?tc")
->  int obj_new_no_struct(void *ctx)
->  {
->
-> -       bpf_obj_new(union { int data; unsigned udata; });
-> +       (void)bpf_obj_new(union { int data; unsigned udata; });
->         return 0;
->  }
->
-> @@ -252,7 +252,7 @@ int new_null_ret(void *ctx)
->  SEC("?tc")
->  int obj_new_acq(void *ctx)
->  {
-> -       bpf_obj_new(struct foo);
-> +       (void)bpf_obj_new(struct foo);
->         return 0;
->  }
->
-> --
-> 2.50.1
->
+Thanks!
 
