@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-66716-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC05B38AE5
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:26:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF2DB38AE4
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:26:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0B36683C3D
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:25:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8295A2084BE
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47556305E2E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2F63081A7;
 	Wed, 27 Aug 2025 20:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AUnynYLK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="APHVpDv6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23042FFDE6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06F2301028;
 	Wed, 27 Aug 2025 20:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756326262; cv=none; b=lwfyMSPUAc25+6pN7hoawDVz4fIatqxK5U0cSIkz9ogev3C9SIai0gJstxNSzxsPeLz6bNfGGLZbFVsl95G0mlmzvdMsl4g3Af0hcLXna1NsTs6vE/8voDhEH3rjXPZM6f++fxK7jJwJsCE5ywEQlKZgN+wd0eUOmfacRBD1Xps=
+	t=1756326262; cv=none; b=lNM30zzYZDfC2vqphWaraRVjiJWLGukz9XvcFsxNHVi62M8Wb/scGXdPoqgQ/ExhYM9XvkkudeQe06A4mFhEI8QRD02EeOXVrV/Y2ovq6Euyaiqi3k5UU9fPBWAMu/pkhaLK5xc8+1WJbRa7JXTBrOlY4yW0ZQZdRg3PcdPlEkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756326262; c=relaxed/simple;
-	bh=GYS2jS3IBb5LImBXp+CSuVflYR2klNpfl1fOuznBhsg=;
+	bh=EgHoeoxXCjxslVJujBtFAK4/oaW+ZtT15/3T3C1cFpY=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=RpN7/tPBPRdK0yX3S6ljmmoeVdRmJJs9Ci8TALo8DjF4xKd9wb8PV7zUSWksycXRORVJ6f6e7iNAN4nUBR788QKw/TnULyHRCdgaRpzyeWLI4pZWI556J8J8kNO09wfMRddN78aON9yxdxgZzve/SmuRoMxQwYoZWSfIgY1sW9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AUnynYLK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80217C4AF11;
+	 Content-Type; b=BJYbPQuy71AdQTVsO60B5fXxkw/IEXT8m60sQLymKbNE0TJX3pJ1YPkTxlxkgnRvYY4lrBl8xBmCHHgJoOcMGREYM+WgTFgIhebIbvA7z1sTyS+6r8BdF9uZGdkjCDHtWDgD0dSfYTufZyQJOnbeOIH5ccRA94osQtIKFZwCSg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=APHVpDv6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA31C4CEFA;
 	Wed, 27 Aug 2025 20:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756326262;
-	bh=GYS2jS3IBb5LImBXp+CSuVflYR2klNpfl1fOuznBhsg=;
+	bh=EgHoeoxXCjxslVJujBtFAK4/oaW+ZtT15/3T3C1cFpY=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=AUnynYLKZF9uvt/IlSpeh0nx9uXnCQT2RtJg768NNQwKvOey+8g+JRoo8GWxUGp9Z
-	 /WJZctxLCDpo+nQ3OMKMS/ephUxLM/bfNKz+BG6sePOmNdBQnCK7XTewS6g3jXgre1
-	 /rZ17lAyXA9O6OEh5C7uhPqDO6bxImpRYC/XkCSmUWAp1CSN+QUPjtjnHy2xvexGfa
-	 PkGEJJsgrAxUylLKm34T7IQhbpCpRDLM+PUQbp4sc3aKwp3wjVPYoz3ZrJsF7SIMl+
-	 IW2RpHe4H3esKRKTtT6un6pJnETyF9ALAXtdeJnYn1OWmibHbVjBOnR2/r/8MYfm24
-	 BtLkf0W8ikooQ==
+	b=APHVpDv6+sGOzsT07FlPoOJMlel/ovN020dbdkghGgEQBAOAaCqSix3fFPp1/NI/Y
+	 nBovlfX2dNP7yv4p6DMvSRceP0s4TpUi9poQA2YduXYwGrTGTbqCeRaDyCd9ax89tz
+	 S/4wjyxoeI1aXmiV7d9mEIXxxZ8sOIaHfO8RV4Wr2z+8PerpXU2DbjM+SGeecsFNIM
+	 ag4eQBqAm+RGCtjWyg5Z8q+SoH3vcP4NnVWKAgijHnW/j+n8gAzm9Z0c7mey6TvVRT
+	 5UIRdimAi1TZND47cppFNcFAGcyAvcxbmnDxotDn4yg48VXlJMQ9ktVkYwwAq0WOTt
+	 Wva4yZzCMlfuw==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1urMhF-00000003kzK-1lhq;
+	id 1urMhF-00000003kzp-2Tcm;
 	Wed, 27 Aug 2025 16:24:41 -0400
-Message-ID: <20250827202441.276817748@kernel.org>
+Message-ID: <20250827202441.441080427@kernel.org>
 User-Agent: quilt/0.68
-Date: Wed, 27 Aug 2025 16:15:55 -0400
+Date: Wed, 27 Aug 2025 16:15:56 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -73,7 +73,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Sam James <sam@gentoo.org>,
  Kees Cook <kees@kernel.org>,
  "Carlos O'Donell" <codonell@redhat.com>
-Subject: [PATCH v10 07/11] unwind_user/sframe/x86: Enable sframe unwinding on x86
+Subject: [PATCH v10 08/11] unwind_user/sframe: Remove .sframe section on detected corruption
 References: <20250827201548.448472904@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -85,28 +85,30 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-The x86 sframe 2.0 implementation works fairly well, starting with
-binutils 2.41 (though some bugs are getting fixed in later versions).
-Enable it.
+To avoid continued attempted use of a bad .sframe section, remove it
+on demand when the first sign of corruption is detected.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/unwind/sframe.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 8f94c58d4de8..c3518f145f0d 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -300,6 +300,7 @@ config X86
- 	select HAVE_UACCESS_VALIDATION		if HAVE_OBJTOOL
- 	select HAVE_UNSTABLE_SCHED_CLOCK
- 	select HAVE_UNWIND_USER_FP		if X86_64
-+	select HAVE_UNWIND_USER_SFRAME		if X86_64
- 	select HAVE_USER_RETURN_NOTIFIER
- 	select HAVE_GENERIC_VDSO
- 	select VDSO_GETRANDOM			if X86_64
+diff --git a/kernel/unwind/sframe.c b/kernel/unwind/sframe.c
+index b10420d19840..f246ead6c2a0 100644
+--- a/kernel/unwind/sframe.c
++++ b/kernel/unwind/sframe.c
+@@ -310,6 +310,10 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
+ 	ret = __find_fre(sec, &fde, ip, frame);
+ end:
+ 	user_read_access_end();
++
++	if (ret == -EFAULT)
++		WARN_ON_ONCE(sframe_remove_section(sec->sframe_start));
++
+ 	return ret;
+ }
+ 
 -- 
 2.50.1
 
