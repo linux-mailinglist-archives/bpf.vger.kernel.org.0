@@ -1,117 +1,119 @@
-Return-Path: <bpf+bounces-66623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCA53B3788A
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 05:29:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AFEAB378F1
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 06:03:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A83D1B280FF
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 03:29:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E868F3651EF
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 04:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A4C308F1B;
-	Wed, 27 Aug 2025 03:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA622594B7;
+	Wed, 27 Aug 2025 04:03:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="qFAu9Vch"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZnS32EDt"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690AA2F60B4;
-	Wed, 27 Aug 2025 03:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7082AE97;
+	Wed, 27 Aug 2025 04:03:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756265344; cv=none; b=aeQll/3E6GMDI3BoBJ0KFkecdrFc5irs06tpIJt/90jscwothFARBD0GxxJLMCR3CthqNA8Z+EXBcH7bPaSLhpdz8nhzLDJnrOnJTqQepDwWXHUTv0V1Jxl+c2t1uh/4EqY1mz8V2EW9dZibZxGJeULzinjIAApzkpV0WkAc5Bc=
+	t=1756267421; cv=none; b=aTwwKKmI0pWDmhh8oKKzN3yJaRWE9Rqp3YO+s4EFjRx/bbJ7feOuY5pzrSe3Mr5QKeW4HxLRs/bRoQ+Ez9wsFJFOQpMaHsDqr5Z8A+YelzH9AOj/02lUHOLzqm1J4WCvb2kPG07fXstKqd+paTiDscIPLRsnZnrEFNiAMI/Sts0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756265344; c=relaxed/simple;
-	bh=nnQv5qVpxeHIq4GcjPz1fWTl4vFpNwQGXWgwRqdOVRE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ied+h4vWnWT7Qu7a768uAnqlnx1XoI/Q3nFuaPJWGWAX7krJ/vxIpFvQfVXnBcNrEKPEJTf39Xj11u724zGGfxRlEvzzxBYHCoL7YqVtDCOpX4k/Vmyn8c3Gnb9RpIVvrvpgiusF3+fW0sUdA8PaRUd6z+qfrDN0s/cLpMrs0f0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=qFAu9Vch; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=Ho
-	97x5wVkXo8pnoO/XNqFweCT71Ev+bvIlScmLgdN70=; b=qFAu9VchkaQH/rAj5z
-	3wGfR+cQ1VFnms4kO2HxXwyoNeVKK3Bxx+9qFrZDF3PfPVBK3CHE+iDJMZL3KbxP
-	iRi5hQ+Fdf26IQmBBNBA228Hgs+LXOfp1PKeL7aUE+V8/MuYxTW71D+MAfeQzK84
-	zzv5EkjIGOOdMRzPkqVccn3mk=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wAng6hNe65oUa90Eg--.1751S2;
-	Wed, 27 Aug 2025 11:28:13 +0800 (CST)
-From: Feng Yang <yangfeng59949@163.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 bpf-next] bpf: Replace kvfree with kfree for kzalloc memory
-Date: Wed, 27 Aug 2025 11:28:12 +0800
-Message-Id: <20250827032812.498216-1-yangfeng59949@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1756267421; c=relaxed/simple;
+	bh=A87iSRfscBq7P7SkJu3Iss7j2q8ndX/POmT8sGhRjPI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZY2Ip/eSJefbSH4XkSpBoRr6rFop57gBv7YkVuCx9ieGKcgqqomNn2b/azOgGbdgNTswi0y+Iu0oEfw40nhqJ7G1X8DkhJ6LVpaADS6N+p9Ou83BZjVG1kSxQC/ti55nh/1EbR5bBLlUVaCRC4PppaLXot0w36x6R/FtDLgYCgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZnS32EDt; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3c6df24f128so3081211f8f.3;
+        Tue, 26 Aug 2025 21:03:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756267418; x=1756872218; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xHKcYRsTqnrv9URkPiuGk0iej4H3twd5JOLJiNJ/Tfc=;
+        b=ZnS32EDteyZ8HPcVDX9164Ed1FslAtePXq4P4qRhJkEiCPU5+TxYVhbG89VFKvK52c
+         q/ubV3IgGWNKS6b/x1RFgIVyEJlkuldhBigzWRm3ohKOYDwZbvZfy/VPwzx7wTd5C9PB
+         ItT5FjmwEcAcX/+QBzYUoOce+KPRNajyUmdirN6myipNqn/hHXQLHIZT05989yEFUBf3
+         b71VEF5LiugFvZHG7EpHSylw2f8QQAPx5oZC+kPo+oAVRTWRNoL7gdLJsFRkSNkbiQT1
+         D2k05uKbHaAQfCZbePdjoLt6uOwrDI3tN/lLVrFMQ1yojuKmtfekzBIjoeECB4X0NWeq
+         VQNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756267418; x=1756872218;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xHKcYRsTqnrv9URkPiuGk0iej4H3twd5JOLJiNJ/Tfc=;
+        b=huJWFX1yCr8f+az6d477lGug7Hv0thU1QRpJfrJcWlf3XYP7rzay842bxFZDY2UOGA
+         ZGZ5RDYrsf7wqxiRODHUvkTfypK06u8JB/ofjeQqL1lxlT6RDZGc9araB6Q/iCE9jOlw
+         se5ZrauvtNvs5mwLVLQFk5VzTB1bfpLOUF3A9q1tce4hU5JqgUIa3oP0AlF7SeX1wSDC
+         L9m8eCqSWA8CYeaD9HPy5UTH77J28L2+j2QNQ4G+Sh6BM29mCkl3qD4VbyJ6zEeW5y+D
+         S3Ul9AdUpsbumSTNEj4790XeZFoNzNguRTFF1INq8Uzs69LeO5nFDLyxW0CoWv9XOZ+i
+         D+Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCU1FmuBCqsBc0bj+fTEbpPMm/gIUn8Rd3/092DodVvkJHFWhqwuWx7iuio4rsoh8xwc/nYlV46eRtWFOdm+@vger.kernel.org, AJvYcCWFxZodmUYpanMjvTSu8rteRRRg3qqgu0Rc8OoBsOaz2IU67xnUTtfs2QMkCHulaoQHCZCp9IXH7WGw5hu66CxW@vger.kernel.org, AJvYcCXsdRBR10vkyJBI6FHcVTBIKJfuv8v3bZwkhIsohZjiwUbwRTEtRmbvQ+PMzZ++D/L3kkg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDjbotNnqvee9vbMjyBnMOlxlfQxqK81lVUhDNC0PT5EvjQajs
+	VGWwUr4zxyYPnE6+Q7yUQHEcweqNkQYVvc+3G85g30arB1xmS5IJkPycLUSgGxjaaLGNuBTn7Dj
+	LLZvbt3cJoovfvYGM7MhVw2V2rJpJD2g=
+X-Gm-Gg: ASbGncsF6AeKygB7lDftspF2V0L+MZteVcp/sk1P0p/Rbrd9G7ZMATk68Qs8lt24bIO
+	7uaRgVEIa/60ISy+lrgIZHYgSOeyXXh4T+vqmyILJbJlhCTirinO0qaHLbwQzUm0MYJWND9JFpL
+	auPV2iXpBxdWBB8bQj56CzeR+ltiHN+bW7A+W3TYrh6TCd3iSACmtkx8MICw6iRVHaMua/nzfSi
+	JsdMivuGimdWScqQm71ey336KedRL2K5YM4
+X-Google-Smtp-Source: AGHT+IFDWKI4ZGd0VrwR+tlbRT2bpFaa0Wri3a0FhO4T8VY8YDpJ6CXxmBVYEC8Zpvs9OwA5CQ3stiQLNQBhXkLhC/w=
+X-Received: by 2002:a05:6000:4010:b0:3c9:79fe:f4f6 with SMTP id
+ ffacd0b85a97d-3c979fefd71mr6751069f8f.18.1756267418019; Tue, 26 Aug 2025
+ 21:03:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wAng6hNe65oUa90Eg--.1751S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Ww4rCFWkWF15AFW5XFy3XFb_yoW8Gr4UpF
-	sYgrnrKw48JF10gFnrCF4UZFyUXan8Jw4xG34qyw1SvF1rtr4qqryjkryF9FyaqFWIga1F
-	vr12vF4jyw18WFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jjCJQUUUUU=
-X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiZRe2eGiudCrnlwAAsU
+References: <20250827031540.461017-1-yangfeng59949@163.com>
+In-Reply-To: <20250827031540.461017-1-yangfeng59949@163.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 26 Aug 2025 21:03:26 -0700
+X-Gm-Features: Ac12FXw4hTBUHTL4RjsVAGs1lO8wZQ0GKceQVN45AgylHH7YunDvWiMf_lzMnqE
+Message-ID: <CAADnVQLQ4=sLwwzuzip+FoeW1RDxKtuhDRbBSnigeQ6O4w8m0g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix the invalid operand for
+ instruction issue
+To: Feng Yang <yangfeng59949@163.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Feng Yang <yangfeng@kylinos.cn>
+On Tue, Aug 26, 2025 at 8:16=E2=80=AFPM Feng Yang <yangfeng59949@163.com> w=
+rote:
+>
+> From: Feng Yang <yangfeng@kylinos.cn>
+>
+> The following issue occurs when compiling with clang version 17.0.6,
+> but not with version 18.1.8. Add a version restriction to fix this proble=
+m.
+>
+> progs/compute_live_registers.c:251:3: error: invalid operand for instruct=
+ion
+>   251 |                 "r0 =3D 1;"
+>       |                 ^
+> <inline asm>:1:22: note: instantiated into assembly here
+>     1 |         r0 =3D 1;r2 =3D 2;if r1 & 0x7 goto +1;exit;r0 =3D r2;exit=
+;
+>       |                             ^
+> 1 error generated.
 
-These pointers are allocated by kzalloc.
-Replace kvfree() with kfree() to avoid unnecessary is_vmalloc_addr()
-check in kvfree().
+and once it compiles what happens next ?
 
-This is the remaining unmodified part from [1].
-
-[1] https://lore.kernel.org/bpf/20250811123949.552885-1-rongqianfeng@vivo.com.
-
-Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
----
-Changes in v2:
-- Add commit message, thanks: Daniel Borkmann.
-- Link to v1: https://lore.kernel.org/all/20250826073920.1215368-1-yangfeng59949@163.com/
----
- kernel/bpf/verifier.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5c9dd16b2c56..b9394f8fac0e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2021,7 +2021,7 @@ static void free_backedges(struct bpf_scc_visit *visit)
- 	for (backedge = visit->backedges; backedge; backedge = next) {
- 		free_verifier_state(&backedge->state, false);
- 		next = backedge->next;
--		kvfree(backedge);
-+		kfree(backedge);
- 	}
- 	visit->backedges = NULL;
- }
-@@ -19651,7 +19651,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 	err = maybe_enter_scc(env, new);
- 	if (err) {
- 		free_verifier_state(new, false);
--		kvfree(new_sl);
-+		kfree(new_sl);
- 		return err;
- 	}
- 
--- 
-2.43.0
-
+pw-bot: cr
 
