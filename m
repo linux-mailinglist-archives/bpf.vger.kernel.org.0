@@ -1,68 +1,68 @@
-Return-Path: <bpf+bounces-66704-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0178B38A78
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 21:50:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8837B38A79
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 21:50:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDE3C1C21103
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 19:50:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB6BC189A3C1
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 19:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80AA2F067F;
-	Wed, 27 Aug 2025 19:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38EDD2EAB6D;
+	Wed, 27 Aug 2025 19:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Wvn678MI"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="c7Ec+0Ap"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03082EAB6D
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 19:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8C42EDD65
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 19:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756324192; cv=none; b=apJPAzevdTtk8F1YV/NgqM8ph78zPZ+1Q73UUn8cDvC+oNcrQ/FyjxM2O0P0vrHRLnW+uqdnLeQKTHO/KNG5ij2PkMmArvIQzAiMdGJdFfMcmfLJth26t+GOGPbGQkTlV4+0M6UZJxaiTS/uGCEq2tOmVp+uJxnDGngoGlnHCMQ=
+	t=1756324192; cv=none; b=Bmg6xVoCcJi7K4MJedR6xjMydq4kQtT5h4AbJsIEPCie5gBRqbDQfd/Oz4manYPOkdj65+hKFnVh9dykmETosiBM1rwDCX+W4lkF1WdI9EPIhm6IlY4wCJ17oygRoBo+kscwjyIUb8TG1QOlrWMgsjIYfwpAJcki5m8HKHdzvoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756324192; c=relaxed/simple;
-	bh=WPEL4OP8XcHUQlE93clnENMckc+EBh2C38q8QJe3aNE=;
+	bh=lhU0DJb9wuc9a3JzmG8B7gN/cWJDZloDEqTj2HEPsaU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lZ+AUuYc3Iajg6xmkVRgq8YleaMr3E8sIPXAQWyR5pq/EM8zjCabF++7QBXoo45GPl7RdtqF6+cSYygQFY1R/0hff5ANEfv7IQJBFpfApOj6euut2N2AcBv+6KpZ8Z1orXXi0t5ziCceBs1TersZyYOKtaUzPFgQCQjzAb4oAxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Wvn678MI; arc=none smtp.client-ip=148.163.156.1
+	 MIME-Version; b=ey2onjQL3SuPXp/XZhp9nB4M7PHCvtqTfvBQJ2+XQ4y8a2F9+rta9hVADbGpQ/+8sJic60NxJ9z/8toFww6lTp5//ZFUuwPhp1L5ZasFSwB87jdQICqaeyxHePfynzXHf1LrJW+8DWTYXotL8ybokEkRiv2RZrG+yyXY56kChOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=c7Ec+0Ap; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57RFU2JU003730;
-	Wed, 27 Aug 2025 19:49:36 GMT
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57RAXOuT028958;
+	Wed, 27 Aug 2025 19:49:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=QvgB0OgM7vCLCVai/
-	K4zfZIpTlhN8KslnF4gc9SMr10=; b=Wvn678MIGpR9TeO3/m/r3UXryIhPzP2R7
-	id4B2Ddtcbh7U8UqtHfZbZ766h3PW2xV1uRTGDeZtZZ+kBjiMWBP5CRBR/X/Ohmm
-	8VqJKfTw9N8vZPIaKMboFrM9O7tD4aPMrea9nUF9SVc+kKG4ovNlr97VwDZU5NJc
-	tXBiCnHaP1M8shecX31KQ5suTBTS5GB6Nygpt23/KFSksmKvZIdcp8U32IKYJo+2
-	7zLa5GzmQ9UhLP1AsMBVdhcpRMUq/8RGnjb/zjXqEfsAW89oCGdmnxW86zko5geL
-	fCXrIGdIXoBpe8zqgqyR9nsj34mUJYr7XZPUt8C8e/zwEV+SBqUkA==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48q55863pk-1
+	:mime-version:references:subject:to; s=pp1; bh=ElOzcbJv06TtinuCY
+	qUUVwQpoNV7KcmudA63u/RI09U=; b=c7Ec+0ApDsu3n1jYn3Bxrz6UefOhfd0pW
+	zA4tet97n+oyYxggdSeb8vGy7U4yR7wUzNugUKWyJat3KFsLGptC3QVaIf9uYOSr
+	yWukR1Vng9XMl1yFAJE/4LQq/aAIkyjdx3lYw+2GGzZ6LCMs4ymZDKlWvP1KnIGH
+	zfXra6NLmak46e+vZ+XfudrvsPjb+dNkv2ANQlhWJ3h0BAp9tDmy/K9zuNJ5Gb/w
+	wLtBJVKl0kPAthMi/DI187R9XLHIlOrWwLC2dQGBZcoF8iCWz3E2SuqfV3vfQqBD
+	2SejNQCeXB+5IOsY607x6lIV9RRsBL/EdUxGl/kh0tFaovahGMOGA==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48q975dbcm-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Aug 2025 19:49:36 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57RJ0Nvx007554;
-	Wed, 27 Aug 2025 19:49:35 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 48qqyuhsgu-1
+	Wed, 27 Aug 2025 19:49:37 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57RJmeld002543;
+	Wed, 27 Aug 2025 19:49:36 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 48qrypsk7v-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Aug 2025 19:49:35 +0000
+	Wed, 27 Aug 2025 19:49:36 +0000
 Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57RJnV3U42992122
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57RJnWRl52166954
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Aug 2025 19:49:31 GMT
+	Wed, 27 Aug 2025 19:49:32 GMT
 Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B8F4E20043;
-	Wed, 27 Aug 2025 19:49:31 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 4E8AD2004B;
+	Wed, 27 Aug 2025 19:49:32 +0000 (GMT)
 Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 460A020040;
+	by IMSVA (Postfix) with ESMTP id CF01E20040;
 	Wed, 27 Aug 2025 19:49:31 +0000 (GMT)
 Received: from heavy.ibm.com (unknown [9.111.21.94])
 	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -75,9 +75,9 @@ Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next v3 1/2] selftests/bpf: Annotate bpf_obj_new_impl() with __must_check
-Date: Wed, 27 Aug 2025 21:46:45 +0200
-Message-ID: <20250827194929.416969-2-iii@linux.ibm.com>
+Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Fix "expression result unused" warnings with icecc
+Date: Wed, 27 Aug 2025 21:46:46 +0200
+Message-ID: <20250827194929.416969-3-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250827194929.416969-1-iii@linux.ibm.com>
 References: <20250827194929.416969-1-iii@linux.ibm.com>
@@ -89,130 +89,78 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _uIcEN2wmKGqfGOaGY-HT80OqlLZt9Xu
-X-Proofpoint-ORIG-GUID: _uIcEN2wmKGqfGOaGY-HT80OqlLZt9Xu
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODIzMDAyMSBTYWx0ZWRfX5+TOvKCKCKYd
- sINMlM3NeMCitQdirX96zQUPlmzgXLWwJBf+X8epi6RvOIuuDHMZQq5h/hzwdx+n8bA7/Yp9oEi
- TsCAVpQdL6/6EL2bC406l3Y9kdOH2h4/QxIQA5PDt2/lzbPV4h7tb6zD8GN1sd/Gjh6Uv0HPHGI
- fuJYyZtAVN75mZ9r2A27ps8TUQ+rGe56AnJwSWz2Sg5qY3tPmv+g14jNFra3LmRZleKeP775Ww8
- Hk5okHAEsxGBXQiv1JEI4cuO5mpqVYMTb4ZxipqboK7h+zgIvdtjsbpfRj5NLqwB9AKfgIANyda
- IRkpMHV97+J3PIH3uYRXK/j8bxHQfTOklHNrwnZ/zim7s3q93c9RYAxpsMpqUls22s8KWRKE+0l
- R9PI7/6q
-X-Authority-Analysis: v=2.4 cv=A8ZsP7WG c=1 sm=1 tr=0 ts=68af6150 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=2OwXVqhp2XgA:10 a=mDV3o1hIAAAA:8 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8
- a=VnNF1IyMAAAA:8 a=y4fOKvO5TH5DvNK41ToA:9 a=dKuBx9SDB9gA:10
+X-Proofpoint-GUID: oH4PjvGx132IDamaCa5qHSdCw8TdYeMF
+X-Proofpoint-ORIG-GUID: oH4PjvGx132IDamaCa5qHSdCw8TdYeMF
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODIzMDA3MSBTYWx0ZWRfX1ZEDFE8l4vZg
+ wJ2zdcNglOpX4oTAMmTNQWp8aC2zhLzvwKqmaNhLXCnYI7DMVAgK8kAlhNyeedxkgGc+xzAsz4g
+ rTR2EpZ21StDQ+b3jNQVWwSJc178B2yCLrtMYvIFsh6VmKxvkiSF210k3UAb5R4u5UiGesemx4a
+ WjHUlCw8Qf3Q31YlwYac1PPxW2sSh6mO2oOtVr28MGx1fsryQEwOR+tepcdiQgy7b3zcPl4vvkW
+ GwDLlSMuiHoj6aKYXba376nr1aDQm40NjeMhpdueBTXlIb5lT/54wP0Pmr++FXWx0M52kBGIvBF
+ IWdlnd0/pmW3OvwnlPELdI5hMv1lEkU9/xe8QkEgD/LWhadoTClniL2aPsVq9xoO8mw4SlBYC2u
+ qRM63BMR
+X-Authority-Analysis: v=2.4 cv=RtDFLDmK c=1 sm=1 tr=0 ts=68af6152 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=2OwXVqhp2XgA:10 a=NEAV23lmAAAA:8 a=VnNF1IyMAAAA:8 a=U3bVoonNbeMQq_PQ-eoA:9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-08-27_04,2025-08-26_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 adultscore=0 priorityscore=1501 suspectscore=0 clxscore=1015
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 classifier=typeunknown
+ impostorscore=0 suspectscore=0 malwarescore=0 spamscore=0 priorityscore=1501
+ bulkscore=0 clxscore=1015 phishscore=0 adultscore=0 classifier=typeunknown
  authscore=0 authtc= authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2507300000 definitions=main-2508230021
+ engine=8.19.0-2507300000 definitions=main-2508230071
 
-The verifier requires that pointers returned by bpf_obj_new_impl() are
-either dropped or stored in a map. Therefore programs that do not use
-its return values will fail to load. Make the compiler point out these
-issues. Adjust selftests that check that the verifier does indeed spot
-these bugs.
+icecc is a compiler wrapper that distributes compile jobs over a build
+farm [1]. It works by sending toolchain binaries and preprocessed
+source code to remote machines.
 
-Note that now there two different bpf_obj_new_impl() declarations: one
-with __must_check from bpf_experimental.h, and one without from
-vmlinux.h. According to the GCC doc [1] this is fine and has the
-desired effect:
+Unfortunately using it with BPF selftests causes build failures due to
+a clang bug [2]. The problem is that clang suppresses the
+-Wunused-value warning if the unused expression comes from a macro
+expansion. Since icecc compiles preprocessed source code, this
+information is not available. This leads to -Wunused-value false
+positives.
 
-    Compatible attribute specifications on distinct declarations of the
-    same function are merged.
+arena_spin_lock_slowpath() uses two macros that produce values and
+ignores the results. Add (void) cast to explicitly indicate that this
+is intentional and suppress the warning.
 
-[1] https://gcc.gnu.org/onlinedocs/gcc-12.4.0/gcc/Function-Attributes.html
+An alternative solution is to change the macros to not produce values.
+This would work today, but in the future there may appear users who
+need them. Another potential solution is to replace these macros with
+functions. Unfortunately this would not work, because these macros
+work with unknown types and control flow.
 
-Link: https://lore.kernel.org/bpf/CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=BjBJWLAtpgOP9CKRw@mail.gmail.com/
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
+[1] https://github.com/icecc/icecream
+[2] https://github.com/llvm/llvm-project/issues/142614
+
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- .../testing/selftests/bpf/bpf_experimental.h  |  6 ++++-
- .../selftests/bpf/progs/linked_list_fail.c    | 23 +++++++++++++++----
- 2 files changed, 24 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/progs/bpf_arena_spin_lock.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index da7e230f2781..a8f206f4fdb9 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -8,6 +8,10 @@
+diff --git a/tools/testing/selftests/bpf/progs/bpf_arena_spin_lock.h b/tools/testing/selftests/bpf/progs/bpf_arena_spin_lock.h
+index d67466c1ff77..f90531cf3ee5 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_arena_spin_lock.h
++++ b/tools/testing/selftests/bpf/progs/bpf_arena_spin_lock.h
+@@ -302,7 +302,7 @@ int arena_spin_lock_slowpath(arena_spinlock_t __arena __arg_arena *lock, u32 val
+ 	 * barriers.
+ 	 */
+ 	if (val & _Q_LOCKED_MASK)
+-		smp_cond_load_acquire_label(&lock->locked, !VAL, release_err);
++		(void)smp_cond_load_acquire_label(&lock->locked, !VAL, release_err);
  
- #define __contains(name, node) __attribute__((btf_decl_tag("contains:" #name ":" #node)))
+ 	/*
+ 	 * take ownership and clear the pending bit.
+@@ -380,7 +380,7 @@ int arena_spin_lock_slowpath(arena_spinlock_t __arena __arg_arena *lock, u32 val
+ 		/* Link @node into the waitqueue. */
+ 		WRITE_ONCE(prev->next, node);
  
-+#ifndef __must_check
-+#define __must_check __attribute__((__warn_unused_result__))
-+#endif
-+
- /* Description
-  *	Allocates an object of the type represented by 'local_type_id' in
-  *	program BTF. User may use the bpf_core_type_id_local macro to pass the
-@@ -20,7 +24,7 @@
-  *	A pointer to an object of the type corresponding to the passed in
-  *	'local_type_id', or NULL on failure.
-  */
--extern void *bpf_obj_new_impl(__u64 local_type_id, void *meta) __ksym;
-+extern __must_check void *bpf_obj_new_impl(__u64 local_type_id, void *meta) __ksym;
+-		arch_mcs_spin_lock_contended_label(&node->locked, release_node_err);
++		(void)arch_mcs_spin_lock_contended_label(&node->locked, release_node_err);
  
- /* Convenience macro to wrap over bpf_obj_new_impl */
- #define bpf_obj_new(type) ((type *)bpf_obj_new_impl(bpf_core_type_id_local(type), NULL))
-diff --git a/tools/testing/selftests/bpf/progs/linked_list_fail.c b/tools/testing/selftests/bpf/progs/linked_list_fail.c
-index 6438982b928b..1e30d103e1c7 100644
---- a/tools/testing/selftests/bpf/progs/linked_list_fail.c
-+++ b/tools/testing/selftests/bpf/progs/linked_list_fail.c
-@@ -212,22 +212,33 @@ int map_compat_raw_tp_w(void *ctx)
- SEC("?tc")
- int obj_type_id_oor(void *ctx)
- {
--	bpf_obj_new_impl(~0UL, NULL);
-+	void *f;
-+
-+	f = bpf_obj_new_impl(~0UL, NULL);
-+	(void)f;
-+
- 	return 0;
- }
- 
- SEC("?tc")
- int obj_new_no_composite(void *ctx)
- {
--	bpf_obj_new_impl(bpf_core_type_id_local(int), (void *)42);
-+	void *f;
-+
-+	f = bpf_obj_new_impl(bpf_core_type_id_local(int), (void *)42);
-+	(void)f;
-+
- 	return 0;
- }
- 
- SEC("?tc")
- int obj_new_no_struct(void *ctx)
- {
-+	void *f;
-+
-+	f = bpf_obj_new(union { int data; unsigned udata; });
-+	(void)f;
- 
--	bpf_obj_new(union { int data; unsigned udata; });
- 	return 0;
- }
- 
-@@ -252,7 +263,11 @@ int new_null_ret(void *ctx)
- SEC("?tc")
- int obj_new_acq(void *ctx)
- {
--	bpf_obj_new(struct foo);
-+	void *f;
-+
-+	f = bpf_obj_new(struct foo);
-+	(void)f;
-+
- 	return 0;
- }
- 
+ 		/*
+ 		 * While waiting for the MCS lock, the next pointer may have
 -- 
 2.50.1
 
