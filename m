@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-66744-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66745-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62941B38EFF
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 01:18:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1A46B38F00
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 01:18:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76FAA189ED4A
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 23:18:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BA623BADF4
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 23:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DCB283159;
-	Wed, 27 Aug 2025 23:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FC330CD80;
+	Wed, 27 Aug 2025 23:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a1k5/8Bk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZgF0/AlS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECAC030CDA6
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 23:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02861239E8B
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 23:18:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756336692; cv=none; b=GMbWZP5aBuQLJlVCawOAlj1tyW9jkYwE4clPSsFfvS6mQIiOmd9Nmv+M77bQECLVlFRpiK1QnXXORoRa7pY8a4T4QRkN7tELtF2BE80EomdPhm+cBapbBKVaYG0v2Ra4vOPljgFRUYx6+UjFjQloHLopPXcKE6chHeMykYCKMTw=
+	t=1756336700; cv=none; b=s3ecNlH9hV1qxXHSyjSYFj7H23797PRqdsSIujBh2BVTheDVPFushx7ur6Hnmz6Ma4r7277AlIH8UOOZsgH4nJbBL8MVJrzKNwt8ugBeXjHCRawEM/OIp+Y5IOpEyn6jPQx8vmOXaGbj5AmP/vOGTCKPqA4b4LrCYtNhHcxMPWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756336692; c=relaxed/simple;
-	bh=2CMawNZOgvnnFXX+ZaoK3qiGFg2UwK1N6cBdyZ8JD4o=;
+	s=arc-20240116; t=1756336700; c=relaxed/simple;
+	bh=1OTIrtEbW/qDWAwsIbHryjux3Va3r5auhMI3MLuKwmE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HloIqDNId3M459krHd7B8mnckrKk0AnkjcriNXdvO+NPxuTyHfwalOO0qOtSEQtRIwZrY1G9mO7XW+4l1BFtYFTkop3TZQbE6r5A8cu4YGrhztVONsLJbbniFEuDE1ec0XvAYfMYPEFPpcYRrjX8bE5jVHfu/jEqF6tf0W1ICwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a1k5/8Bk; arc=none smtp.client-ip=209.85.216.54
+	 To:Cc:Content-Type; b=sPgVsBkmNfgd7gGk9o/hUwODzU2Y4IeWUsPykSArj3ORpW7QOMnoCS+/IIS7VUyC3K1g04gJSA86fF3PdF5e/sxUu52Q4FId608r2QrofE/YtvfIDv1nwzOWaX8poiUVHJuTxgQPFAZM+bJ8OvDUcuRFdlZqWKbMywaB7ssFaco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZgF0/AlS; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-323266d6f57so421300a91.0
-        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 16:18:10 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-3252c3b048cso337674a91.2
+        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 16:18:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756336690; x=1756941490; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756336698; x=1756941498; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OUgSSWZgjnMaYmVlcD/X2Os5itWL2DPqp4ZGn6vNMP0=;
-        b=a1k5/8BkqxgYmgmlAu10f0efCtPe1w0ZLY3wCxr5ROUBsvjjS/8HIDgKzOqpVvbJ37
-         dZFHjBNZLjHxh21DXm4vH6V1ZztXTvPZNa0ZVnlPTlNv8WY7gyY9xgo3GR7yulDPPRRu
-         vMNt6iSz/46VEG5ge4HWF2GJrhWTm+oEjKFypAMjUc/C95SOdxIYyVtVJG+HUqfXR/uz
-         p+YUXkpkmnfz1d1Z/dJiKM9sadete0oMIzv/dfVaNf8k9xTP2lTilV1xlCZjE8LZnnwJ
-         R565usLXDXYvqv1XwvjfEon06Mk33eU7V2vKSh3yPG5WPQWwtpftWV0YhzORlG7lrrmH
-         0IaQ==
+        bh=l8+uFlrjeT+Ukr+wEIWpTRGQd1QRdf6huTdc9xZnDBo=;
+        b=ZgF0/AlSC7Ejh6GA8iJi/yHqVFv39Voe5Z2PJb86NQ4TSgN1xN9AaQ8mIbDEpHPCpc
+         8DP3In+IVLV2YIsqMp6SnFAyAhXW9xwTixPWB9+Dl194pmM+TK9rz8/tbj2gqm6IeAUL
+         1PoX4cgFxH2dtbJrUaquDdwKwaICdYScytjx6mnVk8h0aTtyEycknahvyYyo4Fq2Ze31
+         BPbVxrXTLYyyvyD0fGczkuuODpppAwKIShf2BoCPlI1zS5Gur4kNBskKa23b38nCY5s5
+         iJmTY4XCBOFSb3JE5df1wPTbVZIdBAhTUnutd20cJTdxIESetGODMbYCy3rApbgKg1j2
+         VLNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756336690; x=1756941490;
+        d=1e100.net; s=20230601; t=1756336698; x=1756941498;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OUgSSWZgjnMaYmVlcD/X2Os5itWL2DPqp4ZGn6vNMP0=;
-        b=Hs7BmiQDTHuNhRUgkJRXjDhnK0Sbo0R+unWoIYCmlh0U0Zc3pFMGSgNUyTMp1Be0Ug
-         ON53xmfwQhy45p41JTpIcaOew1I/5ZtOJdNcTtF4Fvt8/atXcpjh7SZRezyLUsAcmfX3
-         xkJ3SrmdG/0OnrcQTPcHdLh+m68//Ne7Q97KRDU5y+7lnuRq9gGCzGP/rV6vzP5BA3LW
-         a0YpgoCZ/Az04CxRh6209PtdYeDMVv3HB5kHllmEzkan8lxf2WLq2V1+BijHEjYdRtOl
-         mYXKcnyvvXX1uahC2TsuGpgBXrqvLpsscZxHed6o2Bf/R/ejp9qzIQuZGV+dzi0QHxyT
-         fdVA==
-X-Gm-Message-State: AOJu0YxDZI6x+/DL9eVnHaA+vfjoArhc1CsW8NKqIO9SQhMWSxLaQYjx
-	THlvP5KBGo+6FXYNzdtljKITJl3zilgDkh4/t20tWrmDttvv2j5jSCOrhKwlpsUs5/gv7e2YHPn
-	p7c6iEg/cs38WcFkeMlIiBV7UxbzpcGk=
-X-Gm-Gg: ASbGncsMd5BJTu2yWlKDLRuift2Hfa9474XthiWrdc0CG+75ZRUTX8snDMmrSZce50D
-	I6I7od4APdWB71zyV1TpcTK7lVT9Sy8Ch3ZwQHtk3mpmq8gsVi3N1do2bLPsxCZldE/KJ2Qe22J
-	txym+L1xPnyYJU34vdbnkG+T0Yg3U7Cv73IQSdHqBiwBLrrivLKDOq1UZR9ihgy6yNbxXX+nxlh
-	Fqe9JPLvJ13+dayhfvejNIEubltatILrg==
-X-Google-Smtp-Source: AGHT+IGbpHDbBHWAfgQ9FGw3eFlgZyViGxNXFajsv6vRxoyMGR9TvGWPkk/or1O66MVhbc+mJhCOd8EhuuNY9eVGhZg=
-X-Received: by 2002:a17:90b:3948:b0:325:46f4:4f6e with SMTP id
- 98e67ed59e1d1-32546f450b5mr22602690a91.32.1756336690249; Wed, 27 Aug 2025
- 16:18:10 -0700 (PDT)
+        bh=l8+uFlrjeT+Ukr+wEIWpTRGQd1QRdf6huTdc9xZnDBo=;
+        b=MZyXSFgViJwYDb8f2ArhepdzuwwEtylaU4MHuu6CIqOFu3rvTMz2YwgFPvjYZcKJ0u
+         oZuGIrVu204hSZUX8nrU9FTtchSjqtk5rE0Y02Rx0k9fp2PMoshDCdLxq1iGi3B5BM2i
+         cDGzkWNZnw0i3Mt6fwQvftsVfIk9c08LPniUkqgzpnd7ydbNVPfuTVrPd/acwRdFpaI9
+         ZTYXPolf3mkoPtTxrisjfFZcwsF/fFc5YOO/JOY8M+QHVM+w6S7/zIAy8JLqwZitzdKF
+         sz8RniutsX9tPGuvcuBMOvcSx6jcMGRXnAO1mEghXeLnDFIN/f276T4WQXP4rVjKgFAF
+         eqkQ==
+X-Gm-Message-State: AOJu0YxNOEMZf+HvI6iX9EPiWOHuVK+lJNkF/4c8X7cfCvgzpbuyLwYQ
+	fBDEMxsjagy4LabzD3d9r+RQIFqjQJZ0plWO21irCmaTQ+y070pbrNYOdce5iaJwh8Ixr4vAkCM
+	a5MfeTAZsSBRHtAJuMySlAcrTF/j6VRk=
+X-Gm-Gg: ASbGncttivvILuAvDQ9payDt5lMmSKVllQIvZTbc5C3VI/k7/5k5NSvgC39Ze84mx+4
+	/UyjnSmW3twiW6/fbFhbJvAB1RDr9Jl3w08r+nejy33wi0p2nmtNYpGetkNuUHLnK0VXvOmJVrt
+	PSIMwVDxsCOmqXIbL84IGmQaGCB2PVXE3tOiThx+Hoo6yRACYm7RFuCuqe2VfWMCvRR2SmSWNhM
+	eWAFVbmDpy0oJ2WNkz1jyY=
+X-Google-Smtp-Source: AGHT+IHPkqCWqh1CGyiAlT9UZr0mtKSaUyRsZvVdHbBOajJzQJtHj8ZRp0gTjs2nZ+6D7+322RlAGi/Ht1kozl4v4JA=
+X-Received: by 2002:a17:90b:3b92:b0:325:3937:ef95 with SMTP id
+ 98e67ed59e1d1-3253937f223mr25855944a91.15.1756336698141; Wed, 27 Aug 2025
+ 16:18:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250827164509.7401-1-leon.hwang@linux.dev> <20250827164509.7401-2-leon.hwang@linux.dev>
-In-Reply-To: <20250827164509.7401-2-leon.hwang@linux.dev>
+References: <20250827164509.7401-1-leon.hwang@linux.dev> <20250827164509.7401-3-leon.hwang@linux.dev>
+In-Reply-To: <20250827164509.7401-3-leon.hwang@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 27 Aug 2025 16:17:55 -0700
-X-Gm-Features: Ac12FXzsao6W4k7blKWvWT_SsEiVOfxtBzuvmdq5c968JImgR5bxYoNqe36q1JA
-Message-ID: <CAEf4BzbuhaWSE6-1fnxYhUX_6iaBvrr6Q1Mq05MhuxE7U4_63A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/7] bpf: Introduce internal
- bpf_map_check_op_flags helper function
+Date: Wed, 27 Aug 2025 16:18:01 -0700
+X-Gm-Features: Ac12FXwevnJvrE1ECmOZ88i9UoMWIcrF43TlgIN1RXgwTPIRMkLp4y5xmBYmx_Q
+Message-ID: <CAEf4BzaUw868nNG3ngMci4fLPDGsaffQ-O3YrPOEo7N5QEkM_w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/7] bpf: Introduce BPF_F_CPU and
+ BPF_F_ALL_CPUS flags
 To: Leon Hwang <leon.hwang@linux.dev>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, jolsa@kernel.org, yonghong.song@linux.dev, 
@@ -93,80 +93,107 @@ Content-Transfer-Encoding: quoted-printable
 On Wed, Aug 27, 2025 at 9:45=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
 rote:
 >
-> It is to unify map flags checking for lookup_elem, update_elem,
-> lookup_batch and update_batch APIs.
+> Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags and the following internal
+> helper functions for percpu maps:
 >
-> Therefore, it will be convenient to check BPF_F_CPU and BPF_F_ALL_CPUS
-> flags in it for these APIs in next patch.
+> * bpf_percpu_copy_to_user: For lookup_elem and lookup_batch user APIs,
+>   copy data to user-provided value pointer.
+> * bpf_percpu_copy_from_user: For update_elem and update_batch user APIs,
+>   copy data from user-provided value pointer.
+> * bpf_map_check_cpu_flags: Check BPF_F_CPU, BPF_F_ALL_CPUS and cpu info i=
+n
+>   flags.
+>
+> And, get the correct value size for these user APIs.
 >
 > Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 > ---
->  include/linux/bpf.h  | 28 ++++++++++++++++++++++++++++
->  kernel/bpf/syscall.c | 34 +++++++++++-----------------------
->  2 files changed, 39 insertions(+), 23 deletions(-)
+>  include/linux/bpf.h            | 89 ++++++++++++++++++++++++++++++++--
+>  include/uapi/linux/bpf.h       |  2 +
+>  kernel/bpf/syscall.c           | 24 ++++-----
+>  tools/include/uapi/linux/bpf.h |  2 +
+>  4 files changed, 103 insertions(+), 14 deletions(-)
 >
 > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 8f6e87f0f3a89..512717d442c09 100644
+> index 512717d442c09..a83364949b64c 100644
 > --- a/include/linux/bpf.h
 > +++ b/include/linux/bpf.h
-> @@ -3709,4 +3709,32 @@ int bpf_prog_get_file_line(struct bpf_prog *prog, =
-unsigned long ip, const char *
->                            const char **linep, int *nump);
->  struct bpf_prog *bpf_prog_find_from_stack(void);
+> @@ -547,6 +547,56 @@ static inline void copy_map_value_long(struct bpf_ma=
+p *map, void *dst, void *src
+>         bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
+>  }
 >
-> +static inline int bpf_map_check_op_flags(struct bpf_map *map, u64 flags,=
- u64 extra_flags_mask)
+> +#ifdef CONFIG_BPF_SYSCALL
+> +static inline void bpf_percpu_copy_to_user(struct bpf_map *map, void __p=
+ercpu *pptr, void *value,
+> +                                          u32 size, u64 flags)
 > +{
-> +       if (extra_flags_mask && (flags & extra_flags_mask))
-
-doh, Leon... when extra_flags_mask =3D=3D 0, `flags & extra_flags_mask` is
-always false, so just:
-
-if (flags & extra_flags_mask)
-    return -EINVAL;
-
-But it feels more natural to reverse the meaning of this and treat it
-as extra *allowed flags*. So zero would mean no extra flags should be
-there (most strict case) and ~0 would mean "we don't care or will
-check later". And so in the code you'd have
-
-if (flags & ~extra_flags) /* check for any unsupported flags */
-    return -EINVAL;
-
-But I need someone else to do a reality check on me here at this point.
-
-> +               return -EINVAL;
+> +       int current_cpu =3D raw_smp_processor_id();
+> +       int cpu, off =3D 0;
 > +
-> +       if ((flags & BPF_F_LOCK) && !btf_record_has_field(map->record, BP=
-F_SPIN_LOCK))
-> +               return -EINVAL;
-> +
-> +       return 0;
+> +       if (flags & BPF_F_CPU) {
+> +               cpu =3D flags >> 32;
+> +               copy_map_value_long(map, value, cpu !=3D current_cpu ? pe=
+r_cpu_ptr(pptr, cpu) :
+> +                                   this_cpu_ptr(pptr));
+> +               check_and_init_map_value(map, value);
+
+I'm not sure it's the question to you, but why would we
+"check_and_init_map_value" when copying data to user space?... this is
+so confusing...
+
+> +       } else {
+> +               for_each_possible_cpu(cpu) {
+> +                       copy_map_value_long(map, value + off, per_cpu_ptr=
+(pptr, cpu));
+> +                       check_and_init_map_value(map, value + off);
+> +                       off +=3D size;
+> +               }
+> +       }
 > +}
 > +
-> +static inline int bpf_map_check_update_flags(struct bpf_map *map, u64 fl=
-ags)
+> +void bpf_obj_free_fields(const struct btf_record *rec, void *obj);
+> +
+> +static inline void bpf_percpu_copy_from_user(struct bpf_map *map, void _=
+_percpu *pptr, void *value,
+> +                                            u32 size, u64 flags)
 > +{
-> +       return bpf_map_check_op_flags(map, flags, 0);
+> +       int current_cpu =3D raw_smp_processor_id();
+> +       int cpu, off =3D 0;
+> +       void *ptr;
+> +
+> +       if (flags & BPF_F_CPU) {
+> +               cpu =3D flags >> 32;
+> +               ptr =3D cpu =3D=3D current_cpu ? this_cpu_ptr(pptr) : per=
+_cpu_ptr(pptr, cpu);
+> +               copy_map_value_long(map, ptr, value);
+> +               bpf_obj_free_fields(map->record, ptr);
+> +       } else {
+> +               for_each_possible_cpu(cpu) {
+> +                       copy_map_value_long(map, per_cpu_ptr(pptr, cpu), =
+value + off);
+> +                       /* same user-provided value is used if
+> +                        * BPF_F_ALL_CPUS is specified, otherwise value i=
+s
+> +                        * an array of per-cpu values.
+> +                        */
+> +                       if (!(flags & BPF_F_ALL_CPUS))
+> +                               off +=3D size;
+> +                       bpf_obj_free_fields(map->record, per_cpu_ptr(pptr=
+, cpu));
+> +               }
+> +       }
 > +}
-> +
-> +#define BPF_MAP_LOOKUP_ELEM_EXTRA_FLAGS_MASK (~BPF_F_LOCK)
-> +
-> +static inline int bpf_map_check_lookup_flags(struct bpf_map *map, u64 fl=
-ags)
-> +{
-> +       return bpf_map_check_op_flags(map, flags, BPF_MAP_LOOKUP_ELEM_EXT=
-RA_FLAGS_MASK);
-> +}
-> +
-> +static inline int bpf_map_check_batch_flags(struct bpf_map *map, u64 fla=
-gs)
-> +{
-> +       return bpf_map_check_op_flags(map, flags, BPF_MAP_LOOKUP_ELEM_EXT=
-RA_FLAGS_MASK);
-> +}
-> +
->  #endif /* _LINUX_BPF_H */
+> +#endif
+
+hm... these helpers are just here with no way to validate that they
+generalize existing logic correctly... Do a separate patch where you
+introduce this helper before adding per-CPU flags *and* make use of
+them in existing code? Then we can check that you didn't introduce any
+subtle differences? Then in this patch you can adjust helpers to
+handle BPF_F_CPU and BPF_F_ALL_CPUS?
+
+pw-bot: cr
 
 [...]
 
