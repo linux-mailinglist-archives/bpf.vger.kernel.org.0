@@ -1,190 +1,239 @@
-Return-Path: <bpf+bounces-66740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5CB6B38EB8
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:50:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57F37B38EBB
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:51:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2B693B975B
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:49:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50A37188D3BD
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEC730FC3F;
-	Wed, 27 Aug 2025 22:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379DA30F94B;
+	Wed, 27 Aug 2025 22:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iytvK6AK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YeIf4OrQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E780830FC01
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 22:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4005828DF36;
+	Wed, 27 Aug 2025 22:50:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756334985; cv=none; b=sJ0EaH8ry0Fa6V8zV/sVu2qxCFqnX9dDlw0O0tMWBlvSXJBK1YwmglaDnpgj7nIbvcsUYuASUJFXMgNTJL1rIGJkW4ZCQ0C3JJyO9ystMsXLvvpqKECMd6E0volirmdlIBG11S+VVvpjM1PRA43QLVT+c/LMs2327Rzaj68fyKs=
+	t=1756335055; cv=none; b=l2/0EnSm1+po6Is9LPHxv4YlluQfoM7vVyyHW6myMb4wIXGIrQsb7giUE6eWpec1gFpSvTbzjIzXYmnnNy6+DicXwmTf2lcwCuE4NJKVa7CAvLzw+NVwJdPd/RyFKNlIM3Rc2bg7YvrdEMYWUOtFaiNaJv+AsPH1mFpPOyk7BWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756334985; c=relaxed/simple;
-	bh=QVc/J5WHQyzN1+X0tRM9t5olzSDJgl8rUhFvK6vUYTQ=;
+	s=arc-20240116; t=1756335055; c=relaxed/simple;
+	bh=vUmX/vn+a+wEwje5Gerz8t/4Z2TFr0ZQg1+1xDnuO1c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o0oT+te1c4upPREbZHRapI9FZ+M4dXHVl4rAah7OuKJ+TB/bZq47pZFK8+Q2H5+/N+I6bHJ+Pe037lHltmCGNIPIRTLVfzF9eJZOEJdJaqSj5+GTPmnWVC6+1jWJh3Zs53X4sdievDNG6F1psCvIcwBzv5bmubvSu0Bk2eAwX3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iytvK6AK; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-323267872f3so341388a91.1
-        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 15:49:43 -0700 (PDT)
+	 To:Cc:Content-Type; b=rUsTI7PMvkE4hWRuWydRAZBn5adAKQSONIAs0QYVkMFmdypcyNLep7HOIdRWsxlnR8jj/8yLXwObcgpGY3wL0m2LNgQw1DnwHOPKRBVzuxEHpXLEKo5oBds03sx6nXGjZOL3wGRBmYE4Z0QeUz1UZ3EdCN4IrqaVKtopKzycB2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YeIf4OrQ; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b471756592cso282973a12.3;
+        Wed, 27 Aug 2025 15:50:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756334983; x=1756939783; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756335053; x=1756939853; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e7tJKydEs+jBSYANdXBRrBzUHYm1sa5F5ZoiiMWvX0g=;
-        b=iytvK6AKI40In9EM+Sdp469R14HqrmSPsgm8hWGf6yRPj3Dx/ebbkz4rqExy8F+Mf5
-         P7DRttD2AFNq+3/9m+TEpKTQjKdP8FDqdWXJQxuyCbX1r9BU7jkd9MCkb8y0el5C8HkQ
-         6+kK6QDEPGr7tRld1ywaiNPuG32dYxTbOq08b1t8nk28YndNh3OfCLE8tEI8TlaS9Fch
-         GqlO7EWS7JNczSGRexden4GNQkuSKMZj9XjL3aRWREBe5RKaYos8n281Ac6agV1H3a5i
-         J/DyTNtrD4CRmFR9RUrlYePbpVraDUwGaN2M9zsM1xfG8YBmSSlpjB+Rb/kbqbwHGnM6
-         WpMQ==
+        bh=JH0ZMkQTqJgFF4M3Hiif3RHQ1h70wIdVN+DAVcLv5fM=;
+        b=YeIf4OrQr76lvdpQENWlWQvqtHbfdjVosMsvhSvUx3P41H4DVEkd02gnX0aiocZO44
+         k+w2cVlHe/w+q/RsOgjWcOnBiZ3y0rteDZCKSC24fikaXQa1VJSNEUPNu0G4xcp8cr7A
+         XK11e05ymP6tr7XzN9vWYNnGYH33AIwMAd5WxFWPpG5jbFGRPhlcRVE2wTPvT4AW/ExE
+         EcWV/dYRyOioGqY688anfG+TgmYUG42WqM7bzTSARYhl6CLBsS540IgkbG/uIsQYYVIh
+         4Z15cvtlUtns0jvysLtvyKLVg3lcdS3ToyrI7eG7ucLQiefuAMolEFTFgCs/30OEk7gO
+         M6EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756334983; x=1756939783;
+        d=1e100.net; s=20230601; t=1756335053; x=1756939853;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e7tJKydEs+jBSYANdXBRrBzUHYm1sa5F5ZoiiMWvX0g=;
-        b=TSO51nGH3Ws+jQIYCl9m62Fz7dup6r1SHSC+iokLv6c7tKrPJ/WddbcevT7P/Xnury
-         WDnKeYkPUCIcjv5wStrEj/U7DFVlRI9ukJ2JOAwBKfdGUtJMdZIuNrflTm019eGuyLtl
-         nl1IKRUduEFA0XmtWt7hO4mXdIMvyf4foWQtEDJpXFMUoYfAx2EgY0C15d0GRoNsoYn4
-         hO8ssRpTf41bAiBjQy8LUW9WlUMW0FKfs96Jw9eH1jEd30tS0V5fg/Wwudzpv2oeFUiK
-         LrqpQYlpFrs2djcrlv+M+TysdyD4jn1HEUgnv+hhD8KAdNvKiH5cWXgY7HCdYgfzruyx
-         PdrA==
-X-Forwarded-Encrypted: i=1; AJvYcCV3WGGhpL2MtcYIp8TiJ57eOafq5NefFiEm75N78X8FwHKd3LgGfU2BDp4T16rMPOwLJvc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YztvnDEpsnkmpXTp0ZGfANtKlbccK1D9wJrdNyKkgm78qpKQD3i
-	hWskgkKwDfbq7JuL9N3Am0LQ9OwsShW1g5Yhn/KLBtASdh3kfG9OxrZOqdAaohwMp9VNMflkz/V
-	jXUDyAccXlb/XRE7LAdstGA8fXFotKKT+Hnnc5vyT
-X-Gm-Gg: ASbGncu2X30JUeqMQ/OR1XMyz7ny6a4luxCcmry0hGgMtn/f7qxyd5zmQ+KxmONiCRT
-	4K7On4tMg6OKCcaijRZ68Jtrd1mQICEq/nbKVixYSr1m+aIScUe8WQ2QZO6HPA+vSgRWJLjtIcN
-	4r0KI7cy3m8qLaX2nih+Fj0nMyWtaowJ8OgnMiZdtcDwIp2OS/QJFn7AAeaD23tYhtu/qNmmea/
-	s/TKjXKRtnDhuHIbZfV2sxTp998+KGs8wNm2KY/sl8oLR3Wpak81QuT+vynnD4CWxO760W9SBZE
-	s2c=
-X-Google-Smtp-Source: AGHT+IFHChF/Z4eumRf7dcLNR3yT9T1V5M+AwTtQOljsYMx3cTlIrD3l+pjRP1l/H6FwzzL7yBvPGjYfLWGIpG1NTpQ=
-X-Received: by 2002:a17:90b:2f87:b0:31e:fac5:5d3f with SMTP id
- 98e67ed59e1d1-32515e37453mr32078746a91.16.1756334982875; Wed, 27 Aug 2025
- 15:49:42 -0700 (PDT)
+        bh=JH0ZMkQTqJgFF4M3Hiif3RHQ1h70wIdVN+DAVcLv5fM=;
+        b=CjaPavV3nsIZpy3NA2MlT9NpIvXWgMOtqYjQ9O8VWbLpwApXEgeVot2yTD6bhcbKEV
+         nrLqrWsAH5Zl8I4N1fwta0PYTihCc1TF5ssI0CmURR3cAgpjYRcYZr9mqcPl3VFNrn+8
+         VSmd5NUiWqvM7wgi1Pbt5MXWTf+5DpbS7f7V9JGe/QOdsSVg4iuZddi7+p/Q25r/m/Vu
+         /Qzd+3+zsxT4wkMrHwo9uPV1ljusJG/va+d5mfhmV+0Qa8QhIsApndTci+w+Gt++3HxK
+         ATEwZhFAL99F8wZml01QFxm3inAvSH2TCoG0j4aZOWG+AfFaL5Q0K50l7s8O73Gox2ww
+         4GiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVAF9pz0lMDfL3wxt77Fv7OcCDo9ffhvPjNV2N+BoyXekugEnfBd4A7IL+y16EZPi+AlLk=@vger.kernel.org, AJvYcCVtjPo9af1Fb0RQSDJxWSJXQq7sUehFHICbV1UhAl+YPGeCgGjFLxopGCCp19o7TVJBnlPehYZaNwvOGtEuj84y@vger.kernel.org, AJvYcCWYQm1gMTM19RlS5BS34rxqtAmoHDZN00t+RRCoHlAeEdNQ9HMRzX4meZwoTSihk2eYkX5FAEZeUWbh18/O@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxjvfcTH4S+00N/B3dLmsQURwHkB6dtFlUdq9irOuYyCkwMD4W
+	6XnGNhyWVC2wsUEk51kJK/y6g1BSYkWEKJ4YSejDOxBe4rQMUhmaWA33Z6CcBOBl6Blis6VuyM1
+	SNzikCOXIMDxSMFy219TahL/YDSkBozelgw==
+X-Gm-Gg: ASbGncvs6Swgeax8xENZnOc+G/gvii8ULznYWMpx6ReFfkcnrcGxFMI281myeTSr1yV
+	IhA5njz+yclX7i6YePs4+NehC36AFVO7NsysVWe6X8y5GyZdcWn5/aq4t8u1/DEyQOQevBRCXVc
+	pFarP7EWwn4IeuIDCaTVgfZ7w3pLvD6Csu44MPLhRw10a1wtWJpbFDWqGBYdmWMcj4FaVwgoo5q
+	9Ici73081nKfLEgz/ODP5peBFoq0SefHA==
+X-Google-Smtp-Source: AGHT+IGVIV7J+4a4Xnd12gCnkcvgNt1fnxHOhmTL9SD0LZ9Z8pgnOwTtcfsTTgPSkZuyvI4Ym/xunFvMMIfMPfztQ4E=
+X-Received: by 2002:a17:90b:258c:b0:325:11d1:1fb with SMTP id
+ 98e67ed59e1d1-32515ee12ffmr28430937a91.6.1756335053440; Wed, 27 Aug 2025
+ 15:50:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250826183940.3310118-1-kuniyu@google.com> <20250826183940.3310118-3-kuniyu@google.com>
- <aaf5eeb5-2336-4a20-9b8f-0cdd3c274ff0@linux.dev>
-In-Reply-To: <aaf5eeb5-2336-4a20-9b8f-0cdd3c274ff0@linux.dev>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Wed, 27 Aug 2025 15:49:31 -0700
-X-Gm-Features: Ac12FXxyFUKfXk4e6gDWfVcO2YtUAFIUl5jV7W_QtTmDvgwlt5pV4h7Mf-JUJVU
-Message-ID: <CAAVpQUCpoN4mA52g_DushJT--Fpi5b8GaB0EVgt1Eu3O+6GUrw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next/net 2/5] bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
+References: <20250827053128.1301287-1-phoenix500526@163.com> <20250827053128.1301287-2-phoenix500526@163.com>
+In-Reply-To: <20250827053128.1301287-2-phoenix500526@163.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 27 Aug 2025 15:50:39 -0700
+X-Gm-Features: Ac12FXxwUYLjf3rHV2MZaI4a5t3Rjssw34Xw2vBiTNBUlzUi8dDCFG0J6OMTzio
+Message-ID: <CAEf4Bzb0y+HM1-VG-vYEckeE=+gcc2=4TWdW_7hngKxGiHtwNQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v16 1/2] libbpf: fix USDT SIB argument handling
+ causing unrecognized register error
+To: Jiawei Zhao <phoenix500526@163.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	yonghong.song@linux.dev, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 27, 2025 at 3:23=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Tue, Aug 26, 2025 at 10:31=E2=80=AFPM Jiawei Zhao <phoenix500526@163.com=
+> wrote:
 >
-> On 8/26/25 11:38 AM, Kuniyuki Iwashima wrote:
-> > We will store a flag in sk->sk_memcg by bpf_setsockopt() during
-> > socket() or before sk->sk_memcg is set in accept().
-> >
-> > BPF_CGROUP_INET_SOCK_CREATE is invoked by __cgroup_bpf_run_filter_sk()
-> > that passes a pointer to struct sock to the bpf prog as void *ctx.
-> >
-> > But there are no bpf_func_proto for bpf_setsockopt() that receives
-> > the ctx as a pointer to struct sock.
-> >
-> > Let's add a new bpf_setsockopt() variant for BPF_CGROUP_INET_SOCK_CREAT=
-E.
-> >
-> > Note that inet_create() is not under lock_sock().
-> >
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
-> > ---
-> > v3: Remove bpf_func_proto for accept()
-> > v2: Make 2 new bpf_func_proto static
-> > ---
-> >   net/core/filter.c | 24 ++++++++++++++++++++++++
-> >   1 file changed, 24 insertions(+)
-> >
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 63f3baee2daf..443d12b7d3b2 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -5743,6 +5743,23 @@ static const struct bpf_func_proto bpf_sock_ops_=
-setsockopt_proto =3D {
-> >       .arg5_type      =3D ARG_CONST_SIZE,
-> >   };
-> >
-> > +BPF_CALL_5(bpf_unlocked_sock_setsockopt, struct sock *, sk, int, level=
+> On x86-64, USDT arguments can be specified using Scale-Index-Base (SIB)
+> addressing, e.g. "1@-96(%rbp,%rax,8)". The current USDT implementation
+> in libbpf cannot parse this format, causing `bpf_program__attach_usdt()`
+> to fail with -ENOENT (unrecognized register).
+>
+> This patch fixes this by implementing the necessary changes:
+> - add correct handling for SIB-addressed arguments in `bpf_usdt_arg`.
+> - add adaptive support to `__bpf_usdt_arg_type` and
+>   `__bpf_usdt_arg_spec` to represent SIB addressing parameters.
+>
+> Signed-off-by: Jiawei Zhao <phoenix500526@163.com>
+> ---
+>  tools/lib/bpf/usdt.bpf.h | 44 +++++++++++++++++++++++--
+>  tools/lib/bpf/usdt.c     | 69 +++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 106 insertions(+), 7 deletions(-)
+>
+
+[...]
+
+> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+> index 3373b9d45ac4..e5eeac0b0fa4 100644
+> --- a/tools/lib/bpf/usdt.c
+> +++ b/tools/lib/bpf/usdt.c
+> @@ -200,12 +200,23 @@ enum usdt_arg_type {
+>         USDT_ARG_CONST,
+>         USDT_ARG_REG,
+>         USDT_ARG_REG_DEREF,
+> +       USDT_ARG_SIB,
+>  };
+>
+>  /* should match exactly struct __bpf_usdt_arg_spec from usdt.bpf.h */
+>  struct usdt_arg_spec {
+>         __u64 val_off;
+> -       enum usdt_arg_type arg_type;
+> +#if __BYTE_ORDER__ =3D=3D __ORDER_LITTLE_ENDIAN__
+> +       enum usdt_arg_type arg_type: 8;
+> +       __u16   idx_reg_off: 12;
+> +       __u16   scale_bitshift: 4;
+> +       __u8 __reserved: 8;     /* keep reg_off offset stable */
+> +#else
+> +       __u8 __reserved: 8;     /* keep reg_off offset stable */
+> +       __u16   idx_reg_off: 12;
+> +       __u16   scale_bitshift: 4;
+> +       enum usdt_arg_type arg_type: 8;
+> +#endif
+>         short reg_off;
+>         bool arg_signed;
+>         char arg_bitshift;
+> @@ -1283,11 +1294,58 @@ static int calc_pt_regs_off(const char *reg_name)
+>
+>  static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_=
+arg_spec *arg, int *arg_sz)
+>  {
+> -       char reg_name[16];
+> -       int len, reg_off;
+> -       long off;
+> +       char reg_name[16] =3D {0}, idx_reg_name[16] =3D {0};
+> +       int len, reg_off, idx_reg_off, scale =3D 1;
+> +       long off =3D 0;
+> +
+> +       if (sscanf(arg_str, " %d @ %ld ( %%%15[^,] , %%%15[^,] , %d ) %n"=
 ,
-> > +        int, optname, char *, optval, int, optlen)
-> > +{
-> > +     return _bpf_setsockopt(sk, level, optname, optval, optlen);
+> +                          arg_sz, &off, reg_name, idx_reg_name, &scale, =
+&len) =3D=3D 5 ||
+> +               sscanf(arg_str, " %d @ ( %%%15[^,] , %%%15[^,] , %d ) %n"=
+,
+> +                          arg_sz, reg_name, idx_reg_name, &scale, &len) =
+=3D=3D 4 ||
+> +               sscanf(arg_str, " %d @ %ld ( %%%15[^,] , %%%15[^)] ) %n",
+> +                          arg_sz, &off, reg_name, idx_reg_name, &len) =
+=3D=3D 4 ||
+> +               sscanf(arg_str, " %d @ ( %%%15[^,] , %%%15[^)] ) %n",
+> +                          arg_sz, reg_name, idx_reg_name, &len) =3D=3D 3
+
+formatting here was messed up, I fixed it up
+
+> +               ) {
+> +               /*
+> +                * Scale Index Base case:
+> +                * 1@-96(%rbp,%rax,8)
+> +                * 1@(%rbp,%rax,8)
+> +                * 1@-96(%rbp,%rax)
+> +                * 1@(%rbp,%rax)
+> +                */
+> +               arg->arg_type =3D USDT_ARG_SIB;
+> +               arg->val_off =3D off;
+> +
+> +               reg_off =3D calc_pt_regs_off(reg_name);
+> +               if (reg_off < 0)
+> +                       return reg_off;
+> +               arg->reg_off =3D reg_off;
 >
-> The sock_owned_by_me() will warn.
+> -       if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n", arg_sz, &off, r=
+eg_name, &len) =3D=3D 3) {
+> +               idx_reg_off =3D calc_pt_regs_off(idx_reg_name);
+> +               if (idx_reg_off < 0)
+> +                       return idx_reg_off;
+> +               /* validate scale factor and set fields directly */
+> +               switch (scale) {
+> +               case 1:
+> +                       arg->scale_bitshift =3D 0;
+> +                       break;
+> +               case 2:
+> +                       arg->scale_bitshift =3D 1;
+> +                       break;
+> +               case 4:
+> +                       arg->scale_bitshift =3D 2;
+> +                       break;
+> +               case 8:
+> +                       arg->scale_bitshift =3D 3;
+> +                       break;
+
+I made this more compact as well.
+
+BPF selftest looks great, thanks for all the explanations ("d" and "a"
+x86-specific register constraints were new to me).
+
+Applied to bpf-next, thanks.
+
+> +               default:
+> +                       pr_warn("usdt: invalid SIB scale %d, expected 1, =
+2, 4, 8\n", scale);
+> +                       return -EINVAL;
+> +               }
+> +               arg->idx_reg_off =3D idx_reg_off;
+> +       } else if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n",
+> +                               arg_sz, &off, reg_name, &len) =3D=3D 3) {
+>                 /* Memory dereference case, e.g., -4@-20(%rbp) */
+>                 arg->arg_type =3D USDT_ARG_REG_DEREF;
+>                 arg->val_off =3D off;
+> @@ -1306,6 +1364,7 @@ static int parse_usdt_arg(const char *arg_str, int =
+arg_num, struct usdt_arg_spec
+>         } else if (sscanf(arg_str, " %d @ %%%15s %n", arg_sz, reg_name, &=
+len) =3D=3D 2) {
+>                 /* Register read case, e.g., -4@%eax */
+>                 arg->arg_type =3D USDT_ARG_REG;
+> +               /* register read has no memory offset */
+>                 arg->val_off =3D 0;
 >
->  From CI:
-> WARNING: CPU: 0 PID: 102 at include/net/sock.h:1756 bpf_unlocked_sock_set=
-sockopt+0xc7/0x110
-
-Oh sorry, I copied from a wrong place.. will fix it.
-
-BTW, I'm thinking I should inherit flags from the listener
-in sk_clone_lock() and disallow other bpf hooks.
-
-Given the listener's flag and bpf hooks come from the
-same cgroup, there is no point having other hooks.
-
-
->
-> > +}
-> > +
-> > +static const struct bpf_func_proto bpf_unlocked_sock_setsockopt_proto =
-=3D {
-> > +     .func           =3D bpf_unlocked_sock_setsockopt,
-> > +     .gpl_only       =3D false,
-> > +     .ret_type       =3D RET_INTEGER,
-> > +     .arg1_type      =3D ARG_PTR_TO_CTX,
-> > +     .arg2_type      =3D ARG_ANYTHING,
-> > +     .arg3_type      =3D ARG_ANYTHING,
-> > +     .arg4_type      =3D ARG_PTR_TO_MEM | MEM_RDONLY,
-> > +     .arg5_type      =3D ARG_CONST_SIZE,
-> > +};
-> > +
-> >   static int bpf_sock_ops_get_syn(struct bpf_sock_ops_kern *bpf_sock,
-> >                               int optname, const u8 **start)
-> >   {
-> > @@ -8051,6 +8068,13 @@ sock_filter_func_proto(enum bpf_func_id func_id,=
- const struct bpf_prog *prog)
-> >               return &bpf_sk_storage_get_cg_sock_proto;
-> >       case BPF_FUNC_ktime_get_coarse_ns:
-> >               return &bpf_ktime_get_coarse_ns_proto;
-> > +     case BPF_FUNC_setsockopt:
-> > +             switch (prog->expected_attach_type) {
-> > +             case BPF_CGROUP_INET_SOCK_CREATE:
-> > +                     return &bpf_unlocked_sock_setsockopt_proto;
-> > +             default:
-> > +                     return NULL;
-> > +             }
-> >       default:
-> >               return bpf_base_func_proto(func_id, prog);
-> >       }
+>                 reg_off =3D calc_pt_regs_off(reg_name);
+> --
+> 2.43.0
 >
 
