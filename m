@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-66718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DF2DB38AE4
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:26:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA22BB38AE6
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:26:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8295A2084BE
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:25:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4D8C1C23450
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2F63081A7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0CDB3081BD;
 	Wed, 27 Aug 2025 20:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="APHVpDv6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nLxW+Cnf"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06F2301028;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0750302767;
 	Wed, 27 Aug 2025 20:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756326262; cv=none; b=lNM30zzYZDfC2vqphWaraRVjiJWLGukz9XvcFsxNHVi62M8Wb/scGXdPoqgQ/ExhYM9XvkkudeQe06A4mFhEI8QRD02EeOXVrV/Y2ovq6Euyaiqi3k5UU9fPBWAMu/pkhaLK5xc8+1WJbRa7JXTBrOlY4yW0ZQZdRg3PcdPlEkA=
+	t=1756326263; cv=none; b=aHutAAOK4x0c+hu3F1kl5QC/qrE+QPdIs0tAiVA1NPvSy26CLj2Yg7cBHHR3k3/cCXX4SNW10IpuCtLbZpk0xZLzTnVBd3zgpLt3rh8zz4hcYPI6Vp4J98GxW6OpDkn1mT5zmOpIvh01zBqKJyqZtvyb+FIZopXdO42Ey19zfGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756326262; c=relaxed/simple;
-	bh=EgHoeoxXCjxslVJujBtFAK4/oaW+ZtT15/3T3C1cFpY=;
+	s=arc-20240116; t=1756326263; c=relaxed/simple;
+	bh=+aOOqq5ATDlTuAY4Uj5/HzrzIr46HmGDaIoU2I/Lquk=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=BJYbPQuy71AdQTVsO60B5fXxkw/IEXT8m60sQLymKbNE0TJX3pJ1YPkTxlxkgnRvYY4lrBl8xBmCHHgJoOcMGREYM+WgTFgIhebIbvA7z1sTyS+6r8BdF9uZGdkjCDHtWDgD0dSfYTufZyQJOnbeOIH5ccRA94osQtIKFZwCSg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=APHVpDv6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABA31C4CEFA;
+	 Content-Type; b=giozKj3CrZV/AhYF/+i+ZY00mjE3vY2aGK+EaBvmTtMgfheAGHIlOSs0RGLgTdRzXx8b65lkAsQVKt+IPkr1z3SOH5sfqvemiMBaJ1HGJwdQ2kPRDoQkBFCh9CLtDHVro2vmVumjDfv7s3zHu0NEanHKSVGipg0LszyCZDJ/puU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nLxW+Cnf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA64DC4CEF7;
 	Wed, 27 Aug 2025 20:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756326262;
-	bh=EgHoeoxXCjxslVJujBtFAK4/oaW+ZtT15/3T3C1cFpY=;
+	bh=+aOOqq5ATDlTuAY4Uj5/HzrzIr46HmGDaIoU2I/Lquk=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=APHVpDv6+sGOzsT07FlPoOJMlel/ovN020dbdkghGgEQBAOAaCqSix3fFPp1/NI/Y
-	 nBovlfX2dNP7yv4p6DMvSRceP0s4TpUi9poQA2YduXYwGrTGTbqCeRaDyCd9ax89tz
-	 S/4wjyxoeI1aXmiV7d9mEIXxxZ8sOIaHfO8RV4Wr2z+8PerpXU2DbjM+SGeecsFNIM
-	 ag4eQBqAm+RGCtjWyg5Z8q+SoH3vcP4NnVWKAgijHnW/j+n8gAzm9Z0c7mey6TvVRT
-	 5UIRdimAi1TZND47cppFNcFAGcyAvcxbmnDxotDn4yg48VXlJMQ9ktVkYwwAq0WOTt
-	 Wva4yZzCMlfuw==
+	b=nLxW+CnfQiy3X6BsFI7f0ExL5YrD99XGL5GxmIW4hjwm7zgWzzEyO8DB9ysGUMCPc
+	 pEKejeI8FcPH68IgAQ0cISTewKN2+cpppEA3fi8IjgM5YnJtb5klFftKuwBdlLfrkN
+	 rn5aLZwR/hEx2RLo8OTmx/z9HVHddb++rZgTlrHoF3BbUl9Z/KyvqoeRunugjVVfJ5
+	 +i6LXQrWjIVlzPWRq0tabozrZuYPIrF9hdL5uB/vqpA2DersfXKdymf3sIF1dWDt6D
+	 aJu3hX17i1YwCm/eg9r3td1l3AjWCCuVPpAZ9yk9NJygy1SSTiiHGxe6qiTvxDaEjo
+	 N1Y4tUCcvLNQg==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1urMhF-00000003kzp-2Tcm;
+	id 1urMhF-00000003l0J-3AiB;
 	Wed, 27 Aug 2025 16:24:41 -0400
-Message-ID: <20250827202441.441080427@kernel.org>
+Message-ID: <20250827202441.612134888@kernel.org>
 User-Agent: quilt/0.68
-Date: Wed, 27 Aug 2025 16:15:56 -0400
+Date: Wed, 27 Aug 2025 16:15:57 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -73,7 +73,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Sam James <sam@gentoo.org>,
  Kees Cook <kees@kernel.org>,
  "Carlos O'Donell" <codonell@redhat.com>
-Subject: [PATCH v10 08/11] unwind_user/sframe: Remove .sframe section on detected corruption
+Subject: [PATCH v10 09/11] unwind_user/sframe: Show file name in debug output
 References: <20250827201548.448472904@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -85,30 +85,195 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-To avoid continued attempted use of a bad .sframe section, remove it
-on demand when the first sign of corruption is detected.
+When debugging sframe issues, the error messages aren't all that helpful
+without knowing what file a corresponding .sframe section belongs to.
+Prefix debug output strings with the file name.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/unwind/sframe.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/sframe.h       |  4 +++-
+ kernel/unwind/sframe.c       | 23 ++++++++++--------
+ kernel/unwind/sframe_debug.h | 45 +++++++++++++++++++++++++++++++-----
+ 3 files changed, 56 insertions(+), 16 deletions(-)
 
+diff --git a/include/linux/sframe.h b/include/linux/sframe.h
+index 9a72209696f9..b79c5ec09229 100644
+--- a/include/linux/sframe.h
++++ b/include/linux/sframe.h
+@@ -10,7 +10,9 @@
+ 
+ struct sframe_section {
+ 	struct rcu_head	rcu;
+-
++#ifdef CONFIG_DYNAMIC_DEBUG
++	const char	*filename;
++#endif
+ 	unsigned long	sframe_start;
+ 	unsigned long	sframe_end;
+ 	unsigned long	text_start;
 diff --git a/kernel/unwind/sframe.c b/kernel/unwind/sframe.c
-index b10420d19840..f246ead6c2a0 100644
+index f246ead6c2a0..66d3ba3c8389 100644
 --- a/kernel/unwind/sframe.c
 +++ b/kernel/unwind/sframe.c
-@@ -310,6 +310,10 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
- 	ret = __find_fre(sec, &fde, ip, frame);
+@@ -311,14 +311,17 @@ int sframe_find(unsigned long ip, struct unwind_user_frame *frame)
  end:
  	user_read_access_end();
-+
-+	if (ret == -EFAULT)
-+		WARN_ON_ONCE(sframe_remove_section(sec->sframe_start));
-+
+ 
+-	if (ret == -EFAULT)
++	if (ret == -EFAULT) {
++		dbg_sec("removing bad .sframe section\n");
+ 		WARN_ON_ONCE(sframe_remove_section(sec->sframe_start));
++	}
+ 
  	return ret;
  }
  
+ static void free_section(struct sframe_section *sec)
+ {
++	dbg_free(sec);
+ 	kfree(sec);
+ }
+ 
+@@ -329,7 +332,7 @@ static int sframe_read_header(struct sframe_section *sec)
+ 	unsigned int num_fdes;
+ 
+ 	if (copy_from_user(&shdr, (void __user *)sec->sframe_start, sizeof(shdr))) {
+-		dbg("header usercopy failed\n");
++		dbg_sec("header usercopy failed\n");
+ 		return -EFAULT;
+ 	}
+ 
+@@ -337,18 +340,18 @@ static int sframe_read_header(struct sframe_section *sec)
+ 	    shdr.preamble.version != SFRAME_VERSION_2 ||
+ 	    !(shdr.preamble.flags & SFRAME_F_FDE_SORTED) ||
+ 	    shdr.auxhdr_len) {
+-		dbg("bad/unsupported sframe header\n");
++		dbg_sec("bad/unsupported sframe header\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (!shdr.num_fdes || !shdr.num_fres) {
+-		dbg("no fde/fre entries\n");
++		dbg_sec("no fde/fre entries\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	header_end = sec->sframe_start + SFRAME_HEADER_SIZE(shdr);
+ 	if (header_end >= sec->sframe_end) {
+-		dbg("header doesn't fit in section\n");
++		dbg_sec("header doesn't fit in section\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -360,7 +363,7 @@ static int sframe_read_header(struct sframe_section *sec)
+ 	fres_end   = fres_start + shdr.fre_len;
+ 
+ 	if (fres_start < fdes_end || fres_end > sec->sframe_end) {
+-		dbg("inconsistent fde/fre offsets\n");
++		dbg_sec("inconsistent fde/fre offsets\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -416,6 +419,8 @@ int sframe_add_section(unsigned long sframe_start, unsigned long sframe_end,
+ 	sec->text_start		= text_start;
+ 	sec->text_end		= text_end;
+ 
++	dbg_init(sec);
++
+ 	ret = sframe_read_header(sec);
+ 	if (ret) {
+ 		dbg_print_header(sec);
+@@ -424,8 +429,8 @@ int sframe_add_section(unsigned long sframe_start, unsigned long sframe_end,
+ 
+ 	ret = mtree_insert_range(sframe_mt, sec->text_start, sec->text_end, sec, GFP_KERNEL);
+ 	if (ret) {
+-		dbg("mtree_insert_range failed: text=%lx-%lx\n",
+-		    sec->text_start, sec->text_end);
++		dbg_sec("mtree_insert_range failed: text=%lx-%lx\n",
++			sec->text_start, sec->text_end);
+ 		goto err_free;
+ 	}
+ 
+@@ -447,7 +452,7 @@ static int __sframe_remove_section(struct mm_struct *mm,
+ 				   struct sframe_section *sec)
+ {
+ 	if (!mtree_erase(&mm->sframe_mt, sec->text_start)) {
+-		dbg("mtree_erase failed: text=%lx\n", sec->text_start);
++		dbg_sec("mtree_erase failed: text=%lx\n", sec->text_start);
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/kernel/unwind/sframe_debug.h b/kernel/unwind/sframe_debug.h
+index 055c8c8fae24..7794bf0bd78c 100644
+--- a/kernel/unwind/sframe_debug.h
++++ b/kernel/unwind/sframe_debug.h
+@@ -10,26 +10,59 @@
+ #define dbg(fmt, ...)							\
+ 	pr_debug("%s (%d): " fmt, current->comm, current->pid, ##__VA_ARGS__)
+ 
++#define dbg_sec(fmt, ...)						\
++	dbg("%s: " fmt, sec->filename, ##__VA_ARGS__)
++
+ static __always_inline void dbg_print_header(struct sframe_section *sec)
+ {
+ 	unsigned long fdes_end;
+ 
+ 	fdes_end = sec->fdes_start + (sec->num_fdes * sizeof(struct sframe_fde));
+ 
+-	dbg("SEC: sframe:0x%lx-0x%lx text:0x%lx-0x%lx "
+-	    "fdes:0x%lx-0x%lx fres:0x%lx-0x%lx "
+-	    "ra_off:%d fp_off:%d\n",
+-	    sec->sframe_start, sec->sframe_end, sec->text_start, sec->text_end,
+-	    sec->fdes_start, fdes_end, sec->fres_start, sec->fres_end,
+-	    sec->ra_off, sec->fp_off);
++	dbg_sec("SEC: sframe:0x%lx-0x%lx text:0x%lx-0x%lx "
++		"fdes:0x%lx-0x%lx fres:0x%lx-0x%lx "
++		"ra_off:%d fp_off:%d\n",
++		sec->sframe_start, sec->sframe_end, sec->text_start, sec->text_end,
++		sec->fdes_start, fdes_end, sec->fres_start, sec->fres_end,
++		sec->ra_off, sec->fp_off);
++}
++
++static inline void dbg_init(struct sframe_section *sec)
++{
++	struct mm_struct *mm = current->mm;
++	struct vm_area_struct *vma;
++
++	guard(mmap_read_lock)(mm);
++	vma = vma_lookup(mm, sec->sframe_start);
++	if (!vma)
++		sec->filename = kstrdup("(vma gone???)", GFP_KERNEL);
++	else if (vma->vm_file)
++		sec->filename = kstrdup_quotable_file(vma->vm_file, GFP_KERNEL);
++	else if (vma->vm_ops && vma->vm_ops->name)
++		sec->filename = kstrdup(vma->vm_ops->name(vma), GFP_KERNEL);
++	else if (arch_vma_name(vma))
++		sec->filename = kstrdup(arch_vma_name(vma), GFP_KERNEL);
++	else if (!vma->vm_mm)
++		sec->filename = kstrdup("(vdso)", GFP_KERNEL);
++	else
++		sec->filename = kstrdup("(anonymous)", GFP_KERNEL);
++}
++
++static inline void dbg_free(struct sframe_section *sec)
++{
++	kfree(sec->filename);
+ }
+ 
+ #else /* !CONFIG_DYNAMIC_DEBUG */
+ 
+ #define dbg(args...)			no_printk(args)
++#define dbg_sec(args...	)		no_printk(args)
+ 
+ static inline void dbg_print_header(struct sframe_section *sec) {}
+ 
++static inline void dbg_init(struct sframe_section *sec) {}
++static inline void dbg_free(struct sframe_section *sec) {}
++
+ #endif /* !CONFIG_DYNAMIC_DEBUG */
+ 
+ #endif /* _SFRAME_DEBUG_H */
 -- 
 2.50.1
 
