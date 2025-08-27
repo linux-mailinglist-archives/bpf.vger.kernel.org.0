@@ -1,106 +1,79 @@
-Return-Path: <bpf+bounces-66661-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66662-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60C5FB3838A
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 15:15:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 985F8B383F0
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 15:46:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 457327A915A
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 13:14:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F01515E11C2
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 13:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892D728F1;
-	Wed, 27 Aug 2025 13:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F3B3568EA;
+	Wed, 27 Aug 2025 13:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="DB2mZn2Q";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="QGo5FpAv"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="iiyw9ZWD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2040.outbound.protection.outlook.com [40.107.237.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB45212D83;
-	Wed, 27 Aug 2025 13:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74852ED16D;
+	Wed, 27 Aug 2025 13:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.40
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756300538; cv=fail; b=jcQOhNEWprxRep7SZWk09ymaxRYAoRN9TCPLZY+rFyj+S0d8knINHHohYvWqHkGa8bgvJ6vTif2cQ0VD7wCNieZH8U1inz5rRJ5BXHL67d3z3Q7mLCzeKTm1XD9fXcJukA/fZrnVWqAXXkLywhtFHBHXh3wPz1oOrfvsuWAklRY=
+	t=1756302349; cv=fail; b=lzv4K6ApE+RU6+aNbmJGFLmuMUTLQvQXau7jHiMMK2wTE5iN1EnregmKvk+Mxnv17RC9C28tOtw1vYLDyZ7vC/O0xF1mTTGmTxq28rl28qSGOPrTSCq+LuUBQiljlWcn5gd7CedCk5uRHSKmTzYUroLnqv+4niovoqZNEpMc2+4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756300538; c=relaxed/simple;
-	bh=ED49BZmWr9jwa+wGBwzMiTERUFABFoQ+t01W1uoa7zU=;
+	s=arc-20240116; t=1756302349; c=relaxed/simple;
+	bh=5vLrR3/MZrbFQyiEyASGMnvBwnUwDT/0GX+d1zZ5NtE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=SU2I0D0xfn5vZJ3zh5c/wpnm8UfkhHNxuQwYwK97NhrTydLDhddReY4A4U8Kk4iY3lIjiLoLxATpqVzZh80rmAJYV/KZiDk1uAmvHcIH5eExRqC8jUSBs0pea6xoB2fF11M55AOXAIcjCHFf9GVNgyknyl8M9ppwr9XkDY35xpg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=DB2mZn2Q; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=QGo5FpAv; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57R7uAoE008720;
-	Wed, 27 Aug 2025 13:14:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=hyJXhW1MD2hd6Y3Nm7px/Ou2Ze33ZHFVYos2ib/nBKQ=; b=
-	DB2mZn2Q3zCyuHr3cO5u0+pB0DDC4uX7UG7bQoIRQZFYiyeC6gV+AoKmlOOAhbEz
-	F4eWF1rv4/+3tmQo0I3jxqibOYg48J2ScZmFTDxQI8Y8gs/X981ya73fZu+xSZ9c
-	R4RI2G03Z5jn5JZNir6p8VafB5rZ0t9tQws3TcM/Dz2Q003fsBTWLJrrM1RwvaQ9
-	YuEPoi4g5ORKWQ1W7qE3sWrhlAc1flR6YtznzAH/Hf32w9N3ycbTt4hUH3fkhC96
-	LClzmdK4zkf7Bs0jMeF9IMkgAW1t4Rr7kXntlYx4z3WSj/XZnuLF6ALgSNYE7tBt
-	/eQ0N0fIg1r/YZHBkmohZQ==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48q5pt6gmx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Aug 2025 13:14:34 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 57RD4Z9Q012331;
-	Wed, 27 Aug 2025 13:14:34 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12on2066.outbound.protection.outlook.com [40.107.244.66])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48q43an0m6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Aug 2025 13:14:33 +0000
+	 Content-Disposition:In-Reply-To:MIME-Version; b=X9U0BM+wuVVGXHpPHYH47+0qhZxaZWQU86egwpdTP8XiZ1pT6e51ToluxbJgUzBw94tqf7xLtlrYlC32s+4eL+bILLZ88hCaJIyvTIllx7hNOeJGU7JZSpSYHLG2VaZCVjDrcEDuEFXyZu6ttjse5z/8j8xqGlgsWl0huCZc6to=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=iiyw9ZWD; arc=fail smtp.client-ip=40.107.237.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WSsIQMAlE7pF9Sj7v0xEHz8P28+eQmdearVKn5Y4VaR8O46g8fWz2U6vRDIc3yhatBXqckG97Ix2/IFPWTHzyFbJbeT6tt8IJW97WAH2MBAo6AzGvk8HcAvJhGucm97OsbELSxSQkYBq0mBCg01omg8PK1KO8xhkpvUV8IUYPu3bEA5q2JBCwzzu5QbRhYVgQDsg56fCwWMhy4zOfT89HxwT1F6EajD+zMmgf8GIixkcV6Jw2uW2v14oRpJVQmH7RcBYeWCbxwvmHy+JtC+aoNEIttdo9xXLnN48AQU2MnUN04ybTiCsdHo0hpduxYTTShPY3Dxh64xLE/+4IpUgMQ==
+ b=ANa0uxo7B0EOg9h+zuJ0teDQ0vrF1jriYWoZqr+rvaxXz1q7Eu9vwINPfistyfgWlqEEJhRKJosbKtuRmUcfLGcnTlUHaPEzqBKdDsPk9Hc+CIGmyRSmU091lbhaznnZR7VQ4LChWYzwjpxYxpnHaGtNq6BV8WmMkGfnW+CCz+OsXsMwNSOsFpiN48q6g5N36/CvwfPEg4CC/NplrX5gmNijXKm6YgY4fOmSn4P/bc/Sb/yGAMg2BJh6qOE72V8vXnSZhv1aNInK3kav9lAjMBjEVcI4QW8ctg+PH3mV3tokJHDqcGh15n9IWwmaNHsDl3b5Sgeg0kkXBPxQc4sp7w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hyJXhW1MD2hd6Y3Nm7px/Ou2Ze33ZHFVYos2ib/nBKQ=;
- b=fFG+8PU5jL22PCye07DUZL8jY/l+Eq7FxgLysiF146EIH6yZOxe9XpuQEqE7O/u0ILpFsiNtDOuZsZEeblGdzz/8pEmWLw+KhIElMHMNO5TVodvXN0fxMtMrjgLELagOJeW1g5hyBdr19T7zd2cUpRqGurezQTta1/2OQeCGMjzB7P41AM+vScgdUW7tp4Rn/1duYM/BsI0DAyJx86xlwgu57HBirLBky9UQuJkzKxKMPNmj39ZHYA/9GJODA2aKsfPs9gxt1JGg7Y1LJlWgbw8CtqutM7sHQZvk36vaJD9E7Xuayk+FxE5nYovlAoXMM7K/LFHPsfD4HmthA+n/5w==
+ bh=pefYaHsQGUGm3q4R39W8D4KILG5uJajtGTVfeZ9e/n8=;
+ b=FoKyJP1WAPHBsWThwzUXU9CUbT3nb3ttwLkWcZMV+ZC8X1ezn3wvoyWdDPsBKiGRRsiA3g8zgIdrkFI+Bx6t+9mMYOOm+jvnWo1YruboveOkwdrflsegwIjZqEaf048RtGbHa0GRqf4mQJY79HTw1oQtVGSGsOBEGmfKDWOtvayO5d4uqdYP0MG/OL3FBaCD0orboXM3ZMn/37N0A8eKfDbK8oPyx+aq2wXQ0ifpS4/Xh3mEPFt2sqZbYlQfxcmfJcMhNIbtLkXPv1K4iuzA4nUvm0iFTsGcZW9+ChncXZl7+UI/eFxPsCAg2oZ3/Tj3xAXT9e7Dpg/+XNuMtysS7A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hyJXhW1MD2hd6Y3Nm7px/Ou2Ze33ZHFVYos2ib/nBKQ=;
- b=QGo5FpAvsXh2fYoOUJolJeqbW8tzSXakHUR70zIdtlAWJRjQYx1A9qRJqHXqrYJVlUvisECzzJahd7hKFF3IDxJ9WyDQULPs5mW3HRmxNujdqODRYkhAlWt4iTK3W9tBUKrjKazwi3itq97ju5zWiJeLFG3NK3PhG2oTboznnY0=
-Received: from DM4PR10MB8218.namprd10.prod.outlook.com (2603:10b6:8:1cc::16)
- by CH4PR10MB8003.namprd10.prod.outlook.com (2603:10b6:610:240::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.13; Wed, 27 Aug
- 2025 13:14:30 +0000
-Received: from DM4PR10MB8218.namprd10.prod.outlook.com
- ([fe80::2650:55cf:2816:5f2]) by DM4PR10MB8218.namprd10.prod.outlook.com
- ([fe80::2650:55cf:2816:5f2%5]) with mapi id 15.20.9052.019; Wed, 27 Aug 2025
- 13:14:30 +0000
-Date: Wed, 27 Aug 2025 14:14:27 +0100
-From: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com,
-        baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com,
-        npache@redhat.com, ryan.roberts@arm.com, dev.jain@arm.com,
-        hannes@cmpxchg.org, usamaarif642@gmail.com,
-        gutierrez.asier@huawei-partners.com, willy@infradead.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        ameryhung@gmail.com, rientjes@google.com, corbet@lwn.net,
-        bpf@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 mm-new 00/10] mm, bpf: BPF based THP order selection
-Message-ID: <06d7bde9-e3f8-45fd-9674-2451b980ef13@lucifer.local>
-References: <20250826071948.2618-1-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=utf-8
+ bh=pefYaHsQGUGm3q4R39W8D4KILG5uJajtGTVfeZ9e/n8=;
+ b=iiyw9ZWDamQroHdaXeRamTGL86ZQ/+gcceHFG2gVG8KP5tpe0a+c41cICBKUJPJ9WT+LlGgQii6u/8/j61qMbrrz+2voJSMDleTBZEtz0XcxZ4+Mz4ekxaylrp5v2LsuFvAu1LJST23ks97PnVXlhrFxqlxpJv28Psom1B/hCYgAbjDnFY9dDqIJs2oXO9D4ZEpPY/kz8QFJT9v8GSQyQ+GQfqcKXLKgIbKIVQt6zjDDX9AFhRsgJw8q0n+T9sDNVPKkqJoR63owg6gCpPQEoBHOAUdK+WPfwO2rN/fHseRjbxj3laabyC2OAfoBpOdJhjRSS0fjw8HvsUflQOfoyg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from IA1PR12MB9031.namprd12.prod.outlook.com (2603:10b6:208:3f9::19)
+ by DS0PR12MB8272.namprd12.prod.outlook.com (2603:10b6:8:fc::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9073.16; Wed, 27 Aug 2025 13:45:43 +0000
+Received: from IA1PR12MB9031.namprd12.prod.outlook.com
+ ([fe80::1fb7:5076:77b5:559c]) by IA1PR12MB9031.namprd12.prod.outlook.com
+ ([fe80::1fb7:5076:77b5:559c%6]) with mapi id 15.20.9073.010; Wed, 27 Aug 2025
+ 13:45:42 +0000
+Date: Wed, 27 Aug 2025 13:45:30 +0000
+From: Dragos Tatulea <dtatulea@nvidia.com>
+To: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, kuba@kernel.org, martin.lau@kernel.org, 
+	mohsin.bashr@gmail.com, saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, 
+	maciej.fijalkowski@intel.com, kernel-team@meta.com, noren@nvidia.com
+Subject: Re: [RFC bpf-next v1 1/7] net/mlx5e: Fix generating skb from
+ nonlinear xdp_buff
+Message-ID: <76vmglojxf3yqysn5iwthctiacjy6xqcvrzzny74524djwhcf3@ejctdcty3cdz>
+References: <20250825193918.3445531-1-ameryhung@gmail.com>
+ <20250825193918.3445531-2-ameryhung@gmail.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250826071948.2618-1-laoar.shao@gmail.com>
-X-ClientProxiedBy: LO2P265CA0092.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:8::32) To DM4PR10MB8218.namprd10.prod.outlook.com
- (2603:10b6:8:1cc::16)
+In-Reply-To: <20250825193918.3445531-2-ameryhung@gmail.com>
+X-ClientProxiedBy: TL2P290CA0028.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:3::10) To IA1PR12MB9031.namprd12.prod.outlook.com
+ (2603:10b6:208:3f9::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -108,407 +81,292 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR10MB8218:EE_|CH4PR10MB8003:EE_
-X-MS-Office365-Filtering-Correlation-Id: fd55dfb1-9c71-481f-5df1-08dde56ba83e
+X-MS-TrafficTypeDiagnostic: IA1PR12MB9031:EE_|DS0PR12MB8272:EE_
+X-MS-Office365-Filtering-Correlation-Id: 49355b1f-ed51-48bb-369c-08dde57003ef
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?b1JPQkdNWG1FWGFqQXRSVzRCSXdQUmdoSG9zUzBUSHozMEZZWDdoL1NlcGVk?=
- =?utf-8?B?NjAybEIxYzloZGJ4L0RjQmwxMng5NkowSHBYcVphTVpsV1AyTmFNTkVIL2VT?=
- =?utf-8?B?S3lWYXpwRE9lMzZoWlVTeHMrMDVkbk43UGZLRUdLcUY0dndxYmt2eVBvU0pC?=
- =?utf-8?B?aFVKdXRTZ0ZaZlRPbENBc2FLVDEyRytBa082KzhjZElZbzFkSjBlUnFsZkxG?=
- =?utf-8?B?VVNvd0FHRTh1c05oRlRoTW9ySmt5T3dvUjNJZHlHREdNZmsrcXRqTTM2Wm8x?=
- =?utf-8?B?YTVMOHAyOXBUT1c0am1rSEdKci9tbElmU1laNVZLY3VRYUV1NmNWajVXT1Ay?=
- =?utf-8?B?WklHNHpRVE8xU2hkbHFQNUQxWDVTNS96enl5VXZpMjRXVC92MmRZYVVVbFFr?=
- =?utf-8?B?c1NHcytWNVd3STR1Skc4eUE1UmVKK2NHR3h6Q1RvQVUxMzF5MEJ3MmJyWjFN?=
- =?utf-8?B?cFpJQWxlUTJWckxYSnNGN1F4cGZiSVYzalorSG84TDAvUlk5TkZ1YUQ5b3V0?=
- =?utf-8?B?djFVdGZQL2M1aG94ZmlyOFdueFFFNjdLVkIvejB0THlURzdCMUwxdDR4TzhR?=
- =?utf-8?B?V3pobUJNeUhidWhwTmNYL1Z2TURmY0ozTWw1K1o1RGlpUFoyUDBvRU0zcjNo?=
- =?utf-8?B?YlIrMFA2WXZJcXRPRHErajZuWnNrWlBzb1RTV09FdEZSU254RDU5NEpkUTlU?=
- =?utf-8?B?dndRaU9vLzNoVFYvVGNkbld1VEcvZnVFQTBwYXZja3MzOWVYWVhGVGZ1dkt2?=
- =?utf-8?B?Wkx6SHRLdEo3N1BpRHA1cjVJTlZRaDJ3dVA0amtJQmtuejduTmQyZ2N3bjk3?=
- =?utf-8?B?LzRYeW9jWFdSMjdOejNtdXIzM0dReHF0S3JZQnpHcTNGNmxQZHZnQWJISWgr?=
- =?utf-8?B?UkZBeHhHVXUzZ0xSaWdvODZWaXYwa3lkdDMzblBzY2plcFJwa215Q3ZReHpz?=
- =?utf-8?B?WmRmbVo4SDJCb25qY09WUUZ6NHRvNjlRSERNM1JhTlVaYlhBS3luTmFRR1I0?=
- =?utf-8?B?WDJXWlI2MFZsTTRVNXJ2d0I2QjZYODN4V1BrUGtnWVlqRko4TVdMcmltbitK?=
- =?utf-8?B?ZmQvWkNDQjZNbVAvSktnQk8yMnJnaGhnUi9wZzJmTWtIU01hc1hiM1VUVnpn?=
- =?utf-8?B?UWZRRWpSbnBQaXFMVERJVGNhVWVNTnJUOEswWTJzdzBCeHpzSjNrSjg5K2Zt?=
- =?utf-8?B?NVIwUlhLVWxJK0xvUncxekZRTnNlYWtIWFViQVh6UTJESjB4MDFoTHZudFhK?=
- =?utf-8?B?MFltR3k1dTZKRWRENXFZbWJRY1lqUHBSSVlKd01jdjBlcTgyZk1GVmRsTmc3?=
- =?utf-8?B?bXo3WjhZUUFJOHBPTHc3WklnbllZRm5UMklRTVdiYWlZcTR1SzJXYThOQ3NY?=
- =?utf-8?B?RnlwSzR2VFNCckFZVko3cjlOeW4rRmk4UlVqRS84SUVIbGRVb2pCMm80ZlVK?=
- =?utf-8?B?ZG5ORG5ORlE2bUF5Q25KVFl4Z1VmajFkeFhnM2x5amIxU2htdEJzaHlVZjND?=
- =?utf-8?B?by9hbkJMcVEzN0hQVjNOL2NoQzVJRFdKQmFRWWVQdmM4RXhVazJTd3k0akpP?=
- =?utf-8?B?WURzekVPaVg4U3JoRmRVRjQzMk92VVQ2RU5ZRExSbVZ6Z01LSW1ZZEtaYWdQ?=
- =?utf-8?B?Q3FxTGp1eCswZkQrYVM0SDBBTVVaRkJFeVRVNmY1NUZDUHp0ZVh3M2ZhODBV?=
- =?utf-8?B?YnFGMHNTNVNRMXltNUR5eE1SZVdaZjhGR3ZBT3hpL0RoR1owcHdLWTVJVndw?=
- =?utf-8?B?SW5iaEkxUEdNR1Z4S3VmV1VqYndBRWZjRkJQUUoyKzh0ZEh1TXhzZXYvTVR6?=
- =?utf-8?B?QmdMRVVOR2RrTmhkZy9QKzk5ZWEwcEVWZFA0Sktpb2FFUUhmNURVTW52dkxq?=
- =?utf-8?Q?zOaXrFpbRRdbu?=
+	=?us-ascii?Q?Z7wruxM7zqv65X5ELmqys/vRucqe3r4/Nx41ybmQSxsgqkEe92fo7/bC8Mfi?=
+ =?us-ascii?Q?I500WcD5Jcb1R9OgBIe4DxYrzxyjAjvMrrcFlW7DyWn2q5tVu3yJV9MFVF1o?=
+ =?us-ascii?Q?Wi2Cu44QvK/yySwj176tzKtOzeizaKqCt0GpxhvKfNqAKTvbMe6c7FGIBJov?=
+ =?us-ascii?Q?qOHadgcX0VgX5cqknUSJ1WQEGpF4JAwyZH71KMDTV+FLkGGWMapTy4kTEDjo?=
+ =?us-ascii?Q?fGL5QOcWyni4FDaMnTsJNVv3bRxCo/CPz7DIzEcs/nLjl6V32CoWJVlOU9QE?=
+ =?us-ascii?Q?vqmWjJvINRTn8g+fdw0m8po87p8vzBtDRN4idZ7SUlV5QuJzaIneQLVllfBE?=
+ =?us-ascii?Q?6GknWZn7iitpGjEmPcvW3LZAU/s/nERmC0xCFoF2atx3Bxm9PDSm+oK5VZhb?=
+ =?us-ascii?Q?nPmM5Ip3BJvO865zXZHcXX37S/2FVpG0HGQqY0bgZdR2LSxxPLl/xjKq5Eqt?=
+ =?us-ascii?Q?kgfLCGVpzkxDg+IBrcPDgGxC95ATb6OjpG5I3mSNmTq7SDdYCQsRDJVOel35?=
+ =?us-ascii?Q?94u6Ao5Zg6XN9U2IGZNF7gKuRR027DkibO3SXDp9lwDapE5iPcv7D+Zy408j?=
+ =?us-ascii?Q?aHP59FcrWFn3vdE9yhn9A0WPZ/g7YRvmwH2znCfPJBt0EczAjsZ8m2aYCojT?=
+ =?us-ascii?Q?bCZ1IyG7C4ckY/lwmxu4go3mw6j4DXEcEbRRIG/MqnJrvZSBSDWlwPdNxHIG?=
+ =?us-ascii?Q?36Hgd/JBZWo4XWWvQ/63SKmEPoDju35Duxn0hPTDScEWdKaL+VkkBNXxPHLE?=
+ =?us-ascii?Q?suC0RIWG6qrKt2HG6mAkuBoYGVoblbnhU2+iI5lhN796dV90QaFx5A9c9lNf?=
+ =?us-ascii?Q?t9no5citheZ6aBi8/T5BjAI9fDLh7tt+pn/YXxpet11eIERGkKTVuakMXCLd?=
+ =?us-ascii?Q?YUWu5DTjSKmU8Ys2ffnW3i2OmXObEpfHz9ooUA1v0UcJO+8mGn6owg4PdU7R?=
+ =?us-ascii?Q?j95+MLQh+tmlHSaxe4uGLbo3yjXdnwbW9RiqwJwmg2C/EFxtM1se1p41WJ10?=
+ =?us-ascii?Q?vEI3s16JDRlMsVrEBwIR824GgRCXun6chv+Qv3/NId1meaAq+j7oco0sbXfk?=
+ =?us-ascii?Q?PcT7P+ShRlYcJce0dvoAjlIjroeqs1GeopFq+8shxyft42gCzQuPx7YK6M0a?=
+ =?us-ascii?Q?EUT5KNc7BVK2VECGvqD53+UqVItBnJ0pKyLQgpqXdQnx6vLtuNhWTWm6dSPq?=
+ =?us-ascii?Q?KnV5PGVDYM4xsUuN8pazaJu3VnXqjgdFqLExMbbVzU4XuUb+S9OAhfb5U4g6?=
+ =?us-ascii?Q?nQ7nErd2yMnoXDvYGSZELXp0rQ+GaSh0dgLIpqIrElituoCTwDiQfYNdWgfb?=
+ =?us-ascii?Q?+uo9GnHukTBGG1ELdZIV6iYP+h/c74t0m7UZjBGgZ8zy360LglR9+3tFTD50?=
+ =?us-ascii?Q?eHiaZvxJyjqwQB6TjCv/fzukwD5QMYbOWmIrfTOCi0WphDKEgJyaZAG/EyeM?=
+ =?us-ascii?Q?lB2dMLuLo+0=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR10MB8218.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB9031.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QXNFVlU3SG1VMERLdm9TdFBvOTBmYm1MY0VMQkF4VXJFMVd6WHhZT0J2RFVS?=
- =?utf-8?B?bFJlWG5aUThoMHFZR3V2cmRjeGpFSktyQTlKc2h3S2ZmMGpMSWVCVTJ2YnpS?=
- =?utf-8?B?eC9jUkxDTnJ0U21YTlV1TlRsSkZVWXBPQmpXcWZMVTJXVWtXS1NTeElWS09z?=
- =?utf-8?B?Q0Nua2JaNXEzV0NhKzIvTmpmUG94MkIyQzRYWlNQTlhaWU8xOGxxNDg0bDVt?=
- =?utf-8?B?Wis3Tmd5Sk9hNEVxU0FoeW53d2xqWnYydGRrREdSdDRabG1BNHhkd0JIR0hi?=
- =?utf-8?B?UWdtNUIxT3k0L0NaTmdzUWI3MFhpZFJPQmNQajZFUEVqeEEwRE9FRmIva2NO?=
- =?utf-8?B?OXREWGMvRmhjMTVvVm4zWTRYZEI2THdQRE9va1JSZG9QNkJTUmY2ekM2VzRL?=
- =?utf-8?B?YzIxbVpUQk1DZG5xZlJrSDZxUjRnQUJkdnBTREk2ZjlnTVlaV2JEcE9iNE5i?=
- =?utf-8?B?amxkcmtmOEkxTHplVGp2enZnMjFhUXpWMzVrQ3VlNGtrL24rNmxmRjlOQmlO?=
- =?utf-8?B?RlZQQTlod0xjSy9aV1dzdEhKSGxEckFzOVZBQ3A0ZnBDb1NUdHg3VU1uYkNo?=
- =?utf-8?B?b2FZQkUzdUtCeXVxcWxoYTJDQXhKZEZOSUk0VHV1U09RcEhWUzM1Vm9CeHNO?=
- =?utf-8?B?dWMva3lQWHFpUHJ0QjNxMzU3REhUYWxpYnVsb2JHS0wwU21NUHdxSTYzQjg0?=
- =?utf-8?B?TUVFZzNyd28relJWS2dlT29LOXFneGI3MnhiUTZSQ3J6UG1yVk5sQWNCaGJw?=
- =?utf-8?B?aXdPQnIyOHk4SEhJWHV4cjNIbG5GZ2wwN2txSWdFajBkMmVMdnFnWllQQWJJ?=
- =?utf-8?B?LzRpeXFPcEx2UHRGRUc3S3lEMVN4eDNzY0lodkhKc0xZU1VLZzhKRzcxNDRK?=
- =?utf-8?B?M1p3dDVTNGpwWWhGdTE4bTNsNjVMZWo2djRxY3NObkY3cEx4NEtRbWhOdTlD?=
- =?utf-8?B?UG4yREhwSm84N0s2b1FUcjJDei9JS3plNVA5anBSRHpCazFET3FFL0NENGd0?=
- =?utf-8?B?M2d3NXl5TjhpRUZDOGJrNWdtanc5eVZySmQvQVB6bklVZVZCdDEwRGZhZGFu?=
- =?utf-8?B?ZXlCRmZIOCsrb1g3dUw1MkZqNWRodTIzNjdUY0JjTFhyVGFxOVJ6SUN5ZEli?=
- =?utf-8?B?QVRiYnVwdUlaTUZOb0dGY0dwbVdJbjQvY2Q2b2plcEpxb3FiTm9RQU8wSHhH?=
- =?utf-8?B?R1ZCT2FrcG9DV05RRC80V083cHF5YkkzMUZaUWpqdXpGVVQ5WHd0dmVVZWRF?=
- =?utf-8?B?d3g4N1NIV2lRWDd5bk14UXlQdER6dldUQUNjQkltZkdRUVdNL0RZcTh4OHR5?=
- =?utf-8?B?ZEw1dnBKUndBUjZ2OG5KUVp4ZmR2L0JKQ01DZXhXem54ZWQ3S1dmNDZYMTRS?=
- =?utf-8?B?N1Q2UWE4enNHZkk1dStyb2IvV0p6cURmQVVvUWJ6N1ROQnJpa1RuWFNlNmNn?=
- =?utf-8?B?UVQ2WGgvWHNnOElwemx5Q09xREdZTlpJdmluMlJCUy84WWF0dVIrYytreHJQ?=
- =?utf-8?B?ak5PV0NWalIvVS93Q2RaajdCVE9MMkd2Y1RpT1VRcEdTWEw4TFE0UE5NVFhK?=
- =?utf-8?B?NkYzTldRQkJ0dTJLTWg3Y0pIL09CTmNKeWFiNi9jZ0V1bE1SblRJVWdUejUw?=
- =?utf-8?B?U0RIbVpPQXZFcHNBYTNiRXY3MW1PT0IzclBjbmQwTXgzeHhXMXB5UzNhU3dx?=
- =?utf-8?B?Q1dKcHpOL0huODQ1S3o3RHNlNi82dUk1NnM1dXlQeGh0RHNXMWVIVVU3ejhs?=
- =?utf-8?B?djcyaW16UVZRNXFUUDBXYUx2WXQxdUovbFNTL0NIWlRxUm9hSXhiWmxaQ1dn?=
- =?utf-8?B?NTdjVnRpSVZaU0J2cnJ1akhwWXNRTS9JMXNwME1vYWtNM1pBZEZ6aHRzSjNF?=
- =?utf-8?B?TDJFZnA2cW9QZW9LdE5GZVliaVd6amhqNW1ET1BPRVk2d0M2YWl5UVhEdjk1?=
- =?utf-8?B?L3daN2JqeVBsWVFvN1RSSVo2djk0VkMvUXpCL3dHV2kvaUxVeTVpUjBycUlq?=
- =?utf-8?B?OGhGSTNnVy9BaURwNzFIWWhKSnBHVlUzc0VHSnJnR2dJZ05kZlJmL3dQN0gz?=
- =?utf-8?B?T1IwTlIvbTBONVNscFR3Y3gvRjIrQzN0emV2VTNSRTIyU3JMMTNPbVVlWDFn?=
- =?utf-8?B?dmhxQmM0SnlndEo4Tk9wa0RDY1huWTc3OEN1VzB3cGJVeXJlcVBhaXRxc3VX?=
- =?utf-8?B?T0E9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	7onRB4aSPCm4FwJ5HgsWp2JkSE8AX9SVGX7LdJEuTSvyCUenVQTksjGSf0vZWkKL9dUjN/FSU9+2yS4om0TF5sUU6cX+vVt84Se0FMRRVEwEHj0ztFYHXsLWuzU1MzLGxpgJWhFj8G0oUpZLj9UVsyK+tWbqJFf37xNp1hjzMMGZIpNsX6ztZs51ey5hU6IX4IiEw2Nkb/IeQlwQMzEBjDh7EDhnbIcw05mEvOjodbqcOaz9WII8ZyczBQDoEnXFZSml0kU1dO3DoRbZAgZh4E9mAC39PKJpnmzmxbUIxOAx1ZIkSGx997FUho0Ea7Kf9YcB9PhrJjqhnb7imcJJVaGR3iTfOddX/zzYKGK04zTNDT6hfeSYbAUpkaLOh2IrQN+e6kenMCfGq9gwPUhvTAWUITnmz4zpvr+CTo9+9RmNradAkCgezqOhHL/TIw4Pwj3UJ7abYjjEReMBcosmKTqLUvsjAH5gO7VUu8hYQZdoX7DpISiXFQOivBImqncWFbRBy/oVs2hvlW6yM0fInbHyCKXW9v1eLvI+MEek3nI3tD7CfzG53P3gc8AHBvFSXwjmdigySYSRfs5CPFxDKgmfGa9tLilInq0XhvK/bzA=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd55dfb1-9c71-481f-5df1-08dde56ba83e
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR10MB8218.namprd10.prod.outlook.com
+	=?us-ascii?Q?d6c7+NaE1l6tYVBKT2zW7DEiMEqsaqTa2NBo+iYodWCtPwoGeJ5s+1pWCrBO?=
+ =?us-ascii?Q?XT6aaV8dGzCW7oD70j3f68ZrKLs9M0GemQCKEjue/pFSoAlpva2Q2zI45/5e?=
+ =?us-ascii?Q?v8YVr78qGwhXLQh0lkCaVTiq3WTv46MYGba+f5Cl0PDaaUMzb8Nap1MH70jR?=
+ =?us-ascii?Q?R6zCH222cCy3nw8qdRSVUoj/TYzEC2BSWIjnLe66ZiV98V7OAt3b8G25gsE/?=
+ =?us-ascii?Q?hP8mfIyVCGmnIPBqeaibxQFZ9EDM1CuNVuKMSEOmQkeOEoL+uqnxBG65xLuU?=
+ =?us-ascii?Q?5iIkpmqp8mVCuMh4kde//ytaEKKzbwluBKIBumLlNlMc7Dms+OpKqWqgT7oz?=
+ =?us-ascii?Q?woW1fdNDSStZABms+SgfWv/5VOxq2ir19TawIi8yptGDzZI0j9xVsyVtg5Lm?=
+ =?us-ascii?Q?FJ0XZ+f4anZTECDH03r+iBJVrEWsjRcRileMBzi7aGNT5nzaLLY1g+PjBtmP?=
+ =?us-ascii?Q?5TsxuABpa3o/twpws7WENsjlee7ryUzTjQCkxaG7mgLy5/LrgD1qZNWq5MWb?=
+ =?us-ascii?Q?31e+Mo3WzSfcltlpHLNstkCN7Ct3Lj8AayAcTEsFhepE08bhMbU+lHr16Ppl?=
+ =?us-ascii?Q?3LmH8uOYldFwIj54Hu9FZNju5uqI4DX553Evw131CbZ8g0npk0TpAbGSPmr6?=
+ =?us-ascii?Q?CWlL3ilZ+oVdgl61+gNJC1v6PSWlBxOSqEzVDDR67kYEf2c6z1S7aZ9ffW03?=
+ =?us-ascii?Q?ihEbOsUjw8Rh+FRqvbwN66OmlXMWWcjM1jNa69AMhrKXgaCI9n99MyS+AiCb?=
+ =?us-ascii?Q?oicifBKbGYTuKTjK0DyEkvkl58AFU3np+i/gCKg4U2QaTgWyhExI8DUqASCa?=
+ =?us-ascii?Q?pAwaUvAwIosiauQsnZ3T9vuKOaA5zSkTnvTigS+0Mdt3jf/c9/VpBVdMqrqd?=
+ =?us-ascii?Q?9W4kbqVj1dnN6FD8OjS1DskLtwGC+8Sy/WiP+Rhc/O4BObo7Mh73OwAOsqNM?=
+ =?us-ascii?Q?rF8gHIJe92M+EI0noRfqpd23pTpIU2WMnj4PH9+VTIp3/RQLKZjbdpwZoSmr?=
+ =?us-ascii?Q?Y2wL9jkFcCpOWDB5DkvjzPDXoQgQH6YYbVDjW/bwlsGG7/3qgtPsgBoeROUe?=
+ =?us-ascii?Q?5GsahZJ/ZO2mXQtOxWcaFzG3jMMbrhyIkmSWK/54sieQCJnTF8HoCjQ3EfWg?=
+ =?us-ascii?Q?zKp74ZJQwCHG/LaWaPPM8ZxbNZELdP0BiArxkRTzDc6umW0WoLF3IWiyz5OZ?=
+ =?us-ascii?Q?MhpsZ5/a2qvtsn2eOcEAr5bsYo8aJ3Mb5b5cqJ3JEVgYyjPMI/GxHguZsDU4?=
+ =?us-ascii?Q?M9/r2LbzszcIz4xv8sXjq2UIk441FiS/Lgm6AZ/xhUapLssN8jLeo9TbAIjs?=
+ =?us-ascii?Q?GldaH9jQeoUdHjm5X1HUp04QtA6JUnFAPpaVqNDCBy3BgA2H7pbJYgMmfaRu?=
+ =?us-ascii?Q?LfXSVzPDCPdW43RSWxMQzE2zEIzXkPyLBfR8kGDOCu6cEUhLqHgZ2YMDAOTT?=
+ =?us-ascii?Q?QJQ26NYsJGNCPpvJgOJUiOc1iI/s5Q9XVb5I+3FW7wm8LgaJoZNDtMJN4T2G?=
+ =?us-ascii?Q?AwuQ1UzmUgqrzK1mLq3g1PWVWYmtmu5yIb2NhG2qLbL1SligLy1xc62LW+Fy?=
+ =?us-ascii?Q?lfMUPqg8JFpixk4u7xe6oYoFk1V6XEXScwS71eH+?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49355b1f-ed51-48bb-369c-08dde57003ef
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB9031.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2025 13:14:30.5148
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2025 13:45:42.6042
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: L06BjVWLKe8AAJWzeLiFC8ox+fnLvwT+5jPkGBNkMDEQdxco6AXZbv52SF1BQYUtRBt8Ci6WpuBSLU0agdQmGj8tPq7xy7Ev2A4gy34nqO4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH4PR10MB8003
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-27_03,2025-08-26_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- adultscore=0 mlxlogscore=999 spamscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
- definitions=main-2508270113
-X-Proofpoint-ORIG-GUID: -N9F9sWj9SiLaFc-p8iQ5f2iFwaNMaTW
-X-Proofpoint-GUID: -N9F9sWj9SiLaFc-p8iQ5f2iFwaNMaTW
-X-Authority-Analysis: v=2.4 cv=EcXIQOmC c=1 sm=1 tr=0 ts=68af04ba b=1 cx=c_pps
- a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=2OwXVqhp2XgA:10 a=GoEa3M9JfhUA:10 a=07d9gI8wAAAA:8 a=20KFwNOVAAAA:8
- a=NEAV23lmAAAA:8 a=pGLkceISAAAA:8 a=pqtBnG_gAAAA:8 a=MCc6aL20a-eiWrZqb7EA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=e2CUPOnPG4QKp8I52DXD:22
- a=dozIAI4aeI13xyvB2pX3:22 cc=ntf awl=host:12069
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODIzMDAzMCBTYWx0ZWRfX+HMS5oGfs30w
- FtHVoCi+FN6E+J36KZgKIGY9QaQ4Ze4FvzCAD/S8h9ZrZTQABN7eCIR08eoPCsJBuztK8+pqWKA
- 41Cks5tlhmBc19XZq0N42Z68MUQPOT6L7YBD1nTTTEREcNwJyKzVebNL8cKlFjV+XSsZ7M/h2fa
- rbzHZ5V+S3S6ybDZw8zFAxy4dZ8oIItXbhE3+IHMBKng7EK5SX3Ts8bRYq4R4cv9HHlL90t77EQ
- dxKBaZnmLJWTJr2Ar7Pp3YNvFc8LwY1y8N5ZiEXBIi2Tw6/p7YAtLmNILYXnDpULqYRsaIE2GQl
- +O1rh/AYBrYJh3R64kGcS6bY7NH5M9Azgtb50Gz7W1UF88dnwQGjR+NkNeveHYiBeappzlSOs0Z
- BlGA19QMJDyDY+hcF1on3YIK8fxocA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8zrSEK1LRnRkmZYLkpL7dGiWF0trXlhTY+3JMBI82qUpXu9Rl+JYuXPP7k/5QLMUe8nyUhRViNwz9pzoo/5pPw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8272
 
-On Tue, Aug 26, 2025 at 03:19:38PM +0800, Yafang Shao wrote:
-> Background
-> ==========
+On Mon, Aug 25, 2025 at 12:39:12PM -0700, Amery Hung wrote:
+> xdp programs can change the layout of an xdp_buff through
+> bpf_xdp_adjust_tail(), bpf_xdp_adjust_head(). Therefore, the driver
+> cannot assume the size of the linear data area nor fragments. Fix the
+> bug in mlx5e driver by generating skb according to xdp_buff layout.
 >
-> Our production servers consistently configure THP to "never" due to
-> historical incidents caused by its behavior. Key issues include:
-> - Increased Memory Consumption
->   THP significantly raises overall memory usage, reducing available memory
->   for workloads.
->
-> - Latency Spikes
->   Random latency spikes occur due to frequent memory compaction triggered
->   by THP.
->
-> - Lack of Fine-Grained Control
->   THP tuning is globally configured, making it unsuitable for containerized
->   environments. When multiple workloads share a host, enabling THP without
->   per-workload control leads to unpredictable behavior.
->
-> Due to these issues, administrators avoid switching to madvise or always
-> modes—unless per-workload THP control is implemented.
->
-> To address this, we propose BPF-based THP policy for flexible adjustment.
-> Additionally, as David mentioned [0], this mechanism can also serve as a
-> policy prototyping tool (test policies via BPF before upstreaming them).
+Good find! Thanks for tackling this Amery.
 
-I think it's important to highlight here that we are exploring an _experimental_
-implementation.
+> Currently, when handling multi-buf xdp, the mlx5e driver assumes the
+> layout of an xdp_buff to be unchanged. That is, the linear data area
+> continues to be empty and the fragments remains the same.
+This is true only for striding rq xdp. Legacy rq xdp puts the header
+in the linear part.
 
+> This may
+> cause the driver to generate erroneous skb or triggering a kernel
+> warning. When an xdp program added linear data through
+> bpf_xdp_adjust_head() the linear data will be ignored as
+> mlx5e_build_linear_skb() builds an skb with empty linear data and then
+> pull data from fragments to fill the linear data area. When an xdp
+> program has shrunk the nonlinear data through bpf_xdp_adjust_tail(),
+> the delta passed to __pskb_pull_tail() may exceed the actual nonlinear
+> data size and trigger the BUG_ON in it.
+> 
+> To fix the issue, first build the skb with linear data area matching
+> the xdp_buff. Then, call __pskb_pull_tail() to fill the linear data for
+> up to MLX5E_RX_MAX_HEAD bytes. In addition, recalculate nr_frags and
+> truesize after xdp program runs.
 >
-> Proposed Solution
-> =================
->
-> As suggested by David [0], we introduce a new BPF interface:
+The ordering here seems misleading. AFAIU recalculating nr_frags happens
+first.
 
-I do agree, to be clear, with this broad approach - that is, to provide the
-minimum information that a reasonable decision can be made upon and to keep
-things as simple as we can.
+> Fixes: f52ac7028bec ("net/mlx5e: RX, Add XDP multi-buffer support in Striding RQ")
+> Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 59 ++++++++++++++-----
+>  1 file changed, 43 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> index b8c609d91d11..c5173f1ccb4e 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> @@ -1725,16 +1725,17 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+>  			     struct mlx5_cqe64 *cqe, u32 cqe_bcnt)
+>  {
+>  	struct mlx5e_rq_frag_info *frag_info = &rq->wqe.info.arr[0];
+> +	struct mlx5e_wqe_frag_info *pwi, *head_wi = wi;
+>  	struct mlx5e_xdp_buff *mxbuf = &rq->mxbuf;
+> -	struct mlx5e_wqe_frag_info *head_wi = wi;
+>  	u16 rx_headroom = rq->buff.headroom;
+>  	struct mlx5e_frag_page *frag_page;
+>  	struct skb_shared_info *sinfo;
+> -	u32 frag_consumed_bytes;
+> +	u32 frag_consumed_bytes, i;
+>  	struct bpf_prog *prog;
+>  	struct sk_buff *skb;
+>  	dma_addr_t addr;
+>  	u32 truesize;
+> +	u8 nr_frags;
+>  	void *va;
+>  
+>  	frag_page = wi->frag_page;
+> @@ -1775,14 +1776,26 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+>  	prog = rcu_dereference(rq->xdp_prog);
+>  	if (prog && mlx5e_xdp_handle(rq, prog, mxbuf)) {
+>  		if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
+> -			struct mlx5e_wqe_frag_info *pwi;
+> +			pwi = head_wi;
+> +			while (pwi->frag_page->netmem != sinfo->frags[0].netmem && pwi < wi)
+> +				pwi++;
+>
+Is this trying to skip counting the frags for the linear part? If yes,
+don't understand the reasoning. If not, I don't follow the code.
 
-As per the THP cabal (I think? :) the general consensus was in line with
-this.
+AFAIU frags have to be counted for the linear part + sinfo->nr_frags.
+Frags could be less after xdp program execution, but the linear part is
+still there.
+
+> -			for (pwi = head_wi; pwi < wi; pwi++)
+> +			for (i = 0; i < sinfo->nr_frags; i++, pwi++)
+>  				pwi->frag_page->frags++;
+Why not:
+
+	pwi = head_wi;
+	for (int i = 0; i < (sinfo->nr_frags + 1); i++, pwi++)
+		pwi->frag_page->frags++;
+
+>  		}
+>  		return NULL; /* page/packet was consumed by XDP */
+>  	}
+>  
+> +	nr_frags = sinfo->nr_frags;
+This makes sense. You are using this in xdp_update_skb_shared_info()
+below.
+
+> +	pwi = head_wi + 1;
+> +
+> +	if (prog) {
+You could do here: if (unlikely(sinfo->nr_frags != nr_frags).
+
+> +		truesize = sinfo->nr_frags * frag_info->frag_stride;
+> +
+Ack. Recalculating truesize.
+
+> +		while (pwi->frag_page->netmem != sinfo->frags[0].netmem && pwi < wi)
+> +			pwi++;
+Why is this needed here?
+> +	}
+
+>  	skb = mlx5e_build_linear_skb(
+>  		rq, mxbuf->xdp.data_hard_start, rq->buff.frame0_sz,
+>  		mxbuf->xdp.data - mxbuf->xdp.data_hard_start,
+> @@ -1796,12 +1809,12 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+>  
+>  	if (xdp_buff_has_frags(&mxbuf->xdp)) {
+>  		/* sinfo->nr_frags is reset by build_skb, calculate again. */
+> -		xdp_update_skb_shared_info(skb, wi - head_wi - 1,
+> +		xdp_update_skb_shared_info(skb, nr_frags,
+>  					   sinfo->xdp_frags_size, truesize,
+>  					   xdp_buff_is_frag_pfmemalloc(
+>  						&mxbuf->xdp));
+>  
+> -		for (struct mlx5e_wqe_frag_info *pwi = head_wi + 1; pwi < wi; pwi++)
+> +		for (i = 0; i < nr_frags; i++, pwi++)
+>  			pwi->frag_page->frags++;
+Why not pull the pwi assignmet to head_wi + 1 up from the for scope and use i
+with i < nr_frags condition?
+
+>  	}
+>  
+> @@ -2073,12 +2086,18 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+>  	}
+>  
+>  	if (prog) {
+> +		u8 nr_frags;
+> +		u32 len, i;
+> +
+>  		if (mlx5e_xdp_handle(rq, prog, mxbuf)) {
+>  			if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
+> -				struct mlx5e_frag_page *pfp;
+> +				struct mlx5e_frag_page *pagep = head_page;
+> +
+> +				while (pagep->netmem != sinfo->frags[0].netmem && pagep < frag_page)
+> +					pagep++;
+>
+Why do you need this?
+
+> -				for (pfp = head_page; pfp < frag_page; pfp++)
+> -					pfp->frags++;
+> +				for (i = 0; i < sinfo->nr_frags; i++)
+> +					pagep->frags++;
+This looks good here but with pfp = head_page. head_page should point to the first
+frag. The linear part is in wi->linear_page.
 
 
->
-> /**
->  * @get_suggested_order: Get the suggested THP orders for allocation
->  * @mm: mm_struct associated with the THP allocation
->  * @vma__nullable: vm_area_struct associated with the THP allocation (may be NULL)
->  *                 When NULL, the decision should be based on @mm (i.e., when
->  *                 triggered from an mm-scope hook rather than a VMA-specific
->  *                 context).
+>  				wi->linear_page.frags++;
+>  			}
+> @@ -2087,9 +2106,12 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+>  			return NULL; /* page/packet was consumed by XDP */
+>  		}
+>  
+> +		len = mxbuf->xdp.data_end - mxbuf->xdp.data;
+> +		nr_frags = sinfo->nr_frags;
+> +
+>  		skb = mlx5e_build_linear_skb(
+>  			rq, mxbuf->xdp.data_hard_start, linear_frame_sz,
+> -			mxbuf->xdp.data - mxbuf->xdp.data_hard_start, 0,
+> +			mxbuf->xdp.data - mxbuf->xdp.data_hard_start, len,
+>  			mxbuf->xdp.data - mxbuf->xdp.data_meta);
+This makes sense.
 
-I'm a little wary of handing a VMA to BPF, under what locking would it be
-provided?
+>  		if (unlikely(!skb)) {
+>  			mlx5e_page_release_fragmented(rq->page_pool,
+> @@ -2102,20 +2124,25 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+>  		mlx5e_page_release_fragmented(rq->page_pool, &wi->linear_page);
+>  
+>  		if (xdp_buff_has_frags(&mxbuf->xdp)) {
+> -			struct mlx5e_frag_page *pagep;
+> +			struct mlx5e_frag_page *pagep = head_page;
+> +
+> +			truesize = nr_frags * PAGE_SIZE;
+I am not sure that this is accurate. The last fragment might be smaller
+than page size. It should be aligned to BIT(rq->mpwqe.log_stride_sz).
 
->  *                 Must belong to @mm (guaranteed by the caller).
->  * @vma_flags: use these vm_flags instead of @vma->vm_flags (0 if @vma is NULL)
+>  
+>  			/* sinfo->nr_frags is reset by build_skb, calculate again. */
+> -			xdp_update_skb_shared_info(skb, frag_page - head_page,
+> +			xdp_update_skb_shared_info(skb, nr_frags,
+>  						   sinfo->xdp_frags_size, truesize,
+>  						   xdp_buff_is_frag_pfmemalloc(
+>  							&mxbuf->xdp));
+>  
+> -			pagep = head_page;
+> -			do
+> +			while (pagep->netmem != sinfo->frags[0].netmem && pagep < frag_page)
+> +				pagep++;
+> +
+> +			for (i = 0; i < nr_frags; i++, pagep++)
+>  				pagep->frags++;
+> -			while (++pagep < frag_page);
+> +
+> +			headlen = min_t(u16, MLX5E_RX_MAX_HEAD - len, sinfo->xdp_frags_size);
+> +			__pskb_pull_tail(skb, headlen);
+>  		}
+> -		__pskb_pull_tail(skb, headlen);
+What happens when there are no more frags? (bpf_xdp_frags_shrink_tail()
+shrinked them out). Is that at all possible?
 
-Hmm this one is also a bit odd - why would these flags differ? Note that I will
-be changing the VMA flags to a bitmap relatively soon which may be larger than
-the system word size.
+In general, I think the code would be nicer if it would do a rewind of
+the end pointer based on the diff between the old and new nr_frags.
 
-So 'handing around all the flags' is something we probably want to avoid.
-
-For the f_op->mmap_prepare stuff I provided an abstraction
-
->  * @tva_flags: TVA flags for current @vma (-1 if @vma is NULL)
->  * @orders: Bitmask of requested THP orders for this allocation
->  *          - PMD-mapped allocation if PMD_ORDER is set
->  *          - mTHP allocation otherwise
->  *
->  * Rerurn: Bitmask of suggested THP orders for allocation. The highest
-
-Obv. a cover letter thing but typo her :P rerurn -> return.
-
->  *         suggested order will not exceed the highest requested order
->  *         in @orders.
-
-In what sense are they 'suggested'? Is this a product of sysfs settings or? I
-think this needs to be clearer.
-
->  */
->  int (*get_suggested_order)(struct mm_struct *mm, struct vm_area_struct *vma__nullable,
->                             u64 vma_flags, enum tva_type tva_flags, int orders) __rcu;
-
-Also here in what sense is this suggested? :)
-
->
-> This interface:
-> - Supports both use cases (per-workload tuning + policy prototyping).
-> - Can be extended with BPF helpers (e.g., for memory pressure awareness).
-
-Hm how would extensions like this work?
-
->
-> This is an experimental feature. To use it, you must enable
-> CONFIG_EXPERIMENTAL_BPF_ORDER_SELECTION.
-
-Yes! Thanks. I am glad we are putting this behind a config flag.
-
->
-> Warning:
-> - The interface may change
-> - Behavior may differ in future kernel versions
-> - We might remove it in the future
->
->
-> Selftests
-> =========
->
-> BPF selftests
-> -------------
->
-> Patch #5: Implements a basic BPF THP policy that restricts THP allocation
->           via khugepaged to tasks within a specified memory cgroup.
-> Patch #6: Contains test cases validating the khugepaged fork behavior.
-> Patch #7: Provides tests for dynamic BPF program updates and replacement.
-> Patch #8: Includes negative tests for invalid BPF helper usage, verifying
->           proper verification by the BPF verifier.
->
-> Currently, several dependency patches reside in mm-new but haven't been
-> merged into bpf-next:
->   mm: add bitmap mm->flags field
->   mm/huge_memory: convert "tva_flags" to "enum tva_type"
->   mm: convert core mm to mm_flags_*() accessors
->
-> To enable BPF CI testing, these dependencies were manually applied to
-> bpf-next [1]. All selftests in this series pass successfully. The observed
-> CI failures are unrelated to these changes.
-
-Cool, glad at least my mm changes were ok :)
-
->
-> Performance Evaluation
-> ----------------------
->
-> As suggested by Usama [2], performance impact was measured given the page
-> fault handler modifications. The standard `perf bench mem memset` benchmark
-> was employed to assess page fault performance.
->
-> Testing was conducted on an AMD EPYC 7W83 64-Core Processor (single NUMA
-> node). Due to variance between individual test runs, a script executed
-> 10000 iterations to calculate meaningful averages and standard deviations.
->
-> The results across three configurations show negligible performance impact:
-> - Baseline (without this patch series)
-> - With patch series but no BPF program attached
-> - With patch series and BPF program attached
->
-> The result are as follows,
->
->   Number of runs: 10,000
->   Average throughput: 40-41 GB/sec
->   Standard deviation: 7-8 GB/sec
-
-You're not giving data comparing the 3? Could you do so? Thanks.
-
->
-> Production verification
-> -----------------------
->
-> We have successfully deployed a variant of this approach across numerous
-> Kubernetes production servers. The implementation enables THP for specific
-> workloads (such as applications utilizing ZGC [3]) while disabling it for
-> others. This selective deployment has operated flawlessly, with no
-> regression reports to date.
->
-> For ZGC-based applications, our verification demonstrates that shmem THP
-> delivers significant improvements:
-> - Reduced CPU utilization
-> - Lower average latencies
-
-Obviously it's _really key_ to point out that this feature is intendend to
-be _absolutely_ ephemeral - we may or may not implement something like this
-- it's really about both exploring how such an interface might look and
-also helping to determine how an 'automagic' future might look.
-
->
-> Future work
-> ===========
->
-> Based on our validation with production workloads, we observed mixed
-> results with XFS large folios (also known as File THP):
->
-> - Performance Benefits
->   Some workloads demonstrated significant improvements with XFS large
->   folios enabled
-> - Performance Regression
->   Some workloads experienced degradation when using XFS large folios
->
-> These results demonstrate that File THP, similar to anonymous THP, requires
-> a more granular approach instead of a uniform implementation.
->
-> We will extend the BPF-based order selection mechanism to support File THP
-> allocation policies.
->
-> Link: https://lwn.net/ml/all/9bc57721-5287-416c-aa30-46932d605f63@redhat.com/ [0]
-> Link: https://github.com/kernel-patches/bpf/pull/9561 [1]
-> Link: https://lwn.net/ml/all/a24d632d-4b11-4c88-9ed0-26fa12a0fce4@gmail.com/ [2]
-> Link: https://wiki.openjdk.org/display/zgc/Main#Main-EnablingTransparentHugePagesOnLinux [3]
->
-> Changes:
-> =======
->
-> RFC v5-> v6:
-> - Code improvement around the RCU usage (Usama)
-> - Add selftests for khugepaged fork (Usama)
-> - Add performance data for page fault (Usama)
-> - Remove the RFC tag
->
-
-Sorry I haven't been involved in the RFC reviews, always intended to but
-workload etc.
-
-Will be looking through this series as very interested in exploring this
-approach.
-
-Cheers, Lorenzo
-
-> RFC v4->v5: https://lwn.net/Articles/1034265/
-> - Add support for vma (David)
-> - Add mTHP support in khugepaged (Zi)
-> - Use bitmask of all allowed orders instead (Zi)
-> - Retrieve the page size and PMD order rather than hardcoding them (Zi)
->
-> RFC v3->v4: https://lwn.net/Articles/1031829/
-> - Use a new interface get_suggested_order() (David)
-> - Mark it as experimental (David, Lorenzo)
-> - Code improvement in THP (Usama)
-> - Code improvement in BPF struct ops (Amery)
->
-> RFC v2->v3: https://lwn.net/Articles/1024545/
-> - Finer-graind tuning based on madvise or always mode (David, Lorenzo)
-> - Use BPF to write more advanced policies logic (David, Lorenzo)
->
-> RFC v1->v2: https://lwn.net/Articles/1021783/
-> The main changes are as follows,
-> - Use struct_ops instead of fmod_ret (Alexei)
-> - Introduce a new THP mode (Johannes)
-> - Introduce new helpers for BPF hook (Zi)
-> - Refine the commit log
->
-> RFC v1: https://lwn.net/Articles/1019290/
->
-> Yafang Shao (10):
->   mm: thp: add support for BPF based THP order selection
->   mm: thp: add a new kfunc bpf_mm_get_mem_cgroup()
->   mm: thp: add a new kfunc bpf_mm_get_task()
->   bpf: mark vma->vm_mm as trusted
->   selftests/bpf: add a simple BPF based THP policy
->   selftests/bpf: add test case for khugepaged fork
->   selftests/bpf: add test case to update thp policy
->   selftests/bpf: add test cases for invalid thp_adjust usage
->   Documentation: add BPF-based THP adjustment documentation
->   MAINTAINERS: add entry for BPF-based THP adjustment
->
->  Documentation/admin-guide/mm/transhuge.rst    |  47 +++
->  MAINTAINERS                                   |  10 +
->  include/linux/huge_mm.h                       |  15 +
->  include/linux/khugepaged.h                    |  12 +-
->  kernel/bpf/verifier.c                         |   5 +
->  mm/Kconfig                                    |  12 +
->  mm/Makefile                                   |   1 +
->  mm/bpf_thp.c                                  | 269 ++++++++++++++
->  mm/huge_memory.c                              |  10 +
->  mm/khugepaged.c                               |  26 +-
->  mm/memory.c                                   |  18 +-
->  tools/testing/selftests/bpf/config            |   3 +
->  .../selftests/bpf/prog_tests/thp_adjust.c     | 343 ++++++++++++++++++
->  .../selftests/bpf/progs/test_thp_adjust.c     | 115 ++++++
->  .../bpf/progs/test_thp_adjust_trusted_vma.c   |  27 ++
->  .../progs/test_thp_adjust_unreleased_memcg.c  |  24 ++
->  .../progs/test_thp_adjust_unreleased_task.c   |  25 ++
->  17 files changed, 955 insertions(+), 7 deletions(-)
->  create mode 100644 mm/bpf_thp.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_trusted_vma.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_unreleased_memcg.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_unreleased_task.c
->
-> --
-> 2.47.3
->
+Thanks,
+Dragos
 
