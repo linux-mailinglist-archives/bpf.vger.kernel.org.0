@@ -1,231 +1,172 @@
-Return-Path: <bpf+bounces-66733-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66734-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 151C7B38BBB
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 23:56:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86677B38DF4
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:20:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B893616554B
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 21:56:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C1A91897DAD
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2150030EF8F;
-	Wed, 27 Aug 2025 21:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550C231E0EA;
+	Wed, 27 Aug 2025 22:10:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fmS8L7LB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SIIzS/BM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4448E30E0F9
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 21:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E8235CEDE
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 22:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756331782; cv=none; b=KNEijm0MRmH95Do1+VxwyH6I5mYeFWIel9yYqkUvT5U7RR6KjT1wAEiQXd40nzpsIkJUeHPZraGOIsz5dym6M5gnRdtXIQekhV51o4xsEhtbtKEEQI2ngm8js76119R+UqhHdPf/AOjQ8O3RH+l9f/lEyVz9btbxwvETqHEZKUM=
+	t=1756332658; cv=none; b=NW+n3NJonhxJKjZtFzm3uB5N4nwQmEJb9il/GLPrZGCr3m+nnrsQr/ncTMnLCQN0kBqN0eQLzg7L9qQ3QcoA6ZsqCMSKLp+CBGpfCHyj1ikiY5vTQIs/24JpzHsytcd9XABJ0dGRsN0jUCQRLLM1Tg0dFD6vzF/GNJauimM+k60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756331782; c=relaxed/simple;
-	bh=H+pfRO9h648rdk+IzP524QlF3ejwb8HlQPoVqvFuIlM=;
+	s=arc-20240116; t=1756332658; c=relaxed/simple;
+	bh=evoc7gdcyPrc/Ie0TDe1eAiLfXUiEcTzOigU5YfvG/c=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tcffmc6tMMGrvKai068Qa2j7pIEXhQkcn1a0DIYXjJ4LeNuKnJFbvn3+QirPId5IAXwpwJ35cjdwm7hNtfbX5Kov543GBmP7VQCmix89Uep+LSWr69gjD9qA1NVLF6lW+u4WdXoG2nsQx3CqCUul0xhFMZaYHMcuFAO01ZmsKe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fmS8L7LB; arc=none smtp.client-ip=91.218.175.170
+	 In-Reply-To:Content-Type; b=MyhFTQU5KW226yKjSRNGgQi1IoMwKF+ykTy7q5HFsLrqTHvkNbF3vX55gUlidIG+Cvx565tnHWxcBvDUJ0bStTXLCMbaIq8HgTnUpefzScwOEB7LEbF+3kpdJh5JvEKB+505bWZ1A3w1LPGYDnwbaZa9nUSoGom0KN83i4ieeV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SIIzS/BM; arc=none smtp.client-ip=91.218.175.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <643863ab-0eb4-40f0-af44-4815f171341f@linux.dev>
+Message-ID: <4690bebe-0ff6-4258-9cab-3dfe2d00fa15@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756331777;
+	t=1756332653;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vxIBxahfMoDVTTdr77B0gYXWYByJrW9zFcNYqiFjAQY=;
-	b=fmS8L7LBrPrGgFJarSgrvI3zPgqH7fHLMjDhIcUcKxv/FyuPyq+1/z4557l7KJbjbaptzo
-	tSqHjqtenMkWIFNJN8DsEEW9FbS3ZpUbETWO3/5gBfE2VGIwf+bJYgkoXSzOarcI8wtgvX
-	XJdXRptgTW9ed/YHz8wbXkdOovZS3sM=
-Date: Wed, 27 Aug 2025 14:56:12 -0700
+	bh=e0Gx8ALySI3X0w8oV2nNtG9pan3UPn8x700zl5Yl6lU=;
+	b=SIIzS/BMkEut1Feu7PLceeGygEs6Ca7bvqaaLt6e/2CNGE6YSz3bjFenXPV9sFhAW3xwxG
+	oDKcsZSSsOWr0VELv5RkdSQxBMhGujuD+wcJlFHm7F5Nbi739NO7L5VBlTeHmgTX2ar0A7
+	lKcGiJ4VYM5HvoUBVZJDbxOgB5cxNEY=
+Date: Wed, 27 Aug 2025 15:10:44 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] selftests/bpf: Annotate
- bpf_obj_new_impl() with __must_check
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>
-References: <20250827130519.411700-1-iii@linux.ibm.com>
- <20250827130519.411700-2-iii@linux.ibm.com>
- <CAEf4BzZgf4vRWnse6N1X_h4X6XPuax_iMxiJ5x=kwLyJzz8x-w@mail.gmail.com>
- <1c796beb8e6d864f6c7498b8a31e2085986e2d60.camel@linux.ibm.com>
- <CAEf4BzYaZJ-TH_T32QpuxdeXOa4yt1dqrExbV6xrsXvs+kp6kQ@mail.gmail.com>
- <f1b6178d73d242c20ac2345d2da9293dd3d1906f.camel@linux.ibm.com>
- <b1b7ffb001712eca27cfafb71365920833eafcd9.camel@linux.ibm.com>
- <CAEf4BzY3wpBSQY5CWkm7CLrD3ZHHoq6LR7dOiCiT6=TmKONGLQ@mail.gmail.com>
-Content-Language: en-US
+Subject: Re: [PATCH] bpf: Mark kfuncs as __noclone
+Content-Language: en-GB
+To: Eduard Zingerman <eddyz87@gmail.com>, Andrea Righi <arighi@nvidia.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, alan.maguire@oracle.com
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250822140553.46273-1-arighi@nvidia.com>
+ <86de1bf6-83b0-4d31-904b-95af424a398a@linux.dev>
+ <45c49b4eedc6038d350f61572e5eed9f183b781b.camel@gmail.com>
+ <a3dabb42-efb5-4aea-8bf8-b3d5ae26dfa1@linux.dev>
+ <a7bcc333d54501d544821b5feeb82588d3bc06cb.camel@gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAEf4BzY3wpBSQY5CWkm7CLrD3ZHHoq6LR7dOiCiT6=TmKONGLQ@mail.gmail.com>
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <a7bcc333d54501d544821b5feeb82588d3bc06cb.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On 8/27/25 2:28 PM, Andrii Nakryiko wrote:
-> On Wed, Aug 27, 2025 at 2:04 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->>
->> On Wed, 2025-08-27 at 22:54 +0200, Ilya Leoshkevich wrote:
->>> On Wed, 2025-08-27 at 13:05 -0700, Andrii Nakryiko wrote:
->>>> On Wed, Aug 27, 2025 at 11:34 AM Ilya Leoshkevich
->>>> <iii@linux.ibm.com>
->>>> wrote:
->>>>>
->>>>> On Wed, 2025-08-27 at 10:32 -0700, Andrii Nakryiko wrote:
->>>>>> On Wed, Aug 27, 2025 at 6:05 AM Ilya Leoshkevich
->>>>>> <iii@linux.ibm.com>
->>>>>> wrote:
->>>>>>>
->>>>>>> The verifier requires that pointers returned by
->>>>>>> bpf_obj_new_impl()
->>>>>>> are
->>>>>>> either dropped or stored in a map. Therefore programs that do
->>>>>>> not
->>>>>>> use
->>>>>>> its return values will fail to load. Make the compiler point
->>>>>>> out
->>>>>>> these
->>>>>>> issues. Adjust selftests that check that the verifier does
->>>>>>> indeed
->>>>>>> spot
->>>>>>> these bugs.
->>>>>>>
->>>>>>> Link:
->>>>>>> https://lore.kernel.org/bpf/CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=BjBJWLAtpgOP9CKRw@mail.gmail.com/
->>>>>>> Suggested-by: Alexei Starovoitov <ast@kernel.org>
->>>>>>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->>>>>>> ---
->>>>>>>   tools/lib/bpf/bpf_helpers.h                          | 4
->>>>>>> ++++
->>>>>>>   tools/testing/selftests/bpf/bpf_experimental.h       | 2 +-
->>>>>>>   tools/testing/selftests/bpf/progs/linked_list_fail.c | 8
->>>>>>> ++++-
->>>>>>> ---
->>>>>>>   3 files changed, 9 insertions(+), 5 deletions(-)
+
+
+On 8/27/25 12:13 PM, Eduard Zingerman wrote:
+> On Wed, 2025-08-27 at 10:00 -0700, Yonghong Song wrote:
+>> On 8/26/25 10:02 PM, Eduard Zingerman wrote:
+>>> On Tue, 2025-08-26 at 13:17 -0700, Yonghong Song wrote:
 >>>
 >>> [...]
 >>>
->>>>>>>   /* When utilizing vmlinux.h with BPF CO-RE, user BPF
->>>>>>> programs
->>>>>>> can't include
->>>>>>>    * any system-level headers (such as stddef.h,
->>>>>>> linux/version.h,
->>>>>>> etc), and
->>>>>>>    * commonly-used macros like NULL and KERNEL_VERSION aren't
->>>>>>> available through
->>>>>>> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h
->>>>>>> b/tools/testing/selftests/bpf/bpf_experimental.h
->>>>>>> index da7e230f2781..e5ef4792da42 100644
->>>>>>> --- a/tools/testing/selftests/bpf/bpf_experimental.h
->>>>>>> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
->>>>>>> @@ -20,7 +20,7 @@
->>>>>>>    *     A pointer to an object of the type corresponding to
->>>>>>> the
->>>>>>> passed in
->>>>>>>    *     'local_type_id', or NULL on failure.
->>>>>>>    */
->>>>>>> -extern void *bpf_obj_new_impl(__u64 local_type_id, void
->>>>>>> *meta)
->>>>>>> __ksym;
->>>>>>> +extern __must_check void *bpf_obj_new_impl(__u64
->>>>>>> local_type_id,
->>>>>>> void *meta) __ksym;
->>>>>>
->>>>>> bpf_obj_new_impl will generally come from vmlinux.h nowadays,
->>>>>> and
->>>>>> that
->>>>>> one won't have __must_check annotation, is that a problem?
->>>>>
->>>>> It should be fine according to [1]:
->>>>>
->>>>> Compatible attribute specifications on distinct declarations of
->>>>> the
->>>>> same function are merged.
->>>>>
->>>>> I will add this to the commit message in v3.
+>>>> I tried with gcc14 and can reproduced the issue described in the above.
+>>>> I build the kernel like below with gcc14
+>>>>      make KCFLAGS='-O3' -j
+>>>> and get the following build error
+>>>>      WARN: resolve_btfids: unresolved symbol bpf_strnchr
+>>>>      make[2]: *** [/home/yhs/work/bpf-next/scripts/Makefile.vmlinux:91: vmlinux] Error 255
+>>>>      make[2]: *** Deleting file 'vmlinux'
+>>>> Checking the symbol table:
+>>>>       22276: ffffffff81b15260   249 FUNC    LOCAL  DEFAULT    1 bpf_strnchr.cons[...]
+>>>>      235128: ffffffff81b1f540   296 FUNC    GLOBAL DEFAULT    1 bpf_strnchr
+>>>> and the disasm code:
+>>>>      bpf_strnchr:
+>>>>        ...
 >>>>
->>>> Sure, for BPF selftests it will work. My question was broader, for
->>>> anyone using bpf_obj_new in the wild, they won't have __must_check
->>>> annotation from vmlinux.h (and I doubt they will manually add it
->>>> like
->>>> we do here for BPF selftests), so if that's important, I guess we
->>>> need
->>>> to think how to wire that up so that it happens automatically
->>>> through
->>>> vmlinux.h.
+>>>>      bpf_strchr:
+>>>>        ...
+>>>>        bpf_strnchr.constprop.0
+>>>>        ...
 >>>>
->>>> "It's not that important to bother" is a fine answer as well :)
->>>
->>> I see. Seems like it's tough:
->>>
->>> - The attribute is not available in DWARF
->>> - But we could introduce KF_MUST_CHECK flag
->>> - Which pahole would extract from .BTF_ids and convert to
->>>    a btf_decl_tag
->>>    - This will make pahole depend on .BTF_ids format though, which
->>> might
->>>      be undesirable
+>>>> So in symbol table, we have both bpf_strnchr.constprop.0 and bpf_strnchr.
+>>>> For such case, pahole will skip func bpf_strnchr hence the above resolve_btfids
+>>>> failure.
+>>>>
+>>>> The solution in this patch can indeed resolve this issue.
+>>> It looks like instead of adding __noclone there is an option to
+>>> improve pahole's filtering of ambiguous functions.
+>>> Abstractly, there is nothing wrong with having a clone of a global
+>>> function that has undergone additional optimizations. As long as the
+>>> original symbol exists, everything should be fine.
+>> Right. The generated code itself is totally fine. The problem is
+>> currently pahole will filter out bpf_strnchr since in the symbol table
+>> having both bpf_strnchr and bpf_strnchr.constprop.0. It there is
+>> no explicit dwarf-level signature in dwarf for bpf_strnchr.constprop.0.
+>> (For this particular .constprop.0 case, it is possible to derive the
+>>    signature. but it will be hard for other suffixes like .isra).
+>> The current pahole will have strip out suffixes so the function
+>> name is 'bpf_strnchr' which covers bpf_strnchr and bpf_strnchr.constprop.0.
+>> Since two underlying signature is different, the 'bpf_strnchr'
+>> will be filtered out.
+> Yes, I understand the mechanics. My question is: is it really
+> necessary for pahole to go through this process?
+>
+> It sees two functions: 'bpf_strnchr', 'bpf_strnchr.constprop.0',
+> first global, second local, first with DWARF signature, second w/o
+> DWARF signature. So, why conflating the two?
+
+In this particular case, I think what you describe the correct.
+For *Global* symbol 'bpf_strnchr', the signature should be in
+the dwarf. But for *Local* symbol 'bpf_strnchr.constprop.0', the
+signature is not clear. I suspect that pahole may not
+distinguish between *Global* and *Local* symbols where they have
+the same prefix.
+
+The case like this patch to have a clone for a kfunc global
+func should be very rare. That is another reason I think
+__noclone should be good enough and it can reduce the
+complexity in pahole. But I will be okay as well if the
+consensus is to implement the support in pahole.
+
+>
+> For non-lto build the function being global guarantees signature
+> correctness, and below you confirm that it is the case for lto builds
+> as well. So, it looks like we are just loosing 'bpf_strnchr' for no
+> good reason.
+>
+>> I am actually working to improve such cases in llvm to address
+>> like foo() and foo.<...>() functions and they will have their
+>> own respective functions. We will discuss with gcc folks
+>> about how to implement similar approaches in gcc.
 >>
->> Hm, I should have checked that before hitting "send": apparently pahole
->> already parses both .BTF_ids and __BTF_ID__set8__*.
-> 
-> Correct, this isn't any new dependency.
-> 
->> Still, DW_TAG_GNU_annotation looks like a better long-term solution.
-> 
-> Ihor a bit earlier added BTF-specific way to attach any random
-> attribute to BTF type (it's a special form of
-> BTF_TYPE_TAG/BTF_DECL_TAG), I think it's still on his plate to wire up
-> the use of that for a few long-standing issues with vmlinux.h, so this
-> might be yet another reason and use case for that.
-
-Acked. Thanks for the reminder...
-
-Although in this particular case (__must_check) there is still an
-issue of passing through the attribute from kernel source to pahole,
-and AFAIU the only feasible way to do that right now is via KF_ flags.
-
-So this DW_TAG_GNU_annotation looks promising, because with that
-pahole could read annotations from DWARF directly, without special
-handling of .BTF_ids data.
-
-But then we probably don't want pahole to put _all_ the attributes in
-BTF, there might be too many of attributes we don't care about. Still,
-a filter on a generic DWARF tag is much simpler then what we have now.
-
-Ilya, thanks for sharing. I wasn't aware of DW_TAG_GNU_annotation
-development.
-
-> 
-> But agreed, for now I'd go with BPF selftests-specific mitigation.
-> 
+>>> Since kfuncs are global, this should guarantee that the compiler does not
+>>> change their signature, correct? Does this also hold for LTO builds?
+>> Yes, the original signature will not changed. This holds for LTO build
+>> and global variables/functions will not be renamed.
 >>
->>> - Then bpftool would convert this btf_decl_tag to __must_check
+>>> If so, when pahole sees a set of symbols like [foo, foo.1, foo.2, ...],
+>> The compiler needs to emit the signature in dwarf for foo.1, foo.2, etc. and this
+>> is something I am working on.
+>>
+>>> with 'foo' being global and the rest local, then there is no real need
+>>> to filter out 'foo'.
+>> I think the current __noclone approach is okay as the full implementation
+>> for signature changes (foo, foo.1, ...) might takes a while for both llvm
+>> and gcc.
+>>
+>>> Wdyt?
 >>>
->>> Seems like they are attempting to upstream the new
->>> DW_TAG_GNU_annotation right now [1], if that lands and is available
->>> for non-BPF targets, we could put
->>> __attribute((btf_decl_tag("must_check"))) on kernel's
->>> bpf_obj_new_impl() and directly access it from bpftool.
->>>
->>> So for now I would propose to limit the solution to selftests.
->>>
->>> [1] https://gcc.gnu.org/pipermail/gcc-patches/2025-August/692445.html
->>>
->>>>> [1]
->>>>> https://gcc.gnu.org/onlinedocs/gcc-12.4.0/gcc/Function-Attributes.html
->>>>>
->>>>> [...]
+>>> [...]
 
 
