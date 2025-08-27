@@ -1,107 +1,172 @@
-Return-Path: <bpf+bounces-66616-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66617-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAE34B377AD
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 04:23:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77FEAB377C4
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 04:31:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 760012A50CE
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 02:23:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DE557C06EA
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 02:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE12272E4E;
-	Wed, 27 Aug 2025 02:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A454F2749C8;
+	Wed, 27 Aug 2025 02:31:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fS+mwt9Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iKjUiv8z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3866B27707
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 02:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839E01EFF80
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 02:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756261404; cv=none; b=SlrcdZHiPlpkB6Zw8XDN1wVbbJvwsaI6jVSFt8ors1a8HlEZckJ/dziestO40GFle3962TsyUNvMKHlhgB/c/Rs8PHI72APyVgn1KsjLsNH9rcVGXYCvrMtCL3GQawUhYt78rFujsvs8vuKcNo54puGPJH0eGj8sF9YmcRfGVB4=
+	t=1756261909; cv=none; b=t2X6i5qJRjRGGFRMHqAIaNu1NeV7HwPgEIjteRdsZw84diGr+hWHlVyu1OoB+uyJpuw33JdhuSvNOQ/MgDdYeypOYjWNVAGIaSeA0qvC3bclUTkNgtnaccwFSOZda7Hxl0pj/v93RCtgHup6hFgx0BsXxeZ0vi6OczeLtTdBtNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756261404; c=relaxed/simple;
-	bh=Oan4Phs7yjycRaPckO1F2kwDFSlozimxAHWvYV7rPXo=;
+	s=arc-20240116; t=1756261909; c=relaxed/simple;
+	bh=JsCM6cUrsSAWEC5+Cl8xQAkPpRceUbn0olHkCGvWnDs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BMKJqRAHpRNdpWfv2NzU0WlZ8Jbp0Hrn9eY7AfvcmepfzCeusy2Jkh9N2tpi+GyRb5/6OalBznlf5eelIJWlKbpSnn8yQXVKDw/xL3PNk+ZH9CsIJATfXrIcd+VpeHqwj0v1hWtxSTtZlOkbymh8kjH88j1+OJlLyjM9A1oOY4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fS+mwt9Q; arc=none smtp.client-ip=209.85.128.54
+	 To:Cc:Content-Type; b=RRxKjk5T/pGcXiM2nqAxG1rHNe3/eHJLVaR15SBJ97kIJlZwVNp1KRpV2lMDRrFIsH/Omo4gFf6Dq3/UEeDdd+9oUA1u7Zwklgdk63uL0cCnk66j9GK4vltcpyDkuA3O9EUUTiDbQeClavu0lqcCRYh9kcBF0fZg4DBvddwyr28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iKjUiv8z; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-45b5c12dd87so28791405e9.2
-        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 19:23:21 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-45a1b0d224dso32666285e9.3
+        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 19:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756261400; x=1756866200; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756261906; x=1756866706; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Oan4Phs7yjycRaPckO1F2kwDFSlozimxAHWvYV7rPXo=;
-        b=fS+mwt9QMRc431pZzhnKwKteUpV2u7how7ssTqN0IEX5rLvb4uEucKvkE2u/GVF4Ie
-         tAcPCgC3wvkvju3t3qF2qKEa8USdiS1SAY/0o1bxhnQdX2Q/zX6ZIA8VF3NctZKB4CcH
-         26k3zD4mcS7Te9zJ7RmpBqtpBslAcIHn7olPwaImmFj2jmG3nVdgNgD56zw8nOOGMKBh
-         a+Uh+LgLPbESmNZKx8D0UwYzquiMR17n7hMTmkZdC8iYgcvLPv3puO2IVTEXZKJCUash
-         G0P+1+RkjAZwJcengoXpbaJ7DFMHVqXb5+NMw8i1tVeOMDsFGj6biknMA+nqYupSGwdE
-         D7Lw==
+        bh=vPZ0cjHpX9ISkQzDoldFUyRE8ewsbgZ6deVAAiBZcHA=;
+        b=iKjUiv8z+xiF65P1QE91MCvu06DhvctANtAJzetk3n+QcVuwbisabcopMQoVXykxIe
+         3gDwRkiobZWmAr2HVdM6vr23sYUZapoRfEY2H/F1pC9d9wFpE/Q8buAhK38sJ27PZIF5
+         oB72huuNxIC0QlsLd49DckvzJmgJw1Ljxy01IzfgM6E4yzDoZom8sktLeg0Eq1jFiGbV
+         6mauAVP9zn9DDbkisqZ4lHbvZNBhcxkhM6WZ0m29pmWHxN6WbEzcpxOEcUiiNtDOQap1
+         lE7c9mtl3gQzZE50snz6RyV5ejJ5TSP+ueduekLitpLXuNF5UciapB2m3yJgajOtoGoE
+         Qriw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756261400; x=1756866200;
+        d=1e100.net; s=20230601; t=1756261906; x=1756866706;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Oan4Phs7yjycRaPckO1F2kwDFSlozimxAHWvYV7rPXo=;
-        b=Z5sfkN7nDIR6qtstnrFWKNdsrudMbWWfa5OLTc1DQ9iP2l66YIGkhUFWwvkI+Uz2xW
-         8iTOjSDsbiKVcp57SlNbWC5EqOS49DVyI0OyzzwMMkRoZyn2ICkFg0xVSy5vmYwbyfox
-         /4KlAZKjEmi2cBZ2uDeCsq/bDkyAA9/ABJ2vaNn9jbduosJCRZExBqJfDtn/pGZxvWcP
-         +FUB28v9mXsh115ntak5GQKx8IVFQvEq98hCvhPWMUKiMtr+Gyp7Wlf8fw7A4rANWe2Z
-         rx8eKatcLmK25/v79wNL7RPCgI+0HSK6NEdD1gv9A6ydMrmzB4hyyMs1iPCcXTNznu6w
-         1tfA==
-X-Gm-Message-State: AOJu0Ywo/swbdwLkiHGDYvZc2IV7qhWYeSKdkEHC87UoyP2L/qCssBYn
-	NxB7W7PG0VOi+wR7XHKJI8NLToTFhImMuLqxXWjce/Tx7Fu6Yzhul9RB7RBeajgwjpKEJPuf1UN
-	sWgkH8FmuVhAA1GJjYfPfW5oCVmrFrFM=
-X-Gm-Gg: ASbGncsA7gS6LEqoJfoPnm03r1S/ygh/eW5QTS2CznzN0cC5zKQyaeeiNI26YAnMmAg
-	oJ9hc1A9kHDjz6Rd69glJ0khshhymMbBMCitL2tF5TQ9iH+qhcRw/oY+YXFRxiZdUXAuXn+osL3
-	0we25gv1LhZqCDE93FziJOB6JqEHyh7S+cNUbFfFXdxNA3Ia/v4RBv3TXZYOKq46kUlfhKdC+tO
-	pGKNibgbJKFSeLuMTA58yRDI7ZWtNrKgEOz
-X-Google-Smtp-Source: AGHT+IEjxXTGedqFksjhbO9wY9a2XWj7oPRpAOX0oiscCtFTs5xBfXBRoAmDhVY1lQtYBY6qaJKEsWP2n16e6xZz0Ok=
-X-Received: by 2002:a05:6000:240e:b0:3c8:89e9:6aa7 with SMTP id
- ffacd0b85a97d-3c889e96e2fmr8979405f8f.2.1756261400250; Tue, 26 Aug 2025
- 19:23:20 -0700 (PDT)
+        bh=vPZ0cjHpX9ISkQzDoldFUyRE8ewsbgZ6deVAAiBZcHA=;
+        b=MTfeTNe4z/cU33ZZ7xWmTOZOGmUWNXXUnHWZB/xicWMf4P/v4XjJwLbZG8aZ4IukiX
+         DWCB4r2h9m+E3rVTZu82onFxJoB8L7mhraXsr2KNXE5Tw6/MQjyZkTdJG7JuY1n7t1dh
+         Z0TiwGxRxngapsrC04JS1H+S6szLCrCLAwSvmW9BXTnEuyoQUx7M7bvUDWBQyVS/oJpE
+         LoG8MZ2Yx6/k4jVtxs2zo+qzxfv9SSjc+/+6e/40PqArdmk+v+5Zsf/8dZgontxRGfpQ
+         Ba8V6ceZcgafSKsjS25ga2FEEhsTs4ZIapAnGpoSPiBWmgugJMTZwYSPC2FvBt9KHFCB
+         ao6w==
+X-Gm-Message-State: AOJu0Yxhl8TlY3OvRgBdsNicnCphj4WWC3TC5hx9+q60yCsOZ24o3lIR
+	QwKG4+7dCWF1PsqqDWnzXJB8X5SYqHcNjuemvx8JnV24R+vKRf0Px3yMdKKk+fWuS0XQ8PNzSVF
+	e4hgjBDBadvqqoC6Q/kSwF5NpLKCao10=
+X-Gm-Gg: ASbGncuvNkFyIV2n4tudo2iwsSU6pw+w33xw29FPPaCxHAeNjtWcDiiiqrWOdb1zhdy
+	e0LsbJZwIZP8wcSf/9pXGhfDDb3xFrjbQYzuZD/hY0/3/W+oEBw2ZcSGVHTjE4k6d8tmKm6bZbJ
+	1DI0Jp90KT/9UOyBhLJBn61DkhzseuSZhv7uPG1dYP3oCbM3VMh/HZwS5rt4gFMHhhgdZBwir7L
+	RPWLG9E0gvWP7SDvi/LLzoWdPukv3d16GjSUO/OL7PDpDWiW6dQtM/WjA==
+X-Google-Smtp-Source: AGHT+IEGvo/30kFFrtTrRRK4xdcQTRYg7nDPi1UfUAg7xHV+Ke7cIP+dwEKwVCmAa/gFohW6TR4IoCcu37qvVrTeKAo=
+X-Received: by 2002:a05:600c:4743:b0:458:bfe1:4a82 with SMTP id
+ 5b1f17b1804b1-45b5179683dmr206749405e9.16.1756261905648; Tue, 26 Aug 2025
+ 19:31:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
-In-Reply-To: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
+References: <20250716022950.69330-1-alexei.starovoitov@gmail.com>
+ <20250716022950.69330-6-alexei.starovoitov@gmail.com> <aKvqT-BAXGkjW7JT@hyeyoo>
+In-Reply-To: <aKvqT-BAXGkjW7JT@hyeyoo>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 26 Aug 2025 19:23:08 -0700
-X-Gm-Features: Ac12FXyt11HFruYGrnEwQRV6wW3Js4UU4syCVUOGXU9x-lwoxi-BYMX5wxXwcfA
-Message-ID: <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com>
-Subject: Re: [BUG] Deadlock triggered by bpfsnoop funcgraph feature
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 26 Aug 2025 19:31:34 -0700
+X-Gm-Features: Ac12FXwjjsZ2EvcANqqa7llhwppJYGqGgQVuUglhvIlTkrBSooCtpKFyYoUNJlg
+Message-ID: <CAADnVQJ3vhBsRqgYEG13neTuXbSU1hNngYmWHqKCLTRr8+QVhw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 26, 2025 at 7:13=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
+On Sun, Aug 24, 2025 at 9:46=E2=80=AFPM Harry Yoo <harry.yoo@oracle.com> wr=
+ote:
 >
-> Hi,
+> On Tue, Jul 15, 2025 at 07:29:49PM -0700, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > kmalloc_nolock() relies on ability of local_lock to detect the situatio=
+n
+> > when it's locked.
+> > In !PREEMPT_RT local_lock_is_locked() is true only when NMI happened in
+> > irq saved region that protects _that specific_ per-cpu kmem_cache_cpu.
+> > In that case retry the operation in a different kmalloc bucket.
+> > The second attempt will likely succeed, since this cpu locked
+> > different kmem_cache_cpu.
+> >
+> > Similarly, in PREEMPT_RT local_lock_is_locked() returns true when
+> > per-cpu rt_spin_lock is locked by current task. In this case re-entranc=
+e
+> > into the same kmalloc bucket is unsafe, and kmalloc_nolock() tries
+> > a different bucket that is most likely is not locked by the current
+> > task. Though it may be locked by a different task it's safe to
+> > rt_spin_lock() on it.
+> >
+> > Similar to alloc_pages_nolock() the kmalloc_nolock() returns NULL
+> > immediately if called from hard irq or NMI in PREEMPT_RT.
+> >
+> > kfree_nolock() defers freeing to irq_work when local_lock_is_locked()
+> > and in_nmi() or in PREEMPT_RT.
+> >
+> > SLUB_TINY config doesn't use local_lock_is_locked() and relies on
+> > spin_trylock_irqsave(&n->list_lock) to allocate while kfree_nolock()
+> > always defers to irq_work.
+> >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  include/linux/kasan.h |  13 +-
+> >  include/linux/slab.h  |   4 +
+> >  mm/Kconfig            |   1 +
+> >  mm/kasan/common.c     |   5 +-
+> >  mm/slab.h             |   6 +
+> >  mm/slab_common.c      |   3 +
+> >  mm/slub.c             | 454 +++++++++++++++++++++++++++++++++++++-----
+> >  7 files changed, 434 insertions(+), 52 deletions(-)
 >
-> I=E2=80=99ve encountered a reproducible deadlock while developing the fun=
-cgraph
-> feature for bpfsnoop [0].
+> > +static void defer_free(struct kmem_cache *s, void *head)
+> > +{
+> > +     struct defer_free *df =3D this_cpu_ptr(&defer_free_objects);
+> > +
+> > +     if (llist_add(head + s->offset, &df->objects))
+> > +             irq_work_queue(&df->work);
+> > +}
+> > +
+> > +static void defer_deactivate_slab(struct slab *slab)
+> > +{
+> > +     struct defer_free *df =3D this_cpu_ptr(&defer_free_objects);
+> > +
+> > +     if (llist_add(&slab->llnode, &df->slabs))
+> > +             irq_work_queue(&df->work);
+> > +}
+> > +
+> > +void defer_free_barrier(void)
+> > +{
+> > +     int cpu;
+> > +
+> > +     for_each_possible_cpu(cpu)
+> > +             irq_work_sync(&per_cpu_ptr(&defer_free_objects, cpu)->wor=
+k);
+> > +}
+>
+> I think it should also initiate deferred frees, if kfree_nolock() freed
+> the last object in some CPUs?
 
-debug it pls.
-Sounds like you're implying that the root cause is in bpf,
-but why do you think so?
+I don't understand the question. "the last object in some CPU" ?
+Are you asking about the need of defer_free_barrier() ?
 
-You're attaching to things that shouldn't be attached to.
-Like rcu_lockdep_current_cpu_online()
-so effectively you're recursing in that lockdep code.
-See big lock there. It will dead lock for sure.
+PS
+I just got back from 2+ week PTO. Going through backlog.
 
