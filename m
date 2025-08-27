@@ -1,133 +1,143 @@
-Return-Path: <bpf+bounces-66642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB1D8B37FB1
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 12:18:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBF2DB37FC4
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 12:22:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37DC216C21C
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 10:18:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A74A35E2D62
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 10:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 285A834A301;
-	Wed, 27 Aug 2025 10:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B21334A32D;
+	Wed, 27 Aug 2025 10:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M5hdkaV6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z6OOsUQD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98DA42D2485;
-	Wed, 27 Aug 2025 10:18:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 608BA1C860B;
+	Wed, 27 Aug 2025 10:21:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756289909; cv=none; b=rW24C60RHgUWo7lJsQNroKL23VvMH0QFVMZlyxdq1OgPN7+EBBM4lgiQVntt6kOOKIMq7hbLoiy7tl/w30XIB2/axhEKET75NRA+t7prrV9Q2FF+RZ3bLJ1w/kmRyMp+uWSfEamjWDnlrsU4iOfrb1LePOJmortTRp1+qCBmEog=
+	t=1756290120; cv=none; b=JBL9APScf9M4VxBnIzX9K3vmlNtWiq4tpCFnJFBLoGOFQ9Pjeeu3Y/txyTQH+gCnhvLkztPyTG6pyWVFZXnpadhslBxNoCNUHS6XRLcTctEDQTQHK5h4rnArpeUCpm7AExyA7pL1zRHYGrPF2AuMEvmzpfAGXFvqZcWMbTfbbqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756289909; c=relaxed/simple;
-	bh=6FzlqskmpU4mqgsOXMFz/wgzjeVlAW4PBLT2lq24aV4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VlV4BYkxeFcTpByc1jTxRzC1yLAOY0xvRv83n2lCo0vEU+GrzsX31tZCZ6x+TWRQOXZG1sEBNwG98i8ITmudRTpTaRbNk9EmxDkf5F4V1T+OZpoZGRxI9MB4C1xZuxDum9zOSockFy5XaazeUAsSy2LrQECse7IDonGvGW6Uu64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M5hdkaV6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79B5AC4AF09;
-	Wed, 27 Aug 2025 10:18:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756289909;
-	bh=6FzlqskmpU4mqgsOXMFz/wgzjeVlAW4PBLT2lq24aV4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=M5hdkaV6NdbcRgLMTdZNGtKkBXlDzUaESLeMZ3UhOp2Lu/Eb0eDmH9DxvQDERmD8d
-	 dtg061BoVzk20FeEZOnpFcC8GsXs9FG0Ypc97u7EKCQYyqQpg89MG3RInCZUAgZ6Tl
-	 4QS+GTYWtFzE0laGDd2Vc0aoU8JL1sbVRu2ynic6fYmCGgJM+S0wMvGxWhA5SBQoTI
-	 DJv0i0ugeEtFH7IMPF0nQzozL1UiUPYta68OfIq1TKnmI5OiosllEU7wDkz52/norF
-	 SmKPFOQmjlZw7SdJGmn2ocSfchl0m2Sxfv/3PTI4SFSPkI+9rkApLntyGCWYPnQ+IY
-	 NqGcgP6jKuerg==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-61cb9f6dbe7so641815a12.0;
-        Wed, 27 Aug 2025 03:18:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW2akWTwVVsaNFbLMQwUQ7oGJ8TynEDACjgDd7lp1edNTOqkJy6n+/LOm0A561qTEzWdyHwUBA02Yk67kUt@vger.kernel.org, AJvYcCXPlqOzM+DvvtivQmledf0dVqcABqJ6lhmfP/wgYekIajN9cERIgyIio6cE+WyG5IlBEjo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzW3GsTBYzCYLovO80ErHAvViMklo7xfW3EFTB/7lfbCFUKxSU/
-	N1SJPPKLNGPaMRm+HjE+9b8/1K1HIPnl4dP6v+N8I3EbvL3vfkWIZ0yAQ30qbi7La/BRM0WqcvP
-	NNRj3/1rNUcs6ZFzLMy+p5Al8BzdD/8g=
-X-Google-Smtp-Source: AGHT+IFDaHJmXdP3CC1Di8LlIhQV097JtkfPqlF8wrrAryeIiXdqAtfMWhdoQiulQi8pOLJWyHP8mPXfB1Tn/2IkwCk=
-X-Received: by 2002:a05:6402:2792:b0:61c:bfa7:5d0 with SMTP id
- 4fb4d7f45d1cf-61cbfa706c9mr119825a12.30.1756289908044; Wed, 27 Aug 2025
- 03:18:28 -0700 (PDT)
+	s=arc-20240116; t=1756290120; c=relaxed/simple;
+	bh=lWGnrKUEhpYeD21CuLeEotP8PCBIr3/OuRbGU8QS7F8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=f64cjHAd5uluq59MUAou0pTA9f42jhq9VZFt3sk99nn9xdLfMgR3U6NQhwYYOCs9Rgj0FH+Bk537dXTl016rBFVmrW9kmnaBMPJzbuPWwlrCG1nQmaM6RWOmxEvJPu26W5Ctm2MxQ/bx7A5tJYv2W/+E1751pTOTwUEOpptbRW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z6OOsUQD; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-771f90a45easo1647422b3a.1;
+        Wed, 27 Aug 2025 03:21:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756290119; x=1756894919; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=aq3fc6aO1OdCHOdewiqMtQD6LH39KbeVaeZG01Zb1Dc=;
+        b=Z6OOsUQDri6ujNWMaWehEawROPwHqB7UPAncR5dFTwFFtXo9eaw+lHwGu72stCUz8H
+         YvY410YbrL6dl9wB+SeQOwd0kLLpBD6BHtLzT6KacMvCwxjzHTYE8dGm66HYUgDSlZyS
+         +BVa+RQUQ+h41x4UIa80z2b9MwgfzO7NnmSTGDWwsMfokJddVH76OZZd5F7/FrlTubO5
+         zxLL3qLeId+zAWE9RJLY5FiptSbKG35kzLzpGAikKLGWyKXe2mBbT3tH1aRAb7bzV6A1
+         2kvKt5OiXODvbdjn5ei2c2eB1yDeg3Gs3zQfzbxzDNsMDn37svV5jq9oQcp2ijn6YXry
+         cV4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756290119; x=1756894919;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aq3fc6aO1OdCHOdewiqMtQD6LH39KbeVaeZG01Zb1Dc=;
+        b=mEq8a7WlZUHK/UsdZq0VykT4ZGOFOhF5yjbI+j0Nhrz37Mw6JGVQj341SNoaOY5W/l
+         M/jWVO/UdsgOwtv6gdWDGEAqeNUaib+WjVVD/tw0xUqEvxgNSsKH83qR8nJSSL/zgzOd
+         spqpCqNnryIBb5IdDOnotRIemDUtEgd1IHyFSTZ2M4bzAlDJs7cALmCu1a9kdXb+hhwd
+         z2sZjL3NGeSqsT86KMycQC4xvXipgq7b/iRKLUmXb9HCs+XCZzPZxQSYKpZs8pT7HfRA
+         Yyx/yiipAbDwHtAzStP10PHxj7lqHf/QE3NQBMOycwvq3wPPVt8+Nw2hagjmTOhwiVUs
+         aJvA==
+X-Forwarded-Encrypted: i=1; AJvYcCU2QZy0Y7ayUHOoW1n/dArrfj9DtW+O0JcJPXXVslynyYuzn/RTqF/BHCXb79f0gcNL0fs=@vger.kernel.org, AJvYcCVFbirJW0NnP6yCunoiY9JAQnrktmUjuEMgtkmd3voDYigQzNf8JMpyiIke7OC9PnjFQo8SzQD5CQQmdFoaeP67@vger.kernel.org, AJvYcCVIfQeXAQLxZCjbaTcIeDX/wEfdvO1ygDaRMlWVaytVKPvlFHL2ZWgJS8rZMlDfjwhy8r11O/sJKOFUiy7X@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywz56ydZKqZPFh+dWN2BJs35oMTWjBIWBAcaT8JTsbBoRNAlB2Q
+	Lk/V8Up1cdNBndOBjA9uWFMZy9dt0JStvedhqvMHPArenu/RgLrfp0rt
+X-Gm-Gg: ASbGncvx1MoIcPgCqtjntay988ODIVRv694jojnmHYZzuTWokWvBa7zOSeVRr0O7Hke
+	OltvjIE1aLLqzjZgc1KcIb5eZvlfcNxvYMx8sxbHGB6heaNU2UEK+kjf6AvHadbfEc0PcNyTGFB
+	goADekRPqysFQYw1vb+GcPpNB6k+CaE4z4zk9w34YPLDf/ATLpEVkEpNeHM8ILQ7PnIAXmtdOc8
+	gCkV7IMr4dNSe2Uls6DRKufQ52lj+PGGsmsm7Zht+kkEJw7OB7AO6hpPY8guZVzY2zjhTF5FYN4
+	NsZqIMLyn4QX6V5eUwVVt3esu0gnlcYLBFpfCSt2g4Jckyb8pFNTGYP8GQsHMSiB9xWeo/v/kAo
+	TlswvFEzsh/t5Vb+wEA==
+X-Google-Smtp-Source: AGHT+IH3WNUVmPqMTukxtKHvHigKxqb3p981KugKiFvNM38h1dKzUOMN7hkmjUIfx2XFxBTJ/6RQWQ==
+X-Received: by 2002:a05:6a00:4095:b0:771:e434:6c80 with SMTP id d2e1a72fcca58-771e43485c6mr10159776b3a.11.1756290118544;
+        Wed, 27 Aug 2025 03:21:58 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-771fc26aa82sm3865371b3a.104.2025.08.27.03.21.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Aug 2025 03:21:58 -0700 (PDT)
+Message-ID: <79d0e1894ffbfe4945ccf6aff7aa6564334e2600.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix the invalid operand for
+ instruction issue
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Feng Yang <yangfeng59949@163.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, 	llvm@lists.linux.dev,
+ martin.lau@linux.dev, sdf@fomichev.me, song@kernel.org, 
+	yonghong.song@linux.dev
+Date: Wed, 27 Aug 2025 03:21:54 -0700
+In-Reply-To: <20250827082452.1381181-1-yangfeng59949@163.com>
+References: <2e20aea407140c22d12f89cdf07605c31c61d0fa.camel@gmail.com>
+	 <20250827082452.1381181-1-yangfeng59949@163.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250826064906.10683-1-yangtiezhu@loongson.cn> <CAEyhmHQJcCvy2TPv7nwT87yS6y698WrECwd+xA9RjsCVmrVXvw@mail.gmail.com>
-In-Reply-To: <CAEyhmHQJcCvy2TPv7nwT87yS6y698WrECwd+xA9RjsCVmrVXvw@mail.gmail.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Wed, 27 Aug 2025 18:18:16 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5SCuXERUBbC5D+k1pjf-Pmf33LOQXL=aUP-E-DgO6+qg@mail.gmail.com>
-X-Gm-Features: Ac12FXw1WWwPsT1YP9ZG06PGkyzJXhLdasQwDqY8XKTWfUUAYVafM9Q29pau5cA
-Message-ID: <CAAhV-H5SCuXERUBbC5D+k1pjf-Pmf33LOQXL=aUP-E-DgO6+qg@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: BPF: Optimize sign-extention mov instructions
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>, bpf@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks.
+On Wed, 2025-08-27 at 16:24 +0800, Feng Yang wrote:
 
-Huacai
+[...]
 
-On Wed, Aug 27, 2025 at 9:27=E2=80=AFAM Hengqi Chen <hengqi.chen@gmail.com>=
- wrote:
->
-> On Tue, Aug 26, 2025 at 2:49=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.=
-cn> wrote:
-> >
-> > For 8-bit and 16-bit sign-extention mov instructions, it can use the na=
-tive
-> > instructions ext.w.b and ext.w.h directly, no need to use the temporary=
- t1
-> > register, just remove the redundant operations.
-> >
-> > Here are the test results:
-> >
-> >   # modprobe test_bpf test_range=3D81,84
-> >   # dmesg -t | tail -5
-> >   test_bpf: #81 ALU_MOVSX | BPF_B jited:1 5 PASS
-> >   test_bpf: #82 ALU_MOVSX | BPF_H jited:1 5 PASS
-> >   test_bpf: #83 ALU64_MOVSX | BPF_B jited:1 5 PASS
-> >   test_bpf: #84 ALU64_MOVSX | BPF_H jited:1 5 PASS
-> >   test_bpf: Summary: 4 PASSED, 0 FAILED, [4/4 JIT'ed]
-> >
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >  arch/loongarch/net/bpf_jit.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.=
-c
-> > index abfdb6bb5c38..7072db18c6cd 100644
-> > --- a/arch/loongarch/net/bpf_jit.c
-> > +++ b/arch/loongarch/net/bpf_jit.c
-> > @@ -527,13 +527,11 @@ static int build_insn(const struct bpf_insn *insn=
-, struct jit_ctx *ctx, bool ext
-> >                         emit_zext_32(ctx, dst, is32);
-> >                         break;
-> >                 case 8:
-> > -                       move_reg(ctx, t1, src);
-> > -                       emit_insn(ctx, extwb, dst, t1);
-> > +                       emit_insn(ctx, extwb, dst, src);
-> >                         emit_zext_32(ctx, dst, is32);
-> >                         break;
-> >                 case 16:
-> > -                       move_reg(ctx, t1, src);
-> > -                       emit_insn(ctx, extwh, dst, t1);
-> > +                       emit_insn(ctx, extwh, dst, src);
-> >                         emit_zext_32(ctx, dst, is32);
-> >                         break;
-> >                 case 32:
-> > --
->
-> Acked-by: Hengqi Chen <hengqi.chen@gmail.com>
->
-> > 2.42.0
-> >
+> I don't know much about assembly language. Could you tell me if the follo=
+wing changes are correct?
+
+Looks correct, should be similar to verifier_search_pruning.c:short_loop1()=
+.
+
+Unfortunately, I'm afraid that the best source for assembly syntax doc
+are llvm backend tests and sources, e.g.:
+- https://github.com/llvm/llvm-project/blob/main/llvm/test/CodeGen/BPF/asse=
+mbler-disassembler.s
+- https://github.com/llvm/llvm-project/blob/main/llvm/test/CodeGen/BPF/asse=
+mbler-disassembler-v4.s
+- https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/BPF/BPFIns=
+trInfo.td
+
+The directives should gas compatible (subset supported by llvm):
+- https://sourceware.org/binutils/docs/as/8byte.html
+
+> diff --git a/tools/testing/selftests/bpf/progs/compute_live_registers.c b=
+/tools/testing/selftests/bpf/progs/compute_live_registers.c
+> index 6884ab99a421..01d73ad76faf 100644
+> --- a/tools/testing/selftests/bpf/progs/compute_live_registers.c
+> +++ b/tools/testing/selftests/bpf/progs/compute_live_registers.c
+> @@ -249,11 +249,13 @@ __naked void if3_jset_bug(void)
+>  	asm volatile (
+>  		"r0 =3D 1;"
+>  		"r2 =3D 2;"
+> -		"if r1 & 0x7 goto +1;"
+> +		".8byte %[jset];" /* same as 'if r1 & 0x7 goto +1;' */
+>  		"exit;"
+>  		"r0 =3D r2;"
+>  		"exit;"
+> -		::: __clobber_all);
+> +		:
+> +		: __imm_insn(jset, BPF_JMP_IMM(BPF_JSET, BPF_REG_1, 0x7, 1))
+> +		: __clobber_all);
+>  }
+>=20
 
