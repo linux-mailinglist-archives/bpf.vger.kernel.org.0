@@ -1,192 +1,178 @@
-Return-Path: <bpf+bounces-66709-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66710-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF69BB38AA3
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:05:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54701B38AD9
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:25:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 909E9364D20
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:05:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26AE07C7524
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 20:25:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94832BE7CD;
-	Wed, 27 Aug 2025 20:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7081A2FDC5A;
+	Wed, 27 Aug 2025 20:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kOdFXVBp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cz9MU/TG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A98CA5A
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 20:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADBE2D97BF;
+	Wed, 27 Aug 2025 20:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756325115; cv=none; b=G9X4+DgedCpYw4acfa4fAuIlDBMqQGQAsSTnz+uxFQrKOD1SNEvQxh40WYGFatQjht5aTCko2yoadHGtcNZPbyqLnL3IsjyZ1mE6moNp1FH5JgO0MJ5Ze9YtnZo6k/3rtdxOZkjyspb8JuMFL0fbOlmxlh2jaSr0l/CsOwgLmas=
+	t=1756326262; cv=none; b=fLYkIaGEan7Pw+o66haVeYTqR1byvULLDt1jWSqd/pxygrKvgyOd5kajpXqqTrRJdxMEltV+cQCaTC4nlX3KhGZT5jeYrywLRbKkJ8V/UQo4VJv8Mlnx3tw71aoyJv9++DaIG1mZamT/k8RVFKGRiiYgZcWB+vd4/CQik5NR37c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756325115; c=relaxed/simple;
-	bh=abo9KHOX4y2p9lPkp9bAk2ow+U2bfu0PjHWcVPor2Ok=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Te1kFzsGwcX7V0svtikRZ674lr7bduf6x+gBc9LrcyUcey9gXkFo25nMBFT2JR5TZEy6CwkhtOS9cfi2ZE4w16TDiqIS9izWZLZmT1BXwSrjEtOkNFTiDlcc2ETbQKj0hqUgzEqYKP9A+OOCKVtPlZb5B2q9mVpksIMKSGGX3u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kOdFXVBp; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b4c29d2ea05so1012365a12.0
-        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 13:05:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756325113; x=1756929913; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bs/XV2NOqspI4S0fjmRCC0xYkGsSXdQpEFGFRK94i/4=;
-        b=kOdFXVBpFzv9+9k2LtT+oZOEubtRoXAc5JbfN/3hMy+ppyN8fKJ6SIAsHRRvxS3ivX
-         BHyVITXYpGKWHvwgGN18KwDvcr9r9YMWFAwLRF9ySLBYCyZm3Nww23aUPGaoRg/8n2Zb
-         YihNAtCM0P+fzGchll4zFaDaZM/Fw+C9vq12oQtEhg4k9txryVCY9VNt+l+oIsewgYNp
-         fQw5ANbkYrJQzZfBbJjtmVnE9di1BI+RgUgZ5gqKr2uQcjbvhxTZ9fpttGtOUswSCr8h
-         Zw131wPquJE2gPu4VHEHHEFFQxMrM9Qkqr748tM7frGB87qEgCmbVYicjmDIg8RHV2Fn
-         /DlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756325113; x=1756929913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bs/XV2NOqspI4S0fjmRCC0xYkGsSXdQpEFGFRK94i/4=;
-        b=Kse2vSL0ikz5gn5tNZ7Rd18RVLfKN/iogVncr3yAB4tmF6x80QwkWdyZjjCdAM7vkm
-         qKfqH1/4PMvq78SWoKFVNbHUA9VaUb5/SI6xDMSOtqQL0nbzTCFCia6QGNAmP5D2rmsU
-         8DdST//e54GF5btwEanSp1fI5mAAIeNpIdOOK+6Z+uCAblDytulR3E+CeJD78vDMvfDC
-         uJIy8N4NiYhecIsOqOW+LayB52Bh7eGiA5wlgTajxJhpsaoEZcnMMMINLD54O5ghIOl7
-         nb/xSkZ8yIfQ7Riv1+eYUZ5OEz2VVNz7FYRztLyfjnqeKYNTgLGeMdT7rdkByyNK2kGk
-         XLOA==
-X-Forwarded-Encrypted: i=1; AJvYcCV+JK2QQz3Tv9lnM7HwLFetEvnMDyuP3ajF0huwGV2yRTJuZogvt+rV5LAmnVUHWoQwzUw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxXifHJPVKDGAX3/Af6qZqwe7CdogI0ZjKGawTcx+dDO0lxVG2D
-	ZwYY5LWda8I28YTtp4VzzYZNukDhjcPJDA65LJnH4e7qsKGCX1dqqF+2gJzkywDGMiqi2XCMCTR
-	mW6JwpBN/4X2ay0RUmXWOaghy25bS254=
-X-Gm-Gg: ASbGncs8lRrPcMtmPHzclop7CzlWP+azQqcoXlpU1XK7m+QmcJdoZ+XA78mn8woXwVL
-	9ciGcD1w1W04rfnBLPU9H0ol5h2Bl+46mouzuaNB/+ZxKRsqvbBQJ+mlDlkHX/olK6F2Ea7UAuW
-	2o3T5hGPgf7KUzAn59YSBBtwn/Jt0x4e8YAh0Nxu71UXiSNXli3KrVDa/Gv28CEagrsDtG4yS6r
-	/VjT2aTatQ9aEGJQhoyhLTHOE2z7mzrmQ==
-X-Google-Smtp-Source: AGHT+IHGXbnxPOIcvY8Uk3D4HBTdmIsqb/fphj5q9ViCrhtD9ZEImlK3BulZLfSLi3INGonSTs9VTzlVej7iFHHAJj8=
-X-Received: by 2002:a17:90b:35c2:b0:312:dbcd:b94f with SMTP id
- 98e67ed59e1d1-3275085e802mr7834642a91.11.1756325112424; Wed, 27 Aug 2025
- 13:05:12 -0700 (PDT)
+	s=arc-20240116; t=1756326262; c=relaxed/simple;
+	bh=jFbyxsG7RwRgME4YN/e4YGrSxJ9KWnGsqcDT7QNU32Q=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=MQIGrslSdYxRWu2F1UyYbvs3fu08sbP+DRK0rz3DckpqxDzFEuOUCvLj8wPpFSFXK9iBetXEiFUmWsxBE2RJYxRHsjDgWDlsz0fiCmiC8/bn2db1QKEMVZzjlwTATU9dBvjbN0tR2n0shi3/XJRbqKKvCs/gdKo1CTO0N/bTwyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cz9MU/TG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A01AC4CEEB;
+	Wed, 27 Aug 2025 20:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756326261;
+	bh=jFbyxsG7RwRgME4YN/e4YGrSxJ9KWnGsqcDT7QNU32Q=;
+	h=Date:From:To:Cc:Subject:From;
+	b=cz9MU/TGs9kzMJ8uOKiGwyDFxIP2YcW/EBSJfxYgt/vpBCz4JtfC1SvoACWEkoyrC
+	 bLgdn16KEJY2v29Pj3hluFS1u62ZrCx8Ko3dty6U42hNdsC6/pSQTzHytdHFYykQz/
+	 YmCin9WJW5hJT90Ywn/uJvNzb8wbRQuSF4r9kcBro4Nr4V922AwymzV/2VzNyT/sQ0
+	 9lRpqkeOXAkMM7hwm8879UzxUvqwCfbun+7nrRfb7MgzpKfPuhtBUncVqVhVf9r1sq
+	 CrbLMuWr09RzOVvSaQbvMpUgaZMMdQRMbgZQ+K+s3gPfcvdxYiIDIWFy9Pd+u3u1qx
+	 yogCn6BJVuksQ==
+Received: from rostedt by gandalf with local (Exim 4.98.2)
+	(envelope-from <rostedt@kernel.org>)
+	id 1urMhE-00000003kvd-0zE5;
+	Wed, 27 Aug 2025 16:24:40 -0400
+Message-ID: <20250827201548.448472904@kernel.org>
+User-Agent: quilt/0.68
+Date: Wed, 27 Aug 2025 16:15:48 -0400
+From: Steven Rostedt <rostedt@kernel.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ x86@kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Indu Bhagat <indu.bhagat@oracle.com>,
+ "Jose E. Marchesi" <jemarch@gnu.org>,
+ Beau Belgrave <beaub@linux.microsoft.com>,
+ Jens Remus <jremus@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Florian Weimer <fweimer@redhat.com>,
+ Sam James <sam@gentoo.org>,
+ Kees Cook <kees@kernel.org>,
+ "Carlos O'Donell" <codonell@redhat.com>
+Subject: [PATCH v10 00/11] unwind_deferred: Implement sframe handling
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250827130519.411700-1-iii@linux.ibm.com> <20250827130519.411700-2-iii@linux.ibm.com>
- <CAEf4BzZgf4vRWnse6N1X_h4X6XPuax_iMxiJ5x=kwLyJzz8x-w@mail.gmail.com> <1c796beb8e6d864f6c7498b8a31e2085986e2d60.camel@linux.ibm.com>
-In-Reply-To: <1c796beb8e6d864f6c7498b8a31e2085986e2d60.camel@linux.ibm.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 27 Aug 2025 13:05:00 -0700
-X-Gm-Features: Ac12FXxeGod21Wrz0504uh5Yh9hk2_CYW2q_mT8LuapGiKu6rjDr2yOYsfyd0Zs
-Message-ID: <CAEf4BzYaZJ-TH_T32QpuxdeXOa4yt1dqrExbV6xrsXvs+kp6kQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] selftests/bpf: Annotate
- bpf_obj_new_impl() with __must_check
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 27, 2025 at 11:34=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm.co=
-m> wrote:
->
-> On Wed, 2025-08-27 at 10:32 -0700, Andrii Nakryiko wrote:
-> > On Wed, Aug 27, 2025 at 6:05=E2=80=AFAM Ilya Leoshkevich <iii@linux.ibm=
-.com>
-> > wrote:
-> > >
-> > > The verifier requires that pointers returned by bpf_obj_new_impl()
-> > > are
-> > > either dropped or stored in a map. Therefore programs that do not
-> > > use
-> > > its return values will fail to load. Make the compiler point out
-> > > these
-> > > issues. Adjust selftests that check that the verifier does indeed
-> > > spot
-> > > these bugs.
-> > >
-> > > Link:
-> > > https://lore.kernel.org/bpf/CAADnVQL6Q+QRv3_JwEd26biwGpFYcwD_=3DBjBJW=
-LAtpgOP9CKRw@mail.gmail.com/
-> > > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > ---
-> > >  tools/lib/bpf/bpf_helpers.h                          | 4 ++++
-> > >  tools/testing/selftests/bpf/bpf_experimental.h       | 2 +-
-> > >  tools/testing/selftests/bpf/progs/linked_list_fail.c | 8 ++++----
-> > >  3 files changed, 9 insertions(+), 5 deletions(-)
->
-> The CI found an issue with bpf-gcc in the meantime, I will fix this in
-> v3.
->
-> > > diff --git a/tools/lib/bpf/bpf_helpers.h
-> > > b/tools/lib/bpf/bpf_helpers.h
-> > > index 80c028540656..e1496a328e3f 100644
-> > > --- a/tools/lib/bpf/bpf_helpers.h
-> > > +++ b/tools/lib/bpf/bpf_helpers.h
-> > > @@ -69,6 +69,10 @@
-> > >   */
-> > >  #define __hidden __attribute__((visibility("hidden")))
-> > >
-> > > +#ifndef __must_check
-> > > +#define __must_check __attribute__((__warn_unused_result__))
-> > > +#endif
-> > > +
-> >
-> > do we need to add this to libbpf UAPI? let's put it in selftests
-> > header somewhere instead?
->
-> Will do.
->
-> >
-> > >  /* When utilizing vmlinux.h with BPF CO-RE, user BPF programs
-> > > can't include
-> > >   * any system-level headers (such as stddef.h, linux/version.h,
-> > > etc), and
-> > >   * commonly-used macros like NULL and KERNEL_VERSION aren't
-> > > available through
-> > > diff --git a/tools/testing/selftests/bpf/bpf_experimental.h
-> > > b/tools/testing/selftests/bpf/bpf_experimental.h
-> > > index da7e230f2781..e5ef4792da42 100644
-> > > --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> > > +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> > > @@ -20,7 +20,7 @@
-> > >   *     A pointer to an object of the type corresponding to the
-> > > passed in
-> > >   *     'local_type_id', or NULL on failure.
-> > >   */
-> > > -extern void *bpf_obj_new_impl(__u64 local_type_id, void *meta)
-> > > __ksym;
-> > > +extern __must_check void *bpf_obj_new_impl(__u64 local_type_id,
-> > > void *meta) __ksym;
-> >
-> > bpf_obj_new_impl will generally come from vmlinux.h nowadays, and
-> > that
-> > one won't have __must_check annotation, is that a problem?
->
-> It should be fine according to [1]:
->
-> Compatible attribute specifications on distinct declarations of the
-> same function are merged.
->
-> I will add this to the commit message in v3.
 
-Sure, for BPF selftests it will work. My question was broader, for
-anyone using bpf_obj_new in the wild, they won't have __must_check
-annotation from vmlinux.h (and I doubt they will manually add it like
-we do here for BPF selftests), so if that's important, I guess we need
-to think how to wire that up so that it happens automatically through
-vmlinux.h.
+[
+  This version is simply a rebase of v9 on top of the v6.17-rc3.
+  It needs to be updated to work with the latest SFrame specification.
+  Indu said she'll be able to make those changes, but I needed to
+  forward port the latest code.
 
-"It's not that important to bother" is a fine answer as well :)
+  You can test this code with the x86 and perf changes applied at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+     unwind/sframe-test
+]
 
->
-> [1]
-> https://gcc.gnu.org/onlinedocs/gcc-12.4.0/gcc/Function-Attributes.html
->
-> [...]
+This is the implementation of parsing the SFrame section in an ELF file.
+It's a continuation of Josh's last work that can be found here:
+
+   https://lore.kernel.org/all/cover.1737511963.git.jpoimboe@kernel.org/
+
+Currently the only way to get a user space stack trace from a stack
+walk (and not just copying large amount of user stack into the kernel
+ring buffer) is to use frame pointers. This has a few issues. The biggest
+one is that compiling frame pointers into every application and library
+has been shown to cause performance overhead.
+
+Another issue is that the format of the frames may not always be consistent
+between different compilers and some architectures (s390) has no defined
+format to do a reliable stack walk. The only way to perform user space
+profiling on these architectures is to copy the user stack into the kernel
+buffer.
+
+SFrames[1] is now supported in gcc binutils and soon will also be supported
+by LLVM. SFrames acts more like ORC, and lives in the ELF executable
+file as its own section. Like ORC it has two tables where the first table
+is sorted by instruction pointers (IP) and using the current IP and finding
+it's entry in the first table, it will take you to the second table which
+will tell you where the return address of the current function is located
+and then you can use that address to look it up in the first table to find
+the return address of that function, and so on. This performs a user
+space stack walk.
+
+Now because the SFrame section lives in the ELF file it needs to be faulted
+into memory when it is used. This means that walking the user space stack
+requires being in a faultable context. As profilers like perf request a stack
+trace in interrupt or NMI context, it cannot do the walking when it is
+requested. Instead it must be deferred until it is safe to fault in user
+space. One place this is known to be safe is when the task is about to return
+back to user space.
+
+This series makes the deferred unwind code implement SFrames.
+
+[1] https://sourceware.org/binutils/wiki/sframe
+
+Changes since v9: https://lore.kernel.org/linux-trace-kernel/20250717012848.927473176@kernel.org/
+
+- Rebased on v6.17-rc3
+
+- Update the changes to unwind/user.c to handle passing a const
+  unwind_user_frame pointer.
+
+Josh Poimboeuf (11):
+      unwind_user/sframe: Add support for reading .sframe headers
+      unwind_user/sframe: Store sframe section data in per-mm maple tree
+      x86/uaccess: Add unsafe_copy_from_user() implementation
+      unwind_user/sframe: Add support for reading .sframe contents
+      unwind_user/sframe: Detect .sframe sections in executables
+      unwind_user/sframe: Wire up unwind_user to sframe
+      unwind_user/sframe/x86: Enable sframe unwinding on x86
+      unwind_user/sframe: Remove .sframe section on detected corruption
+      unwind_user/sframe: Show file name in debug output
+      unwind_user/sframe: Add .sframe validation option
+      unwind_user/sframe: Add prctl() interface for registering .sframe sections
+
+----
+ MAINTAINERS                       |   1 +
+ arch/Kconfig                      |  23 ++
+ arch/x86/Kconfig                  |   1 +
+ arch/x86/include/asm/mmu.h        |   2 +-
+ arch/x86/include/asm/uaccess.h    |  39 ++-
+ fs/binfmt_elf.c                   |  49 +++-
+ include/linux/mm_types.h          |   3 +
+ include/linux/sframe.h            |  60 ++++
+ include/linux/unwind_user_types.h |   4 +-
+ include/uapi/linux/elf.h          |   1 +
+ include/uapi/linux/prctl.h        |   6 +-
+ kernel/fork.c                     |  10 +
+ kernel/sys.c                      |   9 +
+ kernel/unwind/Makefile            |   3 +-
+ kernel/unwind/sframe.c            | 593 ++++++++++++++++++++++++++++++++++++++
+ kernel/unwind/sframe.h            |  71 +++++
+ kernel/unwind/sframe_debug.h      |  68 +++++
+ kernel/unwind/user.c              |  41 ++-
+ mm/init-mm.c                      |   2 +
+ 19 files changed, 967 insertions(+), 19 deletions(-)
+ create mode 100644 include/linux/sframe.h
+ create mode 100644 kernel/unwind/sframe.c
+ create mode 100644 kernel/unwind/sframe.h
+ create mode 100644 kernel/unwind/sframe_debug.h
 
