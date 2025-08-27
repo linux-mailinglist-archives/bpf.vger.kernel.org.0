@@ -1,172 +1,226 @@
-Return-Path: <bpf+bounces-66617-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77FEAB377C4
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 04:31:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C4EDB37866
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 04:58:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DE557C06EA
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 02:31:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8592F1B22CE7
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 02:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A454F2749C8;
-	Wed, 27 Aug 2025 02:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245F7305062;
+	Wed, 27 Aug 2025 02:58:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iKjUiv8z"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JzOtl8eQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839E01EFF80
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 02:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1784276046;
+	Wed, 27 Aug 2025 02:58:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756261909; cv=none; b=t2X6i5qJRjRGGFRMHqAIaNu1NeV7HwPgEIjteRdsZw84diGr+hWHlVyu1OoB+uyJpuw33JdhuSvNOQ/MgDdYeypOYjWNVAGIaSeA0qvC3bclUTkNgtnaccwFSOZda7Hxl0pj/v93RCtgHup6hFgx0BsXxeZ0vi6OczeLtTdBtNU=
+	t=1756263524; cv=none; b=OfVEDVmvwYkOwZNI/Wx3PpBSi2hFtOUdfSX6i3cbVZQdc2E9Z7gN/jE5XFasQEvWzvnoMnJ3I81oHQIW+hCRXNWKGGpk0ENBI1px5O6AaZt4IH1tOq97WblFgzoHZXnkTbGCt/odRh3Bk/eXz+3VAmC+PT23FdePe7m4fWVvStw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756261909; c=relaxed/simple;
-	bh=JsCM6cUrsSAWEC5+Cl8xQAkPpRceUbn0olHkCGvWnDs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RRxKjk5T/pGcXiM2nqAxG1rHNe3/eHJLVaR15SBJ97kIJlZwVNp1KRpV2lMDRrFIsH/Omo4gFf6Dq3/UEeDdd+9oUA1u7Zwklgdk63uL0cCnk66j9GK4vltcpyDkuA3O9EUUTiDbQeClavu0lqcCRYh9kcBF0fZg4DBvddwyr28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iKjUiv8z; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-45a1b0d224dso32666285e9.3
-        for <bpf@vger.kernel.org>; Tue, 26 Aug 2025 19:31:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756261906; x=1756866706; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vPZ0cjHpX9ISkQzDoldFUyRE8ewsbgZ6deVAAiBZcHA=;
-        b=iKjUiv8z+xiF65P1QE91MCvu06DhvctANtAJzetk3n+QcVuwbisabcopMQoVXykxIe
-         3gDwRkiobZWmAr2HVdM6vr23sYUZapoRfEY2H/F1pC9d9wFpE/Q8buAhK38sJ27PZIF5
-         oB72huuNxIC0QlsLd49DckvzJmgJw1Ljxy01IzfgM6E4yzDoZom8sktLeg0Eq1jFiGbV
-         6mauAVP9zn9DDbkisqZ4lHbvZNBhcxkhM6WZ0m29pmWHxN6WbEzcpxOEcUiiNtDOQap1
-         lE7c9mtl3gQzZE50snz6RyV5ejJ5TSP+ueduekLitpLXuNF5UciapB2m3yJgajOtoGoE
-         Qriw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756261906; x=1756866706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vPZ0cjHpX9ISkQzDoldFUyRE8ewsbgZ6deVAAiBZcHA=;
-        b=MTfeTNe4z/cU33ZZ7xWmTOZOGmUWNXXUnHWZB/xicWMf4P/v4XjJwLbZG8aZ4IukiX
-         DWCB4r2h9m+E3rVTZu82onFxJoB8L7mhraXsr2KNXE5Tw6/MQjyZkTdJG7JuY1n7t1dh
-         Z0TiwGxRxngapsrC04JS1H+S6szLCrCLAwSvmW9BXTnEuyoQUx7M7bvUDWBQyVS/oJpE
-         LoG8MZ2Yx6/k4jVtxs2zo+qzxfv9SSjc+/+6e/40PqArdmk+v+5Zsf/8dZgontxRGfpQ
-         Ba8V6ceZcgafSKsjS25ga2FEEhsTs4ZIapAnGpoSPiBWmgugJMTZwYSPC2FvBt9KHFCB
-         ao6w==
-X-Gm-Message-State: AOJu0Yxhl8TlY3OvRgBdsNicnCphj4WWC3TC5hx9+q60yCsOZ24o3lIR
-	QwKG4+7dCWF1PsqqDWnzXJB8X5SYqHcNjuemvx8JnV24R+vKRf0Px3yMdKKk+fWuS0XQ8PNzSVF
-	e4hgjBDBadvqqoC6Q/kSwF5NpLKCao10=
-X-Gm-Gg: ASbGncuvNkFyIV2n4tudo2iwsSU6pw+w33xw29FPPaCxHAeNjtWcDiiiqrWOdb1zhdy
-	e0LsbJZwIZP8wcSf/9pXGhfDDb3xFrjbQYzuZD/hY0/3/W+oEBw2ZcSGVHTjE4k6d8tmKm6bZbJ
-	1DI0Jp90KT/9UOyBhLJBn61DkhzseuSZhv7uPG1dYP3oCbM3VMh/HZwS5rt4gFMHhhgdZBwir7L
-	RPWLG9E0gvWP7SDvi/LLzoWdPukv3d16GjSUO/OL7PDpDWiW6dQtM/WjA==
-X-Google-Smtp-Source: AGHT+IEGvo/30kFFrtTrRRK4xdcQTRYg7nDPi1UfUAg7xHV+Ke7cIP+dwEKwVCmAa/gFohW6TR4IoCcu37qvVrTeKAo=
-X-Received: by 2002:a05:600c:4743:b0:458:bfe1:4a82 with SMTP id
- 5b1f17b1804b1-45b5179683dmr206749405e9.16.1756261905648; Tue, 26 Aug 2025
- 19:31:45 -0700 (PDT)
+	s=arc-20240116; t=1756263524; c=relaxed/simple;
+	bh=FaAYjYeaqo6BXH3QV/GlJJdaIRRLN9q/K9TzS6NDhLo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rs1rvJJBfKx7m8DgUbeAmJOeLFQpNzXjvMKsCRXSaj+ZBdGD02ZwJjWGenbPDzH2IGl3WI40TGM9XMxcgm3tFs9BYr7SVDrSB++4LkWz7aO2B10qJiQi2KEj4858MF4XC4Yitw9WZZNI59xgBStXKzlnE0tZoOJ84QydG3O2+Q8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JzOtl8eQ; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1756263523; x=1787799523;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FaAYjYeaqo6BXH3QV/GlJJdaIRRLN9q/K9TzS6NDhLo=;
+  b=JzOtl8eQZYJvSpW41W3KmNbwHuP0GNIpf53VWpKjCmTlxJe8orK0w7kK
+   1ttZib4jegj69g6GHX1SLDwr2XZBm4dByiBJTdy9pzK2RFTkpAqkHMoVU
+   4gMDHFznMBSVN7ryd8RxHyPZeYiBLXymBTPXlO3AQgKAWl9H9SWVE+TK4
+   Hoe4RZWZFEqRR9kPCoWa8Yw0WtpKnTRyC83JIUemCzG2wvjLfYJyUStBV
+   b/7n7hpvj0uqmmKk/cFVKM2maccLndIrD9k+mOtS+AqMBDtVXPNoqPcE7
+   jB4waF8LT8u5TTkqRRkRmTa6gnHZgxiccLKRUeahpy+PWeJuSluOj/PKd
+   Q==;
+X-CSE-ConnectionGUID: uN5icr2gTI2woPvnOBzNZA==
+X-CSE-MsgGUID: SRube0x/SBGSZ0onC8wAxw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="58569363"
+X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
+   d="scan'208";a="58569363"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2025 19:58:42 -0700
+X-CSE-ConnectionGUID: WQLEuyUDQBiSRfhdVtzXyA==
+X-CSE-MsgGUID: uWywIkghRhiOifWM3Oe+9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,214,1751266800"; 
+   d="scan'208";a="193380595"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 26 Aug 2025 19:58:36 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ur6Mr-000Sbz-3B;
+	Wed, 27 Aug 2025 02:58:33 +0000
+Date: Wed, 27 Aug 2025 10:57:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
+	david@redhat.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+	npache@redhat.com, ryan.roberts@arm.com, dev.jain@arm.com,
+	hannes@cmpxchg.org, usamaarif642@gmail.com,
+	gutierrez.asier@huawei-partners.com, willy@infradead.org,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	ameryhung@gmail.com, rientjes@google.com, corbet@lwn.net
+Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org, linux-mm@kvack.org,
+	linux-doc@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH v6 mm-new 01/10] mm: thp: add support for BPF based THP
+ order selection
+Message-ID: <202508271009.5neOZ0OG-lkp@intel.com>
+References: <20250826071948.2618-2-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250716022950.69330-1-alexei.starovoitov@gmail.com>
- <20250716022950.69330-6-alexei.starovoitov@gmail.com> <aKvqT-BAXGkjW7JT@hyeyoo>
-In-Reply-To: <aKvqT-BAXGkjW7JT@hyeyoo>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 26 Aug 2025 19:31:34 -0700
-X-Gm-Features: Ac12FXwjjsZ2EvcANqqa7llhwppJYGqGgQVuUglhvIlTkrBSooCtpKFyYoUNJlg
-Message-ID: <CAADnVQJ3vhBsRqgYEG13neTuXbSU1hNngYmWHqKCLTRr8+QVhw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	Vlastimil Babka <vbabka@suse.cz>, Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250826071948.2618-2-laoar.shao@gmail.com>
 
-On Sun, Aug 24, 2025 at 9:46=E2=80=AFPM Harry Yoo <harry.yoo@oracle.com> wr=
-ote:
->
-> On Tue, Jul 15, 2025 at 07:29:49PM -0700, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > kmalloc_nolock() relies on ability of local_lock to detect the situatio=
-n
-> > when it's locked.
-> > In !PREEMPT_RT local_lock_is_locked() is true only when NMI happened in
-> > irq saved region that protects _that specific_ per-cpu kmem_cache_cpu.
-> > In that case retry the operation in a different kmalloc bucket.
-> > The second attempt will likely succeed, since this cpu locked
-> > different kmem_cache_cpu.
-> >
-> > Similarly, in PREEMPT_RT local_lock_is_locked() returns true when
-> > per-cpu rt_spin_lock is locked by current task. In this case re-entranc=
-e
-> > into the same kmalloc bucket is unsafe, and kmalloc_nolock() tries
-> > a different bucket that is most likely is not locked by the current
-> > task. Though it may be locked by a different task it's safe to
-> > rt_spin_lock() on it.
-> >
-> > Similar to alloc_pages_nolock() the kmalloc_nolock() returns NULL
-> > immediately if called from hard irq or NMI in PREEMPT_RT.
-> >
-> > kfree_nolock() defers freeing to irq_work when local_lock_is_locked()
-> > and in_nmi() or in PREEMPT_RT.
-> >
-> > SLUB_TINY config doesn't use local_lock_is_locked() and relies on
-> > spin_trylock_irqsave(&n->list_lock) to allocate while kfree_nolock()
-> > always defers to irq_work.
-> >
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> >  include/linux/kasan.h |  13 +-
-> >  include/linux/slab.h  |   4 +
-> >  mm/Kconfig            |   1 +
-> >  mm/kasan/common.c     |   5 +-
-> >  mm/slab.h             |   6 +
-> >  mm/slab_common.c      |   3 +
-> >  mm/slub.c             | 454 +++++++++++++++++++++++++++++++++++++-----
-> >  7 files changed, 434 insertions(+), 52 deletions(-)
->
-> > +static void defer_free(struct kmem_cache *s, void *head)
-> > +{
-> > +     struct defer_free *df =3D this_cpu_ptr(&defer_free_objects);
-> > +
-> > +     if (llist_add(head + s->offset, &df->objects))
-> > +             irq_work_queue(&df->work);
-> > +}
-> > +
-> > +static void defer_deactivate_slab(struct slab *slab)
-> > +{
-> > +     struct defer_free *df =3D this_cpu_ptr(&defer_free_objects);
-> > +
-> > +     if (llist_add(&slab->llnode, &df->slabs))
-> > +             irq_work_queue(&df->work);
-> > +}
-> > +
-> > +void defer_free_barrier(void)
-> > +{
-> > +     int cpu;
-> > +
-> > +     for_each_possible_cpu(cpu)
-> > +             irq_work_sync(&per_cpu_ptr(&defer_free_objects, cpu)->wor=
-k);
-> > +}
->
-> I think it should also initiate deferred frees, if kfree_nolock() freed
-> the last object in some CPUs?
+Hi Yafang,
 
-I don't understand the question. "the last object in some CPU" ?
-Are you asking about the need of defer_free_barrier() ?
+kernel test robot noticed the following build warnings:
 
-PS
-I just got back from 2+ week PTO. Going through backlog.
+[auto build test WARNING on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/mm-thp-add-support-for-BPF-based-THP-order-selection/20250826-152415
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20250826071948.2618-2-laoar.shao%40gmail.com
+patch subject: [PATCH v6 mm-new 01/10] mm: thp: add support for BPF based THP order selection
+config: loongarch-randconfig-r113-20250827 (https://download.01.org/0day-ci/archive/20250827/202508271009.5neOZ0OG-lkp@intel.com/config)
+compiler: clang version 18.1.8 (https://github.com/llvm/llvm-project 3b5b5c1ec4a3095ab096dd780e84d7ab81f3d7ff)
+reproduce: (https://download.01.org/0day-ci/archive/20250827/202508271009.5neOZ0OG-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508271009.5neOZ0OG-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> mm/bpf_thp.c:47:31: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/bpf_thp.c:47:31: sparse:    int ( [noderef] __rcu * )( ... )
+   mm/bpf_thp.c:47:31: sparse:    int ( * )( ... )
+   mm/bpf_thp.c:101:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/bpf_thp.c:101:9: sparse:    int ( [noderef] __rcu * )( ... )
+   mm/bpf_thp.c:101:9: sparse:    int ( * )( ... )
+   mm/bpf_thp.c:102:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/bpf_thp.c:102:9: sparse:    int ( [noderef] __rcu * )( ... )
+   mm/bpf_thp.c:102:9: sparse:    int ( * )( ... )
+   mm/bpf_thp.c:111:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/bpf_thp.c:111:9: sparse:    int ( [noderef] __rcu * )( ... )
+   mm/bpf_thp.c:111:9: sparse:    int ( * )( ... )
+   mm/bpf_thp.c:112:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/bpf_thp.c:112:9: sparse:    int ( [noderef] __rcu * )( ... )
+   mm/bpf_thp.c:112:9: sparse:    int ( * )( ... )
+   mm/bpf_thp.c:112:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/bpf_thp.c:112:9: sparse:    int ( [noderef] __rcu * )( ... )
+   mm/bpf_thp.c:112:9: sparse:    int ( * )( ... )
+   mm/bpf_thp.c:133:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/bpf_thp.c:133:9: sparse:    int ( [noderef] __rcu * )( ... )
+   mm/bpf_thp.c:133:9: sparse:    int ( * )( ... )
+   mm/bpf_thp.c:134:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/bpf_thp.c:134:9: sparse:    int ( [noderef] __rcu * )( ... )
+   mm/bpf_thp.c:134:9: sparse:    int ( * )( ... )
+   mm/bpf_thp.c:134:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   mm/bpf_thp.c:134:9: sparse:    int ( [noderef] __rcu * )( ... )
+   mm/bpf_thp.c:134:9: sparse:    int ( * )( ... )
+>> mm/bpf_thp.c:102:9: sparse: sparse: dereference of noderef expression
+>> mm/bpf_thp.c:102:9: sparse: sparse: dereference of noderef expression
+   mm/bpf_thp.c:112:9: sparse: sparse: dereference of noderef expression
+   mm/bpf_thp.c:134:9: sparse: sparse: dereference of noderef expression
+   mm/bpf_thp.c:134:9: sparse: sparse: dereference of noderef expression
+   mm/bpf_thp.c:134:9: sparse: sparse: dereference of noderef expression
+   mm/bpf_thp.c:148:14: sparse: sparse: dereference of noderef expression
+
+vim +47 mm/bpf_thp.c
+
+    33	
+    34	int get_suggested_order(struct mm_struct *mm, struct vm_area_struct *vma__nullable,
+    35				u64 vma_flags, enum tva_type tva_flags, int orders)
+    36	{
+    37		int (*bpf_suggested_order)(struct mm_struct *mm, struct vm_area_struct *vma__nullable,
+    38					   u64 vma_flags, enum tva_type tva_flags, int orders);
+    39		int suggested_orders = orders;
+    40	
+    41		/* No BPF program is attached */
+    42		if (!test_bit(TRANSPARENT_HUGEPAGE_BPF_ATTACHED,
+    43			      &transparent_hugepage_flags))
+    44			return suggested_orders;
+    45	
+    46		rcu_read_lock();
+  > 47		bpf_suggested_order = rcu_dereference(bpf_thp.get_suggested_order);
+    48		if (!bpf_suggested_order)
+    49			goto out;
+    50	
+    51		suggested_orders = bpf_suggested_order(mm, vma__nullable, vma_flags, tva_flags, orders);
+    52		if (highest_order(suggested_orders) > highest_order(orders))
+    53			suggested_orders = orders;
+    54	
+    55	out:
+    56		rcu_read_unlock();
+    57		return suggested_orders;
+    58	}
+    59	
+    60	static bool bpf_thp_ops_is_valid_access(int off, int size,
+    61						enum bpf_access_type type,
+    62						const struct bpf_prog *prog,
+    63						struct bpf_insn_access_aux *info)
+    64	{
+    65		return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
+    66	}
+    67	
+    68	static const struct bpf_func_proto *
+    69	bpf_thp_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+    70	{
+    71		return bpf_base_func_proto(func_id, prog);
+    72	}
+    73	
+    74	static const struct bpf_verifier_ops thp_bpf_verifier_ops = {
+    75		.get_func_proto = bpf_thp_get_func_proto,
+    76		.is_valid_access = bpf_thp_ops_is_valid_access,
+    77	};
+    78	
+    79	static int bpf_thp_init(struct btf *btf)
+    80	{
+    81		return 0;
+    82	}
+    83	
+    84	static int bpf_thp_init_member(const struct btf_type *t,
+    85				       const struct btf_member *member,
+    86				       void *kdata, const void *udata)
+    87	{
+    88		return 0;
+    89	}
+    90	
+    91	static int bpf_thp_reg(void *kdata, struct bpf_link *link)
+    92	{
+    93		struct bpf_thp_ops *ops = kdata;
+    94	
+    95		spin_lock(&thp_ops_lock);
+    96		if (test_and_set_bit(TRANSPARENT_HUGEPAGE_BPF_ATTACHED,
+    97				     &transparent_hugepage_flags)) {
+    98			spin_unlock(&thp_ops_lock);
+    99			return -EBUSY;
+   100		}
+   101		WARN_ON_ONCE(rcu_access_pointer(bpf_thp.get_suggested_order));
+ > 102		rcu_assign_pointer(bpf_thp.get_suggested_order, ops->get_suggested_order);
+   103		spin_unlock(&thp_ops_lock);
+   104		return 0;
+   105	}
+   106	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
