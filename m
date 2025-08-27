@@ -1,372 +1,1166 @@
-Return-Path: <bpf+bounces-66662-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66663-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 985F8B383F0
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 15:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE366B3844A
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 16:02:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F01515E11C2
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 13:46:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE66F5E4874
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 14:02:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F3B3568EA;
-	Wed, 27 Aug 2025 13:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6695A21171D;
+	Wed, 27 Aug 2025 14:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="iiyw9ZWD"
+	dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b="B6wMRXUq"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2040.outbound.protection.outlook.com [40.107.237.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74852ED16D;
-	Wed, 27 Aug 2025 13:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756302349; cv=fail; b=lzv4K6ApE+RU6+aNbmJGFLmuMUTLQvQXau7jHiMMK2wTE5iN1EnregmKvk+Mxnv17RC9C28tOtw1vYLDyZ7vC/O0xF1mTTGmTxq28rl28qSGOPrTSCq+LuUBQiljlWcn5gd7CedCk5uRHSKmTzYUroLnqv+4niovoqZNEpMc2+4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756302349; c=relaxed/simple;
-	bh=5vLrR3/MZrbFQyiEyASGMnvBwnUwDT/0GX+d1zZ5NtE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=X9U0BM+wuVVGXHpPHYH47+0qhZxaZWQU86egwpdTP8XiZ1pT6e51ToluxbJgUzBw94tqf7xLtlrYlC32s+4eL+bILLZ88hCaJIyvTIllx7hNOeJGU7JZSpSYHLG2VaZCVjDrcEDuEFXyZu6ttjse5z/8j8xqGlgsWl0huCZc6to=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=iiyw9ZWD; arc=fail smtp.client-ip=40.107.237.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ANa0uxo7B0EOg9h+zuJ0teDQ0vrF1jriYWoZqr+rvaxXz1q7Eu9vwINPfistyfgWlqEEJhRKJosbKtuRmUcfLGcnTlUHaPEzqBKdDsPk9Hc+CIGmyRSmU091lbhaznnZR7VQ4LChWYzwjpxYxpnHaGtNq6BV8WmMkGfnW+CCz+OsXsMwNSOsFpiN48q6g5N36/CvwfPEg4CC/NplrX5gmNijXKm6YgY4fOmSn4P/bc/Sb/yGAMg2BJh6qOE72V8vXnSZhv1aNInK3kav9lAjMBjEVcI4QW8ctg+PH3mV3tokJHDqcGh15n9IWwmaNHsDl3b5Sgeg0kkXBPxQc4sp7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pefYaHsQGUGm3q4R39W8D4KILG5uJajtGTVfeZ9e/n8=;
- b=FoKyJP1WAPHBsWThwzUXU9CUbT3nb3ttwLkWcZMV+ZC8X1ezn3wvoyWdDPsBKiGRRsiA3g8zgIdrkFI+Bx6t+9mMYOOm+jvnWo1YruboveOkwdrflsegwIjZqEaf048RtGbHa0GRqf4mQJY79HTw1oQtVGSGsOBEGmfKDWOtvayO5d4uqdYP0MG/OL3FBaCD0orboXM3ZMn/37N0A8eKfDbK8oPyx+aq2wXQ0ifpS4/Xh3mEPFt2sqZbYlQfxcmfJcMhNIbtLkXPv1K4iuzA4nUvm0iFTsGcZW9+ChncXZl7+UI/eFxPsCAg2oZ3/Tj3xAXT9e7Dpg/+XNuMtysS7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pefYaHsQGUGm3q4R39W8D4KILG5uJajtGTVfeZ9e/n8=;
- b=iiyw9ZWDamQroHdaXeRamTGL86ZQ/+gcceHFG2gVG8KP5tpe0a+c41cICBKUJPJ9WT+LlGgQii6u/8/j61qMbrrz+2voJSMDleTBZEtz0XcxZ4+Mz4ekxaylrp5v2LsuFvAu1LJST23ks97PnVXlhrFxqlxpJv28Psom1B/hCYgAbjDnFY9dDqIJs2oXO9D4ZEpPY/kz8QFJT9v8GSQyQ+GQfqcKXLKgIbKIVQt6zjDDX9AFhRsgJw8q0n+T9sDNVPKkqJoR63owg6gCpPQEoBHOAUdK+WPfwO2rN/fHseRjbxj3laabyC2OAfoBpOdJhjRSS0fjw8HvsUflQOfoyg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA1PR12MB9031.namprd12.prod.outlook.com (2603:10b6:208:3f9::19)
- by DS0PR12MB8272.namprd12.prod.outlook.com (2603:10b6:8:fc::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9073.16; Wed, 27 Aug 2025 13:45:43 +0000
-Received: from IA1PR12MB9031.namprd12.prod.outlook.com
- ([fe80::1fb7:5076:77b5:559c]) by IA1PR12MB9031.namprd12.prod.outlook.com
- ([fe80::1fb7:5076:77b5:559c%6]) with mapi id 15.20.9073.010; Wed, 27 Aug 2025
- 13:45:42 +0000
-Date: Wed, 27 Aug 2025 13:45:30 +0000
-From: Dragos Tatulea <dtatulea@nvidia.com>
-To: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, kuba@kernel.org, martin.lau@kernel.org, 
-	mohsin.bashr@gmail.com, saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, 
-	maciej.fijalkowski@intel.com, kernel-team@meta.com, noren@nvidia.com
-Subject: Re: [RFC bpf-next v1 1/7] net/mlx5e: Fix generating skb from
- nonlinear xdp_buff
-Message-ID: <76vmglojxf3yqysn5iwthctiacjy6xqcvrzzny74524djwhcf3@ejctdcty3cdz>
-References: <20250825193918.3445531-1-ameryhung@gmail.com>
- <20250825193918.3445531-2-ameryhung@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250825193918.3445531-2-ameryhung@gmail.com>
-X-ClientProxiedBy: TL2P290CA0028.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:3::10) To IA1PR12MB9031.namprd12.prod.outlook.com
- (2603:10b6:208:3f9::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8BD3126A2
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 14:01:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756303318; cv=none; b=sgdyZsGL9gBSBPIlXoVH/Fwpxki4p3mjANcJ5+p9DnEL4YeLe6O0v6xwG+v/k05F7VHmDKy5YvHWBcevmDayoUNunHKJvVTtpJIHal/eJ6YjiQzo4R7g6d6wKMNkYXan95G3BCktZdsohjr6TN2eB5QPqZvSa9wBP/z0SGM+9aM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756303318; c=relaxed/simple;
+	bh=g+0J+mNFv1MeQDECn7G/Tnx2FI3UVDMWdvusMKNukZg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=SuNbSkWygYWMRGhvBLY0BuXX2f/NcupErqRBtKkQ0KxLI9zic6E1NkRcLKDtNvJ4IcVAHUPYaMbS5E/ngcNpaj0pPMUphU/zYFbQJOK3qHuaJ54RedGZzpCg4nO8/gfEX3g4mVkpbXHJkSbOIPRAN/qgVmMaLeqbOLaU2a4cOE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b=B6wMRXUq; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=readmodwrite.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3c79f0a606fso2490305f8f.0
+        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 07:01:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=readmodwrite-com.20230601.gappssmtp.com; s=20230601; t=1756303313; x=1756908113; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KomuSFt9BbcHPTeKol1T7iF1W1yz+1/6+/Vo+hol5XM=;
+        b=B6wMRXUqJrsF41f2u6bI2MvU7HR1oZ3LKwJVYYQXAj5uhCFKQxAP5R+Jm9cf3+/2x5
+         f8SQwL5BVpZsOzYg79tPglMGVleekbYIp1+hkSDAy+wBlWrs9h3hfD/7Jg2I42G3kQY4
+         xGIjqRH8sMnHq2lcbbDLG2cL28eQgvYOAO1xsQ1FUWEuqSSGp7ayxeX6nx18RUa0tKso
+         m/agOeS9QdRc4whj0urvFfw2Na2ugyy3ZOzNMnykEnnhWefJ5K+jmZH/EspYFG1nskIl
+         HiU09Bsjz+tLNw/e9b1DxYmF3r/mgELGNOmxboeCbVm79Gw4KllTNsZtBf6LgOyqlWLP
+         8gSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756303313; x=1756908113;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KomuSFt9BbcHPTeKol1T7iF1W1yz+1/6+/Vo+hol5XM=;
+        b=iPn6TQeE29Rmqoc4nrZZvwZBs5eYYduS/MenUIi8PGozxlZGDGmZNc3ouJb3Y3R/YY
+         hYOfVI0wzuJx1TzxC/sRfOBiJknGO46HmQ0WUR+9qDAISYcUgu/B9jBHlufm4lYMt1xm
+         uNgrzl5u/N6XF/b7MRiF+mss9aVU3B6QiiF/8nK3MMba64e4zj/GZStiIjkuP9O1LTYE
+         BE6ExKsx2j6RRz4l8v/v5oWzc33ubxYbeuhJCXqgu9+smpu16EqwiMc+fpNgTUyAfTba
+         Dba6ZoPSz2fzo/oyAdxc7H1BG9SsGoBRLKI1fs0N96xckaW1Mn/lXjku+7b5XMQAkX2a
+         a58A==
+X-Forwarded-Encrypted: i=1; AJvYcCXpUJSu0dWtaIRkwKQlXmqWJjLIRPtjbYH/E16HZQT82erqnotkmgcsTPRd/HJ+92Pto/U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YztW+i6IozRf4Cvtxm9CTCm565ERxbyAj52QJhobcrpqwc4kLBH
+	NYCWW4AmCxbbnxZuRsaLyVvlRThGhuTnjdv8tk7cP6roMEguaweHijsx9nXoFsb8Uh0=
+X-Gm-Gg: ASbGncv7A4znY9nTiUIxKK0cSLXfyQdh76XYSCaV3aEMs2j3p+mCsA2z3d8FNQmEh6p
+	LzRKSY/AofRptCPDtb7CHWtj9wP43k8rb09UU32LYuQ4yHs0AeP9d/WsAwH6Vsf/74caKE0pBkL
+	JcreszZQj8ifjCkXIc/6ljm7TORazeRFkY3Gb9n9N9RxMbDX4ic31hvD7nwLj9qO/TqhO1ZN8pV
+	lEaJwu04Qw6rOfRZMqICB7d03/gGhjGDQLqK3kPEBNZwl6kgJmHAjtERrsVdrpjXLuM5z3zQqT3
+	ePm6snLFmJYayl3+HbvjuH+xOhzY7SQ8rPCej0DjSgL+HQTi/r93Yg28WF0hDOFFGzhxiWN0Kwd
+	675PSVUlY5L2lsxGHGLgeIa4=
+X-Google-Smtp-Source: AGHT+IHfZUolqi1ONluO/BnIn6I+D5kCdc4wUj+lXgkygAgsv1KTkuNBiqmifBei7E4/rWMLXbP1nQ==
+X-Received: by 2002:a05:6000:4025:b0:3cc:faaa:ec96 with SMTP id ffacd0b85a97d-3ccfaaaf496mr1460880f8f.0.1756303313009;
+        Wed, 27 Aug 2025 07:01:53 -0700 (PDT)
+Received: from matt-Precision-5490.. ([2a09:bac1:2880:f0::3de:4a])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c88901520asm16084671f8f.19.2025.08.27.07.01.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Aug 2025 07:01:51 -0700 (PDT)
+From: Matt Fleming <matt@readmodwrite.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Cc: Shuah Khan <shuah@kernel.org>,
+	kernel-team@cloudflare.com,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	netdev@vger.kernel.org,
+	Matt Fleming <mfleming@cloudflare.com>
+Subject: [PATCH bpf-next v5] selftests/bpf: Add LPM trie microbenchmarks
+Date: Wed, 27 Aug 2025 15:01:49 +0100
+Message-Id: <20250827140149.1001557-1-matt@readmodwrite.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB9031:EE_|DS0PR12MB8272:EE_
-X-MS-Office365-Filtering-Correlation-Id: 49355b1f-ed51-48bb-369c-08dde57003ef
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Z7wruxM7zqv65X5ELmqys/vRucqe3r4/Nx41ybmQSxsgqkEe92fo7/bC8Mfi?=
- =?us-ascii?Q?I500WcD5Jcb1R9OgBIe4DxYrzxyjAjvMrrcFlW7DyWn2q5tVu3yJV9MFVF1o?=
- =?us-ascii?Q?Wi2Cu44QvK/yySwj176tzKtOzeizaKqCt0GpxhvKfNqAKTvbMe6c7FGIBJov?=
- =?us-ascii?Q?qOHadgcX0VgX5cqknUSJ1WQEGpF4JAwyZH71KMDTV+FLkGGWMapTy4kTEDjo?=
- =?us-ascii?Q?fGL5QOcWyni4FDaMnTsJNVv3bRxCo/CPz7DIzEcs/nLjl6V32CoWJVlOU9QE?=
- =?us-ascii?Q?vqmWjJvINRTn8g+fdw0m8po87p8vzBtDRN4idZ7SUlV5QuJzaIneQLVllfBE?=
- =?us-ascii?Q?6GknWZn7iitpGjEmPcvW3LZAU/s/nERmC0xCFoF2atx3Bxm9PDSm+oK5VZhb?=
- =?us-ascii?Q?nPmM5Ip3BJvO865zXZHcXX37S/2FVpG0HGQqY0bgZdR2LSxxPLl/xjKq5Eqt?=
- =?us-ascii?Q?kgfLCGVpzkxDg+IBrcPDgGxC95ATb6OjpG5I3mSNmTq7SDdYCQsRDJVOel35?=
- =?us-ascii?Q?94u6Ao5Zg6XN9U2IGZNF7gKuRR027DkibO3SXDp9lwDapE5iPcv7D+Zy408j?=
- =?us-ascii?Q?aHP59FcrWFn3vdE9yhn9A0WPZ/g7YRvmwH2znCfPJBt0EczAjsZ8m2aYCojT?=
- =?us-ascii?Q?bCZ1IyG7C4ckY/lwmxu4go3mw6j4DXEcEbRRIG/MqnJrvZSBSDWlwPdNxHIG?=
- =?us-ascii?Q?36Hgd/JBZWo4XWWvQ/63SKmEPoDju35Duxn0hPTDScEWdKaL+VkkBNXxPHLE?=
- =?us-ascii?Q?suC0RIWG6qrKt2HG6mAkuBoYGVoblbnhU2+iI5lhN796dV90QaFx5A9c9lNf?=
- =?us-ascii?Q?t9no5citheZ6aBi8/T5BjAI9fDLh7tt+pn/YXxpet11eIERGkKTVuakMXCLd?=
- =?us-ascii?Q?YUWu5DTjSKmU8Ys2ffnW3i2OmXObEpfHz9ooUA1v0UcJO+8mGn6owg4PdU7R?=
- =?us-ascii?Q?j95+MLQh+tmlHSaxe4uGLbo3yjXdnwbW9RiqwJwmg2C/EFxtM1se1p41WJ10?=
- =?us-ascii?Q?vEI3s16JDRlMsVrEBwIR824GgRCXun6chv+Qv3/NId1meaAq+j7oco0sbXfk?=
- =?us-ascii?Q?PcT7P+ShRlYcJce0dvoAjlIjroeqs1GeopFq+8shxyft42gCzQuPx7YK6M0a?=
- =?us-ascii?Q?EUT5KNc7BVK2VECGvqD53+UqVItBnJ0pKyLQgpqXdQnx6vLtuNhWTWm6dSPq?=
- =?us-ascii?Q?KnV5PGVDYM4xsUuN8pazaJu3VnXqjgdFqLExMbbVzU4XuUb+S9OAhfb5U4g6?=
- =?us-ascii?Q?nQ7nErd2yMnoXDvYGSZELXp0rQ+GaSh0dgLIpqIrElituoCTwDiQfYNdWgfb?=
- =?us-ascii?Q?+uo9GnHukTBGG1ELdZIV6iYP+h/c74t0m7UZjBGgZ8zy360LglR9+3tFTD50?=
- =?us-ascii?Q?eHiaZvxJyjqwQB6TjCv/fzukwD5QMYbOWmIrfTOCi0WphDKEgJyaZAG/EyeM?=
- =?us-ascii?Q?lB2dMLuLo+0=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB9031.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?d6c7+NaE1l6tYVBKT2zW7DEiMEqsaqTa2NBo+iYodWCtPwoGeJ5s+1pWCrBO?=
- =?us-ascii?Q?XT6aaV8dGzCW7oD70j3f68ZrKLs9M0GemQCKEjue/pFSoAlpva2Q2zI45/5e?=
- =?us-ascii?Q?v8YVr78qGwhXLQh0lkCaVTiq3WTv46MYGba+f5Cl0PDaaUMzb8Nap1MH70jR?=
- =?us-ascii?Q?R6zCH222cCy3nw8qdRSVUoj/TYzEC2BSWIjnLe66ZiV98V7OAt3b8G25gsE/?=
- =?us-ascii?Q?hP8mfIyVCGmnIPBqeaibxQFZ9EDM1CuNVuKMSEOmQkeOEoL+uqnxBG65xLuU?=
- =?us-ascii?Q?5iIkpmqp8mVCuMh4kde//ytaEKKzbwluBKIBumLlNlMc7Dms+OpKqWqgT7oz?=
- =?us-ascii?Q?woW1fdNDSStZABms+SgfWv/5VOxq2ir19TawIi8yptGDzZI0j9xVsyVtg5Lm?=
- =?us-ascii?Q?FJ0XZ+f4anZTECDH03r+iBJVrEWsjRcRileMBzi7aGNT5nzaLLY1g+PjBtmP?=
- =?us-ascii?Q?5TsxuABpa3o/twpws7WENsjlee7ryUzTjQCkxaG7mgLy5/LrgD1qZNWq5MWb?=
- =?us-ascii?Q?31e+Mo3WzSfcltlpHLNstkCN7Ct3Lj8AayAcTEsFhepE08bhMbU+lHr16Ppl?=
- =?us-ascii?Q?3LmH8uOYldFwIj54Hu9FZNju5uqI4DX553Evw131CbZ8g0npk0TpAbGSPmr6?=
- =?us-ascii?Q?CWlL3ilZ+oVdgl61+gNJC1v6PSWlBxOSqEzVDDR67kYEf2c6z1S7aZ9ffW03?=
- =?us-ascii?Q?ihEbOsUjw8Rh+FRqvbwN66OmlXMWWcjM1jNa69AMhrKXgaCI9n99MyS+AiCb?=
- =?us-ascii?Q?oicifBKbGYTuKTjK0DyEkvkl58AFU3np+i/gCKg4U2QaTgWyhExI8DUqASCa?=
- =?us-ascii?Q?pAwaUvAwIosiauQsnZ3T9vuKOaA5zSkTnvTigS+0Mdt3jf/c9/VpBVdMqrqd?=
- =?us-ascii?Q?9W4kbqVj1dnN6FD8OjS1DskLtwGC+8Sy/WiP+Rhc/O4BObo7Mh73OwAOsqNM?=
- =?us-ascii?Q?rF8gHIJe92M+EI0noRfqpd23pTpIU2WMnj4PH9+VTIp3/RQLKZjbdpwZoSmr?=
- =?us-ascii?Q?Y2wL9jkFcCpOWDB5DkvjzPDXoQgQH6YYbVDjW/bwlsGG7/3qgtPsgBoeROUe?=
- =?us-ascii?Q?5GsahZJ/ZO2mXQtOxWcaFzG3jMMbrhyIkmSWK/54sieQCJnTF8HoCjQ3EfWg?=
- =?us-ascii?Q?zKp74ZJQwCHG/LaWaPPM8ZxbNZELdP0BiArxkRTzDc6umW0WoLF3IWiyz5OZ?=
- =?us-ascii?Q?MhpsZ5/a2qvtsn2eOcEAr5bsYo8aJ3Mb5b5cqJ3JEVgYyjPMI/GxHguZsDU4?=
- =?us-ascii?Q?M9/r2LbzszcIz4xv8sXjq2UIk441FiS/Lgm6AZ/xhUapLssN8jLeo9TbAIjs?=
- =?us-ascii?Q?GldaH9jQeoUdHjm5X1HUp04QtA6JUnFAPpaVqNDCBy3BgA2H7pbJYgMmfaRu?=
- =?us-ascii?Q?LfXSVzPDCPdW43RSWxMQzE2zEIzXkPyLBfR8kGDOCu6cEUhLqHgZ2YMDAOTT?=
- =?us-ascii?Q?QJQ26NYsJGNCPpvJgOJUiOc1iI/s5Q9XVb5I+3FW7wm8LgaJoZNDtMJN4T2G?=
- =?us-ascii?Q?AwuQ1UzmUgqrzK1mLq3g1PWVWYmtmu5yIb2NhG2qLbL1SligLy1xc62LW+Fy?=
- =?us-ascii?Q?lfMUPqg8JFpixk4u7xe6oYoFk1V6XEXScwS71eH+?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 49355b1f-ed51-48bb-369c-08dde57003ef
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB9031.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2025 13:45:42.6042
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8zrSEK1LRnRkmZYLkpL7dGiWF0trXlhTY+3JMBI82qUpXu9Rl+JYuXPP7k/5QLMUe8nyUhRViNwz9pzoo/5pPw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8272
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 25, 2025 at 12:39:12PM -0700, Amery Hung wrote:
-> xdp programs can change the layout of an xdp_buff through
-> bpf_xdp_adjust_tail(), bpf_xdp_adjust_head(). Therefore, the driver
-> cannot assume the size of the linear data area nor fragments. Fix the
-> bug in mlx5e driver by generating skb according to xdp_buff layout.
->
-Good find! Thanks for tackling this Amery.
+From: Matt Fleming <mfleming@cloudflare.com>
 
-> Currently, when handling multi-buf xdp, the mlx5e driver assumes the
-> layout of an xdp_buff to be unchanged. That is, the linear data area
-> continues to be empty and the fragments remains the same.
-This is true only for striding rq xdp. Legacy rq xdp puts the header
-in the linear part.
+Add benchmarks for the standard set of operations: LOOKUP, INSERT,
+UPDATE, DELETE. Also include benchmarks to measure the overhead of the
+bench framework itself (NOOP) as well as the overhead of generating keys
+(BASELINE). Lastly, this includes a benchmark for FREE (trie_free())
+which is known to have terrible performance for maps with many entries.
 
-> This may
-> cause the driver to generate erroneous skb or triggering a kernel
-> warning. When an xdp program added linear data through
-> bpf_xdp_adjust_head() the linear data will be ignored as
-> mlx5e_build_linear_skb() builds an skb with empty linear data and then
-> pull data from fragments to fill the linear data area. When an xdp
-> program has shrunk the nonlinear data through bpf_xdp_adjust_tail(),
-> the delta passed to __pskb_pull_tail() may exceed the actual nonlinear
-> data size and trigger the BUG_ON in it.
-> 
-> To fix the issue, first build the skb with linear data area matching
-> the xdp_buff. Then, call __pskb_pull_tail() to fill the linear data for
-> up to MLX5E_RX_MAX_HEAD bytes. In addition, recalculate nr_frags and
-> truesize after xdp program runs.
->
-The ordering here seems misleading. AFAIU recalculating nr_frags happens
-first.
+Benchmarks operate on tries without gaps in the key range, i.e. each
+test begins or ends with a trie with valid keys in the range [0,
+nr_entries). This is intended to cause maximum branching when traversing
+the trie.
 
-> Fixes: f52ac7028bec ("net/mlx5e: RX, Add XDP multi-buffer support in Striding RQ")
-> Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> ---
->  .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 59 ++++++++++++++-----
->  1 file changed, 43 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> index b8c609d91d11..c5173f1ccb4e 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> @@ -1725,16 +1725,17 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
->  			     struct mlx5_cqe64 *cqe, u32 cqe_bcnt)
->  {
->  	struct mlx5e_rq_frag_info *frag_info = &rq->wqe.info.arr[0];
-> +	struct mlx5e_wqe_frag_info *pwi, *head_wi = wi;
->  	struct mlx5e_xdp_buff *mxbuf = &rq->mxbuf;
-> -	struct mlx5e_wqe_frag_info *head_wi = wi;
->  	u16 rx_headroom = rq->buff.headroom;
->  	struct mlx5e_frag_page *frag_page;
->  	struct skb_shared_info *sinfo;
-> -	u32 frag_consumed_bytes;
-> +	u32 frag_consumed_bytes, i;
->  	struct bpf_prog *prog;
->  	struct sk_buff *skb;
->  	dma_addr_t addr;
->  	u32 truesize;
-> +	u8 nr_frags;
->  	void *va;
->  
->  	frag_page = wi->frag_page;
-> @@ -1775,14 +1776,26 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
->  	prog = rcu_dereference(rq->xdp_prog);
->  	if (prog && mlx5e_xdp_handle(rq, prog, mxbuf)) {
->  		if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
-> -			struct mlx5e_wqe_frag_info *pwi;
-> +			pwi = head_wi;
-> +			while (pwi->frag_page->netmem != sinfo->frags[0].netmem && pwi < wi)
-> +				pwi++;
->
-Is this trying to skip counting the frags for the linear part? If yes,
-don't understand the reasoning. If not, I don't follow the code.
+LOOKUP, UPDATE, DELETE, and FREE fill a BPF LPM trie from userspace
+using bpf_map_update_batch() and run the corresponding benchmark
+operation via bpf_loop(). INSERT starts with an empty map and fills it
+kernel-side from bpf_loop(). FREE records the time to free a filled LPM
+trie by attaching and destroying a BPF prog. NOOP measures the overhead
+of the test harness by running an empty function with bpf_loop().
+BASELINE is similar to NOOP except that the function generates a key.
 
-AFAIU frags have to be counted for the linear part + sinfo->nr_frags.
-Frags could be less after xdp program execution, but the linear part is
-still there.
+Each operation runs 10,000 times using bpf_loop(). Note that this value
+is intentionally independent of the number of entries in the LPM trie so
+that the stability of the results isn't affected by the number of
+entries.
 
-> -			for (pwi = head_wi; pwi < wi; pwi++)
-> +			for (i = 0; i < sinfo->nr_frags; i++, pwi++)
->  				pwi->frag_page->frags++;
-Why not:
+For those benchmarks that need to reset the LPM trie once it's full
+(INSERT) or empty (DELETE), throughput and latency results are scaled by
+the fraction of a second the operation actually ran to ignore any time
+spent reinitialising the trie.
 
-	pwi = head_wi;
-	for (int i = 0; i < (sinfo->nr_frags + 1); i++, pwi++)
-		pwi->frag_page->frags++;
+By default, benchmarks run using sequential keys in the range [0,
+nr_entries). BASELINE, LOOKUP, and UPDATE can use random keys via the
+--random parameter but beware there is a runtime cost involved in
+generating random keys. Other benchmarks are prohibited from using
+random keys because it can skew the results, e.g. when inserting an
+existing key or deleting a missing one.
 
->  		}
->  		return NULL; /* page/packet was consumed by XDP */
->  	}
->  
-> +	nr_frags = sinfo->nr_frags;
-This makes sense. You are using this in xdp_update_skb_shared_info()
-below.
+All measurements are recorded from within the kernel to eliminate
+syscall overhead. Most benchmarks run an XDP program to generate stats
+but FREE needs to collect latencies using fentry/fexit on
+map_free_deferred() because it's not possible to use fentry directly on
+lpm_trie.c since commit c83508da5620 ("bpf: Avoid deadlock caused by
+nested kprobe and fentry bpf programs") and there's no way to
+create/destroy a map from within an XDP program.
 
-> +	pwi = head_wi + 1;
-> +
-> +	if (prog) {
-You could do here: if (unlikely(sinfo->nr_frags != nr_frags).
+Here is example output from an AMD EPYC 9684X 96-Core machine for each
+of the benchmarks using a trie with 10K entries and a 32-bit prefix
+length, e.g.
 
-> +		truesize = sinfo->nr_frags * frag_info->frag_stride;
-> +
-Ack. Recalculating truesize.
+  $ ./bench lpm-trie-$op \
+  	--prefix_len=32  \
+	--producers=1     \
+	--nr_entries=10000
 
-> +		while (pwi->frag_page->netmem != sinfo->frags[0].netmem && pwi < wi)
-> +			pwi++;
-Why is this needed here?
-> +	}
+     noop: throughput   74.417 ± 0.032 M ops/s ( 74.417M ops/prod), latency   13.438 ns/op
+ baseline: throughput   70.107 ± 0.171 M ops/s ( 70.107M ops/prod), latency   14.264 ns/op
+   lookup: throughput    8.467 ± 0.047 M ops/s (  8.467M ops/prod), latency  118.109 ns/op
+   insert: throughput    2.440 ± 0.015 M ops/s (  2.440M ops/prod), latency  409.290 ns/op
+   update: throughput    2.806 ± 0.042 M ops/s (  2.806M ops/prod), latency  356.322 ns/op
+   delete: throughput    4.625 ± 0.011 M ops/s (  4.625M ops/prod), latency  215.613 ns/op
+     free: throughput    0.578 ± 0.006 K ops/s (  0.578K ops/prod), latency    1.730 ms/op
 
->  	skb = mlx5e_build_linear_skb(
->  		rq, mxbuf->xdp.data_hard_start, rq->buff.frame0_sz,
->  		mxbuf->xdp.data - mxbuf->xdp.data_hard_start,
-> @@ -1796,12 +1809,12 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
->  
->  	if (xdp_buff_has_frags(&mxbuf->xdp)) {
->  		/* sinfo->nr_frags is reset by build_skb, calculate again. */
-> -		xdp_update_skb_shared_info(skb, wi - head_wi - 1,
-> +		xdp_update_skb_shared_info(skb, nr_frags,
->  					   sinfo->xdp_frags_size, truesize,
->  					   xdp_buff_is_frag_pfmemalloc(
->  						&mxbuf->xdp));
->  
-> -		for (struct mlx5e_wqe_frag_info *pwi = head_wi + 1; pwi < wi; pwi++)
-> +		for (i = 0; i < nr_frags; i++, pwi++)
->  			pwi->frag_page->frags++;
-Why not pull the pwi assignmet to head_wi + 1 up from the for scope and use i
-with i < nr_frags condition?
+And the same benchmarks using random keys:
 
->  	}
->  
-> @@ -2073,12 +2086,18 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->  	}
->  
->  	if (prog) {
-> +		u8 nr_frags;
-> +		u32 len, i;
-> +
->  		if (mlx5e_xdp_handle(rq, prog, mxbuf)) {
->  			if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
-> -				struct mlx5e_frag_page *pfp;
-> +				struct mlx5e_frag_page *pagep = head_page;
-> +
-> +				while (pagep->netmem != sinfo->frags[0].netmem && pagep < frag_page)
-> +					pagep++;
->
-Why do you need this?
+  $ ./bench lpm-trie-$op \
+  	--prefix_len=32  \
+	--producers=1     \
+	--nr_entries=10000 \
+	--random
 
-> -				for (pfp = head_page; pfp < frag_page; pfp++)
-> -					pfp->frags++;
-> +				for (i = 0; i < sinfo->nr_frags; i++)
-> +					pagep->frags++;
-This looks good here but with pfp = head_page. head_page should point to the first
-frag. The linear part is in wi->linear_page.
+     noop: throughput   74.259 ± 0.335 M ops/s ( 74.259M ops/prod), latency   13.466 ns/op
+ baseline: throughput   35.150 ± 0.144 M ops/s ( 35.150M ops/prod), latency   28.450 ns/op
+   lookup: throughput    7.119 ± 0.048 M ops/s (  7.119M ops/prod), latency  140.469 ns/op
+   insert: N/A
+   update: throughput    2.736 ± 0.012 M ops/s (  2.736M ops/prod), latency  365.523 ns/op
+   delete: N/A
+     free: N/A
 
+Signed-off-by: Matt Fleming <mfleming@cloudflare.com>
+Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+---
 
->  				wi->linear_page.frags++;
->  			}
-> @@ -2087,9 +2106,12 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->  			return NULL; /* page/packet was consumed by XDP */
->  		}
->  
-> +		len = mxbuf->xdp.data_end - mxbuf->xdp.data;
-> +		nr_frags = sinfo->nr_frags;
-> +
->  		skb = mlx5e_build_linear_skb(
->  			rq, mxbuf->xdp.data_hard_start, linear_frame_sz,
-> -			mxbuf->xdp.data - mxbuf->xdp.data_hard_start, 0,
-> +			mxbuf->xdp.data - mxbuf->xdp.data_hard_start, len,
->  			mxbuf->xdp.data - mxbuf->xdp.data_meta);
-This makes sense.
+Changes in v5:
 
->  		if (unlikely(!skb)) {
->  			mlx5e_page_release_fragmented(rq->page_pool,
-> @@ -2102,20 +2124,25 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->  		mlx5e_page_release_fragmented(rq->page_pool, &wi->linear_page);
->  
->  		if (xdp_buff_has_frags(&mxbuf->xdp)) {
-> -			struct mlx5e_frag_page *pagep;
-> +			struct mlx5e_frag_page *pagep = head_page;
-> +
-> +			truesize = nr_frags * PAGE_SIZE;
-I am not sure that this is accurate. The last fragment might be smaller
-than page size. It should be aligned to BIT(rq->mpwqe.log_stride_sz).
+ - Fix uninitialised read of blackbox variable to avoid gcc-bpf CI
+   failure
 
->  
->  			/* sinfo->nr_frags is reset by build_skb, calculate again. */
-> -			xdp_update_skb_shared_info(skb, frag_page - head_page,
-> +			xdp_update_skb_shared_info(skb, nr_frags,
->  						   sinfo->xdp_frags_size, truesize,
->  						   xdp_buff_is_frag_pfmemalloc(
->  							&mxbuf->xdp));
->  
-> -			pagep = head_page;
-> -			do
-> +			while (pagep->netmem != sinfo->frags[0].netmem && pagep < frag_page)
-> +				pagep++;
-> +
-> +			for (i = 0; i < nr_frags; i++, pagep++)
->  				pagep->frags++;
-> -			while (++pagep < frag_page);
-> +
-> +			headlen = min_t(u16, MLX5E_RX_MAX_HEAD - len, sinfo->xdp_frags_size);
-> +			__pskb_pull_tail(skb, headlen);
->  		}
-> -		__pskb_pull_tail(skb, headlen);
-What happens when there are no more frags? (bpf_xdp_frags_shrink_tail()
-shrinked them out). Is that at all possible?
+Changes in v4:
 
-In general, I think the code would be nicer if it would do a rewind of
-the end pointer based on the diff between the old and new nr_frags.
+ - Incorporate Jesper's NOOP and BASELINE benchmarks
+ - Remove use of double underscore naming
+ - Add --random parameter to use random keys (linear by default)
+ - Fractional second reporting to make delete op times accurate
+ - Check return value of bpf_map_update_elem()
+ - Make latency_free_start a global var and remove hashmap
 
-Thanks,
-Dragos
+Changes in v3:
+
+ - Replace BPF_CORE_READ() with BPF_CORE_READ_STR_INTO() to avoid
+   gcc-bpf CI build failure
+
+Changes in v2:
+
+ - Add Jesper's Tested-by and Revewied-by tags
+ - Remove use of atomic_*() in favour of __sync_add_and_fetch()
+ - Use a file-local 'deleted_entries' in the DELETE op benchmark and add
+   a comment explaining why non-atomic accesses are safe.
+ - Bump 'hits' with the number of bpf_loop() loops actually executed
+
+ tools/testing/selftests/bpf/Makefile          |   2 +
+ tools/testing/selftests/bpf/bench.c           |  16 +
+ tools/testing/selftests/bpf/bench.h           |   1 +
+ .../selftests/bpf/benchs/bench_lpm_trie_map.c | 555 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/lpm_trie.h  |  30 +
+ .../selftests/bpf/progs/lpm_trie_bench.c      | 230 ++++++++
+ .../selftests/bpf/progs/lpm_trie_map.c        |  19 +
+ 7 files changed, 853 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_lpm_trie_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/lpm_trie.h
+ create mode 100644 tools/testing/selftests/bpf/progs/lpm_trie_bench.c
+ create mode 100644 tools/testing/selftests/bpf/progs/lpm_trie_map.c
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 4863106034df..c6555497372f 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -816,6 +816,7 @@ $(OUTPUT)/bench_bpf_hashmap_lookup.o: $(OUTPUT)/bpf_hashmap_lookup.skel.h
+ $(OUTPUT)/bench_htab_mem.o: $(OUTPUT)/htab_mem_bench.skel.h
+ $(OUTPUT)/bench_bpf_crypto.o: $(OUTPUT)/crypto_bench.skel.h
+ $(OUTPUT)/bench_sockmap.o: $(OUTPUT)/bench_sockmap_prog.skel.h
++$(OUTPUT)/bench_lpm_trie_map.o: $(OUTPUT)/lpm_trie_bench.skel.h $(OUTPUT)/lpm_trie_map.skel.h
+ $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
+ $(OUTPUT)/bench: LDLIBS += -lm
+ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+@@ -837,6 +838,7 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+ 		 $(OUTPUT)/bench_htab_mem.o \
+ 		 $(OUTPUT)/bench_bpf_crypto.o \
+ 		 $(OUTPUT)/bench_sockmap.o \
++		 $(OUTPUT)/bench_lpm_trie_map.o \
+ 		 #
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
+index ddd73d06a1eb..23ed6feee0d9 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -284,6 +284,7 @@ extern struct argp bench_htab_mem_argp;
+ extern struct argp bench_trigger_batch_argp;
+ extern struct argp bench_crypto_argp;
+ extern struct argp bench_sockmap_argp;
++extern struct argp bench_lpm_trie_map_argp;
+ 
+ static const struct argp_child bench_parsers[] = {
+ 	{ &bench_ringbufs_argp, 0, "Ring buffers benchmark", 0 },
+@@ -299,6 +300,7 @@ static const struct argp_child bench_parsers[] = {
+ 	{ &bench_trigger_batch_argp, 0, "BPF triggering benchmark", 0 },
+ 	{ &bench_crypto_argp, 0, "bpf crypto benchmark", 0 },
+ 	{ &bench_sockmap_argp, 0, "bpf sockmap benchmark", 0 },
++	{ &bench_lpm_trie_map_argp, 0, "LPM trie map benchmark", 0 },
+ 	{},
+ };
+ 
+@@ -558,6 +560,13 @@ extern const struct bench bench_htab_mem;
+ extern const struct bench bench_crypto_encrypt;
+ extern const struct bench bench_crypto_decrypt;
+ extern const struct bench bench_sockmap;
++extern const struct bench bench_lpm_trie_noop;
++extern const struct bench bench_lpm_trie_baseline;
++extern const struct bench bench_lpm_trie_lookup;
++extern const struct bench bench_lpm_trie_insert;
++extern const struct bench bench_lpm_trie_update;
++extern const struct bench bench_lpm_trie_delete;
++extern const struct bench bench_lpm_trie_free;
+ 
+ static const struct bench *benchs[] = {
+ 	&bench_count_global,
+@@ -625,6 +634,13 @@ static const struct bench *benchs[] = {
+ 	&bench_crypto_encrypt,
+ 	&bench_crypto_decrypt,
+ 	&bench_sockmap,
++	&bench_lpm_trie_noop,
++	&bench_lpm_trie_baseline,
++	&bench_lpm_trie_lookup,
++	&bench_lpm_trie_insert,
++	&bench_lpm_trie_update,
++	&bench_lpm_trie_delete,
++	&bench_lpm_trie_free,
+ };
+ 
+ static void find_benchmark(void)
+diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftests/bpf/bench.h
+index 005c401b3e22..bea323820ffb 100644
+--- a/tools/testing/selftests/bpf/bench.h
++++ b/tools/testing/selftests/bpf/bench.h
+@@ -46,6 +46,7 @@ struct bench_res {
+ 	unsigned long gp_ns;
+ 	unsigned long gp_ct;
+ 	unsigned int stime;
++	unsigned long duration_ns;
+ };
+ 
+ struct bench {
+diff --git a/tools/testing/selftests/bpf/benchs/bench_lpm_trie_map.c b/tools/testing/selftests/bpf/benchs/bench_lpm_trie_map.c
+new file mode 100644
+index 000000000000..246f6cb3387d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/bench_lpm_trie_map.c
+@@ -0,0 +1,555 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Cloudflare */
++
++/*
++ * All of these benchmarks operate on tries with keys in the range
++ * [0, args.nr_entries), i.e. there are no gaps or partially filled
++ * branches of the trie for any key < args.nr_entries.
++ *
++ * This gives an idea of worst-case behaviour.
++ */
++
++#include <argp.h>
++#include <linux/time64.h>
++#include <linux/if_ether.h>
++#include "lpm_trie_bench.skel.h"
++#include "lpm_trie_map.skel.h"
++#include "bench.h"
++#include "testing_helpers.h"
++#include "progs/lpm_trie.h"
++
++static struct ctx {
++	struct lpm_trie_bench *bench;
++} ctx;
++
++static struct {
++	__u32 nr_entries;
++	__u32 prefixlen;
++	bool random;
++} args = {
++	.nr_entries = 0,
++	.prefixlen = 32,
++	.random = false,
++};
++
++enum {
++	ARG_NR_ENTRIES = 9000,
++	ARG_PREFIX_LEN,
++	ARG_RANDOM,
++};
++
++static const struct argp_option opts[] = {
++	{ "nr_entries", ARG_NR_ENTRIES, "NR_ENTRIES", 0,
++	  "Number of unique entries in the LPM trie" },
++	{ "prefix_len", ARG_PREFIX_LEN, "PREFIX_LEN", 0,
++	  "Number of prefix bits to use in the LPM trie" },
++	{ "random", ARG_RANDOM, NULL, 0, "Access random keys during op" },
++	{},
++};
++
++static error_t lpm_parse_arg(int key, char *arg, struct argp_state *state)
++{
++	long ret;
++
++	switch (key) {
++	case ARG_NR_ENTRIES:
++		ret = strtol(arg, NULL, 10);
++		if (ret < 1 || ret > UINT_MAX) {
++			fprintf(stderr, "Invalid nr_entries count.");
++			argp_usage(state);
++		}
++		args.nr_entries = ret;
++		break;
++	case ARG_PREFIX_LEN:
++		ret = strtol(arg, NULL, 10);
++		if (ret < 1 || ret > UINT_MAX) {
++			fprintf(stderr, "Invalid prefix_len value.");
++			argp_usage(state);
++		}
++		args.prefixlen = ret;
++		break;
++	case ARG_RANDOM:
++		args.random = true;
++		break;
++	default:
++		return ARGP_ERR_UNKNOWN;
++	}
++	return 0;
++}
++
++const struct argp bench_lpm_trie_map_argp = {
++	.options = opts,
++	.parser = lpm_parse_arg,
++};
++
++static void validate_common(void)
++{
++	if (env.consumer_cnt != 0) {
++		fprintf(stderr, "benchmark doesn't support consumer\n");
++		exit(1);
++	}
++
++	if (args.nr_entries == 0) {
++		fprintf(stderr, "Missing --nr_entries parameter\n");
++		exit(1);
++	}
++
++	if ((1UL << args.prefixlen) < args.nr_entries) {
++		fprintf(stderr, "prefix_len value too small for nr_entries\n");
++		exit(1);
++	}
++}
++
++static void lpm_insert_validate(void)
++{
++	validate_common();
++
++	if (env.producer_cnt != 1) {
++		fprintf(stderr, "lpm-trie-insert requires a single producer\n");
++		exit(1);
++	}
++
++	if (args.random) {
++		fprintf(stderr, "lpm-trie-insert does not support --random\n");
++		exit(1);
++	}
++}
++
++static void lpm_delete_validate(void)
++{
++	validate_common();
++
++	if (env.producer_cnt != 1) {
++		fprintf(stderr, "lpm-trie-delete requires a single producer\n");
++		exit(1);
++	}
++
++	if (args.random) {
++		fprintf(stderr, "lpm-trie-delete does not support --random\n");
++		exit(1);
++	}
++}
++
++static void lpm_free_validate(void)
++{
++	validate_common();
++
++	if (env.producer_cnt != 1) {
++		fprintf(stderr, "lpm-trie-free requires a single producer\n");
++		exit(1);
++	}
++
++	if (args.random) {
++		fprintf(stderr, "lpm-trie-free does not support --random\n");
++		exit(1);
++	}
++}
++
++static struct trie_key *keys;
++static __u32 *vals;
++
++static void fill_map(int map_fd)
++{
++	int err;
++
++	DECLARE_LIBBPF_OPTS(bpf_map_batch_opts, opts,
++		.elem_flags = 0,
++		.flags = 0,
++	);
++
++	err = bpf_map_update_batch(map_fd, keys, vals, &args.nr_entries, &opts);
++	if (err) {
++		fprintf(stderr, "failed to batch update keys to map: %d\n",
++			-err);
++		exit(1);
++	}
++}
++
++static void empty_map(int map_fd)
++{
++	int err;
++
++	DECLARE_LIBBPF_OPTS(bpf_map_batch_opts, opts,
++		.elem_flags = 0,
++		.flags = 0,
++	);
++
++	err = bpf_map_delete_batch(map_fd, keys, &args.nr_entries, &opts);
++	if (err) {
++		fprintf(stderr, "failed to batch delete keys for map: %d\n",
++			-err);
++		exit(1);
++	}
++}
++
++static void attach_prog(void)
++{
++	int i;
++
++	ctx.bench = lpm_trie_bench__open_and_load();
++	if (!ctx.bench) {
++		fprintf(stderr, "failed to open skeleton\n");
++		exit(1);
++	}
++
++	ctx.bench->bss->nr_entries = args.nr_entries;
++	ctx.bench->bss->prefixlen = args.prefixlen;
++	ctx.bench->bss->random = args.random;
++
++	if (lpm_trie_bench__attach(ctx.bench)) {
++		fprintf(stderr, "failed to attach skeleton\n");
++		exit(1);
++	}
++
++	keys = calloc(args.nr_entries, sizeof(*keys));
++	vals = calloc(args.nr_entries, sizeof(*vals));
++
++	for (i = 0; i < args.nr_entries; i++) {
++		struct trie_key *k = &keys[i];
++		__u32 *v = &vals[i];
++
++		k->prefixlen = args.prefixlen;
++		k->data = i;
++		*v = 1;
++	}
++}
++
++static void attach_prog_and_fill_map(void)
++{
++	int fd;
++
++	attach_prog();
++
++	fd = bpf_map__fd(ctx.bench->maps.trie_map);
++	fill_map(fd);
++}
++
++static void lpm_noop_setup(void)
++{
++	attach_prog();
++	ctx.bench->bss->op = LPM_OP_NOOP;
++}
++
++static void lpm_baseline_setup(void)
++{
++	attach_prog();
++	ctx.bench->bss->op = LPM_OP_BASELINE;
++}
++
++static void lpm_lookup_setup(void)
++{
++	attach_prog_and_fill_map();
++	ctx.bench->bss->op = LPM_OP_LOOKUP;
++}
++
++static void lpm_insert_setup(void)
++{
++	attach_prog();
++	ctx.bench->bss->op = LPM_OP_INSERT;
++}
++
++static void lpm_update_setup(void)
++{
++	attach_prog_and_fill_map();
++	ctx.bench->bss->op = LPM_OP_UPDATE;
++}
++
++static void lpm_delete_setup(void)
++{
++	attach_prog_and_fill_map();
++	ctx.bench->bss->op = LPM_OP_DELETE;
++}
++
++static void lpm_free_setup(void)
++{
++	attach_prog();
++	ctx.bench->bss->op = LPM_OP_FREE;
++}
++
++static void lpm_measure(struct bench_res *res)
++{
++	res->hits = atomic_swap(&ctx.bench->bss->hits, 0);
++	res->duration_ns = atomic_swap(&ctx.bench->bss->duration_ns, 0);
++}
++
++static void bench_reinit_map(void)
++{
++	int fd = bpf_map__fd(ctx.bench->maps.trie_map);
++
++	switch (ctx.bench->bss->op) {
++	case LPM_OP_INSERT:
++		/* trie_map needs to be emptied */
++		empty_map(fd);
++		break;
++	case LPM_OP_DELETE:
++		/* trie_map needs to be refilled */
++		fill_map(fd);
++		break;
++	default:
++		fprintf(stderr, "Unexpected REINIT return code for op %d\n",
++				ctx.bench->bss->op);
++		exit(1);
++	}
++}
++
++/* For NOOP, BASELINE, LOOKUP, INSERT, UPDATE, and DELETE */
++static void *lpm_producer(void *unused __always_unused)
++{
++	int err;
++	char in[ETH_HLEN]; /* unused */
++
++	LIBBPF_OPTS(bpf_test_run_opts, opts, .data_in = in,
++		    .data_size_in = sizeof(in), .repeat = 1, );
++
++	while (true) {
++		int fd = bpf_program__fd(ctx.bench->progs.run_bench);
++		err = bpf_prog_test_run_opts(fd, &opts);
++		if (err) {
++			fprintf(stderr, "failed to run BPF prog: %d\n", err);
++			exit(1);
++		}
++
++		/* Check for kernel error code */
++		if ((int)opts.retval < 0) {
++			fprintf(stderr, "BPF prog returned error: %d\n",
++				opts.retval);
++			exit(1);
++		}
++
++		switch (opts.retval) {
++		case LPM_BENCH_SUCCESS:
++			break;
++		case LPM_BENCH_REINIT_MAP:
++			bench_reinit_map();
++			break;
++		default:
++			fprintf(stderr, "Unexpected BPF prog return code %d for op %d\n",
++					opts.retval, ctx.bench->bss->op);
++			exit(1);
++		}
++	}
++
++	return NULL;
++}
++
++static void *lpm_free_producer(void *unused __always_unused)
++{
++	while (true) {
++		struct lpm_trie_map *skel;
++
++		skel = lpm_trie_map__open_and_load();
++		if (!skel) {
++			fprintf(stderr, "failed to open skeleton\n");
++			exit(1);
++		}
++
++		fill_map(bpf_map__fd(skel->maps.trie_free_map));
++		lpm_trie_map__destroy(skel);
++	}
++
++	return NULL;
++}
++
++/*
++ * The standard bench op_report_*() functions assume measurements are
++ * taken over a 1-second interval but operations that modify the map
++ * (INSERT, DELETE, and FREE) cannot run indefinitely without
++ * "resetting" the map to the initial state. Depending on the size of
++ * the map, this likely needs to happen before the 1-second timer fires.
++ *
++ * Calculate the fraction of a second over which the op measurement was
++ * taken (to ignore any time spent doing the reset) and report the
++ * throughput results per second.
++ */
++static void frac_second_report_progress(int iter, struct bench_res *res,
++					long delta_ns, double rate_divisor,
++					char rate)
++{
++	double hits_per_sec, hits_per_prod;
++
++	hits_per_sec = res->hits / rate_divisor /
++		(res->duration_ns / (double)NSEC_PER_SEC);
++	hits_per_prod = hits_per_sec / env.producer_cnt;
++
++	printf("Iter %3d (%7.3lfus): ", iter,
++	       (delta_ns - NSEC_PER_SEC) / 1000.0);
++	printf("hits %8.3lf%c/s (%7.3lf%c/prod)\n", hits_per_sec, rate,
++	       hits_per_prod, rate);
++}
++
++static void frac_second_report_final(struct bench_res res[], int res_cnt,
++				     double lat_divisor, double rate_divisor,
++				     char rate, const char *unit)
++{
++	double hits_mean = 0.0, hits_stddev = 0.0;
++	double latency = 0.0;
++	int i;
++
++	for (i = 0; i < res_cnt; i++) {
++		double val = res[i].hits / rate_divisor /
++			     (res[i].duration_ns / (double)NSEC_PER_SEC);
++		hits_mean += val / (0.0 + res_cnt);
++		latency += res[i].duration_ns / res[i].hits / (0.0 + res_cnt);
++	}
++
++	if (res_cnt > 1) {
++		for (i = 0; i < res_cnt; i++) {
++			double val =
++				res[i].hits / rate_divisor /
++				(res[i].duration_ns / (double)NSEC_PER_SEC);
++			hits_stddev += (hits_mean - val) * (hits_mean - val) /
++				       (res_cnt - 1.0);
++		}
++
++		hits_stddev = sqrt(hits_stddev);
++	}
++	printf("Summary: throughput %8.3lf \u00B1 %5.3lf %c ops/s (%7.3lf%c ops/prod), ",
++	       hits_mean, hits_stddev, rate, hits_mean / env.producer_cnt,
++	       rate);
++	printf("latency %8.3lf %s/op\n",
++	       latency / lat_divisor / env.producer_cnt, unit);
++}
++
++static void insert_ops_report_progress(int iter, struct bench_res *res,
++				       long delta_ns)
++{
++	double rate_divisor = 1000000.0;
++	char rate = 'M';
++
++	frac_second_report_progress(iter, res, delta_ns, rate_divisor, rate);
++}
++
++static void delete_ops_report_progress(int iter, struct bench_res *res,
++				       long delta_ns)
++{
++	double rate_divisor = 1000000.0;
++	char rate = 'M';
++
++	frac_second_report_progress(iter, res, delta_ns, rate_divisor, rate);
++}
++
++static void free_ops_report_progress(int iter, struct bench_res *res,
++				     long delta_ns)
++{
++	double rate_divisor = 1000.0;
++	char rate = 'K';
++
++	frac_second_report_progress(iter, res, delta_ns, rate_divisor, rate);
++}
++
++static void insert_ops_report_final(struct bench_res res[], int res_cnt)
++{
++	double lat_divisor = 1.0;
++	double rate_divisor = 1000000.0;
++	const char *unit = "ns";
++	char rate = 'M';
++
++	frac_second_report_final(res, res_cnt, lat_divisor, rate_divisor, rate,
++				 unit);
++}
++
++static void delete_ops_report_final(struct bench_res res[], int res_cnt)
++{
++	double lat_divisor = 1.0;
++	double rate_divisor = 1000000.0;
++	const char *unit = "ns";
++	char rate = 'M';
++
++	frac_second_report_final(res, res_cnt, lat_divisor, rate_divisor, rate,
++				 unit);
++}
++
++static void free_ops_report_final(struct bench_res res[], int res_cnt)
++{
++	double lat_divisor = 1000000.0;
++	double rate_divisor = 1000.0;
++	const char *unit = "ms";
++	char rate = 'K';
++
++	frac_second_report_final(res, res_cnt, lat_divisor, rate_divisor, rate,
++				 unit);
++}
++
++/* noop bench measures harness-overhead */
++const struct bench bench_lpm_trie_noop = {
++	.name = "lpm-trie-noop",
++	.argp = &bench_lpm_trie_map_argp,
++	.validate = validate_common,
++	.setup = lpm_noop_setup,
++	.producer_thread = lpm_producer,
++	.measure = lpm_measure,
++	.report_progress = ops_report_progress,
++	.report_final = ops_report_final,
++};
++
++/* baseline overhead for lookup and update */
++const struct bench bench_lpm_trie_baseline = {
++	.name = "lpm-trie-baseline",
++	.argp = &bench_lpm_trie_map_argp,
++	.validate = validate_common,
++	.setup = lpm_baseline_setup,
++	.producer_thread = lpm_producer,
++	.measure = lpm_measure,
++	.report_progress = ops_report_progress,
++	.report_final = ops_report_final,
++};
++
++/* measure cost of doing a lookup on existing entries in a full trie */
++const struct bench bench_lpm_trie_lookup = {
++	.name = "lpm-trie-lookup",
++	.argp = &bench_lpm_trie_map_argp,
++	.validate = validate_common,
++	.setup = lpm_lookup_setup,
++	.producer_thread = lpm_producer,
++	.measure = lpm_measure,
++	.report_progress = ops_report_progress,
++	.report_final = ops_report_final,
++};
++
++/* measure cost of inserting new entries into an empty trie */
++const struct bench bench_lpm_trie_insert = {
++	.name = "lpm-trie-insert",
++	.argp = &bench_lpm_trie_map_argp,
++	.validate = lpm_insert_validate,
++	.setup = lpm_insert_setup,
++	.producer_thread = lpm_producer,
++	.measure = lpm_measure,
++	.report_progress = insert_ops_report_progress,
++	.report_final = insert_ops_report_final,
++};
++
++/* measure cost of updating existing entries in a full trie */
++const struct bench bench_lpm_trie_update = {
++	.name = "lpm-trie-update",
++	.argp = &bench_lpm_trie_map_argp,
++	.validate = validate_common,
++	.setup = lpm_update_setup,
++	.producer_thread = lpm_producer,
++	.measure = lpm_measure,
++	.report_progress = ops_report_progress,
++	.report_final = ops_report_final,
++};
++
++/* measure cost of deleting existing entries from a full trie */
++const struct bench bench_lpm_trie_delete = {
++	.name = "lpm-trie-delete",
++	.argp = &bench_lpm_trie_map_argp,
++	.validate = lpm_delete_validate,
++	.setup = lpm_delete_setup,
++	.producer_thread = lpm_producer,
++	.measure = lpm_measure,
++	.report_progress = delete_ops_report_progress,
++	.report_final = delete_ops_report_final,
++};
++
++/* measure cost of freeing a full trie */
++const struct bench bench_lpm_trie_free = {
++	.name = "lpm-trie-free",
++	.argp = &bench_lpm_trie_map_argp,
++	.validate = lpm_free_validate,
++	.setup = lpm_free_setup,
++	.producer_thread = lpm_free_producer,
++	.measure = lpm_measure,
++	.report_progress = free_ops_report_progress,
++	.report_final = free_ops_report_final,
++};
+diff --git a/tools/testing/selftests/bpf/progs/lpm_trie.h b/tools/testing/selftests/bpf/progs/lpm_trie.h
+new file mode 100644
+index 000000000000..76aa5821807f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/lpm_trie.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#ifndef __PROGS_LPM_TRIE_H
++#define __PROGS_LPM_TRIE_H
++
++struct trie_key {
++	__u32 prefixlen;
++	__u32 data;
++};
++
++/* Benchmark operations */
++enum {
++	LPM_OP_NOOP = 0,
++	LPM_OP_BASELINE,
++	LPM_OP_LOOKUP,
++	LPM_OP_INSERT,
++	LPM_OP_UPDATE,
++	LPM_OP_DELETE,
++	LPM_OP_FREE
++};
++
++/*
++ * Return values from run_bench.
++ *
++ * Negative values are also allowed and represent kernel error codes.
++ */
++#define LPM_BENCH_SUCCESS	0
++#define LPM_BENCH_REINIT_MAP 	1	/* Reset trie to initial state for current op */
++
++#endif
+diff --git a/tools/testing/selftests/bpf/progs/lpm_trie_bench.c b/tools/testing/selftests/bpf/progs/lpm_trie_bench.c
+new file mode 100644
+index 000000000000..1b48c67b02ca
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/lpm_trie_bench.c
+@@ -0,0 +1,230 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Cloudflare */
++
++#include <vmlinux.h>
++#include <errno.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_misc.h"
++#include "bpf_atomic.h"
++#include "progs/lpm_trie.h"
++
++#define BPF_OBJ_NAME_LEN 16U
++#define MAX_ENTRIES 100000000
++#define NR_LOOPS 10000
++
++char _license[] SEC("license") = "GPL";
++
++/* Filled by userspace. See fill_map() in bench_lpm_trie_map.c */
++struct {
++	__uint(type, BPF_MAP_TYPE_LPM_TRIE);
++	__type(key, struct trie_key);
++	__type(value, __u32);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__uint(max_entries, MAX_ENTRIES);
++} trie_map SEC(".maps");
++
++long hits;
++long duration_ns;
++
++/* Configured from userspace */
++__u32 nr_entries;
++__u32 prefixlen;
++bool random;
++__u8 op;
++
++static __u64 latency_free_start;
++
++SEC("fentry/bpf_map_free_deferred")
++int BPF_PROG(trie_free_entry, struct work_struct *work)
++{
++	struct bpf_map *map = container_of(work, struct bpf_map, work);
++	char name[BPF_OBJ_NAME_LEN];
++	u32 map_type;
++
++	map_type = BPF_CORE_READ(map, map_type);
++	if (map_type != BPF_MAP_TYPE_LPM_TRIE)
++		return 0;
++
++	/*
++	 * Ideally we'd have access to the map ID but that's already
++	 * freed before we enter trie_free().
++	 */
++	BPF_CORE_READ_STR_INTO(&name, map, name);
++	if (bpf_strncmp(name, BPF_OBJ_NAME_LEN, "trie_free_map"))
++		return 0;
++
++	latency_free_start = bpf_ktime_get_ns();
++
++	return 0;
++}
++
++SEC("fexit/bpf_map_free_deferred")
++int BPF_PROG(trie_free_exit, struct work_struct *work)
++{
++	__u64 val;
++
++	if (!latency_free_start)
++		return 0;
++
++	val = bpf_ktime_get_ns() - latency_free_start;
++	latency_free_start = 0;
++
++	__sync_add_and_fetch(&duration_ns, val);
++	__sync_add_and_fetch(&hits, 1);
++
++	return 0;
++}
++
++static __u32 cur_key;
++
++static __always_inline void generate_key(struct trie_key *key)
++{
++	key->prefixlen = prefixlen;
++
++	if (random)
++		key->data = bpf_get_prandom_u32() % nr_entries;
++	else
++		key->data = cur_key++ % nr_entries;
++}
++
++static int noop(__u32 index, __u32 *unused)
++{
++	return 0;
++}
++
++static int baseline(__u32 index, __u32 *unused)
++{
++	struct trie_key key;
++	__u32 blackbox = 0;
++
++	generate_key(&key);
++	/* Avoid compiler optimizing out the modulo */
++	barrier_var(blackbox);
++	blackbox = READ_ONCE(key.data);
++
++	return 0;
++}
++
++static int lookup(__u32 index, int *retval)
++{
++	struct trie_key key;
++
++	generate_key(&key);
++	if (!bpf_map_lookup_elem(&trie_map, &key)) {
++		*retval = -ENOENT;
++		return 1;
++	}
++
++	return 0;
++}
++
++static int insert(__u32 index, int *retval)
++{
++	struct trie_key key;
++	u32 val = 1;
++	int err;
++
++	generate_key(&key);
++	err = bpf_map_update_elem(&trie_map, &key, &val, BPF_NOEXIST);
++	if (err) {
++		*retval = err;
++		return 1;
++	}
++
++	/* Is this the last entry? */
++	if (key.data == nr_entries - 1) {
++		/* For atomicity concerns, see the comment in delete() */
++		*retval = LPM_BENCH_REINIT_MAP;
++		return 1;
++	}
++
++	return 0;
++}
++
++static int update(__u32 index, int *retval)
++{
++	struct trie_key key;
++	u32 val = 1;
++	int err;
++
++	generate_key(&key);
++	err = bpf_map_update_elem(&trie_map, &key, &val, BPF_EXIST);
++	if (err) {
++		*retval = err;
++		return 1;
++	}
++
++	return 0;
++}
++
++static int delete(__u32 index, int *retval)
++{
++	struct trie_key key;
++	int err;
++
++	generate_key(&key);
++	err = bpf_map_delete_elem(&trie_map, &key);
++	if (err) {
++		*retval = err;
++		return 1;
++	}
++
++	/* Do we need to refill the map? */
++	if (key.data == nr_entries - 1) {
++		/*
++		 * Atomicity isn't required because DELETE only supports
++		 * one producer running concurrently. What we need is a
++		 * way to track how many entries have been deleted from
++		 * the trie between consecutive invocations of the BPF
++		 * prog because a single bpf_loop() call might not
++		 * delete all entries, e.g. when NR_LOOPS < nr_entries.
++		 */
++		*retval = LPM_BENCH_REINIT_MAP;
++		return 1;
++	}
++
++	return 0;
++}
++
++SEC("xdp")
++int BPF_PROG(run_bench)
++{
++	int err = LPM_BENCH_SUCCESS;
++	u64 start, delta;
++	int loops;
++
++	start = bpf_ktime_get_ns();
++
++	switch (op) {
++	case LPM_OP_NOOP:
++		loops = bpf_loop(NR_LOOPS, noop, NULL, 0);
++		break;
++	case LPM_OP_BASELINE:
++		loops = bpf_loop(NR_LOOPS, baseline, NULL, 0);
++		break;
++	case LPM_OP_LOOKUP:
++		loops = bpf_loop(NR_LOOPS, lookup, &err, 0);
++		break;
++	case LPM_OP_INSERT:
++		loops = bpf_loop(NR_LOOPS, insert, &err, 0);
++		break;
++	case LPM_OP_UPDATE:
++		loops = bpf_loop(NR_LOOPS, update, &err, 0);
++		break;
++	case LPM_OP_DELETE:
++		loops = bpf_loop(NR_LOOPS, delete, &err, 0);
++		break;
++	default:
++		bpf_printk("invalid benchmark operation\n");
++		return -1;
++	}
++
++	delta = bpf_ktime_get_ns() - start;
++
++	__sync_add_and_fetch(&duration_ns, delta);
++	__sync_add_and_fetch(&hits, loops);
++
++	return err;
++}
+diff --git a/tools/testing/selftests/bpf/progs/lpm_trie_map.c b/tools/testing/selftests/bpf/progs/lpm_trie_map.c
+new file mode 100644
+index 000000000000..2ab43e2cd6c6
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/lpm_trie_map.c
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++#define MAX_ENTRIES 100000000
++
++struct trie_key {
++	__u32 prefixlen;
++	__u32 data;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_LPM_TRIE);
++	__type(key, struct trie_key);
++	__type(value, __u32);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__uint(max_entries, MAX_ENTRIES);
++} trie_free_map SEC(".maps");
+-- 
+2.34.1
+
 
