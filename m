@@ -1,189 +1,139 @@
-Return-Path: <bpf+bounces-66644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B76D0B38047
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 12:49:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64C72B380AD
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 13:17:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6551F980E1C
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 10:49:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A48B8169D5C
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 11:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AD5734DCCA;
-	Wed, 27 Aug 2025 10:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0777834DCCA;
+	Wed, 27 Aug 2025 11:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="JrwxX8bL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsDr45aS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8C43469E6
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 10:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E709B1B425C;
+	Wed, 27 Aug 2025 11:16:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756291733; cv=none; b=mUkhyWKCoNUXmsJP3yu4O6RWVtUhBVwjAsIm6qR45HolHzpaswnN2kC/vOpYhN4H4AiXDYWQCVyTYRo5DeZzRp4E0pEdaRIysnDeQMxe63lHPnUKIu2lOYsFIKnthUV3ICl4HL7tU7PIbLmgJsbNfEaKa+1UA5QdDn6TYQhjpZc=
+	t=1756293420; cv=none; b=ABBhC/oU6cnPobyr9zPZGdbkP2kGXkUGDCxaMZsUCK6VDVl9G/ykcQCQHykAY5FvWPYpJBJh4WfLY9yMFUEr3NYKe0PIZkyoYZvKzovb/Xc1aZ9UgBqrJFnnF1alWhrxslDGXZu8E956Ib6ofTkAKqlEAEPJlyk20sDkYlQa5Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756291733; c=relaxed/simple;
-	bh=hUoasQnCGasuL2bHEECdPbjoocMmyF4EX7JMYC3YOH4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=OEiaTEy2DbitpyOUZDnt1GaIoRchnOh6bp7DCdJ6bYgLk0Sx7zW8TP2//mUWPx12vERvVKFECr3lbilUdsG/72LKVvjgaP9z3zKnLGuuh2HqQSRHsq4Cfipj1OWgNdd4m6EEijcQg2el/modP9LuEXeQVwsUe23MR849e/6T+FM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=JrwxX8bL; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-afcb72d5409so1114277866b.0
-        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 03:48:50 -0700 (PDT)
+	s=arc-20240116; t=1756293420; c=relaxed/simple;
+	bh=laF4aCzdnYqqOiKe6TJk6V7rDYa2OP/TEOF4ueQbzRo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=C6jffPMH0iVEe0Aeulpp27PUb206ksTCSu58GHHwvzyym/wqTrsJ29ykFKEzcDJ5xpOVdr+wLTscegKMo9YnquKGm7Y3R/Vwl8cuXeZk8LWJo3Bxq4hXN4kn/ftSrvGs5TZtrISrWsJS28VvTLsSB1BcQ2H6JpsmKINwDwI8B0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsDr45aS; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3c46686d1e6so4234270f8f.3;
+        Wed, 27 Aug 2025 04:16:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1756291728; x=1756896528; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lL19xfHMBfEDs48X3K+oV8VPfeHvbok1+JBxYOZS28U=;
-        b=JrwxX8bL2YcdBz5x0AOh+CA+Ane56S2aUbd+YdY3PyY7Ikj2v/RHA0O2bwTvwc000c
-         G40Y57Mb6WpeZ6c+fzTNsqHhM5zZCjqMxOjYMhPNIrFpVCPoFU3uKWtBktiPj0h6qjB8
-         hnvnuyrtjrnjJuYHGyFKo352O20VH74oD4S2B5jgGYgKCrtotEipd27Yww4t8GUOHRIN
-         v5o3FIxbriFx/IZ0iFT0Re5tm03s7nw8OD2ZWtiVysOa49mh5YJZJigU4pQTyHb2Ya3e
-         B1b81sp1g4NTjYSPAzcMMStq+oIVLgf0wXI9geBI8WAuOkfQuXN2A5jtCCA1BdN6KqtN
-         GU/Q==
+        d=gmail.com; s=20230601; t=1756293417; x=1756898217; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NpRjwZvPLOD/qXd7yzG90qI1YNyMsZmvSBlze1Z94c4=;
+        b=RsDr45aSoDhlg/eK393W0XTPieZmu8alGPsmg/jPxx3I65EO1Kq/bDAHRMuKxQwPO0
+         aXQ7e2zX4JHxiR6z3WXkuMghoPU3mIqi7ybmU+26IxKob+ADpsweMQVDXhoZ1Jm6rn+e
+         tjOL/1/F+Nnfoc0k2f93qXy9NIH3D49ZRcvu3rV8ohHVS2Vbj/QEU88d4qM1ThIAmq9T
+         7VHTH+iMQ+vVals3O8YFfeT94XyNamrbURTI6pEolvQpR9r85lIwMbiasHw0vjKUXP2c
+         XzuTFTTEziIHDG/YSnB95Jqn9dvqA/oU8oxx8wm/sPIslDkvYYS3o4l9PYZvf/suf+cQ
+         huPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756291728; x=1756896528;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lL19xfHMBfEDs48X3K+oV8VPfeHvbok1+JBxYOZS28U=;
-        b=C6yTD4a05QYrMegNm3pqwP3UeqoOF6rrwNysEkiA/kqqv0d1b97mQ5KKE7mL2awL7E
-         a5TNKEibr3VhUFJWs86bUzhMroKwWwg4X/5+oNiK/uPt1ZHvzBW8FckWuzzeNWdERkj/
-         h4kQK9ZtQPEfQHIAIwIRrzxeSIW1BBuRKhhXGpnPYiUpAuAxkzv4VMhh1YNIwCbkZo69
-         vapqkJkbuDqsrGxqa15OwTdEC+7xMkXKjPEJw5LWNuO3oa3URhyNzrspq0q+Mts/jTHq
-         SOFc58pvlp6i4xNE07HjE3OFBca2pGJt41oXoLVAiobs9uw9VZr8Yk5khqIHFqdpURl7
-         4q7g==
-X-Gm-Message-State: AOJu0Yyhvi43u+50AlIJxvsSut8NuwybKMps60XALxY/CAnMGAR+apdA
-	xNzD/W2VkwkLPaTcfjn3qsRSBcLbHZVLPRarypxeJMpsKABNutDuqG6eRyccZpSq6eE=
-X-Gm-Gg: ASbGncv73hqvBnIs6bMja1Uv0o1a+BDmn7Dv5pI0kUNGzA6bTw4enANxeqgwI6nbNgY
-	8BgMnViO1Cj/mDZ4bY3wJwOYBqGYtOJro5jmXYWVSSiHYAzcpVHzbPgD4b1sk8ZHJjyfkfo8C/K
-	I4zQTPn4sFqhwqabGPAkbY/k9rY5ktEQt+yvexG9nRNL6SvIuPjhhT21ZXug0UiDOK8Kc1YTjBr
-	5T6EAy66OhtdPlNQotbyPQj+w2f0WYv3h4FoWfdUML0zlGsN79HxsH3hpNaGiuiQj55bppfUXnP
-	UikqKx9sY1n4GwFkxS9+8nsBq0FzaPWyrDoF8S2Dxjzq4G5H/5P2e5SU766QjMt+yREYEJTVEfq
-	89J4p8168oyV+yI1+S/+MoeQm6auHjsR3mIs79AGYQ1ThLTZtZZHSu/j+nPGaaJ1t9T85
-X-Google-Smtp-Source: AGHT+IEVADrPJMUJPey3grHp2K9MK686lufQkO5QVcW/tIjMAy10SkXHsy6F5Gw27EFMbLCTtMlK5w==
-X-Received: by 2002:a17:907:d06:b0:af9:6065:fc84 with SMTP id a640c23a62f3a-afe29437cafmr2078631166b.27.1756291728550;
-        Wed, 27 Aug 2025 03:48:48 -0700 (PDT)
-Received: from cloudflare.com (79.191.55.218.ipv4.supernova.orange.pl. [79.191.55.218])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-afe8c74194dsm534171166b.35.2025.08.27.03.48.47
+        d=1e100.net; s=20230601; t=1756293417; x=1756898217;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NpRjwZvPLOD/qXd7yzG90qI1YNyMsZmvSBlze1Z94c4=;
+        b=c9ZvWsUxefOJumWYDBOuLdVZV7CSV9HBh3EQ+xsKsjbqFOWmmReAvfNPe6CwDYuYhE
+         XQrG4oiDZGwmoFJt5RGDywgoX0/FpacxzF/IBWois6MulKBDEHCdKZEs4nLQUGbQix+H
+         AAsXlvfb8GouKP3AJgbq1FwzwjcMwOxnisF7CjVqVoawa/BPnti+GYLfOqDMsL3V48s5
+         /vF5tC/CinCEDFJPNIJF0iU7r5jOtkxUtJ1/Fv7rl24SS2vQHyNfg6tA4nXLfp1JYMFj
+         nSHYn1GTJ3HaxgFPTRzRhJ6uGu6mUdYUSz5b4hZD6ttddHYdBdqmQF8+cxraUCRNqLXB
+         BLoA==
+X-Forwarded-Encrypted: i=1; AJvYcCXK4fxbhCj0ZJIXf2cacn7UwtR+O05UAo2Kz488g3d0sLmbiFERj/o6DH578/bl6UxamHes6BIDycx2fkgW@vger.kernel.org, AJvYcCXoAYSlGrNdK7DXdQOtRz6AEP420sPkskEcHssrVGNHXXfR8S6GKTiPMyWizpHA9c0//WQ=@vger.kernel.org, AJvYcCXpt2v/ifQFB5mPg1W3LIjcCuENV1TqvtlbS1K3WcR5ps/kOLvzsR2QXE7C67dYtECub368bpuATlrZI3QA80HH@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4qqfVPnKG13sFvkI2acywxqUBPk3pKWWr8iYPW5ugB44sSOBL
+	mK5FtEi+KDIAHomrjYUZQvFh6a4aFulwWEJuTMDHA0Tec9HSi0lbQGbgCiqjn28vZJRQqQ==
+X-Gm-Gg: ASbGncunXFluSdgr6a5cBhCnWXbAztGOgZEfKFab6S0gd4ARuKxO57IlBpIG7CYqga/
+	biWycy981kgVBfpW9h13d5LUTxGyk4HU/R5vBP0R1n+ZwMSMNnfPC/B1vaR9hYLABtftQ8auroS
+	KQWim1pKjarPkRkpdpc20J2ELSNbkAKxT0Cpjcmt5uAZz4Fh9FdliRRM6XSrgZ92fAZGbiCgMDL
+	hxzFKRgSmqjWOjDP5ICXd7iG5K5rlVfl/7n752iVP2UC1zXUNtw5eYC/Wj2ljauTZMOLek203iV
+	CztbpWlHnGFuADUUeLQ6uKK0aUof1VuYEQuL7XXmNnymadKdN/iIKrBRTtF5FO99wTz2r3SFKiN
+	Mca61DPDuTZ2zK2fceCbTWwk/Tu0jXaUAng2OfWfp4jRSHeufozE2kA==
+X-Google-Smtp-Source: AGHT+IHUDZ1Tch/bZVEatphfXZPYhJnc2lujMS/5Dy3W/Jlz6v8h2Z4+vQMwElC/Pu2wQHXGQZA7kg==
+X-Received: by 2002:a05:6000:188c:b0:3ca:c607:adb9 with SMTP id ffacd0b85a97d-3cac607b09emr6033359f8f.5.1756293416955;
+        Wed, 27 Aug 2025 04:16:56 -0700 (PDT)
+Received: from localhost (54-240-197-230.amazon.com. [54.240.197.230])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c70e4ba078sm22085879f8f.4.2025.08.27.04.16.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Aug 2025 03:48:47 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-Date: Wed, 27 Aug 2025 12:48:29 +0200
-Subject: [PATCH bpf-next] bpf: stub out skb metadata dynptr read/write ops
- when CONFIG_NET=n
+        Wed, 27 Aug 2025 04:16:56 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: KaFai Wan <kafai.wan@linux.dev>, xukuohai@huaweicloud.com,
+ ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
+ mrpre@163.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Add socket filter attach test
+In-Reply-To: <139bf7d77750fdf04d26e1a77c0955466c9a4827.camel@gmail.com>
+References: <20250813152958.3107403-1-kafai.wan@linux.dev>
+ <20250813152958.3107403-3-kafai.wan@linux.dev>
+ <eb6f9ba4acccc7685596a8f1b282667a43d51ca8.camel@gmail.com>
+ <CANk7y0hQWOL3OW8Ok4e-kp7Brn5Zq6H5+EfS=mVtoVd+AUxZmA@mail.gmail.com>
+ <35c18502a4870d8a833c1c9af20b85ca3f8a0ff6.camel@gmail.com>
+ <CANk7y0gVNwX70ur0KkZKNkSDq7RH1xs5=dOHx_UCOErbwc7zhA@mail.gmail.com>
+ <139bf7d77750fdf04d26e1a77c0955466c9a4827.camel@gmail.com>
+Date: Wed, 27 Aug 2025 11:16:53 +0000
+Message-ID: <mb61pv7m92evu.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250827-dynptr-skb-meta-no-net-v1-1-42695c402b16@cloudflare.com>
-X-B4-Tracking: v=1; b=H4sIAHzirmgC/x2MQQqEMAwAvyI5G9CAWvcr4kHbqEE2lrYsLuLfL
- R4HZuaCyEE4wqe4IPBPohyaoS4LsNukK6O4zEAVNZWhDt1ffQoY9xm/nCbUA5UT2o4s2dYY1zP
- k2Ade5HzHA8x+ydKZYLzvB4W+AihyAAAA
-X-Change-ID: 20250827-dynptr-skb-meta-no-net-c72c2c688d9e
-To: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- kernel-team@cloudflare.com, netdev@vger.kernel.org, 
- kernel test robot <lkp@intel.com>
-X-Mailer: b4 0.15-dev-07fe9
+Content-Type: text/plain
 
-Kernel Test Robot reported a compiler warning - a null pointer may be
-passed to memmove in __bpf_dynptr_{read,write} when building without
-networking support.
+Eduard Zingerman <eddyz87@gmail.com> writes:
 
-The warning is correct from a static analysis standpoint, but not actually
-reachable. Without CONFIG_NET, creating dynptrs to skb metadata is
-impossible since the constructor kfunc is missing.
+> On Mon, 2025-08-25 at 21:27 +0200, Puranjay Mohan wrote:
+>
+> [...]
+>
+>> Hi Eduard,
+>> 
+>> You were right, I have verified that the program is hitting the 0xfff
+>> boundary while doing the call to bpf_skb_load_helper_32
+>> While jiting this call, emit_a32_mov_i(tmp[1], func, ctx); is called,
+>> where this issue it triggered.
+>> 
+>> The offset in imm_offset() is calculated as:
+>> ctx->offsets[ctx->prog->len - 1] * 4 + ctx->prologue_bytes +
+>> ctx->epilogue_bytes + imm_i * 4
+>> 
+>> For this program, ctx->offsets[ctx->prog->len - 1] * 4 itself is
+>> 0x1400 which is above 0xfff boundary.
+>> So, this is not a bug and expected behaviour with the current
+>> implementation of the JIT.
+>> 
+>> For now, we can merge this and later I will try to improve the JIT so
+>> it works for bigger programs.
+>
+> Hi Puranjay,
+>
+> Thank you for checking this!
+> What do you think about this test case, do we need it in the suite?
 
-Fix this the same way as for skb and xdp data dynptrs. Add wrappers for
-loading and storing bytes to skb metadata, and stub them out to return an
-error when CONFIG_NET=n.
+I don't think that we need this test as it is based on a missing feature
+in the JIT. Once the arm JIT is improved, this test will silently stop
+testing what it is supposed to test (fallback to interpreter).
 
-Fixes: 6877cd392bae ("bpf: Enable read/write access to skb metadata through a dynptr")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202508212031.ir9b3B6Q-lkp@intel.com/
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- include/linux/filter.h | 26 ++++++++++++++++++++++++++
- kernel/bpf/helpers.c   |  6 ++----
- 2 files changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 9092d8ea95c8..5b0d7c5824ac 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1779,6 +1779,20 @@ void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len);
- void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsigned long off,
- 		      void *buf, unsigned long len, bool flush);
- void *bpf_skb_meta_pointer(struct sk_buff *skb, u32 offset);
-+
-+static inline int __bpf_skb_meta_load_bytes(struct sk_buff *skb,
-+					    u32 offset, void *to, u32 len)
-+{
-+	memmove(to, bpf_skb_meta_pointer(skb, offset), len);
-+	return 0;
-+}
-+
-+static inline int __bpf_skb_meta_store_bytes(struct sk_buff *skb, u32 offset,
-+					     const void *from, u32 len)
-+{
-+	memmove(bpf_skb_meta_pointer(skb, offset), from, len);
-+	return 0;
-+}
- #else /* CONFIG_NET */
- static inline int __bpf_skb_load_bytes(const struct sk_buff *skb, u32 offset,
- 				       void *to, u32 len)
-@@ -1818,6 +1832,18 @@ static inline void *bpf_skb_meta_pointer(struct sk_buff *skb, u32 offset)
- {
- 	return NULL;
- }
-+
-+static inline int __bpf_skb_meta_load_bytes(struct sk_buff *skb, u32 offset,
-+					    void *to, u32 len)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int __bpf_skb_meta_store_bytes(struct sk_buff *skb, u32 offset,
-+					     const void *from, u32 len)
-+{
-+	return -EOPNOTSUPP;
-+}
- #endif /* CONFIG_NET */
- 
- #endif /* __LINUX_FILTER_H__ */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 401b4932cc49..85761e347190 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1778,8 +1778,7 @@ static int __bpf_dynptr_read(void *dst, u32 len, const struct bpf_dynptr_kern *s
- 	case BPF_DYNPTR_TYPE_XDP:
- 		return __bpf_xdp_load_bytes(src->data, src->offset + offset, dst, len);
- 	case BPF_DYNPTR_TYPE_SKB_META:
--		memmove(dst, bpf_skb_meta_pointer(src->data, src->offset + offset), len);
--		return 0;
-+		return __bpf_skb_meta_load_bytes(src->data, src->offset + offset, dst, len);
- 	default:
- 		WARN_ONCE(true, "bpf_dynptr_read: unknown dynptr type %d\n", type);
- 		return -EFAULT;
-@@ -1839,8 +1838,7 @@ int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u32 offset, void *src,
- 	case BPF_DYNPTR_TYPE_SKB_META:
- 		if (flags)
- 			return -EINVAL;
--		memmove(bpf_skb_meta_pointer(dst->data, dst->offset + offset), src, len);
--		return 0;
-+		return __bpf_skb_meta_store_bytes(dst->data, dst->offset + offset, src, len);
- 	default:
- 		WARN_ONCE(true, "bpf_dynptr_write: unknown dynptr type %d\n", type);
- 		return -EFAULT;
-
-
+Thanks,
+Puranjay
 
 
