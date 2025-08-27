@@ -1,130 +1,117 @@
-Return-Path: <bpf+bounces-66621-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66622-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889AFB3786B
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 05:05:04 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7192B37881
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 05:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 694444E1BD2
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 03:05:03 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 845104E2AD7
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 03:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95C31D8A10;
-	Wed, 27 Aug 2025 03:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09383307498;
+	Wed, 27 Aug 2025 03:16:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hCzVeDaF"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="NFc7s06I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8D614F9FB;
-	Wed, 27 Aug 2025 03:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 565B11A3166;
+	Wed, 27 Aug 2025 03:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756263896; cv=none; b=EMFengMmWKjsxAJTkzVdmCO6mG3FDerL5h/S0Ub7rS99xR1faoj35HDGJcvbrPAUvasBg3URy+qQSti+nI+8SvqUtHsOK8WLVRCejBtdn+7b8+tyheUlb0EJ1WUtOdviUvkSovICDJLagz3CsmLDz2qpO2MLn0jM9HJ6psQ9njA=
+	t=1756264593; cv=none; b=H/5Y8ncXOxyh1X2EYbGcT8+ks7jzN1vMT9cBfZ1oxc5Vh0DEBWp+TJfmceM8u0WEDMQUwTGkmoZbcjcsXxtBW60xcQlPZrwD8GyhXsZBmHPmSuMZHleoDmrdJ8G5MFOPUR/AlRO72gWqM5Y36MNjwKuhEoiYnoVme3hXL2qIfbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756263896; c=relaxed/simple;
-	bh=smOktKjtdRWIwgo7/OB0VenJcvMyx+oeyyre95NO4P0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XhALR5tYQpqGyY2H78TUvZDBd+FMiqheDuk63aQidUIw+8Cd25ttw83ubTu0ZV9WF/rMOR0gMvqtQhzSMj8/TgyGm01m1h7+o3RDBZVc919M8PEmqN/4yOWh58AlmaVAh6mviy30spPEuCxrgPnNJrJReWaNH6iizxBm2I2OX58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hCzVeDaF; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-45a1b066b5eso34069155e9.1;
-        Tue, 26 Aug 2025 20:04:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756263893; x=1756868693; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=smOktKjtdRWIwgo7/OB0VenJcvMyx+oeyyre95NO4P0=;
-        b=hCzVeDaFGaJha1OUZHsquva3/C8b5Kl/3TNL0D174oMRTpLdOmrtadgJmuvrBvKSx3
-         hlH/FDc4vVEtiHIfVxduqNSDrbxjETwLmfNbcwMrLO9nK2tJSM0WrdoD6g7kkveQoomL
-         I7fqWk8KFiOx/mV2ajDtQbqOMrR7KCnQXCGxbdJAHw1pCxaPulZuF75Xte0Li51ztqqL
-         MnoDOO+NtfJiylCg9cjdX7jbeAcd7681IodnT9XPQDisjrqkdx2dR8GQ6VtysddYw95z
-         pcerQB2F0fGnmoRz0qw8E7RaV8JpstH1dM0N3tCxK/n2Wurfq2wwGUsfs92gthN39nlJ
-         jEdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756263893; x=1756868693;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=smOktKjtdRWIwgo7/OB0VenJcvMyx+oeyyre95NO4P0=;
-        b=eoI4/TZKre6PxMexZOS+FOhhn7VJCCemIRvyGtxUwlN88b2sSOjhjxktH5tnASOZDG
-         oGvRnIIMdkUYp8K3itUY/l8CmT8wnmVOtzWNhUZvMq0YQwMI4kyANXOJ0Gx8A/XjG8z7
-         IQ1OiMZIPJhuu5lgx9EhzsxjIwAX34YOg8VePMcwMFou/ZWCzctOKHgHprLYbDJB56ZC
-         9g8WggjhvVONVchwhHcqy5o26JeOcdpVajyxRlIypJGx/CEoPERrk8e1NaPhaPA2tbbW
-         WxiOk7eMrQlyVTYkF9mI1bS3RM5TE9SxqpJpon5GMUZGl5DkS5tllqj3K4aOEeXkkVoM
-         FNrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1zeJcA13nhKfg2rjdPQyfmE6Irf8T5vo8gW/+PqSTeMGQ3ZBLqLFoeRCIbCSd8hTL+FU=@vger.kernel.org, AJvYcCWetxAwwJ+pmnTjPUzEp2fGgUpNPC8Lbf3hTjdWBdjYJO5AisVObycMa2KeR8XplOBQCAaoT4lz5pBsoG4h@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdiJcw+Ak+9a5anRHS6wggEDumPAQuk5ZMH8QZPabGMxH4osze
-	2f29IiYTRaOlX7JIYQPXiWFDwDLNdL09kE6A99S86KQsWN7MWldeu1C5Y8oCuvqb0eyuoKBDxwq
-	NIaBk/y3c+fiYiNtnc4Kq+p/WVZSFL5g=
-X-Gm-Gg: ASbGnctt7w0cfHz/FF6fjBXHVuwxU2rGXWZDq1xf68mEc6TWjOhzMTN+0AX5neCKQzD
-	tJSOnFhYnxCYXs9o2fU2F6I8oLcwDY/wTWWzw7IEILbrL/Bgf2PVLczZdU+HMweuPn6QKrTjM8k
-	uWEbN+KYwm5WZo9ClTntfp1lafi02DMS0FEhLaWUHYFK0/6wlRyyBmVikuDqGJv1Hnjh9ygHq97
-	dLrHL7jR97zEJ3w4ztgT+q0g3wLZpGWEcA5s2+dkHyZyS0=
-X-Google-Smtp-Source: AGHT+IFitAmGYZ56kr5IFaTzqBojnOv6C7rCTjgvF16llJhFePceMI6lrkUpiozItpobt4XgXOYYFrG79nOnv0ObZPQ=
-X-Received: by 2002:a05:600c:5493:b0:459:eeaf:d6c7 with SMTP id
- 5b1f17b1804b1-45b517c2e69mr130967235e9.26.1756263892927; Tue, 26 Aug 2025
- 20:04:52 -0700 (PDT)
+	s=arc-20240116; t=1756264593; c=relaxed/simple;
+	bh=Qs2OM8u+Lsz6MOPYflBgcuyoauChwiyNm0Qg9Fp8l+Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jIIkQgwwIw9UikIa7Q1fSZx8yZaleYC4oNQp8NDO4m3kCxgS0Srq5H7ygjZGKtQqTuvg6gBb8n1sGaRueVdQnYTtlGSfVFdI8mwImcMe3VOW8VpWlbas1cg4FXSnQT8jZ078Td9Ikm5PdYS9IltivJYsf/9CWfJ0OEf7LSkBmWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=NFc7s06I; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=J0
+	iCFAWZwK2LvypLJsD3Kz9xYwE43hjGdHVixQJu+A4=; b=NFc7s06IbOvdJXwOCv
+	qcfR255RbqM4W4cadxZZwdHdZ1419RFAnD74XK1SUCCP8tlG+HwmpDd/LDy4MG7L
+	U6qlphAcKfBFMvoIOpD2usNjFGhMRJt4RDO1SGmjINMC0MvXmZIEXBisTdfSjZRt
+	1zQEyW/jDcwgtB6y/P5ZKGLfw=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-0 (Coremail) with SMTP id _____wD3F+RdeK5ocMYdEw--.56776S2;
+	Wed, 27 Aug 2025 11:15:42 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH bpf-next] selftests/bpf: Fix the invalid operand for instruction issue
+Date: Wed, 27 Aug 2025 11:15:40 +0800
+Message-Id: <20250827031540.461017-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250821093807.49750-1-dongml2@chinatelecom.cn> <20250821093807.49750-2-dongml2@chinatelecom.cn>
-In-Reply-To: <20250821093807.49750-2-dongml2@chinatelecom.cn>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 26 Aug 2025 20:04:41 -0700
-X-Gm-Features: Ac12FXxG2JTrP3izXMlp35kGr_LV5o12GnoztWhZlRDTE1Syy9dnAPr999ZkpCY
-Message-ID: <CAADnVQLtvygmqCk5QHmHCURAYiLET6BpCxX7TkqmuAdXZ5trZg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] arch: add the macro COMPILE_OFFSETS to all the asm-offsets.c
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Benjamin Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	tzimmermann@suse.de, simona.vetter@ffwll.ch, 
-	Jani Nikula <jani.nikula@intel.com>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3F+RdeK5ocMYdEw--.56776S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tw18tr4UZFW5tF4kuFyUZFb_yoW8Gry7pw
+	18X3s8tFyS9r1UX3W7Jr4UWF1rWFsaqr48Ar40yr9rAF98GF97Jr1xKFyYgr93Xr4furW3
+	Zrsrtw43CF4kAaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UKzuZUUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiYwO2eGiudCWPIwAAsV
 
-On Thu, Aug 21, 2025 at 2:38=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> The include/generated/asm-offsets.h is generated in Kbuild during
-> compiling from arch/SRCARCH/kernel/asm-offsets.c. When we want to
-> generate another similar offset header file, circular dependency can
-> happen.
+From: Feng Yang <yangfeng@kylinos.cn>
 
-Is there a way to avoid all this churn?
+The following issue occurs when compiling with clang version 17.0.6,
+but not with version 18.1.8. Add a version restriction to fix this problem.
 
-> For example, we want to generate a offset file include/generated/test.h,
-> which is included in include/sched/sched.h. If we generate asm-offsets.h
-> first, it will fail, as include/sched/sched.h is included in asm-offsets.=
-c
+progs/compute_live_registers.c:251:3: error: invalid operand for instruction
+  251 |                 "r0 = 1;"
+      |                 ^
+<inline asm>:1:22: note: instantiated into assembly here
+    1 |         r0 = 1;r2 = 2;if r1 & 0x7 goto +1;exit;r0 = r2;exit;
+      |                             ^
+1 error generated.
 
-if so, may be don't add "static inline void migrate_disable()" to sched.h
-and instead add it to preempt.h and it will avoid this issue?
+Fixes: 4a4b84ba9e453 ("selftests/bpf: verify jset handling in CFG computation")
+Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+---
+ tools/testing/selftests/bpf/progs/compute_live_registers.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> and include/generated/test.h doesn't exist; If we generate test.h first,
-> it can't success neither, as include/generated/asm-offsets.h is included
-> by it.
->
-> In x86_64, the macro COMPILE_OFFSETS is used to avoid such circular
-> dependency. We can generate asm-offsets.h first, and if the
-> COMPILE_OFFSETS is defined, we don't include the "generated/test.h".
->
-> And we define the macro COMPILE_OFFSETS for all the asm-offsets.c for thi=
-s
-> purpose.
+diff --git a/tools/testing/selftests/bpf/progs/compute_live_registers.c b/tools/testing/selftests/bpf/progs/compute_live_registers.c
+index 6884ab99a421..56aec43f206f 100644
+--- a/tools/testing/selftests/bpf/progs/compute_live_registers.c
++++ b/tools/testing/selftests/bpf/progs/compute_live_registers.c
+@@ -240,6 +240,7 @@ __naked void if2(void)
+ 		::: __clobber_all);
+ }
+ 
++#if __clang_major__ >= 18
+ /* Verifier misses that r2 is alive if jset is not handled properly */
+ SEC("socket")
+ __log_level(2)
+@@ -255,6 +256,7 @@ __naked void if3_jset_bug(void)
+ 		"exit;"
+ 		::: __clobber_all);
+ }
++#endif
+ 
+ SEC("socket")
+ __log_level(2)
+-- 
+2.43.0
+
 
