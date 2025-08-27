@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-66653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66654-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B73CFB3811A
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 13:33:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 887ABB3811B
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 13:33:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B41F01BA26FB
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 11:33:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8907E1BA2AE4
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 11:33:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDC32D1F7E;
-	Wed, 27 Aug 2025 11:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219842F0C5E;
+	Wed, 27 Aug 2025 11:32:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="igiMMjru"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HVPY0WnK"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EA62BE641
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 11:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D04B298CAB
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 11:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756294375; cv=none; b=ERoQwChfVtlM0Y/MI4FY3b4A9/Zjx/Fi8pokWLo7MMOwlu1Z5UoftYadmIpAXz7spwFAKThKKY7qa9BRLPPAcswMe820Qn3LK2IehbSHd9F6tDm4M3MfuyVpHIja0wD7a+MT13qjFuuTIaOiuryOO6E8rUHaJsVD5z6qOsHn/tk=
+	t=1756294377; cv=none; b=Ylp2aNrj1TB2uCvXsAD566ysMh/i+dHKPBWMNK41HIvJo63fb/ivDQHm7sQF/i79VSC45h8b/mwD1nC6E0aL3wd50wlZtkzONfhOJovdP2WwAWWIxIuwm18GzyWovqJJyHT8oQSoNDGSu5Gg9sgHEaPTh9qn3QwUpjNIAci+MvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756294375; c=relaxed/simple;
-	bh=7StUn0vWe6d7wRECJ3LU4KriSVPmo4Fu3GyqND4yk9o=;
+	s=arc-20240116; t=1756294377; c=relaxed/simple;
+	bh=Xfo80+O/z3FQZrLoxr9SlVVuBcxg+OPeXvuWJb0CoEM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qPomEHnC2HJKQ5LEHIubmTahSJ0s4WZ4Muh+Sg71TAOOJUV57UCgMbOxMyBegCI68qlNJXUl4G8kGtr5qEMq2eEmqErR0tXCMM/5NUSP8TrKJXUnCUibGmaNHQT/81J9L3W9e25d2rlNcgG+GNECkf3/K3mmz30uXuTy8E1/FuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=igiMMjru; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12B5DC4CEEB;
-	Wed, 27 Aug 2025 11:32:53 +0000 (UTC)
+	 MIME-Version; b=edYGH8CBcxvthaDAM3BxQbmxRahHjs2o7h1+E/v25Cj8WOrXAL//yOoa8fMkZpD5ffymHRJUNYKOoonWdcfHoI2qz2Io+P+b37UtewnmIrsrr2MsQC205xvY6wSzccZhKHAMCfSKwTAQlzwUAIa1d7XUewOFqiXYV5JGec18/8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HVPY0WnK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41F00C116C6;
+	Wed, 27 Aug 2025 11:32:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756294374;
-	bh=7StUn0vWe6d7wRECJ3LU4KriSVPmo4Fu3GyqND4yk9o=;
+	s=k20201202; t=1756294377;
+	bh=Xfo80+O/z3FQZrLoxr9SlVVuBcxg+OPeXvuWJb0CoEM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=igiMMjruFdBheFd/U/i8DiD9zy6zWUBWuiL6zbn7qULuzwKxys50khwduyQUyG2nw
-	 XUouLweUqsgWFoXRCLvtw+RRjo9zGLkZ46qNZrUqElRT2OzcpFNslNG6brYwI/js9s
-	 yIlKLUDRYv9hWU2QUhiRpfaDx+JX0PPCieXZnckLisKPbMWlQ5emqBgRoOe1KEKIJz
-	 oUiwpM6KCd/kqzeVOi0IKPL62MgyOnMNGmpRkoJWzuzE/f9UzCHeqiAnea4r9qPlC3
-	 bRDBdd1Hozf3tgS5aWGHiJkE5vNdmnWKD0oGz4p2h4p+yUVaaNVIx9KEqkjePSpJP9
-	 Pq31sBl28M49g==
+	b=HVPY0WnK1MDwF1P0d8nTOK/SpDK8I5aUm3MfQcxXlbK/3OIA3yC9akyS9tRUNNZQN
+	 2koYr94L/IGwhfmo+PO/z4gXwCTMxyjswigzBXEvbxH8qPqduc1Ns0uGUIi+SaWh0L
+	 f3hThHAtb0tgcFuu6gNhsJiNq5kZWeS6OSpZb7978957K0jaJTiBXmGADB34N9TMA5
+	 PATqmAR/dsmsCwh/lRsC2hO+TVGX1aideQZyudmCW1WrZVNGtWrsRbBC9rkhIe+S/3
+	 V2ahrGRtc0XMJWm31AJf97/ATemzcxQvKGHSIocU7+Tb5xcxvxuO6kjUOLsu6NnzTx
+	 0Z8+/ck0PBZUw==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -62,9 +62,9 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	bpf@vger.kernel.org
 Cc: Xu Kuohai <xukuohai@huawei.com>
-Subject: [PATCH bpf-next v3 1/2] bpf, arm64: Add JIT support for timed may_goto
-Date: Wed, 27 Aug 2025 11:32:43 +0000
-Message-ID: <20250827113245.52629-2-puranjay@kernel.org>
+Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Enable timed may_goto tests for arm64
+Date: Wed, 27 Aug 2025 11:32:44 +0000
+Message-ID: <20250827113245.52629-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250827113245.52629-1-puranjay@kernel.org>
 References: <20250827113245.52629-1-puranjay@kernel.org>
@@ -76,118 +76,165 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When verifier sees a timed may_goto instruction, it emits a call to
-arch_bpf_timed_may_goto() with a stack offset in BPF_REG_AX (arm64 r9)
-and expects a count value to be returned in the same register. The
-verifier doesn't save or restore any registers before emitting this
-call.
+As arm64 JIT now supports timed may_goto instruction, make sure all
+relevant tests run on this architecture. Some tests were enabled and
+other required modifications to work properly on arm64.
 
-arch_bpf_timed_may_goto() should act as a trampoline to call
-bpf_check_timed_may_goto() with AAPCS64 calling convention.
+ $ ./test_progs -a "stream*","*may_goto*",verifier_bpf_fastcall
 
-To support this custom calling convention, implement
-arch_bpf_timed_may_goto() in assembly and make sure BPF caller saved
-registers are saved and restored, call bpf_check_timed_may_goto with
-arm64 calling convention where first argument and return value both are
-in x0, then put the result back into BPF_REG_AX before returning.
+ #404     stream_errors:OK
+ [...]
+ #406/2   stream_success/stream_cond_break:OK
+ [...]
+ #494/23  verifier_bpf_fastcall/may_goto_interaction_x86_64:SKIP
+ #494/24  verifier_bpf_fastcall/may_goto_interaction_arm64:OK
+ [...]
+ #539/1   verifier_may_goto_1/may_goto 0:OK
+ #539/2   verifier_may_goto_1/batch 2 of may_goto 0:OK
+ #539/3   verifier_may_goto_1/may_goto batch with offsets 2/1/0:OK
+ #539/4   verifier_may_goto_1/may_goto batch with offsets 2/0:OK
+ #539     verifier_may_goto_1:OK
+ #540/1   verifier_may_goto_2/C code with may_goto 0:OK
+ #540     verifier_may_goto_2:OK
+ Summary: 7/16 PASSED, 25 SKIPPED, 0 FAILED
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Acked-by: Xu Kuohai <xukuohai@huawei.com>
 ---
- arch/arm64/net/Makefile             |  2 +-
- arch/arm64/net/bpf_jit_comp.c       | 13 +++++++++-
- arch/arm64/net/bpf_timed_may_goto.S | 40 +++++++++++++++++++++++++++++
- 3 files changed, 53 insertions(+), 2 deletions(-)
- create mode 100644 arch/arm64/net/bpf_timed_may_goto.S
+ .../testing/selftests/bpf/prog_tests/stream.c |  2 +-
+ .../bpf/progs/verifier_bpf_fastcall.c         | 27 +++++++++------
+ .../selftests/bpf/progs/verifier_may_goto_1.c | 34 ++++---------------
+ 3 files changed, 23 insertions(+), 40 deletions(-)
 
-diff --git a/arch/arm64/net/Makefile b/arch/arm64/net/Makefile
-index 5c540efb7d9b9..3ae382bfca879 100644
---- a/arch/arm64/net/Makefile
-+++ b/arch/arm64/net/Makefile
-@@ -2,4 +2,4 @@
- #
- # ARM64 networking code
- #
--obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o
-+obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o bpf_timed_may_goto.o
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 52ffe115a8c47..a98b8132479a7 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1558,7 +1558,13 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 		if (ret < 0)
- 			return ret;
- 		emit_call(func_addr, ctx);
--		emit(A64_MOV(1, r0, A64_R(0)), ctx);
-+		/*
-+		 * Call to arch_bpf_timed_may_goto() is emitted by the
-+		 * verifier and called with custom calling convention with
-+		 * first argument and return value in BPF_REG_AX (x9).
-+		 */
-+		if (func_addr != (u64)arch_bpf_timed_may_goto)
-+			emit(A64_MOV(1, r0, A64_R(0)), ctx);
- 		break;
- 	}
- 	/* tail call */
-@@ -3038,6 +3044,11 @@ bool bpf_jit_bypass_spec_v4(void)
- 	return true;
+diff --git a/tools/testing/selftests/bpf/prog_tests/stream.c b/tools/testing/selftests/bpf/prog_tests/stream.c
+index 36a1a1ebde692..9d0e5d93edee7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stream.c
++++ b/tools/testing/selftests/bpf/prog_tests/stream.c
+@@ -77,7 +77,7 @@ void test_stream_errors(void)
+ 		ASSERT_OK(ret, "ret");
+ 		ASSERT_OK(opts.retval, "retval");
+ 
+-#if !defined(__x86_64__) && !defined(__s390x__)
++#if !defined(__x86_64__) && !defined(__s390x__) && !defined(__aarch64__)
+ 		ASSERT_TRUE(1, "Timed may_goto unsupported, skip.");
+ 		if (i == 0) {
+ 			ret = bpf_prog_stream_read(prog_fd, 2, buf, sizeof(buf), &ropts);
+diff --git a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
+index c258b0722e045..fb4fa465d67c6 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
++++ b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
+@@ -660,19 +660,24 @@ __naked void may_goto_interaction_x86_64(void)
+ 
+ SEC("raw_tp")
+ __arch_arm64
+-__log_level(4) __msg("stack depth 16")
+-/* may_goto counter at -16 */
+-__xlated("0: *(u64 *)(r10 -16) =")
+-__xlated("1: r1 = 1")
+-__xlated("2: call bpf_get_smp_processor_id")
++__log_level(4) __msg("stack depth 24")
++/* may_goto counter at -24 */
++__xlated("0: *(u64 *)(r10 -24) =")
++/* may_goto timestamp at -16 */
++__xlated("1: *(u64 *)(r10 -16) =")
++__xlated("2: r1 = 1")
++__xlated("3: call bpf_get_smp_processor_id")
+ /* may_goto expansion starts */
+-__xlated("3: r11 = *(u64 *)(r10 -16)")
+-__xlated("4: if r11 == 0x0 goto pc+3")
+-__xlated("5: r11 -= 1")
+-__xlated("6: *(u64 *)(r10 -16) = r11")
++__xlated("4: r11 = *(u64 *)(r10 -24)")
++__xlated("5: if r11 == 0x0 goto pc+6")
++__xlated("6: r11 -= 1")
++__xlated("7: if r11 != 0x0 goto pc+2")
++__xlated("8: r11 = -24")
++__xlated("9: call unknown")
++__xlated("10: *(u64 *)(r10 -24) = r11")
+ /* may_goto expansion ends */
+-__xlated("7: *(u64 *)(r10 -8) = r1")
+-__xlated("8: exit")
++__xlated("11: *(u64 *)(r10 -8) = r1")
++__xlated("12: exit")
+ __success
+ __naked void may_goto_interaction_arm64(void)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c b/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c
+index cc1063863569d..6d1edaef92138 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c
++++ b/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c
+@@ -10,6 +10,7 @@ SEC("raw_tp")
+ __description("may_goto 0")
+ __arch_x86_64
+ __arch_s390x
++__arch_arm64
+ __xlated("0: r0 = 1")
+ __xlated("1: exit")
+ __success
+@@ -29,6 +30,7 @@ SEC("raw_tp")
+ __description("batch 2 of may_goto 0")
+ __arch_x86_64
+ __arch_s390x
++__arch_arm64
+ __xlated("0: r0 = 1")
+ __xlated("1: exit")
+ __success
+@@ -50,6 +52,7 @@ SEC("raw_tp")
+ __description("may_goto batch with offsets 2/1/0")
+ __arch_x86_64
+ __arch_s390x
++__arch_arm64
+ __xlated("0: r0 = 1")
+ __xlated("1: exit")
+ __success
+@@ -72,9 +75,10 @@ __naked void may_goto_batch_1(void)
  }
  
-+bool bpf_jit_supports_timed_may_goto(void)
-+{
-+	return true;
-+}
-+
- bool bpf_jit_inlines_helper_call(s32 imm)
+ SEC("raw_tp")
+-__description("may_goto batch with offsets 2/0 - x86_64 and s390x")
++__description("may_goto batch with offsets 2/0")
+ __arch_x86_64
+ __arch_s390x
++__arch_arm64
+ __xlated("0: *(u64 *)(r10 -16) = 65535")
+ __xlated("1: *(u64 *)(r10 -8) = 0")
+ __xlated("2: r11 = *(u64 *)(r10 -16)")
+@@ -88,33 +92,7 @@ __xlated("9: r0 = 1")
+ __xlated("10: r0 = 2")
+ __xlated("11: exit")
+ __success
+-__naked void may_goto_batch_2_x86_64_s390x(void)
+-{
+-	asm volatile (
+-	".8byte %[may_goto1];"
+-	".8byte %[may_goto3];"
+-	"r0 = 1;"
+-	"r0 = 2;"
+-	"exit;"
+-	:
+-	: __imm_insn(may_goto1, BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, 2 /* offset */, 0)),
+-	  __imm_insn(may_goto3, BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, 0 /* offset */, 0))
+-	: __clobber_all);
+-}
+-
+-SEC("raw_tp")
+-__description("may_goto batch with offsets 2/0 - arm64")
+-__arch_arm64
+-__xlated("0: *(u64 *)(r10 -8) = 8388608")
+-__xlated("1: r11 = *(u64 *)(r10 -8)")
+-__xlated("2: if r11 == 0x0 goto pc+3")
+-__xlated("3: r11 -= 1")
+-__xlated("4: *(u64 *)(r10 -8) = r11")
+-__xlated("5: r0 = 1")
+-__xlated("6: r0 = 2")
+-__xlated("7: exit")
+-__success
+-__naked void may_goto_batch_2_arm64(void)
++__naked void may_goto_batch_2(void)
  {
- 	switch (imm) {
-diff --git a/arch/arm64/net/bpf_timed_may_goto.S b/arch/arm64/net/bpf_timed_may_goto.S
-new file mode 100644
-index 0000000000000..894cfcd7b2416
---- /dev/null
-+++ b/arch/arm64/net/bpf_timed_may_goto.S
-@@ -0,0 +1,40 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2025 Puranjay Mohan <puranjay@kernel.org> */
-+
-+#include <linux/linkage.h>
-+
-+SYM_FUNC_START(arch_bpf_timed_may_goto)
-+	/* Allocate stack space and emit frame record */
-+	stp     x29, x30, [sp, #-64]!
-+	mov     x29, sp
-+
-+	/* Save BPF registers R0 - R5 (x7, x0-x4)*/
-+	stp	x7, x0, [sp, #16]
-+	stp	x1, x2, [sp, #32]
-+	stp	x3, x4, [sp, #48]
-+
-+	/*
-+	 * Stack depth was passed in BPF_REG_AX (x9), add it to the BPF_FP
-+	 * (x25) to get the pointer to count and timestamp and pass it as the
-+	 * first argument in x0.
-+	 *
-+	 * Before generating the call to arch_bpf_timed_may_goto, the verifier
-+	 * generates a load instruction using FP, i.e. REG_AX = *(u64 *)(FP -
-+	 * stack_off_cnt), so BPF_REG_FP (x25) is always set up by the arm64
-+	 * jit in this case.
-+	 */
-+	add	x0, x9, x25
-+	bl	bpf_check_timed_may_goto
-+	/* BPF_REG_AX(x9) will be stored into count, so move return value to it. */
-+	mov	x9, x0
-+
-+	/* Restore BPF registers R0 - R5 (x7, x0-x4) */
-+	ldp	x7, x0, [sp, #16]
-+	ldp	x1, x2, [sp, #32]
-+	ldp	x3, x4, [sp, #48]
-+
-+	/* Restore FP and LR */
-+	ldp     x29, x30, [sp], #64
-+
-+	ret
-+SYM_FUNC_END(arch_bpf_timed_may_goto)
+ 	asm volatile (
+ 	".8byte %[may_goto1];"
 -- 
 2.47.3
 
