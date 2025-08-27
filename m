@@ -1,147 +1,145 @@
-Return-Path: <bpf+bounces-66737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A891B38E59
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:25:01 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CC13B38E71
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:28:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 375CE7A7E88
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:23:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3D6774E1E9A
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55E528DF36;
-	Wed, 27 Aug 2025 22:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA6B2E1C63;
+	Wed, 27 Aug 2025 22:28:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eagy1LZk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P4jpIdmW"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB0330F951
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 22:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EADD72612
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 22:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756333426; cv=none; b=WMgEZ4F+DGwTbVWC06qMcfNqSwK5OLTC/2BsXc2FqHjcZEDBRCwfVQ/rL2Eol4qB+WOpElpxb7cPcCXFhyqjsXj/1laXx0GY+6givmUc/DbGK2o5DbTzyt/isY7YT3Mk9Mo9ZIRUmX1erryeNePFFE5RVCpfRxIyi0Kl6KOPOIk=
+	t=1756333690; cv=none; b=PC0ceKc0+JEC5w+Bg3jubeJWKjBuUS1yEhQFCwVS7A/tN0SwxZD+ZAESAaaCiKrVUfpUmKZlxKjsPA+83Qp1hNGNAVvgK88RNVtD/0inqHYvQ7sScn3U5m/iMhm4akVvMdEuiqJvpzBLgA2oimTaTSaZhlUEg2DYBkyArS/VH9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756333426; c=relaxed/simple;
-	bh=YfoXYH3cm92sHCjAYQM6pQjLBZ7QQPBb5+txY9E1NA0=;
+	s=arc-20240116; t=1756333690; c=relaxed/simple;
+	bh=WmhUhpitk+M1fksgRD3QATbaAN4mdKBQ7BKzuEwVXDc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rvGF0nlGLtFI+kKOc1BUvtd1XN0k0li49fXQHHhf0AX/ITQNstvFZuDNrfV9e7vIiHJQd7o6X/eDnB8c9YKks/+9LpAX7SmoSW7sXZ1JM4wtW9AjdiLEW2mfglh9rcBhPHM5tjV8qdo7+yPX/mCvhPDeFIZ3HRSTVFJJTGvWkkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eagy1LZk; arc=none smtp.client-ip=91.218.175.184
+	 In-Reply-To:Content-Type; b=U5X0OXcVSsRmpNmkayZiscLOu8gCMVZSLBpUUmy/mTIQx1n613VTRZ5VpQ1OFA2Nej4+D1LBkIi3EUg3j/PauioutwlOis2M4lixY41z0899t1qY4lyykL8WqkmAb58RnGTZDDN+AwxvdNfCKp1N98oQOZ3mqhsOlhm65m5lqFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P4jpIdmW; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <aaf5eeb5-2336-4a20-9b8f-0cdd3c274ff0@linux.dev>
+Message-ID: <7f29deaa-e426-457f-8e93-1fdaa111d3d0@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756333422;
+	t=1756333686;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YXH9gB5skVmjTjxtTahEaINOT63mMXBiq7apizRcrto=;
-	b=eagy1LZkvI6Yu0kL1UO1q9Z7Xsq89PYa/MCWFuCYozy1tW2hAIAkLONuznop9aCX5oNRny
-	uuJSRWpLdjau4AVJF7ppIZ0ra7+B69dmlMawtQzQaweTv2f6ktLxKtkvEvdJlzW6e9UVK+
-	E+Eb8K1QovpFnEnc6dZacyY24QDmkQk=
-Date: Wed, 27 Aug 2025 15:23:35 -0700
+	bh=aUxbqUkSO58s3byyGyKFemo4dQMbxCx8I/oKnOo6GV0=;
+	b=P4jpIdmWyk5D7yEOCu3ECiYeLEo0gFIyPJ1l3/YRcN5J8x1gwevNw30WdocA4yDASV9n0m
+	QD5bq3/p/B/QTaYGFKsq/FdFzb6hf5qLWz12fzCH3x5h8W6AxT/15dM3FFNQ3aIEGA5Y8p
+	qBBgIOWrDAZ1VBxZIWlkoDdZ0nYJBGQ=
+Date: Wed, 27 Aug 2025 15:28:00 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 bpf-next/net 2/5] bpf: Support bpf_setsockopt() for
- BPF_CGROUP_INET_SOCK_CREATE.
-To: Kuniyuki Iwashima <kuniyu@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>,
- Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima
- <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20250826183940.3310118-1-kuniyu@google.com>
- <20250826183940.3310118-3-kuniyu@google.com>
-Content-Language: en-US
+Subject: Re: [PATCH] bpf: Mark kfuncs as __noclone
+Content-Language: en-GB
+To: Alan Maguire <alan.maguire@oracle.com>,
+ Eduard Zingerman <eddyz87@gmail.com>, Andrea Righi <arighi@nvidia.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250822140553.46273-1-arighi@nvidia.com>
+ <86de1bf6-83b0-4d31-904b-95af424a398a@linux.dev>
+ <45c49b4eedc6038d350f61572e5eed9f183b781b.camel@gmail.com>
+ <a3dabb42-efb5-4aea-8bf8-b3d5ae26dfa1@linux.dev>
+ <a7bcc333d54501d544821b5feeb82588d3bc06cb.camel@gmail.com>
+ <c41268ae-e09c-43e3-9bd3-89b762989ec0@oracle.com>
+ <0d5c5cf8e1f3efb35b1f597dae2ae2bf0fb9a346.camel@gmail.com>
+ <53ab50de-04e0-48b1-af19-f1dbf60b0927@oracle.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250826183940.3310118-3-kuniyu@google.com>
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <53ab50de-04e0-48b1-af19-f1dbf60b0927@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On 8/26/25 11:38 AM, Kuniyuki Iwashima wrote:
-> We will store a flag in sk->sk_memcg by bpf_setsockopt() during
-> socket() or before sk->sk_memcg is set in accept().
-> 
-> BPF_CGROUP_INET_SOCK_CREATE is invoked by __cgroup_bpf_run_filter_sk()
-> that passes a pointer to struct sock to the bpf prog as void *ctx.
-> 
-> But there are no bpf_func_proto for bpf_setsockopt() that receives
-> the ctx as a pointer to struct sock.
-> 
-> Let's add a new bpf_setsockopt() variant for BPF_CGROUP_INET_SOCK_CREATE.
-> 
-> Note that inet_create() is not under lock_sock().
-> 
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
-> ---
-> v3: Remove bpf_func_proto for accept()
-> v2: Make 2 new bpf_func_proto static
-> ---
->   net/core/filter.c | 24 ++++++++++++++++++++++++
->   1 file changed, 24 insertions(+)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 63f3baee2daf..443d12b7d3b2 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5743,6 +5743,23 @@ static const struct bpf_func_proto bpf_sock_ops_setsockopt_proto = {
->   	.arg5_type	= ARG_CONST_SIZE,
->   };
->   
-> +BPF_CALL_5(bpf_unlocked_sock_setsockopt, struct sock *, sk, int, level,
-> +	   int, optname, char *, optval, int, optlen)
-> +{
-> +	return _bpf_setsockopt(sk, level, optname, optval, optlen);
 
-The sock_owned_by_me() will warn.
 
- From CI:
-WARNING: CPU: 0 PID: 102 at include/net/sock.h:1756 bpf_unlocked_sock_setsockopt+0xc7/0x110
+On 8/27/25 12:52 PM, Alan Maguire wrote:
+> On 27/08/2025 20:41, Eduard Zingerman wrote:
+>> On Wed, 2025-08-27 at 20:28 +0100, Alan Maguire wrote:
+>>
+>> [...]
+>>
+>>> I'm working on a small 2-patch series at the moment to improve this. The
+>>> problem is we currently have no way to associate the DWARF with the
+>>> relevant ELF function; DWARF representations of functions do not have
+>>> "." suffixes either so we are just matching by name prefix when we
+>>> collect DWARF info about a particular function.
+>> Oh, I see, there is no way to associate DWARF info with either
+>> 'bpf_strnchr' or 'bpf_strnchr.constprop.0' w/o checking address.
+>> Thank you.
+>>
+>>> The series I'm working on uses DWARF addresses to improve the DWARF/ELF
+>>> association, ensuring that we don't toss functions that look
+>>> inconsistent but just have .part or .cold suffixed components that have
+>>> non-matching DWARF function signatures. ".constprop" isn't covered yet
+>>> however.
+>> Is ".constprop" special, or just has to be allowed as one of the prefixes?
+>>
+> Yonghong can remind me if I've got this wrong, but .constprop is
+> somewhat different from .part/.cold in that the latter aren't really on
 
-> +}
-> +
-> +static const struct bpf_func_proto bpf_unlocked_sock_setsockopt_proto = {
-> +	.func		= bpf_unlocked_sock_setsockopt,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_PTR_TO_CTX,
-> +	.arg2_type	= ARG_ANYTHING,
-> +	.arg3_type	= ARG_ANYTHING,
-> +	.arg4_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
-> +	.arg5_type	= ARG_CONST_SIZE,
-> +};
-> +
->   static int bpf_sock_ops_get_syn(struct bpf_sock_ops_kern *bpf_sock,
->   				int optname, const u8 **start)
->   {
-> @@ -8051,6 +8068,13 @@ sock_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   		return &bpf_sk_storage_get_cg_sock_proto;
->   	case BPF_FUNC_ktime_get_coarse_ns:
->   		return &bpf_ktime_get_coarse_ns_proto;
-> +	case BPF_FUNC_setsockopt:
-> +		switch (prog->expected_attach_type) {
-> +		case BPF_CGROUP_INET_SOCK_CREATE:
-> +			return &bpf_unlocked_sock_setsockopt_proto;
-> +		default:
-> +			return NULL;
-> +		}
->   	default:
->   		return bpf_base_func_proto(func_id, prog);
->   	}
+For symbol with .cold, it is not a function. It is just a jump target
+from another function.
+
+For symbol with .part, it is a actual function, but mostly like its
+function signature has changed as it is part of the original
+function.
+
+For symbol with .constprop, is a clone of another function but
+with less parameters, i.e., some parameters become a constant
+inside the .constprop.<n> function.
+
+With gcc build, you can see even more complicated suffixes:
+   ffffffff81825bf0 t __remove_instance.part.0.constprop.0
+   ffffffff81ed07c0 t eventfd_ctx_fileget.part.0.isra.0
+   ...
+
+> function boundaries. Sometimes we want to retain .constprop
+> representations since they are function boundaries and sometimes do not
+> mess with parameters in incompatible ways. If we can find a good
+> heuristic for tossing them when they are not helpful as in the above
+> case that would be great, but I'm not sure how to do that without losing
+
+It is indeed very hard to have a good heuristic for those function
+with suffixes. '<func>.constprop.<n>' might be easier as you can
+check location in the subprogrm, if there is no location, most
+likely that parameter has become a constant inside the function.
+
+Currently I am working on llvm to add
+   - function with suffixes
+   - function with changed signature and without suffixes.
+
+Such infomation should have better mapping from func to
+its type.
+
+> BTF representations which are useful. Any suggestions on that would be
+> really great; in the meantime I'll try and get the series dealing with
+> .part and .cold functions out ASAP. Thanks!
+>
+> Alan
 
 
