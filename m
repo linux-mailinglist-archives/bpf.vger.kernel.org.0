@@ -1,172 +1,97 @@
-Return-Path: <bpf+bounces-66734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86677B38DF4
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:20:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 740F0B38E4C
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:24:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C1A91897DAD
-	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:19:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C36B33B66E5
+	for <lists+bpf@lfdr.de>; Wed, 27 Aug 2025 22:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550C231E0EA;
-	Wed, 27 Aug 2025 22:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730943128AC;
+	Wed, 27 Aug 2025 22:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SIIzS/BM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgGJXsFd"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E8235CEDE
-	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 22:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC23311C3E
+	for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 22:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756332658; cv=none; b=NW+n3NJonhxJKjZtFzm3uB5N4nwQmEJb9il/GLPrZGCr3m+nnrsQr/ncTMnLCQN0kBqN0eQLzg7L9qQ3QcoA6ZsqCMSKLp+CBGpfCHyj1ikiY5vTQIs/24JpzHsytcd9XABJ0dGRsN0jUCQRLLM1Tg0dFD6vzF/GNJauimM+k60=
+	t=1756333203; cv=none; b=gTKbbeK2VBZG55dmUc3thPN5xfiMogmlOt25mE0QUw/NuMOFBn8rDm0PpXGqRyj1kcK56EZM40hpbVygCIFYntkBTQFVVtgDuxBcrrBXXn+6lTsTxGQuuMYzbcqvkXOA1yV/V2JKMCc8hfjj77tpbmV7r/Ke9MEY+zVWrt0j308=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756332658; c=relaxed/simple;
-	bh=evoc7gdcyPrc/Ie0TDe1eAiLfXUiEcTzOigU5YfvG/c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MyhFTQU5KW226yKjSRNGgQi1IoMwKF+ykTy7q5HFsLrqTHvkNbF3vX55gUlidIG+Cvx565tnHWxcBvDUJ0bStTXLCMbaIq8HgTnUpefzScwOEB7LEbF+3kpdJh5JvEKB+505bWZ1A3w1LPGYDnwbaZa9nUSoGom0KN83i4ieeV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SIIzS/BM; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4690bebe-0ff6-4258-9cab-3dfe2d00fa15@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756332653;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e0Gx8ALySI3X0w8oV2nNtG9pan3UPn8x700zl5Yl6lU=;
-	b=SIIzS/BMkEut1Feu7PLceeGygEs6Ca7bvqaaLt6e/2CNGE6YSz3bjFenXPV9sFhAW3xwxG
-	oDKcsZSSsOWr0VELv5RkdSQxBMhGujuD+wcJlFHm7F5Nbi739NO7L5VBlTeHmgTX2ar0A7
-	lKcGiJ4VYM5HvoUBVZJDbxOgB5cxNEY=
-Date: Wed, 27 Aug 2025 15:10:44 -0700
+	s=arc-20240116; t=1756333203; c=relaxed/simple;
+	bh=fyMRhL7PPriONHHTDzsMOnsehCYDVe09cBsJ0wP1JIQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=mIhNIHdft8h0SLzauJikhR8F92HEm7osOQCxFKsWHjKTnDEouHRqjmloi/Va1wobPPllHBOKeJyF/gVq+lWCJSTCzoMWwWyYMA0gK5lSiNOCFFd/5xxi8oMI5svEL/KzRGx2sVMahOO4PFph6/upzGl9g29VC4SnxycKKDiUkWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgGJXsFd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72789C4CEEB;
+	Wed, 27 Aug 2025 22:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756333200;
+	bh=fyMRhL7PPriONHHTDzsMOnsehCYDVe09cBsJ0wP1JIQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=sgGJXsFdBqOIUezyri+HUMn0ZHh4ytNyUrUzCluypNjEB5TdIdoCEMsRMyXi2hxc+
+	 UlceK/NysTfWdfq08FCW8IhCpOLAhl/nrAIwPMa/DbXsvsZ/YBWYX8qzSIHraYEQCe
+	 RxdXKb+DqiDpLIoEmVWeky1YdIjG2NN1p0uRd3sddPF5pnHt3RRSfSgpLRWOKawaGU
+	 RvO9yWFTG9ahREOS5h7DUP2jRQ5i4hRx2Fi0xhuJ0OkBPGo5m5LiNf0CqGprMFYFih
+	 1FxLIPj6WYGksmUECBBXLemYvPwGqvUlkSgaY5ywcAPXSODxwk4bGJtEEqO6x9z3lc
+	 sJdd+PJNQ1VLg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAEBD383BF76;
+	Wed, 27 Aug 2025 22:20:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Mark kfuncs as __noclone
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>, Andrea Righi <arighi@nvidia.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, alan.maguire@oracle.com
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250822140553.46273-1-arighi@nvidia.com>
- <86de1bf6-83b0-4d31-904b-95af424a398a@linux.dev>
- <45c49b4eedc6038d350f61572e5eed9f183b781b.camel@gmail.com>
- <a3dabb42-efb5-4aea-8bf8-b3d5ae26dfa1@linux.dev>
- <a7bcc333d54501d544821b5feeb82588d3bc06cb.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <a7bcc333d54501d544821b5feeb82588d3bc06cb.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v6 bpf-next 1/2] bpf: Improve the general precision of
+ tnum_mul
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175633320776.857353.6375443651457217963.git-patchwork-notify@kernel.org>
+Date: Wed, 27 Aug 2025 22:20:07 +0000
+References: <20250826034524.2159515-1-nandakumar@nandakumar.co.in>
+In-Reply-To: <20250826034524.2159515-1-nandakumar@nandakumar.co.in>
+To: Nandakumar Edamana <nandakumar@nandakumar.co.in>
+Cc: alexei.starovoitov@gmail.com, eddyz87@gmail.com, bpf@vger.kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ jakub@cloudflare.com, harishankar.vishwanathan@gmail.com
 
+Hello:
 
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-On 8/27/25 12:13 PM, Eduard Zingerman wrote:
-> On Wed, 2025-08-27 at 10:00 -0700, Yonghong Song wrote:
->> On 8/26/25 10:02 PM, Eduard Zingerman wrote:
->>> On Tue, 2025-08-26 at 13:17 -0700, Yonghong Song wrote:
->>>
->>> [...]
->>>
->>>> I tried with gcc14 and can reproduced the issue described in the above.
->>>> I build the kernel like below with gcc14
->>>>      make KCFLAGS='-O3' -j
->>>> and get the following build error
->>>>      WARN: resolve_btfids: unresolved symbol bpf_strnchr
->>>>      make[2]: *** [/home/yhs/work/bpf-next/scripts/Makefile.vmlinux:91: vmlinux] Error 255
->>>>      make[2]: *** Deleting file 'vmlinux'
->>>> Checking the symbol table:
->>>>       22276: ffffffff81b15260   249 FUNC    LOCAL  DEFAULT    1 bpf_strnchr.cons[...]
->>>>      235128: ffffffff81b1f540   296 FUNC    GLOBAL DEFAULT    1 bpf_strnchr
->>>> and the disasm code:
->>>>      bpf_strnchr:
->>>>        ...
->>>>
->>>>      bpf_strchr:
->>>>        ...
->>>>        bpf_strnchr.constprop.0
->>>>        ...
->>>>
->>>> So in symbol table, we have both bpf_strnchr.constprop.0 and bpf_strnchr.
->>>> For such case, pahole will skip func bpf_strnchr hence the above resolve_btfids
->>>> failure.
->>>>
->>>> The solution in this patch can indeed resolve this issue.
->>> It looks like instead of adding __noclone there is an option to
->>> improve pahole's filtering of ambiguous functions.
->>> Abstractly, there is nothing wrong with having a clone of a global
->>> function that has undergone additional optimizations. As long as the
->>> original symbol exists, everything should be fine.
->> Right. The generated code itself is totally fine. The problem is
->> currently pahole will filter out bpf_strnchr since in the symbol table
->> having both bpf_strnchr and bpf_strnchr.constprop.0. It there is
->> no explicit dwarf-level signature in dwarf for bpf_strnchr.constprop.0.
->> (For this particular .constprop.0 case, it is possible to derive the
->>    signature. but it will be hard for other suffixes like .isra).
->> The current pahole will have strip out suffixes so the function
->> name is 'bpf_strnchr' which covers bpf_strnchr and bpf_strnchr.constprop.0.
->> Since two underlying signature is different, the 'bpf_strnchr'
->> will be filtered out.
-> Yes, I understand the mechanics. My question is: is it really
-> necessary for pahole to go through this process?
->
-> It sees two functions: 'bpf_strnchr', 'bpf_strnchr.constprop.0',
-> first global, second local, first with DWARF signature, second w/o
-> DWARF signature. So, why conflating the two?
+On Tue, 26 Aug 2025 09:15:23 +0530 you wrote:
+> Drop the value-mask decomposition technique and adopt straightforward
+> long-multiplication with a twist: when LSB(a) is uncertain, find the
+> two partial products (for LSB(a) = known 0 and LSB(a) = known 1) and
+> take a union.
+> 
+> Experiment shows that applying this technique in long multiplication
+> improves the precision in a significant number of cases (at the cost
+> of losing precision in a relatively lower number of cases).
+> 
+> [...]
 
-In this particular case, I think what you describe the correct.
-For *Global* symbol 'bpf_strnchr', the signature should be in
-the dwarf. But for *Local* symbol 'bpf_strnchr.constprop.0', the
-signature is not clear. I suspect that pahole may not
-distinguish between *Global* and *Local* symbols where they have
-the same prefix.
+Here is the summary with links:
+  - [v6,bpf-next,1/2] bpf: Improve the general precision of tnum_mul
+    (no matching commit)
+  - [v6,bpf-next,2/2] bpf: Add selftest to check the verifier's abstract multiplication
+    https://git.kernel.org/bpf/bpf-next/c/2660b9d47750
 
-The case like this patch to have a clone for a kfunc global
-func should be very rare. That is another reason I think
-__noclone should be good enough and it can reduce the
-complexity in pahole. But I will be okay as well if the
-consensus is to implement the support in pahole.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->
-> For non-lto build the function being global guarantees signature
-> correctness, and below you confirm that it is the case for lto builds
-> as well. So, it looks like we are just loosing 'bpf_strnchr' for no
-> good reason.
->
->> I am actually working to improve such cases in llvm to address
->> like foo() and foo.<...>() functions and they will have their
->> own respective functions. We will discuss with gcc folks
->> about how to implement similar approaches in gcc.
->>
->>> Since kfuncs are global, this should guarantee that the compiler does not
->>> change their signature, correct? Does this also hold for LTO builds?
->> Yes, the original signature will not changed. This holds for LTO build
->> and global variables/functions will not be renamed.
->>
->>> If so, when pahole sees a set of symbols like [foo, foo.1, foo.2, ...],
->> The compiler needs to emit the signature in dwarf for foo.1, foo.2, etc. and this
->> is something I am working on.
->>
->>> with 'foo' being global and the rest local, then there is no real need
->>> to filter out 'foo'.
->> I think the current __noclone approach is okay as the full implementation
->> for signature changes (foo, foo.1, ...) might takes a while for both llvm
->> and gcc.
->>
->>> Wdyt?
->>>
->>> [...]
 
 
