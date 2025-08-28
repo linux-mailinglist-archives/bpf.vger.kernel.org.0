@@ -1,131 +1,138 @@
-Return-Path: <bpf+bounces-66822-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB98EB39BFA
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 13:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 245D4B39C64
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 14:11:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E86CC16A9FF
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 11:50:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D11E4683FC
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 12:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F8030EF7F;
-	Thu, 28 Aug 2025 11:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E5CF30FC08;
+	Thu, 28 Aug 2025 12:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J90mXeI/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nmE321J/"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6091614EC73
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 11:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037E730F554
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 12:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756381820; cv=none; b=YZui3uIBb74JNDSWZy9X9LJw8Tj6HpMQPFDDUBiET2hp8U/GrJLN9SeQvAmyjDFsot2aITD2NsrA92v+X4GlwLCCSTC6zVuoXrvoAoSCzTfMZiWQeh0wd8k1Vn+oo7vL4xf43Ocfthix+bx6epOP44aOSU4HTJ8CuYOHe5jya+Q=
+	t=1756383016; cv=none; b=i1NnwZmzEyvAomnsZYoTXwE4Ewf8YultJCdRPzkdfGSxKZkO/82jhbxEkGePwWczgUY00f1BS9ZOgR2db1qYIzaRD/bNKOsWSKjqHOwbOR6BDUxGQDL/aJSX4AuT0xkxC/EDSn+I4KLgKuwx9PyqF5WSwdsxTmllDhC6nZJisr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756381820; c=relaxed/simple;
-	bh=kbGSPAMgxZf5tV9gvLx5eUQe1pQ7TTRkm3Q8PtH3S/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J40eZ/D8aQfDV27TPt9Vpj+BtiLoMxwrUCQKoXJn2KERW5Z2UR5yuEM/v9nGIPr922oEbgCV48kLkZsWZua6urTuV+W2mffV3vbenMopDTpnQAM+jzU7Jz5gjEKBfDovhVZmbKF9TgU5MHYGT5reYjWO3ENWCDVr+8KWKSu9eRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J90mXeI/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA916C4CEEB;
-	Thu, 28 Aug 2025 11:50:19 +0000 (UTC)
+	s=arc-20240116; t=1756383016; c=relaxed/simple;
+	bh=zKFP7gnLB5E28hm89+phFHoHM6iqCsl0KuLbk4Kmfeo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qAXOx07tIkVolnGnkIB2p3bk50JWmli41cn92jwwp+P2bAzLt427hQEoc3b+EfxlhRbLi7vLlG/sBBaGYSdiJrq/IrFFQEmbjp943HtsKgovLwquPpFB6FkXYEEIJlVop+gj8crflNdI85R8H6Bkorzr91P+rcmbuQ88VhN+gXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nmE321J/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DEB1C4CEF5;
+	Thu, 28 Aug 2025 12:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756381819;
-	bh=kbGSPAMgxZf5tV9gvLx5eUQe1pQ7TTRkm3Q8PtH3S/Q=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=J90mXeI/kS4OHWAy8fh6My25/W2bzqeFmeuLypkRoyuGtWA/9ynerRiBaywW74XZz
-	 Qct0ghIthWQPQdzvmaPYUpdxgA/xTvGJkuIwS18lyl4fR12sl7vu9XiJI/MJsULvaB
-	 qqGN/YJv8hV7YRS3kl90iIY+cJLAv06lzqh/KKZJkswr40jKysecjJJwXhtD6WmblB
-	 eCwz6BD5EqAyCt6RQlC0Gbg1P6XCxhXSwxXir83bCpFTKy76PIQ8m7hVtLFNfRaJBu
-	 DN4dAOWXAFAc6b6a9u9g9HCslpKEup/M3UuCDIpZrWITRNmI+6pR35QyJ28sw5kIy4
-	 w/8Ya2sCCN8OA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 82FEDCE0D09; Thu, 28 Aug 2025 04:50:19 -0700 (PDT)
-Date: Thu, 28 Aug 2025 04:50:19 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [BUG] Deadlock triggered by bpfsnoop funcgraph feature
-Message-ID: <93e75cff-871f-4b49-868c-11fea0eec396@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
- <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com>
- <8dcc144e-3142-4e0d-a852-155781e41eb4@linux.dev>
- <CAADnVQLDG=Oavh9He=ivXm9MPwsqWHttbTYQh1-EZuHpwujaBA@mail.gmail.com>
- <b3463ffa-c2cb-43c8-a0d2-92bad49e3c23@linux.dev>
+	s=k20201202; t=1756383015;
+	bh=zKFP7gnLB5E28hm89+phFHoHM6iqCsl0KuLbk4Kmfeo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=nmE321J/SyL6viFFqnBuolsF9lsXeYrSBg4qkfajYLZhoO3D9TnP38CMSq+1BcNjJ
+	 x8pOju3SWDlW6Eh7N3I7YTIWnXBR9kFFIojIWLsWTE+FIPsz9T371OtJhjU+DwZZd7
+	 3w/p+40Wl7lyKaE+PPxuVTcHYX5mWI1LnTpQ+5ORKV8guA6Nht9G/+CFOMdXOqpOZa
+	 JBg+RcOmHDnDhd/kRQAb2PuHSkVg8wvzO12vIqXxXZygs8XoGQW6Ey9vvi0DGSIQ6w
+	 ESoRR69m53ULVTFvuHbnEM1H02Yx78XbWskogy6oL/UR+2KHtiKaWo/rVUec6eLpR9
+	 92E9mywwvznjQ==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Hengqi Chen <hengqi.chen@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ xukuohai@huaweicloud.com, Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, Hengqi Chen <hengqi.chen@gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, arm64: Call
+ bpf_jit_binary_pack_finalize() in bpf_jit_free()
+In-Reply-To: <20250828013415.2298-1-hengqi.chen@gmail.com>
+References: <20250828013415.2298-1-hengqi.chen@gmail.com>
+Date: Thu, 28 Aug 2025 12:10:11 +0000
+Message-ID: <mb61pjz2nmyu4.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b3463ffa-c2cb-43c8-a0d2-92bad49e3c23@linux.dev>
+Content-Type: text/plain
 
-On Thu, Aug 28, 2025 at 10:40:47AM +0800, Leon Hwang wrote:
-> On 28/8/25 08:42, Alexei Starovoitov wrote:
-> > On Tue, Aug 26, 2025 at 7:58 PM Leon Hwang <leon.hwang@linux.dev> wrote:
-> >> On 27/8/25 10:23, Alexei Starovoitov wrote:
-> >>> On Tue, Aug 26, 2025 at 7:13 PM Leon Hwang <leon.hwang@linux.dev> wrote:
-> >>>>
-> >>>> Hi,
-> >>>>
-> >>>> I’ve encountered a reproducible deadlock while developing the funcgraph
-> >>>> feature for bpfsnoop [0].
-> >>>
-> >>> debug it pls.
-> >>
-> >> It’s quite difficult for me. I’ve tried debugging it but didn’t succeed.
-> >>
-> >>> Sounds like you're implying that the root cause is in bpf,
-> >>> but why do you think so?
-> >>>
-> >>> You're attaching to things that shouldn't be attached to.
-> >>> Like rcu_lockdep_current_cpu_online()
-> >>> so effectively you're recursing in that lockdep code.
-> >>> See big lock there. It will dead lock for sure.
-> >>
-> >> If a function that acquires a lock can be traced by a tracing program,
-> >> bpfsnoop’s funcgraph will attempt to trace it as well. In such cases, a
-> >> deadlock is highly likely to occur.
-> >>
-> >> With bpfsnoop I try my best to avoid such deadlock issues. But what
-> >> about other bpf tracing tools? If they don’t handle this properly, the
-> >> kernel is very likely to crash.
-> > 
-> > bpf infra is trying hard not to crash it, but debug kernel is a different
-> > category. rcu_read_lock_held() doesn't exist in production kernels.
-> > You can propose adding "notrace" for it, but in general that doesn't scale.
-> > Same with rcu_lockdep_current_cpu_online().
-> > It probably deserves "notrace" too.
-> 
-> Indeed, it doesn't scale.
-> 
-> When I run
-> ./bpfsnoop -k "htab_*_elem" --output-fgraph --fgraph-debug
-> --fgraph-exclude
-> 'rcu_read_lock_*held,rcu_lockdep_current_cpu_online,*raw_spin_*lock*,kvfree,show_stack,put_task_stack',
-> the kernel doesn’t panic, but the OS eventually stalls and becomes
-> unresponsive to key presses.
-> 
-> It seems preferable to avoid running BPF programs continuously in such
-> cases.
+Hengqi Chen <hengqi.chen@gmail.com> writes:
 
-Agreed, when adding code to the Linux kernel, whether via a patch, via
-a BPF program, or by whatever other means, you are taking responsibility
-for the speed, scalability, and latency effects of that code.
+> The current implementation seems incorrect and does NOT match the
+> comment above, use bpf_jit_binary_pack_finalize() instead.
+>
+> Fixes: 1dad391daef1 ("bpf, arm64: use bpf_prog_pack for memory management")
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  arch/arm64/net/bpf_jit_comp.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 52ffe115a8c4..4ef9b7b8fb40 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -3064,8 +3064,7 @@ void bpf_jit_free(struct bpf_prog *prog)
+>  		 * before freeing it.
+>  		 */
+>  		if (jit_data) {
+> -			bpf_arch_text_copy(&jit_data->ro_header->size, &jit_data->header->size,
+> -					   sizeof(jit_data->header->size));
+> +			bpf_jit_binary_pack_finalize(jit_data->ro_header, jit_data->header);
+>  			kfree(jit_data);
 
-Nevertheless, I am happy to add a few "notrace" modifiers
-if needed.  Do you guys need them for rcu_read_lock_held() and
-rcu_lockdep_current_cpu_online()?
+Thanks for this patch!
 
-							Thanx, Paul
+So, this is fixing a bug because bpf_jit_binary_pack_finalize() will do
+kvfree(rw_header); but without it currently, jit_data->header is never
+freed.
+
+But I think we shouldn't use bpf_jit_binary_pack_finalize() here as it
+copies the whole rw_header to ro_header using  bpf_arch_text_copy()
+which is an expensive operation (patch_map/unmap in loop +
+flush_icache_range()) and not needed here because we are going
+to free ro_header anyway.
+
+We only need to copy jit_data->header->size to jit_data->ro_header->size
+because this size is later used by bpf_jit_binary_pack_free(), see
+comment above bpf_jit_binary_pack_free().
+
+How I suggest we should fix the code and the comment:
+
+-- >8 --
+
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 5083886d6e66b..cb4c50eeada13 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -3093,12 +3093,14 @@ void bpf_jit_free(struct bpf_prog *prog)
+
+                /*
+                 * If we fail the final pass of JIT (from jit_subprogs),
+-                * the program may not be finalized yet. Call finalize here
+-                * before freeing it.
++                * the program may not be finalized yet. Copy the header size
++                * from rw_header to ro_header before freeing the ro_header
++                * with bpf_jit_binary_pack_free().
+                 */
+                if (jit_data) {
+                        bpf_arch_text_copy(&jit_data->ro_header->size, &jit_data->header->size,
+                                           sizeof(jit_data->header->size));
++                       kvfree(jit_data->header);
+                        kfree(jit_data);
+                }
+                prog->bpf_func -= cfi_get_offset();
+
+-- 8< --
+
+Song,
+
+Do you think this optimization is worth it or should we just call
+bpf_jit_binary_pack_finalize() here like this patch is doing?
+
+Thanks,
+Puranjay
 
