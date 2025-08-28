@@ -1,177 +1,116 @@
-Return-Path: <bpf+bounces-66807-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66808-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77A0CB3982F
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 11:26:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADB4EB398AF
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 11:47:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC7335E8451
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 09:26:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74DCA5607E5
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 09:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32ED62DF6F4;
-	Thu, 28 Aug 2025 09:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pu00wy5c"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BA42EA498;
+	Thu, 28 Aug 2025 09:47:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE816253F12
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 09:26:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 304F02E0910
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 09:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756373209; cv=none; b=D6Y/HE0D1Wb5bHSXLpp/pPexhgTg5jakOZil6cjUElPhvggng1rHtpJQNI2u2El2JEegGTXA1esU0k6VCU5BBMYwdGLKbTydF/IvFGTjD1rSJiPqa/RAsOkU6mCp40m7fNQxFnlhM4ZqZq41kQGjb3WHFYdNQzuCMDuggHZkwe4=
+	t=1756374428; cv=none; b=Nf4XDWLI5wtDuyRZYfKiDib2V1VU/jCGhiDRiXrKOCHeClOuYP0j74G6VcTlsft3LmxlOf22hbV8CHuIfu5yi8dO1etWam8IhvgI9qIHIAGY0xT0IItHfz/upSKfoU5n5UErQi9KPzDHKoB66XqTcVmNjZ+xeIlDP+u46yqqcMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756373209; c=relaxed/simple;
-	bh=snT81cutXnKAiftpW/DQUIB335yflaJxMphmU8w21Gk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YeWeefmMz0eV24bwyc7rhaf1KqBEgiMnsieFKN+fjHcHw9BPdVUmu3JM/uFtECrBEjykABsSDAYBy6dWcjOh3LG1gobbM5lVbg3llSFRWr2/LHKNR9kHdxltlC90O5K/yEibONOQEBcE8WYu96tj8lI6dj0q4MBgHb+ZnQXHmMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pu00wy5c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54056C4AF09
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 09:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756373209;
-	bh=snT81cutXnKAiftpW/DQUIB335yflaJxMphmU8w21Gk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=pu00wy5cderMEQ7qdS0ueLVyo+2kEFhBGFnh63A62Wh9w60RsBMNUULng/Fx9ul1W
-	 4ST8bZzTFu7Vp2lYJsfBbXJc6G0X8+T4kBr7TmzhLCwctgYgqnsRAfbsxLEVdbREFJ
-	 Xtf4Rm9jzXWL8vEncpW0uQkIFPQUfQboAqHaRgJVMCKi2tZ5NmXOclNhENN9CtCXtj
-	 1beQjiUayAPiM7NfkcZ1HuR7HRkWyXx4d+CXHJeP0BCWY4O4C9maAe/6JyNFbOn1wU
-	 6J5vRNAZb8hE/RE+qojW8B0s7Fvu1Qfk1WD6SkMQAppTt7mhvCzdXyDF7FJoC0pkOT
-	 Zyml/Z/VpCnyg==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-afcb78f5df4so113829266b.1
-        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 02:26:49 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWKmlNJdp3otH145O+G9MeWltkx7LdlyT1AdEOR+NcplBqX6hiVvRPBnXMsQuSdQe4lNT0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxddqipIjVOVsvtY/3/1aSR4/hr5T3w8oNriI3ObhG6izCMFpFy
-	cg+WOCGZDcs0Yaz0j4/AuBoSpb8LTZfiF6b+mXJ9/bY/Ktich45jRooXpifvN6z5VTJlKN7GpBb
-	NCItY1yLxbEFOmQ3nZZSpB6I1V3HvH34=
-X-Google-Smtp-Source: AGHT+IFqcXoHtTbkCaL7Y0XQS+AuxhLLcyTPvJLS7GziQvbtvAv1gHtvwqwErgLC6XqMqiXor3MQp8jXO76Cd6WU6Hk=
-X-Received: by 2002:a17:906:ecb5:b0:afe:7c3b:bc7d with SMTP id
- a640c23a62f3a-afe7c3bbe94mr1046517266b.41.1756373207894; Thu, 28 Aug 2025
- 02:26:47 -0700 (PDT)
+	s=arc-20240116; t=1756374428; c=relaxed/simple;
+	bh=MSLaMs3rAa+prGfPmlV1WWXXnC993y/fQtNGUWuqhLI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=ACMnvi9sSH8eQE/lXAk/1bic1Ry332Rbnw6pE63ikbfuLsZdazpf43vwPT6Cn52R26+/RbofZHfGxeTTzvbhn3g3iamkYbKM4716ottFNrKLozPAzm0Yi5Ub97SAC4jYxWzJWlDCpV3KeTBHzEubtXyzo3tunqVcjcXaSDa81kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3eb91f3f269so29910315ab.0
+        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 02:47:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756374426; x=1756979226;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gmLL3Yors61Iq+sDMZvn9f+Icd5Wdo+SAXBhmo6lSbU=;
+        b=kT4c5KDzjmSTuTrnZX756hiswMDbHlXZMqS0S+Mwp7TlIKxasoDzvUld4RsTXPXtxe
+         ypJQTgnWCO+l3lKwmgsOz/kctjHbZP3XzsM+UFD2wGxfKkJFM2RNEppnFsOeLNHCTHaU
+         sK2GvLa8YXZ+OYpDuIodhtQQuI1viZsC5rwSlksJuidBmEoYkQuzDvTfZJtyLFNakx1H
+         6C2uvZiwQs+0IXNZC8q13kz2npUWvG+nY1SKFnAHmsqEJYN9Que5YNXJxB62hPNwmYYB
+         XknyG7XEv2lGPv2pG3b1eNDJRCL9INCfDLVckxn6fiHc3J4COwLCtLLAd2kvx3YLtgzh
+         EyQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUoXmBil4HG2EbHxUL2KXxRLJMSYt/MYktAA4vySd2EYYLrVOmqCp0XzwbSaSU//uow440=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzjJWNUGzQtC8gS23YMGBGqzxugGUNmC/NXsvdtOW89guAdOmn
+	e3jCuxb4fYVngVDsETJOiUp90e8OgFm6C+mLxwc0+rzukWpPHEXLq3OwWEhu/qwk6Zsnx6a424N
+	arQbiQ1RD1cgYzzl6YEioOuMGy7Iq+uHcsnhczO+b8wMHoyo3GfKK9cE9g7E=
+X-Google-Smtp-Source: AGHT+IFmtkVHPGY5fLLeWN31O6o6YPd0eaLQh58jPo7hoDlIZOdtl0ZFb/x/ObUbYprxjK5wjsiCRyA45J3YhpVFU+n4D5vKtMMq
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250827094733.426839-1-hengqi.chen@gmail.com> <20250827094733.426839-4-hengqi.chen@gmail.com>
-In-Reply-To: <20250827094733.426839-4-hengqi.chen@gmail.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Thu, 28 Aug 2025 17:26:35 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5sBUjPhuPgpsMV-ywiKJX2-C3D1Re60FGiD9b207NddQ@mail.gmail.com>
-X-Gm-Features: Ac12FXxpuOLwdb5wHwVGJeyOhsVW9p_DUzOkZT2bVBJC7AkQc3uJqN3sJTnAQZc
-Message-ID: <CAAhV-H5sBUjPhuPgpsMV-ywiKJX2-C3D1Re60FGiD9b207NddQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] LoongArch: BPF: No support of struct argument in
- trampoline programs
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: yangtiezhu@loongson.cn, jianghaoran@kylinos.cn, duanchenghao@kylinos.cn, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	vincent.mc.li@gmail.com, bpf@vger.kernel.org, loongarch@lists.linux.dev
+X-Received: by 2002:a05:6e02:160a:b0:3ed:d368:48b0 with SMTP id
+ e9e14a558f8ab-3ef08858acamr113953225ab.0.1756374426372; Thu, 28 Aug 2025
+ 02:47:06 -0700 (PDT)
+Date: Thu, 28 Aug 2025 02:47:06 -0700
+In-Reply-To: <20250828060354.57846-1-menglong.dong@linux.dev>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68b0259a.050a0220.8762d.0008.GAE@google.com>
+Subject: [syzbot ci] Re: sched: make migrate_enable/migrate_disable inline
+From: syzbot ci <syzbot+ci553dbf0055ebca13@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, bsegall@google.com, 
+	daniel@iogearbox.net, dietmar.eggemann@arm.com, eddyz87@gmail.com, 
+	haoluo@google.com, jani.nikula@intel.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, juri.lelli@redhat.com, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, menglong.dong@linux.dev, 
+	mgorman@suse.de, mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org, 
+	sdf@fomichev.me, simona.vetter@ffwll.ch, song@kernel.org, tzimmermann@suse.de, 
+	vincent.guittot@linaro.org, vschneid@redhat.com, yonghong.song@linux.dev
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 27, 2025 at 7:19=E2=80=AFPM Hengqi Chen <hengqi.chen@gmail.com>=
- wrote:
->
-> The current implementation does not support struct argument.
-> This cause a oops when running bpf selftest:
->
->     $ ./test_progs -a tracing_struct
->     CPU -1 Unable to handle kernel paging request at virtual address 0000=
-000000000018, era =3D=3D 90000000845659f4, ra =3D=3D 90000000845659e8
->     Oops[#1]:
->     CPU -1 Unable to handle kernel paging request at virtual address 0000=
-000000000018, era =3D=3D 9000000085bef268, ra =3D=3D 90000000844f3938
->     rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
->     rcu:     1-...0: (19 ticks this GP) idle=3D1094/1/0x4000000000000000 =
-softirq=3D1380/1382 fqs=3D801
->     rcu:     (detected by 0, t=3D5252 jiffies, g=3D1197, q=3D52 ncpus=3D4=
-)
->     Sending NMI from CPU 0 to CPUs 1:
->     rcu: rcu_preempt kthread starved for 2495 jiffies! g1197 f0x0 RCU_GP_=
-DOING_FQS(6) ->state=3D0x0 ->cpu=3D2
->     rcu:     Unless rcu_preempt kthread gets sufficient CPU time, OOM is =
-now expected behavior.
->     rcu: RCU grace-period kthread stack dump:
->     task:rcu_preempt     state:I stack:0     pid:15    tgid:15    ppid:2 =
-     task_flags:0x208040 flags:0x00000800
->     Stack : 9000000100423e80 0000000000000402 0000000000000010 9000000100=
-3b0680
->             9000000085d88000 0000000000000000 0000000000000040 9000000087=
-159350
->             9000000085c2b9b0 0000000000000001 900000008704a000 0000000000=
-000005
->             00000000ffff355b 00000000ffff355b 0000000000000000 0000000000=
-000004
->             9000000085d90510 0000000000000000 0000000000000002 7b5d998f82=
-81e86e
->             00000000ffff355c 7b5d998f8281e86e 000000000000003f 9000000087=
-159350
->             900000008715bf98 0000000000000005 9000000087036000 9000000087=
-04a000
->             9000000100407c98 90000001003aff80 900000008715c4c0 9000000085=
-c2b9b0
->             00000000ffff355b 9000000085c33d3c 00000000000000b4 0000000000=
-000000
->             9000000007002150 00000000ffff355b 9000000084615480 0000000007=
-000002
->             ...
->     Call Trace:
->     [<9000000085c2a868>] __schedule+0x410/0x1520
->     [<9000000085c2b9ac>] schedule+0x34/0x190
->     [<9000000085c33d38>] schedule_timeout+0x98/0x140
->     [<90000000845e9120>] rcu_gp_fqs_loop+0x5f8/0x868
->     [<90000000845ed538>] rcu_gp_kthread+0x260/0x2e0
->     [<900000008454e8a4>] kthread+0x144/0x238
->     [<9000000085c26b60>] ret_from_kernel_thread+0x28/0xc8
->     [<90000000844f20e4>] ret_from_kernel_thread_asm+0xc/0x88
->
->     rcu: Stack dump where RCU GP kthread last ran:
->     Sending NMI from CPU 0 to CPUs 2:
->     NMI backtrace for cpu 2 skipped: idling at idle_exit+0x0/0x4
->
-> Reject it for now.
-Drop this patch or pick Tiezhu's patches as a single series?
-https://lore.kernel.org/loongarch/20250821144302.14010-1-yangtiezhu@loongso=
-n.cn/T/#t
+syzbot ci has tested the following series
 
-Huacai
+[v4] sched: make migrate_enable/migrate_disable inline
+https://lore.kernel.org/all/20250828060354.57846-1-menglong.dong@linux.dev
+* [PATCH v4 1/3] arch: add the macro COMPILE_OFFSETS to all the asm-offsets.c
+* [PATCH v4 2/3] sched: make migrate_enable/migrate_disable inline
+* [PATCH v4 3/3] sched: fix some typos in include/linux/preempt.h
 
->
-> Fixes: f9b6b41f0cf3 ("LoongArch: BPF: Add basic bpf trampoline support")
-> Acked-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Tested-by: Vincent Li <vincent.mc.li@gmail.com>
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->  arch/loongarch/net/bpf_jit.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index c239e5ed0c92..66b102ed9874 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -1514,6 +1514,12 @@ static int __arch_prepare_bpf_trampoline(struct ji=
-t_ctx *ctx, struct bpf_tramp_i
->         if (m->nr_args > LOONGARCH_MAX_REG_ARGS)
->                 return -ENOTSUPP;
->
-> +       /* don't support struct argument */
-> +       for (i =3D 0; i < m->nr_args; i++) {
-> +               if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
-> +                       return -ENOTSUPP;
-> +       }
-> +
->         if (flags & (BPF_TRAMP_F_ORIG_STACK | BPF_TRAMP_F_SHARE_IPMODIFY)=
-)
->                 return -ENOTSUPP;
->
-> --
-> 2.43.5
->
->
->
+and found the following issue:
+kernel build error
+
+Full report is available here:
+https://ci.syzbot.org/series/aac2d563-711a-4b4b-89c3-7365b1c03190
+
+***
+
+kernel build error
+
+tree:      bpf-next
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf-next.git
+base:      d3abefe897408718799ae3bd06295b89b870a38e
+arch:      amd64
+compiler:  Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+config:    https://ci.syzbot.org/builds/bb1748d9-0b48-4894-b30e-ea91020f1c78/config
+
+./include/linux/rcupdate.h:968:3: error: call to undeclared function 'migrate_disable'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+./include/linux/rcupdate.h:976:3: error: call to undeclared function 'migrate_enable'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+./include/linux/sched.h:2402:20: error: static declaration of 'migrate_disable' follows non-static declaration
+./include/linux/sched.h:2407:20: error: static declaration of 'migrate_enable' follows non-static declaration
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
