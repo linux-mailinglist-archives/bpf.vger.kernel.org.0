@@ -1,145 +1,155 @@
-Return-Path: <bpf+bounces-66782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE4B7B3939A
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 08:05:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75446B393A0
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 08:09:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF7093A7D13
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 06:05:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C8543A75EE
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 06:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDF927B330;
-	Thu, 28 Aug 2025 06:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C2F6253934;
+	Thu, 28 Aug 2025 06:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gtymtKOb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UUXfCvhS"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E8327A927
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 06:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7D03597C;
+	Thu, 28 Aug 2025 06:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756361071; cv=none; b=jP+LeJFhbLJMIjkF4SncX9WKYI8bmAgv1XwcWFBMDcqNXoGdOfDno6iaJUHXNpfcveHUNXaTeCX1GxKy+I0i5Hbd7CihNhhz5JDWjN6zKCbI7dGRgWvbtkHhbmd1juU5Dp+k9svvB2bs9cPjPNmI+bLOKoCGGXHbjmLB+znBTd8=
+	t=1756361376; cv=none; b=DFZD3jcUTliSn47HkqwHXvAtB5oMEpvQBl3/bSjY001Ct8UmT25Eunr7A3NiwD/SddTlfJwE4M9Wj4Zilu33C84nsHOZdBcIYybOmgRX+sXdBxs/D7uiE8MDC77KC2va6jzpImk3Xs3qEfJPVOI7ztGty5V7N4vZRAsnMoGJVgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756361071; c=relaxed/simple;
-	bh=QNQvynZlOOH8IMgTmEdWcYET2p/CChKWnmzoWhxeMd4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Za7vsKYAa2ek9dC+wcpJqXoccvWK0VKv13fASdkicMqqyuIb/nuavX2quvvIZhfNNtjZfuwNoq++98ftXvmloEncMP4M0lnMFry+x2qMI19Mr7cFFk7aAbr+OWNHRY995HYTgBbdDlg+0FwVOuFxqQH/JRgFM+Li6uLc84oAmwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gtymtKOb; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756361068;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e59v+VK1meCsMZeLVvoLFn49I9lv/VnXIPMZZBibqP4=;
-	b=gtymtKObbmhJU277WdmkrSfFaQjJRg7Hy5T8I+atRCNj/JR5AycubvjfbC9cSQ2LBwbWl0
-	DpI1uD54yfkpBtEqMCi5wwDpPLrpKF3M4BIN+Jnerk+TLK9FK2LsPsXj/E9i+fEORU/hgh
-	uTkJZ8jmfyYhannw10cVXJMPS/kBoFE=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: peterz@infradead.org,
-	ast@kernel.org
-Cc: mingo@redhat.com,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tzimmermann@suse.de,
-	simona.vetter@ffwll.ch,
-	jani.nikula@intel.com,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Menglong Dong <menglong.dong@linux.dev>
-Subject: [PATCH v4 3/3] sched: fix some typos in include/linux/preempt.h
-Date: Thu, 28 Aug 2025 14:03:54 +0800
-Message-ID: <20250828060354.57846-4-menglong.dong@linux.dev>
-In-Reply-To: <20250828060354.57846-1-menglong.dong@linux.dev>
-References: <20250828060354.57846-1-menglong.dong@linux.dev>
+	s=arc-20240116; t=1756361376; c=relaxed/simple;
+	bh=TRye7ER/IIv0vGH5KBCn9DndSSIuH71N4Qjlj8YUhOE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JLeHJJJvY2FVLH8EqFVphm1KXnfiDwbTeqHBJxNVseQvwslw8H/rgOLEv8ILmMxe0ic+7zWSOYX24j4TdzMRT/MWMD8/qd/pdFLDLr/H7WpMJELqVNTpPXQjr/C+vQFnqbyRhYItnL61hYEuae66+8Iz7XqAn8m1zRDo0Zi8jnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UUXfCvhS; arc=none smtp.client-ip=209.85.219.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-70deaa19d3cso6041666d6.3;
+        Wed, 27 Aug 2025 23:09:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756361374; x=1756966174; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=irThEuCN+CJAqgmTRs026MQyU4oy4M2XOA9xvrhaZ+8=;
+        b=UUXfCvhSPV6hAZUnvRn4pPYcb0622a/SSFydNlmIKxX2KmKqRCA/Vgf1KvsEZH9Wvd
+         /RNrYfWupc4HvN3DkjYNe6CuuJFXpY/tEp/gnKSCIPh/3mvkJbkAfHGVanGt5d8PcVta
+         HtE25YZT7BdrGM93tvVV5JfM/HLQ0/bvvH3onzRaYKnSXI3vOuTMKaBNSL9+ak2plFG3
+         BJi0x2rfkR/pRnaQKeZA0ea1aC4cZftN3DXyCBtTRmcz6ko/fi37zYybvk37YF9qY0jh
+         LUXnoMTmWW1MdmEIPJlrBSBzvg5/+ALS7or72fnWBw2+Kq6rPOePBW5rEYnfI6cNFTi2
+         392Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756361374; x=1756966174;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=irThEuCN+CJAqgmTRs026MQyU4oy4M2XOA9xvrhaZ+8=;
+        b=D3pVvYsk0eud9STEkJI2muwJgBDAm8plt/przBvo9+IczX9HRfr/HB9e/dIZqZlH2z
+         FMg+4yhT3HHx/ygqduD9JMTd0hL7iN+bjIkNx5Lyb5R+xUR434GKTjLc6ZF1dUz9oc1N
+         XVIj2kBxPSIkCFh+x0oTPojg1/4oAZUixOKhcIqiJ5/xASqNvxqwy0p9ECEoP+Aze5dd
+         Pam/vD5PLD/kVHDvxmlNI4xiaLZHRh1xzXbh79lWYxxnzAYZH9LGtnvRFpQdc4GvGcpB
+         OhlREIRF1/hhk0lijE9Jecxj4VgnWWyjKPzY8XImJ3Snk1xFMImhLx0u5zaQXSvYrkXc
+         +bYA==
+X-Forwarded-Encrypted: i=1; AJvYcCU5lk07yAfYC8e7OmHCUzA/gGGYdg1xAqKeb48Hs+yMwmOtjyVXoi89/hX6+Dr/h3aNzuo=@vger.kernel.org, AJvYcCWVw959jAPwd2Jr9dg0f+okj3fnSjYJGMaV4SZ5wsMh0lr6tuTSyXlSkD4oNWhvrZjGWBGGJao8lkIb@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywhc3fULrrNoqHVPrD2ifEQGA+mZAfaY58/06bROlj8m8nlBysB
+	Vyfe4JTB93eBfJU15oXPgFK6nTOoPmZsYdKobQnFIq625VDNhTnrbfazTrBPproD7I6hp2C92jC
+	gx7T2LcYlj02S8/CiKvJ/N5S3C9IJaT0=
+X-Gm-Gg: ASbGncuWMFbNsrvbsb7iXQyRHvBdt6nE1tEnVjFSzGLGgK+my/3Wj0xhTgvCNTiA9x6
+	kBElRGtEGAfPD+YEU3s6x2T0L0r6nY6tgPVS0i5vwPiF2W14L58yPqLUHcMNJjY+AOS2fpHggsv
+	v19E62bk/iuSHaHIEnQvgnDr3OG6FZtcAONB62EJRJi4Z2LJYW4BT+mPwkp68bFIBBejk4Okccy
+	isBA/S+r7/7uNKVZfl5xvA806qyM/0Ylw9Op1w=
+X-Google-Smtp-Source: AGHT+IEcc1wPCV34Pnn1u/ZsU4Rb1aY5zTIXLY6XmNlFFcithgRKC2hL9mmp5Due2o1Ite+lHeZgHeo0cfSWEsXPL9A=
+X-Received: by 2002:a05:6214:3005:b0:70d:cecb:17db with SMTP id
+ 6a1803df08f44-70dcecb19c9mr100573286d6.63.1756361373826; Wed, 27 Aug 2025
+ 23:09:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250826071948.2618-1-laoar.shao@gmail.com> <20250826071948.2618-11-laoar.shao@gmail.com>
+ <6934188d-12a5-4225-aaa9-828878d8dba2@lucifer.local>
+In-Reply-To: <6934188d-12a5-4225-aaa9-828878d8dba2@lucifer.local>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 28 Aug 2025 14:08:57 +0800
+X-Gm-Features: Ac12FXxzyoO7MGOQ-T37czdAMJrKQyvMPOFtYB1ymhcClovTUHLiAKI7h86q2_U
+Message-ID: <CALOAHbCys+iz_8fwsPPZjqp+Y4+KMRbizPsjApX+v1JVGTy3oA@mail.gmail.com>
+Subject: Re: [PATCH v6 mm-new 10/10] MAINTAINERS: add entry for BPF-based THP adjustment
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com, 
+	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
+	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, 
+	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	ameryhung@gmail.com, rientjes@google.com, corbet@lwn.net, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There are some typos in the comments of migrate in
-include/linux/preempt.h:
+On Wed, Aug 27, 2025 at 11:47=E2=80=AFPM Lorenzo Stoakes
+<lorenzo.stoakes@oracle.com> wrote:
+>
+> On Tue, Aug 26, 2025 at 03:19:48PM +0800, Yafang Shao wrote:
+> > Add maintainership entry for the experimental BPF-driven THP adjustment
+> > feature. This experimental component may be removed in future releases.
+> > I will help with maintenance tasks for this feature during its developm=
+ent
+> > lifecycle.
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  MAINTAINERS | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 390829ae9803..71d0f7c58ce8 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -16239,6 +16239,7 @@ F:    Documentation/admin-guide/mm/transhuge.rs=
+t
+> >  F:   include/linux/huge_mm.h
+> >  F:   include/linux/khugepaged.h
+> >  F:   include/trace/events/huge_memory.h
+> > +F:   mm/bpf_thp.c
+> >  F:   mm/huge_memory.c
+> >  F:   mm/khugepaged.c
+> >  F:   mm/mm_slot.h
+> > @@ -16246,6 +16247,15 @@ F:   tools/testing/selftests/mm/khugepaged.c
+> >  F:   tools/testing/selftests/mm/split_huge_page_test.c
+> >  F:   tools/testing/selftests/mm/transhuge-stress.c
+> >
+> > +MEMORY MANAGEMENT - THP WITH BPF SUPPORT
+> > +M:   Yafang Shao <laoar.shao@gmail.com>
+> > +L:   bpf@vger.kernel.org
+> > +L:   linux-mm@kvack.org
+> > +S:   Maintained
+> > +F:   mm/bpf_thp.c
+> > +F:   tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+> > +F:   tools/testing/selftests/bpf/progs/test_thp_adjust*
+> > +
+>
+> Sorry but I don't agree with a separate section for this.
+>
+> This should form part of the THP section only, I don't think it's warrant=
+ed to
+> do elsewise.
 
-  elegible -> eligible
-  it's -> its
-  migirate_disable -> migrate_disable
-  abritrary -> arbitrary
+I initially added it as a separate entry to ensure that
+bpf@vger.kernel.org would be CCed. However, I discovered that any file
+containing =E2=80=9Cbpf=E2=80=9D will automatically CC that list. Therefore=
+, it=E2=80=99s fine
+to include this under the THP entry instead.
 
-Just fix them.
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- include/linux/preempt.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-index 92237c319035..102202185d7a 100644
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -372,7 +372,7 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
- /*
-  * Migrate-Disable and why it is undesired.
-  *
-- * When a preempted task becomes elegible to run under the ideal model (IOW it
-+ * When a preempted task becomes eligible to run under the ideal model (IOW it
-  * becomes one of the M highest priority tasks), it might still have to wait
-  * for the preemptee's migrate_disable() section to complete. Thereby suffering
-  * a reduction in bandwidth in the exact duration of the migrate_disable()
-@@ -387,7 +387,7 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
-  * - a lower priority tasks; which under preempt_disable() could've instantly
-  *   migrated away when another CPU becomes available, is now constrained
-  *   by the ability to push the higher priority task away, which might itself be
-- *   in a migrate_disable() section, reducing it's available bandwidth.
-+ *   in a migrate_disable() section, reducing its available bandwidth.
-  *
-  * IOW it trades latency / moves the interference term, but it stays in the
-  * system, and as long as it remains unbounded, the system is not fully
-@@ -399,7 +399,7 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
-  * PREEMPT_RT breaks a number of assumptions traditionally held. By forcing a
-  * number of primitives into becoming preemptible, they would also allow
-  * migration. This turns out to break a bunch of per-cpu usage. To this end,
-- * all these primitives employ migirate_disable() to restore this implicit
-+ * all these primitives employ migrate_disable() to restore this implicit
-  * assumption.
-  *
-  * This is a 'temporary' work-around at best. The correct solution is getting
-@@ -407,7 +407,7 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
-  * per-cpu locking or short preempt-disable regions.
-  *
-  * The end goal must be to get rid of migrate_disable(), alternatively we need
-- * a schedulability theory that does not depend on abritrary migration.
-+ * a schedulability theory that does not depend on arbitrary migration.
-  *
-  *
-  * Notes on the implementation.
--- 
-2.51.0
-
+--=20
+Regards
+Yafang
 
