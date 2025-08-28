@@ -1,136 +1,131 @@
-Return-Path: <bpf+bounces-66821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBB9DB39B6C
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 13:23:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB98EB39BFA
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 13:50:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A76C53B4E52
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 11:23:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E86CC16A9FF
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 11:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAEAD30DEC4;
-	Thu, 28 Aug 2025 11:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F8030EF7F;
+	Thu, 28 Aug 2025 11:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qt1kh0yC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J90mXeI/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE97244691;
-	Thu, 28 Aug 2025 11:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6091614EC73
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 11:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756380178; cv=none; b=ZivJeGmrCOM0Jeq3YSaM4BtwWLdaxw/N1JJc6VLt20YI1S2NxgTMwX1+awKwN9rG1GXsnPJmOr/HIZtTbDLWUt13Je7sDT5cDz3MPEDixv/Jmz5FZeqmSqILeIYizzoRa0vngh+ljeN9m7KF3HMSPkNOciT6gOopv7Wlg4tyEW0=
+	t=1756381820; cv=none; b=YZui3uIBb74JNDSWZy9X9LJw8Tj6HpMQPFDDUBiET2hp8U/GrJLN9SeQvAmyjDFsot2aITD2NsrA92v+X4GlwLCCSTC6zVuoXrvoAoSCzTfMZiWQeh0wd8k1Vn+oo7vL4xf43Ocfthix+bx6epOP44aOSU4HTJ8CuYOHe5jya+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756380178; c=relaxed/simple;
-	bh=fvV1/34M0q/gAMQ253l/U84MmKBcsMJLgosMs2oZQgk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=d/iv61m2I+TkmV3UGbPnvSUt7w3+7WzfeYdAba8KFn5cWOVI9wr4IIPQVNRaeXjmXkCdunDpvcn96vtvtPcXuXzxvMaGw6UNI48TUZKxO3pGKU36xrRMo2+3vvuwCF5/455Maka4GaaFr0SnffQ97nMPjxzmBNdlbqVnmZSnkXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qt1kh0yC; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2445824dc27so7139685ad.3;
-        Thu, 28 Aug 2025 04:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756380176; x=1756984976; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PxeMfx1+uNFbtk5b+iMV6QezPtIYzUJuvmOTjg2DLuM=;
-        b=Qt1kh0yC0vw6jItCiCV9czAn4OxUuWnFj4N5JpMiJpbj0sAgDXYu9+mGe9LHRkJgQ2
-         lvZgeAvisXSaBFB8tM7pgmQ9knbZrvAs1ypnG0yKEJMa+/GFNvUJGJGpcQBKojNLE43Y
-         nofVOyfUHq/piwG50hZBRXhgxVvGSzAYxDTTrRD5oUmaxs6tNcc64V8TU2qYtcDlhNNc
-         qz8dL8THwnv9/3rW4mXFPJNUFZTGohLW/tcUISN/WWEazQil38RnyPNnjLKksr/sgrY7
-         78QjKisVDqJzF+P9oHKCkGI2uY5IBR/MF5O/z6bqlkE0fDF8B3ESYE7sim7GSMTIxe2R
-         I/xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756380176; x=1756984976;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PxeMfx1+uNFbtk5b+iMV6QezPtIYzUJuvmOTjg2DLuM=;
-        b=UhrpCDLqTJpaX+ZgWymxslGSr3gR0ni8s/LQ3VeLWsQ4yB05xDeWUAV8HD4/K8VIou
-         AX9/ozU0UK/04U7sQX4uu+3pxsZgsTmaJdeoo4VEKj/mpDa2HRkmJoeHQGZjmblpvv2g
-         yAUHPtXc3K5+S0zIjdq6kGkiWxZ7+Z3Z7SQ7m5pDDL7Zwv+gatdBEviR0DklS8pNl/Ub
-         +W/k6F+fC6nHbkDv/WOjNaJKkwyWExPH+nLwdaFFm98bx1wUmDO4+P3iXwuGGmP5ClXy
-         mWKKM0kuoZoeFvzUrPG6/9O2VnVihVnODP+mM3bfw7DQPLs0UPJdG07rJNqRpDujCUvX
-         NTug==
-X-Forwarded-Encrypted: i=1; AJvYcCVBr6DgtmPWhbHdXj1CTfsfzvvVa7zCOMkysAvIGKps70G1JpgfNQ84fZBFQk18pLfRJRsskyE3@vger.kernel.org, AJvYcCWjwRlTwc6k3+H0LcjOisJarhehSPWbV54Q8Ywso8f5Pwa/TvaDs+rImEa64V3oaMVBQco=@vger.kernel.org, AJvYcCWpp76uyiENM6t509yPUC4nYseUZ6HPpuqVS8qHRrf/tNGJXbG3FSPx2lOTDWswoN+6AwjvMbFQOCq28w==@vger.kernel.org, AJvYcCXvR08hnM5jb73cboeoRv3nPFY2gooM0MZ43wqjSz1tZdD4IAkU8nH6IxHNpRS+TWsGiAjOcbSbrcLx/Jfr@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmBuF3KO703f2KJGAixIW9chkaVIDaiUN9kAQhX94s/89Z0By4
-	zAJOg+f0i/sJDg7sAlUFbbgrBl93iIRMypC6fPHDQP3Sxibthimb77h8
-X-Gm-Gg: ASbGnctIbRq63VKxrki0H2ekp3f9sZWXOkSfjRliJprT2aLr+aJzLLgvKurDXGtIONB
-	uEWNkK5Km95fg8FJg8w38c5suHJkt5dzJdYjYCR7PcI/R5teEfo37ZSI2FOTrakuhdfOKZOBarj
-	8jKzy8rRZOs/19a6JuJmhgKUHMafqWYNIpnpueG3R9qJSvhfBvcr/04nvxw9JugdPEElxXNAgGH
-	c3C0ninF2lxFh2HEcXQzYiR0/+m6wRFiz8B+x66tsC2UV9TDuAilcPd7K2PprsgeC8MZ93efgkA
-	0ErCp4R8cTXCH7aTS+WPv3IbwDxTCoeSihffMdJmqZIJJMtn3PMqptDe94Uj4/BVMsluBt4KxVL
-	ULx8SUg2o3SOuI0sAHUWAgL01UTTVqUbSVhUOP81kjnsqsxFzbeRRyTWUH0wroIXvTj973noUxM
-	kyGr8Ipy/XHA9DbEZgN5wvOQ==
-X-Google-Smtp-Source: AGHT+IHQiVu4toyB2lDInXoaA+fupYv0LkXXDoJV5p3MjYWV2/Hw1sV5uJxKSw9UtwpQSAHlRTlqsQ==
-X-Received: by 2002:a17:902:fd0e:b0:242:accd:bbe8 with SMTP id d9443c01a7336-2462ef4ca76mr245371675ad.36.1756380175971;
-        Thu, 28 Aug 2025 04:22:55 -0700 (PDT)
-Received: from localhost.localdomain ([112.97.57.188])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-3276f57ab3esm4952547a91.3.2025.08.28.04.22.48
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 28 Aug 2025 04:22:55 -0700 (PDT)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Joerg Roedel <jroedel@suse.de>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	linux-acpi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: linmq006@gmail.com,
-	stable@vger.kernel.org
-Subject: [PATCH] ACPI/IORT: Fix memory leak in iort_rmr_alloc_sids()
-Date: Thu, 28 Aug 2025 19:22:43 +0800
-Message-Id: <20250828112243.61460-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+	s=arc-20240116; t=1756381820; c=relaxed/simple;
+	bh=kbGSPAMgxZf5tV9gvLx5eUQe1pQ7TTRkm3Q8PtH3S/Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J40eZ/D8aQfDV27TPt9Vpj+BtiLoMxwrUCQKoXJn2KERW5Z2UR5yuEM/v9nGIPr922oEbgCV48kLkZsWZua6urTuV+W2mffV3vbenMopDTpnQAM+jzU7Jz5gjEKBfDovhVZmbKF9TgU5MHYGT5reYjWO3ENWCDVr+8KWKSu9eRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J90mXeI/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA916C4CEEB;
+	Thu, 28 Aug 2025 11:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756381819;
+	bh=kbGSPAMgxZf5tV9gvLx5eUQe1pQ7TTRkm3Q8PtH3S/Q=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=J90mXeI/kS4OHWAy8fh6My25/W2bzqeFmeuLypkRoyuGtWA/9ynerRiBaywW74XZz
+	 Qct0ghIthWQPQdzvmaPYUpdxgA/xTvGJkuIwS18lyl4fR12sl7vu9XiJI/MJsULvaB
+	 qqGN/YJv8hV7YRS3kl90iIY+cJLAv06lzqh/KKZJkswr40jKysecjJJwXhtD6WmblB
+	 eCwz6BD5EqAyCt6RQlC0Gbg1P6XCxhXSwxXir83bCpFTKy76PIQ8m7hVtLFNfRaJBu
+	 DN4dAOWXAFAc6b6a9u9g9HCslpKEup/M3UuCDIpZrWITRNmI+6pR35QyJ28sw5kIy4
+	 w/8Ya2sCCN8OA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 82FEDCE0D09; Thu, 28 Aug 2025 04:50:19 -0700 (PDT)
+Date: Thu, 28 Aug 2025 04:50:19 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [BUG] Deadlock triggered by bpfsnoop funcgraph feature
+Message-ID: <93e75cff-871f-4b49-868c-11fea0eec396@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
+ <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com>
+ <8dcc144e-3142-4e0d-a852-155781e41eb4@linux.dev>
+ <CAADnVQLDG=Oavh9He=ivXm9MPwsqWHttbTYQh1-EZuHpwujaBA@mail.gmail.com>
+ <b3463ffa-c2cb-43c8-a0d2-92bad49e3c23@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <b3463ffa-c2cb-43c8-a0d2-92bad49e3c23@linux.dev>
 
-If krealloc_array() fails in iort_rmr_alloc_sids(), the function returns
-NULL but does not free the original 'sids' allocation. This results in a
-memory leak since the caller overwrites the original pointer with the
-NULL return value.
+On Thu, Aug 28, 2025 at 10:40:47AM +0800, Leon Hwang wrote:
+> On 28/8/25 08:42, Alexei Starovoitov wrote:
+> > On Tue, Aug 26, 2025 at 7:58 PM Leon Hwang <leon.hwang@linux.dev> wrote:
+> >> On 27/8/25 10:23, Alexei Starovoitov wrote:
+> >>> On Tue, Aug 26, 2025 at 7:13 PM Leon Hwang <leon.hwang@linux.dev> wrote:
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> I’ve encountered a reproducible deadlock while developing the funcgraph
+> >>>> feature for bpfsnoop [0].
+> >>>
+> >>> debug it pls.
+> >>
+> >> It’s quite difficult for me. I’ve tried debugging it but didn’t succeed.
+> >>
+> >>> Sounds like you're implying that the root cause is in bpf,
+> >>> but why do you think so?
+> >>>
+> >>> You're attaching to things that shouldn't be attached to.
+> >>> Like rcu_lockdep_current_cpu_online()
+> >>> so effectively you're recursing in that lockdep code.
+> >>> See big lock there. It will dead lock for sure.
+> >>
+> >> If a function that acquires a lock can be traced by a tracing program,
+> >> bpfsnoop’s funcgraph will attempt to trace it as well. In such cases, a
+> >> deadlock is highly likely to occur.
+> >>
+> >> With bpfsnoop I try my best to avoid such deadlock issues. But what
+> >> about other bpf tracing tools? If they don’t handle this properly, the
+> >> kernel is very likely to crash.
+> > 
+> > bpf infra is trying hard not to crash it, but debug kernel is a different
+> > category. rcu_read_lock_held() doesn't exist in production kernels.
+> > You can propose adding "notrace" for it, but in general that doesn't scale.
+> > Same with rcu_lockdep_current_cpu_online().
+> > It probably deserves "notrace" too.
+> 
+> Indeed, it doesn't scale.
+> 
+> When I run
+> ./bpfsnoop -k "htab_*_elem" --output-fgraph --fgraph-debug
+> --fgraph-exclude
+> 'rcu_read_lock_*held,rcu_lockdep_current_cpu_online,*raw_spin_*lock*,kvfree,show_stack,put_task_stack',
+> the kernel doesn’t panic, but the OS eventually stalls and becomes
+> unresponsive to key presses.
+> 
+> It seems preferable to avoid running BPF programs continuously in such
+> cases.
 
-Fixes: 491cf4a6735a ("ACPI/IORT: Add support to retrieve IORT RMR reserved regions")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
-This follows the same pattern as the fix in commit 06615967d488
-("bpf, verifier: Fix memory leak in array reallocation for stack state").
----
- drivers/acpi/arm64/iort.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Agreed, when adding code to the Linux kernel, whether via a patch, via
+a BPF program, or by whatever other means, you are taking responsibility
+for the speed, scalability, and latency effects of that code.
 
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index 98759d6199d3..65f0f56ad753 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -937,8 +937,10 @@ static u32 *iort_rmr_alloc_sids(u32 *sids, u32 count, u32 id_start,
- 
- 	new_sids = krealloc_array(sids, count + new_count,
- 				  sizeof(*new_sids), GFP_KERNEL);
--	if (!new_sids)
-+	if (!new_sids) {
-+		kfree(sids);
- 		return NULL;
-+	}
- 
- 	for (i = count; i < total_count; i++)
- 		new_sids[i] = id_start++;
--- 
-2.39.5 (Apple Git-154)
+Nevertheless, I am happy to add a few "notrace" modifiers
+if needed.  Do you guys need them for rcu_read_lock_held() and
+rcu_lockdep_current_cpu_online()?
 
+							Thanx, Paul
 
