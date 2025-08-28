@@ -1,218 +1,116 @@
-Return-Path: <bpf+bounces-66753-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87AB7B38FB0
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 02:17:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F472B38FB4
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 02:20:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 005FB7C24DD
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:17:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CAD81B21B40
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA789153BE8;
-	Thu, 28 Aug 2025 00:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB4A1519B4;
+	Thu, 28 Aug 2025 00:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kyCv4Mvg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dUcs+Ns2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA549CA6B
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 00:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DB1FCA6B
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 00:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756340254; cv=none; b=d/TOlJTxwS33qJjgiG+sIKCAnz/xuKk5Tf6tDgUVOqLDfNjel2nvGhVpZdgcRDtPGv4emQrMoDTeQzICL8xZm75f5z3K8SHk6V/DQkkIaCShj8VdLFqW6+bRXcpkPgSsUueho1OonIEkLM6qNpYEWjQqxnVi+sTMlS3qO1s1poM=
+	t=1756340398; cv=none; b=aGcMVqhIT/lUfYYZBuw7ZNnM7qV8tUeFFOYEebtxLtaJuyv7mtdx0hRVvjfiGHKS2pHJNL4GUd2H1KkR+/jLsfjs+dWjB7nRhfx5thrDN8ZZYVuI4dAnpaLlbSr9D/7tc4nVmDfC9n44a5IIeq1t/xDN0dVtBLRGX8KM2Tjcpgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756340254; c=relaxed/simple;
-	bh=BydufAr9TRihBjCNwji+Qjq7DWn7B5SiHIlkTJpyP4U=;
+	s=arc-20240116; t=1756340398; c=relaxed/simple;
+	bh=GKjiiXjy33te+ZxssV3/CettlETZIJuVxkEqaRwtdMs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rUZ6sW97dosDdY9+qhoDzug0dWuu7fr1yKXVc4zPY7Hy414E8cZFBkyBVN4hbxZNdXH8P7PrBiRcjOXUFVzcfE2iReSO40B4dupSxhNdjNuP6UjEUektUcj5t1tsplDkRGpvGlf/e/P9a4zrjdMhkHtD91yoT4tOzpL9Cgrz2Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kyCv4Mvg; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-246ef40cf93so4239195ad.0
-        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 17:17:32 -0700 (PDT)
+	 To:Cc:Content-Type; b=rgcOkwRZLbY2dfqq8Q2iw0pLJqJru+lXw1PUBou7gcVlGTPVh9CcdCCPtfVTwCrHqulKfFOooXh32/AsEF0Qir5ggieTeGTfc/atNfuiXwbCJo4q9Ry8IIkqsu0CQy1IKLUqT8K/y4C0eov+ZoSeaIGrhtJCAVJe8XQkEKqCCRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dUcs+Ns2; arc=none smtp.client-ip=209.85.218.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-afcb7ace3baso61526866b.3
+        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 17:19:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756340252; x=1756945052; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W23XGRanXXtnZg8pgF6wPf5lx31c85O1mg0Y/LrT18w=;
-        b=kyCv4Mvg6NszQLixO1RX2zFfzoG10Ol98288tcJZvyG1pLkGpAMpHsrLwgyzWHhOhs
-         VfRCHGdFsuv+CYKhzjADURMNmNJKNBeX1S8L+zPWb0MB/489c8yEn2+4uHZO3dk1iksF
-         w6ycQpQXTdvziARgzPgSuSf6svIUEHG0GNv9A78jcsc5bcreUQQPqzBE/FgNnLGf9u2E
-         9dLd/nFj5Pl9aWVMTOMpHjdmUbD0AK54WQ5dj0TyTkOTfNrSSLuJGwuvU2rTdfULa3qx
-         /TWQrwDte+lndMzNI7Y+MBqc1bEYdTqXEpFJO7uJuSOEMNMUiGHsT+wCTOFni97kQAXF
-         aweQ==
+        d=gmail.com; s=20230601; t=1756340395; x=1756945195; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GKjiiXjy33te+ZxssV3/CettlETZIJuVxkEqaRwtdMs=;
+        b=dUcs+Ns2doaqODAFJxivmzEMFmPUC3WqsZ5Ro2j/cK6JLb1T68m+rGsDnZ/HSLojvV
+         KdLxWsuj8sZtYGWE2hbgH/at3sen3t+rxTGE4HytBx7DVL5SlWe5nw5fNd2mh8NUPMmh
+         JJ548AbRYafcHtmLZ7oD2WBbttZxHiqvhxbtfBn1BIVr1TwNwegpEePcW+e8+8RWnbH4
+         bQZNhp7hP9kM3EPpMW0u6N8YnVq+qvVKwBI1PR13yd+v3vF9WowOV5v2Dzcy6JbhDsrX
+         SOPVMHhdmA0nedKPuMtg8Y9Fq1B/4sYv0IyO5O24ioNN89BQ2zZ2gaZb3ax+iz/7vPE/
+         +hGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756340252; x=1756945052;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W23XGRanXXtnZg8pgF6wPf5lx31c85O1mg0Y/LrT18w=;
-        b=nEDOh4xNniTRu8IdgEasF9I8GzSOTgL83O9A1VizoulpwJZtss2NIYhUEJBd7XJxoo
-         WaX+SzAnQnqB18tDOGSN8W7t7rqz0qe59cs1ljjMKl7BJEte2YtsedObKBbujgm7w0jx
-         lq5Pholkj9imRnnL9I4YhyZYCdHkGHmTdBOBOvaUgmklYXM3dwzjPXEAPC95b+zIZGoB
-         I71ds/woTkiC414ex+ZxRpHq4meRlm59Vv18x0CE9M85ErKr0wgvy09lKdlU/NhrRElX
-         g5cWY/Cb20hcx11qmJtMfcj6N85JqlfqLh1mTCUB6uFuD7oQg0gAMpARqzXrHIr3MWKe
-         AQAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWwIaNC+rs+HCwk6Pf2WMt2of+ck2+/XmPRcifopHbzImUOyYaTFAHne4zUem/7e/vRPLk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLAl+aTTxi1O2nI/DDCvWCsOBxOaJHBy3Ub3DwMGApqDxoPixh
-	fqkosXjdT8DqWYBlWvKWhCAa6esQCSzeB9GK/t30/20UfCrfCaSET8MJ497fsRQ0JZVeZRHJdMt
-	KHvtLuUEWb3a18JawM9exQqv5Jm/fquipT4ZAuOMv
-X-Gm-Gg: ASbGnct5M7AyxoYG5UARJqfgechUnZ+aAqF1Kq+VZpV/x7wFZiptU/opRmCXX/aIkMm
-	Qf8rKhmqQMd1CMqe2jkTlpE5jpuHXnJ3huUCViE4LKkci4K5m6Wblw6/xlRmtncFPhQs0zgLJCl
-	ugKsxVx0M34dONvXcIvi2I9T9faGj9vGmWN5bnoj+Env9vIbkaaTUUpKVGTb5l88iOSXEC5NSUD
-	ttON/sfdKdZ+21o1w/zrBNhfAUXRuLvipCpA+c00tEdUCDNtbq6zkk+jRp4MRDNWbMkMHnothha
-	Y/y45PnVij+daQ==
-X-Google-Smtp-Source: AGHT+IFzRst4+V3uKc71q+xDhx2rcX+OOs/1EVS74qiu29Mbw02RhemNFzT0qQGc3wO7puzZSQKrwbpxU/b0ctb1HDo=
-X-Received: by 2002:a17:903:19e5:b0:246:e1b6:cb19 with SMTP id
- d9443c01a7336-246e1b6cd69mr151013265ad.35.1756340251958; Wed, 27 Aug 2025
- 17:17:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1756340395; x=1756945195;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GKjiiXjy33te+ZxssV3/CettlETZIJuVxkEqaRwtdMs=;
+        b=AIdUMcjDPw+hZrpQYZdo6944lYpVC0G+HdgtpCyFDP9wMt9iGS+KRIFXu+zCxal1tr
+         OxqFnFMpahSo1qzCkDe65IvOtQb6F2YHDDDVu49uv2WB41tYq9+Jv18x3qfPNqOp5rBC
+         PIixwdV705QRuKhlI85KNJXubz7djSxHBZv6bdFZf5Nm3rvifPyZy5lCqltzluq1RIpk
+         YtwyKveDf2ljIAtIZWJMMVi6MOjlTbwhy3YPEGuTlx0LG8nkbIYbIPNWNqNYi1Hk39Ln
+         B9OjLauLyFGdg3N6SjXnWdZ88axMDsLzeA8uDnbE2oqmAOOkKZc6AN3K77iqW5IVuCyC
+         WuOw==
+X-Forwarded-Encrypted: i=1; AJvYcCWd7LrFnvUg+7aQ2HuFK5bI++1ct9TLlOzusegYTTeCLLfhYunhGLGbKErNnC5GmN37m34=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVTWgG7OM6rl9GK9O1RLse8XDhlUsjaCibYe3+/vU/899TNlTT
+	IUuMhaNm5cf3mZ6HcT0tUZ7JyAngSrYygC8o80xcBwYuEzPx7e0hqMIoA+hrY0fA9Cv6nIM61rn
+	jBw3iqCSgueERwoRzw+gdlKRvOyiTOxY=
+X-Gm-Gg: ASbGncsJGnw47W1xseHJ4GIMBYT37TWvP38D3g66ekSC/p6qRyRlC5jZscaUPviN/Px
+	QQMbDcon997fAUZtaFDQyeJzLYbeifJF9kP7vyp7y3T1YXUvAUQAzYY5xLvrP3I44Cjnn2HWkKU
+	+SQxX487+mgF485XVMsOturYUeyxlA/xL0nfbG2zZLlQIxMbYI6C6Bq7AnZVfZ799paAZzG3UoH
+	yQdYsJRy5RHwBoaku17IeNn4q3Mz1cm4ghIcqigvrY1hNv3/Z8=
+X-Google-Smtp-Source: AGHT+IFKx4T/v/atlWS0GEOP5pauYJzMNBMEBfDjbTm4i8KRTTbYbQSHiUGb19cVtjpdfcgxCXMjwtvnSq86iG3xT4A=
+X-Received: by 2002:a17:907:3f9a:b0:afe:d21f:7af0 with SMTP id
+ a640c23a62f3a-afed21f7e3cmr238641466b.14.1756340394705; Wed, 27 Aug 2025
+ 17:19:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250826183940.3310118-1-kuniyu@google.com> <20250826183940.3310118-4-kuniyu@google.com>
- <9919daa2-b6e0-4d5c-b349-39b055eaaed2@linux.dev>
-In-Reply-To: <9919daa2-b6e0-4d5c-b349-39b055eaaed2@linux.dev>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Wed, 27 Aug 2025 17:17:20 -0700
-X-Gm-Features: Ac12FXymSI4XzHCT4oSRAssqmTcZKeTl8F7P37tiFI-IZW8ivZjlv5OePQhbdy0
-Message-ID: <CAAVpQUAVrsPxPj9zArvFcD76KYjY_X1gWvd7LnyBcQQQgYZ0cw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next/net 3/5] bpf: Introduce SK_BPF_MEMCG_FLAGS and SK_BPF_MEMCG_SOCK_ISOLATED.
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
+References: <20250827153728.28115-1-puranjay@kernel.org> <20250827153728.28115-2-puranjay@kernel.org>
+In-Reply-To: <20250827153728.28115-2-puranjay@kernel.org>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 28 Aug 2025 02:19:18 +0200
+X-Gm-Features: Ac12FXzbIsORarAzgHg8aq4Jg4dpR1eKdQZK0U5l_2HO2sptfamIJ6HT7xI8yd0
+Message-ID: <CAP01T76+uk1F1m-EaXVgPM3irxFFM6Y4Jx-0DtCt9pk8brdE-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/3] bpf: arm64: simplify exception table handling
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, bpf@vger.kernel.org, Xu Kuohai <xukuohai@huaweicloud.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 27, 2025 at 4:48=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Wed, 27 Aug 2025 at 17:37, Puranjay Mohan <puranjay@kernel.org> wrote:
 >
-> On 8/26/25 11:38 AM, Kuniyuki Iwashima wrote:
-> > The main targets are BPF_CGROUP_INET_SOCK_CREATE and
-> > BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB as demonstrated in the selftest.
-> >
-> > Note that we do not support modifying the flag once sk->sk_memcg is set
-> > especially because UDP charges memory under sk->sk_receive_queue.lock
-> > instead of lock_sock().
-> >
+> BPF loads with BPF_PROBE_MEM(SX) can load from unsafe pointers and the
+> JIT adds an exception table entry for the JITed instruction which allows
+> the exeption handler to set the destination register of the load to zero
+> and continue execution from the next instruction.
 >
-> [ ... ]
+> As all arm64 instructions are AARCH64_INSN_SIZE size, the exception
+> handler can just increment the pc by AARCH64_INSN_SIZE without needing
+> the exact address of the instruction following the the faulting
+> instruction.
 >
-> > diff --git a/include/net/sock.h b/include/net/sock.h
-> > index 63a6a48afb48..d41a2f8f8b30 100644
-> > --- a/include/net/sock.h
-> > +++ b/include/net/sock.h
-> > @@ -2596,10 +2596,39 @@ static inline gfp_t gfp_memcg_charge(void)
-> >       return in_softirq() ? GFP_ATOMIC : GFP_KERNEL;
-> >   }
-> >
-> > +#define SK_BPF_MEMCG_FLAG_MASK       (SK_BPF_MEMCG_FLAG_MAX - 1)
-> > +#define SK_BPF_MEMCG_PTR_MASK        ~SK_BPF_MEMCG_FLAG_MASK
-> > +
-> >   #ifdef CONFIG_MEMCG
-> > +static inline void mem_cgroup_sk_set_flags(struct sock *sk, unsigned s=
-hort flags)
-> > +{
-> > +     unsigned long val =3D (unsigned long)sk->sk_memcg;
-> > +
-> > +     val |=3D flags;
-> > +     sk->sk_memcg =3D (struct mem_cgroup *)val;
-> > +}
-> > +
+> Simplify the exception table usage in arm64 JIT by only saving the
+> destination register in ex->fixup and drop everything related to
+> the fixup_offset. The fault handler is modified to add AARCH64_INSN_SIZE
+> to the pc.
 >
-> [ ... ]
->
-> > +static int sk_bpf_set_get_memcg_flags(struct sock *sk, int *optval, bo=
-ol getopt)
-> > +{
-> > +     if (!sk_has_account(sk))
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     if (getopt) {
-> > +             *optval =3D mem_cgroup_sk_get_flags(sk);
-> > +             return 0;
-> > +     }
-> > +
-> > +     if (sock_owned_by_user_nocheck(sk) && mem_cgroup_from_sk(sk))
->
-> I still don't see how this can stop some of the bh bpf prog to set/clear =
-the bit
-> after mem_cgroup_sk_alloc() is done. For example, in BPF_SOCK_OPS_RETRANS=
-_CB,
-> bh_lock_sock() is held but not owned by user, so the bpf prog can continu=
-e to
-> change the SK_BPF_MEMCG_FLAGS. What am I missing?
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
 
-You are totally right.  I think I was just confused.
-
->
-> Passing some more args to __bpf_setsockopt() for caller context purpose i=
-s quite
-> ugly which I think you also mentioned/tried earlier.
-
-Another option I was thinking (but didn't try) was extending void *ctx
-from struct sock * to like below and silently cast ctx back to the original
-one in the dedicated setsockopt proto.
-
-struct {
-    struct sock * sk;
-    /* caller info here */
-}
-
->  May be it can check "if
-> (in_softirq() && mem_cgroup_from_sk(sk)) return -EBUSY" but looks quite t=
-ricky
-> together with the sock_owned_by_user_nocheck().
->
-> It seems this sk_memcg bit change is only needed for sock_ops hook and cr=
-eate
-> hook? sock_ops already has its only func_proto bpf_sock_ops_setsockopt().
-> bpf_sock_ops_setsockopt can directly call sk_bpf_set_get_memcg_flags() bu=
-t limit
-> it to the BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB. Is it also safe to allow i=
-t for
-> BPF_SOCK_OPS_TCP_LISTEN_CB? For the create hook, create a new func proto =
-which
-> can directly call sk_bpf_set_get_memcg_flags(). wdyt?
-
-I prefer the new proto instead of a hacky/complicated approach.
-
-
->
-> > +             return -EBUSY;
-> > +
-> > +     if (*optval <=3D 0 || *optval >=3D SK_BPF_MEMCG_FLAG_MAX)
->
-> It seems the bit cannot be cleared (the *optval <=3D 0 check). There coul=
-d be
-> multiple bpf progs running in a cgroup which want to clear this bit. e.g.=
- the
-> parent cgroup's prog may want to ensure this bit is not set.
-
-I didn't think about the situation, so the set helper will need to
-reset all flags (in case there could be multiple bit flags in the future)
-
-static inline void mem_cgroup_sk_set_flags(struct sock *sk, unsigned short =
-flags
-{
-    unsigned long val =3D (unsigned long)sk->sk_memcg;
-
-    val &=3D SK_BPF_MEMCG_PTR_MASK;
-    val |=3D flags;
-
-    sk->sk_memcg =3D (struct mem_cgroup *)val;
-}
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
