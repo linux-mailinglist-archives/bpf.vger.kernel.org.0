@@ -1,121 +1,126 @@
-Return-Path: <bpf+bounces-66770-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66771-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D836B39163
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 04:02:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF10BB391CC
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 04:41:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D77C1C246D4
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 02:03:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A70B31799CE
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 02:41:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86CE23C4FA;
-	Thu, 28 Aug 2025 02:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401B925BEE1;
+	Thu, 28 Aug 2025 02:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="kQG/Le85"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sSWH2+Y8"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D9B76FC5;
-	Thu, 28 Aug 2025 02:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7081C01
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 02:40:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756346556; cv=none; b=RBHq70fDp2KRSTm8sTj+Q4lF7m+SnQKvoJsoOkkFDce7Wrh1iyDdTIZBXnTWTsHtjcv+nOJ3TUasNsmZWBz+taABm2RC1wRnNkdPPfIQri+eQLUBMfvt3piV7aXu+adB60HUPLkphXA+U4T1gbwX2m8HEkFaJTo50mwoZtxffHI=
+	t=1756348859; cv=none; b=m9Mm1u5Qdwvmu51wcMtp3rDflTi5kWvAl05igl4CnCr7TZZ/E7uwE9NdOmhZhDNbPv5jYK4NGA/7x8CrX4ZS8Cr/0hqOg6gspSb1cmWb+yRWB9qTor1cy5NcyVkQ829MLakBXl4PnvaKJiiRafMu8iBeGfbUntKhGOYwk3dLTVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756346556; c=relaxed/simple;
-	bh=vsfhv3Gr7aPA9DerCN7CntWRlP3vsCWyOX62qut/PpE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UREdQ/gvpJwGx/KwD3tG1tEHMdXvzap9n7oZN2jMDSuQX7iibffT8TaIKVZyF+ZUpP6LOt0h0WuxWdWVrYjDHZ/z5Z8j4jo28cGd5k+z07QTlyzxT1DCtV+ZTdEX0FRvz7stDilC4k7DzbYBs0LFGkHp9UyUgmC36oozRbZaXoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=kQG/Le85; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=OC
-	PqRs8ymz/48v/kbOviYYdt13c7ovX3tb/1u5IzY5o=; b=kQG/Le850NIFk5U8k/
-	rjYOVs3cyLtvg2+HveeRz1XgvBb70po5NLdGAJ0lIg5fPMI9Zulmaj3ay/ZURPeV
-	X6etzSBaj6+I6ZXjqJr9WOlp6eQ8Gksll+rP/x56NOtHgKq/EiosmHE11saEjWjO
-	VUwzjtJY+dDrBDk3i/cHVvRbQ=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-4 (Coremail) with SMTP id _____wA3NVB_uK9o16VVEQ--.1167S2;
-	Thu, 28 Aug 2025 10:01:37 +0800 (CST)
-From: Feng Yang <yangfeng59949@163.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH v2 bpf-next] selftests/bpf: Fix the invalid operand for instruction issue
-Date: Thu, 28 Aug 2025 10:01:35 +0800
-Message-Id: <20250828020135.248869-1-yangfeng59949@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1756348859; c=relaxed/simple;
+	bh=YUnBOV0DRlWVcBC/QtoOy0ZWvZB0grZmo4YXjOzoDH4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HSCHtlhMccpgfnicceWQGh67AMDJvuGkTdS+i6+v620yMKW9bj6wbcoucBonEM4iiFFD7pArZXj77dJcs8wKKyM/8LErrWWpXx9nPx6xoUHSLF9BMWgbdXUd3NphKLOT5B/Fj2/Dk30mKHcPCke1ED0VRQov+wpTb8s89de+wL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sSWH2+Y8; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b3463ffa-c2cb-43c8-a0d2-92bad49e3c23@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756348854;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HSzIAxQjIPhumyUd628BNPGzi5Ifl6qfzdJVclskNWo=;
+	b=sSWH2+Y89Sm08DUMkjrMZaBSEVTDFUgl6aZHg+OOf5M4VfsyxQ2qbAFMJBorFxxptJAJUA
+	N+5m2Czl2ETEyuR0aNaVuo+IJbDT4UDVZGdd9zEhvMrejc+HtGKmHRRhl/twR46DF58Hnw
+	VL/7AaPBqGinEbipvV8+0STYe0Mvcb8=
+Date: Thu, 28 Aug 2025 10:40:47 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [BUG] Deadlock triggered by bpfsnoop funcgraph feature
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jiri Olsa <jolsa@kernel.org>
+References: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
+ <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com>
+ <8dcc144e-3142-4e0d-a852-155781e41eb4@linux.dev>
+ <CAADnVQLDG=Oavh9He=ivXm9MPwsqWHttbTYQh1-EZuHpwujaBA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAADnVQLDG=Oavh9He=ivXm9MPwsqWHttbTYQh1-EZuHpwujaBA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wA3NVB_uK9o16VVEQ--.1167S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Ww48WrWxZFyxWry7Cr4rXwb_yoW8XF15p3
-	W8W3s0qF1Sgr15XF47Jr47WF4rGFs3Xr48Cw40ywsrAF15Cr97JryxKrWYgr9xWa93ur4f
-	ZFn7tr4a9F4DAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UMc_hUUUUU=
-X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiYxi3eGivsoPJhQAAsO
+X-Migadu-Flow: FLOW_OUT
 
-From: Feng Yang <yangfeng@kylinos.cn>
 
-The following issue occurs when compiling with clang version 17.0.6:
-progs/compute_live_registers.c:251:3: error: invalid operand for instruction
-  251 |                 "r0 = 1;"
-      |                 ^
-<inline asm>:1:22: note: instantiated into assembly here
-    1 |         r0 = 1;r2 = 2;if r1 & 0x7 goto +1;exit;r0 = r2;exit;
-      |                             ^
-1 error generated.
 
-Use __imm_insn to fix this issue.
+On 28/8/25 08:42, Alexei Starovoitov wrote:
+> On Tue, Aug 26, 2025 at 7:58 PM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>
+>>
+>>
+>> On 27/8/25 10:23, Alexei Starovoitov wrote:
+>>> On Tue, Aug 26, 2025 at 7:13 PM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> I’ve encountered a reproducible deadlock while developing the funcgraph
+>>>> feature for bpfsnoop [0].
+>>>
+>>> debug it pls.
+>>
+>> It’s quite difficult for me. I’ve tried debugging it but didn’t succeed.
+>>
+>>> Sounds like you're implying that the root cause is in bpf,
+>>> but why do you think so?
+>>>
+>>> You're attaching to things that shouldn't be attached to.
+>>> Like rcu_lockdep_current_cpu_online()
+>>> so effectively you're recursing in that lockdep code.
+>>> See big lock there. It will dead lock for sure.
+>>
+>> If a function that acquires a lock can be traced by a tracing program,
+>> bpfsnoop’s funcgraph will attempt to trace it as well. In such cases, a
+>> deadlock is highly likely to occur.
+>>
+>> With bpfsnoop I try my best to avoid such deadlock issues. But what
+>> about other bpf tracing tools? If they don’t handle this properly, the
+>> kernel is very likely to crash.
+> 
+> bpf infra is trying hard not to crash it, but debug kernel is a different
+> category. rcu_read_lock_held() doesn't exist in production kernels.
+> You can propose adding "notrace" for it, but in general that doesn't scale.
+> Same with rcu_lockdep_current_cpu_online().
+> It probably deserves "notrace" too.
 
-Fixes: 4a4b84ba9e453 ("selftests/bpf: verify jset handling in CFG computation")
-Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
----
-Changes in v2:
-- Use __imm_insn, thanks: Eduard Zingerman.
-- Link to v1: https://lore.kernel.org/all/20250827031540.461017-1-yangfeng59949@163.com/
----
- tools/testing/selftests/bpf/progs/compute_live_registers.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Indeed, it doesn't scale.
 
-diff --git a/tools/testing/selftests/bpf/progs/compute_live_registers.c b/tools/testing/selftests/bpf/progs/compute_live_registers.c
-index 6884ab99a421..01d73ad76faf 100644
---- a/tools/testing/selftests/bpf/progs/compute_live_registers.c
-+++ b/tools/testing/selftests/bpf/progs/compute_live_registers.c
-@@ -249,11 +249,13 @@ __naked void if3_jset_bug(void)
- 	asm volatile (
- 		"r0 = 1;"
- 		"r2 = 2;"
--		"if r1 & 0x7 goto +1;"
-+		".8byte %[jset];" /* same as 'if r1 & 0x7 goto +1;' */
- 		"exit;"
- 		"r0 = r2;"
- 		"exit;"
--		::: __clobber_all);
-+		:
-+		: __imm_insn(jset, BPF_JMP_IMM(BPF_JSET, BPF_REG_1, 0x7, 1))
-+		: __clobber_all);
- }
- 
- SEC("socket")
--- 
-2.43.0
+When I run
+./bpfsnoop -k "htab_*_elem" --output-fgraph --fgraph-debug
+--fgraph-exclude
+'rcu_read_lock_*held,rcu_lockdep_current_cpu_online,*raw_spin_*lock*,kvfree,show_stack,put_task_stack',
+the kernel doesn’t panic, but the OS eventually stalls and becomes
+unresponsive to key presses.
+
+It seems preferable to avoid running BPF programs continuously in such
+cases.
+
+Thanks,
+Leon
 
 
