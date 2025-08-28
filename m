@@ -1,775 +1,285 @@
-Return-Path: <bpf+bounces-66809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13891B398D6
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 11:53:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 617CFB39A71
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 12:41:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EBCC5E4E60
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 09:52:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8210D170453
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 10:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18272EDD59;
-	Thu, 28 Aug 2025 09:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6301730C616;
+	Thu, 28 Aug 2025 10:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Io76OjbD"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="qYg7x9W3";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zy4+BvHj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90852E03EC
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 09:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756374764; cv=none; b=h6zOzKdJ7Ia8fKGUNfpMfncG0cxOet/+gJmB6FG2BHLHDqj61NIqgd/cFl4bEV4tkIF+C0lB7NaqV6B7/leOjpwBihGzJEXILgW7VoEiAdUXBIptIS5gob/CUYliCj3Hfdhx9aHLEa1B16VoprNyPfoU3KjXzZfSiZa0uowZL2Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756374764; c=relaxed/simple;
-	bh=7nMiuWqAUHqbLI1dmSjsWGRmCcEbZBayp6UbQspiXM0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LtLQCRUi7YbBiBYfTd4Cqs2SGef4un1EtUbSQaeunNpA1uJigD7OnKkKWMtUELbxd2NBPTnwH3MpmdSjKvxqqNK+RpnbgSmABLGPvDvKV1EzMFOdtz7k1HmBItbtuA2veS6C6gFKBgn38mC0BLW1NaV7ZT7FkqFryownzw6vTA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Io76OjbD; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3ce47d1f1f8so278684f8f.2
-        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 02:52:41 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28EDD30CDBA;
+	Thu, 28 Aug 2025 10:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756377683; cv=fail; b=Myo9WLQNuN85IKnhPcaIKLdO7qJJOZUEkO/pWwryrTQXZ4842tkDVAiE3Ol9nWLYf+KIPFM4hCxHHA+MAAToH/R7AOg4ynNXwE6rTIrl7CwgHXP6ukQxH0/0J7MEii7EvVlKRlKxeY747x1Ti3K2RPYvAxxfGf+dlzePIdsPsC0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756377683; c=relaxed/simple;
+	bh=9GqhT0StR8UF8iPVuVwbhtp1eQplakoicvYHQtNy6jk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=iqEXN4sweZfOKiPJVTG6seJWgVZyBDDCKZWVXbVXP9mN7iU13y19E71x0/p9AG12d8JvDiRhbBfk6gUdKtYK+wDF94T3HaXjBPbH4lqcCZN+sqqoA4LSI0bCveNXSDd6ypJFFZQd6A2q0/4ATFqWm4Axw2VnrqykdoL0Ykc2c5o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=qYg7x9W3; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zy4+BvHj; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57S8u1Tv024324;
+	Thu, 28 Aug 2025 10:40:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2025-04-25; bh=ikQxlHkGBkfSLtE+j2
+	ESvYCXcfme20kAumWS5SkoCF0=; b=qYg7x9W3lnieviN6/qcRj99RBzm2ZNHLOh
+	Hy9os8KoIFBWZtLFK0elkD1zJ8W9a+oQOH8hAbWrnMGzD49doaNwBpseghMzZsMh
+	OFbM4bX1zdtUM8nAHAguRZ8DDdm/hCxa6up1YSwJN64w8IjSVHFYlaaFkgnmk1dP
+	kP6PTBTS2114x946ZePciC1q7PblTQ0Pb2aNmjVas9yp1hFMmTpZoMSaqmYEzybF
+	FQ8Q5uz1lDUzGcytr3UuCiwT9JqFrhlDWwph3nQNTb0OgqMjCKAZCV0y6WaPmf8T
+	FvJ9lYujb7Qvti7v7eWl+J/5DdwZj1JkRiNsiDTPnlIt1JkBLYVQ==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 48r8twey6s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 28 Aug 2025 10:40:28 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 57S8VRqA005107;
+	Thu, 28 Aug 2025 10:40:26 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10on2045.outbound.protection.outlook.com [40.107.92.45])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 48qj8bykf0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 28 Aug 2025 10:40:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=sEJBXYqst7LQ7pFIfHu3fToy6MVwj4GErf9DZYGcV1I2tup2Yg1r+gZn8kWn1gVGzzAY3hBh1LYdAbvQWOozEsNsgoizZtFrPIK0gUUnmgJD72At6SH/jKHd2XeaqfU0tY1p4sTUVNMryxSLmiigsDukppWCkXnHZwYSzLHtA9yLwudph+R++EVasf9tiVapO/RJtCWGs9rRzsNa6j4Nrz5pz5h8R9ZQyzMEoerNjIcqvTzuN1tWFI33UdNxuJweWuoJtu7MFGdZCcJBiI+dk4WmFOShjHqN5VyS2Ib8T/to208Aal0Zkk6YnByAAJRJ8SpwoLuZ5g4Wb4eXUhskIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ikQxlHkGBkfSLtE+j2ESvYCXcfme20kAumWS5SkoCF0=;
+ b=e+RMz2EHexdmESE9ALtLe/2mLS1Ms/QMShzk6Yvw1YuYgL5JTvAwEoyfbAXyN5Aomg9Ib72omKsQu5xTtwbKVaMZ9Ats7g602i/c266Gym2eiCqcQZp7bStRI052zT+CAMmdVqNbbAnvT2zYDVdns+KPrGECTXV4p6BoCceIamMR79b6uw0qer75bkH0k9RLiIAoc2y5uM6g5WP7FS/6a3u7ENW6ZORO2S21slm3ue9NFZAvOqlwNjdYi63Mt/UegeIkEqB9R78euu4Acguqu9IAgdVFCy2N5zYxfRGF/BTaPhTuIqlAfDZrJG3PCDfVSzKcslG477f6CXVnDmptHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756374760; x=1756979560; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zSu/gRLQqnanTM5ODgcoFtPmfZrkkXuli/7Kd1wOqT4=;
-        b=Io76OjbDcL1uVrv49/PsdD9ShVnVFut4a8IermS7UbKocxpq4D8MP1TQ/ZN4qKVoGg
-         qE/rjWT6RwzFvcpC3tfburbo5UP0THEBFFdbI8530jLBqTu/mOUkpVuHoWQXHBzpKeaU
-         lTZz+RXcTC5bKW11M/zhcbQBn7EgZ/5FMCvMkzcygXbAnglSMWmCXjWthdBawvSbPCGC
-         xszV4ss7A1K4atRaBcoQb7Vd7qzKXjUKKaVmYplfE7XvGxcOVppERtAkEREUq1F8XH2K
-         O2cmS0Iycmo2DVH2FyCYOovdTuGWPLY+bnB3h1HKL1R6Q/X+IfkuPr9fYehNkMaz9a74
-         AcDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756374760; x=1756979560;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zSu/gRLQqnanTM5ODgcoFtPmfZrkkXuli/7Kd1wOqT4=;
-        b=PfOFpddhbMdOdqWOw1lJ5jIy6tcrD0nM2+6RcmmvNk0viEsCAb3sJlBMJfYjUahq4t
-         xeZnH7uMYVGqlqdygZ4QAvxtiHQcHU2a9am2At0KCp08EiGMhpehmAcQWu23bwztEqh4
-         /RIkbNHFjLTPTrXvaa8wppx1lmy0fMBUi3Mnl85G9DQ+aY5z6s+N2sbxIUc1nS5Nh90r
-         ntWimaz1ZwUUUqwRn445LKn5sR4xS2cknA6dC6Cfh6L02enKM/ELJUWR5I9moe+QaWZB
-         vmBtaWbOObF7AHwnZsGWyfqf/o9ZelWmMiaBO3Vt1cZjYcp3vJnOpJGg3gRCofl3MOd3
-         f+mw==
-X-Gm-Message-State: AOJu0Yw6DuaweD8e5Yeor+GPCVCgquFPwC/8INdQfyQDlLwy3O3x6AWA
-	QKeatIVqv2bSUj9mdrvl33kwrlPwMfXSmXioPI1Km0pAuJ821DNWW567
-X-Gm-Gg: ASbGncu6jy9ikI25Mld0atpsIks3lGy+uv9LnqAYrD6shP2lwSHTw4qM523QY5Y8keb
-	a1mVgHFhU3WkaRr8UuPUL7KHmbJNyWT/mV+0jU389ETtZ/deJr7FKM0kU/c4RBOOXmJpN7sFMKY
-	hM5w2MkpxSz2Zn6W00SBPygofHYzjWZa5Jx3lhg6nS4TkKZG/OcNTMpPycScv1jSDuqBK9dmYIn
-	1TrzkwoLFHE+1QgqE9I4S4Z4TUOEC9s0IH/ImrcFpjP6wJclGNDuU5wLGa+0k/FYvYp892/pXyq
-	mD1nO6nHgAw1z5kexdcvi5anTdYTR7d5Ps2vhftPuAaTVMFRHdhNYNHiES5Z0KSfLemV/4KpB5u
-	hOTPTpuaH9hRzekvaRRHs9YMIz29iwi338g==
-X-Google-Smtp-Source: AGHT+IFkgLINBvImhQFpnNfKc468iiEdyCMbtvmn48FCYeA4OdCnxBQW6QM89raGB8TdJsdi4cg8iQ==
-X-Received: by 2002:a05:6000:2891:b0:3cd:8a55:f175 with SMTP id ffacd0b85a97d-3cd8a55f69cmr2418834f8f.43.1756374759600;
-        Thu, 28 Aug 2025 02:52:39 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3ca6240b4ecsm13815278f8f.43.2025.08.28.02.52.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Aug 2025 02:52:39 -0700 (PDT)
-Date: Thu, 28 Aug 2025 09:58:40 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v1 bpf-next 08/11] bpf, x86: add support for indirect
- jumps
-Message-ID: <aLAoUK22+PpuAbhy@mail.gmail.com>
-References: <20250816180631.952085-1-a.s.protopopov@gmail.com>
- <20250816180631.952085-9-a.s.protopopov@gmail.com>
- <506e9593cf15c388ddfd4feaf89053c1e469b078.camel@gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ikQxlHkGBkfSLtE+j2ESvYCXcfme20kAumWS5SkoCF0=;
+ b=zy4+BvHj2wD2j6T3oy3UJAqMsL0D69bL2DoMNP3jQHM2DcSCtT0hBwfzoomB91PGRzkrPrz74uWtIp01jqMoCqq6HtzfudtzjSvX/g1KCIYAMxmbRRfS2skO9ax1D6hMnWAK8+M0lrcuDKxFKrm9u80LL0jzABjd2rc2WkN8WnQ=
+Received: from DM4PR10MB8218.namprd10.prod.outlook.com (2603:10b6:8:1cc::16)
+ by MN2PR10MB4269.namprd10.prod.outlook.com (2603:10b6:208:1d1::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.19; Thu, 28 Aug
+ 2025 10:40:20 +0000
+Received: from DM4PR10MB8218.namprd10.prod.outlook.com
+ ([fe80::2650:55cf:2816:5f2]) by DM4PR10MB8218.namprd10.prod.outlook.com
+ ([fe80::2650:55cf:2816:5f2%5]) with mapi id 15.20.9052.019; Thu, 28 Aug 2025
+ 10:40:20 +0000
+Date: Thu, 28 Aug 2025 11:40:16 +0100
+From: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
+        david@redhat.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
+        Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
+        dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com,
+        gutierrez.asier@huawei-partners.com, willy@infradead.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        ameryhung@gmail.com, rientjes@google.com, corbet@lwn.net,
+        bpf@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Subject: Re: [PATCH v6 mm-new 02/10] mm: thp: add a new kfunc
+ bpf_mm_get_mem_cgroup()
+Message-ID: <46cecd34-9102-48fe-8a98-091aff6cc88a@lucifer.local>
+References: <20250826071948.2618-1-laoar.shao@gmail.com>
+ <20250826071948.2618-3-laoar.shao@gmail.com>
+ <299e12dc-259b-45c2-8662-2f3863479939@lucifer.local>
+ <3m6jhfndkoshnoj76wyjjgmqa55p4ij4desc45yz6g7gbpxnrd@xumacckayj4t>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3m6jhfndkoshnoj76wyjjgmqa55p4ij4desc45yz6g7gbpxnrd@xumacckayj4t>
+X-ClientProxiedBy: GVYP280CA0028.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:150:f9::10) To DM4PR10MB8218.namprd10.prod.outlook.com
+ (2603:10b6:8:1cc::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <506e9593cf15c388ddfd4feaf89053c1e469b078.camel@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR10MB8218:EE_|MN2PR10MB4269:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0dd7c3a8-aa8a-4fd1-787a-08dde61f4944
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?jP6KQS0+IWSX/0aWhmbO+sm/6/nWSDnEYNLD+c0l8dO6OdHD+goh2EcEMPLU?=
+ =?us-ascii?Q?B/OM9dXJcFs5r56jfnBa0j8YtNUtnm32I1W+NNEH7IPsg16aGTd7nkMePSFl?=
+ =?us-ascii?Q?ZM7hvdmibqsiUdqdROfZ+eORZUlRSS0hXuZB2LVBqszBD8/8clPoCi9Nne/T?=
+ =?us-ascii?Q?1o4P73xynm22SBcmr6alZ0YiEYXD2BibS6WqJmorDgTlkfSOcm2GXVUWxxxW?=
+ =?us-ascii?Q?lUP1ATYcTX49WGzGEnFoFVESk0uf0J1CVL4DbnwXJYgMQ7JOAg5ZJCza4Oul?=
+ =?us-ascii?Q?lFnidZJ64lior5hSpMIr5ykkq5VA9nZR4ZoiO/wfmB4tO+nyZw0JKJl8mdsz?=
+ =?us-ascii?Q?Uc8egZLNvetcR6Mn9g9m0YjlvAnDdIE3IMhLoQR1WBoPfAYP06/Ks5kw1oWB?=
+ =?us-ascii?Q?vwf38g3AxU7X9X6giDJ+KhGZ/zZ/BQ8TM/IzeA8XHDjo8EjIU9aIOVSlvCLs?=
+ =?us-ascii?Q?paGEUMBJWOGut9/FcuNFtwmKccSR+Y893puom/F14w7zuE/nDNhdvAIMXyWg?=
+ =?us-ascii?Q?bekGKBFGfD6X/c0ve8J3YKnHiL+6zD6lF7HTvFFztLFzvBAYCU8OE4G2+MB6?=
+ =?us-ascii?Q?iZIsB68VSAn7uwjDfdZ2Rktd2BcM3XqdprRI69MW5cTaiDVYvm3SNeNacc+0?=
+ =?us-ascii?Q?fkUQVCR6q6u+WkxZpig0cxyneFNM4aQoxZoEyYK3gU2Lt1fof6mKqPEEFCxe?=
+ =?us-ascii?Q?VhoG0s2Lz2pQsSom6k9XTMEIrof03SLdVUQvf5p5xD7jgphZC6AcLdVc9Bqw?=
+ =?us-ascii?Q?sA6/iAUZATo86FYpDxdSdVINDvJC/lvpdSDSzYB8aDCMJgt8pNbl1TQYNg/n?=
+ =?us-ascii?Q?ElEWleeM95199wlDXGvsL/aGMx9wTsG7TFSyDAYrDY8ljakk7afrCuZkDmzJ?=
+ =?us-ascii?Q?gmEgwBldhZ02gW7hf2SF8pMA4ZK6rQ+lR7aOq2bi+t9BWyC1TOSokaRiZbSB?=
+ =?us-ascii?Q?fX6V+6b6rbM0sjc8+upe28HkmhR6TFr1OBneCmf7/obIy9ERmHXEIirv9Awh?=
+ =?us-ascii?Q?pm6OK2Peu6o0T0x4ulWBTHPyMZI4H+ER8ItFM5Y1u4r9qNEDgnMLi1ckxfcC?=
+ =?us-ascii?Q?BCF8u/SiTdGtWtwXdzJsXEvIJJNk7pUVcPippEbxyBrXHxOo+7yAjZ4xHl3b?=
+ =?us-ascii?Q?Rz/bwj+OXAdiNdJ/EX029Zu7Dk3ugPSFsCQyU8faUBdx3u1IDqi+Bza/F4Tf?=
+ =?us-ascii?Q?2si1ePFoLeErYsm/3GEeBuoQnjBFTLJq78DOo5zahmyPPOBDcvT4TP3ty+Ls?=
+ =?us-ascii?Q?72vSwK2Mw3Yf1QgvwgS5qX1vZa31dr4jc/B78ObmxOPU/X33nsEWhqFQMaAd?=
+ =?us-ascii?Q?HaI1acivi+AK2azgWvCLgMRhBDlH4MCL2WqvHC+AOkZROheps+Bua6Y/OQTW?=
+ =?us-ascii?Q?E+CKyCgT441PfX61cuwJ5lSDU5WViOY8zdXE8FNocRtCidXVEku+fMKJDtm5?=
+ =?us-ascii?Q?APt0NAgar4k=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR10MB8218.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?daqhAmLJ9CE2vvr0JYlip/n71eEMezIxGbSVQ+hfzrayUY0PdvOMGdhCt5L/?=
+ =?us-ascii?Q?yXvCX0aiO29jnXMX45E9t+FNnu4X0gR8LSHrDkJXfqaYYeZqtJBtkf3E8tCt?=
+ =?us-ascii?Q?02XHydzppbDE67liws/oM3P+qT6l64tLB+lhwzO7jMxecFcEfHDbOV/B7lE1?=
+ =?us-ascii?Q?1DO/dRpcyW1+1NUx4GvsIBG/Em4RHs2moCNOD6QD4edbxHmy6hRfPyg5URu4?=
+ =?us-ascii?Q?j9NJlxiQoGTMt15GcGvG4UZOMBplnpK58ZUCGsNbV0byMjSKpI3HfdQt77hJ?=
+ =?us-ascii?Q?wRJMZqMwPGaFFb72jqBbM7ZRnY1FMasTRJ91t5boYsakrMdGJ8hFxWeVg94s?=
+ =?us-ascii?Q?PFxdYan8j5CKBd9Vn3PJye/4F7ec7CVsUI4GTuRGUyV6agwB+BptRK373nrQ?=
+ =?us-ascii?Q?gjwnN9XWs4P+otKmmkNI6jNylFHXUD4z5P63JhdFb0dBybHwLlCAJXnENrPZ?=
+ =?us-ascii?Q?SD+Ng3gm7j2c2vZf+B0CQNjon6cbWIHHdVzpaIgFh4ahDZ19Dkn5ALEaXE0h?=
+ =?us-ascii?Q?P6VWPENexSxwr2GRrmeMCHrCRtyJYo3Jz7gJ/l9tM5NCFqt9qPBKAv1S+KCY?=
+ =?us-ascii?Q?w0/QzvnIYsT6K1eR9US0rov1Y1If5AcQEdjAjqSmotP+hHYUkItjvWz48p6V?=
+ =?us-ascii?Q?VxN/CS2wSQHyi0iIcAS35rdfuoZNJu8dcYG95ur0KaYbD2fcn5WBBZIbaxxY?=
+ =?us-ascii?Q?mgLTORt36SOwMMYeHiZwMr6madM1N2XoGl3YFLMGQOjieM7iYxiXOQwPGw6g?=
+ =?us-ascii?Q?EjhwipizqIj+h3FJ9xpa5baJVHheqMzrWexzPVL0+CRq+GOyKlUDBDfSyCwi?=
+ =?us-ascii?Q?167G1U4hd1+wLzlh7/xrj6q4VnFgYmZNFW1k/ILuv1KBtASlc/nIaS3CLMQD?=
+ =?us-ascii?Q?cXTqBb/vcbec941rbEj3UvqzSwVPmvngjkb41Lt3k5bPll3k1WIXKnHQua6R?=
+ =?us-ascii?Q?gEDFcO/mKPj3N8H16vwWnfQi5FMV1qUqeCtrKB9cEjdrvfQkKYI0d8EzydMo?=
+ =?us-ascii?Q?pTVLcfmfCf1F99XVQ8+3OEk7Uo4vuCuJl2I9rTY05rpdT02/PJtoEquzjWVn?=
+ =?us-ascii?Q?1JaUYRGwSCyGr0GvjNs3sI9VZXpEipZA8FtUgzb7ld3efOUz0HFKIzoDqD6Y?=
+ =?us-ascii?Q?YYgcnhw08Hft7iSd6WgRb3jcPvyRkNJ5jnXKVTJjbEyLJI0OoLXkO0RV0YhI?=
+ =?us-ascii?Q?ZEekPU/1xw4llQqiuXEMvoBrYYwEh3rJFyv68ELyuZweay7A6VTguN7RuTeL?=
+ =?us-ascii?Q?oG3f28IDOSMJQmfw8Pn/4/Bfq2GwkusaFcvuMpTX5x5xPMjXDd8AbrGgNBpG?=
+ =?us-ascii?Q?laT0RcIo1xVUFd5DzYvb+VUcX3QC2X5Sk2X1Pq2BqOIjpijYuvnsI1LVeZcZ?=
+ =?us-ascii?Q?2mozVz+69jEKhhOb5HH1iB9mo9EQ7wvFJbb98swhped7qbkiY5Wc2kD0v6Xh?=
+ =?us-ascii?Q?96RPf14aMdMmPqS8g2oABWmY76RydpocE5NKnaN9rp5MsSO/DbvfN1b8DB4b?=
+ =?us-ascii?Q?lfYTPvEXLDiMVVfLGEiVDuxjPCgQg6tbnvitYIevbyYNm8yS761yrgDpdCFd?=
+ =?us-ascii?Q?y3j4m5CrzOOhj/m2zp1+sGZRR3sUODoBsXu6efjfIJy6Tn8iOdKeXleKXmel?=
+ =?us-ascii?Q?Gg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	zVIvZBMjbWeZ6rfMIq7L9xmtOF2I17OL7A4MXe2wqzQ6NkC31IeSiuvQa8E1wJO/qD7CdVwfAN0LOkZEBGn9zdOzGbgXgNh3gLMjqBz6UowKviBY0DnYqjF6brOfei9mWFJ+oa8SOlZS0Avt40ddpNF9MB5nW79u2p3AP+TBxOWk1+LcWFtLULJaJ6EzIo9qxI1i/mAstLFtyAQZM/oyFYBfcQ756VIGjz2wKrx9Q9NVrsJ8LH4nn/b8kGR3Jn6Ujcziln+jBYvTgiTA6C6NdSYCzXYwm6Z0XBrjyhEzzgOEG/19UMVOJjZAz0utl5ey72hGRp//5fd+SQVBV0hOeQ4dpo9+/GQrjsCuz5bNXmjKTj4R1of4brN4XR19D1XfWsUNy1Vady6or8koUltuRxqOre9UvoIWoet5T57yBaXaxZ+QJKC+LuhYsTw6oI7LIxXeAiG9LX5Y0JdfM+iHXXAZrSbIX8+dBghAdMgXliatpiCvqFhfLmPUo9EU1fRSCqxSLYkCPGgcoOC97WXNQmAA9LEkmxZAdpvPnCvbwi+KIsuN6T3I7dsrQc3S643+YZZNCS26UTiO2Xgh04eOs7hTcoCeagycIWjXqrL9Js4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0dd7c3a8-aa8a-4fd1-787a-08dde61f4944
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR10MB8218.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2025 10:40:20.5908
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EXcWYtsXBoXq6MAFicgsRVz+UAoXNgOB5KoHW2+zzfK49I5PZGSVx6c2rADlbvrSdzrpmtRMwPvg0jgRjNdYzSfLtjbh60As127S77p1gH0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4269
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-28_03,2025-08-28_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ phishscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
+ definitions=main-2508280089
+X-Proofpoint-ORIG-GUID: hR1Py55bp47Hsr29Z6tQ7DDHyRFI768z
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODI0MDE4NCBTYWx0ZWRfX1i6o0rvXfkCg
+ ENVbrMbOmrKBNlUkwd1MsxlHsm0YoMA8RbUmMvVO2SRiZCeRM8SWxsFT94dSQFkbdpJNtJGC5x0
+ kQlUwSGyk80W/URXTrtRnQMPA9wN5urFFEunQmhK6M96dqTywvqCPRiXtcpOdqWRMEMZ0BQTmhC
+ 3FcxGQDx/mwf3E+v//a75Y5XVtdFoHFD96UKg0CsniJRTGegVkGdLpqSma9IcnrxA2gRiw9X6V0
+ C659OdT8aAnAaH1MyFKmu/3Zq4/Gz16FkZ6vXmhJ4R6U9D1j8ITWUIphwzaX4zT/9viOuEH0Y6B
+ mZBkEBeBAhGw2OvtQ6qzvtNrOwyJYVB+aSYRlf4WiQnPsJ80o8UhQf3hevzMkoPQG1YNHqOMMQg
+ 0LN4JZdaNIDWJclabJfSCXgQxv/6GQ==
+X-Proofpoint-GUID: hR1Py55bp47Hsr29Z6tQ7DDHyRFI768z
+X-Authority-Analysis: v=2.4 cv=IciHWXqa c=1 sm=1 tr=0 ts=68b0321c b=1 cx=c_pps
+ a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
+ a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
+ a=2OwXVqhp2XgA:10 a=GoEa3M9JfhUA:10 a=7afO4S0sTikFj10kJyUA:9
+ a=CjuIK1q_8ugA:10 cc=ntf awl=host:12068
 
-On 25/08/25 04:15PM, Eduard Zingerman wrote:
-> On Sat, 2025-08-16 at 18:06 +0000, Anton Protopopov wrote:
-> 
+On Wed, Aug 27, 2025 at 01:50:18PM -0700, Shakeel Butt wrote:
+> On Wed, Aug 27, 2025 at 04:34:48PM +0100, Lorenzo Stoakes wrote:
+> > > +__bpf_kfunc_start_defs();
+> > > +
+> > > +/**
+> > > + * bpf_mm_get_mem_cgroup - Get the memory cgroup associated with a mm_struct.
+> > > + * @mm: The mm_struct to query
+> > > + *
+> > > + * The obtained mem_cgroup must be released by calling bpf_put_mem_cgroup().
+> > > + *
+> > > + * Return: The associated mem_cgroup on success, or NULL on failure. Note that
+> > > + * this function depends on CONFIG_MEMCG being enabled - it will always return
+> > > + * NULL if CONFIG_MEMCG is not configured.
+> >
+> > What kind of locking is assumed here?
+> >
+> > Are we protected against mmdrop() clearing out the mm?
+>
+> No locking is needed. Just the valid mm object or NULL. Usually the
+> underlying function (get_mem_cgroup_from_mm) is called in page fault
+> context where the current is holding mm. Here the only requirement is
+> that mm is valid either through explicit reference or the context.
 
-[...] (see the previous reply)
+I mean this may be down to me being not so familiar with BPF, but my concern is
+that we're handing _any_ mm here.
 
-> > +{
-> > +	if (map->map_type == BPF_MAP_TYPE_INSN_ARRAY)
-> > +		return map->max_entries * sizeof(long);
->   		       			  ^^^^^^^^^^^^
-> 		Nit: sizeof_field(struct bpf_insn_array, ips) ?
+So presumably this could also be a remote mm?
 
-I think sizeof(long) is ok, as this always will be a size of a
-pointer.  (To use sizeof_field() the bpf_insn_array should be
-shared in a header, is it worth it?)
+If not then why are we accepting an mm parameter at all, when we could just grab
+current->mm?
 
-> > +
-> > +	return map->value_size;
-> > +}
-> > +
-> >  /* check read/write into a map element with possible variable offset */
-> >  static int check_map_access(struct bpf_verifier_env *env, u32 regno,
-> >  			    int off, int size, bool zero_size_allowed,
-> 
-> [...]
-> 
-> > @@ -7820,6 +7849,13 @@ static int check_load_mem(struct bpf_verifier_env *env, struct bpf_insn *insn,
-> >  				       allow_trust_mismatch);
-> >  	err = err ?: reg_bounds_sanity_check(env, &regs[insn->dst_reg], ctx);
-> >  
-> > +	if (map_ptr_copy) {
-> > +		regs[insn->dst_reg].type = PTR_TO_INSN;
-> > +		regs[insn->dst_reg].map_ptr = map_ptr_copy;
-> > +		regs[insn->dst_reg].min_index = regs[insn->src_reg].min_index;
-> > +		regs[insn->dst_reg].max_index = regs[insn->src_reg].max_index;
-> > +	}
-> > +
-> 
-> I think this should be handled inside check_mem_access(), see case for
-> reg->type == PTR_TO_MAP_VALUE.
+If it's a remote mm, then we need to be absolutely sure that we won't UAF.
 
-yes, ok
+I also feel we should talk about this in the kdoc, unless BPF always somehow
+asserts these things to be the case + verifies them smoehow.
 
-> 
-> >  	return err;
-> >  }
-> >  
-> 
-> [...]
-> 
-> > @@ -14554,6 +14592,36 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
-> >  
-> >  	switch (opcode) {
-> >  	case BPF_ADD:
-> > +		if (ptr_to_insn_array) {
-> > +			u32 min_index = dst_reg->min_index;
-> > +			u32 max_index = dst_reg->max_index;
-> > +
-> > +			if ((umin_val + ptr_reg->off) > (u64) U32_MAX * sizeof(long)) {
-> > +				verbose(env, "umin_value %llu + offset %u is too big to convert to index\n",
-> > +					     umin_val, ptr_reg->off);
-> > +				return -EACCES;
-> > +			}
-> > +			if ((umax_val + ptr_reg->off) > (u64) U32_MAX * sizeof(long)) {
-> > +				verbose(env, "umax_value %llu + offset %u is too big to convert to index\n",
-> > +					     umax_val, ptr_reg->off);
-> > +				return -EACCES;
-> > +			}
-> > +
-> > +			min_index += (umin_val + ptr_reg->off) / sizeof(long);
-> > +			max_index += (umax_val + ptr_reg->off) / sizeof(long);
-> > +
-> > +			if (min_index >= ptr_reg->map_ptr->max_entries) {
-> > +				verbose(env, "min_index %u points to outside of map\n", min_index);
-> > +				return -EACCES;
-> > +			}
-> > +			if (max_index >= ptr_reg->map_ptr->max_entries) {
-> > +				verbose(env, "max_index %u points to outside of map\n", max_index);
-> > +				return -EACCES;
-> > +			}
-> > +
-> > +			dst_reg->min_index = min_index;
-> > +			dst_reg->max_index = max_index;
-> > +		}
-> 
-> I think this and the following hunk would disappear if {min,max}_index
-> are replaced by regular offset tracking mechanics.
-> 
-> >  		/* We can take a fixed offset as long as it doesn't overflow
-> >  		 * the s32 'off' field
-> >  		 */
-> > @@ -14598,6 +14666,11 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
-> >  		}
-> >  		break;
-> >  	case BPF_SUB:
-> > +		if (ptr_to_insn_array) {
-> > +			verbose(env, "Operation %s on ptr to instruction set map is prohibited\n",
-> > +				bpf_alu_string[opcode >> 4]);
-> > +			return -EACCES;
-> > +		}
-> >  		if (dst_reg == off_reg) {
-> >  			/* scalar -= pointer.  Creates an unknown scalar */
-> >  			verbose(env, "R%d tried to subtract pointer from scalar\n",
-> > @@ -16943,7 +17016,8 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
-> >  		}
-> >  		dst_reg->type = PTR_TO_MAP_VALUE;
-> >  		dst_reg->off = aux->map_off;
-> > -		WARN_ON_ONCE(map->max_entries != 1);
-> > +		WARN_ON_ONCE(map->map_type != BPF_MAP_TYPE_INSN_ARRAY &&
-> > +			     map->max_entries != 1);
-> 
-> Q: when is this necessary?
+>
+> >
+> > > + */
+> > > +__bpf_kfunc struct mem_cgroup *bpf_mm_get_mem_cgroup(struct mm_struct *mm)
+> > > +{
+> > > +	return get_mem_cgroup_from_mm(mm);
+> > > +}
+> > > +
+> > > +/**
+> > > + * bpf_put_mem_cgroup - Release a memory cgroup obtained from bpf_mm_get_mem_cgroup()
+> > > + * @memcg: The memory cgroup to release
+> > > + */
+> > > +__bpf_kfunc void bpf_put_mem_cgroup(struct mem_cgroup *memcg)
+> > > +{
+> > > +#ifdef CONFIG_MEMCG
+> > > +	if (!memcg)
+> > > +		return;
+> > > +	css_put(&memcg->css);
+> >
+> > Feels weird to have an ifdef here but not elsewhere, maybe the whole thing
+> > should be ifdef...?
+> >
+> > Is there not a put equivalent for get_mem_cgroup_from_mm()? That is a bit weird.
+> >
+> > Also do we now refrence the memcg global? That's pretty gross, could we not
+> > actually implement such a helper?
+> >
+> > Is it valid to do this also? Maybe cgroup people can chime in.
+>
+> There is mem_cgroup_put() which should handle !CONFIG_MEMCG configs.
+>
 
-For all maps except INSN_ARRAY only (map->max_entries == 1) is
-allowed. This change adds an exception for INSN_ARRAY.
-
-> 
-> >  		/* We want reg->id to be same (0) as map_value is not distinct */
-> >  	} else if (insn->src_reg == BPF_PSEUDO_MAP_FD ||
-> >  		   insn->src_reg == BPF_PSEUDO_MAP_IDX) {
-> > @@ -17696,6 +17770,246 @@ static int mark_fastcall_patterns(struct bpf_verifier_env *env)
-> >  	return 0;
-> >  }
-> >  
-> > +#define SET_HIGH(STATE, LAST)	STATE = (STATE & 0xffffU) | ((LAST) << 16)
-> > +#define GET_HIGH(STATE)		((u16)((STATE) >> 16))
-> > +
-> > +static int push_goto_x_edge(int t, struct bpf_verifier_env *env, struct jt *jt)
-> 
-> I think check_cfg() can be refactored to use insn_successors().
-> In such a case it won't be necessary to special case gotox processing
-> (appart from insn_aux->jt allocation).
-
-Yes, this sounds right, theoretically. I will take a look.
-
-> > +{
-> > +	int *insn_stack = env->cfg.insn_stack;
-> > +	int *insn_state = env->cfg.insn_state;
-> > +	u16 prev;
-> > +	int w;
-> > +
-> > +	for (prev = GET_HIGH(insn_state[t]); prev < jt->off_cnt; prev++) {
-> > +		w = jt->off[prev];
-> > +
-> > +		/* EXPLORED || DISCOVERED */
-> > +		if (insn_state[w])
-> > +			continue;
-> > +
-> > +		break;
-> > +	}
-> > +
-> > +	if (prev == jt->off_cnt)
-> > +		return DONE_EXPLORING;
-> > +
-> > +	mark_prune_point(env, t);
-> > +
-> > +	if (env->cfg.cur_stack >= env->prog->len)
-> > +		return -E2BIG;
-> > +	insn_stack[env->cfg.cur_stack++] = w;
-> > +
-> > +	mark_jmp_point(env, w);
-> > +
-> > +	SET_HIGH(insn_state[t], prev + 1);
-> > +	return KEEP_EXPLORING;
-> > +}
-> > +
-> > +static int copy_insn_array(struct bpf_map *map, u32 start, u32 end, u32 *off)
-> > +{
-> > +	struct bpf_insn_array_value *value;
-> > +	u32 i;
-> > +
-> > +	for (i = start; i <= end; i++) {
-> > +		value = map->ops->map_lookup_elem(map, &i);
-> > +		if (!value)
-> > +			return -EINVAL;
-> > +		off[i - start] = value->xlated_off;
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> > +static int cmp_ptr_to_u32(const void *a, const void *b)
-> > +{
-> > +	return *(u32 *)a - *(u32 *)b;
-> > +}
-> 
-> This will overflow for e.g. `0 - 8`.
-
-Why? 0U - 8U = 0xfffffff8U (it's not an UB because values are
-unsigned).  Then it's cast to int on return which is -8.
-
-> > +
-> > +static int sort_insn_array_uniq(u32 *off, int off_cnt)
-> > +{
-> > +	int unique = 1;
-> > +	int i;
-> > +
-> > +	sort(off, off_cnt, sizeof(off[0]), cmp_ptr_to_u32, NULL);
-> > +
-> > +	for (i = 1; i < off_cnt; i++)
-> > +		if (off[i] != off[unique - 1])
-> > +			off[unique++] = off[i];
-> > +
-> > +	return unique;
-> > +}
-> > +
-> > +/*
-> > + * sort_unique({map[start], ..., map[end]}) into off
-> > + */
-> > +static int copy_insn_array_uniq(struct bpf_map *map, u32 start, u32 end, u32 *off)
-> > +{
-> > +	u32 n = end - start + 1;
-> > +	int err;
-> > +
-> > +	err = copy_insn_array(map, start, end, off);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	return sort_insn_array_uniq(off, n);
-> > +}
-> > +
-> > +/*
-> > + * Copy all unique offsets from the map
-> > + */
-> > +static int jt_from_map(struct bpf_map *map, struct jt *jt)
-> > +{
-> > +	u32 *off;
-> > +	int n;
-> > +
-> > +	off = kvcalloc(map->max_entries, sizeof(u32), GFP_KERNEL_ACCOUNT);
-> > +	if (!off)
-> > +		return -ENOMEM;
-> > +
-> > +	n = copy_insn_array_uniq(map, 0, map->max_entries - 1, off);
-> > +	if (n < 0) {
-> > +		kvfree(off);
-> > +		return n;
-> > +	}
-> > +
-> > +	jt->off = off;
-> > +	jt->off_cnt = n;
-> > +	return 0;
-> > +}
-> > +
-> > +/*
-> > + * Find and collect all maps which fit in the subprog. Return the result as one
-> > + * combined jump table in jt->off (allocated with kvcalloc
-> > + */
-> > +static int jt_from_subprog(struct bpf_verifier_env *env,
-> > +			   int subprog_start,
-> > +			   int subprog_end,
-> > +			   struct jt *jt)
-> > +{
-> > +	struct bpf_map *map;
-> > +	struct jt jt_cur;
-> > +	u32 *off;
-> > +	int err;
-> > +	int i;
-> > +
-> > +	jt->off = NULL;
-> > +	jt->off_cnt = 0;
-> > +
-> > +	for (i = 0; i < env->insn_array_map_cnt; i++) {
-> > +		/*
-> > +		 * TODO (when needed): collect only jump tables, not static keys
-> > +		 * or maps for indirect calls
-> > +		 */
-> > +		map = env->insn_array_maps[i];
-> > +
-> > +		err = jt_from_map(map, &jt_cur);
-> > +		if (err) {
-> > +			kvfree(jt->off);
-> > +			return err;
-> > +		}
-> > +
-> > +		/*
-> > +		 * This is enough to check one element. The full table is
-> > +		 * checked to fit inside the subprog later in create_jt()
-> > +		 */
-> > +		if (jt_cur.off[0] >= subprog_start && jt_cur.off[0] < subprog_end) {
-> 
-> This won't always catch cases when insn array references offsets from
-> several subprograms. Also is one subprogram limitation really necessary?
-
-This was intentional. If you have a switch or a jump table
-defined in C, then corresponding jump tables belong to one function.
-Also, what if you have a jt which can jump from function f() to g(),
-but then g() is livepatched by another function?
-
-> > +			off = kvrealloc(jt->off, (jt->off_cnt + jt_cur.off_cnt) << 2, GFP_KERNEL_ACCOUNT);
-> > +			if (!off) {
-> > +				kvfree(jt_cur.off);
-> > +				kvfree(jt->off);
-> > +				return -ENOMEM;
-> > +			}
-> > +			memcpy(off + jt->off_cnt, jt_cur.off, jt_cur.off_cnt << 2);
-> > +			jt->off = off;
-> > +			jt->off_cnt += jt_cur.off_cnt;
-> > +		}
-> > +
-> > +		kvfree(jt_cur.off);
-> > +	}
-> > +
-> > +	if (jt->off == NULL) {
-> > +		verbose(env, "no jump tables found for subprog starting at %u\n", subprog_start);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	jt->off_cnt = sort_insn_array_uniq(jt->off, jt->off_cnt);
-> > +	return 0;
-> > +}
-> > +
-> > +static int create_jt(int t, struct bpf_verifier_env *env, int fd, struct jt *jt)
-> > +{
-> > +	static struct bpf_subprog_info *subprog;
-> > +	int subprog_idx, subprog_start, subprog_end;
-> > +	struct bpf_map *map;
-> > +	int map_idx;
-> > +	int ret;
-> > +	int i;
-> > +
-> > +	if (env->subprog_cnt == 0)
-> > +		return -EFAULT;
-> > +
-> > +	subprog_idx = find_containing_subprog_idx(env, t);
-> > +	if (subprog_idx < 0) {
-> > +		verbose(env, "can't find subprog containing instruction %d\n", t);
-> > +		return -EFAULT;
-> > +	}
-> > +	subprog = &env->subprog_info[subprog_idx];
-> > +	subprog_start = subprog->start;
-> > +	subprog_end = (subprog + 1)->start;
-> > +
-> > +	map_idx = add_used_map(env, fd);
-> 
-> Will this spam the log with bogus
-> "fd %d is not pointing to valid bpf_map\n" messages if gotox does not
-> specify fd?
-
-Yes, thanks, good catch! (This code will be removed in v2, as
-gotox[imm=map_fd] will be gone for now, as you've suggested.)
-
-> > +	if (map_idx >= 0) {
-> > +		map = env->used_maps[map_idx];
-> > +		if (map->map_type != BPF_MAP_TYPE_INSN_ARRAY) {
-> > +			verbose(env, "map type %d in the gotox insn %d is incorrect\n",
-> > +				     map->map_type, t);
-> > +			return -EINVAL;
-> > +		}
-> > +
-> > +		env->insn_aux_data[t].map_index = map_idx;
-> > +
-> > +		ret = jt_from_map(map, jt);
-> > +		if (ret)
-> > +			return ret;
-> > +	} else {
-> > +		ret = jt_from_subprog(env, subprog_start, subprog_end, jt);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> > +	/* Check that the every element of the jump table fits within the given subprogram */
-> > +	for (i = 0; i < jt->off_cnt; i++) {
-> > +		if (jt->off[i] < subprog_start || jt->off[i] >= subprog_end) {
-> > +			verbose(env, "jump table for insn %d points outside of the subprog [%u,%u]",
-> > +					t, subprog_start, subprog_end);
-> > +			return -EINVAL;
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/* "conditional jump with N edges" */
-> > +static int visit_goto_x_insn(int t, struct bpf_verifier_env *env, int fd)
-> > +{
-> > +	struct jt *jt = &env->insn_aux_data[t].jt;
-> > +	int ret;
-> > +
-> > +	if (jt->off == NULL) {
-> > +		ret = create_jt(t, env, fd, jt);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Mark jt as allocated. Otherwise, this is not possible to check if it
-> > +	 * was allocated or not in the code which frees memory (jt is a part of
-> > +	 * union)
-> > +	 */
-> > +	env->insn_aux_data[t].jt_allocated = true;
-> > +
-> > +	return push_goto_x_edge(t, env, jt);
-> > +}
-> > +
-> >  /* Visits the instruction at index t and returns one of the following:
-> >   *  < 0 - an error occurred
-> >   *  DONE_EXPLORING - the instruction was fully explored
-> > @@ -17786,8 +18100,8 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
-> >  		return visit_func_call_insn(t, insns, env, insn->src_reg == BPF_PSEUDO_CALL);
-> >  
-> >  	case BPF_JA:
-> > -		if (BPF_SRC(insn->code) != BPF_K)
-> > -			return -EINVAL;
-> > +		if (BPF_SRC(insn->code) == BPF_X)
-> > +			return visit_goto_x_insn(t, env, insn->imm);
-> >  
-> >  		if (BPF_CLASS(insn->code) == BPF_JMP)
-> >  			off = insn->off;
-> 
-> [...]
-> 
-> > @@ -18679,6 +19000,10 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
-> >  		return regs_exact(rold, rcur, idmap) && rold->frameno == rcur->frameno;
-> >  	case PTR_TO_ARENA:
-> >  		return true;
-> > +	case PTR_TO_INSN:
-> > +		/* cur ⊆ old */
-> 
-> Out of curiosity: are unicode symbols allowed in kernel source code?
-
-I've replaced with words, don't see other examples of unicode around
-(but also can't find "don't use unicode" in coding-style.rst).
-
-> > +		return (rcur->min_index >= rold->min_index &&
-> > +			rcur->max_index <= rold->max_index);
-> >  	default:
-> >  		return regs_exact(rold, rcur, idmap);
-> >  	}
-> > @@ -19825,6 +20150,67 @@ static int process_bpf_exit_full(struct bpf_verifier_env *env,
-> >  	return PROCESS_BPF_EXIT;
-> >  }
-> >  
-> > +/* gotox *dst_reg */
-> > +static int check_indirect_jump(struct bpf_verifier_env *env, struct bpf_insn *insn)
-> > +{
-> > +	struct bpf_verifier_state *other_branch;
-> > +	struct bpf_reg_state *dst_reg;
-> > +	struct bpf_map *map;
-> > +	int err = 0;
-> > +	u32 *xoff;
-> > +	int n;
-> > +	int i;
-> > +
-> > +	dst_reg = reg_state(env, insn->dst_reg);
-> > +	if (dst_reg->type != PTR_TO_INSN) {
-> > +		verbose(env, "BPF_JA|BPF_X R%d has type %d, expected PTR_TO_INSN\n",
-> > +				insn->dst_reg, dst_reg->type);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	map = dst_reg->map_ptr;
-> > +	if (!map)
-> > +		return -EINVAL;
-> 
-> Is this a verifier bug or legit situation?
-> If it is a bug, maybe add a verifier_bug() here and return -EFAULT?
-
-Yes, thanks, this would be a bug.
-
-> > +
-> > +	if (map->map_type != BPF_MAP_TYPE_INSN_ARRAY)
-> > +		return -EINVAL;
-> 
-> Same question here, ->type is already `PTR_TO_INSN`.
-
-Right, thanks, I can add a bug check here. (I think this check is here
-historically earlier than PTR_TO_INSN appeared.)
-
-> > +
-> > +	if (dst_reg->max_index >= map->max_entries) {
-> > +		verbose(env, "BPF_JA|BPF_X R%d is out of map boundaries: index=%u, max_index=%u\n",
-> > +				insn->dst_reg, dst_reg->max_index, map->max_entries-1);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	xoff = kvcalloc(dst_reg->max_index - dst_reg->min_index + 1, sizeof(u32), GFP_KERNEL_ACCOUNT);
-> > +	if (!xoff)
-> > +		return -ENOMEM;
-> > +
-> > +	n = copy_insn_array_uniq(map, dst_reg->min_index, dst_reg->max_index, xoff);
-> 
-> Nit: I'd avoid this allocation and do a loop for(i = min_index; i <= max_index; i++),
->      with map->ops->map_lookup_elem(map, &i) (or a wrapper) inside it.
-
-But it should be a list of unique values, how would you sort it
-without allocating memory (in a reqsonable time)?
-
-> > +	if (n < 0) {
-> > +		err = n;
-> > +		goto free_off;
-> > +	}
-> > +	if (n == 0) {
-> > +		verbose(env, "register R%d doesn't point to any offset in map id=%d\n",
-> > +			     insn->dst_reg, map->id);
-> > +		err = -EINVAL;
-> > +		goto free_off;
-> > +	}
-> > +
-> > +	for (i = 0; i < n - 1; i++) {
-> > +		other_branch = push_stack(env, xoff[i], env->insn_idx, false);
-> > +		if (IS_ERR(other_branch)) {
-> > +			err = PTR_ERR(other_branch);
-> > +			goto free_off;
-> > +		}
-> > +	}
-> > +	env->insn_idx = xoff[n-1];
-> > +
-> > +free_off:
-> > +	kvfree(xoff);
-> > +	return err;
-> > +}
-> > +
-> >  static int do_check_insn(struct bpf_verifier_env *env, bool *do_print_state)
-> >  {
-> >  	int err;
-> 
-> [...]
-> 
-> > @@ -20981,6 +21371,23 @@ static int bpf_adj_linfo_after_remove(struct bpf_verifier_env *env, u32 off,
-> >  	return 0;
-> >  }
-> >  
-> > +/*
-> > + * Clean up dynamically allocated fields of aux data for instructions [start, ..., end]
-> > + */
-> > +static void clear_insn_aux_data(struct bpf_insn_aux_data *aux_data, int start, int end)
-> 
-> Nit: switching this to (..., int start, int len) would simplify arithmetic at call sites.
-
-Yes, thanks.
-
-> 
-> > +{
-> > +	int i;
-> > +
-> > +	for (i = start; i <= end; i++) {
-> > +		if (aux_data[i].jt_allocated) {
-> > +			kvfree(aux_data[i].jt.off);
-> > +			aux_data[i].jt.off = NULL;
-> > +			aux_data[i].jt.off_cnt = 0;
-> > +			aux_data[i].jt_allocated = false;
-> > +		}
-> > +	}
-> > +}
-> > +
-> >  static int verifier_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt)
-> >  {
-> >  	struct bpf_insn_aux_data *aux_data = env->insn_aux_data;
-> 
-> [...]
-> 
-> > @@ -24175,18 +24586,18 @@ static bool can_jump(struct bpf_insn *insn)
-> >  	return false;
-> >  }
-> >  
-> > -static int insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
-> > +static int insn_successors_regular(struct bpf_prog *prog, u32 insn_idx, u32 *succ)
-> >  {
-> > -	struct bpf_insn *insn = &prog->insnsi[idx];
-> > +	struct bpf_insn *insn = &prog->insnsi[insn_idx];
-> >  	int i = 0, insn_sz;
-> >  	u32 dst;
-> >  
-> >  	insn_sz = bpf_is_ldimm64(insn) ? 2 : 1;
-> > -	if (can_fallthrough(insn) && idx + 1 < prog->len)
-> > -		succ[i++] = idx + insn_sz;
-> > +	if (can_fallthrough(insn) && insn_idx + 1 < prog->len)
-> > +		succ[i++] = insn_idx + insn_sz;
-> >  
-> >  	if (can_jump(insn)) {
-> > -		dst = idx + jmp_offset(insn) + 1;
-> > +		dst = insn_idx + jmp_offset(insn) + 1;
-> >  		if (i == 0 || succ[0] != dst)
-> >  			succ[i++] = dst;
-> >  	}
-> > @@ -24194,6 +24605,36 @@ static int insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
-> >  	return i;
-> >  }
-> >  
-> > +static int insn_successors_gotox(struct bpf_verifier_env *env,
-> > +				 struct bpf_prog *prog,
-> > +				 u32 insn_idx, u32 **succ)
-> > +{
-> > +	struct jt *jt = &env->insn_aux_data[insn_idx].jt;
-> > +
-> > +	if (WARN_ON_ONCE(!jt->off || !jt->off_cnt))
-> > +		return -EFAULT;
-> > +
-> > +	*succ = jt->off;
-> > +	return jt->off_cnt;
-> > +}
-> > +
-> > +/*
-> > + * Fill in *succ[0],...,*succ[n-1] with successors. The default *succ
-> > + * pointer (of size 2) may be replaced with a custom one if more
-> > + * elements are required (i.e., an indirect jump).
-> > + */
-> > +static int insn_successors(struct bpf_verifier_env *env,
-> > +			   struct bpf_prog *prog,
-> > +			   u32 insn_idx, u32 **succ)
-> > +{
-> > +	struct bpf_insn *insn = &prog->insnsi[insn_idx];
-> > +
-> > +	if (unlikely(insn_is_gotox(insn)))
-> > +		return insn_successors_gotox(env, prog, insn_idx, succ);
-> > +
-> > +	return insn_successors_regular(prog, insn_idx, *succ);
-> > +}
-> > +
-> 
-> The `prog` parameter can be dropped, as it is accessible from `env`.
-> I don't like the `u32 **succ` part of this interface.
-> What about one of the following alternatives:
-> 
-> - u32 *insn_successors(struct bpf_verifier_env *env, u32 insn_idx)
->   and `u32 succ_buf[2]` added to bpf_verifier_env?
-
-I like this variant of yours more than the second one.
-
-Small corrections that this would be
-
-    u32 *insn_successors(struct bpf_verifier_env *env, u32 insn_idx, int *succ_num)
-
-to return the number of instructions.
-
-> - int insn_successor(struct bpf_verifier_env *env, u32 insn_idx, u32 succ_num):
-> 	bool fallthrough = can_fallthrough(insn);
-> 	bool jump = can_jump(insn);
-> 	if (succ_num == 0) {
-> 		if (fallthrough)
-> 			return <next insn>
-> 		if (jump)
-> 			return <jump tgt>
-> 	} else if (succ_num == 1) {
-> 		if (fallthrough && jump)
-> 			return <jmp tgt>
-> 	} else if (is_gotox) {
-> 		return <lookup>
-> 	}
-> 	return -1;
->   
-> ?
-> 
-> >  /* Each field is a register bitmask */
-> >  struct insn_live_regs {
-> >  	u16 use;	/* registers read by instruction */
-> > @@ -24387,11 +24828,17 @@ static int compute_live_registers(struct bpf_verifier_env *env)
-> 
-> Could you please extend `tools/testing/selftests/bpf/progs/compute_live_registers.c`
-> with test cases for gotox?
-
-Yes, thanks for pointing to it, will do.
-
-> >  			int insn_idx = env->cfg.insn_postorder[i];
-> >  			struct insn_live_regs *live = &state[insn_idx];
-> >  			int succ_num;
-> > -			u32 succ[2];
-> > +			u32 _succ[2];
-> > +			u32 *succ = &_succ[0];
-> >  			u16 new_out = 0;
-> >  			u16 new_in = 0;
-> >  
-> > -			succ_num = insn_successors(env->prog, insn_idx, succ);
-> > +			succ_num = insn_successors(env, env->prog, insn_idx, &succ);
-> > +			if (succ_num < 0) {
-> > +				err = succ_num;
-> > +				goto out;
-> > +
-> > +			}
-> >  			for (int s = 0; s < succ_num; ++s)
-> >  				new_out |= state[succ[s]].in;
-> >  			new_in = (new_out & ~live->def) | live->use;
-> 
-> [...]
+OK Yafang - let's use this instead then?
 
