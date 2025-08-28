@@ -1,131 +1,91 @@
-Return-Path: <bpf+bounces-66907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E29B3ACB4
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 23:27:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E14D4B3ACFA
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 23:50:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEAF5566E91
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 21:27:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3AE0164D85
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 21:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380B629D29B;
-	Thu, 28 Aug 2025 21:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C5E29A322;
+	Thu, 28 Aug 2025 21:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UiF4yDGh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ayggmNeQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9AC31A8F84;
-	Thu, 28 Aug 2025 21:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361AE149C6F;
+	Thu, 28 Aug 2025 21:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756416440; cv=none; b=E1NASVQq6N/vWgXtw+2GERxizc9qwtHEIEOLOsx/8A8167+DUL168wgLfbTUwkToximSj0rv2KZM/MKnHLKFl6V9giYk5wiYwvpI8/VAJvKvmONm2n4DcMiuu0D20vmaxUjz0g3oFyOcV7pvJVspxBvZq6zZQGL1nSDdIeu7wzg=
+	t=1756417806; cv=none; b=nqxO5fpHjxUk20/1+B3bldDyDzTHGye1M+qFbN9hCmp09glkTgQ9NgisHSsU5OAIgCzldNPNtChv0aXIYf6oIJ8PAJNG19BVAVZ2zpS6U2nPqTH+4VobkSOQ7axOYRQWusu8xJv+cKgZBHRNlMcczFp7lMeBRN+UgYEAdh0D8nY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756416440; c=relaxed/simple;
-	bh=F9xDHWqkF1GjRihj3dUZnAszqw+My0fBopE3OqZzH+M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Duh1bZFWHlAc7x0KE2l6Om/PkBi7PRSlRWzHztunGvWOoMon7WUw6Gp/7ZJD1tf6jFkHPcs+jngA77+E4dzffv7HF5ZJyMgD2BhSYS8ZzqsTeQ52tn5882KHYWxLjrlWgGRHRXVKMD832XtJgAS4R3MHuBFomYBmqa4m/ficPdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UiF4yDGh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76D2CC4CEEB;
-	Thu, 28 Aug 2025 21:27:17 +0000 (UTC)
+	s=arc-20240116; t=1756417806; c=relaxed/simple;
+	bh=4Y4J6JquET82yYOKsdSO3p46GETUY7cRdw3zU1Y47NY=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=JO9lpOwIO4+LnOnMO4BIgYwLTGtiolapo/5CE8N14vhO39SQU+y3MYGpDVezTh5p/4TYDqa+N5o82a/NJTqF6/gcRGeZuI9KWkJnBoA05QrR/DCON/JEvaKfw9qyvwwM+6+1vdtqjLbVeoYwcsASSV3XT+MhU1xiiak+6uNKOYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ayggmNeQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC5E5C4CEEB;
+	Thu, 28 Aug 2025 21:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756416440;
-	bh=F9xDHWqkF1GjRihj3dUZnAszqw+My0fBopE3OqZzH+M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UiF4yDGhRLT6PMsa8dqe7Ki50MQDjr5ERQN7do3EYNZ/iXznCNMs2GIJkBlUFjwN7
-	 0eBQPDI/l3k/JIm/x329kWAd9PoWpgNi+QOTgLiNxv7fG8/8Sv1vzrHlO4F2AjZwlU
-	 hP9M14RVymaWeYklvV6oEiLc9eLdrtUFoYmEx8HXTCFUCThG/ZxlsQj5gzmdO30Sjj
-	 cTOKbWWrH7C4e3Eh9hcUq8zFpEVk/0i+d3fjRkc7e2H2cGnPdClwWtbaIrcraXu+uT
-	 T4wyjpcqm6R0S1/ECvRtvzZqKQYHTuz8ZWo+UEA1Eg12A0+zv9DlwP8/0d+w1/ZjZv
-	 KtYeZxUh1EsCQ==
-Date: Thu, 28 Aug 2025 17:27:15 -0400
-From: Steven Rostedt <rostedt@kernel.org>
-To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung
- Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Andrii
- Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>, "Jose
- E. Marchesi" <jemarch@gnu.org>, Beau Belgrave <beaub@linux.microsoft.com>,
- Jens Remus <jremus@linux.ibm.com>, Andrew Morton
- <akpm@linux-foundation.org>, Florian Weimer <fweimer@redhat.com>, Sam James
- <sam@gentoo.org>, Kees Cook <kees@kernel.org>, Carlos O'Donell
- <codonell@redhat.com>
-Subject: Re: [PATCH v6 5/6] tracing: Show inode and device major:minor in
- deferred user space stacktrace
-Message-ID: <20250828172715.215d18ee@batman.local.home>
-In-Reply-To: <F8A0C174-F51B-40A4-8DC5-C75B8706BE74@gmail.com>
-References: <20250828180300.591225320@kernel.org>
-	<20250828180357.223298134@kernel.org>
-	<CAHk-=wi0EnrBacWYJoUesS0LXUprbLmSDY3ywDfGW94fuBDVJw@mail.gmail.com>
-	<D7C36F69-23D6-4AD5-AED1-028119EAEE3F@gmail.com>
-	<CAHk-=wiBUdyV9UdNYEeEP-1Nx3VUHxUb0FQUYSfxN1LZTuGVyg@mail.gmail.com>
-	<20250828161718.77cb6e61@batman.local.home>
-	<583E1D73-CED9-4526-A1DE-C65567EA779D@gmail.com>
-	<20250828165139.15a74511@batman.local.home>
-	<F8A0C174-F51B-40A4-8DC5-C75B8706BE74@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1756417805;
+	bh=4Y4J6JquET82yYOKsdSO3p46GETUY7cRdw3zU1Y47NY=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=ayggmNeQ6jWVzGfgIn3J/tTcKORg8NpOIes7vSK9PcFoCSm7fGwJ9Z45Qw6lRZPPr
+	 u4gHCXlu35ra6ZobagPCDcaqbVTPOT9pH/zUrn9U5fP3I0lImCk5Muqpsc5xY0kfFC
+	 NNcDAtGGg0iVVvAnz7IiWB4Q5qnqYh0/KzT0msk5KYibTUGl2PGHOKZyMu4F288ojh
+	 0WAV2azFiI9yF2WoLKD4WPH0/1mFU2FDwoEpifsDjEjJbzVUeJDA0Ayj6shTzGN+wl
+	 PXrnUDQxC5rRmsEcUbEAZ/htNtEY/eP4qVpA0dK2PIj4dB8cs/tpD0s2spOqt/FjYb
+	 phE9JOxeiXRHA==
+Message-ID: <b0cc6fef-2048-4798-881f-61ae0366b726@kernel.org>
+Date: Thu, 28 Aug 2025 22:50:02 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+From: Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH v7 0/2] bpftool: Refactor config parsing and add CET
+ symbol matching
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, chenyuan_fl@163.com
+Cc: olsajiri@gmail.com, andrii@kernel.org, ast@kernel.org,
+ bpf@vger.kernel.org, chenyuan@kylinos.cn, daniel@iogearbox.net,
+ linux-kernel@vger.kernel.org, yonghong.song@linux.dev
+References: <aKL4rB3x8Cd4uUvb@krava>
+ <20250825022002.13760-1-chenyuan_fl@163.com>
+ <CAEf4Bzb_3ac0dPnkuMqs-dCrTEWqjVt-fsGWGyHAai_bUxubNA@mail.gmail.com>
+Content-Language: en-GB
+In-Reply-To: <CAEf4Bzb_3ac0dPnkuMqs-dCrTEWqjVt-fsGWGyHAai_bUxubNA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, 28 Aug 2025 18:00:22 -0300
-Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
-
-> >Thus, the user stack trace will just have the offset and a hash value
-> >that will be match the output of the file_cache event which will have
-> >the path name and a build id (if one exists).
-> >
-> >Would that work?  
+2025-08-27 14:53 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Sun, Aug 24, 2025 at 7:20 PM <chenyuan_fl@163.com> wrote:
+>>
+>> From: Yuan CHen <chenyuan@kylinos.cn>
+>>
+>> 1. **Refactor kernel config parsing**
+>>    - Moves duplicate config file handling from feature.c to common.c
+>>    - Keeps all existing functionality while enabling code reuse
+>>
+>> 2. **Add CET-aware symbol matching**
+>>    - Adjusts kprobe hook detection for x86_64 CET (endbr32/64 prefixes)
+>>    - Matches symbols at both original and CET-adjusted addresses
+>>
 > 
-> Probably.
-> 
-> This "if it is available" question is valid, but since 2016 it's is
-> more of a "did developers disabled it explicitly?"
+> Quentin, can you please take a quick look at this patch set, when you
+> get a chance? Thanks!
 
-The "if one exists" comment is that it's not a requirement. If none
-exists, it would just add a zero.
 
-> 
-> If my "googling" isn't wrong, GNU LD defaults to generating a build
-> ID in ELF images since 2011 and clang's companion since 2016.
-> 
-> So making it even more available than what the BPF guys did long ago
-> and perf piggybacked on at some point, by having it cached, on
-> request?, in some 20 bytes alignment hole in task_struct that would
-> be only used when profiling/tracing may be amenable.
+Yes! Both patches look good to me. For the series:
 
-Would perf be interested in this hash file lookup?
+Acked-by: Quentin Monnet <qmo@kernel.org>
 
-I know perf is reliant on user space more than ftrace is, and has a lot
-of work happening in user space while getting stack traces. With
-ftrace, there's on real user space requirement, thus a lot of the work
-needs to be done in the kernel.
-
-If we go with a hash to file, it's somewhat useless by itself without a
-way to map the hash to file/buildid.
-
-I originally started making this hash->file a file in tracefs. But then
-I needed to figure out how to manage the allocations. Do I add a "size"
-for that file and start dropping mappings when it reaches that limit.
-Then I may need to add a LRU algorithm to do so. I found simply having
-an event that wrote out the mappings was so much easier to implement.
-
-But the file_cache code could be used by perf, where perf does the same
-and just monitors the file_cache event. I could make the API more
-global than just the kernel/trace directory.
-
--- Steve
+Thanks for this work
 
