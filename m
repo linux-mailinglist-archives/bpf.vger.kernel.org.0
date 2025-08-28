@@ -1,150 +1,207 @@
-Return-Path: <bpf+bounces-66865-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66866-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3C24B3A747
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 19:04:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0459DB3A7D7
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 19:24:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A318D983764
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 17:04:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF9707A76A2
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 17:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44BBF334371;
-	Thu, 28 Aug 2025 17:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC7B3375BA;
+	Thu, 28 Aug 2025 17:24:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TqIjF2eh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R4ynusb6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA8F1624D5;
-	Thu, 28 Aug 2025 17:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97CF176ADB
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 17:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756400683; cv=none; b=O8V/TzsI/Chl5XFL7OKV/N7cxyaWfGm9R7uuk0N17RjlEhG7Bw52ePFUz7gImk8MThCJyYIeLOaep8kpxdh3cspB2qZk9Uun/A7/ZDjIMjDxx6DJURVlm6xDAiZjYiO82WjV7ThxJllUATZOkXFPnYgvoww9gocGQ78oo31Rf7o=
+	t=1756401857; cv=none; b=RN+yCboUsDQN2JJtwv7Gme+NGpQt5xWKt9DhDXxfOS3seQMvP1jv0joQsRgf3I5CPfv5wi2el+9IZ7mh/bYuO8khgYmDYPXq/N+sTAVw7Lo3U6be79wmKczDuYfR//5uq5bnLg7Z8bCKVWW5yAEq03j0G7zivhOiE/TzLj1jmZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756400683; c=relaxed/simple;
-	bh=ro7RSIiLzI/HFo3sLXaNXatjdUFS6DcqL5llpgvGnxM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=djvDkqdDimku+Eukn/8umxflmJjSLI7brXFOe+D5fiZ9A4Yv4r/1kn5DIKQnjCInwGe7ExoGPXyRoBuxa8n+uoCsOGV4BZizJIX0H/zL+iNllhchHtAMJizZLM0aWXhE+hsjyIi0xNKewvJZBXCJu1DHQ5ajVclKMHdhD13+lKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TqIjF2eh; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b49c1c130c9so877056a12.0;
-        Thu, 28 Aug 2025 10:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756400682; x=1757005482; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W2wC2bic+HM0w4hPf0WG0ikD2mufCn5v6xkL6+MZy2Q=;
-        b=TqIjF2ehTlreF6k0K4kN55182G6+31r8+yNR7/ExgN63Z/i/CmkkezqJW/S8UFfImR
-         nSUwol5m5Hw3JgeuvZqfkuEf903TUP10RPVEqfVPrSqh/nVbR2kAVvuJ2k51LKpQUpVw
-         oZaXnk/Vn+vVlzyzywzUNXe3W1rAtnCki9TA/6NhkfsTpod9C1S50OVofJvlQRavVgpS
-         2B83ICz4thNmwqVWLyeF6GdSy8GvqSkpdZID5pcQheH0548Ed4ZBCGs2fc27HIfGS+6p
-         BX1NLMXpRg3gE95hsh5xEbxobGgA3DXWm+9Dr2cvy1AH4TQUZnlOsXWYtKltfrdF8PiF
-         5rVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756400682; x=1757005482;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W2wC2bic+HM0w4hPf0WG0ikD2mufCn5v6xkL6+MZy2Q=;
-        b=migjWQsJbO9pZeH/a7yaU6jqIXTYGmsM1W6xMtWyCcLtvw0OTTomQbLzmKm4TGmfKz
-         u2d/Jh7D2oq9NEkkTholE1LA8M6+Gg4N80snMpvFmPPkrWj+/MgRkxYLjthOV19w7ql3
-         /gnI2OgZlzc0dFleri0LsShLVpkn/2XMr/sKBgRAwzMRt4pysyDIohoUs5PBS4kogsuT
-         qWItqaa1UydHmuLR69egPw4e4stAHKBVckAHieEu1A8ysDN7wBnlay6cbD8AtfG5vyyL
-         6tfyTjDRlzr+gdJgyvQrlzmjsOB9wzY2I+KRZU8T1eKpcQ+pL3ncX43YIc8wJIeEEkd8
-         n0vw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0prD57La6+O9cIdIaDr1WOf3yH62Xzc06qxK+yRVkT8MMkXwaV0Bu1CsAWmczFHiRKC8=@vger.kernel.org, AJvYcCX0OuxuHzJshEIjQgGE09zNXZVb5SOBm28yMl41JAE8unmQKOoRUTBnnYzB/5Bnd9DdjFC0/mqOfbLcbTLz@vger.kernel.org, AJvYcCXJtG71t4zqINlOREUNc2Z8DRvNDIF6UsxsIPVoFS6imThMv7SMecUw8qKjGCMr2BiB3rG/NCAuxsQBrj6lwx0k@vger.kernel.org
-X-Gm-Message-State: AOJu0YzScxQNhFB2HVXhrge7nEXGFsDLPZ9vTjmdVuXenZ1WFSqH+ws2
-	U245eQWSTD4LwXM1OyPHCHPwxLzVJ0Oa3oYoezMPKto9m3kPlq3U3slxfKokzK4qsKTVDVlXkIA
-	ktaGQfkQZLMJHahQuCjKoRqePoEcupFs=
-X-Gm-Gg: ASbGncvHSAU0kheG0Sstqh4gnLyn2adjLX/JM/omHrTNPgvLsG7bhYz/lDQfIGLrAm5
-	44Ied+dWTfQ1w+FoPMEvEUFlyNBuyoAqBThce5QEX/ZNQURNJcBGWZl7MYHMtEdF9AsB6VjlQGV
-	7TBWRwk8TjsHFC5Q4CAYpLzRacJ4misPrH3Kk4W4xkIkuenRzAdlejNc4N/8tJ5J10EDgCnNqw+
-	SZ3WIA9KlMgydLf6V4wpHpwOcp+73o6
-X-Google-Smtp-Source: AGHT+IFiz9Fltl3Ekl6BtNBgM/mYYAS5rXsGZowBgqkTJqyGF3lSFbLfo89hYUxN7PU+O0TF3aQJIJzRRbhaEBFoDdQ=
-X-Received: by 2002:a17:903:2ad0:b0:246:b93b:9739 with SMTP id
- d9443c01a7336-246b93b9d0bmr190974475ad.22.1756400681424; Thu, 28 Aug 2025
- 10:04:41 -0700 (PDT)
+	s=arc-20240116; t=1756401857; c=relaxed/simple;
+	bh=SZ1VTuE69jIefYaf0ogpU6KHGeyQYJ4Y8v6J+/oHLmo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BPy1XDsLKFGPeelYE60RabNZauc099KBKlWvW1UTdCIicBswoQkn7eV6n2p4hBCrzfQHK1iwxjvBPQmvm45R12z0K5O+Tcsu+0gVFFkWwM9goFhycoKWTnzuUjkcj9PMejlTKAwN9DrYHOl/PyloLJmXA3z+aXvoNt/K9+7TZek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R4ynusb6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75E41C4CEF4;
+	Thu, 28 Aug 2025 17:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756401857;
+	bh=SZ1VTuE69jIefYaf0ogpU6KHGeyQYJ4Y8v6J+/oHLmo=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=R4ynusb6BfDXUFC9sXeZwNNF+uIgu3tH+7uWIEqpa8/cv2Zf9AyAgSkfT4E+KL2Fs
+	 pM5L0laoLCU8iAZ0qHfQumROdVSzjjxpN2uKGYO7w0n7m2ZbWEoI638PwIuyhQvVNi
+	 1kpBsqXtpmP89pel902JJCLoVQOKGaTA6PqVPjSluQj0y7A0Nexus9XtoLzS3e/DBy
+	 JI9W658HkkoaUIf83jdSBOimD8cCdtSjDQi82G6NDGtT13I2uUsiYpZ0BeLwUMtNgQ
+	 UYm1lakUARU0s+4iAcdRB3WMpShYNYwMF7uu5jf1is6MjF7BUDjJpt25ZQO/AEJoA8
+	 JCfbDK9Onikwg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 20150CE0C12; Thu, 28 Aug 2025 10:24:17 -0700 (PDT)
+Date: Thu, 28 Aug 2025 10:24:17 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Leon Hwang <leon.hwang@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [BUG] Deadlock triggered by bpfsnoop funcgraph feature
+Message-ID: <8ab6e14b-e639-413e-91cc-56dc02d1a4fb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
+ <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com>
+ <8dcc144e-3142-4e0d-a852-155781e41eb4@linux.dev>
+ <CAADnVQLDG=Oavh9He=ivXm9MPwsqWHttbTYQh1-EZuHpwujaBA@mail.gmail.com>
+ <b3463ffa-c2cb-43c8-a0d2-92bad49e3c23@linux.dev>
+ <93e75cff-871f-4b49-868c-11fea0eec396@paulmck-laptop>
+ <DCE3PPX8IFF4.FE1BC8HMP4Y7@linux.dev>
+ <CAADnVQ+G73vyC77tSo3AFcBT5FiBFbojfddnpYi5yRcqOxQiDQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1756378974.git.rtoax@foxmail.com> <tencent_69BD268FBA201219240B51661D5E96A8D80A@qq.com>
-In-Reply-To: <tencent_69BD268FBA201219240B51661D5E96A8D80A@qq.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 28 Aug 2025 10:04:29 -0700
-X-Gm-Features: Ac12FXzNK0vBhdz_ED_YsUdfZ9pdzwt-wk3B0YpHBu8eCPK40xcRRGNSxIQkCok
-Message-ID: <CAEf4Bza9=xYzT=QcoZjiqn7rnfBP9bjtEuWLu9qZKKodwOjgZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf/helpers: bpf_strnstr: Exact match length
-To: Rong Tao <rtoax@foxmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, vmalik@redhat.com, 
-	Rong Tao <rongtao@cestc.cn>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+G73vyC77tSo3AFcBT5FiBFbojfddnpYi5yRcqOxQiDQ@mail.gmail.com>
 
-On Thu, Aug 28, 2025 at 4:07=E2=80=AFAM Rong Tao <rtoax@foxmail.com> wrote:
->
-> From: Rong Tao <rongtao@cestc.cn>
->
-> strnstr should not treat the ending '\0' of s2 as a matching character,
-> otherwise the parameter 'len' will be meaningless, for example:
->
->     1. bpf_strnstr("openat", "open", 4) =3D -ENOENT
->     2. bpf_strnstr("openat", "open", 5) =3D 0
->
-> This patch makes (1) return 0, indicating a successful match.
->
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
->  kernel/bpf/helpers.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
+On Thu, Aug 28, 2025 at 09:43:00AM -0700, Alexei Starovoitov wrote:
+> On Thu, Aug 28, 2025 at 6:39 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+> >
+> > On Thu Aug 28, 2025 at 7:50 PM +08, Paul E. McKenney wrote:
+> > > On Thu, Aug 28, 2025 at 10:40:47AM +0800, Leon Hwang wrote:
+> > >> On 28/8/25 08:42, Alexei Starovoitov wrote:
+> > >> > On Tue, Aug 26, 2025 at 7:58 PM Leon Hwang <leon.hwang@linux.dev> wrote:
+> >
+> > [...]
+> >
+> > >> >
+> > >> > bpf infra is trying hard not to crash it, but debug kernel is a different
+> > >> > category. rcu_read_lock_held() doesn't exist in production kernels.
+> > >> > You can propose adding "notrace" for it, but in general that doesn't scale.
+> > >> > Same with rcu_lockdep_current_cpu_online().
+> > >> > It probably deserves "notrace" too.
+> > >>
+> > >> Indeed, it doesn't scale.
+> > >>
+> > >> When I run
+> > >> ./bpfsnoop -k "htab_*_elem" --output-fgraph --fgraph-debug
+> > >> --fgraph-exclude
+> > >> 'rcu_read_lock_*held,rcu_lockdep_current_cpu_online,*raw_spin_*lock*,kvfree,show_stack,put_task_stack',
+> > >> the kernel doesn’t panic, but the OS eventually stalls and becomes
+> > >> unresponsive to key presses.
+> > >>
+> > >> It seems preferable to avoid running BPF programs continuously in such
+> > >> cases.
+> > >
+> > > Agreed, when adding code to the Linux kernel, whether via a patch, via
+> > > a BPF program, or by whatever other means, you are taking responsibility
+> > > for the speed, scalability, and latency effects of that code.
+> > >
+> > > Nevertheless, I am happy to add a few "notrace" modifiers
+> > > if needed.  Do you guys need them for rcu_read_lock_held() and
+> > > rcu_lockdep_current_cpu_online()?
+> > >
+> >
+> > I think it would be better to add "notrace" to following functions:
+> >
+> > ./bpfsnoop -k 'rcu_read_*lock_*held*,rcu_lockdep_*' --show-func-proto
+> > bool rcu_lockdep_current_cpu_online(); [traceable]
+> > int rcu_read_lock_any_held(); [traceable]
+> > int rcu_read_lock_bh_held(); [traceable]
+> > int rcu_read_lock_held(); [traceable]
+> > int rcu_read_lock_sched_held(); [traceable]
+> 
+> Agree. Seems like an easy way to remove a footgun.
 
-Add Fixes: tag?
+Very good, and please see below.  This might or might not make the next
+merge window, but if not, it should be good for the one after that.
 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 401b4932cc49..ced7132980fe 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3672,10 +3672,12 @@ __bpf_kfunc int bpf_strnstr(const char *s1__ign, =
-const char *s2__ign, size_t len
->
->         guard(pagefault)();
->         for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
-> -               for (j =3D 0; i + j < len && j < XATTR_SIZE_MAX; j++) {
-> +               for (j =3D 0; i + j <=3D len && j < XATTR_SIZE_MAX; j++) =
-{
+> Independently it would be good to make noinstr/notrace to include __cpuidle
+> functions. I think right now it's allowed to attach to default_idle()
+> which is causing issues.
 
+Leon, would you be interested in putting together a patch for these?
 
-that <=3D is a bit subtle, and combined with extra i+j=3D=3Dlen check below
-is a bit confusing, so I think it would be good to add a short comment
-explaining this corner case you caught and that we are doing this to
-ensure that we matched entire s2 (and thus we need to find NUL to
-confirm).
+							Thanx, Paul
 
->                         __get_kernel_nofault(&c2, s2__ign + j, char, err_=
-out);
->                         if (c2 =3D=3D '\0')
->                                 return i;
-> +                       if (i + j =3D=3D len)
-> +                               break;
->                         __get_kernel_nofault(&c1, s1__ign + j, char, err_=
-out);
->                         if (c1 =3D=3D '\0')
->                                 return -ENOENT;
-> --
-> 2.51.0
->
+------------------------------------------------------------------------
+
+commit dada60c8851f19e54524cc1bcf8ab5938eb909c9
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Thu Aug 28 10:17:10 2025 -0700
+
+    rcu: Mark diagnostic functions as notrace
+    
+    The rcu_lockdep_current_cpu_online(), rcu_read_lock_sched_held(),
+    rcu_read_lock_held(), rcu_read_lock_bh_held(), rcu_read_lock_any_held()
+    are used by tracing-related code paths, so putting traces on them is
+    unlikely to make anyone happy.  This commit therefore marks them all
+    "notrace".
+    
+    Reported-by: Leon Hwang <leon.hwang@linux.dev>
+    Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1291e0761d70ab..2515ee9a82df4f 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4021,7 +4021,7 @@ bool rcu_cpu_online(int cpu)
+  * RCU on an offline processor during initial boot, hence the check for
+  * rcu_scheduler_fully_active.
+  */
+-bool rcu_lockdep_current_cpu_online(void)
++bool notrace rcu_lockdep_current_cpu_online(void)
+ {
+ 	struct rcu_data *rdp;
+ 	bool ret = false;
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index c912b594ba987f..dfeba9b3539508 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -117,7 +117,7 @@ static bool rcu_read_lock_held_common(bool *ret)
+ 	return false;
+ }
+ 
+-int rcu_read_lock_sched_held(void)
++int notrace rcu_read_lock_sched_held(void)
+ {
+ 	bool ret;
+ 
+@@ -342,7 +342,7 @@ EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
+  * Note that rcu_read_lock() is disallowed if the CPU is either idle or
+  * offline from an RCU perspective, so check for those as well.
+  */
+-int rcu_read_lock_held(void)
++int notrace rcu_read_lock_held(void)
+ {
+ 	bool ret;
+ 
+@@ -367,7 +367,7 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_held);
+  * Note that rcu_read_lock_bh() is disallowed if the CPU is either idle or
+  * offline from an RCU perspective, so check for those as well.
+  */
+-int rcu_read_lock_bh_held(void)
++int notrace rcu_read_lock_bh_held(void)
+ {
+ 	bool ret;
+ 
+@@ -377,7 +377,7 @@ int rcu_read_lock_bh_held(void)
+ }
+ EXPORT_SYMBOL_GPL(rcu_read_lock_bh_held);
+ 
+-int rcu_read_lock_any_held(void)
++int notrace rcu_read_lock_any_held(void)
+ {
+ 	bool ret;
+ 
 
