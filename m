@@ -1,131 +1,130 @@
-Return-Path: <bpf+bounces-66764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A56AB3903C
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 02:51:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC4A0B39071
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 03:03:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E9397A7265
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:49:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61B36680F40
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 01:03:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6986C1991B6;
-	Thu, 28 Aug 2025 00:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421021D5160;
+	Thu, 28 Aug 2025 01:03:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YHtBKe5m"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n9O8rFBf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CCE3FC2
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 00:51:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029171B0F1E
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 01:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756342262; cv=none; b=EY1RBmXMclOAI/wLzLRmKADTAy9DETxN8LbaanuLv8AVGh+bYBH3Z9/FwoE354t7qLFiH6ob0umOuSrPAiQFnDnU6/XjltmGESfZcdDIN0TPHeKqwGZXDP6Oi+17j0yzBbDqzJxrlz1dtQNptMzHeyfmbeBzj3JV1I/rRSaAb0k=
+	t=1756343023; cv=none; b=HfBUt0ZsqKjlfuBsR217izFPcPXAHedoUKcYNJZGIntNt1GYVaCa/mTmexSsLMm4d0jE+ltCJZUryKtcplRtbFs8OP2w/P7GpsxZmexpWb08pCs/7shqdRUeMfukZtagrK8ZkyJhnkWfF8J+DWJkjHExte2cT8vfGC8ZARLswtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756342262; c=relaxed/simple;
-	bh=7248RPAsz3Z95KnnWFSLZDi9b4+19CVOrBLqZb/shPU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KSTUy0NdRL/Q1mchcWMc7mR/LtGHWFZUMh9g0fQzIS2sGU7rKuQXJA31Y4NUm3ccL3LOvrGZrJCyrpvx++G+H2vmDT969K9P/OUehFczKOrdVpCKXgRoRiVfUnSKbx2UM82ES/Wfs+OSY4RuTaNAtRnT2O34lvfGg1P8HDvuogY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YHtBKe5m; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-45a1b00f23eso2110205e9.0
-        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 17:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756342259; x=1756947059; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=evBlsihqgOHXWNsnXc1g19w6kdk7SfPMM3+YSTIV5EA=;
-        b=YHtBKe5mXrk0MmAfM/7doJUZ8Bf1IOHiNxqpjvSrcWnIiDuOPZnqCWHyE+QfQPMvh6
-         4+6VtT3457GZBWNay90A45EzFfluWWMcO3Xj72EmU1+0Fru78vee07Pm4YRJCQsUEjus
-         qv1h2FxpWTFkG4XSuD/18QjUAhlnpizsKOwQ1wlcoy/tqtLL5ePu5H0z9q6ZjbBwgSdK
-         7CrvT6FD3HirQdnfn8PlNY5VByG7GpZlODujPpUR2w8t82czTKvEAXR+CzUz6z0fjRQ3
-         saIQ7Oc+U+ZZYIgJYXIMXvQ7l1Hb/AzykAz8WiPvL9d3nlrG16ze2SzTi8BWN16IoTFD
-         M+pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756342259; x=1756947059;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=evBlsihqgOHXWNsnXc1g19w6kdk7SfPMM3+YSTIV5EA=;
-        b=MlVf5d7HgW2OwllACPCWiaK4XwI8CJFhTGpCvaQ9Fz3uPKBcYJRNZJlthAHBj7ABOU
-         zpHCJuu7ISYv20w5lkY5nwwNL8GbLb5K32KV3besJv2NkFwVuRQf1H9UDyEL9BYYeHDf
-         pDbZrySvY4M6RVWwbHO9G0MM8Wssl2YVUbvhRe8arhc0mIjpMRnqUYgy55winK3oZwyf
-         8f4pvptmPbhMGyO8VXuD3Omlz3H59HP4plB7Vq7+iLcAua9k72nJ6fs+ehNBnDhRlYXd
-         xpsss5BXi9zzBzxARpJiI1MefKGZzmCcHIqTubZR9mo/RQT71pKWAlpI0j2F80fu1wLk
-         mu3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW4QkWtUlG0t1/zCK/xUHLB/+Nc4s8AIGA1X/Lkq9QdKfHNe6gDuG2HcsfSUZw31E7Qfdg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwzA33Uql3aZj3mNftd16cN+zSvFmB/Znoz8aVSZwTYoekFiv6g
-	+8StVRoAYxcXl3WiutyfEIyyKKZCG5XRXRatQH9siPM3XEHZ+YLfbniu3XmLAvzZLgBwKLvZ0Dc
-	LUblNUKOnDPR8pRirfE7EBg/sHLKyYP4=
-X-Gm-Gg: ASbGncsUnjxKKPLWMUGQjgv1E01EIzknnlt+rdAoIyaIUqj6p08wagJiXxoY64WrX39
-	Llj/HSNqp57UMieMogBSw9FzNb2UsQi/T29d1cCqGoJ3XCD57tWvY7a5K8gDMx+Yl6E6NPEKCt5
-	0BVnaWjUoyNdL9lzGVAiV4d448Vry/RaGNFH+tK9FlLcGNm/SCMUfCZh68j8pxDKg8dURPrQoWu
-	SZ+QiWSxbNl0P/6rw7LWDDExdFMS7suvNxg
-X-Google-Smtp-Source: AGHT+IGAY4apCDizd+/wTwdGZHUcLwv3aQAVXsZPKpx2M+J5r4asNbE8H0nKFnIOL2jH788sWGQNFGBgJ0UItbBkfzE=
-X-Received: by 2002:a05:600c:4f83:b0:456:1d61:b0f2 with SMTP id
- 5b1f17b1804b1-45b517d077amr214155965e9.30.1756342258631; Wed, 27 Aug 2025
- 17:50:58 -0700 (PDT)
+	s=arc-20240116; t=1756343023; c=relaxed/simple;
+	bh=b24uQsPaOHO5WcHk9xhEmDzHjmw2HswBoihdspk5wcU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=e8OLMZ3Ee0f4W41vLndFNDPas/+NNcKc3IBpx6wiRq0hu2P8bXh/sOrIdQJSoPme3SkW3Lvj3yYHw8HhaCBV+YiA12gPHsJBaApCjrNZfMnupwBA/KE13ldCVVfRmT8hN730TLj6t5Y8NpwquwPrG709ok+rmgwh3nmIYRfFl90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n9O8rFBf; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756343009;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=r4mNXbiX+NSPwA7+Q8DrgehkukiMG4HUmSlD8ae2wX4=;
+	b=n9O8rFBfQ4lehqgRI0HW6JdV/AJdESHwtw1qkjaS6k31nWWYJ7AhCPk311eatnGIxsCzYL
+	7Ta21nr2/EjGIOHth5kftSSA8nzm963DKTWZ4fWXkkpY5o/ErQ5GhzlPGDw3Y/Yv5g/GMA
+	T592kIKywmxMHtM+v9gUF0WmAd+ougw=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Menglong Dong <menglong8.dong@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Matt Bobrowski <mattbobrowski@google.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+Subject:
+ Re: [PATCH bpf-next] bpf: remove unnecessary rcu_read_lock in
+ kprobe_multi_link_prog_run
+Date: Thu, 28 Aug 2025 09:03:07 +0800
+Message-ID: <2797045.mvXUDI8C0e@7940hx>
+In-Reply-To:
+ <CAADnVQLBwjVhKFptO1_CEC9q1ugT1Cy2SiG5XgtD+kr7BTrr_A@mail.gmail.com>
+References:
+ <20250827123814.60217-1-dongml2@chinatelecom.cn>
+ <CAADnVQLBwjVhKFptO1_CEC9q1ugT1Cy2SiG5XgtD+kr7BTrr_A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250827194929.416969-1-iii@linux.ibm.com> <20250827194929.416969-2-iii@linux.ibm.com>
- <ac3eabcb-934d-40a4-b725-6a4684ef48a0@linux.dev>
-In-Reply-To: <ac3eabcb-934d-40a4-b725-6a4684ef48a0@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 27 Aug 2025 17:50:47 -0700
-X-Gm-Features: Ac12FXxdy2ybQH1PXPp1n-1qOf_vGZG5NTIUVnRIp0Qd5oGmY458W6s-2bQVFRA
-Message-ID: <CAADnVQLgqL9eu_mA8Lq=wA12GXCaFzxm5ZXsieOkL9xeOYaoaw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] selftests/bpf: Annotate
- bpf_obj_new_impl() with __must_check
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Aug 27, 2025 at 2:38=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
-> diff --git a/tools/testing/selftests/bpf/progs/linked_list_fail.c b/tools=
-/testing/selftests/bpf/progs/linked_list_fail.c
-> index 6438982b928b..35616b5c9b9e 100644
-> --- a/tools/testing/selftests/bpf/progs/linked_list_fail.c
-> +++ b/tools/testing/selftests/bpf/progs/linked_list_fail.c
-> @@ -227,7 +227,7 @@ SEC("?tc")
->   int obj_new_no_struct(void *ctx)
->   {
->
-> -       bpf_obj_new(union { int data; unsigned udata; });
-> +       (void)bpf_obj_new(union { int data; unsigned udata; });
->          return 0;
->   }
->
-> @@ -252,7 +252,7 @@ int new_null_ret(void *ctx)
->   SEC("?tc")
->   int obj_new_acq(void *ctx)
->   {
-> -       bpf_obj_new(struct foo);
-> +       (void)bpf_obj_new(struct foo);
->          return 0;
->   }
->
-> I think this probably will address your icecc issue.
+On 2025/8/28 00:21 Alexei Starovoitov <alexei.starovoitov@gmail.com> write:
+> On Wed, Aug 27, 2025 at 5:38=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > Preemption is disabled in ftrace graph, which indicate rcu_read_lock. So
+> > the rcu_read_lock is not needed in fprobe_entry(), and it is not needed
+> > in kprobe_multi_link_prog_run() neither.
+>=20
+> kprobe_busy_begin() doing preempt_disable() is an implementation
+> detail that might change.
+> Having explicit rcu_read_lock() doesn't hurt.
+> It's a nop anyway in PREEMPT_NONE.
 
-Ilya,
+Ok, I see. Thanks~
 
-does above fix it ?
+>=20
+> pw-bot: cr
+>=20
+> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > ---
+> >  kernel/trace/bpf_trace.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 606007c387c5..0e79fa84a634 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2741,12 +2741,10 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_mu=
+lti_link *link,
+> >                 goto out;
+> >         }
+> >
+> > -       rcu_read_lock();
+> >         regs =3D ftrace_partial_regs(fregs, bpf_kprobe_multi_pt_regs_pt=
+r());
+> >         old_run_ctx =3D bpf_set_run_ctx(&run_ctx.session_ctx.run_ctx);
+> >         err =3D bpf_prog_run(link->link.prog, regs);
+> >         bpf_reset_run_ctx(old_run_ctx);
+> > -       rcu_read_unlock();
+> >
+> >   out:
+> >         __this_cpu_dec(bpf_prog_active);
+> > --
+> > 2.51.0
+> >
+>=20
+>=20
 
-If so we should probably do that and hold on __must_check,
-since if we're getting pedantic __alloc_size__ is a better tag
-than __must_check, but it will be even harder to get through pahole.
+
+
+
 
