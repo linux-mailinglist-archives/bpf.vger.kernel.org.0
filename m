@@ -1,207 +1,172 @@
-Return-Path: <bpf+bounces-66866-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66867-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0459DB3A7D7
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 19:24:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 557B7B3A85C
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 19:39:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF9707A76A2
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 17:22:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E4B47C37A3
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 17:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC7B3375BA;
-	Thu, 28 Aug 2025 17:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48677338F22;
+	Thu, 28 Aug 2025 17:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R4ynusb6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R7vDYOmg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97CF176ADB
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 17:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF1F21B9F1
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 17:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756401857; cv=none; b=RN+yCboUsDQN2JJtwv7Gme+NGpQt5xWKt9DhDXxfOS3seQMvP1jv0joQsRgf3I5CPfv5wi2el+9IZ7mh/bYuO8khgYmDYPXq/N+sTAVw7Lo3U6be79wmKczDuYfR//5uq5bnLg7Z8bCKVWW5yAEq03j0G7zivhOiE/TzLj1jmZQ=
+	t=1756402765; cv=none; b=aD+uMNzp1kYkBlQyopHZHYyFSXvUP4l70jvt8D97uuCf+18rNZuV6Vrv3vopDAQHkLrrrG6ZfYfpNG+1/bjj57+LVxD/LTrCDoBK4FXa3r9j2OBxbkqA/YSpHHErH4SfkVf83GpzpYMvuRySutKCSuU0wRzangh3IRsq2ve6ePE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756401857; c=relaxed/simple;
-	bh=SZ1VTuE69jIefYaf0ogpU6KHGeyQYJ4Y8v6J+/oHLmo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BPy1XDsLKFGPeelYE60RabNZauc099KBKlWvW1UTdCIicBswoQkn7eV6n2p4hBCrzfQHK1iwxjvBPQmvm45R12z0K5O+Tcsu+0gVFFkWwM9goFhycoKWTnzuUjkcj9PMejlTKAwN9DrYHOl/PyloLJmXA3z+aXvoNt/K9+7TZek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R4ynusb6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75E41C4CEF4;
-	Thu, 28 Aug 2025 17:24:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756401857;
-	bh=SZ1VTuE69jIefYaf0ogpU6KHGeyQYJ4Y8v6J+/oHLmo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=R4ynusb6BfDXUFC9sXeZwNNF+uIgu3tH+7uWIEqpa8/cv2Zf9AyAgSkfT4E+KL2Fs
-	 pM5L0laoLCU8iAZ0qHfQumROdVSzjjxpN2uKGYO7w0n7m2ZbWEoI638PwIuyhQvVNi
-	 1kpBsqXtpmP89pel902JJCLoVQOKGaTA6PqVPjSluQj0y7A0Nexus9XtoLzS3e/DBy
-	 JI9W658HkkoaUIf83jdSBOimD8cCdtSjDQi82G6NDGtT13I2uUsiYpZ0BeLwUMtNgQ
-	 UYm1lakUARU0s+4iAcdRB3WMpShYNYwMF7uu5jf1is6MjF7BUDjJpt25ZQO/AEJoA8
-	 JCfbDK9Onikwg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 20150CE0C12; Thu, 28 Aug 2025 10:24:17 -0700 (PDT)
-Date: Thu, 28 Aug 2025 10:24:17 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Leon Hwang <leon.hwang@linux.dev>, bpf <bpf@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [BUG] Deadlock triggered by bpfsnoop funcgraph feature
-Message-ID: <8ab6e14b-e639-413e-91cc-56dc02d1a4fb@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
- <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com>
- <8dcc144e-3142-4e0d-a852-155781e41eb4@linux.dev>
- <CAADnVQLDG=Oavh9He=ivXm9MPwsqWHttbTYQh1-EZuHpwujaBA@mail.gmail.com>
- <b3463ffa-c2cb-43c8-a0d2-92bad49e3c23@linux.dev>
- <93e75cff-871f-4b49-868c-11fea0eec396@paulmck-laptop>
- <DCE3PPX8IFF4.FE1BC8HMP4Y7@linux.dev>
- <CAADnVQ+G73vyC77tSo3AFcBT5FiBFbojfddnpYi5yRcqOxQiDQ@mail.gmail.com>
+	s=arc-20240116; t=1756402765; c=relaxed/simple;
+	bh=Vz7dZ9XpwA8N7+YhHCRhQgw1f+83rsvEBddQl+9Q6tU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lYrQGvTdf8fypJmYKDS2w383qrpWjS4EzopZ0YRLyRo8PPsqnet6sBXgmyFJHNO5bowbRlzbBqDCkHDcxrEQTb3wToOMMr22V2t6oFEfPlgFFibBM8+eVlWyFFXToCMiNJc0e0PSnR5uhB+fNU/aINhiI0w1uOtC4YMpwL7lBU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R7vDYOmg; arc=none smtp.client-ip=209.85.208.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-61a8c134609so1630970a12.3
+        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 10:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756402762; x=1757007562; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vz7dZ9XpwA8N7+YhHCRhQgw1f+83rsvEBddQl+9Q6tU=;
+        b=R7vDYOmg6v/D5Qimn2ZgHssgHyAKqtRtEG+ffb/iZBepW2EUOWZ8b4LVp+Ap7RAETX
+         IhwZHEnMvJxRz8JQnm9STCAs/KFreQsE+rGe/FYL70PzaPeCompQe2VDD5XXjYsCnA97
+         v40ByROlC1aRU4aYtkN0VbQL96YKMJQ07OMVqniWijPAyZsom/uzPHwhSyuAqtZzKUjd
+         RyO0LyfZRDsWuQDPhivrTKv2Vn/W75pZu1X0XQjKRjbeRUTxom8TnyV8ubmFZQfchhWd
+         k6xCoUwTMC9R5XOi576XIdLRYsC55eQzvPsV995zIr5kXZfrNge/9C4yZAJoz8xoBuEK
+         oljg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756402762; x=1757007562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vz7dZ9XpwA8N7+YhHCRhQgw1f+83rsvEBddQl+9Q6tU=;
+        b=Wm6OL4E9zPqcoaYXtnwFUSf0UfQwjn1xX/k7MWbC0+AYmVjF7N1BQZe9dnjvsTy3xT
+         julWhWxWGe7ueGfbi8pHdTULFpf8R5PCFC0Ijo3KFVsmAUeZ2VDuUDh1GNNQwrh8/TwP
+         FXuATflcxhdbL3QSVA+2/d3KvUm6Tx7s2TVq/leAf/8eOJ87iARTPV6Vy62OzR8mPkf5
+         UrnaZSJbNLw/7V5YLkjeuetyx0bpfC+EGWTRWOUjN3paX/CzElfX+s7U9YiNwc0q3BaK
+         b3GjaK6ARPV1iTT1nubx1J6b7eJ12uedFjtQf/5khUqm9RerwN+U35uDNJJLOv1reS7Y
+         PJ8w==
+X-Forwarded-Encrypted: i=1; AJvYcCW1c7v6i6+P1kYhrwief/dzHppavr7GUxtRsXNCMkf7rU8sgiXPfGmMc2ZeqKLxrK+sFYQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4c0HEmLoZDip1lzNgZg67MnAumobirrOuBTQorpaFOsJ7GQow
+	dYOdcZE2S7gSY/pVi4uXy1lBIzXg89aS6z3zrauLR4HaVON7NN+OhFUzSvirM3o20ifLoZXvTBn
+	3G/xO3n9mKY0G4z8KzPblkpnpJ1VjWwQ=
+X-Gm-Gg: ASbGncv0gfpo7BOg3c0HV2IE4XWPkjL4ONgNdLn0Tfxu3CzVxwYQMBm6nU8UHqrvKGO
+	o47DtfWkOC6W62J5XyIL1mQfhtlttKsC6s1FQP5I8RA6rII62izoY93k6H1r8kZCV2fVuXzajAC
+	R/NORcTM3+twiqJZqAmg9faKyqkRd79TRbk9nzrBw0ZFFRmeJdnG9OJGRsIuRP1iZkTR2q8hSef
+	PgJt7dh4dlUWWuALNXfTVbnuUpiPj2XBjK9QI6e8NGR5dRHY7K00o6zkRxu1w==
+X-Google-Smtp-Source: AGHT+IEX9DO+UtOuaooWy1HBUBR39g5nYhsTD4SnfYDcvdOQqfD5hTcq5nGLmoRscaFZyMWqcr4u6c1SbJj26ZUQxlM=
+X-Received: by 2002:a05:6402:84a:b0:61c:1a89:5d71 with SMTP id
+ 4fb4d7f45d1cf-61c1b7056d2mr18088209a12.36.1756402762052; Thu, 28 Aug 2025
+ 10:39:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+G73vyC77tSo3AFcBT5FiBFbojfddnpYi5yRcqOxQiDQ@mail.gmail.com>
+References: <20250815192156.272445-1-mykyta.yatsenko5@gmail.com>
+ <20250815192156.272445-4-mykyta.yatsenko5@gmail.com> <CAP01T751FPiuZv5yBMeHSAmFmywc7L3iY=jYLb992YOp_94pRQ@mail.gmail.com>
+ <7a40bdcc-3905-4fa2-beac-c7612becabb7@gmail.com> <CAP01T74vkbS6yszqe4GjECJq=j5-V7ADde7D6wnTfw=zN8zJyw@mail.gmail.com>
+ <CAEf4BzZPcawkrrdd2OoKLT-BWzCYsEpNxw52RKa6dL1B=xvdoA@mail.gmail.com>
+ <CAP01T74gKna6WrgZvkoBBmwsbhrqrv4azeKwfk=frQasc9eaXQ@mail.gmail.com>
+ <CAEf4BzZadH9NYkYSrgUvZAynBuG=t2TayhFPxzFzbWHsP8HCUw@mail.gmail.com>
+ <CAADnVQLCg0KAo-uPL+nmYzwRJDcm0W5w_2=0p1PBgi=pUEONLw@mail.gmail.com> <CAEf4BzagzR6xbbMJn7TQaCeP4trgv4wgWM-tUQYrMutRfx+qUw@mail.gmail.com>
+In-Reply-To: <CAEf4BzagzR6xbbMJn7TQaCeP4trgv4wgWM-tUQYrMutRfx+qUw@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 28 Aug 2025 19:38:45 +0200
+X-Gm-Features: Ac12FXz3td4foUaIMTqLShS10b14pssAJycqeGQaeQyjFafc-7ltHEFBo6GvO6k
+Message-ID: <CAP01T77xFRLHj_irvbEr6KaOAcu=GUVr2Hb5Bbf_nB4PhkT9iw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] bpf: task work scheduling kfuncs
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 28, 2025 at 09:43:00AM -0700, Alexei Starovoitov wrote:
-> On Thu, Aug 28, 2025 at 6:39 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+On Thu, 28 Aug 2025 at 19:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
+rote:
+>
+> On Wed, Aug 27, 2025 at 6:34=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Thu Aug 28, 2025 at 7:50 PM +08, Paul E. McKenney wrote:
-> > > On Thu, Aug 28, 2025 at 10:40:47AM +0800, Leon Hwang wrote:
-> > >> On 28/8/25 08:42, Alexei Starovoitov wrote:
-> > >> > On Tue, Aug 26, 2025 at 7:58 PM Leon Hwang <leon.hwang@linux.dev> wrote:
-> >
-> > [...]
-> >
-> > >> >
-> > >> > bpf infra is trying hard not to crash it, but debug kernel is a different
-> > >> > category. rcu_read_lock_held() doesn't exist in production kernels.
-> > >> > You can propose adding "notrace" for it, but in general that doesn't scale.
-> > >> > Same with rcu_lockdep_current_cpu_online().
-> > >> > It probably deserves "notrace" too.
-> > >>
-> > >> Indeed, it doesn't scale.
-> > >>
-> > >> When I run
-> > >> ./bpfsnoop -k "htab_*_elem" --output-fgraph --fgraph-debug
-> > >> --fgraph-exclude
-> > >> 'rcu_read_lock_*held,rcu_lockdep_current_cpu_online,*raw_spin_*lock*,kvfree,show_stack,put_task_stack',
-> > >> the kernel doesn’t panic, but the OS eventually stalls and becomes
-> > >> unresponsive to key presses.
-> > >>
-> > >> It seems preferable to avoid running BPF programs continuously in such
-> > >> cases.
+> > On Wed, Aug 20, 2025 at 11:33=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
 > > >
-> > > Agreed, when adding code to the Linux kernel, whether via a patch, via
-> > > a BPF program, or by whatever other means, you are taking responsibility
-> > > for the speed, scalability, and latency effects of that code.
 > > >
-> > > Nevertheless, I am happy to add a few "notrace" modifiers
-> > > if needed.  Do you guys need them for rcu_read_lock_held() and
-> > > rcu_lockdep_current_cpu_online()?
+> > > I don't see why we can't consolidate internals of all these async
+> > > callbacks while maintaining a user-facing API that makes most sense
+> > > for each specific case. For task_work (and yes, I think for timers it
+> > > would make more sense as well), we are talking about a single
+> > > conceptual operation: just schedule a callback. So it makes sense to
+> > > have a single kfunc that expresses that.
 > > >
+> > > Having a split into init, set_callback, kick is unnecessary and
+> > > cumbersome.
 > >
-> > I think it would be better to add "notrace" to following functions:
+> > For timers the split api of init vs start_timer is mandatory,
+> > since it's common usage to start and stop the same timer before
+> > it fires. So the moving init operation (which allocates) and
+> > set_callback operation (that needs a pointer to callback)
+> > out of start/stop is a good thing, since the code that does start/stop
+> > may be far away and in a different file than init/set_callback.
+>
+> Ok, that makes sense, thanks for filling in the context.
+>
+> > That's how networking stack is written.
+> > Where I screwed things up is when I made bpf_timer_cancel() to also
+> > clear the callback to NULL. Not sure what I was thinking.
+> > The api wasn't modelled by existing kernel timer api, but
+> > by how the networking stack is using timers.
+> > Most of the time the started timer will be cancelled before firing.
+> > bpf_wq just followed bpf_timer api pattern.
+> > But, unlike timers, wq and task_work actually expect the callback
+> > to be called. It's rare to cancel wq/task_work.
+> > So for them the single 'just schedule' kfunc that allocates,
+> > sets callback, and schedules makes sense.
+> > For wq there is no bpf_wq_cancel. So there is a difference already.
+> > It's fine for bpf_timers, bpf_wq, bpf_task_work to have
+> > different set of kfuncs, since the usage pattern is different.
 > >
-> > ./bpfsnoop -k 'rcu_read_*lock_*held*,rcu_lockdep_*' --show-func-proto
-> > bool rcu_lockdep_current_cpu_online(); [traceable]
-> > int rcu_read_lock_any_held(); [traceable]
-> > int rcu_read_lock_bh_held(); [traceable]
-> > int rcu_read_lock_held(); [traceable]
-> > int rcu_read_lock_sched_held(); [traceable]
-> 
-> Agree. Seems like an easy way to remove a footgun.
+>
+> agreed
+>
+> > Regarding state machine vs spinlock I think we should see
+> > through this approach with state machine.
+> > And if we convince ourselves that after all reviews it
+> > looks to be bug free, we should try to convert timer/wq
+> > to state machine as well to have a shared logic.
+>
+> yep, completely agree
+>
+> > Note irq_work from nmi is mandatory for timers too
+> > regardless of state machine or rqspinlock,
+> > since timers/wq take more locks inside,
+> > We cannot rqspinlock() + hrtimer_start() unconditionally.
+>
+> Ack. Once we unify all this, we can invest a bit more effort trying to
+> optimize away the need for irq_work when not under NMI (and maybe not
+> in irq). For timers this seems more important than for task_work, as
+> timers can be used significantly more frequently.
 
-Very good, and please see below.  This might or might not make the next
-merge window, but if not, it should be good for the one after that.
+Ok, let's go with this approach. I'll take a stab at addressing timers
+later on once Mykyta's set lands.
 
-> Independently it would be good to make noinstr/notrace to include __cpuidle
-> functions. I think right now it's allowed to attach to default_idle()
-> which is causing issues.
-
-Leon, would you be interested in putting together a patch for these?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit dada60c8851f19e54524cc1bcf8ab5938eb909c9
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Thu Aug 28 10:17:10 2025 -0700
-
-    rcu: Mark diagnostic functions as notrace
-    
-    The rcu_lockdep_current_cpu_online(), rcu_read_lock_sched_held(),
-    rcu_read_lock_held(), rcu_read_lock_bh_held(), rcu_read_lock_any_held()
-    are used by tracing-related code paths, so putting traces on them is
-    unlikely to make anyone happy.  This commit therefore marks them all
-    "notrace".
-    
-    Reported-by: Leon Hwang <leon.hwang@linux.dev>
-    Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1291e0761d70ab..2515ee9a82df4f 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4021,7 +4021,7 @@ bool rcu_cpu_online(int cpu)
-  * RCU on an offline processor during initial boot, hence the check for
-  * rcu_scheduler_fully_active.
-  */
--bool rcu_lockdep_current_cpu_online(void)
-+bool notrace rcu_lockdep_current_cpu_online(void)
- {
- 	struct rcu_data *rdp;
- 	bool ret = false;
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index c912b594ba987f..dfeba9b3539508 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -117,7 +117,7 @@ static bool rcu_read_lock_held_common(bool *ret)
- 	return false;
- }
- 
--int rcu_read_lock_sched_held(void)
-+int notrace rcu_read_lock_sched_held(void)
- {
- 	bool ret;
- 
-@@ -342,7 +342,7 @@ EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
-  * Note that rcu_read_lock() is disallowed if the CPU is either idle or
-  * offline from an RCU perspective, so check for those as well.
-  */
--int rcu_read_lock_held(void)
-+int notrace rcu_read_lock_held(void)
- {
- 	bool ret;
- 
-@@ -367,7 +367,7 @@ EXPORT_SYMBOL_GPL(rcu_read_lock_held);
-  * Note that rcu_read_lock_bh() is disallowed if the CPU is either idle or
-  * offline from an RCU perspective, so check for those as well.
-  */
--int rcu_read_lock_bh_held(void)
-+int notrace rcu_read_lock_bh_held(void)
- {
- 	bool ret;
- 
-@@ -377,7 +377,7 @@ int rcu_read_lock_bh_held(void)
- }
- EXPORT_SYMBOL_GPL(rcu_read_lock_bh_held);
- 
--int rcu_read_lock_any_held(void)
-+int notrace rcu_read_lock_any_held(void)
- {
- 	bool ret;
- 
+>
+> But one step at a time, let's wait for Mykyta to come back from
+> vacation and update the patch set.
 
