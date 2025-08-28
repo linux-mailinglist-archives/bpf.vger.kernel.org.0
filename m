@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-66779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66780-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5F28B39391
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 08:04:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15975B39392
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 08:04:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F2493A6775
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 06:04:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF1993A640E
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 06:04:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47481DC075;
-	Thu, 28 Aug 2025 06:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CDA21D59B;
+	Thu, 28 Aug 2025 06:04:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RhVAbjTt"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YWYqPll2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDC14A02
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 06:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAAE24A02
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 06:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756361052; cv=none; b=Ca8Qqyj4HmTD81BXmh1ghWQ2zO2Dp/pFaC6OngnfhqLhIkUcw0thUZnOgLxxSJ3qXZSGh7CYaV9UpB7c/QSGLeqFwRQP3XbEWzFah0knPn9dyfBT26UuKP+WsQ+OeyvMTYHtcr4UGjKXVhLpd6jfpuGgEMrn+EsBQR72PLwXgUg=
+	t=1756361058; cv=none; b=oK+V7lOncLBSZL4ItfMEvmyT+TXvX3cfH2hexinRep9jdfgSs3H39ZSRARkDkjQhyAd20NyHql/eimZBrSDpkuMchQYmvE0+F1CGTF5BBntK2V7ISg1NjJA+Rn9dpFYrKo4BG/AZPswevwIede6gsPe7ci5NqXyZ+0KYGSBqZVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756361052; c=relaxed/simple;
-	bh=zxW/iHEZjYoXSMBuvx8VQfr6AZp0nBTpJ4j1Hg9kp2c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BOJktGA325Xwmnc1cNFWljyeDLM2v2pNnQ+avnohldrl+5TrZQoMOfpKNtaHVaAk/caFYhQqXoDpp5/W1cVucZzjkp4pfI+8eP5Q2Azn+QlFOy6f5ZgoX4vocgFMY2o9/beRvpIuBCS7NrxQIJ4yHrbtZjrPqJ407qyn40q8rAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RhVAbjTt; arc=none smtp.client-ip=95.215.58.181
+	s=arc-20240116; t=1756361058; c=relaxed/simple;
+	bh=51/7G50SDfjQX29eW9cyq2LILmEKrSJpjBavpe+mqxY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=PC4cNvtVOpdyjuS8yrKuS20jWDN0jEJZRLPPztqxLJXWDEpr8qPUKH9hhtpCAnyDsAUnfL/5nIwu2Vg9meD2FHZaNDYomCd0KI7G02zC6t3EWSJOZTR2kcASH0ToCOncTi3y50lsHmby5B+lPByIENlOKMQF8Irpe7nCO98LRb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YWYqPll2; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756361046;
+	t=1756361053;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=v+daTrA2lk2ON5RtGrAg2zg1F0Uu28Z3Kg8udtbYQtE=;
-	b=RhVAbjTtGEoFxTSg8f6W07+BEPquG3TcX7nc0U50ZBpy7xnZ1xfKhIqqPzWU6VrZfDJJLV
-	kNgfCd7BJRHcotwFgmatLPgHfnuED/ul/MX9xvhwwENOo72s5JEa9Qa0wsWB3ci3o0dsiz
-	J+MVVyMHZyfcQw6h4gZAWO87zwpKnOA=
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kyDiWMiReLjD3cuUzzqO54+mvDQQQch/ZsaFwMEEKa4=;
+	b=YWYqPll2L4plrh4vKYNCETp3Qig6WFTQQgG29h+5MP0kGa8PTvhfkDrRxX+aTVkZQxdQnz
+	W1CXOfDaC26tRG9yzB4bNPw0w7YZJZmIDczbIvDSvR4NswqEt7C3DTz8CUmuv0ns62ugKc
+	fVQNYn1NSLbUARtOpYDSMKZncHXLaaA=
 From: Menglong Dong <menglong.dong@linux.dev>
 To: peterz@infradead.org,
 	ast@kernel.org
@@ -68,112 +70,301 @@ Cc: mingo@redhat.com,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Menglong Dong <menglong.dong@linux.dev>
-Subject: [PATCH v4 0/3] sched: make migrate_enable/migrate_disable inline
-Date: Thu, 28 Aug 2025 14:03:51 +0800
-Message-ID: <20250828060354.57846-1-menglong.dong@linux.dev>
+Subject: [PATCH v4 1/3] arch: add the macro COMPILE_OFFSETS to all the asm-offsets.c
+Date: Thu, 28 Aug 2025 14:03:52 +0800
+Message-ID: <20250828060354.57846-2-menglong.dong@linux.dev>
+In-Reply-To: <20250828060354.57846-1-menglong.dong@linux.dev>
+References: <20250828060354.57846-1-menglong.dong@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-In this series, we make migrate_enable/migrate_disable inline to obtain
-better performance in some case.
+The include/generated/asm-offsets.h is generated in Kbuild during
+compiling from arch/SRCARCH/kernel/asm-offsets.c. When we want to
+generate another similar offset header file, circular dependency can
+happen.
 
-In the first patch, we add the macro "COMPILE_OFFSETS" to all the
-asm-offset.c to avoid circular dependency in the 2nd patch.
+For example, we want to generate a offset file include/generated/test.h,
+which is included in include/sched/sched.h. If we generate asm-offsets.h
+first, it will fail, as include/sched/sched.h is included in asm-offsets.c
+and include/generated/test.h doesn't exist; If we generate test.h first,
+it can't success neither, as include/generated/asm-offsets.h is included
+by it.
 
-In the 2nd patch, we generate the offset of nr_pinned in "struct rq" with
-rq-offsets.c, as the "struct rq" is defined internally and we need to
-access the "nr_pinned" field in migrate_enable and migrate_disable. Then,
-we move the definition of migrate_enable/migrate_disable from
-kernel/sched/core.c to include/linux/sched.h.
+In x86_64, the macro COMPILE_OFFSETS is used to avoid such circular
+dependency. We can generate asm-offsets.h first, and if the
+COMPILE_OFFSETS is defined, we don't include the "generated/test.h".
 
-In the 3rd patch, we fix some typos in include/linux/preempt.h.
+And we define the macro COMPILE_OFFSETS for all the asm-offsets.c for this
+purpose.
 
-One of the beneficiaries of this series is BPF trampoline. Without this
-series, the migrate_enable/migrate_disable is hot when we run the
-benchmark for FENTRY, FEXIT, MODIFY_RETURN, etc:
+Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+---
+ arch/alpha/kernel/asm-offsets.c      | 1 +
+ arch/arc/kernel/asm-offsets.c        | 1 +
+ arch/arm/kernel/asm-offsets.c        | 2 ++
+ arch/arm64/kernel/asm-offsets.c      | 1 +
+ arch/csky/kernel/asm-offsets.c       | 1 +
+ arch/hexagon/kernel/asm-offsets.c    | 1 +
+ arch/loongarch/kernel/asm-offsets.c  | 2 ++
+ arch/m68k/kernel/asm-offsets.c       | 1 +
+ arch/microblaze/kernel/asm-offsets.c | 1 +
+ arch/mips/kernel/asm-offsets.c       | 2 ++
+ arch/nios2/kernel/asm-offsets.c      | 1 +
+ arch/openrisc/kernel/asm-offsets.c   | 1 +
+ arch/parisc/kernel/asm-offsets.c     | 1 +
+ arch/powerpc/kernel/asm-offsets.c    | 1 +
+ arch/riscv/kernel/asm-offsets.c      | 1 +
+ arch/s390/kernel/asm-offsets.c       | 1 +
+ arch/sh/kernel/asm-offsets.c         | 1 +
+ arch/sparc/kernel/asm-offsets.c      | 1 +
+ arch/um/kernel/asm-offsets.c         | 2 ++
+ arch/xtensa/kernel/asm-offsets.c     | 1 +
+ 20 files changed, 24 insertions(+)
 
-  54.63% bpf_prog_2dcccf652aac1793_bench_trigger_fentry [k]
-                 bpf_prog_2dcccf652aac1793_bench_trigger_fentry
-  10.43% [kernel] [k] migrate_enable
-  10.07% bpf_trampoline_6442517037 [k] bpf_trampoline_6442517037
-  8.06% [kernel] [k] __bpf_prog_exit_recur
-  4.11% libc.so.6 [.] syscall
-  2.15% [kernel] [k] entry_SYSCALL_64
-  1.48% [kernel] [k] memchr_inv
-  1.32% [kernel] [k] fput
-  1.16% [kernel] [k] _copy_to_user
-  0.73% [kernel] [k] bpf_prog_test_run_raw_tp
-
-Before this patch, the performance of BPF FENTRY is:
-
-  fentry         :  113.030 ± 0.149M/s
-  fentry         :  112.501 ± 0.187M/s
-  fentry         :  112.828 ± 0.267M/s
-  fentry         :  115.287 ± 0.241M/s
-
-After this patch, the performance of BPF FENTRY increases to:
-
-  fentry         :  143.644 ± 0.670M/s
-  fentry         :  149.764 ± 0.362M/s
-  fentry         :  149.642 ± 0.156M/s
-  fentry         :  145.263 ± 0.221M/s
-
-Changes since V3:
-* some modification on the 2nd patch, as Alexei advised:
- - rename CREATE_MIGRATE_DISABLE to INSTANTIATE_EXPORTED_MIGRATE_DISABLE
- - add document for INSTANTIATE_EXPORTED_MIGRATE_DISABLE
-
-Changes since V2:
-* some modification on the 2nd patch, as Peter advised:
-  - don't export runqueues, define migrate_enable and migrate_disable in
-    kernel/sched/core.c and use them for kernel modules instead
-  - define the macro this_rq_pinned()
-  - add some comment for this_rq_raw()
-
-Changes since V1:
-* use PERCPU_PTR() for this_rq_raw() if !CONFIG_SMP in the 2nd patch
-
-Menglong Dong (3):
-  arch: add the macro COMPILE_OFFSETS to all the asm-offsets.c
-  sched: make migrate_enable/migrate_disable inline
-  sched: fix some typos in include/linux/preempt.h
-
- Kbuild                               |  13 ++-
- arch/alpha/kernel/asm-offsets.c      |   1 +
- arch/arc/kernel/asm-offsets.c        |   1 +
- arch/arm/kernel/asm-offsets.c        |   2 +
- arch/arm64/kernel/asm-offsets.c      |   1 +
- arch/csky/kernel/asm-offsets.c       |   1 +
- arch/hexagon/kernel/asm-offsets.c    |   1 +
- arch/loongarch/kernel/asm-offsets.c  |   2 +
- arch/m68k/kernel/asm-offsets.c       |   1 +
- arch/microblaze/kernel/asm-offsets.c |   1 +
- arch/mips/kernel/asm-offsets.c       |   2 +
- arch/nios2/kernel/asm-offsets.c      |   1 +
- arch/openrisc/kernel/asm-offsets.c   |   1 +
- arch/parisc/kernel/asm-offsets.c     |   1 +
- arch/powerpc/kernel/asm-offsets.c    |   1 +
- arch/riscv/kernel/asm-offsets.c      |   1 +
- arch/s390/kernel/asm-offsets.c       |   1 +
- arch/sh/kernel/asm-offsets.c         |   1 +
- arch/sparc/kernel/asm-offsets.c      |   1 +
- arch/um/kernel/asm-offsets.c         |   2 +
- arch/xtensa/kernel/asm-offsets.c     |   1 +
- include/linux/preempt.h              |  11 +--
- include/linux/sched.h                | 113 +++++++++++++++++++++++++++
- kernel/bpf/verifier.c                |   1 +
- kernel/sched/core.c                  |  63 ++++-----------
- kernel/sched/rq-offsets.c            |  12 +++
- 26 files changed, 180 insertions(+), 57 deletions(-)
- create mode 100644 kernel/sched/rq-offsets.c
-
+diff --git a/arch/alpha/kernel/asm-offsets.c b/arch/alpha/kernel/asm-offsets.c
+index e9dad60b147f..1ebb05890499 100644
+--- a/arch/alpha/kernel/asm-offsets.c
++++ b/arch/alpha/kernel/asm-offsets.c
+@@ -4,6 +4,7 @@
+  * This code generates raw asm output which is post-processed to extract
+  * and format the required data.
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/types.h>
+ #include <linux/stddef.h>
+diff --git a/arch/arc/kernel/asm-offsets.c b/arch/arc/kernel/asm-offsets.c
+index f77deb799175..2978da85fcb6 100644
+--- a/arch/arc/kernel/asm-offsets.c
++++ b/arch/arc/kernel/asm-offsets.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (C) 2004, 2007-2010, 2011-2012 Synopsys, Inc. (www.synopsys.com)
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/sched.h>
+ #include <linux/mm.h>
+diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
+index 123f4a8ef446..2101938d27fc 100644
+--- a/arch/arm/kernel/asm-offsets.c
++++ b/arch/arm/kernel/asm-offsets.c
+@@ -7,6 +7,8 @@
+  * This code generates raw asm output which is post-processed to extract
+  * and format the required data.
+  */
++#define COMPILE_OFFSETS
++
+ #include <linux/compiler.h>
+ #include <linux/sched.h>
+ #include <linux/mm.h>
+diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+index 30d4bbe68661..b6367ff3a49c 100644
+--- a/arch/arm64/kernel/asm-offsets.c
++++ b/arch/arm64/kernel/asm-offsets.c
+@@ -6,6 +6,7 @@
+  *               2001-2002 Keith Owens
+  * Copyright (C) 2012 ARM Ltd.
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/arm_sdei.h>
+ #include <linux/sched.h>
+diff --git a/arch/csky/kernel/asm-offsets.c b/arch/csky/kernel/asm-offsets.c
+index d1e903579473..5525c8e7e1d9 100644
+--- a/arch/csky/kernel/asm-offsets.c
++++ b/arch/csky/kernel/asm-offsets.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (C) 2018 Hangzhou C-SKY Microsystems co.,ltd.
++#define COMPILE_OFFSETS
+ 
+ #include <linux/sched.h>
+ #include <linux/kernel_stat.h>
+diff --git a/arch/hexagon/kernel/asm-offsets.c b/arch/hexagon/kernel/asm-offsets.c
+index 03a7063f9456..50eea9fa6f13 100644
+--- a/arch/hexagon/kernel/asm-offsets.c
++++ b/arch/hexagon/kernel/asm-offsets.c
+@@ -8,6 +8,7 @@
+  *
+  * Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/compat.h>
+ #include <linux/types.h>
+diff --git a/arch/loongarch/kernel/asm-offsets.c b/arch/loongarch/kernel/asm-offsets.c
+index db1e4bb26b6a..3017c7157600 100644
+--- a/arch/loongarch/kernel/asm-offsets.c
++++ b/arch/loongarch/kernel/asm-offsets.c
+@@ -4,6 +4,8 @@
+  *
+  * Copyright (C) 2020-2022 Loongson Technology Corporation Limited
+  */
++#define COMPILE_OFFSETS
++
+ #include <linux/types.h>
+ #include <linux/sched.h>
+ #include <linux/mm.h>
+diff --git a/arch/m68k/kernel/asm-offsets.c b/arch/m68k/kernel/asm-offsets.c
+index 906d73230537..67a1990f9d74 100644
+--- a/arch/m68k/kernel/asm-offsets.c
++++ b/arch/m68k/kernel/asm-offsets.c
+@@ -9,6 +9,7 @@
+  * #defines from the assembly-language output.
+  */
+ 
++#define COMPILE_OFFSETS
+ #define ASM_OFFSETS_C
+ 
+ #include <linux/stddef.h>
+diff --git a/arch/microblaze/kernel/asm-offsets.c b/arch/microblaze/kernel/asm-offsets.c
+index 104c3ac5f30c..b4b67d58e7f6 100644
+--- a/arch/microblaze/kernel/asm-offsets.c
++++ b/arch/microblaze/kernel/asm-offsets.c
+@@ -7,6 +7,7 @@
+  * License. See the file "COPYING" in the main directory of this archive
+  * for more details.
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/init.h>
+ #include <linux/stddef.h>
+diff --git a/arch/mips/kernel/asm-offsets.c b/arch/mips/kernel/asm-offsets.c
+index 1e29efcba46e..5debd9a3854a 100644
+--- a/arch/mips/kernel/asm-offsets.c
++++ b/arch/mips/kernel/asm-offsets.c
+@@ -9,6 +9,8 @@
+  * Kevin Kissell, kevink@mips.com and Carsten Langgaard, carstenl@mips.com
+  * Copyright (C) 2000 MIPS Technologies, Inc.
+  */
++#define COMPILE_OFFSETS
++
+ #include <linux/compat.h>
+ #include <linux/types.h>
+ #include <linux/sched.h>
+diff --git a/arch/nios2/kernel/asm-offsets.c b/arch/nios2/kernel/asm-offsets.c
+index e3d9b7b6fb48..88190b503ce5 100644
+--- a/arch/nios2/kernel/asm-offsets.c
++++ b/arch/nios2/kernel/asm-offsets.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (C) 2011 Tobias Klauser <tklauser@distanz.ch>
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/stddef.h>
+ #include <linux/sched.h>
+diff --git a/arch/openrisc/kernel/asm-offsets.c b/arch/openrisc/kernel/asm-offsets.c
+index 710651d5aaae..3cc826f2216b 100644
+--- a/arch/openrisc/kernel/asm-offsets.c
++++ b/arch/openrisc/kernel/asm-offsets.c
+@@ -18,6 +18,7 @@
+  * compile this file to assembler, and then extract the
+  * #defines from the assembly-language output.
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/signal.h>
+ #include <linux/sched.h>
+diff --git a/arch/parisc/kernel/asm-offsets.c b/arch/parisc/kernel/asm-offsets.c
+index 757816a7bd4b..9abfe65492c6 100644
+--- a/arch/parisc/kernel/asm-offsets.c
++++ b/arch/parisc/kernel/asm-offsets.c
+@@ -13,6 +13,7 @@
+  *    Copyright (C) 2002 Randolph Chung <tausq with parisc-linux.org>
+  *    Copyright (C) 2003 James Bottomley <jejb at parisc-linux.org>
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/types.h>
+ #include <linux/sched.h>
+diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+index b3048f6d3822..a4bc80b30410 100644
+--- a/arch/powerpc/kernel/asm-offsets.c
++++ b/arch/powerpc/kernel/asm-offsets.c
+@@ -8,6 +8,7 @@
+  * compile this file to assembler, and then extract the
+  * #defines from the assembly-language output.
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/compat.h>
+ #include <linux/signal.h>
+diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offsets.c
+index 6e8c0d6feae9..7d42d3b8a32a 100644
+--- a/arch/riscv/kernel/asm-offsets.c
++++ b/arch/riscv/kernel/asm-offsets.c
+@@ -3,6 +3,7 @@
+  * Copyright (C) 2012 Regents of the University of California
+  * Copyright (C) 2017 SiFive
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/kbuild.h>
+ #include <linux/mm.h>
+diff --git a/arch/s390/kernel/asm-offsets.c b/arch/s390/kernel/asm-offsets.c
+index 95ecad9c7d7d..a8915663e917 100644
+--- a/arch/s390/kernel/asm-offsets.c
++++ b/arch/s390/kernel/asm-offsets.c
+@@ -4,6 +4,7 @@
+  * This code generates raw asm output which is post-processed to extract
+  * and format the required data.
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/kbuild.h>
+ #include <linux/sched.h>
+diff --git a/arch/sh/kernel/asm-offsets.c b/arch/sh/kernel/asm-offsets.c
+index a0322e832845..429b6a763146 100644
+--- a/arch/sh/kernel/asm-offsets.c
++++ b/arch/sh/kernel/asm-offsets.c
+@@ -8,6 +8,7 @@
+  * compile this file to assembler, and then extract the
+  * #defines from the assembly-language output.
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/stddef.h>
+ #include <linux/types.h>
+diff --git a/arch/sparc/kernel/asm-offsets.c b/arch/sparc/kernel/asm-offsets.c
+index 3d9b9855dce9..6e660bde48dd 100644
+--- a/arch/sparc/kernel/asm-offsets.c
++++ b/arch/sparc/kernel/asm-offsets.c
+@@ -10,6 +10,7 @@
+  *
+  * On sparc, thread_info data is static and TI_XXX offsets are computed by hand.
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <linux/sched.h>
+ #include <linux/mm_types.h>
+diff --git a/arch/um/kernel/asm-offsets.c b/arch/um/kernel/asm-offsets.c
+index 1fb12235ab9c..a69873aa697f 100644
+--- a/arch/um/kernel/asm-offsets.c
++++ b/arch/um/kernel/asm-offsets.c
+@@ -1 +1,3 @@
++#define COMPILE_OFFSETS
++
+ #include <sysdep/kernel-offsets.h>
+diff --git a/arch/xtensa/kernel/asm-offsets.c b/arch/xtensa/kernel/asm-offsets.c
+index da38de20ae59..cfbced95e944 100644
+--- a/arch/xtensa/kernel/asm-offsets.c
++++ b/arch/xtensa/kernel/asm-offsets.c
+@@ -11,6 +11,7 @@
+  *
+  * Chris Zankel <chris@zankel.net>
+  */
++#define COMPILE_OFFSETS
+ 
+ #include <asm/processor.h>
+ #include <asm/coprocessor.h>
 -- 
 2.51.0
 
