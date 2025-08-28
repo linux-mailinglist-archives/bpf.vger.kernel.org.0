@@ -1,150 +1,205 @@
-Return-Path: <bpf+bounces-66827-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66828-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB9EB39E5C
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 15:14:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C557B39F32
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 15:40:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B1771C28BB4
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 13:14:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88A6D5634E4
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 13:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A339D311C38;
-	Thu, 28 Aug 2025 13:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20640313E17;
+	Thu, 28 Aug 2025 13:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="O3YYsHa7"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YxBiHe9T"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2057.outbound.protection.outlook.com [40.107.212.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049DA311C07
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 13:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756386781; cv=none; b=J79grc/KWQ1PXWgnr8wPFXT3TN9qvFpBoYSVaCAenXwI+Gb5WbhKRGnjCS4Yo7oMVCH+Fa85gkI6gCnc0+8BWT50AXSzgMJEm8ZTZYPYe0C6YET5b1chbgJ9NT4/a7mQbbIi7Iy4sCJS3p+UuLKt74KYKVE/u6lX7oKImZCQRE0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756386781; c=relaxed/simple;
-	bh=2N4zkmyqye7LBYfPkMsXA3H1zZ5ZsRLH5P7of8pw368=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=T8iGYodkFADZ94q1U9AG6b2Ha5niYBLl8qEw9uYf6b4yBMJkshnK3lHEehTIX3NWDRtkPgP+b1gcsSK4b7RLlnigH3RBhXuePqk3lotJn9cP9HDr3EGP+fZ/+eDBwUeBtvzITunWmLcj25dURMsxKjZblWkxs+LJOIJByXvEQgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=O3YYsHa7; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3c8fe6bd038so479007f8f.1
-        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 06:12:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1756386777; x=1756991577; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aaoHRMJOmlPZvNuw5zJXIt9WwLQFwql6jfGw43WqudQ=;
-        b=O3YYsHa79TXCQ/PwN87lMgs4aqHy7lJApJ1wk5VrqPLp8s0M+k8sLQtqzKmDmBSSR3
-         p1dnMApgno9C3s2L3H9A5QsrCAJIBVoK0RM1AwdsABqD0bZWQ/1oE18JG/Kfxar8gCfZ
-         fQY/fPwEFb/aADZ5Nv2n4VeTIuJZDFI7/xsjsCV5AssZPKF8DjRUde5RUXARmDuaflj0
-         1oHJv67PKcIe13uabc89oaeGddN4TumInfmwtSIYHf7OEtpLW6qVY+esKX86+vsYd1sY
-         JTvYd0/Z0KA5lVejsPYEi+LLxywETZcD5fY8Ga70aA9hAGVzH7jcW0mnuMJv66q3rKyP
-         B/NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756386777; x=1756991577;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aaoHRMJOmlPZvNuw5zJXIt9WwLQFwql6jfGw43WqudQ=;
-        b=H6INDN74+7ALOz5+yvaefKQixBqDKZ9HNvcmU26pVwezX8SSrUdHUMevE4TiXsoZMC
-         hnmHx2qCYv1Fk713/4MvuGlnKrPgaD0GmDmAUVjz+bspoWFCNv935jKTHgqj5xWDnvqt
-         +hdC/QeoOnwgSd1fLG1HKXUGTPMdnDh7xSjJuJh5GmnfT6+fdlum+mclLpHs0CWXjgmJ
-         R6raQDpFh1mYdVcxAzpyB58eaG/QePjDCCXzB+SssYuQ/kS6ZVzz+vK9z6utW0GNa4H+
-         WBNX/CoqFRVoNLpf0HDo8aTTuA6SEFD8RZa17TFYkmsIzLoafCTAtVUo27Gm5mRRgVcd
-         A84A==
-X-Gm-Message-State: AOJu0YyIZcxobXuim8LtuifVvPGsW4UrZALZH+aAaGGmCeDADrpHhTpO
-	/8/0h4O3iNrlbUMc/mA8j0DURNB/64pFAHDSEEaNQ1RaRLa5mZobeRDGQU5+zTBZZE0=
-X-Gm-Gg: ASbGncsAGqvYL3XZDcs6zVgVbVMoeWlyMqQwRWouqS+3QHFNTfUwUeSsHnV7fZ3uXU2
-	7/p0o/yE/JCdtkhts4HjhX05QOtOENcc3qTuRQdvC9kAl3QWFs+qodtxDBfMlq80Vz5yANnjNHR
-	6o1R4kxeJyQnvqhNeBU2evNmuUnPSfCN8PSBMfkehw7kqNGD6da3J/HijO7WVJpnzDRRV9pf8j2
-	OVAhUM5S30ex4q/+/ebY4PYW0KOk/y+GozuQtJUXdpUxVSE5UN62fypvPB6MP57qYVK3Pl+/xwD
-	kZWgEB5arcOUBZ4ZVYyGFQWoHce7iXtoUfqYr0Zi3MV+Qv4dqiyrcWUnevsInl9mHqU/qaxVmcJ
-	H98fiISgcOQ==
-X-Google-Smtp-Source: AGHT+IHKcbqOWajx9cMRL5ztLf39tQDGmF7C1CKrMSZTAerPaPmDVS3PcCg6lRUmSNT4kED+aAopEA==
-X-Received: by 2002:a05:6000:2511:b0:3cd:7200:e021 with SMTP id ffacd0b85a97d-3cd7200e18amr3609135f8f.59.1756386777169;
-        Thu, 28 Aug 2025 06:12:57 -0700 (PDT)
-Received: from localhost ([177.94.120.255])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3ca6240b4ecsm14435609f8f.43.2025.08.28.06.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Aug 2025 06:12:56 -0700 (PDT)
-From: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
-Date: Thu, 28 Aug 2025 10:12:33 -0300
-Subject: [PATCH] selftests/bpf: Fix bpf_prog_detach2 usage in
- test_lirc_mode2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035F6313530;
+	Thu, 28 Aug 2025 13:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756388382; cv=fail; b=QN2UkxhMSWX6EYILH7p1E1ji70bi3QOqKJwO/LjwwA0yCv9OH5q6AJp69asySOfVgKQPn4hvknY5zr2Orvbli5EdPcE6FTFUBfyGPAwhfnyWsE3OrqIDUkOHpJw8FKsAG6zNenayzYvGD/esERPK3a+kppfSTeZ471GnmyVqek8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756388382; c=relaxed/simple;
+	bh=KxS4dIu3RAWau2bSeaChpvjU4+AUT42eAXan9ilWvAU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WQgDxBa9VUfapkRY/xWD4ANeHN278o6MiQXftmbkiMYgPm/lPjS0MAE84CnBYan+akUbEe5xZCOktoB+1FPbeMUH+NS1icmhxqajjpo4lg2aim/xzr9erG11PyL3dUJyyVUNrpTdxj6hR8RmQmNAaAz/6cOA5PSFAKidCCAVvxo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YxBiHe9T; arc=fail smtp.client-ip=40.107.212.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=d/bFYO+JtoX40bQhr5+xI/1uhL0ErYi/xLXUDhajfJFwd5kbcpSSuzDdXvKAAa3Zy6IMBzQqoLuGu/Ctlf4L3XFgZ6m1BrmKgG3gQ76ppoUTSEQYg8mlo4LRSfOAQstKkwfLgSAIA7l/s3qMV15uRSgjHiZ1LykOUyUvT4q4wINfglxvEgvsvvL/XlKUelmqnhXMNNPJRgGNiJD4rQgvFYO/fTHJBPPWvw5w+Y0TM5NZNiUCW1OWTuc+/byUz8JhPbe/UCw26Nq2mV4aAajXH4sMehLMzA1FEihgIyumws8pMwYX1Qt/6WvIMQHdY0QOwdOQp2ym4k7In5ZX76hq3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KxS4dIu3RAWau2bSeaChpvjU4+AUT42eAXan9ilWvAU=;
+ b=fg6PgRNLAiJFdnAjD9T4tccF1c5U0txoA/lwBR2ouQZC6oYqpiE7lisN9t+39xzZmvjGpyVkk6Qn8HHL3hnhtPRefKj0vosNNrTwRdUb5uLAmij2JVa0vkDd6y6XXjVTGhPaWmC9c3/HPJAwco/nMGM7q5dPh0p/3ylIXPGsSitlPaEqQ10IKP9ZCwHPXWEU1SwU3RlIeDqp8zLEwvpQb6ffYBQ0CLBZkmnJf5SlhuaPgcNPjthuHOOyg5bV+misPLgGSiYrLWpPp47d3JvPG9pepXHnOJ/9afXbvynSUgRRMj/RW6ChwQBKAsyBbrzKH0CGbzCMC8d/h6xnSvRXGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KxS4dIu3RAWau2bSeaChpvjU4+AUT42eAXan9ilWvAU=;
+ b=YxBiHe9Tqi8+G2VLnQIvFMeN5xgUHh0XwprW/aq2biXirXYssQN02fex26dhYpBzAV1aOuykeSwZGG19tqvSqDY7zHrd6epvgfK+Vm99Y05Nqp6XLZe//viZj+tHftwj0B88Qw/sr+0cHjBk+lB9dNqgQadWVG3+nXy8kdRu72tlxoxEUAa3c82k4QzST+qR+VdArFjxwcgeY3rcxeWU0FoiG+Mdf+BEF52es2vyz2IDXbV3iNTh8p2rrsDUgFWHAoraFb8BYpPD77xVzlZ55B4eLDxqw26M5t+rzdJBgPcPAlYPdfuxyhtRNf6pQeK2WPED6hp+kQh/QNJC+pxJuw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from IA1PR12MB6186.namprd12.prod.outlook.com (2603:10b6:208:3e6::5)
+ by DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9052.20; Thu, 28 Aug
+ 2025 13:39:30 +0000
+Received: from IA1PR12MB6186.namprd12.prod.outlook.com
+ ([fe80::abec:f9c4:35f7:3d8b]) by IA1PR12MB6186.namprd12.prod.outlook.com
+ ([fe80::abec:f9c4:35f7:3d8b%4]) with mapi id 15.20.9052.019; Thu, 28 Aug 2025
+ 13:39:29 +0000
+Message-ID: <7695218f-2193-47f8-82ac-fc843a3a56b0@nvidia.com>
+Date: Thu, 28 Aug 2025 16:39:22 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next v1 0/7] Add kfunc bpf_xdp_pull_data
+To: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
+ daniel@iogearbox.net, kuba@kernel.org, martin.lau@kernel.org,
+ mohsin.bashr@gmail.com, saeedm@nvidia.com, tariqt@nvidia.com,
+ mbloch@nvidia.com, maciej.fijalkowski@intel.com, kernel-team@meta.com,
+ Dragos Tatulea <dtatulea@nvidia.com>
+References: <20250825193918.3445531-1-ameryhung@gmail.com>
+Content-Language: en-US
+From: Nimrod Oren <noren@nvidia.com>
+In-Reply-To: <20250825193918.3445531-1-ameryhung@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TL2P290CA0017.ISRP290.PROD.OUTLOOK.COM (2603:1096:950:3::7)
+ To IA1PR12MB6186.namprd12.prod.outlook.com (2603:10b6:208:3e6::5)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20250828-selftests-bpf-v1-1-c7811cd8b98c@suse.com>
-X-B4-Tracking: v=1; b=H4sIAMBVsGgC/x2MQQqDMBAAvyJ77lIb1Np+RXpI1k1dKFF2QxHEv
- xu9zRxmNjBWYYN3tYHyX0zmVORxq4Amn76MMhYHV7u27l2Pxr+Y2bJhWCI2LVF8UcfPsYHSLMp
- R1us3fIoHb4xBfaLpvJxJ4jXf46wXwL4f/+eAXIMAAAA=
-X-Change-ID: 20250828-selftests-bpf-45ccf9c6e7d4
-To: Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1172; i=rbm@suse.com;
- h=from:subject:message-id; bh=2N4zkmyqye7LBYfPkMsXA3H1zZ5ZsRLH5P7of8pw368=;
- b=owEBiQJ2/ZANAwAIAckLinxjhlimAcsmYgBosFXU9biVjxEUfGoANyy3ge+FD+emJsoaxcbZR
- znAS3JTHhyJAk8EAAEIADkWIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCaLBV1BsUgAAAAAAEAA5t
- YW51MiwyLjUrMS4xMSwyLDIACgkQyQuKfGOGWKZKGhAAi96BIN+czst4Ja7UBJVoY1FeQxgaqsf
- jQGL3+2DaedYNE8rCru8aWRwpjLBf6yk4Be/wSDmUKjAAecQLTgcw9n/NPALgVGkcNToQxeUXt6
- BTbRHWnaLNydPf077SqNAesxQaOiPZjBUpxDf1KB0nN8Whwmw8I+SULoLkwgO2/wVyd7SSB+G2P
- Iwt7U4aBjGyD8MS+64pP6qaK2DSHTliLOibivmNcT01mTjDnCMbt2cOV6suqEicz/QGBpA5LEZc
- ccyoHvIkqhfFW15m7fmWsbe7/4W+reNQ4mU5VCO6W329xkB6pnNNBvXUxl/uOwJxgTivT6LWc93
- JSqpF0gqAbHOdRQQNE/n8gEv5OBKPwqJMWB2bKzcciaqi5NrpsfSLmG3v4Ru4/IhGKBzRkl+ZsE
- CXPHHGyHpaHRIxl3U+Ym1MALfDC4/k40kX1VtSelbtqGBFErVqU4YNI6g7VAR16aBzjrM5Y9gzI
- rNhs3su/eFvZILXqMz3DYVglfHiDy8vYS20PdLz+cAFZ2zmXzASLs4rNGALPDL3EzORPL/TpEXU
- YUqIDBO1LFIUz0/hq7032MxFDWXDUWVd8FDG82s2FNwaHGxlGoM0IAjXbtHpBnTGqRtBHlNwTSD
- EGsPq6WBWqPk0McH2jEm3Qnp2V54uh4+hZlFuGYVeqcJaJfQMDEM=
-X-Developer-Key: i=rbm@suse.com; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6186:EE_|DS0PR12MB6583:EE_
+X-MS-Office365-Filtering-Correlation-Id: de2617c7-6399-4b0d-074a-08dde6385046
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?b1ZjeFUwRG1qdmRDY0UraEdYbGtPMUVtWkVQaWVEaEFzT0ZpMFRxaXg1WE9w?=
+ =?utf-8?B?NUxiOG1wUXkzVEtjT29WcXlVRnBjUWhiWFlYK0xHR0RjTG1kZUhTK3RDekc1?=
+ =?utf-8?B?QkVsNWQxNHJIY0hybzJBKzFhbUVFbE00MzZYOTFOV1gwVE1xWE5Ia25qTEF6?=
+ =?utf-8?B?UVBaZTZoVjV5a3F6N0pxWHY3RlpqdGpaaWo3bFRWQzl3Q3IyblR3MytOWkZz?=
+ =?utf-8?B?Q2diY2dBVENVTkpFTWYrNXpTWmRzbGl6eFQ2cGh3MC9ZcWFIUy9EK1dDcEts?=
+ =?utf-8?B?azcrKzFRK1lGM05hcGljUXRyN1hTNGd0Zko3eHJLSkxMWEwvUVB3TUFpd0hJ?=
+ =?utf-8?B?OXhIbXVwSTNFV1FJVmhGTVFIaUI4ZkJJUlhHeFB3RUw1YkcxVDJEV25ETWl2?=
+ =?utf-8?B?cE9PMXJ4YXpJUkNhcmZ4STFrRVNiU2ZLYmJuM2dXZkF5cmJNaUloQXNYUDR6?=
+ =?utf-8?B?ajdYY2MvMGVxUG93aXNaN3h2Mzhlc3ZycitVSzh6b1I2UjNTY0YzMStJZkl6?=
+ =?utf-8?B?WGpuWHg0Rkc0WUp1R01QdXdxTGQzTGhjRUprMHVReEh0eFhyRjRnME42K1ZG?=
+ =?utf-8?B?MTBURUJuZkxjY21SVkljMHhEMU9iNXcwaiswTlRuNklQYmRONlZpa0VOWlFn?=
+ =?utf-8?B?cXBrd1RrTDlFSG5kRzQ5bVdHU1RHcVVYaWlVOWNLSFZEOU93OEdzZTdUTGVr?=
+ =?utf-8?B?V2crbDdVNWNCWng1WlhHU28rUmF2LzVoeGVQSTlCZUxCOGs5QkhoL3AvWEZO?=
+ =?utf-8?B?UnFjT3djcEpGYlNHcGptTmUrcWsrQUtNUjByS3p4ZXp4QUJ2eVBZTHhiR3hr?=
+ =?utf-8?B?NnMxQUVuK2ZZS1JmRzFYbG9JR0czVHhiRTJBTk9KcnpSdFRjS0RKVDIwSTU3?=
+ =?utf-8?B?R0FqMTloeXZVdkxWL0hXR1dDcmJ4U1R4SXFPZjUwYk45UmJkbURhb01FWUhm?=
+ =?utf-8?B?K0V3S25HNTQ2bzBzWUxZYWxaOExWUFN5Ukh3UzdPWnlUNElRS3JVb20rSGht?=
+ =?utf-8?B?ZFdEVDh4bEhLclMwTjQ1UUxWN1B4d25jWjF4YUQ2MFRCaEFrRnFnMGdiREJB?=
+ =?utf-8?B?M1U1N3FqZXhtTVd1ZUVOcEdTQlEzRGx4dnVRWVpwZGFhRm1CNjAzdDB1VTho?=
+ =?utf-8?B?cmd5ZHh6eHlFMVRnUUpHWU82ZXhuaUNlYnFWSldscFFVQ2ZkdmNCbHpDREhR?=
+ =?utf-8?B?N2FWbFptWm9Ec2M4eSs5SXZGc01tVmFST2tDM0E4b1dTN0RuNUQxWnJFcEZw?=
+ =?utf-8?B?MU1PSDZrUmNtNTBEbk5GZFdJZTV2eURTcTBtQUNhOG5hWncrUU90L05QRktT?=
+ =?utf-8?B?Z3VPYjFjMEJ2OXhVME11Um5XWVQxV2kyWjRsYmI1dE5VTWgrV091M3ZjMWlm?=
+ =?utf-8?B?VHFiOEZKNkxScG9lWW5iVVhDRXRjNUlEMm5RVmJ3VVRDTHBqUlB4c25pQlFa?=
+ =?utf-8?B?WWZRMDF4ajhGWGhHYUJJemsvRmZ0Tjh3Z1JmYVpYczEyUithZ3RmR0RwT3RU?=
+ =?utf-8?B?RldnOStjcWhPak9yZ2RMbS9PZG9qbWd1UUhnMi9JQmxxZm05Q0FyMVliaFFL?=
+ =?utf-8?B?dmcvNFYwWkl3cG8wYzg2QUVlN28xVWhQVmx0eE9reDlsaDkrRzVqazRjVVQ5?=
+ =?utf-8?B?WWNTbzRXd1NQTlZPRUZBeC9QWFpmWTN5K1l1TEltd1ZRVVhxOXlpWVRLK2ZN?=
+ =?utf-8?B?aWxuRjl4elQyczNQb2NZQXJkVEl6OWxTY2taVFVVRDVjV3ZmTHBMT2dnKzdW?=
+ =?utf-8?B?L0UzU1dscENRcjdoR2QwRlNQYzFsRWVmR1VaTUhUbGNVRkNPbnIyS1Z6RzRH?=
+ =?utf-8?B?ZEFIc084bXVKRlllMmEvb25ZZDlJekJjUnNLRHl3czl4MjNVckpad3ZkcVNN?=
+ =?utf-8?B?SllxVEhaRXBiRXAxNXZqV1R2TjJKTlJGamY4Um1Jd2d2THc9PQ==?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6186.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NVovUnVMZHFGUjhiUzZhVlllOGtYWGhoVU9FdXNGZUQvMS9RTWY2MmZjWEJo?=
+ =?utf-8?B?d2hjS3VOSU03UnROZU90Zi94dnM4U1Q3MTFpLzFmdHB0cm1VbGZjSTV0RmU5?=
+ =?utf-8?B?UllnbzZMeWxzaERPZHpzMlBsclp4MktUK2RTUGUraXFCUndiM0JEbXg4ZWo2?=
+ =?utf-8?B?aGh5b29MaEQ4UTFqZUR5ekxZQ2FrZGpuSVEzTWh2dVRDQXZLQW9TQzM3SjA3?=
+ =?utf-8?B?VnNIa0xlVFZIQ0hJbjErTXlmamtUSjdrMTFQa2srMGFzZFFWdEFlWm01Ny9Z?=
+ =?utf-8?B?TG9VcnRXTDZUNmdGUnpJTkVlTXNsNW9LT0NGR3JDdGxvdG5aTlI1b2pqQUNx?=
+ =?utf-8?B?ZWlWS1hxd1o1K2dYd25udU1uQ29JazAvY1FGZzE2T0cwSWRTc3ZkeEkybWN6?=
+ =?utf-8?B?OFhaT01sZTdiL2ZINzFrRjlhQkk0eWNTY2tiMS9MSGFycy9pemNrdkNLMmhk?=
+ =?utf-8?B?KzVnVDZaRjRmZEJyTEljVHR6S0lZRkJ6a2ErbjZOZEUwRjI3UlVSa2R1ODdx?=
+ =?utf-8?B?UTd0Qk5LSFF5OWlRQkVnWjlZdjgvaHd6VHg0L29LTm5HMnBrNUU0UzdqS0tP?=
+ =?utf-8?B?bzlJLzIwYnBZMlhTQ0loMDE2WUZyejFXZUxYWC8wc3R3WVNoZnJaMU9iV3FS?=
+ =?utf-8?B?WjBkUnRDWHJIcVVWS3JqSDA3MEhoR3pCRmNDbTN2T1ZLOTZxeHR2eVpGLzlK?=
+ =?utf-8?B?cGM2a25CcmhQSEJ3UGZIL2RkZTNuakJldk93cjlOelNxcEcyVEZxa25XN1Nn?=
+ =?utf-8?B?eHhxRjNoUlNzZUFFVXlmK1A4K0VkdWNZOWNVU1RqSmdlQkplZy9IM1psNE5D?=
+ =?utf-8?B?Szk4NXo0d2RNTC9kTGFqWm1idXJURVZvaEltSE5HTUtrU21pQlhDVjgxdUxv?=
+ =?utf-8?B?TCtzdTUyM2duWWNXak1MVFhHbTQ0RGxJbllubEkvNW5xbDZJUWlqYld0eGVK?=
+ =?utf-8?B?UjM3MWV0V0Z4V2sxMkcvVitoT01JZ25ZbGtqNi9wbnlHSzMwY1RxWFRCejlC?=
+ =?utf-8?B?MXR0elpCKzRDUElQdUJCRktVUUFlMlJIaDMyN0k3ZG1yZG92Y3ErdkJHM3dj?=
+ =?utf-8?B?NHRtMys5L3hET0lRM3A0dnIvZ3g4MTlhckZ0SmlyMy9tRjlSamloWVo5VHJU?=
+ =?utf-8?B?ZHRNT0dvQnVVc2dpMHI1VCtmY01sZmRmUWhlei9wdVJZbjFORHQweHFLdHlz?=
+ =?utf-8?B?VTM0d1VGWWVqNG5BMU5IcE5PeWlTUzlDbHgzU2JQSk8rLy9XazhPWERnSWNN?=
+ =?utf-8?B?YnVzY3ZTRXlHeUNZWkE3TFdrVndBdUw4OTdiVHN1YmU5c05teUYySTBlaDVk?=
+ =?utf-8?B?cEV5OGtxdFNDcml2ZjJFS1dNSENlakdTS0tpRjNQa05OVkRKYklyaWY3OFdi?=
+ =?utf-8?B?OVNrQzBVajNjSURuYmFFTklvdklDM3Y5NENkMy80aTdXUVU2WVI1aHBwNWhP?=
+ =?utf-8?B?Y2NCaG5TeUlCZGRLZTdnTE13Nk5NWWgrbXAvSXdDbWE4ZTlRbCszT2o5Wk8y?=
+ =?utf-8?B?YkxFNmQ5ZUNYbWxManl3VTdkWGxJa01ZK0o2d1Nxbk83bi9DZGxYK2szaXRa?=
+ =?utf-8?B?aEIvVEtlL0FyMkhLV0FwdExrUzVFeEI3b1J3eGRwK0pGNi8vN01zY3lsRjBv?=
+ =?utf-8?B?U2N3WmMrcnd1WTFINU1LQUxrc1VseUExajRKemt5TlAxWXo1ZWhRMkltNDIx?=
+ =?utf-8?B?ZmVubUFPdFhBSWwxUXNOYS9ycXZIQ3VGa0wvUnoxOGdhemhnaVFWWElsdnJx?=
+ =?utf-8?B?bWQvaWVuVk5YSWVrTWJjS3d3ZjNDU1dEQ3pwZDZLcjZmYnM1RjVCZitVWFYw?=
+ =?utf-8?B?eFRPV2ZkdmFFVWZyakZabDI0M1NNTURudkc4S0hzeXJkcWgzVTFpV05CWTU2?=
+ =?utf-8?B?ekxZVitaVXhHbGR5SHppRVp4Zjc3aWt1K3FreDF3ZDBscWp3TUU0bjRQaUZv?=
+ =?utf-8?B?dGd0Z2l1cTgzbzA2SHJRbGJBbm9jdFN2YUJlOWh0YTY2dTF2Z0g5TUg5M3lk?=
+ =?utf-8?B?bFI1dFJYZWhEbWhUbGRRNi9TU3p2Q2ZTMXdiYlBUZUtZRFZsREtGTGpMTG1B?=
+ =?utf-8?B?aEkrdGhjWGZUK2tQYmNhTlJBUGltcEJHa3E0Mk5qTWNkN2NXUWJ2VUdqdkE4?=
+ =?utf-8?Q?DEo27eN7auDzPBJxee4VhoylX?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de2617c7-6399-4b0d-074a-08dde6385046
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6186.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2025 13:39:29.8471
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VwgxPdYp2SJKuPfCETuI4Mvy9FRxP4gV6Sq2jRP7l/OTUoygch/2uxHZGc1OZ8PHUk8S2AOi9UlSo/Cj2Y2RoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6583
 
-Commit e9fc3ce99b34 ("libbpf: Streamline error reporting for high-level
-APIs") redefined the way that bpf_prog_detach2() returns. Therefore, adapt
-the usage in test_lirc_mode2_user.c.
+On 25/08/2025 22:39, Amery Hung wrote:
+> This patchset introduces a new kfunc bpf_xdp_pull_data() to allow
+> pulling nonlinear xdp data. This may be useful when a driver places
+> headers in fragments. When an xdp program would like to keep parsing
+> packet headers using direct packet access, it can call
+> bpf_xdp_pull_data() to make the header available in the linear data
+> area. The kfunc can also be used to decapsulate the header in the
+> nonlinear data, as currently there is no easy way to do this.
 
-Signed-off-by: Ricardo B. Marlière <rbm@suse.com>
----
- tools/testing/selftests/bpf/test_lirc_mode2_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm currently working on a series that converts the xdp_native program
+to use dynptr for accessing header data. If accepted, it should provide
+better performance, since dynptr can access without copying the data.
 
-diff --git a/tools/testing/selftests/bpf/test_lirc_mode2_user.c b/tools/testing/selftests/bpf/test_lirc_mode2_user.c
-index 4694422aa76c36faa4afa8832e56040547dc7547..88e4aeab21b7bc37665d6fd3959006c5a83a81c9 100644
---- a/tools/testing/selftests/bpf/test_lirc_mode2_user.c
-+++ b/tools/testing/selftests/bpf/test_lirc_mode2_user.c
-@@ -74,7 +74,7 @@ int main(int argc, char **argv)
- 
- 	/* Let's try detach it before it was ever attached */
- 	ret = bpf_prog_detach2(progfd, lircfd, BPF_LIRC_MODE2);
--	if (ret != -1 || errno != ENOENT) {
-+	if (ret != -ENOENT) {
- 		printf("bpf_prog_detach2 not attached should fail: %m\n");
- 		return 1;
- 	}
+> This patchset also tries to fix an issue in the mlx5e driver. The driver
+> curretly assumes the packet layout to be unchanged after xdp program
+> runs and may generate packet with corrupted data or trigger kernel warning
+> if xdp programs calls layout-changing kfunc such as bpf_xdp_adjust_tail(),
+> bpf_xdp_adjust_head() or bpf_xdp_pull_data() introduced in this set.
 
----
-base-commit: 5b6d6fe1ca7b712c74f78426bb23c465fd34b322
-change-id: 20250828-selftests-bpf-45ccf9c6e7d4
+Thanks for working on this!
 
-Best regards,
--- 
-Ricardo B. Marlière <rbm@suse.com>
+> Tested with the added bpf selftest using bpf test_run and also on
+> mlx5e with the tools/testing/selftests/drivers/net/xdp.py. mlx5e with
+> striding RQ will produce xdp_buff with empty linear data.
+> xdp.test_xdp_native_pass_mb would fail to parse the header before this
+> patchset.
 
+I got a crash when testing this series with the xdp_dummy program from
+tools/testing/selftests/net/lib/. Need to make sure we're not breaking
+compatibility for programs that keep the linear part empty.
 
