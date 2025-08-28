@@ -1,458 +1,146 @@
-Return-Path: <bpf+bounces-66874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B819DB3A97B
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 20:04:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46524B3AA22
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 20:40:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D55BA03B9D
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 18:04:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CF9617BE25
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 18:40:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FDE270EBC;
-	Thu, 28 Aug 2025 18:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0022773C6;
+	Thu, 28 Aug 2025 18:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YpaTHhyO"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="W2u4nBP7"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD0AF26E143;
-	Thu, 28 Aug 2025 18:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CABC277008
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 18:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756404217; cv=none; b=TkOJPQiIAb11m18h3Itg4V96rUlM1NHZVe9MKgGdoQnCp/8mwutm4tDQMGO2uJLO6HJjQ9/2uKyokKlbQGXMWnvIxZ13ig0PmYOqsuZ8YBlNCtgRDWc0d+Y9DZmWtGjcqLbQaDFNYLOZk47/L8+v0UzMm2DBRcVFAYsT5asVBVk=
+	t=1756406398; cv=none; b=W3xT+k6HV1JQ8jPKsVmD8pdZ6JhW0oQtvQTUhqQn0daUfW5BpZKicQffSYiTeJxcdWsz3bsC3ocPZ9l26pifRIIRT9Zi1UznZmbSHX33sNh0YK0F5oLonoJ1LYcGCXdz01e+9LjQ3CKxp8blbfVrGw0IwcbFqibOSuiO4A2al4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756404217; c=relaxed/simple;
-	bh=TcYMw4TZuj8n6gPvf25Za15ZY5i9wM2Tt/cm2PhH12g=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=SztjPftQM5Q8wd1/zx9VcXTer4PeQTdHQknPx0kGPFlIoLf7Jpov9V/QiLeK3x5Ndk60rfArRuswuONO2ov8NOBOw2khc2J4YMsIG/II654Gux0oAxT7/vE0FIrNCTspIwbZnybCHOif6brcZP2+n/5tnp5/njTJ+t7ZrYlKmMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YpaTHhyO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A445DC4CEF4;
-	Thu, 28 Aug 2025 18:03:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756404216;
-	bh=TcYMw4TZuj8n6gPvf25Za15ZY5i9wM2Tt/cm2PhH12g=;
-	h=Date:From:To:Cc:Subject:References:From;
-	b=YpaTHhyOZ1cenbrU2SF3pXIr3ko+8DibORAn8ukh8yG0ybAFyXbhdA/t4ZZ8I2gRo
-	 9O2BGtIepXroU2uBR7VsCFjN3PJNYCCUH9WSqfGe4Z/ElYkYEZE7WeM5t9dr0HJSs6
-	 +EQkaSefl9BXX0ghuhth7Bh9CFiHVpcKpObv9HlDbGn7sIe2ll4uFUOTu/vMKHaDO2
-	 +mLJsouGjqQZjvtEAjWpiwdxc8Fzmb3wHy6uWC3Ovw4aQcGNp5meuyqDn/tmt08wTy
-	 HwXqsT3mhYSM2o9E55QHqpKJNMhMM95ILbqu6ZtEzxd0YYNPkt4jIACZrMW98YIK2z
-	 tWlilMQs/XAjQ==
-Received: from rostedt by gandalf with local (Exim 4.98.2)
-	(envelope-from <rostedt@kernel.org>)
-	id 1urgyb-00000004GDk-2Hxh;
-	Thu, 28 Aug 2025 14:03:57 -0400
-Message-ID: <20250828180357.394699143@kernel.org>
-User-Agent: quilt/0.68
-Date: Thu, 28 Aug 2025 14:03:06 -0400
-From: Steven Rostedt <rostedt@kernel.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org,
- x86@kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>,
- Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>,
- Beau Belgrave <beaub@linux.microsoft.com>,
- Jens Remus <jremus@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Florian Weimer <fweimer@redhat.com>,
- Sam James <sam@gentoo.org>,
- Kees Cook <kees@kernel.org>,
- "Carlos O'Donell" <codonell@redhat.com>
-Subject: [PATCH v6 6/6] tracing: Add an event to map the inodes to their file names
-References: <20250828180300.591225320@kernel.org>
+	s=arc-20240116; t=1756406398; c=relaxed/simple;
+	bh=KHlidwqQkhRRqz68j9Qh09NEV+gPpDi3h+EEr17Y4rQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qO0hc2wMVBU6yjsOhHJIxT/2T/dK0nYmdWcuo14R+cXwwYMHciqIxJKNCd42NOHt8D+pd9mV2XPTvH+S9sYTNAZgdTR2bMYIwsnV4GmnBh/1RjXQqLKmWI+Em6LcHp6qWBl5qx0Kbiu5NbfrtGjI3Ojsge+EVhl7yQeAS4++HgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=W2u4nBP7; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-afebe21a1c0so199534866b.1
+        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 11:39:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1756406394; x=1757011194; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zk4/XHzh8fN7NJt1U1cc1xXgNC+2AfvluqXsOt7pkrs=;
+        b=W2u4nBP7hIh6uVKpD0C1cNGY+xMYhIBmzmafM/lfStC2ppooY1cT+Ufe0osk9XEOuj
+         jcAPPDZCuOvSyAZTw54b8WXuav/Viwet62zntQiT1Rrxh6IiSu16RiosYr7LtCJdiNk3
+         XsoG0KAi4TqddkPoeEciQYuJ8m972C7tg8sl8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756406394; x=1757011194;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zk4/XHzh8fN7NJt1U1cc1xXgNC+2AfvluqXsOt7pkrs=;
+        b=nuQARQQdFJRUYNeDnNmXL+FIQe7xfEnZ7K3bPnkTIt3eC4kQj3f0sevMW0WFYiJUYB
+         eYpfq7apbT2L+0XijWB4s/3EfoqJReUBSyZBUdAaHSUS0A3G+cozOB9fo05TC5/k7UtJ
+         rsoRoEQYc3N2+s7ub+Z2MSFgBiNHdKNCsMqk15HhJDLiUGyM2RdlPKO+Vfnl36QiRAT3
+         rka+xkyJdpNmFVNy/Uvkj0wWrVhYd7Ybrb9PkpKrH4paV13IIo/UbfV9B5h1+z9jeoJw
+         NYkUW7nMjd0BNTIPSoF6d9SWW0I2wdG6gIaZMgGoflCKCd0dLrO4Hf2DTBrlXHvJ2+gP
+         uqWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUd1bQQ7FAssQB1dFQqT3dUKKelAmhJyczFfVLIQZq+R8/SjZLyMRSW7AG6S3VF3DKS/5c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzO2WxcOnj8+QL51A42fqKKmpCNU5sab2bxadJ75CyVMYIQCdee
+	twgyCd8m56JpyZHqVCjtSonuqTd37z57k7uBhkPz3LVKcV/0l7SKIKEDdUaQbZJSfRBzTQLdfaD
+	QUasiAms=
+X-Gm-Gg: ASbGncs+SGsDjwatdVXr/5iQhDCxARhAlsX+Yx5f5bG1B6Nwl5Rl3C/pWvqLzLC6arV
+	ZrQ6xarlHWqhph27Wo9k8Wdjc9OQST1DefltcQOJTNzNO1l8BsbG06E6a4h0RDM7j+S8AKaRYkR
+	wqzpS0Wuvvop+fvp7DPgcj8bfgAQJt2EOR/L1O9ZK136/Uq+PlX1QTixhSMsYARo0hEcQUqUYu2
+	8gd3+GeGNUI+6XHJnfQTXkgb3lO4uiCiRHUhaWCEiG/mXGujv8f0UQPjpDBQk1Ub9rc6wvawtQn
+	EzVnXJ5V4q61+ikzIxihdh/Htpt3C4GmhOSY1F3iTWweXdHXLsORk4Ktx1798AhOvLXzHF20KSF
+	FIvT9sN/FX+UbBOg8jClWiP2f2xl2xtgZcd7VcOQenSLoY1cOtHZ3RRvQULMcKeeRnYa3GfDS
+X-Google-Smtp-Source: AGHT+IFXzCC9qHGjBFzugyaFSFHTwg9qHFAzoNRxvdjUEAKdoLMNlztkoUX2gy3xgm4lcNoH/AjV8A==
+X-Received: by 2002:a17:907:9450:b0:afe:d5bb:f424 with SMTP id a640c23a62f3a-afed5cb5858mr435466466b.45.1756406394272;
+        Thu, 28 Aug 2025 11:39:54 -0700 (PDT)
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-afefcbd8708sm16445366b.71.2025.08.28.11.39.52
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Aug 2025 11:39:52 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-afcb7ace3baso222353966b.3
+        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 11:39:52 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXQl843ajUTOiaxaU6GlNY/RoGN/x63uk6ld+Vjw4gZdoU+zNgNRWBePiJrsa0uvsRUUxk=@vger.kernel.org
+X-Received: by 2002:a17:907:d8d:b0:afe:a121:c466 with SMTP id
+ a640c23a62f3a-afea121c81dmr1115762266b.18.1756406392000; Thu, 28 Aug 2025
+ 11:39:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20250828180300.591225320@kernel.org> <20250828180357.223298134@kernel.org>
+In-Reply-To: <20250828180357.223298134@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 28 Aug 2025 11:39:35 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi0EnrBacWYJoUesS0LXUprbLmSDY3ywDfGW94fuBDVJw@mail.gmail.com>
+X-Gm-Features: Ac12FXwObny_n6wQ-ugpdD6HjGwdsHVCsiy2fjxZ8DxqXIznImh_eKBzj6tMsaI
+Message-ID: <CAHk-=wi0EnrBacWYJoUesS0LXUprbLmSDY3ywDfGW94fuBDVJw@mail.gmail.com>
+Subject: Re: [PATCH v6 5/6] tracing: Show inode and device major:minor in
+ deferred user space stacktrace
+To: Steven Rostedt <rostedt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Indu Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, 
+	Beau Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Florian Weimer <fweimer@redhat.com>, 
+	Sam James <sam@gentoo.org>, Kees Cook <kees@kernel.org>, "Carlos O'Donell" <codonell@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Steven Rostedt <rostedt@goodmis.org>
+On Thu, 28 Aug 2025 at 11:05, Steven Rostedt <rostedt@kernel.org> wrote:
+>
+> The deferred user space stacktrace event already does a lookup of the vma
+> for each address in the trace to get the file offset for those addresses,
+> it can also report the file itself.
 
-The userstacktrace_delay stack trace shows for each frame of the listed
-stack, the address in the file of the code, the inode number of the file,
-and the device number of the file. This can be used by a user space tool
-to find exactly where the stack walk is in the source code. But the issue
-with this is that it also requires the tool to find the application on
-disk from its device number and inode. This can take a bit of time.
+That sounds like a good idea..
 
-The output of the usestacktrace_delay looks like this:
+But the implementation absolutely sucks:
 
-       trace-cmd-1053    [007] .....  1290.400226: <user stack unwind>
-cookie=300000008
- =>  <000000000008f687> : 1340007 : 254:3
- =>  <0000000000014560> : 1488818 : 254:3
- =>  <000000000001f94a> : 1488818 : 254:3
- =>  <000000000001fc9e> : 1488818 : 254:3
- =>  <000000000001fcfa> : 1488818 : 254:3
- =>  <000000000000ebae> : 1488818 : 254:3
- =>  <0000000000029ca8> : 1340007 : 254:3
+> Add two more arrays to the user space stacktrace event. One for the inode
+> number, and the other to store the device major:minor number. Now the
+> output looks like this:
 
-To help out, create a "inode_cache" that maps the device/inode to the path
-of the file. Use a rhashtable to store the device/inode as a key, and
-every time a new inode is added, it triggers a trace event that prints the
-device, inode and the path. A tool can use this trace event to find the
-paths without having to look for them on the device:
+WTF? Why are you back in the 1960's? What's next? The index into the
+paper card deck?
 
- trace-cmd start -B map -e inode_cache
-[..]
- trace-cmd show -B map
-[..]
-       trace-cmd-1053    [007] ...1.  1290.400956: inode_cache: inode=1340007 dev=[254:3] path=/usr/lib/x86_64-linux-gnu/libc.so.6
-       trace-cmd-1053    [007] ...1.  1290.401175: inode_cache: inode=1488818 dev=[254:3] path=/usr/local/bin/trace-cmd
-       trace-cmd-1053    [007] ...1.  1290.401249: inode_cache: inode=1308544 dev=[254:3] path=/usr/local/lib64/libtracefs.so.1.8.2
-       trace-cmd-1053    [007] ...1.  1290.401288: inode_cache: inode=1319848 dev=[254:3] path=/usr/local/lib64/libtraceevent.so.1.8.4
-       trace-cmd-1053    [007] ...1.  1290.401338: inode_cache: inode=1311769 dev=[254:3] path=/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.7
-            bash-1044    [006] ...1.  1290.402620: inode_cache: inode=1308405 dev=[254:3] path=/usr/bin/bash
-            bash-1044    [006] ...1.  1293.945511: inode_cache: inode=1309170 dev=[254:3] path=/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
-       trace-cmd-1054    [001] ...1.  1293.956178: inode_cache: inode=1339989 dev=[254:3] path=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
-            less-1055    [000] ...1.  1293.962161: inode_cache: inode=1309556 dev=[254:3] path=/usr/bin/less
-       trace-cmd-1054    [001] ...1.  1293.963118: inode_cache: inode=1309303 dev=[254:3] path=/usr/lib/x86_64-linux-gnu/libz.so.1.3.1
-  NetworkManager-592     [000] ...1.  1296.802760: inode_cache: inode=1310774 dev=[254:3] path=/usr/sbin/NetworkManager
-   systemd-udevd-323     [002] ...1.  1327.342209: inode_cache: inode=1308579 dev=[254:3] path=/usr/lib/x86_64-linux-gnu/systemd/libsystemd-shared-257.so
-    sshd-session-1041    [001] ...1.  1352.996159: inode_cache: inode=1570224 dev=[254:3] path=/usr/lib/openssh/sshd-session
+Stop using inode numbers and device numbers already. It's the 21st
+century. No, cars still don't fly, but dammit, inode numbers were a
+great idea back in the days, but they are not acceptable any more.
 
-The event is only triggered when a new inode device combo is added to the
-rhashtable. To help make sure new tracing can read this event, every time
-the trace starts and stops and some other changes to the tracing system
-occur, the cache is cleared so that it will show the paths again.
+They *particularly* aren't acceptable when you apparently think that
+they are 'unsigned long'.  Yes, that's the internal representation we
+use for inode indexing, but for example on nfs the inode is actually
+bigger. It's exposed to user space as a u64 through
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/Makefile            |   3 +
- kernel/trace/inode_cache.c       | 144 +++++++++++++++++++++++++++++++
- kernel/trace/trace.c             |  15 +++-
- kernel/trace/trace.h             |  10 +++
- kernel/trace/trace_inode_cache.h |  42 +++++++++
- 5 files changed, 212 insertions(+), 2 deletions(-)
- create mode 100644 kernel/trace/inode_cache.c
- create mode 100644 kernel/trace/trace_inode_cache.h
+        stat->ino = nfs_compat_user_ino64(NFS_FILEID(inode));
 
-diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-index dcb4e02afc5f..c13f8ec48dc2 100644
---- a/kernel/trace/Makefile
-+++ b/kernel/trace/Makefile
-@@ -71,6 +71,7 @@ obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += trace_functions_graph.o
- obj-$(CONFIG_TRACE_BRANCH_PROFILING) += trace_branch.o
- obj-$(CONFIG_BLK_DEV_IO_TRACE) += blktrace.o
- obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += fgraph.o
-+obj-$(CONFIG_UNWIND_USER) += inode_cache.o
- ifeq ($(CONFIG_BLOCK),y)
- obj-$(CONFIG_EVENT_TRACING) += blktrace.o
- endif
-@@ -110,4 +111,6 @@ obj-$(CONFIG_FPROBE_EVENTS) += trace_fprobe.o
- obj-$(CONFIG_TRACEPOINT_BENCHMARK) += trace_benchmark.o
- obj-$(CONFIG_RV) += rv/
- 
-+CFLAGS_inode_cache.o := -I$(src)
-+
- libftrace-y := ftrace.o
-diff --git a/kernel/trace/inode_cache.c b/kernel/trace/inode_cache.c
-new file mode 100644
-index 000000000000..bf177f7a5dad
---- /dev/null
-+++ b/kernel/trace/inode_cache.c
-@@ -0,0 +1,144 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2025 Google, author: Steven Rostedt <rostedt@goodmis.org>
-+ */
-+#include <linux/rhashtable.h>
-+#include "trace.h"
-+
-+#define CREATE_TRACE_POINTS
-+#include "trace_inode_cache.h"
-+
-+struct inode_cache_key {
-+	unsigned long		inode_nr;
-+	unsigned long		dev_nr;
-+};
-+
-+struct inode_cache {
-+	struct rhash_head	rh;
-+	struct inode_cache_key	key;
-+};
-+
-+struct inode_cache_hash {
-+	struct rhashtable	rhash;
-+	struct rcu_head		rcu;
-+};
-+
-+static const struct rhashtable_params inode_cache_params = {
-+	.nelem_hint		= 32,
-+	.key_len		= sizeof(struct inode_cache_key),
-+	.key_offset		= offsetof(struct inode_cache, key),
-+	.head_offset		= offsetof(struct inode_cache, rh),
-+};
-+
-+static DEFINE_MUTEX(inode_cache_mutex);
-+static struct inode_cache_hash	*imhash;
-+
-+static void free_inode_cache(void *ptr, void *arg)
-+{
-+	kfree(ptr);
-+}
-+
-+static const char *get_vma_name(struct vm_area_struct *vma, char *buf, int size)
-+{
-+	struct anon_vma_name *anon_name = anon_vma_name(vma);
-+	const struct path *path;
-+
-+	if (anon_name)
-+		return anon_name->name;
-+
-+	path = file_user_path(vma->vm_file);
-+
-+	return d_path(path, buf, size);
-+}
-+
-+#define PATH_BUF_SZ 128
-+
-+static void print_inode_vma(struct vm_area_struct *vma,
-+			 unsigned long inode, unsigned int dev)
-+{
-+	static char buf[PATH_BUF_SZ];
-+	const char *name;
-+
-+	lockdep_assert_held(&inode_cache_mutex);
-+
-+	name = get_vma_name(vma, buf, PATH_BUF_SZ);
-+
-+	trace_inode_cache(inode, dev, name);
-+}
-+
-+/**
-+ * trace_inode_cache_add - Add a inode/dev to the cache and trigger path trace
-+ * @vma: The vma that maps to the inode/dev
-+ * @inode: The inode number of the vma->vm_file
-+ * @dev: The device number of the vma->vm_file
-+ *
-+ * This is used to trigger the inode_cache trace event when a new inode/dev
-+ * is added. This only gets called when that trace event is active.
-+ * Whenever a inode/dev is added to the userstacktrace, this function
-+ * gets called with the associated @vma and if it wasn't added before, it
-+ * triggers the trace event that will write the @inode, @dev and lookup
-+ * the file it is associated with. This can be used by user space tools to
-+ * map the inode/dev in the userspace stack traces to their corresponding
-+ * files.
-+ *
-+ * This gets reset when certain events happen in the tracefs system, such as,
-+ * enabling or disabling tracing, or enabling or disabling the deferred user
-+ * space stack tracing. This is done to not miss events.
-+ */
-+void trace_inode_cache_add(struct vm_area_struct *vma,
-+			 unsigned long inode, unsigned int dev)
-+{
-+	struct inode_cache_hash *rht = READ_ONCE(imhash);
-+	struct inode_cache_key key;
-+	struct inode_cache *item;
-+
-+	if (!vma->vm_file)
-+		return;
-+
-+	key.inode_nr = inode;
-+	key.dev_nr = dev;
-+
-+	/* First check if the inode, dev exist already */
-+	if (rht && rhashtable_lookup_fast(&rht->rhash, &key, inode_cache_params) != NULL)
-+		return;
-+
-+	guard(mutex)(&inode_cache_mutex);
-+
-+	rht = imhash;
-+
-+	/* Make sure it wasn't added between the lookup and taking the lock */
-+	if (rht && rhashtable_lookup_fast(&rht->rhash, &key, inode_cache_params) != NULL)
-+		return;
-+
-+	if (!rht) {
-+		rht = kmalloc(sizeof(*rht), GFP_KERNEL);
-+		if (!rht)
-+			goto print;
-+		if (rhashtable_init(&rht->rhash, &inode_cache_params) < 0) {
-+			kfree(rht);
-+			goto print;
-+		}
-+		imhash = rht;
-+	}
-+
-+	item = kmalloc(sizeof(*item), GFP_KERNEL);
-+	if (!item)
-+		goto print;
-+
-+	item->key = key;
-+
-+	rhashtable_insert_fast(&rht->rhash, &item->rh, inode_cache_params);
-+
-+ print:
-+	print_inode_vma(vma, inode, dev);
-+}
-+
-+void trace_inode_cache_reset(void)
-+{
-+	guard(mutex)(&inode_cache_mutex);
-+	if (!imhash)
-+		return;
-+	rhashtable_free_and_destroy(&imhash->rhash, free_inode_cache, NULL);
-+	kfree_rcu(imhash, rcu);
-+	imhash = NULL;
-+}
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index c6e1471e4615..983b885fee88 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -57,6 +57,7 @@
- 
- #include "trace.h"
- #include "trace_output.h"
-+#include "trace_inode_cache.h"
- 
- #ifdef CONFIG_FTRACE_STARTUP_TEST
- /*
-@@ -3203,6 +3204,9 @@ static void trace_user_unwind_callback(struct unwind_work *unwind,
- 		if (vma->vm_file && vma->vm_file->f_inode) {
- 			inodes[i] = vma->vm_file->f_inode->i_ino;
- 			devs[i] = vma->vm_file->f_inode->i_sb->s_dev;
-+
-+			if (trace_inode_cache_enabled())
-+				trace_inode_cache_add(vma, inodes[i], devs[i]);
- 		} else {
- 			inodes[i] = 0;
- 			devs[i] = 0;
-@@ -4979,9 +4983,10 @@ static int tracing_open(struct inode *inode, struct file *file)
- 			trace_buf = &tr->max_buffer;
- #endif
- 
--		if (cpu == RING_BUFFER_ALL_CPUS)
-+		if (cpu == RING_BUFFER_ALL_CPUS) {
- 			tracing_reset_online_cpus(trace_buf);
--		else
-+			trace_inode_cache_reset();
-+		} else
- 			tracing_reset_cpu(trace_buf, cpu);
- 	}
- 
-@@ -5324,6 +5329,7 @@ int trace_keep_overwrite(struct tracer *tracer, u32 mask, int set)
- 
- static int update_unwind_deferred(struct trace_array *tr, int enabled)
- {
-+	trace_inode_cache_reset();
- 	if (enabled) {
- 		return unwind_deferred_init(&tr->unwinder,
- 					    trace_user_unwind_callback);
-@@ -6041,6 +6047,7 @@ tracing_set_trace_read(struct file *filp, char __user *ubuf,
- int tracer_init(struct tracer *t, struct trace_array *tr)
- {
- 	tracing_reset_online_cpus(&tr->array_buffer);
-+	trace_inode_cache_reset();
- 	return t->init(tr);
- }
- 
-@@ -7518,6 +7525,7 @@ int tracing_set_clock(struct trace_array *tr, const char *clockstr)
- 	 * Reset the buffer so that it doesn't have incomparable timestamps.
- 	 */
- 	tracing_reset_online_cpus(&tr->array_buffer);
-+	trace_inode_cache_reset();
- 
- #ifdef CONFIG_TRACER_MAX_TRACE
- 	if (tr->max_buffer.buffer)
-@@ -9478,6 +9486,9 @@ rb_simple_write(struct file *filp, const char __user *ubuf,
- 	if (ret)
- 		return ret;
- 
-+	/* Cleare the inode cache whenever tracing starts or stops */
-+	trace_inode_cache_reset();
-+
- 	if (buffer) {
- 		guard(mutex)(&trace_types_lock);
- 		if (!!val == tracer_tracing_is_on(tr)) {
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 940107ba618a..d04563f088bf 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -450,6 +450,16 @@ struct trace_array {
- 	bool ring_buffer_expanded;
- };
- 
-+#ifdef CONFIG_UNWIND_USER
-+void trace_inode_cache_add(struct vm_area_struct *vma,
-+			 unsigned long inode, unsigned int dev);
-+void trace_inode_cache_reset(void);
-+#else
-+static inline void trace_inode_cache_add(struct vm_area_struct *vma,
-+				       unsigned long inode, unsigned int dev) {}
-+static inline void trace_inode_cache_reset(void) {}
-+#endif
-+
- enum {
- 	TRACE_ARRAY_FL_GLOBAL		= BIT(0),
- 	TRACE_ARRAY_FL_BOOT		= BIT(1),
-diff --git a/kernel/trace/trace_inode_cache.h b/kernel/trace/trace_inode_cache.h
-new file mode 100644
-index 000000000000..3a71d0104fbb
---- /dev/null
-+++ b/kernel/trace/trace_inode_cache.h
-@@ -0,0 +1,42 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifdef CONFIG_UNWIND_USER
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM inode_cache
-+
-+#if !defined(_TRACE_inode_cache_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_inode_cache_H
-+
-+TRACE_EVENT(inode_cache,
-+
-+	TP_PROTO(unsigned long inode, unsigned int dev, const char *path),
-+
-+	TP_ARGS(inode, dev, path),
-+
-+	TP_STRUCT__entry(
-+		__field(	unsigned long,	inode		)
-+		__field(	unsigned int,	dev		)
-+		__string(	path,		path		)
-+	),
-+	TP_fast_assign(
-+		__entry->inode = inode;
-+		__entry->dev = dev;
-+		__assign_str(path);
-+	),
-+	TP_printk("inode=%lu dev=[%u:%u] path=%s",
-+		  __entry->inode, MAJOR(__entry->dev), MINOR(__entry->dev),
-+		  __get_str(path))
-+);
-+
-+
-+#endif /* if !defined(_TRACE_inode_cache_H) || defined(TRACE_HEADER_MULTI_READ) */
-+
-+#undef TRACE_INCLUDE_PATH
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_FILE trace_inode_cache
-+
-+/* This part must be outside protection */
-+#include <trace/define_trace.h>
-+#else /* CONFIG_UNWIND_USER */
-+static inline bool trace_inode_cache_enabled(void) { return false; }
-+#endif /* !CONFIG_UNWIND_USER */
--- 
-2.50.1
+so the inode that user space sees in 'struct stat' (a) doesn't
+actually match inode->i_ino, and (b) isn't even the full file ID that
+NFS actually uses.
 
+Let's not let that 60's thinking be any part of a new interface.
 
+Give the damn thing an actual filename or something *useful*, not a
+number that user space can't even necessarily match up to anything.
+
+              Linus
 
