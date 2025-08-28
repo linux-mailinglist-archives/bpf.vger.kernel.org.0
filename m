@@ -1,187 +1,205 @@
-Return-Path: <bpf+bounces-66831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66832-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D20B39F45
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 15:44:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BE6B3A14D
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 16:22:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F24C3AFF5C
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 13:44:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0160B610C8
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 14:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604DE311946;
-	Thu, 28 Aug 2025 13:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B84931579F;
+	Thu, 28 Aug 2025 14:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="BKHbh+ND"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WvD1Tu/9"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2074.outbound.protection.outlook.com [40.107.220.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B5E13C9C4;
-	Thu, 28 Aug 2025 13:44:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756388648; cv=fail; b=ibLE+Ldlnu69RAWosdWbuwpuGxrNkuQ1PBOfzcpseyEVZXXa7OrBIAUBpUOmalNyC6J6B/RlTcbftWOcWgJG3e8RYl/JTu5Qn9GauKlaZGKyzVl8Y3Tsl16VeW0AiD8GNZxu48/ZfR3gKf7ZB5q424HxNOQUgQ8RT6jzjToVgwM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756388648; c=relaxed/simple;
-	bh=s+k3dcbQTht9jDIqx200PEYKUzTwrzVv02DPO7/Lbjo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Ia9AxUaSnoDTKfaN3Np4Sgd14KhOuYx7+q/he7J9d7iNrwXL86tRwVvSPLeDbFdmtFN6MJA5bRAjUtaxq0pPyvV7y8mEZ631cIOFBkj5uPipkXbwaht+4hDlo7iSuQJu09SVQfCz6HgNIj8XpWlIZaXi/Yxc6FLFwtVEzoIxdtY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=BKHbh+ND; arc=fail smtp.client-ip=40.107.220.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=BeDRKzIW3VrpkUhXD02DFVyaBoJhEIUfmGlzXildkZQ+vtK2EcQDyjonV8eIv1nPSVjsqhyweJUm6oAkQ4KhA0ZzU5nA4O9703FYbmyePvfITNG/RxT9+jvtryzhkFzRuQ3iuwZfpQcoW/4ptbwutXiVkA0rS9bzgvDNT1P6ri380WClgCLDqGhNXKgrICp+vu0oa0nelW1Koe1bueWsscwyosYhUyQAr9ZX+rV2SLxdVX563/8LiBJ65wYkb6crxJjxq/SpajzV1K824yjxjnNy0cLFBzf2U0FQNNj8RnaOx/lenPrTs7lHO+0m/Fo22wl7QiKrYBWNpFx60Tai4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s+k3dcbQTht9jDIqx200PEYKUzTwrzVv02DPO7/Lbjo=;
- b=MGBzOSzrdCrvJk77qDLdksAWtcO7RCsMqwxwznqZEN+LoTd5f1hjWlOoiGiJew6ouiY3bY+5wQ/5GcNSIkX/DqM0xu8dDAFj925oPgosJW5aUggbNwkeN5rT0hNkETvjw99olFUDTj/ecMNiJUk0QtXgS9xO5xGtO7MuvV6CgoWGUEM8PYS45oyN6Binuvtw/FHxD7PptgF22hzOJ88uCUGCxJvB7tvriqigoNBQsmEYXK4ePcHcZVjpRo+v0TaQcrLudIUIKH/OfUz3lUR+85d7zswDJHhM2u0uTllSOYxPiSUzHsoPsDSyzY9iBHWOVzmlGFW3uL0F87D5B5ObdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+k3dcbQTht9jDIqx200PEYKUzTwrzVv02DPO7/Lbjo=;
- b=BKHbh+NDUUpsFf/sIQWg9IH1SzkvbtPKnMq6TBPkHbCNsbZ73E2df1JZyqVSOYq5h9Q3vXjF1vNcmYpEORw1D/6CWJWVm57dOeutzb/I6gI+RDmWR58F37Q1qhHynm0syiyeo0fDW/CfzSRrm7gugnGGy560LUKvZiHzcs6RnVnujCsbXNBhvppSO3I5D9iK98dN8ELGIYjDm9kXRFReCD4U8UJJQ1uvwq/uHfbyPHNZAF1etWW1HJ75VXgbvrO2cfakBUDeKWrb5Fgp7A/qbvPvtP2z6x5yCM/pxfKuIKdXeMY1WQMcSq+hvMZtV1+TvdolWmrkqrgdDqBv5lt5Ew==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA1PR12MB6186.namprd12.prod.outlook.com (2603:10b6:208:3e6::5)
- by DS7PR12MB6214.namprd12.prod.outlook.com (2603:10b6:8:96::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9052.21; Thu, 28 Aug
- 2025 13:44:04 +0000
-Received: from IA1PR12MB6186.namprd12.prod.outlook.com
- ([fe80::abec:f9c4:35f7:3d8b]) by IA1PR12MB6186.namprd12.prod.outlook.com
- ([fe80::abec:f9c4:35f7:3d8b%4]) with mapi id 15.20.9052.019; Thu, 28 Aug 2025
- 13:44:03 +0000
-Message-ID: <f35db6aa-ac4c-4690-bb54-4bbd5d4a3970@nvidia.com>
-Date: Thu, 28 Aug 2025 16:43:55 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC bpf-next v1 2/7] bpf: Allow bpf_xdp_shrink_data to shrink a
- frag from head and tail
-To: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
- daniel@iogearbox.net, kuba@kernel.org, martin.lau@kernel.org,
- mohsin.bashr@gmail.com, saeedm@nvidia.com, tariqt@nvidia.com,
- mbloch@nvidia.com, maciej.fijalkowski@intel.com, kernel-team@meta.com,
- Dragos Tatulea <dtatulea@nvidia.com>, Gal Pressman <gal@nvidia.com>
-References: <20250825193918.3445531-1-ameryhung@gmail.com>
- <20250825193918.3445531-3-ameryhung@gmail.com>
-Content-Language: en-US
-From: Nimrod Oren <noren@nvidia.com>
-In-Reply-To: <20250825193918.3445531-3-ameryhung@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TL2P290CA0025.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:3::20) To IA1PR12MB6186.namprd12.prod.outlook.com
- (2603:10b6:208:3e6::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1023E314B9C
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 14:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756390154; cv=none; b=aj/Oqwg8QOMnRcLis6J/KucSn2p54bPbfe35fzFRgHzP6CqjU5g7Bw+Fzk29qaI6VJGROrA/6AME9dufORQyjNRtCJlL/AKNEAfFNTEotN1q3ttDTPHY1f7TXRtWl+l4BYuYxC5fCnmelj9aLPF3NSx/jEu5hC91/RXXeodH4ME=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756390154; c=relaxed/simple;
+	bh=x4sRVrOwsPozk+TvMqw1fQ9o/sScBFDYlqWZEbKnVns=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FTV7QWouJTSS/FPGsY8mPcO4OOADodVlqTZ/EpxX+j7LPpXJ+TnYe/FVKhr4+TJ4gfdcgM0annt0OlVgZOdEln+2cCU/L7/volo2IwNKbU96Zf0/FY+qsqm+vB8qlrUlPPbvvMapO3Qx84Z1nu0UxQUHzx3iEeeX3cMxMcivCac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WvD1Tu/9; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-45b4d89217aso6204255e9.2
+        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 07:09:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756390151; x=1756994951; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iT4QPOld809hb0t/4oWA/iavLlodldhi7NcBfjirSPc=;
+        b=WvD1Tu/9XhCsLmmk8VN4Mh2UNlniALpvZ5Ep5oepnejsSBfquSKDMwg/1REuBKrzFA
+         50wxIwtFGnqRVy2OAJDoEJVMvLDVlzzBvIioT8xxRqx5Gm0GPks+iklxvrGGAjZvwagJ
+         KT4UA0FHyXgtmLFYL7Z3d/P/phkuuXwH48irkkKDImCyI6Nd79Fu+DwTQMzRYumyMz7o
+         rSd5eITEovKbQGrCPs7sqGquTXrdTEP5oTqhvEZhXoIsLLZdZZK+XPHLCt31duCGhHtL
+         d8rT/fW1O7vEI2qjZ5BlK+4aS5KrGNzon+fdghCkYCdDUkCNs4zsugD2SetOAAMuO/8T
+         1IPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756390151; x=1756994951;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iT4QPOld809hb0t/4oWA/iavLlodldhi7NcBfjirSPc=;
+        b=gKGwJJchb1GsWM9mF5L3Ms74PCBqYopom1zdQCYpR8YOxTYGk2hzl2JQ0qIRLzTvIk
+         wIpyy31WVinU5lCTYtyNazsOhxStSBaa6EbIOjCa0MojBK9NBG2NxqpVhG6rBweDVvni
+         6cp+XwBvinxX0DAIrs12h/Bu3UF0HsxeXnLPmmk8tqpltY+3cmUhWZXgBbU3ZnqOrGiM
+         LjGTymOiU5ebVucNrimSkLh8EYpFuLJUaN22hRSnpeYc5r8SH51Qy1zewKtdz+hhqLAO
+         lRoCorBy2J19bIYPP4R5uIcf9vu1Kv0fVRGZoQmvPmjXINUdr4nYtePGHQhPD9Lee2s9
+         F6rQ==
+X-Gm-Message-State: AOJu0Ywg/9pxmdYJYtHjQ0D6ALVuUv+To76C/l80YjqahtMcdbn38UDo
+	NsHekxKIikxCrVBmeYu6ry162+RyPuPtSU533rl6Qu6ETYGdpSbHqPGq
+X-Gm-Gg: ASbGnctoUgaqi979/owDuNFlY1wm5wCoOEjDGFUq7QZ//VQMk7GsvOSxRJuc+mMyPv7
+	9nR96a0NJEmUMX+8e/nfeubbq54xJHOXl2wtEz+H1WMxGAGoZtZNlE36tabVKsVOT32qruN22km
+	g1mPw9fHaWvOrZ8syed2SZ2DXtNdrFqdAfVJhDR0B+UW8762UVeog5xMJ3Ay0HgbqmOXrAqSPGs
+	pgaAxd/KcEusA8rIei3X/m6sZtMaaXXz14pGX2963ueUi8SCQnp8+ejWHXhUKy11U2NcE9TwLQo
+	4PCd2olAMXIeZVbQ7v2GpTc5HgS6xAXFxbcmzrAzOtnHCbHndqbZ43r53TmK7FLkvpJn/gzmUKX
+	HhH62VVLTp0FBWUwgfRDkYyKnjig8QxEeWZazzJ14YBZd
+X-Google-Smtp-Source: AGHT+IGsMw8/+D/3e3qOxp91MFgPTnOCOPsojBaCG/JH1j6HtAbR33bnerE3irOdEw2n5IOAVrCx6g==
+X-Received: by 2002:a05:600c:154d:b0:459:d780:3602 with SMTP id 5b1f17b1804b1-45b517d4185mr197599115e9.23.1756390150884;
+        Thu, 28 Aug 2025 07:09:10 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3cc50050c4esm8384520f8f.25.2025.08.28.07.09.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Aug 2025 07:09:10 -0700 (PDT)
+Date: Thu, 28 Aug 2025 14:15:11 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH v1 bpf-next 08/11] bpf, x86: add support for indirect
+ jumps
+Message-ID: <aLBkbzahReym9UXm@mail.gmail.com>
+References: <20250816180631.952085-1-a.s.protopopov@gmail.com>
+ <20250816180631.952085-9-a.s.protopopov@gmail.com>
+ <506e9593cf15c388ddfd4feaf89053c1e469b078.camel@gmail.com>
+ <aLAoUK22+PpuAbhy@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB6186:EE_|DS7PR12MB6214:EE_
-X-MS-Office365-Filtering-Correlation-Id: ea3484d3-0525-4789-87ec-08dde638f319
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?cnBGdXdkVHVzNW8xUEdDWjNqaW5xRmRsSC9xUmxFMFlpcVpxNW1zN29KVDNw?=
- =?utf-8?B?cnhaa2xiTTU2U1VBZHFuT1hRYlA2UVljWGhDQzVqdE1kSU9SWjd5MmRKQU9V?=
- =?utf-8?B?WTNIOFlqY3IxQVpWK0wxdFRNemI2R0ZjdWNwdHFkWWtaeG5RbmEyREJ3OWc3?=
- =?utf-8?B?d2pUbjh6bHBYMFdJZ1o4YUJOYjcvalp2d2h4M2VHTTQwQXB1Wm8vQWNOd0lt?=
- =?utf-8?B?aGF0RzZPME1QVDJJNzc4bmN6N09IYVVBL1J4Z09qcXpxYjIwT216bFhmZndV?=
- =?utf-8?B?Q3NtODBMZHBYdWJaMXk3QjliU2hjb2t3TEJ2T1NRem41NHo1V01Wek9VTHhU?=
- =?utf-8?B?L2pLUThyaVRGUlU4SUNDbnQ5ZFZFTzUxN0c1SWM0L3lhdUFucFJ1N3VJNFJk?=
- =?utf-8?B?aExBYzZGOG51cUszNTdZRVloRkdLc01qdWtDRHAvam9uTWRjTXN1dmIwUTZn?=
- =?utf-8?B?UEZVcTB3Z0hyMnJjZDFZTU9LdmoxbXhKS2xUMUlVQWZhMWxGMk43VCtEalht?=
- =?utf-8?B?c1lCOHBIOHcvZis2RFp6VHp5RjBqRWFEMjhEUWNneGlZcDh0UWFSQ3NtaW4w?=
- =?utf-8?B?bFgzVFVmWHhtNFI5N2Naeng5ZURBMEVta3gySnk1MWlEdnVlY3FkbUN1cThY?=
- =?utf-8?B?TC9EVkdrcm5FU2M5RlZDT2s5NTQ2cUJsOWtWS0tXL3pIMjZtOHJhUnBWcCt5?=
- =?utf-8?B?dWJCQy9BWHBndFFOM2R6SjExNWNQbXdKbTF6ekVpRjVsWWk2Nm1ldHFEZ3Bj?=
- =?utf-8?B?VU9VVTN0ZHBMa2RRcEtMaWsyWk94bTM2NmxMdWZuRDkyYnZYbTY4R3ZhVmVh?=
- =?utf-8?B?cytTNUNzZVBYSS96dWxXa1diK0dtTjRyT29xTEdheDhaYnhKc0dFaHJPVmdU?=
- =?utf-8?B?QmpkVDFPVTJpaTEwdzB3dGF5ZERMem5iTHZ3SjVGZkJHWWFtcnR3ZTc4SWZQ?=
- =?utf-8?B?aTd4clN4d3VMNWlTaEtwdmxMa2dBYkRhZStaSU1aWU1hSmRyOXpSdEJ1V2xJ?=
- =?utf-8?B?UFZjVnRKaWlSOUMvYkYzT0FyS0tXL2Z0Y1pnUHVGbWdYY2FkL0pBY25leW43?=
- =?utf-8?B?RTNQM0JKMDFlZ1JXQ0dNSTduUTlnMWUxT0JsU3ZVUFFhc1pKc09abnVuSFAv?=
- =?utf-8?B?UzdEdHpCcmJuR00vY2RGLzdDOUdtMzhJRDR3Z3FmRU1YWFhCTzZCS1MvR3ZT?=
- =?utf-8?B?T0xRM2lCTDdrUkFRZWUrZXFrVFVZK2Y2aEZCUERmenF4M3JWcm5jZktSajR6?=
- =?utf-8?B?WDNxWThVRG9KR0U1SzlYR001eCtoZDRVRDFyUUkwN3krYm1IbXBtTE8xbWp3?=
- =?utf-8?B?dG5sdmwzQ2tHaWlCZTJYSzc1cEl4a1JBTVZKV3NTak9MZ1QrYlliUnhhanNn?=
- =?utf-8?B?RWtsbGFaeXFtL2cvN0szU09NOUdaMEh0OS92dnFCbXBENnJ5bkdXVUx1T1Nt?=
- =?utf-8?B?SmVSd2c0WkxyQzNrdlMvNXNDNUxCeUUyQWl6c3YvTEhoUW9OOXA3ejlnK2RT?=
- =?utf-8?B?ZkJhVVcxdk1rTE5CY1U0aTVqa3B5a1FXOVhnV09TUjJIcy9xanFrRS85V3Ro?=
- =?utf-8?B?SWlIZUVHa21vS0hCTjBNYWxqdlArenFKeEFJK0xPQmdQYWs2T0lzdG1LbC9s?=
- =?utf-8?B?NzJDcFJHcE1MZnp5clVzWTloSXQveXQvNDRMQ0Z0T0tjb3RlckpsZ2VKRFM1?=
- =?utf-8?B?OFNOT2pVK2xtcUk1OWRYbWxjdHdXWFdBbEVyTmgvMFh2Wlh2bnBZNXMrTFU1?=
- =?utf-8?B?ME1weGNrbEZ2S3hCd3kwSmZxYjROWUNldzIvMnNNcWtpWWRvTUd0dmJaTmtS?=
- =?utf-8?B?eVFEOEtyTUdIeHI5VGN3UVoreE8rVG1kb245K3ZTTUtWME04Y0pNSHpYdFhV?=
- =?utf-8?B?cVo2TlRxa3E3NFlBei90dThDVmpoM0k1TWpwMmw3cGxxaFpFWERwakxKS1FM?=
- =?utf-8?Q?fR6jgIUzu54=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6186.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WVZTT1d2TjV0cWJncmc5T2V2eEFGN0pHT0ExTXc2RnlQYmVXMWZEMGhNcWp1?=
- =?utf-8?B?dXZtOUNKTm9NajFuNlJVZEZtY3RjM3ZPVmsxSll0NVl4SjV1TzZxUlRRVDNJ?=
- =?utf-8?B?UTdSWWd2OWliaUJDbHBxc2NmUysvN2NyN3hQTzI4ZGxaNjNnakErRExtNUc5?=
- =?utf-8?B?SzhpL21WN1BXejBZUElybUdYdG5qUWtzaDNyT0cwUXJvRTFTZ0lKeTBaaE45?=
- =?utf-8?B?eDhjOXAvUjducHp0SmtHR1hUYlc3NmMyMzN5Y1NUZkRKRXI5bWtXTU5KZWVn?=
- =?utf-8?B?c1E2Vi9XaVpseXU2Y2wxK1liK1RLL25jZkM1L0NHanZ0S25ieUJ0MnZBc2hm?=
- =?utf-8?B?WGh6WU5WMUgreSt3Ykh3ME9pTG5abm0zdUJRTGNTcjhZdEdsb05sT1B2a2xY?=
- =?utf-8?B?Wk1rWEVYZitXdklHOHkrWHJpWjY4TDFzeC9zejNZejVYWE05S2JnTVE4cHgz?=
- =?utf-8?B?SkN2VFdrd0p1WnYwOVZiVXIyamYwQjdrRE84Z1IzdWwwNlhZTWNCMXlYdHV6?=
- =?utf-8?B?RUczMVBhVjF0T2FxWlN0MzZtSnBsOHBCc0gvNFZDNzNtN1RzVFVqMGxwQ0Qy?=
- =?utf-8?B?TU5BZGlVVWYyUnlBbk1nVVA0a05vRHJMUHJlcjg4OHJnNmErcGVoM0VNUEow?=
- =?utf-8?B?ZklXQjd3MTFWZzFZUW5pdlF4UlNmYWJ2cmE4MFFiRERNVFJVcUc0M0IwSDZL?=
- =?utf-8?B?QmJCem0wOHlHTUZCV0lJc1JXcGdNeDNGL2JQZlZ4RTRwYm9TWSsxaWE0ckNO?=
- =?utf-8?B?VGNoVXluclVSWWJkdnplRkVKalJGZGw3dEY3THpWWGVFMno4V3JmMWxSRTV6?=
- =?utf-8?B?TU1QWmRzZ2NzYW1HNE1QVmZQdDgzOW5aTTNidUdJYm9PamZEOTd6OUNrdk5W?=
- =?utf-8?B?eWw4T29vdHNjalVJVHlaM0tES3lmZ1RYUWNJa0plaEsyczdJTisxZlRESW45?=
- =?utf-8?B?M1ZLdXJiVVhjNkd0Sjc1SGZnWEZoaDkzNGdpSjdNa1RwcXNPQUFBaWoyeDZZ?=
- =?utf-8?B?N2NIODFNdzF5WE1EMHNPMVVxQVQ1cyt4UktPUmpXQmxpUG1YSWVwQUhURHQ5?=
- =?utf-8?B?UVNDbnFWOE0wckVMcitIYXhuYVRpd2xSclNxYU9IM05CSUZmZTNhMUdWYnFG?=
- =?utf-8?B?ZjVDQ0h5YmR5SE1Qbm5jMkxMTkczbzVQR0VrVjNxMTJwSWtuQnNadWl1Slhw?=
- =?utf-8?B?QXgzcmw2cGE3WDh5ck9lbjhXQTA0OWJ4Mmh0NXEyV1c3ckMwNUJXYkpaVDd5?=
- =?utf-8?B?TzM3aG53emhXRmc5cm83Um9sNlpERzFnbzZnSjR3Y1R6OVQrSmUreVVEY1lS?=
- =?utf-8?B?ZTlaUlBualVWUkZxYTB6enFwQjBoZTdOM0F3NWJCTEx5WVEwUFZwZnBMOEda?=
- =?utf-8?B?ZHpHVncyS28vZlpBQlpRdis2QUtUc1JNY296Z0pTOWhnWkhOYk0xcTdJVnRy?=
- =?utf-8?B?TE5DNFhlb0I4TzF0LzUxaEsxVW9OWGFMYVVQVkwzanUweWdKVnZLNWFnNWlr?=
- =?utf-8?B?S09sRVo3cHk3ajFZSmxzZllid25zdWNYOUNtTi9BOHdnZnVTNDZrWEp2dGxR?=
- =?utf-8?B?QjZib0pkMnZiK1B6THVobkV2eVJncnZxTWEvZlBkZy9lbHdRbldlaXhpSitl?=
- =?utf-8?B?NGRNMkVwRjRkKzdKTXp6Z0JrMVZVOXhDY2p2QnQ2QTE5eUkrQUJ3czFtZ2Vs?=
- =?utf-8?B?TTZnTHArNVpNbnVIakd5OVNnYWl4TUE3QW4wU0RCMDRHREdpejRySXVncXc5?=
- =?utf-8?B?TkprWE12YWlLVW5rNnQzTVpOblFUZ0trRkFTQzBwb0F2R0dDYlZVRGZqM3g3?=
- =?utf-8?B?N2JnbEJwR2puZXNHWlUxQVo5WWxOdTdLSTNEYk5uYk9CSHZDdWtabVdYNE0w?=
- =?utf-8?B?aWVrd2dZSG9QdHpoU2haSS9pMzh0cEtwZTl4VTkrSytnMC9UYllTSnhKaEpk?=
- =?utf-8?B?NFQzUm5uT2dUR3F6SmtuV0M1b3d0M0FBbTNrZzVMNmlHYUdLeXFNRjRmQVNy?=
- =?utf-8?B?dWNQdndPM3IwaUs0YytNbzkyaFZlSm9ZK2RHcmxhclBvL2tmZUJ2WEo2Y3I5?=
- =?utf-8?B?VkJtc21XUnZXM2tvYnRvVVFUZHdNTlg5QXYzZERWTDFwNmJLNFpJcm9PTW1D?=
- =?utf-8?Q?I7GpgCCkuZq+oEA5Nr3QBxJkQ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea3484d3-0525-4789-87ec-08dde638f319
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6186.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2025 13:44:03.0688
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xlOK1ch7jksU2/zDcqWTbTFfI6JOx2ajV2S7apHtMQo+RbGtAAtiLRPDoUHseNRfmROnPPym16iaLxP7EhinGg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6214
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aLAoUK22+PpuAbhy@mail.gmail.com>
 
-On 25/08/2025 22:39, Amery Hung wrote:
-> Move skb_frag_t adjustment into bpf_xdp_shrink_data() and extend its
-> functionality to be able to shrink an xdp fragment from both head and
-> tail. In a later patch, bpf_xdp_pull_data() will reuse it to shrink an
-> xdp fragment from head.
-I had assumed that XDP multi-buffer frags must always be the same size,
-except for the last one. If that’s the case, shrinking from the head
-seems to break this rule.
+On 25/08/28 09:58AM, Anton Protopopov wrote:
+> On 25/08/25 04:15PM, Eduard Zingerman wrote:
+> > On Sat, 2025-08-16 at 18:06 +0000, Anton Protopopov wrote:
+> > 
+> 
+
+[...]
+
+> > >  
+> > > -static int insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
+> > > +static int insn_successors_regular(struct bpf_prog *prog, u32 insn_idx, u32 *succ)
+> > >  {
+> > > -	struct bpf_insn *insn = &prog->insnsi[idx];
+> > > +	struct bpf_insn *insn = &prog->insnsi[insn_idx];
+> > >  	int i = 0, insn_sz;
+> > >  	u32 dst;
+> > >  
+> > >  	insn_sz = bpf_is_ldimm64(insn) ? 2 : 1;
+> > > -	if (can_fallthrough(insn) && idx + 1 < prog->len)
+> > > -		succ[i++] = idx + insn_sz;
+> > > +	if (can_fallthrough(insn) && insn_idx + 1 < prog->len)
+> > > +		succ[i++] = insn_idx + insn_sz;
+> > >  
+> > >  	if (can_jump(insn)) {
+> > > -		dst = idx + jmp_offset(insn) + 1;
+> > > +		dst = insn_idx + jmp_offset(insn) + 1;
+> > >  		if (i == 0 || succ[0] != dst)
+> > >  			succ[i++] = dst;
+> > >  	}
+> > > @@ -24194,6 +24605,36 @@ static int insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
+> > >  	return i;
+> > >  }
+> > >  
+> > > +static int insn_successors_gotox(struct bpf_verifier_env *env,
+> > > +				 struct bpf_prog *prog,
+> > > +				 u32 insn_idx, u32 **succ)
+> > > +{
+> > > +	struct jt *jt = &env->insn_aux_data[insn_idx].jt;
+> > > +
+> > > +	if (WARN_ON_ONCE(!jt->off || !jt->off_cnt))
+> > > +		return -EFAULT;
+> > > +
+> > > +	*succ = jt->off;
+> > > +	return jt->off_cnt;
+> > > +}
+> > > +
+> > > +/*
+> > > + * Fill in *succ[0],...,*succ[n-1] with successors. The default *succ
+> > > + * pointer (of size 2) may be replaced with a custom one if more
+> > > + * elements are required (i.e., an indirect jump).
+> > > + */
+> > > +static int insn_successors(struct bpf_verifier_env *env,
+> > > +			   struct bpf_prog *prog,
+> > > +			   u32 insn_idx, u32 **succ)
+> > > +{
+> > > +	struct bpf_insn *insn = &prog->insnsi[insn_idx];
+> > > +
+> > > +	if (unlikely(insn_is_gotox(insn)))
+> > > +		return insn_successors_gotox(env, prog, insn_idx, succ);
+> > > +
+> > > +	return insn_successors_regular(prog, insn_idx, *succ);
+> > > +}
+> > > +
+> > 
+> > The `prog` parameter can be dropped, as it is accessible from `env`.
+> > I don't like the `u32 **succ` part of this interface.
+> > What about one of the following alternatives:
+> > 
+> > - u32 *insn_successors(struct bpf_verifier_env *env, u32 insn_idx)
+> >   and `u32 succ_buf[2]` added to bpf_verifier_env?
+> 
+> I like this variant of yours more than the second one.
+> 
+> Small corrections that this would be
+> 
+>     u32 *insn_successors(struct bpf_verifier_env *env, u32 insn_idx, int *succ_num)
+> 
+> to return the number of instructions.
+> 
+> > - int insn_successor(struct bpf_verifier_env *env, u32 insn_idx, u32 succ_num):
+> > 	bool fallthrough = can_fallthrough(insn);
+> > 	bool jump = can_jump(insn);
+> > 	if (succ_num == 0) {
+> > 		if (fallthrough)
+> > 			return <next insn>
+> > 		if (jump)
+> > 			return <jump tgt>
+> > 	} else if (succ_num == 1) {
+> > 		if (fallthrough && jump)
+> > 			return <jmp tgt>
+> > 	} else if (is_gotox) {
+> > 		return <lookup>
+> > 	}
+> > 	return -1;
+> >   
+> > ?
+
+So, insn_successors() actually returns two values: a pointer and a
+number elements. This is the same value as "struct bpf_jt" (struct jt
+in the sent patch). Wdyt about 
+
+     struct bpf_jt *insn_successors(struct bpf_verifier_env *env, u32 insn_idx)
+
+? (Maybe bpf_jt is not right name here, "insn_array" is already used
+in the map, maybe smth with "successors"?)
 
