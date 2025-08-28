@@ -1,182 +1,195 @@
-Return-Path: <bpf+bounces-66833-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66834-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81625B3A201
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 16:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C2B8B3A23E
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 16:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C3BEA06AA6
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 14:29:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 033455E5C6B
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 14:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00664277C85;
-	Thu, 28 Aug 2025 14:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E91314A93;
+	Thu, 28 Aug 2025 14:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cDPB+8s6"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0748621CA02;
-	Thu, 28 Aug 2025 14:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D46F31282F
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 14:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756391294; cv=none; b=e1ocnMy3C7yoaBwcpxfuaGDqIhVU8PR5s/C+DkgMGMlF9cEz9JaF2Z7W55rCJy3SGaNWyl9Mp5gI2oBP1lCoYxGlelobwn+zuqa9jbAlRezFofWnBeg/FT+ZwRfzV7Ct7l5w5kiBPqG2z1BF5jb+KPF4qpLmKnbX4QSa8W/xYVM=
+	t=1756391947; cv=none; b=cmGzlK0AOQbmrLm9SnK95g4g/WpAtOp0sW9d1SuhuMsSoQoNl1zoBPm1SzptsVNXA7MpfwG2zW0UIr5CLjTb4m/8d2LNbNnWLuRdlDmaOelzPkzncEZHFzAhToKVO+PvkyQ+E4EHkxACsInfBdSIBWuaecyiR8aCyXI5yThiYFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756391294; c=relaxed/simple;
-	bh=t7pg/G4Tk4S39M8NtXKJTglfwsOPVinBNlNJsePOcow=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k8ZKRAN8nxjB6ZZ89K+EiAiTguAL59eLxcRb1HnglaBmbU5ooXyoBRZVWqwYSfSY7zUBAuAavEEAPt2vEysdLD225OvYCd93xQxIksuKsD/swUHi1VxE1txZ/NVV+1ErK1RJgznfhn5iOnS8a+uQfxKJkW7AK523zbkXGiQiTU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay05.hostedemail.com (Postfix) with ESMTP id C3E74577E2;
-	Thu, 28 Aug 2025 14:28:07 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf15.hostedemail.com (Postfix) with ESMTPA id 39CDD29;
-	Thu, 28 Aug 2025 14:27:59 +0000 (UTC)
-Date: Thu, 28 Aug 2025 10:28:19 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc: Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
- Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave
- <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>, Linus
- Torvalds <torvalds@linux-foundation.org>, Andrew Morton
- <akpm@linux-foundation.org>, Florian Weimer <fweimer@redhat.com>, Sam James
- <sam@gentoo.org>, Kees Cook <kees@kernel.org>, Carlos O'Donell
- <codonell@redhat.com>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin"
- <hpa@zytor.com>, David Hildenbrand <david@redhat.com>, Lorenzo Stoakes
- <lorenzo.stoakes@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, Mike
- Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal
- Hocko <mhocko@suse.com>, linux-mm@kvack.org
-Subject: Re: [PATCH v10 02/11] unwind_user/sframe: Store sframe section data
- in per-mm maple tree
-Message-ID: <20250828102819.27d62d75@gandalf.local.home>
-In-Reply-To: <el6nfiplc3pitfief24cbcsd4dhvrp5hxwoz3dzccb5kilcogq@qv4pqrzekkfw>
-References: <20250827201548.448472904@kernel.org>
-	<20250827202440.444464744@kernel.org>
-	<el6nfiplc3pitfief24cbcsd4dhvrp5hxwoz3dzccb5kilcogq@qv4pqrzekkfw>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1756391947; c=relaxed/simple;
+	bh=IPbm3EEleMFbUVespzsN0f+yx0VLB7ZL/rwtdsPEdrQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iDJjaWTL3q0sNVGJkounKMUW+teHwp/LOVLaDYbg/V7lZBjMDVSkyUGRn/CxxBhgt08G41U+57+VGiXULGCgompUgyNjRgP2MMLQm+ukeszSooSdwR9MqmFVQVxcsQpI21rzsM2F33xp4V8vTmKAL2jIYBxFgUxbhs1GditCCzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cDPB+8s6; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3c8fe6bd1a2so311382f8f.1
+        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 07:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1756391943; x=1756996743; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iucEIZ4LkNYxckWKLsrRaxl+yyXGvtlT30ovvAVN0RE=;
+        b=cDPB+8s6XqSk/1Ea8uOt6g1HRieHVwcDsM2SZisYufXOG8DFmdA9mz997oKvUQnMiN
+         LajLLiBdyx/rADunnv/XYHdL9Kv+t4hb5PGkQwZn/G75q0nwtYoZ+o60bSJo1hWwCO/j
+         Za0NXOE5a+mVY1W7mP9V76hAEdxfMC+r8bUYBRdzgLcWI5K3ohq0ZEdsXPXKTHAkSRmV
+         T0XeXQ0tmWZEEOJIUvEo0/iD+Xsy326Umdgpe1YCQCCroiHVn455+040sp7+qzRUcPuG
+         Mf+OwTS0O6accpDS3EBi5RTkXGK/+V47HnbwMP3ZMzw0MeCsdHoHEYxARf2dS0rp6qOL
+         nN+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756391944; x=1756996744;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iucEIZ4LkNYxckWKLsrRaxl+yyXGvtlT30ovvAVN0RE=;
+        b=QFGo+SHfnuoML2MvFGq8ioJ5VcX99Sfh15pa+78tYQ2UkOLMlMvWHtrGETEk0f//7g
+         bEygOfJSFF2KkDQyTzmcPFTgLF1ISYxlDDNxFM3kX50sJbSlslplD6HJ8LuA1hB6vLLc
+         NV1pKpy0+H8mlf39Q4kNv3JiA+qO52daa8w8+Ka9O9qJyyVApy8d5wcm6AQXUfS04wc6
+         zx1SLjfLiEyPPkvHbajUYIDFkh9j19XFZYrLSJtF7YKcrUfG6uK18zfn36vRXUkQCpip
+         a+Ad4VGperi9tXzCdNk57Tji7HLFym0ADk+YpSohul6Y5rfW6v2F651MHblAxNnq29se
+         fCVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVImBECrDHaP7s+mAOAQKw1h3KYX/rAksuByeKuyGD2ukI6vDHFT31Zq88jfOveUoy/ye8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YygYcHANwcczwhcJ1XHuVm4lFQIGRop65rY8vcN/PJwKKCkFXOa
+	aaZO4FxKf7C5mOGUj1sOThus/AhhXea2OF6OGI3ZtVJIiH4ffI/Yhxka0kH6rUZ4je0=
+X-Gm-Gg: ASbGncuMy1MSIDGIBtfE61bUQ4SwVnhrrre/4TL9phmWLchRwu5aILpswqQ9dnmb6uV
+	rZJWvehlyuB+DO2pZoO3uxlK1kFiJZ2NeFr2kpL4OaWJJfktJqtKSwfIhgRtF5ZvPC7gPb6lUBW
+	PNrK6owRB+JB45a3cJnXhZw0m5W0L6qkqGagPGY3jpI0wCUmC+3O0IEnqhfakTZmdaGeUdI9oJg
+	rqw8nll2GvqKA8pkR9VBNWcDZNsvi8t5nfzwPq++tbe8shwgVmR6Hcrvy5rU/Rqn6+/DHHCJHem
+	hGRiCjH2ygLew2ZGkeOLePyukzlEf8lvIbLcQxlvT3OwMBtOuPak5X3bS8aPJQ+YBkGkGYcHxrs
+	Xa+IxvvBI8D7XmavWG0/8eoaYfizMSjq7E1Izhc5H6bU=
+X-Google-Smtp-Source: AGHT+IEETnhwgNf+iEEImikgXshAoM3ByKssB/yJbmHC25kj/2urjm3QbTo/QrJZdvSHWPBi0xGjZw==
+X-Received: by 2002:a05:6000:40cf:b0:3cd:fd51:f6d1 with SMTP id ffacd0b85a97d-3cdfd51fbc5mr2081166f8f.0.1756391942818;
+        Thu, 28 Aug 2025 07:39:02 -0700 (PDT)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-771ea46b3b7sm10776165b3a.57.2025.08.28.07.38.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Aug 2025 07:39:02 -0700 (PDT)
+Date: Thu, 28 Aug 2025 16:38:45 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Djalal Harouni <tixxdz@gmail.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, 
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	mykolal@fb.com, shuah@kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, tixxdz@opendz.org
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+Message-ID: <m7laj6747wtu5r732iph47zn6no3mbu6iq3mne3zslzyqlq523@7tmw25ap77ek>
+References: <20250818090424.90458-1-tixxdz@gmail.com>
+ <356xekrj6vqsmtcvbd3rnh7vg6ey7l6sd6f4v3dv4jxidxfd6m@cepwozvwucda>
+ <0e78be6f-ef48-4fcc-b0c7-48bc14fdfc7f@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: xedd6eijkc1xu5qms1rx3p8witpz3qqo
-X-Rspamd-Server: rspamout07
-X-Rspamd-Queue-Id: 39CDD29
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/UpGGk0sN7ZRFjbCfmYaa8yXlKjFyWmZ0=
-X-HE-Tag: 1756391279-514030
-X-HE-Meta: U2FsdGVkX1/NHsF/xLEc4nIoi2djvu4+eFUqz+90saW6KPe2SSSeHmY3d+2NzAa0ja91OBKVE3l04tc1bxQy7939iX/OxWrqxK1IELyEJeTE86USU8gn/Yo564nlJA0gRJUwLSoesr1f16mCj/54MlKG/D2f/iybpDUF+amParwwGdPNDuwVkc+tupcJa0smZ6kzulttx6uToOb3SFRwLvkJ65U63MpGUeLUyl80lS7vxSNbsm3iUljE607my7wQG5plrIvuU58Lc4jwmSELen3dko11S0vheFH6PbTbHgw4gWUnnOaT8XsXXcBY7bDZVhxP1UVlbhi9CDBAw8HqA0VFWELP40G2
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="k5xghjz3fialy6l2"
+Content-Disposition: inline
+In-Reply-To: <0e78be6f-ef48-4fcc-b0c7-48bc14fdfc7f@gmail.com>
 
-On Wed, 27 Aug 2025 21:46:01 -0400
-"Liam R. Howlett" <Liam.Howlett@oracle.com> wrote:
 
-> >  int sframe_remove_section(unsigned long sframe_start)
-> >  {
-> > -	return -ENOSYS;
-> > +	struct mm_struct *mm = current->mm;
-> > +	struct sframe_section *sec;
-> > +	unsigned long index = 0;
-> > +	bool found = false;
-> > +	int ret = 0;
-> > +
-> > +	mt_for_each(&mm->sframe_mt, sec, index, ULONG_MAX) {
-> > +		if (sec->sframe_start == sframe_start) {
-> > +			found = true;
-> > +			ret |= __sframe_remove_section(mm, sec);
-> > +		}
-> > +	}  
-> 
+--k5xghjz3fialy6l2
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+MIME-Version: 1.0
 
-Josh should be able to answer this better than I can, as he wrote it, and
-I'm not too familiar with how to use maple tree (reading the documentation
-now).
+On Wed, Aug 27, 2025 at 12:27:08AM +0100, Djalal Harouni <tixxdz@gmail.com>=
+ wrote:
+> It solves the case perfectly, you detect something you fail the
+> security hook return -EPERM and optionally freeze the cgroup,
+> snapshot the runtime state.
 
-> If you use the advanced interface you have to handle the locking, but it
-> will be faster.  I'm not sure how frequent you loop across many entries,
-> but you can do something like:
-> 
-> MA_SATE(mas, &mm->sframe_mt, index, index);
-> 
-> mas_lock(&mas);
-> mas_for_each(&mas, sec, ULONG_MAX) {
-> ...
-> }
-> mas_unlock(&mas);
-> 
-> The maple state contains memory addresses of internal nodes, so you
-> cannot just edit the tree without it being either unlocked (which
-> negates the gains you would have) or by using it in the modification.
-> 
-> This seems like a good choice considering the __sframe_remove_section()
-> is called from only one place. You can pass the struct ma_state through
-> to the remove function and use it with mas_erase().
-> 
-> Actually, reading it again,  why are you starting a search at 0?  And
-> why are you deleting everything after the sframe_start to ULONG_MAX?
-> This seems incorrect.  Can you explain your plan a bit here?
+So -EPERM is the right way to cut off such tasks.
 
-Let me give a brief overview of how and why maple trees are used for
-sframes:
+> Oh I thought the attached example is an obvious one, customers want to
+> restrict bpf() usage per cgroup specific container/pod, so when
+> we detect bpf() that's not per allowed cgroup we fail it and freeze
+> it.
+>=20
+> Take this and build on top, detect bash/shell exec or any other new
+> dropped binaries, fail and freeze the exec early at linux_bprm object
+> checks.
 
-The sframe section is mapped to the user space address from the elf file
-when the application starts. The dynamic library loader could also do a
-system call to tell the kernel where the sframe is for some dynamically
-loaded code. Since there can be more than one text section that has an
-sframe associated to it, the mm->sframe_mt is used to hold the range of
-text to find its corresponding sframe section. That is, there's one sframe
-section for the code that was loaded during exec(), and then there may be a
-separate sframe section for every library that is loaded. Note, it is
-possible that the same sframe section may cover more than one range of text.
+Or if you want to do some followup analysis, the process can be killed
+and coredump'd (at least seccomp allows this, it'd be good to have such
+a possibility with LSMs if there isn't (I'm not that familiar)).
+Freezing the groups sounds like a way to DoS the system (not only
+because of hanging the faulty process itself but possibly spreading via
+IPC dependencies to unrelated processes).
 
-When doing stack walking, the instruction pointer is used as the key in the
-maple tree to find its corresponding sframe section.
+> > Also why couldn't all these tools execute the cgroup actions themselves
+> > through traditional userspace API?
+>=20
+> - Freezing at BPF is obviously better, less race since you don't need
+>   access to the corresponding cgroup fs and namespace. Not all tools run
+>   as supervisor/container manager.
 
-Now, if the sframe is determined to be corrupted, it must be removed from
-the current->mm->sframe_mt. It also gets removed when the dynamic loader
-removes some text from the application that has the code.
+Less race or more race -- I know the race window size may vary but
+strictly speaking , there is a race or isn't (depends on having proper
+synchronization or not). (And when intentionally misbehaving processes are
+considered even tiny window is potential risk.)
 
-I'm guessing that the 0 to ULONG_MAX is to simply find and remove all the
-associated sframe sections, as there may be more than one text range that a
-single sframe section covers.
+> - The bpf_send_signal in some cases is not enough, what if you race with
+>   a task clone as an example? however freezing the cgroup hierarchy or
+>   the one above is a catch all...
 
-Does this make sense?
+Yeah, this might be part that I don't internalize well. If you're
+running the hook in particular task's process context, it cannot do
+clone at the same time. If they are independent tasks, there's no
+ordering, so there's always possibility of the race (so why not embrace
+it and do whatever is possible with userspace monitoring audit log or
+similar and respond based on that).
 
-Thanks for reviewing!
+> The feature is supposed to be used by sleepable BPF programs, I don't
+> think we need extra checks here?
 
--- Steve
+Good.
 
-> 
-> > +
-> > +	if (!found || ret)
-> > +		return -EINVAL;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +void sframe_free_mm(struct mm_struct *mm)
-> > +{
-> > +	struct sframe_section *sec;
-> > +	unsigned long index = 0;
-> > +
-> > +	if (!mm)
-> > +		return;
-> > +
-> > +	mt_for_each(&mm->sframe_mt, sec, index, ULONG_MAX)
-> > +		free_section(sec);
-> > +
-> > +	mtree_destroy(&mm->sframe_mt);  
->
+> It could be that this BPF code runs in a process that is under
+> pod-x/container-y/cgroup-z/  and maybe you want to freeze "cgroup-z"
+> or "container-y" and so on... or in case of delegated hierarchies,
+> freezing the parent is a catch all.
+
+OK, this would be good. Could it also be pod-x/container-y/cgroup-z2?
+
+---
+
+I acknowledge that sooner or later some kind of access to cgroup through
+BPF will be added, I'd prefer if it was done in a generic way (so that
+it doesn't become cgroup's problem but someone else's e.g. VFS's or
+kernfs's ;-)).
+I can even imagine some usefulness of helpers for selected specific
+cgroup (core) operations (which is the direction brought up in the other
+discussion), I just don't think it solves the problem as you present it.
+
+HTH,
+Michal
+
+--k5xghjz3fialy6l2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaLBp8hsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjsxQEAnKdbH9e9i+AM0uU2XoOx
+WOwY0p0bJzdNOs/CKDWmexcBAJWoa5XhMLAt9worCmHF+E1gfKT/4Ay9P/xEIC89
+hxsJ
+=u+pg
+-----END PGP SIGNATURE-----
+
+--k5xghjz3fialy6l2--
 
