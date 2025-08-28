@@ -1,134 +1,131 @@
-Return-Path: <bpf+bounces-66763-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66764-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DBBCB39032
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 02:42:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A56AB3903C
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 02:51:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8AB17C2711
-	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:42:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E9397A7265
+	for <lists+bpf@lfdr.de>; Thu, 28 Aug 2025 00:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5CD18A6C4;
-	Thu, 28 Aug 2025 00:42:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6986C1991B6;
+	Thu, 28 Aug 2025 00:51:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QORTl2SG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YHtBKe5m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C995B665
-	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 00:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CCE3FC2
+	for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 00:51:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756341771; cv=none; b=TqgrsxaCAQcqkKei/KIFv+53ATsZFBM+aL8xBN1MXMKNr9wHMqSzUTVrIXblqJ7nTyF+sUw81rgFiJ9IXBOg4mEuJzF2xWpa5ZEz5COWRAA/V7dsDqZPvAncj3xa6D4OFOBiY2mUW4fEwrMMfn8bcYnSWStYvhWYrhCp6dY8CbQ=
+	t=1756342262; cv=none; b=EY1RBmXMclOAI/wLzLRmKADTAy9DETxN8LbaanuLv8AVGh+bYBH3Z9/FwoE354t7qLFiH6ob0umOuSrPAiQFnDnU6/XjltmGESfZcdDIN0TPHeKqwGZXDP6Oi+17j0yzBbDqzJxrlz1dtQNptMzHeyfmbeBzj3JV1I/rRSaAb0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756341771; c=relaxed/simple;
-	bh=UqD4WJQh5+xx3wvRfZ8mkQjV8iffvT+n+TE/wMuc1Ys=;
+	s=arc-20240116; t=1756342262; c=relaxed/simple;
+	bh=7248RPAsz3Z95KnnWFSLZDi9b4+19CVOrBLqZb/shPU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hgIJoEY9ItLDhiGljNef2BiZCUlLfzY+zx+mzow2RNngrrMRFJqt0zbQJZPg6cFfaAZdFal7sEbDxhtXJOltvz4RLgNaJQXJghpM9qFWijxOoaQEzG9oSymWc32zcxd51LITvRrThtJDdm6Q1g4ZiA9+lDUFPoxaWs68QfQ5NqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QORTl2SG; arc=none smtp.client-ip=209.85.221.52
+	 To:Cc:Content-Type; b=KSTUy0NdRL/Q1mchcWMc7mR/LtGHWFZUMh9g0fQzIS2sGU7rKuQXJA31Y4NUm3ccL3LOvrGZrJCyrpvx++G+H2vmDT969K9P/OUehFczKOrdVpCKXgRoRiVfUnSKbx2UM82ES/Wfs+OSY4RuTaNAtRnT2O34lvfGg1P8HDvuogY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YHtBKe5m; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3cd59c5a953so287676f8f.0
-        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 17:42:49 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-45a1b00f23eso2110205e9.0
+        for <bpf@vger.kernel.org>; Wed, 27 Aug 2025 17:51:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756341768; x=1756946568; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756342259; x=1756947059; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UqD4WJQh5+xx3wvRfZ8mkQjV8iffvT+n+TE/wMuc1Ys=;
-        b=QORTl2SG2Qz1NRiVQkjtLHHPqz7IXI8pTA8ZjRompG+W0/+NlCPse2ifMYLoI2nswu
-         uIgsWz4QM9WllmxSBHfnKxsWtfvRSLxgmCa8I09UDcpw9tZaWcRdTFn7yCFXQ58+CF0J
-         tsiP0U0PRyJoXXKxxAblN7xJFb97zorjMe1wpShfcn8GnYs9/8P3CnOSkMAtwoi2yKH4
-         p4B4YCortgQWbKxDKO6uSIQ/K2v+XOh99Q3Q2l4asxGcRexCcpKLPThHD1rEnQYPKv7u
-         cfMlyuL3kd3O/MA+SoycE9ZijcRQF1TZZprezTUlxkhzjRELqfaeiPmwKwnMZZw72jOZ
-         KAKQ==
+        bh=evBlsihqgOHXWNsnXc1g19w6kdk7SfPMM3+YSTIV5EA=;
+        b=YHtBKe5mXrk0MmAfM/7doJUZ8Bf1IOHiNxqpjvSrcWnIiDuOPZnqCWHyE+QfQPMvh6
+         4+6VtT3457GZBWNay90A45EzFfluWWMcO3Xj72EmU1+0Fru78vee07Pm4YRJCQsUEjus
+         qv1h2FxpWTFkG4XSuD/18QjUAhlnpizsKOwQ1wlcoy/tqtLL5ePu5H0z9q6ZjbBwgSdK
+         7CrvT6FD3HirQdnfn8PlNY5VByG7GpZlODujPpUR2w8t82czTKvEAXR+CzUz6z0fjRQ3
+         saIQ7Oc+U+ZZYIgJYXIMXvQ7l1Hb/AzykAz8WiPvL9d3nlrG16ze2SzTi8BWN16IoTFD
+         M+pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756341768; x=1756946568;
+        d=1e100.net; s=20230601; t=1756342259; x=1756947059;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UqD4WJQh5+xx3wvRfZ8mkQjV8iffvT+n+TE/wMuc1Ys=;
-        b=T2gdwVQNoFlanJvMuBeEMc7+OjQQDFNlomeVCv1Cj5xYchMDajQsWovPU28Vomb9iK
-         O2ErtKdHrV/9XnrPNuToWcg6QvODDmbzs58L6jbDYswznpt8q+ykDF3FiRAjWiKQNFk2
-         Lrg2EFS+iMFH+Wz06AAnZzADG5SU5GpP3iPwscUDMqCt5EUJ2wmRFZFrkXJXG0Rh0jpe
-         otBkdAQ2LqVJs6E66/2RhkIk/V9U98s+nkYNgvGe0HiWoO39sBIVdcd8uCkIFdNcnpOC
-         LqtOMpI4psqg61cz49P+c9AEOKjNnpJ+vurhb1hdmH2plNtvyM2i284oGotgarDnWjBs
-         SaSw==
-X-Gm-Message-State: AOJu0YypThzOKF19fSP7uekb9Non5XAvUAJmdJhCynv/nzXeWltApN0v
-	BD+S7VBeO77fte0NF/HTak9VuqVeqrWhTFIIzZME8IsSemx+rp00eSOE4tEoWK+KiK3dCPRYOO5
-	uw2tqh8HQUkHrVWqVTCi422xCUVmY2PI=
-X-Gm-Gg: ASbGncvtY1ccU8kparBCwR7NwrnrbI2l+Mu7ZX6RRm5iEkpKCuoHD80WDFE1d8Z4bKK
-	P6Omw6gRWKNatHpYAcnXF0hVMxLb9pQZOVpWx2zVXuPtDSN6shUvqs8q1AyxR+FYaYzduLQ4Be8
-	xHg1JQqk5tcgNFri3db/uwFqJ9bPLo9RcU7lwsWfh0RM6oIF1jTfl7/r4tF8BTXeko22zpwi+EW
-	V/k9UQ+hefmLIR0fXGj2RO8sr84/CUZeams
-X-Google-Smtp-Source: AGHT+IHAg5iDBo6vVFgBTl3aI5t3Hcr+IPPNDUeE71mGYhMmn0cBH9SYaRWwRfsG691/rzMMpNv2202AsuisMmZtFJ8=
-X-Received: by 2002:a5d:5887:0:b0:3b7:78c8:9392 with SMTP id
- ffacd0b85a97d-3c5daa2b898mr14652805f8f.19.1756341767724; Wed, 27 Aug 2025
- 17:42:47 -0700 (PDT)
+        bh=evBlsihqgOHXWNsnXc1g19w6kdk7SfPMM3+YSTIV5EA=;
+        b=MlVf5d7HgW2OwllACPCWiaK4XwI8CJFhTGpCvaQ9Fz3uPKBcYJRNZJlthAHBj7ABOU
+         zpHCJuu7ISYv20w5lkY5nwwNL8GbLb5K32KV3besJv2NkFwVuRQf1H9UDyEL9BYYeHDf
+         pDbZrySvY4M6RVWwbHO9G0MM8Wssl2YVUbvhRe8arhc0mIjpMRnqUYgy55winK3oZwyf
+         8f4pvptmPbhMGyO8VXuD3Omlz3H59HP4plB7Vq7+iLcAua9k72nJ6fs+ehNBnDhRlYXd
+         xpsss5BXi9zzBzxARpJiI1MefKGZzmCcHIqTubZR9mo/RQT71pKWAlpI0j2F80fu1wLk
+         mu3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW4QkWtUlG0t1/zCK/xUHLB/+Nc4s8AIGA1X/Lkq9QdKfHNe6gDuG2HcsfSUZw31E7Qfdg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwzA33Uql3aZj3mNftd16cN+zSvFmB/Znoz8aVSZwTYoekFiv6g
+	+8StVRoAYxcXl3WiutyfEIyyKKZCG5XRXRatQH9siPM3XEHZ+YLfbniu3XmLAvzZLgBwKLvZ0Dc
+	LUblNUKOnDPR8pRirfE7EBg/sHLKyYP4=
+X-Gm-Gg: ASbGncsUnjxKKPLWMUGQjgv1E01EIzknnlt+rdAoIyaIUqj6p08wagJiXxoY64WrX39
+	Llj/HSNqp57UMieMogBSw9FzNb2UsQi/T29d1cCqGoJ3XCD57tWvY7a5K8gDMx+Yl6E6NPEKCt5
+	0BVnaWjUoyNdL9lzGVAiV4d448Vry/RaGNFH+tK9FlLcGNm/SCMUfCZh68j8pxDKg8dURPrQoWu
+	SZ+QiWSxbNl0P/6rw7LWDDExdFMS7suvNxg
+X-Google-Smtp-Source: AGHT+IGAY4apCDizd+/wTwdGZHUcLwv3aQAVXsZPKpx2M+J5r4asNbE8H0nKFnIOL2jH788sWGQNFGBgJ0UItbBkfzE=
+X-Received: by 2002:a05:600c:4f83:b0:456:1d61:b0f2 with SMTP id
+ 5b1f17b1804b1-45b517d077amr214155965e9.30.1756342258631; Wed, 27 Aug 2025
+ 17:50:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
- <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com> <8dcc144e-3142-4e0d-a852-155781e41eb4@linux.dev>
-In-Reply-To: <8dcc144e-3142-4e0d-a852-155781e41eb4@linux.dev>
+References: <20250827194929.416969-1-iii@linux.ibm.com> <20250827194929.416969-2-iii@linux.ibm.com>
+ <ac3eabcb-934d-40a4-b725-6a4684ef48a0@linux.dev>
+In-Reply-To: <ac3eabcb-934d-40a4-b725-6a4684ef48a0@linux.dev>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 27 Aug 2025 17:42:36 -0700
-X-Gm-Features: Ac12FXw7szaFmExqtpzlR4gh0wuAJiO8ANFBmbxVfjEfz5XhzhDEtWxqwNaluyc
-Message-ID: <CAADnVQLDG=Oavh9He=ivXm9MPwsqWHttbTYQh1-EZuHpwujaBA@mail.gmail.com>
-Subject: Re: [BUG] Deadlock triggered by bpfsnoop funcgraph feature
-To: Leon Hwang <leon.hwang@linux.dev>, "Paul E. McKenney" <paulmck@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 27 Aug 2025 17:50:47 -0700
+X-Gm-Features: Ac12FXxdy2ybQH1PXPp1n-1qOf_vGZG5NTIUVnRIp0Qd5oGmY458W6s-2bQVFRA
+Message-ID: <CAADnVQLgqL9eu_mA8Lq=wA12GXCaFzxm5ZXsieOkL9xeOYaoaw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] selftests/bpf: Annotate
+ bpf_obj_new_impl() with __must_check
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 26, 2025 at 7:58=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
+On Wed, Aug 27, 2025 at 2:38=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
 >
 >
+> diff --git a/tools/testing/selftests/bpf/progs/linked_list_fail.c b/tools=
+/testing/selftests/bpf/progs/linked_list_fail.c
+> index 6438982b928b..35616b5c9b9e 100644
+> --- a/tools/testing/selftests/bpf/progs/linked_list_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/linked_list_fail.c
+> @@ -227,7 +227,7 @@ SEC("?tc")
+>   int obj_new_no_struct(void *ctx)
+>   {
 >
-> On 27/8/25 10:23, Alexei Starovoitov wrote:
-> > On Tue, Aug 26, 2025 at 7:13=E2=80=AFPM Leon Hwang <leon.hwang@linux.de=
-v> wrote:
-> >>
-> >> Hi,
-> >>
-> >> I=E2=80=99ve encountered a reproducible deadlock while developing the =
-funcgraph
-> >> feature for bpfsnoop [0].
-> >
-> > debug it pls.
+> -       bpf_obj_new(union { int data; unsigned udata; });
+> +       (void)bpf_obj_new(union { int data; unsigned udata; });
+>          return 0;
+>   }
 >
-> It=E2=80=99s quite difficult for me. I=E2=80=99ve tried debugging it but =
-didn=E2=80=99t succeed.
+> @@ -252,7 +252,7 @@ int new_null_ret(void *ctx)
+>   SEC("?tc")
+>   int obj_new_acq(void *ctx)
+>   {
+> -       bpf_obj_new(struct foo);
+> +       (void)bpf_obj_new(struct foo);
+>          return 0;
+>   }
 >
-> > Sounds like you're implying that the root cause is in bpf,
-> > but why do you think so?
-> >
-> > You're attaching to things that shouldn't be attached to.
-> > Like rcu_lockdep_current_cpu_online()
-> > so effectively you're recursing in that lockdep code.
-> > See big lock there. It will dead lock for sure.
->
-> If a function that acquires a lock can be traced by a tracing program,
-> bpfsnoop=E2=80=99s funcgraph will attempt to trace it as well. In such ca=
-ses, a
-> deadlock is highly likely to occur.
->
-> With bpfsnoop I try my best to avoid such deadlock issues. But what
-> about other bpf tracing tools? If they don=E2=80=99t handle this properly=
-, the
-> kernel is very likely to crash.
+> I think this probably will address your icecc issue.
 
-bpf infra is trying hard not to crash it, but debug kernel is a different
-category. rcu_read_lock_held() doesn't exist in production kernels.
-You can propose adding "notrace" for it, but in general that doesn't scale.
-Same with rcu_lockdep_current_cpu_online().
-It probably deserves "notrace" too.
+Ilya,
+
+does above fix it ?
+
+If so we should probably do that and hold on __must_check,
+since if we're getting pedantic __alloc_size__ is a better tag
+than __must_check, but it will be even harder to get through pahole.
 
