@@ -1,90 +1,90 @@
-Return-Path: <bpf+bounces-67017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4C7B3C181
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 19:08:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75D77B3C194
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 19:14:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E8C25883C1
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 17:08:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BD203AA0E8
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 17:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84E23376BA;
-	Fri, 29 Aug 2025 17:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DB833A03D;
+	Fri, 29 Aug 2025 17:13:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XK4z6s6j"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="bVCZqOMX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4263A334371
-	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 17:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BEBA33A010
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 17:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756487302; cv=none; b=pvEU0ycHhoazN0iCBDD50comkb77OChto9vLLVuLXEfTX6BV8t56UCJD6hZr0NViBNI4W5Kc78pLg5/H/GIIg27GY9MeL7QKkuzyZnydO2X4AqBvI/XlL4Gbq8KLQkIHYkdjCGitkRXr+yuTC4uQaI5KJgit6GagUeEc9dlP3VA=
+	t=1756487637; cv=none; b=TdPuMA/c8kD/Sxibq3RcSqDGb+dMtGlTuoRB2628ySFjKGYyraz60fETTy3uBsQDWp8jlNfgI7ou6yibiVCyanzenItiOssw6Ch2KVnecafI963Tx3z14kpGaR9o6xKDadI91OLnC8Auk0t+hUg0OA4qYPp+3Dpz2nNPTG57MWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756487302; c=relaxed/simple;
-	bh=fD4739ZL8XX1stZE9Og6p4xwwcsU6Q7KYj3wGwFxT7U=;
+	s=arc-20240116; t=1756487637; c=relaxed/simple;
+	bh=iHb9WdSbAWsQISH5SeW0HmAsw6mcHOltHvAyxrfR9Ls=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Zx1aWDtSyNMGy9HkXHNCcEQeCWv8ESJuyPOKZkJ2MLU9/44D2ewloOR18+0lcsjQcM4i1Z20VqM1jDo5biLBqg5fjaWCjs1XDxOc81lTKLE1J+Xalx+zrMiacs4yNEjqIDpoJkd9+166ZQwr2eqPPZGexFuJgM2b48Q1JT0LTok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XK4z6s6j; arc=none smtp.client-ip=209.85.208.49
+	 To:Cc:Content-Type; b=ZCyPtW3E0NOkSaeqQ0RzvRkah1nJTm/g/mJm311Fo/ZgLZjJondpnPteh6XLsBgnRuEZHH2u4u5WOZxLhk7u9kBgA0+h1UQCiP8+FnRnCWBBQT6imqTtwmULzeHxq9adgya+JGlV405Ige2IZEL8o5gXua/nRdOzj5zU6PAU8Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=bVCZqOMX; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-61cbe5cef28so4578715a12.0
-        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 10:08:19 -0700 (PDT)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-6188b7550c0so2953654a12.2
+        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 10:13:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1756487298; x=1757092098; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1756487632; x=1757092432; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ad3L86iH5Z7fm1hgP7OBtRKFsr713rsXkiJ6RmeN8+s=;
-        b=XK4z6s6jBNNs9PeK1y4XMviwJd21XObvV99wPdOYkz6GnvfjvigT8ejk+0e6ZpUia3
-         Tw2Zbaw/ODTImBZMXxL5a41d6qjVFpAhK6Em2EjqDXkLJgk4s7zynC88mmsH8WrV43kO
-         paTiDNJGlk+46rMcSCyGDGzcYkpOEC20pNEVI=
+        bh=mKGIjOYE1ze9iH1dgqLKf8Xyy++WiMU+AjEh9bVOYgA=;
+        b=bVCZqOMXZSYmZlyZ/7dEJk4j9UZNb3JUk/4cBlq1kM6F2x0TepqBeERJUPxx2HYNvF
+         S7Ldxspw4D2RfgSRJ+PJcWU27HHyn3zWLDZZ2PpN77vQCmIr8Ni5jGY1WSf+w2a3oMgQ
+         Su3xS4HQPRI88oFFOIGsE1CKr53pWYowYGnLo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756487298; x=1757092098;
+        d=1e100.net; s=20230601; t=1756487632; x=1757092432;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Ad3L86iH5Z7fm1hgP7OBtRKFsr713rsXkiJ6RmeN8+s=;
-        b=uHRwVqgHKg09Dd+kBNYiuaLh04baRDgA3xyPACkH1F+kKUNCM2mPATmyGD+PIRCa65
-         kyl8USBq0pSjemsLTkFLcCgmoBAPE0FxurBLx9jAOKeTm7EIBsaJf5ufF+hMENNPqi5c
-         YMAF4GBvAdaeOZRhcp53vz5tL5LQZ7a/tqjReyWsWraVtBQJosAAdXOaAOZkkrrY5TA4
-         4K4zLJAMDsO/9CTuDUYzlsd157IDK01vQ50SvhDkJagl6EHdjX9je7u/0FBzVL/XwDhq
-         ezK/jjh+OdhgvBRnoASrT8DZRbmQZ/19EmjFcoesaYm33Bcm7Vg/B/6oHkEDWHmCkIHQ
-         vwGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVAckeOUAVMdSLxiHB3/wZLCXy0uZUMoZNXptsigZMHlY22lRTLX+Nw3PPIr8FZL2ONX3Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxbp18TPryc6TfD7dKoE8if+lLCm0EcOK/usiy9KBEUBVShYh8A
-	LNdGo0Zgb3AnKR4g/YQeekP0Cf0AbmrYxCBxns1LulYXk3oU5pLQDdRnKwCfKX6TDNttaiogfVq
-	XeWRdiahqnw==
-X-Gm-Gg: ASbGncuWMbULpRO0aK0gSzEf72nk2kM3LR/Pe9Fwt6ESb15QPBaP5iO0E8kcilgofL1
-	3ZHuKAAXe/dnWSgFrKAPClIAPhvULtNMyKqTZr0+v0EGRJEx1eRRj0b8y57/qw3/hKKVKml/+am
-	S8Sl/1S4ZnDCalL07Pt/3tfWV4fyqh52mK5r3QVP2Wozgzwtho8CUvww8R+iVExBGtAgfi3pB7r
-	NZgXK6BLsIxFxeabaIrP771Lshb39PdC4gZMOtBYBeRk2ICSJrqCrk8Y0h6KW3n8BgUwxHRmARG
-	C3tt+ydPZLsQr/q5uiaMk8E/IP6/OJYHES2WjH2nhXmgSZcXgW5tsmJYx+RGVx1p74DjSkmpLnq
-	p5frcpDNdq/vsiLV+wQbdvcUtjUtELSK/Ll8sLsLmeBsM9KKJo1VhOMDdhFktpL2YbfJKJgmF
-X-Google-Smtp-Source: AGHT+IEzUqIHP7uMjQRD9og1/m9P5QJt/7u1aJuDf5z8CVgcqDmCKLSsx5mb+cFHcVR+UQmzu/zKkA==
-X-Received: by 2002:a05:6402:274e:b0:615:5f47:8873 with SMTP id 4fb4d7f45d1cf-61c983b7f74mr14051005a12.14.1756487298288;
-        Fri, 29 Aug 2025 10:08:18 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61cfc1c775fsm2106227a12.4.2025.08.29.10.08.17
+        bh=mKGIjOYE1ze9iH1dgqLKf8Xyy++WiMU+AjEh9bVOYgA=;
+        b=tkZCAMQltEgE+NmcsykqRF97iPoGDIgfK0HsPcgPlR14fu/lk12nraO7rLBIkoZTdR
+         xuL2/TFqMq58H/8rRAsgf5FxqmLRvCqfn7T4qewJXPIumGQRjHVUb6uv46dHvhW4aoTL
+         R9rcIwFZyLKnrKiDo7tI8UV8AEp3Z7Dy2s/oms6/WoBbl2/2nlF6Z+n0EBHds7//3q+y
+         vKK4/HI6qG20EaOZmsSLYYxhJR38RYjGT/TXCvA2HaNrla4AePYot+DsRPXkYzSj52k3
+         xm3pVEJ/zKfouw5wxI3hdzGl0J8ss7nsf4bUSH5gokj5y1y12Pvze8W6SyIDGZVKK0tw
+         eGDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUqwtEituO060hJsYno7XaA55FK8xlA5jaIQ2uGTcJxqZc6J0JUgFDy7Q8fxCwWhVDPOic=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHOl73NCiOV8hmpw7/u8VFsMtXWvIPbndAjRaPsRF0IiLCNSWa
+	YqxuAW5g0C6+5yLtxPHMBvSejl2c0TTlX1sSvMmxCTFI+4ciWLX7GbstZ9vqZc65HBtLBdxrTTK
+	A4Htc3MX/PQ==
+X-Gm-Gg: ASbGnctCTKHVPU0hjzMMnVo996pjHlMIbr7Fd5IAvVqKubMO/VdJVm3N1u/bhd88jTC
+	DVpelMPtKaIbpLbQf2ITRJ3FAwd6FTPr+yqjfZcPLTObb23+phMiKDBGpQd26ghmBiaVpZ6a1EK
+	bSsEZpYcsSFFW37SiJ8x5JR1VUtaN1hNzGfhCHQVDYeNTcoshEEQeTXg58Xm3PDH13+hT0UGTil
+	bs2YMh5XFCtN6/OOz1gYys7VI1HBzF+r2aXPeHmwzVl+GljJbB79FiR5iAijWTtKtwrb25AMl+E
+	bo/PYFo1HgsKoXvA/vCIwr9KE9LRpDZjNGgyGcUy5xwSMG1H7RJuo0oAb8DoZYSDkxuyhV2tIvZ
+	0U1e8CRLeRtNy/H/XmUPsBsjOzLQJJk9tGI9NfR5KFezslCF+sdoCz6oG3UYN9NhiPvt/95uyWm
+	rg8DXmZ4I=
+X-Google-Smtp-Source: AGHT+IGGkOVdddxU6NbzdE/O5frUqOEK2LOGOhHHeWc/V6hav0mw4TqVV76VAmaJ2nrK6YP6x0l2lw==
+X-Received: by 2002:a05:6402:2786:b0:61c:8c63:a91e with SMTP id 4fb4d7f45d1cf-61c8c63adfamr12327868a12.25.1756487632252;
+        Fri, 29 Aug 2025 10:13:52 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61cfc4e1a47sm2058159a12.35.2025.08.29.10.13.50
         for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Aug 2025 10:08:17 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-afcb6856dfbso422408466b.1
-        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 10:08:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUME7x7FpqVwDaDi/EtrL5FGbHKxNdNtcFnm+aym+gJw5FSu68jZQvr6WozWGT5QPclkb0=@vger.kernel.org
-X-Received: by 2002:a17:907:6eab:b0:afe:ef8a:a48c with SMTP id
- a640c23a62f3a-afeef8ac7f9mr611238166b.8.1756486976814; Fri, 29 Aug 2025
- 10:02:56 -0700 (PDT)
+        Fri, 29 Aug 2025 10:13:50 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-afebe21a1c0so382699766b.1
+        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 10:13:50 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU7tF+fjrE0TrWuWNV+keEHY7O/yxJxmAhV5DUwa6sHRgO2iXBEfEn9XiFXTIqC4C+B7aw=@vger.kernel.org
+X-Received: by 2002:a17:907:9410:b0:afc:a190:848a with SMTP id
+ a640c23a62f3a-afe2962294amr2593662266b.60.1756487629636; Fri, 29 Aug 2025
+ 10:13:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250828180300.591225320@kernel.org> <20250828180357.223298134@kernel.org>
- <CAHk-=wi0EnrBacWYJoUesS0LXUprbLmSDY3ywDfGW94fuBDVJw@mail.gmail.com>
+References: <20250828180300.591225320@kernel.org> <CAHk-=wi0EnrBacWYJoUesS0LXUprbLmSDY3ywDfGW94fuBDVJw@mail.gmail.com>
  <D7C36F69-23D6-4AD5-AED1-028119EAEE3F@gmail.com> <CAHk-=wiBUdyV9UdNYEeEP-1Nx3VUHxUb0FQUYSfxN1LZTuGVyg@mail.gmail.com>
  <20250828161718.77cb6e61@batman.local.home> <CAHk-=wiujYBqcZGyBgLOT+OWdY3cz7EhbZE0GidhJmLNd9VPOQ@mail.gmail.com>
  <20250828164819.51e300ec@batman.local.home> <CAHk-=wjRC0sRZio4TkqP8_S+Fr8LUypVucPDnmERrHVjWOABXw@mail.gmail.com>
@@ -92,13 +92,13 @@ References: <20250828180300.591225320@kernel.org> <20250828180357.223298134@kern
  <20250829110639.1cfc5dcc@gandalf.local.home> <CAHk-=wjeT3RKCTMDCcZzXznuvG2qf0fpKbHKCZuoPzxFYxVcQw@mail.gmail.com>
  <CAHk-=wjCOWCzXG7Z=wkbLYOOcqFbuZTXSdX2yqCCWWOvanugUg@mail.gmail.com>
  <20250829123321.63c9f525@gandalf.local.home> <CAHk-=wgv11k-3e8Ee-Vk_KHJMB0S9J1PwHqFUv2X-Z8eFWq8mg@mail.gmail.com>
- <20250829125756.2be2a3c3@gandalf.local.home>
-In-Reply-To: <20250829125756.2be2a3c3@gandalf.local.home>
+ <CAHk-=whbHyKvJ5VSvObfmGSSEukYhv5DZVhR3_-smu_1_b54mg@mail.gmail.com> <20250829130239.61e25379@gandalf.local.home>
+In-Reply-To: <20250829130239.61e25379@gandalf.local.home>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 29 Aug 2025 10:02:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj-ZfHXfXKtSNKoRXhNz10Do+mqDyUumEkx8H8OqVYP-A@mail.gmail.com>
-X-Gm-Features: Ac12FXypzub4sT_YQp3-NVQ4K7fOdzCL-9SS4ZE75x9Zoqx6YPOM5EIXszDBXRM
-Message-ID: <CAHk-=wj-ZfHXfXKtSNKoRXhNz10Do+mqDyUumEkx8H8OqVYP-A@mail.gmail.com>
+Date: Fri, 29 Aug 2025 10:13:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi3muqW7XAEawu+xvvqADMmoqyvmDPYUC_64aCnqz-WLg@mail.gmail.com>
+X-Gm-Features: Ac12FXzOUr821UWDaFJ2PkQOv_cHIiiBd9eyjGJVTqCl8VoWLaBc08lTL7Mwpbc
+Message-ID: <CAHk-=wi3muqW7XAEawu+xvvqADMmoqyvmDPYUC_64aCnqz-WLg@mail.gmail.com>
 Subject: Re: [PATCH v6 5/6] tracing: Show inode and device major:minor in
  deferred user space stacktrace
 To: Steven Rostedt <rostedt@goodmis.org>
@@ -115,26 +115,30 @@ Cc: Steven Rostedt <rostedt@kernel.org>, Arnaldo Carvalho de Melo <arnaldo.melo@
 	Sam James <sam@gentoo.org>, Kees Cook <kees@kernel.org>, "Carlos O'Donell" <codonell@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 29 Aug 2025 at 09:57, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, 29 Aug 2025 at 10:02, Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> The reason is to keep from triggering the event that records the pathname
-> for every look up.
+> Note, the ring buffer can be mapped to user space. So anything written into
+> the buffer is already exposed.
 
-BUT THAT WAS NEVER THE POINT.
+Oh, good point. Yeah, that means that you have to do the hashing
+immediately. Too bad. Because while 'vma->vm_file' is basically free
+(since you have to access the vma for other reasons anyway), a good
+hash isn't.
 
-There is only a single 64-bit number. No lookup. No pointer following.
-No nothing.
+siphash is good and fast for being what it is, but it's not completely
+free. It's something like 50 shift/xor pairs, and it obviously needs
+to also access that secret hash value that is likely behind a cache
+miss..
 
-The whole point of hashing was to get an *opaque* thing very quickly.
-Not a pathname. No reference counting. No verifying whether you have
-seen it before.
+Still, I suspect it's the best we've got.
 
-Literally just something that you can match up in the trace file much
-much later.
+(If hashing is noticeable, it *might* be worth it to use
+'siphash_1u32()' and only hash 32 bits of the pointers. That makes the
+hashing slightly cheaper, and since the low bits of the pointer will
+be zero anyway due to alignment, and the high bits don't have a lot of
+information in them either, it doesn't actually remove much
+information. You might get collissions if the two pointers are exactly
+32 GB apart or whatever, but that sounds really really unlucky)
 
-(And, honestly, the likely thing is that you never match it up at all
-- you can delay the "match it up" until a human actually looks at a
-trace, which is presumably going to be a "one in a million" case).
-
-              Linus
+                Linus
 
