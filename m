@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-66938-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D38CB3B300
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 08:11:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74805B3B303
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 08:11:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6397A189C3F4
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 06:12:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32F4F20446F
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 06:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB29224B0D;
-	Fri, 29 Aug 2025 06:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3239022B594;
+	Fri, 29 Aug 2025 06:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ACmqGIW0"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ld3f3buL"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B028BEC;
-	Fri, 29 Aug 2025 06:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8993A1D5CD7;
+	Fri, 29 Aug 2025 06:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756447902; cv=none; b=A1FbMdCyPjv6qCAbPAauod/ZL7LOanq5wnaXYcXs3K22Ahojc2Z33RCqmzAgELBjPyBE+yIBf3WmB0YbY3YasVHhABwPUYPi3c6Fg784C8mL2B1WsfsImSHbIkobLvP30foIC91U8P+HWqehNG0kVCipxwiJIo172ttdDfq1PKQ=
+	t=1756447903; cv=none; b=ZWI28P6vhjbijVz6YCteVppYPcuWfxtU8wwff3kNpybzr4KnuveCopRm+BwNC3S8kfQDzn3NwFZ6FhZN6BflLtwpAOW7uKOWREAF97gMEEuR8u+ORVQ6nbi5ke7eINGHfwpNqDFmHjSSJfIPbVsOOswoCrK/5hxfNv7pmBqlgfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756447902; c=relaxed/simple;
-	bh=cu3KRq89+Yv5psuZer+g04DuZsJqadIh3W9DN+nJesk=;
+	s=arc-20240116; t=1756447903; c=relaxed/simple;
+	bh=8eT40SFiTm3bVZK3mBpVRWmv0CD13kcOlWuHOLTsX8o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ct3nyyqCXDLnjP/7ehcszRTJYuinDStnhC/5ageiZBbo21EWcYz5gqn+ZGiVckPcHV8H/Yc3IkAsr8ftE+clCGcUxPrX9G/WtHjcJ7ihSBO7HbN8t73UmURPPkHW6C3bd2MuoQ6dUMYXhQLlbHCBTs8xlSGyJN25PjLN3U1bEIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ACmqGIW0; arc=none smtp.client-ip=220.197.31.3
+	 MIME-Version; b=JflV4h3M2jAauMMQYPo5qUILAyFJIsU4TKH6bqTfymKhHRq7kffd1NQpl9jUnGNHljPGqgWUciWCrPg5Wug8mpW01RGaILNKhR7HeA4YcdLBLt4bdFmfBozGuKOtdDyUi9Q5v2k2G5zbjqYmd8Xh6VGkco5Z86zsPd5ydKDr+ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ld3f3buL; arc=none smtp.client-ip=117.135.210.2
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=gk
-	k5bJ+6QuOJA5OiM2jXUM7YEzFrEsHxta8bwk2tPtM=; b=ACmqGIW02Ep4SdZ6+k
-	nrqOCWDo86nnAq+Mo+JEcVrwP6r473VU7czJPQ+YIATMj1fW+qzLcPEwtvWCS4Ww
-	LAAZ2B/BwWDsLkzvafy5kck6etHX58QBIx9tBudXmDODVPEGiR/wjoJ1lhzl6CfS
-	+p30KRu23I5QuqJqbxy4qa/FE=
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=Cq
+	pEj+ueVwgCgyH4K9Q1Vf8CzcGg3m/pudLLnNbw+iA=; b=ld3f3buL4MukubknxU
+	+RIMMyVmjYRFVLSHjBZIGVkqQ6NkUBK+7IJ5GZuhnx9ZqwDoO+/vI6j4ReCSk87n
+	xczpr4XgXepT9t3OsfNkKylOeRMyh5RQQbfBhIcaBx8ZfogHUIB21f10Wy1ux/Nn
+	feACqfp7zLcfI/zeMNDYTmve0=
 Received: from 163.com (unknown [])
-	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wD3vTZ9RLFoGWmGEg--.4740S3;
-	Fri, 29 Aug 2025 14:11:12 +0800 (CST)
+	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wD3vTZ9RLFoGWmGEg--.4740S4;
+	Fri, 29 Aug 2025 14:11:14 +0800 (CST)
 From: chenyuan_fl@163.com
 To: qmo@kernel.org,
 	ast@kernel.org,
@@ -49,9 +49,9 @@ Cc: yonghong.song@linux.dev,
 	linux-kernel@vger.kernel.org,
 	chenyuan@kylinos.cn,
 	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH v8 1/2] bpftool: Refactor kernel config reading into common helper
-Date: Fri, 29 Aug 2025 07:11:06 +0100
-Message-Id: <20250829061107.23905-2-chenyuan_fl@163.com>
+Subject: [PATCH v8 2/2] bpftool: Add CET-aware symbol matching for x86_64 architectures
+Date: Fri, 29 Aug 2025 07:11:07 +0100
+Message-Id: <20250829061107.23905-3-chenyuan_fl@163.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250829061107.23905-1-chenyuan_fl@163.com>
 References: <20250829061107.23905-1-chenyuan_fl@163.com>
@@ -62,298 +62,126 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3vTZ9RLFoGWmGEg--.4740S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Jw1xCF43GF48JF1UJr15CFg_yoW3GrWxpF
-	Z5Ga45Jry8XF1fuw4xtFWrCrWrGwn7J3yUKrZrW3yrZrnFyryqva18KFnaqasxZryvgr17
-	ZrZY9Fyj9w4UXr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jxAwxUUUUU=
-X-CM-SenderInfo: xfkh05pxdqswro6rljoofrz/xtbBSQa4vWixPi6UnAAAsL
+X-CM-TRANSID:_____wD3vTZ9RLFoGWmGEg--.4740S4
+X-Coremail-Antispam: 1Uf129KBjvJXoWxGr1Duw1kCw1kGFyruFWUtwb_yoWrGw1kpr
+	WrJw1YyFW8XrW3Wws3AayUCF43KFsavw4UAr9rG3yI9r15Xr1DZF4xKF10vF1avrykJa17
+	AF1fuFZ0kFZIyrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jILvtUUUUU=
+X-CM-SenderInfo: xfkh05pxdqswro6rljoofrz/xtbBSQa4vWixPi6UnAABsK
 
 From: Yuan Chen <chenyuan@kylinos.cn>
 
-Extract the kernel configuration file parsing logic from feature.c into
-a new read_kernel_config() function in common.c. This includes:
-
-1. Moving the config file handling and option parsing code
-2. Adding required headers and struct definition
-3. Keeping all existing functionality
-
-The refactoring enables sharing this logic with other components while
-maintaining current behavior. This will be used by subsequent patches
-that need to check kernel config options.
+Adjust symbol matching logic to account for Control-flow Enforcement
+Technology (CET) on x86_64 systems. CET prefixes functions with
+a 4-byte 'endbr' instruction, shifting the actual hook entry point to
+symbol + 4.
 
 Acked-by: Quentin Monnet <qmo@kernel.org>
 Acked-by: Yonghong Song <yonghong.song@linux.dev>
 Acked-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Yuan Chen <chenyuan@kylinos.cn>
 ---
- tools/bpf/bpftool/common.c  | 93 +++++++++++++++++++++++++++++++++++++
- tools/bpf/bpftool/feature.c | 86 ++--------------------------------
- tools/bpf/bpftool/main.h    |  9 ++++
- 3 files changed, 106 insertions(+), 82 deletions(-)
+ tools/bpf/bpftool/link.c | 54 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 50 insertions(+), 4 deletions(-)
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index b07317d2842f..e8daf963ecef 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -21,6 +21,7 @@
- #include <sys/resource.h>
- #include <sys/stat.h>
- #include <sys/vfs.h>
-+#include <sys/utsname.h>
- 
- #include <linux/filter.h>
- #include <linux/limits.h>
-@@ -31,6 +32,7 @@
- #include <bpf/hashmap.h>
- #include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
- #include <bpf/btf.h>
-+#include <zlib.h>
- 
- #include "main.h"
- 
-@@ -1208,3 +1210,94 @@ int pathname_concat(char *buf, int buf_sz, const char *path,
- 
- 	return 0;
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index a773e05d5ade..bdcd717b0348 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -282,11 +282,52 @@ get_addr_cookie_array(__u64 *addrs, __u64 *cookies, __u32 count)
+ 	return data;
  }
-+
-+static bool read_next_kernel_config_option(gzFile file, char *buf, size_t n,
-+					   char **value)
+ 
++static bool is_x86_ibt_enabled(void)
 +{
-+	char *sep;
++#if defined(__x86_64__)
++	struct kernel_config_option options[] = {
++		{ "CONFIG_X86_KERNEL_IBT", },
++	};
++	char *values[ARRAY_SIZE(options)] = { };
++	bool ret;
 +
-+	while (gzgets(file, buf, n)) {
-+		if (strncmp(buf, "CONFIG_", 7))
-+			continue;
++	if (read_kernel_config(options, ARRAY_SIZE(options), values, NULL))
++		return false;
 +
-+		sep = strchr(buf, '=');
-+		if (!sep)
-+			continue;
++	ret = !!values[0];
++	free(values[0]);
++	return ret;
++#else
++	return false;
++#endif
++}
 +
-+		/* Trim ending '\n' */
-+		buf[strlen(buf) - 1] = '\0';
-+
-+		/* Split on '=' and ensure that a value is present. */
-+		*sep = '\0';
-+		if (!sep[1])
-+			continue;
-+
-+		*value = sep + 1;
++static bool
++symbol_matches_target(__u64 sym_addr, __u64 target_addr, bool is_ibt_enabled)
++{
++	if (sym_addr == target_addr)
 +		return true;
-+	}
++
++	/*
++	 * On x86_64 architectures with CET (Control-flow Enforcement Technology),
++	 * function entry points have a 4-byte 'endbr' instruction prefix.
++	 * This causes kprobe hooks to target the address *after* 'endbr'
++	 * (symbol address + 4), preserving the CET instruction.
++	 * Here we check if the symbol address matches the hook target address
++	 * minus 4, indicating a CET-enabled function entry point.
++	 */
++	if (is_ibt_enabled && sym_addr == target_addr - 4)
++		return true;
 +
 +	return false;
 +}
 +
-+int read_kernel_config(const struct kernel_config_option *requested_options,
-+		       size_t num_options, char **out_values,
-+		       const char *define_prefix)
-+{
-+	struct utsname utsn;
-+	char path[PATH_MAX];
-+	gzFile file = NULL;
-+	char buf[4096];
-+	char *value;
-+	size_t i;
-+	int ret = 0;
-+
-+	if (!requested_options || !out_values || num_options == 0)
-+		return -1;
-+
-+	if (!uname(&utsn)) {
-+		snprintf(path, sizeof(path), "/boot/config-%s", utsn.release);
-+
-+		/* gzopen also accepts uncompressed files. */
-+		file = gzopen(path, "r");
-+	}
-+
-+	if (!file) {
-+		/* Some distributions build with CONFIG_IKCONFIG=y and put the
-+		 * config file at /proc/config.gz.
-+		 */
-+		file = gzopen("/proc/config.gz", "r");
-+	}
-+
-+	if (!file) {
-+		p_info("skipping kernel config, can't open file: %s",
-+			strerror(errno));
-+		return -1;
-+	}
-+
-+	if (!gzgets(file, buf, sizeof(buf)) || !gzgets(file, buf, sizeof(buf))) {
-+		p_info("skipping kernel config, can't read from file: %s",
-+			strerror(errno));
-+		ret = -1;
-+		goto end_parse;
-+	}
-+
-+	if (strcmp(buf, "# Automatically generated file; DO NOT EDIT.\n")) {
-+		p_info("skipping kernel config, can't find correct file");
-+		ret = -1;
-+		goto end_parse;
-+	}
-+
-+	while (read_next_kernel_config_option(file, buf, sizeof(buf), &value)) {
-+		for (i = 0; i < num_options; i++) {
-+			if ((define_prefix && !requested_options[i].macro_dump) ||
-+			     out_values[i] || strcmp(buf, requested_options[i].name))
-+				continue;
-+
-+			out_values[i] = strdup(value);
-+		}
-+	}
-+
-+end_parse:
-+	gzclose(file);
-+	return ret;
-+}
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 24fecdf8e430..0f6070a0c8e7 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -10,7 +10,6 @@
- #ifdef USE_LIBCAP
- #include <sys/capability.h>
- #endif
--#include <sys/utsname.h>
- #include <sys/vfs.h>
- 
- #include <linux/filter.h>
-@@ -18,7 +17,6 @@
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
--#include <zlib.h>
- 
- #include "main.h"
- 
-@@ -327,40 +325,9 @@ static void probe_jit_limit(void)
- 	}
- }
- 
--static bool read_next_kernel_config_option(gzFile file, char *buf, size_t n,
--					   char **value)
--{
--	char *sep;
--
--	while (gzgets(file, buf, n)) {
--		if (strncmp(buf, "CONFIG_", 7))
--			continue;
--
--		sep = strchr(buf, '=');
--		if (!sep)
--			continue;
--
--		/* Trim ending '\n' */
--		buf[strlen(buf) - 1] = '\0';
--
--		/* Split on '=' and ensure that a value is present. */
--		*sep = '\0';
--		if (!sep[1])
--			continue;
--
--		*value = sep + 1;
--		return true;
--	}
--
--	return false;
--}
--
- static void probe_kernel_image_config(const char *define_prefix)
+ static void
+ show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
  {
--	static const struct {
--		const char * const name;
--		bool macro_dump;
--	} options[] = {
-+	struct kernel_config_option options[] = {
- 		/* Enable BPF */
- 		{ "CONFIG_BPF", },
- 		/* Enable bpf() syscall */
-@@ -435,52 +402,11 @@ static void probe_kernel_image_config(const char *define_prefix)
- 		{ "CONFIG_HZ", true, }
- 	};
- 	char *values[ARRAY_SIZE(options)] = { };
--	struct utsname utsn;
--	char path[PATH_MAX];
--	gzFile file = NULL;
--	char buf[4096];
--	char *value;
- 	size_t i;
+ 	struct addr_cookie *data;
+ 	__u32 i, j = 0;
++	bool is_ibt_enabled;
  
--	if (!uname(&utsn)) {
--		snprintf(path, sizeof(path), "/boot/config-%s", utsn.release);
--
--		/* gzopen also accepts uncompressed files. */
--		file = gzopen(path, "r");
--	}
--
--	if (!file) {
--		/* Some distributions build with CONFIG_IKCONFIG=y and put the
--		 * config file at /proc/config.gz.
--		 */
--		file = gzopen("/proc/config.gz", "r");
--	}
--	if (!file) {
--		p_info("skipping kernel config, can't open file: %s",
--		       strerror(errno));
--		goto end_parse;
--	}
--	/* Sanity checks */
--	if (!gzgets(file, buf, sizeof(buf)) ||
--	    !gzgets(file, buf, sizeof(buf))) {
--		p_info("skipping kernel config, can't read from file: %s",
--		       strerror(errno));
--		goto end_parse;
--	}
--	if (strcmp(buf, "# Automatically generated file; DO NOT EDIT.\n")) {
--		p_info("skipping kernel config, can't find correct file");
--		goto end_parse;
--	}
--
--	while (read_next_kernel_config_option(file, buf, sizeof(buf), &value)) {
--		for (i = 0; i < ARRAY_SIZE(options); i++) {
--			if ((define_prefix && !options[i].macro_dump) ||
--			    values[i] || strcmp(buf, options[i].name))
--				continue;
--
--			values[i] = strdup(value);
--		}
--	}
-+	if (read_kernel_config(options, ARRAY_SIZE(options), values,
-+			       define_prefix))
-+		return;
+ 	jsonw_bool_field(json_wtr, "retprobe",
+ 			 info->kprobe_multi.flags & BPF_F_KPROBE_MULTI_RETURN);
+@@ -306,11 +347,13 @@ show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
+ 	if (!dd.sym_count)
+ 		goto error;
  
- 	for (i = 0; i < ARRAY_SIZE(options); i++) {
- 		if (define_prefix && !options[i].macro_dump)
-@@ -488,10 +414,6 @@ static void probe_kernel_image_config(const char *define_prefix)
- 		print_kernel_option(options[i].name, values[i], define_prefix);
- 		free(values[i]);
- 	}
--
--end_parse:
--	if (file)
--		gzclose(file);
- }
++	is_ibt_enabled = is_x86_ibt_enabled();
+ 	for (i = 0; i < dd.sym_count; i++) {
+-		if (dd.sym_mapping[i].address != data[j].addr)
++		if (!symbol_matches_target(dd.sym_mapping[i].address,
++					   data[j].addr, is_ibt_enabled))
+ 			continue;
+ 		jsonw_start_object(json_wtr);
+-		jsonw_uint_field(json_wtr, "addr", dd.sym_mapping[i].address);
++		jsonw_uint_field(json_wtr, "addr", (unsigned long)data[j].addr);
+ 		jsonw_string_field(json_wtr, "func", dd.sym_mapping[i].name);
+ 		/* Print null if it is vmlinux */
+ 		if (dd.sym_mapping[i].module[0] == '\0') {
+@@ -719,6 +762,7 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
+ {
+ 	struct addr_cookie *data;
+ 	__u32 i, j = 0;
++	bool is_ibt_enabled;
  
- static bool probe_bpf_syscall(const char *define_prefix)
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index a2bb0714b3d6..374cac2a8c66 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -275,4 +275,13 @@ int pathname_concat(char *buf, int buf_sz, const char *path,
- /* print netfilter bpf_link info */
- void netfilter_dump_plain(const struct bpf_link_info *info);
- void netfilter_dump_json(const struct bpf_link_info *info, json_writer_t *wtr);
-+
-+struct kernel_config_option {
-+	const char *name;
-+	bool macro_dump;
-+};
-+
-+int read_kernel_config(const struct kernel_config_option *requested_options,
-+		       size_t num_options, char **out_values,
-+		       const char *define_prefix);
- #endif
+ 	if (!info->kprobe_multi.count)
+ 		return;
+@@ -742,12 +786,14 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
+ 	if (!dd.sym_count)
+ 		goto error;
+ 
++	is_ibt_enabled = is_x86_ibt_enabled();
+ 	printf("\n\t%-16s %-16s %s", "addr", "cookie", "func [module]");
+ 	for (i = 0; i < dd.sym_count; i++) {
+-		if (dd.sym_mapping[i].address != data[j].addr)
++		if (!symbol_matches_target(dd.sym_mapping[i].address,
++					   data[j].addr, is_ibt_enabled))
+ 			continue;
+ 		printf("\n\t%016lx %-16llx %s",
+-		       dd.sym_mapping[i].address, data[j].cookie, dd.sym_mapping[i].name);
++		       (unsigned long)data[j].addr, data[j].cookie, dd.sym_mapping[i].name);
+ 		if (dd.sym_mapping[i].module[0] != '\0')
+ 			printf(" [%s]  ", dd.sym_mapping[i].module);
+ 		else
 -- 
 2.39.5
 
