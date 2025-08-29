@@ -1,167 +1,184 @@
-Return-Path: <bpf+bounces-66912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E07C4B3AF7D
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 02:32:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94B8EB3B021
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 03:00:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6A9A17C6EB
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 00:32:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2E639853FE
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 01:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42FE14B08A;
-	Fri, 29 Aug 2025 00:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2572C1C5D57;
+	Fri, 29 Aug 2025 01:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="neO4ie+3"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ifhRWMyT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE37072614;
-	Fri, 29 Aug 2025 00:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED254A23
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 01:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756427517; cv=none; b=IPy1NW7wGotPjPnMqMbex/Sax/Y8ci5J/VOB4ahO6BsEF1dt64oMhaWaUbdCYeaJUGeyKjWA1AguGR6QZv1w+0w64Es0SFHGtV7PT84NzuPg04shJLjjOb7A4d6h5hc3VyKAfpIdwSmlYXPKwTu2U/LVgYizt5z0q+mcWAuj8Po=
+	t=1756429232; cv=none; b=Y2XRvkqc+KpsZ2XXdXzjQ95Y9Kvv6xPHbCWXCg6Qpk9gcLSAIebX7qksF2rLPkqZHaXBir3WwVdXe0tayf1/6T9cw6W2tRuoJpjF08bYf8ieoP1BDgr2P7kF8MARTmjryt5ohm8V2fpNCswKNHSsUZmzD7g1ALShGk4utkVDhjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756427517; c=relaxed/simple;
-	bh=ABlFmf0bedrZpweMBtl9WZsWU1lfwK8DnF8GKtSqjXM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Tnha1GwDlrK/cSY/Ocoqdrbh8X1EKdesfdNYDGPNC1BjGfD2fxdgFTC6vUi4i0444nLP4gRb+3NLisQhRT7gudkTAp2v451NorPkIBOb0eP531vQPC8cBStF9/BVCzw0cWa/9tV/bKN9bWndpk1QstHk/Pf+qlpiWKtFB1ko4Ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=neO4ie+3; arc=none smtp.client-ip=209.85.166.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-88432daa973so44147239f.1;
-        Thu, 28 Aug 2025 17:31:54 -0700 (PDT)
+	s=arc-20240116; t=1756429232; c=relaxed/simple;
+	bh=yD1Esuj0Lh3yK7mpW5WWJeUIj1YS7IGhyxzodFvtwfM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=UvhyFGgpOQhRorpRTAd8oze4B4yzyduWickFc0pn3f3+4hb3XUD28eBJpCaK9WqRndQncv9bD8mn9Lo4mkAGYp/DsFsgPEz4EN9plPy0RPLbjZZJx7YAfqgW5SSQGgTPbhBQmPBvFFi9PYbY0Z4YD+KHgaXEt3TpVGwoHP3dq/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ifhRWMyT; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-771e4a8b533so1473415b3a.3
+        for <bpf@vger.kernel.org>; Thu, 28 Aug 2025 18:00:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756427514; x=1757032314; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4jcV9IGK1Y8AbgjMsYPO/NSZt2dKq8a3BQdAP04HXA4=;
-        b=neO4ie+3I/IINS0rnZb6EEnib4dT1YPsdNg5jKEyKIjgWvp2zy+ozltMdkozVMaq3w
-         tUpqy83djdL8qudNqb3MGy81fNsr3IglDKhmIHtFA1s3/jxTsYRjwA6IXkIXpZdeiLne
-         ZXzn+Yrk73O/Wi22DqdHXqBV7RE09XldvxNZxZnwarXmLvVz30EyPlmugnuUKXiVO7hJ
-         rOT+k1IPtwkB6R+MNEV01qj4iNeyR1rg4fRa+HLfLrhcJRu+lwElQjKLUmqsI4+eckOs
-         j5/qG4+QtVv8vRJg4suEXVcgFRcWUlL3+Nk2eGNvxfiL1S0CbUAmK1VIjAXaRwTw75LL
-         xJ0g==
+        d=google.com; s=20230601; t=1756429230; x=1757034030; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mABjjaqiP2UTHmxp2gWA08VShFYcnmT1DBYRkgpaZ+w=;
+        b=ifhRWMyTyC5UeY7MqAIbBDp219LacRU08CJyZ8vjI3jWW+DlECQZnobh0kZxOFkj7O
+         nPMVQWgSp0p1gqwOXfb9dXqF+T0kmWL1yZz3sOLWNnLGkB8kBUEEY0rPYVeOTpzTHvw4
+         k5V34vYW1BhgfF7TXyfDLZZHPh673cgwahbQXRFGFID54rWcfFnMyL/3MK3KDpFhG9p9
+         3b6Zjb0w2mlXj4mCqohuoG/8EYF5gBU1wwiT3EW6oZOP4/wVtjtmJIYayhqCriLlSPBk
+         zMYMjrohUR6LLjh7eYw6NgIa7SL/fJ6jLnwyylOEoHn6D2wpyXuEYM7+vKe5jDFYPZBf
+         4oZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756427514; x=1757032314;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4jcV9IGK1Y8AbgjMsYPO/NSZt2dKq8a3BQdAP04HXA4=;
-        b=wnLVAQuf0DTTR5M+fs1pGf44J42F87YJUITqLYcQyvkLDRZKaJZsRvU5nsMyBhkI9V
-         C+dZctS1xk73+EeetKrcWjVi6kgeXVveTmtp8TtIMvedNj1hG4UhQ1R9LT4gGuQ6/ReT
-         ENkzrxXYDGSFG2WOeLrIy5MeKWQQBKIkhtsvhHagl4Qz4H/9u35RZ34jC2fnGXmbnCmS
-         f71k/yzzFxBdbwj2r4ssv8dHnNHRsftZ1rntTcRN/i8aiMx3ZSQgmPc5I5kZu3dsMzoO
-         abNyHwqV0iqTP1bqhsXcuRysApojYO3za6o1Uhg7+caaY0ojym2/CB0oVC1wnbo8vWfV
-         gD3A==
-X-Forwarded-Encrypted: i=1; AJvYcCUfUMTvJVw9sj57pcY0gXo46isRq0Lzzm/evbipGx6gmgYLUwmwbQ11kwe4H/Vwcy8oXLI=@vger.kernel.org, AJvYcCWj+aNDhbTb4q62C6CJzD5YzeKFItbACIYpAEFy6gJBs9NHH6H5WaK1qpMHvRLEh/4KAba9nUw6@vger.kernel.org
-X-Gm-Message-State: AOJu0YxrKA84CYuWKr+IUguqn43aRbWfMPv5hSKx5TicdZvzV+OmdxXQ
-	7vpuGidzsgPL2007/049S7lmOxUPcbe1KNOr7vAsCMpOncZr1zGS1ykf1j+eA+8SFyMXG+ywyAF
-	ZE21vs25hKcrMFjtWbt7sasyLrWDofNU=
-X-Gm-Gg: ASbGncvHCH9tyIvElgzUrbi0NZxYtrj/B1v4FZcEdA+WEdy2VkQYXddJz8uDOOez7C4
-	ksEJsnFjUprnoDJn2nrLw3C7H97Epf5bFPgejXkJ26tHsYeAuNUmkUlAY4JwSem5hpNzuJoJzO0
-	FHK7wmRE1cPvkxhMHMI0uwjVuJUDmlE2OzrTYZC7KlEZwrwv4EobaXJD+otk51p5OmgFAJA09hj
-	euh9zwGT86l9UUa8A==
-X-Google-Smtp-Source: AGHT+IEhL6L6wkVDdfsa52WM29fU7WimldoM+zsyqxjY2CHMH+r5eyoO3bh9RbQvKDE0dOYoGh5A3vMPuPyyAmggkZY=
-X-Received: by 2002:a05:6e02:228c:b0:3f1:87a1:32fa with SMTP id
- e9e14a558f8ab-3f187a134damr48708765ab.27.1756427513901; Thu, 28 Aug 2025
- 17:31:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1756429230; x=1757034030;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mABjjaqiP2UTHmxp2gWA08VShFYcnmT1DBYRkgpaZ+w=;
+        b=wveZpAfxoUDcdvxOu2R1cHMZX3+5Rg/eDAopsRMheiephOvdzvZF4xPVpvYuhvsN0c
+         vM4vbNc4uSLJNRP+GWD2QPTTZXJKCiXLDaNvhWu4niejYx5oa38oJNaI0ohO7DrOQo5Z
+         VVDCgGDIJoIMMJwCDaGGDEK6dTjNbhd8OzVbFmsT8LntpR96fxVccApXt19WF3HZYWbO
+         ZpDwyMp+i1mQ+T50lM57YJj4Rw7VGfQ6qIjFuKPHzAAol2L1CuTu/dePKF70lPHxyNxu
+         GvVlkH9oO24qP1cTdZfAEws1tH4sidvrXHW07kz2wFrAplsY9RmMgk6hhr17sFhxdaNT
+         S6fA==
+X-Forwarded-Encrypted: i=1; AJvYcCU4a0nl3V6eNbtIZN95jyB+mci0/5YMU64CFlTcDFONBtnoIl1JC8bU7k5R/Hl2ioNPNiU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyf5PK0/fUI9l8DGmnLaH2tADXWf6gXCSFPjV/f5FYSasmsxgcn
+	J/EYaueNb6ErTVAwGPfmy208WazHHyGTplUKYQnzV5Uk1R1JbMSL877lLWNgn4CjYr3dZVmZeTY
+	HgJm8VQ==
+X-Google-Smtp-Source: AGHT+IEP4ctVkBTx+X5nJfCWiW1nJL0JfwQHajXAMXfp6ptS7jbQ9mYY0PQVtPK6Gw+1JD9w6fkBGh6pXVg=
+X-Received: from pfbha19.prod.google.com ([2002:a05:6a00:8513:b0:771:fd7c:50e7])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:1ca0:b0:771:f763:4654
+ with SMTP id d2e1a72fcca58-771f7634976mr16665603b3a.18.1756429230374; Thu, 28
+ Aug 2025 18:00:30 -0700 (PDT)
+Date: Fri, 29 Aug 2025 01:00:03 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250825135342.53110-1-kerneljasonxing@gmail.com>
- <20250825135342.53110-6-kerneljasonxing@gmail.com> <951bc347-0c33-4359-8d15-0e5e054b951c@intel.com>
- <CAL+tcoCBTS0T-DNRjC0k2pH+qveM6=OHQ98eatp7nG5g1DA=bA@mail.gmail.com> <f0c0a512-900b-4d12-9e59-5fbcd35ed495@intel.com>
-In-Reply-To: <f0c0a512-900b-4d12-9e59-5fbcd35ed495@intel.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Fri, 29 Aug 2025 08:31:17 +0800
-X-Gm-Features: Ac12FXw_2Wf-fkbu7TvZ5qNodmMkCKXbC_RtSpfX6TavoARY_8oV1AMorpyjN0w
-Message-ID: <CAL+tcoCDpyyVd1kiutPsH8abNRkAcoo=SkXKVJG+U90pAd+3tw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 5/9] xsk: add xsk_alloc_batch_skb() to build
- skbs in batch
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, horms@kernel.org, andrew+netdev@lunn.ch, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.51.0.318.gd7df087d1a-goog
+Message-ID: <20250829010026.347440-1-kuniyu@google.com>
+Subject: [PATCH v4 bpf-next/net 0/5] bpf: Allow decoupling memcg from sk->sk_prot->memory_allocated.
+From: Kuniyuki Iwashima <kuniyu@google.com>
+To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
+Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 28, 2025 at 11:29=E2=80=AFPM Alexander Lobakin
-<aleksander.lobakin@intel.com> wrote:
->
-> From: Jason Xing <kerneljasonxing@gmail.com>
-> Date: Thu, 28 Aug 2025 08:38:42 +0800
->
-> > On Wed, Aug 27, 2025 at 10:33=E2=80=AFPM Alexander Lobakin
-> > <aleksander.lobakin@intel.com> wrote:
-> >>
-> >> From: Jason Xing <kerneljasonxing@gmail.com>
-> >> Date: Mon, 25 Aug 2025 21:53:38 +0800
-> >>
-> >>> From: Jason Xing <kernelxing@tencent.com>
-> >>>
-> >>> Support allocating and building skbs in batch.
-> >>
-> >> [...]
-> >>
-> >>> +     base_len =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headro=
-om));
-> >>> +     if (!(dev->priv_flags & IFF_TX_SKB_NO_LINEAR))
-> >>> +             base_len +=3D dev->needed_tailroom;
-> >>> +
-> >>> +     if (xs->skb_count >=3D nb_pkts)
-> >>> +             goto build;
-> >>> +
-> >>> +     if (xs->skb) {
-> >>> +             i =3D 1;
-> >>> +             xs->skb_count++;
-> >>> +     }
-> >>> +
-> >>> +     xs->skb_count +=3D kmem_cache_alloc_bulk(net_hotdata.skbuff_cac=
-he,
-> >>> +                                            gfp_mask, nb_pkts - xs->=
-skb_count,
-> >>> +                                            (void **)&skbs[xs->skb_c=
-ount]);
-> >>
-> >> Have you tried napi_skb_cache_get_bulk()? Depending on the workload, i=
-t
-> >> may give better perf numbers.
-> >
-> > Sure, my initial try is using this interface. But later I want to see
-> > a standalone cache belonging to xsk. The whole xsk_alloc_batch_skb
-> > function I added is quite similar to napi_skb_cache_get_bulk(), to
-> > some extent.
-> >
-> > And if using napi_xxx(), we need a lock to avoid the race between this
-> > context and softirq context on the same core.
->
-> Are you saying this particular function is not run in the softirq
+Some protocols (e.g., TCP, UDP) have their own memory accounting for
+socket buffers and charge memory to global per-protocol counters such
+as /proc/net/ipv4/tcp_mem.
 
-No, it runs in process context. Please see this chain:
-sendto->__xsk_generic_xmit-> (allocating skbs function handling).
+When running under a non-root cgroup, this memory is also charged to
+the memcg as sock in memory.stat.
 
-Thanks,
-Jason
+Sockets of such protocols are still subject to the global limits,
+thus affected by a noisy neighbour outside cgroup.
 
-> context? I thought all Tx is done in BH.
-> If it's not BH, then ignore my suggestion -- napi_skb_cache_get_bulk()
-> requires BH, that's true.
->
-> >
-> > Thanks,
-> > Jason
->
-> Thanks,
-> Olek
+This makes it difficult to accurately estimate and configure appropriate
+global limits.
+
+This series allows decoupling memcg from the global memory accounting
+if socket is configured as such by BPF prog.
+
+This simplifies the memcg configuration while keeping the global limits
+within a reasonable range, which is only 10% of the physical memory by
+default.
+
+Overview of the series:
+
+  patch 1 & 2 are prep
+  patch 3 intorduces SK_BPF_MEMCG_SOCK_ISOLATED for bpf_setsockopt()
+  patch 4 decouples memcg from sk_prot->memory_allocated based on the flag
+  patch 5 is selftest
+
+
+Changes:
+  v4:
+    * Patch 2
+      * Use __bpf_setsockopt() instead of _bpf_setsockopt()
+      * Add getsockopt() for a cgroup with multiple bpf progs running
+    * Patch 3
+      * Only allow inet_create() to set flags
+      * Inherit flags from listener to child in sk_clone_lock()
+      * Support clearing flags
+    * Patch 5
+      * Only use inet_create() hook
+      * Test bpf_getsockopt()
+      * Add serial_ prefix
+      * Reduce sleep() and the amount of sent data
+
+  v3: https://lore.kernel.org/netdev/20250826183940.3310118-1-kuniyu@google.com/
+    * Drop patches for accept() hook
+    * Patch 1
+      * Merge if blocks
+    * Patch2
+      * Drop bpf_func_proto for accept()
+    * Patch 3
+      * Allow flagging without sk->sk_memcg
+      * Inherit SK_BPF_MEMCG_SOCK_ISOLATED in __inet_accept()
+
+  v2: https://lore.kernel.org/bpf/20250825204158.2414402-1-kuniyu@google.com/
+    * Patch 2
+      * Define BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT() when CONFIG_CGROUP_BPF=n
+    * Patch 5
+      * Make 2 new bpf_func_proto static
+    * Patch 6
+      * s/mem_cgroup_sk_set_flag/mem_cgroup_sk_set_flags/ when CONFIG_MEMCG=n
+      * Use finer CONFIG_CGROUP_BPF instead of CONFIG_BPF_SYSCALL for ifdef
+
+  v1: https://lore.kernel.org/netdev/20250822221846.744252-1-kuniyu@google.com/
+
+
+Kuniyuki Iwashima (5):
+  tcp: Save lock_sock() for memcg in inet_csk_accept().
+  bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
+  bpf: Introduce SK_BPF_MEMCG_FLAGS and SK_BPF_MEMCG_SOCK_ISOLATED.
+  net-memcg: Allow decoupling memcg from global protocol memory
+    accounting.
+  selftest: bpf: Add test for SK_BPF_MEMCG_SOCK_ISOLATED.
+
+ include/net/proto_memory.h                    |  15 +-
+ include/net/sock.h                            |  50 ++++
+ include/net/tcp.h                             |  10 +-
+ include/uapi/linux/bpf.h                      |   6 +
+ net/core/filter.c                             |  91 +++++++-
+ net/core/sock.c                               |  65 ++++--
+ net/ipv4/af_inet.c                            |  37 +++
+ net/ipv4/inet_connection_sock.c               |  26 +--
+ net/ipv4/tcp.c                                |   3 +-
+ net/ipv4/tcp_output.c                         |  10 +-
+ net/mptcp/protocol.c                          |   3 +-
+ net/tls/tls_device.c                          |   4 +-
+ tools/include/uapi/linux/bpf.h                |   6 +
+ .../selftests/bpf/prog_tests/sk_memcg.c       | 218 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/sk_memcg.c  |  38 +++
+ 15 files changed, 525 insertions(+), 57 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_memcg.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sk_memcg.c
+
+-- 
+2.51.0.318.gd7df087d1a-goog
+
 
