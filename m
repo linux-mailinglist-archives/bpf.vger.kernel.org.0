@@ -1,253 +1,175 @@
-Return-Path: <bpf+bounces-67031-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67032-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B63F4B3C2B2
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 20:50:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAB10B3C2BC
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 20:54:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10E0D1CC4A2D
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 18:50:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49BA8A00886
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 18:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A55230BE9;
-	Fri, 29 Aug 2025 18:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018BA230BE9;
+	Fri, 29 Aug 2025 18:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pSc/h3Tt"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="p450uBrC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.155.198.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C6D30CD9F;
-	Fri, 29 Aug 2025 18:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5852C9443;
+	Fri, 29 Aug 2025 18:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.155.198.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756493405; cv=none; b=CpKQA3RDJYxSzFn1nrU4f0vw/XmFz08rnNNxejhJCB04d1MYvjF12HhZYTBYa8MxZIBQE/OX5pkt0AaYnKjiMwmFR1i7NIPn0pwrfZ88H1ICLf2DOxSPM2iiX0sj8SXAro5+Rvr9eEUVqLYQW17K8opXGWngb9wNgTEL2SutRDM=
+	t=1756493664; cv=none; b=a1vJGFl+Wh+gG02vzUDWHnWmfDSa8K2F+5RRe5qslp0650qhFb/9HaY8U/6OQRV7zEFz6OEEk67ELuy4b7xuvbzK81jSOH8T2oM1EOojQ9SEoO9xYgZZrByhuvehJGA6UG6VwsnuhgKmb73WkvsBLfA4XK6GWGX7BESr1aqsUwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756493405; c=relaxed/simple;
-	bh=kRzuQPQvzBNdotMBP7pTnWR1VHUeXzZCdlNmYEGfLEI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kCs2Pys2BuBLYkTSGcoLil969Z5vy5PsdLoLL1LAu/JU9rdclCUvUeH6uLkEMef5wnD52HTbCtpDINNOaeOHznWK+wS0jLpj8gYCivXJe0RlMxwDM0rGmu2iZETOue6UcpA4ZxYYztwQdwB7vvGkFcgpsbZthCaS8FYlGx+Ed08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pSc/h3Tt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2809C4CEFA;
-	Fri, 29 Aug 2025 18:50:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756493404;
-	bh=kRzuQPQvzBNdotMBP7pTnWR1VHUeXzZCdlNmYEGfLEI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=pSc/h3TtTy66683UtsDFjw5lfDUKOX657sak2OgwgcNNq8iAF2xrzqwbaGjLCl6f9
-	 gMUiA8FQFKciBfUWGxeAFKmv4EivlxR6NMzZm0EUiZE06VFFq0AvnWE5jai8HvfewA
-	 VNcdLxiKLxViNlBPEohTpFP57ldZJciAsjLAVWfRWPhvZtMAbMuhOxLo/kzBbQ5AwW
-	 0ABh+4brs214VNfQCNKcgUqPBjWrS2joxC00kJjkKSNmC2HPFT9mXc0Lz4Rt28zkiz
-	 RIO3jV77ZsszpwA6njjtwVx2hnhV6v58lZg6hxYxn/lMxmMpZDMvYl4y9etBiL5Vs4
-	 sf2uYuX0CRx0w==
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7f7e89e4b37so233845185a.3;
-        Fri, 29 Aug 2025 11:50:04 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV1tSsR5kMP7WQF1hsueleSbDT6sdyuCOpCP+IFhpLU/dziHaTC+zbZqYia9c/sKNiotCttiYdD3GvdMib6@vger.kernel.org, AJvYcCWHAnL+XpchO0b/KBFodxC3xipBldobCzmHgjIInobYeNwCWKrOzb1B/6gZno26BpaemZI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0udDmHmWphj9RHa2rRLrrKGiqEP1Bcf8l6guTQcAZ+i8nixSJ
-	8uDC2kMZS8bE1L1eH3edyiLYi/VbqKRkj7eNw+L4rr1Et9BcKy9a/hbYCKb/nLLDVGqi2NJPzIo
-	3XOmjzydAnp9Sf8fcnoNm48dyvcAzJBA=
-X-Google-Smtp-Source: AGHT+IGk+2e+MtbMfwnwjvMNj8yikW5bC6K516UGdm2sSFuCWKS1iZedV3T1faNau0Cipnb+kFsu14fOLq5avBSWm94=
-X-Received: by 2002:a05:620a:4706:b0:7fc:b747:3168 with SMTP id
- af79cd13be357-7fcb74734a0mr375745085a.71.1756493403865; Fri, 29 Aug 2025
- 11:50:03 -0700 (PDT)
+	s=arc-20240116; t=1756493664; c=relaxed/simple;
+	bh=onDw0zBJvA2aM4dl11X2cmXP4ov854rmqxhd1ow39+0=;
+	h=Subject:From:To:CC:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=WzEZqoTInsCD6FQBEifAZgozZMRC7r4IKP2gdZPKpbznLsv4dgruBjyrxINYREJe5HF+KByuUClXu9Go5Pby9Bdp/xhgrX5lfoSJK7puPbRxfa5NWE7UwWtDt5hpEvDlm+a/SsycShHc4+vhlOsSkFGgl3Gyr/sEjZGgHbYpHG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=p450uBrC; arc=none smtp.client-ip=35.155.198.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1756493662; x=1788029662;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version:subject;
+  bh=onDw0zBJvA2aM4dl11X2cmXP4ov854rmqxhd1ow39+0=;
+  b=p450uBrCbaz3gl6+dTSMv9C5/tqFffJqv4aPCXT26TEX0nxhgPbOoiqb
+   7ZMyI/hwk7IJAceZO0AcPjcVDsFmbRXVPLNgvW/Bn/e2ysxPNlYsUAx1u
+   qLxQ97jtlonmnndQ5xBvxgPk92vXyPIMRNzmA2mUjgDtHOb7nkWyxMH04
+   09TxYPxrshzpap/BaZ0BHs038ErSogehzG8nqD+A969uDRCRZpR3htN98
+   sAJAFx1aCtgYdLSFfhfBSax2hGYE1jhcd+s/9rfonJU9FVdohtF/4w5yK
+   g0CO1yaopBZ+KN26Ne7Ulg6EWHdabw9FM8tXtnmmDkX1NhHf/7FNE0v/H
+   g==;
+X-CSE-ConnectionGUID: vUS98EYqRNm3RBnTuS4Z6g==
+X-CSE-MsgGUID: 388zlf7oQNqGJeTjOXQpqQ==
+X-IronPort-AV: E=Sophos;i="6.18,221,1751241600"; 
+   d="scan'208";a="1944126"
+Subject: Re: [PATCH v4 0/5] barrier: Add smp_cond_load_*_timewait()
+Thread-Topic: [PATCH v4 0/5] barrier: Add smp_cond_load_*_timewait()
+Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
+  by internal-pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2025 18:54:20 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:54966]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.10.144:2525] with esmtp (Farcaster)
+ id d09b57f8-b9c6-4bca-870a-9e36f79c3866; Fri, 29 Aug 2025 18:54:20 +0000 (UTC)
+X-Farcaster-Flow-ID: d09b57f8-b9c6-4bca-870a-9e36f79c3866
+Received: from EX19D032UWA003.ant.amazon.com (10.13.139.37) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.17;
+ Fri, 29 Aug 2025 18:54:20 +0000
+Received: from EX19D032UWA003.ant.amazon.com (10.13.139.37) by
+ EX19D032UWA003.ant.amazon.com (10.13.139.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.17;
+ Fri, 29 Aug 2025 18:54:20 +0000
+Received: from EX19D032UWA003.ant.amazon.com ([fe80::8e94:8f60:9531:c497]) by
+ EX19D032UWA003.ant.amazon.com ([fe80::8e94:8f60:9531:c497%5]) with mapi id
+ 15.02.2562.017; Fri, 29 Aug 2025 18:54:20 +0000
+From: "Okanovic, Haris" <harisokn@amazon.com>
+To: "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-arch@vger.kernel.org"
+	<linux-arch@vger.kernel.org>, "ankur.a.arora@oracle.com"
+	<ankur.a.arora@oracle.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC: "Okanovic, Haris" <harisokn@amazon.com>, "cl@gentwo.org" <cl@gentwo.org>,
+	"joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"peterz@infradead.org" <peterz@infradead.org>, "mark.rutland@arm.com"
+	<mark.rutland@arm.com>, "memxor@gmail.com" <memxor@gmail.com>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>, "arnd@arndb.de"
+	<arnd@arndb.de>, "will@kernel.org" <will@kernel.org>,
+	"zhenglifeng1@huawei.com" <zhenglifeng1@huawei.com>, "ast@kernel.org"
+	<ast@kernel.org>, "xueshuai@linux.alibaba.com" <xueshuai@linux.alibaba.com>,
+	"konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+	"boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>
+Thread-Index: AQHcGLwkeAOmnfRWAUuaDQGZvBHLrrR5+yuA
+Date: Fri, 29 Aug 2025 18:54:20 +0000
+Message-ID: <2cecbf7fb23ee83a4ce027e1be3f46f97efd585c.camel@amazon.com>
+References: <20250829080735.3598416-1-ankur.a.arora@oracle.com>
+In-Reply-To: <20250829080735.3598416-1-ankur.a.arora@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B00C4BB2ABE1CC418E9442EB1C4C3F26@amazon.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250826212229.143230-1-contact@arnaud-lcm.com>
- <20250826212352.143299-1-contact@arnaud-lcm.com> <CAADnVQ+6bV3h3i-A1LHbEk=nY_PMx69BiogWjf5GtGaLxWSQVg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+6bV3h3i-A1LHbEk=nY_PMx69BiogWjf5GtGaLxWSQVg@mail.gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Fri, 29 Aug 2025 11:49:52 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5P4sOHmMCmVTZw2vfuz7Rny-xkhuPkRBitfoATQkm=eA@mail.gmail.com>
-X-Gm-Features: Ac12FXx2yvfNrnZ_hVhKtaFpA_xeHScVvOotbYo86wZxc1kdVMhhG9MXCo_IIb4
-Message-ID: <CAPhsuW5P4sOHmMCmVTZw2vfuz7Rny-xkhuPkRBitfoATQkm=eA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/2] bpf: fix stackmap overflow check in __bpf_get_stackid()
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Arnaud Lecomte <contact@arnaud-lcm.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eduard <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 29, 2025 at 10:29=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-[...]
-> >
-> >  static long __bpf_get_stackid(struct bpf_map *map,
-> > -                             struct perf_callchain_entry *trace, u64 f=
-lags)
-> > +                             struct perf_callchain_entry *trace, u64 f=
-lags, u32 max_depth)
-> >  {
-> >         struct bpf_stack_map *smap =3D container_of(map, struct bpf_sta=
-ck_map, map);
-> >         struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
-> > @@ -263,6 +263,8 @@ static long __bpf_get_stackid(struct bpf_map *map,
-> >
-> >         trace_nr =3D trace->nr - skip;
-> >         trace_len =3D trace_nr * sizeof(u64);
-> > +       trace_nr =3D min(trace_nr, max_depth - skip);
-> > +
->
-> The patch might have fixed this particular syzbot repro
-> with OOB in stackmap-with-buildid case,
-> but above two line looks wrong.
-> trace_len is computed before being capped by max_depth.
-> So non-buildid case below is using
-> memcpy(new_bucket->data, ips, trace_len);
->
-> so OOB is still there?
-
-+1 for this observation.
-
-We are calling __bpf_get_stackid() from two functions: bpf_get_stackid
-and bpf_get_stackid_pe. The check against max_depth is only needed
-from bpf_get_stackid_pe, so it is better to just check here.
-
-I have got the following on top of patch 1/2. This makes more sense to
-me.
-
-PS: The following also includes some clean up in __bpf_get_stack.
-I include those because it also uses stack_map_calculate_max_depth.
-
-Does this look better?
-
-Thanks,
-Song
-
-
-diff --git c/kernel/bpf/stackmap.c w/kernel/bpf/stackmap.c
-index 796cc105eacb..08554fb146e1 100644
---- c/kernel/bpf/stackmap.c
-+++ w/kernel/bpf/stackmap.c
-@@ -262,7 +262,7 @@ static long __bpf_get_stackid(struct bpf_map *map,
-                return -EFAULT;
-
-        trace_nr =3D trace->nr - skip;
--       trace_len =3D trace_nr * sizeof(u64);
-+
-        ips =3D trace->ip + skip;
-        hash =3D jhash2((u32 *)ips, trace_len / sizeof(u32), 0);
-        id =3D hash & (smap->n_buckets - 1);
-@@ -297,6 +297,7 @@ static long __bpf_get_stackid(struct bpf_map *map,
-                        return -EEXIST;
-                }
-        } else {
-+               trace_len =3D trace_nr * sizeof(u64);
-                if (hash_matches && bucket->nr =3D=3D trace_nr &&
-                    memcmp(bucket->data, ips, trace_len) =3D=3D 0)
-                        return id;
-@@ -322,19 +323,17 @@ static long __bpf_get_stackid(struct bpf_map *map,
- BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
-           u64, flags)
- {
--       u32 max_depth =3D map->value_size / stack_map_data_size(map);
--       u32 skip =3D flags & BPF_F_SKIP_FIELD_MASK;
-+       u32 elem_size =3D stack_map_data_size(map);
-        bool user =3D flags & BPF_F_USER_STACK;
-        struct perf_callchain_entry *trace;
-        bool kernel =3D !user;
-+       u32 max_depth;
-
-        if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
-                               BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID))=
-)
-                return -EINVAL;
-
--       max_depth +=3D skip;
--       if (max_depth > sysctl_perf_event_max_stack)
--               max_depth =3D sysctl_perf_event_max_stack;
-+       max_depth =3D stack_map_calculate_max_depth(map->value_size,
-elem_size, flags);
-
-        trace =3D get_perf_callchain(regs, 0, kernel, user, max_depth,
-                                   false, false);
-@@ -375,6 +374,7 @@ BPF_CALL_3(bpf_get_stackid_pe, struct
-bpf_perf_event_data_kern *, ctx,
-        bool kernel, user;
-        __u64 nr_kernel;
-        int ret;
-+       u32 elem_size, max_depth;
-
-        /* perf_sample_data doesn't have callchain, use bpf_get_stackid */
-        if (!(event->attr.sample_type & PERF_SAMPLE_CALLCHAIN))
-@@ -393,11 +393,12 @@ BPF_CALL_3(bpf_get_stackid_pe, struct
-bpf_perf_event_data_kern *, ctx,
-                return -EFAULT;
-
-        nr_kernel =3D count_kernel_ip(trace);
--
-+       elem_size =3D stack_map_data_size(map);
-        if (kernel) {
-                __u64 nr =3D trace->nr;
-
--               trace->nr =3D nr_kernel;
-+               max_depth =3D
-stack_map_calculate_max_depth(map->value_size, elem_size, flags);
-+               trace->nr =3D min_t(u32, nr_kernel, max_depth);
-                ret =3D __bpf_get_stackid(map, trace, flags);
-
-                /* restore nr */
-@@ -410,6 +411,8 @@ BPF_CALL_3(bpf_get_stackid_pe, struct
-bpf_perf_event_data_kern *, ctx,
-                        return -EFAULT;
-
-                flags =3D (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
-+               max_depth =3D
-stack_map_calculate_max_depth(map->value_size, elem_size, flags);
-+               trace->nr =3D min_t(u32, trace->nr, max_depth);
-                ret =3D __bpf_get_stackid(map, trace, flags);
-        }
-        return ret;
-@@ -428,7 +431,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
-struct task_struct *task,
-                            struct perf_callchain_entry *trace_in,
-                            void *buf, u32 size, u64 flags, bool may_fault)
- {
--       u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
-+       u32 trace_nr, copy_len, elem_size, max_depth;
-        bool user_build_id =3D flags & BPF_F_USER_BUILD_ID;
-        bool crosstask =3D task && task !=3D current;
-        u32 skip =3D flags & BPF_F_SKIP_FIELD_MASK;
-@@ -465,13 +468,15 @@ static long __bpf_get_stack(struct pt_regs
-*regs, struct task_struct *task,
-        if (may_fault)
-                rcu_read_lock(); /* need RCU for perf's callchain below */
-
--       if (trace_in)
-+       if (trace_in) {
-                trace =3D trace_in;
--       else if (kernel && task)
-+               trace->nr =3D min_t(u32, trace->nr, max_depth);
-+       } else if (kernel && task) {
-                trace =3D get_callchain_entry_for_task(task, max_depth);
--       else
-+       } else {
-                trace =3D get_perf_callchain(regs, 0, kernel, user, max_dep=
-th,
-                                           crosstask, false);
-+       }
-
-        if (unlikely(!trace) || trace->nr < skip) {
-                if (may_fault)
-@@ -479,9 +484,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
-struct task_struct *task,
-                goto err_fault;
-        }
-
--       num_elem =3D size / elem_size;
-        trace_nr =3D trace->nr - skip;
--       trace_nr =3D (trace_nr <=3D num_elem) ? trace_nr : num_elem;
-        copy_len =3D trace_nr * elem_size;
-
-        ips =3D trace->ip + skip;
+T24gRnJpLCAyMDI1LTA4LTI5IGF0IDAxOjA3IC0wNzAwLCBBbmt1ciBBcm9yYSB3cm90ZToNCj4g
+Q0FVVElPTjogVGhpcyBlbWFpbCBvcmlnaW5hdGVkIGZyb20gb3V0c2lkZSBvZiB0aGUgb3JnYW5p
+emF0aW9uLiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91
+IGNhbiBjb25maXJtIHRoZSBzZW5kZXIgYW5kIGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZS4NCj4g
+DQo+IA0KPiANCj4gSGksDQo+IA0KPiBUaGlzIHNlcmllcyBhZGRzIHdhaXRlZCB2YXJpYW50cyBv
+ZiB0aGUgc21wX2NvbmRfbG9hZCgpIHByaW1pdGl2ZXM6DQo+IHNtcF9jb25kX2xvYWRfcmVsYXhl
+ZF90aW1ld2FpdCgpLCBhbmQgc21wX2NvbmRfbG9hZF9hY3F1aXJlX3RpbWV3YWl0KCkuDQo+IA0K
+PiBXaHk/OiBhcyB0aGUgbmFtZSBzdWdnZXN0cywgdGhlIG5ldyBpbnRlcmZhY2VzIGFyZSBtZWFu
+dCBmb3IgY29udGV4dHMNCj4gd2hlcmUgeW91IHdhbnQgdG8gd2FpdCBvbiBhIGNvbmRpdGlvbiB2
+YXJpYWJsZSBmb3IgYSBmaW5pdGUgZHVyYXRpb24uDQo+IFRoaXMgaXMgZWFzeSBlbm91Z2ggdG8g
+ZG8gd2l0aCBhIGxvb3AgYXJvdW5kIGNwdV9yZWxheCgpLiBIb3dldmVyLA0KPiBzb21lIGFyY2hp
+dGVjdHVyZXMgKGV4LiBhcm02NCkgYWxzbyBhbGxvdyB3YWl0aW5nIG9uIGEgY2FjaGVsaW5lLiBT
+bywNCj4gdGhlc2UgaW50ZXJmYWNlcyBoYW5kbGUgYSBtaXh0dXJlIG9mIHNwaW4vd2FpdCB3aXRo
+IGEgc21wX2NvbmRfbG9hZCgpDQo+IHRocm93biBpbi4NCj4gDQo+IFRoZXJlIGFyZSB0d28ga25v
+d24gdXNlcnMgZm9yIHRoZXNlIGludGVyZmFjZXM6DQo+IA0KPiAgLSBwb2xsX2lkbGUoKSBbMV0N
+Cj4gIC0gcmVzaWxpZW50IHF1ZXVlZCBzcGlubG9ja3MgWzJdDQo+IA0KPiBUaGUgaW50ZXJmYWNl
+cyBhcmU6DQo+ICAgIHNtcF9jb25kX2xvYWRfcmVsYXhlZF90aW1ld2FpdChwdHIsIGNvbmRfZXhw
+ciwgdGltZV9jaGVja19leHByKQ0KPiAgICBzbXBfY29uZF9sb2FkX2FjcXVpcmVfc3BpbndhaXQo
+cHRyLCBjb25kX2V4cHIsIHRpbWVfY2hlY2tfZXhwcikNCj4gDQo+IFRoZSBhZGRlZCBwYXJhbWV0
+ZXIsIHRpbWVfY2hlY2tfZXhwciwgZGV0ZXJtaW5lcyB0aGUgYmFpbCBvdXQgY29uZGl0aW9uLg0K
+PiANCj4gQ2hhbmdlbG9nOg0KPiAgIHYzIFszXToNCj4gICAgIC0gZnVydGhlciBpbnRlcmZhY2Ug
+c2ltcGxpZmljYXRpb25zIChzdWdnZXN0ZWQgYnkgQ2F0YWxpbiBNYXJpbmFzKQ0KPiANCj4gICB2
+MiBbNF06DQo+ICAgICAtIHNpbXBsaWZpZWQgdGhlIGludGVyZmFjZSAoc3VnZ2VzdGVkIGJ5IENh
+dGFsaW4gTWFyaW5hcykNCj4gICAgICAgIC0gZ2V0IHJpZCBvZiB3YWl0X3BvbGljeSwgYW5kIGEg
+bXVsdGl0dWRlIG9mIGNvbnN0YW50cw0KPiAgICAgICAgLSBhZGRzIGEgc2xhY2sgcGFyYW1ldGVy
+DQo+ICAgICAgIFRoaXMgaGVscGVkIHJlbW92ZSBhIGZhaXIgYW1vdW50IG9mIGR1cGxpY2F0ZWQg
+Y29kZSBkdXBsaWNhdGlvbiBhbmQgaW4gaGluZHNpZ2h0DQo+ICAgICAgIHVubmVjZXNzYXJ5IGNv
+bnN0YW50cy4NCj4gDQo+ICAgdjEgWzVdOg0KPiAgICAgIC0gYWRkIHdhaXRfcG9saWN5IChjb2Fy
+c2UgYW5kIGZpbmUpDQo+ICAgICAgLSBkZXJpdmUgc3Bpbi1jb3VudCBldGMgYXQgcnVudGltZSBp
+bnN0ZWFkIG9mIHVzaW5nIGFyYml0cmFyeQ0KPiAgICAgICAgY29uc3RhbnRzLg0KPiANCj4gSGFy
+aXMgT2thbm92aWMgaGFkIHRlc3RlZCBhbiBlYXJsaWVyIHZlcnNpb24gb2YgdGhpcyBzZXJpZXMg
+d2l0aA0KPiBwb2xsX2lkbGUoKS9oYWx0cG9sbCBwYXRjaGVzLiBbNl0NCj4gDQo+IEFueSBjb21t
+ZW50cyBhcHByZWNpYXRlZCENCj4gDQo+IFRoYW5rcyENCj4gQW5rdXINCj4gDQo+IFsxXSBodHRw
+czovL2xvcmUua2VybmVsLm9yZy9sa21sLzIwMjQxMTA3MTkwODE4LjUyMjYzOS0zLWFua3VyLmEu
+YXJvcmFAb3JhY2xlLmNvbS8NCj4gWzJdIFVzZXMgdGhlIHNtcF9jb25kX2xvYWRfYWNxdWlyZV90
+aW1ld2FpdCgpIGZyb20gdjENCj4gICAgIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9s
+aW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90cmVlL2FyY2gvYXJtNjQvaW5jbHVk
+ZS9hc20vcnFzcGlubG9jay5oDQo+IFszXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzIw
+MjUwNjI3MDQ0ODA1Ljk0NTQ5MS0xLWFua3VyLmEuYXJvcmFAb3JhY2xlLmNvbS8NCj4gWzRdIGh0
+dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyNTA1MDIwODUyMjMuMTMxNjkyNS0xLWFua3Vy
+LmEuYXJvcmFAb3JhY2xlLmNvbS8NCj4gWzVdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwv
+MjAyNTAyMDMyMTQ5MTEuODk4Mjc2LTEtYW5rdXIuYS5hcm9yYUBvcmFjbGUuY29tLw0KPiBbNl0g
+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC9mMmY1ZDA5ZTc5NTM5NzU0Y2VkMDg1ZWQ4OTg2
+NTc4N2ZhNjY4Njk1LmNhbWVsQGFtYXpvbi5jb20NCj4gDQo+IENjOiBBcm5kIEJlcmdtYW5uIDxh
+cm5kQGFybmRiLmRlPg0KPiBDYzogV2lsbCBEZWFjb24gPHdpbGxAa2VybmVsLm9yZz4NCj4gQ2M6
+IENhdGFsaW4gTWFyaW5hcyA8Y2F0YWxpbi5tYXJpbmFzQGFybS5jb20+DQo+IENjOiBQZXRlciBa
+aWpsc3RyYSA8cGV0ZXJ6QGluZnJhZGVhZC5vcmc+DQo+IENjOiBLdW1hciBLYXJ0aWtleWEgRHdp
+dmVkaSA8bWVteG9yQGdtYWlsLmNvbT4NCj4gQ2M6IEFsZXhlaSBTdGFyb3ZvaXRvdiA8YXN0QGtl
+cm5lbC5vcmc+DQo+IENjOiBsaW51eC1hcmNoQHZnZXIua2VybmVsLm9yZw0KPiANCj4gQW5rdXIg
+QXJvcmEgKDUpOg0KPiAgIGFzbS1nZW5lcmljOiBiYXJyaWVyOiBBZGQgc21wX2NvbmRfbG9hZF9y
+ZWxheGVkX3RpbWV3YWl0KCkNCj4gICBhcm02NDogYmFycmllcjogQWRkIHNtcF9jb25kX2xvYWRf
+cmVsYXhlZF90aW1ld2FpdCgpDQo+ICAgYXJtNjQ6IHJxc3BpbmxvY2s6IFJlbW92ZSBwcml2YXRl
+IGNvcHkgb2YNCj4gICAgIHNtcF9jb25kX2xvYWRfYWNxdWlyZV90aW1ld2FpdA0KPiAgIGFzbS1n
+ZW5lcmljOiBiYXJyaWVyOiBBZGQgc21wX2NvbmRfbG9hZF9hY3F1aXJlX3RpbWV3YWl0KCkNCj4g
+ICBycXNwaW5sb2NrOiB1c2Ugc21wX2NvbmRfbG9hZF9hY3F1aXJlX3RpbWV3YWl0KCkNCj4gDQo+
+ICBhcmNoL2FybTY0L2luY2x1ZGUvYXNtL2JhcnJpZXIuaCAgICB8IDIyICsrKysrKysrDQo+ICBh
+cmNoL2FybTY0L2luY2x1ZGUvYXNtL3Jxc3BpbmxvY2suaCB8IDg0ICstLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tDQo+ICBpbmNsdWRlL2FzbS1nZW5lcmljL2JhcnJpZXIuaCAgICAgICB8IDU3
+ICsrKysrKysrKysrKysrKysrKysrDQo+ICBpbmNsdWRlL2FzbS1nZW5lcmljL3Jxc3BpbmxvY2su
+aCAgICB8ICA0ICsrDQo+ICBrZXJuZWwvYnBmL3Jxc3BpbmxvY2suYyAgICAgICAgICAgICB8IDI1
+ICsrKystLS0tLQ0KPiAgNSBmaWxlcyBjaGFuZ2VkLCA5MyBpbnNlcnRpb25zKCspLCA5OSBkZWxl
+dGlvbnMoLSkNCj4gDQo+IC0tDQo+IDIuMzEuMQ0KPiANCg0KVGVzdGVkIG9uIEFXUyBHcmF2aXRv
+biAyLCAzLCBhbmQgNCAoQVJNNjQgTmVvdmVyc2UgTjEsIFYxLCBhbmQgVjIpIHdpdGgNCnlvdXIg
+VjEwIGhhbHRwb2xsIGNoYW5nZXMsIGF0b3AgNi4xNy4wLXJjMyAoY29tbWl0IDA3ZDlkZjgwMDgp
+Lg0KU3RpbGwgc2VlaW5nIGJldHdlZW4gMS4zeCBhbmQgMi41eCBzcGVlZHVwcyBpbiBgcGVyZiBi
+ZW5jaCBzY2hlZCBwaXBlYA0KYW5kIGBzZWNjb21wLW5vdGlmeWA7IG5vIGNoYW5nZSBpbiBgbWVz
+c2FnaW5nYC4NCg0KUmV2aWV3ZWQtYnk6IEhhcmlzIE9rYW5vdmljIDxoYXJpc29rbkBhbWF6b24u
+Y29tPg0KVGVzdGVkLWJ5OiBIYXJpcyBPa2Fub3ZpYyA8aGFyaXNva25AYW1hem9uLmNvbT4NCg0K
+UmVnYXJkcywNCkhhcmlzIE9rYW5vdmljDQpBV1MgR3Jhdml0b24gU29mdHdhcmUNCg0K
 
