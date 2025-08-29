@@ -1,156 +1,160 @@
-Return-Path: <bpf+bounces-67001-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67005-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59DE5B3C0DA
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 18:35:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48462B3C11B
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 18:44:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B48447B0C19
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 16:33:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3A0E7BDBAE
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 16:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636E832A3DB;
-	Fri, 29 Aug 2025 16:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B223314B2;
+	Fri, 29 Aug 2025 16:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fgKkOVvv"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="IzyDEmsP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7275E101DE
-	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 16:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0808432C30B
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 16:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756485282; cv=none; b=jeanPcex0r+mgfkJhz/WHr1mN+9JzLe9R1rylNDUmuWTEzLlEDrWGW13FYrmisWreVl9YaP7Hxp8NinTHpOPA177J3wPtKMjkQUIOmRoy063D7PTW3aP1s3wIPSkzKHd1n3yHm0l5jf9cf+eid5+vAZ7cZwm3+o7e2Wsu2kMqWA=
+	t=1756485744; cv=none; b=QVGTNI1X22nOYI6dRFmPSkQOZmxxrG4FB7AIrZ+bkxzyMqiBsI2wGWx680MO2BYNrY9CeonvRXJ+Dtiii9nfUiIrBRpJLkKMJNlyFQXdew6zr8MRX7DCEfPHM3VhxZbweph05yd1z00sCN79iFd13ZQ9pFc/vCejGIjMDs2hocQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756485282; c=relaxed/simple;
-	bh=w02vc4ZIN2Yf79bTdKCIFILkHtJW+xpLkB9Df766SjM=;
+	s=arc-20240116; t=1756485744; c=relaxed/simple;
+	bh=upVsUuMpOdHRiGkETwVJlsIxvbf0n85rijqW3icJrTY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pi1feOSQoem0FO2C3ygxBXe72QLdMFSADDhaADB1tHy5pLLVv2VGZGzEqMlEEOFZg+aF+RzNcKsXBCR6Ii0CA+VTX4hY2CgXf9Pk/p3wUzary8VYku+AdjxYsUdO3452vCWhjPaJD1kTz0SP9iorA1agg2A1KBcy6JTjvkO8PLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fgKkOVvv; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4b10c1abfe4so21489471cf.2
-        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 09:34:40 -0700 (PDT)
+	 To:Cc:Content-Type; b=l+5OxS0/492CjZGvhu+pXhws6f+ox4SROlTXFVgZpGzGE7RDiCNgFolLbEtrL4MNXo10CnXeVwGRUM5eYx63JV8EOZ21xHffNDh4+vH1/eNJXHAvO4V/hDH68+QwePA+gd5QkTwAXu4rkeDKZbrK7CgdECYYSOoUvmpC77g0tmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=IzyDEmsP; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-afcb7ae6ed0so325980466b.3
+        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 09:42:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756485279; x=1757090079; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HJbh/xt21xx/+x2x94uAOCLVyNPUW7zvmYwO/H9Z7jc=;
-        b=fgKkOVvvn5iSE2wMO8ukaQSbym8MN7l4vYMQUzhCMuYq9qAZaT4hBkbVwVxCRs408z
-         fdpsC1VQYeTZR//qC+bTm7Mc2MINkfivYjM1Czh7Y/BcY2eQjL7S+UKzPLvpXNyx7RbU
-         q7iSnsRC97a+32Sp7qefa1/cfALlKqrFSeEQUP4gE/+rkv570gvULbL0TzJvOnVEpwLI
-         opCVFfTPDxfGWSEipCkJ/oQoIZr7CmQbmbNG850jXuhRTgKZB+lTejff6OMO4g4boQRX
-         MFMxHD/sD2JKD/RAlLa+BONNOCtIFomb4CTVX53+wB9MBVlS0JIQsokHCv/hE0mboZAH
-         HfdQ==
+        d=linux-foundation.org; s=google; t=1756485741; x=1757090541; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pcseL9VLwiGrQMBX6gFapN6MvL8wsPhkJRSj/QHz9Rs=;
+        b=IzyDEmsP8Wx0GgMVAkDSgVNa0wYZy1DI68rU/jpXhwCcnxGTNJ8kecW8VZ2aBFpoRr
+         IM/eD7xkBHO7laL2HMa5JQAB5GbHW3cPMc5tIZlow5/EPLD71aq5CNyNwexu5cTysjyB
+         JrUq3ioLNTO+RFHsp5AgRtFmOTJX+ipMGAR8o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756485279; x=1757090079;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HJbh/xt21xx/+x2x94uAOCLVyNPUW7zvmYwO/H9Z7jc=;
-        b=KFLnLGjLjuX10Osg5laKG2ezuqlTHvk3Qe+/ongQxljoAo9qjk2dZf/XTZKcflqnAJ
-         V1pyRqSQguuZQO0/G3YVINGGffjZouRkWvlIRhhqlvoPZd+fo7EGCCZA9XJKEpKFk90k
-         /0RpgnZRzWu8h/fxDFYsCjsIE864FX5Y/L9RG2djhqYQ5eMV1q182WUw1+361bwXTfc6
-         TkSxhUJ7mmOREujflK54tROeO74dW/2FG9GduEO9PPv2fHMwWOooOigHGYTPDKjA+t+g
-         e2enlY1foAunYRVfpRF5krm/YZHQLsfOXa1Zlm8sG2ovCiMcT5FHVTGzT3BL+Rg2bxPv
-         mmrA==
-X-Forwarded-Encrypted: i=1; AJvYcCXKZBmwRcAw/gWx3YO0Xn3YXqI7rsSXP9cQbGOTBwVjFtEYqulOgqd+KA2hIaG90pYoMhY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/qR+a9LDXDFjw/WN4rOvGK7iUm1GvJGNJKdLAB0AAMhiKYKmq
-	t0cqX7hqjfIpXjO8HTuizQBxMI/qanLIgpovaKj47DR9g59/uvboLhtF/BSCGpGytQwKTCr9hYr
-	sGz2IygjzG7HC8BQ6IhMUkrt5eJeB4rrrlDKfW9LM
-X-Gm-Gg: ASbGncun/knn9CMhMcavx6yAopaAmbVXmmkSDt71vtlgXSiEDOfeX6212ZceGnsFxNF
-	WoYBD56+6TO3gl64fU9FgAk1mFRssCUVzHgQo0N5YwM9+9iSSqJ6f4p5azXpn3mbQhFRyd+y1MT
-	7XCVcotBWyvbBwJrpfRKbv4/8RvtLHmTFG0jYo6GESH2OXQL5MI9o0wnJDchyXm+OqfhqaeCdYd
-	w8FTGKMsDAsuFFoti2uM+Q7ekowkXzsoO4bQI8AjBrtjT1V4r0pW7LbDtY=
-X-Google-Smtp-Source: AGHT+IENd4Z0R9bs0yr+ss5hcDT2iTdZpCbQuWcpSCFPXVpeEPiccjbKYZO4LaH+miGYLmYc3pfD6qG5WCFK1qvIYh4=
-X-Received: by 2002:ac8:58cf:0:b0:4b2:fe63:ae03 with SMTP id
- d75a77b69052e-4b2fe63b804mr87346471cf.22.1756485278738; Fri, 29 Aug 2025
- 09:34:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1756485741; x=1757090541;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pcseL9VLwiGrQMBX6gFapN6MvL8wsPhkJRSj/QHz9Rs=;
+        b=FTe3SOUNdlSx/UD4hu1ke+eEg1XsRN5PqI7brs4NM0EycIQba4NmcW23/izQboQpEK
+         qT7fJxl9+Hi7XIseL/WZGbMpbpeHnGLDZIkave5dSyVfGmL5wPtB82JkxMZNApcGQUGN
+         M6kYl53eY+CiCNUZwX1iN/DWZHVDwWCrnXcIWxoYiNBJLB8SXF+0V2Ldhay9JBT9zCXH
+         j/BZ6ckl8XZKoSXbqdiQZwvjMR0I4GQbAAL14uYIWUVRmKweuN1MZnVjLei/8OeUDEpo
+         Is4c0QM3CWX5dTc0TGLkOCHmxzpcMuy04CV67XBX282HBeOofAk7jh+O668JaNZsC1aI
+         i40g==
+X-Forwarded-Encrypted: i=1; AJvYcCWfKbt7XVLh6eP27u6UVyGZz5W5pU2WhzZtmArUfEy3hQQ7OQNlZDgOxgFaHETX/z6fTN4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyiY6mKZ3iIGAW78eeRxAGLflDUrEpRv2KUQJVzKW2uIjMdtsLQ
+	F5efFcMeTDi1BOKFs6/EJFZduW2zPvIIh3xuBmeXhXOuoDOlnzFtuCHQvea02uZDwh5bkeOEbk4
+	lbhBMlKwtJw==
+X-Gm-Gg: ASbGncuS7Vwj9Kjb0If0aTyQDsDydBCGyVZFHKfstdsi8ISaMYJYp7oJfUNUkrDkF0B
+	YZ/zcEwPgHg7OSa643Zt8B2lN5ltfKAEBECSu61Fs+DzRmPZtvIfrGd7X9ZOHDGBnSU83+v2L5u
+	woTf3ozLfvbrKB62Em+XaNdYHAwr6PsXyd6dEfPP7ZW+VmCVC7vfen0CWUhOsOlRgP164PSh1gu
+	iFvrLk1J5XOIxLrJroIq7kYIHyQvPoNFw7LibNg7s4rlFXHkGQgxY/DA2a15ryZszZo4P1rfIv7
+	4tWh1vcOneqApgFsNF5rB/mt2yFvVtYx+Fbs4/vKR+pkUrYu5rwGutqnfZsH6rVlcAGA5KNcGsV
+	21Nbk8TXyVDn0eM7CtHOFoNqk4EBWMaxRGqjMdc+69XucBTZvu+Nn3JrtjA2TZTI00xcIubQL
+X-Google-Smtp-Source: AGHT+IHvG9RpyMtlvEtzPpzhLunK663qDSLUvHAaGRdjawTJw62s3ulyJnnKRvYFIBb/x9B7dudwFw==
+X-Received: by 2002:a17:906:9fcb:b0:afe:b2be:6109 with SMTP id a640c23a62f3a-afeb2be6285mr1224924966b.59.1756485741230;
+        Fri, 29 Aug 2025 09:42:21 -0700 (PDT)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-afefcc2d50dsm227655066b.93.2025.08.29.09.42.20
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Aug 2025 09:42:21 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-afcb78ead12so376611966b.1
+        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 09:42:20 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXheagiKXZyKgh0cia6/zn76Qd+3PE0Z5QAknSiu/rDeAhF8NE0toKgWUSkq39Lof0jp3w=@vger.kernel.org
+X-Received: by 2002:a17:907:9405:b0:ad8:9c97:c2e5 with SMTP id
+ a640c23a62f3a-afe2875bfdcmr2604625966b.0.1756485740538; Fri, 29 Aug 2025
+ 09:42:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
- <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-2-bfcd5033a77c@openai.com>
-In-Reply-To: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-2-bfcd5033a77c@openai.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 29 Aug 2025 09:34:26 -0700
-X-Gm-Features: Ac12FXzW_w7AW6j0jAtk0R2jBActMK4XmdvL7HZnq7aTeIkGOtaz1bYi8RYYyM4
-Message-ID: <CANn89iJbbqCvTWnaWgRQd1KEVveaPL+qLPfsfNkCrDFenAjEgA@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 2/2] net/mlx5: Avoid copying payload to the
- skb's linear part
-To: cpaasch@openai.com
-Cc: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20250828180300.591225320@kernel.org> <20250828180357.223298134@kernel.org>
+ <CAHk-=wi0EnrBacWYJoUesS0LXUprbLmSDY3ywDfGW94fuBDVJw@mail.gmail.com>
+ <D7C36F69-23D6-4AD5-AED1-028119EAEE3F@gmail.com> <CAHk-=wiBUdyV9UdNYEeEP-1Nx3VUHxUb0FQUYSfxN1LZTuGVyg@mail.gmail.com>
+ <20250828161718.77cb6e61@batman.local.home> <CAHk-=wiujYBqcZGyBgLOT+OWdY3cz7EhbZE0GidhJmLNd9VPOQ@mail.gmail.com>
+ <20250828164819.51e300ec@batman.local.home> <CAHk-=wjRC0sRZio4TkqP8_S+Fr8LUypVucPDnmERrHVjWOABXw@mail.gmail.com>
+ <20250828171748.07681a63@batman.local.home> <CAHk-=wh0LjoJmRPHF41eQ1ZRf085urz+rvQQ-rwp8dLQCdqohw@mail.gmail.com>
+ <20250829110639.1cfc5dcc@gandalf.local.home> <CAHk-=wjeT3RKCTMDCcZzXznuvG2qf0fpKbHKCZuoPzxFYxVcQw@mail.gmail.com>
+ <CAHk-=wjCOWCzXG7Z=wkbLYOOcqFbuZTXSdX2yqCCWWOvanugUg@mail.gmail.com> <20250829123321.63c9f525@gandalf.local.home>
+In-Reply-To: <20250829123321.63c9f525@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 29 Aug 2025 09:42:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgv11k-3e8Ee-Vk_KHJMB0S9J1PwHqFUv2X-Z8eFWq8mg@mail.gmail.com>
+X-Gm-Features: Ac12FXyxaMJRB_uNJ16NrW9PwMVmli5CdBpfhgymWkTxGXIEdjwFXvJ_jKjFZ2M
+Message-ID: <CAHk-=wgv11k-3e8Ee-Vk_KHJMB0S9J1PwHqFUv2X-Z8eFWq8mg@mail.gmail.com>
+Subject: Re: [PATCH v6 5/6] tracing: Show inode and device major:minor in
+ deferred user space stacktrace
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Steven Rostedt <rostedt@kernel.org>, Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Indu Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, 
+	Beau Belgrave <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Florian Weimer <fweimer@redhat.com>, 
+	Sam James <sam@gentoo.org>, Kees Cook <kees@kernel.org>, "Carlos O'Donell" <codonell@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 28, 2025 at 8:36=E2=80=AFPM Christoph Paasch via B4 Relay
-<devnull+cpaasch.openai.com@kernel.org> wrote:
+On Fri, 29 Aug 2025 at 09:33, Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> From: Christoph Paasch <cpaasch@openai.com>
->
-> mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
-> bytes from the page-pool to the skb's linear part. Those 256 bytes
-> include part of the payload.
->
-> When attempting to do GRO in skb_gro_receive, if headlen > data_offset
-> (and skb->head_frag is not set), we end up aggregating packets in the
-> frag_list.
->
-> This is of course not good when we are CPU-limited. Also causes a worse
-> skb->len/truesize ratio,...
->
-> So, let's avoid copying parts of the payload to the linear part. We use
-> eth_get_headlen() to parse the headers and compute the length of the
-> protocol headers, which will be used to copy the relevant bits ot the
-> skb's linear part.
->
-> We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking
-> stack needs to call pskb_may_pull() later on, we don't need to reallocate
-> memory.
->
-> This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
-> LRO enabled):
->
-> BEFORE:
-> =3D=3D=3D=3D=3D=3D=3D
-> (netserver pinned to core receiving interrupts)
-> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
->  87380  16384 262144    60.01    32547.82
->
-> (netserver pinned to adjacent core receiving interrupts)
-> $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
->  87380  16384 262144    60.00    52531.67
->
-> AFTER:
-> =3D=3D=3D=3D=3D=3D
-> (netserver pinned to core receiving interrupts)
-> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
->  87380  16384 262144    60.00    52896.06
->
-> (netserver pinned to adjacent core receiving interrupts)
->  $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
->  87380  16384 262144    60.00    85094.90
->
-> Additional tests across a larger range of parameters w/ and w/o LRO, w/
-> and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), different
-> TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
-> better performance with this patch.
->
-> Signed-off-by: Christoph Paasch <cpaasch@openai.com>
-> ---
+> I just realized that I'm using the rhashtable as an "does this hash exist".
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+The question is still *why*?
+
+Just use the hash. Don't do anything to it. Don't mess with it.
+
+> I could get the content of the item that matches the hash and compare it to
+> what was used to create the hash in the first place. If there's a reference
+> counter or some other identifier I could use to know that the passed in vma
+> is the same as what is in the hash table, I can use this to know if the
+> hash needs to be updated with the new information or not.
+
+No such information exists.
+
+Sure, we have reference counts for everything: to a very close
+approximation, any memory allocation with external visibility has to
+be reference counted for correctness.
+
+But those reference counts are never going to tell you whether they
+are the *same* object that they were last time you looked at it, or
+just a new allocation that happens to have the same pointer.
+
+Don't even *TRY*.
+
+You still haven't explained why you would care. Your patch that used
+inode numbers didn't care. It just used the numbers.
+
+SO JUST USE THE NUMBERS, for chissake! Don't make them mean anything.
+Don't try to think they mean something.
+
+The *reason* I htink hashing 'struct file *' is better than the
+alternative is exactly that it *cannot* mean anything. It will get
+re-used quite actively, even when nobody actually changes any of the
+files. So you are forced to deal with this correctly, even though you
+seem to be fighting dealing with it correctly tooth and nail.
+
+And at no point have you explained why you can't just treat it as
+meaningless numbers. The patch that started this all did exactly that.
+It just used the *wrong* numbers, and I pointed out why they were
+wrong, and why you shouldn't use those numbers.
+
+          Linus
 
