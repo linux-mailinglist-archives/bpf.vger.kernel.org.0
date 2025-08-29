@@ -1,78 +1,80 @@
-Return-Path: <bpf+bounces-66945-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66946-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E15DB3B4DE
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 09:55:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 272A9B3B4E5
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 09:56:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5B3A9847A5
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 07:55:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF6A6562059
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 07:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E81E286D60;
-	Fri, 29 Aug 2025 07:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6187928C03E;
+	Fri, 29 Aug 2025 07:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kokq4rww"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KAuafXqG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DD4285077;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182142857C2;
 	Fri, 29 Aug 2025 07:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756454136; cv=none; b=jYhrASCshKcUm4BruqVwNDrQyevnQawZWNlfHTZbiAJ7lnpfZxUA8ne1vMQF4k1kCpLoc/d6AOykxpaxyYocQeSqvNMTsA2NxckKWVyyg729vpMrT5EIkxv8piSwIV0QTFlv5Vj9C09iSCxN4dQfo92n+hre86xY84hUsde6dLo=
+	t=1756454136; cv=none; b=Q8LKIXom0ZPSk6RjokwxmpPl9dlgvpFy1Pt+b/X25jEYYUO4rmXRaMmJf4KDlVcnPJiomR3hKUY0nEdaQKkSslglm2nxlXIFS44fLoZ166+WwGQQZ4KN5HEVJ9xJL3Rxr4T/9Yv3fatyltBG84ys7alNZnEF7M0DpGFMT7BxqBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756454136; c=relaxed/simple;
-	bh=UJUK8/oCaP8or4xMM6dYj2gtHalMI9xq0zTRRM+Er48=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CQvZ1G9ecPqnXZg+rVVzVsDNpKcJQ1fObEzlTBXSdyJphpfsmHGTXkUqSdyAVIjigHHnNYSkVO+yuwc+a5FfCeVpTRW83LCc2cYrM9xvQXCYajhbkYGWN2UjcBfUfAzWUpvpYXh6yD2/M0lKQA3VL/pIMjpKLWxvAZQWYmKE8ZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kokq4rww; arc=none smtp.client-ip=209.85.214.173
+	bh=oQ/U51BIIgNGsRun+kwInz/tmig5xTqHruGeEvNRxQQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Z3y8+ewm+716inBxYqThUiibZ6wAk6v6HCJT7/C8uHZmqoeg51th9CpRMCAZ8sHSG3dYGurUtgXwPE8P6NitSrL8LCo9QG6di5uNpO4WJ8mSjdjIjaLl/Tck4B4K9Flrf2NXIiBsTn3UkBXqRyPcyf7DZ9wjUQZCALUSF7/c9NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KAuafXqG; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-248c7f955a2so16704015ad.2;
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7704f3c4708so2199480b3a.1;
         Fri, 29 Aug 2025 00:55:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1756454134; x=1757058934; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e1dzl/9HN9fCmWWoku2EUAe+4oZJtgdEcU9UZmXN/7A=;
-        b=Kokq4rwwv9kr4Aoe18BW0bhcPqdWkfT8VFobv5jQ0ddyir/b8CkYjUUTzzk2/5NWD6
-         k9ovOq3/edK3u9B5g8x0PR/uF65j7iZ7SPeHJDtlkaLEIPSZmunTi1ae+wdfjhbYMMEs
-         Z6lcDyh0rcaB3I3RzTHV+oQ0B/nbBfSXZInDuWK85WA+rCjiyeLmQyDaFZ0yiUVZMz1t
-         28KwQ1kVTsoabTsnDKQPwIiD5WuF/ePsSxct6Zg7SYFjqLsZ2Ru3t9YLEpaLNcUH1tF5
-         37fD+hPEp6aFDDfLFvDBEu6SEI0IC+1vtvC74p1k0hwNrSJaPYVf4ngEezMn2vH8fv6i
-         EY/g==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PKHUedwTpnE+6902OLKWJUrKeeyE0icmaP4M6h8VeIM=;
+        b=KAuafXqG690UxpnLiISh4UMSpaxxvihp1iG4ytY70oJDiF/BIneIX0COIzV7wOP8JM
+         yNV/EbONZ8YqwAMIxVlWDHncHGE7oM/uBT78ilF22gSZGn4nDElHw8yOi6YIjeM0IKa5
+         39mS5COThbqekVNxIxA8QEgLgNhFRxbvUtIURDT9Po9nfjsoXsEAzupZ0yLMT3UlHwfs
+         0howrt/wMc6zd/L0MRf3Aj7suFyFiAWes9wkO/nWRFDdz5xZDVwOSmW6/QfPiJD1HHWU
+         YPWVZnVSVZp5++TL25gm4Sta0DXPY5ywrPWRYPpbEFAcZAoQCFNSix2Yc390IwAtT+Fm
+         bRIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1756454134; x=1757058934;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e1dzl/9HN9fCmWWoku2EUAe+4oZJtgdEcU9UZmXN/7A=;
-        b=Ak3wnzQWT0gRbqvFYaB5oW7EIIbnDcZwSqKbTTK+XaNpyj9BMiUoK0ifC2YSuZmybx
-         WDYSbTt06AeDPujou4w+xid9M7vYZQ6Zdp/ZPWhsHUOPMV/liETWpRRl5u2cnIqJnfZh
-         ycjKxJFqz+MqAQqJAcbxieHdCeUePczNHFp3NPOKlhA/dlWdFg6N+47L36XsYAgEFZfy
-         rEIlXt+fY2DMjAYy97q62/XwIh9IXa6a1f3mSpU9M6LJ3K0GjjA4qHWsxdKn86DI93z7
-         mqz1q973mf8w5c/fPPu5/HRNEZKW/gVRbcE8RwVmOM4XrviyJSrG1Z8yKjCxixY0qozx
-         YQfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/kP5btMwaqykAgFlRB1o1XMmT900etxlz/GspTY8cMk9FhODTa1KP21zf92qQeEgeqXOOEPJ7sOUH@vger.kernel.org, AJvYcCUWIj/P/32OJegev1BTdZBa8LLqa3i+JBk3erobSK8moVKte88KmBWQ+AznBgJtxnumOTgb/g7x@vger.kernel.org, AJvYcCVHrqD/Ph2BeD3JjkOAjoR/fWeasbVdF8rWnHky6TwWUKLfmrn/OJubib2067IA++a2hJqpTA/ATv7uBoU=@vger.kernel.org, AJvYcCWEROOUk/uokrp44eT6Do82R8WqF28bIw94IKDET8hWmnAOQC42t4PQgP3FUj6DsFMUpAjypkfBNXhTXg==@vger.kernel.org, AJvYcCWLLW01uQs3QEDhMdvQwCucilt4eqvbzkHktMQnpcDtrU4V8CUKTMTmsqCMBooosWFlXt8=@vger.kernel.org, AJvYcCWLvokeoXvlBFFh5MNeIqWkOgsB0OQd7/q4OeWALSEku/XE2FTtn0yo4BdFdMtueAfw7p++/pj/fmni@vger.kernel.org, AJvYcCX8QgUP1FlVu7D8Vu2cL8oe7ic23Wnw25dqzSMFoB51fp0eqa7OKeCluiA5VH2g4MW0mQeU4ie8Q1w=@vger.kernel.org, AJvYcCXGEzbj/JF0nCS6SkPWJJxvH4N2WPfO2aX3dZJrMNlm6sugJtXabVxRVyHsRUU7nchFz4qKZJD/pP5ixduj@vger.kernel.org, AJvYcCXnQUZAxlb15sfSQeN+avIS7oG/SnGUWaD35JfZaLwaHo7GQ8eKKuCdlUQpS2yQam8dK+0Anp80LVgmbFM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxwuN6/iEdk4yLzGo7pPsGuVdOksnYPxSJtS3XReKMQIFEmyLL1
-	CtW7JjWXcPmvhAkn/RD2jXuP6qgl1PbT/pwmC8sOruL01gxGyycn7UFc
-X-Gm-Gg: ASbGncu4pG6TY0wFGGILhqbLTLZ3+gml0zIfrFc+8XKR7tcOIEclAEfwQX8myyoi25H
-	t4Ss7HkjADGXXgsep8WFQEiWyap3qd+hoLwmhPeFwnuuZb9O+7WEaAyYN6W7OhmhTqqzA2IFjc7
-	6e2gLC6PqQgl24nVdBSGbmWGF8uUzfM21Li+hZGslX33yIzWUY+ePs4VSwYeUkV5vGSmS5qwFZm
-	M5Z0GOFaEKb/nOVkarrsZxZxr1VamCi+Wk8ctit81fH2Y8QNGZHdZNTpn6sbWvdlkTw/xspxucp
-	hlT3cofzoHAt2a4M2caU1Q9PFhNcL6PHQ/brK1t4VCZOKOKjUBwe0A/FMK5kAWp+7FMe3XBsYTi
-	aU5RPG7YFrP6lX4LWuoCpS9rK6TJ6/IqpO9Ud
-X-Google-Smtp-Source: AGHT+IHHspv4kBSvuOju+syLfWNvxBR1WSkz7mrwJNK9paKzC+4NcNK8VdwZC8CcLSepusoSJLIitw==
-X-Received: by 2002:a17:903:15ce:b0:246:c7dd:8da7 with SMTP id d9443c01a7336-246c7dd91f6mr219457635ad.32.1756454133503;
-        Fri, 29 Aug 2025 00:55:33 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PKHUedwTpnE+6902OLKWJUrKeeyE0icmaP4M6h8VeIM=;
+        b=MLIuJ5U4zs9Gkm26FVYwNWN9t0+OjCO1lwejLp5C0K5jcgeIVoiRKSDdDdsKmvBNV8
+         Xrg7cmmJER38QW8oPZC6Pvg9UQ0qFruFoQVtggXy+BQhYxWU0PKFsk8QXRqhrfmSiJgG
+         UG1mKC7rETt6Cjb4SmThvtWpQ+/uzl+NRi3m/GkrAseF7AZ6EYfDbwNgZcMFgdxglHC+
+         AQOiEqb9eBJuJbwtVR5uynKY60Tu5e6ebMTozWdJepkR7uTS3WX1DTulqhYquD27tNVu
+         m00wrugPB7eAIO8ZfFM1X/l0KsDCnCeAIeBjMbBe634LxI0wnALysVN3B8CyrPLKWEpL
+         FwGA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpKGhp630GUvtASmmtI6Q8Poyu3ABWRLYM/RQ4S/Uj4Ujx4Yo0EtDV4g9Y7U1d75/6t1wFf7oHO3DxrWg0@vger.kernel.org, AJvYcCUybJM8DNGlfop5IezwRLuFpyPEN9oBApyg+5aaQJYD9lM18R4GnNcETneOWg2PbNRDVzkGxtPVCe4l@vger.kernel.org, AJvYcCVO2k8tUEpCQOqOQb7gtLdvIiqOTsI4AIGKAC99qeYOl1DfXf48YALTeecImkhXFMQeWsFvr7SR@vger.kernel.org, AJvYcCVW7d/uYhzsShiGGk7yXHKZcn/EA9B1vz+2l0FeLBFCyGTgTVs9AmaPS1wYW6flZhM86DXdOoA5X6Q=@vger.kernel.org, AJvYcCVpqvowjwXlibtYcxIJx4vTXIY78eLDltiQY7XAAKeWU7jQJ3cYu78d005mBkYXYZ84IMAf1xQSRy55DQ==@vger.kernel.org, AJvYcCWYtVCvgGlJrAiUaIh8aksIV49tpe9lwAgZMcoJyaxBsj45CQo3bwWlvNXMqheFc61DuSPHEqaRuaWL@vger.kernel.org, AJvYcCX3Evo3bwRHlNUJpm5l9xkGz5UhHeAldGof9/fU8m6AUWgQH5Z2fssUO0rJYbIWWqv43dc=@vger.kernel.org, AJvYcCXUW7YMa8ujA9K+FHkfSRNE9jrniwJ42/OntZx1bz2AiHBUoAgDOKkDiYaZRqbjNJZVtrsdoYa0+c0h+vc=@vger.kernel.org, AJvYcCXmFsATSh0SihdklJVY7lH5kfoyF6toDnnQARN1N9Az+f1ISyaD6deNHc/KgRENqT97+MfxebsjpaavaFY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyzIcF2JgmT6NqW6FfTpYYpYBk5ueEj+X5yYkT77irxu1L7QMLb
+	LxJ3GHvbkjJRi6jlHY1BlxbQSeXTBNi0BHGvksMkyXrA1y40riLqNbo6
+X-Gm-Gg: ASbGncsaU/g/ikjKDIZ57aPa1mbZnbMItZkJXU2WTlzZEQ0lhMLfT0590RWpUEb2htN
+	woC6Pg13HLV46s05Fpq5f0TTPevIJTIsAJnnvtW0l681MsPTCpjsXD+c6X8h2UL3qVm0sgoKkna
+	scmgMrIOOmQbJ1IgrKnTxcTm0bisPcRok/7MTWlVYOs/lU8ObKg0cLmoS4gLoG/PuSzxS1pkKeT
+	x1FCYyMsTIkm5Gqhv/fb8GDE4w/NRTr1V/fHJylDRZ5m2qIkf69fN+3tFHqJJy5fu1RK7SN/bC0
+	GwGSd1NaR94zStvJjQGNOE7vOqO2tdv6NHuxdptxDvVlfDheOnggFccZMMfFf1RBiQ3B7snYo2A
+	vdQRDBpjkFgWQOhHRxsC4EPiTcQ==
+X-Google-Smtp-Source: AGHT+IGAIwvY26FUOsw+74AGPHA13vcCLFsNdM4e5R6RQVZDqKcVncdSUEtOIO22R3FiVyKLzy1QwA==
+X-Received: by 2002:a05:6a21:6d95:b0:243:9824:26f0 with SMTP id adf61e73a8af0-2439824377dmr17475585637.46.1756454134181;
+        Fri, 29 Aug 2025 00:55:34 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-249037043b3sm17009045ad.22.2025.08.29.00.55.31
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3276fcd336dsm7401665a91.18.2025.08.29.00.55.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 00:55:31 -0700 (PDT)
+        Fri, 29 Aug 2025 00:55:32 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 92CC9411BF96; Fri, 29 Aug 2025 14:55:27 +0700 (WIB)
+	id CE9134016442; Fri, 29 Aug 2025 14:55:27 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -174,85 +176,56 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Bart Van Assche <bvanassche@acm.org>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 00/14] Internalize www.kernel.org/doc cross-reference
-Date: Fri, 29 Aug 2025 14:55:10 +0700
-Message-ID: <20250829075524.45635-1-bagasdotme@gmail.com>
+Subject: [PATCH 01/14] Documentation: hw-vuln: l1tf: Convert kernel docs external links
+Date: Fri, 29 Aug 2025 14:55:11 +0700
+Message-ID: <20250829075524.45635-2-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
+References: <20250829075524.45635-1-bagasdotme@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3498; i=bagasdotme@gmail.com; h=from:subject; bh=UJUK8/oCaP8or4xMM6dYj2gtHalMI9xq0zTRRM+Er48=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY17c4br6T35GuJHFF8Yt24416R5lZZr0d5nIjOkLd Wbtjd2k0FHKwiDGxSArpsgyKZGv6fQuI5EL7WsdYeawMoEMYeDiFICJxIow/NNvVZZWvf59gvln 8f09a96zlV1ddP/qfkeet3OelO1bF7GW4X+WSslpN8ZtovrZdcGNj+0m353MlHX12bkXf15P2h5 ctoADAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1333; i=bagasdotme@gmail.com; h=from:subject; bh=oQ/U51BIIgNGsRun+kwInz/tmig5xTqHruGeEvNRxQQ=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY144a/JZLY81M41OfrJ5W/1jtyyro8lZM99fCflwN Zg5yrW3o5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABMpCGH4p3zu88Pdlu95fhsv /CZ2ieHwual5ab7C13i5XivpL/Ip/M7IMI9vYUN6A5f856j5POvK+r6kxCYoXlPd7vthl2/zPqb NrAA=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 
-Cross-references to other docs (so-called internal links) are typically
-done following Documentation/doc-guide/sphinx.rst: either simply
-write the target docs (preferred) or use :doc: or :ref: reST directives
-(for use-cases like having anchor text or cross-referencing sections).
-In some places, however, links to https://www.kernel.org/doc
-are used instead (outgoing, external links), owing inconsistency as
-these requires Internet connection only to see docs that otherwise
-can be accessed locally (after building with ``make htmldocs``).
+Convert external links to kernel docs to use internal cross-references.
 
-Convert such external links to internal links. Note that this does not
-cover docs.kernel.org links nor touching Documentation/tools (as
-docs containing external links are in manpages).
+Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+---
+ Documentation/admin-guide/hw-vuln/l1tf.rst | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-This series is based on docs-next tree.
-
-Bagas Sanjaya (14):
-  Documentation: hw-vuln: l1tf: Convert kernel docs external links
-  Documentation: damon: reclaim: Convert "Free Page Reporting" citation
-    link
-  Documentation: perf-security: Convert security credentials
-    bibliography link
-  Documentation: amd-pstate: Use internal link to kselftest
-  Documentation: blk-mq: Convert block layer docs external links
-  Documentation: bpf: Convert external kernel docs link
-  Documentation: kasan: Use internal link to kunit
-  Documentation: gpu: Use internal link to kunit
-  Documentation: filesystems: Fix stale reference to device-mapper docs
-  Documentation: smb: smbdirect: Convert KSMBD docs link
-  Documentation: net: Convert external kernel networking docs
-  ASoC: doc: Internally link to Writing an ALSA Driver docs
-  nitro_enclaves: Use internal cross-reference for kernel docs links
-  Documentation: checkpatch: Convert kernel docs references
-
- Documentation/admin-guide/hw-vuln/l1tf.rst    |   9 +-
- .../admin-guide/mm/damon/reclaim.rst          |   2 +-
- Documentation/admin-guide/perf-security.rst   |   2 +-
- Documentation/admin-guide/pm/amd-pstate.rst   |   3 +-
- Documentation/block/blk-mq.rst                |  23 ++--
- Documentation/bpf/bpf_iterators.rst           |   3 +-
- Documentation/bpf/map_xskmap.rst              |   5 +-
- Documentation/dev-tools/checkpatch.rst        | 121 ++++++++++++------
- Documentation/dev-tools/kasan.rst             |   6 +-
- .../bindings/submitting-patches.rst           |   2 +
- .../driver-api/driver-model/device.rst        |   2 +
- Documentation/filesystems/fsverity.rst        |  11 +-
- Documentation/filesystems/smb/smbdirect.rst   |   4 +-
- Documentation/filesystems/sysfs.rst           |   2 +
- .../filesystems/ubifs-authentication.rst      |   4 +-
- Documentation/gpu/todo.rst                    |   6 +-
- Documentation/kbuild/reproducible-builds.rst  |   2 +
- Documentation/locking/lockdep-design.rst      |   2 +
- .../can/ctu/ctucanfd-driver.rst               |   3 +-
- .../device_drivers/ethernet/amazon/ena.rst    |   4 +-
- Documentation/networking/ethtool-netlink.rst  |   3 +-
- Documentation/networking/snmp_counter.rst     |  12 +-
- Documentation/process/coding-style.rst        |  15 +++
- Documentation/process/deprecated.rst          |   4 +
- Documentation/process/submitting-patches.rst  |   4 +
- Documentation/sound/soc/codec.rst             |   4 +-
- Documentation/sound/soc/platform.rst          |   4 +-
- Documentation/virt/ne_overview.rst            |  10 +-
- 28 files changed, 165 insertions(+), 107 deletions(-)
-
-
-base-commit: ee9a6691935490dc39605882b41b9452844d5e4e
+diff --git a/Documentation/admin-guide/hw-vuln/l1tf.rst b/Documentation/admin-guide/hw-vuln/l1tf.rst
+index 3eeeb488d95527..60bfabbf0b6e2d 100644
+--- a/Documentation/admin-guide/hw-vuln/l1tf.rst
++++ b/Documentation/admin-guide/hw-vuln/l1tf.rst
+@@ -239,9 +239,8 @@ Guest mitigation mechanisms
+    scenarios.
+ 
+    For further information about confining guests to a single or to a group
+-   of cores consult the cpusets documentation:
+-
+-   https://www.kernel.org/doc/Documentation/admin-guide/cgroup-v1/cpusets.rst
++   of cores consult the :doc:`cgroup cpusets documentation
++   <../cgroup-v1/cpusets>`.
+ 
+ .. _interrupt_isolation:
+ 
+@@ -266,9 +265,7 @@ Guest mitigation mechanisms
+ 
+    Interrupt affinity can be controlled by the administrator via the
+    /proc/irq/$NR/smp_affinity[_list] files. Limited documentation is
+-   available at:
+-
+-   https://www.kernel.org/doc/Documentation/core-api/irq/irq-affinity.rst
++   available at Documentation/core-api/irq/irq-affinity.rst.
+ 
+ .. _smt_control:
+ 
 -- 
 An old man doll... just what I always wanted! - Clara
 
