@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-66952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3449B3B512
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 09:58:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC8AAB3B567
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 10:04:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E604D1C837CC
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 07:59:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88DBE1C8759B
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 08:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E7A82D838F;
-	Fri, 29 Aug 2025 07:55:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E2212C08CE;
+	Fri, 29 Aug 2025 08:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mXUGCrDQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m6HK6QJr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07A6286421;
-	Fri, 29 Aug 2025 07:55:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 036DC285068;
+	Fri, 29 Aug 2025 08:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756454149; cv=none; b=BLuZ1a8BWVD9uRSesaPSUKFBuMS5+Fm81yUFtYqifbTuQtIcxyZVKHtnH7EU5NntTK7/njUGcF7c4KItO9xndC7z6pZzotMdnrUP30INu2PjNJhdJLKAcHBMm/0AsqZvTyIn0pL++kc6tJu8+2QkRLC5HfYOFFyKeF98LZZsJjM=
+	t=1756454578; cv=none; b=oP58oLiPUXQPOCpJ8UiRTFAWFZeJWCw3Yk5KRifwueM3KFesJfh/4VqwKzk+oqGbCmezrwZjLJWBuRgiWBqU7Z6iwOGdUORfTOsq/FPrZvKoOmRNw+q8xV8UWiTZiPot8L+qZ3VePJL4p4SL/FlivtOKh3Lupvk5oy7OtQOvVXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756454149; c=relaxed/simple;
-	bh=Ip9RCWVx3N2eFboDnh1dVntKjUKs5RT6sbpEBdmz23c=;
+	s=arc-20240116; t=1756454578; c=relaxed/simple;
+	bh=tVZea1ikNA4Sssls4g09ZchJ08JhUaFOY8Mmt8T2Tzg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PR8JhsOYh27wY2pOh10Zz8rce0dbvv2SGBcUgs5sJDof/zkJi+62Xl1TgepOLN0ShOX5iZt37p7M0Hz6NQBG9dpTW52jeOK2Ao+8uCX5jX21itIRQFIVy3vu0XK+6AHFzq6/bVvc1+Xmw4kHRZ6dkyC8dm1hR5mdNb3Eiy+edq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mXUGCrDQ; arc=none smtp.client-ip=209.85.215.175
+	 MIME-Version; b=pmX4sT8XfC2MuYioqeeOGyHHT4g6MTD+/ebpveH8zeuyHURa22/Eg+PL5qihVfrh7ziW0eb0dv0bjdGkLvphXYsSbYoKOhTNyEfbi4zqGg73y2krf25lhMaNHhD0Z9q4FOaftOT/QoLtUjsCViTZKtT/AxSXjTjKND/FLAS2cEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m6HK6QJr; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b4c6fee41c9so1102159a12.1;
-        Fri, 29 Aug 2025 00:55:46 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-3278efed3b0so1412256a91.2;
+        Fri, 29 Aug 2025 01:02:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756454146; x=1757058946; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756454576; x=1757059376; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fK0hEDM5Yyao3a7xqBzpr49p9H5HB+om5vfXDIKLdeg=;
-        b=mXUGCrDQmBJLuU2PXYJKU3+UhVoS6GW6T8ED6CwRweLnu7LaCnbqxuEqNJEXVauim8
-         m10tm42f2l6OtMKt8nNOlxiBvo7uMOJ6VieTDOLCK1kgGBHRoB3MHn1FGKF5ntq+tzZ6
-         e36vZxGAI/blx9eRrD6aBou5EAISoTHPywT+L57CG30TmmPvjFGYvkjzYIsOMw23xwTC
-         wHgnvDZnlpkCBJLzt1FRCbAJUZwwpLQwXBKQfGLS/ngOkh58PMQve7gmQba6F6Vzm6bP
-         4royouIipJCE0b9T4H8xhwzyHB+TZk3fNVLcgETpN9F4dJqjee4Itf0cdkc8JxEH0yNo
-         dz6Q==
+        bh=jdhbTSK6p9ht0YngyCDiyyRtcLCfpgxS9tGDrcGiJGs=;
+        b=m6HK6QJrKCL4NhX5vRmRvx+kKf+UD0SCePCT8SQyijOvyVFAUmvYFeLpKLE/0xgHWi
+         FNwOZKI6qFJBvK8mxDqCQa9QZO31ghE/2F0gETGOKNDB+GJAYSAmLNVDbObTf3yOssgA
+         d6o8kdtYIrxFisM6uTjlvznUIZVuj0W0J6Ru+jW3saIZMn1aQodFz4TsG0yOR1Sdby+S
+         amaAZaTzNcTeE6+wN/urH+7nZCwz4mSFFXJCQKrsbSArm2/bPOek03vleCh45+QA61xR
+         QtVIhjGwt9YANZcbmNMyAa9KyES0pnhBHHBYegyFILKtOclZLv9rJF6VKNSOHVclCAjy
+         WJ6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756454146; x=1757058946;
+        d=1e100.net; s=20230601; t=1756454576; x=1757059376;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fK0hEDM5Yyao3a7xqBzpr49p9H5HB+om5vfXDIKLdeg=;
-        b=cj+1fFCj95lCrSrky7pS/YU/Ieal5omuUHv8ypQ4urvQczo8I/elafUZpDgHogKyWH
-         bTqPCwUoFkB6Eh0s1E4p+fpP1dFjuScEW+Qwth2Irye2RmLoHEkvgueGLlq63EvEXrIq
-         s8byQaeh4Yk+LJtWGastDPOuRyc39ODoK8KuGOEJXAxr9r8msm47OBMEykNYQNhcMgAZ
-         FP3n6Gh9TdQgxJfzU9cmXrfBc2DpjWWkAIoOwbqYnfOarawvH3fXhr/iFCPQdjqIN6cO
-         dj1fXR9rIlWTtTzWZzp+188xmw5P+1VsmFJ53iRi58AqdHLkjURzPFVlH77r+Quz98v4
-         WGzg==
-X-Forwarded-Encrypted: i=1; AJvYcCU2qvK28KHmF0ynyBY7i55rCBiOuToJWzxRGlxjp4A1v9fttxSr470P5bIZcmF0vvl4pkYN+qsM7zZr@vger.kernel.org, AJvYcCUSV6/NI4NVO30PQbQa0lZKtBA9Xs2HROgO55cQjJ5I5pqkoTlESYmJOkG2/Toa4b5rAOQ=@vger.kernel.org, AJvYcCUUxyHrFQhysIQve993bLt+JW5upTSbLNvEK3vloBM0wMUndlrpy/O02FJp4ER74h15Zt+AWHYahWGp@vger.kernel.org, AJvYcCV3oNcJefRmxfv1KwBQTXCLdANw/cojtNNAwhR6rHQsB/4t2MUy07nueUlURXGFXcslvvqlCGhk@vger.kernel.org, AJvYcCW+NgJE0iIr4C4EUnGzr3okbt4ddT+1n/yAYg1Th/tqb2JbvIk94pjicmv+oKfhMj1gXKZ26xxSeFgFKfE=@vger.kernel.org, AJvYcCW+Rpv1vFynwiliY+9JRexwGrisOFjngVouPHcZ31QXyHOqOf6EK/PiqiATAOrBtsCuNhkOHvBtFxQJUg==@vger.kernel.org, AJvYcCWWtr9IRaGx2+SL8aOHHUSsLbdNH6YJaqe1bXjYEMPxnsXritU9H9JKqlKqIahoJjNEMWlkCEt0r+w=@vger.kernel.org, AJvYcCXRY6qiW6WRn7GAx3E4zz/rLCsePRUPFnhYiFxanKrRC8stmvgTUIsbZQWhFYDxkYJUH5rPpsI3FMMJb4o=@vger.kernel.org, AJvYcCXys3FNPxdeqn1gCY2B97jznEwbLy19/IRcM6qPjPqceqhKdQzKsWf+YnvSkdZSwSfFjuY7dUHLf2WhHwRo@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyhy7DZbNTwnmAKti8UN0+7FnTKvsLdTqvauPwUQTSglXCgtR6L
-	0483ZA2FV9RjP71wVF8kPqS0OK82PQq5Lb8MbyeWaOINYgw/jgw3DzkM
-X-Gm-Gg: ASbGncvv/GVN9GNtE4i5fUFQmIN+486zWV3OS0VfE/YzutwmXGqa7aeLcRyeR7glnv9
-	lIOjGGDHXOEeCXcb6WqF0ZcjfB7veYoSA/bKPUPTHaabo981wxmb1YgHiLN9RmNAIOLsvWBbNtC
-	s1q2w+0cOFuIhqo80tf4/BuvhzXG6yU9/I0EnAP1l/D0Ul9u8wEoBr4DTbN4K0w4tcx959/h/Ml
-	pAhGcO+6rvD7/rhUwjQWcNYHqtdg/XPM1+FunzcSSLSnT/j7oKlwyIc6eov/2y+WvZH8C8Ib+sd
-	v4/YmEmTNFZJzatQeH4j2V/k+IeN4nN9drM0ndTzCiQw5tmTOAqS3xGDtUkQkzDEkxiIu858sEQ
-	0MsWOccsuTuFaOvTbfq6HPLL9pd7wtH1Q+dPp
-X-Google-Smtp-Source: AGHT+IHJbtOvLK7smFZ5Taldvs91dQKYlT3bJQAsV4fZ4iEcDvRKpIMHMCPIqq2aQ2G3ehFn7aA64Q==
-X-Received: by 2002:a17:902:cf08:b0:248:a4e2:e6d6 with SMTP id d9443c01a7336-248a4f2333bmr133286365ad.39.1756454145980;
-        Fri, 29 Aug 2025 00:55:45 -0700 (PDT)
+        bh=jdhbTSK6p9ht0YngyCDiyyRtcLCfpgxS9tGDrcGiJGs=;
+        b=uo1k4zl1PUKCz4j5dJZO2gxyw3cy0Cl+3aKiRNy4I+9oGr6tJF2msC8Dwpd2hX49zB
+         +A4VpP+IeR/QSdVlv8l+HL59avGxWzJCvVL/18qZ3/F9GKlWa+K6Lqy9a0rTp/Eif2xi
+         cKloI3+BxHuGVgfCdbJnlhhLKLrN5CgqCKAf8q2uK1zrMPMor5d5sYktX9+/8XeymQWj
+         qPsZvjlaTx00YBJUoMsu6tKButJxap6tP2SY+DN5jpuPXpA2AbuzSsGu6n1Jv1gx79dc
+         X5vE/I8v71GVpsD9JaVErOunYmKPSDlvY3kXYban7H0EmlaPypnSNAyejw6YTNApzn0U
+         I9Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCUEzXYUSDACPszdUy9gR6LKJbFJPoX+/czSMh4Z0jy47EnSZtIz4G2ojO9qzSzcC7ij3Ktf/PChYlqUNzg=@vger.kernel.org, AJvYcCV+CiW4TveYanL2/Qe7E6hqFr5RnkAWgTS+qHuodmE8DMQESJgxE+JhWk/vZi+WzNIk3SuQtqCxgi1J@vger.kernel.org, AJvYcCVKLSdat6W0fHNwS+7QS+lWGPwu1jfut0Wecr3MssjYh+1CufcXi8XTbNiGCn3AH4OnEwGbr+Klpi8IRCI=@vger.kernel.org, AJvYcCVjvD5ruNLoBdw5TPsCwLU0MW1mDTec+tI//d6xbir4ooCuVdKmoWUgiz/e+MVSvLBVEdUPtT+74/U=@vger.kernel.org, AJvYcCVohjlWzrfgdeNwhtElJ/W2IDpTaMbCdAm/DfgAbQkS95VbfB/PJ2qmDkYFW77WmjZpshk=@vger.kernel.org, AJvYcCW6SQC3JlEgiKsTM/dfsku5zh25GoTkQquU28xxvhqnLtXOvRPGnQcmSj5AORaq4bJf8/mb4lS5@vger.kernel.org, AJvYcCWRDebciJJWyAzBF4BpCLRSkcqVMgcjLvFXifrkuDpEYxsaYsv7TaIZEZPBXgD/0mjiYLPy2JR/sIWzQiRQ@vger.kernel.org, AJvYcCXHx16CiNI5LXgWbwg7mqHQhhKY/1kODRyvgbzFhddBZ+6GbbZXfbqliv8JynKND9ApPlXwxbJdBxcb3g==@vger.kernel.org, AJvYcCXQ4knurbHGgla9K6V/1r4ubFXP0oxRjxhuNRfSckdCFLATn97oOQFdqghFEPcuNDNHWCvUREzPEMeu@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVAAIkvGe/mVF1E89R4T5ULBkIrwVRcDC/teEvUsPx1tvyYPeT
+	McrXGfjrwFCZ57sWGphUXK4d2HcbuSmqMGjKjhvH6ihiCbeqpGadrsRE
+X-Gm-Gg: ASbGnctLcVon0vT/3wZ57GMzuPDYtOFY8OCsJVLcavWPvTk+pka1jJ7Dfxgk+tQbOFL
+	YLIy1DZxEnArym0QKN0Q04K3drcBqOkwx6zTF1dfsVf7oEk7iaW/SkI2RqOTkuRtrIfnMaWpVa2
+	AylxYYlEQ1SI7A4ppq3VGCs1EwhVsK+m/7RV1qCGk8WNwGWHXrBoNvrnhn6hHLirpSuJ1KiPuyi
+	CSrALq+9SYY4DBIglt8ontGkpR0oe/rLzaqgf3PRUHAhz30ASdIuJbAIGwlXx4xWDMyUaYlc+tz
+	WQRtnYuQqVkPICX75Og/zm/HFZ+mPTgQspmqB2AlnFAf4QkJOrd4hc6eZKKgBT9ATIMsWBkhpRA
+	P545ODSpcigVaHFPQwJGu43f5Ata2A6HKbu6l
+X-Google-Smtp-Source: AGHT+IE+D5SeDqchp/24MDHXx5CQWTZci+ASgYtlboM+vs82gW00FOC1mk2B4v9sodvZwpxdBzPuFw==
+X-Received: by 2002:a17:90b:3a87:b0:327:c9c1:4f2a with SMTP id 98e67ed59e1d1-327c9c1642bmr4975594a91.27.1756454576161;
+        Fri, 29 Aug 2025 01:02:56 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24905da4784sm16792615ad.90.2025.08.29.00.55.38
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-327b01e90e5sm2191228a91.1.2025.08.29.01.02.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 00:55:43 -0700 (PDT)
+        Fri, 29 Aug 2025 01:02:55 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id C98394480991; Fri, 29 Aug 2025 14:55:28 +0700 (WIB)
+	id E8F6644809A5; Fri, 29 Aug 2025 14:55:28 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -176,9 +176,9 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Bart Van Assche <bvanassche@acm.org>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 09/14] Documentation: filesystems: Fix stale reference to device-mapper docs
-Date: Fri, 29 Aug 2025 14:55:19 +0700
-Message-ID: <20250829075524.45635-10-bagasdotme@gmail.com>
+Subject: [PATCH 10/14] Documentation: smb: smbdirect: Convert KSMBD docs link
+Date: Fri, 29 Aug 2025 14:55:20 +0700
+Message-ID: <20250829075524.45635-11-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
 References: <20250829075524.45635-1-bagasdotme@gmail.com>
@@ -188,61 +188,32 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2828; i=bagasdotme@gmail.com; h=from:subject; bh=Ip9RCWVx3N2eFboDnh1dVntKjUKs5RT6sbpEBdmz23c=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY16ybj++M2M+e9AK28XZP75VaZfxL/rvM//ttckLa 3oE7/o/6yhlYRDjYpAVU2SZlMjXdHqXkciF9rWOMHNYmUCGMHBxCsBEPq1l+Ke0Kqr32Tmn3/wy 503l2Fb8+Tb1i0vpkb/b//3YUvkmUo6bkeGv6MSGx38SK429ymz0txt6/t/hdS/prR+npRZPk6W qGg8A
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1002; i=bagasdotme@gmail.com; h=from:subject; bh=tVZea1ikNA4Sssls4g09ZchJ08JhUaFOY8Mmt8T2Tzg=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY15VZXUEfpV/XXVSre/C87lNIRyCV5IjnItu7ShZU PiphvtYRykLgxgXg6yYIsukRL6m07uMRC60r3WEmcPKBDKEgYtTACbSt4OR4WixGWdF367Ci0f0 5/VHVx3YxHrvMF/c3LtfDf1enBJSvMrwV9hALHj9kQNbWF8l9WcGsahNXW7scuzOjYlmr0LWbpu 3gQUA
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 
-Commit 6cf2a73cb2bc42 ("docs: device-mapper: move it to the admin-guide")
-moves device mapper docs to Documentation/admin-guide, but left
-references (which happen to be external ones) behind, hence 404 when
-clicking them.
-
-Fix the references while also converting them to internal ones.
+Convert KSMBD docs link to internal link.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/filesystems/fsverity.rst             | 11 +++++------
- Documentation/filesystems/ubifs-authentication.rst |  4 ++--
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ Documentation/filesystems/smb/smbdirect.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
-index 412cf11e329852..54378a3926de7b 100644
---- a/Documentation/filesystems/fsverity.rst
-+++ b/Documentation/filesystems/fsverity.rst
-@@ -15,12 +15,11 @@ of read-only files.  Currently, it is supported by the ext4, f2fs, and
- btrfs filesystems.  Like fscrypt, not too much filesystem-specific
- code is needed to support fs-verity.
+diff --git a/Documentation/filesystems/smb/smbdirect.rst b/Documentation/filesystems/smb/smbdirect.rst
+index ca6927c0b2c084..6258de919511fa 100644
+--- a/Documentation/filesystems/smb/smbdirect.rst
++++ b/Documentation/filesystems/smb/smbdirect.rst
+@@ -76,8 +76,8 @@ Installation
+ Setup and Usage
+ ================
  
--fs-verity is similar to `dm-verity
--<https://www.kernel.org/doc/Documentation/admin-guide/device-mapper/verity.rst>`_
--but works on files rather than block devices.  On regular files on
--filesystems supporting fs-verity, userspace can execute an ioctl that
--causes the filesystem to build a Merkle tree for the file and persist
--it to a filesystem-specific location associated with the file.
-+fs-verity is similar to :doc:`dm-verity
-+</admin-guide/device-mapper/verity>` but works on files rather than block
-+devices.  On regular files on filesystems supporting fs-verity, userspace can
-+execute an ioctl that causes the filesystem to build a Merkle tree for the file
-+and persist it to a filesystem-specific location associated with the file.
+-- Set up and start a KSMBD server as described in the `KSMBD documentation
+-  <https://www.kernel.org/doc/Documentation/filesystems/smb/ksmbd.rst>`_.
++- Set up and start a KSMBD server as described in the :doc:`KSMBD documentation
++  <ksmbd>`.
+   Also add the "server multi channel support = yes" parameter to ksmbd.conf.
  
- After this, the file is made readonly, and all reads from the file are
- automatically verified against the file's Merkle tree.  Reads of any
-diff --git a/Documentation/filesystems/ubifs-authentication.rst b/Documentation/filesystems/ubifs-authentication.rst
-index 106bb9c056f611..9fcad59820915d 100644
---- a/Documentation/filesystems/ubifs-authentication.rst
-+++ b/Documentation/filesystems/ubifs-authentication.rst
-@@ -439,9 +439,9 @@ References
- 
- [DMC-CBC-ATTACK]     https://www.jakoblell.com/blog/2013/12/22/practical-malleability-attack-against-cbc-encrypted-luks-partitions/
- 
--[DM-INTEGRITY]       https://www.kernel.org/doc/Documentation/device-mapper/dm-integrity.rst
-+[DM-INTEGRITY]       Documentation/admin-guide/device-mapper/dm-integrity.rst
- 
--[DM-VERITY]          https://www.kernel.org/doc/Documentation/device-mapper/verity.rst
-+[DM-VERITY]          Documentation/admin-guide/device-mapper/verity.rst
- 
- [FSCRYPT-POLICY2]    https://lore.kernel.org/r/20171023214058.128121-1-ebiggers3@gmail.com/
- 
+ - On the client, mount the share with `rdma` mount option to use SMB Direct
 -- 
 An old man doll... just what I always wanted! - Clara
 
