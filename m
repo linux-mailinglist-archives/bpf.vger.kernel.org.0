@@ -1,102 +1,164 @@
-Return-Path: <bpf+bounces-66935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6DB1B3B234
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 06:47:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B86AB3B241
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 06:56:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 145A61C83C4A
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 04:47:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56DF53BF4FD
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 04:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A08651C5D72;
-	Fri, 29 Aug 2025 04:47:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248BE201033;
+	Fri, 29 Aug 2025 04:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mMbtoxBc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zz/Jatyo"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EBAA1373
-	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 04:47:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB491F8BA6;
+	Fri, 29 Aug 2025 04:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756442845; cv=none; b=uU6O3dRlBZEDD5j0vCx73jXjU6TpEKh1aNZVWOq/0WUiwexU2hCjDsGh23Q/1rPxZlscc7GKDRQWD6PV1BSvw5bjPZPSl3D11DdvfAyzfmzWRV4kbMDx863aCGFIevbqx6AVRqt6o+Dp8e0eGbW0lZ0hArdMJN0hx96D8EsSqQQ=
+	t=1756443405; cv=none; b=IOwQZC1qA3WkPXaUxT9l36KiS9L/ntGyzKmbiGb1GtAc/G2OwixQTG9XKVS8q90msnO773TMtvem2lYEY0Sjjfy9v3ueYzURbsFMeAEReLBJvuF+Az+5CaYrb08EfzzCHZ0Sp5eDyD/yR+ALUElYIQ/qgF3HYyJmlm0n8Kixxgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756442845; c=relaxed/simple;
-	bh=CWeRyO+OuTqPwlUUrlyUBM9X1+Rg53uSH89ORHoTxJY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hTErt9G0cBFV+HY1kigDd7BILPw0Sus4myy9t1lVLNRCeSb7ooA7PqWthfQLFyJq27E/d3RJuG3OFM12YBp+NJ6J1nL9yWI4cAM1DumJwTQ089kgAUuigd9hq3FhWThLUwS94OJWGgpN69RUr3crBg02KO4OoYUMq0L8nTDU238=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mMbtoxBc; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e008e5d4-8a38-407e-a90b-eb960e6cc4d9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756442840;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CWeRyO+OuTqPwlUUrlyUBM9X1+Rg53uSH89ORHoTxJY=;
-	b=mMbtoxBcBlcLxFDqxj7MckBPlB4cDwKAUcuqHcYbT9Y2tb6+a8aG3+HYefUUcKIRvoJHzC
-	LnrqbcuzdiFwaSjoE8tZdNHn0l3LODMr7IeHgrIpjONd9DV4e42QKvt6BtTLfVZHA53WSS
-	Hvle/HH7kOdT0V0JKAuzrHcWH37SVPw=
-Date: Thu, 28 Aug 2025 21:47:13 -0700
+	s=arc-20240116; t=1756443405; c=relaxed/simple;
+	bh=rlMwh0ZusaeNnDDZUrztnPVbqGAayQPFWOV5sNNVUYs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BCTG9n6j6QtYQsbuAqqPqv3rroMStBnBdwD5PXOatSmZyn7KxKdpsQxphAiHRTCtAoZkuJaaDYo9W9FcV3HyLgBu38e3r9gny9ICVMPOMpMGASpm7DJ6vfZO8okxu6LojZNYxfBOd/ZQClnGt2dzKS3z6kk9Iuw/hQn5MoxN4oI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zz/Jatyo; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7f901afc2fbso155325085a.0;
+        Thu, 28 Aug 2025 21:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756443403; x=1757048203; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KNryYBJJVfQELDTrjz1KnvzL2xecRXp3PVwLzaUrbpo=;
+        b=Zz/Jatyo2bx9EPtABaq3AD/yz4dbaOHFf2aqiA5MGgo6XUZPRdwnP9TGa5wJ1904/k
+         TU4t/xKyISmrj5l4yNcgLvTz1FfE7L95r/weKY4RAbIGc/dbbOM7ZpqJGAzhHfQyPKYi
+         GogCu+9insPvJ4xkPkZ7TLK274bH34x5vlBVS0nhesRQEmNcf07O4zm2arfxkDEy5QRr
+         YNmNcUeB0zmPavve3rjUVFGibEfy8jbzeQGG0eCuED0Rp4XZaa0KzQQDGoZ3b8J0aUJL
+         30nyjnZVHE5HL2nSf7IUz7htM4iBV2CWgoh+xMpjv26eHJMQeuDFZFnlbjhdnhINgTAy
+         P9Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756443403; x=1757048203;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KNryYBJJVfQELDTrjz1KnvzL2xecRXp3PVwLzaUrbpo=;
+        b=qGxJIBwuiiRCHJFW3GEXrpmtoEHjvEEh2hBVoTf34nlw1KVqgp9kVz2pCE3oenZ8fZ
+         lDHZdQOP3M9SA7JzJeLYidw065zWqYKM84ANb83D6sa50i+54lsg0wyxOQFto92Cw0NR
+         5vcsuqMFxrtvi54xGchMs/50Q6c0Hbs0y0kGTuk62rUAaFOiHAMUCFygG0+ZQg6xdkdI
+         QtvXE+slGiCUkfY64UzU2yqba65o/mo0P/F/5H2KEwGVlPujwDJAp56bVszVi0SjF6yB
+         Qdci5x+By8Yo6dZb5aZKi3NGEbU/w/UnSZJoqmAkofvjESHPvEnUcTGgoY6lhWK2Wz76
+         pD4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUQIpqDRV9S06Oj6gtbanPbUx9mIqaQ2vADpZr60vwR80yBB9X7QV6PrQCQ3mhAYO67Ayldz4VT6EkV@vger.kernel.org, AJvYcCWIGetRqlmNsfpjUh0NJxCed3CCPefViI0Di8ch4StRzpj3M0j5WBPohxWjiWt5+YpHqeI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXgMm7b1dDwR646mjzpzS8ymEOO5ZWllMapLeyEFEZO5jhwISw
+	0xLURfFbSzzg2S6uEKzL1+QVkGhP6LEaPSle11uyeigwejyVCWUXOyO9sQRzpe3T6RoRpOW/vPI
+	pNwv/83D9J+fqOMcXJumZwcn3AC0rfd4=
+X-Gm-Gg: ASbGncsg2V2WEtQ08wWM/qLm2kNmyg/wQcRat0YKTZwd3vo+kKnphK4RZsxij+tdTc+
+	WV6SWJIlCub3lRlow24DY0Y17mGmYLmk6vBrBThNyPEGmNKhTisqNM33Ohl50JPl7pObcy8Cta/
+	WldvdKFCUDI+Krf3e10YVmR6CKKQ4AqaD2qTFDpDOs/OfqdQezyCjj81HWfpLrDdO50JSFx/moY
+	5Q+//X/Mda8QHy60w==
+X-Google-Smtp-Source: AGHT+IER+nM+4LqnTVVsRA0C/YRbwEY2iIeChjcQqyAqsqSfTBP1dTQx0YTtFem6RkzVwlWqhUcSmkomW7o4OpJu2UM=
+X-Received: by 2002:a05:620a:2983:b0:7fc:8834:a8a6 with SMTP id
+ af79cd13be357-7fc8834ab4bmr147951085a.16.1756443402922; Thu, 28 Aug 2025
+ 21:56:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 1/1] selftests/bpf: Fix "expression result
- unused" warnings with icecc
-Content-Language: en-GB
-To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>
-References: <20250829030017.102615-1-iii@linux.ibm.com>
- <20250829030017.102615-2-iii@linux.ibm.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20250829030017.102615-2-iii@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250826071948.2618-1-laoar.shao@gmail.com> <20250826071948.2618-2-laoar.shao@gmail.com>
+In-Reply-To: <20250826071948.2618-2-laoar.shao@gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Fri, 29 Aug 2025 12:56:31 +0800
+X-Gm-Features: Ac12FXygzLGLDRPOyTzO4Xch95XvlKZwEGk1nOgFbtgG9eYsTL90i6vr2LXC7WA
+Message-ID: <CAGsJ_4wa0gC7FQmUP9HQxbacheKFRCqMbnfXwugeyOzhOS4McA@mail.gmail.com>
+Subject: Re: [PATCH v6 mm-new 01/10] mm: thp: add support for BPF based THP
+ order selection
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com, 
+	dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com, 
+	gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com, 
+	rientjes@google.com, corbet@lwn.net, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Aug 26, 2025 at 3:43=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+[...]
 
+> @@ -4510,13 +4510,18 @@ static struct folio *alloc_swap_folio(struct vm_f=
+ault *vmf)
+>         if (!zswap_never_enabled())
+>                 goto fallback;
+>
+> +       suggested_orders =3D get_suggested_order(vma->vm_mm, vma, vma->vm=
+_flags,
+> +                                              TVA_PAGEFAULT,
+> +                                              BIT(PMD_ORDER) - 1);
 
-On 8/28/25 7:53 PM, Ilya Leoshkevich wrote:
-> icecc is a compiler wrapper that distributes compile jobs over a build
-> farm [1]. It works by sending toolchain binaries and preprocessed
-> source code to remote machines.
->
-> Unfortunately using it with BPF selftests causes build failures due to
-> a clang bug [2]. The problem is that clang suppresses the
-> -Wunused-value warning if the unused expression comes from a macro
-> expansion. Since icecc compiles preprocessed source code, this
-> information is not available. This leads to -Wunused-value false
-> positives.
->
-> obj_new_no_struct() and obj_new_acq() use the bpf_obj_new() macro and
-> discard the result. arena_spin_lock_slowpath() uses two macros that
-> produce values and ignores the results. Add (void) casts to explicitly
-> indicate that this is intentional and suppress the warning.
->
-> An alternative solution is to change the macros to not produce values.
-> This would work today for the arena_spin_lock_slowpath() issue, but in
-> the future there may appear users who need them. Another potential
-> solution is to replace these macros with functions. Unfortunately this
-> would not work, because these macros work with unknown types and
-> control flow.
->
-> [1] https://github.com/icecc/icecream
-> [2] https://github.com/llvm/llvm-project/issues/142614
->
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Can we separate this case from the normal anonymous page faults below?
+We=E2=80=99ve observed that swapping in large folios can lead to more
+swap thrashing for some workloads- e.g. kernel build. Consequently,
+some workloads
+might prefer swapping in smaller folios than those allocated by
+alloc_anon_folio().
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> +       if (!suggested_orders)
+> +               goto fallback;
+>         entry =3D pte_to_swp_entry(vmf->orig_pte);
+>         /*
+>          * Get a list of all the (large) orders below PMD_ORDER that are =
+enabled
+>          * and suitable for swapping THP.
+>          */
+>         orders =3D thp_vma_allowable_orders(vma, vma->vm_flags, TVA_PAGEF=
+AULT,
+> -                                         BIT(PMD_ORDER) - 1);
+> +                                         suggested_orders);
+>         orders =3D thp_vma_suitable_orders(vma, vmf->address, orders);
+>         orders =3D thp_swap_suitable_orders(swp_offset(entry),
+>                                           vmf->address, orders);
+> @@ -5044,12 +5049,12 @@ static struct folio *alloc_anon_folio(struct vm_f=
+ault *vmf)
+>  {
+>         struct vm_area_struct *vma =3D vmf->vma;
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +       int order, suggested_orders;
+>         unsigned long orders;
+>         struct folio *folio;
+>         unsigned long addr;
+>         pte_t *pte;
+>         gfp_t gfp;
+> -       int order;
+>
+>         /*
+>          * If uffd is active for the vma we need per-page fault fidelity =
+to
+> @@ -5058,13 +5063,18 @@ static struct folio *alloc_anon_folio(struct vm_f=
+ault *vmf)
+>         if (unlikely(userfaultfd_armed(vma)))
+>                 goto fallback;
+>
+> +       suggested_orders =3D get_suggested_order(vma->vm_mm, vma, vma->vm=
+_flags,
+> +                                              TVA_PAGEFAULT,
+> +                                              BIT(PMD_ORDER) - 1);
+> +       if (!suggested_orders)
+> +               goto fallback;
 
+Thanks
+Barry
 
