@@ -1,139 +1,144 @@
-Return-Path: <bpf+bounces-66942-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66943-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EC6CB3B3E6
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 09:10:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E17B7B3B433
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 09:26:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D156317A84D
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 07:10:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BEEA1B27C5F
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 07:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FDED26A1CF;
-	Fri, 29 Aug 2025 07:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 092B726AA91;
+	Fri, 29 Aug 2025 07:26:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="llzdcQ4V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="agLBi5Og"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B67269CF0;
-	Fri, 29 Aug 2025 07:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2103526A0C7;
+	Fri, 29 Aug 2025 07:26:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756451399; cv=none; b=A5pWKLDmwI9VuJJZqpPHRsnM4OqE6QtcHmxj+oKE8Mc6+JMts0pYCly63OGyEjBoIdzqHQUwEF7Tp0vo3DB7JpuEpvcYwZHpBvOW3TMs/cMgbbxc7mgxh99RtL7G2t74QgoUQxLei4iQ/34e5mVkLn4+LOLA1DHi1lOek+yjFcA=
+	t=1756452402; cv=none; b=GUpQ4k12LOvZnkgVI5QB/AChOuAMfy6WV5WogZ+6b8jHcZrU0UxKhVcQRaJoVOxpHw1rvpFxfzSC5aA53DBTeRU4uvsx6+7t/uSdzOCfyVLB6T3aJ2qJJgWmh+yBGZGTjHcVNdiMRX776zLINUfHONeDdxKbFqcCYpMbNfOAsfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756451399; c=relaxed/simple;
-	bh=HYx+Zk1058/5oto7OfyHPENrkH+C8WmQWhdcII+vzYQ=;
+	s=arc-20240116; t=1756452402; c=relaxed/simple;
+	bh=BLwQCdBRaWtkRyxwP03nqZ9do149DeGJJ+GOZteNyj8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R5mqL23m+HeFHFnsetppi+oZpj8YWyW2DMfIPgX6AUk2YeUIIK3twr4qLphOLM0reDcVUz3VNArwBQLgQr1KRo4irsTPlEDimarfHUV9c8KLi8+4X3H59hh8DR7vfek0wx9j+8E10trK0XWQwgS411bpqaFVmO4BfRVmR4Czt1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=llzdcQ4V; arc=none smtp.client-ip=209.85.219.50
+	 To:Cc:Content-Type; b=JT9IoyZjDdOikAbRKzWr8FLTqnbBhgR3D5U7uztVXBPxCqSODnsAcSOsvFMohg6MjSgmPAxucm8lkMepU3CUYR6zWbaIdZhmcbfjlhbxuMZ2KGrHol9xsJbK9lhV43QCcl/0dY0wblYUJsCRelOmAKeDgvCXOXcLKddDLqbVhSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=agLBi5Og; arc=none smtp.client-ip=209.85.219.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-70df4418f98so14491936d6.0;
-        Fri, 29 Aug 2025 00:09:57 -0700 (PDT)
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e96ff518c08so1437047276.1;
+        Fri, 29 Aug 2025 00:26:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756451396; x=1757056196; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756452400; x=1757057200; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hUkGjldN+EofC9u85s21ovIaAl+rkgsc6ddh+BEGdNE=;
-        b=llzdcQ4VVCtyvwmL4p5V9W+1Y/Od/PjF1yjJGcHrad0gng/UQ/t67Cyv6OIJF9OnpC
-         7MDWh/NGcBXbXkSWh/z05rR7OUK3LwA1iwqN3b35zd7AnEdEo3zdG1VFojmSIVJv8vV4
-         VkMF7i6ISpxQKSN62X0AT088+eKr3khL5JYgDhmaOUhxNR86xGc7DvZxET15LOpbbt6H
-         EZsHYtKY+gXbgkIxX7HzkPq4Z35K4jUg/XSTh2AdGJLJ/1HiGiAtnRdb0faBNZRMXcfp
-         i/v8mocpphQft0mLZgepY0O0+s3H13Hg7ZycY5OulvIbPZlOCmqpte3mFNbpe0xlAmZl
-         6vAA==
+        bh=BLwQCdBRaWtkRyxwP03nqZ9do149DeGJJ+GOZteNyj8=;
+        b=agLBi5Ogt3CS117aYn3scWjNLsBsGxvwua48dfqQnAOwNjMLpOrBK4bQVypxjkUZ25
+         5u1WqjXEA9rQ2KojxAdK4pFePBbUYYRVTnTrWEx8w1yYEIALjQCGVrgq+IXenx+g6UW9
+         Uz3Rcpp6eFmFl0kflUNfV3xQqQfTttb/V4vTV1pWj3sgkat/nhYclo/E9/eD2v5H2PP9
+         JsxnfvbQV7UKhcFds2CyFb7s5TCur00uXkzh3nFm7yRDCozoUuhOvi+hzKTbjR6sQUU8
+         KTJWYaDyOxLo9mrlPK501VRL4VmYf2oAcWulg1TaDtnXMPwgKDTkYMYbFgh28AvMc9HX
+         LuNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756451396; x=1757056196;
+        d=1e100.net; s=20230601; t=1756452400; x=1757057200;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hUkGjldN+EofC9u85s21ovIaAl+rkgsc6ddh+BEGdNE=;
-        b=c6N+ZoR2QEPWG1QMiqU8i5a/b4ueYlngTAH1fcrYUGcim5nSRRxP77Pm0q958NIGch
-         bYW4JyC+KX4gE9GfTO0c7BpsD33l1c7N4KL16RcAoBuMw1TgNUgX7XOd3qjNza+OGLDL
-         4GVRuZwMjov5mZfXu+3VlU8ihPfUngsm0349eQMjgZ06TzCZg5B5s7AmW63pIqAbUks0
-         LwA5HpWphkSoWPinSgBlb/MigcI81+PQlHkA3OTqHqfmn0ZaYEyCz8YcS6IQ7XmTEB26
-         NtYmJhEEbD85NysfGXy/8YwpPwd5WyHRBMy+YmtKiQvUZe/yPQlkhtpMO24bmonVuhOc
-         hY6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUZgQf3LXunsOLEbdzFdjCC67bjkecr6eK3MwVpFxnPkQguQH9pwhYe+vIj4gp3t0RRXS46OMYAWrBCrgdUSwXu@vger.kernel.org, AJvYcCVKWbCaEDV38u0MkHSKCqA5kA9vOdozVUzU+MWE8QMHZPaS2k3hMvBGr+liLBP7Dz5o/K7kVXg81iM3/yx1@vger.kernel.org, AJvYcCW6TunD66jps4qjUPejqnDVLsS2AkTqhRRw08lmCwGqHj9uTTGoQDDssm08iSHZE/AgYhI=@vger.kernel.org, AJvYcCXljjtHyV6EEgXmeMkNowD8dvc7fQVvTKUeULWP/wmoMJ3WhXTcPs8joxpG0Eld5Ievq+SE1sDw@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIiRuJyOclgV4oehTFIwhv7W3LZy+/La6bxoLvwaKg57B0/4Uo
-	2PIIqPruILPWJc3KNz1trlzzWLOuPcWyAsli9nSMkopDp72aw5UAqwiKkQuL0aDD99Z4s14P7e7
-	5IhboboZAWMoK82QXNphHdlHFEGaaD5Q=
-X-Gm-Gg: ASbGnctIPOdlsUZny8f0Fni5GiOYuFCBufgNuInqsidKCC5u32XtF9KhxiRYqPLtanW
-	zFKQr6whBwNclAF14ZDxEBPKaygn0mB6w+Cc9+6pS+NpfZta4ZYAvYo7DU4LSUHtjAfbAkWIF+h
-	8jryKGku73ObEjXzyg5HaPgtjksBOeYwMwRVyzGCPHUtSzZo+QKNESahHW1TOavp2zQPEXGXMl+
-	qMh6KO8kPaOlOkBvw==
-X-Google-Smtp-Source: AGHT+IFxcKRG9r7dVp8KIPkGJJPtopwmLGupqW0RCrwq8dUceOmP7gOI7OSsPxXhCfqC1dH93npJoNvblBEIevYMKyU=
-X-Received: by 2002:a05:6214:765:b0:70d:9d01:d7f3 with SMTP id
- 6a1803df08f44-70dd59c0dbamr151992376d6.32.1756451395820; Fri, 29 Aug 2025
- 00:09:55 -0700 (PDT)
+        bh=BLwQCdBRaWtkRyxwP03nqZ9do149DeGJJ+GOZteNyj8=;
+        b=wugbOgopUKQybRODA+B9uIgzKnjRRD8ztkq5wEN7yKTyUZQjTq1+VOyKMRhU5Oc4rr
+         8HiVHO+wp1BFGk32Swb5PwWxXHLWA+DM/zOFa9vpWH0wNdfnXIAKMYOqiFoMyGxAmXc2
+         sqjZAmAoJXbASOA3Tia4MWJ6te1pz9SnotoM9MQ+P4EHrLTYW4ryHjuPZMqIjNpdYPHx
+         TrXcbDglGCTE3thx5hXTYCikcLzMzCVQ79SRb1wLTaLMio3+mvU6h9V1Xr6XRtPyCFQj
+         2vSgkbLd0vjpMaPZ4X/6wFr2Rw3NuN0/fgZTzb5UoR84E5L2tdRi0zqzkPQfFVvNWENe
+         5fbA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQbW0mldsveHe/jNSAgFr2EMAP7fAPLaJDVv9LkVF5aKQ9b0UmHoESqm5873yRTqvD+cuze6M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJTwYVO/P8/WhOUbe8j5oRW6WG52BdkY2lvC4kUxGAVPADnQ8R
+	j4d8UxMtsd5fYIx74D2si/L6z5cdzNlHqbqvPgM8jvh7HBYvZjXlIVMmEBMQeEtZI5Eay9AWFsy
+	ZWfAruyOVQwUzePt3Vt7CNmCXz/IEcIM=
+X-Gm-Gg: ASbGncv+D8gjE764u2J+24KANB1jMzM1TTq7BdNsbXD0Ms/GUM6LvYzhC75W2QmFPM2
+	5kKMJsbgV5EsjwJNacy6ivBnkyS7EddPbsv/wiNYjGjedpB53Fx9/9ndxBlo3zLwZYzRMIWL0NN
+	2u6y6dz/y0w05L26zE1iZd7wsZONP1/o/ePSR9reL2NE98vMtjheH/rnIECRzRms+Eh7HvGr+HT
+	cjPFZ8FCs02h7dZ
+X-Google-Smtp-Source: AGHT+IEZrf7Ul0SM5Coa5W3xhcU5NjqwAdrQjwR60uWH8xVq0Qzal9GVN5MEuD5dfFtX0H6o3K5eDo3r03gMbs8wrKo=
+X-Received: by 2002:a05:690c:fca:b0:721:248b:97a4 with SMTP id
+ 00721157ae682-721248bab83mr180469277b3.37.1756452399929; Fri, 29 Aug 2025
+ 00:26:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250828-selftests-bpf-test_xsk_ret-v1-1-e6656c01f397@suse.com>
-In-Reply-To: <20250828-selftests-bpf-test_xsk_ret-v1-1-e6656c01f397@suse.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Fri, 29 Aug 2025 09:09:45 +0200
-X-Gm-Features: Ac12FXwEo1YoTOSA95m6PPBg4ofOarTUXiF9XHhF14W-vruutPg6yLL_VH6of1I
-Message-ID: <CAJ8uoz2US3EtXe17E2Rq6J+pkHe0TqiN9S8dM9npGaRskQo5QQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Upon failures, exit with code 1 in test_xsk.sh
-To: =?UTF-8?Q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250825193918.3445531-1-ameryhung@gmail.com> <7695218f-2193-47f8-82ac-fc843a3a56b0@nvidia.com>
+In-Reply-To: <7695218f-2193-47f8-82ac-fc843a3a56b0@nvidia.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Fri, 29 Aug 2025 00:26:29 -0700
+X-Gm-Features: Ac12FXwB-8-TbNnHhSbqwcfKSeGbXPrnlpwG_PIuUUeRIo_iU_xTgV8A65cENzM
+Message-ID: <CAMB2axPpaoDfFEBzNTaTjp4GnFKtWy0k-sTez56ap+FBZzLFeA@mail.gmail.com>
+Subject: Re: [RFC bpf-next v1 0/7] Add kfunc bpf_xdp_pull_data
+To: Nimrod Oren <noren@nvidia.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, kuba@kernel.org, 
+	martin.lau@kernel.org, mohsin.bashr@gmail.com, saeedm@nvidia.com, 
+	tariqt@nvidia.com, mbloch@nvidia.com, maciej.fijalkowski@intel.com, 
+	kernel-team@meta.com, Dragos Tatulea <dtatulea@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 28 Aug 2025 at 20:48, Ricardo B. Marli=C3=A8re <rbm@suse.com> wrote=
-:
+On Thu, Aug 28, 2025 at 6:39=E2=80=AFAM Nimrod Oren <noren@nvidia.com> wrot=
+e:
 >
-> Currently, even if some subtests fails, the end result will still yield
-> "ok 1 selftests: bpf: test_xsk.sh". Fix it by exiting with 1 if there are
-> any failures.
+> On 25/08/2025 22:39, Amery Hung wrote:
+> > This patchset introduces a new kfunc bpf_xdp_pull_data() to allow
+> > pulling nonlinear xdp data. This may be useful when a driver places
+> > headers in fragments. When an xdp program would like to keep parsing
+> > packet headers using direct packet access, it can call
+> > bpf_xdp_pull_data() to make the header available in the linear data
+> > area. The kfunc can also be used to decapsulate the header in the
+> > nonlinear data, as currently there is no easy way to do this.
 >
-> Signed-off-by: Ricardo B. Marli=C3=A8re <rbm@suse.com>
+> I'm currently working on a series that converts the xdp_native program
+> to use dynptr for accessing header data. If accepted, it should provide
+> better performance, since dynptr can access without copying the data.
+>
 
-Thanks Ricardo.
+I feel that bpf_xdp_pull_data() is a more generic approach, but yeah
+dynptr may yield better performance. Looking forward to seeing the
+numbers.
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+It will also be great if the dynptr approach doesn't require
+xdp_native to make assumptions about the xdp_buff layout (headers are
+in frags if linear data is empty), and creates two versions of header
+parsing code.
 
-> ---
->  tools/testing/selftests/bpf/test_xsk.sh | 2 ++
->  1 file changed, 2 insertions(+)
+> > This patchset also tries to fix an issue in the mlx5e driver. The drive=
+r
+> > curretly assumes the packet layout to be unchanged after xdp program
+> > runs and may generate packet with corrupted data or trigger kernel warn=
+ing
+> > if xdp programs calls layout-changing kfunc such as bpf_xdp_adjust_tail=
+(),
+> > bpf_xdp_adjust_head() or bpf_xdp_pull_data() introduced in this set.
 >
-> diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/self=
-tests/bpf/test_xsk.sh
-> index 65aafe0003db054e9dfd156092fed53b07be06a0..62db060298a4a3b4391ee4cfa=
-50557cf4a62d3d5 100755
-> --- a/tools/testing/selftests/bpf/test_xsk.sh
-> +++ b/tools/testing/selftests/bpf/test_xsk.sh
-> @@ -241,4 +241,6 @@ done
+> Thanks for working on this!
 >
->  if [ $failures -eq 0 ]; then
->          echo "All tests successful!"
-> +else
-> +       exit 1
->  fi
+> > Tested with the added bpf selftest using bpf test_run and also on
+> > mlx5e with the tools/testing/selftests/drivers/net/xdp.py. mlx5e with
+> > striding RQ will produce xdp_buff with empty linear data.
+> > xdp.test_xdp_native_pass_mb would fail to parse the header before this
+> > patchset.
 >
-> ---
-> base-commit: 5b6d6fe1ca7b712c74f78426bb23c465fd34b322
-> change-id: 20250828-selftests-bpf-test_xsk_ret-1eb27dbac071
->
-> Best regards,
-> --
-> Ricardo B. Marli=C3=A8re <rbm@suse.com>
->
->
+> I got a crash when testing this series with the xdp_dummy program from
+> tools/testing/selftests/net/lib/. Need to make sure we're not breaking
+> compatibility for programs that keep the linear part empty.
+
+Appreciate the detailed review! I will make sure to test xdp_dummy as
+well. I am taking some time off and will get back to this patchset
+next week.
 
