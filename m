@@ -1,150 +1,172 @@
-Return-Path: <bpf+bounces-67040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 828DEB3C435
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 23:18:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BB17B3C4BC
+	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 00:19:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1033B3B14AB
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 21:18:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95FF57BC1C2
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 22:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA64528505C;
-	Fri, 29 Aug 2025 21:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5EC428A3FA;
+	Fri, 29 Aug 2025 22:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NpneGQ3Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB5C1EEA49;
-	Fri, 29 Aug 2025 21:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E587B26F445;
+	Fri, 29 Aug 2025 22:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756502324; cv=none; b=sO6RCpiS3FtzSrg8Xg+DpYXF6IKZdUA8hbHtqAm4ai1gsNs9fT3C1F9DR0a5LCLDO5P4i7L6TtBE/bN4K405jqcFbI5Ntqm3HlrG82nbw1yrv7J9sq8it09p6x8xh0m3FsuwAILbk2aVzW6/2uN4RwFexr+uP7T5j6tC5LU8wb8=
+	t=1756505963; cv=none; b=KWfpnpANmvoB8AmYyfgghbwai/yntVP4vpuksvJNMe+gDLl75aSUQzNNTB3jjbBJ0ttUwDW6DBBXM0Us05cAPJUmumQSo94GTaFpdPjKfXxZPzs5czy9YEyi+cQ1aUizz4mDSgrYzqmY/iCcA75dLMJ0e2SZokn72N8bs2zsK6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756502324; c=relaxed/simple;
-	bh=RYOu0bMYVMS0CJNjElebnSBdnOQ7QIVuZ+Ry/6lRIn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n/hx6ha5lu8ZFVzwxDkOMODLG0aLbn6HFr5RYfAOxavPH8mjLomMMuBWhQ4CU8ejnVqpyoOarPskUTiaKHZqWYqLyM3pFbNChhPMv3kIJuzjmMMs49iLk4Zxl5srhwgP5gQx/CIcP/eTK7BssbMD7xpRTkG2QGY9ck1wZy7RcQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id F2D42119DC2;
-	Fri, 29 Aug 2025 21:18:38 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id AB7CF2000E;
-	Fri, 29 Aug 2025 21:18:33 +0000 (UTC)
-Date: Fri, 29 Aug 2025 17:18:55 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Steven Rostedt
- <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
- Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave
- <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>, Andrew
- Morton <akpm@linux-foundation.org>, Florian Weimer <fweimer@redhat.com>,
- Sam James <sam@gentoo.org>, Kees Cook <kees@kernel.org>, "Carlos O'Donell"
- <codonell@redhat.com>
-Subject: Re: [PATCH v6 5/6] tracing: Show inode and device major:minor in
- deferred user space stacktrace
-Message-ID: <20250829171855.64f2cbfc@gandalf.local.home>
-In-Reply-To: <CAHk-=wh8QVL4rb_17+6NfxW=AF-HS0WarMmq-nYm42akG0-Gbg@mail.gmail.com>
-References: <20250828180300.591225320@kernel.org>
-	<20250828161718.77cb6e61@batman.local.home>
-	<CAHk-=wiujYBqcZGyBgLOT+OWdY3cz7EhbZE0GidhJmLNd9VPOQ@mail.gmail.com>
-	<20250828164819.51e300ec@batman.local.home>
-	<CAHk-=wjRC0sRZio4TkqP8_S+Fr8LUypVucPDnmERrHVjWOABXw@mail.gmail.com>
-	<20250828171748.07681a63@batman.local.home>
-	<CAHk-=wh0LjoJmRPHF41eQ1ZRf085urz+rvQQ-rwp8dLQCdqohw@mail.gmail.com>
-	<20250829110639.1cfc5dcc@gandalf.local.home>
-	<CAHk-=wjeT3RKCTMDCcZzXznuvG2qf0fpKbHKCZuoPzxFYxVcQw@mail.gmail.com>
-	<20250829121900.0e79673c@gandalf.local.home>
-	<CAHk-=wj6+8vXfBQKoU4=8CSvgSEe1A++1KuQhXRZBHVvgFzzJg@mail.gmail.com>
-	<20250829124922.6826cfe6@gandalf.local.home>
-	<CAHk-=wid_71e2FQ-kZ-=aGTkBxDjLwtWqcsuNSxrarnU4ewFCg@mail.gmail.com>
-	<6B146FF6-B84E-40A2-A4FA-ABD5576BF463@gmail.com>
-	<CAHk-=wjgdKtBAAu10W04VTktRcgEMZu+92sf1PW-TV-cfZO3OQ@mail.gmail.com>
-	<20250829141142.3ffc8111@gandalf.local.home>
-	<CAHk-=wh8QVL4rb_17+6NfxW=AF-HS0WarMmq-nYm42akG0-Gbg@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1756505963; c=relaxed/simple;
+	bh=0bwPfbMyrek5L9hOu7GBREJXWyINw9aI7B0CsO+yy18=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=gS+j9X+RZCCT8PBD6OtENW+p+FlHGfJmu3fCai1WIit2rIGItApAfXYPs0v17ovLIHNWBYH+9Rih7VQXIdCtX4ygWlzvGAH1zMITezdu7NlFKbJ+dD5DvyWDuIj5tBXXNNry//txCFk4dCRLLIeR4y2SumO8s1yxYABn4hnKoAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NpneGQ3Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D549C4CEF0;
+	Fri, 29 Aug 2025 22:19:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756505962;
+	bh=0bwPfbMyrek5L9hOu7GBREJXWyINw9aI7B0CsO+yy18=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=NpneGQ3QoAZZMVPOqxAMTMsnXEod1MdR9ylvjRjnlUJ/5Mz3jdgYOeIgkfRKPhZ/U
+	 vShN87eLYGT8BEANkp63jXP/WsDTW3PU0xitnIZmnudm3QKOtQPPDMN6lDjVT1DMy6
+	 XFRyCvB6YJQmelc7Wn3BJtfB7gPtsENP28OUr9nZgR3Z3uJVJ4N4zjTqq2R/gAAsif
+	 WTFcvK4iQOHAl7e/mRAw01njvP6SR0PeP/vp9kcpLKktQGVHBqKVQ45BB3W4Cv3bfY
+	 SvtEaHF5gGrpETbJNljug4x3qCKcghxgOt/gZHQtCpaow0R9q2yCiFsgb9Uaue3SoT
+	 1eYuRWMtynFfw==
+From: Mark Brown <broonie@kernel.org>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+ Linux Documentation <linux-doc@vger.kernel.org>, 
+ Linux DAMON <damon@lists.linux.dev>, 
+ Linux Memory Management List <linux-mm@kvack.org>, 
+ Linux Power Management <linux-pm@vger.kernel.org>, 
+ Linux Block Devices <linux-block@vger.kernel.org>, 
+ Linux BPF <bpf@vger.kernel.org>, 
+ Linux Kernel Workflows <workflows@vger.kernel.org>, 
+ Linux KASAN <kasan-dev@googlegroups.com>, 
+ Linux Devicetree <devicetree@vger.kernel.org>, 
+ Linux fsverity <fsverity@lists.linux.dev>, 
+ Linux MTD <linux-mtd@lists.infradead.org>, 
+ Linux DRI Development <dri-devel@lists.freedesktop.org>, 
+ Linux Kernel Build System <linux-lbuild@vger.kernel.org>, 
+ Linux Networking <netdev@vger.kernel.org>, 
+ Linux Sound <linux-sound@vger.kernel.org>, 
+ Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
+ Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+ Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ David Hildenbrand <david@redhat.com>, 
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+ Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>, 
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
+ Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>, 
+ Mario Limonciello <mario.limonciello@amd.com>, 
+ Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Dwaipayan Ray <dwaipayanray1@gmail.com>, 
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>, Joe Perches <joe@perches.com>, 
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+ Alexander Potapenko <glider@google.com>, 
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>, 
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Eric Biggers <ebiggers@kernel.org>, 
+ tytso@mit.edu, Richard Weinberger <richard@nod.at>, 
+ Zhihao Cheng <chengzhihao1@huawei.com>, David Airlie <airlied@gmail.com>, 
+ Simona Vetter <simona@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Nathan Chancellor <nathan@kernel.org>, 
+ Nicolas Schier <nicolas.schier@linux.dev>, Ingo Molnar <mingo@redhat.com>, 
+ Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, 
+ Waiman Long <longman@redhat.com>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+ Shay Agroskin <shayagr@amazon.com>, Arthur Kiyanovski <akiyano@amazon.com>, 
+ David Arinzon <darinzon@amazon.com>, Saeed Bishara <saeedb@amazon.com>, 
+ Andrew Lunn <andrew@lunn.ch>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ Alexandru Ciobotaru <alcioa@amazon.com>, 
+ The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Steve French <stfrench@microsoft.com>, 
+ Meetakshi Setiya <msetiya@microsoft.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>, 
+ Bart Van Assche <bvanassche@acm.org>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+ Masahiro Yamada <masahiroy@kernel.org>
+In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
+References: <20250829075524.45635-1-bagasdotme@gmail.com>
+Subject: Re: (subset) [PATCH 00/14] Internalize www.kernel.org/doc
+ cross-reference
+Message-Id: <175650594072.395832.3911302052314725751.b4-ty@kernel.org>
+Date: Fri, 29 Aug 2025 23:19:00 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: AB7CF2000E
-X-Stat-Signature: w3ym7wpa6zzpwnb7t6ru45gcf9o647yf
-X-Rspamd-Server: rspamout06
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/xOwhcpNx8jBJvzSWcQKR6NMQEpBrR9Ws=
-X-HE-Tag: 1756502313-711946
-X-HE-Meta: U2FsdGVkX1+iQ1x6FBp3lwKCTTU9jDI5hstb9vfH4+g/iGcQlxwYXiPatWIIZJMfUouB8xBufqf1/oRk/Dk4ZoiCyHjqCIJIYwjTzASXDmS3W6QWsUf0yP0LY7juuCpQ+qZKViSMyUSfmfRgQKPzM4zjsW1/1MNvrhQX1RrRdQ8tkOZP9vbPvuqGeIY9N2pvySkqeJYttAnlxvRK8lKIuiq33RaxQl8Z20s0tlumroF6y67zmVYpCyefKjMTz1YOSAw/Jc0KxkYeS/Dd+zi+SH5lR9oP9DgmJKdVUFErLw+T6mmNzkwqAmPcwSA0m5JkDYxcodmFE6GK8Fw0Q4C3y0wIxq78A1dLSBW+U4Jih/s2+38HL9/uRtL2c/zrmtIx/WiQIs4R8sPYPH3pkn7V++LPQL8ZzudClF8Ut+5GgzkTSxZME666jJwEi01EqYJ7
+X-Mailer: b4 0.15-dev-a9b2a
 
-On Fri, 29 Aug 2025 13:54:08 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> On Fri, 29 Aug 2025 at 11:11, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > The idea is this (pseudo code):
-> >
-> >  user_stack_trace() {
-> >    foreach vma in each stack frame:
-> >        key = hash(vma->vm_file);
-> >        if (!lookup(key)) {
-> >            trace_file_map(key, generate_path(vma), generate_buildid(vma));
-> >            add_into_hash(key);
-> >        }
-> >    }  
+On Fri, 29 Aug 2025 14:55:10 +0700, Bagas Sanjaya wrote:
+> Cross-references to other docs (so-called internal links) are typically
+> done following Documentation/doc-guide/sphinx.rst: either simply
+> write the target docs (preferred) or use :doc: or :ref: reST directives
+> (for use-cases like having anchor text or cross-referencing sections).
+> In some places, however, links to https://www.kernel.org/doc
+> are used instead (outgoing, external links), owing inconsistency as
+> these requires Internet connection only to see docs that otherwise
+> can be accessed locally (after building with ``make htmldocs``).
 > 
-> I see *zero* advantage to this. It's only doing stupid things that
-> cost extra, and only because you don't want to do the smart thing that
-> I've explained extensively that has *NONE* of these overheads.
-> 
-> Just do the parsing at parse time. End of story.
+> [...]
 
-What does "parsing at parse time" mean?
+Applied to
 
-> 
-> Or don't do this at all. Justy forget the whole thing entirely. Throw
-> the patch that started this all away, and just DON'T DO THIS.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Maybe we are talking past each other.
+Thanks!
 
-When I get a user space stack trace, I get the virtual addresses of each of
-the user space functions. This is saved into an user stack trace event in
-the ring buffer that usually gets mapped right to a file for post
-processing.
+[12/14] ASoC: doc: Internally link to Writing an ALSA Driver docs
+        commit: f522da9ab56c96db8703b2ea0f09be7cdc3bffeb
 
-I still do the:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
- user_stack_trace() {
-   foreach addr each stack frame
-      vma = vma_lookup(mm, addr);
-      callchain[i++] = (addr - vma->vm_start) + (vma->vm_pgoff << PAGE_SHIFT);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Are you saying that this shouldn't be done either? And to just record the
-the virtual address in the chain and the vma->vm_start and
-vma->vm_pgoff in another event? Where the post processing could do the
-math? This other event could also record the path and build id.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-The question is, when do I record this vma event? How do I know it's new?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-I can't rely too much on other events (like mmap) and such as those events
-may have occurred before the tracing started. I have to have some way to
-know if the vma has been saved previously, which was why I had the hash
-lookup, and only add vma's on new instances.
-
-My main question is, when do I record the vma data event?
-
--- Steve
+Thanks,
+Mark
 
 
