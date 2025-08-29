@@ -1,229 +1,257 @@
-Return-Path: <bpf+bounces-66986-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66981-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4628AB3BED3
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 17:05:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2EDBB3BC83
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 15:28:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C0A618981EF
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 15:05:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 828B13B2FBE
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 13:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C5D032254B;
-	Fri, 29 Aug 2025 15:05:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB98F314B82;
+	Fri, 29 Aug 2025 13:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UL0L+xjl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QphZIPv/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D69C320CD5;
-	Fri, 29 Aug 2025 15:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA0D29D267
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 13:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756479902; cv=none; b=cY3yQWEjBOJBOWkWhfx54R6akL7F/8ZBJV5ZYbYQx7XBk2NEzTyOavYQqsq+0iWG1v8jjSM5PvUPLlNnaBbPReVesBvDIu6FWfFMKj0b6lq1l686ksUwTJs9eQF/4N/Sc01hE3QczxlJeUTp+ZShxUtV3OJU4BeXJ0wXbJaLXj0=
+	t=1756474113; cv=none; b=S9JePiXnYdKsbzxEEfMcU9BXkibRyGkQKQuZlaAwtuSo7pTorZnbAwYBO513N0wFK49zjCSdc8xu4iXbNQ7fANMNxz1PuZ0yDz5E89Mj4LSmlzrep/ki3CEvWzdS0jdrtDOdnzbAHAwEdGkvOFq6GZpFpVKp6qNvR8gfS/EzxFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756479902; c=relaxed/simple;
-	bh=xtU8o3RRKlATt1ZkDZoqGZInz4LA3xlvTSiKt6WYT3E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hod53G5QAZS6i7DqYCUYgwplRhXBJPXHxxu8sci3MnKcZVihPvnVlAZWJY2+sfC+X7qvzrtaYz8KP+9C4igIItO78DCfCDw4bXS+HaOZ+3iztfEZg3fZcfBhrlo96L7E/BhM0/xYjxd4kRjlsvCq+cmqgzbNMA9V4/ITRVfaQxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UL0L+xjl; arc=none smtp.client-ip=209.85.210.47
+	s=arc-20240116; t=1756474113; c=relaxed/simple;
+	bh=m2w7J/BmEkKNK0Nfik2B9EcbF78wa0J9LOhx6vAmtsY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VB25bUa16/x4zoElD6mKjwfQmwM2rXb7Zw6fJRNStPIpPGKgF6p2SACEL/RZGGs5R85FPjrdfML69BaG+pLgWZqsgGLRO/Uk3ljGlct1TPxqYJHzXhsjX0XHKEyfAPT5OJmagDMa3MRxcxEpBopjMvG427MZ8pxrAhMUBYmVoD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QphZIPv/; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-74526ca7d64so1825829a34.2;
-        Fri, 29 Aug 2025 08:05:01 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45b82a21eeeso3621285e9.2
+        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 06:28:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756479900; x=1757084700; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xtU8o3RRKlATt1ZkDZoqGZInz4LA3xlvTSiKt6WYT3E=;
-        b=UL0L+xjlcYxqac//yMFsSf2xAtZdfsYphdBxn58T6Q33LeyXlDUYPPTRHsxLDKK82M
-         Gx20Y246DcEGHik30/Vglq1syNcfv+f5DbpU6PRT9Xn+Xoa+LjFIniUUEZWDu8aAWpTN
-         Lwhew2gxTBWpylX9FMlJHI7KoQMMGtAQ8rStgsxF/XNx2/8UVtlVuY6cVN+hMzasO0px
-         a4d6kx9BEQ8lSKgxqRXG3df+04c3Wmy6H55P7ZhjORoVDd0t88BHFmGZuTv/aCqkfKAa
-         5W6Oo6FgTkpoS2SgpT7HUx9IQR2ovJ6g6v9oPlg8YASMzwYT+EybHssh8qPCNGo+x27i
-         Z2vA==
+        d=gmail.com; s=20230601; t=1756474110; x=1757078910; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=17u74bjVCEa7IlbKmae/+ywIyEMnxWgnm4Z9JL0BgL8=;
+        b=QphZIPv/1CGXmEUeqGdt4LKwGZ53mPMfTtrCLnT76MB7Q0qzkUrCxg0Qw7trtJBXjA
+         Kq2pRxWbzCy+usoMqJGHoHJZ28Od4OIotoo2YFkhUxlAGpSX1qU8Jq57fSBI/I3ejMim
+         3gZapIoYtm0n6CEZ8HMj2NySeZ0QvYJpi52QJxa6FuPS0OXmPvNSZHHhSSCBd6yTNXMS
+         q7bNOix9dCU5fStfzbX2X39bvwaWcFEdGq3jKOmiXkeK4S27roM856fFeoW2gGfz3Ykg
+         ByWKqgdn7qSaBkw3rIEVoA6sw0qv+vl+udxeeqdQmCwjNRVEN7oszRQM1IjjltL7r0t+
+         7nJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756479900; x=1757084700;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xtU8o3RRKlATt1ZkDZoqGZInz4LA3xlvTSiKt6WYT3E=;
-        b=nCWMb4Q4o84yc7pVZXkiExnSAKUDwWaDqjzXZ/qK8NYn7r5ZGwuN3CAsE+PmN+YoE4
-         UQmogKg8r6nmyFbQrAXiiwBbq32xHCgxcW026f9roI8gOsrUx7+y49JKPU9KFkI0p3Y9
-         WDif0uwALU7xxhPa41KPbgNRKBb8i5X8szzk4e07PX7r/t5I2h4fG6kXOM5vpeAiYlEP
-         DKGUSllVU0GtMErEQQsCLYqIvvUHAMss3u0eg+gkl9MUZBCZmFCjwSGu9dQe4WcuzuJz
-         AZ4CG9d77tvsNGhc+MHhV98W6rAPl4coqfFD7863WaxgU1zmTEpGci3NbfVnT8sVjl8a
-         u/Tg==
-X-Forwarded-Encrypted: i=1; AJvYcCUKo5zTR9R6oV2U4bh9PWXKT875MPmf1b9taBKfvjVA4ILvUVYcX7CakR9b76OYazgN3QO+OZrwXYwv+edI@vger.kernel.org, AJvYcCUgEdEPAqMgO1KyQJLAunak7kLd2HwOvsB4eTL2OFTdGYPvJOu4sivv2nvoZaZxJPqBL9I=@vger.kernel.org, AJvYcCUr6UvJbQmJTjbdyCTSDnNiUng1sdsVSOcOrIszZeL9y3iQfZUAeSlBnNra9WCXMpENucBPhSpl+3s=@vger.kernel.org, AJvYcCV1EuCkugrRpVHAU7DfxH2J4BkkeG7ApGj0mA8c1zRsXFpd+4kEjqaTC+Cbvz8d89PVpeHKuTfXY+2ulh8=@vger.kernel.org, AJvYcCVG0tPGbuhr7OCgkCqZYlj8t99OvdkGTY2ubKVe5fxwOWtTYddJqN281naJfbJN5V/mGn7qX1uIBcJP@vger.kernel.org, AJvYcCVeYk0FHzJwE8qw9LDBaHcRik1aKym9gI5zq6gNYraMauY/JMRuMeJEd71dEBEq1rLs8ShAQrJTDD5snF0=@vger.kernel.org, AJvYcCVkpFNkW03sxni6lEhP5PHYtDvNKXAKUW5WPXZovQQ0IWOiGZO3UYdsiTpTx78pVGR+TsqA06TSOiPi@vger.kernel.org, AJvYcCVo14Anf+DPJAVcz9EUWGl2noH2gemSiIQwHMHyDyXeBTq7dwoOUyYN+btrihRjOgqHcmcTBhle@vger.kernel.org, AJvYcCW4jAYBwOxzxrAgnPgJtteSycpdIc3s0Ue+ENFMNLCBNeGm2jvJItT1l69vCU58xujt2uglgbTl2GY6TvdH@vger.kernel.org, AJvYcCW9O9bdlN+zvqzvV4eJjBzPB1vmgFymzT38M02iEAhC
- uumUff3cyWssmKFZ/dhVL9GYUOKfetPEhnzM4g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxqnowe6BG0Kiv/NHSCns6GtIE6qUF3R82LKWKO4gRlnIW3Fult
-	YIQ/HBOmsYEu1029ZwZgCXHzVg0zyFbDUE0EcBLHtZzZEEapOlMHm/YH
-X-Gm-Gg: ASbGncv71ccvPHCEKErgy9F+LnM8h1WER9+6qTZZDUvVEl+zN7j64nGscXe7p5QhNtV
-	HsKXhvVolwSXf1+/OouULynDMSsOre3HGGQsTH2vGY2+E4QN+0mjhXVzHDsc6JGJR59ODzLyYOu
-	bR8v9Q9DUqyBMKTvUthBgTPtLIPtWeYfBFqs/BnmDOBiNjiGqxNDjy+DZxRT5LTKGjQFAuOEa/B
-	yy2lNKj9Sgpi5leu1zFtsqun3c1F9/lAdRrxqIH4J6C954aQ4sBsxt3pgrPlHUPZpALH7skCUbe
-	Q2cfEeyeWwf1R7rh5Ysmip9yqpLC9vJ2GyKIAHvI85tlXsJD1ItvN1BLWA73qNJ6x/qwZeZKlF/
-	ZiYcxJZBeDxHBUCh0dk8LSOplDg==
-X-Google-Smtp-Source: AGHT+IHoYRW1dTyT65+rU4V7sdHQy1ZAWCnUhYSUduVJT7h6pncITh0MMXOlALcxWQkuMLP36zurpg==
-X-Received: by 2002:a05:6a21:339e:b0:243:9b4e:281b with SMTP id adf61e73a8af0-2439b4e296dmr15525181637.49.1756473541271;
-        Fri, 29 Aug 2025 06:19:01 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a4bac60sm2408193b3a.63.2025.08.29.06.19.00
+        d=1e100.net; s=20230601; t=1756474110; x=1757078910;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=17u74bjVCEa7IlbKmae/+ywIyEMnxWgnm4Z9JL0BgL8=;
+        b=mb3x7zvbtdJYgEhExYwAuMsAScQoCpR/6GvAYAPB5eOCZmPURYN727KmrCuCz5hVyc
+         qsROrSBQ3EGTFW2YdofyzH02rBD2FbAt/Zc7R0GlNbc6lALy5yVe1CVOtKAIuSP4uSmI
+         w6R/w7pYYep/xDftXaQfXL+OL0/CPMEvzdp8fsfSmJBX8mkP3yeCURJxJ4NxFY58x13u
+         dTEV1pzYgle1p4WI6Io7dfS2NClCoZvE/MqEcBjmZ9OpbbzyBX530aa1IZmUAJAcbZsL
+         d4Djn+orGZpmI6C427PTzXKzrJSsqaTup/F8JP6+oL9Wr3URVIwRAqc6UOh+JTj+gV/0
+         ddHA==
+X-Gm-Message-State: AOJu0Yw1+zmGdnssUe87zYWMWsuMfVO/5SMTrBuQB0YypKuhuu4xILK1
+	fQsLK17hdwsDRVrxw55z1eiw/FjPj8pLoKKs6Ii78HQ/KNHQSeTBVYjzh+hYTQ==
+X-Gm-Gg: ASbGncvzv5QcdSuWs+jLcjKjy6ZWVpOgRKLLRKs3Ux0giy4OPy8BMI9b5MNyTCFaHev
+	irE+378qBpo5WC+dIFONi/XFLspZAgU/zr/erFJT3TGwaScNNY7mRiAlRK/bXTgdW1mVQzDIAQL
+	w0ASwrBuqtT8Bm5AYLuoR1cQXcvd1fETinZx21QQD6ZJv/aecOjdZI+juQGjkOSMU24DfRJyDjY
+	MYsmi8MgzZvmfkz+cMdAUde2VGq3rwgO6IkGp+CAfkrWAb6bgFU0MAB2+Rc6ALRyv0AVnhmO9na
+	RnWObEHDxOhipCelsi0aFT0Ba0RpRvEvMsgaFVccMdpAGfTnvPAjgtQj/dOk1Z2sXk+AvNcf4Hu
+	jR4CJQf/i3TbM
+X-Google-Smtp-Source: AGHT+IEa9FwJ3QxqADYmt946/45w5PacFuP1hzQakjYrZEba/1+cS2T3I1JdcQ3xOHoG9cy+gJIT9A==
+X-Received: by 2002:a05:600c:8b85:b0:45b:581c:ad0d with SMTP id 5b1f17b1804b1-45b6211d560mr177193155e9.8.1756474109517;
+        Fri, 29 Aug 2025 06:28:29 -0700 (PDT)
+Received: from localhost ([2620:10d:c092:500::5:4e0a])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3cf276d204asm3428277f8f.24.2025.08.29.06.28.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 06:19:00 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 51DA0409D7C0; Fri, 29 Aug 2025 20:18:56 +0700 (WIB)
-Date: Fri, 29 Aug 2025 20:18:55 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Jani Nikula <jani.nikula@intel.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux DAMON <damon@lists.linux.dev>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Linux Power Management <linux-pm@vger.kernel.org>,
-	Linux Block Devices <linux-block@vger.kernel.org>,
-	Linux BPF <bpf@vger.kernel.org>,
-	Linux Kernel Workflows <workflows@vger.kernel.org>,
-	Linux KASAN <kasan-dev@googlegroups.com>,
-	Linux Devicetree <devicetree@vger.kernel.org>,
-	Linux fsverity <fsverity@lists.linux.dev>,
-	Linux MTD <linux-mtd@lists.infradead.org>,
-	Linux DRI Development <dri-devel@lists.freedesktop.org>,
-	Linux Kernel Build System <linux-lbuild@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux Sound <linux-sound@vger.kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>, Huang Rui <ray.huang@amd.com>,
-	"Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Joe Perches <joe@perches.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Eric Biggers <ebiggers@kernel.org>, tytso@mit.edu,
-	Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas.schier@linux.dev>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Waiman Long <longman@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Shay Agroskin <shayagr@amazon.com>,
-	Arthur Kiyanovski <akiyano@amazon.com>,
-	David Arinzon <darinzon@amazon.com>,
-	Saeed Bishara <saeedb@amazon.com>, Andrew Lunn <andrew@lunn.ch>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Alexandru Ciobotaru <alcioa@amazon.com>,
-	The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Steve French <stfrench@microsoft.com>,
-	Meetakshi Setiya <msetiya@microsoft.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 00/14] Internalize www.kernel.org/doc cross-reference
-Message-ID: <aLGovx7OpL_85YTf@archie.me>
-References: <20250829075524.45635-1-bagasdotme@gmail.com>
- <437912a24e94673c2355a2b7b50c3c4b6f68fcc6@intel.com>
+        Fri, 29 Aug 2025 06:28:29 -0700 (PDT)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next v4] selftests/bpf: add BPF program dump in veristat
+Date: Fri, 29 Aug 2025 14:28:13 +0100
+Message-ID: <20250829132813.105149-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="v+QeNeXg1wIV/8Z8"
-Content-Disposition: inline
-In-Reply-To: <437912a24e94673c2355a2b7b50c3c4b6f68fcc6@intel.com>
+Content-Transfer-Encoding: 8bit
 
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
---v+QeNeXg1wIV/8Z8
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add the ability to dump BPF program instructions directly from veristat.
+Previously, inspecting a program required separate bpftool invocations:
+one to load and another to dump it, which meant running multiple
+commands.
+During active development, it's common for developers to use veristat
+for testing verification. Integrating instruction dumping into veristat
+reduces the need to switch tools and simplifies the workflow.
+By making this information more readily accessible, this change aims
+to streamline the BPF development cycle and improve usability for
+developers.
+This implementation leverages bpftool, by running it directly via popen
+to avoid any code duplication and keep veristat simple.
 
-On Fri, Aug 29, 2025 at 03:18:20PM +0300, Jani Nikula wrote:
-> FWIW, I'd much prefer using :ref: on rst anchors (that automatically
-> pick the link text from the target heading) instead of manually adding
-> link texts and file references.
->=20
-> i.e.
->=20
-> .. _some_target:
->=20
-> Heading After Some Target
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
->=20
-> See :ref:`some_target`.
->=20
-> Will generate "See Heading After Some Target".
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/testing/selftests/bpf/veristat.c | 75 +++++++++++++++++++++++++-
+ 1 file changed, 74 insertions(+), 1 deletion(-)
 
-I did that in patch [14/14], but I had to write out explicit anchor text
-considering people reading rst source. When they encounter checkpatch warni=
-ng
-and they'd like to learn about solution by following See: links, they shoul=
-d be
-able to locate the actual docs and section mentioned without leaving the
-terminal. Before this series, however, they need to click the https link
-provided, which leads to relevant docs in docs.kernel.org that its source is
-already in Documentation/.
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+index d532dd82a3a8..c824f6e72e2f 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -181,6 +181,12 @@ struct var_preset {
+ 	bool applied;
+ };
+ 
++enum dump_mode {
++	DUMP_NONE = 0,
++	DUMP_XLATED = 1,
++	DUMP_JITED = 2,
++};
++
+ static struct env {
+ 	char **filenames;
+ 	int filename_cnt;
+@@ -227,6 +233,7 @@ static struct env {
+ 	char orig_cgroup[PATH_MAX];
+ 	char stat_cgroup[PATH_MAX];
+ 	int memory_peak_fd;
++	__u32 dump_mode;
+ } env;
+ 
+ static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
+@@ -271,6 +278,7 @@ const char argp_program_doc[] =
+ enum {
+ 	OPT_LOG_FIXED = 1000,
+ 	OPT_LOG_SIZE = 1001,
++	OPT_DUMP = 1002,
+ };
+ 
+ static const struct argp_option opts[] = {
+@@ -295,10 +303,12 @@ static const struct argp_option opts[] = {
+ 	  "Force BPF verifier failure on register invariant violation (BPF_F_TEST_REG_INVARIANTS program flag)" },
+ 	{ "top-src-lines", 'S', "N", 0, "Emit N most frequent source code lines" },
+ 	{ "set-global-vars", 'G', "GLOBAL", 0, "Set global variables provided in the expression, for example \"var1 = 1\"" },
++	{ "dump", OPT_DUMP, "DUMP_MODE", OPTION_ARG_OPTIONAL, "Print BPF program dump (xlated, jited)" },
+ 	{},
+ };
+ 
+ static int parse_stats(const char *stats_str, struct stat_specs *specs);
++static int parse_dump_mode(char *mode_str, __u32 *dump_mode);
+ static int append_filter(struct filter **filters, int *cnt, const char *str);
+ static int append_filter_file(const char *path);
+ static int append_var_preset(struct var_preset **presets, int *cnt, const char *expr);
+@@ -427,6 +437,11 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+ 			return err;
+ 		}
+ 		break;
++	case OPT_DUMP:
++		err = parse_dump_mode(arg, &env.dump_mode);
++		if (err)
++			return err;
++		break;
+ 	default:
+ 		return ARGP_ERR_UNKNOWN;
+ 	}
+@@ -956,6 +971,32 @@ static int parse_stats(const char *stats_str, struct stat_specs *specs)
+ 	return 0;
+ }
+ 
++static int parse_dump_mode(char *mode_str, __u32 *dump_mode)
++{
++	char *state = NULL, *cur;
++	int cnt = 0;
++
++	if (!mode_str) {
++		env.dump_mode = DUMP_XLATED;
++		return 0;
++	}
++
++	for (cur = mode_str; *cur; ++cur)
++		*cur = tolower(*cur);
++
++	while ((cur = strtok_r(cnt++ ? NULL : mode_str, ",", &state))) {
++		if (strcmp(cur, "jited") == 0) {
++			env.dump_mode |= DUMP_JITED;
++		} else if (strcmp(cur, "xlated") == 0) {
++			env.dump_mode |= DUMP_XLATED;
++		} else {
++			fprintf(stderr, "Unrecognized dump mode '%s'\n", cur);
++			return -EINVAL;
++		}
++	}
++	return 0;
++}
++
+ static void free_verif_stats(struct verif_stats *stats, size_t stat_cnt)
+ {
+ 	int i;
+@@ -1554,6 +1595,35 @@ static int parse_rvalue(const char *val, struct rvalue *rvalue)
+ 	return 0;
+ }
+ 
++static void dump(__u32 prog_id, const char *file_name, const char *prog_name)
++{
++	char command[64], buf[1024];
++	enum dump_mode modes[2] = { DUMP_XLATED, DUMP_JITED };
++	const char *mode_lower[2] = { "xlated", "jited" };
++	const char *mode_upper[2] = { "XLATED", "JITED" };
++	FILE *fp;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(modes); ++i) {
++		if (!(env.dump_mode & modes[i]))
++			continue;
++		snprintf(command, sizeof(command), "bpftool prog dump %s id %u",
++			 mode_lower[i], prog_id);
++
++		fp = popen(command, "r");
++		if (!fp) {
++			fprintf(stderr, "Can't run bpftool\n");
++			return;
++		}
++
++		printf("%s/%s DUMP %s:\n", file_name, prog_name, mode_upper[i]);
++		while (fgets(buf, sizeof(buf), fp))
++			printf("%s", buf);
++		printf("\n");
++		pclose(fp);
++	}
++}
++
+ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf_program *prog)
+ {
+ 	const char *base_filename = basename(strdupa(filename));
+@@ -1630,8 +1700,11 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
+ 
+ 	memset(&info, 0, info_len);
+ 	fd = bpf_program__fd(prog);
+-	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0)
++	if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) == 0) {
+ 		stats->stats[JITED_SIZE] = info.jited_prog_len;
++		if (env.dump_mode != DUMP_NONE)
++			dump(info.id, base_filename, prog_name);
++	}
+ 
+ 	parse_verif_log(buf, buf_sz, stats);
+ 
+-- 
+2.51.0
 
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---v+QeNeXg1wIV/8Z8
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaLGougAKCRD2uYlJVVFO
-oyLxAP95mJgSRTOQ+hTC3+7/hjakAGgQRjyWnfFgZF9dKlXeHgD/bJRCDtPLAnbQ
-JLSf5TwAGdo1LgUd0wgEgetqhpMKwQI=
-=82dj
------END PGP SIGNATURE-----
-
---v+QeNeXg1wIV/8Z8--
 
