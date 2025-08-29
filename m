@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-66958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27180B3B573
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 10:05:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DF09B3B519
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 09:59:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11DEE4679B9
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 08:04:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F21B3202AA7
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 07:59:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589F72D24A0;
-	Fri, 29 Aug 2025 08:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6782D8DD9;
+	Fri, 29 Aug 2025 07:55:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iz5w3LXU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T/PrkAbE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08F22857DE;
-	Fri, 29 Aug 2025 08:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEC62D8388;
+	Fri, 29 Aug 2025 07:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756454581; cv=none; b=XKNjLWnkGKs/zxt4Ni7wRV8psVOCXGC4i5ZUA6P/eyVY7+zemDcbUZU8a/sHbuBY7tiOmfFGVSuCTMTlvfljcNE95Y1Kx0MahOgiMifo54PNk54hxf8YPHp25hZ6ObPQ98aGZ6t7UiPOBnlETtRUi1tiQ0V1I3Awh1BVb/IlQCs=
+	t=1756454151; cv=none; b=MWA5IfmK7Jl104QlqJfjEcHI/17+jOHLbC9TriMYI3iQewVsrSvsn0EWwUOw3WinmEiM2EXQaJvy9ZYELSHIFi/2hKDHnUWeKqS7O77WkE9zw1hx4hLuE0E94ksfj8fpbE+Lg5p/Owqa5Rq1KAXPmhfOtlFJTN56BTaqtxzpnzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756454581; c=relaxed/simple;
-	bh=QIAPxg2EoM7XBiBH/OfCd9SfIrsCdhbBl57WJdF7gOo=;
+	s=arc-20240116; t=1756454151; c=relaxed/simple;
+	bh=evrdLEAoXKuQzTljW81Kh3KyWLApG8gUObVzJ2YlNgE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Nkb5bOEXPsX79UPWThE29Iv/nZKUEpncDfZaA7Dn2GCnur756RqYvmvv2HCdSWejjMHhJxNR68jbXT3SQAmpBLJ4rMT89veFCwUR/gXLvtern2FpVbl990TplOBcwdNhGI/21EeF6Z9Xk5ooAi/Qn7glyQYAf+zoBTgU+IyJXEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iz5w3LXU; arc=none smtp.client-ip=209.85.210.175
+	 MIME-Version; b=pThoW70Ipe6UdxQvJmqLNJQxDtvQ6pl3eyRgF+TlWsYrIx0Vhm3BmsLLkKoTIs5kncGqw5BvRx+yEvTj+LBNqz5hbfyW+W6PRe1OnFH2IriuU2POUDrCzryA7BPpfTXmVNDug/QKt/g3wK5frMCALNTtDdO1aT9sMg1Ufy9ljxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T/PrkAbE; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7720f231174so1555043b3a.1;
-        Fri, 29 Aug 2025 01:02:59 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b4755f37c3eso1570525a12.3;
+        Fri, 29 Aug 2025 00:55:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756454579; x=1757059379; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756454149; x=1757058949; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ji3KkW3qUsiM430Q8CaZBzXxSVywrfxa2oAywWyFSjA=;
-        b=iz5w3LXU7XG4NJJFh6JefPvazJrNiHtO6WJ1Cpxe2GJsc9IuITz2gDST5g9A12ywz6
-         5nRD2LcBNbOQN0G3Lf++FWqahxBkPsZIZgcsjxi0alLe8JsmvWZ9SNyApUMiSjQgM88A
-         A9bSidnrzdKRldwyOx1kduh6mh03uBXRvoBDXhLSHuyZYKHazy6DFnLKCSJ+Zu9E+ofL
-         ioQcMc+VqJ3HskJTy1B3ff5hqNbPr613J+m3MgnYs6bgnSQ2y0Be9jpnnb/ixwh3ADq7
-         3kAgBj42FMCzGWYlDmR46MjEJidq8ePt17Smk/kvLLuf/0mfOYPEmPg3h1UA84X4RlRK
-         ZsLA==
+        bh=mQcUO3MMNiHKjyp0GXG4A4uvsTQgAsYSLBA8ucpISkE=;
+        b=T/PrkAbEDgjnmooE6ttNcyK3EB3/X33I1ZV1rEbxXFyHf+Aj35dnQhz7bfaWzgxcd1
+         sc+EQQn403MHJ+gE88k2ZoqEvsu9l7pvYduPA3u0Y53wNMvVaKajDMtMoP4k6zQB5FO6
+         sUdkchM0EMLwLnNowwb9LM3MQc8LKoAv/jZOIGAzuUUDoI1xbm2rGBXel589wjFmfGNd
+         i8bwPCREuv35B35XkH7ufMkmPQ9WTdeQ9jjj2wnoA/xyq3f+QwZW61ffcuvNW5dsu9JL
+         sZeGz9xVmihcIPFtF4SFsMX834A8aS6ljmP5UXxMI+P6t8CQialhwMumuzLl8nAzybRj
+         QG6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756454579; x=1757059379;
+        d=1e100.net; s=20230601; t=1756454149; x=1757058949;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ji3KkW3qUsiM430Q8CaZBzXxSVywrfxa2oAywWyFSjA=;
-        b=bO6Kb9itXNqe/7mZ5mCLFhD4Ps5h6gYkVa/2lqSKKZoom5sMWOc50uQl+QIvSLRuyo
-         NVQ4N8QSOOo8Qh4db+kcHt4ZpK94/hrOtElRWuVcAqBQBzP0+zDoirqklaZ2OmOVYYSS
-         dL4WYnxd4XdF8xKpS1s5iKvTB87m0mu+DjD65ym1uT5ZfRIM0MhPAbMrciefGzKOh5My
-         mmJ05glKgZTQPZahYEzHaY+Jqdzah2Z1WdHXWscG7fRmrJqsODGa1LMQuV+461itbPO0
-         7jxTI0PzbFq/NTU8qpEVU37+/IceyYmjfqMlkGDBSuX3LHMs3PsF5tTjDBFbZxXM6yVm
-         vJDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4otoMrVFm24C0rn+TBc/oCIIYzdgpJngJyKPaMFP3rQyMxX7US6osigjfFJTFuYXldUAygv3X@vger.kernel.org, AJvYcCUMq9OofPdjCb/k8aiYBW2xeCGcagQEWm+bPoyCPPk+f2N+q0dLU+EIJts+itz0w+RKOy+hsGX1qKEQeqo=@vger.kernel.org, AJvYcCUX6dDPgJdUjdYB39iA2S24EU+gksdi4x5BaCb8BeiJ5Dh9yMDEmmTEuPwNw3EIX3azm6t54xtpDpO+@vger.kernel.org, AJvYcCUeolW69DQmdmT7ZNkuOFpP8gW4CQCvjOypBTDEvted89iuEXTlIOAL4qzGEfTVt9/ti8COikFGtEEAwQ==@vger.kernel.org, AJvYcCUuy+verHzC1MT+5D9Nnn1KK8Y8aFMoJBGhQ3fpRFl9Gi1ZflkQjrXuazlvJSdqBo/lyEI=@vger.kernel.org, AJvYcCVJjOjQgPPZAf1FdT1ZRF9aVeZyvoTg5s6fcDiwRflMWhi6I4QKdCwF5T7jv1SwHtL/fFrmn3DNI7R0TDcy@vger.kernel.org, AJvYcCWbq5h1c93VS0ok6CgusN/uk7QxadgNI84+nLL88kR2EaRkXTOWq84KEB5wTxAG/2sIAE6QFirG+txVHEM=@vger.kernel.org, AJvYcCWn/xf+8HPUKNZlHLk1KJIZcsT0oyM5U1m7c0RKYIsCHwHkzfKG8KIV7HBYM9YbWWGjy/k07RvX0S/0@vger.kernel.org, AJvYcCXN0qtDi7sLM9hEr50+1aGGEkS+KOWtTw/4/nIHrAtaPgp6znWsANFtzE5ZNAD5ARzPQ+VkYbRPBZM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwiUlmwUsAu6R0o003MWYf2kazlutMaLwEtMRBvxqNgn8a2Q8Sb
-	36fJU7MMxegq54hMc3Ekh5WpUMkc94zneK3768BMOfzuVpXSEhMUeJIA
-X-Gm-Gg: ASbGncv3kWYDobCixjrs82gpp9GoqCj0aUJN9jlp2HjdN1+oVZXqtXTX+eAeDz4gdb5
-	QJR91YLFGfCcTAymyanAkS2Bh5T4CoPC6NIo0fkUf8vTu6yYkFk9fjI8LBhhNR2vkLlGpxPDlMa
-	VXNiWkmuh/BhhsHwtv1QIFSZsmXvyOMvePGUj6R1ySEunr1hAY8Z0ZLfli0BdNzDK+PPhAA8nPG
-	aT5uGhlEg3MBMZ6SMp1Got0Akft9cl2FOp8GCBtxkqydc3CObouE6+6HrJfqg5Z4epLPk/N555M
-	gJBp8d9ok7hyzoySG23MYatZGQ0UXiRQMCiKogqJpyKxsdv6yptBjTXyIG69NK5Swnhm8esayT9
-	ReJkeKSgtf7kBoejm63jPkrFTzV8o4Tkqtkn1983FrPo9mOk=
-X-Google-Smtp-Source: AGHT+IG4XzsUhVmrn4fJ8v1PNDsbGNCghgUfxDPbkeqpUjvEg9N6RxHWj66Wbdw1AdmD0ATs4dsvZw==
-X-Received: by 2002:a05:6a20:3ca8:b0:240:750:58f with SMTP id adf61e73a8af0-24340d91edcmr35447322637.30.1756454578938;
-        Fri, 29 Aug 2025 01:02:58 -0700 (PDT)
+        bh=mQcUO3MMNiHKjyp0GXG4A4uvsTQgAsYSLBA8ucpISkE=;
+        b=c0MepO2zuk32WlNy9OaWrezzL/BBBXS0OIuGgJzE/LE6Xu5CmI3zq/3Vj7SfP0bRDP
+         gm/2kPP2vGc+Z44kqYCYOeBIUu5T14pMlnkFRYofeR3KTt8hXULPAXdVAooCPA5rdMsR
+         0b0lWQJS1kC7G8QTNK1yGRsg8DPmsmxF4BLyS69anVYIom+/mFwQULmdDuEB8Me9VQi/
+         Hfwblh/f40WpbeD3mgFf5+ur8iTPxpTGRS44v/HRfFR+yF5uyiPBJMN9uK+cYzXKzlTg
+         IOlCndfD8feXRVo3loHKOyY04N1X28d62QTpq1ipl6Fnry650dBuVamur+wLdzGM80f0
+         54gw==
+X-Forwarded-Encrypted: i=1; AJvYcCUC96xhMssdMUmU3J+rHxyQtwzKxAY7L0kv+vxKs9JybCOX0x68C3+v+4ZGPSehoQCZwT+OEf+U@vger.kernel.org, AJvYcCUkIaXEiSBSDjo4lv5twD77phstJWd7CQGKVxfoOn+qWaA817dlVYjZNi+RWxOFSmTg83Nl0ZiVMJMszw==@vger.kernel.org, AJvYcCVBgeGkLBhXYA05N39LCXv307vE2ri5mne2QVNgpJ60cOkI68rnkgxckup9H3+/kvHRdPwl22nN4Fo0PeUB@vger.kernel.org, AJvYcCVMXSyr6D/RWDQaQ4UdcSM6AujCU3ouEBtN1MedSihIqs7cApu/6ttjC4YkwhKgC8m70CxLCWQypHiEwkg=@vger.kernel.org, AJvYcCVZRfTWOVBg6lIO4cJPsufnu9l9ugx8wCJ0XJqYufTofL13VtfB6Pf6GH4goCUviOIPs/NfO0eH3Ur3@vger.kernel.org, AJvYcCVeZ+ewrcd5moUVF9suB9J8KfaLpdBO0dyO//yi8yoXD+RooB6e00YcEJDieWZlRzd0OYPuujCPU3c3@vger.kernel.org, AJvYcCXGssv+qy3+boqIdZxqARk3ujZIs1bNQtndqyrorAJ7HQB83pBSekoc5/onq4ZpP/4VH5Z8mqHZZgW5zbo=@vger.kernel.org, AJvYcCXfs7TRVyOPDB65hplta4sYo+ta9s2UOtFH64jPlNb3H4/MNEhEvoZAkaM6FegIbULxDzA=@vger.kernel.org, AJvYcCXmmB76Rg+c+9ppoe2TLF/1KfCdKJzyaGHpkHhH1Bw7nVhKyX4ILxQZvbTy9Ee2qrvmZcfpmgahN7g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCMAQmw5aqSDNvDujOu/TdjwPJzAK7yCc+5fyHemzann48Wzbt
+	mFwGOKrsVD219zxcP2KROIQKee+lFqjcA8K73BUI37oUfq+XNl+HL67z
+X-Gm-Gg: ASbGncvij/WkXwcJct2nEOCd78fX5I6d86tD1oYJ9faqegNA38njj8YFmcm8rpC0bTp
+	B2jKVgorqMCOi7htUiB69hicut01b8jn9B9y2ohOeKo7jxoUepj7m6HLzVPgLCnHUOmtUM1GQxv
+	2Q6h6kdN0Z61FxpOUDO/YTUFSKnN83VUE8sD44FiiHX15b4QkTjBdulpoGLn411OyUZngDYfrjn
+	rgMCrRlfR+QrWol/Mg6PC1Mm0+zsMXwucVZMiJdsIz5knbfiPVGuCX4bvUc40LuZiYBeELGR3a7
+	mWZZMvATC+AWpdp11AxcVQ++ZA3PdJOy7vIXrdkptUOaPWfjtixcV4cOZPs4hC8MONb7oq5qPha
+	VMHcKrnCvw7eShL2eE1G85rq9aaaWkiMimIX1
+X-Google-Smtp-Source: AGHT+IHLqM32trOVVzh172ftn7E15FM6Ea2Jk4ybBnzNmcbOCkm5faJ3oUsml9NRpuaa5OiBwPVbig==
+X-Received: by 2002:a17:90b:4ccc:b0:327:7c5a:fe77 with SMTP id 98e67ed59e1d1-3277c5aff68mr10961209a91.30.1756454148623;
+        Fri, 29 Aug 2025 00:55:48 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4cd0e1c0besm1461992a12.24.2025.08.29.01.02.57
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-327a22ec24dsm2591905a91.3.2025.08.29.00.55.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 01:02:58 -0700 (PDT)
+        Fri, 29 Aug 2025 00:55:43 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 1E9654489F51; Fri, 29 Aug 2025 14:55:28 +0700 (WIB)
+	id 3924545A3F85; Fri, 29 Aug 2025 14:55:29 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -176,9 +176,9 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Bart Van Assche <bvanassche@acm.org>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 12/14] ASoC: doc: Internally link to Writing an ALSA Driver docs
-Date: Fri, 29 Aug 2025 14:55:22 +0700
-Message-ID: <20250829075524.45635-13-bagasdotme@gmail.com>
+Subject: [PATCH 13/14] nitro_enclaves: Use internal cross-reference for kernel docs links
+Date: Fri, 29 Aug 2025 14:55:23 +0700
+Message-ID: <20250829075524.45635-14-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
 References: <20250829075524.45635-1-bagasdotme@gmail.com>
@@ -188,50 +188,38 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1684; i=bagasdotme@gmail.com; h=from:subject; bh=QIAPxg2EoM7XBiBH/OfCd9SfIrsCdhbBl57WJdF7gOo=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY14FftK8Ic/EqPdDdzlDXfSrtOCCiCo1tq0af6f2T rxS2nS/o5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABP5M42RYQe/RHjLfYX8tv8L 9vQt6eKUm/OnRm/3gUlFq/44pi2Xf8HI0BjxjsH0R+yFD+urVrRxaVu1SiT8M9vxwkWu7L/ecZP DfAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1391; i=bagasdotme@gmail.com; h=from:subject; bh=evrdLEAoXKuQzTljW81Kh3KyWLApG8gUObVzJ2YlNgE=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY16J9usWFB1WvT+NSavLIanh+698vZJvp5Iqyn5cF Oeb1Xiho5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABPJ/8zI8C+tSSfleGvDlW33 Ss5v/Xrog5zFrjCmKzem/Vr2Ka6JL4WRod0y2uaV0GJBfuHrJzY9vTqdTVAvLqhtcdO5S89liyP teAA=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 
-ASoC codec and platform driver docs contain reference to writing ALSA
-driver docs, as an external link. Use :doc: directive for the job
-instead.
+Convert links to kernel docs pages from external link to internal
+cross-references.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/sound/soc/codec.rst    | 4 ++--
- Documentation/sound/soc/platform.rst | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ Documentation/virt/ne_overview.rst | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
-index af973c4cac9309..b9d87a4f929b5d 100644
---- a/Documentation/sound/soc/codec.rst
-+++ b/Documentation/sound/soc/codec.rst
-@@ -131,8 +131,8 @@ The codec driver also supports the following ALSA PCM operations:-
- 	int (*prepare)(struct snd_pcm_substream *);
-   };
+diff --git a/Documentation/virt/ne_overview.rst b/Documentation/virt/ne_overview.rst
+index 74c2f5919c886e..572105eab452b2 100644
+--- a/Documentation/virt/ne_overview.rst
++++ b/Documentation/virt/ne_overview.rst
+@@ -91,10 +91,10 @@ running in the primary VM via a poll notification mechanism. Then the user space
+ enclave process can exit.
  
--Please refer to the ALSA driver PCM documentation for details.
--https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
-+Please refer to the :doc:`ALSA driver PCM documentation
-+<../kernel-api/writing-an-alsa-driver>` for details.
- 
- 
- DAPM description
-diff --git a/Documentation/sound/soc/platform.rst b/Documentation/sound/soc/platform.rst
-index 7036630eaf016c..bd21d0a4dd9b0b 100644
---- a/Documentation/sound/soc/platform.rst
-+++ b/Documentation/sound/soc/platform.rst
-@@ -45,8 +45,8 @@ snd_soc_component_driver:-
- 	...
-   };
- 
--Please refer to the ALSA driver documentation for details of audio DMA.
--https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
-+Please refer to the :doc:`ALSA driver documentation
-+<../kernel-api/writing-an-alsa-driver>` for details of audio DMA.
- 
- An example DMA driver is soc/pxa/pxa2xx-pcm.c
- 
+ [1] https://aws.amazon.com/ec2/nitro/nitro-enclaves/
+-[2] https://www.kernel.org/doc/html/latest/admin-guide/mm/hugetlbpage.html
++[2] Documentation/admin-guide/mm/hugetlbpage.rst
+ [3] https://lwn.net/Articles/807108/
+-[4] https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
++[4] Documentation/admin-guide/kernel-parameters.rst
+ [5] https://man7.org/linux/man-pages/man7/vsock.7.html
+-[6] https://www.kernel.org/doc/html/latest/x86/boot.html
+-[7] https://www.kernel.org/doc/html/latest/arm64/hugetlbpage.html
+-[8] https://www.kernel.org/doc/html/latest/arm64/booting.html
++[6] Documentation/arch/x86/boot.rst
++[7] Documentation/arch/arm64/hugetlbpage.rst
++[8] Documentation/arch/arm64/booting.rst
 -- 
 An old man doll... just what I always wanted! - Clara
 
