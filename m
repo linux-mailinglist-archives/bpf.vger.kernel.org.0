@@ -1,62 +1,88 @@
-Return-Path: <bpf+bounces-66919-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66920-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89122B3B08E
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 03:42:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CF9DB3B0BE
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 04:12:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50F3A200C61
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 01:42:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18C7698814E
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 02:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 075B51F09B6;
-	Fri, 29 Aug 2025 01:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DF821507C;
+	Fri, 29 Aug 2025 02:12:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="m/9q9vzv"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="aOMjaQEx"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74421A23B1;
-	Fri, 29 Aug 2025 01:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87CF3282F1;
+	Fri, 29 Aug 2025 02:12:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756431725; cv=none; b=YziX6RFvbU6LBbYEGMjGinNZfhgdKzcB6HtckHZEICD9FhcBzKWZDp3WkXJPNjtycCiv2dXGyawydEfw4U3FYSHih1Af9q7xgIY3VCqxujVQ1D83/Y1aC9conRRIDSHyTMegw2ktozH148zKtt1GO5XwYKfzgW1YlT2Hc1YJJ74=
+	t=1756433563; cv=none; b=fqabBJRy9mDJ3TxAljpobFH7LaPymM+OnBctlPIWttcqbzrNOQLuxtCGF+UZPKm+Cn0RkypA5pbJ2EY0W/tyvz5pGLD+ovTX7D1p8R0pv8/uHCcWB36rPnHOINhV+wLG990onZBR9RDwv/RF/87boIv0ZypyfbpOsj1+6ZLv/bM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756431725; c=relaxed/simple;
-	bh=nVEcU2CtQRVhw3xToJfM7g9BJlq7bGKMEjErO0KLGf0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=K8ebQxyIZ+xtUzSAFHchXT4Ias/6edPGaEq5Q7nTn/h2v15StxHVAd9z0QuqMHZ6YUyQuWa0ytFNTbG/VtdP4q5TrXaehi11a2c3xlhxWI/mZghxoh1pOinzNJ9MFWsj5Xds/EG5T+ewQTNtjBmhTtsTpMpL+BiDa/eV+LK5bhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=m/9q9vzv; arc=none smtp.client-ip=220.197.31.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=Uh
-	lgy4Ywf0NSBeLK8rCRboihXyWCo7Qcuxp4QSGjAfI=; b=m/9q9vzvYX7acbGhvo
-	vT8hWzSt0Cv5Ml2jjyXFgUqth8DUfsvUT3yqI7xKmvLaeQroTI83jV2gOa6bzUlv
-	1PZQBvtnIK5h71EssQt5tODCOD+iYNap2aNiyK2Nq0od1QTubE1EsxIuDNZsgcMp
-	g1otSp7+Mgs2e7bcsu/BKsg6Y=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wAX5GJFBbFowQQwFA--.17685S2;
-	Fri, 29 Aug 2025 09:41:27 +0800 (CST)
-From: Feng Yang <yangfeng59949@163.com>
-To: ast@kernel.org,
+	s=arc-20240116; t=1756433563; c=relaxed/simple;
+	bh=51uAMdHVDwoFTVTVYf+NlRl0ILVmKg0xaUDXaj1Nq/M=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=VdjC41LmAv/UlypbW7xqWyww2qCYXEpcFG5X0NoWVynpJijoBfJKMCar+Dd8aDSi6TMH4XPpgd1z2RvA0iNXeKJagqLL3v5Ip0ShYxmRUWeJn7evjhc93tSGOe/vXqrsTxAAmVaLu+qKX3Erj9i2qIUNO/yr6K7AKT0dHNNhBek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=aOMjaQEx; arc=none smtp.client-ip=43.163.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1756433556;
+	bh=4v4LNsGqTHD7ULFJNVAcOe5ApYuY00p0ODKG+0gwLYA=;
+	h=From:To:Cc:Subject:Date;
+	b=aOMjaQExR/NqpBJvwP5S6twzUMB+3+PNef6rV4Q4jhG8rSF4wyDeVtksuDST3PGHu
+	 z8sx1RctOGbvgIwQaOQjlRyZvf6gRlaDdWtUsKtuemgfvBJnGUQ9isCS3BdjfT7gWO
+	 T43scL45iiroscDsvp18qW1YESPREiMrmWmD9HK4=
+Received: from NUC10 ([39.156.73.10])
+	by newxmesmtplogicsvrszc41-0.qq.com (NewEsmtp) with SMTP
+	id 31F13A44; Fri, 29 Aug 2025 10:12:31 +0800
+X-QQ-mid: xmsmtpt1756433551trq3aing6
+Message-ID: <tencent_0682AB14BD5A8D0623CA1B440881665D5F0A@qq.com>
+X-QQ-XMAILINFO: MtZ6QPwsmM9XukR/3G/ZOEbVNiVQpzxTcvIYYfcSxan6lDtbR0d+Cqg/jIYw7m
+	 lYXdYJUtcDEeiY8FkIHj86i19KfbwVlxz5yrq3/EfGL4eH7rcjpN68gYlKQvilJUO9tLzxywvW81
+	 BQaaMDfpC9Z1Ts1IktVsZ5gQcSJuGD2K/INWb1VozDaU9DUNLID2B1wKcscIqJxkaOVsDjkUgpCv
+	 eACOwi578UTQ86M9Ce47zxCPTZhmH8+iNV61yL+/UlAxBhZMGXyP55Tf4eDCxJmxlEIFIMQap334
+	 JhA+ykdVjDOSSyvUW7fS/7pJrJOPeX8xvHfxaIjexQYHUIIwHk5aUNyY7Vuj5Qo1rrIu704vIHVV
+	 HEExwoEQSWXu8Ftqrw6ADOVEpRrC+bhab/4CP9edReUdUHld5zhT2mDIHX+v42zMKhRUvdZ+URm5
+	 xMmnIV6O7S+r4B7BHbo3TeR5eUitK3lFfpQ/AzpRdtRPzPFqA+jx7jmZqgXFMYfVJ7mRccCMBN3T
+	 r+gLOQDHTNqRk44nTCknILDS8+8G/q20Yy9SYMtRIEsQF0PU/sDKOzDPLd8pIvtnxQAqAahIUkrX
+	 LJjXvgNcOVSEVNHwoVpxiAYwDRE/HnXich14loNSKl7tWUlHXn49MjUxWExKh/yPvVHxqc3eo1ku
+	 Y/enWhvo9cb4plNCKkMh11HkWggHkc0O8d2+4AAALE/kDSV3vUpj2cowvfyB3QFhVSCQ4eB/+SXj
+	 dWxhoesPotAkueE2Bzf5jFl/Qz+fJOHEg5jW1RtxVZLb+5Ai4rAM3UjwzspO4CTrK7yMLeRkDDg7
+	 huMwn4UtwVvpuJEwde9HBkhC0vDysFguoazkjHcsDGXQdXrMSAi53nDV4GgMxBKwW/ptTXrLK1tg
+	 dkHWItnQs+dcybeDXSTvt5EtBKhee8tJL5QW+QNCdx93bwUvdbk2+WYgNQxcytKmjI3UV0zkeY+T
+	 8aXvDhTnkjuYjU3FvGEi76x6lN7EZJ+fJHbe6aboBHdsntkAqnCprn435U6w6dUkc7VTHG68Q3AV
+	 1aFTXM2QQYZrnySrvX
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: Rong Tao <rtoax@foxmail.com>
+To: andrii.nakryiko@gmail.com,
+	ast@kernel.org,
 	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 bpf-next] selftests/bpf: Fix the issue where the error code is 0
-Date: Fri, 29 Aug 2025 09:41:25 +0800
-Message-Id: <20250829014125.198653-1-yangfeng59949@163.com>
-X-Mailer: git-send-email 2.25.1
+	vmalik@redhat.com
+Cc: Rong Tao <rongtao@cestc.cn>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kernel@vger.kernel.org (open list),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+Subject: [PATCH bpf-next v4 0/2] Fix bpf_strnstr len error
+Date: Fri, 29 Aug 2025 10:12:18 +0800
+X-OQ-MSGID: <cover.1756433400.git.rongtao@cestc.cn>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,50 +90,28 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wAX5GJFBbFowQQwFA--.17685S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CrW7WrykAF1xXF4DCw4xtFb_yoW8Xr1fpa
-	y0gw40kr1Fqr45Xa18Xa1Uur4FgF4vq3yrWwnrKayYvr1kWryxXr1xKFy3uFn8WrWY93ya
-	yasFqFy8u34UZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jbKsbUUUUU=
-X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiYwG3eGiwemSS8gABsK
 
-From: Feng Yang <yangfeng@kylinos.cn>
+From: Rong Tao <rongtao@cestc.cn>
 
-The error message printed here only uses the previous err value,
-which results in it being printed as 0.
-Fix this issue by using libbpf_get_error to retrieve the error.
+Fix bpf_strnstr() wrong 'len' parameter, bpf_strnstr("open", "open", 4)
+should return 0 instead of -ENOENT.
 
-Fix before:
-run_subtest:FAIL:1019 bpf_map__attach_struct_ops failed for map pro_epilogue: err=0
+Rong Tao (2):
+  bpf/helpers: bpf_strnstr: Exact match length
+  selftests/bpf: Add tests for bpf_strnstr
 
-Fix after:
-run_subtest:FAIL:1019 bpf_map__attach_struct_ops failed for map pro_epilogue: err=-9
+ kernel/bpf/helpers.c                                   | 10 +++++++++-
+ .../selftests/bpf/progs/string_kfuncs_success.c        |  8 ++++++--
+ 2 files changed, 15 insertions(+), 3 deletions(-)
 
-Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
 ---
-Changes in v2:
-- Use libbpf_get_error, thanks: Alexei Starovoitov.
-- Link to v1: https://lore.kernel.org/all/20250828081507.1380218-1-yangfeng59949@163.com/
----
- tools/testing/selftests/bpf/test_loader.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index 78423cf89e01..b8e102eb0908 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -1082,8 +1082,8 @@ void run_subtest(struct test_loader *tester,
- 			}
- 			link = bpf_map__attach_struct_ops(map);
- 			if (!link) {
--				PRINT_FAIL("bpf_map__attach_struct_ops failed for map %s: err=%d\n",
--					   bpf_map__name(map), err);
-+				PRINT_FAIL("bpf_map__attach_struct_ops failed for map %s: err=%ld\n",
-+					   bpf_map__name(map), libbpf_get_error(link));
- 				goto tobj_cleanup;
- 			}
- 			links[links_cnt++] = link;
+v4: Add comment and more selftests;
+v3: Fix selftests/bpf error in v2, sorry about that;
+    https://lore.kernel.org/lkml/tencent_69BD268FBA201219240B51661D5E96A8D80A@qq.com/
+v2: Follow Andrii Nakryiko's advise, fix the 'wrong fix';
+    https://lore.kernel.org/lkml/tencent_DF4DA83EEBFB9246E5E3357BB40911CCA005@qq.com/
+v1: https://lore.kernel.org/lkml/tencent_65E5988AD52BEC280D22964189505CD6ED06@qq.com/
 -- 
-2.25.1
+2.51.0
 
 
