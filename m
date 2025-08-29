@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-66959-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66958-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C2CB3B578
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 10:05:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27180B3B573
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 10:05:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 198CD564FE2
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 08:04:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11DEE4679B9
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 08:04:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DE82D3EC0;
-	Fri, 29 Aug 2025 08:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589F72D24A0;
+	Fri, 29 Aug 2025 08:03:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LBB32ZE3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iz5w3LXU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE9829992E;
-	Fri, 29 Aug 2025 08:03:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08F22857DE;
+	Fri, 29 Aug 2025 08:02:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756454582; cv=none; b=HwA1YhrDQeTHO4lSm7aWeIYOkZQlrEEgg+V54wsFKgFtCBBilcQRtd2TrHcmw9Z+fuCUsN/kO/oCbsL3s/LCGWkxUHYz9MSzoUnccP07fOgw7D89vpzAcy8sdKquXFmao4Jz0gCMbTFufkA2+Ej/IP47bS8aUpmavIh5EcR/hBE=
+	t=1756454581; cv=none; b=XKNjLWnkGKs/zxt4Ni7wRV8psVOCXGC4i5ZUA6P/eyVY7+zemDcbUZU8a/sHbuBY7tiOmfFGVSuCTMTlvfljcNE95Y1Kx0MahOgiMifo54PNk54hxf8YPHp25hZ6ObPQ98aGZ6t7UiPOBnlETtRUi1tiQ0V1I3Awh1BVb/IlQCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756454582; c=relaxed/simple;
-	bh=eMX/Qh24hdl/D8upWlphNzasCNRD/YCgXxsSIbz5MxY=;
+	s=arc-20240116; t=1756454581; c=relaxed/simple;
+	bh=QIAPxg2EoM7XBiBH/OfCd9SfIrsCdhbBl57WJdF7gOo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hfWJ3QmlNabph2hpImO2wabaFvpuC1epNPykoJGKSStza1eU4u/ULyKfqko5JapK/W9Bd5C9l+jFDmr5xBKyv+kgWCbkl+J3iQoz1cqquf7aOtArOhQHmsYgFKmXWK+tFKPwya2t7kPX0z/DoNQvw/SarrC3krPjhkMem/v1nLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LBB32ZE3; arc=none smtp.client-ip=209.85.214.171
+	 MIME-Version; b=Nkb5bOEXPsX79UPWThE29Iv/nZKUEpncDfZaA7Dn2GCnur756RqYvmvv2HCdSWejjMHhJxNR68jbXT3SQAmpBLJ4rMT89veFCwUR/gXLvtern2FpVbl990TplOBcwdNhGI/21EeF6Z9Xk5ooAi/Qn7glyQYAf+zoBTgU+IyJXEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iz5w3LXU; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-248df8d82e2so11752065ad.3;
-        Fri, 29 Aug 2025 01:03:00 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7720f231174so1555043b3a.1;
+        Fri, 29 Aug 2025 01:02:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1756454579; x=1757059379; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0AfZlK+2PpvnkbeUUWLESRnsPEd9fz1tduXIyE8HjWg=;
-        b=LBB32ZE3h6wVAtBgQkBBDLcZdfoFS6/AbAuz3H+B89It1paqDs8stvayV9p8vCPHJe
-         DnMdKmThMwX/dhaJISNWXMqCZAC7BJeMMdAk7tUgRrzhpWs44bCJA4qQNbZ2qeOp5G7L
-         /dzQiVvAB0bQQLDsRNvmFHahF4Pu0/XaZTakWb+B9L6dC2goVyU2cr2OmGRvImgwhvPQ
-         fxEhM3WU88vilITw4wzjveQjgIbbllGzyc2q6/zsMiNrT7Gv+PhLUu5bvLLpnpAdPMXd
-         8X5cGJagF0WQuk7Qw/I9mR9U86+xedE7ZMB8NrtljCgz9eU+3Z7IilIyldcFAT8z9ba9
-         Io2A==
+        bh=Ji3KkW3qUsiM430Q8CaZBzXxSVywrfxa2oAywWyFSjA=;
+        b=iz5w3LXU7XG4NJJFh6JefPvazJrNiHtO6WJ1Cpxe2GJsc9IuITz2gDST5g9A12ywz6
+         5nRD2LcBNbOQN0G3Lf++FWqahxBkPsZIZgcsjxi0alLe8JsmvWZ9SNyApUMiSjQgM88A
+         A9bSidnrzdKRldwyOx1kduh6mh03uBXRvoBDXhLSHuyZYKHazy6DFnLKCSJ+Zu9E+ofL
+         ioQcMc+VqJ3HskJTy1B3ff5hqNbPr613J+m3MgnYs6bgnSQ2y0Be9jpnnb/ixwh3ADq7
+         3kAgBj42FMCzGWYlDmR46MjEJidq8ePt17Smk/kvLLuf/0mfOYPEmPg3h1UA84X4RlRK
+         ZsLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1756454579; x=1757059379;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0AfZlK+2PpvnkbeUUWLESRnsPEd9fz1tduXIyE8HjWg=;
-        b=vLl+slBl1kWpngjzXE0QeiGJqIRIf2E/oTCcrrwMhpLYGInyF/smv3Ft9OgCQoz4y0
-         HoUJ2fTtDJvc4nGaLm5whUGnv4TjTd+6BBp6JjORpdaajMQdMPTdsYTmc/kiCUIcPgfP
-         DDN93fIzkdCfRYNlesN35zu4fdMmQH1fh6IGkfcYQUGir/kPdpIAO/0g60H8l6WDLkdX
-         GiPw9fDS0LspOfdYsiGcLLN5QQzcw09FP5r7jAg7iTMqT9ZvL8DAmxX30MK6wrrPRN25
-         K4b7OSW4kXGn/tCfWnSa6wLOXm5oOPz9P8GhDwHjgI4TnyvfNCef65fBL4Ygi+2dirFm
-         j4jQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUaMWqDrpxeb/7v2nRwbambWuC09rs1oIwGtve7hIiS2FuMYCPVP7cy0cKMTm7cyG6xux9IZ9KWmkzr5U1F@vger.kernel.org, AJvYcCUbj90W7DDKTzaL2Mgi5VpC+tpVjS/hNkBrjla1cWnmEzWRY5ddQMC82N29/lPqyexyYQsHDrm3i7UZWKs=@vger.kernel.org, AJvYcCV//DjOhQFYcFQ2pjvgscXwzja1kq2dx6/4ryq+O/gvGGOPUNiBM8B+nj0pKMnwsDoTuKqPHsRvqwhG@vger.kernel.org, AJvYcCV7KvlWV81T8xE9UsYX6bnrS38K1KteBR0Qgy3wkpGXGqRCDK510C1FuBElzH3jdd3qthmUlH3Au9Vk@vger.kernel.org, AJvYcCWCgVQHkVgn8Vwj+E4KbZPRAizUpfK5jgQwWXu1T1azxVtA7R1zwThIa/2uw2h2M5pn32Q=@vger.kernel.org, AJvYcCWKUEnvejFhX57qXLEPb3sOLdxKNvCzSJW5KJCOM6a7udakfpV0Jam2kVh3BpAN1D7DEeN8r5IpWsYKMw==@vger.kernel.org, AJvYcCWvbYrR35IyuA5eO+xIDRddVRN1NjSigNg6YTGE3PeRv5KagcNDi9SK2GYZ6VoZf9xS7m38yf+O@vger.kernel.org, AJvYcCX4S/qPMxZubDSOGEKUBxjQ7TZon4s26GVAs+tEXq/6TdGNy1dP6ufXqz3X6LGf0VqlDv6HQSUu3mM=@vger.kernel.org, AJvYcCXtlPlwCnn4+pMeu29VUwD8sszlmm+FW7UfPM2h3Bx9iA18UtMz6NUVpTCstLN6hIgIjf4ydzgusiVk8KY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdO/bnej+Roq27QikLSEVWw9yN1ZITxJO6fJkutxH8AaSnYGAM
-	o7InZzkFkBQbmfi+7zEGNtM5Y/cnEdT4RRPXn21KhKikzY/jr+F36uTM
-X-Gm-Gg: ASbGncvSD99emGxggympLMXTnmEy9isfsRo9BNklwaWyZXQZ2oBjQkj2DtBksoevyq4
-	oJ+Tjj1h1vrop7C6CcjoNklUGOCr5rxHBi8alH3sMMVY6eg5qkr/HUhisxCu7Dwmin+e7pSGtTJ
-	KmHN6L78JS/m3i5zv1hULh7WpUWaCuF9B0Ijd+IxXQeWrao8o/+41EGfAUMyz8gHs9TR35jCmB+
-	WFsFPsZF0TLDz/j78V+ER4W3NhAUX5oexKiuc6pTj3J+ebLcJfT6BMpgT7wIRLzj39JPQf2l0sZ
-	MqFgHk2CEyOHm5L9/9MReRyuhLJQa+wqwlx2uxdXkjvre6CEm5hbBqiwlDe7rBpskSsgBnoYkMB
-	SRsnnsc+3+9Lte70vn03+Sad71bvN1oX+yiMrrxC/tp2AdKU=
-X-Google-Smtp-Source: AGHT+IEwoXGIzV8akza9wuHnzpdMDJjRSJFuE8pmXkEOlv9nwKY6YvijMOuiPPSYq1k0su7e61Abrw==
-X-Received: by 2002:a17:903:acd:b0:248:cd0b:344d with SMTP id d9443c01a7336-248cd0b381emr78909285ad.9.1756454579374;
-        Fri, 29 Aug 2025 01:02:59 -0700 (PDT)
+        bh=Ji3KkW3qUsiM430Q8CaZBzXxSVywrfxa2oAywWyFSjA=;
+        b=bO6Kb9itXNqe/7mZ5mCLFhD4Ps5h6gYkVa/2lqSKKZoom5sMWOc50uQl+QIvSLRuyo
+         NVQ4N8QSOOo8Qh4db+kcHt4ZpK94/hrOtElRWuVcAqBQBzP0+zDoirqklaZ2OmOVYYSS
+         dL4WYnxd4XdF8xKpS1s5iKvTB87m0mu+DjD65ym1uT5ZfRIM0MhPAbMrciefGzKOh5My
+         mmJ05glKgZTQPZahYEzHaY+Jqdzah2Z1WdHXWscG7fRmrJqsODGa1LMQuV+461itbPO0
+         7jxTI0PzbFq/NTU8qpEVU37+/IceyYmjfqMlkGDBSuX3LHMs3PsF5tTjDBFbZxXM6yVm
+         vJDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU4otoMrVFm24C0rn+TBc/oCIIYzdgpJngJyKPaMFP3rQyMxX7US6osigjfFJTFuYXldUAygv3X@vger.kernel.org, AJvYcCUMq9OofPdjCb/k8aiYBW2xeCGcagQEWm+bPoyCPPk+f2N+q0dLU+EIJts+itz0w+RKOy+hsGX1qKEQeqo=@vger.kernel.org, AJvYcCUX6dDPgJdUjdYB39iA2S24EU+gksdi4x5BaCb8BeiJ5Dh9yMDEmmTEuPwNw3EIX3azm6t54xtpDpO+@vger.kernel.org, AJvYcCUeolW69DQmdmT7ZNkuOFpP8gW4CQCvjOypBTDEvted89iuEXTlIOAL4qzGEfTVt9/ti8COikFGtEEAwQ==@vger.kernel.org, AJvYcCUuy+verHzC1MT+5D9Nnn1KK8Y8aFMoJBGhQ3fpRFl9Gi1ZflkQjrXuazlvJSdqBo/lyEI=@vger.kernel.org, AJvYcCVJjOjQgPPZAf1FdT1ZRF9aVeZyvoTg5s6fcDiwRflMWhi6I4QKdCwF5T7jv1SwHtL/fFrmn3DNI7R0TDcy@vger.kernel.org, AJvYcCWbq5h1c93VS0ok6CgusN/uk7QxadgNI84+nLL88kR2EaRkXTOWq84KEB5wTxAG/2sIAE6QFirG+txVHEM=@vger.kernel.org, AJvYcCWn/xf+8HPUKNZlHLk1KJIZcsT0oyM5U1m7c0RKYIsCHwHkzfKG8KIV7HBYM9YbWWGjy/k07RvX0S/0@vger.kernel.org, AJvYcCXN0qtDi7sLM9hEr50+1aGGEkS+KOWtTw/4/nIHrAtaPgp6znWsANFtzE5ZNAD5ARzPQ+VkYbRPBZM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwiUlmwUsAu6R0o003MWYf2kazlutMaLwEtMRBvxqNgn8a2Q8Sb
+	36fJU7MMxegq54hMc3Ekh5WpUMkc94zneK3768BMOfzuVpXSEhMUeJIA
+X-Gm-Gg: ASbGncv3kWYDobCixjrs82gpp9GoqCj0aUJN9jlp2HjdN1+oVZXqtXTX+eAeDz4gdb5
+	QJR91YLFGfCcTAymyanAkS2Bh5T4CoPC6NIo0fkUf8vTu6yYkFk9fjI8LBhhNR2vkLlGpxPDlMa
+	VXNiWkmuh/BhhsHwtv1QIFSZsmXvyOMvePGUj6R1ySEunr1hAY8Z0ZLfli0BdNzDK+PPhAA8nPG
+	aT5uGhlEg3MBMZ6SMp1Got0Akft9cl2FOp8GCBtxkqydc3CObouE6+6HrJfqg5Z4epLPk/N555M
+	gJBp8d9ok7hyzoySG23MYatZGQ0UXiRQMCiKogqJpyKxsdv6yptBjTXyIG69NK5Swnhm8esayT9
+	ReJkeKSgtf7kBoejm63jPkrFTzV8o4Tkqtkn1983FrPo9mOk=
+X-Google-Smtp-Source: AGHT+IG4XzsUhVmrn4fJ8v1PNDsbGNCghgUfxDPbkeqpUjvEg9N6RxHWj66Wbdw1AdmD0ATs4dsvZw==
+X-Received: by 2002:a05:6a20:3ca8:b0:240:750:58f with SMTP id adf61e73a8af0-24340d91edcmr35447322637.30.1756454578938;
+        Fri, 29 Aug 2025 01:02:58 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24903702999sm17213525ad.3.2025.08.29.01.02.58
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4cd0e1c0besm1461992a12.24.2025.08.29.01.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Aug 2025 01:02:59 -0700 (PDT)
+        Fri, 29 Aug 2025 01:02:58 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 08D794489F50; Fri, 29 Aug 2025 14:55:28 +0700 (WIB)
+	id 1E9654489F51; Fri, 29 Aug 2025 14:55:28 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -176,9 +176,9 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Bart Van Assche <bvanassche@acm.org>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 11/14] Documentation: net: Convert external kernel networking docs
-Date: Fri, 29 Aug 2025 14:55:21 +0700
-Message-ID: <20250829075524.45635-12-bagasdotme@gmail.com>
+Subject: [PATCH 12/14] ASoC: doc: Internally link to Writing an ALSA Driver docs
+Date: Fri, 29 Aug 2025 14:55:22 +0700
+Message-ID: <20250829075524.45635-13-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
 References: <20250829075524.45635-1-bagasdotme@gmail.com>
@@ -188,87 +188,49 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4099; i=bagasdotme@gmail.com; h=from:subject; bh=eMX/Qh24hdl/D8upWlphNzasCNRD/YCgXxsSIbz5MxY=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY16d1mKOz99m1qX25ldgn5beybqta3f6vFwaVK3P9 qU9Ts6io5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABP5Y8vIsLj5nquL3YaGH+H5 K1M/GSvVfagoWJf+Wf//FmmeVbsWnGJk2HnZqfzd057r3t1TvvSsKTBp/5q8NJD5d+PrUJ8N/JZ PmQE=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1684; i=bagasdotme@gmail.com; h=from:subject; bh=QIAPxg2EoM7XBiBH/OfCd9SfIrsCdhbBl57WJdF7gOo=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkbY14FftK8Ic/EqPdDdzlDXfSrtOCCiCo1tq0af6f2T rxS2nS/o5SFQYyLQVZMkWVSIl/T6V1GIhfa1zrCzGFlAhnCwMUpABP5M42RYQe/RHjLfYX8tv8L 9vQt6eKUm/OnRm/3gUlFq/44pi2Xf8HI0BjxjsH0R+yFD+urVrRxaVu1SiT8M9vxwkWu7L/ecZP DfAA=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 
-Convert cross-references to kernel networking docs that use external
-links into internal ones.
+ASoC codec and platform driver docs contain reference to writing ALSA
+driver docs, as an external link. Use :doc: directive for the job
+instead.
 
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- .../device_drivers/can/ctu/ctucanfd-driver.rst       |  3 +--
- .../device_drivers/ethernet/amazon/ena.rst           |  4 ++--
- Documentation/networking/ethtool-netlink.rst         |  3 +--
- Documentation/networking/snmp_counter.rst            | 12 +++++-------
- 4 files changed, 9 insertions(+), 13 deletions(-)
+ Documentation/sound/soc/codec.rst    | 4 ++--
+ Documentation/sound/soc/platform.rst | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
-index 1661d13174d5b8..4f9f36414333fd 100644
---- a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
-+++ b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
-@@ -40,8 +40,7 @@ About SocketCAN
- SocketCAN is a standard common interface for CAN devices in the Linux
- kernel. As the name suggests, the bus is accessed via sockets, similarly
- to common network devices. The reasoning behind this is in depth
--described in `Linux SocketCAN <https://www.kernel.org/doc/html/latest/networking/can.html>`_.
--In short, it offers a
-+described in Documentation/networking/can.rst. In short, it offers a
- natural way to implement and work with higher layer protocols over CAN,
- in the same way as, e.g., UDP/IP over Ethernet.
+diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
+index af973c4cac9309..b9d87a4f929b5d 100644
+--- a/Documentation/sound/soc/codec.rst
++++ b/Documentation/sound/soc/codec.rst
+@@ -131,8 +131,8 @@ The codec driver also supports the following ALSA PCM operations:-
+ 	int (*prepare)(struct snd_pcm_substream *);
+   };
  
-diff --git a/Documentation/networking/device_drivers/ethernet/amazon/ena.rst b/Documentation/networking/device_drivers/ethernet/amazon/ena.rst
-index 14784a0a6a8a10..b7b314de857b01 100644
---- a/Documentation/networking/device_drivers/ethernet/amazon/ena.rst
-+++ b/Documentation/networking/device_drivers/ethernet/amazon/ena.rst
-@@ -366,9 +366,9 @@ RSS
+-Please refer to the ALSA driver PCM documentation for details.
+-https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
++Please refer to the :doc:`ALSA driver PCM documentation
++<../kernel-api/writing-an-alsa-driver>` for details.
  
- DEVLINK SUPPORT
- ===============
--.. _`devlink`: https://www.kernel.org/doc/html/latest/networking/devlink/index.html
  
--`devlink`_ supports reloading the driver and initiating re-negotiation with the ENA device
-+:doc:`devlink </networking/devlink/index>` supports reloading the driver and
-+initiating re-negotiation with the ENA device
+ DAPM description
+diff --git a/Documentation/sound/soc/platform.rst b/Documentation/sound/soc/platform.rst
+index 7036630eaf016c..bd21d0a4dd9b0b 100644
+--- a/Documentation/sound/soc/platform.rst
++++ b/Documentation/sound/soc/platform.rst
+@@ -45,8 +45,8 @@ snd_soc_component_driver:-
+ 	...
+   };
  
- .. code-block:: shell
+-Please refer to the ALSA driver documentation for details of audio DMA.
+-https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
++Please refer to the :doc:`ALSA driver documentation
++<../kernel-api/writing-an-alsa-driver>` for details of audio DMA.
  
-diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
-index ab20c644af2485..3445b575cb5d39 100644
---- a/Documentation/networking/ethtool-netlink.rst
-+++ b/Documentation/networking/ethtool-netlink.rst
-@@ -1100,8 +1100,7 @@ This feature is mainly of interest for specific USB devices which does not cope
- well with frequent small-sized URBs transmissions.
- 
- ``ETHTOOL_A_COALESCE_RX_PROFILE`` and ``ETHTOOL_A_COALESCE_TX_PROFILE`` refer
--to DIM parameters, see `Generic Network Dynamic Interrupt Moderation (Net DIM)
--<https://www.kernel.org/doc/Documentation/networking/net_dim.rst>`_.
-+to DIM parameters, see Documentation/networking/net_dim.rst.
- 
- COALESCE_SET
- ============
-diff --git a/Documentation/networking/snmp_counter.rst b/Documentation/networking/snmp_counter.rst
-index ff1e6a8ffe2164..c51d6ca9eff2c7 100644
---- a/Documentation/networking/snmp_counter.rst
-+++ b/Documentation/networking/snmp_counter.rst
-@@ -782,13 +782,11 @@ TCP ACK skip
- ============
- In some scenarios, kernel would avoid sending duplicate ACKs too
- frequently. Please find more details in the tcp_invalid_ratelimit
--section of the `sysctl document`_. When kernel decides to skip an ACK
--due to tcp_invalid_ratelimit, kernel would update one of below
--counters to indicate the ACK is skipped in which scenario. The ACK
--would only be skipped if the received packet is either a SYN packet or
--it has no data.
--
--.. _sysctl document: https://www.kernel.org/doc/Documentation/networking/ip-sysctl.rst
-+section of the Documentation/networking/ip-sysctl.rst. When kernel
-+decides to skip an ACK due to tcp_invalid_ratelimit, kernel would
-+update one of below counters to indicate the ACK is skipped in
-+which scenario. The ACK would only be skipped if the received
-+packet is either a SYN packet or it has no data.
- 
- * TcpExtTCPACKSkippedSynRecv
+ An example DMA driver is soc/pxa/pxa2xx-pcm.c
  
 -- 
 An old man doll... just what I always wanted! - Clara
