@@ -1,173 +1,135 @@
-Return-Path: <bpf+bounces-67035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1A1BB3C389
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 22:00:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EECFB3C3C1
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 22:28:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74039A031A2
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 20:00:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FD651CC1BED
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 20:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E85230BCC;
-	Fri, 29 Aug 2025 20:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2115F32A3E0;
+	Fri, 29 Aug 2025 20:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FYw0945C"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="INjeQ7We"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8D1BA4A;
-	Fri, 29 Aug 2025 20:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BA404A11
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 20:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756497635; cv=none; b=vDXMeE+305uEbWo7Xos4E3XpkhhiuRPHqf5Z/19C7D4xLbEb1XBvElu+KbdFuOK1d9y9tVL5Jxi2WK6VZmgt9nhrvEYhJke+nSg2mv9TvQdHjXUJQuD3vAdBvsQQl/dMHWMQM2ZhjZREH0E/Mg4w6JbeqT/ALptHqfCqUo5G400=
+	t=1756499298; cv=none; b=qJ3Yz7QOzf34qOHjiBFhmVXAc5E8ViM3BqTgL0XTbpH0yz9cx2O/1LLt0wBOTAWLnx4SRLaCH1Tb8Zacv8G/fQ3AVt5/Cl2nGa/ArokxkydoU2rTAqHZ4qHl1kq0b8PyjI0vLwaFIycr/2Oh2UYQt66d63dYkLAF8DeAHbghrTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756497635; c=relaxed/simple;
-	bh=tGu1dFZlkUH2ZlwJr+5eUr2YBcteUSsRt+nkTR5xzCI=;
+	s=arc-20240116; t=1756499298; c=relaxed/simple;
+	bh=N0ICU/D8kh5l0n3cAkUR0ricP5bOfeIhoNuOTDwlvR8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AwJe4JKwRraOiUwH2v1lVTO+vapohE6SyPKL797mwej74y0/fEAhc9E2AEAmMkHQSuYvcwqykYhzGbuCBqatHAM8Bs5gfC7flijts8oyh+v2ry84bALcNQvIMkzTmX1m7Y9iKa3qNRlgF4BoxqvWqpHTVdSEqabOa+0eHXzvajU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FYw0945C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96BDDC4CEFC;
-	Fri, 29 Aug 2025 20:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756497634;
-	bh=tGu1dFZlkUH2ZlwJr+5eUr2YBcteUSsRt+nkTR5xzCI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FYw0945CI6hNsF5qwPXnooPMYvne0iLlVEJyLR/IlhFArD8zid0Ek6XJqpakXnYGE
-	 Obyvv0sBS8RQGyaqnISGwN54cz7ETvvTPWYbc2oscIDuWzp+vSn8WzjRX2r0U9khjs
-	 0YaTchuuUfC/UI/zbEreTrY5rcU4ar9VrqX+z3saV0ZzSwf91qCORSljdhAicBt8af
-	 ZUClTkCBu88X0xdAzbxP7L/frrLjJvStjj2iUl4fyaH+xZ4hDox2NJsEIzxvvUKa7P
-	 lNtXFOsc6vsDSvbgzSjHRPc7hiliJ465jHzXE1gwWYjr5sjRJznT4lMuFcc7ucY1au
-	 56NmHl8qEqtIg==
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7f6f367a248so225132785a.3;
-        Fri, 29 Aug 2025 13:00:34 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUqmBSbKeJk0L1NLuZvAW1hrFrEBW7kRrnRQi9NDV0zWw9T2MlrrlRngStc2ERQcI1nYz0VS6C8V3Q=@vger.kernel.org, AJvYcCVMpSlcvV1fU02opLeXAMXuk+y4DSUrDFkYo2CH7QLaoUTGy5GvF92cif1FBOud6w/ducw=@vger.kernel.org, AJvYcCXqq1BLLahQWozYT4F/tYO/78c/yHEarMsnL1W9klq6wZbGhErX4WTzq8FJaR4aMfDNTUs6UnHDLziYArFe3ku4@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz4wHCH6Wbb4RB8PksqNQP53vkqsTnRW/BJ+BfjK1OMSKsYI0xN
-	tE+bs+rfpt8J1W1Jpexk28qGMeSxBt5i8HakqVE3Rwc0nd4Cq8W7c0GbtdTwnA5BYHuu93bMQWs
-	21y4Vn+a63j6fHInrbDIzYNcQCiiXVzk=
-X-Google-Smtp-Source: AGHT+IHSBIsmxfB4wv0PbjBr9gp8OWigJMigqz+UbJ6LHPcpZ51he76LgiFBpO638pBpXDbTOHsOwY0AxaBuMJZKs/k=
-X-Received: by 2002:a05:620a:318d:b0:7e8:3430:dd31 with SMTP id
- af79cd13be357-7ea1107efa3mr3192577685a.59.1756497633622; Fri, 29 Aug 2025
- 13:00:33 -0700 (PDT)
+	 To:Cc:Content-Type; b=RB91DdLIDukLBn4/tyKLYJA6Md0WB3XrKiLbZVnZxR+ypcd+p552pGTi18ATtQgWJCpQVbNAvdwEHawMt8/T+Aa8CMQQq7tr0sJpPzkShpUKPDiqq3Ulv9L3/vCQ9ZqtJEkpzkREEKEk5ryGcRpLQrU604oxj+/gosOpSu25exo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=INjeQ7We; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3ce4ed7a73fso1225294f8f.1
+        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 13:28:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756499295; x=1757104095; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oWWarxd9Q9YFnJBwnTjqO785xVsefxmIEy9LEQkKiTI=;
+        b=INjeQ7WecmdTPXntbHGdM0oxf7id4NQUd+FQQ5ge9Crny+CBoUZJ09d7iEby2bG8Tu
+         s0a70iirG7Z1bNHvuFpqqfxDyGHRTXir8hGBdaDzfmhVc7WzzEcks8swA9eXYS7GVgOG
+         OU0OLdUF6Ge4AyqZ2upuy/yzi8EXL/pwYGZKh/4rS49pwIXXvX9ydRKxiZx170AFExhx
+         yCKH6PpQ1gOMoo3RJMX9+6fHJZFfNSLIXgRfl4whdZz5GZb1weWxvWAXasaBPLh71Snb
+         e1q4rqA1oUcjgj6Mt8LWbCwjZKODdfx1xmPV6OS28+XBJnsA06MEPgZrJBr17rITWGND
+         hfIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756499295; x=1757104095;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oWWarxd9Q9YFnJBwnTjqO785xVsefxmIEy9LEQkKiTI=;
+        b=l+5CfItn2W6vX47mdI3Z5iRbse8M0Y620lgpeRdAuUqPPRgzhkG7IfomnwXmS9uUIS
+         Up7wN0i/K+GsyT+Yy+oKKT/dTrWxBQoofRjbvVCvyHUx40vds9Q0S0dpP0NPmNPy2pHg
+         hwfGECNgcMOvy/F5xYaGV9CSSw6jBXfqmI64/Xo2WCFnN/2CUOV3talUSeETmif8FVt/
+         e8r/OJT/8bcybW4mklGsF4x1YuPMjqaLUpr+NGMrfbkUdaUypt0yGi8Ny+wLutUT9QvG
+         QRPmQ9oiKEeJrej5dwMSloiapQZFKFYoT1f/JKjQhKovezV1/vWjT2HLMVBQne/XhyEd
+         MZVg==
+X-Forwarded-Encrypted: i=1; AJvYcCU0FbLx80rPx59SQaf1bZDrr4gr/o82smyxTvX5AqiRcxwhGnmkMrwEn/q9JYLY0Fcj7/g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZTYj4w73muvuF8nVlbVOuZdRbKL/0iPtkeW193PDu4THHsjkf
+	7UVtfVurkoe9KTfr1ZTa+L2mRBZ9vJqL6nLeaco40YiqqXj34NHnXnai9u4vuldYJ5DazLS1Za7
+	en8vgEiy2SLbWQ5BovvdiIzgQ1alPIJQ=
+X-Gm-Gg: ASbGncs1ruW8leF+9lcMJUJDLu9RxEtB6ecbdYLwjvWjgVxsGinN4kEMi6kBvPKklyG
+	5uOqRtwxqKhNDA/xwk82mg1kvqmb4FL6yrVPnlWrABd4A3jXwCH1o+734LkbHqebjx1dxmADiRP
+	oehBVUI/CDteXraCJRLIZsbzvE9e7D3CuUhg5FW6bTwfNKYdDsiUF68yfQGv32/kUxPPWiAlCyL
+	JPt3vDwvFy8Yj8PdOPqU4IeNOZywUCMnqeT21BCpMTG
+X-Google-Smtp-Source: AGHT+IHvDgUR+LZ5GnHw8eOu+1C1OJbKXsUMzPB5USxFpqR7IauWs87sKKg+/THGxwXin5Mjl41w0K/NjVJp5A1A/f8=
+X-Received: by 2002:a05:6000:420e:b0:3d1:ce9d:4f9c with SMTP id
+ ffacd0b85a97d-3d1ce9d52dbmr70394f8f.31.1756499295198; Fri, 29 Aug 2025
+ 13:28:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250829101137.9507-1-yikai.lin@vivo.com>
-In-Reply-To: <20250829101137.9507-1-yikai.lin@vivo.com>
-From: Song Liu <song@kernel.org>
-Date: Fri, 29 Aug 2025 13:00:21 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4PGfmFnJ-huFFELRQDJ7SpgWOLxYVBhRtsZnsLZhB6rw@mail.gmail.com>
-X-Gm-Features: Ac12FXyKOSVX7PJ0uvfGlANZIBgd5lQ9Wdk5Tk9y48U--lJ0AkCGPKEND7MCduM
-Message-ID: <CAPhsuW4PGfmFnJ-huFFELRQDJ7SpgWOLxYVBhRtsZnsLZhB6rw@mail.gmail.com>
-Subject: Re: [PATCHSET V1 0/2] cpuidle, bpf: Introduce BPF-based extensible
- cpuidle policy via struct_ops
-To: Lin Yikai <yikai.lin@vivo.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org, 
-	linux-pm@vger.kernel.org, bpf@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
-	zhaofuyu@vivo.com
+References: <20250827153728.28115-1-puranjay@kernel.org> <20250827153728.28115-3-puranjay@kernel.org>
+ <99bb1aa8-885b-4819-beb3-723a73960f67@huaweicloud.com>
+In-Reply-To: <99bb1aa8-885b-4819-beb3-723a73960f67@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 29 Aug 2025 13:28:01 -0700
+X-Gm-Features: Ac12FXwlLsc5i03CfGafUHRqTc4meVU_JjjINdZ4YRDpCONVk-reha-OlSTdwR8
+Message-ID: <CAADnVQKp-FXhVtxCSE8rako8BBnAU4Qt-dxviqrJUr-Fpfm+4w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Report arena faults to BPF stderr
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-Thanks for the patchset.
-
-Some logistics:
-
-1. Please prefix future patches properly with "bpf" or "bpf-next", for exam=
-ple,
-[PATCH v2 bpf-next 1/2].
-
-2. Please be specific with the patch title, i.e. "selftests/bpf: Add selfte=
-sts"
-should be something like "selftests/bpf: Add selftests for cpu-idle ext".
-
-On Fri, Aug 29, 2025 at 3:11=E2=80=AFAM Lin Yikai <yikai.lin@vivo.com> wrot=
-e:
+On Fri, Aug 29, 2025 at 3:30=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
+> wrote:
 >
-> Summary
-> ----------
-> Hi, everyone,
-> This patch set introduces an extensible cpuidle governor framework
-> using BPF struct_ops, enabling dynamic implementation of idle-state selec=
-tion policies
-> via BPF programs.
+> > +
+> > +void bpf_prog_report_arena_violation(bool write, unsigned long addr)
+> > +{
+> > +     struct bpf_stream_stage ss;
+> > +     struct bpf_prog *prog;
+> > +     u64 user_vm_start;
+> > +
+> > +     prog =3D bpf_prog_find_from_stack();
 >
-> Motivation
-> ----------
-> As is well-known, CPUs support multiple idle states (e.g., C0, C1, C2, ..=
-.),
-> where deeper states reduce power consumption, but results in longer wakeu=
-p latency,
-> potentially affecting performance.
-> Existing generic cpuidle governors operate effectively in common scenario=
-s
-> but exhibit suboptimal behavior in specific Android phone's use cases.
->
-> Our testing reveals that during low-utilization scenarios
-> (e.g., screen-off background tasks like music playback with CPU utilizati=
-on <10%),
-> the C0 state occupies ~50% of idle time, causing significant energy ineff=
-iciency.
-> Reducing C0 to =E2=89=A420% could yield =E2=89=A55% power savings on mobi=
-le phones.
->
-> To address this, we expect:
->   1.Dynamic governor switching to power-saved policies for low cpu utiliz=
-ation scenarios (e.g., screen-off mode)
->   2.Dynamic switching to alternate governors for high-performance scenari=
-os (e.g., gaming)
->
-> OverView
-> ----------
-> The BPF cpuidle ext governor registers at postcore_initcall()
-> but remains disabled by default due to its low priority "rating" with val=
-ue "1".
-> Activation requires adjust higer "rating" than other governors within BPF=
-.
->
-> Core Components:
-> 1.**struct cpuidle_gov_ext_ops** =E2=80=93 BPF-overridable operations:
-> - ops.enable()/ops.disable(): enable or disable callback
-> - ops.select(): cpu Idle-state selection logic
-> - ops.set_stop_tick(): Scheduler tick management after state selection
-> - ops.reflect(): feedback info about previous idle state.
-> - ops.init()/ops.deinit(): Initialization or cleanup.
->
-> 2.**Critical kfuncs for kernel state access**:
-> - bpf_cpuidle_ext_gov_update_rating():
->   Activate ext governor by raising rating must be called from "ops.init()=
-"
-> - bpf_cpuidle_ext_gov_latency_req(): get idle-state latency constraints
-> - bpf_tick_nohz_get_sleep_length(): get CPU sleep duration in tickless mo=
-de
->
-> Future work
-> ----------
-> 1. Scenario detection: Identifying low-utilization states (e.g., screen-o=
-ff + background music)
-> 2. Policy optimization: Optimizing state-selection algorithms for specifi=
-c scenarios
+> bpf_prog_find_from_stack depends on arch_bpf_stack_walk, which isn't avai=
+lable
+> on all archs. How about switching to bpf_prog_ksym_find with the fault pc=
+?
 
-I am not an expert on cpuidle, so pardon me if the following are rookie
-questions. But I guess some more detail will help other folks too.
+Out of archs that support bpf arena only riscv doesn't
+support arch_bpf_stack_walk(), which is probably fixable.
+But I agree that direct bpf_prog_ksym_find() is cleaner here.
+We need to make sure it works for subprogs, since streams[2] are
+valid only for main prog.
+I think we can add:
+struct bpf_prog_aux {
+  ...
+  struct bpf_prog_aux *main_prog;
+};
+init it during jit_subprogs() and use it for stream access.
+We can also remove skipping of subprogs in find_from_stack_cb() then.
 
-1. It is not clear to me why a BPF based solution is needed here. Can
-  we achieve similar benefits with a knob and some userspace daemon?
+Kumar, wdyt?
 
-2. Is it possible to extend sched_ext to cover cpuidle logic?
-
-Thanks,
-Song
+In a bigger follow up maybe we can split bpf_prog_aux into two
+structures for main prog and for subprogs, since we copy
+a bunch of pointers from main into subprogs.
+With 'main_prog' pointer all these pointers (like linfo, func_info,
+kfunc_tab, arena, btf) can stay in 'struct bpf_main_prog_aux',
+so 'struct bpf_subprog_aux' can be smaller.
 
