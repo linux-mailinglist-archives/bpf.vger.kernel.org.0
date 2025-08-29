@@ -1,443 +1,378 @@
-Return-Path: <bpf+bounces-66970-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66971-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 605E4B3B85F
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 12:12:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 499B2B3B8BB
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 12:30:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E2B31CC068B
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 10:12:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD6173BE53C
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 10:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779B230AD0C;
-	Fri, 29 Aug 2025 10:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="Qe8PDQiY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1386C308F1B;
+	Fri, 29 Aug 2025 10:30:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from SEYPR02CU001.outbound.protection.outlook.com (mail-koreacentralazon11013002.outbound.protection.outlook.com [40.107.44.2])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BF1309DC0;
-	Fri, 29 Aug 2025 10:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.44.2
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756462322; cv=fail; b=RhVjT4rCTDFXPqU3kLEuZnVWr1ouumU+xHbzT253ZxZlgc4dPi3YwUDOcCT4qTTR6UaupgmXiwtgJvlzI01AoPIGXSJUubDeNql/GeC/LtvXAGkvZg86gGkhF0g5g8iIX8hVebuD+w88bvToU+b+r7n78WMeIoGxU3i9ASduu4Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756462322; c=relaxed/simple;
-	bh=SYtyr+Qzqc/idkP+yrorvaFG8QioD8WDcn13swIpGqw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=d5G4N9rgJUB4zHhRoIC+ArVwbAIra4/zICJOGDBbltZP8+VsYLfvagL0bgcfQfX5FWBWmbArcY6Np6sjpcvYz+Gja6J6sJf2iyveC0bSyqweuf6ckS2/AaOdB7VQvrfUpDGO0SjqIYF/OPd69nK8Sd3JNl8pj+RbJY8anlKixL8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=Qe8PDQiY; arc=fail smtp.client-ip=40.107.44.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=s3sBvMj/nQyYbILP1wVfPc8B7xZMAsT1eqzXN0QwtvJdKp2529ayjK9T+YSgb4n0yWUbCQnljGLYixTatGUsJnLLbFzXYfDNoPy7VYhWQXmWJxu8t4v/qVe83kDGIwnY7V5AEPUuyFU484pZWFYXOz02nTsplAOnPdTWtA2WvJ/I6lJSYb0vTNYY3QMX92OJlTDlUTKbCjHY/J29oqLmxyPxMAzRYa09iCz8C0CL87/IMFgninoz2CsJV0TmE275kDVUCUxXK6d9jU1R53diWExtmd4bNurvKBJH0GNneGKOQaLpibPxVxYv4uhyOqO8gYfqh/mtzyizf/fYHdTGiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6ykWLYf24ZDz+qNM32g8wekdn77URpwO6+3W/tti5lY=;
- b=uXv98xYHqQmjPUBSuEYRGGJQbKy1KMIDmbIrWgHevsTE1KBCtGD8dugDDrSACQPaIErG95G9nO1BAQU2v+fNYHoxuunUhOxMoW2oCCh6KI8LSJPpGEw7Tquov0jqS7uLV+fjWPSAWwflMqetsNSV9SSRyBcFxdmIVyRxqu7F112n3rSSvxm70WE5l6OvPjI2MZJkxZ9TPH4wN9QB4Hf/c07oUbXYvLycJDw6Nw5iy331sFXwOkRpWn2Bo+01us6tOq8A9YI5cclhynalznR9absuJluOfPDt+TS8D1B0RJcsoo6JwrxpZCrY/2/YC6YLWb/C45mSTBC3/pAJTe+AHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ykWLYf24ZDz+qNM32g8wekdn77URpwO6+3W/tti5lY=;
- b=Qe8PDQiY8Rudwj2AhEuJFPuM8nct2dyVjbfJcba+sN1wA/Ih5nS34HuP9pr7VjJe3lYjBwXIAhdakLgO9EVQZHg5Qm1RhjvX2SivAUDIvbL3/+5rNZRb2dxt2jNx0RgwlqUVj8zWrShDf51nQ/LXzBGU4wZh0E9+ndE8LYX4aiVcoYXYxi+A7xUkTo9PicZRdsmObEx0b/ge4KI/VbQeuCYrMl6hXawdfWdCFyJGEpcnKtVf5eipR/I/f7h2703bXPps4Vp1kJ2bOa/Ou94dxM6fepqb8x/KDsHGyWUgubsAgP7WHoS+q/Be5g4xhjkYlvtcjyKNSGn3iWJRa8k3Ug==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from KL1PR0601MB4324.apcprd06.prod.outlook.com (2603:1096:820:73::6)
- by TYZPR06MB6565.apcprd06.prod.outlook.com (2603:1096:400:452::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9052.21; Fri, 29 Aug
- 2025 10:11:55 +0000
-Received: from KL1PR0601MB4324.apcprd06.prod.outlook.com
- ([fe80::f8ee:b41e:af25:202]) by KL1PR0601MB4324.apcprd06.prod.outlook.com
- ([fe80::f8ee:b41e:af25:202%5]) with mapi id 15.20.9073.010; Fri, 29 Aug 2025
- 10:11:55 +0000
-From: Lin Yikai <yikai.lin@vivo.com>
-To: "Rafael J . Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kselftest@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Tejun Heo <tj@kernel.org>,
-	Lin Yikai <yikai.lin@vivo.com>
-Cc: zhaofuyu@vivo.com
-Subject: [PATCH v1 2/2] selftests/bpf: Add selftests
-Date: Fri, 29 Aug 2025 18:11:37 +0800
-Message-ID: <20250829101137.9507-3-yikai.lin@vivo.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250829101137.9507-1-yikai.lin@vivo.com>
-References: <20250829101137.9507-1-yikai.lin@vivo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SGBP274CA0012.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::24)
- To KL1PR0601MB4324.apcprd06.prod.outlook.com (2603:1096:820:73::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 086B01DE8B3
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 10:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756463430; cv=none; b=qgoUsoxy8l2qEyM4Q01TrMLUqCGFRQZ3ncyb/oZ1ZObhKOXYzVoN6hiolZC+dmf8MYbfD3mxPLFGFweyFGr1gG2KlDOw5ywiVOFANmm7oiYKSx2CLA+PkMmzpqQbwF3zg0ouVRWDOZRPxtBzUNZzcDlnAYQpxKKKLRoFGx7rZg4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756463430; c=relaxed/simple;
+	bh=M0CYIANZ9QxzcqfRlPUF6f0UDYWM92Fa6BpJDt10YYY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=mcdxTv8vWbsace0Q4dlx8R7yt+uxs7WvoXHZc8B9IfdtswvfAhc4s5X0uVeaW44FUe+fP5hZc1jhm1aEqj0eLSXzhWcgDFt5EaE7UOhChdcE7/bKbZcwnmYMYFG8piRkbxjzITV1PJ+sRR+1U+ixxrZeec2UiEAKtelmGIL645M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cCvfn6PSfzYQvp9
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 18:30:25 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 6B4B61A01A0
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 18:30:24 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP4 (Coremail) with SMTP id gCh0CgCn74s_gbFojvXAAg--.17221S2;
+	Fri, 29 Aug 2025 18:30:24 +0800 (CST)
+Message-ID: <99bb1aa8-885b-4819-beb3-723a73960f67@huaweicloud.com>
+Date: Fri, 29 Aug 2025 18:30:23 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: KL1PR0601MB4324:EE_|TYZPR06MB6565:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8a5a434f-ceab-48d3-5bbe-08dde6e47b0f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|52116014|7416014|376014|38350700014|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?64CvJhcc5eXpr46Y6Z9SulVQhz0citCRaySMrZkKicM+EFs8qKtOppyIGCrS?=
- =?us-ascii?Q?R9nzQHhqDdthEaqoHVCdYT4935u0l45+ciSxlqBjCZIOsn9ZGMfoog1JX4HQ?=
- =?us-ascii?Q?1sXqcoTXXHx2/Vddr3BgJTapQhQ3Kzz6u9J5axTzw9LQB0EObOJ1nluZKHiq?=
- =?us-ascii?Q?4+Ct6GinKJ4wRjtbGFr7AyqAXfUtL/EynLwqt1KNa/bFCZsooIJlEti9er78?=
- =?us-ascii?Q?YbAOkh53fBEYqq9d0qxjYq1zzvBpNDU8msCDlrp4PKKt8IIwZDtyDStpWbI/?=
- =?us-ascii?Q?b2G7jp3MRCakhtuK8drurCydxw17T9LpzepGilH+MWdNTTqdUFaxYeoSkOsK?=
- =?us-ascii?Q?jiLWf6XhrGbDNQvfssGtoyyEMypDgi7FghUfqAgAYUzVftnxM4Ksi8TtW15u?=
- =?us-ascii?Q?LeQJfNOst/lUbJuN+xBPQ5HZnNHtH2KLzf7YhvgMTWjtFp/FMsGw6REh28BS?=
- =?us-ascii?Q?h8HS/Bp7Ygyipr4GeMyp/MUwXQehJrf2MzheE7udXz+lbYcdHJZ6raKwQsGu?=
- =?us-ascii?Q?Ejoq4rth5Fz5U0+NI1VyCsQnXTF+TlHfb/vrJyDEnRMw53xJHERy8u/+eS1o?=
- =?us-ascii?Q?MrzhPtu9+j5M12rmgIWDiimArdXrb6jaA/wBdGfY3gOhYiJcDtO9l2sp+Ogx?=
- =?us-ascii?Q?KfDaV0EsOllM/evO0iKMUrQAEt3amTNFIP1mZsTy8qjiEDQDMdv9/F3ZCTEo?=
- =?us-ascii?Q?DivxX1A3JmGHKFw/Wjz3yPmpPL81Vw9Ivi/DW9hpYJl7wX+STo+dm3jiG67+?=
- =?us-ascii?Q?IqttlBpk1Zozcg84liY4zY1lbFraa6y69oA8dUHWKHA6bf3MfUVt73jRRCYV?=
- =?us-ascii?Q?a5diiNCJXBYZWbT7L/Y7rohfu4DKJxisGCPS4bBU1TdSFVtq3ugGJ01c3ld6?=
- =?us-ascii?Q?15EdoKhlrKACROoUANgcoBhAMp5P8u0bpjOxe5FuP8/qx07PYtWYr4neu+vB?=
- =?us-ascii?Q?8M+20VPnX+bz9jKxauxxRBJhTLjmu9JvRY3hlEF7iVV2kczo2dgm06JvmndW?=
- =?us-ascii?Q?j0DFTJSbT9IHVxb9puY0lcUx/gAfGVcXOdN3bW7/XURevGqdNREUYWS5K8a2?=
- =?us-ascii?Q?63TUihaf7BAKZMVcok5fUIaZqwVD0ONJJvofGzqOkuHgMD3Bd6cVog5O5WaY?=
- =?us-ascii?Q?7lU+rNBvTBYyWe7uYlmjttEDCNTcvOQw87Gd6piZd9J0cDjqDTBblV2nh8uQ?=
- =?us-ascii?Q?vOXcXNe2lmHlKAazsHdONN4GUgOmIakj+yfH9fKxnW2+BhM6+5e6wNfE5mz5?=
- =?us-ascii?Q?TkdEJb/kvWL2ndMpz9Smt1iCVJxmDr5XOFj0aVMV+rTUMSxes8zzcAAEfgJ7?=
- =?us-ascii?Q?aQ70MKP48GglaSW3uDw86abMUUwezV8cXnMu3pmYZPM5yUPk8CDbRdn6U0gA?=
- =?us-ascii?Q?iGd/bw0u03EYtSIvqLWBKijWI6iM+zkuCPCxLhJqnbBQ2qZTGh6JM4d5qHsx?=
- =?us-ascii?Q?Axan8smdj/kndeI8WgmvZpN+KKm4ijpJDDvH9HRaf8SiPq5JuJr5gyIOa+E9?=
- =?us-ascii?Q?/9dYnCAC3gC3wUw=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB4324.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(52116014)(7416014)(376014)(38350700014)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?rb/yvVCvt9gpyt7OuIzCu6zRQ8zsJomKuP9butnoOoT/y3lnIzcgdJhxj8px?=
- =?us-ascii?Q?xWIQTUomdBzQD7mcMKpKHho3LZYvq3j1IQpQZnuGJwH1mh7SRovn9aAspiYs?=
- =?us-ascii?Q?LaZIvYlOrWfCYFEhtJBtDEyHJz1SiI3PnrkpP5Cgg+sTlROAfgEa4goAXdaT?=
- =?us-ascii?Q?4AQBGntmJeCY00bsDxo3PfSgkdMm9fNY/Lu+YLqsK82viVyI/2AuhLGN/pAe?=
- =?us-ascii?Q?vYvzB0YSR/qRbopWzKf9Zx/oputDVJBJipwmJpLurCynJCMqZnRrpS+QHX1P?=
- =?us-ascii?Q?FuCdDaaRRwJFhGpvSA5cIVfW6rD4/7q+C5EUAcMJPt2yXfi16fIfurMQ57Dd?=
- =?us-ascii?Q?wIvBwSqeRZio7irjHHrz21v+YSgzUsZX2mtdg7ZHuMgV3yPrpc7WgbqGTrEh?=
- =?us-ascii?Q?OPuXlvYJVuoBjDIa4rNlWP924FeMe/Lgjm1lIh+6+EKz6KFvQ50otFlhDw8V?=
- =?us-ascii?Q?h30SNsXi7NxXiH44t/hLsbkYe2HXXnYcmnLwvRcraNlWjD9vzRgdJcAywK1O?=
- =?us-ascii?Q?xIv6XcQ1SMRKUpGj/D6y8sSIcwAMPnRydMLT/b2vbL33Z+klrIae/K/3eae6?=
- =?us-ascii?Q?kO15782AMydHpDEDNrXOMj3WyEaNNUydKVsE/PwValG9efNXNcF2rC1zIISA?=
- =?us-ascii?Q?GvruRbCecxAqvWLMnTKR+9lagleHC/zpJ+exo7HRgJCpNFOdsza6I9Z2hriV?=
- =?us-ascii?Q?8IHHC7N05KKFvFEPZfmY7LHEz9Nql50dtIwKgmO7/qYFJKQeHkcDh67Eokjr?=
- =?us-ascii?Q?XTBF3Nomc4XD1/TLiHW21cC5pBUTUyks7Z4GYuUrvdEkWupDianlKBlNYN2u?=
- =?us-ascii?Q?QLtRUEJ7rq6BctvEldxafYFuoOXKjtNKR7QiTTnAwc6CrKo6UKYdf4CnoHsK?=
- =?us-ascii?Q?GJk+be2CE+jJ3sgeIic5R/KkD3IlzE6cl2445CP0JPitc91IsiFInGCZ0qPV?=
- =?us-ascii?Q?tHU2XvkdAkatM3/PznhkT9nXDI62qVsi6T8WJ5mH5kf1rdA8sle+Jj7jAcJh?=
- =?us-ascii?Q?opP4RM/l7G2EBS0J2wOFL1eoZvrZz0QUu2CSR2VN/ok08lCDJr1ZX50mPH4S?=
- =?us-ascii?Q?6+5foWRwSNon08mG8B6grzU61Ub+LrbWEFgUTRsITH8yNvaPIa8ZkLD8yonO?=
- =?us-ascii?Q?QpuA3mMFBTi1EpQlgVXGyn/+qInYNV8d2eZA/xh4eOH9a+IvkVawAH6ST5E0?=
- =?us-ascii?Q?4U+ViU9Hp5CP08gY7xZQ5PajIErvWsSjqV5Rywpv1uTORCL2o6tIrSR13Aj8?=
- =?us-ascii?Q?VFBb5j3TkRjJwgQPcKRQ1lFr09mPiNAUBuyiIYBGtNh8tc65lNDVZ5vwonxn?=
- =?us-ascii?Q?mm/LpJ+3OS8KuGdvzdtX8kvcg/2rA0O7V98HQatgI1QtePqUy6u51g90t0hJ?=
- =?us-ascii?Q?UqY5M2RtM13cTL58tCvlnuWKY9im2inoKa/6Ee+8jifGDZDWzxkpqGxOvenR?=
- =?us-ascii?Q?+IKkoXoR6jTsSzokqlKSSHHRf5aCyHLmxyQ0uui4JX3jH797ScDN+cCK6vae?=
- =?us-ascii?Q?+Y/xNTpxx1JodObCM1+zlxudKO1RYEjESevFPazZB9cesoB+L5mLo9Wl2fZn?=
- =?us-ascii?Q?es5F+/Ip32mV+MKNp8Ely8889zrB0E+lJczNtk1s?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a5a434f-ceab-48d3-5bbe-08dde6e47b0f
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB4324.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2025 10:11:55.0038
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: S34hBMgrcNpA9Ryd3aQEzvnrB6vGTfZoBq024YUhX8UY+pCADHajQQ/4vyd85LfD2i/Mz7KCWaACQ+j38tOhbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6565
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Report arena faults to BPF stderr
+Content-Language: en-US
+To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ bpf@vger.kernel.org
+References: <20250827153728.28115-1-puranjay@kernel.org>
+ <20250827153728.28115-3-puranjay@kernel.org>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <20250827153728.28115-3-puranjay@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCn74s_gbFojvXAAg--.17221S2
+X-Coremail-Antispam: 1UD129KBjvJXoWfJryfZF45XF4UGF1DuF1rZwb_yoWDur1UpF
+	yfCF13JrWqqw47ur47WF4UAF1Ygr4fWw18CF43K34fJw12vr1rWa18Ka4rXr98ArW8WF1U
+	Za40krZF9rnxZrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-Add test to verify cpuidle governor ext's load, attach, and kfuncs.
+On 8/27/2025 11:37 PM, Puranjay Mohan wrote:
+> Begin reporting arena page faults and the faulting address to BPF
+> program's stderr, this patch adds support in the arm64 and x86-64 JITs,
+> support for other archs can be added later.
+> 
+> The fault handlers receive the 32 bit address in the arena region so
+> the upper 32 bits of user_vm_start is added to it before printing the
+> address. This is what the user would expect to see as this is what is
+> printed by bpf_printk() is you pass it an address returned by
+> bpf_arena_alloc_pages();
+> 
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>   arch/arm64/net/bpf_jit_comp.c | 52 +++++++++++++++++++++++
+>   arch/x86/net/bpf_jit_comp.c   | 79 +++++++++++++++++++++++++++++++++--
+>   include/linux/bpf.h           |  5 +++
+>   kernel/bpf/arena.c            | 20 +++++++++
+>   4 files changed, 152 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 42643fd9168fc..5083886d6e66b 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -1066,6 +1066,30 @@ static void build_epilogue(struct jit_ctx *ctx, bool was_classic)
+>   	emit(A64_RET(A64_LR), ctx);
+>   }
+>   
+> +/*
+> + * Metadata encoding for exception handling in JITed code.
+> + *
+> + * Format of `fixup` field in `struct exception_table_entry`:
+> + *
+> + * Bit layout of `fixup` (32-bit):
+> + *
+> + * +-----------+--------+-----------+-----------+----------+
+> + * |   31-27   | 26-22  |     21    |   20-16   |   15-0   |
+> + * |           |        |           |           |          |
+> + * | FIXUP_REG | Unused | ARENA_ACC | ARENA_REG |  OFFSET  |
+> + * +-----------+--------+-----------+-----------+----------+
+> + *
+> + * - OFFSET (16 bits): Offset used to compute address for Load/Store instruction.
+> + * - ARENA_REG (5 bits): Register that is used to calculate the address for load/store when
+> + *                       accessing the arena region.
+> + * - ARENA_ACCESS (1 bit): This bit is set when the faulting instruction accessed the arena region.
+> + * - FIXUP_REG (5 bits): Destination register for the load instruction (cleared on fault) or set to
+> + *                       DONT_CLEAR if it is a store instruction.
+> + */
+> +
+> +#define BPF_FIXUP_OFFSET_MASK      GENMASK(15, 0)
+> +#define BPF_FIXUP_ARENA_REG_MASK   GENMASK(20, 16)
+> +#define BPF_ARENA_ACCESS           BIT(21)
+>   #define BPF_FIXUP_REG_MASK	GENMASK(31, 27)
+>   #define DONT_CLEAR 5 /* Unused ARM64 register from BPF's POV */
+>   
+> @@ -1073,11 +1097,22 @@ bool ex_handler_bpf(const struct exception_table_entry *ex,
+>   		    struct pt_regs *regs)
+>   {
+>   	int dst_reg = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
+> +	s16 off = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
+> +	int arena_reg = FIELD_GET(BPF_FIXUP_ARENA_REG_MASK, ex->fixup);
+> +	bool is_arena = !!(ex->fixup & BPF_ARENA_ACCESS);
+> +	bool is_write = (dst_reg == DONT_CLEAR);
+> +	unsigned long addr;
+>   
+>   	if (dst_reg != DONT_CLEAR)
+>   		regs->regs[dst_reg] = 0;
+>   	/* Skip the faulting instruction */
+>   	regs->pc += AARCH64_INSN_SIZE;
+> +
+> +	if (is_arena) {
+> +		addr = regs->regs[arena_reg] + off;
+> +		bpf_prog_report_arena_violation(is_write, addr);
+> +	}
+> +
+>   	return true;
+>   }
+>   
+> @@ -1087,6 +1122,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>   				 int dst_reg)
+>   {
+>   	off_t ins_offset;
+> +	s16 off = insn->off;
+> +	bool is_arena;
+> +	int arena_reg;
+>   	unsigned long pc;
+>   	struct exception_table_entry *ex;
+>   
+> @@ -1100,6 +1138,9 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>   				BPF_MODE(insn->code) != BPF_PROBE_ATOMIC)
+>   		return 0;
+>   
+> +	is_arena = (BPF_MODE(insn->code) == BPF_PROBE_MEM32) ||
+> +		   (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC);
+> +
+>   	if (!ctx->prog->aux->extable ||
+>   	    WARN_ON_ONCE(ctx->exentry_idx >= ctx->prog->aux->num_exentries))
+>   		return -EINVAL;
+> @@ -1131,6 +1172,17 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>   
+>   	ex->fixup = FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
+>   
+> +	if (is_arena) {
+> +		ex->fixup |= BPF_ARENA_ACCESS;
+> +		if (BPF_CLASS(insn->code) == BPF_LDX)
+> +			arena_reg = bpf2a64[insn->src_reg];
+> +		else
+> +			arena_reg = bpf2a64[insn->dst_reg];
+> +
+> +		ex->fixup |=  FIELD_PREP(BPF_FIXUP_OFFSET_MASK, off) |
+> +			      FIELD_PREP(BPF_FIXUP_ARENA_REG_MASK, arena_reg);
+> +	}
+> +
+>   	ex->type = EX_TYPE_BPF;
+>   
+>   	ctx->exentry_idx++;
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 7e3fca1646203..b75dea55df5a2 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -8,6 +8,7 @@
+>   #include <linux/netdevice.h>
+>   #include <linux/filter.h>
+>   #include <linux/if_vlan.h>
+> +#include <linux/bitfield.h>
+>   #include <linux/bpf.h>
+>   #include <linux/memory.h>
+>   #include <linux/sort.h>
+> @@ -1388,16 +1389,67 @@ static int emit_atomic_ld_st_index(u8 **pprog, u32 atomic_op, u32 size,
+>   	return 0;
+>   }
+>   
+> +/*
+> + * Metadata encoding for exception handling in JITed code.
+> + *
+> + * Format of `fixup` and `data` fields in `struct exception_table_entry`:
+> + *
+> + * Bit layout of `fixup` (32-bit):
+> + *
+> + * +-----------+--------+-----------+---------+----------+
+> + * | 31        | 30-24  |   23-16   |   15-8  |    7-0   |
+> + * |           |        |           |         |          |
+> + * | ARENA_ACC | Unused | ARENA_REG | DST_REG | INSN_LEN |
+> + * +-----------+--------+-----------+---------+----------+
+> + *
+> + * - INSN_LEN (8 bits): Length of faulting insn (max x86 insn = 15 bytes (fits in 8 bits)).
+> + * - DST_REG  (8 bits): Offset of dst_reg from reg2pt_regs[] (max offset = 112 (fits in 8 bits)).
+> + *                      This is set to DONT_CLEAR if the insn is a store.
+> + * - ARENA_REG (8 bits): Offset of the register that is used to calculate the
+> + *                       address for load/store when accessing the arena region.
+> + * - ARENA_ACCESS (1 bit): This bit is set when the faulting instruction accessed the arena region.
+> + *
+> + * Bit layout of `data` (32-bit):
+> + *
+> + * +--------------+--------+--------------+
+> + * |	31-16	  |  15-8  |     7-0      |
+> + * |              |	   |              |
+> + * | ARENA_OFFSET | Unused |  EX_TYPE_BPF |
+> + * +--------------+--------+--------------+
+> + *
+> + * - ARENA_OFFSET (16 bits): Offset used to calculate the address for load/store when
+> + *                           accessing the arena region.
+> + */
+> +
+>   #define DONT_CLEAR 1
+> +#define FIXUP_INSN_LEN_MASK	GENMASK(7, 0)
+> +#define FIXUP_REG_MASK		GENMASK(15, 8)
+> +#define FIXUP_ARENA_REG_MASK	GENMASK(23, 16)
+> +#define FIXUP_ARENA_ACCESS	BIT(31)
+> +#define DATA_ARENA_OFFSET_MASK	GENMASK(31, 16)
+>   
+>   bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
+>   {
+> -	u32 reg = x->fixup >> 8;
+> +	u32 reg = FIELD_GET(FIXUP_REG_MASK, x->fixup);
+> +	u32 insn_len = FIELD_GET(FIXUP_INSN_LEN_MASK, x->fixup);
+> +	bool is_arena = !!(x->fixup & FIXUP_ARENA_ACCESS);
+> +	bool is_write = (reg == DONT_CLEAR);
+> +	unsigned long addr;
+> +	s16 off;
+> +	u32 arena_reg;
+>   
+>   	/* jump over faulting load and clear dest register */
+>   	if (reg != DONT_CLEAR)
+>   		*(unsigned long *)((void *)regs + reg) = 0;
+> -	regs->ip += x->fixup & 0xff;
+> +	regs->ip += insn_len;
+> +
+> +	if (is_arena) {
+> +		arena_reg = FIELD_GET(FIXUP_ARENA_REG_MASK, x->fixup);
+> +		off = FIELD_GET(DATA_ARENA_OFFSET_MASK, x->data);
+> +		addr = *(unsigned long *)((void *)regs + arena_reg) + off;
+> +		bpf_prog_report_arena_violation(is_write, addr);
+> +	}
+> +
+>   	return true;
+>   }
+>   
+> @@ -2070,6 +2122,8 @@ st:			if (is_imm8(insn->off))
+>   			{
+>   				struct exception_table_entry *ex;
+>   				u8 *_insn = image + proglen + (start_of_ldx - temp);
+> +				u32 arena_reg, fixup_reg;
+> +				bool is_arena;
+>   				s64 delta;
+>   
+>   				if (!bpf_prog->aux->extable)
+> @@ -2089,8 +2143,25 @@ st:			if (is_imm8(insn->off))
+>   
+>   				ex->data = EX_TYPE_BPF;
+>   
+> -				ex->fixup = (prog - start_of_ldx) |
+> -					((BPF_CLASS(insn->code) == BPF_LDX ? reg2pt_regs[dst_reg] : DONT_CLEAR) << 8);
+> +				is_arena = (BPF_MODE(insn->code) == BPF_PROBE_MEM32) ||
+> +					   (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC);
+> +
+> +				fixup_reg = (BPF_CLASS(insn->code) == BPF_LDX) ?
+> +					    reg2pt_regs[dst_reg] : DONT_CLEAR;
+> +
+> +				ex->fixup = FIELD_PREP(FIXUP_INSN_LEN_MASK, prog - start_of_ldx) |
+> +					    FIELD_PREP(FIXUP_REG_MASK, fixup_reg);
+> +
+> +				if (is_arena) {
+> +					ex->fixup |= FIXUP_ARENA_ACCESS;
+> +					if (BPF_CLASS(insn->code) == BPF_LDX)
+> +						arena_reg = reg2pt_regs[src_reg];
+> +					else
+> +						arena_reg = reg2pt_regs[dst_reg];
+> +
+> +					ex->fixup |= FIELD_PREP(FIXUP_ARENA_REG_MASK, arena_reg);
+> +					ex->data |= FIELD_PREP(DATA_ARENA_OFFSET_MASK, insn->off);
+> +				}
+>   			}
+>   			break;
+>   
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 8f6e87f0f3a89..9959e30f805b2 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2013,6 +2013,7 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   			     struct bpf_verifier_log *log);
+>   void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
+>   void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc);
+> +void bpf_prog_report_arena_violation(bool write, unsigned long addr);
+>   #else
+>   #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
+>   static inline bool bpf_try_module_get(const void *data, struct module *owner)
+> @@ -2045,6 +2046,10 @@ static inline void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_op
+>   {
+>   }
+>   
+> +static inline void bpf_prog_report_arena_violation(bool write, unsigned long addr)
+> +{
+> +}
+> +
+>   #endif
+>   
+>   int bpf_prog_ctx_arg_info_init(struct bpf_prog *prog,
+> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+> index 5b37753799d20..a1653d1c04ca5 100644
+> --- a/kernel/bpf/arena.c
+> +++ b/kernel/bpf/arena.c
+> @@ -633,3 +633,23 @@ static int __init kfunc_init(void)
+>   	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &common_kfunc_set);
+>   }
+>   late_initcall(kfunc_init);
+> +
+> +void bpf_prog_report_arena_violation(bool write, unsigned long addr)
+> +{
+> +	struct bpf_stream_stage ss;
+> +	struct bpf_prog *prog;
+> +	u64 user_vm_start;
+> +
+> +	prog = bpf_prog_find_from_stack();
 
-This patch also provides a simple demonstration of `cpuidle_gov_ext_ops` usage:
-- In `ops.init()`, we set the "rating" value to 60 - significantly exceeding other governors' ratings - to activate `cpuidle_gov_ext`.
-- For specific scenarios (e.g., screen-off music playback on mobile devices), we can enable "expect_deeper" to transition to deeper idle states.
+bpf_prog_find_from_stack depends on arch_bpf_stack_walk, which isn't available
+on all archs. How about switching to bpf_prog_ksym_find with the fault pc?
 
-This implementation serves as a foundation, not a final solution.
-We can explore further exploration of cpuidle strategies optimized for various usage scenarios.
-
-Signed-off-by: Lin Yikai <yikai.lin@vivo.com>
----
- .../bpf/prog_tests/test_cpuidle_gov_ext.c     |  28 +++
- .../selftests/bpf/progs/cpuidle_gov_ext.c     | 208 ++++++++++++++++++
- 2 files changed, 236 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_cpuidle_gov_ext.c
- create mode 100644 tools/testing/selftests/bpf/progs/cpuidle_gov_ext.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_cpuidle_gov_ext.c b/tools/testing/selftests/bpf/prog_tests/test_cpuidle_gov_ext.c
-new file mode 100644
-index 000000000000..8b35771ada44
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_cpuidle_gov_ext.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * test_cpuidle_gov_ext.c - test cpuidle governor ext's load, attach and kfuncs
-+ *
-+ * Copyright (C) Yikai Lin <yikai.lin@vivo.com>
-+ */
-+
-+#include <test_progs.h>
-+#include "cpuidle_gov_ext.skel.h"
-+
-+void test_test_cpuidle_gov_ext(void)
-+{
-+	struct cpuidle_gov_ext *skel;
-+	int err;
-+
-+	skel = cpuidle_gov_ext__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "cpuidle_gov_ext__open_and_load"))
-+		return;
-+
-+	skel->bss->expect_deeper = 1;
-+	err = cpuidle_gov_ext__attach(skel);
-+	if (!ASSERT_OK(err, "cpuidle_gov_ext__attach"))
-+		goto cleanup;
-+
-+cleanup:
-+	cpuidle_gov_ext__destroy(skel);
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/cpuidle_gov_ext.c b/tools/testing/selftests/bpf/progs/cpuidle_gov_ext.c
-new file mode 100644
-index 000000000000..62d5a9bc8cb3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cpuidle_gov_ext.c
-@@ -0,0 +1,208 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * cpuidle_gov_ext.c - test to use cpuidle governor ext by bpf
-+ *
-+ * Copyright (C) Yikai Lin <yikai.lin@vivo.com>
-+ */
-+
-+#include "vmlinux.h"
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+#ifndef ARRAY_SIZE
-+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-+#endif
-+#ifndef max
-+#define max(a, b) ((a) > (b) ? (a) : (b))
-+#endif
-+#ifndef min
-+#define min(a, b) ((a) < (b) ? (a) : (b))
-+#endif
-+
-+#define ALPHA 10
-+#define ALPHA_SCALE 100
-+#define FIT_FACTOR 90
-+
-+/*
-+ * For some low-power scenarios,
-+ * such as the screen off scenario of mobile devices
-+ * (which will be determined by the user-space BPF program),
-+ * we aim to choose a deeper state
-+ * At this point, we will somewhat disregard the impact on CPU performance.
-+ */
-+int expect_deeper = 0;
-+
-+int bpf_cpuidle_ext_gov_update_rating(unsigned int rating) __ksym __weak;
-+s64 bpf_cpuidle_ext_gov_latency_req(unsigned int cpu) __ksym __weak;
-+s64 bpf_tick_nohz_get_sleep_length(void) __ksym __weak;
-+
-+struct cpuidle_gov_data {
-+	int cpu;
-+	int last_idx;
-+	u64 last_pred;
-+	u64 last_duration;
-+	u64 next_pred;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, u32);
-+	__type(value, struct cpuidle_gov_data);
-+} cpuidle_gov_data_map SEC(".maps");
-+
-+static u64 calculate_ewma(u64 last, u64 new, u32 alpha, u32 alpha_scale)
-+{
-+	return (alpha * new + (alpha_scale - alpha) * last) / alpha_scale;
-+}
-+
-+static void update_predict_duration(struct cpuidle_gov_data *data,
-+			struct cpuidle_driver *drv, struct cpuidle_device *dev)
-+{
-+	int idx;
-+	struct cpuidle_state target;
-+
-+	if (!data || !drv || !dev)
-+		return;
-+	idx = data->last_idx;
-+	data->last_duration = dev->last_residency_ns;
-+	if (idx > 0) {
-+		bpf_core_read(&target, sizeof(target), &drv->states[idx]);
-+		if (data->last_duration > target.exit_latency)
-+			data->last_duration -= target.exit_latency;
-+	}
-+	data->last_pred = data->next_pred;
-+	data->next_pred = calculate_ewma(data->next_pred,
-+		data->last_duration, ALPHA, ALPHA_SCALE);
-+}
-+
-+/* Enable the cpuidle governor */
-+SEC("struct_ops.s/enable")
-+int BPF_PROG(bpf_cpuidle_enable, struct cpuidle_driver *drv, struct cpuidle_device *dev)
-+{
-+	u32 key = 0;
-+	struct cpuidle_gov_data *data;
-+
-+	bpf_printk("cpuidle_gov_ext: enabled");
-+	data = bpf_map_lookup_percpu_elem(&cpuidle_gov_data_map, &key, dev->cpu);
-+	if (!data)
-+		return 0;
-+
-+	__builtin_memset(data, 0, sizeof(struct cpuidle_gov_data));
-+	data->cpu = dev->cpu;
-+	return 0;
-+}
-+
-+/* Disable the cpuidle governor */
-+SEC("struct_ops.s/disable")
-+void BPF_PROG(bpf_cpuidle_disable, struct cpuidle_driver *drv, struct cpuidle_device *dev)
-+{
-+	bpf_printk("cpuidle_gov_ext: disabled");
-+}
-+
-+/* Select the next idle state */
-+SEC("struct_ops.s/select")
-+int BPF_PROG(bpf_cpuidle_select, struct cpuidle_driver *drv, struct cpuidle_device *dev)
-+{
-+	u32 key = 0;
-+	s64 delta, latency_req, residency_ns;
-+	int i, selected;
-+	unsigned long long disable = 0;
-+	struct cpuidle_gov_data *data;
-+	struct cpuidle_state cs;
-+
-+	data = bpf_map_lookup_percpu_elem(&cpuidle_gov_data_map, &key, dev->cpu);
-+	if (!data) {
-+		bpf_printk("cpuidle_gov_ext: [%s] cpuidle_gov_data_map is NULL\n", __func__);
-+		return 0;
-+	}
-+	latency_req = bpf_cpuidle_ext_gov_latency_req(dev->cpu);
-+	delta = bpf_tick_nohz_get_sleep_length();
-+
-+	update_predict_duration(data, drv, dev);
-+
-+	for (i = ARRAY_SIZE(drv->states)-1; i > 0; i--) {
-+		if (i > drv->state_count-1)
-+			continue;
-+		bpf_core_read(&cs, sizeof(cs), &drv->states[i]);
-+		bpf_core_read(&disable, sizeof(disable), &dev->states_usage[i]);
-+
-+		if (disable)
-+			continue;
-+
-+		if (latency_req < cs.exit_latency_ns)
-+			continue;
-+
-+		if (delta < cs.target_residency_ns)
-+			continue;
-+
-+		if (data->next_pred / FIT_FACTOR * ALPHA_SCALE < cs.target_residency_ns)
-+			continue;
-+
-+		break;
-+	}
-+	residency_ns = drv->states[i].target_residency_ns;
-+	if (expect_deeper &&
-+		i < drv->state_count - 1 &&
-+		data->last_pred >= residency_ns &&
-+		data->next_pred < residency_ns &&
-+		data->next_pred / FIT_FACTOR * ALPHA_SCALE >= residency_ns &&
-+		data->next_pred / FIT_FACTOR * ALPHA_SCALE >= data->last_duration &&
-+		delta > residency_ns) {
-+		i++;
-+	}
-+
-+	selected = i;
-+	return selected;
-+}
-+
-+//enable or disable scheduling tick after selecting cpuidle state
-+SEC("struct_ops.s/set_stop_tick")
-+bool BPF_PROG(bpf_cpuidle_set_stop_tick)
-+{
-+	return false;
-+}
-+
-+/* Reflect function called after entering an idle state */
-+SEC("struct_ops.s/reflect")
-+void BPF_PROG(bpf_cpuidle_reflect, struct cpuidle_device *dev, int index)
-+{
-+	u32 key = 0;
-+	struct cpuidle_gov_data *data;
-+
-+	data = bpf_map_lookup_percpu_elem(&cpuidle_gov_data_map, &key, dev->cpu);
-+	if (!data) {
-+		bpf_printk("cpuidle_gov_ext: [%s] cpuidle_gov_data_map is NULL\n", __func__);
-+		return;
-+	}
-+	data->last_idx = index;
-+}
-+
-+/* Initialize the BPF cpuidle governor */
-+SEC("struct_ops.s/init")
-+int BPF_PROG(bpf_cpuidle_init)
-+{
-+	int ret = bpf_cpuidle_ext_gov_update_rating(60);
-+	return ret;
-+}
-+
-+/* Cleanup after the BPF cpuidle governor */
-+SEC("struct_ops.s/exit")
-+void BPF_PROG(bpf_cpuidle_exit) { }
-+
-+/* Struct_ops linkage for cpuidle governor */
-+SEC(".struct_ops.link")
-+struct cpuidle_gov_ext_ops ops = {
-+	.enable  = (void *)bpf_cpuidle_enable,
-+	.disable = (void *)bpf_cpuidle_disable,
-+	.select  = (void *)bpf_cpuidle_select,
-+	.set_stop_tick = (void *)bpf_cpuidle_set_stop_tick,
-+	.reflect = (void *)bpf_cpuidle_reflect,
-+	.init	= (void *)bpf_cpuidle_init,
-+	.exit	= (void *)bpf_cpuidle_exit,
-+	.name	= "BPF_cpuidle_gov"
-+};
--- 
-2.43.0
+> +	if (!prog)
+> +		return;
+> +
+> +	user_vm_start = bpf_arena_get_user_vm_start(prog->aux->arena);
+> +	addr += (user_vm_start >> 32) << 32;
+> +
+> +	bpf_stream_stage(ss, prog, BPF_STDERR, ({
+> +		bpf_stream_printk(ss, "ERROR: Arena %s access at unmapped address 0x%lx\n",
+> +				  write ? "WRITE" : "READ", addr);
+> +		bpf_stream_dump_stack(ss);
+> +	}));
+> +}
 
 
