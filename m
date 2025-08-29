@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-66931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC259B3B1B1
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 05:36:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A428B3B1B3
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 05:37:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D4861C86567
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 03:37:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D45F17BCBA8
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 03:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B42221F13;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF3E221F34;
 	Fri, 29 Aug 2025 03:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iAKe1IzZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JghHnSxg"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326DD1FDE31;
-	Fri, 29 Aug 2025 03:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AF91FF1A0;
+	Fri, 29 Aug 2025 03:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756438602; cv=none; b=NL+VylKC9n2kU5wsJ9vQx125jAY6HToRb4PmMHq6LplSVdUauv2xe+jH4Rc/Q6Z8d799xilq65ZFtdRTy4BXHOtFyN64dzfl6OaHy/MXWXY9JRTMcA30RZBeyXti6kuBVo1i271mvV/VYlRbfiFjXMml3VzFzAGIayuwC+/lud4=
+	t=1756438602; cv=none; b=gWsMDmAbAgWJpgb9QU1Ze5FXwM5RD3+63DZ5qLprTCzB1eCtHxnIq2CXR+HyUh16LKJ/3KpTJ3GOwcvuGZ3XKh3eb6LL/wBcDvzvJzwwm4rpxx6HsYV0g8clAHrjE1nXUj3uh1uNkaH8oIAo9xBa0y5yzbx+J8aB9XhLxLDDjaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756438602; c=relaxed/simple;
-	bh=lLD8NUQ1wv6nlx9YnRHQKnHbLnh1cRGdlvrFwAvOA0A=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=J7mDOvH6mutxYWLlLIoHrI9s6Qkq36BmPBJGfd0sluKAHVDlnbfy3AZNPdx5hfWJC9Ash5D2qdsnmc0FAp2hRBK4jfqgJ9QBaFTiUjRY8hxc2LiwcscpA5N0MFNLhFqLD0Ih1ruOpnx99wFUIcf/wB8Thjl4rFEtEDD+jt6LB+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iAKe1IzZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B6D9AC4CEF0;
+	bh=IJD7kFOE2PJTMk4Ak4BtV04HYJ8FbDFuUpRsW6Xu3AQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=tuoRq045u5c220GNV/cUf0uoM+KEtXYdauyTvkZDBi0DlGseNn+GZKqFi6Cwij3ggrdLwEc/9sjJaNcxCfbH5QHVMA+q+XuZzy5DeUQyc9lsmTqRSu/u3X+fDm75sbaPgnMRHXsu2MHFRtNt2Rb4Mu5E2y/av+8q/1bGmy9Pq8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JghHnSxg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C8FDAC4CEF1;
 	Fri, 29 Aug 2025 03:36:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756438601;
-	bh=lLD8NUQ1wv6nlx9YnRHQKnHbLnh1cRGdlvrFwAvOA0A=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=iAKe1IzZMnpNbNPJ4zf4ZR4zzFNozZwbPx7sZ7QyVvL2eW6XmxNSHE7U/vCJ7wDrb
-	 SRtZUHwMUvBhq4IcNv+bIK9BxxcVwltThYfuDC8n3MLRD/W9AqZjWZxzl9mwkNeG10
-	 dmuByV53EbdmcjiT2X14h6NBgePmxhwv5vT3610sJc8GKprzrqDBVlFW05EfGGPuZO
-	 o1Kqe+6iP87I0wyHbXgmysGtzJ0SmQveL4tSFCXDlxYT/L6yyjINHxKH0ihliuiWh4
-	 JpOvMFMUBTf3VNRgTmZR4P6RRraVXtkS+K1FewNUM9UVMQrE4dA4uW5CPKNgrXGB/3
-	 URfH6IDudx14A==
+	bh=IJD7kFOE2PJTMk4Ak4BtV04HYJ8FbDFuUpRsW6Xu3AQ=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=JghHnSxg2JC9OraP9VH23hmB9bqHRU7j2/MvHDQu7UiLZtJJmRH4DDR/Pf8x6yJ0d
+	 4Lx3hckzht2gL7VIBzoSi25tXhzK89cw1Ju+T1MlaSjKsvtY4JSwiHnlFRBfoFhdWy
+	 0QultZpcKD2vjSwtS5ykmi1uloMRbDYNCAEcakdMvlrNKc/B+Ca5snPQxGTgVWmr5p
+	 +5LvrteuHLVx90GKkqZBnSZaFijKF37LP933JA0Z/irav+2d9HO/VHGLjENgF8icUj
+	 lRD/FgIiBAtaKEaHGdNZJkquwTgOJX37m0y/8X4++MylwdfpCZRzmUh288hoXMhyjR
+	 UN3jzeeWBetoQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A13F5CA0EED;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1571CA0FF0;
 	Fri, 29 Aug 2025 03:36:41 +0000 (UTC)
 From: Christoph Paasch via B4 Relay <devnull+cpaasch.openai.com@kernel.org>
-Subject: [PATCH net-next v4 0/2] net/mlx5: Avoid payload in skb's linear
- part for better GRO-processing
-Date: Thu, 28 Aug 2025 20:36:17 -0700
-Message-Id: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
+Date: Thu, 28 Aug 2025 20:36:18 -0700
+Subject: [PATCH net-next v4 1/2] net/mlx5: DMA-sync earlier in
+ mlx5e_skb_from_cqe_mpwrq_nonlinear
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,12 +56,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADEgsWgC/63Oz2qEMBDH8VdZcu4UMyb+6anvUXoYk3ENqAlGg
- rL47htkoS29evwxMJ/vQ0ReHEfxcXuIhZOLzs95qLebMAPNdwZn8xZYoC5qiWACUTQDhB5arGH
- mdRo3DZS8s2B82N18h3VgCLSPniys/pwTjaM3bIEWJqg0qlbWSmuqRLbCwr3bzo4vkX/mv9sqv
- vNlcHH1y34GJnneXy3lRS1JQgFsiG1jsFGKP33gmdy78dOZkPCHbWR1FYuZ7aTsyqIzaGXxjy1
- /saivYsvMao01t9xV3Js/7HEcT+Uhei4TAgAA
-X-Change-ID: 20250712-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-6524917455a6
+Message-Id: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-1-bfcd5033a77c@openai.com>
+References: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
+In-Reply-To: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
 To: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
  Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
  Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
@@ -75,11 +72,11 @@ To: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
 Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org, 
  Christoph Paasch <cpaasch@openai.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1756438601; l=2427;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1756438601; l=3092;
  i=cpaasch@openai.com; s=20250712; h=from:subject:message-id;
- bh=lLD8NUQ1wv6nlx9YnRHQKnHbLnh1cRGdlvrFwAvOA0A=;
- b=PcmsDyofHgu6loGt6I8bnOR8TMUktjuYLu2lEeHuMJVwmsTKqikZSKvFx40vwU2IgzULpIPJZ
- fgo03BSVnDvA92y6Zt95rNTvtS5H8kNJ7I0FUdOKvtyP2ev3vmspCER
+ bh=wZ6sujNCZEX35sUzLOUfZGnKZmRTmAIAxJyg34hRjcA=;
+ b=rnMQRxqgOg0aVxfMv5HMSU/R+nK3utU0awxFrR/2DiC4G6bhKid5XH8jAzulXAnxLoff7+OtT
+ D8Llm1LxhKaBrLKGLVNXb6iJQ+dNDLXYEaLMEs6QbeFGlWoZeutw/qI
 X-Developer-Key: i=cpaasch@openai.com; a=ed25519;
  pk=1HRHZlVUZPziMZvsAQFvP7n5+uEosTDAjXmNXykdxdg=
 X-Endpoint-Received: by B4 Relay for cpaasch@openai.com/20250712 with
@@ -87,55 +84,90 @@ X-Endpoint-Received: by B4 Relay for cpaasch@openai.com/20250712 with
 X-Original-From: Christoph Paasch <cpaasch@openai.com>
 Reply-To: cpaasch@openai.com
 
-When LRO is enabled on the MLX, mlx5e_skb_from_cqe_mpwrq_nonlinear
-copies parts of the payload to the linear part of the skb.
+From: Christoph Paasch <cpaasch@openai.com>
 
-This triggers suboptimal processing in GRO, causing slow throughput,...
+Doing the call to dma_sync_single_for_cpu() earlier will allow us to
+adjust headlen based on the actual size of the protocol headers.
 
-This patch series addresses this by using eth_get_headlen to compute the
-size of the protocol headers and only copy those bits. This results in
-a significant throughput improvement (detailled results in the specific
-patch).
+Doing this earlier means that we don't need to call
+mlx5e_copy_skb_header() anymore and rather can call
+skb_copy_to_linear_data() directly.
 
 Signed-off-by: Christoph Paasch <cpaasch@openai.com>
 ---
-Changes in v4:
-- Use eth_get_headlen() instead of building a dissector based on struct mlx5_cqe64.
-  This mimics what other drivers,... are doing as well. (Eric Dumazet
-  <edumazet@google.com>)
-- Link to v3: https://lore.kernel.org/r/20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-0-5527e9eb6efc@openai.com
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-Changes in v3:
-- Avoid computing headlen when it is not absolutely necessary (e.g., xdp
-  decides to "consume" the packet) (Dragos Tatulea <dtatulea@nvidia.com> & Jakub Kicinski <kuba@kernel.org>)
-- Given the above change, consolidate the check for min3(...) in the new
-  function to avoid code duplication.
-- Make sure local variables are in reverse xmas-tree order.
-- Refine comment about why the check for l4_type worsk as is.
-- Link to v2: https://lore.kernel.org/r/20250816-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v2-0-b11b30bc2d10@openai.com
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+index b8c609d91d11bd315e8fb67f794a91bd37cd28c0..8bedbda522808cbabc8e62ae91a8c25d66725ebb 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+@@ -2005,17 +2005,19 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 	struct skb_shared_info *sinfo;
+ 	unsigned int truesize = 0;
+ 	struct bpf_prog *prog;
++	void *va, *head_addr;
+ 	struct sk_buff *skb;
+ 	u32 linear_frame_sz;
+ 	u16 linear_data_len;
+ 	u16 linear_hr;
+-	void *va;
+ 
+ 	prog = rcu_dereference(rq->xdp_prog);
+ 
++	head_addr = netmem_address(head_page->netmem) + head_offset;
++
+ 	if (prog) {
+ 		/* area for bpf_xdp_[store|load]_bytes */
+-		net_prefetchw(netmem_address(frag_page->netmem) + frag_offset);
++		net_prefetchw(head_addr);
+ 		if (unlikely(mlx5e_page_alloc_fragmented(rq->page_pool,
+ 							 &wi->linear_page))) {
+ 			rq->stats->buff_alloc_err++;
+@@ -2028,6 +2030,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 		linear_data_len = 0;
+ 		linear_frame_sz = MLX5_SKB_FRAG_SZ(linear_hr + MLX5E_RX_MAX_HEAD);
+ 	} else {
++		dma_addr_t addr;
++
+ 		skb = napi_alloc_skb(rq->cq.napi,
+ 				     ALIGN(MLX5E_RX_MAX_HEAD, sizeof(long)));
+ 		if (unlikely(!skb)) {
+@@ -2039,6 +2043,10 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 		net_prefetchw(va); /* xdp_frame data area */
+ 		net_prefetchw(skb->data);
+ 
++		addr = page_pool_get_dma_addr_netmem(head_page->netmem);
++		dma_sync_single_for_cpu(rq->pdev, addr + head_offset, headlen,
++					rq->buff.map_dir);
++
+ 		frag_offset += headlen;
+ 		byte_cnt -= headlen;
+ 		linear_hr = skb_headroom(skb);
+@@ -2117,8 +2125,6 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 		}
+ 		__pskb_pull_tail(skb, headlen);
+ 	} else {
+-		dma_addr_t addr;
+-
+ 		if (xdp_buff_has_frags(&mxbuf->xdp)) {
+ 			struct mlx5e_frag_page *pagep;
+ 
+@@ -2133,9 +2139,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 			while (++pagep < frag_page);
+ 		}
+ 		/* copy header */
+-		addr = page_pool_get_dma_addr_netmem(head_page->netmem);
+-		mlx5e_copy_skb_header(rq, skb, head_page->netmem, addr,
+-				      head_offset, head_offset, headlen);
++		skb_copy_to_linear_data(skb, head_addr, headlen);
++
+ 		/* skb linear part was allocated with headlen and aligned to long */
+ 		skb->tail += headlen;
+ 		skb->len  += headlen;
 
-Changes in v2:
-- Refine commit-message with more info and testing data
-- Make mlx5e_cqe_get_min_hdr_len() return MLX5E_RX_MAX_HEAD when l3_type
-  is neither IPv4 nor IPv6. Same for the l4_type. That way behavior is
-  unchanged for other traffic types.
-- Rename mlx5e_cqe_get_min_hdr_len to mlx5e_cqe_estimate_hdr_len
-- Link to v1: https://lore.kernel.org/r/20250713-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v1-0-ecaed8c2844e@openai.com
-
----
-Christoph Paasch (2):
-      net/mlx5: DMA-sync earlier in mlx5e_skb_from_cqe_mpwrq_nonlinear
-      net/mlx5: Avoid copying payload to the skb's linear part
-
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
----
-base-commit: 29828b81a46a3ae55ebc053fce512219172560ba
-change-id: 20250712-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-6524917455a6
-
-Best regards,
 -- 
-Christoph Paasch <cpaasch@openai.com>
+2.50.1
 
 
 
