@@ -1,284 +1,172 @@
-Return-Path: <bpf+bounces-66979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F05CB3BA96
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 14:02:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6B12B3BB09
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 14:19:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8A5E177F96
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 12:01:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFBF3208014
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 12:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9FA3164B0;
-	Fri, 29 Aug 2025 12:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F15314B98;
+	Fri, 29 Aug 2025 12:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EZXX5o4h";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0MSpGSb+";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OPBU/lqB";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8HmyejID"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JQ0/AxIO"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388EA314A71
-	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 12:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA4E13128BA;
+	Fri, 29 Aug 2025 12:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756468858; cv=none; b=MDZA09ZVCJA5tjMlSrKxpt6fycszOFsfnuDJcWX2t7KwelIFYwwcfkokLfn8mVdZmNiBH6z29QVfUme1Rvu43N5pYLHa27cbgesx9y9gBl84q0q90IatqUgPad3YC05oyP1Hjs9upbK1OTuLWrAQqe1pXgT/3efv7TkLFUDlH7w=
+	t=1756469934; cv=none; b=j+avQN4WhEr7qXpDuA/3nhceLiCx2nMLiANtB4U3xGPsCcmFsdKQ73zdCesgJvKUYW3Gkjk5YeEWLfpsdkuT7kThPTFWA5UeDUkP1Qy8FCufqzoQS1OSATLB+fOkIIqiq2ErXMnOoiY2ormYdotsQ6vTGLhuxRLtU1dCLDRSIgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756468858; c=relaxed/simple;
-	bh=O9hhzTPoLNrhsM4crWvZ3QFR5dbDYeIRHd+/7WFD/Lo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SaMx9wM4HRzOklKOYAXfP7EEv3CmroxHCTZvisxTTQOsMKJv4J7ElrB30KEZ/tvH/w0Q8nHlxfrAajYDJNwqQMjJqRMG+0ktw6Sos8NG31sbfGRIvK11oBuwSeFWYPdN5DRHKJZEPK2I+qgMKr0xHxGehYptV0zLFRZIPUPkWHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EZXX5o4h; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0MSpGSb+; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OPBU/lqB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8HmyejID; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E240333DB6;
-	Fri, 29 Aug 2025 12:00:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1756468854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=iaUzxmwBsmTBCo2WBOyDflFvUI/88ipptA2vlawnwBU=;
-	b=EZXX5o4hQ2Oh7plQuT98v6ah+GhxmYAgzg1F3DN+VoOuk1+I60IqOg+wim4HVwfvZSqk5f
-	VXhIIfKRC6+rFIM6IT4VfU7O/rhiTSdo68En/5dfo/OrDfx5ZZaGA58OL+/ZOcRTIyPN6d
-	fz6jO2qzGW350Q0Z5O4Dg9aDj5vGPg0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1756468854;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=iaUzxmwBsmTBCo2WBOyDflFvUI/88ipptA2vlawnwBU=;
-	b=0MSpGSb+up5ugfLC8+w6PJ5di9IfOZ04Xx+/9bdOmpxI5u8p68jh9c2UpOBzM3HrOSt/uV
-	+5Y/F/pI2PXZwTDg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="OPBU/lqB";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=8HmyejID
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1756468853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=iaUzxmwBsmTBCo2WBOyDflFvUI/88ipptA2vlawnwBU=;
-	b=OPBU/lqBuATLoeCcBKBuuQItTtcidsKi3kFoZdqDZ0Nl+eK/z0By3HAYaUQ02mzaBeaA3n
-	AxJWmJoWqSxQnOwqThQTyxhYEXHtRdMThJ3gi3fNxVUxFZHqSIPSSoAYM7B5Uonj0JldUt
-	pgzVsobFIRWaxfBiWpLS/8FdPrQ6liE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1756468853;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=iaUzxmwBsmTBCo2WBOyDflFvUI/88ipptA2vlawnwBU=;
-	b=8HmyejIDx04CqR36zeLP1yk+JJaYK1w8XikVj/s27iMRpTGBB5nX44hU8iQRmaYyaeDrU8
-	9JTMYu3gqgAvlVDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D2EC13A72;
-	Fri, 29 Aug 2025 12:00:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id l3olJXOWsWgSYwAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Fri, 29 Aug 2025 12:00:51 +0000
-Message-ID: <871b2113-5482-4f3c-b58b-573d6cbeebe0@suse.de>
-Date: Fri, 29 Aug 2025 14:00:50 +0200
+	s=arc-20240116; t=1756469934; c=relaxed/simple;
+	bh=lmOaDJrWsALHNdIkFkPEn+1/tHhvy8ASz+0CpcTOxMQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=aixO4Udse8s1/Be5EQ+hm5B9V1oK4EoGuqdUm4w7WZN6OgfQjs9oDhXgFjHHuKBX6oB6pN/VihjWOlSnlzAU7WZg5OrRBnvWeTs7xPkgdvtSa+K9u01GU0NVVPZOrZ1nq17ue8hc+/U1WWO2OoUou5xWsMxaTmWf/Yo/c/qSaoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JQ0/AxIO; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1756469933; x=1788005933;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=lmOaDJrWsALHNdIkFkPEn+1/tHhvy8ASz+0CpcTOxMQ=;
+  b=JQ0/AxIOhGOdNMLF+qwZWK/qJiXTSwfEjc9AjX87xrVNj81JYdTRUYja
+   V7Zb2LTkZJLsheaBDsqGMptJ5WLRby9tzbmbVTPMLbVDGXjofwZLzfW44
+   uOWocqbtuuJjlRsXxevgLMALWmEsvl5IiIVUgq/yRnlEAAkyhKziMiGiq
+   8LQ0HYP1ZzdKGkkj3GmzQUSZySM6I71X9QFAhieJDOOWEHkEahigArV0G
+   EZKhduHmce0JLMY2Jfh70zm2ysBhf+FZp5eGkImBMlzoWCDD2/UUeD67o
+   gUoOPBKJW64YrJe4R/5lKaE/2DIWL5soyk1zj202MgephKE5eRnOICCye
+   A==;
+X-CSE-ConnectionGUID: HteoTLb2Tjy5YxO8qrXg+A==
+X-CSE-MsgGUID: J3mI7IycSxOWSYmo7wvxqg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11536"; a="58603807"
+X-IronPort-AV: E=Sophos;i="6.18,221,1751266800"; 
+   d="scan'208";a="58603807"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2025 05:18:51 -0700
+X-CSE-ConnectionGUID: FceyOGKfTMK8J/ArNXLz6w==
+X-CSE-MsgGUID: nahg4MG6QSGDgmwgF/j0Ug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,221,1751266800"; 
+   d="scan'208";a="170753940"
+Received: from hrotuna-mobl2.ger.corp.intel.com (HELO localhost) ([10.245.246.58])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2025 05:18:22 -0700
+From: Jani Nikula <jani.nikula@intel.com>
+To: Bagas Sanjaya <bagasdotme@gmail.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Documentation
+ <linux-doc@vger.kernel.org>, Linux DAMON <damon@lists.linux.dev>, Linux
+ Memory Management List <linux-mm@kvack.org>, Linux Power Management
+ <linux-pm@vger.kernel.org>, Linux Block Devices
+ <linux-block@vger.kernel.org>, Linux BPF <bpf@vger.kernel.org>, Linux
+ Kernel Workflows <workflows@vger.kernel.org>, Linux KASAN
+ <kasan-dev@googlegroups.com>, Linux Devicetree
+ <devicetree@vger.kernel.org>, Linux fsverity <fsverity@lists.linux.dev>,
+ Linux MTD <linux-mtd@lists.infradead.org>, Linux DRI Development
+ <dri-devel@lists.freedesktop.org>, Linux Kernel Build System
+ <linux-lbuild@vger.kernel.org>, Linux Networking <netdev@vger.kernel.org>,
+ Linux Sound <linux-sound@vger.kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+ Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>, Andrew
+ Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett"
+ <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport
+ <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko
+ <mhocko@suse.com>, Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy"
+ <gautham.shenoy@amd.com>, Mario Limonciello <mario.limonciello@amd.com>,
+ Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas Bulwahn
+ <lukas.bulwahn@gmail.com>, Joe Perches <joe@perches.com>, Andrey Ryabinin
+ <ryabinin.a.a@gmail.com>, Alexander Potapenko <glider@google.com>, Andrey
+ Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Eric Biggers <ebiggers@kernel.org>, tytso@mit.edu,
+ Richard Weinberger <richard@nod.at>, Zhihao Cheng
+ <chengzhihao1@huawei.com>, David Airlie <airlied@gmail.com>, Simona Vetter
+ <simona@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann
+ <tzimmermann@suse.de>, Nathan Chancellor <nathan@kernel.org>, Nicolas
+ Schier <nicolas.schier@linux.dev>, Ingo Molnar <mingo@redhat.com>, Will
+ Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, Waiman Long
+ <longman@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Shay Agroskin
+ <shayagr@amazon.com>, Arthur Kiyanovski <akiyano@amazon.com>, David
+ Arinzon <darinzon@amazon.com>, Saeed Bishara <saeedb@amazon.com>, Andrew
+ Lunn <andrew@lunn.ch>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>, Alexandru Ciobotaru <alcioa@amazon.com>, The AWS Nitro
+ Enclaves Team <aws-nitro-enclaves-devel@amazon.com>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>, Laurent
+ Pinchart <laurent.pinchart@ideasonboard.com>, Steve French
+ <stfrench@microsoft.com>, Meetakshi Setiya <msetiya@microsoft.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "Martin K. Petersen"
+ <martin.petersen@oracle.com>, Bart Van Assche <bvanassche@acm.org>, Thomas
+ =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>, Masahiro Yamada
+ <masahiroy@kernel.org>
+Subject: Re: [PATCH 00/14] Internalize www.kernel.org/doc cross-reference
+In-Reply-To: <20250829075524.45635-1-bagasdotme@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20250829075524.45635-1-bagasdotme@gmail.com>
+Date: Fri, 29 Aug 2025 15:18:20 +0300
+Message-ID: <437912a24e94673c2355a2b7b50c3c4b6f68fcc6@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/14] Documentation: gpu: Use internal link to kunit
-To: Bagas Sanjaya <bagasdotme@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Documentation <linux-doc@vger.kernel.org>,
- Linux DAMON <damon@lists.linux.dev>,
- Linux Memory Management List <linux-mm@kvack.org>,
- Linux Power Management <linux-pm@vger.kernel.org>,
- Linux Block Devices <linux-block@vger.kernel.org>,
- Linux BPF <bpf@vger.kernel.org>,
- Linux Kernel Workflows <workflows@vger.kernel.org>,
- Linux KASAN <kasan-dev@googlegroups.com>,
- Linux Devicetree <devicetree@vger.kernel.org>,
- Linux fsverity <fsverity@lists.linux.dev>,
- Linux MTD <linux-mtd@lists.infradead.org>,
- Linux DRI Development <dri-devel@lists.freedesktop.org>,
- Linux Kernel Build System <linux-lbuild@vger.kernel.org>,
- Linux Networking <netdev@vger.kernel.org>,
- Linux Sound <linux-sound@vger.kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
- Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
- Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka
- <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Dwaipayan Ray <dwaipayanray1@gmail.com>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>, Joe Perches <joe@perches.com>,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>, Rob Herring
- <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Eric Biggers <ebiggers@kernel.org>,
- tytso@mit.edu, Richard Weinberger <richard@nod.at>,
- Zhihao Cheng <chengzhihao1@huawei.com>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Nicolas Schier <nicolas.schier@linux.dev>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
- Waiman Long <longman@redhat.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Shay Agroskin <shayagr@amazon.com>, Arthur Kiyanovski <akiyano@amazon.com>,
- David Arinzon <darinzon@amazon.com>, Saeed Bishara <saeedb@amazon.com>,
- Andrew Lunn <andrew@lunn.ch>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Alexandru Ciobotaru <alcioa@amazon.com>,
- The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Steve French <stfrench@microsoft.com>,
- Meetakshi Setiya <msetiya@microsoft.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Bart Van Assche <bvanassche@acm.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Masahiro Yamada <masahiroy@kernel.org>
-References: <20250829075524.45635-1-bagasdotme@gmail.com>
- <20250829075524.45635-9-bagasdotme@gmail.com>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20250829075524.45635-9-bagasdotme@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: E240333DB6
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com,lists.infradead.org,lists.freedesktop.org];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_CC(0.00)[linutronix.de,alien8.de,infradead.org,kernel.org,linux.intel.com,lwn.net,linux-foundation.org,redhat.com,oracle.com,suse.cz,google.com,suse.com,amd.com,kernel.dk,iogearbox.net,linux.dev,gmail.com,fomichev.me,perches.com,arm.com,mit.edu,nod.at,huawei.com,ffwll.ch,davemloft.net,amazon.com,lunn.ch,perex.cz,ideasonboard.com,microsoft.com,linuxfoundation.org,acm.org,weissschuh.net];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[99];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[dt];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	R_RATELIMIT(0.00)[to_ip_from(RL8kdret51y9bzcpk5wqse1m3g)];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -3.01
+Content-Type: text/plain
 
-
-
-Am 29.08.25 um 09:55 schrieb Bagas Sanjaya:
-> Use internal linking to kunit documentation.
+On Fri, 29 Aug 2025, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+> Cross-references to other docs (so-called internal links) are typically
+> done following Documentation/doc-guide/sphinx.rst: either simply
+> write the target docs (preferred) or use :doc: or :ref: reST directives
+> (for use-cases like having anchor text or cross-referencing sections).
+> In some places, however, links to https://www.kernel.org/doc
+> are used instead (outgoing, external links), owing inconsistency as
+> these requires Internet connection only to see docs that otherwise
+> can be accessed locally (after building with ``make htmldocs``).
 >
-> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> Convert such external links to internal links. Note that this does not
+> cover docs.kernel.org links nor touching Documentation/tools (as
+> docs containing external links are in manpages).
 
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+FWIW, I'd much prefer using :ref: on rst anchors (that automatically
+pick the link text from the target heading) instead of manually adding
+link texts and file references.
 
-Fell free to merge it through a tree of your choice.
+i.e.
 
-Best regards
-Thomas
+.. _some_target:
 
-> ---
->   Documentation/gpu/todo.rst | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
-> index be8637da3fe950..efe9393f260ae2 100644
-> --- a/Documentation/gpu/todo.rst
-> +++ b/Documentation/gpu/todo.rst
-> @@ -655,9 +655,9 @@ Better Testing
->   Add unit tests using the Kernel Unit Testing (KUnit) framework
->   --------------------------------------------------------------
->   
-> -The `KUnit <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_
-> -provides a common framework for unit tests within the Linux kernel. Having a
-> -test suite would allow to identify regressions earlier.
-> +The :doc:`KUnit </dev-tools/kunit/index>` provides a common framework for unit
-> +tests within the Linux kernel. Having a test suite would allow to identify
-> +regressions earlier.
->   
->   A good candidate for the first unit tests are the format-conversion helpers in
->   ``drm_format_helper.c``.
+Heading After Some Target
+=========================
+
+See :ref:`some_target`.
+
+Will generate "See Heading After Some Target".
+
+
+BR,
+Jani.
+
 
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
-
-
+Jani Nikula, Intel
 
