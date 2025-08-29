@@ -1,123 +1,175 @@
-Return-Path: <bpf+bounces-66990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4759FB3BF87
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 17:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E1CFB3BF91
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 17:40:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AFEC58829A
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 15:39:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AD33587106
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 15:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C217326D49;
-	Fri, 29 Aug 2025 15:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B5C33438D;
+	Fri, 29 Aug 2025 15:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P62n5vgv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hxRjy6JU"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88865322A1A
-	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 15:34:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8BC3314B5;
+	Fri, 29 Aug 2025 15:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756481695; cv=none; b=NGA5UlSiPGqcJwgskRhTQpZMXOIY3z8lq21zlg3v31YHS5XB/dyD/5OR+zwvMa7PLSO+3sATeIGvPyKuc6YXitZDGlOcH2bs1kkXuyIgZHEYfbUBmXRKdNVK5xJTd8ELhTWBZ9PqOoEQcfsavH8hyxRrwkjQCgei72/82IwoUhA=
+	t=1756481821; cv=none; b=HFQK+i1BkoweWh+BDSVEZDu5TZac3GMoZgJUDHT/q+ExtXvmNvUuPT8nPjxV1gPgbwPFPTvhtYCA3LT5IbcgMPbCsSOhhWBsjK/MfCuqCajso5dwh0qgknDOYgNhZudyKj1TcQ05S6CauQXrCqSllT6u++ajsn1jo538d2o5DLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756481695; c=relaxed/simple;
-	bh=Q4YgVpLsGvMNxEZedETcLw/QXEISSTovzr9ZBwXrwh0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JgPyFQQqpJ4YI0P/BevCnolxZRqRu5izKFydyaw5KkMr27Y0ocHM3xJre7GoZh8KZKP4h0w+VYorNlidfjSg8b8xmj1yC1FX//Vf3ndmTczD2jq989lE/5+EGU6zwUYmDzSaMoiPrkBkVBv4f2hhVl2+3lDLUyD5mPlX/Q5A7lU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P62n5vgv; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <9a3d321e-b8d6-4a64-a1f1-fc44d9d7848e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756481691;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hy0QtKBiYJ+ZRh0PGhAXjFTjhyal8GXd64ijZwBdxrs=;
-	b=P62n5vgvN+dSYE5vYOQlbsUWXQXERHjkl1iMCw2NhSxqn6BbqQHeiRjN6xIAa5LOLWBl4Q
-	JTUGSP1ua/Ulx5qDOVxQNJxs0jhW6Z8DuG+09UJFmPOwrHRDHis1wCuysfx7A9sumVxOkR
-	ZTfdg8x6YGUWtLooGDuw+u22FHL1Vc4=
-Date: Fri, 29 Aug 2025 16:34:45 +0100
+	s=arc-20240116; t=1756481821; c=relaxed/simple;
+	bh=Z0Bv7WaDdOXi4UMDM6ZgBS7CKcxMZ6kvuSO3nqYq5X8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tsIfPZa7mQzdBEr0SQkeuIybGgclalZa2TMbE3XaXUV70tsaXAjZZ0QnaymCyqt0KvlDCCwP/TShTmqFVpEeBu8C7VkMRbnFocgkvDBUWaB2fRNyHScrjbOxuMhy62lbhebt3XO5L19lEbhC7fg8CfBo0laeTWqUN5obMTgFhMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hxRjy6JU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61569C4CEFC;
+	Fri, 29 Aug 2025 15:37:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756481820;
+	bh=Z0Bv7WaDdOXi4UMDM6ZgBS7CKcxMZ6kvuSO3nqYq5X8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hxRjy6JU/oDw6RINsxcmGRsTVGeDOVIb4ykJmLCqUX+QQzeylWuLrDXAGu73hmOa8
+	 cXkBsFfxubx34foFYG+QHJojJeqb3QzXsHL83AkHDPdn/Qv4/IIR3e2qaYlaHVj7X8
+	 /ujZy8fCtuvOl+p3ABN9mW0y/L62IEPa3LIB45zqcEIJiII+iaRRjvCxcFZVIe4UIP
+	 kaEKsYFY6b00ExIR7mNyizMsT0mnem6gSXppPc1I0E+Yiwnl2Whyv7VtVp7zbfroC1
+	 buwbPy49vW/4gXiHEGPpC1YTGlyYCgxjAJ+Hb56S4jwabvggJ+9rHuCjN6QDMZMzu7
+	 EVcfRMiw+6syA==
+From: SeongJae Park <sj@kernel.org>
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux DAMON <damon@lists.linux.dev>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Linux Power Management <linux-pm@vger.kernel.org>,
+	Linux Block Devices <linux-block@vger.kernel.org>,
+	Linux BPF <bpf@vger.kernel.org>,
+	Linux Kernel Workflows <workflows@vger.kernel.org>,
+	Linux KASAN <kasan-dev@googlegroups.com>,
+	Linux Devicetree <devicetree@vger.kernel.org>,
+	Linux fsverity <fsverity@lists.linux.dev>,
+	Linux MTD <linux-mtd@lists.infradead.org>,
+	Linux DRI Development <dri-devel@lists.freedesktop.org>,
+	Linux Kernel Build System <linux-lbuild@vger.kernel.org>,
+	Linux Networking <netdev@vger.kernel.org>,
+	Linux Sound <linux-sound@vger.kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Huang Rui <ray.huang@amd.com>,
+	"Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Perry Yuan <perry.yuan@amd.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Joe Perches <joe@perches.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Eric Biggers <ebiggers@kernel.org>,
+	tytso@mit.edu,
+	Richard Weinberger <richard@nod.at>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas.schier@linux.dev>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Waiman Long <longman@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Shay Agroskin <shayagr@amazon.com>,
+	Arthur Kiyanovski <akiyano@amazon.com>,
+	David Arinzon <darinzon@amazon.com>,
+	Saeed Bishara <saeedb@amazon.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Alexandru Ciobotaru <alcioa@amazon.com>,
+	The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Steve French <stfrench@microsoft.com>,
+	Meetakshi Setiya <msetiya@microsoft.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH 02/14] Documentation: damon: reclaim: Convert "Free Page Reporting" citation link
+Date: Fri, 29 Aug 2025 08:36:58 -0700
+Message-Id: <20250829153658.69466-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250829075524.45635-3-bagasdotme@gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf 1/2] bpf: Fix out-of-bounds dynptr write in
- bpf_crypto_crypt
-To: Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
-Cc: andrii@kernel.org, bpf@vger.kernel.org,
- Stanislav Fort <disclosure@aisle.com>
-References: <20250829143657.318524-1-daniel@iogearbox.net>
- <c4e28d41-ee1f-4167-a07d-25c499c496ea@linux.dev>
- <cacb4948-fb97-4bb4-8147-f38245ec3826@iogearbox.net>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <cacb4948-fb97-4bb4-8147-f38245ec3826@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 29/08/2025 16:30, Daniel Borkmann wrote:
-> On 8/29/25 4:50 PM, Vadim Fedorenko wrote:
->> On 29/08/2025 15:36, Daniel Borkmann wrote:
->>> Stanislav reported that in bpf_crypto_crypt() the destination dynptr's
->>> size is not validated to be at least as large as the source dynptr's
->>> size before calling into the crypto backend with 'len = src_len'. This
->>> can result in an OOB write when the destination is smaller than the
->>> source.
->>>
->>> Concretely, in mentioned function, psrc and pdst are both linear
->>> buffers fetched from each dynptr:
->>>
->>>    psrc = __bpf_dynptr_data(src, src_len);
->>>    [...]
->>>    pdst = __bpf_dynptr_data_rw(dst, dst_len);
->>>    [...]
->>>    err = decrypt ?
->>>          ctx->type->decrypt(ctx->tfm, psrc, pdst, src_len, piv) :
->>>          ctx->type->encrypt(ctx->tfm, psrc, pdst, src_len, piv);
->>>
->>> The crypto backend expects pdst to be large enough with a src_len length
->>> that can be written. Add an additional src_len > dst_len check and bail
->>> out if it's the case. Note that these kfuncs are accessible under root
->>> privileges only.
->>>
->>> Fixes: 3e1c6f35409f ("bpf: make common crypto API for TC/XDP programs")
->>> Reported-by: Stanislav Fort <disclosure@aisle.com>
->>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->>> Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>
->>> ---
->>>   kernel/bpf/crypto.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
->>> index 94854cd9c4cc..83c4d9943084 100644
->>> --- a/kernel/bpf/crypto.c
->>> +++ b/kernel/bpf/crypto.c
->>> @@ -278,7 +278,7 @@ static int bpf_crypto_crypt(const struct 
->>> bpf_crypto_ctx *ctx,
->>>       siv_len = siv ? __bpf_dynptr_size(siv) : 0;
->>>       src_len = __bpf_dynptr_size(src);
->>>       dst_len = __bpf_dynptr_size(dst);
->>> -    if (!src_len || !dst_len)
->>> +    if (!src_len || !dst_len || src_len > dst_len)
->>
->> I think it would make sense to have less restrictive check. I mean it's
->> ok to have dst_len equal to src_len.
+On Fri, 29 Aug 2025 14:55:12 +0700 Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+
+> Use internal cross-reference for the citation link to Free Page
+> Reporting docs.
+
+Thank you for fixing this!
+
 > 
-> That scenario is/remains allowed and is also what the 'good' case is 
-> testing in
-> the BPF selftests (src_len 16 vs dst_len 16).
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-Ah, sorry, misread the code. Yeah, it makes sense.
+Reviewed-by: SeongJae Park <sj@kernel.org>
 
-Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+
+Thanks,
+SJ
+
+[...]
 
