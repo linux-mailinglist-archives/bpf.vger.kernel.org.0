@@ -1,87 +1,96 @@
-Return-Path: <bpf+bounces-66978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-66979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7561B3B983
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 12:57:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F05CB3BA96
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 14:02:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1366158082B
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 10:57:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8A5E177F96
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 12:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D3D313537;
-	Fri, 29 Aug 2025 10:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9FA3164B0;
+	Fri, 29 Aug 2025 12:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D2srUIEY"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EZXX5o4h";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0MSpGSb+";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OPBU/lqB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8HmyejID"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07644311C30
-	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 10:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388EA314A71
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 12:00:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756465005; cv=none; b=oEEPYISp+KzgZXERh5NJ3j4ZsHqg6XD3+mUNlTQX2HM2+t919Uveh6isAmmGsmsnh7lV/biTJuq9BVE1UQQQs3QbIbEKYLyNszbgYZyRUHl2ZQnMYqEEh1zuIThEQEl1oYoAEenoD0Tvsp/nnsRTwUk71tbCgS1uQexITZBpzOc=
+	t=1756468858; cv=none; b=MDZA09ZVCJA5tjMlSrKxpt6fycszOFsfnuDJcWX2t7KwelIFYwwcfkokLfn8mVdZmNiBH6z29QVfUme1Rvu43N5pYLHa27cbgesx9y9gBl84q0q90IatqUgPad3YC05oyP1Hjs9upbK1OTuLWrAQqe1pXgT/3efv7TkLFUDlH7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756465005; c=relaxed/simple;
-	bh=inbltJcud415RfOLdtDWb4ZRPiVNmpE13gKJhy8SUBQ=;
+	s=arc-20240116; t=1756468858; c=relaxed/simple;
+	bh=O9hhzTPoLNrhsM4crWvZ3QFR5dbDYeIRHd+/7WFD/Lo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iC+hOD/dveH47diYWxnhws35gVzaWHNnQEYHAPEe4IQECDTr6hhD0q7toLGdaerV7PTQAWFdxrXscqrPMPbTp6JS1KMDvF3ljCw8gdn/TQKJ2dx1lyhtoofGT7SM3mC1gBnNgcnkZifnrFvYjrC0PFpN8PR/WyYzVL1jhC7xhUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D2srUIEY; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756465003;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 In-Reply-To:Content-Type; b=SaMx9wM4HRzOklKOYAXfP7EEv3CmroxHCTZvisxTTQOsMKJv4J7ElrB30KEZ/tvH/w0Q8nHlxfrAajYDJNwqQMjJqRMG+0ktw6Sos8NG31sbfGRIvK11oBuwSeFWYPdN5DRHKJZEPK2I+qgMKr0xHxGehYptV0zLFRZIPUPkWHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EZXX5o4h; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0MSpGSb+; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OPBU/lqB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8HmyejID; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E240333DB6;
+	Fri, 29 Aug 2025 12:00:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1756468854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EaP7Ha620z7PGq0bZ/BqrUJv9Q8RkZ+3RzVayMVbaTE=;
-	b=D2srUIEYXfStuj8ptWfVdvcq14JNe+GEoC1DcTbArICDEN5gn13414iY5KEwCXuHf4jJar
-	OTJZfhNBEjIV+i09YmeEHKLKWNNVxxZa1eRNt+tbeRQxkgOq/qCT9aMVM2XqrXsH2WsxH0
-	XkmI/IUuV5LF1Fiu2K9Dpzh09PpHv5Q=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-359-Yl5PNM60P7Cx6UW5ijC7kg-1; Fri, 29 Aug 2025 06:56:41 -0400
-X-MC-Unique: Yl5PNM60P7Cx6UW5ijC7kg-1
-X-Mimecast-MFC-AGG-ID: Yl5PNM60P7Cx6UW5ijC7kg_1756465000
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-45b7f0d1449so3718085e9.0
-        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 03:56:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756465000; x=1757069800;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EaP7Ha620z7PGq0bZ/BqrUJv9Q8RkZ+3RzVayMVbaTE=;
-        b=hJ316Lhlmm8APdoRQad4TNEXIz66l82Ol9R4s7FwEa/aMZrab9fcW5/zkA7VbUAVOx
-         nDbVBv4oixJeEFkvzVe9T+rhrTA9tSVlFOdKHvLyA3/gDZfRtUR30HfGHl++kjOH3JeM
-         PEUC8A+XqFneHGJyVOUsLw9pMFN2R7fWo5/8Tr1S2KiBVMmssiDqC0Ymv3qglT2e1qaC
-         dNSNjaIhyD5nus2m+RCNubsNaeNHkux6xfJ8O9GOcH4y+sBjWO68xb29BZmVVdLg3cjw
-         EEm+dI3hrkIl2Apt4eOLfsVOKTJgzdAR3DtrUsd//Ay1HaR6xVpjs7VEsYqTgf87TCoZ
-         imEg==
-X-Forwarded-Encrypted: i=1; AJvYcCV4ShUA3uFFS20WnprZ/94wz6jOroEBhn4axln5M1vjCT+kVYlEN/U0w946YCMjIGiikiQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5f1W4WHLCjZtcpKXXUX69K9cYCwCFSiee5VH+4M+/nxHcixHw
-	k/iQV7OHp9y5PjEERRqhdrvtTB0qj9I56kPZpjd45VzcWVMsRWWe067coeP3NCe+5xpKlS2E+/h
-	RQVM0V0nxGUY6hvgEDvcR1ENUzX/jtFgCUmhHKLEXK/XG7zdEAXV3
-X-Gm-Gg: ASbGncvPi+uoA1yeH0rNPcg5Hrn4rt3BvM/mqeN5evccDerC/I94yCSYyJT8dZjiilb
-	ONwxk2jQissptHTvxSfMlQt3Z1wdqngXWsjyLvYkQPF32ouPjrbWCNIqvBBeG/UuPoY2DvOKXzU
-	JGL4gTIFyVuLdKUaR9DvQf+oZ6zU6AAzvMiC+EBVLgVHc2UCB73YSQefyZ2BOxdkspZaYj8Szgz
-	R1cbUNecdcrLLVmFbNtrWBT8+vMQr8WEmdwXwLiQ8KBnqdQGo7/WljnbbWQfemKmqav88m90SdK
-	yFHF5ipiM99rHY9S7dTWGKbH02tiuZV36DFZ+6E65nsRn5JlCbXXs8HIkOJAvUx7DmETFhuwCg=
-	=
-X-Received: by 2002:a05:600c:1c96:b0:45b:7608:3ca5 with SMTP id 5b1f17b1804b1-45b761d6183mr63569455e9.6.1756465000393;
-        Fri, 29 Aug 2025 03:56:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFuVwvGfPI/MYjQRGZTZ+NOvbRfl9s4GjAwqHmXYox48PYZsps29gxhwdHfvLN5DCLN/+ixVg==
-X-Received: by 2002:a05:600c:1c96:b0:45b:7608:3ca5 with SMTP id 5b1f17b1804b1-45b761d6183mr63569115e9.6.1756464999966;
-        Fri, 29 Aug 2025 03:56:39 -0700 (PDT)
-Received: from [192.168.0.102] (185-219-167-205-static.vivo.cz. [185.219.167.205])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b7e887fdcsm33676505e9.13.2025.08.29.03.56.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Aug 2025 03:56:39 -0700 (PDT)
-Message-ID: <9a1973bf-88d7-4270-b979-d3ea0280a80b@redhat.com>
-Date: Fri, 29 Aug 2025 12:56:36 +0200
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=iaUzxmwBsmTBCo2WBOyDflFvUI/88ipptA2vlawnwBU=;
+	b=EZXX5o4hQ2Oh7plQuT98v6ah+GhxmYAgzg1F3DN+VoOuk1+I60IqOg+wim4HVwfvZSqk5f
+	VXhIIfKRC6+rFIM6IT4VfU7O/rhiTSdo68En/5dfo/OrDfx5ZZaGA58OL+/ZOcRTIyPN6d
+	fz6jO2qzGW350Q0Z5O4Dg9aDj5vGPg0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1756468854;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=iaUzxmwBsmTBCo2WBOyDflFvUI/88ipptA2vlawnwBU=;
+	b=0MSpGSb+up5ugfLC8+w6PJ5di9IfOZ04Xx+/9bdOmpxI5u8p68jh9c2UpOBzM3HrOSt/uV
+	+5Y/F/pI2PXZwTDg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="OPBU/lqB";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=8HmyejID
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1756468853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=iaUzxmwBsmTBCo2WBOyDflFvUI/88ipptA2vlawnwBU=;
+	b=OPBU/lqBuATLoeCcBKBuuQItTtcidsKi3kFoZdqDZ0Nl+eK/z0By3HAYaUQ02mzaBeaA3n
+	AxJWmJoWqSxQnOwqThQTyxhYEXHtRdMThJ3gi3fNxVUxFZHqSIPSSoAYM7B5Uonj0JldUt
+	pgzVsobFIRWaxfBiWpLS/8FdPrQ6liE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1756468853;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=iaUzxmwBsmTBCo2WBOyDflFvUI/88ipptA2vlawnwBU=;
+	b=8HmyejIDx04CqR36zeLP1yk+JJaYK1w8XikVj/s27iMRpTGBB5nX44hU8iQRmaYyaeDrU8
+	9JTMYu3gqgAvlVDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D2EC13A72;
+	Fri, 29 Aug 2025 12:00:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id l3olJXOWsWgSYwAAD6G6ig
+	(envelope-from <tzimmermann@suse.de>); Fri, 29 Aug 2025 12:00:51 +0000
+Message-ID: <871b2113-5482-4f3c-b58b-573d6cbeebe0@suse.de>
+Date: Fri, 29 Aug 2025 14:00:50 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,89 +98,187 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 1/2] bpf/helpers: bpf_strnstr: Exact match
- length
-To: Rong Tao <rtoax@foxmail.com>, andrii.nakryiko@gmail.com, ast@kernel.org,
- daniel@iogearbox.net
-Cc: Rong Tao <rongtao@cestc.cn>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
+Subject: Re: [PATCH 08/14] Documentation: gpu: Use internal link to kunit
+To: Bagas Sanjaya <bagasdotme@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Documentation <linux-doc@vger.kernel.org>,
+ Linux DAMON <damon@lists.linux.dev>,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ Linux Power Management <linux-pm@vger.kernel.org>,
+ Linux Block Devices <linux-block@vger.kernel.org>,
+ Linux BPF <bpf@vger.kernel.org>,
+ Linux Kernel Workflows <workflows@vger.kernel.org>,
+ Linux KASAN <kasan-dev@googlegroups.com>,
+ Linux Devicetree <devicetree@vger.kernel.org>,
+ Linux fsverity <fsverity@lists.linux.dev>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Linux DRI Development <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Build System <linux-lbuild@vger.kernel.org>,
+ Linux Networking <netdev@vger.kernel.org>,
+ Linux Sound <linux-sound@vger.kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+ Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka
+ <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
  John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
  Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>,
- "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)"
- <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-References: <cover.1756433400.git.rongtao@cestc.cn>
- <tencent_CBD40091C14056E8298BE3725B65EE156405@qq.com>
-From: Viktor Malik <vmalik@redhat.com>
+ Jiri Olsa <jolsa@kernel.org>, Dwaipayan Ray <dwaipayanray1@gmail.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>, Joe Perches <joe@perches.com>,
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Eric Biggers <ebiggers@kernel.org>,
+ tytso@mit.edu, Richard Weinberger <richard@nod.at>,
+ Zhihao Cheng <chengzhihao1@huawei.com>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nicolas.schier@linux.dev>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Waiman Long <longman@redhat.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Shay Agroskin <shayagr@amazon.com>, Arthur Kiyanovski <akiyano@amazon.com>,
+ David Arinzon <darinzon@amazon.com>, Saeed Bishara <saeedb@amazon.com>,
+ Andrew Lunn <andrew@lunn.ch>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Alexandru Ciobotaru <alcioa@amazon.com>,
+ The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Steve French <stfrench@microsoft.com>,
+ Meetakshi Setiya <msetiya@microsoft.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Bart Van Assche <bvanassche@acm.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>, Masahiro Yamada <masahiroy@kernel.org>
+References: <20250829075524.45635-1-bagasdotme@gmail.com>
+ <20250829075524.45635-9-bagasdotme@gmail.com>
 Content-Language: en-US
-In-Reply-To: <tencent_CBD40091C14056E8298BE3725B65EE156405@qq.com>
-Content-Type: text/plain; charset=UTF-8
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20250829075524.45635-9-bagasdotme@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: E240333DB6
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com,lists.infradead.org,lists.freedesktop.org];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_CC(0.00)[linutronix.de,alien8.de,infradead.org,kernel.org,linux.intel.com,lwn.net,linux-foundation.org,redhat.com,oracle.com,suse.cz,google.com,suse.com,amd.com,kernel.dk,iogearbox.net,linux.dev,gmail.com,fomichev.me,perches.com,arm.com,mit.edu,nod.at,huawei.com,ffwll.ch,davemloft.net,amazon.com,lunn.ch,perex.cz,ideasonboard.com,microsoft.com,linuxfoundation.org,acm.org,weissschuh.net];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[99];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[dt];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	R_RATELIMIT(0.00)[to_ip_from(RL8kdret51y9bzcpk5wqse1m3g)];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -3.01
 
-On 8/29/25 04:12, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
-> 
-> strnstr should not treat the ending '\0' of s2 as a matching character
-> if the parameter 'len' equal to s2 string length, for example:
 
-A good catch, thanks!
 
-But this doesn't fix just the `len == strlen(s2)` case but a more
-general case when s2 is a suffix of the first len characters of s1,
-right? The commit message should reflect that.
+Am 29.08.25 um 09:55 schrieb Bagas Sanjaya:
+> Use internal linking to kunit documentation.
+>
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-> 
->     1. bpf_strnstr("openat", "open", 4) = -ENOENT
->     2. bpf_strnstr("openat", "open", 5) = 0
-> 
-> This patch makes (1) return 0, indicating a successful match.
-> 
-> Fixes: e91370550f1f ("bpf: Add kfuncs for read-only string operations")
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+Fell free to merge it through a tree of your choice.
+
+Best regards
+Thomas
+
 > ---
->  kernel/bpf/helpers.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 401b4932cc49..bf04881f96ec 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3672,10 +3672,18 @@ __bpf_kfunc int bpf_strnstr(const char *s1__ign, const char *s2__ign, size_t len
->  
->  	guard(pagefault)();
->  	for (i = 0; i < XATTR_SIZE_MAX; i++) {
-> -		for (j = 0; i + j < len && j < XATTR_SIZE_MAX; j++) {
-> +		for (j = 0; i + j <= len && j < XATTR_SIZE_MAX; j++) {
->  			__get_kernel_nofault(&c2, s2__ign + j, char, err_out);
->  			if (c2 == '\0')
->  				return i;
-> +			/**
-> +			 * corner case i+j==len to ensure that we matched
-> +			 * entire s2. for example, param len=3:
-> +			 *     s1: A B C D E F  -> i==1
-> +			 *     s2:   B C D      -> j==2
-> +			 */
+>   Documentation/gpu/todo.rst | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
+> index be8637da3fe950..efe9393f260ae2 100644
+> --- a/Documentation/gpu/todo.rst
+> +++ b/Documentation/gpu/todo.rst
+> @@ -655,9 +655,9 @@ Better Testing
+>   Add unit tests using the Kernel Unit Testing (KUnit) framework
+>   --------------------------------------------------------------
+>   
+> -The `KUnit <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_
+> -provides a common framework for unit tests within the Linux kernel. Having a
+> -test suite would allow to identify regressions earlier.
+> +The :doc:`KUnit </dev-tools/kunit/index>` provides a common framework for unit
+> +tests within the Linux kernel. Having a test suite would allow to identify
+> +regressions earlier.
+>   
+>   A good candidate for the first unit tests are the format-conversion helpers in
+>   ``drm_format_helper.c``.
 
-This is not really a good example as it's not clear whether D is a null
-byte or not. How about something like:
+-- 
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
 
-/**
- * We allow reading an extra byte from s2 (note the
- * `i + j <= len` above) to cover the case when s2 is
- * a suffix of the first len chars of s1.
- */
-
-> +			if (i + j == len)
-> +				break;
-
-Viktor
-
->  			__get_kernel_nofault(&c1, s1__ign + j, char, err_out);
->  			if (c1 == '\0')
->  				return -ENOENT;
 
 
