@@ -1,157 +1,253 @@
-Return-Path: <bpf+bounces-67030-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67031-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51E74B3C2A5
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 20:47:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B63F4B3C2B2
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 20:50:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC559A633EE
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 18:47:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10E0D1CC4A2D
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 18:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7B530CD9F;
-	Fri, 29 Aug 2025 18:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A55230BE9;
+	Fri, 29 Aug 2025 18:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TdAj69Cq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pSc/h3Tt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AFF917BEBF;
-	Fri, 29 Aug 2025 18:47:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C6D30CD9F;
+	Fri, 29 Aug 2025 18:50:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756493235; cv=none; b=rSQ8DZ3SeNPgqKWvzZpPC7dOA53TVEPccpRYIV316GrKcZ+2r1nwecKR4OIjfXdLKA+X5FGNdoM8W69KgSkBZbjCnZ1Vs/J5bUJMlGPoDWli69un1mjw7rH6RHoeVGnV6xKQgUurcelTaxj7ludu5fkpJF4c0YUxbR3T1E1SaLk=
+	t=1756493405; cv=none; b=CpKQA3RDJYxSzFn1nrU4f0vw/XmFz08rnNNxejhJCB04d1MYvjF12HhZYTBYa8MxZIBQE/OX5pkt0AaYnKjiMwmFR1i7NIPn0pwrfZ88H1ICLf2DOxSPM2iiX0sj8SXAro5+Rvr9eEUVqLYQW17K8opXGWngb9wNgTEL2SutRDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756493235; c=relaxed/simple;
-	bh=Jf5xdeLi9X3HHuafvcLjhSs5xeo9GEy9j0/o8Ji1qGo=;
+	s=arc-20240116; t=1756493405; c=relaxed/simple;
+	bh=kRzuQPQvzBNdotMBP7pTnWR1VHUeXzZCdlNmYEGfLEI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vC7uKvfFNYu/y/zOfbtqLqXQwEXqaEoseNSeGUWhCuuhEMUAhz3QmvlbBn4EVpvYlXn0zN/MP9Sg68r5ZsuwIxVkH6VDiwwJsyedXe/N3roGw1xpn7i3gcVWSpNd6roLHRH8L8HhpmcGcZ+yL5WmI9eJBsYzoe1flRDeOM7vETE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TdAj69Cq; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b4d223d7ddaso820935a12.1;
-        Fri, 29 Aug 2025 11:47:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756493232; x=1757098032; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jeCwmU4xOG3C3Tl0VehuOumH20NJc9mb2FfHUNIfDFY=;
-        b=TdAj69CqbwWMrT0Wi3G24BHFvhCFZRyPM+moOCpBn527TifH9B9usNkFwRr/b9fkRt
-         m41vJQpmPoDOOPPLZ3HuUaEO/jDXQRLz04vvXUMHpgFJHOT+tsbUTLP31rhso9dgFJIM
-         6VrpvDNyKNoc9kXCRrn68DCNtpro1gHCUckvAGOJIBYBEyvos7Q8sjhIK/2kqUYfAiZF
-         P4fzNip910UJ3H3whzDrq4Ehn/Z+hIAh3aC4cfOBn4VcF27zwSsF5JyJsLB6gXoLpCU6
-         Nu3QLZ+M+EB+iVGCNq6upMLqCKc27Q/6mbpg/oQU+/XJ7Ttnt3EDB91bimpNUOJAN0SY
-         XXGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756493232; x=1757098032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jeCwmU4xOG3C3Tl0VehuOumH20NJc9mb2FfHUNIfDFY=;
-        b=eAb95Sbjwn53eSl1vFB7ny/Ushl6XPRcEX6DUpZMGVx8MErQ7GLpJkl8qe1AZxWSo3
-         ew/LR19Pn1zJF33QsCFBx943Ozh+gW6V97cqLUzlFIND56eneytpB+HPdktJxn/gihlb
-         wnmijp9RhHwyqaF6Dt6yj/KuecdHf+0nVSGzhMiQ4F5y3JlE0gmkCNEojbSz9M9O9LXu
-         3Ednrpoceh0rc+Vo201t32gjQqUBqOlzzf3Ab0WgVwEDcZJmwE09ZTmVNXQTAPQaD6Tq
-         9pjVD65S+oXmLpqQ4SKVI7rOdQvamyKZl1ot9ZSA0g954GJ/EagQnuQdbo21E6dYr/Z7
-         dkpA==
-X-Forwarded-Encrypted: i=1; AJvYcCUydZSFZLkb641xLF5p7biSWoNjHE4XM1fze9tmyjLIAnXTH5Z3f183/TUAPygcp19l03k=@vger.kernel.org, AJvYcCVu6TcyY4gCQmlpzZnQE8GWkWYaodIC83zCIx23Q9CbbFot/DnKEEqDTR6RnaIKRsTyX1oep6Rx0Ze0PNmdPgww@vger.kernel.org, AJvYcCWnUiRJhTOLY8GkSaF5vGp44frRVQu4Yl4XDt7scrYxZKrhSaRggpTsqwwtwH8Dz1x9dyCK2nar370QjeDZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YyAbxbHQVobA9eafYo6zGoQm5mfg90biJBbLSJPFEVMJyae+EVU
-	htshYr4hklBWxEKeCPPxJYVLiZNxbxvFUC5ihDc7nAojNzsDe9OAgtXZDH62QOAjljiItlqNM5d
-	U9m1avq5vFwNKbw9juZ+l3SJKfxev+1Y=
-X-Gm-Gg: ASbGncuAT0zQKMX96kjVEg2ZJ1B8LwtnWMukgw5JO9/MUWV+bwKQPk1FPlk/2cYo755
-	vpVFBYH2EHgvZtgYoQmKScgrb40t/1bcs0uA7dztrAx+lv4GHkcTeR5jYAZ7U1a4x49oYa5UKFg
-	dMxc83YSOn0QcD7ZztjnoEhLa46eHo9T9mzHcYdaAcoeFEY6m3BKstlTkU3klKmhmr6HkmzbcsH
-	MnuR7qBtA6lyezuKCw2ehE=
-X-Google-Smtp-Source: AGHT+IHf/znaf+lBJ/veFcj0Gvn2/7bHY9QNTgc0yJs+fcmYEwCAWxwdshLq6iKmVxML0GtcpDVzn5+jHYESeE/92Xg=
-X-Received: by 2002:a17:90b:3504:b0:327:cee4:b730 with SMTP id
- 98e67ed59e1d1-327cee4bef7mr9778191a91.15.1756493232203; Fri, 29 Aug 2025
- 11:47:12 -0700 (PDT)
+	 To:Cc:Content-Type; b=kCs2Pys2BuBLYkTSGcoLil969Z5vy5PsdLoLL1LAu/JU9rdclCUvUeH6uLkEMef5wnD52HTbCtpDINNOaeOHznWK+wS0jLpj8gYCivXJe0RlMxwDM0rGmu2iZETOue6UcpA4ZxYYztwQdwB7vvGkFcgpsbZthCaS8FYlGx+Ed08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pSc/h3Tt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2809C4CEFA;
+	Fri, 29 Aug 2025 18:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756493404;
+	bh=kRzuQPQvzBNdotMBP7pTnWR1VHUeXzZCdlNmYEGfLEI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=pSc/h3TtTy66683UtsDFjw5lfDUKOX657sak2OgwgcNNq8iAF2xrzqwbaGjLCl6f9
+	 gMUiA8FQFKciBfUWGxeAFKmv4EivlxR6NMzZm0EUiZE06VFFq0AvnWE5jai8HvfewA
+	 VNcdLxiKLxViNlBPEohTpFP57ldZJciAsjLAVWfRWPhvZtMAbMuhOxLo/kzBbQ5AwW
+	 0ABh+4brs214VNfQCNKcgUqPBjWrS2joxC00kJjkKSNmC2HPFT9mXc0Lz4Rt28zkiz
+	 RIO3jV77ZsszpwA6njjtwVx2hnhV6v58lZg6hxYxn/lMxmMpZDMvYl4y9etBiL5Vs4
+	 sf2uYuX0CRx0w==
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7f7e89e4b37so233845185a.3;
+        Fri, 29 Aug 2025 11:50:04 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV1tSsR5kMP7WQF1hsueleSbDT6sdyuCOpCP+IFhpLU/dziHaTC+zbZqYia9c/sKNiotCttiYdD3GvdMib6@vger.kernel.org, AJvYcCWHAnL+XpchO0b/KBFodxC3xipBldobCzmHgjIInobYeNwCWKrOzb1B/6gZno26BpaemZI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0udDmHmWphj9RHa2rRLrrKGiqEP1Bcf8l6guTQcAZ+i8nixSJ
+	8uDC2kMZS8bE1L1eH3edyiLYi/VbqKRkj7eNw+L4rr1Et9BcKy9a/hbYCKb/nLLDVGqi2NJPzIo
+	3XOmjzydAnp9Sf8fcnoNm48dyvcAzJBA=
+X-Google-Smtp-Source: AGHT+IGk+2e+MtbMfwnwjvMNj8yikW5bC6K516UGdm2sSFuCWKS1iZedV3T1faNau0Cipnb+kFsu14fOLq5avBSWm94=
+X-Received: by 2002:a05:620a:4706:b0:7fc:b747:3168 with SMTP id
+ af79cd13be357-7fcb74734a0mr375745085a.71.1756493403865; Fri, 29 Aug 2025
+ 11:50:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1756484762.git.rongtao@cestc.cn> <tencent_17DC57B9D16BC443837021BEACE84B7C1507@qq.com>
-In-Reply-To: <tencent_17DC57B9D16BC443837021BEACE84B7C1507@qq.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 29 Aug 2025 11:46:57 -0700
-X-Gm-Features: Ac12FXwrU28gK6SIVA99CPuI4bRo0QxhUM16_M_cWvktQ_dGZmUdsLReV-etm6A
-Message-ID: <CAEf4BzYNGXxCJhsj+xQL0ANxFDOPFQ5=k9Y23GUg83+HLK4ARg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/2] bpf/helpers: bpf_strnstr: Exact match length
-To: Rong Tao <rtoax@foxmail.com>
-Cc: vmalik@redhat.com, ast@kernel.org, daniel@iogearbox.net, 
-	Rong Tao <rongtao@cestc.cn>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+References: <20250826212229.143230-1-contact@arnaud-lcm.com>
+ <20250826212352.143299-1-contact@arnaud-lcm.com> <CAADnVQ+6bV3h3i-A1LHbEk=nY_PMx69BiogWjf5GtGaLxWSQVg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+6bV3h3i-A1LHbEk=nY_PMx69BiogWjf5GtGaLxWSQVg@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 29 Aug 2025 11:49:52 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5P4sOHmMCmVTZw2vfuz7Rny-xkhuPkRBitfoATQkm=eA@mail.gmail.com>
+X-Gm-Features: Ac12FXx2yvfNrnZ_hVhKtaFpA_xeHScVvOotbYo86wZxc1kdVMhhG9MXCo_IIb4
+Message-ID: <CAPhsuW5P4sOHmMCmVTZw2vfuz7Rny-xkhuPkRBitfoATQkm=eA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/2] bpf: fix stackmap overflow check in __bpf_get_stackid()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Arnaud Lecomte <contact@arnaud-lcm.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eduard <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 29, 2025 at 9:32=E2=80=AFAM Rong Tao <rtoax@foxmail.com> wrote:
+On Fri, Aug 29, 2025 at 10:29=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+[...]
+> >
+> >  static long __bpf_get_stackid(struct bpf_map *map,
+> > -                             struct perf_callchain_entry *trace, u64 f=
+lags)
+> > +                             struct perf_callchain_entry *trace, u64 f=
+lags, u32 max_depth)
+> >  {
+> >         struct bpf_stack_map *smap =3D container_of(map, struct bpf_sta=
+ck_map, map);
+> >         struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
+> > @@ -263,6 +263,8 @@ static long __bpf_get_stackid(struct bpf_map *map,
+> >
+> >         trace_nr =3D trace->nr - skip;
+> >         trace_len =3D trace_nr * sizeof(u64);
+> > +       trace_nr =3D min(trace_nr, max_depth - skip);
+> > +
 >
-> From: Rong Tao <rongtao@cestc.cn>
+> The patch might have fixed this particular syzbot repro
+> with OOB in stackmap-with-buildid case,
+> but above two line looks wrong.
+> trace_len is computed before being capped by max_depth.
+> So non-buildid case below is using
+> memcpy(new_bucket->data, ips, trace_len);
 >
+> so OOB is still there?
 
-I reworded patch subject a bit, please check the final version
++1 for this observation.
 
-> strnstr should not treat the ending '\0' of s2 as a matching character
-> if the parameter 'len' equal to s2 string length, for example:
->
->     1. bpf_strnstr("openat", "open", 4) =3D -ENOENT
->     2. bpf_strnstr("openat", "open", 5) =3D 0
->
-> This patch makes (1) return 0, fix just the `len =3D=3D strlen(s2)` case.
->
-> And fix a more general case when s2 is a suffix of the first len
-> characters of s1.
->
-> Fixes: e91370550f1f ("bpf: Add kfuncs for read-only string operations")
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
->  kernel/bpf/helpers.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 401b4932cc49..91ad124844ae 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3672,10 +3672,17 @@ __bpf_kfunc int bpf_strnstr(const char *s1__ign, =
-const char *s2__ign, size_t len
->
->         guard(pagefault)();
->         for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
-> -               for (j =3D 0; i + j < len && j < XATTR_SIZE_MAX; j++) {
-> +               for (j =3D 0; i + j <=3D len && j < XATTR_SIZE_MAX; j++) =
-{
->                         __get_kernel_nofault(&c2, s2__ign + j, char, err_=
-out);
->                         if (c2 =3D=3D '\0')
->                                 return i;
-> +                       /**
+We are calling __bpf_get_stackid() from two functions: bpf_get_stackid
+and bpf_get_stackid_pe. The check against max_depth is only needed
+from bpf_get_stackid_pe, so it is better to just check here.
 
-fixed up comment style (extra *) when applying to bpf tree, thanks.
+I have got the following on top of patch 1/2. This makes more sense to
+me.
+
+PS: The following also includes some clean up in __bpf_get_stack.
+I include those because it also uses stack_map_calculate_max_depth.
+
+Does this look better?
+
+Thanks,
+Song
 
 
-> +                        * We allow reading an extra byte from s2 (note t=
-he
-> +                        * `i + j <=3D len` above) to cover the case when=
- s2 is
-> +                        * a suffix of the first len chars of s1.
-> +                        */
-> +                       if (i + j =3D=3D len)
-> +                               break;
->                         __get_kernel_nofault(&c1, s1__ign + j, char, err_=
-out);
->                         if (c1 =3D=3D '\0')
->                                 return -ENOENT;
-> --
-> 2.51.0
->
+diff --git c/kernel/bpf/stackmap.c w/kernel/bpf/stackmap.c
+index 796cc105eacb..08554fb146e1 100644
+--- c/kernel/bpf/stackmap.c
++++ w/kernel/bpf/stackmap.c
+@@ -262,7 +262,7 @@ static long __bpf_get_stackid(struct bpf_map *map,
+                return -EFAULT;
+
+        trace_nr =3D trace->nr - skip;
+-       trace_len =3D trace_nr * sizeof(u64);
++
+        ips =3D trace->ip + skip;
+        hash =3D jhash2((u32 *)ips, trace_len / sizeof(u32), 0);
+        id =3D hash & (smap->n_buckets - 1);
+@@ -297,6 +297,7 @@ static long __bpf_get_stackid(struct bpf_map *map,
+                        return -EEXIST;
+                }
+        } else {
++               trace_len =3D trace_nr * sizeof(u64);
+                if (hash_matches && bucket->nr =3D=3D trace_nr &&
+                    memcmp(bucket->data, ips, trace_len) =3D=3D 0)
+                        return id;
+@@ -322,19 +323,17 @@ static long __bpf_get_stackid(struct bpf_map *map,
+ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+           u64, flags)
+ {
+-       u32 max_depth =3D map->value_size / stack_map_data_size(map);
+-       u32 skip =3D flags & BPF_F_SKIP_FIELD_MASK;
++       u32 elem_size =3D stack_map_data_size(map);
+        bool user =3D flags & BPF_F_USER_STACK;
+        struct perf_callchain_entry *trace;
+        bool kernel =3D !user;
++       u32 max_depth;
+
+        if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+                               BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID))=
+)
+                return -EINVAL;
+
+-       max_depth +=3D skip;
+-       if (max_depth > sysctl_perf_event_max_stack)
+-               max_depth =3D sysctl_perf_event_max_stack;
++       max_depth =3D stack_map_calculate_max_depth(map->value_size,
+elem_size, flags);
+
+        trace =3D get_perf_callchain(regs, 0, kernel, user, max_depth,
+                                   false, false);
+@@ -375,6 +374,7 @@ BPF_CALL_3(bpf_get_stackid_pe, struct
+bpf_perf_event_data_kern *, ctx,
+        bool kernel, user;
+        __u64 nr_kernel;
+        int ret;
++       u32 elem_size, max_depth;
+
+        /* perf_sample_data doesn't have callchain, use bpf_get_stackid */
+        if (!(event->attr.sample_type & PERF_SAMPLE_CALLCHAIN))
+@@ -393,11 +393,12 @@ BPF_CALL_3(bpf_get_stackid_pe, struct
+bpf_perf_event_data_kern *, ctx,
+                return -EFAULT;
+
+        nr_kernel =3D count_kernel_ip(trace);
+-
++       elem_size =3D stack_map_data_size(map);
+        if (kernel) {
+                __u64 nr =3D trace->nr;
+
+-               trace->nr =3D nr_kernel;
++               max_depth =3D
+stack_map_calculate_max_depth(map->value_size, elem_size, flags);
++               trace->nr =3D min_t(u32, nr_kernel, max_depth);
+                ret =3D __bpf_get_stackid(map, trace, flags);
+
+                /* restore nr */
+@@ -410,6 +411,8 @@ BPF_CALL_3(bpf_get_stackid_pe, struct
+bpf_perf_event_data_kern *, ctx,
+                        return -EFAULT;
+
+                flags =3D (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
++               max_depth =3D
+stack_map_calculate_max_depth(map->value_size, elem_size, flags);
++               trace->nr =3D min_t(u32, trace->nr, max_depth);
+                ret =3D __bpf_get_stackid(map, trace, flags);
+        }
+        return ret;
+@@ -428,7 +431,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
+struct task_struct *task,
+                            struct perf_callchain_entry *trace_in,
+                            void *buf, u32 size, u64 flags, bool may_fault)
+ {
+-       u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
++       u32 trace_nr, copy_len, elem_size, max_depth;
+        bool user_build_id =3D flags & BPF_F_USER_BUILD_ID;
+        bool crosstask =3D task && task !=3D current;
+        u32 skip =3D flags & BPF_F_SKIP_FIELD_MASK;
+@@ -465,13 +468,15 @@ static long __bpf_get_stack(struct pt_regs
+*regs, struct task_struct *task,
+        if (may_fault)
+                rcu_read_lock(); /* need RCU for perf's callchain below */
+
+-       if (trace_in)
++       if (trace_in) {
+                trace =3D trace_in;
+-       else if (kernel && task)
++               trace->nr =3D min_t(u32, trace->nr, max_depth);
++       } else if (kernel && task) {
+                trace =3D get_callchain_entry_for_task(task, max_depth);
+-       else
++       } else {
+                trace =3D get_perf_callchain(regs, 0, kernel, user, max_dep=
+th,
+                                           crosstask, false);
++       }
+
+        if (unlikely(!trace) || trace->nr < skip) {
+                if (may_fault)
+@@ -479,9 +484,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
+struct task_struct *task,
+                goto err_fault;
+        }
+
+-       num_elem =3D size / elem_size;
+        trace_nr =3D trace->nr - skip;
+-       trace_nr =3D (trace_nr <=3D num_elem) ? trace_nr : num_elem;
+        copy_len =3D trace_nr * elem_size;
+
+        ips =3D trace->ip + skip;
 
