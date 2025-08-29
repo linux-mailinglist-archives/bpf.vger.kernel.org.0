@@ -1,101 +1,179 @@
-Return-Path: <bpf+bounces-67033-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67034-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 522C1B3C2C4
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 21:00:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DDE8B3C314
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 21:34:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0574B5A1D18
-	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 19:00:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C106A188D4B0
+	for <lists+bpf@lfdr.de>; Fri, 29 Aug 2025 19:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85AA1F4C8C;
-	Fri, 29 Aug 2025 19:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 848E324729A;
+	Fri, 29 Aug 2025 19:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="smvsPoBu"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NmUET5/X"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616962376F2;
-	Fri, 29 Aug 2025 19:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79561242D6F
+	for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 19:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756494004; cv=none; b=adxstZ/BAxmTh/LLXF1OvUdJo/A0IB/IwpZw2pBo3IC9tQA2HnJTkgqTeUFBgFIhZ4iMQEUh44tfCj0iiWIRtcne2gnXR5t6N7Ra5A/+FGA9sQh3ODSJxoYkvUfF0P/O8NgwtFVsj8OpefwJG+yEE1YGBwwaqQYT1IzDe/ZPmWM=
+	t=1756496038; cv=none; b=WTDxVc0ztBha1YLMgu0gsPcvcQdUqeTlrjqtAPwOJCAczW0tK1Vi3SQUS7rut//ZpQMC9nkPmJuGU9ItPpEtRRaS2bSDHEDuliFuuvpF1j9tGpQMzvtJwqjEeoOEp18tot96atuGF4bLX/5tKFTOdtaCB+23iWJ4kLwg/WsSdBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756494004; c=relaxed/simple;
-	bh=i6tDdIDs9ubee1gDISiT3rIyWAiXOFRuZFgHy12Cg8I=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=r0obgUBeTdQ0wywwUkbm4kaRtsjloai3cQVPtUCPL/wRsjgm4rE8hcDEymRdVYTw/6vhaAHDK/DiQumW1+8qayQlnU1XEDotpK+IyFIszgY7CSYaoL8lWXTIEod3vF5kd9RNF+LZtIYwNSBCDb+2l85Ozsikk4zJxpzTMgrq7FI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=smvsPoBu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D269EC4CEF0;
-	Fri, 29 Aug 2025 19:00:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756494002;
-	bh=i6tDdIDs9ubee1gDISiT3rIyWAiXOFRuZFgHy12Cg8I=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=smvsPoBuKqZpPV6/HD/HgUZB9RU3v4qJcDRynEZjoWLbpGPDhCLtJzfMPF/+TJ0u4
-	 1AlGJwWTcjxeXqBYbaQNSARAU5tIcyqRWHTgXuGmbtY77J8HIvRe2a9EhQq6dTVby4
-	 Td1F7yQqj3bdCU0PkuaAsPpj6NcxJ90vHkV3r86zxKBLNMAmlujXZ1I6QT7kQUxoGe
-	 Pe03FglpEBDpjmQ0uymr9iEY3tRAJfQ3Rjb4ovGh3Kb2B6lo8R5ozA4bhyKfRr3F75
-	 N9T4b8ToVigVNg4PvWC7k830XdYu1UVDS76191ABboCZCcxeQm6NntS88Ia+Nnr1rW
-	 BEaJjr82svFwA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B0307383BF75;
-	Fri, 29 Aug 2025 19:00:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1756496038; c=relaxed/simple;
+	bh=OArcrcPJKctf7kyzhyu5N9o4Z5m1mtDS835/OiICaDA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=MvZahIRnKSY/iQ6PaioKQRVxJSTE2K5UJgPuLxVcGeq9BRADfZME7fZFEKbCV2JIJXSOxIbndYWGAeqa9WG6OYL9ut5mJjaeMrhASqcOphH6E9IV9/DHQB71z4I6uDpwB6bDSwtZCpzMMM4wkWAucbWd/Lp3WY6y6gAPQXA4gIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NmUET5/X; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3c6abcfd142so1101717f8f.2
+        for <bpf@vger.kernel.org>; Fri, 29 Aug 2025 12:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1756496035; x=1757100835; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=10aYLv6x+nousnJCn+LNWW0LkPPpH+PRdELXD4FgtcI=;
+        b=NmUET5/X3U8sj2gncXKyFCnU5CVXnxTD2YGhtvVi8DHQg6+yBIW+pbrP9bCZaDtY9T
+         CnRAMaYFNBKYoa1T6b+uRj+omG/LIAvoPUMk1NU3eni5IiBhv0ZbvJCKeLCi5+QQwf1F
+         PCF8ayZgHuxI4dE7FRFuNLDvNy6OV2n4mYejFLNVg+p4Cdzj/chxFTxcZ4BPWSVN/Jck
+         V1hMFJeTQcHGflCsvCfxLv07pjCWX9p0qZU9MnmFiJ0Ove++lVsi6WW1qf6aGsK9uit/
+         zfeqHBfG5PzYsvEefpsBCsCDj/YoZ8omUh0ArMSz0SLlNp2SB97cKo6B1EraCdW5regL
+         F0oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756496035; x=1757100835;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=10aYLv6x+nousnJCn+LNWW0LkPPpH+PRdELXD4FgtcI=;
+        b=TZ2OAc5HKAe9k/7HEVXhBsUxCgQSKXhK/ZCUOjyONgKzM/pTpv7Hqqndnl7D0aYiIh
+         TVy5mN25CHXV6oxrnV9YOgjGJUavsty3BiywHcC96bZvOIhOgneLny/P/tKpulUPjP2J
+         sXcZ9G45Ebtv212gWH8EykyFPKprOjzedZ7/Imz1ZTHVzTvkwdAXocdd1rmYakgIQmV2
+         a91l0eay20CpfnRx73gI88dJXvxeCWyBBJuN0MuYIfBZfvMrzMupl61JVnFvJhdoTKMX
+         vqtP2gu0JXBOkipw0OWPOMf2TI/PbqEAId2s7MwT6iNmBGLqt5um8gpfJJKWfGUOMFG7
+         JeSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUkuSVGQaYnzJJCKiX9CkgT/qCDLNdhdFgmenQXHl6hWSRBTHn3WKNocr8JLNR1ipfb1pQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8yRiBAwoRf7EwwFLTdDMXR62rZqWFdgjj2gRz0j3e9ko1Ft41
+	orOrrBR11Ox9PJxwB69GMF4H9kgtQWeaL2Kroi3nfganJNb2Q5zWK7F+z1kJYN53bvQ=
+X-Gm-Gg: ASbGncvPoqyck7lgun3wAQ0qBbtAWORTfQk50C1Ni6Fuj/h73twmE7sVnybeJI2FLpC
+	l0YYnVowlvWHUoMDXvHEAP5864VhOBEgJuLZu9z3Hg9oKSqtLSrrHdatxVfEfVseVHIDFFYWdL5
+	v2EcGo6pkup9fTfKXJ+HbivFWZACyuJUGRPwqwWtzlZDmnHNe3h/JLWykSf4j7BtpmYmksr0vo8
+	/VBA6bpYRolOnECLO4nCsYcY2Wnj89uJstf1SBBgnS1r8ubrsjaog+vNjZLaG9JqBIVKfA4cWyO
+	7JOk3NmMJ97qKXtpOhTB4WUN79LInejnBK43UX8BsjFAUuJR2gkGrHZc+8WwnrCzOW6u6353MHH
+	xXwicmJU4kw==
+X-Google-Smtp-Source: AGHT+IGd9CKACvtLyrQHHdrX6nttBshhd3uTSHt7m/xqpIEz2JTGn2U407DsxW/ZcIqykVDLTwW6Yg==
+X-Received: by 2002:a05:6000:250e:b0:3b7:8268:8335 with SMTP id ffacd0b85a97d-3c5dcc0dd86mr22855026f8f.42.1756496034796;
+        Fri, 29 Aug 2025 12:33:54 -0700 (PDT)
+Received: from localhost ([177.94.120.255])
+        by smtp.gmail.com with UTF8SMTPSA id 3f1490d57ef6-e9847da0a06sm981166276.18.2025.08.29.12.33.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Aug 2025 12:33:54 -0700 (PDT)
+From: =?utf-8?B?UmljYXJkbyBCLiBNYXJsacOocmU=?= <rbm@suse.com>
+Date: Fri, 29 Aug 2025 16:33:49 -0300
+Subject: [PATCH] selftests/bpf: Fix count write in
+ testapp_xdp_metadata_copy()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v5 0/2] Fix bpf_strnstr len error
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175649400852.2313311.339778074846590009.git-patchwork-notify@kernel.org>
-Date: Fri, 29 Aug 2025 19:00:08 +0000
-References: <tencent_E72A37AF03A3B18853066E421B5969976208@qq.com>
-In-Reply-To: <tencent_E72A37AF03A3B18853066E421B5969976208@qq.com>
-To: Rong Tao <rtoax@foxmail.com>
-Cc: vmalik@redhat.com, andrii.nakryiko@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, rongtao@cestc.cn, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
+Message-Id: <20250829-selftests-bpf-xsk_regression_fix-v1-1-5f5acdb9fe6b@suse.com>
+X-B4-Tracking: v=1; b=H4sIAJwAsmgC/x2N2wqDMBBEf0X2uQEberO/UkpIdKKhJcpuKAHx3
+ 7v6sswZmLMrCThB6NmsxPglSXNWOJ8a6iefR5g0KJNt7bV92M4IvrFAipiwRFPl4xgjQ/ahi6m
+ a2/0y2M5CryfVLAytjxevt3LwAhPY537axbsloxYXZz4CbdsfmUQplpYAAAA=
+X-Change-ID: 20250829-selftests-bpf-xsk_regression_fix-674d292e4d2a
+To: =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
+ Magnus Karlsson <magnus.karlsson@intel.com>, 
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ Tushar Vyavahare <tushar.vyavahare@intel.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Ricardo_B=2E_Marli=C3=A8re?= <rbm@suse.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2049; i=rbm@suse.com;
+ h=from:subject:message-id; bh=OArcrcPJKctf7kyzhyu5N9o4Z5m1mtDS835/OiICaDA=;
+ b=owEBiQJ2/ZANAwAIAckLinxjhlimAcsmYgBosgCeMkw0JmQH1sVx8Ie24sG2wxN+m6s3zrnNT
+ QJL2G/SuGiJAk8EAAEIADkWIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCaLIAnhsUgAAAAAAEAA5t
+ YW51MiwyLjUrMS4xMSwyLDIACgkQyQuKfGOGWKbbOg//aeQgH/RaZl6hnKGr9Y4sJQ8C7y5Ef9L
+ pKIgXrcSFWHne+BBmxu20oK8ZUuAD25iR5lKX3D/11k5ybUB4SlP0+QLrSfdHIOv0chE+ughqDs
+ gw3jWuyAeA9v8soWdvIyH626+aeT1rE401v1cfeO6C6Hs+CRHYoevxGB6vDeQ2BAWC2hGJ7ZT7A
+ 7PoiE5qzR7WeKuECK5A+lSTk0dpt2Pa+tOwAmed4Vs/spWNEhVk/qV3o2cRzZ7p/5i9T7JHQCBT
+ 89EzHrHG9UlfryoKgUh5e0PZqSblqEdtMg1dK0+hX2HgDUGkt3Z0TkcA8/kwwBjEQC0zGiOuI8h
+ Rdf7qbl7f1h+K/xChY0/T6ovJArR+UCT3RVlglJwvBkiNze5emFqIvSHZNpL/kknbCnNAir/lVe
+ y2VA17wsd8OgDpQDLtkLNVYxXr4FBA8EDHSDOp/rKHJnUyLOLUOEEp2U7oyGLSltha9L2T1qKyY
+ jQ0QShWjWnRfcWTz/1XFLaHiWUOVnAWZ2g8N3WP6VfUenbAq42bS4CGtzTOj3xJpULNOhBWISjU
+ gd4B+yycWRArtnKg9wcdiDCaIhW+aU5+PAQyX3kdZnSLdfzrmaq+PV0p2esjLFZpqFjxV44Fn/B
+ Wb9CB7BGcbz0m96feLJdcU6jjQVeWByWzq1G7Jm9M8vJ7zg1q4zE=
+X-Developer-Key: i=rbm@suse.com; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Hello:
+Commit 4b302092553c ("selftests/xsk: Add tail adjustment tests and support
+check") added a new global to xsk_xdp_progs.c, but left out the access in
+the testapp_xdp_metadata_copy() function. Since bpf_map_update_elem() will
+write to the whole bss section, it gets truncated. Fix by writing to
+skel_rx->bss->count directly.
 
-This series was applied to bpf/bpf.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Fixes: 4b302092553c ("selftests/xsk: Add tail adjustment tests and support check")
+Signed-off-by: Ricardo B. Marlière <rbm@suse.com>
+---
+ tools/testing/selftests/bpf/xskxceiver.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-On Sat, 30 Aug 2025 00:30:16 +0800 you wrote:
-> From: Rong Tao <rongtao@cestc.cn>
-> 
-> Fix bpf_strnstr() wrong 'len' parameter, bpf_strnstr("open", "open", 4)
-> should return 0 instead of -ENOENT. And fix a more general case when s2
-> is a suffix of the first len characters of s1.
-> 
-> Rong Tao (2):
->   bpf/helpers: bpf_strnstr: Exact match length
->   selftests/bpf: Add tests for bpf_strnstr
-> 
-> [...]
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index a29de0713f19f05ef49a52e3824bb58a30565e87..352adc8df2d1cd777c823c5a89f1720ee043f342 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -2276,25 +2276,13 @@ static int testapp_xdp_metadata_copy(struct test_spec *test)
+ {
+ 	struct xsk_xdp_progs *skel_rx = test->ifobj_rx->xdp_progs;
+ 	struct xsk_xdp_progs *skel_tx = test->ifobj_tx->xdp_progs;
+-	struct bpf_map *data_map;
+-	int count = 0;
+-	int key = 0;
+ 
+ 	test_spec_set_xdp_prog(test, skel_rx->progs.xsk_xdp_populate_metadata,
+ 			       skel_tx->progs.xsk_xdp_populate_metadata,
+ 			       skel_rx->maps.xsk, skel_tx->maps.xsk);
+ 	test->ifobj_rx->use_metadata = true;
+ 
+-	data_map = bpf_object__find_map_by_name(skel_rx->obj, "xsk_xdp_.bss");
+-	if (!data_map || !bpf_map__is_internal(data_map)) {
+-		ksft_print_msg("Error: could not find bss section of XDP program\n");
+-		return TEST_FAILURE;
+-	}
+-
+-	if (bpf_map_update_elem(bpf_map__fd(data_map), &key, &count, BPF_ANY)) {
+-		ksft_print_msg("Error: could not update count element\n");
+-		return TEST_FAILURE;
+-	}
++	skel_rx->bss->count = 0;
+ 
+ 	return testapp_validate_traffic(test);
+ }
 
-Here is the summary with links:
-  - [bpf-next,v5,1/2] bpf/helpers: bpf_strnstr: Exact match length
-    (no matching commit)
-  - [bpf-next,v5,2/2] selftests/bpf: Add tests for bpf_strnstr
-    https://git.kernel.org/bpf/bpf/c/19139f45999a
+---
+base-commit: 5b6d6fe1ca7b712c74f78426bb23c465fd34b322
+change-id: 20250829-selftests-bpf-xsk_regression_fix-674d292e4d2a
 
-You are awesome, thank you!
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Ricardo B. Marlière <rbm@suse.com>
 
 
