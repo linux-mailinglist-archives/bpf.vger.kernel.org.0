@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-67051-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67052-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 035E8B3C650
-	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 02:36:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ABB5B3C69E
+	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 02:44:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520961CC1374
-	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 00:36:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85EE71BA22BC
+	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 00:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BD845945;
-	Sat, 30 Aug 2025 00:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23401D6195;
+	Sat, 30 Aug 2025 00:44:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725BA1388;
-	Sat, 30 Aug 2025 00:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F9F21CCEE0;
+	Sat, 30 Aug 2025 00:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756514174; cv=none; b=c0EjD/A32APWeXwK7yyiYgSoPdobKK3eLZ4JA5bz+X6HR3CR52qTyWXavZnP7UKTcIImI7dYvJoO/QIfn1jJyVn8LDhYSyIh3AxShJx10XZFmAB7yOSqBUneXM11itPrMzY4ork/+BxlzIn+Nja5bhPV4OCRFdODN3fcInaUTIg=
+	t=1756514686; cv=none; b=mxHUh5Xl7udFK3Mlbj9+Cn1AYAp0JOqBD70yEHDKLNkpHJ/8bI4wXCHcLW+72JQRAFclI2DhvhedRgYO21eJo1W6kqAt8/k2Ng1sDDvZ3sxFI0OA7dS6Fb6Yl0FN7ByApz0k8mTP5otKcy/cvxjwqLXeyJXoCzrrXRRgX4YGY1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756514174; c=relaxed/simple;
-	bh=qsMti+LWhYucHDA3xzzk7LXoXUO9jYvItet2jyL2qNI=;
+	s=arc-20240116; t=1756514686; c=relaxed/simple;
+	bh=lpddepxRjNM+Jah/wSuL8Sm09Ygknht0LVd4mig4g00=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZqY7bCD47aexzr4KwRVPptmzR6//nSZndagbsv2Ri+FA75izKgfnRiNixANZOt3pkuofTucKmJ748pSDcfArGHEoV845bE4wEq8muOwGp/L7DHJ3uemnNxftNWAbmpb4RGkCq4m3v0lFu5DD9ktmDGtc+nVh8hJW5RVemP2N/jY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+	 MIME-Version:Content-Type; b=D936rZcGRsThjFm8UPAmLy+yjKfCKIXns9yT+F50+39/33F8irzCy9X9vUpknnUgsLRjQLDstV8nju9l7LZTbyJF5+EB34BSHpeFqrk42YBusgGr6xLQbf2ZGbYMIlQHf9pPu3JISFWhnr7ebGA7y3OOHWWYVzXeP24XldLblRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id 6A1E21606F0;
-	Sat, 30 Aug 2025 00:36:09 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf03.hostedemail.com (Postfix) with ESMTPA id 0A5D56000B;
-	Sat, 30 Aug 2025 00:36:03 +0000 (UTC)
-Date: Fri, 29 Aug 2025 20:36:27 -0400
+Received: from omf20.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 5C23D119E52;
+	Sat, 30 Aug 2025 00:44:41 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf20.hostedemail.com (Postfix) with ESMTPA id 37BE92002E;
+	Sat, 30 Aug 2025 00:44:36 +0000 (UTC)
+Date: Fri, 29 Aug 2025 20:44:59 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Steven Rostedt
@@ -53,9 +53,10 @@ Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Steven Rostedt
  <codonell@redhat.com>
 Subject: Re: [PATCH v6 5/6] tracing: Show inode and device major:minor in
  deferred user space stacktrace
-Message-ID: <20250829203627.3bbb9c24@gandalf.local.home>
-In-Reply-To: <20250829194246.744c760b@gandalf.local.home>
+Message-ID: <20250829204459.6ea62c31@gandalf.local.home>
+In-Reply-To: <20250829190935.7e014820@gandalf.local.home>
 References: <20250828180300.591225320@kernel.org>
+	<CAHk-=wjRC0sRZio4TkqP8_S+Fr8LUypVucPDnmERrHVjWOABXw@mail.gmail.com>
 	<20250828171748.07681a63@batman.local.home>
 	<CAHk-=wh0LjoJmRPHF41eQ1ZRf085urz+rvQQ-rwp8dLQCdqohw@mail.gmail.com>
 	<20250829110639.1cfc5dcc@gandalf.local.home>
@@ -71,7 +72,6 @@ References: <20250828180300.591225320@kernel.org>
 	<20250829171855.64f2cbfc@gandalf.local.home>
 	<CAHk-=wj7rL47QetC+e70y7pgyH4v7Q2vcSZatRsCk+Z6urA3hw@mail.gmail.com>
 	<20250829190935.7e014820@gandalf.local.home>
-	<20250829194246.744c760b@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -81,67 +81,24 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: qeeg9p3gxtqwn1yhdotjp5fxoqtn4meg
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 0A5D56000B
+X-Rspamd-Queue-Id: 37BE92002E
+X-Stat-Signature: cc5jdic8b9uokx7zbzn5hunotaxqir71
+X-Rspamd-Server: rspamout02
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+xcImp8TxVi+CCl2dnC6hREgbekVcnl3c=
-X-HE-Tag: 1756514163-476374
-X-HE-Meta: U2FsdGVkX19n43wdPBIbkHhrdzMH6DataEPRK47xCyyx1UXXit2BgIP9Tq1W3JoMSrSuGFn1io2mRJDoO18d47VGNrFj3omXyhXloMxMIfcc/q9/QiwewOeQ1aXjc4T2l9U/kIpfL7LFyxVHQBV1LWDeVdTZUGESVVd8rKbliev4HcwhwSDRdIo9oif2LQaZ8R49/uH+9G5EGc94vRPBKjMhy3yrZWExB32gT6jqcNqKoHVVz4TKFrnBAGtqUWDF8VlQpQCGVbVJfru2N3s5ii+gLV2v8oxdl+oHdJylWEaBxrU/JriyRwUswYUpGqWLnKV9nb1mjSkCv0DBBW/M42f3Jevw78+w84AfHcdCCoaqLMnkvETo/0F1MgzcHhJAtAwkhQvGo5HC823tnUsnMfjuXSxF5ACI
+X-Session-ID: U2FsdGVkX19pl6C6Kqnejk8tIUdrvZf4zNQEFz+Ax6w=
+X-HE-Tag: 1756514676-477073
+X-HE-Meta: U2FsdGVkX18PN91WHs6dIsuh4/qRVy2Jy4rubtURT4o6fCFBr/KthGOlbftdPYGY9SqWoP5If/oQP92D/X9khPPlkPyLJr/8YLUmeKu2/wr83Rwms6cO3eagEfCtNS8uLL609Zl1nT6lZTclhIxJCTtgdQpawXkNbow0/2MHZC83UeeTZ9j0GJhMxIO+C6WEKobAh7+U1nsUzCinUCeH1jz7VyUPLJ2vHhCH4GQPs3FvogZQXliqKejYUAUqsnZpgV9Jy+vv5B+jmQ5ynA1dqRWrSqps393ly1L7wsQvOMy51X97hARmEBudxmLnN+FePPw91D1e1gKj7R4bN6mp+M13Noi8DvrX42YrVqPS0tYZ2EuUMnuGjEGM4+2cdKCB6JJUV13UPJiG6e+kup4xDm7ICGBBRb0I
 
-On Fri, 29 Aug 2025 19:42:46 -0400
+On Fri, 29 Aug 2025 19:09:35 -0400
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
->    vma = NULL;
->    hash = 0;
->    foreach addr in callchain
->      if (!vma || addr not in range of vma) {
->        vma = vma_lookup(addr);
->        hash = get_hash(vma);
->      }
->      callchain[i] = addr - offset;
->      hash[i] = hash;
-> 
-> 
-> I had that get_hash(vma) have something like:
-> 
-> 
->   u32 get_hash(vma) {
->      unsigned long ptr = (unsigned long)vma->vm_file;
->      u32 hash;
-> 
->      /* Remove alignment */
->      ptr >>= 3;
->      hash = siphash_1u32((u32)ptr, &key);
+> Yeah, we could add an optimization to store vma's in the callchain walk to
+> see if the next call chain belongs to a previous one. Could even just cache
+> the previous vma, as it's not as common to have one library calling into
+> another and back again.
 
-Oh, this hash isn't that great, as it did appear to have collisions. But I
-saw in vsprintf() it has something like:
+Although, it does happen with libc. :-p
 
-#ifdef CONFIG_64BIT
-	return (u32)(unsigned long)siphash_1u64((u64)ptr, &key);
-#else
-	return (u32)siphash_1u32((u32)ptr, &key);
-#endif
-
-Which for the 64 bit version, it uses all the bits to calculate the hash,
-and the resulting bottom 32 is rather a good spread.
-
-> 
->      if (lookup_hash(hash))
->         return hash; // already saved
-> 
->      // The above is the most common case and is quick.
->      // Especially compared to vma_lookup() and the hash algorithm
-> 
->      /* Slow but only happens when a new vma is discovered */
->      trigger_event_that_maps_hash_to_file_data(hash, vma);
-> 
->      /* Doesn't happen again for this hash value */
->      save_hash(hash);
-
-So this basically creates the output of:
-
-       trace-cmd-1034    [003] .....   142.197674: <user stack unwind>
 cookie=300000004
  =>  <000000000008f687> : 0x666220af
  =>  <0000000000014560> : 0x88512fee
@@ -150,18 +107,27 @@ cookie=300000004
  =>  <000000000001fcfa> : 0x88512fee
  =>  <000000000000ebae> : 0x88512fee
  =>  <0000000000029ca8> : 0x666220af
-       trace-cmd-1034    [003] ...1.   142.198063: file_cache: hash=0x666220af path=/usr/lib/x86_64-linux-gnu/libc.so.6 build_id={0x10bddb6d,0xf5234181,0xc2f72e26,0x1aa4f797,0x6aa19eda}
-       trace-cmd-1034    [003] ...1.   142.198093: file_cache: hash=0x88512fee path=/usr/local/bin/trace-cmd build_id={0x3f399e26,0xf9eb2d4d,0x475fa369,0xf5bb7eeb,0x6244ae85}
 
+The 0x666220af is libc, where the first item is (according to objdump):
 
-Where the first instances of the vma with the values of 0x666220af and
-0x88512fee get printed, but from then on, they are not. That is, from then
-on, the lookup will return true, and no processing will take place.
+000000000008f570 <__libc_alloca_cutoff@@GLIBC_PRIVATE>:
 
-And periodically, I could clear the hash cache, so that all vmas get
-printed again. But this would be rate limited to not cause performance
-issues.
+And the last one (top of the stack) is:
 
+0000000000029c20 <__libc_init_first@@GLIBC_2.2.5>:
+
+Of course libc starts the application, and then the application will likely
+call back into libc. We could optimize for this case with:
+
+  first_vma = NULL;
+  vma = NULL;
+  foreach addr in callchain
+    if (!first_vma)
+      vma = first_vma = vma_alloc()
+    else if (addr in range of first_vma)
+      vma = first_vma
+    else (addr not in range of vma)
+      vma = vma_lookup(addr);
 
 -- Steve
 
