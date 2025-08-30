@@ -1,149 +1,167 @@
-Return-Path: <bpf+bounces-67050-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67051-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CD58B3C64C
-	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 02:28:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 035E8B3C650
+	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 02:36:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA2287BE83F
-	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 00:26:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520961CC1374
+	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 00:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A49D43AA4;
-	Sat, 30 Aug 2025 00:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDGbv+GK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BD845945;
+	Sat, 30 Aug 2025 00:36:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CAD191;
-	Sat, 30 Aug 2025 00:28:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725BA1388;
+	Sat, 30 Aug 2025 00:36:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756513695; cv=none; b=K95etvpfBKux5SD7K21fkEfH4Jta9MkM4lvbMhumlLSV9ZSqF28ccvDa+3Ba/889bttI0EbDVJa6fheN1CNkYz2loyIRWlGF6XIeqr/+x9Omwc5uNGEABywS5l4aidqI/vgZV5sFBB7JDgJgQ0Yt1g5FfAVL9M9IbeQiveTo89Y=
+	t=1756514174; cv=none; b=c0EjD/A32APWeXwK7yyiYgSoPdobKK3eLZ4JA5bz+X6HR3CR52qTyWXavZnP7UKTcIImI7dYvJoO/QIfn1jJyVn8LDhYSyIh3AxShJx10XZFmAB7yOSqBUneXM11itPrMzY4ork/+BxlzIn+Nja5bhPV4OCRFdODN3fcInaUTIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756513695; c=relaxed/simple;
-	bh=ZvK4bYA3r8mTlanGVlu/JYxp/7dderxUPye0iM8shsQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qa3dazD3XsdkDacbdNzCz+onUb2Wix+684bY9PWVSrcy+4n99jd+gf3ql31hnJiOyrWq9Z6EfoA6fQrmJsyrOBjteOgh048q3Tg6bMdM3b5k6yLKqY9B7dag9UiFYlJtqssyEseA2WTiB1HUH/oM43QFki9IdnwV1qLZyDaSd3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDGbv+GK; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3cf991e8bb8so780483f8f.2;
-        Fri, 29 Aug 2025 17:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756513692; x=1757118492; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VrhIVs/dJPUCsFAm8+oJ7qqPTnO0H735wh0Jw8oqxj8=;
-        b=EDGbv+GKKQsLV0uJWS9E96RLANMVo5nFTCOYefs8WP+Wph6JOBDNqqpWG6s/klSkCt
-         TZZTjoMXuAXUwtczYYYC1OD+UieSiYhazFIw3aPCOpDCmd8/CBfLf5jL3t1bdN0TPhC7
-         XmSIp52ww3COt9gE6+TMwhOPGWA0/hdp1sQJm2VEww2lvuKVW1ZuKSi9F8/TF3Ad2Rqb
-         fdet3pOlY5BsQ1BJ7/cASeNF/opDRDtzqlfvwqxM2tfYwzCIg44bj4JUzEoyWjjjJXIg
-         Ua7D8r7V0p27/4yPtPmfHUAetU0IpIg/mmZ6NdOhpA8SzfK+n4eJLOXaenGH3Y2xMSV+
-         gMKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756513692; x=1757118492;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VrhIVs/dJPUCsFAm8+oJ7qqPTnO0H735wh0Jw8oqxj8=;
-        b=e3uBGAe8SymAimt/w+mb1GxAk5pH5V/6WDLetQj4zLu1H+egA1oIz3NbgO6JaFbuNn
-         wU2qG7muS4QQzfqoLQlPohfP465WnDG1o6FfrrIa1jHoGsBe+jUcdKrNpsCCfdyZOtVi
-         Fy67vGl5S60M5lT1ySalsgGahpya3LgDoDlDitWZnDjcaYaK2bCjSNUkjjfiR2lELYEa
-         7gKKMjpQNt9stXe+jFNdVYU0NCfuTRQy+jAMGgTt9Ze/FJKiSWw8T4duB9Y+PwRwGZQo
-         FOac7hTEnDqbIwfejjEHvtIVwOjyjfDDPjbK95xWYsvz28/Y51p0NlIwo1d2vepdMQwA
-         bcJg==
-X-Forwarded-Encrypted: i=1; AJvYcCUDtedRBA49h88Zp/+FiKlaUvYWXUW5F72jiuEcVvKrCr5fQz4nnzzthMGvhMQ72XFM2l0=@vger.kernel.org, AJvYcCUjyKRSy2xGQGQ8mfKHpMCO0v8TJafKMwDmoOYdqMGMUInS+fRDo+WAUlaHJbZ/3oKcFL6ULU4l/qklmkQA@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEBP6kYk//8/wavx/Egq56QHK1xbp2wGY0qHv6OQpzUaEnnKFY
-	uwnEvvV2EWnrDrmr52tkAYG9rEOoIf3rVlajegCu/Kqp+iUJ1tmBo9dWvYddtiougGZIRdhHtMM
-	sHs+YTzx5qCfcemCZN6tNyclt05YpJzo=
-X-Gm-Gg: ASbGnctV21bHEPKr3Tt6CAvFdmyUdI+vDZ7vImMyci+qQQv7AhZaorH5bGRjfNVnDK+
-	6jzU8M1vBUF2RKEHWnSiux3GPAUbroKkBN2VBvlIITAe7bdWhRMDBabkcDcxy9Div7VOEbJf2F4
-	2r52gn3TeWc/29IrQJBy9znpiZxyqBTf9oOXW/zB4N+uiiTN+WcrohVPtohI5i8fVdyWPOjFmeL
-	3aYBxAj3Wl1K+wnfbKwp9493zCUcFflfmp+Agig4Mx7rWY=
-X-Google-Smtp-Source: AGHT+IHLLfxZUg/Gr9rEauyIEDuTh+gBYRyOxVzgA0NvK1AU6IZrp6Wg6fE87yy64L9t+WHZ8+W2dtWCcrNFNJ9w57w=
-X-Received: by 2002:a05:6000:2509:b0:3c8:ed45:497 with SMTP id
- ffacd0b85a97d-3d1dea8cfd0mr216623f8f.47.1756513692178; Fri, 29 Aug 2025
- 17:28:12 -0700 (PDT)
+	s=arc-20240116; t=1756514174; c=relaxed/simple;
+	bh=qsMti+LWhYucHDA3xzzk7LXoXUO9jYvItet2jyL2qNI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZqY7bCD47aexzr4KwRVPptmzR6//nSZndagbsv2Ri+FA75izKgfnRiNixANZOt3pkuofTucKmJ748pSDcfArGHEoV845bE4wEq8muOwGp/L7DHJ3uemnNxftNWAbmpb4RGkCq4m3v0lFu5DD9ktmDGtc+nVh8hJW5RVemP2N/jY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay07.hostedemail.com (Postfix) with ESMTP id 6A1E21606F0;
+	Sat, 30 Aug 2025 00:36:09 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf03.hostedemail.com (Postfix) with ESMTPA id 0A5D56000B;
+	Sat, 30 Aug 2025 00:36:03 +0000 (UTC)
+Date: Fri, 29 Aug 2025 20:36:27 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Steven Rostedt
+ <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>,
+ "Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave
+ <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>, Andrew
+ Morton <akpm@linux-foundation.org>, Florian Weimer <fweimer@redhat.com>,
+ Sam James <sam@gentoo.org>, Kees Cook <kees@kernel.org>, "Carlos O'Donell"
+ <codonell@redhat.com>
+Subject: Re: [PATCH v6 5/6] tracing: Show inode and device major:minor in
+ deferred user space stacktrace
+Message-ID: <20250829203627.3bbb9c24@gandalf.local.home>
+In-Reply-To: <20250829194246.744c760b@gandalf.local.home>
+References: <20250828180300.591225320@kernel.org>
+	<20250828171748.07681a63@batman.local.home>
+	<CAHk-=wh0LjoJmRPHF41eQ1ZRf085urz+rvQQ-rwp8dLQCdqohw@mail.gmail.com>
+	<20250829110639.1cfc5dcc@gandalf.local.home>
+	<CAHk-=wjeT3RKCTMDCcZzXznuvG2qf0fpKbHKCZuoPzxFYxVcQw@mail.gmail.com>
+	<20250829121900.0e79673c@gandalf.local.home>
+	<CAHk-=wj6+8vXfBQKoU4=8CSvgSEe1A++1KuQhXRZBHVvgFzzJg@mail.gmail.com>
+	<20250829124922.6826cfe6@gandalf.local.home>
+	<CAHk-=wid_71e2FQ-kZ-=aGTkBxDjLwtWqcsuNSxrarnU4ewFCg@mail.gmail.com>
+	<6B146FF6-B84E-40A2-A4FA-ABD5576BF463@gmail.com>
+	<CAHk-=wjgdKtBAAu10W04VTktRcgEMZu+92sf1PW-TV-cfZO3OQ@mail.gmail.com>
+	<20250829141142.3ffc8111@gandalf.local.home>
+	<CAHk-=wh8QVL4rb_17+6NfxW=AF-HS0WarMmq-nYm42akG0-Gbg@mail.gmail.com>
+	<20250829171855.64f2cbfc@gandalf.local.home>
+	<CAHk-=wj7rL47QetC+e70y7pgyH4v7Q2vcSZatRsCk+Z6urA3hw@mail.gmail.com>
+	<20250829190935.7e014820@gandalf.local.home>
+	<20250829194246.744c760b@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250826212229.143230-1-contact@arnaud-lcm.com>
- <20250826212352.143299-1-contact@arnaud-lcm.com> <CAADnVQ+6bV3h3i-A1LHbEk=nY_PMx69BiogWjf5GtGaLxWSQVg@mail.gmail.com>
- <CAPhsuW5P4sOHmMCmVTZw2vfuz7Rny-xkhuPkRBitfoATQkm=eA@mail.gmail.com>
-In-Reply-To: <CAPhsuW5P4sOHmMCmVTZw2vfuz7Rny-xkhuPkRBitfoATQkm=eA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 29 Aug 2025 17:28:01 -0700
-X-Gm-Features: Ac12FXz6kWOcxspa5bslzCZuaIzwRt9668IkCzqmvaW4DsWio--34nodGGwXtHs
-Message-ID: <CAADnVQK=3xigzt-pCat5OF29xT_F7-5rXDOMG+_FLSS0jRoWsQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/2] bpf: fix stackmap overflow check in __bpf_get_stackid()
-To: Song Liu <song@kernel.org>
-Cc: Arnaud Lecomte <contact@arnaud-lcm.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eduard <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: qeeg9p3gxtqwn1yhdotjp5fxoqtn4meg
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 0A5D56000B
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+xcImp8TxVi+CCl2dnC6hREgbekVcnl3c=
+X-HE-Tag: 1756514163-476374
+X-HE-Meta: U2FsdGVkX19n43wdPBIbkHhrdzMH6DataEPRK47xCyyx1UXXit2BgIP9Tq1W3JoMSrSuGFn1io2mRJDoO18d47VGNrFj3omXyhXloMxMIfcc/q9/QiwewOeQ1aXjc4T2l9U/kIpfL7LFyxVHQBV1LWDeVdTZUGESVVd8rKbliev4HcwhwSDRdIo9oif2LQaZ8R49/uH+9G5EGc94vRPBKjMhy3yrZWExB32gT6jqcNqKoHVVz4TKFrnBAGtqUWDF8VlQpQCGVbVJfru2N3s5ii+gLV2v8oxdl+oHdJylWEaBxrU/JriyRwUswYUpGqWLnKV9nb1mjSkCv0DBBW/M42f3Jevw78+w84AfHcdCCoaqLMnkvETo/0F1MgzcHhJAtAwkhQvGo5HC823tnUsnMfjuXSxF5ACI
 
-On Fri, Aug 29, 2025 at 11:50=E2=80=AFAM Song Liu <song@kernel.org> wrote:
->
-> On Fri, Aug 29, 2025 at 10:29=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> [...]
-> > >
-> > >  static long __bpf_get_stackid(struct bpf_map *map,
-> > > -                             struct perf_callchain_entry *trace, u64=
- flags)
-> > > +                             struct perf_callchain_entry *trace, u64=
- flags, u32 max_depth)
-> > >  {
-> > >         struct bpf_stack_map *smap =3D container_of(map, struct bpf_s=
-tack_map, map);
-> > >         struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
-> > > @@ -263,6 +263,8 @@ static long __bpf_get_stackid(struct bpf_map *map=
-,
-> > >
-> > >         trace_nr =3D trace->nr - skip;
-> > >         trace_len =3D trace_nr * sizeof(u64);
-> > > +       trace_nr =3D min(trace_nr, max_depth - skip);
-> > > +
-> >
-> > The patch might have fixed this particular syzbot repro
-> > with OOB in stackmap-with-buildid case,
-> > but above two line looks wrong.
-> > trace_len is computed before being capped by max_depth.
-> > So non-buildid case below is using
-> > memcpy(new_bucket->data, ips, trace_len);
-> >
-> > so OOB is still there?
->
-> +1 for this observation.
->
-> We are calling __bpf_get_stackid() from two functions: bpf_get_stackid
-> and bpf_get_stackid_pe. The check against max_depth is only needed
-> from bpf_get_stackid_pe, so it is better to just check here.
+On Fri, 29 Aug 2025 19:42:46 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Good point.
+>    vma = NULL;
+>    hash = 0;
+>    foreach addr in callchain
+>      if (!vma || addr not in range of vma) {
+>        vma = vma_lookup(addr);
+>        hash = get_hash(vma);
+>      }
+>      callchain[i] = addr - offset;
+>      hash[i] = hash;
+> 
+> 
+> I had that get_hash(vma) have something like:
+> 
+> 
+>   u32 get_hash(vma) {
+>      unsigned long ptr = (unsigned long)vma->vm_file;
+>      u32 hash;
+> 
+>      /* Remove alignment */
+>      ptr >>= 3;
+>      hash = siphash_1u32((u32)ptr, &key);
 
-> I have got the following on top of patch 1/2. This makes more sense to
-> me.
->
-> PS: The following also includes some clean up in __bpf_get_stack.
-> I include those because it also uses stack_map_calculate_max_depth.
->
-> Does this look better?
+Oh, this hash isn't that great, as it did appear to have collisions. But I
+saw in vsprintf() it has something like:
 
-yeah. It's certainly cleaner to avoid adding extra arg to
-__bpf_get_stackid()
+#ifdef CONFIG_64BIT
+	return (u32)(unsigned long)siphash_1u64((u64)ptr, &key);
+#else
+	return (u32)siphash_1u32((u32)ptr, &key);
+#endif
+
+Which for the 64 bit version, it uses all the bits to calculate the hash,
+and the resulting bottom 32 is rather a good spread.
+
+> 
+>      if (lookup_hash(hash))
+>         return hash; // already saved
+> 
+>      // The above is the most common case and is quick.
+>      // Especially compared to vma_lookup() and the hash algorithm
+> 
+>      /* Slow but only happens when a new vma is discovered */
+>      trigger_event_that_maps_hash_to_file_data(hash, vma);
+> 
+>      /* Doesn't happen again for this hash value */
+>      save_hash(hash);
+
+So this basically creates the output of:
+
+       trace-cmd-1034    [003] .....   142.197674: <user stack unwind>
+cookie=300000004
+ =>  <000000000008f687> : 0x666220af
+ =>  <0000000000014560> : 0x88512fee
+ =>  <000000000001f94a> : 0x88512fee
+ =>  <000000000001fc9e> : 0x88512fee
+ =>  <000000000001fcfa> : 0x88512fee
+ =>  <000000000000ebae> : 0x88512fee
+ =>  <0000000000029ca8> : 0x666220af
+       trace-cmd-1034    [003] ...1.   142.198063: file_cache: hash=0x666220af path=/usr/lib/x86_64-linux-gnu/libc.so.6 build_id={0x10bddb6d,0xf5234181,0xc2f72e26,0x1aa4f797,0x6aa19eda}
+       trace-cmd-1034    [003] ...1.   142.198093: file_cache: hash=0x88512fee path=/usr/local/bin/trace-cmd build_id={0x3f399e26,0xf9eb2d4d,0x475fa369,0xf5bb7eeb,0x6244ae85}
+
+
+Where the first instances of the vma with the values of 0x666220af and
+0x88512fee get printed, but from then on, they are not. That is, from then
+on, the lookup will return true, and no processing will take place.
+
+And periodically, I could clear the hash cache, so that all vmas get
+printed again. But this would be rate limited to not cause performance
+issues.
+
+
+-- Steve
 
