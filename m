@@ -1,158 +1,228 @@
-Return-Path: <bpf+bounces-67067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67068-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 278BEB3D0D4
-	for <lists+bpf@lfdr.de>; Sun, 31 Aug 2025 05:17:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D94BB3D0D6
+	for <lists+bpf@lfdr.de>; Sun, 31 Aug 2025 05:21:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52F20189DBAA
-	for <lists+bpf@lfdr.de>; Sun, 31 Aug 2025 03:17:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D4A9444A48
+	for <lists+bpf@lfdr.de>; Sun, 31 Aug 2025 03:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9125520102C;
-	Sun, 31 Aug 2025 03:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B931620E011;
+	Sun, 31 Aug 2025 03:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/Hrn0CL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lJn4ceJS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A62648CFC;
-	Sun, 31 Aug 2025 03:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932D27E792;
+	Sun, 31 Aug 2025 03:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756610226; cv=none; b=Z9jzth5aWdemNSZd/AeGEFqmKEiqorJQY4cyd30EV7tFE753Rf31CTRqSa2RaTRnAaAdvOweJ4bvjiuAduuMO9CCM6Av0AHiOmIFU4Wn3wubDvGDASj2nGkYg0blkC216a+IFrOmDI1LadzzduhS7IUIvOUjQgFSpIhDatDeD4Q=
+	t=1756610481; cv=none; b=OrQi0LE7A+eXIaHhxxLnPLKqeYV2hqyMMuSB1tlfMOdPd2cre2prnSSnPFACzRwyfhhpOzrFcoAeG+gEGpkvkaS7V1yTCq8uMD1koZEYX1uFrVJ1PEB+tAwPxYHkqy+2ai1KcNNqgM0B4QY23d1yasrPlNpAInli0NscP6a6sP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756610226; c=relaxed/simple;
-	bh=uNoXH+wPgXdIb++tmK8Rpao0qcmHJzxf5uW0DbXtepM=;
+	s=arc-20240116; t=1756610481; c=relaxed/simple;
+	bh=DvsrS5yV4f8tnEjy4K5dpNZ63UE+ZLKpyPJ0V7szXSE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=as7luoJHacW1t2yM4ZPkacIsdI0tjsVfWPcD4rGTUhAn/QAdt8RXtZSt6efNKt2IZK4REpzZ8rxNqlZ2GpMUUt/dOOVytwU7TtJqnf8zIe3sROR9Lesv8jkD742j5R5ZzNYAalH3u+wSQyOWpiuCv6yB2SdpY3rrw16j39Pwax4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R/Hrn0CL; arc=none smtp.client-ip=209.85.160.172
+	 To:Cc:Content-Type; b=p+0fbhndYlaQindrwLHu673iKKWXzOKJUq6ksupc3iWy61wlqBXkg8Z9aV3xNqVnc741viHumZ1yrWYrDE4b96Eu0+CHvCKIQCEtGMUTzaHLzF0gB3cW8tMnKnXRiL93Qy0CS3qMRiWCt1fJfk6Q4kyFmHTYjS6+SOl/VECWnII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lJn4ceJS; arc=none smtp.client-ip=209.85.219.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4b307179ea4so22650601cf.2;
-        Sat, 30 Aug 2025 20:17:04 -0700 (PDT)
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-70fa0e941a9so15903656d6.0;
+        Sat, 30 Aug 2025 20:21:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756610223; x=1757215023; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756610478; x=1757215278; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5N7BdKrpgIpY9aSYUioHU5026fLiwEEjedpqQJ1T/KU=;
-        b=R/Hrn0CLj8QXkAuvARc1cdvg6PbcQ3g6lg5KsBtsY1cJzG8CLJj0V73hFhSl0sT3KG
-         l59tE/Sb7X1iDgQeh4FMj7uywI0NgBc0dcORtkDH4VB158o4mEK656171RIxHVPkvdoa
-         rwfIyfow0eZOsjy7AskLjftG+a2dZwTlseS7zE83m7jaymXXahOzdDxFn24CQucLhGb+
-         xAyC5w1hUG8wLkUAvJPhC+EBYfROdF/ZF/zfc8mHHSkcy5HgIvU3JgEpo8VCqPksRWWo
-         xRsTxQc4X8P5fDLaXTnCuurXJLsPb+auQuxtpyaoEAR8x8bS9JCYToV4AmvJAmi3xSaX
-         6uFg==
+        bh=QmkA2GEtVBpE1rfMwgGSnld1GOA1shoo7sxcZ5Vcnw8=;
+        b=lJn4ceJSJp7M4NuRs8br5n0QcgMWeoJrw++fLPHSrKIgSMp4iGhadhkF/VY4X+pBub
+         BMs4xYnhqWaLj6HNTe8ZYLEO8sjzq0UGpNE2wj3jL7SZx/7Dk1A+YL/XnNFOmhyJXJHG
+         JlP+gUgDpfIXPEGNCmF1hnY1eV6ck0AtN15f2rE99gG2mu+f5Y4LnCYC9o7u0R+I+LSO
+         Y/qxN0IBGStWxql5QuRZ1DZvo/L2+H/XS9/obrkI8OMtOa4h6L4Pp7KkybWTfjjRfYln
+         NUrd1cjXkx0q3jN9+55UKS87+tBElhbaoqNAgfOUHpf1alKw+Tju3sAAmqaffMVcvwNJ
+         /dhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756610223; x=1757215023;
+        d=1e100.net; s=20230601; t=1756610478; x=1757215278;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5N7BdKrpgIpY9aSYUioHU5026fLiwEEjedpqQJ1T/KU=;
-        b=w4mmv7Z5bYAibrwcIusMIuDBFQ3aI/pLew5eQn3zTfY7rBJ1ekCtIggFbvxZ3RffBa
-         PL7p2bisdUirX84GxDUCboPVJnJn5b+f4MNWEbCAzIxpUm4RvhLEx/6kezq94IAqmidq
-         2kd/8+8neiObGDi5IxVDb7m6tZAcD2jgW61Qhh4CorbQy5CYV49koRPfmK+/oh2GGApK
-         /zEY02ns88ZaxEkvMUd3GNWk5FFu+dnxrdGxuNs4ao291Yo5V7a0prwr/kQN7dsTVfTk
-         iPlw0Ddn3jJX2TblYkNezPVmEFOipgKgKDOsm8kXNefUi65T+tuyHumwwj9WYpdp621a
-         3IKA==
-X-Forwarded-Encrypted: i=1; AJvYcCUsdg7M5KTDx6Ld0+AqGrobLn+tNJ8UcoyH8Yj4BmX/ghy2+WlGWH19+1H/of18UIe7jvE=@vger.kernel.org, AJvYcCVMpkiRHw18zPuMwMvAO0HZtFT1w5kpah/NhmD/kSvSDDlf2Am1zoEydrbUTESmTrALFe/hT49m2/5y@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDPpkYh3G8Yszzx6/7veSOZXSOBNnf+ArDpojmZnY0xf6gEHBn
-	njxjt6Fvn79Dbquq6gzQTuyaW/r83gMZu3Z51OnGYYAHfL8bvI9oWQtgupNvoykPppskZYJkcJB
-	SL0c3WPhYbOu5lhH7e1pkhvCRo3yt4PI=
-X-Gm-Gg: ASbGncvXq/NH9Iubb/XZW3tHDtlHVcdVYzaLI3HtjfLovfahvuLzN1LbxxutqrgIhvS
-	nfUKQ5z7V/VehGwlekFDyrv7jS4inJPWrfKN/+CucSFwd8QJaV46MC0TlZ6SqHcaklFP4qG7FVa
-	uZAl+gaWwOZi9AVCNOBh2Shv7ch11iqqe70FNsjOVBaaWCGmBsTZRL53ShE4zQcT0TBf/psyWfh
-	H3eSW64dSzd+HS1Rx4BzVUKPEF1GNnbuizVCPmm
-X-Google-Smtp-Source: AGHT+IHe94eMIWMY4dbrxy1YiHjHy0HuBEp+5ADPw2mSy4ygzqofX4QZ6gFssRpbt5INRd/s9w0eUBJOOA9RRs/hVCY=
-X-Received: by 2002:a05:622a:592:b0:4b2:9830:197 with SMTP id
- d75a77b69052e-4b31da3cdadmr39861351cf.48.1756610223300; Sat, 30 Aug 2025
- 20:17:03 -0700 (PDT)
+        bh=QmkA2GEtVBpE1rfMwgGSnld1GOA1shoo7sxcZ5Vcnw8=;
+        b=j0RRgGFwbNmLuXcg+sRHMl2zu/uv2xjj19TX1EFvpjIZHxBk0gMv/L5ZkYmMq/WJ69
+         SCZtrZVb7WVjKlbSWF5Kakb7eQ6GdC4u1Z2DFLgEa7yJwtCovU95IQmOBzQreS7Tzb5S
+         9cHoyEN+WTtDTQVyjoxj9eTwnemeAWK7pOkBJwuROm6YpXfVDBnaPHkcV8jmAoqkopkL
+         Uoqe4pgsxSVnXWIuT9DKFCO1MlirV9LPNnmYRBuryMOURNBUsGEHu2wEp11KDuqtIRa4
+         EpSvYtLJ0NCjNG1F/cdl/GhCrIXnwE8+8+Mr+AXllPfB71pG1mN7JgQuLkRxTKqXCIjW
+         F6Qg==
+X-Forwarded-Encrypted: i=1; AJvYcCWG+jhFIDo2wOPDlTxI8BOh7eDldoitSLEXPxiZ+kcmNg7BrjnscciRyS4zf5DgkWvQz1w=@vger.kernel.org, AJvYcCWhRGnN3tpIN7k+F+EfNN0wa6ydKXUIzuC2Rl3g/DncKUdPO8GaKeIt5CWL4jIe42o9UuMu5yKD@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzb2vlbIBaNI76DolngEaelENn1HMKjR5n+DMfoGjPXbta1lkMt
+	3cb38cpDMoi0HVqhGQRC4Q9BhROavEbtXJdoVpmSbLSqG0HZ5i1TiMhBhZDyxHp8dHJDR14NB0g
+	/SATcY2s3SAJYV+D4ffslki0IlRqOX7U=
+X-Gm-Gg: ASbGncsCcGmb/8QKuHwndLwQVnw5H17vYJpKVIKVSx5E24eAHmlWsRmp4KcNKjFtAPe
+	wJHjLBrZQfPMAm3dayqj16l5LS6mYIWRyRWcmJx5eDLkq8tYZuesdewX6mVUAeNGKWaJrlYbOWJ
+	vQ26AbIJVgeRCphbpzlaGRBmRogWH6Ispvibxf89CDfBcqUbvEe0KEGr7EArxIbiQDN2aeD9ilZ
+	qQj0/Cs3gZyn4j/vHtyzqZpSkL3sg9RjZiSvhJG
+X-Google-Smtp-Source: AGHT+IFhcvL+85PJicyFvcYlpqfO5G7Jf9qUBEDmdUJQ9rfiz+3OG/iZpLHOb4Vi9O5eBLN1MJ1tLqo29CIkblyMpPk=
+X-Received: by 2002:ad4:576d:0:b0:70d:c3ac:2bb5 with SMTP id
+ 6a1803df08f44-70fac97d6f4mr44981526d6.34.1756610478389; Sat, 30 Aug 2025
+ 20:21:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250826071948.2618-1-laoar.shao@gmail.com> <20250826071948.2618-5-laoar.shao@gmail.com>
- <bca7698c-7617-4584-afaa-4c3d2c971a79@lucifer.local> <CALOAHbDxxN8CsGwAWQU4XRkG8NvU-chbiDv=oKW0mADSf1vaiQ@mail.gmail.com>
- <b335afe9-be7a-46bb-bf92-37abf806d164@lucifer.local> <CALOAHbApv0Sj25La7EQZg7UBxfvkfMXpGPtNrYKABSYpNV6ORA@mail.gmail.com>
- <a4d0857f-1520-49a2-a717-3e74325f2d6f@lucifer.local>
-In-Reply-To: <a4d0857f-1520-49a2-a717-3e74325f2d6f@lucifer.local>
+References: <20250822064200.38149-1-laoar.shao@gmail.com> <1d3ba6ba-5c1e-4d3f-980a-8ad75101f04d@redhat.com>
+ <CALOAHbBdiPZ_YVhBJeV517Xqz8=cuGo6jhhta_QXy5-eQ6EN4g@mail.gmail.com> <96158e58-da9a-4661-a47b-e7b85856ac90@iogearbox.net>
+In-Reply-To: <96158e58-da9a-4661-a47b-e7b85856ac90@iogearbox.net>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 31 Aug 2025 11:16:27 +0800
-X-Gm-Features: Ac12FXzUXlC_rm_aYklaAinmwNAfHTa64DZQJN2Q1d5F2Z14aWeMQl-5B-4ZRZM
-Message-ID: <CALOAHbBaC2sd578CCT_15R64P75MAtYopm+pDrRqmOJpaOB-Dg@mail.gmail.com>
-Subject: Re: [PATCH v6 mm-new 04/10] bpf: mark vma->vm_mm as trusted
-To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
-	baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com, 
-	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
-	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, 
-	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	ameryhung@gmail.com, rientjes@google.com, corbet@lwn.net, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, linux-doc@vger.kernel.org
+Date: Sun, 31 Aug 2025 11:20:42 +0800
+X-Gm-Features: Ac12FXw19OqNKsxFEFxE8wzcjjHwmEp4kancSM8hftsH5GarRDGyjKlO_tPF4t0
+Message-ID: <CALOAHbBq0+zNGx_yYCFVsacOZREs=8OBhGdiOBCK75k0YoPKOQ@mail.gmail.com>
+Subject: Re: [PATCH v2] net/cls_cgroup: Fix task_get_classid() during qdisc run
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Paolo Abeni <pabeni@redhat.com>, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, horms@kernel.org, bigeasy@linutronix.de, tgraf@suug.ch, 
+	paulmck@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	Martin KaFai Lau <martin.lau@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 29, 2025 at 6:49=E2=80=AFPM Lorenzo Stoakes
-<lorenzo.stoakes@oracle.com> wrote:
+On Fri, Aug 29, 2025 at 4:14=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
 >
-> On Fri, Aug 29, 2025 at 11:05:01AM +0800, Yafang Shao wrote:
-> > On Thu, Aug 28, 2025 at 7:11=E2=80=AFPM Lorenzo Stoakes
-> > <lorenzo.stoakes@oracle.com> wrote:
-> > >
-> > > On Thu, Aug 28, 2025 at 02:12:12PM +0800, Yafang Shao wrote:
-> > > > On Wed, Aug 27, 2025 at 11:46=E2=80=AFPM Lorenzo Stoakes
-> > > > <lorenzo.stoakes@oracle.com> wrote:
-> > > > >
-> > > > > On Tue, Aug 26, 2025 at 03:19:42PM +0800, Yafang Shao wrote:
-> > > > > > Every VMA must have an associated mm_struct, and it is safe to =
-access
-> > > > >
-> > > > > Err this isn't true? Pretty sure special VMAs don't have that set=
-.
-> > > >
-> > > > I=E2=80=99m not aware of any VMA that doesn=E2=80=99t belong to an =
-mm_struct. If there
-> > > > is such a case, it would be helpful if you could point it out. In a=
-ny
-> > > > case, I=E2=80=99ll remove the VMA-related code in the next version =
-since it=E2=80=99s
-> > > > unnecessary.
-> > >
-> > > If you lok at get_vma_name() in fs/proc/task_mmu.c you'll see:
-> > >
-> > >         if (!vma->vm_mm) {
-> > >                 *name =3D "[vdso]";
-> > >                 return;
-> > >         }
-> > >
-> > > So a VDSO will have this condition.
-> > >
-> > > I did a quick drgn()/printk() test and didn't see any, but maybe my s=
-ystem - but
-> > > in any case this appears to be a valid situation that can arise, pres=
-umably
-> > > because it's a VMA somehow shared with multiple mm's or something tru=
-ly god
-> > > awful like that :)
+> On 8/29/25 5:23 AM, Yafang Shao wrote:
+> > On Thu, Aug 28, 2025 at 3:55=E2=80=AFPM Paolo Abeni <pabeni@redhat.com>=
+ wrote:
+> >> On 8/22/25 8:42 AM, Yafang Shao wrote:
+> >>> During recent testing with the netem qdisc to inject delays into TCP
+> >>> traffic, we observed that our CLS BPF program failed to function corr=
+ectly
+> >>> due to incorrect classid retrieval from task_get_classid(). The issue
+> >>> manifests in the following call stack:
+> >>>
+> >>>          bpf_get_cgroup_classid+5
+> >>>          cls_bpf_classify+507
+> >>>          __tcf_classify+90
+> >>>          tcf_classify+217
+> >>>          __dev_queue_xmit+798
+> >>>          bond_dev_queue_xmit+43
+> >>>          __bond_start_xmit+211
+> >>>          bond_start_xmit+70
+> >>>          dev_hard_start_xmit+142
+> >>>          sch_direct_xmit+161
+> >>>          __qdisc_run+102             <<<<< Issue location
+> >>>          __dev_xmit_skb+1015
+> >>>          __dev_queue_xmit+637
+> >>>          neigh_hh_output+159
+> >>>          ip_finish_output2+461
+> >>>          __ip_finish_output+183
+> >>>          ip_finish_output+41
+> >>>          ip_output+120
+> >>>          ip_local_out+94
+> >>>          __ip_queue_xmit+394
+> >>>          ip_queue_xmit+21
+> >>>          __tcp_transmit_skb+2169
+> >>>          tcp_write_xmit+959
+> >>>          __tcp_push_pending_frames+55
+> >>>          tcp_push+264
+> >>>          tcp_sendmsg_locked+661
+> >>>          tcp_sendmsg+45
+> >>>          inet_sendmsg+67
+> >>>          sock_sendmsg+98
+> >>>          sock_write_iter+147
+> >>>          vfs_write+786
+> >>>          ksys_write+181
+> >>>          __x64_sys_write+25
+> >>>          do_syscall_64+56
+> >>>          entry_SYSCALL_64_after_hwframe+100
+> >>>
+> >>> The problem occurs when multiple tasks share a single qdisc. In such =
+cases,
+> >>> __qdisc_run() may transmit skbs created by different tasks. Consequen=
+tly,
+> >>> task_get_classid() retrieves an incorrect classid since it references=
+ the
+> >>> current task's context rather than the skb's originating task.
+> >>>
+> >>> Given that dev_queue_xmit() always executes with bh disabled, we can =
+safely
+> >>> use in_softirq() instead of in_serving_softirq() to properly identify=
+ the
+> >>> softirq context and obtain the correct classid.
+> >>>
+> >>> The simple steps to reproduce this issue:
+> >>> 1. Add network delay to the network interface:
+> >>>    such as: tc qdisc add dev bond0 root netem delay 1.5ms
+> >>> 2. Create two distinct net_cls cgroups, each running a network-intens=
+ive task
+> >>> 3. Initiate parallel TCP streams from both tasks to external servers.
+> >>>
+> >>> Under this specific condition, the issue reliably occurs. The kernel
+> >>> eventually dequeues an SKB that originated from Task-A while executin=
+g in
+> >>> the context of Task-B.
+> >>>
+> >>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> >>> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> >>> Cc: Thomas Graf <tgraf@suug.ch>
+> >>> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> >>>
+> >>> v1->v2: use softirq_count() instead of in_softirq()
+> >>> ---
+> >>>   include/net/cls_cgroup.h | 2 +-
+> >>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/include/net/cls_cgroup.h b/include/net/cls_cgroup.h
+> >>> index 7e78e7d6f015..668aeee9b3f6 100644
+> >>> --- a/include/net/cls_cgroup.h
+> >>> +++ b/include/net/cls_cgroup.h
+> >>> @@ -63,7 +63,7 @@ static inline u32 task_get_classid(const struct sk_=
+buff *skb)
+> >>>         * calls by looking at the number of nested bh disable calls b=
+ecause
+> >>>         * softirqs always disables bh.
+> >>>         */
+> >>> -     if (in_serving_softirq()) {
+> >>> +     if (softirq_count()) {
+> >>>                struct sock *sk =3D skb_to_full_sk(skb);
+> >>>
+> >>>                /* If there is an sock_cgroup_classid we'll use that. =
+*/
+> >>
+> >> AFAICS the above changes the established behavior for a slightly
+> >> different scenario:
 > >
-> > Thanks for clarifying that.
+> > right.
+> >
+> >> <sock S is created by task A>
+> >> <class ID for task A is changed>
+> >> <skb is created by sock S xmit and classified>
+> >>
+> >> prior to this patch the skb will be classified with the 'new' task A
+> >> classid, now with the old/original one.
+> >>
+> >> I'm unsure if such behavior change is acceptable;
+> >
+> > The classid of a skb is only meaningful within its original network
+> > context, not from a random task.
 >
-> No problem! These weird edge cases are... weird and hugely confusing. I s=
-hould
-> document some of this somewhere, as it's at the moment more 'oh yeah I
-> remember...' then having to dig through to figure it out.
->
-> The "/dev/zero file-backed but actually anon if MAP_PRIVATE'd" is another=
- fun
-> unique case.
+> Do you mean by original network context original netns? We also have
+> bpf_skb_cgroup_classid() as well as bpf_get_cgroup_classid_curr(), both
+> exposed to tcx, which kind of detangles what task_get_classid() is doing.
+> I guess if you have apps in its own netns and the skb->sk is retained all
+> the way to phys dev in hostns then bpf_skb_cgroup_classid() might be a
+> better choice (assuming classid stays constant from container orchestrato=
+r
+> PoV).
 
-It would be immensely helpful if you could document these cases. We
-truly appreciate your contribution and the time you've invested in
-this.
+Right. We have replaced bpf_get_cgroup_classid() with
+bpf_skb_cgroup_classid() to handle this case. Nonetheless, I believe
+we still need to fix bpf_get_cgroup_classid(), since this function can
+easily mislead users.
 
 --=20
 Regards
