@@ -1,220 +1,397 @@
-Return-Path: <bpf+bounces-67065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087A2B3D02D
-	for <lists+bpf@lfdr.de>; Sun, 31 Aug 2025 01:11:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE0BFB3D0D1
+	for <lists+bpf@lfdr.de>; Sun, 31 Aug 2025 05:12:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B16D21B249C6
-	for <lists+bpf@lfdr.de>; Sat, 30 Aug 2025 23:12:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A70194449D3
+	for <lists+bpf@lfdr.de>; Sun, 31 Aug 2025 03:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37DF266B66;
-	Sat, 30 Aug 2025 23:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F16F207A32;
+	Sun, 31 Aug 2025 03:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TIVg8xKD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KyPkHC2i"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA95A25A65B;
-	Sat, 30 Aug 2025 23:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548C433F6;
+	Sun, 31 Aug 2025 03:12:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756595495; cv=none; b=EVq/n4WtDGjBOz4JT6VdBGmszQwhY8aBKs0/Eqynd9ew+OBjIYZtDi84sP7ljDazyswaMfGZY26tUFdNO3GaFwh8GV8rutmwaB0GD8mOpr1Nzsss8cS2nmSmoLP6HxGgHJDJWc4L3xW1ZDhqnJy4t6DVMMbGzwzg5rTf2dvZiVU=
+	t=1756609934; cv=none; b=PTaZGDEsLMMlY0qj/3Jp9ZZqCIZ8YUu624q64ue6rtDaV/hW9bM2zlyf75484I6GOkT7cwS17DZHN7miVLMZuGp2Ip32K4B14a1EiYdMFjpBMPq5rQy0LEsfZ8KGqh62nq9+grO5u5xwMZhCY/LyhwJEsMt7ARqfC2F2FJ4vVEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756595495; c=relaxed/simple;
-	bh=pKJR3d1y6/pE646jp/qQ2LVHmuXD7qWjBS7Rpy0QVAg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t913QYLO23eQtM7qxBDzlf11RFzSFT7d9dYj8hDzGEvuAsOdvmtWG2KQ/XipqugD+AxmcTBLaiRPN0w8u6+Dm9gwswYjSdApx0LBHBMgO5C10NgxHdkQ3SyDBOeJC6ILHHmhAL3n5ARFjItIevfLGmtbHrDL/ufT/0UgZHRu2F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TIVg8xKD; arc=none smtp.client-ip=209.85.215.169
+	s=arc-20240116; t=1756609934; c=relaxed/simple;
+	bh=ZghKD+huZEMFUfuTcUPU6A8gGO3lMEzzE+8mMxZGLy0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UYBvIfRvAV87e+g81GA9tZWZM1x0KdsWYiyIUMn+8nNQS3YPMgkxe/YVN4w2AOzDWRm2DhjwzLTekDqvVN97V8PtX/zj+tstUwvaYbvQ6pVcJmSvG7/DJwCFhOTUzaPNVJImhogc1AeoMUbiwjm83viqkR2dJRyUgo3z37T2cFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KyPkHC2i; arc=none smtp.client-ip=209.85.219.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b4f1ee2e250so218252a12.2;
-        Sat, 30 Aug 2025 16:11:33 -0700 (PDT)
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-70fa294211dso18632916d6.0;
+        Sat, 30 Aug 2025 20:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756595493; x=1757200293; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pKJR3d1y6/pE646jp/qQ2LVHmuXD7qWjBS7Rpy0QVAg=;
-        b=TIVg8xKDK8jOd6uAUjWKvjYMF0o3z9qT2kTioFTpikXbNdl8/U32G3LsyTrnVa9q71
-         28HtSsFm1Kj35XAgD+pyJ7d69a78HT0ccO+A4pp2W+an/UJsBws7ntMQs7siDyINTtYp
-         ONkchYQ+dIkHDhnbsD1yXmuYmsgjhCuB+Crm2du1ZtScalWSqYDuo1/teSqVj0ThWBZ+
-         kO52RyQ2FghkncBplB8yixYbgEblHVAWEdjMknp794codTxh3Q/bzjT3oR9ep9sqhVy8
-         yuZXgHcBln+TVkLR1+XdoB1HMAPguEMwMXhwaDsDY6/wgJjIhyuSOn507LH1BTND7a0F
-         uJfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756595493; x=1757200293;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1756609931; x=1757214731; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pKJR3d1y6/pE646jp/qQ2LVHmuXD7qWjBS7Rpy0QVAg=;
-        b=F1UxlTncWX1CSiQyQWD8gZ02Y5cCHqcUEHaKhzb4ggry4qYYQsWkeNznApZFHN7iV1
-         ygjL7HqYNJ20OFU0zvVGJWAg5riXTnXWqxQdcpU8Cn4DMdWx6hgPMx34QVGUuksGK8E/
-         5vDRS/L+rAYDPshQJ71VGrUo0b0DuScVSwnbC/npHOFclT390Ar9eoTY9rsn0lVfDtZG
-         Qk6vQQwNoJ31U6zd8dJmaqLGrnFrY1IIYdRTlv8lmEKmhRdhcFCsA67KhQGa8xaLFZo/
-         j4fZLK+g1egP3bKnuGwau8Ch/1Dkdh84j7NEB2LD4G/O8PZaUBnkcP9Pg2TUVS5URsOG
-         E9jw==
-X-Forwarded-Encrypted: i=1; AJvYcCUGOu/NjOZ63m7hu5Wv6Bq5b5kSwMz0VEwKvexcvgDVNsdeQA3wd34y+IHK/lBgJiSSh7u0VXv2il0=@vger.kernel.org, AJvYcCUN6IF3MeXJKOL5eMazf40cg7WhcGyGi5Ugbnc14vWvOlxqjfUGlGC46P/LzAksKrBrMRVq/kb7gJRD@vger.kernel.org, AJvYcCV/AaLl1ghNppibbhke1457I5FzR9UN+GF5Sc3HpO4Er8+O1iEhvxX9WdWDAUMMEsOgPeQRTk+fLRsKncU=@vger.kernel.org, AJvYcCW4c/F+fA53F9wE/Cc7S25/gdHLgs/Z3jNzXKZmj/H4quK6ZOosC8oWLB70jhAKO3rvd82bOVUykmGF+A==@vger.kernel.org, AJvYcCWdXQOnK2F7zc0Jnkfoijlj/F0n/F72Zcrz27Jxv9vHAPL++wtSEOZJ8dQ6WO4hDcO9Vtk=@vger.kernel.org, AJvYcCXQcHsHBv0/wPZAsFuceLMUaHpGeiA+kWQBEHbMRbES86PgBTxP4+zn/tBGz8buMTz8pjYNUp6J@vger.kernel.org, AJvYcCXWyj7sAxlYMyJFEQimOcFxoCoQyb5MHg1D7KLAqaOpqS72OFwR9uZJuuv+zXdoKe2U7Iy5LRqDqCVk@vger.kernel.org, AJvYcCXeX1INGpb9EBaEecPmJghKHp5IKEECq5fPupBu4trVfzjJzDWpe36cj/s26fOf8P0fzVQdnXwaa9PO9J0=@vger.kernel.org, AJvYcCXyfOsv1rreXY7umSmcxqqTcqigImyczGxYO0KfyH3Jy710uZejaOrbs1tkRynaaZP2+Rw0v/ndZ76udJKI@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJMExlmz96Bolgxw6xWS+Z5j3sJDhYdb1dXOBCrHUIsTaL6zFS
-	RvHE2JJ8naVRUZmK7JU1fyD3iikbbrJy6I4ApkFXsmEYrcL0qg1/n9dw
-X-Gm-Gg: ASbGncsfAKYjgNdWwNg7xXqJNSQuLnN/PSrLnCGKOf2FFKHu9V4VsvY3AzSq8NenHpy
-	xePsgoiHPUuwIlHaPW2FgcE7s5Mi55wmwH23KCdG5I5mKQbo79Uvf1nJv0NIKcm3giYObUYwnbF
-	Wvidmhwe1mTgmP26baCmqMdOsK1oEXJWKbXjrt9lrwvWlxUdF8K/rhLV2bL/MOysifIiGY0p+WS
-	ifyP5RZS8K0P68xX/DxjgIctf9ouElhgNLwUH8WnErEp9A/5X2A3/HWcbrKNIVRAO9KOIkwWW85
-	eeOt5GFJTQIJKoVV4WQTbTpItF2W/Iuqtjo2kblXzHfoofZPRT+NtHZTB/333jUz4v6KK/Q4U3H
-	Xbjefj/OwH6pMWCb/OBOZzfpHiYJbCCG3mb0I
-X-Google-Smtp-Source: AGHT+IH09TdLkBTBS46a9KkDQcsPHCKV5BjcOl3BN1JIlX/axUWBHc8jxps5fYfmQWtY+6vT/lzr2w==
-X-Received: by 2002:a17:902:c952:b0:248:cd4c:d6e with SMTP id d9443c01a7336-2494488a679mr39782015ad.9.1756595492940;
-        Sat, 30 Aug 2025 16:11:32 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24906395aa0sm61840295ad.100.2025.08.30.16.11.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Aug 2025 16:11:31 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 3F63E4222987; Sun, 31 Aug 2025 06:11:28 +0700 (WIB)
-Date: Sun, 31 Aug 2025 06:11:28 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux DAMON <damon@lists.linux.dev>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Linux Power Management <linux-pm@vger.kernel.org>,
-	Linux Block Devices <linux-block@vger.kernel.org>,
-	Linux BPF <bpf@vger.kernel.org>,
-	Linux Kernel Workflows <workflows@vger.kernel.org>,
-	Linux KASAN <kasan-dev@googlegroups.com>,
-	Linux Devicetree <devicetree@vger.kernel.org>,
-	Linux fsverity <fsverity@lists.linux.dev>,
-	Linux MTD <linux-mtd@lists.infradead.org>,
-	Linux DRI Development <dri-devel@lists.freedesktop.org>,
-	Linux Kernel Build System <linux-lbuild@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux Sound <linux-sound@vger.kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>, Huang Rui <ray.huang@amd.com>,
-	"Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Joe Perches <joe@perches.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Eric Biggers <ebiggers@kernel.org>, tytso@mit.edu,
-	Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas.schier@linux.dev>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Waiman Long <longman@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Shay Agroskin <shayagr@amazon.com>,
-	Arthur Kiyanovski <akiyano@amazon.com>,
-	David Arinzon <darinzon@amazon.com>,
-	Saeed Bishara <saeedb@amazon.com>, Andrew Lunn <andrew@lunn.ch>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Alexandru Ciobotaru <alcioa@amazon.com>,
-	The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Steve French <stfrench@microsoft.com>,
-	Meetakshi Setiya <msetiya@microsoft.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 12/14] ASoC: doc: Internally link to Writing an ALSA
- Driver docs
-Message-ID: <aLOFIEknbxQZ6FM2@archie.me>
-References: <20250829075524.45635-1-bagasdotme@gmail.com>
- <20250829075524.45635-13-bagasdotme@gmail.com>
- <20250830224614.6a124f82@foz.lan>
+        bh=i6uViiQkLqQ26rYisgrBivch86yoSDYpu/P/2cI/29k=;
+        b=KyPkHC2iMqWJ+HXq11ncUqS2bixsUxBgsJW2BDd/lreqfQYt6dRjbGJz8twx+uFy02
+         RvRrE0YvaCUyP2MMOF1UferdAwMNHmnmGNlNhrvf18xCE6784Rgs7NYI/dE6ua1yjVzj
+         SINX4G1n+u0N5fgn7AgvDg+iF6NOYkN3MctWXcxroXdtLZObE9O5/cLG6kvD6JG3x6Jf
+         TvBeYZbTXIdjIPwMzUAAPCqU8qDIppJ1dOAQ+qTMkmOmUmzpCDAIGf7jU+b1TjD2gVPx
+         DX8Nw0yLJuvLOT+RwcK6J+9JMsTk5oPUXPlV0P0l318G/zVxOjucQJH4LkdBxyuOFdQZ
+         s6tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756609931; x=1757214731;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i6uViiQkLqQ26rYisgrBivch86yoSDYpu/P/2cI/29k=;
+        b=n//Lg5dTWBPv42ycdMFlcTRhNs1AGqbDdQ2obp3qDVAl952AOZb+rwlOe8SJkOG49Z
+         SB7pPdxHyVLQ9eWhtdzsmlgt5a5rsPqTa8Ekxpr0OWzquFTZIaE4kbjzjXz9ztLNLKfG
+         FzzectCe5AYV9oz85xAjeGPROP8e22Y//cFq3uZ+JYNMty6AhSPgPtGZ1gAOdmerSk5y
+         aGzTmaZMR1WIG5PCFRsBiUdA40WWAjOo4bUO7ISCCaNRkh4RrKqrMfLFceHbfvOwlSdp
+         KoAHORXHOvdMn9Wo7DbTg0zI4TGbwClXeIZRt/Z20x6sNab+CspCmrgFDmrubJ7hxUYq
+         0TBg==
+X-Forwarded-Encrypted: i=1; AJvYcCVZQ2W9/dVaZsWL+YdTyPYEPBJscXFrsFXRlokCCP1XeGwhMfnEHqw/Obus0PUdQutJIK8=@vger.kernel.org, AJvYcCXFu4yLnIrk/qualKN3Jn3krdtRAc1SZGBhgsltZGDrg/E3pAX8JBD3V0N8W1ZcjXtrQM4ex7UYgZIY@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCBRG6f0dH7QCn4yJ53APxTRh66ytmsnhT1Diqpf2OjEdtEJ9x
+	WVpCjJ8zlFQPlNKJM9CzkC5D5NBWzr/KbbCYJ/KjNnpqrTeoD1CZH8WymkdKPo5BRoesvoYfGV/
+	lZpzxrr/oKCwyGKOCI2uWSX/PTIxS7lg=
+X-Gm-Gg: ASbGnctKkzslRvfwf4MXPIHj+sj7JQL1wGZdHT07IGilhOP2ahiqzeJIWj+825Oh5ny
+	FgB9/lROLbihNAyOxRD/kWVyKQBtEgaUrVnQEzKD29pBOb1iaBsWhs4mEedtsVprRs4My10HZz7
+	pHmkHA+4WfIQj2FIrDtxM3YfFQch0o46me5y/vs0cSIkVBrdGCCpyRWdGdyJXkIfF9DdHDafkT2
+	VBkWKYrZ09AsPT7Ej3vqnECDNt8K9YoUOGpKWmXEhajEZd/tIQ=
+X-Google-Smtp-Source: AGHT+IHoOeIBrZuK799idI+00BU0X1iG2eH36Jm1fCyI100q8UfhD5xJHvPrmnVRleAD5vkGI71wj24qNED5HFa1jek=
+X-Received: by 2002:a05:6214:2246:b0:70d:c4f1:cd7d with SMTP id
+ 6a1803df08f44-70fac901b9dmr41557476d6.56.1756609931096; Sat, 30 Aug 2025
+ 20:12:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="q50L9+H94gXo88jD"
-Content-Disposition: inline
-In-Reply-To: <20250830224614.6a124f82@foz.lan>
-
-
---q50L9+H94gXo88jD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20250826071948.2618-1-laoar.shao@gmail.com> <20250826071948.2618-2-laoar.shao@gmail.com>
+ <f1bc20e0-9d39-4294-8f70-f51315a534d8@lucifer.local> <CALOAHbCd4vuZoot-Bt4y=4EMLB0UvX=5u8PjsW2Nz883sevT1g@mail.gmail.com>
+ <80db932c-6d0d-43ef-9c80-386300cbeb64@lucifer.local> <CALOAHbCQucvD968pgmMzv0dcg1j5cJ+Nxz4FKaiGXajXXBcs0Q@mail.gmail.com>
+ <95a32a87-5fa8-4919-8166-e9958d6d4e38@lucifer.local>
+In-Reply-To: <95a32a87-5fa8-4919-8166-e9958d6d4e38@lucifer.local>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 31 Aug 2025 11:11:34 +0800
+X-Gm-Features: Ac12FXzOtmfjHzolQe069Qe3boecmHTNTi6kRA1b6pdevFJ7dSaEwg9sdG8Semg
+Message-ID: <CALOAHbBRQf=QLqYgA9E8m6AKGmZxY6rFZsoXwTYCaiSqpTb=JQ@mail.gmail.com>
+Subject: Re: [PATCH v6 mm-new 01/10] mm: thp: add support for BPF based THP
+ order selection
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com, 
+	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
+	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, 
+	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	ameryhung@gmail.com, rientjes@google.com, corbet@lwn.net, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Aug 30, 2025 at 10:46:22PM +0200, Mauro Carvalho Chehab wrote:
-> Em Fri, 29 Aug 2025 14:55:22 +0700
-> Bagas Sanjaya <bagasdotme@gmail.com> escreveu:
-> > -Please refer to the ALSA driver documentation for details of audio DMA.
-> > -https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-als=
-a-driver.html
-> > +Please refer to the :doc:`ALSA driver documentation
-> > +<../kernel-api/writing-an-alsa-driver>` for details of audio DMA.
->=20
-> Don't use relative paths for :doc:. They don't work well, specially
-> when one uses SPHINXDIRS.
->=20
-> The best is o use Documentation/kernel-api/writing-an-alsa-driver.rst
-> and let automarkup figure it out. As we have a checker, broken
-> references generate warnings at build time.
+On Fri, Aug 29, 2025 at 6:42=E2=80=AFPM Lorenzo Stoakes
+<lorenzo.stoakes@oracle.com> wrote:
+>
+> On Fri, Aug 29, 2025 at 11:01:59AM +0800, Yafang Shao wrote:
+> > On Thu, Aug 28, 2025 at 6:50=E2=80=AFPM Lorenzo Stoakes
+> > <lorenzo.stoakes@oracle.com> wrote:
+> > >
+> > > On Thu, Aug 28, 2025 at 01:54:39PM +0800, Yafang Shao wrote:
+> > > > > Also will mm ever !=3D vma->vm_mm?
+> > > >
+> > > > No it can't. It can be guaranteed by the caller.
+> > >
+> > > In this case we don't need to pass mm separately then right?
+> >
+> > Right, we need to pass either @mm or @vma. However, there are cases
+> > where vma information is not available at certain call sites, such as
+> > in khugepaged. In those cases, we need to pass @mm instead.
+>
+> Yeah... this is weird to me though, are you checking in _general_ what
+> khugepaged should use, or otherwise surely it's per-VMA?
+>
+> Otherwise this bpf hook seems ill-suited for that, and we should have a
+> separate one for khugepaged surely?
+>
+> I also hate that we're passing mm _just because of this one edge case_,
+> otherwise always passing vma->vm_mm, it's a confusing interface.
 
-Thanks for the tip!
+make sense.
+I'll give some thought to how we can better handle this edge case.
+
+>
+> >
+> > >
+> > > >
+> > > > >
+> > > > > Are we hacking this for the sake of overloading what this does?
+> > > >
+> > > > The @vma is actually unneeded. I will remove it.
+> > >
+> > > Ah OK.
+> > >
+> > > I am still a little concerned about passing around a value reference =
+to the VMA
+> > > flags though, esp as this type can + will change in future (not sure =
+what that
+> > > means for BPF).
+> > >
+> > > We may go to e.g. a 128 bit bitmap there etc.
+> >
+> > As mentioned in another thread, we only need to determine whether the
+> > flag is VM_HUGEPAGE or VM_NOHUGEPAGE, so it can be simplified.
+>
+> OK cool thanks. Maybe missed.
+>
+> >
+> > >
+> > >
+> > > >
+> > > > >
+> > > > > Also if we're returning a bitmask of orders which you seem to be =
+(not sure I
+> > > > > like that tbh - I feel like we shoudl simply provide one order bu=
+t open for
+> > > > > disucssion) - shouldn't it return an unsigned long?
+> > > >
+> > > > We are indifferent to whether a single order or a bitmask is return=
+ed,
+> > > > as we only use order-0 and order-9. We have no use cases for
+> > > > middle-order pages, though this feature might be useful for other
+> > > > architectures or for some special use cases.
+> > >
+> > > Well surely we want to potentially specify a mTHP under certain circu=
+mstances
+> > > no?
+> >
+> > Perhaps there are use cases, but I haven=E2=80=99t found any use cases =
+for
+> > this in our production environment. On the other hand, I can clearly
+> > see a risk that it could lead to more costly high-order allocations.
+>
+> So why are we returning a bitmap then? Seems like we should just return a
+> single order in this case... I think you say below that you are open to
+> this?
+
+will return a single order in the next version.
+
+>
+> >
+> > >
+> > > In any case I feel it's worth making any bitfield a system word size.
+>
+> Also :>)
+>
+> If we do move to returning a single order, should be unsigned int.
+
+sure
+
+>
+> > >
+> > > >
+> > > > >
+> > > > > > +#else
+> > > > > > +static inline int
+> > > > > > +get_suggested_order(struct mm_struct *mm, struct vm_area_struc=
+t *vma__nullable,
+> > > > > > +                 u64 vma_flags, enum tva_type tva_flags, int o=
+rders)
+> > > > > > +{
+> > > > > > +     return orders;
+> > > > > > +}
+> > > > > > +#endif
+> > > > > > +
+> > > > > >  static inline int highest_order(unsigned long orders)
+> > > > > >  {
+> > > > > >       return fls_long(orders) - 1;
+> > > > > > diff --git a/include/linux/khugepaged.h b/include/linux/khugepa=
+ged.h
+> > > > > > index eb1946a70cff..d81c1228a21f 100644
+> > > > > > --- a/include/linux/khugepaged.h
+> > > > > > +++ b/include/linux/khugepaged.h
+> > > > > > @@ -4,6 +4,8 @@
+> > > > > >
+> > > > > >  #include <linux/mm.h>
+> > > > > >
+> > > > > > +#include <linux/huge_mm.h>
+> > > > > > +
+> > > > >
+> > > > > Hm this is iffy too, There's probably a reason we didn't include =
+this before,
+> > > > > the headers can be so so fragile. Let's be cautious...
+> > > >
+> > > > I will check.
+> > >
+> > > Thanks!
+> > >
+> > > >
+> > > > >
+> > > > > >  extern unsigned int khugepaged_max_ptes_none __read_mostly;
+> > > > > >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > > > > >  extern struct attribute_group khugepaged_attr_group;
+> > > > > > @@ -22,7 +24,15 @@ extern int collapse_pte_mapped_thp(struct mm=
+_struct *mm, unsigned long addr,
+> > > > > >
+> > > > > >  static inline void khugepaged_fork(struct mm_struct *mm, struc=
+t mm_struct *oldmm)
+> > > > > >  {
+> > > > > > -     if (mm_flags_test(MMF_VM_HUGEPAGE, oldmm))
+> > > > > > +     /*
+> > > > > > +      * THP allocation policy can be dynamically modified via =
+BPF. Even if a
+> > > > > > +      * task was allowed to allocate THPs, BPF can decide whet=
+her its forked
+> > > > > > +      * child can allocate THPs.
+> > > > > > +      *
+> > > > > > +      * The MMF_VM_HUGEPAGE flag will be cleared by khugepaged=
+.
+> > > > > > +      */
+> > > > > > +     if (mm_flags_test(MMF_VM_HUGEPAGE, oldmm) &&
+> > > > > > +             get_suggested_order(mm, NULL, 0, -1, BIT(PMD_ORDE=
+R)))
+> > > > >
+> > > > > Hmmm so there seems to be some kind of additional functionality y=
+ou're providing
+> > > > > here kinda quietly, which is to allow the exact same interface to=
+ determine
+> > > > > whether we kick off khugepaged or not.
+> > > > >
+> > > > > Don't love that, I think we should be hugely specific about that.
+> > > > >
+> > > > > This bpf interface should literally be 'ok we're deciding what or=
+der we
+> > > > > want'. It feels like a bit of a gross overloading?
+> > > >
+> > > > This makes sense. I have no objection to reverting to returning a s=
+ingle order.
+> > >
+> > > OK but key point here is - we're now determining if a forked child ca=
+n _not_
+> > > allocate THPs using this function.
+> > >
+> > > To me this should be a separate function rather than some _weird_ usa=
+ge of this
+> > > same function.
+> >
+> > Perhaps a separate function is better.
+>
+> Thanks!
+>
+> >
+> > >
+> > > And generally at this point I think we should just drop this bit of c=
+ode
+> > > honestly.
+> >
+> > MMF_VM_HUGEPAGE is set when the THP mode is "always" or "madvise". If
+> > it=E2=80=99s set, any forked child processes will inherit this flag. It=
+ is
+> > only cleared when the mm_struct is destroyed (please correct me if I=E2=
+=80=99m
+> > wrong).
+>
+> __mmput()
+> -> khugepaged_exit()
+> -> (if MMF_VM_HUGEPAGE set) __khugepaged_exit()
+> -> Clear flag once mm fully done with (afaict), dropping associated mm re=
+fcount.
+>
+> ^--- this does seem to be accurate indeed.
+
+Thanks for the explanation.
+
+>
+> >
+> > However, when you switch the THP mode to "never", tasks that still
+> > have MMF_VM_HUGEPAGE remain on the khugepaged scan list. This isn=E2=80=
+=99t an
+> > issue under the current global mode because khugepaged doesn=E2=80=99t =
+run
+> > when THP is set to "never".
+> >
+> > The problem arises when we move from a global mode to a per-task mode.
+> > In that case, khugepaged may end up doing unnecessary work. For
+> > example, if the THP mode is "always", but some tasks are not allowed
+> > to allocate THP while still having MMF_VM_HUGEPAGE set, khugepaged
+> > will continue scanning them unnecessarily.
+>
+> But this can change right?
+>
+> I really don't like the idea _at all_ of overriding this hook to do thing=
+s
+> other than what it says it does.
+>
+> It's 'set which order to use' except when it's this case then it's 'will =
+we
+> do any work'.
+>
+> This should be a separate callback or we should drop this and live with t=
+he
+> possible additional work.
+
+Perhaps we could reuse the MMF_DISABLE_THP flag by introducing a new
+BPF helper to set it when we want to disable THP for a specific task.
+
+Separately from this patchset, I realized we can optimize khugepaged
+handling for the MMF_DISABLE_THP case with the following changes:
+
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 15203ea7d007..e9964edcee29 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -402,6 +402,11 @@ void __init khugepaged_destroy(void)
+        kmem_cache_destroy(mm_slot_cache);
+ }
+
++static inline int hpage_collapse_test_disable(struct mm_struct *mm)
++{
++       return test_bit(MMF_DISABLE_THP, &mm->flags);
++}
++
+ static inline int hpage_collapse_test_exit(struct mm_struct *mm)
+ {
+        return atomic_read(&mm->mm_users) =3D=3D 0;
+@@ -1448,6 +1453,11 @@ static void collect_mm_slot(struct
+khugepaged_mm_slot *mm_slot)
+                /* khugepaged_mm_lock actually not necessary for the below =
+*/
+                mm_slot_free(mm_slot_cache, mm_slot);
+                mmdrop(mm);
++       } else if (hpage_collapse_test_disable(mm)) {
++               hash_del(&slot->hash);
++               list_del(&slot->mm_node);
++               mm_flags_clear(MMF_VM_HUGEPAGE, mm);
++               mm_slot_free(mm_slot_cache, mm_slot);
+        }
+ }
+
+Specifically, if MMF_DISABLE_THP is set, we should remove it from
+mm_slot to prevent unnecessary khugepaged processing.
+
+>
+> >
+> > To avoid this, we should prevent setting this flag for child processes
+> > if they are not allowed to allocate THP in the first place. This way,
+> > khugepaged won=E2=80=99t waste cycles scanning them. While an alternati=
+ve
+> > approach would be to set the flag at fork and later clear it for
+> > khugepaged, it=E2=80=99s clearly more efficient to avoid setting it fro=
+m the
+> > start.
+>
+> We also obviously should have a comment with all this context here.
+
+Understood. I'll give some thought to a better way of handling this.
 
 --=20
-An old man doll... just what I always wanted! - Clara
-
---q50L9+H94gXo88jD
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaLOFGwAKCRD2uYlJVVFO
-o9MMAPwIm+r4BZdTF0jZV4Naj+z2WrUBji4gRFJQ4f97vYNhfgEAwX/UGgC71a9U
-lMJHF+utPAWnldcv9PoyPOBgO71EEAA=
-=C7rV
------END PGP SIGNATURE-----
-
---q50L9+H94gXo88jD--
+Regards
+Yafang
 
