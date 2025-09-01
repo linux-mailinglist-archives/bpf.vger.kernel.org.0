@@ -1,320 +1,212 @@
-Return-Path: <bpf+bounces-67078-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67079-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E09EB3D89D
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 07:22:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2BDBB3D8C3
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 07:28:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D4461786B8
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 05:22:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EB5616CE14
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 05:28:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB2523D283;
-	Mon,  1 Sep 2025 05:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4B123C8A1;
+	Mon,  1 Sep 2025 05:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l+xzEkrH"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="glE3PBsn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF0221FF44
-	for <bpf@vger.kernel.org>; Mon,  1 Sep 2025 05:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3AC21FF44;
+	Mon,  1 Sep 2025 05:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756704137; cv=none; b=gxSp0yW0h2jnJqEc/P3iEfnJQohA+w+ZZ/IqNYtkHluuyKg1MBSVlxjlYsEbeDeO+hkG3IbicfUTfthc6bcUHWMSNNnExMbD/sFGCJ54ruIXsvnQNvUChKX6RHABlb5I7XiGd5nJq1nMMCqVFCeNRs7iqGER9H+znJu8C9bPZ2k=
+	t=1756704525; cv=none; b=shxF8iWdWtCSDmrML03BQMWz4vDhwMtZR/LNpkw3iyTHRMtSqL9OSdsnVRSNyN4uCVMiETeqKdDtkngGNDimGVlzPXDmaoUEIXrIwUn2+qknOy1nuA8QH7/9a5mfqvBfaY+Gx1GOum3fQTQcZDBl6LBpc9+wIGzTGM0RFm1/0og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756704137; c=relaxed/simple;
-	bh=HLHTsIM34h2bVmSHmK3RHCrjuvZXbEGT2mCQfxSkDgk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c/s/tDxmL2Kpzrw0gBDNY2P3i1I1COurYEGwRCxiWRiAIRK5BJJMRmfw40S8Tr8b7B/7V7jgtD9shAH6yo7IX8f8Vf5cx2rFK80jj9q5Sp1Qf2bWI/wO2/kK5gtiRj11veLYjOv9NgQtt03vya5bXT18uw0ZjppiC1JMMasyUvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l+xzEkrH; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-24936b6f321so208275ad.1
-        for <bpf@vger.kernel.org>; Sun, 31 Aug 2025 22:22:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756704134; x=1757308934; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G3JUOeI5eLkXAJ0JToqzBrsoZN/dgfdGjoQiuyDHwOA=;
-        b=l+xzEkrHhL9bNRDr2+uDo8L9XbjAsCXxgd39wfS0K/ANSrBsJMnIiCGCglTAYcCS6/
-         j1MfGDLSKe2T/RlJ1yok0EruA9oX9yfoHXu26vY10TFw2F8SUYBmARSwQgPHVkVdD9dy
-         7AEIcA0O0Ue86c7k6g+UJ9ylsA+8+d1ZmnYv6iA+y55UK7MkN8w1mnqZ/i3ekQPFPVav
-         /9vniOmOQMlvEVxh3wpjUAvMn8iRJ/hxBqjHqUCLS4yfvVRj5YtW9sqdIrI6UPyH9j0A
-         YkH+9N1ZriUmn5mBWKdlcV3c/2daeCk5UUOH7wlw1NaTVpJlkp6UoTsrhchc9rGVwiZr
-         RW/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756704134; x=1757308934;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G3JUOeI5eLkXAJ0JToqzBrsoZN/dgfdGjoQiuyDHwOA=;
-        b=Ky+HCwsG7sug2vndj1GB5M/c6tTLqKxplhnjdLh958IRuqkH7du9ImmVlrnwYEZnL0
-         cy4HZ7UrVW4Cr/kPqhUGD31ZK0+ie9uQyudx/+J0JRjWXicGFHFCM5n7olPZKTtxdElo
-         X+ElntqskDAGvxr9/2j9VN+F6Taq8szdgOv/H/j6pSaPRYgDHmm2GOOWYHjX2fCJZtUK
-         vSyByT9ZxY3G4ItI0axtDzOUVEjmwVCvK0HzM/v0ICTThR1NO5iHRMPiKnx/dy0zg1Ue
-         fNOrAec/rbTxKabQRoyfZEopNMFSi1QKj0+y8Yeoye+WpOskK5243IytUu+T8uZKx/iW
-         3R9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUihWKXJIXHZ7XkRSwvIkuthDSRPp5uHo2qk79A/08D7oOJ6c/S431tFboeJk8/YX99u/c=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+mwDDeIdcYBt9zMpZ8smSMhHFjrKT66yrU66+0cFX3vEP4Mte
-	QfnbL6PIorjNLkUjI1oHvNRopFB4G4eRSjZymQpblmvtkVOsKC6wQesA7pNXRy5ky5R6ZGgdBW1
-	V25siR+/QKY7CHssFImNkZhx8o6c7T1CvabvQOLPo
-X-Gm-Gg: ASbGncts9oE9OgM8J1MdabC5k2i2XVWbtCbzNzrSa0y8/nkTFK4U6FwelOIPYghI5z8
-	OJ6a7N/vwtrE3qFEnvg2Zrvwq2nhbcX9V7PqZd/v1nf09Mvx3D6m7Rw7xsQeF71e80ummUi/nGe
-	2W+jcdjucHsPqtvs1MKpCaiDgybE2jWrYXNPNg2ucaSQ/qQSq9dsCDNclTh+yB+/1Do7rbhLHJG
-	ArCbzuG5VEnYIg=
-X-Google-Smtp-Source: AGHT+IF8vf/SRj6IG+4XnZ6s0Tr8kDj9KMTcJmMft5w4l8YRI7nwXBYFtazfjQcQUjut7i7ZjJeBJ2Xf14sjuarTmEY=
-X-Received: by 2002:a17:902:e802:b0:249:2caa:d5c9 with SMTP id
- d9443c01a7336-2493e95f173mr4689325ad.17.1756704134085; Sun, 31 Aug 2025
- 22:22:14 -0700 (PDT)
+	s=arc-20240116; t=1756704525; c=relaxed/simple;
+	bh=VH+6KCioF7nPyFiaGHvYI106SEQk852VC3TqE8gkjzk=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=BxBcMMgzxR1k4kt4S4XEJUO62kSUoLPB7L1XrecpLWWaPFRtR248PpYjpV7dekSbWan8VxvYWYSLOzzz9Qat9r3KkLG7VYXUWfsXKay0p73wRJKdE1lsAcpzlAv4hEGOIfN2RSL8xw7cpvfIXTRrJ41pdNWuf0ckdUm1jmIgrbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=glE3PBsn; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:
+	Cc:To:Subject:From:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=0RpMW/QmoSWZmxGRn2TYP438jGsUybJgguDX0wk4nWE=; b=glE3PBsns+8CeBPeVzCFehbg3A
+	bMwdEcHS+cK1l3/Fc4rZ1OAItsxMPvqRHYMbGl6VrP+hIgyv7CFXmlPJWM3uqsfyIYzqUt8mgaHk2
+	d46b/jEBJaSXRtzq9ztcRdmzDF+qT5XOM/ReU481SKEL7cDJkixL0z816Hv6o3ALJfD80FFLxsmqM
+	u1Y65lk+Lu00QeqFa8Ou3mZWqx4aJ56egqx0mw1aYaP4niRoPBzz/Tooz9afPJ3DveEQ9XzUM3oRE
+	Sm4KLe95n+KMsuXO73IoFIW8NQtxR6X5Io/DBLV7Gj8/n1Wm1VkYH4rzOF5pREspa0sOB2CxduujR
+	nkasc42A==;
+Received: from [223.233.71.70] (helo=[192.168.1.8])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1usx5f-0058MA-4e; Mon, 01 Sep 2025 07:28:27 +0200
+Message-ID: <d48f66cf-9843-1575-bcf0-5117a5527004@igalia.com>
+Date: Mon, 1 Sep 2025 10:58:17 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250603203701.520541-1-blakejones@google.com>
- <174915723301.3244853.343931856692302765.git-patchwork-notify@kernel.org>
- <CAP-5=fWJQcmUOP7MuCA2ihKnDAHUCOBLkQFEkQES-1ZZTrgf8Q@mail.gmail.com> <466d45ae-ce97-4256-9444-9f25f3328c51@linux.dev>
-In-Reply-To: <466d45ae-ce97-4256-9444-9f25f3328c51@linux.dev>
-From: Ian Rogers <irogers@google.com>
-Date: Sun, 31 Aug 2025 22:22:01 -0700
-X-Gm-Features: Ac12FXwcFeRmn2EUEMANe0UmtUpSCzeDlOtFTyoUJR0xvtvmxIWSMqVLvBoTo-Q
-Message-ID: <CAP-5=fWQCZ6kC6rg5T1zOcshzEqhraXT5ix9kA=SjimiC4T-ZA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] libbpf: add support for printing BTF character
- arrays as strings
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Blake Jones <blakejones@google.com>, namhyung@kernel.org, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org, 
-	ihor.solodrai@linux.dev, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, 
-	linux-perf-users <linux-perf-users@vger.kernel.org>, Howard Chu <howardchu95@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+From: Bhupesh Sharma <bhsharma@igalia.com>
+Subject: Re: [PATCH v8 4/5] treewide: Switch memcpy() users of 'task->comm' to
+ a more safer implementation
+To: Kees Cook <kees@kernel.org>, Bhupesh <bhupesh@igalia.com>
+Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
+ laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
+ mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+ alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+ mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+ david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
+ brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+ linux-trace-kernel@vger.kernel.org, torvalds@linux-foundation.org
+References: <20250821102152.323367-1-bhupesh@igalia.com>
+ <20250821102152.323367-5-bhupesh@igalia.com> <202508250656.9D56526@keescook>
+Content-Language: en-US
+In-Reply-To: <202508250656.9D56526@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Aug 31, 2025 at 9:17=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
->
-> On 8/29/25 10:19 PM, Ian Rogers wrote:
-> > On Thu, Jun 5, 2025 at 2:00=E2=80=AFPM <patchwork-bot+netdevbpf@kernel.=
-org> wrote:
-> >> Hello:
-> >>
-> >> This series was applied to bpf/bpf-next.git (master)
-> >> by Andrii Nakryiko <andrii@kernel.org>:
-> >>
-> >> On Tue,  3 Jun 2025 13:37:00 -0700 you wrote:
-> >>> The BTF dumper code currently displays arrays of characters as just t=
-hat -
-> >>> arrays, with each character formatted individually. Sometimes this is=
- what
-> >>> makes sense, but it's nice to be able to treat that array as a string=
-.
-> >>>
-> >>> This change adds a special case to the btf_dump functionality to allo=
-w
-> >>> 0-terminated arrays of single-byte integer values to be printed as
-> >>> character strings. Characters for which isprint() returns false are
-> >>> printed as hex-escaped values. This is enabled when the new ".emit_st=
-rings"
-> >>> is set to 1 in the btf_dump_type_data_opts structure.
-> >>>
-> >>> [...]
-> >> Here is the summary with links:
-> >>    - [v3,1/2] libbpf: add support for printing BTF character arrays as=
- strings
-> >>      https://git.kernel.org/bpf/bpf-next/c/87c9c79a02b4
-> >>    - [v3,2/2] Tests for the ".emit_strings" functionality in the BTF d=
-umper.
-> >>      https://git.kernel.org/bpf/bpf-next/c/a570f386f3d1
-> >>
-> >> You are awesome, thank you!
-> > I believe this patch is responsible for segvs occurring in v6.17 in
-> > various perf tests when the perf tests run in parallel. There's lots
->
-> Could you share the command line to reproduce this failure?
-> This will help debugging. Thanks!
+Hi Kees,
 
-Sure:
-```
-$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t
-...
-$ cd linux
-$ mkdir /tmp/perf
-$ make -C tools/perf O=3D/tmp/perf
-make: Entering directory 'linux/tools/perf'
- BUILD:   Doing 'make -j28' parallel build
-Warning: Kernel ABI header differences:
- diff -u tools/arch/arm64/include/asm/cputype.h arch/arm64/include/asm/cput=
-ype.h
+On 8/25/25 7:31 PM, Kees Cook wrote:
+> On Thu, Aug 21, 2025 at 03:51:51PM +0530, Bhupesh wrote:
+>> As Linus mentioned in [1], currently we have several memcpy() use-cases
+>> which use 'current->comm' to copy the task name over to local copies.
+>> For an example:
+>>
+>>   ...
+>>   char comm[TASK_COMM_LEN];
+>>   memcpy(comm, current->comm, TASK_COMM_LEN);
+>>   ...
+>>
+>> These should be rather calling a wrappper like "get_task_array()",
+>> which is implemented as:
+>>
+>>     static __always_inline void
+>>         __cstr_array_copy(char *dst,
+>>              const char *src, __kernel_size_t size)
+>>     {
+>>          memcpy(dst, src, size);
+>>          dst[size] = 0;
+>>     }
+>>
+>>     #define get_task_array(dst,src) \
+>>        __cstr_array_copy(dst, src, __must_be_array(dst))
+>>
+>> The relevant 'memcpy()' users were identified using the following search
+>> pattern:
+>>   $ git grep 'memcpy.*->comm\>'
+>>
+>> Link:https://lore.kernel.org/all/CAHk-=wi5c=_-FBGo_88CowJd_F-Gi6Ud9d=TALm65ReN7YjrMw@mail.gmail.com/  #1
+>>
+>> Signed-off-by: Bhupesh<bhupesh@igalia.com>
+>> ---
+>>   include/linux/coredump.h                      |  2 +-
+>>   include/linux/sched.h                         | 32 +++++++++++++++++++
+>>   include/linux/tracepoint.h                    |  4 +--
+>>   include/trace/events/block.h                  | 10 +++---
+>>   include/trace/events/oom.h                    |  2 +-
+>>   include/trace/events/osnoise.h                |  2 +-
+>>   include/trace/events/sched.h                  | 13 ++++----
+>>   include/trace/events/signal.h                 |  2 +-
+>>   include/trace/events/task.h                   |  4 +--
+>>   tools/bpf/bpftool/pids.c                      |  6 ++--
+>>   .../bpf/test_kmods/bpf_testmod-events.h       |  2 +-
+>>   11 files changed, 54 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/include/linux/coredump.h b/include/linux/coredump.h
+>> index 68861da4cf7c..bcee0afc5eaf 100644
+>> --- a/include/linux/coredump.h
+>> +++ b/include/linux/coredump.h
+>> @@ -54,7 +54,7 @@ extern void vfs_coredump(const kernel_siginfo_t *siginfo);
+>>   	do {	\
+>>   		char comm[TASK_COMM_LEN];	\
+>>   		/* This will always be NUL terminated. */ \
+>> -		memcpy(comm, current->comm, sizeof(comm)); \
+>> +		get_task_array(comm, current->comm); \
+>>   		printk_ratelimited(Level "coredump: %d(%*pE): " Format "\n",	\
+>>   			task_tgid_vnr(current), (int)strlen(comm), comm, ##__VA_ARGS__);	\
+>>   	} while (0)	\
+>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>> index 5a58c1270474..d26d1dfb9904 100644
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -1960,12 +1960,44 @@ extern void wake_up_new_task(struct task_struct *tsk);
+>>   
+>>   extern void kick_process(struct task_struct *tsk);
+>>   
+>> +/*
+>> + * - Why not use task_lock()?
+>> + *   User space can randomly change their names anyway, so locking for readers
+>> + *   doesn't make sense. For writers, locking is probably necessary, as a race
+>> + *   condition could lead to long-term mixed results.
+>> + *   The logic inside __set_task_comm() should ensure that the task comm is
+>> + *   always NUL-terminated and zero-padded. Therefore the race condition between
+>> + *   reader and writer is not an issue.
+>> + */
+>> +
+>>   extern void __set_task_comm(struct task_struct *tsk, const char *from, bool exec);
+>>   #define set_task_comm(tsk, from) ({			\
+>>   	BUILD_BUG_ON(sizeof(from) < TASK_COMM_LEN);	\
+>>   	__set_task_comm(tsk, from, false);		\
+>>   })
+>>   
+>> +/*
+>> + * 'get_task_array' can be 'data-racy' in the destination and
+>> + * should not be used for cases where a 'stable NUL at the end'
+>> + * is needed. Its better to use strscpy and friends for such
+>> + * use-cases.
+>> + *
+>> + * It is suited mainly for a 'just copy comm to a constant-sized
+>> + * array' case - especially in performance sensitive use-cases,
+>> + * like tracing.
+>> + */
+>> +
+>> +static __always_inline void
+>> +	__cstr_array_copy(char *dst, const char *src,
+>> +			  __kernel_size_t size)
+>> +{
+>> +	memcpy(dst, src, size);
+>> +	dst[size] = 0;
+>> +}
+> Please don't reinvent the wheel. :) We already have memtostr, please use
+> that (or memtostr_pad).
 
-Auto-detecting system features:
-...                                   libdw: [ on  ]
-...                                   glibc: [ on  ]
-...                                  libelf: [ on  ]
-...                                 libnuma: [ on  ]
-...                  numa_num_possible_cpus: [ on  ]
-...                                 libperl: [ on  ]
-...                               libpython: [ on  ]
-...                             libcapstone: [ on  ]
-...                               llvm-perf: [ on  ]
-...                                    zlib: [ on  ]
-...                                    lzma: [ on  ]
-...                               get_cpuid: [ on  ]
-...                                     bpf: [ on  ]
-...                                  libaio: [ on  ]
-...                                 libzstd: [ on  ]
+Sure, but wouldn't we get a static assertion failure: "must be array" 
+for memtostr() usage, because of the following:
 
- GEN     /tmp/perf/common-cmds.h
-...
-  LINK    /tmp/perf/perf
-  GEN     /tmp/perf/python/perf.cpython-313-x86_64-linux-gnu.so
-make: Leaving directory 'linux/tools/perf'
-$ git describe
-v6.17-rc4
-$ sudo /tmp/perf/perf test -v
-  1: vmlinux symtab matches kallsyms                                 : Skip
-  2: Detect openat syscall event                                     : Ok
-...
- 79: build id cache operations                                       : Ok
---- start ---
-test child forked, pid 2546565
-test daemon list
-FAILED: wrong name
-FAILED: wrong run
-FAILED: wrong base
-FAILED: wrong output
-FAILED: wrong control
-FAILED: wrong ack
-test daemon reconfig
-FAILED: Timeout waiting for daemon to ping
----- end(-1) ----
-80: daemon operations                                               : FAILE=
-D!
-81: perf diff tests                                                 : Ok
- 82: DRM PMU                                                         : Ok
- 83: perf ftrace tests                                               : Ok
---- start ---
-test child forked, pid 2546573
-Test perf header file
-perf: Segmentation fault
-linux/tools/perf/tests/shell/header.sh: line 51: 2546664 Segmentation
-fault      (core dumped
-) perf record -o "${perfdata}" -- perf test -w noploop
-Unexpected signal in test_file
----- end(-1) ----
-84: perf header tests                                               : FAILE=
-D!
-85: perf list tests                                                 : Ok
-...
- 92: perf sched tests                                                : Ok
---- start ---
-test child forked, pid 2546593
-DB test
-perf: Segmentation fault
-/tmp/x/linux/tools/perf/tests/shell/script.sh: line 35: 2546822
-Segmentation fault      (core dumped
-) perf record $cmd_flags -o "${perfdatafile}" true
---- Cleaning up ---
----- end(-1) ----
-93: perf script tests                                               : FAILE=
-D!
-...
-$ /tmp/perf/perf version --build-options
-perf version 6.17.rc4.gb320789d6883
-                  aio: [ on  ]  # HAVE_AIO_SUPPORT
-                  bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
-        bpf_skeletons: [ on  ]  # HAVE_BPF_SKEL
-           debuginfod: [ on  ]  # HAVE_DEBUGINFOD_SUPPORT
-                dwarf: [ on  ]  # HAVE_LIBDW_SUPPORT
-   dwarf_getlocations: [ on  ]  # HAVE_LIBDW_SUPPORT
-         dwarf-unwind: [ on  ]  # HAVE_DWARF_UNWIND_SUPPORT
-             auxtrace: [ on  ]  # HAVE_AUXTRACE_SUPPORT
-               libbfd: [ OFF ]  # HAVE_LIBBFD_SUPPORT ( tip:
-Deprecated, license incompatibility, u
-se BUILD_NONDISTRO=3D1 and install binutils-dev[el] )
-       libbpf-strings: [ on  ]  # HAVE_LIBBPF_STRINGS_SUPPORT
-          libcapstone: [ on  ]  # HAVE_LIBCAPSTONE_SUPPORT
-   libdw-dwarf-unwind: [ on  ]  # HAVE_LIBDW_SUPPORT
-               libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
-              libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-           libopencsd: [ OFF ]  # HAVE_CSTRACE_SUPPORT
-              libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
-              libpfm4: [ on  ]  # HAVE_LIBPFM
-            libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
-             libslang: [ on  ]  # HAVE_SLANG_SUPPORT
-        libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
-            libunwind: [ OFF ]  # HAVE_LIBUNWIND_SUPPORT ( tip:
-Deprecated, use LIBUNWIND=3D1 and ins
-tall libunwind-dev[el] to build with it )
-                 lzma: [ on  ]  # HAVE_LZMA_SUPPORT
-numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-                 zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
-                 zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
-```
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
+__must_be_array(arr))
+
+I think it would be easier just to set:
+
+   memcpy(dst, src, size);
+   dst[size -1] = 0;
+
+instead as Linus and Steven suggested.
 
 Thanks,
-Ian
+Bhupesh
 
-> > of BPF things happening in parallel in the test but the failures are
-> > happening in a shell and I did get to attach a debugger. I've not seen
-> > this problem earlier as the patches weren't in the perf-tools-next
-> > tree. Through bisection I was able to blame the patch and I came up
-> > with this minimal fix:
-> > ```
-> > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-> > index ccfd905f03df..71e198b30c5f 100644
-> > --- a/tools/lib/bpf/btf.h
-> > +++ b/tools/lib/bpf/btf.h
-> > @@ -326,10 +326,10 @@ struct btf_dump_type_data_opts {
-> >         bool compact;           /* no newlines/indentation */
-> >         bool skip_names;        /* skip member/type names */
-> >         bool emit_zeroes;       /* show 0-valued fields */
-> > -       bool emit_strings;      /* print char arrays as strings */
-> > +       //bool emit_strings;    /* print char arrays as strings */
-> >         size_t :0;
-> > };
-> > -#define btf_dump_type_data_opts__last_field emit_strings
-> > +#define btf_dump_type_data_opts__last_field emit_zeroes
-> >
-> > LIBBPF_API int
-> > btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
-> > diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> > index f09f25eccf3c..c7b5a376642f 100644
-> > --- a/tools/lib/bpf/btf_dump.c
-> > +++ b/tools/lib/bpf/btf_dump.c
-> > @@ -2599,7 +2599,7 @@ int btf_dump__dump_type_data(struct btf_dump *d, =
-__u32 id,
-> >         d->typed_dump->compact =3D OPTS_GET(opts, compact, false);
-> >         d->typed_dump->skip_names =3D OPTS_GET(opts, skip_names, false)=
-;
-> >         d->typed_dump->emit_zeroes =3D OPTS_GET(opts, emit_zeroes, fals=
-e);
-> > -       d->typed_dump->emit_strings =3D OPTS_GET(opts, emit_strings, fa=
-lse);
-> > +       d->typed_dump->emit_strings =3D true; // OPTS_GET(opts,
-> > emit_strings, false);
-> >
-> >         ret =3D btf_dump_dump_type_data(d, NULL, t, id, data, 0, 0);
-> >
-> >
-> > ```
-> > So I think the problem relates to modifying struct
-> > btf_dump_type_data_opts. Given I'm statically linking libbpf into perf
-> > I'm not sure on the exact route of the segv, no doubt this report will
-> > be enough for someone else to figure it out.
-> >
-> > Given this is a regression what should the fix be?
-> >
-> > Thanks,
-> > Ian
+>> +
+>> +#define get_task_array(dst, src) \
+>> +	__cstr_array_copy(dst, src, __must_be_array(dst))
+> Uh, __must_be_array(dst) returns 0 on success. :P Are you sure you
+> tested this?
 >
+
 
