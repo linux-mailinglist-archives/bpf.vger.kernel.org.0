@@ -1,97 +1,187 @@
-Return-Path: <bpf+bounces-67131-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67132-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AB1BB3F0D4
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 00:10:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9489FB3F13E
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 00:47:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DDA3480D63
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 22:10:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFE671B21CAF
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 22:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644F327E1C6;
-	Mon,  1 Sep 2025 22:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11756284696;
+	Mon,  1 Sep 2025 22:45:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J3QOhF8e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF69273D77
-	for <bpf@vger.kernel.org>; Mon,  1 Sep 2025 22:10:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD5D2673B7
+	for <bpf@vger.kernel.org>; Mon,  1 Sep 2025 22:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756764607; cv=none; b=PJuHPxT7Bq0kW6jzoIdbHNUzNfzByPGKGLMM6d828w38OF5LZ1xSiNmPFV+eoZZ4SJ0uzSCEogAsjjjXQdaiA94QIJqVcBcuc5IlEYwkyepDEoHQ3fk8Fjchvxov4+pz8k/Dw0qVs0mvba63KfYavU8K4FuRW+ypZsVmlXwi3Yg=
+	t=1756766728; cv=none; b=qQHghxQN/a9VmtqvdFI5/oGBTCEKTQJrBWEPQfXoJZKQDDn/Lg765fVtIYGat786+PzYX8S0Qux0QATTuJfKW29SPyGyUQJHx4hWtzJ8bt275ao7T3a/TTjLnn0quhz+scDyhEj2aRXFTlJMQxlVGEaFfDyKLLHRPXV3yMCfhUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756764607; c=relaxed/simple;
-	bh=p0kMM4y7F6N7P9lmCZgTWs3ZjOeXgQCDCsLCsQtEfe0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=scxoo9wDQsEcL6mk1BAhgkwF8a9p9FL320q2B+/pu/+nP+Bl7mMx5ikYwRps/c0L7xGHuzuMJ8nnAwrXHuHD0jJ6s1I+Bqz60A5wFZ2ftUJiujntMRJH/gG4XEiKBslqa5kYw/OQ3Oar7KIzg0J2tUCpKd8muq79sgD1hD9TqL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-8870219dce3so434957739f.0
-        for <bpf@vger.kernel.org>; Mon, 01 Sep 2025 15:10:05 -0700 (PDT)
+	s=arc-20240116; t=1756766728; c=relaxed/simple;
+	bh=qR42YfqJASD0y/o1/Oa0Uw0TRQxNmHyoDb1NMbJmwRU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J/+gh+TjVt8QuOc9xna+q+unrjfYMuwrgQPv9Di3i4ct6t33ZTZqvNkPaHznXmpzzGEjyirgHWJGuXEp2SPYGB18OQ+lzAfztfUVeecRw+hD84pkwJviQxw/HQ7tCN2AlIiSy0pUuuvN144QrB00VhFb4acqAkSOmcTeBzb4UO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J3QOhF8e; arc=none smtp.client-ip=209.85.208.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-6188b7550c0so5672968a12.2
+        for <bpf@vger.kernel.org>; Mon, 01 Sep 2025 15:45:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756766725; x=1757371525; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kk7sPG0jKvqaxdr4efba0QSysbV64YWjMYkvJGfPKQU=;
+        b=J3QOhF8eFmKeoW+7++CwOzHyfWBIsEJuDyKF+cdj+zf3m/A3Mlhfef3zxpbw8jagxJ
+         yf5vA7rLpdpJpHn1Um0u9KtWv8w0ALTw1K2ps4JV+hJLVvJTS7Q8X7bIWZrwwtEs+sbI
+         pWMsCVV6xYyQzD03X5bUwYUM10fJF6Yy32hn4VfxmyCVrKC23wIkcLk/KOfcuuf2E5G2
+         dYIM7IXeSVDfx9eEf/JHBI6ev4rNOThjaFVHMCG2yQe4nIDCRv97JHiO1Kdna7hSAyfv
+         OgMzFIHzp3E7ys0vH+564jzD5rfsFzO1Ae5JDOwIeevg4Mheee/Hlvh58m9bJV2NdVEV
+         YwxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756764605; x=1757369405;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rONquuup1tA/FntPWjZbG/timt5LNSvQmqhWL+HMBzU=;
-        b=IOVHjCeMCK+1aHR2zwwFhkismTZQdKIITx4SYKpFKzkezn5wNnbOnWsNe/uzUnojZI
-         aXIqTSh69CGzazCqo2BrYwADVem3Ym6wo7Y+KMVhHw+y1EDQ1cluYnuYYfbNwU2Z1Mgq
-         AmIeih8aDKRrDuizl9ozOub58UCO68r3JpCr5CVlgeIxxJIyWorkm4AJsDiwtUbfQf6i
-         xe2rmdzke/9swoQEk7x7CX0qJ2Iyht19ORPICVwf6zhV85DzRcYKVYmDCSuPtQKswXY1
-         rWW83WIzIhfziRBcI41GDjTFxAssOOA9F7dv2X+fy+CLvFMplk3CRH19kKGXoF26DZOb
-         8KLA==
-X-Forwarded-Encrypted: i=1; AJvYcCW+zOA890gV0msa+JWgGdPG1zk1whQrc324Wl6phqVcPSDVdxJxLFlnZLhVwqPqQb5bx60=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbG4wx3z+wmb6gVTmEnEyCF29YnKJhKNnDBD0UIC2jWLlKyY/e
-	ie5+VHpGn02jRCY26/9jAeAZypkg3dZub78sVvKjQZenzatelEsjknqcEROZjWcm3uTl+I6jc1S
-	1LYUFhJOkiZXoSUthUoE4Yd9UuFZitxu+uglVAwoE7ScrXtNZpCFcBsIXi/w=
-X-Google-Smtp-Source: AGHT+IEwWIM0KR32k0CrIYVm5MqXLqvHyE40n+Jbcb7UVXKXi5zhmdRI/WfQizUkVs9bev2AbFsAxIgzU7Q7sbXwGYhdaNj7lYwg
+        d=1e100.net; s=20230601; t=1756766725; x=1757371525;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kk7sPG0jKvqaxdr4efba0QSysbV64YWjMYkvJGfPKQU=;
+        b=Dk531XtKplcR0F2Vk31hv2WthtxVpDJWwnSjW8TFIdTP3Vchg2Pswu1iwJi6OBqdEL
+         iFVmb/Blk78N2AYxOAGlOAZIK1Vvpdlscm+0TAovv7Fv9DiqISXOOhR+4qFGIl02hbnm
+         KDHa8oFdn3U1sa9tAqPuxz2SrNJwWXFzXaSRpSrwf0lHIahTmJPQAMtze4oC3Mi0XHwn
+         SXquASYNV6wdLuj5cIooXRQeYIoqq2UUF9HdfPP83WTneELUAyYb3EMH9m9chWivLQv1
+         kfMtu5vbPbwQtOnl7i5myHAHlq5jRGwQEbKnn4R+e+V/HtYX4sIwFQbwd5Ctzkqx3xtP
+         jzBw==
+X-Forwarded-Encrypted: i=1; AJvYcCXKWkAA7MLW+DF5demoqEWIdFZ7dNmN5EqEf5pmgHwNCRRCQA+8iLnlvNt6RjDx4md6IHI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxiEekhIXTx77LbSs7rH9an3Ak0ya/oo6q3bHd2RLfU8oEBwExR
+	2apFJNmjxKaDyNGGTgZy9+JkaRf0fJRRCsI9gs5rcIkH6tQhFz8hRwZTSgfnC5mIL0WWNqBb6u9
+	MEtJYn5VJkpnNEDKiVvHrCIouHyX12Jk=
+X-Gm-Gg: ASbGncs6fdZtDe04V9bDNYRkzzURX8eDu6QEl/87NI2w3Hk6kvcsHe93ZzHXYi80Mdw
+	0JV9XWVOwG+5GIlCpHg0SxhPn4USQP9wO795iEAcezlHSdQRq/XSrVzqN7neDOUPRE3Q6+rpNXs
+	3tjjkINkgh5vz6E+Icpj1PIgR5DYdvRAUaZjddka4xR+JJ9KqkIAubtpoBL6BG9Ae4hQOdrcBbu
+	3FB+4mM
+X-Google-Smtp-Source: AGHT+IGeIi52B8yZ80HycwMNDSnH7u5TPFIE9KFLGfsK+ndDDhK+7L+89Ud8oJBSQ/HERanPh0whlHhqwuIq7AgVQ1Q=
+X-Received: by 2002:a05:6402:26d3:b0:61d:57a:2fe9 with SMTP id
+ 4fb4d7f45d1cf-61d269a0a6emr9023719a12.16.1756766724825; Mon, 01 Sep 2025
+ 15:45:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa2:b0:3f0:78c3:8fc5 with SMTP id
- e9e14a558f8ab-3f400097882mr176361265ab.5.1756764604779; Mon, 01 Sep 2025
- 15:10:04 -0700 (PDT)
-Date: Mon, 01 Sep 2025 15:10:04 -0700
-In-Reply-To: <68ac9fd3.050a0220.37038e.0096.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68b619bc.050a0220.3db4df.01c5.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] possible deadlock in __bpf_ringbuf_reserve (2)
-From: syzbot <syzbot+fa5c2814795b5adca240@syzkaller.appspotmail.com>
-To: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, 
-	haoluo@google.com, hffilwlqm@gmail.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, memxor@gmail.com, netdev@vger.kernel.org, 
-	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
+References: <20250827153728.28115-1-puranjay@kernel.org> <20250827153728.28115-3-puranjay@kernel.org>
+ <99bb1aa8-885b-4819-beb3-723a73960f67@huaweicloud.com> <CAADnVQKp-FXhVtxCSE8rako8BBnAU4Qt-dxviqrJUr-Fpfm+4w@mail.gmail.com>
+ <mb61p4itmjnze.fsf@kernel.org> <CAADnVQKPLwGF25YOzA=a4Vr==0UZFycv6GkLbwszkFrBiHGCcw@mail.gmail.com>
+ <mb61p1poqj7vd.fsf@kernel.org>
+In-Reply-To: <mb61p1poqj7vd.fsf@kernel.org>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 2 Sep 2025 00:44:48 +0200
+X-Gm-Features: Ac12FXzy_HipBL4ton9Y9hIZ-atmn4Jl48Nz8WR5RTVY2WvIGZHV_6ftcWGx1H0
+Message-ID: <CAP01T74DdVsxtdivHg6hi5Ei8k=iT_FMvRr8XE7zEqBXYyz6EQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Report arena faults to BPF stderr
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has bisected this issue to:
+On Mon, 1 Sept 2025 at 21:22, Puranjay Mohan <puranjay@kernel.org> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > On Mon, Sep 1, 2025 at 6:34=E2=80=AFAM Puranjay Mohan <puranjay@kernel.=
+org> wrote:
+> >>
+> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> >>
+> >> > On Fri, Aug 29, 2025 at 3:30=E2=80=AFAM Xu Kuohai <xukuohai@huaweicl=
+oud.com> wrote:
+> >> >>
+> >> >> > +
+> >> >> > +void bpf_prog_report_arena_violation(bool write, unsigned long a=
+ddr)
+> >> >> > +{
+> >> >> > +     struct bpf_stream_stage ss;
+> >> >> > +     struct bpf_prog *prog;
+> >> >> > +     u64 user_vm_start;
+> >> >> > +
+> >> >> > +     prog =3D bpf_prog_find_from_stack();
+> >> >>
+> >> >> bpf_prog_find_from_stack depends on arch_bpf_stack_walk, which isn'=
+t available
+> >> >> on all archs. How about switching to bpf_prog_ksym_find with the fa=
+ult pc?
+> >> >
+> >> > Out of archs that support bpf arena only riscv doesn't
+> >> > support arch_bpf_stack_walk(), which is probably fixable.
+> >> > But I agree that direct bpf_prog_ksym_find() is cleaner here.
+> >> > We need to make sure it works for subprogs, since streams[2] are
+> >> > valid only for main prog.
+> >> > I think we can add:
+> >> > struct bpf_prog_aux {
+> >> >   ...
+> >> >   struct bpf_prog_aux *main_prog;
+> >> > };
+> >> > init it during jit_subprogs() and use it for stream access.
+> >> > We can also remove skipping of subprogs in find_from_stack_cb() then=
+.
+> >> >
+> >> > Kumar, wdyt?
+> >>
+> >> So, IIUC, after adding struct bpf_prog_aux *main_prog_aux in struct
+> >> bpf_prog_aux,
+> >>
+> >> We can do in bpf_prog_alloc_no_stats():
+> >>    fp->aux->main_prog_aux =3D aux;
+> >>
+> >> and in jit_subprogs():
+> >>     func[i]->aux->main_prog_aux =3D prog->aux;
+> >>
+> >> and then all users of bpf_stream_get() can do
+> >>     bpf_stream_get(stream_id, prog->aux->main_prog_aux);
+> >>
+> >> with above we can allow find_from_stack_cb() to return subprogs.
+> >> and bpf_prog_ksym_find() can be used in
+> >> bpf_prog_report_arena_violation() without any other changes.
+> >
+> > Yes. That's exactly the proposal.
+>
+> I think we should go ahead with this approach but also divide
+> bpf_prog_aux into two as you suggested. I will send a follow-up set for
+> that.
 
-commit 27861fc720be2c39b861d8bdfb68287f54de6855
-Author: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Thu Aug 21 16:26:00 2025 +0000
+find_from_stack_cb shouldn't be returning subprogs IMO, I think what
+was meant by Alexei was to use the first found subprog to jump to its
+main prog.
 
-    bpf: Drop rqspinlock usage in ringbuf
+I think this will also make stream related logic work in cases where
+we only have subprog of the program, and not the main prog (e.g. timer
+callbacks, etc.) in the stack trace, which was probably an oversight
+on my part. It would be nice to test this, let me know if you can fold
+it in your set / send as a follow up, otherwise I will.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=167eee34580000
-start commit:   dd9de524183a xsk: Fix immature cq descriptor production
-git tree:       bpf
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=157eee34580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=117eee34580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c321f33e4545e2a1
-dashboard link: https://syzkaller.appspot.com/bug?extid=fa5c2814795b5adca240
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142da862580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1588aef0580000
+Additionally, I feel the extra pointer is unnecessary. Instead, the
+logic to jump to the main prog from the subprog can be (if I didn't
+miss anything):
 
-Reported-by: syzbot+fa5c2814795b5adca240@syzkaller.appspotmail.com
-Fixes: 27861fc720be ("bpf: Drop rqspinlock usage in ringbuf")
+prog->aux->func ? prog->aux->func[0]->aux ? prog-aux
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+When prog->aux->func is not set, that means there are no subprogs. I
+would simply wrap this logic in bpf_main_prog_aux or something.
+
+>
+> Thanks,
+> Puranjay
 
