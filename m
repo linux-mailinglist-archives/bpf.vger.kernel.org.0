@@ -1,258 +1,139 @@
-Return-Path: <bpf+bounces-67108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0390B3E4BA
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 15:24:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59A5FB3E4F0
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 15:28:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A8627A8D93
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 13:22:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C8621A84880
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 13:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239C6326D63;
-	Mon,  1 Sep 2025 13:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A24334391;
+	Mon,  1 Sep 2025 13:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="OsEF+cf3"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5165031DD9A
-	for <bpf@vger.kernel.org>; Mon,  1 Sep 2025 13:23:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBEF832BF41
+	for <bpf@vger.kernel.org>; Mon,  1 Sep 2025 13:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756733019; cv=none; b=owHLfnkm9xYGYLmEh/bpzhMy7X225qh7zV7vJ0bMkLSyNnV0QVm/y6B6XetNUVn0OwGay/5e7LRFq49GqcEIIvNCW4bytkosGwEqgLkIT9pnZqwcaEvbUxh/G9d9mxtYAnB+ILsh1v29vPnIzKAefnN5jbYNXj8syVYZVcJNI0A=
+	t=1756733283; cv=none; b=lnuEQ6aRm1ZXqQemWzZYyW+33Nz8IuIu75yG4IgQAAxoG85tUTBcmvKAXF9UJssouhZyyLzaZ0HyGP+qwfgZ94gBngL9AD0uu3A1wK9NiygPasZx+ODfSxGmNEY7B69g6W8bXqCq+mefLn/Q3sY8ZWrY87GUUwaXjFf6f5i0zQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756733019; c=relaxed/simple;
-	bh=ExGhHAnYVznkoY82qSMX9UzJRnNZjxsc2TNt4ZJ8X3s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=puat/MvXBDiGl2Hsd5fdXUxhQcnKGvbDaMXdge34qKdGi3aatqya9xelHaSzL+yJyhFpb4MjH6APsVoCEhcWkSfOT3PMqWnr7X7qt7u5k6SzJIx/eb/PIo7v/fXeiowy6qzvyR2CoBbhWb7zs2leyLtUH/RTAoabwVqlU6nrmZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4cFqG11Bb0zdch2;
-	Mon,  1 Sep 2025 21:19:05 +0800 (CST)
-Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
-	by mail.maildlp.com (Postfix) with ESMTPS id 981FD180495;
-	Mon,  1 Sep 2025 21:23:33 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 1 Sep 2025 21:23:32 +0800
-Message-ID: <b1789304-715b-4fe4-8c82-3da9849ad3d2@huawei.com>
-Date: Mon, 1 Sep 2025 21:23:32 +0800
+	s=arc-20240116; t=1756733283; c=relaxed/simple;
+	bh=6O9zYzknF1XakScCV4bBbfOhUs+802B4MkwhMeX25CQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=OSyMIYcOH5DFdqwOmUJHv+EcEikH92M38GSRzG20YV60W4njru8kOHdg2nyday8BTfn0SQX0dANFnAggP/tq/y1T8Mzx72C3SZwTyGGxFc16FXPhuVf8TgOSfcrGuh4jMb3bw9I/zeesWEfNHEZZAbLOcgI9/cJLbZF1Tf8FE+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=OsEF+cf3; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b040df389easo294011066b.3
+        for <bpf@vger.kernel.org>; Mon, 01 Sep 2025 06:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1756733279; x=1757338079; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SvkpV4Bq+rj+YuFtB7kDJzqT2KzLsgVk2R2l+HFV7nw=;
+        b=OsEF+cf3p0AJ11lNHUNClDHP6nWkirEYx9oIikOVDY4YGzA3MKCWDPWrbV40SJUkKa
+         iiPOttNGWEBdUIVFu0y+7ab8zJ9HFToySbXdcF8YYOvpinQ9vdretF9rQ1+4+onGg9iW
+         SwUKXzC4mShTE88Ry/eEiUGH+zh6sYsNhDb7T3HnKKvnLhCl5xgu2TtLJ+g1jCBhC+zd
+         3apYAQlu3RdYzm3Kn/fV5zWJqx1yZ0zgoUVeA/ALH+or7I4ZgAT+SbnniQQguDtcBkJA
+         ZuZaYXpGlC46S35fp4+QPin5lw+vWHGd4eJMgKN3HirunSnPJSvYw6ADqm2NI8fvc6sZ
+         salw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756733279; x=1757338079;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SvkpV4Bq+rj+YuFtB7kDJzqT2KzLsgVk2R2l+HFV7nw=;
+        b=ixe+b6XkLi8QNsyF6gZWP0i4eb9Gm7q7Jqv2PmnR8GxWO9d5p3vsfIj7x5bGVur9TZ
+         Y7qcc3xnRJbKLONe4S11/0QB0N+fgOhTDZPjbD4TUL+5e679Tkh8/jS/SxhkxPC8i82Y
+         9kO6L3HGd6wA94X456C45EKozoybe/uhYbJRaHUkgUnWx6spnvWxBAD/FsL0RcyHFBWt
+         IHM/lOBri1ARHOVvm3d3VbBA8P+l79rQEYvwZuFXRJ3sLDQIyScZWOK3fNS7UXHh6saH
+         2MUNnFLR1c7/ckjXxfUOMaIAaNkuHEzzCo2bJGQuTiMNJOlML5iok4k4HhkHys5GWs07
+         WZBg==
+X-Gm-Message-State: AOJu0YxIr7gQxlrufBa4ogS7yJbAVGV2J5C945U4NlWJGE2LgJO65diG
+	BWldwfOnqYtpab9vjclbt0PQwbO+fF/aEiHzDp9BBqPWa0sZU/bOUEw1Rs/mPBojcKbwaP/2Aei
+	7uw57
+X-Gm-Gg: ASbGnctsKZBZ7W8XHFHyEyZ8FmsDlPDQQqiRsF1HRkJXz+I2UBMkq1fadd0x8GdBsev
+	K2RKBIYiAn6BtsPPJ8XyNJYLjMfv3KSMZsuGEeaUfQTp9d2a8a/LybReYjMbD23nV2ahA7PERnF
+	nT+YojNZ0XkgzSVkrOK5l9JI6+WmkmVYXj0yNnBfvD1XEqwfXYPQJxkCvH7wkLOwAdYi3tQ1ZFP
+	xqEzPC9vXDou+WVc7wpD2XB2DxCcPNwdxfs9Pbj+UBGHFLanq8QT5v23tMU8723VJxUQt3+hfpa
+	Dv3xo9gB5jfByL90ir/tWj3vY2vKgUYNMaI4FWX+wIqkipx98IV2GJNbRpmrDgCg99Z8DMeTQIY
+	6pihpHIvvu25XagbKPwP4Io/KZA==
+X-Google-Smtp-Source: AGHT+IEh3AaonZ5QJBkOf1S6UvYDoHMiIZHdv/ST35c9pqz9MF0Ajnr6x/W5jLydJXe0NqvFsZyLHA==
+X-Received: by 2002:a17:906:f5a2:b0:b04:3955:10e2 with SMTP id a640c23a62f3a-b0439551a93mr223405766b.25.1756733279510;
+        Mon, 01 Sep 2025 06:27:59 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:295f::41f:42])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61cfc5315c7sm7074508a12.46.2025.09.01.06.27.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Sep 2025 06:27:58 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+Date: Mon, 01 Sep 2025 15:27:43 +0200
+Subject: [PATCH bpf-next v2] bpf: Return an error pointer for skb metadata
+ when CONFIG_NET=n
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv, bpf: Sign extend struct ops return values properly
-Content-Language: en-US
-To: Hengqi Chen <hengqi.chen@gmail.com>
-CC: <bjorn@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<martin.lau@linux.dev>, <puranjay@kernel.org>, <ast@kernel.org>,
-	<bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-References: <20250827120344.6796-1-hengqi.chen@gmail.com>
- <d90361c5-75c6-4337-a590-0d81c61adfb9@huawei.com>
- <1be38ff5-ea37-4d5d-9f33-16799d2fe2c5@huawei.com>
- <CAEyhmHTz-ZXSg63AQhU4_Pk9CnTs2CQgGdH=LjWbFOqHOva9=Q@mail.gmail.com>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <CAEyhmHTz-ZXSg63AQhU4_Pk9CnTs2CQgGdH=LjWbFOqHOva9=Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemf100007.china.huawei.com (7.202.181.221)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250901-dynptr-skb-meta-no-net-v2-1-ce607fcb6091@cloudflare.com>
+X-B4-Tracking: v=1; b=H4sIAE6ftWgC/4WNSw6DMAxEr4K8riti8e2q96hYQGJKVEiiJEUgx
+ N0bcYEuR2/mzQGBveYAj+wAz6sO2poU6JaBnHrzZtQqZaCcyryhGtVuXPQYPgMuHHs0Fg1HlDV
+ JklXTqJYhjZ3nUW+X+AWDG1Npi9AlMukQrd+vx1Vc/J98FSiwoKotZZHTIKqnnO1XjXPv+S7tA
+ t15nj93RkZZywAAAA==
+X-Change-ID: 20250827-dynptr-skb-meta-no-net-c72c2c688d9e
+To: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ kernel-team@cloudflare.com, netdev@vger.kernel.org, 
+ kernel test robot <lkp@intel.com>
+X-Mailer: b4 0.15-dev-07fe9
+
+Kernel Test Robot reported a compiler warning - a null pointer may be
+passed to memmove in __bpf_dynptr_{read,write} when building without
+networking support.
+
+The warning is correct from a static analysis standpoint, but not actually
+reachable. Without CONFIG_NET, creating dynptrs to skb metadata is
+impossible since the constructor kfunc is missing.
+
+Silence the false-postive diagnostic message by returning an error pointer
+from bpf_skb_meta_pointer stub when CONFIG_NET=n.
+
+Fixes: 6877cd392bae ("bpf: Enable read/write access to skb metadata through a dynptr")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202508212031.ir9b3B6Q-lkp@intel.com/
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+Changes in v2:
+- Switch to an error pointer (Alexei)
+- Link to v1: https://lore.kernel.org/r/20250827-dynptr-skb-meta-no-net-v1-1-42695c402b16@cloudflare.com
+---
+ include/linux/filter.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 9092d8ea95c8..4241a885975f 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1816,7 +1816,7 @@ static inline void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsigned long off, voi
+ 
+ static inline void *bpf_skb_meta_pointer(struct sk_buff *skb, u32 offset)
+ {
+-	return NULL;
++	return ERR_PTR(-EOPNOTSUPP);
+ }
+ #endif /* CONFIG_NET */
+ 
 
 
 
-On 2025/9/1 17:14, Hengqi Chen wrote:
-> On Mon, Sep 1, 2025 at 4:06 PM Pu Lehui <pulehui@huawei.com> wrote:
->>
->>
->>
->> On 2025/8/28 9:53, Pu Lehui wrote:
->>>
->>> On 2025/8/27 20:03, Hengqi Chen wrote:
->>>> The ns_bpf_qdisc selftest triggers a kernel panic:
->>>>
->>>>       Unable to handle kernel paging request at virtual address
->>>> ffffffffa38dbf58
->>>>       Current test_progs pgtable: 4K pagesize, 57-bit VAs,
->>>> pgdp=0x00000001109cc000
->>>>       [ffffffffa38dbf58] pgd=000000011fffd801, p4d=000000011fffd401,
->>>> pud=000000011fffd001, pmd=0000000000000000
->>>>       Oops [#1]
->>>>       Modules linked in: bpf_testmod(OE) xt_conntrack nls_iso8859_1
->>>> dm_mod drm drm_panel_orientation_quirks configfs backlight btrfs
->>>> blake2b_generic xor lzo_compress zlib_deflate raid6_pq efivarfs [last
->>>> unloaded: bpf_testmod(OE)]
->>>>       CPU: 1 UID: 0 PID: 23584 Comm: test_progs Tainted: G        W
->>>> OE       6.17.0-rc1-g2465bb83e0b4 #1 NONE
->>>>       Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
->>>>       Hardware name: Unknown Unknown Product/Unknown Product, BIOS
->>>> 2024.01+dfsg-1ubuntu5.1 01/01/2024
->>>>       epc : __qdisc_run+0x82/0x6f0
->>>>        ra : __qdisc_run+0x6e/0x6f0
->>>>       epc : ffffffff80bd5c7a ra : ffffffff80bd5c66 sp : ff2000000eecb550
->>>>        gp : ffffffff82472098 tp : ff60000096895940 t0 : ffffffff8001f180
->>>>        t1 : ffffffff801e1664 t2 : 0000000000000000 s0 : ff2000000eecb5d0
->>>>        s1 : ff60000093a6a600 a0 : ffffffffa38dbee8 a1 : 0000000000000001
->>>>        a2 : ff2000000eecb510 a3 : 0000000000000001 a4 : 0000000000000000
->>>>        a5 : 0000000000000010 a6 : 0000000000000000 a7 : 0000000000735049
->>>>        s2 : ffffffffa38dbee8 s3 : 0000000000000040 s4 : ff6000008bcda000
->>>>        s5 : 0000000000000008 s6 : ff60000093a6a680 s7 : ff60000093a6a6f0
->>>>        s8 : ff60000093a6a6ac s9 : ff60000093140000 s10: 0000000000000000
->>>>        s11: ff2000000eecb9d0 t3 : 0000000000000000 t4 : 0000000000ff0000
->>>>        t5 : 0000000000000000 t6 : ff60000093a6a8b6
->>>>       status: 0000000200000120 badaddr: ffffffffa38dbf58 cause:
->>>> 000000000000000d
->>>>       [<ffffffff80bd5c7a>] __qdisc_run+0x82/0x6f0
->>>>       [<ffffffff80b6fe58>] __dev_queue_xmit+0x4c0/0x1128
->>>>       [<ffffffff80b80ae0>] neigh_resolve_output+0xd0/0x170
->>>>       [<ffffffff80d2daf6>] ip6_finish_output2+0x226/0x6c8
->>>>       [<ffffffff80d31254>] ip6_finish_output+0x10c/0x2a0
->>>>       [<ffffffff80d31446>] ip6_output+0x5e/0x178
->>>>       [<ffffffff80d2e232>] ip6_xmit+0x29a/0x608
->>>>       [<ffffffff80d6f4c6>] inet6_csk_xmit+0xe6/0x140
->>>>       [<ffffffff80c985e4>] __tcp_transmit_skb+0x45c/0xaa8
->>>>       [<ffffffff80c995fe>] tcp_connect+0x9ce/0xd10
->>>>       [<ffffffff80d66524>] tcp_v6_connect+0x4ac/0x5e8
->>>>       [<ffffffff80cc19b8>] __inet_stream_connect+0xd8/0x318
->>>>       [<ffffffff80cc1c36>] inet_stream_connect+0x3e/0x68
->>>>       [<ffffffff80b42b20>] __sys_connect_file+0x50/0x88
->>>>       [<ffffffff80b42bee>] __sys_connect+0x96/0xc8
->>>>       [<ffffffff80b42c40>] __riscv_sys_connect+0x20/0x30
->>>>       [<ffffffff80e5bcae>] do_trap_ecall_u+0x256/0x378
->>>>       [<ffffffff80e69af2>] handle_exception+0x14a/0x156
->>>>       Code: 892a 0363 1205 489c 8bc1 c7e5 2d03 084a 2703 080a (2783) 0709
->>>>       ---[ end trace 0000000000000000 ]---
->>>>
->>>> The bpf_fifo_dequeue prog returns a skb which is a pointer.
->>>> The pointer is treated as a 32bit value and sign extend to
->>>> 64bit in epilogue. This behavior is right for most bpf prog
->>>> types but wrong for struct ops which requires RISC-V ABI.
->>>
->>> Hi Hengqi,
->>>
->>> Nice catch!
->>>
->>> Actually, I think commit 7112cd26e606c7ba51f9cc5c1905f06039f6f379 looks
->>> a little bit wired and related to this issue. I guess I need some time
->>> to recall this commit.
->>
->> Hi Hengqi,
->>
->> Sorry for late due to busy work. After some backtracking, I dismissed my
->> doubts about commit 7112cd26e606.
->>
->>>
->>> Thanks.
->>>
->>>>
->>>> So let's sign extend struct ops return values according to
->>>> the return value spec in function model.
->>>>
->>>> Fixes: 25ad10658dc1 ("riscv, bpf: Adapt bpf trampoline to optimized
->>>> riscv ftrace framework")
->>>> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
->>>> ---
->>>>    arch/riscv/net/bpf_jit_comp64.c | 33 +++++++++++++++++++++++++++++++++
->>>>    1 file changed, 33 insertions(+)
->>>>
->>>> diff --git a/arch/riscv/net/bpf_jit_comp64.c
->>>> b/arch/riscv/net/bpf_jit_comp64.c
->>>> index 549c3063c7f1..11ca56320a3f 100644
->>>> --- a/arch/riscv/net/bpf_jit_comp64.c
->>>> +++ b/arch/riscv/net/bpf_jit_comp64.c
->>>> @@ -954,6 +954,33 @@ static int invoke_bpf_prog(struct bpf_tramp_link
->>>> *l, int args_off, int retval_of
->>>>        return ret;
->>>>    }
->>>> +/*
->>>> + * Sign-extend the register if necessary
->>>> + */ >>>> +static int sign_extend(struct rv_jit_context *ctx, int r, u8 size)
-
-put `ctx` as last param would be more aligned with other function.
-
->>>> +{
->>>> +    switch (size) {
->>>> +    case 1:
->>>> +        emit_slli(r, r, 56, ctx);
->>>> +        emit_srai(r, r, 56, ctx); >>>> +        break;
->>>> +    case 2:
->>>> +        emit_slli(r, r, 48, ctx);
->>>> +        emit_srai(r, r, 48, ctx) >>>> +        break;
->>>> +    case 4:
->>>> +        emit_addiw(r, r, 0, ctx);
-
-pls use emit_sextb/h/w() helper
-
->>>> +        break;
->>>> +    case 8:
->>>> +        break;
->>>> +    default:
->>>> +        pr_err("bpf-jit: invalid size %d for sign_extend\n", size);
->>>> +        return -EINVAL;
->>>> +    }
->>>> +
->>>> +    return 0;
->>>> +}
->>
->> We don't need to sign-ext when return value is 1 or 2 bytes. As for 4
-> 
-> Could you please elaborate more on this ?
-
-Indeed, you pointed out my misunderstanding. According to riscv calling 
-convention [0], for signed char and short, we need to do sign extension, 
-but no need to do the same for unsigned. So for 1 or 2 bytes, we only 
-need to do that for the signed.
-
-Link: https://riscv.org/wp-content/uploads/2024/12/riscv-calling.pdf [0]
-
-> IIUC, addiw on 1 byte / 2 byte values is equivalent to zext them.
-> 
->> bytes, we have already do that in __build_epilogue. So we only need to
->> take care of 8 bytes return value. And the real fix would be:
->>
->> diff --git a/arch/riscv/net/bpf_jit_comp64.c
->> b/arch/riscv/net/bpf_jit_comp64.c
->> index 2f7188e0340a..08cc641f8b7c 100644
->> --- a/arch/riscv/net/bpf_jit_comp64.c
->> +++ b/arch/riscv/net/bpf_jit_comp64.c
->> @@ -1177,6 +1177,9 @@ static int __arch_prepare_bpf_trampoline(struct
->> bpf_tramp_image *im,
->>           if (save_ret) {
->>                   emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
->>                   emit_ld(regmap[BPF_REG_0], -(retval_off - 8),
->> RV_REG_FP, ctx);
->> +               /* Do not truncate return value when it's 8 bytes */
->> +               if (is_struct_ops && m->ret_size == 8)
->> +                       emit_mv(RV_REG_A0, regmap[BPF_REG_0], ctx);
->>           }
->>
->>           emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
->>
->>>> +
->>>>    static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
->>>>                         const struct btf_func_model *m,
->>>>                         struct bpf_tramp_links *tlinks,
->>>> @@ -1177,6 +1204,12 @@ static int __arch_prepare_bpf_trampoline(struct
->>>> bpf_tramp_image *im,
->>>>        if (save_ret) {
->>>>            emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
->>>>            emit_ld(regmap[BPF_REG_0], -(retval_off - 8), RV_REG_FP, ctx);
->>>> +        if (is_struct_ops) {
->>>> +            emit_mv(RV_REG_A0, regmap[BPF_REG_0], ctx);
-
-This could be omit by combining with the sign_extend insn like 
-`sextb(rd, rs, ctx)`.
-
->>>> +            ret = sign_extend(ctx, RV_REG_A0, m->ret_size);
->>>> +            if (ret)
->>>> +                goto out;
->>>> +        }
->>>>        }
->>>>        emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
 
