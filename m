@@ -1,252 +1,205 @@
-Return-Path: <bpf+bounces-67128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49593B3EE7B
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 21:38:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 617A0B3EEFF
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 21:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A52AC1A85F31
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 19:38:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49899481AA6
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 19:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC12320A3F;
-	Mon,  1 Sep 2025 19:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F51261B8F;
+	Mon,  1 Sep 2025 19:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vzp4S3zo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zc9GWhx4"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2CC45C0B
-	for <bpf@vger.kernel.org>; Mon,  1 Sep 2025 19:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBDE120296C;
+	Mon,  1 Sep 2025 19:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756755478; cv=none; b=NUO8eoBHxfqyZgMd/ogohzuHacQVYae2PvBb0C0ZalJ8G+74i3llGwT1wqVY4Cn+XKCJJSSrD0Q76xBNXiHquNKlkoL7iuuLZnK5VoaMK8YzFwPmSG5P2DILWqNUtYJ7ln1+rjOK5b8FlFF3zDeSL0wAKnigDhiWJ4CFxGw+bgU=
+	t=1756756423; cv=none; b=ld8dILSqD+ZaXoIX5xvqq/j/MgSi9SGAq/VxbfxRQRO8qBklXSPS+DPKgnv5/OwYuvl+b42lxt0bQHfwjLGQoM0hbHsd0TCGOvCqthBRgzObsxo1PgL3SW9L/C52Hn7XDQ46MGMmSbVqWomS6iTUZVjblM8fDI5VTimSKfAAuzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756755478; c=relaxed/simple;
-	bh=fKslYKD8OIfdgcm5UkwVebYAqos1eY3DZESHQHl4t+8=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=liK2ThHrMPxrGTsP4+ITLsZo/BzwNwBAPhi2hHEb/iwL7FXleZ+4d6ogLLFmo528Ez44C8A+LBkdBl4UQHhZbrS79CXR2gjZrbWlL1WqUwfVspMumjoJtQZLXYhqTTNT4B8m3Uy15Gz4qgcGOT5touezNZ+nkoP1+zZMVrLYh88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vzp4S3zo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8E79C4CEF0;
-	Mon,  1 Sep 2025 19:37:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756755478;
-	bh=fKslYKD8OIfdgcm5UkwVebYAqos1eY3DZESHQHl4t+8=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Vzp4S3zoHhyOjqXPAOugmF/UCp+26VIbgr6Z/nc/XMSUfp1uJ4Cjfuaz0DNZer/u0
-	 ELd3hEsMKEQlutpey1JdBa0ylAZo91E3n2LN8Np5P8S9Af1xE2D7oecPJY4YAjcYVs
-	 fnVn3rvgLw7rAeTJb4LcHAvof8vQBIeeGJSbhOQCdl0oZAu9Jw4LKGLrgYhDk+KiLw
-	 gBLBHKSM/IioaW6qihZ/qlYt/BWib77vNBaO+wLmsvk/bd79ry+xq0RAJNgmzdynDi
-	 cuhQ22y6HR6qTgnrYWcfCPJFUzQ7+0i4Cx2Pk7+jO1WJ7UoP7YTNBy5rGJHEjBeWvs
-	 DcmCnHCdgjn3A==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v5 4/4] selftests/bpf: Add tests for arena fault reporting
-Date: Mon,  1 Sep 2025 19:37:26 +0000
-Message-ID: <20250901193730.43543-5-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250901193730.43543-1-puranjay@kernel.org>
-References: <20250901193730.43543-1-puranjay@kernel.org>
+	s=arc-20240116; t=1756756423; c=relaxed/simple;
+	bh=BqfrjMPuGiaKQBMWPv9o8TEs9m15Yj2+7KdBDuWr2nc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gUPqQPAArboK1289Mh/j8BumQ2Ceqbtys65dM++0PTW5iTOagc6vuyb3YeCNPER3pOD0ncoB6BmCbZ4lwSUSeyORI/R5e42y1phRaus9urRgWVI9eoPKutHojlvhGn1TvYnCvfBWqsmGRX60nXglHSQYnjwzlK2q3JYVm7F39ZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zc9GWhx4; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45b89147cfbso15471975e9.3;
+        Mon, 01 Sep 2025 12:53:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756756420; x=1757361220; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U6dC2QIlPVYDynwThj1XsMObK2EBHiK+oeTA9R38dbg=;
+        b=Zc9GWhx4gfrsrrDepQ6gSrVgvSCoc9oMlcnWqx7Go5tfHCKBLiplt7aLmHxf+aHJNE
+         tV+6iRo9FpvhzdO2XZ9b9N4gqxc5leNxSi2efLcomcJJBIU6YienVbAkYD0UxiFJxeaf
+         rhyd859RTkWIprgpYo2bCoVOsPyyGrkfA/FW8X75PqK9Mpej2n64fI7+cnvnisfLTsN3
+         tCMexANo2ya38VlZ1sR2WiGrzNOL/TmOqR+5euCpL6SnuO0Xm2F9JxiA7h64NwRkwwxc
+         t1eIpPw4DlrbjyDsBHU7jqs2abHClgMsKuYzUEUywqhwxeIh+bmGl6fpVHOHHkPlwSBT
+         CVOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756756420; x=1757361220;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U6dC2QIlPVYDynwThj1XsMObK2EBHiK+oeTA9R38dbg=;
+        b=l2j43ZWalVLAfDrC59scx74PPj8pfEl84G0mHLNQfC0DBxMriioJtBVOUPpNzQUsr2
+         ovCC4OyxXtwhjafZrvFpsLAQqRTcA7QNr6yRYthjhTCLMeKodRP2zrP3llBBc1NiAAZM
+         H2fCsqvi3lpoeua9qDM2E8gP/EAOi6AjyhRXX84cdIp853GW8+1U6imiPf7bLezwdPfS
+         wKeXA3q9EmCavzyMW+0xlnFCejMgIskyyOll38SrLJByWw4mMEtQ/JNbXjEIsP66hfzT
+         hOw7HaMWoketFzTqZ9ssbyrDYMPhJzM8h0jVAcQfyIcwfRFNxwWKBHquafGIVJQnKPy6
+         JQfA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6iaOPLR4I4pNIUgtd5wMpVcS0CHCkVcVGnxV/pjbSB8/pyVtOm5yiIF47V15sOqsppojBXDT3AA==@vger.kernel.org, AJvYcCVLOXRWlG9iG4pVwz3Tyb0KxX3m961BUqySGZ6x4mD6fLLaR4MBIHtAOVir1JXM/+fJItM=@vger.kernel.org, AJvYcCXl8Be3O0Xv4y2OyJ7GyQtcD80wPq/pyCSm8QIWP6coVRg71+FRgH+OhADhLluSYGC6q9Fpmi5XS1CWxyQRZpp7@vger.kernel.org
+X-Gm-Message-State: AOJu0YynpKQj+QHxR5jEXGHIKiQqbBJg9/KilIaetwESJ4hHJEyoTrnd
+	mE0cSY5uncGUoiXy5GCEHrVu5laf2iFslQc6dpydi917m8jjzLhTkKHp
+X-Gm-Gg: ASbGncuSIUOwPIpM7RlHJN72tkCimwtngkANAuwhyZbnQxaEg9OapntDcMyEQeByKcR
+	OfRj/YPyGTEg9QB5xyPG4p2tvaDUaOWSsBotiEMN65xR7AZ74w7R2f6kMQrVtJcAMhOefs4tThT
+	cOcKJx3Txiw9xyGFxbP6XseSUwc4+W4Th8tNIYYvfuEAxxCzaJZ6P86wIEq2EXTK+7q7wQ8tUc5
+	Ph6wsb5VFGclhNNqrKB4gerqi4SSN/khw/tVeRgOezZ4M2vzwBmcv1crx0JNWiKF2LPM1bDpEOi
+	bqBmAJP9Njo1nIuBgRYiyOlnstqmESDaCjVlBtBsh6BYQKUiwz4yyrsOu7GxAObfAlnJGpBSh+W
+	5GEeTa37qamQMI6q097r4Z4hb
+X-Google-Smtp-Source: AGHT+IFqmqy7JTqCE8kp/izmK35smwPEY9oWGFGG/gnBIrSVmpVJnbVt7jfeeObUA4ZRq4rWsdC6CA==
+X-Received: by 2002:a05:600c:1e87:b0:45b:47e1:ef68 with SMTP id 5b1f17b1804b1-45b855bec6emr71221655e9.35.1756756419930;
+        Mon, 01 Sep 2025 12:53:39 -0700 (PDT)
+Received: from [192.168.100.3] ([105.109.196.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3cf34493b8csm16184910f8f.59.2025.09.01.12.53.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Sep 2025 12:53:39 -0700 (PDT)
+Message-ID: <28cbe760-e218-4f2e-a18a-651e2477ebfe@gmail.com>
+Date: Mon, 1 Sep 2025 20:53:36 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, tixxdz@opendz.org
+References: <20250818090424.90458-1-tixxdz@gmail.com>
+ <356xekrj6vqsmtcvbd3rnh7vg6ey7l6sd6f4v3dv4jxidxfd6m@cepwozvwucda>
+ <0e78be6f-ef48-4fcc-b0c7-48bc14fdfc7f@gmail.com>
+ <m7laj6747wtu5r732iph47zn6no3mbu6iq3mne3zslzyqlq523@7tmw25ap77ek>
+Content-Language: en-US
+From: Djalal Harouni <tixxdz@gmail.com>
+In-Reply-To: <m7laj6747wtu5r732iph47zn6no3mbu6iq3mne3zslzyqlq523@7tmw25ap77ek>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Add selftests for testing the reporting of arena page faults through BPF
-streams. Two new bpf programs are added that read and write to an
-unmapped arena address and the fault reporting is verified in the
-userspace through streams.
+Hi Michal,
 
-The added bpf programs need to access the user_vm_start in struct
-bpf_arena, this is done by casting &arena to struct bpf_arena *, but
-barrier_var() is used on this ptr before accessing ptr->user_vm_start;
-to stop GCC from issuing an out-of-bound access due to the cast from
-smaller map struct to larger "struct bpf_arena"
+On 8/28/25 15:38, Michal Koutný wrote:
+> On Wed, Aug 27, 2025 at 12:27:08AM +0100, Djalal Harouni <tixxdz@gmail.com> wrote:
+>> It solves the case perfectly, you detect something you fail the
+>> security hook return -EPERM and optionally freeze the cgroup,
+>> snapshot the runtime state.
+> 
+> So -EPERM is the right way to cut off such tasks.
+> 
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/stream.c | 34 ++++++++++-
- tools/testing/selftests/bpf/progs/stream.c    | 61 +++++++++++++++++++
- 2 files changed, 94 insertions(+), 1 deletion(-)
+Indeed. A process can retry x y z paths, at some point we just
+want to stop the process or container before snapshot.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/stream.c b/tools/testing/selftests/bpf/prog_tests/stream.c
-index 9d0e5d93edee7..b2a85364e3c4f 100644
---- a/tools/testing/selftests/bpf/prog_tests/stream.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stream.c
-@@ -41,6 +41,22 @@ struct {
- 		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
- 		"|[ \t]+[^\n]+\n)*",
- 	},
-+	{
-+		offsetof(struct stream, progs.stream_arena_read_fault),
-+		"ERROR: Arena READ access at unmapped address 0x.*\n"
-+		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
-+		"Call trace:\n"
-+		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
-+		"|[ \t]+[^\n]+\n)*",
-+	},
-+	{
-+		offsetof(struct stream, progs.stream_arena_write_fault),
-+		"ERROR: Arena WRITE access at unmapped address 0x.*\n"
-+		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
-+		"Call trace:\n"
-+		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
-+		"|[ \t]+[^\n]+\n)*",
-+	},
- };
- 
- static int match_regex(const char *pattern, const char *string)
-@@ -63,6 +79,7 @@ void test_stream_errors(void)
- 	struct stream *skel;
- 	int ret, prog_fd;
- 	char buf[1024];
-+	char fault_addr[64] = {0};
- 
- 	skel = stream__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "stream__open_and_load"))
-@@ -85,6 +102,14 @@ void test_stream_errors(void)
- 			continue;
- 		}
- #endif
-+#if !defined(__x86_64__) && !defined(__aarch64__)
-+		ASSERT_TRUE(1, "Arena fault reporting unsupported, skip.");
-+		if (i == 2 || i == 3) {
-+			ret = bpf_prog_stream_read(prog_fd, 2, buf, sizeof(buf), &ropts);
-+			ASSERT_EQ(ret, 0, "stream read");
-+			continue;
-+		}
-+#endif
- 
- 		ret = bpf_prog_stream_read(prog_fd, BPF_STREAM_STDERR, buf, sizeof(buf), &ropts);
- 		ASSERT_GT(ret, 0, "stream read");
-@@ -92,8 +117,15 @@ void test_stream_errors(void)
- 		buf[ret] = '\0';
- 
- 		ret = match_regex(stream_error_arr[i].errstr, buf);
--		if (!ASSERT_TRUE(ret == 1, "regex match"))
-+		if (ret && (i == 2 || i == 3)) {
-+			sprintf(fault_addr, "0x%lx", skel->bss->fault_addr);
-+			ret = match_regex(fault_addr, buf);
-+		}
-+		if (!ASSERT_TRUE(ret == 1, "regex match")) {
- 			fprintf(stderr, "Output from stream:\n%s\n", buf);
-+			if (i == 2 || i == 3)
-+				fprintf(stderr, "Fault Addr: 0x%lx\n", skel->bss->fault_addr);
-+		}
- 	}
- 
- 	stream__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/stream.c b/tools/testing/selftests/bpf/progs/stream.c
-index 35790897dc879..8ca6d3396a20a 100644
---- a/tools/testing/selftests/bpf/progs/stream.c
-+++ b/tools/testing/selftests/bpf/progs/stream.c
-@@ -5,6 +5,7 @@
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- #include "bpf_experimental.h"
-+#include "bpf_arena_common.h"
- 
- struct arr_elem {
- 	struct bpf_res_spin_lock lock;
-@@ -17,10 +18,17 @@ struct {
- 	__type(value, struct arr_elem);
- } arrmap SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARENA);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+	__uint(max_entries, 1); /* number of pages */
-+} arena SEC(".maps");
-+
- #define ENOSPC 28
- #define _STR "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
- 
- int size;
-+u64 fault_addr;
- 
- SEC("syscall")
- __success __retval(0)
-@@ -76,4 +84,57 @@ int stream_syscall(void *ctx)
- 	return 0;
- }
- 
-+SEC("syscall")
-+__success __retval(0)
-+int stream_arena_write_fault(void *ctx)
-+{
-+	struct bpf_arena *ptr = (void *)&arena;
-+	u64 user_vm_start;
-+
-+	/* Prevent GCC bounds warning: casting &arena to struct bpf_arena *
-+	 * triggers bounds checking since the map definition is smaller than struct
-+	 * bpf_arena. barrier_var() makes the pointer opaque to GCC, preventing the
-+	 * bounds analysis
-+	 */
-+	barrier_var(ptr);
-+	user_vm_start =  ptr->user_vm_start;
-+	fault_addr = user_vm_start + 0x7fff;
-+	bpf_addr_space_cast(user_vm_start, 0, 1);
-+	asm volatile (
-+		"r1 = %0;"
-+		"r2 = 1;"
-+		"*(u32 *)(r1 + 0x7fff) = r2;"
-+		:
-+		: "r" (user_vm_start)
-+		: "r1", "r2"
-+	);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+__success __retval(0)
-+int stream_arena_read_fault(void *ctx)
-+{
-+	struct bpf_arena *ptr = (void *)&arena;
-+	u64 user_vm_start;
-+
-+	/* Prevent GCC bounds warning: casting &arena to struct bpf_arena *
-+	 * triggers bounds checking since the map definition is smaller than struct
-+	 * bpf_arena. barrier_var() makes the pointer opaque to GCC, preventing the
-+	 * bounds analysis
-+	 */
-+	barrier_var(ptr);
-+	user_vm_start = ptr->user_vm_start;
-+	fault_addr = user_vm_start + 0x7fff;
-+	bpf_addr_space_cast(user_vm_start, 0, 1);
-+	asm volatile (
-+		"r1 = %0;"
-+		"r1 = *(u32 *)(r1 + 0x7fff);"
-+		:
-+		: "r" (user_vm_start)
-+		: "r1"
-+	);
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.47.3
+>> Oh I thought the attached example is an obvious one, customers want to
+>> restrict bpf() usage per cgroup specific container/pod, so when
+>> we detect bpf() that's not per allowed cgroup we fail it and freeze
+>> it.
+>>
+>> Take this and build on top, detect bash/shell exec or any other new
+>> dropped binaries, fail and freeze the exec early at linux_bprm object
+>> checks.
+> 
+> Or if you want to do some followup analysis, the process can be killed
+> and coredump'd (at least seccomp allows this, it'd be good to have such
+> a possibility with LSMs if there isn't (I'm not that familiar)).
+> Freezing the groups sounds like a way to DoS the system (not only
+> because of hanging the faulty process itself but possibly spreading via
+> IPC dependencies to unrelated processes).
+
+Well mis-using things is possible, but here nothing is new.
+
+Pausing a container, freezing the cgroup, or criu have been there for
+years, no new features here ;-)
+
+> 
+>>> Also why couldn't all these tools execute the cgroup actions themselves
+>>> through traditional userspace API?
+>>
+>> - Freezing at BPF is obviously better, less race since you don't need
+>>    access to the corresponding cgroup fs and namespace. Not all tools run
+>>    as supervisor/container manager.
+> 
+> Less race or more race -- I know the race window size may vary but
+> strictly speaking , there is a race or isn't (depends on having proper
+> synchronization or not). (And when intentionally misbehaving processes are
+> considered even tiny window is potential risk.)
+> 
+>> - The bpf_send_signal in some cases is not enough, what if you race with
+>>    a task clone as an example? however freezing the cgroup hierarchy or
+>>    the one above is a catch all...
+> 
+> Yeah, this might be part that I don't internalize well. If you're
+> running the hook in particular task's process context, it cannot do
+> clone at the same time. If they are independent tasks, there's no
+> ordering, so there's always possibility of the race (so why not embrace
+> it and do whatever is possible with userspace monitoring audit log or
+> similar and respond based on that).
+
+The complexity to do that from userspace for an eBPF security tool
+that is not running as a supervisor in other namespaces is high.
+Basically the race window is reduced... we trigger in the task context 
+that we want to freeze and set the freeze jobctl bit of the other
+tasks.
+
+The extra offending syscalls by that cgroup tasks are reduced.
+
+> 
+>> The feature is supposed to be used by sleepable BPF programs, I don't
+>> think we need extra checks here?
+> 
+> Good.
+> 
+>> It could be that this BPF code runs in a process that is under
+>> pod-x/container-y/cgroup-z/  and maybe you want to freeze "cgroup-z"
+>> or "container-y" and so on... or in case of delegated hierarchies,
+>> freezing the parent is a catch all.
+> 
+> OK, this would be good. Could it also be pod-x/container-y/cgroup-z2?
+> 
+
+Yes, basically the cgroup of the task, or any parent by fetching its
+cgroup.
+
+BPF is already the core interface of cgroup device controller.
+
+
+Thanks!
+
+> ---
+> 
+> I acknowledge that sooner or later some kind of access to cgroup through
+> BPF will be added, I'd prefer if it was done in a generic way (so that
+> it doesn't become cgroup's problem but someone else's e.g. VFS's or
+> kernfs's ;-)).
+> I can even imagine some usefulness of helpers for selected specific
+> cgroup (core) operations (which is the direction brought up in the other
+> discussion), I just don't think it solves the problem as you present it.
+> 
+> HTH,
+> Michal
 
 
