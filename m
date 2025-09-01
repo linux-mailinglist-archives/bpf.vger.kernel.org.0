@@ -1,302 +1,195 @@
-Return-Path: <bpf+bounces-67081-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67082-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AF81B3DA7A
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 09:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 981BFB3DB99
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 09:57:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A96DA1893C87
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 07:00:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9B70189CA05
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 07:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D9025A659;
-	Mon,  1 Sep 2025 06:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C475D2EE26F;
+	Mon,  1 Sep 2025 07:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="PwhqvEdG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ay1qEhOq"
 X-Original-To: bpf@vger.kernel.org
-Received: from OS8PR02CU002.outbound.protection.outlook.com (mail-japanwestazon11012018.outbound.protection.outlook.com [40.107.75.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65944243954;
-	Mon,  1 Sep 2025 06:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.75.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756709993; cv=fail; b=Bu26Kk4RhjrHUsTMTSMepxi9rFHb3n+1KC/lrn6K3Bm+27mc+w4sEhfZSpXcg43bgO9Wg8oKPYA+6KONTgwzSqvKQO289Dmwek+A2lgYsKEOEn3JhM/hvegvAf/5+uRMUh9+QeLqjiqwiLfcm/uN+lrU1wOtrWHtY+qlB3AmHog=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756709993; c=relaxed/simple;
-	bh=6Pf9d5yjrs1a29WUGF5UQkmj8/JsKQTWI3xV6iShtYk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=QNLma517BcsN96O14JSIlVdUj14PxUVZy03yPB73bL4BSFgr+biUx3xOGiVbvyuwtn4btqbFJ+vWKaXH5mE/TzPd3OleIDqjXT5upkT2JRrGsKdVGOOMeW9rZExSy62bh3XmJegIT9BEMQIYJ4AhM+H/NqgZdmjZkIqOVJFvgXE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=PwhqvEdG; arc=fail smtp.client-ip=40.107.75.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WkK6y798rx2UekZZZwFj8pNIR9hMb89Ru9eOt+aU1rhJK0Kw9MGmC5ofXjwxZZxDlbxOFgTl9VuSdwqiz06iyZyHyvTEOnz8xTFVAh8jzcy1kdBuxQhxtWftLfRtCCQ3x9HBunpXVinwpuI8TIvt9Jy8GMxM+xtAqzCC3nIaMcVhnarHgYc2BpqV4z1kHcBkvbNAOI16vFMd9ou5/se08l8D5LZkbZzYw79/ie5OBvkr7pGGEo0mr86kv59rxhUwQAdSYWZ22JhgHghPAgPfiEitOgKdcwczs41EjbGVpRy0nL54YC7AKMHPfvDPPDqLe0XKkNnSLafA/4OuQAXNUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YBw4XH8J5NULEOXiyf1Un4jl2qt/oqFZgN1MBlMTTU4=;
- b=jMkBYsQPA8ZBBAnLAKm6GmRmsvPwZM2IZhMznGts9NX5QOg8dFSmcJcOFYGPRBIh0HlkxB7AHufSw7tdwXK2cl8zkG0pRXrPqgYyfbp4Ybb9B4O1YWiP19RaYdGsUkoWdIZScKnHUGMPhzHFNFoxvaJBuk92B7UO//cqn1Xx8ETApHlKN1SAkrJPCoqyjuJ8m1lNbuMYzFDQ5WANVlDNCKHuni9YCz2B0+OHKooSWp8Vq1T4q+xyuP1ESALoV2RyC9fmdZB0Ese0yb4LWXG129kUF54GIlc/HGIE9OEEogdboYQh1Mvn7YSLwr12zfcYYf7/sSyJFJP6zM3YuFydcA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YBw4XH8J5NULEOXiyf1Un4jl2qt/oqFZgN1MBlMTTU4=;
- b=PwhqvEdGjaY06xfvb6Mn6IDCBAM6xedqP8eHj+BVtpItAE2/XbS5a+PCMvwqxMUcFNSwdbpsNtSz+Gkv8P3L0wVOYwwjw7tvrwN096De1hzMH0Bq4q/RTu7IWmCLau8btPHNwGnlOTnnrRweQz6EvWItqhTzGu+mQ3IVLiVihoy6L14iXQgyd0fsQ0dGZ3OwzWp+o/fFH8Rw+bwq0iLCC/sjVCd9PiaoR73WbdJ7bakJCRD+/bhYbIRpZt7z3dfVIKOnb83QZf2zvspCgpKa/rVtHnLZlSdIEbK7jAaqhYuaoaU2L3gKqCOwmxqUF+F7NjE3rU5y9MrwxqCjogp2Aw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from KL1PR0601MB4324.apcprd06.prod.outlook.com (2603:1096:820:73::6)
- by JH0PR06MB6386.apcprd06.prod.outlook.com (2603:1096:990:17::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.27; Mon, 1 Sep
- 2025 06:59:48 +0000
-Received: from KL1PR0601MB4324.apcprd06.prod.outlook.com
- ([fe80::f8ee:b41e:af25:202]) by KL1PR0601MB4324.apcprd06.prod.outlook.com
- ([fe80::f8ee:b41e:af25:202%5]) with mapi id 15.20.9073.026; Mon, 1 Sep 2025
- 06:59:48 +0000
-Message-ID: <37d6f4a3-89dc-464a-b5fe-dcfb3e7882cc@vivo.com>
-Date: Mon, 1 Sep 2025 14:59:43 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHSET V1 0/2] cpuidle, bpf: Introduce BPF-based extensible
- cpuidle policy via struct_ops
-To: Song Liu <song@kernel.org>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- linux-kselftest@vger.kernel.org, linux-pm@vger.kernel.org,
- bpf@vger.kernel.org, Tejun Heo <tj@kernel.org>, zhaofuyu@vivo.com
-References: <20250829101137.9507-1-yikai.lin@vivo.com>
- <CAPhsuW4PGfmFnJ-huFFELRQDJ7SpgWOLxYVBhRtsZnsLZhB6rw@mail.gmail.com>
-From: "yikai.lin" <yikai.lin@vivo.com>
-In-Reply-To: <CAPhsuW4PGfmFnJ-huFFELRQDJ7SpgWOLxYVBhRtsZnsLZhB6rw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR06CA0194.apcprd06.prod.outlook.com (2603:1096:4:1::26)
- To KL1PR0601MB4324.apcprd06.prod.outlook.com (2603:1096:820:73::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39EDF2EDD53;
+	Mon,  1 Sep 2025 07:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756713433; cv=none; b=RrNfkCJG2W7/9o0SpcCxwxd2xZtmDz7rcyPQP1DElqnth9JO3t9UfYuEbsbnuGxJf7xnFy6zLLQpJ8b/BxQ5EByksO0uxGodScs22LQ1LyQtAAdPIUM8VAIvXq5iIkM0C9bPUTPulyBYAVP0stfESiql9jHamdwqhAPYa7YLso8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756713433; c=relaxed/simple;
+	bh=6cf6IP3Zyu1K8Nz0C795sQp5Ekxuv1v5U19u2AtF0Mw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N5SjAOmYVTfDa915xFzvfbsGzQUyz/qsXK4jfb+SepPHH9C0NEtDOcq9wLzEGYYRupwzk2SodLyFQux8yj3vq1ZOmS+QwXKvfjDU+kZno6lixPjwiLvrEEpTtU+oUnB6/e5/+twAf3ipoivuFFf+R5Qan7w25sMMRdbWgghFhuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ay1qEhOq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B774C4CEF0;
+	Mon,  1 Sep 2025 07:57:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756713432;
+	bh=6cf6IP3Zyu1K8Nz0C795sQp5Ekxuv1v5U19u2AtF0Mw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ay1qEhOqJl1chGeEzlvrxLvyH0AGc2YoqIWlKtLJF5EMJwbDSJYaNBCEjxRn3iROt
+	 n0Eb+SeWq747Noh/t8m7YK0tnGYhRUB5lNSTtft9X2ooJwbb+FrLICsD7vb93VDSgQ
+	 Ji2CP7IvnOUnCdUccPH/ktqgUsnYlxantdVOWCORGOH/Lsude3RGRkWq8P5y18SeOE
+	 UzyWLm7RjzBab8QRoDzzKtGXVmzi9Otli8nk8oHtHY4RI1AwZZLHmRCd25s+BVabLp
+	 osfA0RbQGqceXFwzVEg9uVvCT0zIwNYDWCIUz3m7dBocWnwc6drDH5cD8tLTbxgpc+
+	 0kbSEKm/J/egw==
+Date: Mon, 1 Sep 2025 00:57:07 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Ian Rogers <irogers@google.com>, Blake Jones <blakejones@google.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
+	ihor.solodrai@linux.dev, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-perf-users <linux-perf-users@vger.kernel.org>,
+	Howard Chu <howardchu95@gmail.com>
+Subject: Re: [PATCH v3 1/2] libbpf: add support for printing BTF character
+ arrays as strings
+Message-ID: <aLVR0-CUGgwHvFpF@google.com>
+References: <20250603203701.520541-1-blakejones@google.com>
+ <174915723301.3244853.343931856692302765.git-patchwork-notify@kernel.org>
+ <CAP-5=fWJQcmUOP7MuCA2ihKnDAHUCOBLkQFEkQES-1ZZTrgf8Q@mail.gmail.com>
+ <466d45ae-ce97-4256-9444-9f25f3328c51@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: KL1PR0601MB4324:EE_|JH0PR06MB6386:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6a3e2a78-9ba5-4ca1-ac92-08dde9252310
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?SGtrOFR6TmVnTG14MUdoQUdYTVRhamtHem11K3RlYXV6L3lVSlYvRUIyMUl5?=
- =?utf-8?B?YVJwTmZPYmljMHRYdlBsc05QRG93MjBtK29iNVUzakZJL0RJVURCc0ZyUkZ2?=
- =?utf-8?B?S1Z6Z2F2SEo3Ull6NjJraGU1ZUJydXR0K24vckl1b3BGRmcvemZwRUg1OWdN?=
- =?utf-8?B?WGcrSXhxVFVZd29QSlFBdjIyNXZWUHRJV2U3eEVJZGNzdnFpYjhibXNZVVJ4?=
- =?utf-8?B?d0Z4ZjZFN0pqQzZiTzBSbVFvWVptNTdJaFdjK09BR2xIMVArbEpIcWR4MDVN?=
- =?utf-8?B?UWY1MGMyV21kL1RQSVh2QXp1R2RqdGxQWVU1UlJjWTV1ZmpNSVUwc3RsK05q?=
- =?utf-8?B?ZXc0VXFNYnBpenF6eDY4bTJocVZ3U0V2U2FZb004cW9KeGdGeG9LLzFLOHF2?=
- =?utf-8?B?MVcyUWUyOERYNWZIT21hU2FCQy93RHR0QkZwam0wOEZwb1p4SXF1L2wzcm5U?=
- =?utf-8?B?SFhyMmQ3TnR2OHZGYU16QnltckJaOTBTelgrV0ZmeFBreHp2SWhhUDd6Qzd4?=
- =?utf-8?B?ZG5YUG9nL01JWFBFNU9PcnRVK1IzKzFpYUpNT0xac20wWUpjVGxiOEhFVDht?=
- =?utf-8?B?V2JTRjFVMmdmNS94clR5dTYwNndBZDJJdDRzV09qdWtEOE1rTEtQV2Q0RTd1?=
- =?utf-8?B?czhENlZaTTVsZzA4NzVOQkprSVZlN2paa0Z4QmZzWEtLWWtUbGF4cDY4TUhn?=
- =?utf-8?B?WURWODE1WW5RVmtyaytPeEJXLzVka1FBeVpBL08zcCtTblAxWDI1UGdPbDN2?=
- =?utf-8?B?VjRhSUp5dkNJWHpCY0FJMS9xZ3pHS2tRZEo3NE1Vc0NBWUZHZVFCamZpanoy?=
- =?utf-8?B?VGc1NTZrV3p5cW91WDJiVnhaQjFkcEd6cmVQa1lVMFBCUVIvTzJyTU1EVVYx?=
- =?utf-8?B?dFpjdXQ3cXF6b2xCSzQzSU5XVGg4NDVNNlAwVVpQRkxkeHhZOEEwRUl1TE4r?=
- =?utf-8?B?LzV0SVVRcVVYdDRleHVjMEsycUhsLyt2NHRVdm1uUXVJNk5UU1NYNHBrQkF1?=
- =?utf-8?B?bkJVVmwvRTdsNUxSZmdpUGdVMS9JTVJxVHdHMUt2c1NLZU5qRVVkVW9kaUMw?=
- =?utf-8?B?UXRDeGk2VVVubnY1ek5IeTBBL0ZncmtiSktzQjg4UEdaMUk2TWpISWVOUlVI?=
- =?utf-8?B?aGdIUU5laXVLSEtDRHJNanEvVERhNmVTNWMvMGNybGg1MjZ6dGxydlR6RFlZ?=
- =?utf-8?B?Z3FsdG5BVXNyQm44MTJrWkdzeTZQZ3N1RzR3ekE4YXBKUU1qaC9VWlhSNGVN?=
- =?utf-8?B?L09SdXYzNzBxOUlwZlJ6Y1JDeHFkRFpWYWlpTUdtdjQ5TUZXMVJlbWFBbita?=
- =?utf-8?B?V0VkWVhlblVZaklLdkR3cUVraWFIU3dHNDhZSEpaK1hpSzQvVjNEaXVIK2xq?=
- =?utf-8?B?WHYzTUZWL2tmd2JmY3ZrZTM3MFZaY3BMZk9WTVFVRzJEMkJDaVZ6M25qUS9K?=
- =?utf-8?B?RTAyeXNvNzZrUCs4MndnK3lJOGlhcXZCMXRnbnA4WnBrTjVJaW9HT1pJTll4?=
- =?utf-8?B?eDUvS1MreGRyMWtwUzZRTERoSHdpWHRtTlJsbExLNERWTnloUDFwZ1JQWW9z?=
- =?utf-8?B?Rk4wMnc5V3pyMFkwME0xMWE1dm5pMk44SWdwRHdmMUNsTDF1bURlbERhZDZj?=
- =?utf-8?B?LzFJekxDcFVPbGFFcWlDTWhiL3k5RmtXeW1UcGk3NDh1YUR1cllkdkw0ZHN1?=
- =?utf-8?B?QXQ2bjhnSHNYeFpBTnp5bldOOVpZMnNOU3l5UExQbGRpeTlxLzV2dlVBNmJj?=
- =?utf-8?B?K0R5WktXTnpud0dpUlMyRzNkalhiR2pNejByZWJFUHI3TE84OXJKclFkbS9K?=
- =?utf-8?B?ajRrN1pJWTd5bEZrZDJQOFlmOUs5SjIrRk9qL1dMSDBseklaUGRjRjQwYXUx?=
- =?utf-8?B?VmdLdUlkVzRkSTRqaHhNY2FLWDZLL2pvTDVVdllKL3RtRkdDTGpEL2x3YzJV?=
- =?utf-8?Q?5Lz6r9x5PVo=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB4324.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dnJ5b1dRakhXM3lFZjRJeEE3bFltdExNR1VWLzcrNDFCWEg1TEpmWGFFR0Jl?=
- =?utf-8?B?R0hpUk1TZzR6bjN1QW9hbmNmZHVjdi9Fc3dyQ3lkTVdJVHFpWXBYTnBZdkFP?=
- =?utf-8?B?clRQUVF3RmVHM2NJZWcwZG45NVRHNjArQjdnZEVpUElicWl2THlxUVlBdnZi?=
- =?utf-8?B?UlMvbThxVVFNdFdxMHhleUkrS2FGWTJGejRKT3lHeSszV3pYbkJmSFZLWVpF?=
- =?utf-8?B?YmpQMVVqSitwTTB4akxQZ24zZ291T2RtTlZLZTJPTUFkVVVKMTY3N1plU1g1?=
- =?utf-8?B?Y0pJK1V6SjNTRUhSRS9Ma1kyb1V6MmlPTGhVYmVkK201VDJjUTc0bisvNzFU?=
- =?utf-8?B?bzh4c1hSZm9qQWxQS1NVSWo0MzJXUHRJQ0dYRTRub1N6VnREOXJQeGVSTDBJ?=
- =?utf-8?B?SDJRN1VLNlhuM0NJUm5GL2xabmRXVGNWYTdvYVBVWFl5OU9FTFZOZU5QVTNS?=
- =?utf-8?B?bjN5MFUxVGtxUVNuS2l0OTFNQ1Z5MVREUmN4bDhRUTBEZW9IU3BXUkF5Tkhw?=
- =?utf-8?B?cHFRRWJCZXZSZ0xsdk1jSHRLUUhqOEpwMzlGSFNrRTJMUGdieDY3aFQ5YmNq?=
- =?utf-8?B?NzAwdmxhcGxiWTJncDd6eUV1Y2YwSTR3dlRHSGp4dFVMZHlhbUNuc2tIVGtr?=
- =?utf-8?B?UURtT1pJTjZmdmk0MHJ0a1p4R1Y3N0xaWWlpV3UzaU1SUloySFgwdDZOQThn?=
- =?utf-8?B?ZmY0MjU0enlKbFRJcWRlS01Vbi9WN1VTNlloZkdCbzVzWWYyaS9MZ1ZHWTRH?=
- =?utf-8?B?L0dLbE52amdMMFl0STlvUjF0UmhTV2wvVm5wSlRBS1Q0ZVZrM1h2N0E3VVpL?=
- =?utf-8?B?ZUVCeU5yNHdKbzAvVG9LYW9DRlhrdWtyTlpRRVV5RUlEN0F6TFVndkpiUC9C?=
- =?utf-8?B?QWpqMDJuTEpabmpKTFk3Tis4WUFBSFd0OVl4TGFIYXpLYTFDZXdQa0svdk5y?=
- =?utf-8?B?TWJ2eFJKWm8wMlFobGtXNXJJQlhZT0RyZEF5ZEZwblZyUVBSQmNjd2lkRWpH?=
- =?utf-8?B?QURmaXdBRWl3dDltRE5NYklEbWhjMmFZRmc5Y3pVemdTNDE1M0g1aExNVGZz?=
- =?utf-8?B?VEtzMS9WYlc5S3VTVDg5MnVEVFNuMzc3ZXU0RXY0NHBibVVEMUpSWEd4NkZp?=
- =?utf-8?B?RzZFcDFmbDVDUUpJSGs0akdOZUQwL1JacjNEbEJ6NDgzYmo4SmJ3d3dGNDM2?=
- =?utf-8?B?U2hIVXBHQktGNmR1L1drbzFTa0I2RHdEMzJ1dDNvLzFWbUFnREp1M25lSWZ3?=
- =?utf-8?B?OTNNeEJXN1FydzNZWExiVzJTYnZYeERpemZYR3oxSFgwcVlSU2VPTUJUTVM1?=
- =?utf-8?B?SSswK3hGa3B5MnF4eW8vM0tvdWU1aWt4cVZranFhVUlOdGxjNWE1OFZhSWlX?=
- =?utf-8?B?QVdRQ055dE9QSGlheWthTnJWZmdvS0drRUF2d0U2akZJenBiY2NUTEw2MzZJ?=
- =?utf-8?B?VnJRQmpQck9nbHJQZkVFbWUwaXJuWDRlSCtkVHBObUlMV0RFWVFzVFNkQVF6?=
- =?utf-8?B?aWdRNmVNTFR5M0h6aUlCb2ErK0U1ZU1TRGhrRXIzMmRJSnlLZXhZUUZSSW1s?=
- =?utf-8?B?YnJtanhaQU84c3F0cnd3TzRObDZLMnlIRDdiNll5TGloZTNMUG5mMVJuZE5x?=
- =?utf-8?B?NFp5U28rSXQ4Ty9NOXB0MXFHVTFmK0JHUFQ3ZnZjM0VLK01TajVnQ2JsazhB?=
- =?utf-8?B?bEQxYWVjd3huUzlheDd6TnEzWnM3QXErWm9jN2dCUEszaWN1c1ZYQlpYMlZk?=
- =?utf-8?B?K2lPT1hYUkJZOURHNlpyUlp0WXpBanFsYzViK1J4NFhOQlQ3VVNjRkpSOG9S?=
- =?utf-8?B?ZVJyVi8zTkk2YW9PN3hrZFlwaTdjYzNaSmlTRGFRdkxkRGRQT1hFdEZFSmhP?=
- =?utf-8?B?MTJ0dmhzTVhtTWFDRTFSM3RwbnFxaEZaSjdrdEJjdGRGUkwzdnRieW9OQ2Rv?=
- =?utf-8?B?NjFvNURkcjlZN1FzR2JoRVZjUUpUeXIwTXRxbFM1UzFMMWJMRVNZaXRxMWJS?=
- =?utf-8?B?MzhDWWlXMGhUNjhUeE03cUN2RXptS0VCKzRZSm8zTjIzNkR5aGcxR0NUc1k3?=
- =?utf-8?B?SHd1dEhZbldMRVpKR0VHY1V4THhQZzY0VG54Q2Y2U2QycWdPRmpyL3JrR0Uw?=
- =?utf-8?Q?A2Cy1P3EASvMPGsGS//AWw4BW?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a3e2a78-9ba5-4ca1-ac92-08dde9252310
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB4324.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2025 06:59:48.8356
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fYZKrPEBNd28Sl7gmPtD/JTiHjUxZPO6uYumKvLporGn/up2z0aMEYKHzvucVT65ZdMYnDxb7jBhU3x5SMkYkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6386
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <466d45ae-ce97-4256-9444-9f25f3328c51@linux.dev>
+
+Hello,
+
+On Sun, Aug 31, 2025 at 09:17:34PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 8/29/25 10:19 PM, Ian Rogers wrote:
+> > On Thu, Jun 5, 2025 at 2:00 PM <patchwork-bot+netdevbpf@kernel.org> wrote:
+> > > Hello:
+> > > 
+> > > This series was applied to bpf/bpf-next.git (master)
+> > > by Andrii Nakryiko <andrii@kernel.org>:
+> > > 
+> > > On Tue,  3 Jun 2025 13:37:00 -0700 you wrote:
+> > > > The BTF dumper code currently displays arrays of characters as just that -
+> > > > arrays, with each character formatted individually. Sometimes this is what
+> > > > makes sense, but it's nice to be able to treat that array as a string.
+> > > > 
+> > > > This change adds a special case to the btf_dump functionality to allow
+> > > > 0-terminated arrays of single-byte integer values to be printed as
+> > > > character strings. Characters for which isprint() returns false are
+> > > > printed as hex-escaped values. This is enabled when the new ".emit_strings"
+> > > > is set to 1 in the btf_dump_type_data_opts structure.
+> > > > 
+> > > > [...]
+> > > Here is the summary with links:
+> > >    - [v3,1/2] libbpf: add support for printing BTF character arrays as strings
+> > >      https://git.kernel.org/bpf/bpf-next/c/87c9c79a02b4
+> > >    - [v3,2/2] Tests for the ".emit_strings" functionality in the BTF dumper.
+> > >      https://git.kernel.org/bpf/bpf-next/c/a570f386f3d1
+> > > 
+> > > You are awesome, thank you!
+> > I believe this patch is responsible for segvs occurring in v6.17 in
+> > various perf tests when the perf tests run in parallel. There's lots
+> 
+> Could you share the command line to reproduce this failure?
+> This will help debugging. Thanks!
+
+My reproducer is below:
+
+terminal 1: run perf trace in a loop.
+
+  $ while true; do sudo ./perf trace true; done
+
+terminal 2: run perf record in a loop until hit the segfault.
+
+  $ while true; do sudo ./perf record true || break; done
+  ...
+  perf: Segmentation fault
+      #0 0x560b2db790e4 in dump_stack debug.c:366
+      #1 0x560b2db7915a in sighandler_dump_stack debug.c:378
+      #2 0x560b2d973b1b in sigsegv_handler builtin-record.c:722
+      #3 0x7f975f249df0 in __restore_rt libc_sigaction.c:0
+      #4 0x560b2dca1ee6 in snprintf_hex bpf-event.c:39
+      #5 0x560b2dca2306 in synthesize_bpf_prog_name bpf-event.c:144
+      #6 0x560b2dca2d92 in bpf_metadata_create bpf-event.c:401
+      #7 0x560b2dca3838 in perf_event__synthesize_one_bpf_prog bpf-event.c:673
+      #8 0x560b2dca3dd5 in perf_event__synthesize_bpf_events bpf-event.c:798
+      #9 0x560b2d977ef5 in record__synthesize builtin-record.c:2131
+      #10 0x560b2d9797c1 in __cmd_record builtin-record.c:2581
+      #11 0x560b2d97db30 in cmd_record builtin-record.c:4376
+      #12 0x560b2da0672e in run_builtin perf.c:349
+      #13 0x560b2da069c6 in handle_internal_command perf.c:401
+      #14 0x560b2da06b1f in run_argv perf.c:448
+      #15 0x560b2da06e68 in main perf.c:555
+      #16 0x7f975f233ca8 in __libc_start_call_main libc_start_call_main.h:74
+      #17 0x7f975f233d65 in __libc_start_main_alias_2 libc-start.c:128
+      #18 0x560b2d959b11 in _start perf[4cb11]
 
 
+I manually ran it with gdb to get some more hints.
 
-On 8/30/2025 4:00 AM, Song Liu wrote:
-> Hi,
-> 
-> Thanks for the patchset.
-> 
-> Some logistics:
-> 
-> 1. Please prefix future patches properly with "bpf" or "bpf-next", for example,
-> [PATCH v2 bpf-next 1/2].
-> 
-> 2. Please be specific with the patch title, i.e. "selftests/bpf: Add selftests"
-> should be something like "selftests/bpf: Add selftests for cpu-idle ext".
-> 
-> On Fri, Aug 29, 2025 at 3:11 AM Lin Yikai <yikai.lin@vivo.com> wrote:
->>
->> Summary
->> ----------
->> Hi, everyone,
->> This patch set introduces an extensible cpuidle governor framework
->> using BPF struct_ops, enabling dynamic implementation of idle-state selection policies
->> via BPF programs.
->>
->> Motivation
->> ----------
->> As is well-known, CPUs support multiple idle states (e.g., C0, C1, C2, ...),
->> where deeper states reduce power consumption, but results in longer wakeup latency,
->> potentially affecting performance.
->> Existing generic cpuidle governors operate effectively in common scenarios
->> but exhibit suboptimal behavior in specific Android phone's use cases.
->>
->> Our testing reveals that during low-utilization scenarios
->> (e.g., screen-off background tasks like music playback with CPU utilization <10%),
->> the C0 state occupies ~50% of idle time, causing significant energy inefficiency.
->> Reducing C0 to ≤20% could yield ≥5% power savings on mobile phones.
->>
->> To address this, we expect:
->>    1.Dynamic governor switching to power-saved policies for low cpu utilization scenarios (e.g., screen-off mode)
->>    2.Dynamic switching to alternate governors for high-performance scenarios (e.g., gaming)
->>
->> OverView
->> ----------
->> The BPF cpuidle ext governor registers at postcore_initcall()
->> but remains disabled by default due to its low priority "rating" with value "1".
->> Activation requires adjust higer "rating" than other governors within BPF.
->>
->> Core Components:
->> 1.**struct cpuidle_gov_ext_ops** – BPF-overridable operations:
->> - ops.enable()/ops.disable(): enable or disable callback
->> - ops.select(): cpu Idle-state selection logic
->> - ops.set_stop_tick(): Scheduler tick management after state selection
->> - ops.reflect(): feedback info about previous idle state.
->> - ops.init()/ops.deinit(): Initialization or cleanup.
->>
->> 2.**Critical kfuncs for kernel state access**:
->> - bpf_cpuidle_ext_gov_update_rating():
->>    Activate ext governor by raising rating must be called from "ops.init()"
->> - bpf_cpuidle_ext_gov_latency_req(): get idle-state latency constraints
->> - bpf_tick_nohz_get_sleep_length(): get CPU sleep duration in tickless mode
->>
->> Future work
->> ----------
->> 1. Scenario detection: Identifying low-utilization states (e.g., screen-off + background music)
->> 2. Policy optimization: Optimizing state-selection algorithms for specific scenarios
-> 
-> I am not an expert on cpuidle, so pardon me if the following are rookie
-> questions. But I guess some more detail will help other folks too.
-> 
-Thanks very much for your comments.
-The cpuidle governor framework is as follows,
-and I will include it in the next V2 version.
-  ----------------------------------------------------------
-                 Scheduler Core
-  ----------------------------------------------------------
-                     |
-                     v
-  ----------------------------------------------------------
-| FAIR Class | EXT Class |           IDLE Class           |
-  ----------------------------------------------------------
-|            |           |              |
-|            |           |              v
-|            |           |      ------------------------
-|            |           |          enter_cpu_idle()
-|            |           |      ------------------------
-|            |           |              |
-|            |           |              v
-|            |           |   ------------------------------
-|            |           |       | CPUIDLE Governor |
-|            |           |   ------------------------------
-|            |           |     |            |           |
-|            |           |     v            v           v
-|            |           |-----------------------------------
-|            |           | default   | |   other  | | BPF ext  |
-|            |           | Governor  | | Governor | | Governor |
-|            |           |-----------------------------------
-|            |           |     |            |           |
-|            |           |     v            v           v
-|            |           |-------------------------------------
-|            |           |           select idle state
-|            |           |-------------------------------------> 1. It is not clear to me why a BPF based solution is needed here. Can
->    we achieve similar benefits with a knob and some userspace daemon?
-> 
-Each time the system switches to the idle class, it requires a governor policy to select the correct idle state.
-Currently, we can only switch governor policies through sysfs nodes, as shown below:
-   / # ls /sys/devices/system/cpu/cpuidle/
-   available_governors  current_driver  current_governor  current_governor_ro
-   / # cat /sys/devices/system/cpu/cpuidle/available_governors
-   menu teo qcom-cpu-lpm   《===Here we can switch governor policy by echo this node.
-However, it is not possible to change the implementation of this policy through user interfaces.
+  Thread 1 "perf" received signal SIGSEGV, Segmentation fault.
+  0x00005555558e8ee6 in snprintf_hex (buf=0x5555562c1d79 "", size=503, data=0x40 <error: Cannot access memory at address 0x40>, len=8)
+      at util/bpf-event.c:39
+  39			ret += snprintf(buf + ret, size - ret, "%02x", data[i]);
 
-> 2. Is it possible to extend sched_ext to cover cpuidle logic?
-> The sched_ext is used to determine the scheduling order of tasks,
-whereas cpuidle is invoked after switching to idle class when no tasks are present.
-They are not closely related, so it's not feasible to implement kfuncs or other extensions via sched_ext.> Thanks,
-> Song
+The data is bpf_prog_info->prog_tags and it's called from
+synthesize_bpf_prog_name().
+
+  (gdb) bt
+  #0  0x00005555558e8ee6 in snprintf_hex (buf=0x5555562c1d79 "", size=503, data=0x40 <error: Cannot access memory at address 0x40>, 
+      len=8) at util/bpf-event.c:39
+  #1  0x00005555558e9306 in synthesize_bpf_prog_name (buf=0x5555562c1d70 "bpf_prog_", size=512, info=0x55555665e400, btf=0x5555562c5630, 
+      sub_id=0) at util/bpf-event.c:144
+  #2  0x00005555558e9db5 in bpf_metadata_create (info=0x55555665e400) at util/bpf-event.c:403
+  #3  0x00005555558ea85b in perf_event__synthesize_one_bpf_prog (session=0x555556178510, 
+      process=0x5555555ba7ab <process_synthesized_event>, machine=0x555556178728, fd=25, event=0x5555561b73a0, 
+      opts=0x5555560d33a8 <record+328>) at util/bpf-event.c:674
+  #4  0x00005555558eadf8 in perf_event__synthesize_bpf_events (session=0x555556178510, 
+      process=0x5555555ba7ab <process_synthesized_event>, machine=0x555556178728, opts=0x5555560d33a8 <record+328>)
+      at util/bpf-event.c:799
+  #5  0x00005555555beef5 in record__synthesize (rec=0x5555560d3260 <record>, tail=false) at builtin-record.c:2131
+  #6  0x00005555555c07c1 in __cmd_record (rec=0x5555560d3260 <record>, argc=1, argv=0x7fffffffe2e0) at builtin-record.c:2581
+  #7  0x00005555555c4b30 in cmd_record (argc=1, argv=0x7fffffffe2e0) at builtin-record.c:4376
+  #8  0x000055555564d72e in run_builtin (p=0x5555560d63c0 <commands+288>, argc=6, argv=0x7fffffffe2e0) at perf.c:349
+  #9  0x000055555564d9c6 in handle_internal_command (argc=6, argv=0x7fffffffe2e0) at perf.c:401
+  #10 0x000055555564db1f in run_argv (argcp=0x7fffffffe0dc, argv=0x7fffffffe0d0) at perf.c:445
+  #11 0x000055555564de68 in main (argc=6, argv=0x7fffffffe2e0) at perf.c:553
+  
+I seems bpf_prog_info is broken for some reason.
+
+  (gdb) up
+  #1  0x00005555558e9306 in synthesize_bpf_prog_name (buf=0x5555563305b0 "bpf_prog_", size=512, info=0x55555664e1d0, btf=0x55555637ad40, 
+      sub_id=0) at util/bpf-event.c:144
+  144		name_len += snprintf_hex(buf + name_len, size - name_len,
+  
+  (gdb) p *info
+  $1 = {type = 68, id = 80, tag = "\\\000\000\000\214\000\000", jited_prog_len = 152, xlated_prog_len = 164, 
+    jited_prog_insns = 824633721012, xlated_prog_insns = 1185410973912, load_time = 1305670058276, created_by_uid = 352, 
+    nr_map_ids = 364, map_ids = 1975684956608, name = "\330\001\000\000\350\001\000\000$\002\000\0004\002\000", ifindex = 576, 
+    gpl_compatible = 0, netns_dev = 2697239462496, netns_ino = 2834678416000, nr_jited_ksyms = 756, nr_jited_func_lens = 768, 
+    jited_ksyms = 3418793968396, jited_func_lens = 3573412791092, btf_id = 844, func_info_rec_size = 880, func_info = 3934190044028, 
+    nr_func_info = 928, nr_line_info = 952, line_info = 4294967296988, jited_line_info = 4449586119680, nr_jited_line_info = 1060, 
+    line_info_rec_size = 1076, jited_line_info_rec_size = 1092, nr_prog_tags = 1108, prog_tags = 4861902980192, 
+    run_time_ns = 5085241279632, run_cnt = 5257039971512, recursion_misses = 5360119186644, verified_insns = 1264, 
+    attach_btf_obj_id = 1288, attach_btf_id = 1312}
+  
 Thanks,
-yikai
+Namhyung
 
 
