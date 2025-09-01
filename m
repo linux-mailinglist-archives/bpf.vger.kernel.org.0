@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-67124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67125-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38450B3EE77
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 21:37:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD680B3EE78
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 21:37:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92ED8483966
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 19:37:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58AE91A85C6F
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 19:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A496830649B;
-	Mon,  1 Sep 2025 19:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F11833064A1;
+	Mon,  1 Sep 2025 19:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dp56dmJM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZqJz8lV7"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF6F2405ED
-	for <bpf@vger.kernel.org>; Mon,  1 Sep 2025 19:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781502405ED
+	for <bpf@vger.kernel.org>; Mon,  1 Sep 2025 19:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756755456; cv=none; b=fcvTWnETVh6ucWWtibBPJa90ioxHCA8Pr6glz0CMheuwCFxncG4ayIWv2m1mG/t/3fh70Sq9RExKtPWBrmTGAaV4DQVbsMdrXDxZsJgy1j+ieDRRifSGUeUaxi3yl/kdYpwoiatv8DNoTRhTf14UP7t4HJlFdgQDUqc64EUHcTY=
+	t=1756755465; cv=none; b=ZblsWEGfvW5ot3zJQOrbkaKG4kCXUMkati7ZFqS2pwxInScAUyyu2K3YvVorBGt/wpF/ciDPYCfeQN0PSIB14hNpg+uwGSTp4xMSizSz6qzMNXZKURxxB3ogM9iSQs890TqfEXdGIUc7vkAh/Q7irZCCxPnK4ZzlSwNjD1zAkpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756755456; c=relaxed/simple;
-	bh=saymX6OF7IpEYtarKrCDIeYJ6dz2Pd0Fen1hodtF7H4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=adCmTF1W7ILpg4Xs2oIt8ICRKBWfh9upJrNaZqa8BMO7x1VVXjasmTb2TVLexTTJataBEj4kSCsXhSV59uGRUcmqABZ5GmUijHjPyBc/D6+oBameMfU48BFpvLN7DJ8wyhJWNPekpPdZVWGOW2UTmzJ7aKU+bpVgEI/B9f/iriw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dp56dmJM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35025C4CEF0;
-	Mon,  1 Sep 2025 19:37:35 +0000 (UTC)
+	s=arc-20240116; t=1756755465; c=relaxed/simple;
+	bh=FxDXXKanwkW7kcmKjVKcwvSOOIvpqWd1CdlZyqD+vqQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=IKhbu3H1kPtdS7VZdsm1LoO3kOilpuoWK8jHvMq6dE1EWWtODHMsO8bqs91q3d28cmxocfeJyTQaXwOWAambcAn3DiL6XVOyVVAt0Re8kPifIeRVSTU2kDNNBPlOL6W89rqw/0Pusgl46EApc9iHNN+28W4JtnekGpszZuk5QBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZqJz8lV7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B79C8C4CEF0;
+	Mon,  1 Sep 2025 19:37:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756755455;
-	bh=saymX6OF7IpEYtarKrCDIeYJ6dz2Pd0Fen1hodtF7H4=;
-	h=From:To:Subject:Date:From;
-	b=dp56dmJMg4ufSQ9BI2KjwlIy3T6VMWtDHlYWgT68ezWbTN3Ls7UZTHWJMapS1Wves
-	 vBP6aCmz3qFJdD/2V+lHNstjd9RRD4iym8ka1+2s+HaYJ7P7Rns97USN7IrY7AmUdc
-	 kFlzYmuAWDEccwbjaNkhVa/VViA6H4z6P6XQ0L6N4w1QP1QUlDWiNL1R/FZ3vjNu0F
-	 yj//YfOm99TXmaLHCzibGzFLWLUiEeVoFXkGH/crA2WfAnza4b2mGaCHIH9aaoI7Es
-	 RX8Wt79+7rCX4QBLw8xMO8lgm6p9ULTamTbt7qFgHznA+c7q+sg8CinlLUy0XIHXdH
-	 SOKMaCiMtYUWA==
+	s=k20201202; t=1756755465;
+	bh=FxDXXKanwkW7kcmKjVKcwvSOOIvpqWd1CdlZyqD+vqQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZqJz8lV7e+y7Z5rSOZm3L3iiCmRot6JxMgPWhDrDb1+Sc2K2JJtkdkevGtfGtqMGP
+	 Kt1NgjC8T9dtIwcY6ZH8vA4eLnoboxvPAaKLxA5NIgjEHxprZ/MOiO9v2uvtnhgraU
+	 icheX5MGT6hVux6rJqlVfiGUM4Ow4IquL2kcncBvmk6O7widtSUWWHJY5AKkyYrf/z
+	 jqLcMPqM+k4XJsXc98x22TJqlpYh0sqjY+ovMZB8Ekl3jLsEa67v5jwH9znUAdQyrc
+	 unv3SFfkG2d6eNCyx39ritt7j13XOGNIRnD+tUM2kcAk1EzUiFyAnIOjNg4Auqh6xT
+	 lWCSs1nLKKD3A==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -59,10 +60,13 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Will Deacon <will@kernel.org>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v5 0/4] bpf: report arena faults to BPF streams
-Date: Mon,  1 Sep 2025 19:37:22 +0000
-Message-ID: <20250901193730.43543-1-puranjay@kernel.org>
+Cc: Xu Kuohai <xukuohai@huawei.com>
+Subject: [PATCH bpf-next v5 1/4] bpf: arm64: simplify exception table handling
+Date: Mon,  1 Sep 2025 19:37:23 +0000
+Message-ID: <20250901193730.43543-2-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20250901193730.43543-1-puranjay@kernel.org>
+References: <20250901193730.43543-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,87 +75,96 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Changes in v4->v5:
-v4: https://lore.kernel.org/all/20250827153728.28115-1-puranjay@kernel.org/
-- Added patch 2 to introducing main_prog_aux for easier access to streams.
-- Fixed bug in fault handlers when arena_reg == dst_reg
-- Updated selftest to check test above edge case.
-- Added comments about the usage of barrier_var() in code and commit message.
+BPF loads with BPF_PROBE_MEM(SX) can load from unsafe pointers and the
+JIT adds an exception table entry for the JITed instruction which allows
+the exeption handler to set the destination register of the load to zero
+and continue execution from the next instruction.
 
-Changes in v3->v4:
-v3: https://lore.kernel.org/all/20250827150113.15763-1-puranjay@kernel.org/
-- Fixed a build issue when CONFIG_BPF_JIT=y and # CONFIG_BPF_SYSCALL is not set
+As all arm64 instructions are AARCH64_INSN_SIZE size, the exception
+handler can just increment the pc by AARCH64_INSN_SIZE without needing
+the exact address of the instruction following the the faulting
+instruction.
 
-Changes in v2->v3:
-v2: https://lore.kernel.org/all/20250811111828.13836-1-puranjay@kernel.org/
-- Improved the selftest to check the exact fault address
-- Dropped BPF_NO_KFUNC_PROTOTYPES and bpf_arena_alloc/free_pages() usage
-- Rebased on bpf-next/master
+Simplify the exception table usage in arm64 JIT by only saving the
+destination register in ex->fixup and drop everything related to
+the fixup_offset. The fault handler is modified to add AARCH64_INSN_SIZE
+to the pc.
 
-Changes in v1->v2:
-v1: https://lore.kernel.org/all/20250806085847.18633-1-puranjay@kernel.org/
-- Changed variable and mask names for consistency (Yonghong)
-- Added Acked-by: Yonghong Song <yonghong.song@linux.dev> on two patches
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Acked-by: Xu Kuohai <xukuohai@huawei.com>
+---
+ arch/arm64/net/bpf_jit_comp.c | 25 +++----------------------
+ 1 file changed, 3 insertions(+), 22 deletions(-)
 
-This set adds the support of reporting page faults inside arena to BPF
-stderr stream. The reported address is the one that a user would expect
-to see if they pass it to bpf_printk();
-
-Here is an example output from a stream and bpf_printk()
-
-ERROR: Arena WRITE access at unmapped address 0xdeaddead0000
-CPU: 9 UID: 0 PID: 502 Comm: test_progs
-Call trace:
-bpf_stream_stage_dump_stack+0xc0/0x150
-bpf_prog_report_arena_violation+0x98/0xf0
-ex_handler_bpf+0x5c/0x78
-fixup_exception+0xf8/0x160
-__do_kernel_fault+0x40/0x188
-do_bad_area+0x70/0x88
-do_translation_fault+0x54/0x98
-do_mem_abort+0x4c/0xa8
-el1_abort+0x44/0x70
-el1h_64_sync_handler+0x50/0x108
-el1h_64_sync+0x6c/0x70
-bpf_prog_a64a9778d31b8e88_stream_arena_write_fault+0x84/0xc8
-  *(page) = 1; @ stream.c:100
-bpf_prog_test_run_syscall+0x100/0x328
-__sys_bpf+0x508/0xb98
-__arm64_sys_bpf+0x2c/0x48
-invoke_syscall+0x50/0x120
-el0_svc_common.constprop.0+0x48/0xf8
-do_el0_svc+0x28/0x40
-el0_svc+0x48/0xf8
-el0t_64_sync_handler+0xa0/0xe8
-el0t_64_sync+0x198/0x1a0
-
-Same address is seen by using bpf_printk():
-
-1389.078831: bpf_trace_printk: Read Address: 0xdeaddead0000
-
-To make this possible, some extra metadata has to be passed to the bpf
-exception handler, so the bpf exception handling mechanism for both
-x86-64 and arm64 have been improved in this set.
-
-The streams selftest has been updated to also test this new feature.
-
-Puranjay Mohan (4):
-  bpf: arm64: simplify exception table handling
-  bpf: core: introduce main_prog_aux for stream access
-  bpf: Report arena faults to BPF stderr
-  selftests/bpf: Add tests for arena fault reporting
-
- arch/arm64/net/bpf_jit_comp.c                 | 77 ++++++++++++------
- arch/x86/net/bpf_jit_comp.c                   | 79 ++++++++++++++++++-
- include/linux/bpf.h                           |  7 ++
- kernel/bpf/arena.c                            | 27 +++++++
- kernel/bpf/core.c                             |  3 +-
- kernel/bpf/stream.c                           |  6 +-
- kernel/bpf/verifier.c                         |  1 +
- .../testing/selftests/bpf/prog_tests/stream.c | 34 +++++++-
- tools/testing/selftests/bpf/progs/stream.c    | 61 ++++++++++++++
- 9 files changed, 263 insertions(+), 32 deletions(-)
-
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index a98b8132479a7..9b3162ff63e9c 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -1066,19 +1066,18 @@ static void build_epilogue(struct jit_ctx *ctx, bool was_classic)
+ 	emit(A64_RET(A64_LR), ctx);
+ }
+ 
+-#define BPF_FIXUP_OFFSET_MASK	GENMASK(26, 0)
+ #define BPF_FIXUP_REG_MASK	GENMASK(31, 27)
+ #define DONT_CLEAR 5 /* Unused ARM64 register from BPF's POV */
+ 
+ bool ex_handler_bpf(const struct exception_table_entry *ex,
+ 		    struct pt_regs *regs)
+ {
+-	off_t offset = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
+ 	int dst_reg = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
+ 
+ 	if (dst_reg != DONT_CLEAR)
+ 		regs->regs[dst_reg] = 0;
+-	regs->pc = (unsigned long)&ex->fixup - offset;
++	/* Skip the faulting instruction */
++	regs->pc += AARCH64_INSN_SIZE;
+ 	return true;
+ }
+ 
+@@ -1088,7 +1087,6 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 				 int dst_reg)
+ {
+ 	off_t ins_offset;
+-	off_t fixup_offset;
+ 	unsigned long pc;
+ 	struct exception_table_entry *ex;
+ 
+@@ -1119,22 +1117,6 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 	if (WARN_ON_ONCE(ins_offset >= 0 || ins_offset < INT_MIN))
+ 		return -ERANGE;
+ 
+-	/*
+-	 * Since the extable follows the program, the fixup offset is always
+-	 * negative and limited to BPF_JIT_REGION_SIZE. Store a positive value
+-	 * to keep things simple, and put the destination register in the upper
+-	 * bits. We don't need to worry about buildtime or runtime sort
+-	 * modifying the upper bits because the table is already sorted, and
+-	 * isn't part of the main exception table.
+-	 *
+-	 * The fixup_offset is set to the next instruction from the instruction
+-	 * that may fault. The execution will jump to this after handling the
+-	 * fault.
+-	 */
+-	fixup_offset = (long)&ex->fixup - (pc + AARCH64_INSN_SIZE);
+-	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, fixup_offset))
+-		return -ERANGE;
+-
+ 	/*
+ 	 * The offsets above have been calculated using the RO buffer but we
+ 	 * need to use the R/W buffer for writes.
+@@ -1147,8 +1129,7 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 	if (BPF_CLASS(insn->code) != BPF_LDX)
+ 		dst_reg = DONT_CLEAR;
+ 
+-	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
+-		    FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
++	ex->fixup = FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
+ 
+ 	ex->type = EX_TYPE_BPF;
+ 
 -- 
 2.47.3
 
