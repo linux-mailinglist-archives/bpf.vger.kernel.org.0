@@ -1,138 +1,140 @@
-Return-Path: <bpf+bounces-67072-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67073-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F03C1B3D6B8
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 04:38:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED5C6B3D7D3
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 05:46:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B54133BA333
-	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 02:38:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EC7E189BA59
+	for <lists+bpf@lfdr.de>; Mon,  1 Sep 2025 03:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F4811DF26B;
-	Mon,  1 Sep 2025 02:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C14238142;
+	Mon,  1 Sep 2025 03:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Cnsb7636"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iyYikQ2w"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com [209.85.215.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7521422301
-	for <bpf@vger.kernel.org>; Mon,  1 Sep 2025 02:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A19C221DB9;
+	Mon,  1 Sep 2025 03:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756694331; cv=none; b=kU7ICxP51vn4yk9A7DdI4vCv/6Q5AdOAEHsp3+XY+FJbV7jigMFyRbwVxV1u+HbCjkHB9o7pHhqSDv/JeE31iGKL5JiBSeO/fJTKJbR2/OsV+6gc70105EtkKMmslD/WsphVGdf4whrndqEDLmv023Ohn3KO5mBveuZxzkiOzeo=
+	t=1756698183; cv=none; b=u5GgcO7XXYaS4n3bgVq/oPe0AKTlbt9Lz6EUydCIgvTQkzLSWvr9Pfh6ngyPVmlrD99I5uzIZVbhNuzfZpqzBoHpCdrIwOrPCnQi2cDiGUplsdlzEaaoUpKNiyQo9HKIIHkse4Y3b1nNRchPRMfDHBlWeNr2q+jyH3CbjGK/QfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756694331; c=relaxed/simple;
-	bh=gn828wWDLw2jhxPs6te5MWoCfNRpQhTwNDR3AWQg700=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QymM3uLFJyeUzU/jDZWf039ILnwxW5Z6PrXh4J6+N21/IgOnQ+hx6Fi32Lr1ZXojCNN4/qzgg+89FDprdFJ4BEmRYD4eU4SI7fMb4LfE1jxt9CAs2IP1LffoDfL18q0O9tgBGtYM4W3rPs1qw10y6LMcwWoYStOTu3rUfiKV+zI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Cnsb7636; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f024210f-88f6-45db-a562-4a35ec0056e7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756694327;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N9M0qT6iiTLhoE8/5LIztWiaxc29Qy3RwYuOUEALl04=;
-	b=Cnsb7636crrNxOrFp6GLmqP6wQ6Q4BWEi9/jHtQnZWSBmTGtYQunHscFJK6QyAY5Yzy+z9
-	+bkZ2ZuJoQat4xI3ncPz76YWMskPgW9Y9KsLpnv0s+aDwipYuyrCGR7e/d+muXXooEj4e6
-	5T9NNlk0zINRO0umDru8LCtzpNmbha8=
-Date: Mon, 1 Sep 2025 10:38:40 +0800
+	s=arc-20240116; t=1756698183; c=relaxed/simple;
+	bh=eVDJfS2vmBwBj0ehU+kXujnjMgfdwYhD36j7tAij5nQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TiHlmvbD7x9uDxRgirQFnH8296ymfvzf8eGDwgaj8mbS3S72cd1R9XQljYR8IOk497QVi7sFjyyOa1RSLaadmQzoEhmaJ+jSJRrYczNMIxkQXoRN618DqPMHMKy0s1UwGxIeUeYDHsU5Zn2y52oiqNF//WmQ/PEXYH7J6a5qFB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iyYikQ2w; arc=none smtp.client-ip=209.85.215.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f195.google.com with SMTP id 41be03b00d2f7-b476c67c5easo2638012a12.0;
+        Sun, 31 Aug 2025 20:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756698182; x=1757302982; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gkUmNTikddeYTMML9G3HM9oCIw6tu9oOLJ0SSZ6TK2o=;
+        b=iyYikQ2wGoA9QSlebcDT2I71uQxMBgBKUXbk2nyyXItQV2QqF0qGrlflNX9+hsVw+q
+         yN+zHL8oHqlaKSNVx2ZkZ6e7EjFSb2xGg+0nJLbP05F3XzRqDoT+6tnaz85EAmtxrmDh
+         Vqk25WYiU2MYDjc9ySwAm8Ct1LNC7A48hF2RxB+xkKAyHL5jVesgTzjO76FV5zK3w7Xt
+         /39RXe7CdRWU4MNPvabJ1c+UxmZG+VNx5/Ts5Zi2kESCeUBTYyYPvyEusjS6YC0C+r8i
+         hdnSPtLu2U3w2TT6Ias7KJBiobwba+au4lz2s5W7ojXvtleVILMxaHD27XbXI/lB2sPS
+         1y1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756698182; x=1757302982;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gkUmNTikddeYTMML9G3HM9oCIw6tu9oOLJ0SSZ6TK2o=;
+        b=RqrrbcYbp5aI7CZxYKu3D+Aoeds6qNYptcOouJ5/O1M5Jx7ulKigGOzhOPJVm1hf+v
+         TKgkWCblY0CxMLbJhByj1seG3X+xTG2i6XBXnxrqCE0uDzx6/f9Fznsd71uEGyA7xha1
+         m/c6TkBPCGKQmIOeHRN4tEnRJeYe56vHUD3ulUA+SJxFgUEI3atOadf0TluKWF7kn5B4
+         wbBUzb7nZLzd2/VXT0Fo9WdBXFCho0TqruYsAqA9NONv6yMGNKvVzG0zOAUFn+fgXXuD
+         L2K8lgAtvNyBpnx4fX4H8rT6uXh08uj2TRQITzsDhRgdqeIgWdwnMu/jjwcV6YMMGdhQ
+         h8ig==
+X-Forwarded-Encrypted: i=1; AJvYcCWJlDlCtwPl5zMYBMY0AOVUirXaSqie3yl3UiuMNfZ6yxIFVrkPO6WCWRWI/S5Zt95KJ+o=@vger.kernel.org, AJvYcCWqYsF8Md/X4BQbs1WvD1oFQ5HCNRZGZ+tgSrasOnRciWrvfLu42REzKXbTSnVVALFBMSDj/QW4Soq7ypR/@vger.kernel.org, AJvYcCX8t4w3ydNDXuzLBdsIq96sMv/xNLwThCr0ADj1gJz45iqOmftRrGx+2LrM7+ZmR4bwFEyJDvWerXBN7s2xgEJN@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsyTdHdm+UxOwQvlfZd2OBat1BIoCeayl4r52LOHs/QvseK0Nc
+	o68wJWOnkH5k5bJSLeewfk2TBUWHoExSmuXEmj5e2czA/ZQSDgCpMQxi
+X-Gm-Gg: ASbGncvKbB/i4WbwVmIL78qlMBLvgIGqkfmVbrs1t1iIIjzt2Uk9BAiKhELbY3jUJQk
+	mVIFjBjdKZG7OL3ty+yy6AugbndRBcTYbvxgeVVtlSJv2B7CRng1gKTIO2YDLVs2d7/7ztjOh62
+	IPKvpkZCQQTjfycqcje1Q1+TkSyKf6puCkey+0g+ZBbXcAh1cgHdsZkRPrpTehwvP7oM9ovDhmT
+	8tt1zXtWjWkvBXjGITjPU63x6nN6jDa0wCadlwgtqWmJpHZMPfND+9VBK85ubcmFP7r2rIKcbYE
+	TYs20f+m+YfGk+LpqAjGjwhoEiqIFlYyHbqBy4HE4OWnotqIrCQWwE3QWmcilZ6w8J6Pc4Q13Q6
+	5OdfTI4pc7AAv9qyZVGspcoY=
+X-Google-Smtp-Source: AGHT+IFZK2yUvz4eipEije432KTVp+GWRyDeDriQPJeQEwuwH2w/3obW82hgUyWbVqQ1wtm46W5HMg==
+X-Received: by 2002:a17:902:e5cb:b0:249:f73:bbad with SMTP id d9443c01a7336-2493ec11630mr101946855ad.0.1756698181590;
+        Sun, 31 Aug 2025 20:43:01 -0700 (PDT)
+Received: from 7940hx ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-249067de9f1sm88398265ad.151.2025.08.31.20.42.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Aug 2025 20:43:01 -0700 (PDT)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: andrii@kernel.org,
+	olsajiri@gmail.com
+Cc: eddyz87@gmail.com,
+	mykolal@fb.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	yikai.lin@vivo.com,
+	memxor@gmail.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/3] selftests/bpf: benchmark all symbols for kprobe-multi
+Date: Mon,  1 Sep 2025 11:42:49 +0800
+Message-ID: <20250901034252.26121-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [BUG] Deadlock triggered by bpfsnoop funcgraph feature
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Leon Hwang <hffilwlqm@gmail.com>, Jiri Olsa <jolsa@kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>
-References: <a08c7c19-1831-481f-9160-0583d850347a@linux.dev>
- <CAADnVQJz9ekB_LjSjRzJLmM_fvdCbeA+pFY20xviJ-qgwFtXWw@mail.gmail.com>
- <8dcc144e-3142-4e0d-a852-155781e41eb4@linux.dev>
- <CAADnVQLDG=Oavh9He=ivXm9MPwsqWHttbTYQh1-EZuHpwujaBA@mail.gmail.com>
- <b3463ffa-c2cb-43c8-a0d2-92bad49e3c23@linux.dev>
- <93e75cff-871f-4b49-868c-11fea0eec396@paulmck-laptop>
- <DCE3PPX8IFF4.FE1BC8HMP4Y7@linux.dev>
- <CAADnVQ+G73vyC77tSo3AFcBT5FiBFbojfddnpYi5yRcqOxQiDQ@mail.gmail.com>
- <8ab6e14b-e639-413e-91cc-56dc02d1a4fb@paulmck-laptop>
- <42f91ff0-b7bf-4ab8-90fe-4ce42eb6bb75@gmail.com>
- <CAADnVQL=c4B3yT18DfFP9ecgd3BL6HvnUU31Wcn0in_3+a--=g@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAADnVQL=c4B3yT18DfFP9ecgd3BL6HvnUU31Wcn0in_3+a--=g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+Add the benchmark testcase "kprobe-multi-all", which will hook all the
+kernel functions during the testing.
 
+This series is separated out from [1].
 
-On 30/8/25 02:08, Alexei Starovoitov wrote:
-> On Thu, Aug 28, 2025 at 7:21 PM Leon Hwang <hffilwlqm@gmail.com> wrote:
->>
->>
->>>
->>>> Independently it would be good to make noinstr/notrace to include __cpuidle
->>>> functions. I think right now it's allowed to attach to default_idle()
->>>> which is causing issues.
->>
->> Nope.
->> ./bpfsnoop -k 'default_idle' -k '__cpuidle' --show-func-proto
->> void default_idle();
-> 
-> hmm. indeed.
-> 
-> Jiri,
-> 
-> why do we still have this in selftest ?
-> 
-> static bool skip_entry(char *name)
-> {
->         /*
->          * We attach to almost all kernel functions and some of them
->          * will cause 'suspicious RCU usage' when fprobe is attached
->          * to them. Filter out the current culprits - arch_cpu_idle
->          * default_idle and rcu_* functions.
->          */
->         if (!strcmp(name, "arch_cpu_idle"))
->                 return true;
->         if (!strcmp(name, "default_idle"))
->                 return true;
+Changes since V2:
+* add some comment to attach_ksyms_all, which notes that don't run the
+  testing on a debug kernel
 
-After removing "arch_cpu_idle" and "default_idle", it's OK to run the
-selftest:
+Changes since V1:
+* introduce trace_blacklist instead of copy-pasting strcmp in the 2nd
+  patch
+* use fprintf() instead of printf() in 3rd patch
 
-./test_progs -t kprobe_multi_test
-#155/1   kprobe_multi_test/skel_api:OK
-#155/2   kprobe_multi_test/link_api_addrs:OK
-#155/3   kprobe_multi_test/link_api_syms:OK
-#155/4   kprobe_multi_test/attach_api_pattern:OK
-#155/5   kprobe_multi_test/attach_api_addrs:OK
-#155/6   kprobe_multi_test/attach_api_syms:OK
-#155/7   kprobe_multi_test/attach_api_fails:OK
-#155/8   kprobe_multi_test/attach_override:OK
-#155/9   kprobe_multi_test/session:OK
-#155/10  kprobe_multi_test/session_cookie:OK
-#155/11  kprobe_multi_test/unique_match:OK
-#155/12  kprobe_multi_test/kprobe_session_return_0:OK
-#155/13  kprobe_multi_test/kprobe_session_return_1:OK
-#155/14  kprobe_multi_test/kprobe_session_return_2:OK
-#155     kprobe_multi_test:OK
-#156/1   kprobe_multi_testmod_test/testmod_attach_api_syms:OK
-#156/2   kprobe_multi_testmod_test/testmod_attach_api_addrs:OK
-#156     kprobe_multi_testmod_test:OK
-Summary: 2/16 PASSED, 0 SKIPPED, 0 FAILED
+Link: https://lore.kernel.org/bpf/20250817024607.296117-1-dongml2@chinatelecom.cn/ [1]
+Menglong Dong (3):
+  selftests/bpf: move get_ksyms and get_addrs to trace_helpers.c
+  selftests/bpf: skip recursive functions for kprobe_multi
+  selftests/bpf: add benchmark testing for kprobe-multi-all
 
-Thanks,
-Leon
+ tools/testing/selftests/bpf/bench.c           |   4 +
+ .../selftests/bpf/benchs/bench_trigger.c      |  61 +++++
+ .../selftests/bpf/benchs/run_bench_trigger.sh |   4 +-
+ .../bpf/prog_tests/kprobe_multi_test.c        | 220 +---------------
+ .../selftests/bpf/progs/trigger_bench.c       |  12 +
+ tools/testing/selftests/bpf/trace_helpers.c   | 234 ++++++++++++++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   3 +
+ 7 files changed, 319 insertions(+), 219 deletions(-)
+
+-- 
+2.51.0
 
 
