@@ -1,99 +1,118 @@
-Return-Path: <bpf+bounces-67238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FCD5B410DC
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 01:37:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52731B41100
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 01:52:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D9F6562346
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 23:37:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77B0E7B22AD
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 23:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B303E284669;
-	Tue,  2 Sep 2025 23:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970682EA74B;
+	Tue,  2 Sep 2025 23:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="d7+z3KRj"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="t/JPApAg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out203-205-221-235.mail.qq.com (out203-205-221-235.mail.qq.com [203.205.221.235])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C13B280309
-	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 23:36:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92975274B51;
+	Tue,  2 Sep 2025 23:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.235
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756856199; cv=none; b=skh6Tbr/d/32igbUIzxx6LtzNCrn9czpcXkbYcg0DxtaDwRIwN8yylmFJF+TUFv9MFUPQ1JbomD0D7NTP0U5RGZ81WBaP/utCHjyvTDJrXIXNTA1YGss0+M3Jyn+0YhdcaWYnTIJpr//YBF8x8inwQPXiK8/3iIgnUgOie9/nqQ=
+	t=1756857139; cv=none; b=pakNyNti7z78TTwSIQAgC1KRM1U+vmSGlspZMEzDjpoYmSRCT9V1EuiFACRlTdSS/IJOUSJIGGDJbgjiBT/YVuS7nHb5qJpmevWwGENddcKbfDZqixBVOe1r0HGsG5BE7I4fTuDjJj5NEXTIoeQM8T5Wbc1X6/nbTsq+CP8M0vU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756856199; c=relaxed/simple;
-	bh=4VRotmPacgDSBhrhKHEwQvLwXAIZ2QzWSVjur4ooG6I=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NuWZslnpdbTHrpDP2ol14TW/cXU0OLoC3VbB81U9QImJZL1DliOCFu+5TrDzvbBONilZPrUcP71cy5H/Sf/N70FnvoexlBzY8TlJAAG3Szzvi7VXP8TKcqGZsD8LPtd9qXvfNcaUAdit2s34dfVVfwI3wxf8svGKFDwXkM319DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=d7+z3KRj; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756856195;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4VRotmPacgDSBhrhKHEwQvLwXAIZ2QzWSVjur4ooG6I=;
-	b=d7+z3KRjKnYgIE8FVboMNcu7cNJ22o0DwNdthxu9cPcAnsobQBApJF/8cftXd51mtBvxBk
-	oNje22SYw/0i4sNoY4RKXd8pZxN4Yo2xT3ys5FFmFFvr41PRc8X6zPCH6lHOGwVv0PBKtI
-	CL58h7dU/uh1AGcCuCtqP1r4DrEqgQE=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,  Kumar Kartikeya
- Dwivedi <memxor@gmail.com>,  linux-mm <linux-mm@kvack.org>,  bpf
- <bpf@vger.kernel.org>,  Suren Baghdasaryan <surenb@google.com>,  Johannes
- Weiner <hannes@cmpxchg.org>,  Michal Hocko <mhocko@suse.com>,  David
- Rientjes <rientjes@google.com>,  Matt Bobrowski
- <mattbobrowski@google.com>,  Song Liu <song@kernel.org>,  Alexei
- Starovoitov <ast@kernel.org>,  Andrew Morton <akpm@linux-foundation.org>,
-  LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 01/14] mm: introduce bpf struct ops for OOM handling
-In-Reply-To: <a76ad1e9-07d5-4ba1-83e4-22fe36a32df0@linux.dev> (Martin KaFai
-	Lau's message of "Tue, 2 Sep 2025 15:30:04 -0700")
-References: <20250818170136.209169-1-roman.gushchin@linux.dev>
-	<20250818170136.209169-2-roman.gushchin@linux.dev>
-	<CAP01T76AUkN_v425s5DjCyOg_xxFGQ=P1jGBDv6XkbL5wwetHA@mail.gmail.com>
-	<87ms7tldwo.fsf@linux.dev>
-	<1f2711b1-d809-4063-804b-7b2a3c8d933e@linux.dev>
-	<87wm6rwd4d.fsf@linux.dev>
-	<ef890e96-5c2a-4023-bcb2-7ffd799155be@linux.dev>
-	<CAADnVQ+LGbXXHHTbBB9b-RjAXO4B6=3Z=G0=7ToZVuH61OONWA@mail.gmail.com>
-	<87iki0n4lm.fsf@linux.dev>
-	<a76ad1e9-07d5-4ba1-83e4-22fe36a32df0@linux.dev>
-Date: Tue, 02 Sep 2025 16:36:27 -0700
-Message-ID: <87ms7c5sw4.fsf@linux.dev>
+	s=arc-20240116; t=1756857139; c=relaxed/simple;
+	bh=ZjfMK8QZbixBUlyogLCkmEo4BQhthsjlCcfthR+K4KI=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=sn8hoSkb0qUeo0LZU7uNxpsei7j2sX0oahqqdsy++PQ7+GmA11yFUXyXadV1ZFjw0++3uGRu5x4HxrOqvmiFiwWc1/iWLuCq9X8QFIbswL+qlSumiaRLZ3Mq+UOwsg/6VY9cFhRwXXx86p0uwlbKFUHRuAhDCd+RxKsFsV6YSpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=t/JPApAg; arc=none smtp.client-ip=203.205.221.235
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1756856827;
+	bh=DMkppThHn8ys5maql7WSO6foFFp8w5MlTRBuShBDSkM=;
+	h=From:To:Cc:Subject:Date;
+	b=t/JPApAgeoeLraDTlLrwW9u3TE/d5zaApneQysmtoSCLry2YNfMq3SC8vyeiASHup
+	 W5IrPC/5zwdNsy02wtRc6Ds6tOm1ehig30AsDayhzqjznD4IF0wDsrQkVhZfEhC0U7
+	 IPTsYuWrAcotK1zwT7AOsC1tItmO03Ntqm5xNkUk=
+Received: from NUC10 ([39.156.73.10])
+	by newxmesmtplogicsvrszc43-0.qq.com (NewEsmtp) with SMTP
+	id BC3A08C9; Wed, 03 Sep 2025 07:47:03 +0800
+X-QQ-mid: xmsmtpt1756856823tyxiz5cbp
+Message-ID: <tencent_DA8DB222AE19F40A9166AD5E5AA8A8BD4E0A@qq.com>
+X-QQ-XMAILINFO: N3l5ASPewLWqXGUtB1HZuLYzrmZuNEnK636uwvXP1k6iiZIm9JodsVl/5j6/va
+	 5wrxtwxzjRfqt6CRBJVDkgwHP1gCRxHP3x6HyFQKpa8Une6EZGqEUXLVCBUEO1KJYrSQBcEy9E8A
+	 tLk/htWv9xyfi58C0MKDuXqIlzmAtIw77ki7GZWHDbO4lUrfwqfqncqv96fUqTG10RLmV1XxsB12
+	 Ft8V/tp/wKHXkiszYFWvO+nKKDeUBB7NTcCJgAbnxX7UHjqp6I4yUZRp7No3U1NDSv+dOmxuSpM4
+	 jF34pG0aeZ9DdbEhvtZn8ier7Luzz/jt9+0FhYS35UitFVNzChDUlFDUHXpHTg/vKS1WCG2IXhNB
+	 ei0ZJimUIhzDfViQzkts800ZOjx6vUxhnC6QiSTFiAaHhO4/EyQE8RMl8HneBr72iB/+XjyfQ2F4
+	 irlnHBPmHYqdhu4WlcKEUh5NPHdLpFX78Bc9CSy8ns17j4afK7DGZiSWyXlXMZsDldG4N1Ji1+ds
+	 KOKK+GXvS12AxX5AYhuaiF7e7ljFrcR5rgU5HQ/f7UX36mGiJ61G73r1QAc0iHx2TkvliGGQU++3
+	 b2hJfVIS/X1WH2VM+0fFMzVwtNwKCgSZgA0L7zfb2i66Ugvb2rQN+iRprHBUpmSwNj68Lr25MB/U
+	 gJsoZEaNpILpHqy3GW2A5ICXBfKRjLfpqwLWMqhoaZAxbmFgrka9qCW9dkaDuF/ixV6b+KctOmR4
+	 e0KuHnprMUt++PoXG2aHLoorSw+mQ+DUHhgGXvPxuHwv9FXYrYyMxMx9xQ+HlNKy3BA6urta3v3u
+	 IqoqZB4ii+eeb2lrSsHjF4+tRFdaUXFNtwlN3s5/+mp16QtUUYjegFmgYUtV0OsWJfwdRRdT+4Kz
+	 k2MRFZNR51TiNmuuxl4z6oy2+Amz9wEwFD4KXtQsslQbS3//4OTde8qbQ4FfVh+H7sUdzqqXr8aS
+	 nYk1ai6JwcAFQqnqLPJdKTlihK2m3NMyWOdzvcD2aexA9So3H+o9v+7v3oW0ZWcvM9cYWsL2dBFU
+	 VHSQkCsQBwjD280JsVaIdTDnFo1CZa4mkliuT0Fg==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Rong Tao <rtoax@foxmail.com>
+To: yonghong.song@linux.dev,
+	andrii@kernel.org,
+	ast@kernel.org,
+	vmalik@redhat.com
+Cc: rtoax@foxmail.com,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Rong Tao <rongtao@cestc.cn>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kernel@vger.kernel.org (open list),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+Subject: [PATCH bpf-next v4 0/2] bpf: Add kfunc bpf_strcasecmp()
+Date: Wed,  3 Sep 2025 07:46:33 +0800
+X-OQ-MSGID: <cover.1756856613.git.rtoax@foxmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-Martin KaFai Lau <martin.lau@linux.dev> writes:
+Kfunc already support bpf_strcmp, this patchset introduce bpf_strcasecmp
+and add some selftests.
 
-> On 9/2/25 10:31 AM, Roman Gushchin wrote:
->> Btw, what's the right way to attach struct ops to a cgroup, if there is
->> one? Add a cgroup_id field to the struct and use it in the .reg()
->
-> Adding a cgroup id/fd field to the struct bpf_oom_ops will be hard to
-> attach the same bpf_oom_ops to multiple cgroups.
+Rong Tao (2):
+  bpf: add bpf_strcasecmp kfunc
+  selftests/bpf: Test kfunc bpf_strcasecmp
 
-Yeah, this is what I thought too, it doesn't look as an attractive path.
+ kernel/bpf/helpers.c                          | 68 +++++++++++++------
+ .../selftests/bpf/prog_tests/string_kfuncs.c  |  1 +
+ .../bpf/progs/string_kfuncs_failure1.c        |  6 ++
+ .../bpf/progs/string_kfuncs_failure2.c        |  1 +
+ .../bpf/progs/string_kfuncs_success.c         |  5 ++
+ 5 files changed, 61 insertions(+), 20 deletions(-)
 
->
->> callback? Or there is something better?
->
-> There is a link_create.target_fd in the "union bpf_attr". The
-> cgroup_bpf_link_attach() is using it as cgroup fd. May be it can be
-> used here also. This will limit it to link attach only. Meaning the
-> SEC(".struct_ops.link") is supported but not the older
-> SEC(".struct_ops"). I think this should be fine.
+---
+v4: __bpf_strcasecmp should be static function;
+v3: Update prog_tests/string_kfuncs.c for "strcasecmp";
+    https://lore.kernel.org/lkml/tencent_0E0C830021A02CBCCB6D95AE57CFD100C407@qq.com/
+v2: Remove __ign prefix from __bpf_strcasecmp and add E2BIG failure test;
+    https://lore.kernel.org/lkml/tencent_8646158457D4511C447C833B21B3ACF6CB07@qq.com/
+v1: https://lore.kernel.org/lkml/tencent_5AE811A28781BE106AD6CDE59F4ADD2BFA06@qq.com/
+-- 
+2.51.0
 
-I'll take a look, thank you!
 
