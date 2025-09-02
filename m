@@ -1,89 +1,72 @@
-Return-Path: <bpf+bounces-67143-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67144-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA14FB3F57B
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 08:30:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 739EDB3F60E
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 08:59:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8238E1A83EE5
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 06:31:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CA0E17C9DE
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 06:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F7D6202F93;
-	Tue,  2 Sep 2025 06:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 008AF2E5B0D;
+	Tue,  2 Sep 2025 06:59:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Hm/j+ZPI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ql+4h5O6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825C51DFFD
-	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 06:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F2E3469D;
+	Tue,  2 Sep 2025 06:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756794651; cv=none; b=pN28z9XxopQLCgjoChbCUBJvf+pFgNzBB9grkqi7tIdgNhToS1uYV6tJ6KErkSpbAMY/MHnukOzXi+ix88N84clpE+/AvliITPxXHoXlkUH/E8GMFFAJ/m6d3PfZjUKtQRQ7Lg3EraO+RDnxlx0K4dSaaxRdvydtwfMyjdtKM3M=
+	t=1756796352; cv=none; b=fItQRSED7eAa34vKHU8otx4QcIwU/OWKgFE9AEI5AROTTre0OVFT9ETVoBeveHPwOlS9D9qC/9/L0dSTns9xIOOuYvLaNGO2TaZeUvIcrwdyobjM6j5AdpucY/qcWCOP4PROC7UrlcORzi3ly9gM4P2C59eIoDzNPqvr66mjykw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756794651; c=relaxed/simple;
-	bh=D9SvvLxhC8sBXwDkRNZZa54C22Gh1LKindMZmxdub48=;
+	s=arc-20240116; t=1756796352; c=relaxed/simple;
+	bh=aNFNdb9BghjJA9Tzkpx25Ji4dZPWsARMv0J3tXAx2fk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KHP/uRItqMPmtdNEuWXIRcyk3rXfwPaonqDodkuDnr/3+Flmklogg5NSZDQbaQRQEBfj1YETSoXd4Wl7Kij4kg5pNhXn8J+q5K3BsN1d0LtJb+U42CtZkFU/4WQQG/LpjSjfgZrCCXy7K3Qaysis/lEHmFFWgjvDteMi54bzc7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Hm/j+ZPI; arc=none smtp.client-ip=209.85.221.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-3d1bf79d758so2260013f8f.1
-        for <bpf@vger.kernel.org>; Mon, 01 Sep 2025 23:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1756794648; x=1757399448; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6N+NYG40wPUqq/tk0Bskx4tffwkmz+AUfjeXOIzwbw0=;
-        b=Hm/j+ZPIW8o6BwUe+e1owfSWMz4LuHCyb4Go8rEMSs8tj5uzVL8qkj5R9M+iBgebJL
-         RrpBf0WdUGxNC/S4zeYBrfTNy14Zjsv5/WhtPyjq436dN1KCquihWOiz39I61/0bso9D
-         TsgBQIYA+M0zgKQDnKmAVyv5xmWTZ8bwk5qcuA0ICI4+u4qMiW/J7JDB00AOXkaTJkfd
-         MDZeZGuV/633oTKeGyFDLGcI5If6x7mmeH3I7XVQF5UqcNVVbVxgzxwQOXWq7UMLfxii
-         kdZWC6wecV53ljQGMPPdQbIY0KDbolPdQvnDp9j0qARe97xU8Un04OqodBO8Zgy0DCM0
-         grHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756794648; x=1757399448;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6N+NYG40wPUqq/tk0Bskx4tffwkmz+AUfjeXOIzwbw0=;
-        b=dDWdc0/HclESM84eJO8A8HjtTdV/sN8JzczzBhfAXfXOLaVm0S7KoONw9Gh1lMbfOD
-         2D/AakPft4TCqLWr3RztbYuizpOedKOw/FBp4SGQ1dUA8qD8a+dcu+cs41hT7R9OlmZ0
-         CrsS6MZgk5nDiWW60yg52aCyukTiIkOia8zC6abEak8B1PmIPPZZnPGbyi078ZHmkump
-         bOB9t/k1dHRbOenggoRzeqW6vzexmoK0FjIvZFE1BQGWAdnv9rZLOXevTP09kS+do3IA
-         WGkI9wcFZul03z1Wu66nMLjbANTu/rx1XM/yGy2Z6m38qFCFTPQkgS8b9rbfisnM3PAk
-         KsLw==
-X-Gm-Message-State: AOJu0Yz4rTQzvqzLWdjL824mYScaIMiCqY7aP/DqKqu1es9JsRaXZlmy
-	wIMhPCBTV9NBNAguBCreK/tm7yMN8j5uFz4uCGCzk3Kwq4mPaSHtYNTVjzZ/KftWgOY=
-X-Gm-Gg: ASbGncsPkCDak0dvncrHQzkc3fDQljrRkJipZnm4E7qzZ57M+DKCH+4kLWA+sbpjnlh
-	mHzTDZM7/FECPzkB+wtgEosqCE4NcJOQ9ZZ2BwiTZVcnB5UR9A851N0p5A+Wdx8CNCvtZLN15Rk
-	a7nEoh13EBcAhiHSR2aezL43z8nybogKE5H+IbTzFU5flVP/nqO/2mRIjuRagBDcmqScp0s9k5+
-	NCV0aPRNCEQeIcWZcXbtWHPnfkZLCJ35OkhBWX18gXXit1BeVKNMqBmvRoDUtDE0GXfZDBwwHhr
-	5jZTz7kv1HNk5UTUGi06+ebuwVu0Df6qZrz66TkaccLeuMOV7lAwIgc7qXSDaLh0RNniW2ZO4c7
-	TjmZUsNU4iysrz+9ToF8=
-X-Google-Smtp-Source: AGHT+IGGbbeivkL1QlhhYEOAVIduuA4ZjfMvtHd/qtBODmjxbQxMeEG8M4b9459RIrLSPK9v3cENQQ==
-X-Received: by 2002:a05:6000:18a3:b0:3cd:b3f7:bb62 with SMTP id ffacd0b85a97d-3d1e01d6734mr8681230f8f.45.1756794647741;
-        Mon, 01 Sep 2025 23:30:47 -0700 (PDT)
-Received: from u94a ([2401:e180:8d68:174d:687c:db9d:19bb:6954])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-329e445d875sm805894a91.11.2025.09.01.23.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Sep 2025 23:30:47 -0700 (PDT)
-Date: Tue, 2 Sep 2025 14:30:15 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH bpf] MAINTAINERS: add Shung-Hsi as reviewer for BPF CORE
-Message-ID: <cbta4qgicer3doijm3qx6ikrdyywsbs7hsl3xecuaubld4mxrn@4qvhsqsd56yu>
-References: <20250829074544.104182-1-shung-hsi.yu@suse.com>
- <CAADnVQ+BKx6EjQ=ezqQZGVP3HBkzp53kSspo1dVZKc0NL9Or1w@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=X1ThdC5mzzhVVeu1Ei/NaBd1059ue73pRVulVTQPargfm1/sEe/lsVBCow1NKD6GZ3vFA29+efJm/OPwVOoBSugNYHNmPSorNMYOt+JR6PCjTB31I12cyWEuKDMWF/kACoihVeoU4+7ZeFj3lJMtoTe1ZMrjXtvxC6zSpqmw6ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ql+4h5O6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21A12C4CEED;
+	Tue,  2 Sep 2025 06:59:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756796351;
+	bh=aNFNdb9BghjJA9Tzkpx25Ji4dZPWsARMv0J3tXAx2fk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ql+4h5O6gxhEMZse4++nLrPH2BN1cdv/hzeAlXeyU+iY2hiXpbDRuw08QVfL2ZNc8
+	 LHcvMVnarVT5dA58QLAm8Gc/vQ3jm9hsFZiMzbIqUlsE6dVWPqInp7dgk1qt/yLA39
+	 asqAiHHPiYygFxqZfuhm9BjDUdk9nZETD4PuN82GVjE13FUgZtKTxHsbXAE+SmCoyD
+	 k8hSWu1oAg4JssnfYZFYjOGUK+zFHniO6AUTmx4b9XwKtbegL/ShY+WlA/LDOW4efb
+	 uxYZgY3WcVw3lQWW8GTAvRnWbCkDG4XyYKNSzGHAN8IeMy8ed8KJtpqwLDI4GCE4ld
+	 StPPjpiK2rWIg==
+Date: Mon, 1 Sep 2025 23:59:09 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Steven Rostedt <rostedt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Indu Bhagat <indu.bhagat@oracle.com>,
+	"Jose E. Marchesi" <jemarch@gnu.org>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Jens Remus <jremus@linux.ibm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>, Florian Weimer <fweimer@redhat.com>,
+	Sam James <sam@gentoo.org>
+Subject: Re: [PATCH v15 7/8] perf script: Display
+ PERF_RECORD_CALLCHAIN_DEFERRED
+Message-ID: <aLaVvT6v8ZyinYFx@z2>
+References: <20250825180638.877627656@kernel.org>
+ <20250825180802.557798597@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,31 +75,165 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+BKx6EjQ=ezqQZGVP3HBkzp53kSspo1dVZKc0NL9Or1w@mail.gmail.com>
+In-Reply-To: <20250825180802.557798597@kernel.org>
 
-On Sun, Aug 31, 2025 at 06:13:25PM -0700, Alexei Starovoitov wrote:
-> On Fri, Aug 29, 2025 at 12:45 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
-> >
-> > Add myself as a reviewer for BPF CORE, focusing mainly on verifier and
-> > tnum.
-> >
-> > Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> > ---
-> > Hope getting myself involved in mail loop would be the nudge I need that
-> > gets me to do reviews more consistently.
+Hi Steven,
+
+On Mon, Aug 25, 2025 at 02:06:45PM -0400, Steven Rostedt wrote:
+> From: Namhyung Kim <namhyung@kernel.org>
 > 
-> I'm afraid that will be an abuse of the checkpatch.pl mechanism
-> for reminders like this. Your reviews are very much appreciated,
+> Handle the deferred callchains in the script output.
+> 
+>   $ perf script
+>   perf     801 [000]    18.031793:          1 cycles:P:
+>           ffffffff91a14c36 __intel_pmu_enable_all.isra.0+0x56 ([kernel.kallsyms])
+>           ffffffff91d373e9 perf_ctx_enable+0x39 ([kernel.kallsyms])
+>           ffffffff91d36af7 event_function+0xd7 ([kernel.kallsyms])
+>           ffffffff91d34222 remote_function+0x42 ([kernel.kallsyms])
+>           ffffffff91c1ebe1 generic_exec_single+0x61 ([kernel.kallsyms])
+>           ffffffff91c1edac smp_call_function_single+0xec ([kernel.kallsyms])
+>           ffffffff91d37a9d event_function_call+0x10d ([kernel.kallsyms])
+>           ffffffff91d33557 perf_event_for_each_child+0x37 ([kernel.kallsyms])
+>           ffffffff91d47324 _perf_ioctl+0x204 ([kernel.kallsyms])
+>           ffffffff91d47c43 perf_ioctl+0x33 ([kernel.kallsyms])
+>           ffffffff91e2f216 __x64_sys_ioctl+0x96 ([kernel.kallsyms])
+>           ffffffff9265f1ae do_syscall_64+0x9e ([kernel.kallsyms])
+>           ffffffff92800130 entry_SYSCALL_64+0xb0 ([kernel.kallsyms])
+> 
+>   perf     801 [000]    18.031814: DEFERRED CALLCHAIN
+>               7fb5fc22034b __GI___ioctl+0x3b (/usr/lib/x86_64-linux-gnu/libc.so.6)
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  tools/perf/builtin-script.c | 89 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 89 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> index d9fbdcf72f25..d17e0a3d8567 100644
+> --- a/tools/perf/builtin-script.c
+> +++ b/tools/perf/builtin-script.c
+> @@ -2484,6 +2484,93 @@ static int process_sample_event(const struct perf_tool *tool,
+>  	return ret;
+>  }
+>  
+> +static int process_deferred_sample_event(const struct perf_tool *tool,
+> +					 union perf_event *event,
+> +					 struct perf_sample *sample,
+> +					 struct evsel *evsel,
+> +					 struct machine *machine)
+> +{
+> +	struct perf_script *scr = container_of(tool, struct perf_script, tool);
+> +	struct perf_event_attr *attr = &evsel->core.attr;
+> +	struct evsel_script *es = evsel->priv;
+> +	unsigned int type = output_type(attr->type);
+> +	struct addr_location al;
+> +	FILE *fp = es->fp;
+> +	int ret = 0;
+> +
+> +	if (output[type].fields == 0)
+> +		return 0;
+> +
+> +	/* Set thread to NULL to indicate addr_al and al are not initialized */
+> +	addr_location__init(&al);
+> +
+> +	if (perf_time__ranges_skip_sample(scr->ptime_range, scr->range_num,
+> +					  sample->time)) {
+> +		goto out_put;
+> +	}
+> +
+> +	if (debug_mode) {
+> +		if (sample->time < last_timestamp) {
+> +			pr_err("Samples misordered, previous: %" PRIu64
+> +				" this: %" PRIu64 "\n", last_timestamp,
+> +				sample->time);
+> +			nr_unordered++;
+> +		}
+> +		last_timestamp = sample->time;
+> +		goto out_put;
+> +	}
+> +
+> +	if (filter_cpu(sample))
+> +		goto out_put;
+> +
+> +	if (machine__resolve(machine, &al, sample) < 0) {
+> +		pr_err("problem processing %d event, skipping it.\n",
+> +		       event->header.type);
+> +		ret = -1;
+> +		goto out_put;
+> +	}
+> +
+> +	if (al.filtered)
+> +		goto out_put;
+> +
+> +	if (!show_event(sample, evsel, al.thread, &al, NULL))
+> +		goto out_put;
+> +
+> +	if (evswitch__discard(&scr->evswitch, evsel))
+> +		goto out_put;
+> +
+> +	perf_sample__fprintf_start(scr, sample, al.thread, evsel,
+> +				   PERF_RECORD_CALLCHAIN_DEFERRED, fp);
+> +	fprintf(fp, "DEFERRED CALLCHAIN");
+> +
+> +	if (PRINT_FIELD(IP)) {
+> +		struct callchain_cursor *cursor = NULL;
+> +
+> +		if (symbol_conf.use_callchain && sample->callchain) {
+> +			cursor = get_tls_callchain_cursor();
+> +			if (thread__resolve_callchain(al.thread, cursor, evsel,
+> +						      sample, NULL, NULL,
+> +						      scripting_max_stack)) {
+> +				pr_info("cannot resolve deferred callchains\n");
+> +				cursor = NULL;
+> +			}
+> +		}
+> +
+> +		fputc(cursor ? '\n' : ' ', fp);
+> +		sample__fprintf_sym(sample, &al, 0, output[type].print_ip_opts,
+> +				    cursor, symbol_conf.bt_stop_list, fp);
+> +	}
+> +
+> +	fprintf(fp, "\n");
+> +
+> +	if (verbose > 0)
+> +		fflush(fp);
+> +
+> +out_put:
+> +	addr_location__exit(&al);
+> +	return ret;
+> +}
+> +
+>  // Used when scr->per_event_dump is not set
+>  static struct evsel_script es_stdout;
+>  
+> @@ -4080,6 +4167,7 @@ int cmd_script(int argc, const char **argv)
+>  
+>  	perf_tool__init(&script.tool, !unsorted_dump);
+>  	script.tool.sample		 = process_sample_event;
+> +	script.tool.callchain_deferred	 = process_deferred_sample_event;
+>  	script.tool.mmap		 = perf_event__process_mmap;
+>  	script.tool.mmap2		 = perf_event__process_mmap2;
+>  	script.tool.comm		 = perf_event__process_comm;
+> @@ -4106,6 +4194,7 @@ int cmd_script(int argc, const char **argv)
+>  	script.tool.throttle		 = process_throttle_event;
+>  	script.tool.unthrottle		 = process_throttle_event;
+>  	script.tool.ordering_requires_timestamps = true;
+> +	script.tool.merge_deferred_callchains = false;
 
-Thanks!
+Oops, this chunk should belong to the next patch which introduces this
+field.  Sorry about that.
 
-> but please figure out a different way to highlight patches
-> in your inbox. For example, gmail can send patches with "tnum"
-> content to a different folder, and so on.
+Thanks,
+Namhyung
 
-Okay. I do have a very crude l2md + local mail filtering setup up, will
-try to improve upon it first as suggested.
 
-Shung-Hsi
+>  	session = perf_session__new(&data, &script.tool);
+>  	if (IS_ERR(session))
+>  		return PTR_ERR(session);
+> -- 
+> 2.50.1
+> 
+> 
 
