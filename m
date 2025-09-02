@@ -1,91 +1,95 @@
-Return-Path: <bpf+bounces-67140-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3107B3F566
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 08:24:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AD53B3F579
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 08:30:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D05F203E3B
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 06:24:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A54651A83E28
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 06:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4702E3AE3;
-	Tue,  2 Sep 2025 06:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC8A2E3AE3;
+	Tue,  2 Sep 2025 06:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="tkzdtSHF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vp9O/VwC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out203-205-221-235.mail.qq.com (out203-205-221-235.mail.qq.com [203.205.221.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02682E3373;
-	Tue,  2 Sep 2025 06:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.235
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7307932F743;
+	Tue,  2 Sep 2025 06:29:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756794247; cv=none; b=QcpT2BcWmW9G9eFtY79WnZyxDV0dMBVOhY+VBZoJd05EE8Jfc6Zt8NFoT5zTQ5O1+38k6CvZnGVykdkGINdAP0ALmiIkaLKHTqj8gmSzYX02kOZ4tFUVXyQOn4IWADZ9c1Wy5lmVWNgETdh9i+ov1DH6KtoEakhTiFMbAdP+sxo=
+	t=1756794591; cv=none; b=F4GL/TQ5WWlxvMElm1wgA4nhLxLVaCYUJALbXM5mgraRwoNbYZU6S9o2MNvyaR2q7p7sxIs3nLLJs3Ag7UUXDFatRPFy+aPQxi/oBKezY3bgvBetnq1To0krEyGLlDxTl7NX1qCmMdtlJCqeUGQhK4ayVnUwcuGlzwURrwDhICw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756794247; c=relaxed/simple;
-	bh=LVB94l7OIqO0HP/kAtDPp8pMZNK+I+FVVI6efuDsYHA=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=THEehUh72RluneL+ZSvJKBoW5dbmV8cqlw6hBUEsb3DGzkRV/ggY88SNrF0r94WmxhW91tmqMawdSND5fnoDrQH9XfNPS1Fbm0pKEt2BFlSm/SmcaZBBlUQFlYUstWePMUo3GMWDX5AnB+6nrE2XU69KYn6YVMPqTKynhUubowA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=tkzdtSHF; arc=none smtp.client-ip=203.205.221.235
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1756793941;
-	bh=GI0eUTf/hMdcFnYu4tIUQhlf6BEb4nTzRS3IPbwEns4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=tkzdtSHFrpfsG82Z9QibZ5JBdmeFgCyrjGlHWEV3nFkaY0eNa6y625gQzg97Cl6A+
-	 01rwzYKdI8h3I67ptkMw43kNcQbLfR2mW/SjPzH+8pCoFjLFDCrXQvH41u624YWkPr
-	 S+gyuaOCtgiIHolT5S9oClYQyuckAunVRgU4kRt0=
-Received: from NUC10 ([39.156.73.10])
-	by newxmesmtplogicsvrszc13-0.qq.com (NewEsmtp) with SMTP
-	id 4B9200C5; Tue, 02 Sep 2025 14:18:57 +0800
-X-QQ-mid: xmsmtpt1756793937t9zzjdmof
-Message-ID: <tencent_4142FE591497F42A5FAF5EA36A8861068708@qq.com>
-X-QQ-XMAILINFO: Nwl7PuG5jlSkoyEuDKoEHKe/JOaSucJxIXrvzTSn3T2JafyMErWHfroOgk8ykX
-	 TSzbqiYvemk3nLO7nDgk6pAlHV3BJreRjmGVieJC/x7uFAw7qZodQdo6iSOFhoGpb1/z+bhmoo5c
-	 E148nDhTTIVFEpFtTVsnseRYmEbxnL29RHNTmZqm0tDopO2Jbed9EzxjVKNPVHeHhMXc4sd0d+lr
-	 61Uc4PpwAUJl8xrwjpdR0kJHe1UryTBkeuEwgL15ueb9p3epHxYXJa/UxxM/6YzyQ+87t2qYyBzg
-	 rXoM3yt6AxaDxWs8FqdwfvqpKIypWQWkdf57yMeizW3aovkZfyzlLD6SN480uj3yof7KecY2h31Z
-	 XFNcyIconvUKhy4pUx5HaOhCmeEKR5B8HNdhk5cB1SMAID/9EziGH/y8bLcrgLOK9psafRzGFm0J
-	 uEmo7XqDkbb4g49LqacB7wuHUp1SiPO1q6MWWBnkjbyY9T1vMEm6JTUmsX3gBOAkcaWs370ziE63
-	 2an6f4yi1hlPYruSr5EgCXhEaHw7ufHiPbg/j3vDDAnstXgA1V2O8SLjWZhyQG8no0nZ67E4iio/
-	 J1YwYoivNRgZOxYI2pctkHHPirMNmbsYv4H78wyt/AAOY8yYuXuu25BvwaB2nkOHYCUr0zMjqPEx
-	 JfUCkUhZB4AGoH2eVCr9/tlZyN+6pDv6HMZ2r6CZnSNcwAddnxtKu4sLXluyAq5seLUc9JIHQSf8
-	 Btp84paL0P4EpqpaDZPud0q8FfRGCrj7iFAcdcNeNPeWK9PPiXcLJM6sNYVgqJevulMuIAO6R4dG
-	 J/gGnQCuGv6s/3c+sdHlkrf1/w1DTtv/1jz8pivKruV60TF4dXWs6HpPfxXVpgBRY8XubvqJAJhm
-	 L+5HAdnjus8Qm8daOVljlueKa3zzmS8wpNatpQ3AcOo3Lfs3Gf3yLGgc+ZOiMEETyUA3IEUvn6g3
-	 tTIMPUs5W95dEI9EKvK6KVwvLepyPq/iFtwM378/F3UguckWJVShUd0a2gvZpfJ4AXREmYZxw5Yx
-	 yRmRRN3GCK8hL6C7oIuXaWBVnCxk7j3PSRf2l3yQ==
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From: Rong Tao <rtoax@foxmail.com>
-To: andrii@kernel.org,
-	ast@kernel.org,
-	vmalik@redhat.com
-Cc: rtoax@foxmail.com,
-	Rong Tao <rongtao@cestc.cn>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
-	linux-kernel@vger.kernel.org (open list),
-	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Test kfunc bpf_strcasecmp
-Date: Tue,  2 Sep 2025 14:18:34 +0800
-X-OQ-MSGID: <7b7ace1a1b57c21e4ab92b1828397e7d0dd84200.1756793624.git.rongtao@cestc.cn>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <cover.1756793624.git.rongtao@cestc.cn>
-References: <cover.1756793624.git.rongtao@cestc.cn>
+	s=arc-20240116; t=1756794591; c=relaxed/simple;
+	bh=UK5vFoDixW+pa/nYeUJpufo6atQ70w+vMke9EfX3kUM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pbEumjB5dM9A6WnZNZQ3SRNs0OhHYzDU/CN/xBOcBhLS97UFbZV5oRIkV5538OLKnCeZn3SsNLHNNpfetOmgXwtl777cmFOb3H1aiwoquc3tEAlinamVBqYmT5a9XWieB6HXMcJRw7vPl+8PiMcpl4bTNuAyLnwa69vRlx3fUI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vp9O/VwC; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-77238a3101fso1851098b3a.0;
+        Mon, 01 Sep 2025 23:29:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756794590; x=1757399390; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RNOyyPpyvUOWymFCI905294N8UhshYAkdPsadCOYhYE=;
+        b=Vp9O/VwCUA9SIAlXCgPhxa9B0GgrHo63DlCmdGuuBuuVbLcYFz0jN27B5npXMTyoW+
+         GnV6DLD+L+TJgRlJjDHmcySEoC+/mg3F2JLHnKe38DTjTCkNC+a3EjDXGtEt35iAuEpo
+         u1dJjHFAHI1F+NXdKEQ8SbbVmSAabD6/r1bcIhszi04+mT2bRwiOOdtvSvjWgRv03S2M
+         nBhABiFRi0rhBlX+HWbv9oiyiyt8Sgz79/7/Rt3ATmRcCyqse/Fo5DUlviIF01drWyj+
+         hGXkIDgSaPSP/6Icugy/SDOyQT5DRmdQKIlvY2B6A0q7W3Hz40hYeP6lkolHZd9DtSKI
+         dFEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756794590; x=1757399390;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RNOyyPpyvUOWymFCI905294N8UhshYAkdPsadCOYhYE=;
+        b=e2irqegjjJ5zWeJstr5rfGxxfaupB4yQIXUAjANcPSa91wdsxKu1Lbe39XgT2+GtSM
+         FU2bnMNmtHf2cij/c+ogiK3BR9mJLdP5ByG0G9MfrNq997B1NM2J+vuC5YqXVWaW+iQU
+         LlTZQx33uNvLyedgM2j97j+FIoyxNWZeI3Ya+hBeqPzMMP2dRHKK3e2MJj0TuH3NDhAC
+         f38pEhPzFr4D3leatAWznDyWh33lP9fMybPJugcshvMhJygseXqRI9oao7I0u9ZK7zXF
+         d6YeMmKDKSCcPQZDBkYHClG4GSHu6jo0Aha9w4Oh/ypsqjoleDrDKfdjaK+Ib+Pv6zIO
+         PGEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfj9zuJKM4ynShi10YRp4kl5gyMdVYEC6I8b/PWZkUHzHHCTXnPs3ntE3Y48/SD0yGbHo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEsjIFA+Fp4aK2HM5/xj+9UJm43xz8BYOQe6A8Nt0OBJ5Juirq
+	lT08c3E0OKXAvssDVDAvzo/nCipRiw5/4k1/PoiAeXTcZjZ+C5f6jyxo
+X-Gm-Gg: ASbGncsm+bceK8e6f3f8ufUIyEmPtftLMyfi7TFvGeZp7lcZ8Wc77eqVuHq6Rl9dCTt
+	f4Qf9kuiji7WC27bGIYjuebQfuj3vCQXzu179qnx1lWHWs9LPfMC1+XXj2Shl4NKwKKmXWbG8Y0
+	MsCTq3dKUXZ4Vt7X/wr8VG7klLKqRMIv9ET+BGMu2jBIxKdJQazkZUe/LHERcCOlSX5Ge3YL2Ed
+	pgRr84q8QmSDfGmlmg0M9nH8T+NWDW8zhEkYcqmWE6mULwxzM+eUsQ87kSvBMzai4x0WTe3tqqc
+	wmpAsfCLzlO8Fu4UGw9EhuSNX/HVHkZVdZa25NGgInHaFp+do1YCPEpSgIAVGuRL6dpd/Tr98LD
+	Aj0+pxbAznSKGKfTV9iz9I7Bb4LkaU2pYlZnJB4wXWp5EfgDdYwiNYSczbNUTZmQNHB4KL0WdA8
+	PqHDxHp8vJ
+X-Google-Smtp-Source: AGHT+IGpbtWsp+Mm/S48jCR6WqRD9PeJ1vXrRe/i0losym/wKIvIDEFhe81JpBAm2YjMZtF3X56FTA==
+X-Received: by 2002:a05:6a00:1d9e:b0:772:4e7f:8106 with SMTP id d2e1a72fcca58-7724e7f87f8mr7686637b3a.16.1756794589591;
+        Mon, 01 Sep 2025 23:29:49 -0700 (PDT)
+Received: from localhost.localdomain ([101.82.213.56])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a26a0b3sm12641236b3a.10.2025.09.01.23.29.44
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 01 Sep 2025 23:29:49 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	daniel@iogearbox.net,
+	bigeasy@linutronix.de,
+	tgraf@suug.ch,
+	paulmck@kernel.org,
+	razor@blackwall.org
+Cc: netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v4 next-next] net/cls_cgroup: Fix task_get_classid() during qdisc run
+Date: Tue,  2 Sep 2025 14:29:33 +0800
+Message-Id: <20250902062933.30087-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,64 +98,106 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Rong Tao <rongtao@cestc.cn>
+During recent testing with the netem qdisc to inject delays into TCP
+traffic, we observed that our CLS BPF program failed to function correctly
+due to incorrect classid retrieval from task_get_classid(). The issue
+manifests in the following call stack:
 
-Add testsuites for kfunc bpf_strcasecmp.
+        bpf_get_cgroup_classid+5
+        cls_bpf_classify+507
+        __tcf_classify+90
+        tcf_classify+217
+        __dev_queue_xmit+798
+        bond_dev_queue_xmit+43
+        __bond_start_xmit+211
+        bond_start_xmit+70
+        dev_hard_start_xmit+142
+        sch_direct_xmit+161
+        __qdisc_run+102             <<<<< Issue location
+        __dev_xmit_skb+1015
+        __dev_queue_xmit+637
+        neigh_hh_output+159
+        ip_finish_output2+461
+        __ip_finish_output+183
+        ip_finish_output+41
+        ip_output+120
+        ip_local_out+94
+        __ip_queue_xmit+394
+        ip_queue_xmit+21
+        __tcp_transmit_skb+2169
+        tcp_write_xmit+959
+        __tcp_push_pending_frames+55
+        tcp_push+264
+        tcp_sendmsg_locked+661
+        tcp_sendmsg+45
+        inet_sendmsg+67
+        sock_sendmsg+98
+        sock_write_iter+147
+        vfs_write+786
+        ksys_write+181
+        __x64_sys_write+25
+        do_syscall_64+56
+        entry_SYSCALL_64_after_hwframe+100
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
+The problem occurs when multiple tasks share a single qdisc. In such cases,
+__qdisc_run() may transmit skbs created by different tasks. Consequently,
+task_get_classid() retrieves an incorrect classid since it references the
+current task's context rather than the skb's originating task.
+
+Given that dev_queue_xmit() always executes with bh disabled, we can use
+softirq_count() instead to obtain the correct classid.
+
+The simple steps to reproduce this issue:
+1. Add network delay to the network interface:
+  such as: tc qdisc add dev bond0 root netem delay 1.5ms
+2. Build two distinct net_cls cgroups, each with a network-intensive task
+3. Initiate parallel TCP streams from both tasks to external servers.
+
+Under this specific condition, the issue reliably occurs. The kernel
+eventually dequeues an SKB that originated from Task-A while executing in
+the context of Task-B.
+
+It is worth noting that it will change the established behavior for a
+slightly different scenario:
+
+  <sock S is created by task A>
+  <class ID for task A is changed>
+  <skb is created by sock S xmit and classified>
+
+prior to this patch the skb will be classified with the 'new' task A
+classid, now with the old/original one. The bpf_get_cgroup_classid_curr()
+function is a more appropriate choice for this case.
+
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Thomas Graf <tgraf@suug.ch>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Nikolay Aleksandrov <razor@blackwall.org>
 ---
- tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c | 6 ++++++
- tools/testing/selftests/bpf/progs/string_kfuncs_success.c  | 5 +++++
- 2 files changed, 11 insertions(+)
+ include/net/cls_cgroup.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
-index 53af438bd998..99d72c68f76a 100644
---- a/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
-+++ b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
-@@ -31,6 +31,8 @@ char *invalid_kern_ptr = (char *)-1;
- /* Passing NULL to string kfuncs (treated as a userspace ptr) */
- SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_null1(void *ctx) { return bpf_strcmp(NULL, "hello"); }
- SEC("syscall")  __retval(USER_PTR_ERR)int test_strcmp_null2(void *ctx) { return bpf_strcmp("hello", NULL); }
-+SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_null1(void *ctx) { return bpf_strcasecmp(NULL, "HELLO"); }
-+SEC("syscall")  __retval(USER_PTR_ERR)int test_strcasecmp_null2(void *ctx) { return bpf_strcasecmp("HELLO", NULL); }
- SEC("syscall")  __retval(USER_PTR_ERR)int test_strchr_null(void *ctx) { return bpf_strchr(NULL, 'a'); }
- SEC("syscall")  __retval(USER_PTR_ERR)int test_strchrnul_null(void *ctx) { return bpf_strchrnul(NULL, 'a'); }
- SEC("syscall")  __retval(USER_PTR_ERR)int test_strnchr_null(void *ctx) { return bpf_strnchr(NULL, 1, 'a'); }
-@@ -49,6 +51,8 @@ SEC("syscall")  __retval(USER_PTR_ERR)int test_strnstr_null2(void *ctx) { return
- /* Passing userspace ptr to string kfuncs */
- SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr1(void *ctx) { return bpf_strcmp(user_ptr, "hello"); }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr2(void *ctx) { return bpf_strcmp("hello", user_ptr); }
-+SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_user_ptr1(void *ctx) { return bpf_strcasecmp(user_ptr, "HELLO"); }
-+SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_user_ptr2(void *ctx) { return bpf_strcasecmp("HELLO", user_ptr); }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strchr_user_ptr(void *ctx) { return bpf_strchr(user_ptr, 'a'); }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strchrnul_user_ptr(void *ctx) { return bpf_strchrnul(user_ptr, 'a'); }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strnchr_user_ptr(void *ctx) { return bpf_strnchr(user_ptr, 1, 'a'); }
-@@ -69,6 +73,8 @@ SEC("syscall") __retval(USER_PTR_ERR) int test_strnstr_user_ptr2(void *ctx) { re
- /* Passing invalid kernel ptr to string kfuncs should always return -EFAULT */
- SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault1(void *ctx) { return bpf_strcmp(invalid_kern_ptr, "hello"); }
- SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault2(void *ctx) { return bpf_strcmp("hello", invalid_kern_ptr); }
-+SEC("syscall") __retval(-EFAULT) int test_strcasecmp_pagefault1(void *ctx) { return bpf_strcasecmp(invalid_kern_ptr, "HELLO"); }
-+SEC("syscall") __retval(-EFAULT) int test_strcasecmp_pagefault2(void *ctx) { return bpf_strcasecmp("HELLO", invalid_kern_ptr); }
- SEC("syscall") __retval(-EFAULT) int test_strchr_pagefault(void *ctx) { return bpf_strchr(invalid_kern_ptr, 'a'); }
- SEC("syscall") __retval(-EFAULT) int test_strchrnul_pagefault(void *ctx) { return bpf_strchrnul(invalid_kern_ptr, 'a'); }
- SEC("syscall") __retval(-EFAULT) int test_strnchr_pagefault(void *ctx) { return bpf_strnchr(invalid_kern_ptr, 1, 'a'); }
-diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
-index 46697f381878..67830456637b 100644
---- a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
-+++ b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
-@@ -12,6 +12,11 @@ char str[] = "hello world";
- /* Functional tests */
- __test(0) int test_strcmp_eq(void *ctx) { return bpf_strcmp(str, "hello world"); }
- __test(1) int test_strcmp_neq(void *ctx) { return bpf_strcmp(str, "hello"); }
-+__test(0) int test_strcasecmp_eq1(void *ctx) { return bpf_strcasecmp(str, "hello world"); }
-+__test(0) int test_strcasecmp_eq2(void *ctx) { return bpf_strcasecmp(str, "HELLO WORLD"); }
-+__test(0) int test_strcasecmp_eq3(void *ctx) { return bpf_strcasecmp(str, "HELLO world"); }
-+__test(1) int test_strcasecmp_neq1(void *ctx) { return bpf_strcasecmp(str, "hello"); }
-+__test(1) int test_strcasecmp_neq2(void *ctx) { return bpf_strcasecmp(str, "HELLO"); }
- __test(1) int test_strchr_found(void *ctx) { return bpf_strchr(str, 'e'); }
- __test(11) int test_strchr_null(void *ctx) { return bpf_strchr(str, '\0'); }
- __test(-ENOENT) int test_strchr_notfound(void *ctx) { return bpf_strchr(str, 'x'); }
+---
+v3->v4: describe the scenario where the original sender's classid could be
+        modified. (Paolo)
+v2->v3: update the commit log (Nikolay)
+v1->v2: use softirq_count() instead of in_softirq() (Sebastian)
+
+
+diff --git a/include/net/cls_cgroup.h b/include/net/cls_cgroup.h
+index 7e78e7d6f015..668aeee9b3f6 100644
+--- a/include/net/cls_cgroup.h
++++ b/include/net/cls_cgroup.h
+@@ -63,7 +63,7 @@ static inline u32 task_get_classid(const struct sk_buff *skb)
+ 	 * calls by looking at the number of nested bh disable calls because
+ 	 * softirqs always disables bh.
+ 	 */
+-	if (in_serving_softirq()) {
++	if (softirq_count()) {
+ 		struct sock *sk = skb_to_full_sk(skb);
+ 
+ 		/* If there is an sock_cgroup_classid we'll use that. */
 -- 
-2.51.0
+2.43.5
 
 
