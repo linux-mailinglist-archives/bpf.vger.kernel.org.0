@@ -1,197 +1,215 @@
-Return-Path: <bpf+bounces-67207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67208-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 195CBB40B3C
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 18:55:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EF37B40BF9
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 19:26:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9A341B606C9
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 16:55:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6146E2084F3
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 17:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F20310654;
-	Tue,  2 Sep 2025 16:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87694341ACA;
+	Tue,  2 Sep 2025 17:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AFEF74jY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOeH0X/u"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14EDD2F6594
-	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 16:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BAB9EADC;
+	Tue,  2 Sep 2025 17:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756832111; cv=none; b=fiBJfrlo5+DqLHtgMKuixOlPmOnNkftgap1WX6xn1cwqupXcyM0twZ4p12K3/pKVrrm2J29mCBqBETSQCntNbnuU7376f8IbWuR/75r4t1GhWlSJ5EcwPs+OGoipXKUM152wwsO7pDcrrndJ2Ao1OjspWGyAXG7Z8NB5+uOogHs=
+	t=1756833972; cv=none; b=Q6XpoEZET/9+UH3ON/oUiD+xL08X1wODb1WxsafxUZ5h9Z1u6YgO39HCs8xiHou8rpvbKO68Kjv+SvdqscdPQsOvSQyidlETDdz7eZk7BHmjmoo6ZwvHUdBCcCFgomMHpxfiJmb6mDCz5K+7TIWQ2SWMpRKfYpFYCK7ryW3n1F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756832111; c=relaxed/simple;
-	bh=dUzqaLLsvlk+kHmoFCR7c9Yn4zMIi9+At7mA5hjlXVk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ehrKqtZXSOovYPoQlhsKIgEQ/NuQSfqjY6gwb2LUPJjag2oJpvvcZibbHxVx5xv95b2hxZMtFRumkVMI6KzDL4eftHFWhfY7wxr5DB57tvHHonHZLydKE9oNA+LXjF/s5OdEZB2suXRM3OmSX45Gx37HV8C25N0oO3YsHpiXIXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AFEF74jY; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e960900d-3811-4b8b-b4b3-bb23048ef5d6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756832105;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hDmFle6NNRHHxvk9SFX7P01CsUfGYQB8JSdA3p8i0w4=;
-	b=AFEF74jY87dxIniW/EuXY7tPRDaxdUOHDklysZdySYCT7Rmui0QN2XWgPC435v1gJyxvRw
-	976FU1oNrsvWB/BVoG9sYG/8Qe1ERdgKRbB0LDqKkgKqJSUafovOJHulLL4doCDXGaUDqz
-	immszZilaVgVhgf8lxPTf5PBL4GHRjc=
-Date: Tue, 2 Sep 2025 09:54:54 -0700
+	s=arc-20240116; t=1756833972; c=relaxed/simple;
+	bh=/z/Dz1XaPvrkNw36gI59b8TNtvVJDPJtI5VaXutkiXw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mff9Yy+NNWHDmRjvAFfX3O6EKa2EkRr5ULbZ1QuHzeEjGyWKd1a/qKCTJtMzCs6KOFhd8Vv1geT5Lqd9yt7QI9NFHDcBhxHeCFFLyobEGscnxzD+3TV3mZMm3mVMdmq5jwH3FXe+8iygRfh4EcMcPhcNaKa6N8fHA1Fu+BJ2A3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NOeH0X/u; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-772627dd50aso120462b3a.1;
+        Tue, 02 Sep 2025 10:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756833970; x=1757438770; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AI0sibvMCgh5fbMVo8FbbdghaTtrNSnQf+2Uv67Hqb0=;
+        b=NOeH0X/uyave7zSafdBKZ1jA3OB5abauOqB3k3ELpNvZVfNmce7fS0BE5llEUoTFG2
+         09Ta7ToOBrr4pmWAWFBl35xxWvu9fugQJ/FIaLPwgBEDcSXOPjXnRMRX5IGVG9RgFW1K
+         /bGG4Sp7dJ0ariaSkhR4/0F+SWewuhSBeImT2KlY0HNeW1qwFQHwMKK0VEsSJXMoTtkI
+         TRdBPg4L4fYWO60otKro8itfKUcdVZ8YB1Mkvp+Ffpbbv+omePceGtEMhJvMZBKzsAv4
+         eNYDbk18OrooP4CQOpQUHuW0c/Xm89U7ldpf/tfCgVMKLWqiYTZ3DgYT4Qvrj0/dEXZb
+         g8vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756833970; x=1757438770;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AI0sibvMCgh5fbMVo8FbbdghaTtrNSnQf+2Uv67Hqb0=;
+        b=D3nvIVYGi8ljuivISsOs0+ZyqYpV6G4gQOw9nj67VVgPkd9iVqzPvP0+GKMxedT6I/
+         VD/kyGg0gWTGytT3HYXUXfsZ0IfwBpzdw1aWqbbOPljwr0LU/pm9mJivUK/+tPdAM4aD
+         fzTvhFK2/xXtxXU2cC/cmbT1rF2YGDnEX1NT+PCyV0WIslbIQ5h4k3mrT9Qb+OVhUipb
+         xWLKPWN5HDr7mjF76l8mSgw/hAa5HJc1UkrqOy4GjCxVWSA6iov13NzfGpgfLgu0yc8p
+         imhRDKhdxvRZgjLsXPoDucOXzoV6jzH/YpOGGgwQTiiLvKah91z2zQLOAxpAWI3+yOrx
+         M7CA==
+X-Forwarded-Encrypted: i=1; AJvYcCWv2FIJHg022eeOPz59PZVMy4/VFqPzSXbiPZpf7eDvy5ZKAuKZre2SL0x3zs9zUghyZQ5wUb8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxg48cya/VDTQaS5zfHdgP4o7Jly0idi5NwgOlCQZaQ/o/3Ucul
+	9U3H/mAvlw36/iCz0kKXDJbrsVHcpoDNgCzNW3RAJsR8coq+43UY608=
+X-Gm-Gg: ASbGnctqPK8pMsEZnGtmLR8b9SJg4lYxbjhasszcayujVaSZb8Dh+2TJJlT94JOitcF
+	7T/9ZCUqBe6d0vSBXlGG9M71D+EN9Nq9+b4mCzwQ+2o+Q+CF+P6d1FXA3hD+xAOtTWZ3/5jvOox
+	yveR/SzJ/hA28QkSrdzuhYeIzxkGMVUgRWHG1OUJVcMLORg/ZhB4/7dEmB+UCzzdMmQTkFAXptN
+	4e7hkKRluW8lCUFu+migFGMi2cHzxkgmpzf+nI8+xHFhCOIEVuM8aEqkG3rqE7rfaiOE+/BxT4T
+	mJDyWoPneSD9YE72e/YClwUQ384sxn7ReUo4WvboiVDv1PuxckeLW33bBaW7AmhcxeUcwdXiKXo
+	z4zmVRDQi7O5lB71FpNTLvT7NqGu7k6DDZ9lQPA99Nng73sqJJik5+6OQenXmCqjCm02ds0Ctdb
+	kI//4J6Uhczh7+AhwxljYV7Qb52O7Wszk3L/Fk35Tgw8Bhz/M6nLxrqGTDsP3xrk9nFC4qsQoFa
+	sZg
+X-Google-Smtp-Source: AGHT+IEUQPE00+kt4cC6c0CTbDY1QOeSG7yzCaxkvyUnPQojU0cKQ/XQPhhE6GNJK8H+7bjn0oI85Q==
+X-Received: by 2002:a05:6a20:244c:b0:23f:ff4e:fcb0 with SMTP id adf61e73a8af0-243d505c677mr19170305637.2.1756833969523;
+        Tue, 02 Sep 2025 10:26:09 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id 41be03b00d2f7-b4cd3670e5csm12353265a12.53.2025.09.02.10.26.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Sep 2025 10:26:09 -0700 (PDT)
+Date: Tue, 2 Sep 2025 10:26:08 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, netdev@vger.kernel.org,
+	magnus.karlsson@intel.com, kerneljasonxing@gmail.com,
+	Eryk Kubanski <e.kubanski@partner.samsung.com>
+Subject: Re: [PATCH v7 bpf] xsk: fix immature cq descriptor production
+Message-ID: <aLcosKaalC8DYR5j@mini-arch>
+References: <20250829180950.2305157-1-maciej.fijalkowski@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: add bpf_strcasecmp kfunc
-Content-Language: en-GB
-To: Rong Tao <rtoax@foxmail.com>, andrii@kernel.org, ast@kernel.org,
- vmalik@redhat.com
-Cc: Rong Tao <rongtao@cestc.cn>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>,
- "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)"
- <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-References: <cover.1756804522.git.rtoax@foxmail.com>
- <tencent_0E0C830021A02CBCCB6D95AE57CFD100C407@qq.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <tencent_0E0C830021A02CBCCB6D95AE57CFD100C407@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250829180950.2305157-1-maciej.fijalkowski@intel.com>
 
-
-
-On 9/2/25 2:19 AM, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
->
-> bpf_strcasecmp() function performs same like bpf_strcmp() except ignoring
-> the case of the characters.
->
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+On 08/29, Maciej Fijalkowski wrote:
+> Eryk reported an issue that I have put under Closes: tag, related to
+> umem addrs being prematurely produced onto pool's completion queue.
+> Let us make the skb's destructor responsible for producing all addrs
+> that given skb used.
+> 
+> Commit from fixes tag introduced the buggy behavior, it was not broken
+> from day 1, but rather when XSK multi-buffer got introduced.
+> 
+> In order to mitigate performance impact as much as possible, mimic the
+> linear and frag parts within skb by storing the first address from XSK
+> descriptor at sk_buff::destructor_arg. For fragments, store them at ::cb
+> via list. The nodes that will go onto list will be allocated via
+> kmem_cache. xsk_destruct_skb() will consume address stored at
+> ::destructor_arg and optionally go through list from ::cb, if count of
+> descriptors associated with this particular skb is bigger than 1.
+> 
+> Previous approach where whole array for storing UMEM addresses from XSK
+> descriptors was pre-allocated during first fragment processing yielded
+> too big performance regression for 64b traffic. In current approach
+> impact is much reduced on my tests and for jumbo frames I observed
+> traffic being slower by at most 9%.
+> 
+> Magnus suggested to have this way of processing special cased for
+> XDP_SHARED_UMEM, so we would identify this during bind and set different
+> hooks for 'backpressure mechanism' on CQ and for skb destructor, but
+> given that results looked promising on my side I decided to have a
+> single data path for XSK generic Tx. I suppose other auxiliary stuff
+> such as helpers introduced in this patch would have to land as well in
+> order to make it work, so we might have ended up with more noisy diff.
+> 
+> Fixes: b7f72a30e9ac ("xsk: introduce wrappers and helpers for supporting multi-buffer in Tx path")
+> Reported-by: Eryk Kubanski <e.kubanski@partner.samsung.com>
+> Closes: https://lore.kernel.org/netdev/20250530103456.53564-1-e.kubanski@partner.samsung.com/
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 > ---
->   kernel/bpf/helpers.c | 68 +++++++++++++++++++++++++++++++-------------
->   1 file changed, 48 insertions(+), 20 deletions(-)
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 401b4932cc49..238fd992c786 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3349,45 +3349,72 @@ __bpf_kfunc void __bpf_trap(void)
->    * __get_kernel_nofault instead of plain dereference to make them safe.
->    */
->   
-> -/**
-> - * bpf_strcmp - Compare two strings
-> - * @s1__ign: One string
-> - * @s2__ign: Another string
-> - *
-> - * Return:
-> - * * %0       - Strings are equal
-> - * * %-1      - @s1__ign is smaller
-> - * * %1       - @s2__ign is smaller
-> - * * %-EFAULT - Cannot read one of the strings
-> - * * %-E2BIG  - One of strings is too large
-> - * * %-ERANGE - One of strings is outside of kernel address space
-> - */
-> -__bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
-> +int __bpf_strcasecmp(const char *s1, const char *s2, bool ignore_case)
+> 
+> Jason, please test this v7 on your setup, I would appreciate if you
+> would report results from your testbed. Thanks!
+> 
+> v1:
+> https://lore.kernel.org/bpf/20250702101648.1942562-1-maciej.fijalkowski@intel.com/
+> v2:
+> https://lore.kernel.org/bpf/20250705135512.1963216-1-maciej.fijalkowski@intel.com/
+> v3:
+> https://lore.kernel.org/bpf/20250806154127.2161434-1-maciej.fijalkowski@intel.com/
+> v4:
+> https://lore.kernel.org/bpf/20250813171210.2205259-1-maciej.fijalkowski@intel.com/
+> v5:
+> https://lore.kernel.org/bpf/aKXBHGPxjpBDKOHq@boxer/T/
+> v6:
+> https://lore.kernel.org/bpf/20250820154416.2248012-1-maciej.fijalkowski@intel.com/
+> 
+> v1->v2:
+> * store addrs in array carried via destructor_arg instead having them
+>   stored in skb headroom; cleaner and less hacky approach;
+> v2->v3:
+> * use kmem_cache for xsk_addrs allocation (Stan/Olek)
+> * set err when xsk_addrs allocation fails (Dan)
+> * change xsk_addrs layout to avoid holes
+> * free xsk_addrs on error path
+> * rebase
+> v3->v4:
+> * have kmem_cache as percpu vars
+> * don't drop unnecessary braces (unrelated) (Stan)
+> * use idx + i in xskq_prod_write_addr (Stan)
+> * alloc kmem_cache on bind (Stan)
+> * keep num_descs as first member in xsk_addrs (Magnus)
+> * add ack from Magnus
+> v4->v5:
+> * have a single kmem_cache per xsk subsystem (Stan)
+> v5->v6:
+> * free skb in xsk_build_skb_zerocopy() when xsk_addrs allocation fails
+>   (Stan)
+> * unregister netdev notifier if creating kmem_cache fails (Stan)
+> v6->v7:
+> * don't include Acks from Magnus/Stan; let them review the new
+>   approach:)
+> * store first desc at sk_buff::destructor_arg and rest of frags in list
+>   stored at sk_buff::cb
 
-The function __bpf_strcasecmp should be a static function.
+This is a nice way out :-)
 
->   {
->   	char c1, c2;
->   	int i;
->   
-> -	if (!copy_from_kernel_nofault_allowed(s1__ign, 1) ||
-> -	    !copy_from_kernel_nofault_allowed(s2__ign, 1)) {
-> +	if (!copy_from_kernel_nofault_allowed(s1, 1) ||
-> +	    !copy_from_kernel_nofault_allowed(s2, 1)) {
->   		return -ERANGE;
->   	}
->   
->   	guard(pagefault)();
->   	for (i = 0; i < XATTR_SIZE_MAX; i++) {
-> -		__get_kernel_nofault(&c1, s1__ign, char, err_out);
-> -		__get_kernel_nofault(&c2, s2__ign, char, err_out);
-> +		__get_kernel_nofault(&c1, s1, char, err_out);
-> +		__get_kernel_nofault(&c2, s2, char, err_out);
-> +		if (ignore_case) {
-> +			c1 = tolower(c1);
-> +			c2 = tolower(c2);
-> +		}
->   		if (c1 != c2)
->   			return c1 < c2 ? -1 : 1;
->   		if (c1 == '\0')
->   			return 0;
-> -		s1__ign++;
-> -		s2__ign++;
-> +		s1++;
-> +		s2++;
->   	}
->   	return -E2BIG;
->   err_out:
->   	return -EFAULT;
->   }
->   
-> +/**
-> + * bpf_strcmp - Compare two strings
-> + * @s1__ign: One string
-> + * @s2__ign: Another string
-> + *
-> + * Return:
-> + * * %0       - Strings are equal
-> + * * %-1      - @s1__ign is smaller
-> + * * %1       - @s2__ign is smaller
-> + * * %-EFAULT - Cannot read one of the strings
-> + * * %-E2BIG  - One of strings is too large
-> + * * %-ERANGE - One of strings is outside of kernel address space
-> + */
-> +__bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
-> +{
-> +	return __bpf_strcasecmp(s1__ign, s2__ign, false);
-> +}
+> * keep the kmem_cache but don't use it for allocation of whole array at
+>   one shot but rather alloc single nodes of list
+> 
+> ---
+>  net/xdp/xsk.c       | 99 ++++++++++++++++++++++++++++++++++++++-------
+>  net/xdp/xsk_queue.h | 12 ++++++
+>  2 files changed, 97 insertions(+), 14 deletions(-)
+> 
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 9c3acecc14b1..3d12d1fbda41 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -36,6 +36,20 @@
+>  #define TX_BATCH_SIZE 32
+>  #define MAX_PER_SOCKET_BUDGET 32
+>  
+> +struct xsk_addr_node {
+> +	u64 addr;
+> +	struct list_head addr_node;
+> +};
 > +
-> +/**
-> + * bpf_strcasecmp - Compare two strings, ignoring the case of the characters
-> + * @s1__ign: One string
-> + * @s2__ign: Another string
-> + *
-> + * Return:
-> + * * %0       - Strings are equal
-> + * * %-1      - @s1__ign is smaller
-> + * * %1       - @s2__ign is smaller
-> + * * %-EFAULT - Cannot read one of the strings
-> + * * %-E2BIG  - One of strings is too large
-> + * * %-ERANGE - One of strings is outside of kernel address space
-> + */
-> +__bpf_kfunc int bpf_strcasecmp(const char *s1__ign, const char *s2__ign)
-> +{
-> +	return __bpf_strcasecmp(s1__ign, s2__ign, true);
-> +}
+> +struct xsk_addr_head {
+> +	u32 num_descs;
+> +	struct list_head addrs_list;
+> +};
 > +
->   /**
->    * bpf_strnchr - Find a character in a length limited string
->    * @s__ign: The string to be searched
-> @@ -3832,6 +3859,7 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
->   #endif
->   BTF_ID_FLAGS(func, __bpf_trap)
->   BTF_ID_FLAGS(func, bpf_strcmp);
-> +BTF_ID_FLAGS(func, bpf_strcasecmp);
->   BTF_ID_FLAGS(func, bpf_strchr);
->   BTF_ID_FLAGS(func, bpf_strchrnul);
->   BTF_ID_FLAGS(func, bpf_strnchr);
+> +static struct kmem_cache *xsk_tx_generic_cache;
+> +
+> +#define XSKCB(skb) ((struct xsk_addr_head *)((skb)->cb))
 
+Since you're gonna respin, maybe stick a build_bug_on here for
+the sizeof xsk_addr_head vs sizeof skb cb? Who knows, maybe at some
+point we'll stick more info into that struct..
+
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
