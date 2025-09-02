@@ -1,156 +1,93 @@
-Return-Path: <bpf+bounces-67232-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67233-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A57B40FF3
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 00:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1890B41006
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 00:30:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23EE65E2E61
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 22:21:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73E7B3ACCCE
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 22:30:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E71275AFA;
-	Tue,  2 Sep 2025 22:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8D472618;
+	Tue,  2 Sep 2025 22:30:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dJtXFWcf"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dFpU6ost"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8117623D7ED
-	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 22:21:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631721E487
+	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 22:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756851671; cv=none; b=IaL5f2W+MuCNvmnXSfitXAij9NarByRqMTRmZDxGpWEQOk0I1nI5wg6IrAmPlhp6COy4sLTt5UclkFjKdZmlgSMTuUQSK+klbOVgAO6pX0tqN0UVRcNbbaZswB3nhW5k9rh8JR77y7USI/V9XVU2kLzimfaggnxJbQUaGQi160k=
+	t=1756852221; cv=none; b=ZSaEC/cE40PmYD0x0U2bn+YlYRLr3FM6hTHJhgI/oBu9vt1WJrsj7jw5DXHt2zOModhURElDN6rXTeBtpkrVpzsJi0TXzmRHrvKBz3ohX12TK9MDXnFPBoOPDplf+qEmhM6LqqfL+czmO4wAcT6pXHlW5NphXc4/ufkjpzgKtJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756851671; c=relaxed/simple;
-	bh=OvAj/Oemb997fnFjRSfudQFn277bbgZlk67Klm4TPDE=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nrv8EEKUQchRL3o+G4fHdkuJ6tQHPMD3jt6KwLILgS5OZSg1+c40oSmoMpLB5K8mDyOI4otgfid5vQbikrnbZfLEI99FmD2oXkOa0vxzjjBwA1cMT+qXRdb0DiSIkVaY8oNyYwAV5AJT2fRe9mpR437bj+R5rV9yELXHul+21js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dJtXFWcf; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-77250e45d36so2254870b3a.0
-        for <bpf@vger.kernel.org>; Tue, 02 Sep 2025 15:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756851670; x=1757456470; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YjW9I1fumeeimP/vzGQ/5tGrn7+6zjAbPdS9bJrXgqE=;
-        b=dJtXFWcfLho2f8a8fjin4t6i9U3/NEHOMabrKSldEuK7CopyJJchGqsWsmYBadxCpf
-         oIKATbagt8v2N7LBtWad/Tnldyiq35UaI9GAXOPfBiwxXNviwi+m/EtkbBDRMr2CDVmQ
-         uwFRiGiWmDy8dBaRAV6vM3YEmTUtz8Halc/SjdUNv3qipj+U6L2c1/M1fKkEL0IRQjP7
-         UBZIcuvDLpfepHfN3Sg9r4TRnQQhZhcGYD+zi9RVyVIDSjAsaAL0PhIPxiVVW5u0Fee/
-         tARxyLTiZdxSjNPBqQOUIfKhqD/LixmxtfhjdCkGDNGUdpqGLzSBhFVgGaYF2MajJNOh
-         kx9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756851670; x=1757456470;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=YjW9I1fumeeimP/vzGQ/5tGrn7+6zjAbPdS9bJrXgqE=;
-        b=Wtn7vtuGKoc5HqX9FE1PznqcO/TK59BrTkxuQX0793gQVuc0cXqFzO8axtafdmo7E/
-         ZVIF9OS9ZVgnonGGVFx2MKIKW4oPx3EA7y3AV4JV3sMwOcdaZPVurlQbrBMxQrGAdu/P
-         LB+ZKm02aUg7hvh0PzAJ8SGXAXPrC3lYJp9IjGaSjEt96fMBaDwNkARjdOeIuVQ6lVsM
-         nZbBKub6WXfoQaI4kxUooLYEevJbhZdnACsq6hn/kIpmOZeYcHl/S27g8GJBUGu+mHJQ
-         SC2nyFBGjN6t01/OO7ZZ8YIENGDXZJ3boAkElNVGqot+M7WSS/Y/J0PcjW2AkoB/Na4s
-         YAag==
-X-Forwarded-Encrypted: i=1; AJvYcCXLu8AjJzO6/0pCAOY1sAxIetYJXuytCP465BgtP4ro9Q6nF5oz/jExfHCAGMNe/T5v550=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywig6zHZoolP5bzUQ31keZEWWfbZeav86Ww1C1p6s9teiwZTcRw
-	zWt83lxWuquxT48JJJUF24+J8olfK8TxBU4rIqnCX8JEA5Sx/WV8oCaZ
-X-Gm-Gg: ASbGncv6c2rxrKBJrgezeoH2hNXkdcOLN0BJ20xoh3Ej0IRMV1KW6otLUSZsX+CU8Gg
-	4j+yEsxR3jNuarC1omZTC5NWDv48HsIfGAHDOCMyKIYlJQO+/WQCra3S/F87JWQCiAIuUDwwFsX
-	pG3FVm9hqyGs41lrOkj4Fh4wJcm7vxQpFAC4JbraEEgoWy+4c1IpneMQ9N/AA0XzEKjicBeky+X
-	lAXMmNDzSod57ybCz/9kNb02r4dQnk/ZQ2P28JSmMNHSnE1N0181HOLM4ziONxVEX2O0Wf2z/lY
-	ofbgeZoAYtcaXhCiChh60+WYHZy1RnZ3voJ9dLRBrxCHlnZ9BKYKc8B2Hz/dAmCVeM2ABUpnZUp
-	q39l60+2xkSjlr6LpeQKQD3zYCRK0KzxUJnnzzAl7MHppyVMPGG5Su5LDkeQrAxcLaknCgQ==
-X-Google-Smtp-Source: AGHT+IH2p7yl86kPRg7049kiVE9NDd6IfNALTmpAUFMXq9Q1+AyyifTFJLTs+9/fJyKk//CvqQP9jg==
-X-Received: by 2002:a05:6a20:1595:b0:243:beb8:1f41 with SMTP id adf61e73a8af0-243d6ddae6fmr17431465637.1.1756851669641;
-        Tue, 02 Sep 2025 15:21:09 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:8bb9:7ccc:ab52:ac92? ([2620:10d:c090:500::6:ea99])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4fa1a29cedsm760609a12.46.2025.09.02.15.21.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Sep 2025 15:21:09 -0700 (PDT)
-Message-ID: <3105c65cd99c483ecb4eb63d590fcec9601891bd.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add tests for arena
- fault reporting
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon	 <will@kernel.org>, Kumar Kartikeya
- Dwivedi <memxor@gmail.com>, 	bpf@vger.kernel.org
-Date: Tue, 02 Sep 2025 15:21:07 -0700
-In-Reply-To: <20250901193730.43543-5-puranjay@kernel.org>
-References: <20250901193730.43543-1-puranjay@kernel.org>
-	 <20250901193730.43543-5-puranjay@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1756852221; c=relaxed/simple;
+	bh=Zu2O/11sa03bmoU53AKoiAUYiDlGKbRK7En5wuIqf8s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WGe5q9cnPIT7PVE4D0ZxfX6UieZOY4VYysXEfZRIcpfRLYic5Hq6+6HfKen3I/QZuET+jRIgiA7i/NCi3VOc+K3ZmxISSPltomkIUSBqFO7K7DDqRmfSV0CJPCduGgfUEyUwaCUHVeUigzhwpub4Ka157kRFgThzluEqG2ETpjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dFpU6ost; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a76ad1e9-07d5-4ba1-83e4-22fe36a32df0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756852216;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WcMClNKqF89fyusNx4KAf+ldD0MkJVJrNd35mLcgadc=;
+	b=dFpU6ostNV6afKRbkI0/nNZ1eh0g4spiTyWoAwtlLsAPG6maCYx9BakMeKrqvtwODdfMoG
+	VYQQmhW5IsWl6KjdaRxwnX1U3SYA7577sVMqDFWS/RPsPxZtC4eqdoIpdKX1J77+IZaV2g
+	6KbVL82VHMnNa3lv2S59vqH/3DiDG/0=
+Date: Tue, 2 Sep 2025 15:30:04 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v1 01/14] mm: introduce bpf struct ops for OOM handling
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>, linux-mm <linux-mm@kvack.org>,
+ bpf <bpf@vger.kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>,
+ David Rientjes <rientjes@google.com>,
+ Matt Bobrowski <mattbobrowski@google.com>, Song Liu <song@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20250818170136.209169-1-roman.gushchin@linux.dev>
+ <20250818170136.209169-2-roman.gushchin@linux.dev>
+ <CAP01T76AUkN_v425s5DjCyOg_xxFGQ=P1jGBDv6XkbL5wwetHA@mail.gmail.com>
+ <87ms7tldwo.fsf@linux.dev> <1f2711b1-d809-4063-804b-7b2a3c8d933e@linux.dev>
+ <87wm6rwd4d.fsf@linux.dev> <ef890e96-5c2a-4023-bcb2-7ffd799155be@linux.dev>
+ <CAADnVQ+LGbXXHHTbBB9b-RjAXO4B6=3Z=G0=7ToZVuH61OONWA@mail.gmail.com>
+ <87iki0n4lm.fsf@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <87iki0n4lm.fsf@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 2025-09-01 at 19:37 +0000, Puranjay Mohan wrote:
+On 9/2/25 10:31 AM, Roman Gushchin wrote:
+> Btw, what's the right way to attach struct ops to a cgroup, if there is
+> one? Add a cgroup_id field to the struct and use it in the .reg()
 
-[...]
+Adding a cgroup id/fd field to the struct bpf_oom_ops will be hard to attach the 
+same bpf_oom_ops to multiple cgroups.
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/stream.c b/tools/test=
-ing/selftests/bpf/prog_tests/stream.c
-> index 9d0e5d93edee7..b2a85364e3c4f 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/stream.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/stream.c
-> @@ -41,6 +41,22 @@ struct {
->  		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
->  		"|[ \t]+[^\n]+\n)*",
->  	},
-> +	{
-> +		offsetof(struct stream, progs.stream_arena_read_fault),
-> +		"ERROR: Arena READ access at unmapped address 0x.*\n"
-> +		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
-> +		"Call trace:\n"
-> +		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
-> +		"|[ \t]+[^\n]+\n)*",
-> +	},
-> +	{
-> +		offsetof(struct stream, progs.stream_arena_write_fault),
-> +		"ERROR: Arena WRITE access at unmapped address 0x.*\n"
-> +		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
-> +		"Call trace:\n"
-> +		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
-> +		"|[ \t]+[^\n]+\n)*",
-> +	},
+> callback? Or there is something better?
 
-I commented when prog_tests/stream.c was first introduced but it was
-decided to postpone the change back then.
-It would be nice to have the above expressed in terms similar to
-bpf_misc.h:__msg() macro. E.g. name it __bpf_{stdout,stderr} and
-have something like this in the progs/stream.c:
+There is a link_create.target_fd in the "union bpf_attr". The 
+cgroup_bpf_link_attach() is using it as cgroup fd. May be it can be used here 
+also. This will limit it to link attach only. Meaning the 
+SEC(".struct_ops.link") is supported but not the older SEC(".struct_ops"). I 
+think this should be fine.
 
-  SEC("syscall")
-  __success __retval(0)
-  __bpf_stderr("ERROR: Arena WRITE access at unmapped address 0x{{.*}}")
-  __bpf_stderr("CPU: {{[0-9]+}} UID: 0 PID: {{[0-9]+}} Comm: {{.*}}")
-  ...
-  int stream_arena_write_fault(void *ctx)
-  {
-	...
-  }
-
-Now that more tests are added, what do you think about such extension?
-
->  };
-> =20
->  static int match_regex(const char *pattern, const char *string)
-
-[...]
 
