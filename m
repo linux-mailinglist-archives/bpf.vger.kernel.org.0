@@ -1,89 +1,89 @@
-Return-Path: <bpf+bounces-67219-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67220-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB2CBB40DE9
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 21:32:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08A3CB40DEB
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 21:33:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB591B62EE7
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 19:32:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B37E33A991B
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 19:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E952F2E62B5;
-	Tue,  2 Sep 2025 19:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC052E5B19;
+	Tue,  2 Sep 2025 19:33:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NXP0GEIo"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hrlbrY9M"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D7D261B75
-	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 19:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB46286D7F
+	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 19:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756841541; cv=none; b=XXTKA9/TmTKFNm8+p/Hnqo0KDproKvWH/63U6eTyFeIamh9hq965VsUPXMc5aQcpB/4q6lDAlIVtbmEbTj/VsUK23ialLim5EW9lKwHpRDbOafkoG3AaSUho+2Y30mDMPp2yAYN7CAwiaVLjQsgtOiP+F7JaCYOH52OTp1YuZDw=
+	t=1756841593; cv=none; b=cI+tbGD0AcI9rX29gMyj8VcMVtSeLZbzBc+oeU+XYpAQXvGYSmn/kHT3jHaLlwGJlpaclerSUxFRLjtGWAwNxmSt++kgD0C7PossKtfk0c6+JC2oara24Z+rrWsv/u0N99+OQ9f/t/Ez7Ololkk99AScG6voxquwJxHFcC8JPGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756841541; c=relaxed/simple;
-	bh=WXVTLRCSAPDFGUkUfLjV2Brr9pyB4DXWU/7ceN0WPc8=;
+	s=arc-20240116; t=1756841593; c=relaxed/simple;
+	bh=DZVG7cD3+F5INllVXM8wY5G9pLWUGigl6+7rZcEMjuk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eH/ReTcsykfT6KMuOf9cdZZr0EFPjFyKaO71vNi4twjvfYmDZNmQAtmlBdgt1NGM265TkrrECDwO9FY2uNymB+2nojtGrtorNEvTzK7WAnpH401UW3h0k6PgxiFiZAa6lI7yRxRQj6p9NNcUuF+WjlqeAWxAJO7JCpSkHZe5EbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NXP0GEIo; arc=none smtp.client-ip=209.85.215.179
+	 To:Cc:Content-Type; b=B6JBY37gPHYYirYIs71CDNrN2xNgFQbXaQqfkKJdRj0TO5EnEXalLivLfslvZbapxuhEhgrpYwMVbRdLwlQSgMTwDTQxi/ipzSmj67Thr2nLIWRDerLTWQ5qU/N6Hzn+W3XKrzoVRaD0vxdUurOjJ/R0XC49SG+9NcQJ5R1qy+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hrlbrY9M; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-b4d4881897cso2856162a12.0
-        for <bpf@vger.kernel.org>; Tue, 02 Sep 2025 12:32:18 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-77256200f1bso1931517b3a.3
+        for <bpf@vger.kernel.org>; Tue, 02 Sep 2025 12:33:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756841538; x=1757446338; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1756841592; x=1757446392; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CETCbHQ39zTv8P6yQnZyYPqp3sT+ZziTFW/GxUKVpUk=;
-        b=NXP0GEIowFOumK0JFjXDr5F3b59TMRyQANHLy0VTMjauhFMjT16UKGhlwHjE46tid1
-         FV0ssmjsPyBhtPf7oWS13Hz0H8raCuOiB62xfjNb4+QGL2FdKzXqaq7Wt3PrJBdmHjnd
-         mjc3rzfAQDbpYLvIYAdtowXC28UMWBBq8N49HEVNY/7rmMzZ4ExVQ6Diw1iqBgOc1yHL
-         zT88I73ytL388dG1bV7baKT6nRFmveOyRw/2TbG/eMS9ow6rhohYooFCyg271kfZ20TC
-         YoGOOakw/IYj/mx5qvfnZKHRe+KBiBqGT/iiagteD5TD+g1j7m+SE8NgCF2tlcHjghGV
-         GVHw==
+        bh=YYwp8Zr2q1d600NBfnugsNcS1VrI9GFl0s1kI6DYjPE=;
+        b=hrlbrY9MGsv5S5rE9ZawGGJ2p9+ExIT67I6FQfc3g3Mz4SYNWYGiKz6y7Tj5JeZeSg
+         0sFquzi2WViyZDGhYatn035wCfv/dM0xhYVTkbxWA2PjFTr2R7jgNaPAiE0pEhRu3WqV
+         aeC0QiY92qFD8+imZp9JqIoRdihqhCivAl6U0ZTlTTwL9s6K1ysafMGGoSs3DnhsKGD6
+         Q8rRHnTZf2z/2I8wfw7VTearwiAPtQltEjDQo8svk8wV60lsIsUQ+GNFmHyoIW8W/HCa
+         s2MBHxE3QPC1SFu8kA6JoM8R+n6mnaGRoQMhxL8eajHzEQK6Al9M2hMR15XwF3SH3TnC
+         6RZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756841538; x=1757446338;
+        d=1e100.net; s=20230601; t=1756841592; x=1757446392;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CETCbHQ39zTv8P6yQnZyYPqp3sT+ZziTFW/GxUKVpUk=;
-        b=bEdzHJRq3XELby1DleEMIcgpzWQyaA0rvMqRQr65Eq5kfuzbUyQ18J98/EPQ5CK7YR
-         MQ6oqy6FQG+6rYwYRCknr8jkOuWcJfgAOwMGirFfXNfk/yt8txtyz8LBsxWsgorL+rVW
-         zkwX0oG4h6sDf3sDPP+h5i2+xrDmIZshS/ynA8pOX80vfYQNbwRXIzRUevUU3c7YPgcU
-         tMOxHUxILeP8y9mvyyeSPGiXqI5QzhBuPmz6zbUiEooPA5C3EieJ/YVga0Ac8pNL/N16
-         bdqGA3cnseXjONR7i6maAJnf762CLjOoG8A2IHFmiTdavFP6Gs8gKazM3A0IiUQuqzy3
-         qo7w==
-X-Forwarded-Encrypted: i=1; AJvYcCUE5cAoHj4B5I+LwbcU/SRZHhOTcLSigzMMYxUYK6jpoIgNFpvOjzSwMKp3V8VrNSMC6NY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbH5qKcs7QkLRKNMz0+RYf5RfEvzW67/46NdCERZQJrCkyPGOX
-	tRFDksoeLd9XLwBWzw87EV+na2TmQh2xXOdvupcZyj3bC/S8CW/ughsMoUEdezoFIXQyDyh+2ZD
-	mOTsiNzBjWu0pn5gZ+3rlBOtt5MXK1SUgZiWRSAgh
-X-Gm-Gg: ASbGncuZMf1VGfldfg7zkvtBr/+j9P0mBGhNzlNVDOKrXSSoZ12qGAHvjXRUYf4hRQm
-	u2iXegprI3DjSlG0wlnAcfC/2Rs+2XMt0ziYzJNY3ba+ln6e7AFEP/H0OIva9Pu4wp/PxZKVxZM
-	MvelrnqW10XOZT90A+FKonsFwjOgOLtevmIaBtBpHYWyUAj8WCLt90xemuPsLE1a6J0QvfsG7md
-	wd91b0t7OPMykVZzEcla/52oZ4BztILiHk66z4u1stLRWcY/6pjXaeUcQ+mdhgnS5cc10Q2eMZ4
-	sQ==
-X-Google-Smtp-Source: AGHT+IFlntFZ8AUaPfRapFyYDD8zXpzvZtNnXvChrwOKRdLdIDsAmCAq+LIFbd1zGlCIFyeJTHa63qqIh6k70Elzs4Q=
-X-Received: by 2002:a17:903:2a90:b0:248:fc2d:3a13 with SMTP id
- d9443c01a7336-24944b67d88mr155884325ad.55.1756841538200; Tue, 02 Sep 2025
- 12:32:18 -0700 (PDT)
+        bh=YYwp8Zr2q1d600NBfnugsNcS1VrI9GFl0s1kI6DYjPE=;
+        b=WQ8PrhrkwfJ1mFc5O/Xzt4YPnepcOcf5rWBWAiAZ+NrpbVSupJ529rXYkwXXhFvb+E
+         Rl7+xUtq+9scOZTl2DFpoB7phVb/TGyCupsVOJkT5XOVc5Or59SL5VGdF9TeZlkFJ3/F
+         j2NEteElaGCZx43koi9ydT5m9EldILiF2KRm3xA/e7MqdSoHS0zAMAg3Eo3rPP6ms0lA
+         jumlE6GeZMQ0gBEO9Q7pzSJ7fJHZH34/JJzkzHiyA+kQa2fClkQeygkxM+kcfkTsSgik
+         E/QPlX2hktRNDx4SIbMcPmztHIUBYAqLnVlIQQ0LN8lTb9bfFtMS6jWF/Kvd6srRr9f9
+         6R9w==
+X-Forwarded-Encrypted: i=1; AJvYcCUjTS7Nhqc7/5yMM8nkFtjMLxpadJrhNAVRt2RY8dQlN5rmQzpPDtg7Dsi2RQW40r2pSBg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3Do6oaByb+ETRkR3vRfB+ml+K+wnikSMnQA1VptQF7vZT6fDQ
+	kWgFX6DHLNhD5DBkfzLcR+BGvk2Zw2mthUkgYNzloddWn8T+1km6gnJD7iFbKm1o1OZVtqRsBWz
+	0pIy1ARPwPhG3Q8Hg3JFBBP+niGVHVRVvjSGMTavf
+X-Gm-Gg: ASbGnctRXF4A6yT4etQ7W6LRR91P/G2MmcYoAjSrFJCkZ7SvQRv/glJn55cu/iosPiJ
+	jHHcJh2XGYZIWhWceX0EMXIWr2gCTFvgKpv1LXM4S1qPT6WHz7J/Dfu7jbY5q3vmMovObP3SWy2
+	T9R/WoYdac5rJs/pxj4CpaWzZd9ArT72TfJn656xMkEdfVo9gl9YC8UOfYHkbcrtBEVJPpcKWut
+	v42U3tEZnfj66+yvtjMgpQ2TgmzulUMyhf+afTE0jAE+G5FmUf4bwvKEIRB3SVYlXp5AZW6l3Qn
+	hA==
+X-Google-Smtp-Source: AGHT+IEATvy9q2b2V7CURED7FUCTkt0VWc77CBS1KVMeBeSUsRNGYkpjgAHH8burand5lFozqhssA7q8awK1+uH5zCs=
+X-Received: by 2002:a17:903:46c3:b0:246:cf6a:f009 with SMTP id
+ d9443c01a7336-24944b46499mr176478375ad.46.1756841591456; Tue, 02 Sep 2025
+ 12:33:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250829010026.347440-1-kuniyu@google.com> <20250829010026.347440-2-kuniyu@google.com>
- <2527aee9-4e19-4e41-9176-7be1eda9aede@linux.dev>
-In-Reply-To: <2527aee9-4e19-4e41-9176-7be1eda9aede@linux.dev>
+References: <20250829010026.347440-1-kuniyu@google.com> <20250829010026.347440-3-kuniyu@google.com>
+ <9bc995b4-d0bd-41a8-8867-97507a55d449@linux.dev>
+In-Reply-To: <9bc995b4-d0bd-41a8-8867-97507a55d449@linux.dev>
 From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Tue, 2 Sep 2025 12:32:06 -0700
-X-Gm-Features: Ac12FXzalWk_-6qt9buKearmsTUcb0_1tRNSujSQPggWO-EMCYtR6EEiiMu4sg8
-Message-ID: <CAAVpQUCivp-5vNq01z3CTikX50OkeEVt=ikVa90CioqGkf9XCQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next/net 1/5] tcp: Save lock_sock() for memcg in inet_csk_accept().
+Date: Tue, 2 Sep 2025 12:33:00 -0700
+X-Gm-Features: Ac12FXzAhZBeB4p5Hn_96Y1BXB7W98FDKQSN1fHhXlm7f7jXYCMLYEKLpI72O7o
+Message-ID: <CAAVpQUBzyT8t1c+8ukk93q_GQMXAxg4WX4fOo4iishJX4wKEkA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next/net 2/5] bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
 To: Martin KaFai Lau <martin.lau@linux.dev>
 Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
@@ -97,54 +97,58 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 2, 2025 at 11:55=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+On Tue, Sep 2, 2025 at 12:10=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
 dev> wrote:
 >
 > On 8/28/25 6:00 PM, Kuniyuki Iwashima wrote:
-> > mem_cgroup_sk_alloc() is called for SCTP before __inet_accept(),
-> > so I added the protocol check in __inet_accept(), but this can be
-> > removed once SCTP uses sk_clone_lock().
+> > +BPF_CALL_5(bpf_unlocked_sock_setsockopt, struct sock *, sk, int, level=
+,
+> > +        int, optname, char *, optval, int, optlen)
+> > +{
+> > +     return __bpf_setsockopt(sk, level, optname, optval, optlen);
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_unlocked_sock_setsockopt_proto =
+=3D {
 >
-> >   void __inet_accept(struct socket *sock, struct socket *newsock, struc=
-t sock *newsk)
-> >   {
-> > +     /* TODO: use sk_clone_lock() in SCTP and remove protocol checks *=
-/
-> > +     if (mem_cgroup_sockets_enabled &&
-> > +         (!IS_ENABLED(CONFIG_IP_SCTP) ||
-> > +          sk_is_tcp(newsk) || sk_is_mptcp(newsk))) {
->
-> Instead of protocol check, is it the same as checking
-> "if (mem_cgroup_sockets_enabled && !mem_cgroup_from_sk(newsk))"
+> nit. There is a bpf_unlocked_"sk"_{get,set}sockopt_proto which its .func =
+is also
+> taking "struct sock *". This one is sock_create specific, how about renam=
+ing it
+> to bpf_sock_create_{get,set}sockopt_proto. The same for the its .func.
 
-sk_memcg could be NULL when the socket is belongs to the root
-memcg, and then we shouldn't call kmem_cache_charge() for SCTP.
-
-Also, SCTP's child sockets are not supported until we convert them to
-sk_clone_lock(), and I plan to do so after this series lands on net-next.
-
-https://github.com/q2ven/linux/commits/522_sctp_sk_clone_lock/
-
+Sounds better to me :)
+Will rename both.
 
 >
-> > +             gfp_t gfp =3D GFP_KERNEL | __GFP_NOFAIL;
+>
+> > +     .func           =3D bpf_unlocked_sock_setsockopt,
+> > +     .gpl_only       =3D false,
+> > +     .ret_type       =3D RET_INTEGER,
+> > +     .arg1_type      =3D ARG_PTR_TO_CTX,
+> > +     .arg2_type      =3D ARG_ANYTHING,
+> > +     .arg3_type      =3D ARG_ANYTHING,
+> > +     .arg4_type      =3D ARG_PTR_TO_MEM | MEM_RDONLY,
+> > +     .arg5_type      =3D ARG_CONST_SIZE,
+> > +};
 > > +
-> > +             mem_cgroup_sk_alloc(newsk);
+> > +BPF_CALL_5(bpf_unlocked_sock_getsockopt, struct sock *, sk, int, level=
+,
+> > +        int, optname, char *, optval, int, optlen)
+> > +{
+> > +     return __bpf_getsockopt(sk, level, optname, optval, optlen);
+> > +}
 > > +
-> > +             if (mem_cgroup_from_sk(newsk)) {
-> > +                     int amt;
-> > +
-> > +                     /* The socket has not been accepted yet, no need
-> > +                      * to look at newsk->sk_wmem_queued.
-> > +                      */
-> > +                     amt =3D sk_mem_pages(newsk->sk_forward_alloc +
-> > +                                        atomic_read(&newsk->sk_rmem_al=
-loc));
-> > +                     if (amt)
-> > +                             mem_cgroup_sk_charge(newsk, amt, gfp);
-> > +             }
-> > +
-> > +             kmem_cache_charge(newsk, gfp);
-> > +     }
-> > +
+> > +static const struct bpf_func_proto bpf_unlocked_sock_getsockopt_proto =
+=3D {
+> > +     .func           =3D bpf_unlocked_sock_getsockopt,
+> > +     .gpl_only       =3D false,
+> > +     .ret_type       =3D RET_INTEGER,
+> > +     .arg1_type      =3D ARG_PTR_TO_CTX,
+> > +     .arg2_type      =3D ARG_ANYTHING,
+> > +     .arg3_type      =3D ARG_ANYTHING,
+> > +     .arg4_type      =3D ARG_PTR_TO_UNINIT_MEM,
+> > +     .arg5_type      =3D ARG_CONST_SIZE,
+> > +};
+>
 
