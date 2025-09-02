@@ -1,133 +1,160 @@
-Return-Path: <bpf+bounces-67165-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67166-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87080B40104
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 14:45:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02D11B40153
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 14:53:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69F4A7B6B23
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 12:43:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB4801B60D2B
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 12:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7972BE63F;
-	Tue,  2 Sep 2025 12:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA85F2D481B;
+	Tue,  2 Sep 2025 12:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UpzTCy/V"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="xhs0WtNR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1807729BD8E
-	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 12:44:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3763595B;
+	Tue,  2 Sep 2025 12:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756817076; cv=none; b=ViPryQS+fttPZsBVVQ5eabscjVhCzvdkHwLDWzkCPXupEvSuLsbDGqThwQU2nRT6KZ7+l8SlP3tbj+xxOmAq/v80bSqKy4PwDVu7tfMUcGGGc0QY0MJXx+yb4vL1OrmaXn0G1PqWdDUoPo1WBVSGKvr3IS4XOGUGUNEdIHaavNs=
+	t=1756817625; cv=none; b=lviUiKQNW6kLrV3A9+UC2XlQRn8tS4dzwbqTdz/t6+B0M02FF4HRm2FtY2fmJAWqPCxfnp52BfoHWMnl9Fgn8rsroSYFPjOT4a1uFtiMhkKKkSBhecCtwz1ryKelADHQ8+Cy16klffdsRo0JLDUC157BOdNw43oYMpJUsAkbnxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756817076; c=relaxed/simple;
-	bh=R2RCICYQh0bmGfUwJGJV4T9ruKuRJOqTjWj8SrJJkQk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a3K8wvLwx8sAgIb9NKUYmJSEoC78rYvC5I5eETe2YmV6YdbH25oflFxP+lmiGyCarCUrG6BuZGbZn6Pi706qofrbJL0CRQ2AM4JUONAzMS7rz5gesbGtMdPZmpg8eaZunoorUGU8IoXN8yJkUqVvGgdjMUSc1+ryX/wIBDQPfnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UpzTCy/V; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1756817073; x=1788353073;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=R2RCICYQh0bmGfUwJGJV4T9ruKuRJOqTjWj8SrJJkQk=;
-  b=UpzTCy/VEWYoxMVNqrI9U//JHtWDDDH9M/1AnZ9oYtNZmQbJiW5RNNZY
-   obRxzznPjs3K1+JActM8tVgbLOmKzwF49Fzt6c9LyZZavt8segw+mvi1C
-   5RNALp2qrqQ21mUlW/1+gL7nP2FqLciHO1hr+/b1+Qt7fCGiWlTCSX9wt
-   D6Vx0q7izV4VwO844XvDc8r2E5vhwF2gnjhTIpgylWvMPzRmViGoI6DAi
-   fwUCUV6NHUxXrTWEupebBwGfu4hd4mIacYAVja4HSQhGSGjPp8rGn479K
-   IC/adZ9EOoaWjRaLW/Ko5puoN2pejOxpYZaAmFNTuvu/IIxw2YhVFFStL
-   Q==;
-X-CSE-ConnectionGUID: vvf32viSQcCCoBnD+1MVAA==
-X-CSE-MsgGUID: yYPSMESPSnyKaUgge7blnQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="62920303"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="62920303"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2025 05:44:32 -0700
-X-CSE-ConnectionGUID: 95i9zhkrQMiNJ1vBeJSU9A==
-X-CSE-MsgGUID: 5taccYprTmSVxwPWqg+u6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,230,1751266800"; 
-   d="scan'208";a="171233054"
-Received: from lkp-server02.sh.intel.com (HELO 06ba48ef64e9) ([10.239.97.151])
-  by fmviesa006.fm.intel.com with ESMTP; 02 Sep 2025 05:44:28 -0700
-Received: from kbuild by 06ba48ef64e9 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1utQMF-00020J-32;
-	Tue, 02 Sep 2025 12:43:42 +0000
-Date: Tue, 2 Sep 2025 20:42:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: Puranjay Mohan <puranjay@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH bpf-next v5 3/4] bpf: Report arena faults to BPF stderr
-Message-ID: <202509022034.z1178h4W-lkp@intel.com>
-References: <20250901193730.43543-4-puranjay@kernel.org>
+	s=arc-20240116; t=1756817625; c=relaxed/simple;
+	bh=GMEf6EiSdX0vFH/h/bzrixMuPQlQqcPnUDYYGB2d/aw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=N538xtS85hy3nI/+ft7XsrMubInAjowQk7HIV0ybRn2uBOZ7GWkUBsQOBe/T84xiWyqrushrbHS7UtDXQ8Or4OiT59P23ya16UeJmQgW1+YtzY89R5ACU/EaW6U/BeXkzU3uiUqporapluuIdv/FM5ayty/uw8WywPEIYDP7KAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=xhs0WtNR; arc=none smtp.client-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 45C49C8EC66;
+	Tue,  2 Sep 2025 12:53:25 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 0D3F860695;
+	Tue,  2 Sep 2025 12:53:40 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5D3FD1C228A25;
+	Tue,  2 Sep 2025 14:53:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1756817618; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=xugUPbYWNv1VVbKMqmzqvQ4aFGqHbEziO/2FwF6oyHY=;
+	b=xhs0WtNR9DqwnwFiqh79+t4UOXdkSKWBliA7a2Jd4do/GpIV5gwl/Z371eD4OAMSFxg3+R
+	S0S5/X39kzEbxN4vsQI/zMwIiwn+nkzDzVQfHKzDrq0p7i2kSLf1Uu+e3QoW4HDHKElCu6
+	QWaJJEV9DLNMCDxD5c/nRGN4gkpI7JV39lidXh6Cxdr12JQ7zL6hez+xgaw4/8k9I97H75
+	mLu+uRsr4XP95wMfQE/IobBx7G12eDMkiBcYPfVBXu/++uH/CleUz5VR7dPSXo8ElxZKfK
+	Yq/p9F5kT8zsq2iaAZVJ58H+U7RY7Cbt+/Ip8wHtOkNQyiuvvULWiN4/4Kwqqg==
+From: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+Subject: [PATCH bpf-next v2 00/14] selftests/bpf: Integrate test_xsk.c to
+ test_progs framework
+Date: Tue, 02 Sep 2025 14:49:50 +0200
+Message-Id: <20250902-xsk-v2-0-17c6345d5215@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250901193730.43543-4-puranjay@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAO7ntmgC/x3MSwrDIBSF4a2EO67FR4K1o+6jZJCYm+bSVoMGs
+ QT3XnF4+A/fCREDYYR7d0LARJG8q0NeOrDb5F7IaKkbJJcDl+LGcnwzblfD0ehhET3U5x5wpdy
+ UJ8z7yhzmA8ZaNoqHD7/GJ9F6k5RQTUqCcaaV7rU0k1GzeczeHx9yV+u/MJZS/hYjf3iiAAAA
+X-Change-ID: 20250218-xsk-0cf90e975d14
+To: =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
+ Magnus Karlsson <magnus.karlsson@intel.com>, 
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+X-Mailer: b4 0.14.2
+X-Last-TLS-Session-Version: TLSv1.3
 
-Hi Puranjay,
+Hi all,
 
-kernel test robot noticed the following build errors:
+This is a second version of a series I sent some time ago, it continues
+the work of migrating the script tests into prog_tests.
 
-[auto build test ERROR on bpf-next/master]
+The test_xsk.sh script covers many AF_XDP use cases. The tests it runs
+are defined in xksxceiver.c. Since this script is used to test real
+hardware, the goal here is to leave it as it is, and only integrate the
+tests that run on veth peers into the test_progs framework.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Puranjay-Mohan/bpf-arm64-simplify-exception-table-handling/20250902-033833
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250901193730.43543-4-puranjay%40kernel.org
-patch subject: [PATCH bpf-next v5 3/4] bpf: Report arena faults to BPF stderr
-config: x86_64-buildonly-randconfig-002-20250902 (https://download.01.org/0day-ci/archive/20250902/202509022034.z1178h4W-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250902/202509022034.z1178h4W-lkp@intel.com/reproduce)
+Some tests are flaky so they can't be integrated in the CI as they are.
+I think that fixing their flakyness would require a significant amount of
+work. So, as first step, I've excluded them from the list of tests
+migrated to the CI (see PATCH 13). If these tests get fixed at some
+point, integrating them into the CI will be straightforward.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202509022034.z1178h4W-lkp@intel.com/
+PATCH 1 extracts test_xsk[.c/.h] from xskxceiver[.c/.h] to make the
+tests available to test_progs.
+PATCH 2 to 5 fix small issues in the current test
+PATCH 7 to 12 handle all errors to release resources instead of calling
+exit() when any error occurs.
+PATCH 13 isolates some flaky tests
+PATCH 14 integrate the non-flaky tests to the test_progs framework
 
-All errors (new ones prefixed by >>):
+Maciej, I've fixed the bug you found in the initial series. I've
+looked for any hardware able to run test_xsk.sh in my office, but I
+couldn't find one ... So here again, only the veth part has been tested,
+sorry about that.
 
->> kernel/bpf/arena.c:637:6: error: redefinition of 'bpf_prog_report_arena_violation'
-     637 | void bpf_prog_report_arena_violation(bool write, unsigned long addr, unsigned long fault_ip)
-         |      ^
-   include/linux/bpf.h:2050:20: note: previous definition is here
-    2050 | static inline void bpf_prog_report_arena_violation(bool write, unsigned long addr,
-         |                    ^
-   1 error generated.
+Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+---
+Changes in v2:
+- Rebase on the latest bpf-next_base and integrate the newly added tests
+  to the work (adjust_tail* and tx_queue_consumer tests)
+- Re-order patches to split xkxceiver sooner.
+- Fix the bug reported by Maciej.
+- Fix verbose mode in test_xsk.sh by keeping kselftest (remove PATCH 1,
+  7 and 8)
+- Link to v1: https://lore.kernel.org/r/20250313-xsk-v1-0-7374729a93b9@bootlin.com
 
+---
+Bastien Curutchet (eBPF Foundation) (14):
+      selftests/bpf: test_xsk: Split xskxceiver
+      selftests/bpf: test_xsk: Initialize bitmap before use
+      selftests/bpf: test_xsk: Fix memory leaks
+      selftests/bpf: test_xsk: Wrap test clean-up in functions
+      selftests/bpf: test_xsk: Release resources when swap fails
+      selftests/bpf: test_xsk: Add return value to init_iface()
+      selftests/bpf: test_xsk: Don't exit immediately when xsk_attach fails
+      selftests/bpf: test_xsk: Don't exit immediately when gettimeofday fails
+      selftests/bpf: test_xsk: Don't exit immediately when workers fail
+      selftests/bpf: test_xsk: Don't exit immediately if validate_traffic fails
+      selftests/bpf: test_xsk: Don't exit immediately on allocation failures
+      selftests/bpf: test_xsk: Move exit_with_error to xskxceiver.c
+      selftests/bpf: test_xsk: Isolate flaky tests
+      selftests/bpf: test_xsk: Integrate test_xsk.c to test_progs framework
 
-vim +/bpf_prog_report_arena_violation +637 kernel/bpf/arena.c
+ tools/testing/selftests/bpf/Makefile              |   11 +-
+ tools/testing/selftests/bpf/prog_tests/test_xsk.c | 2616 ++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/test_xsk.h |  294 +++
+ tools/testing/selftests/bpf/prog_tests/xsk.c      |  146 ++
+ tools/testing/selftests/bpf/xskxceiver.c          | 2698 +--------------------
+ tools/testing/selftests/bpf/xskxceiver.h          |  156 --
+ 6 files changed, 3183 insertions(+), 2738 deletions(-)
+---
+base-commit: 1e6c91221f429972767f073295e2dd0d372520e7
+change-id: 20250218-xsk-0cf90e975d14
 
-   636	
- > 637	void bpf_prog_report_arena_violation(bool write, unsigned long addr, unsigned long fault_ip)
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+
 
