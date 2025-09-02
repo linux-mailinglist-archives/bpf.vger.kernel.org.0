@@ -1,194 +1,116 @@
-Return-Path: <bpf+bounces-67156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89D25B3FA09
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 11:18:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28AD0B3FA3C
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 11:24:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49C707AE0A0
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 09:16:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C15E54E2112
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 09:24:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A0F26A0D5;
-	Tue,  2 Sep 2025 09:17:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB752E9EA4;
+	Tue,  2 Sep 2025 09:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SSogPvC4"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="Q5BTvG0A"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB26F19D06B;
-	Tue,  2 Sep 2025 09:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE7663D987;
+	Tue,  2 Sep 2025 09:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756804678; cv=none; b=NwwZrgtmOScffvOT1W4C/gFkR4d3pDGuCk67B/bMFPQyFQxUGgBQt7ISYXKm2xEm/HWdOLYfNpYFVCdOe7rvtAV7pyFtaMUiNqKr6tiw1rYBHB51Kxg1/rNPSyKoVRuyIX6x8VyM6oRDTTjsbLtEWd/pEt/+7tfct0irU1FwVA0=
+	t=1756805050; cv=none; b=czyg8caX7weW0HYD/srftTTEhv4hN0a3GhX0suUZcD2vjZJ/q/4Z0LY3ypd++HSvOe8JNRtyatkC5u53Lvb4XFtfUQUFfh3j/Dw0NU80KX/WCuzGe7ydHewmomAxOUpBufeIQEIyqgFTcBNR3HiHlDoRWWw+ZbszDgA5f1B5/EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756804678; c=relaxed/simple;
-	bh=ZMYyEAscphgdmWWTvHvYvdsj1M79rUZLDhkB0ChvVfI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h+uGVqwcy5s798bS/ETozfye4kfYvI78eJ+Z36KLVsYGMbPBXF4KQ0Y6sFVE1Cj5wZg9S0egrQaDKIPrCx0k7sl+OG3ngaXeQaUtRGsMSV866rRLo6shxVo6nSOXVnkZnUdW2ibHJyMW99nAY7Ttym+mtCiCldYTfHvtqTbxJl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SSogPvC4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CD55C4AF0B;
-	Tue,  2 Sep 2025 09:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756804676;
-	bh=ZMYyEAscphgdmWWTvHvYvdsj1M79rUZLDhkB0ChvVfI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=SSogPvC47cUZCsDMNRs/xEtm7GbdryLFVf7rbbut4qu/COO054bmqYMHvGOqKPj8C
-	 4WQIFIAxyAs1Btc6qI0nbhZH47eakAKggQMPVCu9MmZMH+fOPmLpP7FWxg2iklszDU
-	 P11+o8IxhZ83eg8pz+rL/uBifdI59v4W2zFMCPIfZsA32s8UDpCknJZkQAZTyn32hS
-	 WPvkhK2d4ItgNqLa4nhxbxQguf/owynucBhD42W30nJDHVIsQcLWQyERcrQCx5zadT
-	 cxrma3I8paF3bbwDOs8Z5NAY53IhMrBfCR9e7uJGskVQ3Yghvp+z/eN5wcTR3Frvpm
-	 s2RwjebaeIkWA==
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-7454fee9da0so1997698a34.3;
-        Tue, 02 Sep 2025 02:17:56 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXAZVr4OaFCR6yVJjn7/8XFyeXC7SnEXwkCPWQJz/q3r7F4Ea/1A5+UUVgOixkYo149p6EPJbF0kvc=@vger.kernel.org, AJvYcCXFlSfYDhNYCfw8jAXXsyRLZf1WVkGFGl/JrnRKT1Ce3I1JhZLfkbz+WtMnIXUQcRsUBgM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7mCI3ApigpHxha6x4Zkxq/VbW/+6VuHu3QlMNFmpjsrudsOdw
-	wLX7JEJ+NKz5/AmabjNSs9V+mh8z0hgjxzgv2tWiyZ2/SG6jTbSIJiZDhC1Jlj/JQCN0crE642q
-	j/5wBwsdjuS3+J/jq0B6Sb9nFc13RzyM=
-X-Google-Smtp-Source: AGHT+IGnmwFytAaUo/rNskEciUlItMGJvwPzNYbXbvPvfUgvZGROLofCCzcfubCSSRfabxf38ciNem+d8tn1olpF6Vo=
-X-Received: by 2002:a05:6830:6aab:b0:743:7ea:67dc with SMTP id
- 46e09a7af769-74569d782b7mr6902862a34.2.1756804675680; Tue, 02 Sep 2025
- 02:17:55 -0700 (PDT)
+	s=arc-20240116; t=1756805050; c=relaxed/simple;
+	bh=pPTR2DPjWLZI78Um/TK9fffQxLMetALz3OjN/SJclL8=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=mlK5LRNUlIS5Tg+S91xgvnM+5otgW08LIkWUQACsrar1qQMByB2dpk2HIa+BdwjN2QIMwrKqIfMKxT0vlaRFUh6Cn6BrlCmA72sHUo2Xrien/Rv5vPrm3Q7BxR6rgMlLCZ2BMiU66AhQ0uMSZkhwtkWUXvjhRd6kQiW0b+M8WjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=Q5BTvG0A; arc=none smtp.client-ip=203.205.221.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1756804739;
+	bh=EpAarfKxM9Xf2n5id5G25GoKghSsP58gEeX99TV+bR4=;
+	h=From:To:Cc:Subject:Date;
+	b=Q5BTvG0AHk+LlRDP/VDDrPzYzeGvTV/OcbJL1FvpxBSXtLTRggnP3gCJPzeEITBt2
+	 Hcqt7ZO5FRzYTUBDjvz2d5/KZzy+HS3g9+EkProBoxvFXOpE1p14QfaAD75gIJe+Iz
+	 C3gZ+lzbBUIa/aGvKU40pDlFuQoVXn/JH+OohwuU=
+Received: from NUC10 ([39.156.73.10])
+	by newxmesmtplogicsvrsza56-0.qq.com (NewEsmtp) with SMTP
+	id 4B722280; Tue, 02 Sep 2025 17:18:55 +0800
+X-QQ-mid: xmsmtpt1756804735tlq9vma9p
+Message-ID: <tencent_E3598F975B2A13AFC3A3E08837062E42A908@qq.com>
+X-QQ-XMAILINFO: NMGzQWUSIfvTYId8edV+Tl6aZmURxcRHFXImvr8PRps3rdF3p9vcMWW80VYG5G
+	 D81vFsFzsDVjC1LTGHQXYV4SH5riK/L5cfIoTJ+rDitDc2jqcIeSC+CwcTdNU3W0O6t2mO0BxSFQ
+	 +irP8PtmoVN3xZngDZBHO10e2fZGCEdU6tI54g4irRcRKLguaRGE8ROp6dbVcKoVibtOmc8NVYDR
+	 NIlx9S9riUWX8FXS3vjtfdums/y0tEj3oX62FcH4rA4FUaVTMmCGDfQ+Ez4QGhn9OJIGd4OhesJt
+	 n8F5WCtgGf3L0LdmN9C1V+3kWEhXqIN8Hk6vc5wOLbcq+FT9LLsOiks35hDd8Ppu//6TWDAoRUH3
+	 MKR9WZwjm+laioU/WWi0MfpD85QYQrR+rEf6c6eNxK4oWbly+vv+DF7h2CldLoot6xW/ghAUlPEX
+	 1YxAkf90xlWxsk1gytTOAY/cnvF0zfbBhC7HWVyWaRi4NZhWqfsv0xvykpJ31S71I/C/n2hMolib
+	 yPh94okuoYaM1BUiMudTKhuNCPUX8wdoqlX2T0MJR38/Bl9rT6StgD3NYmpH+EaSYbhaAwfYWGY8
+	 tatgGSe+5sB2FscRADUd83uIJkL8ry8ckjgcnTMZdCcWel0BLfOvYIV/7MLraPMfLgKZJlcVGjKx
+	 BBHkVqYmrj7OQUNFBJ+SCHTWys2tlRZA2GFKUo9t4+QgkQRhdo0/B1Og2KPaCpga1s/LGVW80zd0
+	 gXSysHNqJZq5HlVlSWZhlggX6p9fbnr/0+ZIdhI8wwm43KpjV2SwvStSbwAhBiWXORLe/kRabCZI
+	 m1c2cibIz9ixfoMVJqsYn5BCc2S4OLvKpva9Izi7bWzIaES3WmqKpDFNY7RjQdnos/7K0uBHVEw8
+	 tOrLR2j41cSqvMoQHQM+OEVpyWQQAnjXBgQq6S2dClyA310HypC4UEMK8/EjpuOFUZXBqDvffv9m
+	 uVNSjBNrfELbzk1Rpgzme+SFBkwHgfKDqLbc6va0JJCmn5PHnwBVBSAGe5NDHTo3fkgcjKHcbZ5R
+	 O/1UNBP82EJMn0hVNOzI85LwhuV8/64FF/ttNUwgULGsrOhoatAWHLnJIGJvTXPzgyggDAUQ==
+X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+From: Rong Tao <rtoax@foxmail.com>
+To: andrii@kernel.org,
+	ast@kernel.org,
+	vmalik@redhat.com
+Cc: rtoax@foxmail.com,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Rong Tao <rongtao@cestc.cn>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kernel@vger.kernel.org (open list),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+Subject: [PATCH bpf-next v3 0/2] bpf: Add kfunc bpf_strcasecmp()
+Date: Tue,  2 Sep 2025 17:18:25 +0800
+X-OQ-MSGID: <cover.1756804522.git.rtoax@foxmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250829101137.9507-1-yikai.lin@vivo.com> <CAPhsuW4PGfmFnJ-huFFELRQDJ7SpgWOLxYVBhRtsZnsLZhB6rw@mail.gmail.com>
- <37d6f4a3-89dc-464a-b5fe-dcfb3e7882cc@vivo.com> <CAPhsuW4h_-Vskzxjt19b_muULJ+wAfze6izswjVS4XN2daUTmg@mail.gmail.com>
- <42c374fe-3ffb-4285-b982-add2a14fb65e@vivo.com>
-In-Reply-To: <42c374fe-3ffb-4285-b982-add2a14fb65e@vivo.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 2 Sep 2025 11:17:44 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jGSJrjJnUdAqvSTxT47Lzo-RPfQr4wEaPzOr0qQH-DnA@mail.gmail.com>
-X-Gm-Features: Ac12FXzJBC5wNKllmDCL-NSVuoSkzamcgTeQi5qlmB-EsTquWwoclWRSshdtMhc
-Message-ID: <CAJZ5v0jGSJrjJnUdAqvSTxT47Lzo-RPfQr4wEaPzOr0qQH-DnA@mail.gmail.com>
-Subject: Re: [PATCHSET V1 0/2] cpuidle, bpf: Introduce BPF-based extensible
- cpuidle policy via struct_ops
-To: "yikai.lin" <yikai.lin@vivo.com>
-Cc: Song Liu <song@kernel.org>, bpf@vger.kernel.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 2, 2025 at 9:23=E2=80=AFAM yikai.lin <yikai.lin@vivo.com> wrote=
-:
->
->
->
-> On 9/2/2025 1:51 AM, Song Liu wrote:
-> > On Sun, Aug 31, 2025 at 11:59=E2=80=AFPM yikai.lin <yikai.lin@vivo.com>=
- wrote:
-> > [...]
-> >> Thanks very much for your comments.
-> >> The cpuidle governor framework is as follows,
-> >> and I will include it in the next V2 version.
-> >>    ----------------------------------------------------------
-> >>                   Scheduler Core
-> >>    ----------------------------------------------------------
-> >>                       |
-> >>                       v
-> >>    ----------------------------------------------------------
-> >> | FAIR Class | EXT Class |           IDLE Class           |
-> >>    ----------------------------------------------------------
-> >> |            |           |              |
-> >> |            |           |              v
-> >> |            |           |      ------------------------
-> >> |            |           |          enter_cpu_idle()
-> >> |            |           |      ------------------------
-> >> |            |           |              |
-> >> |            |           |              v
-> >> |            |           |   ------------------------------
-> >> |            |           |       | CPUIDLE Governor |
-> >> |            |           |   ------------------------------
-> >> |            |           |     |            |           |
-> >> |            |           |     v            v           v
-> >> |            |           |-----------------------------------
-> >> |            |           | default   | |   other  | | BPF ext  |
-> >> |            |           | Governor  | | Governor | | Governor |
-> >> |            |           |-----------------------------------
-> >> |            |           |     |            |           |
-> >> |            |           |     v            v           v
-> >> |            |           |-------------------------------------
-> >> |            |           |           select idle state
-> >> |            |           |-------------------------------------> 1. It=
- is not clear to me why a BPF based solution is needed here. Can
-> >>>     we achieve similar benefits with a knob and some userspace daemon=
-?
-> >>>
-> >> Each time the system switches to the idle class, it requires a governo=
-r policy to select the correct idle state.
-> >> Currently, we can only switch governor policies through sysfs nodes, a=
-s shown below:
-> >>     / # ls /sys/devices/system/cpu/cpuidle/
-> >>     available_governors  current_driver  current_governor  current_gov=
-ernor_ro
-> >>     / # cat /sys/devices/system/cpu/cpuidle/available_governors
-> >>     menu teo qcom-cpu-lpm   =E3=80=8A=3D=3D=3DHere we can switch gover=
-nor policy by echo this node.
-> >> However, it is not possible to change the implementation of this polic=
-y through user interfaces.
-> >
-> > It is still not clear to me why we need this feature in BPF. From the
-> > overview, we need two different governors for two different scenarios,
-> > which can be achieved with a much simpler interface.
-> >
-> Thanks for your comments.
->
-> Below is a comparison of traditional governor methods
-> with a BPF-based approach for dynamic optimization of the cpuidle governo=
-r:
->
-> 1.Agile Iteration
-> -Traditional:
->    Governor policies require being predetermined and statically embedded =
-before kernel compilation.
-> -BPF:
->    Allows dynamic policy iteration based on real-time market user feedbac=
-k
->    User-space components can be updated via cloud deployment,
->    eliminating the need for kernel modifications, recompilation, or reboo=
-ts.
->    It is very convenient for mobile device updates.
+Kfunc already support bpf_strcmp, this patchset introduce bpf_strcasecmp
+and add some selftests.
 
-But surely you can add control knobs to a cpuidle governor?
+Rong Tao (2):
+  bpf: add bpf_strcasecmp kfunc
+  selftests/bpf: Test kfunc bpf_strcasecmp
 
-> 2.Dynamic Fine-Tuning
-> -Traditional:
->   Involves replacing the entire governor, which is less granular.
+ kernel/bpf/helpers.c                          | 68 +++++++++++++------
+ .../selftests/bpf/prog_tests/string_kfuncs.c  |  1 +
+ .../bpf/progs/string_kfuncs_failure1.c        |  6 ++
+ .../bpf/progs/string_kfuncs_failure2.c        |  1 +
+ .../bpf/progs/string_kfuncs_success.c         |  5 ++
+ 5 files changed, 61 insertions(+), 20 deletions(-)
 
-Same here.
+---
+v3: Update prog_tests/string_kfuncs.c for "strcasecmp";
+v2: Remove __ign prefix from __bpf_strcasecmp and add E2BIG failure test;
+    https://lore.kernel.org/lkml/tencent_8646158457D4511C447C833B21B3ACF6CB07@qq.com/
+v1: https://lore.kernel.org/lkml/tencent_5AE811A28781BE106AD6CDE59F4ADD2BFA06@qq.com/
+-- 
+2.51.0
 
-> -BPF:
->   Allows granular tuning of governor parameters.
-> -Examples:
->   --Screen-off music playback: dynamically enable the "expect_deeper" fla=
-g for deeper idle states.
->   --Gaming scenarios: Allows idle strategy parameters adjustments via use=
-r-space signals
->     (e.g., FPS, charging state) =E2=80=93 metrics often opaque to the ker=
-nel.
->
-> So, by exposing tunable parameters through BPF maps,
-> user-space applications could make more run-time parameters adjustments, =
-enhancing precision for specific scenarios.
-
-You may as well expose tunable parameters of a cpuidle governors by other m=
-eans.
-
-> Conclusion
-> ----------
-> This approach aims to preserve the common logic of existing Linux governo=
-rs
-> while adding flexibility for scenario-specific optimizations on certain S=
-oC platforms or by ODMs.
->
-> Welcome any additional insights you might have on this.
-
-I'm still not sure why BPF is needed for any of the things you want to
-be able to do.
-
-Thanks!
 
