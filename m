@@ -1,154 +1,132 @@
-Return-Path: <bpf+bounces-67198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67199-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7BBEB409BB
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 17:52:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0D48B40A36
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 18:12:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 835011B63274
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 15:52:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 775E91BA227E
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 16:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BE132A3D1;
-	Tue,  2 Sep 2025 15:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D08733A00B;
+	Tue,  2 Sep 2025 16:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b="Qq+etEVM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DXdmJjJl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5F32D47FD
-	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 15:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A8A3375DA;
+	Tue,  2 Sep 2025 16:11:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756828335; cv=none; b=VKS6pmMJm9sf8+mRrl136GXoie1bxwNWrxy8P4LD9EwzSNCs9EhL9OOkQZ6s4maBqC7O8/75deemcOWLqXpngA1Mg9FLJzxcjGLDtpoTV5pQvdCkkyvSP14SKjqmSbybywoDeO3tg14AkALF+TZiYA6/uqSyDWUYhw+9IqzczVw=
+	t=1756829497; cv=none; b=meUemaHurGI576rx8u3Fg4Ub9aQ4SxQKjFJt9IKq8qqXgNzbtfJzantXSbM/hOacP4sU5xHHGhYFkmRVn6R7lX6+Wjckv02ZlqeK2NDPT5X1WliTuPw9sNjzlLwNl2Krh0QHRNVMM0vGcrpskV5+mMUdtXeE0WAN97FShiSszS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756828335; c=relaxed/simple;
-	bh=stLhhV7bm1vUFI/iU1WBQlYtrw7OG6XE8jShsR81V70=;
+	s=arc-20240116; t=1756829497; c=relaxed/simple;
+	bh=jTW8kVFk5PN3HuFXHJyL7zyMWDABWszA9BxNrkt5TOA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nJ4vq9r7IMQQAbatHsZUowjsafb/3g6gQ7gPfhX/sCd/SG21kUIUq13/xWY9f8FVRRTT/NaBWHGlQ/MIi8pw3fOWGOiHVwrUSLr+8WqvT44bJQ0te/4kaU0H0mYUnohVg9RJm81QlQUXaAkpEe4w5H7U7pz4AKIPT6/Nu50upM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com; spf=pass smtp.mailfrom=openai.com; dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b=Qq+etEVM; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openai.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-333f92a69d4so42610861fa.2
-        for <bpf@vger.kernel.org>; Tue, 02 Sep 2025 08:52:13 -0700 (PDT)
+	 To:Cc:Content-Type; b=ZrOSB5LAD/sNStLirtNoS0qprC6VW9M+7yLqm6ZjH7gg5dGTlBUqPxQKqFdiUOPv/9ce/s5mv+IQ5Y4hOIDPmKYmOKaCb6U6vCyfG0ou2OzUUxZ3UZNn4HReXklDxdVIdXcQu8Gurqwc8LTppUPlQ1cXPFdWwXyi6nKAcRrFljg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DXdmJjJl; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b04271cfc3eso296969066b.3;
+        Tue, 02 Sep 2025 09:11:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openai.com; s=google; t=1756828332; x=1757433132; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756829494; x=1757434294; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=stLhhV7bm1vUFI/iU1WBQlYtrw7OG6XE8jShsR81V70=;
-        b=Qq+etEVMTaV7CZJy7fbVjo+Myg6LqBVoCHuuF77GYt9ClZywNx/aUME0GgLd8w5dha
-         WLLGLNEzAyVQ/KF5pK90CRxR4fTHDQi0nRTNbkxcgrq/1y4xKSex43PcaZkA5VtaS8TJ
-         aQeWwu0wgTvY/uvT8GfAvDg/8qd7zu9cF8dbs=
+        bh=2dcZpUvLVz3N0at5fXDhoAD++E+8uoI2vo+O9PjHjxU=;
+        b=DXdmJjJlMiQuesX1dfc8SFL+xs9UQOod39hIT5WybyNLOIxcIiEmyS2Z99On7i/pWv
+         pbtCKWmDENyaMltBn5PL3VFw3ItxRG67TQ6Qw5AKGQPNQn+CZgYi+JJsyoYNQN0iae7s
+         BylNdqpzjt9lSZJSrA/sLXks9waYkZXSfFuKRWYmakqNTOGRc6+6YeEqITA2i8P09Bs0
+         f1Cmuw5SJV7rNvOZTBs2NbEwxrxsHi7SgktCTNXYNo8Z/yYKCdpXGfWBP7kceJwUujnF
+         xtDNsTe+KJFD7WJzryYPu8/V3azy1P+he6NMrNL/WZIN2QGqmFxTvi5N6kR9F+dwtFyS
+         Q4aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756828332; x=1757433132;
+        d=1e100.net; s=20230601; t=1756829494; x=1757434294;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=stLhhV7bm1vUFI/iU1WBQlYtrw7OG6XE8jShsR81V70=;
-        b=u9r6gs703ZJSV7GtPFdsZxtgb9BStLA/bjxrBvpXwJhZBaMQTs5i9byX73hBMcxepB
-         uPYXREUYOegYgVegfHxhbcTE0jJIbTKy8d8GB8F/u7YdfAGG8YrzbtLlMPbWHkVDW11y
-         oM4GlNtkjwLzJ52ResKkSCpzxMQTv29EFl5Um29D+Eac0TH9Og9t+qCLOEs6av7rQD3m
-         ekJFsKPqMMu8Hxcl1ErOtVXfis9IueTAW26+6xUP2IhNhuE85RUvZ0MFEdwCGZn17tTC
-         X87CE3cdRLvzKzpOSC/lJW0MDV41gV/ta8m9bgC7VVyAgdVL0KLyq/VCsrHWu146ijQm
-         SPOw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjsBvozAY4Y6d6FuKtMUSYYPOwbG4mQus0r8lSMAanjl+OwIv9cZQqI3BolLKT9+gm4Pg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0Tw19J2uElbUMhzpuYbaKfYH7HLH7IGT/X4zc//5vU8gGOrmp
-	Ii/y5MTsKVTruDQk4qghDMmwHG/kMhJGGeQAOSJMQwTGp/Qk7s6QGjiauL1cnW3zuTCtSxCBDma
-	djKwrM6G/nPP5dbdaDVgcjtv/6nbQadO7rVZGBR0Sutnm+0v7Yng4I6XbHA==
-X-Gm-Gg: ASbGncvxg6B23c4nyvdUTadfuPJ5gNDZCoavqgm+auA1rGAZUce+N3IWPu2F7Vwa7N7
-	/3lgimmD4jAvwtmItK2Y/+1HVYmUxPO8ZyRjmEhzM0BXPf1iNlAkC7s74Y0LChbfUd3Sshi25ZC
-	SbEY33uT0ZusKUyg3FrSmCpt9X3MbrgQ2D1qesUUklhpbOAYhUIRXbL19hg9+uj4ATFGjKTnAVe
-	/8aum18ikpbivbn/aI56egcxQ+XnGIc82d4YZ2pVv01QNnqlDxsuoZcTdLAVlut
-X-Google-Smtp-Source: AGHT+IFLBXCpi7DHnKmwPh1wQEtdxsg94/MOK5AfXLAdui68Z928N/2/I1UOJHxa5Rdvs1rNz3Fh7wKz3/vUOpXEgLw=
-X-Received: by 2002:a05:651c:4183:b0:335:2d39:efe8 with SMTP id
- 38308e7fff4ca-336cb148b70mr30923391fa.44.1756828332127; Tue, 02 Sep 2025
- 08:52:12 -0700 (PDT)
+        bh=2dcZpUvLVz3N0at5fXDhoAD++E+8uoI2vo+O9PjHjxU=;
+        b=qqTS9XY/j+MxXyYaEpetsTz5Xvgg4aHyyf/zYLR0m6IMp0jy4juMiAiNOK6GFJVuVE
+         IpkeMekbtfIzKjaVcSQOFXTxmfF5Gqk6WdY3+AnHz8qtu2CiNoOkvBejOCnkPKYHMsLw
+         nlLlfi5P7V8wVoF+jag1oH3feye6cEX6LF6FOReLdpBtLd4OlJFQMzZ0CNKYB8/5j1+T
+         SsS+XhElkdVqyBwKToAMovNEEU3mSeAQEKp95b4hK3IyfdsNWALzIJ9AF5XVnyorRDz/
+         oH8+Qb2v7yvMc7eB4sZJRBYwoLT89J2C8cvp0n1w1YPcIOzfAoW366F9DePzSkSzT5T8
+         nt+g==
+X-Forwarded-Encrypted: i=1; AJvYcCU5FOS+pKgEkIepFQHQxJ2FlualIXrD2+Myv5ygefUze4J+DC7AmEw7GYZ88U5RZugVbJo/e0xWMKxAH+RYaaRMHbQC@vger.kernel.org, AJvYcCV8RbKXQv9rW6kKR6JFZ0xEUI4vzqC/AJk7GGkQaRUi9Yy02LY3r3TI9WNpz4q6ZhfYnL+/gWY/8VLySqtw@vger.kernel.org, AJvYcCWp+uarZnd7YXCvJg6ocDIpco/HfJXfSjdXmWzsJTFJBCcFo+fIl4jy047YKdlWV5E/POg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzhCDk4KgxB+PdvSvD95AtiO9dAwE6e470hHM5emcW1yyU8Cwro
+	Gs8kbJLPL/uTfEBkETKxlthEfWkmqnuS71q7KBS5+rot2FEe/zv1FpM+lVriw1apsOSLwFjo8gr
+	jR/hQQ6UAcyuMGJXtHWANxEPWr1j+aGo=
+X-Gm-Gg: ASbGncujZaweWH9Ss4zSe3xGHETqfF3SArM1Y/tmPUpzv+THYguwstggnmPX8OQ96Rn
+	wj0b2/Boo6SUYL1q6nM1gFlrVwczwCz/lUybRHSsm/xz/HyHAaaihkLycuXuGHwvmiPqVYUsJzd
+	15uYVZ3+HlaLPIqiggvLI1dj5hzrd8Eruj6Uv1JNDGdRpw1dqOf1gt19CTcwjrtl/LmUFkrd/JM
+	WrwQu8gggCkMbmL1+PdZM4ph1oHzWj9LQ==
+X-Google-Smtp-Source: AGHT+IERdIljI9N7Xe/T21h5febi7Y0OYO4gOFIJTKeQ7Xhez0g3OMTeZX2wNcts37cq/XlPW8fxUGYhvx5teij95Y0=
+X-Received: by 2002:a17:907:7291:b0:b04:3e43:eccc with SMTP id
+ a640c23a62f3a-b043e43f17amr552559166b.40.1756829493901; Tue, 02 Sep 2025
+ 09:11:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
- <aLIs_-lDKHCLTrTy@x130> <e0786dbc-4681-4bee-a54a-e58c1b9b7557@gmail.com>
-In-Reply-To: <e0786dbc-4681-4bee-a54a-e58c1b9b7557@gmail.com>
-From: Christoph Paasch <cpaasch@openai.com>
-Date: Tue, 2 Sep 2025 08:51:59 -0700
-X-Gm-Features: Ac12FXzhLOJq0ytlrXGx13ITo2PO1Hdam1DCDF49TdzDn0Pda0hF-4fNTx9ov7Y
-Message-ID: <CADg4-L8+c+kHHzJhEaxKoNowbONqfMPVuqyOw7_DqhKFqzzLFw@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 0/2] net/mlx5: Avoid payload in skb's linear
- part for better GRO-processing
-To: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: Saeed Mahameed <saeed@kernel.org>, Gal Pressman <gal@nvidia.com>, 
-	Dragos Tatulea <dtatulea@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20250902143504.1224726-1-jolsa@kernel.org> <20250902143504.1224726-5-jolsa@kernel.org>
+In-Reply-To: <20250902143504.1224726-5-jolsa@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 2 Sep 2025 09:11:22 -0700
+X-Gm-Features: Ac12FXzfov0r30nmd6VkzyQEbnijwjfleIGZKFPAEflFWqIgyGmqUWuPgQC4Xmk
+Message-ID: <CAADnVQ+MntzHdwSe_Oqe7CU=E3yjko=7+9GTnapsPWwe4oqpsw@mail.gmail.com>
+Subject: Re: [PATCH perf/core 04/11] bpf: Add support to attach uprobe_multi
+ unique uprobe
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hello Tariq,
+On Tue, Sep 2, 2025 at 7:38=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Adding support to attach unique uprobe through uprobe multi link
+> interface.
+>
+> Adding new BPF_F_UPROBE_MULTI_UNIQUE flag that denotes the unique
+> uprobe creation.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/uapi/linux/bpf.h       | 3 ++-
+>  kernel/trace/bpf_trace.c       | 4 +++-
+>  tools/include/uapi/linux/bpf.h | 3 ++-
+>  3 files changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 233de8677382..3de9eb469fe2 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1300,7 +1300,8 @@ enum {
+>   * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
+>   */
+>  enum {
+> -       BPF_F_UPROBE_MULTI_RETURN =3D (1U << 0)
+> +       BPF_F_UPROBE_MULTI_RETURN =3D (1U << 0),
+> +       BPF_F_UPROBE_MULTI_UNIQUE =3D (1U << 1),
 
-On Sun, Aug 31, 2025 at 2:28=E2=80=AFAM Tariq Toukan <ttoukan.linux@gmail.c=
-om> wrote:
->
->
->
-> On 30/08/2025 1:43, Saeed Mahameed wrote:
-> > On 28 Aug 20:36, Christoph Paasch via B4 Relay wrote:
-> >> When LRO is enabled on the MLX, mlx5e_skb_from_cqe_mpwrq_nonlinear
-> >> copies parts of the payload to the linear part of the skb.
-> >>
-> >> This triggers suboptimal processing in GRO, causing slow throughput,..=
-.
-> >>
-> >> This patch series addresses this by using eth_get_headlen to compute t=
-he
-> >> size of the protocol headers and only copy those bits. This results in
-> >> a significant throughput improvement (detailled results in the specifi=
-c
-> >> patch).
-> >>
-> >> Signed-off-by: Christoph Paasch <cpaasch@openai.com>
-> >
-> > LGTM, I would love to take this to net-next-mlx5 and submit it back to
-> > netdev after regression testing if that's ok? Christoph? Anyway I will
-> > wait for Jakub to mark this as "awaiting-upstream" or if he
-> > applies it directly then fine.
-> >
-> >
-> >
->
-> Hi,
->
-> I recall trying out similar approach internally a few years ago.
->
-> eth_get_headlen() function didn't work properly for non-Eth frames
-> (ipoib). I believe this is still the case.
->
-> Extra care is needed for the ipoib flow, which I assume gets broken here.
-
-Are you actually sure that ipoib goes through
-mlx5e_skb_from_cqe_mpwrq_nonlinear() ? Because, as far as I can see,
-IPoIB disables striding in mlx5i_build_nic_params().
-
-It's rather mlx5e_skb_from_cqe_nonlinear() that handles both, ethernet
-and ipoib.
-
-
-Christoph
-
->
-> According to the perf gain, it is worth splitting to multiple code paths
-> via branches/function pointers.
->
-> Regards,
-> Tariq
+I second Masami's point. "exclusive" name fits better.
+And once you use that name the "multi_exclusive"
+part will not make sense.
+How can an exclusive user of the uprobe be "multi" at the same time?
+Like attaching to multiple uprobes and modifying regsiters
+in all of them? Is it practical ?
+It feels to me BPF_F_UPROBE_EXCLUSIVE should be targeting
+one specific uprobe.
 
