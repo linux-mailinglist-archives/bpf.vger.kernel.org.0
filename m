@@ -1,66 +1,86 @@
-Return-Path: <bpf+bounces-67157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67161-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BA55B3FA1A
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 11:21:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D98B3FAF9
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 11:46:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE1961B200EE
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 09:22:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFD1617E2F5
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 09:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19342E8B7B;
-	Tue,  2 Sep 2025 09:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1AFD2ECE84;
+	Tue,  2 Sep 2025 09:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="SkjgygrE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bSJMcf0s"
 X-Original-To: bpf@vger.kernel.org
-Received: from out203-205-221-236.mail.qq.com (out203-205-221-236.mail.qq.com [203.205.221.236])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E051127466D;
-	Tue,  2 Sep 2025 09:21:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.236
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967112EC572
+	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 09:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756804903; cv=none; b=ftJGn4cFrhPmjUnFn5Ko4ZrFFpvliY8WYPZurNLOaCQ/aLJ8FXWvxJ7N1jenF3toMkqB7CSZbLo5gQIhbJrlny5AH/AOgS2zHuyjOsMQwOD/3V5qJMO161R9PhVFYUtVmnEWwtfsKf75uogQkmyKHCeg3mLNi90nCLXh9kjr4CQ=
+	t=1756806351; cv=none; b=qBvQmrYbIZz5V27gFOmhXDLNgYvNfZMRg+0aJxjhX1SUKt2bSDL370bOcthFWyhnWDTVMSZIfn12MmQSgyKLN1NrV66j6Rf7KlPWCtqW8lL1LyztL5BkBgEMzwHnYpJJNaw1emqF/Mxmfqs5J7G4FvIzhNoNet/hlHCja3M80mU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756804903; c=relaxed/simple;
-	bh=fJ+8zjPxcFduC8vpbJmpStNAHjNkgFzRwt6qlypCTVo=;
+	s=arc-20240116; t=1756806351; c=relaxed/simple;
+	bh=bmdHYgxlrSJ4C+/l7uub89+wrMG6ofKMt8evfvkO93g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AfOO+/GNkerEu22/WUx8jWN2vVtjOou1KZX3NSFeM5Kf9TImFkLvQMCab4RoK7VWUUOP0aoTKrojFHNgbkMHPPNgUROpsVGleoYvtvEH3CJCY5fYjF7LmMG6B39RK/60Pgu1ioQl72jS8wJpLCDfK8fiwR8F1Hmn6JPi80dQSUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=SkjgygrE; arc=none smtp.client-ip=203.205.221.236
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1756804898;
-	bh=OxpOJmhECTdLgWfX9uIafSF9DcEyP9WjBjiAh0oefRo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=SkjgygrEtp/z3arybBz0wD8TZ9nJJVFCskkBxKWTV4Ucl+viBHNQ6fEFhgnUGCkb0
-	 43MkSXwYN1sEz4lC0VfGTuurpOl9OFvKfhn0XXAHsJxLQu4OdlEPbYGX7fcfivANFw
-	 71QO72QSUN2oLVfAcV2uZQRe5MQgw+uLzX/z2Kac=
-Received: from [10.56.52.9] ([39.156.73.10])
-	by newxmesmtplogicsvrszc41-0.qq.com (NewEsmtp) with SMTP
-	id 56221432; Tue, 02 Sep 2025 17:21:34 +0800
-X-QQ-mid: xmsmtpt1756804894t1p04q3ox
-Message-ID: <tencent_A364CD5CCEAA68BD7E8CAA2092180409150A@qq.com>
-X-QQ-XMAILINFO: NwU6Bou9okj/tbdOQoNWWLVwvWA8HB3wvWH6M8x+KFoP19lo9jLr+KYnags3Dx
-	 0SBm2+jH32YP8CngseKDGiIXeqNrBC7JVCTwwTShVUHDzd7d0t7QC57O/sPXUPNnNiNotl329G4y
-	 G900N+YePazTIfBf9bj+kybeVIVEqJnn15wq/75NMzn5nOv97E4IhfR1/dL2VvfgsZ7I7TY5NtXG
-	 QFKZ+hlY42JK9MP459rkbBHAVu/Geh/OmQMRViAA/7dsmclgBuIdw/71hQ8ztxM3Lj56AF4rwJIS
-	 l9WKiK1NYIL1lKoAcSe3KxDeBGsMhQ6aVgn4X7oaVVhUqMoxwKyX9UyvjK66cybHwDaBC31n5Xh2
-	 JF3nUXv06/O7tYZWXJ2T/Uop4/sywRVWxySf/ShV7/rH3FswuRtjTg0ZR7SL5frT7vmfTUldyqWo
-	 hmLT/3c6tRWjTvFlG40NGib5l/yS9Xe6o3h2h0Jt73eFIqMPy6LH9Rt75zW9rAvw5ROfnAB/COZh
-	 SHG/lFGWNpgQ0Qqa2n6NI5MYBhmBlmKgb3C6nQiVR3dk+xdnJ/gmUpu4Ah8XeaMXzsJi3RFDqtWw
-	 aQUDQ/6q0aHgDPLiebE474Efik6bTu9WpyWFlYgazp/wbHA52hwqVefo3Xi26sYPPgGE9Qj+D5w5
-	 bIcAoE0irshIZVsgmL5EqHtCexFwz7jNK7xJH0rGGr5u38Do7e5MI/5elapTWUMGyhlxzIWzaRJC
-	 t7PVuBr+vL1JlOhQTCe95zRwfELp4TWihUQtAzMlNhbEvZuYOxL89s//W/REc+mh0AdLG3SVwIvC
-	 6ABODXpbNokYC4YazA+4prY+aqtM2FxeFmpp2jApjr3mq5fdb3JBQmQYKQtKNyU5SyMSJEYKFwMI
-	 05JSGWsslwHS0pC2Jbo52MFSG4iCc/5Jmdg5C3Wx8gh7W42rN5BEviukGTTFJt4JVQAhR6uKfIZ0
-	 Xg9ljZgzOMQUDHFhnZQ408SUqdcM/yjtW/QJEGsKaVJvKb+kYQEV0bDxEXBfi742ETtXOuNxeN+j
-	 8dl4Gz1Wbq356nqOpPZukMIlo6THP38migzckgqkJDzR6X2VK8t6k0KLz6y7Y=
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-X-OQ-MSGID: <4e5f23c2-32f8-4c6a-a4f3-f92b52007fbb@foxmail.com>
-Date: Tue, 2 Sep 2025 17:21:33 +0800
+	 In-Reply-To:Content-Type; b=arfLV482P4+/Huu57rG8973pytZzqPg8BVOfho9/LOObiscfJKE13mVlus7n7nigv3boXy0PhDq9iqiXeGr7SinujQDtOZR9NYthawKLi4/VoC4WtSDUcRp7tpWIML/ZA/x9Ap3MEqvON8p8ydI/GHmzvVoS25rXLjE4SaqNgdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bSJMcf0s; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1756806346;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C2Ve4CgS6Jqh9ORpRtoAAIe0w/LUc4ir/s41Tz+S/dE=;
+	b=bSJMcf0siIUmz4LWRF60tE3ps7OlPiKqPci3o79iSw+2N4clLIjm3ThSb5LLJteMC5+P73
+	/b3O9EfDulkjTw0TvCmvGkdbi5dClKnjyuZvdnnU6sO/MA46tFf3C8A/rn3o29pFqntTnd
+	xVI7lcX3MG79U5EpPi/N4pggU3FUWdY=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-62-BpaItr8mMLK99igHYQ8s_Q-1; Tue, 02 Sep 2025 05:45:45 -0400
+X-MC-Unique: BpaItr8mMLK99igHYQ8s_Q-1
+X-Mimecast-MFC-AGG-ID: BpaItr8mMLK99igHYQ8s_Q_1756806345
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4b3298c585bso29373651cf.0
+        for <bpf@vger.kernel.org>; Tue, 02 Sep 2025 02:45:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756806345; x=1757411145;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C2Ve4CgS6Jqh9ORpRtoAAIe0w/LUc4ir/s41Tz+S/dE=;
+        b=tQKqgCySUAkUk8T05A1iEmhqX8euphFXQ0adTSJ06E/DO9aTydUIe+2xA5Wv7KDaJM
+         TgbZTuJDCoF8b+/+cgMh+tbZWyY/NZuebPMdfOGF0XPmuLdfMcfqOfuhug3pCg79x4zC
+         9kLAPeepya+n80qyuWnipII6gaOgRQE8mtUeyOQ3WSXlRgTMkfCZ2n8lH08M0TWuMoOk
+         8rTKFdToyJG+aCkzfo651fl1sIZGYmcSVlnpF52YLpx4t0c9+UejMdtagxDMlTwLYp+v
+         Dk/BSqE5DbRoZv9tbo10rempCrm0HZyomi1cSE3aQwYiH/sMsKeqQSYu5R4EtwXDJJKF
+         c98Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUsS8ri6s2Ql7CxoSgodLiVTclqUlmlqwVJvT4lEsVjMfAfxRgna3oZHvQHi63NHw6WOWE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFiarHPzNc02ZED7ruOQ18s4Gz8Q57lrjvY7pgWHisLLZ8M1Ay
+	iOayG4h5bwebjLtw5OgJpcREkAoQrfSAcqH4pvqHr9inJsERVW76XhdVRatmvfhcmdNDWj7rO6A
+	LZXTA52dq2CyyK8oq+l87nGNWYpBkOjs8dXGDwuJA/tqcn4rO/08G
+X-Gm-Gg: ASbGnct08WjW3VjcVvejIFD/iHSztkyZe50ssAnd9r4rQebg8U/JpfzHXJhSqRAFPOO
+	iczNYqKZ4hefV/uwGe93aDPkPOLEBM7G8LnGzvtswZDH/DiZmBqi/uBJYG/2Z9ScT1j9W0o1+nU
+	4yq/eSbIOPj/K1lknEp1nPtqTFaIThzgtrHkvelCebJVWK0T3Fzknk1t98UBBUVrenmsGXPcEX4
+	F9XBw5IwyQS7wDqfXAqp7RLXBtoKZc9sibd7+VX15z95QgTEdeyukx/lB+FBmJGTQsW++0wpldf
+	xh7Cu3PE0rrYE8kRLNuuK009bHDZzdHxwQk=
+X-Received: by 2002:ac8:5dc8:0:b0:4b0:71e7:2d7e with SMTP id d75a77b69052e-4b31b85ea03mr128189521cf.8.1756806344644;
+        Tue, 02 Sep 2025 02:45:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGrXB5u8zkFeeKDAOLeeb1BWItMmJbWssZqtK3k4jcmoOb1/w6NiXzFGMOyMKcLcHSLWa38dA==
+X-Received: by 2002:ac8:5dc8:0:b0:4b0:71e7:2d7e with SMTP id d75a77b69052e-4b31b85ea03mr128189311cf.8.1756806344112;
+        Tue, 02 Sep 2025 02:45:44 -0700 (PDT)
+Received: from [10.43.17.17] ([85.93.96.130])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4b3461e04f5sm9734241cf.19.2025.09.02.02.45.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Sep 2025 02:45:43 -0700 (PDT)
+Message-ID: <3c75ce2b-a863-40e0-9280-120cafc3542e@redhat.com>
+Date: Tue, 2 Sep 2025 11:45:40 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,8 +88,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Test kfunc bpf_strcasecmp
-To: Viktor Malik <vmalik@redhat.com>, andrii@kernel.org, ast@kernel.org
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: add bpf_strcasecmp kfunc
+To: Rong Tao <rtoax@foxmail.com>, andrii@kernel.org, ast@kernel.org
 Cc: Rong Tao <rongtao@cestc.cn>, Daniel Borkmann <daniel@iogearbox.net>,
  Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
  <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
@@ -81,94 +101,134 @@ Cc: Rong Tao <rongtao@cestc.cn>, Daniel Borkmann <daniel@iogearbox.net>,
  "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)"
  <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
  "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-References: <cover.1756798860.git.rtoax@foxmail.com>
- <tencent_00107416F7259ACAC62BF8681F22B5C19D06@qq.com>
- <76f6ed83-48a2-4dad-9229-1169050e9552@redhat.com>
+References: <cover.1756804522.git.rtoax@foxmail.com>
+ <tencent_0E0C830021A02CBCCB6D95AE57CFD100C407@qq.com>
+From: Viktor Malik <vmalik@redhat.com>
 Content-Language: en-US
-From: Rong Tao <rtoax@foxmail.com>
-In-Reply-To: <76f6ed83-48a2-4dad-9229-1169050e9552@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <tencent_0E0C830021A02CBCCB6D95AE57CFD100C407@qq.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
+On 9/2/25 11:19, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
+> 
+> bpf_strcasecmp() function performs same like bpf_strcmp() except ignoring
+> the case of the characters.
+> 
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
 
-On 9/2/25 16:56, Viktor Malik wrote:
-> On 9/2/25 09:55, Rong Tao wrote:
->> From: Rong Tao <rongtao@cestc.cn>
->>
->> Add testsuites for kfunc bpf_strcasecmp.
->>
->> Signed-off-by: Rong Tao <rongtao@cestc.cn>
->> ---
->>   tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c | 6 ++++++
->>   tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c | 1 +
->>   tools/testing/selftests/bpf/progs/string_kfuncs_success.c  | 5 +++++
->>   3 files changed, 12 insertions(+)
->>
->> diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
->> index 53af438bd998..99d72c68f76a 100644
->> --- a/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
->> +++ b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
->> @@ -31,6 +31,8 @@ char *invalid_kern_ptr = (char *)-1;
->>   /* Passing NULL to string kfuncs (treated as a userspace ptr) */
->>   SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_null1(void *ctx) { return bpf_strcmp(NULL, "hello"); }
->>   SEC("syscall")  __retval(USER_PTR_ERR)int test_strcmp_null2(void *ctx) { return bpf_strcmp("hello", NULL); }
->> +SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_null1(void *ctx) { return bpf_strcasecmp(NULL, "HELLO"); }
->> +SEC("syscall")  __retval(USER_PTR_ERR)int test_strcasecmp_null2(void *ctx) { return bpf_strcasecmp("HELLO", NULL); }
->>   SEC("syscall")  __retval(USER_PTR_ERR)int test_strchr_null(void *ctx) { return bpf_strchr(NULL, 'a'); }
->>   SEC("syscall")  __retval(USER_PTR_ERR)int test_strchrnul_null(void *ctx) { return bpf_strchrnul(NULL, 'a'); }
->>   SEC("syscall")  __retval(USER_PTR_ERR)int test_strnchr_null(void *ctx) { return bpf_strnchr(NULL, 1, 'a'); }
->> @@ -49,6 +51,8 @@ SEC("syscall")  __retval(USER_PTR_ERR)int test_strnstr_null2(void *ctx) { return
->>   /* Passing userspace ptr to string kfuncs */
->>   SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr1(void *ctx) { return bpf_strcmp(user_ptr, "hello"); }
->>   SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr2(void *ctx) { return bpf_strcmp("hello", user_ptr); }
->> +SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_user_ptr1(void *ctx) { return bpf_strcasecmp(user_ptr, "HELLO"); }
->> +SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_user_ptr2(void *ctx) { return bpf_strcasecmp("HELLO", user_ptr); }
->>   SEC("syscall") __retval(USER_PTR_ERR) int test_strchr_user_ptr(void *ctx) { return bpf_strchr(user_ptr, 'a'); }
->>   SEC("syscall") __retval(USER_PTR_ERR) int test_strchrnul_user_ptr(void *ctx) { return bpf_strchrnul(user_ptr, 'a'); }
->>   SEC("syscall") __retval(USER_PTR_ERR) int test_strnchr_user_ptr(void *ctx) { return bpf_strnchr(user_ptr, 1, 'a'); }
->> @@ -69,6 +73,8 @@ SEC("syscall") __retval(USER_PTR_ERR) int test_strnstr_user_ptr2(void *ctx) { re
->>   /* Passing invalid kernel ptr to string kfuncs should always return -EFAULT */
->>   SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault1(void *ctx) { return bpf_strcmp(invalid_kern_ptr, "hello"); }
->>   SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault2(void *ctx) { return bpf_strcmp("hello", invalid_kern_ptr); }
->> +SEC("syscall") __retval(-EFAULT) int test_strcasecmp_pagefault1(void *ctx) { return bpf_strcasecmp(invalid_kern_ptr, "HELLO"); }
->> +SEC("syscall") __retval(-EFAULT) int test_strcasecmp_pagefault2(void *ctx) { return bpf_strcasecmp("HELLO", invalid_kern_ptr); }
->>   SEC("syscall") __retval(-EFAULT) int test_strchr_pagefault(void *ctx) { return bpf_strchr(invalid_kern_ptr, 'a'); }
->>   SEC("syscall") __retval(-EFAULT) int test_strchrnul_pagefault(void *ctx) { return bpf_strchrnul(invalid_kern_ptr, 'a'); }
->>   SEC("syscall") __retval(-EFAULT) int test_strnchr_pagefault(void *ctx) { return bpf_strnchr(invalid_kern_ptr, 1, 'a'); }
->> diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c b/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
->> index 89fb4669b0e9..e41cc5601994 100644
->> --- a/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
->> +++ b/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
->> @@ -7,6 +7,7 @@
->>   char long_str[XATTR_SIZE_MAX + 1];
->>   
->>   SEC("syscall") int test_strcmp_too_long(void *ctx) { return bpf_strcmp(long_str, long_str); }
->> +SEC("syscall") int test_strcasecmp_too_long(void *ctx) { return bpf_strcasecmp(long_str, long_str); }
-> This is not sufficient, you also need to update
-> prog_tests/string_kfuncs.c so that the test case is actually triggered.
-Thanks Viktor, sorry about that, I just submit v3, please review.
-Rong Tao
->
-> Viktor
->
->>   SEC("syscall") int test_strchr_too_long(void *ctx) { return bpf_strchr(long_str, 'b'); }
->>   SEC("syscall") int test_strchrnul_too_long(void *ctx) { return bpf_strchrnul(long_str, 'b'); }
->>   SEC("syscall") int test_strnchr_too_long(void *ctx) { return bpf_strnchr(long_str, sizeof(long_str), 'b'); }
->> diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
->> index 46697f381878..67830456637b 100644
->> --- a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
->> +++ b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
->> @@ -12,6 +12,11 @@ char str[] = "hello world";
->>   /* Functional tests */
->>   __test(0) int test_strcmp_eq(void *ctx) { return bpf_strcmp(str, "hello world"); }
->>   __test(1) int test_strcmp_neq(void *ctx) { return bpf_strcmp(str, "hello"); }
->> +__test(0) int test_strcasecmp_eq1(void *ctx) { return bpf_strcasecmp(str, "hello world"); }
->> +__test(0) int test_strcasecmp_eq2(void *ctx) { return bpf_strcasecmp(str, "HELLO WORLD"); }
->> +__test(0) int test_strcasecmp_eq3(void *ctx) { return bpf_strcasecmp(str, "HELLO world"); }
->> +__test(1) int test_strcasecmp_neq1(void *ctx) { return bpf_strcasecmp(str, "hello"); }
->> +__test(1) int test_strcasecmp_neq2(void *ctx) { return bpf_strcasecmp(str, "HELLO"); }
->>   __test(1) int test_strchr_found(void *ctx) { return bpf_strchr(str, 'e'); }
->>   __test(11) int test_strchr_null(void *ctx) { return bpf_strchr(str, '\0'); }
->>   __test(-ENOENT) int test_strchr_notfound(void *ctx) { return bpf_strchr(str, 'x'); }
+For the series:
+
+Acked-by: Viktor Malik <vmalik@redhat.com>
+
+> ---
+>  kernel/bpf/helpers.c | 68 +++++++++++++++++++++++++++++++-------------
+>  1 file changed, 48 insertions(+), 20 deletions(-)
+> 
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 401b4932cc49..238fd992c786 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3349,45 +3349,72 @@ __bpf_kfunc void __bpf_trap(void)
+>   * __get_kernel_nofault instead of plain dereference to make them safe.
+>   */
+>  
+> -/**
+> - * bpf_strcmp - Compare two strings
+> - * @s1__ign: One string
+> - * @s2__ign: Another string
+> - *
+> - * Return:
+> - * * %0       - Strings are equal
+> - * * %-1      - @s1__ign is smaller
+> - * * %1       - @s2__ign is smaller
+> - * * %-EFAULT - Cannot read one of the strings
+> - * * %-E2BIG  - One of strings is too large
+> - * * %-ERANGE - One of strings is outside of kernel address space
+> - */
+> -__bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
+> +int __bpf_strcasecmp(const char *s1, const char *s2, bool ignore_case)
+>  {
+>  	char c1, c2;
+>  	int i;
+>  
+> -	if (!copy_from_kernel_nofault_allowed(s1__ign, 1) ||
+> -	    !copy_from_kernel_nofault_allowed(s2__ign, 1)) {
+> +	if (!copy_from_kernel_nofault_allowed(s1, 1) ||
+> +	    !copy_from_kernel_nofault_allowed(s2, 1)) {
+>  		return -ERANGE;
+>  	}
+>  
+>  	guard(pagefault)();
+>  	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> -		__get_kernel_nofault(&c1, s1__ign, char, err_out);
+> -		__get_kernel_nofault(&c2, s2__ign, char, err_out);
+> +		__get_kernel_nofault(&c1, s1, char, err_out);
+> +		__get_kernel_nofault(&c2, s2, char, err_out);
+> +		if (ignore_case) {
+> +			c1 = tolower(c1);
+> +			c2 = tolower(c2);
+> +		}
+>  		if (c1 != c2)
+>  			return c1 < c2 ? -1 : 1;
+>  		if (c1 == '\0')
+>  			return 0;
+> -		s1__ign++;
+> -		s2__ign++;
+> +		s1++;
+> +		s2++;
+>  	}
+>  	return -E2BIG;
+>  err_out:
+>  	return -EFAULT;
+>  }
+>  
+> +/**
+> + * bpf_strcmp - Compare two strings
+> + * @s1__ign: One string
+> + * @s2__ign: Another string
+> + *
+> + * Return:
+> + * * %0       - Strings are equal
+> + * * %-1      - @s1__ign is smaller
+> + * * %1       - @s2__ign is smaller
+> + * * %-EFAULT - Cannot read one of the strings
+> + * * %-E2BIG  - One of strings is too large
+> + * * %-ERANGE - One of strings is outside of kernel address space
+> + */
+> +__bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
+> +{
+> +	return __bpf_strcasecmp(s1__ign, s2__ign, false);
+> +}
+> +
+> +/**
+> + * bpf_strcasecmp - Compare two strings, ignoring the case of the characters
+> + * @s1__ign: One string
+> + * @s2__ign: Another string
+> + *
+> + * Return:
+> + * * %0       - Strings are equal
+> + * * %-1      - @s1__ign is smaller
+> + * * %1       - @s2__ign is smaller
+> + * * %-EFAULT - Cannot read one of the strings
+> + * * %-E2BIG  - One of strings is too large
+> + * * %-ERANGE - One of strings is outside of kernel address space
+> + */
+> +__bpf_kfunc int bpf_strcasecmp(const char *s1__ign, const char *s2__ign)
+> +{
+> +	return __bpf_strcasecmp(s1__ign, s2__ign, true);
+> +}
+> +
+>  /**
+>   * bpf_strnchr - Find a character in a length limited string
+>   * @s__ign: The string to be searched
+> @@ -3832,6 +3859,7 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
+>  #endif
+>  BTF_ID_FLAGS(func, __bpf_trap)
+>  BTF_ID_FLAGS(func, bpf_strcmp);
+> +BTF_ID_FLAGS(func, bpf_strcasecmp);
+>  BTF_ID_FLAGS(func, bpf_strchr);
+>  BTF_ID_FLAGS(func, bpf_strchrnul);
+>  BTF_ID_FLAGS(func, bpf_strnchr);
 
 
