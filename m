@@ -1,146 +1,155 @@
-Return-Path: <bpf+bounces-67222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889AEB40E65
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 22:14:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DA10B40E72
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 22:17:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D9BF1B26ADE
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 20:14:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDF4A1B6519C
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 20:17:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0709352099;
-	Tue,  2 Sep 2025 20:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791582E7BA3;
+	Tue,  2 Sep 2025 20:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="awkemBfs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="l30VwIAS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251C234F491
-	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 20:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630E22E6CA0
+	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 20:17:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756844024; cv=none; b=VOBpXEs0uUEFnwq9YX0RN1drNP0NzfXI0sP9xH4T9uACJ8bNFXYSydiTyZogIYWc8PQJDLQ+KsQ/8KM/dS2ZeMIamtVN2igPZ2a81m7fuEGQTIgOif0OpwQSz8TVYWyhEE9q3KuSdk268RMwkUiwCVUJ/w7xmZPk5v5j/KEUya4=
+	t=1756844222; cv=none; b=hB7r3zon/z21wSBjGd3J3VKYmfzJE0uPL5LnwFYURMMJQn1+GQ5XTqwkgevQNrnQIcIsLFv770h2YzKi74PpoHym9e8NMpkIneMKmS4BfTI79qtQ4c341LBFSqJA/A9qPpibB91dFCRowSYvSpMBe29sXYlloLEQRa68O//jEEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756844024; c=relaxed/simple;
-	bh=JFMvSJKmvouio1S2V97JFSH+oyA42x64UOXLlbXqEEY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iEnihBRqbuctNdMDk83EEyPdBMrgwOxA8oJvEE6e+etyZPWpJQQEi0A+pXPzzxqpyWF0YUSqC1DUvfKCSACPff4FKkDlm7LnYOo42lw03aLe5+vo54Fvum7z9Z0OnWmurDs071/OFBx232J/G/zbsdqbRMSoj8oeIexQWQ0Nduk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=awkemBfs; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2445806df50so44731445ad.1
-        for <bpf@vger.kernel.org>; Tue, 02 Sep 2025 13:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756844022; x=1757448822; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=50VELORRmga2bsXVhAB0RUkFgMEc1EdgXr2M5pQzE2g=;
-        b=awkemBfsfN0VFbiLtFC+o/J8zasnNGTzshHEw6q4JseloTHCSJ1dhvHTwMlXJzjpEa
-         t5BiBEip1GFFImF8C5FAEgED82t8k/zKuje0TU39gnCEAFnQBz6raLMkwRExjCdoc+2Q
-         VUtGtNnWYqtdhQG2CReU6KixRjBd3sfriqZ0ZNzifXMj4/puSqmP0B1IhTpwkVXVUFWD
-         aHvqmik500vHG3U6Y7UUFE1AOJwnuqkdqHmmP6G1XFmHDvDDklZuqFLwSaV+PS13SENr
-         99Yq7r1hqJjRxejE2TqbMMgWpv1HMAFnFLZVDZXBsTrqYFaxsapZJsrcHeECF+bkRctV
-         F40w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756844022; x=1757448822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=50VELORRmga2bsXVhAB0RUkFgMEc1EdgXr2M5pQzE2g=;
-        b=R1f630RgKvO++noAv2k8Ad8yDRKpo3/GkHt8hy1VRxCIsYUMbH8uEpUHJbvgWsVZHa
-         Thkj9WFBR1+KUp/W6IH8aqgaJ2TED11CSrhEDdL7LGV041CBPytH8yZPuxmI0VmboOfS
-         A2Pn4TlMzMKonrhu5s5//VC3QKs45uZxdYs6XArWPofo5k1rf37mH89yHNd8PX2mtHhP
-         39v+t96lj7pdHdutgDevV3yi2AbsalWLvreieBBHd9kY2MMU5fS49g/Oc2sxIXg8Dcwb
-         /wn82QUve5ieJBTtyweXOlgquCViyLP6nqmFh42/XN7wK30i2QbxSdf3+HjRdGvOaMan
-         fYPg==
-X-Forwarded-Encrypted: i=1; AJvYcCVa3FNVpaWTXigzkikEWHpNkg9apjCLAlC8BnFqJytrHX4egO0CxoImH8TnrsLAhWUqzXk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywwyte8V631HHzvz7Su2tP+nhi5bzumvviPSfV7I5kc0vZmvcna
-	JHrgmYfOJzUimded1y3BD+0o2C7rnUQaEGAUldvAoEiKZpeGjEkqHWMRVqJWfxGC7UWHr84XEJm
-	SurOxOj/L2c1hnOqx05h8MavZ2KZqgPSkNSvCdhvo
-X-Gm-Gg: ASbGnctbr3a5yYhabSrH5zZxnXNk5OhliCugLhWidLTTKsL3c7fsn7GmY9cSAA/Lzgr
-	p4vELf4ytJ2LOvJRcv/97shGLl7+Ngwlt6yixgR0xJMBEqOJYjdii9hp1HiL9cZGakLfRj395VE
-	+gclSO9PZ2QoOumFliO1WqjtOK6nwwCwf329zlU6ZGSTMz8lNys98cLfUCAQv6qnskgLdNsFahM
-	vHYsCXjn+s5qJcnTdonLI+yNpyFhOsy/1V8ej1ms5WOEgJPN0NUMFCh6znKlsgi3uRhyA4RnCVx
-	ng==
-X-Google-Smtp-Source: AGHT+IF6Y+YbRwdDNXA1bFyeAXeEuQC7HJrV+I2THNQbBrLvAc/L/26mNWWGOWWKIr9NUWSQRYEgoem3+7Hig+8uuAY=
-X-Received: by 2002:a17:903:388c:b0:249:33db:34b with SMTP id
- d9443c01a7336-24944b3fa5amr148255155ad.42.1756844022235; Tue, 02 Sep 2025
- 13:13:42 -0700 (PDT)
+	s=arc-20240116; t=1756844222; c=relaxed/simple;
+	bh=+hbpy2Iiqvr1/l+i18sWmNyFeecx71SVVhMh4y2GFPo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pl/1xTY+zRuC7/M3OEAErqNXIVAiTGtDanZVEo4gGDSbUaGf6vlreCjIUO4+n91qFY8ZhhK37kqOEJia/r4hvhnOAbt0YxKg7j2niRM4u/EWccE2nyNRIj2pzz9F444OGqGEmIqL1F4Vf1GZtjcfF0c3+pQojRLI0eU2yB2mypY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=l30VwIAS; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <4334e29b-1cd0-48ba-9afa-54d01b1b7143@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756844217;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k8BX0PvoIYm3qSVd3fOXvAXCOsSt/r0E/au78lFxCpY=;
+	b=l30VwIAS6nXs2JQmyxqdbm95ZHPrXBlsrpA+RHj1rJcDlQRxIrx6SyG0HECSoaYhVX2LOo
+	cnNnCZg27zUjJpWIlUNEvW4QIv3tlsW2eeoGMTxJFjTAgvmVa1xtFjyvaoJgRzuFxxTKLg
+	JLt/nfsVQqb+hjWQYj/mHG7AZUrydJg=
+Date: Tue, 2 Sep 2025 13:16:50 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250829010026.347440-1-kuniyu@google.com> <20250829010026.347440-4-kuniyu@google.com>
- <e4d9f89b-03cb-47ee-bc71-acea080a84e2@linux.dev>
-In-Reply-To: <e4d9f89b-03cb-47ee-bc71-acea080a84e2@linux.dev>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Tue, 2 Sep 2025 13:13:29 -0700
-X-Gm-Features: Ac12FXxtUQxxFtFmkPSCPQp4CvvTcDOidnP1dpNPOA3b9fp5cg1RUDv7hT43kkM
-Message-ID: <CAAVpQUDsBUcn+0ZB2Da4ymNGhvWU2=HoVumPQvsw97AhREWsRg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next/net 3/5] bpf: Introduce SK_BPF_MEMCG_FLAGS and SK_BPF_MEMCG_SOCK_ISOLATED.
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v4 bpf-next/net 4/5] net-memcg: Allow decoupling memcg
+ from global protocol memory accounting.
+To: Kuniyuki Iwashima <kuniyu@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>,
+ Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima
+ <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250829010026.347440-1-kuniyu@google.com>
+ <20250829010026.347440-5-kuniyu@google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250829010026.347440-5-kuniyu@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 2, 2025 at 1:02=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.d=
-ev> wrote:
->
-> On 8/28/25 6:00 PM, Kuniyuki Iwashima wrote:
-> >   static int sol_socket_sockopt(struct sock *sk, int optname,
-> >                             char *optval, int *optlen,
-> >                             bool getopt)
-> > @@ -5284,6 +5313,7 @@ static int sol_socket_sockopt(struct sock *sk, in=
-t optname,
-> >       case SO_BINDTOIFINDEX:
-> >       case SO_TXREHASH:
-> >       case SK_BPF_CB_FLAGS:
-> > +     case SK_BPF_MEMCG_FLAGS:
-> >               if (*optlen !=3D sizeof(int))
-> >                       return -EINVAL;
-> >               break;
-> > @@ -5293,8 +5323,15 @@ static int sol_socket_sockopt(struct sock *sk, i=
-nt optname,
-> >               return -EINVAL;
-> >       }
-> >
-> > -     if (optname =3D=3D SK_BPF_CB_FLAGS)
-> > +     switch (optname) {
-> > +     case SK_BPF_CB_FLAGS:
-> >               return sk_bpf_set_get_cb_flags(sk, optval, getopt);
-> > +     case SK_BPF_MEMCG_FLAGS:
->
-> I would remove the getsockopt only support from the other hooks that cann=
-ot do
-> the setsockopt. There are other ways for them to read sk->sk_memcg if it =
-is
-> really needed.
+On 8/28/25 6:00 PM, Kuniyuki Iwashima wrote:
+> +static inline bool sk_should_enter_memory_pressure(struct sock *sk)
+> +{
+> +	return !mem_cgroup_sk_enabled(sk) || !mem_cgroup_sk_isolated(sk);
+> +}
+> +
+>   static inline long
+>   proto_memory_allocated(const struct proto *prot)
+>   {
 
-Ah, I forgot bpf_core_cast().
+> @@ -3154,8 +3158,11 @@ bool sk_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
+>   	if (likely(skb_page_frag_refill(32U, pfrag, sk->sk_allocation)))
+>   		return true;
+>   
+> -	sk_enter_memory_pressure(sk);
+> +	if (sk_should_enter_memory_pressure(sk))
+> +		sk_enter_memory_pressure(sk);
+> +
+>   	sk_stream_moderate_sndbuf(sk);
+> +
+>   	return false;
+>   }
 
->
-> > +             if (!IS_ENABLED(CONFIG_MEMCG) || !getopt)
-> > +                     return -EOPNOTSUPP;
-> > +
-> > +             return sk_bpf_get_memcg_flags(sk, optval);
->
-> Instead, do this only in bpf_sock_create_getsockopt.
+> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> index 71a956fbfc55..dcbd49e2f8af 100644
+> --- a/net/ipv4/tcp.c
+> +++ b/net/ipv4/tcp.c
+> @@ -908,7 +908,8 @@ struct sk_buff *tcp_stream_alloc_skb(struct sock *sk, gfp_t gfp,
+>   		}
+>   		__kfree_skb(skb);
+>   	} else {
+> -		sk->sk_prot->enter_memory_pressure(sk);
+> +		if (sk_should_enter_memory_pressure(sk))
+> +			tcp_enter_memory_pressure(sk);
 
-Will do.
+This change from sk_prot->enter_memory_pressure to tcp_enter_memory_pressure 
+looks fine. A qq / nit, have you thought about checking 
+sk_should_enter_memory_pressure inside the tcp_enter_memory_pressure(sk) / 
+sk_enter_memory_pressure(sk) ?
 
-Thanks!
+Other changes of patch 4 lgtm.
+
+Shakeel, you have ack-ed patch 1. Will you take a look at patch 3 and patch 4 also?
+
+>   		sk_stream_moderate_sndbuf(sk);
+>   	}
+
+> @@ -1016,7 +1017,7 @@ static void mptcp_enter_memory_pressure(struct sock *sk)
+>   	mptcp_for_each_subflow(msk, subflow) {
+>   		struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
+>   
+> -		if (first)
+> +		if (first && sk_should_enter_memory_pressure(ssk))
+>   			tcp_enter_memory_pressure(ssk);
+>   		sk_stream_moderate_sndbuf(ssk);
+>   
+> diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+> index f672a62a9a52..6696ef837116 100644
+> --- a/net/tls/tls_device.c
+> +++ b/net/tls/tls_device.c
+> @@ -35,6 +35,7 @@
+>   #include <linux/netdevice.h>
+>   #include <net/dst.h>
+>   #include <net/inet_connection_sock.h>
+> +#include <net/proto_memory.h>
+>   #include <net/tcp.h>
+>   #include <net/tls.h>
+>   #include <linux/skbuff_ref.h>
+> @@ -371,7 +372,8 @@ static int tls_do_allocation(struct sock *sk,
+>   	if (!offload_ctx->open_record) {
+>   		if (unlikely(!skb_page_frag_refill(prepend_size, pfrag,
+>   						   sk->sk_allocation))) {
+> -			READ_ONCE(sk->sk_prot)->enter_memory_pressure(sk);
+> +			if (sk_should_enter_memory_pressure(sk))
+> +				READ_ONCE(sk->sk_prot)->enter_memory_pressure(sk);
+>   			sk_stream_moderate_sndbuf(sk);
+>   			return -ENOMEM;
+>   		}
+
 
