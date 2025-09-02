@@ -1,160 +1,197 @@
-Return-Path: <bpf+bounces-67206-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67207-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17AFCB40B35
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 18:54:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 195CBB40B3C
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 18:55:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56B5D561933
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 16:54:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9A341B606C9
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 16:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6413340D8A;
-	Tue,  2 Sep 2025 16:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F20310654;
+	Tue,  2 Sep 2025 16:55:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="daUFPnYt"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AFEF74jY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D58931353B;
-	Tue,  2 Sep 2025 16:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14EDD2F6594
+	for <bpf@vger.kernel.org>; Tue,  2 Sep 2025 16:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756832076; cv=none; b=QQ373korwxBH44o4Pqw6QkuUUUvpL/vDBAy3pLfW6MwnDXBRlLWA0kekevc46psxn5sYFKrov/hdPY9sIJlTfD9MraDYcdH3TQg2VnTb3uP5+cTie7H2kF8oTDg36cyKUzd5gz5xEmR9Qv4sZNBwXC9tl3X26rK9iTOowCu3ThQ=
+	t=1756832111; cv=none; b=fiBJfrlo5+DqLHtgMKuixOlPmOnNkftgap1WX6xn1cwqupXcyM0twZ4p12K3/pKVrrm2J29mCBqBETSQCntNbnuU7376f8IbWuR/75r4t1GhWlSJ5EcwPs+OGoipXKUM152wwsO7pDcrrndJ2Ao1OjspWGyAXG7Z8NB5+uOogHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756832076; c=relaxed/simple;
-	bh=CHG2gt25cLFb4Lh1xBkNyzL4RKXfc6SZYoTnmNprWXo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fks3vjB2b29ncFxFsCyQv8f72+Rn6/8xfj6titY4XiVSMAhNQYUx9Ke0xnE0XUgFhz3VeC1MnkxMZ4+Z0o9Z7NWYBJYWWcCSMcrM6/vuWNhXgv6f2asz+YtOZaFidltK1KTnIGKU5V6s3zpuxAu88DXyD2TNs4bv1/WLdcgO/wc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=daUFPnYt; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3ea8b3a6454so419455ab.1;
-        Tue, 02 Sep 2025 09:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756832074; x=1757436874; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qd7SYjkGLCDXV8sOUNsW1gZmfkcFB2xKeMtakWXaoI4=;
-        b=daUFPnYt+ZsHKIRBE6lFxxiQCKuyisnhPAO1mj6rsZ7D7k0jBoNen8Rr/P5XqILn/6
-         JBhRLbBjL4FrTTAeweQrsePeDD6PTlQf5Xx1tTjl1beyYL5vpj1IxEKbonf8nS7vfyYi
-         cTQY0Emax45PUxJe8MxQRs5Ufh0P7nU1BytULNcDLtk18hVtzL+7x9456uadKBFVxK6y
-         xZeYX64X+jmF8fjES6so2qtVHIRz03v2WgM1mlEU7C9q6tDlvPDv3XHBpDewQt8UD1O9
-         4sDDbpno5nCzpNb1rsb94Y4jyxa1m5XKY4/arb/AD67jpctjVNS6M7kI+U/bgRv3tKaV
-         cuPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756832074; x=1757436874;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qd7SYjkGLCDXV8sOUNsW1gZmfkcFB2xKeMtakWXaoI4=;
-        b=t+QoJASxX1AqFrlq8x5M1Zl51P3FgzAuNOCWmPCEyNw1+KqFc+7VUEkImU9ueDxEXE
-         oc+R7omCbR/XYFo8g9tUDy46mGoKp5cezbQ8rKs1OnDFth2elaMPJYTzDuPFrVFEQg4H
-         O4GLeVa1gLfqsLa1BOStQAL3HOt4DyMXaP5eNmNtBKjSEgL8EyioqZetz5B9DFqQt7pa
-         Hmh362a5PyI7hJi4XH2Jw3PufzcI9nN4cngUuvSoLLHJj8U4x+djhKopa+mbLb7OEXPe
-         mezWYHWGIOrU/ap4O6VF2V6oYEJfzykYEQVgewLZM14YqZq/dXjGvaBiUnRxv42HJfKF
-         WTAA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4pBrKSOSEewKdruEQz2bqVSZQ6dF9Q0sVjrI593n3fwAn1Yo0ZxuL9awhFQu6G6URejs=@vger.kernel.org, AJvYcCXDQeL3AVn7/2foWIgIgPzBQhY4lQ5VEsi2tKQzN0d4QK+G8mXyzFts3Rq/3lHbpDG0IgX+wBRp@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTrcSkYRAcp7vNidB6hGT9133s3ItYBIpFRZcTuT9pAGzFk5nP
-	D94KlPbS6rohhjCgQBhdfcbiDNfqgVZr8J2bmfS+d6wZo3BvJ1w+5kgRIPavO5ZDq62pQKZ1LEc
-	TDrYJGrrxOF85dV3fR99lJlgB7eqR1MpqlOekJb6ACg==
-X-Gm-Gg: ASbGncukBVJcIIxXUV44F+Iszm42x/UGcqoohto9P3yXfvf6+a7ipJc/GZGg3Icc5nA
-	hxKwGqDh2moKIFbZ6kMuBdYsakmMlqbbZOCSzRbOrm1RD1UP3nd3PvmQz8VrRBEwdUNTE1qaIcu
-	XjNbEdw6r0TjBhIA1sdV48nNuQRMDezft8zfC84Xc7G9M6ULy52UNHTprdoOO0GuFJ/OdOMzz4i
-	R9MfvkZ1+ZEqTl68g==
-X-Google-Smtp-Source: AGHT+IFHUDYdDmsqSsp+8hlN5MZJfQiguEWD2ztygF0ULyA6ouJsnC9YN1gma/qlzDQzVRI491v98FiBs2vhCKrxwR8=
-X-Received: by 2002:a05:6e02:4711:b0:3f6:5b66:b5cd with SMTP id
- e9e14a558f8ab-3f65b66c0b8mr27157345ab.6.1756832073878; Tue, 02 Sep 2025
- 09:54:33 -0700 (PDT)
+	s=arc-20240116; t=1756832111; c=relaxed/simple;
+	bh=dUzqaLLsvlk+kHmoFCR7c9Yn4zMIi9+At7mA5hjlXVk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ehrKqtZXSOovYPoQlhsKIgEQ/NuQSfqjY6gwb2LUPJjag2oJpvvcZibbHxVx5xv95b2hxZMtFRumkVMI6KzDL4eftHFWhfY7wxr5DB57tvHHonHZLydKE9oNA+LXjF/s5OdEZB2suXRM3OmSX45Gx37HV8C25N0oO3YsHpiXIXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AFEF74jY; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e960900d-3811-4b8b-b4b3-bb23048ef5d6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756832105;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hDmFle6NNRHHxvk9SFX7P01CsUfGYQB8JSdA3p8i0w4=;
+	b=AFEF74jY87dxIniW/EuXY7tPRDaxdUOHDklysZdySYCT7Rmui0QN2XWgPC435v1gJyxvRw
+	976FU1oNrsvWB/BVoG9sYG/8Qe1ERdgKRbB0LDqKkgKqJSUafovOJHulLL4doCDXGaUDqz
+	immszZilaVgVhgf8lxPTf5PBL4GHRjc=
+Date: Tue, 2 Sep 2025 09:54:54 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250829180950.2305157-1-maciej.fijalkowski@intel.com>
- <CAL+tcoA2MK72wWGXL-RR2Rf+01_tKpSZo7x6VFM+N4DthBK+=w@mail.gmail.com>
- <aLYD2iq+traoJZ7R@boxer> <CAL+tcoAKVRs9nnAHeOA=2kN3Hf_zSS5z64yUSEVmtiS82zz3-Q@mail.gmail.com>
- <aLbNNInuSjkC5qbI@boxer> <CAL+tcoAiY1_OvVAJwWj-YwWY3_9QOWQ_Dwsn5V4vy+wnOQJJog@mail.gmail.com>
- <CAADnVQKOwfFsccUxC1MmtdETkbEw34MaV+YwV=f4vssP=+scVA@mail.gmail.com>
-In-Reply-To: <CAADnVQKOwfFsccUxC1MmtdETkbEw34MaV+YwV=f4vssP=+scVA@mail.gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 3 Sep 2025 00:53:57 +0800
-X-Gm-Features: Ac12FXx_CUZdyn221gc2z-fsFixpqKdzobexwvGkkMEomfrJMAFGCzCewEJN73o
-Message-ID: <CAL+tcoDn7HCW1+t0bceDPr2D-Q1EcSqh91eG3HJ+CjiLdX4Nag@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf] xsk: fix immature cq descriptor production
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, Stanislav Fomichev <stfomichev@gmail.com>, 
-	Eryk Kubanski <e.kubanski@partner.samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: add bpf_strcasecmp kfunc
+Content-Language: en-GB
+To: Rong Tao <rtoax@foxmail.com>, andrii@kernel.org, ast@kernel.org,
+ vmalik@redhat.com
+Cc: Rong Tao <rongtao@cestc.cn>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>,
+ "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)"
+ <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+References: <cover.1756804522.git.rtoax@foxmail.com>
+ <tencent_0E0C830021A02CBCCB6D95AE57CFD100C407@qq.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <tencent_0E0C830021A02CBCCB6D95AE57CFD100C407@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Sep 3, 2025 at 12:22=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+
+
+On 9/2/25 2:19 AM, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
 >
-> On Tue, Sep 2, 2025 at 6:39=E2=80=AFAM Jason Xing <kerneljasonxing@gmail.=
-com> wrote:
-> >
-> > > > > >
-> > > > > > > +               list_for_each_entry_safe(pos, tmp, &XSKCB(skb=
-)->addrs_list, addr_node) {
-> > > > > >
-> > > > > > It seems no need to use xxx_safe() since the whole process (fro=
-m
-> > > > > > allocating skb to freeing skb) makes sure each skb can be proce=
-ssed
-> > > > > > atomically?
-> > > > >
-> > > > > We're deleting nodes from linked list so we need the @tmp for fur=
-ther list
-> > > > > traversal, I'm not following your statement about atomicity here?
-> > > >
-> > > > I mean this list is chained around each skb. It's not possible for =
-one
-> > > > skb to do the allocation operation and free operation at the same
-> > > > time, right? That means it's not possible for one list to do the
-> > > > delete operation and add operation at the same time. If so, the
-> > > > xxx_safe() seems unneeded.
-> > >
-> > > _safe() variants are meant to allow you to delete nodes while travers=
-ing
-> > > the list.
-> > > You wouldn't be able to traverse the list when in body of the loop no=
-des
-> > > are deleted as the ->next pointer is poisoned by list_del(). _safe()
-> > > variant utilizes additional 'tmp' parameter to allow you doing this
-> > > operation.
-> >
-> > Sure, this is exactly how _safe() works. My take is we don't need to
-> > use _safe() to keep safety because it's not possible for one reader
-> > traversing the entire addr list while another one is trying to delete
-> > node. If it can happen, then _safe() does make sense.
+> bpf_strcasecmp() function performs same like bpf_strcmp() except ignoring
+> the case of the characters.
 >
-> Jason,
-> sounds like you're still confused what "_safe" suffix does.
-> "_safe" doesn't help with concurrent access at all.
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> ---
+>   kernel/bpf/helpers.c | 68 +++++++++++++++++++++++++++++++-------------
+>   1 file changed, 48 insertions(+), 20 deletions(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 401b4932cc49..238fd992c786 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -3349,45 +3349,72 @@ __bpf_kfunc void __bpf_trap(void)
+>    * __get_kernel_nofault instead of plain dereference to make them safe.
+>    */
+>   
+> -/**
+> - * bpf_strcmp - Compare two strings
+> - * @s1__ign: One string
+> - * @s2__ign: Another string
+> - *
+> - * Return:
+> - * * %0       - Strings are equal
+> - * * %-1      - @s1__ign is smaller
+> - * * %1       - @s2__ign is smaller
+> - * * %-EFAULT - Cannot read one of the strings
+> - * * %-E2BIG  - One of strings is too large
+> - * * %-ERANGE - One of strings is outside of kernel address space
+> - */
+> -__bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
+> +int __bpf_strcasecmp(const char *s1, const char *s2, bool ignore_case)
 
-Hi, Alex.
+The function __bpf_strcasecmp should be a static function.
 
-Quoting Maciej to explain the function of _safe(): _safe() variants
-are meant to allow you to delete nodes while traversing the list.
+>   {
+>   	char c1, c2;
+>   	int i;
+>   
+> -	if (!copy_from_kernel_nofault_allowed(s1__ign, 1) ||
+> -	    !copy_from_kernel_nofault_allowed(s2__ign, 1)) {
+> +	if (!copy_from_kernel_nofault_allowed(s1, 1) ||
+> +	    !copy_from_kernel_nofault_allowed(s2, 1)) {
+>   		return -ERANGE;
+>   	}
+>   
+>   	guard(pagefault)();
+>   	for (i = 0; i < XATTR_SIZE_MAX; i++) {
+> -		__get_kernel_nofault(&c1, s1__ign, char, err_out);
+> -		__get_kernel_nofault(&c2, s2__ign, char, err_out);
+> +		__get_kernel_nofault(&c1, s1, char, err_out);
+> +		__get_kernel_nofault(&c2, s2, char, err_out);
+> +		if (ignore_case) {
+> +			c1 = tolower(c1);
+> +			c2 = tolower(c2);
+> +		}
+>   		if (c1 != c2)
+>   			return c1 < c2 ? -1 : 1;
+>   		if (c1 == '\0')
+>   			return 0;
+> -		s1__ign++;
+> -		s2__ign++;
+> +		s1++;
+> +		s2++;
+>   	}
+>   	return -E2BIG;
+>   err_out:
+>   	return -EFAULT;
+>   }
+>   
+> +/**
+> + * bpf_strcmp - Compare two strings
+> + * @s1__ign: One string
+> + * @s2__ign: Another string
+> + *
+> + * Return:
+> + * * %0       - Strings are equal
+> + * * %-1      - @s1__ign is smaller
+> + * * %1       - @s2__ign is smaller
+> + * * %-EFAULT - Cannot read one of the strings
+> + * * %-E2BIG  - One of strings is too large
+> + * * %-ERANGE - One of strings is outside of kernel address space
+> + */
+> +__bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
+> +{
+> +	return __bpf_strcasecmp(s1__ign, s2__ign, false);
+> +}
+> +
+> +/**
+> + * bpf_strcasecmp - Compare two strings, ignoring the case of the characters
+> + * @s1__ign: One string
+> + * @s2__ign: Another string
+> + *
+> + * Return:
+> + * * %0       - Strings are equal
+> + * * %-1      - @s1__ign is smaller
+> + * * %1       - @s2__ign is smaller
+> + * * %-EFAULT - Cannot read one of the strings
+> + * * %-E2BIG  - One of strings is too large
+> + * * %-ERANGE - One of strings is outside of kernel address space
+> + */
+> +__bpf_kfunc int bpf_strcasecmp(const char *s1__ign, const char *s2__ign)
+> +{
+> +	return __bpf_strcasecmp(s1__ign, s2__ign, true);
+> +}
+> +
+>   /**
+>    * bpf_strnchr - Find a character in a length limited string
+>    * @s__ign: The string to be searched
+> @@ -3832,6 +3859,7 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
+>   #endif
+>   BTF_ID_FLAGS(func, __bpf_trap)
+>   BTF_ID_FLAGS(func, bpf_strcmp);
+> +BTF_ID_FLAGS(func, bpf_strcasecmp);
+>   BTF_ID_FLAGS(func, bpf_strchr);
+>   BTF_ID_FLAGS(func, bpf_strchrnul);
+>   BTF_ID_FLAGS(func, bpf_strnchr);
 
-I meant the _safe is not needed at all as I explained above. The
-af_xdp logic makes sure processes (like reading/adding/deleting) nodes
-of this addr list are serialized. So why add _safe here, I wonder?
-Just remove the _safe suffix then.
-
-The moment you jump into the conversation, I feel I might get stuck
-somehow, but I'm not aware of it... Please correct me if I'm wrong.
-
-Sure, it's a trivial thing because it has no impact on the whole patch.
-
-Thanks,
-Jason
 
