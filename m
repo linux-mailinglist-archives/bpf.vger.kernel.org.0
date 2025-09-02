@@ -1,206 +1,263 @@
-Return-Path: <bpf+bounces-67148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9D8B3F657
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 09:15:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B15A5B3F68F
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 09:23:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8226E176067
-	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 07:15:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AA8217BBA9
+	for <lists+bpf@lfdr.de>; Tue,  2 Sep 2025 07:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF292E6CA5;
-	Tue,  2 Sep 2025 07:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C29562E6CB3;
+	Tue,  2 Sep 2025 07:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="be9OdOMp"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="HRIfzRi8"
 X-Original-To: bpf@vger.kernel.org
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.44])
+Received: from TYPPR03CU001.outbound.protection.outlook.com (mail-japaneastazon11012024.outbound.protection.outlook.com [52.101.126.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A2E1E868;
-	Tue,  2 Sep 2025 07:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756797293; cv=none; b=lIzoULCA6cg0/UBVgG8ategExfM1lhAYyyPShKAPTxdk45H2eRqjgmE10nGeTV8kiR5jORhsfiJg6H53sLuTXpTbifhlMQHK9Dg4wMQSnMnkZKWq+rDV1zk9auKAEbyn0hAbWTewER/mlxzslieZGOdEfaj8wjly3IKYobfQ0V4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756797293; c=relaxed/simple;
-	bh=5m4wuX0ixnq+slRI1bqds2dMb7HFvtC25MMn9M8I97A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IUIKysr7Uk7zQuhANXBtvIaqaAHATRVmmlZCMd2zfs2dJqHlBmVpIRKKGD36kl/Iye/aWWwiQ661t/Qkg33gwQiCvgXChWlhLSu/0BjStZZrIk/+TqSHLrmJOJcQFgAk9xwiD9ON2rHd+I9nZSWKZRA5/nJKV+DIgWyLN9BgMeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=be9OdOMp; arc=none smtp.client-ip=43.163.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1756797287;
-	bh=vkRxsIhq4dcGKVqQeGmjXbG+Rq+X2vu/ATof8Ui5CQk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=be9OdOMpgR+q3S/45tqc41rjN2Um1nZjL44WjlcCJ2ktM6AZ3cNX8s4Hpfz5FcQlM
-	 ZJkTivOnbao1gMto9syQJF54ThBTeS7LY0dSyxSqXElXDy1tWj8cH7pm+14I0K1I9F
-	 fF+2cN4m2zSjIiwoZVa6Lv0lGpIASGbh/US0IxWY=
-Received: from [10.56.52.9] ([39.156.73.10])
-	by newxmesmtplogicsvrszc41-0.qq.com (NewEsmtp) with SMTP
-	id 3ABB3CC5; Tue, 02 Sep 2025 15:14:43 +0800
-X-QQ-mid: xmsmtpt1756797283tzhqdj16h
-Message-ID: <tencent_AC7510F30CC28482B2982E5155905F634609@qq.com>
-X-QQ-XMAILINFO: NhUkPfKlCtQwe9m5YIvRivMiHRdlMMnyPKmQre95qFh77h8Op8e/pUczjzqXjd
-	 fpuL7Nr8Vm4SJ0FdvQgLrW4wVBzqdQ2TDpvo03Sfhq0VFpWx/+FuXX3VTpHB+6tnFw38TlJsdu4X
-	 GK3A8eyF+KLgc9fTyYPF+piiMF1A2kEwAffUcHkDOcWdBHvZ2NHp1r+AOyb146yTwgxPFFwASCqx
-	 v4xvul6uW6jU4yRrea2i5qooVXRNma/MPju8u1lspoHKvODH+C1O/ftJ1HV51wqaxCJL0RgUyVDB
-	 7iNDUS32cJcTkeRcoyW2EuakvIhlnR1xAIMrW2x0r3LN+aMjBGL9GfWGEKcU/Gh58656/Bg6MZCM
-	 PY0BIEfBuIbpEjTaS2B5WXd4srOo3FQGdbDQxGnrpPN1H/2D4B0XirGX7ntlIcbssy+CnxJ4VvtL
-	 nutGHn+67i6U3RIZFElSaWfc24PhNHXFv54MvdLDEoS/5Hh4qtPGJlNLWP+2woIgj8cjgFBkvLM6
-	 N6OI8wOz7ScMeu4WZdYqBdCROkFmHB/oP/RIqL5E1rn1rtdBjpHj3GC5vTQtQVF75ZwzYZBnBggR
-	 tf74sQoGLbOJZ8nxHKVbS4FOYvr96OCNrFRVcbP1WYYY4hCGCidBYYlXHlbrY7Rhb74ZwDgbn3W8
-	 ExQrw/iUkDLynJPf094YyQxOPdqznc9dbgJ8tA3MvNQOnEbmrAz8SL7CS6bqledT2xsTsOX/tXkv
-	 y8SY6a5nujuq8b8x+8bQVgBcsFtQ+1KhZ1NEZM7dJ5jCPOIZL2xwbqtcL/mmHY+nWAYXMGiFsMng
-	 CkueBhKs3tbGMdKQYJBcD3LYISZhub6FIA4akdHa0bbnuh7J+oI6Kn1EYIu4PEofH+GZtyjyP3TZ
-	 OaBWy3R2xClLVWvjpiK22+eavB+4ZFC8JQlMph8yEt9E/M3GfrIsr33520o3Co8ScgvSgWmAUKuk
-	 JUAZq4AbxHCHK2uHQvMN3jZI7AHZj6UUuLkpEB5IWqMCnFzGv7FGKkrOD/AwjJZyd0326V/Ffzcc
-	 5bX0mEiw==
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-X-OQ-MSGID: <9e482067-14c0-48c5-87d2-8aedf2128d66@foxmail.com>
-Date: Tue, 2 Sep 2025 15:14:43 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63AA6282E1;
+	Tue,  2 Sep 2025 07:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.126.24
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756797808; cv=fail; b=V6yiX6aKTTayCqnt3A9A83NHFkoAJKwdxb59l+FBJxsc0Az2k7GZz11pI9cFIsMmc5RFEkkfTuFCRQC/ejPkeCuWPFvBLxPMDSv7+eX/u9mZBMsQVJpU2Jk2gIPjHQlLc5FXmGmoZDxyLKLTNH1JWOQ6qq6YbSfGXDSXHLTrYOA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756797808; c=relaxed/simple;
+	bh=cjnJEPvUgsY1aew+MrIgqDAqOa0eIavnzN5qw+InKdw=;
+	h=Message-ID:Date:Subject:To:References:From:Cc:In-Reply-To:
+	 Content-Type:MIME-Version; b=mWnbXzwuIFDyXnrfCHYwQteH5LeAhQNneOSwI9p41jCIlIO9jFFV6e8XUgx/axngn4k9jAstIpe11dbJb1Q2gYy0wyUOPmJZa1excb0U7XIU2B2scEDtHFEvysQBRLcQ0duHSDOrQ6sjNYlBf4rHe6KISJCqqeMYXJ/gWH8dwLI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=HRIfzRi8; arc=fail smtp.client-ip=52.101.126.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Jzlm/ydII/sc4/NA0F2OOPlqIoY+Tf3MM2of3pytdQ6fwiMh4cjVD0qbd9UBNng+4Ea0yoKRCig5g5ovrVuOFokx61O1Zp40W0MbbmflMk3rMD9T2fDMUjUvVoF1JruFR4XhG8beY6F7JZ9Olx3FOtpLukeTTgu/nZUJ0bxO/w8eJdkwEZjf+F0UzjNN0V5bJSVFmswlO7P82Z6Z4lvJPs9VqlJCCqg8Pa4blydpXRtJkc7a/TV62qSyPkGQQ/7ROfXFxHOWVkIuG6QaBe2pq+66ggqm16dfEiaRPyMyNhuE0IxX9nQmKtnZHgFHXdHlYYSBmmaxHSHAB8MTLNNCCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fwB5oNHXSQ3qLGwdFxV6hPwf/mGh03uhBQWdRsUeT80=;
+ b=zGOoZY7Xgn/IPrDYS64DO0fnhX7JVY8WtPBz40HYxUmPgeJlhYDKyMH6J2EKff8FkFjXxmUCqR/xqy5lSPaHWNqR1wNG4+vwwMjgcKkDMVwt9gHmG97nkh0Fj+81AQRh5JF0Gbut+71Pj3IoTCtYY2wMwH66GamoGaM18taGqJ2Z6vQZFtW3LzU7kfi8RRQKWUXFGxLExyAdsJFMVFqP1G8l+NPjyw9S5R91fJ1QSwJOiW4HHfEKYIgvs23rFCtrX2EVcTypYN2bP0h8Ama5NXb9bbgYVaLmxyqRBbFXciFv0/DRpRArU5WwkBktmigFG9or+WaewnIMEWtNpVW/jA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fwB5oNHXSQ3qLGwdFxV6hPwf/mGh03uhBQWdRsUeT80=;
+ b=HRIfzRi8CfiPfWDNDpH1+G6kdAaET9RNcsEGP9PCi2A1LNK0Xp1yTTUBbuE2zKh1ZdOGOuUSzW8/KXS6DWo2Oxoj6uBWjXLtwhwYep15k9O0SOMXH7P7zt0TzPn4QGbQQIBzQrpsnQpsC+MFn0Fuay80iYs49OC9yC0O1fKMGC/f7e649LA7EXjGqXPwSktDUROF0cYNZ5WY7v+5x2pwvpT96LI9Aagp+kHxVob/wkgSylK3ffYmLCKWy8vvlOhL6QWF2RPwroMgyPeR2jDHP0a+dJxOyLX+kheX06ITIq7AYRt1+KKSYE6vJPNdztsyxhuwEBU52+uK3qrutJWlIg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from KL1PR0601MB4324.apcprd06.prod.outlook.com (2603:1096:820:73::6)
+ by KUZPR06MB8026.apcprd06.prod.outlook.com (2603:1096:d10:4a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.27; Tue, 2 Sep
+ 2025 07:23:22 +0000
+Received: from KL1PR0601MB4324.apcprd06.prod.outlook.com
+ ([fe80::f8ee:b41e:af25:202]) by KL1PR0601MB4324.apcprd06.prod.outlook.com
+ ([fe80::f8ee:b41e:af25:202%5]) with mapi id 15.20.9073.026; Tue, 2 Sep 2025
+ 07:23:22 +0000
+Message-ID: <42c374fe-3ffb-4285-b982-add2a14fb65e@vivo.com>
+Date: Tue, 2 Sep 2025 15:23:19 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHSET V1 0/2] cpuidle, bpf: Introduce BPF-based extensible
+ cpuidle policy via struct_ops
+To: Song Liu <song@kernel.org>
+References: <20250829101137.9507-1-yikai.lin@vivo.com>
+ <CAPhsuW4PGfmFnJ-huFFELRQDJ7SpgWOLxYVBhRtsZnsLZhB6rw@mail.gmail.com>
+ <37d6f4a3-89dc-464a-b5fe-dcfb3e7882cc@vivo.com>
+ <CAPhsuW4h_-Vskzxjt19b_muULJ+wAfze6izswjVS4XN2daUTmg@mail.gmail.com>
+From: "yikai.lin" <yikai.lin@vivo.com>
+Cc: bpf@vger.kernel.org, linux-pm@vger.kernel.org
+In-Reply-To: <CAPhsuW4h_-Vskzxjt19b_muULJ+wAfze6izswjVS4XN2daUTmg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR04CA0167.apcprd04.prod.outlook.com (2603:1096:4::29)
+ To KL1PR0601MB4324.apcprd06.prod.outlook.com (2603:1096:820:73::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_strcasecmp kfunc
-To: Viktor Malik <vmalik@redhat.com>, andrii@kernel.org, ast@kernel.org
-Cc: Rong Tao <rongtao@cestc.cn>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>,
- "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)"
- <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-References: <cover.1756793624.git.rongtao@cestc.cn>
- <tencent_5AE811A28781BE106AD6CDE59F4ADD2BFA06@qq.com>
- <f0194235-19ae-43de-b73d-b2d8b7f77035@redhat.com>
-Content-Language: en-US
-From: Rong Tao <rtoax@foxmail.com>
-In-Reply-To: <f0194235-19ae-43de-b73d-b2d8b7f77035@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: KL1PR0601MB4324:EE_|KUZPR06MB8026:EE_
+X-MS-Office365-Filtering-Correlation-Id: 44a53e45-0681-4a05-f840-08dde9f198cf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?V1lMVXlhTFk2U3U4aC9oc1ZMTE9zZ0xlbWpWZk14WUVtaVpaYWoydnhkbXdF?=
+ =?utf-8?B?L2Y4VWZLdXRZUEpaMlBDSjVWN0l3MDNQWmFoZXZBM1hibTNiSm1IK1pWeFZB?=
+ =?utf-8?B?OXJOMnljeDgxcmpkM2FZNzZHdWJJSkw4T3B5T2dGK0xiNS9QemVLOUMzSE9C?=
+ =?utf-8?B?S3hRcHo2dDA0WUpuSFdWUkRtRlRkWUNRRWhiV0hpb3o2Ym5BMmFvd2xwZVVp?=
+ =?utf-8?B?M1N2Q1FURlJ1Mk9sL2IrMjZ5SUNQSHFhaFZMYnE0N3E0c3R2NllBdjAyc3Nu?=
+ =?utf-8?B?SkRiTlZ4U1pSVCtlUm1Xdk1MUXRtSnNPYWNLOVF6dTlZdEFBSERuaWJyQ3c0?=
+ =?utf-8?B?MGFINFpGUVB2czExR1p1VnY3RmEwcEFoVFl1SE5rRVBFeFJGS0NYV2hQNnpM?=
+ =?utf-8?B?bjA1ZUlDRkZSZnFlSHExZHhHZW9kVFdYdWoxSkNBYktFODBOaHlwNTgrVjJL?=
+ =?utf-8?B?UzNvK25yUEpJQjVOVlNjQm55VTI0bk50ZHFBQWl5Q000TXBjM2J5ZnhaUG5V?=
+ =?utf-8?B?VkFVdnBwTUxacXRwbVBKMXhaN1BzclllSFVUeGxZMDlUc2NxV013bXdqS2Y0?=
+ =?utf-8?B?a09WaHZEb2VGTE8yUkwwMVhxbW1YWURDNHZ2RGFwN2dudXhTR1UyeFZ6TFNk?=
+ =?utf-8?B?aEx6TVZ0OFVZWDNvek90dGZaNTY5dEQwWlpmTXpBb3pDbFRNdjVhd1hyczh4?=
+ =?utf-8?B?VHZOWFVtdzh3Ni8zRjFtYjhYK3N6UEZibmtmNXdaQ2VxbGR3T0pJclloZ01j?=
+ =?utf-8?B?VmRLREhEM3F6OW5rZmF3VUdGUFlobmxTeUtuclBVWnY1RU5sN3h0bFdqWGlH?=
+ =?utf-8?B?M29CcDlWL2FodzVFOVAwRitnVUZpbXh6am5zMXBOMFUyVFJsUW83UUdHZEpl?=
+ =?utf-8?B?dzlJaHhXSVphTUJ0VXJnWjJCVWZZQXpQOGZsbisxSEdQcnVya0FBUFV2ZTZP?=
+ =?utf-8?B?Y3VRaXFKb2thb2ordmxkNHBxK2dmMlA3ZExTRUxacTZIK1JDcVcyVEtSYTBZ?=
+ =?utf-8?B?SkNJRnVZcnJ5cXlDSFhZSkE3Sys0S3ZvS3lKWkxXRVVQVnJoc2RYQlpBYnJa?=
+ =?utf-8?B?bkdxSWFrUHdaOHZaMk9RMG4yTlRiMU1pZHIzNUw2ZVZYTkJISksxRzN5b2pT?=
+ =?utf-8?B?dzZGRkRrODhsWG0xUUc3dSs0UHZBUEt4NTRGL2tMM2U2MVBkc0Fnelo5QWRP?=
+ =?utf-8?B?Q3hsTm5CeGFmR3A3Y3lBU2hyOGIrUVVMMjNVcyswejFQYm0vMzVHZzlqc3ND?=
+ =?utf-8?B?dm9qSHlHdEJSa042bmxXRlJ5bmRBYU1EWTAzYy9kcjh0OWdjQzdWRWlaSFNU?=
+ =?utf-8?B?L0pLZ0xueGwxQXlKOS9BMGJyOUxBaCtEcldmb2djV0dGKzVxMWVVclY2UEQr?=
+ =?utf-8?B?Ky9vK3RaN05YNFl4dSthYkVGb295U2plbnZBWEVrVWQrcmdHczBPdHdoQ1NG?=
+ =?utf-8?B?dVlWdkE3dW04ZFpNaWd5Sk85R2pUZUZPSCs3QzRJRjFEemRzVkl3TWRnSCt3?=
+ =?utf-8?B?bktibDBSdWRtdXhjR2p3RWpkMnFBMTNPQUpMaE80a0pNbFdYcDluM2I2ZjEw?=
+ =?utf-8?B?SjQ5K3pUVzhhSTJkQ08xaVJQcFVlVkJwZGhqeHlOc0ZONmVKbjFjYnlvejA3?=
+ =?utf-8?B?b3lxeTMvRElMRHV5NTVpRU41K0JrVEk5dG9IMUVwYUdsUy85VTgwVnBBeDB2?=
+ =?utf-8?B?TUhUTHUreFFFdkdkancxb3V1VFJaR3M3M1BmVGFZNVJLQ3lJdEEyOG9CNklK?=
+ =?utf-8?B?NVJyb3Zxc05md29GblNCNzVLeWpRZmZESm9icFp1VXFaVldRR3l4WmdEK3Nt?=
+ =?utf-8?B?K0EzQjBOOE9EOUd0MVdEVVpjM1I3WGMvaElYS0tjWCtJSnBmRW02MEtHWVlR?=
+ =?utf-8?B?ZERybEtYektMWWFKVGJ0UHFCSG9WN3hBcktMVVFydjVvZUJEcmk4STdYbTc5?=
+ =?utf-8?Q?GMy9mFvUSJI=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB4324.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZCtKYTRlZDlEZmZEOXhidWl1UDRDdm1CaVp5cUxHS3dNdnFZTTNWQTRRTFhB?=
+ =?utf-8?B?R3M5QzNsN3VMblF3UVp3eXk2ZHVQZS9iUlRpQWZtVXJjMCttSHJPZjFWOVZ3?=
+ =?utf-8?B?RWlneUJWS1dtMjJLVmpZOWhkRE0zbFN2eUVOVm9zUmFvbjNSSmRGdmhSdSsr?=
+ =?utf-8?B?U2pvc2xoQ3N3bWhHV2c5K3dleGQ0SW1Bd3FTYklCZThFb1ViWUVyazM2bFVU?=
+ =?utf-8?B?SlhSN2xvWWhkK0VHd0xrWmhVWnE0eE5PdnVWenZBVE9lS2xGUGxnRWpiaXlv?=
+ =?utf-8?B?NzJpNXFqMUxudkxJWGNsVUhWQ1lUY3FJdW80d2MzeUFmQlZab1ZGdlpkZ3dy?=
+ =?utf-8?B?UnJmalBPK1g0b3U4OFpwdm5LYVpON2NYRWxkSHZhTDdKTFhOelJKMFAzWlJO?=
+ =?utf-8?B?ZlVxSHREQmszcG5zQ2xXa2RmMjZqdmlCaGNaQzRhWkUveENPaUJyWTNNSmhW?=
+ =?utf-8?B?Ymc3QnNFQTZPbS9ZTTA5THZsNUM4OHZmZFdPdkFXQU1jYmljSVpvbUhWVDI5?=
+ =?utf-8?B?ZXhDVlJCZ2hncGxBbDk1aGVnR28rSCtGc01CVGg3aXdzSzk5a2tYU1h3Q2xH?=
+ =?utf-8?B?TnFCV3pXN3lXYlNzYlJYL0h0MzhFWmpNTnluMFgxcWNzYUVVbGZlSTR6OUF2?=
+ =?utf-8?B?djFPMnRrL3BLWEJJcUk0bnVsZkNEb0c1WDI4THc5N0pmNElMa1BQdzJqOVhr?=
+ =?utf-8?B?QkJRRmNVdWROa2NZSTRuVHlQRUZRbCtpaFNjY0tzRXlGQUFuSHJrS0JyQnh6?=
+ =?utf-8?B?UG1BRVU4UDJ5ZlA2ZnlaYlZLb1JzSE5STmVlaytXTlg5cU9WSTNiYnc4UVM0?=
+ =?utf-8?B?SjlvZHpOcmV3ejZBVlk2SnhmbDR2K2ZkbFZkR01vSXhGOHlmYW5ObXhzYlBG?=
+ =?utf-8?B?NDRpU1pjYnBtZ1BTVTcxSExjdU5NWkQwRWFnMUZ6cFE0aTdUMFdxRCt3SGdM?=
+ =?utf-8?B?dzlnS3BpNGd4QXkrcitpWlN6RnR3VkhFMmhvTkNycnhzQytuMDIraXBwOUp5?=
+ =?utf-8?B?ZzJrVkZ5Mm51dGxyL09uaFhLdWFhY1FVK01EUk5DQ3JXYW4wNk1wTWhlc1lz?=
+ =?utf-8?B?OVgwRHY3VFhWWEx4d0pBSklHNC90WDIvNXhHSDJoQzc5SGViQnpXM3ppSURy?=
+ =?utf-8?B?Z0cxZFpwSkdEMjNBTkVkT3JJNERzdlhYc2F2S2hmVXJpSGpjVmQvVHZFME9v?=
+ =?utf-8?B?aHFhL0hNRXg3VWdLKzVrNE42bi9UVitjWUx5T0JZejNFV2t5eXE1UnEzMmVP?=
+ =?utf-8?B?WHdBU2doVEdNVVBacy8vc3hSWkZTQ0lLSDNIZ2lZdisyNWlYb1VyTUhVRkc1?=
+ =?utf-8?B?STlYbis5Nmt1SUFvU3B2QWlrdHdtSTUyNlJTWHdJNzBscGlJVkQreEtyc3hW?=
+ =?utf-8?B?eWVsNnVTR0pxOFN0MlBrL1lreTFtZC9pZ1d3bUhneU94SDNOUW1iVm5WTDVo?=
+ =?utf-8?B?eG02UVRvSjkyNHQ0dUlFbWlGQ0JkVFdQZ2xnWTNZSVc4TmgyVmFaZnhUcDhF?=
+ =?utf-8?B?K3VjN0ZWR01lNU13SklGT3NLdzV1NmhRNUErT1ZOd2QvSG9ybkI5Z2lUV3d1?=
+ =?utf-8?B?a3dLYXdldm1waU5MRnpqMU9lUE03bTd5dTF0NWtQcHZSSkpJL3FoazVoa2lx?=
+ =?utf-8?B?bjcyUmcyVWt5WW1kZnM2cXRjWFhJOW15VXJoTnN1b0JMM3ppRU81SGFpRHQy?=
+ =?utf-8?B?a3YrMlZTS0JMOE83U1l3RjZPcVRId1c4dnRhRHhkTHJOYzkwT3lvMXN2T092?=
+ =?utf-8?B?MUhZUkJWRyswVENqZ0Noblg0UVNnamxjcTVKNTNDNFhJdFBaa3EvZnJLekpW?=
+ =?utf-8?B?TWFPeUtnK043ZGFPczQ0a1BoeGw2TGM2WTlldTBNdnRGN0FxK1VDS0pncHlL?=
+ =?utf-8?B?YUJpdUpFWXF3NnFrWkRnUXJHa3l1NmUwV0krazBzMWhCSnFScmZ1THVhUUEv?=
+ =?utf-8?B?ZHA2aGc4OFM3VS9ReWdHdGJNSCtYSWNmOVA4Q1lDV0ZuWm8vdnA1dGRrZXIw?=
+ =?utf-8?B?bWcrc1J4K1I2aFF4WHhnMDFNRzdTZEc2RXh1dmJqQ2ZxUjh0cGVaeG5hNTRq?=
+ =?utf-8?B?cGdNWTkzdVdhS3l3dFhpd1dKYUxaWk56VmMvN01iWnNUTWllZndGZUZCYVZS?=
+ =?utf-8?Q?MvYSoTGXTLhnYPiErukWfmQ//?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44a53e45-0681-4a05-f840-08dde9f198cf
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB4324.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2025 07:23:21.8369
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oIztfsQi7LlDFOUWHA4xeinm8tP21+TYJ1+b8fda3OmIVS/KZ2wRHHPvm2BAaWPCtBj+kFVkI/LESx3R2LyEGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KUZPR06MB8026
 
 
-On 9/2/25 15:08, Viktor Malik wrote:
-> On 9/2/25 08:17, Rong Tao wrote:
->> From: Rong Tao <rongtao@cestc.cn>
->>
->> bpf_strcasecmp() function performs same like bpf_strcmp() except ignoring
->> the case of the characters.
->>
->> Signed-off-by: Rong Tao <rongtao@cestc.cn>
->> ---
->>   kernel/bpf/helpers.c | 56 +++++++++++++++++++++++++++++++++-----------
->>   1 file changed, 42 insertions(+), 14 deletions(-)
->>
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 401b4932cc49..e807a708e5fc 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -3349,20 +3349,7 @@ __bpf_kfunc void __bpf_trap(void)
->>    * __get_kernel_nofault instead of plain dereference to make them safe.
->>    */
->>   
->> -/**
->> - * bpf_strcmp - Compare two strings
->> - * @s1__ign: One string
->> - * @s2__ign: Another string
->> - *
->> - * Return:
->> - * * %0       - Strings are equal
->> - * * %-1      - @s1__ign is smaller
->> - * * %1       - @s2__ign is smaller
->> - * * %-EFAULT - Cannot read one of the strings
->> - * * %-E2BIG  - One of strings is too large
->> - * * %-ERANGE - One of strings is outside of kernel address space
->> - */
->> -__bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
->> +int __bpf_strcasecmp(const char *s1__ign, const char *s2__ign, bool ignore_case)
-> No need to use the `__ign` suffix here.
 
-Viktor, Thanks for your review, i'll submit v2 soon.
+On 9/2/2025 1:51 AM, Song Liu wrote:
+> On Sun, Aug 31, 2025 at 11:59 PM yikai.lin <yikai.lin@vivo.com> wrote:
+> [...]
+>> Thanks very much for your comments.
+>> The cpuidle governor framework is as follows,
+>> and I will include it in the next V2 version.
+>>    ----------------------------------------------------------
+>>                   Scheduler Core
+>>    ----------------------------------------------------------
+>>                       |
+>>                       v
+>>    ----------------------------------------------------------
+>> | FAIR Class | EXT Class |           IDLE Class           |
+>>    ----------------------------------------------------------
+>> |            |           |              |
+>> |            |           |              v
+>> |            |           |      ------------------------
+>> |            |           |          enter_cpu_idle()
+>> |            |           |      ------------------------
+>> |            |           |              |
+>> |            |           |              v
+>> |            |           |   ------------------------------
+>> |            |           |       | CPUIDLE Governor |
+>> |            |           |   ------------------------------
+>> |            |           |     |            |           |
+>> |            |           |     v            v           v
+>> |            |           |-----------------------------------
+>> |            |           | default   | |   other  | | BPF ext  |
+>> |            |           | Governor  | | Governor | | Governor |
+>> |            |           |-----------------------------------
+>> |            |           |     |            |           |
+>> |            |           |     v            v           v
+>> |            |           |-------------------------------------
+>> |            |           |           select idle state
+>> |            |           |-------------------------------------> 1. It is not clear to me why a BPF based solution is needed here. Can
+>>>     we achieve similar benefits with a knob and some userspace daemon?
+>>>
+>> Each time the system switches to the idle class, it requires a governor policy to select the correct idle state.
+>> Currently, we can only switch governor policies through sysfs nodes, as shown below:
+>>     / # ls /sys/devices/system/cpu/cpuidle/
+>>     available_governors  current_driver  current_governor  current_governor_ro
+>>     / # cat /sys/devices/system/cpu/cpuidle/available_governors
+>>     menu teo qcom-cpu-lpm   《===Here we can switch governor policy by echo this node.
+>> However, it is not possible to change the implementation of this policy through user interfaces.
+> 
+> It is still not clear to me why we need this feature in BPF. From the
+> overview, we need two different governors for two different scenarios,
+> which can be achieved with a much simpler interface.
+> 
+Thanks for your comments.
 
-Rong Tao
+Below is a comparison of traditional governor methods
+with a BPF-based approach for dynamic optimization of the cpuidle governor:
 
->
-> Otherwise LGTM. I guess that it could be useful in some applications.
->
-> Viktor
->
->>   {
->>   	char c1, c2;
->>   	int i;
->> @@ -3376,6 +3363,10 @@ __bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
->>   	for (i = 0; i < XATTR_SIZE_MAX; i++) {
->>   		__get_kernel_nofault(&c1, s1__ign, char, err_out);
->>   		__get_kernel_nofault(&c2, s2__ign, char, err_out);
->> +		if (ignore_case) {
->> +			c1 = tolower(c1);
->> +			c2 = tolower(c2);
->> +		}
->>   		if (c1 != c2)
->>   			return c1 < c2 ? -1 : 1;
->>   		if (c1 == '\0')
->> @@ -3388,6 +3379,42 @@ __bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
->>   	return -EFAULT;
->>   }
->>   
->> +/**
->> + * bpf_strcmp - Compare two strings
->> + * @s1__ign: One string
->> + * @s2__ign: Another string
->> + *
->> + * Return:
->> + * * %0       - Strings are equal
->> + * * %-1      - @s1__ign is smaller
->> + * * %1       - @s2__ign is smaller
->> + * * %-EFAULT - Cannot read one of the strings
->> + * * %-E2BIG  - One of strings is too large
->> + * * %-ERANGE - One of strings is outside of kernel address space
->> + */
->> +__bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
->> +{
->> +	return __bpf_strcasecmp(s1__ign, s2__ign, false);
->> +}
->> +
->> +/**
->> + * bpf_strcasecmp - Compare two strings, ignoring the case of the characters
->> + * @s1__ign: One string
->> + * @s2__ign: Another string
->> + *
->> + * Return:
->> + * * %0       - Strings are equal
->> + * * %-1      - @s1__ign is smaller
->> + * * %1       - @s2__ign is smaller
->> + * * %-EFAULT - Cannot read one of the strings
->> + * * %-E2BIG  - One of strings is too large
->> + * * %-ERANGE - One of strings is outside of kernel address space
->> + */
->> +__bpf_kfunc int bpf_strcasecmp(const char *s1__ign, const char *s2__ign)
->> +{
->> +	return __bpf_strcasecmp(s1__ign, s2__ign, true);
->> +}
->> +
->>   /**
->>    * bpf_strnchr - Find a character in a length limited string
->>    * @s__ign: The string to be searched
->> @@ -3832,6 +3859,7 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
->>   #endif
->>   BTF_ID_FLAGS(func, __bpf_trap)
->>   BTF_ID_FLAGS(func, bpf_strcmp);
->> +BTF_ID_FLAGS(func, bpf_strcasecmp);
->>   BTF_ID_FLAGS(func, bpf_strchr);
->>   BTF_ID_FLAGS(func, bpf_strchrnul);
->>   BTF_ID_FLAGS(func, bpf_strnchr);
+1.Agile Iteration
+-Traditional:
+   Governor policies require being predetermined and statically embedded before kernel compilation.
+-BPF:
+   Allows dynamic policy iteration based on real-time market user feedback
+   User-space components can be updated via cloud deployment,
+   eliminating the need for kernel modifications, recompilation, or reboots.
+   It is very convenient for mobile device updates.
+
+2.Dynamic Fine-Tuning
+-Traditional:
+  Involves replacing the entire governor, which is less granular.
+-BPF:
+  Allows granular tuning of governor parameters.
+-Examples:
+  --Screen-off music playback: dynamically enable the "expect_deeper" flag for deeper idle states.
+  --Gaming scenarios: Allows idle strategy parameters adjustments via user-space signals
+    (e.g., FPS, charging state) – metrics often opaque to the kernel.
+
+So, by exposing tunable parameters through BPF maps,
+user-space applications could make more run-time parameters adjustments, enhancing precision for specific scenarios.
+
+Conclusion
+----------
+This approach aims to preserve the common logic of existing Linux governors
+while adding flexibility for scenario-specific optimizations on certain SoC platforms or by ODMs.
+
+Welcome any additional insights you might have on this.
+
+> Thanks,
+> SongThanks,
+yikai
 
 
