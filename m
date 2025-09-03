@@ -1,205 +1,230 @@
-Return-Path: <bpf+bounces-67325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A923FB42896
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 20:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE564B4289F
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 20:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F3ED3B524D
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 18:20:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55DEB3BC8D7
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 18:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4DA362081;
-	Wed,  3 Sep 2025 18:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28A53629B2;
+	Wed,  3 Sep 2025 18:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WgSwY/Xt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UGj8++od"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50622010EE;
-	Wed,  3 Sep 2025 18:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6553362995;
+	Wed,  3 Sep 2025 18:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756923616; cv=none; b=rmq0wgYyUssU/9JhP7gRQm+XF1mULUj0Bm/rT2EvMO0e/CcZ9sQtaoFL1MiRq8C0c5XFk4jUOBlZwUaHm7KgJUF8K9XdPjiuLUx4qzw4H76Ynq6Dkqsk3uqlqpph7YmfH3hfZhsh6jo4JRLS6Y3cEDxsyQ8VTDzdqn6y3flr+iU=
+	t=1756923887; cv=none; b=kCp5FUxNEdY1tgRNLnbYJ7VRIw3+0xRAE8BDIWQdT+wCZnt7IjdOKJeXEp1Wro24sxzRqErcEgVjDAXFeNjjEu6E0e4YwXCOVVuIRP+F6IM45s1sDcFs6tvUVvc0Ds7FMOYRzk4rSShN/qb7gB4Q54uB+foZ1tiU4yAo6GrcLHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756923616; c=relaxed/simple;
-	bh=5L9IvmqvIoBbv7cKvxT07RQpTrNSVmQNxpLyw9n7IFc=;
+	s=arc-20240116; t=1756923887; c=relaxed/simple;
+	bh=hZVYoNafis8V6Hw8eXjPvFhUR0O92lnebuf6bclVpbM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rngQqfnugg19Sx3URs623fE69KsUGrvvGZAZSoulMJaFBlyYUplyENMaxlZmlnv9c1muAwPSxAE+szz4Pyo01IPJAyPVaRX1Eg1866eFgvyrQQmhoagb7Ai9zrr7Wlk8wHA3i5WsDzxYG5uHfwkdXOMofQmTzyTS7a+DgYoFthY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WgSwY/Xt; arc=none smtp.client-ip=209.85.215.170
+	 To:Cc:Content-Type; b=S5sa/MVGY3COQLjHJrmAL2FNXWtqc+NysAvv/6QP94Jbe87Oyr7s8FNXATPx9KhYdIcXmCw17c9l0o9+XXoG2r8G8houlAf8Me0wq1JVQYrzQrWzwNXokquaceIXNK1KmJfj7973mEHuZXAPpcEIBSy9hGJ0uafn2n1TOQUJzXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UGj8++od; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b4f9d61e7deso75703a12.2;
-        Wed, 03 Sep 2025 11:20:14 -0700 (PDT)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-329b760080fso138691a91.1;
+        Wed, 03 Sep 2025 11:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756923614; x=1757528414; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756923885; x=1757528685; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5LklR1axfAguady/UTzpPSQ/6MSRqKnTgXH9zey9jMY=;
-        b=WgSwY/Xt8S93/Yn/p9UxNmDGYrL6sOwpX51YRHIgticgCAuCjolW5d1oAlzMc7Mydr
-         DIEgYeTpHneFGLZZAjhc1tz3EM9cPBdg4cHiNQdRvS1LKDmozDUJw85/wIg9WPvYSsxM
-         UoQmni1lsgPryTVBD8SV4sPxoBG8scfpjjfmvSEQoToG8egT3PeHZPNYuxCa0qad2qha
-         zNoclL6eDdq2fgnQldsEgjaZ8EcMGTfoBYNf3Hn/MSY21yout1MxuNrusB22RHQb9/si
-         TC3BWo9rmcjwjIeFPjjB2musLaUPJ/dnonEmBY5Nw2eh+5vEttpkfVlABu6PeosYKIBQ
-         T4CA==
+        bh=+eUrqfmFjwQkudC850PI46TEPvDfF6DyRtqJa4aRFtM=;
+        b=UGj8++odYw4GZ8/qqdofx9BEgAQYLff3ciXGtayGq1BKJLwRUOqntJhpk86ARJ6SEt
+         ydt9MxRzgDEvJF1YjyPOkn1XgYdTPsert5U7BsmvLgAZovXmDyixJ6qIGYgzWQxccwfi
+         5cuqrijeug8GxGcT0g6ASDVzlE4zY9ac2XYZ6l1bPyH6eNfyZCJUtCMGWtIvYv2DZLb4
+         mKdFroEQyDNOgSZykbvsUzmJ6nWwIsdOZAiTiuQ8c2WGL4Ih2enp2y9V3Cs9UWwi+N/N
+         XhhvZCTnxfHtgBx6Lf6wbGTeN0EfAQucSblU3TIwjaDircCFx1QihzHKltOIKv3oTlnp
+         KjVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756923614; x=1757528414;
+        d=1e100.net; s=20230601; t=1756923885; x=1757528685;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5LklR1axfAguady/UTzpPSQ/6MSRqKnTgXH9zey9jMY=;
-        b=QTPWtZiMBccBqUZ5GhBAgZ1Ups1TOC9AKuEeoY44/qzvFJknYx2PGJnm8stf4wvZSA
-         JhK0++QeJyVuWkh/L9QBP2vF7gyjh286LU0h4N1JMU4z44SMO71qCwnOQAMyZfLfTC6/
-         dGobgVKjeJZZk0un3dLx3yu9ILVFplqJtvGkYUcPcdsjPaPCW/f/+VYOFg/c/m0CEwkH
-         HrfVfdFOjQaodtSCchP2oUqfAYwC8ynChaSI5uIOdbjtbURFJzZUO6XbBWZtPIN8prPK
-         o0VtuI/SeZW/Mylh8wADlBanCnIjEZFVwepxYbPiigNLNsTLc/7GOT3/F8ksVxIQ2BMU
-         k7fw==
-X-Forwarded-Encrypted: i=1; AJvYcCVT3BEKWfJQYna8yCkQntaJCdKLOUoOx1xhfW7AM2WVHFV4gTzt3J3asTzaOMoza5iUSGzQE8jX71K+WX1f@vger.kernel.org, AJvYcCWFyQuf2dgKTBJco8Ucnv/4DJrGe2JYC7uncKLWcJaoKD+WJkEtRlLYyvrONLrRN5nxzfs=@vger.kernel.org, AJvYcCXFP1Rtx6+J8pPOX3hCzu2coCrHWBBk7aijDRMOnSsgrOvNDiEc+NMoc8nU8fb+5dO/tCtw54GAFv9r978x/ROFMBdT@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxe+ZLHQP0khG3oBEfllt4pgHgY36CGVsZDsa0WmNQCurc6rHTK
-	s55ZSkPwsuRm+C8/AExO1KI4wpejyKud2UlrRR6P2wygOxof8OltYswP0MJWtrK4mtG7BcK/MvO
-	UKUXuCs3itw/FY/TmEYH/bDkuvxnwUcY=
-X-Gm-Gg: ASbGncsf144mepK9LNn/N421fMV1t83CpeehVVPiTEK2RlKyOtUrFRbquJe8NEU5nBs
-	F1pM9hD8cH9YCiU+jQ3Ntavnj/J3l2z5xn3tn1Ce96clxBp69Rm8GqxR5sKet77d5FET0T2SoNA
-	0rbqXsiGYGmO5DjIj7lSO8CQuQKmuIv9Cpr9UFMpDoTfeYyBfSrazfn8DzkoNeXaOZepN///SXk
-	XnUq77claLUVfN0owvtPjp1mEO0d7BrNg==
-X-Google-Smtp-Source: AGHT+IFDckPXLt62/YVrwNa7YVFAXYaMU92lBDll278DpS343p7hIE9hmeIPdtlDUj823tk4D7pWm3Cv5GFyPELW2gM=
-X-Received: by 2002:a17:902:ecc1:b0:24c:b54e:bf0a with SMTP id
- d9443c01a7336-24cb54ec1c4mr12662195ad.0.1756923613755; Wed, 03 Sep 2025
- 11:20:13 -0700 (PDT)
+        bh=+eUrqfmFjwQkudC850PI46TEPvDfF6DyRtqJa4aRFtM=;
+        b=BDlt2Cwr6x04t7fshRpxDtcTrjet7fv2T9Zq8VJFa7iyRD5DqXRVd1X93DC/jYDjTt
+         o4p8A96uvZSuLfGOoFPE+PnHw6Wz7dRRUUu4Ia6jKwqudPxc7rlUJCd5DLn9FLBNaT3z
+         fciWJLA4TMwMW+2ZLfkpXDrS5Qj+56Al2UofjjbTc0Na4azuFFuN6dA9juzW7v5qYe/x
+         fF+pEE1goOTH54nC+wnJ8AKHmoNyqMIIuJn8+VKV7TPGCmlfpsg9AEZoVkc4AYq1rf0v
+         WTxtA77md93cZkMmiXSMGPYO8IiY+r+WI/fqoO4710bsR3yhwS5PWokpp1p14W7qs8jm
+         0PCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUNQtPRtcDdbputF3mlbXcJs3tS7QHl1l9sFF7XRwYJ4b/1Mpk63ZsEFXUlpc18cLRMNk2FztvHEYNjw96bxGbh4X79@vger.kernel.org, AJvYcCW9r5WE1RqegH/4cmLC/POaOhidY1AoWyB6jsmWnkRWU1RvbEDRzxPxbrPELZQvzhiZwTQnRq5itJEBlzOJ@vger.kernel.org, AJvYcCWCE7kOqfzzxSw3TjxrdiYsKwoyf7h4kdeKSw4vQZutsmpuR+eVGAtXwlIajrsMvc0F9VQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwReHhiz/b0i+RRKNaX5pvcvaPXxbr4AFhZNaoQJyVgzzXx5Mb4
+	HMI/DUMIKKgulTFGltnuELLO38ik36lcwDYblLw1LN6rQJ1xB20sDbYmaQe8KfFKmVHW2MrA+Tn
+	iLsdxUfSRdb09HuX91l4Ro8MMSXmzO7Y=
+X-Gm-Gg: ASbGncs8jJUdpeMbbXyaDLRyV9MM4CvsvmcRvCDoTsZykAwMVCDpDeZy6TCvzGxqIJb
+	SM07fD+Lzg+k39y+5TlMIH5j7Q2KWwFdRPp/Wog+5MGkk+zkVCNfExAuBzpOXqfjL8HRIRBueiH
+	5A9r/aOR66t/ngpozB29FRPmZQXXQOBTxg7JG1tRdiCuSu9facZovhctxZHjDLSNt7/aCXBMqOT
+	vuB7lJGa8+EfTnGuwohZN4=
+X-Google-Smtp-Source: AGHT+IEbQZgvF/QJp0YCLhLx91oQzZUvUYqP3DtXK35MeWN8s3xag2vO3f8JQWeKPKRRchStq5GhnhtoLXas9gdTEUU=
+X-Received: by 2002:a17:90b:3809:b0:329:dff0:701b with SMTP id
+ 98e67ed59e1d1-329dff070c6mr11649626a91.17.1756923884806; Wed, 03 Sep 2025
+ 11:24:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250902143504.1224726-1-jolsa@kernel.org> <20250902143504.1224726-3-jolsa@kernel.org>
- <20250903112648.GC18799@redhat.com>
-In-Reply-To: <20250903112648.GC18799@redhat.com>
+References: <20250720112133.244369-1-jolsa@kernel.org> <20250720112133.244369-10-jolsa@kernel.org>
+In-Reply-To: <20250720112133.244369-10-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 3 Sep 2025 11:20:01 -0700
-X-Gm-Features: Ac12FXy4s2geNOmLCONj1osd11jEfHmKme1TYgq3LHbeuSWAD6nNQwo2SGjYqPA
-Message-ID: <CAEf4BzZ87DAtQSKOOLjADP3C7_4FwNw6iZr_OKYtPNO=RqFAjQ@mail.gmail.com>
-Subject: Re: [PATCH perf/core 02/11] uprobes: Skip emulate/sstep on unique
- uprobe when ip is changed
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	x86@kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+Date: Wed, 3 Sep 2025 11:24:31 -0700
+X-Gm-Features: Ac12FXwWHOP4yXoYBwWow17ILC6CZ7f2XIfR21TQkM1qfxEUau0Qrql7M6g5OZw
+Message-ID: <CAEf4BzaxtW_W1M94e3q0Qw4vM_heHqU7zFeH-fFHOQBwy5+7LQ@mail.gmail.com>
+Subject: Re: [PATCHv6 perf/core 09/22] uprobes/x86: Add uprobe syscall to
+ speed up uprobe
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
 	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, David Laight <David.Laight@aculab.com>, 
+	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
+	Ingo Molnar <mingo@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 3, 2025 at 4:28=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
-e:
+On Sun, Jul 20, 2025 at 4:23=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On 09/02, Jiri Olsa wrote:
-> >
-> > If user decided to take execution elsewhere, it makes little sense
-> > to execute the original instruction, so let's skip it.
+> Adding new uprobe syscall that calls uprobe handlers for given
+> 'breakpoint' address.
 >
-> Exactly.
+> The idea is that the 'breakpoint' address calls the user space
+> trampoline which executes the uprobe syscall.
 >
-> So why do we need all these "is_unique" complications? Only a single
+> The syscall handler reads the return address of the initial call
+> to retrieve the original 'breakpoint' address. With this address
+> we find the related uprobe object and call its consumers.
+>
+> Adding the arch_uprobe_trampoline_mapping function that provides
+> uprobe trampoline mapping. This mapping is backed with one global
+> page initialized at __init time and shared by the all the mapping
+> instances.
+>
+> We do not allow to execute uprobe syscall if the caller is not
+> from uprobe trampoline mapping.
+>
+> The uprobe syscall ensures the consumer (bpf program) sees registers
+> values in the state before the trampoline was called.
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  arch/x86/entry/syscalls/syscall_64.tbl |   1 +
+>  arch/x86/kernel/uprobes.c              | 139 +++++++++++++++++++++++++
+>  include/linux/syscalls.h               |   2 +
+>  include/linux/uprobes.h                |   1 +
+>  kernel/events/uprobes.c                |  17 +++
+>  kernel/sys_ni.c                        |   1 +
+>  6 files changed, 161 insertions(+)
+>
+> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/sysc=
+alls/syscall_64.tbl
+> index cfb5ca41e30d..9fd1291e7bdf 100644
+> --- a/arch/x86/entry/syscalls/syscall_64.tbl
+> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
+> @@ -345,6 +345,7 @@
+>  333    common  io_pgetevents           sys_io_pgetevents
+>  334    common  rseq                    sys_rseq
+>  335    common  uretprobe               sys_uretprobe
+> +336    common  uprobe                  sys_uprobe
+>  # don't use numbers 387 through 423, add new calls after the last
+>  # 'common' entry
+>  424    common  pidfd_send_signal       sys_pidfd_send_signal
+> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+> index 6c4dcbdd0c3c..d18e1ae59901 100644
+> --- a/arch/x86/kernel/uprobes.c
+> +++ b/arch/x86/kernel/uprobes.c
+> @@ -752,6 +752,145 @@ void arch_uprobe_clear_state(struct mm_struct *mm)
+>         hlist_for_each_entry_safe(tramp, n, &state->head_tramps, node)
+>                 destroy_uprobe_trampoline(tramp);
+>  }
+> +
+> +static bool __in_uprobe_trampoline(unsigned long ip)
+> +{
+> +       struct vm_area_struct *vma =3D vma_lookup(current->mm, ip);
+> +
+> +       return vma && vma_is_special_mapping(vma, &tramp_mapping);
+> +}
+> +
+> +static bool in_uprobe_trampoline(unsigned long ip)
+> +{
+> +       struct mm_struct *mm =3D current->mm;
+> +       bool found, retry =3D true;
+> +       unsigned int seq;
+> +
+> +       rcu_read_lock();
+> +       if (mmap_lock_speculate_try_begin(mm, &seq)) {
+> +               found =3D __in_uprobe_trampoline(ip);
+> +               retry =3D mmap_lock_speculate_retry(mm, seq);
+> +       }
+> +       rcu_read_unlock();
+> +
+> +       if (retry) {
+> +               mmap_read_lock(mm);
+> +               found =3D __in_uprobe_trampoline(ip);
+> +               mmap_read_unlock(mm);
+> +       }
+> +       return found;
+> +}
+> +
+> +/*
+> + * See uprobe syscall trampoline; the call to the trampoline will push
+> + * the return address on the stack, the trampoline itself then pushes
+> + * cx, r11 and ax.
+> + */
+> +struct uprobe_syscall_args {
+> +       unsigned long ax;
+> +       unsigned long r11;
+> +       unsigned long cx;
+> +       unsigned long retaddr;
+> +};
+> +
+> +SYSCALL_DEFINE0(uprobe)
+> +{
+> +       struct pt_regs *regs =3D task_pt_regs(current);
+> +       struct uprobe_syscall_args args;
+> +       unsigned long ip, sp;
+> +       int err;
+> +
+> +       /* Allow execution only from uprobe trampolines. */
+> +       if (!in_uprobe_trampoline(regs->ip))
+> +               goto sigill;
 
-I second this. This whole is_unique flag just seems like an
-unnecessary thing that spills all around (extra kernel and libbpf
-flags/APIs), and it's all just not to confuse the second uprobe
-attached? Let's just allow uprobes to override user registers and
-handle IP change on kernel side (as unlikely() check)?
+Hey Jiri,
 
-> is_unique/exclusive consumer can change regs->ip, so I guess handle_swbp(=
-)
-> can just do
->
->         handler_chain(uprobe, regs);
->         if (instruction_pointer(regs) !=3D bp_vaddr)
->                 goto out;
->
->
-> > Allowing this
-> > behaviour only for uprobe with unique consumer attached.
->
-> But if a non-exclusive consumer changes regs->ip, we have a problem
-> anyway, right?
->
-> We can probably add something like
->
->                 rc =3D uc->handler(uc, regs, &cookie);
->         +       WARN_ON(!uc->is_unique && instruction_pointer(regs) !=3D =
-bp_vaddr);
->
-> into handler_chain(), although I don't think this is needed.
->
-> Oleg.
->
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/events/uprobes.c | 13 ++++++++++---
-> >  1 file changed, 10 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > index b9b088f7333a..da8291941c6b 100644
-> > --- a/kernel/events/uprobes.c
-> > +++ b/kernel/events/uprobes.c
-> > @@ -2568,7 +2568,7 @@ static bool ignore_ret_handler(int rc)
-> >       return rc =3D=3D UPROBE_HANDLER_REMOVE || rc =3D=3D UPROBE_HANDLE=
-R_IGNORE;
-> >  }
-> >
-> > -static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
-> > +static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs,=
- bool *is_unique)
-> >  {
-> >       struct uprobe_consumer *uc;
-> >       bool has_consumers =3D false, remove =3D true;
-> > @@ -2582,6 +2582,9 @@ static void handler_chain(struct uprobe *uprobe, =
-struct pt_regs *regs)
-> >               __u64 cookie =3D 0;
-> >               int rc =3D 0;
-> >
-> > +             if (is_unique)
-> > +                     *is_unique |=3D uc->is_unique;
-> > +
-> >               if (uc->handler) {
-> >                       rc =3D uc->handler(uc, regs, &cookie);
-> >                       WARN(rc < 0 || rc > 2,
-> > @@ -2735,6 +2738,7 @@ static void handle_swbp(struct pt_regs *regs)
-> >  {
-> >       struct uprobe *uprobe;
-> >       unsigned long bp_vaddr;
-> > +     bool is_unique =3D false;
-> >       int is_swbp;
-> >
-> >       bp_vaddr =3D uprobe_get_swbp_addr(regs);
-> > @@ -2789,7 +2793,10 @@ static void handle_swbp(struct pt_regs *regs)
-> >       if (arch_uprobe_ignore(&uprobe->arch, regs))
-> >               goto out;
-> >
-> > -     handler_chain(uprobe, regs);
-> > +     handler_chain(uprobe, regs, &is_unique);
-> > +
-> > +     if (is_unique && instruction_pointer(regs) !=3D bp_vaddr)
-> > +             goto out;
-> >
-> >       /* Try to optimize after first hit. */
-> >       arch_uprobe_optimize(&uprobe->arch, bp_vaddr);
-> > @@ -2819,7 +2826,7 @@ void handle_syscall_uprobe(struct pt_regs *regs, =
-unsigned long bp_vaddr)
-> >               return;
-> >       if (arch_uprobe_ignore(&uprobe->arch, regs))
-> >               return;
-> > -     handler_chain(uprobe, regs);
-> > +     handler_chain(uprobe, regs, NULL);
-> >  }
-> >
-> >  /*
-> > --
-> > 2.51.0
-> >
->
+So I've been thinking what's the simplest and most reliable way to
+feature-detect support for this sys_uprobe (e.g., for libbpf to know
+whether we should attach at nop5 vs nop1), and clearly that would be
+to try to call uprobe() syscall not from trampoline, and expect some
+error code.
+
+How bad would it be to change this part to return some unique-enough
+error code (-ENXIO, -EDOM, whatever).
+
+Is there any reason not to do this? Security-wise it will be just fine, rig=
+ht?
+
+> +
+> +       err =3D copy_from_user(&args, (void __user *)regs->sp, sizeof(arg=
+s));
+> +       if (err)
+> +               goto sigill;
+> +
+> +       ip =3D regs->ip;
+> +
+
+[...]
 
