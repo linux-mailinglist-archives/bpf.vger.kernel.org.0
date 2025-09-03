@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-67330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E57BB42964
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 21:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DB6AB42966
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 21:03:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE1B4680C72
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 19:02:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDCD8687357
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 19:03:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C67320A02;
-	Wed,  3 Sep 2025 19:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111413680AC;
+	Wed,  3 Sep 2025 19:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="opNKHDMG"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="COc8r5SU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A0120EB
-	for <bpf@vger.kernel.org>; Wed,  3 Sep 2025 19:02:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24EF22D9789
+	for <bpf@vger.kernel.org>; Wed,  3 Sep 2025 19:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756926164; cv=none; b=Z9NNvCJ3V39cK69b8/alL/uiFNMT2ACfJKZz/LM8PWCQCWo5Cv6T+XvAz82UepfR12l0gFzANKqqJhP/iPOGr1x0x+gamA7kFtj8qbN4xAhbMpVesz7UNqugvNvZOdPUzNDRmAG9G+slpZHrPfS6VFLH9v2ALoa96CQsHbSYHaI=
+	t=1756926166; cv=none; b=bj5x+qmdrh4O4k4lua7rdBHRXEzVKEvSz47HKuEsowJotOD7v6TLOhWRMqn8XBlVKcmb3X75Ac2xMEb2x/gzy42f9k66h2Mlqd531fpWeKcfhjXHHmOVvEGMTmG0gbCxzhH/UcWKYNjZfMqsqyPWE4ew11ltlztvyyiTyVC0Cwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756926164; c=relaxed/simple;
-	bh=7D7bMi8SSZYNWcJKyOwJUyeDl/e9zbUO3SKA2T9Bpnk=;
+	s=arc-20240116; t=1756926166; c=relaxed/simple;
+	bh=msexKRoOWWu708vhFOv15aCp2yq6WClH6MFmNCnrAB0=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=s/c8FFOKaoiJa0ScSXpB26koZEPDn+mWVlZyp7tg2yYNyhvltm3xN+QBOoRMZ22VVYybVT0cv6XOr8rTaLx8z9cvLza9Eh8ijuyTYHjAXfQ5YX9pnKXwqgvroJR/MrqXIhDGRVvPfDjd9WfJy5qMA2F19Y0MZwUjCgbK+JMvZzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=opNKHDMG; arc=none smtp.client-ip=209.85.216.74
+	 To:Cc:Content-Type; b=Rgm6B+ps/aNX5jcZQ4ireRnAOOvsrUX9Z3WD5cJZCwdkCIgkqPsCbubIACCcxJiK6BJe53xPn22qvDsHwVoFin2AmohhD7PoOhvASZ3JQkiOvgn1reMMHLlc2CFEciJa+KrQBLPpsf2DaRQn+Cf7QX/GD6lhtDp168t8eD6FfWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=COc8r5SU; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-324e41e946eso213854a91.0
-        for <bpf@vger.kernel.org>; Wed, 03 Sep 2025 12:02:43 -0700 (PDT)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-24b2b347073so3130845ad.1
+        for <bpf@vger.kernel.org>; Wed, 03 Sep 2025 12:02:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756926163; x=1757530963; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1756926164; x=1757530964; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+NfU6GKTz93dEkYl4pL3zEIP00thpC/peM3VLRO6Xus=;
-        b=opNKHDMGfosc0OWOetjTcStOGcSppgxky2DmFONrUUi78W7pShC9HCkSGgiWMJ1Qlo
-         rSUtrueYlyxfAyZjHdAohxGKaj8F/MVaw8YPcE2Q3cf0IVKFZZ4BaxCfDHXtJ/CsMD5c
-         KjgjmusHthceLLuUgx2k1YyT3fLHvKZL9orhxerwssRmh72hl/P73C29dM6n116Ke7s9
-         DU/3jSgFl+VSSljyjTd+JbIpPzGHccUErjVejfvJppPz5QCkSxZz89qKX5uEy/v0+gg0
-         hGzauFaicFZG+1CSRk6RJ0MnJ5FmXYhWduItDcZvzBRRPDm6+AayDwULV3SCOdj6VBuN
-         aXlw==
+        bh=DHPGfsvlVgGO5d2N3Xpt2aHuFaG1f8adEH+NiEv9Hao=;
+        b=COc8r5SUWOr2hICVqVf4wvk51ttgpVt9tvWng5QhpePcO3j0rDfAhVROMWh6/3eatT
+         wgqx4q4+4//Spbeo/2nyhjjw8Ui6dmmC3upc0QZ9cA7dRf/c5CnJYwy7orETF7KBUjqd
+         l2fkiQr6qlA0tLZ/+QqbPfPYix4OhzyRn3sgVd4WFg9solJNggaPSpYU8FwdilUs+y4V
+         AQwDicrPjCfP1iNVHsPJy6r8fGtl928HzT2LQYBRe5sVYhfOTjAb8I6mdZgp5u5simP/
+         cQfS8Pn191h1QLcdFEjDkycgwYbKly1cB6vA3NFOI6SWXioQeOn/mZOuRqBJx4dvAmZk
+         LLnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756926163; x=1757530963;
+        d=1e100.net; s=20230601; t=1756926164; x=1757530964;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+NfU6GKTz93dEkYl4pL3zEIP00thpC/peM3VLRO6Xus=;
-        b=sDY33taM4HOC3QcWmbQo17mUeJ0etQIbsr5Nd9L0gJ7ADE2BPxlrfZtZyZ2z6TOJmF
-         zoKgMpwcpPE0rnK8/44o5CKsyFzwjo0+BqRnMf9K8Q+uyZlohK2bmVS6aNZpZblidHO5
-         ZwjaFHcrrkCYw7DkpR6+He0sAe7WfjyAZ2uS/BaW0ZX/p2uUJiB47Nkj2lm0ttl4MU7E
-         RRKH2LgYa5XzHwdU6IO3FM+qlWgOL4lsbbT5wbEz6J8PkL/1fHyvLbPkjxnjnLzU4fkz
-         RFvHWbdnIvGCA7OwIK1Wi2isZk7KO9OSz9xeJIukEPIsCbMxMOzp5gPFKx+Ko2D9i9b5
-         A20w==
-X-Forwarded-Encrypted: i=1; AJvYcCWGzcBdOxahQjkF+SxhE+AgR6G6SeWmdMlRORi1QcI69CVVxj4sKNdhVlU+x0UDFqNVjQk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwI8dQRv8n1mL0jO2mO28wH9dkGQfhb02f7wPxOSOMA8yOTMQDd
-	k4rMla/+OqwL6hEQyJH+RHF5j0zmwxb8GXskGDcJS/nliFjWbD1HAYjg3Wvkk2K3l4kAUhDcBGp
-	LSw9PhA==
-X-Google-Smtp-Source: AGHT+IGfYahHkjh0geWywJoGTcwXYKTJi4HfLIpSfqfr+0Kw2gtf6nzSUDWzSQJ2vf4ta8HqTcx5uqBo5Pc=
-X-Received: from pjex8.prod.google.com ([2002:a17:90a:1648:b0:329:6ac4:ea2e])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:38c5:b0:327:e34e:eb16
- with SMTP id 98e67ed59e1d1-32815412a34mr19304111a91.1.1756926162896; Wed, 03
- Sep 2025 12:02:42 -0700 (PDT)
-Date: Wed,  3 Sep 2025 19:02:00 +0000
+        bh=DHPGfsvlVgGO5d2N3Xpt2aHuFaG1f8adEH+NiEv9Hao=;
+        b=Wvh8LA4qbI/oHbo8a8MrYG3hFCwQRc+CxDskroxIDY4ARvvvTvktsYjEWdU2M2pS0E
+         KT7s8gOO9BU2fr7OwNFuJwVEXneZqBBoKyrasmyrHFA4XHKpoQLvs98wNtWDhjZymMX7
+         kBDiXjT9rOUZsPB2uw/QKTTcods72kgyeFeG4ZrOBZvW+KLD/VJldWHr1Uqgp16Es7Cp
+         qKyHH6jjTShP9ispnZaBP9EEO+/5tSBjQS2xL6IQ5D2bF8gVTvRomkQAlEi2wSMx/7er
+         TReMgixdXY3Ap0YtILYGCZ4O/l25VN3IsDUCKO8BCkNCFdQYOD5ni/zaDywO0zcTbs8c
+         IvXg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8jYTX8xdfFXncMwctzCAU7ANd9XtQv21mvUpGt4C/e+KnRjvDOLPJDoauSKVCyRLok6M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxXYd3jF1KM1pYZtQcf8zd2u5oQzD5g5sOxqyDsmxJmhgL0aUw
+	AJAsIutwtTpsZNZtjqUL34Cpig+R4YBafAx7+9bONtkCI/2ru6KLmSNCPH+gltiGvHScI0ezH1G
+	8gJzT5A==
+X-Google-Smtp-Source: AGHT+IFISbwiCDDNVkXjyASXAuvIp7wDi1cJn/o15BknQV0z4/pa2CGp5M1tmE3lZpHJhlz1Dip9HCEkve4=
+X-Received: from pjbsg10.prod.google.com ([2002:a17:90b:520a:b0:329:e390:e996])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:d503:b0:24c:ba8a:6f23
+ with SMTP id d9443c01a7336-24cba8a7245mr7401065ad.35.1756926164419; Wed, 03
+ Sep 2025 12:02:44 -0700 (PDT)
+Date: Wed,  3 Sep 2025 19:02:01 +0000
 In-Reply-To: <20250903190238.2511885-1-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250903190238.2511885-1-kuniyu@google.com>
 X-Mailer: git-send-email 2.51.0.338.gd7d06c2dae-goog
-Message-ID: <20250903190238.2511885-2-kuniyu@google.com>
-Subject: [PATCH v5 bpf-next/net 1/5] tcp: Save lock_sock() for memcg in inet_csk_accept().
+Message-ID: <20250903190238.2511885-3-kuniyu@google.com>
+Subject: [PATCH v5 bpf-next/net 2/5] bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
 From: Kuniyuki Iwashima <kuniyu@google.com>
 To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
@@ -89,98 +89,102 @@ Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.
 	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-If memcg is enabled, accept() acquires lock_sock() twice for each new
-TCP/MPTCP socket in inet_csk_accept() and __inet_accept().
+We will store a flag in sk->sk_memcg by bpf_setsockopt() at the
+BPF_CGROUP_INET_SOCK_CREATE hook.
 
-Let's move memcg operations from inet_csk_accept() to __inet_accept().
+BPF_CGROUP_INET_SOCK_CREATE is invoked by __cgroup_bpf_run_filter_sk()
+that passes a pointer to struct sock to the bpf prog as void *ctx.
 
-Note that SCTP somehow allocates a new socket by sk_alloc() in
-sk->sk_prot->accept() and clones fields manually, instead of using
-sk_clone_lock().
+But there are no bpf_func_proto for bpf_setsockopt() that receives
+the ctx as a pointer to struct sock.
 
-mem_cgroup_sk_alloc() is called for SCTP before __inet_accept(),
-so I added the protocol check in __inet_accept(), but this can be
-removed once SCTP uses sk_clone_lock().
+Also, bpf_getsockopt() will be necessary for a cgroup with multiple
+bpf progs running.
+
+Let's add new bpf_setsockopt() and bpf_getsockopt() variants for
+BPF_CGROUP_INET_SOCK_CREATE.
+
+Note that inet_create() is not under lock_sock() and has the same
+semantics with bpf_lsm_unlocked_sockopt_hooks.
 
 Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
-Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
-v3: Don't split if blocks
+v5: Rename new variants to bpf_sock_create_{get,set}sockopt().
+v4:
+  * Use __bpf_setsockopt() instead of _bpf_setsockopt()
+  * Add getsockopt() for a cgroup with multiple bpf progs running
+v3: Remove bpf_func_proto for accept()
+v2: Make 2 new bpf_func_proto static
 ---
- net/ipv4/af_inet.c              | 23 +++++++++++++++++++++++
- net/ipv4/inet_connection_sock.c | 25 -------------------------
- 2 files changed, 23 insertions(+), 25 deletions(-)
+ net/core/filter.c | 48 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 76e38092cd8a..d42757f74c6e 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -753,6 +753,29 @@ EXPORT_SYMBOL(inet_stream_connect);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 63f3baee2daf..31b259f02ee9 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5723,6 +5723,40 @@ static const struct bpf_func_proto bpf_sock_addr_getsockopt_proto = {
+ 	.arg5_type	= ARG_CONST_SIZE,
+ };
  
- void __inet_accept(struct socket *sock, struct socket *newsock, struct sock *newsk)
++BPF_CALL_5(bpf_sock_create_setsockopt, struct sock *, sk, int, level,
++	   int, optname, char *, optval, int, optlen)
++{
++	return __bpf_setsockopt(sk, level, optname, optval, optlen);
++}
++
++static const struct bpf_func_proto bpf_sock_create_setsockopt_proto = {
++	.func		= bpf_sock_create_setsockopt,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_CTX,
++	.arg2_type	= ARG_ANYTHING,
++	.arg3_type	= ARG_ANYTHING,
++	.arg4_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
++	.arg5_type	= ARG_CONST_SIZE,
++};
++
++BPF_CALL_5(bpf_sock_create_getsockopt, struct sock *, sk, int, level,
++	   int, optname, char *, optval, int, optlen)
++{
++	return __bpf_getsockopt(sk, level, optname, optval, optlen);
++}
++
++static const struct bpf_func_proto bpf_sock_create_getsockopt_proto = {
++	.func		= bpf_sock_create_getsockopt,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_CTX,
++	.arg2_type	= ARG_ANYTHING,
++	.arg3_type	= ARG_ANYTHING,
++	.arg4_type	= ARG_PTR_TO_UNINIT_MEM,
++	.arg5_type	= ARG_CONST_SIZE,
++};
++
+ BPF_CALL_5(bpf_sock_ops_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
+ 	   int, level, int, optname, char *, optval, int, optlen)
  {
-+	/* TODO: use sk_clone_lock() in SCTP and remove protocol checks */
-+	if (mem_cgroup_sockets_enabled &&
-+	    (!IS_ENABLED(CONFIG_IP_SCTP) ||
-+	     sk_is_tcp(newsk) || sk_is_mptcp(newsk))) {
-+		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
-+
-+		mem_cgroup_sk_alloc(newsk);
-+
-+		if (mem_cgroup_from_sk(newsk)) {
-+			int amt;
-+
-+			/* The socket has not been accepted yet, no need
-+			 * to look at newsk->sk_wmem_queued.
-+			 */
-+			amt = sk_mem_pages(newsk->sk_forward_alloc +
-+					   atomic_read(&newsk->sk_rmem_alloc));
-+			if (amt)
-+				mem_cgroup_sk_charge(newsk, amt, gfp);
+@@ -8051,6 +8085,20 @@ sock_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_sk_storage_get_cg_sock_proto;
+ 	case BPF_FUNC_ktime_get_coarse_ns:
+ 		return &bpf_ktime_get_coarse_ns_proto;
++	case BPF_FUNC_setsockopt:
++		switch (prog->expected_attach_type) {
++		case BPF_CGROUP_INET_SOCK_CREATE:
++			return &bpf_sock_create_setsockopt_proto;
++		default:
++			return NULL;
 +		}
-+
-+		kmem_cache_charge(newsk, gfp);
-+	}
-+
- 	sock_rps_record_flow(newsk);
- 	WARN_ON(!((1 << newsk->sk_state) &
- 		  (TCPF_ESTABLISHED | TCPF_SYN_RECV |
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index 0ef1eacd539d..ed10b959a906 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -708,31 +708,6 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
- 
- 	release_sock(sk);
- 
--	if (mem_cgroup_sockets_enabled) {
--		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
--		int amt = 0;
--
--		/* atomically get the memory usage, set and charge the
--		 * newsk->sk_memcg.
--		 */
--		lock_sock(newsk);
--
--		mem_cgroup_sk_alloc(newsk);
--		if (mem_cgroup_from_sk(newsk)) {
--			/* The socket has not been accepted yet, no need
--			 * to look at newsk->sk_wmem_queued.
--			 */
--			amt = sk_mem_pages(newsk->sk_forward_alloc +
--					   atomic_read(&newsk->sk_rmem_alloc));
--		}
--
--		if (amt)
--			mem_cgroup_sk_charge(newsk, amt, gfp);
--		kmem_cache_charge(newsk, gfp);
--
--		release_sock(newsk);
--	}
--
- 	if (req)
- 		reqsk_put(req);
- 
++	case BPF_FUNC_getsockopt:
++		switch (prog->expected_attach_type) {
++		case BPF_CGROUP_INET_SOCK_CREATE:
++			return &bpf_sock_create_getsockopt_proto;
++		default:
++			return NULL;
++		}
+ 	default:
+ 		return bpf_base_func_proto(func_id, prog);
+ 	}
 -- 
 2.51.0.338.gd7d06c2dae-goog
 
