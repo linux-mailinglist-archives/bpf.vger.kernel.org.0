@@ -1,293 +1,153 @@
-Return-Path: <bpf+bounces-67248-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67249-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BCF0B412C3
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 05:06:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 026B6B412FB
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 05:32:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9622D487A6E
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 03:06:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 455FF700F95
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 03:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971002C21CB;
-	Wed,  3 Sep 2025 03:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C142D0618;
+	Wed,  3 Sep 2025 03:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="X9Uz/Wwv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c6/aA16+"
 X-Original-To: bpf@vger.kernel.org
-Received: from TYPPR03CU001.outbound.protection.outlook.com (mail-japaneastazon11012015.outbound.protection.outlook.com [52.101.126.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BAB258CE9;
-	Wed,  3 Sep 2025 03:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.126.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756868795; cv=fail; b=TfhLc5CLTyUEvC5gbi6pSU0IoeTq0flY+sWyiyn+HxtrnfcWUaeGp5etZXL4CExe+C2JQWPnFWiu6Mbk2XzVWgvpZDDxURkQj0zQAmaj5njhsrbRsk12uDhGrK104j1noWB1dvddapz5K6/u9l/O+WARW+qiBP+x16DqrdHsY/A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756868795; c=relaxed/simple;
-	bh=jt61xHParKhqd6SdyRGjBJhL1cOOwVEAYarFniKheps=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=V+FidBpc+epzs9kYMcppnW2UIPSxHMHTOcXjxDQ/uZmMz/CQhl5d5QKzdhE6gLr4a8fxrbH/s1qMkRwhwkyptyYbtCi2S6y9nhHASM4+5joutLHmK2W8qU3RxBPPr+cq1UyDdYyvQHuZetFwRnJZ4+TKNFEkcoudE84QZMV/MpI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=X9Uz/Wwv; arc=fail smtp.client-ip=52.101.126.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ryLLwiGzwTJAfpt14tQ7PVR2dP9L+dIEZgbki0byFaRCpzIcb+yCV0WA9xea69Sx6WF8jB6tvT6bpNaAyP9a+eP0FkmJgUizcogydmybuZwMSq9EdVo889vRso6ddZxGdZF3h6OYY8g3MHAAQvc66RM2f0Q2FAHdc/vHb1TJBRID66eUbbF8oJyS4Z13diJ1l7vaAViZQyP16Htv/j9/4Mjfvp1QWhqVfDe5R8TANd9OT22hUfyEBoRyjPykAEC1KEmLDeWYGWvxPzb6CEVDi9nHMEteKgihR8jqvZE1UerIq0wAr5JvZMztBOz75bBxa6VhAFAaYkjAInH6VhtD6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LM7IfD/Q5OEc4OT8fEvqqvEMhejfGMmuMRdSZG6u4jM=;
- b=sAut/1zm99KUYGOwx/FdtEFpPfp7dEwWTP7cZpK+nxK7byntGf8AzJxWd+bFHmx5wENAxD4QBsL29JfqlhXGoKk+5nPSuWz22i/isqGvlAF8cZMurGN6WJA4fQ06xTIrRluImyp//gQk8YNvbHOlg2xyQiU6UUbrmjSnufPrp+lo7wst1PEkl7rq0P7ERBNo8doN8FBfOPEgmgAOBWDzy5oqIPY4oH8C+C1sSyjrnzZlRRWilyJfsd12qfbL15NVsvwtiEtT474xf96DKa3o+yRn4o+hHzCEtI8hAAXxxV7gA4V1o7fx1NuXw79zVySbmsVeRDkYcp4FZwI78lbXrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LM7IfD/Q5OEc4OT8fEvqqvEMhejfGMmuMRdSZG6u4jM=;
- b=X9Uz/WwvjbL1GUJIK1+6pT2TI8QDhksymuO5nq9kdsP3MngWx/Q/x2BdBla90IrLd3yzoOV/6HIquO/h/tFBFBQX0T0iKw6wXyuDcz5gbkEuboPljGtbYOZ6DcvVni+8JuGibfLTimoxQW8HTUfWTKq1iNsb1lcZMAhVhv728DqjrgTMnAVwnxhKCIshM85fKSHv8mZM+OTMJ9o1nah6xOadEzNR2P9wTXX4bN0w5pHbrtQOuYUg8EwxPYAgWQ5Gu00DyK/SE4V+InQT2FTQ6oIoxIzTx4yrPkx64kWviMKb5y3QVuQDhO1W2hKt5TZz+IlNklEuiV1l4CqUTUYVgQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from KL1PR0601MB4324.apcprd06.prod.outlook.com (2603:1096:820:73::6)
- by SEZPR06MB6057.apcprd06.prod.outlook.com (2603:1096:101:e5::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.27; Wed, 3 Sep
- 2025 03:06:27 +0000
-Received: from KL1PR0601MB4324.apcprd06.prod.outlook.com
- ([fe80::6273:8ab0:465a:4a69]) by KL1PR0601MB4324.apcprd06.prod.outlook.com
- ([fe80::6273:8ab0:465a:4a69%4]) with mapi id 15.20.9094.016; Wed, 3 Sep 2025
- 03:06:27 +0000
-Message-ID: <8cdfe5bf-96a5-4aec-ad38-8136bf0f811d@vivo.com>
-Date: Wed, 3 Sep 2025 11:06:18 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftests for
- cpuidle_gov_ext
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Song Liu <song@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>
-Cc: Christian Loehle <christian.loehle@arm.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- Linux Power Management <linux-pm@vger.kernel.org>, bpf
- <bpf@vger.kernel.org>, Tejun Heo <tj@kernel.org>, zhaofuyu@vivo.com
-References: <20250901135609.76590-1-yikai.lin@vivo.com>
- <20250901135609.76590-3-yikai.lin@vivo.com>
- <CAADnVQ+iazLpRWtt219MqGD0LHVoccahG=Cf1w+Ow5xOjRd_Lg@mail.gmail.com>
-From: "yikai.lin" <yikai.lin@vivo.com>
-In-Reply-To: <CAADnVQ+iazLpRWtt219MqGD0LHVoccahG=Cf1w+Ow5xOjRd_Lg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TYCP286CA0142.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:31b::18) To KL1PR0601MB4324.apcprd06.prod.outlook.com
- (2603:1096:820:73::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D2932F740;
+	Wed,  3 Sep 2025 03:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756870341; cv=none; b=UKNfRQPDhSb7p+4/Wfv3XTdfIs51PaiHxO7AlU7Uco5oz+sqOxjHF438ibH4JKa8AP2YMf+khgEPDyedmjsftH24qI+mIFRJnPUHcYo8z5Qlx+IYXF72k7g1MAh2uhXjB1ImChypZP2VO0mj/WCiIinulK1zPAzhlEwEgx3o4L0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756870341; c=relaxed/simple;
+	bh=1armfrQSPhghEXbEgCR40kMT3Mz1KUNVgAlY6GjrTLM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=J5t5VZXgL/5Iof6OoWLFo3U1JfXrDUBu3hVZfePtCs16N4B/zwrcpCdWF5EmmR9bz4kftQTc+tOyppvPyFtKM+m5+YtnovbWV3uiDJ8FjlShx5IrpkZg3QttQElhH/1khn+snkJjD9WDehyCIr2qMeogk0BceX0EmBfunuymcOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c6/aA16+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C22F8C4CEF0;
+	Wed,  3 Sep 2025 03:32:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756870340;
+	bh=1armfrQSPhghEXbEgCR40kMT3Mz1KUNVgAlY6GjrTLM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=c6/aA16+bBkQH51tR2bcv5SM6tXtTwJMULf4022Tate2FmzdfUbzGvPiP2fkcVpWI
+	 RriSmrsN2ZlJj0IloB/qX3FQ3Nx9cN4lqbucrjYT4KLxt2DgUbVBqvIKo2olMXLgfB
+	 9N5kKv4v3IBmC1YJev3/3rxoXwXwhR46dCAt8jPxByNLb/XkehQ3Po6KdKfM7VpmMm
+	 1Q1BM8WVxFsEMqVtGOxGMqeKmeEKRty2lb7WMxAWqJ6tmtHvJWE+KovB1IE7Kw9o50
+	 ge8OGusvBxfm+9So2e0mbnLX+HsjFa6ZxAt4PFAo/YR4SAEcoNc0h0IuibbyWbTQJn
+	 FVh2NdAaEjS2A==
+Message-ID: <3242f4a2-9a5f-4165-8d24-5c2387967277@kernel.org>
+Date: Tue, 2 Sep 2025 22:32:05 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: KL1PR0601MB4324:EE_|SEZPR06MB6057:EE_
-X-MS-Office365-Filtering-Correlation-Id: 00eea229-9e42-4f68-7f5a-08ddea96deed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?amRtRzFzQW1wK2xnUTlWdlR1UVQ5QVBjS2pUQUdoNlZOQXJqRXF6dEhyc20v?=
- =?utf-8?B?QVNTNHEveWhPeFVySjVUcWlDZldZTURLTFN1eVpCUm1RSkJqUEdpR3p1UzBu?=
- =?utf-8?B?UlhPNG1BQ1dyRElvOUpNQ0lCSzJ6Vk5tQzhEZVVXdW5jek1iQmZvbVd5bGFD?=
- =?utf-8?B?eXNpWUFaSUdaOWRBQlNzOEJtcGFqMTBabkJ5UDlranRmOEhISTJHV1BCUzlD?=
- =?utf-8?B?bFhwWUIvdEFsZ3Y3eTJnWnZrNjlLcVpkdno0QTRrbkhHUkt2UFg2ZGtkVlFI?=
- =?utf-8?B?aHNuTVFaSWUxS3dYT0pHVHcyZHRTV0Z5OFRobGdxTlJ1eGtkdy9pS210bTF1?=
- =?utf-8?B?SjR3eGIwTEt6YnRXQ1c4WENiQ1NRZ2hzRU1FTTFDdGxXRC9NbVNCZFRzaS9H?=
- =?utf-8?B?ZGRCRjU1Z0RqTXY1OVdKcEtEdlVFNzRqdnFHbXZMekdhZHpRZ2RJZmtlK1Fn?=
- =?utf-8?B?WGpaRUNsUXNFOHYvYlR3OGUrelRkVy9TaFYwb09KYnV0KyszS3VvY3hPMTBp?=
- =?utf-8?B?WEtVZnJlaHczbzEwZEczb3VQamR4ZEc5OTJ4QTA4K0J5Z2lod0NCenJLNnBQ?=
- =?utf-8?B?eFAxUUNSbHZaS2k5UWgrY1NzOG5jQVV6MkxsYjArKy9KcmNHWGFFb1NjYnBn?=
- =?utf-8?B?bi9qWTd2THRranYyd0dvbVE2RlEyY0ovVW5YbUpRTkRtZjEwamRCc2tiTWhj?=
- =?utf-8?B?M0hpUlArZm55ZFNIL2s0aEpJcHloTnBXSTcxeGVXWit4dHRaN0t2WVVZUzM3?=
- =?utf-8?B?S2JqR2JFbzBHR2dydUprNnp5RlRldzRnL3pQT04veWk4bjk0RU5nTklrblZN?=
- =?utf-8?B?dk56UkxmakdCa1V4WFlNaVkwUWsyN2JUNmtmcGRtUVJsUDRsaThVQi9RTW90?=
- =?utf-8?B?OUtMd216RUVLblpQOXV5VjM1R3hHVGFUSHV1bTJOMGMyQlhkdlZSbDRvSDZE?=
- =?utf-8?B?d1kvT205TU5QZE5PcjU3VkYwNnhYeng2MmhHRG5ZeWVCWWQrNERnSFFOV1hv?=
- =?utf-8?B?WW03N0R2b05aZnlWUndPUnROclI1R3kzNG1YWkovT0o4NnhoZmw4azRFOGVh?=
- =?utf-8?B?WXdKdzhWNWhrSStGdVE4YmszOUVmREN4am5kSCsrTmxiNk5XeG9CYWNUNHBp?=
- =?utf-8?B?MHZ0L29nNXVyQ1lEQUFsdXQzRHhiTTM0MDFwWWtEV25aMnFpNUgvQVpIUmEz?=
- =?utf-8?B?Yko0N3VWU3pyQjY2WEoySkc5b2d2a1JrNmVQSXAveVJ6VUJEdHJTd0hMbHJ6?=
- =?utf-8?B?Y1RWQXFzNFhXaFA0eTQwT2RJQVF3M2ZTQW93ZjhRYTM2SzNvSzBPSU9ibGdh?=
- =?utf-8?B?WFdYR1k0bDZPZlpndmt1V0JtNFU4eURxbEIrRG02L2greUZCbTRUYWtmK0dI?=
- =?utf-8?B?VThXSUprVm5VeFRXWkhTRWowV0RUM2d5RTV3YTVpR1Jna1pGenlTdnJiZ0tG?=
- =?utf-8?B?R1JVM2ZpK0xGSWliUHBlenlKQjkwUDY1THBvVDJ5R3JkS1VNWkliVFlkSnlG?=
- =?utf-8?B?ejFmTFFmV2hLQTY1VjlBMzRGWWFOSG5qZkF1dkR5UEMxZjcvUk05czlPSVFJ?=
- =?utf-8?B?aE9aSXZLMGZoQW8zakFwMTdzNXFubXF3NmsxYURYckFUMVVKcW4zYnV4QURP?=
- =?utf-8?B?Yk12ZWE0U3FlWFgyV1ptQlRJT0ZmUFNpMVFISUZlYSt5ekttZ2V6dHVKd0JF?=
- =?utf-8?B?YlVCV0hBL0VnOUoxei83RHM2Zkl0VlpWSExJWHBiMkRKeFVGMWRCSitleVRB?=
- =?utf-8?B?TFJtK21lcGU3QnZ4WlhIWHJKemJ0NTFXcGNDSHVscWZlcTM5N2phN3JvT2dh?=
- =?utf-8?B?YUNDUi9Gb3p3SDgvWVQreTMrUjBSR01WUlNUVnE0OGt6N3FEcnNKQ1kvQVFF?=
- =?utf-8?B?bmJCa0FHTGtnR1JmeHp2bFBKVWs4elhJdVRmblBjYmlWOTlQcW9DMHRoUUpM?=
- =?utf-8?Q?IYgN3XL2OM4=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB4324.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Q1dIZDE4aWErR1BuWllpTmIwWWVTZXk3Q1pNWkFxMnNOZjlMbVI5TVZuNkRR?=
- =?utf-8?B?bXoyRGxvQjlXQW05UGhKd2txMHIyQVNCVXF5MWRIM0ZzRU9xbnJDRDcrbEhE?=
- =?utf-8?B?ODFDYXE4OXg5aTZhWFgvZ0QyaU9uM0lPMGxSRThGTnVuSk5UcXc5M1RpQ3hi?=
- =?utf-8?B?SnN3MDk2SFFGQ2Y2bU1HcitPNVRUNUhIWnd6T3huREwySHovY2dldjBkV3Br?=
- =?utf-8?B?aERIM1pBMnlUZzFCckY0YjRPYU9Odkp1MEFiWVphMkhCZEtWR1pEWnR0L01O?=
- =?utf-8?B?a2MxclFHdFcvKzJHNTZyU1V2MjhGc2RyR0R3dHNVbUZ0OFlzMVhPU3FWZ2Jz?=
- =?utf-8?B?U1BiejRjRjk2dEtzWndZenFaTUFaV054UzVqMjNaTUo2VHIyV1U3NE9EajJI?=
- =?utf-8?B?akdFRHV0Tkx1Q2xLaGNKRDNkQ0ZGUEdBbVN6S1lPNjBLS2V6a1FKRVgwNmlH?=
- =?utf-8?B?cWVjWmUzM2tYeENRbVVqa2YwTTJ0elVXYjVpeS9uZHAvYjhmR1h5b2x0REE5?=
- =?utf-8?B?OFIvRUQ3cFJOWExiZEx0ZW5aUnc1Y0o2WHc1WjZWaHMxZzZDd3hsTnNFdVpu?=
- =?utf-8?B?a2xFWFpvTVZpbzdWRkxNa0dwMEpUdTlQRlNPR1dHcUpQZzVjdCtxejJXU1NS?=
- =?utf-8?B?bFVtZGhjaTVyQlRpT3RWbkdkUWpUL2ZwL1ZXOUtnTUg5MXdTUWMxa1UybnMx?=
- =?utf-8?B?UjVPR2F1U3RBRC9OSU5hTzMrV1RvZ1pWMVhxOGhFUG9yUkJzQ0F2WGlydkJu?=
- =?utf-8?B?VmFIdjdkSHM5V1E4UFp0R1ZiMFlqWS9IRHlBbkVEcVBuTXdzZDNPem8vSkJW?=
- =?utf-8?B?QURzaEZzK0FHRGorKzBjSHpZK2JVYXFxZ2gxN3lQUFJCQWRkY0JtQjk1ZEVo?=
- =?utf-8?B?NEFyOHltZEN4a2Z5QWZLbDZ4VXJMTkp4WFM3clZ6a0pWQUsxRHkrVTdOSE5W?=
- =?utf-8?B?WWVIUkFPRkJYNUg4ZjNLS1NtaVhsQWxEVllpRk1EVmx2SDhNaWR6OWlYZHR5?=
- =?utf-8?B?eExxRFlsNE8vYVhYNmFCMkJTZWQxb0NFcER1ckNRZ0JqQUR1bHMrVGo5V3RX?=
- =?utf-8?B?U0VLeDFlRzRwSGxTUTBNSkJkYkRKY3FjdUxHZUdWcnZSVVo3NEhBdjNUUjZV?=
- =?utf-8?B?RHhDUlMwbkh6d1JLc0hFQUdjcjdUZWEyN3BuWVEvSVBmNzdDNldKUzdMRFVL?=
- =?utf-8?B?MlVBbmdWajkxallWWlE5UXhoQUxLL25IbzkwT3l5clZxa2FQZzZiYjlkc0Vk?=
- =?utf-8?B?VWE1ZVBmVUMzMVQvT3Zsb25YZURxTHhsTmpwRjkraFFHemx2eDlDUGFsbXFJ?=
- =?utf-8?B?Y2lNTFBaUmJuN0ZUK2kxQy9sNDMzWTBhTm9IWVYybk9ia0RoSk80LzhSV1hm?=
- =?utf-8?B?c2Vqd3ZXUjJ2dzRNL2VWSytCVC8yVi9kTk5LRGJxLzZqb2dSTkpxaFVKaUt3?=
- =?utf-8?B?bkJyV1hMZ0YzUUs0QkFveFViYW9CUWhMc1N6dGh5eExZVHB5S2ZMRGpaTjNV?=
- =?utf-8?B?d0ZrVUl4dGdLZEFMRzEwZDhPMWp0MUFkMDc5dVhvVk9Gdm03NE0rRU5aMXdo?=
- =?utf-8?B?bENvQURWTmhEbWlvdzc0TEsxOW1xcHFpemo3RjZoQ0ZITWVwbWJFSmgrNGFv?=
- =?utf-8?B?MkF0V1Y2dzVFK3RvY3NFQ0RHL1VqbWl0bllmVGdVS25uSVlkb1VlU0pBc2Yy?=
- =?utf-8?B?Z2sySmdlUWpZRHR5MlVzME9CTGhtaUF1SWRpaWM4WEJWSll3N2dxYlhNWFkz?=
- =?utf-8?B?a3NlelNYbG9qOVRWM2hsQVF0aElWYm84L3BoUHpQdTFxVFRVMS9aM1ZMcThy?=
- =?utf-8?B?NlBETGYyZ3BMYXNnM2hSeUFyQnZ6QWxST015a1JhdGVTa0JQWXY1dFUrSmow?=
- =?utf-8?B?VWhHUU9wMCtOaE1xMzNCWHpabFB4THdib3hJMlBIbTM0UGxkV2JaV0xKdmZP?=
- =?utf-8?B?QUFKekdvYVFEWDl3U3BUMi9NTk1SK1EzWHlZWW15UXJuS1ZCTlJKaEdIWjhR?=
- =?utf-8?B?MlFzdkFQSXkwVFgxUmRBUTlNRExmTG9CZWE4cmdzNE9uU0VTcjE4OWxpeUMy?=
- =?utf-8?B?LzhKTlAxNzlTemIxZ0ZTbXYvb2N4ZnlFUG0rZGlZZ1ZvUkxNb3JiR1RJcHU0?=
- =?utf-8?Q?BgPxuWS8iwDxcsc9V2jYHXu6W?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00eea229-9e42-4f68-7f5a-08ddea96deed
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB4324.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2025 03:06:26.6178
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eXC2sZC+FPHclTRVeO2uvsQyqHnqtKyfQJ0G9eUIOfxykKKhUAD0LeGHYcZcM8FYZYSpr/W3E0Vmw+Q4wYDtNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6057
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/14] Documentation: amd-pstate: Use internal link to
+ kselftest
+To: Bagas Sanjaya <bagasdotme@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Documentation <linux-doc@vger.kernel.org>,
+ Linux DAMON <damon@lists.linux.dev>,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ Linux Power Management <linux-pm@vger.kernel.org>,
+ Linux Block Devices <linux-block@vger.kernel.org>,
+ Linux BPF <bpf@vger.kernel.org>,
+ Linux Kernel Workflows <workflows@vger.kernel.org>,
+ Linux KASAN <kasan-dev@googlegroups.com>,
+ Linux Devicetree <devicetree@vger.kernel.org>,
+ Linux fsverity <fsverity@lists.linux.dev>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Linux DRI Development <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Build System <linux-lbuild@vger.kernel.org>,
+ Linux Networking <netdev@vger.kernel.org>,
+ Linux Sound <linux-sound@vger.kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+ Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sj@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka
+ <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+ Perry Yuan <perry.yuan@amd.com>, Jens Axboe <axboe@kernel.dk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Dwaipayan Ray <dwaipayanray1@gmail.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>, Joe Perches <joe@perches.com>,
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Eric Biggers <ebiggers@kernel.org>,
+ tytso@mit.edu, Richard Weinberger <richard@nod.at>,
+ Zhihao Cheng <chengzhihao1@huawei.com>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nicolas.schier@linux.dev>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Waiman Long <longman@redhat.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Shay Agroskin <shayagr@amazon.com>, Arthur Kiyanovski <akiyano@amazon.com>,
+ David Arinzon <darinzon@amazon.com>, Saeed Bishara <saeedb@amazon.com>,
+ Andrew Lunn <andrew@lunn.ch>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Alexandru Ciobotaru <alcioa@amazon.com>,
+ The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Steve French <stfrench@microsoft.com>,
+ Meetakshi Setiya <msetiya@microsoft.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Bart Van Assche <bvanassche@acm.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>, Masahiro Yamada <masahiroy@kernel.org>
+References: <20250829075524.45635-1-bagasdotme@gmail.com>
+ <20250829075524.45635-5-bagasdotme@gmail.com>
+Content-Language: en-US
+From: Mario Limonciello <superm1@kernel.org>
+In-Reply-To: <20250829075524.45635-5-bagasdotme@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 8/29/2025 2:55 AM, Bagas Sanjaya wrote:
+> Convert kselftest docs link to internal cross-reference.
+> 
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> ---
+>   Documentation/admin-guide/pm/amd-pstate.rst | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
+> index e1771f2225d5f0..37082f2493a7c1 100644
+> --- a/Documentation/admin-guide/pm/amd-pstate.rst
+> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
+> @@ -798,5 +798,4 @@ Reference
+>   .. [3] Processor Programming Reference (PPR) for AMD Family 19h Model 51h, Revision A1 Processors
+>          https://www.amd.com/system/files/TechDocs/56569-A1-PUB.zip
+>   
+> -.. [4] Linux Kernel Selftests,
+> -       https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+> +.. [4] Documentation/dev-tools/kselftest.rst
 
-
-On 9/3/2025 8:38 AM, Alexei Starovoitov wrote:
-> [Some people who received this message don't often get email from alexei.starovoitov@gmail.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> 
-> On Mon, Sep 1, 2025 at 6:56 AM Lin Yikai <yikai.lin@vivo.com> wrote:
->>
->> +
->> +/*
->> + * For some low-power scenarios,
->> + * such as the screen off scenario of mobile devices
->> + * (which will be determined by the user-space BPF program),
->> + * we aim to choose a deeper state
->> + * At this point, we will somewhat disregard the impact on CPU performance.
->> + */
->> +int expect_deeper = 0;
-> 
-> ...
-> 
->> +/* Select the next idle state */
->> +SEC("struct_ops.s/select")
->> +int BPF_PROG(bpf_cpuidle_select, struct cpuidle_driver *drv, struct cpuidle_device *dev)
->> +{
->> +       u32 key = 0;
->> +       s64 delta, latency_req, residency_ns;
->> +       int i;
->> +       unsigned long long disable;
->> +       struct cpuidle_gov_data *data;
->> +       struct cpuidle_state *cs;
->> +
->> +       data = bpf_map_lookup_percpu_elem(&cpuidle_gov_data_map, &key, dev->cpu);
->> +       if (!data) {
->> +               bpf_printk("cpuidle_gov_ext: [%s] cpuidle_gov_data_map is NULL\n", __func__);
->> +               return 0;
->> +       }
->> +       latency_req = bpf_cpuidle_ext_gov_latency_req(dev->cpu);
->> +       delta = bpf_tick_nohz_get_sleep_length();
->> +
->> +       update_predict_duration(data, drv, dev);
->> +       for (i = ARRAY_SIZE(drv->states)-1; i > 0; i--) {
->> +               if (i >= drv->state_count)
->> +                       continue;
->> +               cs = &drv->states[i];
->> +               disable = dev->states_usage[i].disable;
->> +               if (disable)
->> +                       continue;
->> +               if (latency_req < cs->exit_latency_ns)
->> +                       continue;
->> +
->> +               if (delta < cs->target_residency_ns)
->> +                       continue;
->> +
->> +               if (data->next_pred / FIT_FACTOR * ALPHA_SCALE < cs->target_residency_ns)
->> +                       continue;
->> +
->> +               break;
->> +       }
->> +       residency_ns = drv->states[i].target_residency_ns;
->> +       if (expect_deeper &&
->> +               i <= drv->state_count-2 &&
->> +               !dev->states_usage[i+1].disable &&
->> +               data->last_pred >= residency_ns &&
->> +               data->next_pred < residency_ns &&
->> +               data->next_pred / FIT_FACTOR * ALPHA_SCALE >= residency_ns &&
->> +               data->next_pred / FIT_FACTOR * ALPHA_SCALE >= data->last_duration &&
->> +               delta > residency_ns) {
->> +               i++;
->> +       }
->> +
->> +       return i;
->> +}
-> 
-> This function is the main programmability benefit that
-> you're claiming, right?
-> 
-> And user space knob 'expect_deeper' is the key difference
-> vs all existing governors ?
-> 
-> If so, I have to agree with Rafael. This doesn't look too compelling
-> to bolt bpf struct-ops onto cpuidle.
-> 
-> There must be a way to introduce user togglable knobs in the current
-> set of governors, no?
-> 
-> Other than that the patch set seems to be doing all the right things
-> from bpf perspective. KF_SLEEPABLE is missing in kfuncs and
-> the safety aspect needs to be thoroughly analyzed,
-> but before doing in-depth review the examples need to have more substance.
-> With real world benchmarks and results.
-> The commit log is saying:
-> "This implementation serves as a foundation, not a final solution"
-> It's understood that it's work-in-progress, but we need to see
-> more real usage before committing.
-
-Thanks, Alexei, Song, and Rafael, for your valuable feedback.
-﻿
-So, I understand that the key requirement here is to demonstrate a real-world scenario example
-that can be effectively used in production environments
-and to provide benchmark results.
-﻿
-Next up, I'll focus on developing a real-world use case for mobile devices
-and providing test results.
-Thanks again for the helpful insights.
-
+Acked-by: Mario Limonciello (AMD) <superm1@kernel.org>
 
 
