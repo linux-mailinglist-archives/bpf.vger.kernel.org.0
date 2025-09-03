@@ -1,128 +1,128 @@
-Return-Path: <bpf+bounces-67311-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67312-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA57B42606
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 17:56:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56A8CB4265B
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 18:13:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D32D68825B
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 15:56:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1D801BA36D0
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 16:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB4F294A10;
-	Wed,  3 Sep 2025 15:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 175632C027F;
+	Wed,  3 Sep 2025 16:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="ecURXDdC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CR7nn9HP"
 X-Original-To: bpf@vger.kernel.org
-Received: from pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.26.1.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D4B291C07;
-	Wed,  3 Sep 2025 15:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.26.1.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1FA32BEC28;
+	Wed,  3 Sep 2025 16:13:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756915001; cv=none; b=nd6SvQko3m6ivQUKxIA1L/Kse74b+wxQZ8oJkwIe+N+xULKyud0GDJnQY9NhZstnhIhyu4tqWIJrV8pzBeP/BJ9btowTi8tzvqdoM4rONZMSO6MdjDT/XL3vSDrf7fT7eOBePyUci+rDBly1/PF2qgvJ3+VsSuWNoSc3hUbHiho=
+	t=1756915993; cv=none; b=hdvYpK07GoGs3aXjghmGuhiVptwckw8JckwiHmd5f4Cfsn4Y0tcC7BhwMuOH22mI2CR/1nW6xhGdKpYEy06CsU8vBHErSGB9pi5NobBICL9ubQjQunna0gfv3HNA5/ByC/4It5IaLg8eMPA5/G9/+9aUtKozc/xlxGtqo7KEl7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756915001; c=relaxed/simple;
-	bh=Shk7aP7NdVdTxePF1n5l+uKN9YxwBMJp3bE/HqRzo1U=;
-	h=Subject:From:To:CC:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=K2BTeGlja97kInLygF7aRCjEBOEC2B+3Z6KSTtffjG3pmnU+SMoo52y3Qzs85jVtHCqkK+ZQlTcIsfLVuJOh4OIa1d5SGzLa2OxKTjld09wqoIbsmVzYU95GD86cfsk8cgu1+tN2wNtbt1Zz3AWfy8X00AZBWkZMlVpr9pufR14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=ecURXDdC; arc=none smtp.client-ip=52.26.1.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+	s=arc-20240116; t=1756915993; c=relaxed/simple;
+	bh=KV9h0jB/Dpni635qfNAzbUivui5+egl9pMeR6wNS3zU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=piTNuvcNdkozROGp3rhCpEkTHTUlNbVERgukXGJM4QvqylVzLAE9KkpK78zvUxVchzxs1k5v3whuxRJ3+sf1M5fSEepim4hCYJR74HTu+kVbmXvuwJzoWjYYe74N2T0rRDxVo9yozr2K+MeX+Lrkj9Dog8j7mOgPA4YUt5Bw4fU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CR7nn9HP; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b042cc3954fso13304666b.0;
+        Wed, 03 Sep 2025 09:13:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1756915000; x=1788451000;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=Shk7aP7NdVdTxePF1n5l+uKN9YxwBMJp3bE/HqRzo1U=;
-  b=ecURXDdCrpQMlKeVpnhv5FGi1R9+yeDRNqDv4no3bmbFbNfjsgVzjPJT
-   1db4Fetgcbt6A43z7ChQBJoycabO4WowqDTiWlE/NhuHzsp3VmhD0BCrC
-   vNqkSfnbRkK2aYeFwMYpDvqaMFrfm6fwswVGB7tu6/0uS4SfwZLUyHvDC
-   dg6k6jYZSpHpOgiRV6kjEqQBrBzY8mKcvolW1oFFAimXoNDNvNbCD7uwt
-   rJ4qc3MEaFmAYr7Z3e3TElFPPFS/FVV7ScT/rmC/Pi+wVijhT/siLo9xQ
-   mEwYB1CSzqNtoGLp/p0Newo1WVqyce0L5kINVpB2Nks2e5Ui+hJ40gOyi
-   g==;
-X-CSE-ConnectionGUID: QiOcNpiNSHuG08I7kgtVrw==
-X-CSE-MsgGUID: efa5nN+GQgSifqLXSQNwvw==
-X-IronPort-AV: E=Sophos;i="6.18,236,1751241600"; 
-   d="scan'208";a="2318615"
-Subject: Re: [PATCH v4 0/5] barrier: Add smp_cond_load_*_timewait()
-Thread-Topic: [PATCH v4 0/5] barrier: Add smp_cond_load_*_timewait()
-Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
-  by internal-pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2025 15:56:39 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.38.20:35374]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.63.19:2525] with esmtp (Farcaster)
- id 3521494c-cd0c-4c7e-a87c-f69a666db393; Wed, 3 Sep 2025 15:56:39 +0000 (UTC)
-X-Farcaster-Flow-ID: 3521494c-cd0c-4c7e-a87c-f69a666db393
-Received: from EX19D032UWA004.ant.amazon.com (10.13.139.56) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Wed, 3 Sep 2025 15:56:39 +0000
-Received: from EX19D032UWA003.ant.amazon.com (10.13.139.37) by
- EX19D032UWA004.ant.amazon.com (10.13.139.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Wed, 3 Sep 2025 15:56:38 +0000
-Received: from EX19D032UWA003.ant.amazon.com ([fe80::8e94:8f60:9531:c497]) by
- EX19D032UWA003.ant.amazon.com ([fe80::8e94:8f60:9531:c497%5]) with mapi id
- 15.02.2562.020; Wed, 3 Sep 2025 15:56:38 +0000
-From: "Okanovic, Haris" <harisokn@amazon.com>
-To: "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"ankur.a.arora@oracle.com" <ankur.a.arora@oracle.com>
-CC: "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-	"xueshuai@linux.alibaba.com" <xueshuai@linux.alibaba.com>,
-	"boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>, "memxor@gmail.com"
-	<memxor@gmail.com>, "zhenglifeng1@huawei.com" <zhenglifeng1@huawei.com>,
-	"konrad.wilk@oracle.com" <konrad.wilk@oracle.com>, "cl@gentwo.org"
-	<cl@gentwo.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>, "linux-arch@vger.kernel.org"
-	<linux-arch@vger.kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
-	"will@kernel.org" <will@kernel.org>, "mark.rutland@arm.com"
-	<mark.rutland@arm.com>, "peterz@infradead.org" <peterz@infradead.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "Okanovic, Haris"
-	<harisokn@amazon.com>
-Thread-Index: AQHcGLwkeAOmnfRWAUuaDQGZvBHLrrR+O4GAgANprQA=
-Date: Wed, 3 Sep 2025 15:56:38 +0000
-Message-ID: <23aca480075a8efc307c9aa07ff62f0f39bbee4e.camel@amazon.com>
-References: <20250829080735.3598416-1-ankur.a.arora@oracle.com>
-	 <aLWITwwDg06F1eXu@arm.com>
-In-Reply-To: <aLWITwwDg06F1eXu@arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0E18BDB4F8F2474DAC3E5EE6935FEE88@amazon.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20230601; t=1756915990; x=1757520790; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mqQ276H+ZGBj+GWdZPrO90Ud1e9U0xYuurgCHIHtniE=;
+        b=CR7nn9HPtrOzquqJcLAHScEmgycdfFenLxs4LxZF/qbfjWHRBfiCBv9x4DLZZspzeS
+         WTQMAMEcHwRl10zac4sS9oXFXmO5QhVhp+FIK4vcvV/+Jr4KZ8wKtEz2NA+mwGkN1Ig4
+         zmkiXaZakGHHcSiI18pS8ZtRVIL8i56H6WM7ECKYowBqKmQwJs6Z1h8P7I7WlUZm+5wi
+         AqUYvw6XoLnDUUQOQ4AOZnl0QCuuxM1+BRUEOlD5cl2ocBZCfG7G2dQ+CDr88pIxkdh6
+         pvm5OMhHdY+zXZZfDOzNuh1UMenZmLwpwQuuJj9e+M88yII+4moK8qshtQHude21951V
+         7mAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756915990; x=1757520790;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mqQ276H+ZGBj+GWdZPrO90Ud1e9U0xYuurgCHIHtniE=;
+        b=GoYHCiMQwyY7P61YAW8dbPv0FYlNtnrMr4uPRsG+FCDS1n0s14xt9SjKCy2NsgarFd
+         buQ/3CzFyfKCfFfsebVLRHRjqha11uX0tIsXXLlN+F2mQIP5XaWsb4p9Y0QE5FSzk3F0
+         34Rv+Uh/XG15mt2l1rKWUkAfrOa2zvtfho9KINX6elfme0qsIVo613r7lmW5uvefUxbz
+         2ytsTB733XN45m/CVpd7aKzobNuDC/7dBZP6jtt/+/qqIxWOKQlnsVcZokTpGNmQoR+t
+         f7uEMtuoDSLZ0tRfADmrjSlS58Nt6zEsBbEYxjEeQs8FNRiOrp2UdDCvGt+AHWbm8Z9N
+         LtlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUomXZUpZjXy35mIpMeu+nwRJrqzGAQghee8sWe+KlAH7wYRnaZ0rdKcIGToMVqDFF9/Jk=@vger.kernel.org, AJvYcCXZH0s8t1Wue3+or0WESEByoMOpHdqruNCUn9hfAayK4cB3R9JpuxFz8hKi7rmoXf8hVnBqznVOptiM4JRO@vger.kernel.org
+X-Gm-Message-State: AOJu0YwzJw2DDBtqiMu+8qi2JU3nPp7GbNoPTzX9aOYSfZeBmnwE/S7S
+	JmTWk/lqDZn673srfo9//LLWkHpjYMvxmrYbAtPd8Zke//RQtct6rzzTDQDbYEJsTjVEJkFUgoZ
+	NYANC+eI92PeYTeztL6kezinyde2yfL42Eg==
+X-Gm-Gg: ASbGnctMBbTZWk+abQlDxGtmEhhzVMOzNBM0JwpdMmijFh2ex9l4WxofvtYTeqzJCX8
+	zWReDDp5YP9toDnTsEVEuxsxLkoya5IIaODYf+uQKaI4xDAwfoc7I4Z/CKIH6J8JGSyhWaxFPMv
+	tTMRMOhd53wnJe2qoU0kM7lAucLyZVwRc8mukvbPm7yWOxBVRpTeblZbx4E8SYt3V5hwg7QsA+8
+	0CAhlkUGbqhDfRKyJfvtatS6lNMI+DSHQ==
+X-Google-Smtp-Source: AGHT+IGG9nARcHXdnW5cfbqf12EMzOAGjea8g0A5eZDL73b4moCN11elfVEvZ/SKUzEyjH8vgMpBWEHiwyMD+EjDo60=
+X-Received: by 2002:a17:907:961c:b0:b04:5a68:8674 with SMTP id
+ a640c23a62f3a-b045a688c30mr138899366b.35.1756915989783; Wed, 03 Sep 2025
+ 09:13:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250903135222.97604-1-contact@arnaud-lcm.com>
+In-Reply-To: <20250903135222.97604-1-contact@arnaud-lcm.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 3 Sep 2025 09:12:58 -0700
+X-Gm-Features: Ac12FXxMF5_Z21DPYKT6G-cJnN1Ifl2kBmk78jHTFHImaXrxBR3GfRlkFrAqMf8
+Message-ID: <CAADnVQLf0wj9hV=tAA=p_GXgpQ6DxtB4heoDqTmb5dEc5P6zfg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/2] bpf: refactor max_depth computation in bpf_get_stack()
+To: Arnaud Lecomte <contact@arnaud-lcm.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eduard <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, 
+	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gTW9uLCAyMDI1LTA5LTAxIGF0IDEyOjQ5ICswMTAwLCBDYXRhbGluIE1hcmluYXMgd3JvdGU6
-DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
-Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSBjYW4gY29uZmlybSB0aGUgc2VuZGVyIGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUu
-DQo+IA0KPiANCj4gDQo+IE9uIEZyaSwgQXVnIDI5LCAyMDI1IGF0IDAxOjA3OjMwQU0gLTA3MDAs
-IEFua3VyIEFyb3JhIHdyb3RlOg0KPiA+IEFua3VyIEFyb3JhICg1KToNCj4gPiAgIGFzbS1nZW5l
-cmljOiBiYXJyaWVyOiBBZGQgc21wX2NvbmRfbG9hZF9yZWxheGVkX3RpbWV3YWl0KCkNCj4gPiAg
-IGFybTY0OiBiYXJyaWVyOiBBZGQgc21wX2NvbmRfbG9hZF9yZWxheGVkX3RpbWV3YWl0KCkNCj4g
-PiAgIGFybTY0OiBycXNwaW5sb2NrOiBSZW1vdmUgcHJpdmF0ZSBjb3B5IG9mDQo+ID4gICAgIHNt
-cF9jb25kX2xvYWRfYWNxdWlyZV90aW1ld2FpdA0KPiA+ICAgYXNtLWdlbmVyaWM6IGJhcnJpZXI6
-IEFkZCBzbXBfY29uZF9sb2FkX2FjcXVpcmVfdGltZXdhaXQoKQ0KPiA+ICAgcnFzcGlubG9jazog
-dXNlIHNtcF9jb25kX2xvYWRfYWNxdWlyZV90aW1ld2FpdCgpDQo+IA0KPiBDYW4geW91IGhhdmUg
-YSBnbyBhdCBwb2xsX2lkbGUoKSB0byBzZWUgaG93IGl0IHdvdWxkIGxvb2sgbGlrZSB1c2luZw0K
-PiB0aGlzIEFQST8gSXQgZG9lc24ndCBuZWNlc3NhcmlseSBtZWFuIHdlIGhhdmUgdG8gbWVyZ2Ug
-dGhlbSBhbGwgYXQgb25jZQ0KPiBidXQgaXQgZ2l2ZXMgdXMgYSBiZXR0ZXIgaWRlYSBvZiB0aGUg
-c3VpdGFiaWxpdHkgb2YgdGhlIGludGVyZmFjZS4NCg0KVGhpcyBpcyB3aGF0IEkgdGVzdGVkIG9u
-IEFSTSBvbiBGcmk6DQoNCmh0dHBzOi8vZ2l0aHViLmNvbS9oYXJpc29rYW5vdmljL2xpbnV4L2Js
-b2IvMzdlMDJiOTUwYzk5MzcwNDY2ZTczODVlNWU3NTRiYmQ2MjMyZWY5NS9kcml2ZXJzL2NwdWlk
-bGUvcG9sbF9zdGF0ZS5jI0wyNA0KDQpSZWdhcmRzLA0KSGFyaXMgT2thbm92aWMNCkFXUyBHcmF2
-aXRvbiBTb2Z0d2FyZQ0KDQo+IA0KPiAtLQ0KPiBDYXRhbGluDQoNCg==
+On Wed, Sep 3, 2025 at 6:52=E2=80=AFAM Arnaud Lecomte <contact@arnaud-lcm.c=
+om> wrote:
+>
+> A new helper function stack_map_calculate_max_depth() that
+> computes the max depth for a stackmap.
+>
+> Changes in v2:
+>  - Removed the checking 'map_size % map_elem_size' from
+>    stack_map_calculate_max_depth
+>  - Changed stack_map_calculate_max_depth params name to be more generic
+>
+> Changes in v3:
+>  - Changed map size param to size in max depth helper
+>
+> Changes in v4:
+>  - Fixed indentation in max depth helper for args
+>
+> Changes in v5:
+>  - Bound back trace_nr to num_elem in __bpf_get_stack
+>  - Make a copy of sysctl_perf_event_max_stack
+>    in stack_map_calculate_max_depth
+>
+> Changes in v6:
+>  - Restrained max_depth computation only when required
+>  - Additional cleanup from Song in __bpf_get_stack
+
+This is not a refactor anymore.
+Pls don't squash different things into one patch.
+Keep refactor as patch 1, and another cleanup as patch 2.
+
+pw-bot: cr
 
