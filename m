@@ -1,95 +1,98 @@
-Return-Path: <bpf+bounces-67253-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67254-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B49F3B41546
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 08:36:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C9FEB41583
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 08:50:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 898B31A811CA
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 06:36:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 585B63A792A
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 06:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D742D876B;
-	Wed,  3 Sep 2025 06:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997722D97B7;
+	Wed,  3 Sep 2025 06:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ab7lWTdA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mii0Lrdn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72491F4C85;
-	Wed,  3 Sep 2025 06:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73ED52D8DD3;
+	Wed,  3 Sep 2025 06:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756881359; cv=none; b=ShQhaDae+QzJBWPuQmUDGG/diW4Pzn4QxZkxxfxuuEpMGjfeSWyZqs28FWIcSyhJ95iVdIsqwsWCVqz0HAT+kHe4Bu/UIs8ZZX7Fs0T5uZZOTgFJ5xrg/uB/wLDAl6VRDty/zbhomh1fCN7oxarT9qFoSKgXR4ivdlKoj6g5qs4=
+	t=1756882133; cv=none; b=LlWUy3eAgXkR8bL5UIjPrqVqTD4fS0UOurgG+keMNeHZ5ZvUPvItI59b+wdjSYdiVILDJutFmJ1frCg8gA0LmWCXcBv699CJRjkJgUsjoEjHbACpfGHHUx4EVFjajSlNUprOcc7CFX4BM91WRLTeYx5X/TMhQEZ2GQDQXqRqTLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756881359; c=relaxed/simple;
-	bh=UTMzuQVzloVO/bJU0/VxUNPURnzSJf47Kqe1+UJzVyM=;
+	s=arc-20240116; t=1756882133; c=relaxed/simple;
+	bh=qjmB1RAA7F0wVqM7zHKXMSrfTZRfahNUiS26O3cUvT8=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VbtrsqO+iBalqWixkoNnPM1p+/dqv2E3MENJm6fa5IB5VNPNbhZySiJ6AyQxo7oYTVfUAI87RdAGbDcNbA4CDmhZsFpFpwaE5zrNHDPSc3RBYPG1GpsttAgyqAJNhm6SPvTbKItomyLE2rKR2y2GSSl+YaZBPFMTgeqkEwXKVOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ab7lWTdA; arc=none smtp.client-ip=209.85.218.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=crmQeBb42bQyHs7v2kVAB1lsd8YgB2Dcl+p8YB7ESTfswmBLikqG3a5/tclRFNKYuUIjqfVkIdMq8798IehMObYElOF9l3UmX1aU0sxeyLeIoJvGwjpzl9VE4HVD9gbOlUU8E+Mdw1ChTrpaZx4I0Kc32woNiX07jnndPSY2GOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mii0Lrdn; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-b02c719a117so460521066b.1;
-        Tue, 02 Sep 2025 23:35:57 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b0428b537e5so495770366b.3;
+        Tue, 02 Sep 2025 23:48:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756881356; x=1757486156; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756882130; x=1757486930; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kFyoMJw6KiFQC6JDcSTadI7EhSdz+gbovd/Nmw8VGsI=;
-        b=ab7lWTdA7SNDmxFE9ZXzkNhvk73IlbqBgs1gZqhr9xaqWu5buoJnc9D/05aTJjA4JK
-         r/fMNnhqkItyo3WRyeZQe1TNDXbKyvhaRr8sdunHnu/1njeV1EL1ysdRcg/Wt4MZSASC
-         jnqM9CFDXSOjkHYR/opYd7hazI3LUm8iK2LTwvuzh8v+5rN1Y+7i3k7bXSxwa4oqP4BB
-         lFojdDWxlC1vHCVQHu+mp03MEkDX35zgJv5C3J6QCYlVwIduFCBoufGaZFTm/ogGr/IB
-         Pg3wNVcpif7Ar90Pkqmpi4v30zRX2jpPjqvCr+3Nbgs9+EAHE6tYLHv4jKFoD/L+PwDZ
-         U30g==
+        bh=AtIpceXnZjTA0NBZG6Ie6QAq4Kp296Wp3sK1PNsV79w=;
+        b=Mii0LrdnafKb/oR90tMideGmfM7fo7biNUIqMT+T7BNzQ0+PD81W3AAUFk4gHhztui
+         5y26v6URdaBWwti0PboYWuqz+5Y/FyYyPRHDI0+/BvP7nq/pJe2HX1/15plMLFFhvBdL
+         XMg7eFvWeZpgmadqJLKKfhYGp6Xku4p2Lr3SQuS6WJXWGfRT0Nl1deit3NO3NhiRKDY+
+         jbVf2PbomBcylAsR3Tc4c5X8QiKRCSrtNylk18cfP7mVZfNWOSIAG63hGLyYcMjUiyL2
+         a3P53sWpL0s64TXi7yHCw639h47micFGz3v4zz8OinlwX+FGm639h2GZ06mXWV9WG3tq
+         xVZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756881356; x=1757486156;
+        d=1e100.net; s=20230601; t=1756882130; x=1757486930;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kFyoMJw6KiFQC6JDcSTadI7EhSdz+gbovd/Nmw8VGsI=;
-        b=PFGf+O0KEgFvJ6/8ZUDMNKrkWmruBh7RtNu28vAl8Yg2iaoxg1IHoO/91KXgxsaT4q
-         vbVzHc+jurBQErE7ADkcQMyYyIUUcZ8vjdwOQSO5EjGimHhcy1wcEKn2tX7goOk2k13u
-         j5N/IKyFMx982vjXAfQG19SlP+1hVzWm5fsc1IF+0Thibmb+GYw5ilp4ZBkOlNHIfdkr
-         72pBLeP7SwB+Q4XraJJBJ2S3HHCPOKZn2Zh01hO/i7FWyfgvTfDUPuzMLZfb96Mu5Ns6
-         8pUtW4CCaKaAaiqFkMSbAvk6PBaslz3YPA154xKEcasxdORF5xwLXXVtNxl9qV8I2uKQ
-         gdrw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQHngj7Fe+mOS7LL8jow3gYsz3zqgiimXDcLVJQwdh7r5SF63VfBjRjf22jwsYp4bL52V2cpC15hKkEBgN@vger.kernel.org, AJvYcCWE0XhmeTaLMJioC4XLbY35eQv9sNNVwjRFy+3biVwC9OT3mpVjqk0UQvbVD8128zEQw/E=@vger.kernel.org, AJvYcCXzuusa2p4lWanYGRem+5v0cJOsWc5UaxVQ8JxXfuvMqT8xeMnMzL/lmcTf/x2nW9UjAodwBAJkTtDurVo07mUMGvHe@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJQ5JhoxblNDdrpGZ1H/aSnOlxISpVgQESHwMiDwdjq5eYSzUR
-	VpsnA0MXkqhnvf8MlYHzFoNIa6Zoxxy4btOm7NeY27OluNfFx3kMuC12
-X-Gm-Gg: ASbGncsFdnhKqDJxhCmn+t0TVTOBvwvnIL65vmBccdWkC3QXS2dTfliGSKyfvxohvsr
-	3YOSRgQJa47Cj/opDmgMJiwSMbfvCHITynNlmLVL1W5QA8hOEwkeX69nTtKX0/iv+R3vfATtb9V
-	M9Mf9fNgV5uo57Tfg6K45kkxCGAqEiloZubFeO7SAdEOMPMDiBFz28D/w/KUBTFJk6+LEi+N/lr
-	om9EV8uKjnLSE0IRe3u9G2kcKun/4Q1WnahkBwMz3whVynObCiI0ltCJKZfdw/vp4S08gVsywZL
-	TTA64QjN9676GWPw7iPjFsuuQMC86HVquXmjiXJNgSazRRaJ4Mzby4043KezYS7vhzs6KGDcc2x
-	rpTaUExoEft4=
-X-Google-Smtp-Source: AGHT+IGXl/QxdYQv+E32uj2HADurAuKBG3IRZKyIzyk6ED5cmYez/6lQZIkLkkOKPemVqFpwMRKLYw==
-X-Received: by 2002:a17:906:f596:b0:b04:65b4:707 with SMTP id a640c23a62f3a-b0465b40b24mr169370466b.13.1756881356006;
-        Tue, 02 Sep 2025 23:35:56 -0700 (PDT)
+        bh=AtIpceXnZjTA0NBZG6Ie6QAq4Kp296Wp3sK1PNsV79w=;
+        b=mEuVooSaZkBYRGGCd4vQMRkuu/GyQZKmwkP5hlFHLg5ouNNqYAj0e5Svm7AM0Wsjav
+         WtFCalZ/BXkAtGToMuQ/fwPKffYOajuqi75BCVUscmDVFpGPKfy8VhvhzrU2775SAwL6
+         QFfxGv4uskgmrQ1ga+ycR3iy1DqG5hihiaHlRMNQhX0uD1VdasVTTubeP7sUovIeHitq
+         cJVA0RDGUr7oQsB/bMeSbH+/BhvdZh09P/iCUNz8BvaiDBz+16iZzbEpHlPfzxOFeWkM
+         v7+Z52NRQ9dUr6kSbHXnxBEUOuX2P7sLB/hVwL68CGggnxn7eB2IUxElYQz/bhCb2quC
+         lpMg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJU88Bw8DQVKEopUqx1orb0XoH1cnf6ObpPh7zq1vh5/dBOm5yNoVHq7oYjQPT1zyB99Q=@vger.kernel.org, AJvYcCVnEsatd++BSV7mowcOLHib28vWTul6h9cYwjWin0JgfFcpk9y3DBrWXbo65VQEiX8pRJMu+/MR7WLiqmvbnhV1fngL@vger.kernel.org, AJvYcCWyk1gfd8UwFPcWhn3WkcmA8RARSOD1MKgsJ2DnodU1iN6UWG46YC1d+JCsV4IVQNi+RogzD+xokqQjbsOn@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxw4jzOUEu3s1gaUU38rVnErXQOlXqFqrfylKeu8mNyuO7giDeG
+	OH+FiCNMWl1s8uJHq8QFAC9KuVPPk+gmwPL8u+AgmKrFyfk/mzmxRlCX
+X-Gm-Gg: ASbGncvpayB7uO1IwT6dYpyN4YQ3L6Q7FsublQ4KPN9INkPBBbJiHBiZVWwS+Q/qAYe
+	2aCqBmNUtpjTGDAw73OX/Zs2S6ZWcc1+HtlcXsfDHjGpFwXK5T7LLzx8Fwvzt1Cn4fhoKzn5CZC
+	7ic+Jk7ZYhvCgjsFFz+UtATqtTNEwgN811aa0hb1reaQhzZda7gV75CWu4+fM7G0Ot2ZVnwj9DR
+	RSndhCrS9aJdGau1wr8J6RAszHXXUaiX5Rj3+AFR8md0yg+A4pJtbkW+bt8vnszs69sSY9mtrTj
+	Hgt/wZEoGzWcFA8kP8SFHCZLLDpVGgfp0A8zRkNE+G2l8/QAFnvkxm4F/xvJA/CeLP2lyW/I4Q2
+	+j3iSOLR9AuWlvmZ8s+8xMw==
+X-Google-Smtp-Source: AGHT+IGVu836mQO+y8+vS80i0WjWO4Im+/HFsaRS2Q1h4C91RiD8hiCYlHBjxai2RlpQHTzTdhDbBQ==
+X-Received: by 2002:a17:907:94d2:b0:ae0:d1f3:f7f4 with SMTP id a640c23a62f3a-b01d8a2fd89mr1355062166b.13.1756882129612;
+        Tue, 02 Sep 2025 23:48:49 -0700 (PDT)
 Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b04190700a4sm838121166b.63.2025.09.02.23.35.55
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b04252103f2sm730511366b.50.2025.09.02.23.48.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Sep 2025 23:35:55 -0700 (PDT)
+        Tue, 02 Sep 2025 23:48:49 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 3 Sep 2025 08:35:53 +0200
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
+Date: Wed, 3 Sep 2025 08:48:44 +0200
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	David Laight <David.Laight@aculab.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH perf/core 01/11] uprobes: Add unique flag to uprobe
- consumer
-Message-ID: <aLfhyancfP5Na4AN@krava>
-References: <20250902143504.1224726-1-jolsa@kernel.org>
- <20250902143504.1224726-2-jolsa@kernel.org>
- <20250903001133.8a02cf5db5ab4fd23c9a334f@kernel.org>
+Subject: Re: [PATCHv6 perf/core 10/22] uprobes/x86: Add support to optimize
+ uprobes
+Message-ID: <aLfkzE_eMYE40QjD@krava>
+References: <20250720112133.244369-1-jolsa@kernel.org>
+ <20250720112133.244369-11-jolsa@kernel.org>
+ <20250819191515.GM3289052@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,111 +101,69 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250903001133.8a02cf5db5ab4fd23c9a334f@kernel.org>
+In-Reply-To: <20250819191515.GM3289052@noisy.programming.kicks-ass.net>
 
-On Wed, Sep 03, 2025 at 12:11:33AM +0900, Masami Hiramatsu wrote:
-> On Tue,  2 Sep 2025 16:34:54 +0200
-> Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Aug 19, 2025 at 09:15:15PM +0200, Peter Zijlstra wrote:
+> On Sun, Jul 20, 2025 at 01:21:20PM +0200, Jiri Olsa wrote:
 > 
-> > Adding unique flag to uprobe consumer to ensure it's the only consumer
-> > attached on the uprobe.
-> > 
-> > This is helpful for use cases when consumer wants to change user space
-> > registers, which might confuse other consumers. With this change we can
-> > ensure there's only one consumer on specific uprobe.
+> > +static bool __is_optimized(uprobe_opcode_t *insn, unsigned long vaddr)
+> > +{
+> > +	struct __packed __arch_relative_insn {
+> > +		u8 op;
+> > +		s32 raddr;
+> > +	} *call = (struct __arch_relative_insn *) insn;
 > 
-> nit: Does this mean one callback (consumer) is exclusively attached?
-> If so, "exclusive" will be better wording?
+> Not something you need to clean up now I suppose, but we could do with
+> unifying this thing. we have a bunch of instances around.
 
-yes, exclusive is better, will change
+found two below, maybe we could use 'union text_poke_insn' instead like below?
 
-thanks,
 jirka
 
-> 
-> The logic looks good to me.
-> 
-> Thanks,
-> 
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/linux/uprobes.h |  1 +
-> >  kernel/events/uprobes.c | 30 ++++++++++++++++++++++++++++--
-> >  2 files changed, 29 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> > index 08ef78439d0d..0df849dee720 100644
-> > --- a/include/linux/uprobes.h
-> > +++ b/include/linux/uprobes.h
-> > @@ -60,6 +60,7 @@ struct uprobe_consumer {
-> >  	struct list_head cons_node;
-> >  
-> >  	__u64 id;	/* set when uprobe_consumer is registered */
-> > +	bool is_unique; /* the only consumer on uprobe */
-> >  };
-> >  
-> >  #ifdef CONFIG_UPROBES
-> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > index 996a81080d56..b9b088f7333a 100644
-> > --- a/kernel/events/uprobes.c
-> > +++ b/kernel/events/uprobes.c
-> > @@ -1024,14 +1024,35 @@ static struct uprobe *alloc_uprobe(struct inode *inode, loff_t offset,
-> >  	return uprobe;
-> >  }
-> >  
-> > -static void consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
-> > +static bool consumer_can_add(struct list_head *head, struct uprobe_consumer *uc)
-> > +{
-> > +	/* Uprobe has no consumer, we can add any. */
-> > +	if (list_empty(head))
-> > +		return true;
-> > +	/* Uprobe has consumer/s, we can't add unique one. */
-> > +	if (uc->is_unique)
-> > +		return false;
-> > +	/*
-> > +	 * Uprobe has consumer/s, we can add nother consumer only if the
-> > +	 * current consumer is not unique.
-> > +	 **/
-> > +	return !list_first_entry(head, struct uprobe_consumer, cons_node)->is_unique;
-> > +}
-> > +
-> > +static int consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
-> >  {
-> >  	static atomic64_t id;
-> > +	int ret = -EBUSY;
-> >  
-> >  	down_write(&uprobe->consumer_rwsem);
-> > +	if (!consumer_can_add(&uprobe->consumers, uc))
-> > +		goto unlock;
-> >  	list_add_rcu(&uc->cons_node, &uprobe->consumers);
-> >  	uc->id = (__u64) atomic64_inc_return(&id);
-> > +	ret = 0;
-> > +unlock:
-> >  	up_write(&uprobe->consumer_rwsem);
-> > +	return ret;
-> >  }
-> >  
-> >  /*
-> > @@ -1420,7 +1441,12 @@ struct uprobe *uprobe_register(struct inode *inode,
-> >  		return uprobe;
-> >  
-> >  	down_write(&uprobe->register_rwsem);
-> > -	consumer_add(uprobe, uc);
-> > +	ret = consumer_add(uprobe, uc);
-> > +	if (ret) {
-> > +		put_uprobe(uprobe);
-> > +		up_write(&uprobe->register_rwsem);
-> > +		return ERR_PTR(ret);
-> > +	}
-> >  	ret = register_for_each_vma(uprobe, uc);
-> >  	up_write(&uprobe->register_rwsem);
-> >  
-> > -- 
-> > 2.51.0
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+---
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 6079d15dab8c..7fd03897d776 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -109,14 +109,10 @@ const int kretprobe_blacklist_size = ARRAY_SIZE(kretprobe_blacklist);
+ static nokprobe_inline void
+ __synthesize_relative_insn(void *dest, void *from, void *to, u8 op)
+ {
+-	struct __arch_relative_insn {
+-		u8 op;
+-		s32 raddr;
+-	} __packed *insn;
+-
+-	insn = (struct __arch_relative_insn *)dest;
+-	insn->raddr = (s32)((long)(to) - ((long)(from) + 5));
+-	insn->op = op;
++	union text_poke_insn *insn = dest;
++
++	insn->disp = (s32)((long)(to) - ((long)(from) + 5));
++	insn->opcode = op;
+ }
+ 
+ /* Insert a jump instruction at address 'from', which jumps to address 'to'.*/
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 0a8c0a4a5423..bac14f3165c3 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -1046,14 +1046,11 @@ static int copy_from_vaddr(struct mm_struct *mm, unsigned long vaddr, void *dst,
+ 
+ static bool __is_optimized(uprobe_opcode_t *insn, unsigned long vaddr)
+ {
+-	struct __packed __arch_relative_insn {
+-		u8 op;
+-		s32 raddr;
+-	} *call = (struct __arch_relative_insn *) insn;
++	union text_poke_insn *call = (union text_poke_insn *) insn;
+ 
+ 	if (!is_call_insn(insn))
+ 		return false;
+-	return __in_uprobe_trampoline(vaddr + 5 + call->raddr);
++	return __in_uprobe_trampoline(vaddr + 5 + call->disp);
+ }
+ 
+ static int is_optimized(struct mm_struct *mm, unsigned long vaddr)
 
