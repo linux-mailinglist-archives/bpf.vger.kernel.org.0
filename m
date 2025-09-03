@@ -1,297 +1,188 @@
-Return-Path: <bpf+bounces-67319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C295DB42789
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 19:04:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9E79B42798
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 19:08:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A8DD685BA2
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 17:04:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 539BA1B21573
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 17:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36922D3EC7;
-	Wed,  3 Sep 2025 17:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C94731DDAF;
+	Wed,  3 Sep 2025 17:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t3Fu/niW"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AaPitmfR"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E8E2BCF5D
-	for <bpf@vger.kernel.org>; Wed,  3 Sep 2025 17:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1489430DED9
+	for <bpf@vger.kernel.org>; Wed,  3 Sep 2025 17:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756919076; cv=none; b=uTe4Ci1rTtrihhoqY+91Seb+cLQOwa6m8SFbnGqBtOJve5QQ+WS0Ggb66o0UjK13zHruIJCocd04PZMd4vWJlu3OWHxwm+YpCc4KViU4oMDpcSR+z3+N5F48yNkF+ugv8xZ7RXgYDLDWhjVaMj9nN39qqLMNb7IhUGMd9faD/GU=
+	t=1756919295; cv=none; b=r8Rg+2FVHXetovLLlIDzMU9uJ0PsusD7Db1QMvII+q0X1rq8lQlgTaknAegKSalNFca6q2feuuO4Rf+8JNOgxdQtZIWUk0XmGrT4/P3aBTgWZZj/ClNFBDQHP4fKBAOwCUAD+ziSyeOfNmEqKn7xMK47qf2wHJ7o4EWEkFk8voE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756919076; c=relaxed/simple;
-	bh=cKJsYtkP776B04dRA/ldB6Q7492z7ZQ7YtltgZnuQCk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UpkE3f+y3sZF7eYJY22YLnpmYcM3e5+/VpAJffvFfdCRURXSwmljYb8a/1XpsU9Zg7mVcqkyoZqw/Pa1bzasP4kLNxyTmasY/mR1Xj5O81nP9aJBJVw2p+MU8WWz41XT153cdMeGmlcqWAb3Bv1tAgUApqDlHc6kBGFj1HggQ5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t3Fu/niW; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756919072;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=80u2bpOuJR39RxMiVzJKRsxTAOuRRjAlmkE6xPXkcfM=;
-	b=t3Fu/niW36bE9KZ8BzxJ9SCozkwdta3NJvqvv9L2LdUPezoHNjtCfVqhBYnGhfgKIC5nta
-	rhDAR2ZhVK1LjwWVJvWEXAQukK0g6JMoD0He+gyIiAx0NrPmnvgo1914AQLmhMpQ4N0FnS
-	hrWKGtIobEnFaTrKRTVo6J1v+Uy2S7Q=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH bpf-next] bpf: Generalize data copying for percpu maps
-Date: Thu,  4 Sep 2025 01:04:11 +0800
-Message-ID: <20250903170411.69188-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1756919295; c=relaxed/simple;
+	bh=WpUygWTDXRLuaPUqHiheWrK6o7CCFVMEczat74c5I0Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Uv3gGT3S39MjntChsSavx/HtOzF+SZ3FCPX4ZCDcQUymKVKoNtL7HhKwseWFFHSzBEKcg4rtvS9izxof4HNVABRgWv9AfnQ2pE41k8jNcN56sfRKVFXg/b2fJ1YArbvO9EHJXVXI+YbC3e3UWOfwyug81Y/x9ENzu73V76Yv1PE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AaPitmfR; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-77281ea2dc7so128847b3a.2
+        for <bpf@vger.kernel.org>; Wed, 03 Sep 2025 10:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1756919293; x=1757524093; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JIAuEdLRPN1A/j3QXgZnGYzvS6zR/mfBqmIlSnWVeV0=;
+        b=AaPitmfREmPE8nYhEvZ8q8u9k0dU+28w3TJvhiK5D0XHXIEmiwY2QM2mJ81S6Z/cT/
+         Pn0j9y5aYWTRSE4pVdiRCY7MeHapv2yI72eio4ZEGZQEqn4rj0j8FHa1uU/tPmYywK9W
+         hyKsZrdGo203IvQQFMro0LlQl41d/hUoH55wxsRU1xu5MzkMt4VQmCIUjVhPY8eFEDsW
+         d8EC8nNrL+3ZPewjJIZESuHOHyUq7CYwr0POqEMGlnoQ01lR0EgAgajImBGr906o1zlA
+         XaHu2CyXN11mOjwkdo+P7rKwh5R72GNbkjcmR6b4hAZOG+qf20C1RDdzYGlcyWOKLFhW
+         F36w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756919293; x=1757524093;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JIAuEdLRPN1A/j3QXgZnGYzvS6zR/mfBqmIlSnWVeV0=;
+        b=cR8pMz467a4lh81+dTzkrHuqUN7jsLDxBUXGTMqwwN3XpmMC/mGSo+lweGj0dDhkjL
+         ghQ9BnirFHgMEj7YkXoZ8RQP1VVN11A9Bf/ZeRZDZuMC1wMkWf3vOjpvkYnOxZX0BnkV
+         l53M9TMIf4T8gMcK9YiCM5FE9GqGRfIOX3iLo4Hd/iOzKJNWR3pSU0uRk7I0MhfQdHcy
+         77QPKVxd4WUQktVMhX39oMybc6wWquw38pJQ8yC+OKgwE1Pd+IpUAYpa9Svs7cA+ieST
+         rboAA+/b23nXX0fl7RKDgcGEDnR3I2Lz1NhaXv60t30UhaxvH56CrS56h6w1zOoeLeaI
+         o2IA==
+X-Forwarded-Encrypted: i=1; AJvYcCWuT4NLPW/lRea6zRl5Hdk+BuPgqah/1aMi+zFaA48/Kb3AkP3JlOfgt8ep0iHMfcLdZ0I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwORm9sZjcUKFfGk8hR3J1WFIQ387pXmgFdIQy5ulaI3fER7O+J
+	wD46NP1l9r9LvKlMNwnZgYJcKaa965yBywyCiyalviHBWhRPX40gEL8Zpc1hPaNxfziCIYcFw3d
+	jO9FyIgK3jM0R5mdnkkZ6NQ4NfcrlJ5WLzMHEsAPI
+X-Gm-Gg: ASbGncuJ89kCr+LDlLnNjfF9zxWFNwWNsd9njkpalXY0wll2EyYh4rERxvG+y9NXw8D
+	4ksiL799gGSbzwY9TJ7Oq5dknChdeAyfRoeo/Lw5JNkLrLs/nvUYNP9sJ/dHrr73KWoOvlPCuHO
+	HnsY5Pf9lsGaSXnpQBPdJzTaVQRCETB38v1mKJqaICVxqjp36QaDx6VRtg7b0MClBmgYd8IVfyq
+	GUVFvx7zTIFT26TCEHkQEuqFUMkxhaXU1dYxNCBwgIJ
+X-Google-Smtp-Source: AGHT+IEaqMoJL3wgMu6tDCAxnk/c/Wh1YZktP0vBrCDWFJlIFrzAMeYPzz996yoti7VmnoAWUvqcGLnGwyTxyU9RbP0=
+X-Received: by 2002:a17:902:ecc3:b0:24b:1191:9864 with SMTP id
+ d9443c01a7336-24b1191a0fcmr101355585ad.18.1756919292763; Wed, 03 Sep 2025
+ 10:08:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250829010026.347440-1-kuniyu@google.com> <20250829010026.347440-6-kuniyu@google.com>
+ <904c1ffb-107e-4f14-89b7-d42ac9a5aa14@linux.dev> <CAAVpQUDfQwb2nfGBV8NEONwaBAMVi_5F8+OPFX3=z+W8X9n9ZQ@mail.gmail.com>
+ <CAAVpQUBWsVDu07xrQcqGMo4cHRu41zvb5CWuiUdJx9m6A+_2AQ@mail.gmail.com>
+In-Reply-To: <CAAVpQUBWsVDu07xrQcqGMo4cHRu41zvb5CWuiUdJx9m6A+_2AQ@mail.gmail.com>
+From: Kuniyuki Iwashima <kuniyu@google.com>
+Date: Wed, 3 Sep 2025 10:08:01 -0700
+X-Gm-Features: Ac12FXwO5UL-VawceaE2PlnfDQoaxDABVVQsiBxWC0odvOHvVVbI6ipzY_xzE44
+Message-ID: <CAAVpQUCyPPO1dfkkU4Hxz67JFcW6dhSfYnmUp0foNMYua_doyg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next/net 5/5] selftest: bpf: Add test for SK_BPF_MEMCG_SOCK_ISOLATED.
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-While adding support for the BPF_F_CPU and BPF_F_ALL_CPUS flags, the data
-copying logic of the following percpu map types needs to be updated:
+On Wed, Sep 3, 2025 at 9:59=E2=80=AFAM Kuniyuki Iwashima <kuniyu@google.com=
+> wrote:
+>
+> On Tue, Sep 2, 2025 at 1:49=E2=80=AFPM Kuniyuki Iwashima <kuniyu@google.c=
+om> wrote:
+> >
+> > On Tue, Sep 2, 2025 at 1:26=E2=80=AFPM Martin KaFai Lau <martin.lau@lin=
+ux.dev> wrote:
+> > >
+> > > On 8/28/25 6:00 PM, Kuniyuki Iwashima wrote:
+> > > > The test does the following for IPv4/IPv6 x TCP/UDP sockets
+> > > > with/without BPF prog.
+> > > >
+> > > >    1. Create socket pairs
+> > > >    2. Send a bunch of data that requires more than 256 pages
+> > > >    3. Read memory_allocated from the 3rd column in /proc/net/protoc=
+ols
+> > > >    4. Check if unread data is charged to memory_allocated
+> > > >
+> > > > If BPF prog is attached, memory_allocated should not be changed,
+> > > > but we allow a small error (up to 10 pages) in case other processes
+> > > > on the host use some amounts of TCP/UDP memory.
+> > > >
+> > > > At 2., the test actually sends more than 1024 pages because the sys=
+ctl
+> > > > net.core.mem_pcpu_rsv is 256 is by default, which means 256 pages a=
+re
+> > > > buffered per cpu before reporting to sk->sk_prot->memory_allocated.
+> > > >
+> > > >    BUF_SINGLE (1024) * NR_SEND (64) * NR_SOCKETS (64) / 4096
+> > > >    =3D 1024 pages
+> > > >
+> > > > When I reduced it to 512 pages, the following assertion for the
+> > > > non-isolated case got flaky.
+> > > >
+> > > >    ASSERT_GT(memory_allocated[1], memory_allocated[0] + 256, ...)
+> > > >
+> > > > Another contributor to slowness is 150ms sleep to make sure 1 RCU
+> > > > grace period passes because UDP recv queue is destroyed after that.
+> > >
+> > > There is a kern_sync_rcu() in testing_helpers.c.
+> >
+> > Nice helper :)  Will use it.
+> >
+> > >
+> > > >
+> > > >    # time ./test_progs -t sk_memcg
+> > > >    #370/1   sk_memcg/TCP       :OK
+> > > >    #370/2   sk_memcg/UDP       :OK
+> > > >    #370/3   sk_memcg/TCPv6     :OK
+> > > >    #370/4   sk_memcg/UDPv6     :OK
+> > > >    #370     sk_memcg:OK
+> > > >    Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
+> > > >
+> > > >    real       0m1.214s
+> > > >    user       0m0.014s
+> > > >    sys        0m0.318s
+> > >
+> > > Thanks. It finished much faster in my setup also comparing with the e=
+arlier
+> > > revision. However, it is a bit flaky when I run it in a loop:
+> > >
+> > > check_isolated:FAIL:not isolated unexpected not isolated: actual 861 =
+<=3D expected 861
+> > >
+> > > I usually can hit this at ~40-th iteration.
+> >
+> > Oh.. I tested ~10 times manually but will try in a tight loop.
+>
+> This didn't reproduce on my QEMU with/without --enable-kvm.
+>
+> Changing the assert from _GT to _GE will address the very case
+> above, but I'm not sure if it's enough.
 
-* percpu_array
-* percpu_hash
-* lru_percpu_hash
-* percpu_cgroup_storage
+I doubled NR_SEND and it was still faster with kern_sync_rcu()
+than usleep(), so I'll simply double NR_SEND in v5
 
-Following Andrii’s suggestion[0], this patch refactors the data copying
-logic by introducing two helpers:
+# time ./test_progs -t sk_memcg
+...
+Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
+real 0m0.483s
+user 0m0.010s
+sys 0m0.191s
 
-* `bpf_percpu_copy_to_user()`
-* `bpf_percpu_copy_from_user()`
 
-This prepares the codebase for the upcoming CPU flag support.
-
-[0] https://lore.kernel.org/bpf/20250827164509.7401-1-leon.hwang@linux.dev/
-
-Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- include/linux/bpf.h        | 29 ++++++++++++++++++++++++++++-
- kernel/bpf/arraymap.c      | 14 ++------------
- kernel/bpf/hashtab.c       | 20 +++-----------------
- kernel/bpf/local_storage.c | 18 ++++++------------
- 4 files changed, 39 insertions(+), 42 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 8f6e87f0f3a89..2dc0299a2da50 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -547,6 +547,34 @@ static inline void copy_map_value_long(struct bpf_map *map, void *dst, void *src
- 	bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
- }
-
-+#ifdef CONFIG_BPF_SYSCALL
-+static inline void bpf_percpu_copy_to_user(struct bpf_map *map, void __percpu *pptr, void *value,
-+					   u32 size)
-+{
-+	int cpu, off = 0;
-+
-+	for_each_possible_cpu(cpu) {
-+		copy_map_value_long(map, value + off, per_cpu_ptr(pptr, cpu));
-+		check_and_init_map_value(map, value + off);
-+		off += size;
-+	}
-+}
-+
-+void bpf_obj_free_fields(const struct btf_record *rec, void *obj);
-+
-+static inline void bpf_percpu_copy_from_user(struct bpf_map *map, void __percpu *pptr, void *value,
-+					     u32 size)
-+{
-+	int cpu, off = 0;
-+
-+	for_each_possible_cpu(cpu) {
-+		copy_map_value_long(map, per_cpu_ptr(pptr, cpu), value + off);
-+		bpf_obj_free_fields(map->record, per_cpu_ptr(pptr, cpu));
-+		off += size;
-+	}
-+}
-+#endif
-+
- static inline void bpf_obj_swap_uptrs(const struct btf_record *rec, void *dst, void *src)
- {
- 	unsigned long *src_uptr, *dst_uptr;
-@@ -2417,7 +2445,6 @@ struct btf_record *btf_record_dup(const struct btf_record *rec);
- bool btf_record_equal(const struct btf_record *rec_a, const struct btf_record *rec_b);
- void bpf_obj_free_timer(const struct btf_record *rec, void *obj);
- void bpf_obj_free_workqueue(const struct btf_record *rec, void *obj);
--void bpf_obj_free_fields(const struct btf_record *rec, void *obj);
- void __bpf_obj_drop_impl(void *p, const struct btf_record *rec, bool percpu);
-
- struct bpf_map *bpf_map_get(u32 ufd);
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 3d080916faf97..6be9c54604503 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -300,7 +300,6 @@ int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value)
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
- 	u32 index = *(u32 *)key;
- 	void __percpu *pptr;
--	int cpu, off = 0;
- 	u32 size;
-
- 	if (unlikely(index >= array->map.max_entries))
-@@ -313,11 +312,7 @@ int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value)
- 	size = array->elem_size;
- 	rcu_read_lock();
- 	pptr = array->pptrs[index & array->index_mask];
--	for_each_possible_cpu(cpu) {
--		copy_map_value_long(map, value + off, per_cpu_ptr(pptr, cpu));
--		check_and_init_map_value(map, value + off);
--		off += size;
--	}
-+	bpf_percpu_copy_to_user(map, pptr, value, size);
- 	rcu_read_unlock();
- 	return 0;
- }
-@@ -387,7 +382,6 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
- 	u32 index = *(u32 *)key;
- 	void __percpu *pptr;
--	int cpu, off = 0;
- 	u32 size;
-
- 	if (unlikely(map_flags > BPF_EXIST))
-@@ -411,11 +405,7 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
- 	size = array->elem_size;
- 	rcu_read_lock();
- 	pptr = array->pptrs[index & array->index_mask];
--	for_each_possible_cpu(cpu) {
--		copy_map_value_long(map, per_cpu_ptr(pptr, cpu), value + off);
--		bpf_obj_free_fields(array->map.record, per_cpu_ptr(pptr, cpu));
--		off += size;
--	}
-+	bpf_percpu_copy_from_user(map, pptr, value, size);
- 	rcu_read_unlock();
- 	return 0;
- }
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 71f9931ac64cd..5f0f3c00dbb74 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -944,12 +944,8 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
- 		copy_map_value(&htab->map, this_cpu_ptr(pptr), value);
- 	} else {
- 		u32 size = round_up(htab->map.value_size, 8);
--		int off = 0, cpu;
-
--		for_each_possible_cpu(cpu) {
--			copy_map_value_long(&htab->map, per_cpu_ptr(pptr, cpu), value + off);
--			off += size;
--		}
-+		bpf_percpu_copy_from_user(&htab->map, pptr, value, size);
- 	}
- }
-
-@@ -1802,15 +1798,10 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 		memcpy(dst_key, l->key, key_size);
-
- 		if (is_percpu) {
--			int off = 0, cpu;
- 			void __percpu *pptr;
-
- 			pptr = htab_elem_get_ptr(l, map->key_size);
--			for_each_possible_cpu(cpu) {
--				copy_map_value_long(&htab->map, dst_val + off, per_cpu_ptr(pptr, cpu));
--				check_and_init_map_value(&htab->map, dst_val + off);
--				off += size;
--			}
-+			bpf_percpu_copy_to_user(&htab->map, pptr, dst_val, size);
- 		} else {
- 			value = htab_elem_value(l, key_size);
- 			if (is_fd_htab(htab)) {
-@@ -2370,7 +2361,6 @@ int bpf_percpu_hash_copy(struct bpf_map *map, void *key, void *value)
- 	struct htab_elem *l;
- 	void __percpu *pptr;
- 	int ret = -ENOENT;
--	int cpu, off = 0;
- 	u32 size;
-
- 	/* per_cpu areas are zero-filled and bpf programs can only
-@@ -2386,11 +2376,7 @@ int bpf_percpu_hash_copy(struct bpf_map *map, void *key, void *value)
- 	 * eviction heuristics when user space does a map walk.
- 	 */
- 	pptr = htab_elem_get_ptr(l, map->key_size);
--	for_each_possible_cpu(cpu) {
--		copy_map_value_long(map, value + off, per_cpu_ptr(pptr, cpu));
--		check_and_init_map_value(map, value + off);
--		off += size;
--	}
-+	bpf_percpu_copy_to_user(map, pptr, value, size);
- 	ret = 0;
- out:
- 	rcu_read_unlock();
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index c93a756e035c0..02c184d20213c 100644
---- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -184,7 +184,7 @@ int bpf_percpu_cgroup_storage_copy(struct bpf_map *_map, void *key,
- {
- 	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
- 	struct bpf_cgroup_storage *storage;
--	int cpu, off = 0;
-+	void __percpu *pptr;
- 	u32 size;
-
- 	rcu_read_lock();
-@@ -199,11 +199,8 @@ int bpf_percpu_cgroup_storage_copy(struct bpf_map *_map, void *key,
- 	 * will not leak any kernel data
- 	 */
- 	size = round_up(_map->value_size, 8);
--	for_each_possible_cpu(cpu) {
--		bpf_long_memcpy(value + off,
--				per_cpu_ptr(storage->percpu_buf, cpu), size);
--		off += size;
--	}
-+	pptr = storage->percpu_buf;
-+	bpf_percpu_copy_to_user(_map, pptr, value, size);
- 	rcu_read_unlock();
- 	return 0;
- }
-@@ -213,7 +210,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *_map, void *key,
- {
- 	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
- 	struct bpf_cgroup_storage *storage;
--	int cpu, off = 0;
-+	void __percpu *pptr;
- 	u32 size;
-
- 	if (map_flags != BPF_ANY && map_flags != BPF_EXIST)
-@@ -233,11 +230,8 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *_map, void *key,
- 	 * so no kernel data leaks possible
- 	 */
- 	size = round_up(_map->value_size, 8);
--	for_each_possible_cpu(cpu) {
--		bpf_long_memcpy(per_cpu_ptr(storage->percpu_buf, cpu),
--				value + off, size);
--		off += size;
--	}
-+	pptr = storage->percpu_buf;
-+	bpf_percpu_copy_from_user(_map, pptr, value, size);
- 	rcu_read_unlock();
- 	return 0;
- }
---
-2.50.1
-
+>
+> Does the bpf CI run tests repeatedly or is this only a manual
+> scenario ?
 
