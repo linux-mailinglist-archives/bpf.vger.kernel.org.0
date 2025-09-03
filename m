@@ -1,169 +1,121 @@
-Return-Path: <bpf+bounces-67254-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67278-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C9FEB41583
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 08:50:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F195B41E64
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 14:08:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 585B63A792A
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 06:50:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA5C17B98B5
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 12:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997722D97B7;
-	Wed,  3 Sep 2025 06:48:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DFAA28640C;
+	Wed,  3 Sep 2025 12:05:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mii0Lrdn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Chha8Jgg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73ED52D8DD3;
-	Wed,  3 Sep 2025 06:48:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8898428467D
+	for <bpf@vger.kernel.org>; Wed,  3 Sep 2025 12:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756882133; cv=none; b=LlWUy3eAgXkR8bL5UIjPrqVqTD4fS0UOurgG+keMNeHZ5ZvUPvItI59b+wdjSYdiVILDJutFmJ1frCg8gA0LmWCXcBv699CJRjkJgUsjoEjHbACpfGHHUx4EVFjajSlNUprOcc7CFX4BM91WRLTeYx5X/TMhQEZ2GQDQXqRqTLM=
+	t=1756901146; cv=none; b=VL4IjM/bEPG8J1FcXZBLW54BK8K4kvNcRV22B41jWKV64D0Rg+/88ONFxvrI3r/k7SHavs/I0d7560ekVwgqQjmr7v5CEQIi+5M9UOQHVM9MSH2LcqajcecLfp0dSVXpMwQUTc1ZUtB4cSfZ1Ta9+h7XztIeUwhOUmPu86FeLcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756882133; c=relaxed/simple;
-	bh=qjmB1RAA7F0wVqM7zHKXMSrfTZRfahNUiS26O3cUvT8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=crmQeBb42bQyHs7v2kVAB1lsd8YgB2Dcl+p8YB7ESTfswmBLikqG3a5/tclRFNKYuUIjqfVkIdMq8798IehMObYElOF9l3UmX1aU0sxeyLeIoJvGwjpzl9VE4HVD9gbOlUU8E+Mdw1ChTrpaZx4I0Kc32woNiX07jnndPSY2GOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mii0Lrdn; arc=none smtp.client-ip=209.85.218.47
+	s=arc-20240116; t=1756901146; c=relaxed/simple;
+	bh=f8N5DIYzoUBoEio1+AEddeH7BI1EjC+5LFt8y7V6Q/c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XoSmiKMT9LG647Im/0GoMrBIPgQqirCqlwCKMElp56zOBbAfgRMuzF4r097rS8RgPnvFmOAdYCynP6D5X/m7114xtQ7y6DEUypY6OICulE4H8SGw+54aK/5SvIk7jrmUAH6PjUrA5XMen1p7u9OM7WtvMwp7EX6Mqwfg/gc97ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Chha8Jgg; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b0428b537e5so495770366b.3;
-        Tue, 02 Sep 2025 23:48:51 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-772843b6057so361141b3a.3
+        for <bpf@vger.kernel.org>; Wed, 03 Sep 2025 05:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756882130; x=1757486930; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AtIpceXnZjTA0NBZG6Ie6QAq4Kp296Wp3sK1PNsV79w=;
-        b=Mii0LrdnafKb/oR90tMideGmfM7fo7biNUIqMT+T7BNzQ0+PD81W3AAUFk4gHhztui
-         5y26v6URdaBWwti0PboYWuqz+5Y/FyYyPRHDI0+/BvP7nq/pJe2HX1/15plMLFFhvBdL
-         XMg7eFvWeZpgmadqJLKKfhYGp6Xku4p2Lr3SQuS6WJXWGfRT0Nl1deit3NO3NhiRKDY+
-         jbVf2PbomBcylAsR3Tc4c5X8QiKRCSrtNylk18cfP7mVZfNWOSIAG63hGLyYcMjUiyL2
-         a3P53sWpL0s64TXi7yHCw639h47micFGz3v4zz8OinlwX+FGm639h2GZ06mXWV9WG3tq
-         xVZw==
+        d=gmail.com; s=20230601; t=1756901144; x=1757505944; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Qykk0xQthpe0RRYOkXWUZrDmHJY/as+WNnOR6DEJK4=;
+        b=Chha8JggRt9SkzjGGfJoEhkNRF7x42whOtCGpT5fyU6orIkbRnWr1GM3mPpPEiNoIz
+         xPem222n26fTQ5SsfRC+Vr99HdDJbpYOL9wk0N4LXyOEyb9edyELOC2aL5NPkDjR5VTt
+         qDONtF7QrEf4EBpUx+Wq0dL1CIGTqHmN6AMxdK2g2zji9BNV1ikEB1FiBNDPRN9U7swS
+         oDfY3OiI9Qs8tb+G89i9xlaWsTUdJkpws2MSH07Y+n64gMrtwsvNetAsFJXyDO7DZoma
+         WPNgAUgiKL796jQ4JqEaC8wL8l5Sb21F/FZKj3rX43+s7r68vYjM9Lcr6Zut0yxci4i0
+         WMeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756882130; x=1757486930;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AtIpceXnZjTA0NBZG6Ie6QAq4Kp296Wp3sK1PNsV79w=;
-        b=mEuVooSaZkBYRGGCd4vQMRkuu/GyQZKmwkP5hlFHLg5ouNNqYAj0e5Svm7AM0Wsjav
-         WtFCalZ/BXkAtGToMuQ/fwPKffYOajuqi75BCVUscmDVFpGPKfy8VhvhzrU2775SAwL6
-         QFfxGv4uskgmrQ1ga+ycR3iy1DqG5hihiaHlRMNQhX0uD1VdasVTTubeP7sUovIeHitq
-         cJVA0RDGUr7oQsB/bMeSbH+/BhvdZh09P/iCUNz8BvaiDBz+16iZzbEpHlPfzxOFeWkM
-         v7+Z52NRQ9dUr6kSbHXnxBEUOuX2P7sLB/hVwL68CGggnxn7eB2IUxElYQz/bhCb2quC
-         lpMg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJU88Bw8DQVKEopUqx1orb0XoH1cnf6ObpPh7zq1vh5/dBOm5yNoVHq7oYjQPT1zyB99Q=@vger.kernel.org, AJvYcCVnEsatd++BSV7mowcOLHib28vWTul6h9cYwjWin0JgfFcpk9y3DBrWXbo65VQEiX8pRJMu+/MR7WLiqmvbnhV1fngL@vger.kernel.org, AJvYcCWyk1gfd8UwFPcWhn3WkcmA8RARSOD1MKgsJ2DnodU1iN6UWG46YC1d+JCsV4IVQNi+RogzD+xokqQjbsOn@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxw4jzOUEu3s1gaUU38rVnErXQOlXqFqrfylKeu8mNyuO7giDeG
-	OH+FiCNMWl1s8uJHq8QFAC9KuVPPk+gmwPL8u+AgmKrFyfk/mzmxRlCX
-X-Gm-Gg: ASbGncvpayB7uO1IwT6dYpyN4YQ3L6Q7FsublQ4KPN9INkPBBbJiHBiZVWwS+Q/qAYe
-	2aCqBmNUtpjTGDAw73OX/Zs2S6ZWcc1+HtlcXsfDHjGpFwXK5T7LLzx8Fwvzt1Cn4fhoKzn5CZC
-	7ic+Jk7ZYhvCgjsFFz+UtATqtTNEwgN811aa0hb1reaQhzZda7gV75CWu4+fM7G0Ot2ZVnwj9DR
-	RSndhCrS9aJdGau1wr8J6RAszHXXUaiX5Rj3+AFR8md0yg+A4pJtbkW+bt8vnszs69sSY9mtrTj
-	Hgt/wZEoGzWcFA8kP8SFHCZLLDpVGgfp0A8zRkNE+G2l8/QAFnvkxm4F/xvJA/CeLP2lyW/I4Q2
-	+j3iSOLR9AuWlvmZ8s+8xMw==
-X-Google-Smtp-Source: AGHT+IGVu836mQO+y8+vS80i0WjWO4Im+/HFsaRS2Q1h4C91RiD8hiCYlHBjxai2RlpQHTzTdhDbBQ==
-X-Received: by 2002:a17:907:94d2:b0:ae0:d1f3:f7f4 with SMTP id a640c23a62f3a-b01d8a2fd89mr1355062166b.13.1756882129612;
-        Tue, 02 Sep 2025 23:48:49 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b04252103f2sm730511366b.50.2025.09.02.23.48.47
+        d=1e100.net; s=20230601; t=1756901144; x=1757505944;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4Qykk0xQthpe0RRYOkXWUZrDmHJY/as+WNnOR6DEJK4=;
+        b=T/8IK4Y7EmbG4+QUaitvu4QzMTpSKR/DZyUiX0MtWy1q9zb3RlAW79Q+jn7IrAEtGP
+         z6xtIROprfaNTZICJNPqqhyAWh2ORmBy5Qvv287Aj+jFTDK879oftINdXKlUnhLs4iBq
+         oKonx9rSR3e8uZq3rfMWXGYVUogcnpme8BPYcnx8GUTE8jGaMtbwF2kyx9oKLjZEd78d
+         cdi8ppHUGbxSl4TywtaR6CdrUaeqTEcnfqgZC34I2bCdulIZIhXoAgVQUwafzRMkF6vQ
+         Y5F+3FX4qkA4hed49EvPUwDJfE0nrXQCyYjGaGbS2dBTHwAcGON2fJwaPOoj1/jBAWMT
+         M2bg==
+X-Forwarded-Encrypted: i=1; AJvYcCXaXsIQspCY2MXDjx/y8KVmWfDWZ1XcucPcP5k5T5ci2o2E73x15SuNM/VmPJW7d0tCXeg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGcChmgjqB8eKnMju5xeEAaAYx8NcwHp2qRHr762x7GbX2DOYg
+	0ts0Px5OxWwBSf94j3u3Fcyl0LBfoCNff1OUXW997h0ete0XnXIQORoS
+X-Gm-Gg: ASbGncshBUTXTwaMmOLk33e1yiYoaWnJrExejHz26idK/KUERqr9VKuQJkSIAzb/Lfg
+	50G9o/F2Ft1VAs0SR8dRkMKKyI4VB4hsNr+fXKpdPIFYiGts0WBt7Q/A/E6UboYCXVWoB7MaKHf
+	+iM8MBBbzzq4eQLoSOnA+yjlL6z883zd6hWTLjx90tbVrghbr4JNjD0lHeshB5DYzA4BIr+yKZo
+	lNBtobwWCd3b+MTsOMkDMZ1SmQvIZkvVBXj4pgIlDUi+K/0sYDT2OIH44MG/PAq3v8nEsvonDZh
+	80Jkg3yV/hnN2MUp0VEOKJ4xzw9r/NcOFepIaZBgaYwIOZW6dvw/YZqJMCqMulOhG3nVRKFHiJL
+	0QBc4NQuFOegCcMSXpfRvqHYO5v0KsKkm2ufPdgOmxzPp3ooAGpo=
+X-Google-Smtp-Source: AGHT+IF9pVOHyDnykUAgAHhoztq3yyto5TS2UIr0a5IaKVOEo/rPYlHUXdNXwZG9HhNFzr/X66iUUQ==
+X-Received: by 2002:a17:902:f642:b0:248:6860:80dd with SMTP id d9443c01a7336-2494485d541mr217919425ad.1.1756901143664;
+        Wed, 03 Sep 2025 05:05:43 -0700 (PDT)
+Received: from devbox.. ([43.132.141.28])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a5014desm16615899b3a.92.2025.09.03.05.05.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Sep 2025 23:48:49 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 3 Sep 2025 08:48:44 +0200
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv6 perf/core 10/22] uprobes/x86: Add support to optimize
- uprobes
-Message-ID: <aLfkzE_eMYE40QjD@krava>
-References: <20250720112133.244369-1-jolsa@kernel.org>
- <20250720112133.244369-11-jolsa@kernel.org>
- <20250819191515.GM3289052@noisy.programming.kicks-ass.net>
+        Wed, 03 Sep 2025 05:05:43 -0700 (PDT)
+From: Hengqi Chen <hengqi.chen@gmail.com>
+To: chenhuacai@kernel.org,
+	yangtiezhu@loongson.cn,
+	vincent.mc.li@gmail.com,
+	hejinyang@loongson.cn
+Cc: loongarch@lists.linux.dev,
+	bpf@vger.kernel.org,
+	Hengqi Chen <hengqi.chen@gmail.com>
+Subject: [PATCH v4 0/8] LoongArch: Fix BPF trampoline related issues
+Date: Wed,  3 Sep 2025 07:01:05 +0000
+Message-ID: <20250903070113.42215-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250819191515.GM3289052@noisy.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 19, 2025 at 09:15:15PM +0200, Peter Zijlstra wrote:
-> On Sun, Jul 20, 2025 at 01:21:20PM +0200, Jiri Olsa wrote:
-> 
-> > +static bool __is_optimized(uprobe_opcode_t *insn, unsigned long vaddr)
-> > +{
-> > +	struct __packed __arch_relative_insn {
-> > +		u8 op;
-> > +		s32 raddr;
-> > +	} *call = (struct __arch_relative_insn *) insn;
-> 
-> Not something you need to clean up now I suppose, but we could do with
-> unifying this thing. we have a bunch of instances around.
+The following two selftest cases triggers oops on LoongArch:
 
-found two below, maybe we could use 'union text_poke_insn' instead like below?
+    $ ./test_progs -a ns_bpf_qdisc -a tracing_struct
 
-jirka
+This series tries to fix/workaround these issues.
+See individual commit for details.
 
+v3 -> v4:
+* Completely rework of previous version
+* Fix more subtle issues
 
----
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 6079d15dab8c..7fd03897d776 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -109,14 +109,10 @@ const int kretprobe_blacklist_size = ARRAY_SIZE(kretprobe_blacklist);
- static nokprobe_inline void
- __synthesize_relative_insn(void *dest, void *from, void *to, u8 op)
- {
--	struct __arch_relative_insn {
--		u8 op;
--		s32 raddr;
--	} __packed *insn;
--
--	insn = (struct __arch_relative_insn *)dest;
--	insn->raddr = (s32)((long)(to) - ((long)(from) + 5));
--	insn->op = op;
-+	union text_poke_insn *insn = dest;
-+
-+	insn->disp = (s32)((long)(to) - ((long)(from) + 5));
-+	insn->opcode = op;
- }
- 
- /* Insert a jump instruction at address 'from', which jumps to address 'to'.*/
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 0a8c0a4a5423..bac14f3165c3 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -1046,14 +1046,11 @@ static int copy_from_vaddr(struct mm_struct *mm, unsigned long vaddr, void *dst,
- 
- static bool __is_optimized(uprobe_opcode_t *insn, unsigned long vaddr)
- {
--	struct __packed __arch_relative_insn {
--		u8 op;
--		s32 raddr;
--	} *call = (struct __arch_relative_insn *) insn;
-+	union text_poke_insn *call = (union text_poke_insn *) insn;
- 
- 	if (!is_call_insn(insn))
- 		return false;
--	return __in_uprobe_trampoline(vaddr + 5 + call->raddr);
-+	return __in_uprobe_trampoline(vaddr + 5 + call->disp);
- }
- 
- static int is_optimized(struct mm_struct *mm, unsigned long vaddr)
+Hengqi Chen (8):
+  LoongArch: BPF: Remove duplicated flags check
+  LoongArch: BPF: Remove duplicated bpf_flush_icache()
+  LoongArch: BPF: No support of struct argument in trampoline programs
+  LoongArch: BPF: No text_poke() for kernel text
+  LoongArch: BPF: Don't assume trampoline size is page aligned
+  LoongArch: BPF: Make trampoline size stable
+  LoongArch: BPF: Make error handling robust in
+    arch_prepare_bpf_trampoline()
+  LoongArch: BPF: Sign extend struct ops return values properly
+
+ arch/loongarch/net/bpf_jit.c | 67 +++++++++++++++++++++++++++---------
+ 1 file changed, 51 insertions(+), 16 deletions(-)
+
+--
+2.43.5
 
