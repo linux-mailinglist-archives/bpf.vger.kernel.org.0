@@ -1,261 +1,474 @@
-Return-Path: <bpf+bounces-67322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35E79B4280B
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 19:36:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B47AB4286E
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 19:59:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDFBB3BE175
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 17:36:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6F22565C44
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 17:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A4922D3ECA;
-	Wed,  3 Sep 2025 17:36:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B7035209B;
+	Wed,  3 Sep 2025 17:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mYIewe6n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kzONO0Ou"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463134C92
-	for <bpf@vger.kernel.org>; Wed,  3 Sep 2025 17:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422832EB849;
+	Wed,  3 Sep 2025 17:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756920989; cv=none; b=o6kwOCR14cQ0efgsfMup5/cTooNTQ7lrhcIEgBoVoKglq3L6C1q/nMAnZcwSPRV9R2I6B1XagrWWMZwL84IA8KXud4KkRi5rl/lrapW7dOM4rPJJ1C6VdjR/plosdNbSfroUYQQ+uj3yyy533FPL/WyThBtRcx423DQAQifxz4I=
+	t=1756922333; cv=none; b=imp9V/VdIcL5MkmBjssgaaIhqGRvcrvQOEw1S9DuAIYR8+L6tGupRe7NuZlk4v56FVbMmLqeeAmFgjnrcZ9gn5x2cPaMYJCgsLwiY7w4qkBtg1X5MjibgOgXUoH2qcJHkUk2Jlyr4fisjre9nB0ce4YGHDmsFmA/zW4iK2TNjWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756920989; c=relaxed/simple;
-	bh=FyxikpDB6NmZDsL8wg2wQn/Qq8OClMkqnc8J3QNLlk4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qJMvUUGCyWBLkJwh8ZxaJvz+ChLCaix7d3DbFduL+g0aw8npYdNdHM4b+vHts1LdYYTon85ixi9NkYhVHJ2Riubx4YvKQHfQfHqJ41gZD4iqPxilkkUkwGqqVItnBM8JLMHD3Egr59H15ps54ik5K2i2GGJZEG68L6+D2FKmWIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mYIewe6n; arc=none smtp.client-ip=209.85.218.50
+	s=arc-20240116; t=1756922333; c=relaxed/simple;
+	bh=PKnWn6ca9EDsLnMx9Iy54O/89/K99WEwh+HMw2GGcGY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tp9S8Pw0Hkx9pSaV8R6M3I1i1oIiH9IYsqRYnrDTwykivx30nuGkfgErRzNZKCiZYT+HA2Rt0uewacTCFyFvH8CgUy5ogEEJM3EGnT8pzPceLosUzi5Tm5fkG4k3tw1ljPDI4yHyqzJ9PHIVyiqhLHZFVFPdX4p390ZsFDjWyB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kzONO0Ou; arc=none smtp.client-ip=209.85.219.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-b0449b1b56eso24736366b.1
-        for <bpf@vger.kernel.org>; Wed, 03 Sep 2025 10:36:27 -0700 (PDT)
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-7211b09f649so699466d6.3;
+        Wed, 03 Sep 2025 10:58:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756920985; x=1757525785; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TbzKAWNRLjJj67tbN2L6zhA3z70SJoeoCtZ9zHlkKa4=;
-        b=mYIewe6nITJ2+N9ddNd1eGs0NWVBrQ8oHrcpwymrIJLPWFm7KnmnC8YmPXcdjfKNZs
-         of6OztWy0J0da6W/rmU/isQiMZR9rjAaKt978XreHyPubz8EC/BGxzfaEH5HjjZyWZVq
-         CdfmQJoMwgUZKhLC7RlexT6Ks0x209TPl5wGJAESXJ14wvmiaiFqau9MS6NtLednZmxn
-         TOR9aKLd6sRqGKGp2A+kwyRrlEBUpJbOmK4VqQCwlpNozbihEvU/OChzRHr/GvuDnY8p
-         WqGpsy9ewxVfqEdE/4p1tSKXOZQf3eyY8dEQEiKGRBUns4b7rpEi/qNxXjSZY7Fjlh7j
-         dyxA==
+        d=gmail.com; s=20230601; t=1756922330; x=1757527130; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e36OV5kUsA67CqNEN60qSeYCTRvQ0vSL6HVPi8QnIf4=;
+        b=kzONO0OuGKbNMmz9DWlphMyIw6AptjnmvRbZfJoWVBQ5d3WDgCfqwpSS4MvXIeXfFb
+         93yLsrvgyTqkD4dyN8ul1IOlb8mN++KygaDvyqN1f0acrVcRTIbQH6b0gHaG2D4UQusM
+         ryV58KDpzxzbsR5EuaLzQOvwevLBZB3zsHXRNyzH4VljpRlzLT+5CabFoJw3Xxm3l7/C
+         RqHrp99gxMhoOR6X5fyPC3H/spnkj6XxN9kGeSOqKvuHgN6hIhbXz+aLL2b34lSfEycQ
+         hSpZ2KyjRwl6ekB0CoNu++8uXe8Qwg70jPlhJyP9TtjBsB5VcUKMSbevgsy36hqUY4Uc
+         pAOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756920985; x=1757525785;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TbzKAWNRLjJj67tbN2L6zhA3z70SJoeoCtZ9zHlkKa4=;
-        b=iJbDWe1PsLr6mVtE0NaX8KUa27R76s4sFDjMdCfhll5GgSkXzUj6/+oWowGgjKqCHp
-         4ZHIqTiBACeq6YAOMFdSMvexRPPm8CVFC/WyEWVA26cklUY2NYwUiKjNgeAH+jSm+tRE
-         eAj15GIzh+YJ0sIMlmC+k8xeIxQP4GwI+zeN5VN/ud6h47PCJ2i6kO0cIACxKUNVNxIZ
-         8tsv+AHvHOEtqAl9tQgXphrtwXThXzOwpcX6RC0uagu+hrNNNbFK1sMpFWK7QsKGWzWL
-         tq3Cpq7HdyyexxEImjqH8xm3M+AfLKynGy9N9kDg+yH2wi3mfhTZQcLQ9g5bIPrsZPAY
-         SxQQ==
-X-Gm-Message-State: AOJu0YzFLm6/UTF8oxOTZMRwv4b3We3QghPFeczA1zdU6jci+CFMqzh5
-	9ww6Qx/ZgdVkBDTwWr8Rn4buSCQIAIAcXiqknjd++FJJmRKTy05TMAG65IWecPhMxARfDgRBPcX
-	3YVi9PifzsMgTa8QKNtarXI5OyWUTPWf5sw==
-X-Gm-Gg: ASbGncvLTO5XfoUAtiCaW6Yxkv8ZjGW3cyXT9NAFgwCJJ2zaV4kvrsEG2djoX8MxeWa
-	N0GLH4vg2oDxGf1OowKVEcPKL/hYF/YGEQAxRGGgW9vthhDmtR9onIgOoxLx63KW/iSYG/frI0r
-	W4bjI3c7VmvvIBswFMorkZHJCqzal88uVaWhbWtKHQ5rcfPd7c6k49e+x0hq6hnDzdMsQZJskQb
-	i6uDDmt5VhQf85ZQ9OK1vF+ObZj7AiwRA==
-X-Google-Smtp-Source: AGHT+IHd0QxPpDD2dIztzqresRHkk4xF9zG3fWEn3K23T9fQT4irGmlmvnrYMYX98TDkWoxIxzGUMStNcAVvEKkWBcI=
-X-Received: by 2002:a17:907:e98b:b0:afe:e7f1:289d with SMTP id
- a640c23a62f3a-b01df90c1ccmr1739053566b.62.1756920985212; Wed, 03 Sep 2025
- 10:36:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1756922330; x=1757527130;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e36OV5kUsA67CqNEN60qSeYCTRvQ0vSL6HVPi8QnIf4=;
+        b=XUHhsqW8RDn2A1JWaB9J8FSaq3I/Zb917ld2RfE9BKK4KlvWdk77BkAwtjtH6t8TZA
+         0RtdC9tTgt1kUZ+pbNxkRdFraOgZRHp33T7H/9ZMltWroJ+1PYxV17IWJ/V/H8LeUQmp
+         fRHqcqO9N5AJwYrSuVA4BKRd7TZuplSs8mQz7uX/rVq2h4DgtgQLGV0+aduUezISlVAR
+         ylCgmpCbYybbALeLZn3JhyLUzjwCd9CJwrUooJe4XIHDyp1v02/qyZrcA53aLOrmW/Qo
+         WhUChSObOermbaMDGW2+AiRyYjU5TBgvRi+DwZXy//j/enYdFNWZ7xhwOsiOn0YdRzIc
+         ov3A==
+X-Gm-Message-State: AOJu0YzL2gEGeWsC+LcZLWNJSLcFmTmVkIXXFBodSunzNZ9ZAD9MGcaW
+	Nhe2+GcCTdrBGVl5kbBdkLiJSnnmC9B2rMAmEjFr0Ku7wX9V/xn0Rr/+jW4ujzXmnto=
+X-Gm-Gg: ASbGnctgkjd2RI1aPlmMtoR3Kf4cPHrRO4H6l8qUMsdvxECsKHYs2J0Vili5eJX6Ht9
+	DKdegTvzds0dDAwNEa5/uHmtDKC5LkZSN622fhkch5PBrz12I76xhkEd1FC5NOyAI2yT6qnpvAK
+	XSOQaMR7jeiGyvRQYuGFlwEiHl5CWU1uSt1NFS81JNozYqtkF7cpI+gPWbcVSaqEkxNcsTzdG+e
+	IkEkTP7SZ2DXPQEHUYTV4mh6x40atEKdE5jf6ffp5/Ubjpy3YJOIM8a1IiRRQ+7z6vTBB3lPuVU
+	/KNpF0hMyii3Z0CErMIhjDm0YRRXvTWxBYsQb2rTLCfIRIJInMEqUrblRSD2QS16iCkzhDYI344
+	4dq7vwK3y8/0yEPOMObWSZBxTUHz9NTN+y3XkcccR9V1iNtLyHpPBjZ4SKbR4LWMCFK3Zm193Sx
+	Bh85Craw==
+X-Google-Smtp-Source: AGHT+IGFhTSKYKqN7YPQAPBBWZD32CmvfLH0GKL3oohS7NW50s5LM6YKZlpXxavTfmvp8atsFC80zg==
+X-Received: by 2002:a05:6214:4107:b0:71d:d902:692b with SMTP id 6a1803df08f44-71dd9027299mr95431726d6.29.1756922329648;
+        Wed, 03 Sep 2025 10:58:49 -0700 (PDT)
+Received: from kerndev.lan (pool-100-15-227-251.washdc.fios.verizon.net. [100.15.227.251])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-720b4665fdasm31955546d6.40.2025.09.03.10.58.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Sep 2025 10:58:49 -0700 (PDT)
+From: David Windsor <dwindsor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	dwindsor@gmail.com
+Subject: [PATCH 1/2] kernel/bpf: Add BPF_MAP_TYPE_CRED_STORAGE map type and kfuncs
+Date: Wed,  3 Sep 2025 13:58:40 -0400
+Message-ID: <20250903175841.232537-1-dwindsor@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250903170411.69188-1-leon.hwang@linux.dev>
-In-Reply-To: <20250903170411.69188-1-leon.hwang@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 3 Sep 2025 10:36:11 -0700
-X-Gm-Features: Ac12FXzvPg9whaDr7t7OpHlV2VVRbo_Por5l2PvAoG-1Y19BdX1Bc36znVaaBYw
-Message-ID: <CAADnVQL-Zj95bfOxkxc2tf9CKvUSCt4PKdoQMZtqaiirzPLxvw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Generalize data copying for percpu maps
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, kernel-patches-bot@fb.com, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 3, 2025 at 10:04=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
->
-> While adding support for the BPF_F_CPU and BPF_F_ALL_CPUS flags, the data
-> copying logic of the following percpu map types needs to be updated:
->
-> * percpu_array
-> * percpu_hash
-> * lru_percpu_hash
-> * percpu_cgroup_storage
->
-> Following Andrii=E2=80=99s suggestion[0], this patch refactors the data c=
-opying
-> logic by introducing two helpers:
->
-> * `bpf_percpu_copy_to_user()`
-> * `bpf_percpu_copy_from_user()`
->
-> This prepares the codebase for the upcoming CPU flag support.
->
-> [0] https://lore.kernel.org/bpf/20250827164509.7401-1-leon.hwang@linux.de=
-v/
->
-> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
->  include/linux/bpf.h        | 29 ++++++++++++++++++++++++++++-
->  kernel/bpf/arraymap.c      | 14 ++------------
->  kernel/bpf/hashtab.c       | 20 +++-----------------
->  kernel/bpf/local_storage.c | 18 ++++++------------
->  4 files changed, 39 insertions(+), 42 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 8f6e87f0f3a89..2dc0299a2da50 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -547,6 +547,34 @@ static inline void copy_map_value_long(struct bpf_ma=
-p *map, void *dst, void *src
->         bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
->  }
->
-> +#ifdef CONFIG_BPF_SYSCALL
-> +static inline void bpf_percpu_copy_to_user(struct bpf_map *map, void __p=
-ercpu *pptr, void *value,
-> +                                          u32 size)
-> +{
-> +       int cpu, off =3D 0;
-> +
-> +       for_each_possible_cpu(cpu) {
-> +               copy_map_value_long(map, value + off, per_cpu_ptr(pptr, c=
-pu));
-> +               check_and_init_map_value(map, value + off);
-> +               off +=3D size;
-> +       }
-> +}
-> +
-> +void bpf_obj_free_fields(const struct btf_record *rec, void *obj);
-> +
-> +static inline void bpf_percpu_copy_from_user(struct bpf_map *map, void _=
-_percpu *pptr, void *value,
-> +                                            u32 size)
-> +{
-> +       int cpu, off =3D 0;
-> +
-> +       for_each_possible_cpu(cpu) {
-> +               copy_map_value_long(map, per_cpu_ptr(pptr, cpu), value + =
-off);
-> +               bpf_obj_free_fields(map->record, per_cpu_ptr(pptr, cpu));
-> +               off +=3D size;
-> +       }
-> +}
-> +#endif
-> +
->  static inline void bpf_obj_swap_uptrs(const struct btf_record *rec, void=
- *dst, void *src)
->  {
->         unsigned long *src_uptr, *dst_uptr;
-> @@ -2417,7 +2445,6 @@ struct btf_record *btf_record_dup(const struct btf_=
-record *rec);
->  bool btf_record_equal(const struct btf_record *rec_a, const struct btf_r=
-ecord *rec_b);
->  void bpf_obj_free_timer(const struct btf_record *rec, void *obj);
->  void bpf_obj_free_workqueue(const struct btf_record *rec, void *obj);
-> -void bpf_obj_free_fields(const struct btf_record *rec, void *obj);
->  void __bpf_obj_drop_impl(void *p, const struct btf_record *rec, bool per=
-cpu);
->
->  struct bpf_map *bpf_map_get(u32 ufd);
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index 3d080916faf97..6be9c54604503 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -300,7 +300,6 @@ int bpf_percpu_array_copy(struct bpf_map *map, void *=
-key, void *value)
->         struct bpf_array *array =3D container_of(map, struct bpf_array, m=
-ap);
->         u32 index =3D *(u32 *)key;
->         void __percpu *pptr;
-> -       int cpu, off =3D 0;
->         u32 size;
->
->         if (unlikely(index >=3D array->map.max_entries))
-> @@ -313,11 +312,7 @@ int bpf_percpu_array_copy(struct bpf_map *map, void =
-*key, void *value)
->         size =3D array->elem_size;
->         rcu_read_lock();
->         pptr =3D array->pptrs[index & array->index_mask];
-> -       for_each_possible_cpu(cpu) {
-> -               copy_map_value_long(map, value + off, per_cpu_ptr(pptr, c=
-pu));
-> -               check_and_init_map_value(map, value + off);
-> -               off +=3D size;
-> -       }
-> +       bpf_percpu_copy_to_user(map, pptr, value, size);
->         rcu_read_unlock();
->         return 0;
->  }
-> @@ -387,7 +382,6 @@ int bpf_percpu_array_update(struct bpf_map *map, void=
- *key, void *value,
->         struct bpf_array *array =3D container_of(map, struct bpf_array, m=
-ap);
->         u32 index =3D *(u32 *)key;
->         void __percpu *pptr;
-> -       int cpu, off =3D 0;
->         u32 size;
->
->         if (unlikely(map_flags > BPF_EXIST))
-> @@ -411,11 +405,7 @@ int bpf_percpu_array_update(struct bpf_map *map, voi=
-d *key, void *value,
->         size =3D array->elem_size;
->         rcu_read_lock();
->         pptr =3D array->pptrs[index & array->index_mask];
-> -       for_each_possible_cpu(cpu) {
-> -               copy_map_value_long(map, per_cpu_ptr(pptr, cpu), value + =
-off);
-> -               bpf_obj_free_fields(array->map.record, per_cpu_ptr(pptr, =
-cpu));
-> -               off +=3D size;
-> -       }
-> +       bpf_percpu_copy_from_user(map, pptr, value, size);
->         rcu_read_unlock();
->         return 0;
->  }
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 71f9931ac64cd..5f0f3c00dbb74 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -944,12 +944,8 @@ static void pcpu_copy_value(struct bpf_htab *htab, v=
-oid __percpu *pptr,
->                 copy_map_value(&htab->map, this_cpu_ptr(pptr), value);
->         } else {
->                 u32 size =3D round_up(htab->map.value_size, 8);
-> -               int off =3D 0, cpu;
->
-> -               for_each_possible_cpu(cpu) {
-> -                       copy_map_value_long(&htab->map, per_cpu_ptr(pptr,=
- cpu), value + off);
-> -                       off +=3D size;
-> -               }
-> +               bpf_percpu_copy_from_user(&htab->map, pptr, value, size);
+All other bpf local storage is obtained using helpers which benefit from
+RET_PTR_TO_MAP_VALUE_OR_NULL, so can return void * pointers directly to
+map values. kfuncs don't have that, so return struct
+bpf_local_storage_data * and access map values through sdata->data.
 
-This is not a refactor. There is a significant change in the logic.
-Why is it needed? Bug fix or introducing a bug?
+Signed-off-by: David Windsor <dwindsor@gmail.com>
+---
+ include/linux/bpf_lsm.h       |  35 +++++++
+ include/linux/bpf_types.h     |   1 +
+ include/uapi/linux/bpf.h      |   1 +
+ kernel/bpf/Makefile           |   1 +
+ kernel/bpf/bpf_cred_storage.c | 175 ++++++++++++++++++++++++++++++++++
+ kernel/bpf/syscall.c          |  10 +-
+ kernel/cred.c                 |   7 ++
+ security/bpf/hooks.c          |   1 +
+ 8 files changed, 228 insertions(+), 3 deletions(-)
+ create mode 100644 kernel/bpf/bpf_cred_storage.c
 
-The names to_user and from_user are wrong.
-There is no user space memory involved.
+diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+index 643809cc78c3..b0e2e5f2a2b8 100644
+--- a/include/linux/bpf_lsm.h
++++ b/include/linux/bpf_lsm.h
+@@ -40,10 +40,27 @@ static inline struct bpf_storage_blob *bpf_inode(
+ 	return inode->i_security + bpf_lsm_blob_sizes.lbs_inode;
+ }
+ 
++static inline struct bpf_storage_blob *bpf_cred(
++	const struct cred *cred)
++{
++	if (unlikely(!cred->security))
++		return NULL;
++
++	return cred->security + bpf_lsm_blob_sizes.lbs_cred;
++}
++
+ extern const struct bpf_func_proto bpf_inode_storage_get_proto;
+ extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
+ void bpf_inode_storage_free(struct inode *inode);
+ 
++void bpf_cred_storage_free(struct cred *cred);
++struct bpf_local_storage_data *bpf_cred_storage_get(struct bpf_map *map,
++						    struct cred *cred,
++						    void *init,
++						    int init__sz,
++						    u64 flags);
++int bpf_cred_storage_delete(struct bpf_map *map, struct cred *cred);
++
+ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
+ 
+ int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
+@@ -81,6 +98,24 @@ static inline void bpf_inode_storage_free(struct inode *inode)
+ {
+ }
+ 
++static inline void bpf_cred_storage_free(struct cred *cred)
++{
++}
++
++static inline struct bpf_local_storage_data *bpf_cred_storage_get(struct bpf_map *map,
++								  struct cred *cred,
++								  void *init,
++								  int init__sz,
++								  u64 flags)
++{
++	return NULL;
++}
++
++static inline int bpf_cred_storage_delete(struct bpf_map *map, struct cred *cred)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+ 					   bpf_func_t *bpf_func)
+ {
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index fa78f49d4a9a..109404ff6f08 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -110,6 +110,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_HASH_OF_MAPS, htab_of_maps_map_ops)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_INODE_STORAGE, inode_storage_map_ops)
+ #endif
+ BPF_MAP_TYPE(BPF_MAP_TYPE_TASK_STORAGE, task_storage_map_ops)
++BPF_MAP_TYPE(BPF_MAP_TYPE_CRED_STORAGE, cred_storage_map_ops)
+ #ifdef CONFIG_NET
+ BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP, dev_map_ops)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP_HASH, dev_map_hash_ops)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 233de8677382..8ce34453b907 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1026,6 +1026,7 @@ enum bpf_map_type {
+ 	BPF_MAP_TYPE_USER_RINGBUF,
+ 	BPF_MAP_TYPE_CGRP_STORAGE,
+ 	BPF_MAP_TYPE_ARENA,
++	BPF_MAP_TYPE_CRED_STORAGE,
+ 	__MAX_BPF_MAP_TYPE
+ };
+ 
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index 269c04a24664..a9e97cca162e 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -12,6 +12,7 @@ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list
+ obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
+ obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
+ obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
++obj-${CONFIG_BPF_LSM}	  += bpf_cred_storage.o
+ obj-$(CONFIG_BPF_SYSCALL) += disasm.o mprog.o
+ obj-$(CONFIG_BPF_JIT) += trampoline.o
+ obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o rqspinlock.o stream.o
+diff --git a/kernel/bpf/bpf_cred_storage.c b/kernel/bpf/bpf_cred_storage.c
+new file mode 100644
+index 000000000000..3202bb95830e
+--- /dev/null
++++ b/kernel/bpf/bpf_cred_storage.c
+@@ -0,0 +1,175 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/rculist.h>
++#include <linux/list.h>
++#include <linux/hash.h>
++#include <linux/types.h>
++#include <linux/spinlock.h>
++#include <linux/bpf.h>
++#include <linux/bpf_local_storage.h>
++#include <linux/bpf_lsm.h>
++#include <linux/cred.h>
++#include <linux/btf_ids.h>
++#include <linux/rcupdate_trace.h>
++
++DEFINE_BPF_STORAGE_CACHE(cred_cache);
++
++static struct bpf_local_storage __rcu **cred_storage_ptr(void *owner)
++{
++	struct cred *cred = owner;
++	struct bpf_storage_blob *bsb;
++
++	bsb = bpf_cred(cred);
++	if (!bsb)
++		return NULL;
++	return &bsb->storage;
++}
++
++static struct bpf_local_storage_data *cred_storage_lookup(struct cred *cred,
++							  struct bpf_map *map,
++							  bool cacheit_lockit)
++{
++	struct bpf_local_storage *cred_storage;
++	struct bpf_local_storage_map *smap;
++	struct bpf_storage_blob *bsb;
++
++	bsb = bpf_cred(cred);
++	if (!bsb)
++		return NULL;
++
++	cred_storage = rcu_dereference_check(bsb->storage, bpf_rcu_lock_held());
++	if (!cred_storage)
++		return NULL;
++
++	smap = (struct bpf_local_storage_map *)map;
++	return bpf_local_storage_lookup(cred_storage, smap, cacheit_lockit);
++}
++
++void bpf_cred_storage_free(struct cred *cred)
++{
++	struct bpf_local_storage *local_storage;
++	struct bpf_storage_blob *bsb;
++
++	bsb = bpf_cred(cred);
++	if (!bsb)
++		return;
++
++	migrate_disable();
++	rcu_read_lock();
++
++	local_storage = rcu_dereference(bsb->storage);
++	if (!local_storage)
++		goto out;
++
++	bpf_local_storage_destroy(local_storage);
++out:
++	rcu_read_unlock();
++	migrate_enable();
++}
++
++static int cred_storage_delete(struct cred *cred, struct bpf_map *map)
++{
++	struct bpf_local_storage_data *sdata;
++
++	sdata = cred_storage_lookup(cred, map, false);
++	if (!sdata)
++		return -ENOENT;
++
++	bpf_selem_unlink(SELEM(sdata), false);
++
++	return 0;
++}
++
++static struct bpf_map *cred_storage_map_alloc(union bpf_attr *attr)
++{
++	return bpf_local_storage_map_alloc(attr, &cred_cache, false);
++}
++
++static void cred_storage_map_free(struct bpf_map *map)
++{
++	bpf_local_storage_map_free(map, &cred_cache, NULL);
++}
++
++static int notsupp_get_next_key(struct bpf_map *map, void *key,
++				void *next_key)
++{
++	return -ENOTSUPP;
++}
++
++const struct bpf_map_ops cred_storage_map_ops = {
++	.map_meta_equal = bpf_map_meta_equal,
++	.map_alloc_check = bpf_local_storage_map_alloc_check,
++	.map_alloc = cred_storage_map_alloc,
++	.map_free = cred_storage_map_free,
++	.map_get_next_key = notsupp_get_next_key,
++	.map_check_btf = bpf_local_storage_map_check_btf,
++	.map_mem_usage = bpf_local_storage_map_mem_usage,
++	.map_btf_id = &bpf_local_storage_map_btf_id[0],
++	.map_owner_storage_ptr = cred_storage_ptr,
++};
++
++BTF_ID_LIST_SINGLE(bpf_cred_storage_btf_ids, struct, cred)
++
++__bpf_kfunc struct bpf_local_storage_data *bpf_cred_storage_get(struct bpf_map *map,
++								struct cred *cred,
++								void *init,
++								int init__sz,
++								u64 flags)
++{
++	struct bpf_local_storage_data *sdata;
++
++	WARN_ON_ONCE(!bpf_rcu_lock_held());
++	if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
++		return NULL;
++
++	if (!cred || !cred_storage_ptr(cred))
++		return NULL;
++
++	sdata = cred_storage_lookup(cred, map, true);
++	if (sdata)
++		return sdata;
++
++	/* This helper must only called from where the cred is guaranteed
++	 * to have a refcount and cannot be freed.
++	 */
++	if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
++		sdata = bpf_local_storage_update(
++			cred, (struct bpf_local_storage_map *)map, init,
++			BPF_NOEXIST, false, GFP_ATOMIC);
++		return IS_ERR(sdata) ? NULL : sdata;
++	}
++
++	return NULL;
++}
++
++__bpf_kfunc int bpf_cred_storage_delete(struct bpf_map *map, struct cred *cred)
++{
++	if (!cred)
++		return -EINVAL;
++
++	return cred_storage_delete(cred, map);
++}
++
++BTF_KFUNCS_START(bpf_cred_storage_kfunc_ids)
++BTF_ID_FLAGS(func, bpf_cred_storage_delete, 0)
++BTF_ID_FLAGS(func, bpf_cred_storage_get, KF_RET_NULL)
++BTF_KFUNCS_END(bpf_cred_storage_kfunc_ids)
++
++static const struct btf_kfunc_id_set bpf_cred_storage_kfunc_set = {
++	.owner = THIS_MODULE,
++	.set   = &bpf_cred_storage_kfunc_ids,
++};
++
++static int __init bpf_cred_storage_init(void)
++{
++	int err;
++	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_cred_storage_kfunc_set);
++	if (err) {
++		pr_err("bpf_cred_storage: failed to register kfuncs: %d\n", err);
++		return err;
++	}
++
++	pr_info("bpf_cred_storage: kfuncs registered successfully\n");
++	return 0;
++}
++late_initcall(bpf_cred_storage_init);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0fbfa8532c39..b44e7f243e10 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1262,7 +1262,8 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
+ 				    map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
+ 				    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
+ 				    map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
+-				    map->map_type != BPF_MAP_TYPE_CGRP_STORAGE) {
++				    map->map_type != BPF_MAP_TYPE_CGRP_STORAGE &&
++				    map->map_type != BPF_MAP_TYPE_CRED_STORAGE) {
+ 					ret = -EOPNOTSUPP;
+ 					goto free_map_tab;
+ 				}
+@@ -1289,13 +1290,15 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
+ 				    map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
+ 				    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
+ 				    map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
+-				    map->map_type != BPF_MAP_TYPE_CGRP_STORAGE) {
++				    map->map_type != BPF_MAP_TYPE_CGRP_STORAGE &&
++				    map->map_type != BPF_MAP_TYPE_CRED_STORAGE) {
+ 					ret = -EOPNOTSUPP;
+ 					goto free_map_tab;
+ 				}
+ 				break;
+ 			case BPF_UPTR:
+-				if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE) {
++				if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
++			    map->map_type != BPF_MAP_TYPE_CRED_STORAGE) {
+ 					ret = -EOPNOTSUPP;
+ 					goto free_map_tab;
+ 				}
+@@ -1449,6 +1452,7 @@ static int map_create(union bpf_attr *attr, bool kernel)
+ 	case BPF_MAP_TYPE_SK_STORAGE:
+ 	case BPF_MAP_TYPE_INODE_STORAGE:
+ 	case BPF_MAP_TYPE_TASK_STORAGE:
++	case BPF_MAP_TYPE_CRED_STORAGE:
+ 	case BPF_MAP_TYPE_CGRP_STORAGE:
+ 	case BPF_MAP_TYPE_BLOOM_FILTER:
+ 	case BPF_MAP_TYPE_LPM_TRIE:
+diff --git a/kernel/cred.c b/kernel/cred.c
+index 9676965c0981..a1be27fe5f4c 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -38,6 +38,10 @@ static struct kmem_cache *cred_jar;
+ /* init to 2 - one for init_task, one to ensure it is never freed */
+ static struct group_info init_groups = { .usage = REFCOUNT_INIT(2) };
+ 
++#ifdef CONFIG_BPF_LSM
++#include <linux/bpf_lsm.h>
++#endif
++
+ /*
+  * The initial credentials for the initial task
+  */
+@@ -76,6 +80,9 @@ static void put_cred_rcu(struct rcu_head *rcu)
+ 		      cred, atomic_long_read(&cred->usage));
+ 
+ 	security_cred_free(cred);
++#ifdef CONFIG_BPF_LSM
++	bpf_cred_storage_free(cred);
++#endif
+ 	key_put(cred->session_keyring);
+ 	key_put(cred->process_keyring);
+ 	key_put(cred->thread_keyring);
+diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+index db759025abe1..d42badc18eb6 100644
+--- a/security/bpf/hooks.c
++++ b/security/bpf/hooks.c
+@@ -30,6 +30,7 @@ static int __init bpf_lsm_init(void)
+ 
+ struct lsm_blob_sizes bpf_lsm_blob_sizes __ro_after_init = {
+ 	.lbs_inode = sizeof(struct bpf_storage_blob),
++	.lbs_cred = sizeof(struct bpf_storage_blob),
+ };
+ 
+ DEFINE_LSM(bpf) = {
+-- 
+2.43.0
 
-pw-bot: cr
 
