@@ -1,152 +1,128 @@
-Return-Path: <bpf+bounces-67310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76FABB42596
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 17:35:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DA57B42606
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 17:56:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5ED891BC7A3D
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 15:33:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D32D68825B
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 15:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9F55242D80;
-	Wed,  3 Sep 2025 15:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB4F294A10;
+	Wed,  3 Sep 2025 15:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i1XrV+ad"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="ecURXDdC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.26.1.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D761EBFFF;
-	Wed,  3 Sep 2025 15:32:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D4B291C07;
+	Wed,  3 Sep 2025 15:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.26.1.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756913550; cv=none; b=ZqzmfsMrXRW0VSJqMIAKvqyQhm4bVDB2YT025dmLVzv/CruN5qeMYrmJeCxm3uKtvKBAWmjjyVsHYGLDEslQKjiQ2HOmKE9yY9LyEFCj72JPlbi2MB5rghlwSFhStQYdK/yMLdkq7U20RZiGxKXJhjuy91SxBbccTF93F6kAcs8=
+	t=1756915001; cv=none; b=nd6SvQko3m6ivQUKxIA1L/Kse74b+wxQZ8oJkwIe+N+xULKyud0GDJnQY9NhZstnhIhyu4tqWIJrV8pzBeP/BJ9btowTi8tzvqdoM4rONZMSO6MdjDT/XL3vSDrf7fT7eOBePyUci+rDBly1/PF2qgvJ3+VsSuWNoSc3hUbHiho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756913550; c=relaxed/simple;
-	bh=fD0zVaYw3TM4QYiKe9is5FFA+yy4HJ9/VXmbpiMJsaw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aGR7EbqwnWwtC5xBKOBxGUtdhBWT6FYWH7WrixFpEwqOD2i4cxO0YcL9OkQEsKGJ1EsGGCWq79E7EX6Fp7oe/whL9YcLQyAmVqXioHuJkfOfHK6Z2EXgVmdIq6N9QQagd5KAxemPSXhZfC+FECZbfk/L6GK5pbeDIf6iDWZcNcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i1XrV+ad; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-afec5651966so632252466b.2;
-        Wed, 03 Sep 2025 08:32:28 -0700 (PDT)
+	s=arc-20240116; t=1756915001; c=relaxed/simple;
+	bh=Shk7aP7NdVdTxePF1n5l+uKN9YxwBMJp3bE/HqRzo1U=;
+	h=Subject:From:To:CC:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=K2BTeGlja97kInLygF7aRCjEBOEC2B+3Z6KSTtffjG3pmnU+SMoo52y3Qzs85jVtHCqkK+ZQlTcIsfLVuJOh4OIa1d5SGzLa2OxKTjld09wqoIbsmVzYU95GD86cfsk8cgu1+tN2wNtbt1Zz3AWfy8X00AZBWkZMlVpr9pufR14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=ecURXDdC; arc=none smtp.client-ip=52.26.1.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756913547; x=1757518347; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RgX6dpZS5QfFmd32ErBKjUZtxBII9pKavjHTTkFejqA=;
-        b=i1XrV+adb51sA90PS6DYQLwTaWpluZ1/G3ZK5G/YFZ/oPMJx+za6dqq/TLiVVZ6MnI
-         hc4jwFv0We/b5Afyo2F1MTY8UYs2ydeWYstsuOqWYcp2Sn+UbQGr0VR3nYY6HpoAuF2P
-         m1/6IoPTqZzIssV8jDQu6EwEX/SlKDTWl9Azh4p9tr8e7gGXjAL/5p/y53iQV2tkGxeV
-         2MvxC/3jr7dTbM1bDv5VL2IXEs2RX11EfsdvoPEB39nTTcm9Z1bnK+QxQdA4BU4ZRzhe
-         9ccdqmVArZ/kJBtgsd8hDEha0MZ83CBHBBHMsiZE9A95PLX1/aklAwGLNqxzLm3fTryI
-         ZIPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756913547; x=1757518347;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RgX6dpZS5QfFmd32ErBKjUZtxBII9pKavjHTTkFejqA=;
-        b=DtleLqX0MLwtGjPGhjJm6rNyDT6XO0VdszN/D0wF2gBheGSPDgC9vBnIXSZxNQKqf/
-         h8CyCcx6Lj2FyIa4Km1dFtDZEbgbsjXt3bH7+E5rMMpl5eEUmuZikRRQRgzhusyG/s4m
-         pSTWMjz3WrkDLJYPTG5HCkiuHGR28r+6JwOBml66O0I15T94Y+Wcrtc+1EBfvOmTWe2i
-         JoCW9NjH9BxR7hqvHPZaFxlIC2kC2luw9n19gGsTsg+T/J+Wk4svKS7EmEvgky05TVRg
-         WOSy5hkKgH3ymaCCWTFeDI3Ep/WbTAKGOJc5g4fj8MXBs+uEEYI3/3CrdS3WfJx8qXQ2
-         66jg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4oMPK0qEJ+YOPwFkh+3CXbUrlnRzN65DuXpZcowkrdUAZw2uQ7UaosaDvpx/ImjRfwTE=@vger.kernel.org, AJvYcCWIb8IMcIVQq0OYrIAaDD2n8eXq5QE7M+c9bRfR6rC66AUrMKm6lMyRkoMmj/ueOFxtSeysDkV9vnU4xMGv1vbfS1QV@vger.kernel.org, AJvYcCXSIp+kYvkfJOTFv5A8Slf0M8eObSiEWWgbjRTLV4mtbmYiq+TwZlxMZyTqB5/CE9EqWjBJnzePj836bg82@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9hXVozcqoSLhgYav1N2yKmWdX2Pbk0Liulkcg5lWvq6t/6DJM
-	JGj+mLRFziLtYwIDCflaWJjE6wHEzprncRLLGmbmjgwSApUwlgFdQu8zy+Vp3ax9SJtm+2xRQWL
-	aHQz79Ca/WYdm6LMufR+jh9qa5OpvWz4=
-X-Gm-Gg: ASbGncvtvxktxHTsgvu7/9q+6G21PCQai8gz5BHjmGeXka3pX0ND1UAeUaRaYDtH/Jd
-	LznJ0pHsnT1cDsqksmqI0TKER7Q0QeaHWAMxfqlQ+Zw+TSFW5TUd9tfW+5IEa0r3wtsWNkb1nbe
-	k79j83O31VXgTTsDtcl3Pyg0WWkBs1q6+fVCgbeoBUchdCR14cL4/45Z1Qqi7UECC6e2Xh4H98J
-	QLZxd/AKzkn4Itev76uJfXMeYgXH9cSPQ==
-X-Google-Smtp-Source: AGHT+IEt0Yis1igDmpDx0CLQTXkm8aHokNuMof+Pl3n0bzmLGpmg9EcoltOpyNV+iZGd/bgZATvGhR0SRpu3UD2W4ZM=
-X-Received: by 2002:a17:907:1c18:b0:b04:25e6:2ddc with SMTP id
- a640c23a62f3a-b0425e63190mr1217006466b.8.1756913546482; Wed, 03 Sep 2025
- 08:32:26 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1756915000; x=1788451000;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version:subject;
+  bh=Shk7aP7NdVdTxePF1n5l+uKN9YxwBMJp3bE/HqRzo1U=;
+  b=ecURXDdCrpQMlKeVpnhv5FGi1R9+yeDRNqDv4no3bmbFbNfjsgVzjPJT
+   1db4Fetgcbt6A43z7ChQBJoycabO4WowqDTiWlE/NhuHzsp3VmhD0BCrC
+   vNqkSfnbRkK2aYeFwMYpDvqaMFrfm6fwswVGB7tu6/0uS4SfwZLUyHvDC
+   dg6k6jYZSpHpOgiRV6kjEqQBrBzY8mKcvolW1oFFAimXoNDNvNbCD7uwt
+   rJ4qc3MEaFmAYr7Z3e3TElFPPFS/FVV7ScT/rmC/Pi+wVijhT/siLo9xQ
+   mEwYB1CSzqNtoGLp/p0Newo1WVqyce0L5kINVpB2Nks2e5Ui+hJ40gOyi
+   g==;
+X-CSE-ConnectionGUID: QiOcNpiNSHuG08I7kgtVrw==
+X-CSE-MsgGUID: efa5nN+GQgSifqLXSQNwvw==
+X-IronPort-AV: E=Sophos;i="6.18,236,1751241600"; 
+   d="scan'208";a="2318615"
+Subject: Re: [PATCH v4 0/5] barrier: Add smp_cond_load_*_timewait()
+Thread-Topic: [PATCH v4 0/5] barrier: Add smp_cond_load_*_timewait()
+Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
+  by internal-pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2025 15:56:39 +0000
+Received: from EX19MTAUWB002.ant.amazon.com [10.0.38.20:35374]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.63.19:2525] with esmtp (Farcaster)
+ id 3521494c-cd0c-4c7e-a87c-f69a666db393; Wed, 3 Sep 2025 15:56:39 +0000 (UTC)
+X-Farcaster-Flow-ID: 3521494c-cd0c-4c7e-a87c-f69a666db393
+Received: from EX19D032UWA004.ant.amazon.com (10.13.139.56) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
+ Wed, 3 Sep 2025 15:56:39 +0000
+Received: from EX19D032UWA003.ant.amazon.com (10.13.139.37) by
+ EX19D032UWA004.ant.amazon.com (10.13.139.56) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
+ Wed, 3 Sep 2025 15:56:38 +0000
+Received: from EX19D032UWA003.ant.amazon.com ([fe80::8e94:8f60:9531:c497]) by
+ EX19D032UWA003.ant.amazon.com ([fe80::8e94:8f60:9531:c497%5]) with mapi id
+ 15.02.2562.020; Wed, 3 Sep 2025 15:56:38 +0000
+From: "Okanovic, Haris" <harisokn@amazon.com>
+To: "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"ankur.a.arora@oracle.com" <ankur.a.arora@oracle.com>
+CC: "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+	"xueshuai@linux.alibaba.com" <xueshuai@linux.alibaba.com>,
+	"boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>, "memxor@gmail.com"
+	<memxor@gmail.com>, "zhenglifeng1@huawei.com" <zhenglifeng1@huawei.com>,
+	"konrad.wilk@oracle.com" <konrad.wilk@oracle.com>, "cl@gentwo.org"
+	<cl@gentwo.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"ast@kernel.org" <ast@kernel.org>, "linux-arch@vger.kernel.org"
+	<linux-arch@vger.kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
+	"will@kernel.org" <will@kernel.org>, "mark.rutland@arm.com"
+	<mark.rutland@arm.com>, "peterz@infradead.org" <peterz@infradead.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "Okanovic, Haris"
+	<harisokn@amazon.com>
+Thread-Index: AQHcGLwkeAOmnfRWAUuaDQGZvBHLrrR+O4GAgANprQA=
+Date: Wed, 3 Sep 2025 15:56:38 +0000
+Message-ID: <23aca480075a8efc307c9aa07ff62f0f39bbee4e.camel@amazon.com>
+References: <20250829080735.3598416-1-ankur.a.arora@oracle.com>
+	 <aLWITwwDg06F1eXu@arm.com>
+In-Reply-To: <aLWITwwDg06F1eXu@arm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0E18BDB4F8F2474DAC3E5EE6935FEE88@amazon.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250902143504.1224726-1-jolsa@kernel.org> <20250902143504.1224726-5-jolsa@kernel.org>
- <CAADnVQ+MntzHdwSe_Oqe7CU=E3yjko=7+9GTnapsPWwe4oqpsw@mail.gmail.com> <aLfhwmf7lkIYQvBt@krava>
-In-Reply-To: <aLfhwmf7lkIYQvBt@krava>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 3 Sep 2025 08:32:14 -0700
-X-Gm-Features: Ac12FXxASY2P0h5YMyjz9HhgwgYggMMDww7dZzIhA6BIbSwyPzLvK2tOLrG5coI
-Message-ID: <CAADnVQLLcH1weL24BJv=K5cSijNzjgWq5LM2=GCyM6bid2m0ag@mail.gmail.com>
-Subject: Re: [PATCH perf/core 04/11] bpf: Add support to attach uprobe_multi
- unique uprobe
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 2, 2025 at 11:35=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Tue, Sep 02, 2025 at 09:11:22AM -0700, Alexei Starovoitov wrote:
-> > On Tue, Sep 2, 2025 at 7:38=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wro=
-te:
-> > >
-> > > Adding support to attach unique uprobe through uprobe multi link
-> > > interface.
-> > >
-> > > Adding new BPF_F_UPROBE_MULTI_UNIQUE flag that denotes the unique
-> > > uprobe creation.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  include/uapi/linux/bpf.h       | 3 ++-
-> > >  kernel/trace/bpf_trace.c       | 4 +++-
-> > >  tools/include/uapi/linux/bpf.h | 3 ++-
-> > >  3 files changed, 7 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index 233de8677382..3de9eb469fe2 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -1300,7 +1300,8 @@ enum {
-> > >   * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
-> > >   */
-> > >  enum {
-> > > -       BPF_F_UPROBE_MULTI_RETURN =3D (1U << 0)
-> > > +       BPF_F_UPROBE_MULTI_RETURN =3D (1U << 0),
-> > > +       BPF_F_UPROBE_MULTI_UNIQUE =3D (1U << 1),
-> >
-> > I second Masami's point. "exclusive" name fits better.
-> > And once you use that name the "multi_exclusive"
-> > part will not make sense.
-> > How can an exclusive user of the uprobe be "multi" at the same time?
-> > Like attaching to multiple uprobes and modifying regsiters
-> > in all of them? Is it practical ?
->
-> we can still attach single uprobe with uprobe_multi,
-> but for more uprobes it's probably not practical
->
-> > It till attach single uprobe with eels to me BPF_F_UPROBE_EXCLUSIVE sho=
-uld be targeting
-> > one specific uprobe.
->
-> do you mean to force single uprobe with this flag?
->
-> I understood 'BPF_F_UPROBE_MULTI_' flag prefix more as indication what li=
-nk
-> it belongs to, but I'm ok with BPF_F_UPROBE_EXCLUSIVE
-
-What is the use case for attaching the same bpf prog to multiple
-uprobes and modifying their registers?
+T24gTW9uLCAyMDI1LTA5LTAxIGF0IDEyOjQ5ICswMTAwLCBDYXRhbGluIE1hcmluYXMgd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
+IHlvdSBjYW4gY29uZmlybSB0aGUgc2VuZGVyIGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUu
+DQo+IA0KPiANCj4gDQo+IE9uIEZyaSwgQXVnIDI5LCAyMDI1IGF0IDAxOjA3OjMwQU0gLTA3MDAs
+IEFua3VyIEFyb3JhIHdyb3RlOg0KPiA+IEFua3VyIEFyb3JhICg1KToNCj4gPiAgIGFzbS1nZW5l
+cmljOiBiYXJyaWVyOiBBZGQgc21wX2NvbmRfbG9hZF9yZWxheGVkX3RpbWV3YWl0KCkNCj4gPiAg
+IGFybTY0OiBiYXJyaWVyOiBBZGQgc21wX2NvbmRfbG9hZF9yZWxheGVkX3RpbWV3YWl0KCkNCj4g
+PiAgIGFybTY0OiBycXNwaW5sb2NrOiBSZW1vdmUgcHJpdmF0ZSBjb3B5IG9mDQo+ID4gICAgIHNt
+cF9jb25kX2xvYWRfYWNxdWlyZV90aW1ld2FpdA0KPiA+ICAgYXNtLWdlbmVyaWM6IGJhcnJpZXI6
+IEFkZCBzbXBfY29uZF9sb2FkX2FjcXVpcmVfdGltZXdhaXQoKQ0KPiA+ICAgcnFzcGlubG9jazog
+dXNlIHNtcF9jb25kX2xvYWRfYWNxdWlyZV90aW1ld2FpdCgpDQo+IA0KPiBDYW4geW91IGhhdmUg
+YSBnbyBhdCBwb2xsX2lkbGUoKSB0byBzZWUgaG93IGl0IHdvdWxkIGxvb2sgbGlrZSB1c2luZw0K
+PiB0aGlzIEFQST8gSXQgZG9lc24ndCBuZWNlc3NhcmlseSBtZWFuIHdlIGhhdmUgdG8gbWVyZ2Ug
+dGhlbSBhbGwgYXQgb25jZQ0KPiBidXQgaXQgZ2l2ZXMgdXMgYSBiZXR0ZXIgaWRlYSBvZiB0aGUg
+c3VpdGFiaWxpdHkgb2YgdGhlIGludGVyZmFjZS4NCg0KVGhpcyBpcyB3aGF0IEkgdGVzdGVkIG9u
+IEFSTSBvbiBGcmk6DQoNCmh0dHBzOi8vZ2l0aHViLmNvbS9oYXJpc29rYW5vdmljL2xpbnV4L2Js
+b2IvMzdlMDJiOTUwYzk5MzcwNDY2ZTczODVlNWU3NTRiYmQ2MjMyZWY5NS9kcml2ZXJzL2NwdWlk
+bGUvcG9sbF9zdGF0ZS5jI0wyNA0KDQpSZWdhcmRzLA0KSGFyaXMgT2thbm92aWMNCkFXUyBHcmF2
+aXRvbiBTb2Z0d2FyZQ0KDQo+IA0KPiAtLQ0KPiBDYXRhbGluDQoNCg==
 
