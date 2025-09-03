@@ -1,268 +1,205 @@
-Return-Path: <bpf+bounces-67324-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67325-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03CB1B4286F
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 19:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A923FB42896
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 20:20:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96A083B7A70
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 17:59:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F3ED3B524D
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 18:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5BA352FCA;
-	Wed,  3 Sep 2025 17:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4DA362081;
+	Wed,  3 Sep 2025 18:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hpko1JoG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WgSwY/Xt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B651D352070;
-	Wed,  3 Sep 2025 17:58:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50622010EE;
+	Wed,  3 Sep 2025 18:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756922333; cv=none; b=myVcFZBKVjvis7hyGZvitAQfPvoP+ER+WyKTB5dm+jJFgjzbYO1uMUWoDm+i0rjUTkyx1AlZfQni1zEGxs6WPe3emVfLb3MA2qZU1syuZRyRDmxwUbNRs+Q970BfQoKjw8QD5VK5jXLLguMyFwA6iXCQq2biLVU4vLYYH8i4TkM=
+	t=1756923616; cv=none; b=rmq0wgYyUssU/9JhP7gRQm+XF1mULUj0Bm/rT2EvMO0e/CcZ9sQtaoFL1MiRq8C0c5XFk4jUOBlZwUaHm7KgJUF8K9XdPjiuLUx4qzw4H76Ynq6Dkqsk3uqlqpph7YmfH3hfZhsh6jo4JRLS6Y3cEDxsyQ8VTDzdqn6y3flr+iU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756922333; c=relaxed/simple;
-	bh=UAX1cLpaImr1uy1YbnrgbQgI0OtkJI1dLQtU22RnnmA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hN9HfhzSFz3jpQEm/M8Wc05X9XV0A5R7Kcug5z5M36Yf6t/PDwrgOWL2haxU2MxTA53vgvY4VN+jadNkx/wkOPdaPW/2UXe9nFCxlW+YbpytZhhfEd18iDIM06iBCJlMFT7q5RnVTZDH0jVoHmY0msiz69ygsyYrlinPIMiSulo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hpko1JoG; arc=none smtp.client-ip=209.85.219.45
+	s=arc-20240116; t=1756923616; c=relaxed/simple;
+	bh=5L9IvmqvIoBbv7cKvxT07RQpTrNSVmQNxpLyw9n7IFc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rngQqfnugg19Sx3URs623fE69KsUGrvvGZAZSoulMJaFBlyYUplyENMaxlZmlnv9c1muAwPSxAE+szz4Pyo01IPJAyPVaRX1Eg1866eFgvyrQQmhoagb7Ai9zrr7Wlk8wHA3i5WsDzxYG5uHfwkdXOMofQmTzyTS7a+DgYoFthY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WgSwY/Xt; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-722e079fa1aso977146d6.3;
-        Wed, 03 Sep 2025 10:58:51 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b4f9d61e7deso75703a12.2;
+        Wed, 03 Sep 2025 11:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756922330; x=1757527130; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1756923614; x=1757528414; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ioh66qKVDtuMqcRVUHX1/ejUzhAKwFsew10JUTDXeI0=;
-        b=hpko1JoGwcvxkY9H8mkCBW5ZvFoTxoEbJvsIVivx/TL360w72Hgsj0WCA0W/RfQnml
-         G6By6pplXw6AKgC+rbNryEbV1WP5Cz5DgRMWp3jw7b5g9JsmP4N9SIE0q6SSKTQRQ4ab
-         gjJ/Kp7uIl2scxXcQwlk9uUuBkg3CPUu9vpEniFUKdVIUS9OBfE0rned68JqnBFxXP+H
-         CK/NURyh2LJPZU6Ov8gU7UWnGOegrLuWuzrBIYuPTrO4n3G7qY9cgSo5nSZf0NEPzjmq
-         pmn31xSMMlk1/KTJkLe7+0LSZqjF2Btirw/Cy6vrlt77zAdvXC+XIQZjhUoEymVcYrzZ
-         UqsQ==
+        bh=5LklR1axfAguady/UTzpPSQ/6MSRqKnTgXH9zey9jMY=;
+        b=WgSwY/Xt8S93/Yn/p9UxNmDGYrL6sOwpX51YRHIgticgCAuCjolW5d1oAlzMc7Mydr
+         DIEgYeTpHneFGLZZAjhc1tz3EM9cPBdg4cHiNQdRvS1LKDmozDUJw85/wIg9WPvYSsxM
+         UoQmni1lsgPryTVBD8SV4sPxoBG8scfpjjfmvSEQoToG8egT3PeHZPNYuxCa0qad2qha
+         zNoclL6eDdq2fgnQldsEgjaZ8EcMGTfoBYNf3Hn/MSY21yout1MxuNrusB22RHQb9/si
+         TC3BWo9rmcjwjIeFPjjB2musLaUPJ/dnonEmBY5Nw2eh+5vEttpkfVlABu6PeosYKIBQ
+         T4CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756922330; x=1757527130;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1756923614; x=1757528414;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ioh66qKVDtuMqcRVUHX1/ejUzhAKwFsew10JUTDXeI0=;
-        b=eV8VQeih/sNgojh5AjZsYLuk0h0tB2rhb6o/IF4zSbUM+PwU8w09VA7DJ8tfu+hz9n
-         gBfzDsmmYePaoMIveFNCPcsZgzt4mNFd/93Piuk3gOOmllaouQxukXSQNbmql33kRdtT
-         UBtfmmopkAK5PGWDRFMNG7r9zNsziaZcDvSoEriDYx4wIFta/uNzsWtNDyywoP+JeplV
-         w18HBnWDmyQLwT52j1FO7UKFt1ep8t0xv/UgdnDg8qjKVETwYE0wYBl0FYp0vWI9lCsz
-         pXDKtC66BouXXFoSE5a3mbqQF3P1Gpg/AQmsYt+VmObn4F9atIESTZD2sNogwJMG98Pf
-         BYKg==
-X-Gm-Message-State: AOJu0YxOxUB4SUBddmmBEdjk2KlrPjizOyan+glOLz1Y8XZGxh77gtL0
-	U5xroeTteD+uNtJ4mmwpAr1au8GGdWP8N9eaTZTuKYAGg11G1imqLcztznGLE55bH20=
-X-Gm-Gg: ASbGnctJrHXYH9t8bM6U+vADhTqLA9io+r8l+E6uxwszg+sIcoH0aeYB0ZLuRGUfky9
-	4ysmTmjx8L20PVae8efkP9iLJHPrtLDHHUYDpni+o43NVhrX5nvpbfvEL2STh9nAy34pr0aqLbI
-	jJEfB2FQv/8x18wUnr3/+tT/8DjxajTBlcw28e1hKOzLOE/iemPk1CzAx9QNHUTZf+c+p25lY8Q
-	TYN2DUCfVDdyh9cwn7SSoVPaOHpDnqZAVedhl5rI2YUZPPOz23Y55Q5hAKY+/zs4AH6OFxo243w
-	Rge/tF3oz5tPn/6EAjf0tvfuXotWMiQhHur6TvNF61oxK3Xq4aFezLRPalIpa2wuzz14fsCavK0
-	uZmO+tLmztKZgCEJMWzryZivgcq1D7Yn442a1lvsgIpyKAlW8T7lLllZUVo0nHQy1pk00/yF9kL
-	2gOt+XhDTDa9znqT72
-X-Google-Smtp-Source: AGHT+IEUrKHDZassl3qYGyQQUwzgxnLDBbvZg/N2L8dUUSy//BC2dcp5e4uJGTck6b1pUjUoNpxH/Q==
-X-Received: by 2002:ad4:5c6e:0:b0:70d:6df4:1afe with SMTP id 6a1803df08f44-70fac9455c1mr221912296d6.60.1756922330296;
-        Wed, 03 Sep 2025 10:58:50 -0700 (PDT)
-Received: from kerndev.lan (pool-100-15-227-251.washdc.fios.verizon.net. [100.15.227.251])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-720b4665fdasm31955546d6.40.2025.09.03.10.58.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Sep 2025 10:58:50 -0700 (PDT)
-From: David Windsor <dwindsor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	dwindsor@gmail.com
-Subject: [PATCH 2/2] selftests/bpf: Add cred local storage tests
-Date: Wed,  3 Sep 2025 13:58:41 -0400
-Message-ID: <20250903175841.232537-2-dwindsor@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250903175841.232537-1-dwindsor@gmail.com>
-References: <20250903175841.232537-1-dwindsor@gmail.com>
+        bh=5LklR1axfAguady/UTzpPSQ/6MSRqKnTgXH9zey9jMY=;
+        b=QTPWtZiMBccBqUZ5GhBAgZ1Ups1TOC9AKuEeoY44/qzvFJknYx2PGJnm8stf4wvZSA
+         JhK0++QeJyVuWkh/L9QBP2vF7gyjh286LU0h4N1JMU4z44SMO71qCwnOQAMyZfLfTC6/
+         dGobgVKjeJZZk0un3dLx3yu9ILVFplqJtvGkYUcPcdsjPaPCW/f/+VYOFg/c/m0CEwkH
+         HrfVfdFOjQaodtSCchP2oUqfAYwC8ynChaSI5uIOdbjtbURFJzZUO6XbBWZtPIN8prPK
+         o0VtuI/SeZW/Mylh8wADlBanCnIjEZFVwepxYbPiigNLNsTLc/7GOT3/F8ksVxIQ2BMU
+         k7fw==
+X-Forwarded-Encrypted: i=1; AJvYcCVT3BEKWfJQYna8yCkQntaJCdKLOUoOx1xhfW7AM2WVHFV4gTzt3J3asTzaOMoza5iUSGzQE8jX71K+WX1f@vger.kernel.org, AJvYcCWFyQuf2dgKTBJco8Ucnv/4DJrGe2JYC7uncKLWcJaoKD+WJkEtRlLYyvrONLrRN5nxzfs=@vger.kernel.org, AJvYcCXFP1Rtx6+J8pPOX3hCzu2coCrHWBBk7aijDRMOnSsgrOvNDiEc+NMoc8nU8fb+5dO/tCtw54GAFv9r978x/ROFMBdT@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxe+ZLHQP0khG3oBEfllt4pgHgY36CGVsZDsa0WmNQCurc6rHTK
+	s55ZSkPwsuRm+C8/AExO1KI4wpejyKud2UlrRR6P2wygOxof8OltYswP0MJWtrK4mtG7BcK/MvO
+	UKUXuCs3itw/FY/TmEYH/bDkuvxnwUcY=
+X-Gm-Gg: ASbGncsf144mepK9LNn/N421fMV1t83CpeehVVPiTEK2RlKyOtUrFRbquJe8NEU5nBs
+	F1pM9hD8cH9YCiU+jQ3Ntavnj/J3l2z5xn3tn1Ce96clxBp69Rm8GqxR5sKet77d5FET0T2SoNA
+	0rbqXsiGYGmO5DjIj7lSO8CQuQKmuIv9Cpr9UFMpDoTfeYyBfSrazfn8DzkoNeXaOZepN///SXk
+	XnUq77claLUVfN0owvtPjp1mEO0d7BrNg==
+X-Google-Smtp-Source: AGHT+IFDckPXLt62/YVrwNa7YVFAXYaMU92lBDll278DpS343p7hIE9hmeIPdtlDUj823tk4D7pWm3Cv5GFyPELW2gM=
+X-Received: by 2002:a17:902:ecc1:b0:24c:b54e:bf0a with SMTP id
+ d9443c01a7336-24cb54ec1c4mr12662195ad.0.1756923613755; Wed, 03 Sep 2025
+ 11:20:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250902143504.1224726-1-jolsa@kernel.org> <20250902143504.1224726-3-jolsa@kernel.org>
+ <20250903112648.GC18799@redhat.com>
+In-Reply-To: <20250903112648.GC18799@redhat.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 3 Sep 2025 11:20:01 -0700
+X-Gm-Features: Ac12FXy4s2geNOmLCONj1osd11jEfHmKme1TYgq3LHbeuSWAD6nNQwo2SGjYqPA
+Message-ID: <CAEf4BzZ87DAtQSKOOLjADP3C7_4FwNw6iZr_OKYtPNO=RqFAjQ@mail.gmail.com>
+Subject: Re: [PATCH perf/core 02/11] uprobes: Skip emulate/sstep on unique
+ uprobe when ip is changed
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	x86@kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: David Windsor <dwindsor@gmail.com>
----
- .../selftests/bpf/prog_tests/cred_storage.c   | 52 +++++++++++
- .../selftests/bpf/progs/cred_storage.c        | 87 +++++++++++++++++++
- 2 files changed, 139 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cred_storage.c
- create mode 100644 tools/testing/selftests/bpf/progs/cred_storage.c
+On Wed, Sep 3, 2025 at 4:28=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
+e:
+>
+> On 09/02, Jiri Olsa wrote:
+> >
+> > If user decided to take execution elsewhere, it makes little sense
+> > to execute the original instruction, so let's skip it.
+>
+> Exactly.
+>
+> So why do we need all these "is_unique" complications? Only a single
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cred_storage.c b/tools/testing/selftests/bpf/prog_tests/cred_storage.c
-new file mode 100644
-index 000000000000..1a99f6453a0f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cred_storage.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include <unistd.h>
-+#include <sys/wait.h>
-+
-+#include "cred_storage.skel.h"
-+
-+static void test_cred_lifecycle(void)
-+{
-+	struct cred_storage *skel;
-+	pid_t child;
-+	int status, err;
-+
-+	skel = cred_storage__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		return;
-+
-+	err = cred_storage__attach(skel);
-+	if (!ASSERT_OK(err, "attach"))
-+		goto cleanup;
-+
-+	skel->data->cred_storage_result = -1;
-+
-+	skel->bss->monitored_pid = getpid();
-+
-+	child = fork();
-+	if (child == 0) {
-+		/* forces cred_prepare with new credentials */
-+		exit(0);
-+	} else if (child > 0) {
-+		waitpid(child, &status, 0);
-+
-+		/* give time for cred_free hook to run */
-+		usleep(10000);
-+
-+		/* verify that the dummy value was stored and persisted */
-+		ASSERT_EQ(skel->data->cred_storage_result, 0,
-+			  "cred_storage_dummy_value");
-+	} else {
-+		ASSERT_TRUE(false, "fork failed");
-+	}
-+
-+cleanup:
-+	cred_storage__destroy(skel);
-+}
-+
-+void test_cred_storage(void)
-+{
-+	if (test__start_subtest("lifecycle"))
-+		test_cred_lifecycle();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cred_storage.c b/tools/testing/selftests/bpf/progs/cred_storage.c
-new file mode 100644
-index 000000000000..ae66d3b00d2e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cred_storage.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2025 David Windsor.
-+ */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define DUMMY_STORAGE_VALUE 0xdeadbeef
-+
-+extern struct bpf_local_storage_data *bpf_cred_storage_get(struct bpf_map *map,
-+							   struct cred *cred,
-+							   void *init, int init__sz, __u64 flags) __ksym;
-+
-+__u32 monitored_pid = 0;
-+int cred_storage_result = -1;
-+
-+struct cred_storage {
-+	__u32 value;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CRED_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct cred_storage);
-+} cred_storage_map SEC(".maps");
-+
-+SEC("lsm/cred_prepare")
-+int BPF_PROG(cred_prepare, struct cred *new, const struct cred *old, gfp_t gfp)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct cred_storage init_storage = {
-+		.value = DUMMY_STORAGE_VALUE,
-+	};
-+	struct bpf_local_storage_data *sdata;
-+	struct cred_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	sdata = bpf_cred_storage_get((struct bpf_map *)&cred_storage_map, new, &init_storage,
-+				     sizeof(init_storage), BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!sdata)
-+		return 0;
-+
-+	storage = (struct cred_storage *)sdata->data;
-+	if (!storage)
-+		return 0;
-+
-+	/* Verify the storage was initialized correctly */
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		cred_storage_result = 0;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/cred_free")
-+int BPF_PROG(cred_free, struct cred *cred)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct bpf_local_storage_data *sdata;
-+	struct cred_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* Try to retrieve the storage that should have been created in prepare */
-+	sdata = bpf_cred_storage_get((struct bpf_map *)&cred_storage_map, cred,
-+				     NULL, 0, 0);
-+	if (!sdata)
-+		return 0;
-+
-+	storage = (struct cred_storage *)sdata->data;
-+	if (!storage)
-+		return 0;
-+
-+	/* Verify the dummy value is still there during free */
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		cred_storage_result = 0;
-+
-+	return 0;
-+}
--- 
-2.43.0
+I second this. This whole is_unique flag just seems like an
+unnecessary thing that spills all around (extra kernel and libbpf
+flags/APIs), and it's all just not to confuse the second uprobe
+attached? Let's just allow uprobes to override user registers and
+handle IP change on kernel side (as unlikely() check)?
 
+> is_unique/exclusive consumer can change regs->ip, so I guess handle_swbp(=
+)
+> can just do
+>
+>         handler_chain(uprobe, regs);
+>         if (instruction_pointer(regs) !=3D bp_vaddr)
+>                 goto out;
+>
+>
+> > Allowing this
+> > behaviour only for uprobe with unique consumer attached.
+>
+> But if a non-exclusive consumer changes regs->ip, we have a problem
+> anyway, right?
+>
+> We can probably add something like
+>
+>                 rc =3D uc->handler(uc, regs, &cookie);
+>         +       WARN_ON(!uc->is_unique && instruction_pointer(regs) !=3D =
+bp_vaddr);
+>
+> into handler_chain(), although I don't think this is needed.
+>
+> Oleg.
+>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/events/uprobes.c | 13 ++++++++++---
+> >  1 file changed, 10 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > index b9b088f7333a..da8291941c6b 100644
+> > --- a/kernel/events/uprobes.c
+> > +++ b/kernel/events/uprobes.c
+> > @@ -2568,7 +2568,7 @@ static bool ignore_ret_handler(int rc)
+> >       return rc =3D=3D UPROBE_HANDLER_REMOVE || rc =3D=3D UPROBE_HANDLE=
+R_IGNORE;
+> >  }
+> >
+> > -static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+> > +static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs,=
+ bool *is_unique)
+> >  {
+> >       struct uprobe_consumer *uc;
+> >       bool has_consumers =3D false, remove =3D true;
+> > @@ -2582,6 +2582,9 @@ static void handler_chain(struct uprobe *uprobe, =
+struct pt_regs *regs)
+> >               __u64 cookie =3D 0;
+> >               int rc =3D 0;
+> >
+> > +             if (is_unique)
+> > +                     *is_unique |=3D uc->is_unique;
+> > +
+> >               if (uc->handler) {
+> >                       rc =3D uc->handler(uc, regs, &cookie);
+> >                       WARN(rc < 0 || rc > 2,
+> > @@ -2735,6 +2738,7 @@ static void handle_swbp(struct pt_regs *regs)
+> >  {
+> >       struct uprobe *uprobe;
+> >       unsigned long bp_vaddr;
+> > +     bool is_unique =3D false;
+> >       int is_swbp;
+> >
+> >       bp_vaddr =3D uprobe_get_swbp_addr(regs);
+> > @@ -2789,7 +2793,10 @@ static void handle_swbp(struct pt_regs *regs)
+> >       if (arch_uprobe_ignore(&uprobe->arch, regs))
+> >               goto out;
+> >
+> > -     handler_chain(uprobe, regs);
+> > +     handler_chain(uprobe, regs, &is_unique);
+> > +
+> > +     if (is_unique && instruction_pointer(regs) !=3D bp_vaddr)
+> > +             goto out;
+> >
+> >       /* Try to optimize after first hit. */
+> >       arch_uprobe_optimize(&uprobe->arch, bp_vaddr);
+> > @@ -2819,7 +2826,7 @@ void handle_syscall_uprobe(struct pt_regs *regs, =
+unsigned long bp_vaddr)
+> >               return;
+> >       if (arch_uprobe_ignore(&uprobe->arch, regs))
+> >               return;
+> > -     handler_chain(uprobe, regs);
+> > +     handler_chain(uprobe, regs, NULL);
+> >  }
+> >
+> >  /*
+> > --
+> > 2.51.0
+> >
+>
 
