@@ -1,101 +1,98 @@
-Return-Path: <bpf+bounces-67339-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67340-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAA4DB42A57
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 21:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A6D2B42A5F
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 21:57:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15B22680301
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 19:55:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ACC83B24C7
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 19:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD61E238D22;
-	Wed,  3 Sep 2025 19:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A75C036998D;
+	Wed,  3 Sep 2025 19:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/GkbZwz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XJtPwOd5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ED829D0E;
-	Wed,  3 Sep 2025 19:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BDE2D6E6C;
+	Wed,  3 Sep 2025 19:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756929317; cv=none; b=auiv5Ba7Nr/3TuQE6Ji03APnkDhVpSHuydgJbUlXNRCotxJ9Vp2YF5+cfUHKl8Bi1JiGOk5mJj3NXijsfg/0ZHndZ4NMDSEqF1iwnbmtWrwsoooMjGZbT1B/6BJr+u7BW2lylH2gTBEf+EeSki+oiP/uWMG1QIUQleHd1XoaLI0=
+	t=1756929463; cv=none; b=JuFNFqpnwX01du/kPln4r1dXUgFZ8OCWuHnSIx//HAzraDw654zOCjLH8mJJmWVpWDzN+pOPvw3QVOrNpJQmNycBD/4jmplfK+Wef2cHgtE/bju/B9b95e57BUieTYwGLTRW5TT1Ru4Ik5v3+KOE+RBEvoOPtb1cKT2x0TaKr3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756929317; c=relaxed/simple;
-	bh=zezUoFN2iNFV98R9sm4aw8j0++6jTrSoQr9j1YUqGro=;
+	s=arc-20240116; t=1756929463; c=relaxed/simple;
+	bh=NQOh6CPJRu8MO+MPKo+ElHzrE43y4ifxJ4cqcm58V1M=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vn0HA1oDckYO+EhSYFf2oFuXo6DDZKhrOiIjy5/67aCyyQMeQ1SbG/7y+k+gqhQu2U5f6ha8DGFpWT2bUDFn7yNWC1N7LQbo9Q8j85mo4g0dTbVvwjAO6JZrx6oS+0PmDgR5cUDGtEtfdsY7UCeprSQ3Qy92dRNvz323hA6tDO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R/GkbZwz; arc=none smtp.client-ip=209.85.218.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=g/+0BWKBF8dTM8cC3Eq+6eE9IwdeXNjy9YXCyqzvbVs5DI3PUeQtGplFv417JeMUQZV8kPFfD4HUqkJMN1BcLBD8uPx8MNT41ItdYVN0bxLJKYsrqem4AJea+ezi45lUnjOHBJHRuFyZB6o6+6N8pAMNBAIMXg5mYv2Vcend6r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XJtPwOd5; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b00a9989633so50070466b.0;
-        Wed, 03 Sep 2025 12:55:13 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-61ded2712f4so328875a12.1;
+        Wed, 03 Sep 2025 12:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756929312; x=1757534112; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756929459; x=1757534259; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=BkGfMi6CkMSbFPzftImbxarPsyJN6UbbO89dlurGrPU=;
-        b=R/GkbZwzxXmqBJclNi1mCyUQgUu17EAp0prDNDTh7wPKXK/lYqQpQMxV+PqHU1i4e/
-         5e64/RKd1o5OPsxMx5SvQs6jDuMHEAZlwbbvnw2BmDzDqUX/d4HVpmKZAAnKwQAw5J8E
-         hx6liWBdVY4x4W+EvI8zuzihXJSVQJJOivrfq1FUnnNYtdkTvh320ZU0U7RbNd3bsEis
-         MwrH/Ky8j/499c9kPnKnLNJ09+CSIorOM3OW8HhNN1Beuk+v3H+Km7PwdjXileD7Pplw
-         opxYpdrxyF7OLMQZgnqdFkQJiPt83+tMgvgJx1XWAw/6qjCh3BbTUrhZOkMl/uoWuxLh
-         A5mw==
+        bh=57f6UrxKZVi5P3iZAoNMgVEmRpxNaCoeH2w/+gFeGeA=;
+        b=XJtPwOd5USnHMVUIEOFWvwRKGO6fyNeqgcknNvYZE5fgOVxSuN+Uz76cxCqc5hsqiS
+         DMQiqray+/rKsDd9m4Yl2HzjzGJkVnIitwEB5D2uQpRp769PqBjy3G5qUTk+g6nBJUkI
+         2wms82+8azFEqgwFeV2ZU2vYhOH2V8vU0qP5q6ULrSPUzb9BkzkUApD69bO28+Lftq5g
+         K/iLT7teagOQSJS973l2Crnq0vGPBnl1spMicS+QMZBAaG1cZJLHKSBVBpVAzorIeT1G
+         j4lKUZERJyuV2k6nvQZvx6Z7UoxyL5ld/s8epazDUG14n1Wx2AL/auT+f75kpISYJbN5
+         5Asw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756929312; x=1757534112;
+        d=1e100.net; s=20230601; t=1756929459; x=1757534259;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BkGfMi6CkMSbFPzftImbxarPsyJN6UbbO89dlurGrPU=;
-        b=m8aYYO+2D8ppaJf8u6i/tm/YHJIGkhyc+kwyaXWxPJoJL4vcocRSLd/IZ8iGbwWFYB
-         BjUnjtY7VgwRAmSr4fYFyCnKnVqaG8Czza+ozPbLflZfoD/FmHM7tJx1UOWauXoOqwPA
-         LGKUhLVftmmM4lR2w/J4lhEs9aavB6eH/zEBGD7lcdGJWnkIZ2kBR5ixdztYZQOkwlzV
-         VME1O2X7KT76StcSWj4eX7+Z26BAVvGNPVT0edCzkgzP7bGbRSMhm29lteF+unxQjwZq
-         YZPznf2qWEWWGKIwxYkvnFKtbqQuVlkiVdH5eoHn/dhQ4Ro2uav5ji0yVbmpthvV6twl
-         4ZrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVSALZNAWvEfMFTW5B74fqUjvzuYMQ0imvjy6Q2r08NeSwMv9cGroiAmIabsd9FrazJ0cNfwJ+Ro9xFvwFBJUKf9HB7@vger.kernel.org, AJvYcCVSSyvunn0hhxSTy1kmf39f9Uhn1WV0xrGPC5ojzEce9P4k/Vy1LBgIqgnyB8RS5MzGyQ3prVFEZPv7U2uq@vger.kernel.org, AJvYcCX7jlAS7BAddAO4Yuw9EtKQ2m7y3lk1pbKMyv1nMdJguPrsok7sKvsFQ+cZSWp2m3nNch8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHjAl0/wMDB8ZdSGcJpbQ5sXACKFVzkrpVJtTCIaVncGjaPIM8
-	4JrgHWybyQeoW9IUXrpqoLa1XNLJfnIgKG20cL7gH59e+PCyzPQ4W4HT
-X-Gm-Gg: ASbGnctaKUNdiYCZHqzZWIzc8/PnqLlI75MuyR/wrhRG7nOX90tO/QyzfPo5H+H51HY
-	3EMJzaoNW6ZLTLgz4riRHNymUk/Wxkl1BjPZxjsGtxtU5OaaiVyMdEvKuPupqBMtdVeKXAaG4WZ
-	b8s/OwW2h48YaGsrG/TFdgXA1GslYH+slUVJd+l8O7X3TG8KdGUGOi5/B8oNj1og0jv65BcwQKv
-	mOhagNfzfNZKVzdRV0EYia2nGiazYgu7E+PnXz1K7JHIXQQ4G8waf85WpPGUAuVgjKYD+glv0Bk
-	aaGqUUW+bILV4Nf0l/9gQ5LFx5RAgtEZX9kKrvyazLwBVfxBjNj0KEvvO2hWIoEGxexK5MRBpXB
-	4AcI+do3LnkQBS8J3Xs4Qwj9vrGd1iOr9
-X-Google-Smtp-Source: AGHT+IEJfQ6bXwCoPaw7VfRqN0ajR8l1s2d0xZIJViqxAY/WD3gIXmO0hhSQ8zJ5cG73NJqFAOu6mA==
-X-Received: by 2002:a17:907:849:b0:afe:86d3:1296 with SMTP id a640c23a62f3a-b01d8c74b6emr1979874766b.11.1756929311676;
-        Wed, 03 Sep 2025 12:55:11 -0700 (PDT)
+        bh=57f6UrxKZVi5P3iZAoNMgVEmRpxNaCoeH2w/+gFeGeA=;
+        b=V5QbnjHArAPWwOFZBBUQkhKopjAGxgtsj93qM4ZNzlxVkugKNHf8sGf57U7tXi0YME
+         ZUUkKpXYy+/bEWA3vq4vlrajSESlDyh2wFoXRdBWkOwsr4ZEWsSLd6TjGfaiyNzQM3T4
+         ZWVyStMXJwe/CMTp3naSlMTa0Na8j36A+cb7gX7E+BfWnjk1WK6eIw8thRRFOx19oXeL
+         vgHDGIgSKvoHOcOc+mJZDvObiMVZVvtjLxhhGJYcc0a8QNRvlSidJLVLHjORKd/pqMq7
+         sFFa9fd7wqgz7tYOy7ruh+gavQTAIgODE8fKxi9ggyoXgr50hFKObZFSEnZD2F85Ncc/
+         q5WA==
+X-Forwarded-Encrypted: i=1; AJvYcCW6EsmFfYJaJQ2p4kRqdnfUaI8NiQcy4pMP3EyL2JDspYqe4466lMbJlznzp82FbHfDXvFeJGWotqs90sPaJIcW99l+@vger.kernel.org, AJvYcCXILHJydWNI0KjdmSOKGCQtLIIn9hEumy/jkU242JJD7TymC8rajR5MK0OFuGNvaWZVvMHC1lz8WH1Msuam@vger.kernel.org, AJvYcCXk1w8gCSOglr4i84n24JZHd2/uT0RfHkr+SfZNRf/928pR2kL7My2MRrgKQx59SMFIsXA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz1mf4hZrEsRSl1gpOqvW9ANWkWr42JPf72gY8vVON7e7qAZ5im
+	qu3lbOJZBhgU97lJquxflQ+Q4Zc4axCMYlHDRs3pTMV3Gx3bbKIbCYQa
+X-Gm-Gg: ASbGnctItjDzMczwjj0/VZ6N+G9+/xnDWr7oSGWMJz/jwlMbSCp/GCbn4AuLDNwkIm7
+	lKNisMzgrk6TCs3dBfA10LLu5net6SKLvr81hOfLN7T4zhPts+oiVb0lQ31OhRX9Tg9lPpELsM7
+	fCe9j4Z1wn2gfJAq8i5Gtsr7GtT3fxqi7yXVNaS+lq3O5vAfkfin2rGF6dXh3LeR1vdHhqAfjsI
+	aegSKZfXOsLqQhI7RsNiS7ykUN3EXJokpz/FGpdpskDq64PEKPLVWU7o9jz2SvCSWsQQqcnkKRM
+	D212T9ArKlKzqBD7VnN3O1z5L/fkaEC3a9Delb4nNA0NCCizCYXMypJmeIoAS0tag0ruEoNtmmU
+	+1a5NV72ncDLY8y0ZYBEJbA==
+X-Google-Smtp-Source: AGHT+IFj5cz+Tx9E3AoYVYXnNw1csMKb/uB4P1Kf9/gIv8Fb6O5+hjh0HyGj3cPNOcDWaR/MA6z2Yg==
+X-Received: by 2002:a05:6402:5c8:b0:618:534:550a with SMTP id 4fb4d7f45d1cf-61d26c53c4amr15960860a12.24.1756929458960;
+        Wed, 03 Sep 2025 12:57:38 -0700 (PDT)
 Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b009ae4f2ddsm1210211066b.82.2025.09.03.12.55.10
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61cfc1c7a8fsm12538518a12.3.2025.09.03.12.57.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Sep 2025 12:55:11 -0700 (PDT)
+        Wed, 03 Sep 2025 12:57:38 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 3 Sep 2025 21:55:09 +0200
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
+Date: Wed, 3 Sep 2025 21:57:37 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
-	X86 ML <x86@kernel.org>, Song Liu <songliubraving@fb.com>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
 	Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH perf/core 04/11] bpf: Add support to attach uprobe_multi
- unique uprobe
-Message-ID: <aLidHRkM2jpUdvwE@krava>
+Subject: Re: [PATCH perf/core 02/11] uprobes: Skip emulate/sstep on unique
+ uprobe when ip is changed
+Message-ID: <aLidsd7DZ-eoJMvJ@krava>
 References: <20250902143504.1224726-1-jolsa@kernel.org>
- <20250902143504.1224726-5-jolsa@kernel.org>
- <CAADnVQ+MntzHdwSe_Oqe7CU=E3yjko=7+9GTnapsPWwe4oqpsw@mail.gmail.com>
- <aLfhwmf7lkIYQvBt@krava>
- <CAADnVQLLcH1weL24BJv=K5cSijNzjgWq5LM2=GCyM6bid2m0ag@mail.gmail.com>
+ <20250902143504.1224726-3-jolsa@kernel.org>
+ <20250903112648.GC18799@redhat.com>
+ <CAEf4BzZ87DAtQSKOOLjADP3C7_4FwNw6iZr_OKYtPNO=RqFAjQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -105,65 +102,116 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLLcH1weL24BJv=K5cSijNzjgWq5LM2=GCyM6bid2m0ag@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ87DAtQSKOOLjADP3C7_4FwNw6iZr_OKYtPNO=RqFAjQ@mail.gmail.com>
 
-On Wed, Sep 03, 2025 at 08:32:14AM -0700, Alexei Starovoitov wrote:
-> On Tue, Sep 2, 2025 at 11:35 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Wed, Sep 03, 2025 at 11:20:01AM -0700, Andrii Nakryiko wrote:
+> On Wed, Sep 3, 2025 at 4:28 AM Oleg Nesterov <oleg@redhat.com> wrote:
 > >
-> > On Tue, Sep 02, 2025 at 09:11:22AM -0700, Alexei Starovoitov wrote:
-> > > On Tue, Sep 2, 2025 at 7:38 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > Adding support to attach unique uprobe through uprobe multi link
-> > > > interface.
-> > > >
-> > > > Adding new BPF_F_UPROBE_MULTI_UNIQUE flag that denotes the unique
-> > > > uprobe creation.
-> > > >
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >  include/uapi/linux/bpf.h       | 3 ++-
-> > > >  kernel/trace/bpf_trace.c       | 4 +++-
-> > > >  tools/include/uapi/linux/bpf.h | 3 ++-
-> > > >  3 files changed, 7 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > index 233de8677382..3de9eb469fe2 100644
-> > > > --- a/include/uapi/linux/bpf.h
-> > > > +++ b/include/uapi/linux/bpf.h
-> > > > @@ -1300,7 +1300,8 @@ enum {
-> > > >   * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
-> > > >   */
-> > > >  enum {
-> > > > -       BPF_F_UPROBE_MULTI_RETURN = (1U << 0)
-> > > > +       BPF_F_UPROBE_MULTI_RETURN = (1U << 0),
-> > > > +       BPF_F_UPROBE_MULTI_UNIQUE = (1U << 1),
+> > On 09/02, Jiri Olsa wrote:
 > > >
-> > > I second Masami's point. "exclusive" name fits better.
-> > > And once you use that name the "multi_exclusive"
-> > > part will not make sense.
-> > > How can an exclusive user of the uprobe be "multi" at the same time?
-> > > Like attaching to multiple uprobes and modifying regsiters
-> > > in all of them? Is it practical ?
+> > > If user decided to take execution elsewhere, it makes little sense
+> > > to execute the original instruction, so let's skip it.
 > >
-> > we can still attach single uprobe with uprobe_multi,
-> > but for more uprobes it's probably not practical
+> > Exactly.
 > >
-> > > It till attach single uprobe with eels to me BPF_F_UPROBE_EXCLUSIVE should be targeting
-> > > one specific uprobe.
-> >
-> > do you mean to force single uprobe with this flag?
-> >
-> > I understood 'BPF_F_UPROBE_MULTI_' flag prefix more as indication what link
-> > it belongs to, but I'm ok with BPF_F_UPROBE_EXCLUSIVE
+> > So why do we need all these "is_unique" complications? Only a single
 > 
-> What is the use case for attaching the same bpf prog to multiple
-> uprobes and modifying their registers?
+> I second this. This whole is_unique flag just seems like an
+> unnecessary thing that spills all around (extra kernel and libbpf
+> flags/APIs), and it's all just not to confuse the second uprobe
+> attached? Let's just allow uprobes to override user registers and
+> handle IP change on kernel side (as unlikely() check)?
 
-I dont have one.. but I guess you could have just one bpf program
-doing the whatever override based on uprobe cookie?
+yes! ;-) I'd just refresh rfc version then
 
-I added the unique flag support in here because you can also
-create just single uprobe with uprobe_multi interface
-
+thanks,
 jirka
+
+
+
+> 
+> > is_unique/exclusive consumer can change regs->ip, so I guess handle_swbp()
+> > can just do
+> >
+> >         handler_chain(uprobe, regs);
+> >         if (instruction_pointer(regs) != bp_vaddr)
+> >                 goto out;
+> >
+> >
+> > > Allowing this
+> > > behaviour only for uprobe with unique consumer attached.
+> >
+> > But if a non-exclusive consumer changes regs->ip, we have a problem
+> > anyway, right?
+> >
+> > We can probably add something like
+> >
+> >                 rc = uc->handler(uc, regs, &cookie);
+> >         +       WARN_ON(!uc->is_unique && instruction_pointer(regs) != bp_vaddr);
+> >
+> > into handler_chain(), although I don't think this is needed.
+> >
+> > Oleg.
+> >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  kernel/events/uprobes.c | 13 ++++++++++---
+> > >  1 file changed, 10 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > > index b9b088f7333a..da8291941c6b 100644
+> > > --- a/kernel/events/uprobes.c
+> > > +++ b/kernel/events/uprobes.c
+> > > @@ -2568,7 +2568,7 @@ static bool ignore_ret_handler(int rc)
+> > >       return rc == UPROBE_HANDLER_REMOVE || rc == UPROBE_HANDLER_IGNORE;
+> > >  }
+> > >
+> > > -static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+> > > +static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs, bool *is_unique)
+> > >  {
+> > >       struct uprobe_consumer *uc;
+> > >       bool has_consumers = false, remove = true;
+> > > @@ -2582,6 +2582,9 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+> > >               __u64 cookie = 0;
+> > >               int rc = 0;
+> > >
+> > > +             if (is_unique)
+> > > +                     *is_unique |= uc->is_unique;
+> > > +
+> > >               if (uc->handler) {
+> > >                       rc = uc->handler(uc, regs, &cookie);
+> > >                       WARN(rc < 0 || rc > 2,
+> > > @@ -2735,6 +2738,7 @@ static void handle_swbp(struct pt_regs *regs)
+> > >  {
+> > >       struct uprobe *uprobe;
+> > >       unsigned long bp_vaddr;
+> > > +     bool is_unique = false;
+> > >       int is_swbp;
+> > >
+> > >       bp_vaddr = uprobe_get_swbp_addr(regs);
+> > > @@ -2789,7 +2793,10 @@ static void handle_swbp(struct pt_regs *regs)
+> > >       if (arch_uprobe_ignore(&uprobe->arch, regs))
+> > >               goto out;
+> > >
+> > > -     handler_chain(uprobe, regs);
+> > > +     handler_chain(uprobe, regs, &is_unique);
+> > > +
+> > > +     if (is_unique && instruction_pointer(regs) != bp_vaddr)
+> > > +             goto out;
+> > >
+> > >       /* Try to optimize after first hit. */
+> > >       arch_uprobe_optimize(&uprobe->arch, bp_vaddr);
+> > > @@ -2819,7 +2826,7 @@ void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr)
+> > >               return;
+> > >       if (arch_uprobe_ignore(&uprobe->arch, regs))
+> > >               return;
+> > > -     handler_chain(uprobe, regs);
+> > > +     handler_chain(uprobe, regs, NULL);
+> > >  }
+> > >
+> > >  /*
+> > > --
+> > > 2.51.0
+> > >
+> >
 
