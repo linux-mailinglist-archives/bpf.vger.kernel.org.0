@@ -1,200 +1,187 @@
-Return-Path: <bpf+bounces-67356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D4C6B42D80
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 01:39:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B72BB42D83
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 01:39:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B987816E82D
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 23:39:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C355E487A19
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 23:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE5E2BDC1D;
-	Wed,  3 Sep 2025 23:39:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BtnVAY42"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB5D27FB2E;
+	Wed,  3 Sep 2025 23:39:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D96824677D;
-	Wed,  3 Sep 2025 23:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1D11E3DE5;
+	Wed,  3 Sep 2025 23:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756942742; cv=none; b=Mc0h7oxHEBu+bEnrBgKN9B2ZLsJpGyiluX9WKbaGyDFE6hkdZRDxyQn1PiBWj0e4LU8aysepUEY4NmFdpoIxrgZFZ9XJtFKAWYSNAybrNAbjLNKplXzJEpCl9LsfkcO5v8+z+iJ4EfFlPurLa804J4aHr14z286NmTscKnqE8MA=
+	t=1756942791; cv=none; b=YnXLu2VqhIDo3yKm4a6TrxE+grDI6hDZy6E6WwC44T8Ii3zmnd/sQ8IMU9T0ifPSJPbbgg1SJXI1Gh/ZNSF7KfnZr/DdAhp23tqaF9mcyP8Gjmdj4c/AYNWCnkE2dUv3HqtlxFKX/0FROOulxWdiJaCNcf6uEKrvH0ogucSRuug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756942742; c=relaxed/simple;
-	bh=RZOICfDiuL5KBp01Tpbggkwd+ps6zFVvHSlxZn9X+Jw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gnpO0byjVwJUrrqoBfyMPC7Z1kBghXGT9j753VTmO0ND5Q2Uf21QD8RaxNVb5N1GQE7/lpxaKuCqE9PrRaSYY4tDk3O1NcYO7feSnm7QH+9OV6Xb0309nnfUwS6HKUcGrDX1i3Y181wXr7A9IYqkWZ0ess9iR/i5aS+yPutQd90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BtnVAY42; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b471737b347so244664a12.1;
-        Wed, 03 Sep 2025 16:39:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756942740; x=1757547540; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Z12ABXWEzXqZcaHBvu7IqMQ7zDyeIiaeHwQRXzioUPU=;
-        b=BtnVAY42jmdaxWsYHLS3I85t1p5MqRlqXUX2An3kPEDho5hhaK0HUuAOtqKtFAxAs6
-         WEodhXSOyU/KTX6nt9pGwfJWhE9K3ixyZM0vjCoFm7n0nn9qt8gHeinZH+jyFjEQuD5t
-         BfAi8ktjvf5zEs3cE74zzo/6uZtXte7k6s4WE1dw05WAJpGahpxytxO2+d6y32odGe9e
-         9lGei1c0PGGgDT2zfvSQlmG3Qghz5sNjN1y7Cnxb96YXzkMuQgJ+IPzzWb2/GkaHlB+x
-         2P7+8lc7fcb+oBsGkZFvyLHZlRQBNhL1ODZtWPxYku9FJ4yRM2Z71mBbtuxg8Jp2atUU
-         H1jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756942740; x=1757547540;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z12ABXWEzXqZcaHBvu7IqMQ7zDyeIiaeHwQRXzioUPU=;
-        b=KnBn9VR/NtoofKYw+oJvnilHpIEvx8GbsvCWlXVuowc6BiaUiIQ6y2bctwKu/T8VFb
-         c7N5sFCZIdrjQdA+2MQFoulbLuMPBPgdY61xzI+6neP5aE4BQv1jGw/X3rLI3IX7IK6A
-         N8cq6pU0c85wTBWwhn8APA2yw9n4afhOD5hsJEJqind/ZQOjfzHA2+Yg7xjxFvXoEnoW
-         pjr2aEYhMz7XXrv8fVzJ7cpiI+CKi++22LEu5qTvAnFdaQYdGL3UNbM2KCufJUNC5zmT
-         +JlaZ0wkEEA21yioRKAg1AhCv78TmFRkqFLDsQsOXR8uW5yzcShT73gXa1py4SwZKhRk
-         Tdog==
-X-Forwarded-Encrypted: i=1; AJvYcCVVK1ypy7KVF3xzxgGs1LjB/cD9/vzW5Sh0669bJVyNiz4vrB6WMK6W1xlCZATan7Rh9e3Gywc8rXMbYA==@vger.kernel.org, AJvYcCWxcqf8Z7Eeh92dAMAGbI8ANIxreqp/KblYl33NyqZqcyw7Uru5kJfSbWzraGNwluMV1Gw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YweWTCmE4aAoCR2GC7Y4S2CJWl1hL5WlDhpPdaFak0wUSCsR5uL
-	IHCiQCowMSwiiAXw2gjH8lBWjXGxS8Ed8nds7tjI3KrAq5ID0wFBR0KR
-X-Gm-Gg: ASbGncufPAp8zBEpgg46Lvwh+LirO62+3mtgwlVImGk/mTgqdk6h7Ucuk/bgzWsmhwS
-	Lrmn91ATVHGzWgUwKxoGe4dcrtPwj3cvaHczkfs/TcXdkbXzLkpXPsFAdLmWHkpO7lLsalFZedS
-	ZNs9JSdWk9XRq3hkiaIHIpsIbSyN5au2Z0fwnFK4umKazNHkjElkNo+Rkp3Yl9oFwGdqwpwCeEc
-	NW72tV+qc9gfWYlWyb7yuKFvTP0arJZAdapJVUB6+VshSQEGYwrBXOM4jPcFHheelAJ19NI5q0O
-	faErnMD7LIvU5ZRoJunYCVLfU3rs4VO5brL+BgGbiRj/uB5jjc9G09griOHLwojc94K1yUNPi3t
-	RwLgNkDvr9WEXARCwId3FoAtjB0M6SUWINP8AufubF2xKw8yljxxSkuNEFI2Ki25P0ObBvlBoYM
-	4o
-X-Google-Smtp-Source: AGHT+IFlVlW4wyVFzJGmUC434Y82dVvdmWR0zRlrKzhgQnQHqYzNdkO9p8Iz4i88nTLylMED71XEJw==
-X-Received: by 2002:a17:902:d4cb:b0:246:cc24:3934 with SMTP id d9443c01a7336-2494487342emr242374005ad.1.1756942740363;
-        Wed, 03 Sep 2025 16:39:00 -0700 (PDT)
-Received: from [172.37.169.159] (245.sub-97-133-23.myvzw.com. [97.133.23.245])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24b2570cfc8sm50926475ad.76.2025.09.03.16.38.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Sep 2025 16:39:00 -0700 (PDT)
-Message-ID: <b840533a-25e1-4884-9d9e-222d9bf79635@gmail.com>
-Date: Wed, 3 Sep 2025 16:38:55 -0700
+	s=arc-20240116; t=1756942791; c=relaxed/simple;
+	bh=EibqTbrDVCsXwQVRnQHV9k7RYVpWkuN5VkDrAVCGo8E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fPSXkXOBZv6+JjD9TY7vcWddaE8zK7b9QNg+IgQHSJbotKoAxT3lQM/yR+bBFzE6q2j+hrQ0uEsl7Rj2B3bFNDywp7tu3zImCl046kd033rispY/v9v2hNMsCWI0qbHcvFd3Po/i0cDWXTFzDL1M7bN3ZiJ6Ip27fsFI/asin8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from 7cf34ddaca59.ant.amazon.com (unknown [IPv6:2a01:e0a:3e8:c0d0:d63:c24f:a3ef:4dc9])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 9179240A6E;
+	Wed,  3 Sep 2025 23:39:45 +0000 (UTC)
+Authentication-Results: Plesk;
+	spf=pass (sender IP is 2a01:e0a:3e8:c0d0:d63:c24f:a3ef:4dc9) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=7cf34ddaca59.ant.amazon.com
+Received-SPF: pass (Plesk: connection is authenticated)
+From: Arnaud Lecomte <contact@arnaud-lcm.com>
+To: alexei.starovoitov@gmail.com,
+	yonghong.song@linux.dev,
+	song@kernel.org
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com,
+	Arnaud Lecomte <contact@arnaud-lcm.com>
+Subject: [PATCH bpf-next v7 1/3] bpf: refactor max_depth computation in
+ bpf_get_stack()
+Date: Thu,  4 Sep 2025 01:39:10 +0200
+Message-Id: <20250903233910.29431-1-contact@arnaud-lcm.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 2/2] net/mlx5: Avoid copying payload to the
- skb's linear part
-To: cpaasch@openai.com, Gal Pressman <gal@nvidia.com>,
- Dragos Tatulea <dtatulea@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-References: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
- <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-2-bfcd5033a77c@openai.com>
-Content-Language: en-US
-From: Amery Hung <ameryhung@gmail.com>
-In-Reply-To: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-2-bfcd5033a77c@openai.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-PPP-Message-ID: <175694278619.6396.11533088594509506004@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
+A new helper function stack_map_calculate_max_depth() that
+computes the max depth for a stackmap.
 
+Changes in v2:
+ - Removed the checking 'map_size % map_elem_size' from
+   stack_map_calculate_max_depth
+ - Changed stack_map_calculate_max_depth params name to be more generic
 
-On 8/28/25 8:36 PM, Christoph Paasch via B4 Relay wrote:
-> From: Christoph Paasch <cpaasch@openai.com>
->
-> mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
-> bytes from the page-pool to the skb's linear part. Those 256 bytes
-> include part of the payload.
->
-> When attempting to do GRO in skb_gro_receive, if headlen > data_offset
-> (and skb->head_frag is not set), we end up aggregating packets in the
-> frag_list.
->
-> This is of course not good when we are CPU-limited. Also causes a worse
-> skb->len/truesize ratio,...
->
-> So, let's avoid copying parts of the payload to the linear part. We use
-> eth_get_headlen() to parse the headers and compute the length of the
-> protocol headers, which will be used to copy the relevant bits ot the
-> skb's linear part.
->
-> We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking
-> stack needs to call pskb_may_pull() later on, we don't need to reallocate
-> memory.
->
-> This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
-> LRO enabled):
->
-> BEFORE:
-> =======
-> (netserver pinned to core receiving interrupts)
-> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
->   87380  16384 262144    60.01    32547.82
->
-> (netserver pinned to adjacent core receiving interrupts)
-> $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
->   87380  16384 262144    60.00    52531.67
->
-> AFTER:
-> ======
-> (netserver pinned to core receiving interrupts)
-> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
->   87380  16384 262144    60.00    52896.06
->
-> (netserver pinned to adjacent core receiving interrupts)
->   $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
->   87380  16384 262144    60.00    85094.90
->
-> Additional tests across a larger range of parameters w/ and w/o LRO, w/
-> and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), different
-> TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
-> better performance with this patch.
->
-> Signed-off-by: Christoph Paasch <cpaasch@openai.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 5 +++++
->   1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> index 8bedbda522808cbabc8e62ae91a8c25d66725ebb..792bb647ba28668ad7789c328456e3609440455d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> @@ -2047,6 +2047,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->   		dma_sync_single_for_cpu(rq->pdev, addr + head_offset, headlen,
->   					rq->buff.map_dir);
->   
-> +		headlen = eth_get_headlen(skb->dev, head_addr, headlen);
-> +
+Changes in v3:
+ - Changed map size param to size in max depth helper
 
-Hi,
+Changes in v4:
+ - Fixed indentation in max depth helper for args
 
-I am building on top of this patchset and got a kernel crash. It was 
-triggered by attaching an xdp program.
+Changes in v5:
+ - Bound back trace_nr to num_elem in __bpf_get_stack
+ - Make a copy of sysctl_perf_event_max_stack
+   in stack_map_calculate_max_depth
 
-I think the problem is skb->dev is still NULL here. It will be set later by:
-mlx5e_complete_rx_cqe() -> mlx5e_build_rx_skb() -> eth_type_trans()
+Changes in v6:
+ - Restrained max_depth computation only when required
+ - Additional cleanup from Song in __bpf_get_stack
 
+Changes in v7:
+ - Removed additional cleanup from v6
 
->   		frag_offset += headlen;
->   		byte_cnt -= headlen;
->   		linear_hr = skb_headroom(skb);
-> @@ -2123,6 +2125,9 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->   				pagep->frags++;
->   			while (++pagep < frag_page);
->   		}
-> +
-> +		headlen = eth_get_headlen(skb->dev, mxbuf->xdp.data, headlen);
-> +
->   		__pskb_pull_tail(skb, headlen);
->   	} else {
->   		if (xdp_buff_has_frags(&mxbuf->xdp)) {
->
+Link to v6: https://lore.kernel.org/all/20250903135323.97847-1-contact@arnaud-lcm.com/
+
+Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ kernel/bpf/stackmap.c | 38 +++++++++++++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 11 deletions(-)
+
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 3615c06b7dfa..ed707bc07173 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -42,6 +42,28 @@ static inline int stack_map_data_size(struct bpf_map *map)
+ 		sizeof(struct bpf_stack_build_id) : sizeof(u64);
+ }
+ 
++/**
++ * stack_map_calculate_max_depth - Calculate maximum allowed stack trace depth
++ * @size:  Size of the buffer/map value in bytes
++ * @elem_size:  Size of each stack trace element
++ * @flags:  BPF stack trace flags (BPF_F_USER_STACK, BPF_F_USER_BUILD_ID, ...)
++ *
++ * Return: Maximum number of stack trace entries that can be safely stored
++ */
++static u32 stack_map_calculate_max_depth(u32 size, u32 elem_size, u64 flags)
++{
++	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
++	u32 max_depth;
++	u32 curr_sysctl_max_stack = READ_ONCE(sysctl_perf_event_max_stack);
++
++	max_depth = size / elem_size;
++	max_depth += skip;
++	if (max_depth > curr_sysctl_max_stack)
++		return curr_sysctl_max_stack;
++
++	return max_depth;
++}
++
+ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+ {
+ 	u64 elem_size = sizeof(struct stack_map_bucket) +
+@@ -300,20 +322,17 @@ static long __bpf_get_stackid(struct bpf_map *map,
+ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+ 	   u64, flags)
+ {
+-	u32 max_depth = map->value_size / stack_map_data_size(map);
+-	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
++	u32 elem_size = stack_map_data_size(map);
+ 	bool user = flags & BPF_F_USER_STACK;
+ 	struct perf_callchain_entry *trace;
+ 	bool kernel = !user;
++	u32 max_depth;
+ 
+ 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+ 			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
+ 		return -EINVAL;
+ 
+-	max_depth += skip;
+-	if (max_depth > sysctl_perf_event_max_stack)
+-		max_depth = sysctl_perf_event_max_stack;
+-
++	max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
+ 	trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
+ 				   false, false);
+ 
+@@ -406,8 +425,8 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 			    struct perf_callchain_entry *trace_in,
+ 			    void *buf, u32 size, u64 flags, bool may_fault)
+ {
+-	u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
+ 	bool user_build_id = flags & BPF_F_USER_BUILD_ID;
++	u32 trace_nr, copy_len, elem_size, max_depth;
+ 	bool crosstask = task && task != current;
+ 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+ 	bool user = flags & BPF_F_USER_STACK;
+@@ -438,10 +457,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 		goto clear;
+ 	}
+ 
+-	num_elem = size / elem_size;
+-	max_depth = num_elem + skip;
+-	if (sysctl_perf_event_max_stack < max_depth)
+-		max_depth = sysctl_perf_event_max_stack;
++	max_depth = stack_map_calculate_max_depth(size, elem_size, flags);
+ 
+ 	if (may_fault)
+ 		rcu_read_lock(); /* need RCU for perf's callchain below */
+-- 
+2.47.3
 
 
