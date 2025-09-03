@@ -1,121 +1,196 @@
-Return-Path: <bpf+bounces-67244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2787EB41152
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 02:29:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67CC8B41163
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 02:39:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9303560FF7
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 00:29:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29A3248865A
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 00:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F45E19E7F8;
-	Wed,  3 Sep 2025 00:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96D81A317D;
+	Wed,  3 Sep 2025 00:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UHxl1z2M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SPPYkJHE"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01FA188580;
-	Wed,  3 Sep 2025 00:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B46A129CEB;
+	Wed,  3 Sep 2025 00:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756859343; cv=none; b=IE3q+YYWm1SAZyyyi8kEo649r83aQP9Ytpjw6M1S4XhhZ5BUZfNrcQmMY5DN25YsrjjITtOloKsMxN34Uu4sPKwPjrPqPAPUj3/7Ic1yXxawHoeyXRKGlkew2yS/TsKOqXmY+N8XcCjO39IbcGQlcI/QKARE/Vs76qFwsA370YE=
+	t=1756859937; cv=none; b=C+NkcevQSEe5VJT2FQWxqQcmUIhkw9R8fAIpmEzHk31/RXDMTCaGbrbZ67QPteAQeaO/6Ry6YetzSLplc71gjks+IWEiRskLwRK3VoCNIXOaufEJ741HkAue5yAjmcCnigoPDAUa2a97XtUZTcmuIcT58f4l1akzCrabFlcLf1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756859343; c=relaxed/simple;
-	bh=U6crchSx22A1Dkt0nN8K+hqbGunsTXrVtw8pYSSnspQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gGTQOBLCPG8HW7J+Qrcyvs3wWSmsBkZhpncOEoy8ZKpfcB9RR5TSbcaLGqvKlbfzmF6NGhRcpr8EXbka1Y9RiUD1dG4z1dR52xDtql8pWgAAC/upClcZKpABZznEtZuEM/y/PYMp0XsQkERCaZyjH+VAxGpLbyBNMT/dwQlncg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UHxl1z2M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E84BC4CEED;
-	Wed,  3 Sep 2025 00:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756859342;
-	bh=U6crchSx22A1Dkt0nN8K+hqbGunsTXrVtw8pYSSnspQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UHxl1z2MauCod22FbWqCkY6B5xkLKi5v1sCfCih9PmgDeWl6ShYcQ4PqJQC2fCBDD
-	 ejCgibNuovMVGUJl/ISP88p2mUL1tipGRboeaDkwOSPjYKxdz+i9BLka2e5meyuAl/
-	 iLaiOyimIXhQ7f29wZx7a8laO0//URfaUDDKqgjSF/wm+mmFDuyqD8TbWlmqO/3Tpu
-	 PGvi2PYP7h9YI6Vqlf64fLXbkhHKbL/HxBZk5aAmFE3BCpMZR7geaUzPGagj7gSUQT
-	 vAYVUEOO8JtZV4uLblMB3kmx6TDPHaYTR4hYT4Tq00dk1eVrdYNIU113DI9qGSfx8j
-	 yLyDyRnl1PwIw==
-Date: Tue, 2 Sep 2025 14:29:01 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@suse.com>,
-	David Rientjes <rientjes@google.com>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 01/14] mm: introduce bpf struct ops for OOM handling
-Message-ID: <aLeLzWygjrTsgBo8@slm.duckdns.org>
-References: <20250818170136.209169-1-roman.gushchin@linux.dev>
- <20250818170136.209169-2-roman.gushchin@linux.dev>
- <CAP01T76AUkN_v425s5DjCyOg_xxFGQ=P1jGBDv6XkbL5wwetHA@mail.gmail.com>
- <87ms7tldwo.fsf@linux.dev>
- <1f2711b1-d809-4063-804b-7b2a3c8d933e@linux.dev>
- <87wm6rwd4d.fsf@linux.dev>
- <ef890e96-5c2a-4023-bcb2-7ffd799155be@linux.dev>
- <CAADnVQ+LGbXXHHTbBB9b-RjAXO4B6=3Z=G0=7ToZVuH61OONWA@mail.gmail.com>
- <87iki0n4lm.fsf@linux.dev>
+	s=arc-20240116; t=1756859937; c=relaxed/simple;
+	bh=bQ5P0TRtfeMCqFKYa4GZQ4TLIAFW8wAzvRz7MT19Sh0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RBKxefT/ICDJotfige364SQ4FBM5b7WRR9FRy51E2rZs+IMtrV5chPLvi8yDQ2nE33TtpXcw6dUlItJtrjxJcz01jmONW9dwvHPBQJ4GSwQEh6S2KvH1BDRzIFfIc7VWsOWi2xg2M26mAq5O7/LXowuaJhQthAigV9RRv5xLtHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SPPYkJHE; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-45cb5e1adf7so769595e9.0;
+        Tue, 02 Sep 2025 17:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756859934; x=1757464734; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bzaSJEDDfxV3rlsTLegpkKoIznmaYx9gbH4pD2Ij04E=;
+        b=SPPYkJHEArfvzF9uIS/FxjbealpcNlkOWU8FqYlmE44CBZenkaOoJuiSIIxu02g/Vb
+         bR97OFM34e81wvzdhF7T6kuz7rqjL8Cdn6D2xGJIl4q/ibJNXjrr16wgxxvP5lrPAnO1
+         qcptcDxkQU7qHdUQe3d6EXOaE4lCQb6cZh6++czVrwhlECEvJp2VnOyp39tvF486uqJj
+         mboZhlcVtsFOYc3exk0vaKpVSMX3t9hWmeWWfTgPKzsuodfZJKAI0B1S227tGF7t2D+Y
+         rdcDOsesRbR9zPhOoDJM0dZMOAM/3ukdLDJJ+5KhebFgucUKBSVE0eNLnKcY1x1cu6hS
+         pboA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756859934; x=1757464734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bzaSJEDDfxV3rlsTLegpkKoIznmaYx9gbH4pD2Ij04E=;
+        b=nqugKHbvOutSO0Dcc2q9+lj4NCZBrDaDeURN2QyZr2EO0zctBH7yq6BUOXcxKh4wWB
+         dDDOX9/DzKbTtk8kiQb95sKMwTTjGHPEWdctdVOgm8H5X911lqvZQHYN2AjwclqAKx9o
+         D1ifkc81K+Ln5Luhrvm/zoFtObS0O0igkjsysalE01uRXSU6mgd/ak4Rhn0UVYK1XYRj
+         0ody4KATcGlSU6UHbyT85jI9xSqBZOF46MkziAdTNg4qNL7RnMtnk/gW70TV3A+t164G
+         B8HUwiE7Qv0YTc0Uu6Ai/qj9RUsHouDxc1ona9gn3Sr8E/F5QAA6y7EbR7ulmM/u8T0a
+         Jp9g==
+X-Forwarded-Encrypted: i=1; AJvYcCUagLRJpBm2D83B8f9b2SeAvIw4qjZUQTr1NXEPbx2frKf8v7QQwJvlsPYBqljjA4JmL6JyquVW7l1u3UEFaVQC@vger.kernel.org, AJvYcCWB7Ncdma+mIBcunIuDQXWzHKiAV5FIKBVtlKvTLZhsWNO4chjv413uFDlAnC6Zo3Qrt8ZB8zCSApw=@vger.kernel.org, AJvYcCXEr0PZeeYObiaYrZNEmS0cZRnuPcst7Y8t+LdpnU26xvgvBWj+BOPveI5++JZIPdAV6ao=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPznU23aPqWGy7i4Lr+zOjjF6GPXXUR/qlzyhYU+6WE4KXR0K1
+	RASwPHZljE1CnYfTs+LsH6LEerPhd4RaGXFLIzWvyV0eKeAhfJuxT3EywllyCCTAEgmuVWExn+r
+	/Ows1ya3rYxbTe7qk962/pH8fQL2FYzg=
+X-Gm-Gg: ASbGncsN+jZ5Wu+DlwneCqCrjPGnkVf6YPZSMLpFkQC8I0uLlf6kT7renzD/ltayWjp
+	dFUhyDHzgwddva8X+gEAxJcJH8lZ5PHRJ2Qi607D2apG6eJimMX7ZQHBZHTjBe6z1q0UjhShcPS
+	SpVndS8qQ614eO5K9HqVwYCbgDVHLKixHWYSfJwo2/0UpLQJ6HUbCidrO3MUoGaE9p+Z90lme4P
+	zH4yXm8GlFp+CgosRu3oU4lgHLgLHKufWLBng55a69kbbs=
+X-Google-Smtp-Source: AGHT+IGjt3Seiom+fEIKYjnNnbJm13OQMDvMA4L7fKAByybsoTA43NUC5VMhJJG7x72r0smtxjxuSVJ1TkH2cwV00rc=
+X-Received: by 2002:a05:600c:3153:b0:458:bda4:43df with SMTP id
+ 5b1f17b1804b1-45b85570996mr139409705e9.17.1756859933744; Tue, 02 Sep 2025
+ 17:38:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87iki0n4lm.fsf@linux.dev>
+References: <20250901135609.76590-1-yikai.lin@vivo.com> <20250901135609.76590-3-yikai.lin@vivo.com>
+In-Reply-To: <20250901135609.76590-3-yikai.lin@vivo.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 2 Sep 2025 17:38:41 -0700
+X-Gm-Features: Ac12FXwsB0RPqWE7renRRPw-WrdvYCrmWnv4rC0XwGG-GxE2-E70WtLP8kdCAfo
+Message-ID: <CAADnVQ+iazLpRWtt219MqGD0LHVoccahG=Cf1w+Ow5xOjRd_Lg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftests for cpuidle_gov_ext
+To: Lin Yikai <yikai.lin@vivo.com>
+Cc: Christian Loehle <christian.loehle@arm.com>, Song Liu <song@kernel.org>, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Linux Power Management <linux-pm@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Tejun Heo <tj@kernel.org>, zhaofuyu@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello, Roman. How are you?
+On Mon, Sep 1, 2025 at 6:56=E2=80=AFAM Lin Yikai <yikai.lin@vivo.com> wrote=
+:
+>
+> +
+> +/*
+> + * For some low-power scenarios,
+> + * such as the screen off scenario of mobile devices
+> + * (which will be determined by the user-space BPF program),
+> + * we aim to choose a deeper state
+> + * At this point, we will somewhat disregard the impact on CPU performan=
+ce.
+> + */
+> +int expect_deeper =3D 0;
 
-On Tue, Sep 02, 2025 at 10:31:33AM -0700, Roman Gushchin wrote:
 ...
-> Btw, what's the right way to attach struct ops to a cgroup, if there is
-> one? Add a cgroup_id field to the struct and use it in the .reg()
-> callback? Or there is something better?
 
-So, I'm trying to do something similar with sched_ext. Right now, I only
-have a very rough prototype (I can attach multiple schedulers with warnings
-and they even can schedule for several seconds before melting down).
-However, the basic pieces should may still be useful. The branch is:
+> +/* Select the next idle state */
+> +SEC("struct_ops.s/select")
+> +int BPF_PROG(bpf_cpuidle_select, struct cpuidle_driver *drv, struct cpui=
+dle_device *dev)
+> +{
+> +       u32 key =3D 0;
+> +       s64 delta, latency_req, residency_ns;
+> +       int i;
+> +       unsigned long long disable;
+> +       struct cpuidle_gov_data *data;
+> +       struct cpuidle_state *cs;
+> +
+> +       data =3D bpf_map_lookup_percpu_elem(&cpuidle_gov_data_map, &key, =
+dev->cpu);
+> +       if (!data) {
+> +               bpf_printk("cpuidle_gov_ext: [%s] cpuidle_gov_data_map is=
+ NULL\n", __func__);
+> +               return 0;
+> +       }
+> +       latency_req =3D bpf_cpuidle_ext_gov_latency_req(dev->cpu);
+> +       delta =3D bpf_tick_nohz_get_sleep_length();
+> +
+> +       update_predict_duration(data, drv, dev);
+> +       for (i =3D ARRAY_SIZE(drv->states)-1; i > 0; i--) {
+> +               if (i >=3D drv->state_count)
+> +                       continue;
+> +               cs =3D &drv->states[i];
+> +               disable =3D dev->states_usage[i].disable;
+> +               if (disable)
+> +                       continue;
+> +               if (latency_req < cs->exit_latency_ns)
+> +                       continue;
+> +
+> +               if (delta < cs->target_residency_ns)
+> +                       continue;
+> +
+> +               if (data->next_pred / FIT_FACTOR * ALPHA_SCALE < cs->targ=
+et_residency_ns)
+> +                       continue;
+> +
+> +               break;
+> +       }
+> +       residency_ns =3D drv->states[i].target_residency_ns;
+> +       if (expect_deeper &&
+> +               i <=3D drv->state_count-2 &&
+> +               !dev->states_usage[i+1].disable &&
+> +               data->last_pred >=3D residency_ns &&
+> +               data->next_pred < residency_ns &&
+> +               data->next_pred / FIT_FACTOR * ALPHA_SCALE >=3D residency=
+_ns &&
+> +               data->next_pred / FIT_FACTOR * ALPHA_SCALE >=3D data->las=
+t_duration &&
+> +               delta > residency_ns) {
+> +               i++;
+> +       }
+> +
+> +       return i;
+> +}
 
- git://git.kernel.org/pub/scm/linux/kernel/git/tj/sched_ext.git scx-hier-prototype
+This function is the main programmability benefit that
+you're claiming, right?
 
-There are several pieces:
+And user space knob 'expect_deeper' is the key difference
+vs all existing governors ?
 
-- cgroup recently grew lifetime notifiers that you can hook in there to
-  receive on/offline events. This is useful for initializing per-cgroup
-  fields and cleaning up when cgroup dies:
+If so, I have to agree with Rafael. This doesn't look too compelling
+to bolt bpf struct-ops onto cpuidle.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tj/sched_ext.git/tree/kernel/sched/ext.c?h=scx-hier-prototype#n5469
+There must be a way to introduce user togglable knobs in the current
+set of governors, no?
 
-- I'm passing in cgroup_id as an optional field in struct_ops and then in
-  enable path, look up the matching cgroup, verify it can attach there and
-  insert and update data structures accordingly:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/tj/sched_ext.git/tree/kernel/sched/ext.c?h=scx-hier-prototype#n5280
-
-- I wanted to be able to group BPF programs together so that the related BPF
-  timers, tracing progs and so on can call sched_ext kfuncs to operate on
-  the associated scheduler instance. This currently isn't possible, so I'm
-  using a really silly hack. I'm hoping we'd be able to get something better
-  in the future:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/tj/sched_ext.git/commit/?h=scx-hier-prototype&id=b459b1f967fe1767783360761042cd36a1a5f2d6
-
-Thanks.
-
--- 
-tejun
+Other than that the patch set seems to be doing all the right things
+from bpf perspective. KF_SLEEPABLE is missing in kfuncs and
+the safety aspect needs to be thoroughly analyzed,
+but before doing in-depth review the examples need to have more substance.
+With real world benchmarks and results.
+The commit log is saying:
+"This implementation serves as a foundation, not a final solution"
+It's understood that it's work-in-progress, but we need to see
+more real usage before committing.
 
