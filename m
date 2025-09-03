@@ -1,230 +1,133 @@
-Return-Path: <bpf+bounces-67326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE564B4289F
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 20:24:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF3BCB428A4
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 20:27:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55DEB3BC8D7
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 18:24:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 565203AAC8E
+	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 18:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28A53629B2;
-	Wed,  3 Sep 2025 18:24:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C879D3629A5;
+	Wed,  3 Sep 2025 18:27:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UGj8++od"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AkKzpzwC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6553362995;
-	Wed,  3 Sep 2025 18:24:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEF67080D;
+	Wed,  3 Sep 2025 18:26:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756923887; cv=none; b=kCp5FUxNEdY1tgRNLnbYJ7VRIw3+0xRAE8BDIWQdT+wCZnt7IjdOKJeXEp1Wro24sxzRqErcEgVjDAXFeNjjEu6E0e4YwXCOVVuIRP+F6IM45s1sDcFs6tvUVvc0Ds7FMOYRzk4rSShN/qb7gB4Q54uB+foZ1tiU4yAo6GrcLHg=
+	t=1756924021; cv=none; b=vGwDVn8PuMFzLoCG9GJNS70C+/m8P0Qq9qPXBZFq2Om0hesiqtvffmNDUV4EnzQufzV5qA4G/NW96LTLXaltWy3vkAjOOsamDn1eaHtI1uEEup0EL3uxZNc5vrtOwOwK3Ek8UrSq3zPckeRuivUvMKa0A6oM1kSw0culJ/2SLxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756923887; c=relaxed/simple;
-	bh=hZVYoNafis8V6Hw8eXjPvFhUR0O92lnebuf6bclVpbM=;
+	s=arc-20240116; t=1756924021; c=relaxed/simple;
+	bh=RkCLVUm+VgOwpMKBClxS3j3qJZ5e/WWIbWbR5Bx5iFM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S5sa/MVGY3COQLjHJrmAL2FNXWtqc+NysAvv/6QP94Jbe87Oyr7s8FNXATPx9KhYdIcXmCw17c9l0o9+XXoG2r8G8houlAf8Me0wq1JVQYrzQrWzwNXokquaceIXNK1KmJfj7973mEHuZXAPpcEIBSy9hGJ0uafn2n1TOQUJzXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UGj8++od; arc=none smtp.client-ip=209.85.216.52
+	 To:Cc:Content-Type; b=KoX3JJAIxOrp9ptk/EbKs+4I/jm6nu560O+4MyyyGTK6r7MwTxk4dRZNR+4gHMLdITxeNpJpRZ4f8mZFy4iks6T0ZCsjAwa0Z4deWLkL3N/7AuUjJPq47r7gKSxJP5sSdVXERL09WIqx93WJwr2WmZ+6t7yE181KNVZHWhSu1Ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AkKzpzwC; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-329b760080fso138691a91.1;
-        Wed, 03 Sep 2025 11:24:45 -0700 (PDT)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-77238a3101fso170100b3a.0;
+        Wed, 03 Sep 2025 11:26:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756923885; x=1757528685; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756924019; x=1757528819; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+eUrqfmFjwQkudC850PI46TEPvDfF6DyRtqJa4aRFtM=;
-        b=UGj8++odYw4GZ8/qqdofx9BEgAQYLff3ciXGtayGq1BKJLwRUOqntJhpk86ARJ6SEt
-         ydt9MxRzgDEvJF1YjyPOkn1XgYdTPsert5U7BsmvLgAZovXmDyixJ6qIGYgzWQxccwfi
-         5cuqrijeug8GxGcT0g6ASDVzlE4zY9ac2XYZ6l1bPyH6eNfyZCJUtCMGWtIvYv2DZLb4
-         mKdFroEQyDNOgSZykbvsUzmJ6nWwIsdOZAiTiuQ8c2WGL4Ih2enp2y9V3Cs9UWwi+N/N
-         XhhvZCTnxfHtgBx6Lf6wbGTeN0EfAQucSblU3TIwjaDircCFx1QihzHKltOIKv3oTlnp
-         KjVQ==
+        bh=hoqojG11OHkQISj5q0OcGSIF6PQ5yOqHBvHUpFUBBLM=;
+        b=AkKzpzwCq3fOf4DqIHxPI1OyJwAkubkZ2T3dU0zTG/q1plm0JDNWm1nYBOndXEtK6Y
+         6LwZuk+UtVnd0Jqkq2BG73jEOcainNzJRpOVo5xidrsiALFhXYsER1H/siobOa2sxxOx
+         NYwydH6vnTfFq+zOLvMilt9mxz8DFySZxIYR0TGZFVN7llElY8Oyy6Er3ifmznztoRrE
+         JzoDaHvcXv0LDCh6kZOj4XgaM4sXf6v6QoCbqfr27L2xN0WiWgmjD8UyfHNLHwzn8c9z
+         3CVCXSRmnt0Yx0UgCZaP9vDOPpvY08dyG0VWguKBzS+T2zuk3cO1mBqstufGBhpiVPBI
+         jdow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756923885; x=1757528685;
+        d=1e100.net; s=20230601; t=1756924019; x=1757528819;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+eUrqfmFjwQkudC850PI46TEPvDfF6DyRtqJa4aRFtM=;
-        b=BDlt2Cwr6x04t7fshRpxDtcTrjet7fv2T9Zq8VJFa7iyRD5DqXRVd1X93DC/jYDjTt
-         o4p8A96uvZSuLfGOoFPE+PnHw6Wz7dRRUUu4Ia6jKwqudPxc7rlUJCd5DLn9FLBNaT3z
-         fciWJLA4TMwMW+2ZLfkpXDrS5Qj+56Al2UofjjbTc0Na4azuFFuN6dA9juzW7v5qYe/x
-         fF+pEE1goOTH54nC+wnJ8AKHmoNyqMIIuJn8+VKV7TPGCmlfpsg9AEZoVkc4AYq1rf0v
-         WTxtA77md93cZkMmiXSMGPYO8IiY+r+WI/fqoO4710bsR3yhwS5PWokpp1p14W7qs8jm
-         0PCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUNQtPRtcDdbputF3mlbXcJs3tS7QHl1l9sFF7XRwYJ4b/1Mpk63ZsEFXUlpc18cLRMNk2FztvHEYNjw96bxGbh4X79@vger.kernel.org, AJvYcCW9r5WE1RqegH/4cmLC/POaOhidY1AoWyB6jsmWnkRWU1RvbEDRzxPxbrPELZQvzhiZwTQnRq5itJEBlzOJ@vger.kernel.org, AJvYcCWCE7kOqfzzxSw3TjxrdiYsKwoyf7h4kdeKSw4vQZutsmpuR+eVGAtXwlIajrsMvc0F9VQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwReHhiz/b0i+RRKNaX5pvcvaPXxbr4AFhZNaoQJyVgzzXx5Mb4
-	HMI/DUMIKKgulTFGltnuELLO38ik36lcwDYblLw1LN6rQJ1xB20sDbYmaQe8KfFKmVHW2MrA+Tn
-	iLsdxUfSRdb09HuX91l4Ro8MMSXmzO7Y=
-X-Gm-Gg: ASbGncs8jJUdpeMbbXyaDLRyV9MM4CvsvmcRvCDoTsZykAwMVCDpDeZy6TCvzGxqIJb
-	SM07fD+Lzg+k39y+5TlMIH5j7Q2KWwFdRPp/Wog+5MGkk+zkVCNfExAuBzpOXqfjL8HRIRBueiH
-	5A9r/aOR66t/ngpozB29FRPmZQXXQOBTxg7JG1tRdiCuSu9facZovhctxZHjDLSNt7/aCXBMqOT
-	vuB7lJGa8+EfTnGuwohZN4=
-X-Google-Smtp-Source: AGHT+IEbQZgvF/QJp0YCLhLx91oQzZUvUYqP3DtXK35MeWN8s3xag2vO3f8JQWeKPKRRchStq5GhnhtoLXas9gdTEUU=
-X-Received: by 2002:a17:90b:3809:b0:329:dff0:701b with SMTP id
- 98e67ed59e1d1-329dff070c6mr11649626a91.17.1756923884806; Wed, 03 Sep 2025
- 11:24:44 -0700 (PDT)
+        bh=hoqojG11OHkQISj5q0OcGSIF6PQ5yOqHBvHUpFUBBLM=;
+        b=LuBGSZTQTq2j0Yh++cdXf5zKFaHmw+L3luuWpxU19oUnBKwGHWxZANnJNWb0VkFuJZ
+         iG9LppUhKkcebMA1I67sQ3VNaOJfcFV+sSFmWLXTkqeuHSZmWESn7I0X+upVCpWr4fRz
+         3EDzDRoAAh/qs9+LBpOAgzLbhgNE+5c4W4KgPXU5i2oYDHPpqXIF5zX9VI7qg87UQ/+r
+         ZRnJ3xashZBuCtAMaEWZO+9fUQ6Im3JUfbYKLT0aQcppAJl+ASTDfZZb7gnWmZMrdA5y
+         KYLWwDv/r5vPZpMpMl9TWHHT/SmGxu6Wl7hS3nQ3n9zgsuzDjmoMkb+bv6Hk3h2zpj1w
+         DnFg==
+X-Forwarded-Encrypted: i=1; AJvYcCUpNC+robxb0W8wGIKtE9t0c0IXiFU+zDCdCeyJ8OqjUEAeh4PK5b777kuhu6+3HfcCfaehAmzUYslfpW5fNzxAiX2E@vger.kernel.org, AJvYcCVZ0cI0U5oaKd1T/iN7/2QwEuLdvCHa1A08TpXdyigSu8rvDvcwYt3D/v1BIa97y8P1OsK/NtoztNeHGqeU@vger.kernel.org, AJvYcCXyD7Q8pn8Ki5bMntdWlTXxF5lRKZ5UBCJGfx8N5jEtS3nuNbLyW83Nj/kK+gGjU0aLTvg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1+vhqdtBVKntUjXqGkeSA1cuFu4MzlGdIW4Fto8cnSCjPjjkI
+	lF69U+bAUmv7Yg8ChnkglWDJ2gtNPGYh/ce5xEooSkOFVdn8I3mjQxW0AYA0NHdlDMrdf1o9Ww+
+	KLFdiOKqMbgiGan7aUkQKKMfTQRcTUi4=
+X-Gm-Gg: ASbGncsiB9L9uP/8C21zzYexkDo1IE124g9dqs3IPpnmOfwVPO1ns/g4XAEIXmKS+iM
+	8vyv6nzO1V81G4Lg7SJ7mhNnp9nSlfIpR6wtDtrA3mEW1QS5/FCF2eK4JN1n1uvyJ9TmMkVy5lX
+	Qs16mn7VJIDs2OpnqmVpdRLwEBzHDCdWePb3FrFinqLbwwOGxhXJkxj+WWIcL4jkBg77jzsEnwQ
+	yhtKCgoOiSjkIA3068LhTY=
+X-Google-Smtp-Source: AGHT+IFgN2FUXZavbPeV9BKbJ7/eI0glYRzG78d+xwWBDtnYXKTVD20iLZJVasGCDV1CXsMDO7Hapk0kbA3BbAaJOI8=
+X-Received: by 2002:a17:903:234a:b0:248:cd0b:3426 with SMTP id
+ d9443c01a7336-24944a460c6mr248501325ad.20.1756924019230; Wed, 03 Sep 2025
+ 11:26:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250720112133.244369-1-jolsa@kernel.org> <20250720112133.244369-10-jolsa@kernel.org>
-In-Reply-To: <20250720112133.244369-10-jolsa@kernel.org>
+References: <20250902143504.1224726-1-jolsa@kernel.org> <20250902143504.1224726-8-jolsa@kernel.org>
+In-Reply-To: <20250902143504.1224726-8-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 3 Sep 2025 11:24:31 -0700
-X-Gm-Features: Ac12FXwWHOP4yXoYBwWow17ILC6CZ7f2XIfR21TQkM1qfxEUau0Qrql7M6g5OZw
-Message-ID: <CAEf4BzaxtW_W1M94e3q0Qw4vM_heHqU7zFeH-fFHOQBwy5+7LQ@mail.gmail.com>
-Subject: Re: [PATCHv6 perf/core 09/22] uprobes/x86: Add uprobe syscall to
- speed up uprobe
+Date: Wed, 3 Sep 2025 11:26:47 -0700
+X-Gm-Features: Ac12FXz1My-dnKSo13TXTJx2Lt0P_uhhsDDW7OL8yKRB2Q5QGJtg2HXASRzwTow
+Message-ID: <CAEf4BzaT+fAMqFXDMFV1tiRSu0vTy3btcx1TS8FyawSe0TQ95g@mail.gmail.com>
+Subject: Re: [PATCH perf/core 07/11] libbpf: Add support to attach generic
+ unique uprobe
 To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+Cc: Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	x86@kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
 	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, David Laight <David.Laight@aculab.com>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
+	Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jul 20, 2025 at 4:23=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Sep 2, 2025 at 7:36=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding new uprobe syscall that calls uprobe handlers for given
-> 'breakpoint' address.
+> Adding support to attach unique generic uprobe by adding the 'unique'
+> bool flag to struct bpf_uprobe_opts.
 >
-> The idea is that the 'breakpoint' address calls the user space
-> trampoline which executes the uprobe syscall.
->
-> The syscall handler reads the return address of the initial call
-> to retrieve the original 'breakpoint' address. With this address
-> we find the related uprobe object and call its consumers.
->
-> Adding the arch_uprobe_trampoline_mapping function that provides
-> uprobe trampoline mapping. This mapping is backed with one global
-> page initialized at __init time and shared by the all the mapping
-> instances.
->
-> We do not allow to execute uprobe syscall if the caller is not
-> from uprobe trampoline mapping.
->
-> The uprobe syscall ensures the consumer (bpf program) sees registers
-> values in the state before the trampoline was called.
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  arch/x86/entry/syscalls/syscall_64.tbl |   1 +
->  arch/x86/kernel/uprobes.c              | 139 +++++++++++++++++++++++++
->  include/linux/syscalls.h               |   2 +
->  include/linux/uprobes.h                |   1 +
->  kernel/events/uprobes.c                |  17 +++
->  kernel/sys_ni.c                        |   1 +
->  6 files changed, 161 insertions(+)
+>  tools/lib/bpf/libbpf.c | 29 ++++++++++++++++++++++++-----
+>  tools/lib/bpf/libbpf.h |  4 +++-
+>  2 files changed, 27 insertions(+), 6 deletions(-)
 >
-> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/sysc=
-alls/syscall_64.tbl
-> index cfb5ca41e30d..9fd1291e7bdf 100644
-> --- a/arch/x86/entry/syscalls/syscall_64.tbl
-> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
-> @@ -345,6 +345,7 @@
->  333    common  io_pgetevents           sys_io_pgetevents
->  334    common  rseq                    sys_rseq
->  335    common  uretprobe               sys_uretprobe
-> +336    common  uprobe                  sys_uprobe
->  # don't use numbers 387 through 423, add new calls after the last
->  # 'common' entry
->  424    common  pidfd_send_signal       sys_pidfd_send_signal
-> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-> index 6c4dcbdd0c3c..d18e1ae59901 100644
-> --- a/arch/x86/kernel/uprobes.c
-> +++ b/arch/x86/kernel/uprobes.c
-> @@ -752,6 +752,145 @@ void arch_uprobe_clear_state(struct mm_struct *mm)
->         hlist_for_each_entry_safe(tramp, n, &state->head_tramps, node)
->                 destroy_uprobe_trampoline(tramp);
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 1f613a5f95b6..aac2bd4fb95e 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -11045,11 +11045,19 @@ static int determine_uprobe_retprobe_bit(void)
+>         return parse_uint_from_file(file, "config:%d\n");
 >  }
-> +
-> +static bool __in_uprobe_trampoline(unsigned long ip)
+>
+> +static int determine_uprobe_unique_bit(void)
 > +{
-> +       struct vm_area_struct *vma =3D vma_lookup(current->mm, ip);
+> +       const char *file =3D "/sys/bus/event_source/devices/uprobe/format=
+/unique";
 > +
-> +       return vma && vma_is_special_mapping(vma, &tramp_mapping);
+> +       return parse_uint_from_file(file, "config:%d\n");
 > +}
-> +
-> +static bool in_uprobe_trampoline(unsigned long ip)
-> +{
-> +       struct mm_struct *mm =3D current->mm;
-> +       bool found, retry =3D true;
-> +       unsigned int seq;
-> +
-> +       rcu_read_lock();
-> +       if (mmap_lock_speculate_try_begin(mm, &seq)) {
-> +               found =3D __in_uprobe_trampoline(ip);
-> +               retry =3D mmap_lock_speculate_retry(mm, seq);
-> +       }
-> +       rcu_read_unlock();
-> +
-> +       if (retry) {
-> +               mmap_read_lock(mm);
-> +               found =3D __in_uprobe_trampoline(ip);
-> +               mmap_read_unlock(mm);
-> +       }
-> +       return found;
-> +}
-> +
-> +/*
-> + * See uprobe syscall trampoline; the call to the trampoline will push
-> + * the return address on the stack, the trampoline itself then pushes
-> + * cx, r11 and ax.
-> + */
-> +struct uprobe_syscall_args {
-> +       unsigned long ax;
-> +       unsigned long r11;
-> +       unsigned long cx;
-> +       unsigned long retaddr;
-> +};
-> +
-> +SYSCALL_DEFINE0(uprobe)
-> +{
-> +       struct pt_regs *regs =3D task_pt_regs(current);
-> +       struct uprobe_syscall_args args;
-> +       unsigned long ip, sp;
-> +       int err;
-> +
-> +       /* Allow execution only from uprobe trampolines. */
-> +       if (!in_uprobe_trampoline(regs->ip))
-> +               goto sigill;
 
-Hey Jiri,
+perf event-based attachment is legacy and libbpf will automatically
+try to use BPF_LINK_CREATE, so I don't think we need to add this at
+all.
 
-So I've been thinking what's the simplest and most reliable way to
-feature-detect support for this sys_uprobe (e.g., for libbpf to know
-whether we should attach at nop5 vs nop1), and clearly that would be
-to try to call uprobe() syscall not from trampoline, and expect some
-error code.
-
-How bad would it be to change this part to return some unique-enough
-error code (-ENXIO, -EDOM, whatever).
-
-Is there any reason not to do this? Security-wise it will be just fine, rig=
-ht?
-
-> +
-> +       err =3D copy_from_user(&args, (void __user *)regs->sp, sizeof(arg=
-s));
-> +       if (err)
-> +               goto sigill;
-> +
-> +       ip =3D regs->ip;
-> +
+But I also feel like we don't really need any special thing for
+"exclusive uprobe", because ultimately we just want to let uprobe
+override user registers, which we can allow for normal uprobes, as I
+mentioned in the other email.
 
 [...]
 
