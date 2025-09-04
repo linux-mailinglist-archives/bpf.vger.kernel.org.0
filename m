@@ -1,177 +1,151 @@
-Return-Path: <bpf+bounces-67394-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67395-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66BDAB4337D
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 09:12:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F3BBB43389
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 09:17:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00F093A5E73
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 07:12:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B4CA5E3554
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 07:17:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3814028A1CC;
-	Thu,  4 Sep 2025 07:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BAC129A312;
+	Thu,  4 Sep 2025 07:17:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b="NOiSe78P"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A7EiTYVG"
 X-Original-To: bpf@vger.kernel.org
-Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazon11021080.outbound.protection.outlook.com [52.101.65.80])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B52428934D;
-	Thu,  4 Sep 2025 07:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.65.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756969948; cv=fail; b=KdngFemba23Lw3G3ing37CM9umuXu4e8Yh4eHauN96N+zEbCqUz/RHkg42g802pZ0LxBhOVIIXbxmSzTbjL7fTRN+yNucPhq6K48mMl0/CBm4eubDB3VR/zduIUtNZJYwcjyYupRzF5aD9fe/3kR3NE4fQzpRX8DnJCGKpFS0NA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756969948; c=relaxed/simple;
-	bh=43FYTOzxL8K3cojLNL8X12qTiMssqZkuyn29xnT1TEg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=cGDORyFYMGReOdxMqYbdueETDSqEJ9HGOf4YswCieu0dG7kM9o2UkuYHj6FUQCLw+y6wKq3oQ9RHQ0syy/r/+Rc6x2RtKqr1FJz1cABOPxKKrScmoqoG4+cY/CgpP5RmVLbYohH8XfuJ/3rXXr7qKQECYnKAfoo1IQyXNN7ROvU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it; spf=pass smtp.mailfrom=santannapisa.it; dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b=NOiSe78P; arc=fail smtp.client-ip=52.101.65.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=santannapisa.it
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JqZWD7nRFRw0oXB2FiV5rQuzhPU33YyZlWdSbB+dKrga8O5KDbkVuW1/NpocRz7n1ve97c1yW6UOZ+xFiUWH7Oya9AaVxAZ/ntPg8gjqRf+pl2of4EZ90khp6A6+oK2zGogoWxPYM1Csa5SN/aGQcX+87gTkw4KnH9pxVnkljlDAAQejUYhieCD41gTUWuWf7Ip7TwrB+YN0Pc9yLa7EbWDojH4QjINjwA61B9P0Jg7nHnBy0EqPujbLfdO7kAXUvwErQX/8O0o66EtSb0/pTvUq/CKuVFrRY5mTK5mPm/1CRViN0bHFVNvS4zueYC9CTPBqMPhvvHfnQHJ/54cQIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ltWu29kWfwzMJqv5+54UJrTgoa2zO4vgWE9qPymIe8A=;
- b=Yl7QCmeHvEyw7BDnDNljDQdZa6wwviqypL+81ZDp0mfPEKMSO2fUFAv8uxgj8bM8bwCuhiZ2hBAe+08kFfK3tOtWmoP+CO6LyJmPf5RKyu7O4Ujl59UkoUQQJqFvvrgFtx3dKFVBTtEIOeaj0MjIcT7azzVF9S4WX1eqIFrRIlHZCLFfEzI93AOrgyVu3t8LnJxf1GseEIFRjb/XmXApeQ2YuXokgc8HfD3srWq0oJQIB8mUL8OHnxAvDOmlVSBBxrEuBR4eaNlgiO2y73TUKxTT+MkQisd1bBb+kZurUkqXF8VyoPzWhXhiJ83P73TZT61F9vt2ym4nXsd61/Kcng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=santannapisa.it; dmarc=pass action=none
- header.from=santannapisa.it; dkim=pass header.d=santannapisa.it; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=santannapisa.it;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ltWu29kWfwzMJqv5+54UJrTgoa2zO4vgWE9qPymIe8A=;
- b=NOiSe78PsGAZamJl3xLAI7p6YAvQBTZC+f5dD6Hb2PIiORPHJx6Ch1c2fk8OyQ/0Rj4D76RSACMu23qRyyW2B4b6m04tcen8ULugqg/FV20ysPukWtkmV2/34GiGF56WMIoKSbMzYOxHPGPMBQ2Be+Jaj68RaRfvry6SziETFak=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=santannapisa.it;
-Received: from PAVPR03MB8969.eurprd03.prod.outlook.com (2603:10a6:102:32e::7)
- by DB9PR03MB9663.eurprd03.prod.outlook.com (2603:10a6:10:45b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.27; Thu, 4 Sep
- 2025 07:12:21 +0000
-Received: from PAVPR03MB8969.eurprd03.prod.outlook.com
- ([fe80::6bbe:2e22:5b77:7235]) by PAVPR03MB8969.eurprd03.prod.outlook.com
- ([fe80::6bbe:2e22:5b77:7235%4]) with mapi id 15.20.9073.026; Thu, 4 Sep 2025
- 07:12:21 +0000
-Date: Thu, 4 Sep 2025 09:12:17 +0200
-From: luca abeni <luca.abeni@santannapisa.it>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A9A2868A6
+	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 07:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756970253; cv=none; b=OLnQzJ8EEWZw2bdsZ5ESWpv4mCp6AETdrHFIi3BYHNSueCU3Me9biBSR28V20i7U7wbgIH+lTXqoOV9Uu84REvojz0+Ho9rvJ0PxZVwJpchsBoa/hri/vkv4PKBgjGxajCd7U0rPj3Vmqj0T6y1KnOrFcfzcJHoMWwzDM0+AgwY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756970253; c=relaxed/simple;
+	bh=oIckBVKRKgmc03f98rn0emLj9a37R8lZrEevCLloEgE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bq2JPE80cLF0IN/Sgk7XUSVxY9M3aafn/NOBQHHoLFQHZphkdNA/XKfcTo43LVzWXsZEVz68qNFXyi0DWciuXE40DegyQyUnWByMy4y+3Y7Q3UbBwO+PgvJ4kBTSglzbX8gQm5PlUuBZyaiK8HL0PC6taMtroN+IwDfU9Hb3cDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A7EiTYVG; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1756970251;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e8hHca6nrr4DSD1i4RnW4HNPHcBb/x8yT/5uh6e1tr0=;
+	b=A7EiTYVG3vpi6Xi06OaZQnIqbAy5rV1zZn/8dG7/rXp2CUm9Ts7OXN3WSe0PX73iS65QsP
+	wrJzZZUMEqnUfB/ugJmki5fL8TgRDK2enjmrJjXq85nyIIEblgf7ohZV/KOQXNm3USPHGt
+	efYJc/llD3lwBnaJj2sY4/Ka/OJaJp0=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-247-kToSeuC7M1SKwdfDlqtlzQ-1; Thu, 04 Sep 2025 03:17:29 -0400
+X-MC-Unique: kToSeuC7M1SKwdfDlqtlzQ-1
+X-Mimecast-MFC-AGG-ID: kToSeuC7M1SKwdfDlqtlzQ_1756970249
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-45b87609663so3706045e9.3
+        for <bpf@vger.kernel.org>; Thu, 04 Sep 2025 00:17:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756970248; x=1757575048;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e8hHca6nrr4DSD1i4RnW4HNPHcBb/x8yT/5uh6e1tr0=;
+        b=u+dB4B9d0ZsjhJxg2fOEPz5An52v7DA/BxEkoG/+bmyWZ/PyMTxzdn5GH9LkXf0MTp
+         PgbJHEBY77+qKSDf6lUhGogGo8Wc0JABo6uf+H73Eg8PPEvwS1fbEaDh3MekKI6n+4o9
+         K57AWPfV8zye83wnJ6Hd9npjNpZLUUSjfHPwhu7Fpjlh1jRCRMCDlfhhF7dDmWMcJxA/
+         Z+zVaFVfYMDtwdss+S3tLdWAsxY70ZuWzVASBc+VM9bvIKNH+9TrFO7pfbykzVC8Fahe
+         Nwzzi+oI+TNucPcSWDRkw2jaYvp99GF/uQFa/kP8rp5FmRLkYgiRyH6O3LjUMAguawgY
+         TBKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIsZ8jUW1RdqKO978aZWNfCdom/fkbVONjD3qGmneRNVgqbfrQpdfviaLR5ma0gJ9O7Ls=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzrSg4pkP0mIzExAesXwFO44kGx4HqQb5A89abAFBrA4T68I4oM
+	m9BWPvkFMQMhsY3yBavFVUnjBoOoBsEzu74IuOkBl3bkoLNvU2SpCpDOLVjBH+FwwejcDUpryUe
+	dApEYylBW2rW754feqgyIo1yPrCh6sNb1/o5qOP1N6g9Esh0xnOGWBQ==
+X-Gm-Gg: ASbGncsbl3vX3Gm1k/jmAI03SkjZjZRxnXL+lm54m2q0yoBITXcxE8K7q+VXkFTAxBw
+	3x0K2JiNrUfEBp3sFzVNkR9ZDjWD+Bc6oQh6hLk+C6BEGQEKMOEntgjDwfhJp4L3lgBt0t1y6qo
+	ktIIr79lXgiYJ1A4UPcjloTADWXsnK94xyYSyIDH0PPb7MiTx+nB4u3kZ9wEGyhE75wKgudBZtj
+	yCeBw+PrtC6T8K/mIiFcz+cMDxM/FnhcN4jlYxQ4M02o/4MPANKvd/stWS4bSgy21yOtGNvMqY1
+	dLYbQ3fFovjFRZCKVzI/27QnVo2ZPqJ27NnAFBcPlPGXOYvk8TMhRAksC1ArjcI5cLuIiMw=
+X-Received: by 2002:a05:600c:4694:b0:459:443e:b177 with SMTP id 5b1f17b1804b1-45b8557a72cmr141027125e9.25.1756970248436;
+        Thu, 04 Sep 2025 00:17:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFxlNaYXu+Ti5TyjToAfM/VPhoLNPClSOiPQxxxvQ/mXgMA1LuzTwi9Jqs2HyOXrR/sPrrxEg==
+X-Received: by 2002:a05:600c:4694:b0:459:443e:b177 with SMTP id 5b1f17b1804b1-45b8557a72cmr141026695e9.25.1756970247956;
+        Thu, 04 Sep 2025 00:17:27 -0700 (PDT)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.70.210])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45dd2304e16sm7685035e9.7.2025.09.04.00.17.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Sep 2025 00:17:27 -0700 (PDT)
+Date: Thu, 4 Sep 2025 09:17:24 +0200
+From: Juri Lelli <juri.lelli@redhat.com>
 To: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>, Andrea Righi <arighi@nvidia.com>,
- Ingo Molnar <mingo@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
- Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, Joel
- Fernandes <joelagnelf@nvidia.com>, Tejun Heo <tj@kernel.org>, David Vernet
- <void@manifault.com>, Changwoo Min <changwoo@igalia.com>, Shuah Khan
- <shuah@kernel.org>, sched-ext@lists.linux.dev, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, Yuri Andriaccio <yurand2000@gmail.com>
-Subject: Re: [PATCH 05/16] sched/deadline: Return EBUSY if dl_bw_cpus is
- zero
-Message-ID: <20250904091217.78de3dde@luca64>
-In-Reply-To: <20250903200520.GN4067720@noisy.programming.kicks-ass.net>
+Cc: Andrea Righi <arighi@nvidia.com>, Ingo Molnar <mingo@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>, Tejun Heo <tj@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
+	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Luca Abeni <luca.abeni@santannapisa.it>,
+	Yuri Andriaccio <yurand2000@gmail.com>
+Subject: Re: [PATCH 05/16] sched/deadline: Return EBUSY if dl_bw_cpus is zero
+Message-ID: <aLk9BNnFYZ3bhVAE@jlelli-thinkpadt14gen4.remote.csb>
 References: <20250903095008.162049-1-arighi@nvidia.com>
-	<20250903095008.162049-6-arighi@nvidia.com>
-	<aLhWh9_bJ5oKlQ3O@jlelli-thinkpadt14gen4.remote.csb>
-	<20250903200520.GN4067720@noisy.programming.kicks-ass.net>
-Organization: Scuola Superiore S. Anna
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: ZR0P278CA0052.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:1d::21) To PAVPR03MB8969.eurprd03.prod.outlook.com
- (2603:10a6:102:32e::7)
+ <20250903095008.162049-6-arighi@nvidia.com>
+ <aLhWh9_bJ5oKlQ3O@jlelli-thinkpadt14gen4.remote.csb>
+ <20250903200520.GN4067720@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAVPR03MB8969:EE_|DB9PR03MB9663:EE_
-X-MS-Office365-Filtering-Correlation-Id: 44a8481e-3196-481a-9803-08ddeb8263d2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?+J9ZsZSwKQ4gq0aJtY7F9wll0LZqTBCZdiMc1LPgSML9ZSt5NUPpPVb1QQTe?=
- =?us-ascii?Q?qm3Vf8qLL2EQAGlH7ZGUrOs5Aa/0LqggAe92SQJto8otqBYG3X+fvnQ1epvY?=
- =?us-ascii?Q?RGMxzddUfx/c2jqCdogwIY8f87TwS3ZRpfegty+3kBpvV8p+yxCxZ0xqCxVi?=
- =?us-ascii?Q?RIdKz+pggqHbQ0pTAghUGbkjpAhZcX5XftsMvzZW19CCZwZ0EJxYRhvwdxxI?=
- =?us-ascii?Q?MfL7CkXWRf00UqKg2nQND6JHLK0LcdBTjyh53zL4BAPEJ0u7cdDSYAxxC+Uy?=
- =?us-ascii?Q?dyIjb78LGHhUbjrXfDt9W+uShZx0cH4Haf2UYxBvduJt9wNgiVOpRRCEEeQu?=
- =?us-ascii?Q?FguZO+3lmfaCfsMYuL6PMUvRrNNqJqPcwnkzusbLvcGppqgofHa+quKg0iF/?=
- =?us-ascii?Q?cgOg2ubTezKuoeXE6hv6OhZ+4rRy4lpouelCheeVO6FFUiGbHIrzHxw6kVK+?=
- =?us-ascii?Q?soUSgS8KKOqS20Ow0V8BLa2qifiFUsMViegf36IevhYW0qsnDIF103yvuVbK?=
- =?us-ascii?Q?1w4TNWXL7viyUM1kHAAgS8EA5oxr/nMZnNFoAOZWRozmNvKh7Y2wg1evVeXV?=
- =?us-ascii?Q?NymiorW70iXsyU2IH9hkAGtC3/VTWn58+00uWsh+N1O8vGEsfqRbAILd8nwW?=
- =?us-ascii?Q?BQl2rrlMmzPi8+N4sMCtkngBEK6v8tc6e6jNMh8cyGtUWc12oL6P/4pdsNup?=
- =?us-ascii?Q?UogmtYP89kofP3OuPIWiSLOzu21NcXn90CTihAc/7z5vX4BpOe7LEUHcnBIT?=
- =?us-ascii?Q?Wb5rzgqSlmAl0PIBI6mukWjYZyk/TYy5EtxWqqqq7oJXJcuWxPP1VvNTpunK?=
- =?us-ascii?Q?bcpr/+Tun/NrgyQy++X83lNrUMvD//NZRZ6EBCgsLyBqVpwFBbWbLeoRruD5?=
- =?us-ascii?Q?5L22slt9NDyTY9W7doS08pL9fEf8+/an1h8Mx63IqMWrxThfCTpp403o2JSk?=
- =?us-ascii?Q?fCs/nkmNnalbR12WitKk/6I36LOBy8kBlmUY+F8M3GwSxjKGVxz7Zn8eEyab?=
- =?us-ascii?Q?WDpjmag0Jd2t7xS1kjq3waOZRzW/Sfeok0lOE7Fp3zDHs3YYEEwsWS+W48h+?=
- =?us-ascii?Q?hyDdecnv4JYQ2DOyZcyLD/DpTuQr148F2UX/zcXBGi2HirWRcGSdLzJ7kJRk?=
- =?us-ascii?Q?Da76XHx7zuOgMZCBUky2ae/hzgtY8dkCBDFrC8vRYmI8HkVNzQPQN38/Knhk?=
- =?us-ascii?Q?+BBfEaQ8Yb+7d86JdjBznFRTtDypHW3N2TRn/QTP741fq3fP/GUUCXgnVGjJ?=
- =?us-ascii?Q?R6ozBsjOEdAXF+B4i+Lm5pFPJwDXr11cwp8c0rqV5RqeSVSmM8r+m+ohkEnQ?=
- =?us-ascii?Q?aAyC5ZwWrqOu9QaRCo/53JL+wBpwv6FfUl609FVab6K3O/RpsE2Y3/nCZivj?=
- =?us-ascii?Q?gUVZuDbs9fcnt3nulGYZklL/Di3g6YSfN8GpxnKOCI+kmwNGrLz0fNZWX5IP?=
- =?us-ascii?Q?cEHE7lxqg8Q=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAVPR03MB8969.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(7053199007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ZlYtF6XMQakMAXqRa2Xd/gZfA349GgJTSRb/Y4Ja1GFDJXqnUQJmlAmYUZWA?=
- =?us-ascii?Q?WHxFuB/gZYqh5V2QEF+/sHCfgR2KwYBpYPqRexnbcq8aLOyj6/+HzQJxFK+M?=
- =?us-ascii?Q?YOxHbW3WfzBE1QFB7VFwNHlkBumtYMH5htdXEId4C6IdKw4faDERQkSD+RZd?=
- =?us-ascii?Q?gGZWKvi0B1ZA3nNspynbEXKu5z/BJijwV3d14ojihkZLyIL4mS6om27Luo7z?=
- =?us-ascii?Q?0RWzwnJGNvdK9uhn7QT/efQkSmQ5CkcTd+gFuqzY+NGJEfgapNmjvIS4E+hV?=
- =?us-ascii?Q?u75lB/yckFOIZY9vcIXf3VvXwkIsGeGjEPajgw9gRZ3ylfNZtECoi/zl5jDD?=
- =?us-ascii?Q?8CrHIG/wjXodQ6tQ/kc7tHvMtqSh/udb1V/21o1jYn1edRr5xgw5U5wAixMU?=
- =?us-ascii?Q?Lt326pd1yV+wcuLBCALVDTayP18WIOirDTGn9P2prTxOHDBfd2C9UV24Mo+o?=
- =?us-ascii?Q?ES0W2gC2eCkFp0bDH/19DkPC+eHxh8h9EUuiQnAt+x7M+KVVeFYyP0vTH0O+?=
- =?us-ascii?Q?0aj7Dkj+dgxLmxVjsepQtXX9HpsO9cLML1aeJ0TPWgdL2O6sDDvdtUTU6tPG?=
- =?us-ascii?Q?1usR7hn8PcgKpXMl7wYa29YMx3FGykXuZnVLkC3saE6U4QLWxZmx7hG57VVp?=
- =?us-ascii?Q?o5+wQDEz2hTAyQaRsOjcnM9Piy2O1xyYn2Y1tbnGwiRIJoEK0IBACy0Q/zf6?=
- =?us-ascii?Q?tVH+3eKdGNNqpnP5fD4sJDlg2OCKXDJTsLZjcFsFjEgvJNcyuMVK21sLlIOq?=
- =?us-ascii?Q?m8ZJhCxTAGpJAdrpNjUiDBLERgtiTlR+eONJsTXYz+fow3wQPpebhDYaUIoz?=
- =?us-ascii?Q?aTQKZb4v2vL65qWx/mdjI7RWwIQ8MtjRyL+eOosp1bRzVSR1tSSnRa2CX2xS?=
- =?us-ascii?Q?uGn8iKLck/T2YlaenIFnDalVt4wD/3oOCiH8xIXNfHI99hUTDQ0A1NqNtwWp?=
- =?us-ascii?Q?EDnY5SGcmjuxiPBgQUf9spFtdaucbRmP9SsEUNe/GRjIyAHrX54M+eMrR8x+?=
- =?us-ascii?Q?ERYZlb3Jbd+HvsO3ZJwtKyARDMR5w3eu3LNQA6nFKSYS2a0WcE54nXhBqxtS?=
- =?us-ascii?Q?Xi9ElNQ6zVbhqnEH4OCOgrU3lRnhHib9lkqB4Baw59YOqG6Nax4hQ6reALfE?=
- =?us-ascii?Q?kW8u6SsHwrJIEy7WKt+r2etTjnCTLbFlrDSe1X6OEvbPT67ZOrt1Yv1idgQX?=
- =?us-ascii?Q?xEIFYy10q96VkEYRduODmqBQQwo5UhNokImiEOrwdZFu6UHjfE6+pdV7POGY?=
- =?us-ascii?Q?4AGYMWeXL7wbg9X2Y1oqcP16nop/sUoERvf409Az8afY0KfwtOCAiC0DW0Xt?=
- =?us-ascii?Q?yR64QmX9DPIyzIDRtLzPTsJ87GMlqHiWvkNp6padzOOlBVlyJAHDExVYJLpb?=
- =?us-ascii?Q?zg/R53lkGHOCcOzzI5KxinCvr3iG9eOZGMk4VI+EnHVeI5FNaMDTCFopmjkB?=
- =?us-ascii?Q?qrULbEdM1EeRx8e1BKuBEoCeZIlaQQCqtaQ8rWL2T+Z6pYGJOQfUnbcoOcDc?=
- =?us-ascii?Q?IoRwgixxenAL0F7OROHYkrjEURk6uQTlFanJAs3QIkbTIVJ9Hps3HYtpzF8o?=
- =?us-ascii?Q?ScKTrb9oJV8wGPxc6dnZig8+iKFmZaJBvNTWp0rGDlAiMNHZtBW8G79Gwo1w?=
- =?us-ascii?Q?LQ=3D=3D?=
-X-OriginatorOrg: santannapisa.it
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44a8481e-3196-481a-9803-08ddeb8263d2
-X-MS-Exchange-CrossTenant-AuthSource: PAVPR03MB8969.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2025 07:12:21.3072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d97360e3-138d-4b5f-956f-a646c364a01e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cmWsOnVwUyVYdE8qSfZQZy7m/zBJWZu2RpXCFxRBZm8OWHS1dnazsQ6FACIx6b9YLlJk3kcOlO+d9sF0p28KCDwwI4vvzmhJ+eeQvc0Muhw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR03MB9663
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250903200520.GN4067720@noisy.programming.kicks-ass.net>
 
-Hi Peter,
-
-On Wed, 3 Sep 2025 22:05:20 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
-[...]
+On 03/09/25 22:05, Peter Zijlstra wrote:
+> On Wed, Sep 03, 2025 at 04:53:59PM +0200, Juri Lelli wrote:
+> > Hi,
+> > 
+> > On 03/09/25 11:33, Andrea Righi wrote:
+> > > From: Joel Fernandes <joelagnelf@nvidia.com>
+> > > 
+> > > Hotplugged CPUs coming online do an enqueue but are not a part of any
+> > > root domain containing cpu_active() CPUs. So in this case, don't mess
+> > > with accounting and we can retry later. Without this patch, we see
+> > > crashes with sched_ext selftest's hotplug test due to divide by zero.
+> > > 
+> > > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> > > ---
+> > >  kernel/sched/deadline.c | 7 ++++++-
+> > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> > > index 3c478a1b2890d..753e50b1e86fc 100644
+> > > --- a/kernel/sched/deadline.c
+> > > +++ b/kernel/sched/deadline.c
+> > > @@ -1689,7 +1689,12 @@ int dl_server_apply_params(struct sched_dl_entity *dl_se, u64 runtime, u64 perio
+> > >  	cpus = dl_bw_cpus(cpu);
+> > >  	cap = dl_bw_capacity(cpu);
+> > >  
+> > > -	if (__dl_overflow(dl_b, cap, old_bw, new_bw))
+> > > +	/*
+> > > +	 * Hotplugged CPUs coming online do an enqueue but are not a part of any
+> > > +	 * root domain containing cpu_active() CPUs. So in this case, don't mess
+> > > +	 * with accounting and we can retry later.
+> > > +	 */
+> > > +	if (!cpus || __dl_overflow(dl_b, cap, old_bw, new_bw))
+> > >  		return -EBUSY;
+> > >  
+> > >  	if (init) {
+> > 
 > > Yuri is proposing to ignore dl-servers bandwidth contribution from
 > > admission control (as they essentially operate on the remaining
 > > bandwidth portion not available to RT/DEADLINE tasks):
@@ -182,37 +156,26 @@ Peter Zijlstra <peterz@infradead.org> wrote:
 > > willing to test this assumption?
 > > 
 > > I don't believe Peter already expressed his opinion on what Yuri is
-> > proposing, so this might be moot.   
+> > proposing, so this might be moot. 
 > 
-> Urgh, yeah, I don't like that at all. That reasoning makes no sense
-> what so ever. That 5% is not lost time, that 5% is being very
-> optimistic and 'models' otherwise unaccountable time like IRQ and
-> random overheads.
-> 
-> Thinking you can give out 100% CPU time to a bandwidth limited group
-> of tasks is delusional.
-> 
-> Explicitly not accounting things that you *can* is just plain wrong.
-> So no, Yuri's thing is not going to go anywhere.
+> Urgh, yeah, I don't like that at all. That reasoning makes no sense what
+> so ever. That 5% is not lost time, that 5% is being very optimistic and
+> 'models' otherwise unaccountable time like IRQ and random overheads.
 
-The goal of Yuri's patch was not to avoid accounting things... The goal
-was to avoid subtracting the fair dl server utilization from the
-utilization reserved for real-time tasks (assuming that
-/proc/sys/kernel/sched_rt_runtime_us / /proc/sys/kernel/sched_rt_period_us
-represents the fraction of CPU time reserved for real-time tasks).
+But, wait. For dealing with IRQs and random overheads we usually say
+'inflate your reservations', e.g. add a 3-5% to your runtime so that it
+is sound against reality. And that gets included already in the 95%
+default max cap and schedulability tests.
 
-Maybe we made errors in describing the patch (or in some details of the
-implementation), but the final goal was just to ensure that
-sched_rt_runtime_us/sched_rt_period_us goes to RT tasks; the remaining
-fraction of CPU time is shared by SCHED_OTHER tasks, fair dl servers,
-IRQs, and other overhead (the fair dl server utilization can be smaller
-than 1-sched_rt_runtime_us/sched_rt_period_us, so some time can be
-explicitly left for IRQs and kernel).
+I believe what Yuri is saying is that dl-servers are different, because
+they are only a safety net and don't provide any guarantees. With RT
+throttling we used to run non-RT on the remaining 5% (from 95%) and with
+Yuri's change we are going to go back at doing the same, but with
+dl-server(s). If we don't do that we are somewhat going to pay overheads
+twice, first we must inflate real reservations or your tasks gets
+prematurely throttled, second we remove 5% of overall bandwidth if
+dl-servers are accounted for with the rest of real reservation.
 
+What do you think? :)
 
-				Luca
-
-
-
-				Luca
 
