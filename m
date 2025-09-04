@@ -1,214 +1,277 @@
-Return-Path: <bpf+bounces-67367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28437B42DC0
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 01:57:44 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E18BB42DE2
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 02:07:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63E8B567ED6
-	for <lists+bpf@lfdr.de>; Wed,  3 Sep 2025 23:57:43 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 00FF74E3509
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 00:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82CE730EF77;
-	Wed,  3 Sep 2025 23:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71DD65661;
+	Thu,  4 Sep 2025 00:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b="FOlDAg0m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YEO873Fo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485593019A0
-	for <bpf@vger.kernel.org>; Wed,  3 Sep 2025 23:57:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5D7AD24
+	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 00:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756943856; cv=none; b=FGlA79RVxGKJOUOnTHupMedc+ikbZC5VHSip7rHIwCO4mzFTwjqfomyyMYKH4A6rmC1IQCDOvQ6EhiM3DSeUPDypbvHv4ydttiSf754wUp3YUeAPHtNgQ9vyk5kAq+riW0rh8fJAjBQDkLKd0v9Y81Kcj68pt5bosRvLfCSKVWw=
+	t=1756944424; cv=none; b=idjIrgizXIPUzZ64YMW2I9iFaHi3Xdko4TGuzFmCAHm++Sul8GImycpNEW8+tzKg2XzQdq1LyshwfaJI0Js9G/Jyee6iCkdKWWcOd7+hZZ2ZRvOtgymf6swmXKTvDW0PaJcvnxgPb8vDDlFTX/UW+xZ7G340bPECUI4czeyQX38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756943856; c=relaxed/simple;
-	bh=SUFI4fwiX0pBPTs7+ouWpfjlXTs2fFG0hyy+3BztGSc=;
+	s=arc-20240116; t=1756944424; c=relaxed/simple;
+	bh=DWsrNZxUTsvGD210Z6bFOa/JN9+vWMiC4MrVg3jslm4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ghgPMUtT1/GhCipzcYudXAXaZhzMUkG0Q14MxqMwnxG9Mxn1gcD4vvtSqmoN6MrN9lIcbZj8dEUFtGIEDSXVNUPAVevMX1U9oW+RjLavv0Zit/DBj3karZgJn7KuCOzSaYePjgiEU8UcmpXUeqAQOwOTwIjpv5kwpJvWYpHsv/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com; spf=pass smtp.mailfrom=openai.com; dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b=FOlDAg0m; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openai.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5608d792558so402788e87.0
-        for <bpf@vger.kernel.org>; Wed, 03 Sep 2025 16:57:34 -0700 (PDT)
+	 To:Cc:Content-Type; b=Uz5Av+X++/340/zRc6Xq27pUnJp3gKrEpIzMqqHvr5FgwaVzX/l1OhWCcezDCj/QB9CluR7Kg1KdxOamhdvpypgNNDfprIgB1mxRr6pS3Du2RsdgZoQ7Psnofyl67wmJWE4CqvyjoVs/5uhBoinpMrkIaB7A1Og1nGD+S8sS/u8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YEO873Fo; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7725de6b57dso574298b3a.0
+        for <bpf@vger.kernel.org>; Wed, 03 Sep 2025 17:07:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openai.com; s=google; t=1756943852; x=1757548652; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756944421; x=1757549221; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hv09e4Lt/OLR/n/FcaiPwgpNIdknD6J+E8y3JnmMEsw=;
-        b=FOlDAg0mMvNaWa5svhyW/LaL4AT92V53zu6nuO774DA67WaCIVMPo63As4JuLuixZF
-         e2TThcAT1YyJtsZCMTqI4tgV7Tz5sWO6Kz6TbhgOuU4ierlL6tBfEjilf+KcnRbLgAfx
-         TKvPTcm1+tZ6t2QAD0lB78/3wfXvyTMsHnatI=
+        bh=DWtqBxK82Mn6R9HXUecgxJDy8NEEHabIA8RqN/iwbDw=;
+        b=YEO873Foq8OcFfzRK85E2qgUozEjZ1pDLcrZo55U4P5J6GWSzSLj/YEKrkna+vipim
+         yH2I6dMhTlTWCMSMLcMj/pJthuXHui5KSRp9rZ9TsmMnGgDrODpWX0oPO+ME5siZ00PC
+         T5w+mbWnjNq4Ttwx5xuFlYbVVTPb1NtMcN7v3oq/t7n+/wc1OEnh0Vb65RrwCiHKhK3Q
+         OOgROBAkJ9iB5vEaBAmY2/uO52zn9ImNEI/QPsvVNUlUR4l/DEnmGNfwci98xHPJkphW
+         QC3R8Qi6OlnBj706grK25GV8e5qRlmEdLkOFasEFbmPKpNbexFj/WQo/2AgFY/pDZjDD
+         /WiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756943852; x=1757548652;
+        d=1e100.net; s=20230601; t=1756944421; x=1757549221;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hv09e4Lt/OLR/n/FcaiPwgpNIdknD6J+E8y3JnmMEsw=;
-        b=p/khDZf3fy40yAbKhGsKI7Emzt6wQ+ERnQ4QIXIFhF7m4cFEEaiEWzNSaJHCWM5kXu
-         5EOM/6cpV9UkBZhUGvHOHumb6WwYoigXHixZkCFDRe2khmRmwSV1NeueDjofbFpsUweq
-         4wbdHkKsYERFPvEed4VjataYg6wamw4NplWmoprN4IeHy30OLyvydXzGZRwQpNaGsjoi
-         7ZmZHM/CpUEAG5mijidTSKxlNj2dHUquazgOnd8kzbXPSHEEW1bdRbsKW3kdQyLQfuaW
-         kRsPBHZkxn3nOHIUstfiVT1JbHyTpHRx/umhA6jL/p0dL/xPvav5yw7OLZNqdLAlDudT
-         MZ/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVEPTszHfGv9bc2idobkQlus6f7ZaofjXGzIirMPJayyxOYG+2+KACWurWwvSLPyEO02vg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyEhaf3/q96ETPuyYl/dPeX845paJt6e9uAK4glSpyJT/C8EnaW
-	ryS908AAt8FDv5Bg64UAGo4rFNEn6FQH33Uxz44iROUCJY8N3hlEhXvPapoqITHxEkK6GZ/Rl+L
-	Joqo2jnI5V4U1d/ZQ/RJmcd3EVlZZ5zrBXXh67lyFSg==
-X-Gm-Gg: ASbGncuNXIxpAWcdZkjeOQD/sqG2nIJ3qTk8msMQ2cqPFpqTFUbJLoEA9Ihgf3vI3+/
-	YgBEmClfm8PgwdSaZrdck5OQdQKOgD3+Noev+yfx2HnPhqwTcS8381PdlR1e53iaQJgdTPtePIj
-	0zw12de4qAxmwajOjCv87bNqR3hZnkNQRKhxdxj4K2kx93p5SaHVw8w42wOTIbYV5M5DNuf8AKp
-	LrX+aUpYzQmasU5BVvNY1aOwTtdw7fbEh0q0tiPz0VZlw5iEScMng0dyJxKiW3ULw==
-X-Google-Smtp-Source: AGHT+IGbfS54Qvlf3EmjlTU6FR8DV3xID1CvDF3YSGWCmbcuFezhFih12dZx/PfGzkY4crFSlHcgYjsHQ9Nf3+VX3fI=
-X-Received: by 2002:a05:6512:4381:b0:55f:4e8a:19a4 with SMTP id
- 2adb3069b0e04-55f708b6079mr4267537e87.23.1756943852379; Wed, 03 Sep 2025
- 16:57:32 -0700 (PDT)
+        bh=DWtqBxK82Mn6R9HXUecgxJDy8NEEHabIA8RqN/iwbDw=;
+        b=wlO+IxaRed0nf1IXqBhK5sN2wIiw7f46HAy99ob+dfWt72Cebng9P1oeeWLvBg/w/X
+         feGVhLfhNw33oF3UslwaTL100zMlFddzSsd1hkZFyqRtZ9mVcIxKPTPfliheqz2aH3ob
+         IXjwq9cGLpNWtpTHChSj3l2ZQCQCKLWJTXdvzXINdh/eIBPKT1yvRn1vlSKoAParBh0V
+         jKIMvcngLnkUwYWopsFGEon540fs2gFcNK6QP2FW9IdvSdoVq8ZO4U0+avOirD736wGh
+         tDn8GZsSlh8JQHeAbDe55sA4Jk44+f2T1XtXnEwvfDMl96ElCa4MI2ZXEpRbpwML12OU
+         SLVg==
+X-Gm-Message-State: AOJu0YzaIUg2y4dDfc5U82Dyr9BaxKQtJpOg3Ifc/1EWCBvtxmcbcuTu
+	Zbae8jJi9BEgaETy1p9eEdUVttorhQlUcZWC8Y/tlGQ3hRXZspAk+Hay4zJcp71UnZxgkSKZvjd
+	GIQ17SgpbKz5+6GTkA2Qc4tV1gJHBxVU=
+X-Gm-Gg: ASbGnctIAIv82iwfPiLJTDG1tRot7I+bPjE+WGAhdXiOVowLrNBi/bDUrEEi0SuOoBx
+	HKK4EvAkOQkERmnyhuQPrhlqXb4y9ZoWocjRSlcieTd0+FsOAn4skqijTtwtAEfUZm7bFO+rDjq
+	BR8t1QAynRUTO8u5iKYHHP1dxMaw0GvM7+Jdhk/vptyfJT6rfz+0Mm74I3/xMNK77FgaK/P1Jzh
+	c6V6KLa6DhYwepHcuqXcSUZon6xgQS3Wg==
+X-Google-Smtp-Source: AGHT+IEOe5/sde7WsiDLyIx7NizXf4zLZ3m1N9ncj8P3cZGMcdl67JiUyLpWA3/XnthWotcqsRrpS+4eacSjF7d0tws=
+X-Received: by 2002:a05:6a21:3384:b0:243:b018:f8a5 with SMTP id
+ adf61e73a8af0-243d6dc8a7emr24458887637.6.1756944420571; Wed, 03 Sep 2025
+ 17:07:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
- <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-2-bfcd5033a77c@openai.com>
- <b840533a-25e1-4884-9d9e-222d9bf79635@gmail.com>
-In-Reply-To: <b840533a-25e1-4884-9d9e-222d9bf79635@gmail.com>
-From: Christoph Paasch <cpaasch@openai.com>
-Date: Wed, 3 Sep 2025 16:57:21 -0700
-X-Gm-Features: Ac12FXwt9zGovKtsi3q9pwxQj_g5H63amgYnMGWNl5-bfcInmOgb5rKBGXq_9aY
-Message-ID: <CADg4-L_83eNn9huME6tuZKeQWyG2xkKCUj9erqzMBGxWt=NKcA@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 2/2] net/mlx5: Avoid copying payload to the
- skb's linear part
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+References: <20250902233502.776885-1-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250902233502.776885-1-mykyta.yatsenko5@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 3 Sep 2025 17:06:46 -0700
+X-Gm-Features: Ac12FXybhNkX5BvhmBDrdTNrla0mSVtpSrJ1jAWnXA00Z42FHDj_0dmiyFB02C8
+Message-ID: <CAEf4BzZA-1HjhtKAz_4=N4DOsCuQZOrqCwJhDqVwH6fJPiiUKQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5] selftests/bpf: add BPF program dump in veristat
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 3, 2025 at 4:39=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wro=
-te:
+On Tue, Sep 2, 2025 at 4:35=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 >
+> Add the ability to dump BPF program instructions directly from veristat.
+> Previously, inspecting a program required separate bpftool invocations:
+> one to load and another to dump it, which meant running multiple
+> commands.
+> During active development, it's common for developers to use veristat
+> for testing verification. Integrating instruction dumping into veristat
+> reduces the need to switch tools and simplifies the workflow.
+> By making this information more readily accessible, this change aims
+> to streamline the BPF development cycle and improve usability for
+> developers.
+> This implementation leverages bpftool, by running it directly via popen
+> to avoid any code duplication and keep veristat simple.
 >
-> On 8/28/25 8:36 PM, Christoph Paasch via B4 Relay wrote:
-> > From: Christoph Paasch <cpaasch@openai.com>
-> >
-> > mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
-> > bytes from the page-pool to the skb's linear part. Those 256 bytes
-> > include part of the payload.
-> >
-> > When attempting to do GRO in skb_gro_receive, if headlen > data_offset
-> > (and skb->head_frag is not set), we end up aggregating packets in the
-> > frag_list.
-> >
-> > This is of course not good when we are CPU-limited. Also causes a worse
-> > skb->len/truesize ratio,...
-> >
-> > So, let's avoid copying parts of the payload to the linear part. We use
-> > eth_get_headlen() to parse the headers and compute the length of the
-> > protocol headers, which will be used to copy the relevant bits ot the
-> > skb's linear part.
-> >
-> > We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networki=
-ng
-> > stack needs to call pskb_may_pull() later on, we don't need to realloca=
-te
-> > memory.
-> >
-> > This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC an=
-d
-> > LRO enabled):
-> >
-> > BEFORE:
-> > =3D=3D=3D=3D=3D=3D=3D
-> > (netserver pinned to core receiving interrupts)
-> > $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> >   87380  16384 262144    60.01    32547.82
-> >
-> > (netserver pinned to adjacent core receiving interrupts)
-> > $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> >   87380  16384 262144    60.00    52531.67
-> >
-> > AFTER:
-> > =3D=3D=3D=3D=3D=3D
-> > (netserver pinned to core receiving interrupts)
-> > $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> >   87380  16384 262144    60.00    52896.06
-> >
-> > (netserver pinned to adjacent core receiving interrupts)
-> >   $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> >   87380  16384 262144    60.00    85094.90
-> >
-> > Additional tests across a larger range of parameters w/ and w/o LRO, w/
-> > and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), differen=
-t
-> > TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
-> > better performance with this patch.
-> >
-> > Signed-off-by: Christoph Paasch <cpaasch@openai.com>
-> > ---
-> >   drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 5 +++++
-> >   1 file changed, 5 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/=
-net/ethernet/mellanox/mlx5/core/en_rx.c
-> > index 8bedbda522808cbabc8e62ae91a8c25d66725ebb..792bb647ba28668ad7789c3=
-28456e3609440455d 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > @@ -2047,6 +2047,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_r=
-q *rq, struct mlx5e_mpw_info *w
-> >               dma_sync_single_for_cpu(rq->pdev, addr + head_offset, hea=
-dlen,
-> >                                       rq->buff.map_dir);
-> >
-> > +             headlen =3D eth_get_headlen(skb->dev, head_addr, headlen)=
-;
-> > +
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  tools/testing/selftests/bpf/veristat.c | 69 +++++++++++++++++++++++++-
+>  1 file changed, 68 insertions(+), 1 deletion(-)
 >
-> Hi,
+> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
+ests/bpf/veristat.c
+> index d532dd82a3a8..e27893863400 100644
+> --- a/tools/testing/selftests/bpf/veristat.c
+> +++ b/tools/testing/selftests/bpf/veristat.c
+> @@ -181,6 +181,12 @@ struct var_preset {
+>         bool applied;
+>  };
 >
-> I am building on top of this patchset and got a kernel crash. It was
-> triggered by attaching an xdp program.
+> +enum dump_mode {
+> +       DUMP_NONE =3D 0,
+> +       DUMP_XLATED =3D 1,
+> +       DUMP_JITED =3D 2,
+> +};
+> +
+>  static struct env {
+>         char **filenames;
+>         int filename_cnt;
+> @@ -227,6 +233,7 @@ static struct env {
+>         char orig_cgroup[PATH_MAX];
+>         char stat_cgroup[PATH_MAX];
+>         int memory_peak_fd;
+> +       __u32 dump_mode;
+>  } env;
 >
-> I think the problem is skb->dev is still NULL here. It will be set later =
-by:
-> mlx5e_complete_rx_cqe() -> mlx5e_build_rx_skb() -> eth_type_trans()
+>  static int libbpf_print_fn(enum libbpf_print_level level, const char *fo=
+rmat, va_list args)
+> @@ -271,6 +278,7 @@ const char argp_program_doc[] =3D
+>  enum {
+>         OPT_LOG_FIXED =3D 1000,
+>         OPT_LOG_SIZE =3D 1001,
+> +       OPT_DUMP =3D 1002,
+>  };
+>
+>  static const struct argp_option opts[] =3D {
+> @@ -295,6 +303,7 @@ static const struct argp_option opts[] =3D {
+>           "Force BPF verifier failure on register invariant violation (BP=
+F_F_TEST_REG_INVARIANTS program flag)" },
+>         { "top-src-lines", 'S', "N", 0, "Emit N most frequent source code=
+ lines" },
+>         { "set-global-vars", 'G', "GLOBAL", 0, "Set global variables prov=
+ided in the expression, for example \"var1 =3D 1\"" },
+> +       { "dump", OPT_DUMP, "DUMP_MODE", OPTION_ARG_OPTIONAL, "Print BPF =
+program dump (xlated, jited)" },
+>         {},
+>  };
+>
+> @@ -427,6 +436,16 @@ static error_t parse_arg(int key, char *arg, struct =
+argp_state *state)
+>                         return err;
+>                 }
+>                 break;
+> +       case OPT_DUMP:
+> +               if (!arg || strcasecmp(arg, "xlated") =3D=3D 0) {
+> +                       env.dump_mode |=3D DUMP_XLATED;
+> +               } else if (strcasecmp(arg, "jited") =3D=3D 0) {
+> +                       env.dump_mode |=3D DUMP_JITED;
+> +               } else {
+> +                       fprintf(stderr, "Unrecognized dump mode '%s'\n", =
+arg);
+> +                       return -EINVAL;
+> +               }
+> +               break;
+>         default:
+>                 return ARGP_ERR_UNKNOWN;
+>         }
+> @@ -1554,6 +1573,49 @@ static int parse_rvalue(const char *val, struct rv=
+alue *rvalue)
+>         return 0;
+>  }
+>
+> +static void dump(__u32 prog_id, enum dump_mode mode, const char *file_na=
+me, const char *prog_name)
+> +{
+> +       char command[64], buf[4096];
+> +       ssize_t len, wrote, off;
+> +       FILE *fp;
+> +       int status;
+> +
+> +       status =3D system("which bpftool > /dev/null 2>&1");
+> +       if (status !=3D 0) {
+> +               fprintf(stderr, "bpftool is not available, can't print pr=
+ogram dump\n");
+> +               return;
+> +       }
+> +       snprintf(command, sizeof(command), "bpftool prog dump %s id %u",
+> +                mode =3D=3D DUMP_JITED ? "jited" : "xlated", prog_id);
+> +       fp =3D popen(command, "r");
+> +       if (!fp) {
+> +               fprintf(stderr, "Can't run bpftool\n");
 
-Hmmm... Not sure what happened here...
-I'm almost certain I tested with xdp as well...
+maybe "bpftool failed with error: %d\n" and pass errno?
 
-I will try again later/tomorrow.
+> +               return;
+> +       }
+> +
+> +       printf("%s/%s DUMP %s:\n", file_name, prog_name, mode =3D=3D DUMP=
+_JITED ? "JITED" : "XLATED");
+> +       fflush(stdout);
+> +       do {
+> +               len =3D read(fileno(fp), buf, sizeof(buf));
+> +               if (len < 0)
+> +                       goto error;
+> +
+> +               for (off =3D 0; off < len;) {
+> +                       wrote =3D write(STDOUT_FILENO, buf + off, len - o=
+ff);
+> +                       if (wrote <=3D 0)
+> +                               goto error;
+> +                       off +=3D wrote;
+> +               }
+> +       } while (len > 0);
+> +       write(STDOUT_FILENO, "\n", 1);
 
-Thanks!
-Christoph
+Given we have FILE abstraction, wouldn't it be more natural to use
+fread()/fwrite()/feof()?
 
+this also doesn't handle interrupted syscalls (-EINTR)
+
+pw-bot: cr
+
+> +       goto out;
+> +error:
+> +       fprintf(stderr, "Could not write BPF prog dump. Error: %s (errno=
+=3D%d)\n", strerror(errno),
+
+why so specific, "write", if it could be an error during reading from
+bpftool? And note a more or less consistent "Failed to ..." wording,
+there is not a single "Could not" in veristat.c. So something generic
+like "Failed to fetch BPF program dump" or something?
+
+> +               errno);
+> +out:
+> +       pclose(fp);
+> +}
+> +
+>  static int process_prog(const char *filename, struct bpf_object *obj, st=
+ruct bpf_program *prog)
+>  {
+>         const char *base_filename =3D basename(strdupa(filename));
+> @@ -1630,8 +1692,13 @@ static int process_prog(const char *filename, stru=
+ct bpf_object *obj, struct bpf
 >
+>         memset(&info, 0, info_len);
+>         fd =3D bpf_program__fd(prog);
+> -       if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) =3D=
+=3D 0)
+> +       if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) =3D=
+=3D 0) {
+>                 stats->stats[JITED_SIZE] =3D info.jited_prog_len;
+> +               if (env.dump_mode & DUMP_JITED)
+> +                       dump(info.id, DUMP_JITED, base_filename, prog_nam=
+e);
+> +               if (env.dump_mode & DUMP_XLATED)
+> +                       dump(info.id, DUMP_XLATED, base_filename, prog_na=
+me);
+> +       }
 >
-> >               frag_offset +=3D headlen;
-> >               byte_cnt -=3D headlen;
-> >               linear_hr =3D skb_headroom(skb);
-> > @@ -2123,6 +2125,9 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_r=
-q *rq, struct mlx5e_mpw_info *w
-> >                               pagep->frags++;
-> >                       while (++pagep < frag_page);
-> >               }
-> > +
-> > +             headlen =3D eth_get_headlen(skb->dev, mxbuf->xdp.data, he=
-adlen);
-> > +
-> >               __pskb_pull_tail(skb, headlen);
-> >       } else {
-> >               if (xdp_buff_has_frags(&mxbuf->xdp)) {
-> >
+>         parse_verif_log(buf, buf_sz, stats);
+>
+> --
+> 2.51.0
 >
 
