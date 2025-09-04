@@ -1,280 +1,153 @@
-Return-Path: <bpf+bounces-67385-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67386-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F398B42FC8
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 04:34:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B7B3B42FCE
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 04:36:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBB6A563A94
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 02:34:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15D831BC6681
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 02:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D561C5F10;
-	Thu,  4 Sep 2025 02:34:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8591FAC34;
+	Thu,  4 Sep 2025 02:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xhpcoy9a"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="m+16xFdK"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219521DE2D7
-	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 02:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC8A129E6E
+	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 02:36:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756953244; cv=none; b=lVF3PL9Sm4kbTXulaNdB9DJ153JICE1Jz3gIrIzM21fbNT6nzgqvmbZkPG5jznHHFtQU3y2cNW3RMFft5ItDeYw6ddxaTbrX16l16e5kue+HtBg+OqOQotWiBFCcxsV8+6abtfG26xmcEyKHki6Bu61yko/sQeMQ74IVJDg6I1U=
+	t=1756953395; cv=none; b=jMBKybItRVDThuWR7T6IQUcB8AisqQZ0Zrltlc5PZZjfpHp8WX3nGCuHb/3tlOJn1BUjAl1XUCGJvRG/OIw3ji5Rph3Xjr4C8q/Cwt1blfs1aEXX906dIXw/Y10XAZBTWY3oynBb9FML9tbZ9KVetS2ws7TfG1u9P9gRuJnmk5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756953244; c=relaxed/simple;
-	bh=1zBt2rQAN+Niiez5Zz3RTB+dhCCpTfP+TZnUMT/cYSo=;
+	s=arc-20240116; t=1756953395; c=relaxed/simple;
+	bh=6bPgq0uuIfc1SOjnfNfm5Z6ziy+jTFRkm4MqCx8g5KM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AYX2U/GbQqvuYhi6Ew8UeggxHbXFKLLiN609+vgKLLjn50N5H7KwPtr6dxz5TVpuRd30scDStIq14ZAIFje9YWkwK9fwAJ9Q2GLjKicTSucORcts6ponUlDSZmU/y7uY+aXMGBofNw3nx9/l1MYQYvhmCek3H6Yp+PP3A6hbkQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xhpcoy9a; arc=none smtp.client-ip=91.218.175.170
+	 In-Reply-To:Content-Type; b=to2jWgq2fsPlbef4D6tZxN/Mu/W9+fRB2UsoPhBFeIZb+DXukMCwLHXa1EHjpR9qXr0jd22noh2QTjuYJj+vytCQsiTqeI6Y3K3/J0Am+pJ/CINofKz3B022Y1/QnHitSSXLsxbgqDVnuR5/DEeOeG90uVLc/12yGjoFXsOn53U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=m+16xFdK; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <dfe41b0d-c73a-433b-99fe-db05dbe1c0f1@linux.dev>
+Message-ID: <b28aa5f0-053a-4e32-b0c8-88295fd8001e@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756953239;
+	t=1756953391;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9GrrzK7URfYVDvwGMvTjuKo66Qu1KuFZeiLQPI0RNuE=;
-	b=xhpcoy9aRcvMZs4USYLfGByUGT8l/vEEdNF2cWf/Zs8z3IUMYFTqzAV+oixxOOYA5rMXNb
-	uGSlarQDg28H6c25gX0m+E3hgDXvAnkyk9XceNoWl7e3Gj30YOFWzUK3lFiGNsXCF/YhkN
-	W9fMZzoiwbF86PgU7ZR6TmYKdHLyh0c=
-Date: Thu, 4 Sep 2025 10:33:47 +0800
+	bh=PmyHYLXEcLu/Jpbj8J6U/tPWnLBvNEljpuFNn1AvWlU=;
+	b=m+16xFdKuBm/0ECvoSZBg3tQM6c2QkIepDoXbiaw8AujzmgfcfjaZeEs920tCa7VnDrkmQ
+	9U59RswhIxZNhwVFz8eBPD2T6kMwwAjgB2IHTxtCJafixl2JHpvDxm2a732xnv8ok/gr0b
+	b0dUtu340rQ0lUPUC9vAS+0ygOrik+o=
+Date: Thu, 4 Sep 2025 10:36:24 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: Generalize data copying for percpu maps
+Subject: Re: [PATCH bpf-next v4 2/7] bpf: Introduce BPF_F_CPU and
+ BPF_F_ALL_CPUS flags
 Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, jolsa@kernel.org, yonghong.song@linux.dev,
+ song@kernel.org, eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net,
  kernel-patches-bot@fb.com
-References: <20250903170411.69188-1-leon.hwang@linux.dev>
- <CAADnVQL-Zj95bfOxkxc2tf9CKvUSCt4PKdoQMZtqaiirzPLxvw@mail.gmail.com>
- <CAEf4BzYmX9RfOwArEAa+XW+uVzqUUy-5gjenog+ZvDjxGa80SQ@mail.gmail.com>
+References: <20250827164509.7401-1-leon.hwang@linux.dev>
+ <20250827164509.7401-3-leon.hwang@linux.dev>
+ <CAEf4BzaUw868nNG3ngMci4fLPDGsaffQ-O3YrPOEo7N5QEkM_w@mail.gmail.com>
+ <DCJ8H98X6UL4.3O75SJOM2WWRG@linux.dev>
+ <CAEf4BzZOVtHu6NMFpEToC5C_Rf1qZ=HLqN5UntG-+PxG2dOn5g@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAEf4BzYmX9RfOwArEAa+XW+uVzqUUy-5gjenog+ZvDjxGa80SQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZOVtHu6NMFpEToC5C_Rf1qZ=HLqN5UntG-+PxG2dOn5g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
 
 
-On 4/9/25 07:39, Andrii Nakryiko wrote:
-> On Wed, Sep 3, 2025 at 10:36 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+On 4/9/25 07:53, Andrii Nakryiko wrote:
+> On Wed, Sep 3, 2025 at 7:27 AM Leon Hwang <leon.hwang@linux.dev> wrote:
 >>
->> On Wed, Sep 3, 2025 at 10:04 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>>
->>> While adding support for the BPF_F_CPU and BPF_F_ALL_CPUS flags, the data
->>> copying logic of the following percpu map types needs to be updated:
->>>
->>> * percpu_array
->>> * percpu_hash
->>> * lru_percpu_hash
->>> * percpu_cgroup_storage
->>>
->>> Following Andrii’s suggestion[0], this patch refactors the data copying
-> 
-> as flattering as that is, "Andrii's suggestion" is no justification
-> why the patch is correct :)
-> 
-
-:)
-
->>> logic by introducing two helpers:
->>>
->>> * `bpf_percpu_copy_to_user()`
->>> * `bpf_percpu_copy_from_user()`
->>>
->>> This prepares the codebase for the upcoming CPU flag support.
->>>
->>> [0] https://lore.kernel.org/bpf/20250827164509.7401-1-leon.hwang@linux.dev/
->>>
->>> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->>> ---
->>>  include/linux/bpf.h        | 29 ++++++++++++++++++++++++++++-
->>>  kernel/bpf/arraymap.c      | 14 ++------------
->>>  kernel/bpf/hashtab.c       | 20 +++-----------------
->>>  kernel/bpf/local_storage.c | 18 ++++++------------
->>>  4 files changed, 39 insertions(+), 42 deletions(-)
->>>
->>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->>> index 8f6e87f0f3a89..2dc0299a2da50 100644
->>> --- a/include/linux/bpf.h
->>> +++ b/include/linux/bpf.h
->>> @@ -547,6 +547,34 @@ static inline void copy_map_value_long(struct bpf_map *map, void *dst, void *src
->>>         bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
->>>  }
->>>
->>> +#ifdef CONFIG_BPF_SYSCALL
->>> +static inline void bpf_percpu_copy_to_user(struct bpf_map *map, void __percpu *pptr, void *value,
->>> +                                          u32 size)
->>> +{
->>> +       int cpu, off = 0;
->>> +
->>> +       for_each_possible_cpu(cpu) {
->>> +               copy_map_value_long(map, value + off, per_cpu_ptr(pptr, cpu));
->>> +               check_and_init_map_value(map, value + off);
-> 
-> I still maintain that this makes zero sense... value+off is memory
-> that we'll copy_to_user, why are we setting refcount to 1, or
-> rb_node/list_node to "proper empty node" is absolutely not clear... it
-> feels like we can drop check_and_init_map_value() altogether and be
-> absolutely no worse. If anything, memset(0) would be nicer, but I
-> guess we didn't have it to begin with, so no need to add it now.
-> 
-
-Agreed.
-
-As 'copy_map_value_long()' won't copy those fields,
-'check_and_init_map_value()' is unnecessary here.
-
->>> +               off += size;
->>> +       }
->>> +}
->>> +
->>> +void bpf_obj_free_fields(const struct btf_record *rec, void *obj);
->>> +
->>> +static inline void bpf_percpu_copy_from_user(struct bpf_map *map, void __percpu *pptr, void *value,
->>> +                                            u32 size)
->>> +{
->>> +       int cpu, off = 0;
->>> +
->>> +       for_each_possible_cpu(cpu) {
->>> +               copy_map_value_long(map, per_cpu_ptr(pptr, cpu), value + off);
-> 
-> copy_map_value_long is generalization of bpf_long_memcpy, and so it
-> would be good to call this out to explain why your refactoring is
-> correct
-> 
-
-No.
-
-It shouldn't call bpf_long_memcpy() before bpf_obj_free_fields(), or it
-will overwrite those fields data used for bpf_obj_free_fields().
-
-It would be better to call bpf_obj_free_fields() then bpf_long_memcpy().
-
->>> +               bpf_obj_free_fields(map->record, per_cpu_ptr(pptr, cpu));
->>> +               off += size;
->>> +       }
->>> +}
->>> +#endif
->>> +
->>>  static inline void bpf_obj_swap_uptrs(const struct btf_record *rec, void *dst, void *src)
->>>  {
->>>         unsigned long *src_uptr, *dst_uptr;
->>> @@ -2417,7 +2445,6 @@ struct btf_record *btf_record_dup(const struct btf_record *rec);
->>>  bool btf_record_equal(const struct btf_record *rec_a, const struct btf_record *rec_b);
->>>  void bpf_obj_free_timer(const struct btf_record *rec, void *obj);
->>>  void bpf_obj_free_workqueue(const struct btf_record *rec, void *obj);
->>> -void bpf_obj_free_fields(const struct btf_record *rec, void *obj);
->>>  void __bpf_obj_drop_impl(void *p, const struct btf_record *rec, bool percpu);
->>>
->>>  struct bpf_map *bpf_map_get(u32 ufd);
->>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
->>> index 3d080916faf97..6be9c54604503 100644
->>> --- a/kernel/bpf/arraymap.c
->>> +++ b/kernel/bpf/arraymap.c
->>> @@ -300,7 +300,6 @@ int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value)
->>>         struct bpf_array *array = container_of(map, struct bpf_array, map);
->>>         u32 index = *(u32 *)key;
->>>         void __percpu *pptr;
->>> -       int cpu, off = 0;
->>>         u32 size;
->>>
->>>         if (unlikely(index >= array->map.max_entries))
->>> @@ -313,11 +312,7 @@ int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value)
->>>         size = array->elem_size;
->>>         rcu_read_lock();
->>>         pptr = array->pptrs[index & array->index_mask];
->>> -       for_each_possible_cpu(cpu) {
->>> -               copy_map_value_long(map, value + off, per_cpu_ptr(pptr, cpu));
->>> -               check_and_init_map_value(map, value + off);
->>> -               off += size;
->>> -       }
->>> +       bpf_percpu_copy_to_user(map, pptr, value, size);
->>>         rcu_read_unlock();
->>>         return 0;
->>>  }
->>> @@ -387,7 +382,6 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
->>>         struct bpf_array *array = container_of(map, struct bpf_array, map);
->>>         u32 index = *(u32 *)key;
->>>         void __percpu *pptr;
->>> -       int cpu, off = 0;
->>>         u32 size;
->>>
->>>         if (unlikely(map_flags > BPF_EXIST))
->>> @@ -411,11 +405,7 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
->>>         size = array->elem_size;
->>>         rcu_read_lock();
->>>         pptr = array->pptrs[index & array->index_mask];
->>> -       for_each_possible_cpu(cpu) {
->>> -               copy_map_value_long(map, per_cpu_ptr(pptr, cpu), value + off);
->>> -               bpf_obj_free_fields(array->map.record, per_cpu_ptr(pptr, cpu));
->>> -               off += size;
->>> -       }
->>> +       bpf_percpu_copy_from_user(map, pptr, value, size);
->>>         rcu_read_unlock();
->>>         return 0;
->>>  }
->>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
->>> index 71f9931ac64cd..5f0f3c00dbb74 100644
->>> --- a/kernel/bpf/hashtab.c
->>> +++ b/kernel/bpf/hashtab.c
->>> @@ -944,12 +944,8 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
->>>                 copy_map_value(&htab->map, this_cpu_ptr(pptr), value);
->>>         } else {
->>>                 u32 size = round_up(htab->map.value_size, 8);
->>> -               int off = 0, cpu;
->>>
->>> -               for_each_possible_cpu(cpu) {
->>> -                       copy_map_value_long(&htab->map, per_cpu_ptr(pptr, cpu), value + off);
->>> -                       off += size;
->>> -               }
->>> +               bpf_percpu_copy_from_user(&htab->map, pptr, value, size);
+>> On Thu Aug 28, 2025 at 7:18 AM +08, Andrii Nakryiko wrote:
+>>> On Wed, Aug 27, 2025 at 9:45 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>>>
 >>
->> This is not a refactor. There is a significant change in the logic.
->> Why is it needed? Bug fix or introducing a bug?
+>> [...]
+>>
+>>>>
+>>>> +#ifdef CONFIG_BPF_SYSCALL
+>>>> +static inline void bpf_percpu_copy_to_user(struct bpf_map *map, void __percpu *pptr, void *value,
+>>>> +                                          u32 size, u64 flags)
+>>>> +{
+>>>> +       int current_cpu = raw_smp_processor_id();
+>>>> +       int cpu, off = 0;
+>>>> +
+>>>> +       if (flags & BPF_F_CPU) {
+>>>> +               cpu = flags >> 32;
+>>>> +               copy_map_value_long(map, value, cpu != current_cpu ? per_cpu_ptr(pptr, cpu) :
+>>>> +                                   this_cpu_ptr(pptr));
+>>>> +               check_and_init_map_value(map, value);
+>>>
+>>> I'm not sure it's the question to you, but why would we
+>>> "check_and_init_map_value" when copying data to user space?... this is
+>>> so confusing...
+>>>
+>>
+>> After reading its code, I think it's to hide some kernel details from
+>> user space, e.g. refcount, list nodes, rb nodes.
 > 
-> this is preparation for that BPF_F_CPU/BPF_F_ALLCPUS, but I agree that
-> it would be better to include as preparatory patch in the actual patch
-> set
+> we don't copy those details, so there is nothing to hide, so no, I
+> think it's just weird that we do this, unless there is some
+> non-obvious reasoning behind this
 > 
 
 Ack.
 
-I'll move this patch into the patch set of BPF_F_CPU/BPF_F_ALLCPUS flags.
+check_and_init_map_value() is useless here.
 
 >>
->> The names to_user and from_user are wrong.
->> There is no user space memory involved.
+>>>> +       } else {
+>>>> +               for_each_possible_cpu(cpu) {
+>>>> +                       copy_map_value_long(map, value + off, per_cpu_ptr(pptr, cpu));
+>>>> +                       check_and_init_map_value(map, value + off);
+>>>> +                       off += size;
+>>>> +               }
+>>>> +       }
+>>>> +}
+>>>> +
+>>>> +void bpf_obj_free_fields(const struct btf_record *rec, void *obj);
+>>>> +
+>>>> +static inline void bpf_percpu_copy_from_user(struct bpf_map *map, void __percpu *pptr, void *value,
+>>>> +                                            u32 size, u64 flags)
+>>>> +{
+>>
+>> [...]
+>>
+>>>> +}
+>>>> +#endif
+>>>
+>>> hm... these helpers are just here with no way to validate that they
+>>> generalize existing logic correctly... Do a separate patch where you
+>>> introduce this helper before adding per-CPU flags *and* make use of
+>>> them in existing code? Then we can check that you didn't introduce any
+>>> subtle differences? Then in this patch you can adjust helpers to
+>>> handle BPF_F_CPU and BPF_F_ALL_CPUS?
+>>>
+>>
+>> Get it.
+>>
+>> I'll send a separate patch later.
 > 
-> This was my suggestion because we either are copying user-supplied
-> data or copying data back to user. Strictly speaking it's all kernel
-> memory (copy_from_user/copy_to_user is done afterwards by the caller),
-> but that's the intent.
-> 
-> Maybe "copy_in" and "copy_out" would be better, I don't know. But
-> there is certainly a direction here w.r.t. user space provided data
-> (note, this is not BPF program-side logic).
+> separate patch as part of the patch set to show the value of this refactoring :)
 > 
 
-'bpf_percpu_copy_data()' and 'bpf_percpu_update_data()' would be better,
-as "copy_data" is used in those 'bpf_percpu_*_copy()' functions and
-"update_data" is used in those 'bpf_percpu_*_update()' functions.
+Sorry for my misunderstanding. :/
 
 Thanks,
 Leon
