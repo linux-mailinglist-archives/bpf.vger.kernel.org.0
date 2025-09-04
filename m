@@ -1,294 +1,446 @@
-Return-Path: <bpf+bounces-67382-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67383-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2F76B42F7D
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 04:13:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C58B42FAC
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 04:19:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 807EF1BC880B
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 02:13:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2A037C1FE7
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 02:19:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A0A825A337;
-	Thu,  4 Sep 2025 02:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921622264BA;
+	Thu,  4 Sep 2025 02:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXay5f9X"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EYAUG+LA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com [209.85.216.68])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC7324728B;
-	Thu,  4 Sep 2025 02:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBEE222562;
+	Thu,  4 Sep 2025 02:17:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756951840; cv=none; b=p3US38S3Hlxr8v+vJE3f+JCqZFgUeIvXhV1SHxBMTqxFz20D//c10UgAREHsmG6G6OWVuTu5PjuEibyuB/2h3YpJTaBb5Lq562NkHfBSdz85OOiWkrgwhRz27u8z8VcwRfntug7WLkl7Okg0SyQgqcq+rmFKuJG7T634QaIDc9A=
+	t=1756952255; cv=none; b=MdT5/Trt7W8F7Df3PIHjbj/AhiGqECLLBbAK4PC5+/j2HDeo/dzRthaaVGl0oPR7MMAbAqoE0SHBOKynOWWGs+nadfqeFB3oaU4gdDHlkoth7j1pwenJKUedo1Gd+Aua/Plw9+2s0lKfB24sLQx/y3M+MADQHhguRAxE/2pfM9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756951840; c=relaxed/simple;
-	bh=JtnLU1lOlEO7kOGweXbOv45YArumQDIRPeP+yy1NpFk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TgOe5mZRrNJvzF5BNquvNgwc6myZXvQ1npHVEYroRqIix9q1w/1azhWjkms+tpJBoqNq4qBxMpOvXy+YRp5tzytjh0Yej6dx1BrpU5w0hYtNF3SnCSQA9fNAJMDoQMiEkQCiQfHgRHl6AJqcYJ8e1DFn4ornCs36SKWBQFEagpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IXay5f9X; arc=none smtp.client-ip=209.85.216.68
+	s=arc-20240116; t=1756952255; c=relaxed/simple;
+	bh=dfEq33pg5RPWYU+MZejY0GaRTOzyoGIGlFQEEOCv3Tc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SKIfWxMTWiFHp/aEFGe+b1sTOwytc/XYDpmMcE2YYRtGBJg+lbmCjdr8KHoIkoV/Z7+f7RgEmkpejhywmHNHf7OtAFSlAVWQGXQPpe/SsGo2CjNZxweBrDGjz47yG/Nq6CaFvZKbJ94LhO/0wbnLZ7ZAWjlfSPxWGhYmWkIC0Ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EYAUG+LA; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f68.google.com with SMTP id 98e67ed59e1d1-32b8919e7c7so579940a91.2;
-        Wed, 03 Sep 2025 19:10:38 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45dcfecdc0fso2906965e9.1;
+        Wed, 03 Sep 2025 19:17:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756951838; x=1757556638; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1756952251; x=1757557051; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S3dvQ7K9NTYyh1ugFrnxU2Kn4PBNqUnkJfMhvkxOxik=;
-        b=IXay5f9XK/J9qnhTv3Fm4zmHqyW4P3kEWyrBZeur8d2AojawypcAHftIMpkmF3SZKQ
-         Kuj+nPxf8iw6SUsq7T9udlm6C8tstfnqwPrNKcFqwX79svEReUpyUsnhoqd9roz48hp9
-         UZeuV75301MUOutvc4rGUPgnlSnCxW9NOTIwqlQhxjcVrMwvN+3m4jbiyFT5WGKnNDKm
-         SibO/q8nzt4N6z9lr7KVzFEbD24DSioJw1HlmVQ5iYarDiY4UCMfY0qrA4AQ4WW01vO6
-         F9N3uw7wpMV0UTlN9iQQ2Iyd1RuW6V0D8fd/acDgVGWgHpBfkBbgCuZxpyt90MWwJv4U
-         C/9w==
+        bh=hEXO6a2Zbwf2FjjjQvWrZz/nh8JyplzRJyF84IyVjJ4=;
+        b=EYAUG+LAmq0gn4htHQwfxtN4Ppxn1oYx84NSSzSVDCfpAnIsXDyuV2RhRDNL1O0FvI
+         WJwTPGf+MTtkxc43irnckJ7n1zRvtXe96hpqA1Hvpj536OL0CQZoXkT8fjZQMwdQnnvb
+         SadsFL4comvMvtxQ3kN7bujhcipwTHs/ua7XbZd9ywwzUuSKEaydr07gOdcfHPlMFgca
+         on0G8Xe2xlaVhAVIfiASNim9seQva+BcnRkxg0Am2+YJ26x/oA5mm981dy10Sd4lVVUQ
+         wTmE/WEfJkqIro9zNLdMVaFEsKlMgJpR0hUsMZyjFhHKnO6iPKQaaqLgBl+t/lHkEOUQ
+         NUDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756951838; x=1757556638;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1756952251; x=1757557051;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S3dvQ7K9NTYyh1ugFrnxU2Kn4PBNqUnkJfMhvkxOxik=;
-        b=QSth7Qrh7rz7QEZm1cZVrb9jPN+WCLffonvDDjYKsbQxN3ELeANzzgzWHUZ32I4Z7O
-         9kX+/Kvp09M/bJdWS2GGcSmlVALrhWhcQF3eX0M1ig2fqKkwQHpCiZNGpaH4w0AflygE
-         +iZmZfwAvA0SzuIwcShYTPKY+tjpcDWhpkc1otJkZ5a41BTwpFe7tD+pylILQN/0pX64
-         IdEroIRbH/zopFBAEV+1HD4ts4CmJG1MnULsqjsblGoY/R5kdNeK2OPxYvMP891Rdr+y
-         wOiiv+HggoZpdgKdgI8OZvR4Vbf/T4QFGxhgvX7a9FH6sI4bRpiGlUMyGuVH0T1PtL09
-         2HCg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9TLSETLEUfYkXS2oxQYrlg3cetGoqamI7hVsafnAeUTLNoW9NGxi9br8fdSiE2dvNTdA7BEuQhI82FFB5@vger.kernel.org, AJvYcCVLJsrNBuSbXNiE0bmUoCiZpOAE0M9P10ALkSPVqmMKerOmrSAb3O11mbjd2+BRhigQX9mzTGFJOgVo4FCQ6nQD@vger.kernel.org, AJvYcCXCKJgLUH+cAfMTDhkG01DwBOTW/quh8dJy4dGdbYXadgoC5Vms6MvxxOP1nQtdJZEhMD4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7Hxd/0rbl8bukAmArj/qv+z6rkT2yvp3+QfjVe7EL7U9NqFck
-	9Q0j2k98I0Nptr4r3RuKXg2vvMmojnFAXDj49Dxqe82xCgpNkt5qOFKp
-X-Gm-Gg: ASbGncvGQJPGI1T1IC/XP7fkK2fFEyofvYN+brj9ejvfc1LvbR7iX4P1D1iswYn2VYf
-	kVAw2DPounppp9x6Ejw7DDH1d9cT9yl1v/CyZKZmGJTLwVFqJgFFrj+ZZKlG/wUUYgrdClOUcQQ
-	A1xMS+EP2lOivisR5Ak90ggAVJZhy5CBLowKwAjutXuMmgF871MfzNz15XpvfQ+BKzvFywqrc0Z
-	WVYBtD1Y3S5k03qOuU3etZ8u/G4Rx+jUK7eFWa+FAkiNYVAMKY28g02PfB4h9e9Bw7cSEF/JjSE
-	CXaAR0KZCHCoQHl0sFtdrRQL4Ba3uHUZTWRTVJ2uG0/yEg1/xgbZywcMoeq0YowZOS9Ep929PIi
-	B7FvKC/8NNgNkIyRMBumhmgg=
-X-Google-Smtp-Source: AGHT+IHv871LldnjZ5vEAPGq0te4x2Jr9f9NB0EUSvNM4YX4zjwy7/kqLXCaYBRlZmQyPu22EPqVww==
-X-Received: by 2002:a17:90b:384d:b0:327:50b2:8007 with SMTP id 98e67ed59e1d1-328156f75f6mr21540854a91.32.1756951838152;
-        Wed, 03 Sep 2025 19:10:38 -0700 (PDT)
-Received: from 7940hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7727822817asm5143014b3a.98.2025.09.03.19.10.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Sep 2025 19:10:37 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: andrii@kernel.org,
-	olsajiri@gmail.com
-Cc: eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	yikai.lin@vivo.com,
-	memxor@gmail.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND bpf-next v3 3/3] selftests/bpf: add benchmark testing for kprobe-multi-all
-Date: Thu,  4 Sep 2025 10:10:11 +0800
-Message-ID: <20250904021011.14069-4-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250904021011.14069-1-dongml2@chinatelecom.cn>
-References: <20250904021011.14069-1-dongml2@chinatelecom.cn>
+        bh=hEXO6a2Zbwf2FjjjQvWrZz/nh8JyplzRJyF84IyVjJ4=;
+        b=OfkSncHqwLwPLC/schMqKHyInXJsxnt5kY9xfwT7OFA3Jupyf5Gu4D7GZMsjCcucr4
+         apc0we6c9dcQdW2zLnqKdihdWsXG9s1fThPgl6Pk0x2F7XDPnCXnhVkaVcH+fj94SsOA
+         qlKLqRMsSQVLOdP5AEEKPF0upbu4CUQVFyeag+cmMzMyH64SjQOLoi993hRI7Bksac6w
+         PGu1jzT1piFERBSZdxsfYFeiaa1pzQxso3TbiudBc4uvwymv8qcgzyToRkzGO47ISaoN
+         PzCzif1fUgaUGay72fgYoIDfQAJlVjgCRRudmoKySaCIRwLaxyjpgzZlVqdOPkDLI0yW
+         iJJw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQqblS/ZbTN2JqEynjgLD58qXqn6M2gXl+djzFy9H6K1V2kz13ARNSdE9MkCiNSozdRtA=@vger.kernel.org, AJvYcCWxaxKXpfMp2zN7FNkVKkiVqudEmoxgf3Km2/bN4VO4cYY10TYk2/QFyXwdA/A3O0/y2u0kodO5BJ5x9I9x@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxvpK1Lx0GdSlWUQ+dgWTZut2K+sqG15+iqE+Ltr5mILI8dwR4
+	f9mcPS0w9srht+HreqpTmFhwtR8WwVLfQRJJRTyAw3aj0c0x11sBnWBLrDNizVALb9mxEaW2iY3
+	ITXYeLSm/g52KRpUT+Xfph0yKB6R0O4Y=
+X-Gm-Gg: ASbGnctcE8vm17gV+ey4bWDhqn7M9WkyOIAyqJSlKHzkQtvwkZgonPf93LCsyJC2s5r
+	t+1TYUh36tNYWadp6AYujoeu87HOtqhnJTmoAPJ8gs0TWz/gHrQ+PA0uOqNPqZfLhcfX2vUiEbq
+	lO5km9W78C9NBOlf6CSohyp0RC3y7YkCvE1OT6pYuFkmyZCY3T7uHI3g4kRgdJ4wWevYvrupQOa
+	Q71RlDtghbd+xw+wtnbp3O/DSI=
+X-Google-Smtp-Source: AGHT+IEucFAzbOUprN6RbQjE2A1w5RXXBRygrH8X6Gi1kmVxoRGSUtgkwQPskre97AkaDSZkj7jk+bag3t78rQH5NIE=
+X-Received: by 2002:a5d:5f54:0:b0:3dc:eb5:503b with SMTP id
+ ffacd0b85a97d-3dc0eb55556mr5059825f8f.56.1756952251222; Wed, 03 Sep 2025
+ 19:17:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250903172453.645226-1-irogers@google.com>
+In-Reply-To: <20250903172453.645226-1-irogers@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 3 Sep 2025 19:17:19 -0700
+X-Gm-Features: Ac12FXybvkGllEktLdh83Sl6bEn2X0A1lHy4ppRVSr0CioZpWZvihXjYlQAkABc
+Message-ID: <CAADnVQLkhysjnEsZACK-fgG3XBaHj1FqnhJdu+0V6PCbpKEK=g@mail.gmail.com>
+Subject: Re: [PATCH v1] bpf: Add kernel-doc for struct bpf_prog_info
+To: Ian Rogers <irogers@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-For now, the benchmark for kprobe-multi is single, which means there is
-only 1 function is hooked during testing. Add the testing
-"kprobe-multi-all", which will hook all the kernel functions during
-the benchmark. And the "kretprobe-multi-all" is added too.
+On Wed, Sep 3, 2025 at 10:25=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> Recently diagnosing a regression [1] would have been easier if struct
+> bpf_prog_info had some comments explaining its usage. As I found it
+> hard to generate comments for some parts of the struct,q what is here is =
+a
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
-v3:
-- add some comment to attach_ksyms_all, which note that don't run the
-  testing on a debug kernel
+"struct,q" ??
 
-v2:
-- use fprintf() instead of printf()
----
- tools/testing/selftests/bpf/bench.c           |  4 ++
- .../selftests/bpf/benchs/bench_trigger.c      | 61 +++++++++++++++++++
- .../selftests/bpf/benchs/run_bench_trigger.sh |  4 +-
- .../selftests/bpf/progs/trigger_bench.c       | 12 ++++
- tools/testing/selftests/bpf/trace_helpers.c   |  1 +
- 5 files changed, 80 insertions(+), 2 deletions(-)
+> mix of mostly hand written, but some AI written, comments.
+>
+> [1] https://lore.kernel.org/lkml/CAP-5=3DfWJQcmUOP7MuCA2ihKnDAHUCOBLkQFEk=
+QES-1ZZTrgf8Q@mail.gmail.com/
 
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index df4489ac14a0..bd29bb2e6cb5 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -512,6 +512,8 @@ extern const struct bench bench_trig_kretprobe;
- extern const struct bench bench_trig_kprobe_multi;
- extern const struct bench bench_trig_kretprobe_multi;
- extern const struct bench bench_trig_fentry;
-+extern const struct bench bench_trig_kprobe_multi_all;
-+extern const struct bench bench_trig_kretprobe_multi_all;
- extern const struct bench bench_trig_fexit;
- extern const struct bench bench_trig_fmodret;
- extern const struct bench bench_trig_tp;
-@@ -587,6 +589,8 @@ static const struct bench *benchs[] = {
- 	&bench_trig_kprobe_multi,
- 	&bench_trig_kretprobe_multi,
- 	&bench_trig_fentry,
-+	&bench_trig_kprobe_multi_all,
-+	&bench_trig_kretprobe_multi_all,
- 	&bench_trig_fexit,
- 	&bench_trig_fmodret,
- 	&bench_trig_tp,
-diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-index 82327657846e..1e2aff007c2a 100644
---- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-@@ -226,6 +226,65 @@ static void trigger_fentry_setup(void)
- 	attach_bpf(ctx.skel->progs.bench_trigger_fentry);
- }
- 
-+static void attach_ksyms_all(struct bpf_program *empty, bool kretprobe)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	char **syms = NULL;
-+	size_t cnt = 0;
-+
-+	/* Some recursive functions will be skipped in
-+	 * bpf_get_ksyms -> skip_entry, as they can introduce sufficient
-+	 * overhead. However, it's difficut to skip all the recursive
-+	 * functions for a debug kernel.
-+	 *
-+	 * So, don't run the kprobe-multi-all and kretprobe-multi-all on
-+	 * a debug kernel.
-+	 */
-+	if (bpf_get_ksyms(&syms, &cnt, true)) {
-+		fprintf(stderr, "failed to get ksyms\n");
-+		exit(1);
-+	}
-+
-+	opts.syms = (const char **) syms;
-+	opts.cnt = cnt;
-+	opts.retprobe = kretprobe;
-+	/* attach empty to all the kernel functions except bpf_get_numa_node_id. */
-+	if (!bpf_program__attach_kprobe_multi_opts(empty, NULL, &opts)) {
-+		fprintf(stderr, "failed to attach bpf_program__attach_kprobe_multi_opts to all\n");
-+		exit(1);
-+	}
-+}
-+
-+static void trigger_kprobe_multi_all_setup(void)
-+{
-+	struct bpf_program *prog, *empty;
-+
-+	setup_ctx();
-+	empty = ctx.skel->progs.bench_kprobe_multi_empty;
-+	prog = ctx.skel->progs.bench_trigger_kprobe_multi;
-+	bpf_program__set_autoload(empty, true);
-+	bpf_program__set_autoload(prog, true);
-+	load_ctx();
-+
-+	attach_ksyms_all(empty, false);
-+	attach_bpf(prog);
-+}
-+
-+static void trigger_kretprobe_multi_all_setup(void)
-+{
-+	struct bpf_program *prog, *empty;
-+
-+	setup_ctx();
-+	empty = ctx.skel->progs.bench_kretprobe_multi_empty;
-+	prog = ctx.skel->progs.bench_trigger_kretprobe_multi;
-+	bpf_program__set_autoload(empty, true);
-+	bpf_program__set_autoload(prog, true);
-+	load_ctx();
-+
-+	attach_ksyms_all(empty, true);
-+	attach_bpf(prog);
-+}
-+
- static void trigger_fexit_setup(void)
- {
- 	setup_ctx();
-@@ -512,6 +571,8 @@ BENCH_TRIG_KERNEL(kretprobe, "kretprobe");
- BENCH_TRIG_KERNEL(kprobe_multi, "kprobe-multi");
- BENCH_TRIG_KERNEL(kretprobe_multi, "kretprobe-multi");
- BENCH_TRIG_KERNEL(fentry, "fentry");
-+BENCH_TRIG_KERNEL(kprobe_multi_all, "kprobe-multi-all");
-+BENCH_TRIG_KERNEL(kretprobe_multi_all, "kretprobe-multi-all");
- BENCH_TRIG_KERNEL(fexit, "fexit");
- BENCH_TRIG_KERNEL(fmodret, "fmodret");
- BENCH_TRIG_KERNEL(tp, "tp");
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh b/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-index a690f5a68b6b..f7573708a0c3 100755
---- a/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-@@ -6,8 +6,8 @@ def_tests=( \
- 	usermode-count kernel-count syscall-count \
- 	fentry fexit fmodret \
- 	rawtp tp \
--	kprobe kprobe-multi \
--	kretprobe kretprobe-multi \
-+	kprobe kprobe-multi kprobe-multi-all \
-+	kretprobe kretprobe-multi kretprobe-multi-all \
- )
- 
- tests=("$@")
-diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
-index 044a6d78923e..3d5f30c29ae3 100644
---- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-+++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-@@ -97,6 +97,12 @@ int bench_trigger_kprobe_multi(void *ctx)
- 	return 0;
- }
- 
-+SEC("?kprobe.multi/bpf_get_numa_node_id")
-+int bench_kprobe_multi_empty(void *ctx)
-+{
-+	return 0;
-+}
-+
- SEC("?kretprobe.multi/bpf_get_numa_node_id")
- int bench_trigger_kretprobe_multi(void *ctx)
- {
-@@ -104,6 +110,12 @@ int bench_trigger_kretprobe_multi(void *ctx)
- 	return 0;
- }
- 
-+SEC("?kretprobe.multi/bpf_get_numa_node_id")
-+int bench_kretprobe_multi_empty(void *ctx)
-+{
-+	return 0;
-+}
-+
- SEC("?fentry/bpf_get_numa_node_id")
- int bench_trigger_fentry(void *ctx)
- {
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 9577979bd84d..171987627f3a 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -549,6 +549,7 @@ static const char * const trace_blacklist[] = {
- 	"preempt_count_sub",
- 	"__rcu_read_lock",
- 	"__rcu_read_unlock",
-+	"bpf_get_numa_node_id",
- };
- 
- static bool skip_entry(char *name)
--- 
-2.51.0
+The perf bug looks unrelated.
+It's not worth it to put this kind of info in the commit log.
 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  include/uapi/linux/bpf.h | 187 ++++++++++++++++++++++++++++++++++++++-
+
+In general, yeah, it could use a doc,
+but tools/...bpf.h must be updated at the same time to keep them in sync.
+
+>  1 file changed, 186 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 233de8677382..008b559dc5c5 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -6607,45 +6607,230 @@ struct sk_reuseport_md {
+>
+>  #define BPF_TAG_SIZE   8
+>
+> +/**
+> + * struct bpf_prog_info - Information about a BPF program.
+> + *
+> + * This structure is used by the bpf(BPF_OBJ_GET_INFO_BY_FD) syscall to =
+retrieve
+> + * metadata about a loaded BPF program. When values like the jited_prog_=
+insns
+> + * are desired typically two syscalls will be made, the first to determi=
+ne the
+> + * length of the buffers and the second with buffers for the syscall to =
+fill
+> + * in. The variables within the struct are ordered to minimize padding.
+> + */
+
+"to minimize padding" ?! Do you see holes in the struct?
+
+>  struct bpf_prog_info {
+> +       /**
+> +        * @type: The type of the BPF program (e.g.,
+> +        * BPF_PROG_TYPE_SOCKET_FILTER, BPF_PROG_TYPE_KPROBE). This defin=
+es
+> +        * where the program can be attached.
+> +        */
+>         __u32 type;
+> +       /**
+> +        * @id: A unique, kernel-assigned ID for the loaded BPF program.
+> +        */
+
+I wouldn't call it unique. It's 32-bit and can be reused
+if somebody loads/unloads 4B bpf progs.
+
+>         __u32 id;
+> +       /**
+> +        * @tag: A user-defined tag for the program, often a hash of the
+> +        * object file it came from. Size is BPF_TAG_SIZE (8 bytes).
+> +        */
+
+That is just wrong. It's your job to check AI imaginations.
+
+>         __u8  tag[BPF_TAG_SIZE];
+> +       /**
+> +        * @jited_prog_len: As an in argument this is the length of the
+> +        * jited_prog_insns buffer. As an out argument, the length of the
+> +        * JIT-compiled (native machine code) program image in bytes.
+> +        */
+>         __u32 jited_prog_len;
+> +       /**
+> +        * @xlated_prog_len: As an in argument this is the length of the
+> +        * xlated_prog_insns buffer. As an out argument, the length of th=
+e
+> +        * translated BPF bytecode in bytes, after the verifier has poten=
+tially
+> +        * modified it. 'xlated' is short for 'translated'.
+> +        */
+>         __u32 xlated_prog_len;
+> +       /**
+> +        * @jited_prog_insns: When 0 (NULL) this is ignored by the kernel=
+. When
+> +        * non-zero a pointer to a buffer is expected and the kernel will=
+ write
+> +        * jited_prog_len(s) worth of JIT-compiled machine code instructi=
+ons into
+> +        * the buffer.
+> +        */
+>         __aligned_u64 jited_prog_insns;
+> +       /**
+> +        * @xlated_prog_insns: When 0 (NULL) this is ignored by the kerne=
+l. When
+> +        * non-zero a pointer to a buffer is expected and the kernel will=
+ write
+> +        * xlated_prog_len(s) worth of translated, after BPF verification=
+, BPF
+> +        * bytecode into the buffer.
+> +        */
+>         __aligned_u64 xlated_prog_insns;
+> -       __u64 load_time;        /* ns since boottime */
+> +       /**
+> +        * @load_time: The timestamp (in nanoseconds since boot time) whe=
+n the
+> +        * program was loaded into the kernel.
+> +        */
+> +       __u64 load_time;
+> +       /**
+> +        * @created_by_uid: The user ID of the process that loaded this p=
+rogram.
+> +        */
+>         __u32 created_by_uid;
+> +       /**
+> +        * @nr_map_ids: As an in argument this is the length of the map_i=
+ds
+> +        * buffer in sizes of u32 (4 bytes). As an out argument, the numb=
+er of
+> +        * BPF maps used by this BPF program.
+> +        */
+>         __u32 nr_map_ids;
+> +       /**
+> +        * @map_ids: When 0 (NULL) this is ignored by the kernel. When no=
+n-zero
+> +        * a pointer to a buffer is expected and the kernel will write
+> +        * nr_map_ids(s) worth of u32 kernel allocated BPF map id values =
+into the
+> +        * buffer.
+> +        */
+>         __aligned_u64 map_ids;
+> +       /**
+> +        * @name: The name of the program, as specified in the ELF object=
+ file.
+> +        * The max length is BPF_OBJ_NAME_LEN (16 characters).
+> +        */
+
+This is generally not true. bpf prog may not come from ELF.
+
+>         char name[BPF_OBJ_NAME_LEN];
+> +       /**
+> +        * @ifindex: If the program is attached to a network device (netd=
+ev),
+> +        * this field holds the interface index.
+> +        */
+>         __u32 ifindex;
+> +       /**
+> +        * @gpl_compatible: A flag indicating if the program is compatibl=
+e with
+> +        * a GPL license. This is important for using certain GPL-only he=
+lpers.
+> +        */
+>         __u32 gpl_compatible:1;
+>         __u32 :31; /* alignment pad */
+> +       /**
+> +        * @netns_dev: The device identifier of the network namespace the
+> +        * program is attached to.
+> +        */
+>         __u64 netns_dev;
+> +       /**
+> +        * @netns_ino: The inode number of the network namespace the prog=
+ram is
+> +        * attached to.
+> +        */
+>         __u64 netns_ino;
+> +       /**
+> +        * @nr_jited_ksyms: As an in argument this is the length of the
+> +        * jited_ksyms buffer in sizes of u64 (8 bytes). As an out argume=
+nt, the
+> +        * number of kernel symbols that the BPF program calls.
+> +        */
+>         __u32 nr_jited_ksyms;
+> +       /**
+> +        * @nr_jited_func_lens: As an in argument this is the length of t=
+he
+> +        * jited_func_lens buffer in sizes of u32 (4 bytes). As an out ar=
+gument,
+> +        * the number of distinct functions within the JIT-ed program.
+> +        */
+>         __u32 nr_jited_func_lens;
+> +       /**
+> +        * @jited_ksyms: When 0 (NULL) this is ignored by the kernel. Whe=
+n
+> +        * non-zero a pointer to a buffer is expected and the kernel will=
+ write
+> +        * nr_jited_ksyms(s) worth of addresses of kernel symbols into th=
+e u64
+> +        * buffer.
+> +        */
+>         __aligned_u64 jited_ksyms;
+> +       /**
+> +        * @jited_func_lens: When 0 (NULL) this is ignored by the kernel.=
+ When
+> +        * non-zero a pointer to a buffer is expected and the kernel will=
+ write
+> +        * nr_jited_func_lens(s) worth of lengths into the u32 buffer.
+> +        */
+>         __aligned_u64 jited_func_lens;
+> +       /**
+> +        * @btf_id: The ID of the BTF (BPF Type Format) object associated=
+ with
+> +        * this program, which contains type information for debugging an=
+d
+> +        * introspection.
+> +        */
+>         __u32 btf_id;
+> +       /**
+> +        * @func_info_rec_size: The size in bytes of a single `bpf_func_i=
+nfo`
+> +        * record.
+> +        */
+>         __u32 func_info_rec_size;
+> +       /**
+> +        * @func_info: When 0 (NULL) this is ignored by the kernel. When
+> +        * non-zero a pointer to a buffer is expected and the kernel will=
+ write
+> +        * nr_func_info(s) worth of func_info_rec_size values.
+> +        */
+>         __aligned_u64 func_info;
+> +       /**
+> +        * @nr_func_info: As an in argument this is the length of the fun=
+c_info
+> +        * buffer in sizes of func_info_rec_size. As an out argument, the=
+ number
+> +        * of `bpf_func_info` records available.
+> +        */
+>         __u32 nr_func_info;
+> +       /**
+> +        * @nr_line_info: As an in argument this is the length of the lin=
+e_info
+> +        * buffer in sizes of line_info_rec_size. As an out argument, the=
+ number
+> +        * of `bpf_line_info` records, which map BPF instructions to sour=
+ce code
+> +        * lines.
+> +        */
+>         __u32 nr_line_info;
+> +       /**
+> +        * @line_info: When 0 (NULL) this is ignored by the kernel. When
+> +        * non-zero a pointer to a buffer is expected and the kernel will=
+ write
+> +        * nr_line_info(s) worth of line_info_rec_size values.
+> +        */
+>         __aligned_u64 line_info;
+> +       /**
+> +        * @jited_line_info: When 0 (NULL) this is ignored by the kernel.=
+ When
+> +        * non-zero a pointer to a buffer is expected and the kernel will=
+ write
+> +        * nr_jited_line_info(s) worth of jited_line_info_rec_size values=
+.
+> +        */
+>         __aligned_u64 jited_line_info;
+> +       /**
+> +        * @nr_line_info: As an in argument this is the length of the
+> +        * jited_line_info buffer in sizes of jited_line_info_rec_size. A=
+s an
+> +        * out argument, the number of `bpf_line_info` records, which map=
+ JIT-ed
+> +        * instructions to source code lines.
+> +        */
+>         __u32 nr_jited_line_info;
+> +       /**
+> +        * @line_info_rec_size: The size in bytes of a `bpf_line_info` re=
+cord.
+> +        */
+>         __u32 line_info_rec_size;
+> +       /**
+> +        * @jited_line_info_rec_size: The size in bytes of a `bpf_line_in=
+fo`
+> +        * record for JIT-ed code.
+> +        */
+>         __u32 jited_line_info_rec_size;
+> +       /**
+> +        * @nr_prog_tags: As an in argument this is the length of the pro=
+g_tags
+> +        * buffer in sizes of BPF_TAG_SIZE (8 bytes). As an out argument,=
+ the
+> +        * number of program tags, which are hashes of programs that this
+> +        * program can tail-call.
+> +        */
+
+what? number of progs that prog can tail-call ?!
+
+What AI LLM did you use?
+
+Please share, so we can tell everyone to avoid it at all cost.
+
+>         __u32 nr_prog_tags;
+> +       /**
+> +        * @prog_tags: When 0 (NULL) this is ignored by the kernel. When
+> +        * non-zero a pointer to a buffer is expected and the kernel will=
+ write
+> +        * nr_prog_tags(s) worth of BPF_TAG_SIZE values.
+> +        */
+
+wrong again.
+
+>         __aligned_u64 prog_tags;
+> +       /**
+> +        * @run_time_ns: The total accumulated execution time of the prog=
+ram in
+> +        * nanoseconds.
+> +        */
+
+Missing critical detail that the kernel doesn't keep counting it all the ti=
+me.
+
+>         __u64 run_time_ns;
+> +       /**
+> +        * @run_cnt: The total number of times the program has been execu=
+ted.
+> +        */
+
+ditto
+
+>         __u64 run_cnt;
+> +       /**
+> +        * @recursion_misses: The number of failed tail calls due to reac=
+hing
+> +        * the recursion limit.
+> +        */
+>         __u64 recursion_misses;
+> +       /**
+> +        * @verified_insns: The number of instructions processed by the
+> +        * verifier.
+> +        */
+
+The comment needs to be expanded.
+
+>         __u32 verified_insns;
+> +       /**
+> +        * @attach_btf_obj_id: If attached via BTF (e.g., fentry/fexit), =
+this is
+> +        * the BTF object ID of the target object (e.g., kernel vmlinux).
+> +        */
+
+"e.g. kernel vmlinux"...
+sigh.
+Don't use this LLM.
+
+pw-bot: cr
 
