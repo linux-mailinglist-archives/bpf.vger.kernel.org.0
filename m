@@ -1,80 +1,66 @@
-Return-Path: <bpf+bounces-67514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67515-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4052CB449DF
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 00:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3557B449E3
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 00:45:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0EA0561199
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 22:42:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91DB156303D
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 22:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C15A2EDD6C;
-	Thu,  4 Sep 2025 22:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ik/rasQW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE6FC2EB874;
+	Thu,  4 Sep 2025 22:45:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2603C2749C4
-	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 22:42:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242A43A8F7;
+	Thu,  4 Sep 2025 22:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757025762; cv=none; b=EjcHI5U0LxZKvGEbnkrALcjThCGh7bfpZcw3a/1zBtYtt57Txg7aYECpD0CqCLjXUytcNkpbolBdw/mcha8Om3RGolCTsYP6W4/JsETDDYy9aLe0sRBOBebj4koUngcQ+SLnrWyutlfJr2dNvBQSo/DsxRJSaaopn1mk7H9ekIY=
+	t=1757025934; cv=none; b=Io0x2h66Bycy1v1zeP97xW9hkJBGiNTaeJ3EKnnUfh/BUWhu9KXtMDMIPLVImQA/hfi13DrvwFqJgtGW8XJtojTVMlWreupUfmGbMyGZNbDzAnn2xUvVOobb6VXOf4bl7WWSd8oWa0KrHYVCGbIwWgKOVQYJbEJERzzqq6KuxZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757025762; c=relaxed/simple;
-	bh=B1W2Z1p5XZpOY8y94+EYl5/wEEkHq4/hJSBkXwZ1eFc=;
+	s=arc-20240116; t=1757025934; c=relaxed/simple;
+	bh=6vMk0pyJwGRJMP7832lAAOOK3ghmH4Yxz7rsEzOOuO8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hKogIwYIUYvOJ3yAum0JPqhC/Uyak4wjWVsWZjH8kNJzr+BfzuL/Pvux/S4gvPjlBjN42bsOOIAfEf74wQakH9mAh8LSwYNAiDiKlVpMhIcqCiqrJk0WlZE+Giy3WKUsbcPS6AmQbrGiZ6tFvFBIg07rTS98l/g8a9xei9l5Vmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ik/rasQW; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 In-Reply-To:Content-Type; b=ekO91c1JquPFIEwcP3XpAjEy8VPs8Wd3pKGH0jNpXUlPaHPz8RlmHS117IuIiWMskdaeiDgvJ3+Db67r5D+JYZEuuLYmQ1m/vEjDqgQPkt9EVAfImelHL+LJk78ztHjTZsPHB3U0Q36AAnlBEsdLK3f3skV4iVzToruFLLmlTJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7722bcb989aso1163321b3a.1
-        for <bpf@vger.kernel.org>; Thu, 04 Sep 2025 15:42:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757025760; x=1757630560; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7stybUMWipO5YZxvvicGiMS8w2Tz02CtPeQiBqJzrfg=;
-        b=ik/rasQWoixSvi4a7sOOoeJvVn4pOePSD8SGl8Xnwr9jvD46YAK1h8gPkQbbvRTPtd
-         W9Ws0XB9XcNB6GufaCnxfbsVkdCQ89lJMMZpc6BOwTlCMW8k3zftDK6mxVDIuOxkVJtX
-         21z9LL77EL0QXndycz+5a1+QjGRvDQLFTf0aWOyUqb5JmNclgccNsvAtXg5l9kA5QiCb
-         C0wXChhHZE1creL+3uw7IyRUZMlGlK1iqXsdrxIxC9jVotZifRjSg3UTvRyZezjXp+Sm
-         dP+ZCiE7VK4R03p23TO5VK29+iKWftlL5bhL8eLdGp0p+awXYawLWqPobrz5v2ZoBFiA
-         wYhw==
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7728815e639so1004813b3a.1;
+        Thu, 04 Sep 2025 15:45:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757025760; x=1757630560;
+        d=1e100.net; s=20230601; t=1757025932; x=1757630732;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7stybUMWipO5YZxvvicGiMS8w2Tz02CtPeQiBqJzrfg=;
-        b=uoYEGeu09+i18mUxkXDJJLy0xiGYx4zyPqe9C7CtUhUupeMdR4yqjx0q0yLYJOtqcj
-         7Z57ShlOjE0+XgBC7E3fCoIQVpTTqpAKRCgvxLWYOL8tal7zGIfymSgG1ea+4R2eKYZh
-         YLr7k9FQ5EqutDb3Tapsn+BOapDYh2zgKhK//L7ujLe18n4fXiMpBqLA7lehuXAlTnSl
-         dw0nd8CnBVobxOJM2NTr/PC/YQXxF7X05Dpt+X4DsXO1ldNuZyr0HnrziiA/rCb3AMTF
-         Xm5hR8PQhFpV7z73xT3Xznb005vUQT8g8PUbv/Kmd74006/coPxdlZcyoN03Vx5hlTwn
-         7R8g==
-X-Gm-Message-State: AOJu0YxyQH8X8HhAOii31u64aVLyO0RtDbHl/yItpgIHbulCQ99toEji
-	MqtNQzaKpVoPoJz5hzqGkIAQe0ODa1d8UfIKNuTlsycbAvOxbIhHFCO5
-X-Gm-Gg: ASbGnct4ocVsikqpyAbqs/6VIhfQXXFBgUl8rII6t0BpogT6QA/at+NBArZcHrwJ/US
-	RGS4yBXYJo7reLQySlfhfh72Q9h8Kd+//xm7ZH/CN/hXGdT62vi+RD65ftk7kxFj37IHULs/ROt
-	k29WJzaopzl+RkewezH2HS6wuhNzRv6cT44Wsbd0Cti2EQ38sXW73Dq7EalZqnaAhL5hmntQgIO
-	iB1hn3im4jMQsvz15S0IIGZjsxlvnj6/2KDPQABBWxrj7Xc5TPSq86yDVbpmunJe/PSTTT9Nu1Z
-	ZcRrt0lySLZCKJI/ryYeRNZfiYPzyy5kdzbm5xXvjrvf34uZcOeBuOaP/xw0ss146BDNXRYxvwD
-	4MYNv0nktx1oSN/IxEFc4pKHMqWpdSHtvic+yV4Fwy23w8j1yTHnneJmTNgshNyllRPmwdQ3i9I
-	e6naLYfibh
-X-Google-Smtp-Source: AGHT+IHaGhQFBh5KvECXojrlO5oM4f210/DrGBke61FWUGGCk6SouPwLYBbDYbh1r6mgA4iOB0psbw==
-X-Received: by 2002:a05:6a00:1495:b0:771:ebf1:5e45 with SMTP id d2e1a72fcca58-7723e393f29mr24193241b3a.22.1757025760425;
-        Thu, 04 Sep 2025 15:42:40 -0700 (PDT)
-Received: from [192.168.1.77] (c-76-146-12-100.hsd1.wa.comcast.net. [76.146.12.100])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a2b78d7sm20362170b3a.30.2025.09.04.15.42.39
+        bh=VUVn5o8RU+VFuWBR3njBdFcUgIW1PLQuaep15gf147A=;
+        b=AzmahD09Jm9HZ8qXVBYGwV1j7TL9Z4o/dPOEidq4EnFxOv6x+WdUH9VQjpXSW2DeXT
+         R20I6xiisCTuffyyodwnvsHcWPjWDj0op/pYQMWTQajDTh9ooOhUc6j63QLoZHDvrGvN
+         yoiaeEduOSf7TkcW8iJnRRXXsMXZ5fNRURkMmL2t221t0Ut1b3Tvo9J/i+3tgvybdYcl
+         XIohcBykBDCIUdYw7B0xWyqa4HBa4DcEQo49pI2SiY0YmaAjbw7xiQx4LKica2wadsc5
+         h7EFbl1yZDfyHRMhFzMFCOinEIIgBF2acTS27j2MGdcEwLQY447eVwZe/RWqJJUo9n9m
+         Yb5g==
+X-Forwarded-Encrypted: i=1; AJvYcCVVLX9Tnc0c763f6rVzi/yDP/Iqdqy7CNqaeyUXgesTVN2kU0L/QhywBYSMVyQ1X1c9kEFcvp7GFGOUPOe5@vger.kernel.org, AJvYcCWcP8buEh7TbbAfyVStpZBBHfhuKsiSpt18iZQinwZiC2mktqtfGmD9tlskkqPtTWcpLz0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOdU+hS4wlQnJZ3hOM6ggRep2Y9L68J75v3bLRBtRTkrsJNCZG
+	2gzWM445a1n3DCDRYneeelcuy7Xsz3CiGpvwHCvJBIPqICvdHhCdE1wv
+X-Gm-Gg: ASbGnct7d3NSNFggxkjjOMI6l7C/a5FAMTJ4Nj9uiVAUsvBl60Ddu2OlH0jppCBFmcu
+	00AHC0ejvW+/ZkC7pO6GPwxH7R7vt9NXYemTwiOQwMXAHFPbiSrqEax7Yuip9JtFFtGbm+VQCE1
+	cJ5kTETk/j74z7xI7ZOK0iCTJnh2aQdXSWePqm3NMnAKZUxkU57u8NnVKJeD1WyveOPOD4vM5HL
+	gZjC/Wi7g5HacuN6GMHSUN2vWgbXRrqEqMCqy3sQpbjLb7idjeO15doijSsFYl1rd0i1bI12Jot
+	eJwSQW3pbIssEc/F2VhxnBqjRI+O4e57CSjaDS8zUHdrNgtvN+OTYQJa2Oq41JHi9xeah6nXj5/
+	oqM6tPkhW6oTD4a8M/0FtTvGnDzga/VUTNq0g/G9y1nSn/CdHYRXD/MHuGiVcCMqrhg==
+X-Google-Smtp-Source: AGHT+IGN94q2Ld2UFuSGU1HjP5jJfzPbfkpJcaTqaoXXgE2LF+n/clgwidAquFl/T+E9+vqSWQ4wCw==
+X-Received: by 2002:a05:6a20:9188:b0:246:17b:3576 with SMTP id adf61e73a8af0-246017b3754mr16664667637.46.1757025932259;
+        Thu, 04 Sep 2025 15:45:32 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1151:15:499:89f8:cf94:6e72? ([2620:10d:c090:500::4:2ac])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a501a94sm20285853b3a.93.2025.09.04.15.45.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Sep 2025 15:42:40 -0700 (PDT)
-Message-ID: <5829abcf-f1b9-4fb0-8811-b6098fdd8a29@gmail.com>
-Date: Thu, 4 Sep 2025 15:42:39 -0700
+        Thu, 04 Sep 2025 15:45:31 -0700 (PDT)
+Message-ID: <f6e9710a-a5bf-4af9-8c0d-d81d28c3040c@kernel.org>
+Date: Thu, 4 Sep 2025 15:45:30 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,142 +68,121 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 bpf-next] riscv, bpf: Sign extend struct ops return
- values properly
-To: Hengqi Chen <hengqi.chen@gmail.com>, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- bjorn@kernel.org, pulehui@huawei.com, puranjay@kernel.org
-Cc: bpf@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <20250904103806.18937-1-hengqi.chen@gmail.com>
+Subject: Re: [PATCH bpf-next v7 3/3] bpf: fix stackmap overflow check in
+ __bpf_get_stackid()
+To: Arnaud Lecomte <contact@arnaud-lcm.com>, alexei.starovoitov@gmail.com,
+ yonghong.song@linux.dev
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
+ syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+ syzkaller-bugs@googlegroups.com
+References: <20250903234052.29678-1-contact@arnaud-lcm.com>
+ <20250903234325.30212-1-contact@arnaud-lcm.com>
 Content-Language: en-US
-From: Amery Hung <ameryhung@gmail.com>
-In-Reply-To: <20250904103806.18937-1-hengqi.chen@gmail.com>
+From: Song Liu <song@kernel.org>
+In-Reply-To: <20250903234325.30212-1-contact@arnaud-lcm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
+On 9/3/25 4:43 PM, Arnaud Lecomte wrote:
+> Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stackid()
+> when copying stack trace data. The issue occurs when the perf trace
+>   contains more stack entries than the stack map bucket can hold,
+>   leading to an out-of-bounds write in the bucket's data array.
+>
+> Changes in v2:
+>   - Fixed max_depth names across get stack id
+>
+> Changes in v4:
+>   - Removed unnecessary empty line in __bpf_get_stackid
+>
+> Changs in v6:
+>   - Added back trace_len computation in __bpf_get_stackid
+>
+> Link to v6: https://lore.kernel.org/all/20250903135348.97884-1-contact@arnaud-lcm.com/
+>
+> Reported-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=c9b724fbb41cf2538b7b
+> Fixes: ee2a098851bf ("bpf: Adjust BPF stack helper functions to accommodate skip > 0")
+> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-On 9/4/25 3:38 AM, Hengqi Chen wrote:
-> The ns_bpf_qdisc selftest triggers a kernel panic:
->
->      Unable to handle kernel paging request at virtual address ffffffffa38dbf58
->      Current test_progs pgtable: 4K pagesize, 57-bit VAs, pgdp=0x00000001109cc000
->      [ffffffffa38dbf58] pgd=000000011fffd801, p4d=000000011fffd401, pud=000000011fffd001, pmd=0000000000000000
->      Oops [#1]
->      Modules linked in: bpf_testmod(OE) xt_conntrack nls_iso8859_1 dm_mod drm drm_panel_orientation_quirks configfs backlight btrfs blake2b_generic xor lzo_compress zlib_deflate raid6_pq efivarfs [last unloaded: bpf_testmod(OE)]
->      CPU: 1 UID: 0 PID: 23584 Comm: test_progs Tainted: G        W  OE       6.17.0-rc1-g2465bb83e0b4 #1 NONE
->      Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
->      Hardware name: Unknown Unknown Product/Unknown Product, BIOS 2024.01+dfsg-1ubuntu5.1 01/01/2024
->      epc : __qdisc_run+0x82/0x6f0
->       ra : __qdisc_run+0x6e/0x6f0
->      epc : ffffffff80bd5c7a ra : ffffffff80bd5c66 sp : ff2000000eecb550
->       gp : ffffffff82472098 tp : ff60000096895940 t0 : ffffffff8001f180
->       t1 : ffffffff801e1664 t2 : 0000000000000000 s0 : ff2000000eecb5d0
->       s1 : ff60000093a6a600 a0 : ffffffffa38dbee8 a1 : 0000000000000001
->       a2 : ff2000000eecb510 a3 : 0000000000000001 a4 : 0000000000000000
->       a5 : 0000000000000010 a6 : 0000000000000000 a7 : 0000000000735049
->       s2 : ffffffffa38dbee8 s3 : 0000000000000040 s4 : ff6000008bcda000
->       s5 : 0000000000000008 s6 : ff60000093a6a680 s7 : ff60000093a6a6f0
->       s8 : ff60000093a6a6ac s9 : ff60000093140000 s10: 0000000000000000
->       s11: ff2000000eecb9d0 t3 : 0000000000000000 t4 : 0000000000ff0000
->       t5 : 0000000000000000 t6 : ff60000093a6a8b6
->      status: 0000000200000120 badaddr: ffffffffa38dbf58 cause: 000000000000000d
->      [<ffffffff80bd5c7a>] __qdisc_run+0x82/0x6f0
->      [<ffffffff80b6fe58>] __dev_queue_xmit+0x4c0/0x1128
->      [<ffffffff80b80ae0>] neigh_resolve_output+0xd0/0x170
->      [<ffffffff80d2daf6>] ip6_finish_output2+0x226/0x6c8
->      [<ffffffff80d31254>] ip6_finish_output+0x10c/0x2a0
->      [<ffffffff80d31446>] ip6_output+0x5e/0x178
->      [<ffffffff80d2e232>] ip6_xmit+0x29a/0x608
->      [<ffffffff80d6f4c6>] inet6_csk_xmit+0xe6/0x140
->      [<ffffffff80c985e4>] __tcp_transmit_skb+0x45c/0xaa8
->      [<ffffffff80c995fe>] tcp_connect+0x9ce/0xd10
->      [<ffffffff80d66524>] tcp_v6_connect+0x4ac/0x5e8
->      [<ffffffff80cc19b8>] __inet_stream_connect+0xd8/0x318
->      [<ffffffff80cc1c36>] inet_stream_connect+0x3e/0x68
->      [<ffffffff80b42b20>] __sys_connect_file+0x50/0x88
->      [<ffffffff80b42bee>] __sys_connect+0x96/0xc8
->      [<ffffffff80b42c40>] __riscv_sys_connect+0x20/0x30
->      [<ffffffff80e5bcae>] do_trap_ecall_u+0x256/0x378
->      [<ffffffff80e69af2>] handle_exception+0x14a/0x156
->      Code: 892a 0363 1205 489c 8bc1 c7e5 2d03 084a 2703 080a (2783) 0709
->      ---[ end trace 0000000000000000 ]---
->
-> The bpf_fifo_dequeue prog returns a skb which is a pointer.
-> The pointer is treated as a 32bit value and sign extend to
-> 64bit in epilogue. This behavior is right for most bpf prog
-> types but wrong for struct ops which requires RISC-V ABI.
->
-> So let's sign extend struct ops return values according to
-> the function model and RISC-V ABI([0]).
->
->    [0]: https://riscv.org/wp-content/uploads/2024/12/riscv-calling.pdf
->
-> Fixes: 25ad10658dc1 ("riscv, bpf: Adapt bpf trampoline to optimized riscv ftrace framework")
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+For future patches, please keep the "Changes in vX.." at the end of
+
+your commit log and after a "---". IOW, something like
+
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
+---
+
+changes in v2:
+
+...
+
+---
+
+kernel/bpf/stackmap.c | 8 ++++++++
+
+
+In this way, the "changes in vXX" part will be removed by git-am.
+
 > ---
->   arch/riscv/net/bpf_jit_comp64.c | 38 ++++++++++++++++++++++++++++++++-
->   1 file changed, 37 insertions(+), 1 deletion(-)
+>   kernel/bpf/stackmap.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
 >
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-> index 549c3063c7f1..c7ae4d0a8361 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -954,6 +954,35 @@ static int invoke_bpf_prog(struct bpf_tramp_link *l, int args_off, int retval_of
->   	return ret;
->   }
+> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> index 9f3ae426ddc3..29e05c9ff1bd 100644
+> --- a/kernel/bpf/stackmap.c
+> +++ b/kernel/bpf/stackmap.c
+> @@ -369,6 +369,7 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
+>   {
+>   	struct perf_event *event = ctx->event;
+>   	struct perf_callchain_entry *trace;
+> +	u32 elem_size, max_depth;
+>   	bool kernel, user;
+>   	__u64 nr_kernel;
+>   	int ret;
+> @@ -390,11 +391,15 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
+>   		return -EFAULT;
 >   
-> +/*
-> + * Sign-extend the register if necessary
-> + */
-> +static int sign_extend(int rd, int rs, u8 size, u8 flags, struct rv_jit_context *ctx)
-> +{
-> +	if (!(flags & BTF_FMODEL_SIGNED_ARG) && (size == 1 || size == 2))
-> +		return 0;
-> +
-> +	switch (size) {
-> +	case 1:
-> +		emit_sextb(rd, rs, ctx);
-> +		break;
-> +	case 2:
-> +		emit_sexth(rd, rs, ctx);
-> +		break;
-> +	case 4:
-> +		emit_sextw(rd, rs, ctx);
-> +		break;
-> +	case 8:
-> +		emit_mv(rd, rs, ctx);
-> +		break;
-> +	default:
-> +		pr_err("bpf-jit: invalid size %d for sign_extend\n", size);
-> +		return -EINVAL;
-
-Will this accidentally rejects struct_ops functions that return void?
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
->   					 const struct btf_func_model *m,
->   					 struct bpf_tramp_links *tlinks,
-> @@ -1175,8 +1204,15 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
->   		restore_args(min_t(int, nr_arg_slots, RV_MAX_REG_ARGS), args_off, ctx);
+>   	nr_kernel = count_kernel_ip(trace);
+> +	elem_size = stack_map_data_size(map);
 >   
->   	if (save_ret) {
-> -		emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
->   		emit_ld(regmap[BPF_REG_0], -(retval_off - 8), RV_REG_FP, ctx);
-> +		if (is_struct_ops) {
-> +			ret = sign_extend(RV_REG_A0, regmap[BPF_REG_0],
-> +					  m->ret_size, m->ret_flags, ctx);
-> +			if (ret)
-> +				goto out;
-> +		} else {
-> +			emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
-> +		}
+>   	if (kernel) {
+>   		__u64 nr = trace->nr;
+>   
+>   		trace->nr = nr_kernel;
+
+this trace->nr = is useless.
+
+> +		max_depth =
+> +			stack_map_calculate_max_depth(map->value_size, elem_size, flags);
+> +		trace->nr = min_t(u32, nr_kernel, max_depth);
+>   		ret = __bpf_get_stackid(map, trace, flags);
+>   
+>   		/* restore nr */
+> @@ -407,6 +412,9 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
+>   			return -EFAULT;
+>   
+>   		flags = (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
+> +		max_depth =
+> +			stack_map_calculate_max_depth(map->value_size, elem_size, flags);
+> +		trace->nr = min_t(u32, trace->nr, max_depth);
+>   		ret = __bpf_get_stackid(map, trace, flags);
+
+I missed this part earlier. Here we need to restore trace->nr, just like 
+we did
+
+in the "if (kernel)" branch.
+
+Thanks,
+
+Song
+
 >   	}
->   
->   	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
-
+>   	return ret;
 
