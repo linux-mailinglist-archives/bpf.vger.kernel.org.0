@@ -1,296 +1,113 @@
-Return-Path: <bpf+bounces-67479-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A53B44447
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 19:26:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05A39B4445C
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 19:29:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4363A47145
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 17:26:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 953C1587F6C
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 17:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD2830BF67;
-	Thu,  4 Sep 2025 17:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470E13148DA;
+	Thu,  4 Sep 2025 17:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KA03Ee0q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TqkOPXvp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA352F5484;
-	Thu,  4 Sep 2025 17:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E143126DE;
+	Thu,  4 Sep 2025 17:28:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757006790; cv=none; b=VwBs8969ZK2IEIJaRss6APkg9o98pCk35nVlCXehZmB3CSyu4PhuXQAu+MLiIL3dj920HBBo/0sHlRd0vqYTajDIEn4XUvIEatdw1v5twN0oFFp38PsDB9eRQ9pSAmP9XdPdOfto/QE4PXZ16WEgBs6wIKDplby8MyorA9ItIco=
+	t=1757006939; cv=none; b=UestJBT/c4Pl6N8SifS2unQG2ktvRKMlM03NarurUTLC2wjuLqrpmGMrHeWySS2RwpLE8VxFAC63C3087uh7nEkgFg6OiZeO4b17npwt4n7uoe3jzMh/4Ck8b+WNrPZYQ8ULQ/Uy/10uz2hVm4AscpZEqF0Jk2WZDxcOWhp+XtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757006790; c=relaxed/simple;
-	bh=EZ4Ig0++pbLqluvGrZc18Gn/h/uLnsrnUXNvG8CGVgI=;
+	s=arc-20240116; t=1757006939; c=relaxed/simple;
+	bh=ZU5d6/ptzJBLDmz675gVBayOMGnW+KFEBVu17nalDm0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BBLk33kPeBCAxKTk0y+mgyRWkY/S9RrEbcxz7yp2SMUWxe4gKak2845Sj6UURzObS3MPoeSQCfPduWkE6vYorwBzC37t/tPfQurG1Fj63kzo+jJxDKOwsN589vsmZ5IBJgywe6IVHk1pZDr2y9BqDvBVxDQ4D8PwtzQC3Q2J3f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KA03Ee0q; arc=none smtp.client-ip=209.85.128.177
+	 To:Cc:Content-Type; b=pxg6Aq+H3Q0w5gnVBKknhl49GSQhEeoriTaqQJsN7XpDw+XCr1q2pf0v1ikhNzlWvCkC5FkO4P5GXbsqEZWhsouoF3WCxGbhyMulvD1hiYTfACi2YqkEMAlBO+QqrnxyNFdPOJyOgOItC+BtHK5EGLespZJ5lMRaK3zl1JFGMm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TqkOPXvp; arc=none smtp.client-ip=209.85.219.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-71d6051afbfso13934187b3.2;
-        Thu, 04 Sep 2025 10:26:28 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e98a18faa35so1500567276.0;
+        Thu, 04 Sep 2025 10:28:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757006787; x=1757611587; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757006937; x=1757611737; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sUseh6g4kqp9p2rXZD1SW9na3Fv96A86jzaodeUURis=;
-        b=KA03Ee0qfyUqZXpD/6JyKMfdxz1taYvnfibL3xQSPnot3Os9uIH338FeA/wdnVwoLd
-         HrVnKdIIPG6PiBG7G8xcP/mZnCsKRBs/L+//0qXCSwevqWff+1Y41h/UphBUnVaoxjVp
-         6eEaMqivEKrw1aa/gP5wvlCKWbfbpJOW+5fCqhARmbPE3+oyU7hA1G+aRM7DGjAI95Ky
-         /9rwLujrbGSrT5puiQUGppm27YOv30cxwCcmwU9JmrdyOyyzm5oFXN2XyJ/8Kaeh/Tai
-         E2ZczNeVNPSgPho/1H2HcoKaD2NkcroRr11qfQA2/4PksKAVRkxisRRN5h2bXgbLCS1O
-         8Flw==
+        bh=ZU5d6/ptzJBLDmz675gVBayOMGnW+KFEBVu17nalDm0=;
+        b=TqkOPXvpmURbcBkkz8dq5ydXU/2p3kG3W1zDo1gVcSeHxLWSYu7XdXh8BiMKOcNDmR
+         lkFgWv6iWa37Yun4L75X95yCewa2vi26A93C5+JEp+kmZtYy9GKh8QHRg02z/NZU3LJ8
+         QL+PtWfs8SxUIYGfUViesOo+/ReNI/0PyzNK3qYUKNqfWzXQy381cdx9v/0sl7EO+zau
+         bpjNUG1Opmksd+bfLAt2T1lc15kW9CcOM6rWiabEURQoF3a8mG2/mySlJcTo1+CILN3a
+         LYVfVt75leyV4K1/B/yFhK0Z5/BcnLzot2AUepT5D0A1i4dzgMWAiaS++KRm5onxjZzm
+         3+BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757006787; x=1757611587;
+        d=1e100.net; s=20230601; t=1757006937; x=1757611737;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sUseh6g4kqp9p2rXZD1SW9na3Fv96A86jzaodeUURis=;
-        b=jqvnuNfwh+5h0m+6bpoVsZPsaY+bUb57RkHV5hEflYwXO3269U9bI3QeqObC++gpAw
-         8L/ARhf7vapb7GhH5cQiT+Z16cxVI5NH/mdtQ9v942OrPKxkxO3qIEvQSL37p71E2cHG
-         Nf03IxM3hmqdvv7GzJ9ui7Mx1Y73a+rk0Nb3AgwljfzmEYILTpiUHSyl7V8Fuu9PoerY
-         pyLe9eOwLBvLyhAnYm5lfiqhjk609NBU2eKFmTTLIx6VpufqdRND2M07nmWqBKzGBT9c
-         8j+QTiuzf4QgRUYGAQE9ROwbm/ZAJRBUYGxQ9lr2oCMbr4cNq2HYDBtdc69j31rPPRDQ
-         rSZw==
-X-Forwarded-Encrypted: i=1; AJvYcCWrM1NBE5/e0YASUYE+SlzUCsQ/Rn3mvBdRg9cBOe97C3mzAfRCzf26Kfm8ORNBy0FnQ80SANg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZCBVUy2owy2XKslRSNvEGDRl8bLP44xaaoy/ZUGeEXx0iQRmX
-	+GdgMEZ608E/dthI5mGgeEhhk5lCPatAy3qdn8vqhuICT7zqooqD2dL9dUSYxvRRewyvvob2njY
-	1SYfEODPwVxjoH39zMVne2jAkzRUnJGg=
-X-Gm-Gg: ASbGncsT+b2NaFvqJ9gvNmGIjpxB3vh2K/CcxbuGKkR8cdfcubzNqCSDhotHJFJEFte
-	T+o6SBcY+2uCaHk2BRd+LmvsEg5pMRhaN6d57ujZc5oH5mlHny2IOFsRNN657G0I15Cqsk8rnDs
-	v+h3J2CNtYfnc534I1uKtEBzNCFYs8pW+3AB4sjAGT3HA9Cna7GwGw1HFF23/PEi5H15VjHuXoe
-	vee+Bs=
-X-Google-Smtp-Source: AGHT+IGx3jnOzpltQpFtLJ6oiDv+D1VVFsLiOEtkFP4nBFm8p4HY0HXJ7PMWXuN/Tp73VN1nHY3liACQfvrrOOifd6s=
-X-Received: by 2002:a05:690c:74c7:b0:723:bd45:4ff5 with SMTP id
- 00721157ae682-723bd45544amr65039767b3.5.1757006787046; Thu, 04 Sep 2025
- 10:26:27 -0700 (PDT)
+        bh=ZU5d6/ptzJBLDmz675gVBayOMGnW+KFEBVu17nalDm0=;
+        b=vPOiLvsdx7gRNl1p8+TaGLvMRTsehxJBtdNP2UpOe754+w77vL8y22rFZmysk3Kshi
+         8QDzCWH2+Q/bXRJuTgZOYjNEI+7Wl/2fmnfX57+1jaiE3+SXPJi3erYvKMSbX085xnSz
+         bThooKbtd8TUEf5DQ8Ukqj90XVDF5kbiyt522eoWWxEMAp23vYnVwSZ2xMshIM4B/Y+o
+         eb88Up0Ob7bzFP2uLRiEZ+wFMPlPLyDlKKENGvDVTqpkvJwju7tFc9oeOiuOyWw1S56q
+         KioHzIiV0vTpfKjndcckJ2dj3unBJF5y8ap9PtMhX2ciT1HneEIE2ZvFmMAHqzD82+yN
+         Rb4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVTmibGY8NiQsL6ZxGNIwNsyDCqz4cf/c4ktQaPzVP3UC+JViQVQwz3b6Z9pbnVHWovLMMh7TZR@vger.kernel.org, AJvYcCVfc+n2los4xFyscGNVoKU1GO1KnyV2vjI/JaU+kMombauYEWpIG/bBZh+cBIEQM9tdlL0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwaPBYgOBHR9bg6rjy451mH7+Fb3gDBNW3eJkYXHxLMzrvtxuZa
+	Saa+iVe5ypVYND9n5q46OZl0XKWgrX5U+jnPpBLyYLjlk5Kq/5LYFMrvBD6rGkipLzoem1Nxic2
+	IeiLF7F3I+4JYxS/yEjlTTgEiPye6+R4=
+X-Gm-Gg: ASbGnctZsdyT9e6DElfOKsUczL4CusF3M7/BmOPkuzrkQRC6BMnA2tDK+RErFsF3R+8
+	nrU5hClQc72Fke3lZBTfOhCsJJEQvFawfmXh9NcT7ILuU31SzX9JaNQ9MaIN9N4r+urBstVXFyz
+	F+VrEgm5T8eBZ+Q5nicYqazbh5sbqF0oS6QRiELgVoohTOy2/lJM/7yjMLaI/Hm7yvCIWHc2Xnx
+	9f8bUZuOti5tvcwuA==
+X-Google-Smtp-Source: AGHT+IGZkjEebBsHg4q1qHKMBW8uVQrFCfBXuYuhq0v6rgBgTZpn8KMJuoONzKYaXdaU8OFvFHohB+EIR+BMGXrYffM=
+X-Received: by 2002:a05:690e:1487:b0:606:bf1f:fa54 with SMTP id
+ 956f58d0204a3-606bf200113mr3756665d50.17.1757006936906; Thu, 04 Sep 2025
+ 10:28:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250825193918.3445531-1-ameryhung@gmail.com> <20250825193918.3445531-2-ameryhung@gmail.com>
- <76vmglojxf3yqysn5iwthctiacjy6xqcvrzzny74524djwhcf3@ejctdcty3cdz>
- <CAMB2axOLCakHEGnPcRTd1-ZdcGT6+wximWDOSMY1r9PGerfF0g@mail.gmail.com> <aniua473ljbet6w6ov24z6yzwlzzsbvd2d5dud2gep6kp6j5fg@fngzextb6w46>
-In-Reply-To: <aniua473ljbet6w6ov24z6yzwlzzsbvd2d5dud2gep6kp6j5fg@fngzextb6w46>
+References: <20250825193918.3445531-1-ameryhung@gmail.com> <7695218f-2193-47f8-82ac-fc843a3a56b0@nvidia.com>
+ <afdc16b0-fd53-4d4c-b322-09d1a0d8cb86@linux.dev>
+In-Reply-To: <afdc16b0-fd53-4d4c-b322-09d1a0d8cb86@linux.dev>
 From: Amery Hung <ameryhung@gmail.com>
-Date: Thu, 4 Sep 2025 10:26:16 -0700
-X-Gm-Features: Ac12FXx2q_q915X9Patm4wfP-feA-NH31t2kA361SMWg6vHC4odkEWwSKPceHCo
-Message-ID: <CAMB2axP-T5PDZK3E5+Jmq2+_O5vAmX7yxQUQGR5c0RPhaZ0JEg@mail.gmail.com>
-Subject: Re: [RFC bpf-next v1 1/7] net/mlx5e: Fix generating skb from
- nonlinear xdp_buff
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, kuba@kernel.org, 
-	martin.lau@kernel.org, mohsin.bashr@gmail.com, saeedm@nvidia.com, 
-	tariqt@nvidia.com, mbloch@nvidia.com, maciej.fijalkowski@intel.com, 
-	kernel-team@meta.com, noren@nvidia.com
+Date: Thu, 4 Sep 2025 10:28:45 -0700
+X-Gm-Features: Ac12FXzOMQ6GKgY8tAOhev_Jj9tG-t7ccVAsMdGHh0wyZ4h_IRscTbWIbi26_Co
+Message-ID: <CAMB2axO1Hb=pNMw8p2Ca+4XfVmDTA+TxbbXaD4G6kxUVEsHERg@mail.gmail.com>
+Subject: Re: [RFC bpf-next v1 0/7] Add kfunc bpf_xdp_pull_data
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Nimrod Oren <noren@nvidia.com>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net, 
+	kuba@kernel.org, martin.lau@kernel.org, mohsin.bashr@gmail.com, 
+	saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, 
+	maciej.fijalkowski@intel.com, kernel-team@meta.com, 
+	Dragos Tatulea <dtatulea@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 28, 2025 at 9:23=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
-> wrote:
+On Fri, Aug 29, 2025 at 11:22=E2=80=AFAM Martin KaFai Lau <martin.lau@linux=
+.dev> wrote:
 >
-> On Wed, Aug 27, 2025 at 08:44:24PM -0700, Amery Hung wrote:
-> > On Wed, Aug 27, 2025 at 6:45=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia=
-.com> wrote:
-> > >
-> > > On Mon, Aug 25, 2025 at 12:39:12PM -0700, Amery Hung wrote:
-> > > > [...]
-> > > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/driv=
-ers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > > > index b8c609d91d11..c5173f1ccb4e 100644
-> > > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > > > @@ -1725,16 +1725,17 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_r=
-q *rq, struct mlx5e_wqe_frag_info *wi
-> > > >                            struct mlx5_cqe64 *cqe, u32 cqe_bcnt)
-> > > >  {
-> > > >       struct mlx5e_rq_frag_info *frag_info =3D &rq->wqe.info.arr[0]=
-;
-> > > > +     struct mlx5e_wqe_frag_info *pwi, *head_wi =3D wi;
-> > > >       struct mlx5e_xdp_buff *mxbuf =3D &rq->mxbuf;
-> > > > -     struct mlx5e_wqe_frag_info *head_wi =3D wi;
-> > > >       u16 rx_headroom =3D rq->buff.headroom;
-> > > >       struct mlx5e_frag_page *frag_page;
-> > > >       struct skb_shared_info *sinfo;
-> > > > -     u32 frag_consumed_bytes;
-> > > > +     u32 frag_consumed_bytes, i;
-> > > >       struct bpf_prog *prog;
-> > > >       struct sk_buff *skb;
-> > > >       dma_addr_t addr;
-> > > >       u32 truesize;
-> > > > +     u8 nr_frags;
-> > > >       void *va;
-> > > >
-> > > >       frag_page =3D wi->frag_page;
-> > > > @@ -1775,14 +1776,26 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_r=
-q *rq, struct mlx5e_wqe_frag_info *wi
-> > > >       prog =3D rcu_dereference(rq->xdp_prog);
-> > > >       if (prog && mlx5e_xdp_handle(rq, prog, mxbuf)) {
-> > > >               if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->=
-flags)) {
-> > > > -                     struct mlx5e_wqe_frag_info *pwi;
-> > > > +                     pwi =3D head_wi;
-> > > > +                     while (pwi->frag_page->netmem !=3D sinfo->fra=
-gs[0].netmem && pwi < wi)
-> > > > +                             pwi++;
-> > > >
-> > > Is this trying to skip counting the frags for the linear part? If yes=
-,
-> > > don't understand the reasoning. If not, I don't follow the code.
-> > >
-> > > AFAIU frags have to be counted for the linear part + sinfo->nr_frags.
-> > > Frags could be less after xdp program execution, but the linear part =
-is
-> > > still there.
-> > >
-> >
-> > This is to search the first frag after xdp runs because I thought it
-> > is possible that the first frag (head_wi+1) might be released by
-> > bpf_xdp_pull_data() and then the frag will start from head_wi+2.
-> >
-> > After sleeping on it a bit, it seems it is not possible as there is
-> > not enough room in the linear to completely pull PAGE_SIZE byte of
-> > data from the first frag to the linear area. Is this correct?
-> >
-> Right. AFAIU the usable linear part is smaller due to headroom and
-> tailroom.
+> On 8/28/25 6:39 AM, Nimrod Oren wrote:
+> > I'm currently working on a series that converts the xdp_native program
+> > to use dynptr for accessing header data. If accepted, it should provide
+> > better performance, since dynptr can access without copying the data.
 >
-> [...]
-> > > >               if (unlikely(!skb)) {
-> > > >                       mlx5e_page_release_fragmented(rq->page_pool,
-> > > > @@ -2102,20 +2124,25 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct m=
-lx5e_rq *rq, struct mlx5e_mpw_info *w
-> > > >               mlx5e_page_release_fragmented(rq->page_pool, &wi->lin=
-ear_page);
-> > > >
-> > > >               if (xdp_buff_has_frags(&mxbuf->xdp)) {
-> > > > -                     struct mlx5e_frag_page *pagep;
-> > > > +                     struct mlx5e_frag_page *pagep =3D head_page;
-> > > > +
-> > > > +                     truesize =3D nr_frags * PAGE_SIZE;
-> > > I am not sure that this is accurate. The last fragment might be small=
-er
-> > > than page size. It should be aligned to BIT(rq->mpwqe.log_stride_sz).
-> > >
-> >
-> > According to the truesize calculation in
-> > mlx5e_skb_from_cqe_mpwrq_nonlinear() just before mlx5e_xdp_handle().
-> > After the first frag, the frag_offset is always 0 and
-> > pg_consumed_bytes will be PAGE_SIZE. Therefore the last page also
-> > consumes a page, no?
-> >
-> My understanding is that the last pg_consumed_bytes will be a byte_cnt
-> that is smaller than PAGE_SIZE as there is a min operation.
+> The bpf_xdp_adjust_tail is aware of xdp_buff_has_frags. Is there a reason=
+ that
+> bpf_xdp_adjust_head cannot handle frags also?
 
-The remaining byte_cnt will then be aligned to
-BIT(rq->mpwqe.log_stride_sz), which is PAGE_SHIFT if there is xdp
-program (per mlx5e_mpwqe_get_log_stride_size()). Therefore, it still
-adds a page to truesize.
+I am not aware of reasons that would stop this.
 
-I will change to ALIGN(..., BIT(rq->mpwqe.log_stride_sz)) to be
-consistent with existing code.
-
->
-> > If the last page has variable size, I wonder how can
-> > bpf_xdp_adjust_tail() handle a dynamic tailroom.
-> That is a good point. So this can stay as is I guess.
->
-> > bpf_xdp_adjust_tail()
-> > requires a driver to specify a static frag size (the maximum size a
-> > frag can grow) when calling __xdp_rxq_info_reg(), which seem to be a
-> > page in mlx5.
-> >
-> This is an issue raised by Nimrod as well. Currently striding rq sets
-> rxq->frag_size to 0. It is set to PAGE_SIZE only in legacy rq mode.
->
-
-I see.
-
-> >
-> > > >
-> > > >                       /* sinfo->nr_frags is reset by build_skb, cal=
-culate again. */
-> > > > -                     xdp_update_skb_shared_info(skb, frag_page - h=
-ead_page,
-> > > > +                     xdp_update_skb_shared_info(skb, nr_frags,
-> > > >                                                  sinfo->xdp_frags_s=
-ize, truesize,
-> > > >                                                  xdp_buff_is_frag_p=
-fmemalloc(
-> > > >                                                       &mxbuf->xdp))=
-;
-> > > >
-> > > > -                     pagep =3D head_page;
-> > > > -                     do
-> > > > +                     while (pagep->netmem !=3D sinfo->frags[0].net=
-mem && pagep < frag_page)
-> > > > +                             pagep++;
-> > > > +
-> > > > +                     for (i =3D 0; i < nr_frags; i++, pagep++)
-> > > >                               pagep->frags++;
-> > > > -                     while (++pagep < frag_page);
-> > > > +
-> > > > +                     headlen =3D min_t(u16, MLX5E_RX_MAX_HEAD - le=
-n, sinfo->xdp_frags_size);
-> > > > +                     __pskb_pull_tail(skb, headlen);
-> > > >               }
-> > > > -             __pskb_pull_tail(skb, headlen);
-> > > What happens when there are no more frags? (bpf_xdp_frags_shrink_tail=
-()
-> > > shrinked them out). Is that at all possible?
-> >
-> > It is possible for bpf_xdp_frags_shrink_tail() to release all frags.
-> > There is no limit of how much they can shrink. If there is linear
-> > data, the kfunc allows shrinking data_end until ETH_HLEN. Before this
-> > patchset, it could trigger a BUG_ON in __pskb_pull_tail(). After this
-> > set, the driver will pass a empty skb to the upper layer.
-> >
-> I see what you mean.
->
-> > For bpf_xdp_pull_data(), in the case of mlx5, I think it is only
-> > possible to release all frags when the first and only frag contains
-> > less than 256 bytes, which is the free space in the linear page.
-> >
-> Why would only 256 bytes be free in the linear area? My understanding
-> is that we have PAGE_SIZE - headroom - tailroom which should be more?
->
-
-mlx5e_skb_from_cqe_mpwrq_nonlinear() currently sets xdp->frame_sz to
-be XDP_PACKET_HEADROOM (256) + MLX5E_RX_MAX_HEAD (256) + sizeof(struct
-skb_shared_info), so only 256 is available to xdp programs to pull
-data in.
-
-> > >
-> > > In general, I think the code would be nicer if it would do a rewind o=
-f
-> > > the end pointer based on the diff between the old and new nr_frags.
-> > >
-> >
-> > Not sure if I get this. Do you mean calling __pskb_pull_tail() some
-> > how based on the difference between sinfo->nr_frags and nr_frags?
-> >
-> > Thanks for reviewing the patch!
-> >
-> I was suggesting an approach for the whole patch that might be cleaner.
->
-> Roll back frag_page to the last used fragment after program execution:
->
->         frag_page -=3D old_nr_frags - new_nr_frags;
->
-> ... and after that you won't need to touch the frag counting loops
-> and the xdp_update_skb_shared_info().
->
-
-Got it. This makes the change quite cleaner.
-
-> Thanks,
-> Dragos
+Are you suggesting another way to pop headers? E.g., use
+bpf_xdp_adjust_head() to shrink the first frag from the front and call
+bpf_xdp_store_bytes() to move the remaining headers
 
