@@ -1,109 +1,127 @@
-Return-Path: <bpf+bounces-67370-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67371-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC77FB42E62
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 02:48:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55C0AB42EBA
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 03:13:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F96546DD5
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 00:48:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A26F7B8C0F
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 01:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B85014D2B7;
-	Thu,  4 Sep 2025 00:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326661A23A6;
+	Thu,  4 Sep 2025 01:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f4a+Hk3X"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kfue+q4u"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F239A14A9B;
-	Thu,  4 Sep 2025 00:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048DE18B12
+	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 01:13:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756946930; cv=none; b=B4UhAAsYDtQJ8IVdmJOMDgTPtCRxOKPENWjzWJTzKC/+CH+Rf9K2ZYv9b2v46Wku02RgBPVd3iCWaD6HvX+8oxoLwjWMlVmPtegf7TxI/RcNOQz30TTrHvGvUkq4FDa4YuV3sN7iGm4EqS8ANt2QAuee1RjG2Zx40jQWi/OCxhE=
+	t=1756948393; cv=none; b=kEFSmhhbgPbCYZo+vJliY2tuoxfkGby6Nb/S4Qz0XVJL3NaVwSihDIK+Jnd4fUKbTLoNWjiuAq6T9nSNfvL4EC+/o3gB/vy1a+CVphSNXv8T7w7zdEWZsEpE0p4s9w+ORNheQm1UWUJCRu6bRE0cbXgy2eqYE/YC/19cdwrYmlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756946930; c=relaxed/simple;
-	bh=/eZokcjTYsgn7x3TN1nV0vQhMpWaAhi7YQj4lS/oW5w=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rte9gRCPFWtsNq4A0xwVoLJdQqSVdY39oC0axF5bkrqbVOexHKjlQ2Nxf1aTwFolZUjiwE4Ho/fZ7f0r6Ok84YIagISHMbZV3h+z1QF21WMWcDnagbUcadzd8jy7cX6zOLizms57S5Y+Tt56xdFgCC7iCHZ2F1nvDbYmMzauvLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f4a+Hk3X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F46C4CEE7;
-	Thu,  4 Sep 2025 00:48:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756946929;
-	bh=/eZokcjTYsgn7x3TN1nV0vQhMpWaAhi7YQj4lS/oW5w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=f4a+Hk3XTjiN/mfxv9pyjGmIzHB8EyWE1g9mMRhBYpyErEFM2eLS2RLCNLZ9m+flb
-	 usBL3tioZb1jmbnGl2cnprJzZgY+7pXdM1pTdJM/l7LSADXMr8lVMlXEjMiGbORW+l
-	 ylL1uOUITFWfR5Vf2cQlWFj287PPpY3SnuOoIUMARaFXEEbDEiJfG2mlCm55uL15H7
-	 EeIpGd0/dS2PeLYfhNQl8FVow1ttEyNVHftFywOVWIkdDwukIuF755hy2naOdqX4iN
-	 mT+GB2IWk5KvmNBlsutFJjAZgnVXN8wIkBAU7y8uonErOB31WtsIKKO8H9zXSHUUsF
-	 U/aLizS4FgT5Q==
-Date: Wed, 3 Sep 2025 17:48:47 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Meghana Malladi <m-malladi@ti.com>
-Cc: <namcao@linutronix.de>, <jacob.e.keller@intel.com>,
- <christian.koenig@amd.com>, <sumit.semwal@linaro.org>, <sdf@fomichev.me>,
- <john.fastabend@gmail.com>, <hawk@kernel.org>, <daniel@iogearbox.net>,
- <ast@kernel.org>, <pabeni@redhat.com>, <edumazet@google.com>,
- <davem@davemloft.net>, <andrew+netdev@lunn.ch>,
- <linaro-mm-sig@lists.linaro.org>, <dri-devel@lists.freedesktop.org>,
- <linux-media@vger.kernel.org>, <bpf@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>, Vignesh Raghavendra
- <vigneshr@ti.com>, Roger Quadros <rogerq@kernel.org>, <danishanwar@ti.com>
-Subject: Re: [PATCH net-next v2 1/6] net: ti: icssg-prueth: Add functions to
- create and destroy Rx/Tx queues
-Message-ID: <20250903174847.5d8d1c9f@kernel.org>
-In-Reply-To: <20250901100227.1150567-2-m-malladi@ti.com>
-References: <20250901100227.1150567-1-m-malladi@ti.com>
-	<20250901100227.1150567-2-m-malladi@ti.com>
+	s=arc-20240116; t=1756948393; c=relaxed/simple;
+	bh=EztcU3I2jQu/JANSrFiQs6YdssHNrEuZtzcIEgzOo50=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MWmjEkTj+r6sLJ5xTB0gTgylpgJgIcy6K09e1+/cl2SLhoyTTpb0Fg++wsS+a5E/+l9ExnIQyvr4FB0fldbQx6cQodFTWkBxQuwgR1wjbrXrOYJUXp8Qc4yQfXzljbTim07jf+h01lmUwkFkQmtVqKSOz0f5i/UrMhiF0Qe1mok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kfue+q4u; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756948380;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T/YdEdpdY6Oro8d1rFM7+q7LaJ8Hyug3oWsbG3ERi6U=;
+	b=Kfue+q4urULTY/Sv4Jusx10FkSy7wsftg2H7iFLQgu5BAnzsUwZKOliqNMWYet95ck94M1
+	RFN69Bwv6howDbyF2Jy2bnhXr9ZmDxmRUSfzcPkuwxth+WHLLSi98e44xaggv9GmNITXtG
+	KBMnAz1skKwEZTrZaKmvPE3kigtD/JI=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Menglong Dong <menglong8.dong@gmail.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: andrii@kernel.org, olsajiri@gmail.com, eddyz87@gmail.com, mykolal@fb.com,
+ ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ yikai.lin@vivo.com, memxor@gmail.com, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH bpf-next v3 0/3] selftests/bpf: benchmark all symbols for
+ kprobe-multi
+Date: Thu, 04 Sep 2025 09:12:18 +0800
+Message-ID: <2797578.mvXUDI8C0e@7940hx>
+In-Reply-To:
+ <CAEf4BzZVTr26Uogf8uh=7HmgG6Qo_uVy3fX8bQgC+Xs63wZcCA@mail.gmail.com>
+References:
+ <20250901034252.26121-1-dongml2@chinatelecom.cn>
+ <CAEf4BzZVTr26Uogf8uh=7HmgG6Qo_uVy3fX8bQgC+Xs63wZcCA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 1 Sep 2025 15:32:22 +0530 Meghana Malladi wrote:
->  	if (!emac->xdpi.prog && !prog)
->  		return 0;
->  
-> -	WRITE_ONCE(emac->xdp_prog, prog);
-> +	if (netif_running(emac->ndev)) {
-> +		prueth_destroy_txq(emac);
-> +		prueth_destroy_rxq(emac);
-> +	}
-> +
-> +	old_prog = xchg(&emac->xdp_prog, prog);
-> +	if (old_prog)
-> +		bpf_prog_put(old_prog);
-> +
-> +	if (netif_running(emac->ndev)) {
-> +		ret = prueth_create_rxq(emac);
+On 2025/9/4 07:50 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> On Sun, Aug 31, 2025 at 8:43=E2=80=AFPM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > Add the benchmark testcase "kprobe-multi-all", which will hook all the
+> > kernel functions during the testing.
+> >
+> > This series is separated out from [1].
+> >
+> > Changes since V2:
+> > * add some comment to attach_ksyms_all, which notes that don't run the
+> >   testing on a debug kernel
+> >
+> > Changes since V1:
+> > * introduce trace_blacklist instead of copy-pasting strcmp in the 2nd
+> >   patch
+> > * use fprintf() instead of printf() in 3rd patch
+> >
+> > Link: https://lore.kernel.org/bpf/20250817024607.296117-1-dongml2@china=
+telecom.cn/ [1]
+> > Menglong Dong (3):
+> >   selftests/bpf: move get_ksyms and get_addrs to trace_helpers.c
+> >   selftests/bpf: skip recursive functions for kprobe_multi
+> >   selftests/bpf: add benchmark testing for kprobe-multi-all
+> >
+>=20
+> this doesn't apply cleanly over bpf-next, can you please rebase and
+> resend to let CI run?
 
-shutting the device down and freeing all rx memory for reconfig is not
-okay. If the system is low on memory the Rx buffer allocations may fail
-and system may drop off the network. You must either pre-allocate or
-avoid freeing the memory, and just restart the queues.
+Yeah, I just notice that. I'll rebase and resend it now.
 
-> +		if (ret) {
-> +			netdev_err(emac->ndev, "Failed to create RX queue: %d\n", ret);
-> +			return ret;
-> +		}
-> +
-> +		ret = prueth_create_txq(emac);
-> +		if (ret) {
-> +			netdev_err(emac->ndev, "Failed to create TX queue: %d\n", ret);
-> +			prueth_destroy_rxq(emac);
-> +			emac->xdp_prog = NULL;
-> +			return ret;
-> +		}
-> +	}
->  
->  	xdp_attachment_setup(&emac->xdpi, bpf);
+Thanks!
+Menglong Dong
+
+>=20
+> >  tools/testing/selftests/bpf/bench.c           |   4 +
+> >  .../selftests/bpf/benchs/bench_trigger.c      |  61 +++++
+> >  .../selftests/bpf/benchs/run_bench_trigger.sh |   4 +-
+> >  .../bpf/prog_tests/kprobe_multi_test.c        | 220 +---------------
+> >  .../selftests/bpf/progs/trigger_bench.c       |  12 +
+> >  tools/testing/selftests/bpf/trace_helpers.c   | 234 ++++++++++++++++++
+> >  tools/testing/selftests/bpf/trace_helpers.h   |   3 +
+> >  7 files changed, 319 insertions(+), 219 deletions(-)
+> >
+> > --
+> > 2.51.0
+> >
+>=20
+>=20
+
+
+
+
 
