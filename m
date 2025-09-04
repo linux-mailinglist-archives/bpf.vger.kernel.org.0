@@ -1,72 +1,94 @@
-Return-Path: <bpf+bounces-67450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D746CB43FAC
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 16:53:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26EDEB43FB3
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 16:54:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A591A541C9A
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 14:53:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3485D18877B5
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 14:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A6E301467;
-	Thu,  4 Sep 2025 14:53:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57D830499A;
+	Thu,  4 Sep 2025 14:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="UJBNJPgN"
 X-Original-To: bpf@vger.kernel.org
-Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4F91EB1A4;
-	Thu,  4 Sep 2025 14:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECDF52FE079;
+	Thu,  4 Sep 2025 14:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756997605; cv=none; b=HqJo6UMU07qYgJdm2LJ9veSXF9dF/pl6/BR4ahq1rQLi/bPNWAoPcMcFlgXORb/vEHFonpICyCUKltPHj7s3Vl3cLc2D1Tgxf1jnMOP2zBl8QDWUBz7UG0ouHR98Rs+WOgWcaclcKMyhD60aVYV2VQfex54EAIzkd/KO3qSjBUk=
+	t=1756997669; cv=none; b=ZyZ3WozAKnsC5VSfDWXIIFlDwfsOM2DRXMRS92uK471pVy7ic2DlI07Nv0WFC/N+gmwSXnvts7Vpm/alhvtoEXrxJ8Adyn/tjRd6apxJQ/CszV6t6XdwzdpM4s2kCsjoUUdAp1hRqdtgH/tSgI824uV6ma0elZNNklcpW5//JXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756997605; c=relaxed/simple;
-	bh=KSx/TiJ8ZczLmapgz5FLegPMs0j6YLk3ABF+H2N+FoE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ELEj3OQo8WvCySjJOiSEfDVS2BEjdgmzcjxDSpopT8Bx2MKLVm+t3uHWy/EdGALd58nta2Q3zLHZ7ZcaMBwY4PHRTCk2/g/cfvxG1gAMeEmaJILqyHRcNYeYnb4dZ70HkYbYT19VGwQsmUUbrNRLstcNe0yX3T9o78K9YyWpqug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
-Received: from [IPV6:2a01:e0a:3e8:c0d0:74c4:9b58:271e:cbdf] (unknown [IPv6:2a01:e0a:3e8:c0d0:74c4:9b58:271e:cbdf])
-	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 9524441C88;
-	Thu,  4 Sep 2025 14:53:21 +0000 (UTC)
-Authentication-Results: Plesk;
-        spf=pass (sender IP is 2a01:e0a:3e8:c0d0:74c4:9b58:271e:cbdf) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=[IPV6:2a01:e0a:3e8:c0d0:74c4:9b58:271e:cbdf]
-Received-SPF: pass (Plesk: connection is authenticated)
-Message-ID: <3e283264-e53e-4d16-a0f1-401f1acbd546@arnaud-lcm.com>
-Date: Thu, 4 Sep 2025 16:53:20 +0200
+	s=arc-20240116; t=1756997669; c=relaxed/simple;
+	bh=U5GevkF+cOyj1KYlkQ98Uiw69qbSwaHKdRRBPX8wLjU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YKdaksuYpUkDOSzFmhWGi7ak51Bs8qGjXxvmtpFn3qL3m+TFBrysgy+8A8nQfiPLNTv7MrpPxjG43fkiNU2UIjJ+y1TegDGOSbu/XN+q5EXOdukKOFuoceEG8GcJW486GvfIcaivafLUY4nsiWrmC0Bd5E+6Y5vKm3m+xHNcqbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=UJBNJPgN; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=+KGTa++fE1o/QSkIN9FVC/7XXIZU3mX08lTkxBMB+YM=; b=UJBNJPgN40zbt/sWSTQtnZUSl3
+	0id5qS5iGWYZhXg8cY5MtpIJybKvmST5YhghrA+ScUH82tRDAmGofjWFaBWz+Ulvp9z4y7+k8ctDx
+	87oEBZ3IynLjJkFLZVR0Qujs1YWDCuzZ2WAOh8Oyert3cbfdVoaJIBDtjabdnBIJzlBI/QRTs8pDh
+	kP0Z4DOCZUIiuEv5JZJZkf/mzdVDVxOIPTA2ktBQVWd/+aaNr0d8hAFQ35NFo5J76tfxCIf8GgF+x
+	gEqmgwlwNAgPja9PjtDSJtG3PXteqF2cjRhMug4VvJ1OXhIjnwc9Wk7Wd3tpjbq7awbAoYDnq6pLm
+	ObbMA+Mg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uuBLw-00000003DEe-31wV;
+	Thu, 04 Sep 2025 14:54:20 +0000
+Date: Thu, 4 Sep 2025 15:54:20 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Tom Hromatka <tom.hromatka@oracle.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Kees Cook <kees@kernel.org>, Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>, Sargun Dhillon <sargun@sargun.me>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] seccomp: Add SECCOMP_CLONE_FILTER operation
+Message-ID: <20250904145420.GP39973@ZenIV>
+References: <20250903203805.1335307-1-tom.hromatka@oracle.com>
+ <CAADnVQLve3KgrqNqSqVrmL-wz6Jj1QUdjAcE5P26Z4wvh9e4HA@mail.gmail.com>
+ <42cf76db-6cda-4606-9128-6f433da57d48@oracle.com>
+ <CAADnVQJSgcAjEnU-A9bF6-9MQRFvbHqRsCCY7a0Y6bhVGtcGpA@mail.gmail.com>
+ <21b618d5-7f6c-4b06-81be-eea6cbac5ba6@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: syztest
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-References: <6887e3c8.a00a0220.b12ec.00ad.GAE@google.com>
- <20250904141113.40660-1-contact@arnaud-lcm.com>
- <20250904074752.352982bf@kernel.org>
-Content-Language: en-US
-From: "Lecomte, Arnaud" <contact@arnaud-lcm.com>
-In-Reply-To: <20250904074752.352982bf@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-PPP-Message-ID: <175699760199.24351.8490463781548650169@Plesk>
-X-PPP-Vhost: arnaud-lcm.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21b618d5-7f6c-4b06-81be-eea6cbac5ba6@oracle.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
+On Thu, Sep 04, 2025 at 08:26:30AM -0600, Tom Hromatka wrote:
 
-On 04/09/2025 16:47, Jakub Kicinski wrote:
-> On Thu,  4 Sep 2025 16:11:13 +0200 Arnaud Lecomte wrote:
->> #syz test
-> You are hereby encouraged to not CC the vger MLs on your attempts
-> to get your patches tested by syzbot. It's not necessary.
->
-Hey, sorry for the inconvenience.
-Will be removed.
+> This snippet addresses the double irq issue.  I also added a
+> check to make sure that task != current.  (A user shouldn't
+> do that but who knows what they'll actually do.)
+> 
+>         if (task == current) {
+>                 put_task_struct(task);
+>                 return -EINVAL;
+>         }
+> 
+>         spin_lock_irq(&current->sighand->siglock);
+>         spin_lock(&task->sighand->siglock);
+
+What do you expect to happen if two tasks do that to each other
+at the same time?  Or, for that matter, if task has been spawned
+by current with CLONE_VM | CLONE_SIGHAND?
 
