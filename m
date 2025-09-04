@@ -1,113 +1,139 @@
-Return-Path: <bpf+bounces-67511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8CEDB44964
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 00:19:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0440B449D8
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 00:40:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 846BEA04DD3
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 22:19:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACC935A2DEF
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 22:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1602E8B8F;
-	Thu,  4 Sep 2025 22:19:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Twm+TTwe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D12782EBDFB;
+	Thu,  4 Sep 2025 22:40:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93F72E88B0;
-	Thu,  4 Sep 2025 22:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07A4A2749C4;
+	Thu,  4 Sep 2025 22:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757024382; cv=none; b=p5C+YXmQlMHOPLxzUBlTz5xoO/2//sqMSi6Dgc5RiEpJe6wYtxrfVEtp1h3SNhMDaRRoL5X2PtRebwLUtmkBLlU+nu5zmrA2CmLACcqDCTpLk5zbiwxHHlLX58iRS41fIAa+6v1V2MErpeP5/5nG7x9LcOMT84ibS6CzZbmxg6w=
+	t=1757025650; cv=none; b=cF8iv8oIBORvC1FINsVKwpHmj58iqfnL7vWkbz+IQCyJkrq4UFx0I3c/RiLTi0WWAk7iwckK8//NqWr4Mj9SK22yjJaMmLByMD0ip7Q1CrnZ+364j4RmwfdSFYXw8XoT2fDRiTOcn3tXa6i7CHaRnmQ0Iu9oYmBobd6asYPeMVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757024382; c=relaxed/simple;
-	bh=ZBR5kYpTew3I7oeoHuGBBXTpnJERsz3BkAbPHFhIm3s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IHvPeTDAIJWqQzMQdcgO0rhwnVTYM4M2gkclwRyk31gQ4wqu13g83Xs8hBkmd/rghDOLXNjcHvBrPoJh5mSxARui6w2tleiScNKJcfjRsvenLlGvw6YxkxZsxAPX5q7GM1YNRhKDS/0VcTo7K3+p+zxOlpSM5aPRVL5ZEnFFjDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Twm+TTwe; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1757025650; c=relaxed/simple;
+	bh=qTVF5sL19zmszjcdOcaIjk6qURyzvokgiNft2ILmfUw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NrIVe05GJhukcagpDIhWxQv90znwicrW0zOLgpJj4XNZJHZ2RBjATHkDMwpzqG8Jt2E7RCp4WAPOauhtPCbfrbSVZ1Sk0KL3jPjvsMa5d5zeqEIRUHJvRCp4hIf9Iedxd3zH6XqxPo24ySKU+xNSmhcFG73zQFCWO7kKo3hjcWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-71d603b60cbso15193177b3.1;
-        Thu, 04 Sep 2025 15:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757024380; x=1757629180; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZBR5kYpTew3I7oeoHuGBBXTpnJERsz3BkAbPHFhIm3s=;
-        b=Twm+TTwehZoDQJU+8EW0uJxGaFpjBgYeMTGkdfmXVl67VQeUSrKlSkogrLmT7MWH1j
-         FE1fhGkYxmboN9Y5npMmXY9XTd+e92rPfY5aeMUs4MDYCbwgWp3RE611NtEtiPTQL1fz
-         JTRoyyhbb4HTn/VOv6bGRM2ZAx30ugnjx3lBZzpi2J26dNJAWFe08/WRyOfuvihrJ+pE
-         FCQv+7CSjyB9V3KqX5EFF5PEWEX6W7JdIMdDvHxBHYfMN64t0ZKUG7Rel7bo0sh8Lyas
-         iwTxNp5r9u0ZC5Vn0WaQj/AOKjokdhqBs55iLq8jS2sAPlSerWLTzWlxW7XUZ0IVrKvS
-         tMiQ==
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-248df8d82e2so16446615ad.3;
+        Thu, 04 Sep 2025 15:40:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757024380; x=1757629180;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZBR5kYpTew3I7oeoHuGBBXTpnJERsz3BkAbPHFhIm3s=;
-        b=oaLk6NDGzHE/+/KChSbCN/eFgitXurpbtU0bxO5M9dtZ7XI2ivmqDPj1M8IDIKIxjB
-         4T9cqZmblHB6mRg5TBk7WW42pZUUEDjCxYeAiawtNWWy+li12KeU7W7xhuo/lPJWnSmE
-         VLSbcru5/KUXC5/hcBAzFecKwbZG0FjIYnpjxfknir2GpImxaP1nk44kshpbQF8ljODm
-         LsfaZu22OOKo4opznj0RBtFfslHc6jquBRQxmzkiuaVrpCpykKvNbJd83cjJ1P3BhnRs
-         sW0RODAZNpo6r5lg/PI1XXRLEcxY3/GsbgLE6ZHF9WdHSBrb0OtQr7CAWTK5zJBGz4Fa
-         RenA==
-X-Forwarded-Encrypted: i=1; AJvYcCU51XE9uKeYBfaC43Srq0TFnaJnRehbCevR/0LwrzDmQp2ry1oZZh8yOzqubPGB2vqN5nKaj2Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzlFn1E7+uUP+G1sZTMHxxZcQTcif3d7uDgc5uK2VV+4nN41UjM
-	dIJXNoPgb/SQ9DwB6v98bySVmrkQzd9sCPAr9I7OtHF8AWtItQLTALRph8XOm9mqggV+g9GM/FX
-	px0nArqotGZ4p2Wiqu3IXa+gLSkIYHK5p6g==
-X-Gm-Gg: ASbGncuosJ/gUbi3aib6kY9+T8r1cRMUUj7dtYgnIhHVCusP22Oyad1OLFlK752C7Uv
-	TWPRW4ipoSs7oHngzgXO0XUF41tBl+0uTzX4643kQ1LemVsj27Ivbz06CBctZAfg7EvroHcyOcd
-	eZ3ZMApCW2VOu/+dnWdcYSutKp5iTUqJqjoZJbfu66qlejhlShxcVVXxeMD1uyVyA3F94ojeQyY
-	PeYYZrv3+PQnThw2EfKh0uWWNuy
-X-Google-Smtp-Source: AGHT+IFzvMrwzdA7gJDCDgmtDNghr3wtpaS8sphzwlvq9gDLtRoDXqEErUssOKB801IFwwXNbDtikby9A5bnM5wi9gk=
-X-Received: by 2002:a05:690c:368c:b0:724:72f0:50e7 with SMTP id
- 00721157ae682-72472f05357mr54295697b3.3.1757024379750; Thu, 04 Sep 2025
- 15:19:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757025648; x=1757630448;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U9kLjbbW0v3g5jIz1pOHvQ6wI7RCfXH9XFGjzeB8QiM=;
+        b=eb0MSwqEC4xqgrhULeLBS6EWASNwwKzxCK67EnQxURsvPYuN4yPcZvOg1v0bFB/ihJ
+         ebV605uwn9z784hzutp9m0GZm8H4wuUaXTGrWcg37k+gan9QJUCQXKUI9105q5xOnX2M
+         SKpt9kBdOofYyWCCRWjQhc0Z5KoXWl9v7Jfye7MZPr+23cDlkZJrctv/SrDd1/s+seE0
+         CiqpVb0WHzzVaAJt831eIfcXbUM0U3xybfpISjj+0vOuGMmyqXCHHn27KA3lS30bUeDr
+         ZY1DzMojalQWv552kYRo24f1wMns7hVLwiBEUUdLTtDCc3fFIDlxRhEdWlykjezD2fUl
+         N2og==
+X-Forwarded-Encrypted: i=1; AJvYcCUfOChSc22vqxadHF5CAt0K0RKWdreS9LBO7tct/VpO70i9+derXexlbySWwU9v0jkvOic=@vger.kernel.org, AJvYcCWbFrtpCl+cPODKQ2wAUabMRJpzTdE2XOJTZ1Qypg2yrMdRsH3F+iUgWUOqjZq163Ebn0cXEGnPEsDfnq1u@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZKmGPzAzvsLK0KqhpYDq8bvzl9ww86jPOJaAITT/Ifyp2T5Sx
+	0aKO6Wp4SM8GPoBO4L3yNcTif2yjFSy1zzlbFHXlPVeRH8oD60u3y7Xq
+X-Gm-Gg: ASbGncvRw4pcpVPxKpf6FuvvrEDcl7XJIyGAeSjIIiu7tkuQm88CYIidpOf6HnTF1rQ
+	yCJQnjZ3NEw4jcULWgAwNYOcK8ZYYMV7RrWmsZalbmWfD0Ti70smQt4QyNwHmkvzK6M1GHkk5Mp
+	SRjGHEyEVs1ve0RTO2a3ADbUSSwSlNzn/PJT5DbV5HCaULGX6imOyO9HeKIV3IH4Q3QRfLr3xf3
+	XX0nOIdcsDNZsFbh4M5+ZRKMn8qFfFZtAxbOfPJnYLUrrz5gTSWZLJZSkdmLWMogdpuY0N2gjMQ
+	9chQuk2yuefR5UoHpwaUtpZApFdCiFmjF54RkG+7KQHh56qjrSAj5sI392MdSTcdBWV/LsMyVsA
+	mFLEJJsa/tT53WcI+ZHbKk1VDpDJB4t9cZIqRngUArBjyJPRx/XGF35tkqivTsaAymQ==
+X-Google-Smtp-Source: AGHT+IEg0EBJsgJD54RpVq77SBgOPP8QfZWbRdHeWbFnCFhn3Dtyc2saKsHgJj5EGnJS6W7ggBQrKw==
+X-Received: by 2002:a17:902:f64a:b0:24a:9105:d020 with SMTP id d9443c01a7336-24a9105d719mr186110155ad.51.1757025648083;
+        Thu, 04 Sep 2025 15:40:48 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1151:15:499:89f8:cf94:6e72? ([2620:10d:c090:500::4:2ac])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24905da2896sm198006415ad.81.2025.09.04.15.40.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Sep 2025 15:40:44 -0700 (PDT)
+Message-ID: <05b2c226-9a09-4541-a18c-8a21898846d0@kernel.org>
+Date: Thu, 4 Sep 2025 15:40:43 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250825193918.3445531-1-ameryhung@gmail.com> <20250825193918.3445531-3-ameryhung@gmail.com>
- <f35db6aa-ac4c-4690-bb54-4bbd5d4a3970@nvidia.com>
-In-Reply-To: <f35db6aa-ac4c-4690-bb54-4bbd5d4a3970@nvidia.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Thu, 4 Sep 2025 15:19:28 -0700
-X-Gm-Features: Ac12FXyHH9LbuyPiY7SEBO-92xNqXL_C4OFjwxecf1U9Ww3niI2okXoyg26GQ5Q
-Message-ID: <CAMB2axOZW_t1y8_wQN=e-vx1LHWLA-CKnYDjVo_g6FcY9NQ5uA@mail.gmail.com>
-Subject: Re: [RFC bpf-next v1 2/7] bpf: Allow bpf_xdp_shrink_data to shrink a
- frag from head and tail
-To: Nimrod Oren <noren@nvidia.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, kuba@kernel.org, 
-	martin.lau@kernel.org, mohsin.bashr@gmail.com, saeedm@nvidia.com, 
-	tariqt@nvidia.com, mbloch@nvidia.com, maciej.fijalkowski@intel.com, 
-	kernel-team@meta.com, Dragos Tatulea <dtatulea@nvidia.com>, Gal Pressman <gal@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v7 2/3] bpf: clean-up bounds checking in
+ __bpf_get_stack
+To: Arnaud Lecomte <contact@arnaud-lcm.com>, alexei.starovoitov@gmail.com,
+ yonghong.song@linux.dev
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
+ syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+ syzkaller-bugs@googlegroups.com
+References: <20250903233910.29431-1-contact@arnaud-lcm.com>
+ <20250903234052.29678-1-contact@arnaud-lcm.com>
+Content-Language: en-US
+From: Song Liu <song@kernel.org>
+In-Reply-To: <20250903234052.29678-1-contact@arnaud-lcm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Aug 28, 2025 at 6:44=E2=80=AFAM Nimrod Oren <noren@nvidia.com> wrot=
-e:
+
+On 9/3/25 4:40 PM, Arnaud Lecomte wrote:
+> Clean-up bounds checking for trace->nr in
+> __bpf_get_stack by limiting it only to
+> max_depth.
 >
-> On 25/08/2025 22:39, Amery Hung wrote:
-> > Move skb_frag_t adjustment into bpf_xdp_shrink_data() and extend its
-> > functionality to be able to shrink an xdp fragment from both head and
-> > tail. In a later patch, bpf_xdp_pull_data() will reuse it to shrink an
-> > xdp fragment from head.
-> I had assumed that XDP multi-buffer frags must always be the same size,
-> except for the last one. If that=E2=80=99s the case, shrinking from the h=
-ead
-> seems to break this rule.
+> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+> Cc: Song Lui <song@kernel.org>
 
-I am not aware of the assumption in the code. Is this documented somewhere?
+Typo in my name, which is "Song Liu".
 
-Thanks,
-Amery
+This looks right.
+
+Acked-by: Song Liu <song@kernel.org>
+
+> ---
+>   kernel/bpf/stackmap.c | 9 +++++----
+>   1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> index ed707bc07173..9f3ae426ddc3 100644
+> --- a/kernel/bpf/stackmap.c
+> +++ b/kernel/bpf/stackmap.c
+> @@ -462,13 +462,15 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>   	if (may_fault)
+>   		rcu_read_lock(); /* need RCU for perf's callchain below */
+>   
+> -	if (trace_in)
+> +	if (trace_in) {
+>   		trace = trace_in;
+> -	else if (kernel && task)
+> +		trace->nr = min_t(u32, trace->nr, max_depth);
+> +	} else if (kernel && task) {
+>   		trace = get_callchain_entry_for_task(task, max_depth);
+> -	else
+> +	} else {
+>   		trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
+>   					   crosstask, false);
+> +	}
+>   
+>   	if (unlikely(!trace) || trace->nr < skip) {
+>   		if (may_fault)
+> @@ -477,7 +479,6 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>   	}
+>   
+>   	trace_nr = trace->nr - skip;
+> -	trace_nr = (trace_nr <= num_elem) ? trace_nr : num_elem;
+>   	copy_len = trace_nr * elem_size;
+>   
+>   	ips = trace->ip + skip;
 
