@@ -1,136 +1,140 @@
-Return-Path: <bpf+bounces-67378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED9C8B42F5B
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 04:10:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86A1DB42F5D
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 04:10:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF0B63BB33F
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 02:10:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B4611BC7399
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 02:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90531CEAB2;
-	Thu,  4 Sep 2025 02:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7772F1DFDB8;
+	Thu,  4 Sep 2025 02:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uAvXcc19"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ea20puSw"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com [209.85.210.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7F072618
-	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 02:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9A519DFA2;
+	Thu,  4 Sep 2025 02:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756951814; cv=none; b=tN/OXMTjpO6lgvCicaTFpNE5yMQc+QpF83SHfQd82pSpQuRuvQKtStVNjquUq6IlNV5Qiw0I3rgWW5ZjBPeowUp8OV93W1KZ1tv5krgstjexoK48IzT8ByfCZeZOS4lqZwJmepTcF466cVKcOmESPPKUYdefCfD4jelMai1owF4=
+	t=1756951823; cv=none; b=X0NYMyYjmwTnoN5236ZZ8y5HSaxk2kHzabQ7Wr/J9oaeiH/cM2SVWJsQ5BIFzXRrP7TvZBfv5jCpusNwl/wNqNi3h1/rG2N8dv2NnkdCsA3aXOImluCtlRz6RpDA4XaoN9wx1d5lcvshgNYKSznSsSoTfCEUoCMq1MmzV9jefSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756951814; c=relaxed/simple;
-	bh=MTc2g4S451CT+5LG46/r2Ah0FmOd5F9DgiZ4ehFh6AU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bEmHbxVxwG/Rjo0au4eHeP/qSwaDry1RcupWz5LMk+lh9c8gCogHZ4VmcwrOcoKeGbfnn256zf1dk3Z5lm7DfIV/z4iR41bTq7K5MugFI1uJZYHX7Id9QfcjOom76Vg9KgvfWJPoDt2+/kxNYctjpk7607/KVWt1zZsjEq4O98E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uAvXcc19; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB9EAC4CEF0
-	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 02:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756951813;
-	bh=MTc2g4S451CT+5LG46/r2Ah0FmOd5F9DgiZ4ehFh6AU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=uAvXcc19F/v66e3s+ajn8Ughn/C1BB841xTD1CSYdDtfbZULem9I04jdigl7RusAd
-	 G863bT/uaSnvWsn71Z/qsp6QXevK87xsJyuUnJgTYh4/UmYw4U+MTWn/aLti97MT1H
-	 6u+nU+q/a/oiCfAI8rAJwsOfvN2ytMoQxNE/MucrnkfH1w4pbQ3AwfF/aG3H9K0IU7
-	 PPotkbOlZ0mu+zCFFN7SeuLssAeYFVZWPMIZAmTgI5sBgdDo0gudGKW5FeKY71pWsg
-	 0abwWgreXrQTWg5CDO/rKUm6NZowRXlKqOp37VserIw+ktWWXa2XVted1KWUTBG0I9
-	 SFccXTkObF3Iw==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b0472bd218bso93251066b.1
-        for <bpf@vger.kernel.org>; Wed, 03 Sep 2025 19:10:13 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVvP81wW1WGb+oLj282iCjxlkgriP59rpg0sG67w0Rkql/txQpxPW0KXN5YLF9ymJBRefY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzpxl8Uo1uBix2t21MQvx/Ft/u/QiC49tO3TMsAsAdVdpme7hW9
-	mgcaqquRhtuc9eEJu2oEvSf5DSC4WPCUY5yWQm8jV1sgiqEbZy0UM7BY/56ZnJG6BLswlnquvv8
-	328OClPGC6uDFREX2Q+5KA2uUm9VIyto=
-X-Google-Smtp-Source: AGHT+IFbBtwIlWpuGUbzHoeIjMpeeDISsUwEw9z/ChIeaG2TNkL8golxeGlN6kc2peOczaxwZYovfzbhOpBkGsYlsAI=
-X-Received: by 2002:a17:907:980a:b0:b04:6412:9612 with SMTP id
- a640c23a62f3a-b0464129adbmr548299166b.46.1756951812372; Wed, 03 Sep 2025
- 19:10:12 -0700 (PDT)
+	s=arc-20240116; t=1756951823; c=relaxed/simple;
+	bh=eVDJfS2vmBwBj0ehU+kXujnjMgfdwYhD36j7tAij5nQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eQSQApx9qJ1qKJTmf75qD0oYwWaxHDAKpbcH7XMH+s9WKhlUcVA6bBkbmEhav195/baxS2J8zsgpI7alauTdaXyFop7f4te/pbVqPK8WVmqXeUWfeuTyOV8O4oK3HumyrjubHGHjuQed9uMUBOC/N4YbmJZjVHflieM7RvRpnVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ea20puSw; arc=none smtp.client-ip=209.85.210.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f196.google.com with SMTP id d2e1a72fcca58-77281ea2dc7so472947b3a.2;
+        Wed, 03 Sep 2025 19:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756951821; x=1757556621; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gkUmNTikddeYTMML9G3HM9oCIw6tu9oOLJ0SSZ6TK2o=;
+        b=Ea20puSwKnLEBIwx6mTz7SFghIiaP/va/qNI0NAzpsGiBUjv4T77N3XMC7Eq9XHaAZ
+         0cRzPPJJgsFgmmNAktVaYSFmlqFWs/Im91LK9auFA8CxHJg3YnpPvGd1yFPuhoyjP0jH
+         wLGokVj0kxkBMRh13wKKex4FpYvu3/limXTmp372KYCIw5iwEQBPRehBxRjCmfFszTU+
+         sM18cZnwbOjV2jCY1YxC9LywIiYpEgg1N61ArDoaa7cSZyqmK6LhgnvnTpCMu7DQJl6F
+         f9DyHLTr0k6l9No4gEj0edUd8MWhpSyiK5iocE1/qenjH3ixNkn2xfJsDJRL5y7Bm0dK
+         WBkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756951821; x=1757556621;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gkUmNTikddeYTMML9G3HM9oCIw6tu9oOLJ0SSZ6TK2o=;
+        b=od7Gjbt+bwlbeWAT3+iDAgCS1OQlmxG4oHpx8PDIqzMvogNrCzoIy8m+ZPJy/tcX5O
+         765Cvr/3fHrJb1O8D7FbEgv/6D/IQK7MAI7wiAb6ELBpRcdmkszcuUgFF/rwNI7M0PQU
+         DvYuvu3RzNVp1jumwmJKhrYL46VbUbnBd6ojlkEHNacBF3CeMOagRgcNUZcvBTZG4Gja
+         563Ls04VdgIjRgZRyAWkOkbEZQoRGRfj2reWv5QtEe3EyusY2KVnhpy5esYIo31en0Fd
+         2qBLzHg1lwnjUxNHpmJpJxaWMJnuNO/HeSrH2sbOdIRyTRivOQFBj4HxIhF47cVMchfH
+         gsbA==
+X-Forwarded-Encrypted: i=1; AJvYcCVB4BBiqxjDTk2K6ilQwi33nXdp0RIMxiyT0OqQy1i6WD1QLCxncS5LDqr6JADsSSzmLpUGi8b5rzymGxat@vger.kernel.org, AJvYcCWbWbPrO1hoNhJ0nA+M3DwNif+l0eGNxix23RLFsyFzW3L4HdnJy5sS4F9qkPsERS2gCr2mq/95h9059CIYTZf/@vger.kernel.org, AJvYcCXdtMc5tQvVtcaCQohSmP9f0IzZBkpM1rbZiAJEjmAaBfEY2P2yu6kQfe3AFOVKoAi+Dsg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZLIVmxbmDnr/0bFTrMYkdg2iwISEcmFgcjj4nC7669TRcOszp
+	2ac1Ww9zEkycsJDmvWQEl1XCpb7A7f5OdQ46urrI+hrD+UWMTKRWKjQ2
+X-Gm-Gg: ASbGncsXhluiUWaFbBG50JLihrl3nQRsKs6IHosTcWu7HLs6yQAxo9BUca2/TzEwkfB
+	5IrThMH76AtTb4PGi+zPZA8O+1yuTH/nSdtlLt47UJjCfpFnjuX61miC7gkLa84uYgXnQlqRON/
+	seVBm/uTOPrvatN+gXEz1YgmvbYm8Qc6+Num8HR+YaxXw1JFl/19RgpZBTfzX33ix0Mfmlve+GA
+	PzJaJviC6r9MSl3eTau67It0rh54xlxIU3DwuEFsp2xKvTm7+oNT+gyYln/zZ3B/BD4/WB9MfMZ
+	VKtdVus+uFpu/11zwt4wgBfBBeISH9YbzMoXSrt77JXZkSfU0oA5uey2P6jsNKNVOL9NhtZPCaz
+	kQHN0hsU5wG1Yt+8BfBNdNRkzP31dEOOtwsQMndos/EIB
+X-Google-Smtp-Source: AGHT+IEyBn4BCZCibAuW4TNxDMV3C46peZ4KvWPoQudYzoj5KUtWqziKxoxGJljNQbxWKBAkLAwuKw==
+X-Received: by 2002:a05:6a20:7fa0:b0:243:9845:4137 with SMTP id adf61e73a8af0-243d6e5b2edmr25172776637.26.1756951820856;
+        Wed, 03 Sep 2025 19:10:20 -0700 (PDT)
+Received: from 7940hx ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7727822817asm5143014b3a.98.2025.09.03.19.10.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Sep 2025 19:10:20 -0700 (PDT)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: andrii@kernel.org,
+	olsajiri@gmail.com
+Cc: eddyz87@gmail.com,
+	mykolal@fb.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	yikai.lin@vivo.com,
+	memxor@gmail.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND bpf-next v3 0/3] selftests/bpf: benchmark all symbols for kprobe-multi
+Date: Thu,  4 Sep 2025 10:10:08 +0800
+Message-ID: <20250904021011.14069-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250903070113.42215-1-hengqi.chen@gmail.com> <20250903070113.42215-6-hengqi.chen@gmail.com>
- <CAAhV-H5PkWkhnBWEynxJki3rbN6rh_HW1hmVUY+ixY0Gx+ot+w@mail.gmail.com> <CAEyhmHTsnLmQy2ShLKwnsrPforzVCA0rGFs0RPQYFOkXgErcmg@mail.gmail.com>
-In-Reply-To: <CAEyhmHTsnLmQy2ShLKwnsrPforzVCA0rGFs0RPQYFOkXgErcmg@mail.gmail.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Thu, 4 Sep 2025 10:09:59 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6y8VcJCp7MRchvepBjgU=AHGb6_JZYEwF=As=rvv+XGQ@mail.gmail.com>
-X-Gm-Features: Ac12FXxU278Ji3w2DDCqshLstBEqGVQxu9RSSobqzS3neEKtEBGZhHpLqOBf7_M
-Message-ID: <CAAhV-H6y8VcJCp7MRchvepBjgU=AHGb6_JZYEwF=As=rvv+XGQ@mail.gmail.com>
-Subject: Re: [PATCH v4 5/8] LoongArch: BPF: Don't assume trampoline size is
- page aligned
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: yangtiezhu@loongson.cn, vincent.mc.li@gmail.com, hejinyang@loongson.cn, 
-	loongarch@lists.linux.dev, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 4, 2025 at 9:56=E2=80=AFAM Hengqi Chen <hengqi.chen@gmail.com> =
-wrote:
->
-> On Wed, Sep 3, 2025 at 10:56=E2=80=AFPM Huacai Chen <chenhuacai@kernel.or=
-g> wrote:
-> >
-> > Hi, Hengqi,
-> >
-> > On Wed, Sep 3, 2025 at 8:06=E2=80=AFPM Hengqi Chen <hengqi.chen@gmail.c=
-om> wrote:
-> > >
-> > > Currently, arch_alloc_bpf_trampoline() use bpf_prog_pack_alloc()
-> > > which will pack multiple trampolines into a huge page. So no need
-> > > to assume the trampoline size is page aligned.
-> > We do the alignment because larch_insn_text_copy() changes page attrs.
-> > If there is other data and BPF trampoline is in the same page,
-> > changing page attrs may cause errors.
-> >
->
-> Doesn't stop_machine() prevent this side effect?
-I don't think so.
+Add the benchmark testcase "kprobe-multi-all", which will hook all the
+kernel functions during the testing.
 
-Consider such a case: BPF trampoline and another vmalloc area share
-the same page, larch_insn_text_copy() makes the whole page be "rox",
-even if stop_machine() completes. But "rox" is only needed by BPF
-trampoline, and the other vmalloc area isn't.
+This series is separated out from [1].
 
-Huacai
+Changes since V2:
+* add some comment to attach_ksyms_all, which notes that don't run the
+  testing on a debug kernel
 
->
-> > Huacai
-> >
-> > >
-> > > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> > > ---
-> > >  arch/loongarch/net/bpf_jit.c | 3 +--
-> > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > >
-> > > diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_ji=
-t.c
-> > > index 35b13d91a979..43628b5e1553 100644
-> > > --- a/arch/loongarch/net/bpf_jit.c
-> > > +++ b/arch/loongarch/net/bpf_jit.c
-> > > @@ -1747,8 +1747,7 @@ int arch_bpf_trampoline_size(const struct btf_f=
-unc_model *m, u32 flags,
-> > >
-> > >         ret =3D __arch_prepare_bpf_trampoline(&ctx, &im, m, tlinks, f=
-unc_addr, flags);
-> > >
-> > > -       /* Page align */
-> > > -       return ret < 0 ? ret : round_up(ret * LOONGARCH_INSN_SIZE, PA=
-GE_SIZE);
-> > > +       return ret < 0 ? ret : ret * LOONGARCH_INSN_SIZE;
-> > >  }
-> > >
-> > >  struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
-> > > --
-> > > 2.43.5
-> > >
->
+Changes since V1:
+* introduce trace_blacklist instead of copy-pasting strcmp in the 2nd
+  patch
+* use fprintf() instead of printf() in 3rd patch
+
+Link: https://lore.kernel.org/bpf/20250817024607.296117-1-dongml2@chinatelecom.cn/ [1]
+Menglong Dong (3):
+  selftests/bpf: move get_ksyms and get_addrs to trace_helpers.c
+  selftests/bpf: skip recursive functions for kprobe_multi
+  selftests/bpf: add benchmark testing for kprobe-multi-all
+
+ tools/testing/selftests/bpf/bench.c           |   4 +
+ .../selftests/bpf/benchs/bench_trigger.c      |  61 +++++
+ .../selftests/bpf/benchs/run_bench_trigger.sh |   4 +-
+ .../bpf/prog_tests/kprobe_multi_test.c        | 220 +---------------
+ .../selftests/bpf/progs/trigger_bench.c       |  12 +
+ tools/testing/selftests/bpf/trace_helpers.c   | 234 ++++++++++++++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   3 +
+ 7 files changed, 319 insertions(+), 219 deletions(-)
+
+-- 
+2.51.0
+
 
