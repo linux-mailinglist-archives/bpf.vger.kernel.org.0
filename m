@@ -1,155 +1,130 @@
-Return-Path: <bpf+bounces-67452-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67453-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 463E4B43FDF
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 17:02:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C0D1B440F7
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 17:49:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBF923B6297
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 15:02:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72F347A9032
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 15:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B989303C9E;
-	Thu,  4 Sep 2025 15:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3363527280A;
+	Thu,  4 Sep 2025 15:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FaLOxh72"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dj5L0VLm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130012D3EC0;
-	Thu,  4 Sep 2025 15:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E611FBC91;
+	Thu,  4 Sep 2025 15:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756998131; cv=none; b=FsS1BOAfED/Lr21020RKJuJtJeyoPpJVnj1FaCOjTbOUr/UbZcflLtfcXINfw0zp0auDEjIoeJJ9HVNiiGwfIMdFWcf/XecOqUvpQDy7T5xzDdXZ+qu1ViR3u3V1HCH3n22jMnqQFXS6Q5PavrYfjvsW96yyuZyNX514eO3Zh3k=
+	t=1757000932; cv=none; b=KygtOF5uLUWX6wnyCMtO3kxDU3SggHJneH8fKWuuXqDLb3v7hi58QeCp0/Qf3vYuAceaxez+Rf8rQEJRESjyo7Y7xO94l6FhEF97FXf4/miKvpQLr1GMFLLDk/GZznssCTkD78/IB/bAFgGHHFaPmfft65bNdzbiXU67IXmXpuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756998131; c=relaxed/simple;
-	bh=WsAaT5z9DTXprMXgadEDAY3E4jgG3J07sJHYyh6BVw4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=laPZir0K+xE9q+eWs/ADSKJyLfnFpv+aXYAVb8OY2D4V+UfkWjh2S82Khb4l9vy+ri6fSqaIZcq45kHgMsHMJIsb+lcYGc+h/aDv4t5pa3RSsGsG9rz7Lw0mbS4p4e6WW4gcSm0zI3pXTrMotWmE7xE4Kh+QV8+N5XsNvk/2Lg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FaLOxh72; arc=none smtp.client-ip=209.85.221.42
+	s=arc-20240116; t=1757000932; c=relaxed/simple;
+	bh=+vBSXd9sOWgC5H7/jhIKwGpSzEmuCrBs94PQmADH8Q8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=WN0CR0A6yFxzLCa9eJxW8ppBiAackeS/KOyv69IjlyHs3dw+G9f2oEjOevgyR24x+TOKi3LGQYpi17vmP6FPOEYsAb6/kIP6bmwGklqXlLEw8/ZWr0HBBBW/hYJ8VgEMIpLoDq7INCgMxefvVDjWawlAzek33xGUUde2F+j1BJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dj5L0VLm; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3e2055ce7b3so427521f8f.0;
-        Thu, 04 Sep 2025 08:02:09 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b482fd89b0eso945491a12.2;
+        Thu, 04 Sep 2025 08:48:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756998128; x=1757602928; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a2ajTeyG2BSzRFwWcOgVNlWU2GcEhvUma3dwfU9D+78=;
-        b=FaLOxh72/54hyhLZ4Vvp0g3qhrJyDNdwqjZZ9se3T136mee+OR0RbQfYpu78VjKb92
-         IPJ/9i/eHFsErpfss7d5Oj0cOdjb7fvjrqzTRtYkpQHXDbASNAPDmjbrPvxc00drHPE5
-         wVUyXTIa9SwOY+F6jgLsirAALhsbBQ6cWl0BeGXvt+PSOH+10jnLcVsQdgpAk92zG7jc
-         LzKLmZ0J9nXKZi0xuwfPdj/3V7ws4fZTndpgGZPZAhWpr09JnCtUB/V1tU+RVrbseMoV
-         H8oKLIW2RBLq/wjmXLfAe3D2oo5hcp+o1PdaE/qqWCEfmXAK1OXn16SRnbe64DkJvFEq
-         la5A==
+        d=gmail.com; s=20230601; t=1757000931; x=1757605731; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Av1N5aGit/P+J1Yl+2LeeoH83qS/K0Xo7Da29MOYquc=;
+        b=dj5L0VLm2p4w+u7XGZufS+U+pc9Dmm0mSn/MbmXMSHCVxL28wZQ1r6fwNUYe8cCJye
+         jjAenCB/8rpqDOAHPoSFiBHmB481hR1H9KAPG+Bj6jI6ZqnZhYlyZA5pyVSRgLDrsfdC
+         /dl6QtKPvTdImn4tWlyB07m5rSukYqj1QrKUA4XA3WDIVYmf42wzroV+4wkjyQ7/sZ1P
+         4aXzYnYZ0zS33AX3sy7uEkicRat1xwMXmuH7wav5Y5ZhANDpv0oxh5R16gzGjAqn9U6M
+         UHCuNze4+rzKZVxkSV8DnKw4SiU4ZbWyZ5tfmnzAnq4LV44RPJaVOFsCXpNlryuz6Rnz
+         8ltQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756998128; x=1757602928;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a2ajTeyG2BSzRFwWcOgVNlWU2GcEhvUma3dwfU9D+78=;
-        b=ZaXv+e5vJnPqzw7t7RbkmKJ+nXahsS+DZnKgah2MzfrU78RwTpi24j76E+1j8i+eKg
-         8Hqhb8/u+umJM0G7zvw/O3OSNJ3XBOQ/HQrBFym7NlPXLZ+DHuSmhKgfdI6AECJp+PdL
-         Npwrppp9NLa3ys4OYtSUbnyMa9HNStnu0WhV3gHhXMOYFeQWs7ivP53v60Ft8urL5q++
-         cKfyJuPizgf5N2gdYvoCjqmoS40aAZbgTrzPirinrU0mv/ssFDS9p+0w3nxZhqOpJCUX
-         wYYAnAagNKyg/8RpGHweo4H+TjuHenkBXp5T7hH88xPQLJdwOqpAmbwYfcbgvv3HgjdI
-         JLTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUifZrFyzcz/hndgnYfOEfFMgH/wLDs76hjd7gJu3HtFEMcK+rpGXJwqw1lRC6xvdLRrns=@vger.kernel.org, AJvYcCWbOh54Ij+EEZ4e3mxty4WDsV9WJHHyKi8VWJfQF5m2QmQryXooPr094EsB4hUkkquwr5pjOhjCw3Cxu39MzDwiInu5@vger.kernel.org, AJvYcCXN9Ha4JtcLAA87zdwnzmhBeg/8912qDSGj5KfQIb5hmRlyrnfNG3SG7dMcN2t9hrmy8cvq5tKrmHqfyNZQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWkL07hL83Y18u7dfhg2LW25J9Cu1F8uctUi4kDsEt0YCIwqGq
-	Xfo05hiQv1QOYgQZMfHyPR+ib6TBG4DsG5jFLIfan2jXfHuYxHOav9bTuqq1BgePQCfAX0GtoWv
-	qhPGnfgajqtRug6Pv5r2f9QT6gIGE+zo=
-X-Gm-Gg: ASbGncsoJGCBqNKycb25uZiHQIdb0vvTf5308SuwxA8RZdXIxmbH0yrl7pe9tgJiFy1
-	osxyYwYJLc43/vbsZ0l1bEfmRIKvpVbFtWq9bT4flER7IAim/ZiwP7G/ZZwX/3lfiNm8hHI2VVC
-	ZfsCaiPrkIhDwCmODbx0NqAvCZLcnRuVFOTFIFDyJtj5Kb9LMv8BbiBSf7fvvJ7qZ98YlJmF7Nn
-	hx87D005Ck8q0OG8rVGO+U=
-X-Google-Smtp-Source: AGHT+IFkJxBHJsi/qhXBTMrnuJxMrKa9yT7zV/ASPN4AZtBUYPr88vFciqMUlhOtEU6msJtj1095Jt5l4VsOVmKLPPo=
-X-Received: by 2002:a05:6000:4013:b0:3b7:94a2:87e8 with SMTP id
- ffacd0b85a97d-3d1dcb75006mr14310626f8f.18.1756998124908; Thu, 04 Sep 2025
- 08:02:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757000931; x=1757605731;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Av1N5aGit/P+J1Yl+2LeeoH83qS/K0Xo7Da29MOYquc=;
+        b=pNR+CnlEoqSmnsvLs10Ygz4efpOTrTTJwgcKTR8ShYPSCVQb92N+Vu3InlFWA9gS1f
+         mjUamxrXnrQyZ50Di/nFNJNufywe86buEtIYFSyms+t0mp2zOIQZLoClr+N+rqkPbmdB
+         1Nvqb0O0cr/xJ73L5TJjMod6nURamiO9ouOURzCOTh0igQhv2N17IDu4B5P+cuLwlO1G
+         WWf7c4AETr6g0Gn9MfmK0MDNBFQbY+ocCLHU+ycfx3wQMikBBYR2J6ZGWD2/ZgHVyAdY
+         8MiQHN3Qz3oRESMrvJaPobOXkEUQf8i3gkIUcmx4bO/i8qUHkhP4dWGU3hMfshuN7LXI
+         fc+g==
+X-Forwarded-Encrypted: i=1; AJvYcCWAn2dmiY7sCFwz8kDJS5JKE2htjzmaDuIizejR8lVz9xkQt3IcuHAfc6nDO69ep3q3bmrmGAAX58saXns=@vger.kernel.org, AJvYcCWcQ8E8Kzl4VUSQsh4a7bFJCkd+uzkwejf3LAHd8i/pCsZTOJJJ0tNRCLb5zP5+e4AL47gUpY98E6y8wg69AhYl@vger.kernel.org
+X-Gm-Message-State: AOJu0YzaDbxqneaQMbOA13NIhxehR138Np0lSt965q/lO5B9txG4fmM/
+	dVgaEL+mQP/qEpqT4m5v+AU3Lf+N/6615TO1z/5Te9BXLSEW++X5UJWG
+X-Gm-Gg: ASbGncv/iUTeWgptqeJabgnKNYnqcdE0QXrPfKnmpf9fRZcliJ3lwnRLPTsOtoxyrJ0
+	eBykzs/HibG9b/w72GwvFQ8DG8xieP/5ZpsNuy2tRePLW/GILDYivBhepxDiWIBIdVfrc/Cw4tq
+	2YX4mUK3lyxg8eQB/67/nr1BHbzWyYRLL6MuTYi2Rj+tKF2BUVmW6hm6FkvitKJvQkCstva6Xdz
+	KA0fFAfOeb6o+JtadozQVlmpRh1PfAV9ootrVwmN0Rg6f++GoG9m7CS5f0/fTH9r/cvHQrt+szs
+	1Qxlbrly1zJcv2BwRdYD3y/k7O1rSRU0Wbt6MExp2haSWnI13wLe7sS9/q+6DVd8Sg0nzLR3lMA
+	RTJLd392PolHKhjqT6DM=
+X-Google-Smtp-Source: AGHT+IFvFCxcwLLfF8xIU765xduJQycqiwbtTv5fPpk1+u5jwXz+C/chGbozQDewxf+A8z/4Sew+ZA==
+X-Received: by 2002:a17:903:2b0e:b0:24c:7861:2ee9 with SMTP id d9443c01a7336-24c78613106mr106139185ad.2.1757000930537;
+        Thu, 04 Sep 2025 08:48:50 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24ccd763948sm17925345ad.118.2025.09.04.08.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Sep 2025 08:48:49 -0700 (PDT)
+Message-ID: <7a037c0579e1cbabb83935c05c24ddbc6bc43327.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Fix the invalid operand for
+ instruction issue
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Feng Yang <yangfeng59949@163.com>, ast@kernel.org, daniel@iogearbox.net,
+ 	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, 	yonghong.song@linux.dev, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, 	jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
+Date: Thu, 04 Sep 2025 08:48:45 -0700
+In-Reply-To: <20250828020135.248869-1-yangfeng59949@163.com>
+References: <20250828020135.248869-1-yangfeng59949@163.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250902143504.1224726-1-jolsa@kernel.org> <20250902143504.1224726-3-jolsa@kernel.org>
- <20250903112648.GC18799@redhat.com> <aLicCjuqchpm1h5I@krava>
- <20250904084949.GB27255@redhat.com> <aLluB1Qe6Y9B8G_e@krava> <20250904112317.GD27255@redhat.com>
-In-Reply-To: <20250904112317.GD27255@redhat.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 4 Sep 2025 08:01:53 -0700
-X-Gm-Features: Ac12FXzf4RJj6-nnXZ3VoZB1z-JhMD_QU665pLEmSa9O2cuDWoa1D1tma5CQqOQ
-Message-ID: <CAADnVQ+DHGc8R0Tdxf7eUj1R0TDGHXLwk5D4i_0==2_rfXGbfw@mail.gmail.com>
-Subject: Re: [PATCH perf/core 02/11] uprobes: Skip emulate/sstep on unique
- uprobe when ip is changed
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 4, 2025 at 4:26=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
-e:
->
-> On 09/04, Jiri Olsa wrote:
-> >
-> > On Thu, Sep 04, 2025 at 10:49:50AM +0200, Oleg Nesterov wrote:
-> > > On 09/03, Jiri Olsa wrote:
-> > > >
-> > > > On Wed, Sep 03, 2025 at 01:26:48PM +0200, Oleg Nesterov wrote:
-> > > > > On 09/02, Jiri Olsa wrote:
-> > > > > >
-> > > > > > If user decided to take execution elsewhere, it makes little se=
-nse
-> > > > > > to execute the original instruction, so let's skip it.
-> > > > >
-> > > > > Exactly.
-> > > > >
-> > > > > So why do we need all these "is_unique" complications? Only a sin=
-gle
-> > > > > is_unique/exclusive consumer can change regs->ip, so I guess hand=
-le_swbp()
-> > > > > can just do
-> > > > >
-> > > > >         handler_chain(uprobe, regs);
-> > > > >         if (instruction_pointer(regs) !=3D bp_vaddr)
-> > > > >                 goto out;
-> > > >
-> > > > hum, that's what I did in rfc [1] but I thought you did not like th=
-at [2]
-> > > >
-> > > > [1] https://lore.kernel.org/bpf/20250801210238.2207429-2-jolsa@kern=
-el.org/
-> > > > [2] https://lore.kernel.org/bpf/20250802103426.GC31711@redhat.com/
-> > > >
-> > > > I guess I misunderstood your reply [2], I'd be happy to drop the
-> > > > unique/exclusive flag
-> > >
-> > > Well, but that rfc didn't introduce the exclusive consumers, and I th=
-ink
-> > > we agree that even with these changes the non-exclusive consumers mus=
-t
-> > > never change regs->ip?
-> >
-> > ok, got excited too soon.. so you meant getting rid of is_unique
-> > check only for this patch and have just change below..  but keep
-> > the unique/exclusive flag from patch#1
->
-> Yes, this is what I meant,
->
-> > IIUC Andrii would remove the unique flag completely?
->
-> Lets wait for Andrii...
+On Thu, 2025-08-28 at 10:01 +0800, Feng Yang wrote:
+> From: Feng Yang <yangfeng@kylinos.cn>
+>=20
+> The following issue occurs when compiling with clang version 17.0.6:
+> progs/compute_live_registers.c:251:3: error: invalid operand for instruct=
+ion
+>   251 |                 "r0 =3D 1;"
+>       |                 ^
+> <inline asm>:1:22: note: instantiated into assembly here
+>     1 |         r0 =3D 1;r2 =3D 2;if r1 & 0x7 goto +1;exit;r0 =3D r2;exit=
+;
+>       |                             ^
+> 1 error generated.
+>=20
+> Use __imm_insn to fix this issue.
+>=20
+> Fixes: 4a4b84ba9e453 ("selftests/bpf: verify jset handling in CFG computa=
+tion")
+> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+> ---
 
-Not Andrii, but I see only negatives in this extra flag.
-It doesn't add any safety or guardrails.
-No need to pollute uapi with pointless flags.
+Hi Feng,
+
+This message felt through cracks a bit.  It's a minor thing, of
+course, but there is a legit question of how much backward we'd like
+to support clang versions for the test suite.
+
+Could you please provide some detail on your build environment,
+why do you want to run the tests with older clang?
+
+[...]
 
