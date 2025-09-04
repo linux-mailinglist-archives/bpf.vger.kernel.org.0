@@ -1,119 +1,139 @@
-Return-Path: <bpf+bounces-67428-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67429-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E8F0B4393D
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 12:51:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09FD5B43A3F
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 13:33:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B873A8FF5
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 10:51:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17F6C4826BB
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 11:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617B32ECEB9;
-	Thu,  4 Sep 2025 10:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247582FF177;
+	Thu,  4 Sep 2025 11:24:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+tuJKtB"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XMokCMmm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982F127461
-	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 10:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D162FD1DD
+	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 11:24:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756983102; cv=none; b=lD9a3MZIaWAHJ/4P34LGxXGtykVpCwle1e4gR5m+hZlUlA2ve7LagyVO9YNEkVto7IW7OO5jRx9RRCGTgLgd5Rr+WYX2sJWFipceo0uBVr3OL4DkTCDPu5F3WwBPrcf4c+zn8ExafU4pgeACNLG6C1c1bkkeAjx+92l8a7MXeCg=
+	t=1756985097; cv=none; b=rxhy86j7cndMyJBr/lkrEacvdDb/u0zbsfrbFlLB6l/yHvi8rObN52oRPYcj4Ui6QeBehsCKzCQ4f7ncs6+KGbRSoJbUHbsbyFszq7emjg+UwGXodKQa4bQnphfy50wuQqZU9yjNL2B0tVlGqtfr/TCyeT8m9Pv+xSaJqIC1jzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756983102; c=relaxed/simple;
-	bh=KurW8R4orjFMAxoWwbZoKPLMwIdOxVUUgSsHzsQYKh8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aPqwF15BQAz8qwcuyWGmGrNnXzpWGVuCVtxxhoDmvMA2tAuMC0a7DmmpdG2JyLLi4Vl7n4APVa7uawGACGdXbIxm8U6K9cD7pHpQBZa2wHPXYZAOwbhIYOTyX2JiF9RvxG2uFHA6ibuaHuEMyEUVlnXZa63EknEC6SFrTKVx9kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+tuJKtB; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-77287fb79d3so862222b3a.1
-        for <bpf@vger.kernel.org>; Thu, 04 Sep 2025 03:51:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756983101; x=1757587901; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=y7jQbVfvjjy4s26/KcS6dbO1yAkMslYFuaBzKbU8/+A=;
-        b=A+tuJKtBq1PHT4bN0xkkuboTl+W0epl4QfoT/uOW2olZE+1ISAs1ZuBbXZ5SFvL/Tw
-         wlpkROUFXImO9Xdb8C1neyoIsk1I36/ua3TM10YMMmtcDnD/IKdtL71eDLOSM3FXB87a
-         2ZaHNkkttp9JzaRzD1hQlNlnj8vJVT72Adwuq0apgZv0SclINx+Dyr/NnQMa+57IBrVR
-         2Fa83+K9/tY3oG+np2HJfZy6g97gPHO5H5wGU204W0txJWdV6sGytg/RyTCOQGoIreER
-         IabP5/hiASJ6qF8H+fmOjNtFBuFxLQEWuH9aooRhRjv7IKFr0mOMQSlgzQV7K7nDwY+G
-         buCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756983101; x=1757587901;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y7jQbVfvjjy4s26/KcS6dbO1yAkMslYFuaBzKbU8/+A=;
-        b=SWgByEdniRkIr17I5Ghvoua5xZzRzEgRxDyr8bumIlzWdCl5N9F7kDSuRNgB0frRqr
-         u4dMAosy2ZWVaGBCM978JJWMsXNihR58PEvV1CqxyZDUUc49dIoJ11mVZkBDQE3akKsT
-         AJpRDsG/Ni9SL0MjTUnZOYJ0hxL1+lh9nVXPn8iLhRkffMgOH7aX5XLSonz4jkctcIu4
-         uHEaXj0OpM4Gkq5xFn/CzarpK4w04ltxp+B0UdSsN6Y+cdBUAhpEevxRGY+uXPgbKYNa
-         7g59EMaPCcWV2c8MgJfFhWAlcdv2mCudg3A0SwAystYBCI39+xC9ITtKBV7LU3q3rx4U
-         2Yyg==
-X-Gm-Message-State: AOJu0YyWqW5DbvlvOylVhXdejnWHU/b8N+CjQAnf4/cYxHmQEVxfVpDm
-	vIHXd1gHD/Dm2xsrujZ1/IpZJlYRgRhnY9rlZkIuNzf5yYZwBsByUm3EmUHlrYyAooM=
-X-Gm-Gg: ASbGncu6vVunu8lxcJkFHo9uLGLiBq0HY816zyoQW0fZPdkSzZL4I0mgaQt3DOXj1gn
-	KXntaRo49iKTZ6pMgL5gjVyCijUxUP5V4tdtVn4DB8LMWQMsKbHeEyruTbYO/MvxxrXyWe+zeoz
-	D4sPhL+eIpa64L/Rz5IedoBlL06xOAqEs7u31myVRjsJFNsmFZL57+TsALN16wxVgDxXulhI6jb
-	rjqnBeZRgN1Px6p8B/0xKh2Y0YHURfwrsiEZkbRu4Hwb5VO09dUS+spVMtPnUJlkeBB+dk+W+P+
-	F5IAvh/RhRJ/ds55u7ZdkvUXbMn2U4HAQSWKeyFr4grut9t5pn53hLVZjp1CxzXBUSQJC/ipAAZ
-	hJB365khmcPWkZbP5n+/34DJCvJjEN3P0Gp+CHDXGPgyoq4c4amw=
-X-Google-Smtp-Source: AGHT+IGsqHfcYn1HKs9rJ6BOzzQ0f8SkFW4i15uSMDVYFJ4sqMTx8DnbC+WafRushmd718na10DSTA==
-X-Received: by 2002:a05:6a21:99a2:b0:248:b2c8:5cbf with SMTP id adf61e73a8af0-248b2c85fa6mr7775770637.58.1756983100730;
-        Thu, 04 Sep 2025 03:51:40 -0700 (PDT)
-Received: from ubuntu.. ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4fb7d391casm2795224a12.7.2025.09.04.03.51.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Sep 2025 03:51:40 -0700 (PDT)
-From: Hengqi Chen <hengqi.chen@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	bjorn@kernel.org,
-	pulehui@huawei.com,
-	puranjay@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Hengqi Chen <hengqi.chen@gmail.com>
-Subject: [PATCH bpf-next] riscv, bpf: Remove duplicated bpf_flush_icache()
-Date: Thu,  4 Sep 2025 10:51:18 +0000
-Message-ID: <20250904105119.21861-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1756985097; c=relaxed/simple;
+	bh=kf+9HDiVeFZDHfJthh5dLpO1I207zVKh8nvH272oWPo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h61yrVTuQeWc4is5XRPATN44T0a5fWZldPKxDJT3Xgaqit+32iJRc6a1i6qaGVsTVWRpG+8zP5vp8Gn5dZtBJiQQNclpoA+PpaiGwyg3xy+rzfOi6XQ4spCNm7ktSocjWDSYrCu3uIj6nPZi00Z/jqwRh4JIf2deb/ep2HYugRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XMokCMmm; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1756985095;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NNlSWipseSmsVlx3oPXi/Dm4sWLczG9la9f/1OIiTnU=;
+	b=XMokCMmmVjvf4fBVvZrKqiWYm3tX69nSwgqtfjJcgZ8PUluCOII+80J6R5jAcn0ARjezdQ
+	IcQwCXFMjCQlU02RXo+xDF6FUv4z+lvPaXbyVAJq1JDt0cYX9wEPrKt/T5sWfJ5slNpUYk
+	3g81Zia5zlHIRjtQfnxYPAhzvgUHA+Q=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-455-nqnVc4rAM9WkkRaS95Gtzw-1; Thu,
+ 04 Sep 2025 07:24:49 -0400
+X-MC-Unique: nqnVc4rAM9WkkRaS95Gtzw-1
+X-Mimecast-MFC-AGG-ID: nqnVc4rAM9WkkRaS95Gtzw_1756985088
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9E0D91800378;
+	Thu,  4 Sep 2025 11:24:47 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.52])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 481FE3002D26;
+	Thu,  4 Sep 2025 11:24:40 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu,  4 Sep 2025 13:23:25 +0200 (CEST)
+Date: Thu, 4 Sep 2025 13:23:17 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH perf/core 02/11] uprobes: Skip emulate/sstep on unique
+ uprobe when ip is changed
+Message-ID: <20250904112317.GD27255@redhat.com>
+References: <20250902143504.1224726-1-jolsa@kernel.org>
+ <20250902143504.1224726-3-jolsa@kernel.org>
+ <20250903112648.GC18799@redhat.com>
+ <aLicCjuqchpm1h5I@krava>
+ <20250904084949.GB27255@redhat.com>
+ <aLluB1Qe6Y9B8G_e@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aLluB1Qe6Y9B8G_e@krava>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-The bpf_flush_icache() is done by bpf_arch_text_copy() already.
-Remove the duplicated one in arch_prepare_bpf_trampoline().
+On 09/04, Jiri Olsa wrote:
+>
+> On Thu, Sep 04, 2025 at 10:49:50AM +0200, Oleg Nesterov wrote:
+> > On 09/03, Jiri Olsa wrote:
+> > >
+> > > On Wed, Sep 03, 2025 at 01:26:48PM +0200, Oleg Nesterov wrote:
+> > > > On 09/02, Jiri Olsa wrote:
+> > > > >
+> > > > > If user decided to take execution elsewhere, it makes little sense
+> > > > > to execute the original instruction, so let's skip it.
+> > > >
+> > > > Exactly.
+> > > >
+> > > > So why do we need all these "is_unique" complications? Only a single
+> > > > is_unique/exclusive consumer can change regs->ip, so I guess handle_swbp()
+> > > > can just do
+> > > >
+> > > > 	handler_chain(uprobe, regs);
+> > > > 	if (instruction_pointer(regs) != bp_vaddr)
+> > > > 		goto out;
+> > >
+> > > hum, that's what I did in rfc [1] but I thought you did not like that [2]
+> > >
+> > > [1] https://lore.kernel.org/bpf/20250801210238.2207429-2-jolsa@kernel.org/
+> > > [2] https://lore.kernel.org/bpf/20250802103426.GC31711@redhat.com/
+> > >
+> > > I guess I misunderstood your reply [2], I'd be happy to drop the
+> > > unique/exclusive flag
+> >
+> > Well, but that rfc didn't introduce the exclusive consumers, and I think
+> > we agree that even with these changes the non-exclusive consumers must
+> > never change regs->ip?
+>
+> ok, got excited too soon.. so you meant getting rid of is_unique
+> check only for this patch and have just change below..  but keep
+> the unique/exclusive flag from patch#1
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- arch/riscv/net/bpf_jit_comp64.c | 1 -
- 1 file changed, 1 deletion(-)
+Yes, this is what I meant,
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index c7ae4d0a8361..3fcc011c6be4 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -1305,7 +1305,6 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *ro_image,
- 		goto out;
- 	}
- 
--	bpf_flush_icache(ro_image, ro_image_end);
- out:
- 	kvfree(image);
- 	return ret < 0 ? ret : size;
--- 
-2.45.2
+> IIUC Andrii would remove the unique flag completely?
+
+Lets wait for Andrii...
+
+Oleg.
 
 
