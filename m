@@ -1,133 +1,133 @@
-Return-Path: <bpf+bounces-67509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D542B448FD
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 00:02:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79D83B44961
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 00:17:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD080A4530E
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 22:02:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1780A1C25DFF
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 22:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F652D73A8;
-	Thu,  4 Sep 2025 22:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68ED72E7F21;
+	Thu,  4 Sep 2025 22:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oi0Wl36p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hmZnVF1/"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970942857F8;
-	Thu,  4 Sep 2025 22:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633F22E717C;
+	Thu,  4 Sep 2025 22:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757023347; cv=none; b=g3O1cDHtWHUUSiY7134uJm7HO6IRZ5upijbPFXZu8CjaYOsN0jYC5Po8+kea8lGdC+vhSTpDhoUpM2ccmj+ebvMtk38ogWH/NbfJS27zQyxdHfoJ0TNn1TlY02hdKXl1zsK0X9Muc4VuWk/m5xs1h82LEtmFhxLKg3KqkHJgl7Y=
+	t=1757024218; cv=none; b=sKxt3Hys3GS0lnLm7GxvDQE3rDXzRUmcJc+Q/9y3QUBCwbufM2dJ9YI4fooy+H8UX7E3YnYBTc2cnTI2oHZuJ4GKo1V5IFYWKDx8ssCMzU+c2pNpC+G/dT3jI/j9gVUW38g81OdCI+4tFs58ctG3htrGijU16dlrznNc7Gy3ndQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757023347; c=relaxed/simple;
-	bh=h7IL8BxWrdOW+yOwf1b00Bh8pl/Z4Lrq2TAiijwMumk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sVRTp0NiSVwKaQzDMdPt43bEtItiviNOdIRhS8qzZLbXjux7J1mbPt90ddyYGVb1eQJEFQKS3bUxbInsblAHl2QdklCacjHFgsUVRdsv39C44ReLRB8Aj3n83UHOPvhqMcG4ygys/qTFm+g0+7zAWGUbUsvUPNk+uw/sW/u3+yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oi0Wl36p; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=PgAxJ6qYG6jFQyK0yTKMM5oVnK/RmutQxy4iOqYUHvk=; b=oi0Wl36pA6MMcWep9ogbt4VUQ1
-	vRkPwua8PqJxBcF/sWE1dvDnmQlRuQn4j1aYgl1Qx9K9ANa/SCn55E+oxnfu3O3GPVzcC/SjloY5i
-	YA5dBBnQrkIOvLrPih/NWodus/4tQ0IrQd+lsTeOkUc6Dr2o8q6TqoQYw46mAMuNoaM4nqG1jcqA2
-	XLECrXUSdhSueinDHSWe6kQWG9SSnK3EVtSvP1GfFmXhYTV/iqOuakeeGZzuQdjI6afXb/MVGVyuE
-	BvG1w1Kau1iHUBY0eww45/z/WFHZ5eZMr8DUA7YNYYmHO7VKBNvXeZHMIpfxe38vAp5R9GfJxqf7I
-	48ugg5ww==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uuI27-00000007fkq-1AhT;
-	Thu, 04 Sep 2025 22:02:20 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 7731A300220; Fri, 05 Sep 2025 00:02:19 +0200 (CEST)
-Date: Fri, 5 Sep 2025 00:02:19 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Andrea Righi <arighi@nvidia.com>, Ingo Molnar <mingo@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
-	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Luigi De Matteis <ldematteis123@gmail.com>
-Subject: Re: [PATCH 07/16] sched_ext: Add a DL server for sched_ext tasks
-Message-ID: <20250904220219.GS3245006@noisy.programming.kicks-ass.net>
-References: <20250903095008.162049-1-arighi@nvidia.com>
- <20250903095008.162049-8-arighi@nvidia.com>
- <aLidEvX41Xie5kwY@slm.duckdns.org>
- <20250903200822.GO4067720@noisy.programming.kicks-ass.net>
- <aLin8VayVsYyKXze@slm.duckdns.org>
- <20250903205646.GR4067720@noisy.programming.kicks-ass.net>
- <20250904202858.GN4068168@noisy.programming.kicks-ass.net>
- <aLoH_5TfiTGgQsb0@slm.duckdns.org>
+	s=arc-20240116; t=1757024218; c=relaxed/simple;
+	bh=nnquELMyGJbkTU1GWLEvcWZCtv0bj3S2OYGGleoWMJg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qIvRcKhgy8lFe0gCQv1Iyxm1M9ba+Otxg1ro8EsxPo9LOaiRS992E/VV3A1h3uIa3XRvNT/Sh82nj0pblwUwNSLurmTDuNeu+fb/+3HMAy3LAnxD+5L1xySxhMk8rJx3rSNhHh8cmLOzmd0TOpup1FWTdJvtMfTf0Y01NGSrexs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hmZnVF1/; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-e9c50598296so1453353276.1;
+        Thu, 04 Sep 2025 15:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757024216; x=1757629016; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nnquELMyGJbkTU1GWLEvcWZCtv0bj3S2OYGGleoWMJg=;
+        b=hmZnVF1/ccc9bGaORDakqTeEjW1X+rIPUgDR7SFJ6srsTL7VJiz/7t5mpghdfxJ6qj
+         3Pw+zNA981LCWl0baAM4JoWVletyfl1ADZh6Xi+Rsm9rkzOtb6oCQoIVjgFortF0HbmB
+         ez57B5IZZ/SQ6Mm/yXTxl21ZFQbayuOyZzshIulHjwJtuc6X8LQ2pV0v0pZouMbb4H1x
+         HZINVi39GvXt0KIuVUK2j5J71BKnwoh3dFlwja65MAy6Nee+QNDXp8/V7rqhx5+z1dRH
+         CwiAPtiZyRm6k/uxTIODatUSKeT1BJFz5rP0hcVxEZdUfMVNS7QuVrt9xgUyZO1laEoH
+         8fwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757024216; x=1757629016;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nnquELMyGJbkTU1GWLEvcWZCtv0bj3S2OYGGleoWMJg=;
+        b=bh2UQR2wvzXKJc4E6uMVhQJkurxIY6ard+FOvliwaCP0aQ/Xq2OrO4d73D9DD4J/1f
+         eknQKk9kVEJ1gRpBuIiHZ6aE0Ty+nORsOMYLCM8Epwr6vnO/Nn/0E46OSjCnhrywKT1k
+         k3v+6pRjUdaZRCVoW0ODSg/vdADFZ38DTW3VMqc+c39giGXJaEG+mJQ7gCc7qt3YQTU4
+         EHdtajwp6tCujOOmeNkjCOPBMck7XFFtuKSnDYIrY5YuAXVPYUrunx6YfFoexji/CYNU
+         lC4NcpDHmLBtWCpNd8gD0Jr0YtOS3XiCdr92W7RYqgosIxBKHrfeATQEB44ciQsMEVGf
+         iF0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWr3dKTSwOTb96g9fzrBBJaHY4w+Ujs18A9ZKKo03nl000/5i5f/cMT3YFaBmksMk43LQNFZWg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFqaqNevM8JMSIELaBChM8owXxbSsBPrymW3szh6Q0LC9DdpD1
+	vXN+t9iW2ZI3fGjgweFv9sU0RXrR+rK5DF341vIctfxe3Tv0EEUf6XWvSrWGOs6gJ+pVt6kXOM3
+	3n5PXy7OIu4HF33ipgh9U/7vrJwDPzek=
+X-Gm-Gg: ASbGncucTqaAj4OGIdntj4RVylK8X7fRBkfdXQu9ELB5urib8wJgVDvbstoW7GhesMp
+	yEZV2secldPxfui4VUCN/XETfvEDXwwoGdhkALOqPGCFquHntjfbDFPVw48TIj7pRwuHC2BDPdi
+	EJR86amBMTZ3B2e3SHu17gSUFh6gLoS+RijF4KozW98KDooyq4oXio0DoCPqdvn3Tz/Q+IeC7D1
+	4UtK5c=
+X-Google-Smtp-Source: AGHT+IFPe/o5bgxRYvYorrq47EKpuQMGFUgyZsTgNI2v/ceyRZWMyCdN+EanIES/vlKg7BmMWsiU8cnJuYKLTL3qRBw=
+X-Received: by 2002:a05:690c:338d:b0:725:68f5:8771 with SMTP id
+ 00721157ae682-72568f589f5mr11826327b3.37.1757024216080; Thu, 04 Sep 2025
+ 15:16:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aLoH_5TfiTGgQsb0@slm.duckdns.org>
+References: <20250825193918.3445531-1-ameryhung@gmail.com> <7695218f-2193-47f8-82ac-fc843a3a56b0@nvidia.com>
+In-Reply-To: <7695218f-2193-47f8-82ac-fc843a3a56b0@nvidia.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Thu, 4 Sep 2025 15:16:45 -0700
+X-Gm-Features: Ac12FXzJA_79IqwmpBM2LPRJxEaU6PHAETTWI5occrSW829FwV2_anu6XoKikBY
+Message-ID: <CAMB2axMk63AAv13q2QREn--ee-SMCwjhtv_iPN8EsrjN1L5EMw@mail.gmail.com>
+Subject: Re: [RFC bpf-next v1 0/7] Add kfunc bpf_xdp_pull_data
+To: Nimrod Oren <noren@nvidia.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, kuba@kernel.org, 
+	martin.lau@kernel.org, mohsin.bashr@gmail.com, saeedm@nvidia.com, 
+	tariqt@nvidia.com, mbloch@nvidia.com, maciej.fijalkowski@intel.com, 
+	kernel-team@meta.com, Dragos Tatulea <dtatulea@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 04, 2025 at 11:43:27AM -1000, Tejun Heo wrote:
-> Hello, Peter.
-> 
-> On Thu, Sep 04, 2025 at 10:28:58PM +0200, Peter Zijlstra wrote:
-> ...
-> >   RUNNABLE:
-> >   1) hold both source and target rq->lock.
-> ...
-> > Now, assuming you have a locking order like:
-> > 
-> >  p->pi_lock
-> >    rq->lock
-> >      dsq->lock
-> > 
-> > When you do something like:
-> > 
-> >   __schedule()
-> >     raw_spin_lock(rq->lock);
-> >     next = pick_next_task() -> pick_task_scx()
-> >       raw_spin_lock(dsq->lock);
-> > 
-> > Then you are, in effect, in the RUNNABLE 1) case above. You hold both
-> > locks. Nothing is going to move your task around while you hold that
-> > dsq->lock. That task is on the dsq, anybody else wanting to also do
-> > anything with that task, will have to first take dsq->lock.
-> >
-> > Therefore, at this point, it is perfectly fine to do:
-> > 
-> > 	set_task_cpu(cpu_of(rq)); // move task here
-> > 
-> > There is no actual concurrency. The only thing there is is
-> > set_task_cpu() complaining you're not following the rules -- but you
-> > are, it just doesn't know -- and we can fix that.
-> 
-> I can't convince myself this is safe. For example, when task_rq_lock()
-> returns, it should guarantee that the rq that the task is currently
-> associated with is locked and the task can't go anywhere. However, as
-> task_rq_lock() isn't interlocked with dsq lock, this won't hold true. I
-> think this will break multiple things subtly - e.g. the assumptions that
-> task_call_func() makes in the comment wouldn't hold anymore,
-> task_sched_runtime()'s test of task_on_rq_queued() would be racy, and so on.
-> 
-> ie. Operations protected by deq/enq pair would be fine but anything which is
-> protected only by task_rq_lock/unlock() would become racy, right?
+On Thu, Aug 28, 2025 at 6:39=E2=80=AFAM Nimrod Oren <noren@nvidia.com> wrot=
+e:
+>
+> On 25/08/2025 22:39, Amery Hung wrote:
+> > This patchset introduces a new kfunc bpf_xdp_pull_data() to allow
+> > pulling nonlinear xdp data. This may be useful when a driver places
+> > headers in fragments. When an xdp program would like to keep parsing
+> > packet headers using direct packet access, it can call
+> > bpf_xdp_pull_data() to make the header available in the linear data
+> > area. The kfunc can also be used to decapsulate the header in the
+> > nonlinear data, as currently there is no easy way to do this.
+>
+> I'm currently working on a series that converts the xdp_native program
+> to use dynptr for accessing header data. If accepted, it should provide
+> better performance, since dynptr can access without copying the data.
+>
+> > This patchset also tries to fix an issue in the mlx5e driver. The drive=
+r
+> > curretly assumes the packet layout to be unchanged after xdp program
+> > runs and may generate packet with corrupted data or trigger kernel warn=
+ing
+> > if xdp programs calls layout-changing kfunc such as bpf_xdp_adjust_tail=
+(),
+> > bpf_xdp_adjust_head() or bpf_xdp_pull_data() introduced in this set.
+>
+> Thanks for working on this!
+>
+> > Tested with the added bpf selftest using bpf test_run and also on
+> > mlx5e with the tools/testing/selftests/drivers/net/xdp.py. mlx5e with
+> > striding RQ will produce xdp_buff with empty linear data.
+> > xdp.test_xdp_native_pass_mb would fail to parse the header before this
+> > patchset.
+>
+> I got a crash when testing this series with the xdp_dummy program from
+> tools/testing/selftests/net/lib/. Need to make sure we're not breaking
+> compatibility for programs that keep the linear part empty.
 
-Yeah, let me go audit all that in the morning. Because it would save a
-lot of pain if we can make this work.
+ping.py test ran successfully for me. Is this what you tried but
+crashed the kernel?
 
