@@ -1,246 +1,450 @@
-Return-Path: <bpf+bounces-67495-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67496-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CF97B446B6
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 21:48:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A88B446B9
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 21:49:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D33B54E1E68
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 19:48:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D0315A815A
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 19:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF1F272E71;
-	Thu,  4 Sep 2025 19:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 371FC275AE9;
+	Thu,  4 Sep 2025 19:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G4G7wffP"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D71aXLmF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B43F4202C43
-	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 19:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551B7202C43;
+	Thu,  4 Sep 2025 19:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757015305; cv=none; b=GWg8BPpHn64kEXNT1sbfeOvwc6KS4vOa8lMwwRwGHQQ2VHtXwaG+PEsmP3iiXwaTLoqGSYh7BipWeEKr2vKtlRMHjyfoAhY1XdGHHsME9SWtNqGr8OwagxFRa5plOEX5UOzU+L28FuF6KrGacI9Z1xGqrhbL+VrqcdUz7Dbds2c=
+	t=1757015365; cv=none; b=Ss4YL2Zn9f8hFfOT9Vfs/cZGPwk+W2aAZNdyUlCFrUix1SIb5qyvLnKXRT8TNnv8A1mJFkUs3ZbFZ2Ut1+iGaHAcnnojtH6Jqks7j1fwaYecD1ygIOpmfPYr48hcvICkIqHnkMOXXTQM4RCEQQ3u2lvn1dsQfUpk29OGSHFBbX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757015305; c=relaxed/simple;
-	bh=nqohl5jgX/PxcHT2z/UszfKDY7KocZbcLutl8HsU95c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Su/9kjVJGBGHtjtb5TGmuIm706eK1f6/J/G107AEn56+sw7agH5ms6aj0DISCSx/z/0EdNK+feQgLYoHGig4vXEBbF3XxsYge2RgCPrlZzIOeh57IZUZ2I3eB7DORR9mbqwFMo2vH9AVqDVpAAR4sHE8jSb87o9NFPlkNSDiMPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G4G7wffP; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <26939fec-b70f-4beb-8895-427db69c38a0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757015291;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gm8d/i/wGeuAxF6pbQHB1XvUNQ/PHAtfV3G4ujYsf1Q=;
-	b=G4G7wffPcnURRryCPhCkm6h4fDpqQVnjamUYpmSQmAw8nOIpepq+fUJA3/h3uFVTWIUq/U
-	FW36s5n49w+Wn00y/k8y5+PI080Rf97OpCreSqhBxyZdFyqAkSkK5PjBRGIREYNjIkP87F
-	z84G+Ul1E8oS6DYE9bm7jK3Ui1+61lU=
-Date: Thu, 4 Sep 2025 12:48:03 -0700
+	s=arc-20240116; t=1757015365; c=relaxed/simple;
+	bh=egw+ohlWEQckBRsrMmotITgNtTkBdVFwfSgpK3qzjWc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OLZ6Uj6/ZhfpwY+hwZkTFzNPQ53Oh1pby9YgOiOMeDvrVZn3P+k0jeUpO4B8Ur72OaloTsOfltvbQkWJkSAwXK9q6G8uhlNCjlOfwnEbI5A2iyNX7RXivmEn0nWeRCKxsJc1ctLv4uBxnh7WKr2ZuW0Hw1leAfjhLAb6XYOC9j4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D71aXLmF; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1757015363; x=1788551363;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=egw+ohlWEQckBRsrMmotITgNtTkBdVFwfSgpK3qzjWc=;
+  b=D71aXLmFgYrb9JQMaohJhZf4Coi97YM4kDW2tQj91CPEqfAbo9GT7nx0
+   uhqzg5zu369Xi/Pub/bk7vfpqkVLpZ+Yacweu+nSr8teii4nD65AyWKiz
+   SZZM0LttN6CAM5v4xi6Xe0iaZGBeBZ1Clm461Ool9/bWMYLvSTtSSDJx5
+   f9FSnYl8wqlRJPjYbnl/qLirL5j7vo4pZ3YcP2c284VH38fBrxqEKKTVd
+   pK3UoqELEfzpN7FnOyo/O5ZpJJ7Bo2D3h4sRFFlXXh79NJi2eMQCakwat
+   r6JDNcQybIt/YfBYHH7P7cPuNCetyQjyFDTgzFiWOaSBoJvvDY9SSO4RC
+   g==;
+X-CSE-ConnectionGUID: tG5gyBSnQT+bxjEgbGPKfQ==
+X-CSE-MsgGUID: eYX9zyUKQuaB3kknoRRwwg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11543"; a="63006469"
+X-IronPort-AV: E=Sophos;i="6.18,239,1751266800"; 
+   d="scan'208";a="63006469"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2025 12:49:22 -0700
+X-CSE-ConnectionGUID: B+tTfBRAR1+onnYDRFPOYw==
+X-CSE-MsgGUID: KODXOCTDRviKzIkaykloKw==
+X-ExtLoop1: 1
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by fmviesa003.fm.intel.com with ESMTP; 04 Sep 2025 12:49:19 -0700
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: netdev@vger.kernel.org,
+	magnus.karlsson@intel.com,
+	stfomichev@gmail.com,
+	kerneljasonxing@gmail.com,
+	aleksander.lobakin@intel.com,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Eryk Kubanski <e.kubanski@partner.samsung.com>,
+	Stanislav Fomichev <sdf@fomichev.me>
+Subject: [PATCH v9 bpf] xsk: fix immature cq descriptor production
+Date: Thu,  4 Sep 2025 21:49:07 +0200
+Message-Id: <20250904194907.2342177-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 bpf-next/net 5/5] selftest: bpf: Add test for
- SK_BPF_MEMCG_SOCK_ISOLATED.
-To: Kuniyuki Iwashima <kuniyu@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>,
- Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima
- <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20250829010026.347440-1-kuniyu@google.com>
- <20250829010026.347440-6-kuniyu@google.com>
- <904c1ffb-107e-4f14-89b7-d42ac9a5aa14@linux.dev>
- <CAAVpQUDfQwb2nfGBV8NEONwaBAMVi_5F8+OPFX3=z+W8X9n9ZQ@mail.gmail.com>
- <CAAVpQUBWsVDu07xrQcqGMo4cHRu41zvb5CWuiUdJx9m6A+_2AQ@mail.gmail.com>
- <CAAVpQUCyPPO1dfkkU4Hxz67JFcW6dhSfYnmUp0foNMYua_doyg@mail.gmail.com>
- <40ed29b3-84d7-4812-890d-3676957d503f@linux.dev>
- <CAAVpQUCLpi+6w1SP=FKVaXwdDHQC_P6B1hzzDC5y4brsf3_UnQ@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAAVpQUCLpi+6w1SP=FKVaXwdDHQC_P6B1hzzDC5y4brsf3_UnQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 9/4/25 9:45 AM, Kuniyuki Iwashima wrote:
-> On Wed, Sep 3, 2025 at 10:51 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 9/3/25 10:08 AM, Kuniyuki Iwashima wrote:
->>> On Wed, Sep 3, 2025 at 9:59 AM Kuniyuki Iwashima <kuniyu@google.com> wrote:
->>>>
->>>> On Tue, Sep 2, 2025 at 1:49 PM Kuniyuki Iwashima <kuniyu@google.com> wrote:
->>>>>
->>>>> On Tue, Sep 2, 2025 at 1:26 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>>>>>
->>>>>> On 8/28/25 6:00 PM, Kuniyuki Iwashima wrote:
->>>>>>> The test does the following for IPv4/IPv6 x TCP/UDP sockets
->>>>>>> with/without BPF prog.
->>>>>>>
->>>>>>>      1. Create socket pairs
->>>>>>>      2. Send a bunch of data that requires more than 256 pages
->>>>>>>      3. Read memory_allocated from the 3rd column in /proc/net/protocols
->>>>>>>      4. Check if unread data is charged to memory_allocated
->>>>>>>
->>>>>>> If BPF prog is attached, memory_allocated should not be changed,
->>>>>>> but we allow a small error (up to 10 pages) in case other processes
->>>>>>> on the host use some amounts of TCP/UDP memory.
->>>>>>>
->>>>>>> At 2., the test actually sends more than 1024 pages because the sysctl
->>>>>>> net.core.mem_pcpu_rsv is 256 is by default, which means 256 pages are
->>>>>>> buffered per cpu before reporting to sk->sk_prot->memory_allocated.
->>>>>>>
->>>>>>>      BUF_SINGLE (1024) * NR_SEND (64) * NR_SOCKETS (64) / 4096
->>>>>>>      = 1024 pages
->>>>>>>
->>>>>>> When I reduced it to 512 pages, the following assertion for the
->>>>>>> non-isolated case got flaky.
->>>>>>>
->>>>>>>      ASSERT_GT(memory_allocated[1], memory_allocated[0] + 256, ...)
->>>>>>>
->>>>>>> Another contributor to slowness is 150ms sleep to make sure 1 RCU
->>>>>>> grace period passes because UDP recv queue is destroyed after that.
->>>>>>
->>>>>> There is a kern_sync_rcu() in testing_helpers.c.
->>>>>
->>>>> Nice helper :)  Will use it.
->>>>>
->>>>>>
->>>>>>>
->>>>>>>      # time ./test_progs -t sk_memcg
->>>>>>>      #370/1   sk_memcg/TCP       :OK
->>>>>>>      #370/2   sk_memcg/UDP       :OK
->>>>>>>      #370/3   sk_memcg/TCPv6     :OK
->>>>>>>      #370/4   sk_memcg/UDPv6     :OK
->>>>>>>      #370     sk_memcg:OK
->>>>>>>      Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
->>>>>>>
->>>>>>>      real       0m1.214s
->>>>>>>      user       0m0.014s
->>>>>>>      sys        0m0.318s
->>>>>>
->>>>>> Thanks. It finished much faster in my setup also comparing with the earlier
->>>>>> revision. However, it is a bit flaky when I run it in a loop:
->>>>>>
->>>>>> check_isolated:FAIL:not isolated unexpected not isolated: actual 861 <= expected 861
->>>>>>
->>>>>> I usually can hit this at ~40-th iteration.
->>>>>
->>>>> Oh.. I tested ~10 times manually but will try in a tight loop.
->>>>
->>>> This didn't reproduce on my QEMU with/without --enable-kvm.
->>>>
->>>> Changing the assert from _GT to _GE will address the very case
->>>> above, but I'm not sure if it's enough.
->>>
->>> I doubled NR_SEND and it was still faster with kern_sync_rcu()
->>> than usleep(), so I'll simply double NR_SEND in v5
->>>
->>> # time ./test_progs -t sk_memcg
->>> ...
->>> Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
->>> real 0m0.483s
->>> user 0m0.010s
->>> sys 0m0.191s
->>>
->>>
->>>>
->>>> Does the bpf CI run tests repeatedly or is this only a manual
->>>> scenario ?
->>
->> I haven't seen bpf CI hit it yet. It is in my manual bash while loop. It should
->> not be dismissed so easily. Some flaky CI tests were eventually reproduced in a
->> loop before and fixed. I kept the bash loop continue this time until grep-ed a
->> "0" from the error output:
->>
->> check_isolated:FAIL:not isolated unexpected not isolated: actual 0 <= expected 256
->>
->> The "long memory_allocated[2]" read from /proc/net/protocols are printed as 0
->> but it is probably actually negative:
->>
->> static inline long
->> proto_memory_allocated(const struct proto *prot)
->> {
->>           return max(0L, atomic_long_read(prot->memory_allocated));
->> }
->>
->> prot->memory_allocated could be negative afaict but printed as 0 in
->> /proc/net/protocols. Even the machine is network quiet after test_progs started,
->> the "prot->memory_allocated" and the "proto->per_cpu_fw_alloc" could be in some
->> random states before the test_progs start.  When I hit "0", it will take some
->> efforts to send some random traffic to the machine to get the test working again. :(
->>
->> Also, after reading the selftest closer, I am not sure I understand why "+ 256".
->> The "proto-> per_cpu_fw_alloc" can start with -255 or +255.
-> 
-> Actually I didn't expect the random state and assumed the test's
-> local communication would complete on the same CPU thus 0~255.
-> 
-> Do you see the flakiness with net.core.mem_pcpu_rsv=0 ?
-> 
-> The per-cpu cache is just for performance and I think it's not
-> critical for testing and it's fine to set it to 0 during the test.
-> 
-> 
->>
->> I don't think changing NR_SEND help here. It needs a better way. May be some
->> functions can be traced such that prot->memory_allocated can be read directly?
->> If fentry and fexit of that function has different memory_allocated values, then
->> the test could also become more straight forward.
-> 
-> Maybe like this ?  Not yet tested, but we could attach a prog to
-> sock_init_data() or somewhere else and trigger it by additional socket(2).
-> 
->          memory_allocated = sk->sk_prot->memory_allocated;
->          nr_cpu = bpf_num_possible_cpus();
-> 
->          for (i = 0; i < nr_cpu; i++) {
->                  per_cpu_fw_alloc =
-> bpf_per_cpu_ptr(sk->sk_prot->per_cpu_fw_alloc, i);
+Eryk reported an issue that I have put under Closes: tag, related to
+umem addrs being prematurely produced onto pool's completion queue.
+Let us make the skb's destructor responsible for producing all addrs
+that given skb used.
 
-I suspect passing per_cpu_fw_alloc to bpf_per_cpu_ptr won't work for now. sk is 
-trusted if it is a "tp_btf" but I don't think the verifier recognizes the 
-sk->sk_prot is a trusted ptr. I haven't tested it though. If the above does not 
-work, try to directly use the global percpu tcp_memory_per_cpu_fw_alloc. Take a 
-look at how "bpf_prog_active" is used in test_ksyms_btf.c.
+Commit from fixes tag introduced the buggy behavior, it was not broken
+from day 1, but rather when xsk multi-buffer got introduced.
 
->                  if (per_cpu_fw_alloc)
->                          memory_allocated += *per_cpu_fw_alloc;
+In order to mitigate performance impact as much as possible, mimic the
+linear and frag parts within skb by storing the first address from XSK
+descriptor at sk_buff::destructor_arg. For fragments, store them at ::cb
+via list. The nodes that will go onto list will be allocated via
+kmem_cache. xsk_destruct_skb() will consume address stored at
+::destructor_arg and optionally go through list from ::cb, if count of
+descriptors associated with this particular skb is bigger than 1.
 
-Yeah. I think figuring out the true memory_allocated value and use it as the 
-before/after value should be good enough. Then no need to worry about the 
-initial states. I wonder why proto_memory_allocated() does not do that for 
-/proc/net/protocols but I guess it may not be accurate for a lot of cores.
+Previous approach where whole array for storing UMEM addresses from XSK
+descriptors was pre-allocated during first fragment processing yielded
+too big performance regression for 64b traffic. In current approach
+impact is much reduced on my tests and for jumbo frames I observed
+traffic being slower by at most 9%.
 
->          }
-> 
-> per_cpu_fw_alloc might have been added to sk_prot->memory_allocated
-> during loop, so it's not 100% accurate still.
-> 
-> Probably we should set net.core.mem_pcpu_rsv=0 and stress
-> memory_allocated before the actual test to drain per_cpu_fw_alloc
-> (at least on the testing CPU).
-I think the best is if a suitable kernel func can be traced or figure out the 
-true memory_allocated value. At least figuring out the true memory_allocated 
-seems doable. If nothing of the above works out, mem_pcpu_rsv=0 and 
-pre-stress/pre-flush should help by getting the per_cpu_fw_alloc and 
-memory_allocated to some certain states before using it in the before/after result.
+Magnus suggested to have this way of processing special cased for
+XDP_SHARED_UMEM, so we would identify this during bind and set different
+hooks for 'backpressure mechanism' on CQ and for skb destructor, but
+given that results looked promising on my side I decided to have a
+single data path for XSK generic Tx. I suppose other auxiliary stuff
+would have to land as well in order to make it work.
 
-[ Before re-spinning, need to conclude/resolve the on-going discussion in v5 first ]
+Fixes: b7f72a30e9ac ("xsk: introduce wrappers and helpers for supporting multi-buffer in Tx path")
+Reported-by: Eryk Kubanski <e.kubanski@partner.samsung.com>
+Closes: https://lore.kernel.org/netdev/20250530103456.53564-1-e.kubanski@partner.samsung.com/
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+v1:
+https://lore.kernel.org/bpf/20250702101648.1942562-1-maciej.fijalkowski@intel.com/
+v2:
+https://lore.kernel.org/bpf/20250705135512.1963216-1-maciej.fijalkowski@intel.com/
+v3:
+https://lore.kernel.org/bpf/20250806154127.2161434-1-maciej.fijalkowski@intel.com/
+v4:
+https://lore.kernel.org/bpf/20250813171210.2205259-1-maciej.fijalkowski@intel.com/
+v5:
+https://lore.kernel.org/bpf/aKXBHGPxjpBDKOHq@boxer/T/
+v6:
+https://lore.kernel.org/bpf/20250820154416.2248012-1-maciej.fijalkowski@intel.com/
+v7:
+https://lore.kernel.org/bpf/20250829180950.2305157-1-maciej.fijalkowski@intel.com/
+v8:
+https://lore.kernel.org/bpf/07646dce-dab4-4afe-a09a-e6a83502ac30@intel.com/T/
+
+v1->v2:
+* store addrs in array carried via destructor_arg instead having them
+  stored in skb headroom; cleaner and less hacky approach;
+v2->v3:
+* use kmem_cache for xsk_addrs allocation (Stan/Olek)
+* set err when xsk_addrs allocation fails (Dan)
+* change xsk_addrs layout to avoid holes
+* free xsk_addrs on error path
+* rebase
+v3->v4:
+* have kmem_cache as percpu vars
+* don't drop unnecessary braces (unrelated) (Stan)
+* use idx + i in xskq_prod_write_addr (Stan)
+* alloc kmem_cache on bind (Stan)
+* keep num_descs as first member in xsk_addrs (Magnus)
+* add ack from Magnus
+v4->v5:
+* have a single kmem_cache per xsk subsystem (Stan)
+v5->v6:
+* free skb in xsk_build_skb_zerocopy() when xsk_addrs allocation fails
+  (Stan)
+* unregister netdev notifier if creating kmem_cache fails (Stan)
+v6->v7:
+* don't include Acks from Magnus/Stan; let them review the new
+  approach:)
+* store first desc at sk_buff::destructor_arg and rest of frags in list
+  stored at sk_buff::cb
+* keep the kmem_cache but don't use it for allocation of whole array at
+  one shot but rather alloc single nodes of list
+v7->v8:
+* fix a problem around incrementing num_descs when kmem_cache failed to
+  provide us chunk of memory (Jason)
+* restore Ack from Stanislav
+* include BUILD_BUG_ON to cover xsk_addr_head future growth (Stan)
+* s/i/descs_processed/ in xsk_cq_submit_addr_locked() (Magnus)
+v8->v9:
+* fix 32bit build warnings by uintptr_t casts on void * <-> u64
+  conversion
+
+---
+ net/xdp/xsk.c       | 113 ++++++++++++++++++++++++++++++++++++++------
+ net/xdp/xsk_queue.h |  12 +++++
+ 2 files changed, 111 insertions(+), 14 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 9c3acecc14b1..72e34bd2d925 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -36,6 +36,20 @@
+ #define TX_BATCH_SIZE 32
+ #define MAX_PER_SOCKET_BUDGET 32
+ 
++struct xsk_addr_node {
++	u64 addr;
++	struct list_head addr_node;
++};
++
++struct xsk_addr_head {
++	u32 num_descs;
++	struct list_head addrs_list;
++};
++
++static struct kmem_cache *xsk_tx_generic_cache;
++
++#define XSKCB(skb) ((struct xsk_addr_head *)((skb)->cb))
++
+ void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
+ {
+ 	if (pool->cached_need_wakeup & XDP_WAKEUP_RX)
+@@ -532,24 +546,43 @@ static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
+ 	return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
+ }
+ 
+-static int xsk_cq_reserve_addr_locked(struct xsk_buff_pool *pool, u64 addr)
++static int xsk_cq_reserve_locked(struct xsk_buff_pool *pool)
+ {
+ 	unsigned long flags;
+ 	int ret;
+ 
+ 	spin_lock_irqsave(&pool->cq_lock, flags);
+-	ret = xskq_prod_reserve_addr(pool->cq, addr);
++	ret = xskq_prod_reserve(pool->cq);
+ 	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ 
+ 	return ret;
+ }
+ 
+-static void xsk_cq_submit_locked(struct xsk_buff_pool *pool, u32 n)
++static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
++				      struct sk_buff *skb)
+ {
++	struct xsk_addr_node *pos, *tmp;
++	u32 descs_processed = 0;
+ 	unsigned long flags;
++	u32 idx;
+ 
+ 	spin_lock_irqsave(&pool->cq_lock, flags);
+-	xskq_prod_submit_n(pool->cq, n);
++	idx = xskq_get_prod(pool->cq);
++
++	xskq_prod_write_addr(pool->cq, idx,
++			     (u64)(uintptr_t)skb_shinfo(skb)->destructor_arg);
++	descs_processed++;
++
++	if (unlikely(XSKCB(skb)->num_descs > 1)) {
++		list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_list, addr_node) {
++			xskq_prod_write_addr(pool->cq, idx + descs_processed,
++					     pos->addr);
++			descs_processed++;
++			list_del(&pos->addr_node);
++			kmem_cache_free(xsk_tx_generic_cache, pos);
++		}
++	}
++	xskq_prod_submit_n(pool->cq, descs_processed);
+ 	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ }
+ 
+@@ -562,9 +595,14 @@ static void xsk_cq_cancel_locked(struct xsk_buff_pool *pool, u32 n)
+ 	spin_unlock_irqrestore(&pool->cq_lock, flags);
+ }
+ 
++static void xsk_inc_num_desc(struct sk_buff *skb)
++{
++	XSKCB(skb)->num_descs++;
++}
++
+ static u32 xsk_get_num_desc(struct sk_buff *skb)
+ {
+-	return skb ? (long)skb_shinfo(skb)->destructor_arg : 0;
++	return XSKCB(skb)->num_descs;
+ }
+ 
+ static void xsk_destruct_skb(struct sk_buff *skb)
+@@ -576,23 +614,33 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ 		*compl->tx_timestamp = ktime_get_tai_fast_ns();
+ 	}
+ 
+-	xsk_cq_submit_locked(xdp_sk(skb->sk)->pool, xsk_get_num_desc(skb));
++	xsk_cq_submit_addr_locked(xdp_sk(skb->sk)->pool, skb);
+ 	sock_wfree(skb);
+ }
+ 
+-static void xsk_set_destructor_arg(struct sk_buff *skb)
++static void xsk_set_destructor_arg(struct sk_buff *skb, u64 addr)
+ {
+-	long num = xsk_get_num_desc(xdp_sk(skb->sk)->skb) + 1;
+-
+-	skb_shinfo(skb)->destructor_arg = (void *)num;
++	BUILD_BUG_ON(sizeof(struct xsk_addr_head) > sizeof(skb->cb));
++	INIT_LIST_HEAD(&XSKCB(skb)->addrs_list);
++	XSKCB(skb)->num_descs = 0;
++	skb_shinfo(skb)->destructor_arg = (void *)(uintptr_t)addr;
+ }
+ 
+ static void xsk_consume_skb(struct sk_buff *skb)
+ {
+ 	struct xdp_sock *xs = xdp_sk(skb->sk);
++	u32 num_descs = xsk_get_num_desc(skb);
++	struct xsk_addr_node *pos, *tmp;
++
++	if (unlikely(num_descs > 1)) {
++		list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_list, addr_node) {
++			list_del(&pos->addr_node);
++			kmem_cache_free(xsk_tx_generic_cache, pos);
++		}
++	}
+ 
+ 	skb->destructor = sock_wfree;
+-	xsk_cq_cancel_locked(xs->pool, xsk_get_num_desc(skb));
++	xsk_cq_cancel_locked(xs->pool, num_descs);
+ 	/* Free skb without triggering the perf drop trace */
+ 	consume_skb(skb);
+ 	xs->skb = NULL;
+@@ -609,6 +657,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ {
+ 	struct xsk_buff_pool *pool = xs->pool;
+ 	u32 hr, len, ts, offset, copy, copied;
++	struct xsk_addr_node *xsk_addr;
+ 	struct sk_buff *skb = xs->skb;
+ 	struct page *page;
+ 	void *buffer;
+@@ -623,6 +672,19 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 			return ERR_PTR(err);
+ 
+ 		skb_reserve(skb, hr);
++
++		xsk_set_destructor_arg(skb, desc->addr);
++	} else {
++		xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
++		if (!xsk_addr)
++			return ERR_PTR(-ENOMEM);
++
++		/* in case of -EOVERFLOW that could happen below,
++		 * xsk_consume_skb() will release this node as whole skb
++		 * would be dropped, which implies freeing all list elements
++		 */
++		xsk_addr->addr = desc->addr;
++		list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
+ 	}
+ 
+ 	addr = desc->addr;
+@@ -694,8 +756,11 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 			err = skb_store_bits(skb, 0, buffer, len);
+ 			if (unlikely(err))
+ 				goto free_err;
++
++			xsk_set_destructor_arg(skb, desc->addr);
+ 		} else {
+ 			int nr_frags = skb_shinfo(skb)->nr_frags;
++			struct xsk_addr_node *xsk_addr;
+ 			struct page *page;
+ 			u8 *vaddr;
+ 
+@@ -710,12 +775,22 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 				goto free_err;
+ 			}
+ 
++			xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
++			if (!xsk_addr) {
++				__free_page(page);
++				err = -ENOMEM;
++				goto free_err;
++			}
++
+ 			vaddr = kmap_local_page(page);
+ 			memcpy(vaddr, buffer, len);
+ 			kunmap_local(vaddr);
+ 
+ 			skb_add_rx_frag(skb, nr_frags, page, 0, len, PAGE_SIZE);
+ 			refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
++
++			xsk_addr->addr = desc->addr;
++			list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
+ 		}
+ 
+ 		if (first_frag && desc->options & XDP_TX_METADATA) {
+@@ -759,7 +834,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 	skb->mark = READ_ONCE(xs->sk.sk_mark);
+ 	skb->destructor = xsk_destruct_skb;
+ 	xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
+-	xsk_set_destructor_arg(skb);
++	xsk_inc_num_desc(skb);
+ 
+ 	return skb;
+ 
+@@ -769,7 +844,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 
+ 	if (err == -EOVERFLOW) {
+ 		/* Drop the packet */
+-		xsk_set_destructor_arg(xs->skb);
++		xsk_inc_num_desc(xs->skb);
+ 		xsk_drop_skb(xs->skb);
+ 		xskq_cons_release(xs->tx);
+ 	} else {
+@@ -812,7 +887,7 @@ static int __xsk_generic_xmit(struct sock *sk)
+ 		 * if there is space in it. This avoids having to implement
+ 		 * any buffering in the Tx path.
+ 		 */
+-		err = xsk_cq_reserve_addr_locked(xs->pool, desc.addr);
++		err = xsk_cq_reserve_locked(xs->pool);
+ 		if (err) {
+ 			err = -EAGAIN;
+ 			goto out;
+@@ -1815,8 +1890,18 @@ static int __init xsk_init(void)
+ 	if (err)
+ 		goto out_pernet;
+ 
++	xsk_tx_generic_cache = kmem_cache_create("xsk_generic_xmit_cache",
++						 sizeof(struct xsk_addr_node),
++						 0, SLAB_HWCACHE_ALIGN, NULL);
++	if (!xsk_tx_generic_cache) {
++		err = -ENOMEM;
++		goto out_unreg_notif;
++	}
++
+ 	return 0;
+ 
++out_unreg_notif:
++	unregister_netdevice_notifier(&xsk_netdev_notifier);
+ out_pernet:
+ 	unregister_pernet_subsys(&xsk_net_ops);
+ out_sk:
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index 46d87e961ad6..f16f390370dc 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -344,6 +344,11 @@ static inline u32 xskq_cons_present_entries(struct xsk_queue *q)
+ 
+ /* Functions for producers */
+ 
++static inline u32 xskq_get_prod(struct xsk_queue *q)
++{
++	return READ_ONCE(q->ring->producer);
++}
++
+ static inline u32 xskq_prod_nb_free(struct xsk_queue *q, u32 max)
+ {
+ 	u32 free_entries = q->nentries - (q->cached_prod - q->cached_cons);
+@@ -390,6 +395,13 @@ static inline int xskq_prod_reserve_addr(struct xsk_queue *q, u64 addr)
+ 	return 0;
+ }
+ 
++static inline void xskq_prod_write_addr(struct xsk_queue *q, u32 idx, u64 addr)
++{
++	struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
++
++	ring->desc[idx & q->ring_mask] = addr;
++}
++
+ static inline void xskq_prod_write_addr_batch(struct xsk_queue *q, struct xdp_desc *descs,
+ 					      u32 nb_entries)
+ {
+-- 
+2.43.0
+
 
