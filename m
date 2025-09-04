@@ -1,217 +1,161 @@
-Return-Path: <bpf+bounces-67426-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1006B438F4
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 12:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8995B4391F
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 12:46:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7277D58831A
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 10:38:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CB8816EFFF
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 10:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB02B2FB982;
-	Thu,  4 Sep 2025 10:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D7B2EFDB4;
+	Thu,  4 Sep 2025 10:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QIapNyfs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DCE6VIp+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9EDB2ECD14
-	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 10:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2A472629;
+	Thu,  4 Sep 2025 10:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756982301; cv=none; b=D1DjaTszqP1zwLHUPqUkiWzN5DZesVbGh9g0RB6Wi024A7bxz5dtMBsfkMwJXqk0pkJi3mm3Sl0/MKnpKLwPOflyV2RlyigNJzGW/yHyHERjhwl0VwPxjYHaS5airHMCss8XtduntW3i4729FJ+3Xn3TzKgui3Zoaqv1pat+us8=
+	t=1756982796; cv=none; b=NHS8eaiWynCARtEcGCbGZIHrzjnjhqYEzS/LxoBEZIUnIliSrBfWKLYlxEbyp6uGYAZClOoZj6b3SPkDPbosquNkz8wN/oqAIxlvsg9Idi2+4nRLsbIUiXfUaODHSNLGQeBP+zRiR41bQmFhNcERCjiMvQt7xPkOanWGZmMztFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756982301; c=relaxed/simple;
-	bh=S7wAkGPdGeXKmcPRSjImMd5XnLL+0sP7L4aBdzFV02A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MC0kYQopisqokPrWIL2LlYAm3bs6H1kCAvyICnSdqeUZsHAA9k3iGFwnQSg3GFqVFuJ3A5nnwpRy+PlVFGwGfQA/4DljIDM6lcbCYEYX9sS0P/hXmZXqv9B5IQR0UiyJJSg141TrVhL/TgccmdlnGYEjEsbKaOfJVI3S1KXlt+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QIapNyfs; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1756982796; c=relaxed/simple;
+	bh=t7jhEFWu/vL/nffTlTXgSrADqDago8gdgl9cPR+Pi2o=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xl25waemFlhMPQgqupXsTK9VvZmfgibbh/OzKZfSkkGqj4ZJ/br5Kdlh/GkMWKZF4sqinjZRlsenORCmntcv8Xuwg6Tqn0TrfjUj01BkLwgUm7vnv0T2bmBUldgrkQ2KTxpUS3P4aunZ3ujHzAR2O//km1BINndDUUFxpYMeljc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DCE6VIp+; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-244580523a0so10102845ad.1
-        for <bpf@vger.kernel.org>; Thu, 04 Sep 2025 03:38:19 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-61d143aa4acso1293837a12.2;
+        Thu, 04 Sep 2025 03:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756982299; x=1757587099; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ktLj96eC6qDTAhpOr75D7Fncxnep+JLnT4FtcC40JJM=;
-        b=QIapNyfs0H7/8sICQibv62o7Qh/M056MGTrzuVsSgUpg9ryWL/1NIZ4dDpsuZmafvp
-         PbQ3EuIuSj4Is4dNQU2gINNZBNEFd7q3XUnQPpL+j0Ti/+l0mv4lDljrwuyd+dNFqW5Z
-         1vhXpEPwbqpguNDiX7D3pXC9q9BKM3nXUqBXPIWfQAW9k5TYoemZBiz7/bLPlfGWD/HW
-         Y9jaFDJNhxmPmxJe6ysMe4iK2nil9cAFy5nwmj+X/qe1KVbXqAdKM/WIOlzxWYtnhbOd
-         dxDktM5Wh8LXX+yRScaX1NKqj/jSTTo9Dccpyh+tx9qE+X+/jIB0B4VDH1V5vWZOLVfI
-         xMCg==
+        d=gmail.com; s=20230601; t=1756982793; x=1757587593; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v/6MCHmVs/INco1rBZwPhEs0od+L81/1d00TkL5c64U=;
+        b=DCE6VIp+KFjtVo2zuxUq1CFdhffi+0fvDvJZQ9+Q1brEeLGbQ53BIfcxRn4+aWCAhU
+         Pa58YEMF15RVfOIyaOhj1IxEQ3CB6wcGAl+Rq9puOY4eeGcPUM2h7cKNKxkN1g6REsSz
+         l2NCBU+BAgdkkR6/3UHGytxzd5zag6Nm64UUcDCliPCTHI/mFjjLwL45rmLWA0whDrbI
+         +hsnWDMLz1uvO+gaj+DPmm2VJM/qS5Jqi9XXLt+wY1WAk4XudcrKPr+z8/BUXB1CHRRn
+         ClBhquHrijfbFIODWmUin8Uh574WVobyTxu18tclAWURfvXBa0o55uEuKZBjcINh2BRq
+         Q9rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756982299; x=1757587099;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ktLj96eC6qDTAhpOr75D7Fncxnep+JLnT4FtcC40JJM=;
-        b=Q05KRWQdtTkDG+cek3D9Vp/yD3jc1OuhS3wn2Uak8Mfo/wGReHHQYf5J2Erew/9agJ
-         Y1jG/RZXpSz5rVfRvBbK6T9TVcJANC7K46G9T7nrA/acAeKK4h/vaL2McCnV6FdrcYgx
-         3oudiCZBfXkPALAA+XCRcEndMC4mVkDl2lMz3hk5I47tEzu+ctUdqaCQqF3mW96r6T8C
-         i4A0gljYbPN0DycHyalM22rgRgLDZ87KBXDJkOQRBtCzh37tCglHtz/cpD98o1vP9Zzn
-         M5YmGWGpzAG5zmFEVmPY6A6Gu687HoWTna2p5LXbjqi7KIbn/iezsC7Q8X9pd9udbkr5
-         5N/Q==
-X-Gm-Message-State: AOJu0Yzsz48CTD5hLShjQT/x/ME9iDuVXSbVDWQFmZvS82xN7yxi834V
-	sX9H6I/kuV7m4+uk+tlaVcoYfXXYpm7Yc6cyB2WF5Fe9npeLu82by4te
-X-Gm-Gg: ASbGncubYNe7mHjKCy9NsVhJ5fZa7NvmuwlWsO2v8vpSUlCc+i23sT3pNhgiDrLn63C
-	+ah/Zhw9j+7xYMyJrNvJqX2AG0Pc2rvDgAM2XMu4ANI1WK+sblHID/FcRzIk7cDzNKK0oOKxJ6z
-	jYPWft7VzEyYMn24xvSQjceYVhY44PpBC2gXu9OR0qrUDzGrxW3KW3b0M+vTBAl4FgKB2d5B4Iu
-	hmnBz/rASyml1hRh4zcHqaaOEsrjUygcRU84pZYSysmVlHXJ/MPrOLDogXrOJEdXZBjkYKhoZaM
-	gvliQqyR701fZuSLCuM1iiQoYIciVWeTZ0huwXLvJ+jOue0OUjQFz52nMsRA24Qyk5DhG3jq9hh
-	1s86LZIz3Iixr9aIr24g4WF56HIz33XN/gcp7PNsnfV9bA8ms8I6HPdkoSIinAw==
-X-Google-Smtp-Source: AGHT+IF9aIk2Z0pYg1hmNIhs1ASNOseLkrqCWdDHEovVy0k8v3ZcvjJUkYiMeYUhSYJyHVnI5ta6nA==
-X-Received: by 2002:a17:903:37cb:b0:242:9bc6:6bc0 with SMTP id d9443c01a7336-24944b73618mr248272765ad.55.1756982298763;
-        Thu, 04 Sep 2025 03:38:18 -0700 (PDT)
-Received: from ubuntu.. ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77236d7eb7fsm17257854b3a.54.2025.09.04.03.38.15
+        d=1e100.net; s=20230601; t=1756982793; x=1757587593;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v/6MCHmVs/INco1rBZwPhEs0od+L81/1d00TkL5c64U=;
+        b=fspTrS3GjtQfV2K0tSsEk9xvXRZhtM1rE2hpc4Exb4mex7vIXkWgtZdJvQGMZac59F
+         Mq7L5cuU3GzUXnfWs9bTpTgcZQQmWvpww8FCpfr4KJZe/JZsOF6elcbxw/4vLdaHZgkK
+         D6ypuZkZRo4KGr1be8mH3ENk5kdYFukgWKtyq8yjPSBMN6r5yf2nP7xnsAgfOzj28mrU
+         jQGqQveN22qjWdiPTWAKWHj3KcjyleMUDkl1Zx4oXyiHSkQYIfIPilAe+6r9g33c/UXZ
+         d580TAMa6e11IPHO2B8jjrmG/zYtPVsSXeNWU8i9EL31+9AZL+LDbs8E8BaeAXFVSUsi
+         ePAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUI5y9fkJBVEHB8Ha4XxLDnSKaUt+AGyVEI6pLoIwnRW1O0PW5Qsi9aGxzpqj0fRCjQGyM=@vger.kernel.org, AJvYcCXq7TXE4lenJU1mevyUDdAHXGZrEPLuNxLWw+vOs2epnjojOXje+oHf/sAXcjPSG862GKiIWZ0dS1Gqc37lIibV1Gc3@vger.kernel.org, AJvYcCXs6iR2xSxIc8CnneIsAOCjgIjs80ctryotlOScvdlRLw3yTPggdBMFXUdBrawe39fRJc/9iLzCJ6ALJwT8@vger.kernel.org
+X-Gm-Message-State: AOJu0YwAQFiS3JukDKxYJkojSWXInmI4MaSSJLDCt7ho9lFcpDQRfmGT
+	AlM+lBF4VwiVRf63ybzWfVsgJAn2dwqv6wN/X0svZ+I8vYuXUa29iZwy
+X-Gm-Gg: ASbGncubnUA3uVALkGGNq6UMGegmnRv5+3Q8XWHcHTZ2+schrsYuRZYj/xBOveO/2pA
+	TjIbsPsQDJ112uOtz8urTTZAenxKTGyNngqHpd/zfr/AiQYC89EZBfzXn07re1XrjJw5G6fqPfo
+	9hpHXnFi7pTTlfJ5T/N5rWT6D+6+PecLlFUbXUJdybxzOb++tGWybxmnWkmZTrSM7NKfWY8rzEc
+	HYuGxRcQ/DastVS5AQ3OOksPplTYrMsWH2t5CenNSJYjXk9ZbldliUMG7TmxwxO/sD1P5n2GhFA
+	s9aaShm989jRiXM4LRErC6i5898SCyA9GrTQYnBma7+SUL4O0yqcf5TNzwvA79M3qFCVUNHPyU6
+	OewIeg9E=
+X-Google-Smtp-Source: AGHT+IF2BbXiznN72q968yvBy6zKn2zLuchEHAzxeMcnRqvSKT6buqhPOlQiBdzDdyf17ZN1MJI/1Q==
+X-Received: by 2002:a17:907:6d18:b0:afe:ba8e:7378 with SMTP id a640c23a62f3a-b01d979d03dmr2024143466b.48.1756982793072;
+        Thu, 04 Sep 2025 03:46:33 -0700 (PDT)
+Received: from krava ([2a02:8308:a00c:e200::31e0])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b017e4b9ed7sm1308898266b.90.2025.09.04.03.46.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Sep 2025 03:38:18 -0700 (PDT)
-From: Hengqi Chen <hengqi.chen@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	bjorn@kernel.org,
-	pulehui@huawei.com,
-	puranjay@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Hengqi Chen <hengqi.chen@gmail.com>
-Subject: [PATCH v2 bpf-next] riscv, bpf: Sign extend struct ops return values properly
-Date: Thu,  4 Sep 2025 10:38:06 +0000
-Message-ID: <20250904103806.18937-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.45.2
+        Thu, 04 Sep 2025 03:46:32 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 4 Sep 2025 12:46:31 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH perf/core 02/11] uprobes: Skip emulate/sstep on unique
+ uprobe when ip is changed
+Message-ID: <aLluB1Qe6Y9B8G_e@krava>
+References: <20250902143504.1224726-1-jolsa@kernel.org>
+ <20250902143504.1224726-3-jolsa@kernel.org>
+ <20250903112648.GC18799@redhat.com>
+ <aLicCjuqchpm1h5I@krava>
+ <20250904084949.GB27255@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250904084949.GB27255@redhat.com>
 
-The ns_bpf_qdisc selftest triggers a kernel panic:
+On Thu, Sep 04, 2025 at 10:49:50AM +0200, Oleg Nesterov wrote:
+> On 09/03, Jiri Olsa wrote:
+> >
+> > On Wed, Sep 03, 2025 at 01:26:48PM +0200, Oleg Nesterov wrote:
+> > > On 09/02, Jiri Olsa wrote:
+> > > >
+> > > > If user decided to take execution elsewhere, it makes little sense
+> > > > to execute the original instruction, so let's skip it.
+> > >
+> > > Exactly.
+> > >
+> > > So why do we need all these "is_unique" complications? Only a single
+> > > is_unique/exclusive consumer can change regs->ip, so I guess handle_swbp()
+> > > can just do
+> > >
+> > > 	handler_chain(uprobe, regs);
+> > > 	if (instruction_pointer(regs) != bp_vaddr)
+> > > 		goto out;
+> >
+> > hum, that's what I did in rfc [1] but I thought you did not like that [2]
+> >
+> > [1] https://lore.kernel.org/bpf/20250801210238.2207429-2-jolsa@kernel.org/
+> > [2] https://lore.kernel.org/bpf/20250802103426.GC31711@redhat.com/
+> >
+> > I guess I misunderstood your reply [2], I'd be happy to drop the
+> > unique/exclusive flag
+> 
+> Well, but that rfc didn't introduce the exclusive consumers, and I think
+> we agree that even with these changes the non-exclusive consumers must
+> never change regs->ip?
 
-    Unable to handle kernel paging request at virtual address ffffffffa38dbf58
-    Current test_progs pgtable: 4K pagesize, 57-bit VAs, pgdp=0x00000001109cc000
-    [ffffffffa38dbf58] pgd=000000011fffd801, p4d=000000011fffd401, pud=000000011fffd001, pmd=0000000000000000
-    Oops [#1]
-    Modules linked in: bpf_testmod(OE) xt_conntrack nls_iso8859_1 dm_mod drm drm_panel_orientation_quirks configfs backlight btrfs blake2b_generic xor lzo_compress zlib_deflate raid6_pq efivarfs [last unloaded: bpf_testmod(OE)]
-    CPU: 1 UID: 0 PID: 23584 Comm: test_progs Tainted: G        W  OE       6.17.0-rc1-g2465bb83e0b4 #1 NONE
-    Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-    Hardware name: Unknown Unknown Product/Unknown Product, BIOS 2024.01+dfsg-1ubuntu5.1 01/01/2024
-    epc : __qdisc_run+0x82/0x6f0
-     ra : __qdisc_run+0x6e/0x6f0
-    epc : ffffffff80bd5c7a ra : ffffffff80bd5c66 sp : ff2000000eecb550
-     gp : ffffffff82472098 tp : ff60000096895940 t0 : ffffffff8001f180
-     t1 : ffffffff801e1664 t2 : 0000000000000000 s0 : ff2000000eecb5d0
-     s1 : ff60000093a6a600 a0 : ffffffffa38dbee8 a1 : 0000000000000001
-     a2 : ff2000000eecb510 a3 : 0000000000000001 a4 : 0000000000000000
-     a5 : 0000000000000010 a6 : 0000000000000000 a7 : 0000000000735049
-     s2 : ffffffffa38dbee8 s3 : 0000000000000040 s4 : ff6000008bcda000
-     s5 : 0000000000000008 s6 : ff60000093a6a680 s7 : ff60000093a6a6f0
-     s8 : ff60000093a6a6ac s9 : ff60000093140000 s10: 0000000000000000
-     s11: ff2000000eecb9d0 t3 : 0000000000000000 t4 : 0000000000ff0000
-     t5 : 0000000000000000 t6 : ff60000093a6a8b6
-    status: 0000000200000120 badaddr: ffffffffa38dbf58 cause: 000000000000000d
-    [<ffffffff80bd5c7a>] __qdisc_run+0x82/0x6f0
-    [<ffffffff80b6fe58>] __dev_queue_xmit+0x4c0/0x1128
-    [<ffffffff80b80ae0>] neigh_resolve_output+0xd0/0x170
-    [<ffffffff80d2daf6>] ip6_finish_output2+0x226/0x6c8
-    [<ffffffff80d31254>] ip6_finish_output+0x10c/0x2a0
-    [<ffffffff80d31446>] ip6_output+0x5e/0x178
-    [<ffffffff80d2e232>] ip6_xmit+0x29a/0x608
-    [<ffffffff80d6f4c6>] inet6_csk_xmit+0xe6/0x140
-    [<ffffffff80c985e4>] __tcp_transmit_skb+0x45c/0xaa8
-    [<ffffffff80c995fe>] tcp_connect+0x9ce/0xd10
-    [<ffffffff80d66524>] tcp_v6_connect+0x4ac/0x5e8
-    [<ffffffff80cc19b8>] __inet_stream_connect+0xd8/0x318
-    [<ffffffff80cc1c36>] inet_stream_connect+0x3e/0x68
-    [<ffffffff80b42b20>] __sys_connect_file+0x50/0x88
-    [<ffffffff80b42bee>] __sys_connect+0x96/0xc8
-    [<ffffffff80b42c40>] __riscv_sys_connect+0x20/0x30
-    [<ffffffff80e5bcae>] do_trap_ecall_u+0x256/0x378
-    [<ffffffff80e69af2>] handle_exception+0x14a/0x156
-    Code: 892a 0363 1205 489c 8bc1 c7e5 2d03 084a 2703 080a (2783) 0709
-    ---[ end trace 0000000000000000 ]---
+ok, got excited too soon.. so you meant getting rid of is_unique
+check only for this patch and have just change below..  but keep
+the unique/exclusive flag from patch#1
 
-The bpf_fifo_dequeue prog returns a skb which is a pointer.
-The pointer is treated as a 32bit value and sign extend to
-64bit in epilogue. This behavior is right for most bpf prog
-types but wrong for struct ops which requires RISC-V ABI.
+IIUC Andrii would remove the unique flag completely?
 
-So let's sign extend struct ops return values according to
-the function model and RISC-V ABI([0]).
+jirka
 
-  [0]: https://riscv.org/wp-content/uploads/2024/12/riscv-calling.pdf
 
-Fixes: 25ad10658dc1 ("riscv, bpf: Adapt bpf trampoline to optimized riscv ftrace framework")
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- arch/riscv/net/bpf_jit_comp64.c | 38 ++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 549c3063c7f1..c7ae4d0a8361 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -954,6 +954,35 @@ static int invoke_bpf_prog(struct bpf_tramp_link *l, int args_off, int retval_of
- 	return ret;
- }
+--
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index b9b088f7333a..1baf5d2792ff 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -2791,6 +2791,9 @@ static void handle_swbp(struct pt_regs *regs)
  
-+/*
-+ * Sign-extend the register if necessary
-+ */
-+static int sign_extend(int rd, int rs, u8 size, u8 flags, struct rv_jit_context *ctx)
-+{
-+	if (!(flags & BTF_FMODEL_SIGNED_ARG) && (size == 1 || size == 2))
-+		return 0;
-+
-+	switch (size) {
-+	case 1:
-+		emit_sextb(rd, rs, ctx);
-+		break;
-+	case 2:
-+		emit_sexth(rd, rs, ctx);
-+		break;
-+	case 4:
-+		emit_sextw(rd, rs, ctx);
-+		break;
-+	case 8:
-+		emit_mv(rd, rs, ctx);
-+		break;
-+	default:
-+		pr_err("bpf-jit: invalid size %d for sign_extend\n", size);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 					 const struct btf_func_model *m,
- 					 struct bpf_tramp_links *tlinks,
-@@ -1175,8 +1204,15 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 		restore_args(min_t(int, nr_arg_slots, RV_MAX_REG_ARGS), args_off, ctx);
+ 	handler_chain(uprobe, regs);
  
- 	if (save_ret) {
--		emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
- 		emit_ld(regmap[BPF_REG_0], -(retval_off - 8), RV_REG_FP, ctx);
-+		if (is_struct_ops) {
-+			ret = sign_extend(RV_REG_A0, regmap[BPF_REG_0],
-+					  m->ret_size, m->ret_flags, ctx);
-+			if (ret)
-+				goto out;
-+		} else {
-+			emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
-+		}
- 	}
++	if (instruction_pointer(regs) != bp_vaddr)
++		goto out;
++
+ 	/* Try to optimize after first hit. */
+ 	arch_uprobe_optimize(&uprobe->arch, bp_vaddr);
  
- 	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
--- 
-2.45.2
-
 
