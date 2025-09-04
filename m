@@ -1,234 +1,217 @@
-Return-Path: <bpf+bounces-67425-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67426-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E183DB438D7
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 12:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1006B438F4
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 12:38:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB4F6583430
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 10:35:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7277D58831A
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 10:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B16B2F6182;
-	Thu,  4 Sep 2025 10:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB02B2FB982;
+	Thu,  4 Sep 2025 10:38:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RZeaEfc+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QIapNyfs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E198E2EE274;
-	Thu,  4 Sep 2025 10:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9EDB2ECD14
+	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 10:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756982115; cv=none; b=Qbsk0NikRM+A8OvxxGgbocnTIp2nKCTSLnv6stpD5+gavq9hHK2CT+PcmryQFSwGc0OhzzUqnLcwkEbijgw1RSeG807TfHMXnzvSYrDKQn7E+WVKM9d30IZKv1byFq7icGbnYCb/4syn84aTm7TknCVgkCdyAQ5rYltEGkWrcag=
+	t=1756982301; cv=none; b=D1DjaTszqP1zwLHUPqUkiWzN5DZesVbGh9g0RB6Wi024A7bxz5dtMBsfkMwJXqk0pkJi3mm3Sl0/MKnpKLwPOflyV2RlyigNJzGW/yHyHERjhwl0VwPxjYHaS5airHMCss8XtduntW3i4729FJ+3Xn3TzKgui3Zoaqv1pat+us8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756982115; c=relaxed/simple;
-	bh=MYw5hemXFsf9YkMivyrfAhanrM40245m2RvU8spXtIE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uJk63gBphwXmahmd/K62fgaXQCpq1SEqitjFya4quG+vDHIi7QghQjKEEHGSP3TDM3zU7KhOUkKkgzAewax1lznCFFgDoktIAxSDSI7mIazmvj5A4N8LoViEq4MgnpgnictdwObFVc4vMSnAHl7PvOh0t1it7eIs+ZahDdH0BXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RZeaEfc+; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5846XDBX005735;
-	Thu, 4 Sep 2025 10:34:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=OvDgBHL1QfReUGKYA4TnrNVX3xlVsu
-	PP0C+YfIarv60=; b=RZeaEfc+QyLLLd1zPZ+nrjAJbmteGpF+7BUCrhbLCLa7pv
-	qg4GXrJW6hqW5dcMxQn0qTwnCDQ9gH6f7XvIuYzF5tMN192PPfSBG0SDZIqXg5tj
-	1fZIBiC4ujMcdNNfHkRYmPvzy86U1ud+FYKfCecZT7RJA6ddvlIZp/hW/v9QAkaD
-	gAEWsryshCvlMASnhfVHC5pyHgmtMJLUmT3kPI+1Ab3TNOD5Ts26JmpGB9qe4chW
-	vTb9j5p949w8iWPeTw6hrpOnb7JQvzKVp3akw6m/Zcst1j374xo4xPSgjRziGa7H
-	Gyw+Fq/rboGYPThdTezKcPac4gfPWEVIBaPj94eg==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48usua93bk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Sep 2025 10:34:44 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 584AYiaC021619;
-	Thu, 4 Sep 2025 10:34:44 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48usua93be-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Sep 2025 10:34:44 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5846sw0g019925;
-	Thu, 4 Sep 2025 10:34:43 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 48vbmuc916-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Sep 2025 10:34:43 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 584AYdTh34669154
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 4 Sep 2025 10:34:39 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6CC3B2004B;
-	Thu,  4 Sep 2025 10:34:39 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DA28420043;
-	Thu,  4 Sep 2025 10:34:34 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.109.219.153])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu,  4 Sep 2025 10:34:34 +0000 (GMT)
-Date: Thu, 4 Sep 2025 16:04:32 +0530
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sachinpb@linux.ibm.com, venkat88@linux.ibm.com, andrii@kernel.org,
-        eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
-        christophe.leroy@csgroup.eu, naveen@kernel.org, maddy@linux.ibm.com,
-        mpe@ellerman.id.au, npiggin@gmail.com, memxor@gmail.com,
-        iii@linux.ibm.com, shuah@kernel.org
-Subject: Re: [PATCH bpf-next v2 5/5] selftests/bpf: Fix arena_spin_lock
- selftest failure
-Message-ID: <aLlrOFzwRZotcpY4@linux.ibm.com>
-References: <20250829165135.1273071-1-skb99@linux.ibm.com>
- <20250829165135.1273071-6-skb99@linux.ibm.com>
- <46243c40-8e5e-47d3-97bd-71f29eeb0127@linux.ibm.com>
- <aLlNBK9Zm+N4zarF@linux.ibm.com>
+	s=arc-20240116; t=1756982301; c=relaxed/simple;
+	bh=S7wAkGPdGeXKmcPRSjImMd5XnLL+0sP7L4aBdzFV02A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MC0kYQopisqokPrWIL2LlYAm3bs6H1kCAvyICnSdqeUZsHAA9k3iGFwnQSg3GFqVFuJ3A5nnwpRy+PlVFGwGfQA/4DljIDM6lcbCYEYX9sS0P/hXmZXqv9B5IQR0UiyJJSg141TrVhL/TgccmdlnGYEjEsbKaOfJVI3S1KXlt+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QIapNyfs; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-244580523a0so10102845ad.1
+        for <bpf@vger.kernel.org>; Thu, 04 Sep 2025 03:38:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756982299; x=1757587099; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ktLj96eC6qDTAhpOr75D7Fncxnep+JLnT4FtcC40JJM=;
+        b=QIapNyfs0H7/8sICQibv62o7Qh/M056MGTrzuVsSgUpg9ryWL/1NIZ4dDpsuZmafvp
+         PbQ3EuIuSj4Is4dNQU2gINNZBNEFd7q3XUnQPpL+j0Ti/+l0mv4lDljrwuyd+dNFqW5Z
+         1vhXpEPwbqpguNDiX7D3pXC9q9BKM3nXUqBXPIWfQAW9k5TYoemZBiz7/bLPlfGWD/HW
+         Y9jaFDJNhxmPmxJe6ysMe4iK2nil9cAFy5nwmj+X/qe1KVbXqAdKM/WIOlzxWYtnhbOd
+         dxDktM5Wh8LXX+yRScaX1NKqj/jSTTo9Dccpyh+tx9qE+X+/jIB0B4VDH1V5vWZOLVfI
+         xMCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756982299; x=1757587099;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ktLj96eC6qDTAhpOr75D7Fncxnep+JLnT4FtcC40JJM=;
+        b=Q05KRWQdtTkDG+cek3D9Vp/yD3jc1OuhS3wn2Uak8Mfo/wGReHHQYf5J2Erew/9agJ
+         Y1jG/RZXpSz5rVfRvBbK6T9TVcJANC7K46G9T7nrA/acAeKK4h/vaL2McCnV6FdrcYgx
+         3oudiCZBfXkPALAA+XCRcEndMC4mVkDl2lMz3hk5I47tEzu+ctUdqaCQqF3mW96r6T8C
+         i4A0gljYbPN0DycHyalM22rgRgLDZ87KBXDJkOQRBtCzh37tCglHtz/cpD98o1vP9Zzn
+         M5YmGWGpzAG5zmFEVmPY6A6Gu687HoWTna2p5LXbjqi7KIbn/iezsC7Q8X9pd9udbkr5
+         5N/Q==
+X-Gm-Message-State: AOJu0Yzsz48CTD5hLShjQT/x/ME9iDuVXSbVDWQFmZvS82xN7yxi834V
+	sX9H6I/kuV7m4+uk+tlaVcoYfXXYpm7Yc6cyB2WF5Fe9npeLu82by4te
+X-Gm-Gg: ASbGncubYNe7mHjKCy9NsVhJ5fZa7NvmuwlWsO2v8vpSUlCc+i23sT3pNhgiDrLn63C
+	+ah/Zhw9j+7xYMyJrNvJqX2AG0Pc2rvDgAM2XMu4ANI1WK+sblHID/FcRzIk7cDzNKK0oOKxJ6z
+	jYPWft7VzEyYMn24xvSQjceYVhY44PpBC2gXu9OR0qrUDzGrxW3KW3b0M+vTBAl4FgKB2d5B4Iu
+	hmnBz/rASyml1hRh4zcHqaaOEsrjUygcRU84pZYSysmVlHXJ/MPrOLDogXrOJEdXZBjkYKhoZaM
+	gvliQqyR701fZuSLCuM1iiQoYIciVWeTZ0huwXLvJ+jOue0OUjQFz52nMsRA24Qyk5DhG3jq9hh
+	1s86LZIz3Iixr9aIr24g4WF56HIz33XN/gcp7PNsnfV9bA8ms8I6HPdkoSIinAw==
+X-Google-Smtp-Source: AGHT+IF9aIk2Z0pYg1hmNIhs1ASNOseLkrqCWdDHEovVy0k8v3ZcvjJUkYiMeYUhSYJyHVnI5ta6nA==
+X-Received: by 2002:a17:903:37cb:b0:242:9bc6:6bc0 with SMTP id d9443c01a7336-24944b73618mr248272765ad.55.1756982298763;
+        Thu, 04 Sep 2025 03:38:18 -0700 (PDT)
+Received: from ubuntu.. ([43.132.141.21])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77236d7eb7fsm17257854b3a.54.2025.09.04.03.38.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Sep 2025 03:38:18 -0700 (PDT)
+From: Hengqi Chen <hengqi.chen@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	bjorn@kernel.org,
+	pulehui@huawei.com,
+	puranjay@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Hengqi Chen <hengqi.chen@gmail.com>
+Subject: [PATCH v2 bpf-next] riscv, bpf: Sign extend struct ops return values properly
+Date: Thu,  4 Sep 2025 10:38:06 +0000
+Message-ID: <20250904103806.18937-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aLlNBK9Zm+N4zarF@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9n8EctKyMzCe8PS3p37W_1wCfXqHauvi
-X-Authority-Analysis: v=2.4 cv=U6uSDfru c=1 sm=1 tr=0 ts=68b96b44 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=kj9zAlcOel0A:10 a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=hPZlYmIs_T5Z1BX5r4cA:9
- a=CjuIK1q_8ugA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODMwMDAzNCBTYWx0ZWRfXyNkE/eE9EHWO
- mzrckl80bYebef7rCxE+x1P2GWjYiILUCBT/Q5NxUMLsjxwXCS68+NstCr87T44YyqAWg22C1Ow
- vIvQEbzfT6icQh23JY7FIolv+WkKvyrM2EsAr0iMYFbCKm5x6cXYS7e+hpHzCd/7c0PsjtqPNck
- zVk/WaXuSwRNpZOQG5adBjsfa0XocwxpbqhIqr5q0z9vBBf2ApaSEXqYbbY3FFGJHg4YQbtpqPp
- mQxeLXPktPz8uGMS7+41h6mQnPVfaA1VOT8o0vkJSveq9YbNXA2ikuJ+tnc1L0QNQcuUqUXgO9d
- yDuQzH5tel4jJp+0O7mPhUiy2ZZ9cL/WYoinTDgZ22x6OAuC9Uaq7+zf3CK1CiSubqYyQRHQAqw
- qQyXZ29O
-X-Proofpoint-ORIG-GUID: he6RjKqFBXFh-cUXmKn7R90-MiZdl3jj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-04_03,2025-08-28_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 phishscore=0 adultscore=0 clxscore=1015 suspectscore=0
- priorityscore=1501 spamscore=0 bulkscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2508300034
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 04, 2025 at 01:55:40PM +0530, Saket Kumar Bhaskar wrote:
-> On Thu, Sep 04, 2025 at 01:39:31PM +0530, Hari Bathini wrote:
-> > 
-> > 
-> > On 29/08/25 10:21 pm, Saket Kumar Bhaskar wrote:
-> > > For systems having CONFIG_NR_CPUS set to > 1024 in kernel config
-> > > the selftest fails as arena_spin_lock_irqsave() returns EOPNOTSUPP.
-> > > 
-> > > The selftest is skipped incase bpf program returns EOPNOTSUPP,
-> > > with a descriptive message logged.
-> > > 
-> > > Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-> > > ---
-> > >   .../selftests/bpf/prog_tests/arena_spin_lock.c      | 13 +++++++++++++
-> > >   tools/testing/selftests/bpf/progs/arena_spin_lock.c |  5 ++++-
-> > >   2 files changed, 17 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-> > > index 0223fce4db2b..1ec1ca987893 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-> > > @@ -40,8 +40,13 @@ static void *spin_lock_thread(void *arg)
-> > >   	err = bpf_prog_test_run_opts(prog_fd, &topts);
-> > >   	ASSERT_OK(err, "test_run err");
-> > > +
-> > > +	if (topts.retval == -EOPNOTSUPP)
-> > > +		goto end;
-> > > +
-> > >   	ASSERT_EQ((int)topts.retval, 0, "test_run retval");
-> > > +end:
-> > >   	pthread_exit(arg);
-> > >   }
-> > > @@ -63,6 +68,7 @@ static void test_arena_spin_lock_size(int size)
-> > >   	skel = arena_spin_lock__open_and_load();
-> > >   	if (!ASSERT_OK_PTR(skel, "arena_spin_lock__open_and_load"))
-> > >   		return;
-> > > +
-> > >   	if (skel->data->test_skip == 2) {
-> > >   		test__skip();
-> > >   		goto end;
-> > > @@ -86,6 +92,13 @@ static void test_arena_spin_lock_size(int size)
-> > >   			goto end_barrier;
-> > >   	}
-> > > +	if (skel->data->test_skip == 2) {
-> > > +		printf("%s:SKIP: %d CPUs exceed the maximum supported by arena spinlock\n",
-> > > +		       __func__, get_nprocs());
-> > > +		test__skip();
-> > > +		goto end_barrier;
-> > > +	}
-> > > +
-> > >   	ASSERT_EQ(skel->bss->counter, repeat * nthreads, "check counter value");
-> > >   end_barrier:
-> > > diff --git a/tools/testing/selftests/bpf/progs/arena_spin_lock.c b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-> > > index c4500c37f85e..a475b974438e 100644
-> > > --- a/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-> > > +++ b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-> > > @@ -37,8 +37,11 @@ int prog(void *ctx)
-> > >   #if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-> > >   	unsigned long flags;
-> > > -	if ((ret = arena_spin_lock_irqsave(&lock, flags)))
-> > > +	if ((ret = arena_spin_lock_irqsave(&lock, flags))) {
-> > > +		if (ret == -EOPNOTSUPP)
-> > > +			test_skip = 2;
-> > >   		return ret;
-> > 
-> > test_skip being set to `1` when the test runs seems counter intuitive.
-> > How about setting test_skip to `0` when run conditions are met
-> > and test_skip=1 if run conditions are not met and
-> > test_skip=2 when operation is not supported?
-> > 
-> > - Hari
-> That seems reasonable to me, but right now -EOPNOTSUPP is also
-> returned when run condition is not met i.e.:
-> 
->   if (CONFIG_NR_CPUS > 1024)
->                 return -EOPNOTSUPP;
-> 
-> So do we really need test_skip = 2 ?
-> 
-> Thanks,
-> Saket
-Also, when test_skip is initialized to 0 it is moved to bss segment 
-from data segment:
+The ns_bpf_qdisc selftest triggers a kernel panic:
 
-        struct arena_spin_lock__arena {
-                struct arena_qnode qnodes[1024][4];
-                struct __qspinlock lock;
-        } *arena;
-        struct arena_spin_lock__bss {
-                int test_skip;
-                int counter;
-                int limit;
-                int cs_count;
-        } *bss;
+    Unable to handle kernel paging request at virtual address ffffffffa38dbf58
+    Current test_progs pgtable: 4K pagesize, 57-bit VAs, pgdp=0x00000001109cc000
+    [ffffffffa38dbf58] pgd=000000011fffd801, p4d=000000011fffd401, pud=000000011fffd001, pmd=0000000000000000
+    Oops [#1]
+    Modules linked in: bpf_testmod(OE) xt_conntrack nls_iso8859_1 dm_mod drm drm_panel_orientation_quirks configfs backlight btrfs blake2b_generic xor lzo_compress zlib_deflate raid6_pq efivarfs [last unloaded: bpf_testmod(OE)]
+    CPU: 1 UID: 0 PID: 23584 Comm: test_progs Tainted: G        W  OE       6.17.0-rc1-g2465bb83e0b4 #1 NONE
+    Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+    Hardware name: Unknown Unknown Product/Unknown Product, BIOS 2024.01+dfsg-1ubuntu5.1 01/01/2024
+    epc : __qdisc_run+0x82/0x6f0
+     ra : __qdisc_run+0x6e/0x6f0
+    epc : ffffffff80bd5c7a ra : ffffffff80bd5c66 sp : ff2000000eecb550
+     gp : ffffffff82472098 tp : ff60000096895940 t0 : ffffffff8001f180
+     t1 : ffffffff801e1664 t2 : 0000000000000000 s0 : ff2000000eecb5d0
+     s1 : ff60000093a6a600 a0 : ffffffffa38dbee8 a1 : 0000000000000001
+     a2 : ff2000000eecb510 a3 : 0000000000000001 a4 : 0000000000000000
+     a5 : 0000000000000010 a6 : 0000000000000000 a7 : 0000000000735049
+     s2 : ffffffffa38dbee8 s3 : 0000000000000040 s4 : ff6000008bcda000
+     s5 : 0000000000000008 s6 : ff60000093a6a680 s7 : ff60000093a6a6f0
+     s8 : ff60000093a6a6ac s9 : ff60000093140000 s10: 0000000000000000
+     s11: ff2000000eecb9d0 t3 : 0000000000000000 t4 : 0000000000ff0000
+     t5 : 0000000000000000 t6 : ff60000093a6a8b6
+    status: 0000000200000120 badaddr: ffffffffa38dbf58 cause: 000000000000000d
+    [<ffffffff80bd5c7a>] __qdisc_run+0x82/0x6f0
+    [<ffffffff80b6fe58>] __dev_queue_xmit+0x4c0/0x1128
+    [<ffffffff80b80ae0>] neigh_resolve_output+0xd0/0x170
+    [<ffffffff80d2daf6>] ip6_finish_output2+0x226/0x6c8
+    [<ffffffff80d31254>] ip6_finish_output+0x10c/0x2a0
+    [<ffffffff80d31446>] ip6_output+0x5e/0x178
+    [<ffffffff80d2e232>] ip6_xmit+0x29a/0x608
+    [<ffffffff80d6f4c6>] inet6_csk_xmit+0xe6/0x140
+    [<ffffffff80c985e4>] __tcp_transmit_skb+0x45c/0xaa8
+    [<ffffffff80c995fe>] tcp_connect+0x9ce/0xd10
+    [<ffffffff80d66524>] tcp_v6_connect+0x4ac/0x5e8
+    [<ffffffff80cc19b8>] __inet_stream_connect+0xd8/0x318
+    [<ffffffff80cc1c36>] inet_stream_connect+0x3e/0x68
+    [<ffffffff80b42b20>] __sys_connect_file+0x50/0x88
+    [<ffffffff80b42bee>] __sys_connect+0x96/0xc8
+    [<ffffffff80b42c40>] __riscv_sys_connect+0x20/0x30
+    [<ffffffff80e5bcae>] do_trap_ecall_u+0x256/0x378
+    [<ffffffff80e69af2>] handle_exception+0x14a/0x156
+    Code: 892a 0363 1205 489c 8bc1 c7e5 2d03 084a 2703 080a (2783) 0709
+    ---[ end trace 0000000000000000 ]---
 
-I dont have enough background here, as to if there is any specific 
-reason to keep it in data segment:
+The bpf_fifo_dequeue prog returns a skb which is a pointer.
+The pointer is treated as a 32bit value and sign extend to
+64bit in epilogue. This behavior is right for most bpf prog
+types but wrong for struct ops which requires RISC-V ABI.
 
-        if (skel->data->test_skip == 2) {
-                test__skip();
-                goto end;
-        }
+So let's sign extend struct ops return values according to
+the function model and RISC-V ABI([0]).
 
-Thanks,
-Saket
+  [0]: https://riscv.org/wp-content/uploads/2024/12/riscv-calling.pdf
+
+Fixes: 25ad10658dc1 ("riscv, bpf: Adapt bpf trampoline to optimized riscv ftrace framework")
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ arch/riscv/net/bpf_jit_comp64.c | 38 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 549c3063c7f1..c7ae4d0a8361 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -954,6 +954,35 @@ static int invoke_bpf_prog(struct bpf_tramp_link *l, int args_off, int retval_of
+ 	return ret;
+ }
+ 
++/*
++ * Sign-extend the register if necessary
++ */
++static int sign_extend(int rd, int rs, u8 size, u8 flags, struct rv_jit_context *ctx)
++{
++	if (!(flags & BTF_FMODEL_SIGNED_ARG) && (size == 1 || size == 2))
++		return 0;
++
++	switch (size) {
++	case 1:
++		emit_sextb(rd, rs, ctx);
++		break;
++	case 2:
++		emit_sexth(rd, rs, ctx);
++		break;
++	case 4:
++		emit_sextw(rd, rs, ctx);
++		break;
++	case 8:
++		emit_mv(rd, rs, ctx);
++		break;
++	default:
++		pr_err("bpf-jit: invalid size %d for sign_extend\n", size);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
+ 					 const struct btf_func_model *m,
+ 					 struct bpf_tramp_links *tlinks,
+@@ -1175,8 +1204,15 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
+ 		restore_args(min_t(int, nr_arg_slots, RV_MAX_REG_ARGS), args_off, ctx);
+ 
+ 	if (save_ret) {
+-		emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
+ 		emit_ld(regmap[BPF_REG_0], -(retval_off - 8), RV_REG_FP, ctx);
++		if (is_struct_ops) {
++			ret = sign_extend(RV_REG_A0, regmap[BPF_REG_0],
++					  m->ret_size, m->ret_flags, ctx);
++			if (ret)
++				goto out;
++		} else {
++			emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
++		}
+ 	}
+ 
+ 	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
+-- 
+2.45.2
+
 
