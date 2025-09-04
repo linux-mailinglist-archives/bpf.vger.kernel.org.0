@@ -1,172 +1,178 @@
-Return-Path: <bpf+bounces-67519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67517-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27D59B44A07
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 00:57:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (unknown [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AAD3B449FC
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 00:55:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4FC43BDB23
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 22:57:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 924F816B8F5
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 22:53:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F792F656F;
-	Thu,  4 Sep 2025 22:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jbHubK3/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B7F2F4A08;
+	Thu,  4 Sep 2025 22:53:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E192F3C3F;
-	Thu,  4 Sep 2025 22:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71594273D6C;
+	Thu,  4 Sep 2025 22:53:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757026646; cv=none; b=cOsNraWRgeKzi95vvMj8TjB33zyLIbLFuHLOkoWP0lvLrbW17IayT9drkwFG6FfzPYJ8ZMxTSLxkbsD/PLH/YEQrQuq+zQJefMGhvuxL2drNJLXqracohjjHMwRN5RDQB0wspTcZOuaXVC2+/gBBvRdgya0PxAsRUGXrK5OIkks=
+	t=1757026431; cv=none; b=iZtcBuVpTPiOmf0MlziSKKh9XTvaAkOOkgaFAkShXRdQ4GeJdey+n80myhyhGUSYwZcsHRFlXobBr+b861DaGJlZQUUJCJhfMt9ZudNSyxOuj1PHGx7vpQurquI/jRRsVtjtqwVrnYMIKXRVtGzDybh+Z4LcSKfGgutFoPBdhng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757026646; c=relaxed/simple;
-	bh=2yGEvFHHHhgvbQ3a6raTZkHh/9Kf0o5M7UdOoOos1pc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RtFkg+Aqsnf9Qa0oUjPURKIFFAXDZnKKNbzvG34CMxjJJiSmXdvvCXpW99O751SGf/3E7VpqK/mb7ND7n0g+lFUdkFU5Znf6XLTHD3eJL4ckDHp4vtawhJuSKxTUQUFw7HElZWH8uLu830+BIYqGASU6F6D19sCEJpY38tOVsz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jbHubK3/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 31493C4CEF4;
-	Thu,  4 Sep 2025 22:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757026646;
-	bh=2yGEvFHHHhgvbQ3a6raTZkHh/9Kf0o5M7UdOoOos1pc=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=jbHubK3/eo1eNnYNv3ULPGJWSNWMlqtJqDazdHsDFLhM754e77/99GtTly05Ia1eZ
-	 VmST7OGIg+qp8WSqTzEPukaT+bRHiywiBGoefANKvAIGPrYL9Sq70kgxICYjYRbsZv
-	 m4MwByKsAOujwukrYu+pJoEgDbtaqVRKXgcRLk/EDmql4Kg1pKCTDpxp22xdvpzQaX
-	 hpQX5BootlJdcCta4L89FiloGlX7vMYdQYJEAHtW8l2RG9Ja5J9UM1FnnH4rAtklcL
-	 vopKJPKcSF09Z0UK011jN58BzCokKHqv/Uu1e3EesACIiV+p3zSMVyMh+wNiDfBH6l
-	 lb06Otk4xP6Fg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EB66CA1016;
-	Thu,  4 Sep 2025 22:57:26 +0000 (UTC)
-From: Christoph Paasch via B4 Relay <devnull+cpaasch.openai.com@kernel.org>
-Date: Thu, 04 Sep 2025 15:53:36 -0700
-Subject: [PATCH net-next v5 2/2] net/mlx5: Avoid copying payload to the
- skb's linear part
+	s=arc-20240116; t=1757026431; c=relaxed/simple;
+	bh=qbNI5VHkpI3jZWTclCz4prtW+t8aTKNshNzePv2EdU8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HUefEX+LUTKBX5Nm5TtrfuRcPGtRzxHL6GAEifs/EV0LxOUePPDqGNjJ4qgBPUTrmBBGYKLPLySj7myiw63gmcY6rPeNYjIHI/KeV1EPSVCeeMJ0R6oF7HZqJ1p5QI/pSF/3zYDgR1gQZvgr1PHc29AySpeDlsPaU+vq/CxfTqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from [IPV6:2a01:e0a:3e8:c0d0:74c4:9b58:271e:cbdf] (unknown [IPv6:2a01:e0a:3e8:c0d0:74c4:9b58:271e:cbdf])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 3391A41E6B;
+	Thu,  4 Sep 2025 22:53:47 +0000 (UTC)
+Authentication-Results: Plesk;
+        spf=pass (sender IP is 2a01:e0a:3e8:c0d0:74c4:9b58:271e:cbdf) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=[IPV6:2a01:e0a:3e8:c0d0:74c4:9b58:271e:cbdf]
+Received-SPF: pass (Plesk: connection is authenticated)
+Message-ID: <090dcc3c-f9a6-4ff8-873f-e0725329a94d@arnaud-lcm.com>
+Date: Fri, 5 Sep 2025 00:53:46 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250904-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v5-2-ea492f7b11ac@openai.com>
-References: <20250904-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v5-0-ea492f7b11ac@openai.com>
-In-Reply-To: <20250904-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v5-0-ea492f7b11ac@openai.com>
-To: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Stanislav Fomichev <sdf@fomichev.me>, Amery Hung <ameryhung@gmail.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org, 
- Christoph Paasch <cpaasch@openai.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1757026645; l=3145;
- i=cpaasch@openai.com; s=20250712; h=from:subject:message-id;
- bh=IL2BQ6RwilnanWsFwUGaKxGp5LH0ZxwNNbUaCebgEgY=;
- b=iGLeJUjmReoTy77GeZlEeA7KYV6oYMc0TPFBJ1DVL9tTxSE5Hgf1zQh6tdPTNdJekk0ijz4Yg
- QdiWnSNrDULCm4Dj4OU9U1nB8rHK7JB/8ZiVvmLu+HfkifB2DxXREOS
-X-Developer-Key: i=cpaasch@openai.com; a=ed25519;
- pk=1HRHZlVUZPziMZvsAQFvP7n5+uEosTDAjXmNXykdxdg=
-X-Endpoint-Received: by B4 Relay for cpaasch@openai.com/20250712 with
- auth_id=459
-X-Original-From: Christoph Paasch <cpaasch@openai.com>
-Reply-To: cpaasch@openai.com
-
-From: Christoph Paasch <cpaasch@openai.com>
-
-mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
-bytes from the page-pool to the skb's linear part. Those 256 bytes
-include part of the payload.
-
-When attempting to do GRO in skb_gro_receive, if headlen > data_offset
-(and skb->head_frag is not set), we end up aggregating packets in the
-frag_list.
-
-This is of course not good when we are CPU-limited. Also causes a worse
-skb->len/truesize ratio,...
-
-So, let's avoid copying parts of the payload to the linear part. We use
-eth_get_headlen() to parse the headers and compute the length of the
-protocol headers, which will be used to copy the relevant bits ot the
-skb's linear part.
-
-We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking
-stack needs to call pskb_may_pull() later on, we don't need to reallocate
-memory.
-
-This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
-LRO enabled):
-
-BEFORE:
-=======
-(netserver pinned to core receiving interrupts)
-$ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.01    32547.82
-
-(netserver pinned to adjacent core receiving interrupts)
-$ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.00    52531.67
-
-AFTER:
-======
-(netserver pinned to core receiving interrupts)
-$ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.00    52896.06
-
-(netserver pinned to adjacent core receiving interrupts)
- $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.00    85094.90
-
-Additional tests across a larger range of parameters w/ and w/o LRO, w/
-and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), different
-TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
-better performance with this patch.
-
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Christoph Paasch <cpaasch@openai.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 8bedbda522808cbabc8e62ae91a8c25d66725ebb..0ac31c7fb64cd60720d390de45a5b6b453ed0a3f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -2047,6 +2047,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
- 		dma_sync_single_for_cpu(rq->pdev, addr + head_offset, headlen,
- 					rq->buff.map_dir);
- 
-+		headlen = eth_get_headlen(rq->netdev, head_addr, headlen);
-+
- 		frag_offset += headlen;
- 		byte_cnt -= headlen;
- 		linear_hr = skb_headroom(skb);
-@@ -2123,6 +2125,9 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
- 				pagep->frags++;
- 			while (++pagep < frag_page);
- 		}
-+
-+		headlen = eth_get_headlen(rq->netdev, mxbuf->xdp.data, headlen);
-+
- 		__pskb_pull_tail(skb, headlen);
- 	} else {
- 		if (xdp_buff_has_frags(&mxbuf->xdp)) {
-
--- 
-2.50.1
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v7 3/3] bpf: fix stackmap overflow check in
+ __bpf_get_stackid()
+To: Song Liu <song@kernel.org>, alexei.starovoitov@gmail.com,
+ yonghong.song@linux.dev
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
+ syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+ syzkaller-bugs@googlegroups.com
+References: <20250903234052.29678-1-contact@arnaud-lcm.com>
+ <20250903234325.30212-1-contact@arnaud-lcm.com>
+ <f6e9710a-a5bf-4af9-8c0d-d81d28c3040c@kernel.org>
+Content-Language: en-US
+From: "Lecomte, Arnaud" <contact@arnaud-lcm.com>
+In-Reply-To: <f6e9710a-a5bf-4af9-8c0d-d81d28c3040c@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-PPP-Message-ID: <175702642777.31109.3208251421253869888@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
 
+On 05/09/2025 00:45, Song Liu wrote:
+>
+> On 9/3/25 4:43 PM, Arnaud Lecomte wrote:
+>> Syzkaller reported a KASAN slab-out-of-bounds write in 
+>> __bpf_get_stackid()
+>> when copying stack trace data. The issue occurs when the perf trace
+>>   contains more stack entries than the stack map bucket can hold,
+>>   leading to an out-of-bounds write in the bucket's data array.
+>>
+>> Changes in v2:
+>>   - Fixed max_depth names across get stack id
+>>
+>> Changes in v4:
+>>   - Removed unnecessary empty line in __bpf_get_stackid
+>>
+>> Changs in v6:
+>>   - Added back trace_len computation in __bpf_get_stackid
+>>
+>> Link to v6: 
+>> https://lore.kernel.org/all/20250903135348.97884-1-contact@arnaud-lcm.com/
+>>
+>> Reported-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
+>> Closes: https://syzkaller.appspot.com/bug?extid=c9b724fbb41cf2538b7b
+>> Fixes: ee2a098851bf ("bpf: Adjust BPF stack helper functions to 
+>> accommodate skip > 0")
+>> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>
+> For future patches, please keep the "Changes in vX.." at the end of
+Good to know, thanks !
+>
+> your commit log and after a "---". IOW, something like
+>
+>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>
+> ---
+>
+> changes in v2:
+>
+> ...
+>
+> ---
+>
+> kernel/bpf/stackmap.c | 8 ++++++++
+>
+>
+> In this way, the "changes in vXX" part will be removed by git-am.
+>
+>> ---
+>>   kernel/bpf/stackmap.c | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+>> index 9f3ae426ddc3..29e05c9ff1bd 100644
+>> --- a/kernel/bpf/stackmap.c
+>> +++ b/kernel/bpf/stackmap.c
+>> @@ -369,6 +369,7 @@ BPF_CALL_3(bpf_get_stackid_pe, struct 
+>> bpf_perf_event_data_kern *, ctx,
+>>   {
+>>       struct perf_event *event = ctx->event;
+>>       struct perf_callchain_entry *trace;
+>> +    u32 elem_size, max_depth;
+>>       bool kernel, user;
+>>       __u64 nr_kernel;
+>>       int ret;
+>> @@ -390,11 +391,15 @@ BPF_CALL_3(bpf_get_stackid_pe, struct 
+>> bpf_perf_event_data_kern *, ctx,
+>>           return -EFAULT;
+>>         nr_kernel = count_kernel_ip(trace);
+>> +    elem_size = stack_map_data_size(map);
+>>         if (kernel) {
+>>           __u64 nr = trace->nr;
+>>             trace->nr = nr_kernel;
+>
+> this trace->nr = is useless.
+>
+>> +        max_depth =
+>> +            stack_map_calculate_max_depth(map->value_size, 
+>> elem_size, flags);
+>> +        trace->nr = min_t(u32, nr_kernel, max_depth);
+>>           ret = __bpf_get_stackid(map, trace, flags);
+>>             /* restore nr */
+>> @@ -407,6 +412,9 @@ BPF_CALL_3(bpf_get_stackid_pe, struct 
+>> bpf_perf_event_data_kern *, ctx,
+>>               return -EFAULT;
+>>             flags = (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
+>> +        max_depth =
+>> +            stack_map_calculate_max_depth(map->value_size, 
+>> elem_size, flags);
+>> +        trace->nr = min_t(u32, trace->nr, max_depth);
+>>           ret = __bpf_get_stackid(map, trace, flags);
+>
+> I missed this part earlier. Here we need to restore trace->nr, just 
+> like we did
+
+>
+> in the "if (kernel)" branch.
+>
+Make sense, thanks !
+> Thanks,
+>
+> Song
+>
+>>       }
+>>       return ret;
+>
+Thanks,
+Arnaud
 
