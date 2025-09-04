@@ -1,299 +1,176 @@
-Return-Path: <bpf+bounces-67483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67484-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4342DB444F7
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 20:02:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4928B4450A
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 20:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9E901BC40B6
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 18:03:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8713E5A53D0
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 18:06:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBDD3126D1;
-	Thu,  4 Sep 2025 18:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09EFB34166A;
+	Thu,  4 Sep 2025 18:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ff1g0SGZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bXXS8GQg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0A0305E2C
-	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 18:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2486154654;
+	Thu,  4 Sep 2025 18:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757008956; cv=none; b=b2T6ehjWtYI+5X6QRbQHlUd2owmXaaDYrEkCGVS7aWdlBhYubg4QtyJOBqcDfwnwkTP/cEDauH8wCcFDBYTLx0KzbLzo5Sh+BpzBjIM70O25drY/N4tO2a0biT9H8m6jmCFOWnPTRAVcBH4PakGRtRtlrYYJK/b9Z4OpeLU/B+g=
+	t=1757009209; cv=none; b=CAtXPurNczRnbs7FT1QRE3Ry8v2DNO6W8OMyAC/ATj+azdJkv8SLczrx6dW3HtB+Gv+oV0TqX6UrKj1dBYxerw/+smS+6HMbh5ovkV/ikEvf8PnhvxphZQAHRMSui0XJnw5AS0RiEjkDwutE5gVzlAcEN830mSahmopZgurYOZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757008956; c=relaxed/simple;
-	bh=QdBTqkwD66iPXr5ysiSe439526BpfeJWSP/F4EzejLM=;
+	s=arc-20240116; t=1757009209; c=relaxed/simple;
+	bh=9CiMvOSQWinJMq6NIMYH71ecyKhv5aE1CwwMMJiawrQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YFDRwz4AijNOgDecMeAx+/w3pEwylaZJvvr52FrwVjA0KKIqsqUBq0EU0azO9hYhHGkaTNcoqILFyJoqA8m4XQE7LUI9jEGx+X1bBhMmbIcw7bCntn2L5s4DA5MgR2AToBlfzBnrqckdYr+nWUCFEiO2wVsw0Vla/+zm3wfgP64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ff1g0SGZ; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=OFV7V26bJRgr/iiSrlIexdqWB4nWfAJit1FdILFQ3OFUv6EXbasKY3lAGKictfItUDw3Sbq3821jyxuH8O8IaHPYEqdgi/P+ch1f5rTnFMTAOYTo6B7wEIm+9pxJWljWcBG9Ln3oytwvPe7LYm/lmwyYV6rnEi9sl9EbOL5ri8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bXXS8GQg; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-32326e20aadso1422234a91.2
-        for <bpf@vger.kernel.org>; Thu, 04 Sep 2025 11:02:34 -0700 (PDT)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-32bb1132c11so335806a91.0;
+        Thu, 04 Sep 2025 11:06:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757008954; x=1757613754; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757009206; x=1757614006; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K6Yldnz7e44mgHNy1wn0HLyZU4pXhYThOQkjfRzh0JM=;
-        b=Ff1g0SGZAb2oIDfzNgXd64YMXIE77XiTasDBEouaPR7+A90Qj4Is6+rMl7+/qdouIR
-         M6Ea3fxzuP2/FmVDDbOw6MqXacydeBteUNqdBrkF5RNkl5MRS/olGl7OXkptZPfbdmds
-         YwHxQO1Tqy6SMoKsOOfPYhy1XuVOZKLwHNCMbDlN7hX4AyjKYTBd8X1Y+iiaFeSxjUy0
-         utxZ3Yba6BhojQZHbkYb5txhYIPR0quGi26GumsXaQcf8+6pnORjCDuk/fw45lUoH5Q5
-         bQhnucqhrv9jg/WapxzSFFvA+E1W2gOsmeYG2xjrYnxKl4qVB9XY5EfHfhGXTts6T0iz
-         taBA==
+        bh=VuyixO0hwkwyh9bGg9JvqJw6+GK3Lee4B6ulKn5PzeY=;
+        b=bXXS8GQg7+G55WXP7sw4YOSdcgqNzo979WaHB+UWgEUbErUDF4g0Dw13jAf0QxNt29
+         JQYHGa8wQBwnJkA00ASh088g6lpF0GPqeTsmue38XQZBLtXc7mQVe+sXOZllVgQkU+d7
+         qMPwUBIxlLnEKfp5nl7tgT9Hx77NDkU65viYYG6cWWd2owTOff0k53IOsDOpLFPdv7dU
+         yeFzsvyJ/vMJSjXwpJx7fnHB6sQYPiGsn79E6Gcm66XOuN4X7uyk3eOc4InX1sF+mZN9
+         oi/zo2lC/ds8L5/W67qQcAfEi6I1DGEXpPHAsqeLlcK41GE0ZwOpQCxeDZxvA9G5gyfS
+         5IeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757008954; x=1757613754;
+        d=1e100.net; s=20230601; t=1757009206; x=1757614006;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K6Yldnz7e44mgHNy1wn0HLyZU4pXhYThOQkjfRzh0JM=;
-        b=E5aR/FYfGOPWxZ+tbTATDlq6CdRpMfxYOQAuf/PV9eL6kvNWPGJeZ3lPbU3LcpCPVV
-         y7/fwJL5mB1x/gRVvI2J6kbVib79DmOdjh3ajp5NoqllwMLwhZZyU7V8rPZ8jCDHvGvr
-         JjKFTjmjx94SwHe2Y7BRHvBxiocsTmEjqowIRoDsh9HzbFOF+o1xoUb5eMkIPp42ZjAf
-         Th5jqgnU3sOyWQdryxC4drnoeA0MD7cGyfVzHXnWM3PkzBcQ06UAXiScJmts7V0Fn5Mv
-         a9+fE/qSjkyHW+eQrU2VRedOTJkNoapKsKv8ieWWd+4ib8CChrDEgKw/YmMJiTJS7Hbb
-         39ww==
-X-Gm-Message-State: AOJu0YwJ4uDiYAjbNi1SzlW3FBxl87cEjqZ1m/jQ9kIY31F7q1LVZc3b
-	lt8nOhRx+7jB2hdWCG9JUilBqEIQp4wvUaTYdo5dYVe+k1+q17kMh20gwOx9iWr8vPvC8MIXcEz
-	e3d6PGJTnKiBBklZVFzeFIOASL+rVIB3r0T8e
-X-Gm-Gg: ASbGncs3BGWJGFKXogpWs1WWLmlq/oxS9A//avSHR/L4g1+1OPJeIAv6H/1z6urxobn
-	s3Ety1qQSzKVt240WiyBBh4+rPvdcN+lugxkLFgSp8M7ujW+6Y7QWlkoGx1KXJCpZP1mv1hRy6k
-	iZNDlFauqM41Zfxf+7RTbe1V9HPLxAhEa3lE8lYO+HypXApQXjbDcfEpDhIqevVuYhL2+sqxyeo
-	/HTONR31w1Nn63knTnchjMMKjG0XRRAuA==
-X-Google-Smtp-Source: AGHT+IE1p8SYnFemf/ahm5JuxxJUxzE9SLEq3wj7Z7xOhgjs3RiJESYJBsTxv3qUiDCU+XyCNGRoYqfkHiWK0vdGyxM=
-X-Received: by 2002:a17:90b:388d:b0:32b:623d:ee91 with SMTP id
- 98e67ed59e1d1-32b623defe9mr8068842a91.27.1757008953734; Thu, 04 Sep 2025
- 11:02:33 -0700 (PDT)
+        bh=VuyixO0hwkwyh9bGg9JvqJw6+GK3Lee4B6ulKn5PzeY=;
+        b=AXIVdsrX9dak8vZyY+NVRFbncRZr6+LbmmcQvxylNprP+wSdVUUd4HjD5gUj/pGxQY
+         u56kF9MtT/uELzIdrCARUTV+Abw8Cg3f1bKD2wkiXKYMH2su7T1ezDbAFtftj8Iokzub
+         EutE54z/Aqs360qWychFXXGon11iU/ulojfBY/xVcrNz2w2I68sikOmZPClPIRZZcE2u
+         k4OtWiS54LxtgqMjS26ZPr5i3RCSMpuUovuw2ZfeZjlmuuIlcexuKqZ1QeyG/n00lDDn
+         iHgop/GuUVCdPzovxSqd2kV5coWIsSJOpmAqSEuqT5Wq15nLrjZ6JS2BGAq82lneQ5Vm
+         X+xg==
+X-Forwarded-Encrypted: i=1; AJvYcCUpHq1iYrZ/SUe0d5caAHfafX61NdPIT3sUQOpOa7l1WQb4dd3+DEed8ZYfxGrFiZ0yKjk=@vger.kernel.org, AJvYcCVA5CZuIj4T9j2YkGC83cUi3HVRj8mZJktrt5BPac5+Pq2XZn6f4kwamLby0gfOpCDlJ5fQWgAWck8jscTa@vger.kernel.org, AJvYcCXexh/Bt05N6MnUTCKtRpHVfDicHGWLNSspXgmoAsiOSedbcnbkFx+OYtrK9YNxiWPpnbUiH8FZDU6+Nlb1kDaevQCy@vger.kernel.org
+X-Gm-Message-State: AOJu0YwMggedmTugmh2DJFW18kwD4rJu/wMqXCyyzWwT9blWHqPV45Ih
+	OvivHVCuoHUD06Tp9+Qu7f39P4pxu+K+Ec0T0djXRVLeg9ZLQdO60B53H+jR9NSkrjENnrsuJZ1
+	jUMO1pY/9mYrdHVMALUaNBu0DaYu0I8w=
+X-Gm-Gg: ASbGnctxtY/NUoQ51eyeCNPy7wEzaK8OlYQhKrafOK0f9irWM/N1QcCkeXZ/klhXd2n
+	iKAW76OjMU4/4IZxu7iXDYnUoYu8RirxDRDatifwlTpVeF33SBubVe0BV9mr8HV4TuntOVBnQzB
+	B+tnu/0lCPnnnIiLfLAGGKHo5sIDWWIsuJp1pc4byAgIGP1ctVIP4u/TC0JNV891wAehS9GEFDO
+	IdJnvjlwgIdDX7e/JD7BH0=
+X-Google-Smtp-Source: AGHT+IHCUO6rhTvzEP9t2OmyzIkR6yMvWXQ4BzuYoMuX/kGOeMKz713GAJpf+6/fxt3zD3e/QK0zSs48VraZx+P8jak=
+X-Received: by 2002:a17:90b:4c4b:b0:32b:5c14:3bb6 with SMTP id
+ 98e67ed59e1d1-32bbcb94786mr624377a91.1.1757009206177; Thu, 04 Sep 2025
+ 11:06:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250902233502.776885-1-mykyta.yatsenko5@gmail.com>
- <CAEf4BzZA-1HjhtKAz_4=N4DOsCuQZOrqCwJhDqVwH6fJPiiUKQ@mail.gmail.com> <542230e1-429b-4f8e-a4d9-60cb3d91aba9@gmail.com>
-In-Reply-To: <542230e1-429b-4f8e-a4d9-60cb3d91aba9@gmail.com>
+References: <20250902143504.1224726-1-jolsa@kernel.org> <20250902143504.1224726-3-jolsa@kernel.org>
+ <20250903112648.GC18799@redhat.com> <aLicCjuqchpm1h5I@krava>
+ <20250904084949.GB27255@redhat.com> <aLluB1Qe6Y9B8G_e@krava>
+ <20250904112317.GD27255@redhat.com> <CAADnVQ+DHGc8R0Tdxf7eUj1R0TDGHXLwk5D4i_0==2_rfXGbfw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+DHGc8R0Tdxf7eUj1R0TDGHXLwk5D4i_0==2_rfXGbfw@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 4 Sep 2025 11:02:18 -0700
-X-Gm-Features: Ac12FXx4-qgJOyLAEze_s6l8qp0kooTj1acv2TmIq2JtB4SVjUVulXp5oHZ7Kto
-Message-ID: <CAEf4BzZPwJ49DDkBbZmy2-vC+E=pqkhOp8AbGCQrfmruyxGxJw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5] selftests/bpf: add BPF program dump in veristat
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
+Date: Thu, 4 Sep 2025 11:06:31 -0700
+X-Gm-Features: Ac12FXzGYab9OQQet97J76DuBacUMuW8DPWM-yoh5yepaOsk3yRtmPhPFspT8nw
+Message-ID: <CAEf4BzbxjRwxhJTLUgJNwR-vEbDybBpawNsRb+y+PiDsxzT=eA@mail.gmail.com>
+Subject: Re: [PATCH perf/core 02/11] uprobes: Skip emulate/sstep on unique
+ uprobe when ip is changed
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Jiri Olsa <olsajiri@gmail.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 4, 2025 at 8:57=E2=80=AFAM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
+On Thu, Sep 4, 2025 at 8:02=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->
->
-> On 9/4/25 01:06, Andrii Nakryiko wrote:
-> > On Tue, Sep 2, 2025 at 4:35=E2=80=AFPM Mykyta Yatsenko
-> > <mykyta.yatsenko5@gmail.com> wrote:
-> >> From: Mykyta Yatsenko <yatsenko@meta.com>
-> >>
-> >> Add the ability to dump BPF program instructions directly from verista=
-t.
-> >> Previously, inspecting a program required separate bpftool invocations=
-:
-> >> one to load and another to dump it, which meant running multiple
-> >> commands.
-> >> During active development, it's common for developers to use veristat
-> >> for testing verification. Integrating instruction dumping into verista=
-t
-> >> reduces the need to switch tools and simplifies the workflow.
-> >> By making this information more readily accessible, this change aims
-> >> to streamline the BPF development cycle and improve usability for
-> >> developers.
-> >> This implementation leverages bpftool, by running it directly via pope=
-n
-> >> to avoid any code duplication and keep veristat simple.
-> >>
-> >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> >> ---
-> >>   tools/testing/selftests/bpf/veristat.c | 69 ++++++++++++++++++++++++=
-+-
-> >>   1 file changed, 68 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/se=
-lftests/bpf/veristat.c
-> >> index d532dd82a3a8..e27893863400 100644
-> >> --- a/tools/testing/selftests/bpf/veristat.c
-> >> +++ b/tools/testing/selftests/bpf/veristat.c
-> >> @@ -181,6 +181,12 @@ struct var_preset {
-> >>          bool applied;
-> >>   };
-> >>
-> >> +enum dump_mode {
-> >> +       DUMP_NONE =3D 0,
-> >> +       DUMP_XLATED =3D 1,
-> >> +       DUMP_JITED =3D 2,
-> >> +};
-> >> +
-> >>   static struct env {
-> >>          char **filenames;
-> >>          int filename_cnt;
-> >> @@ -227,6 +233,7 @@ static struct env {
-> >>          char orig_cgroup[PATH_MAX];
-> >>          char stat_cgroup[PATH_MAX];
-> >>          int memory_peak_fd;
-> >> +       __u32 dump_mode;
-> >>   } env;
-> >>
-> >>   static int libbpf_print_fn(enum libbpf_print_level level, const char=
- *format, va_list args)
-> >> @@ -271,6 +278,7 @@ const char argp_program_doc[] =3D
-> >>   enum {
-> >>          OPT_LOG_FIXED =3D 1000,
-> >>          OPT_LOG_SIZE =3D 1001,
-> >> +       OPT_DUMP =3D 1002,
-> >>   };
-> >>
-> >>   static const struct argp_option opts[] =3D {
-> >> @@ -295,6 +303,7 @@ static const struct argp_option opts[] =3D {
-> >>            "Force BPF verifier failure on register invariant violation=
- (BPF_F_TEST_REG_INVARIANTS program flag)" },
-> >>          { "top-src-lines", 'S', "N", 0, "Emit N most frequent source =
-code lines" },
-> >>          { "set-global-vars", 'G', "GLOBAL", 0, "Set global variables =
-provided in the expression, for example \"var1 =3D 1\"" },
-> >> +       { "dump", OPT_DUMP, "DUMP_MODE", OPTION_ARG_OPTIONAL, "Print B=
-PF program dump (xlated, jited)" },
-> >>          {},
-> >>   };
-> >>
-> >> @@ -427,6 +436,16 @@ static error_t parse_arg(int key, char *arg, stru=
-ct argp_state *state)
-> >>                          return err;
-> >>                  }
-> >>                  break;
-> >> +       case OPT_DUMP:
-> >> +               if (!arg || strcasecmp(arg, "xlated") =3D=3D 0) {
-> >> +                       env.dump_mode |=3D DUMP_XLATED;
-> >> +               } else if (strcasecmp(arg, "jited") =3D=3D 0) {
-> >> +                       env.dump_mode |=3D DUMP_JITED;
-> >> +               } else {
-> >> +                       fprintf(stderr, "Unrecognized dump mode '%s'\n=
-", arg);
-> >> +                       return -EINVAL;
-> >> +               }
-> >> +               break;
-> >>          default:
-> >>                  return ARGP_ERR_UNKNOWN;
-> >>          }
-> >> @@ -1554,6 +1573,49 @@ static int parse_rvalue(const char *val, struct=
- rvalue *rvalue)
-> >>          return 0;
-> >>   }
-> >>
-> >> +static void dump(__u32 prog_id, enum dump_mode mode, const char *file=
-_name, const char *prog_name)
-> >> +{
-> >> +       char command[64], buf[4096];
-> >> +       ssize_t len, wrote, off;
-> >> +       FILE *fp;
-> >> +       int status;
-> >> +
-> >> +       status =3D system("which bpftool > /dev/null 2>&1");
-> >> +       if (status !=3D 0) {
-> >> +               fprintf(stderr, "bpftool is not available, can't print=
- program dump\n");
-> >> +               return;
-> >> +       }
-> >> +       snprintf(command, sizeof(command), "bpftool prog dump %s id %u=
-",
-> >> +                mode =3D=3D DUMP_JITED ? "jited" : "xlated", prog_id)=
-;
-> >> +       fp =3D popen(command, "r");
-> >> +       if (!fp) {
-> >> +               fprintf(stderr, "Can't run bpftool\n");
-> > maybe "bpftool failed with error: %d\n" and pass errno?
+> On Thu, Sep 4, 2025 at 4:26=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wr=
+ote:
 > >
-> >> +               return;
-> >> +       }
-> >> +
-> >> +       printf("%s/%s DUMP %s:\n", file_name, prog_name, mode =3D=3D D=
-UMP_JITED ? "JITED" : "XLATED");
-> >> +       fflush(stdout);
-> >> +       do {
-> >> +               len =3D read(fileno(fp), buf, sizeof(buf));
-> >> +               if (len < 0)
-> >> +                       goto error;
-> >> +
-> >> +               for (off =3D 0; off < len;) {
-> >> +                       wrote =3D write(STDOUT_FILENO, buf + off, len =
-- off);
-> >> +                       if (wrote <=3D 0)
-> >> +                               goto error;
-> >> +                       off +=3D wrote;
-> >> +               }
-> >> +       } while (len > 0);
-> >> +       write(STDOUT_FILENO, "\n", 1);
-> > Given we have FILE abstraction, wouldn't it be more natural to use
-> > fread()/fwrite()/feof()?
+> > On 09/04, Jiri Olsa wrote:
+> > >
+> > > On Thu, Sep 04, 2025 at 10:49:50AM +0200, Oleg Nesterov wrote:
+> > > > On 09/03, Jiri Olsa wrote:
+> > > > >
+> > > > > On Wed, Sep 03, 2025 at 01:26:48PM +0200, Oleg Nesterov wrote:
+> > > > > > On 09/02, Jiri Olsa wrote:
+> > > > > > >
+> > > > > > > If user decided to take execution elsewhere, it makes little =
+sense
+> > > > > > > to execute the original instruction, so let's skip it.
+> > > > > >
+> > > > > > Exactly.
+> > > > > >
+> > > > > > So why do we need all these "is_unique" complications? Only a s=
+ingle
+> > > > > > is_unique/exclusive consumer can change regs->ip, so I guess ha=
+ndle_swbp()
+> > > > > > can just do
+> > > > > >
+> > > > > >         handler_chain(uprobe, regs);
+> > > > > >         if (instruction_pointer(regs) !=3D bp_vaddr)
+> > > > > >                 goto out;
+> > > > >
+> > > > > hum, that's what I did in rfc [1] but I thought you did not like =
+that [2]
+> > > > >
+> > > > > [1] https://lore.kernel.org/bpf/20250801210238.2207429-2-jolsa@ke=
+rnel.org/
+> > > > > [2] https://lore.kernel.org/bpf/20250802103426.GC31711@redhat.com=
+/
+> > > > >
+> > > > > I guess I misunderstood your reply [2], I'd be happy to drop the
+> > > > > unique/exclusive flag
+> > > >
+> > > > Well, but that rfc didn't introduce the exclusive consumers, and I =
+think
+> > > > we agree that even with these changes the non-exclusive consumers m=
+ust
+> > > > never change regs->ip?
+> > >
+> > > ok, got excited too soon.. so you meant getting rid of is_unique
+> > > check only for this patch and have just change below..  but keep
+> > > the unique/exclusive flag from patch#1
 > >
-> > this also doesn't handle interrupted syscalls (-EINTR)
-> I did that initially, but then removed, is there a relevant scenario
-> where veristat handles signals, is it
->   SIGSTOP/SIGCONT ? Otherwise it's going to terminate anyway, isn't it?
+> > Yes, this is what I meant,
+> >
+> > > IIUC Andrii would remove the unique flag completely?
+> >
+> > Lets wait for Andrii...
+>
+> Not Andrii, but I see only negatives in this extra flag.
+> It doesn't add any safety or guardrails.
+> No need to pollute uapi with pointless flags.
 
-there are a bunch of signals that can be sent to veristat (e.g.,
-SIGCHLD), that wouldn't kill the process. I guess why not handle that
-if that's part of syscall handling protocol?
++1. I think it's fine to just have something like
 
-> >
-> > pw-bot: cr
-> >
-> >> +       goto out;
-> >> +error:
-> >> +       fprintf(stderr, "Could not write BPF prog dump. Error: %s (err=
-no=3D%d)\n", strerror(errno),
-> > why so specific, "write", if it could be an error during reading from
-> By write I meant "output" or "print" in a sense that we
-> can't print dump any further, because there is some error.
-> I'll send the next version.
-> > bpftool? And note a more or less consistent "Failed to ..." wording,
-> > there is not a single "Could not" in veristat.c. So something generic
-> > like "Failed to fetch BPF program dump" or something?
-> >
-> >> +               errno);
-> >> +out:
-> >> +       pclose(fp);
-> >> +}
-> >> +
-> >>   static int process_prog(const char *filename, struct bpf_object *obj=
-, struct bpf_program *prog)
-> >>   {
-> >>          const char *base_filename =3D basename(strdupa(filename));
-> >> @@ -1630,8 +1692,13 @@ static int process_prog(const char *filename, s=
-truct bpf_object *obj, struct bpf
-> >>
-> >>          memset(&info, 0, info_len);
-> >>          fd =3D bpf_program__fd(prog);
-> >> -       if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) =
-=3D=3D 0)
-> >> +       if (fd > 0 && bpf_prog_get_info_by_fd(fd, &info, &info_len) =
-=3D=3D 0) {
-> >>                  stats->stats[JITED_SIZE] =3D info.jited_prog_len;
-> >> +               if (env.dump_mode & DUMP_JITED)
-> >> +                       dump(info.id, DUMP_JITED, base_filename, prog_=
-name);
-> >> +               if (env.dump_mode & DUMP_XLATED)
-> >> +                       dump(info.id, DUMP_XLATED, base_filename, prog=
-_name);
-> >> +       }
-> >>
-> >>          parse_verif_log(buf, buf_sz, stats);
-> >>
-> >> --
-> >> 2.51.0
-> >>
->
+if (unlikely(instruction_pointer(regs) !=3D bp_vaddr))
+      goto out;
+
+after all uprobe callbacks were processed. Even if every single one of
+them modify IP, the last one that did that wins. Others (if they care)
+can detect this.
+
+Generally speaking, this is a very specialized use case (which is why
+the opposition to complicating UAPI for all of that), and I'd expect
+to have at most 1 such uprobe callbacks at any attach point, while all
+others (if there are any "others") are read-only and won't care about
+return IP.
 
