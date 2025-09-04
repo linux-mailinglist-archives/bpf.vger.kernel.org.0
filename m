@@ -1,169 +1,118 @@
-Return-Path: <bpf+bounces-67396-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67431-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ABCDB434BE
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 09:56:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B78AEB43AC8
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 13:54:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00D135E6A81
-	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 07:56:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E7211C262FF
+	for <lists+bpf@lfdr.de>; Thu,  4 Sep 2025 11:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1306A2BE04C;
-	Thu,  4 Sep 2025 07:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AA72FDC5A;
+	Thu,  4 Sep 2025 11:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O1XIUPu1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYXlp/V4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E635D2BD5A8;
-	Thu,  4 Sep 2025 07:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833362FD7B1
+	for <bpf@vger.kernel.org>; Thu,  4 Sep 2025 11:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756972579; cv=none; b=lwcoJI9TX47rTwOFMBNwLNCcoGH3HBiYqfSIdFbi0rQM3X726GJWTuB23ugFyZ5p/UmB+WR2gnxEngGUi2OmvDeeInu5kda4hMUor0pCe/V3Wc5dYvXn1RzQV1J9FoxqnsZHgzUkv23oiLthaQAn/Bu+alZMoj1pzsd1MsinlOo=
+	t=1756986842; cv=none; b=mj0dFNssOQiyzFQxETXavnWQrusDuJPj0x2Q7PQZNfC6uxo7UZxaI7lYUtljo8Yl9bZy4NliKFEA0HsTOKFH4a9dvCdztbsHMgrzRWdsRPyamntGJ5UD0oo6L7MEkcP6xuhnTrjyu7uN72yXERWvw81VwsqvFz2kp8VlgQN1iNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756972579; c=relaxed/simple;
-	bh=KaxI14PGx+2va8d76I8IO6QyJFhwddmPV6YbW4b5a7Q=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BL8bDn+3L2hfQfetMCZdPvpYTEyxor76ocCBpzZp+wpVVOQ6SSGA9fqsd+CMxz05BaM6+lmBZygCiYx3HZmEKApMeVkI1Hq/G7/cOwxvOD9YdPmK26yJ+DPkv7w7ZP9pCMRkYPTpavuA8A7wSz5hG1YgS1COKVMjb7u9hlkv4To=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O1XIUPu1; arc=none smtp.client-ip=209.85.218.51
+	s=arc-20240116; t=1756986842; c=relaxed/simple;
+	bh=ZGDry0f3I9LdhfdPtPrCDF1bR37eHAMJfJY2yIdL1pE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mu3EB4ph0dqHwjc7Y3gMf8IsSlmyZy1uT6VjAbphMhFB6UhTwEWsSfCHMPkip2uz6QYFj4CpaGj4KIi3IENEm4X8S5CMeuadocwsHjPVRd9kXu7yG7ZC3vmxGKGcnV6UFsIU0Snb4dJcO6C/lNjZczdbDYqe2NIBKVQzxbWqGMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYXlp/V4; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b04770a25f2so100595566b.2;
-        Thu, 04 Sep 2025 00:56:17 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7704f3c46ceso783113b3a.2
+        for <bpf@vger.kernel.org>; Thu, 04 Sep 2025 04:54:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756972576; x=1757577376; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eZ8jod7Af56ytSP2ydZ4q7A0RJBJCc32H7x6V6cO39I=;
-        b=O1XIUPu1BoT5p3jZcIqs250DLC9CL6QUSJN69+8ny5xXZHk3fUbJMRqS3m3p5MK0EA
-         YWx1gQW3uM56V2ZPSfn790nwyfuacmxsCvkKjrJ/uQ9iJ2OXNBbJtgP/LYQfRChQtupw
-         2CGTu8c4OoSQsR1CD0Cb2jsudbjm5686nYYdJbk81PGqDSzw6kB+ScLAkulrBrd0zNWZ
-         aoYZDa/qTJqGhfjmpqB7bRFOVhksQc9NQ4ac2GxIvihF66noLsZVJrR1GKb/H04WI4+b
-         Kyo60U4U0436xvY0sNGjGkS3jrIC4pz/ys58OJhsYgiPuGzr4/kK8LFEE8LzrqjXRlmc
-         KeCw==
+        d=gmail.com; s=20230601; t=1756986841; x=1757591641; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eOyaOy1TUeTlLQpuH2jY8lV+lD5/5FEO5WmDobRugY0=;
+        b=PYXlp/V4vn661Br+uYIc0HktWnrpDmlirLLK7bq4inbpnAHM5NpTkoykTyAaajm9YX
+         ZoI+WaRgz0eoZ64VCBaCr3mkdPoyKtQSRjQ3Tme3OMLbfeXn82cUwRtIfF2kRPmstTIV
+         JqzTCZt39rpGRkhkivt0bZ3WAFDt86KZ5e7N0m5O3MvshaEO9JPnanJdecH3nKkIgi2B
+         KExvp1vkeMFnGJzGA/q5QwfOLXIJ+GnJEMIV1aIqIfBfGn3V5o65SCB68yq27u7rdW9j
+         ILypoGKG/GHNKeM/7Y0mmDIfradfOBF1pFwO4Iz6zmlC45po6DpmqVwfhB6rgoiuQ40l
+         zsoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756972576; x=1757577376;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eZ8jod7Af56ytSP2ydZ4q7A0RJBJCc32H7x6V6cO39I=;
-        b=hscIZZwQs8RbXXy/Y3brSINSQ8Rcj3IIXi34EfP/31JARiWAwBeEThVlX3X0Cvw0rv
-         M9Rfkpmu9g6oJTgjxpOePKFNa8AJSerjAXNopi5x3eyCorjtHDa26sakF4AZ06Mwq60D
-         N3OwvF5y82AioHG01jsA4uSMxYXPf+iWhugXY+eBgjBXnsDwryAQOVJ5mfZdX+rNR1pp
-         Q64ajC+yBJ74R4yl2ZmHtmG7Zzs1WWuGA7HnXh0rIkEA6i2oPYdoyeE2r7ejHq7Ybv7A
-         tQODTCkYcpVPEL/T+Wmh8kyIDc7cUPtX4oAKiDg/tccn1j0h7NtL5zjX3Rj8OWHaWb96
-         Gp5A==
-X-Forwarded-Encrypted: i=1; AJvYcCU11A5DCCDrz2uJkhxYWOgcWsIkzRGBcTjP2/8S+eNWIuVb+OO0UfFhUmun+5p1NHd7Ln4GreYU1rEW7niQREJ7giTR@vger.kernel.org, AJvYcCU8JD3xul9F98AhMBmHg8i+49iqgxXRGTCZQNca1iAjdERac8P4UPIxRF+pooWe0MxmfddZazIGcNpH09x0@vger.kernel.org, AJvYcCX2E/Y0SEILnNJ5yYZA+KZSS4R+A6FhIuwEJCrgcUQCau83umQ2WIcz9jzv8/OMhpLJoaU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzyf9FEvHRvBmN1wTc1XU01KpZRTpwcYbzhJ24h+zszrOY90DAl
-	ISCYOFbXKDntCNIGWzQ7jcaPMSDN7MV3MuvtasTbXHb3585WV/xG2NTp
-X-Gm-Gg: ASbGncsFK2+Hzar03iYJgkE5MavFQxzyrdO4+pyH4qtoaAVqUzNfexReu7cx7QzlCNm
-	kS8wesstgovjX8SNAoR8RkdWNRgPCKBF3I5Fz8R0Pmi1n2/4RtcD5AvAMHvjVgUSbNtT/zSkVsK
-	tyh7g+yw3M+rFZzmzRdQGACqqRre/q+HSBvRj3NU3HFt2lI8PP79wGNbYzJe1tdzqxAduMXjqMB
-	HqusaF9cBYcIK5g/Rm3grQ19Oczj72hOtmGargSBeDVJ6/luIFZivLR/cEmqtQlkNmfw0KOrvnK
-	oRImdLoF4DfWnRhkw7lzxgwLB6gnDmDeHCx99Wo4OKznFwoZMdHac/kuhv2KbifdXg+zN6g/Tog
-	TQd/Kirj8DLYc/vXhypwoD7GoV0n+DJ6x
-X-Google-Smtp-Source: AGHT+IE8ZYTZ6PG3uV+NaUilMh28NQOiuNYmEFxVnG9FaTM0hi8Bsp68jmqpA8bcoET0M2dRNp7x+Q==
-X-Received: by 2002:a17:907:3f9e:b0:b04:33a1:7f11 with SMTP id a640c23a62f3a-b0433a18511mr1259366366b.26.1756972575999;
-        Thu, 04 Sep 2025 00:56:15 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aff173ddc78sm1331075966b.33.2025.09.04.00.56.14
+        d=1e100.net; s=20230601; t=1756986841; x=1757591641;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eOyaOy1TUeTlLQpuH2jY8lV+lD5/5FEO5WmDobRugY0=;
+        b=UUpyJMpYl3cxDLWr8/iCq6+STHTq+SgiQGc1KA4BZyhxTE/NjNWEgLtNGR6Vr/bWNU
+         lk6dBD6LQZMmiphdlOUneKcLu1To91bpbAfuwxfakrDL8jKDrX1/ZrdD5Uk8JmkxArfB
+         c2vKGUuwOxsmS0EpU2E4GBbTXgFu3o18oeIKrSvhhjHMUI+yGGY7YZL6YSvI2KRtUgca
+         NHBzRk/83/J80/aJK5FID9v/FQ14wpgL1FgZtKPN9w5Lr3Ye5zAoUotJtB4eWX1JlouJ
+         ze2yWs38StAzZ6y2k+s/8S7yKBofMwq0mYh4Knlo7ChZktO7Z/ErFutHj5Skit/r7Vij
+         8nog==
+X-Gm-Message-State: AOJu0YwcTuFUiq5TvEk+aFQvBhkel1doHi0jbd+ZM4WXmtNvSgsCsz1Z
+	5Dc2sw3ByBtRY2ssX6jRgmar+KOTm2AyOzTLkpp6pZlFqQZ7493qvmue
+X-Gm-Gg: ASbGncsjKkf7peaH0WrtaYE2aWvLadIffIqTNK1suxsP3lxdUsSWCfma7ezCVgKGDyQ
+	6V/8+HeI23y+L6/kHT47f0DMvRRe7JE4aMML3TpArGkqv6rIy76F+As4AQU+BpF2jZm0uTwDCg9
+	ezlATMYRUU74n17NkL5ozELbMj5hp+Z2Y56sDzztfd2p0sVFJ20PN803Z37UhfQ23fzACQmhoOE
+	6gHZeucuaWGzMkbJh9SjpP1qv5w1crWMoPj1cexTIB0Vm22BQ8p9wBcPFnb5MMw2f2flyvTv/GH
+	JkpphmcYYxRSH1PT0bqvzFfEpvpbhjxbwd21ZDcqQ01fnbZg7HjUwbolLyrsoOS1bVioe3TXLwV
+	9JvVdHOrGI0GzVvm0+HtWFr8HM6NbK7XNogtP0nsW
+X-Google-Smtp-Source: AGHT+IG5U8I77c0aXyWTZbBAke1v35au5SmobUKELJ9QsTDU5WcZb24e3FlTusI3wJ/BkyFpwW2QiA==
+X-Received: by 2002:a05:6a00:14d6:b0:770:579a:bb84 with SMTP id d2e1a72fcca58-7723e21e765mr20732802b3a.5.1756986840648;
+        Thu, 04 Sep 2025 04:54:00 -0700 (PDT)
+Received: from devbox.. ([43.132.141.15])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77231f40553sm18016441b3a.43.2025.09.04.04.53.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Sep 2025 00:56:15 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 4 Sep 2025 09:56:13 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Jann Horn <jannh@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Jiri Olsa <olsajiri@gmail.com>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCHv6 perf/core 09/22] uprobes/x86: Add uprobe syscall to
- speed up uprobe
-Message-ID: <aLlGHSgTR5T17dma@krava>
-References: <20250720112133.244369-1-jolsa@kernel.org>
- <20250720112133.244369-10-jolsa@kernel.org>
- <CAEf4BzaxtW_W1M94e3q0Qw4vM_heHqU7zFeH-fFHOQBwy5+7LQ@mail.gmail.com>
- <aLirakTXlr4p2Z7K@krava>
- <20250903210112.GS4067720@noisy.programming.kicks-ass.net>
- <CAEf4Bza-5u1j75YjvMdfgsEexv2W8nwikMaOUYpScie6ZWDOsg@mail.gmail.com>
+        Thu, 04 Sep 2025 04:54:00 -0700 (PDT)
+From: Hengqi Chen <hengqi.chen@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	puranjay@kernel.org,
+	xukuohai@huaweicloud.com
+Cc: bpf@vger.kernel.org,
+	Hengqi Chen <hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next] bpf, arm64: Remove duplicated bpf_flush_icache()
+Date: Thu,  4 Sep 2025 07:57:03 +0000
+Message-ID: <20250904075703.49404-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bza-5u1j75YjvMdfgsEexv2W8nwikMaOUYpScie6ZWDOsg@mail.gmail.com>
 
-On Wed, Sep 03, 2025 at 04:12:37PM -0700, Andrii Nakryiko wrote:
-> On Wed, Sep 3, 2025 at 2:01 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Wed, Sep 03, 2025 at 10:56:10PM +0200, Jiri Olsa wrote:
-> >
-> > > > > +SYSCALL_DEFINE0(uprobe)
-> > > > > +{
-> > > > > +       struct pt_regs *regs = task_pt_regs(current);
-> > > > > +       struct uprobe_syscall_args args;
-> > > > > +       unsigned long ip, sp;
-> > > > > +       int err;
-> > > > > +
-> > > > > +       /* Allow execution only from uprobe trampolines. */
-> > > > > +       if (!in_uprobe_trampoline(regs->ip))
-> > > > > +               goto sigill;
-> > > >
-> > > > Hey Jiri,
-> > > >
-> > > > So I've been thinking what's the simplest and most reliable way to
-> > > > feature-detect support for this sys_uprobe (e.g., for libbpf to know
-> > > > whether we should attach at nop5 vs nop1), and clearly that would be
-> > > > to try to call uprobe() syscall not from trampoline, and expect some
-> > > > error code.
-> > > >
-> > > > How bad would it be to change this part to return some unique-enough
-> > > > error code (-ENXIO, -EDOM, whatever).
-> > > >
-> > > > Is there any reason not to do this? Security-wise it will be just fine, right?
-> > >
-> > > good question.. maybe :) the sys_uprobe sigill error path followed the
-> > > uprobe logic when things go bad, seem like good idea to be strict
-> > >
-> > > I understand it'd make the detection code simpler, but it could just
-> > > just fork and check for sigill, right?
-> >
-> > Can't you simply uprobe your own nop5 and read back the text to see what
-> > it turns into?
-> 
-> Sure, but none of that is neither fast, nor cheap, nor that simple...
-> (and requires elevated permissions just to detect)
-> 
-> Forking is also resource-intensive. (think from libbpf's perspective,
-> it's not cool for library to fork some application just to check such
-> a seemingly simple thing as whether to
-> 
-> The question is why all that? That SIGILL when !in_uprobe_trampoline()
-> is just paranoid. I understand killing an application if it tries to
-> screw up "protocol" in all the subsequent checks. But here it's
-> equally secure to just fail that syscall with normal error, instead of
-> punishing by death.
+The bpf_flush_icache() is done by bpf_arch_text_copy() already.
+Remove the duplicated one in arch_prepare_bpf_trampoline().
 
-adding Jann to the loop, any thoughts on this ^^^ ?
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ arch/arm64/net/bpf_jit_comp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-thanks,
-jirka
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index a98b8132479a..f0b1cb2c3bc4 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -2773,7 +2773,6 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *ro_image,
+ 		goto out;
+ 	}
+ 
+-	bpf_flush_icache(ro_image, ro_image + size);
+ out:
+ 	kvfree(image);
+ 	return ret;
+-- 
+2.43.5
+
+
 
