@@ -1,81 +1,81 @@
-Return-Path: <bpf+bounces-67538-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67539-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E7DDB45177
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 10:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E2F6CB451B0
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 10:38:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B651016CF19
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 08:32:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B53A317F38E
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 08:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2483112C3;
-	Fri,  5 Sep 2025 08:29:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1810827AC48;
+	Fri,  5 Sep 2025 08:38:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GxqU0wHn"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R4b+CBZZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037793112C2
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 08:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80F1222594;
+	Fri,  5 Sep 2025 08:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757060961; cv=none; b=sPzklzK+Z4W0gIi0B4+0Mt6lmo4NVFwNXd+OVTqRDync+9Yc8z3HEKIXNPLDBzyD+rVoLjzfaiz52WHNt4LfmyWzAz5QaFerTlULm4wYqTa30SN+L1TunKkglXmS9/eDwWJyf89+6couRQcjhVR89hPbE7AidePmR2BKRaW5Uaw=
+	t=1757061530; cv=none; b=D2ks8FjOYMp1zzo2MrggSsAJQk3fj/IJoNxOGhyo2N/v2J0wF2QFB8wSYRCfqshm6G0HduqnhE1O7xXkEYZ/NtfOYFqOjigCiS+kmb4dlO0qh6bjaI/kz/NAc4nDV5E4YVhkm/CyFl45/8FtRdPDzmyow7yVdvFgRLuwxoywIyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757060961; c=relaxed/simple;
-	bh=kwtRzEimvtpLrmOqqyXZ2f1tX9zUnglfb92WvRi+wAc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=H66zVOPKZczCJAzBDrMo3f4nrJrGsNAZl3cC01h85DYcAgB2qYL2wWJX/QmE+0S64J0WZTxkwNeauIDquROXzm56CPzUUUOResNgtV2oJOIAXMCQnyRkc5WKQ6W2pY8gDwD1xxvh7R2JVNe7DGVfGxDB57jEHUCtlgnjSDNfDPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GxqU0wHn; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3dcce361897so1277607f8f.3
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 01:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1757060958; x=1757665758; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AjrpyuHiQ2iH5gQyFoJsWbyIGpc1VmBeELccX5MB0vw=;
-        b=GxqU0wHnPbimGnQMJydFp9h6gRu+1fM/didYq1YsDD96ZNHK1tjOF15VNtlJmDn5Fa
-         FFUvA1YwRjbDNi+wACdQhRBrOyoRMAJEmWK25CA6P88qrYUALoNbrIfHZJ6lJCxSTi9Y
-         9yioZHy7uM3rpybbvtMQvsF3YNzA7KrhiePIJyJdkCv/2fA/UBl/oirI3jX+BRS0gbnA
-         JSOyuJ5Ww58FfBwBF82qHuBb/twVgCFK3KYs2COTOztUBQpo3ktNKde+iVLSxwQ69JJI
-         /4CKwGD6zsV0tzX+3VYft2qXLxNVht9ZF1fNEfgp3Y+dJ/bCDjUYQrvtIfnhx5wekKNh
-         Ah/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757060958; x=1757665758;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AjrpyuHiQ2iH5gQyFoJsWbyIGpc1VmBeELccX5MB0vw=;
-        b=ECNKfysJkNvOIMpik1ruuzV82dSBHnlGpS+XgrMVz0tFzPkgwkTr4y9c27D4JADjez
-         ZfwOT71YS3ln1dAQNpgh/1HP8fZ2/MqMZ8BUsWrQL2jlkxd2j3+W1devT5mmwqJVstnS
-         NnwxBypfRE6OAjdNOG2dGy2kcN1AuAWqoN7ydcCinUpPWjVpQ+bUOKP+GlgHHqfxFcKF
-         cf+jTr4l2HjIngfaEBq7NLH91wBW+dNZ/S16y1U/VpxCjYb4Vlt31I2EnZa3oRALqA9z
-         wNY3KiXABxk86Ltm0YmR3as2MWJpogDxP1iJIzTOeJcFNVvcVTInpmRN0sWPiZIku56J
-         kWkw==
-X-Gm-Message-State: AOJu0YxYdoMbXeTYbH/IVsvIzX6DgxAIvcIaNaXVpJKxVTVlqgOj0w6r
-	lfmH9wg7rNa4sUvENGFPntz8hBZV9KeTcAHnYEQdGQfzRAtejdM3eWKnmV/bXdGS4OU=
-X-Gm-Gg: ASbGncvopA5A4HRPPuxRT7tyEeLDnA1IVZnL1nus2HOLblbxq3FE6sknNrbPR/azzlD
-	q640OsLBwuoizOtoNdtECWajxsiXMMw0BhuC8NPmjuBHASXi9MXjECtgFU65wEe0kzf4FheV1Hw
-	f1SjRzA96pqYB6dnS+8HNvr7d92pkiPVeKHW3e3nJMBh0vlh6VvBiiRojd2Xz0xT/mbkx5ov07B
-	F4nDB3ZOIF9Vau9QraKjX4QWYswIDJV0s3nhcd5aO64jcrfi0O6pmOQsdGPY/FgewnMg6WNewMi
-	6ir+kwsDxuCIxLQ4HH92Rdzfh99webLGWE71xW0NkH+G3w11skrzD/hW33wg4e3TJRVqK15VQhG
-	um/HU0tfOnis2gzwBiCkvQH1cUwqOWiOgqqe1mQ==
-X-Google-Smtp-Source: AGHT+IFEvCT7cftOHZO5jf4iWcOS3253s9HffuDuqj0+9u9GDfbc5U393v8kkgducPBi6qjGPaKlww==
-X-Received: by 2002:a05:6000:22ca:b0:3ce:f0a5:d594 with SMTP id ffacd0b85a97d-3d1dca7bc64mr20100856f8f.13.1757060958381;
-        Fri, 05 Sep 2025 01:29:18 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45dcfcba94esm37384985e9.2.2025.09.05.01.29.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Sep 2025 01:29:18 -0700 (PDT)
-Date: Fri, 5 Sep 2025 11:29:14 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [bug report] selftest/bpf/benchs: Add benchmark for sockmap usage
-Message-ID: <aLqfWuRR9R_KTe5e@stanley.mountain>
+	s=arc-20240116; t=1757061530; c=relaxed/simple;
+	bh=jkLTVGDQyGvp2VGSJ84Q/tzQ9JUtr5HITxCZfTbHdoI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=APYDPjEUYaTnbU8RCKGXZ71gRzL3pb2dcVcsNRUxmCEyeX0pyuZndg11alMDAG1dBSLlCX4KKDUyfR8hqKEm9yabakOdTtemImzxlGtRZ1N70xDMsGZCm20mMCZ8/pH4MT3w75gTTbNLkxJba6OiCyizOjfAv8S7zIytqOrTLJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=R4b+CBZZ; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Om9p5nchqSzMFiVI8uUuwUfI4UaRwvpBhNH4IXNq5Hg=; b=R4b+CBZZ5G4FtZxCDVm1UoPQUo
+	v8kkly1N6o0/AOPJPJi0TJ5nUWajzLZOyYrf78kCoF+932Cpdv+JJ4VQxrLdu4TNxPt9IaR0w296U
+	nXMQGyQ5T2RtynQVzL2lME7/S8r1r/9ZxHG7APSRZRPYtoZWXyz/da/yg0idzNOzK5enKZkGJsAFh
+	TcdGonZKELB7XMFN94kFo6HeXtJ6qwbQG1/J/fSLpHLmOeCpAYMG8MvTfXqDWKksKjIl5e7RDrI9Y
+	NQ/a4ybnXuCNqzl+ylEf/k5CX2XyL5RnOwNFfXvKQZKBkw0kF4gfEyOCE7803jHKZEzVcWHY3Rrep
+	yYbpn5vQ==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uuRxp-0000000EmVO-3F3o;
+	Fri, 05 Sep 2025 08:38:34 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 552C530034B; Fri, 05 Sep 2025 10:38:33 +0200 (CEST)
+Date: Fri, 5 Sep 2025 10:38:33 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
+	X86 ML <x86@kernel.org>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	David Laight <David.Laight@aculab.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: nop5-optimized USDTs WAS: Re: [PATCHv6 perf/core 09/22]
+ uprobes/x86: Add uprobe syscall to speed up uprobe
+Message-ID: <20250905083833.GR4068168@noisy.programming.kicks-ass.net>
+References: <CAEf4BzaxtW_W1M94e3q0Qw4vM_heHqU7zFeH-fFHOQBwy5+7LQ@mail.gmail.com>
+ <aLlKJWRs5etuvFuK@krava>
+ <CAEf4BzYUyOP_ziQjXshVeKmiocLjtWH+8LVHSaFNN1p=sp2rNg@mail.gmail.com>
+ <20250904203511.GB4067720@noisy.programming.kicks-ass.net>
+ <CAEf4BzZ6xSc7cFy7rF=G2+gPAfK+5cvZ0eDhnd5eP5m1t9EK-A@mail.gmail.com>
+ <20250904205210.GQ3245006@noisy.programming.kicks-ass.net>
+ <CAEf4BzY216jgetzA_TBY7_jSkcw-TGCj64s96ijoi3iAhcyHuw@mail.gmail.com>
+ <20250904215617.GR3245006@noisy.programming.kicks-ass.net>
+ <20250904215826.GP4068168@noisy.programming.kicks-ass.net>
+ <20250905082447.GQ4068168@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,35 +84,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20250905082447.GQ4068168@noisy.programming.kicks-ass.net>
 
-Hello Jiayuan Chen,
+On Fri, Sep 05, 2025 at 10:24:47AM +0200, Peter Zijlstra wrote:
+> +bool insn_is_nop(struct insn *insn)
+> +{
+> +	u8 rex, rex_b = 0, rex_x = 0, rex_r = 0, rex_w = 0;
+> +	u8 modrm, modrm_mod, modrm_reg, modrm_rm;
+> +	u8 sib = 0, sib_scale, sib_index, sib_base;
+> +
+> +	if (insn->rex_prefix.nbytes) {
+> +		rex = insn->rex_prefix.bytes[0];
+> +		rex_w = !!X86_REX_W(rex);
+> +		rex_r = !!X86_REX_R(rex);
+> +		rex_x = !!X86_REX_X(rex);
+> +		rex_b = !!X86_REX_B(rex);
+> +	}
+> +
+> +	if (insn->modrm.nbytes) {
+> +		modrm = insn->modrm.bytes[0];
+> +		modrm_mod = X86_MODRM_MOD(modrm);
+> +		modrm_reg = X86_MODRM_REG(modrm) + 8*rex_r;
+> +		modrm_rm  = X86_MODRM_RM(modrm)  + 8*rex_b;
+> +	}
+> +
+> +	if (insn->sib.nbytes) {
+> +		sib = insn->sib.bytes[0];
+> +		sib_scale = X86_SIB_SCALE(sib);
+> +		sib_index = X86_SIB_INDEX(sib) + 8*rex_x;
+> +		sib_base  = X86_SIB_BASE(sib)  + 8*rex_b;
+> +
+> +		modrm_rm = sib_base;
+> +	}
+> +
+> +	switch (insn->opcode.bytes[0]) {
+> +	case 0x0f: /* 2nd byte */
+> +		break;
+> +
+> +	case 0x89: /* MOV */
+> +		if (modrm_mod != 3) /* register-direct */
+> +			return false;
+> +
+> +		if (insn->x86_64 && !rex_w) /* native size */
+> +			return false;
+> +
+> +		for (int i = 0; i < insn->prefixes.nbytes; i++) {
+> +			if (insn->prefixes.bytes[i] == 0x66) /* OSP */
+> +				return false;
+> +		}
+> +
+> +		return modrm_reg == modrm_rm; /* MOV %reg, %reg */
+> +
+> +	case 0x8d: /* LEA */
+> +		if (modrm_mod == 0 || modrm_mod == 3) /* register-indirect with disp */
+> +			return false;
+> +
+> +		if (insn->x86_64 && !rex_w) /* native size */
+> +			return false;
+> +
+> +		if (insn->displacement.value != 0)
+> +			return false;
+> +
+> +		if (sib & (sib_scale != 0 || sib_index != 4)) /* (%reg, %eiz, 1) */
 
-Commit 7b2fa44de5e7 ("selftest/bpf/benchs: Add benchmark for sockmap
-usage") from Apr 7, 2025 (linux-next), leads to the following Smatch
-static checker warning:
+Argh, that should obviously be: &&
 
-    tools/testing/selftests/bpf/benchs/bench_sockmap.c:129 bench_sockmap_prog_destroy()
-    error: buffer overflow 'ctx.fds' 5 <= 19
-
-tools/testing/selftests/bpf/benchs/bench_sockmap.c
-    123 static void bench_sockmap_prog_destroy(void)
-    124 {
-    125         int i;
-    126 
-    127         for (i = 0; i < sizeof(ctx.fds); i++) {
-                                ^^^^^^^^^^^^^^^
-This should be ARRAY_SIZE(ctx.fds) otherwise it's a buffer overflow.
-
-    128                 if (ctx.fds[0] > 0)
-                            ^^^^^^^^^^
-Instead of .fds[0] it should be .fds[i], right?
-
---> 129                         close(ctx.fds[i]);
-    130         }
-    131 
-    132         bench_sockmap_prog__destroy(ctx.skel);
-    133 }
-
-regards,
-dan carpenter
+> +			return false;
+> +
+> +		for (int i = 0; i < insn->prefixes.nbytes; i++) {
+> +			if (insn->prefixes.bytes[i] != 0x3e) /* DS */
+> +				return false;
+> +		}
+> +
+> +		return modrm_reg == modrm_rm; /* LEA 0(%reg), %reg */
+> +
+> +	case 0x90: /* NOP */
+> +		for (int i = 0; i < insn->prefixes.nbytes; i++) {
+> +			if (insn->prefixes.bytes[i] == 0xf3) /* REP */
+> +				return false; /* REP NOP -- PAUSE */
+> +		}
+> +		return true;
+> +
+> +	case 0xe9: /* JMP.d32 */
+> +	case 0xeb: /* JMP.d8 */
+> +		return insn->immediate.value == 0; /* JMP +0 */
+> +
+> +	default:
+> +		return false;
+> +	}
+> +
+> +	switch (insn->opcode.bytes[1]) {
+> +	case 0x1f:
+> +		return modrm_reg == 0; /* 0f 1f /0 -- NOPL */
+> +
+> +	default:
+> +		return false;
+> +	}
+> +}
 
