@@ -1,139 +1,145 @@
-Return-Path: <bpf+bounces-67642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0112B4662D
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 23:52:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 722C3B46643
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 23:57:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C83B51D23739
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 21:52:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 288D07B2DB1
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 21:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E58287241;
-	Fri,  5 Sep 2025 21:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E1E2F3604;
+	Fri,  5 Sep 2025 21:56:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CGhRh6Rx"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rIhrS3up"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D34C22129B
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 21:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1DE27FB37
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 21:56:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757109120; cv=none; b=b6fm0SgTN6G2IjGAOv5e7qUrrWJo80jm7/i+4XT5Rdr1WoHtFqbC7xXdEVSvnYyDgKE9UhV9VfQcPizikZb2XZAkgGf5VHRtIihJ8lZQA0mFXEw17Je/9Nu2cqsEk7vWluQ2Qfx3mIbl9LumeThYGAFnXQIImkNvZk3zMDGIyU4=
+	t=1757109410; cv=none; b=bODMbu/5yeL+QoW2Ej7wCpo/YcLh4kkaN8eUw2iIA07wCqDZUW2brCPI25VIS0HMhaXFZAfmOu4ZuP2ilaGo9dENtZaioMb2+03EPDoQByNkCgImPb9Qjr1UJ28JaCZgZ8pMQkhus87Okm74HO82VTAexoOOz7XvKrle+NvyUBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757109120; c=relaxed/simple;
-	bh=4lYuciLgrFDDNH1UYNu7CasoUrpi/S5C5VKKOipoEQQ=;
+	s=arc-20240116; t=1757109410; c=relaxed/simple;
+	bh=K4rPEUhgDOci25ECMoMn91PK5HGu+UvUImo0Jrj/eTg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Yt9B1E9s2lL4sbGIDHMbxqdnMpLQ9YdRTLAm1/LdSNxBi7s623C/DZmxzI1rie2FvjB+vJGhH4ItkP+DfbK34g7JG5rk+5lTae8cdb20h4QZDdmeriFTc5A4TaAygHEUsLUNRv1xSaLsIZxdz2JDKNCcjBaCvSZGF7gQ6bkqk0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CGhRh6Rx; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-248df8d82e2so28332445ad.3
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 14:51:58 -0700 (PDT)
+	 To:Cc:Content-Type; b=URwIytBI5vfwQpTKtrj2voHFxnKrDv1HflllFwYx4X+CPR8HQxi5InICqI53RkAAeNw51MQ5WqiSijue+RbfSVrTn+QWZyA8DP2M3bn5Ph296QRG6MCa5Su6JmdXZJ+G+xIxJSY2OZ253LMX7JH5mjxvlV3ojszAxcWCSqwxIyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rIhrS3up; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-32d3e17d95dso238801a91.3
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 14:56:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757109118; x=1757713918; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1757109409; x=1757714209; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qFQVJz+YDMCWdxavl6HxN+CA7fguDUAUcHuwcPmPUdQ=;
-        b=CGhRh6RxhBf88ALobBJI8Ze9wRP7E9OslGkaVZs8dIcZzYT5aRrSmaIaC7mwbK9pbQ
-         Nw1ol32/vRSWMXZqRqDcyz0NYiLZizFx2/isxItAqVzxt+c19deursERkcdp7sFJk8AX
-         mALjasaxDgC0vObrYqP3Gz40qVwpreX5OjfkHfUxoUfdvY+mMKgddycabi65kipyTujr
-         M+3HUJ27P35n2wwDvNXdq8aRl41gEt3/HjsFAOw9McvA5tVPy0dZc6guWfqU8Kje1wW9
-         Np0CUFNnej5gMQPPkhXd7aksDSY1Avfo509in88Bu7qAxwS8OuTBoeo/EyDLMGMiS9cG
-         856Q==
+        bh=K4rPEUhgDOci25ECMoMn91PK5HGu+UvUImo0Jrj/eTg=;
+        b=rIhrS3upf8VLji/Ff6dAZ7B9GVFGK+8v7KfuQ9zBdrmSo/WROcS3MP+HlfZlRck6p5
+         P/cW40O4jrNDjF6FQ7ak2vqD+rJ6sFtkj4YYuIb3p5MYVwYKDVJjDr9vaUx5GMwjZ4WS
+         REmoEBCFEhFEceelpidwScH7kWxo03x6E11Y4KhNRdVBYcxQ0mn8iZxrpy1uXaqvGrAN
+         jlBFBuj73yh9Mwy5//ObAmiccRUcyrm9o6heNZ24jZ46wuIbuCH8BGvI8Rcbdx0DhUDD
+         q8BIdaCWogiWTPncLT/JMtt/QVHLLkvITqNfCQczXCH56rtoIDHWdwOvAAm+zyqsoXMW
+         imnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757109118; x=1757713918;
+        d=1e100.net; s=20230601; t=1757109409; x=1757714209;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qFQVJz+YDMCWdxavl6HxN+CA7fguDUAUcHuwcPmPUdQ=;
-        b=J8lbAcc+qAuCVczjr/5Z9nzbKmjuGge62p5+pEgu7mG2fuQF5G9LQzLXXCwpZ/TmjJ
-         DQt6uEsUxcvjczzQRTbjC7sC6Wlr0LQDiD3RcHwU7JmR2c91bcGcAU3YFFGT0X20df9+
-         AR5hxR5y5byzGjqNuRvG1A5G5sR5z3rtDS9rfiopgDeB3KTZLWq89s58o34CgiG0WBDs
-         qTDq5iaE0V513rxKbZ7m8vKmg3F16WoDQXfq+qh+l0lk2/eyejTQKHogKHzCZIZ5j38h
-         u2s2nBSrXFmDrS0kHCfL8/5iPpcVE70b4qo78+OkpuO0z1cGEQBTfPcO9fyzGdJYY95X
-         UkrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUp5xb+WrAKGAtNKuQNbrk7L+sQvkErXBYmkHA3M6jZbsy+atljTAycor0qm0ulAzF4EQc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywb26+EKdOKV8ljx9AdC9C+cTBPvGh9Qfv8yz7OPng8VAUda1A+
-	CDl9eyg5ttgMvMmXvtuFs5dBM1g01U2EwJgW86f4zgkIRrUI9ypOqnSQKoho4zS115zWN9UzqpE
-	E9k4qYtmi6pPWgUoLmB8RlR78C2kxdhw=
-X-Gm-Gg: ASbGncs4Q6PbLe85DYADYWIE6lae9Ov1sZRxPyKGsImx1P0BVLQ4yrH1xgAdZyFGKEX
-	hDDCvqDCr1a/l1LFKSJ1GWqk0CBocnUq3yDJaU09L6dkGWAaVPTb4KjFFQlpxVEXcH1Kg1zA0OW
-	YKI+KVzurtnz2ZK6cihuRv5YV+Z4J//1jrSqqtZ54ILEcwZBNclaj3ci1/6bXkIQ6wbMzhCpwCc
-	d6WCm8y1YlRDQw=
-X-Google-Smtp-Source: AGHT+IHarFSvDXs80fx+ZJ6BgQ9S+OuLRq7aSkVnC9lXT/E8bL31C49uUu2Jvjso9FlrfFqJK6S2ZMmlJ9IeobAxxYI=
-X-Received: by 2002:a17:902:e88d:b0:251:2d4d:bdfa with SMTP id
- d9443c01a7336-2516dce7bbdmr2062365ad.20.1757109117947; Fri, 05 Sep 2025
- 14:51:57 -0700 (PDT)
+        bh=K4rPEUhgDOci25ECMoMn91PK5HGu+UvUImo0Jrj/eTg=;
+        b=Gk4Tigq7jm7woZ0d01/TyCuIPIeENCWlFr4YdUZhbXPB+uifMF+jQpXDoMddCEC2RT
+         CNefJX58dfMAETBE6/PkQ9ckoihCpDujjKT68Uo+1sgDlNmBk0VoollZjrXkWIUNRUTW
+         MkQ57WmySh0vIWkpCbeuSNxKvEynSaVdLcyVLXD5LVH4QreWNdBorvkDznjfPexvsnAk
+         lIC31Deo3U4EdEE6HnyfT/PvszTOnv1cv20Q6ZJM36+rfEMDKkS8lBCe7DghH1qAjHy/
+         PUed6YBk4bIWR56e9weQhDdNGSonS6/9aob+21ThwVmFnviRhKW42jWr6Nh2Entv7D8h
+         uclQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWpa//u4zm2bJoMJk0eQUsVXlySL88gq2rurTN5jfrTxQOiUcB/+WDi1ufmzq/6kBzo06M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxH8CQxiD2hH8IdRmVKgCssEhoHJdLkdkIhm2a+D6SrWdsrOB7
+	pdxoNXPcVTe1FMHHAKJzdyXy+Q4cva3k2h/pdIYAEbjZJn13yeVEvmB3ayBs8ZLU46xSPVYe4tj
+	cynYcWoFvuwfFRIFtX/3dFLKtL9SgqFI+1AsRAhWv
+X-Gm-Gg: ASbGnct8Goz/FfONtf5wF5e1T6cTFlLRPukU3Wt4lanhKSrc+SUNdZMHPV18nvEfDef
+	DPFa4vLB0x9SQumU8xB//KiGej2gdEPz/hhaefF/3CaJsgp1/Ue6qwuRWx17LQBkKhmMyOsYu1o
+	dRhuN3gbKhkqEgloC6QmC2Az4fcGyS3QghgoomZwCuFWrsAfmEDQEwnF3Md3K8trEVWQn2vtHMb
+	Nmis2f2s0WMFs8TERpukvTiz8hoKrI4bklHmwnjxRQrs+RTJR34JwFBV78Mf1cIQeFVj3ZUy8vy
+	05DckrpUyE2feQ==
+X-Google-Smtp-Source: AGHT+IHee2bfwNAMC7Lf9gLv17bkMAwutCH+4xPIrizmqEN9SW0fuoijafwHuVi6n2B6Nt9NE9ZR8AeiczyOlODnHb0=
+X-Received: by 2002:a17:90b:38cb:b0:32b:df0e:928f with SMTP id
+ 98e67ed59e1d1-32d43f936ccmr452341a91.37.1757109408411; Fri, 05 Sep 2025
+ 14:56:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250905140835.1416179-1-mykyta.yatsenko5@gmail.com>
- <ac6e70c96097c677d5689d86dd2bc0dea603a5d1.camel@gmail.com>
- <CAEf4BzbZg-BqMQV5vKHSDPabZQbpHFbdZhQ4NXCRiAZvh0yc=A@mail.gmail.com>
- <d38c391c806ed34e9b669e64be4e1c85afdfd6e3.camel@gmail.com>
- <CAEf4BzawRYXXSJDiK4GzuYo=g-N_-QMgUXQAGN15eaPYuWXBWQ@mail.gmail.com> <84b34c685418234c21bb3c127bb966d5744efc59.camel@gmail.com>
-In-Reply-To: <84b34c685418234c21bb3c127bb966d5744efc59.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 5 Sep 2025 14:51:45 -0700
-X-Gm-Features: Ac12FXxIsu_4yQIT0sEo_1ZAMyO3waWGzeqU13J88AjeCSGVwzPhmCIIV-fsFsw
-Message-ID: <CAEf4Bza5RNDAt0EW4zo27QhHN=qw4CmJakAneCS6T7URxjq-ig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7] selftests/bpf: add BPF program dump in veristat
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250903190238.2511885-1-kuniyu@google.com> <20250903190238.2511885-5-kuniyu@google.com>
+ <20250904063456.GB2144@cmpxchg.org> <CAAVpQUA+rVJKMXQFATfxT=uX3QaLrCtCG_wtiGF_kt-_KrMRBQ@mail.gmail.com>
+ <sathtxzxvi5zz5gh37twfng7srn7nsdlrdlposompqkq646pp5@2r74fqgbalzq>
+In-Reply-To: <sathtxzxvi5zz5gh37twfng7srn7nsdlrdlposompqkq646pp5@2r74fqgbalzq>
+From: Kuniyuki Iwashima <kuniyu@google.com>
+Date: Fri, 5 Sep 2025 14:56:36 -0700
+X-Gm-Features: Ac12FXx_Dq7bkvb-v_DTHwN8EXWrX7E_LQJFMN4E-0VuPARl91jQFUntqLLHeXc
+Message-ID: <CAAVpQUDjNfU-fqhh4nfPPo1kg0LPcBRbU3ob22k8WtPU_BouZw@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next/net 4/5] net-memcg: Allow decoupling memcg
+ from global protocol memory accounting.
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 5, 2025 at 2:43=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
+On Fri, Sep 5, 2025 at 2:25=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
+> wrote:
 >
-> On Fri, 2025-09-05 at 14:38 -0700, Andrii Nakryiko wrote:
->
-> [...]
->
-> > > > > Fun fact: if you do a minimal Fedora install (dnf group install c=
-ore)
-> > > > >           "which" is not installed by default o.O
-> > > > >           (not suggesting any changes).
+> On Thu, Sep 04, 2025 at 01:21:47PM -0700, Kuniyuki Iwashima wrote:
+> > On Wed, Sep 3, 2025 at 11:35=E2=80=AFPM Johannes Weiner <hannes@cmpxchg=
+.org> wrote:
+> > >
+> > > On Wed, Sep 03, 2025 at 07:02:03PM +0000, Kuniyuki Iwashima wrote:
+> > > > If all workloads were guaranteed to be controlled under memcg, the =
+issue
+> > > > could be worked around by setting tcp_mem[0~2] to UINT_MAX.
 > > > >
-> > > > I switched to `command -v bpftool` for now, is there any gotcha wit=
+> > > > In reality, this assumption does not always hold, and processes not
+> > > > controlled by memcg lose the seatbelt and can consume memory up to
+> > > > the global limit, becoming noisy neighbour.
+> > >
+> > > It's been repeatedly pointed out to you that this container
+> > > configuration is not, and cannot be, supported. Processes not
+> > > controlled by memcg have many avenues to become noisy neighbors in a
+> > > multi-tenant system.
+> > >
+> > > So my NAK still applies. Please carry this forward in all future patc=
 h
-> > > > that one as well?
-> > >
-> > > Should be fine, I guess:
-> > >
-> > >   $ rpm -qf /usr/sbin/command
-> > >   bash-5.2.37-1.fc42.x86_64
+> > > submissions even if your implementation changes.
 > >
-> > command is actually a shell built-in ([0]). At least for Bourne shells,=
- I think.
+> > I see.
 > >
-> >   [0] https://pubs.opengroup.org/onlinepubs/009695399/utilities/command=
-.html
-> >
+> > I'm waiting for Shakeel's response as he agreed on decoupling
+> > memcg and tcp_mem and suggested the bpf approach.
 >
-> Yes, but looks like it's a separate binary, not a command:
+> Yes I agreed on decoupling memcg and tcp_mem but not for a weird
+> configuration, so please stop using this motivatioan already. You can
+> motivate the decoupling simply on performance. Why pay the cost
+> of two orthogonal accounting mechanisms concurrently? Also you are not
+> disabling memcg accounting, so we should be good from memcg side. Make
+> this very clear in your commit message.
 >
->   $ strace command -v ls 2>&1 | grep command
->   execve("/usr/bin/command", ["command", "-v", "ls"], 0x7ffffeaef7b0 /* 6=
-5 vars */) =3D 0
->
-> (Not that it changes much).
+> I don't care how you plan to use this feature to enable your weird
+> use-case but make sure this feature is beneficial to general Linux
+> users.
 
-You nerd sniped me here :) You get that execve("/usr/bin/command")
-because strace forces the command to be resolved as binary. If you run
-something like execsnoop in background and execute `command -v blah`
-you won't see this execve. =C2=AF\_(=E3=83=84)_/=C2=AF
-
->
-> [...]
+Thank you Shakeel, I will rephrase the commit messages and
+clarify the points above.
 
