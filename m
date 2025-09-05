@@ -1,377 +1,170 @@
-Return-Path: <bpf+bounces-67575-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67576-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5ADDB45CB9
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 17:39:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9306B45D24
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 17:55:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C3B31C81275
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 15:39:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BD6E5C2A03
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 15:55:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53AA92FB0A4;
-	Fri,  5 Sep 2025 15:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF15431D746;
+	Fri,  5 Sep 2025 15:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MrI68jgk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Cu/U+6Ps"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CC092F7ACE
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 15:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C78B31D727
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 15:55:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757086751; cv=none; b=Cm3fF8YE5xeCAfU6GZbv3qgfkdvT3C903UfCEkgY0rnOOYCrdVUYwcuZopViAR9mLA80EZ4jQivws410kWucSmbION0GxsM0/0QI+EJRiaTBqtB/Tougyy2CQDugJMGlszKfFdWQyIkErLCrgwpgmx62r3/9ptMAyNEjXH4aw+g=
+	t=1757087712; cv=none; b=kfZZv6jEsX9VpipMhpRVpVXxPuTkeDPy1+LKf7b21UK5RtXJbbfrvBoIkVP0Ef9HG48pBkvCwMhbJDDbQNVOkfoIwGZVdEZE4HDizhYguIxkClpgOr0Wqpf0POsQiKeizeEdQK5mMibkOWXszr8ZKKfv9TN0dN89cLC0C48sor8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757086751; c=relaxed/simple;
-	bh=6yJjvY1b9k8e9wx1gHMiNjPoYCJNnckDyeeoixJUhV4=;
+	s=arc-20240116; t=1757087712; c=relaxed/simple;
+	bh=VK5L9ZQl5SjCnEBuOT7vVdJruIk2fkLuhS+o/xPYcMw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JRcHQvUEmEJJCtahbKBmO0c/ipQbUfSuzKM6T1FyZc+K9CKNlMcJyLOr1PVdbINEDB5S/WgkU0jfSkIro+JkxCfx5OilLI8t82Zci/05Pc6ShMdcNu3qrFp+whCUZPUaA6iXiW2+QNrCX/Obq67Pi1iDXF8j9LL8vE+WRhRwXSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MrI68jgk; arc=none smtp.client-ip=91.218.175.186
+	 In-Reply-To:Content-Type; b=ZN9M0gpiEZuvW299/OEXjNlR1mSKAbPbOom/P+GEprhc0FxZBHEomUWDOoFxBAOkVieej8Uou+DgQ/y4XK+TWNzEWm/a+8W5+rFNrtpz/BjTNgCQ0MkDakQ21h6vvsSDMH8xXIMKGjxzDwgty0+hBloeqm13sN2g2uM26uVf2/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Cu/U+6Ps; arc=none smtp.client-ip=95.215.58.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c3f6482e-fce0-4d9d-a1dd-53bafa901fe0@linux.dev>
+Message-ID: <ca64e62b-740e-4e02-a386-e1016317b071@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757086747;
+	t=1757087706;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2z+LrDSmvHve6i5sE/koHCqrWzmItvc0sUs3qhj55I0=;
-	b=MrI68jgkHtZRcVOe0S2xOVMs2xNfhIUBkmcfRPBaOGMx+Tr9aIxOhx+BuG2WBr5wKZmlcH
-	A4nerbkSXDfUP9DkYLkGekYFmqg3nukOKQXYMvneyWRWuI4y2cu9aMnbzIytLIZKcNx9Su
-	AUD3in79K3Io7MDqbFD/TBSIG0qcOTY=
-Date: Fri, 5 Sep 2025 08:39:02 -0700
+	bh=5SkhDx01VH5ULkTtGZmBjnS7ayJVpHz3ZygQmDSZ2dE=;
+	b=Cu/U+6PsLuRwZnWv3E3Wzw7kScSJJHds5FQyisY7hZ2cFZhr1wFebmDS00NgIUvDISC20c
+	jqLR1yuKPB/o4rskbDHmRuCW9PQ1W88xlz4xNKj8JykWG/iTU2llI7HZIojAN8dn8KU1kW
+	vgZ9r3FJPxIJrxzu629/XpqNrIiGBRU=
+Date: Fri, 5 Sep 2025 08:54:45 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 bpf-next 00/11] BPF indirect jumps
+Subject: Re: [RFC bpf-next v2 1/1] libbpf: add compile-time OOB warning to
+ bpf_tail_call_static
 Content-Language: en-GB
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
- <eddyz87@gmail.com>, Quentin Monnet <qmo@kernel.org>
-References: <20250816180631.952085-1-a.s.protopopov@gmail.com>
- <d75eb424-b399-4e17-800e-ca59d39cc10d@linux.dev>
- <aLqdTM9CL+eOdWBs@mail.gmail.com>
+To: Hoyeon Lee <hoyeon.lee@suse.com>
+Cc: netdev@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ "open list:BPF [LIBRARY] (libbpf)" <bpf@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:CLANG/LLVM BUILD SUPPORT:Keyword:b(?i:clang|llvm)b"
+ <llvm@lists.linux.dev>
+References: <20250905051814.291254-1-hoyeon.lee@suse.com>
+ <20250905051814.291254-2-hoyeon.lee@suse.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <aLqdTM9CL+eOdWBs@mail.gmail.com>
+In-Reply-To: <20250905051814.291254-2-hoyeon.lee@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
 
-On 9/5/25 1:20 AM, Anton Protopopov wrote:
-> On 25/09/04 01:27PM, Yonghong Song wrote:
->>
->> On 8/16/25 11:06 AM, Anton Protopopov wrote:
->>> This patchset implements a new type of map, instruction set, and uses
->>> it to build support for indirect branches in BPF (on x86). (The same
->>> map will be later used to provide support for indirect calls and static
->>> keys.) See [1], [2] for more context.
->>>
->>> This patch set is a follow-up on the initial RFC [3], now converted to
->>> normal version to trigger CI. Note that GCC and non-x86 archs are not
->>> supposed to work.
->>>
->>> Short table of contents:
->>>
->>>     * Patches 1-6 implement the new map of type
->>>       BPF_MAP_TYPE_INSN_SET and corresponding selftests. This map can
->>>       be used to track the "original -> xlated -> jitted mapping" for
->>>       a given program. Patches 5,6 add support for "blinded" variant.
->>>
->>>     * Patches 7,8,9 implement the support for indirect jumps
->>>
->>>     * Patches 10,11 add support for LLVM-compiled programs containing
->>>       indirect jumps.
->>>
->>> A special LLVM should be used for that, see [4] for the details and
->>> some related discussions. Due to this fact, selftests for indirect
->>> jumps which directly use `goto *rX` are commented out (such that
->>> CI can run).
->>>
->>> There is a list of TBDs (mostly, more selftests + some limitations
->>> like maximal map size), however, all the selftests which compile
->>> to contain an indirect jump work with this patchset.
->>>
->>> See individual patches for more details on implementation details.
->>>
->>> Changes since RFC:
->>>
->>>     * I've tried to address all the comments provided by Alexei and
->>>       Eduard in RFC. Will try to list the most important of them below.
->>>
->>>     * One big change: move from older LLVM version [5] to newer [4].
->>>       Now LLVM generates jump tables as symbols in the new special
->>>       section ".jumptables". Another part of this change is that
->>>       libbpf now doesn't try to link map load and goto *rX, as
->>>       1) this is absolutely not reliable 2) for some use cases this
->>>       is impossible (namely, when more than one jump table can be used
->>>       in the same gotox instruction).
->>>
->>>     * Added insn_successors() support (Alexei, Eduard). This includes
->>>       getting rid of the ugly bpf_insn_set_iter_xlated_offset()
->>>       interface (Eduard).
->>>
->>>     * Removed hack for the unreachable instruction, as new LLVM thank to
->>>       Eduard doesn't generate it.
->>>
->>>     * Set mem_size for direct map access properly instead of hacking.
->>>       Remove off>0 check. (Alexei)
->>>
->>>     * Do not allocate new memory for min_index/max_index (Alexei, Eduard)
->>>
->>>     * Information required during check_cfg is now cached to be reused
->>>       later (Alexei + general logic for supporting multiple JT per jump)
->>>
->>>     * Properly compare registers in regsafe (Alexei, Eduard)
->>>
->>>     * Remove support for JMP32 (Eduard)
->>>
->>>     * Better checks in adjust_ptr_min_max_vals (Eduard)
->>>
->>>     * More selftests were added (but still there's room for more) which
->>>       directly use gotox (Alexei)
->>>
->>>     * More checks and verbose messages added
->>>
->>>     * "unique pointers" are no more in the map
->>>
->>> Links:
->>>     1. https://lpc.events/event/18/contributions/1941/
->>>     2. https://lwn.net/Articles/1017439/
->>>     3. https://lore.kernel.org/bpf/20250615085943.3871208-1-a.s.protopopov@gmail.com/
->>>     4. https://github.com/llvm/llvm-project/pull/149715
->>>
->>> Anton Protopopov (11):
->>>     bpf: fix the return value of push_stack
->>>     bpf: save the start of functions in bpf_prog_aux
->>>     bpf, x86: add new map type: instructions array
->>>     selftests/bpf: add selftests for new insn_array map
->>>     bpf: support instructions arrays with constants blinding
->>>     selftests/bpf: test instructions arrays with blinding
->>>     bpf, x86: allow indirect jumps to r8...r15
->>>     bpf, x86: add support for indirect jumps
->>>     bpf: disasm: add support for BPF_JMP|BPF_JA|BPF_X
->>>     libbpf: support llvm-generated indirect jumps
->>>     selftests/bpf: add selftests for indirect jumps
->>>
->>>    arch/x86/net/bpf_jit_comp.c                   |  39 +-
->>>    include/linux/bpf.h                           |  30 +
->>>    include/linux/bpf_types.h                     |   1 +
->>>    include/linux/bpf_verifier.h                  |  20 +-
->>>    include/uapi/linux/bpf.h                      |  11 +
->>>    kernel/bpf/Makefile                           |   2 +-
->>>    kernel/bpf/bpf_insn_array.c                   | 350 ++++++++++
->>>    kernel/bpf/core.c                             |  20 +
->>>    kernel/bpf/disasm.c                           |   9 +
->>>    kernel/bpf/syscall.c                          |  22 +
->>>    kernel/bpf/verifier.c                         | 603 ++++++++++++++++--
->>>    .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
->>>    tools/bpf/bpftool/map.c                       |   2 +-
->>>    tools/include/uapi/linux/bpf.h                |  11 +
->>>    tools/lib/bpf/libbpf.c                        | 159 ++++-
->>>    tools/lib/bpf/libbpf_probes.c                 |   4 +
->>>    tools/lib/bpf/linker.c                        |  12 +-
->>>    tools/testing/selftests/bpf/Makefile          |   4 +-
->>>    .../selftests/bpf/prog_tests/bpf_goto_x.c     | 132 ++++
->>>    .../selftests/bpf/prog_tests/bpf_insn_array.c | 498 +++++++++++++++
->>>    .../testing/selftests/bpf/progs/bpf_goto_x.c  | 384 +++++++++++
->>>    21 files changed, 2230 insertions(+), 85 deletions(-)
->>>    create mode 100644 kernel/bpf/bpf_insn_array.c
->>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_goto_x.c
->>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
->>>    create mode 100644 tools/testing/selftests/bpf/progs/bpf_goto_x.c
->>>
->> After indirect jumps, the next natural steps will be supporting callx
->> and static key in bpf programs.
->>
->> For static keys, currently, llvm supports gotol_or_nop/nop_or_gotol insns
->> (https://github.com/llvm/llvm-project/compare/main...aspsk:llvm-project:static-keys)
->> and these insns can only be used in inline asm.
->>
->> For callx, there are two patterns, one is calling a particular func with
->> flow sensitive analysis, another is calling through call stable.
->>
->> The following two examples are to call a partuclar func with current
->> variable to tracing register.
->>
->> Example 1:
->>
->> typedef int (*op_t)(int, int); static int add(int a, int b) { return a + b;
->> } static int mul(int a, int b) { return a * b; } static int apply(op_t f,
->> int a, int b) { // indirect call via function pointer return f(a, b); } int
->> result(int i, int j) { op_t f; if (i + j) f = add; else f = mul; return
->> apply(f, i, j); } The asm code:
->> result:                                 # @result
->> # %bb.0:
->>          w4 = w2
->>          w4 = -w4
->>          r3 = mul ll
->>          if w1 == w4 goto LBB0_2
->> # %bb.1:
->>          r3 = add ll
->> LBB0_2:
->>          callx r3
->>          exit
->>
->> Example 2:
->>
->> typedef int (*op_t)(int, int);
->>
->> __attribute__((section("_add"))) static int add(int a, int b) { return a + b; }
->> __attribute__((section("_mul"))) static int mul(int a, int b) { return a * b; }
->>
->> struct ctx {
->>    op_t f;
->> };
->>
->> __attribute__((noinline)) static int apply(struct ctx *ctx, int a, int b) {
->>      // indirect call via function pointer
->>      return ctx->f(a, b);
->> }
->>
->> int result(int i, int j) {
->>      int x = 2, y = 3;
->>      struct ctx ctx;
->>
->>      if (i&2) ctx.f = add;
->>      else ctx.f = mul;
->>      int r1 = apply(&ctx, x, y);
->>      int r2 = apply(&ctx, x, y);
->>
->>      return r1 + r2;
->> }
->>
->> asm code:
->>
->> result:                                 # @result
->> # %bb.0:
->>          w1 &= 2
->>          r2 = mul ll
->>          if w1 == 0 goto LBB0_2
->> # %bb.1:
->>          r2 = add ll
->> LBB0_2:
->>          *(u64 *)(r10 - 8) = r2
->>          r6 = r10
->>          r6 += -8
->>          r1 = r6
->>          call apply
->>          w7 = w0
->>          r1 = r6
->>          call apply
->>          w0 += w7
->>          exit
->> ...
->> apply:                                  # @apply
->> # %bb.0:
->>          r3 = *(u64 *)(r1 + 0)
->>          w1 = 2
->>          w2 = 3
->>          callx r3
->>          exit
->>
->> In the above two cases, current verifier can be enhanced to
->> track functions and eventuall 'callx r3' can find proper
->> targets.
->>
->> Another pattern is to have a calltable (similar to jump table)
->> and callx will call one of functions based on calltable base
->> and an index. The example is below:
->>
->> typedef int (*op_t)(int, int);
->>
->> __attribute__((section("_add"))) static int add(int a, int b) { return a + b; }
->> __attribute__((section("_mul"))) static int mul(int a, int b) { return a * b; }
->>
->> __attribute__((noinline)) static int apply(op_t *ops, int index, int a, int b) {
->>      // indirect call via function pointer
->>      return ops[index](a, b);
->> }
->>
->> int result(int i, int j) {
->>      op_t ops[] = { add, mul, add, add, mul, mul };
->>      int x = 2, y = 3;
->>
->>      int r1 = apply(ops, 0, x, y);
->>      int r2 = apply(ops, 4, x, y);
->>
->>      return r1 + r2;
->> }
->>
->> int result2(int i, int j) {
->>      op_t ops[] = { add, add, add, mul, mul };
->>      int x = 3, y = 2;
->>
->>      int r1 = apply(ops, 1, x, y);
->>      int r2 = apply(ops, 2, x, y);
->>
->>      return r1 + r2;
->> }
->>
->>
->> The related llvm IR:
->>
->> @__const.result.ops = private unnamed_addr constant [6 x ptr] [ptr @add, ptr @mul, ptr @add, ptr @add, ptr @mul, ptr @mul], align 8
->> @__const.result2.ops = private unnamed_addr constant [5 x ptr] [ptr @add, ptr @add, ptr @add, ptr @mul, ptr @mul], align 8
->>
->> ; Function Attrs: nounwind
->> define dso_local i32 @result(i32 noundef %0, i32 noundef %1) local_unnamed_addr #0 {
->>    %3 = tail call fastcc i32 @apply(ptr noundef @__const.result.ops, i32 noundef 0, i32 noundef 2, i32 noundef 3)
->>    %4 = tail call fastcc i32 @apply(ptr noundef @__const.result.ops, i32 noundef 4, i32 noundef 2, i32 noundef 3)
->>    %5 = add nsw i32 %4, %3
->>    ret i32 %5
->> }
->> ...
->> ; Function Attrs: noinline nounwind
->> define internal fastcc i32 @apply(ptr noundef nonnull readonly captures(none) %0, i32 noundef range(i32 0, 5) %1, i32 noundef range(i32 2, 4) %2, i32 noundef range(i32 2, 4) %3) unnamed_addr #2 {
->>    %5 = zext nneg i32 %1 to i64
->>    %6 = getelementptr inbounds nuw ptr, ptr %0, i64 %5
->>    %7 = load ptr, ptr %6, align 8, !tbaa !3
->>    %8 = tail call i32 %7(i32 noundef %2, i32 noundef %3) #3
->>    ret i32 %8
->> }
->>
->> ; Function Attrs: nounwind
->> define dso_local i32 @result2(i32 noundef %0, i32 noundef %1) local_unnamed_addr #0 {
->>    %3 = tail call fastcc i32 @apply(ptr noundef @__const.result2.ops, i32 noundef 1, i32 noundef 3, i32 noundef 2)
->>    %4 = tail call fastcc i32 @apply(ptr noundef @__const.result2.ops, i32 noundef 2, i32 noundef 3, i32 noundef 2)
->>    %5 = add nsw i32 %4, %3
->>    ret i32 %5
->> }
->>
->> To make
->>     @__const.result.ops = private unnamed_addr constant [6 x ptr] [ptr @add, ptr @mul, ptr @add, ptr @add, ptr @mul, ptr @mul], align 8
->> explicit for call table, the llvm changed the call table name (with a llvm hack) to be like
->>     BPF.__const.result.ops
->>
->> The llvm hack on top of https://github.com/llvm/llvm-project/pull/149715:
-> Thanks for the details Yonghong! I am planning to work on this after
-> indirect jumps. At the moment I have a simple change to the verifier
-> which allows to do `callx rx` for any rx having type PTR_TO_FUNCTION
-> (see https://github.com/aspsk/bpf-next/tree/wip/indirect-calls).
-
-Sounds good. My above hack is only for compiler generated globals (private linkage).
-I will handle static and external globals as well. Will post it to llvm-project
-once indirect jump pull request lands.
-
+On 9/4/25 10:18 PM, Hoyeon Lee wrote:
+> Add a compile-time check to bpf_tail_call_static() to warn when a
+> constant slot(index) >= map->max_entries. This uses a small
+> BPF_MAP_ENTRIES() macro together with Clang's diagnose_if attribute.
 >
-> Also, I've recently rebased static keys branch on top of the current
-> indirect jumps implementation, the one main thing left is to address
-> Andrii's comments and implement "global", i.e., per object, static
-> keys, such that any program in the object can use it. (This would be
-> a map of maps containing pointers to instruction arrays, which must
-> be unique per program.)
+> Clang front-end keeps the map type with a '(*max_entries)[N]' field,
+> so the expression
 >
-Sound good. Thanks!
+>      sizeof(*(m)->max_entries) / sizeof(**(m)->max_entries)
+>
+> is resolved to N entirely at compile time. This allows diagnose_if()
+> to emit a warning when a constant slot index is out of range.
+>
+> Out-of-bounds tail calls are currently silent no-ops at runtime, so
+> emitting a compile-time warning helps detect logic errors earlier.
+> This is currently limited to Clang (due to diagnose_if) and only for
+> constant indices, but should still catch the common cases.
+>
+> Signed-off-by: Hoyeon Lee <hoyeon.lee@suse.com>
+> ---
+> Changes in V2:
+> - add function definition for __bpf_tail_call_warn for compile error
+>
+>   tools/lib/bpf/bpf_helpers.h | 21 +++++++++++++++++++++
+>   1 file changed, 21 insertions(+)
+>
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index 80c028540656..98bc1536c497 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -173,6 +173,27 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+>   		     :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
+>   		     : "r0", "r1", "r2", "r3", "r4", "r5");
+>   }
+> +
+> +#if __has_attribute(diagnose_if)
+> +static __always_inline void __bpf_tail_call_warn(int oob)
+> +	__attribute__((diagnose_if(oob, "bpf_tail_call: slot >= max_entries",
+> +				   "warning"))) {};
+> +
+> +#define BPF_MAP_ENTRIES(m) \
+> +	((__u32)(sizeof(*(m)->max_entries) / sizeof(**(m)->max_entries)))
+> +
+> +#ifndef bpf_tail_call_static
+> +#define bpf_tail_call_static(ctx, map, slot)				      \
+> +({									      \
+> +	/* wrapped to avoid double evaluation. */                             \
+> +	const __u32 __slot = (slot);                                          \
+> +	__bpf_tail_call_warn(__slot >= BPF_MAP_ENTRIES(map));                 \
+> +	/* Avoid re-expand & invoke original as (bpf_tail_call_static)(..) */ \
+> +	(bpf_tail_call_static)(ctx, map, __slot);                             \
+> +})
+> +#endif /* bpf_tail_call_static */
+> +#endif
+
+I got the following error with llvm21.
+
+progs/tailcall_bpf2bpf3.c:20:3: error: bpf_tail_call: slot >= max_entries [-Werror,-Wuser-defined-warnings]
+    20 |                 bpf_tail_call_static(skb, &jmp_table,progs/tailcall_bpf2bpf2.c:17:3 10);
+       | :                ^
+  /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:190:53: note: expanded from macro
+       'bpf_tail_call_static'
+   190 |         __bpf_tail_call_warn(__slot >= BPF_MAP_ENTRIES(map));                 \
+       |                                                            ^
+/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:179:17: note: from 'diagnose_if'
+       attribute on '__bpf_tail_call_warn':
+   179 |         __attribute__((diagnose_if(oob, "bpf_tail_call: slot >= max_entries",
+       |                        ^           ~~~
+error: bpf_tail_call: slot >= max_entries [-Werror,-Wuser-defined-warnings]
+    17 |                 bpf_tail_call_static(skb, &jmp_table, 1);
+       |                 ^
+/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:190:53: note: expanded from macro
+       'bpf_tail_call_static'
+   190 |         __bpf_tail_call_warn(__slot >= BPF_MAP_ENTRIES(map));                 \
+       |                                                            ^
+/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:179:17: note: from 'diagnose_if'
+       attribute on '__bpf_tail_call_warn':
+   179 |         __attribute__((diagnose_if(oob, "bpf_tail_call: slot >= max_entries",
+       |                        ^           ~~~
+   CLNG-BPF [test_progs] tailcall_poke.bpf.o
+1 error generated.
+make: *** [Makefile:733: /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tailcall_bpf2bpf3.bpf.o] Error 1
+
+> +
+>   #endif
+>   #endif
+>
+> --
+> 2.51.0
 
 
