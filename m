@@ -1,122 +1,202 @@
-Return-Path: <bpf+bounces-67656-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDC5AB46715
-	for <lists+bpf@lfdr.de>; Sat,  6 Sep 2025 01:19:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FA88B4674F
+	for <lists+bpf@lfdr.de>; Sat,  6 Sep 2025 01:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A46891CC6F4B
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 23:19:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CD23163EFB
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 23:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACDD6288C36;
-	Fri,  5 Sep 2025 23:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BDA241C89;
+	Fri,  5 Sep 2025 23:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EyFcBi4w"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jspLUeqR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32022550AF
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 23:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5EE5226CFD
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 23:46:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757114366; cv=none; b=EJTvq5khznT+N6XEN8vJj8qpXw2RtQVi00y6XZVZdQrXSy3GmAt1Px+8OAehtMosWta+kwoIwpDo6lFA97JNEoY/03mBoLs9x6pd7PJlNNlD49o0Htcd/jKLEajiUYKmkkOk/SPSo07WOhCz9AZ1CRAobBxKr8+bBUHH969scKM=
+	t=1757115976; cv=none; b=VJg0dgV8AklfzX7roypueTV5OMkSNI/YJrHg3RVFgz4IzWfCUEE1cZE25DM48sN/1w3xOPLDWRsFLdyFuZscGhiord7qer/e10luBnolnIlz2Elf5R+tSTPnU0xNK0fJ9Q0B1py1QeIxNYWqIQkuC0pRxS/y67C89Z1R9QXm7aQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757114366; c=relaxed/simple;
-	bh=aEmIO/htj4VOpMlWosP8EZ//6ya1Pg7geIBY3G5gl74=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ayAvQplWdSFn3IRRruI4v1N1I2gD0BU9BSF5Krg6vQk7tMzvhgOcl/a1tE3o1le8w5yC3ykk2HvyR61HE8gbv/ON4U9r+3m8yKiJJ5bceGF3v0wow561MSrJ82F6Q8n/L2CvWQE1GWfF45LXjKTeURslvzTs9M2+xH1YKtz63pI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EyFcBi4w; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-248df8d82e2so28861835ad.3
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 16:19:24 -0700 (PDT)
+	s=arc-20240116; t=1757115976; c=relaxed/simple;
+	bh=jWv34maFp9Onz9dXbDd9WLzcUQfA/7/Ptzl0B5GHKkI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=aGMcpXKnUG0ifpv4gKfm/zyxywg5ZB3HjV8CZ5NV2r8/jGBRzp7Tk1amYb6OX5cu4XVzIIZNz58bdeq8ArcFg7zxPf+OG8D/Xwyk1RG/eDQnnzty6YO6tpmqtnpy1NqUe0wZihpAzg58wLI6DoW+a/KqglsAzJuZq0LDFqtecos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jspLUeqR; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-24afab6d4a7so51268265ad.1
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 16:46:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757114364; x=1757719164; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+        d=google.com; s=20230601; t=1757115974; x=1757720774; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=cMWz80axYlQRk7JHOzFiM799ojvMx/FC7V7ZhbRtgMc=;
-        b=EyFcBi4wCLx5/JZo4E5sV2Bvxh41IiB0rsdi5tim1jqTui9OtkUKCVFYHmKZJO+aaM
-         W+KHlkd+ZjX2fJ0PMLxwPh5MfsGkPhPUk5qvfAZADbeM7dDo5QBijRy8zP1V9twi+Hzo
-         jDMtvyM6Hemcto9GpMQjAMvPRJoNXttj/95lfLFtvRjBqa+noRfnZi/5RZ3vmMgac6bg
-         syjBIG+hueJUSr/a5Jyx0UXKRKBYrbQAptGOBBZGc/ZxfBLXCG3VhS2GYAVUjVO9hLlm
-         CDNfe0AvLnkjxO+R52n8Q3eoo45mmIhJ10U8mBzwbdsIF2/s9eykit32CFeREB8LoH9X
-         IH9Q==
+        bh=Ka3pAMib8mg56UcIRiGYQOnsatMqr/ASQE3iJhG8eFo=;
+        b=jspLUeqR6YzMhq6oOGkTObhcIu+AAYqQNNX9jMbCyySkGfwfIyKBbeXqlQ5FPO3mdw
+         /AumPWTkxHvXQdRfMToGj0nmkCu0P9Z0htAHRiwo0hTDn1AGwYrXXn793AZgCQQXuaOY
+         RI3XYyYFB7XonPKavk73AnLg2NOLjv/JVurSqQCTcDk0XEGTXKjQ0V6mK316JgIGql7j
+         TN3fZ82aFcU5SN7VMPb39wTP4Y8sQRpfTnJEh/PiVRyaXcdMUpiibPgSegdybjemEvHi
+         s7r1eFkJiDSVogY7jd42cgs6PFQDXqoTHkbM7v2pCnMJ0BJ8muPANLnMal22iYGwXR5X
+         0ZBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757114364; x=1757719164;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=1e100.net; s=20230601; t=1757115974; x=1757720774;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cMWz80axYlQRk7JHOzFiM799ojvMx/FC7V7ZhbRtgMc=;
-        b=icLZ1dIxAUe80HS7JKuej02AA8UuRQ8UwyDNtNwyh+FVhhxxLpVKDlUYKiCtyiF/UG
-         prANoU14G2WomIuoCbRvP2ennBg98ZRqn9ZiX/KbERQGWsIUMpeMUFJFSDgMg4FWq0OT
-         /IydgvJ8T1xcJUfhmPmcirNNgwT1KBJDVSh4d2SM+ZQK6lFQ6aOX5l3ilxra2KCbZNSQ
-         2ILTFYXjPjVeO12B30YMMRpD57HMAEbeKqWNWyf7pDdb07GntbmP2qqGaVSUM6Oxoa1b
-         y2NPGh4hyTZicz6Ry/CpabWAyaHpx3YAuIsypT+ELsRjF3/SQwX0IZcsebv/g+5TjYiz
-         7S+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVpkiXSWjxSpXKEpQhaSUWn5hq8j9sLOoiYiAYnB7yHEShjM+WP3auQjpZ4fzUVw6Fgf8o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzvxb6DexwUZ3JAdh26Czxluza8WDrB6JBY1I5xciQ0+2+P2XSa
-	/+QFMDlfcD/Af58w3OI5BRbDWv55wmefGMq6EEj2pSa7v7OulyvnOnpF
-X-Gm-Gg: ASbGncsyq88jNFjgl9m+A/RfGyt9DQyZdr5n6hFrx5zidpM2fRbAr2Zh2KLJNUH2CZz
-	qwY3oWr3L3Bn9L0LpZFdbpx9TKFwn2Wy+IrGUKauW6aJjHgy41xZRzcYgcv89c66af6JIMftbu5
-	Oz1udFxdemx9x/kUzbaeAdG20cJefv0D+vKxwI1L/FabLFx/s1TUxBXKAmpMIGYu+nGl2UpC3pb
-	n3cSRT9bIgRowW2dmcEJ/ZBpKpwfjhteawPoHvTp3iMW6lopI2cz0HzlqeQOSzvTEh5uccVhg6K
-	46iPKuhzwnASnDkfyzG7UgtV2RcWO04NBLoFB3f895GvgH3S3yVc70jKeJzTEhqD1B3PKfESoqD
-	L5bWxunuORIrAq25K4FzRFPYsDO/K
-X-Google-Smtp-Source: AGHT+IHu7nEAyBTFTWE21IeIWXB0LxRv732ZiQX724VSmwY8uzUnR/vudxhhVWD/SqFnblSB7IOc1A==
-X-Received: by 2002:a17:902:ea06:b0:24c:e6fa:2a3b with SMTP id d9443c01a7336-25170e41037mr4702205ad.38.1757114364058;
-        Fri, 05 Sep 2025 16:19:24 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24b1589e4b7sm110705655ad.43.2025.09.05.16.19.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Sep 2025 16:19:23 -0700 (PDT)
-Message-ID: <453b077245a1d42385f00ae9a30916e88b07164b.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/7] bpf: extract map key pointer calculation
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Fri, 05 Sep 2025 16:19:19 -0700
-In-Reply-To: <20250905164508.1489482-6-mykyta.yatsenko5@gmail.com>
-References: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
-	 <20250905164508.1489482-6-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        bh=Ka3pAMib8mg56UcIRiGYQOnsatMqr/ASQE3iJhG8eFo=;
+        b=dhaFZ3v/e2+WgutMi0BDjwkRLAFG0yOm7qW4HsVKo1Cil+noPVBG28N0yUe6YfSzk9
+         A3kuDl7bT0+UfbPg73+WSwa55Q4cjMmz0XiYfyf9kDYkAilf9ZMp04Sm3d71nTCq2QkZ
+         6/KAhesh2ecBzpBVtLBwsRg9jacglMcraRNabAV28M+WnNDMX1iO9rcZ4+sdaTxUqrUs
+         npYuOy3F5L18KzfVs4ydbjtBU6baXHTswm51srOfh3DjbL5c/Gg4pnST9KuHDcK0aZSG
+         yl2QcF5U9RJyT2ATZHkY97G6cMBvXxEsBF8EidQ+k8gpJZpX7J5cp4Qwc9TbiX/5FhxU
+         xT5w==
+X-Gm-Message-State: AOJu0YwFPNFg50PbRxk94Jx90qZBpR5Lc7lVFtLhsCR8FdsWtJwc8yTC
+	Tq5XqZpFcrYCx74Z87ibLa1bXsJwhs7f3yV34S4b9pJd1elNLU+GVNinmepLEYNt4LAGyQVWlvW
+	Ct5ZXezplSiqZMg+Z/EKm/9v4ZfeKdW4413dQ3+kizs/9m/w7rase5HE9rv+Sj5n1u08SxWUrPA
+	x83aJLN5BPPvuqswR2f63hA+RP5xs/XrTvh+CUvGMa/7s=
+X-Google-Smtp-Source: AGHT+IGrorJIHwVe08/3eXVVnnu3ROgHDFhtPU55HCU9Hj6LhTj/S95ofHRY3+PvYuo9S+ud8faNhgZS8ou1Bw==
+X-Received: from plrp10.prod.google.com ([2002:a17:902:b08a:b0:243:31a:f8e2])
+ (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:903:138a:b0:24c:9e2d:9a13 with SMTP id d9443c01a7336-25170772b3amr5276615ad.27.1757115974045;
+ Fri, 05 Sep 2025 16:46:14 -0700 (PDT)
+Date: Fri,  5 Sep 2025 23:45:46 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.51.0.355.g5224444f11-goog
+Message-ID: <20250905234547.862249-1-yepeilin@google.com>
+Subject: [PATCH bpf] bpf/helpers: Use __GFP_HIGH instead of GFP_ATOMIC in __bpf_async_init()
+From: Peilin Ye <yepeilin@google.com>
+To: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Peilin Ye <yepeilin@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Josh Don <joshdon@google.com>, 
+	Barret Rhoden <brho@google.com>, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 2025-09-05 at 17:45 +0100, Mykyta Yatsenko wrote:
+Currently, calling bpf_map_kmalloc_node() from __bpf_async_init() can
+cause various locking issues; see the following stack trace (edited for
+style) as one example:
 
-[...]
+...
+ [10.011566]  do_raw_spin_lock.cold
+ [10.011570]  try_to_wake_up             (5) double-acquiring the same
+ [10.011575]  kick_pool                      rq_lock, causing a hardlockup
+ [10.011579]  __queue_work
+ [10.011582]  queue_work_on
+ [10.011585]  kernfs_notify
+ [10.011589]  cgroup_file_notify
+ [10.011593]  try_charge_memcg           (4) memcg accounting raises an
+ [10.011597]  obj_cgroup_charge_pages        MEMCG_MAX event
+ [10.011599]  obj_cgroup_charge_account
+ [10.011600]  __memcg_slab_post_alloc_hook
+ [10.011603]  __kmalloc_node_noprof
+...
+ [10.011611]  bpf_map_kmalloc_node
+ [10.011612]  __bpf_async_init
+ [10.011615]  bpf_timer_init             (3) BPF calls bpf_timer_init()
+ [10.011617]  bpf_prog_xxxxxxxxxxxxxxxx_fcg_runnable
+ [10.011619]  bpf__sched_ext_ops_runnable
+ [10.011620]  enqueue_task_scx           (2) BPF runs with rq_lock held
+ [10.011622]  enqueue_task
+ [10.011626]  ttwu_do_activate
+ [10.011629]  sched_ttwu_pending         (1) grabs rq_lock
+...
 
-> +static void *map_key_from_value(struct bpf_map *map, void *value, u32 *a=
-rr_idx)
+The above was reproduced on bpf-next (b338cf849ec8) by modifying
+./tools/sched_ext/scx_flatcg.bpf.c to call bpf_timer_init() during
+ops.runnable(), and hacking [1] the memcg accounting code a bit to make
+a bpf_timer_init() call much more likely to raise an MEMCG_MAX event.
 
-`arr_idx` is unused at every call site of this function.
-And even if it was used, why both set through pointer and return same value=
-?
+We have also run into other similar variants (both internally and on
+bpf-next), including double-acquiring cgroup_file_kn_lock, the same
+worker_pool::lock, etc.
 
-> +{
-> +	if (map->map_type =3D=3D BPF_MAP_TYPE_ARRAY) {
-> +		struct bpf_array *array =3D container_of(map, struct bpf_array, map);
-> +
-> +		*arr_idx =3D ((char *)value - array->value) / array->elem_size;
-> +		return arr_idx;
-> +	}
-> +	BUG_ON(map->map_type !=3D BPF_MAP_TYPE_HASH && map->map_type !=3D BPF_M=
-AP_TYPE_LRU_HASH);
-> +	return (void *)value - round_up(map->key_size, 8);
-> +}
-> +
+As suggested by Shakeel, fix this by using __GFP_HIGH instead of
+GFP_ATOMIC in __bpf_async_init(), so that if try_charge_memcg() raises
+an MEMCG_MAX event, we call __memcg_memory_event() with
+@allow_spinning=false and skip calling cgroup_file_notify(), in order to
+avoid the locking issues described above.
 
-[...]
+Depends on mm patch "memcg: skip cgroup_file_notify if spinning is not
+allowed".  Tested with vmtest.sh (llvm-18, x86-64):
+
+ $ ./test_progs -a '*timer*' -a '*wq*'
+...
+ Summary: 7/12 PASSED, 0 SKIPPED, 0 FAILED
+
+[1] Making bpf_timer_init() much more likely to raise an MEMCG_MAX event
+(gist-only, for brevity):
+
+kernel/bpf/helpers.c:__bpf_async_init():
+ -        cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_node);
+ +        cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC | __GFP_HACK,
+ +                                  map->numa_node);
+
+mm/memcontrol.c:try_charge_memcg():
+          if (!do_memsw_account() ||
+ -            page_counter_try_charge(&memcg->memsw, batch, &counter)) {
+ -                if (page_counter_try_charge(&memcg->memory, batch, &counter))
+ +            page_counter_try_charge_hack(&memcg->memsw, batch, &counter,
+ +                                         gfp_mask & __GFP_HACK)) {
+ +                if (page_counter_try_charge_hack(&memcg->memory, batch,
+ +                                                 &counter,
+ +                                                 gfp_mask & __GFP_HACK))
+                          goto done_restock;
+
+mm/page_counter.c:page_counter_try_charge():
+ -bool page_counter_try_charge(struct page_counter *counter,
+ -                             unsigned long nr_pages,
+ -                             struct page_counter **fail)
+ +bool page_counter_try_charge_hack(struct page_counter *counter,
+ +                                  unsigned long nr_pages,
+ +                                  struct page_counter **fail, bool hack)
+ {
+...
+ -                if (new > c->max) {
+ +                if (hack || new > c->max) {     // goto failed;
+                          atomic_long_sub(nr_pages, &c->usage);
+
+Fixes: b00628b1c7d5 ("bpf: Introduce bpf timers.")
+Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Peilin Ye <yepeilin@google.com>
+---
+ kernel/bpf/helpers.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index b9b0c5fe33f6..508b13c24778 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1274,8 +1274,14 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+ 		goto out;
+ 	}
+ 
+-	/* allocate hrtimer via map_kmalloc to use memcg accounting */
+-	cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_node);
++	/* Allocate via bpf_map_kmalloc_node() for memcg accounting. Use
++	 * __GFP_HIGH instead of GFP_ATOMIC to avoid calling
++	 * cgroup_file_notify() if an MEMCG_MAX event is raised by
++	 * try_charge_memcg(). This prevents various locking issues, including
++	 * double-acquiring locks that may already be held here (e.g.,
++	 * cgroup_file_kn_lock, rq_lock).
++	 */
++	cb = bpf_map_kmalloc_node(map, size, __GFP_HIGH, map->numa_node);
+ 	if (!cb) {
+ 		ret = -ENOMEM;
+ 		goto out;
+-- 
+2.51.0.355.g5224444f11-goog
 
