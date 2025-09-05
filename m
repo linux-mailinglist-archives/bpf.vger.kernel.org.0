@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-67613-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BD40B46507
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:58:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1059EB46509
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:58:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C16C1CC3643
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 20:58:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 311671CC2E35
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 20:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE0062E03EE;
-	Fri,  5 Sep 2025 20:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1490283FFB;
+	Fri,  5 Sep 2025 20:58:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QL2T7HZ4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SdJWkdDB"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1DF278157;
-	Fri,  5 Sep 2025 20:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3622E03EE;
+	Fri,  5 Sep 2025 20:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757105878; cv=none; b=fz32D1FNAmNNkv670whpuI28N6Z8u3+Yo0/5Xp0vVzsf4QZ3jvdUMm1iLl89gwTbe3lhZOGelLYJNHYsCnP8XfUtLDaHlNHiFgDxWBYSkVOkd7WvTx9GiNjIbFpAAz0zVk7vcNNP+xhgafB9+OdaLBQuCPGryJE1Q86C6/1iBtg=
+	t=1757105890; cv=none; b=LJ6PZpyq8Suske69DAM4856Jhe1tCIe+hBpqhlPWseQvxHB/mnQbUh6/E2l6AahyoRmLteN80ME9KyKbkHHKfgDr5JUJZ2a+Jo18Dt53licFvPIjpk8vDPFp6ThcwxmPIxSBF6BfmJVlN9cXQpVJjJlll8lIOkmuy/fad6+hPIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757105878; c=relaxed/simple;
-	bh=sz7WRdEvocERBLwqK8WQqHfQ9wbtzBvV0anL7xCXY7U=;
+	s=arc-20240116; t=1757105890; c=relaxed/simple;
+	bh=QMZ/veCn4xaV39aEXQXHqu9USRqQHNLeV/rMSYlEz7M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U2TrpNoG0UWsCNbm0+jP4f6L73YXHUIaVwXbfvL0nwp/ScnW8oKe2Ns5Cg6lSgBvGYcGsEVeNKDLu37Yg7OZWyNw+7M1qZOdRWThbATjoKxTUjWWLlJD84d+P5fYA2sa54us+1WNypEPazxSXtlAlQ4OFXcJgr2leVyaLIlbmE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QL2T7HZ4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BAF5C4CEF1;
-	Fri,  5 Sep 2025 20:57:53 +0000 (UTC)
+	 MIME-Version; b=trhvZmu21cfEJb6LB0QQCPZpHGyRg9w4MbSzRWUIPjpKBvfPJGspg5qBPOzCBiF3chZOAruY/P9CUcRozKrd5Vqi9ja4tQRaK42qtV5bufPv1XDB5wRrrJuwUhTUPJijIttUlq0zMXAuYsJmc7WVvk/L+ysvf9q39qlPx6A9kM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SdJWkdDB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 334CDC4CEF1;
+	Fri,  5 Sep 2025 20:58:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757105877;
-	bh=sz7WRdEvocERBLwqK8WQqHfQ9wbtzBvV0anL7xCXY7U=;
+	s=k20201202; t=1757105889;
+	bh=QMZ/veCn4xaV39aEXQXHqu9USRqQHNLeV/rMSYlEz7M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QL2T7HZ4EDMng4gP/vJeuW1QppRFaRiAdsb3L/8bFMiB0tzTwYXZrtlGOCUxnbA/l
-	 sQb2LYweU3Nja9+MQ/GMYf8UgPV2KjBLxDAWtdhqrR5bK/+711+yeqK/po7LEJXvyJ
-	 YN6Z6ZnKUJChyT2NIKhgkJHCvOXjfQ7eRN5QBm7O9Nyqr931YTCtaFyOfqOw22Zue4
-	 3n3ZHeQ8yS2JZAp38OwA4bRo4tqkczm7/OMLN+moqhCg5LMYGrrXegwkHBu19DHQ1s
-	 vAzv5a43ffIaAFU3bYd5K9B3zx6LcrKm+S1KLNhsXsBIADeWZww1rOeBPZfk8aP4Oa
-	 YsNQ0Lztr3uDg==
+	b=SdJWkdDBr3RiVA9C6GFt0y6pOYMK54XtG1YPwxmvnZrQmWt2cmV45eVM1HYhCMMHg
+	 cdFZ2EfXg964oGBSeyTeu1e91G8CxETBRkCO24M1R7W1zDZg57aKEZBOvpOs0IVtSL
+	 f5bx2Bzyjleey1SM6iKCbA18AUEn48tgQwspVT/rVSqfb0y3xbTmnh33yMdzFWMpT8
+	 gv8T/LsDvnaczAV8W1/lvY+d5Yb5hxOEl0IiiSBq0EuYk7bb1uD7I6YOidxGcg0UxX
+	 VP+EsqHpCI5DxLoSI4lXHZRQUONtb5IJlmf47wLviW0RHcZiCv0I5XsxEoNumNRdyJ
+	 cH6KuYf1iIdLw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -61,9 +61,9 @@ Cc: bpf@vger.kernel.org,
 	Ingo Molnar <mingo@kernel.org>,
 	Jann Horn <jannh@google.com>,
 	Alejandro Colomar <alx@kernel.org>
-Subject: [PATCH perf/core 1/3] uprobes/x86: Return error from uprobe syscall when not called from trampoline
-Date: Fri,  5 Sep 2025 22:57:29 +0200
-Message-ID: <20250905205731.1961288-2-jolsa@kernel.org>
+Subject: [PATCH perf/core 2/3] selftests/bpf: Fix uprobe_sigill test for uprobe syscall error value
+Date: Fri,  5 Sep 2025 22:57:30 +0200
+Message-ID: <20250905205731.1961288-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250905205731.1961288-1-jolsa@kernel.org>
 References: <20250905205731.1961288-1-jolsa@kernel.org>
@@ -75,33 +75,69 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently uprobe syscall handles all errors with forcing SIGILL to current
-process. As suggested by Andrii it'd be helpful for uprobe syscall detection
-to return error value for the !in_uprobe_trampoline check.
+The uprobe syscall now returns -ENXIO errno when called outside
+kernel trampoline, fixing the current sigill test to reflect that
+and renaming it to uprobe_error.
 
-This way we could just call uprobe syscall and based on return value we will
-find out if the kernel has it.
-
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/kernel/uprobes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/uprobe_syscall.c | 34 ++++---------------
+ 1 file changed, 6 insertions(+), 28 deletions(-)
 
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 0a8c0a4a5423..845aeaf36b8d 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -810,7 +810,7 @@ SYSCALL_DEFINE0(uprobe)
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+index 5da0b49eeaca..6d75ede16e7c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+@@ -757,34 +757,12 @@ static void test_uprobe_race(void)
+ #define __NR_uprobe 336
+ #endif
  
- 	/* Allow execution only from uprobe trampolines. */
- 	if (!in_uprobe_trampoline(regs->ip))
--		goto sigill;
-+		return -ENXIO;
+-static void test_uprobe_sigill(void)
++static void test_uprobe_error(void)
+ {
+-	int status, err, pid;
++	long err = syscall(__NR_uprobe);
  
- 	err = copy_from_user(&args, (void __user *)regs->sp, sizeof(args));
- 	if (err)
+-	pid = fork();
+-	if (!ASSERT_GE(pid, 0, "fork"))
+-		return;
+-	/* child */
+-	if (pid == 0) {
+-		asm volatile (
+-			"pushq %rax\n"
+-			"pushq %rcx\n"
+-			"pushq %r11\n"
+-			"movq $" __stringify(__NR_uprobe) ", %rax\n"
+-			"syscall\n"
+-			"popq %r11\n"
+-			"popq %rcx\n"
+-			"retq\n"
+-		);
+-		exit(0);
+-	}
+-
+-	err = waitpid(pid, &status, 0);
+-	ASSERT_EQ(err, pid, "waitpid");
+-
+-	/* verify the child got killed with SIGILL */
+-	ASSERT_EQ(WIFSIGNALED(status), 1, "WIFSIGNALED");
+-	ASSERT_EQ(WTERMSIG(status), SIGILL, "WTERMSIG");
++	ASSERT_EQ(err, -1, "error");
++	ASSERT_EQ(errno, ENXIO, "errno");
+ }
+ 
+ static void __test_uprobe_syscall(void)
+@@ -805,8 +783,8 @@ static void __test_uprobe_syscall(void)
+ 		test_uprobe_usdt();
+ 	if (test__start_subtest("uprobe_race"))
+ 		test_uprobe_race();
+-	if (test__start_subtest("uprobe_sigill"))
+-		test_uprobe_sigill();
++	if (test__start_subtest("uprobe_error"))
++		test_uprobe_error();
+ 	if (test__start_subtest("uprobe_regs_equal"))
+ 		test_uprobe_regs_equal(false);
+ 	if (test__start_subtest("regs_change"))
 -- 
 2.51.0
 
