@@ -1,87 +1,89 @@
-Return-Path: <bpf+bounces-67524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CCB1B44B5D
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 03:52:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 305F8B44B5E
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 03:56:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C14B93BBCEF
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 01:52:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9396B7AA5FC
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 01:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8991F4C84;
-	Fri,  5 Sep 2025 01:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OxvNidCT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB631F4C84;
+	Fri,  5 Sep 2025 01:55:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29F4B661;
-	Fri,  5 Sep 2025 01:52:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A16220EB
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 01:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757037163; cv=none; b=Zch6WNoOO8p8qwXrZnnuG1XnwhqdL6Px6rv0IAfnKg6pxtZALTdRCFJz9x09uL8VGOCpJ28xVsOMDMtwyTvhUEwCFLqeV3yYpO8e0DQGXreRe39u0aGddTFwdcyzuG1ojMn24N+EcEvE+D/9gapmbxNZaVfO5280NwhlPtYPIso=
+	t=1757037356; cv=none; b=CE4kWVmlW/dJ8nwqs96M4jJ8WW3QI/9UCHh3d4jtf4YFYOWumouZvgp6BDMULL9lUHYnUjWi7531HJ06gPKhWcIkTLWyINNhGCOsH1EdrEfI5oAbfjG36IvjGHKJU19FaSb7aEiyAxedLzt6vV5+WLp4ICDWjAApeZmHrpHQ5dM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757037163; c=relaxed/simple;
-	bh=TnBhCsXeLzqVyIFIJMgUEK2kSXCGuLd5NI1z1elnFRk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rj5gI5neW6F8hgxEScG30omhQ+N7IiwYnjfNHeRnxMjX7Dfba/QBFIBS1T7npv0gGqWFrGuUREDIsQUD4ljAEaxbGBOpxGy+e4ZsMQ6ittsl3l6Nw6c7iHbkeTjMxSQOY4AAARz8bABa3TdlXqDQpRscAVh1osQxp/DKaB5ZyXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OxvNidCT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 692F0C4CEF0;
-	Fri,  5 Sep 2025 01:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757037163;
-	bh=TnBhCsXeLzqVyIFIJMgUEK2kSXCGuLd5NI1z1elnFRk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=OxvNidCTmtbyCGLjmkUwhNidr9WqvV4gVras5WcF7oMpJQgp84mcoL1c9vADmKRvk
-	 m8TgrlM7wf02Y4R3G4Lxu13N8mGDkR6ZWktO/MCkDyxJV8Y1miLWbV90xIcTsJCTFJ
-	 NbFafER0NxOVKyFp1DlFKLvAegMHzQdPzxrtpDr4fHSZ+7i2EX3rUVBus8eAtxD2xq
-	 IAaKrdM3mdt8wcaH4xiH5PTSAZPDaAZphIJ235UctkqpAC3LJr1bF/jqSzJghDL2vV
-	 DaotVNZm6UdH0KRQdTdYlD/qiaY7VoQ7V/eHm5mCm3e84H+K0qylZEBd+pR3avPjqU
-	 qvu5sdFI8597A==
-Date: Thu, 4 Sep 2025 18:52:41 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Nimrod Oren <noren@nvidia.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@kernel.org, mohsin.bashr@gmail.com,
- saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com,
- maciej.fijalkowski@intel.com, kernel-team@meta.com, Dragos Tatulea
- <dtatulea@nvidia.com>, Gal Pressman <gal@nvidia.com>
-Subject: Re: [RFC bpf-next v1 2/7] bpf: Allow bpf_xdp_shrink_data to shrink
- a frag from head and tail
-Message-ID: <20250904185241.607552f7@kernel.org>
-In-Reply-To: <CAMB2axOZW_t1y8_wQN=e-vx1LHWLA-CKnYDjVo_g6FcY9NQ5uA@mail.gmail.com>
-References: <20250825193918.3445531-1-ameryhung@gmail.com>
-	<20250825193918.3445531-3-ameryhung@gmail.com>
-	<f35db6aa-ac4c-4690-bb54-4bbd5d4a3970@nvidia.com>
-	<CAMB2axOZW_t1y8_wQN=e-vx1LHWLA-CKnYDjVo_g6FcY9NQ5uA@mail.gmail.com>
+	s=arc-20240116; t=1757037356; c=relaxed/simple;
+	bh=6AByOwb7HisVrmBoPtg6FIKjm018BKX07bq3rjf6kX0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=k4j69r5FxZDD//jxWgpunz7qQz+3J6+wEA2S+QDpYbvblAztE5mgTcqgKkCjmQkrWXVfVFFKGJuTWtaLALxCb0MTrQDEkBgySN/at4g++xX28NdBxM8k6PSqYFUnkjLyRfoiMrCMxQNqWXRxdqceI1flNMcG+7UsJn7pTIF7SP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4cHzpV18CKzQjv8;
+	Fri,  5 Sep 2025 09:51:14 +0800 (CST)
+Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
+	by mail.maildlp.com (Postfix) with ESMTPS id CC986140278;
+	Fri,  5 Sep 2025 09:55:50 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 5 Sep 2025 09:55:50 +0800
+Message-ID: <95324d30-2e75-47dd-8ef7-0eb1bc80ab90@huawei.com>
+Date: Fri, 5 Sep 2025 09:55:49 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] riscv, bpf: Remove duplicated bpf_flush_icache()
+Content-Language: en-US
+To: Hengqi Chen <hengqi.chen@gmail.com>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <andrii@kernel.org>, <martin.lau@linux.dev>,
+	<bjorn@kernel.org>, <puranjay@kernel.org>
+CC: <bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>
+References: <20250904105119.21861-1-hengqi.chen@gmail.com>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <20250904105119.21861-1-hengqi.chen@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ kwepemf100007.china.huawei.com (7.202.181.221)
 
-On Thu, 4 Sep 2025 15:19:28 -0700 Amery Hung wrote:
-> On Thu, Aug 28, 2025 at 6:44=E2=80=AFAM Nimrod Oren <noren@nvidia.com> wr=
-ote:
-> > On 25/08/2025 22:39, Amery Hung wrote: =20
-> > > Move skb_frag_t adjustment into bpf_xdp_shrink_data() and extend its
-> > > functionality to be able to shrink an xdp fragment from both head and
-> > > tail. In a later patch, bpf_xdp_pull_data() will reuse it to shrink an
-> > > xdp fragment from head. =20
-> > I had assumed that XDP multi-buffer frags must always be the same size,
-> > except for the last one. If that=E2=80=99s the case, shrinking from the=
- head
-> > seems to break this rule. =20
->=20
-> I am not aware of the assumption in the code. Is this documented somewher=
-e?
 
-There's no such rule. Perhaps conflating frags with segments after TSO.
+On 2025/9/4 18:51, Hengqi Chen wrote:
+> The bpf_flush_icache() is done by bpf_arch_text_copy() already.
+> Remove the duplicated one in arch_prepare_bpf_trampoline().
+> 
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>   arch/riscv/net/bpf_jit_comp64.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+> index c7ae4d0a8361..3fcc011c6be4 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -1305,7 +1305,6 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *ro_image,
+>   		goto out;
+>   	}
+>   
+> -	bpf_flush_icache(ro_image, ro_image_end);
+>   out:
+>   	kvfree(image);
+>   	return ret < 0 ? ret : size;
+
+Reviewed-by: Pu Lehui <pulehui@huawei.com>
 
