@@ -1,89 +1,81 @@
-Return-Path: <bpf+bounces-67536-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67537-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4127CB45109
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 10:15:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87A31B45146
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 10:25:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC2521C25E35
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 08:15:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F07FB1C21CE0
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 08:25:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E482FE058;
-	Fri,  5 Sep 2025 08:14:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9131B304BB4;
+	Fri,  5 Sep 2025 08:25:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LKLPl3vx"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EtcEA84B"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF422FDC3F
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 08:14:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E311A2797A3;
+	Fri,  5 Sep 2025 08:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757060094; cv=none; b=Q4vDYrORJKftCIHQGvejO0QsaupmWkEd9fWP82Pz7OxWDex9F+i9u3h1dAxCvfgyIHIGFxf2DEp3XdIa4XO5gXZjR4QgL96Ne+CqedBRrYxo0aXvcc/GbLzNJI2LLl91Rmp6m2IY+x9HxMVwbt5JW3yeFoMm7/XakWW0rOCXe8o=
+	t=1757060703; cv=none; b=qNiVUqFKLNRH/D1hLjaDAJi11Gl6C3Am795UX4P3kmuVyU1ujDkGX+TfGBBbPy2ei4QsseRVUkChiZZYx/D8LwRhKnwtKi8BtGloedVwP5mCGvK2GN5SqMiPp5VKqUVJkBGomzycxBIO+WMsQLeeFdE1ENKI0NxdzJdlpWZVWEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757060094; c=relaxed/simple;
-	bh=+itZio5DvZYPzqAXQrtfSIndN01Zo6DmpvvfKECnoWE=;
+	s=arc-20240116; t=1757060703; c=relaxed/simple;
+	bh=sSHBpf5gNZD4zUBkCscC6KgcuBcDuYpB76W99xRjE10=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cBnBk57xjXQyLGflR8TMZ2mAO9pkknJvZ6+XtV1PLQ+H9/US4ZN8U4am5BnCV/Jh4zh0Ts1ksVjNDMkiBmmjm4xLO9PJZY2i6yJe7n8FyYVfEgR1WaTbnSvJ1M8hB1la2jWTxfGFOLzrEmAuhtU6ehx9LZE3nX262P/B0yd3mQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LKLPl3vx; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-61d143aa4acso2871086a12.2
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 01:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757060089; x=1757664889; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oziSzT+nyZ8VxZnZ2JMMsTIX/PRsxYVprEwuvs1B1Aw=;
-        b=LKLPl3vxTaGyM9aN2WSHSrqE5L9/ig45fb0p+Cqr0TV9I4us0DpYpGtKiNT46d/uEO
-         f95oRyFGjzeFoVl0iXTGLA8kAHNoHR2nPNeHUhytLFn19ExfRYzLj3dqyEN6Eg5VRMUH
-         H4pBGTinf/Y3mTG4VxoFWstl/JnhhadKkt/OXA5VA2fcr1sxZKyidiwM6BOkPQwEklVj
-         mvV5Duz9qXk1RaupLgh21W/lEu+fFUYW9euCXIYIrtx4Z58myzo/H8pLfPnEPGNr2ana
-         q9Y8Z1lz6saHtSX/d3DPspSl2akKhvDRRUA8rQJJNWHJHHnrRTLhbaLAWkMv5UnrwfoL
-         +Thw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757060089; x=1757664889;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oziSzT+nyZ8VxZnZ2JMMsTIX/PRsxYVprEwuvs1B1Aw=;
-        b=mvlbG2F0j35ngvsVerL5/e3Qsl1Po7MVvjZf1vbBzddxreLfDEvTIVzIeIYSSIpSIr
-         +aeYKoEEPz0DXfhzWABDLUACLuvp7wKM70yRihge1vQWEXKxiGJ0mqC1Rdh6QnDlZ6RC
-         e4jvLX9H8/nR/FQQbK9v7R6FVBHoF+UtTCvE7emY0dr1Yuum66bumDwZhjJL2g4KJBKi
-         EC7jBDUrECDmC0h0pdRSzs4inOKzDvaklH58jgl7UmCtSD0uhrTXt+dAEmjuNqSQSJL0
-         sCmAItpmPxWlpQILl38ykNJYGcOOjsnqAgWfIc6CLhkQmhhRbnLBneUdCR7r2J3aqmVM
-         f42g==
-X-Gm-Message-State: AOJu0YweZg0eaiBA5agfEvMR5oq7ZdlZy3Ntg1Thnc96sHnTX9QEwOpa
-	uwMR0/ZcVXU+YOBKsQHEFmPs20kfLHI8w7H6oKOFqWiECyd/Aw3EFhM6
-X-Gm-Gg: ASbGncuDCx31u4rpsmbPp+TZ6xO5iNQpCOgrYxdwviHJ885oOOlPI6WXetFYKE8KxQ4
-	2SdDo7Wd2TarZ/MqVKJEfkD9Sezz3W/rf9xxMOHP2MecDO0CSPeiI3li9cxN6Dcs9fRFHCtTaR4
-	L4TY7YpuvmmrY683ITZ8A2wk++xfCTDU7H9vViODkIzjFeNwvUABNr1lJRIVoh+ElkRT0pjSFPY
-	2Fin2wJTvxQVqeqvLc5yZtUPJpic2PEqN3rvWMBZzNQQxpaBl3FOFbzYe058xH3ihkJ0BTGWA2a
-	4z9dZW0wfcIYYzxcPxWIFhWM6uCaxV4gUuEPUkxTqkwDKP5ErUVvJ4176dTey2U3Aeh6VThfhs+
-	ofD6GUmVgBfuXQ3r7jUEjtFiK4wXkR6QwxQ==
-X-Google-Smtp-Source: AGHT+IFXGFWdblEmlT7qR66h+r+KQe8UmXl50RnwVsX87x8HHxFkLHI+fQCcdNH00INMFVZohyQq2A==
-X-Received: by 2002:a05:6402:2686:b0:61f:afe3:9177 with SMTP id 4fb4d7f45d1cf-61fafe393f9mr4152273a12.2.1757060089205;
-        Fri, 05 Sep 2025 01:14:49 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61cfc4e4d77sm16242063a12.37.2025.09.05.01.14.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Sep 2025 01:14:48 -0700 (PDT)
-Date: Fri, 5 Sep 2025 08:20:28 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH v1 bpf-next 00/11] BPF indirect jumps
-Message-ID: <aLqdTM9CL+eOdWBs@mail.gmail.com>
-References: <20250816180631.952085-1-a.s.protopopov@gmail.com>
- <d75eb424-b399-4e17-800e-ca59d39cc10d@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WLv9NowjRQjqSavPrG80DQ/giugmg0REDYjsBQOiqJz37qapd1Q5zEQJxPTYrNtWs7Oh/QYoKN7jz61YhtFcFV/H9Ql4+ZsPU0OBGBgnRDSFzAnRh+yW3uIdzC16GpJ6GgawAKvdOBxF5gguYoYRrT9hj9YBcavuwIvkORUxZzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EtcEA84B; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=PwfmZGqP6JvTcDVciyiLJhdNhb7filjP+mJ4Kpx4Mec=; b=EtcEA84BoJ6U63x+A0GH7p1XmI
+	aBQdAwoukV6CX0BCcRZ7xYHoinwVh7BTLYbpYXwcOSTOz+UzjXd7V3Onomsd1hNedbbjiYncjo0jq
+	krK48/tgu4YUQVZCHxpxjl5GptEr/vdNEVq+ysZAworBR3eABLzxy2LIVXb9l0nmvnMvUVznazN8t
+	SrnFlR4bSlp5zd4+GlY4wGyvWp62YpnUT5wcBinAFazczaeNt84wN/39pGJc1VrGU5AonqUK+Ewcf
+	YuaLurmKjROeGJ7Tj9SYqBQv5bsmCsKqLMorRcJex2cy7gR/ig4WRmCvs/a6WrYUpfjXO5Yusxt9B
+	QEfYgqFA==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uuRkW-00000004Ujy-2XJw;
+	Fri, 05 Sep 2025 08:24:49 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 6A4E330034B; Fri, 05 Sep 2025 10:24:47 +0200 (CEST)
+Date: Fri, 5 Sep 2025 10:24:47 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
+	X86 ML <x86@kernel.org>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	David Laight <David.Laight@aculab.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: nop5-optimized USDTs WAS: Re: [PATCHv6 perf/core 09/22]
+ uprobes/x86: Add uprobe syscall to speed up uprobe
+Message-ID: <20250905082447.GQ4068168@noisy.programming.kicks-ass.net>
+References: <20250720112133.244369-10-jolsa@kernel.org>
+ <CAEf4BzaxtW_W1M94e3q0Qw4vM_heHqU7zFeH-fFHOQBwy5+7LQ@mail.gmail.com>
+ <aLlKJWRs5etuvFuK@krava>
+ <CAEf4BzYUyOP_ziQjXshVeKmiocLjtWH+8LVHSaFNN1p=sp2rNg@mail.gmail.com>
+ <20250904203511.GB4067720@noisy.programming.kicks-ass.net>
+ <CAEf4BzZ6xSc7cFy7rF=G2+gPAfK+5cvZ0eDhnd5eP5m1t9EK-A@mail.gmail.com>
+ <20250904205210.GQ3245006@noisy.programming.kicks-ass.net>
+ <CAEf4BzY216jgetzA_TBY7_jSkcw-TGCj64s96ijoi3iAhcyHuw@mail.gmail.com>
+ <20250904215617.GR3245006@noisy.programming.kicks-ass.net>
+ <20250904215826.GP4068168@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,479 +84,242 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d75eb424-b399-4e17-800e-ca59d39cc10d@linux.dev>
+In-Reply-To: <20250904215826.GP4068168@noisy.programming.kicks-ass.net>
 
-On 25/09/04 01:27PM, Yonghong Song wrote:
+On Thu, Sep 04, 2025 at 11:58:26PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 04, 2025 at 11:56:17PM +0200, Peter Zijlstra wrote:
 > 
+> > Ooh, that suggests we do something like so:
 > 
-> On 8/16/25 11:06 AM, Anton Protopopov wrote:
-> > This patchset implements a new type of map, instruction set, and uses
-> > it to build support for indirect branches in BPF (on x86). (The same
-> > map will be later used to provide support for indirect calls and static
-> > keys.) See [1], [2] for more context.
-> > 
-> > This patch set is a follow-up on the initial RFC [3], now converted to
-> > normal version to trigger CI. Note that GCC and non-x86 archs are not
-> > supposed to work.
-> > 
-> > Short table of contents:
-> > 
-> >    * Patches 1-6 implement the new map of type
-> >      BPF_MAP_TYPE_INSN_SET and corresponding selftests. This map can
-> >      be used to track the "original -> xlated -> jitted mapping" for
-> >      a given program. Patches 5,6 add support for "blinded" variant.
-> > 
-> >    * Patches 7,8,9 implement the support for indirect jumps
-> > 
-> >    * Patches 10,11 add support for LLVM-compiled programs containing
-> >      indirect jumps.
-> > 
-> > A special LLVM should be used for that, see [4] for the details and
-> > some related discussions. Due to this fact, selftests for indirect
-> > jumps which directly use `goto *rX` are commented out (such that
-> > CI can run).
-> > 
-> > There is a list of TBDs (mostly, more selftests + some limitations
-> > like maximal map size), however, all the selftests which compile
-> > to contain an indirect jump work with this patchset.
-> > 
-> > See individual patches for more details on implementation details.
-> > 
-> > Changes since RFC:
-> > 
-> >    * I've tried to address all the comments provided by Alexei and
-> >      Eduard in RFC. Will try to list the most important of them below.
-> > 
-> >    * One big change: move from older LLVM version [5] to newer [4].
-> >      Now LLVM generates jump tables as symbols in the new special
-> >      section ".jumptables". Another part of this change is that
-> >      libbpf now doesn't try to link map load and goto *rX, as
-> >      1) this is absolutely not reliable 2) for some use cases this
-> >      is impossible (namely, when more than one jump table can be used
-> >      in the same gotox instruction).
-> > 
-> >    * Added insn_successors() support (Alexei, Eduard). This includes
-> >      getting rid of the ugly bpf_insn_set_iter_xlated_offset()
-> >      interface (Eduard).
-> > 
-> >    * Removed hack for the unreachable instruction, as new LLVM thank to
-> >      Eduard doesn't generate it.
-> > 
-> >    * Set mem_size for direct map access properly instead of hacking.
-> >      Remove off>0 check. (Alexei)
-> > 
-> >    * Do not allocate new memory for min_index/max_index (Alexei, Eduard)
-> > 
-> >    * Information required during check_cfg is now cached to be reused
-> >      later (Alexei + general logic for supporting multiple JT per jump)
-> > 
-> >    * Properly compare registers in regsafe (Alexei, Eduard)
-> > 
-> >    * Remove support for JMP32 (Eduard)
-> > 
-> >    * Better checks in adjust_ptr_min_max_vals (Eduard)
-> > 
-> >    * More selftests were added (but still there's room for more) which
-> >      directly use gotox (Alexei)
-> > 
-> >    * More checks and verbose messages added
-> > 
-> >    * "unique pointers" are no more in the map
-> > 
-> > Links:
-> >    1. https://lpc.events/event/18/contributions/1941/
-> >    2. https://lwn.net/Articles/1017439/
-> >    3. https://lore.kernel.org/bpf/20250615085943.3871208-1-a.s.protopopov@gmail.com/
-> >    4. https://github.com/llvm/llvm-project/pull/149715
-> > 
-> > Anton Protopopov (11):
-> >    bpf: fix the return value of push_stack
-> >    bpf: save the start of functions in bpf_prog_aux
-> >    bpf, x86: add new map type: instructions array
-> >    selftests/bpf: add selftests for new insn_array map
-> >    bpf: support instructions arrays with constants blinding
-> >    selftests/bpf: test instructions arrays with blinding
-> >    bpf, x86: allow indirect jumps to r8...r15
-> >    bpf, x86: add support for indirect jumps
-> >    bpf: disasm: add support for BPF_JMP|BPF_JA|BPF_X
-> >    libbpf: support llvm-generated indirect jumps
-> >    selftests/bpf: add selftests for indirect jumps
-> > 
-> >   arch/x86/net/bpf_jit_comp.c                   |  39 +-
-> >   include/linux/bpf.h                           |  30 +
-> >   include/linux/bpf_types.h                     |   1 +
-> >   include/linux/bpf_verifier.h                  |  20 +-
-> >   include/uapi/linux/bpf.h                      |  11 +
-> >   kernel/bpf/Makefile                           |   2 +-
-> >   kernel/bpf/bpf_insn_array.c                   | 350 ++++++++++
-> >   kernel/bpf/core.c                             |  20 +
-> >   kernel/bpf/disasm.c                           |   9 +
-> >   kernel/bpf/syscall.c                          |  22 +
-> >   kernel/bpf/verifier.c                         | 603 ++++++++++++++++--
-> >   .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
-> >   tools/bpf/bpftool/map.c                       |   2 +-
-> >   tools/include/uapi/linux/bpf.h                |  11 +
-> >   tools/lib/bpf/libbpf.c                        | 159 ++++-
-> >   tools/lib/bpf/libbpf_probes.c                 |   4 +
-> >   tools/lib/bpf/linker.c                        |  12 +-
-> >   tools/testing/selftests/bpf/Makefile          |   4 +-
-> >   .../selftests/bpf/prog_tests/bpf_goto_x.c     | 132 ++++
-> >   .../selftests/bpf/prog_tests/bpf_insn_array.c | 498 +++++++++++++++
-> >   .../testing/selftests/bpf/progs/bpf_goto_x.c  | 384 +++++++++++
-> >   21 files changed, 2230 insertions(+), 85 deletions(-)
-> >   create mode 100644 kernel/bpf/bpf_insn_array.c
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_goto_x.c
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/bpf_goto_x.c
-> > 
-> After indirect jumps, the next natural steps will be supporting callx
-> and static key in bpf programs.
-> 
-> For static keys, currently, llvm supports gotol_or_nop/nop_or_gotol insns
-> (https://github.com/llvm/llvm-project/compare/main...aspsk:llvm-project:static-keys)
-> and these insns can only be used in inline asm.
-> 
-> For callx, there are two patterns, one is calling a particular func with
-> flow sensitive analysis, another is calling through call stable.
-> 
-> The following two examples are to call a partuclar func with current
-> variable to tracing register.
-> 
-> Example 1:
-> 
-> typedef int (*op_t)(int, int); static int add(int a, int b) { return a + b;
-> } static int mul(int a, int b) { return a * b; } static int apply(op_t f,
-> int a, int b) { // indirect call via function pointer return f(a, b); } int
-> result(int i, int j) { op_t f; if (i + j) f = add; else f = mul; return
-> apply(f, i, j); } The asm code:
-> result:                                 # @result
-> # %bb.0:
->         w4 = w2
->         w4 = -w4
->         r3 = mul ll
->         if w1 == w4 goto LBB0_2
-> # %bb.1:
->         r3 = add ll
-> LBB0_2:
->         callx r3
->         exit
-> 
-> Example 2:
-> 
-> typedef int (*op_t)(int, int);
-> 
-> __attribute__((section("_add"))) static int add(int a, int b) { return a + b; }
-> __attribute__((section("_mul"))) static int mul(int a, int b) { return a * b; }
-> 
-> struct ctx {
->   op_t f;
-> };
-> 
-> __attribute__((noinline)) static int apply(struct ctx *ctx, int a, int b) {
->     // indirect call via function pointer
->     return ctx->f(a, b);
-> }
-> 
-> int result(int i, int j) {
->     int x = 2, y = 3;
->     struct ctx ctx;
-> 
->     if (i&2) ctx.f = add;
->     else ctx.f = mul;
->     int r1 = apply(&ctx, x, y);
->     int r2 = apply(&ctx, x, y);
-> 
->     return r1 + r2;
-> }
-> 
-> asm code:
-> 
-> result:                                 # @result
-> # %bb.0:
->         w1 &= 2
->         r2 = mul ll
->         if w1 == 0 goto LBB0_2
-> # %bb.1:
->         r2 = add ll
-> LBB0_2:
->         *(u64 *)(r10 - 8) = r2
->         r6 = r10
->         r6 += -8
->         r1 = r6
->         call apply
->         w7 = w0
->         r1 = r6
->         call apply
->         w0 += w7
->         exit
-> ...
-> apply:                                  # @apply
-> # %bb.0:
->         r3 = *(u64 *)(r1 + 0)
->         w1 = 2
->         w2 = 3
->         callx r3
->         exit
-> 
-> In the above two cases, current verifier can be enhanced to
-> track functions and eventuall 'callx r3' can find proper
-> targets.
-> 
-> Another pattern is to have a calltable (similar to jump table)
-> and callx will call one of functions based on calltable base
-> and an index. The example is below:
-> 
-> typedef int (*op_t)(int, int);
-> 
-> __attribute__((section("_add"))) static int add(int a, int b) { return a + b; }
-> __attribute__((section("_mul"))) static int mul(int a, int b) { return a * b; }
-> 
-> __attribute__((noinline)) static int apply(op_t *ops, int index, int a, int b) {
->     // indirect call via function pointer
->     return ops[index](a, b);
-> }
-> 
-> int result(int i, int j) {
->     op_t ops[] = { add, mul, add, add, mul, mul };
->     int x = 2, y = 3;
-> 
->     int r1 = apply(ops, 0, x, y);
->     int r2 = apply(ops, 4, x, y);
-> 
->     return r1 + r2;
-> }
-> 
-> int result2(int i, int j) {
->     op_t ops[] = { add, add, add, mul, mul };
->     int x = 3, y = 2;
-> 
->     int r1 = apply(ops, 1, x, y);
->     int r2 = apply(ops, 2, x, y);
-> 
->     return r1 + r2;
-> }
-> 
-> 
-> The related llvm IR:
-> 
-> @__const.result.ops = private unnamed_addr constant [6 x ptr] [ptr @add, ptr @mul, ptr @add, ptr @add, ptr @mul, ptr @mul], align 8
-> @__const.result2.ops = private unnamed_addr constant [5 x ptr] [ptr @add, ptr @add, ptr @add, ptr @mul, ptr @mul], align 8
-> 
-> ; Function Attrs: nounwind
-> define dso_local i32 @result(i32 noundef %0, i32 noundef %1) local_unnamed_addr #0 {
->   %3 = tail call fastcc i32 @apply(ptr noundef @__const.result.ops, i32 noundef 0, i32 noundef 2, i32 noundef 3)
->   %4 = tail call fastcc i32 @apply(ptr noundef @__const.result.ops, i32 noundef 4, i32 noundef 2, i32 noundef 3)
->   %5 = add nsw i32 %4, %3
->   ret i32 %5
-> }
-> ...
-> ; Function Attrs: noinline nounwind
-> define internal fastcc i32 @apply(ptr noundef nonnull readonly captures(none) %0, i32 noundef range(i32 0, 5) %1, i32 noundef range(i32 2, 4) %2, i32 noundef range(i32 2, 4) %3) unnamed_addr #2 {
->   %5 = zext nneg i32 %1 to i64
->   %6 = getelementptr inbounds nuw ptr, ptr %0, i64 %5
->   %7 = load ptr, ptr %6, align 8, !tbaa !3
->   %8 = tail call i32 %7(i32 noundef %2, i32 noundef %3) #3
->   ret i32 %8
-> }
-> 
-> ; Function Attrs: nounwind
-> define dso_local i32 @result2(i32 noundef %0, i32 noundef %1) local_unnamed_addr #0 {
->   %3 = tail call fastcc i32 @apply(ptr noundef @__const.result2.ops, i32 noundef 1, i32 noundef 3, i32 noundef 2)
->   %4 = tail call fastcc i32 @apply(ptr noundef @__const.result2.ops, i32 noundef 2, i32 noundef 3, i32 noundef 2)
->   %5 = add nsw i32 %4, %3
->   ret i32 %5
-> }
-> 
-> To make
->    @__const.result.ops = private unnamed_addr constant [6 x ptr] [ptr @add, ptr @mul, ptr @add, ptr @add, ptr @mul, ptr @mul], align 8
-> explicit for call table, the llvm changed the call table name (with a llvm hack) to be like
->    BPF.__const.result.ops
-> 
-> The llvm hack on top of https://github.com/llvm/llvm-project/pull/149715:
+> N/m, I need to go sleep, that doesn't work right for the 32bit nops that
+> use lea instead of nopl. I'll see if I can come up with something more
+> sensible.
 
-Thanks for the details Yonghong! I am planning to work on this after
-indirect jumps. At the moment I have a simple change to the verifier
-which allows to do `callx rx` for any rx having type PTR_TO_FUNCTION
-(see https://github.com/aspsk/bpf-next/tree/wip/indirect-calls).
+Something like this. Can someone please look very critical at this fancy
+insn_is_nop()?
 
-Also, I've recently rebased static keys branch on top of the current
-indirect jumps implementation, the one main thing left is to address
-Andrii's comments and implement "global", i.e., per object, static
-keys, such that any program in the object can use it. (This would be
-a map of maps containing pointers to instruction arrays, which must
-be unique per program.)
+---
+ arch/x86/include/asm/insn-eval.h |  2 +
+ arch/x86/kernel/alternative.c    | 20 +--------
+ arch/x86/kernel/uprobes.c        | 32 ++------------
+ arch/x86/lib/insn-eval.c         | 92 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 98 insertions(+), 48 deletions(-)
 
-> commit 7b3d21831d2e2ccc77ec09553297e955e480eb96 (HEAD -> jumptable-v17-callx)
-> Author: Yonghong Song <yonghong.song@linux.dev>
-> Date:   Thu Sep 4 10:02:56 2025 -0700
-> 
->     callx
-> 
-> diff --git a/llvm/lib/Target/BPF/BPFCheckAndAdjustIR.cpp b/llvm/lib/Target/BPF/BPFCheckAndAdjustIR.cpp
-> index b202b20291af..3d6a2c047d7b 100644
-> --- a/llvm/lib/Target/BPF/BPFCheckAndAdjustIR.cpp
-> +++ b/llvm/lib/Target/BPF/BPFCheckAndAdjustIR.cpp
-> @@ -55,6 +55,7 @@ private:
->    bool sinkMinMax(Module &M);
->    bool removeGEPBuiltins(Module &M);
->    bool insertASpaceCasts(Module &M);
-> +  bool renameCallTableGlobal(Module &M);
->  };
->  } // End anonymous namespace
-> @@ -527,12 +528,39 @@ bool BPFCheckAndAdjustIR::insertASpaceCasts(Module &M) {
->    return Changed;
->  }
-> +bool BPFCheckAndAdjustIR::renameCallTableGlobal(Module &M) {
-> +  bool Changed = false;
-> +  for (GlobalVariable &Global : M.globals()) {
-> +    if (Global.getLinkage() != GlobalValue::PrivateLinkage)
-> +      continue;
-> +    if (!Global.isConstant() || !Global.hasInitializer())
-> +      continue;
-> +
-> +    Constant *CV = dyn_cast<Constant>(Global.getInitializer());
-> +    if (!CV)
-> +      continue;
-> +    ConstantArray *CA = dyn_cast<ConstantArray>(CV);
-> +    if (!CA)
-> +      continue;
-> +
-> +    for (unsigned i = 1, e = CA->getNumOperands(); i != e; ++i) {
-> +      if (!dyn_cast<Function>(CA->getOperand(i)))
-> +        continue;
-> +    }
-> +    Global.setName("BPF." + Global.getName());
-> +    Global.setLinkage(GlobalValue::LinkageTypes::InternalLinkage);
-> +    Global.setSection(".calltables");
-> +    Changed = true;
-> +  }
-> +
-> +  return Changed;
-> +}
-> +
->  bool BPFCheckAndAdjustIR::adjustIR(Module &M) {
->    bool Changed = removePassThroughBuiltin(M);
->    Changed = removeCompareBuiltin(M) || Changed;
->    Changed = sinkMinMax(M) || Changed;
->    Changed = removeGEPBuiltins(M) || Changed;
->    Changed = insertASpaceCasts(M) || Changed;
-> +  Changed = renameCallTableGlobal(M) || Changed;
->    return Changed;
->  }
-> 
-> 
-> At the end, we will have asm code:
-> 
-> result:                                 # @result
-> # %bb.0:
->         r1 = BPF.__const.result.ops ll
->         w2 = 0
->         w3 = 2
->         w4 = 3
->         call apply
->         w6 = w0
->         r1 = BPF.__const.result.ops ll
->         w2 = 4
->         w3 = 2
->         w4 = 3
->         call apply
->         w0 += w6
->         exit
-> .Lfunc_end0:
->         .size   result, .Lfunc_end0-result
-> ...
->  apply:                                  # @apply
-> # %bb.0:
->         r2 = w2
->         r2 <<= 3
->         r1 += r2
->         r5 = *(u64 *)(r1 + 0)
->         w1 = w3
->         w2 = w4
->         callx r5
->         exit
-> .Lfunc_end3:
->         .size   apply, .Lfunc_end3-apply
-> ...
->         .section        .calltables,"a",@progbits
->         .p2align        3, 0x0
-> BPF.__const.result.ops:
->         .quad   add
->         .quad   mul
->         .quad   add
->         .quad   add
->         .quad   mul
->         .quad   mul
->         .size   BPF.__const.result.ops, 48
-> 
->         .type   BPF.__const.result2.ops,@object # @BPF.__const.result2.ops
->         .p2align        3, 0x0
-> BPF.__const.result2.ops:
->         .quad   add
->         .quad   add
->         .quad   add
->         .quad   mul
->         .quad   mul
->         .size   BPF.__const.result2.ops, 40
-> 
-> $ llvm-readelf -s t.o
-> ...
->      2: 0000000000000000    48 OBJECT  LOCAL  DEFAULT     6 BPF.__const.result.ops
->      8: 0000000000000030    40 OBJECT  LOCAL  DEFAULT     6 BPF.__const.result2.ops
->      9: 0000000000000000     0 SECTION LOCAL  DEFAULT     6 .calltables
-> 
-> 0000000000000000 <result>:
->        0:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x0 ll
->                 0000000000000000:  R_BPF_64_64  .calltables
->        2:       b4 02 00 00 00 00 00 00 w2 = 0x0
->        3:       b4 03 00 00 02 00 00 00 w3 = 0x2
->        4:       b4 04 00 00 03 00 00 00 w4 = 0x3
->        5:       85 10 00 00 09 00 00 00 call 0x9
->        6:       bc 06 00 00 00 00 00 00 w6 = w0
->        7:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x0 ll
->                 0000000000000038:  R_BPF_64_64  .calltables
->        9:       b4 02 00 00 04 00 00 00 w2 = 0x4
->       10:       b4 03 00 00 02 00 00 00 w3 = 0x2
->       11:       b4 04 00 00 03 00 00 00 w4 = 0x3
->       12:       85 10 00 00 02 00 00 00 call 0x2
->       13:       0c 60 00 00 00 00 00 00 w0 += w6
->       14:       95 00 00 00 00 00 00 00 exit
-> ...
-> 00000000000000b8 <result2>:
->       23:       18 01 00 00 30 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x30 ll
->                 00000000000000b8:  R_BPF_64_64  .calltables
->       25:       b4 02 00 00 01 00 00 00 w2 = 0x1
->       26:       b4 03 00 00 03 00 00 00 w3 = 0x3
->       27:       b4 04 00 00 02 00 00 00 w4 = 0x2
->       28:       85 10 00 00 f2 ff ff ff call -0xe
->       29:       bc 06 00 00 00 00 00 00 w6 = w0
->       30:       18 01 00 00 30 00 00 00 00 00 00 00 00 00 00 00 r1 = 0x30 ll
->                 00000000000000f0:  R_BPF_64_64  .calltables
->       32:       b4 02 00 00 02 00 00 00 w2 = 0x2
->       33:       b4 03 00 00 03 00 00 00 w3 = 0x3
->       34:       b4 04 00 00 02 00 00 00 w4 = 0x2
->       35:       85 10 00 00 eb ff ff ff call -0x15
->       36:       0c 60 00 00 00 00 00 00 w0 += w6
->       37:       95 00 00 00 00 00 00 00 exit
-> 
-> 
-> Relocation section '.rel.calltables' at offset 0x3d0 contains 11 entries:
->     Offset             Info             Type               Symbol's Value  Symbol's Name
-> 0000000000000000  0000000400000002 R_BPF_64_ABS64         0000000000000000 _add
-> 0000000000000008  0000000600000002 R_BPF_64_ABS64         0000000000000000 _mul
-> 0000000000000010  0000000400000002 R_BPF_64_ABS64         0000000000000000 _add
-> 0000000000000018  0000000400000002 R_BPF_64_ABS64         0000000000000000 _add
-> 0000000000000020  0000000600000002 R_BPF_64_ABS64         0000000000000000 _mul
-> 0000000000000028  0000000600000002 R_BPF_64_ABS64         0000000000000000 _mul
-> 0000000000000030  0000000400000002 R_BPF_64_ABS64         0000000000000000 _add
-> 0000000000000038  0000000400000002 R_BPF_64_ABS64         0000000000000000 _add
-> 0000000000000040  0000000400000002 R_BPF_64_ABS64         0000000000000000 _add
-> 0000000000000048  0000000600000002 R_BPF_64_ABS64         0000000000000000 _mul
-> 0000000000000050  0000000600000002 R_BPF_64_ABS64         0000000000000000 _mul
-> 
-> For the disasm code, the first two relocations clearly points to
-> BPF.__const.result.ops, and the next two relocations point to
-> BPF.__const.result2.ops.
-
-Looks great!
+diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
+index 54368a43abf6..4733e9064ee5 100644
+--- a/arch/x86/include/asm/insn-eval.h
++++ b/arch/x86/include/asm/insn-eval.h
+@@ -44,4 +44,6 @@ enum insn_mmio_type {
+ 
+ enum insn_mmio_type insn_decode_mmio(struct insn *insn, int *bytes);
+ 
++bool insn_is_nop(struct insn *insn);
++
+ #endif /* _ASM_X86_INSN_EVAL_H */
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 7bde68247b5f..e1f98189fe77 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -9,6 +9,7 @@
+ 
+ #include <asm/text-patching.h>
+ #include <asm/insn.h>
++#include <asm/insn-eval.h>
+ #include <asm/ibt.h>
+ #include <asm/set_memory.h>
+ #include <asm/nmi.h>
+@@ -345,25 +346,6 @@ static void add_nop(u8 *buf, unsigned int len)
+ 		*buf = INT3_INSN_OPCODE;
+ }
+ 
+-/*
+- * Matches NOP and NOPL, not any of the other possible NOPs.
+- */
+-static bool insn_is_nop(struct insn *insn)
+-{
+-	/* Anything NOP, but no REP NOP */
+-	if (insn->opcode.bytes[0] == 0x90 &&
+-	    (!insn->prefixes.nbytes || insn->prefixes.bytes[0] != 0xF3))
+-		return true;
+-
+-	/* NOPL */
+-	if (insn->opcode.bytes[0] == 0x0F && insn->opcode.bytes[1] == 0x1F)
+-		return true;
+-
+-	/* TODO: more nops */
+-
+-	return false;
+-}
+-
+ /*
+  * Find the offset of the first non-NOP instruction starting at @offset
+  * but no further than @len.
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 0a8c0a4a5423..32bc583e6fd4 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -17,6 +17,7 @@
+ #include <linux/kdebug.h>
+ #include <asm/processor.h>
+ #include <asm/insn.h>
++#include <asm/insn-eval.h>
+ #include <asm/mmu_context.h>
+ #include <asm/nops.h>
+ 
+@@ -1158,35 +1159,12 @@ void arch_uprobe_optimize(struct arch_uprobe *auprobe, unsigned long vaddr)
+ 	mmap_write_unlock(mm);
+ }
+ 
+-static bool insn_is_nop(struct insn *insn)
+-{
+-	return insn->opcode.nbytes == 1 && insn->opcode.bytes[0] == 0x90;
+-}
+-
+-static bool insn_is_nopl(struct insn *insn)
+-{
+-	if (insn->opcode.nbytes != 2)
+-		return false;
+-
+-	if (insn->opcode.bytes[0] != 0x0f || insn->opcode.bytes[1] != 0x1f)
+-		return false;
+-
+-	if (!insn->modrm.nbytes)
+-		return false;
+-
+-	if (X86_MODRM_REG(insn->modrm.bytes[0]) != 0)
+-		return false;
+-
+-	/* 0f 1f /0 - NOPL */
+-	return true;
+-}
+-
+ static bool can_optimize(struct insn *insn, unsigned long vaddr)
+ {
+ 	if (!insn->x86_64 || insn->length != 5)
+ 		return false;
+ 
+-	if (!insn_is_nop(insn) && !insn_is_nopl(insn))
++	if (!insn_is_nop(insn))
+ 		return false;
+ 
+ 	/* We can't do cross page atomic writes yet. */
+@@ -1428,17 +1406,13 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+ 	insn_byte_t p;
+ 	int i;
+ 
+-	/* x86_nops[insn->length]; same as jmp with .offs = 0 */
+-	if (insn->length <= ASM_NOP_MAX &&
+-	    !memcmp(insn->kaddr, x86_nops[insn->length], insn->length))
++	if (insn_is_nop(insn))
+ 		goto setup;
+ 
+ 	switch (opc1) {
+ 	case 0xeb:	/* jmp 8 */
+ 	case 0xe9:	/* jmp 32 */
+ 		break;
+-	case 0x90:	/* prefix* + nop; same as jmp with .offs = 0 */
+-		goto setup;
+ 
+ 	case 0xe8:	/* call relative */
+ 		branch_clear_offset(auprobe, insn);
+diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
+index 4e385cbfd444..3a67f1c5582c 100644
+--- a/arch/x86/lib/insn-eval.c
++++ b/arch/x86/lib/insn-eval.c
+@@ -1676,3 +1676,95 @@ enum insn_mmio_type insn_decode_mmio(struct insn *insn, int *bytes)
+ 
+ 	return type;
+ }
++
++bool insn_is_nop(struct insn *insn)
++{
++	u8 rex, rex_b = 0, rex_x = 0, rex_r = 0, rex_w = 0;
++	u8 modrm, modrm_mod, modrm_reg, modrm_rm;
++	u8 sib = 0, sib_scale, sib_index, sib_base;
++
++	if (insn->rex_prefix.nbytes) {
++		rex = insn->rex_prefix.bytes[0];
++		rex_w = !!X86_REX_W(rex);
++		rex_r = !!X86_REX_R(rex);
++		rex_x = !!X86_REX_X(rex);
++		rex_b = !!X86_REX_B(rex);
++	}
++
++	if (insn->modrm.nbytes) {
++		modrm = insn->modrm.bytes[0];
++		modrm_mod = X86_MODRM_MOD(modrm);
++		modrm_reg = X86_MODRM_REG(modrm) + 8*rex_r;
++		modrm_rm  = X86_MODRM_RM(modrm)  + 8*rex_b;
++	}
++
++	if (insn->sib.nbytes) {
++		sib = insn->sib.bytes[0];
++		sib_scale = X86_SIB_SCALE(sib);
++		sib_index = X86_SIB_INDEX(sib) + 8*rex_x;
++		sib_base  = X86_SIB_BASE(sib)  + 8*rex_b;
++
++		modrm_rm = sib_base;
++	}
++
++	switch (insn->opcode.bytes[0]) {
++	case 0x0f: /* 2nd byte */
++		break;
++
++	case 0x89: /* MOV */
++		if (modrm_mod != 3) /* register-direct */
++			return false;
++
++		if (insn->x86_64 && !rex_w) /* native size */
++			return false;
++
++		for (int i = 0; i < insn->prefixes.nbytes; i++) {
++			if (insn->prefixes.bytes[i] == 0x66) /* OSP */
++				return false;
++		}
++
++		return modrm_reg == modrm_rm; /* MOV %reg, %reg */
++
++	case 0x8d: /* LEA */
++		if (modrm_mod == 0 || modrm_mod == 3) /* register-indirect with disp */
++			return false;
++
++		if (insn->x86_64 && !rex_w) /* native size */
++			return false;
++
++		if (insn->displacement.value != 0)
++			return false;
++
++		if (sib & (sib_scale != 0 || sib_index != 4)) /* (%reg, %eiz, 1) */
++			return false;
++
++		for (int i = 0; i < insn->prefixes.nbytes; i++) {
++			if (insn->prefixes.bytes[i] != 0x3e) /* DS */
++				return false;
++		}
++
++		return modrm_reg == modrm_rm; /* LEA 0(%reg), %reg */
++
++	case 0x90: /* NOP */
++		for (int i = 0; i < insn->prefixes.nbytes; i++) {
++			if (insn->prefixes.bytes[i] == 0xf3) /* REP */
++				return false; /* REP NOP -- PAUSE */
++		}
++		return true;
++
++	case 0xe9: /* JMP.d32 */
++	case 0xeb: /* JMP.d8 */
++		return insn->immediate.value == 0; /* JMP +0 */
++
++	default:
++		return false;
++	}
++
++	switch (insn->opcode.bytes[1]) {
++	case 0x1f:
++		return modrm_reg == 0; /* 0f 1f /0 -- NOPL */
++
++	default:
++		return false;
++	}
++}
 
