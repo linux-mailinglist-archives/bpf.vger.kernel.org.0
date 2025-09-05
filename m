@@ -1,135 +1,138 @@
-Return-Path: <bpf+bounces-67597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2824AB46231
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 20:23:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC7D2B46263
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 20:38:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 437AD7B1454
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 18:22:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B15271CC81C8
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 18:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD80E239085;
-	Fri,  5 Sep 2025 18:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC1A217F4F6;
+	Fri,  5 Sep 2025 18:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="c9ZmsXD5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K3flNssD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E282133E7
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 18:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05602235BEE
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 18:38:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757096610; cv=none; b=Jx3Q88+v75P1c+O3nCBKjAdepO0eOflxAAGiBXUXQeayMzqd7qIk3JVLi28p87n/OCGMfRpJF7Yd5Yeq27FdAExlfNIJRjf9a/PvfohvR4UBxZ4PYsDcmte/ZK0lhFkFJUWS7FcZ3FVTOcV7h2vbv2x01yJ1xKxXdrMnEZFIjL8=
+	t=1757097519; cv=none; b=YIBEt/g/YshBIcT9v+htRwztuTdPZ0UXedXP7VukSGxHPtFt8zihNERpTgtYtSiMP6gDxnLRA766dYuI93P/j0Qqe1Xb+N5pcnQBeHQ23aNm+/BpbOSViKfxENkX1FyL580p7Bz187xFkFhF2oF2MBNuxSFIK7Ihpp8UF1D5TFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757096610; c=relaxed/simple;
-	bh=f9+zISEGqjgWmvuzjuNbH5wW8MYkeOXK8Iz3N3p0WOs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jRhOXfbbb4QmqP7fuVgPVXTtphK/ETrPCP5fe2tOJCHvbsDJkwdbvmd1olfi5c6noOI+T3n7gnMtmwX91g9mxvvDhFuMSCb8ep5W1JbDZgz/GiyAEQ+KRZJJZ+OIiZPP6I6GfmPvYprATMfrKJXpIAT2TrmCWt/11ktIwjXoAzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=c9ZmsXD5; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-24cf5bcfb60so19755ad.0
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 11:23:28 -0700 (PDT)
+	s=arc-20240116; t=1757097519; c=relaxed/simple;
+	bh=sQTrJN/NqE8cCz07rmgvmwLyl97MZTzynu7sFwKmhgg=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=aOKKOVicj7btgl1IfR4XrLQm6jCafWkG0ciJH70CVFEDCocPzX/TftwJYzNfNBTFovFyzWmrJTnsBb8Juq4iRJJIawZLzDcfMJ7ysH52ct1WUJJYKs4xu0RrVitS8cw4dtU7ccJ6DcvUj35mEPCUaprUKdVszdyZGQlSJ3co8AI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K3flNssD; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-77287fb79d3so2192257b3a.1
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 11:38:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757096608; x=1757701408; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rgWOc0h7T/LwTAxHfFQtzP5pqZV8FThPEz2kt4MSq5E=;
-        b=c9ZmsXD5jczetvj8SvIo8j59PY5OHQ1OlRTkRhXOJ+w8YduZJxha8hP3+wTBrW9jCr
-         ycv8kKIZQK/oEa2AUkwNNIyqMs6IiVUgSRVSagt4m2nEcHBcLcgK9biK3wNcUOd/3CnK
-         raW7i/Io0LopzVYzbPWgE9DtOqrrwHaOwU/RC8TihF6LwqfWLJzQDZHqhTjbe3mQrZo9
-         F8x03iWFOGFBTRWydN6pHHisli00F7qVsI81e0h3U6PdkGJvbxNFYzRsuivzDJrx+nDs
-         HvpDqXGKBz0dtCoDJB3ZiZwS0JtojWkHkLYBsW+8O3xUhcy9ASJlY1OaY3Zur1sF7GAD
-         /guA==
+        d=gmail.com; s=20230601; t=1757097517; x=1757702317; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AaoZHKsIdrsHZEJAr8xH+OqjAiSdKNxQE05QfNcjvOw=;
+        b=K3flNssDH9a/WzpvX+GQUiCM6w4/rnPTyQyE8cU+TaBTb8q9cg7xr5JF+agfIIPQ6b
+         DoK1OmK4w35zHDfSNHyaNltP/YJP6D2XqfLozy5iKhjkMLVA6mzFvRaMelKUARGEK1/R
+         lAiylL6Hpv/2/iobf0kckMorVRQdroijpTBJ3QJ/Tnlo0Gplf14QLEb+DaLxHXlJynXT
+         7xXjMeh5HD6Oj2JORfVaJYz/Yr/bj8+vGNXsUd5zCeeSu8wRe6lcL1Zvfck+op+4BgU6
+         n5KvY8cWOtvzkog/R2vV5eEtBa/GHH87oYMmu/T8wALTB9pBNTE58t2XMsVwOsbvgTCO
+         gSzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757096608; x=1757701408;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rgWOc0h7T/LwTAxHfFQtzP5pqZV8FThPEz2kt4MSq5E=;
-        b=ZvqhUBHxxyj11okxMh5+271IUNjXpa8RUYWy8jT7Pn5lLtPSB/Es2nZ8JSGG/L1cLm
-         RtqvpxnZH5b2kiHLeUv+nvbxBMAc5mb977BFOKXD1Iot3oHouU9/IMp+e1ISfmcMacxb
-         VmjuqLpH01y+3dtq+BHYojcUGUqw7EIxORwJQhm7pBmBNK7VfstgiN1g47jndLqogYy7
-         ba9OjPL1912fNTzHaFURTDuwbOX9AlhI+78Lk6vAGD6Y4iVnj1Eqeu177j1rVXVdjrxF
-         vfZHCd1xUDY1fAgnIiqxHrbHrYEJo++QceJyGPaeKayahPlksPs/QVoBaE/LMtvlyTBl
-         4ZtA==
-X-Forwarded-Encrypted: i=1; AJvYcCXHQCGEz6eEL8m+O8aDUjFgpzjjJR6dbHVt7cicFJg6QJuD9FikRbMkt8JaDAYlBDRmSoQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2P0bWStZSjZ7HW0EYoJNliIJbHxCnbXUZW0awjseuPnioaOLN
-	zks1PJ99zFGW2TFoBslrbGeK/lsFmiFMHgARtFuHxE4dRr3w2R4pihgPCVrgofKSVA==
-X-Gm-Gg: ASbGncuL5J9UPqIBtGa4vPpApV6Js7rF1bPrlI3xtoPV0vBac1U4GPMk21aCL4kKGB/
-	HDTmGvpCA22aDT/iHJ8LZATpUCqGWU4PVtrIfvBN2pO3S9HhdhNIOirD3bihDcjr5iyjwZ2omau
-	L4n/U3N3/U0sTVqNP4426HOhpXSzYDU+c4mADke+6p+Q3enZYYK/+eH4oK0q4H2DsXzfmqdkr52
-	jVN5qW0w7xKmxsRnKJ2KgB4g+ZFgeGAdDkUSNvmx1KFY9O0AIth/rW06cvtJzyGgaJm4t+lQjIc
-	Dh2idoZAZmD64Q4l0RJ9atTnrSLwhZ2qKa+rq5XK1lMMVBgi4POMw18BU0r8xWPE8j5zviWRQnk
-	FcbxE/yATAMp8czwj9xhgAMoAhiRqNVTxuZHVDyZhIroIppJNzdnxzAD9snC1a1o9DFY=
-X-Google-Smtp-Source: AGHT+IHIHCT/LHWg3smHhUZvr7cjK1B8dD2CGV1dFWXEglBs03iMs0n2W9jj0hS//Dye90GLARpV1A==
-X-Received: by 2002:a17:902:f550:b0:249:2caa:d5c9 with SMTP id d9443c01a7336-25123db6d69mr166865ad.17.1757096607758;
-        Fri, 05 Sep 2025 11:23:27 -0700 (PDT)
-Received: from google.com (132.192.16.34.bc.googleusercontent.com. [34.16.192.132])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24c7d2dcd2csm87587595ad.145.2025.09.05.11.23.26
+        d=1e100.net; s=20230601; t=1757097517; x=1757702317;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=AaoZHKsIdrsHZEJAr8xH+OqjAiSdKNxQE05QfNcjvOw=;
+        b=cnWUltahdSdRIDb5w/brbsZD4rmFXEzkDQ8pVUnc3lU0FjkyCIY5mCjF+O9R0RgVyn
+         bpCPenhuyv5Z9GLg6KDGGeKUa5F8KMAUhbT9qmYiWacdzEU+0WDOcLIgaWH5ojnZw2Aa
+         ma2xk/tFNQIXN90aMpDQ44TA9prCeVpZ0b4t1mtQy2Fgo/1HwaMWPMwkP6NnFLxKk+Bj
+         mnT6HElzLWZMRSVaVgLqaH4uf1Iww25gL4WMFKQHEtny95+0NvlZNBbKHKvYH6wW79We
+         XrZ8rcXStkkNb/SuLwOAN/a5SQfNS9huzR+S1JytgDx3LVTFM4AELIfToSFxIIFjb9NO
+         2pfA==
+X-Forwarded-Encrypted: i=1; AJvYcCWLJA+InEVkWAdC3D9PUKFiCkgAuDk7gP/hKwYKFOCXfgJ5/ZERS75dKTO5Y3OePC8vTnU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVmCn6jSSIjy977eKSAxb5W9b7/VNLk3rxSb0S82W4gn3jjalu
+	a56IWlFBDuKuzeuXRrFl1sU+oLFQ7foAX1nfhSrvlOmgAnTqIe36GA1P
+X-Gm-Gg: ASbGnctf42hd58UGHR569KrHOgn2fD8Wo7m9/FBmJX+gE5rQgThscU97ytZpWSrXrGB
+	Un1gY7mSaUmKRPfISyfh9rKKtHMw2/S+vK8dVIaYFVzxIbmjYUEs+kzbmEL+zYnSLvPaS6iCGV2
+	nU8Zu1UhL102SuH2dc638qA1jdWbr/0Tj66rLpnzHzm5p00TEbeIGGjN0Kc4QCD/dAA0uG/eR2s
+	qtATChCZikL8NoscgTNTJ5qf5wpinUv01r54XrbVsHFFVk2Tz4XtLOAysPGZuLWmTH4lwRVkFMQ
+	Vrb+gicuO78SkgxMMbdnISSMVgbTfEJM1xckajZycz0+R3fnOdhIPs8FXFUaC9+Oh4GDQ9GIaty
+	fsBkzXa3qyS1hCa26WmwPjb88NX/8
+X-Google-Smtp-Source: AGHT+IHlP+jAKGVw0IBwEyGQZEjPlD9oubPvObYL7CTqaMTXGko16UGKCMV5TvFQfmfEvN5va6PW4A==
+X-Received: by 2002:a05:6a00:4616:b0:770:343b:5457 with SMTP id d2e1a72fcca58-7723e308528mr28144669b3a.16.1757097517070;
+        Fri, 05 Sep 2025 11:38:37 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a71c60bsm22262497b3a.103.2025.09.05.11.38.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Sep 2025 11:23:27 -0700 (PDT)
-Date: Fri, 5 Sep 2025 18:23:22 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	linux-mm@kvack.org
-Subject: Re: [PATCH bpf] bpf/helpers: Skip memcg accounting in
- __bpf_async_init()
-Message-ID: <aLsqmno0KJqrXFot@google.com>
-References: <20250905061919.439648-1-yepeilin@google.com>
- <CAADnVQKAd-jubdQ9ja=xhTqahs+2bk2a+8VUTj1bnLpueow0Lg@mail.gmail.com>
- <qwrl5ivlaou2qqbrj4wh2vi4uqmeny2zyfidkjizkyyzta3uo3@z6bjemb7om6y>
+        Fri, 05 Sep 2025 11:38:36 -0700 (PDT)
+Message-ID: <cb5d92d707032fbc2276705c9b198318f0c4f5c6.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add tests for arena
+ fault reporting
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon	 <will@kernel.org>, Kumar Kartikeya
+ Dwivedi <memxor@gmail.com>, 	bpf@vger.kernel.org
+Date: Fri, 05 Sep 2025 11:38:32 -0700
+In-Reply-To: <mb61ptt1hq9sc.fsf@kernel.org>
+References: <20250901193730.43543-1-puranjay@kernel.org>
+	 <20250901193730.43543-5-puranjay@kernel.org>
+	 <3105c65cd99c483ecb4eb63d590fcec9601891bd.camel@gmail.com>
+	 <mb61ptt1hq9sc.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <qwrl5ivlaou2qqbrj4wh2vi4uqmeny2zyfidkjizkyyzta3uo3@z6bjemb7om6y>
 
-On Fri, Sep 05, 2025 at 10:31:07AM -0700, Shakeel Butt wrote:
-> On Fri, Sep 05, 2025 at 08:18:25AM -0700, Alexei Starovoitov wrote:
-> > On Thu, Sep 4, 2025 at 11:20 PM Peilin Ye <yepeilin@google.com> wrote:
-> > > As pointed out by Kumar, we can use bpf_mem_alloc() and friends for
-> > > bpf_hrtimer and bpf_work, to skip memcg accounting.
-> > 
-> > This is a short term workaround that we shouldn't take.
-> > Long term bpf_mem_alloc() will use kmalloc_nolock() and
-> > memcg accounting that was already made to work from any context
-> > except that the path of memcg_memory_event() wasn't converted.
-> > 
-> > Shakeel,
-> > 
-> > Any suggestions how memcg_memory_event()->cgroup_file_notify()
-> > can be fixed?
-> > Can we just trylock and skip the event?
-> 
-> Will !gfpflags_allow_spinning(gfp_mask) be able to detect such call
-> chains? If yes, then we can change memcg_memory_event() to skip calls to
-> cgroup_file_notify() if spinning is not allowed.
+On Fri, 2025-09-05 at 14:00 +0000, Puranjay Mohan wrote:
 
-Thanks!  I'll try this.
+[...]
 
-Peilin Ye
+> > I commented when prog_tests/stream.c was first introduced but it was
+> > decided to postpone the change back then.
+> > It would be nice to have the above expressed in terms similar to
+> > bpf_misc.h:__msg() macro. E.g. name it __bpf_{stdout,stderr} and
+> > have something like this in the progs/stream.c:
+> >=20
+> >   SEC("syscall")
+> >   __success __retval(0)
+> >   __bpf_stderr("ERROR: Arena WRITE access at unmapped address 0x{{.*}}"=
+)
+>=20
+> I would prefer naming them __stderr and __stdout
 
+Works for me.
+
+> >   __bpf_stderr("CPU: {{[0-9]+}} UID: 0 PID: {{[0-9]+}} Comm: {{.*}}")
+> >   ...
+> >   int stream_arena_write_fault(void *ctx)
+> >   {
+> > 	...
+> >   }
+> >=20
+> > Now that more tests are added, what do you think about such extension?
+>=20
+> I tried implementing this and it looks nice, so I think we
+> should have it.
+> Will add it with the next version.
+
+Great, thank you.
 
