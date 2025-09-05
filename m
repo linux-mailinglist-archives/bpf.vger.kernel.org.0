@@ -1,138 +1,132 @@
-Return-Path: <bpf+bounces-67569-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67570-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 961BAB45B06
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 16:54:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF82AB45C2D
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 17:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E03311754F7
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 14:54:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DA6CA00824
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 15:13:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11600371EB2;
-	Fri,  5 Sep 2025 14:54:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b="YWDkWDlO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B528531B83D;
+	Fri,  5 Sep 2025 15:13:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C18636CDE5
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 14:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC2931B80D;
+	Fri,  5 Sep 2025 15:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757084072; cv=none; b=OMD3I3V9zJNhr6TkneHOi+7EjFPkgwdxZcOhccMg8Q13VxF377L2JbD/gPkEnIc995HbmxDRHHeKyCxYtK0bnYALQ1zO/wRebAupTYVr4Ol5KZGx4kTKfEY3T0qrgwrrmBX61X7QSZhtiYAdPOAjA4AvNcNyvO4ohctzxmLjABc=
+	t=1757085204; cv=none; b=Uy7OyGz97vFvdlhEmnN8mQfd+MDUH9+gQYIo5NWXnjneFcte9mPQ336NmaGQy+zWv4N+8gCn7YN1UN1uhkLsfgONXjKZ/FnNmxJsuY8ssL9ReX4Oqhdr4XJXxwUS+9R+DnAkPEXgenzG8XuPhSPHlS8dGXW76ird+gSATFAlPbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757084072; c=relaxed/simple;
-	bh=2QGDmWuuR0Q3I5spDA6jKf30IjmU5r3dVWiu2VclS8c=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=DaMuRUs01F3d/9obn9jultmiJGhzZ7a2uzvE5vxSine83yAFxp7m3ouKLq6fHvpgmRWnVyUkRfVz0pMh3A2uefTpX0cOxs2KjQa0ayZWl658BOrsYRVvvR4x40SvNpHWmEZwcrZxsd7Hq0R4yVRgbdZ1FOTjT/C+3stNMIaWkkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu; spf=pass smtp.mailfrom=superluminal.eu; dkim=pass (2048-bit key) header.d=superluminal.eu header.i=@superluminal.eu header.b=YWDkWDlO; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=superluminal.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=superluminal.eu
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-32326e20aadso2435699a91.2
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 07:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=superluminal.eu; s=google; t=1757084069; x=1757688869; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EUGswAdRItueoSYQPU7jm1v44GCGzqxzoNxIhfsat5o=;
-        b=YWDkWDlOiSO0t24AQ3irHXNwg9LbNARWYiP53d3aqXTyTnZxRM1Aq4r+UL5Y6T7FOx
-         rRq/3vqf5z7yGLtJZxEb4BcQD+IB04Ja2Ai+7MFLet0xcGOrKXAKVbWUZ/mcE1sr2ylQ
-         bkvWtm/LkDa7hwsilHsz02sXfq/crBqShdZX/CO2H5IS6xH2xR8r2Sz5QHg55V+6x+GD
-         HK9PaJu4q6SP75LDQDhS69MfeWfca3hEZF9e13Yzak2vquGL7R63ydYGN+ciOz3qUStp
-         FbyQUU/NMMHGxmFCeNKQld6TvKZ84BjaSl7V+MoK8v7nJ7AO4aKoQ6HgDTPcbVHFjrUt
-         qInw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757084069; x=1757688869;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EUGswAdRItueoSYQPU7jm1v44GCGzqxzoNxIhfsat5o=;
-        b=itwK/s12MNn7hj6zcQA5Y0hkAQhyKqhqJELdiZLOY607toGoUUwlYTJnHyXBLZztdF
-         UVGIIbBbjrD0ijpfTuDvpAecneYfTHHrYZJfDn04v1hI/9D/MuJKZsNf2f7F3hE2aaIu
-         Xlz7T1Yz95+xfDGdGfmevA+hIuCcfM3RyM8nqW3BqL9NjfnTYOAr200hO2yzGAkDpO9w
-         hAiP9Md9tYZgFTaxbT6M+O+9e0cFjRNnWU0jB2TH8hwqZR5xkaxjxeYIXKI2enLIrEJv
-         JJF/yjNvyYYngYXaNdvC+svx+T5mCFAgaAzRmCBneOTM7zxcFFqeX2d/xd3vXrVFRgkz
-         XX8w==
-X-Gm-Message-State: AOJu0Yy/kfu1/0WcOQdoeXaW9OtkZVkbYYPqqGdIUvfhi68guYmY2RoU
-	JklhgKvxy042fX0yGRiSnQy/6k2puVr+7+ivVgra8hvRckwRQZ6YGLpfABi7cXRVecdFV6Rtg6s
-	aLaj/lK79v6V6ySsh+ADTNM4TG2OcRSu/tEys6SWn62f5fOmh/NKw39g=
-X-Gm-Gg: ASbGnct2BMnZW3ZR50YeCnuFm83sRpevn+mZxzl0+K7QOoxE16ibPZeKGQd3Kn+LCBv
-	F9vfyqIYRkOvNB/dCuMOl8umWvYZk9/oGarlMYr+z3aSl9EAU+WRYkpYzPG4U20AjDydtLzPfye
-	aos5aDjWAarIlDzFt+wqGEoa/vxCOhS2WAVBHd8QzglHtGHlEOLRjONHMl05GBA+faRWEu8KVd+
-	afW2GfT0ziWxiUEtAc=
-X-Google-Smtp-Source: AGHT+IGVDRL34ICZB5fqSj2g9AtAWwf3kFf6mJXzvvv5/3qI+MxVFX9TpEgwbnmZmNOIWDnKTMYULgUtrubVy57+FB4=
-X-Received: by 2002:a17:90b:1d8f:b0:32d:17ce:49d5 with SMTP id
- 98e67ed59e1d1-32d17ce4d41mr1018715a91.23.1757084068872; Fri, 05 Sep 2025
- 07:54:28 -0700 (PDT)
+	s=arc-20240116; t=1757085204; c=relaxed/simple;
+	bh=aX0skoyK6lzyBnPPEwaSlTRzaALmW1WARz4u1Q7KPC4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pT0IpfL1IVpfAeoh70+/+Fq520g6HmsZ2cuiOCloKEKMj6q4iDdoEYQMloqGlzQvNZwWTecJI9O0XCfxtss4qnEQZWHuT4gc4OHkYwGpQt76eLuKyu2ve/kSb394kVf1aeMNWZu/uYJKOXHjreCibqL60GGu6VkeJavdsnAYC10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cJKbt5YPbzYQvGy;
+	Fri,  5 Sep 2025 23:13:14 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 42B651A07BB;
+	Fri,  5 Sep 2025 23:13:13 +0800 (CST)
+Received: from k-arm6401.huawei.com (unknown [7.217.19.243])
+	by APP4 (Coremail) with SMTP id gCh0CgDnfYoF_rpoPC72BQ--.54678S2;
+	Fri, 05 Sep 2025 23:13:11 +0800 (CST)
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yhs@fb.com>,
+	Song Liu <song@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Willem de Bruijn <willemb@google.com>,
+	Jason Xing <kerneljasonxing@gmail.com>,
+	Paul Chaignon <paul.chaignon@gmail.com>,
+	Tao Chen <chen.dylane@linux.dev>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Martin Kelly <martin.kelly@crowdstrike.com>
+Subject: [PATCH bpf-next v2 0/3] Add overwrite mode for bpf ring buffer
+Date: Fri,  5 Sep 2025 23:06:38 +0800
+Message-ID: <20250905150641.2078838-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Ritesh Oedayrajsingh Varma <ritesh@superluminal.eu>
-Date: Fri, 5 Sep 2025 16:54:18 +0200
-X-Gm-Features: Ac12FXyFQZlSvqRV8e5HtPwJGSWd3jeHqhyyAqZRVdEAQ49uh4b1P8F6oU6aHts
-Message-ID: <CAH6OuBRzMZfa2kR6KYw2-F3mo3LfqwdVDqLSAD6e-xU9C56Fdw@mail.gmail.com>
-Subject: Kernel lockup on bpf_probe_read_kernel in BPF_PROG_TYPE_RAW_TRACEPOINT
- sched_switch program
-To: bpf <bpf@vger.kernel.org>, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDnfYoF_rpoPC72BQ--.54678S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw4kGFWUCr4rtrW7tF43KFg_yoW8GF17pa
+	n5KF15trn2kFyxWw1fuF4IgryrAw4kZr1rKw1fXw15ZrWUJFWrXFyIkr15XrnxJrWIqr1F
+	k34qgryrW34jqa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r4a6rW5MxkF7I0Ew4C26cxK6c8Ij28IcwCY02Avz4vEIxC_XrWl42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUhiFxUUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-Hi,
+When the bpf ring buffer is full, new events can not be recorded util
+the consumer consumes some events to free space. This may cause critical
+events to be discarded, such as in fault diagnostic, where recent events
+are more critical than older ones.
 
-We're running into an issue with our eBPF-based CPU profiler that
-we've been attempting to debug for a week now. The issue is that as
-soon as our eBPF program(s) are attached, the entire system (kernel)
-hangs, but only on specific distributions. We've managed to reduce the
-problem down to the following code:
+So add ovewrite mode for bpf ring buffer. In this mode, the new event
+overwrites the oldest event when the buffer is full.
 
-SEC("raw_tracepoint/sched_switch")
-int raw_tracepoint__sched__sched_switch(struct bpf_raw_tracepoint_args *ctx)
-{
-    struct task_struct *prev_task = (struct task_struct
-*)BPF_CORE_READ(ctx, args[1]);
-    struct task_struct *next_task = (struct task_struct
-*)BPF_CORE_READ(ctx, args[2]);
-    return 0;
-}
+v2:
+- remove libbpf changes (Andrii)
+- update overwrite benchmark
 
-i.e. this is just a raw tracepoint attached to sched_switch. Loading &
-attaching this program, which just reads the tracepoint args, will
-result in the system immediately locking up on some distributions. It
-works fine on Ubuntu, Debian (on various distros & kernel versions),
-but will hang on Arch and Fedora. As far as we can tell there is no
-relation to kernel version; we've tested both old (5.11 on Fedora 34)
-and new (6.16.3-arch1-1 on Arch) kernels and both hang immediately
-when this program executes.
+v1:
+https://lore.kernel.org/bpf/20250804022101.2171981-1-xukuohai@huaweicloud.com/
 
-The code above calls BPF_CORE_READ, which compiles down to
-bpf_probe_read_kernel, which we've verified by dumping the xlated
-version of the program after loading it (without attaching it. And
-indeed, if we replace the BPF_CORE_READ with direct calls to
-bpf_probe_read_kernel, it hangs in the same way.
+Xu Kuohai (3):
+  bpf: Add overwrite mode for bpf ring buffer
+  selftests/bpf: Add test for overwrite ring buffer
+  selftests/bpf/benchs: Add producer and overwrite bench for ring buffer
 
-To debug, we've attempted the following:
+ include/uapi/linux/bpf.h                      |   4 +
+ kernel/bpf/ringbuf.c                          | 159 +++++++++++++++---
+ tools/include/uapi/linux/bpf.h                |   4 +
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ tools/testing/selftests/bpf/bench.c           |   2 +
+ .../selftests/bpf/benchs/bench_ringbufs.c     |  95 ++++++++++-
+ .../bpf/benchs/run_bench_ringbufs.sh          |   4 +
+ .../selftests/bpf/prog_tests/ringbuf.c        |  74 ++++++++
+ .../selftests/bpf/progs/ringbuf_bench.c       |  10 ++
+ .../bpf/progs/test_ringbuf_overwrite.c        |  98 +++++++++++
+ 10 files changed, 418 insertions(+), 35 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_overwrite.c
 
-- Enabled nmi_watchdog, hardlockup_panic, softlockup_panic and hard &
-softlockup backtraces. This doesn't give any further information.
-- There is no relevant output from dmesg
-- Regarding Arch, of note is that a Manjaro distro with its own kernel
-works fine, but an Arch kernel doesn't. We suspect there is some kind
-of kernel config option this code is interacting badly with, but we
-have been unable to find such an option by diffing the kernel configs
-of both the working & non-working machines.
-- Attaching a kernel debugger via network. Unfortunately, the lockup
-also locks up the networking layer, so gdb is unable to remotely
-inspect the hanging state. We're currently in the process of setting
-up a serial debugger.
+-- 
+2.43.0
 
-We'll continue debugging this on our end once we get the serial
-debugger components, but we were wondering if anybody has seen this
-before or has any tips with regards to tracking down the cause of the
-hang? Any input would be greatly appreciated.
-
-Thanks,
-Ritesh
 
