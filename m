@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-67612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 934EEB46505
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:57:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BD40B46507
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:58:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A7D91CC2EB1
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 20:58:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C16C1CC3643
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 20:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312DD2E285B;
-	Fri,  5 Sep 2025 20:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE0062E03EE;
+	Fri,  5 Sep 2025 20:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SMUFBYxy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QL2T7HZ4"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A7ED2C17A3;
-	Fri,  5 Sep 2025 20:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1DF278157;
+	Fri,  5 Sep 2025 20:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757105866; cv=none; b=lcg6lT4C927tivzSXP7vZmO0MwZSeIsqjTAfrgc0AxBtBrH46vAg+kvyZiM6aloCfy/TYBRqe4K9QMN1hzN3tMkyPHt+ImEI1sZbT4xBWNPD1si9HTDHOqv/V/gxP/Uoj3IRWCrkhheO3y4wM6M/Q2wHIZ1ZXFiWo78l2uR63c8=
+	t=1757105878; cv=none; b=fz32D1FNAmNNkv670whpuI28N6Z8u3+Yo0/5Xp0vVzsf4QZ3jvdUMm1iLl89gwTbe3lhZOGelLYJNHYsCnP8XfUtLDaHlNHiFgDxWBYSkVOkd7WvTx9GiNjIbFpAAz0zVk7vcNNP+xhgafB9+OdaLBQuCPGryJE1Q86C6/1iBtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757105866; c=relaxed/simple;
-	bh=n0FHDW3YG/QaSMYvc6CMm7we6inPdibj+d+gLQ9pWd8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Oz9e+zHd27BpS67vNtVxncgx+Ums5gf7AB/EMeCCKrRCRWW1uCU5nfxcHzaydXc4BhMmS8KL2CqkP+zIiqxstuIuv7SaKP6I0z2zVvE7OmSR9n1bTbsH7uSCuouJLee8YiIfa91WEuV3vmGDudap84Z+EpaFlgyW0+y7elBGC14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SMUFBYxy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EA76C4CEF1;
-	Fri,  5 Sep 2025 20:57:41 +0000 (UTC)
+	s=arc-20240116; t=1757105878; c=relaxed/simple;
+	bh=sz7WRdEvocERBLwqK8WQqHfQ9wbtzBvV0anL7xCXY7U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=U2TrpNoG0UWsCNbm0+jP4f6L73YXHUIaVwXbfvL0nwp/ScnW8oKe2Ns5Cg6lSgBvGYcGsEVeNKDLu37Yg7OZWyNw+7M1qZOdRWThbATjoKxTUjWWLlJD84d+P5fYA2sa54us+1WNypEPazxSXtlAlQ4OFXcJgr2leVyaLIlbmE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QL2T7HZ4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BAF5C4CEF1;
+	Fri,  5 Sep 2025 20:57:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757105866;
-	bh=n0FHDW3YG/QaSMYvc6CMm7we6inPdibj+d+gLQ9pWd8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=SMUFBYxyDrZsLbh5dKppGgCCn/j2gkhQhcZgAuayS0c4E1cggEKzM7g7lMlQVullR
-	 I5gSmjumoy+ZtwK1jEf/Nbccw3Rjurrn2mE0jij6yBPAkBgAWK5batgIIS0rU2bO+S
-	 aBLgCzHzKFhq4cnJRSx+1IhopYVRXPQW1jcvUHS5xDGoeURBGeUN4RkvSxvzPEBetr
-	 5tqZ+U8M5Bqil1QnPLY4/xmAmExYTQ6XIIYkIflq8D+ayYK5xuHtfhBNnN27Ipo9c+
-	 BvBvfOmlZ7V5tkn1zx10Zf5C8MVerTRgQ0Yrx2v3L663CPruUWw3c9IL3RGmQyzmx4
-	 C2dFzC9OYPFlw==
+	s=k20201202; t=1757105877;
+	bh=sz7WRdEvocERBLwqK8WQqHfQ9wbtzBvV0anL7xCXY7U=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=QL2T7HZ4EDMng4gP/vJeuW1QppRFaRiAdsb3L/8bFMiB0tzTwYXZrtlGOCUxnbA/l
+	 sQb2LYweU3Nja9+MQ/GMYf8UgPV2KjBLxDAWtdhqrR5bK/+711+yeqK/po7LEJXvyJ
+	 YN6Z6ZnKUJChyT2NIKhgkJHCvOXjfQ7eRN5QBm7O9Nyqr931YTCtaFyOfqOw22Zue4
+	 3n3ZHeQ8yS2JZAp38OwA4bRo4tqkczm7/OMLN+moqhCg5LMYGrrXegwkHBu19DHQ1s
+	 vAzv5a43ffIaAFU3bYd5K9B3zx6LcrKm+S1KLNhsXsBIADeWZww1rOeBPZfk8aP4Oa
+	 YsNQ0Lztr3uDg==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -60,10 +61,12 @@ Cc: bpf@vger.kernel.org,
 	Ingo Molnar <mingo@kernel.org>,
 	Jann Horn <jannh@google.com>,
 	Alejandro Colomar <alx@kernel.org>
-Subject: [PATCH perf/core 0/3] uprobes/x86: change error path for uprobe syscall
-Date: Fri,  5 Sep 2025 22:57:28 +0200
-Message-ID: <20250905205731.1961288-1-jolsa@kernel.org>
+Subject: [PATCH perf/core 1/3] uprobes/x86: Return error from uprobe syscall when not called from trampoline
+Date: Fri,  5 Sep 2025 22:57:29 +0200
+Message-ID: <20250905205731.1961288-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20250905205731.1961288-1-jolsa@kernel.org>
+References: <20250905205731.1961288-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,39 +75,34 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-hi,
-as suggested by Andrii [1] it'd be helpful for uprobe syscall
-detection to return error value for the !in_uprobe_trampoline
-check instead of forcing SIGILL.
+Currently uprobe syscall handles all errors with forcing SIGILL to current
+process. As suggested by Andrii it'd be helpful for uprobe syscall detection
+to return error value for the !in_uprobe_trampoline check.
 
-This way we could just call uprobe syscall and based on return
-value we will find out if the kernel supports it.
+This way we could just call uprobe syscall and based on return value we will
+find out if the kernel has it.
 
-Alejandro,
-I included the full man page change from [2], because IIUC this
-was not applied yet, and as usual I butchered the wording, so I'd
-appreciate your review on that.
-
-thanks,
-jirka
-
-
-[1] https://lore.kernel.org/bpf/CAEf4BzaxtW_W1M94e3q0Qw4vM_heHqU7zFeH-fFHOQBwy5+7LQ@mail.gmail.com/
-[2] https://lore.kernel.org/bpf/20250720112133.244369-23-jolsa@kernel.org/
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (2):
-      uprobes/x86: Return error from uprobe syscall when not called from trampoline
-      selftests/bpf: Fix uprobe_sigill test for uprobe syscall error value
+ arch/x86/kernel/uprobes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/x86/kernel/uprobes.c                               |  2 +-
- tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c | 34 ++++++----------------------------
- 2 files changed, 7 insertions(+), 29 deletions(-)
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 0a8c0a4a5423..845aeaf36b8d 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -810,7 +810,7 @@ SYSCALL_DEFINE0(uprobe)
+ 
+ 	/* Allow execution only from uprobe trampolines. */
+ 	if (!in_uprobe_trampoline(regs->ip))
+-		goto sigill;
++		return -ENXIO;
+ 
+ 	err = copy_from_user(&args, (void __user *)regs->sp, sizeof(args));
+ 	if (err)
+-- 
+2.51.0
 
-Jiri Olsa (1):
-      man2: Add uprobe syscall page
-
- man/man2/uprobe.2    |  1 +
- man/man2/uretprobe.2 | 42 +++++++++++++++++++++++++++++-------------
- 2 files changed, 30 insertions(+), 13 deletions(-)
- create mode 100644 man/man2/uprobe.2
 
