@@ -1,171 +1,131 @@
-Return-Path: <bpf+bounces-67636-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C318FB46615
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 23:47:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58510B4660E
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 23:46:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 071971D232D1
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 21:46:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC3D33ABF58
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 21:46:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACFA22F7453;
-	Fri,  5 Sep 2025 21:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A2530102F;
+	Fri,  5 Sep 2025 21:41:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bXE8L5pH"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FC+s6T3B"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416CF2F3C16;
-	Fri,  5 Sep 2025 21:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D6E2F7468
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 21:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757108446; cv=none; b=PQeAZzE2I7PBjCH9Q6JwpC77ToGUishgy5ptyDyGFIvh0r5F0QzdAbLcrH6Ergwt8cGUIyTsHRDCOMNHEwzuweKaWzmAFvApFmoPeN3FeJdkOCJ4TPykxXpvcpNbExT4qeT5Bt7IYRekHM840ksL9UYiP2k4c2bC0bMQAyfohes=
+	t=1757108465; cv=none; b=l6bL+XDq0QRegDCyRN6hu3NlZ4pxSWrSp46P1+EsaTeJ2v49I3yfwA3QQsbKVhgfWVN6UjKqqzgwziGZ8wsmLdxokgzhAljy/zSnK2f+epdPUSscko6dqh+z0v6W+5F3kb0wQvA6uu1gLQ/DKv/usp4/FvO6w1bDIDb+/CvhMho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757108446; c=relaxed/simple;
-	bh=FDY959cO9wwTENDJzS2+XGN7bG6tY4hhG8E4UV3KT4U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C/zmByHK7KIBiyjXit9cL6Gah+HX4jjeobaIglIwwFquBavUGqnSeosJIN/WZoMzkIhb7jbGSPevdSF6NopEJJ6NHln818UZYu740CuxPWQ8H81d3fM1Zbr8NDp7PFRPbldy17UsB3XD9uZd4aiMW9ujLsZ/O9XfQcytKWjoPw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bXE8L5pH; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-61d7b2ec241so3079977a12.0;
-        Fri, 05 Sep 2025 14:40:44 -0700 (PDT)
+	s=arc-20240116; t=1757108465; c=relaxed/simple;
+	bh=EISgDghY/knXbNwDvDGK2KSaNFpugS1NjVBQvkSH1ok=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pnrPfS2l7H121/K6vTHpZFeBWyphSpyfJ/xyAUTQX+MavblVe8s4ByNkK1jmn04qucGnzpNfZHMou9Aa1hso1nxRzFL5y5taB5cTy8vVETvsXswJfq+OWOWrcGgTkSlAeuOHprmin9Ql/RqutmVHm0lsoI1l3LL0VjBi9oqypo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FC+s6T3B; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-24b2337d1bfso57295ad.0
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 14:41:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757108442; x=1757713242; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JjQFGEB6YpkPaQvXYN6qaYlcf1r3Th/NOUzoCak8BuA=;
-        b=bXE8L5pHRd6u+fsIX6U2kTDfQw5nxX/x+NCwEplzrWYDUbiTSAOuYyhrLgLulPvdE9
-         zGvx/ADrmyYzyXo00Ga2SMD7Hw2ASRGDS6zAgZJjj3MqqUfgNOUI/+wGKpdHFEFtzexp
-         b3Ai70nhiluK5rKBZGM85Z+Ruz5RZ1vwpRWk/Zg2i/ArSRdlORLGawfot4bix2vol7Br
-         2chhgmWR2NkPhDan/qjekTjQvWMe6wuIoF7VYJwmEWcuGZpPPtvM0i0fIOqTTix7Culb
-         5V4E/bFj3vmsK3u40JJoep3fyVkMoVt0+jG2STPaJkLSbBt7206jkSNj9Q1aqAbIsM23
-         dTng==
+        d=google.com; s=20230601; t=1757108462; x=1757713262; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JJ/emNLCJz3vxOzQ9R3rq9Yl2yjJO1c1zooZAILHbKw=;
+        b=FC+s6T3Be9OhbfE3d46wlRbNypqlcHGfaR3fU5bGf9ZyZZ2fmGWCSbQb8rlZzeCopj
+         pjofAdVG2MdF0FLFJNlh06l1AmQhy0a4E+kRIKUgBoRZssqSbeOHgvo8vu7514bZHzPK
+         iDT+AMRi0oWyCNR/ccVAKWZKlLYIgihTf0MA6nv+onyUu+RUvcXDwHJ727YGTjOItv0X
+         dPVBLYEr/8muy7TKkxfBC7ig1GE4nqlEcJTYe9jyEuqO296rAivFxzq/b+lBSBHrxoIQ
+         GgNavhIfeBMjXK+1dBa645uzHc1zrm5STYCy4wgaq4yAN/kfLWnwDPyvDSipNESsqV2n
+         CGBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757108442; x=1757713242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JjQFGEB6YpkPaQvXYN6qaYlcf1r3Th/NOUzoCak8BuA=;
-        b=PDDFkfPilFJOaJNAt8wGnjuAQXTegEwe23VdhB1mx+NQyE0WI/Ct3l9U8uX+T8mlIW
-         aqsiNkYuUylAfzmaocSxyJZkNz5eSf1OblwDtSdS8viFUr33shxof2Unm1dxPGkaeo1D
-         jjorU+zGGZ/u/tV6V7rWJx3wEl2AWv9C1z0WO1+vZYclrylyEpbIBA6CH7JUpht3jnNW
-         0AXfOq9jhFOaTXAy2tj6NcVyerMDljIVIGaKX604e4T2gRdcZyxVi/gfUX0QglDRLk0R
-         bp7YNL8LdWnd3c6o3RkEp+NjjHf/9YLMwYllfgsjIYO1ZrRXSXZAhc79xD7dVYwqonEF
-         idjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUSOMP1Gj1OheQLCSH8kmOeYjdfOGAIX1r+QQcVhRi5+Qlt1tKbbQDNoVzgJmU4o3yv7+N3tg8b0G+1QNW5j/QlxI2O@vger.kernel.org, AJvYcCVemXP9HK/j1LH16JM12naTllHfOo2jamP35AblTGHD9Ph2LJwIm0Uvwf0DsDXcGFYhyZrXHTGUQLeoFKvN@vger.kernel.org, AJvYcCVpnCIvkvF0WqH37ad2qJ4reNoTRX4u5DJpiXaFTq1CLmI6dI3NyyjWJ3bOP+nyNSA2RuI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRy5bSUbf32DgPNKOXy4ck1nZKxUVZn6cnCUgwkROmit+V0MA3
-	xgsarobAFFhjsNQKkAA5XEhlKuoxHn1zHgxDtiTNU/CZJ1zVSsilb68/XRoOa5SKYU7+De3kjDw
-	r3zDLf+fSrfiuvVFDom1w8v4NwKnjsBE=
-X-Gm-Gg: ASbGnct+Zuh9mJknjxjuqsw0iGkO7CCiiYCEHSfZGnlvZLocwAF3Zt4/F5/rBfPVKK7
-	dM+cbP9RfVV+dzf91AXeeDrgYMevkR916BzU2WM0+wTVP4Di8FODvtZHF3JRK/JFFfs3BR4rWuM
-	mAKVcLxaRZyRDspnCf6l/Raye9kx3X0jBnTOMpXJ7FL3jWf9YITw5iMxPLd3Q6hCEk22PPjzZ4C
-	NQCQh41bdOkjE9yzkyFNOor2Q==
-X-Google-Smtp-Source: AGHT+IFZfG8mZqRvQ/99I3k+YKlP8EPpxCHHBeoBZvG3bPIr/jsBy+2GreK7+mcbhzjpnK50IxYgO09KjN/nC7yPV4s=
-X-Received: by 2002:a17:907:94c1:b0:ae0:d1f3:f7f4 with SMTP id
- a640c23a62f3a-b04b13cd58bmr25664466b.13.1757108442262; Fri, 05 Sep 2025
- 14:40:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757108462; x=1757713262;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JJ/emNLCJz3vxOzQ9R3rq9Yl2yjJO1c1zooZAILHbKw=;
+        b=wPvSZOId5CNRqso/BaNOCDkm2sZA6iouSFutYidBNcQQFF1OqOdjg3nXDlg0/Diyy8
+         3ooWGGTs8iaZBLmFgol7pKgSDzvCShxmQUp6WAyFGDVt4PHVfrqk1vhHlvC9FtJtzuBz
+         4ypzhuKwD574x+WPmyQN8K77m7Ek/kEqrXhEgmnPj5Y4Lv1Cfk255eq0gRn6uVRCEW4k
+         79t3ioH3PhCD9OgYIAo70hWFLV/3pHIrcLWkC5xcSj/p72WwGRoyReOakFBlwJ6tQs8M
+         n+rj+mllHxhTkgKVMcpBvxJk1Qfn1kXnF+275a75RutlO/j/X5sVCSMIxI87WIjnYUsw
+         1J1A==
+X-Forwarded-Encrypted: i=1; AJvYcCWO2Q1Yh+J6QplvOB21OSjkPPqVYUXlI6uX2uAgRKZS6XU4Ds03nZNEG1khr26KA18CJTI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8mc5svn9St6VWYKj+ay8Gm0vKRD+YZLmsvxRgR50Ak1JtpCEL
+	74JRrGrNlO/gsr0ph54NFNlxCS9dcn8xecAtrSDJNks0Kl/xybv9W25god0gpO8chQ==
+X-Gm-Gg: ASbGncsiPWQ3lv8c2VZ0cAm3QCwXP+tQseP/3QiaGctGQSk1c8wH47zHn6G6+tvJSMF
+	HuER8vTVbiOd5bgui45RszBZJqNNV6ns0uBi/mGKoIzOb8iksU1Yqr8Lenkn7YdQs1q1xjOvLv+
+	F2/ymsiuAKX0jtR0hTEjzyPPPwO9XXBvesCW/Ehtl+lGOFSINe7XSeAt1TUG0PcgKqEdfAkFGjf
+	Hoawlf8VfrznbCevWyq1QQ0LeMxFRY4i95z5Y1iPO5lwDLediaTfpmXJ6NMN0YfqyJT8VUdN6MJ
+	xdWX6MUC3re1qxxbA3cdFHrJ//P0w/tkdGLLFdLvtweYdR5t83YgJTNAuAFRy00dPkplIoJllj9
+	LKQxMFsngxhThYkg16ejo3iibxVb93XoD+iO+9wkb1vFdwS+JaNKZxm4mqNT40xaebv4=
+X-Google-Smtp-Source: AGHT+IEgsoKeEdAOmf7V3AwPOG3rhylbsP/X4Pjd1kcqhKfVj8Dc8zkYrCPZC0GXi2o1KWjaV1iW6Q==
+X-Received: by 2002:a17:902:f546:b0:24b:9056:86a5 with SMTP id d9443c01a7336-2517446f701mr288115ad.7.1757108461368;
+        Fri, 05 Sep 2025 14:41:01 -0700 (PDT)
+Received: from google.com (132.192.16.34.bc.googleusercontent.com. [34.16.192.132])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a2aaa70sm22678386b3a.24.2025.09.05.14.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Sep 2025 14:41:00 -0700 (PDT)
+Date: Fri, 5 Sep 2025 21:40:56 +0000
+From: Peilin Ye <yepeilin@google.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
+Message-ID: <aLtY6JqoOTMA-OtG@google.com>
+References: <20250905201606.66198-1-shakeel.butt@linux.dev>
+ <aLtMrlSDP7M5GZ27@google.com>
+ <ukh4fh3xsahsff62siwgsa3o5k7mjv3xs6j3u2ymdkvgpzagqf@jfrd7uwbacld>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250905205731.1961288-1-jolsa@kernel.org> <20250905205731.1961288-3-jolsa@kernel.org>
-In-Reply-To: <20250905205731.1961288-3-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 5 Sep 2025 14:40:26 -0700
-X-Gm-Features: Ac12FXwbNGJ3otrnN6W2Jgm_ZRnGxpsFDGJFYKQUsNpWsEdtmyGy6UEoMuQMrfI
-Message-ID: <CAEf4BzYnr1UEk-6b73Won4HqcQ_c3Tg+zsHaBXM1P4n3LjKzAQ@mail.gmail.com>
-Subject: Re: [PATCH perf/core 2/3] selftests/bpf: Fix uprobe_sigill test for
- uprobe syscall error value
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, David Laight <David.Laight@aculab.com>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>, Alejandro Colomar <alx@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ukh4fh3xsahsff62siwgsa3o5k7mjv3xs6j3u2ymdkvgpzagqf@jfrd7uwbacld>
 
-On Fri, Sep 5, 2025 at 1:58=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> The uprobe syscall now returns -ENXIO errno when called outside
-> kernel trampoline, fixing the current sigill test to reflect that
-> and renaming it to uprobe_error.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  .../selftests/bpf/prog_tests/uprobe_syscall.c | 34 ++++---------------
->  1 file changed, 6 insertions(+), 28 deletions(-)
->
+On Fri, Sep 05, 2025 at 02:33:16PM -0700, Shakeel Butt wrote:
+> On Fri, Sep 05, 2025 at 08:48:46PM +0000, Peilin Ye wrote:
+> > On Fri, Sep 05, 2025 at 01:16:06PM -0700, Shakeel Butt wrote:
+> > > Generally memcg charging is allowed from all the contexts including NMI
+> > > where even spinning on spinlock can cause locking issues. However one
+> > > call chain was missed during the addition of memcg charging from any
+> > > context support. That is try_charge_memcg() -> memcg_memory_event() ->
+> > > cgroup_file_notify().
+> > > 
+> > > The possible function call tree under cgroup_file_notify() can acquire
+> > > many different spin locks in spinning mode. Some of them are
+> > > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
+> > > just skip cgroup_file_notify() from memcg charging if the context does
+> > > not allow spinning.
+> > > 
+> > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > 
+> > Tested-by: Peilin Ye <yepeilin@google.com>
+> 
+> Thanks Peilin. When you post the official patch for __GFP_HIGH in
+> __bpf_async_init(), please add a comment on why __GFP_HIGH is used
+> instead of GFP_ATOMIC.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Got it!  I'll schedule to have that done today.
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/to=
-ols/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> index 5da0b49eeaca..6d75ede16e7c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> @@ -757,34 +757,12 @@ static void test_uprobe_race(void)
->  #define __NR_uprobe 336
->  #endif
->
-> -static void test_uprobe_sigill(void)
-> +static void test_uprobe_error(void)
->  {
-> -       int status, err, pid;
-> +       long err =3D syscall(__NR_uprobe);
->
-> -       pid =3D fork();
-> -       if (!ASSERT_GE(pid, 0, "fork"))
-> -               return;
-> -       /* child */
-> -       if (pid =3D=3D 0) {
-> -               asm volatile (
-> -                       "pushq %rax\n"
-> -                       "pushq %rcx\n"
-> -                       "pushq %r11\n"
-> -                       "movq $" __stringify(__NR_uprobe) ", %rax\n"
-> -                       "syscall\n"
-> -                       "popq %r11\n"
-> -                       "popq %rcx\n"
-> -                       "retq\n"
-> -               );
-> -               exit(0);
-> -       }
-> -
-> -       err =3D waitpid(pid, &status, 0);
-> -       ASSERT_EQ(err, pid, "waitpid");
-> -
-> -       /* verify the child got killed with SIGILL */
-> -       ASSERT_EQ(WIFSIGNALED(status), 1, "WIFSIGNALED");
-> -       ASSERT_EQ(WTERMSIG(status), SIGILL, "WTERMSIG");
-> +       ASSERT_EQ(err, -1, "error");
-> +       ASSERT_EQ(errno, ENXIO, "errno");
->  }
->
->  static void __test_uprobe_syscall(void)
-> @@ -805,8 +783,8 @@ static void __test_uprobe_syscall(void)
->                 test_uprobe_usdt();
->         if (test__start_subtest("uprobe_race"))
->                 test_uprobe_race();
-> -       if (test__start_subtest("uprobe_sigill"))
-> -               test_uprobe_sigill();
-> +       if (test__start_subtest("uprobe_error"))
-> +               test_uprobe_error();
->         if (test__start_subtest("uprobe_regs_equal"))
->                 test_uprobe_regs_equal(false);
->         if (test__start_subtest("regs_change"))
-> --
-> 2.51.0
->
+Thanks,
+Peilin Ye
+
 
