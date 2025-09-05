@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-67581-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D155B45E7B
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 18:45:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC247B45E7E
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 18:45:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F301717BE68
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 16:45:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C07B81C82CE6
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 16:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15ADB309F02;
-	Fri,  5 Sep 2025 16:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00F530B513;
+	Fri,  5 Sep 2025 16:45:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K+zFMOwB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WC0MGxnt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA2452F7ACE
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 16:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A2B309EFA
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 16:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757090718; cv=none; b=HIBUOkMKMQU6j231g5PIITmT+f9PFe8lsQNJFZtmQWsS/lTQvmJuINgh81HxGoepQd7u5PTcjHa/5HD1H26XteGxliG5Immnlib9sgytADI63c0QHHBQz6Pqao1S9lEwH5ibvjHq6awu89IPpNlv/EZYp/MHolbExgsFivffoqU=
+	t=1757090720; cv=none; b=Aj+RBseQEMuRJFToJ1e2s8EQW7q2L555tGG+q3KlLv1l38S8gcdxoh0d6ITW78/DtBFduPhtnH5HXLZz3167y4XqvjDeXlRI382M/YDza67H8LLLgcV4t5rAEnsoJnEDtyDFHc63NoU6Bbc3tAS5sIq83LCUe8KzNHktIh4amGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757090718; c=relaxed/simple;
-	bh=v3KB9I3KbznufVXm9NrjrsbvI/Lid3OGi5TDnItzEDA=;
+	s=arc-20240116; t=1757090720; c=relaxed/simple;
+	bh=tkbki1q5zitUITvhVRXAvCkARxsvSpMJi35tbbPaq1s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QY/7ZOsYML3RuQP+WeOmUDUIGSOiv5vFKLlgwaJ0vdIfCGIPc34uaeGlgFXDyODRrBBpDY1laPXgdurrYhSoNL9cjgbHV+pdlIX7LufNqmEZZyqz3mraXpxB5txFey0ECXmnJjVxI/rkhtU56pD/f9ahcUojniaJqcMlh158JW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K+zFMOwB; arc=none smtp.client-ip=209.85.221.48
+	 MIME-Version; b=cztEc+TJG2UODDsLJ4rLHC0Mxyv5JdZlAZpAF3iW8ezUD/A7TeSTFTk8dqg5T4vdPsfDwYhyVRQZNmDOOe1cS4ege3o6T06YT56ggtC29YKhEjgn/dgvC9tALw/LXfsTQz0WST6n9KqC1x+4VFlmuNO6tFI5HeJbXYZX3YrGiZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WC0MGxnt; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3dae49b1293so1336769f8f.1
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 09:45:16 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-45dda7d87faso6310445e9.2
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 09:45:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757090715; x=1757695515; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757090717; x=1757695517; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YxytmS/Ckk7m1jV2iytTHllbgR5XXiv+XYUENzBL1c0=;
-        b=K+zFMOwBnH/ZfBmvK2H95jMfbYYF6cczAD++9vIY691lPIBkfNs6ta7+C41abRdCyQ
-         M4TaLGJiwYZb32IMHT5xgkzt87fWOzPXOQOp/bI104Z7/36fizlRQOau+lbDlrP6YdkH
-         mhWHbZwVOYwovltkCHItwFQXoQwoEarzrQ5XsShg3yk/mAbh/3X27+Xc+tZ40pQ6EPK+
-         5DQtIulB9K6g4u6ZclWgUbsQMXWDsbQj11flOjfFB4/gdfEI+uRx6WYhtrKvb2VpzghM
-         vv844ctnj+4MhABSbfiHaRVIag7z1p41KvHlwyoNZMDC6V7dAWcva8Vy1Mh2/ydxxV2o
-         +f2A==
+        bh=FjSJ+33pjco0D6Drl0o+EBST2Xza5L2pSY4bBt9vS+E=;
+        b=WC0MGxntb1XkiDNvz0UCNj5DgckLxRypvUqNKjTdY2l1RCwqin4sVh4cQFOyLL++fa
+         48Vr7Oxm6nu9wl1RiFJoZ+2q5ZUCs8nylEtZbhvbVsFctI/cBPaA7pU/iTLTLLx1m/pN
+         ZIIDitUlR8t3giiDbr8FZj5qB28cfLtpIigYHBUNTZmUgp7rMbdAcccQqyzKvULCe+es
+         aBASipKwtUd4GVqhNWY6A9r72+FHMUG9ogyoKf8qdOCmaIQrpwcNBDhLjpUjHyNi/hmI
+         F7aIsWxtKXll6A5rxxw4Q1VPGjYpQ1W8+C9LI0a6jFoVsAlOJ+QbQZBRpyxJUGZiynv6
+         4fFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757090715; x=1757695515;
+        d=1e100.net; s=20230601; t=1757090717; x=1757695517;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YxytmS/Ckk7m1jV2iytTHllbgR5XXiv+XYUENzBL1c0=;
-        b=OccEvwMicKFIIXp/OgEkjt/8DSg3J2Qh5JhbU3wC8cpCdTlNXnv2L6ZdGNXj3qZhPS
-         XvAcTpJvBbesRclYKwOR5IM/joM9F+mX+8vmj9XXMWp8L+lOrrcmrNXK2OV0kU8Q/59W
-         /DPJM1rGHfg/Tqp/5/vr4m0UaYbjHa5OqPwgg66oIUH6BmrLkb7drOobho8GFHjx0apT
-         KKMj4wqc2nXaEBkxIDulkyJYa1a25Tg/pwOvh3hnjtcsjSt4fMyfAwuRY1XMnqrUXqb1
-         p05XPMC8umT23ERCbf5/8snPrGfOv/XeybEhirKyJwluCa/EW0kTDAu7/fHeIhOgeB5G
-         23Ew==
-X-Gm-Message-State: AOJu0Yw11xoup6BG7MjCaTTVPAUJtRHgZvGjVQxLtub6iT28THGzjZec
-	slHg7rv8HPvdAE1SLHuT77i8tc6k2vB+3HIbkJbADqSbJ4niEitbV/d6MFLJkw==
-X-Gm-Gg: ASbGncuAVtGQZ9RPeCj60iKLxUsSYNk6EeV41BNTMrNkpd7nQ5FBxHAPBUF4x2/Ug5E
-	uDL9HuROj00WNRLj8TAIZ/gmjHyVjoji3s23c7AOrxQlV1OmVrqK9qzCscpO+1DInKsSBeV33mQ
-	fVxG9qqE4rHSgTR1WaRUbvJLKBXg7TL40OE0l2bCbxWR6QKumJMVQT8hiy/e9mEQSdzUpDi/e2Z
-	HI7MG9/tL2pRaSliLqVlVx4qcVxxKEWwpVf0Bjb/A8yHDASuGjO+FNTwbrAKe4gj2X6Ou+Bj5dS
-	y5ZEBZCuUPR2P1SE9SuH9ylSnEez0lFjmotV/aWBLtXJNpP6EPtPIHvUog29npYDdMKR4r5rz2k
-	Hrdo8t37RFtbxZMqzqxae3lg2QvMIVQY=
-X-Google-Smtp-Source: AGHT+IFGUSqNhVSFcjLWd552jj3A3+UsZz302te3gQUBFRUUIea/UaE63PrpDhlQ9ArqAqxcGYHM5A==
-X-Received: by 2002:a05:6000:2a02:b0:3d4:a64:6725 with SMTP id ffacd0b85a97d-3d40a646ab1mr12767794f8f.10.1757090714928;
-        Fri, 05 Sep 2025 09:45:14 -0700 (PDT)
+        bh=FjSJ+33pjco0D6Drl0o+EBST2Xza5L2pSY4bBt9vS+E=;
+        b=uBICtmRfXFQ/ac5WOl+1bses1hsCpqKevCOSxxF6X5EAidtcUdmMOH5JP9GZC2xY/a
+         8+Uc+ZfJbfQEGGM0ryxdzgrofVTTr9ArfOZeIpNg6+rH7xFYe7stGphrk+C5LYqHJjvC
+         7kMZbZHGOqHcFzibXRG0VuYXPpM+LoJFB7iapG6tGQnJ3J72Viyj9pgymoOjnuK1G9C5
+         pUkZ3D98YzYtudfq1M2pDsAPl1L1q/6Mh3e5DvdY9M185z6bD3c6S8XepDGrJUfpzSSj
+         TaZyR3Vr0HI8eLPEwCk4xUmHISrgGv46JkTWfKceGdiDEzf4zgnenngYceVZwKpzmVdD
+         DqTg==
+X-Gm-Message-State: AOJu0YzyqOAjUPtEGhvRnIb4t3T526+xXb/D3Mgzqys179louwozKrxp
+	84BIkVgL0IbpOKSErUghRE3meoObVg0/nVNhiA8S+PcJiDGJMXJunj+6DTGuaA==
+X-Gm-Gg: ASbGncuBE8BIKPKmRsShkmLnB176xeu3JmWx3ulI43fpEqBIy/j6FWw4/yCPtQkTIrt
+	Hwly/PFnfpznxzsYBxYafBJEzlzi7i4KsOaKALIGAvNA6ph3cKhKtBNN8Wnu1r8ll1FQJ1ew0Se
+	dlgMc4MQOUxPhr3ECMSAXJtwnKEVel71DTWXiVCZKqFzepm/wiuvesB1bFlgE4LryKq44vv/g2r
+	d/Wno5TbxJltzuujv0csUEE30yaiGQo2Z+js/DvUEGjHDOm9MJTXdcHzNzHfy7hfvnMKwS59LU8
+	BE3TiU8Nc4BFUCnugEThgO5GtM8/nY5uFyBSfwTPXnszwpEMak1YIbzpz81DI8dKAB14uhX/JYf
+	b/0YzyM7IAZZspV7a7AAH
+X-Google-Smtp-Source: AGHT+IGs43+4cSCtMbQf7u7QKwmAD5gTOEtn5JdpP5YFSi835r7YZ5ynVmDvPpX5WBILAlaYuMfFlw==
+X-Received: by 2002:a05:600c:1c0e:b0:459:e466:1bec with SMTP id 5b1f17b1804b1-45cb5871c12mr75689595e9.2.1757090716633;
+        Fri, 05 Sep 2025 09:45:16 -0700 (PDT)
 Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3dbead0b247sm12949512f8f.6.2025.09.05.09.45.14
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3d95df59e50sm16990080f8f.23.2025.09.05.09.45.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Sep 2025 09:45:14 -0700 (PDT)
+        Fri, 05 Sep 2025 09:45:16 -0700 (PDT)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	eddyz87@gmail.com,
 	memxor@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v3 2/7] bpf: extract generic helper from process_timer_func()
-Date: Fri,  5 Sep 2025 17:45:00 +0100
-Message-ID: <20250905164508.1489482-3-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v3 3/7] bpf: htab: extract helper for freeing special structs
+Date: Fri,  5 Sep 2025 17:45:01 +0100
+Message-ID: <20250905164508.1489482-4-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
 References: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
@@ -98,88 +98,64 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Refactor the verifier by pulling the common logic from
-process_timer_func() into a dedicated helper. This allows reusing
-process_async_func() helper for verifying bpf_task_work struct in the
-next patch.
+Extract the cleanup of known embedded structs into the dedicated helper.
+Remove duplication and introduce a single source of truth for freeing
+special embedded structs in hashtab.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- kernel/bpf/verifier.c | 39 ++++++++++++++++++++++++---------------
- 1 file changed, 24 insertions(+), 15 deletions(-)
+ kernel/bpf/hashtab.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b9394f8fac0e..a5d19a01d488 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8520,43 +8520,52 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno, int flags)
- 	return 0;
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 71f9931ac64c..2319f8f8fa3e 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -215,6 +215,16 @@ static bool htab_has_extra_elems(struct bpf_htab *htab)
+ 	return !htab_is_percpu(htab) && !htab_is_lru(htab) && !is_fd_htab(htab);
  }
  
--static int process_timer_func(struct bpf_verifier_env *env, int regno,
--			      struct bpf_call_arg_meta *meta)
-+static int process_async_func(struct bpf_verifier_env *env, int regno, struct bpf_map **map_ptr,
-+			      int *map_uid, u32 rec_off, enum btf_field_type field_type,
-+			      const char *struct_name)
- {
- 	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
- 	bool is_const = tnum_is_const(reg->var_off);
- 	struct bpf_map *map = reg->map_ptr;
- 	u64 val = reg->var_off.value;
-+	int *struct_off = (void *)map->record + rec_off;
- 
- 	if (!is_const) {
- 		verbose(env,
--			"R%d doesn't have constant offset. bpf_timer has to be at the constant offset\n",
--			regno);
-+			"R%d doesn't have constant offset. %s has to be at the constant offset\n",
-+			regno, struct_name);
- 		return -EINVAL;
- 	}
- 	if (!map->btf) {
--		verbose(env, "map '%s' has to have BTF in order to use bpf_timer\n",
--			map->name);
-+		verbose(env, "map '%s' has to have BTF in order to use %s\n", map->name,
-+			struct_name);
- 		return -EINVAL;
- 	}
--	if (!btf_record_has_field(map->record, BPF_TIMER)) {
--		verbose(env, "map '%s' has no valid bpf_timer\n", map->name);
-+	if (!btf_record_has_field(map->record, field_type)) {
-+		verbose(env, "map '%s' has no valid %s\n", map->name, struct_name);
- 		return -EINVAL;
- 	}
--	if (map->record->timer_off != val + reg->off) {
--		verbose(env, "off %lld doesn't point to 'struct bpf_timer' that is at %d\n",
--			val + reg->off, map->record->timer_off);
-+	if (*struct_off != val + reg->off) {
-+		verbose(env, "off %lld doesn't point to 'struct %s' that is at %d\n",
-+			val + reg->off, struct_name, *struct_off);
- 		return -EINVAL;
- 	}
--	if (meta->map_ptr) {
--		verifier_bug(env, "Two map pointers in a timer helper");
-+	if (*map_ptr) {
-+		verifier_bug(env, "Two map pointers in a %s helper", struct_name);
- 		return -EFAULT;
- 	}
--	meta->map_uid = reg->map_uid;
--	meta->map_ptr = map;
-+	*map_uid = reg->map_uid;
-+	*map_ptr = map;
- 	return 0;
- }
- 
-+static int process_timer_func(struct bpf_verifier_env *env, int regno,
-+			      struct bpf_call_arg_meta *meta)
++static void htab_free_internal_structs(struct bpf_htab *htab, struct htab_elem *elem)
 +{
-+	return process_async_func(env, regno, &meta->map_ptr, &meta->map_uid,
-+				  offsetof(struct btf_record, timer_off), BPF_TIMER, "bpf_timer");
++	if (btf_record_has_field(htab->map.record, BPF_TIMER))
++		bpf_obj_free_timer(htab->map.record,
++				   htab_elem_value(elem, htab->map.key_size));
++	if (btf_record_has_field(htab->map.record, BPF_WORKQUEUE))
++		bpf_obj_free_workqueue(htab->map.record,
++				       htab_elem_value(elem, htab->map.key_size));
 +}
 +
- static int process_wq_func(struct bpf_verifier_env *env, int regno,
- 			   struct bpf_kfunc_call_arg_meta *meta)
+ static void htab_free_prealloced_timers_and_wq(struct bpf_htab *htab)
  {
+ 	u32 num_entries = htab->map.max_entries;
+@@ -227,12 +237,7 @@ static void htab_free_prealloced_timers_and_wq(struct bpf_htab *htab)
+ 		struct htab_elem *elem;
+ 
+ 		elem = get_htab_elem(htab, i);
+-		if (btf_record_has_field(htab->map.record, BPF_TIMER))
+-			bpf_obj_free_timer(htab->map.record,
+-					   htab_elem_value(elem, htab->map.key_size));
+-		if (btf_record_has_field(htab->map.record, BPF_WORKQUEUE))
+-			bpf_obj_free_workqueue(htab->map.record,
+-					       htab_elem_value(elem, htab->map.key_size));
++		htab_free_internal_structs(htab, elem);
+ 		cond_resched();
+ 	}
+ }
+@@ -1502,12 +1507,7 @@ static void htab_free_malloced_timers_and_wq(struct bpf_htab *htab)
+ 
+ 		hlist_nulls_for_each_entry(l, n, head, hash_node) {
+ 			/* We only free timer on uref dropping to zero */
+-			if (btf_record_has_field(htab->map.record, BPF_TIMER))
+-				bpf_obj_free_timer(htab->map.record,
+-						   htab_elem_value(l, htab->map.key_size));
+-			if (btf_record_has_field(htab->map.record, BPF_WORKQUEUE))
+-				bpf_obj_free_workqueue(htab->map.record,
+-						       htab_elem_value(l, htab->map.key_size));
++			htab_free_internal_structs(htab, l);
+ 		}
+ 		cond_resched_rcu();
+ 	}
 -- 
 2.51.0
 
