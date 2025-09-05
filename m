@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-67560-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67561-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0C91B45935
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 15:36:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2F99B45977
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 15:47:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 098F6A63129
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 13:34:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A3E63A2ED7
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 13:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B358A35A289;
-	Fri,  5 Sep 2025 13:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GVxN8Zap"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA3BC25557;
+	Fri,  5 Sep 2025 13:46:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8203570BE
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 13:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A94BC3568F2;
+	Fri,  5 Sep 2025 13:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757079175; cv=none; b=cIDtLSL3MVCcfEAgv7il03Enul6TsTAud3pSC/LW+Lc6S6LsNFcSKr/ZLL2S14eChdlByiJ9vcUMqUu71Q8Cma+ZAeBqSEVcoK8AeRcSjxakNgyEfE9hf98G0Tk5hAChpyL0u0mNFG/0szKnmN2TrT5hHzVJHeFEZ04UL8kupYc=
+	t=1757080007; cv=none; b=UtRlshZMxjlmxKH9n05eXvQ/ccQlXsr6Mzqbx1O2n/WZy/Wj7z0FmAiA65uOpMLlaczywJBM2LwSHk/6Qtbe31pbf6TuYoJBxATnGRve8HWShbfMN7dncPhzrntXTbgbm/CYsBfI3sbjUOr3PTMy9kwtnIo3NqY7ShOVlji55pA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757079175; c=relaxed/simple;
-	bh=uInE0YkDUJUXbXok94E9bxvR8a4hiG6j6WidqWN48kk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dKEeipyc0mpEeGOl6kI9Ymx+6FsROfrB139uA43G/lSPe9TGoF66jJfBxqstlvRN+14GOLUop+ItXhAvrTx49VVga1XumoMLpPptU+nqDCiIsQfUaXBMVlwJI8zZD3uGjzTb8l6X0VYmnNih+fHOHjT1TvqMrVnVdDiFVwox8Bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GVxN8Zap; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757079171;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9T08l57xag5gO77hB+KVsLs3u1rcQ9NCVDDsDmzUHGM=;
-	b=GVxN8Zapg3Nc8zcWmAHmKMKw+roQ21h8eubgMfF0Xw68lkOzvYlW3rO0IzZBeiYHPSXqLL
-	CRPb9g7/eLZ2VHNGL0TWazdriPgQvZk5cTKHrD60M7FODgtIuf4nExUA+PHaAE+jmpQeeX
-	aGzw7Y28boNyYuQY7Ztz+f2jax2r3KI=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
+	s=arc-20240116; t=1757080007; c=relaxed/simple;
+	bh=0Z+odll08XIx79p7xMrLB0QONIlzENyS3D9paA5KBFI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EaH8iySfw7qJV/OoVKKamG2Mpj6aBELNs5dXQF6oQE2dwYCaUKRL7uFRXk7YElP7o13pTvMRRnw2mlbY5AplruxWPigvBfQ7gItz4ot50WhvUHuealWFUIWKfVCDMFeJvRrxV5FZq8rTPyI2NIaN//UBU43SUJmBgZjfbXT1r8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from 7cf34ddaca59.ant.amazon.com (unknown [IPv6:2a01:e0a:3e8:c0d0:24ce:2523:e0d0:1c47])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id D1B61420C4;
+	Fri,  5 Sep 2025 13:46:41 +0000 (UTC)
+Authentication-Results: Plesk;
+	spf=pass (sender IP is 2a01:e0a:3e8:c0d0:24ce:2523:e0d0:1c47) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=7cf34ddaca59.ant.amazon.com
+Received-SPF: pass (Plesk: connection is authenticated)
+From: Arnaud lecomte <contact@arnaud-lcm.com>
+To: alexei.starovoitov@gmail.com,
 	yonghong.song@linux.dev,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test to access union argument in tracing program
-Date: Fri,  5 Sep 2025 21:32:26 +0800
-Message-ID: <20250905133226.84675-3-leon.hwang@linux.dev>
-In-Reply-To: <20250905133226.84675-1-leon.hwang@linux.dev>
-References: <20250905133226.84675-1-leon.hwang@linux.dev>
+	song@kernel.org
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com,
+	Arnaud Lecomte <contact@arnaud-lcm.com>
+Subject: [PATCH bpf-next v8 1/3] bpf: refactor max_depth computation in
+ bpf_get_stack()
+Date: Fri,  5 Sep 2025 15:46:25 +0200
+Message-Id: <20250905134625.26531-1-contact@arnaud-lcm.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,86 +65,125 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-PPP-Message-ID: <175708000245.25943.12706762412363530719@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
-Adding verifier test for accessing union argument in tracing programs.
+From: Arnaud Lecomte <contact@arnaud-lcm.com>
 
-The test program loads 1st argument of bpf_fentry_test11 function
-which is union and checks that verifier allows that.
+A new helper function stack_map_calculate_max_depth() that
+computes the max depth for a stackmap.
 
-cd tools/testing/selftests/bpf
-./test_progs -t verifier_btf_ctx
-501/7   verifier_btf_ctx_access/btf_ctx_access union arg accept:OK
-501     verifier_btf_ctx_access:OK
-Summary: 1/7 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Acked-by: Song Liu <song@kernel.org>
 ---
- net/bpf/test_run.c                                 | 14 +++++++++++++-
- .../selftests/bpf/progs/verifier_btf_ctx_access.c  | 12 ++++++++++++
- 2 files changed, 25 insertions(+), 1 deletion(-)
+Changes in v2:
+ - Removed the checking 'map_size % map_elem_size' from
+   stack_map_calculate_max_depth
+ - Changed stack_map_calculate_max_depth params name to be more generic
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 4a862d6053861..c65d468fd6012 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -574,6 +574,16 @@ noinline int bpf_fentry_test10(const void *a)
- 	return (long)a;
+Changes in v3:
+ - Changed map size param to size in max depth helper
+
+Changes in v4:
+ - Fixed indentation in max depth helper for args
+
+Changes in v5:
+ - Bound back trace_nr to num_elem in __bpf_get_stack
+ - Make a copy of sysctl_perf_event_max_stack
+   in stack_map_calculate_max_depth
+
+Changes in v6:
+ - Restrained max_depth computation only when required
+ - Additional cleanup from Song in __bpf_get_stack
+
+Changes in v7:
+ - Removed additional cleanup from v6
+
+Link to v7: https://lore.kernel.org/all/20250903233910.29431-1-contact@arnaud-lcm.com/
+---
+ kernel/bpf/stackmap.c | 38 +++++++++++++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 11 deletions(-)
+
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 3615c06b7dfa..ed707bc07173 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -42,6 +42,28 @@ static inline int stack_map_data_size(struct bpf_map *map)
+ 		sizeof(struct bpf_stack_build_id) : sizeof(u64);
  }
  
-+typedef union {
-+	void *arg0;
-+	int *arg1;
-+} union_test_t;
-+
-+noinline int bpf_fentry_test11(union_test_t t)
++/**
++ * stack_map_calculate_max_depth - Calculate maximum allowed stack trace depth
++ * @size:  Size of the buffer/map value in bytes
++ * @elem_size:  Size of each stack trace element
++ * @flags:  BPF stack trace flags (BPF_F_USER_STACK, BPF_F_USER_BUILD_ID, ...)
++ *
++ * Return: Maximum number of stack trace entries that can be safely stored
++ */
++static u32 stack_map_calculate_max_depth(u32 size, u32 elem_size, u64 flags)
 +{
-+	return (int)(long)t.arg0;
++	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
++	u32 max_depth;
++	u32 curr_sysctl_max_stack = READ_ONCE(sysctl_perf_event_max_stack);
++
++	max_depth = size / elem_size;
++	max_depth += skip;
++	if (max_depth > curr_sysctl_max_stack)
++		return curr_sysctl_max_stack;
++
++	return max_depth;
 +}
 +
- noinline void bpf_fentry_test_sinfo(struct skb_shared_info *sinfo)
+ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
  {
- }
-@@ -688,6 +698,7 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 	struct bpf_fentry_test_t arg = {};
- 	u16 side_effect = 0, ret = 0;
- 	int b = 2, err = -EFAULT;
-+	union_test_t utt = {};
- 	u32 retval = 0;
+ 	u64 elem_size = sizeof(struct stack_map_bucket) +
+@@ -300,20 +322,17 @@ static long __bpf_get_stackid(struct bpf_map *map,
+ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+ 	   u64, flags)
+ {
+-	u32 max_depth = map->value_size / stack_map_data_size(map);
+-	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
++	u32 elem_size = stack_map_data_size(map);
+ 	bool user = flags & BPF_F_USER_STACK;
+ 	struct perf_callchain_entry *trace;
+ 	bool kernel = !user;
++	u32 max_depth;
  
- 	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
-@@ -705,7 +716,8 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 		    bpf_fentry_test7((struct bpf_fentry_test_t *)0) != 0 ||
- 		    bpf_fentry_test8(&arg) != 0 ||
- 		    bpf_fentry_test9(&retval) != 0 ||
--		    bpf_fentry_test10((void *)0) != 0)
-+		    bpf_fentry_test10((void *)0) != 0 ||
-+		    bpf_fentry_test11(utt) != 0)
- 			goto out;
- 		break;
- 	case BPF_MODIFY_RETURN:
-diff --git a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-index 03942cec07e56..ff379836b5f00 100644
---- a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-@@ -77,4 +77,16 @@ __naked void ctx_access_const_void_pointer_accept(void)
- "	::: __clobber_all);
- }
+ 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+ 			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
+ 		return -EINVAL;
  
-+SEC("fentry/bpf_fentry_test11")
-+__description("btf_ctx_access union arg accept")
-+__success __retval(0)
-+__naked void ctx_access_union_arg_accept(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u64 *)(r1 + 0);		/* load 1st argument value (union) */\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
+-	max_depth += skip;
+-	if (max_depth > sysctl_perf_event_max_stack)
+-		max_depth = sysctl_perf_event_max_stack;
+-
++	max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
+ 	trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
+ 				   false, false);
+ 
+@@ -406,8 +425,8 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 			    struct perf_callchain_entry *trace_in,
+ 			    void *buf, u32 size, u64 flags, bool may_fault)
+ {
+-	u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
+ 	bool user_build_id = flags & BPF_F_USER_BUILD_ID;
++	u32 trace_nr, copy_len, elem_size, max_depth;
+ 	bool crosstask = task && task != current;
+ 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+ 	bool user = flags & BPF_F_USER_STACK;
+@@ -438,10 +457,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 		goto clear;
+ 	}
+ 
+-	num_elem = size / elem_size;
+-	max_depth = num_elem + skip;
+-	if (sysctl_perf_event_max_stack < max_depth)
+-		max_depth = sysctl_perf_event_max_stack;
++	max_depth = stack_map_calculate_max_depth(size, elem_size, flags);
+ 
+ 	if (may_fault)
+ 		rcu_read_lock(); /* need RCU for perf's callchain below */
 -- 
-2.50.1
-
+2.47.3
 
