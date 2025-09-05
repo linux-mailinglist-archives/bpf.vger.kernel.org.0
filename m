@@ -1,145 +1,125 @@
-Return-Path: <bpf+bounces-67643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 722C3B46643
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 23:57:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67704B46661
+	for <lists+bpf@lfdr.de>; Sat,  6 Sep 2025 00:00:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 288D07B2DB1
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 21:55:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EDBA1CC5BE7
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E1E2F3604;
-	Fri,  5 Sep 2025 21:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059822F5329;
+	Fri,  5 Sep 2025 22:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rIhrS3up"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bXtNFFFz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1DE27FB37
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 21:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4186F2877DB
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 22:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757109410; cv=none; b=bODMbu/5yeL+QoW2Ej7wCpo/YcLh4kkaN8eUw2iIA07wCqDZUW2brCPI25VIS0HMhaXFZAfmOu4ZuP2ilaGo9dENtZaioMb2+03EPDoQByNkCgImPb9Qjr1UJ28JaCZgZ8pMQkhus87Okm74HO82VTAexoOOz7XvKrle+NvyUBU=
+	t=1757109613; cv=none; b=GUoq9XFvBaIXd+KfvQh2LJt20hHa6Vk+xiXq1D1BFrqAEsGrgKr0YsnQak70FIhiCbacdLRl+z885JZ2TxXwkW/vLzTVjSCVeFNgp9lWBKMH+lbfl2YCJfr9yI7oKV0BVapm0LP8qBDuST/MPzSiPTMPJ5ZA8bOsyVctAU959Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757109410; c=relaxed/simple;
-	bh=K4rPEUhgDOci25ECMoMn91PK5HGu+UvUImo0Jrj/eTg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=URwIytBI5vfwQpTKtrj2voHFxnKrDv1HflllFwYx4X+CPR8HQxi5InICqI53RkAAeNw51MQ5WqiSijue+RbfSVrTn+QWZyA8DP2M3bn5Ph296QRG6MCa5Su6JmdXZJ+G+xIxJSY2OZ253LMX7JH5mjxvlV3ojszAxcWCSqwxIyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rIhrS3up; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-32d3e17d95dso238801a91.3
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 14:56:49 -0700 (PDT)
+	s=arc-20240116; t=1757109613; c=relaxed/simple;
+	bh=47WmwHFxwQr5vP/jJ8nmSlh4yukYl1jpyqu5oCpFlvQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CskC9WMaHmkN903380TLkeXPRpZEY23TwzzBZDEDU7yo2MW44l3EOT7c2QgwqAJh77AV4bxCi5aYbGB3olnlk5jNJmhkKkWGV3U09u5gI1Qn5R4d8jk0eOCoG6E5oj6NzMGSV/Wh6qs5uq4/61diVAhmuS0EG/nDvUWXwzgKLhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bXtNFFFz; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-24b1622788dso18973965ad.2
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 15:00:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757109409; x=1757714209; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K4rPEUhgDOci25ECMoMn91PK5HGu+UvUImo0Jrj/eTg=;
-        b=rIhrS3upf8VLji/Ff6dAZ7B9GVFGK+8v7KfuQ9zBdrmSo/WROcS3MP+HlfZlRck6p5
-         P/cW40O4jrNDjF6FQ7ak2vqD+rJ6sFtkj4YYuIb3p5MYVwYKDVJjDr9vaUx5GMwjZ4WS
-         REmoEBCFEhFEceelpidwScH7kWxo03x6E11Y4KhNRdVBYcxQ0mn8iZxrpy1uXaqvGrAN
-         jlBFBuj73yh9Mwy5//ObAmiccRUcyrm9o6heNZ24jZ46wuIbuCH8BGvI8Rcbdx0DhUDD
-         q8BIdaCWogiWTPncLT/JMtt/QVHLLkvITqNfCQczXCH56rtoIDHWdwOvAAm+zyqsoXMW
-         imnw==
+        d=gmail.com; s=20230601; t=1757109611; x=1757714411; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=X+qLaRMMdaO7U0YTNrs9y/oyInoZuowOTa7hdOk5V6c=;
+        b=bXtNFFFzFFCnxRJQuNIr+WhyyWYx2IJJSPm845ddn71XOszdR9i6y7NwxrCr6EtZVB
+         +l0YL7gVlzGWRiTGEZjPgm6jfQoF3smP70WwWy/p1o0icm+bcNJBiNCw5RKCgD+qT9lk
+         SwKyRC+OfSBpKYJgxoEc2ieAaD03i1ogtvLrI+bH7jpvzwymETQh9PMRS2ebmYgn8t9r
+         aCGJqqEPqks552Keli2GUED9ejV62WrahKuXWePmXnlzfZIxonbnsnLuZdWgyqm+wdmJ
+         q9zj7Ewc5sQDV5A0R+E7v64kdYMJSqHnwYMUW/X7wDBwTcfrHhn4fzHLwOEU99yKyAGY
+         Vbsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757109409; x=1757714209;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K4rPEUhgDOci25ECMoMn91PK5HGu+UvUImo0Jrj/eTg=;
-        b=Gk4Tigq7jm7woZ0d01/TyCuIPIeENCWlFr4YdUZhbXPB+uifMF+jQpXDoMddCEC2RT
-         CNefJX58dfMAETBE6/PkQ9ckoihCpDujjKT68Uo+1sgDlNmBk0VoollZjrXkWIUNRUTW
-         MkQ57WmySh0vIWkpCbeuSNxKvEynSaVdLcyVLXD5LVH4QreWNdBorvkDznjfPexvsnAk
-         lIC31Deo3U4EdEE6HnyfT/PvszTOnv1cv20Q6ZJM36+rfEMDKkS8lBCe7DghH1qAjHy/
-         PUed6YBk4bIWR56e9weQhDdNGSonS6/9aob+21ThwVmFnviRhKW42jWr6Nh2Entv7D8h
-         uclQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWpa//u4zm2bJoMJk0eQUsVXlySL88gq2rurTN5jfrTxQOiUcB/+WDi1ufmzq/6kBzo06M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxH8CQxiD2hH8IdRmVKgCssEhoHJdLkdkIhm2a+D6SrWdsrOB7
-	pdxoNXPcVTe1FMHHAKJzdyXy+Q4cva3k2h/pdIYAEbjZJn13yeVEvmB3ayBs8ZLU46xSPVYe4tj
-	cynYcWoFvuwfFRIFtX/3dFLKtL9SgqFI+1AsRAhWv
-X-Gm-Gg: ASbGnct8Goz/FfONtf5wF5e1T6cTFlLRPukU3Wt4lanhKSrc+SUNdZMHPV18nvEfDef
-	DPFa4vLB0x9SQumU8xB//KiGej2gdEPz/hhaefF/3CaJsgp1/Ue6qwuRWx17LQBkKhmMyOsYu1o
-	dRhuN3gbKhkqEgloC6QmC2Az4fcGyS3QghgoomZwCuFWrsAfmEDQEwnF3Md3K8trEVWQn2vtHMb
-	Nmis2f2s0WMFs8TERpukvTiz8hoKrI4bklHmwnjxRQrs+RTJR34JwFBV78Mf1cIQeFVj3ZUy8vy
-	05DckrpUyE2feQ==
-X-Google-Smtp-Source: AGHT+IHee2bfwNAMC7Lf9gLv17bkMAwutCH+4xPIrizmqEN9SW0fuoijafwHuVi6n2B6Nt9NE9ZR8AeiczyOlODnHb0=
-X-Received: by 2002:a17:90b:38cb:b0:32b:df0e:928f with SMTP id
- 98e67ed59e1d1-32d43f936ccmr452341a91.37.1757109408411; Fri, 05 Sep 2025
- 14:56:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757109611; x=1757714411;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X+qLaRMMdaO7U0YTNrs9y/oyInoZuowOTa7hdOk5V6c=;
+        b=L/qS6ZW7jEeq7Cf9hCuu+d93GbIRZXm/14gXOJeti3iIvYVgZCeuDtQnSaCPa0fj41
+         p+EMHHDZJBOxf3S5WLJty/DgccNqz1R4syL525M48w5z15IJGzMB19O19QZ8GIRUkMpW
+         XwYYkaCI8nHeJoZ4j+RkRMAmGGe6wQaMlnclzW962fUXdU9HuSF6fqTde56cdJqidE4u
+         iFsKuauRS90HayFKVI0t3LkHEBnPP/dhyIwPzPuywf4foQJPaLeVemNx7TD2TDhhiAbf
+         Vzh5oJViAXWuHlPTfJOcy/KvP4bnoX1k9tp6sbco8qDdtH327acbTI+fMiuD7dkha/Pq
+         oXew==
+X-Forwarded-Encrypted: i=1; AJvYcCXJraekx6P2RPTzIjg8aeFAp/KVqvhThF2lV3knKBAYh81ac7pX0MCZ21SRHYPxnQheR1Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEDQO/Njd8EQ6b0IkEadWaUSMQOuVF2JF9iIey9ohwjrm3gcoD
+	i9WCh5OTTN0Cd5m/io+Ms1o1zpkKpCheL1Ij82PuP8L/iN79z8lv8N1d
+X-Gm-Gg: ASbGncumDNcc367Qb1dU7FZLWIdTTJiWtrPoFaKTB7eeOEn9AWnPptNR0RKaaLPhw3/
+	eVUSLIw+UZM7bQW0EDD45bOfB8AQ/32jVKzApYeGHl0fXjTxfmmx6TOsCb36cUUs9GianynQapc
+	DL14jcb643VoOjxyNoE/MJIPip2wmiP7K+aX1fVHik+sfm6FWWiuAdVWIps5m0EQ77ua2dczD06
+	yzqegKMwnD9wzJS5F4O8A+0/UX8HInGQnD8Ug2y03Gzaq9B0d0gSg5ubM6Q4n+HPwSGPcqbekUV
+	ci1v8bh/XX1TxmHyF6mX1BFOqtSwwnPWwnBamFLcqxGAYL6gUBXXLqGWhSHKKer0uo6fPHcfZQ3
+	EtT5B3iSxYvfqayydpmg6H5QLCDMlo9iNYXPIoaM=
+X-Google-Smtp-Source: AGHT+IHFpRxSkeL5vP73vckG57P+6vsW43eoX1RoN6lzP+QWKkGNCEqK7BdhsWR/HfxlGB9iO0jQPQ==
+X-Received: by 2002:a17:903:2442:b0:24c:b54e:bf0a with SMTP id d9443c01a7336-25166792637mr2570645ad.0.1757109611443;
+        Fri, 05 Sep 2025 15:00:11 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24b0637d948sm115614635ad.30.2025.09.05.15.00.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Sep 2025 15:00:10 -0700 (PDT)
+Message-ID: <afbadcd26936f5c849a0e8eae66e1d9268453577.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v7] selftests/bpf: add BPF program dump in
+ veristat
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com, Mykyta Yatsenko <yatsenko@meta.com>
+Date: Fri, 05 Sep 2025 15:00:07 -0700
+In-Reply-To: <CAEf4Bza5RNDAt0EW4zo27QhHN=qw4CmJakAneCS6T7URxjq-ig@mail.gmail.com>
+References: <20250905140835.1416179-1-mykyta.yatsenko5@gmail.com>
+	 <ac6e70c96097c677d5689d86dd2bc0dea603a5d1.camel@gmail.com>
+	 <CAEf4BzbZg-BqMQV5vKHSDPabZQbpHFbdZhQ4NXCRiAZvh0yc=A@mail.gmail.com>
+	 <d38c391c806ed34e9b669e64be4e1c85afdfd6e3.camel@gmail.com>
+	 <CAEf4BzawRYXXSJDiK4GzuYo=g-N_-QMgUXQAGN15eaPYuWXBWQ@mail.gmail.com>
+	 <84b34c685418234c21bb3c127bb966d5744efc59.camel@gmail.com>
+	 <CAEf4Bza5RNDAt0EW4zo27QhHN=qw4CmJakAneCS6T7URxjq-ig@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250903190238.2511885-1-kuniyu@google.com> <20250903190238.2511885-5-kuniyu@google.com>
- <20250904063456.GB2144@cmpxchg.org> <CAAVpQUA+rVJKMXQFATfxT=uX3QaLrCtCG_wtiGF_kt-_KrMRBQ@mail.gmail.com>
- <sathtxzxvi5zz5gh37twfng7srn7nsdlrdlposompqkq646pp5@2r74fqgbalzq>
-In-Reply-To: <sathtxzxvi5zz5gh37twfng7srn7nsdlrdlposompqkq646pp5@2r74fqgbalzq>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Fri, 5 Sep 2025 14:56:36 -0700
-X-Gm-Features: Ac12FXx_Dq7bkvb-v_DTHwN8EXWrX7E_LQJFMN4E-0VuPARl91jQFUntqLLHeXc
-Message-ID: <CAAVpQUDjNfU-fqhh4nfPPo1kg0LPcBRbU3ob22k8WtPU_BouZw@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next/net 4/5] net-memcg: Allow decoupling memcg
- from global protocol memory accounting.
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 5, 2025 at 2:25=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
-> wrote:
->
-> On Thu, Sep 04, 2025 at 01:21:47PM -0700, Kuniyuki Iwashima wrote:
-> > On Wed, Sep 3, 2025 at 11:35=E2=80=AFPM Johannes Weiner <hannes@cmpxchg=
-.org> wrote:
-> > >
-> > > On Wed, Sep 03, 2025 at 07:02:03PM +0000, Kuniyuki Iwashima wrote:
-> > > > If all workloads were guaranteed to be controlled under memcg, the =
-issue
-> > > > could be worked around by setting tcp_mem[0~2] to UINT_MAX.
-> > > >
-> > > > In reality, this assumption does not always hold, and processes not
-> > > > controlled by memcg lose the seatbelt and can consume memory up to
-> > > > the global limit, becoming noisy neighbour.
-> > >
-> > > It's been repeatedly pointed out to you that this container
-> > > configuration is not, and cannot be, supported. Processes not
-> > > controlled by memcg have many avenues to become noisy neighbors in a
-> > > multi-tenant system.
-> > >
-> > > So my NAK still applies. Please carry this forward in all future patc=
-h
-> > > submissions even if your implementation changes.
-> >
-> > I see.
-> >
-> > I'm waiting for Shakeel's response as he agreed on decoupling
-> > memcg and tcp_mem and suggested the bpf approach.
->
-> Yes I agreed on decoupling memcg and tcp_mem but not for a weird
-> configuration, so please stop using this motivatioan already. You can
-> motivate the decoupling simply on performance. Why pay the cost
-> of two orthogonal accounting mechanisms concurrently? Also you are not
-> disabling memcg accounting, so we should be good from memcg side. Make
-> this very clear in your commit message.
->
-> I don't care how you plan to use this feature to enable your weird
-> use-case but make sure this feature is beneficial to general Linux
-> users.
+On Fri, 2025-09-05 at 14:51 -0700, Andrii Nakryiko wrote:
 
-Thank you Shakeel, I will rephrase the commit messages and
-clarify the points above.
+[...]
+
+> > Yes, but looks like it's a separate binary, not a command:
+> >=20
+> >   $ strace command -v ls 2>&1 | grep command
+> >   execve("/usr/bin/command", ["command", "-v", "ls"], 0x7ffffeaef7b0 /*=
+ 65 vars */) =3D 0
+> >=20
+> > (Not that it changes much).
+>=20
+> You nerd sniped me here :) You get that execve("/usr/bin/command")
+> because strace forces the command to be resolved as binary. If you run
+> something like execsnoop in background and execute `command -v blah`
+> you won't see this execve. =C2=AF\_(=E3=83=84)_/=C2=AF
+
+Interesting, so I should have done this:
+
+  $ strace bash -c 'command -v ls' 2>&1 | grep command
+
+So, it's like 'time' vs '/usr/bin/time' :)
 
