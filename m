@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-67580-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67581-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0717B45E81
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 18:45:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D155B45E7B
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 18:45:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 917433B9697
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 16:45:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F301717BE68
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 16:45:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539C2309EEF;
-	Fri,  5 Sep 2025 16:45:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15ADB309F02;
+	Fri,  5 Sep 2025 16:45:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KKyZ4+YI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K+zFMOwB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC702F7AC7
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 16:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA2452F7ACE
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 16:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757090717; cv=none; b=twuoPbnMRSyBogPShNWbl0iPeizgBZupwgrVEG9o6LONvYgsT6CGHWrjbPC/KtxWFVeQQ/xaWykAcvZfRxwB1aTxiGvhXLnqjhzQ96JfaUiQBf/+km+L45mVp4rOXv2UOLxSzfOiqLzMaHd30x27KFtbXd4PSIX22TEC92CS+Io=
+	t=1757090718; cv=none; b=HIBUOkMKMQU6j231g5PIITmT+f9PFe8lsQNJFZtmQWsS/lTQvmJuINgh81HxGoepQd7u5PTcjHa/5HD1H26XteGxliG5Immnlib9sgytADI63c0QHHBQz6Pqao1S9lEwH5ibvjHq6awu89IPpNlv/EZYp/MHolbExgsFivffoqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757090717; c=relaxed/simple;
-	bh=WKlqY+jDUKH2pA9OW0wWWq11rou3iEP8Op5q/Bcobbs=;
+	s=arc-20240116; t=1757090718; c=relaxed/simple;
+	bh=v3KB9I3KbznufVXm9NrjrsbvI/Lid3OGi5TDnItzEDA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AGmVLEhaTOSFTGgtW8+k2MlprkRpIR31MeifSvTZ7bgzCsmI+xDcT5Ta061ttD0X/N2Gb7YHGYtYYxBOyh3K4XlSy2RKOSoaLdABjcUruCcEjZbrAjqUurYD+3tIxQuGJUYX5kx5HlbQxZVeDHeTUWKRZr0gWVP0Rnv3QRVwp7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KKyZ4+YI; arc=none smtp.client-ip=209.85.221.41
+	 MIME-Version; b=QY/7ZOsYML3RuQP+WeOmUDUIGSOiv5vFKLlgwaJ0vdIfCGIPc34uaeGlgFXDyODRrBBpDY1laPXgdurrYhSoNL9cjgbHV+pdlIX7LufNqmEZZyqz3mraXpxB5txFey0ECXmnJjVxI/rkhtU56pD/f9ahcUojniaJqcMlh158JW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K+zFMOwB; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3e34dbc38easo625449f8f.1
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 09:45:15 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3dae49b1293so1336769f8f.1
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 09:45:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757090714; x=1757695514; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757090715; x=1757695515; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PeKK8ZB+ockw47d0fxPC1fjOenrP7+gVwrrWR/20oj8=;
-        b=KKyZ4+YIAKHMhEeCUKjpEGkcsYE8jlCF6NZhp6j83QIpOFhey7H0X6eWiWC65AIQ4Q
-         jNRpVL/eHPG9yx6ZmoqjgotI9W0SaGXJ7uVlHqU47yvOUuwhV+mgGTYBC+GgO3w5ILFx
-         JaI/AGbFXAfI3o9hlAOLMLM241cxlmRUR0N11JB10yK9yYsehpNaB8p1OZ+px7Gs3OKV
-         eF5Xa3gn/BlX32NfwKxnf61G3k8xhdOp4GdQ8SIr/qgwqCGDcDE02WdgUj3LPaY3NZ48
-         Gn1OkXHyxoWPpDTzFF2IkvqekhtNlpRoOX4rq6EdDoZusOjuuAxWPFr/yP0TKM/dBfgq
-         LZgA==
+        bh=YxytmS/Ckk7m1jV2iytTHllbgR5XXiv+XYUENzBL1c0=;
+        b=K+zFMOwBnH/ZfBmvK2H95jMfbYYF6cczAD++9vIY691lPIBkfNs6ta7+C41abRdCyQ
+         M4TaLGJiwYZb32IMHT5xgkzt87fWOzPXOQOp/bI104Z7/36fizlRQOau+lbDlrP6YdkH
+         mhWHbZwVOYwovltkCHItwFQXoQwoEarzrQ5XsShg3yk/mAbh/3X27+Xc+tZ40pQ6EPK+
+         5DQtIulB9K6g4u6ZclWgUbsQMXWDsbQj11flOjfFB4/gdfEI+uRx6WYhtrKvb2VpzghM
+         vv844ctnj+4MhABSbfiHaRVIag7z1p41KvHlwyoNZMDC6V7dAWcva8Vy1Mh2/ydxxV2o
+         +f2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757090714; x=1757695514;
+        d=1e100.net; s=20230601; t=1757090715; x=1757695515;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PeKK8ZB+ockw47d0fxPC1fjOenrP7+gVwrrWR/20oj8=;
-        b=nF5v8sizN0G1ihCzCsRk1gP5Kh4PoIlFQw48810AtXb7NG6c7+C6skxKsqzOUnSllj
-         z6m8ONv7IzsbdQjDuk3Nwl/Va3Y05AMdjtXtiBFvnd7iM80AfBG3aU94z69Fup5i+hVW
-         xe6/gmB/whLR2RZfFp55yhfL9ZCfpNhGTkCMgLrwebQk210SsKNQcSeH70lAitkud1jz
-         UxCPeEol4FOJttdimdLmuCxV+JCisf188qLlsye6nGko2Uq13Sra2RoF02XaIr0SzkZT
-         mvz7XJwxqCat1qg+0x9fQYeOtK9QtdYDR8/1N0VvMCfQpZDJ/YCL2se4o+u3Btsgowb8
-         8xaQ==
-X-Gm-Message-State: AOJu0YzH/GdHaCVfFiCV9IX8pnyOBdU5g4r9frCMkCghRj7LTyWNF2l2
-	jZ38WUpYmaMXiHVf/8Yv8HjZlY/K9HEQFYiCljfQa6js/cYdZHLFzA3qjw+4lA==
-X-Gm-Gg: ASbGncvYiYekL92quFveRY6Avp22fHxevNfq4a5pTbowQdHqld/o8GCYUTtMlvmZkRM
-	nFyROPa3BibCEua1R4Ys0JWDTEN9/9cmC5n50ADu4+66i4wmEFj7UxeVaDZ/s2Drlv2csyyMX8V
-	gag7VWC1ciYp3pc94rmBwnt7pFKCnyHYV3TUEKLpp3t8OFFz6hP6ffLSGAWC0IB8+ALy1AMt9Z0
-	kTTlM2LktKkNIKXfUhtnRdCCcqmdk1p//WI0kR7uPPUaE5P/emWYDmseRlH/T+w7cjRdCDCyoT+
-	0bdqIbz0+V8Jd9gBkNBmzz9Ige2zbdyKarKe3aaP6zCmG7bMeWTXAYdQZgHoDtNTbNA0TyIzr37
-	4v40xxNvlC9f/+NqjF3X7M3qCSRH8ySKYDdFkfFr1Gw==
-X-Google-Smtp-Source: AGHT+IH7NCEfLeCITqX6ipzxqieRjO4Vu8dwoA5Z7hkQOn8gd53QhR09qYSNPngddDM9J6lru+2eMA==
-X-Received: by 2002:a05:6000:2410:b0:3d8:e1de:7e4f with SMTP id ffacd0b85a97d-3d8e1edc849mr12053893f8f.21.1757090714041;
+        bh=YxytmS/Ckk7m1jV2iytTHllbgR5XXiv+XYUENzBL1c0=;
+        b=OccEvwMicKFIIXp/OgEkjt/8DSg3J2Qh5JhbU3wC8cpCdTlNXnv2L6ZdGNXj3qZhPS
+         XvAcTpJvBbesRclYKwOR5IM/joM9F+mX+8vmj9XXMWp8L+lOrrcmrNXK2OV0kU8Q/59W
+         /DPJM1rGHfg/Tqp/5/vr4m0UaYbjHa5OqPwgg66oIUH6BmrLkb7drOobho8GFHjx0apT
+         KKMj4wqc2nXaEBkxIDulkyJYa1a25Tg/pwOvh3hnjtcsjSt4fMyfAwuRY1XMnqrUXqb1
+         p05XPMC8umT23ERCbf5/8snPrGfOv/XeybEhirKyJwluCa/EW0kTDAu7/fHeIhOgeB5G
+         23Ew==
+X-Gm-Message-State: AOJu0Yw11xoup6BG7MjCaTTVPAUJtRHgZvGjVQxLtub6iT28THGzjZec
+	slHg7rv8HPvdAE1SLHuT77i8tc6k2vB+3HIbkJbADqSbJ4niEitbV/d6MFLJkw==
+X-Gm-Gg: ASbGncuAVtGQZ9RPeCj60iKLxUsSYNk6EeV41BNTMrNkpd7nQ5FBxHAPBUF4x2/Ug5E
+	uDL9HuROj00WNRLj8TAIZ/gmjHyVjoji3s23c7AOrxQlV1OmVrqK9qzCscpO+1DInKsSBeV33mQ
+	fVxG9qqE4rHSgTR1WaRUbvJLKBXg7TL40OE0l2bCbxWR6QKumJMVQT8hiy/e9mEQSdzUpDi/e2Z
+	HI7MG9/tL2pRaSliLqVlVx4qcVxxKEWwpVf0Bjb/A8yHDASuGjO+FNTwbrAKe4gj2X6Ou+Bj5dS
+	y5ZEBZCuUPR2P1SE9SuH9ylSnEez0lFjmotV/aWBLtXJNpP6EPtPIHvUog29npYDdMKR4r5rz2k
+	Hrdo8t37RFtbxZMqzqxae3lg2QvMIVQY=
+X-Google-Smtp-Source: AGHT+IFGUSqNhVSFcjLWd552jj3A3+UsZz302te3gQUBFRUUIea/UaE63PrpDhlQ9ArqAqxcGYHM5A==
+X-Received: by 2002:a05:6000:2a02:b0:3d4:a64:6725 with SMTP id ffacd0b85a97d-3d40a646ab1mr12767794f8f.10.1757090714928;
         Fri, 05 Sep 2025 09:45:14 -0700 (PDT)
 Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45c447244c4sm139275305e9.6.2025.09.05.09.45.13
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3dbead0b247sm12949512f8f.6.2025.09.05.09.45.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Sep 2025 09:45:13 -0700 (PDT)
+        Fri, 05 Sep 2025 09:45:14 -0700 (PDT)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	eddyz87@gmail.com,
 	memxor@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v3 1/7] bpf: refactor special field-type detection
-Date: Fri,  5 Sep 2025 17:44:59 +0100
-Message-ID: <20250905164508.1489482-2-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v3 2/7] bpf: extract generic helper from process_timer_func()
+Date: Fri,  5 Sep 2025 17:45:00 +0100
+Message-ID: <20250905164508.1489482-3-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
 References: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
@@ -98,84 +98,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Reduce code duplication in detection of the known special field types in
-map values. This refactoring helps to avoid copying a chunk of code in
-the next patch of the series.
+Refactor the verifier by pulling the common logic from
+process_timer_func() into a dedicated helper. This allows reusing
+process_async_func() helper for verifying bpf_task_work struct in the
+next patch.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- kernel/bpf/btf.c | 56 +++++++++++++++++-------------------------------
- 1 file changed, 20 insertions(+), 36 deletions(-)
+ kernel/bpf/verifier.c | 39 ++++++++++++++++++++++++---------------
+ 1 file changed, 24 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 64739308902f..a1a9bc589518 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -3488,44 +3488,28 @@ static int btf_get_field_type(const struct btf *btf, const struct btf_type *var_
- 			      u32 field_mask, u32 *seen_mask,
- 			      int *align, int *sz)
- {
--	int type = 0;
-+	const struct {
-+		enum btf_field_type type;
-+		const char *const name;
-+	} field_types[] = { { BPF_SPIN_LOCK, "bpf_spin_lock" },
-+			    { BPF_RES_SPIN_LOCK, "bpf_res_spin_lock" },
-+			    { BPF_TIMER, "bpf_timer" },
-+			    { BPF_WORKQUEUE, "bpf_wq" }};
-+	int type = 0, i;
- 	const char *name = __btf_name_by_offset(btf, var_type->name_off);
-+	const char *field_type_name;
-+	enum btf_field_type field_type;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index b9394f8fac0e..a5d19a01d488 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8520,43 +8520,52 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno, int flags)
+ 	return 0;
+ }
  
--	if (field_mask & BPF_SPIN_LOCK) {
--		if (!strcmp(name, "bpf_spin_lock")) {
--			if (*seen_mask & BPF_SPIN_LOCK)
--				return -E2BIG;
--			*seen_mask |= BPF_SPIN_LOCK;
--			type = BPF_SPIN_LOCK;
--			goto end;
--		}
--	}
--	if (field_mask & BPF_RES_SPIN_LOCK) {
--		if (!strcmp(name, "bpf_res_spin_lock")) {
--			if (*seen_mask & BPF_RES_SPIN_LOCK)
--				return -E2BIG;
--			*seen_mask |= BPF_RES_SPIN_LOCK;
--			type = BPF_RES_SPIN_LOCK;
--			goto end;
--		}
--	}
--	if (field_mask & BPF_TIMER) {
--		if (!strcmp(name, "bpf_timer")) {
--			if (*seen_mask & BPF_TIMER)
--				return -E2BIG;
--			*seen_mask |= BPF_TIMER;
--			type = BPF_TIMER;
--			goto end;
--		}
--	}
--	if (field_mask & BPF_WORKQUEUE) {
--		if (!strcmp(name, "bpf_wq")) {
--			if (*seen_mask & BPF_WORKQUEUE)
--				return -E2BIG;
--			*seen_mask |= BPF_WORKQUEUE;
--			type = BPF_WORKQUEUE;
--			goto end;
--		}
-+	for (i = 0; i < ARRAY_SIZE(field_types); ++i) {
-+		field_type = field_types[i].type;
-+		field_type_name = field_types[i].name;
-+		if (!(field_mask & field_type) || strcmp(name, field_type_name))
-+			continue;
-+		if (*seen_mask & field_type)
-+			return -E2BIG;
-+		*seen_mask |= field_type;
-+		type = field_type;
-+		goto end;
+-static int process_timer_func(struct bpf_verifier_env *env, int regno,
+-			      struct bpf_call_arg_meta *meta)
++static int process_async_func(struct bpf_verifier_env *env, int regno, struct bpf_map **map_ptr,
++			      int *map_uid, u32 rec_off, enum btf_field_type field_type,
++			      const char *struct_name)
+ {
+ 	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+ 	bool is_const = tnum_is_const(reg->var_off);
+ 	struct bpf_map *map = reg->map_ptr;
+ 	u64 val = reg->var_off.value;
++	int *struct_off = (void *)map->record + rec_off;
+ 
+ 	if (!is_const) {
+ 		verbose(env,
+-			"R%d doesn't have constant offset. bpf_timer has to be at the constant offset\n",
+-			regno);
++			"R%d doesn't have constant offset. %s has to be at the constant offset\n",
++			regno, struct_name);
+ 		return -EINVAL;
  	}
- 	field_mask_test_name(BPF_LIST_HEAD, "bpf_list_head");
- 	field_mask_test_name(BPF_LIST_NODE, "bpf_list_node");
+ 	if (!map->btf) {
+-		verbose(env, "map '%s' has to have BTF in order to use bpf_timer\n",
+-			map->name);
++		verbose(env, "map '%s' has to have BTF in order to use %s\n", map->name,
++			struct_name);
+ 		return -EINVAL;
+ 	}
+-	if (!btf_record_has_field(map->record, BPF_TIMER)) {
+-		verbose(env, "map '%s' has no valid bpf_timer\n", map->name);
++	if (!btf_record_has_field(map->record, field_type)) {
++		verbose(env, "map '%s' has no valid %s\n", map->name, struct_name);
+ 		return -EINVAL;
+ 	}
+-	if (map->record->timer_off != val + reg->off) {
+-		verbose(env, "off %lld doesn't point to 'struct bpf_timer' that is at %d\n",
+-			val + reg->off, map->record->timer_off);
++	if (*struct_off != val + reg->off) {
++		verbose(env, "off %lld doesn't point to 'struct %s' that is at %d\n",
++			val + reg->off, struct_name, *struct_off);
+ 		return -EINVAL;
+ 	}
+-	if (meta->map_ptr) {
+-		verifier_bug(env, "Two map pointers in a timer helper");
++	if (*map_ptr) {
++		verifier_bug(env, "Two map pointers in a %s helper", struct_name);
+ 		return -EFAULT;
+ 	}
+-	meta->map_uid = reg->map_uid;
+-	meta->map_ptr = map;
++	*map_uid = reg->map_uid;
++	*map_ptr = map;
+ 	return 0;
+ }
+ 
++static int process_timer_func(struct bpf_verifier_env *env, int regno,
++			      struct bpf_call_arg_meta *meta)
++{
++	return process_async_func(env, regno, &meta->map_ptr, &meta->map_uid,
++				  offsetof(struct btf_record, timer_off), BPF_TIMER, "bpf_timer");
++}
++
+ static int process_wq_func(struct bpf_verifier_env *env, int regno,
+ 			   struct bpf_kfunc_call_arg_meta *meta)
+ {
 -- 
 2.51.0
 
