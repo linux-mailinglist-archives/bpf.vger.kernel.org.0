@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-67646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 457C2B4667E
-	for <lists+bpf@lfdr.de>; Sat,  6 Sep 2025 00:16:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 684DFB46680
+	for <lists+bpf@lfdr.de>; Sat,  6 Sep 2025 00:16:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEF441BC3F72
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:16:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8091B7C5167
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC3F275854;
-	Fri,  5 Sep 2025 22:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C191284684;
+	Fri,  5 Sep 2025 22:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FSEIomum"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D/t+P5+O"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C339B269CF0;
-	Fri,  5 Sep 2025 22:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34B827CCEE;
+	Fri,  5 Sep 2025 22:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757110549; cv=none; b=Az6E0K4Wjt15QxAqxRJ/qKB/Lb4RhtKkdaUVpRfoud/Z5cV7LdbdajwDmTdBdY2GkOlaVl07RghBAIZoTGZeDbLLrFH6I6+3PIhEqDyVTESBTYonId2CebzSQNmgNzq3cjdlUvL1FfF7GruV/Hlq8yppFv/m3sm3JT0Sq0LkHck=
+	t=1757110550; cv=none; b=Tg040FRhERrDvNNbqsWMbKX+MrPFO4phi6hOm2UGrrrPx2rIQWf0Ix6AxiZI5l5CNPhHfbHIOoyFEdG9mc09zOfOFRYbaZ20+H0j9g9LVWKE/ZEUQMIZmLZ3ZbPkirrLvowSiJ7Dg57l5wbxKkqaqUqFK79jZD02pTQIQ1DU5yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757110549; c=relaxed/simple;
-	bh=yeZw84P8uzsxnfYKVGPBuq8o6OQCeKop1MJntsz37kE=;
+	s=arc-20240116; t=1757110550; c=relaxed/simple;
+	bh=RmPWHSmTFGED2+phg1IDhj1Eqmc+Ugmbit9TQn6jp4w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qMcrigF5cAYD392db92WtqBnXOVyIUwxtnvVCvDbaAV6ZdO3Eovw2D2rdCIjDMz9dTybwpISXW8T7EALgS13WzrM6iBB7/oMDIy2Mkdl//zf1cRH9M+VQusTbegbKxJwx+1u0D2qo0AEX8ZdyV5FYqpkZ4PIuhlBUgbibpBOus8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FSEIomum; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EBE0C4CEF8;
-	Fri,  5 Sep 2025 22:15:48 +0000 (UTC)
+	 MIME-Version; b=cpg8hzuWezgHmrSNKrktrCbysrosfcvwiGNPfL/lwW1mKjCHq4CNrv3uAZVoyvdr6S4DFtLXYKL4SJX6SLmdPyKSSMx6znOlL3TbyPSqEAJFlZm358rVPiMrsdFv/dN/doVORs25rGR40Xy8XDtUAdp/N4UCajAkjX6J8ZJ2yhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D/t+P5+O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EF60C4CEF9;
+	Fri,  5 Sep 2025 22:15:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757110549;
-	bh=yeZw84P8uzsxnfYKVGPBuq8o6OQCeKop1MJntsz37kE=;
+	s=k20201202; t=1757110550;
+	bh=RmPWHSmTFGED2+phg1IDhj1Eqmc+Ugmbit9TQn6jp4w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FSEIomumlB3dFFUqWls40mUlXMWqXu6AKz0lBQoy0lbAXzuUZnbAaaTMum9xDDyJo
-	 Hc8AUYQ/0MdaZIb7gEa77yEQYpg59rBjcp0JxH9fMGy34l6ymMk7nPdkwopydtJv3h
-	 2vLmkVx8/4Ux5wkl2K2JWHg6eV1zo8hDUIN8ax4OU57JDfcZsbUKcW+2UFdRuu5w8a
-	 odiLSKXwynNd/gUdf/IePLsgPLxep6MeTnlx2bxaYPQVkMw+inU3EuQ2GVBevof9Cm
-	 j8tVL6qq85nWzLrOH8pMoxo0Rjo6IYYXAs5YeCCqh24h4Mo1ZiQcL3d+Ze06vu3Q1Q
-	 a703C1HycFjrA==
+	b=D/t+P5+OyhlFwueXEx46sUCxJRrNWV6Vgl1v8Fduoir2KKM50H363p2mrkLiIA5kF
+	 dE4kJFlF4a7QZwmD79qCygMsvE8dj4+QkGocn+kTzfE3kuwEBPjylTuTaTJPoJVlpw
+	 81RWN3jNeN2MA+MCraGq8+0X4uGdFbKRShTpxrw/bg7ch0nx36mukHLypQhidiV5gy
+	 PfUaxf5Sa/iI/KlzkgiianppvcQJRYX7FJvfkzuFhWLRdeebB2FqWyKUumJFq0PLSb
+	 H+ZtO4qj+05WudCpSNUmxguilyP8BzHlBB9I314aQAruZnBNZ/9TT3nFGxif7vD2ou
+	 aqWAmdm0CabGg==
 From: Jakub Kicinski <kuba@kernel.org>
 To: davem@davemloft.net
 Cc: netdev@vger.kernel.org,
@@ -63,9 +63,9 @@ Cc: netdev@vger.kernel.org,
 	pavan.chebbi@broadcom.com,
 	przemyslaw.kitszel@intel.com,
 	Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net-next 1/2] net: xdp: pass full flags to xdp_update_skb_shared_info()
-Date: Fri,  5 Sep 2025 15:15:38 -0700
-Message-ID: <20250905221539.2930285-2-kuba@kernel.org>
+Subject: [PATCH net-next 2/2] net: xdp: handle frags with unreadable memory
+Date: Fri,  5 Sep 2025 15:15:39 -0700
+Message-ID: <20250905221539.2930285-3-kuba@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250905221539.2930285-1-kuba@kernel.org>
 References: <20250905221539.2930285-1-kuba@kernel.org>
@@ -77,330 +77,61 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-xdp_update_skb_shared_info() needs to update skb state which
-was maintained in xdp_buff / frame. Pass full flags into it,
-instead of breaking it out bit by bit. We will need to add
-a bit for unreadable frags (even tho XDP doesn't support
-those the driver paths may be common), at which point almost
-all call sites would become:
-
-    xdp_update_skb_shared_info(skb, num_frags,
-                               sinfo->xdp_frags_size,
-                               MY_PAGE_SIZE * num_frags,
-                               xdp_buff_is_frag_pfmemalloc(xdp),
-                               xdp_buff_is_frag_unreadable(xdp));
-
-Keep a helper for accessing the flags, in case we need to
-transform them somehow in the future (e.g. to cover up xdp_buff
-vs xdp_frame differences).
-
-While we are touching call callers - rename the helper to
-xdp_update_skb_frags_info(), previous name may have implied that
-it's shinfo that's updated. We are updating flags in struct sk_buff
-based on frags that got attched.
+We don't expect frags with unreadable memory to be presented
+to XDP programs today, but the XDP helpers are designed to be
+usable whether XDP is enabled or not. Support handling frags
+with unreadable memory.
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
-v1:
- - rename skb_flags arg to xdp_flags
- - rename xdp_update_skb_shared_info() -> xdp_update_skb_frags_info()
-RFC: https://lore.kernel.org/20250812161528.835855-1-kuba@kernel.org
----
- include/net/xdp.h                             | 25 +++++++++----------
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  7 +++---
- drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 15 ++++++-----
- drivers/net/ethernet/intel/ice/ice_txrx.c     | 15 ++++++-----
- drivers/net/ethernet/marvell/mvneta.c         |  7 +++---
- .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 23 ++++++++---------
- drivers/net/virtio_net.c                      |  7 +++---
- net/core/xdp.c                                | 21 ++++++++--------
- 8 files changed, 56 insertions(+), 64 deletions(-)
+ include/net/xdp.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/include/net/xdp.h b/include/net/xdp.h
-index b40f1f96cb11..57189fc21168 100644
+index 57189fc21168..98f984d8f2c6 100644
 --- a/include/net/xdp.h
 +++ b/include/net/xdp.h
-@@ -104,17 +104,16 @@ static __always_inline void xdp_buff_clear_frags_flag(struct xdp_buff *xdp)
- 	xdp->flags &= ~XDP_FLAGS_HAS_FRAGS;
- }
+@@ -76,6 +76,11 @@ enum xdp_buff_flags {
+ 	XDP_FLAGS_FRAGS_PF_MEMALLOC	= BIT(1), /* xdp paged memory is under
+ 						   * pressure
+ 						   */
++	/* frags have unreadable mem, this can't be true for real XDP packets,
++	 * but drivers may use XDP helpers to construct Rx pkt state even when
++	 * XDP program is not attached.
++	 */
++	XDP_FLAGS_FRAGS_UNREADABLE	= BIT(2),
+ };
  
--static __always_inline bool
--xdp_buff_is_frag_pfmemalloc(const struct xdp_buff *xdp)
--{
--	return !!(xdp->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
--}
--
- static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
- {
+ struct xdp_buff {
+@@ -109,6 +114,11 @@ static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
  	xdp->flags |= XDP_FLAGS_FRAGS_PF_MEMALLOC;
  }
  
-+static __always_inline u32 xdp_buff_get_skb_flags(const struct xdp_buff *xdp)
++static __always_inline void xdp_buff_set_frag_unreadable(struct xdp_buff *xdp)
 +{
-+	return xdp->flags;
++	xdp->flags |= XDP_FLAGS_FRAGS_UNREADABLE;
 +}
 +
- static __always_inline void
- xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+ static __always_inline u32 xdp_buff_get_skb_flags(const struct xdp_buff *xdp)
  {
-@@ -272,10 +271,10 @@ static __always_inline bool xdp_frame_has_frags(const struct xdp_frame *frame)
- 	return !!(frame->flags & XDP_FLAGS_HAS_FRAGS);
- }
+ 	return xdp->flags;
+@@ -248,6 +258,8 @@ static inline bool xdp_buff_add_frag(struct xdp_buff *xdp, netmem_ref netmem,
  
--static __always_inline bool
--xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
-+static __always_inline u32
-+xdp_frame_get_skb_flags(const struct xdp_frame *frame)
- {
--	return !!(frame->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
-+	return frame->flags;
- }
- 
- #define XDP_BULK_QUEUE_SIZE	16
-@@ -312,9 +311,9 @@ static inline void xdp_scrub_frame(struct xdp_frame *frame)
- }
- 
- static inline void
--xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
--			   unsigned int size, unsigned int truesize,
--			   bool pfmemalloc)
-+xdp_update_skb_frags_info(struct sk_buff *skb, u8 nr_frags,
-+			  unsigned int size, unsigned int truesize,
-+			  u32 xdp_flags)
- {
- 	struct skb_shared_info *sinfo = skb_shinfo(skb);
- 
-@@ -328,7 +327,7 @@ xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
- 	skb->len += size;
- 	skb->data_len += size;
- 	skb->truesize += truesize;
--	skb->pfmemalloc |= pfmemalloc;
-+	skb->pfmemalloc |= !!(xdp_flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
- }
- 
- /* Avoids inlining WARN macro in fast-path */
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-index 58d579dca3f1..3e77a96e5a3e 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-@@ -468,9 +468,8 @@ bnxt_xdp_build_skb(struct bnxt *bp, struct sk_buff *skb, u8 num_frags,
- 	if (!skb)
- 		return NULL;
- 
--	xdp_update_skb_shared_info(skb, num_frags,
--				   sinfo->xdp_frags_size,
--				   BNXT_RX_PAGE_SIZE * num_frags,
--				   xdp_buff_is_frag_pfmemalloc(xdp));
-+	xdp_update_skb_frags_info(skb, num_frags, sinfo->xdp_frags_size,
-+				  BNXT_RX_PAGE_SIZE * num_frags,
-+				  xdp_buff_get_skb_flags(xdp));
- 	return skb;
- }
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index 048c33039130..98601c62c592 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -2151,10 +2151,10 @@ static struct sk_buff *i40e_construct_skb(struct i40e_ring *rx_ring,
- 		memcpy(&skinfo->frags[skinfo->nr_frags], &sinfo->frags[0],
- 		       sizeof(skb_frag_t) * nr_frags);
- 
--		xdp_update_skb_shared_info(skb, skinfo->nr_frags + nr_frags,
--					   sinfo->xdp_frags_size,
--					   nr_frags * xdp->frame_sz,
--					   xdp_buff_is_frag_pfmemalloc(xdp));
-+		xdp_update_skb_frags_info(skb, skinfo->nr_frags + nr_frags,
-+					  sinfo->xdp_frags_size,
-+					  nr_frags * xdp->frame_sz,
-+					  xdp_buff_get_skb_flags(xdp));
- 
- 		/* First buffer has already been processed, so bump ntc */
- 		if (++rx_ring->next_to_clean == rx_ring->count)
-@@ -2206,10 +2206,9 @@ static struct sk_buff *i40e_build_skb(struct i40e_ring *rx_ring,
- 		skb_metadata_set(skb, metasize);
- 
- 	if (unlikely(xdp_buff_has_frags(xdp))) {
--		xdp_update_skb_shared_info(skb, nr_frags,
--					   sinfo->xdp_frags_size,
--					   nr_frags * xdp->frame_sz,
--					   xdp_buff_is_frag_pfmemalloc(xdp));
-+		xdp_update_skb_frags_info(skb, nr_frags, sinfo->xdp_frags_size,
-+					  nr_frags * xdp->frame_sz,
-+					  xdp_buff_get_skb_flags(xdp));
- 
- 		i40e_process_rx_buffs(rx_ring, I40E_XDP_PASS, xdp);
- 	} else {
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-index d2871757ec94..107632a71f3c 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-@@ -1035,10 +1035,9 @@ ice_build_skb(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp)
- 		skb_metadata_set(skb, metasize);
- 
- 	if (unlikely(xdp_buff_has_frags(xdp)))
--		xdp_update_skb_shared_info(skb, nr_frags,
--					   sinfo->xdp_frags_size,
--					   nr_frags * xdp->frame_sz,
--					   xdp_buff_is_frag_pfmemalloc(xdp));
-+		xdp_update_skb_frags_info(skb, nr_frags, sinfo->xdp_frags_size,
-+					  nr_frags * xdp->frame_sz,
-+					  xdp_buff_get_skb_flags(xdp));
- 
- 	return skb;
- }
-@@ -1115,10 +1114,10 @@ ice_construct_skb(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp)
- 		memcpy(&skinfo->frags[skinfo->nr_frags], &sinfo->frags[0],
- 		       sizeof(skb_frag_t) * nr_frags);
- 
--		xdp_update_skb_shared_info(skb, skinfo->nr_frags + nr_frags,
--					   sinfo->xdp_frags_size,
--					   nr_frags * xdp->frame_sz,
--					   xdp_buff_is_frag_pfmemalloc(xdp));
-+		xdp_update_skb_frags_info(skb, skinfo->nr_frags + nr_frags,
-+					  sinfo->xdp_frags_size,
-+					  nr_frags * xdp->frame_sz,
-+					  xdp_buff_get_skb_flags(xdp));
- 	}
- 
- 	return skb;
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 476e73e502fe..7351e98d73f4 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -2416,10 +2416,9 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
- 	skb->ip_summed = mvneta_rx_csum(pp, desc_status);
- 
- 	if (unlikely(xdp_buff_has_frags(xdp)))
--		xdp_update_skb_shared_info(skb, num_frags,
--					   sinfo->xdp_frags_size,
--					   num_frags * xdp->frame_sz,
--					   xdp_buff_is_frag_pfmemalloc(xdp));
-+		xdp_update_skb_frags_info(skb, num_frags, sinfo->xdp_frags_size,
-+					  num_frags * xdp->frame_sz,
-+					  xdp_buff_get_skb_flags(xdp));
- 
- 	return skb;
- }
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index b8c609d91d11..2925ece136c4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1796,10 +1796,9 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
- 
- 	if (xdp_buff_has_frags(&mxbuf->xdp)) {
- 		/* sinfo->nr_frags is reset by build_skb, calculate again. */
--		xdp_update_skb_shared_info(skb, wi - head_wi - 1,
--					   sinfo->xdp_frags_size, truesize,
--					   xdp_buff_is_frag_pfmemalloc(
--						&mxbuf->xdp));
-+		xdp_update_skb_frags_info(skb, wi - head_wi - 1,
-+					  sinfo->xdp_frags_size, truesize,
-+					  xdp_buff_get_skb_flags(&mxbuf->xdp));
- 
- 		for (struct mlx5e_wqe_frag_info *pwi = head_wi + 1; pwi < wi; pwi++)
- 			pwi->frag_page->frags++;
-@@ -2105,10 +2104,10 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
- 			struct mlx5e_frag_page *pagep;
- 
- 			/* sinfo->nr_frags is reset by build_skb, calculate again. */
--			xdp_update_skb_shared_info(skb, frag_page - head_page,
--						   sinfo->xdp_frags_size, truesize,
--						   xdp_buff_is_frag_pfmemalloc(
--							&mxbuf->xdp));
-+			xdp_update_skb_frags_info(skb, frag_page - head_page,
-+						  sinfo->xdp_frags_size,
-+						  truesize,
-+						  xdp_buff_get_skb_flags(&mxbuf->xdp));
- 
- 			pagep = head_page;
- 			do
-@@ -2122,10 +2121,10 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
- 		if (xdp_buff_has_frags(&mxbuf->xdp)) {
- 			struct mlx5e_frag_page *pagep;
- 
--			xdp_update_skb_shared_info(skb, sinfo->nr_frags,
--						   sinfo->xdp_frags_size, truesize,
--						   xdp_buff_is_frag_pfmemalloc(
--							&mxbuf->xdp));
-+			xdp_update_skb_frags_info(skb, sinfo->nr_frags,
-+						  sinfo->xdp_frags_size,
-+						  truesize,
-+						  xdp_buff_get_skb_flags(&mxbuf->xdp));
- 
- 			pagep = frag_page - sinfo->nr_frags;
- 			do
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 975bdc5dab84..06708c9a979e 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2185,10 +2185,9 @@ static struct sk_buff *build_skb_from_xdp_buff(struct net_device *dev,
- 		skb_metadata_set(skb, metasize);
- 
- 	if (unlikely(xdp_buff_has_frags(xdp)))
--		xdp_update_skb_shared_info(skb, nr_frags,
--					   sinfo->xdp_frags_size,
--					   xdp_frags_truesz,
--					   xdp_buff_is_frag_pfmemalloc(xdp));
-+		xdp_update_skb_frags_info(skb, nr_frags, sinfo->xdp_frags_size,
-+					  xdp_frags_truesz,
-+					  xdp_buff_get_skb_flags(xdp));
- 
- 	return skb;
- }
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 491334b9b8be..9100e160113a 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -663,9 +663,8 @@ struct sk_buff *xdp_build_skb_from_buff(const struct xdp_buff *xdp)
- 		u32 tsize;
- 
- 		tsize = sinfo->xdp_frags_truesize ? : nr_frags * xdp->frame_sz;
--		xdp_update_skb_shared_info(skb, nr_frags,
--					   sinfo->xdp_frags_size, tsize,
--					   xdp_buff_is_frag_pfmemalloc(xdp));
-+		xdp_update_skb_frags_info(skb, nr_frags, sinfo->xdp_frags_size,
-+					  tsize, xdp_buff_get_skb_flags(xdp));
- 	}
- 
- 	skb->protocol = eth_type_trans(skb, rxq->dev);
-@@ -692,7 +691,7 @@ static noinline bool xdp_copy_frags_from_zc(struct sk_buff *skb,
- 	struct skb_shared_info *sinfo = skb_shinfo(skb);
- 	const struct skb_shared_info *xinfo;
- 	u32 nr_frags, tsize = 0;
--	bool pfmemalloc = false;
-+	u32 flags = 0;
- 
- 	xinfo = xdp_get_shared_info_from_buff(xdp);
- 	nr_frags = xinfo->nr_frags;
-@@ -714,11 +713,12 @@ static noinline bool xdp_copy_frags_from_zc(struct sk_buff *skb,
- 		__skb_fill_page_desc_noacc(sinfo, i, page, offset, len);
- 
- 		tsize += truesize;
--		pfmemalloc |= page_is_pfmemalloc(page);
-+		if (page_is_pfmemalloc(page))
-+			flags |= XDP_FLAGS_FRAGS_PF_MEMALLOC;
- 	}
- 
--	xdp_update_skb_shared_info(skb, nr_frags, xinfo->xdp_frags_size,
--				   tsize, pfmemalloc);
-+	xdp_update_skb_frags_info(skb, nr_frags, xinfo->xdp_frags_size, tsize,
-+				  flags);
+ 	if (unlikely(netmem_is_pfmemalloc(netmem)))
+ 		xdp_buff_set_frag_pfmemalloc(xdp);
++	if (unlikely(netmem_is_net_iov(netmem)))
++		xdp_buff_set_frag_unreadable(xdp);
  
  	return true;
  }
-@@ -823,10 +823,9 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 		skb_metadata_set(skb, xdpf->metasize);
+@@ -328,6 +340,7 @@ xdp_update_skb_frags_info(struct sk_buff *skb, u8 nr_frags,
+ 	skb->data_len += size;
+ 	skb->truesize += truesize;
+ 	skb->pfmemalloc |= !!(xdp_flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
++	skb->unreadable |= !!(xdp_flags & XDP_FLAGS_FRAGS_UNREADABLE);
+ }
  
- 	if (unlikely(xdp_frame_has_frags(xdpf)))
--		xdp_update_skb_shared_info(skb, nr_frags,
--					   sinfo->xdp_frags_size,
--					   nr_frags * xdpf->frame_sz,
--					   xdp_frame_is_frag_pfmemalloc(xdpf));
-+		xdp_update_skb_frags_info(skb, nr_frags, sinfo->xdp_frags_size,
-+					  nr_frags * xdpf->frame_sz,
-+					  xdp_frame_get_skb_flags(xdpf));
- 
- 	/* Essential SKB info: protocol and skb->dev */
- 	skb->protocol = eth_type_trans(skb, dev);
+ /* Avoids inlining WARN macro in fast-path */
 -- 
 2.51.0
 
