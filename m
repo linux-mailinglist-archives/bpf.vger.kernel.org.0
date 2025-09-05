@@ -1,123 +1,125 @@
-Return-Path: <bpf+bounces-67648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7276EB466CB
-	for <lists+bpf@lfdr.de>; Sat,  6 Sep 2025 00:45:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EF28B466D0
+	for <lists+bpf@lfdr.de>; Sat,  6 Sep 2025 00:48:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10AB53A118C
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:44:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B4E43AC9B9
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 659AE2BD030;
-	Fri,  5 Sep 2025 22:44:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C675B2BCF6C;
+	Fri,  5 Sep 2025 22:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D11SbykN"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R5pisFY9"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94C552BCF51;
-	Fri,  5 Sep 2025 22:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBB9298CA5
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 22:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757112279; cv=none; b=U+sKryG04qUY2vCe6wNdIjgXuAsD4fh8g+JBKdBsxO3sySPkO5dqUmxF75zIn9DD/jdjMRDZyvvLIbIo/l9lSbWjoTBEHWSfE5op31aJhskYuAei0IV/ex9yN6rlEZN+NwCo3h5f0HaP3mSnlQFxDvkc06bI9wu+Ngxq8tHE3J0=
+	t=1757112464; cv=none; b=H+Svg7unt7dI95sYShQscyp13JiGxVrTIuDGw3Y6TFanYXtGZ+DZbnS7Oq57E+Z7JPSXLmQF8Sr1t4iWzEInZ/XRYp9LMPXShQX4R0lF8x4U/nnptuja/X7w+1MTZVtsVFbC3YVb08lv7BDudMCJsQ0awNfGQPWLvQKYBOsXf/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757112279; c=relaxed/simple;
-	bh=V23C9Ebj02wqWuD1jFpn8uhOfCPGnEw6lbKl9cWUTRQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=EqAdL1W69za0LQr9F2XoL+a+71iXJyhFUpRaYEo7OY2QqrZxgU/Yxytj3zSU2IvOafE7jrwSqDvfPwKUARmU7KiXj+YRpO1D79Kfwd6C4wUh5Ya2cw3LMTtIkoAZCYOmSMSRJSoc7L0MNsVLWjVq/iPQojMijzvDYSbhWeZBUOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D11SbykN; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757112274;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IEvTf0gu2uvX4iNptGPGuSQc3Jmjp1dV6o5P5PehWGU=;
-	b=D11SbykNSIElurYGwH8imcgAOpuoUqmYxP+VrnGYqNwwXfriFXq2dx3BkVqnX9Rvg0B+82
-	hnSm4wVK2Zit7mfTkJ54avRQbmsT6cHrZRK6Z8tn1mLUC+8OndYp4Q2VLeJ/IqgrZCj3ze
-	BjbZntUKHiduelcTWnahlGLb4HT2xAY=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,  Tejun Heo <tj@kernel.org>,
-  Johannes Weiner <hannes@cmpxchg.org>,  Michal Hocko <mhocko@kernel.org>,
-  Muchun Song <muchun.song@linux.dev>,  Alexei Starovoitov
- <ast@kernel.org>,  Peilin Ye <yepeilin@google.com>,  Kumar Kartikeya
- Dwivedi <memxor@gmail.com>,  bpf@vger.kernel.org,  linux-mm@kvack.org,
-  cgroups@vger.kernel.org,  linux-kernel@vger.kernel.org,  Meta kernel team
- <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
-In-Reply-To: <6bcjnhdsbyfmlua2x7olz6w3gheejfatnrtn5qu7ls5svegrok@zeatti7whrnq>
-	(Shakeel Butt's message of "Fri, 5 Sep 2025 14:50:17 -0700")
-References: <20250905201606.66198-1-shakeel.butt@linux.dev>
-	<87y0qsa95d.fsf@linux.dev>
-	<mai3ndkvqrpkfpblkazbyejvpkizrp7dh22374tpkmepfji32o@3troawzsuvqe>
-	<87ecska85y.fsf@linux.dev>
-	<6bcjnhdsbyfmlua2x7olz6w3gheejfatnrtn5qu7ls5svegrok@zeatti7whrnq>
-Date: Fri, 05 Sep 2025 15:44:28 -0700
-Message-ID: <87cy848qpf.fsf@linux.dev>
+	s=arc-20240116; t=1757112464; c=relaxed/simple;
+	bh=1qEENq51KcrDUXNZwje7lxyTf8mqEp73otnktCFs+yQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Content-Type; b=h3Y9gHMK1qULcUbW6kTN2aa3gZMQrMeoEJkj8pQmNb5DvFj0goJAol9GIy00yXc8ia2hsrWwZKJWLhIbxLd9u/rcJ4OUeNQblK5l+Az+2bMRNIv+desVIfun6Frh5+U1SA8CvyQPLP/1DMpeNoS08wqd3FhTGnzhQB42j8a0URI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R5pisFY9; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-24c8264a137so32989215ad.3
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 15:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1757112462; x=1757717262; darn=vger.kernel.org;
+        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gmx3wlIJ1eDwZ4XBZbMsVjYFEQidwm1ewtHh14rsYe0=;
+        b=R5pisFY9lvoHzNh4dY912OmPpT1W8MNywn5Pi87aMnrj381/m3LXokmXLh4af/pkcB
+         Xk5CrV/OCnoTfSk7k4/dMG8QI1ycLTFKK2ku33NiUa8+VkGr1RdXNSsBE/PbmNF/lC/T
+         zcOU8zEGQ4zTg6YYK1zC0nrJkEaxthrTdk7/kpBYa48Bjwrn7uyL8QXrrcxdwmdkqni9
+         gBaLj7CCL7NcQyubifz4RGWslINF7hZKvDR6QijQYT7uRoWnV6+5IF30fbfKECtqaxPP
+         ae/RELbZuiSdMMvs91yE14bYcpIji47JtbCh7ExhLABu385a/P1t1qDzdhlIDtt775S4
+         tbJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757112462; x=1757717262;
+        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gmx3wlIJ1eDwZ4XBZbMsVjYFEQidwm1ewtHh14rsYe0=;
+        b=OlM4Muq98IOIFALS/iQkbP65CXrpjLPXgv71zzrblehZ/+aUpst/RlWsBNXjC4T9lF
+         Y+9MhfwQoHChajPoOg19CybdstvL8AsFlyU2+hahQVQUMkm99URaxIOo0YSzVturpMjw
+         LMGe15KUmQB05kUXXyZ08h3HNYej+BiKZFSOnZ8T827V8joICR6QGQ+MhMNI5f0z1Hrl
+         mm8B53qV5Z8GD+Wh0FcYikXRpUZBumb7xaeOJe3Mw9HbVwhxDS7dGFaMLt4iBp3l+Vfc
+         nwXQ5N5fYf/LDJkPDBzPRZSJJeyyjXZ+C2e9Erbp2pW3lZ+yWzsTtdPEItRciPyHFPOf
+         RcGA==
+X-Forwarded-Encrypted: i=1; AJvYcCXYYLm5+NPz/tGIMcf58tvsSvR3rdNAetbPzS8lRFjP4OIyi3bUSSdajJvjJt3+qLnUS8w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEglBy4X5ruIZUXnaydZxu3C7RXwmmOIwqq8AlNor2auc9b0Up
+	jD6C1Grkxn8PO5ifdroYoqqk3S8QS1N7WtmTQv6VikAIbGowM4RhkwhHeKFuAQyitV0W2fCFWnn
+	WLC4PCwC43A==
+X-Google-Smtp-Source: AGHT+IFxVMXZNiowTRquBEGq3NjyT+CYIXxvPnTvjh9qSatvFbQBMQOwqtw/9eKbbSMaD9wkYdEdrABaLYAf
+X-Received: from pjbst4.prod.google.com ([2002:a17:90b:1fc4:b0:32b:5e07:ca10])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:ce89:b0:24e:229e:204e
+ with SMTP id d9443c01a7336-2516da05c43mr3530465ad.16.1757112462153; Fri, 05
+ Sep 2025 15:47:42 -0700 (PDT)
+Date: Fri,  5 Sep 2025 15:47:04 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.51.0.355.g5224444f11-goog
+Message-ID: <20250905224708.2469021-1-irogers@google.com>
+Subject: [PATCH v1 0/4] perf/tools build related fixes
+From: Ian Rogers <irogers@google.com>
+To: Yury Norov <yury.norov@gmail.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, 
+	"=?UTF-8?q?Andr=C3=A9=20Almeida?=" <andrealmeid@igalia.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Ido Schimmel <idosch@nvidia.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>, 
+	Jason Xing <kerneljasonxing@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Yuyang Huang <yuyanghuang@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	"David S. Miller" <davem@davemloft.net>, Petr Machata <petrm@nvidia.com>, 
+	Maurice Lambert <mauricelambert434@gmail.com>, Jonas Gottlieb <jonas.gottlieb@stackit.cloud>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Shakeel Butt <shakeel.butt@linux.dev> writes:
+Add missing header files and #includes to fix the build in some
+environments like bazel.
 
-> On Fri, Sep 05, 2025 at 02:42:01PM -0700, Roman Gushchin wrote:
->> Shakeel Butt <shakeel.butt@linux.dev> writes:
->> 
->> > On Fri, Sep 05, 2025 at 02:20:46PM -0700, Roman Gushchin wrote:
->> >> Shakeel Butt <shakeel.butt@linux.dev> writes:
->> >> 
->> >> > Generally memcg charging is allowed from all the contexts including NMI
->> >> > where even spinning on spinlock can cause locking issues. However one
->> >> > call chain was missed during the addition of memcg charging from any
->> >> > context support. That is try_charge_memcg() -> memcg_memory_event() ->
->> >> > cgroup_file_notify().
->> >> >
->> >> > The possible function call tree under cgroup_file_notify() can acquire
->> >> > many different spin locks in spinning mode. Some of them are
->> >> > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
->> >> > just skip cgroup_file_notify() from memcg charging if the context does
->> >> > not allow spinning.
->> >> 
->> >> Hmm, what about OOM events? Losing something like MEMCG_LOW doesn't look
->> >> like a bit deal, but OOM events can be way more important.
->> >> 
->> >> Should we instead preserve the event (e.g. as a pending_event_mask) and
->> >> raise it on the next occasion / from a different context?
->> >>
->> >
->> > Thanks for the review. For now only MAX can happen in non-spinning
->> > context. All others only happen in process context. Maybe with BPF OOM,
->> > OOM might be possible in a different context (is that what you are
->> > thinking?). I think we can add the complexity of preserving the event
->> > when the actual need arise.
->> 
->> No, I haven't thought about any particular use case, just a bit
->> worried about silently dropping some events. It might be not an issue
->> now, but might be easy to miss a moment when it becomes a problem.
->> 
->
-> Only the notification can be dropped and not the event (i.e. we are
-> still incrementing the counters). Also for MAX only but I got your
-> point.
->
->> So in my opinion using some delayed delivery mechanism is better
->> than just dropping these events.
->
-> Let me see how doing this irq_work looks like and will update here.
+Ian Rogers (4):
+  perf bench futex: Add missing stdbool.h
+  tools bitmap: Add missing asm-generic/bitsperlong.h include
+  tools include: Replace tools linux/gfp_types.h with kernel version
+  tools include: Add headers to make tools builds more hermetic
 
-Thanks!
+ tools/include/linux/bitmap.h             |   1 +
+ tools/include/linux/gfp_types.h          | 393 ++++++++++-
+ tools/include/uapi/linux/genetlink.h     | 103 +++
+ tools/include/uapi/linux/if_addr.h       |  79 +++
+ tools/include/uapi/linux/neighbour.h     | 229 ++++++
+ tools/include/uapi/linux/netfilter.h     |  80 +++
+ tools/include/uapi/linux/netfilter_arp.h |  23 +
+ tools/include/uapi/linux/rtnetlink.h     | 848 +++++++++++++++++++++++
+ tools/perf/bench/futex.h                 |   1 +
+ tools/perf/check-headers.sh              |   9 +-
+ 10 files changed, 1764 insertions(+), 2 deletions(-)
+ create mode 100644 tools/include/uapi/linux/genetlink.h
+ create mode 100644 tools/include/uapi/linux/if_addr.h
+ create mode 100644 tools/include/uapi/linux/neighbour.h
+ create mode 100644 tools/include/uapi/linux/netfilter.h
+ create mode 100644 tools/include/uapi/linux/netfilter_arp.h
+ create mode 100644 tools/include/uapi/linux/rtnetlink.h
 
-If it won't work out for some reason, maybe at least explicitly
-narrow it down to the MEMCG_MAX events.
+-- 
+2.51.0.355.g5224444f11-goog
+
 
