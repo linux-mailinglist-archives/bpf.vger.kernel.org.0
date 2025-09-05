@@ -1,95 +1,136 @@
-Return-Path: <bpf+bounces-67624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D173B46588
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 23:31:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AA5EB4658B
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 23:31:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBF091C817B5
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 21:31:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60AE7B629DA
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 21:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3E02C3770;
-	Fri,  5 Sep 2025 21:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E8812F28F0;
+	Fri,  5 Sep 2025 21:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="voEmRble"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eITR0bcc"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4815AE55A
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 21:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED5B2F069A
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 21:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757107883; cv=none; b=iNM5Rk1PwtrnLe+seSMphvqvekk/PT/YEp/nEwgHZRjXZs38KHqXvcgYSaVZkmWtMs/y5p/xzrS7HW638jjX+83e8ns/fNtzKeacwZHGJYt2hmh6byQKUF4fv1y7Jj2/WNl148/TGIvf9rDvSGCXZm1TKvCZdAqJ6lICIEjrNwM=
+	t=1757107896; cv=none; b=N4FsqWtI7q8K06Db9SMLTIPZc6sUylmAy+eQyaoLvcTuRJfvOtns7ygt0gccggwhViy2juRgSyZr+Me02KLGExtRpCrPPdQIfHdBXeoJioD4wQajTgV6QkAxFgw2pmyGPejS/qPW9phS/ku2oD3EYEJC2BgC8vkJVP6DV5tG0M0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757107883; c=relaxed/simple;
-	bh=O1QlZOpxn2e4JbweuBX+CLtUVDe61DRgQomhWgdN20s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L0jS8tG2+i1XLLg/bQsLfPYMlQtNBfluZGolWJL+dU9orcGY2Ji+2wA1NUxdySuEhOsO1by4IE6XFK7CtfW5rcwSeAeerBBxwSnSSMC1XpXrIijm3PuIvLRiePxu7C8zWHGdw+TVu7vJNrCI3PRBiopVjQnGWQXTuFMjhkJdv7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=voEmRble; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 5 Sep 2025 14:31:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757107879;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RFQUguBVJMx+l4CUkTr7CK43jPG6OXp0+p67IT5nXMo=;
-	b=voEmRblefBXMxz3/aRw61YL39gF+K4+3bqkAdIgzpUcJeINfDp+Ef2SjC/9GndUwbRNl3I
-	3GjnzzdPeWH0FaYq7EoXMcvDWPFesvQ9XHU/tJMv7wB1CZ3hXohp3VPsJ4nxtBGhwae0pY
-	KQyV7A0uv54NDMEhzag/JNNs22cMcSs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Peilin Ye <yepeilin@google.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
-Message-ID: <mai3ndkvqrpkfpblkazbyejvpkizrp7dh22374tpkmepfji32o@3troawzsuvqe>
-References: <20250905201606.66198-1-shakeel.butt@linux.dev>
- <87y0qsa95d.fsf@linux.dev>
+	s=arc-20240116; t=1757107896; c=relaxed/simple;
+	bh=6Q94cZ7NSrhX6BjKaGmvaegWXVh1akMHOcRSKmZtvZM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X+U05Wy69nWzx3KK0/1oB01D9R6ZhtCNic1rEguGljbApgUwrbifGnIpVdeFI4xPINyeAG41AjUcfPJUHie+AWdo7V7cUp//PvbqHA3de4SXuRkCiLM1Gax5uj+vhP1DOIK9QGdqCSUWzP3XXKsmvDzQbzY1kKFfYO0jC5NJDFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eITR0bcc; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-32b92d75eaeso1723587a91.0
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 14:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757107895; x=1757712695; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ywt9RukDF8KyJU6JBKaqLIsNi79StlQwOVQw1Dbcjj0=;
+        b=eITR0bcc+SpP+KSZrlhoPxsSz8xdlRYwgsWuwQAPz/j58AXYcrnV4LA6hIDYX1owjP
+         apQhamqhEKJVmb0Omd8vHUtVmpynHBQxrRrpU93JG4Gh4IEwI3HcOlAwI+Z+ppmaHzza
+         tqk+QHLZPAwSLAJKEJy8Cqx5r9TYwDJMgsw2ceYxDDELaUN3Cl0UQz5DPF7i87BY+Wiz
+         i/xsHVFJOhAxdY3K7LJOr7L4HZqzi1MTdiJBdjpe8gznKpPX9m84dmxMpOsyNgt58yx6
+         CQH9JvypXJrIRA9v6+nDGTIwCehuKHry28d352Mls363TWxq+MSsB6OVxXMLgEfhhVMR
+         yWAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757107895; x=1757712695;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ywt9RukDF8KyJU6JBKaqLIsNi79StlQwOVQw1Dbcjj0=;
+        b=xBHn7uXTcH1wreapP27MMdKLBzxy0Aj9wyMBTnan48C5QJW8+as2IN6qWlKrsMeFbZ
+         JsonCClctNFPL2B5JU6SGAVt3lerri30j4XBosJ7qHkHjG9vX8H8zVDnf2ALMpzHD1oj
+         i7YuU+MoFcWoMY9icrQBiZJzBbsk6/fRLeVYaeiwIUzBxn98TsO+IAD2NVHqdUJ9zYaf
+         iKQtCQg5dLTDPTMftxKU9MqBE3qlfLCG3vnKgJQmYN6cWHJaocyKgC0OAqcKDiDDdgaV
+         T7bYdFxFOhD2Z967UlzPw/5+NqMUrSL/o/bsM6pJ0J6emL/AWdGG+txY4Ti0PW15ozuX
+         hvIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU61pRpiutEkxUXcvPQ7lVpEMyyWxOk9rd604nuf4LvdmkhTCW1Ur5l3CaNVX9+JUBfHhE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywjh2tzZ0ZaJK8CKed1JLgDxXLWgdNaavdGMfk36372NeO9R9R2
+	Y7D8czbOyfu57Jalpj86cQcUemJORCCQBxWyxRLgiiW2BK4jISqLs7EhQMmdIruC5JHT/rZz2gV
+	9Z+X6iVP/fWCyuAt9unosgAu/HZSOWtI=
+X-Gm-Gg: ASbGnctxJRjpTdkYxENMCsnq1M4yrT+QaCeQ4bfIKpbk2JEgCvwaCPIHTmAx6KGMAg0
+	sf85aAmAgS9jmz2dnNv8R1VLVJACsElMJbrWSIIGybxLpCkEFLzMjJ9P1KkkPvgTEtUBeW87fYO
+	MNxmHNcj/QXtTEzljPXWsiuKIfFE6is53nNpmuNPcZNRbp7vKi+pAYMD7by8PBkJW6DHb0+V7wC
+	C51bsO8SZQU88k=
+X-Google-Smtp-Source: AGHT+IHc4Z674kymMhbedR2tJXeyzklUVyL0XQVLF6zwBPh8e+ZWigXpaJH8usWEmNIYIV+CoV039cpAhcuQKW7UFNA=
+X-Received: by 2002:a17:90b:4ccb:b0:329:e9da:35d6 with SMTP id
+ 98e67ed59e1d1-32bbcb945c3mr6329783a91.4.1757107894708; Fri, 05 Sep 2025
+ 14:31:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y0qsa95d.fsf@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+References: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
+ <20250905164508.1489482-3-mykyta.yatsenko5@gmail.com> <dd66ef2b3ba7d462b649ef87ebb2e166103bdb79.camel@gmail.com>
+In-Reply-To: <dd66ef2b3ba7d462b649ef87ebb2e166103bdb79.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 5 Sep 2025 14:31:20 -0700
+X-Gm-Features: Ac12FXy5B-C0g5wo4AcTsx6iSJm5BlZcHOY39HbDhqnMUDpNpXgqn71p_Hih_-g
+Message-ID: <CAEf4BzbiKHQa_q=KrPaXsJRPCQue_PPoEazvsu5G6bg5yvXO0g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/7] bpf: extract generic helper from process_timer_func()
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
+	memxor@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 05, 2025 at 02:20:46PM -0700, Roman Gushchin wrote:
-> Shakeel Butt <shakeel.butt@linux.dev> writes:
-> 
-> > Generally memcg charging is allowed from all the contexts including NMI
-> > where even spinning on spinlock can cause locking issues. However one
-> > call chain was missed during the addition of memcg charging from any
-> > context support. That is try_charge_memcg() -> memcg_memory_event() ->
-> > cgroup_file_notify().
-> >
-> > The possible function call tree under cgroup_file_notify() can acquire
-> > many different spin locks in spinning mode. Some of them are
-> > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
-> > just skip cgroup_file_notify() from memcg charging if the context does
-> > not allow spinning.
-> 
-> Hmm, what about OOM events? Losing something like MEMCG_LOW doesn't look
-> like a bit deal, but OOM events can be way more important.
-> 
-> Should we instead preserve the event (e.g. as a pending_event_mask) and
-> raise it on the next occasion / from a different context?
+On Fri, Sep 5, 2025 at 2:28=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
+> On Fri, 2025-09-05 at 17:45 +0100, Mykyta Yatsenko wrote:
+> > From: Mykyta Yatsenko <yatsenko@meta.com>
+> >
+> > Refactor the verifier by pulling the common logic from
+> > process_timer_func() into a dedicated helper. This allows reusing
+> > process_async_func() helper for verifying bpf_task_work struct in the
+> > next patch.
+> >
+> > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> > ---
+> >  kernel/bpf/verifier.c | 39 ++++++++++++++++++++++++---------------
+> >  1 file changed, 24 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index b9394f8fac0e..a5d19a01d488 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -8520,43 +8520,52 @@ static int process_spin_lock(struct bpf_verifie=
+r_env *env, int regno, int flags)
+> >       return 0;
+> >  }
+> >
+> > -static int process_timer_func(struct bpf_verifier_env *env, int regno,
+> > -                           struct bpf_call_arg_meta *meta)
+> > +static int process_async_func(struct bpf_verifier_env *env, int regno,=
+ struct bpf_map **map_ptr,
+> > +                           int *map_uid, u32 rec_off, enum btf_field_t=
+ype field_type,
+> > +                           const char *struct_name)
+>
+> Also, it appears that process_wq_func() needs to have the same checks
+> as in process_async_func(). Maybe add it as a separate commit?
 
-Thanks for the review. For now only MAX can happen in non-spinning
-context. All others only happen in process context. Maybe with BPF OOM,
-OOM might be possible in a different context (is that what you are
-thinking?). I think we can add the complexity of preserving the event
-when the actual need arise.
+heh, we raced, I was asking the same question.
+
+But let's do any extra refactorings and fixes to pre-existing code as
+a follow up, ok?
+
+>
+> [...]
 
