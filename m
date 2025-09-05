@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-67543-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67544-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A91FAB4521F
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 10:53:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6530BB45221
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 10:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 554F11C24146
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 08:54:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F399F1C24010
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 08:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E741530506C;
-	Fri,  5 Sep 2025 08:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D54308F0E;
+	Fri,  5 Sep 2025 08:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Xe9sc5ko"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dwjCrxb2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8228D28031D
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 08:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F83E1FDE14
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 08:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757062405; cv=none; b=DHjjTe6XrKx92SjWCHbUPStmF5UH3/KLduxwcWM8mE3AdDTIBCKM0/N8eEwFV+s1RCIeWOftlidRAq/qZ00s9mTMYYCGN/neEyPRPtUCGNbx/INtjDtVm58yqzpeMMJkZyQYhg2uYMUfx7calIMS6aCB46lXfrO/7mxjH3KeRuM=
+	t=1757062406; cv=none; b=A54ZIIeQQU4dKtx3dgoDF0ON9DarMoOvARp7FLV7OsxOrJEm33Um9blBHY5pL2rwbYsrKf6Dj/jSEELMZrhaErxLoe2KeWEmz3J+t4xhjOZi3EhV8Rr3bEdNZRctw4GARGsraVbufNfTmZtju49l4MExn6rsAw+Qw3C1b9SYI2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757062405; c=relaxed/simple;
-	bh=GEf62t/g6oiTVPVC1cJMYKypf+y03W8litzuitIwb3A=;
+	s=arc-20240116; t=1757062406; c=relaxed/simple;
+	bh=Rd5E7VX8al1/yxlM1TCq3M2KFAf74BT5deQ9L5tNQys=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HA579zPu9DM9+u++EKrT75VSd7JqNToZ3iPgfgJerg9wHr8a3e2NxCSoLIkgaYNh3EdXtFb9C1jcQPKqWb2guGzNKMd7qmHAjxpY3I5mSjBo/L4cAvd4R00lekNMn7CAiZD2lxdEolQQXIxcndMCRFWt2vEHKdqxWrECH76ldXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Xe9sc5ko; arc=none smtp.client-ip=209.85.128.53
+	 MIME-Version:Content-Type; b=uzQD0HlXUxbOOlpGQP3fXL5DLcEBsx+f4izAK5jP0kuLijHifVbkqYBpImR0E7B6/TQ1+aFUA0j5kWTCDFDma0D4CM4InxG4NnpftPd+3F2jcWRzHaeJH5IStW6J2u2dEtY/ve3ffC4aHY9BNJf9HCKYrlsWigCxxMjI/wBEWRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dwjCrxb2; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-45b79ec2fbeso13281955e9.3
-        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 01:53:23 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3da9ad0c1f4so1272438f8f.3
+        for <bpf@vger.kernel.org>; Fri, 05 Sep 2025 01:53:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=suse.com; s=google; t=1757062402; x=1757667202; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4B2o7LJolSwLsUyedkxBTIDf82LUraxF+ncxBU9k/G8=;
-        b=Xe9sc5kobS8rKgJpzVV3E+grt28SWN2X5TGc7W0t62nvbZgNvG9wwbzshJLnSgSotO
-         G5fhUquHkbRrlM0iqDtYQvKlxf5jip1r9WWF31xIN8JvJR9MXvLnCeclsU29uhPt17Wb
-         k+CY5pDHftVQk7E8/7tDVJB59PDzkcmB5eCv9K0lpk9vpsNKpMUK/556Ts6TgqL6SY8D
-         RTXV4RgbnIbF3b63h/zPYIdOBBJosuFiH743skE2AJgDNvg5k8M4/v+IPZAddSL6NVNB
-         kZ37OXnx+5xbpJI0ueuAHzFNQzZxWQGyiE2scXiPg7txRJ42IboHDy3Mbcd1Tzdx0QNw
-         RNGw==
+        bh=IkkrYyhxJd0RflEiiebzkXK9jZInfTGc63Bh8fEciOA=;
+        b=dwjCrxb2UpKIo4nyhaMr91Hyq6A4r/8LcvaiutyrF38BS0nhtsvy4xHh+mNhFxCU0R
+         aIskeOm7XxRTZD85+aqbc7lsCJ2HKBFmNJ7RtMYaM9w3GlNCH0ZGlY5PqMyr12rgIDsi
+         UVUIATAGgyhEPHwc3t77hGQpqw3Ii7+AuDoSclQgt95U1ytZXh8iFtuEvE7Z91hvqjZb
+         56Pa2jXuD7JgmWpWkrening0pMjNeLliIOByXCyIFze4F2pYWhcY2bgmPdly0oseoGhW
+         cy4pn4c4xsYoKskl+zcYglqcNerMakEQlrFFle7ESoRWt1zxvW00/3okobcxfkt/ymDA
+         W8FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757062402; x=1757667202;
+        d=1e100.net; s=20230601; t=1757062403; x=1757667203;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4B2o7LJolSwLsUyedkxBTIDf82LUraxF+ncxBU9k/G8=;
-        b=f6pJSITJToBGPqOG/ddvFvYhdGAfQQHbGi0kYbekZ4a6N80dDNedmB4B//8S+S9Yyg
-         XCzPAeUpfwQacE1JxAJs28BGmuXSH2X+8OwcMDJ1PtWfqK6q8AvfjT+lg5c/RFOJAoft
-         8B48rwpBHGNj1oAlgfLz6pEj1qISdvXB+GRxtkqHk1GzAOlDgvBLpZotLvCYfIRTbgEr
-         khzwGoLl3/MjzBkCPrwaNDHd8GT6a5M/WYF36g35lHDGk2350wSDjPj8FqPZELj+yWco
-         6G7u+tl1CtvtWxWTA5QCNcEYdPrMXm+7F4lgLTP2egKG6MEkEgyGx/HkAKFwkjbbp0SP
-         u1Zw==
-X-Forwarded-Encrypted: i=1; AJvYcCU16WnZO4v0aFOZ4WgdtBVj1xvkoKVFP9RDD4pESd4IH2yLP/RxjLIkiYL2PSFwLXSDRnw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSRGWlQAzeXkPohrIpxWx4CWjUjaTAONsE3QW2V4g9CUl2ES0D
-	0g3pKKQyljpYV85mB/lMmu+lge0KEq/hWpUIEvqkObIzQzQePSRAt0tJp/48etV9q3o=
-X-Gm-Gg: ASbGncsyChhZN450bWMI53nzIUar2R9SKyD8/MbmtoMvN3FS2/nhqY5NZun/kNn72PH
-	PfTDkgVOmN6LfEQvxmlQCCuZlMnkCxgZ0+/sxgQvvgeO01kuy5xmRQe8Gi+H4XIZVUpJwwDA3ha
-	Sbz1PDihpZ2zF26waLK/mvwt6Se1QB5QA5gjVjcBc092H+qnziUYlYmmwYYXwiplhyhzw+ZNUml
-	XPROJ4jmaGzxvEIEANXbBO6bBMCBGUnbMhijjRq8Zf57NLYAdmv7kviMaCjuzOw9BYsh5GoKbVe
-	06rKK7OikmOrxTnrakDjqJ6YY7gwS5wHBOub3UX8K1y6c3rmtvhkQLtgES50kkMPPyEu2vBsZSI
-	C0f3xQ27XG3nbCcR6wrtFqN21eZu3LxBMqvJgYmV5pMMkYJ8=
-X-Google-Smtp-Source: AGHT+IGBjO7xQV7cWnxGjNyx+7vN27kfCPPMb+7tirAXxLTouuf1kijLEtLKWTroGzkDJeGipPC59w==
-X-Received: by 2002:a05:600c:1c26:b0:45d:d68c:dfa5 with SMTP id 5b1f17b1804b1-45dd68ce344mr12325985e9.19.1757062401693;
-        Fri, 05 Sep 2025 01:53:21 -0700 (PDT)
+        bh=IkkrYyhxJd0RflEiiebzkXK9jZInfTGc63Bh8fEciOA=;
+        b=tdQlDPAjAxskoZ67zQIOuv1424ZIdFCH17jnIMBsoeqMijdWiPPyyhHWbB7nrWjmAN
+         4omJEvpwrdJmRy9iz8ahsDYLfwhvyLkJFNOpb5BfkwjHcKQ2+ZKur92zrDtbWYyl5OqZ
+         9xcbHe3JpCdOw8Y08bDQOkJeqAi53hVsTomA363ei9iIbNmv2IReeIg1arKGfpDI2E+m
+         vL0NdIQUJ+XBVygwBeTiqI34JtUU1YlGyXkv+badQM8ZeyC0hasHls6zyrEIkp8bM+1Q
+         D27Iv5AnvJUKuYs7tlDuylSFzboYU5iGHJYcK+pgwWwGBMeTZ2rPkmiocnUaE/KBg3tG
+         nD8g==
+X-Forwarded-Encrypted: i=1; AJvYcCVZKSPb2Du1T74M5DDIuoM2eMjydIJDqI7mLe9hO5YLfCaszOlFgsC7GAhcG6MysEBjcr4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2Kfk9rNmFFs5N1joezrh8cA67YbMGKmCFBSH5N72BWhAe3+QM
+	QF0WYPufMrZkcE9tnOG4PKbojtZ41NBGnUH2Qmc2C6zH+oM1o/n/LqsvaJ6Op7NMRIo=
+X-Gm-Gg: ASbGncvVs0NbtYrDg23D4K7olWmVUzV8B/1+SuLhBKJ2MX64KX/xFg00z3lwlqqW4Og
+	jmuzK6yh2OYrc4/Un7UswBdW71q+r+ietZ9m3n/g912SvkSRCNQ8IjrCfwg9xaUFEnkBVhB5ODS
+	TWrCHCfyI09G9mr+ENUwUQWmzy0ClPDpwWjf7b1uQCmG9kHz+PcXxT2adnCXUrYc1RVW7y+U4mP
+	Jk3PbQVsIGnDqfAnxaGpJtefc1gPWtGODU7z4Pl4cnl4t9hToDuD7yHCxk+waglHoF1duPzd2rC
+	uZsQkHKS5aiArvL9EZ1AsQ6mjeEhhn2B5vX9H/EUVfScHVJKptyV3DUaj2C1Y6fJl+s8NKEHvHx
+	R66EYJitE6PkaUlxsgKQ7eL4hwGI1gZyCOT8aHnFrVHKuuC6ZY+uUM9fFRA==
+X-Google-Smtp-Source: AGHT+IG4QQ45lKCN+n0HyBk6qgrsjQ/B3l2iLMhuDOogHoANzxh7AVdJOxYPMBT0wed4ztKRtHT89A==
+X-Received: by 2002:a05:6000:22ca:b0:3a3:67bb:8f3f with SMTP id ffacd0b85a97d-3d1e06afa9fmr19056043f8f.53.1757062402553;
+        Fri, 05 Sep 2025 01:53:22 -0700 (PDT)
 Received: from localhost.localdomain ([2a00:6d43:105:c401:e307:1a37:2e76:ce91])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3d729a96912sm18487293f8f.8.2025.09.05.01.53.20
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3d729a96912sm18487293f8f.8.2025.09.05.01.53.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Sep 2025 01:53:21 -0700 (PDT)
+        Fri, 05 Sep 2025 01:53:22 -0700 (PDT)
 From: Marco Crivellari <marco.crivellari@suse.com>
 To: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -85,9 +85,9 @@ Cc: Tejun Heo <tj@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH 2/3] bpf: replace use of system_unbound_wq with system_dfl_wq
-Date: Fri,  5 Sep 2025 10:53:08 +0200
-Message-ID: <20250905085309.94596-3-marco.crivellari@suse.com>
+Subject: [PATCH 3/3] bpf: WQ_PERCPU added to alloc_workqueue users
+Date: Fri,  5 Sep 2025 10:53:09 +0200
+Message-ID: <20250905085309.94596-4-marco.crivellari@suse.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250905085309.94596-1-marco.crivellari@suse.com>
 References: <20250905085309.94596-1-marco.crivellari@suse.com>
@@ -97,6 +97,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Currently if a user enqueue a work item using schedule_delayed_work() the
@@ -104,76 +105,52 @@ used wq is "system_wq" (per-cpu wq) while queue_delayed_work() use
 WORK_CPU_UNBOUND (used when a cpu is not specified). The same applies to
 schedule_work() that is using system_wq and queue_work(), that makes use
 again of WORK_CPU_UNBOUND.
-
 This lack of consistentcy cannot be addressed without refactoring the API.
 
-system_unbound_wq should be the default workqueue so as not to enforce
-locality constraints for random work whenever it's not required.
+alloc_workqueue() treats all queues as per-CPU by default, while unbound
+workqueues must opt-in via WQ_UNBOUND.
 
-Adding system_dfl_wq to encourage its use when unbound work should be used.
+This default is suboptimal: most workloads benefit from unbound queues,
+allowing the scheduler to place worker threads where they’re needed and
+reducing noise when CPUs are isolated.
 
-queue_work() / queue_delayed_work() / mod_delayed_work() will now use the
-new unbound wq: whether the user still use the old wq a warn will be
-printed along with a wq redirect to the new one.
+This default is suboptimal: most workloads benefit from unbound queues,
+allowing the scheduler to place worker threads where they’re needed and
+reducing noise when CPUs are isolated.
 
-The old system_unbound_wq will be kept for a few release cycles.
+This patch adds a new WQ_PERCPU flag to explicitly request the use of
+the per-CPU behavior. Both flags coexist for one release cycle to allow
+callers to transition their calls.
+
+Once migration is complete, WQ_UNBOUND can be removed and unbound will
+become the implicit default.
+
+With the introduction of the WQ_PERCPU flag (equivalent to !WQ_UNBOUND),
+any alloc_workqueue() caller that doesn’t explicitly specify WQ_UNBOUND
+must now use WQ_PERCPU.
+
+All existing users have been updated accordingly.
 
 Suggested-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
 ---
- kernel/bpf/helpers.c  | 4 ++--
- kernel/bpf/memalloc.c | 2 +-
- kernel/bpf/syscall.c  | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ kernel/bpf/cgroup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index e3a2662f4e33..b969ca4d7af0 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1593,7 +1593,7 @@ void bpf_timer_cancel_and_free(void *val)
- 	 * timer callback.
- 	 */
- 	if (this_cpu_read(hrtimer_running)) {
--		queue_work(system_unbound_wq, &t->cb.delete_work);
-+		queue_work(system_dfl_wq, &t->cb.delete_work);
- 		return;
- 	}
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index b8699ec4d766..f3da9400c178 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -34,7 +34,8 @@ static struct workqueue_struct *cgroup_bpf_destroy_wq;
  
-@@ -1606,7 +1606,7 @@ void bpf_timer_cancel_and_free(void *val)
- 		if (hrtimer_try_to_cancel(&t->timer) >= 0)
- 			kfree_rcu(t, cb.rcu);
- 		else
--			queue_work(system_unbound_wq, &t->cb.delete_work);
-+			queue_work(system_dfl_wq, &t->cb.delete_work);
- 	} else {
- 		bpf_timer_delete_work(&t->cb.delete_work);
- 	}
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 889374722d0a..bd45dda9dc35 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -736,7 +736,7 @@ static void destroy_mem_alloc(struct bpf_mem_alloc *ma, int rcu_in_progress)
- 	/* Defer barriers into worker to let the rest of map memory to be freed */
- 	memset(ma, 0, sizeof(*ma));
- 	INIT_WORK(&copy->work, free_mem_alloc_deferred);
--	queue_work(system_unbound_wq, &copy->work);
-+	queue_work(system_dfl_wq, &copy->work);
- }
- 
- void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 9794446bc8c6..bb6f85fda240 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -901,7 +901,7 @@ static void bpf_map_free_in_work(struct bpf_map *map)
- 	/* Avoid spawning kworkers, since they all might contend
- 	 * for the same mutex like slab_mutex.
- 	 */
--	queue_work(system_unbound_wq, &map->work);
-+	queue_work(system_dfl_wq, &map->work);
- }
- 
- static void bpf_map_free_rcu_gp(struct rcu_head *rcu)
+ static int __init cgroup_bpf_wq_init(void)
+ {
+-	cgroup_bpf_destroy_wq = alloc_workqueue("cgroup_bpf_destroy", 0, 1);
++	cgroup_bpf_destroy_wq = alloc_workqueue("cgroup_bpf_destroy",
++						WQ_PERCPU, 1);
+ 	if (!cgroup_bpf_destroy_wq)
+ 		panic("Failed to alloc workqueue for cgroup bpf destroy.\n");
+ 	return 0;
 -- 
 2.51.0
 
