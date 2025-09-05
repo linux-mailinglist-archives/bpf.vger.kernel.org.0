@@ -1,51 +1,52 @@
-Return-Path: <bpf+bounces-67614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1059EB46509
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1F8BB4650F
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 22:58:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 311671CC2E35
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 20:58:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65A981CC7C6F
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 20:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1490283FFB;
-	Fri,  5 Sep 2025 20:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 281472ECE89;
+	Fri,  5 Sep 2025 20:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SdJWkdDB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YxBVW1vW"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3622E03EE;
-	Fri,  5 Sep 2025 20:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988612E36F1;
+	Fri,  5 Sep 2025 20:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757105890; cv=none; b=LJ6PZpyq8Suske69DAM4856Jhe1tCIe+hBpqhlPWseQvxHB/mnQbUh6/E2l6AahyoRmLteN80ME9KyKbkHHKfgDr5JUJZ2a+Jo18Dt53licFvPIjpk8vDPFp6ThcwxmPIxSBF6BfmJVlN9cXQpVJjJlll8lIOkmuy/fad6+hPIs=
+	t=1757105902; cv=none; b=XvHRJvqvutXoKgNHyZ+ZdHS/h0kZ8O+Y13CecTRT04x+3XDTnHUWuQv7uFHAD5l2kprSC+ov9nPX6+HyCum7vdrPgXGgPSEwgJK56Xy4qhfjPK5Pnif4cr6zHlaYUxH/nQ/G6RId9y/SfIqu04yMTqYdqzNioKYnJ0WFAzej5Rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757105890; c=relaxed/simple;
-	bh=QMZ/veCn4xaV39aEXQXHqu9USRqQHNLeV/rMSYlEz7M=;
+	s=arc-20240116; t=1757105902; c=relaxed/simple;
+	bh=JKhp4iQNMvplNSLCvN5SbNCBpcxiojFisJJsDiDMSK8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=trhvZmu21cfEJb6LB0QQCPZpHGyRg9w4MbSzRWUIPjpKBvfPJGspg5qBPOzCBiF3chZOAruY/P9CUcRozKrd5Vqi9ja4tQRaK42qtV5bufPv1XDB5wRrrJuwUhTUPJijIttUlq0zMXAuYsJmc7WVvk/L+ysvf9q39qlPx6A9kM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SdJWkdDB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 334CDC4CEF1;
-	Fri,  5 Sep 2025 20:58:05 +0000 (UTC)
+	 MIME-Version; b=SqJGQtIuIjOrLa7EkztLH+e5oSZMq5GU3Ui9sH9fLddRk8uACD9PrSVXvBs1N0VIorF101hgHPqUN3DC6KSJm3314CZa7M3IT2PnpXndWmioVl5tT/ta2TECwWjmkn4aYBBrm6XeIuG5Oge+Sci2c3/k1kh6jBh1HTR3psQsp6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YxBVW1vW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E3AEC4CEF5;
+	Fri,  5 Sep 2025 20:58:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757105889;
-	bh=QMZ/veCn4xaV39aEXQXHqu9USRqQHNLeV/rMSYlEz7M=;
+	s=k20201202; t=1757105902;
+	bh=JKhp4iQNMvplNSLCvN5SbNCBpcxiojFisJJsDiDMSK8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SdJWkdDBr3RiVA9C6GFt0y6pOYMK54XtG1YPwxmvnZrQmWt2cmV45eVM1HYhCMMHg
-	 cdFZ2EfXg964oGBSeyTeu1e91G8CxETBRkCO24M1R7W1zDZg57aKEZBOvpOs0IVtSL
-	 f5bx2Bzyjleey1SM6iKCbA18AUEn48tgQwspVT/rVSqfb0y3xbTmnh33yMdzFWMpT8
-	 gv8T/LsDvnaczAV8W1/lvY+d5Yb5hxOEl0IiiSBq0EuYk7bb1uD7I6YOidxGcg0UxX
-	 VP+EsqHpCI5DxLoSI4lXHZRQUONtb5IJlmf47wLviW0RHcZiCv0I5XsxEoNumNRdyJ
-	 cH6KuYf1iIdLw==
+	b=YxBVW1vWumM5gPr2bg33BaUr70e2KrfBOaxFU20CtmMlS7kxaWIuTMVyw6ZMnt5Bk
+	 icOm9PeLGdLK2SDkPxYKaMXBZYfV6Y23i0udnpdvneysBIer2KI5gWr/Mfo1XNmpsF
+	 k4wQ6zhy8t+eaNMQD2B73LrIiSvsQS0TZ9G9MvjBP6faOqFKZPyFYae2kRnmDk33Ya
+	 Iww5HG1inffS+2oJBtcq9isHAgZ7hBqD75qZ+pm0gQWXCoQjcQU581NQ66Bur5CgEH
+	 SdXeJ5OpYUgiDGjpVctfFjcRAC6FS22M+dpDJM9vahQJIwaYenPL2h3ZeBvuI6jx/t
+	 GLtsNs690QyHw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
+Cc: Alejandro Colomar <alx@kernel.org>,
+	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	x86@kernel.org,
@@ -59,11 +60,10 @@ Cc: bpf@vger.kernel.org,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>,
-	Jann Horn <jannh@google.com>,
-	Alejandro Colomar <alx@kernel.org>
-Subject: [PATCH perf/core 2/3] selftests/bpf: Fix uprobe_sigill test for uprobe syscall error value
-Date: Fri,  5 Sep 2025 22:57:30 +0200
-Message-ID: <20250905205731.1961288-3-jolsa@kernel.org>
+	Jann Horn <jannh@google.com>
+Subject: [PATCH 3/3] man2: Add uprobe syscall page
+Date: Fri,  5 Sep 2025 22:57:31 +0200
+Message-ID: <20250905205731.1961288-4-jolsa@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250905205731.1961288-1-jolsa@kernel.org>
 References: <20250905205731.1961288-1-jolsa@kernel.org>
@@ -75,69 +75,104 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The uprobe syscall now returns -ENXIO errno when called outside
-kernel trampoline, fixing the current sigill test to reflect that
-and renaming it to uprobe_error.
+Changing uretprobe syscall man page to be shared with new
+uprobe syscall man page.
 
+Cc: Alejandro Colomar <alx@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/uprobe_syscall.c | 34 ++++---------------
- 1 file changed, 6 insertions(+), 28 deletions(-)
+ man/man2/uprobe.2    |  1 +
+ man/man2/uretprobe.2 | 42 +++++++++++++++++++++++++++++-------------
+ 2 files changed, 30 insertions(+), 13 deletions(-)
+ create mode 100644 man/man2/uprobe.2
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index 5da0b49eeaca..6d75ede16e7c 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -757,34 +757,12 @@ static void test_uprobe_race(void)
- #define __NR_uprobe 336
- #endif
- 
--static void test_uprobe_sigill(void)
-+static void test_uprobe_error(void)
- {
--	int status, err, pid;
-+	long err = syscall(__NR_uprobe);
- 
--	pid = fork();
--	if (!ASSERT_GE(pid, 0, "fork"))
--		return;
--	/* child */
--	if (pid == 0) {
--		asm volatile (
--			"pushq %rax\n"
--			"pushq %rcx\n"
--			"pushq %r11\n"
--			"movq $" __stringify(__NR_uprobe) ", %rax\n"
--			"syscall\n"
--			"popq %r11\n"
--			"popq %rcx\n"
--			"retq\n"
--		);
--		exit(0);
--	}
--
--	err = waitpid(pid, &status, 0);
--	ASSERT_EQ(err, pid, "waitpid");
--
--	/* verify the child got killed with SIGILL */
--	ASSERT_EQ(WIFSIGNALED(status), 1, "WIFSIGNALED");
--	ASSERT_EQ(WTERMSIG(status), SIGILL, "WTERMSIG");
-+	ASSERT_EQ(err, -1, "error");
-+	ASSERT_EQ(errno, ENXIO, "errno");
- }
- 
- static void __test_uprobe_syscall(void)
-@@ -805,8 +783,8 @@ static void __test_uprobe_syscall(void)
- 		test_uprobe_usdt();
- 	if (test__start_subtest("uprobe_race"))
- 		test_uprobe_race();
--	if (test__start_subtest("uprobe_sigill"))
--		test_uprobe_sigill();
-+	if (test__start_subtest("uprobe_error"))
-+		test_uprobe_error();
- 	if (test__start_subtest("uprobe_regs_equal"))
- 		test_uprobe_regs_equal(false);
- 	if (test__start_subtest("regs_change"))
+diff --git a/man/man2/uprobe.2 b/man/man2/uprobe.2
+new file mode 100644
+index 000000000000..ea5ccf901591
+--- /dev/null
++++ b/man/man2/uprobe.2
+@@ -0,0 +1 @@
++.so man2/uretprobe.2
+diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
+index c81d4c5313a3..a1e4a1fa56f4 100644
+--- a/man/man2/uretprobe.2
++++ b/man/man2/uretprobe.2
+@@ -2,46 +2,62 @@
+ .\"
+ .\" SPDX-License-Identifier: Linux-man-pages-copyleft
+ .\"
+-.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
++.TH uprobe 2 (date) "Linux man-pages (unreleased)"
+ .SH NAME
++uprobe,
+ uretprobe
+ \-
+-execute pending return uprobes
++execute pending entry or return uprobes
+ .SH SYNOPSIS
+ .nf
++.B int uprobe(void);
+ .B int uretprobe(void);
+ .fi
+ .SH DESCRIPTION
++.BR uprobe ()
++is an alternative to breakpoint instructions
++for triggering entry uprobe consumers.
++.P
+ .BR uretprobe ()
+ is an alternative to breakpoint instructions
+ for triggering return uprobe consumers.
+ .P
+ Calls to
+-.BR uretprobe ()
++these system calls
+ are only made from the user-space trampoline provided by the kernel.
+ Calls from any other place result in a
+-.BR SIGILL .
++.BR SIGILL
++or error value (see below).
++
+ .SH RETURN VALUE
+ The return value is architecture-specific.
+ .SH ERRORS
+ .TP
+ .B SIGILL
+-.BR uretprobe ()
+-was called by a user-space program.
++uretprobe() was called by a user-space program.
++.TP
++.B ENXIO
++uprobe() was called by a user-space program.
+ .SH VERSIONS
+ The behavior varies across systems.
+ .SH STANDARDS
+ None.
+ .SH HISTORY
++.TP
++.BR uprobe ()
++TBD
++.TP
++.BR uretprobe ()
+ Linux 6.11.
+ .P
+-.BR uretprobe ()
+-was initially introduced for the x86_64 architecture
+-where it was shown to be faster than breakpoint traps.
+-It might be extended to other architectures.
++These system calls
++were initially introduced for the x86_64 architecture
++where they were shown to be faster than breakpoint traps.
++They might be extended to other architectures.
+ .SH CAVEATS
+-.BR uretprobe ()
+-exists only to allow the invocation of return uprobe consumers.
+-It should
++These system calls
++exist only to allow the invocation of
++entry or return uprobe consumers.
++They should
+ .B never
+ be called directly.
 -- 
 2.51.0
 
