@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-67559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67560-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B598B45927
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 15:34:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0C91B45935
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 15:36:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A1CE1C23700
-	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 13:35:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 098F6A63129
+	for <lists+bpf@lfdr.de>; Fri,  5 Sep 2025 13:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179E4352FFF;
-	Fri,  5 Sep 2025 13:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B358A35A289;
+	Fri,  5 Sep 2025 13:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sl6PZwir"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GVxN8Zap"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456CF35208A
-	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 13:32:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8203570BE
+	for <bpf@vger.kernel.org>; Fri,  5 Sep 2025 13:32:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757079169; cv=none; b=b0Uduh7TieqzlnzmMKJXN9Z/luO+wEyiUIVrFnwUFI8f0jEwXYiQ+8+UPn1ViXcBnN/0t9bAGQqGW6GwgJ4xILGV4FuRCxP05ZQISG2+QcEiKuwkbmsfSLGvaMW/FPY6hHXQ9Xzgj1pT0nAp0YMbYdjKofyc+G87IZl8HADbK+A=
+	t=1757079175; cv=none; b=cIDtLSL3MVCcfEAgv7il03Enul6TsTAud3pSC/LW+Lc6S6LsNFcSKr/ZLL2S14eChdlByiJ9vcUMqUu71Q8Cma+ZAeBqSEVcoK8AeRcSjxakNgyEfE9hf98G0Tk5hAChpyL0u0mNFG/0szKnmN2TrT5hHzVJHeFEZ04UL8kupYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757079169; c=relaxed/simple;
-	bh=p4jcOUlnFsPlwQKKhAeofZd7pW0D/hauwANMH6oB8VA=;
+	s=arc-20240116; t=1757079175; c=relaxed/simple;
+	bh=uInE0YkDUJUXbXok94E9bxvR8a4hiG6j6WidqWN48kk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cKxOxp53qOftWxoS8oYJ8XiTByVAEjs3+H22mQBDpXcRRs6QqMK3A3S6InlewC0eoNgM27MX+qGkjDUI/yuqJnlHc2QWwP0WuozaherNqF4IIVDemKnhycfB2m4vKfGUqio+uaT1e4zmrQ4WDqiz7BuC8a1vjzRaV8mpAG7b0I4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sl6PZwir; arc=none smtp.client-ip=95.215.58.189
+	 MIME-Version; b=dKEeipyc0mpEeGOl6kI9Ymx+6FsROfrB139uA43G/lSPe9TGoF66jJfBxqstlvRN+14GOLUop+ItXhAvrTx49VVga1XumoMLpPptU+nqDCiIsQfUaXBMVlwJI8zZD3uGjzTb8l6X0VYmnNih+fHOHjT1TvqMrVnVdDiFVwox8Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GVxN8Zap; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757079165;
+	t=1757079171;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oBKM7KaZAek2Q0NY2l12aJ4wT++4m1UmFtSJCLY2LaI=;
-	b=sl6PZwirHJWpPuYIxrVh9Ho/nW6ZdoWrCqadTmaLzd6IstG4nj74qNn3PzPhqYzgYzmMiL
-	Af/PuqXZLSpeiGgo/vGvJ4vwxsRmusQQMigVgp8zsoTEwgjHh1Az6fMryoG24PgLLalYH9
-	0yduwOXOplx41zrDQKVKt8yRdQx53Dw=
+	bh=9T08l57xag5gO77hB+KVsLs3u1rcQ9NCVDDsDmzUHGM=;
+	b=GVxN8Zapg3Nc8zcWmAHmKMKw+roQ21h8eubgMfF0Xw68lkOzvYlW3rO0IzZBeiYHPSXqLL
+	CRPb9g7/eLZ2VHNGL0TWazdriPgQvZk5cTKHrD60M7FODgtIuf4nExUA+PHaAE+jmpQeeX
+	aGzw7Y28boNyYuQY7Ztz+f2jax2r3KI=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -53,9 +53,9 @@ Cc: ast@kernel.org,
 	yonghong.song@linux.dev,
 	leon.hwang@linux.dev,
 	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next 1/2] bpf: Support fentry/fexit for functions with union args
-Date: Fri,  5 Sep 2025 21:32:25 +0800
-Message-ID: <20250905133226.84675-2-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test to access union argument in tracing program
+Date: Fri,  5 Sep 2025 21:32:26 +0800
+Message-ID: <20250905133226.84675-3-leon.hwang@linux.dev>
 In-Reply-To: <20250905133226.84675-1-leon.hwang@linux.dev>
 References: <20250905133226.84675-1-leon.hwang@linux.dev>
 Precedence: bulk
@@ -67,58 +67,84 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Currently, functions with 'union' arguments cannot be traced with
-fentry/fexit:
+Adding verifier test for accessing union argument in tracing programs.
 
-bpftrace -e 'fentry:release_pages { exit(); }' -v
-AST node count: 6
-Attaching 1 probe...
-ERROR: Error loading BPF program for fentry_vmlinux_release_pages_1.
-Kernel error log:
-The function release_pages arg0 type UNION is unsupported.
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+The test program loads 1st argument of bpf_fentry_test11 function
+which is union and checks that verifier allows that.
 
-ERROR: Loading BPF object(s) failed.
-
-The type of the 'release_pages' argument is defined as:
-
-typedef union {
-	struct page **pages;
-	struct folio **folios;
-	struct encoded_page **encoded_pages;
-} release_pages_arg __attribute__ ((__transparent_union__));
-
-This patch relaxes the restriction by allowing function arguments of type
-'union' to be traced.
+cd tools/testing/selftests/bpf
+./test_progs -t verifier_btf_ctx
+501/7   verifier_btf_ctx_access/btf_ctx_access union arg accept:OK
+501     verifier_btf_ctx_access:OK
+Summary: 1/7 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 ---
- kernel/bpf/btf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/bpf/test_run.c                                 | 14 +++++++++++++-
+ .../selftests/bpf/progs/verifier_btf_ctx_access.c  | 12 ++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 64739308902f7..86883b3c97d20 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6762,7 +6762,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 	/* skip modifiers */
- 	while (btf_type_is_modifier(t))
- 		t = btf_type_by_id(btf, t->type);
--	if (btf_type_is_small_int(t) || btf_is_any_enum(t) || __btf_type_is_struct(t))
-+	if (btf_type_is_small_int(t) || btf_is_any_enum(t) || btf_type_is_struct(t))
- 		/* accessing a scalar */
- 		return true;
- 	if (!btf_type_is_ptr(t)) {
-@@ -7334,7 +7334,7 @@ static int __get_type_size(struct btf *btf, u32 btf_id,
- 	if (btf_type_is_ptr(t))
- 		/* kernel size of pointer. Not BPF's size of pointer*/
- 		return sizeof(void *);
--	if (btf_type_is_int(t) || btf_is_any_enum(t) || __btf_type_is_struct(t))
-+	if (btf_type_is_int(t) || btf_is_any_enum(t) || btf_type_is_struct(t))
- 		return t->size;
- 	return -EINVAL;
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 4a862d6053861..c65d468fd6012 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -574,6 +574,16 @@ noinline int bpf_fentry_test10(const void *a)
+ 	return (long)a;
  }
---
+ 
++typedef union {
++	void *arg0;
++	int *arg1;
++} union_test_t;
++
++noinline int bpf_fentry_test11(union_test_t t)
++{
++	return (int)(long)t.arg0;
++}
++
+ noinline void bpf_fentry_test_sinfo(struct skb_shared_info *sinfo)
+ {
+ }
+@@ -688,6 +698,7 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
+ 	struct bpf_fentry_test_t arg = {};
+ 	u16 side_effect = 0, ret = 0;
+ 	int b = 2, err = -EFAULT;
++	union_test_t utt = {};
+ 	u32 retval = 0;
+ 
+ 	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
+@@ -705,7 +716,8 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
+ 		    bpf_fentry_test7((struct bpf_fentry_test_t *)0) != 0 ||
+ 		    bpf_fentry_test8(&arg) != 0 ||
+ 		    bpf_fentry_test9(&retval) != 0 ||
+-		    bpf_fentry_test10((void *)0) != 0)
++		    bpf_fentry_test10((void *)0) != 0 ||
++		    bpf_fentry_test11(utt) != 0)
+ 			goto out;
+ 		break;
+ 	case BPF_MODIFY_RETURN:
+diff --git a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
+index 03942cec07e56..ff379836b5f00 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
++++ b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
+@@ -77,4 +77,16 @@ __naked void ctx_access_const_void_pointer_accept(void)
+ "	::: __clobber_all);
+ }
+ 
++SEC("fentry/bpf_fentry_test11")
++__description("btf_ctx_access union arg accept")
++__success __retval(0)
++__naked void ctx_access_union_arg_accept(void)
++{
++	asm volatile ("					\
++	r2 = *(u64 *)(r1 + 0);		/* load 1st argument value (union) */\
++	r0 = 0;						\
++	exit;						\
++"	::: __clobber_all);
++}
++
+ char _license[] SEC("license") = "GPL";
+-- 
 2.50.1
 
 
