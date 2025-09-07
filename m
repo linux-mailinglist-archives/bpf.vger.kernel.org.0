@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-67683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 174C7B4812D
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 01:04:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADFD8B4812E
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 01:04:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBF19189EE98
-	for <lists+bpf@lfdr.de>; Sun,  7 Sep 2025 23:05:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25A993C031E
+	for <lists+bpf@lfdr.de>; Sun,  7 Sep 2025 23:04:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DBA231A3B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA94233727;
 	Sun,  7 Sep 2025 23:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rd3HJtJt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DC0J26cp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188152236EB
-	for <bpf@vger.kernel.org>; Sun,  7 Sep 2025 23:04:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB8022D7B5
+	for <bpf@vger.kernel.org>; Sun,  7 Sep 2025 23:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757286275; cv=none; b=NWpgxxYxivkzwWzWdma5OI7/iFjNmpvhZYKMqOpR1mS2LcJ7I2joF0xtZzHcgzmUvWhrZiAjYMOOf7Q5/kKo4Kpca2coouwo6B618E1EG9NfikN+Revn2gMwKJVyzD33KAZAapc61OVmhIuzaivIFcfO6qnRjlHtkcgPSbR8SIg=
+	t=1757286276; cv=none; b=N+73bDmdSrUbhWLxQaY+OCX8zhvZaTffag4hAGxq+cDlAFsAr8gIZ8tRgXWeRxYji95xMmhgE1DmMs7cb6K5tmEz0YzPoFURYOZritNgb7tsnU4tx1f0p6qgE65N77HiafV8ETRicuGezo56ExdR1UES+Zyg+RrutZVAUyyUwxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757286275; c=relaxed/simple;
-	bh=6/74q4qUxhm2ELHmjmSLgP6nRI7k0a7rywQXeQzGLTo=;
+	s=arc-20240116; t=1757286276; c=relaxed/simple;
+	bh=iKBYToeiRMctq1ozdhGwoZA7uhN9va8F1zyyjYc24mI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sb2MQgN453OGAE+V0jOhW6IGmBa/Uiax8b+Y13cYLyP7PmKhqRi7ZH9Es5rrHFEGYwNBUhl9YkrPdhvS8+okMrsudNGGhVfIDbe1IVNONf3gWUKFAQiQTPQJiGVJbaT1O6n/55zW+X4pekY5Ig67s6oQ0fKy5HNan8eLBPaZGhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rd3HJtJt; arc=none smtp.client-ip=209.85.215.178
+	 MIME-Version; b=iVbmivOSH9ZOxtJot9w9VeILVtrf3VIkes2RWTkD0DbZIILXLa5s5rKSEOljbpMxjU1DD9m08o10WH1a6yeGSBccBS9Bpwu3RP/6/q4JPVFqCalW4/+5izsZAFZXQ9XEHsca5bfpXyOuRv3SxAN2xBgli8dm6LkypGceh3X2SaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DC0J26cp; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-b4c738ee2fbso3005476a12.3
-        for <bpf@vger.kernel.org>; Sun, 07 Sep 2025 16:04:33 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7722c8d2694so3265548b3a.3
+        for <bpf@vger.kernel.org>; Sun, 07 Sep 2025 16:04:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757286273; x=1757891073; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757286274; x=1757891074; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dl/5x5+d2VMj2AmeBnSV78Zj1+WhxLXoMFjHLBsRJE0=;
-        b=Rd3HJtJtHVRpsgRzKcLFN+NeRqXRd22ZsfbAGnPrnqAw94yCWFXGVbu0rgXdTZ/nP/
-         mFU2f96z4t/e/FurLZglz3SO+dGQExKl9xs2TH+1j2YZgj9YGfCKLLQ4s7v3MX/mCrPn
-         ELsDUrZ8KeL1akb5KxNpfHWuUH1ZZguzFBe8TIsEJHcaF2whE0QxixKKaKpAfDGtQNl4
-         jrOWXubq/iQe2LTECJI1QndUTTDDz9hwb6VjX6P+vLkBJBSNr2AQE81kgypJVfh2tdpW
-         uUK5x1IyjNDjBqxtmoOok+Nf7G7Pto8H5lB6OCLBGmI9LenM41weDn2qLav/X+E87N4r
-         yIzQ==
+        bh=TcsaHvIZMp8uFjWT1HEwZb1esXkePszGBONrUtdnYUc=;
+        b=DC0J26cpCODx66D6mZWhFewCHkNQIQEMN3RkBH4NyosKz0uLcY5A1opFJqM5IyVreN
+         DYBDln1H+EwBIJHBwf8rMuMCXhz0HRj6IsKmnQloLCgoMcnrQc2vPPKRiKakAf9AI8UN
+         YbeV5jQFQNvgtuAplTaKvxOGzGMZkk7YI4p7lkfDjeF5kbn0Db6Zgu4SZD/rfnXfOBFU
+         ah73L6X/kCnVvG3beU9Cb4kUL8oV+f9dwj0mNSTxps5OsXnNOkMWRJG2aNI8IlE/G5mc
+         OXQ1PX0JjDRz4hbuPFM8KeXHyqA+NuJpReYU+mMLb2RGO4GbGsLu2C2yBcr4uVgZtn4o
+         8aww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757286273; x=1757891073;
+        d=1e100.net; s=20230601; t=1757286274; x=1757891074;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Dl/5x5+d2VMj2AmeBnSV78Zj1+WhxLXoMFjHLBsRJE0=;
-        b=ZGwxhlfuJGHWPYlTsA4C+4YrUGQI7tCE04VW8+HCVQY+J8BsxTV8VrUkQvlkikRJOK
-         P2njRpLUSKw5sbeyP4F5WJDyM+DcteU4t1RVYko+PGe3bFVdIoP4Wg1OWXSN3bX/shTB
-         pkVnoggwXG1rYtFZmTIqeXHDOZRpp7ad+Lyu1/h3L2PQn/6dTm4/+PHnkS3vzQzcffuK
-         A3vlrDjH7nAIhCyEr13h71NhDx8yduSvSY6A9W8Cb5HKlfuv2hipLDwLpKt40tRFwSpA
-         n9tcruCpI1z/k5Hr358Um+myAFSnoU2eIzeEEyRVFKBEOG1P2/7YVtLaujorVs5xLLRH
-         N+Iw==
-X-Gm-Message-State: AOJu0YwOznlIWat7jDd0c6Q5dKwNDjvOyIVGr2nRZYLoDCDi6J2ObE1d
-	ViBFwhzXEDj6UV/DD/cWDgBQiNXL6+9XJitW/+6VNvMlXV1vH7B5T+s9eqp/6ZfK
-X-Gm-Gg: ASbGncu4x2vlj1nSctDEJioLmNz7hxNmqOcdhtgKZ1WTL2kbzD6NYwAI8WlywmhQAEr
-	0wUT6BSgcMz4oe45K8B0RvUiw5A5y3KdtlBZXDt/DSvVb2ChnVkomc+hfazJ6Xg/WvraQclvs9B
-	fsdSLmTTYvG+Pu0uBTj7BaBoLZqcvLDoIvB9vW+ihEuicjJEIagB1FMeVxRdpgtfg+BTZOApXCr
-	SQQ72NUyV1VdNZLHh0td0lgMzG9FwiaHw6KukOWKClpmUOsdT8s8YeV6nrwvzxtPd8REOz1fFAM
-	/Y0lDHFs/FWDRADr85NK4g3jrl8mc0yRr8cbiPD13v2LGbPGC2GsSsFTj9qRy/+V+Xxt6Noi5uv
-	ypXkchmeCun8ji4Xp8Lqsj0KsXfLGL+iiJJUE6mSpfwv8FfTJQJyEPnMsROjbrguuDIQzql9ku2
-	xbG+ZkxHNeiQOiI/6mvVw/
-X-Google-Smtp-Source: AGHT+IFJrTd/3WgA5G3RSj5vnqv20GNu5gNrDb1G2KnKtOXeWu465ojHHj0jMIdUcBNR+DgL5Tc6pg==
-X-Received: by 2002:a17:902:f711:b0:240:1850:cb18 with SMTP id d9443c01a7336-251755cab1fmr74796045ad.53.1757286273026;
+        bh=TcsaHvIZMp8uFjWT1HEwZb1esXkePszGBONrUtdnYUc=;
+        b=ATsRpgVoFTFUnpbW1Ohh4AQfNMLJSA/vYUpleuRt1MDIKYSrwATAFTG0Y+sie9gWEv
+         DaZYweJUFXQqTDgmCV/PQ9jXXM0PyyJ+SDgLPLvKtDVqJuaI6L+AboSW8+fYB329jhWs
+         vwWgcy9WwPhixurSZqPaxAxwlTOJXSQuvOl/hLHdcPdz+GyVta0fX6RwGMA5/svvMlqa
+         Y+bAPHEF/VhSBcOTyy3+wVCFn+jspU9OWju1rZXyIdo1+vD3BkDKqnC3U6o3dQc82OKY
+         qxN+f3nDN0fAaITj4QoWwZBXs+67qpfTefvFaq020/2CcMenPh7OMHMUa5dxbAM3g4L7
+         9M8A==
+X-Gm-Message-State: AOJu0YyGmSSQmDJnFkYPWhkazH8Cp0ACSacXFLVYd7INmKQV70FHVame
+	9xmj5OocXxGG/6wXB9jK6kKVzGt5S/8gLN5kBtO6mZTCf7qBhtsS0+ab1LEPnUDW
+X-Gm-Gg: ASbGncsMtwj7uxbV5DjCj5+Udm59RoIcOcMijIHhHT50zewSL3gT4HO2vR+nLjq/l7q
+	ZSF3bpEKQqlX8SJRJepMfazo2pAfEY2uHaKSzx/Fs9RxrA5hl/Lw7JcBWHN3wA5kDrVh+CILf88
+	M0lKi33j9o8lnaX7qJCKlNUKP/ovqEkWU94rhm6cVItn+ZQmS+LbnO26/4Czx787gF5VEFuf6FY
+	Vlf3tWhRS336UIIvUe46AHamtEbTkehl0qTx1iiifWSMQR4SFvfzX+beZDxpegMWtax/rt7jyHN
+	o7GcdwH2cMhaGpke432h9kNZP/pMTm+1zEMqvBDZirNxLMMGtKLq7W074iFQjP/HGjg4ZbvNT3t
+	D4o5fz0R0k4Op1ffqiDl4gtsPLjxvPzhNeLRPMIsnqJhxHTeRaG0Q8uMsKoYOlhsesHC5oai2Xv
+	V9rCp1OQJrQpYeuMmSyMvC
+X-Google-Smtp-Source: AGHT+IH15YaYC7M14M5HUxVlzMBQg6P1aW/n1I+68j8jih7B1bWxjPenOex1edpdFrxBur/UBKhH1w==
+X-Received: by 2002:a17:902:f54d:b0:24e:e5c9:ed06 with SMTP id d9443c01a7336-25173118f11mr75882295ad.28.1757286273911;
         Sun, 07 Sep 2025 16:04:33 -0700 (PDT)
 Received: from sid-dev-env.cgrhrlrrq2nuffriizdlnb1x4b.xx.internal.cloudapp.net ([4.155.54.158])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24caf245690sm111254675ad.10.2025.09.07.16.04.32
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24caf245690sm111254675ad.10.2025.09.07.16.04.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Sep 2025 16:04:32 -0700 (PDT)
+        Sun, 07 Sep 2025 16:04:33 -0700 (PDT)
 From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -99,9 +99,9 @@ Cc: ast@kernel.org,
 	egor@vt.edu,
 	sairoop10@gmail.com,
 	rjsu26@gmail.com
-Subject: [PATCH 2/4] bpf: Creating call sites table to stub instructions during runtime
-Date: Sun,  7 Sep 2025 23:04:13 +0000
-Message-ID: <20250907230415.289327-3-sidchintamaneni@gmail.com>
+Subject: [PATCH 3/4] bpf: runtime part of fast-path termination approach
+Date: Sun,  7 Sep 2025 23:04:14 +0000
+Message-ID: <20250907230415.289327-4-sidchintamaneni@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250907230415.289327-1-sidchintamaneni@gmail.com>
 References: <20250907230415.289327-1-sidchintamaneni@gmail.com>
@@ -113,355 +113,320 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Create callsites tables and store jit indexes of RET_NULL calls
-to poke them later with dummy functions. Additional to jit indexes,
-meta data about helpers/kfuncs/loops is stored. Later this could
-be extended to remaining potential long running iterator helpers/kfuncs.
+Update softlock detection logic to detect any stalls due to
+BPF programs. When softlockup is detected, bpf_die will be
+added to a workqueue on a CPU. With this implementation termination
+handler will only get triggered when CONFIG_SOFTLOCKUP_DETECTOR is
+enabled.
+
+Inside bpf_die, we perform the text_poke to stub helpers/kfuncs.
+The current implementation handles termination of long running
+bpf_loop iterators both inlining and non-inlining case.
+
+The limitation of this implementation is that the termination handler
+atleast need a single CPU to run.
 
 Signed-off-by: Raj Sahu <rjsu26@gmail.com>
 Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
 ---
- arch/x86/net/bpf_jit_comp.c  |   9 +++
- include/linux/bpf_verifier.h |   1 +
- kernel/bpf/core.c            |   5 +-
- kernel/bpf/verifier.c        | 135 +++++++++++++++++++++++++++++++----
- 4 files changed, 137 insertions(+), 13 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 132 ++++++++++++++++++++++++++++++++++++
+ include/linux/bpf.h         |   2 +
+ include/linux/filter.h      |   6 ++
+ kernel/bpf/core.c           |  35 +++++++++-
+ kernel/watchdog.c           |   8 +++
+ 5 files changed, 182 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 7e3fca164620..107a44729675 100644
+index 107a44729675..4de9a8cdc465 100644
 --- a/arch/x86/net/bpf_jit_comp.c
 +++ b/arch/x86/net/bpf_jit_comp.c
-@@ -3733,6 +3733,15 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	}
- 
- 	if (!image || !prog->is_func || extra_pass) {
-+		
-+		if (addrs) {
-+			struct bpf_term_patch_call_sites *patch_call_sites = prog->term_states->patch_call_sites;
-+			for (int i = 0; i < patch_call_sites->call_sites_cnt; i++) {
-+				struct call_aux_states *call_states = patch_call_sites->call_states + i;
-+				call_states->jit_call_idx = addrs[call_states->call_bpf_insn_idx];
+@@ -2606,6 +2606,10 @@ st:			if (is_imm8(insn->off))
+ 				if (arena_vm_start)
+ 					pop_r12(&prog);
+ 			}
++			/* emiting 5 byte nop for non-inline bpf_loop callback */
++			if (bpf_is_subprog(bpf_prog) && bpf_prog->aux->is_bpf_loop_cb_non_inline) {
++				emit_nops(&prog, X86_PATCH_SIZE);
 +			}
-+		}
-+		
- 		if (image)
- 			bpf_prog_fill_jited_linfo(prog, addrs + 1);
- out_addrs:
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 020de62bd09c..2c8bfde8191a 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -677,6 +677,7 @@ struct bpf_subprog_info {
- 	bool is_cb: 1;
- 	bool is_async_cb: 1;
- 	bool is_exception_cb: 1;
-+	bool is_bpf_loop_cb_non_inline: 1;
- 	bool args_cached: 1;
- 	/* true if bpf_fastcall stack region is used by functions that can't be inlined */
- 	bool keep_fastcall_stack: 1;
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 740b5a3a6b55..93442ab2acde 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -136,6 +136,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 	fp->term_states = term_states;
- 	fp->term_states->patch_call_sites = patch_call_sites;
- 	fp->term_states->patch_call_sites->call_sites_cnt = 0;
-+	fp->term_states->patch_call_sites->call_states = NULL;
- 	fp->term_states->prog = fp;
+ 			EMIT1(0xC9);         /* leave */
+ 			emit_return(&prog, image + addrs[i - 1] + (prog - temp));
+ 			break;
+@@ -3833,6 +3837,8 @@ bool bpf_jit_supports_private_stack(void)
+ 	return true;
+ }
  
- #ifdef CONFIG_CGROUP_BPF
-@@ -314,8 +315,10 @@ void __bpf_prog_free(struct bpf_prog *fp)
- 		kfree(fp->aux);
- 	}
- 	if (fp->term_states) {
--		if (fp->term_states->patch_call_sites)
-+		if (fp->term_states->patch_call_sites) {
-+			vfree(fp->term_states->patch_call_sites->call_states);
- 			kfree(fp->term_states->patch_call_sites);
-+		}
- 		kfree(fp->term_states);
- 	}
- 	free_percpu(fp->stats);
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b9394f8fac0e..1d27208e1078 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3491,6 +3491,7 @@ static int add_subprog_and_kfunc(struct bpf_verifier_env *env)
- 	 * logic. 'subprog_cnt' should not be increased.
- 	 */
- 	subprog[env->subprog_cnt].start = insn_cnt;
-+	subprog[env->subprog_cnt].is_bpf_loop_cb_non_inline = false;
- 
- 	if (env->log.level & BPF_LOG_LEVEL2)
- 		for (i = 0; i < env->subprog_cnt; i++)
-@@ -11319,19 +11320,30 @@ static bool loop_flag_is_zero(struct bpf_verifier_env *env)
- static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
++
++
+ void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
  {
- 	struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
-+	struct bpf_subprog_info *prev_info, *info = subprog_info(env, subprogno);
- 
- 	if (!state->initialized) {
- 		state->initialized = 1;
- 		state->fit_for_inline = loop_flag_is_zero(env);
- 		state->callback_subprogno = subprogno;
-+		if (!state->fit_for_inline)
-+			info->is_bpf_loop_cb_non_inline = 1;
- 		return;
- 	}
- 
--	if (!state->fit_for_inline)
-+	if (!state->fit_for_inline) {
-+		info->is_bpf_loop_cb_non_inline = 1;
- 		return;
-+	}
- 
- 	state->fit_for_inline = (loop_flag_is_zero(env) &&
- 				 state->callback_subprogno == subprogno);
-+
-+	if (state->callback_subprogno != subprogno) {
-+		info->is_bpf_loop_cb_non_inline = 1;
-+		prev_info = subprog_info(env, state->callback_subprogno);
-+		prev_info->is_bpf_loop_cb_non_inline = 1;
-+	}
+ #if defined(CONFIG_UNWINDER_ORC)
+@@ -3849,6 +3855,132 @@ void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp
+ #endif
  }
  
- /* Returns whether or not the given map type can potentially elide
-@@ -21120,6 +21132,9 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
- 	int i, patch_len, delta = 0, len = env->prog->len;
- 	struct bpf_insn *insns = env->prog->insnsi;
- 	struct bpf_prog *new_prog;
-+	struct bpf_term_aux_states *term_states = env->prog->term_states;
-+	u32 call_sites_cnt = term_states->patch_call_sites->call_sites_cnt;
-+	struct call_aux_states *call_states = term_states->patch_call_sites->call_states;
- 	bool rnd_hi32;
- 
- 	rnd_hi32 = attr->prog_flags & BPF_F_TEST_RND_HI32;
-@@ -21205,6 +21220,15 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
- 		insns = new_prog->insnsi;
- 		aux = env->insn_aux_data;
- 		delta += patch_len - 1;
-+
-+		/* Adust call instruction offsets
-+		 * w.r.t adj_idx
-+		 */
-+		for (int iter = 0; iter < call_sites_cnt; iter++) {
-+			if (call_states[iter].call_bpf_insn_idx < adj_idx)
-+				continue;
-+			call_states[iter].call_bpf_insn_idx += patch_len - 1;
-+		}
- 	}
- 
- 	return 0;
-@@ -21597,6 +21621,26 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 		func[i]->aux->func_info_cnt = prog->aux->func_info_cnt;
- 		func[i]->aux->poke_tab = prog->aux->poke_tab;
- 		func[i]->aux->size_poke_tab = prog->aux->size_poke_tab;
-+		func[i]->aux->is_bpf_loop_cb_non_inline = env->subprog_info[i].is_bpf_loop_cb_non_inline;
-+
-+		if (prog->term_states->patch_call_sites->call_sites_cnt != 0) {
-+			int call_sites_cnt = 0;
-+			struct call_aux_states *func_call_states;
-+			func_call_states = vzalloc(sizeof(*func_call_states) * len);
-+			if (!func_call_states)
-+				goto out_free;
-+			for (int iter = 0; iter < prog->term_states->patch_call_sites->call_sites_cnt; iter++) {
-+				struct call_aux_states call_states = prog->term_states->patch_call_sites->call_states[iter];
-+				if (call_states.call_bpf_insn_idx >= subprog_start
-+						&& call_states.call_bpf_insn_idx < subprog_end) {
-+					func_call_states[call_sites_cnt] = call_states;
-+					func_call_states[call_sites_cnt].call_bpf_insn_idx -= subprog_start;
-+					call_sites_cnt++;
-+				}
-+			}
-+			func[i]->term_states->patch_call_sites->call_sites_cnt = call_sites_cnt;
-+			func[i]->term_states->patch_call_sites->call_states = func_call_states;
-+		}
- 
- 		for (j = 0; j < prog->aux->size_poke_tab; j++) {
- 			struct bpf_jit_poke_descriptor *poke;
-@@ -21886,15 +21930,21 @@ static void __fixup_collection_insert_kfunc(struct bpf_insn_aux_data *insn_aux,
- }
- 
- static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
--			    struct bpf_insn *insn_buf, int insn_idx, int *cnt)
-+			    struct bpf_insn *insn_buf, int insn_idx, int *cnt, int *kfunc_btf_id)
- {
- 	const struct bpf_kfunc_desc *desc;
-+	struct bpf_kfunc_call_arg_meta meta;
-+	int err;
- 
- 	if (!insn->imm) {
- 		verbose(env, "invalid kernel function call not eliminated in verifier pass\n");
- 		return -EINVAL;
- 	}
- 
-+	err = fetch_kfunc_meta(env, insn, &meta, NULL);
-+	if (err)
-+		return err;
-+
- 	*cnt = 0;
- 
- 	/* insn->imm has the btf func_id. Replace it with an offset relative to
-@@ -21908,8 +21958,11 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		return -EFAULT;
- 	}
- 
--	if (!bpf_jit_supports_far_kfunc_call())
-+	if (!bpf_jit_supports_far_kfunc_call()) {
-+		if (meta.kfunc_flags & KF_RET_NULL)
-+			*kfunc_btf_id = insn->imm;
- 		insn->imm = BPF_CALL_IMM(desc->addr);
-+	}
- 	if (insn->off)
- 		return 0;
- 	if (desc->func_id == special_kfunc_list[KF_bpf_obj_new_impl] ||
-@@ -22019,6 +22072,13 @@ static int add_hidden_subprog(struct bpf_verifier_env *env, struct bpf_insn *pat
- 	return 0;
- }
- 
-+static bool is_bpf_loop_call(struct bpf_insn *insn)
++void in_place_patch_bpf_prog(struct bpf_prog *prog)
 +{
-+	return insn->code == (BPF_JMP | BPF_CALL) &&
-+		insn->src_reg == 0 &&
-+		insn->imm == BPF_FUNC_loop;
++	struct call_aux_states *call_states;
++	unsigned long new_target;
++	unsigned char *addr;
++	u8 ret_jmp_size = 1;
++	if (cpu_wants_rethunk()) {
++		ret_jmp_size = 5;
++	}
++	call_states = prog->term_states->patch_call_sites->call_states;
++	for (int i = 0; i < prog->term_states->patch_call_sites->call_sites_cnt; i++) {
++		
++		new_target = (unsigned long) bpf_termination_null_func;
++		if (call_states[i].is_bpf_loop_cb_inline) {
++			new_target = (unsigned long) bpf_loop_term_callback;	
++		}
++		char new_insn[5];
++
++		addr = (unsigned char *)prog->bpf_func + call_states->jit_call_idx;
++
++		unsigned long new_rel = (unsigned long)(new_target - (unsigned long)(addr + 5));
++		new_insn[0] = 0xE8;
++		new_insn[1] = (new_rel >> 0) & 0xFF;
++		new_insn[2] = (new_rel >> 8) & 0xFF;
++		new_insn[3] = (new_rel >> 16) & 0xFF;
++		new_insn[4] = (new_rel >> 24) & 0xFF;
++
++		smp_text_poke_batch_add(addr, new_insn, 5 /* call instruction len */, NULL);
++	}
++
++	if (prog->aux->is_bpf_loop_cb_non_inline) {
++		
++		char new_insn[5] = { 0xB8, 0x01, 0x00, 0x00, 0x00 };
++		char old_insn[5] = { 0x0F, 0x1F, 0x44, 0x00, 0x00 };
++		smp_text_poke_batch_add(prog->bpf_func + prog->jited_len - 
++				(1 + ret_jmp_size) /* leave, jmp/ ret */ - 5 /* nop size */, new_insn, 5 /* mov eax, 1 */, old_insn);
++	}
++
++
++	/* flush all text poke calls */
++	smp_text_poke_batch_finish();
 +}
 +
- /* Do various post-verification rewrites in a single program pass.
-  * These rewrites simplify JIT and interpreter implementations.
-  */
-@@ -22039,6 +22099,12 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 	struct bpf_subprog_info *subprogs = env->subprog_info;
- 	u16 stack_depth = subprogs[cur_subprog].stack_depth;
- 	u16 stack_depth_extra = 0;
-+	u32 call_sites_cnt = 0;
-+	struct call_aux_states *call_states;
-+
-+	call_states = vzalloc(sizeof(*call_states) * prog->len);
-+	if (!call_states)
-+		return -ENOMEM;
- 
- 	if (env->seen_exception && !env->exception_callback_subprog) {
- 		struct bpf_insn *patch = insn_buf;
-@@ -22368,11 +22434,12 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 		if (insn->src_reg == BPF_PSEUDO_CALL)
- 			goto next_insn;
- 		if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
--			ret = fixup_kfunc_call(env, insn, insn_buf, i + delta, &cnt);
-+			int kfunc_btf_id = 0;
-+			ret = fixup_kfunc_call(env, insn, insn_buf, i + delta, &cnt, &kfunc_btf_id);
- 			if (ret)
- 				return ret;
- 			if (cnt == 0)
--				goto next_insn;
-+				goto store_call_indices;
- 
- 			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
- 			if (!new_prog)
-@@ -22381,6 +22448,12 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			delta	 += cnt - 1;
- 			env->prog = prog = new_prog;
- 			insn	  = new_prog->insnsi + i + delta;
-+store_call_indices:
-+			if (kfunc_btf_id != 0) {
-+				call_states[call_sites_cnt].call_bpf_insn_idx = i + delta;
-+				call_states[call_sites_cnt].is_helper_kfunc = 1;
-+				call_sites_cnt++;
-+			}
- 			goto next_insn;
- 		}
- 
-@@ -22859,6 +22932,15 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 				     func_id_name(insn->imm), insn->imm);
- 			return -EFAULT;
- 		}
-+
-+		if ((fn->ret_type & PTR_MAYBE_NULL) || is_bpf_loop_call(insn)) {
-+			call_states[call_sites_cnt].call_bpf_insn_idx = i + delta;	
-+			if (is_bpf_loop_call(insn))
-+				call_states[call_sites_cnt].is_bpf_loop = 1;
-+			else
-+				call_states[call_sites_cnt].is_helper_kfunc = 1;
-+			call_sites_cnt++;
-+		}
- 		insn->imm = fn->func - __bpf_call_base;
- next_insn:
- 		if (subprogs[cur_subprog + 1].start == i + delta + 1) {
-@@ -22879,6 +22961,8 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 		insn++;
- 	}
- 
-+	env->prog->term_states->patch_call_sites->call_sites_cnt = call_sites_cnt;
-+	env->prog->term_states->patch_call_sites->call_states = call_states;
- 	env->prog->aux->stack_depth = subprogs[0].stack_depth;
- 	for (i = 0; i < env->subprog_cnt; i++) {
- 		int delta = bpf_jit_supports_timed_may_goto() ? 2 : 1;
-@@ -23014,17 +23098,12 @@ static struct bpf_prog *inline_bpf_loop(struct bpf_verifier_env *env,
- 	call_insn_offset = position + 12;
- 	callback_offset = callback_start - call_insn_offset - 1;
- 	new_prog->insnsi[call_insn_offset].imm = callback_offset;
-+	/* Marking offset field to identify loop cb */
-+	new_prog->insnsi[call_insn_offset].off = 0x1;
- 
- 	return new_prog;
- }
- 
--static bool is_bpf_loop_call(struct bpf_insn *insn)
--{
--	return insn->code == (BPF_JMP | BPF_CALL) &&
--		insn->src_reg == 0 &&
--		insn->imm == BPF_FUNC_loop;
--}
--
- /* For all sub-programs in the program (including main) check
-  * insn_aux_data to see if there are bpf_loop calls that require
-  * inlining. If such calls are found the calls are replaced with a
-@@ -24584,6 +24663,35 @@ static int compute_scc(struct bpf_verifier_env *env)
- 	return err;
- }
- 
-+static int fix_call_sites(struct bpf_verifier_env *env)
++void bpf_die(struct bpf_prog *prog)
 +{
-+	int err = 0, i, subprog;
-+	struct bpf_insn *insn;
-+	struct bpf_prog *prog = env->prog;
-+	struct bpf_term_aux_states *term_states = env->prog->term_states;
-+	u32 *call_sites_cnt = &term_states->patch_call_sites->call_sites_cnt;
-+	struct call_aux_states *call_states = term_states->patch_call_sites->call_states;
++	u8 ret_jmp_size = 1;
++	if (cpu_wants_rethunk()) {
++		ret_jmp_size = 5;
++	}
 +
-+	if (!env->subprog_cnt)
-+		return 0;
-+	for (i = 0, insn = prog->insnsi; i < prog->len; i++, insn++) {
-+		if (!bpf_pseudo_func(insn) && !bpf_pseudo_call(insn))
++	/*
++	 * Replacing 5 byte nop in prologue with jmp instruction to ret
++	 */
++	unsigned long jmp_offset = prog->jited_len - (4 /* First endbr is 4 bytes */ 
++					+ 5 /* noop is 5 bytes */ 
++					+ ret_jmp_size /* 5 bytes of jmp return_thunk or 1 byte ret*/);
++
++	char new_insn[5];
++	new_insn[0] = 0xE9;
++	new_insn[1] = (jmp_offset >> 0) & 0xFF;
++	new_insn[2] = (jmp_offset >> 8) & 0xFF;
++	new_insn[3] = (jmp_offset >> 16) & 0xFF;
++	new_insn[4] = (jmp_offset >> 24) & 0xFF;
++
++	smp_text_poke_batch_add(prog->bpf_func + 4, new_insn, 5, NULL);
++
++	if (prog->aux->func_cnt) {
++		for (int i = 0; i < prog->aux->func_cnt; i++) {
++			in_place_patch_bpf_prog(prog->aux->func[i]);
++		}
++	} else {
++		in_place_patch_bpf_prog(prog);
++	}
++
++}
++
++void bpf_prog_termination_deferred(struct work_struct *work)
++{
++	struct bpf_term_aux_states *term_states = container_of(work, struct bpf_term_aux_states,
++						 work);
++	struct bpf_prog *prog = term_states->prog;
++
++	bpf_die(prog);
++}
++
++static struct workqueue_struct *bpf_termination_wq;
++
++void bpf_softlockup(u32 dur_s)
++{
++	unsigned long addr;
++	struct unwind_state state;
++	struct bpf_prog *prog;
++
++	for (unwind_start(&state, current, NULL, NULL); !unwind_done(&state);
++	     unwind_next_frame(&state)) {
++		addr = unwind_get_return_address(&state);
++		if (!addr)
++			break;
++
++		if (!is_bpf_text_address(addr))
 +			continue;
 +
-+		subprog = find_subprog(env, i + insn->imm + 1);
-+		if (subprog < 0)
-+			return -EFAULT;
++		rcu_read_lock();
++		prog = bpf_prog_ksym_find(addr);
++		rcu_read_unlock();
++		if (bpf_is_subprog(prog))
++			continue;
 +
-+		if (insn->off == 0x1) {
-+			call_states[*call_sites_cnt].call_bpf_insn_idx = i;
-+			call_states[*call_sites_cnt].is_bpf_loop_cb_inline = 1;
-+			*call_sites_cnt = *call_sites_cnt + 1;
-+			prog->insnsi[i].off = 0x0; /* Removing the marker */
-+		}
++		if (atomic_cmpxchg(&prog->term_states->bpf_die_in_progress, 0, 1))
++			break;
++	
++		bpf_termination_wq = alloc_workqueue("bpf_termination_wq", WQ_UNBOUND, 1);
++		if (!bpf_termination_wq)
++			pr_err("Failed to alloc workqueue for bpf termination.\n");
++
++		queue_work(bpf_termination_wq, &prog->term_states->work);
++
++		/* Currently nested programs are not terminated together.
++		 * Removing this break will result in BPF trampolines being
++		 * identified as is_bpf_text_address resulting in NULL ptr
++		 * deref in next step.
++		 */
++		break;
 +	}
-+	return err;
 +}
 +
- int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_size)
+ void bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
+ 			       struct bpf_prog *new, struct bpf_prog *old)
  {
- 	u64 start_time = ktime_get_ns();
-@@ -24769,6 +24877,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 								     : false;
- 	}
- 
-+	if (ret == 0)
-+		ret = fix_call_sites(env);
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index caaee33744fc..03fce8f2c466 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -71,6 +71,7 @@ typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
+ typedef void (*bpf_iter_fini_seq_priv_t)(void *private_data);
+ typedef unsigned int (*bpf_func_t)(const void *,
+ 				   const struct bpf_insn *);
 +
- 	if (ret == 0)
- 		ret = fixup_call_args(env);
+ struct bpf_iter_seq_info {
+ 	const struct seq_operations *seq_ops;
+ 	bpf_iter_init_seq_priv_t init_seq_private;
+@@ -1600,6 +1601,7 @@ struct bpf_term_patch_call_sites {
+ struct bpf_term_aux_states {
+ 	struct bpf_prog *prog;
+ 	struct work_struct work;
++	atomic_t bpf_die_in_progress;
+ 	struct bpf_term_patch_call_sites *patch_call_sites;
+ };
  
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 9092d8ea95c8..4f0f8fe478bf 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1123,6 +1123,8 @@ int sk_get_filter(struct sock *sk, sockptr_t optval, unsigned int len);
+ bool sk_filter_charge(struct sock *sk, struct sk_filter *fp);
+ void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
+ 
++void *bpf_termination_null_func(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
++int bpf_loop_term_callback(u64 reg_loop_cnt, u64 *reg_loop_ctx);
+ u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+ #define __bpf_call_base_args \
+ 	((u64 (*)(u64, u64, u64, u64, u64, const struct bpf_insn *)) \
+@@ -1257,6 +1259,10 @@ bpf_jit_binary_pack_hdr(const struct bpf_prog *fp);
+ 
+ void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns);
+ void bpf_prog_pack_free(void *ptr, u32 size);
++void bpf_softlockup(u32 dur_s);
++void bpf_prog_termination_deferred(struct work_struct *work);
++void bpf_die(struct bpf_prog *prog);
++void in_place_patch_bpf_prog(struct bpf_prog *prog);
+ 
+ static inline bool bpf_prog_kallsyms_verify_off(const struct bpf_prog *fp)
+ {
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 93442ab2acde..7b0552d15be3 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -41,6 +41,7 @@
+ #include <linux/execmem.h>
+ 
+ #include <asm/barrier.h>
++#include <asm/unwind.h>
+ #include <linux/unaligned.h>
+ 
+ /* Registers */
+@@ -95,6 +96,37 @@ enum page_size_enum {
+ 	__PAGE_SIZE = PAGE_SIZE
+ };
+ 
++void *bpf_termination_null_func(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5)
++{
++	return NULL;
++}
++
++int bpf_loop_term_callback(u64 reg_loop_cnt, u64 *reg_loop_ctx)
++{
++	return 1;
++}
++
++
++void __weak in_place_patch_bpf_prog(struct bpf_prog *prog)
++{
++	return;
++}
++
++void __weak bpf_die(struct bpf_prog *prog)
++{
++	return;
++}
++
++void __weak bpf_prog_termination_deferred(struct work_struct *work)
++{
++	return;
++}
++
++void __weak bpf_softlockup(u32 dur_s)
++{
++	return;
++}
++
+ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flags)
+ {
+ 	gfp_t gfp_flags = bpf_memcg_flags(GFP_KERNEL | __GFP_ZERO | gfp_extra_flags);
+@@ -134,11 +166,12 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
+ 	fp->jit_requested = ebpf_jit_enabled();
+ 	fp->blinding_requested = bpf_jit_blinding_enabled(fp);
+ 	fp->term_states = term_states;
++	atomic_set(&fp->term_states->bpf_die_in_progress, 0);
+ 	fp->term_states->patch_call_sites = patch_call_sites;
+ 	fp->term_states->patch_call_sites->call_sites_cnt = 0;
+ 	fp->term_states->patch_call_sites->call_states = NULL;
+ 	fp->term_states->prog = fp;
+-
++	INIT_WORK(&fp->term_states->work, bpf_prog_termination_deferred);
+ #ifdef CONFIG_CGROUP_BPF
+ 	aux->cgroup_atype = CGROUP_BPF_ATTACH_TYPE_INVALID;
+ #endif
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 80b56c002c7f..59c91c18ca0e 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -25,6 +25,7 @@
+ #include <linux/stop_machine.h>
+ #include <linux/sysctl.h>
+ #include <linux/tick.h>
++#include <linux/filter.h>
+ 
+ #include <linux/sched/clock.h>
+ #include <linux/sched/debug.h>
+@@ -700,6 +701,13 @@ static int is_softlockup(unsigned long touch_ts,
+ 		if (time_after_eq(now, period_ts + get_softlockup_thresh() * 3 / 4))
+ 			scx_softlockup(now - touch_ts);
+ 
++		/*
++		 * Long running BPF programs can cause CPU's to stall.
++		 * So trigger fast path termination to terminate such BPF programs.
++		 */
++		if (time_after_eq(now, period_ts + get_softlockup_thresh() * 3 / 4))
++			bpf_softlockup(now - touch_ts);
++
+ 		/* Warn about unreasonable delays. */
+ 		if (time_after(now, period_ts + get_softlockup_thresh()))
+ 			return now - touch_ts;
 -- 
 2.43.0
 
