@@ -1,187 +1,183 @@
-Return-Path: <bpf+bounces-67782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD7AB499EB
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 21:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D88DB49A15
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 21:36:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC6904E000A
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:29:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4B7F167F9E
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4991527F000;
-	Mon,  8 Sep 2025 19:29:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9614E2BE658;
+	Mon,  8 Sep 2025 19:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SVJmc1iy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YkZJDNKk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 678E825634
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 19:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C27045945;
+	Mon,  8 Sep 2025 19:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757359786; cv=none; b=oTzCGKJn1kW0GdE4ug6U0JigjkDpV7dLT1bWCEjjZtNTidWQxL0OK3Tyxjan3wZQ1YKBQR7LkGUQtFQoa89tWTVx3J/dSW6hlhPa34GobFvluNzZzwkuY/A+xhoaePo1DiRMnQ+rrJ61WSifYyXZx/SgG11b8oCUhnTiktUrHbg=
+	t=1757360182; cv=none; b=RgXwYJTqud28+DvfFlulMeTOXoWtzWL5DxnIMrnLJ2zA2hg0lAiuOtvRU7jGkb2W5NyAE++fB8y1WMyGChnqGkKrGsk7UxJbaDyCoKnrlQfGPk3r/iUcLwu5vAkn4mr64fCbSzESDOiuAFOjhzKpSQKQSR1lpvw3A4DBFGIkoao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757359786; c=relaxed/simple;
-	bh=eypYIHAGCDqRrFByDGVlMsv+wV8HsCOf+oVpLaoVMVM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=anFtX666UH0dK7Yr5qvqQLT+sOn0xWFwQymmcCdfndIr4imCDWnYunTVg2csewf9Ny3PyvCKxuw6PU9/m+3krh2g6fYCVULVFRBn0k8kPZshZEAMjQbrsAmIJrmlmhMdQ54ByvbYP2Geb1mlBCfBG9K/CFjX+NX145VGfHfWh5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SVJmc1iy; arc=none smtp.client-ip=209.85.215.181
+	s=arc-20240116; t=1757360182; c=relaxed/simple;
+	bh=Bo0hCDM48l6MeV5W+uWlFYBVKoa36PqCvcURT03ayKc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t1gz7dzTB/C5mWxl8WyAygglPpqVyiRPbMfCHMe+JAVCCKLIinXhkNdbRyXmBy//4bWuWHKStuyA9T4RC3jbS42Z49rrsDVDmS3Z+RRb6AQgJpfncQvhYiC19l/elFrQkVHxcMaaTIVpED+ovGxLDJSVBQhpbqSJy0zFcH1r1wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YkZJDNKk; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b4f7053cc38so2985102a12.2
-        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 12:29:45 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-628f29d68ecso2390994a12.3;
+        Mon, 08 Sep 2025 12:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757359785; x=1757964585; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3Wh1pmErzA4T5g/k2ByBY4Fxfmmbxqc2T9D32et5awE=;
-        b=SVJmc1iyQbxoC/AbThd8ArJUBffGdaC69I3Ib1wXhzkYtPw0oBSy/aLCA508hJRl8i
-         Bgnp/WaauLeljzuF7hG04GXysn4h/qzBblGeaTcjrMeuV5tuEUxggfAD3A/3fkEu04Xz
-         hUBRRhtpYj3La/VphLunQASEaWVrqinnX8PYu5xifeaGqIugDMJ21IEX3SPOfUahxC2y
-         Bcwi04I/jMHxnadU2mmLUO1OWqzumTVv9jIXsb99WrSiEI9v0Tih9HzXI9NuJKmi9JBR
-         rjI3doYSl0difq4VxMXWe6LCImxIr3lQGMyc2UmOEkBBlPmuqBqXUqV6Bw5tjOvk9mrX
-         if2Q==
+        d=gmail.com; s=20230601; t=1757360179; x=1757964979; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7PxCoAvR6l4gW5lG5Yd8jKDUVRJOCjR4r1nXG3daz4I=;
+        b=YkZJDNKkolGstj4Lt459QRGPAFbM5IVCRQ9D+Yl5TbvzoJYCWClHJp9EIenMzzVYGC
+         WonTkOTTveWJ/1t9NgdmvVHwZtdJ0xKLPWi06+5TnrXE3ibNOM8GGPQxvUOtzp1WTLvZ
+         jNJhODipLUTkpC8UXaXllzd4ejhVoqadc9L7RKMgu8nqGnSUu1E6stOvFxB3AX65bLR/
+         l2iZHJQxcQu0Vt7cipC/BNaygWehayjalrKfOiAbpeclMj7SxtcHHeCqYKHHmqGbLQ+i
+         56UVbRcqRIR2Ra7jfPLqg1odH2Z2nDLbRytpMlwJtTR7U8A4wg+o68WeQ50gbDXbaokj
+         kyaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757359785; x=1757964585;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3Wh1pmErzA4T5g/k2ByBY4Fxfmmbxqc2T9D32et5awE=;
-        b=XnHeoeau3VimcvLpwbUS+K96iqrFjbljho69nf1cj+/ViwjaWaNeVcpj66zmLIUAcn
-         zBTDnjQh6Ce40814x0OLC7Wkm4+Po2RRrGC+Y+GShlajsCegq7Tk8KL3kwwb29tReLCa
-         0l598qzvLmfNetwHVwAErb0xsZWir86Kuz8y+L3CYultNcU0nJLF5y3tHlwf0V59NUKE
-         172zF+L1pJirJIS1/qbwdaqUxTFlvWI/4/V7itiHlYb2gq0R00t3KsN7JCP2diFBrgKv
-         r56EBYDKk9+zbrqW74R2Vo/9ktIXcoTZXCyEI8SsGNcm2jnRKlzhgwF+X/b0rs5fMN16
-         5cCg==
-X-Forwarded-Encrypted: i=1; AJvYcCWciiurA9M3K/AjumCLlZMPoJ7o14lcZUnJv3cQZrsdXGgkL1b1CJ0Keon/kU8sCwxYnok=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw201Udn0Wk23BLODxTbhw3hW4OMYswSHrR3GJwwI7P0623UJpi
-	26jf+6ueIRl1b1BMa8osXVuDMVj7nsVtbHIcrSOGpJVPF2q0bfihJbU/
-X-Gm-Gg: ASbGncvGHLbizNN2vuP2BtDZr9cBUoA9x3Ib/PMk9xIwPYaxoAghDY17a5oaBrBqlzU
-	6GT9OtjbfuVGnCfinbx3LxnYaXMNp7qoaJWv2EblS6qw0QrkoWZ4pPYf9FWXmXrWbwVRTU6nHtD
-	ie25EbOMBWGKfJgfmYUdYJkCr9cMt0xlUhD4ncm+36mSpC57w3j66GSidIWK0o/NeMTLs49O6qF
-	2IWIgPB+fnRtuNEhPCg5oSbBf4TG8rNs5FIigcKlSS80+0C01zFRtXcnx6+QrCRWQYK6r5W28Hx
-	ewRuOwUQL6S3wO4fxW4bAmkQZIkARKelLYjM8JeMGMgRFrT5Vn141sGMjd1vFzoSnt1xkH7uapw
-	luvNG0iIuPV8M8oClHoc5ZVeW1or3hUsjNgqUX5U6ekl0/ZonNwXQwkpIKUCzuCSZmc7J
-X-Google-Smtp-Source: AGHT+IEg+HTCcZslsLJP3CtpRGAl42+5oEj3VYyWwBAEKJiFuU7ooJFzwTSs58UtTic91fCXEa962A==
-X-Received: by 2002:a17:902:d48c:b0:250:5ff5:3f4b with SMTP id d9443c01a7336-2516fdc77a2mr147571915ad.15.1757359784739;
-        Mon, 08 Sep 2025 12:29:44 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:613:2710:d29c:cd12? ([2620:10d:c090:500::5:c621])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24ccc79a363sm121960725ad.142.2025.09.08.12.29.43
+        d=1e100.net; s=20230601; t=1757360179; x=1757964979;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7PxCoAvR6l4gW5lG5Yd8jKDUVRJOCjR4r1nXG3daz4I=;
+        b=jeis8k6sXv/Q1UORW/+8SunlgUwnzEP0MXvUf6hQdMeTHBP/ggiQXpu5i0MbHBCiPG
+         +h/CZM8btY0dIJFfdar3IGGmsEDBCSoxrXJthGQl7AOriopTXJf3p4YFUI5wXBdY6JSE
+         1d6KOcCeUUGVdHicsJ8lINpmpEVxcp/hnY/v8I1fWK1l1dZHQyjftaHojE16nn68Op4O
+         kIybrr3nIAKr1tu7vzbs7kk92VGfnO09Eg6q5mKVIYgaNhpiUZcIxUfJzM/W9JNzEVWS
+         gdhWVOvNZnwwzD+sBiteNq48AV7m1uA6uDlL6OmzxSqbKehZemQTVYXOucEag0/XoCdv
+         hIxA==
+X-Forwarded-Encrypted: i=1; AJvYcCU5jLqdS4gWYFu1GkcltB2SQEssHgGJ+olpyfTQeXkluPxR9TgvnzTaIeD+2+QalFth1IfG3NC5Lgif6hDoZgIetjuS@vger.kernel.org, AJvYcCUqYMxew0woNw22fgHdvvCEnE3qZc+daTRnxW1ghamT2M648fsnzD8rWqXpKuHBhu9MnBdiysNxpEM2lLO/@vger.kernel.org, AJvYcCXG5OQZWS2lrzv0plakv2hZ8DgMdTsqvNJ3UEtJqHaU6KF/fCTvs/O6EfvtM6sGIWQAt5k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIroCKiUjpOPAaIfbpx3TGu86IsozAarkamNETgDPW2UoGydwK
+	8Ba0NJi4v/LWOUyiFPnAXg0oY/MegRNsgjc2XgipevZmfqeXftxz55fN
+X-Gm-Gg: ASbGncvjiwTv+YqRGroIOIoeINBeh929F1/rrVRllu8R6SzkZzp8HiWCatmZeu2ADoZ
+	bwXUoNaoGggKVEbLxdR1VIw8L65ExhIdg6raycqDfmcfMEwoBW4ChavvQezfUCISm7AxE2BX3B5
+	/3boDVPoer3mpiCyuQviGfbm1H5lu0lUhYALbyDRQJ5GBCS5reNALOGA0oo0QYHRohDHif1jvxR
+	Vs82BSAZavnoYSv+MQsVT017TmHttps4JvWS3teag/QVAscdDgMi/di3ByJ1F/+Zp/QYz6VFfUC
+	buM4oxEAzKUIDjYLm7PhLkhJF5+ZQfo0Za0rZSnL4Cu/4Ifdrt0kKJJxHNkTRmAfiEk65G+xawf
+	yQU05ZTG/Af0=
+X-Google-Smtp-Source: AGHT+IFLfG/96PmNOOS1sDG/gwN3q65g5ZhGzfd6k4qr91vqyjSbl27rWiEXu2Mn02q2AVdYFmGt0Q==
+X-Received: by 2002:a05:6402:1ecf:b0:62a:82e8:e1f6 with SMTP id 4fb4d7f45d1cf-62a82e8e4afmr2476554a12.36.1757360178263;
+        Mon, 08 Sep 2025 12:36:18 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61d3174074bsm19440249a12.35.2025.09.08.12.36.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Sep 2025 12:29:44 -0700 (PDT)
-Message-ID: <603b37f4ef1a3ccbb661eaf11f56da9144bdcb66.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Reject bpf_timer for PREEMPT_RT
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, 	song@kernel.org, yonghong.song@linux.dev,
- kernel-patches-bot@fb.com, 	yepeilin@google.com
-Date: Mon, 08 Sep 2025 12:29:42 -0700
-In-Reply-To: <b0505a919d39e8151d0e14d9e41950f19d3807e0.camel@gmail.com>
-References: <20250908044025.77519-1-leon.hwang@linux.dev>
-		 <20250908044025.77519-2-leon.hwang@linux.dev>
-	 <b0505a919d39e8151d0e14d9e41950f19d3807e0.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        Mon, 08 Sep 2025 12:36:17 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 8 Sep 2025 21:36:15 +0200
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
+	X86 ML <x86@kernel.org>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCHv2 perf/core 1/4] bpf: Allow uprobe program to change
+ context registers
+Message-ID: <aL8wL1rJRpWp_qHs@krava>
+References: <20250908121310.46824-1-jolsa@kernel.org>
+ <20250908121310.46824-2-jolsa@kernel.org>
+ <CAADnVQKC4tNCLrS6_1zLOtF7MUWiXUWnLXCnQBp_UDLQZj3rrg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKC4tNCLrS6_1zLOtF7MUWiXUWnLXCnQBp_UDLQZj3rrg@mail.gmail.com>
 
-On Mon, 2025-09-08 at 12:20 -0700, Eduard Zingerman wrote:
-> On Mon, 2025-09-08 at 12:40 +0800, Leon Hwang wrote:
-> > When enable CONFIG_PREEMPT_RT, the kernel will panic when run timer
-> > selftests by './test_progs -t timer':
+On Mon, Sep 08, 2025 at 10:20:55AM -0700, Alexei Starovoitov wrote:
+> On Mon, Sep 8, 2025 at 5:13 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Currently uprobe (BPF_PROG_TYPE_KPROBE) program can't write to the
+> > context registers data. While this makes sense for kprobe attachments,
+> > for uprobe attachment it might make sense to be able to change user
+> > space registers to alter application execution.
+> >
+> > Since uprobe and kprobe programs share the same type (BPF_PROG_TYPE_KPROBE),
+> > we can't deny write access to context during the program load. We need
+> > to check on it during program attachment to see if it's going to be
+> > kprobe or uprobe.
+> >
+> > Storing the program's write attempt to context and checking on it
+> > during the attachment.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/linux/bpf.h      | 1 +
+> >  kernel/events/core.c     | 4 ++++
+> >  kernel/trace/bpf_trace.c | 3 +--
+> >  3 files changed, 6 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index cc700925b802..404a30cde84e 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1619,6 +1619,7 @@ struct bpf_prog_aux {
+> >         bool priv_stack_requested;
+> >         bool changes_pkt_data;
+> >         bool might_sleep;
+> > +       bool kprobe_write_ctx;
+> >         u64 prog_array_member_cnt; /* counts how many times as member of prog_array */
+> >         struct mutex ext_mutex; /* mutex for is_extended and prog_array_member_cnt */
+> >         struct bpf_arena *arena;
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index 28de3baff792..c3f37b266fc4 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -11238,6 +11238,10 @@ static int __perf_event_set_bpf_prog(struct perf_event *event,
+> >         if (prog->kprobe_override && !is_kprobe)
+> >                 return -EINVAL;
+> >
+> > +       /* Writing to context allowed only for uprobes. */
+> > +       if (prog->aux->kprobe_write_ctx && !is_uprobe)
+> > +               return -EINVAL;
+> > +
+> >         if (is_tracepoint || is_syscall_tp) {
+> >                 int off = trace_event_get_offsets(event->tp_event);
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 3ae52978cae6..467fd5ab4b79 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1521,8 +1521,6 @@ static bool kprobe_prog_is_valid_access(int off, int size, enum bpf_access_type
+> >  {
+> >         if (off < 0 || off >= sizeof(struct pt_regs))
+> >                 return false;
+> > -       if (type != BPF_READ)
+> > -               return false;
+> >         if (off % size != 0)
+> >                 return false;
+> >         /*
+> > @@ -1532,6 +1530,7 @@ static bool kprobe_prog_is_valid_access(int off, int size, enum bpf_access_type
+> >         if (off + size > sizeof(struct pt_regs))
+> >                 return false;
+> >
+> > +       prog->aux->kprobe_write_ctx |= type == BPF_WRITE;
+> 
+> iirc the same function is used to validate [ku]probe.multi ctx access,
+> but attaching is not done via __perf_event_set_bpf_prog().
+> The check at attach time is missing?
 
-Related discussions:
-- https://lore.kernel.org/bpf/b634rejnvxqu6knjqlijosxrcnxbbpagt4de4pl6env6d=
-wldz2@hoofqufparh5/T/
-- https://lore.kernel.org/bpf/lhmdi6npaxqeuaumjhmq24ckpul7ufopwzxjbsezhepgu=
-qkxag@wolz4r2fazu2/T/
+argh, yes, missed that.. good catch, thanks
 
-CC'ing Peilin.
-
-> >=20
-> > [   35.955287] BUG: sleeping function called from invalid context at ke=
-rnel/locking/spinlock_rt.c:48
-> > [   35.955312] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1=
-20, name: test_progs
-> > [   35.955315] preempt_count: 1, expected: 0
-> > [   35.955316] RCU nest depth: 0, expected: 0
-> > [   35.955317] 2 locks held by test_progs/120:
-> > [   35.955319]  #0: ffffffff8f1c3720 (rcu_read_lock_trace){....}-{0:0},=
- at: bpf_prog_test_run_syscall+0xc9/0x240
-> > [   35.955358]  #1: ffff9155fbd331c8 ((&c->lock)){+.+.}-{3:3}, at: ___s=
-lab_alloc+0xb0/0xd20
-> > [   35.955388] irq event stamp: 100
-> > [   35.955389] hardirqs last  enabled at (99): [<ffffffff8dfcd890>] do_=
-syscall_64+0x30/0x2d0
-> > [   35.955414] hardirqs last disabled at (100): [<ffffffff8d4a9baa>] __=
-bpf_async_init+0xca/0x310
-> > [   35.955428] softirqs last  enabled at (0): [<ffffffff8d296cbb>] copy=
-_process+0x9db/0x2000
-> > [   35.955449] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> > [   35.955482] CPU: 1 UID: 0 PID: 120 Comm: test_progs Tainted: G      =
-     OE       6.17.0-rc1-gc5f5af560d8a #30 PREEMPT_{RT,(full)}
-> > [   35.955487] Tainted: [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODULE
-> > [   35.955488] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996=
-), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-> > [   35.955491] Call Trace:
-> > [   35.955493]  <TASK>
-> > [   35.955499]  dump_stack_lvl+0x73/0xb0
-> > [   35.955514]  dump_stack+0x14/0x20
-> > [   35.955518]  __might_resched+0x167/0x230
-> > [   35.955537]  rt_spin_lock+0x66/0x180
-> > [   35.955543]  ? ___slab_alloc+0xb0/0xd20
-> > [   35.955549]  ? bpf_map_kmalloc_node+0x7c/0x200
-> > [   35.955560]  ___slab_alloc+0xb0/0xd20
-> > [   35.955575]  ? __lock_acquire+0x43d/0x2590
-> > [   35.955601]  __kmalloc_node_noprof+0x10b/0x410
-> > [   35.955605]  ? __kmalloc_node_noprof+0x10b/0x410
-> > [   35.955607]  ? bpf_map_kmalloc_node+0x7c/0x200
-> > [   35.955616]  bpf_map_kmalloc_node+0x7c/0x200
-> > [   35.955624]  __bpf_async_init+0xf8/0x310
->=20
-> The error is reported because of the kmalloc call in the __bpf_async_init=
-, right?
-> Instead of disabling timers for PREEMPT_RT, would it be possible to
-> switch implementation to use kernel/bpf/memalloc.c:bpf_mem_alloc() instea=
-d?
->=20
-> > [   35.955633]  bpf_timer_init+0x37/0x40
-> > [   35.955637]  bpf_prog_2287350dd5909839_start_cb+0x5d/0x91
-> > [   35.955642]  bpf_prog_0d54653d8a74e954_start_timer+0x65/0x8a
-> > [   35.955650]  bpf_prog_test_run_syscall+0x111/0x240
-> > [   35.955660]  __sys_bpf+0x81c/0x2ab0
-> > [   35.955665]  ? __might_fault+0x47/0x90
-> > [   35.955700]  __x64_sys_bpf+0x1e/0x30
-> > [   35.955703]  x64_sys_call+0x171d/0x20d0
-> > [   35.955715]  do_syscall_64+0x6a/0x2d0
-> > [   35.955722]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > [   35.955728] RIP: 0033:0x7fee4261225d
-> > [   35.955734] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa=
- 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05=
- <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 8b bb 0d 00 f7 d8 64 89 01 48
-> > [   35.955736] RSP: 002b:00007fee424e5bd8 EFLAGS: 00000202 ORIG_RAX: 00=
-00000000000141
-> > [   35.955742] RAX: ffffffffffffffda RBX: 00007fee424e6cdc RCX: 00007fe=
-e4261225d
-> > [   35.955744] RDX: 0000000000000050 RSI: 00007fee424e5c20 RDI: 0000000=
-00000000a
-> > [   35.955745] RBP: 00007fee424e5bf0 R08: 0000000000000003 R09: 00007fe=
-e424e5c20
-> > [   35.955747] R10: 00007fffc266f910 R11: 0000000000000202 R12: 00007fe=
-e424e66c0
-> > [   35.955748] R13: ffffffffffffff08 R14: 0000000000000016 R15: 00007ff=
-fc266f650
-> > [   35.955766]  </TASK>
->=20
-> [...]
+jirka
 
