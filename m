@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-67689-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67690-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60078B48350
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 06:40:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6F97B4834F
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 06:40:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D1983B4195
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 04:40:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E66E167618
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 04:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3B021FF35;
-	Mon,  8 Sep 2025 04:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE14921FF3E;
+	Mon,  8 Sep 2025 04:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ruy2kaNV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TczFsScU"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28E8421CC63
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 04:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B332E21CC63
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 04:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757306442; cv=none; b=SwRNesjRzET1w7BRWkgeys/7rUXFIK/eb8LuI9j3LzLIScQUUENxIkJ3yvaZ/zNp1WBqisJMZBJ97ZQpL4jUzUExwPL+oNrHn0kGZH3lF0o6XrCtaOAvnj5TPrNS+wLi0CsxOcG/ERDZb7KFn1eyeRsEokYw4HvjSh/hPpLAX9k=
+	t=1757306445; cv=none; b=orO8vz+GFqQnls2ORKXrzVgv0sQB9AXP3f12lj2fzZd9mAHTJrOlpBcomVZb6KR1Zqy4NTuZcqvrIHjqu4FcxnmYX9wsW3GBIWdZluafgkNe3hFTQFbPlf1+vTgNtqQU+wNiu3BiK7vxrV60Tx0R10EI3OcB+rXkA6/xuKOHdKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757306442; c=relaxed/simple;
-	bh=083HwJ2xUbbczqiWvkpFSX3UTgeTzijSbq6nRjk9Muo=;
+	s=arc-20240116; t=1757306445; c=relaxed/simple;
+	bh=i2FTbnZcsbclfK8oQvHXWCme9aX0McUJhuNKqzf5m20=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TicWx2577pE87DJTOONvWIu9GcTJ/H9cETA9rVbtsvn48Gir2lMzt45vZK8+YpTySp4859xJIsKHbyeBgDe2agFOrBaTs8VNDef8gfO/uDiewezppdg6iswS1LWwGyDjte+3ohs1WQD3s09ejQ2OXS9olB2U+inP8HbzBFbYm0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ruy2kaNV; arc=none smtp.client-ip=91.218.175.180
+	 MIME-Version; b=f/wjRsa0KLuRsPc53oCFEt/ezSk1kRIEnTD+O28WqeEMdqU47aKt6U0zHsFCcS3aVVU7jJRN0sh6asvPKJ16Sn3FPUZ8XsiGR3sPOY6j+LQBxgxVKblr1S2oxKh163CVBCOk/1CM/MdPQfRNgkn5MGs5/hlNWZs6zOwWn4rq2sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TczFsScU; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757306438;
+	t=1757306441;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vMSfUnJ02H2mvCTiuKfYKJ6ScG7lHbKmte5StXNCKSI=;
-	b=ruy2kaNVua+F/H35hFEES4ku2BCZlx5Nc3VBbYF474MFOaiexNoDshzYsCMg5/hm4QHTdj
-	xnz7IZlOZhWKU8tqd0cr9gD84k79uPLi24oWSlOdqhpkzEAN2jAtyTASAxLEvi1275zZRH
-	UR6G/h8iqGZxomh1X/3d7spTVi4MPn4=
+	bh=cTC0GtNdIsMuQMwAUekmbe8MGFdpEa4u90Mx+ZC/LlQ=;
+	b=TczFsScUzV1Gcd+DleuLW1vd+6VPYkbIzdcYyS5uObY45vdGfUwkL9pgeZ//NvB9RPFCM3
+	8bNoADEWeHjwLPLGBBo3Y0ouNvdBUqQndMOvCToOKBboKP0dRmTxvwzHLIwQubXRONcfh+
+	w9b5a4tEwPl8iS0R//PLe+GRMHKocH4=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -53,9 +53,9 @@ Cc: ast@kernel.org,
 	yonghong.song@linux.dev,
 	leon.hwang@linux.dev,
 	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v2 1/2] bpf: Reject bpf_timer for PREEMPT_RT
-Date: Mon,  8 Sep 2025 12:40:24 +0800
-Message-ID: <20250908044025.77519-2-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Skip timer cases when bpf_timer is not supported
+Date: Mon,  8 Sep 2025 12:40:25 +0800
+Message-ID: <20250908044025.77519-3-leon.hwang@linux.dev>
 In-Reply-To: <20250908044025.77519-1-leon.hwang@linux.dev>
 References: <20250908044025.77519-1-leon.hwang@linux.dev>
 Precedence: bulk
@@ -67,82 +67,118 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-When enable CONFIG_PREEMPT_RT, the kernel will panic when run timer
-selftests by './test_progs -t timer':
+When enable CONFIG_PREEMPT_RT, verifier will reject bpf_timer with
+returning -EOPNOTSUPP.
 
-[   35.955287] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-[   35.955312] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 120, name: test_progs
-[   35.955315] preempt_count: 1, expected: 0
-[   35.955316] RCU nest depth: 0, expected: 0
-[   35.955317] 2 locks held by test_progs/120:
-[   35.955319]  #0: ffffffff8f1c3720 (rcu_read_lock_trace){....}-{0:0}, at: bpf_prog_test_run_syscall+0xc9/0x240
-[   35.955358]  #1: ffff9155fbd331c8 ((&c->lock)){+.+.}-{3:3}, at: ___slab_alloc+0xb0/0xd20
-[   35.955388] irq event stamp: 100
-[   35.955389] hardirqs last  enabled at (99): [<ffffffff8dfcd890>] do_syscall_64+0x30/0x2d0
-[   35.955414] hardirqs last disabled at (100): [<ffffffff8d4a9baa>] __bpf_async_init+0xca/0x310
-[   35.955428] softirqs last  enabled at (0): [<ffffffff8d296cbb>] copy_process+0x9db/0x2000
-[   35.955449] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[   35.955482] CPU: 1 UID: 0 PID: 120 Comm: test_progs Tainted: G           OE       6.17.0-rc1-gc5f5af560d8a #30 PREEMPT_{RT,(full)}
-[   35.955487] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-[   35.955488] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-[   35.955491] Call Trace:
-[   35.955493]  <TASK>
-[   35.955499]  dump_stack_lvl+0x73/0xb0
-[   35.955514]  dump_stack+0x14/0x20
-[   35.955518]  __might_resched+0x167/0x230
-[   35.955537]  rt_spin_lock+0x66/0x180
-[   35.955543]  ? ___slab_alloc+0xb0/0xd20
-[   35.955549]  ? bpf_map_kmalloc_node+0x7c/0x200
-[   35.955560]  ___slab_alloc+0xb0/0xd20
-[   35.955575]  ? __lock_acquire+0x43d/0x2590
-[   35.955601]  __kmalloc_node_noprof+0x10b/0x410
-[   35.955605]  ? __kmalloc_node_noprof+0x10b/0x410
-[   35.955607]  ? bpf_map_kmalloc_node+0x7c/0x200
-[   35.955616]  bpf_map_kmalloc_node+0x7c/0x200
-[   35.955624]  __bpf_async_init+0xf8/0x310
-[   35.955633]  bpf_timer_init+0x37/0x40
-[   35.955637]  bpf_prog_2287350dd5909839_start_cb+0x5d/0x91
-[   35.955642]  bpf_prog_0d54653d8a74e954_start_timer+0x65/0x8a
-[   35.955650]  bpf_prog_test_run_syscall+0x111/0x240
-[   35.955660]  __sys_bpf+0x81c/0x2ab0
-[   35.955665]  ? __might_fault+0x47/0x90
-[   35.955700]  __x64_sys_bpf+0x1e/0x30
-[   35.955703]  x64_sys_call+0x171d/0x20d0
-[   35.955715]  do_syscall_64+0x6a/0x2d0
-[   35.955722]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[   35.955728] RIP: 0033:0x7fee4261225d
-[   35.955734] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 8b bb 0d 00 f7 d8 64 89 01 48
-[   35.955736] RSP: 002b:00007fee424e5bd8 EFLAGS: 00000202 ORIG_RAX: 0000000000000141
-[   35.955742] RAX: ffffffffffffffda RBX: 00007fee424e6cdc RCX: 00007fee4261225d
-[   35.955744] RDX: 0000000000000050 RSI: 00007fee424e5c20 RDI: 000000000000000a
-[   35.955745] RBP: 00007fee424e5bf0 R08: 0000000000000003 R09: 00007fee424e5c20
-[   35.955747] R10: 00007fffc266f910 R11: 0000000000000202 R12: 00007fee424e66c0
-[   35.955748] R13: ffffffffffffff08 R14: 0000000000000016 R15: 00007fffc266f650
-[   35.955766]  </TASK>
+Therefore, skip test cases when errno is EOPNOTSUPP.
 
-In order to avoid such panic, reject bpf_timer in verifier when
-PREEMPT_RT is enabled.
+cd tools/testing/selftests/bpf
+./test_progs -t timer
+125     free_timer:SKIP
+459     timer:SKIP
+460/1   timer_crash/array:SKIP
+460/2   timer_crash/hash:SKIP
+460     timer_crash:SKIP
+461     timer_interrupt:SKIP
+462     timer_lockup:SKIP
+463     timer_mim:SKIP
+Summary: 6/0 PASSED, 7 SKIPPED, 0 FAILED
 
 Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 ---
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/free_timer.c   | 4 ++++
+ tools/testing/selftests/bpf/prog_tests/timer.c        | 8 ++++++++
+ tools/testing/selftests/bpf/prog_tests/timer_crash.c  | 4 ++++
+ tools/testing/selftests/bpf/prog_tests/timer_lockup.c | 4 ++++
+ tools/testing/selftests/bpf/prog_tests/timer_mim.c    | 4 ++++
+ 5 files changed, 24 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b9394f8fac0e..8ca9d20ab61f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8552,6 +8552,10 @@ static int process_timer_func(struct bpf_verifier_env *env, int regno,
- 		verifier_bug(env, "Two map pointers in a timer helper");
- 		return -EFAULT;
- 	}
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		verbose(env, "bpf_timer cannot be used for PREEMPT_RT.\n");
-+		return -EOPNOTSUPP;
+diff --git a/tools/testing/selftests/bpf/prog_tests/free_timer.c b/tools/testing/selftests/bpf/prog_tests/free_timer.c
+index b7b77a6b2979..0de8facca4c5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/free_timer.c
++++ b/tools/testing/selftests/bpf/prog_tests/free_timer.c
+@@ -124,6 +124,10 @@ void test_free_timer(void)
+ 	int err;
+ 
+ 	skel = free_timer__open_and_load();
++	if (!skel && errno == EOPNOTSUPP) {
++		test__skip();
++		return;
 +	}
- 	meta->map_uid = reg->map_uid;
- 	meta->map_ptr = map;
- 	return 0;
+ 	if (!ASSERT_OK_PTR(skel, "open_load"))
+ 		return;
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
+index 049efb5e7823..34f9ccce2602 100644
+--- a/tools/testing/selftests/bpf/prog_tests/timer.c
++++ b/tools/testing/selftests/bpf/prog_tests/timer.c
+@@ -87,6 +87,10 @@ void serial_test_timer(void)
+ 	int err;
+ 
+ 	timer_skel = timer__open_and_load();
++	if (!timer_skel && errno == EOPNOTSUPP) {
++		test__skip();
++		return;
++	}
+ 	if (!ASSERT_OK_PTR(timer_skel, "timer_skel_load"))
+ 		return;
+ 
+@@ -104,6 +108,10 @@ void test_timer_interrupt(void)
+ 	LIBBPF_OPTS(bpf_test_run_opts, opts);
+ 
+ 	skel = timer_interrupt__open_and_load();
++	if (!skel && errno == EOPNOTSUPP) {
++		test__skip();
++		return;
++	}
+ 	if (!ASSERT_OK_PTR(skel, "timer_interrupt__open_and_load"))
+ 		return;
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer_crash.c b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
+index f74b82305da8..b841597c8a3a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/timer_crash.c
++++ b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
+@@ -12,6 +12,10 @@ static void test_timer_crash_mode(int mode)
+ 	struct timer_crash *skel;
+ 
+ 	skel = timer_crash__open_and_load();
++	if (!skel && errno == EOPNOTSUPP) {
++		test__skip();
++		return;
++	}
+ 	if (!ASSERT_OK_PTR(skel, "timer_crash__open_and_load"))
+ 		return;
+ 	skel->bss->pid = getpid();
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer_lockup.c b/tools/testing/selftests/bpf/prog_tests/timer_lockup.c
+index 1a2f99596916..eb303fa1e09a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/timer_lockup.c
++++ b/tools/testing/selftests/bpf/prog_tests/timer_lockup.c
+@@ -59,6 +59,10 @@ void test_timer_lockup(void)
+ 	}
+ 
+ 	skel = timer_lockup__open_and_load();
++	if (!skel && errno == EOPNOTSUPP) {
++		test__skip();
++		return;
++	}
+ 	if (!ASSERT_OK_PTR(skel, "timer_lockup__open_and_load"))
+ 		return;
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer_mim.c b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
+index 9ff7843909e7..c930c7d7105b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/timer_mim.c
++++ b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
+@@ -65,6 +65,10 @@ void serial_test_timer_mim(void)
+ 		goto cleanup;
+ 
+ 	timer_skel = timer_mim__open_and_load();
++	if (!timer_skel && errno == EOPNOTSUPP) {
++		test__skip();
++		return;
++	}
+ 	if (!ASSERT_OK_PTR(timer_skel, "timer_skel_load"))
+ 		goto cleanup;
+ 
 -- 
 2.51.0
 
