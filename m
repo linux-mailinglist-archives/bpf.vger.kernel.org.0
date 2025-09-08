@@ -1,221 +1,516 @@
-Return-Path: <bpf+bounces-67686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CA70B48210
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 03:25:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07B8BB4829A
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 04:26:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F01C17C961
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 01:25:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CD3017B379
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 02:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E7D1A76DE;
-	Mon,  8 Sep 2025 01:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD9A1EBFE0;
+	Mon,  8 Sep 2025 02:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BkQHBTFU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e9m2nkiv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EEA110F1
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 01:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D67C1B87F2;
+	Mon,  8 Sep 2025 02:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757294707; cv=none; b=RizzOoQM1h+baA5ZfKzRgK0rG0t5s77+mBFvGt9GH+CedK3AURVrWzlGrwNGQWbET6SIR5xQcBy7ICeb/14q+rkbxqHs4FR6DpTNeK+MsQ+mWHuI2k/Jdvd/OTzxKdp2iV1R4PqAIc692AY2+3prRbMQHKXzRvIMzZedNQURay0=
+	t=1757298408; cv=none; b=Yvj6OIiMYE0GXFZaMEOHBFKZNa0IHAQgK/UcktP5h476C8Rg1pd+cQBE99L0XWr83JtZPvSrYrjPO+MybK+4U6osPtexPUXIntylN8ibn5UYhnLC30OB3FGXFGmOnZWWT0FM/11Z4VxJPa9KkVSI+2Qys3OEegi5HhK4G/x8qbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757294707; c=relaxed/simple;
-	bh=i1UBKeVCo0S01+2IKFgWiNf7CIWnr2cNRil8oV2DYKg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wt1+Miux4Xo17C4/hY6clMrPWoCChih91gz0Rp2Z/+/ph99FGjT1n9TPY1A0WtMyOuVi+AZgA4B0WLxbYy8aDsJNcDtAvVUqmVpGUN9fklnqnMLS8x17J22CPx8xbSqRiZfRaW9s139Nq5HDFQ6s30rWOYXc36FLKJO14XGu5Gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BkQHBTFU; arc=none smtp.client-ip=209.85.215.176
+	s=arc-20240116; t=1757298408; c=relaxed/simple;
+	bh=zo42/wjKpt7G+qw5sVfTbmgKWtr8AZ9KQ/NBxzcAJ3o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Dj1ROXEXK8hM4hNKHy4ODxCHdHqrrkbFhpLp5Xbz18B82OVSoXERRNvUql8fLeikm6rgUURWQBWmsCvF+Ti1wQvWrULPyUk3SvYlV6Jo96kn1Sj7pFA/s8qnaniKUaaHltLCeFeW2svqr7MI/Y2Gv+cyiTVl5aONuz7YUhCkPTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e9m2nkiv; arc=none smtp.client-ip=209.85.166.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b4c9a6d3fc7so2207406a12.3
-        for <bpf@vger.kernel.org>; Sun, 07 Sep 2025 18:25:05 -0700 (PDT)
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3f664c47ac9so22609585ab.2;
+        Sun, 07 Sep 2025 19:26:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757294705; x=1757899505; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uzw6hQQ7M5B5xk9kBfDEuQjeyMGC+VPV/lN83f90R+c=;
-        b=BkQHBTFUZv2ePFy3nUgDP/zA/kfUUBletqdQGuZpIIsJJBuzD8fXvBHV1c8/fBObLS
-         JnOMhpvEapT6rLiWGRlSjUmTHpKPqbz5A0CAOcNppm7EBvOpI/uiErgOAJyZTENSiX51
-         aXo8jHS9YbvyohTdhb13IwEKyKWkh0pM32YH4HDRkrC/P8MMElO9NTYTT/9gj13GtdQP
-         94KRvSQ2FNnv7yGbMlmurmDKXuTH67IRxSx7Z1ALHfIaMqHvWBCWvVi42UKZX/1ol/gG
-         T21VUSD6PG//kClJCS3QVIDBntHWHz6RqSWzk4bawUHveIP14hw7bMp7uIv2l9hqmcC4
-         RmAQ==
+        d=gmail.com; s=20230601; t=1757298405; x=1757903205; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RKWvySzWJat18AGVts8d21jsFhMMlrxadhW2bRjy+yU=;
+        b=e9m2nkivZfEBdlT+/yKfNqw32LsSazk3Igj+P8bybgIsLUonKkBAqw+a7V2OmJR79/
+         xRMO/74WJIksqoLaQNYphXLIW8+DL6bZ0ZQsMUkUx8h/fE5gt4lpDQnbE5k1gmzsgFd2
+         uiPP4oKY5phtaQpKKZLz+zE56PciVs0/UoVJJ8Tw6Vln5qGaDr2tdkr5QYrmNOpOwYvR
+         KSoreqMxY4GewIEN89jzrVH1sOBoQGmlxpH9SZPdo9ruI6xOzFXZAaKj0HGs5IOn5hMa
+         PzdfNpEK418WOTOubWs/f7dyLi/JTnf3MpENEV7G9Ynk0Up3ymkxv7OsFbL/Upf1xHkO
+         2Tag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757294705; x=1757899505;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uzw6hQQ7M5B5xk9kBfDEuQjeyMGC+VPV/lN83f90R+c=;
-        b=t35CYlUOGnJwHZYCdWP6W5AG4ERhFbI8FHcdnMuETf1mbVshuc8elU1E7ZyvpYmaud
-         8rPy9hcpoce49WJbRZSVd3eulglvnB74kqvu8cytceEW/7TCJMkqU5n3RCdeMF8pytsy
-         iH4FGoDSmKUBjh5jQAl6TadmVA6AqYEqa2xYATbsx1D6iJC8S/wxArKTaI/zBeWRL7Xc
-         Q9Y7jspKhCXgJNeFG8flZXps6gGgL9el0MlR+qfzQV7m84/PFEsOalhGWoZzsCX4hvZL
-         FSu0CC5+sWyTVJQWO7XZsVC42SaHx9V5PAqn9LVCqfeqn9Vva+t8rrWFY647H4osmp/R
-         +m/w==
-X-Gm-Message-State: AOJu0YxMhOgrQHLQdfBKUE0Nmx6YXdqXTvw2E52DEwbId2GDAPuk6e08
-	i32VFQjUU+5frD6ZMF2HEilJ1Dtv3XG8ezgm2jGRiCLMOazvclR50gBG
-X-Gm-Gg: ASbGncvUxxsmpDaOrgNaMRomGug5xlG7inDroeAi1He8Sy8S8n1SL1xNTXbx3D0/6cU
-	eGCrS0EZNbHKjmiIqaQxwFq2XTmcYX1KcM+ChyEJzmpQ5TLZgtYPDPKwDEdJy0VChOeLpI3a/my
-	SLM1avgw4D7BV9lrGmPkP7M2RY1613YJ1fdpHaLBUVJDdmJCw8dwuz29+cCEVdKYsmjkjWW9XbU
-	7RY9prBQwVpHj7p7MnFq+m8rNrX0WEIj9PGf4pf52DJjmJqwvMpYd7+y4Zb49QGRijefXkMua7B
-	qHN1I771d9PvTS5jFGt8rEYAQTCLOrm391iOas+BLaY2lCY6D/YCfb/RHUbMncI8zTQePIIjY9u
-	97u4Lj/3ZHyWJhD4SJ3b+RMmqqtPwe2UIBg1R8OW00CL9
-X-Google-Smtp-Source: AGHT+IETyclgoC3/kP2x/Xtmcnc4HLt8X24CdhRyQ7WeY9046AXJnN9GiR46XdEO9ZMshU4kGunA6A==
-X-Received: by 2002:a17:902:ec8a:b0:24b:74da:627a with SMTP id d9443c01a7336-2516f050096mr100680835ad.11.1757294705193;
-        Sun, 07 Sep 2025 18:25:05 -0700 (PDT)
-Received: from ubuntu.. ([43.132.141.24])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24ccfc56ec1sm94646545ad.59.2025.09.07.18.25.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Sep 2025 18:25:04 -0700 (PDT)
-From: Hengqi Chen <hengqi.chen@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	bjorn@kernel.org,
-	pulehui@huawei.com,
-	puranjay@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Hengqi Chen <hengqi.chen@gmail.com>
-Subject: [PATCH bpf-next v3] riscv, bpf: Sign extend struct ops return values properly
-Date: Mon,  8 Sep 2025 01:24:48 +0000
-Message-ID: <20250908012448.1695-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.45.2
+        d=1e100.net; s=20230601; t=1757298405; x=1757903205;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RKWvySzWJat18AGVts8d21jsFhMMlrxadhW2bRjy+yU=;
+        b=Hmsjg2R+yWqGd9MzgBKmBmKAmGARmsyC53P1YNAHbboig9M1eGtceemeUKwTrLbCut
+         dd6/w2TJ0483djqLrJ6QowCPnrWJp0w9CsDBy+Io4Y3by85DFZyycRjujBpq7oJgBbaq
+         sJgym+97lBHCDM29yrNiABdQgCUnjfVJePDbMO1bfPcBv3XEFdQRatn7FKzBR8soot2J
+         iI/uFETTyf578Ja+3fgxA45WPv9boCeSOkaS32uwCUyR0Jei0Rq1UOQ34n8mS59asRCS
+         8nW1r2DHGFlGu9y47IxvANxFq29egv5RMsmwZnbgbd/f3nIJUqmFzgded5M+jFvNJUv9
+         KwUg==
+X-Forwarded-Encrypted: i=1; AJvYcCUHL8Q/Eyj9aSx4S2eEH+Hu2dUW8lApLfSyj9/qH9F4vCvP7wxCY6wr6bep8gPYFndhfyDSXKc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRnFt6KBxVSjMGWLElojaI2XNznOv6ks5sja9cDBAnfqnmeOyr
+	dXghGwDYvOET0SUH6g6aIH5SNlCARvgTjcRGpsV1/Wwfp2TizSrs4B1M2sHV8q89ludQTrp1IN2
+	ugo0w0ybUDaWgTpd1qYwTA6uRAEQb6DAo+o+GI5DeUA==
+X-Gm-Gg: ASbGnct5hmQzfS2jRRVXEVdAPrrqFhtov93ZNb56GY1GQLYmNbXAR+n69aG8EvNcFwv
+	sAaN9n2fWE6EltoJ+SDIuNaK89SiQzybq1Ef6F7so2onDt6QJiILzJL/vOSyAkEvT71uqT5QF/D
+	a3bpVOWWu5cZPP/i18UDK1XThNdTI2arO3c+3eDV8eBlV9gQertjBd24XS+p3MFKIleCenWl1wk
+	DN9p8/Dxg8=
+X-Google-Smtp-Source: AGHT+IGU/1zalxz9wTU2SvwU3vfFkZ9jX3VYp3UpaQeHN5eLQ6m6U8e8cuuxSf7ptKVwwUZM/lXUnoMQGR8m3FXh5MA=
+X-Received: by 2002:a05:6e02:3c06:b0:3f0:a48b:151b with SMTP id
+ e9e14a558f8ab-3fd8a398275mr97697525ab.31.1757298405366; Sun, 07 Sep 2025
+ 19:26:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250904194907.2342177-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20250904194907.2342177-1-maciej.fijalkowski@intel.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Mon, 8 Sep 2025 10:26:08 +0800
+X-Gm-Features: Ac12FXxAxVckqQ1YOtNIaZQeoA2IQYVRnBPKeEfGXIlgfSQiMdeF-3sbNbMCffo
+Message-ID: <CAL+tcoCX0X8mNa1xn-B6T=WoCmAVcMBD0haFO+AaxscwN_F0=Q@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf] xsk: fix immature cq descriptor production
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com, 
+	stfomichev@gmail.com, aleksander.lobakin@intel.com, 
+	Eryk Kubanski <e.kubanski@partner.samsung.com>, Stanislav Fomichev <sdf@fomichev.me>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The ns_bpf_qdisc selftest triggers a kernel panic:
+On Fri, Sep 5, 2025 at 3:49=E2=80=AFAM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> Eryk reported an issue that I have put under Closes: tag, related to
+> umem addrs being prematurely produced onto pool's completion queue.
+> Let us make the skb's destructor responsible for producing all addrs
+> that given skb used.
+>
+> Commit from fixes tag introduced the buggy behavior, it was not broken
+> from day 1, but rather when xsk multi-buffer got introduced.
+>
+> In order to mitigate performance impact as much as possible, mimic the
+> linear and frag parts within skb by storing the first address from XSK
+> descriptor at sk_buff::destructor_arg. For fragments, store them at ::cb
+> via list. The nodes that will go onto list will be allocated via
+> kmem_cache. xsk_destruct_skb() will consume address stored at
+> ::destructor_arg and optionally go through list from ::cb, if count of
+> descriptors associated with this particular skb is bigger than 1.
+>
+> Previous approach where whole array for storing UMEM addresses from XSK
+> descriptors was pre-allocated during first fragment processing yielded
+> too big performance regression for 64b traffic. In current approach
+> impact is much reduced on my tests and for jumbo frames I observed
+> traffic being slower by at most 9%.
+>
+> Magnus suggested to have this way of processing special cased for
+> XDP_SHARED_UMEM, so we would identify this during bind and set different
+> hooks for 'backpressure mechanism' on CQ and for skb destructor, but
+> given that results looked promising on my side I decided to have a
+> single data path for XSK generic Tx. I suppose other auxiliary stuff
+> would have to land as well in order to make it work.
+>
+> Fixes: b7f72a30e9ac ("xsk: introduce wrappers and helpers for supporting =
+multi-buffer in Tx path")
+> Reported-by: Eryk Kubanski <e.kubanski@partner.samsung.com>
+> Closes: https://lore.kernel.org/netdev/20250530103456.53564-1-e.kubanski@=
+partner.samsung.com/
+> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-    Unable to handle kernel paging request at virtual address ffffffffa38dbf58
-    Current test_progs pgtable: 4K pagesize, 57-bit VAs, pgdp=0x00000001109cc000
-    [ffffffffa38dbf58] pgd=000000011fffd801, p4d=000000011fffd401, pud=000000011fffd001, pmd=0000000000000000
-    Oops [#1]
-    Modules linked in: bpf_testmod(OE) xt_conntrack nls_iso8859_1 dm_mod drm drm_panel_orientation_quirks configfs backlight btrfs blake2b_generic xor lzo_compress zlib_deflate raid6_pq efivarfs [last unloaded: bpf_testmod(OE)]
-    CPU: 1 UID: 0 PID: 23584 Comm: test_progs Tainted: G        W  OE       6.17.0-rc1-g2465bb83e0b4 #1 NONE
-    Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-    Hardware name: Unknown Unknown Product/Unknown Product, BIOS 2024.01+dfsg-1ubuntu5.1 01/01/2024
-    epc : __qdisc_run+0x82/0x6f0
-     ra : __qdisc_run+0x6e/0x6f0
-    epc : ffffffff80bd5c7a ra : ffffffff80bd5c66 sp : ff2000000eecb550
-     gp : ffffffff82472098 tp : ff60000096895940 t0 : ffffffff8001f180
-     t1 : ffffffff801e1664 t2 : 0000000000000000 s0 : ff2000000eecb5d0
-     s1 : ff60000093a6a600 a0 : ffffffffa38dbee8 a1 : 0000000000000001
-     a2 : ff2000000eecb510 a3 : 0000000000000001 a4 : 0000000000000000
-     a5 : 0000000000000010 a6 : 0000000000000000 a7 : 0000000000735049
-     s2 : ffffffffa38dbee8 s3 : 0000000000000040 s4 : ff6000008bcda000
-     s5 : 0000000000000008 s6 : ff60000093a6a680 s7 : ff60000093a6a6f0
-     s8 : ff60000093a6a6ac s9 : ff60000093140000 s10: 0000000000000000
-     s11: ff2000000eecb9d0 t3 : 0000000000000000 t4 : 0000000000ff0000
-     t5 : 0000000000000000 t6 : ff60000093a6a8b6
-    status: 0000000200000120 badaddr: ffffffffa38dbf58 cause: 000000000000000d
-    [<ffffffff80bd5c7a>] __qdisc_run+0x82/0x6f0
-    [<ffffffff80b6fe58>] __dev_queue_xmit+0x4c0/0x1128
-    [<ffffffff80b80ae0>] neigh_resolve_output+0xd0/0x170
-    [<ffffffff80d2daf6>] ip6_finish_output2+0x226/0x6c8
-    [<ffffffff80d31254>] ip6_finish_output+0x10c/0x2a0
-    [<ffffffff80d31446>] ip6_output+0x5e/0x178
-    [<ffffffff80d2e232>] ip6_xmit+0x29a/0x608
-    [<ffffffff80d6f4c6>] inet6_csk_xmit+0xe6/0x140
-    [<ffffffff80c985e4>] __tcp_transmit_skb+0x45c/0xaa8
-    [<ffffffff80c995fe>] tcp_connect+0x9ce/0xd10
-    [<ffffffff80d66524>] tcp_v6_connect+0x4ac/0x5e8
-    [<ffffffff80cc19b8>] __inet_stream_connect+0xd8/0x318
-    [<ffffffff80cc1c36>] inet_stream_connect+0x3e/0x68
-    [<ffffffff80b42b20>] __sys_connect_file+0x50/0x88
-    [<ffffffff80b42bee>] __sys_connect+0x96/0xc8
-    [<ffffffff80b42c40>] __riscv_sys_connect+0x20/0x30
-    [<ffffffff80e5bcae>] do_trap_ecall_u+0x256/0x378
-    [<ffffffff80e69af2>] handle_exception+0x14a/0x156
-    Code: 892a 0363 1205 489c 8bc1 c7e5 2d03 084a 2703 080a (2783) 0709
-    ---[ end trace 0000000000000000 ]---
+Tested-by: Jason Xing <kerneljasonxing@gmail.com>
+Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
 
-The bpf_fifo_dequeue prog returns a skb which is a pointer.
-The pointer is treated as a 32bit value and sign extend to
-64bit in epilogue. This behavior is right for most bpf prog
-types but wrong for struct ops which requires RISC-V ABI.
+Thanks!
 
-So let's sign extend struct ops return values according to
-the function model and RISC-V ABI([0]).
+> ---
+> v1:
+> https://lore.kernel.org/bpf/20250702101648.1942562-1-maciej.fijalkowski@i=
+ntel.com/
+> v2:
+> https://lore.kernel.org/bpf/20250705135512.1963216-1-maciej.fijalkowski@i=
+ntel.com/
+> v3:
+> https://lore.kernel.org/bpf/20250806154127.2161434-1-maciej.fijalkowski@i=
+ntel.com/
+> v4:
+> https://lore.kernel.org/bpf/20250813171210.2205259-1-maciej.fijalkowski@i=
+ntel.com/
+> v5:
+> https://lore.kernel.org/bpf/aKXBHGPxjpBDKOHq@boxer/T/
+> v6:
+> https://lore.kernel.org/bpf/20250820154416.2248012-1-maciej.fijalkowski@i=
+ntel.com/
+> v7:
+> https://lore.kernel.org/bpf/20250829180950.2305157-1-maciej.fijalkowski@i=
+ntel.com/
+> v8:
+> https://lore.kernel.org/bpf/07646dce-dab4-4afe-a09a-e6a83502ac30@intel.co=
+m/T/
+>
+> v1->v2:
+> * store addrs in array carried via destructor_arg instead having them
+>   stored in skb headroom; cleaner and less hacky approach;
+> v2->v3:
+> * use kmem_cache for xsk_addrs allocation (Stan/Olek)
+> * set err when xsk_addrs allocation fails (Dan)
+> * change xsk_addrs layout to avoid holes
+> * free xsk_addrs on error path
+> * rebase
+> v3->v4:
+> * have kmem_cache as percpu vars
+> * don't drop unnecessary braces (unrelated) (Stan)
+> * use idx + i in xskq_prod_write_addr (Stan)
+> * alloc kmem_cache on bind (Stan)
+> * keep num_descs as first member in xsk_addrs (Magnus)
+> * add ack from Magnus
+> v4->v5:
+> * have a single kmem_cache per xsk subsystem (Stan)
+> v5->v6:
+> * free skb in xsk_build_skb_zerocopy() when xsk_addrs allocation fails
+>   (Stan)
+> * unregister netdev notifier if creating kmem_cache fails (Stan)
+> v6->v7:
+> * don't include Acks from Magnus/Stan; let them review the new
+>   approach:)
+> * store first desc at sk_buff::destructor_arg and rest of frags in list
+>   stored at sk_buff::cb
+> * keep the kmem_cache but don't use it for allocation of whole array at
+>   one shot but rather alloc single nodes of list
+> v7->v8:
+> * fix a problem around incrementing num_descs when kmem_cache failed to
+>   provide us chunk of memory (Jason)
+> * restore Ack from Stanislav
+> * include BUILD_BUG_ON to cover xsk_addr_head future growth (Stan)
+> * s/i/descs_processed/ in xsk_cq_submit_addr_locked() (Magnus)
+> v8->v9:
+> * fix 32bit build warnings by uintptr_t casts on void * <-> u64
+>   conversion
+>
+> ---
+>  net/xdp/xsk.c       | 113 ++++++++++++++++++++++++++++++++++++++------
+>  net/xdp/xsk_queue.h |  12 +++++
+>  2 files changed, 111 insertions(+), 14 deletions(-)
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 9c3acecc14b1..72e34bd2d925 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -36,6 +36,20 @@
+>  #define TX_BATCH_SIZE 32
+>  #define MAX_PER_SOCKET_BUDGET 32
+>
+> +struct xsk_addr_node {
+> +       u64 addr;
+> +       struct list_head addr_node;
+> +};
+> +
+> +struct xsk_addr_head {
+> +       u32 num_descs;
+> +       struct list_head addrs_list;
+> +};
+> +
+> +static struct kmem_cache *xsk_tx_generic_cache;
+> +
+> +#define XSKCB(skb) ((struct xsk_addr_head *)((skb)->cb))
+> +
+>  void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
+>  {
+>         if (pool->cached_need_wakeup & XDP_WAKEUP_RX)
+> @@ -532,24 +546,43 @@ static int xsk_wakeup(struct xdp_sock *xs, u8 flags=
+)
+>         return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
+>  }
+>
+> -static int xsk_cq_reserve_addr_locked(struct xsk_buff_pool *pool, u64 ad=
+dr)
+> +static int xsk_cq_reserve_locked(struct xsk_buff_pool *pool)
+>  {
+>         unsigned long flags;
+>         int ret;
+>
+>         spin_lock_irqsave(&pool->cq_lock, flags);
+> -       ret =3D xskq_prod_reserve_addr(pool->cq, addr);
+> +       ret =3D xskq_prod_reserve(pool->cq);
+>         spin_unlock_irqrestore(&pool->cq_lock, flags);
+>
+>         return ret;
+>  }
+>
+> -static void xsk_cq_submit_locked(struct xsk_buff_pool *pool, u32 n)
+> +static void xsk_cq_submit_addr_locked(struct xsk_buff_pool *pool,
+> +                                     struct sk_buff *skb)
+>  {
+> +       struct xsk_addr_node *pos, *tmp;
+> +       u32 descs_processed =3D 0;
+>         unsigned long flags;
+> +       u32 idx;
+>
+>         spin_lock_irqsave(&pool->cq_lock, flags);
+> -       xskq_prod_submit_n(pool->cq, n);
+> +       idx =3D xskq_get_prod(pool->cq);
+> +
+> +       xskq_prod_write_addr(pool->cq, idx,
+> +                            (u64)(uintptr_t)skb_shinfo(skb)->destructor_=
+arg);
+> +       descs_processed++;
+> +
+> +       if (unlikely(XSKCB(skb)->num_descs > 1)) {
+> +               list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_lis=
+t, addr_node) {
+> +                       xskq_prod_write_addr(pool->cq, idx + descs_proces=
+sed,
+> +                                            pos->addr);
+> +                       descs_processed++;
+> +                       list_del(&pos->addr_node);
+> +                       kmem_cache_free(xsk_tx_generic_cache, pos);
+> +               }
+> +       }
+> +       xskq_prod_submit_n(pool->cq, descs_processed);
+>         spin_unlock_irqrestore(&pool->cq_lock, flags);
+>  }
+>
+> @@ -562,9 +595,14 @@ static void xsk_cq_cancel_locked(struct xsk_buff_poo=
+l *pool, u32 n)
+>         spin_unlock_irqrestore(&pool->cq_lock, flags);
+>  }
+>
+> +static void xsk_inc_num_desc(struct sk_buff *skb)
+> +{
+> +       XSKCB(skb)->num_descs++;
+> +}
+> +
+>  static u32 xsk_get_num_desc(struct sk_buff *skb)
+>  {
+> -       return skb ? (long)skb_shinfo(skb)->destructor_arg : 0;
+> +       return XSKCB(skb)->num_descs;
+>  }
+>
+>  static void xsk_destruct_skb(struct sk_buff *skb)
+> @@ -576,23 +614,33 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+>                 *compl->tx_timestamp =3D ktime_get_tai_fast_ns();
+>         }
+>
+> -       xsk_cq_submit_locked(xdp_sk(skb->sk)->pool, xsk_get_num_desc(skb)=
+);
+> +       xsk_cq_submit_addr_locked(xdp_sk(skb->sk)->pool, skb);
+>         sock_wfree(skb);
+>  }
+>
+> -static void xsk_set_destructor_arg(struct sk_buff *skb)
+> +static void xsk_set_destructor_arg(struct sk_buff *skb, u64 addr)
+>  {
+> -       long num =3D xsk_get_num_desc(xdp_sk(skb->sk)->skb) + 1;
+> -
+> -       skb_shinfo(skb)->destructor_arg =3D (void *)num;
+> +       BUILD_BUG_ON(sizeof(struct xsk_addr_head) > sizeof(skb->cb));
+> +       INIT_LIST_HEAD(&XSKCB(skb)->addrs_list);
+> +       XSKCB(skb)->num_descs =3D 0;
+> +       skb_shinfo(skb)->destructor_arg =3D (void *)(uintptr_t)addr;
+>  }
+>
+>  static void xsk_consume_skb(struct sk_buff *skb)
+>  {
+>         struct xdp_sock *xs =3D xdp_sk(skb->sk);
+> +       u32 num_descs =3D xsk_get_num_desc(skb);
+> +       struct xsk_addr_node *pos, *tmp;
+> +
+> +       if (unlikely(num_descs > 1)) {
+> +               list_for_each_entry_safe(pos, tmp, &XSKCB(skb)->addrs_lis=
+t, addr_node) {
+> +                       list_del(&pos->addr_node);
+> +                       kmem_cache_free(xsk_tx_generic_cache, pos);
+> +               }
+> +       }
+>
+>         skb->destructor =3D sock_wfree;
+> -       xsk_cq_cancel_locked(xs->pool, xsk_get_num_desc(skb));
+> +       xsk_cq_cancel_locked(xs->pool, num_descs);
+>         /* Free skb without triggering the perf drop trace */
+>         consume_skb(skb);
+>         xs->skb =3D NULL;
+> @@ -609,6 +657,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct =
+xdp_sock *xs,
+>  {
+>         struct xsk_buff_pool *pool =3D xs->pool;
+>         u32 hr, len, ts, offset, copy, copied;
+> +       struct xsk_addr_node *xsk_addr;
+>         struct sk_buff *skb =3D xs->skb;
+>         struct page *page;
+>         void *buffer;
+> @@ -623,6 +672,19 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct=
+ xdp_sock *xs,
+>                         return ERR_PTR(err);
+>
+>                 skb_reserve(skb, hr);
+> +
+> +               xsk_set_destructor_arg(skb, desc->addr);
+> +       } else {
+> +               xsk_addr =3D kmem_cache_zalloc(xsk_tx_generic_cache, GFP_=
+KERNEL);
+> +               if (!xsk_addr)
 
-  [0]: https://riscv.org/wp-content/uploads/2024/12/riscv-calling.pdf
+nit: unlikely(). No need to respin :)
 
-Fixes: 25ad10658dc1 ("riscv, bpf: Adapt bpf trampoline to optimized riscv ftrace framework")
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- arch/riscv/net/bpf_jit_comp64.c | 42 ++++++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
+> +                       return ERR_PTR(-ENOMEM);
+> +
+> +               /* in case of -EOVERFLOW that could happen below,
+> +                * xsk_consume_skb() will release this node as whole skb
+> +                * would be dropped, which implies freeing all list eleme=
+nts
+> +                */
+> +               xsk_addr->addr =3D desc->addr;
+> +               list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_li=
+st);
+>         }
+>
+>         addr =3D desc->addr;
+> @@ -694,8 +756,11 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock=
+ *xs,
+>                         err =3D skb_store_bits(skb, 0, buffer, len);
+>                         if (unlikely(err))
+>                                 goto free_err;
+> +
+> +                       xsk_set_destructor_arg(skb, desc->addr);
+>                 } else {
+>                         int nr_frags =3D skb_shinfo(skb)->nr_frags;
+> +                       struct xsk_addr_node *xsk_addr;
+>                         struct page *page;
+>                         u8 *vaddr;
+>
+> @@ -710,12 +775,22 @@ static struct sk_buff *xsk_build_skb(struct xdp_soc=
+k *xs,
+>                                 goto free_err;
+>                         }
+>
+> +                       xsk_addr =3D kmem_cache_zalloc(xsk_tx_generic_cac=
+he, GFP_KERNEL);
+> +                       if (!xsk_addr) {
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 397968d6ee09..a860be52dc49 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -711,6 +711,39 @@ static int emit_atomic_rmw(u8 rd, u8 rs, const struct bpf_insn *insn,
- 	return 0;
- }
- 
-+/*
-+ * Sign-extend the register if necessary
-+ */
-+static int sign_extend(u8 rd, u8 rs, u8 sz, bool sign, struct rv_jit_context *ctx)
-+{
-+	if (!sign && (sz == 1 || sz == 2)) {
-+		if (rd != rs)
-+			emit_mv(rd, rs, ctx);
-+		return 0;
-+	}
-+
-+	switch (sz) {
-+	case 1:
-+		emit_sextb(rd, rs, ctx);
-+		break;
-+	case 2:
-+		emit_sexth(rd, rs, ctx);
-+		break;
-+	case 4:
-+		emit_sextw(rd, rs, ctx);
-+		break;
-+	case 8:
-+		if (rd != rs)
-+			emit_mv(rd, rs, ctx);
-+		break;
-+	default:
-+		pr_err("bpf-jit: invalid size %d for sign_extend\n", sz);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
- #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
- #define REG_DONT_CLEAR_MARKER	0	/* RV_REG_ZERO unused in pt_regmap */
-@@ -1175,8 +1208,15 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 		restore_args(min_t(int, nr_arg_slots, RV_MAX_REG_ARGS), args_off, ctx);
- 
- 	if (save_ret) {
--		emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
- 		emit_ld(regmap[BPF_REG_0], -(retval_off - 8), RV_REG_FP, ctx);
-+		if (is_struct_ops) {
-+			ret = sign_extend(RV_REG_A0, regmap[BPF_REG_0], m->ret_size,
-+					  m->ret_flags & BTF_FMODEL_SIGNED_ARG, ctx);
-+			if (ret)
-+				goto out;
-+		} else {
-+			emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
-+		}
- 	}
- 
- 	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
--- 
-2.45.2
+same here.
 
+Thanks,
+Jason
+
+> +                               __free_page(page);
+> +                               err =3D -ENOMEM;
+> +                               goto free_err;
+> +                       }
+> +
+>                         vaddr =3D kmap_local_page(page);
+>                         memcpy(vaddr, buffer, len);
+>                         kunmap_local(vaddr);
+>
+>                         skb_add_rx_frag(skb, nr_frags, page, 0, len, PAGE=
+_SIZE);
+>                         refcount_add(PAGE_SIZE, &xs->sk.sk_wmem_alloc);
+> +
+> +                       xsk_addr->addr =3D desc->addr;
+> +                       list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->=
+addrs_list);
+>                 }
+>
+>                 if (first_frag && desc->options & XDP_TX_METADATA) {
+> @@ -759,7 +834,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock =
+*xs,
+>         skb->mark =3D READ_ONCE(xs->sk.sk_mark);
+>         skb->destructor =3D xsk_destruct_skb;
+>         xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
+> -       xsk_set_destructor_arg(skb);
+> +       xsk_inc_num_desc(skb);
+>
+>         return skb;
+>
+> @@ -769,7 +844,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock =
+*xs,
+>
+>         if (err =3D=3D -EOVERFLOW) {
+>                 /* Drop the packet */
+> -               xsk_set_destructor_arg(xs->skb);
+> +               xsk_inc_num_desc(xs->skb);
+>                 xsk_drop_skb(xs->skb);
+>                 xskq_cons_release(xs->tx);
+>         } else {
+> @@ -812,7 +887,7 @@ static int __xsk_generic_xmit(struct sock *sk)
+>                  * if there is space in it. This avoids having to impleme=
+nt
+>                  * any buffering in the Tx path.
+>                  */
+> -               err =3D xsk_cq_reserve_addr_locked(xs->pool, desc.addr);
+> +               err =3D xsk_cq_reserve_locked(xs->pool);
+>                 if (err) {
+>                         err =3D -EAGAIN;
+>                         goto out;
+> @@ -1815,8 +1890,18 @@ static int __init xsk_init(void)
+>         if (err)
+>                 goto out_pernet;
+>
+> +       xsk_tx_generic_cache =3D kmem_cache_create("xsk_generic_xmit_cach=
+e",
+> +                                                sizeof(struct xsk_addr_n=
+ode),
+> +                                                0, SLAB_HWCACHE_ALIGN, N=
+ULL);
+> +       if (!xsk_tx_generic_cache) {
+> +               err =3D -ENOMEM;
+> +               goto out_unreg_notif;
+> +       }
+> +
+>         return 0;
+>
+> +out_unreg_notif:
+> +       unregister_netdevice_notifier(&xsk_netdev_notifier);
+>  out_pernet:
+>         unregister_pernet_subsys(&xsk_net_ops);
+>  out_sk:
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index 46d87e961ad6..f16f390370dc 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -344,6 +344,11 @@ static inline u32 xskq_cons_present_entries(struct x=
+sk_queue *q)
+>
+>  /* Functions for producers */
+>
+> +static inline u32 xskq_get_prod(struct xsk_queue *q)
+> +{
+> +       return READ_ONCE(q->ring->producer);
+> +}
+> +
+>  static inline u32 xskq_prod_nb_free(struct xsk_queue *q, u32 max)
+>  {
+>         u32 free_entries =3D q->nentries - (q->cached_prod - q->cached_co=
+ns);
+> @@ -390,6 +395,13 @@ static inline int xskq_prod_reserve_addr(struct xsk_=
+queue *q, u64 addr)
+>         return 0;
+>  }
+>
+> +static inline void xskq_prod_write_addr(struct xsk_queue *q, u32 idx, u6=
+4 addr)
+> +{
+> +       struct xdp_umem_ring *ring =3D (struct xdp_umem_ring *)q->ring;
+> +
+> +       ring->desc[idx & q->ring_mask] =3D addr;
+> +}
+> +
+>  static inline void xskq_prod_write_addr_batch(struct xsk_queue *q, struc=
+t xdp_desc *descs,
+>                                               u32 nb_entries)
+>  {
+> --
+> 2.43.0
+>
 
