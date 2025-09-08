@@ -1,290 +1,183 @@
-Return-Path: <bpf+bounces-67742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67743-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E427B496E5
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:24:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 685F0B496FA
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:32:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE048164BB2
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 17:24:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D5981C25AA3
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 17:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC49E31283A;
-	Mon,  8 Sep 2025 17:24:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424FC313288;
+	Mon,  8 Sep 2025 17:32:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C2vV+QMV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PaPT8sxo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15B41E1DE7;
-	Mon,  8 Sep 2025 17:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F302A35947
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 17:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757352242; cv=none; b=dwqTRsWf0M6zh9+twdlmh8zon3Vgk7sJAUp4feyCG3qUdBD4cT4xoEB4azEz0FWVvU2ppI2iAqacXpiIJT50e+fj1jZ3MBs6VdjwDanUVf2IpeZkeEoDeZP4SEyzODAJLrlKvW1B7B4opBNi2gIv0uSWWaYpwuu1l70WMcbt7q0=
+	t=1757352762; cv=none; b=l9zBbu3BoR3i0gGon8W45c4t2jl94z0glsWZW9DcHaGHom1Zh+RAplvgXDLFLaN3w9s1LEvDWP4/4Coy7UaqH8CC5oBQWKS43dq2hUtoFmsUJw68A2SQqWlmwkFQUyniDH5+h9rnUuo3CToQuZTCn5d0HfeWnNGgC0m5whpcdbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757352242; c=relaxed/simple;
-	bh=qneFfOqnL/55hc/APD1To1k5e3b7xuMXLn1DjS+W9Cc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UT9gIoModkffWt8I4IckHFRuKPVbvL5KmcqrqEKsbPDcSMbaKQtJat3YYfE0/NQfXwuiRI6xinLCnlcfqEjpC7qS+HO61hAmRqTFD/1NytbrNcn29R7u75tDDuqfWLFSokEiICbmMG1ZxTs20OhrA1gJjy7XTagkWeQaH8Va//A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C2vV+QMV; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-71d6059f490so40334467b3.3;
-        Mon, 08 Sep 2025 10:24:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757352240; x=1757957040; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yuKkpzYEiCvO71Ei8abl0SPWjd7LNSODsnz5Kg8MlhA=;
-        b=C2vV+QMVJFDfR8jehzlTm5HJbwVXpDKegkYWvu9e1mKM7Q/VKBMONgRrYUD4vze+je
-         w3S/scGhQcI8TDxSt37Mq8rK2epOK8JNh30Se0eixan5bXfwKmCczcRvTJBZ1lpSL6fJ
-         rNXDgX2jjD3u2j95EbOEIJGBqi5HhC6vA9GswNZwsG4Y1AOVjJXldjC4/E+jftOciRZv
-         Z4dV3SvORoqVE/Y6VrPmS1UxDUEhQk9WC+uOOk339p5NdwHYG3G09Jkswwck0TJmYlRW
-         jSO3rV9a7AlecJRSCm3n4ZHPcfD43ZNQuwLXzV4R6qCr3VWyvXEJWZfBeKP8IcJwswCt
-         fIuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757352240; x=1757957040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yuKkpzYEiCvO71Ei8abl0SPWjd7LNSODsnz5Kg8MlhA=;
-        b=iiBSGKlt+fzG3p+dsL/mAeQ/Y5s5pbg3AXDMZ02Rihgu252I3vZpmTxLCDESXsRrJy
-         tD3gVtiwjWaH/LUNJwzWWr0OPt2tonfD/zr8Rw1J3p8Cv7K86eKXTkNyTMp5+Ow6a9BO
-         0Fc8k3dYwTVumVuzQ4Tvvx1CCtZtEbV2Rgrv2IpNW1JJtKnEjlYJmfUEgb7CbM0IpRSC
-         puhIpi3ooBfv9PSLvSwE0zRT3nIlUzl9dB8o8zQRqsekxLhFV3yau86wh/RTWE9bz92Q
-         o1TQnK08I8KYo5jZjl5Vhw8H/MjlezqIVFc85+y4bZG6dKZwC9FMMpYMMbCKnYOFgaRH
-         exlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX0Xyuobl35QzRB7c/c8X+eAHlEceC5anqA4VUH1I62EdDz8CrB4mzsfXrIJ5yMaau25OFuoa4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzO+XBUcjRXfQhm0ZWEO+CeZLX9ZBra3tWiQBbdtbX0+WW59zxb
-	o5vQC1I1LLZAeojltEgBMbyhaj+J0WYeEd6o37hsJb8L1dg4GnOI2wxImerTnmHB/9d6XNhN4tl
-	/emxZZTOatEkEKRN0JbVcLHOVrNFyuJNFKHEL
-X-Gm-Gg: ASbGncvPQzZc5REC8vw85wBKCD0qFk7+lH4Eu5k/VQWm5NLinvYiQ2dwDnLzDtq1HNX
-	ccMnIFZqiHj5l0hn4fCZBRJ/9QLhu1NbxXyLI3VEahb+tG5xSPgNYi2T6JF48F2qtlrI72cxtN9
-	ssCtGPLWgbDI4KmZ8j7AX7kerFE33NSkKXJhxDNrm4+1V+lVB2Op1U10QpQFzzqTHVFQ2fQsGQa
-	STWMjs=
-X-Google-Smtp-Source: AGHT+IFmcR6kIZTfFFH38Mv50nfyJ8VTSCs13f+os33Iq32qw8+PAHy+dsPhdR+ID+BxjLqjAnctIj1Ev7XrqZSudYk=
-X-Received: by 2002:a05:690c:4444:b0:721:3bd0:d5b4 with SMTP id
- 00721157ae682-727f652a236mr79006277b3.33.1757352239722; Mon, 08 Sep 2025
- 10:23:59 -0700 (PDT)
+	s=arc-20240116; t=1757352762; c=relaxed/simple;
+	bh=HNDyIXFjXlFMtYtVfiM4CJ1KbvodoBg5GWrt+WBLMpM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ewlhw/m4dusIDT+JmwPTnGq/g01wDOKAhI/dthdSfRli4GN/6OBksPTt+phXox2FLRc5L1lux+5ciPKZvHk59W9BKcrLTX3wmvb9G820GShgGwFxUXKRCeXqXJN61URhKE8GpIt2uHtjhUFErDHJupYD5jsaJh3SxmR8nkTWz4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PaPT8sxo; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 8 Sep 2025 10:32:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757352757;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zv9Ta4mThEV4XBqO1qxHvbCXn2hXPpn499vn6yt4SLY=;
+	b=PaPT8sxopmQs/goLFGqee+bzc4AGGChuBX+kzsBj8jmIJC4SPTpG5yEe882ldBSHcRVJZR
+	9pXtxwb4Ye35WfAxVQOi2FCCVznhXNbfonLQctD629gDl/xwxqLvkJJRQc7p/BW6cMIaue
+	pEzPqDtRAWRdjPVpinx034Gbnk2rRK0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Peilin Ye <yepeilin@google.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, 
+	linux-mm@kvack.org
+Subject: Re: [PATCH bpf] bpf/helpers: Use __GFP_HIGH instead of GFP_ATOMIC in
+ __bpf_async_init()
+Message-ID: <b634rejnvxqu6knjqlijosxrcnxbbpagt4de4pl6env6dwldz2@hoofqufparh5>
+References: <20250905234547.862249-1-yepeilin@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250905173352.3759457-1-ameryhung@gmail.com> <20250905173352.3759457-2-ameryhung@gmail.com>
- <4hgasq7ibnulieu77b4bryhouggobgousci7z2i3pefv7ofysh@j3qeucyw5wv5>
-In-Reply-To: <4hgasq7ibnulieu77b4bryhouggobgousci7z2i3pefv7ofysh@j3qeucyw5wv5>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 8 Sep 2025 10:23:48 -0700
-X-Gm-Features: Ac12FXxxe1yFTTrTU9YLONLqW1XUVSPH2DSVnCDNx2pozF0qEODf_ma-DU3pwss
-Message-ID: <CAMB2axOoZysP2QtiLF+rYU_RebF140zPN4FjAm3AF1wW8yFLuQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/7] net/mlx5e: Fix generating skb from
- nonlinear xdp_buff
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, kuba@kernel.org, 
-	stfomichev@gmail.com, martin.lau@kernel.org, mohsin.bashr@gmail.com, 
-	noren@nvidia.com, saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, 
-	maciej.fijalkowski@intel.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250905234547.862249-1-yepeilin@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Sep 8, 2025 at 7:42=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com>=
- wrote:
+On Fri, Sep 05, 2025 at 11:45:46PM +0000, Peilin Ye wrote:
+> Currently, calling bpf_map_kmalloc_node() from __bpf_async_init() can
+> cause various locking issues; see the following stack trace (edited for
+> style) as one example:
+> 
+> ...
+>  [10.011566]  do_raw_spin_lock.cold
+>  [10.011570]  try_to_wake_up             (5) double-acquiring the same
+>  [10.011575]  kick_pool                      rq_lock, causing a hardlockup
+>  [10.011579]  __queue_work
+>  [10.011582]  queue_work_on
+>  [10.011585]  kernfs_notify
+>  [10.011589]  cgroup_file_notify
+>  [10.011593]  try_charge_memcg           (4) memcg accounting raises an
+>  [10.011597]  obj_cgroup_charge_pages        MEMCG_MAX event
+>  [10.011599]  obj_cgroup_charge_account
+>  [10.011600]  __memcg_slab_post_alloc_hook
+>  [10.011603]  __kmalloc_node_noprof
+> ...
+>  [10.011611]  bpf_map_kmalloc_node
+>  [10.011612]  __bpf_async_init
+>  [10.011615]  bpf_timer_init             (3) BPF calls bpf_timer_init()
+>  [10.011617]  bpf_prog_xxxxxxxxxxxxxxxx_fcg_runnable
+>  [10.011619]  bpf__sched_ext_ops_runnable
+>  [10.011620]  enqueue_task_scx           (2) BPF runs with rq_lock held
+>  [10.011622]  enqueue_task
+>  [10.011626]  ttwu_do_activate
+>  [10.011629]  sched_ttwu_pending         (1) grabs rq_lock
+> ...
+> 
+> The above was reproduced on bpf-next (b338cf849ec8) by modifying
+> ./tools/sched_ext/scx_flatcg.bpf.c to call bpf_timer_init() during
+> ops.runnable(), and hacking [1] the memcg accounting code a bit to make
+> a bpf_timer_init() call much more likely to raise an MEMCG_MAX event.
+> 
+> We have also run into other similar variants (both internally and on
+> bpf-next), including double-acquiring cgroup_file_kn_lock, the same
+> worker_pool::lock, etc.
+> 
+> As suggested by Shakeel, fix this by using __GFP_HIGH instead of
+> GFP_ATOMIC in __bpf_async_init(), so that if try_charge_memcg() raises
+> an MEMCG_MAX event, we call __memcg_memory_event() with
+> @allow_spinning=false and skip calling cgroup_file_notify(), in order to
+> avoid the locking issues described above.
+> 
+> Depends on mm patch "memcg: skip cgroup_file_notify if spinning is not
+> allowed".  Tested with vmtest.sh (llvm-18, x86-64):
+> 
+>  $ ./test_progs -a '*timer*' -a '*wq*'
+> ...
+>  Summary: 7/12 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> [1] Making bpf_timer_init() much more likely to raise an MEMCG_MAX event
+> (gist-only, for brevity):
+> 
+> kernel/bpf/helpers.c:__bpf_async_init():
+>  -        cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_node);
+>  +        cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC | __GFP_HACK,
+>  +                                  map->numa_node);
+> 
+> mm/memcontrol.c:try_charge_memcg():
+>           if (!do_memsw_account() ||
+>  -            page_counter_try_charge(&memcg->memsw, batch, &counter)) {
+>  -                if (page_counter_try_charge(&memcg->memory, batch, &counter))
+>  +            page_counter_try_charge_hack(&memcg->memsw, batch, &counter,
+>  +                                         gfp_mask & __GFP_HACK)) {
+>  +                if (page_counter_try_charge_hack(&memcg->memory, batch,
+>  +                                                 &counter,
+>  +                                                 gfp_mask & __GFP_HACK))
+>                           goto done_restock;
+> 
+> mm/page_counter.c:page_counter_try_charge():
+>  -bool page_counter_try_charge(struct page_counter *counter,
+>  -                             unsigned long nr_pages,
+>  -                             struct page_counter **fail)
+>  +bool page_counter_try_charge_hack(struct page_counter *counter,
+>  +                                  unsigned long nr_pages,
+>  +                                  struct page_counter **fail, bool hack)
+>  {
+> ...
+>  -                if (new > c->max) {
+>  +                if (hack || new > c->max) {     // goto failed;
+>                           atomic_long_sub(nr_pages, &c->usage);
+> 
+> Fixes: b00628b1c7d5 ("bpf: Introduce bpf timers.")
+> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Signed-off-by: Peilin Ye <yepeilin@google.com>
+> ---
+>  kernel/bpf/helpers.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index b9b0c5fe33f6..508b13c24778 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1274,8 +1274,14 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+>  		goto out;
+>  	}
+>  
+> -	/* allocate hrtimer via map_kmalloc to use memcg accounting */
+> -	cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_node);
+> +	/* Allocate via bpf_map_kmalloc_node() for memcg accounting. Use
+> +	 * __GFP_HIGH instead of GFP_ATOMIC to avoid calling
+> +	 * cgroup_file_notify() if an MEMCG_MAX event is raised by
+> +	 * try_charge_memcg(). This prevents various locking issues, including
+> +	 * double-acquiring locks that may already be held here (e.g.,
+> +	 * cgroup_file_kn_lock, rq_lock).
 
-Resending the reply to the list again as some html stuff accidentally
-got mixed in
-
->
-> On Fri, Sep 05, 2025 at 10:33:45AM -0700, Amery Hung wrote:
-> > xdp programs can change the layout of an xdp_buff through
-> > bpf_xdp_adjust_tail() and bpf_xdp_adjust_head(). Therefore, the driver
-> > cannot assume the size of the linear data area nor fragments. Fix the
-> > bug in mlx5 by generating skb according to xdp_buff after xdp programs
-> > run.
-> >
-> Shouldn't this patch be a fix for net then?
-
-Make sense. I will separate the mlx5 patch from this set and target net.
-
->
-> > Currently, when handling multi-buf xdp, the mlx5 driver assumes the
-> > layout of an xdp_buff to be unchanged. That is, the linear data area
-> > continues to be empty and fragments remains the same. This may cause
-> > the driver to generate erroneous skb or triggering a kernel
-> > warning. When an xdp program added linear data through
-> > bpf_xdp_adjust_head(), the linear data will be ignored as
-> > mlx5e_build_linear_skb() builds an skb without linear data and then
-> > pull data from fragments to fill the linear data area. When an xdp
-> > program has shrunk the non-linear data through bpf_xdp_adjust_tail(),
-> > the delta passed to __pskb_pull_tail() may exceed the actual nonlinear
-> > data size and trigger the BUG_ON in it.
-> >
-> > To fix the issue, first record the original number of fragments. If the
-> > number of fragments changes after the xdp program runs, rewind the end
-> > fragment pointer by the difference and recalculate the truesize. Then,
-> > build the skb with linear data area matching the xdp_buff. Finally, onl=
-y
-> > pull data in if there is non-linear data and fill the linear part up to
-> > 256 bytes.
-> >
-> > Fixes: f52ac7028bec ("net/mlx5e: RX, Add XDP multi-buffer support in St=
-riding RQ")
-> Your fix covers both Legacy RQ and Striding RQ. So the tag is only 1/2
-> correct. Normally we have separate patches for each mode.
-
-Will split the patch into two.
-
->
->
->
-> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> > ---
-> >  .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 38 +++++++++++++++++--
-> >  1 file changed, 35 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/=
-net/ethernet/mellanox/mlx5/core/en_rx.c
-> > index b8c609d91d11..6b6bb90cf003 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > @@ -1729,6 +1729,7 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq,=
- struct mlx5e_wqe_frag_info *wi
-> >       struct mlx5e_wqe_frag_info *head_wi =3D wi;
-> >       u16 rx_headroom =3D rq->buff.headroom;
-> >       struct mlx5e_frag_page *frag_page;
-> > +     u8 nr_frags_free, old_nr_frags;
-> >       struct skb_shared_info *sinfo;
-> >       u32 frag_consumed_bytes;
-> >       struct bpf_prog *prog;
-> > @@ -1772,17 +1773,27 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *r=
-q, struct mlx5e_wqe_frag_info *wi
-> >               wi++;
-> >       }
-> >
-> > +     old_nr_frags =3D sinfo->nr_frags;
-> > +
-> >       prog =3D rcu_dereference(rq->xdp_prog);
-> >       if (prog && mlx5e_xdp_handle(rq, prog, mxbuf)) {
-> >               if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flag=
-s)) {
-> >                       struct mlx5e_wqe_frag_info *pwi;
-> >
-> > +                     wi -=3D old_nr_frags - sinfo->nr_frags;
-> > +
-> >                       for (pwi =3D head_wi; pwi < wi; pwi++)
-> >                               pwi->frag_page->frags++;
-> >               }
-> >               return NULL; /* page/packet was consumed by XDP */
-> >       }
-> >
-> > +     nr_frags_free =3D old_nr_frags - sinfo->nr_frags;
-> > +     if (unlikely(nr_frags_free)) {
-> Even with with a branch prediction hint, is it really worth it?
->
-
-[...]
-
->
-> > +             wi -=3D nr_frags_free;
-> > +             truesize -=3D nr_frags_free * frag_info->frag_stride;
-> > +     }
-> > +
-> >       skb =3D mlx5e_build_linear_skb(
-> >               rq, mxbuf->xdp.data_hard_start, rq->buff.frame0_sz,
-> >               mxbuf->xdp.data - mxbuf->xdp.data_hard_start,
-> > @@ -2004,6 +2015,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_r=
-q *rq, struct mlx5e_mpw_info *w
-> >       u32 byte_cnt       =3D cqe_bcnt;
-> >       struct skb_shared_info *sinfo;
-> >       unsigned int truesize =3D 0;
-> > +     u32 pg_consumed_bytes;
-> >       struct bpf_prog *prog;
-> >       struct sk_buff *skb;
-> >       u32 linear_frame_sz;
-> > @@ -2057,7 +2069,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_r=
-q *rq, struct mlx5e_mpw_info *w
-> >
-> >       while (byte_cnt) {
-> >               /* Non-linear mode, hence non-XSK, which always uses PAGE=
-_SIZE. */
-> > -             u32 pg_consumed_bytes =3D min_t(u32, PAGE_SIZE - frag_off=
-set, byte_cnt);
-> > +             pg_consumed_bytes =3D min_t(u32, PAGE_SIZE - frag_offset,=
- byte_cnt);
-> >
-> >               if (test_bit(MLX5E_RQ_STATE_SHAMPO, &rq->state))
-> >                       truesize +=3D pg_consumed_bytes;
-> > @@ -2073,10 +2085,15 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e=
-_rq *rq, struct mlx5e_mpw_info *w
-> >       }
-> >
-> >       if (prog) {
-> > +             u8 nr_frags_free, old_nr_frags =3D sinfo->nr_frags;
-> > +             u32 len;
-> > +
-> >               if (mlx5e_xdp_handle(rq, prog, mxbuf)) {
-> >                       if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, =
-rq->flags)) {
-> >                               struct mlx5e_frag_page *pfp;
-> >
-> > +                             frag_page -=3D old_nr_frags - sinfo->nr_f=
-rags;
-> > +
-> >                               for (pfp =3D head_page; pfp < frag_page; =
-pfp++)
-> >                                       pfp->frags++;
-> >
-> > @@ -2087,9 +2104,22 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_=
-rq *rq, struct mlx5e_mpw_info *w
-> >                       return NULL; /* page/packet was consumed by XDP *=
-/
-> >               }
-> >
-> > +             len =3D mxbuf->xdp.data_end - mxbuf->xdp.data;
-> > +
-> > +             nr_frags_free =3D old_nr_frags - sinfo->nr_frags;
-> > +             if (unlikely(nr_frags_free)) {
-> Same question about the if.
-
-I see. I will make the recalculation unconditional.
-
->
-> > +                     frag_page -=3D nr_frags_free;
-> > +
-> > +                     /* the last frag is always freed first */
-> > +                     truesize -=3D ALIGN(pg_consumed_bytes, BIT(rq->mp=
-wqe.log_stride_sz));
-> > +                     while (--nr_frags_free)
-> > +                             truesize -=3D nr_frags_free *
-> > +                                         ALIGN(PAGE_SIZE, BIT(rq->mpwq=
-e.log_stride_sz));
-> > +             }
-> > +
-> This doesn't seem correct. It seems to remove too much from truesize
-> when nr_frags_free > 2. I think it should be:
->
-> truesize -=3D ALIGN(pg_consumed_bytes, BIT(rq->mpwqe.log_stride_sz)) -
->             (nr_frags_free - 1) * ALIGN(PAGE_SIZE, BIT(rq->mpwqe.log_stri=
-de_sz));
->
-> And PAGE_SIZE is aligned to stride size so you can shorted it to:
->
-> truesize -=3D ALIGN(pg_consumed_bytes, BIT(rq->mpwqe.log_stride_sz)) -
->             (nr_frags_free - 1) * PAGE_SIZE;
-
-Sorry that I was being sloppy here. You are correct, and I think you
-probably meant "+" instead of "-".
-
-truesize -=3D ALIGN(pg_consumed_bytes, BIT(rq->mpwqe.log_stride_sz)) +
-             (nr_frags_free - 1) * PAGE_SIZE;
-
->
-> Thanks,
-> Dragos
->
+Too much unnecessary information in the comment. Just mention that we
+want nolock allocations and for that we need to remove __GFP_RECLAIM
+flags until nolock allocation interfaces are available.
 
