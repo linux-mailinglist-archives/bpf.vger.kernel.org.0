@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-67766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B5E1B49795
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 994D4B49798
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:54:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6AD01701C5
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 17:54:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 412FA171696
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 17:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51AC1314A63;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA6D314B6E;
 	Mon,  8 Sep 2025 17:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OvyK2i7I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NT9jQse+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6157313520;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BC1313E2E;
 	Mon,  8 Sep 2025 17:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757354024; cv=none; b=ki32PfgVP2V/7mtxVDxrbBQiUE4Q+S+lwENxrIXxLH7BUCy8+Vwml/VJnAB+zoRHYaM5T+JYSN7syzwn4n5HliVJ5gT7qU7KVE/s276RizO8yhQSSV0ZGJQPMDLBu/V9+5t5Efv3orJNK1Nj2DGBSsjptIgDVi7vcENMZi9SW2o=
+	t=1757354025; cv=none; b=aHv//x3xqJXGTcbTIQWjL7XlFBZcn9ZfDilXIY23wcaoh1BPYp6urw+B/ucBRKR52WIvyIK17g/08QD2+wxpxLivb/f5mxOYTQveguf10nwFPgycGS5DwXbdNLpC69bxtuFkyplviOfB4dMG9U1pe9L/tDBdDkRFK+MxI9pshHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757354024; c=relaxed/simple;
-	bh=yjVRm7qoaDEwxBX+tn5L8eAZpS2gap8hvaYEm/BHnlI=;
+	s=arc-20240116; t=1757354025; c=relaxed/simple;
+	bh=BhpB4Hf4gnrWTl4zJnVEoytLOMXxEDW7wZ+75iSbkjg=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=ePfvr341+Sc+g3KSIGVexngIYafcSYdz74GFDaMN8MHaZ22RSgb8474cQaV78zlvinfox14A8CmvQ7HAFQaB5vNIg9izG1+LnYbPL6LCi57OsCfv7XuEOKwvVZp7qS5D1DC896XsdaahBxzPHz7SNWfP+oSlOPLS74ZAGJr4wGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OvyK2i7I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DCB9C4CEF7;
+	 Content-Type; b=Nt/D+fa2IlC3DeYQKSgvEpXL8stoQXTp6OZq+BP6VaO0It8MvXJGJfkjOsCSQJjlIA7dUGH4dmsH3bg2jH+DKTfiyCZ6rK2s73TOjS1zqOmpDJO4nejP1LzKIDkPlKUKoZURciUJd92SOAxV21pmFwIjd/sTOqshU2+XZIAndEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NT9jQse+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AEF3C4CEFA;
 	Mon,  8 Sep 2025 17:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1757354024;
-	bh=yjVRm7qoaDEwxBX+tn5L8eAZpS2gap8hvaYEm/BHnlI=;
+	bh=BhpB4Hf4gnrWTl4zJnVEoytLOMXxEDW7wZ+75iSbkjg=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=OvyK2i7Itr0DJu4jz35tL/gAK6FTZTkvA8+vLxf55g9rq5HfStp6F/BSbWCz6SZoI
-	 ySa0st4p9aBVIjslXLL7Ppvt/EJKl38DBi6NM8uJ1XWBDCBQiqc97oqff8ahJRefv3
-	 EB/KqV19mJw6KXNK0Usp90M1bujEKDBbYmQjd8pnYzboo6dY8lsEev6sUaOWuqdIx5
-	 MymS0VHrBhei2vzqoivQwIT0LWfs8+8E2EEZ7NLvsu+2oDSkmvYgMEzyRExeOYRn95
-	 IhvzQ6yypb+mh2lZ/B4aBIjdFAz2pgm0t6W55iAK3UtvTyVi5lGhLrNaicF7M/aWgK
-	 w2vMGBJJN9noQ==
+	b=NT9jQse+G5KXmTuLtYrDkzxSKOTd1QsmwpQRO2dgyiBZq2oS34eYKTuq6fyK29Ft9
+	 ZgzBDDI3dgOEtephTU2pYK4Nmm8tfHUTuDFoUoAvU3ITzdE3SpvkpxFSFKPaJm0zfN
+	 BC/HpM5wxv55I4FA09hLSLkPeOqqcC2XO619WFyMEbyXX+NR440wEgZ6SCTq8XnXl2
+	 2btn0smZ1iqQSqxSYfEa6eAfJ7q5vR+NUwQ284dvjTXm9BBD+rVifFjFcJYtHBrJYx
+	 VKqbkcnQ/M2HQubA2aadDfgaWqqkX5SnwIe4MBmJYkXo6qEiZomo9giVi/3Sdtat5L
+	 /2xoAMBtNY3FQ==
 Received: from rostedt by gandalf with local (Exim 4.98.2)
 	(envelope-from <rostedt@kernel.org>)
-	id 1uvg4U-000000076Ad-1scA;
+	id 1uvg4U-000000076B7-2axS;
 	Mon, 08 Sep 2025 13:54:30 -0400
-Message-ID: <20250908175430.303280181@kernel.org>
+Message-ID: <20250908175430.469531803@kernel.org>
 User-Agent: quilt/0.68
-Date: Mon, 08 Sep 2025 13:53:21 -0400
+Date: Mon, 08 Sep 2025 13:53:22 -0400
 From: Steven Rostedt <rostedt@kernel.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org,
@@ -73,7 +73,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Sam James <sam@gentoo.org>,
  Kees Cook <kees@kernel.org>,
  "Carlos O'Donell" <codonell@redhat.com>
-Subject: [PATCH v16 2/4] perf record: Enable defer_callchain for user callchains
+Subject: [PATCH v16 3/4] perf script: Display PERF_RECORD_CALLCHAIN_DEFERRED
 References: <20250908175319.841517121@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -85,113 +85,145 @@ Content-Type: text/plain; charset=UTF-8
 
 From: Namhyung Kim <namhyung@kernel.org>
 
-And add the missing feature detection logic to clear the flag on old
-kernels.
+Handle the deferred callchains in the script output.
 
-  $ perf record -g -vv true
-  ...
-  ------------------------------------------------------------
-  perf_event_attr:
-    type                             0 (PERF_TYPE_HARDWARE)
-    size                             136
-    config                           0 (PERF_COUNT_HW_CPU_CYCLES)
-    { sample_period, sample_freq }   4000
-    sample_type                      IP|TID|TIME|CALLCHAIN|PERIOD
-    read_format                      ID|LOST
-    disabled                         1
-    inherit                          1
-    mmap                             1
-    comm                             1
-    freq                             1
-    enable_on_exec                   1
-    task                             1
-    sample_id_all                    1
-    mmap2                            1
-    comm_exec                        1
-    ksymbol                          1
-    bpf_event                        1
-    defer_callchain                  1
-  ------------------------------------------------------------
-  sys_perf_event_open: pid 162755  cpu 0  group_fd -1  flags 0x8
-  sys_perf_event_open failed, error -22
-  switching off deferred callchain support
+  $ perf script
+  perf     801 [000]    18.031793:          1 cycles:P:
+          ffffffff91a14c36 __intel_pmu_enable_all.isra.0+0x56 ([kernel.kallsyms])
+          ffffffff91d373e9 perf_ctx_enable+0x39 ([kernel.kallsyms])
+          ffffffff91d36af7 event_function+0xd7 ([kernel.kallsyms])
+          ffffffff91d34222 remote_function+0x42 ([kernel.kallsyms])
+          ffffffff91c1ebe1 generic_exec_single+0x61 ([kernel.kallsyms])
+          ffffffff91c1edac smp_call_function_single+0xec ([kernel.kallsyms])
+          ffffffff91d37a9d event_function_call+0x10d ([kernel.kallsyms])
+          ffffffff91d33557 perf_event_for_each_child+0x37 ([kernel.kallsyms])
+          ffffffff91d47324 _perf_ioctl+0x204 ([kernel.kallsyms])
+          ffffffff91d47c43 perf_ioctl+0x33 ([kernel.kallsyms])
+          ffffffff91e2f216 __x64_sys_ioctl+0x96 ([kernel.kallsyms])
+          ffffffff9265f1ae do_syscall_64+0x9e ([kernel.kallsyms])
+          ffffffff92800130 entry_SYSCALL_64+0xb0 ([kernel.kallsyms])
+
+  perf     801 [000]    18.031814: DEFERRED CALLCHAIN
+              7fb5fc22034b __GI___ioctl+0x3b (/usr/lib/x86_64-linux-gnu/libc.so.6)
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- tools/perf/util/evsel.c | 24 ++++++++++++++++++++++++
- tools/perf/util/evsel.h |  1 +
- 2 files changed, 25 insertions(+)
+Changes since v15: https://lore.kernel.org/20250825180802.557798597@kernel.org
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 7512b9fb877d..438343dbb1c9 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1061,6 +1061,14 @@ static void __evsel__config_callchain(struct evsel *evsel, struct record_opts *o
- 		}
- 	}
+- Removed initialization of script.tool.merge_deferred_callchains as it is
+  introduced in the next patch.
+
+ tools/perf/builtin-script.c | 88 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
+
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index d9fbdcf72f25..03ea7b7e5bc1 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -2484,6 +2484,93 @@ static int process_sample_event(const struct perf_tool *tool,
+ 	return ret;
+ }
  
-+	if (param->record_mode == CALLCHAIN_FP && !attr->exclude_callchain_user) {
-+		/*
-+		 * Enable deferred callchains optimistically.  It'll be switched
-+		 * off later if the kernel doesn't support it.
-+		 */
-+		attr->defer_callchain = 1;
++static int process_deferred_sample_event(const struct perf_tool *tool,
++					 union perf_event *event,
++					 struct perf_sample *sample,
++					 struct evsel *evsel,
++					 struct machine *machine)
++{
++	struct perf_script *scr = container_of(tool, struct perf_script, tool);
++	struct perf_event_attr *attr = &evsel->core.attr;
++	struct evsel_script *es = evsel->priv;
++	unsigned int type = output_type(attr->type);
++	struct addr_location al;
++	FILE *fp = es->fp;
++	int ret = 0;
++
++	if (output[type].fields == 0)
++		return 0;
++
++	/* Set thread to NULL to indicate addr_al and al are not initialized */
++	addr_location__init(&al);
++
++	if (perf_time__ranges_skip_sample(scr->ptime_range, scr->range_num,
++					  sample->time)) {
++		goto out_put;
 +	}
 +
- 	if (function) {
- 		pr_info("Disabling user space callchains for function trace event.\n");
- 		attr->exclude_callchain_user = 1;
-@@ -2121,6 +2129,8 @@ static int __evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
- 
- static void evsel__disable_missing_features(struct evsel *evsel)
- {
-+	if (perf_missing_features.defer_callchain)
-+		evsel->core.attr.defer_callchain = 0;
- 	if (perf_missing_features.inherit_sample_read && evsel->core.attr.inherit &&
- 	    (evsel->core.attr.sample_type & PERF_SAMPLE_READ))
- 		evsel->core.attr.inherit = 0;
-@@ -2395,6 +2405,15 @@ static bool evsel__detect_missing_features(struct evsel *evsel, struct perf_cpu
- 
- 	/* Please add new feature detection here. */
- 
-+	attr.defer_callchain = true;
-+	attr.sample_type = PERF_SAMPLE_CALLCHAIN;
-+	if (has_attr_feature(&attr, /*flags=*/0))
-+		goto found;
-+	perf_missing_features.defer_callchain = true;
-+	pr_debug2("switching off deferred callchain support\n");
-+	attr.defer_callchain = false;
-+	attr.sample_type = 0;
++	if (debug_mode) {
++		if (sample->time < last_timestamp) {
++			pr_err("Samples misordered, previous: %" PRIu64
++				" this: %" PRIu64 "\n", last_timestamp,
++				sample->time);
++			nr_unordered++;
++		}
++		last_timestamp = sample->time;
++		goto out_put;
++	}
 +
- 	attr.inherit = true;
- 	attr.sample_type = PERF_SAMPLE_READ;
- 	if (has_attr_feature(&attr, /*flags=*/0))
-@@ -2506,6 +2525,11 @@ static bool evsel__detect_missing_features(struct evsel *evsel, struct perf_cpu
- 	errno = old_errno;
- 
- check:
-+	if (evsel->core.attr.defer_callchain &&
-+	    evsel->core.attr.sample_type & PERF_SAMPLE_CALLCHAIN &&
-+	    perf_missing_features.defer_callchain)
-+		return true;
++	if (filter_cpu(sample))
++		goto out_put;
 +
- 	if (evsel->core.attr.inherit &&
- 	    (evsel->core.attr.sample_type & PERF_SAMPLE_READ) &&
- 	    perf_missing_features.inherit_sample_read)
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 5797a02e5d6a..d9559d29e345 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -221,6 +221,7 @@ struct perf_missing_features {
- 	bool branch_counters;
- 	bool aux_action;
- 	bool inherit_sample_read;
-+	bool defer_callchain;
- };
++	if (machine__resolve(machine, &al, sample) < 0) {
++		pr_err("problem processing %d event, skipping it.\n",
++		       event->header.type);
++		ret = -1;
++		goto out_put;
++	}
++
++	if (al.filtered)
++		goto out_put;
++
++	if (!show_event(sample, evsel, al.thread, &al, NULL))
++		goto out_put;
++
++	if (evswitch__discard(&scr->evswitch, evsel))
++		goto out_put;
++
++	perf_sample__fprintf_start(scr, sample, al.thread, evsel,
++				   PERF_RECORD_CALLCHAIN_DEFERRED, fp);
++	fprintf(fp, "DEFERRED CALLCHAIN");
++
++	if (PRINT_FIELD(IP)) {
++		struct callchain_cursor *cursor = NULL;
++
++		if (symbol_conf.use_callchain && sample->callchain) {
++			cursor = get_tls_callchain_cursor();
++			if (thread__resolve_callchain(al.thread, cursor, evsel,
++						      sample, NULL, NULL,
++						      scripting_max_stack)) {
++				pr_info("cannot resolve deferred callchains\n");
++				cursor = NULL;
++			}
++		}
++
++		fputc(cursor ? '\n' : ' ', fp);
++		sample__fprintf_sym(sample, &al, 0, output[type].print_ip_opts,
++				    cursor, symbol_conf.bt_stop_list, fp);
++	}
++
++	fprintf(fp, "\n");
++
++	if (verbose > 0)
++		fflush(fp);
++
++out_put:
++	addr_location__exit(&al);
++	return ret;
++}
++
+ // Used when scr->per_event_dump is not set
+ static struct evsel_script es_stdout;
  
- extern struct perf_missing_features perf_missing_features;
+@@ -4080,6 +4167,7 @@ int cmd_script(int argc, const char **argv)
+ 
+ 	perf_tool__init(&script.tool, !unsorted_dump);
+ 	script.tool.sample		 = process_sample_event;
++	script.tool.callchain_deferred	 = process_deferred_sample_event;
+ 	script.tool.mmap		 = perf_event__process_mmap;
+ 	script.tool.mmap2		 = perf_event__process_mmap2;
+ 	script.tool.comm		 = perf_event__process_comm;
 -- 
 2.50.1
 
