@@ -1,94 +1,92 @@
-Return-Path: <bpf+bounces-67770-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67771-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1286AB497C9
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 20:01:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D93DB49831
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 20:23:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EEDF7B58FD
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 17:59:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4364116924C
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 18:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEFC8314B8A;
-	Mon,  8 Sep 2025 18:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E2231B13B;
+	Mon,  8 Sep 2025 18:23:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SahPiPFA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UdiYY4mx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18671314B60
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 18:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F7D831AF20
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 18:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757354427; cv=none; b=juWsBWzjdd/qHUfORCECMMVexLBc1zmsHSU9pjdl/rMugUrjKgeITOA2sei5ld7kp69Ji0jGLCsLAZLXybkwa2WBNbO6HPa+FuUUxW4a+b7f1/bEQsqUoMQt39YOJdTNK7TyjiMCSJ4InKcX8tzkuJxRd8zXXjnUF/rNUYt6S14=
+	t=1757355794; cv=none; b=RhCwzi+rBaLU/siWcMmdOQdH21NsyDuQtAIEwPmCNAQRyWHaqbuBPa28uX1YRJSOVGbQA+/IyCW3OFRb7huXjDMr1xMMG+IHopcqwAzgyUQwO6D6qFc6FM2IriyW0BuHY9XBn6kwmffFaxGFSdHiZWU148D2a4BzKLBD+0f5MG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757354427; c=relaxed/simple;
-	bh=ArDTteNm9MOJDVPm0MPQ+3NkywvOOEVcIiDftLs6Ycs=;
+	s=arc-20240116; t=1757355794; c=relaxed/simple;
+	bh=WZOmG8+a2vJ2JMJAGjMXfdDz/j6ZikrP5L0V9LK4+RM=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CSakXx/m5qfOsLvDZ447WN1iYFwnYBt32ZLf4akvXXGFKbOWnm+pZNvFyzcO6FX+z+4f8t72bcD4ggbJ31ouZgr0e2fhnH6XaXzP1C6NMxMQJuFAQdn7t6/g6NECKC+lTF05buxCJDlDCL53tPT2r8UvxQ6EvXhalUrD3lJHS2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SahPiPFA; arc=none smtp.client-ip=209.85.210.172
+	 Content-Type:MIME-Version; b=brXWOZjj406qDuCs/j5wx2Ccu0aD596hvovkZ/lbGIXLSrNg3GBt7ClEa7FQDkHMtygNfA3dvOSIbQ7XOoQNSMh6JvBXhdbtN/2gIo0w7Vd+Ahr+sUXs7cnfJoqQJazQlTCNtpk01Gwm6n4/7Jl8ABrlIPai/fhfjxrnvUwtLlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UdiYY4mx; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-76e6cbb991aso4054508b3a.1
-        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 11:00:25 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-24cd340377dso28370245ad.1
+        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 11:23:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757354425; x=1757959225; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757355791; x=1757960591; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=ArDTteNm9MOJDVPm0MPQ+3NkywvOOEVcIiDftLs6Ycs=;
-        b=SahPiPFAJGkpOqK+uAVHZKofOV4KgdvcjsqN4yHOoqCjscBVtJf5hkWxodOwCfOx7+
-         Px5DavYYi9MQpBWPnz/u6/2AR1x1/3zZcbJJP/wpJ31Vqph6H7YNxU26Xrm3prWHSZ/U
-         WnUCHS2ZTlu4dvmzrZmIlCsZmYbtd2VWWSwlLpM2W3Kg/0+ZVAyuQhJcu0YGNGbXsxym
-         dJZ2dTBm6uN0Zo2dXiD0wHMroQeZmQv7CTaU6BJwA9VLE2G5of6Tuz8vrQihBAU3b8D1
-         bIvwvTVdbnCyH1v1RWTUDGnB8T0g8+YUp78iujgeytaKSZFWhpNXL6pd2z3NRQA0Ubmi
-         jpsA==
+        bh=WZOmG8+a2vJ2JMJAGjMXfdDz/j6ZikrP5L0V9LK4+RM=;
+        b=UdiYY4mxsmCt4MyquIdHmwUGjyg2r086YnAaSxXNCufkSg8KEs9My1jIULcHGGuFvg
+         p8kK3xDyfDK3GCpLr6jpwxBVdQJQ89uN+5P1oTSNtefdnm0n/0TpKHlcjzl17TVbFHdT
+         cdWL63+LAprSdu1I1vPO/c/dQ0yLHDXdjLFHcti4nC838Bib5zTkky4XbI8d+dWD1nzW
+         O8AfLsWL9o2DuH4/Ly9QILAqgZpm/hB92cU6SvbR+zEY0IxgE9aHEWgXzY9vdyCoBIW1
+         g1xTm1BRHzHf9yGD4nflKeSfXWMlrPZqzwifAexhFIzbIxBSPJBfPTo65vwd9nKOTGuQ
+         LoXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757354425; x=1757959225;
+        d=1e100.net; s=20230601; t=1757355791; x=1757960591;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ArDTteNm9MOJDVPm0MPQ+3NkywvOOEVcIiDftLs6Ycs=;
-        b=SQT6xhCDXm8EvclnbrnIBAQqX/DNYWIt9ezqm7NpyhOSWm/8OfTGjNkTh/Q/fXolO1
-         vtJ0hn5odPOClVz7x5+9jC+al8+NkyVEH5TpiuZ9bEZLmELHZKQquj/juWGo8XhO2tMH
-         vTdbbQQtCZXSXex1uIOD+dYW27kDnvb6/SgBoZfJqUYdWEDUYcu92wmDyv3+1R59Fm93
-         sn+Z/FiblQLXEl08xdks39sxUuSPTN2qdFeHDmPE+y+xxFwaJSe0PAS8MfHAucMEU0ca
-         jecAyPOFmLVGlnXg2ftNMm6x+HeGJQrIGEbIY0XNlrSXGiDy8HdlP8LT6ZGir9m3mSWK
-         mB7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU7kgnxAwfmc7I1c0E/NdBTxiqzZoakEnik2wJU/61VnhjxqkZgfFop+LUCic8fWsMkRvo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVz4wmcflXDKiXASwUs+WjdFNP0IXEGKAuKvUwAn5uBMoENRqL
-	Q7UMv0xEIgDat35LXOT7zMS4HUZkUGdtP0g7sKxT+T+3gjrXa9ChHWQ+
-X-Gm-Gg: ASbGnctEMSpEfTO8VDt40CbXaQpYTdt1ZPrPTlElhBeSM3lomIq/7/E51d3mVFIMAQ7
-	T3EcP9xoo9kTxUKSCZN73TxXLrd5dV+iTd6Gqbz1UUl5sfE6Cn74lB7fCW25D4VQqb2OX1o8K9V
-	XmdUdbmP3Vu7RmTpSCEomLW+GwiwDK/nKYulriccUzBUu8N3cmKZFgQJJEpc9ey+sVyOULYRF5q
-	hJW0q+d1xEykcqkQ1yzQRFBoGneccxKn3XDTv6QlF2eYn7+g4heRqbJFM9XUtFsDQCI5FycKlun
-	uzQK2SCAMDUF4Vv/Ds4OUy+A+jOQfpErB6cNz/pAZ2wGZ/1h2zmXKvdE+Vjvw6fHmIkvzzj2rNU
-	bmaVWOeCtWNv0cg14O+ZyYcbTJoIq1qRrrFkGrexthpgr6XQAenyHFCp+kQ==
-X-Google-Smtp-Source: AGHT+IFl3A0tiSOO5sy0VIt1JcTPBYLa2cCFLc7gVDg0bmBFwaXmHwmc7qbYANpGSHd7nm1EalPsYQ==
-X-Received: by 2002:a05:6a21:3384:b0:249:765e:d650 with SMTP id adf61e73a8af0-2533fab757fmr12183868637.27.1757354425113;
-        Mon, 08 Sep 2025 11:00:25 -0700 (PDT)
+        bh=WZOmG8+a2vJ2JMJAGjMXfdDz/j6ZikrP5L0V9LK4+RM=;
+        b=kQPsZdEN/nEr9Oq/q2UVwY+6ouj9hbCuHKs4HAqQ47VlBHSQDTzCSXFxR026ei3vsL
+         lBya/qf0Sac+oixbRtEDwkSRGHF4WMDf6EHQeUH6WrLzjZgAB2xj/0W/L2TeziFEqDyY
+         awVgR9cuG7Hi/cPivlGRWfy/GXVO0pxN0m1mO8q+EO/tV62BDdNTOqsMkabXIXoGYCn5
+         EYJCFeZt34Go3fBqdEDot7k2CNynqga1VIX6LLkIeVl5eHgcDL4tZAS8lDspjTjMcd5N
+         AC/hy6j+1ghTolh1vQAC+ATv2swfVUdg42tsSBJhxfio3y6tQAOLKfehWj+Va8JZE1Zh
+         d0fg==
+X-Forwarded-Encrypted: i=1; AJvYcCViSI/BdapnKi5N3QypYAax9Wo4OqN8NYwgguHEwJHU2F7I4hP7MftDoSHAgKaPJhtBQ7s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwClYrFkz+w4TVxcu2APN0XRfw11LYSHAM2URKiU0FKcPL5M5sT
+	oYG/h5r9rC1LyAyucu61zaQsNRF+xBSRKXVRTsfwB3HMMqKTZIGbU1j+2rdCI8tI
+X-Gm-Gg: ASbGncvOEE7hEhjXxX3I2WZRq/QXPrUpEBItcd/gTQ1dP6CdrOmqYRfhmjRppcnHSqZ
+	x4ASg0HsCp/FT9g5OMDO5ubHRCr1seMu3xedSC8Bt1WEYIHiYu4x4vW4QgOvbhdtUCmfCkptoST
+	nGNFVCRsCHwr9X58IKONU9HH9z6hDJ4ANKWSslbSAGxMG5NmlAlku+a/UrJp5mG8UdjQYivQar1
+	+vTgnAr2UjOcRaOVA/2X7g3IhS/RmqXTJwWYVLbOHoTfyaGBIAKxwH+VIHkEMradYe6NmZrMzEH
+	UvkYNHiq2PZqTNInbRVr90Dq/wdHXytPg7PyEyeUGtcz+cKf+DbNRxMJyDdwsD2VEd5Jw+dXZDr
+	AOptTHFOlpgqnfaCQo+wQ5+wSOxpT5hyHMS5odB25t0DyG9cPlnsAK4F8kw==
+X-Google-Smtp-Source: AGHT+IFGOgLIrk0xY5bqQoOX63w8JmUzfboQv1JGpmVOIeX2hG0l7jZeX/9Ujm2Jr24HKyMZ1vbLLg==
+X-Received: by 2002:a17:903:2c07:b0:257:3283:b856 with SMTP id d9443c01a7336-2573283bbaemr45840865ad.6.1757355790950;
+        Mon, 08 Sep 2025 11:23:10 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:613:2710:d29c:cd12? ([2620:10d:c090:500::5:c621])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7722a26a34fsm29580459b3a.6.2025.09.08.11.00.23
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24caffd7beesm135177855ad.121.2025.09.08.11.23.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Sep 2025 11:00:24 -0700 (PDT)
-Message-ID: <cf36f407713920055fcee1e30c007d23a117e712.camel@gmail.com>
-Subject: Re: [syzbot ci] Re: bpf: Use tnums for JEQ/JNE is_branch_taken logic
+        Mon, 08 Sep 2025 11:23:10 -0700 (PDT)
+Message-ID: <d6e5d817fb1c4d305ba6c43df3935dca578ad6dc.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 7/7] selftests/bpf: BPF task work scheduling
+ tests
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Paul Chaignon <paul.chaignon@gmail.com>
-Cc: syzbot ci <syzbot+ci59254af1cb47328a@syzkaller.appspotmail.com>, 
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, 	shung-hsi.yu@suse.com, yonghong.song@linux.dev,
- syzbot@lists.linux.dev, 	syzkaller-bugs@googlegroups.com
-Date: Mon, 08 Sep 2025 11:00:22 -0700
-In-Reply-To: <aL8XJI_gpHjjvX7o@Tunnel>
-References: 
-	<ba9baf9f73d51d9bce9ef13778bd39408d67db79.1755098817.git.paul.chaignon@gmail.com>
-	 <689eeec8.050a0220.e29e5.000f.GAE@google.com>
-	 <aKWytdZ8mRegBE0H@mail.gmail.com>
-	 <6d172613960339eff4b3a9261ef61a2c50f69dae.camel@gmail.com>
-	 <aL8XJI_gpHjjvX7o@Tunnel>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com, memxor@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Mon, 08 Sep 2025 11:23:08 -0700
+In-Reply-To: <e42913c0-811c-43bb-a570-9f903529ad91@gmail.com>
+References: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
+	 <20250905164508.1489482-8-mykyta.yatsenko5@gmail.com>
+	 <6bc24eca4d2abdec108f2013c2e414e24d48642f.camel@gmail.com>
+	 <e42913c0-811c-43bb-a570-9f903529ad91@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -99,47 +97,32 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2025-09-08 at 19:49 +0200, Paul Chaignon wrote:
-> On Wed, Aug 20, 2025 at 12:37:46PM -0700, Eduard Zingerman wrote:
-> > On Wed, 2025-08-20 at 13:34 +0200, Paul Chaignon wrote:
-> >=20
-> > [...]
-> >=20
-> > > I have a patch to potentially fix this, but I'm still testing it and
-> > > would prefer to send it separately as it doesn't really relate to my
-> > > current patchset.
-> >=20
-> > I'd like to bring this point again: this is a cat-and-mouse game.
-> > is_scalar_branch_taken() and regs_refine_cond_op() are essentially
-> > same operation and should be treated as such: produce register states
-> > for both branches and prune those that result in an impossible state.
-> > There is nothing wrong with this logically and we haven't got a single
-> > real bug from the invariant violations check if I remember correctly.
-> >=20
-> > Comparing the two functions, it looks like tricky cases are BPF_JE/JNE
-> > and BPF_JSET/JSET|BPF_X. However, given that regs_refine_cond_op() is
-> > called for a false branch with opcode reversed it looks like there is
-> > no issues with these cases.
-> >=20
-> > I'll give this a try.
->=20
-> Hi Eduard,
->=20
-> Did you get a chance to look into this? syzkaller came back (finally)
-> complaining about the remaining invariant violations:
-> https://lore.kernel.org/bpf/68bacb3e.050a0220.192772.018d.GAE@google.com/
-> If not, I can have a look at the end of the week.
->=20
-> Paul
+On Mon, 2025-09-08 at 14:21 +0100, Mykyta Yatsenko wrote:
+> On 9/8/25 08:43, Eduard Zingerman wrote:
+> > On Fri, 2025-09-05 at 17:45 +0100, Mykyta Yatsenko wrote:
+> > > From: Mykyta Yatsenko <yatsenko@meta.com>
+> > >=20
+> > > Introducing selftests that check BPF task work scheduling mechanism.
+> > > Validate that verifier does not accepts incorrect calls to
+> > > bpf_task_work_schedule kfunc.
+> > >=20
+> > > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> > > ---
+> > The test cases in this patch check functional correctness, but there
+> > is no attempt to do some stress testing of the state machine.
+> > E.g. how hard/feasible would it be to construct a test that attempts
+> > to exercise both branches of the (state =3D=3D BPF_TW_SCHEDULED) in the
+> > bpf_task_work_cancel_and_free()?
 
-Hi Paul,
+> Good point, I have stress test, but did not include it in the patches,=
+=20
+> as it takes longer to run.
+> I had to add logs in the kernel code to make sure cancellation/freeing=
+=20
+> branches are hit.
+> https://github.com/kernel-patches/bpf/commit/86408b074ab0a2d290977846c3e9=
+9a07443ac604
 
-I have an unfinished branch here:
-https://github.com/kernel-patches/bpf/commit/ef2e080a58206e23e3a521d2942f9b=
-4d58a8627c
-Don't like how it looks though. Planned on getting back to it this week.
-Please ping me if you'd start working on a fix.
-
-Thanks,
-Eduard
+Ack. I see no harm in having such test run for a couple of seconds on
+CI, but up to you.
 
