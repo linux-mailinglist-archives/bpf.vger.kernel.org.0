@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-67726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C43CB495B0
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 18:41:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 549EFB495B3
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 18:41:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B68B21898507
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 16:41:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFF88340A8A
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 16:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C631CBEAA;
-	Mon,  8 Sep 2025 16:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C61C3126DD;
+	Mon,  8 Sep 2025 16:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FsmuRivk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CUuAZFHZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F65831063C
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 16:36:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D7F3126BB
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 16:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757349417; cv=none; b=t4SQBuE16eWNuXLiNfDWN4aRkIM6hvgU8pKw7cX7pX89pu/9LkkuTWiOlIiqi/qihGvdJC9uqM3Uv7DwODxS7t4IMSRDh6NOZp0dYysVQVZSA9NKeFBCx+PmTqWMJJw1rIEq72LCT9Bz6o3gR7uYVQGEfLAL7MemiAW4UveKmO8=
+	t=1757349419; cv=none; b=nJD46tzbR+nWyzSQdMcXbI8yGM7Sve4DB2g3H9vQzVdQeg/2Cjdle3jhyervsz8dHvKtdYZ3yKtkyl1y46Ga4EDa8T4mb++gDZna0QsMUr1c6+OljPV5/8R6X/oIZjVSWictUoQHfeDXYZd/Am65j/N8Mq/RooYIddPqBPafm5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757349417; c=relaxed/simple;
-	bh=hClYAMjDahvVyU3lIom3BLL5dfb2JOmiB0zo9QK4YaQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cRszTHp3jYGf2VF774xl/2F+dmWED+SW+lo+Rgll1EjzPZ31kd3XoQtOTDcSQ1+wodpn0SeYPH3G4FP8xnZ39I2/h3accY6fZcL7WW14jebN63PBXaIDzm2XMqgb3eZNLJ4wY89rQhueyfYY2zPSJGtVTcNRvWYV5lqy0OJN7cE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FsmuRivk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FEC0C4CEF1;
-	Mon,  8 Sep 2025 16:36:55 +0000 (UTC)
+	s=arc-20240116; t=1757349419; c=relaxed/simple;
+	bh=tPFaiGQ9ipeWwto9ATZu8Uzn2irEud1LM+TyKGxlZr8=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SnBryT4XqxYIeJCsyhUBxpZG5xx3JNAx+rMyaMrBYH3kI5Fj1BA/xhfcdj5bTXIxMLFutgWlEw7tjDzA0jIsxUEhi2olQ87tiEv6phklLvKLpFdT8bTGyQg8Uphek8Kk4Pn4KvP82O+am6v6CGaqsM3ve4tk6xiEaNuOMz36zdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CUuAZFHZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6973FC4CEF1;
+	Mon,  8 Sep 2025 16:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757349416;
-	bh=hClYAMjDahvVyU3lIom3BLL5dfb2JOmiB0zo9QK4YaQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FsmuRivk++ewYUHn7jBwSx/8JYRe2CdwaeyDdeTRiH3q4SlDOALLix2TTUEZiEMdE
-	 en8iVMVzq5kYTuqlpznYaqRO+5abXBYoOYG2/DAcB7hk8mfPdrW5vt6G9xApxqYJft
-	 GOIqyldsDWnjfsL/XrPUvxCw9bvPei41yU1BFrDxLwpsSgH2AUZQEi8UeVlW7fWMz0
-	 rfElsck0nkLuN2uqvoV48CnJ6fYQ6Q3Foaae32fscFhWGiQGz5wItEKznmKPlW9kIJ
-	 WL9OpNojx/t4VfHl/SK3dD845mgwaySZV1YTNvSmU1ZK31B18jzk3EWnQSqRXGZutg
-	 hmviV+SOlKjcg==
+	s=k20201202; t=1757349419;
+	bh=tPFaiGQ9ipeWwto9ATZu8Uzn2irEud1LM+TyKGxlZr8=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=CUuAZFHZL5LizZpeffzVC/STCP6ymphXoxlyNRBbCFVcnQdy1x1r33TZ+Ehymp4f3
+	 BonlgvQLa+mgSe+Js4SMSgLD7fH6EGECr5wM5v6S5OXjpHygIRefxHMWu3hlwFWHcb
+	 iNoZQ/Zx+UJZdM6hDKC2cJqo/e40Z+HEMyNo7st4AZv28Spwo0kWtb0PPJY/bO7rgD
+	 2flOfqjoLGpnQWvveZVPUeTWyS7feGdTmwv5mcoIxU/sF3FeAIohZTGCiGm2wRfSfo
+	 mjCNr2nGeMg9mjI3C/vzt8wVGd0Vdm0gQfoWQxHabWFEWSM5vTD6o5JMldVG0LKss6
+	 NxbcnlaAsFoJg==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,10 +60,9 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Will Deacon <will@kernel.org>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	bpf@vger.kernel.org
-Cc: Xu Kuohai <xukuohai@huawei.com>
-Subject: [PATCH bpf-next v6 1/5] bpf: arm64: simplify exception table handling
-Date: Mon,  8 Sep 2025 16:36:30 +0000
-Message-ID: <20250908163638.23150-2-puranjay@kernel.org>
+Subject: [PATCH bpf-next v6 2/5] bpf: core: introduce main_prog_aux for stream access
+Date: Mon,  8 Sep 2025 16:36:31 +0000
+Message-ID: <20250908163638.23150-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250908163638.23150-1-puranjay@kernel.org>
 References: <20250908163638.23150-1-puranjay@kernel.org>
@@ -75,96 +74,71 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-BPF loads with BPF_PROBE_MEM(SX) can load from unsafe pointers and the
-JIT adds an exception table entry for the JITed instruction which allows
-the exeption handler to set the destination register of the load to zero
-and continue execution from the next instruction.
+BPF streams are only valid for the main programs, to make it easier to
+access streams from subprogs, introduce main_prog_aux in struct
+bpf_prog_aux.
 
-As all arm64 instructions are AARCH64_INSN_SIZE size, the exception
-handler can just increment the pc by AARCH64_INSN_SIZE without needing
-the exact address of the instruction following the the faulting
-instruction.
+prog->aux->main_prog_aux = prog->aux, for main programs and
+prog->aux->main_prog_aux = main_prog->aux, for subprograms.
 
-Simplify the exception table usage in arm64 JIT by only saving the
-destination register in ex->fixup and drop everything related to
-the fixup_offset. The fault handler is modified to add AARCH64_INSN_SIZE
-to the pc.
+Make bpf_prog_find_from_stack() use the added main_prog_aux to return
+the mainprog when a subprog is found on the stack.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Acked-by: Xu Kuohai <xukuohai@huawei.com>
 ---
- arch/arm64/net/bpf_jit_comp.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
+ include/linux/bpf.h   | 1 +
+ kernel/bpf/core.c     | 6 +++---
+ kernel/bpf/verifier.c | 1 +
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index f0b1cb2c3bc48..e6d1fdc1e6f52 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1066,19 +1066,18 @@ static void build_epilogue(struct jit_ctx *ctx, bool was_classic)
- 	emit(A64_RET(A64_LR), ctx);
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 8f6e87f0f3a89..d133171c4d2a9 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1633,6 +1633,7 @@ struct bpf_prog_aux {
+ 	/* function name for valid attach_btf_id */
+ 	const char *attach_func_name;
+ 	struct bpf_prog **func;
++	struct bpf_prog_aux *main_prog_aux;
+ 	void *jit_data; /* JIT specific data. arch dependent */
+ 	struct bpf_jit_poke_descriptor *poke_tab;
+ 	struct bpf_kfunc_desc_tab *kfunc_tab;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ef01cc644a965..c732737e6b735 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -120,6 +120,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
+ 
+ 	fp->pages = size / PAGE_SIZE;
+ 	fp->aux = aux;
++	fp->aux->main_prog_aux = aux;
+ 	fp->aux->prog = fp;
+ 	fp->jit_requested = ebpf_jit_enabled();
+ 	fp->blinding_requested = bpf_jit_blinding_enabled(fp);
+@@ -3292,9 +3293,8 @@ static bool find_from_stack_cb(void *cookie, u64 ip, u64 sp, u64 bp)
+ 	rcu_read_unlock();
+ 	if (!prog)
+ 		return true;
+-	if (bpf_is_subprog(prog))
+-		return true;
+-	ctxp->prog = prog;
++	/* Make sure we return the main prog if we found a subprog */
++	ctxp->prog = prog->aux->main_prog_aux->prog;
+ 	return false;
  }
  
--#define BPF_FIXUP_OFFSET_MASK	GENMASK(26, 0)
- #define BPF_FIXUP_REG_MASK	GENMASK(31, 27)
- #define DONT_CLEAR 5 /* Unused ARM64 register from BPF's POV */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index b9394f8fac0ed..0162c5ad682ed 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -21597,6 +21597,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+ 		func[i]->aux->func_info_cnt = prog->aux->func_info_cnt;
+ 		func[i]->aux->poke_tab = prog->aux->poke_tab;
+ 		func[i]->aux->size_poke_tab = prog->aux->size_poke_tab;
++		func[i]->aux->main_prog_aux = prog->aux;
  
- bool ex_handler_bpf(const struct exception_table_entry *ex,
- 		    struct pt_regs *regs)
- {
--	off_t offset = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
- 	int dst_reg = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
- 
- 	if (dst_reg != DONT_CLEAR)
- 		regs->regs[dst_reg] = 0;
--	regs->pc = (unsigned long)&ex->fixup - offset;
-+	/* Skip the faulting instruction */
-+	regs->pc += AARCH64_INSN_SIZE;
- 	return true;
- }
- 
-@@ -1088,7 +1087,6 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 				 int dst_reg)
- {
- 	off_t ins_offset;
--	off_t fixup_offset;
- 	unsigned long pc;
- 	struct exception_table_entry *ex;
- 
-@@ -1119,22 +1117,6 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 	if (WARN_ON_ONCE(ins_offset >= 0 || ins_offset < INT_MIN))
- 		return -ERANGE;
- 
--	/*
--	 * Since the extable follows the program, the fixup offset is always
--	 * negative and limited to BPF_JIT_REGION_SIZE. Store a positive value
--	 * to keep things simple, and put the destination register in the upper
--	 * bits. We don't need to worry about buildtime or runtime sort
--	 * modifying the upper bits because the table is already sorted, and
--	 * isn't part of the main exception table.
--	 *
--	 * The fixup_offset is set to the next instruction from the instruction
--	 * that may fault. The execution will jump to this after handling the
--	 * fault.
--	 */
--	fixup_offset = (long)&ex->fixup - (pc + AARCH64_INSN_SIZE);
--	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, fixup_offset))
--		return -ERANGE;
--
- 	/*
- 	 * The offsets above have been calculated using the RO buffer but we
- 	 * need to use the R/W buffer for writes.
-@@ -1147,8 +1129,7 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 	if (BPF_CLASS(insn->code) != BPF_LDX)
- 		dst_reg = DONT_CLEAR;
- 
--	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
--		    FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
-+	ex->fixup = FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
- 
- 	ex->type = EX_TYPE_BPF;
- 
+ 		for (j = 0; j < prog->aux->size_poke_tab; j++) {
+ 			struct bpf_jit_poke_descriptor *poke;
 -- 
 2.47.3
 
