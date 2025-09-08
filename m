@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-67810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37EEEB49D06
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 00:38:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 378A8B49D08
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 00:38:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E397D170064
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 22:38:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F2013B45E4
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 22:38:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7D13054E4;
-	Mon,  8 Sep 2025 22:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C7530AD09;
+	Mon,  8 Sep 2025 22:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u1ovmplw"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iVZa+Ske"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D502F7449
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 22:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF352EF671
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 22:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757371084; cv=none; b=Qra5Rb/IvSYYfLWH43UBpWsf0Mvk8BOdwrRPGx1//B8QbOwflV0pGeW2ORHQ/fDke9oixXmyjk7YZAh1yTLC08DXttq7aaPgU/8AumGlIWxaB9gmxkEHv42X5PkzwVyrjBOgMNUU9PZjs5a6vELHHPmHt9SOQ1tgl12/Dcvm6Bw=
+	t=1757371085; cv=none; b=XLhmZJ8+j6JX8soCM9ZQHlIsWp8IiX85oizVQj7rLhes9OEVGII5lTSytOuONJGbragUU5D+Ey71b5u06Yo/VyhAD3VwRRjad/5WTesWTvXKc3cWyOe1MwH3lQnYhDjVQhHOSufD3NMhZqEfq6Hv+RGzXo8zhPDPVs1Qec7X+sE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757371084; c=relaxed/simple;
-	bh=MvbBR5pzBYpYf2+kymmP2KpJY0bjrbJky7R+wQxUwVs=;
+	s=arc-20240116; t=1757371085; c=relaxed/simple;
+	bh=xvN67whfpOhKIwxwIl11JsYnVj0DqrXhAlM3YdZ+s8E=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=KUMhsuwy2aGwZ3wjq2QgeFX32tRKSkXcHABXN14atQr9xx5Tg5WCrek7yo9Z8kadh0A4Q6eCg5Uh9JhSBxFsRrZaHERPs7121CsxD1/j/l2n6yOF//PAG9u1yY4XcU0efIKx2/Qmy6IW/9kPSkDanwJC1GVoQFnr6ErOcPn3fC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u1ovmplw; arc=none smtp.client-ip=209.85.214.201
+	 To:Cc:Content-Type; b=DcshtQH3PLMp5oQ7QZ1X5IZAriUAWRPRYzE+1kJwPxK2Ey08wMp/5gy4gTlocVc7PNW3ymKcFDtJqyRV0PDsr9Bd26696e8/hn9Pm61Hr7KGzc/a0rlzIT6iZ5AkLSz1CvaLVqR6Db/md59K4ERvKAtOQsqrTHIvmeGhAALKJF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iVZa+Ske; arc=none smtp.client-ip=209.85.216.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-258b7567e8cso4320585ad.1
-        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 15:38:02 -0700 (PDT)
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-329cb4c3f78so4985762a91.2
+        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 15:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757371081; x=1757975881; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1757371083; x=1757975883; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kqaqUP3nMZFvLQVOkcG9ZCuRnTN5jT7aHz8tfDT/rSc=;
-        b=u1ovmplwkTx1SD+7tTiFFh+Aw6UCXGKP5JLK2S7pg7v+yXt3zZvbqTC8eSIGUbFlJa
-         ML7n9+IvO+fp8YkOmmL7sl7X3c0U/RIpMLzlwocAJScnAxmDit8Mftr+fkWr5fk4FJ+Q
-         C8ALdcKvJvcAPBQma72gQoR3CTBclpEZ6S91B3NoN9/tCXlpUy7iif/AdsKnvObY8jIJ
-         3KmWfmBoxzvVRAzNjfo1Ja1ddSaZFloEdnqZDArp1ML+57AAtmf13BLBN//ahXZwco+0
-         K86cItJlyUteBuNDGG62tfldroRV2F49e4QDHk8Y57+INITC2N1xLqHnyYrZx7bW3PqC
-         +2vg==
+        bh=E/mgg2O9+HGTiL/F6Nv60Nv7w7MOKCLuTn/jqD9mWPI=;
+        b=iVZa+SkeFYqE8XNd+NlrL+FTC2Ikil+AsrR2xRF4hChu9wfKVMR5h1cg1y+Vjn/Xe6
+         25lC5nL/NdkreGLunezBjrpGdll//tI+jHqsEuLG/CjNjaOrIS63nZGg25ipnaANz8a1
+         QKqSm277wkYnRMsOJfkZojtXlP1NNlwE5/z8UwEAgHtm7gxvsxEQ/uweQlcoS5wrVjKM
+         1xfDgwRecJqGaNLEyAYt2GD/k/whalzZQA4/qTcf32w/+a0RIZ+Cy2ot+FCFwbYMxF0A
+         21mYAsvrZ/vWELuqEgc1gcI4+ZCBbHgIMFJ+9sJzV5Sqf2OiVg170cq9ZTlLyeYHnJEL
+         iZIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757371081; x=1757975881;
+        d=1e100.net; s=20230601; t=1757371083; x=1757975883;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kqaqUP3nMZFvLQVOkcG9ZCuRnTN5jT7aHz8tfDT/rSc=;
-        b=OE4RmoVxN+4bk/LJCVCucIyr3ryFn8efLRiAUCMs/q8xy7LROfTj+Crf8dNSPrqONT
-         BvHwtROIe3XUMmY6kzhNUohZvINOwEjPqfNvd6DNU8BExzg5Fyf0AQHKq/kOgNNwaCXf
-         3qnCEii2prBH/3dPwzYNfyUY/ARfG0VaoD+BexZ9pTk/HjZsZR2KrSpBhf7CZuTMku9o
-         7Vd3Og0d6EiDPqd+n8H7r8WQENsAGlanElEVe6cXoPAWVv8ZV7M2towP2fAuel0mZJNz
-         cDSeDGSyQokJyCta3mPmJ/smOeRp5Yqw9aGgejC90bE6V8WK29LK1yTf17taD5Hws5WE
-         y/+w==
-X-Forwarded-Encrypted: i=1; AJvYcCUGAdKqf9zUKxdXlozouhgNK78FAkShjMX7jpaLBpYBqlEmmtCLpjGbToJPVGuejaxqF2w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YySG7K+l9bABpiqfbjM0HKOJwhjAcEK/qfnNiRpSxb4uFoGUZ5x
-	ETHV396YZ5xMy/ZBYSSpemdaz/4PRLPNWSJQUJbEFRgYGjr+xQBErV70zUENBqwkRBvdjsWfQzt
-	hsRiOXg==
-X-Google-Smtp-Source: AGHT+IHpVDzNVmMdyMPKVfdWDijuadwNont6W84jL0EA+QCqJoSp/70UinFq5d7Aayh+hWY9HRhOLejeiNI=
-X-Received: from plbmq16.prod.google.com ([2002:a17:902:fd50:b0:248:93f4:fe04])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:fc45:b0:248:fc2d:3a25
- with SMTP id d9443c01a7336-25170c416d0mr118705645ad.38.1757371081523; Mon, 08
- Sep 2025 15:38:01 -0700 (PDT)
-Date: Mon,  8 Sep 2025 22:34:38 +0000
+        bh=E/mgg2O9+HGTiL/F6Nv60Nv7w7MOKCLuTn/jqD9mWPI=;
+        b=H4Vqv5unbAwI3+xl2lalc8RP7G+xDATsUPqaenxVddRstFDK1/Xg13fzrVVpkwKl8Y
+         /23lOHZmVToANm59sVw4rTqvn9vTRqioCyyjWiwi93ZNlpUpaLzUNmYX/Nze4G4oMKMT
+         xyUoo/rj3Qh8z31xMV6zY1EvrcTBKBql5FOdrQpwYNh8Zr4yFTX5B9UDBJQIvdjb1vX1
+         /TjZeuC+HUbfIh1NdGof+jnISFgCWUZ/QVM9aER0k4fhAi7qR5AuBNyK+Axtj3/+ckMu
+         4D2GiOY6Zxod4ThRNwrpfpdAYdMyX1HJiYgwvvQp6FQTSpF2R/xzsbxGgkYN6IyR5G+K
+         JhkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXlI7MDA0zj6zNYcwIUZKpRpOib69Se1eZBhbcZiTy8pulgS5gc/Cjhqb3w9ikYOgXrlEE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yywu+EA5aFCb6AFU78IW6x1HSdVIAB4I2Krqp0ZV0K0zSSB51x3
+	GYPh/rvNRmXhs7UGo27KF6rGeTS9lkMXEJohB5/n2vcKbNhS9nyxFjxFZwyeca6DXCR7QH1+S/9
+	PPbgrLw==
+X-Google-Smtp-Source: AGHT+IFB/siW0u9MZMXdgmUr0n+KiJOm7gtwcyncPXiCelJ3yrPxrmqqucGvkdLFXpTngy9W9wkHXcg2bMU=
+X-Received: from pjeb1.prod.google.com ([2002:a17:90a:10c1:b0:32b:b3c4:a304])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90a:d40e:b0:32b:656f:5a5d
+ with SMTP id 98e67ed59e1d1-32d43f701admr11064178a91.29.1757371082858; Mon, 08
+ Sep 2025 15:38:02 -0700 (PDT)
+Date: Mon,  8 Sep 2025 22:34:39 +0000
 In-Reply-To: <20250908223750.3375376-1-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,9 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250908223750.3375376-1-kuniyu@google.com>
 X-Mailer: git-send-email 2.51.0.384.g4c02a37b29-goog
-Message-ID: <20250908223750.3375376-5-kuniyu@google.com>
-Subject: [PATCH v6 bpf-next/net 4/5] net-memcg: Allow decoupling memcg from
- global protocol memory accounting.
+Message-ID: <20250908223750.3375376-6-kuniyu@google.com>
+Subject: [PATCH v6 bpf-next/net 5/5] selftest: bpf: Add test for SK_BPF_MEMCG_SOCK_ISOLATED.
 From: Kuniyuki Iwashima <kuniyu@google.com>
 To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
@@ -90,370 +89,459 @@ Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.
 	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Some protocols (e.g., TCP, UDP) implement memory accounting for socket
-buffers and charge memory to per-protocol global counters pointed to by
-sk->sk_proto->memory_allocated.
+The test does the following for IPv4/IPv6 x TCP/UDP sockets
+with/without SK_BPF_MEMCG_SOCK_ISOLATED.
 
-When running under a non-root cgroup, this memory is also charged to the
-memcg as "sock" in memory.stat.
+  1. Create socket pairs
+  2. Send a bunch of data that requires more than 1024 pages
+  3. Read memory_allocated from sk->sk_prot->memory_allocated and
+     sk->sk_prot->memory_per_cpu_fw_alloc
+  4. Check if unread data is charged to memory_allocated
 
-We do not need to pay costs for two orthogonal memory accounting
-mechanisms.
+If SK_BPF_MEMCG_SOCK_ISOLATED is set, memory_allocated should not
+be changed, but we allow a small error (up to 10 pages) in case
+other processes on the host use some amounts of TCP/UDP memory.
 
-Let's decouple sockets in memcg from the global per-protocol memory
-accounting if sockets have SK_BPF_MEMCG_SOCK_ISOLATED in sk->sk_memcg.
+The amount of allocated pages are buffered to per-cpu variable
+{tcp,udp}_memory_per_cpu_fw_alloc up to +/- net.core.mem_pcpu_rsv
+before reported to {tcp,udp}_memory_allocated.
 
-Note that this does NOT disable memcg, but rather the per-protocol one.
+At 3., memory_allocated is calculated from the 2 variables twice
+at fentry and fexit of socket create function to check if the per-cpu
+value is drained during calculation.  In that case, 3. is retried.
 
-If mem_cgroup_sk_isolated(sk) returns true, the per-protocol memory
-accounting is skipped.
+We use kern_sync_rcu() for UDP because UDP recv queue is destroyed
+after RCU grace period.
 
-  # cat /sys/fs/cgroup/test/memory.stat | grep sock
-  sock 2757468160 <--------------------------------- charged to memcg
-  # cat /proc/net/sockstat | grep TCP
-  TCP: inuse 2006 orphan 0 tw 0 alloc 2008 mem 0 <-- not charged to tcp_mem
+The test takes ~2s on QEMU (64 CPUs) w/ KVM but takes 6s w/o KVM.
 
-In __inet_accept(), we need to reclaim counts that are already charged
-for child sockets because we do not allocate sk->sk_memcg until accept().
+  # time ./test_progs -t sk_memcg
+  #370/1   sk_memcg/TCP  :OK
+  #370/2   sk_memcg/UDP  :OK
+  #370/3   sk_memcg/TCPv6:OK
+  #370/4   sk_memcg/UDPv6:OK
+  #370     sk_memcg:OK
+  Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
 
-trace_sock_exceed_buf_limit() will always show 0 as accounted for the
-isolated sockets, but this can be obtained via memory.stat.
-
-Most changes are inline and hard to trace, but a microbenchmark on
-__sk_mem_raise_allocated() during neper/tcp_stream showed that more
-samples completed faster with bpf.  This will be more visible under
-tcp_mem pressure.
-
-  # bpftrace -e 'kprobe:__sk_mem_raise_allocated { @start[tid] = nsecs; }
-    kretprobe:__sk_mem_raise_allocated /@start[tid]/
-    { @end[tid] = nsecs - @start[tid]; @times = hist(@end[tid]); delete(@start[tid]); }'
-  # tcp_stream -6 -F 1000 -N -T 256
-
-Without bpf prog:
-
-  [128, 256)          3846 |                                                    |
-  [256, 512)       1505326 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-  [512, 1K)        1371006 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     |
-  [1K, 2K)          198207 |@@@@@@                                              |
-  [2K, 4K)           31199 |@                                                   |
-
-With bpf prog in the next patch:
-  (must be attached before tcp_stream)
-  # bpftool prog load sk_memcg.bpf.o /sys/fs/bpf/sk_memcg type cgroup/sock_create
-  # bpftool cgroup attach /sys/fs/cgroup/test cgroup_inet_sock_create pinned /sys/fs/bpf/sk_memcg
-
-  [128, 256)          6413 |                                                    |
-  [256, 512)       1868425 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-  [512, 1K)        1101697 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                      |
-  [1K, 2K)          117031 |@@@@                                                |
-  [2K, 4K)           11773 |                                                    |
+  real	0m1.623s
+  user	0m0.165s
+  sys	0m0.366s
 
 Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
-Nacked-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
-v6: Update commit message
----
- include/net/proto_memory.h      | 15 ++++++--
- include/net/tcp.h               | 10 ++++--
- net/core/sock.c                 | 64 ++++++++++++++++++++++-----------
- net/ipv4/af_inet.c              | 12 ++++++-
- net/ipv4/inet_connection_sock.c |  1 +
- net/ipv4/tcp.c                  |  3 +-
- net/ipv4/tcp_output.c           | 10 ++++--
- net/mptcp/protocol.c            |  3 +-
- net/tls/tls_device.c            |  4 ++-
- 9 files changed, 90 insertions(+), 32 deletions(-)
+v6:
+  * Trace sk_prot->memory_allocated + sk_prot->memory_per_cpu_fw_alloc
 
-diff --git a/include/net/proto_memory.h b/include/net/proto_memory.h
-index 72d4ec413ab5..8f20210136ab 100644
---- a/include/net/proto_memory.h
-+++ b/include/net/proto_memory.h
-@@ -31,13 +31,22 @@ static inline bool sk_under_memory_pressure(const struct sock *sk)
- 	if (!sk->sk_prot->memory_pressure)
- 		return false;
- 
--	if (mem_cgroup_sk_enabled(sk) &&
--	    mem_cgroup_sk_under_memory_pressure(sk))
--		return true;
-+	if (mem_cgroup_sk_enabled(sk)) {
-+		if (mem_cgroup_sk_under_memory_pressure(sk))
-+			return true;
+v5:
+  * Use kern_sync_rcu()
+  * Double NR_SEND to 128
+
+v4:
+  * Only use inet_create() hook
+  * Test bpf_getsockopt()
+  * Add serial_ prefix
+  * Reduce sleep() and the amount of sent data
+---
+ .../selftests/bpf/prog_tests/sk_memcg.c       | 236 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/sk_memcg.c  | 146 +++++++++++
+ 2 files changed, 382 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_memcg.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sk_memcg.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/sk_memcg.c b/tools/testing/selftests/bpf/prog_tests/sk_memcg.c
+new file mode 100644
+index 000000000000..c6152240a6b7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/sk_memcg.c
+@@ -0,0 +1,236 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright 2025 Google LLC */
 +
-+		if (mem_cgroup_sk_isolated(sk))
-+			return false;
-+	}
- 
- 	return !!READ_ONCE(*sk->sk_prot->memory_pressure);
- }
- 
-+static inline bool sk_should_enter_memory_pressure(struct sock *sk)
++#include <test_progs.h>
++#include "sk_memcg.skel.h"
++#include "network_helpers.h"
++
++#define NR_SOCKETS	64
++#define NR_SEND		128
++#define BUF_SINGLE	1024
++#define BUF_TOTAL	(BUF_SINGLE * NR_SEND)
++
++struct test_case {
++	char name[8];
++	int family;
++	int type;
++	int (*create_sockets)(struct test_case *test_case, int sk[], int len);
++	long (*get_memory_allocated)(struct test_case *test_case, struct sk_memcg *skel);
++};
++
++static int tcp_create_sockets(struct test_case *test_case, int sk[], int len)
 +{
-+	return !mem_cgroup_sk_enabled(sk) || !mem_cgroup_sk_isolated(sk);
++	int server, i;
++
++	server = start_server(test_case->family, test_case->type, NULL, 0, 0);
++	ASSERT_GE(server, 0, "start_server_str");
++
++	for (i = 0; i < len / 2; i++) {
++		sk[i * 2] = connect_to_fd(server, 0);
++		if (!ASSERT_GE(sk[i * 2], 0, "connect_to_fd"))
++			return sk[i * 2];
++
++		sk[i * 2 + 1] = accept(server, NULL, NULL);
++		if (!ASSERT_GE(sk[i * 2 + 1], 0, "accept"))
++			return sk[i * 2 + 1];
++	}
++
++	close(server);
++
++	return 0;
 +}
 +
- static inline long
- proto_memory_allocated(const struct proto *prot)
- {
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 2936b8175950..0191a4585bba 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -275,9 +275,13 @@ extern unsigned long tcp_memory_pressure;
- /* optimized version of sk_under_memory_pressure() for TCP sockets */
- static inline bool tcp_under_memory_pressure(const struct sock *sk)
- {
--	if (mem_cgroup_sk_enabled(sk) &&
--	    mem_cgroup_sk_under_memory_pressure(sk))
--		return true;
-+	if (mem_cgroup_sk_enabled(sk)) {
-+		if (mem_cgroup_sk_under_memory_pressure(sk))
-+			return true;
++static int udp_create_sockets(struct test_case *test_case, int sk[], int len)
++{
++	int i, err, rcvbuf = BUF_TOTAL;
 +
-+		if (mem_cgroup_sk_isolated(sk))
-+			return false;
++	for (i = 0; i < len / 2; i++) {
++		sk[i * 2] = start_server(test_case->family, test_case->type, NULL, 0, 0);
++		if (!ASSERT_GE(sk[i * 2], 0, "start_server"))
++			return sk[i * 2];
++
++		sk[i * 2 + 1] = connect_to_fd(sk[i * 2], 0);
++		if (!ASSERT_GE(sk[i * 2 + 1], 0, "connect_to_fd"))
++			return sk[i * 2 + 1];
++
++		err = connect_fd_to_fd(sk[i * 2], sk[i * 2 + 1], 0);
++		if (!ASSERT_EQ(err, 0, "connect_fd_to_fd"))
++			return err;
++
++		err = setsockopt(sk[i * 2], SOL_SOCKET, SO_RCVBUF, &rcvbuf, sizeof(int));
++		if (!ASSERT_EQ(err, 0, "setsockopt(SO_RCVBUF)"))
++			return err;
++
++		err = setsockopt(sk[i * 2 + 1], SOL_SOCKET, SO_RCVBUF, &rcvbuf, sizeof(int));
++		if (!ASSERT_EQ(err, 0, "setsockopt(SO_RCVBUF)"))
++			return err;
 +	}
- 
- 	return READ_ONCE(tcp_memory_pressure);
- }
-diff --git a/net/core/sock.c b/net/core/sock.c
-index ae30d7d54498..bda1655fa9bf 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1046,17 +1046,21 @@ static int sock_reserve_memory(struct sock *sk, int bytes)
- 	if (!charged)
- 		return -ENOMEM;
- 
--	/* pre-charge to forward_alloc */
--	sk_memory_allocated_add(sk, pages);
--	allocated = sk_memory_allocated(sk);
--	/* If the system goes into memory pressure with this
--	 * precharge, give up and return error.
--	 */
--	if (allocated > sk_prot_mem_limits(sk, 1)) {
--		sk_memory_allocated_sub(sk, pages);
--		mem_cgroup_sk_uncharge(sk, pages);
--		return -ENOMEM;
-+	if (!mem_cgroup_sk_isolated(sk)) {
-+		/* pre-charge to forward_alloc */
-+		sk_memory_allocated_add(sk, pages);
-+		allocated = sk_memory_allocated(sk);
 +
-+		/* If the system goes into memory pressure with this
-+		 * precharge, give up and return error.
++	return 0;
++}
++
++static long get_memory_allocated(struct test_case *test_case,
++				 bool *activated, bool *stable,
++				 long *memory_allocated)
++{
++	*stable = false;
++
++	do {
++		*activated = true;
++
++		/* AF_INET and AF_INET6 share the same memory_allocated.
++		 * tcp_init_sock() is called by AF_INET and AF_INET6,
++		 * but udp_lib_init_sock() is inline.
 +		 */
-+		if (allocated > sk_prot_mem_limits(sk, 1)) {
-+			sk_memory_allocated_sub(sk, pages);
-+			mem_cgroup_sk_uncharge(sk, pages);
-+			return -ENOMEM;
-+		}
- 	}
++		socket(AF_INET, test_case->type, 0);
++	} while (!*stable);
 +
- 	sk_forward_alloc_add(sk, pages << PAGE_SHIFT);
- 
- 	WRITE_ONCE(sk->sk_reserved_mem,
-@@ -3154,8 +3158,11 @@ bool sk_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
- 	if (likely(skb_page_frag_refill(32U, pfrag, sk->sk_allocation)))
- 		return true;
- 
--	sk_enter_memory_pressure(sk);
-+	if (sk_should_enter_memory_pressure(sk))
-+		sk_enter_memory_pressure(sk);
++	return *memory_allocated;
++}
 +
- 	sk_stream_moderate_sndbuf(sk);
++static long tcp_get_memory_allocated(struct test_case *test_case, struct sk_memcg *skel)
++{
++	return get_memory_allocated(test_case,
++				    &skel->bss->tcp_activated,
++				    &skel->bss->tcp_stable,
++				    &skel->bss->tcp_memory_allocated);
++}
 +
- 	return false;
- }
- EXPORT_SYMBOL(sk_page_frag_refill);
-@@ -3268,18 +3275,30 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
- {
- 	bool memcg_enabled = false, charged = false;
- 	struct proto *prot = sk->sk_prot;
--	long allocated;
--
--	sk_memory_allocated_add(sk, amt);
--	allocated = sk_memory_allocated(sk);
-+	long allocated = 0;
- 
- 	if (mem_cgroup_sk_enabled(sk)) {
-+		bool isolated = mem_cgroup_sk_isolated(sk);
++static long udp_get_memory_allocated(struct test_case *test_case, struct sk_memcg *skel)
++{
++	return get_memory_allocated(test_case,
++				    &skel->bss->udp_activated,
++				    &skel->bss->udp_stable,
++				    &skel->bss->udp_memory_allocated);
++}
 +
- 		memcg_enabled = true;
- 		charged = mem_cgroup_sk_charge(sk, amt, gfp_memcg_charge());
--		if (!charged)
++static int check_isolated(struct test_case *test_case,
++			  struct sk_memcg *skel, bool isolated)
++{
++	char buf[BUF_SINGLE] = {};
++	long memory_allocated[2];
++	int sk[NR_SOCKETS] = {};
++	int err, i, j;
 +
-+		if (isolated && charged)
-+			return 1;
++	err = test_case->create_sockets(test_case, sk, ARRAY_SIZE(sk));
++	if (err)
++		goto close;
 +
-+		if (!charged) {
-+			if (!isolated) {
-+				sk_memory_allocated_add(sk, amt);
-+				allocated = sk_memory_allocated(sk);
++	memory_allocated[0] = test_case->get_memory_allocated(test_case, skel);
++
++	/* allocate pages >= 1024 */
++	for (i = 0; i < ARRAY_SIZE(sk); i++) {
++		for (j = 0; j < NR_SEND; j++) {
++			int bytes = send(sk[i], buf, sizeof(buf), 0);
++
++			/* Avoid too noisy logs when something failed. */
++			if (bytes != sizeof(buf)) {
++				ASSERT_EQ(bytes, sizeof(buf), "send");
++				if (bytes < 0) {
++					err = bytes;
++					goto close;
++				}
 +			}
-+
- 			goto suppress_allocation;
 +		}
- 	}
- 
-+	sk_memory_allocated_add(sk, amt);
-+	allocated = sk_memory_allocated(sk);
-+
- 	/* Under limit. */
- 	if (allocated <= sk_prot_mem_limits(sk, 0)) {
- 		sk_leave_memory_pressure(sk);
-@@ -3358,7 +3377,8 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
- 
- 	trace_sock_exceed_buf_limit(sk, prot, allocated, kind);
- 
--	sk_memory_allocated_sub(sk, amt);
-+	if (allocated)
-+		sk_memory_allocated_sub(sk, amt);
- 
- 	if (charged)
- 		mem_cgroup_sk_uncharge(sk, amt);
-@@ -3397,11 +3417,15 @@ EXPORT_SYMBOL(__sk_mem_schedule);
-  */
- void __sk_mem_reduce_allocated(struct sock *sk, int amount)
- {
--	sk_memory_allocated_sub(sk, amount);
--
--	if (mem_cgroup_sk_enabled(sk))
-+	if (mem_cgroup_sk_enabled(sk)) {
- 		mem_cgroup_sk_uncharge(sk, amount);
- 
-+		if (mem_cgroup_sk_isolated(sk))
-+			return;
 +	}
 +
-+	sk_memory_allocated_sub(sk, amount);
++	memory_allocated[1] = test_case->get_memory_allocated(test_case, skel);
 +
- 	if (sk_under_global_memory_pressure(sk) &&
- 	    (sk_memory_allocated(sk) < sk_prot_mem_limits(sk, 0)))
- 		sk_leave_memory_pressure(sk);
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 9b62f1ae13ba..adbc8bcb760b 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -95,6 +95,7 @@
- #include <net/checksum.h>
- #include <net/ip.h>
- #include <net/protocol.h>
-+#include <net/proto_memory.h>
- #include <net/arp.h>
- #include <net/route.h>
- #include <net/ip_fib.h>
-@@ -773,8 +774,17 @@ void __inet_accept(struct socket *sock, struct socket *newsock, struct sock *new
- 			 */
- 			amt = sk_mem_pages(newsk->sk_forward_alloc +
- 					   atomic_read(&newsk->sk_rmem_alloc));
--			if (amt)
-+			if (amt) {
-+				/* This amt is already charged globally to
-+				 * sk_prot->memory_allocated due to lack of
-+				 * sk_memcg until accept(), thus we need to
-+				 * reclaim it here if newsk is isolated.
-+				 */
-+				if (mem_cgroup_sk_isolated(newsk))
-+					sk_memory_allocated_sub(newsk, amt);
++	if (isolated)
++		ASSERT_LE(memory_allocated[1], memory_allocated[0] + 10, "isolated");
++	else
++		ASSERT_GT(memory_allocated[1], memory_allocated[0] + 1024, "not isolated");
 +
- 				mem_cgroup_sk_charge(newsk, amt, gfp);
-+			}
- 		}
- 
- 		kmem_cache_charge(newsk, gfp);
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index ed10b959a906..f8dd53d40dcf 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -22,6 +22,7 @@
- #include <net/tcp.h>
- #include <net/sock_reuseport.h>
- #include <net/addrconf.h>
-+#include <net/proto_memory.h>
- 
- #if IS_ENABLED(CONFIG_IPV6)
- /* match_sk*_wildcard == true:  IPV6_ADDR_ANY equals to any IPv6 addresses
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 71a956fbfc55..dcbd49e2f8af 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -908,7 +908,8 @@ struct sk_buff *tcp_stream_alloc_skb(struct sock *sk, gfp_t gfp,
- 		}
- 		__kfree_skb(skb);
- 	} else {
--		sk->sk_prot->enter_memory_pressure(sk);
-+		if (sk_should_enter_memory_pressure(sk))
-+			tcp_enter_memory_pressure(sk);
- 		sk_stream_moderate_sndbuf(sk);
- 	}
- 	return NULL;
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index dfbac0876d96..f7aa86661219 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -3574,12 +3574,18 @@ void sk_forced_mem_schedule(struct sock *sk, int size)
- 	delta = size - sk->sk_forward_alloc;
- 	if (delta <= 0)
- 		return;
++close:
++	for (i = 0; i < ARRAY_SIZE(sk); i++)
++		close(sk[i]);
 +
- 	amt = sk_mem_pages(delta);
- 	sk_forward_alloc_add(sk, amt << PAGE_SHIFT);
--	sk_memory_allocated_add(sk, amt);
- 
--	if (mem_cgroup_sk_enabled(sk))
-+	if (mem_cgroup_sk_enabled(sk)) {
- 		mem_cgroup_sk_charge(sk, amt, gfp_memcg_charge() | __GFP_NOFAIL);
-+
-+		if (mem_cgroup_sk_isolated(sk))
-+			return;
++	if (test_case->type == SOCK_DGRAM) {
++		/* UDP recv queue is destroyed after RCU grace period.
++		 * With one kern_sync_rcu(), memory_allocated[0] of the
++		 * isoalted case often matches with memory_allocated[1]
++		 * of the preceding non-isolated case.
++		 */
++		kern_sync_rcu();
++		kern_sync_rcu();
 +	}
 +
-+	sk_memory_allocated_add(sk, amt);
- }
- 
- /* Send a FIN. The caller locks the socket for us.
-diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index 9a287b75c1b3..f7487e22a3f8 100644
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -16,6 +16,7 @@
- #include <net/inet_common.h>
- #include <net/inet_hashtables.h>
- #include <net/protocol.h>
-+#include <net/proto_memory.h>
- #include <net/tcp_states.h>
- #if IS_ENABLED(CONFIG_MPTCP_IPV6)
- #include <net/transp_v6.h>
-@@ -1016,7 +1017,7 @@ static void mptcp_enter_memory_pressure(struct sock *sk)
- 	mptcp_for_each_subflow(msk, subflow) {
- 		struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
- 
--		if (first)
-+		if (first && sk_should_enter_memory_pressure(ssk))
- 			tcp_enter_memory_pressure(ssk);
- 		sk_stream_moderate_sndbuf(ssk);
- 
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index f672a62a9a52..6696ef837116 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -35,6 +35,7 @@
- #include <linux/netdevice.h>
- #include <net/dst.h>
- #include <net/inet_connection_sock.h>
-+#include <net/proto_memory.h>
- #include <net/tcp.h>
- #include <net/tls.h>
- #include <linux/skbuff_ref.h>
-@@ -371,7 +372,8 @@ static int tls_do_allocation(struct sock *sk,
- 	if (!offload_ctx->open_record) {
- 		if (unlikely(!skb_page_frag_refill(prepend_size, pfrag,
- 						   sk->sk_allocation))) {
--			READ_ONCE(sk->sk_prot)->enter_memory_pressure(sk);
-+			if (sk_should_enter_memory_pressure(sk))
-+				READ_ONCE(sk->sk_prot)->enter_memory_pressure(sk);
- 			sk_stream_moderate_sndbuf(sk);
- 			return -ENOMEM;
- 		}
++	return err;
++}
++
++void run_test(struct test_case *test_case)
++{
++	struct sk_memcg *skel;
++	int cgroup, err;
++
++	skel = sk_memcg__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open_and_load"))
++		return;
++
++	skel->bss->nr_cpus = libbpf_num_possible_cpus();
++
++	err = sk_memcg__attach(skel);
++	if (!ASSERT_OK(err, "attach"))
++		goto destroy_skel;
++
++	cgroup = test__join_cgroup("/sk_memcg");
++	if (!ASSERT_GE(cgroup, 0, "join_cgroup"))
++		goto destroy_skel;
++
++	err = check_isolated(test_case, skel, false);
++	if (!ASSERT_EQ(err, 0, "test_isolated(false)"))
++		goto close_cgroup;
++
++	skel->links.sock_create = bpf_program__attach_cgroup(skel->progs.sock_create, cgroup);
++	if (!ASSERT_OK_PTR(skel->links.sock_create, "attach_cgroup(sock_create)"))
++		goto close_cgroup;
++
++	err = check_isolated(test_case, skel, true);
++	ASSERT_EQ(err, 0, "test_isolated(false)");
++
++close_cgroup:
++	close(cgroup);
++destroy_skel:
++	sk_memcg__destroy(skel);
++}
++
++struct test_case test_cases[] = {
++	{
++		.name = "TCP  ",
++		.family = AF_INET,
++		.type = SOCK_STREAM,
++		.create_sockets = tcp_create_sockets,
++		.get_memory_allocated = tcp_get_memory_allocated,
++	},
++	{
++		.name = "UDP  ",
++		.family = AF_INET,
++		.type = SOCK_DGRAM,
++		.create_sockets = udp_create_sockets,
++		.get_memory_allocated = udp_get_memory_allocated,
++	},
++	{
++		.name = "TCPv6",
++		.family = AF_INET6,
++		.type = SOCK_STREAM,
++		.create_sockets = tcp_create_sockets,
++		.get_memory_allocated = tcp_get_memory_allocated,
++	},
++	{
++		.name = "UDPv6",
++		.family = AF_INET6,
++		.type = SOCK_DGRAM,
++		.create_sockets = udp_create_sockets,
++		.get_memory_allocated = udp_get_memory_allocated,
++	},
++};
++
++void serial_test_sk_memcg(void)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
++		test__start_subtest(test_cases[i].name);
++		run_test(&test_cases[i]);
++	}
++}
+diff --git a/tools/testing/selftests/bpf/progs/sk_memcg.c b/tools/testing/selftests/bpf/progs/sk_memcg.c
+new file mode 100644
+index 000000000000..cd46d6dfa73c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/sk_memcg.c
+@@ -0,0 +1,146 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright 2025 Google LLC */
++
++#include "bpf_tracing_net.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <errno.h>
++
++extern int tcp_memory_per_cpu_fw_alloc __ksym;
++extern int udp_memory_per_cpu_fw_alloc __ksym;
++
++int nr_cpus;
++bool tcp_activated, tcp_stable, udp_activated, udp_stable;
++long tcp_memory_allocated, udp_memory_allocated;
++static struct sock *tcp_sk_tracing, *udp_sk_tracing;
++
++struct sk_prot {
++	long *memory_allocated;
++	int *memory_per_cpu_fw_alloc;
++};
++
++static int drain_memory_per_cpu_fw_alloc(__u32 i, struct sk_prot *sk_prot_ctx)
++{
++	int *memory_per_cpu_fw_alloc;
++
++	memory_per_cpu_fw_alloc = bpf_per_cpu_ptr(sk_prot_ctx->memory_per_cpu_fw_alloc, i);
++	if (memory_per_cpu_fw_alloc)
++		*sk_prot_ctx->memory_allocated += *memory_per_cpu_fw_alloc;
++
++	return 0;
++}
++
++static long get_memory_allocated(struct sock *_sk, int *memory_per_cpu_fw_alloc)
++{
++	struct sock *sk = bpf_core_cast(_sk, struct sock);
++	struct sk_prot sk_prot_ctx;
++	long memory_allocated;
++
++	/* net_aligned_data.{tcp,udp}_memory_allocated was not available. */
++	memory_allocated = sk->__sk_common.skc_prot->memory_allocated->counter;
++
++	sk_prot_ctx.memory_allocated = &memory_allocated;
++	sk_prot_ctx.memory_per_cpu_fw_alloc = memory_per_cpu_fw_alloc;
++
++	bpf_loop(nr_cpus, drain_memory_per_cpu_fw_alloc, &sk_prot_ctx, 0);
++
++	return memory_allocated;
++}
++
++static void fentry_init_sock(struct sock *sk, struct sock **sk_tracing,
++			     long *memory_allocated, int *memory_per_cpu_fw_alloc,
++			     bool *activated)
++{
++	if (!*activated)
++		return;
++
++	if (__sync_val_compare_and_swap(sk_tracing, NULL, sk))
++		return;
++
++	*activated = false;
++	*memory_allocated = get_memory_allocated(sk, memory_per_cpu_fw_alloc);
++}
++
++static void fexit_init_sock(struct sock *sk, struct sock **sk_tracing,
++			    long *memory_allocated, int *memory_per_cpu_fw_alloc,
++			    bool *stable)
++{
++	long new_memory_allocated;
++
++	if (sk != *sk_tracing)
++		return;
++
++	new_memory_allocated = get_memory_allocated(sk, memory_per_cpu_fw_alloc);
++	if (new_memory_allocated == *memory_allocated)
++		*stable = true;
++
++	*sk_tracing = NULL;
++}
++
++SEC("fentry/tcp_init_sock")
++int BPF_PROG(fentry_tcp_init_sock, struct sock *sk)
++{
++	fentry_init_sock(sk, &tcp_sk_tracing,
++			 &tcp_memory_allocated, &tcp_memory_per_cpu_fw_alloc,
++			 &tcp_activated);
++	return 0;
++}
++
++SEC("fexit/tcp_init_sock")
++int BPF_PROG(fexit_tcp_init_sock, struct sock *sk)
++{
++	fexit_init_sock(sk, &tcp_sk_tracing,
++			&tcp_memory_allocated, &tcp_memory_per_cpu_fw_alloc,
++			&tcp_stable);
++	return 0;
++}
++
++SEC("fentry/udp_init_sock")
++int BPF_PROG(fentry_udp_init_sock, struct sock *sk)
++{
++	fentry_init_sock(sk, &udp_sk_tracing,
++			 &udp_memory_allocated, &udp_memory_per_cpu_fw_alloc,
++			 &udp_activated);
++	return 0;
++}
++
++SEC("fexit/udp_init_sock")
++int BPF_PROG(fexit_udp_init_sock, struct sock *sk)
++{
++	fexit_init_sock(sk, &udp_sk_tracing,
++			&udp_memory_allocated, &udp_memory_per_cpu_fw_alloc,
++			&udp_stable);
++	return 0;
++}
++
++SEC("cgroup/sock_create")
++int sock_create(struct bpf_sock *ctx)
++{
++	u32 flags = SK_BPF_MEMCG_SOCK_ISOLATED;
++	int err;
++
++	err = bpf_setsockopt(ctx, SOL_SOCKET, SK_BPF_MEMCG_FLAGS,
++			     &flags, sizeof(flags));
++	if (err)
++		goto err;
++
++	flags = 0;
++
++	err = bpf_getsockopt(ctx, SOL_SOCKET, SK_BPF_MEMCG_FLAGS,
++			     &flags, sizeof(flags));
++	if (err)
++		goto err;
++
++	if (flags != SK_BPF_MEMCG_SOCK_ISOLATED) {
++		err = -EINVAL;
++		goto err;
++	}
++
++	return 1;
++
++err:
++	bpf_set_retval(err);
++	return 0;
++}
++
++char LICENSE[] SEC("license") = "GPL";
 -- 
 2.51.0.384.g4c02a37b29-goog
 
