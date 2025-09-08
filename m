@@ -1,82 +1,83 @@
-Return-Path: <bpf+bounces-67814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36045B49D4E
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 01:10:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEB84B49D7A
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 01:27:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 026A63ABFF6
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 23:10:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 843593C0EDE
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 23:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624922E1EE6;
-	Mon,  8 Sep 2025 23:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37CF630276F;
+	Mon,  8 Sep 2025 23:27:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="MV0f/LN9"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="B37s5tly"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF43523AE87
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 23:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23E92F8BE8
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 23:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757373013; cv=none; b=X0TkD7D9UnMO6IW3qYJr/4SRDE7u/k6hhggtaZnwUJQ8smiZjyE6yAY/tdaOq5qHM6N6TmvXA0ugPTfhm92dT/L8OFMLYrp3yEiGA1QCDF2GvfE5q5xGXKkAQIbyEATqO1wH7gyAOVJ71nnQ46x+4U8/wAhtJFtal85DwiSlChA=
+	t=1757374035; cv=none; b=QNrlEo3qCaW3/UT6odmGPBq2Tnj0VfhT/Bq2xRQDn2XfXgb4jfHYEAVZbrpTlU948I4rE49n8g3Qh76s/9ijJK2ZQvjChAIjw8gGj1W1rQ6a/tTOevX7SIVkwITHQ87lqkSqU0mAJC5Nye5HXAwD9bM9lcu+MZVQM4/MjY5V0HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757373013; c=relaxed/simple;
-	bh=FS4nc2fJeS5Q3A/mcWeQ/ZPhjTODNmSRZ+cO8Gw2KxQ=;
+	s=arc-20240116; t=1757374035; c=relaxed/simple;
+	bh=9j1F9Hlgq0izFEcvkNVfyEGzv++lE2ro3SvVkZ0AdfI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PWqyO/FtaU4JHwKjdAcO2Pre2lJ2TYuQKRDrY/gPJu/tJaYW6syMT/6OBKcgySkGFKwjPVShfw3A8eKBbume3bUwQ0PJtklTRlo61SHke5n3GrZ5uqqtaCGFG8dQevkBoM8PpbnD47Zu7xkW/OWjG+02LEDe4/IORh/tYzXO4PU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=MV0f/LN9; arc=none smtp.client-ip=209.85.218.49
+	 To:Cc:Content-Type; b=kVyI74Z5BCvrWyMvUAMTCUQJwGSBnwcIC6KfGcWURBpPE+Sl2s9PGc1Ro+d9eCAW36iuuuzrrERK4fEELgGab20eZQbVsCU92uTs8Pa5QSgE3cJyLCgm9Y3JDlY2wpDulB2VeNtJwt520PqxkOBLAnNE6Lucq6wjN0yU9VRPnhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=B37s5tly; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b0473327e70so804579466b.3
-        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 16:10:11 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-623720201fdso5206109a12.1
+        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 16:27:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1757373010; x=1757977810; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1757374032; x=1757978832; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=n3Q44KwJ8t0CaEyMHJTLNYuOABw/iss9AUCNI8J6M2g=;
-        b=MV0f/LN9H2UEh/BmH0WkTH+g6+dFORcfNj2oHMRgrEcVSwAUREBSqc1fRHuseHquWt
-         bsfqqXd9mDF4KYVoltqeBaDFkxphrdWr1txAois3XZchT8U7Va3OGVhuVXk0rZs1ceaS
-         K5kQhRmXzU0e6JwacowsR36bZllFuDZ8nLq4g=
+        bh=Bsrp6f7rC2KY8hXQre2m5AM/+TH/nwxi0ROAfuOjXMY=;
+        b=B37s5tlyjWLaZcRArjJg3ErLyl7tJr8WWnl9ecRj22Rzh6ti5AbbapWuLwYqtAZEBW
+         9kGIvptJJSJpbIq5r7TlthoSU2kVgmIIEI0z9KJ+J4Sdy7qVDKJIeAkOcWevp1qs9w1r
+         PzXQkEczFqSAl4rGulf6mIuGg94W7sBMIMA7Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757373010; x=1757977810;
+        d=1e100.net; s=20230601; t=1757374032; x=1757978832;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=n3Q44KwJ8t0CaEyMHJTLNYuOABw/iss9AUCNI8J6M2g=;
-        b=AGA1xedQwUpSZo62vkcdlu1w0DTmJAQw0ntfQhQXFk4+gbeYXmNXQhNTlRZhz698q8
-         emdR5n6cFE+5zpuGaF42tcuUh3e6Lxuud4B8G/a2pPwv4w1slBP/MFh2xtEcN6/znS5y
-         x13xRjTglliTTeuzqk/cUQll6XOfDyxX2ZnyNB5JiZUXTOBwe4STgbyipLIS/QDDBWrb
-         WcBlk/reMZ+eNgKz3eo3tzYuGoBegqxYxz0zmDafquw7N6ItgcB2tbYf7Y8Woj0/lPja
-         O8y5hFXU4UThhQZhmBxChmEvB5RkRud01co17BOlftNU000nSlwe72d0/jSLhuo1/VhY
-         azVw==
-X-Forwarded-Encrypted: i=1; AJvYcCXyC+afJ9zLgMLRO8i3gQMigwWxS1XdXdr5S0w0TMGjWIXIAgriEs75qujpFbeSpBYn2rs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8nOHQJZkxugZ4rbxqTVVR8Dznt01Xapi0XsUwCA6z8o5UF9ju
-	rYkb475crIxAacukj8c1V4A7pe25s+z6K2yvJMF35i2vSqErKAW4+Lv77DN272h6pzU8c1dHTPR
-	hE4ZMHQ0=
-X-Gm-Gg: ASbGncu2QawvfmnNfKKS/AiPpdHELSrkyMY1J4/vQ10mYjQGFB3RRsSKo9gQhx60b7U
-	pAN6/RQDUw81j72a3aVaFD3E6KA5xP4yY7gXuOhClwDoQJLh+BIcjdb9QVCbIdnlKXQSjmIeKtT
-	B6nDc9sRI/teSf7fvWrVg8EAZHEyffNxU+c+zBU2+7NFWWygX/DnluYYsGo54mfCXdiKOAWSHSF
-	2VSUGOCJ/4atJWL80WebW78b4MqIul5P7bufzYwP+2NChbcyGeTBfvWAbPKwqLp42JlZeGpEJyB
-	1a50Hb2bbWo5x298M1R5uPHlmapIlCEgubgLVWQ49t7tJrsu/G1F4mUml/KgqjYb0Oyij495IYW
-	cCZ5iUb+gfRZL6vR+m9befwb3/Plg+710P7JI/sc7aOgqfOFYsXS/cJWMkp68/TXDaaNzKCIM
-X-Google-Smtp-Source: AGHT+IFD7x4C4+/UP/QJ5A4TRIryGLmCM9TsNsIvD0rTRgxywYjbnSOIAHcAJRuCuJBXX4209/dwDA==
-X-Received: by 2002:a17:907:3e9e:b0:b04:302c:fe14 with SMTP id a640c23a62f3a-b04b1452a36mr911238166b.21.1757373009401;
-        Mon, 08 Sep 2025 16:10:09 -0700 (PDT)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b0466a962c4sm1464379466b.71.2025.09.08.16.10.08
+        bh=Bsrp6f7rC2KY8hXQre2m5AM/+TH/nwxi0ROAfuOjXMY=;
+        b=cLe45779Fy9JONghjbh2h47UwmGLrR0KjHHOGtIshlhssiwtXDjk2/fRl6TIlKOL9s
+         fNgzqtwVU97QzOaYIaKOdgE3iJ/fKxHkDaz7cyoLZdsI7/eww0Ny8y/33zMGfRktSTNp
+         gCr8DuYj1Yx8qtYCzR+OlmHzOvtbwkiK8uJ0di/nnrOkkQ4fQ7U/5HOAD7vc0BarcMBX
+         OXHbRORlFPMxQw9/5CssPmeZtmunMXiIdMkLNISqcEtNyUOzK5o0atdx+rqskRdZG8Jp
+         kLym4DUZ5GU/U/5Wu11HJWceiXuGFx8z9Bl+4fIQkZtqdXm9mDHsV+/cN9zQNEZIl38Y
+         eOag==
+X-Forwarded-Encrypted: i=1; AJvYcCWMUVxzxprBQOs1K2GBMfvWm0Jn48rEORNiijq2H4ygYWCL4fPRX1hYxEX84VQsSzRydnc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxl5N4ZK063bSHV1764Wb/vqeJGQiRYBSjSQY0nYfIAANuvgiAs
+	9KlCTN0NXoR/DymdUe8cGMs9FdfNx7S3wsrwbp6CsOy3oFNIUvbP5qev+b7022hzhEcQLOaQtwN
+	kc5uYc20=
+X-Gm-Gg: ASbGncv26M5TEWAUu2Q5kbeOpvmcCMV8xyb29SL+WgSqYZhEsmi2QMN6C7fC4uOL9uy
+	WnZ1/3biX0wqoJi0MJX2hOVXris86BA/t4JmB7AECZk2wlm+8Z6+9RwfOxUkMgxzElB1ySoEpis
+	NKNQVucIIoCjRMB5yOEXY5Hg4yqdpecUgfH3EQj9OE4Pr0DKVA2+zcU+/DhkXgVJPLvQKecsf69
+	lUFpB0b2naKP5ppmJ+GU0rIjnygmuuI7N4doN4zGLOqs2GQGeebE7OD3Jj/XFGah1y3Z6qmsBbk
+	TCqJ3J+Jvek+4H1uqnTFDatg88cLpQ6ARBhSklBUKLXkl2HF+DgIKmk3yxIitQZ8g5Zj1Pnlhbn
+	Eo7r6ZBB+lqlVcJk6TZY0Km43pvflaFnfU95qEdseCletRe82/GjEe0vebpcaIy61ttiEWhlWhZ
+	96+KNVs0s=
+X-Google-Smtp-Source: AGHT+IH/qRIdV/Qbw7Yhrb0nBG+8tRMFvjacB4pN6w7VAsuhlBl/CPJhdfThNPEvPFLoZ6WDKI3QFQ==
+X-Received: by 2002:a05:6402:2553:b0:61f:167:7749 with SMTP id 4fb4d7f45d1cf-623725ed9f3mr9859379a12.5.1757374031800;
+        Mon, 08 Sep 2025 16:27:11 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-62bfe99ffcbsm58391a12.3.2025.09.08.16.27.07
         for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Sep 2025 16:10:08 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b0473327e70so804572066b.3
-        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 16:10:08 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVpnwD9qSDc52w19gIJwq3QSfS2dtaYw7zdKlD46BE5EnlwguoMC40HsMQLD/EsuTnznq0=@vger.kernel.org
-X-Received: by 2002:a17:907:6d0d:b0:ae3:8c9b:bd61 with SMTP id
- a640c23a62f3a-b04b13fb3d7mr915632966b.12.1757373007881; Mon, 08 Sep 2025
- 16:10:07 -0700 (PDT)
+        Mon, 08 Sep 2025 16:27:10 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-afcb7ace3baso867211966b.3
+        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 16:27:07 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUKhI9sjdLN4jHSAuG4XHWzNgYRiXpkUZikBwWzEnZQxQYw24Vj3Ru1h9pKf3Rm1L3KPc4=@vger.kernel.org
+X-Received: by 2002:a17:906:f597:b0:b04:ad1c:59e4 with SMTP id
+ a640c23a62f3a-b04b13cfa09mr966785466b.12.1757374027292; Mon, 08 Sep 2025
+ 16:27:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,13 +93,13 @@ References: <20250828180300.591225320@kernel.org> <20250829110639.1cfc5dcc@ganda
  <20250829171855.64f2cbfc@gandalf.local.home> <CAHk-=wj7rL47QetC+e70y7pgyH4v7Q2vcSZatRsCk+Z6urA3hw@mail.gmail.com>
  <20250829190935.7e014820@gandalf.local.home> <CAHk-=wgNeu8_=kPnKwFpwMUC=o-uh=KjJWePR9ujk=7F9yNXDQ@mail.gmail.com>
  <20250830143114.395ed246@batman.local.home> <CAHk-=wjgXGuJVaOmftxnwrS6FafwrLL+yHrH6-sgbBRB-iLn8w@mail.gmail.com>
- <20250908174235.29a57e62@gandalf.local.home>
-In-Reply-To: <20250908174235.29a57e62@gandalf.local.home>
+ <20250908174235.29a57e62@gandalf.local.home> <CAHk-=wiEL-5f96NbRtm4JJVi6u=3Edto9-ZABgpOc6WAj=gX=w@mail.gmail.com>
+In-Reply-To: <CAHk-=wiEL-5f96NbRtm4JJVi6u=3Edto9-ZABgpOc6WAj=gX=w@mail.gmail.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 8 Sep 2025 16:09:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiEL-5f96NbRtm4JJVi6u=3Edto9-ZABgpOc6WAj=gX=w@mail.gmail.com>
-X-Gm-Features: Ac12FXy1lCy2MUtjNn6OggSKXnFGQilTbpirSh9H6fsZa-eyGTZysLHvi-fEy38
-Message-ID: <CAHk-=wiEL-5f96NbRtm4JJVi6u=3Edto9-ZABgpOc6WAj=gX=w@mail.gmail.com>
+Date: Mon, 8 Sep 2025 16:26:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgyry=1=gabJ0iw_HbqrHkg84gCvKQXi5Qg5u6pq=vwzg@mail.gmail.com>
+X-Gm-Features: Ac12FXw_TEqw3uAfoUb6rds-8PBZlK9wEtfwraJcwLFCTgjp6oxAH2_abLFrQqY
+Message-ID: <CAHk-=wgyry=1=gabJ0iw_HbqrHkg84gCvKQXi5Qg5u6pq=vwzg@mail.gmail.com>
 Subject: Re: [PATCH v6 5/6] tracing: Show inode and device major:minor in
  deferred user space stacktrace
 To: Steven Rostedt <rostedt@goodmis.org>
@@ -115,127 +116,52 @@ Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Steven Rostedt <rostedt@k
 	Sam James <sam@gentoo.org>, Kees Cook <kees@kernel.org>, "Carlos O'Donell" <codonell@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 8 Sept 2025 at 14:42, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, 8 Sept 2025 at 16:09, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> I just re-read the entire thread, and I'm still not sure where to go with
-> this.
+> Make the "give me the expensive output" be a dynamic flag, so that you
+> don't do it by default, but if you have some model where you are
+> scripting things with shell-script rather than doing 'perf record', at
+> least you get good output.
 
-So honestly, I don't know how to get where you want to get - or
-whether it's even *possible* without horrible performance impact.
+Side note: you could make that dynamic flag be basically "per-target",
+by having the *tracer* open the files that it wants to match against,
+and guaranteeing that the dentry stays around by virtue of having
+opened the files.
 
-And no, we're not adding crap interfaces to mmap/munmap just for a
-stupid sysfs tracing thing.
+Then - I'm handwaving a bit here - you could have some "hash the
+dentry pointer" model.
 
-> Ideally, the user space stack trace should look like:
->
->    futex_requeue-1044    [002] .....   168.761423: <user stack unwind> cookie=31500000003
->  =>  <000000000009a9ee> : path=/usr/lib/x86_64-linux-gnu/libselinux.so.1 build_id={0x3ba6e0c2,0xdd815e8,0xe1821a58,0xa5940cef,0x7c7bc5ab}
->  =>  <0000000000001472> : path=/work/c/futex_requeue build_id={0xc02417ea,0x1f4e0143,0x338cf27d,0x506a7a5d,0x7884d090}
->  =>  <0000000000092b7b> : path=/usr/lib/x86_64-linux-gnu/libselinux.so.1 build_id={0x3ba6e0c2,0xdd815e8,0xe1821a58,0xa5940cef,0x7c7bc5ab}
+In that model,  you couldn't use the 'struct file' hash, because now
+you're matching against different 'open()' cases: the tracer that uses
+sysfs would open the executable and the libraries it knows it is going
+to trace, and keep them open for the duration of the trace in order to
+have stable hashes for those files.
 
-Yes. And I think that's what you should aim to generate. Not inode
-numbers, because inode numbers are the wrong thing.
+All the tracer would need is some simple interface to "give me the
+hash for the file I just opened", and then it could easily match that
+against any hashes it sees in sysfs stack traces.
 
-> Note, the build-id isn't really necessary for my own use case, because the
-> applications seldom change on a chromebook. I added it as it appears to be
-> useful for others I've talked to that would like to use this.
+The advantage of this model is that now the tracer not only has the
+hash, and controls the lifetime, it means that the tracer also can
+decide to look up build IDs etc if it wants to.
 
-My personal suspicion is that in reality, the pathname is sufficient.
-It's certainly a lot better than inode numbers are, in that the
-pathname is meaningful even after-the-fact, and even on a different
-machine etc. It's not some guaranteed match with some particular
-library or executable version, no. But for some random one-time quick
-scripting thing that uses sysfs, it's probably "good enough".
+The disadvantage is obvious, though: this requires that the tracer
+know what the files in question are. Of course, that's usually not
+that hard. You might literally just know it a-priori (ie just from
+what you are tracing along with having run 'ldd' etc), but for the
+'I'm tracing a running process' you can use that /proc/<pid>/maps file
+to start populating your hash information.
 
-The build id is certainly very convenient too, but it's not *always*
-convenient. And 99% of the time you could just look up the build id
-from the path, even though obviously that wouldn't work across
-machines and wouldn't work across system updates.
+I'm *not* claiming this is a wonderful interface, but it's at least a
+*fairly* straightforward way to give some kind of cheap hash ID for
+the user space traces, and it puts the burden of "hash lifetime"
+clearly on user space, not on the kernel having to try to maintain
+some kind of hash map.
 
-> But printing a copy of the full path name and build-id at every stack trace
-> is expensive. The path lookup may not be so bad, but the space on the ring
-> buffer is.
+In other words: if user space wants to get good information, maybe
+user space needs to work at it a bit.  The kernel side shouldn't be
+made complicated or be expected to bend over backwards.
 
-So that's the thing. You can do it right, or you can do it wrong. I'd
-personally tend to prefer the "expensive but right", and just make it
-a trace-time option.
-
-> To compensate this, we could replace the path and build-id with a unique
-> identifier, (being an inode/device or hash, or whatever) to associate that
-> file. It may even work if it is unique per task. Then whenever one of these
-> identifiers were to show up representing a new file, it would be printed.
-
-So I really hate the inode number, because it's just wrong.
-
-You can't match it across machines, and to make things worse it's not
-even *meaningful* over time or over machines - or to humans - so it's
-strictly clearly objectively worse than the pathname.
-
-But more importanly - rven on the *local* machine - and at the moment
-- it's actually wrong.
-
-Exactly because the inode number you look up is *not* the user-visible
-inode number from 'stat()'.
-
-So it's *really* wrong to use the inode number. It's basically never
-right. And bever will be, even if you can make it appear useful in
-some specific cases.
-
-The *one* saving grace for the inode number is that *in*the*moment*
-you can match it against /proc/<pid>/maps, because that /proc file has
-that historical bug too (it wasn't buggy at the time that /proc file
-was introduced, but our filesystems have become much more complex
-since).
-
-So if you do that
-
-    inode = file_user_inode(vma->vm_file);
-
-that I mentioned, at least the otherwise random inode numbers can be
-matched to *something*.
-
-That still doesn't fix the other issues with inode numbers, but it
-means that at the time of the trace - and on the machine that the
-tracing is done - you can now match that not-quite-real inode number
-and device against another /proc file, and turn it into a pathname.
-
-But it's kind of sad to do that, when you could just do the pathname
-in the trace directly, and not force the stupid interface in the first
-place.
-
-And honestly, at that point it's still not really *better* than the
-pathname (and arguably much much worse, because you might not be able
-to do the matching if you didn't catch the /proc/<pid>/maps file).
-
-So the inode number - together with a lookup in /proc/<pid>/maps - is
-generally about the same as just giving a path, but typically much
-less convenient, and anybody using that interface would have to do
-extra work in user space.
-
-And *none* of these issues would be true of somebody who uses the
-'perf()' interface that can do all of this much more efficiently, and
-without the downsides, and without any artificially limited sysfs
-interfaces.
-
-So that really makes me go: just don't expose this at all in sysfs
-files.  You *cannot* do a good job in sysfs, because the interface is
-strictly worse than just doing the proper job using perf.
-
-Alternatively, just do the expensive thing. Expose the actual
-pathname, and expose the build ID. Yes, it's expensive, but dammit,
-that's the whole *point* of tracing in sysfs. sysfs was never about
-being efficient, it was about convenience.
-
-So if you trace through sysfs, you either don't get the full
-information that could be there, or pay the price for the expense of
-generating the full info.
-
-Make the "give me the expensive output" be a dynamic flag, so that you
-don't do it by default, but if you have some model where you are
-scripting things with shell-script rather than doing 'perf record', at
-least you get good output.
-
-Hmm?
-
-           Linus
+          Linus
 
