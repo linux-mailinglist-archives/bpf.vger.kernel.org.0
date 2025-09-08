@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-67729-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67730-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B78F7B495F4
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 18:47:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2B13B495B5
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 18:41:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAF577ACD37
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 16:39:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92DAF188BF62
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 16:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB733128A0;
-	Mon,  8 Sep 2025 16:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85343128C6;
+	Mon,  8 Sep 2025 16:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XWmgwGNs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gs1A6kTy"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56A01D6BB
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 16:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 424143128B9
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 16:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757349427; cv=none; b=Lg1xGyX3T6dI4dXE8dGNJnSp2kxrOb2HMHpemh7xfjDFTWnIpla6VMnkG0yoDlN1YhGuahN+dAdi26q0hmvVUE7G7X7UY4yKJp8z4AqqpWjj/io3U96ngRd9T6b3OTq/yum8G5DLFsabq/CNK2x7Y02D4oIuYN53RemKZ7dwHKI=
+	t=1757349431; cv=none; b=YhxwxLMJ5Zd+A0hqeolTRVUttvVkXV6iYxWwW69CvyQonQfyC+o+gsjtwyJuLEYDnP1M1S/zsbwwTvUVf4x5f98ZPNUzIgvHg2rlnBN76AHUHxo76uxm4qv23i1pb8AfzPPd7sjxQPGA1+ILoq8VbaA38j0oj1Zn+mZN8NNlltA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757349427; c=relaxed/simple;
-	bh=i5HPQpFxl5jsUa+ZEq3dbcjbcHyGZXqL8pLBSv4PUik=;
+	s=arc-20240116; t=1757349431; c=relaxed/simple;
+	bh=ooJ+x2sGrz7SnSKOawx8mZ/taQxFfsABI6Gc97nIc5w=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BFivkD/G9rIwNVnjzV13wUBKsaWpfm1fKohvlMOvfcU30+68ID2bIHy0xma4qYH8uBdMrymPG3SmzZ4ncR8yPxQJcDKC1fI+fZugRcnw8opZkuqMQyG187WQMF+n4iZE6lxkhFMqR6oeRm7MwTyXwDlHf2WxlmW6BgH80sp5X5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XWmgwGNs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54AB0C4CEF1;
-	Mon,  8 Sep 2025 16:37:07 +0000 (UTC)
+	 MIME-Version; b=pPUGWzqujQ/WYhqU9GmKLinnXosFF1gyz6uvIYfkB4+jC2Dnky6noMfrXAGEG36ZUYZLD7dEYQvOORpx5MRoK9+NjTa6Qr+4Ez3FrcnwmlIwwo7cjwahNQO9Jjo5JzghMqwYo93KkThqNwYiyixOO56jt9DW1ptmU+RbYBPIZUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gs1A6kTy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 778A1C4CEF1;
+	Mon,  8 Sep 2025 16:37:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757349427;
-	bh=i5HPQpFxl5jsUa+ZEq3dbcjbcHyGZXqL8pLBSv4PUik=;
+	s=k20201202; t=1757349430;
+	bh=ooJ+x2sGrz7SnSKOawx8mZ/taQxFfsABI6Gc97nIc5w=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=XWmgwGNscCEf6ukkuZDVmQCbZ69UvKm1Yxto9ZJphvDMhKzR8YB5jC6H0wlk3GaCy
-	 P3ZIz0FDK5meZR2cmFdeWkkHe9osRFZ2PG2pwAQkZamv5Uh6jC0sIrFbDqp3zAXvP8
-	 xdp5JjzMaz9yI+q/iz5ihagaBYrK+XtzooKMthtALfZJ7UdarhHIHvilgLYo+xep9V
-	 kMZjf1pDla53C0pR8OScFQlzgwYjIERdjSvx4j+dVlVuOlPH+MCbGlwvqHxzBK5X2+
-	 6C8MFzDIJld4ayM2SLUWlMhzUq9xc3qXO/MdzjBbvYVy+xIkNAoeTo3rWnb7R6SUka
-	 yZ0U0hTne1dTA==
+	b=gs1A6kTyvoz9Py59Lljb3lvaXvvsond9xyB3D0ZBrL17ymIksW7lseUtXQf6siteH
+	 TWe5y3zJ7+cL2nTJaYLt7NT4GMd3Lz+XkoUsa3tvLZeT12sU1Z7BpDPtn3SpsqAWCE
+	 wnV2suFjLyqb+cplgIpI0HccRkcPC0IzLEklDH4Lyl5qVQUViO05MmPMRrKaBn1Txl
+	 bv5mzIyMLQ5H8Q5RjeCysyXkowKw6gpesByc8Do6uA5ulbX44VCtJDgfzGy4p0CnBj
+	 ciJctyGOzTbhagEM7pejH3bRHWX5riBuztM+bFe8s6wWVkhx5ZDbBwD0Lair3zfuIi
+	 isXUAaDP+zVjQ==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,9 +60,9 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Will Deacon <will@kernel.org>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v6 4/5] selftests: bpf: introduce __stderr and __stdout
-Date: Mon,  8 Sep 2025 16:36:33 +0000
-Message-ID: <20250908163638.23150-5-puranjay@kernel.org>
+Subject: [PATCH bpf-next v6 5/5] selftests/bpf: Add tests for arena fault reporting
+Date: Mon,  8 Sep 2025 16:36:34 +0000
+Message-ID: <20250908163638.23150-6-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250908163638.23150-1-puranjay@kernel.org>
 References: <20250908163638.23150-1-puranjay@kernel.org>
@@ -74,202 +74,326 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add __stderr and __stdout to validate the output of BPF streams for bpf
-selftests. Similar to __xlated, __jited, etc., __stderr/out can be used
-in the BPF progs to compare a string (regex supported) to the output in
-the bpf streams.
+Add selftests for testing the reporting of arena page faults through BPF
+streams. Two new bpf programs are added that read and write to an
+unmapped arena address and the fault reporting is verified in the
+userspace through streams.
+
+The added bpf programs need to access the user_vm_start in struct
+bpf_arena, this is done by casting &arena to struct bpf_arena *, but
+barrier_var() is used on this ptr before accessing ptr->user_vm_start;
+to stop GCC from issuing an out-of-bound access due to the cast from
+smaller map struct to larger "struct bpf_arena"
+
+Other tests related to streams have been converted to use __stderr in
+progs/stream.c directly and test_stream_errors() in prog_tests/stream.c
+has been repurposed to validate the arena fault address printed in the
+stderr stream. This can't be directly validated using __stderr because
+the address is dynamic.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/bpf_misc.h | 10 +++
- tools/testing/selftests/bpf/test_loader.c    | 90 ++++++++++++++++++++
- 2 files changed, 100 insertions(+)
+ .../testing/selftests/bpf/prog_tests/stream.c |  53 ++----
+ tools/testing/selftests/bpf/progs/stream.c    | 158 ++++++++++++++++++
+ 2 files changed, 176 insertions(+), 35 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index 72c2d72a245e5..7905396c9cc4e 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -35,6 +35,12 @@
-  *                   inside the brackets.
-  * __msg_unpriv      Same as __msg but for unprivileged mode.
-  *
-+ * __stderr          Message expected to be found in bpf stderr stream. The
-+ *                   same regex rules apply like __msg.
-+ * __stderr_unpriv   Same as __stderr but for unpriveleged mode.
-+ * __stdout          Same as __stderr but for stdout stream.
-+ * __stdout_unpriv   Same as __stdout but for unpriveleged mode.
-+ *
-  * __xlated          Expect a line in a disassembly log after verifier applies rewrites.
-  *                   Multiple __xlated attributes could be specified.
-  *                   Regular expressions could be specified same way as in __msg.
-@@ -140,6 +146,10 @@
- #define __caps_unpriv(caps)	__attribute__((btf_decl_tag("comment:test_caps_unpriv=" EXPAND_QUOTE(caps))))
- #define __load_if_JITed()	__attribute__((btf_decl_tag("comment:load_mode=jited")))
- #define __load_if_no_JITed()	__attribute__((btf_decl_tag("comment:load_mode=no_jited")))
-+#define __stderr(msg)		__attribute__((btf_decl_tag("comment:test_expect_stderr=" XSTR(__COUNTER__) "=" msg)))
-+#define __stderr_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_stderr_unpriv=" XSTR(__COUNTER__) "=" msg)))
-+#define __stdout(msg)		__attribute__((btf_decl_tag("comment:test_expect_stdout=" XSTR(__COUNTER__) "=" msg)))
-+#define __stdout_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_stdout_unpriv=" XSTR(__COUNTER__) "=" msg)))
- 
- /* Define common capabilities tested using __caps_unpriv */
- #define CAP_NET_ADMIN		12
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index a9388ac883587..ccf54694da7cc 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -38,6 +38,10 @@
- #define TEST_TAG_JITED_PFX_UNPRIV "comment:test_jited_unpriv="
- #define TEST_TAG_CAPS_UNPRIV "comment:test_caps_unpriv="
- #define TEST_TAG_LOAD_MODE_PFX "comment:load_mode="
-+#define TEST_TAG_EXPECT_STDERR_PFX "comment:test_expect_stderr="
-+#define TEST_TAG_EXPECT_STDERR_PFX_UNPRIV "comment:test_expect_stderr_unpriv="
-+#define TEST_TAG_EXPECT_STDOUT_PFX "comment:test_expect_stdout="
-+#define TEST_TAG_EXPECT_STDOUT_PFX_UNPRIV "comment:test_expect_stdout_unpriv="
- 
- /* Warning: duplicated in bpf_misc.h */
- #define POINTER_VALUE	0xbadcafe
-@@ -79,6 +83,8 @@ struct test_subspec {
- 	struct expected_msgs expect_msgs;
- 	struct expected_msgs expect_xlated;
- 	struct expected_msgs jited;
-+	struct expected_msgs stderr;
-+	struct expected_msgs stdout;
- 	int retval;
- 	bool execute;
- 	__u64 caps;
-@@ -139,6 +145,10 @@ static void free_test_spec(struct test_spec *spec)
- 	free_msgs(&spec->unpriv.expect_xlated);
- 	free_msgs(&spec->priv.jited);
- 	free_msgs(&spec->unpriv.jited);
-+	free_msgs(&spec->unpriv.stderr);
-+	free_msgs(&spec->priv.stderr);
-+	free_msgs(&spec->unpriv.stdout);
-+	free_msgs(&spec->priv.stdout);
- 
- 	free(spec->priv.name);
- 	free(spec->unpriv.name);
-@@ -407,6 +417,10 @@ static int parse_test_spec(struct test_loader *tester,
- 	bool xlated_on_next_line = true;
- 	bool unpriv_jit_on_next_line;
- 	bool jit_on_next_line;
-+	bool stderr_on_next_line = true;
-+	bool unpriv_stderr_on_next_line = true;
-+	bool stdout_on_next_line = true;
-+	bool unpriv_stdout_on_next_line = true;
- 	bool collect_jit = false;
- 	int func_id, i, err = 0;
- 	u32 arch_mask = 0;
-@@ -598,6 +612,26 @@ static int parse_test_spec(struct test_loader *tester,
- 				err = -EINVAL;
- 				goto cleanup;
- 			}
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_STDERR_PFX))) {
-+			err = push_disasm_msg(msg, &stderr_on_next_line,
-+					      &spec->priv.stderr);
-+			if (err)
-+				goto cleanup;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_STDERR_PFX_UNPRIV))) {
-+			err = push_disasm_msg(msg, &unpriv_stderr_on_next_line,
-+					      &spec->unpriv.stderr);
-+			if (err)
-+				goto cleanup;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_STDOUT_PFX))) {
-+			err = push_disasm_msg(msg, &stdout_on_next_line,
-+					      &spec->priv.stdout);
-+			if (err)
-+				goto cleanup;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_STDOUT_PFX_UNPRIV))) {
-+			err = push_disasm_msg(msg, &unpriv_stdout_on_next_line,
-+					      &spec->unpriv.stdout);
-+			if (err)
-+				goto cleanup;
- 		}
- 	}
- 
-@@ -651,6 +685,10 @@ static int parse_test_spec(struct test_loader *tester,
- 			clone_msgs(&spec->priv.expect_xlated, &spec->unpriv.expect_xlated);
- 		if (spec->unpriv.jited.cnt == 0)
- 			clone_msgs(&spec->priv.jited, &spec->unpriv.jited);
-+		if (spec->unpriv.stderr.cnt == 0)
-+			clone_msgs(&spec->priv.stderr, &spec->unpriv.stderr);
-+		if (spec->unpriv.stdout.cnt == 0)
-+			clone_msgs(&spec->priv.stdout, &spec->unpriv.stdout);
- 	}
- 
- 	spec->valid = true;
-@@ -712,6 +750,20 @@ static void emit_jited(const char *jited, bool force)
- 	fprintf(stdout, "JITED:\n=============\n%s=============\n", jited);
+diff --git a/tools/testing/selftests/bpf/prog_tests/stream.c b/tools/testing/selftests/bpf/prog_tests/stream.c
+index 9d0e5d93edee7..61ab1da9b189b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stream.c
++++ b/tools/testing/selftests/bpf/prog_tests/stream.c
+@@ -18,29 +18,9 @@ void test_stream_success(void)
+ 	return;
  }
  
-+static void emit_stderr(const char *stderr, bool force)
-+{
-+	if (!force && env.verbosity == VERBOSE_NONE)
-+		return;
-+	fprintf(stdout, "STDERR:\n=============\n%s=============\n", stderr);
-+}
-+
-+static void emit_stdout(const char *bpf_stdout, bool force)
-+{
-+	if (!force && env.verbosity == VERBOSE_NONE)
-+		return;
-+	fprintf(stdout, "STDOUT:\n=============\n%s=============\n", bpf_stdout);
-+}
-+
- static void validate_msgs(char *log_buf, struct expected_msgs *msgs,
- 			  void (*emit_fn)(const char *buf, bool force))
+-struct {
+-	int prog_off;
+-	const char *errstr;
+-} stream_error_arr[] = {
+-	{
+-		offsetof(struct stream, progs.stream_cond_break),
+-		"ERROR: Timeout detected for may_goto instruction\n"
+-		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
+-		"Call trace:\n"
+-		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
+-		"|[ \t]+[^\n]+\n)*",
+-	},
+-	{
+-		offsetof(struct stream, progs.stream_deadlock),
+-		"ERROR: AA or ABBA deadlock detected for bpf_res_spin_lock\n"
+-		"Attempted lock   = (0x[0-9a-fA-F]+)\n"
+-		"Total held locks = 1\n"
+-		"Held lock\\[ 0\\] = \\1\n"  // Lock address must match
+-		"CPU: [0-9]+ UID: 0 PID: [0-9]+ Comm: .*\n"
+-		"Call trace:\n"
+-		"([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
+-		"|[ \t]+[^\n]+\n)*",
+-	},
++int prog_off[] = {
++	offsetof(struct stream, progs.stream_arena_read_fault),
++	offsetof(struct stream, progs.stream_arena_write_fault),
+ };
+ 
+ static int match_regex(const char *pattern, const char *string)
+@@ -56,34 +36,33 @@ static int match_regex(const char *pattern, const char *string)
+ 	return rc == 0 ? 1 : 0;
+ }
+ 
+-void test_stream_errors(void)
++void test_stream_arena_fault_address(void)
  {
-@@ -934,6 +986,19 @@ static int get_xlated_program_text(int prog_fd, char *text, size_t text_sz)
- 	return err;
+ 	LIBBPF_OPTS(bpf_test_run_opts, opts);
+ 	LIBBPF_OPTS(bpf_prog_stream_read_opts, ropts);
+ 	struct stream *skel;
+ 	int ret, prog_fd;
+ 	char buf[1024];
++	char fault_addr[64];
+ 
+ 	skel = stream__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "stream__open_and_load"))
+ 		return;
+ 
+-	for (int i = 0; i < ARRAY_SIZE(stream_error_arr); i++) {
++	for (int i = 0; i < ARRAY_SIZE(prog_off); i++) {
+ 		struct bpf_program **prog;
+ 
+-		prog = (struct bpf_program **)(((char *)skel) + stream_error_arr[i].prog_off);
++		prog = (struct bpf_program **)(((char *)skel) + prog_off[i]);
+ 		prog_fd = bpf_program__fd(*prog);
+ 		ret = bpf_prog_test_run_opts(prog_fd, &opts);
+ 		ASSERT_OK(ret, "ret");
+ 		ASSERT_OK(opts.retval, "retval");
+ 
+-#if !defined(__x86_64__) && !defined(__s390x__) && !defined(__aarch64__)
+-		ASSERT_TRUE(1, "Timed may_goto unsupported, skip.");
+-		if (i == 0) {
+-			ret = bpf_prog_stream_read(prog_fd, 2, buf, sizeof(buf), &ropts);
+-			ASSERT_EQ(ret, 0, "stream read");
+-			continue;
+-		}
++#if !defined(__x86_64__) && !defined(__aarch64__)
++		ASSERT_TRUE(1, "Arena fault reporting unsupported, skip.");
++		ret = bpf_prog_stream_read(prog_fd, 2, buf, sizeof(buf), &ropts);
++		ASSERT_EQ(ret, 0, "stream read");
++		continue;
+ #endif
+ 
+ 		ret = bpf_prog_stream_read(prog_fd, BPF_STREAM_STDERR, buf, sizeof(buf), &ropts);
+@@ -91,9 +70,13 @@ void test_stream_errors(void)
+ 		ASSERT_LE(ret, 1023, "len for buf");
+ 		buf[ret] = '\0';
+ 
+-		ret = match_regex(stream_error_arr[i].errstr, buf);
+-		if (!ASSERT_TRUE(ret == 1, "regex match"))
++		sprintf(fault_addr, "0x%lx", skel->bss->fault_addr);
++		ret = match_regex(fault_addr, buf);
++
++		if (!ASSERT_TRUE(ret == 1, "regex match")) {
+ 			fprintf(stderr, "Output from stream:\n%s\n", buf);
++			fprintf(stderr, "Fault Addr: 0x%lx\n", skel->bss->fault_addr);
++		}
+ 	}
+ 
+ 	stream__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/progs/stream.c b/tools/testing/selftests/bpf/progs/stream.c
+index 35790897dc879..07ebca16a7338 100644
+--- a/tools/testing/selftests/bpf/progs/stream.c
++++ b/tools/testing/selftests/bpf/progs/stream.c
+@@ -5,6 +5,7 @@
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
+ #include "bpf_experimental.h"
++#include "bpf_arena_common.h"
+ 
+ struct arr_elem {
+ 	struct bpf_res_spin_lock lock;
+@@ -17,10 +18,29 @@ struct {
+ 	__type(value, struct arr_elem);
+ } arrmap SEC(".maps");
+ 
++struct {
++	__uint(type, BPF_MAP_TYPE_ARENA);
++	__uint(map_flags, BPF_F_MMAPABLE);
++	__uint(max_entries, 1); /* number of pages */
++} arena SEC(".maps");
++
++struct elem {
++	struct bpf_timer timer;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} array SEC(".maps");
++
+ #define ENOSPC 28
+ #define _STR "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+ 
+ int size;
++u64 fault_addr;
++void *arena_ptr;
+ 
+ SEC("syscall")
+ __success __retval(0)
+@@ -37,7 +57,15 @@ int stream_exhaust(void *ctx)
  }
  
-+/* Read the bpf stream corresponding to the stream_id */
-+static int get_stream(int stream_id, int prog_fd, char *text, size_t text_sz)
+ SEC("syscall")
++__arch_x86_64
++__arch_arm64
++__arch_s390x
+ __success __retval(0)
++__stderr("ERROR: Timeout detected for may_goto instruction")
++__stderr("CPU: {{[0-9]+}} UID: 0 PID: {{[0-9]+}} Comm: {{.*}}")
++__stderr("Call trace:\n"
++"{{([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
++"|[ \t]+[^\n]+\n)*}}")
+ int stream_cond_break(void *ctx)
+ {
+ 	while (can_loop)
+@@ -47,6 +75,15 @@ int stream_cond_break(void *ctx)
+ 
+ SEC("syscall")
+ __success __retval(0)
++__stderr("ERROR: AA or ABBA deadlock detected for bpf_res_spin_lock")
++__stderr("{{Attempted lock   = (0x[0-9a-fA-F]+)\n"
++"Total held locks = 1\n"
++"Held lock\\[ 0\\] = \\1}}")
++__stderr("...")
++__stderr("CPU: {{[0-9]+}} UID: 0 PID: {{[0-9]+}} Comm: {{.*}}")
++__stderr("Call trace:\n"
++"{{([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
++"|[ \t]+[^\n]+\n)*}}")
+ int stream_deadlock(void *ctx)
+ {
+ 	struct bpf_res_spin_lock *lock, *nlock;
+@@ -76,4 +113,125 @@ int stream_syscall(void *ctx)
+ 	return 0;
+ }
+ 
++SEC("syscall")
++__arch_x86_64
++__arch_arm64
++__success __retval(0)
++__stderr("ERROR: Arena WRITE access at unmapped address 0x{{.*}}")
++__stderr("CPU: {{[0-9]+}} UID: 0 PID: {{[0-9]+}} Comm: {{.*}}")
++__stderr("Call trace:\n"
++"{{([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
++"|[ \t]+[^\n]+\n)*}}")
++int stream_arena_write_fault(void *ctx)
 +{
-+	LIBBPF_OPTS(bpf_prog_stream_read_opts, ropts);
-+	int ret;
++	struct bpf_arena *ptr = (void *)&arena;
++	u64 user_vm_start;
 +
-+	ret = bpf_prog_stream_read(prog_fd, stream_id, text, text_sz, &ropts);
-+	ASSERT_GT(ret, 0, "stream read");
-+	text[ret] = '\0';
-+
-+	return ret;
++	/* Prevent GCC bounds warning: casting &arena to struct bpf_arena *
++	 * triggers bounds checking since the map definition is smaller than struct
++	 * bpf_arena. barrier_var() makes the pointer opaque to GCC, preventing the
++	 * bounds analysis
++	 */
++	barrier_var(ptr);
++	user_vm_start =  ptr->user_vm_start;
++	fault_addr = user_vm_start + 0x7fff;
++	bpf_addr_space_cast(user_vm_start, 0, 1);
++	asm volatile (
++		"r1 = %0;"
++		"r2 = 1;"
++		"*(u32 *)(r1 + 0x7fff) = r2;"
++		:
++		: "r" (user_vm_start)
++		: "r1", "r2"
++	);
++	return 0;
 +}
 +
- /* this function is forced noinline and has short generic name to look better
-  * in test_progs output (in case of a failure)
-  */
-@@ -1108,6 +1173,31 @@ void run_subtest(struct test_loader *tester,
- 			PRINT_FAIL("Unexpected retval: %d != %d\n", retval, subspec->retval);
- 			goto tobj_cleanup;
- 		}
++SEC("syscall")
++__arch_x86_64
++__arch_arm64
++__success __retval(0)
++__stderr("ERROR: Arena READ access at unmapped address 0x{{.*}}")
++__stderr("CPU: {{[0-9]+}} UID: 0 PID: {{[0-9]+}} Comm: {{.*}}")
++__stderr("Call trace:\n"
++"{{([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
++"|[ \t]+[^\n]+\n)*}}")
++int stream_arena_read_fault(void *ctx)
++{
++	struct bpf_arena *ptr = (void *)&arena;
++	u64 user_vm_start;
 +
-+		if (subspec->stderr.cnt) {
-+			err = get_stream(2, bpf_program__fd(tprog),
-+					 tester->log_buf, tester->log_buf_sz);
-+			if (err <= 0) {
-+				PRINT_FAIL("Unexpected retval from get_stream(): %d, errno = %d\n",
-+					   err, errno);
-+				goto tobj_cleanup;
-+			}
-+			emit_stderr(tester->log_buf, false /*force*/);
-+			validate_msgs(tester->log_buf, &subspec->stderr, emit_stderr);
-+		}
++	/* Prevent GCC bounds warning: casting &arena to struct bpf_arena *
++	 * triggers bounds checking since the map definition is smaller than struct
++	 * bpf_arena. barrier_var() makes the pointer opaque to GCC, preventing the
++	 * bounds analysis
++	 */
++	barrier_var(ptr);
++	user_vm_start = ptr->user_vm_start;
++	fault_addr = user_vm_start + 0x7fff;
++	bpf_addr_space_cast(user_vm_start, 0, 1);
++	asm volatile (
++		"r1 = %0;"
++		"r1 = *(u32 *)(r1 + 0x7fff);"
++		:
++		: "r" (user_vm_start)
++		: "r1"
++	);
++	return 0;
++}
 +
-+		if (subspec->stdout.cnt) {
-+			err = get_stream(1, bpf_program__fd(tprog),
-+					 tester->log_buf, tester->log_buf_sz);
-+			if (err <= 0) {
-+				PRINT_FAIL("Unexpected retval from get_stream(): %d, errno = %d\n",
-+					   err, errno);
-+				goto tobj_cleanup;
-+			}
-+			emit_stdout(tester->log_buf, false /*force*/);
-+			validate_msgs(tester->log_buf, &subspec->stdout, emit_stdout);
-+		}
++static __noinline void subprog(void)
++{
++	int __arena *addr = (int __arena *)0xdeadbeef;
 +
- 		/* redo bpf_map__attach_struct_ops for each test */
- 		while (links_cnt > 0)
- 			bpf_link__destroy(links[--links_cnt]);
++	arena_ptr = &arena;
++	*addr = 1;
++}
++
++SEC("syscall")
++__arch_x86_64
++__arch_arm64
++__success __retval(0)
++__stderr("ERROR: Arena WRITE access at unmapped address 0x{{.*}}")
++__stderr("CPU: {{[0-9]+}} UID: 0 PID: {{[0-9]+}} Comm: {{.*}}")
++__stderr("Call trace:\n"
++"{{([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
++"|[ \t]+[^\n]+\n)*}}")
++int stream_arena_subprog_fault(void *ctx)
++{
++	subprog();
++	return 0;
++}
++
++static __noinline int timer_cb(void *map, int *key, struct bpf_timer *timer)
++{
++	int __arena *addr = (int __arena *)0xdeadbeef;
++
++	arena_ptr = &arena;
++	*addr = 1;
++	return 0;
++}
++
++SEC("syscall")
++__arch_x86_64
++__arch_arm64
++__success __retval(0)
++__stderr("ERROR: Arena WRITE access at unmapped address 0x{{.*}}")
++__stderr("CPU: {{[0-9]+}} UID: 0 PID: {{[0-9]+}} Comm: {{.*}}")
++__stderr("Call trace:\n"
++"{{([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
++"|[ \t]+[^\n]+\n)*}}")
++int stream_arena_callback_fault(void *ctx)
++{
++	struct bpf_timer *arr_timer;
++
++	arr_timer = bpf_map_lookup_elem(&array, &(int){0});
++	if (!arr_timer)
++		return 0;
++	bpf_timer_init(arr_timer, &array, 1);
++	bpf_timer_set_callback(arr_timer, timer_cb);
++	bpf_timer_start(arr_timer, 0, 0);
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.47.3
 
