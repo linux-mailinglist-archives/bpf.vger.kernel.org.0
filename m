@@ -1,97 +1,145 @@
-Return-Path: <bpf+bounces-67732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFFC6B49690
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 932A8B4969D
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:11:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3D8C1C222D8
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 17:10:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A3111C22C4E
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 17:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C3C3126C9;
-	Mon,  8 Sep 2025 17:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FEB53126D6;
+	Mon,  8 Sep 2025 17:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rp+sVRsW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eg/yNx3D"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5833126C5;
-	Mon,  8 Sep 2025 17:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657063112BA;
+	Mon,  8 Sep 2025 17:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757351409; cv=none; b=JtV81tw9p9hHbk+BSBKvg5RAFjLBwTiDKqphZlM7K6Qu1G0xp1fI9Na4V9XXMbs8tdsSs76xnPg9NuOk4vrrOCQsbJCbRW/tDdHVcocwAtyogp4cAPT6jrGinv5waViqWHsKM8uH/679BGaOjYGqw6Y8dqHv2tr1Wl3VgoYr35E=
+	t=1757351504; cv=none; b=dGgFEVWyJik3+YP5T69xFUJmVG6Z0Vttdhawn2lNRFqV/oHpJmPhZ4sVZppag8nSyGNriCr+V4sE5jN7gDkNmiulQ8MoMgqomFolnibncG6+kdRo/NPsxcbkIzQ4+XUXBQxbIJazRxRbk5nD1Ph5jcplPnKniPZF2+oPj4/O6nQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757351409; c=relaxed/simple;
-	bh=mkhf/7gtatGkQ7O1zYt4YTF5QS6JQdKkj+kGj8y33Fc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=NbTH5dTR0XDscrBF/d86mhnfi4wWFl35n/TFG6WXYhvhmOK+6bvF+ZVuAcUDhTKjCNQ+UKXltHCaT1ppaUahO9af/nBlZxKJqQJ7amYicHg8grYp1hUHLoS5kkrzBkYXBIF6kayDi7pO5QYfgLj1KBuxC5a0hAViM9irbiAa0QA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rp+sVRsW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F865C4CEF7;
-	Mon,  8 Sep 2025 17:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757351408;
-	bh=mkhf/7gtatGkQ7O1zYt4YTF5QS6JQdKkj+kGj8y33Fc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Rp+sVRsWaXORS+u283rGav++E0m38SoPMaR4j7gx2rAMdrvkZXNJCCTb8WaLyZkh6
-	 zq3yNchOPGegJ9QEy7Q5VgZwmqaT41sTa38snXZtiTbKdiNsmBGLEqMmqamyz7U9Vd
-	 yy6UljxLhLWAGO+f/5Owf7I6rh7itvqC6HFQEPjHC5BB0ynm0c01AATlEidGu1Kqx0
-	 4OCcTpVWsjsu3o/509nKTDWFQYff14D6fZIrWAD9qdKzDSe/vw+g2ywb5as3kTImxJ
-	 vGf7nEJAJPFs/SVivYnqYjb6bv92WeWbxz9f87zuebCWf8nSBB+nOtvN1K9MMB/rWN
-	 q96tFhWTuUbSg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E17383BF69;
-	Mon,  8 Sep 2025 17:10:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1757351504; c=relaxed/simple;
+	bh=nc/qUGfo82fdUqUDWPiQzP0//A1I8DqE1JSdgWBo+Bs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=at9nACvES3MhqqY77wXCR0nWuf6zE/hv9wfNK4srWVhmNN0RtPpjunYItu39cdNkZI0Dq+TwHUu/pnyK3BJVIK0yci5LcLRPV1YdknKVqUP9XhE/TFLMPl/xmqvNghHtk/zEr+lR99jdJDJlrqjRWGUEzD/D53brk5u/gd/l9m0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eg/yNx3D; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3e34dbc38easo1902652f8f.1;
+        Mon, 08 Sep 2025 10:11:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757351501; x=1757956301; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I1/Xo26IpLOmm9VGHwt34+har9g1uHoZGkWPqsB7phg=;
+        b=eg/yNx3DCHdSa+OPAbsEjN2oWBdyoLILBrsh/oZGbbrl5guGLUFsux/o2wC4eBAsc5
+         mAR1+Yr7qxmm6E2NMrmW/C9urwg7FN+wMNAP/H+5KmJACbmwNSKl3THwVM9xBOkid8yj
+         0EuFi37o6VMjNu+gxPVGUaW7XxaS0WEya0XYoMscs5XGGw3YbUddAD/GZfoV6H4ucEWR
+         RDO9f2jtayQEcuQn2aP0RKSWUg3JiB5agYsfRoWLOM30oh07OAImq60ipnlSdXJ4k2Z8
+         91qiEQLlSk5HZpwn+IWSENvfJFn8yC9bPVeSRCZ/oyFMWvgN1g/L3NXncFy7LGAvpIGt
+         V4IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757351501; x=1757956301;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I1/Xo26IpLOmm9VGHwt34+har9g1uHoZGkWPqsB7phg=;
+        b=w6BXq5DibsesDAL/zpaM3VVNJN/mgZxXs24lXT2nU7jVfatZNJ/kpaaTKWMaRATcbB
+         PHEpn149NsjslYJDLMgmPPy99vu6z9i4ecIrlrTNVy6W9afyvLzVLA6ydtITV1XL76a2
+         faRI0EjuZ6kPZGHm4B4tVz72dA9E0k8KrT8J7Q+FM+aMNSEfahUL6dhvi/vFFeDHCMHn
+         vrXkjFlFYzKwTwQGUqcdxO1BNaY8zMuy0kKs26Ma6eEd6jtLlmOgHQk5oQnSfnTXxNWf
+         grb92imbbIFpPrWe+e/HijPsRYShK7D8sd14yBW4BIhFgJHS753qHUQIjEC+HMOJHXsy
+         kXZg==
+X-Forwarded-Encrypted: i=1; AJvYcCURLVc3IMiTQuCa3bPtpo/kIANcqhbemQG0HzDlGZ7KT8v9mH3pzEe54PcgV7JxW02iRtQ=@vger.kernel.org, AJvYcCW6y44gKzcXY1fVNUUi9/0Cfnjaern1BtyGX9P7L3i3LouXyrz4TzOoEA7XLWLc+rxQh7C+Dvwnjw==@vger.kernel.org, AJvYcCWug+UHAXtKqIJx5LH9v8XrvlUeIJgAy4BaW5tU6xJHdTdHDVzKSQO52bL21Vm1vHtsPamirfhIcZpZ+hbT@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJx/8wQO/FunyiSSJNcEdBGKXmKKIUq+5J8lNCppkgnwKHNgJE
+	OwwmQ1+QJM8MQYehr+x8Uj+EORwTS5JYHcgs/E4rddyoPdWDDRCwySK65QBhTLUFol9k8BLAwmo
+	wUwYD3LFh0xCeimLqqryAMttUOfgVmRE=
+X-Gm-Gg: ASbGnct5q0yBcP1KrNscCCW2zXTtokgao8k7k8uJEc+DEsUHV+W6EB+MYSph2Qvs9Pr
+	jygQGGU8Y4Joy+A2s3mFF7vWNF/5Yx5xmM8Sg2/ElOIPvhwhUIdWbPsKESFlcHEtqCV1rxF5eKN
+	6Z7ewKREEgY5WcI3Dei8Ea2SdeMgponexPE99z9oRAdmuq4D1UfmZ53qwNLV9i3H+5gSJg3p6rN
+	U2/E3QQkmtwzb9XGqJfEVmBO2O6yLMnxv0d
+X-Google-Smtp-Source: AGHT+IHLSc9z9t6zrJNIia9iqmvjLGG9Y3cJVAfc2BnuuchdOalrLs4aZRfsDiiM6JS6UgJelkC0rFMQMh3PO0dNIHE=
+X-Received: by 2002:a05:6000:3113:b0:3dc:1a8c:e878 with SMTP id
+ ffacd0b85a97d-3e642cad4b3mr6110427f8f.18.1757351500438; Mon, 08 Sep 2025
+ 10:11:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 bpf-next] selftests/bpf: Fix the issue where the error
- code
- is 0
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175735141225.4178020.16850270917605667422.git-patchwork-notify@kernel.org>
-Date: Mon, 08 Sep 2025 17:10:12 +0000
-References: <20250908060810.1054341-1-yangfeng59949@163.com>
-In-Reply-To: <20250908060810.1054341-1-yangfeng59949@163.com>
-To: Feng Yang <yangfeng59949@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20250905201606.66198-1-shakeel.butt@linux.dev>
+ <aLtMrlSDP7M5GZ27@google.com> <aL6dBivokIeBApj8@tiehlicka>
+In-Reply-To: <aL6dBivokIeBApj8@tiehlicka>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 8 Sep 2025 10:11:29 -0700
+X-Gm-Features: AS18NWCPGMAuKGdXbwS4CiI7NiTNAFh-3hy8_bYRFu2qhn-yMLQ9ZTr5pJnwwvw
+Message-ID: <CAADnVQLtc+OOQ67AS_1+u-sRmO+bDLWJrrihASXMrDNnvrmNSw@mail.gmail.com>
+Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
+To: Michal Hocko <mhocko@suse.com>
+Cc: Peilin Ye <yepeilin@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Meta kernel team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, Sep 8, 2025 at 2:08=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Fri 05-09-25 20:48:46, Peilin Ye wrote:
+> > On Fri, Sep 05, 2025 at 01:16:06PM -0700, Shakeel Butt wrote:
+> > > Generally memcg charging is allowed from all the contexts including N=
+MI
+> > > where even spinning on spinlock can cause locking issues. However one
+> > > call chain was missed during the addition of memcg charging from any
+> > > context support. That is try_charge_memcg() -> memcg_memory_event() -=
+>
+> > > cgroup_file_notify().
+> > >
+> > > The possible function call tree under cgroup_file_notify() can acquir=
+e
+> > > many different spin locks in spinning mode. Some of them are
+> > > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, le=
+t's
+> > > just skip cgroup_file_notify() from memcg charging if the context doe=
+s
+> > > not allow spinning.
+> > >
+> > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> >
+> > Tested-by: Peilin Ye <yepeilin@google.com>
+> >
+> > The repro described in [1] no longer triggers locking issues after
+> > applying this patch and making __bpf_async_init() use __GFP_HIGH
+> > instead of GFP_ATOMIC:
+> >
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1275,7 +1275,7 @@ static int __bpf_async_init(struct bpf_async_kern=
+ *async, struct bpf_map *map, u
+> >         }
+> >
+> >         /* allocate hrtimer via map_kmalloc to use memcg accounting */
+> > -       cb =3D bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_no=
+de);
+> > +       cb =3D bpf_map_kmalloc_node(map, size, __GFP_HIGH, map->numa_no=
+de);
+>
+> Why do you need to consume memory reserves? Shouldn't kmalloc_nolock be
+> used instead here?
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Mon,  8 Sep 2025 14:08:10 +0800 you wrote:
-> From: Feng Yang <yangfeng@kylinos.cn>
-> 
-> The error message printed here only uses the previous err value,
-> which results in it being printed as 0.
-> When bpf_map__attach_struct_ops encounters an error,
-> it uses libbpf_err_ptr(err) to set errno = -err and returns NULL.
-> Therefore, Using -errno can fix this issue.
-> 
-> [...]
-
-Here is the summary with links:
-  - [v3,bpf-next] selftests/bpf: Fix the issue where the error code is 0
-    https://git.kernel.org/bpf/bpf-next/c/93a83d044314
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Yes. That's a plan. We'll convert most of bpf allocations to kmalloc_nolock=
+()
+when it lands.
 
