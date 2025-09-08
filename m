@@ -1,167 +1,240 @@
-Return-Path: <bpf+bounces-67696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF414B484DC
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 09:15:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE1BDB485FE
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 09:47:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 533B43AB8D9
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 07:15:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B0153B2D34
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 07:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 263C72E3B15;
-	Mon,  8 Sep 2025 07:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A01E52EA74C;
+	Mon,  8 Sep 2025 07:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iOALOs93"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FapjAo7x"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A061547F2
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 07:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C52D2E7F3A
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 07:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757315712; cv=none; b=eyQvrnTruBDw/9qOOyJA/kVTXuTTxdkYhbmtMfAJlAv8elqFvrNH1wCeDXxXx7N5jANBkJBTeo3ao315gPDi2KdN/wG8Uj5kSbKpVPOJUUAz3JiF6zmrOrmc93XjABWxYP1+BN3Lz6D2LU4RieasfebFpO1o+BDsaw0jmA6P+Ik=
+	t=1757317394; cv=none; b=tp0EGrW73Bkqkwys4+k0MY7rxxOLeMjaNMPLsZ/MmMGoHqMB3wqBkGjDs5lSiOz1UligE1fwjUHdeSgTy3KBIGITrCyCRhb+EF8u4OayyKNDMcEBzibt0Tgu/bdQMfMmuBb5iCv1RpJpSKO5+7/O6dSehJmMVTdmMU0kYtWzyxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757315712; c=relaxed/simple;
-	bh=RYE2RVLWJPgkzL6TNpcgLWwtELPk2nT2TKu9RyZYI4w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ef2fWrM1s5QpqJHjm8F+lQo0/1AgUTtX4wIFHUKMLivMS92khbkdJ/ueC+a/H4M8EoXLCwK4n2UnrzbjD9E1DL/60rUQkgB/L+dAovSkrEo3CZY4Aidl37woxyWy1YE41C37zFBHBPWtfdPqUjHk9GgzKn9yThxmKpDvgaYeuB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iOALOs93; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757315710; x=1788851710;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RYE2RVLWJPgkzL6TNpcgLWwtELPk2nT2TKu9RyZYI4w=;
-  b=iOALOs93uxX5LkttxeC75c4w6P7zfTWOnmMScGcpjAbhAkrRJK4Mc1bL
-   tAqmgftE9v4598rO8S1f6Pj8WwTBzAOsr9mqxveNnqHM5ZS8Oh5nOF/kF
-   5UxuaEitcBZhaBwnLA/vHvpDNQ92sXnpD3ivu9/FbzkVlnh/stoNwleXV
-   g4llXFNyljVngrjBFqCBQ2WpUEegEqZcVzBI5cicQ3AyO7HlDHsykvPeN
-   /P71XGJW+c4etkx5e+3YXPtoi/FnvPH9BVvgXrhVsubBxvQZRDzpdBdYg
-   OiAoT7cP/ob5IseSyDrB3+zQ6HOpPAhkS+Coah45Oif5kflOzgHbI49Ls
-   Q==;
-X-CSE-ConnectionGUID: qxt1rj5sSN+vg9l3hhF9OA==
-X-CSE-MsgGUID: B2a/sF+3Qoyw5CM28nYw2g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11546"; a="58779307"
-X-IronPort-AV: E=Sophos;i="6.18,247,1751266800"; 
-   d="scan'208";a="58779307"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2025 00:15:08 -0700
-X-CSE-ConnectionGUID: ScFNDBXkRXS0mDxxN1zmBA==
-X-CSE-MsgGUID: +am4mPH0Qvy8IkzcHnQB3g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,247,1751266800"; 
-   d="scan'208";a="172832137"
-Received: from lkp-server01.sh.intel.com (HELO 114d98da2b6c) ([10.239.97.150])
-  by orviesa008.jf.intel.com with ESMTP; 08 Sep 2025 00:15:03 -0700
-Received: from kbuild by 114d98da2b6c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uvW5c-0003cV-0F;
-	Mon, 08 Sep 2025 07:15:00 +0000
-Date: Mon, 8 Sep 2025 15:14:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, djwillia@vt.edu, miloc@vt.edu, ericts@vt.edu,
-	rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu,
-	jinghao7@illinois.edu, sidchintamaneni@gmail.com, memxor@gmail.com,
-	egor@vt.edu, sairoop10@gmail.com, rjsu26@gmail.com
-Subject: Re: [PATCH 3/4] bpf: runtime part of fast-path termination approach
-Message-ID: <202509081431.PcY1azAC-lkp@intel.com>
-References: <20250907230415.289327-4-sidchintamaneni@gmail.com>
+	s=arc-20240116; t=1757317394; c=relaxed/simple;
+	bh=YmRkE5Q/NBG1GbjO5fZbIc3YcFRjbgiD7rHBFpk0TnE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=J/+zoKCjQr68E6oXCvJBHBODtKOHpH8c0+R79CZi8QRZ3Yzb9F1WDDNs6vfEO+ZvtkImUn9uWAXTXnSrCWKlPAWeCvtj7oYjfV5bi91p/I7zDvGvMMbiDst/mneOf1Pxnac0pVnWSb/co9+Hm0ylo6c21tY1TQr+ZnyHaNzS+Ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FapjAo7x; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-76e6cbb991aso3447762b3a.1
+        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 00:43:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757317392; x=1757922192; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vFORQsuBb9a0i8qix2/u4ryyjGrq0N7ZEvH3oL/s/Y4=;
+        b=FapjAo7xi1Q2KoSj1947n5cATAGaxCH6pY2tA9D63YpXfUvdX5saVyphSDamvOdt2b
+         cY5LYS8RKKCFrRpnNcWAp4au2pVwzF71ZbTODKXjbOCD/NE+mH6xGOSlJ+VXRvxVHQXG
+         7TKbgkC7Dl+4STf2XKHqAw6syXIZEhuCTHqkbImPveqRUefyYWkEzsnxdyH610yNR6FS
+         K2bX9H+nb7iQw8tsJ/ps3kMBQlD97UCIuyDzcp3hscAD+t3LYe0rsEx8o6j0HTg95eV/
+         n1nKBFKV83YfM+XopeMeLTKzPYBJCO0drUxbmfMvHg4H0gG7nztuZAwAW2dITK/n2XZY
+         xjTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757317392; x=1757922192;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vFORQsuBb9a0i8qix2/u4ryyjGrq0N7ZEvH3oL/s/Y4=;
+        b=TDCYWHA2NEtf7AEM7y2zm4hSoDkDpbme51Wnu683XtZ0MbsxFz0RAlQ2vqPoNcw/OV
+         hEptoEm5wpqfcfKzrfC7UQM1AnZMD8MkqhgERZrtzUPFFNTYTwTrBsPPQ/47+gqoAUWD
+         zIyiq9On5KhP+Gjsdd3Q5L2sw8Xu3lSHooffepQLO5hGP7AXGh9fgtGoFN7T1/OQhi7O
+         BFBTLRWuAcJm5uIDVkZ2Ctzr3bwCIe+Q3/NVT0C/3ZrcO9djOLP2eL6vMkczA5C8/yBj
+         LbbxmRUPwRuWvC9lowFiUGjKNWDeoBKOdjGjFuEbn3H4HRMrKP6rddHbLO3eUk2PV3uH
+         3knQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVtV3cbUaSWRuBIeBnd7Il3aw1CLlVjdBDD680qzcHeAfJHFR0Wk3qiXe45A5u4TncvnG4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVNBSkANLIO2OMyqCfiVRaJN2Q+BGxXbT0gCzVt4ThTgk8tr7l
+	nvJuscbaF2+vJc8dpi+AFuxigMYN8JyV24nyUpT2R+6VivpTEJQ9AHBs
+X-Gm-Gg: ASbGnctzbr3zdMSiKBe7l7mCtKpDMRtdX7i+wJR6XCwtJ2Ow22TPjVtTm3AgZpDiyFw
+	8ahtM3IsqXPi/maBIotShCu+2HFAWQGpa9DAKpjcYL4bjoSDTTLlGNJ1W32IUyDkHIhp9okyUtp
+	4cONGgBKrlmrwi+/bPbw1gcaBsXnL/f7XzmoJGAavrKr6mjm/TCx9bAUNPVIJMw2ErWgBkRoJL8
+	rSXS92LaMIJ+GEaHnKPZty4yvRR9MfEuXRbErV8UwGfXyUhJjZmFpDUim0bRyOpf3BG8wQUA1hX
+	qIna/YlLuo7zbHODpz1IyREjQ//cp/+Cl03aum8WHxHYzfuQ54PQcNS24BdLZU7NgtrpwQE84a5
+	opel6r4SqiwRmgNLPEfytDWVMiUgc
+X-Google-Smtp-Source: AGHT+IFPQab+nlAJfa0UVp9Ngd+0kgD9Wh3+TnWn0OgREEtBqC9/JdlJExigkXR/CdjPq01rtXISbA==
+X-Received: by 2002:aa7:8881:0:b0:772:5b42:63d1 with SMTP id d2e1a72fcca58-7742de633f5mr7330156b3a.20.1757317391672;
+        Mon, 08 Sep 2025 00:43:11 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7725e419913sm20968358b3a.55.2025.09.08.00.43.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Sep 2025 00:43:11 -0700 (PDT)
+Message-ID: <6bc24eca4d2abdec108f2013c2e414e24d48642f.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 7/7] selftests/bpf: BPF task work scheduling
+ tests
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com, memxor@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Mon, 08 Sep 2025 00:43:07 -0700
+In-Reply-To: <20250905164508.1489482-8-mykyta.yatsenko5@gmail.com>
+References: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
+	 <20250905164508.1489482-8-mykyta.yatsenko5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250907230415.289327-4-sidchintamaneni@gmail.com>
 
-Hi Siddharth,
+On Fri, 2025-09-05 at 17:45 +0100, Mykyta Yatsenko wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>=20
+> Introducing selftests that check BPF task work scheduling mechanism.
+> Validate that verifier does not accepts incorrect calls to
+> bpf_task_work_schedule kfunc.
+>=20
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
 
-kernel test robot noticed the following build errors:
+The test cases in this patch check functional correctness, but there
+is no attempt to do some stress testing of the state machine.
+E.g. how hard/feasible would it be to construct a test that attempts
+to exercise both branches of the (state =3D=3D BPF_TW_SCHEDULED) in the
+bpf_task_work_cancel_and_free()?
 
-[auto build test ERROR on bpf-next/net]
-[also build test ERROR on bpf-next/master bpf/master linus/master v6.17-rc5 next-20250905]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>  .../selftests/bpf/prog_tests/test_task_work.c | 149 ++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/task_work.c | 108 +++++++++++++
+>  .../selftests/bpf/progs/task_work_fail.c      |  98 ++++++++++++
+>  3 files changed, 355 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_task_work=
+.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/task_work.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/task_work_fail.c
+>=20
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_task_work.c b/to=
+ols/testing/selftests/bpf/prog_tests/test_task_work.c
+> new file mode 100644
+> index 000000000000..9c3c7a46a827
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_task_work.c
+> @@ -0,0 +1,149 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+> +#include <test_progs.h>
+> +#include <string.h>
+> +#include <stdio.h>
+> +#include "task_work.skel.h"
+> +#include "task_work_fail.skel.h"
+> +#include <linux/bpf.h>
+> +#include <linux/perf_event.h>
+> +#include <sys/syscall.h>
+> +#include <time.h>
+> +
+> +static int perf_event_open(__u32 type, __u64 config, int pid)
+> +{
+> +	struct perf_event_attr attr =3D {
+> +		.type =3D type,
+> +		.config =3D config,
+> +		.size =3D sizeof(struct perf_event_attr),
+> +		.sample_period =3D 100000,
+> +	};
+> +
+> +	return syscall(__NR_perf_event_open, &attr, pid, -1, -1, 0);
+> +}
+> +
+> +struct elem {
+> +	char data[128];
+> +	struct bpf_task_work tw;
+> +};
+> +
+> +static int verify_map(struct bpf_map *map, const char *expected_data)
+> +{
+> +	int err;
+> +	struct elem value;
+> +	int processed_values =3D 0;
+> +	int k, sz;
+> +
+> +	sz =3D bpf_map__max_entries(map);
+> +	for (k =3D 0; k < sz; ++k) {
+> +		err =3D bpf_map__lookup_elem(map, &k, sizeof(int), &value, sizeof(stru=
+ct elem), 0);
+> +		if (err)
+> +			continue;
+> +		if (!ASSERT_EQ(strcmp(expected_data, value.data), 0, "map data")) {
+> +			fprintf(stderr, "expected '%s', found '%s' in %s map", expected_data,
+> +				value.data, bpf_map__name(map));
+> +			return 2;
+> +		}
+> +		processed_values++;
+> +	}
+> +
+> +	return processed_values =3D=3D 0;
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Siddharth-Chintamaneni/bpf-Introduce-new-structs-and-struct-fields-for-fast-path-termination/20250908-070655
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
-patch link:    https://lore.kernel.org/r/20250907230415.289327-4-sidchintamaneni%40gmail.com
-patch subject: [PATCH 3/4] bpf: runtime part of fast-path termination approach
-config: sh-randconfig-001-20250908 (https://download.01.org/0day-ci/archive/20250908/202509081431.PcY1azAC-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 14.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250908/202509081431.PcY1azAC-lkp@intel.com/reproduce)
+Nit: check for exact number of expected values here?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202509081431.PcY1azAC-lkp@intel.com/
+> +}
+> +
+> +static void task_work_run(const char *prog_name, const char *map_name)
+> +{
+> +	struct task_work *skel;
+> +	struct bpf_program *prog;
+> +	struct bpf_map *map;
+> +	struct bpf_link *link;
+> +	int err, pe_fd =3D 0, pid, status, pipefd[2];
+> +	char user_string[] =3D "hello world";
+> +
+> +	if (!ASSERT_NEQ(pipe(pipefd), -1, "pipe"))
+> +		return;
+> +
+> +	pid =3D fork();
 
-All errors (new ones prefixed by >>):
+Nit: check for negative return value?
 
-   kernel/watchdog.c: In function 'is_softlockup':
->> kernel/watchdog.c:709:25: error: implicit declaration of function 'bpf_softlockup'; did you mean 'is_softlockup'? [-Wimplicit-function-declaration]
-     709 |                         bpf_softlockup(now - touch_ts);
-         |                         ^~~~~~~~~~~~~~
-         |                         is_softlockup
+> +	if (pid =3D=3D 0) {
+> +		__u64 num =3D 1;
+> +		int i;
+> +		char buf;
+> +
+> +		close(pipefd[1]);
+> +		read(pipefd[0], &buf, sizeof(buf));
+> +		close(pipefd[0]);
+> +
+> +		for (i =3D 0; i < 10000; ++i)
+> +			num *=3D time(0) % 7;
+> +		(void)num;
+> +		exit(0);
+> +	}
+> +	skel =3D task_work__open();
+> +	if (!ASSERT_OK_PTR(skel, "task_work__open"))
+> +		return;
+> +
+> +	bpf_object__for_each_program(prog, skel->obj) {
+> +		bpf_program__set_autoload(prog, false);
+> +	}
+> +
+> +	prog =3D bpf_object__find_program_by_name(skel->obj, prog_name);
+> +	if (!ASSERT_OK_PTR(prog, "prog_name"))
+> +		goto cleanup;
+> +	bpf_program__set_autoload(prog, true);
+> +	bpf_program__set_type(prog, BPF_PROG_TYPE_PERF_EVENT);
 
+Nit: this is not really necessary, the programs are already defined as
+     SEC("perf_event").
 
-vim +709 kernel/watchdog.c
+> +	skel->bss->user_ptr =3D (char *)user_string;
+> +
+> +	err =3D task_work__load(skel);
+> +	if (!ASSERT_OK(err, "skel_load"))
+> +		goto cleanup;
 
-   678	
-   679	static int is_softlockup(unsigned long touch_ts,
-   680				 unsigned long period_ts,
-   681				 unsigned long now)
-   682	{
-   683		if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && watchdog_thresh) {
-   684			/*
-   685			 * If period_ts has not been updated during a sample_period, then
-   686			 * in the subsequent few sample_periods, period_ts might also not
-   687			 * be updated, which could indicate a potential softlockup. In
-   688			 * this case, if we suspect the cause of the potential softlockup
-   689			 * might be interrupt storm, then we need to count the interrupts
-   690			 * to find which interrupt is storming.
-   691			 */
-   692			if (time_after_eq(now, period_ts + get_softlockup_thresh() / NUM_SAMPLE_PERIODS) &&
-   693			    need_counting_irqs())
-   694				start_counting_irqs();
-   695	
-   696			/*
-   697			 * A poorly behaving BPF scheduler can live-lock the system into
-   698			 * soft lockups. Tell sched_ext to try ejecting the BPF
-   699			 * scheduler when close to a soft lockup.
-   700			 */
-   701			if (time_after_eq(now, period_ts + get_softlockup_thresh() * 3 / 4))
-   702				scx_softlockup(now - touch_ts);
-   703	
-   704			/*
-   705			 * Long running BPF programs can cause CPU's to stall.
-   706			 * So trigger fast path termination to terminate such BPF programs.
-   707			 */
-   708			if (time_after_eq(now, period_ts + get_softlockup_thresh() * 3 / 4))
- > 709				bpf_softlockup(now - touch_ts);
-   710	
-   711			/* Warn about unreasonable delays. */
-   712			if (time_after(now, period_ts + get_softlockup_thresh()))
-   713				return now - touch_ts;
-   714		}
-   715		return 0;
-   716	}
-   717	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+[...]
 
