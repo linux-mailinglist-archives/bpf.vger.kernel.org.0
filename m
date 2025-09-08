@@ -1,196 +1,167 @@
-Return-Path: <bpf+bounces-67695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21D53B48438
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 08:31:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF414B484DC
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 09:15:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB136189A38D
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 06:31:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 533B43AB8D9
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 07:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E056B221F15;
-	Mon,  8 Sep 2025 06:31:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 263C72E3B15;
+	Mon,  8 Sep 2025 07:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iOALOs93"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0B718DF89
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 06:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A061547F2
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 07:15:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757313087; cv=none; b=DrXdQDkNkBfGhFTLyY8MWleO4SFwnXR5WUyBUTIBNCpx18BF+kyp3e8lF2jubL5//D7XR0UAczVqA3jjlsvY4eXis0SFSdsO5Gm3ECsgV7Vtn5vvLYtbZqO7zrgUyasA3LBmxpYVo7zxrO95Z0o2yABGvOLdGqsjauCH+1vj3UA=
+	t=1757315712; cv=none; b=eyQvrnTruBDw/9qOOyJA/kVTXuTTxdkYhbmtMfAJlAv8elqFvrNH1wCeDXxXx7N5jANBkJBTeo3ao315gPDi2KdN/wG8Uj5kSbKpVPOJUUAz3JiF6zmrOrmc93XjABWxYP1+BN3Lz6D2LU4RieasfebFpO1o+BDsaw0jmA6P+Ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757313087; c=relaxed/simple;
-	bh=qAJu8w6PQjvedLmmu5baNBFPq0ic+oxZ9yqQ6V2IFgo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=EhlMln0ENDFTUl1WrIqTAgnZBlDSHOR2a6YQ/LAInSqMNBwul7MDYFQ89fUJitMYYArYrBYd/sBud/44ewrKMzij1Hbtz32YoatUuODSw2RcVuEacYCoIZrERkcS1tUikvDNXQjq8F4AXTuKVbKoeAgKpIBbDml10GCSowCZkbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4cKxpq369lz1R9Ly;
-	Mon,  8 Sep 2025 14:28:19 +0800 (CST)
-Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
-	by mail.maildlp.com (Postfix) with ESMTPS id 071661401E9;
-	Mon,  8 Sep 2025 14:31:21 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 8 Sep 2025 14:31:20 +0800
-Message-ID: <d7985cf6-ff6b-48ab-a1f9-81b0629479af@huawei.com>
-Date: Mon, 8 Sep 2025 14:31:19 +0800
+	s=arc-20240116; t=1757315712; c=relaxed/simple;
+	bh=RYE2RVLWJPgkzL6TNpcgLWwtELPk2nT2TKu9RyZYI4w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ef2fWrM1s5QpqJHjm8F+lQo0/1AgUTtX4wIFHUKMLivMS92khbkdJ/ueC+a/H4M8EoXLCwK4n2UnrzbjD9E1DL/60rUQkgB/L+dAovSkrEo3CZY4Aidl37woxyWy1YE41C37zFBHBPWtfdPqUjHk9GgzKn9yThxmKpDvgaYeuB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iOALOs93; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1757315710; x=1788851710;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RYE2RVLWJPgkzL6TNpcgLWwtELPk2nT2TKu9RyZYI4w=;
+  b=iOALOs93uxX5LkttxeC75c4w6P7zfTWOnmMScGcpjAbhAkrRJK4Mc1bL
+   tAqmgftE9v4598rO8S1f6Pj8WwTBzAOsr9mqxveNnqHM5ZS8Oh5nOF/kF
+   5UxuaEitcBZhaBwnLA/vHvpDNQ92sXnpD3ivu9/FbzkVlnh/stoNwleXV
+   g4llXFNyljVngrjBFqCBQ2WpUEegEqZcVzBI5cicQ3AyO7HlDHsykvPeN
+   /P71XGJW+c4etkx5e+3YXPtoi/FnvPH9BVvgXrhVsubBxvQZRDzpdBdYg
+   OiAoT7cP/ob5IseSyDrB3+zQ6HOpPAhkS+Coah45Oif5kflOzgHbI49Ls
+   Q==;
+X-CSE-ConnectionGUID: qxt1rj5sSN+vg9l3hhF9OA==
+X-CSE-MsgGUID: B2a/sF+3Qoyw5CM28nYw2g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11546"; a="58779307"
+X-IronPort-AV: E=Sophos;i="6.18,247,1751266800"; 
+   d="scan'208";a="58779307"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2025 00:15:08 -0700
+X-CSE-ConnectionGUID: ScFNDBXkRXS0mDxxN1zmBA==
+X-CSE-MsgGUID: +am4mPH0Qvy8IkzcHnQB3g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,247,1751266800"; 
+   d="scan'208";a="172832137"
+Received: from lkp-server01.sh.intel.com (HELO 114d98da2b6c) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 08 Sep 2025 00:15:03 -0700
+Received: from kbuild by 114d98da2b6c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uvW5c-0003cV-0F;
+	Mon, 08 Sep 2025 07:15:00 +0000
+Date: Mon, 8 Sep 2025 15:14:18 +0800
+From: kernel test robot <lkp@intel.com>
+To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>, bpf@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, djwillia@vt.edu, miloc@vt.edu, ericts@vt.edu,
+	rahult@vt.edu, doniaghazy@vt.edu, quanzhif@vt.edu,
+	jinghao7@illinois.edu, sidchintamaneni@gmail.com, memxor@gmail.com,
+	egor@vt.edu, sairoop10@gmail.com, rjsu26@gmail.com
+Subject: Re: [PATCH 3/4] bpf: runtime part of fast-path termination approach
+Message-ID: <202509081431.PcY1azAC-lkp@intel.com>
+References: <20250907230415.289327-4-sidchintamaneni@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3] riscv, bpf: Sign extend struct ops return
- values properly
-Content-Language: en-US
-To: Hengqi Chen <hengqi.chen@gmail.com>, <ast@kernel.org>,
-	<daniel@iogearbox.net>, <andrii@kernel.org>, <martin.lau@linux.dev>,
-	<bjorn@kernel.org>, <puranjay@kernel.org>
-CC: <bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-References: <20250908012448.1695-1-hengqi.chen@gmail.com>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20250908012448.1695-1-hengqi.chen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemf100007.china.huawei.com (7.202.181.221)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250907230415.289327-4-sidchintamaneni@gmail.com>
+
+Hi Siddharth,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on bpf-next/net]
+[also build test ERROR on bpf-next/master bpf/master linus/master v6.17-rc5 next-20250905]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Siddharth-Chintamaneni/bpf-Introduce-new-structs-and-struct-fields-for-fast-path-termination/20250908-070655
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
+patch link:    https://lore.kernel.org/r/20250907230415.289327-4-sidchintamaneni%40gmail.com
+patch subject: [PATCH 3/4] bpf: runtime part of fast-path termination approach
+config: sh-randconfig-001-20250908 (https://download.01.org/0day-ci/archive/20250908/202509081431.PcY1azAC-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 14.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250908/202509081431.PcY1azAC-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202509081431.PcY1azAC-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   kernel/watchdog.c: In function 'is_softlockup':
+>> kernel/watchdog.c:709:25: error: implicit declaration of function 'bpf_softlockup'; did you mean 'is_softlockup'? [-Wimplicit-function-declaration]
+     709 |                         bpf_softlockup(now - touch_ts);
+         |                         ^~~~~~~~~~~~~~
+         |                         is_softlockup
 
 
+vim +709 kernel/watchdog.c
 
-On 2025/9/8 9:24, Hengqi Chen wrote:
-> The ns_bpf_qdisc selftest triggers a kernel panic:
-> 
->      Unable to handle kernel paging request at virtual address ffffffffa38dbf58
->      Current test_progs pgtable: 4K pagesize, 57-bit VAs, pgdp=0x00000001109cc000
->      [ffffffffa38dbf58] pgd=000000011fffd801, p4d=000000011fffd401, pud=000000011fffd001, pmd=0000000000000000
->      Oops [#1]
->      Modules linked in: bpf_testmod(OE) xt_conntrack nls_iso8859_1 dm_mod drm drm_panel_orientation_quirks configfs backlight btrfs blake2b_generic xor lzo_compress zlib_deflate raid6_pq efivarfs [last unloaded: bpf_testmod(OE)]
->      CPU: 1 UID: 0 PID: 23584 Comm: test_progs Tainted: G        W  OE       6.17.0-rc1-g2465bb83e0b4 #1 NONE
->      Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
->      Hardware name: Unknown Unknown Product/Unknown Product, BIOS 2024.01+dfsg-1ubuntu5.1 01/01/2024
->      epc : __qdisc_run+0x82/0x6f0
->       ra : __qdisc_run+0x6e/0x6f0
->      epc : ffffffff80bd5c7a ra : ffffffff80bd5c66 sp : ff2000000eecb550
->       gp : ffffffff82472098 tp : ff60000096895940 t0 : ffffffff8001f180
->       t1 : ffffffff801e1664 t2 : 0000000000000000 s0 : ff2000000eecb5d0
->       s1 : ff60000093a6a600 a0 : ffffffffa38dbee8 a1 : 0000000000000001
->       a2 : ff2000000eecb510 a3 : 0000000000000001 a4 : 0000000000000000
->       a5 : 0000000000000010 a6 : 0000000000000000 a7 : 0000000000735049
->       s2 : ffffffffa38dbee8 s3 : 0000000000000040 s4 : ff6000008bcda000
->       s5 : 0000000000000008 s6 : ff60000093a6a680 s7 : ff60000093a6a6f0
->       s8 : ff60000093a6a6ac s9 : ff60000093140000 s10: 0000000000000000
->       s11: ff2000000eecb9d0 t3 : 0000000000000000 t4 : 0000000000ff0000
->       t5 : 0000000000000000 t6 : ff60000093a6a8b6
->      status: 0000000200000120 badaddr: ffffffffa38dbf58 cause: 000000000000000d
->      [<ffffffff80bd5c7a>] __qdisc_run+0x82/0x6f0
->      [<ffffffff80b6fe58>] __dev_queue_xmit+0x4c0/0x1128
->      [<ffffffff80b80ae0>] neigh_resolve_output+0xd0/0x170
->      [<ffffffff80d2daf6>] ip6_finish_output2+0x226/0x6c8
->      [<ffffffff80d31254>] ip6_finish_output+0x10c/0x2a0
->      [<ffffffff80d31446>] ip6_output+0x5e/0x178
->      [<ffffffff80d2e232>] ip6_xmit+0x29a/0x608
->      [<ffffffff80d6f4c6>] inet6_csk_xmit+0xe6/0x140
->      [<ffffffff80c985e4>] __tcp_transmit_skb+0x45c/0xaa8
->      [<ffffffff80c995fe>] tcp_connect+0x9ce/0xd10
->      [<ffffffff80d66524>] tcp_v6_connect+0x4ac/0x5e8
->      [<ffffffff80cc19b8>] __inet_stream_connect+0xd8/0x318
->      [<ffffffff80cc1c36>] inet_stream_connect+0x3e/0x68
->      [<ffffffff80b42b20>] __sys_connect_file+0x50/0x88
->      [<ffffffff80b42bee>] __sys_connect+0x96/0xc8
->      [<ffffffff80b42c40>] __riscv_sys_connect+0x20/0x30
->      [<ffffffff80e5bcae>] do_trap_ecall_u+0x256/0x378
->      [<ffffffff80e69af2>] handle_exception+0x14a/0x156
->      Code: 892a 0363 1205 489c 8bc1 c7e5 2d03 084a 2703 080a (2783) 0709
->      ---[ end trace 0000000000000000 ]---
-> 
-> The bpf_fifo_dequeue prog returns a skb which is a pointer.
-> The pointer is treated as a 32bit value and sign extend to
-> 64bit in epilogue. This behavior is right for most bpf prog
-> types but wrong for struct ops which requires RISC-V ABI.
-> 
-> So let's sign extend struct ops return values according to
-> the function model and RISC-V ABI([0]).
-> 
->    [0]: https://riscv.org/wp-content/uploads/2024/12/riscv-calling.pdf
-> 
-> Fixes: 25ad10658dc1 ("riscv, bpf: Adapt bpf trampoline to optimized riscv ftrace framework")
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->   arch/riscv/net/bpf_jit_comp64.c | 42 ++++++++++++++++++++++++++++++++-
->   1 file changed, 41 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-> index 397968d6ee09..a860be52dc49 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -711,6 +711,39 @@ static int emit_atomic_rmw(u8 rd, u8 rs, const struct bpf_insn *insn,
->   	return 0;
->   }
->   
-> +/*
-> + * Sign-extend the register if necessary
-> + */
-> +static int sign_extend(u8 rd, u8 rs, u8 sz, bool sign, struct rv_jit_context *ctx)
-> +{
-> +	if (!sign && (sz == 1 || sz == 2)) {
-> +		if (rd != rs)
-> +			emit_mv(rd, rs, ctx);
-> +		return 0;
-> +	}
-> +
-> +	switch (sz) {
-> +	case 1:
-> +		emit_sextb(rd, rs, ctx);
-> +		break;
-> +	case 2:
-> +		emit_sexth(rd, rs, ctx);
-> +		break;
-> +	case 4:
-> +		emit_sextw(rd, rs, ctx);
-> +		break;
-> +	case 8:
-> +		if (rd != rs)
-> +			emit_mv(rd, rs, ctx);
-> +		break;
-> +	default:
-> +		pr_err("bpf-jit: invalid size %d for sign_extend\n", sz);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
->   #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
->   #define REG_DONT_CLEAR_MARKER	0	/* RV_REG_ZERO unused in pt_regmap */
-> @@ -1175,8 +1208,15 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
->   		restore_args(min_t(int, nr_arg_slots, RV_MAX_REG_ARGS), args_off, ctx);
->   
->   	if (save_ret) {
-> -		emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
->   		emit_ld(regmap[BPF_REG_0], -(retval_off - 8), RV_REG_FP, ctx);
-> +		if (is_struct_ops) {
-> +			ret = sign_extend(RV_REG_A0, regmap[BPF_REG_0], m->ret_size,
-> +					  m->ret_flags & BTF_FMODEL_SIGNED_ARG, ctx);
-> +			if (ret)
-> +				goto out;
-> +		} else {
-> +			emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
-> +		}
->   	}
->   
->   	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
+   678	
+   679	static int is_softlockup(unsigned long touch_ts,
+   680				 unsigned long period_ts,
+   681				 unsigned long now)
+   682	{
+   683		if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && watchdog_thresh) {
+   684			/*
+   685			 * If period_ts has not been updated during a sample_period, then
+   686			 * in the subsequent few sample_periods, period_ts might also not
+   687			 * be updated, which could indicate a potential softlockup. In
+   688			 * this case, if we suspect the cause of the potential softlockup
+   689			 * might be interrupt storm, then we need to count the interrupts
+   690			 * to find which interrupt is storming.
+   691			 */
+   692			if (time_after_eq(now, period_ts + get_softlockup_thresh() / NUM_SAMPLE_PERIODS) &&
+   693			    need_counting_irqs())
+   694				start_counting_irqs();
+   695	
+   696			/*
+   697			 * A poorly behaving BPF scheduler can live-lock the system into
+   698			 * soft lockups. Tell sched_ext to try ejecting the BPF
+   699			 * scheduler when close to a soft lockup.
+   700			 */
+   701			if (time_after_eq(now, period_ts + get_softlockup_thresh() * 3 / 4))
+   702				scx_softlockup(now - touch_ts);
+   703	
+   704			/*
+   705			 * Long running BPF programs can cause CPU's to stall.
+   706			 * So trigger fast path termination to terminate such BPF programs.
+   707			 */
+   708			if (time_after_eq(now, period_ts + get_softlockup_thresh() * 3 / 4))
+ > 709				bpf_softlockup(now - touch_ts);
+   710	
+   711			/* Warn about unreasonable delays. */
+   712			if (time_after(now, period_ts + get_softlockup_thresh()))
+   713				return now - touch_ts;
+   714		}
+   715		return 0;
+   716	}
+   717	
 
-Thanks Hengqi, feel free to add:
-
-Reviewed-by: Pu Lehui <pulehui@huawei.com>
-Tested-by: Pu Lehui <pulehui@huawei.com>
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
