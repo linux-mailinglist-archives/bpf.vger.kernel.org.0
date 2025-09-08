@@ -1,281 +1,161 @@
-Return-Path: <bpf+bounces-67757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67759-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5714AB49739
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:37:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CF5DB49743
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:37:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11E023A99C6
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 17:37:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EDF1179EBE
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 17:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549D3319875;
-	Mon,  8 Sep 2025 17:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EFE314A9F;
+	Mon,  8 Sep 2025 17:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="auubr69G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nDvYYktB"
 X-Original-To: bpf@vger.kernel.org
-Received: from PA4PR04CU001.outbound.protection.outlook.com (mail-francecentralazon11013064.outbound.protection.outlook.com [40.107.162.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3CE3112C7;
-	Mon,  8 Sep 2025 17:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.162.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757352886; cv=fail; b=EYqe6+ia1G+ryehSgZ/TNGl7helElZebKbTn+VJUKH9KFNb5KHJHrvc8929BRQ07Fdb+yjQf4dZxaHvqBiQliyVM0vuzM0rgy4sgdqbasqVhnXhU0/bNQJp8vf3L70Kt1SXdVcrVAeSaO9HVB/kjQ1w1fbzmyAxdrSExdq3xgbg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757352886; c=relaxed/simple;
-	bh=4roOIwVB4t/QyVRpZ7WhxO58mPofxqAcb5mjO44z5c4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c5aQK5RObCwmita3iMsWts9FqRCsrgQo9BHJs/pvXUsSY0AQhVy/Sm6R9JvfdE/WXEvX1KlYLDp8vmqI9m174m+vz+Z/rEywdNwTETyIyy8LZvZ26phv5XLwLaDqJNy2i+twCgqDv6oWgHTfeL57XR/FM1LJVGMdWnCU30WCdDU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=auubr69G; arc=fail smtp.client-ip=40.107.162.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KzSxxITOafM6wOIMTwKsDpHy1CETO8+L+qafXlifmFlo5jKFvlQORLfBB4yWMe+kbTp8Ef+dq4KNsU06jU9d7MStQ8p2KAINdqpD7UvmASCPALeIdeNBAFsWw/Th5RGyLuJAdC1eFokt82EnSrkXM+6ZnOO14eFU9+nxnwgONq3EavbBriwE5JwBTAe0IJwxdkVyw2tvBhuBHiErYRqkHPjVVDiQLPc/48UloS0EKSE+MYW7iPqmrBMSf3ClVZSGxLslipwF2S4h4zJLnXhz9rRJvpTKAwPZsARRKYqGY+fcBR0jr2p9TK9AnQUUsICg28pM3/PN3ASM+Ctg1Jus7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UvkpQev33JM82+voUy94wmxzIg5p1RbiMdjsJAb0Tf0=;
- b=ktT0RAP0w+GC3Ck9BshPhBAojlPTPargd1DgiMrXlxbxedwlBSElXYyT1FpZ8irUWpRzUFoyhg2sO6OWPpxeFcgB75sTXKJISoZ28Lt35PhRnDDpHwwGfzZQUDhnYMrlU/nfOCK0xt+Cqe8Sr6lhtvAMEtjHe0tPFWqRSSOe6HHRH4Py9ZOv88yglfmgrcGHB8Jgi3eXoSx3nAWXU/RUbtvHRzS7DsRJfAc5R8dl7fGwn5lqgHeIceOb8v8LJdBPO8hbKTuZGZVwy3vnbw0DeHqpkR305IbZD1vu9WeeiGA6R0/gTKHrjCKUmI8Xejl/+U70WdSOrh/3WozZ6UrhBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 131.228.6.101) smtp.rcpttodomain=amazon.com
- smtp.mailfrom=nokia-bell-labs.com; dmarc=pass (p=reject sp=reject pct=100)
- action=none header.from=nokia-bell-labs.com; dkim=none (message not signed);
- arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UvkpQev33JM82+voUy94wmxzIg5p1RbiMdjsJAb0Tf0=;
- b=auubr69GcZPvvGPUbvmPGRLticZvHX5M0/P8GEvPcYdQy0Y4z6XzR5X3/qEbrFDARuaIM7e6fT/KtOrHfHOdjFQAi6r6AcpCBFxz4ulDw3mNR6/p69C9OX9HrnVzWvPvpdgPCM1OfrU41Ncf6bORFzKCz8hrSFLrJ+iRmEJAKchklpMlBE8EmE8YKEucsAP0rnb5OgRKkHfMs1bIaKRMjMApFfN/q3nkS9ezA7bh4s+5CrK0dk16TgSdaChp4OT4Pre14/SGLEGVbKe+ABIoYK6aYb1kMtfLNjRFLhKRVB7bxj9U4EKZTcR1BiYBr/U7nLazRpVWsS28zWeSFwNsYw==
-Received: from AS4P191CA0019.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:5d9::9)
- by DU4PR07MB10883.eurprd07.prod.outlook.com (2603:10a6:10:5f3::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Mon, 8 Sep
- 2025 17:34:40 +0000
-Received: from AM3PEPF0000A78F.eurprd04.prod.outlook.com
- (2603:10a6:20b:5d9:cafe::2f) by AS4P191CA0019.outlook.office365.com
- (2603:10a6:20b:5d9::9) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9094.22 via Frontend Transport; Mon,
- 8 Sep 2025 17:34:38 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.6.101)
- smtp.mailfrom=nokia-bell-labs.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nokia-bell-labs.com;
-Received-SPF: Pass (protection.outlook.com: domain of nokia-bell-labs.com
- designates 131.228.6.101 as permitted sender)
- receiver=protection.outlook.com; client-ip=131.228.6.101;
- helo=fr712usmtp1.zeu.alcatel-lucent.com; pr=C
-Received: from fr712usmtp1.zeu.alcatel-lucent.com (131.228.6.101) by
- AM3PEPF0000A78F.mail.protection.outlook.com (10.167.16.118) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.13
- via Frontend Transport; Mon, 8 Sep 2025 17:34:39 +0000
-Received: from sarah.nbl.nsn-rdnet.net (sarah.nbl.nsn-rdnet.net [10.0.73.150])
-	by fr712usmtp1.zeu.alcatel-lucent.com (Postfix) with ESMTP id 60AE11C004F;
-	Mon,  8 Sep 2025 20:34:38 +0300 (EEST)
-From: chia-yu.chang@nokia-bell-labs.com
-To: pabeni@redhat.com,
-	edumazet@google.com,
-	linux-doc@vger.kernel.org,
-	corbet@lwn.net,
-	horms@kernel.org,
-	dsahern@kernel.org,
-	kuniyu@amazon.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	dave.taht@gmail.com,
-	jhs@mojatatu.com,
-	kuba@kernel.org,
-	stephen@networkplumber.org,
-	xiyou.wangcong@gmail.com,
-	jiri@resnulli.us,
-	davem@davemloft.net,
-	andrew+netdev@lunn.ch,
-	donald.hunter@gmail.com,
-	ast@fiberby.net,
-	liuhangbin@gmail.com,
-	shuah@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	ij@kernel.org,
-	ncardwell@google.com,
-	koen.de_schepper@nokia-bell-labs.com,
-	g.white@cablelabs.com,
-	ingemar.s.johansson@ericsson.com,
-	mirja.kuehlewind@ericsson.com,
-	cheshire@apple.com,
-	rs.ietf@gmx.at,
-	Jason_Livingood@comcast.com,
-	vidhi_goel@apple.com
-Cc: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-Subject: [PATCH v17 net-next 14/14] tcp: accecn: try to fit AccECN option with SACK
-Date: Mon,  8 Sep 2025 19:34:08 +0200
-Message-Id: <20250908173408.79715-15-chia-yu.chang@nokia-bell-labs.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250908173408.79715-1-chia-yu.chang@nokia-bell-labs.com>
-References: <20250908173408.79715-1-chia-yu.chang@nokia-bell-labs.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269811F0E58
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 17:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757352924; cv=none; b=d+ErSLph4mNPOqK6o1ijYS4cIOjkTs5uUsuSi2EjQs4b/q3RBgOT5EGBTCkE0LKCrTOHyRRYST+sMU7/l1/N9Yip4CmgLf2m9Z1c3YP2woXAITCbOU0TxNFEfl6cVhS27HYheu+/GvwXyLGm3n6NZSVIxywc9zl5r96bj69Dw9E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757352924; c=relaxed/simple;
+	bh=4tfFdcm5eSUJFpeer0Sbj+8SWh3eWbjQW537e2UioWQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bOFc0WV4KBnQkzLQ4uSX54CV66WZq9qO3RlazSYNBfOP1ts/xfF1RPQOXgBTPrI49ehkohFrvt1Z617mCpVz8HG+OAvbDWglR81s1qWuhAzINuGbcFIHO16faXCSVkOr6NH0ba9Q8JGrnZPR5zQuLmTMrjQRg+tYDJSYc2tkvcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nDvYYktB; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-45decc9e83eso879015e9.3
+        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 10:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757352921; x=1757957721; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s8LJyieb2TXLYNgMBSTfipj7w1t+I2tbKypPhIFeBxE=;
+        b=nDvYYktBhu/jezgA7Ps4YvriT63aYtMc2QvyYPfcUOnqcHYPv5Yr0rw82QvjYd3eK9
+         UShXM64dG7kAbP3U1lEI6nExjLgoq9VwsTyUBrJaJ1AGTuJDTh3q0z/NswuL5rB2ekwh
+         WViizSYpvktXk9Wj0xxOpC5sAopP5zvdbdtuGNsANP31OJqSGtO3byhoyCsdWA2yYHT2
+         8z9MM9JtV0emGiqzswXe7muGOI9XalYxO8jEnCU+0EyF30RyymQdA3kD0AnPC/Q/jDVL
+         mMcr3/YxN1IRHEOQmxDkraWCrmpDrZjITUqLbvthmioaZ8SGLqloH1yHkOZn+7XhgKvS
+         Kwtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757352921; x=1757957721;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s8LJyieb2TXLYNgMBSTfipj7w1t+I2tbKypPhIFeBxE=;
+        b=Dr3wHitAovgztJyaQgZ9USNus9hFmPtsJUduw2mIZ7jXmKEXaZ10rq0cAELJk6XzR6
+         DR0dEdb0ugcldge2GxshIk9LtOnUQqaYiT4S/KPIJb8oCzQmpMhuGWim13+rQ/5zZuqB
+         DtL+3VYswl3iEs7hHVGKxnKE9jLeoM9nMgGSRXJbYBJV5dvq4eZAgCa1/CMJGx9hBcrH
+         7QIZmibtKYmsCXnX4krRarq77B41kjddXBBRlsPKHn+p2reaAk+5DT4JJDdmj4xZJ3Uf
+         BHQqDcELuTdQDD4/4kxfQQcit2EVaYP8MDD1pK9NXDqsd8eFERZyWk5XVZeV8BQfQ1kH
+         7L6Q==
+X-Gm-Message-State: AOJu0Yx0PIpnM0eJ61KiEWW7zKVskEK3fdCZqcvLlvvJF1HXsNh2swU2
+	QCvOX3xX76UG2hFcwCpWj0uwOFQTsIF/j3ZRv1vdvsUzYKjMpElucHBv9IZq1xYMQeTOujRDNr8
+	JTALoalx76yuEf3VyK/T41szXUJa5gSiWiA==
+X-Gm-Gg: ASbGncuQZMm2dhaD0TypdeoDgs72cHX3UDcjFIbE47pWPYSRABX5eEQhhhMHJmNfdpR
+	JZEzHECfS/AGmru5cpXC2RYPsbdFd0vQoq5Nm9lj/k5HAObb4zN3ggQGyVsQVJ+vy9Eb9rfJsQb
+	1w5iTrkiFpD+0HFIrZjr7MjVNzdQBiLTWsibEqaWjsDV+HScr0oT6VguhwDUdfKRVIQRBgX8cQJ
+	eO40F+ULJV7qwnRasC0sU6oqjm+RGTacIUYDpl5oRfV0b8=
+X-Google-Smtp-Source: AGHT+IHEu9ST9ieexhVzJqhO9oBDvcnUSpBSyRvXGF50+6Q8mQzzU/bXbOhSaeOpm+JgO6uVCD9v5TbZdcCqkcu+Cyo=
+X-Received: by 2002:a05:6000:3103:b0:3dc:2912:15c0 with SMTP id
+ ffacd0b85a97d-3e636d8f8e9mr8196580f8f.1.1757352921417; Mon, 08 Sep 2025
+ 10:35:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM3PEPF0000A78F:EE_|DU4PR07MB10883:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4af0f973-b6d8-4134-6834-08ddeefdfd3f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|82310400026|376014|7416014|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Nytld0I0dzBicWliTGRWSDMyVU92RjBrNXhwamlseFlRVnh2bENHWUhuVWp2?=
- =?utf-8?B?UFhoUE1jOHlTN3lhcUY2MkdqeDVrenZ3WnNXZFFZQ0Vhd3N5bE1Qc0hORmE2?=
- =?utf-8?B?TVdVS29XYVRrQkhzeU9yZVJxN1A1Uk1XQnhQTVZxYTEvY0pPWVBuSDFuZXc2?=
- =?utf-8?B?ZXlSVEhMdGtKTXJEdGRuVUFSTkQyM1pRTGpiUUFmdkF0L1A2YVFBc05iT1dp?=
- =?utf-8?B?NEJvcVdmblhZU2xEL2JmMWJ4dmFmRlRZNWQ5NmxjZ2xSeGVjN1VKSHBBU2hZ?=
- =?utf-8?B?aUpkUjZ4RW5OSzRnS2tlZG5XdWpZS3FaOUYyNVowS3JLVmRKczh4UXJGb3lx?=
- =?utf-8?B?NkFMTUJrWjd4bllKOGIrL2ZHZWIzZDRDcFQrZ09oNXQzRHdDQTZWQldsTkZa?=
- =?utf-8?B?anp2MHlmNGNOeWw5KzVkQzRHdEs4YlFZV2NTVy9FZGRydmlKRWNEWW14c3NR?=
- =?utf-8?B?QUlJZkdGbTFNazZxTGJGdkdZa0pOOHhZYnR3Zkc3UjM0NTFCWUsvazYvWER0?=
- =?utf-8?B?bzdoaHNaUThobTV0bHVuK1pCclZhZ0gyNWJwb3J5dWN2Y1hWZDdHQ3dSS1Bl?=
- =?utf-8?B?ZlQ4bXhNY0Q0M2pHNm9HSWY3dkxxbE1iRk1EdENIeHNDdFVISTNYMGQ0cjFw?=
- =?utf-8?B?TlFST1FFZW90dmxZWE1yalI3YUt2NnB5dlJuMjJXcU0wSmZHVTg4bG1XZFc1?=
- =?utf-8?B?eHJJQTAwOEpHa0doMms3MVZ2LzlSeDZVWEY3aTVGYmVCYWFUZ0M5Uno3UUw5?=
- =?utf-8?B?eGQ4bWZNUXlLb1lhSzV5L0JKanhOQmI4eVpZY0ZmZ0RJMHAwZUpwOWV2R2M4?=
- =?utf-8?B?dzc5VG1rSlFBbTNMYUxhS0tKOFZCL2J5Q0p0RWx0RkZtdnUzQy95Y0lmSUhL?=
- =?utf-8?B?NWhwcm4xdkxkb2xXMm1hVm51UkRtR21QcWNJUmdyVHRDZHFUL1Q2L2d2U0Y3?=
- =?utf-8?B?TDk2TEh0TCtPc29hbmxLUjlMaWp2aHlJSm5naWh4dXBObE40S3lsclI4eU56?=
- =?utf-8?B?UmhWQ1hVekwrbndpcTduSWwrc0JaZkF6MFJMZzZTbm1ncGlncTBLb1VoS2Vr?=
- =?utf-8?B?c1BrRVNOcjc3QTVib2N6UWw2QmdCaEVGUDVaYzRlVHdNdjJJaW5LNG5XSXpl?=
- =?utf-8?B?Zmg0V1VGTzJKSDMrNHIzZS8zQTJBQXo1L25mNzVSSVkwdGNzNGs4bXNQd3Zm?=
- =?utf-8?B?NkdVQ3FWVXhkRjdNNTUrdzZVclk2VnVPSU5ackVkVTBWUHBmZU0zMWRqWUNZ?=
- =?utf-8?B?dVRCSTNicXhuNmtoWGdjZjBacTd5MDdMTkQ2SVE1TkZSVXRxQUJHVTA4bTlO?=
- =?utf-8?B?dmdLa3lqMkR2Nk45cTNwcnZVTmRXVFBwRGJwR1lCQk5kaFR1cnp4WGUxaVNV?=
- =?utf-8?B?UldHendvMDdUTStzei9WRGJpMUpNVFozVkNrR1FIeEZJemR4OHQ5WTdUa2M3?=
- =?utf-8?B?UHMyMk9yd3d6M1R0eUFjamFkTXpzeklwbUFzOUU5WkFoUmxPYUlBYnBMV0k1?=
- =?utf-8?B?OHkzUW15enFPRm5UelpBUFQ3R3J1TCtxTTdBbkNGakF2OU1qMEJJVWx0TlBV?=
- =?utf-8?B?UGIrTFBiRVFRcEwwS3M2eTlBbXhKUmxNTmNOUTlScis1SVA5RzIxS1Bubjk5?=
- =?utf-8?B?YXhGbUdSWFgydHVKRkhKVmQ4R3hSYVE3VDJpWnQ5dFlkTkFiNE5peGM1VXhO?=
- =?utf-8?B?d2xzSGN5NUhBcWJpSm5Ra2tMM2VsSXJlSk44N1I4QWd6YTZTSmkwTHZxM2ox?=
- =?utf-8?B?cEhZSzhwVDB6bG5la2pFNVF0NzN0VjFmbEYrLy9iRVYvc29KTlFtR0xuZHNU?=
- =?utf-8?B?cUc5K0xkVzJha0J4Vm1OYWRPSWltZ2M4dUd5MFF0U1dxY3lSeEsxSDlXUGxV?=
- =?utf-8?B?RU5NU3R1bmNFVm1paDhpM3NoSHFsenYvTkFCK1lIeVJYU0U0VTZGUlhDaHZR?=
- =?utf-8?B?RHYwb3czdXlyQXFLQ3ViYWYvUnAxclRPOUVCOW5WVjNBcSs3b3pTeUVhWGFT?=
- =?utf-8?B?VGpEdmkzNGx3RVRMQnUvN3VSLzhnWS9jOFNHZUNKTzgrVmltU0NwRGQyNWlW?=
- =?utf-8?B?MWt4QTg0N3dSZFc0YnRzcy9WZ1ZyRFdGQXdDUT09?=
-X-Forefront-Antispam-Report:
-	CIP:131.228.6.101;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fr712usmtp1.zeu.alcatel-lucent.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(82310400026)(376014)(7416014)(921020);DIR:OUT;SFP:1101;
-X-OriginatorOrg: nokia-bell-labs.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2025 17:34:39.8733
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4af0f973-b6d8-4134-6834-08ddeefdfd3f
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.6.101];Helo=[fr712usmtp1.zeu.alcatel-lucent.com]
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TreatMessagesAsInternal-AM3PEPF0000A78F.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR07MB10883
+References: <20250908143644.30993-1-leon.hwang@linux.dev> <20250908143644.30993-2-leon.hwang@linux.dev>
+In-Reply-To: <20250908143644.30993-2-leon.hwang@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 8 Sep 2025 10:35:10 -0700
+X-Gm-Features: AS18NWDn889uJ4sOz0oSATEQ3NMwfSji7SEoa1meg1Vf0wc8tVVKNgxBS2u4Idg
+Message-ID: <CAADnVQLSYy6FNrgX82GPFypwm-LCqGs31QfzoXC=Yunhov-cyQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/9] bpf: Generalize data copying for percpu maps
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Daniel Xu <dxu@dxuuu.xyz>, =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>, 
+	kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+On Mon, Sep 8, 2025 at 7:37=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> wr=
+ote:
+>
+> Refactor the data copying logic of the following percpu map types:
+>
+> * percpu_array
+> * percpu_hash
+> * lru_percpu_hash
+> * percpu_cgroup_storage
+>
+> by introducing two helpers:
+>
+> * 'bpf_percpu_copy_data()'
+> * 'bpf_percpu_update_data()'
+>
+> It is to introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for these percpu
+> maps with less code churn.
+>
+> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+> ---
+>  include/linux/bpf.h        | 28 +++++++++++++++++++++++++++-
+>  kernel/bpf/arraymap.c      | 14 ++------------
+>  kernel/bpf/hashtab.c       | 27 ++++-----------------------
+>  kernel/bpf/local_storage.c | 18 ++++++------------
+>  4 files changed, 39 insertions(+), 48 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 8f6e87f0f3a89..ce523a49dc20c 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -547,6 +547,33 @@ static inline void copy_map_value_long(struct bpf_ma=
+p *map, void *dst, void *src
+>         bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
+>  }
+>
+> +#ifdef CONFIG_BPF_SYSCALL
+> +static inline void bpf_percpu_copy_data(struct bpf_map *map, void __perc=
+pu *pptr, void *value,
+> +                                       u32 size)
+> +{
+> +       int cpu, off =3D 0;
+> +
+> +       for_each_possible_cpu(cpu) {
+> +               copy_map_value_long(map, value + off, per_cpu_ptr(pptr, c=
+pu));
+> +               off +=3D size;
+> +       }
+> +}
 
-As SACK blocks tend to eat all option space when there are
-many holes, it is useful to compromise on sending many SACK
-blocks in every ACK and attempt to fit the AccECN option
-there by reducing the number of SACK blocks. However, it will
-never go below two SACK blocks because of the AccECN option.
+..
 
-As the AccECN option is often not put to every ACK, the space
-hijack is usually only temporary. Depending on the reuqired
-AccECN fields (can be either 3, 2, 1, or 0, cf. Table 5 in
-AccECN spec) and the NOPs used for alignment of other
-TCP options, up to two SACK blocks will be reduced. Please
-find below tables for more details:
+> @@ -313,11 +312,7 @@ int bpf_percpu_array_copy(struct bpf_map *map, void =
+*key, void *value)
+>         size =3D array->elem_size;
+>         rcu_read_lock();
+>         pptr =3D array->pptrs[index & array->index_mask];
+> -       for_each_possible_cpu(cpu) {
+> -               copy_map_value_long(map, value + off, per_cpu_ptr(pptr, c=
+pu));
+> -               check_and_init_map_value(map, value + off);
+> -               off +=3D size;
+> -       }
+> +       bpf_percpu_copy_data(map, pptr, value, size);
 
-+====================+=========================================+
-| Number of | Required | Remaining |  Number of  |    Final    |
-|   SACK    |  AccECN  |  option   |  reduced    |  number of  |
-|  blocks   |  fields  |  spaces   | SACK blocks | SACK blocks |
-+===========+==========+===========+=============+=============+
-|  x (<=2)  |  0 to 3  |    any    |      0      |      x      |
-+-----------+----------+-----------+-------------+-------------+
-|     3     |    0     |    any    |      0      |      3      |
-|     3     |    1     |    <4     |      1      |      2      |
-|     3     |    1     |    >=4    |      0      |      3      |
-|     3     |    2     |    <8     |      1      |      2      |
-|     3     |    2     |    >=8    |      0      |      3      |
-|     3     |    3     |    <12    |      1      |      2      |
-|     3     |    3     |    >=12   |      0      |      3      |
-+-----------+----------+-----------+-------------+-------------+
-|  y (>=4)  |    0     |    any    |      0      |      y      |
-|  y (>=4)  |    1     |    <4     |      1      |     y-1     |
-|  y (>=4)  |    1     |    >=4    |      0      |      y      |
-|  y (>=4)  |    2     |    <8     |      1      |     y-1     |
-|  y (>=4)  |    2     |    >=8    |      0      |      y      |
-|  y (>=4)  |    3     |    <4     |      2      |     y-2     |
-|  y (>=4)  |    3     |    <12    |      1      |     y-1     |
-|  y (>=4)  |    3     |    >=12   |      0      |      y      |
-+===========+==========+===========+=============+=============+
+Same issue as before. This is not equivalent.
+Stop this "refactoring".
 
-Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-Co-developed-by: Ilpo Järvinen <ij@kernel.org>
-Signed-off-by: Ilpo Järvinen <ij@kernel.org>
-
----
-v8:
-- Update tcp_options_fit_accecn() to avoid using recursion
----
- net/ipv4/tcp_output.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 65b90f73daa0..388c45859469 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -873,7 +873,9 @@ static int tcp_options_fit_accecn(struct tcp_out_options *opts, int required,
- 				  int remaining)
- {
- 	int size = TCP_ACCECN_MAXSIZE;
-+	int sack_blocks_reduce = 0;
- 	int max_combine_saving;
-+	int rem = remaining;
- 	int align_size;
- 
- 	if (opts->use_synack_ecn_bytes)
-@@ -888,14 +890,31 @@ static int tcp_options_fit_accecn(struct tcp_out_options *opts, int required,
- 		else
- 			align_size = ALIGN_DOWN(size, 4);
- 
--		if (remaining >= align_size) {
-+		if (rem >= align_size) {
- 			size = align_size;
- 			break;
-+		} else if (opts->num_accecn_fields == required &&
-+			   opts->num_sack_blocks > 2 &&
-+			   required > 0) {
-+			/* Try to fit the option by removing one SACK block */
-+			opts->num_sack_blocks--;
-+			sack_blocks_reduce++;
-+			rem = rem + TCPOLEN_SACK_PERBLOCK;
-+
-+			opts->num_accecn_fields = TCP_ACCECN_NUMFIELDS;
-+			size = TCP_ACCECN_MAXSIZE;
-+			continue;
- 		}
- 
- 		opts->num_accecn_fields--;
- 		size -= TCPOLEN_ACCECN_PERFIELD;
- 	}
-+	if (sack_blocks_reduce > 0) {
-+		if (opts->num_accecn_fields >= required)
-+			size -= sack_blocks_reduce * TCPOLEN_SACK_PERBLOCK;
-+		else
-+			opts->num_sack_blocks += sack_blocks_reduce;
-+	}
- 	if (opts->num_accecn_fields < required)
- 		return 0;
- 
--- 
-2.34.1
-
+pw-bot: cr
 
