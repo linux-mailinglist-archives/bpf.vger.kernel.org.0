@@ -1,269 +1,193 @@
-Return-Path: <bpf+bounces-67805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60192B49CDA
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 00:34:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89884B49CFE
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 00:38:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 190913B94C0
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 22:34:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E75221BC052E
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 22:38:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D155F211A14;
-	Mon,  8 Sep 2025 22:34:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8E12EBDE3;
+	Mon,  8 Sep 2025 22:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FXV1eVSV"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OppRjWbh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B788620C001
-	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 22:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DACB01EB5CE
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 22:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757370878; cv=none; b=b3+6uvDW+IQ2IrAUnhxpNWPWmG1uVNAyec5a+UwNpzxX03i5J6oMLGCh1iCVixFxF4uaGfPKSKQc5ToBeSABmUO+4Yotgt3WGy89VuZfsj83GmzdwAlJNEb+5EtRndh6nazCx5mNY/TpU+UhkTrgC9D8zxzdTh6rIGVO9+GN6eM=
+	t=1757371077; cv=none; b=tMzXaVMZQq6nfLESn7BQJLUM/fXsxo/ONmYam3V4UnuvuWwmgJCnyHroX3bIMEjlLFA0AIZfOYOpZAJCsiAM6k/yV/t+zoD41NDPEfR7QSixjBk3TD23pnNokIZGFUcUEumCvBHKWX2dsPyLhBbN5+6KiK8to8n+uXCDf7Dni8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757370878; c=relaxed/simple;
-	bh=Dwg3DLnHMCV8GGsNwrHRL2KaNMiND3kaSrV2dA5axRg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jbJzYHEuEjgwPNNNVDiW+vwWa34FRNlEBOay8c5XS30J7IBRwTgswg4MkqweMDfKFI9DthFyvKRXMohYXHDLCM2tB960ILT5mt2h4L0MVVFyBYe3B0xY93QyLKMQwBWnViuRgs1Gme/JxJ37LaXaZI15r+UbemBxuaN7wZMiutw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FXV1eVSV; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-71d60504788so41379277b3.2
-        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 15:34:36 -0700 (PDT)
+	s=arc-20240116; t=1757371077; c=relaxed/simple;
+	bh=K/+6HaezEKTNCz6DDiybQvx3x6N3ML8txPdoxMorAek=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=kxXjIfvdf7j5zdwR1sR6U7rJNLDgEpJNxgbtU4+VXVsxavU/+EZbSHADEzsvJNi2xS75cK8MQQw5RgeY5qvxpTvU42fv5oP+pdtXAAJ4lb5do+bs6RCEUyt8Nia9NBncCY5VDEd0kQvdbgMBwMwwDUO9cDojw3k0EVythVxNB4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OppRjWbh; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-32b58dd475eso4904058a91.1
+        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 15:37:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757370876; x=1757975676; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jjt7DDjX972By2stpkZpYIsKdYZGTii1n0cqsdLOGiE=;
-        b=FXV1eVSV07xxz/kUAwZ4OcpjlMWMOtuIgewdfaJVhk1aYEqeI65whB67BCQttb9b5l
-         RdB/E3zv30GwKNsOQM9wkOBu/frUjXHN7WnJAiFQ3q3AF2cnfXCSv768lVpI/mwxK4dU
-         KwgQTjbQbR0wAWPpuVARLvI1lx1s43O6hp7Pn7kwVU7sTsfQRi75/0xpqC24TreHdt12
-         ZjHemG0M7iK0YgOKtUKhSEisU2Nl13BlGMDF3GeS/u56ij1s9e0s3ZP6NuWCk4uL0xnq
-         VV+SQoj/vzuPtNdQrcDsnDu6/B3snMzrFqMNYk6OO7MQuZ6kZATmpmkxl0By8IBmb/Cp
-         M7VQ==
+        d=google.com; s=20230601; t=1757371075; x=1757975875; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=oHB8VmjoeKDrD30KjQ7/qnRVGLhietJGaZsMWEtgdC4=;
+        b=OppRjWbhpGouVpkY6BNuFPNZanA9BWDEJPhHVoLY4UBrCxD0cCUYPhwGUa07AsHvdP
+         7AwjIgfxgWvMbY90ZEZtu/VeG29piK/2uY++1mmARw9pxPvrnFrbewXt4k1MarmVYRoN
+         CvPlbWg8NdUiziILreeWFXi2rWUysagQNvdFjwMaCSE9l3PbRBj9TApYB6iYirh3PZVr
+         OiCTNxBzOA5VZrLFkNw7qNdQ1t5wONpPa151Cp5ZeOe2mfl4H8VxnKgTcxYTSmtULDYX
+         Dp0fH7kIl5WBPOj1O9+1ZfTHJZgSZWJiLKkH8ND3nc2ktefdrOXskKw4f15cXWwrQrcU
+         x93w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757370876; x=1757975676;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jjt7DDjX972By2stpkZpYIsKdYZGTii1n0cqsdLOGiE=;
-        b=oUfuskUJgQR8R7aNj5ywcm7lPnQffFP63Cf7X5Ebsc8kIN/+mDgfnVLZA/o5IJju/0
-         //nUxHwi2OnniPfIiiB+ztrV5xYnSpB6V3OjKQjIofjUwBfmeVLcWQuLMFL1tPUdjS08
-         xQ0MYfCe5VJgLqoTtzmnnKWTLFtN10KI+ydZg3bsYaS5VUfzKP6tEMNouNm81teHswA6
-         /ijLl62VytP+uDnnajxPPoCBQdvDt40jywlmBjVZu9gu8dym8TbxxJAyKcCqmO4wN5Ml
-         U5im+jiqcP/w5bDar0mWo4h7ZARdgAzB1ONHx41rvH3f6i1dNu9aiibN9jdWZmGwp+tn
-         5u5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUTvln8VgTiH414cVqyRsnJRE0EPmhlFwu/qtXoeopJstD9Z9zdhNm8EaNwilXcZEmZbZc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxhokk8Og8BerulozdK+0eOjGIw8nW8Nv5AFbg3p/uD+Ka9+6kT
-	57+Q6EdqMfMIxaQZY+L2Am6L0/xymmmAoF9ZK1T7hNk77qSy0xjvJ4UqLpVQaMYqWJmL9y5x28+
-	CP11/Z2UinLAPVaPDwiw52HsAbbatbpw=
-X-Gm-Gg: ASbGncv8uY+JM9Sp5HaT0/zZ+sUaC3z8UEFoUtB0UE/PQ2uv5GRCKU8oOJ64oFB9iXj
-	UwBDHFrR4gB7JT8cX34MLFKALj7U5PvcLjk8C2V5Jabb/WBkKTJ4gTXca8oBfrp5AgLIphpZoMN
-	T45DPRLlMtmzF9Hxzd5Cc63CB0mhxemjYMOkPubcya0ZSnAu01BIFQYa1hAQZQ1noAWDYT0dv2f
-	0prm7gP
-X-Google-Smtp-Source: AGHT+IGoZcTWd/GPs5VbkaDpyGGNUiEMOa5TrD1+NjbPsAN4xpn0v0Y0Eop+NY/MlgWZ+YudhgKbFng93dfHVhqkvRQ=
-X-Received: by 2002:a05:690c:62c1:b0:726:76f0:4b89 with SMTP id
- 00721157ae682-727f505434fmr88421927b3.22.1757370875500; Mon, 08 Sep 2025
- 15:34:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757371075; x=1757975875;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oHB8VmjoeKDrD30KjQ7/qnRVGLhietJGaZsMWEtgdC4=;
+        b=YR3ALvIuiN2snUSsvjJbWPmh/fqRkLqdMxduNp6xTpUU0xFP0hYGLq7ElIw5vQbwSc
+         IWvAkk35EtYQBgJNO9p5yraZRf3IhHo8e4grF5fWnuknj6NAjk7Qbkqcl0ndSJVOWIP8
+         esSbV8NVMQsblygevE70WkxZshgOPRfNMN26zW/Y0nRXg38muQ9gzpOPET+zc8ktgfgW
+         KSS6Pnn6wiJhD9bwxZozFiiWQ/bStUkqE6nl0Jy4AaGUzsJrmTFbz0Ug3ArirO6Kdgq8
+         518K9IMJxFwv1ngosrP+hqq+0yeVr+nRVrhv4N8O03KfJXoAqpSoBxj879Cdl/2Nt+sQ
+         55hw==
+X-Forwarded-Encrypted: i=1; AJvYcCXI+HGRsnn3MLbOkhnaEJme9gPE+NpvEKleoeJOy9DpRhW4xx53vONkrBILKh74u0pBkGE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyxiaayHEi5trj6nOm3ELaua1Jx7KG76Ze1kLHg0/D3jt3NweAR
+	R0FlVBRa3YbtZONqEQPBRnRHqvVqgVOE36hMVPSrvN+4Q/a0prxj+SBcPn0vqKyqIdXrLdRT1uN
+	KbZxuYg==
+X-Google-Smtp-Source: AGHT+IH4X8yBYzXqkgZhB9Z5Tv9zh1FGyGOFIpK56IY9kyCpIIZ9HtmeysYahQjYkIzCj52o7SB1uHXB6+8=
+X-Received: from pjbse15.prod.google.com ([2002:a17:90b:518f:b0:32b:95bb:dbc])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:3d04:b0:32b:623d:ee9e
+ with SMTP id 98e67ed59e1d1-32d43eff92bmr12149451a91.14.1757371075173; Mon, 08
+ Sep 2025 15:37:55 -0700 (PDT)
+Date: Mon,  8 Sep 2025 22:34:34 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250904103806.18937-1-hengqi.chen@gmail.com> <5829abcf-f1b9-4fb0-8811-b6098fdd8a29@gmail.com>
- <CAEyhmHQebTd1+XojM3M9K7VYESQYLKsmkH4DbQfERFBP_E3WLA@mail.gmail.com>
-In-Reply-To: <CAEyhmHQebTd1+XojM3M9K7VYESQYLKsmkH4DbQfERFBP_E3WLA@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 8 Sep 2025 15:34:24 -0700
-X-Gm-Features: Ac12FXyYIw_KCLdrWjdZaTuagcQZ9L9HxDRNeratvFaEeepMp1sMwsmGXhGX5Bo
-Message-ID: <CAMB2axMZ6M8X1PABsQ9k=K6uQt0jSXo_21pRDmcsQkDFg4QeGg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] riscv, bpf: Sign extend struct ops return
- values properly
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, bjorn@kernel.org, pulehui@huawei.com, 
-	puranjay@kernel.org, bpf@vger.kernel.org, linux-riscv@lists.infradead.org
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.51.0.384.g4c02a37b29-goog
+Message-ID: <20250908223750.3375376-1-kuniyu@google.com>
+Subject: [PATCH v6 bpf-next/net 0/5] bpf: Allow decoupling memcg from sk->sk_prot->memory_allocated.
+From: Kuniyuki Iwashima <kuniyu@google.com>
+To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
+Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 4, 2025 at 6:24=E2=80=AFPM Hengqi Chen <hengqi.chen@gmail.com> =
-wrote:
->
-> On Fri, Sep 5, 2025 at 6:42=E2=80=AFAM Amery Hung <ameryhung@gmail.com> w=
-rote:
-> >
-> >
-> >
-> > On 9/4/25 3:38 AM, Hengqi Chen wrote:
-> > > The ns_bpf_qdisc selftest triggers a kernel panic:
-> > >
-> > >      Unable to handle kernel paging request at virtual address ffffff=
-ffa38dbf58
-> > >      Current test_progs pgtable: 4K pagesize, 57-bit VAs, pgdp=3D0x00=
-000001109cc000
-> > >      [ffffffffa38dbf58] pgd=3D000000011fffd801, p4d=3D000000011fffd40=
-1, pud=3D000000011fffd001, pmd=3D0000000000000000
-> > >      Oops [#1]
-> > >      Modules linked in: bpf_testmod(OE) xt_conntrack nls_iso8859_1 dm=
-_mod drm drm_panel_orientation_quirks configfs backlight btrfs blake2b_gene=
-ric xor lzo_compress zlib_deflate raid6_pq efivarfs [last unloaded: bpf_tes=
-tmod(OE)]
-> > >      CPU: 1 UID: 0 PID: 23584 Comm: test_progs Tainted: G        W  O=
-E       6.17.0-rc1-g2465bb83e0b4 #1 NONE
-> > >      Tainted: [W]=3DWARN, [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODULE
-> > >      Hardware name: Unknown Unknown Product/Unknown Product, BIOS 202=
-4.01+dfsg-1ubuntu5.1 01/01/2024
-> > >      epc : __qdisc_run+0x82/0x6f0
-> > >       ra : __qdisc_run+0x6e/0x6f0
-> > >      epc : ffffffff80bd5c7a ra : ffffffff80bd5c66 sp : ff2000000eecb5=
-50
-> > >       gp : ffffffff82472098 tp : ff60000096895940 t0 : ffffffff8001f1=
-80
-> > >       t1 : ffffffff801e1664 t2 : 0000000000000000 s0 : ff2000000eecb5=
-d0
-> > >       s1 : ff60000093a6a600 a0 : ffffffffa38dbee8 a1 : 00000000000000=
-01
-> > >       a2 : ff2000000eecb510 a3 : 0000000000000001 a4 : 00000000000000=
-00
-> > >       a5 : 0000000000000010 a6 : 0000000000000000 a7 : 00000000007350=
-49
-> > >       s2 : ffffffffa38dbee8 s3 : 0000000000000040 s4 : ff6000008bcda0=
-00
-> > >       s5 : 0000000000000008 s6 : ff60000093a6a680 s7 : ff60000093a6a6=
-f0
-> > >       s8 : ff60000093a6a6ac s9 : ff60000093140000 s10: 00000000000000=
-00
-> > >       s11: ff2000000eecb9d0 t3 : 0000000000000000 t4 : 0000000000ff00=
-00
-> > >       t5 : 0000000000000000 t6 : ff60000093a6a8b6
-> > >      status: 0000000200000120 badaddr: ffffffffa38dbf58 cause: 000000=
-000000000d
-> > >      [<ffffffff80bd5c7a>] __qdisc_run+0x82/0x6f0
-> > >      [<ffffffff80b6fe58>] __dev_queue_xmit+0x4c0/0x1128
-> > >      [<ffffffff80b80ae0>] neigh_resolve_output+0xd0/0x170
-> > >      [<ffffffff80d2daf6>] ip6_finish_output2+0x226/0x6c8
-> > >      [<ffffffff80d31254>] ip6_finish_output+0x10c/0x2a0
-> > >      [<ffffffff80d31446>] ip6_output+0x5e/0x178
-> > >      [<ffffffff80d2e232>] ip6_xmit+0x29a/0x608
-> > >      [<ffffffff80d6f4c6>] inet6_csk_xmit+0xe6/0x140
-> > >      [<ffffffff80c985e4>] __tcp_transmit_skb+0x45c/0xaa8
-> > >      [<ffffffff80c995fe>] tcp_connect+0x9ce/0xd10
-> > >      [<ffffffff80d66524>] tcp_v6_connect+0x4ac/0x5e8
-> > >      [<ffffffff80cc19b8>] __inet_stream_connect+0xd8/0x318
-> > >      [<ffffffff80cc1c36>] inet_stream_connect+0x3e/0x68
-> > >      [<ffffffff80b42b20>] __sys_connect_file+0x50/0x88
-> > >      [<ffffffff80b42bee>] __sys_connect+0x96/0xc8
-> > >      [<ffffffff80b42c40>] __riscv_sys_connect+0x20/0x30
-> > >      [<ffffffff80e5bcae>] do_trap_ecall_u+0x256/0x378
-> > >      [<ffffffff80e69af2>] handle_exception+0x14a/0x156
-> > >      Code: 892a 0363 1205 489c 8bc1 c7e5 2d03 084a 2703 080a (2783) 0=
-709
-> > >      ---[ end trace 0000000000000000 ]---
-> > >
-> > > The bpf_fifo_dequeue prog returns a skb which is a pointer.
-> > > The pointer is treated as a 32bit value and sign extend to
-> > > 64bit in epilogue. This behavior is right for most bpf prog
-> > > types but wrong for struct ops which requires RISC-V ABI.
-> > >
-> > > So let's sign extend struct ops return values according to
-> > > the function model and RISC-V ABI([0]).
-> > >
-> > >    [0]: https://riscv.org/wp-content/uploads/2024/12/riscv-calling.pd=
-f
-> > >
-> > > Fixes: 25ad10658dc1 ("riscv, bpf: Adapt bpf trampoline to optimized r=
-iscv ftrace framework")
-> > > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> > > ---
-> > >   arch/riscv/net/bpf_jit_comp64.c | 38 ++++++++++++++++++++++++++++++=
-++-
-> > >   1 file changed, 37 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit=
-_comp64.c
-> > > index 549c3063c7f1..c7ae4d0a8361 100644
-> > > --- a/arch/riscv/net/bpf_jit_comp64.c
-> > > +++ b/arch/riscv/net/bpf_jit_comp64.c
-> > > @@ -954,6 +954,35 @@ static int invoke_bpf_prog(struct bpf_tramp_link=
- *l, int args_off, int retval_of
-> > >       return ret;
-> > >   }
-> > >
-> > > +/*
-> > > + * Sign-extend the register if necessary
-> > > + */
-> > > +static int sign_extend(int rd, int rs, u8 size, u8 flags, struct rv_=
-jit_context *ctx)
-> > > +{
-> > > +     if (!(flags & BTF_FMODEL_SIGNED_ARG) && (size =3D=3D 1 || size =
-=3D=3D 2))
-> > > +             return 0;
-> > > +
-> > > +     switch (size) {
-> > > +     case 1:
-> > > +             emit_sextb(rd, rs, ctx);
-> > > +             break;
-> > > +     case 2:
-> > > +             emit_sexth(rd, rs, ctx);
-> > > +             break;
-> > > +     case 4:
-> > > +             emit_sextw(rd, rs, ctx);
-> > > +             break;
-> > > +     case 8:
-> > > +             emit_mv(rd, rs, ctx);
-> > > +             break;
-> > > +     default:
-> > > +             pr_err("bpf-jit: invalid size %d for sign_extend\n", si=
-ze);
-> > > +             return -EINVAL;
-> >
-> > Will this accidentally rejects struct_ops functions that return void?
-> >
->
-> No, see https://elixir.bootlin.com/linux/v6.16.4/source/kernel/bpf/bpf_st=
-ruct_ops.c#L601-L602
+Some protocols (e.g., TCP, UDP) have their own memory accounting for
+socket buffers and charge memory to global per-protocol counters such
+as /proc/net/ipv4/tcp_mem.
 
-Ah, I see. Thanks for pointing it out.
+When running under a non-root cgroup, this memory is also charged to
+the memcg as sock in memory.stat.
 
->
-> > > +     }
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > >   static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im=
-,
-> > >                                        const struct btf_func_model *m=
-,
-> > >                                        struct bpf_tramp_links *tlinks=
-,
-> > > @@ -1175,8 +1204,15 @@ static int __arch_prepare_bpf_trampoline(struc=
-t bpf_tramp_image *im,
-> > >               restore_args(min_t(int, nr_arg_slots, RV_MAX_REG_ARGS),=
- args_off, ctx);
-> > >
-> > >       if (save_ret) {
-> > > -             emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
-> > >               emit_ld(regmap[BPF_REG_0], -(retval_off - 8), RV_REG_FP=
-, ctx);
-> > > +             if (is_struct_ops) {
-> > > +                     ret =3D sign_extend(RV_REG_A0, regmap[BPF_REG_0=
-],
-> > > +                                       m->ret_size, m->ret_flags, ct=
-x);
-> > > +                     if (ret)
-> > > +                             goto out;
-> > > +             } else {
-> > > +                     emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx)=
-;
-> > > +             }
-> > >       }
-> > >
-> > >       emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
-> >
+We do not need to pay costs for two orthogonal memory accounting
+mechanisms.
+
+This series allows decoupling memcg from the global memory accounting
+(memcg + tcp_mem -> memcg) if socket is configured as such by BPF prog.
+
+
+Overview of the series:
+
+  patch 1 & 2 are prep
+  patch 3 intorduces SK_BPF_MEMCG_SOCK_ISOLATED for bpf_setsockopt()
+  patch 4 decouples memcg from sk_prot->memory_allocated based on the flag
+  patch 5 is selftest
+
+
+Changes:
+  v6:
+    * Patch 4
+      * Update commit message
+    * Patch 5
+      * Trace sk_prot->memory_allocated + sk_prot->memory_per_cpu_fw_alloc
+
+  v5: https://lore.kernel.org/netdev/20250903190238.2511885-1-kuniyu@google.com/
+    * Patch 2
+      * Rename new variants to bpf_sock_create_{get,set}sockopt()
+    * Patch 3
+      * Limit getsockopt() to BPF_CGROUP_INET_SOCK_CREATE
+    * Patch 5
+      * Use kern_sync_rcu()
+      * Double NR_SEND to 128
+
+  v4: https://lore.kernel.org/netdev/20250829010026.347440-1-kuniyu@google.com/
+    * Patch 2
+      * Use __bpf_setsockopt() instead of _bpf_setsockopt()
+      * Add getsockopt() for a cgroup with multiple bpf progs running
+    * Patch 3
+      * Only allow inet_create() to set flags
+      * Inherit flags from listener to child in sk_clone_lock()
+      * Support clearing flags
+    * Patch 5
+      * Only use inet_create() hook
+      * Test bpf_getsockopt()
+      * Add serial_ prefix
+      * Reduce sleep() and the amount of sent data
+
+  v3: https://lore.kernel.org/netdev/20250826183940.3310118-1-kuniyu@google.com/
+    * Drop patches for accept() hook
+    * Patch 1
+      * Merge if blocks
+    * Patch2
+      * Drop bpf_func_proto for accept()
+    * Patch 3
+      * Allow flagging without sk->sk_memcg
+      * Inherit SK_BPF_MEMCG_SOCK_ISOLATED in __inet_accept()
+
+  v2: https://lore.kernel.org/bpf/20250825204158.2414402-1-kuniyu@google.com/
+    * Patch 2
+      * Define BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT() when CONFIG_CGROUP_BPF=n
+    * Patch 5
+      * Make 2 new bpf_func_proto static
+    * Patch 6
+      * s/mem_cgroup_sk_set_flag/mem_cgroup_sk_set_flags/ when CONFIG_MEMCG=n
+      * Use finer CONFIG_CGROUP_BPF instead of CONFIG_BPF_SYSCALL for ifdef
+
+  v1: https://lore.kernel.org/netdev/20250822221846.744252-1-kuniyu@google.com/
+
+
+Kuniyuki Iwashima (5):
+  tcp: Save lock_sock() for memcg in inet_csk_accept().
+  bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
+  bpf: Introduce SK_BPF_MEMCG_FLAGS and SK_BPF_MEMCG_SOCK_ISOLATED.
+  net-memcg: Allow decoupling memcg from global protocol memory
+    accounting.
+  selftest: bpf: Add test for SK_BPF_MEMCG_SOCK_ISOLATED.
+
+ include/net/proto_memory.h                    |  15 +-
+ include/net/sock.h                            |  50 ++++
+ include/net/tcp.h                             |  10 +-
+ include/uapi/linux/bpf.h                      |   6 +
+ net/core/filter.c                             |  82 ++++++
+ net/core/sock.c                               |  65 +++--
+ net/ipv4/af_inet.c                            |  37 +++
+ net/ipv4/inet_connection_sock.c               |  26 +-
+ net/ipv4/tcp.c                                |   3 +-
+ net/ipv4/tcp_output.c                         |  10 +-
+ net/mptcp/protocol.c                          |   3 +-
+ net/tls/tls_device.c                          |   4 +-
+ tools/include/uapi/linux/bpf.h                |   6 +
+ .../selftests/bpf/prog_tests/sk_memcg.c       | 236 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/sk_memcg.c  | 146 +++++++++++
+ 15 files changed, 643 insertions(+), 56 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_memcg.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sk_memcg.c
+
+-- 
+2.51.0.384.g4c02a37b29-goog
+
 
