@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-67785-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67786-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C38B9B49A70
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 21:58:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B006B49A72
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 21:58:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79E923BB4C6
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:58:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E18D177BF2
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 19:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 700042D640A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94502D6626;
 	Mon,  8 Sep 2025 19:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FXdq+jAV"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mXNEq/UW"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490992D3756;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C292D59FA;
 	Mon,  8 Sep 2025 19:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757361492; cv=none; b=af8lnvb2Hoy/iI7rhgTNSTDlrpgv2l1hH8DO79+oMMT4Os9Dl6Cs1H8Qz1XesYf4mTJOmiwmUOd13pQo+i0X8z7aXe6z65R+mtryWFtxlCWd+jytfAMhqDdVOoqGDS+s6znYZqpvOLz2kflT4Oeg11tEyRHYnb+15RoMHBws2X4=
+	t=1757361493; cv=none; b=WWVkJUSGku5q+IN6nwLkwNUzfYGTeW9gYWpsaiYcSu607CJHBJDFUJQo/RP+Zqii+1II1LE+gY5e7zVGYYrx4JeD/7V0MTE4DFotn4Wo8/oksWs+P4jxNH9tt8+OJLlCAoQoIW7odK0ewZMKIECAkp6f1foGi8Kw7mnpIzF1CdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757361492; c=relaxed/simple;
-	bh=C8OBztZ6vPk8ZFff7QvtWdo3gfREr1untuw3Po2M6Yw=;
+	s=arc-20240116; t=1757361493; c=relaxed/simple;
+	bh=jbWSGpGem2/14sA4dhvLZGjchcwCY5+K7+Is214s8Lo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mg5ypKnPyavrq1SYDr9jWJTnDt300ekMQ8HsXrc6kg+2WyGTVa5L4R6AAvtCxFPXDr91mmRIdVhnnmjn97nD3uatlTNm7KhjeETAHkjj1KNFF8br6NhpgNla1CDT6cfKavkyWETHoTSrtJuv541dnjFQlaxBhjl3+a204S5zQsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FXdq+jAV; arc=none smtp.client-ip=198.175.65.10
+	 MIME-Version; b=ohd2M7TR3/mqPquQJGu+h02MagzJ0p9O+dkAG1gyr+HZy12h509p5fr8DJbdbNPAcvu32LtxsrZBTXlQFc+68gYUdVoLC9e+bPZdxbZyGDnIr1osxLhOsNGy1uw/JxstelU12Jz48lSGwflXr5yDFpYQKnulTWs8sdKQB5lAqXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mXNEq/UW; arc=none smtp.client-ip=198.175.65.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757361492; x=1788897492;
+  t=1757361493; x=1788897493;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=C8OBztZ6vPk8ZFff7QvtWdo3gfREr1untuw3Po2M6Yw=;
-  b=FXdq+jAVHe4ayptQcWbl1pcZ/hDTKNYD9JPGGjqrWm0LCk+Ck4d/NsZA
-   xmGRhCJ4TbiXbPONQG1iqrgqMiTAR1dcAS8sR5j3tw5szeYEyBokzTEth
-   omyxKTvRdGtMVkkRXzrBwq/GLBIM/MltlCaf/P704V3L+ZvABu7VNyNnw
-   +/IhVcjBPEKBviQrUEDdNomvPzzVutCexu5up7nkAzEx/5fYpYcfOobGf
-   v6qMJltmacDQ7GW/C/RKThoz9hYhkCW4TPH4NyixqjNgF40xmVIGW4CDc
-   q9jBJMQCovod3wWtyZwFxkQZG8Pcf8V3bgm496LGhrIlNwrxfU1l58Ohc
+  bh=jbWSGpGem2/14sA4dhvLZGjchcwCY5+K7+Is214s8Lo=;
+  b=mXNEq/UWsN7oXwu0FdODMkEeTA2locXPwrz7R8pqfbQT5s2hLWXuDv5W
+   rCl5a9GbKYfUHEH4DjkhAppUDGunlklHnHj+cXznRM2j2IjWEQLRR02wS
+   fssdmcKT9cy28Y7T8ijYawBw7ATbVv7GWQo/CgqYhsBmTtR8UG1v7U23U
+   55+d9HqNLtLojReVyET2IFW7p+CUTh0cpPzRVsCVXMsN1cntP8rXYubh/
+   fAXfZO7sK6TN6bvT2PhH/iHDXQZEmS/CdSehOJdX9tTpY2Lax2CPAWbwG
+   0fYNkKkafqR5o6K3JOrlyebr7VS9d8rqGf4KWMMRPlzcZMoQOK6WWokHt
    Q==;
-X-CSE-ConnectionGUID: 4ta2gggQRnOAN8TGKYpOAQ==
-X-CSE-MsgGUID: PTQRgypaSU2/QWQJsRc2kw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11547"; a="77088878"
+X-CSE-ConnectionGUID: tHmSTlopQiWm7KDWkhE68Q==
+X-CSE-MsgGUID: jN9I511tTwKm48Zew577hw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11547"; a="77088888"
 X-IronPort-AV: E=Sophos;i="6.18,249,1751266800"; 
-   d="scan'208";a="77088878"
+   d="scan'208";a="77088888"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2025 12:58:11 -0700
-X-CSE-ConnectionGUID: yAykBEaGRQyH47xO8bvRrA==
-X-CSE-MsgGUID: KOMD6AyzSvOGgqIeAFmVJw==
+X-CSE-ConnectionGUID: 1WyD8bvuTxKzZtoP3vCdvw==
+X-CSE-MsgGUID: OEHh+r1hSy2YHccjcNpMtg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.18,249,1751266800"; 
-   d="scan'208";a="177189716"
+   d="scan'208";a="177189721"
 Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
   by orviesa004.jf.intel.com with ESMTP; 08 Sep 2025 12:58:10 -0700
 From: Tony Nguyen <anthony.l.nguyen@intel.com>
@@ -79,16 +79,10 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	sdf@fomichev.me,
 	nxne.cnse.osdt.itp.upstreaming@intel.com,
 	bpf@vger.kernel.org,
-	kees@kernel.org,
-	nathan@kernel.org,
-	nick.desaulniers+lkml@gmail.com,
-	morbo@google.com,
-	justinstitt@google.com,
-	llvm@lists.linux.dev,
 	Ramu R <ramu.r@intel.com>
-Subject: [PATCH net-next 01/13] xdp, libeth: make the xdp_init_buff() micro-optimization generic
-Date: Mon,  8 Sep 2025 12:57:31 -0700
-Message-ID: <20250908195748.1707057-2-anthony.l.nguyen@intel.com>
+Subject: [PATCH net-next 02/13] idpf: fix Rx descriptor ready check barrier in splitq
+Date: Mon,  8 Sep 2025 12:57:32 -0700
+Message-ID: <20250908195748.1707057-3-anthony.l.nguyen@intel.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250908195748.1707057-1-anthony.l.nguyen@intel.com>
 References: <20250908195748.1707057-1-anthony.l.nguyen@intel.com>
@@ -102,113 +96,49 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 
-Often times the compilers are not able to expand two consecutive 32-bit
-writes into one 64-bit on the corresponding architectures. This applies
-to xdp_init_buff() called for every received frame (or at least once
-per each 64 frames when the frag size is fixed).
-Move the not-so-pretty hack from libeth_xdp straight to xdp_init_buff(),
-but using a proper union around ::frame_sz and ::flags.
-The optimization is limited to LE architectures due to the structure
-layout.
+No idea what the current barrier position was meant for. At that point,
+nothing is read from the descriptor, only the pointer to the actual one
+is fetched.
+The correct barrier usage here is after the generation check, so that
+only the first qword is read if the descriptor is not yet ready and we
+need to stop polling. Debatable on coherent DMA as the Rx descriptor
+size is <= cacheline size, but anyway, the current barrier position
+only makes the codegen worse.
 
-One simple example from idpf with the XDP series applied (Clang 22-git,
-CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE => -O2):
-
-add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-27 (-27)
-Function                                     old     new   delta
-idpf_vport_splitq_napi_poll                 5076    5049     -27
-
-The perf difference with XDP_DROP is around +0.8-1% which I see as more
-than satisfying.
-
-Suggested-by: Simon Horman <horms@kernel.org>
+Fixes: 3a8845af66ed ("idpf: add RX splitq napi poll support")
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 Tested-by: Ramu R <ramu.r@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 ---
- include/net/libeth/xdp.h | 11 +----------
- include/net/xdp.h        | 28 +++++++++++++++++++++++++---
- 2 files changed, 26 insertions(+), 13 deletions(-)
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/libeth/xdp.h b/include/net/libeth/xdp.h
-index f4880b50e804..bc3507edd589 100644
---- a/include/net/libeth/xdp.h
-+++ b/include/net/libeth/xdp.h
-@@ -1274,7 +1274,6 @@ bool libeth_xdp_buff_add_frag(struct libeth_xdp_buff *xdp,
-  * Internal, use libeth_xdp_process_buff() instead. Initializes XDP buffer
-  * head with the Rx buffer data: data pointer, length, headroom, and
-  * truesize/tailroom. Zeroes the flags.
-- * Uses faster single u64 write instead of per-field access.
-  */
- static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
- 					   const struct libeth_fqe *fqe,
-@@ -1282,17 +1281,9 @@ static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
- {
- 	const struct page *page = __netmem_to_page(fqe->netmem);
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+index 194f924d2bd6..e75a94d7ac2a 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+@@ -3102,18 +3102,14 @@ static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
+ 		/* get the Rx desc from Rx queue based on 'next_to_clean' */
+ 		rx_desc = &rxq->rx[ntc].flex_adv_nic_3_wb;
  
--#ifdef __LIBETH_WORD_ACCESS
--	static_assert(offsetofend(typeof(xdp->base), flags) -
--		      offsetof(typeof(xdp->base), frame_sz) ==
--		      sizeof(u64));
+-		/* This memory barrier is needed to keep us from reading
+-		 * any other fields out of the rx_desc
+-		 */
+-		dma_rmb();
 -
--	*(u64 *)&xdp->base.frame_sz = fqe->truesize;
--#else
--	xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
--#endif
- 	xdp_prepare_buff(&xdp->base, page_address(page) + fqe->offset,
- 			 pp_page_to_nmdesc(page)->pp->p.offset, len, true);
-+	xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
- }
+ 		/* if the descriptor isn't done, no work yet to do */
+ 		gen_id = le16_get_bits(rx_desc->pktlen_gen_bufq_id,
+ 				       VIRTCHNL2_RX_FLEX_DESC_ADV_GEN_M);
+-
+ 		if (idpf_queue_has(GEN_CHK, rxq) != gen_id)
+ 			break;
  
- /**
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index b40f1f96cb11..af60e11b336c 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -85,8 +85,20 @@ struct xdp_buff {
- 	void *data_hard_start;
- 	struct xdp_rxq_info *rxq;
- 	struct xdp_txq_info *txq;
--	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
--	u32 flags; /* supported values defined in xdp_buff_flags */
++		dma_rmb();
 +
-+	union {
-+		struct {
-+			/* frame size to deduce data_hard_end/tailroom */
-+			u32 frame_sz;
-+			/* supported values defined in xdp_buff_flags */
-+			u32 flags;
-+		};
-+
-+#ifdef __LITTLE_ENDIAN
-+		/* Used to micro-optimize xdp_init_buff(), don't use directly */
-+		u64 frame_sz_flags_init;
-+#endif
-+	};
- };
- 
- static __always_inline bool xdp_buff_has_frags(const struct xdp_buff *xdp)
-@@ -118,9 +130,19 @@ static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
- static __always_inline void
- xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
- {
--	xdp->frame_sz = frame_sz;
- 	xdp->rxq = rxq;
-+
-+#ifdef __LITTLE_ENDIAN
-+	/*
-+	 * Force the compilers to initialize ::flags and assign ::frame_sz with
-+	 * one write on 64-bit LE architectures as they're often unable to do
-+	 * it themselves.
-+	 */
-+	xdp->frame_sz_flags_init = frame_sz;
-+#else
-+	xdp->frame_sz = frame_sz;
- 	xdp->flags = 0;
-+#endif
- }
- 
- static __always_inline void
+ 		rxdid = FIELD_GET(VIRTCHNL2_RX_FLEX_DESC_ADV_RXDID_M,
+ 				  rx_desc->rxdid_ucast);
+ 		if (rxdid != VIRTCHNL2_RXDID_2_FLEX_SPLITQ) {
 -- 
 2.47.1
 
