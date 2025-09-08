@@ -1,227 +1,166 @@
-Return-Path: <bpf+bounces-67801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA256B49C4D
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 23:43:34 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 706E3B49CBC
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 00:16:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BDE93B2A9B
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 21:42:05 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1ECA14E11BA
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 22:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C822DF6F7;
-	Mon,  8 Sep 2025 21:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E5AE2DCBE3;
+	Mon,  8 Sep 2025 22:15:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O2rj+UlI"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE6020C004;
-	Mon,  8 Sep 2025 21:41:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3787A1CAB3;
+	Mon,  8 Sep 2025 22:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757367721; cv=none; b=M7KgehF5CMFMM8FJ2Jbcu5P18eb4gf5Yb4OfAZMqMdm4JqAMDZjCKuPepAil9p+HFn8qSx94xhVB0Y6wYjBErA6+gG51Rf5FyymjYdHi8IDDi2nKSCVnVsJYtWhMIzUA5D2w5Z7aOTADrUgnRSS6jlNWtlo8QxVf/h6owBSmv8E=
+	t=1757369757; cv=none; b=GQxk6MkKafmycpEq22BtG8l/t1743X85xKJoT0zR2AchSGLx3YlDasQ4zgPHq4nsah36dRAGwkfpzstHJtOcV0FRsMPDcN2bXdWltBEsCaAUw62KtThyh9jtQut8B7xzPoP9ugig2Pyfo/SQBhfHKU9TA1D5osx7TjSHUSxoKAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757367721; c=relaxed/simple;
-	bh=pcupT4JxHZa/XBL17X8Hm8c1mg4Gd7THUkTpzM9I1fA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i/aojTRnE+3YgneYREcJCsS/OmCH4ChbGi36031mar8WPeAoZoLCNGFKiyFXcxYIzwVP8V4smyYQAqs55Aceh5mxplHRyk3HsX+OFxd65c1FrjxhUXf9KfysEBpUy7SKEihxlLKTUIw2Du4Jiv9vbCWUlaHZUTq8nodyXefTixc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id D4FE3119719;
-	Mon,  8 Sep 2025 21:41:54 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf01.hostedemail.com (Postfix) with ESMTPA id 9FD2060011;
-	Mon,  8 Sep 2025 21:41:49 +0000 (UTC)
-Date: Mon, 8 Sep 2025 17:42:35 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Steven Rostedt
- <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
- Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave
- <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>, Andrew
- Morton <akpm@linux-foundation.org>, Florian Weimer <fweimer@redhat.com>,
- Sam James <sam@gentoo.org>, Kees Cook <kees@kernel.org>, "Carlos O'Donell"
- <codonell@redhat.com>
-Subject: Re: [PATCH v6 5/6] tracing: Show inode and device major:minor in
- deferred user space stacktrace
-Message-ID: <20250908174235.29a57e62@gandalf.local.home>
-In-Reply-To: <CAHk-=wjgXGuJVaOmftxnwrS6FafwrLL+yHrH6-sgbBRB-iLn8w@mail.gmail.com>
-References: <20250828180300.591225320@kernel.org>
-	<20250829110639.1cfc5dcc@gandalf.local.home>
-	<CAHk-=wjeT3RKCTMDCcZzXznuvG2qf0fpKbHKCZuoPzxFYxVcQw@mail.gmail.com>
-	<20250829121900.0e79673c@gandalf.local.home>
-	<CAHk-=wj6+8vXfBQKoU4=8CSvgSEe1A++1KuQhXRZBHVvgFzzJg@mail.gmail.com>
-	<20250829124922.6826cfe6@gandalf.local.home>
-	<CAHk-=wid_71e2FQ-kZ-=aGTkBxDjLwtWqcsuNSxrarnU4ewFCg@mail.gmail.com>
-	<6B146FF6-B84E-40A2-A4FA-ABD5576BF463@gmail.com>
-	<CAHk-=wjgdKtBAAu10W04VTktRcgEMZu+92sf1PW-TV-cfZO3OQ@mail.gmail.com>
-	<20250829141142.3ffc8111@gandalf.local.home>
-	<CAHk-=wh8QVL4rb_17+6NfxW=AF-HS0WarMmq-nYm42akG0-Gbg@mail.gmail.com>
-	<20250829171855.64f2cbfc@gandalf.local.home>
-	<CAHk-=wj7rL47QetC+e70y7pgyH4v7Q2vcSZatRsCk+Z6urA3hw@mail.gmail.com>
-	<20250829190935.7e014820@gandalf.local.home>
-	<CAHk-=wgNeu8_=kPnKwFpwMUC=o-uh=KjJWePR9ujk=7F9yNXDQ@mail.gmail.com>
-	<20250830143114.395ed246@batman.local.home>
-	<CAHk-=wjgXGuJVaOmftxnwrS6FafwrLL+yHrH6-sgbBRB-iLn8w@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1757369757; c=relaxed/simple;
+	bh=RwQ7UCz527ifaP8+Sv/1V2E2KJyy2+JYcgwQhQSMazI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kK9gM8ILZiXLPS4mYL1s3jKyht0c4usxQDqFhBdbxLJlzl5/FX2AwY7o9VteGhekWTrrWYVhpueOJlrNw8e5oYNlZq7sCcuIYtPErswrbRN0Gr5XXUklrlUbhctKQ+PdKm9eNXyid4eujq769XnEGnN0fHU9mSiiDS1S+DetuGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O2rj+UlI; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2445824dc27so48838625ad.3;
+        Mon, 08 Sep 2025 15:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757369755; x=1757974555; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XmleHkclN2N7xiK207HC2jo02VYu1gJHqknqPHZCHKY=;
+        b=O2rj+UlI+xDDotrfyFzqsVimAPeXlZdu/NizeFQkIYPH6VkSresx0dn5k5ONNQNZSL
+         G7bsGn2Wyk9NnQ86N0atfMCsNpxHCWjgrE/ziIadHOAbUGSzWUjqaDs4z0l2Yp27Kpiu
+         QaVBuanPO0LLDVc1m3OTdwnz2f3fQyGDUHH+PtBfANvE/n4pA7+f8q/GH9DerN1OQdZO
+         0diJ3xs3EipIsJcL7Udujv6vJnpLRhoZXQUKr2+oJ9CYjKtLPGayR3bb9heVwd3mEH1P
+         3Xcm1RpE73si/pwof3oaxaQ9olWigWdLVd2mPxFASMjSFyCdGeOhPU8pzrUUvbbdX7tG
+         Jmcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757369755; x=1757974555;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XmleHkclN2N7xiK207HC2jo02VYu1gJHqknqPHZCHKY=;
+        b=fpBWkS7hNYmjuwS6o6/OeC47/g62FoH7j4uY3YQVxvIC52jKY5w/8WEPiOrdezeMOy
+         /bLyRiEP1+vi1udjdIFUL9vWsi+s3eVbntSqcDTj66gJwVPUFnVPWiSmuGWWjoY5Vjd9
+         MXOS2uFUIXUoF/+avZD5hqNnbYD1fThnm7LVJk/KXZDjEQQgs/ghnRUDNN64TdR0lIpg
+         aw72Rv5enP5BtVblxME8RtX5weoFLRDYPsoyjiNlBnDLfb6rejyvaqmuIOWOdKGXlX+b
+         bdMo+5FKcXcF4qk6rtuNOareNa6c9SSlihz4Ay69+SjKCukI48CkKlyFI+U3E1Yv74jo
+         77Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCU53SAO/FAi2zAvoGw5Dhphoz1ty+gIJYXcSyztDy0omrzjYsAVIjSFXCfy96KTtIW4Np4=@vger.kernel.org, AJvYcCWhBiJPul2FbsVt7oouT492Lo3atcCzV0jVHxMiFfGWKX8kJ5TXsCkBKcRY3GHP4/QyVURkNzUPXB0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbYquLh61bku9XCiZgDygnG45gWo0SXOyqeO1EB6Qzk6ma/YXg
+	nPrLzzOuO7VtJgMGzzNpXuE6uvGlAAhyXdEDn3VcRcnFWS8W/L2bCJWR
+X-Gm-Gg: ASbGnculvKyGxyv2Ru24TkqmaQDtkxbECvy9zVVbrajrc3gygtvnEdAzPQZi1gAa6ID
+	Soj96rxrZhp3JlB2+iY5cR53ulmpqh5oo8YwEdUL8BSL+f3K0wARH3cKsGOZ+UiB4+tJlgrO97U
+	8XyQl9w3PgZy1qR6JAq5mkt+hclh495wYnP9kT8tVpCM3LokNs1NnNMLfYh6lw5KGQ6AdgI1VLV
+	VqX9bOD36sdkg0jzVvbnJhC+KX71kkrh7+2gpoL2HOGhiBrL2jlJAhLfZ+sc0rnWEgRH1wdi7kv
+	mdAqISadDW0b9aVOCxP50X8eM5RwSmzc+r2p6pnHArxnKdEkNkNnrY3j+0qySVKz8rkfwcjCxwn
+	M/PFuTHXypWSyM6ldlxzrBdNJQ5NPO5nl5AYesXE8qQzP4Dz6u5RuxOj8501HbQ==
+X-Google-Smtp-Source: AGHT+IGsWoGRUEg2UW+xk0le/mjW+nq65zly6kSjWr/ClU/xlK6N1ucyeRRCp65bdRfDg0FeSN6JLA==
+X-Received: by 2002:a17:902:ef52:b0:251:5f19:c3b1 with SMTP id d9443c01a7336-2516dbf19camr100172555ad.9.1757369755316;
+        Mon, 08 Sep 2025 15:15:55 -0700 (PDT)
+Received: from MacBook-Pro-49.local ([2001:558:600a:7:44e6:767e:cc5a:a060])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2490658999fsm288788275ad.112.2025.09.08.15.15.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Sep 2025 15:15:54 -0700 (PDT)
+Date: Mon, 8 Sep 2025 15:15:53 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Caleb Sander Mateos <csander@purestorage.com>, io-uring <io-uring@vger.kernel.org>, 
+	Konstantin Ryabitsev <konstantin@linuxfoundation.org>, bpf@vger.kernel.org
+Subject: Re: [GIT PULL] io_uring fix for 6.17-rc5
+Message-ID: <lxevpprltteumg5r77ekdors6tlpy5vyvxxef737obpluz2u44@vgkpxkcwq76r>
+References: <9ef87524-d15c-4b2c-9f86-00417dad9c48@kernel.dk>
+ <CAHk-=wjamixjqNwrr4+UEAwitMOd6Y8-_9p4oUZdcjrv7fsayQ@mail.gmail.com>
+ <f0f31943-cfed-463d-8e03-9855ba027830@kernel.dk>
+ <CAHk-=wgkgSoqMh3CQgj=tvKdEwJhFvr1gtDbK7Givr1bNRZ==w@mail.gmail.com>
+ <72fb5776-0c50-42b8-943d-940960714811@kernel.dk>
+ <CAHk-=wgdOGyaZ3p=r8Zn8Su0DnSqhEAMXzME91ZD9=8DDurnUg@mail.gmail.com>
+ <a65abd25-69bd-4f10-a8b8-90c348d89242@kernel.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: gpj98z98daaxksb57udjcmxtab8so5n5
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 9FD2060011
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/CfE+ywjht4F27AI8/CvrIl4boMbDPuIQ=
-X-HE-Tag: 1757367709-480644
-X-HE-Meta: U2FsdGVkX1/ZVrqhJu4Jt72FlxS7qiCR5j663z72R2b1nyrM90EuP+eO8yhIVven4tNTQC0ED3ZsPcdQA8qlSCOXFMZxe+1cdyjvgXOJX4+unGdWGySn9oZL8xQwCeFCO1ioxzXrAi0AstdjZHF6s5ABFQyETmy8OWcwasDG1+elerSFv/3a6zucpoWa2b0kt5BVdknoJL7BzbxAenbEQ6ghs/2dWe0G7SZBphsowA1HM9U26l9SzDTtOSxANJzoy7Uo0a69iuRFTLSscEdsT+9a6JvYV8hNUKv30d+96KrgN2a2wje+asr64R1jdFamUKskzrrRXHuCCCoaX++nOe4lLJ/0ldsfptSo3+X9vLPVsmkdQg/1AGrYZLsosrrE8Yz/erbuHHh4ApFvSGQ/Y6iciS5KDTOuUDv20OjzpozVT36jQB69UhJYJh1zzLs6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a65abd25-69bd-4f10-a8b8-90c348d89242@kernel.dk>
 
-On Sat, 30 Aug 2025 12:03:53 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> On Sat, 30 Aug 2025 at 11:31, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > If we are going to rely on mmap, then we might as well get rid of the
-> > vma_lookup() altogether. The mmap event will have the mapping of the
-> > file to the actual virtual address.  
+On Fri, Sep 05, 2025 at 06:01:01PM -0600, Jens Axboe wrote:
+> On 9/5/25 2:54 PM, Linus Torvalds wrote:
+> > On Fri, 5 Sept 2025 at 12:30, Jens Axboe <axboe@kernel.dk> wrote:
+> >>
+> >> Like I said, I think there more fruitful ways to get the point across
+> >> and this picked up and well known, because I don't believe it is right
+> >> now.
+> > 
+> > So I've actually been complaining about the link tags for years: [1]
+> > [2] [3] [4].
+> > 
+> > In fact, that [4] from 2022 is about how people are then trying to
+> > distinguish the *useful* links (to bug reports) from the useless ones,
+> > by giving them a different name ("Buglink:"). Where I was telling
+> > people to instead fix this problem by just not adding the useless
+> > links in the first place!
+> > 
+> > Anyway, I'm a bit frustrated, exactly because this _has_ been going on
+> > for years. It's not a new peeve.
 > 
-> It actually won't - not unless you also track every mremap etc.
+> What's that saying on doing the same thing over and over again and
+> expecting different results...? :-)
 > 
-> Which is certainly doable, but I'd argue that it's a lot of complexity.
+> > And I don't think we have a good central place for that kind of "don't do this".
+> > 
+> > Yes, there's the maintainer summit, but that's a pretty limited set of people.
 > 
-> All you really want is an ID for the file mapping, and yes, I agree
-> that it's very very annoying that we don't have anything that can then
-> be correlated to user space any other way than also having a stage
-> that tracks mmap.
-> 
-> I've slept on it and tried to come up with something, and I can't. As
-> mentioned, the inode->i_ino isn't actually exposed to user space as
-> such at all for some common filesystems, so while it's very
-> traditional, it really doesn't actually work. It's also almost
-> impossible to turn into a path, which is what you often would want for
-> many cases.
-> 
-> That said, having slept on it, I'm starting to come around to the
-> inode number model, not because I think it's a good model - it really
-> isn't - but because it's a very historical mistake.
-> 
-> And in particular, it's the same mistake we made in /proc/<xyz>/maps.
-> 
-> So I think it's very very wrong, but it does have the advantage that
-> it's a number that we already do export.
-> 
-> But the inode we expose that way isn't actually the
-> 'vma->vm_file->f_inode' as you'd think, it's actually
-> 
->         inode = file_user_inode(vma->vm_file);
-> 
-> which is subtly different for the backing inode case (ie overlayfs).
-> 
-> Oh, how I dislike that thing, but using the same thing as
-> /proc/<xyz>/maps does avoid some problems.
-> 
+> That'd be a great place to discuss it, however. One thing I've always
+> wanted to bring up but have forgotten to, is how I'd _love_ for your PR
+> merges to contain the link to the PR that you got for them. Yes I know
+> that's now adding a link, but that's a useful one. Maybe not for you,
+> but for me and I bet tons of other people. At least if there's
+> discussion on it. But hey I'd be happy if it was just always there, but
+> it seems we disagree on that part.
 
-Sorry for the late reply. I left to the Tracing Summit the following
-Monday, and when I got back home on Thursday, I came down with a nasty cold
-that prevented me from thinking about any of this.
++1 to above request.
 
-I just re-read the entire thread, and I'm still not sure where to go with
-this. Thus, let me start with what I'm trying to accomplish, and even add
-one example of a real world use case we would like to have.
+Regarding Link tag. We've been adding them to all bpf/net commits
+for quite some time and found them useful in many cases:
 
-Several times we find issues with futexes causing applications to either
-lock up or cause long latency. Since a futex is mostly managed in user
-space, it's good to be able to at least have a backtrace of where a
-contended futex occurs. Thus we start tracing the futex system call and
-triggering a user space backtrace on each one. Using this information can
-help us figure out where the futex contention lies. This is just one use
-case, we do have others.
+1. patches rarely come as a single patch. Even if it's a single line
+fix there is likely a selftest in the other commit. When I investigate
+a commit clicking on lore link and seeing the whole series saves a ton
+of time, since search by commit name in lore.kernel.org/all/ isn't great.
 
-Ideally, the user space stack trace should look like:
+2. patches rarely accepted on the first revision and we recommend developers
+to add lore link to v1 when they respin v2. So by the time vN series
+are accepted the cover letter has links to all previous revisions.
+Similarly when I debug an issue: git blame, git show sha, click on lore link,
+click on 0/N, click on v2-v3, since most of the interesting discussion
+happens in earlier revisions. The last few respins will typically address
+final nits.
 
-   futex_requeue-1044    [002] .....   168.761423: <user stack unwind>
-cookie=31500000003
- =>  <000000000009a9ee> : path=/usr/lib/x86_64-linux-gnu/libselinux.so.1 build_id={0x3ba6e0c2,0xdd815e8,0xe1821a58,0xa5940cef,0x7c7bc5ab}
- =>  <0000000000001472> : path=/work/c/futex_requeue build_id={0xc02417ea,0x1f4e0143,0x338cf27d,0x506a7a5d,0x7884d090}
- =>  <0000000000092b7b> : path=/usr/lib/x86_64-linux-gnu/libselinux.so.1 build_id={0x3ba6e0c2,0xdd815e8,0xe1821a58,0xa5940cef,0x7c7bc5ab}
+3. even if it's a rare single commit the patch subject doesn't say
+whether it was v1 or v2, while lore has this information in email
+like [PATCH bpf-next v2] subj. Going to lore and realizing that
+ohh it was v2 that was accepted is a lot better than search by subject
+and seeing v1, v2, v3 versions of the same patch and not being able
+to tell which one was applied.
 
-Where the above shows the callstack (offset from the file), the path to the
-file, and a build id of that file such that the tooling can verify that the
-path is indeed the same library/executable as for when the trace occurred.
-
-Note, the build-id isn't really necessary for my own use case, because the
-applications seldom change on a chromebook. I added it as it appears to be
-useful for others I've talked to that would like to use this.
-
-But printing a copy of the full path name and build-id at every stack trace
-is expensive. The path lookup may not be so bad, but the space on the ring
-buffer is.
-
-To compensate this, we could replace the path and build-id with a unique
-identifier, (being an inode/device or hash, or whatever) to associate that
-file. It may even work if it is unique per task. Then whenever one of these
-identifiers were to show up representing a new file, it would be printed.
-
-We could monitor an event that if a file is deleted, renamed, or whatever,
-and a new file with the same name comes around, the identifier with the
-path and build-id gets printed for the new file.
-
-Where the output would be, instead:
-
-             sed-1037    [007] ...1.   167.362583: file_map: hash=0x51eff94b path=/usr/lib/x86_64-linux-gnu/libselinux.so.1 build_id={0x3ba6e0c2,0xdd815e8,0xe1821a58,0xa5940cef,0x7c7bc5ab}
-[..]
-   futex_requeue-1042    [007] ...1.   168.754128: file_map: hash=0xad2c6f1b path=/work/c/futex_requeue build_id={0xc02417ea,0x1f4e0143,0x338cf27d,0x506a7a5d,0x7884d090}
-[..]
-   futex_requeue-1042    [007] .....   168.757912: <user stack unwind>
-cookie=34900000008
- =>  <00000000001001ca> : 0x51eff94b
- =>  <000000000000173c> : 0xad2c6f1b
- =>  <0000000000029ca8> : 0x51eff94b
-[.. repeats several more traces without having to save the path names again ..]
-
-It comes down to when do we print these mappings?
-
-I noticed that uprobes has hooks to all the mmappings in the vma code as it
-needs to keep track of them. We could change those hooks to tracepoints,
-and have both uprobes and tracing monitor the changes, and when a new
-mapping happens, it traces it. Changing them to tracepoints may be useful
-anyway, as it would then turn them over to static branchs and not a normal
-"if" statement.
-
-We could even add a file to tracefs that would trigger the dump of all
-files that are mapped executable for all currently running tasks.Then when
-tracing starts, it would trigger the "show all currently running task
-mappings" and then only do the mappings on demand. This way, the tracer
-would get the mappings of the identifier (or hash, or whatever) to the
-files and build-ids at the start of tracing, as well as get any of the
-mappings when they happen later on.
-
-This should have enough information for the post processing to put the
-stack traces back to what is ideal in the first place. That is, the tooling
-could output:
-
-   futex_requeue-1044    [002] .....   168.761423: <user stack unwind>
-cookie=31500000003
- =>  <000000000009a9ee> : path=/usr/lib/x86_64-linux-gnu/libselinux.so.1 build_id={0x3ba6e0c2,0xdd815e8,0xe1821a58,0xa5940cef,0x7c7bc5ab}
- =>  <0000000000001472> : path=/work/c/futex_requeue build_id={0xc02417ea,0x1f4e0143,0x338cf27d,0x506a7a5d,0x7884d090}
- =>  <0000000000092b7b> : path=/usr/lib/x86_64-linux-gnu/libselinux.so.1 build_id={0x3ba6e0c2,0xdd815e8,0xe1821a58,0xa5940cef,0x7c7bc5ab}
-
-and hide the identifier that was used in the ring buffer.
-
--- Steve
-
+So the only case where Link is useless is the case of single commit
+without any revisions that was accepted on the first try.
+We can manually remove such links, but this would be tedious
+manual work, since automation is tailored for common case where
+link is in every commit and they are useful.
 
 
