@@ -1,110 +1,90 @@
-Return-Path: <bpf+bounces-67685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C705BB4812F
-	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 01:04:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CA70B48210
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 03:25:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37BE5189EF64
-	for <lists+bpf@lfdr.de>; Sun,  7 Sep 2025 23:05:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F01C17C961
+	for <lists+bpf@lfdr.de>; Mon,  8 Sep 2025 01:25:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C840235072;
-	Sun,  7 Sep 2025 23:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E7D1A76DE;
+	Mon,  8 Sep 2025 01:25:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pao2JTpA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BkQHBTFU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7B923183B
-	for <bpf@vger.kernel.org>; Sun,  7 Sep 2025 23:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EEA110F1
+	for <bpf@vger.kernel.org>; Mon,  8 Sep 2025 01:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757286277; cv=none; b=sDNSn9njCyDB/e09OPDjP7s/MJnX8Ubq5S8RgT3AHC466f9ZNf5m/9wqTcWWOSdAslnpw4CzYR6Xdr/cpEgEFt5ZvrwCm7yXvrMzVgxzlsO7ajCV5+u4E+eeFxCRnZQqxMNDIwkq05jCPUh8DhPEhyHj2Ldfwxlt3+8Y99Zz1DM=
+	t=1757294707; cv=none; b=RizzOoQM1h+baA5ZfKzRgK0rG0t5s77+mBFvGt9GH+CedK3AURVrWzlGrwNGQWbET6SIR5xQcBy7ICeb/14q+rkbxqHs4FR6DpTNeK+MsQ+mWHuI2k/Jdvd/OTzxKdp2iV1R4PqAIc692AY2+3prRbMQHKXzRvIMzZedNQURay0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757286277; c=relaxed/simple;
-	bh=GIq31y9xzB8TFC/ZTZagrIOpYKVbUazUFnX8e3e+COg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vucg6UDVruTN1oLVqyyqd5qSlZu/AoMqlskN3LPpNHSP6cXNZ0rY531a+wzCsLWbEBpzQ0OssNfmGCsr0xXHEWFzdGWlnWlcQa5CmAsiomwRUyVbJ9RT31FOxIAccEetq2IIdNVVTA67RAVRYHDym4gojimZCAp5N34ZUqWQbS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pao2JTpA; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1757294707; c=relaxed/simple;
+	bh=i1UBKeVCo0S01+2IKFgWiNf7CIWnr2cNRil8oV2DYKg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wt1+Miux4Xo17C4/hY6clMrPWoCChih91gz0Rp2Z/+/ph99FGjT1n9TPY1A0WtMyOuVi+AZgA4B0WLxbYy8aDsJNcDtAvVUqmVpGUN9fklnqnMLS8x17J22CPx8xbSqRiZfRaW9s139Nq5HDFQ6s30rWOYXc36FLKJO14XGu5Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BkQHBTFU; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-24c784130e6so42616485ad.3
-        for <bpf@vger.kernel.org>; Sun, 07 Sep 2025 16:04:35 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b4c9a6d3fc7so2207406a12.3
+        for <bpf@vger.kernel.org>; Sun, 07 Sep 2025 18:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757286275; x=1757891075; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yGTCLy658JtzUlU/LIkV5gaaVJilu1gfYlyRzBD4JEY=;
-        b=Pao2JTpAZ7QeJAaG5ZNk7p/0eqYZctkdvaCbx4NLaa0A1NPllc9cdMXRSfxHjv2bu/
-         78Jppsl6omAvJyIqMoj+aQyuwYRRuEmr6szXlEnJXu1ohzFndlJ7Z+D8Y6uUpRMFZ/wc
-         0a/lmT+yhPT3IPPshhZaT1kK5CpnLlmJRSI4nX55AUykEN7QrHUKPGQrDSQANJmVFmu1
-         U3jwIZM8SHCWjNXDGZhaXTpr83R/NivsEw4tqhjSsmReDh7bfnY0h5oEg3bcnZNJrxaN
-         ySo/NhB/RI59TTtg5aHNKFewNgv7OE9xv6MA7JBaIWByNhQkiQPZL+6f5WtmWtFSumQZ
-         dyjg==
+        d=gmail.com; s=20230601; t=1757294705; x=1757899505; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uzw6hQQ7M5B5xk9kBfDEuQjeyMGC+VPV/lN83f90R+c=;
+        b=BkQHBTFUZv2ePFy3nUgDP/zA/kfUUBletqdQGuZpIIsJJBuzD8fXvBHV1c8/fBObLS
+         JnOMhpvEapT6rLiWGRlSjUmTHpKPqbz5A0CAOcNppm7EBvOpI/uiErgOAJyZTENSiX51
+         aXo8jHS9YbvyohTdhb13IwEKyKWkh0pM32YH4HDRkrC/P8MMElO9NTYTT/9gj13GtdQP
+         94KRvSQ2FNnv7yGbMlmurmDKXuTH67IRxSx7Z1ALHfIaMqHvWBCWvVi42UKZX/1ol/gG
+         T21VUSD6PG//kClJCS3QVIDBntHWHz6RqSWzk4bawUHveIP14hw7bMp7uIv2l9hqmcC4
+         RmAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757286275; x=1757891075;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yGTCLy658JtzUlU/LIkV5gaaVJilu1gfYlyRzBD4JEY=;
-        b=a9dh1gRwKrw86O/246YkyafaMDg5SKUjzyjCtLxHdGeHTRQ0h5+sIWcWRLWyMYlccg
-         GHeTe/jzbpj7fi7DhK/aFBsmYdk8OdrxpvkIk1GlSZxwjyO6senJS5FZ/CBQlk0AUTlN
-         7nnhrC5VN8B3/i9cvyRBIuFrakXy7F8vcciKu1dita1WCudviVO6Op1Cx/KuA5DZ36Um
-         4HnBspCwxxLtrK2gABu1SrdXu9mjML+vxzSzHmqRp/TW1V31ni1YNMwEYj2xi5tLgQ9y
-         r6ibCwyTitpmkgGUIsN+rortOfAYpV3bw685Cr1jIn6uaFrl2ve+LK/J7VVqtFFXwa1F
-         W4xg==
-X-Gm-Message-State: AOJu0YyEgnxllPQ4GKl3346/oKzJGc8Lxyi/sm5M+PnwZS6NxRJXeHde
-	WQcQqcuqsZevbkNwAyJeI0X8tTNK+EJYoHXDZtGv+oiDjqrmslHj4Tj4eanj2/Hs
-X-Gm-Gg: ASbGncvOeL92cCutYvLPvBrOhNYTn1yXGR5VzikgfQCjhRfCM9LIo1ZEmpc1H/xYH5e
-	CyC+99SHBbwdv/p+3reUf99X/VuAI+ycrFbMgIJqy/hpLGVQ8oRU90K4jBjHT8+AMy5hBhQ2Nfs
-	5uTvAhqcdm4ULzSM/c/y27GN1t7kfHVCG/d/R0IySWH4pBmDRVk1yZqs9cwT0LqexHOjk9vEkFK
-	BpH9VIWEpAT4eg93mLwQFrGq8oRRwusaC1crL/uu6j8CLSwvxvd/A4qLHaFTWRFBnCm/3Z+Apes
-	N8GGksuMzaFn1lsXlFnwnWhuFXCZ4mJOnZA5Fr3SzEmaXU+eS44Ts3uqYUMC0thLNeHmguW69NI
-	uGYgzKC5DpdWkarhAYye8xznvkQYECjoou+U31Q4xbb/flIjGNkXDcJqPDIRwoc6nZ454Zo7z+y
-	15G3nZY2uHaMED2w7BR9giRNyJXiBpJ4o=
-X-Google-Smtp-Source: AGHT+IFZ7IP6Hgv8cuoTazvKat5dqwhVfrfeg+YM3az2UhYS0w7spSZyQUHkgzhTdKRTmmIhQBDlMQ==
-X-Received: by 2002:a17:902:f54c:b0:24e:95bb:88b1 with SMTP id d9443c01a7336-25171cbfb7dmr66491315ad.34.1757286274836;
-        Sun, 07 Sep 2025 16:04:34 -0700 (PDT)
-Received: from sid-dev-env.cgrhrlrrq2nuffriizdlnb1x4b.xx.internal.cloudapp.net ([4.155.54.158])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24caf245690sm111254675ad.10.2025.09.07.16.04.34
+        d=1e100.net; s=20230601; t=1757294705; x=1757899505;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uzw6hQQ7M5B5xk9kBfDEuQjeyMGC+VPV/lN83f90R+c=;
+        b=t35CYlUOGnJwHZYCdWP6W5AG4ERhFbI8FHcdnMuETf1mbVshuc8elU1E7ZyvpYmaud
+         8rPy9hcpoce49WJbRZSVd3eulglvnB74kqvu8cytceEW/7TCJMkqU5n3RCdeMF8pytsy
+         iH4FGoDSmKUBjh5jQAl6TadmVA6AqYEqa2xYATbsx1D6iJC8S/wxArKTaI/zBeWRL7Xc
+         Q9Y7jspKhCXgJNeFG8flZXps6gGgL9el0MlR+qfzQV7m84/PFEsOalhGWoZzsCX4hvZL
+         FSu0CC5+sWyTVJQWO7XZsVC42SaHx9V5PAqn9LVCqfeqn9Vva+t8rrWFY647H4osmp/R
+         +m/w==
+X-Gm-Message-State: AOJu0YxMhOgrQHLQdfBKUE0Nmx6YXdqXTvw2E52DEwbId2GDAPuk6e08
+	i32VFQjUU+5frD6ZMF2HEilJ1Dtv3XG8ezgm2jGRiCLMOazvclR50gBG
+X-Gm-Gg: ASbGncvUxxsmpDaOrgNaMRomGug5xlG7inDroeAi1He8Sy8S8n1SL1xNTXbx3D0/6cU
+	eGCrS0EZNbHKjmiIqaQxwFq2XTmcYX1KcM+ChyEJzmpQ5TLZgtYPDPKwDEdJy0VChOeLpI3a/my
+	SLM1avgw4D7BV9lrGmPkP7M2RY1613YJ1fdpHaLBUVJDdmJCw8dwuz29+cCEVdKYsmjkjWW9XbU
+	7RY9prBQwVpHj7p7MnFq+m8rNrX0WEIj9PGf4pf52DJjmJqwvMpYd7+y4Zb49QGRijefXkMua7B
+	qHN1I771d9PvTS5jFGt8rEYAQTCLOrm391iOas+BLaY2lCY6D/YCfb/RHUbMncI8zTQePIIjY9u
+	97u4Lj/3ZHyWJhD4SJ3b+RMmqqtPwe2UIBg1R8OW00CL9
+X-Google-Smtp-Source: AGHT+IETyclgoC3/kP2x/Xtmcnc4HLt8X24CdhRyQ7WeY9046AXJnN9GiR46XdEO9ZMshU4kGunA6A==
+X-Received: by 2002:a17:902:ec8a:b0:24b:74da:627a with SMTP id d9443c01a7336-2516f050096mr100680835ad.11.1757294705193;
+        Sun, 07 Sep 2025 18:25:05 -0700 (PDT)
+Received: from ubuntu.. ([43.132.141.24])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24ccfc56ec1sm94646545ad.59.2025.09.07.18.25.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Sep 2025 16:04:34 -0700 (PDT)
-From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
+        Sun, 07 Sep 2025 18:25:04 -0700 (PDT)
+From: Hengqi Chen <hengqi.chen@gmail.com>
+To: ast@kernel.org,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	djwillia@vt.edu,
-	miloc@vt.edu,
-	ericts@vt.edu,
-	rahult@vt.edu,
-	doniaghazy@vt.edu,
-	quanzhif@vt.edu,
-	jinghao7@illinois.edu,
-	sidchintamaneni@gmail.com,
-	memxor@gmail.com,
-	egor@vt.edu,
-	sairoop10@gmail.com,
-	rjsu26@gmail.com
-Subject: [PATCH 4/4] selftests/bpf: Adds selftests to check termination of long running nested bpf loops
-Date: Sun,  7 Sep 2025 23:04:15 +0000
-Message-ID: <20250907230415.289327-5-sidchintamaneni@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250907230415.289327-1-sidchintamaneni@gmail.com>
-References: <20250907230415.289327-1-sidchintamaneni@gmail.com>
+	bjorn@kernel.org,
+	pulehui@huawei.com,
+	puranjay@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Hengqi Chen <hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next v3] riscv, bpf: Sign extend struct ops return values properly
+Date: Mon,  8 Sep 2025 01:24:48 +0000
+Message-ID: <20250908012448.1695-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -113,120 +93,129 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adds tests checks for loops termination which are nested.
+The ns_bpf_qdisc selftest triggers a kernel panic:
 
-32/1    bpf_termination/bpf_termination:OK
-32      bpf_termination:OK
-Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+    Unable to handle kernel paging request at virtual address ffffffffa38dbf58
+    Current test_progs pgtable: 4K pagesize, 57-bit VAs, pgdp=0x00000001109cc000
+    [ffffffffa38dbf58] pgd=000000011fffd801, p4d=000000011fffd401, pud=000000011fffd001, pmd=0000000000000000
+    Oops [#1]
+    Modules linked in: bpf_testmod(OE) xt_conntrack nls_iso8859_1 dm_mod drm drm_panel_orientation_quirks configfs backlight btrfs blake2b_generic xor lzo_compress zlib_deflate raid6_pq efivarfs [last unloaded: bpf_testmod(OE)]
+    CPU: 1 UID: 0 PID: 23584 Comm: test_progs Tainted: G        W  OE       6.17.0-rc1-g2465bb83e0b4 #1 NONE
+    Tainted: [W]=WARN, [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+    Hardware name: Unknown Unknown Product/Unknown Product, BIOS 2024.01+dfsg-1ubuntu5.1 01/01/2024
+    epc : __qdisc_run+0x82/0x6f0
+     ra : __qdisc_run+0x6e/0x6f0
+    epc : ffffffff80bd5c7a ra : ffffffff80bd5c66 sp : ff2000000eecb550
+     gp : ffffffff82472098 tp : ff60000096895940 t0 : ffffffff8001f180
+     t1 : ffffffff801e1664 t2 : 0000000000000000 s0 : ff2000000eecb5d0
+     s1 : ff60000093a6a600 a0 : ffffffffa38dbee8 a1 : 0000000000000001
+     a2 : ff2000000eecb510 a3 : 0000000000000001 a4 : 0000000000000000
+     a5 : 0000000000000010 a6 : 0000000000000000 a7 : 0000000000735049
+     s2 : ffffffffa38dbee8 s3 : 0000000000000040 s4 : ff6000008bcda000
+     s5 : 0000000000000008 s6 : ff60000093a6a680 s7 : ff60000093a6a6f0
+     s8 : ff60000093a6a6ac s9 : ff60000093140000 s10: 0000000000000000
+     s11: ff2000000eecb9d0 t3 : 0000000000000000 t4 : 0000000000ff0000
+     t5 : 0000000000000000 t6 : ff60000093a6a8b6
+    status: 0000000200000120 badaddr: ffffffffa38dbf58 cause: 000000000000000d
+    [<ffffffff80bd5c7a>] __qdisc_run+0x82/0x6f0
+    [<ffffffff80b6fe58>] __dev_queue_xmit+0x4c0/0x1128
+    [<ffffffff80b80ae0>] neigh_resolve_output+0xd0/0x170
+    [<ffffffff80d2daf6>] ip6_finish_output2+0x226/0x6c8
+    [<ffffffff80d31254>] ip6_finish_output+0x10c/0x2a0
+    [<ffffffff80d31446>] ip6_output+0x5e/0x178
+    [<ffffffff80d2e232>] ip6_xmit+0x29a/0x608
+    [<ffffffff80d6f4c6>] inet6_csk_xmit+0xe6/0x140
+    [<ffffffff80c985e4>] __tcp_transmit_skb+0x45c/0xaa8
+    [<ffffffff80c995fe>] tcp_connect+0x9ce/0xd10
+    [<ffffffff80d66524>] tcp_v6_connect+0x4ac/0x5e8
+    [<ffffffff80cc19b8>] __inet_stream_connect+0xd8/0x318
+    [<ffffffff80cc1c36>] inet_stream_connect+0x3e/0x68
+    [<ffffffff80b42b20>] __sys_connect_file+0x50/0x88
+    [<ffffffff80b42bee>] __sys_connect+0x96/0xc8
+    [<ffffffff80b42c40>] __riscv_sys_connect+0x20/0x30
+    [<ffffffff80e5bcae>] do_trap_ecall_u+0x256/0x378
+    [<ffffffff80e69af2>] handle_exception+0x14a/0x156
+    Code: 892a 0363 1205 489c 8bc1 c7e5 2d03 084a 2703 080a (2783) 0709
+    ---[ end trace 0000000000000000 ]---
 
-Signed-off-by: Raj Sahu <rjsu26@gmail.com>
-Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+The bpf_fifo_dequeue prog returns a skb which is a pointer.
+The pointer is treated as a 32bit value and sign extend to
+64bit in epilogue. This behavior is right for most bpf prog
+types but wrong for struct ops which requires RISC-V ABI.
+
+So let's sign extend struct ops return values according to
+the function model and RISC-V ABI([0]).
+
+  [0]: https://riscv.org/wp-content/uploads/2024/12/riscv-calling.pdf
+
+Fixes: 25ad10658dc1 ("riscv, bpf: Adapt bpf trampoline to optimized riscv ftrace framework")
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
- .../bpf/prog_tests/bpf_termination.c          | 39 +++++++++++++++
- .../selftests/bpf/progs/bpf_termination.c     | 47 +++++++++++++++++++
- 2 files changed, 86 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_termination.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_termination.c
+ arch/riscv/net/bpf_jit_comp64.c | 42 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_termination.c b/tools/testing/selftests/bpf/prog_tests/bpf_termination.c
-new file mode 100644
-index 000000000000..d060073db8f9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_termination.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include <sys/socket.h>
-+
-+#include "bpf_termination.skel.h"
-+
-+void test_loop_termination(void)
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 397968d6ee09..a860be52dc49 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -711,6 +711,39 @@ static int emit_atomic_rmw(u8 rd, u8 rs, const struct bpf_insn *insn,
+ 	return 0;
+ }
+ 
++/*
++ * Sign-extend the register if necessary
++ */
++static int sign_extend(u8 rd, u8 rs, u8 sz, bool sign, struct rv_jit_context *ctx)
 +{
-+	struct bpf_termination *skel;
-+	int err;
-+	
-+	skel = bpf_termination__open();
-+	if (!ASSERT_OK_PTR(skel, "bpf_termination__open"))
-+	        return;
-+	
-+	err = bpf_termination__load(skel);
-+	if (!ASSERT_OK(err, "bpf_termination__load"))
-+	        goto out;
-+	
-+	skel->bss->pid = getpid();
-+	err = bpf_termination__attach(skel);
-+	if (!ASSERT_OK(err, "bpf_termination__attach"))
-+	        goto out;
-+	
-+	/* Triggers long running BPF program */
-+	socket(AF_UNSPEC, SOCK_DGRAM, 0);
-+
-+	/* If the program is not terminated, it doesn't reach this point */
-+	ASSERT_TRUE(true, "Program is terminated");
-+out:
-+       bpf_termination__destroy(skel);
-+}
-+
-+void test_bpf_termination(void)
-+{
-+	if (test__start_subtest("bpf_termination"))
-+		test_loop_termination();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_termination.c b/tools/testing/selftests/bpf/progs/bpf_termination.c
-new file mode 100644
-index 000000000000..36e97d84750b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_termination.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stddef.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int pid;
-+
-+#define LOOPS_CNT 1 << 10
-+
-+static int callback_fn4(void *ctx) {
-+	return 0;
-+}
-+
-+static int callback_fn3(void *ctx) {
-+
-+	bpf_loop(LOOPS_CNT, callback_fn4, NULL, 0);
-+	return 0;
-+
-+}
-+
-+
-+static int callback_fn2(void *ctx) {
-+
-+	bpf_loop(LOOPS_CNT, callback_fn3, NULL, 0);
-+	return 0;
-+
-+}
-+
-+static int callback_fn(void *ctx) {
-+
-+	bpf_loop(LOOPS_CNT, callback_fn2, NULL, 0);
-+	return 0;
-+
-+}
-+
-+SEC("tp/syscalls/sys_enter_socket")
-+int bpf_loop_lr(void *ctx) {
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != pid)
++	if (!sign && (sz == 1 || sz == 2)) {
++		if (rd != rs)
++			emit_mv(rd, rs, ctx);
 +		return 0;
++	}
 +
-+	bpf_loop(LOOPS_CNT, callback_fn, NULL, 0);
++	switch (sz) {
++	case 1:
++		emit_sextb(rd, rs, ctx);
++		break;
++	case 2:
++		emit_sexth(rd, rs, ctx);
++		break;
++	case 4:
++		emit_sextw(rd, rs, ctx);
++		break;
++	case 8:
++		if (rd != rs)
++			emit_mv(rd, rs, ctx);
++		break;
++	default:
++		pr_err("bpf-jit: invalid size %d for sign_extend\n", sz);
++		return -EINVAL;
++	}
 +
 +	return 0;
 +}
 +
-+char _license[] SEC("license") = "GPL";
+ #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+ #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
+ #define REG_DONT_CLEAR_MARKER	0	/* RV_REG_ZERO unused in pt_regmap */
+@@ -1175,8 +1208,15 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
+ 		restore_args(min_t(int, nr_arg_slots, RV_MAX_REG_ARGS), args_off, ctx);
+ 
+ 	if (save_ret) {
+-		emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
+ 		emit_ld(regmap[BPF_REG_0], -(retval_off - 8), RV_REG_FP, ctx);
++		if (is_struct_ops) {
++			ret = sign_extend(RV_REG_A0, regmap[BPF_REG_0], m->ret_size,
++					  m->ret_flags & BTF_FMODEL_SIGNED_ARG, ctx);
++			if (ret)
++				goto out;
++		} else {
++			emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
++		}
+ 	}
+ 
+ 	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
 -- 
-2.43.0
+2.45.2
 
 
