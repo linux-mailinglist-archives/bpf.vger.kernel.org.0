@@ -1,154 +1,191 @@
-Return-Path: <bpf+bounces-67843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA49EB4A1F1
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 08:21:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7A03B4A593
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 10:39:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 923AF16D68B
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 06:21:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2277D16A375
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 08:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5250B302149;
-	Tue,  9 Sep 2025 06:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9174F254846;
+	Tue,  9 Sep 2025 08:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FDX7WNT6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a8nxIoOf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07D82550CA
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 06:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40DED24EF76
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 08:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757398855; cv=none; b=Tmo3D1Yb9wCbZisvnIWaKlRI64R7g7F6ehdo6/oMo/6u4F9OH8QWG2YIsgyVZRrJjlOLq/Nn3labPUGccncZ5a5TYFQSIC3Jvi0T6yNstDbiAN9igxJaPcl4B6WBAGljqh130vl2/eG+vPSkUbZbNrdGrWgj5VDytWvH99j82lI=
+	t=1757407181; cv=none; b=Gl5rbj/CFfnbGrfS2v83IXs1oMkpNY8iIq7BtDVftk0vPXfY4otyeURWVHRo7sVuREyw7WF+KV/FNRgTDLeTdgIPOaiSbANkTEWmssHLyJ+jAgJuOK20BcKWFq8sfCqejIk784nJahicq+f39O1fHRuFev1fBV+iDQfWuMs/cVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757398855; c=relaxed/simple;
-	bh=KDyF09UmSmfPauYAR4WrsCS2uIoJPzqHmaa7An4Iit8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zns6o49zkfyYIOFd+uooNXURalc715DkeQ13bf5QKPRBEd8MQcBk4UeA1CgqWv0yBA3lnmQWuOh0vJbqmxtEeN4lcm2y+1pEjYS+1bGw/mu3Sdz8Vu8CaFQh6IgJ5u7C0vgJaG4VW9i2TuoPE4FWidZbs4NykJIXMwr0ZxVBOrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FDX7WNT6; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-6263d0e4b94so5501999a12.3
-        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 23:20:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1757398852; x=1758003652; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=w/59r4nKFKoXQCTnkJhQgP9ynEgR8S9O7tupwQt0EUM=;
-        b=FDX7WNT63QzmMdBxju2WHlEx2glRjl/hjZGck3s5+ltCi1YBdvqu1hxq6xjozW0NdF
-         mUlh1tssDngmh7fmqw1cEmaLYa36SNvP60CvE8Ky1uOogv3L4Xg0hjCl1OhCBbxs8kiG
-         r3W+jV5h3j7Ru510MmKcqrPcCxMd2vDS6pfnKkuLevq7yHYozuM/FjhnmCUbAuNw1M0r
-         H0oj1vE9/Bn22goyGSG1oN4tpKg41R/Exzp9I5sSGyL8PV4QzcebsNvS2jwlsifGDgeS
-         6E0WyvTF/JPToNlU2hd9LDijvFh1UlfOwod6RSytUo1DQ52ZgGkBoFqj2yKbkr98Q9MV
-         P5yg==
+	s=arc-20240116; t=1757407181; c=relaxed/simple;
+	bh=vHPLwL5CQU5Z7ksG2yxqsuuGbT1FFTbEvzv+jOPpr/Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F3nYrgrD4ZL1yuDePMGyUJ9QaL/w+v+HsPL3+P6GQ7txi2OPj90hukXcC7MIi//gQGjAruG14qYSKQPLnUz/uBUgc8C/4+05y0zmavwqvNRthKhQ9YHXUT+lyVrG989jbj/eDeWirFO4Y+Owa9d0vPwQ0CoPSC2pQlNXSXkHmVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a8nxIoOf; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1757407177;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=maLbMap+2LT57yr3xpTTUZY1o3cg9/xDffeybKHOaQ8=;
+	b=a8nxIoOfwkHRt68DI9SbfkmN+m7JjZE0X6/Pft+92cBjCsKeUQmoeVZVNN7O8/LUMN4aN8
+	nkt0J8BUeI2xzd5/3uS5V4v6jYXyjfP8zMRBbdVqJndEqv/kZuaBaTgZSM8gAYjJVx/nC0
+	J9JOFDAxv5H5hg172mu3Bg3umVuZGMM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-401-SpGXQHeaMkqdB49KGH8l9A-1; Tue, 09 Sep 2025 04:39:36 -0400
+X-MC-Unique: SpGXQHeaMkqdB49KGH8l9A-1
+X-Mimecast-MFC-AGG-ID: SpGXQHeaMkqdB49KGH8l9A_1757407175
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-45dd9a66cfbso37143395e9.1
+        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 01:39:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757398852; x=1758003652;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1757407174; x=1758011974;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w/59r4nKFKoXQCTnkJhQgP9ynEgR8S9O7tupwQt0EUM=;
-        b=RrPf4IoFpbLwFld2xMljsB/cmIPddrPyv7D765s4furaZi85aXepD3nhvSP1OdFPg5
-         NTFeMkKpDVqC501sGKJj8HvObvGCQA3idKVhn4xNBbx3XD9VNe1n6M2D0LdjUJ75WUEW
-         7lYuVSQPW5oao4LBR2XHI51xGPqgtrFtVvRG4hT/2Hg31+odKISa7YXrH4Fi+prbowxK
-         aY5T1w9ccprHiNcGlbhifOxHU8QFDcYhEHTlxsmGFIp84jRDj86cmsz1+SXhb1jCAHS+
-         GTiUY0WemaUFgdNQhU/JI9wcnxj1BXie9UJF0ZuYCniNtdGpiEf8ieKNfMjhlXChvrao
-         poSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXWW1BZvu1zZs94p08YcrU+bN67NJTxJbtCPcbIwJDAgR0aEam597lx1m3s1kHMt7s25vw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1xnz0BOZM/r2ojZRoVz6lSbAmbPRvIUcdFnjKY2bqSXnWX/D7
-	n0TcWcKhotRKnI1cHc6mFhtuUXNAjNgLzKpBoiMBoV/fwom4O34cg8fuSKCMLAN+lhc=
-X-Gm-Gg: ASbGncuBjgfAWJoC8l/z5c17k/dDze9SYCnjTIrO7goUgLE/zUsTw1943wpe9f8ac1t
-	gNC+Pk4d7nKc/m4wb/d1hq9wFn7Ea6dmPTdw+ZWI5aMN0K2baMxbUVrLbwMt52ZHu8VcKrgnGFn
-	vAxGeqd3QZXWgTB0IAlTDD5HZyDcQDm+yIoe3uyEIznoDTMcerdjtLq3UTg9Ty/pHX+xeip9uxM
-	/gwct7HjQZp3kcgw3+fOmT6faGGw4TNdUOpvDGLlnsVEEqrC2AmWHpp8/c7Uvpms6t2C92iJVZ1
-	C4xtoinlavFyPrXlQukviEv+Fwy8/lgDDkfuJdKgSNd1OaFkoLfA8aDRpnXrYbuRYgJNuv7pxnA
-	45rkJI7h9c5AD5jCemFKFrowpNb+fYjeFlQ==
-X-Google-Smtp-Source: AGHT+IEy7r+3IQg6FyahElzQLsyWsCN+nac3o89gK9QMZ1U0RxA6rWKjSJAXvBlojXrZGYl7wLf9pA==
-X-Received: by 2002:a17:907:1c10:b0:b04:1a80:35b9 with SMTP id a640c23a62f3a-b04b13cd575mr1019442566b.12.1757398852041;
-        Mon, 08 Sep 2025 23:20:52 -0700 (PDT)
-Received: from localhost (109-81-31-43.rct.o2.cz. [109.81.31.43])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b0761c9314esm150029966b.33.2025.09.08.23.20.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Sep 2025 23:20:51 -0700 (PDT)
-Date: Tue, 9 Sep 2025 08:20:50 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Peilin Ye <yepeilin@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
-Message-ID: <aL_HQn9gZjbt4zLl@tiehlicka>
-References: <20250905201606.66198-1-shakeel.butt@linux.dev>
- <aLtMrlSDP7M5GZ27@google.com>
- <aL6dBivokIeBApj8@tiehlicka>
- <CAADnVQLtc+OOQ67AS_1+u-sRmO+bDLWJrrihASXMrDNnvrmNSw@mail.gmail.com>
+        bh=maLbMap+2LT57yr3xpTTUZY1o3cg9/xDffeybKHOaQ8=;
+        b=HsLbVRkbO54VeCCOkCBQHD+HUDOwZVt40jjSnj+QcXLnQSbyWPkfktBjyBmaewUfVq
+         LkT29PQ0kZGfA/ggBlTU48KD5jwcE1YpM5K15zSIAHWcX2yRkJIwVcUVb4PUJpva7Y4p
+         AWK/+EuzOnnAlkL/6ORfg2pVix3Bzbx5jXG9DpaHjeXL/HoimCj4M/0i7wic9M924yer
+         XhWuZhHN6R5RnAuOzxPMY1GvhQDBHXsHY/e8jopOrW3KyvWHTukbSEJ/08Ubp3BZTO6i
+         utiXEvZQ1F0gfTDHUOD9b5/9xgaXb0jdfFcQKgCmTAyr+VZXh5E86K9Rv4jXF5lyMRFY
+         vHUg==
+X-Forwarded-Encrypted: i=1; AJvYcCXeIB1c5bxUnfU7ArloJ4SjWOzUyMfqLgduOX8FI/B2cZgXjPwwj3WSGmja8gUl2QyIIn0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywwvqp2zTN5IsnbeJHvZqSL8eAWVhJQqTl5riMBTu050qvX8YWd
+	0qzV9n3gXR6o9PFAg+z2Reti11UToDh4E0S17sH/sKft3reAGw8mkSYC6z+pFmxyYl/YE/rRwdy
+	JSUotToyC5ZO9BIqyV5+5jN4vEjtWzsGM7atVFREf0qrDj82yMrm0kLxq39NGlw==
+X-Gm-Gg: ASbGncs/jQzzW8pfM3McK2prA9e/mDJ9xnN7c0+RcVN+mmSscMvfwYhyw7QPI8MhIcE
+	AqK4oFaKZsFl3a97EUt3Sw3m0XaNHDMz4CFlmYRjnyBZY9rlturoiItUleCZAgwDkyxZf9LzZv9
+	9HrTSChLvJBGaCOdJ8aAyMHY9er2fumyZpUzaJOKc6G6q3C21J0JVCQlsSg2sNo0noqg+5ubYDt
+	NfQa0sId7UJfKGAyxGlrCWcdUhiuEXJyy7vMB6c+tB9PMh+eB0moBzDYiWETv5fetdlXVgChIMw
+	p8j2Sw+LqLpSoCsIe8hFt4RWPdQHdCHDdf4vUwVP12Ug7Ol3jK20z8FRHT2Mn8mFj/nG0uK/Rhy
+	n1q/2fqj4CNY=
+X-Received: by 2002:a05:600c:3b1a:b0:45b:9291:320d with SMTP id 5b1f17b1804b1-45ddded3454mr106956635e9.31.1757407174300;
+        Tue, 09 Sep 2025 01:39:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGKYLjLr4ZoJ0jfoejUOqrxruD9FHV3EcrxDGxf12RFoTaR7PxwRKlFp81591joPR5nP+nJtQ==
+X-Received: by 2002:a05:600c:3b1a:b0:45b:9291:320d with SMTP id 5b1f17b1804b1-45ddded3454mr106956235e9.31.1757407173858;
+        Tue, 09 Sep 2025 01:39:33 -0700 (PDT)
+Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45cb61377a7sm274262995e9.13.2025.09.09.01.39.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Sep 2025 01:39:33 -0700 (PDT)
+Message-ID: <6516a49f-5d4f-4c3a-8ddc-7d8623aeb816@redhat.com>
+Date: Tue, 9 Sep 2025 10:39:32 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLtc+OOQ67AS_1+u-sRmO+bDLWJrrihASXMrDNnvrmNSw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 next-next] net/cls_cgroup: Fix task_get_classid()
+ during qdisc run
+To: Yafang Shao <laoar.shao@gmail.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, horms@kernel.org,
+ daniel@iogearbox.net, bigeasy@linutronix.de, tgraf@suug.ch,
+ paulmck@kernel.org, razor@blackwall.org
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20250902062933.30087-1-laoar.shao@gmail.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250902062933.30087-1-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon 08-09-25 10:11:29, Alexei Starovoitov wrote:
-> On Mon, Sep 8, 2025 at 2:08 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Fri 05-09-25 20:48:46, Peilin Ye wrote:
-> > > On Fri, Sep 05, 2025 at 01:16:06PM -0700, Shakeel Butt wrote:
-> > > > Generally memcg charging is allowed from all the contexts including NMI
-> > > > where even spinning on spinlock can cause locking issues. However one
-> > > > call chain was missed during the addition of memcg charging from any
-> > > > context support. That is try_charge_memcg() -> memcg_memory_event() ->
-> > > > cgroup_file_notify().
-> > > >
-> > > > The possible function call tree under cgroup_file_notify() can acquire
-> > > > many different spin locks in spinning mode. Some of them are
-> > > > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
-> > > > just skip cgroup_file_notify() from memcg charging if the context does
-> > > > not allow spinning.
-> > > >
-> > > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > >
-> > > Tested-by: Peilin Ye <yepeilin@google.com>
-> > >
-> > > The repro described in [1] no longer triggers locking issues after
-> > > applying this patch and making __bpf_async_init() use __GFP_HIGH
-> > > instead of GFP_ATOMIC:
-> > >
-> > > --- a/kernel/bpf/helpers.c
-> > > +++ b/kernel/bpf/helpers.c
-> > > @@ -1275,7 +1275,7 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
-> > >         }
-> > >
-> > >         /* allocate hrtimer via map_kmalloc to use memcg accounting */
-> > > -       cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_node);
-> > > +       cb = bpf_map_kmalloc_node(map, size, __GFP_HIGH, map->numa_node);
-> >
-> > Why do you need to consume memory reserves? Shouldn't kmalloc_nolock be
-> > used instead here?
+On 9/2/25 8:29 AM, Yafang Shao wrote:
+> During recent testing with the netem qdisc to inject delays into TCP
+> traffic, we observed that our CLS BPF program failed to function correctly
+> due to incorrect classid retrieval from task_get_classid(). The issue
+> manifests in the following call stack:
 > 
-> Yes. That's a plan. We'll convert most of bpf allocations to kmalloc_nolock()
-> when it lands.
+>         bpf_get_cgroup_classid+5
+>         cls_bpf_classify+507
+>         __tcf_classify+90
+>         tcf_classify+217
+>         __dev_queue_xmit+798
+>         bond_dev_queue_xmit+43
+>         __bond_start_xmit+211
+>         bond_start_xmit+70
+>         dev_hard_start_xmit+142
+>         sch_direct_xmit+161
+>         __qdisc_run+102             <<<<< Issue location
+>         __dev_xmit_skb+1015
+>         __dev_queue_xmit+637
+>         neigh_hh_output+159
+>         ip_finish_output2+461
+>         __ip_finish_output+183
+>         ip_finish_output+41
+>         ip_output+120
+>         ip_local_out+94
+>         __ip_queue_xmit+394
+>         ip_queue_xmit+21
+>         __tcp_transmit_skb+2169
+>         tcp_write_xmit+959
+>         __tcp_push_pending_frames+55
+>         tcp_push+264
+>         tcp_sendmsg_locked+661
+>         tcp_sendmsg+45
+>         inet_sendmsg+67
+>         sock_sendmsg+98
+>         sock_write_iter+147
+>         vfs_write+786
+>         ksys_write+181
+>         __x64_sys_write+25
+>         do_syscall_64+56
+>         entry_SYSCALL_64_after_hwframe+100
+> 
+> The problem occurs when multiple tasks share a single qdisc. In such cases,
+> __qdisc_run() may transmit skbs created by different tasks. Consequently,
+> task_get_classid() retrieves an incorrect classid since it references the
+> current task's context rather than the skb's originating task.
+> 
+> Given that dev_queue_xmit() always executes with bh disabled, we can use
+> softirq_count() instead to obtain the correct classid.
+> 
+> The simple steps to reproduce this issue:
+> 1. Add network delay to the network interface:
+>   such as: tc qdisc add dev bond0 root netem delay 1.5ms
+> 2. Build two distinct net_cls cgroups, each with a network-intensive task
+> 3. Initiate parallel TCP streams from both tasks to external servers.
+> 
+> Under this specific condition, the issue reliably occurs. The kernel
+> eventually dequeues an SKB that originated from Task-A while executing in
+> the context of Task-B.
+> 
+> It is worth noting that it will change the established behavior for a
+> slightly different scenario:
+> 
+>   <sock S is created by task A>
+>   <class ID for task A is changed>
+>   <skb is created by sock S xmit and classified>
+> 
+> prior to this patch the skb will be classified with the 'new' task A
+> classid, now with the old/original one. The bpf_get_cgroup_classid_curr()
+> function is a more appropriate choice for this case.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Thomas Graf <tgraf@suug.ch>
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Cc: Nikolay Aleksandrov <razor@blackwall.org>
 
-OK, I thought this was merged already. I suspect __GFP_HIGH is used here
-as a result of manual GFP_ATOMIC & ~GFP_RECLAIM. A TODO/FIXME referring
-to kmalloc_nolock would clarify the situation.
+@Daniel: I'm wondering if you have some specific use-case explicit
+leveraging the affected helper. If so, could you please test this change
+does not break it?
 
--- 
-Michal Hocko
-SUSE Labs
+Thanks,
+
+Paolo
+
 
