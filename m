@@ -1,92 +1,93 @@
-Return-Path: <bpf+bounces-67841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F003B4A07A
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 06:05:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2182B4A086
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 06:15:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BB774E38B1
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 04:05:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9711B3A919D
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 04:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418632BE653;
-	Tue,  9 Sep 2025 04:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86AF2DFA38;
+	Tue,  9 Sep 2025 04:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h/btJUya"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b2hgDOnl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F30221DB1
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 04:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99CD2773DC
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 04:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757390753; cv=none; b=MLOjhBL95TWb16oA1EXjpDQ9g/gAZSPHY9bVWTnsLGv+4tLmAUJyODTVg7H9o3GZFu7MGddzOjyTA/Kd+7g6kDJmnPCPBK2q6Na/EU4VfYrfLe+9gHVWTcYtLQFOurKkQLyOeiL5iYMazYKDHmXPVydRv7sSwtvjxqGWup1n1q8=
+	t=1757391307; cv=none; b=DXf7kDqdfIPPmMqhYpaZvBSvJ2yJuWBeRvc0rBzOndcjt0PNNj4XLidAsFuggwPy/xcmAqWczWuPT7cym8V+tnV+UJIvbNWKVFbe7uyfkRxgTMdj4b5ZzFHksoYla1JEdI64Am+jCkesOHlIZ44PQExxkRvzX72qct4d+xpNVJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757390753; c=relaxed/simple;
-	bh=0tMCLuwXiX6hoMRV4O+cix9H+ZQ/kZGcs7tUN5/aUjI=;
+	s=arc-20240116; t=1757391307; c=relaxed/simple;
+	bh=T2tOjaNsv0sxCt0MzK4+J0G0zThMDBkt9P5jwpy/gAI=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=koajJiH55la20Xc8ff120ZXguoSrc3oNjOR5GoOciPp+tad7hBFkPCd+ZU9p7zM91NOCRDDj5LkaZsK0Fu03ZVALAV8KAmCVhwF7kVuX4yej00mBIv8B9qgtq/KwWoqrd0ws4L84lhXsvv7SD2ajzfSP94vypYl1AdV8CRZSJDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h/btJUya; arc=none smtp.client-ip=209.85.214.171
+	 Content-Type:MIME-Version; b=HVDRpyRPaq760Oppa+O5LdONyAamBuvdECkHfOxaeF9TTr94hzHdR5VCp4yyCYWxCFFZjAwaOYjc6GmYdHeUduDOqTBHs7X/WggP0mblO+Lkb1LNc5xgcnQ8b1pZ1JX7aNc2fdhb3efQJv4vQFNMPEoNSvs25ognG8HjYGKOC+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b2hgDOnl; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-251ace3e7caso35252105ad.2
-        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 21:05:50 -0700 (PDT)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-76e2ea933b7so4594062b3a.1
+        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 21:15:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757390750; x=1757995550; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757391304; x=1757996104; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=e4qaV1WAtgErrTLNQy/F0bB+D5tXbv+jHl/+13gWTTI=;
-        b=h/btJUyarNf5uImJtOmDDLB9JUhBb6IFauM4wZIjWoY/NNB2dJ3A5sgE0fDWxMN30w
-         R97kFcARPjM2n25rnQERAzwaHsWA1x1OBYSLolnztNck0YTQQRNoip5blm6goQy1el8n
-         yLl1i+1xNRmkPaA4dfl5L3yxICQ7Ggjye32qCfuSlJ3eM+dnBap5jfCF7E6S8vVA9D5+
-         NwEpiCP1SfzCJi24wQ6JN1dAT6sTzW4nLG96IVNg0DZT1DDnKMlf1SnnqUUAekpS8EBU
-         QeeA+Uh70EVZl1zJlxYr2EPUdQCS+LcnB9ewETvXWtv5Z5Y/LdLB4U5OIlfaS+GkaHp1
-         a8nQ==
+        bh=/bGVOhMok1Qcr9HQrTMnEab/uTJVWxFpIW1I/ejMUXM=;
+        b=b2hgDOnljRR/fsFb/dN9s+DQD376CkVE8DUmIyCw35Pj5UbYcN4Tyx3/RbZDxyRW27
+         GOcDpioePQY2CgIF+9jm6554cBYydMUZseBC9J4KQhOcztOOB7Kt/2KdcGXLsWPYL3nA
+         fS5dA2nvR9xel3bqPTB0llsK79DyCX/3fm60p5jmPPhhH+1dsx8Bw1UFQVdmfxNAtxVz
+         1cu/LKd6mIE+Q481MQ/tVzVN0pB++vaxwgDHhPU9m13rhBIvqZj81a3pF7iXIskeZGVM
+         ZVVXDbMuESwlosVUXavXmIrb+u5day1JiYyAIV7n46vd6OWgfM3K9ysJv2F6yFzkamWZ
+         4h+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757390750; x=1757995550;
+        d=1e100.net; s=20230601; t=1757391304; x=1757996104;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=e4qaV1WAtgErrTLNQy/F0bB+D5tXbv+jHl/+13gWTTI=;
-        b=gEQN11QpXUQqSlRZK2HmPnkYogtOhOhaKbjKwwuYi760gW7Ncjq0g/bzrn8P+PNmE8
-         PIpbGf91Um8wsoGj9w6vmgUcH6uzy4MBM5rEx4G+gp7C2824w3W1DlGyTFVgfMnoeWN4
-         BOf91daajYADJbMkrOMuw2IBEpiBbzKyVP7jCBvq1/nL7SBkO6Y1NWXaoHNsUoQSS4F6
-         s0gyjmIS0Bbbc+ithybiu3S8cUS62BY+/Upus4wOiqqDphmaSInH9TzsSktHJ9c+IsHr
-         DUwK5gyGupzr+URlIWHDKdamNPt6/3nn9BnAKET/30qM7BwFOBoteRCH9IlvpGG9v1TX
-         0hjQ==
-X-Gm-Message-State: AOJu0YzyIKpmv/yJxFBOZHsaYH+PWocd1Fpey6D7x15Cz3EanP70a1l9
-	T23BLcHOKwAlVOTnJZ+WBMcCJEWEvDEZEHosHBR5hPddTy0rR2sEPRXT
-X-Gm-Gg: ASbGncv9xCu22z33z2S0plQGr/JdLq5gn5EA6rp9SzbRQuYsrO0dWdg50p/GUAlsZJB
-	/kEd0ZE+GNvWpN7jQYZiJk5VYg41RJAXpTEHS4aZcluYx9IlNOQvIOOG6WMtnYAFHLquVinpe2a
-	0lzk7AiLC01E4mwT7qEBom1uO0wtKoqKjYXILzg8Dh/zSBEVrCp2gDHJ83nz6RHZ66FfG+bgytz
-	Td5lhiuHwCGq+8X6l7CHVxpBYh21MQqtozIcsQzAVHwfcYYV9GtTkCQzXr4NcB3X3NA1n7xXKsV
-	He2K35iP9djNVDL7/YW0EU0eVwDgkf+rb6bQV8DOWp6grBlekfHOSxWDz9C1EcKXpVXM3SSNWxN
-	gsJrOBq7vYTC3zrNb0A==
-X-Google-Smtp-Source: AGHT+IF94C5kR6tfqcr1iNI0CKPZIGICZx/gkgE6+3WjmAUeOY+HY4GKpF0g0hPiimgjWwtMVup/MQ==
-X-Received: by 2002:a17:902:dac3:b0:24a:fc8d:894c with SMTP id d9443c01a7336-2516d81824fmr145402095ad.1.1757390750298;
-        Mon, 08 Sep 2025 21:05:50 -0700 (PDT)
+        bh=/bGVOhMok1Qcr9HQrTMnEab/uTJVWxFpIW1I/ejMUXM=;
+        b=oB2miIgGkaJBPxLOUvP5tZEe2Nxe5x7lpml4ECfzEfj2y1tnR2W24VmquhEYXR/ojb
+         w6iTdEVaaKX8PfwRg+J4fvmDmcjFrIJO1NmByWxw5h4r29uKxKJJoFWrEd/X2TikbaPY
+         lZCCWm4bOvWKBJVf5mL/OMkBiXBdLjCVQxDaV4Tr5hjRKjlO5kT2MEB/pjIONzHkuGWV
+         Gtjb1xz/dXIrh9iC7790vRaBKNZ0C9QaKvMGmiLvdIXw8wRu8LPC8dBybgLaP60eab35
+         RVr2CTPIVC4KjaX7ihVz8k/m4gLWPTAVvNTw5YcPr58o6L1EiJxi4P9+S7InjPUhPCi6
+         lxZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXlsy+rvy2sB+WqAImaajB/m3wCGnxCOYWUImSn8VVZWeNnBOj9gM7rKYeNAjp0PhBECzY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy8f1d8/ziGwRUqwLPOc3We4V2Jb8MO9zl2PwlF82d4Y8yPiqR8
+	mGkDw6NNe7H3ZGsq05xg+dAvRZrEz60kauWeqZ+Rq1kOD77C+t3EflnC
+X-Gm-Gg: ASbGncv1z2H26UHmZF0BzChjRrS4VHfHNpQoBPo5Pnr8VPNBTq4u8aR4yttoX124sAy
+	9lx7h4T3A1/DZdnMmzlY3RRwXvSJZpHy8UKD1AW344S3XtoNZHi/dX7aepikqnxRG9Ql0R8uZ0K
+	VitxDlERsucl3NHTxoV7AQdsB9VrrvSfS0oeoTWCBn36r+uAombnsLD5a6kklb0S88L7UVCuS4B
+	TYHrBu/hp1mFcPN42AfILk0N6anpYVVr9HLHMD5yUytX0EC0Eu/0M0yjG+d21235LGxYMVbeDDM
+	4KvhI33kixBNnKkY4z7jyq6A2+k0hcgWwO5yK7JkevE/MBOMTapEGk2CUdd/31dYYM5+ugKheYw
+	5Yvdcc6RV2GDz6Xa6ji8TZjZNYSGz
+X-Google-Smtp-Source: AGHT+IHwwfOxOCKOMrAOT37p7UPhYv8mtFtvJZZKGS5UvAbPjYCHyGXA3MHJeYUVXp9E2COcEOk4VA==
+X-Received: by 2002:a05:6a21:3396:b0:247:55a7:695a with SMTP id adf61e73a8af0-2537be015b4mr14796111637.15.1757391304179;
+        Mon, 08 Sep 2025 21:15:04 -0700 (PDT)
 Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32b9be55c1esm13787493a91.9.2025.09.08.21.05.49
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4cd28ade38sm26996021a12.34.2025.09.08.21.15.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Sep 2025 21:05:49 -0700 (PDT)
-Message-ID: <205c8ce8829a93bd1f371ac9f86d86c3ef5c0639.camel@gmail.com>
+        Mon, 08 Sep 2025 21:15:03 -0700 (PDT)
+Message-ID: <890c29d3e9c7bf8f5ca42f8078e7b427786b293e.camel@gmail.com>
 Subject: Re: [PATCH bpf-next v3 6/7] bpf: task work scheduling kfuncs
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Mykyta Yatsenko
-	 <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, 	kafai@meta.com, kernel-team@meta.com,
- memxor@gmail.com, Mykyta Yatsenko	 <yatsenko@meta.com>
-Date: Mon, 08 Sep 2025 21:05:47 -0700
-In-Reply-To: <CAEf4BzYSc_vGz42vpYzgAGmT15Lx77BduV6c9AJurQw5PSe63g@mail.gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com, memxor@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+Date: Mon, 08 Sep 2025 21:15:00 -0700
+In-Reply-To: <CAEf4BzbVbCMiTKC8Zz96W16tKCU2cfiM2ULAA7B2ofb0hRZ6sw@mail.gmail.com>
 References: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
 	 <20250905164508.1489482-7-mykyta.yatsenko5@gmail.com>
 	 <aa9dcf55f1ed26c140f83fdde8312304efb80099.camel@gmail.com>
 	 <4330e66c-59c0-4d1f-8401-de13b54342e8@gmail.com>
-	 <CAEf4BzYSc_vGz42vpYzgAGmT15Lx77BduV6c9AJurQw5PSe63g@mail.gmail.com>
+	 <b727f3872d51c2b8cc622fb01cdc864a3336b9d8.camel@gmail.com>
+	 <CAEf4BzbVbCMiTKC8Zz96W16tKCU2cfiM2ULAA7B2ofb0hRZ6sw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -97,209 +98,59 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2025-09-08 at 23:33 -0400, Andrii Nakryiko wrote:
-> On Mon, Sep 8, 2025 at 9:13=E2=80=AFAM Mykyta Yatsenko
-> <mykyta.yatsenko5@gmail.com> wrote:
+On Mon, 2025-09-08 at 23:42 -0400, Andrii Nakryiko wrote:
+> On Mon, Sep 8, 2025 at 1:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
 > >=20
-> > On 9/6/25 21:22, Eduard Zingerman wrote:
-> > > On Fri, 2025-09-05 at 17:45 +0100, Mykyta Yatsenko wrote:
-> > >=20
-> > > [...]
-> > >=20
-> > > > A small state machine and refcounting scheme ensures safe reuse and
-> > > > teardown:
-> > > >   STANDBY -> PENDING -> SCHEDULING -> SCHEDULED -> RUNNING -> STAND=
-BY
-> > > Nit: state machine is actually a bit more complex:
-> > >=20
-> > >    digraph G {
-> > >      scheduling  -> running    [label=3D"callback 1"];
-> > >      scheduled   -> running    [label=3D"callback 2"];
-> > >      running     -> standby    [label=3D"callback 3"];
-> > >      pending     -> scheduling [label=3D"irq 1"];
-> > >      scheduling  -> standby    [label=3D"irq 2"];
-> > >      scheduling  -> scheduled  [label=3D"irq 3"];
-> > >      standby     -> pending    [label=3D"acquire_ctx"];
-> > >=20
-> > >      freed      -> freed [label=3D"cancel_and_free"];
-> > >      pending    -> freed [label=3D"cancel_and_free"];
-> > >      running    -> freed [label=3D"cancel_and_free"];
-> > >      scheduled  -> freed [label=3D"cancel_and_free"];
-> > >      scheduling -> freed [label=3D"cancel_and_free"];
-> > >      standby    -> freed [label=3D"cancel_and_free"];
-> > >    }
-> > >=20
-> > > [...]
-> > >=20
-> > I'll update the description to contain proper graph.
->=20
-> Hm... I like the main linear chain of state transitions as is, tbh.
-> It's fundamentally simple and helps get the general picture. Sure,
-> there are important details, but I don't think we should overwhelm
-> anyone reading with all of this upfront.
->=20
-> In the above, "callback 1" and so on is not really helpful for
-> understanding, IMO.
-
-I'm not suggesting to take the above graphviz spec as a description.
-Just point out that current message is misleading.
-
-> I'd just add the note that a) each state can transition to FREED and
-> b) with tiny probability we might skip SCHEDULED and go SCHEDULING ->
-> RUNNING (extremely unlikely if at all possible, tbh).
->=20
-> In short, let's not go too detailed here.
-
-As you see fit. Transition graph is easier to read for me, but maybe
-other people are better at reading text.
-
->=20
-> > > > Flow of successful task work scheduling
-> > > >   1) bpf_task_work_schedule_* is called from BPF code.
-> > > >   2) Transition state from STANDBY to PENDING, marks context is own=
-ed by
-> > > >   this task work scheduler
-> > > >   3) irq_work_queue() schedules bpf_task_work_irq().
-> > > >   4) Transition state from PENDING to SCHEDULING.
-> > > >   4) bpf_task_work_irq() attempts task_work_add(). If successful, s=
-tate
-> > > >   transitions to SCHEDULED.
-> > > Nit: "4" repeated two times.
-> > >=20
-> > > >   5) Task work calls bpf_task_work_callback(), which transition sta=
-te to
-> > > >   RUNNING.
-> > > >   6) BPF callback is executed
-> > > >   7) Context is cleaned up, refcounts released, context state set b=
-ack to
-> > > >   STANDBY.
-> > > >=20
-> > > > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> > > > ---
-> > > >   kernel/bpf/helpers.c | 319 ++++++++++++++++++++++++++++++++++++++=
-++++-
-> > > >   1 file changed, 317 insertions(+), 2 deletions(-)
-> > > >=20
-> > > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > > > index 109cb249e88c..418a0a211699 100644
-> > > > --- a/kernel/bpf/helpers.c
-> > > > +++ b/kernel/bpf/helpers.c
-> > > [...]
-> > >=20
-> > > > +static void bpf_task_work_cancel(struct bpf_task_work_ctx *ctx)
-> > > > +{
-> > > > +    /*
-> > > > +     * Scheduled task_work callback holds ctx ref, so if we succes=
-sfully
-> > > > +     * cancelled, we put that ref on callback's behalf. If we coul=
-dn't
-> > > > +     * cancel, callback is inevitably run or has already completed
-> > > > +     * running, and it would have taken care of its ctx ref itself=
-.
-> > > > +     */
-> > > > +    if (task_work_cancel_match(ctx->task, task_work_match, ctx))
-> > > Will `task_work_cancel(ctx->task, ctx->work)` do the same thing here?
-> > I think so, yes, thanks for checking.
-> > >=20
-> > > > +            bpf_task_work_ctx_put(ctx);
-> > > > +}
-> > > [...]
-> > >=20
-> > > > +static void bpf_task_work_irq(struct irq_work *irq_work)
-> > > > +{
-> > > > +    struct bpf_task_work_ctx *ctx =3D container_of(irq_work, struc=
-t bpf_task_work_ctx, irq_work);
-> > > > +    enum bpf_task_work_state state;
-> > > > +    int err;
-> > > > +
-> > > > +    guard(rcu_tasks_trace)();
-> > > > +
-> > > > +    if (cmpxchg(&ctx->state, BPF_TW_PENDING, BPF_TW_SCHEDULING) !=
+> > On Mon, 2025-09-08 at 14:13 +0100, Mykyta Yatsenko wrote:
+> >=20
+> > [...]
+> >=20
+> > > > > +static void bpf_task_work_irq(struct irq_work *irq_work)
+> > > > > +{
+> > > > > + struct bpf_task_work_ctx *ctx =3D container_of(irq_work, struct=
+ bpf_task_work_ctx, irq_work);
+> > > > > + enum bpf_task_work_state state;
+> > > > > + int err;
+> > > > > +
+> > > > > + guard(rcu_tasks_trace)();
+> > > > > +
+> > > > > + if (cmpxchg(&ctx->state, BPF_TW_PENDING, BPF_TW_SCHEDULING) !=
 =3D BPF_TW_PENDING) {
-> > > > +            bpf_task_work_ctx_put(ctx);
-> > > > +            return;
-> > > > +    }
-> > > Why are separate PENDING and SCHEDULING states needed?
-> > > Both indicate that the task had not been yet but is ready to be
-> > > submitted to task_work_add(). So, on a first glance it seems that
-> > > merging the two won't change the behaviour, what do I miss?
-> > Yes, this is right, we may drop SCHEDULING state, it does not change an=
-y
-> > behavior compared to PENDING.
-> > The state check before task_work_add is needed anyway, so we won't
-> > remove much code here.
-> > I kept it just to be more consistent: with every state check we also
-> > transition state machine forward.
+> > > > > +         bpf_task_work_ctx_put(ctx);
+> > > > > +         return;
+> > > > > + }
+> > > > Why are separate PENDING and SCHEDULING states needed?
+> > > > Both indicate that the task had not been yet but is ready to be
+> > > > submitted to task_work_add(). So, on a first glance it seems that
+> > > > merging the two won't change the behaviour, what do I miss?
+> >=20
+> > > Yes, this is right, we may drop SCHEDULING state, it does not change =
+any
+> > > behavior compared to PENDING.
+> > > The state check before task_work_add is needed anyway, so we won't
+> > > remove much code here.
+> > > I kept it just to be more consistent: with every state check we also
+> > > transition state machine forward.
+> >=20
+> > Why is state check before task_work_add() mandatory?
+> > You check for FREED in both branches of task_work_add(),
+> > so there seem to be no issues with leaking ctx.
 >=20
-> Yeah, I like this property as well, I think it makes it easier to
-> reason about all this. I'd keep the PENDING and SCHEDULING
-> distinction, unless there is a strong reason not to.
->=20
-> It also gives us a natural point to check for FREED before doing
-> unnecessary task_work scheduling + cancelling (if we were already in
-> FREED). It doesn't seem like we'll simplify anything by SCHEDULING (or
-> PENDING) state.
+> Not really mandatory, but I think it is good to avoid even attempting
+> to schedule task_work if the map element was already deleted?
+> Technically, even that last FREED check in bpf_task_work_irq is not
+> strictly necessary, we could have always let task_work callback
+> execute and bail all the way there, but that seems too extreme (and
+> task_work can be delayed by a lot for some special task states, I
+> think).
+>
+> Also, keep in mind, this same state machine will be used for timers
+> and wqs (at least we should try), and so, in general, being diligent
+> about not doing doomed-to-be-failed-or-cancelled work is a good
+> property.
 
-Again, people are probably different, but it took me some time trying
-to figure out if I'm missing some details or SCHEDULING is there just
-for the sake of it.
-
-> > >=20
-> > > > +    err =3D task_work_add(ctx->task, &ctx->work, ctx->mode);
-> > > > +    if (err) {
-> > > > +            bpf_task_work_ctx_reset(ctx);
-> > > > +            /*
-> > > > +             * try to switch back to STANDBY for another task_work=
- reuse, but we might have
-> > > > +             * gone to FREED already, which is fine as we already =
-cleaned up after ourselves
-> > > > +             */
-> > > > +            (void)cmpxchg(&ctx->state, BPF_TW_SCHEDULING, BPF_TW_S=
-TANDBY);
-> > > > +
-> > > > +            /* we don't have RCU protection, so put after switchin=
-g state */
-> > > > +            bpf_task_work_ctx_put(ctx);
-> > > > +    }
-> > > > +
->=20
-> [...]
->=20
-> > > > +
-> > > > +    return ctx;
-> > > > +}
-> > > > +
-> > > > +static int bpf_task_work_schedule(struct task_struct *task, struct=
- bpf_task_work *tw,
-> > > > +                              struct bpf_map *map, bpf_task_work_c=
-allback_t callback_fn,
-> > > > +                              struct bpf_prog_aux *aux, enum task_=
-work_notify_mode mode)
-> > > > +{
-> > > > +    struct bpf_prog *prog;
-> > > > +    struct bpf_task_work_ctx *ctx;
-> > > > +    int err;
-> > > > +
-> > > > +    BTF_TYPE_EMIT(struct bpf_task_work);
-> > > > +
-> > > > +    prog =3D bpf_prog_inc_not_zero(aux->prog);
-> > > > +    if (IS_ERR(prog))
-> > > > +            return -EBADF;
-> > > > +    task =3D bpf_task_acquire(task);
-> > > > +    if (!task) {
-> > > > +            err =3D -EPERM;
-> > > Nit: Why -EPERM? bpf_task_acquire() returns NULL if task->rcu_users
-> > >       is zero, does not seem to be permission related.
-> > Right, this probably should be -EBADF.
->=20
-> timer and wq (and now task_work) return -EPERM for map->usercnt=3D=3D0
-> check, but we have -EBADF for prog refcount being zero. It's a bit all
-> over the place... I don't have a strong preference, but it would be
-> nice to stay more or less consistent for all these "it's too late"
-> conditions, IMO.
-
-Ok, probably being consistently wrong is better option here,
-let's stick with -EPERM.
+Ack, thank you for explaining.
 
 [...]
 
