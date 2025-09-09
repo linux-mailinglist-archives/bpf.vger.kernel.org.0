@@ -1,147 +1,95 @@
-Return-Path: <bpf+bounces-67946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67947-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B795EB5081E
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 23:26:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 844D0B508D1
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 00:20:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73E554E5ECD
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 21:26:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4644B1B243CD
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 22:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7555125A324;
-	Tue,  9 Sep 2025 21:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C142B2698A2;
+	Tue,  9 Sep 2025 22:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="AxjhYTJC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B7YHPDUX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B72A525F784;
-	Tue,  9 Sep 2025 21:25:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476E6DDC3
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 22:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757453161; cv=none; b=jwPQrUkA59lSQW0UsXfinIFwolOegGy26cj//A+wv/kvJSz3LlcdX6ivVM7WeKfid3LwbVPLwZ7S3Zn/o06q0/qEyQaHmjUqfu1TbpKdqnw91qBWd1Bp5OG/IWVu4O+GzFC+C65FJpCZlYJwgaDDsz1UCveDVWt86tmjnl6FsSs=
+	t=1757456418; cv=none; b=nmv6vCLRrBux1uueX7wDHiptBD+FNugS1TZ/dcn9MA4Nr2n7dORmORCmFgTydUDcCTyUibE7VNjQJaqPFTM4xBocHP1LQDFb3b6O3e1AqjLlWlroWKSEHaifoc4HRLjluLFPFo56vx3mc9B/ushXKUsuM5Tnp8HS71gRWE9lK1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757453161; c=relaxed/simple;
-	bh=bzziaSea1ezUweh9b99QeO0GW6TdKMo9jl6rrcFxt/Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YGxuNsULy9Kv4DB6cvTIsHRipkb6nplL0p66wbC1zWnvGypbcREAqC7CxV3Z3uK4Zz1ADK0yamLbnsy9KR+XMNQDjySGsmzeA+ma48/KiOB6rVEJybz/OsRDcVKLhP8jw11OvZBsLF9pdX/00TGPmPqM57kA3vMmgibkKYjr7xA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=AxjhYTJC; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1uw5qG-00GhtX-Hv; Tue, 09 Sep 2025 23:25:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=0o2XDIdrcZ+poEKn50hqKwtLG2/0sDmrZ/MBl6kvJBw=; b=AxjhYTJCBDiSG2+dyYbg4GPiCC
-	AlrS60fZGsOKZKFNHlP1YdTvA53yxtMc/fvo+Tk5l0rQTEYcaADUE8st+ydaR6qzVf04Mnw2uVlhL
-	Yj40O+1qdo4y6Rw5XrNv7Yi7GepT4yx9kWGs2FACnYZNPS6eq8lGkgSEjFFbZRTePJHXPMMIoKHTj
-	fVO8sKqk+gPw0W7S6OleVDiOI7h8LoGmWuuU2+tSmYnJ5y97ZjI0JIKxRK5PsTDXkvkl1ro6lmWAT
-	OHdbXZTkE6ciSQoI3ZseK+fwaPm75H5eZcKi3rBjEd/7u4GH8zcMQX7wkwnjfmnVMihK90J3fpBU6
-	ejg9w9yw==;
-Received: from [10.9.9.72] (helo=submission01.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1uw5qE-0007kN-Pu; Tue, 09 Sep 2025 23:25:31 +0200
-Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1uw5q3-00Ev5C-4k; Tue, 09 Sep 2025 23:25:19 +0200
-Message-ID: <35912d55-eb6e-403a-9a7a-05cae551ccf3@rbox.co>
-Date: Tue, 9 Sep 2025 23:25:16 +0200
+	s=arc-20240116; t=1757456418; c=relaxed/simple;
+	bh=k543HBY3iPS5FEJ45yq8cqoQji/9GFCbQc+MS9+u1M8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=hZsHGgzrbHHRWascdig5nkmz3+rcC7aigBi5F8BjQQgv4Bt/IkjIDuc3Wy0a3pB3CqYWcRbYTuDvjPZYKOCkLyA1R3LN3MkJmPJR9theEu0JhXMgCQIjmUBrb4qtUJo4Q+xlwfKW0L96p75Dv3Cxk1pfSfRJD1wbbhWh7oZuMU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B7YHPDUX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0DF7C4CEF4;
+	Tue,  9 Sep 2025 22:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757456416;
+	bh=k543HBY3iPS5FEJ45yq8cqoQji/9GFCbQc+MS9+u1M8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=B7YHPDUXh3EDGedKESwNylPzeSxBpTrOTW0d6hEhr7//kE4Cg6n+QbtirCHThhI+y
+	 3J5fYLeWw8awLrTMtjPPWOGzEz4mEW5Clz17cCNGmCYv3/H3JcyBF52c35qE73P0nN
+	 /k88qvBxcYbhbJvbC75zp7M5dO0LcVdna6oO+D20SuE5jxUqaQ/vjttHOMPy2NcC9h
+	 ixmOQE1QKke48KCsFrkiheFg8YQa5CqYnxyO1eOO288rrHhFE1MSkSuxzayxp9IikT
+	 ZYjF3KDLCeVskVDC/4YF7WbvVbluLePub78uHDLRqqnb88u269tlDmZL2q7r+HiYTQ
+	 D4L9iY+sYrj7w==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34344383BF69;
+	Tue,  9 Sep 2025 22:20:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/5] selftests/bpf: sockmap_redir: Simplify
- try_recv()
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250905-redir-test-pass-drop-v1-0-9d9e43ff40df@rbox.co>
- <20250905-redir-test-pass-drop-v1-1-9d9e43ff40df@rbox.co>
- <87ikhs54z2.fsf@cloudflare.com> <87bjnk53uo.fsf@cloudflare.com>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <87bjnk53uo.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2] rqspinlock: Choose trylock fallback for NMI
+ waiters
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175745641999.833608.430490724192273857.git-patchwork-notify@kernel.org>
+Date: Tue, 09 Sep 2025 22:20:19 +0000
+References: <20250909184959.3509085-1-memxor@gmail.com>
+In-Reply-To: <20250909184959.3509085-1-memxor@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, josef@toxicpanda.com, ast@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+ eddyz87@gmail.com, kkd@meta.com, kernel-team@meta.com
 
-On 9/9/25 12:15, Jakub Sitnicki wrote:
-> On Tue, Sep 09, 2025 at 11:51 AM +02, Jakub Sitnicki wrote:
->> On Fri, Sep 05, 2025 at 01:11 PM +02, Michal Luczaj wrote:
->>> try_recv() was meant to support both @expect_success cases, but all the
->>> callers use @expect_success=false anyway. Drop the unused logic and fold in
->>> MSG_DONTWAIT. Adapt callers.
->>>
->>> Subtle change here: recv() return value of 0 will also be considered (an
->>> unexpected) success.
->>>
->>> Signed-off-by: Michal Luczaj <mhal@rbox.co>
->>> ---
->>>  .../selftests/bpf/prog_tests/sockmap_redir.c       | 25 +++++++++-------------
->>>  1 file changed, 10 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_redir.c b/tools/testing/selftests/bpf/prog_tests/sockmap_redir.c
->>> index 9c461d93113db20de65ac353f92dfdbe32ffbd3b..c1bf1076e8152b7d83c3e07e2dce746b5a39cf7e 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_redir.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_redir.c
->>> @@ -144,17 +144,14 @@ static void get_redir_params(struct redir_spec *redir,
->>>  		*redirect_flags = 0;
->>>  }
->>>  
->>> -static void try_recv(const char *prefix, int fd, int flags, bool expect_success)
->>> +static void fail_recv(const char *prefix, int fd, int more_flags)
->>>  {
->>>  	ssize_t n;
->>>  	char buf;
->>>  
->>> -	errno = 0;
->>> -	n = recv(fd, &buf, 1, flags);
->>> -	if (n < 0 && expect_success)
->>> -		FAIL_ERRNO("%s: unexpected failure: retval=%zd", prefix, n);
->>> -	if (!n && !expect_success)
->>> -		FAIL("%s: expected failure: retval=%zd", prefix, n);
->>> +	n = recv(fd, &buf, 1, MSG_DONTWAIT | more_flags);
->>> +	if (n >= 0)
->>> +		FAIL("%s: unexpected success: retval=%zd", prefix, n);
->>>  }
->>
->> This bit, which you highlighted in the description, I don't get.
->>
->> If we're expecting to receive exactly one byte, why treat a short read
->> as a succcess? Why not make it a strict "n != 1" check?
->>
->> [...]
-> 
-> Nevermind. It makes sense now. We do want to report a failure for 0-len
-> msg recv as well. You're effectively checking if the rcv queue is empty.
-> 
-> I'd add MSG_PEEK, to signal that we're _just checking_ if the socket is
-> readable, and turn the check into the below to succeed only when
-> queue is empty:
-> 
->         (n != -1 || (errno != EAGAIN && errno != EWOULDBLOCK))
+Hello:
 
-Well, looks like adding MSG_PEEK exposed a bug in the test. I'll fix that.
+This patch was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Thanks,
-Michal
+On Tue,  9 Sep 2025 18:49:59 +0000 you wrote:
+> Currently, out of all 3 types of waiters in the rqspinlock slow path
+> (i.e., pending bit waiter, wait queue head waiter, and wait queue
+> non-head waiter), only the pending bit waiter and wait queue head
+> waiters apply deadlock checks and a timeout on their waiting loop. The
+> assumption here was that the wait queue head's forward progress would be
+> sufficient to identify cases where the lock owner or pending bit waiter
+> is stuck, and non-head waiters relying on the head waiter would prove to
+> be sufficient for their own forward progress.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf,v2] rqspinlock: Choose trylock fallback for NMI waiters
+    https://git.kernel.org/bpf/bpf/c/0d80e7f951be
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
