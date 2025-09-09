@@ -1,138 +1,207 @@
-Return-Path: <bpf+bounces-67936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67937-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46640B50721
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 22:32:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8337DB50763
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 22:47:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFB9A543249
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:32:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E9EF5E76FB
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5659D35CEB2;
-	Tue,  9 Sep 2025 20:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A429135A2B4;
+	Tue,  9 Sep 2025 20:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LtY8XwGy"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YABzo4v9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251542E1746;
-	Tue,  9 Sep 2025 20:32:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B39301022
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 20:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757449964; cv=none; b=LFwQMtKKyzRR/yrrP+4i42SlFyqTBSSZ8y25Kcl+opMOQEo7GZYlhaF1vX4oTtlfPtwj+o8eDhw6kh1USzr9YNVJFOU/GXevEOnJMhAcKj06zixHHnmlXWiy+A6AN6ZEdnMxydI3BGfJMZ1i/Mo7SZ9K8zvMLpL+91u41buw7lk=
+	t=1757450799; cv=none; b=QJx3ozEs4TBvHwVtQZbMJrB7zCyX/tM+FGmEwzr+FPxoPQympupu/Scy8p5HiJELcmtNNnZ+xevbaJiyBthG0upqNYrpmDUrVDAmEFpKDExe9qzq7iEyR9dqVHR5Efdc6mP0/73JjkdCmtPbjLIEQZAgyanWR5YzyvUjqqOikfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757449964; c=relaxed/simple;
-	bh=VAI0WXbXUb5x9r3u4rQKLO6ou4RNUkmvBE8iI+zQUTM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QlOlg1koGbVBSc15ZUOXuIzkKzgSKo+/nae+lOjVbYwyNIQ3XSe/pC591P9FiZnLpqeharuj9nPKNAiJRgoUWF2eW3poQ1kw94L3PZt0eVLfThyoAnoCbSQRBQitp5NyqxeuFuqt8GCY3yAsM/bULxSJ52TkceGDb/GPZcF5nOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LtY8XwGy; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757449963; x=1788985963;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=VAI0WXbXUb5x9r3u4rQKLO6ou4RNUkmvBE8iI+zQUTM=;
-  b=LtY8XwGyR0lbhEeqAmMLTu5b7lb0Ssml8NXc18oHPZBPdyLk/c97nBDD
-   uH8nBj41LGv8nKeMqkMrLWZbW35/dvb779Ia8oVJg/M7mvrvyxq+dumRi
-   D/2eMhTXEizFp9CDZLIfhKxvx7c+2jrDtMoxee9EraD0hBeGPVy4/8olV
-   +L4J4VRA70EpOEvuw3P4vOJGPtiASAu7AdcFbrRqmVm47FfUcm4MbTDnD
-   CzmBADDLVBwZZtJJZvbrRla5UIFG2sVske7f8+EGQujQ8r/DCVDkdAMM1
-   r7Q3AZXWXi2R64fFb4Ng3wwFNPWn1InedsSjNxi46FsBgtyfZDTyL6SU/
-   g==;
-X-CSE-ConnectionGUID: HXhtTh7FRVGubFXicgsu9A==
-X-CSE-MsgGUID: 3pjQxB6tQbubOaRIrsL4bg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11548"; a="59606757"
-X-IronPort-AV: E=Sophos;i="6.18,252,1751266800"; 
-   d="scan'208";a="59606757"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2025 13:32:41 -0700
-X-CSE-ConnectionGUID: N005NoPbQnSwMNb53EdE4g==
-X-CSE-MsgGUID: Fsb2p+UnQ1K6zj85stz/lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,252,1751266800"; 
-   d="scan'208";a="173287025"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by orviesa008.jf.intel.com with ESMTP; 09 Sep 2025 13:32:41 -0700
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	andrew+netdev@lunn.ch,
-	netdev@vger.kernel.org
-Cc: Tianyu Xu <tianyxu@cisco.com>,
-	anthony.l.nguyen@intel.com,
-	xtydtc@gmail.com,
-	kurt@linutronix.de,
-	sriram.yagnaraman@ericsson.com,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	sdf@fomichev.me,
-	bpf@vger.kernel.org,
-	Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-	Joe Damato <joe@dama.to>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	Rinitha S <sx.rinitha@intel.com>
-Subject: [PATCH net 1/4] igb: Fix NULL pointer dereference in ethtool loopback test
-Date: Tue,  9 Sep 2025 13:32:31 -0700
-Message-ID: <20250909203236.3603960-2-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250909203236.3603960-1-anthony.l.nguyen@intel.com>
-References: <20250909203236.3603960-1-anthony.l.nguyen@intel.com>
+	s=arc-20240116; t=1757450799; c=relaxed/simple;
+	bh=Fct3e4B6A6ZR1i/d0po8drRvWEtKD8QIsPSJI8uf17A=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=VYi/WWTTcwHDSImTGWzsTrmLAze0CNOFKdCSJ669CmE5LJVFQj06YtlGPdp0/WNb71haGut51eprP4kBl4NRgdB8vi5yhj/xGVVoPHjHk/2WJYYEy9QdWu8ISjhb+UoK4KwXFHhHoWRvJB+VH0sANa3FWK6F8AeIt9xYm3Ua53k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YABzo4v9; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-24ca417fb41so70756235ad.1
+        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 13:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1757450796; x=1758055596; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1lvZ1o30VYBTsa6ogSGZDG7Gv6CnhJma3tgeQqrmyfc=;
+        b=YABzo4v9cO8fy33ueWodrnsvbBq/pR4rGUEQH4zz5YHRoj7x+jEP5oSU3mW8r0qkRA
+         VT++il4H8lCiOlwnZPj1KRb/B2yZmiTmtST6m8/tU22hZvkSPuRDa1YTeF1lB9XxNsuY
+         U8+Jl9WomXfaMHOUUqyJyZrtmBm64OpDFUoMOcUQDox37yilABm6Vgsjxph1l9R5t2lK
+         YzNsraQXa4zcYiBuh9brmIjwbRrt9BS4zpuuydkbdSIxORjGu3G8eQKsQYZC6mZ/2y6n
+         wfTZMk5K9WJ3nDR4ZycL8gLxTcBbHkW5+a9LunFbfs9gMpqytdPPTjPI1l0YQyH9WaK+
+         r6Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757450796; x=1758055596;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1lvZ1o30VYBTsa6ogSGZDG7Gv6CnhJma3tgeQqrmyfc=;
+        b=gtmqb57i6mLTWimyC8BCmk09ujmLLEr7lnQmT733itjqv8HUEeQzXfYl4q7F2fXM/q
+         g/VKd4xlrVJ9wPEsp1pflOHEJQV1uIlaaEKP+ykhesloLCR7Y94GhPGFIFcmedmiasf8
+         2BZyj1MqKJS/UOaGv1ac+nuHXXzyy4klosl7zQXcc8Z4tuPQTvrwdWoMQ43MKLrof3bJ
+         0yTQBRno6Zl3Rms1EXUEUAmS52l37SFjeTw7u2AeRVUg1BJNH+jvhcLkgtvQEWmx7Zk1
+         4YI6j5LQA/33F9lKNXJLrhJXkH9D0tOswLZlb/psAummtOrCqg3v2lTq5SiDYNAPIcZt
+         P4yg==
+X-Forwarded-Encrypted: i=1; AJvYcCVZS9WLTOtvSmFBx+4oLUphmmcDDt5+vhzYgo+d+qF0hJisDwkK4D8GS1t8QRTsBPNuAe8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcscP0LrAGYDQzR0rXoPcp2Ynx1uwYyMlmTpNvFW1B4Fy6ZL5g
+	XENFLKxfr8hUVEX3o7sG8ppT84+SXqpxPBTYpneDTQ2Q6umFntkYe9p/+Nkl8BmY+pefr47tGdq
+	hyggz4w==
+X-Google-Smtp-Source: AGHT+IHJWpCbproYlIy0hWLsQ9DM7XbYS5ndVs6oC3FnBSa72bBmwQxAbv2ImylNXstMVut5vWZ8nKYnfMk=
+X-Received: from pjbnd14.prod.google.com ([2002:a17:90b:4cce:b0:31f:3227:1724])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:1ce:b0:24c:ba67:95
+ with SMTP id d9443c01a7336-2516f04ed3bmr138281735ad.9.1757450796500; Tue, 09
+ Sep 2025 13:46:36 -0700 (PDT)
+Date: Tue,  9 Sep 2025 20:45:30 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.51.0.384.g4c02a37b29-goog
+Message-ID: <20250909204632.3994767-1-kuniyu@google.com>
+Subject: [PATCH v7 bpf-next/net 0/6] bpf: Allow decoupling memcg from sk->sk_prot->memory_allocated.
+From: Kuniyuki Iwashima <kuniyu@google.com>
+To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
+Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Tianyu Xu <tianyxu@cisco.com>
+Some protocols (e.g., TCP, UDP) have their own memory accounting for
+socket buffers and charge memory to global per-protocol counters such
+as /proc/net/ipv4/tcp_mem.
 
-The igb driver currently causes a NULL pointer dereference when executing
-the ethtool loopback test. This occurs because there is no associated
-q_vector for the test ring when it is set up, as interrupts are typically
-not added to the test rings.
+If the socket has sk->sk_memcg this memory is also charged to the memcg
+as sock in memory.stat.
 
-Since commit 5ef44b3cb43b removed the napi_id assignment in
-__xdp_rxq_info_reg(), there is no longer a need to pass a napi_id to it.
-Therefore, simply use 0 as the last parameter.
+We do not need to pay costs for two orthogonal memory accounting
+mechanisms.
 
-Fixes: 2c6196013f84 ("igb: Add AF_XDP zero-copy Rx support")
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Reviewed-by: Joe Damato <joe@dama.to>
-Signed-off-by: Tianyu Xu <tianyxu@cisco.com>
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Tested-by: Rinitha S <sx.rinitha@intel.com> (A Contingent worker at Intel)
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/igb/igb_main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This series allows decoupling memcg from the global memory accounting
+(memcg + tcp_mem -> memcg) if socket is configured as such by sysctl
+or BPF prog.
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index a9a7a94ae61e..453deb6d14b3 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -4453,8 +4453,7 @@ int igb_setup_rx_resources(struct igb_ring *rx_ring)
- 	if (xdp_rxq_info_is_reg(&rx_ring->xdp_rxq))
- 		xdp_rxq_info_unreg(&rx_ring->xdp_rxq);
- 	res = xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev,
--			       rx_ring->queue_index,
--			       rx_ring->q_vector->napi.napi_id);
-+			       rx_ring->queue_index, 0);
- 	if (res < 0) {
- 		dev_err(dev, "Failed to register xdp_rxq index %u\n",
- 			rx_ring->queue_index);
+
+Overview of the series:
+
+  patch 1 & 2 prepare for decoupling memcg from sk_prot->memory_allocated
+    based on the SK_MEMCG_EXCLUSIVE flag
+  patch 3 introduces net.core.memcg_exclusive sysctl
+  patch 4 & 5 supports flagging SK_MEMCG_EXCLUSIVE via bpf_setsockopt()
+  patch 6 is selftest
+
+
+Changes:
+  v7:
+    * Rename s/ISOLATED/EXCLUSIVE/
+    * Add patch 3 (net.core.memcg_exclusive sysctl)
+    * Reorder the core patch 2 before sysctl + bpf changes
+    * Patch 6
+      * Add test for sysctl
+
+  v6: https://lore.kernel.org/netdev/20250908223750.3375376-1-kuniyu@google.com/
+    * Patch 4
+      * Update commit message
+    * Patch 5
+      * Trace sk_prot->memory_allocated + sk_prot->memory_per_cpu_fw_alloc
+
+  v5: https://lore.kernel.org/netdev/20250903190238.2511885-1-kuniyu@google.com/
+    * Patch 2
+      * Rename new variants to bpf_sock_create_{get,set}sockopt()
+    * Patch 3
+      * Limit getsockopt() to BPF_CGROUP_INET_SOCK_CREATE
+    * Patch 5
+      * Use kern_sync_rcu()
+      * Double NR_SEND to 128
+
+  v4: https://lore.kernel.org/netdev/20250829010026.347440-1-kuniyu@google.com/
+    * Patch 2
+      * Use __bpf_setsockopt() instead of _bpf_setsockopt()
+      * Add getsockopt() for a cgroup with multiple bpf progs running
+    * Patch 3
+      * Only allow inet_create() to set flags
+      * Inherit flags from listener to child in sk_clone_lock()
+      * Support clearing flags
+    * Patch 5
+      * Only use inet_create() hook
+      * Test bpf_getsockopt()
+      * Add serial_ prefix
+      * Reduce sleep() and the amount of sent data
+
+  v3: https://lore.kernel.org/netdev/20250826183940.3310118-1-kuniyu@google.com/
+    * Drop patches for accept() hook
+    * Patch 1
+      * Merge if blocks
+    * Patch2
+      * Drop bpf_func_proto for accept()
+    * Patch 3
+      * Allow flagging without sk->sk_memcg
+      * Inherit SK_BPF_MEMCG_SOCK_ISOLATED in __inet_accept()
+
+  v2: https://lore.kernel.org/bpf/20250825204158.2414402-1-kuniyu@google.com/
+    * Patch 2
+      * Define BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT() when CONFIG_CGROUP_BPF=n
+    * Patch 5
+      * Make 2 new bpf_func_proto static
+    * Patch 6
+      * s/mem_cgroup_sk_set_flag/mem_cgroup_sk_set_flags/ when CONFIG_MEMCG=n
+      * Use finer CONFIG_CGROUP_BPF instead of CONFIG_BPF_SYSCALL for ifdef
+
+  v1: https://lore.kernel.org/netdev/20250822221846.744252-1-kuniyu@google.com/
+
+
+Kuniyuki Iwashima (6):
+  tcp: Save lock_sock() for memcg in inet_csk_accept().
+  net-memcg: Allow decoupling memcg from global protocol memory
+    accounting.
+  net-memcg: Introduce net.core.memcg_exclusive sysctl.
+  bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
+  bpf: Introduce SK_BPF_MEMCG_FLAGS and SK_BPF_MEMCG_EXCLUSIVE.
+  selftest: bpf: Add test for SK_MEMCG_EXCLUSIVE.
+
+ Documentation/admin-guide/sysctl/net.rst      |   9 +
+ include/net/netns/core.h                      |   3 +
+ include/net/proto_memory.h                    |  15 +-
+ include/net/sock.h                            |  47 +++-
+ include/net/tcp.h                             |  10 +-
+ include/uapi/linux/bpf.h                      |   6 +
+ mm/memcontrol.c                               |  13 +-
+ net/core/filter.c                             |  82 ++++++
+ net/core/sock.c                               |  65 +++--
+ net/core/sysctl_net_core.c                    |  11 +
+ net/ipv4/af_inet.c                            |  37 +++
+ net/ipv4/inet_connection_sock.c               |  26 +-
+ net/ipv4/tcp.c                                |   3 +-
+ net/ipv4/tcp_output.c                         |  10 +-
+ net/mptcp/protocol.c                          |   3 +-
+ net/tls/tls_device.c                          |   4 +-
+ tools/include/uapi/linux/bpf.h                |   6 +
+ .../selftests/bpf/prog_tests/sk_memcg.c       | 261 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/sk_memcg.c  | 146 ++++++++++
+ 19 files changed, 699 insertions(+), 58 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_memcg.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sk_memcg.c
+
 -- 
-2.47.1
+2.51.0.384.g4c02a37b29-goog
 
 
