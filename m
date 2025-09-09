@@ -1,67 +1,69 @@
-Return-Path: <bpf+bounces-67863-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67864-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA06B4FB7C
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 14:41:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D0EBB4FB9C
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 14:47:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0730E18999F2
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 12:41:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 295084E57E7
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 12:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74F433A014;
-	Tue,  9 Sep 2025 12:40:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05ECE338F2F;
+	Tue,  9 Sep 2025 12:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NdpnaDqS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KG/sKjTM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E44132A3D7;
-	Tue,  9 Sep 2025 12:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C154227380C
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 12:47:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757421613; cv=none; b=upQYzFJXJAUM81PL2Oln+JGy6y8Cg9HXcB8/gileAPdaS6qKqbjIxKUjpVJfduZrMRm+XuUS813viUaR6K9SXUCIV+atRDm9f8VBrGKkhAn+gNQpEHJPb8mD/wuMxmZKGqLswP71wCEeJ6Oe/aE3q6jjcsh/rIrFV+oZU7ZxxUs=
+	t=1757422070; cv=none; b=HS1VeKHZ0NagA7frUs2eOxuiwazxjz+nHn0bwstuI1kSPJQSxxgyRnbhzgTdYGRlrcJ2BFcf1cjZxzALd74XM62F+QYrsiOlc/QFcYfBVSu/7kc20hVy8LBETBpTEkA9dbKkFrnIdSgZO1JdH03bsVkO1XfY+4/MCWBOmDSqJUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757421613; c=relaxed/simple;
-	bh=E0pyzzXc5ywisIehqLd9QVqn8ohz0R6l3t8a5bN6GPQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gjuqdS9xrcK+Ysv1OpfDwdxgtPo7Zh5JYsC+RCCc35k0CMa+u4E2O9xwQ7mlO5HadeJQhGC6DIcBfRU4xqk948zUoRNYBdLkyE5C7U2gO8duGLOZzt98qUYUtFHXiqniYK5tKximFgE9cHRq25TCpt4wR9Gs3Azan3bEwJmr22s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NdpnaDqS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B11DC4CEF4;
-	Tue,  9 Sep 2025 12:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757421612;
-	bh=E0pyzzXc5ywisIehqLd9QVqn8ohz0R6l3t8a5bN6GPQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NdpnaDqSV+cIrUEa0xp48dPO9/HLwy2WjTn/gdyoiBwiV03w8my8dnDSlWtX5pcy0
-	 tKUuU78gwaXUDoL5kHeSumgsXw5rGiWb8FuRqjOqQFHQypt/ZsAF87cu0iLh4XPMVB
-	 oKatSJuVKW3KvmOzHN+T0xqYen9FVEstV4fWndAFoyoGhh76EcmAnEp44sbGMeDd6W
-	 NmwCYWVpnoV6tTCJdlWXWxnqhmEX88MW3bCXhH4y8I4bjUsDdR37Ssaeb5R/uRrqd+
-	 vFkW7+0oxAhr9y7tHWSEQpF/u42j5BVrfki6M31XSlMEkTUi6RX0QQpp7FH+KfpWPH
-	 1uyWd42IlBOqw==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
+	s=arc-20240116; t=1757422070; c=relaxed/simple;
+	bh=C/o3+QkdyajagqcWpvpUtf/kbpe5Cr0u7uLUZDwXD6w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hfSWOtA6Q9HOMX42LStI5/CDmhDPBHJE0kgVqaElpUibtqONbONtZdh6qqFqw8xDmR4WXfJc3niKm+bc9rDsuwcLHGGJweFc8z+TJHq4hLqSwCzd2ratKOwFOZSLC6QuLNKdCBNMtriFQ1TQq+kYZjLBf3/s1rV8/9v0l8pgwJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KG/sKjTM; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757422056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Civ3v7++W+FLuwnLZNUaxx6xIkTNDQTvDlA6SdwcjAQ=;
+	b=KG/sKjTMufw82dzqQfGVZtHmIKPFQHjuko4gDGm2VJ8PiUkf/cdXrcsWVNTTRI0/e158e7
+	vA1IZjtT5F2Ib8aSgAXpjckrO5n7N9Cp53SXyOkPTcvGNW3IavPzg4XB68O7GjhVMY0lAs
+	jNytsDhuBxLvL89RZdlSy706tA7kG78=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: jiayuan.chen@linux.dev
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv3 perf/core 6/6] selftests/bpf: Add kprobe multi write ctx attach test
-Date: Tue,  9 Sep 2025 14:38:57 +0200
-Message-ID: <20250909123857.315599-7-jolsa@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250909123857.315599-1-jolsa@kernel.org>
-References: <20250909123857.315599-1-jolsa@kernel.org>
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2] selftests/bpf: Fix incorrect array size calculation
+Date: Tue,  9 Sep 2025 20:47:04 +0800
+Message-ID: <20250909124721.191555-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,86 +71,52 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Adding test to check we can't attach kprobe multi program
-that writes to the context.
+The loop in bench_sockmap_prog_destroy() has two issues:
 
-It's x86_64 specific test.
+1. Using 'sizeof(ctx.fds)' as the loop bound results in the number of
+   bytes, not the number of file descriptors, causing the loop to iterate
+   far more times than intended.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+2. The condition 'ctx.fds[0] > 0' incorrectly checks only the first fd for
+   all iterations, potentially leaving file descriptors unclosed. Change
+   it to 'ctx.fds[i] > 0' to check each fd properly.
+
+These fixes ensure correct cleanup of all file descriptors when the
+benchmark exits.
+
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/bpf/aLqfWuRR9R_KTe5e@stanley.mountain/
 ---
- .../bpf/prog_tests/kprobe_multi_test.c        | 27 +++++++++++++++++++
- .../selftests/bpf/progs/kprobe_write_ctx.c    |  7 +++++
- 2 files changed, 34 insertions(+)
+ tools/testing/selftests/bpf/benchs/bench_sockmap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index e19ef509ebf8..bc52389217e2 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -7,6 +7,7 @@
- #include "kprobe_multi_session.skel.h"
- #include "kprobe_multi_session_cookie.skel.h"
- #include "kprobe_multi_verifier.skel.h"
-+#include "kprobe_write_ctx.skel.h"
- #include "bpf/libbpf_internal.h"
- #include "bpf/hashmap.h"
+diff --git a/tools/testing/selftests/bpf/benchs/bench_sockmap.c b/tools/testing/selftests/bpf/benchs/bench_sockmap.c
+index 8ebf563a67a2..cfc072aa7fff 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_sockmap.c
++++ b/tools/testing/selftests/bpf/benchs/bench_sockmap.c
+@@ -10,6 +10,7 @@
+ #include <argp.h>
+ #include "bench.h"
+ #include "bench_sockmap_prog.skel.h"
++#include "bpf_util.h"
  
-@@ -753,6 +754,30 @@ static void test_attach_override(void)
- 	kprobe_multi_override__destroy(skel);
- }
- 
-+#ifdef __x86_64__
-+static void test_attach_write_ctx(void)
-+{
-+	struct kprobe_write_ctx *skel = NULL;
-+	struct bpf_link *link = NULL;
-+
-+	skel = kprobe_write_ctx__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "kprobe_write_ctx__open_and_load"))
-+		return;
-+
-+	link = bpf_program__attach_kprobe_opts(skel->progs.kprobe_multi_write_ctx,
-+						     "bpf_fentry_test1", NULL);
-+	if (!ASSERT_ERR_PTR(link, "bpf_program__attach_kprobe_opts"))
-+		bpf_link__destroy(link);
-+
-+	kprobe_write_ctx__destroy(skel);
-+}
-+#else
-+static void test_attach_write_ctx(void)
-+{
-+	test__skip();
-+}
-+#endif
-+
- void serial_test_kprobe_multi_bench_attach(void)
+ #define FILE_SIZE (128 * 1024)
+ #define DATA_REPEAT_SIZE 10
+@@ -124,8 +125,8 @@ static void bench_sockmap_prog_destroy(void)
  {
- 	if (test__start_subtest("kernel"))
-@@ -792,5 +817,7 @@ void test_kprobe_multi_test(void)
- 		test_session_cookie_skel_api();
- 	if (test__start_subtest("unique_match"))
- 		test_unique_match();
-+	if (test__start_subtest("attach_write_ctx"))
-+		test_attach_write_ctx();
- 	RUN_TESTS(kprobe_multi_verifier);
- }
-diff --git a/tools/testing/selftests/bpf/progs/kprobe_write_ctx.c b/tools/testing/selftests/bpf/progs/kprobe_write_ctx.c
-index 4621a5bef4e2..f77aef0474d3 100644
---- a/tools/testing/selftests/bpf/progs/kprobe_write_ctx.c
-+++ b/tools/testing/selftests/bpf/progs/kprobe_write_ctx.c
-@@ -12,4 +12,11 @@ int kprobe_write_ctx(struct pt_regs *ctx)
- 	ctx->ax = 0;
- 	return 0;
- }
-+
-+SEC("kprobe.multi")
-+int kprobe_multi_write_ctx(struct pt_regs *ctx)
-+{
-+	ctx->ax = 0;
-+	return 0;
-+}
- #endif
+ 	int i;
+ 
+-	for (i = 0; i < sizeof(ctx.fds); i++) {
+-		if (ctx.fds[0] > 0)
++	for (i = 0; i < ARRAY_SIZE(ctx.fds); i++) {
++		if (ctx.fds[i] > 0)
+ 			close(ctx.fds[i]);
+ 	}
+ 
 -- 
-2.51.0
+2.43.0
 
 
