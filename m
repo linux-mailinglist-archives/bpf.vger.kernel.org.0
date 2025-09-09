@@ -1,165 +1,168 @@
-Return-Path: <bpf+bounces-67907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0D34B50331
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:49:12 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E001B503BB
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 19:03:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA8D51C63247
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 16:49:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4DADA4E3246
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 17:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0B5248F5E;
-	Tue,  9 Sep 2025 16:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6222D35E4D9;
+	Tue,  9 Sep 2025 16:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="fOGqQAiH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XH8Q1frt"
 X-Original-To: bpf@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88BD334734;
-	Tue,  9 Sep 2025 16:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C58435E4C9
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 16:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757436510; cv=none; b=cz1zJNdcPHKFA12bAvCeHCHtGNwuwJV52YK3uCgUkSB1zu21yKV/A//k3q54H1IH50b/iQ7riUyXVF+ZJ0jb6G0pjvs2q9dHsA2GN4Sz36G963wyY56Mysi7D8GHcptOKCpDWSZLl+qt9aqa9Y6wMtiohaF5oN95o4BSRcve9YI=
+	t=1757437165; cv=none; b=pCnZhCMBK/073zgQ7d+OcvjxY9SvfRz8sC9H593l5vt54+5lpCm1SdhwXI5lZ4lGsDtpJFfIjyxX9O9ySeGeZhLG1bcQWsan67jazOBcKWqaCezgxbXJ3GYJ5It2/dIe16AyXjtUTIz5qmFKfkeriztK/9EVzKJSxbz9gmJW198=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757436510; c=relaxed/simple;
-	bh=P6ziM++D7EGjvykroQP/8gShFk9KhYnpWo7xbEc2R64=;
-	h=In-Reply-To:References:From:To:Cc:Subject:MIME-Version:
-	 Content-Disposition:Content-Type:Message-Id:Date; b=Np1TFZKEysiZO8g3uifAZjNiIFFoQs6ZxjuGk5sj1wRiuNYoNlQSyH+3VCLovHLaKQN5Wb0ZtnXNyvi7JgXHPScpxOclUOCacuyCKU4gicDVirxSzY2bb8FBvr5jw8vSBbPNTBUm2Keg2Zt74j8n6kEZkDuFUMfy4LfDgWiFXho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=fOGqQAiH; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
-	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=rz0hbAq7fEga5zRohMAv5O8tOvXUWgvThRUc5VepeC8=; b=fOGqQAiHccsvB7ENctq9tyL9Hy
-	vGSFLvDRw+4U/XUQETE04K0cyRdoCpe8ELqAeyOth0cDv6pfiS9+aYDk1BVw2mqdapKuMTTUkbaEs
-	8gR0XMZjLqCzNwxLiSnBbkAT0I6+uowSOJExq5lko/5u8TKQIqqjQed0GLyx/PFYAqDk9kWbIclBn
-	s5MR6orvBn8GuW+h1Xm4OkmTbJlF4YLyIoiQvPJK7VRLs7oqXDs53W0l4jKUNnsBwHUMKoykQu0Ic
-	SyQBLba2QqPsCkdGDq54mhgnvk+KKOWys9n3XeDVBnbwE2fmboR1puh4NJBNI/9ZpSQGsi6LZLXBJ
-	r375amDg==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:55444 helo=rmk-PC.armlinux.org.uk)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <rmk@armlinux.org.uk>)
-	id 1uw1W2-0000000006H-0lfA;
-	Tue, 09 Sep 2025 17:48:22 +0100
-Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.98.2)
-	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1uw1W0-00000004MCp-0Iuc;
-	Tue, 09 Sep 2025 17:48:20 +0100
-In-Reply-To: <aMBaCga5UAXT03Bi@shell.armlinux.org.uk>
-References: <aMBaCga5UAXT03Bi@shell.armlinux.org.uk>
-From: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-To: Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	s=arc-20240116; t=1757437165; c=relaxed/simple;
+	bh=WVAjxwh17S2lB+pHUPM4iwfDcpAOFH3ek15Q+dT/V7c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W4rnHyVpJkQOTPUixwYNK8W38ofz9RVBKOg2JprmCS6C8UyEkxr630oAeDkOs0VDUej4BgltGuL+6xYx41i0grvGyQGwTTJmjAL4I//8PXvCvqvnhnah9A0yYHmgec05WZYV2FgJMFdDwA5bE3KsBLXpEIbAfcCqNuHjmik1Dvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XH8Q1frt; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-45de2b517a3so25541545e9.3
+        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 09:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757437162; x=1758041962; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tXS505H9R1o+vqx1ndt9ftdWkFdo1/cPCy+boBP27hM=;
+        b=XH8Q1frt43BWwrhPKGc+mGeyOjBvnFEwBLPbK0RobWNVe4l5fV1v7Moo2j6iANaILd
+         7eRdMA8r7gnos0H0EUdMfWdfxzS9tVCH/rskFDSuw+YlnWGdqIvqsaJnKwIve0i5lwGp
+         8sX4obhP9yIg6QIeibkkeQ6WXxPyRuOmLRzDNDjwKwX0TQ6wyiXSjlvj/7hHjAC7pCs8
+         WAg1T1klokOm5KDTukFkJ45zoJw+VyL+V+1JnzzFYYIB1hmqk4rhID0pMdtqoWloViDb
+         JrYUdtPaQzqAY1cqffQ+wTTOjIhJV+Zc7Fkps43iXFjT17bzOz1xxjmSc8FesU7fpCWq
+         eeHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757437162; x=1758041962;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tXS505H9R1o+vqx1ndt9ftdWkFdo1/cPCy+boBP27hM=;
+        b=kDAUpG0H6wWWDS2MusQePB/aw/YfjC5bpwxH2cKyQJLHGtNyM2S/6rR/sFC/DnMvtU
+         PlhjgFKlpg4VyF51U1CzLY4v/Wv6ySiZxnZimO1Ra0ysFI7+Emqcqgrmg+SxRdk6uGED
+         XDXp1JF244xqmIvU75rYbpnHQPPEfCYCKmN1sL5/MXdHwPu5BG9HzYUvD66ppBkhoshj
+         ik+cFJUBgcX1D47LrJBU1UbBMPUsnRvPRJrb128MxJ8HLjcZDmeo6vMNydHSdMYaSo5J
+         XlppIARrNpaRK3hOUeB6OfY6AJGNzoI2e/cxou2wocfrOUtMdhwxCrkZyqMDRgADuwzX
+         c0wA==
+X-Gm-Message-State: AOJu0YyPtXYqrgQ0kKqAFP6U/m4uhUKjoIjelhA+FZ59wjaXxQ+yLObQ
+	g7TtJckYQXG4BLevanbaGfKE8oWwTgFGCdAPc/3dHX1/YTZlVB6cZNESuDN6xFMT
+X-Gm-Gg: ASbGnctPjlBFrFWglDOJD/EKxchk/M6WPRX1sbnq/1ox3y06iVo3EDO5gbSXiLU6WcK
+	AqjfIwhym1lHZ+kEuh9pkeFKnHinMsmVyeOHiHpakAv5epA6cbD1KU6ANe65u2Jqna0uiXYJ41K
+	3XzPPoiTtDVc8APVGxQaxqYhYxV5qK4YfbRirqwJ154UMzrWbCflkvRHjjr50YYQvujzB5Cjmxb
+	Okp2W31fccMbsZqoAVFrGGLOwOEkl7/0TN/BCT1+t+FNLZeRTcft3KUo8q4BH5hZItlEU1DHVEq
+	FpFZthgbrj5wF7ljf+UfFYVMUAl1/CE5eWu4rNhfS+Ff+3tWVSB4MaxQIFXheUD9Qn67oZA4Mw2
+	UAN2GBnR0FVeIGhgeDUKeH+j5lBnRpO/Px10c2TLAsj2p2LE2g1Q0gAXCDlpJIws4cg==
+X-Google-Smtp-Source: AGHT+IE1YnAOkEFVFfwRWHkkwqFyDDEBB+TLFrAA7KHQHpqtk5dphZIm1Olzec+fm1Tq7jY2ePnCrQ==
+X-Received: by 2002:a05:600c:6305:b0:45d:5c71:76a9 with SMTP id 5b1f17b1804b1-45ddded7652mr121134115e9.24.1757437161894;
+        Tue, 09 Sep 2025 09:59:21 -0700 (PDT)
+Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45b7e8ab14esm540765965e9.21.2025.09.09.09.59.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Sep 2025 09:59:21 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>,
 	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	bpf@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>
-Subject: [PATCH net-next 11/11] net: stmmac: move timestamping/ptp init to
- stmmac_hw_setup() caller
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf v1] rqspinlock: Choose trylock fallback for NMI waiters
+Date: Tue,  9 Sep 2025 16:59:17 +0000
+Message-ID: <20250909165917.3354162-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1uw1W0-00000004MCp-0Iuc@rmk-PC.armlinux.org.uk>
-Sender: Russell King <rmk@armlinux.org.uk>
-Date: Tue, 09 Sep 2025 17:48:20 +0100
 
-Move the call to stmmac_init_timestamping() or stmmac_setup_ptp() out
-of stmmac_hw_setup() to its caller after stmmac_hw_setup() has
-successfully completed. This slightly changes the ordering during
-setup, but should be safe to do.
+Currently, out of all 3 types of waiters in the rqspinlock slow path
+(i.e., pending bit waiter, wait queue head waiter, and wait queue
+non-head waiter), only the pending bit waiter and wait queue head
+waiters apply deadlock checks and a timeout on their waiting loop. The
+assumption here was that the wait queue head's forward progress would be
+sufficient to identify cases where the lock owner or pending bit waiter
+is stuck, and non-head waiters relying on the head waiter would prove to
+be sufficient for their own forward progress.
 
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+However, the head waiter itself can be preempted by a non-head waiter
+for the same lock (AA) or a different lock (ABBA) in a manner that
+impedes its forward progress. In such a case, non-head waiters not
+performing deadlock and timeout checks becomes insufficient, and the
+system can enter a state of lockup.
+
+This is typically not a concern with non-NMI lock acquisitions, as lock
+holders which in run in different contexts (IRQ, non-IRQ) use "irqsave"
+variants of the lock APIs, which naturally excludes such lock holders
+from preempting one another on the same CPU.
+
+It might seem likely that a similar case may occur for rqspinlock when
+programs are attached to contention tracepoints (begin, end), however,
+these tracepoints either precede the enqueue into the wait queue, or
+succeed it, therefore cannot be used to preempt a head waiter's waiting
+loop.
+
+We must still be careful against nested kprobe and fentry programs that
+may attach to the middle of the head's waiting loop to stall forward
+progress and invoke another rqspinlock acquisition that proceeds as a
+non-head waiter. To this end, drop CC_FLAGS_FTRACE from the rqspinlock.o
+object file.
+
+For now, this issue is resolved by falling back to a repeated trylock on
+the lock word from NMI context, while performing the deadlock checks to
+break out early in case forward progress is impossible, and use the
+timeout as a final fallback.
+
+A more involved fix to terminate the queue when such a condition occurs
+will be made as a follow up.
+
+Reported-by: Josef Bacik <josef@toxicpanda.com>
+Fixes: 164c246571e9 ("rqspinlock: Protect waiters in queue from stalls")
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ kernel/bpf/Makefile     | 1 +
+ kernel/bpf/rqspinlock.c | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index ff12c4b34eb6..8c8ca5999bd8 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3436,7 +3436,7 @@ static void stmmac_safety_feat_configuration(struct stmmac_priv *priv)
-  *  0 on success and an appropriate (-)ve integer as defined in errno.h
-  *  file on failure.
-  */
--static int stmmac_hw_setup(struct net_device *dev, bool ptp_register)
-+static int stmmac_hw_setup(struct net_device *dev)
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 	u32 rx_cnt = priv->plat->rx_queues_to_use;
-@@ -3507,11 +3507,6 @@ static int stmmac_hw_setup(struct net_device *dev, bool ptp_register)
- 
- 	stmmac_mmc_setup(priv);
- 
--	if (ptp_register)
--		stmmac_setup_ptp(priv);
--	else
--		stmmac_init_timestamping(priv);
--
- 	if (priv->use_riwt) {
- 		u32 queue;
- 
-@@ -4000,12 +3995,14 @@ static int __stmmac_open(struct net_device *dev,
- 		}
- 	}
- 
--	ret = stmmac_hw_setup(dev, true);
-+	ret = stmmac_hw_setup(dev);
- 	if (ret < 0) {
- 		netdev_err(priv->dev, "%s: Hw setup failed\n", __func__);
- 		goto init_error;
- 	}
- 
-+	stmmac_setup_ptp(priv);
-+
- 	stmmac_init_coalesce(priv);
- 
- 	phylink_start(priv->phylink);
-@@ -7917,7 +7914,7 @@ int stmmac_resume(struct device *dev)
- 	stmmac_free_tx_skbufs(priv);
- 	stmmac_clear_descriptors(priv, &priv->dma_conf);
- 
--	ret = stmmac_hw_setup(ndev, false);
-+	ret = stmmac_hw_setup(ndev);
- 	if (ret < 0) {
- 		netdev_err(priv->dev, "%s: Hw setup failed\n", __func__);
- 		mutex_unlock(&priv->lock);
-@@ -7925,6 +7922,8 @@ int stmmac_resume(struct device *dev)
- 		return ret;
- 	}
- 
-+	stmmac_init_timestamping(priv);
-+
- 	stmmac_init_coalesce(priv);
- 	phylink_rx_clk_stop_block(priv->phylink);
- 	stmmac_set_rx_mode(ndev);
--- 
-2.47.3
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index 269c04a24664..f6cf8c2af5f7 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -62,3 +62,4 @@ CFLAGS_REMOVE_bpf_lru_list.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_queue_stack_maps.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_lpm_trie.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_ringbuf.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_rqspinlock.o = $(CC_FLAGS_FTRACE)
+diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
+index 5ab354d55d82..a00561b1d3e5 100644
+--- a/kernel/bpf/rqspinlock.c
++++ b/kernel/bpf/rqspinlock.c
+@@ -471,7 +471,7 @@ int __lockfunc resilient_queued_spin_lock_slowpath(rqspinlock_t *lock, u32 val)
+ 	 * any MCS node. This is not the most elegant solution, but is
+ 	 * simple enough.
+ 	 */
+-	if (unlikely(idx >= _Q_MAX_NODES)) {
++	if (unlikely(idx >= _Q_MAX_NODES || in_nmi())) {
+ 		lockevent_inc(lock_no_node);
+ 		RES_RESET_TIMEOUT(ts, RES_DEF_TIMEOUT);
+ 		while (!queued_spin_trylock(lock)) {
+--
+2.51.0
 
 
