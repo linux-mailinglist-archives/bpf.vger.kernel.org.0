@@ -1,249 +1,151 @@
-Return-Path: <bpf+bounces-67880-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67881-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 034AAB500D9
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 17:19:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2E5BB500E9
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 17:20:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 366871C615AC
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 15:19:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0243D7AA96A
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 15:19:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44039352066;
-	Tue,  9 Sep 2025 15:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B5B1350847;
+	Tue,  9 Sep 2025 15:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b="H72Yl/zC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H0hfksql"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7031341652
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 15:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2D6246788;
+	Tue,  9 Sep 2025 15:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757431128; cv=none; b=ESqu3RGQzTXhT/AjpuQurnl+pouxKGpltYPrJTGW1by4raU1D5NIHoQm1m3wTylKWkTTNcFyOyNMMSsSioFYjX5zc57RnrR0EubFcJrLKKCsgiWCJS6d1PpQoxlu2RRIIXTaBjO4CcvWml+Qka6ytYbWaiV2QkkvQOZS/IQR3XA=
+	t=1757431228; cv=none; b=lShkhaXfIKTAm92bwM8A5UlcarXI74+kZkwTS0Mw5o7qSosVDpWOiWllGecJngv+BONgv1ahTRb2wqfCvg5sLh3GBpdA8Ub36SR5XWyth/OF87Q9wDek7lfDML4EvxJ+YgN6yIO5bboRgR12m0qsSnux3jWCDnORCRtWIIdFl7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757431128; c=relaxed/simple;
-	bh=bR4dIdoRPS6mGjl21kqHScfk2rx+W6ycIilX7b/RNGo=;
+	s=arc-20240116; t=1757431228; c=relaxed/simple;
+	bh=24MEWkpDU+oPsVLsFh/DCdvIvAifluDEpWqU6cVm6uY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kOamLdy7b6LrRYuL84cHSUlTG+A7G2/GU+a0oFyU6+XZFyErm3JJAPlRW0/DlEkHeN/V3xPzk+u9TrPSzLt73j5/jOFNHp6D5p1teF/xsSTWgLkh9ChTu8aF7S1aFp6zs1F6gpqpaEeqgu/NWhWLAOWqo2gG6e0irE34m9OgWHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com; spf=pass smtp.mailfrom=openai.com; dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b=H72Yl/zC; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openai.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-55f6186cc17so5149759e87.2
-        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 08:18:46 -0700 (PDT)
+	 To:Cc:Content-Type; b=V8IgQ2C6GS0qYOiXw39l4fywbhs207oaEVSbgwPXtI9DITeotxpw9gn/VQFW83Klg+QEQmjydhlCKL1/ugWAN82dTLuOGTuvGo7cYJx9VBbQDTXL0cnh2ySGLvgvFj+CND0SjJO2zTJioiJnE84Vl2R3Yf7GHrKo6m56gpw9I8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H0hfksql; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-772481b2329so5951731b3a.2;
+        Tue, 09 Sep 2025 08:20:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openai.com; s=google; t=1757431125; x=1758035925; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757431227; x=1758036027; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CTmYm/3NJWN6FaiyVzu4eHMNvDOcOAN+2cDrv4pkNQA=;
-        b=H72Yl/zCPpwPcCfemS1mUrNgI0UeCyWOkK4wrIWkbMhHWwljS8S/OqmNQUPcaZlT5u
-         M6P4gm0xXOf/jiZEMeh9SGtb4bHL1ltWMMBuO7Mnx+DExPnndQZFq69DevBDPr8y17V/
-         ams4FDRTAllxE331o80XHD25cJfCFPxUFeoJk=
+        bh=hLHe+egzyj71r6iVZkeqWuv/uV5QzYXqi8KlStEJB/s=;
+        b=H0hfksqlot5u/jKfDrdCsTC4sIKt/zb20BsLETL1lh3Xpt1bo3ou06vwX3t0zwqeqZ
+         MiGC7TPPCNAKSQABAm2+R+nV2CNW8l6wWy1h44/CZmGKB/lV3uiR/eh/9dnHiB3dW5Sd
+         qiZ+5bpFLdbiWn0yC9grogPxX2mLXfMZsPYz01SCZWd1SXoodaPbSdyqoOl/UUDqu8Zw
+         EPhRoXlDhewwNMdSQFl7biQ7NGlYE0QIaUejqFfEI+mqoLe/CDEJ5DKM7vk9zMTErJjs
+         k8J0Pvs7VT8RU3LVWCT9e9xY2JMkakCZNh1YgltqhhIcTnpUlthiruofGObFocEy9b8i
+         JYVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757431125; x=1758035925;
+        d=1e100.net; s=20230601; t=1757431227; x=1758036027;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CTmYm/3NJWN6FaiyVzu4eHMNvDOcOAN+2cDrv4pkNQA=;
-        b=bd8MoCWjRiwZTEn2Z98c2tdQfeQGqoR/caNoIjdnJKsCr3eB5tniv44qL0DInwDF1l
-         oluT0+3MuO+4Ji6xdI4kfZ0sEfP1t6Dn4pf5DdP62uBBQ0vCL/dIRGlkMHGN+i9vZr6+
-         +h7HCqNG+QPKPOLDUirUcL9zSdwizZ0HVOg1SezfRoSsYoG4eGELxqUoNFZ9/c2QmIyK
-         /r7sS0oz2WUxcNq0JezLXn8szckxZK2lxqI8zJyVf7dqRnfjWqRYL7huGXwkvR4Jhqwf
-         wz9DciR2eqjYOFlbI/mCXMoo56QNbZEtMlK5smcLi7SRlIuLQ+zqOd2A3l4IaRdg96BA
-         qwqw==
-X-Forwarded-Encrypted: i=1; AJvYcCWz1UY8KHkNEylIaA3aaLo1oM64EWkanj/Z/b1Sa8C6VYpyb8bnvDDRJ3qg0Kdh/FAVKl8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwQdvLyZhI54rJx2B3R37AdSxBAWOFKQEodJihs2XKvsm5JswrO
-	V2XHg7C6QhGJCMcNwgZfxXUQkIT+d0DaMqQXlqZ+TgSBiKPkxO164b1zYSwhJKOrJMPWKM/2OO8
-	C24ab7m9tbtZYB3cw7YltgCexJyS33pQxZrfP3rAm7A==
-X-Gm-Gg: ASbGncvCU93n8cZnvCpL+AWYAbxwSR/9UGt4wZx6l/0pHb9EEHtwDrhWZ4JTDwJEI6n
-	Ttv88SHSmYegEXV0EZCI0nlAPXrHoEtmgm2Jbtu6FxBVORy2C0pz2R12SBBzQeMGaFfVdbnAtjS
-	CuU5KQUAcHDdHswNcVkTP+tZB12PLct2Q1FqNfwkG2qhsHc6TmOr/XwWMXw8ChhhebcFETJUiYY
-	JhmG5TgVwYfEvJbEgTc7B9k1siburaiJF3SyKO0g1y9/GGZHUbTxA==
-X-Google-Smtp-Source: AGHT+IFn4BOWF97PNcC3qO85DqmGcYDSyB3hTK4fzzbrhufLdnD7HWaPgAbvIg7kgSs2qLUEWNuedl/bAzFC23sgoI4=
-X-Received: by 2002:a05:6512:1385:b0:55f:7193:1e8c with SMTP id
- 2adb3069b0e04-562636d5c11mr4275328e87.31.1757431124882; Tue, 09 Sep 2025
- 08:18:44 -0700 (PDT)
+        bh=hLHe+egzyj71r6iVZkeqWuv/uV5QzYXqi8KlStEJB/s=;
+        b=cDO9zNvouGgt9yTpy6pu8uBsj4aod+fdiLwDEGNCf88It+gbb4I8KmQmvsqpHE4/vc
+         3aqxy/W6Pu+M2WYf3ACGw5zbqiohWP2RtBRiSa01pWzhWI1pVD9WuWfuTi9RfJnyFoD+
+         n/kLdzBMDLZ1AnvBCmvTVvA0m2plYNYXYixbKQnImhDu12g/FGDjcI6bQ+f85+En/zgh
+         GSsr4yrC8XgFyI2EWCCBEqvA5eYYSf8V1bSCv1uB/fvPLlL+ULF6Ve6Km4u5yyso/VO3
+         d6Lh0uCxEx46nPxGc4d5NvCUFk2D8OQI+coTDsG7tgaUbrYFar0V3tIf4+a3l7VhIeLN
+         Or1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUJpBGob1WhjM7y0oknsYZQ+vZzzUqv9tDbOxyPLv/FSoHsK3xafatWDwVnnr2ZMb4Gahw0qKSXffS8VIMCrXdeRnYa@vger.kernel.org, AJvYcCVC/WNNw5g333M2JheBYtDk0M7zzbFhQrFnhnlj37iwiPjDtD6xDcJOInmZxzQtj8Gi3aY=@vger.kernel.org, AJvYcCVuY693xXOl+6/CVcyPLjEddv6O7zVmikFG7+Rke3ZHW6+1pqdmumTiqKlGn0GsX6HlgnL4+YM9tPw6x6Vy@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0yF+G4usrXkastG1LjDt0+K+nttfT7oSxxHy+JexfDygxIZaV
+	3wChxxEe9tWT/ydEQYrvhqDe8zLaP4SWENTA62N9h3RQlCBF/J1Q1UWGMhJ1H6oPpsMwLFv17dg
+	nQW2XGXBp7g7cRsTgkHyKc2RLHUabERk=
+X-Gm-Gg: ASbGnctdMyv+dRznwaNdiSZAO6zltIuodgnf72t2yQ7VTEub8of5LKiDjPfZwtrlHh0
+	RcrHUt6qGfauf2BEiGAU3FeD0VtFIC97YXOhEdT5RmWoYk5Qyn8jmIJ9fyRomw5MVe3VHVDBvo5
+	8S+ZteEmdcdntQQzWnwN4KLoTSOsrf6Ji9Hw8kpUhA0qy9w19viHb6XAY8O8X+PJtsYpPQy2Sle
+	aYP5T9Py5Q4mSzRNsepOlg=
+X-Google-Smtp-Source: AGHT+IHg4JXF1EvCqzPzzXH4bT9W+XFU3eS3rEjSI4kSq0X630Rt8af52WqrdvC1S3yakfX5aw1JR0xXrGCjfGy4yWw=
+X-Received: by 2002:a05:6a20:3c8f:b0:248:f4c3:b31e with SMTP id
+ adf61e73a8af0-2534441f670mr19093658637.33.1757431226633; Tue, 09 Sep 2025
+ 08:20:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250904-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v5-0-ea492f7b11ac@openai.com>
- <20250904-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v5-2-ea492f7b11ac@openai.com>
- <CAMB2axO4ySD2Lo9xzkkYdUqL2tHPcO02-h2HZiWT993wsU3NtA@mail.gmail.com> <CADg4-L92GbxSXaqg1KuoGxt2c_yC=gbmKywVPvcAjHY_7v2H1g@mail.gmail.com>
-In-Reply-To: <CADg4-L92GbxSXaqg1KuoGxt2c_yC=gbmKywVPvcAjHY_7v2H1g@mail.gmail.com>
-From: Christoph Paasch <cpaasch@openai.com>
-Date: Tue, 9 Sep 2025 08:18:32 -0700
-X-Gm-Features: AS18NWC8bTZ9zbKs1e6hJdbXPQ9cmJYIK9GtF_caFhUdPXvo43ULFYnM1yFVzB4
-Message-ID: <CADg4-L8dLtzPL-x8o1HAHrbQ2fQ0MxB3Gm68HVj9Jp3-YunwrA@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 2/2] net/mlx5: Avoid copying payload to the
- skb's linear part
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+References: <20250821122822.671515652@infradead.org> <aKcqm023mYJ5Gv2l@krava>
+ <aKgtaXHtQvJ0nm_b@krava> <CAEf4BzYg9jsEK1XdKW4dKFdOSrY4CAspaCAAv6ZJZScHxkHSyA@mail.gmail.com>
+ <aMAiMrLlfmG9FbQ3@krava>
+In-Reply-To: <aMAiMrLlfmG9FbQ3@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 9 Sep 2025 11:20:13 -0400
+X-Gm-Features: Ac12FXzAifWnHsDNUsovzlMLCf6odlC_hVRrnGq8pMR5gysK-J62aUi7y_H-z10
+Message-ID: <CAEf4BzZnvWH-X-7qKvx2LxzR+xkFfvjj27Tfjoui5xnph-urMw@mail.gmail.com>
+Subject: Re: [PATCH 0/6] uprobes/x86: Cleanups and fixes
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: andrii@kernel.org, Peter Zijlstra <peterz@infradead.org>, oleg@redhat.com, 
+	mhiramat@kernel.org, linux-kernel@vger.kernel.org, alx@kernel.org, 
+	eyal.birger@gmail.com, kees@kernel.org, bpf@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org, songliubraving@fb.com, 
+	yhs@fb.com, john.fastabend@gmail.com, haoluo@google.com, rostedt@goodmis.org, 
+	alan.maguire@oracle.com, David.Laight@aculab.com, thomas@t-8ch.de, 
+	mingo@kernel.org, rick.p.edgecombe@intel.com, 
+	Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 8, 2025 at 9:00=E2=80=AFPM Christoph Paasch <cpaasch@openai.com=
-> wrote:
+On Tue, Sep 9, 2025 at 8:48=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
+:
 >
-> On Thu, Sep 4, 2025 at 4:30=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
-rote:
+> On Fri, Aug 22, 2025 at 11:05:59AM -0700, Andrii Nakryiko wrote:
+> > On Fri, Aug 22, 2025 at 1:42=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> =
+wrote:
+> > >
+> > > On Thu, Aug 21, 2025 at 04:18:03PM +0200, Jiri Olsa wrote:
+> > > > On Thu, Aug 21, 2025 at 02:28:22PM +0200, Peter Zijlstra wrote:
+> > > > > Hi,
+> > > > >
+> > > > > These are cleanups and fixes that I applied on top of Jiri's patc=
+hes:
+> > > > >
+> > > > >   https://lkml.kernel.org/r/20250720112133.244369-1-jolsa@kernel.=
+org
+> > > > >
+> > > > > The combined lot sits in:
+> > > > >
+> > > > >   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git =
+perf/core
+> > > > >
+> > > > > Jiri was going to send me some selftest updates that might mean r=
+ebasing that
+> > > > > tree, but we'll see. If this all works we'll land it in -tip.
+> > > > >
+> > > >
+> > > > hi,
+> > > > sent the selftest fix in here:
+> > > >   https://lore.kernel.org/bpf/20250821141557.13233-1-jolsa@kernel.o=
+rg/T/#u
+> > >
+> > > Andrii,
+> > > do we want any special logistic for the bpf/selftest changes or it co=
+uld
+> > > go through the tip tree?
 > >
-> > On Thu, Sep 4, 2025 at 3:57=E2=80=AFPM Christoph Paasch via B4 Relay
-> > <devnull+cpaasch.openai.com@kernel.org> wrote:
-> > >
-> > > From: Christoph Paasch <cpaasch@openai.com>
-> > >
-> > > mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
-> > > bytes from the page-pool to the skb's linear part. Those 256 bytes
-> > > include part of the payload.
-> > >
-> > > When attempting to do GRO in skb_gro_receive, if headlen > data_offse=
-t
-> > > (and skb->head_frag is not set), we end up aggregating packets in the
-> > > frag_list.
-> > >
-> > > This is of course not good when we are CPU-limited. Also causes a wor=
-se
-> > > skb->len/truesize ratio,...
-> > >
-> > > So, let's avoid copying parts of the payload to the linear part. We u=
-se
-> > > eth_get_headlen() to parse the headers and compute the length of the
-> > > protocol headers, which will be used to copy the relevant bits ot the
-> > > skb's linear part.
-> > >
-> > > We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networ=
-king
-> > > stack needs to call pskb_may_pull() later on, we don't need to reallo=
-cate
-> > > memory.
-> > >
-> > > This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC =
-and
-> > > LRO enabled):
-> > >
-> > > BEFORE:
-> > > =3D=3D=3D=3D=3D=3D=3D
-> > > (netserver pinned to core receiving interrupts)
-> > > $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> > >  87380  16384 262144    60.01    32547.82
-> > >
-> > > (netserver pinned to adjacent core receiving interrupts)
-> > > $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> > >  87380  16384 262144    60.00    52531.67
-> > >
-> > > AFTER:
-> > > =3D=3D=3D=3D=3D=3D
-> > > (netserver pinned to core receiving interrupts)
-> > > $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> > >  87380  16384 262144    60.00    52896.06
-> > >
-> > > (netserver pinned to adjacent core receiving interrupts)
-> > >  $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> > >  87380  16384 262144    60.00    85094.90
-> > >
-> > > Additional tests across a larger range of parameters w/ and w/o LRO, =
-w/
-> > > and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), differ=
-ent
-> > > TCP read/write-sizes as well as UDP benchmarks, all have shown equal =
-or
-> > > better performance with this patch.
-> > >
-> > > Reviewed-by: Eric Dumazet <edumazet@google.com>
-> > > Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-> > > Signed-off-by: Christoph Paasch <cpaasch@openai.com>
-> > > ---
-> > >  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/driver=
-s/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > > index 8bedbda522808cbabc8e62ae91a8c25d66725ebb..0ac31c7fb64cd60720d39=
-0de45a5b6b453ed0a3f 100644
-> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > > @@ -2047,6 +2047,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e=
-_rq *rq, struct mlx5e_mpw_info *w
-> > >                 dma_sync_single_for_cpu(rq->pdev, addr + head_offset,=
- headlen,
-> > >                                         rq->buff.map_dir);
-> > >
-> > > +               headlen =3D eth_get_headlen(rq->netdev, head_addr, he=
-adlen);
-> > > +
-> > >                 frag_offset +=3D headlen;
-> > >                 byte_cnt -=3D headlen;
-> > >                 linear_hr =3D skb_headroom(skb);
-> > > @@ -2123,6 +2125,9 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e=
-_rq *rq, struct mlx5e_mpw_info *w
-> > >                                 pagep->frags++;
-> > >                         while (++pagep < frag_page);
-> > >                 }
-> > > +
-> > > +               headlen =3D eth_get_headlen(rq->netdev, mxbuf->xdp.da=
-ta, headlen);
-> > > +
-> >
-> > The size of mxbuf->xdp.data is most likely not headlen here.
-> >
-> > The driver currently generates a xdp_buff with empty linear data, pass
-> > it to the xdp program and assumes the layout If the xdp program does
-> > not change the layout of the xdp_buff through bpf_xdp_adjust_head() or
-> > bpf_xdp_adjust_tail(). The assumption is not correct and I am working
-> > on a fix. But, if we keep that assumption for now, mxbuf->xdp.data
-> > will not contain any headers or payload. The thing that you try to do
-> > probably should be:
-> >
-> >         skb_frag_t *frag =3D &sinfo->frags[0];
-> >
-> >         headlen =3D eth_get_headlen(rq->netdev, skb_frag_address(frag),
-> > skb_frag_size(frag));
+> > let's route selftest changes through tip together with the rest of
+> > uprobe changes, it's unlikely to conflict
+>
+> fyi, there's conflict now between tip/perf/core and bpf-next/master
+> in the selftests.. due to usdt SIB argument support changes
+>
+> please let me know if you need any help in resolving that
 
-So, when I look at the headlen I get, it is correct (even with my old
-code using mxbuf->xdp.data).
-
-To make sure I test the right thing, which scenario would
-mxbuf->xdp.data not contain any headers or payload ? What do I need to
-do to reproduce that ?
-
-Thanks,
-Christoph
+so selftest change hasn't landed in tip/perf/core just yet, is that
+right? If there is a conflict, I guess that changes equation a bit.
+I'd land it in bpf-next and for now disable that test in BPF CI until
+the trees converge. WDYT?
 
 >
-> Ok, I think I understand what you mean! Thanks for taking the time to exp=
-lain!
->
-> I will do some tests on my side to make sure I get it right.
->
-> As your change goes to net and mine to netnext, I can wait until yours
-> is in the tree so that there aren't any conflicts that need to be
-> taken care of.
->
->
-> Christoph
->
-> >
-> >
-> >
-> > >                 __pskb_pull_tail(skb, headlen);
-> > >         } else {
-> > >                 if (xdp_buff_has_frags(&mxbuf->xdp)) {
-> > >
-> > > --
-> > > 2.50.1
-> > >
-> > >
+> jirka
 
