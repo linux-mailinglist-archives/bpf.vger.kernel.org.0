@@ -1,92 +1,88 @@
-Return-Path: <bpf+bounces-67931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12B37B5057B
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:40:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7CCDB50588
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:46:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D31E1C67ED5
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:40:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05BC91C80195
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E00AB2FE058;
-	Tue,  9 Sep 2025 18:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C0E3019AF;
+	Tue,  9 Sep 2025 18:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BLoCs8Kk"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="JPLMlUpz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69395301008
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 18:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7D7219A7D;
+	Tue,  9 Sep 2025 18:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757443206; cv=none; b=QlqAx1OSJGGkA+rZetTkj/ErTCdHI6Sbz1p+OMSU9d4uHcbiD8hrfilA59tZp2sIT+F++Ny7FT4unfnykp2xapc016Ad+SmkJ2PlCtlAAvPI8MpVG0pRLAxsSlTt3NFgG85af4LSMsvQRJdlrxKNEVlRtq9dKRn05jL0uWzE1iI=
+	t=1757443588; cv=none; b=EiI44dUahaHz+Gl18HwQzD2MRYqqQ3T8FLkdXuHsX+xtP0QcddQykh8idS94WCYcxRQhwLzpl812nhY1RKKRqsX7kbeU/HHAeAuEAsACZT+xwVi7OiG7+DQ/LhG1gLzgIBxbXzaW+o21ca1o4aY7maoekJIx67syc3/o/BiYw9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757443206; c=relaxed/simple;
-	bh=oE6xKfvu8kUkll63Q0vMQeBZ8O7emnAhfuih17WMssM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=m3AbxuCcv/MnctshL7x4g3DwaZjA6VCDOnZxK4Kt/vjgjR00dm5brXmiE8bcS/03/l3Bxi6w4IaXJ5KszxCYDCi0+63MpsxUN4m4zGZZUakCWUva1U56xJVyVthnXpRCghEOZnpvPFcKyNehhhMnFHM6GxewCXKIsRfphlDin+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BLoCs8Kk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F291AC4CEF4;
-	Tue,  9 Sep 2025 18:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757443206;
-	bh=oE6xKfvu8kUkll63Q0vMQeBZ8O7emnAhfuih17WMssM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=BLoCs8KkbmYj8lQ1QEaTFmw5Xha1Oi7yWIx+AxTH/uqGI1RyjwB90F+BgUn4PU5iM
-	 fFCGRbK2NaSxh5Wd5IVOXILfAZj6P1ak7IMY1/0ap72JUVTIXsHCPytkxIl65D/aCp
-	 ZZbIv7TBAXKX0bulp7YC61VP3w5u3Fb2+iTcst+H0cP8Z8u52uzoBXrrGmYb3uKQb0
-	 v3wrfhhDIJOIZiVUJ3/ObuP9j+D0eQyWbxqb6tl02kp7qrXOOB3L6YZ+m86YPT1zeX
-	 LQkPnDzCu+mnDA03oaQ7778qpJ+0UMFwcPEN2vu60jy5NyJKeq0b9XM2jmw+iI5hOO
-	 /hiSueGhnutTw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70F18383BF69;
-	Tue,  9 Sep 2025 18:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1757443588; c=relaxed/simple;
+	bh=GG5MrdZarwj/hHTsW4LWBjSF9k2G2Z8PjXf0WYdDiis=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=afMgT7Rpj5y43kDGy1brsRuFewC69s9XGvLGX+P3sj/Yt8j/cu5MkJNEufsAfJWS97KIfKrsrcg0kPj80e8qy9pjnioXSQ/YYJ3ojHLg8hgBhaBcu2d7YWUjEbP3Zrmt9lEXfx+F+E/HL0uvpwjJ/fT+BaiVWE1a5FZ9M8t+Kzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=JPLMlUpz; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=lRwvBfaT+yf+uQJrvSGSQs+uuRk8X3P8qH0TRfgm1YI=; b=JPLMlUpzERItWrQzhAqHKr3cEa
+	lgvLCXK/1mcEVZUS9+ZzzssMX75QpSPWHJIyM6pRvm5YRU/PHtsGzWR8x3aHbbbJOobSGp/4WjkI7
+	mXAwAYChDQ4Wk/3elC1Qk5ZvYAD/S7Jls5dLP1jUWvU+MdzYMPYo3+OdDxycQMStlDTw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1uw3M1-007qdT-1T; Tue, 09 Sep 2025 20:46:09 +0200
+Date: Tue, 9 Sep 2025 20:46:09 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>
+Subject: Re: [PATCH net-next 00/11] net: stmmac: timestamping/ptp cleanups
+Message-ID: <afb70e68-5e59-47a3-837d-d15cde9dc8da@lunn.ch>
+References: <aMBaCga5UAXT03Bi@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: remove Mykola Lysenko from BPF
- selftests maintainers
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175744320925.783799.16292442885494310557.git-patchwork-notify@kernel.org>
-Date: Tue, 09 Sep 2025 18:40:09 +0000
-References: <20250909171638.2417272-1-eddyz87@gmail.com>
-In-Reply-To: <20250909171638.2417272-1-eddyz87@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aMBaCga5UAXT03Bi@shell.armlinux.org.uk>
 
-Hello:
+> On that point... I hardly (never?) seem to get testing feedback from
+> anyone when touching stmmac. I suspect that's because of the structure
+> of the driver, where MAINTAINERS only lists people for their appropriate
+> dwmac-* files. Thus they don't get Cc'd for core stmmac changes. Not
+> sure what the solution is, but manually picking out all the entries
+> in MAINTAINERS every time doesn't scale.
 
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+One option might be to add an R: entry to the STMMAC ETHERNET DRIVER
+for everybody who Maintains a glue driver?
 
-On Tue,  9 Sep 2025 10:16:38 -0700 you wrote:
-> Unfortunately Mykola won't participate in BPF selftests maintenance
-> anymore. He asked me to remove the entry on his behalf.
-> 
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
-
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: remove Mykola Lysenko from BPF selftests maintainers
-    https://git.kernel.org/bpf/bpf/c/78c2ef58b395
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+    Andrew
 
