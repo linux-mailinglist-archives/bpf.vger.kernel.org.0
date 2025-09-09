@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-67888-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582B5B502B5
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:32:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65A5FB502BC
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:33:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4B8034E1C8E
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 16:32:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 414487AAB6D
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 16:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDB5233CEBE;
-	Tue,  9 Sep 2025 16:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC9F274B29;
+	Tue,  9 Sep 2025 16:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tKQ/dsuP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iB/1DIwD"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A41FC32CF76
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 16:32:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D84A2DCF4D
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 16:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757435566; cv=none; b=gHy7xIqE5YxayEdSdEPH8Nhwn8jUGk+7buf9rEaK+AJjYMgK04m224cgCSOw6UhLQHQW+OQRVj6ECKVUNv+mou9r65CQdDoAC4asLytYbNQI7BoVki2oWqvk++G8KAypVXPNzHJSgLIpjNr6A7D3Bxzfc40q6BQmZX4NsDRvjZU=
+	t=1757435620; cv=none; b=FYRXTva/wnyCSYyt0003/oztvxCL0C6DkWD+c0+k7cCe7oq0SrdGtWylXJ62U27QbNybj5CUA4W7T0eREzDwGqn0Ju3+rlRGONGm43vv1BKKmQ2LJu+YKwpssAnQAvOV8SZFBVHLav5h3V6D1257xZfiBjR8I6oPkUb8I0ytrCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757435566; c=relaxed/simple;
-	bh=ciEY2PaVBYP+7hoGJMbRLn9kqFFWPM7A52v8VWueBtg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PUsgDqc2Vb3CNteg5fUdtd9DjSTsLx3Z0huba8+BXldIYT0EeNNPCbxo4fY+icaVtwqZtqA7174YT+cHQGvar5mrJ07J6N/oUslOqP/m+N/cTr3nrUI08K41SYIQ47h/PEi3dIO/3fKiHlaUobWflmkYeWD60fTmFjDB/kHN3pU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tKQ/dsuP; arc=none smtp.client-ip=95.215.58.173
+	s=arc-20240116; t=1757435620; c=relaxed/simple;
+	bh=WFdnUqV4hxxpkPOjvjzf5tq25E07YEPwR7vxyUNJK0U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=RenBV1EOpIoPB0enko5+0al8cWwtVr7I9s85ApsfGNfWxy1F4Bs1RPqKzKUNiFDQLq1iUPxIiskYypKON4lcwM9gr5JC7GlqJg/UbjKR/SiFd8KvQX4dTbCnTx9ALFzu3RHyCKr0atPHwnhZXK1QaMLjg8TK8HctXMrXAB6R5xY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iB/1DIwD; arc=none smtp.client-ip=91.218.175.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757435561;
+	t=1757435616;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=x3f//JhIM3taFVtW9+tp/WXHFv05eY0uyCUPn/w7lIw=;
-	b=tKQ/dsuPeVjJ66SlFP7V45ZhHxgWJXPh5qn4QPu1tJKL/ymhS7IFVW6Lj9anl8AneUNvpV
-	wuSVTV9Ds6QANvdItGAuU4mJ3dEcFxkH+whL8zhNZxnfuvhJzRCZprnpxAIZvDICnfGZYp
-	Dn3oHsw7ZDSgeVMc/0QSaDEJPFN98/E=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Al0hvK+RUU6ek3CWk5iv4s8AREKcqh06zDhA8knnZdg=;
+	b=iB/1DIwDKMXqbvO+/XekJUPu0XZM/s+VJL8ItzWLB/SH672cI+SuYi7DXX7rd1Iln9/Eri
+	swSgq+ooyM+sQY7tNkXsX9thm9rUoziX0johgNM3ZJwkwt8fxvtg0g073w3+ksZ8NtlF2V
+	eSQnUpOHakTXrRSWVYdR7alx13aBF7M=
 From: Tao Chen <chen.dylane@linux.dev>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -56,9 +58,11 @@ To: ast@kernel.org,
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v2 1/2] bpf: Add lookup_and_delete_elem for BPF_MAP_STACK_TRACE
-Date: Wed, 10 Sep 2025 00:32:21 +0800
-Message-ID: <20250909163223.864120-1-chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add stacktrace map lookup_and_delete_elem test case
+Date: Wed, 10 Sep 2025 00:32:22 +0800
+Message-ID: <20250909163223.864120-2-chen.dylane@linux.dev>
+In-Reply-To: <20250909163223.864120-1-chen.dylane@linux.dev>
+References: <20250909163223.864120-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,113 +72,100 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The stacktrace map can be easily full, which will lead to failure in
-obtaining the stack. In addition to increasing the size of the map,
-another solution is to delete the stack_id after looking it up from
-the user, so extend the existing bpf_map_lookup_and_delete_elem()
-functionality to stacktrace map types.
+...
+test_stacktrace_map:PASS:compare_stack_ips stackmap vs. stack_amap 0 nsec
+test_stacktrace_map:PASS:stack_key_map lookup 0 nsec
+test_stacktrace_map:PASS:stackmap lookup and detele 0 nsec
+test_stacktrace_map:PASS:stackmap lookup deleted stack_id 0 nsec
+ #397     stacktrace_map:OK
+...
 
 Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 ---
- include/linux/bpf.h   |  2 +-
- kernel/bpf/stackmap.c | 16 ++++++++++++++--
- kernel/bpf/syscall.c  |  8 +++++---
- 3 files changed, 20 insertions(+), 6 deletions(-)
+ .../selftests/bpf/prog_tests/stacktrace_map.c | 22 ++++++++++++++++++-
+ .../selftests/bpf/progs/test_stacktrace_map.c |  8 +++++++
+ 2 files changed, 29 insertions(+), 1 deletion(-)
 
-Change list:
- v1 -> v2:
-  - typo s/detele/delete/.(Jiri)
-  - make sure following lookup fails after deleting the stack_id with NOENT.(Jiri)
-  - use '&key' directly as the update value.(Jiri)
-  v1: https://lore.kernel.org/bpf/20250908113622.810652-1-chen.dylane@linux.dev
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 8f6e87f0f3a..84a41c42495 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2703,7 +2703,7 @@ int bpf_percpu_hash_update(struct bpf_map *map, void *key, void *value,
- int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
- 			    u64 flags);
+diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
+index 84a7e405e91..7d38afe5cfc 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
++++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
+@@ -3,7 +3,7 @@
  
--int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value);
-+int bpf_stackmap_copy_and_delete(struct bpf_map *map, void *key, void *value, bool delete);
+ void test_stacktrace_map(void)
+ {
+-	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
++	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd, stack_key_map_fd;
+ 	const char *prog_name = "oncpu";
+ 	int err, prog_fd, stack_trace_len;
+ 	const char *file = "./test_stacktrace_map.bpf.o";
+@@ -11,6 +11,9 @@ void test_stacktrace_map(void)
+ 	struct bpf_program *prog;
+ 	struct bpf_object *obj;
+ 	struct bpf_link *link;
++	__u32 stack_id;
++	char val_buf[PERF_MAX_STACK_DEPTH *
++		sizeof(struct bpf_stack_build_id)];
  
- int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
- 				 void *key, void *value, u64 map_flags);
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 3615c06b7df..bb63a74db7b 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -646,7 +646,15 @@ static void *stack_map_lookup_elem(struct bpf_map *map, void *key)
- }
+ 	err = bpf_prog_test_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj, &prog_fd);
+ 	if (CHECK(err, "prog_load", "err %d errno %d\n", err, errno))
+@@ -41,6 +44,10 @@ void test_stacktrace_map(void)
+ 	if (CHECK_FAIL(stack_amap_fd < 0))
+ 		goto disable_pmu;
  
- /* Called from syscall */
--int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
-+static int stack_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
-+					    void *value, u64 flags)
-+{
-+	return bpf_stackmap_copy_and_delete(map, key, value, true);
-+}
++	stack_key_map_fd = bpf_find_map(__func__, obj, "stack_key_map");
++	if (CHECK_FAIL(stack_key_map_fd < 0))
++		goto disable_pmu;
 +
-+/* Called from syscall */
-+int bpf_stackmap_copy_and_delete(struct bpf_map *map, void *key, void *value,
-+				 bool delete)
- {
- 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
- 	struct stack_map_bucket *bucket, *old_bucket;
-@@ -663,7 +671,10 @@ int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
- 	memcpy(value, bucket->data, trace_len);
- 	memset(value + trace_len, 0, map->value_size - trace_len);
+ 	/* give some time for bpf program run */
+ 	sleep(1);
  
--	old_bucket = xchg(&smap->buckets[id], bucket);
-+	if (delete)
-+		old_bucket = bucket;
-+	else
-+		old_bucket = xchg(&smap->buckets[id], bucket);
- 	if (old_bucket)
- 		pcpu_freelist_push(&smap->freelist, &old_bucket->fnode);
- 	return 0;
-@@ -754,6 +765,7 @@ const struct bpf_map_ops stack_trace_map_ops = {
- 	.map_free = stack_map_free,
- 	.map_get_next_key = stack_map_get_next_key,
- 	.map_lookup_elem = stack_map_lookup_elem,
-+	.map_lookup_and_delete_elem = stack_map_lookup_and_delete_elem,
- 	.map_update_elem = stack_map_update_elem,
- 	.map_delete_elem = stack_map_delete_elem,
- 	.map_check_btf = map_check_no_btf,
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0fbfa8532c3..d606d156c62 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -318,7 +318,7 @@ static int bpf_map_copy_value(struct bpf_map *map, void *key, void *value,
- 	} else if (map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE) {
- 		err = bpf_percpu_cgroup_storage_copy(map, key, value);
- 	} else if (map->map_type == BPF_MAP_TYPE_STACK_TRACE) {
--		err = bpf_stackmap_copy(map, key, value);
-+		err = bpf_stackmap_copy_and_delete(map, key, value, false);
- 	} else if (IS_FD_ARRAY(map) || IS_FD_PROG_ARRAY(map)) {
- 		err = bpf_fd_array_map_lookup_elem(map, key, value);
- 	} else if (IS_FD_HASH(map)) {
-@@ -1627,7 +1627,8 @@ struct bpf_map *bpf_map_inc_not_zero(struct bpf_map *map)
- }
- EXPORT_SYMBOL_GPL(bpf_map_inc_not_zero);
+@@ -68,6 +75,19 @@ void test_stacktrace_map(void)
+ 		  "err %d errno %d\n", err, errno))
+ 		goto disable_pmu;
  
--int __weak bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
-+int __weak bpf_stackmap_copy_and_delete(struct bpf_map *map, void *key, void *value,
-+					bool delete)
- {
- 	return -ENOTSUPP;
- }
-@@ -2158,7 +2159,8 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
- 	} else if (map->map_type == BPF_MAP_TYPE_HASH ||
- 		   map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
- 		   map->map_type == BPF_MAP_TYPE_LRU_HASH ||
--		   map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
-+		   map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH ||
-+		   map->map_type == BPF_MAP_TYPE_STACK_TRACE) {
- 		if (!bpf_map_is_offloaded(map)) {
- 			bpf_disable_instrumentation();
- 			rcu_read_lock();
++	err = bpf_map_lookup_elem(stack_key_map_fd, &key, &stack_id);
++	if (CHECK(err, "stack_key_map lookup", "err %d errno %d\n", err, errno))
++		goto disable_pmu;
++
++	err = bpf_map_lookup_and_delete_elem(stackmap_fd, &stack_id, &val_buf);
++	if (CHECK(err, "stackmap lookup and delete",
++		  "err %d errno %d\n", err, errno))
++		goto disable_pmu;
++
++	err = bpf_map_lookup_elem(stackmap_fd, &stack_id, &val_buf);
++	CHECK((!err || errno != ENOENT), "stackmap lookup deleted stack_id",
++	      "err %d errno %d\n", err, errno);
++
+ disable_pmu:
+ 	bpf_link__destroy(link);
+ close_prog:
+diff --git a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
+index 47568007b66..3bede76c151 100644
+--- a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
++++ b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
+@@ -38,6 +38,13 @@ struct {
+ 	__type(value, stack_trace_t);
+ } stack_amap SEC(".maps");
+ 
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u32);
++} stack_key_map SEC(".maps");
++
+ /* taken from /sys/kernel/tracing/events/sched/sched_switch/format */
+ struct sched_switch_args {
+ 	unsigned long long pad;
+@@ -64,6 +71,7 @@ int oncpu(struct sched_switch_args *ctx)
+ 	/* The size of stackmap and stackid_hmap should be the same */
+ 	key = bpf_get_stackid(ctx, &stackmap, 0);
+ 	if ((int)key >= 0) {
++		bpf_map_update_elem(&stack_key_map, &val, &key, 0);
+ 		bpf_map_update_elem(&stackid_hmap, &key, &val, 0);
+ 		stack_p = bpf_map_lookup_elem(&stack_amap, &key);
+ 		if (stack_p)
 -- 
 2.48.1
 
