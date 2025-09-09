@@ -1,132 +1,138 @@
-Return-Path: <bpf+bounces-67935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F356CB50651
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 21:21:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46640B50721
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 22:32:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69E511BC891D
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 19:21:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFB9A543249
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:32:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D902335CEB7;
-	Tue,  9 Sep 2025 19:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5659D35CEB2;
+	Tue,  9 Sep 2025 20:32:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gCRYHtlD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LtY8XwGy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016483570C5;
-	Tue,  9 Sep 2025 19:21:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251542E1746;
+	Tue,  9 Sep 2025 20:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757445665; cv=none; b=Ol8te0lxGiehS+Z0WYtS6YjjIPQKmp6CIplHVB52d9RQ/IiYVr/OcfeD+90G69qg2MrC4q5DmaxpRQL7DaikoawjWm8F5UlxglueX9hRzYBNyGQXZO8oAIBY5tG4knkdxRPW/pWkB5/GU8ie/XvsvcZmBWCx5inoZLGvpSQCH3A=
+	t=1757449964; cv=none; b=LFwQMtKKyzRR/yrrP+4i42SlFyqTBSSZ8y25Kcl+opMOQEo7GZYlhaF1vX4oTtlfPtwj+o8eDhw6kh1USzr9YNVJFOU/GXevEOnJMhAcKj06zixHHnmlXWiy+A6AN6ZEdnMxydI3BGfJMZ1i/Mo7SZ9K8zvMLpL+91u41buw7lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757445665; c=relaxed/simple;
-	bh=PBaWCw1yzNsutBu+o233AHDRCu7w/AA2teJPBgfek08=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VjyYrM07hLmmMBsM9HiVfA48r5XepM9R6/YeZ339xWDE8qaqfmOUGn5j6St4KFDeCT0E3WuzvwCr8h5L8lGB5e5XpNn4yhbl40W9uvx/QPU3+DpgugtsDXqnb6d9/+Y4/hdxYVVS+ymr5bQdlT8Q5KuzLDGYdq1b9EQpgfgNBUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gCRYHtlD; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-71d603acc23so48177367b3.1;
-        Tue, 09 Sep 2025 12:21:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757445661; x=1758050461; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PBaWCw1yzNsutBu+o233AHDRCu7w/AA2teJPBgfek08=;
-        b=gCRYHtlDs/PO3fVLrvN5OcHsmWSIknJebhG8ONe+IU4WcLy+r6cqrmFYKqn0Zn4j30
-         bOtnhdMQxSoZQNdZh0M4NRS1qYcXdmzPwbaZFv/YzhLYPZBGWA09BV6F92mDVprlbJ9d
-         6tu7V2yinT2Njy5I/EttYLtclFY7PyuMhx+IwYZP1JrIE4S1Y0kKHmGOMRmbgQjuj8rI
-         6MMKKBNF3WLnOJnysIL9WPcNTKeELY1PVcIzJJVc2yjOj3YKVv1aIPZ16AwQdtjnjyIX
-         swBOXPoSeVxJGgn5aR3rwgGhQCmsRhGxid/RKaI1mCG/naMD06BePNialzrGoQtrZ78U
-         KdFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757445661; x=1758050461;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PBaWCw1yzNsutBu+o233AHDRCu7w/AA2teJPBgfek08=;
-        b=sDp+JuG2LNzcnsNma9c/GuijAMlpZ1t40WQmZcBAqLWbQDm8YDSvh6+YfTl1hSI0AF
-         xljQVwhVkFCRV9+a/4jpiKP5YMR8QaRaR/tKYUzCIi+ukhJei0pgWIz1XZgQfo5h3V4/
-         3iv27vzs4lGatmI4M1CGc8DxgUKZ2Fyuww53RC4gKbOavuJlMigDwwhRdJVzBTsJ4osf
-         r/jaZa0qM1lBw8NF67xNGkq0ngzfqUPEgLd1TkD1lofxUwFWknVo/av3nhhRj1iyMg1a
-         p6lOEk0U+JM2x+PeJIB62cr+J/qx3b1yuJXo4V9+Uhd9tN9xd2k1LpmaVkTyK9Gx2ypH
-         lvQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVaEpFmOPKTOLyBB7rNtpdFQtpkR/WorrmY5B3fD/csH2S7stWgmR82rPQFsm/iJVfnflWnV4g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVY8+4OXPT4nMAQl1elbpmZIovEe0YrrXxMZFycHTMDBAaRelG
-	r7HpRkwVpRSyP8OXK8/WCp5w/rcKr5yR6nf52PoQzDvyep0DQ2N+v/Fu8lPBMX12MIOIYl3wSec
-	vRl95XklqIhJ4iWs8fd2lzEk/KR/gF3Q=
-X-Gm-Gg: ASbGncuXMWz1+ho77bRA2NFXX0t7V+MJRRbl9RB1904R1otWx3LJEosDFoA/t2FFeYm
-	i2UGBB1Lrp0AAasvYz2llHtwn2Qu3AzDLR7jXMY6scXJ6z8UgEbT6ZvacZ+zbBesT5jmgK06fMi
-	cmT5gXS6iZ7VvawfH4kUFD9RXuGxMiJWOepcY3yZ9/MpF/gxB1ny56aYsoDcXlTMYaflBTYztOz
-	jIxmfXaLerTTY648f3ibGJaAAD/79gqxA==
-X-Google-Smtp-Source: AGHT+IGrJ0pqWmM3h2TfRH5DiQcU5gjHiJZCcKOmB4gBkSun6Wjs7kS0s4HyzyuxPcE1JIBFIWnmy6kSLzpiaUE/iP8=
-X-Received: by 2002:a05:690c:4b83:b0:719:f1b0:5c29 with SMTP id
- 00721157ae682-727f27db7bemr103452427b3.3.1757445660862; Tue, 09 Sep 2025
- 12:21:00 -0700 (PDT)
+	s=arc-20240116; t=1757449964; c=relaxed/simple;
+	bh=VAI0WXbXUb5x9r3u4rQKLO6ou4RNUkmvBE8iI+zQUTM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=QlOlg1koGbVBSc15ZUOXuIzkKzgSKo+/nae+lOjVbYwyNIQ3XSe/pC591P9FiZnLpqeharuj9nPKNAiJRgoUWF2eW3poQ1kw94L3PZt0eVLfThyoAnoCbSQRBQitp5NyqxeuFuqt8GCY3yAsM/bULxSJ52TkceGDb/GPZcF5nOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LtY8XwGy; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1757449963; x=1788985963;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=VAI0WXbXUb5x9r3u4rQKLO6ou4RNUkmvBE8iI+zQUTM=;
+  b=LtY8XwGyR0lbhEeqAmMLTu5b7lb0Ssml8NXc18oHPZBPdyLk/c97nBDD
+   uH8nBj41LGv8nKeMqkMrLWZbW35/dvb779Ia8oVJg/M7mvrvyxq+dumRi
+   D/2eMhTXEizFp9CDZLIfhKxvx7c+2jrDtMoxee9EraD0hBeGPVy4/8olV
+   +L4J4VRA70EpOEvuw3P4vOJGPtiASAu7AdcFbrRqmVm47FfUcm4MbTDnD
+   CzmBADDLVBwZZtJJZvbrRla5UIFG2sVske7f8+EGQujQ8r/DCVDkdAMM1
+   r7Q3AZXWXi2R64fFb4Ng3wwFNPWn1InedsSjNxi46FsBgtyfZDTyL6SU/
+   g==;
+X-CSE-ConnectionGUID: HXhtTh7FRVGubFXicgsu9A==
+X-CSE-MsgGUID: 3pjQxB6tQbubOaRIrsL4bg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11548"; a="59606757"
+X-IronPort-AV: E=Sophos;i="6.18,252,1751266800"; 
+   d="scan'208";a="59606757"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2025 13:32:41 -0700
+X-CSE-ConnectionGUID: N005NoPbQnSwMNb53EdE4g==
+X-CSE-MsgGUID: Fsb2p+UnQ1K6zj85stz/lg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,252,1751266800"; 
+   d="scan'208";a="173287025"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by orviesa008.jf.intel.com with ESMTP; 09 Sep 2025 13:32:41 -0700
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	andrew+netdev@lunn.ch,
+	netdev@vger.kernel.org
+Cc: Tianyu Xu <tianyxu@cisco.com>,
+	anthony.l.nguyen@intel.com,
+	xtydtc@gmail.com,
+	kurt@linutronix.de,
+	sriram.yagnaraman@ericsson.com,
+	maciej.fijalkowski@intel.com,
+	magnus.karlsson@intel.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	bpf@vger.kernel.org,
+	Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+	Joe Damato <joe@dama.to>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	Rinitha S <sx.rinitha@intel.com>
+Subject: [PATCH net 1/4] igb: Fix NULL pointer dereference in ethtool loopback test
+Date: Tue,  9 Sep 2025 13:32:31 -0700
+Message-ID: <20250909203236.3603960-2-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20250909203236.3603960-1-anthony.l.nguyen@intel.com>
+References: <20250909203236.3603960-1-anthony.l.nguyen@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250825193918.3445531-1-ameryhung@gmail.com> <7695218f-2193-47f8-82ac-fc843a3a56b0@nvidia.com>
- <CAMB2axMk63AAv13q2QREn--ee-SMCwjhtv_iPN8EsrjN1L5EMw@mail.gmail.com>
- <19e4aad7-c4ab-49a4-9be4-28f464e6789f@nvidia.com> <CAMB2axOJXqHu3QZNCtCKNM8ScuoQU4SWTHgcYva=+62YUydCHg@mail.gmail.com>
-In-Reply-To: <CAMB2axOJXqHu3QZNCtCKNM8ScuoQU4SWTHgcYva=+62YUydCHg@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Tue, 9 Sep 2025 15:20:48 -0400
-X-Gm-Features: Ac12FXxjrdZn7nfSzcymFT69uHuWWML_scQjPb83KOptvoHcQ8U7i_2g52NGVic
-Message-ID: <CAMB2axNOd=SvDkyjcgadJ0ZaC0HNSjeEJd11nYOaZNbm1PfUdA@mail.gmail.com>
-Subject: Re: [RFC bpf-next v1 0/7] Add kfunc bpf_xdp_pull_data
-To: Nimrod Oren <noren@nvidia.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, kuba@kernel.org, 
-	martin.lau@kernel.org, mohsin.bashr@gmail.com, saeedm@nvidia.com, 
-	tariqt@nvidia.com, mbloch@nvidia.com, maciej.fijalkowski@intel.com, 
-	kernel-team@meta.com, Dragos Tatulea <dtatulea@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Sep 9, 2025 at 11:53=E2=80=AFAM Amery Hung <ameryhung@gmail.com> wr=
-ote:
->
-> On Tue, Sep 9, 2025 at 9:21=E2=80=AFAM Nimrod Oren <noren@nvidia.com> wro=
-te:
-> >
-> > On 05/09/2025 1:16, Amery Hung wrote:
-> > > On Thu, Aug 28, 2025 at 6:39=E2=80=AFAM Nimrod Oren <noren@nvidia.com=
-> wrote:
-> > >> I got a crash when testing this series with the xdp_dummy program fr=
-om
-> > >> tools/testing/selftests/net/lib/. Need to make sure we're not breaki=
-ng
-> > >> compatibility for programs that keep the linear part empty.
-> > >
-> > > ping.py test ran successfully for me. Is this what you tried but
-> > > crashed the kernel?
-> >
-> > Yes, that's odd. Is it possible that the native multibuf case was
-> > skipped over because of an older iproute2/libbpf version?
-> >
-> > If it's helpful, I used iproute2-6.16.0 built with libbpf 1.7.0 support=
-.
-> > I am able to reproduce the crash by loading multibuf prog directly with=
-:
-> > `ip link set dev eth0 mtu 9000 xdp obj
-> > tools/testing/selftests/net/lib/xdp_dummy.bpf.o sec xdp.frags`
->
-> I can reproduce it with v2. Will fix it in v3.
->
-> The bug is that sinfo->flags is also cleared in build_skb(), so later
-> xdp_buff_has_frags() will always return false and no data was ever
-> pulled into the linear part.
+From: Tianyu Xu <tianyxu@cisco.com>
 
-Correcting myself. It is sinfo->xdp_frags_size being cleared in
-xdp_update_skb_shared_info().
+The igb driver currently causes a NULL pointer dereference when executing
+the ethtool loopback test. This occurs because there is no associated
+q_vector for the test ring when it is set up, as interrupts are typically
+not added to the test rings.
+
+Since commit 5ef44b3cb43b removed the napi_id assignment in
+__xdp_rxq_info_reg(), there is no longer a need to pass a napi_id to it.
+Therefore, simply use 0 as the last parameter.
+
+Fixes: 2c6196013f84 ("igb: Add AF_XDP zero-copy Rx support")
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Reviewed-by: Joe Damato <joe@dama.to>
+Signed-off-by: Tianyu Xu <tianyxu@cisco.com>
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Tested-by: Rinitha S <sx.rinitha@intel.com> (A Contingent worker at Intel)
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/igb/igb_main.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index a9a7a94ae61e..453deb6d14b3 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -4453,8 +4453,7 @@ int igb_setup_rx_resources(struct igb_ring *rx_ring)
+ 	if (xdp_rxq_info_is_reg(&rx_ring->xdp_rxq))
+ 		xdp_rxq_info_unreg(&rx_ring->xdp_rxq);
+ 	res = xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev,
+-			       rx_ring->queue_index,
+-			       rx_ring->q_vector->napi.napi_id);
++			       rx_ring->queue_index, 0);
+ 	if (res < 0) {
+ 		dev_err(dev, "Failed to register xdp_rxq index %u\n",
+ 			rx_ring->queue_index);
+-- 
+2.47.1
+
 
