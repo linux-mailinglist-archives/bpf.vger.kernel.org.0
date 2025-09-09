@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-67862-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD40B4FB7B
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 14:41:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AA06B4FB7C
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 14:41:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51FBA3A1551
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 12:40:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0730E18999F2
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 12:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C14322DB4;
-	Tue,  9 Sep 2025 12:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74F433A014;
+	Tue,  9 Sep 2025 12:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hVmlTsvs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NdpnaDqS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A5433471A;
-	Tue,  9 Sep 2025 12:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E44132A3D7;
+	Tue,  9 Sep 2025 12:40:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757421602; cv=none; b=pqRXcUoeyuvN0K5UcIZ4rUrj37phBx1Hnw4R57wKsqml4yrJy6rXC7yXWQOkbc2Jif/aB3dCij1hrzQQVYBHDpDniPTymUwRI0NMVgpBXbfwuBvlv+AKdPMDxr3ZDAvj1VYOQZGgW/oiKniOsURu+TLhQOghvwGaRBy3vjcKhw0=
+	t=1757421613; cv=none; b=upQYzFJXJAUM81PL2Oln+JGy6y8Cg9HXcB8/gileAPdaS6qKqbjIxKUjpVJfduZrMRm+XuUS813viUaR6K9SXUCIV+atRDm9f8VBrGKkhAn+gNQpEHJPb8mD/wuMxmZKGqLswP71wCEeJ6Oe/aE3q6jjcsh/rIrFV+oZU7ZxxUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757421602; c=relaxed/simple;
-	bh=DcRm/QuIJ29/54z6kYgqyNeqOZ05ZpUkyeEHfEwnpc4=;
+	s=arc-20240116; t=1757421613; c=relaxed/simple;
+	bh=E0pyzzXc5ywisIehqLd9QVqn8ohz0R6l3t8a5bN6GPQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tlN0EfMnox2w0nXm9Mz590iHtcIoqNYQmpJg0MiE5RJhicudmmZCG9+dh5o3Mi92pwXWglVDmFtY251LTrJ5Tnfd5o9jKRpeSm8gFmyIrHBVSRhi7PLfuE3SpdVm6tyjSE8oRD+L6FKk+gHzxcQ46t5qcdDZrGMzxcFMUhW27aM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hVmlTsvs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17217C4CEF4;
-	Tue,  9 Sep 2025 12:39:58 +0000 (UTC)
+	 MIME-Version; b=gjuqdS9xrcK+Ysv1OpfDwdxgtPo7Zh5JYsC+RCCc35k0CMa+u4E2O9xwQ7mlO5HadeJQhGC6DIcBfRU4xqk948zUoRNYBdLkyE5C7U2gO8duGLOZzt98qUYUtFHXiqniYK5tKximFgE9cHRq25TCpt4wR9Gs3Azan3bEwJmr22s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NdpnaDqS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B11DC4CEF4;
+	Tue,  9 Sep 2025 12:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757421602;
-	bh=DcRm/QuIJ29/54z6kYgqyNeqOZ05ZpUkyeEHfEwnpc4=;
+	s=k20201202; t=1757421612;
+	bh=E0pyzzXc5ywisIehqLd9QVqn8ohz0R6l3t8a5bN6GPQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hVmlTsvssKVPqgCV3pY2c2IMxY6p7Bk65CBfDMopoTpW5bm04o8SYkJ6Uc1SGwFn6
-	 O0BLqJhoSsvr06GLmNuslZhLE1+phByuLLBqDe8/BbU+r26grCc/XNtjkV/0sVIgc+
-	 oVOryjY7aHSXGjTaM/Vh/D9fayIsRRjXbKbquqfaI9HhTIXoa4yMXorIUHwUY3txS+
-	 E4mnP3yQ2f+X0hRdzboi67sRMcGnxKyS5f0N5exbYU5Rw1xbw/WdgzOJr+G1uu3I76
-	 dkUaxsYo2CtQw0QU4CUnInvxd/39jWXuvr+f0PeOLKB9LsWmbM8Qqc0VV0fQ87wXKq
-	 CnMEepYqbHS9g==
+	b=NdpnaDqSV+cIrUEa0xp48dPO9/HLwy2WjTn/gdyoiBwiV03w8my8dnDSlWtX5pcy0
+	 tKUuU78gwaXUDoL5kHeSumgsXw5rGiWb8FuRqjOqQFHQypt/ZsAF87cu0iLh4XPMVB
+	 oKatSJuVKW3KvmOzHN+T0xqYen9FVEstV4fWndAFoyoGhh76EcmAnEp44sbGMeDd6W
+	 NmwCYWVpnoV6tTCJdlWXWxnqhmEX88MW3bCXhH4y8I4bjUsDdR37Ssaeb5R/uRrqd+
+	 vFkW7+0oxAhr9y7tHWSEQpF/u42j5BVrfki6M31XSlMEkTUi6RX0QQpp7FH+KfpWPH
+	 1uyWd42IlBOqw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
@@ -56,9 +56,9 @@ Cc: bpf@vger.kernel.org,
 	Hao Luo <haoluo@google.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCHv3 perf/core 5/6] selftests/bpf: Add kprobe write ctx attach test
-Date: Tue,  9 Sep 2025 14:38:56 +0200
-Message-ID: <20250909123857.315599-6-jolsa@kernel.org>
+Subject: [PATCHv3 perf/core 6/6] selftests/bpf: Add kprobe multi write ctx attach test
+Date: Tue,  9 Sep 2025 14:38:57 +0200
+Message-ID: <20250909123857.315599-7-jolsa@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250909123857.315599-1-jolsa@kernel.org>
 References: <20250909123857.315599-1-jolsa@kernel.org>
@@ -70,37 +70,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding test to check we can't attach standard kprobe program that
-writes to the context.
+Adding test to check we can't attach kprobe multi program
+that writes to the context.
 
 It's x86_64 specific test.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/attach_probe.c   | 28 +++++++++++++++++++
- .../selftests/bpf/progs/kprobe_write_ctx.c    | 15 ++++++++++
- 2 files changed, 43 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/kprobe_write_ctx.c
+ .../bpf/prog_tests/kprobe_multi_test.c        | 27 +++++++++++++++++++
+ .../selftests/bpf/progs/kprobe_write_ctx.c    |  7 +++++
+ 2 files changed, 34 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-index cabc51c2ca6b..9e77e5da7097 100644
---- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-@@ -3,6 +3,7 @@
- #include "test_attach_kprobe_sleepable.skel.h"
- #include "test_attach_probe_manual.skel.h"
- #include "test_attach_probe.skel.h"
+diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+index e19ef509ebf8..bc52389217e2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+@@ -7,6 +7,7 @@
+ #include "kprobe_multi_session.skel.h"
+ #include "kprobe_multi_session_cookie.skel.h"
+ #include "kprobe_multi_verifier.skel.h"
 +#include "kprobe_write_ctx.skel.h"
+ #include "bpf/libbpf_internal.h"
+ #include "bpf/hashmap.h"
  
- /* this is how USDT semaphore is actually defined, except volatile modifier */
- volatile unsigned short uprobe_ref_ctr __attribute__((unused)) __attribute((section(".probes")));
-@@ -201,6 +202,31 @@ static void test_attach_kprobe_long_event_name(void)
- 	test_attach_probe_manual__destroy(skel);
+@@ -753,6 +754,30 @@ static void test_attach_override(void)
+ 	kprobe_multi_override__destroy(skel);
  }
  
 +#ifdef __x86_64__
-+/* attach kprobe/kretprobe long event name testings */
-+static void test_attach_kprobe_write_ctx(void)
++static void test_attach_write_ctx(void)
 +{
 +	struct kprobe_write_ctx *skel = NULL;
 +	struct bpf_link *link = NULL;
@@ -109,53 +107,47 @@ index cabc51c2ca6b..9e77e5da7097 100644
 +	if (!ASSERT_OK_PTR(skel, "kprobe_write_ctx__open_and_load"))
 +		return;
 +
-+	link = bpf_program__attach_kprobe_opts(skel->progs.kprobe_write_ctx,
-+					     "bpf_fentry_test1", NULL);
++	link = bpf_program__attach_kprobe_opts(skel->progs.kprobe_multi_write_ctx,
++						     "bpf_fentry_test1", NULL);
 +	if (!ASSERT_ERR_PTR(link, "bpf_program__attach_kprobe_opts"))
 +		bpf_link__destroy(link);
 +
 +	kprobe_write_ctx__destroy(skel);
 +}
 +#else
-+static void test_attach_kprobe_write_ctx(void)
++static void test_attach_write_ctx(void)
 +{
 +	test__skip();
 +}
 +#endif
 +
- static void test_attach_probe_auto(struct test_attach_probe *skel)
+ void serial_test_kprobe_multi_bench_attach(void)
  {
- 	struct bpf_link *uprobe_err_link;
-@@ -406,6 +432,8 @@ void test_attach_probe(void)
- 		test_attach_uprobe_long_event_name();
- 	if (test__start_subtest("kprobe-long_name"))
- 		test_attach_kprobe_long_event_name();
-+	if (test__start_subtest("kprobe-write-ctx"))
-+		test_attach_kprobe_write_ctx();
- 
- cleanup:
- 	test_attach_probe__destroy(skel);
+ 	if (test__start_subtest("kernel"))
+@@ -792,5 +817,7 @@ void test_kprobe_multi_test(void)
+ 		test_session_cookie_skel_api();
+ 	if (test__start_subtest("unique_match"))
+ 		test_unique_match();
++	if (test__start_subtest("attach_write_ctx"))
++		test_attach_write_ctx();
+ 	RUN_TESTS(kprobe_multi_verifier);
+ }
 diff --git a/tools/testing/selftests/bpf/progs/kprobe_write_ctx.c b/tools/testing/selftests/bpf/progs/kprobe_write_ctx.c
-new file mode 100644
-index 000000000000..4621a5bef4e2
---- /dev/null
+index 4621a5bef4e2..f77aef0474d3 100644
+--- a/tools/testing/selftests/bpf/progs/kprobe_write_ctx.c
 +++ b/tools/testing/selftests/bpf/progs/kprobe_write_ctx.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
+@@ -12,4 +12,11 @@ int kprobe_write_ctx(struct pt_regs *ctx)
+ 	ctx->ax = 0;
+ 	return 0;
+ }
 +
-+char _license[] SEC("license") = "GPL";
-+
-+#if defined(__TARGET_ARCH_x86)
-+SEC("kprobe")
-+int kprobe_write_ctx(struct pt_regs *ctx)
++SEC("kprobe.multi")
++int kprobe_multi_write_ctx(struct pt_regs *ctx)
 +{
 +	ctx->ax = 0;
 +	return 0;
 +}
-+#endif
+ #endif
 -- 
 2.51.0
 
