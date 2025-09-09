@@ -1,172 +1,122 @@
-Return-Path: <bpf+bounces-67889-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67890-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65A5FB502BC
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:33:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 338C7B502CD
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 414487AAB6D
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 16:32:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1592364E8F
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 16:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC9F274B29;
-	Tue,  9 Sep 2025 16:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEBF5343D64;
+	Tue,  9 Sep 2025 16:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iB/1DIwD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GJjB+gSR"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D84A2DCF4D
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 16:33:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD3323E34C;
+	Tue,  9 Sep 2025 16:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757435620; cv=none; b=FYRXTva/wnyCSYyt0003/oztvxCL0C6DkWD+c0+k7cCe7oq0SrdGtWylXJ62U27QbNybj5CUA4W7T0eREzDwGqn0Ju3+rlRGONGm43vv1BKKmQ2LJu+YKwpssAnQAvOV8SZFBVHLav5h3V6D1257xZfiBjR8I6oPkUb8I0ytrCo=
+	t=1757435848; cv=none; b=QC6Uke0hEJCRZgQQoEWXyws4yQgvcgky/CYu58yIRT9iOKG0kNYlJiTZNAiZK9ss04NLYj/oA1oBodTpTOdfr7fyrjohQtI6yswJ2y2S5zQumyQSm2ta8kpoOpcVH25pu5wm65b4Gi/imCtQ7Jee7BRPTIXnbrs//CSyQvrePE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757435620; c=relaxed/simple;
-	bh=WFdnUqV4hxxpkPOjvjzf5tq25E07YEPwR7vxyUNJK0U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RenBV1EOpIoPB0enko5+0al8cWwtVr7I9s85ApsfGNfWxy1F4Bs1RPqKzKUNiFDQLq1iUPxIiskYypKON4lcwM9gr5JC7GlqJg/UbjKR/SiFd8KvQX4dTbCnTx9ALFzu3RHyCKr0atPHwnhZXK1QaMLjg8TK8HctXMrXAB6R5xY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iB/1DIwD; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757435616;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Al0hvK+RUU6ek3CWk5iv4s8AREKcqh06zDhA8knnZdg=;
-	b=iB/1DIwDKMXqbvO+/XekJUPu0XZM/s+VJL8ItzWLB/SH672cI+SuYi7DXX7rd1Iln9/Eri
-	swSgq+ooyM+sQY7tNkXsX9thm9rUoziX0johgNM3ZJwkwt8fxvtg0g073w3+ksZ8NtlF2V
-	eSQnUpOHakTXrRSWVYdR7alx13aBF7M=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add stacktrace map lookup_and_delete_elem test case
-Date: Wed, 10 Sep 2025 00:32:22 +0800
-Message-ID: <20250909163223.864120-2-chen.dylane@linux.dev>
-In-Reply-To: <20250909163223.864120-1-chen.dylane@linux.dev>
-References: <20250909163223.864120-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1757435848; c=relaxed/simple;
+	bh=YnkXCsLcczNTFU7hE49SrGykNFGCbsufvXkEOENu0EU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jWTZXG8W8hGuJd9x0odVxLdU+UsmT6t7QCx/EiDtDaZjpPhR1ZOgC7PbtEApj45ib1722y4D8Q0BRmnQnidWRjYkJOIMRYq1s1fYntvcq4W1X3L/HnXrgyr+g+0VM7Dm2HAcmTs614bDrwLpHvin6c5ExGWhhFLluzWbhEZAEOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GJjB+gSR; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45deccb2c1eso10080855e9.1;
+        Tue, 09 Sep 2025 09:37:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757435845; x=1758040645; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DlzWJI9z3BZGRXDFF9YrcS74SSvEUleUaQgoUykTV4s=;
+        b=GJjB+gSRQz4+C56Gn3CIgiuhtlv3LIOioY+ypB24DAXTbQ7OJESjYiRS4JzYnQY356
+         W/O+QXs2Z4/d01CgDMfQjhSQFcvNpa4oNvYLOLH7aKpr5uFkkV9HRQSOMVcEyG9+6r82
+         JAJwLRrQ1npOYw1G/3NV85xYdSHEgBQkfbP1x81EMRvROREHNdC2rXoMUIaHtmMgreHf
+         U0Gv39vB5arrY2NZcP/8cofFU2QgZRV0zSOTstr6e7tPxCWyz5wVWRwzWQw/DG9ophLT
+         MCjKoSXm1dcEuyHp8Crbrnj3l3IAOD+VG/lcPq5OSMsvUjeRLrZ+rCc49yJZgrrpWxtI
+         Lilw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757435845; x=1758040645;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DlzWJI9z3BZGRXDFF9YrcS74SSvEUleUaQgoUykTV4s=;
+        b=jfOD8gQBZQn/yYg1BXjNAOnF7001I6oK6mRTFzZ4QjMTRqK0Krb2QSvVckbVC53Q4B
+         wlddKT4m8l1OnpLfQkhYPE07LKXRZE9snzyLEzXpPOHQhfjiNRgHVdaVMR5qftPLTIFQ
+         yzn/iYtS6Azt8Tdx/DoD3EfduXB/4PuSziQUj6aaCZWh9C6iIZlvHnyPBCz67ZtcsiZH
+         lFOVPg1rPWtXfKJtwI5IUrGt4mOudmAUAau+zKtWSXp1XWu6XdjVM5dzwiXtjh5I7Fky
+         gUGh4LFZeR0LYN0JPZE7fjQ+R90JqQ8uw1f2oiMkOD4u7QHR+horX9lZ0nHojJs6qNyZ
+         7Mog==
+X-Forwarded-Encrypted: i=1; AJvYcCXTjXVjiVsTyL78CcMdzVDR8IWxRX/9prNKBeSA61dzBD6vtT4l4MkLwZEb+rD8rE2HoHnmVUd34xVowA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YymeAMQq66JkSQHi59AvemANsh3SvCFJpiONNpME4IUNb1Ln7UM
+	q/sdFXm52DjLDXwEiYSuDkWebTVgCMQv8pJ1Mj/lV2u1VQWf0Vq3Gy/7b3qWV3/yMExsCdsCUVv
+	wXGj5/993nSyNqytDreAw0PR5XHhPOl527Q==
+X-Gm-Gg: ASbGncs7CNb9W23514loyT7jV0sgEfjZrhmCjKqpikqt/ttxZiLpydrrAieoMZTfYVr
+	wJqPkOF4ZFmQrxlrDvqT7SxKivZb3Q4wrIKjBe4nO8xJBd7BRwzneMsaYdPlI16n+Xi7Au4odXE
+	5OaoBez6oIewr+5e7BMO9mDkgKPp14JaJtpxw5CaOm7breLWe6aB4MtALIDfCrvg3lKR0YCxg59
+	0M1tLb8lQJP04Tm/VKxsiM=
+X-Google-Smtp-Source: AGHT+IEgjMKuPkRrJOaeKE6FyLMSmZqgiMsJgyq+AQKlQslV7AwAk+bhBUdhjOVoAJG8vw5x6p/Gz630qyrh5GUgb7k=
+X-Received: by 2002:a05:600c:1ca0:b0:45d:d9ca:9f8a with SMTP id
+ 5b1f17b1804b1-45dddeef8bbmr103174135e9.27.1757435844886; Tue, 09 Sep 2025
+ 09:37:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <a37ee461-1df8-4cdb-afea-ac104d81eb4a@iogearbox.net>
+In-Reply-To: <a37ee461-1df8-4cdb-afea-ac104d81eb4a@iogearbox.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 9 Sep 2025 09:37:11 -0700
+X-Gm-Features: AS18NWAeAhO2v7dZCFcsixhAX2frZQs6i2DZ7E1hGS-aRTP-ifb1cy2fSx5Kzow
+Message-ID: <CAADnVQJuK-Pe0Pt18O+iy-3XawRX_N7AULbo-t85tvk58zeEcA@mail.gmail.com>
+Subject: Re: [ANNOUNCEMENT] LPC 2025 BPF Track CFP
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: "open list:BPF [RINGBUF]" <bpf@vger.kernel.org>, Xdp <xdp-newbies@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-...
-test_stacktrace_map:PASS:compare_stack_ips stackmap vs. stack_amap 0 nsec
-test_stacktrace_map:PASS:stack_key_map lookup 0 nsec
-test_stacktrace_map:PASS:stackmap lookup and detele 0 nsec
-test_stacktrace_map:PASS:stackmap lookup deleted stack_id 0 nsec
- #397     stacktrace_map:OK
-...
+On Wed, Jul 16, 2025 at 10:59=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
+net> wrote:
+>
+> We are pleased to announce the Call for Proposals (CFP) for the BPF track=
+ at
+> the 2025 edition of the Linux Plumbers Conference (LPC), which is taking =
+place
+> in Tokyo, Japan, from December 11th to 13th, 2025.
+>
+> Note that the conference is planned to be primarily in person. CFP submit=
+ters
+> should be able to give their presentation in person to minimize technical=
+ issues,
+> although presenting remotely will be possible as a last resort.
+>
+> We are seeking proposals of 30 minutes in length (including Q&A discussio=
+n).
+>
+> Please submit your proposals through the official LPC website at:
+>
+>       https://lpc.events/event/19/abstracts/
+>
+> Make sure to select "eBPF Track" in the track pull-down menu.
+>
+> Proposals must be submitted by September 29th, and submitters will be not=
+ified of
+> acceptance by October 6th. Final slides (as PDF) are due on the first day=
+ of the
+> conference.
 
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- .../selftests/bpf/prog_tests/stacktrace_map.c | 22 ++++++++++++++++++-
- .../selftests/bpf/progs/test_stacktrace_map.c |  8 +++++++
- 2 files changed, 29 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-index 84a7e405e91..7d38afe5cfc 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-@@ -3,7 +3,7 @@
- 
- void test_stacktrace_map(void)
- {
--	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
-+	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd, stack_key_map_fd;
- 	const char *prog_name = "oncpu";
- 	int err, prog_fd, stack_trace_len;
- 	const char *file = "./test_stacktrace_map.bpf.o";
-@@ -11,6 +11,9 @@ void test_stacktrace_map(void)
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	struct bpf_link *link;
-+	__u32 stack_id;
-+	char val_buf[PERF_MAX_STACK_DEPTH *
-+		sizeof(struct bpf_stack_build_id)];
- 
- 	err = bpf_prog_test_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj, &prog_fd);
- 	if (CHECK(err, "prog_load", "err %d errno %d\n", err, errno))
-@@ -41,6 +44,10 @@ void test_stacktrace_map(void)
- 	if (CHECK_FAIL(stack_amap_fd < 0))
- 		goto disable_pmu;
- 
-+	stack_key_map_fd = bpf_find_map(__func__, obj, "stack_key_map");
-+	if (CHECK_FAIL(stack_key_map_fd < 0))
-+		goto disable_pmu;
-+
- 	/* give some time for bpf program run */
- 	sleep(1);
- 
-@@ -68,6 +75,19 @@ void test_stacktrace_map(void)
- 		  "err %d errno %d\n", err, errno))
- 		goto disable_pmu;
- 
-+	err = bpf_map_lookup_elem(stack_key_map_fd, &key, &stack_id);
-+	if (CHECK(err, "stack_key_map lookup", "err %d errno %d\n", err, errno))
-+		goto disable_pmu;
-+
-+	err = bpf_map_lookup_and_delete_elem(stackmap_fd, &stack_id, &val_buf);
-+	if (CHECK(err, "stackmap lookup and delete",
-+		  "err %d errno %d\n", err, errno))
-+		goto disable_pmu;
-+
-+	err = bpf_map_lookup_elem(stackmap_fd, &stack_id, &val_buf);
-+	CHECK((!err || errno != ENOENT), "stackmap lookup deleted stack_id",
-+	      "err %d errno %d\n", err, errno);
-+
- disable_pmu:
- 	bpf_link__destroy(link);
- close_prog:
-diff --git a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
-index 47568007b66..3bede76c151 100644
---- a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
-@@ -38,6 +38,13 @@ struct {
- 	__type(value, stack_trace_t);
- } stack_amap SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} stack_key_map SEC(".maps");
-+
- /* taken from /sys/kernel/tracing/events/sched/sched_switch/format */
- struct sched_switch_args {
- 	unsigned long long pad;
-@@ -64,6 +71,7 @@ int oncpu(struct sched_switch_args *ctx)
- 	/* The size of stackmap and stackid_hmap should be the same */
- 	key = bpf_get_stackid(ctx, &stackmap, 0);
- 	if ((int)key >= 0) {
-+		bpf_map_update_elem(&stack_key_map, &val, &key, 0);
- 		bpf_map_update_elem(&stackid_hmap, &key, &val, 0);
- 		stack_p = bpf_map_lookup_elem(&stack_amap, &key);
- 		if (stack_p)
--- 
-2.48.1
-
+A reminder that deadline is approaching fast.
+Please don't wait till the last day to submit a talk proposal.
 
