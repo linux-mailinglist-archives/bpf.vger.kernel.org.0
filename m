@@ -1,128 +1,100 @@
-Return-Path: <bpf+bounces-67928-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67929-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DBF4B504C1
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 19:55:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68BEDB5056E
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:35:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64715407D5
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 17:55:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EAA13BC796
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:35:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F5635CEBA;
-	Tue,  9 Sep 2025 17:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5132FFDC6;
+	Tue,  9 Sep 2025 18:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aVsNT+xl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DnC8Zz9Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4534435AAB5
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 17:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F8C42FF67F
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 18:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757440549; cv=none; b=NA+VgOUWxzWfLomHiPudvO4PYQdbgJwcdmRbGK/xIdxUN/R35zJ6ZS/iMbSZ1O0CQ93K+yGHAxX0Bd3kYsxvM3qLKTsdgh6U6CCvgJoU7YiNHvIHe6aWWBu4jaiZluRslZglT6r7n1EvkfS9Ui7b1TGRDMkDNxstEqOHIcz2KDI=
+	t=1757442948; cv=none; b=n6jxHMNnkZxyU5A8Ll2n88TLAWsJ+J0PmGPEKilvrvoRpNxIxG++I8Vr0MzVLNrIqsPpxp3mhswZeI4kGwOO8r6nnIsmV/jZ9vyK8cmBk/KVMkeZoFmM7Tw7eRAs61tHKLzTNYGZROarRhpZQGd5DjebZzkMEJSjhw4O4pD2z38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757440549; c=relaxed/simple;
-	bh=kg6liD7wVGpeWyLbeqfrlgY+ggYT6hl2VFD6TeNodQk=;
+	s=arc-20240116; t=1757442948; c=relaxed/simple;
+	bh=w6n4ljxjGOJoq0dBSVBu9j6BBX/CfAkjEUfWg7gkTRc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UlrCePSmzMSnQ4rfGJE/Si7l2kaRBS/b8zOf+M+gghx51fNmoly04oaRUXs7eS+4bHG5Hg/1Jsrkb+jsEJloVScfp7cqLKOVr0zdzrJYdwF1tqUQR7yw1XafqCn09TJIcgFILcBJKNS2IiPMwE3ZDfpSbn5q0UZuAWglXWJyoNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aVsNT+xl; arc=none smtp.client-ip=209.85.166.173
+	 To:Cc:Content-Type; b=tyxnQNk8FJ3jDtdcZ5MdokQKNf4HybLMkKEFAwhTs4blw+2fWMXjk3f0FyUvqio0Z22vtMZNPRlXq5U11r2bGGGlhRDgYiTWpbSALozYrXWZIFShzwtzyl0EoabTR6fiA1NNhVdcZI7Z0Re7nmlNdRmI8LPIPkT1wt1l1dMn5J0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DnC8Zz9Q; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-412a2fe2f31so3726225ab.3
-        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 10:55:48 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45df0cde41bso7032075e9.3
+        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 11:35:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757440547; x=1758045347; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757442945; x=1758047745; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WbdWTDtH4qpTFp4chX0FRf/4+hWqh78ZgtDZiKJPfXs=;
-        b=aVsNT+xl/EU3c3dXtzCQeHGi/saEyusRv9FAYgtYHDkbLAIR3vmHvbl+uBwRQ0vy0S
-         RU1WyeGdW2R4HqXcNb9op0pkakYlfr1ajoN53nsCYU2c887ujZN81+twbabY4O+Xz1+4
-         Zu9HsxhNjjry+NYuCcXfcH/JMDKqZd7ed9M1bzSl0oGKBQaheIvuAbVCLAEJm6/ZTItg
-         A/vS2kqpU85CXDy0xLFMwnlLuAWmI04J72xwEZdjxn92PUTvfKcA5os4mGek2uupO8gs
-         JKYRmZJlJKi368PqT7VZW1oWtOrLACamuZyK7gMujPdOAE4cwpvYPOfoc2Q2eJNvCBHa
-         TguA==
+        bh=w6n4ljxjGOJoq0dBSVBu9j6BBX/CfAkjEUfWg7gkTRc=;
+        b=DnC8Zz9QTI6W+6Cei48oFlwe3zNQ7tuOdfD4u1WENxioD+u0C6iBh9SEv2beV9U4/k
+         pavH5AA0iKQTKuuftmmlYGxAP00Hk8HVsmCwKU5f+4DE6SAMWxu3AcfhHf/CZKQIPYnM
+         I2RvlFL0Y06HjCrPRwmYa3doRM3hLw9+Ke8a95fOhVlAjqpubk1dZkqb7uJXRlV2rlyZ
+         woF+Z8orT08zBo4xRJIXDLY9RZxdEOh+XIWRbfCfZS1yAVjKm0Uo/ptx6EjCUdJOuFp5
+         qCto13ZkjUzQAq/7tHZ3gFZX4RpW5zoMmZfu4oo6FqGllREKhC2T90VTzJ9qR88hlvZg
+         4MOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757440547; x=1758045347;
+        d=1e100.net; s=20230601; t=1757442945; x=1758047745;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WbdWTDtH4qpTFp4chX0FRf/4+hWqh78ZgtDZiKJPfXs=;
-        b=QzCurW1d33iEdFEEwbIECsw6v9MGdrRmqRGAUgStySjkwkkWH4/vaasqpIiNxl7WYI
-         2ygOckg/nV810ERPQKOWz2UGE289Jve+etojclK/D3SQLVamWCWuuRobAipDrUnzgNc4
-         dLxlO9Q+N32Nb+q0mUpepZ3Gxzm4Aplu8GReRWr3pOYS6MSyjcpCa7XeFc/6125nSJxE
-         0SsuVHSsx1cOTuwvhw30XYHZdoNwLszozeHw77KWImyYQ2frtoWcE76zGhznvF0nsrwI
-         eYwEb6QHOmSXu/uJwlZ4XlpZaZHMFExvj0VqhMfaCj/gZ8cmYpRWdjPdlgCKBWg/axUJ
-         18wA==
-X-Forwarded-Encrypted: i=1; AJvYcCVkFLsmqete9dOV+yu17AZX1rRE8LN73/FXy1LQiD+U7Or7XUtJWWSkFAJjUDbbY3FPoxU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzKE/Oiu7aLc3Gydg1LfDy5RFvL0LTEiWDgYnr17wYJXIknVmSW
-	XIAcp+PkHNqO+RF4xh/+abPl/5Rze+G4zlFFLQ3RnPOatfO/8P2tr1CU3HyuhrMFfUEjVGoNyCw
-	Ulfewc7YImAjy7ByuHrjtI+lpWZmR9fk=
-X-Gm-Gg: ASbGnct7sB95paB+mMCfyl0OPcXU1sTT+sos2hwTDdeal5Fzi1jOWxvVuDftJrQGo5b
-	EP8BGZvHo92PkK7cMBLcNEV5OelOWoqeg4ts8TTko/8oYvRweJhepSOZwi22eOCFZQCCZgFCIc+
-	x7td2uMK8Z7CD9eihFQ/ei8ow+J2N4jxdm5GAhMXMW41GubagP7O93Skdg6XYR7lb/u2YL1spSa
-	BMyXvvuL/zP8C+FbHokBFTTNmc/8GmpzRrfeNuWsg5Okm++FMEc
-X-Google-Smtp-Source: AGHT+IFYOhqvjzIj+LQDRcbWbj0lSHPo3r8cJ+8bzeY75x25Y7X3YqmlaZNse7yuMlkY5D/qr/XKAva8jZDEuj6mqfw=
-X-Received: by 2002:a05:6e02:2589:b0:412:fa25:dd54 with SMTP id
- e9e14a558f8ab-412fa25df91mr34189335ab.14.1757440547283; Tue, 09 Sep 2025
- 10:55:47 -0700 (PDT)
+        bh=w6n4ljxjGOJoq0dBSVBu9j6BBX/CfAkjEUfWg7gkTRc=;
+        b=d20x14HeT644mMF3DLgsK7lmsFr8/zhTMH96xbF1Uwb0jIU+nWqVuqzWzOgmBx696n
+         4Ts5lc4Ji4LhJaa5RU0chf0G+f9EMYFTusoUwLlyPBVO7ywGr+csuvbWgtnPOQycW4Ua
+         w73U/FPBR9iJ8VJOm6thojsVB0ARYSEObtD8czdQrDFSds3X57izmZD50gQdosO9wCJ7
+         bMYMIfDYDrDO2VUJaAkcu7NfQToYQx4liopj184MuTV41B2tNHQ+l459tPq8N9kvWbHm
+         hEpHems5OM3iBx8aAToY6WYI9dIobkqhTEiAWCbgQKae5KtVYPcOphEq6o3OR4D7jIho
+         F5Bw==
+X-Gm-Message-State: AOJu0YyiSHZafsJp6SuwDvL67s4UrJctsw7etR2RSq5FeKqaCnMkvYpY
+	xwcn3eU7oZKEPrl/PWcMzh9U1yCPAkAwEDe31dmX0FNMmRBDxOYLkcoY815a9GvPzYiqCH4/uci
+	8pcwR+m/jKrHdJbyY5BiqeSgNEZU0NcTiRA==
+X-Gm-Gg: ASbGncteDIGX9eDq24cXHI8zuSSWD5+pawdIYZWEabYEm5v0De/e07s1ZbpLbwE69dD
+	P/8vIII+0rraGWxV7Jb3GBkwZ+kAoAny/3sxZpADpAMOT+ylPD9QraCshG0c6atxfinEbW3ySK0
+	guu+9QbCsTNcYean+oM9kIuGYF+k6Q5Z7rVoRFlHkP3lW/OKtBWA+sADTTat6KCz0ZJV/LT1tHb
+	h46PFNFETbKqvGfyqFCaQYC2ls/eHI2FA==
+X-Google-Smtp-Source: AGHT+IFtkWanWlAJVCH5X7DVdDqrq7p9DxKRMipcihIsw403L/QE23uvLwGFSomVxBzz8Lo1epAZBEDfwseLmF8cjo0=
+X-Received: by 2002:a5d:5f96:0:b0:3e3:2c0b:dc3d with SMTP id
+ ffacd0b85a97d-3e6428cd2f7mr9724642f8f.17.1757442944557; Tue, 09 Sep 2025
+ 11:35:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909171638.2417272-1-eddyz87@gmail.com> <CAEf4BzYf3ew_ho3=FWiZr_VYvex=XVFDv8Y9ymTUuAgn9EKqOw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYf3ew_ho3=FWiZr_VYvex=XVFDv8Y9ymTUuAgn9EKqOw@mail.gmail.com>
-From: Mykola Lysenko <nickolay.lysenko@gmail.com>
-Date: Tue, 9 Sep 2025 10:55:37 -0700
-X-Gm-Features: Ac12FXwefaPDEMP95XfBA7Yty91KI43bk1RPN5zsCTKApCZIxtrDmjQIANuIW1E
-Message-ID: <CAMtxOX16V7myorKCrJQtGJR=VffcRnmZ63cnpzj_bYXBYPhr2Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: remove Mykola Lysenko from BPF
- selftests maintainers
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, yonghong.song@linux.dev
+References: <20250909165917.3354162-1-memxor@gmail.com>
+In-Reply-To: <20250909165917.3354162-1-memxor@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 9 Sep 2025 11:35:31 -0700
+X-Gm-Features: AS18NWAXBaHMM12hjYasZq8cXWpsVbs4cHjKEksQNrNGcB3vK7etiW4uSBNmcSo
+Message-ID: <CAADnVQJozfMWiLkkmFxFsnSS7027rOAKYZogd30D-LyuaGhfMQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v1] rqspinlock: Choose trylock fallback for NMI waiters
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 9, 2025 at 10:43=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Sep 9, 2025 at 9:59=E2=80=AFAM Kumar Kartikeya Dwivedi <memxor@gmai=
+l.com> wrote:
 >
-> On Tue, Sep 9, 2025 at 1:16=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >
-> > Unfortunately Mykola won't participate in BPF selftests maintenance
-> > anymore. He asked me to remove the entry on his behalf.
-> >
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >  MAINTAINERS | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index fe168477caa4..6056ad6f1afa 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -4682,7 +4682,6 @@ F:        security/bpf/
-> >  BPF [SELFTESTS] (Test Runners & Infrastructure)
-> >  M:     Andrii Nakryiko <andrii@kernel.org>
-> >  M:     Eduard Zingerman <eddyz87@gmail.com>
-> > -R:     Mykola Lysenko <mykolal@fb.com>
->
-> cc'ing Mykola
->
-> >  L:     bpf@vger.kernel.org
-> >  S:     Maintained
-> >  F:     tools/testing/selftests/bpf/
-> > --
-> > 2.47.3
-> >
+> A more involved fix to terminate the queue when such a condition occurs
+> will be made as a follow up.
 
-
- Acked-by: Mykola Lysenko <nickolay.lysenko@gmail.com>
+Worth adding that the stress test aka selftest for this race
+will be targeted bpf-next when the fix lands and trees converge.
 
