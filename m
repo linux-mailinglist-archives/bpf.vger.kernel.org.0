@@ -1,76 +1,77 @@
-Return-Path: <bpf+bounces-67819-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67820-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DCBFB49E6D
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 03:00:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE050B49E6C
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 03:00:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5A973B3B49
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 01:00:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C0EB7AA8F6
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 00:58:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0542B22425E;
-	Tue,  9 Sep 2025 01:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C15B3216E23;
+	Tue,  9 Sep 2025 01:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B0N1qsIn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iyoKXzEV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05269223702
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 01:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCA021FF4A
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 01:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757379612; cv=none; b=afQHSX3/0LiCbpRouksy3WY37aqUd7v4xYel3KOogvkCt1O3ghua0KnsS1B7gAL/w77L6wReeFmU76kaWJsNnQJxbGfUdABY64FVPSdMgLBwiN2DDLDu/0yLqGxEfFHIRCz16wdyXgGF8W81aYjxSvDxM7cfC5lww113RjUeoIQ=
+	t=1757379615; cv=none; b=P7blURnoZwVzK50Swg36jRJT6/3LtDPYHDAUfs3jNGaf2AIQpgwo+HtGkaQiLDNBJL7ue/dL3Fsw9WhgKsA0cimAR4wh62a1qGnDd3vCdGy4cEd3HE3i7QmsjH8YLN3DIFHk8cy+mErbDKGBcBrxh58dDCkdSTSW/SEuy/iPt4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757379612; c=relaxed/simple;
-	bh=Xpz4Q3HgOThYXgXXsQSg4qUb3z3ioTsrrBuBFUdAxv0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GnejeIFg1XTwcNGQqL1an90H5pH5NnpJeinGtrE0P25lHpCqIv4VAAeXyDFqSsIxM8wdQgQqgPzeJ6jTPp6Xp88h76JHbRF0s/rFVTjoHsCv08BlNsmf1uegjuYDfk71Sw6/vLdos0CzUumD2o6hBDpEsHMKCIw5eitDkN7FdCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B0N1qsIn; arc=none smtp.client-ip=209.85.215.173
+	s=arc-20240116; t=1757379615; c=relaxed/simple;
+	bh=M9PQGG0oeCTh7MmM0ClfF4e0pIEvQP5vo15W9Qm5ix0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Bc/01iQItBPJ/yjxUQlKmL9El/R67sksOWwidUarkBrxXjkL9vhEj6IWrQ9viEazb2d12NWFdSIzBOSgoQeITkBp09ajZCetC5EyTiPA8JsWzA9XRCX1vj4FyYCcb+J7l4lr7cd1kLP+AbLmbsnMaOp8oFvTVtTqNd5ZuZWDoGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iyoKXzEV; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b4d5886f825so4370283a12.0
-        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 18:00:10 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-772488c78bcso4988844b3a.1
+        for <bpf@vger.kernel.org>; Mon, 08 Sep 2025 18:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757379610; x=1757984410; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3I0VmGs2kpEbMcr5q5JKcZdoO9Oa/TvNmRGysVtq0no=;
-        b=B0N1qsInpquPJJMvuFHg50ptm2LabdQxbo/pbejC4hk0oDD46czET6rzi7kyqFHaH+
-         bG70Ub8KrfonzMbqfBioJVXeAE6yH3PSaLmUV8fbR90x4yFG6Z8HTqatkga+UtLdu3x6
-         JehuAdxTMVxQxwtEe7ARm05gk9bqbC7h4VlQleoFPcLvedAXuCTZ8Smq2EA/1GXlg74M
-         LSoHWcpZsyCx5gg7Fy3+spYlC6i0t9H9FrBaLoHt8QQLZhpfj43b3ZooCmgV3da3MFAx
-         2ulE2794PoY8R+SNpK87AuWZVu0DaH2CP14k6t765lRkRoCzva8EAHcmRITE+BFxCNho
-         OYVA==
+        d=gmail.com; s=20230601; t=1757379613; x=1757984413; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LQaXiO7Rj6JeUoLNyDKccCslPjkrNZKqfhPqinjWMVs=;
+        b=iyoKXzEV69QwxCEiocIsPxycvuSJGA9AaMb5JKN2EqokZxsuaTcUy1mD0HbpRAQ1kK
+         h3q1otCYFD0kNjzadmwZJelP7uv62upwb76hVEIPxSZcxfnHEr8ORPAMGrLB6APlBLNB
+         HKkpAlRJlTbnYr9emUa+zNWbOWb/PruleguinAMjGn+ellqjSXKgnpfTiSmip2wikp0d
+         5Zzrb15PyTFWfFrJ6a3/PDVRjwhIm3YVvJwOzTTo+EPwZ7WhSC+H3H5POQUFG/1bDMVt
+         HSkqu6EOC04vkBgxWUpMpRAn+QKNwjSglvW4Y39nxF8ti+N7R4Kqq9Ghq+cnlPmIXIWK
+         SYjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757379610; x=1757984410;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3I0VmGs2kpEbMcr5q5JKcZdoO9Oa/TvNmRGysVtq0no=;
-        b=HjznoWzy4jEPfGhxjARzDFPWJsn1ruQjciB1aV9TQ6txaTCnmLvphPEfd0xIiyGWdr
-         P6zRwBojU6EZML4hxMwNbCRcpYxE/zuOtus+TwiX/mZdDRQDSFk5e/LwYPLKj4mqMzMP
-         K7IbHo1fp/sKs7dAmXOw5WqnvoKr3LFzaqJTyi0BlXxsNQE+GfIusDv4kuLQuojKMGJT
-         4/vJZ3DNKOzj5rziiX/+NiD/wOV0pUkid0NhAY97w7+wpwmlyDTEZ90LRl7w6GngGqEJ
-         ghY+JrsDFvYMR3LfiDy5e7tw4fH2wAtO80M3OJ1wXADFe+l5/91lRQtG7vOCsSiDA4lK
-         +XDg==
-X-Gm-Message-State: AOJu0YxyshIbDodhXgBJGTs5Rl2aKwzHUsJWv0+U1/f52dqRwM6K2a3C
-	I/udz3vtjrWli9UuDX1A6yMv2sVcz1yvSG+0MbvHTXybF0Tlbm1VHa4IYLamCQ==
-X-Gm-Gg: ASbGncsOfshcBqIgP/QJyWEGzreRi7ZCG7yeWig07Clnz9vefyXbZT1BJzegtoT6mWn
-	vA83DLITkvY2qGDEwKcHDQrcilEsNE0ieLylPHUrTwfrrIIWp+l3/9a81p9CVEmU3koacS9xXCw
-	GashRAM0OTIbvN1lEdJfCykIRfiEe7AzHzfRjGRJeQHfZjp2hgUPubAWlJjFESSTXuiKTeEulUv
-	UsYfcClrUn9+8Z0rNsld4/iYgHVMn0LTBNq+AaPpjt4P2KvIxCCk/YGqAjGia+SNcQj8wg7A47k
-	2gb8hK8l+Hj2B2/vYfB3uErFx05M6ONGwliq3gV+iY/guZJ60j/BXllWpaTHCKbRLx4ugOlPO7x
-	I1KMaMcnedMte1Em1LFHbEDUWqSo7rCKHs8x44u/9h8INBReufJl8EL1en4ejGF9sNL/v/BHZL/
-	hBMU/2+k+v
-X-Google-Smtp-Source: AGHT+IEM2XoQeUfxViqxHUBGb9ymPiInaAJmBJ0r2R3U73+XlaqvewD+wzVN2Y2P6L12bEYs46pCRg==
-X-Received: by 2002:a17:903:1b64:b0:24b:4a9a:703a with SMTP id d9443c01a7336-2516e4aeb33mr144178765ad.17.1757379609741;
-        Mon, 08 Sep 2025 18:00:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757379613; x=1757984413;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LQaXiO7Rj6JeUoLNyDKccCslPjkrNZKqfhPqinjWMVs=;
+        b=SY/ZDthKmEKO7qiVAV0AWKfUbV894pOUGBZ7tLjHkdXHapzbUPqcGt5qeFKpxI9xxr
+         FDlE30+XbT7AXwyUplYQrpihL+1O96wqDb60pvbLB+NTe14I4H2+plxqEp8D+SHAthSp
+         cRKh52SQVXCx1+V1woo9CVoVlMuI//uDN7tmtssAFWjwgfz8L4BZcsGh9gMitZg3p2vB
+         Of1bDWNInmYUAdXUOj3fbJNCNofanQqtZF69PsSPAWqmkIcCN2lDzgWYAODI6qmXENBo
+         9w1th8PSUnjXM2cRp9wx1rmOiIUKLbhDFIcZ7DKjTg9rj4Ls7HnHthBxaBN5HInNyEFW
+         x7Tg==
+X-Gm-Message-State: AOJu0YyzsMNTr1vDq7NROFrqqXWf1ylvK6L3XYwwxmSJDAF2HGzKV0nn
+	QHcMvwKSK3lfDg14B6+UC4ZdIH5j9G3UrMawE4UE1Vh2llMcfDjoYkJtxsbMsw==
+X-Gm-Gg: ASbGncuixqwnTPfYuc1oH5b0jlDGkjS6oIe7ZeAWhBlYLTRSAEJV2TKT0zcbB8sl4e+
+	Yj3Yrl4+0TGs2tEXYg9t18xvvDShCmY5GPSYqu8gsQb47gh0n6AX0DR7/ibverIgVVEiXjVxl5L
+	YMcJ+s4cm44c9PZOLwiQuGAAmKZFD8XO+AfyNyyxrrUzqpgSpax6sURBEqiIYXUO7ozTDib8YE6
+	fTin5Pyl+yk7ZCZBgx+aPX02AbYLnBcZHc/l2krVtdcDSHB6djbWAv7r2o2z5cKy71IdkfhOmjU
+	tdB2vlvfFjwSlxqgzNb4+M+t3BgHtTHbLS65S8ePP2fbtxkI8PbNURanpxbLqV8GOfk/tBeoyhR
+	s2nzsUdKyhVDhM8G44FJqbckX8viGXRRCUpXC8lvENn6djgrgTlLIbLoHPOQxJWc=
+X-Google-Smtp-Source: AGHT+IEyyyLEKg31IihQi/ou94RxqHeZu017zfwcJX6SGzpwddIuJtEgCWvNWfw0XBs7sZ8NiG6v/g==
+X-Received: by 2002:a05:6a00:1394:b0:771:ef79:9338 with SMTP id d2e1a72fcca58-7742def5d1emr11646157b3a.21.1757379612566;
+        Mon, 08 Sep 2025 18:00:12 -0700 (PDT)
 Received: from localhost.localdomain ([2001:558:600a:7:44e6:767e:cc5a:a060])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24cb28c30f4sm135606085ad.110.2025.09.08.18.00.08
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7746628fca0sm205235b3a.56.2025.09.08.18.00.11
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 08 Sep 2025 18:00:09 -0700 (PDT)
+        Mon, 08 Sep 2025 18:00:12 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org,
 	linux-mm@kvack.org
@@ -85,10 +86,12 @@ Cc: vbabka@suse.cz,
 	peterz@infradead.org,
 	rostedt@goodmis.org,
 	hannes@cmpxchg.org
-Subject: [PATCH slab v5 0/6] slab: Re-entrant kmalloc_nolock() 
-Date: Mon,  8 Sep 2025 18:00:01 -0700
-Message-Id: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
+Subject: [PATCH slab v5 1/6] locking/local_lock: Introduce local_lock_is_locked().
+Date: Mon,  8 Sep 2025 18:00:02 -0700
+Message-Id: <20250909010007.1660-2-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
+References: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,119 +102,97 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Overview:
+Introduce local_lock_is_locked() that returns true when
+given local_lock is locked by current cpu (in !PREEMPT_RT) or
+by current task (in PREEMPT_RT).
+The goal is to detect a deadlock by the caller.
 
-This patch set introduces kmalloc_nolock() which is the next logical
-step towards any context allocation necessary to remove bpf_mem_alloc
-and get rid of preallocation requirement in BPF infrastructure.
-In production BPF maps grew to gigabytes in size. Preallocation wastes
-memory. Alloc from any context addresses this issue for BPF and
-other subsystems that are forced to preallocate too.
-This long task started with introduction of alloc_pages_nolock(),
-then memcg and objcg were converted to operate from any context
-including NMI, this set completes the task with kmalloc_nolock()
-that builds on top of alloc_pages_nolock() and memcg changes.
-After that BPF subsystem will gradually adopt it everywhere.
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ include/linux/local_lock.h          |  2 ++
+ include/linux/local_lock_internal.h |  7 +++++++
+ include/linux/rtmutex.h             | 10 ++++++++++
+ kernel/locking/rtmutex_common.h     |  9 ---------
+ 4 files changed, 19 insertions(+), 9 deletions(-)
 
-The patch set is on top of slab/for-next that already has
-pre-patch "locking/local_lock: Expose dep_map in local_trylock_t." applied.
-I think the patch set should be routed via vbabka/slab.git.
-
-v4->v5:
-- New patch "Reuse first bit for OBJEXTS_ALLOC_FAIL" to free up a bit
-  and use it to mark slabobj_ext vector allocated with kmalloc_nolock(),
-  so that freeing of the vector can be done with kfree_nolock()
-- Call kasan_slab_free() directly from kfree_nolock() instead of deferring to
-  do_slab_free() to avoid double poisoning
-- Addressed other minor issues spotted by Harry
-
-v4:
-https://lore.kernel.org/all/20250718021646.73353-1-alexei.starovoitov@gmail.com/
-
-v3->v4:
-- Converted local_lock_cpu_slab() to macro
-- Reordered patches 5 and 6
-- Emphasized that kfree_nolock() shouldn't be used on kmalloc()-ed objects
-- Addressed other comments and improved commit logs
-- Fixed build issues reported by bots
-
-v3:
-https://lore.kernel.org/bpf/20250716022950.69330-1-alexei.starovoitov@gmail.com/
-
-v2->v3:
-- Adopted Sebastian's local_lock_cpu_slab(), but dropped gfpflags
-  to avoid extra branch for performance reasons,
-  and added local_unlock_cpu_slab() for symmetry.
-- Dropped local_lock_lockdep_start/end() pair and switched to
-  per kmem_cache lockdep class on PREEMPT_RT to silence false positive
-  when the same cpu/task acquires two local_lock-s.
-- Refactorred defer_free per Sebastian's suggestion
-- Fixed slab leak when it needs to be deactivated via irq_work and llist
-  as Vlastimil proposed. Including defer_free_barrier().
-- Use kmem_cache->offset for llist_node pointer when linking objects
-  instead of zero offset, since whole object could be used for slabs
-  with ctors and other cases.
-- Fixed "cnt = 1; goto redo;" issue.
-- Fixed slab leak in alloc_single_from_new_slab().
-- Retested with slab_debug, RT, !RT, lockdep, kasan, slab_tiny
-- Added acks to patches 1-4 that should be good to go.
-
-v2:
-https://lore.kernel.org/bpf/20250709015303.8107-1-alexei.starovoitov@gmail.com/
-
-v1->v2:
-Added more comments for this non-trivial logic and addressed earlier comments.
-In particular:
-- Introduce alloc_frozen_pages_nolock() to avoid refcnt race
-- alloc_pages_nolock() defaults to GFP_COMP
-- Support SLUB_TINY
-- Added more variants to stress tester to discover that kfree_nolock() can
-  OOM, because deferred per-slab llist won't be serviced if kfree_nolock()
-  gets unlucky long enough. Scraped previous approach and switched to
-  global per-cpu llist with immediate irq_work_queue() to process all
-  object sizes.
-- Reentrant kmalloc cannot deactivate_slab(). In v1 the node hint was
-  downgraded to NUMA_NO_NODE before calling slab_alloc(). Realized it's not
-  good enough. There are odd cases that can trigger deactivate. Rewrote
-  this part.
-- Struggled with SLAB_NO_CMPXCHG. Thankfully Harry had a great suggestion:
-  https://lore.kernel.org/bpf/aFvfr1KiNrLofavW@hyeyoo/
-  which was adopted. So slab_debug works now.
-- In v1 I had to s/local_lock_irqsave/local_lock_irqsave_check/ in a bunch
-  of places in mm/slub.c to avoid lockdep false positives.
-  Came up with much cleaner approach to silence invalid lockdep reports
-  without sacrificing lockdep coverage. See local_lock_lockdep_start/end().
-
-v1:
-https://lore.kernel.org/bpf/20250501032718.65476-1-alexei.starovoitov@gmail.com/
-
-Alexei Starovoitov (6):
-  locking/local_lock: Introduce local_lock_is_locked().
-  mm: Allow GFP_ACCOUNT to be used in alloc_pages_nolock().
-  mm: Introduce alloc_frozen_pages_nolock()
-  slab: Make slub local_(try)lock more precise for LOCKDEP
-  slab: Reuse first bit for OBJEXTS_ALLOC_FAIL
-  slab: Introduce kmalloc_nolock() and kfree_nolock().
-
- include/linux/gfp.h                 |   2 +-
- include/linux/kasan.h               |  13 +-
- include/linux/local_lock.h          |   2 +
- include/linux/local_lock_internal.h |   7 +
- include/linux/memcontrol.h          |  12 +-
- include/linux/rtmutex.h             |  10 +
- include/linux/slab.h                |   4 +
- kernel/bpf/stream.c                 |   2 +-
- kernel/bpf/syscall.c                |   2 +-
- kernel/locking/rtmutex_common.h     |   9 -
- mm/Kconfig                          |   1 +
- mm/internal.h                       |   4 +
- mm/kasan/common.c                   |   5 +-
- mm/page_alloc.c                     |  55 ++--
- mm/slab.h                           |   7 +
- mm/slab_common.c                    |   3 +
- mm/slub.c                           | 495 +++++++++++++++++++++++++---
- 17 files changed, 541 insertions(+), 92 deletions(-)
-
+diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
+index 2ba846419524..0d91d060e3e9 100644
+--- a/include/linux/local_lock.h
++++ b/include/linux/local_lock.h
+@@ -66,6 +66,8 @@
+  */
+ #define local_trylock(lock)		__local_trylock(this_cpu_ptr(lock))
+ 
++#define local_lock_is_locked(lock)	__local_lock_is_locked(lock)
++
+ /**
+  * local_trylock_irqsave - Try to acquire a per CPU local lock, save and disable
+  *			   interrupts if acquired
+diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
+index 949de37700db..a4dc479157b5 100644
+--- a/include/linux/local_lock_internal.h
++++ b/include/linux/local_lock_internal.h
+@@ -165,6 +165,9 @@ do {								\
+ 		!!tl;						\
+ 	})
+ 
++/* preemption or migration must be disabled before calling __local_lock_is_locked */
++#define __local_lock_is_locked(lock) READ_ONCE(this_cpu_ptr(lock)->acquired)
++
+ #define __local_lock_release(lock)					\
+ 	do {								\
+ 		local_trylock_t *tl;					\
+@@ -285,4 +288,8 @@ do {								\
+ 		__local_trylock(lock);				\
+ 	})
+ 
++/* migration must be disabled before calling __local_lock_is_locked */
++#define __local_lock_is_locked(__lock)					\
++	(rt_mutex_owner(&this_cpu_ptr(__lock)->lock) == current)
++
+ #endif /* CONFIG_PREEMPT_RT */
+diff --git a/include/linux/rtmutex.h b/include/linux/rtmutex.h
+index fa9f1021541e..ede4c6bf6f22 100644
+--- a/include/linux/rtmutex.h
++++ b/include/linux/rtmutex.h
+@@ -44,6 +44,16 @@ static inline bool rt_mutex_base_is_locked(struct rt_mutex_base *lock)
+ 	return READ_ONCE(lock->owner) != NULL;
+ }
+ 
++#ifdef CONFIG_RT_MUTEXES
++#define RT_MUTEX_HAS_WAITERS	1UL
++
++static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
++{
++	unsigned long owner = (unsigned long) READ_ONCE(lock->owner);
++
++	return (struct task_struct *) (owner & ~RT_MUTEX_HAS_WAITERS);
++}
++#endif
+ extern void rt_mutex_base_init(struct rt_mutex_base *rtb);
+ 
+ /**
+diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
+index 78dd3d8c6554..cf6ddd1b23a2 100644
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -153,15 +153,6 @@ static inline struct rt_mutex_waiter *task_top_pi_waiter(struct task_struct *p)
+ 			pi_tree.entry);
+ }
+ 
+-#define RT_MUTEX_HAS_WAITERS	1UL
+-
+-static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
+-{
+-	unsigned long owner = (unsigned long) READ_ONCE(lock->owner);
+-
+-	return (struct task_struct *) (owner & ~RT_MUTEX_HAS_WAITERS);
+-}
+-
+ /*
+  * Constants for rt mutex functions which have a selectable deadlock
+  * detection.
 -- 
 2.47.3
 
