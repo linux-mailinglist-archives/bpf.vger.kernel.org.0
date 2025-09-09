@@ -1,78 +1,81 @@
-Return-Path: <bpf+bounces-67937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8337DB50763
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 22:47:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E10DB5075F
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 22:47:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E9EF5E76FB
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:46:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FDD7544C4D
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A429135A2B4;
-	Tue,  9 Sep 2025 20:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7022D24B3;
+	Tue,  9 Sep 2025 20:46:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YABzo4v9"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="blJ2OhOK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B39301022
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 20:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E88E4502F
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 20:46:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757450799; cv=none; b=QJx3ozEs4TBvHwVtQZbMJrB7zCyX/tM+FGmEwzr+FPxoPQympupu/Scy8p5HiJELcmtNNnZ+xevbaJiyBthG0upqNYrpmDUrVDAmEFpKDExe9qzq7iEyR9dqVHR5Efdc6mP0/73JjkdCmtPbjLIEQZAgyanWR5YzyvUjqqOikfQ=
+	t=1757450800; cv=none; b=Hj05tk2SYIRAbSAWani7aptc1hFByili9renQsGe+t6WKICTFwPx661lrUOgSqy3wQNFxCF0i+FVDcXMsgVO/Sh7P9CeWdNOxuIl99p1oNaSOGTRHkmBtWgZsSs6Oee5bUMluV4VDFIUQkqTpIRjG1IpBZStqBHQwMcm9OWtrTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757450799; c=relaxed/simple;
-	bh=Fct3e4B6A6ZR1i/d0po8drRvWEtKD8QIsPSJI8uf17A=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=VYi/WWTTcwHDSImTGWzsTrmLAze0CNOFKdCSJ669CmE5LJVFQj06YtlGPdp0/WNb71haGut51eprP4kBl4NRgdB8vi5yhj/xGVVoPHjHk/2WJYYEy9QdWu8ISjhb+UoK4KwXFHhHoWRvJB+VH0sANa3FWK6F8AeIt9xYm3Ua53k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YABzo4v9; arc=none smtp.client-ip=209.85.214.201
+	s=arc-20240116; t=1757450800; c=relaxed/simple;
+	bh=v3w2SS7Kkrv52T8FXm7oOh2uz/3H5kSOug5YVI7wCT8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=mgMnnV8bbSDTSZOtQJKroSqpmbrY8O78zMBz54/AfyBobU2uKlB+g3812vM/SjO4sdCn3tJJhPyg1kGzqALMXkmpnps8w/FLm1QUyEErPzqHL5eC3uP2xoSMkEijz1aT7LmMFlCNERBBHa1fS55OCL6BnugEuMlY6b6fiiLlP70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=blJ2OhOK; arc=none smtp.client-ip=209.85.210.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-24ca417fb41so70756235ad.1
-        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 13:46:37 -0700 (PDT)
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-77250c660d3so5726485b3a.0
+        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 13:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757450796; x=1758055596; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1lvZ1o30VYBTsa6ogSGZDG7Gv6CnhJma3tgeQqrmyfc=;
-        b=YABzo4v9cO8fy33ueWodrnsvbBq/pR4rGUEQH4zz5YHRoj7x+jEP5oSU3mW8r0qkRA
-         VT++il4H8lCiOlwnZPj1KRb/B2yZmiTmtST6m8/tU22hZvkSPuRDa1YTeF1lB9XxNsuY
-         U8+Jl9WomXfaMHOUUqyJyZrtmBm64OpDFUoMOcUQDox37yilABm6Vgsjxph1l9R5t2lK
-         YzNsraQXa4zcYiBuh9brmIjwbRrt9BS4zpuuydkbdSIxORjGu3G8eQKsQYZC6mZ/2y6n
-         wfTZMk5K9WJ3nDR4ZycL8gLxTcBbHkW5+a9LunFbfs9gMpqytdPPTjPI1l0YQyH9WaK+
-         r6Cg==
+        d=google.com; s=20230601; t=1757450798; x=1758055598; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9BeVPATa3pZCn8jXo+/vosY7DTRyTcrn7DL+ZXvQULA=;
+        b=blJ2OhOKZAyvvKoozaTBpz0xv0v2BiFuSSkKZZYRVLP56X9hYc0ZaK+yR/JupHAo2c
+         ffz2+SWA8j3sfWiEWiW7cKkiYzkS2rvjV7758TnbIZ4Faj3K9GqgpKDyP4jM/Ht45j/a
+         L8DHQItX1BhUHqfzMahQywNd/BPDMvShaIBw9I4e8iZQnjLuStBuOnNBrTdKbuPSFpMa
+         x5n1MkUGaXVpb+EyJmb13acb6CJ5UM+frVb46awJbMFdcQI8YO4SUgmR530tY51z9o9X
+         RYjS9nVHHDC8UwSS4V0fP1RMBUm9A6/cHM44keWCsARwR78Am/CWYer0UjxciNc4WxC+
+         vFzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757450796; x=1758055596;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1lvZ1o30VYBTsa6ogSGZDG7Gv6CnhJma3tgeQqrmyfc=;
-        b=gtmqb57i6mLTWimyC8BCmk09ujmLLEr7lnQmT733itjqv8HUEeQzXfYl4q7F2fXM/q
-         g/VKd4xlrVJ9wPEsp1pflOHEJQV1uIlaaEKP+ykhesloLCR7Y94GhPGFIFcmedmiasf8
-         2BZyj1MqKJS/UOaGv1ac+nuHXXzyy4klosl7zQXcc8Z4tuPQTvrwdWoMQ43MKLrof3bJ
-         0yTQBRno6Zl3Rms1EXUEUAmS52l37SFjeTw7u2AeRVUg1BJNH+jvhcLkgtvQEWmx7Zk1
-         4YI6j5LQA/33F9lKNXJLrhJXkH9D0tOswLZlb/psAummtOrCqg3v2lTq5SiDYNAPIcZt
-         P4yg==
-X-Forwarded-Encrypted: i=1; AJvYcCVZS9WLTOtvSmFBx+4oLUphmmcDDt5+vhzYgo+d+qF0hJisDwkK4D8GS1t8QRTsBPNuAe8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcscP0LrAGYDQzR0rXoPcp2Ynx1uwYyMlmTpNvFW1B4Fy6ZL5g
-	XENFLKxfr8hUVEX3o7sG8ppT84+SXqpxPBTYpneDTQ2Q6umFntkYe9p/+Nkl8BmY+pefr47tGdq
-	hyggz4w==
-X-Google-Smtp-Source: AGHT+IHJWpCbproYlIy0hWLsQ9DM7XbYS5ndVs6oC3FnBSa72bBmwQxAbv2ImylNXstMVut5vWZ8nKYnfMk=
-X-Received: from pjbnd14.prod.google.com ([2002:a17:90b:4cce:b0:31f:3227:1724])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:1ce:b0:24c:ba67:95
- with SMTP id d9443c01a7336-2516f04ed3bmr138281735ad.9.1757450796500; Tue, 09
- Sep 2025 13:46:36 -0700 (PDT)
-Date: Tue,  9 Sep 2025 20:45:30 +0000
+        d=1e100.net; s=20230601; t=1757450798; x=1758055598;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9BeVPATa3pZCn8jXo+/vosY7DTRyTcrn7DL+ZXvQULA=;
+        b=kD17XRaAU/t+AJzYVvJp3SnuLYfcwGKldQLRvtar5N5jq0VRZxAQQYXTq89Y4pb02t
+         PHrHIVSYz57Kvdc3GENDWGQ+sV8FADpnFUT8c/NdiEKpzfXKYcvAgZodSxb/KjFUhKdg
+         uuPQellKs1KWxQA/7xZ9Mjt6DXmSWu9AMW7W3SNCTfcAbRTnprxzoVwOodlJ9iM5Ywga
+         rb2RAW2GgpgPiDDDjAdCM+KbT4F9yDAwC7c3O/xp42u7J0n2L0jUQpP3Yzb88YgCss18
+         eE1DA8gwnYslUDXlkc7dPk51U/4bgoGx/Ezx+zr91Ss0SlF4RjoLDqSh1oHfQmEEgnxl
+         9p3A==
+X-Forwarded-Encrypted: i=1; AJvYcCVIPamO3yWu1Rgg3bqvW4p2P6+D6/z2fqpHIvZ3AeFnIeCeVCfnx7JEEj17TDpsYktxp+M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxqKV3QO/6hw5jEdw6GmdF9/Onmc9sA+9rjnjlfvgM48PK9uC5
+	9m5DwVu4y8DQLpdkb63DmlogibxJ1gFXOgK/CG8gxJTeqiouYTXXyJSyCKIs9PT2MobzWClrStN
+	lMN12tg==
+X-Google-Smtp-Source: AGHT+IF/YIcLf2+3AzZZZdpFcU8J1LDxv3YGeOA4xweV2ZaPU+2Gx0EG3ASHt15Ha5z8ID2ydEeU9jp9PGQ=
+X-Received: from pgcv18.prod.google.com ([2002:a05:6a02:5312:b0:b4a:fba1:5765])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:99a4:b0:24b:954e:387a
+ with SMTP id adf61e73a8af0-2533f7c90d2mr17446390637.16.1757450797854; Tue, 09
+ Sep 2025 13:46:37 -0700 (PDT)
+Date: Tue,  9 Sep 2025 20:45:31 +0000
+In-Reply-To: <20250909204632.3994767-1-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20250909204632.3994767-1-kuniyu@google.com>
 X-Mailer: git-send-email 2.51.0.384.g4c02a37b29-goog
-Message-ID: <20250909204632.3994767-1-kuniyu@google.com>
-Subject: [PATCH v7 bpf-next/net 0/6] bpf: Allow decoupling memcg from sk->sk_prot->memory_allocated.
+Message-ID: <20250909204632.3994767-2-kuniyu@google.com>
+Subject: [PATCH v7 bpf-next/net 1/6] tcp: Save lock_sock() for memcg in inet_csk_accept().
 From: Kuniyuki Iwashima <kuniyu@google.com>
 To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
@@ -86,121 +89,98 @@ Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.
 	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Some protocols (e.g., TCP, UDP) have their own memory accounting for
-socket buffers and charge memory to global per-protocol counters such
-as /proc/net/ipv4/tcp_mem.
+If memcg is enabled, accept() acquires lock_sock() twice for each new
+TCP/MPTCP socket in inet_csk_accept() and __inet_accept().
 
-If the socket has sk->sk_memcg this memory is also charged to the memcg
-as sock in memory.stat.
+Let's move memcg operations from inet_csk_accept() to __inet_accept().
 
-We do not need to pay costs for two orthogonal memory accounting
-mechanisms.
+Note that SCTP somehow allocates a new socket by sk_alloc() in
+sk->sk_prot->accept() and clones fields manually, instead of using
+sk_clone_lock().
 
-This series allows decoupling memcg from the global memory accounting
-(memcg + tcp_mem -> memcg) if socket is configured as such by sysctl
-or BPF prog.
+mem_cgroup_sk_alloc() is called for SCTP before __inet_accept(),
+so I added the protocol check in __inet_accept(), but this can be
+removed once SCTP uses sk_clone_lock().
 
+Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
+Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+v3: Don't split if blocks
+---
+ net/ipv4/af_inet.c              | 23 +++++++++++++++++++++++
+ net/ipv4/inet_connection_sock.c | 25 -------------------------
+ 2 files changed, 23 insertions(+), 25 deletions(-)
 
-Overview of the series:
-
-  patch 1 & 2 prepare for decoupling memcg from sk_prot->memory_allocated
-    based on the SK_MEMCG_EXCLUSIVE flag
-  patch 3 introduces net.core.memcg_exclusive sysctl
-  patch 4 & 5 supports flagging SK_MEMCG_EXCLUSIVE via bpf_setsockopt()
-  patch 6 is selftest
-
-
-Changes:
-  v7:
-    * Rename s/ISOLATED/EXCLUSIVE/
-    * Add patch 3 (net.core.memcg_exclusive sysctl)
-    * Reorder the core patch 2 before sysctl + bpf changes
-    * Patch 6
-      * Add test for sysctl
-
-  v6: https://lore.kernel.org/netdev/20250908223750.3375376-1-kuniyu@google.com/
-    * Patch 4
-      * Update commit message
-    * Patch 5
-      * Trace sk_prot->memory_allocated + sk_prot->memory_per_cpu_fw_alloc
-
-  v5: https://lore.kernel.org/netdev/20250903190238.2511885-1-kuniyu@google.com/
-    * Patch 2
-      * Rename new variants to bpf_sock_create_{get,set}sockopt()
-    * Patch 3
-      * Limit getsockopt() to BPF_CGROUP_INET_SOCK_CREATE
-    * Patch 5
-      * Use kern_sync_rcu()
-      * Double NR_SEND to 128
-
-  v4: https://lore.kernel.org/netdev/20250829010026.347440-1-kuniyu@google.com/
-    * Patch 2
-      * Use __bpf_setsockopt() instead of _bpf_setsockopt()
-      * Add getsockopt() for a cgroup with multiple bpf progs running
-    * Patch 3
-      * Only allow inet_create() to set flags
-      * Inherit flags from listener to child in sk_clone_lock()
-      * Support clearing flags
-    * Patch 5
-      * Only use inet_create() hook
-      * Test bpf_getsockopt()
-      * Add serial_ prefix
-      * Reduce sleep() and the amount of sent data
-
-  v3: https://lore.kernel.org/netdev/20250826183940.3310118-1-kuniyu@google.com/
-    * Drop patches for accept() hook
-    * Patch 1
-      * Merge if blocks
-    * Patch2
-      * Drop bpf_func_proto for accept()
-    * Patch 3
-      * Allow flagging without sk->sk_memcg
-      * Inherit SK_BPF_MEMCG_SOCK_ISOLATED in __inet_accept()
-
-  v2: https://lore.kernel.org/bpf/20250825204158.2414402-1-kuniyu@google.com/
-    * Patch 2
-      * Define BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT() when CONFIG_CGROUP_BPF=n
-    * Patch 5
-      * Make 2 new bpf_func_proto static
-    * Patch 6
-      * s/mem_cgroup_sk_set_flag/mem_cgroup_sk_set_flags/ when CONFIG_MEMCG=n
-      * Use finer CONFIG_CGROUP_BPF instead of CONFIG_BPF_SYSCALL for ifdef
-
-  v1: https://lore.kernel.org/netdev/20250822221846.744252-1-kuniyu@google.com/
-
-
-Kuniyuki Iwashima (6):
-  tcp: Save lock_sock() for memcg in inet_csk_accept().
-  net-memcg: Allow decoupling memcg from global protocol memory
-    accounting.
-  net-memcg: Introduce net.core.memcg_exclusive sysctl.
-  bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
-  bpf: Introduce SK_BPF_MEMCG_FLAGS and SK_BPF_MEMCG_EXCLUSIVE.
-  selftest: bpf: Add test for SK_MEMCG_EXCLUSIVE.
-
- Documentation/admin-guide/sysctl/net.rst      |   9 +
- include/net/netns/core.h                      |   3 +
- include/net/proto_memory.h                    |  15 +-
- include/net/sock.h                            |  47 +++-
- include/net/tcp.h                             |  10 +-
- include/uapi/linux/bpf.h                      |   6 +
- mm/memcontrol.c                               |  13 +-
- net/core/filter.c                             |  82 ++++++
- net/core/sock.c                               |  65 +++--
- net/core/sysctl_net_core.c                    |  11 +
- net/ipv4/af_inet.c                            |  37 +++
- net/ipv4/inet_connection_sock.c               |  26 +-
- net/ipv4/tcp.c                                |   3 +-
- net/ipv4/tcp_output.c                         |  10 +-
- net/mptcp/protocol.c                          |   3 +-
- net/tls/tls_device.c                          |   4 +-
- tools/include/uapi/linux/bpf.h                |   6 +
- .../selftests/bpf/prog_tests/sk_memcg.c       | 261 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/sk_memcg.c  | 146 ++++++++++
- 19 files changed, 699 insertions(+), 58 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_memcg.c
- create mode 100644 tools/testing/selftests/bpf/progs/sk_memcg.c
-
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 76e38092cd8a..d42757f74c6e 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -753,6 +753,29 @@ EXPORT_SYMBOL(inet_stream_connect);
+ 
+ void __inet_accept(struct socket *sock, struct socket *newsock, struct sock *newsk)
+ {
++	/* TODO: use sk_clone_lock() in SCTP and remove protocol checks */
++	if (mem_cgroup_sockets_enabled &&
++	    (!IS_ENABLED(CONFIG_IP_SCTP) ||
++	     sk_is_tcp(newsk) || sk_is_mptcp(newsk))) {
++		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
++
++		mem_cgroup_sk_alloc(newsk);
++
++		if (mem_cgroup_from_sk(newsk)) {
++			int amt;
++
++			/* The socket has not been accepted yet, no need
++			 * to look at newsk->sk_wmem_queued.
++			 */
++			amt = sk_mem_pages(newsk->sk_forward_alloc +
++					   atomic_read(&newsk->sk_rmem_alloc));
++			if (amt)
++				mem_cgroup_sk_charge(newsk, amt, gfp);
++		}
++
++		kmem_cache_charge(newsk, gfp);
++	}
++
+ 	sock_rps_record_flow(newsk);
+ 	WARN_ON(!((1 << newsk->sk_state) &
+ 		  (TCPF_ESTABLISHED | TCPF_SYN_RECV |
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index 0ef1eacd539d..ed10b959a906 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -708,31 +708,6 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
+ 
+ 	release_sock(sk);
+ 
+-	if (mem_cgroup_sockets_enabled) {
+-		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
+-		int amt = 0;
+-
+-		/* atomically get the memory usage, set and charge the
+-		 * newsk->sk_memcg.
+-		 */
+-		lock_sock(newsk);
+-
+-		mem_cgroup_sk_alloc(newsk);
+-		if (mem_cgroup_from_sk(newsk)) {
+-			/* The socket has not been accepted yet, no need
+-			 * to look at newsk->sk_wmem_queued.
+-			 */
+-			amt = sk_mem_pages(newsk->sk_forward_alloc +
+-					   atomic_read(&newsk->sk_rmem_alloc));
+-		}
+-
+-		if (amt)
+-			mem_cgroup_sk_charge(newsk, amt, gfp);
+-		kmem_cache_charge(newsk, gfp);
+-
+-		release_sock(newsk);
+-	}
+-
+ 	if (req)
+ 		reqsk_put(req);
+ 
 -- 
 2.51.0.384.g4c02a37b29-goog
 
