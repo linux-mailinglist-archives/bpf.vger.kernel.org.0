@@ -1,99 +1,121 @@
-Return-Path: <bpf+bounces-67925-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16EA9B5046C
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 19:27:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA126B5049E
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 19:43:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C79B16CC19
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 17:26:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 838F77A5E57
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 17:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9CD35A2B6;
-	Tue,  9 Sep 2025 17:26:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E5F345723;
+	Tue,  9 Sep 2025 17:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Wjx32i4A"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NXRYpXo6"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA47533EAF1;
-	Tue,  9 Sep 2025 17:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E098422CBC6
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 17:43:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757438799; cv=none; b=qQK/mU4FnSINmKfn8tKcfNrV4S48EPrZii8ESobRFNsmpTDU4fXERTyzpZUIX6j4IhpuoMtvjEQAwES9YIr1PRrhl6zwxfSoGOwndjCwfg8ilpy3Ec+aZpIuaSedLsfPlh8GZ1P40eWWbrf8Zf6BgfmEErLotGg/qLk5n4FzxFE=
+	t=1757439799; cv=none; b=VynEThy7vL8cs+xOFyJJbhtbtjWS4xbH0eRA4xEACt85jUAzlJQyfD0GB2d8YCQsvcvNO7pvVbesw7we3mgJxKU0wsWcVtTL3PSJ36QBKBYrruX/CKxc7dwxqrjP18ubERifycw4oMoqjd1inzW8v1PFh/ROfF1w94eOW7TmQy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757438799; c=relaxed/simple;
-	bh=fYwwelCpjz0TKSvgunEd+NMziwStEViYCA4Flr+qADY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iuFinpgGAKd5/dAcQ43TR8IkthHJzU1B7BbOUlbRsdLf2dp/+1ZOB9wUD/VZmWcG/qtBj27ws6jH85yD2pQWMTCTQTBTLwlaf7EWA+OUKxX5FBgqZ1Cpy3jEyv4yR6qw9VtActThevzacp2LpE72q3V6jLEvFUDCVpXuDxrDeDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Wjx32i4A; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0b8c5619-455b-4a9f-bab5-ec10ae0f2184@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757438783;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZM23rJaFMUQOdytqcrD9TWG8M7I3bEgVDd8tdlcZtwg=;
-	b=Wjx32i4ADe/Drt2X3vlWrZirvIcRj6p5YnD9myOHdeO1k8GLL6pTVHYCWIc/d6vi6gSX0H
-	R14Pwa4qc3oIPEeYb0aqrG5plQZa36cjmbQGBwvDG3ibO2ukuCVne51r2eioV1zPquP06V
-	cdqWwmaStnx3snRzM/9ioZGDrWwys1o=
-Date: Tue, 9 Sep 2025 10:26:09 -0700
+	s=arc-20240116; t=1757439799; c=relaxed/simple;
+	bh=BvQb6kT/0BgL8i4g8xvMWhvNmnBB4lCjfyN8t/RpY6c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VJTIw1kcDyuFrKZXcnK5AIDJVyR/D0fSeVBgOFiESWvkvaQpVHlv/a7vXKBZWfP/SWVNDp8poJh6/Ub+i+03ShXPk3HOcSpb5BvbYDha//fdttOSqZyRURpHigzYsUfGda6l2yR2EXC1DioiUzcSiXhucIVdaS1Zap/JKGJB19Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NXRYpXo6; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-b4c1fc383eeso3668264a12.1
+        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 10:43:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757439795; x=1758044595; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ehaBvL5mwc8SZQIwOqWZuETikIQ0vyouBo4B6n27EPE=;
+        b=NXRYpXo6PX6NDpF9CO3NK0mUZBLg2YSnTkkS4xiSsCWCqj1bZXQ1/GmTDJKJ0F1QiJ
+         RUKYLb1gJ8CnoKDwJ5e41oLLCC7OO4EsxcgVKLll4kjo4TQS8Pb4mPtgbRvR92M8+i0y
+         mehs4BwD+juLS0ClAteOkin5B/YCLDqbfU8JI1jZbRl5FRECF9LcZbtmZ8xgn8nzW2t9
+         lXHH7wtMIE1UrOmGrTV8AdlquFsQOYgtu69BlVpS3UQANV06PBXyi2frSa9g6qBMG6cw
+         aTG2H54iHIRq83PpnBtj6ATaVQEwYI7ArCef0ueJZ9+aZlwFRmVyWkw+4g7YZv4Mh1Bn
+         HTrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757439795; x=1758044595;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ehaBvL5mwc8SZQIwOqWZuETikIQ0vyouBo4B6n27EPE=;
+        b=s8nghdqK96X7dl9Pn0/M1WrbZNgQ2mH6VPIKTx/cNnI03Ch1ZZoxA1OtqRPhbs3Xx9
+         u+HYXHFZm1t9wdiFK/nzh2LuObu/1VFsaBrXkFvYL31AjbrEvNvC4jmUvm9NkKRZdbTi
+         UJsMzudmCSrVJQOQmOX3FB5rOAgRxPPotqQOQ0OGcrPViFQMpRPLbuUiOBVtviC16QPk
+         VdwGzEfMQSoeeIlPpl56C8/W9ZXcRIp8VwMMqkmE8K9Yox8WGXrs3kBQ6QkznwK7syeA
+         JaUWZCkUsoG89hT15mSt/p0QHW8S9/CCWO5IDZBQrAVCapqsb67/7XLv4VGMnD9zUdyT
+         5dqg==
+X-Gm-Message-State: AOJu0YzyDGt6925KDeP2Xahi4qrFmyfaHV3E9bs1bv9uaBP/8CutF0mN
+	nPW/uD5BzruqWtT8h0+hkRn+Dw4j8B17Av7/hfMzmBBHQ/JTBmKRjAwQtUm0QxRf5hF3ycnBCQX
+	4TOMySIeLuaSLXYwoHAXeby/3tisJFvg=
+X-Gm-Gg: ASbGncuN7vWzbpRSbhNmq9m8jGG+ysMul40fS5hUbIE7v5qXySGfADdrp7AiuLPaub3
+	GqncfEGPrHmgfivWw9ALgQ9W4Lp1voYmq1pFzG1GWOxCSV/ZBSX3/pTjfdNaPl81iUcXUJVK0yZ
+	CFKsBW1z6Y6Oi2FUTx8KlyTL58E9wSVFy7biK1YrQWzkOsRQbvLIIlnDBxEoVXsXAWVC7r/zyT+
+	U+7Dp9yrZn/mMnR4/nc9VslisvsBPU8Ng==
+X-Google-Smtp-Source: AGHT+IEnKshsa0wLAiq12+HI8hiVyTL5sg1YEnRU5aSF1IXC/Ci/ZeC6LvuZQ97fcyThMlSiLy/LSVNzMwcsaNxaynA=
+X-Received: by 2002:a17:90b:3e83:b0:327:7c8e:8725 with SMTP id
+ 98e67ed59e1d1-32d43f02b62mr17944187a91.10.1757439794903; Tue, 09 Sep 2025
+ 10:43:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC net-next 3/5] selftests: drv-net: Test XDP head
- adjustment with bpf_dynptr
-To: Nimrod Oren <noren@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, Mohsin Bashir
- <mohsin.bashr@gmail.com>, Dragos Tatulea <dtatulea@nvidia.com>,
- Tariq Toukan <tariqt@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- Amery Hung <ameryhung@gmail.com>
-References: <20250909085236.2234306-1-noren@nvidia.com>
- <20250909085236.2234306-4-noren@nvidia.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250909085236.2234306-4-noren@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250909171638.2417272-1-eddyz87@gmail.com>
+In-Reply-To: <20250909171638.2417272-1-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 9 Sep 2025 13:42:59 -0400
+X-Gm-Features: Ac12FXyiH26jM9-ytrx6XnSn-jxIBrbM--7bDmfROhK6pgvMhC6lKkFXYRmQ4Kg
+Message-ID: <CAEf4BzYf3ew_ho3=FWiZr_VYvex=XVFDv8Y9ymTUuAgn9EKqOw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: remove Mykola Lysenko from BPF
+ selftests maintainers
+To: Eduard Zingerman <eddyz87@gmail.com>, nickolay.lysenko@gmail.com
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/9/25 1:52 AM, Nimrod Oren wrote:
-> +	if (bpf_dynptr_read(tmp_buff, hdr_len, &ptr, 0, 0) < 0)
->   		return -1;
->   
-> -	if (bpf_xdp_store_bytes(ctx, 0, tmp_buff, hdr_len) < 0)
-> +	if (bpf_dynptr_write(&ptr, offset, tmp_buff, hdr_len, 0) < 0)
+On Tue, Sep 9, 2025 at 1:16=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> Unfortunately Mykola won't participate in BPF selftests maintenance
+> anymore. He asked me to remove the entry on his behalf.
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index fe168477caa4..6056ad6f1afa 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4682,7 +4682,6 @@ F:        security/bpf/
+>  BPF [SELFTESTS] (Test Runners & Infrastructure)
+>  M:     Andrii Nakryiko <andrii@kernel.org>
+>  M:     Eduard Zingerman <eddyz87@gmail.com>
+> -R:     Mykola Lysenko <mykolal@fb.com>
 
-Instead of bpf_dynptr_read() and then bpf_dynptr_write(), try to use 
-bpf_dynptr_copy(). I think you have also noticed that Amery is also modifying 
-xdp_native.bpf.c to test the linear access (i.e. data/data_end) with the 
-bpf_xdp_pull_data addition. Not sure if xdp_native.bpf.c wants to keep testing 
-both (data/data_end and dynptr). In the bpf selftests, it does want to have test 
-coverage for both and have some existing selftests for that.
+cc'ing Mykola
 
-> +		return -1;
-> +
-> +	if (bpf_xdp_adjust_head(ctx, offset) < 0)
->   		return -1;
->   
->   	return 0;
-
+>  L:     bpf@vger.kernel.org
+>  S:     Maintained
+>  F:     tools/testing/selftests/bpf/
+> --
+> 2.47.3
+>
 
