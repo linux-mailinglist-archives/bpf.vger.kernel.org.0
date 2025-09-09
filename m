@@ -1,176 +1,212 @@
-Return-Path: <bpf+bounces-67933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31D13B50594
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B97CB505C0
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 20:59:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 051FA4E48C1
-	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:50:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2288C5E41C6
+	for <lists+bpf@lfdr.de>; Tue,  9 Sep 2025 18:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2045D352080;
-	Tue,  9 Sep 2025 18:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743D53570DF;
+	Tue,  9 Sep 2025 18:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lmUN2SEo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nDW9cz04"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5EDA21FF24
-	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 18:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045F735CEDB
+	for <bpf@vger.kernel.org>; Tue,  9 Sep 2025 18:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757443808; cv=none; b=rRL6WLysTLb1zjyo+3HdxrSG3r5NYymVTNt812VrvGC2+DuwYBUvbP7E3nZRkPnxz03fkct7tqYY6RCBxwbdyFT/MthFW4Fhoz7e9gKg7MjBVMURdoM5MfBgfXlzC5RySQg6GgJkMIbGcoQnRsKAE74ngxYxHS9JSAVM9t4pWCQ=
+	t=1757444358; cv=none; b=egd04Mfl4YtYOuZeZjCSY7MC1vJouMfdrNp2dCZXtNINTYUUFRis2oY5gwhLzMVOiuAnWvC88v6V7i8jjiY/35+DxtRcBQ8M+D9J8iqFeJ3GppbtmCQ5M/rqYyYh9gi0VtSdkLj7+aLlFB/x72bwuDdFv1AJrcWTZ77l1mKW+Wk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757443808; c=relaxed/simple;
-	bh=AIdpGdCtR4CWvytc9ynHviivkMyDzhZGlyzur0+U+FA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=I/k7mtLV9QLqJUztrRfmrifLiL925GajSPwzz5E7SH0w6jUi9iiXNZHQ7aMRka8cyRGFbFCJBmNXAICiPjodvl1dFJJQJkVr/z/Zbq/AAg/wEZjdXyRNXkxvZjTwYU2nGqjz3uuya8lx0aKpCGx7YtX+DmEww/MfeBDzIwtjI9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lmUN2SEo; arc=none smtp.client-ip=209.85.221.67
+	s=arc-20240116; t=1757444358; c=relaxed/simple;
+	bh=eL0OwzZM2j4uzHo/+cUow0OvwunZD5L7/Jc67NKlzbE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r/UiR66Qm5y/aVrTBLmhlgmFMW44M8CfF76223YAWnPWGmGEhwrxza2ERa5lBXiuyYMJTrAVJLTTuEkLsi8L7OrD44Ng8yeD4+adAVMlh05Tl3v94mLUNAavLx5Ikg+NNu3vCREfzfECNB3VojTvQAN9+qYucp3tCBa92+MPPIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nDW9cz04; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-3e2055ce973so3250058f8f.0
-        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 11:50:06 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45deccb2c1eso11116045e9.1
+        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 11:59:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757443805; x=1758048605; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mBq8/zPHNAvO4ZHrc95hoaPHI2gNms2kWd1UUmJwldg=;
-        b=lmUN2SEoGGF0LwdQ7IQYaE7gp9WYiOrBBf3M2f8iRvEzjq/cMO9l6s96HdEeIatuLa
-         iuDfSK7fU+i0/VdrZJCO/XuRJwH7b6pz52Uda7hSqJHIdc78/ymD3t4GKcZIVqC3QQoL
-         Oo1v/e9nhCVlaWle/TixpyXyRGTNqiVHl6JqzF7XdbZ+OkdU4hJv1zd4uD3YbJ4hLuhY
-         8gLb1cClcRt7t3ezFo6IEMrlgxHQ+0hAffV0HGrTAQbr/jwRhEyqSIB+S3649Aq61hNi
-         hMHWi2hKjn7C3mjhFwWBLA7+y+9R07ifcB4UleX33GvS3XgHigpU7J3FDxPxQm0gTzys
-         TPSQ==
+        d=gmail.com; s=20230601; t=1757444352; x=1758049152; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CFSG715nnJg/HAlxZHxW0/scYOQ2bqAMQrWdc22Zb2U=;
+        b=nDW9cz0412Jo/CIgMPyNPz42zLK1cR6xHiESG/SyZiJX2MysVEPvsUnkL64hWQUtDw
+         onbDinzE3Pxwn3tReN8u+ZJZI0V2wvjT3k4raUF+xNRTL1Nx/nA9klfmQRTA3OneBM+/
+         N9QN0d9IFBW17OU1lBX6zdAzznaxbDjKySwAc9Clv5CV7p4zDpOOhCEZnoD511H/eFYe
+         /AwXbGcFzM6zxldBWBSX6yJExpQ/d1Q+rHgOCgDfhfH/9qzYI5IjaGfzgbxg9uKZ0uqx
+         CoEE/znryLiR5uYBdr6dbGOtMXbYjIJ1ucS1/eDG7MG4Lu316I/DHE8f4iT2cAvzLq+M
+         t2rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757443805; x=1758048605;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mBq8/zPHNAvO4ZHrc95hoaPHI2gNms2kWd1UUmJwldg=;
-        b=D9G3KZMBw+c3KaWzK5b7krVhspBgkDKWIl9ka4eScjzFMsiku3ZrHKSNV5zxxrc5r7
-         r0mtOAroy2YCdt3APXD7nkAIAeSH+EAoop5ObQX5mxbSKh3BxDjXEQTz3rcZ3q++k25g
-         mjZsQbdm+rBgsvhvSCtKRl5AxZG8p63fllM1qM0M7dBsz5Nf49IYdHny2WcG1E2RJyfR
-         KhaXOJ7jSnLMcWy6m9s/UfAcUhQnab3zr8UWSRs2fIHu8YOfxbcpfTLnUiRTMWOBr+ol
-         twDG4cwHVC8sbri/0+bUFDfBjG5W8u9JygRw/S/wJPBAspeSkkcaMByIfCMAKy8dlnM5
-         bxWQ==
-X-Gm-Message-State: AOJu0Yz0qQKG0nP12R7KcdJgvA0dZAUM0l4+pBrdbb80bete0vCWecV9
-	stAabpd8bfT96oLHdy2IzwTI8FIe+3WK4f5HxeKdjB4CGYLWI0vnw3qRxyNGJfn9
-X-Gm-Gg: ASbGncvgNjSJaUn8SqpI1R3uqf0eMFBfI1SIfZvi4QjkIv3QQ5quaoJV5dUtxMop5dC
-	90rsh0mS/07gwLx57NY3fjL2993R9apN4iNwNawO3U61JdSEhPtoHBQiRcmqcwUoRzt01maoCzX
-	tLiXa0gRSvj2y4gDNeo/h6sa24dWsDjyxrakSXLLH6/fLAUFtMD6O7Ea8hjlF6d1sdqE+YLunb1
-	ZRMakdo7lgWwFEo89YOovHmiTFonvR5DY2qraL2X4VAeLZBQJLTxKhHClEKLEGJOTYztMtHhHcl
-	mvr8tBvByaXibVAj0MSCgnYIDYVV+iwUwuID6rcusNNUa73ixemKxYKc6HIz//YVgdfS1cGtLtL
-	9nO4J0WalyoiIECgMGG492uDEAD4lYu6HsK6NxhTH1oNW
-X-Google-Smtp-Source: AGHT+IEbzu4fVIutOsz+P1c9zeDN/tGpzhDdg83wKP/n5COWRz1BhhPza9fpWA4rJWbXTBrOGkOfwg==
-X-Received: by 2002:a05:6000:1ac6:b0:3df:f065:ca13 with SMTP id ffacd0b85a97d-3e64392b761mr10343167f8f.33.1757443804527;
-        Tue, 09 Sep 2025 11:50:04 -0700 (PDT)
-Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3e7521bff6esm3566777f8f.13.2025.09.09.11.50.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Sep 2025 11:50:04 -0700 (PDT)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Josef Bacik <josef@toxicpanda.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	kkd@meta.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf v2] rqspinlock: Choose trylock fallback for NMI waiters
-Date: Tue,  9 Sep 2025 18:49:59 +0000
-Message-ID: <20250909184959.3509085-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.51.0
+        d=1e100.net; s=20230601; t=1757444352; x=1758049152;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CFSG715nnJg/HAlxZHxW0/scYOQ2bqAMQrWdc22Zb2U=;
+        b=tQ55WT11Djcg0TznmCpf4Vm0nIiWiV/nn6A50pL4QUWAiU5QoqqS5Z90QSgAyLS/Gb
+         Bt3hqX01UDS8y0hOqQsqz8EhbBmzmEF7exWJVHl77HmN0KvIryMyIlnbWeUiNm+WeqCQ
+         ekTe1E8dsnnjmbIskfzv7+uAy0GER1d2qgwU7x5B/dKpIHneZCxUcmoN6hLyzA0UKFlu
+         ZgS+hRYhBJM0YXE0g579bj/xwhBtN+4wcxDD8eJu93vq+7ZudUubNyZFeydx4SlmG8rx
+         mk1GmT6Xvc6TN3pZsmBYJ9S84Y9/IAGBYHwuO1ttM43j27TnGjgJUNmh605o7gtKbpqr
+         FB9g==
+X-Forwarded-Encrypted: i=1; AJvYcCW5XTkg5FP2URi/yxJP8NZyojhL90nKRSzLXUK4ZvIaBovpJ9b6q1eXNgBLECjdl/q1Xxs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzwJZpsp5B0N+mwB6x1u5h9ZKv1F50mSFJOHPTdCRTIsDaappb7
+	A5MGeSjxJoWAfhy27wg9VkdzNs1DoW+aKRzuTYRkOJjdhMaZIxR3vMMA
+X-Gm-Gg: ASbGncvWNgOkEM9T4pWun6C0p2LM5USk7mRKziZ/VdXV7WlytXpPiSCClpx2lKebCgA
+	92zB/ezJUWupl7sZy1cdAGpd97uJRVIxMp2xTe46CyaPfOj6DccvEnmFSgBm9e53HmMsmoyQMe5
+	mQ9z1089wox/4/TH8r0mW3lk6cECNbgP1V0s+21+7r3P41ymoqFVZkDDDerKYAajVmO9VaL3zX0
+	yeiEU+onpJe6A0bM/UD1BBQPynuq7eUTq7qZHqKs7B4YVUGBNtqT50zwRJaKTtU2TN0K+bbnZ+V
+	CD1FUrTo0DpOs/ekUofYBrtKTdsMTh/81ANtD/U/lcC0tAaTfD0B+GrXTBsJv8Xgro6wA1GwLUI
+	zNlDvNAojhuVtAKxrj/q3EoPbPD5Ze6JIDm9ld+spnxu1RyqCRaeipFNrkHaKi1ztoGzMQSoeJq
+	hQZoBj9g==
+X-Google-Smtp-Source: AGHT+IFr5f9PGraYmQMjYCiRxa7MUAWtFctNdAotHsDdGaNpxqcKMOema0Lg4I/SjMXE2mz2hk9gjQ==
+X-Received: by 2002:a05:6000:1789:b0:3d9:7021:fff0 with SMTP id ffacd0b85a97d-3e6440ef054mr8639828f8f.37.1757444352174;
+        Tue, 09 Sep 2025 11:59:12 -0700 (PDT)
+Received: from ?IPV6:2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7? ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45cb687fe4esm267337795e9.23.2025.09.09.11.59.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Sep 2025 11:59:11 -0700 (PDT)
+Message-ID: <9a79c79a-8273-4cc7-a073-95046f95e14c@gmail.com>
+Date: Tue, 9 Sep 2025 19:59:10 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 6/7] bpf: task work scheduling kfuncs
+To: Chris Mason <clm@meta.com>, bpf@vger.kernel.org, ast@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com, eddyz87@gmail.com, memxor@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
+ <20250905164508.1489482-7-mykyta.yatsenko5@gmail.com>
+ <5d6226f6-c3ae-4e68-a420-76f553a462ec@meta.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <5d6226f6-c3ae-4e68-a420-76f553a462ec@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Currently, out of all 3 types of waiters in the rqspinlock slow path
-(i.e., pending bit waiter, wait queue head waiter, and wait queue
-non-head waiter), only the pending bit waiter and wait queue head
-waiters apply deadlock checks and a timeout on their waiting loop. The
-assumption here was that the wait queue head's forward progress would be
-sufficient to identify cases where the lock owner or pending bit waiter
-is stuck, and non-head waiters relying on the head waiter would prove to
-be sufficient for their own forward progress.
-
-However, the head waiter itself can be preempted by a non-head waiter
-for the same lock (AA) or a different lock (ABBA) in a manner that
-impedes its forward progress. In such a case, non-head waiters not
-performing deadlock and timeout checks becomes insufficient, and the
-system can enter a state of lockup.
-
-This is typically not a concern with non-NMI lock acquisitions, as lock
-holders which in run in different contexts (IRQ, non-IRQ) use "irqsave"
-variants of the lock APIs, which naturally excludes such lock holders
-from preempting one another on the same CPU.
-
-It might seem likely that a similar case may occur for rqspinlock when
-programs are attached to contention tracepoints (begin, end), however,
-these tracepoints either precede the enqueue into the wait queue, or
-succeed it, therefore cannot be used to preempt a head waiter's waiting
-loop.
-
-We must still be careful against nested kprobe and fentry programs that
-may attach to the middle of the head's waiting loop to stall forward
-progress and invoke another rqspinlock acquisition that proceeds as a
-non-head waiter. To this end, drop CC_FLAGS_FTRACE from the rqspinlock.o
-object file.
-
-For now, this issue is resolved by falling back to a repeated trylock on
-the lock word from NMI context, while performing the deadlock checks to
-break out early in case forward progress is impossible, and use the
-timeout as a final fallback.
-
-A more involved fix to terminate the queue when such a condition occurs
-will be made as a follow up. A selftest to stress this aspect of nested
-NMI/non-NMI locking attempts will be added in a subsequent patch to the
-bpf-next tree when this fix lands and trees are synchronized.
-
-Reported-by: Josef Bacik <josef@toxicpanda.com>
-Fixes: 164c246571e9 ("rqspinlock: Protect waiters in queue from stalls")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
-Changelog:
-v1 -> v2
-v1: https://lore.kernel.org/bpf/20250909165917.3354162-1-memxor@gmail.com
-
- * Add description about future addition of selftest to the commit log.
----
- kernel/bpf/Makefile     | 1 +
- kernel/bpf/rqspinlock.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 269c04a24664..f6cf8c2af5f7 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -62,3 +62,4 @@ CFLAGS_REMOVE_bpf_lru_list.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_queue_stack_maps.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_lpm_trie.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_ringbuf.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_rqspinlock.o = $(CC_FLAGS_FTRACE)
-diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
-index 5ab354d55d82..a00561b1d3e5 100644
---- a/kernel/bpf/rqspinlock.c
-+++ b/kernel/bpf/rqspinlock.c
-@@ -471,7 +471,7 @@ int __lockfunc resilient_queued_spin_lock_slowpath(rqspinlock_t *lock, u32 val)
- 	 * any MCS node. This is not the most elegant solution, but is
- 	 * simple enough.
- 	 */
--	if (unlikely(idx >= _Q_MAX_NODES)) {
-+	if (unlikely(idx >= _Q_MAX_NODES || in_nmi())) {
- 		lockevent_inc(lock_no_node);
- 		RES_RESET_TIMEOUT(ts, RES_DEF_TIMEOUT);
- 		while (!queued_spin_trylock(lock)) {
---
-2.51.0
+On 9/9/25 18:49, Chris Mason wrote:
+> On 9/5/25 12:45 PM, Mykyta Yatsenko wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Implementation of the new bpf_task_work_schedule kfuncs, that let a BPF
+>> program schedule task_work callbacks for a target task:
+>>   * bpf_task_work_schedule_signal() → schedules with TWA_SIGNAL
+>>   * bpf_task_work_schedule_resume() → schedules with TWA_RESUME
+>>
+>> Each map value should embed a struct bpf_task_work, which the kernel
+>> side pairs with struct bpf_task_work_kern, containing a pointer to
+>> struct bpf_task_work_ctx, that maintains metadata relevant for the
+>> concrete callback scheduling.
+>>
+>> A small state machine and refcounting scheme ensures safe reuse and
+>> teardown:
+>>   STANDBY -> PENDING -> SCHEDULING -> SCHEDULED -> RUNNING -> STANDBY
+>>
+>> A FREED terminal state coordinates with map-value
+>> deletion (bpf_task_work_cancel_and_free()).
+>>
+>> Scheduling itself is deferred via irq_work to keep the kfunc callable
+>> from NMI context.
+>>
+>> Lifetime is guarded with refcount_t + RCU Tasks Trace.
+>>
+>> Main components:
+>>   * struct bpf_task_work_context – Metadata and state management per task
+>> work.
+>>   * enum bpf_task_work_state – A state machine to serialize work
+>>   scheduling and execution.
+>>   * bpf_task_work_schedule() – The central helper that initiates
+>> scheduling.
+>>   * bpf_task_work_acquire_ctx() - Attempts to take ownership of the context,
+>>   pointed by passed struct bpf_task_work, allocates new context if none
+>>   exists yet.
+>>   * bpf_task_work_callback() – Invoked when the actual task_work runs.
+>>   * bpf_task_work_irq() – An intermediate step (runs in softirq context)
+>> to enqueue task work.
+>>   * bpf_task_work_cancel_and_free() – Cleanup for deleted BPF map entries.
+>>
+>> Flow of successful task work scheduling
+>>   1) bpf_task_work_schedule_* is called from BPF code.
+>>   2) Transition state from STANDBY to PENDING, marks context is owned by
+>>   this task work scheduler
+>>   3) irq_work_queue() schedules bpf_task_work_irq().
+>>   4) Transition state from PENDING to SCHEDULING.
+>>   4) bpf_task_work_irq() attempts task_work_add(). If successful, state
+>>   transitions to SCHEDULED.
+>>   5) Task work calls bpf_task_work_callback(), which transition state to
+>>   RUNNING.
+>>   6) BPF callback is executed
+>>   7) Context is cleaned up, refcounts released, context state set back to
+>>   STANDBY.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   kernel/bpf/helpers.c | 319 ++++++++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 317 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index 109cb249e88c..418a0a211699 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+> [ ... ]
+>
+>> +static void bpf_task_work_irq(struct irq_work *irq_work)
+>> +{
+>> +	struct bpf_task_work_ctx *ctx = container_of(irq_work, struct bpf_task_work_ctx, irq_work);
+>> +	enum bpf_task_work_state state;
+>> +	int err;
+>> +
+>> +	guard(rcu_tasks_trace)();
+>> +
+>> +	if (cmpxchg(&ctx->state, BPF_TW_PENDING, BPF_TW_SCHEDULING) != BPF_TW_PENDING) {
+>> +		bpf_task_work_ctx_put(ctx);
+>> +		return;
+>> +	}
+>> +
+>> +	err = task_work_add(ctx->task, &ctx->work, ctx->mode);
+>> +	if (err) {
+>> +		bpf_task_work_ctx_reset(ctx);
+>> +		/*
+>> +		 * try to switch back to STANDBY for another task_work reuse, but we might have
+>> +		 * gone to FREED already, which is fine as we already cleaned up after ourselves
+>> +		 */
+>> +		(void)cmpxchg(&ctx->state, BPF_TW_SCHEDULING, BPF_TW_STANDBY);
+>> +
+>> +		/* we don't have RCU protection, so put after switching state */
+>> +		bpf_task_work_ctx_put(ctx);
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+> Do we want to return here?  I didn't follow all of the references, but
+> even if this isn't the last reference, it looks like the rest of the
+> function isn't meant to work on the ctx after this point.
+Thanks for taking a look! That's right, we should return there.
+>
+>> +	}
+>> +
+>> +	/*
+>> +	 * It's technically possible for just scheduled task_work callback to
+>> +	 * complete running by now, going SCHEDULING -> RUNNING and then
+>> +	 * dropping its ctx refcount. Instead of capturing extra ref just to
+>> +	 * protected below ctx->state access, we rely on RCU protection to
+>> +	 * perform below SCHEDULING -> SCHEDULED attempt.
+>> +	 */
+>> +	state = cmpxchg(&ctx->state, BPF_TW_SCHEDULING, BPF_TW_SCHEDULED);
+>> +	if (state == BPF_TW_FREED)
+>> +		bpf_task_work_cancel(ctx); /* clean up if we switched into FREED state */
+>> +}
+> -chris
 
 
