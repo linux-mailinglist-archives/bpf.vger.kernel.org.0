@@ -1,129 +1,227 @@
-Return-Path: <bpf+bounces-68010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15826B51641
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 13:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D44CDB51728
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 14:43:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5682565A9B
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 11:58:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C9881707DB
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 12:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D7A31196F;
-	Wed, 10 Sep 2025 11:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E6B31B13F;
+	Wed, 10 Sep 2025 12:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T0OAgWT2"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oYS6I0KF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DAC6245031;
-	Wed, 10 Sep 2025 11:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0024C31196C
+	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 12:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757505499; cv=none; b=Lqt60MO3l3+PHh3egtCxIQIsLJfURrtIaQaFkyhTepF4pcCK4cgORXu/dr//1g10ttk4x8XDXOY3+zj0pfLChL3X3tfLpRVj6kqUrdetlxF2Vv8yccZ6BqucapFdZB8fl+lUV3C6JwJb2pTri8rN2Cjxq7huvlw8OVqoQ1nA3p8=
+	t=1757508207; cv=none; b=pyswqEaVtFbGMoQxE7ebekeTFFt37DRMvdJSFzYeGCGUgKQSdBcqh3AcncOgPc4ZD+6AdDqI9dbwZo2wXVj3CKKf2UhkvFhAilOHHuzqTBMICLem1IhqBG6G5EttCg43ZFzyUo32goJJXPXLIdZVwJw762yuy2XWlMX0kWitNzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757505499; c=relaxed/simple;
-	bh=YgHoSlMyGCwyBPFYKxKiq0pYJf9NvlcVUq+xwRtrf+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o3dKk5eBeewHuIkhOuHlt7hceeJmr6qOHAmW62ishS8QlcPFoPRuGsqZUYWAZk5DmxQdDFzAqZUK1SPMD4trL1KUOp2W2P/0jije1pMDDJVsVuiQQNNMP9A0YWIk3fMg17sF3QIocdO2K46ysJzL3y1q3YbHs/uo2JctFHO8pW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T0OAgWT2; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757505497; x=1789041497;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YgHoSlMyGCwyBPFYKxKiq0pYJf9NvlcVUq+xwRtrf+A=;
-  b=T0OAgWT2AL/hoKfqv5/oLH6WCUNCMiMLn7XW96OQWgxobdOb5UtL36+z
-   CNXacYawLAlL0lgxnlTcVyKMxwQxVxTErD6aVS2nBrBTxdq3nEL1GhIRa
-   RL7NSAsW9rID1TZAixao1CYxfp57PRs4TtHAbqFyyoT/BkrFzYgajtBhJ
-   Ad8x5I09kllYFXg0yBwqnEwkSw1oQgc1SsTkhDH9ge5a9LqwWvKikOMVA
-   CHWk7hSPMAzLooBPySvisdlmkA2ng4tFf37sdVFLl689FpgQMN7bLF4BJ
-   TZQoQshcCDJOyLMqAFTMAzc/bn55mn3N0ytol4qXabgNdlWRvPncGa7Ch
-   Q==;
-X-CSE-ConnectionGUID: 24rspeXyRDqlMEiGNndBdA==
-X-CSE-MsgGUID: BBK3fxuLQy6wCE9teVD9Zg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11548"; a="70911868"
-X-IronPort-AV: E=Sophos;i="6.18,254,1751266800"; 
-   d="scan'208";a="70911868"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2025 04:58:15 -0700
-X-CSE-ConnectionGUID: cQXzNYOUQDyxOUWUNGJnrQ==
-X-CSE-MsgGUID: mP/ModIiRNmkZaym8tqETw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,254,1751266800"; 
-   d="scan'208";a="197042998"
-Received: from lkp-server01.sh.intel.com (HELO 114d98da2b6c) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 10 Sep 2025 04:58:11 -0700
-Received: from kbuild by 114d98da2b6c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uwJSi-0005tf-1K;
-	Wed, 10 Sep 2025 11:58:08 +0000
-Date: Wed, 10 Sep 2025 19:57:39 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kuniyuki Iwashima <kuniyu@google.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Neal Cardwell <ncardwell@google.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Mina Almasry <almasrymina@google.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v7 bpf-next/net 3/6] net-memcg: Introduce
- net.core.memcg_exclusive sysctl.
-Message-ID: <202509101912.ROjtP2uL-lkp@intel.com>
-References: <20250909204632.3994767-4-kuniyu@google.com>
+	s=arc-20240116; t=1757508207; c=relaxed/simple;
+	bh=1Ad3b74urJ/RMTOHlVyMzYhsdm3dYbzUIK1fkOPCFiM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VELmI/o45wM4fGkEff65z1vG27K48ZTjSgkgXsTTSx3n2mXzd6JtJROwGHatc4iUjHybc3FzovrPHlSyC23fMifKESLkWuGu85I/IDwue1sC+kTHd22HhggSwILqwABLjS2Nrc5fHCBD9FwTqKFnxj5XMSfF62C4/JvAVLDzna8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oYS6I0KF; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Forwarded-Encrypted: i=1; AJvYcCW/Cq/Mo8KfVUuNYjUBtyr1cJKyacWfIKxFH+N2UqjphZk8SPCB3pUVwC2svkeLoKMSz+o=@vger.kernel.org, AJvYcCXBSgi3U9We1XCS8M+uWHA1cee+8PyezN6gUNiLVUBF2hOfuUJ7RXsXbWQGZl1CwJFuRm+qUVOAb0zg@vger.kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757508202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cWOnY6bsoNbRGhI6jrKdlgeXeUlIE02ttDreMjH2ThU=;
+	b=oYS6I0KFGcBY/upNaGvHQ2bTg7Dx6yLmcaFn7N7drhXxYJWFSJzgUTHKeBvC8IKSgYv0FT
+	BL4OSjIHyCA2qjCCrIy4ZvlBzIprKy5PeY0UW17Dtp/HDkF8R9JaPpJj/ZzleIi2Wv7BGr
+	dF8uenint62QEHDFYkLo15AAALgC1NA=
+X-Gm-Message-State: AOJu0Yw6U1WicDklK8nwE1JsnBX175rHgNN2f7tyjVlMsCpkq3Zm68bF
+	gtq+iq5P420UwpeMS1v7pbGKQZh6+/OSrrY8kkTv66sUIfEa7dCH/PuJ1BF8unv1i3QhXS03Itq
+	9Mf67tBNjKYUd232RWJSaIpmhW9e1Tlk=
+X-Google-Smtp-Source: AGHT+IGS4IyMyT2B5rjpMHdQ/sH6F7nZ01XypbWguYA7dCWguRiSUdDaKM5DsDcnWRSvBhMGTGMkWFlbQbHkoeCdCfo=
+X-Received: by 2002:ad4:5de2:0:b0:70f:abee:f9ba with SMTP id
+ 6a1803df08f44-73a21485479mr148779516d6.12.1757508200059; Wed, 10 Sep 2025
+ 05:43:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250909204632.3994767-4-kuniyu@google.com>
+References: <20250910024447.64788-1-laoar.shao@gmail.com> <20250910024447.64788-3-laoar.shao@gmail.com>
+In-Reply-To: <20250910024447.64788-3-laoar.shao@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
+Date: Wed, 10 Sep 2025 20:42:37 +0800
+X-Gmail-Original-Message-ID: <CABzRoyZm32HT2fDpSy_PRDxeXZVJD35+9YqRpn9XWix8jG6w8g@mail.gmail.com>
+X-Gm-Features: AS18NWA2-rrAiWS-c1ep0R42ZfRXwiuMPFMEj6A1tty0wp_Sw-BPEy3kdhILrOo
+Message-ID: <CABzRoyZm32HT2fDpSy_PRDxeXZVJD35+9YqRpn9XWix8jG6w8g@mail.gmail.com>
+Subject: Re: [PATCH v7 mm-new 02/10] mm: thp: add support for BPF based THP
+ order selection
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com, 
+	dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com, 
+	gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com, 
+	rientjes@google.com, corbet@lwn.net, 21cnbao@gmail.com, 
+	shakeel.butt@linux.dev, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-Hi Kuniyuki,
+Hey Yafang,
 
-kernel test robot noticed the following build errors:
+On Wed, Sep 10, 2025 at 10:53=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
+>
+> This patch introduces a new BPF struct_ops called bpf_thp_ops for dynamic
+> THP tuning. It includes a hook bpf_hook_thp_get_order(), allowing BPF
+> programs to influence THP order selection based on factors such as:
+> - Workload identity
+>   For example, workloads running in specific containers or cgroups.
+> - Allocation context
+>   Whether the allocation occurs during a page fault, khugepaged, swap or
+>   other paths.
+> - VMA's memory advice settings
+>   MADV_HUGEPAGE or MADV_NOHUGEPAGE
+> - Memory pressure
+>   PSI system data or associated cgroup PSI metrics
+>
+> The kernel API of this new BPF hook is as follows,
+>
+> /**
+>  * @thp_order_fn_t: Get the suggested THP orders from a BPF program for a=
+llocation
+>  * @vma: vm_area_struct associated with the THP allocation
+>  * @vma_type: The VMA type, such as BPF_THP_VM_HUGEPAGE if VM_HUGEPAGE is=
+ set
+>  *            BPF_THP_VM_NOHUGEPAGE if VM_NOHUGEPAGE is set, or BPF_THP_V=
+M_NONE if
+>  *            neither is set.
+>  * @tva_type: TVA type for current @vma
+>  * @orders: Bitmask of requested THP orders for this allocation
+>  *          - PMD-mapped allocation if PMD_ORDER is set
+>  *          - mTHP allocation otherwise
+>  *
+>  * Return: The suggested THP order from the BPF program for allocation. I=
+t will
+>  *         not exceed the highest requested order in @orders. Return -1 t=
+o
+>  *         indicate that the original requested @orders should remain unc=
+hanged.
+>  */
+> typedef int thp_order_fn_t(struct vm_area_struct *vma,
+>                            enum bpf_thp_vma_type vma_type,
+>                            enum tva_type tva_type,
+>                            unsigned long orders);
+>
+> Only a single BPF program can be attached at any given time, though it ca=
+n
+> be dynamically updated to adjust the policy. The implementation supports
+> anonymous THP, shmem THP, and mTHP, with future extensions planned for
+> file-backed THP.
+>
+> This functionality is only active when system-wide THP is configured to
+> madvise or always mode. It remains disabled in never mode. Additionally,
+> if THP is explicitly disabled for a specific task via prctl(), this BPF
+> functionality will also be unavailable for that task.
+>
+> This feature requires CONFIG_BPF_GET_THP_ORDER (marked EXPERIMENTAL) to b=
+e
+> enabled. Note that this capability is currently unstable and may undergo
+> significant changes=E2=80=94including potential removal=E2=80=94in future=
+ kernel versions.
+>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Suggested-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+[...]
+> diff --git a/mm/huge_memory_bpf.c b/mm/huge_memory_bpf.c
+> new file mode 100644
+> index 000000000000..525ee22ab598
+> --- /dev/null
+> +++ b/mm/huge_memory_bpf.c
+> @@ -0,0 +1,243 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * BPF-based THP policy management
+> + *
+> + * Author: Yafang Shao <laoar.shao@gmail.com>
+> + */
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/btf.h>
+> +#include <linux/huge_mm.h>
+> +#include <linux/khugepaged.h>
+> +
+> +enum bpf_thp_vma_type {
+> +       BPF_THP_VM_NONE =3D 0,
+> +       BPF_THP_VM_HUGEPAGE,    /* VM_HUGEPAGE */
+> +       BPF_THP_VM_NOHUGEPAGE,  /* VM_NOHUGEPAGE */
+> +};
+> +
+> +/**
+> + * @thp_order_fn_t: Get the suggested THP orders from a BPF program for =
+allocation
+> + * @vma: vm_area_struct associated with the THP allocation
+> + * @vma_type: The VMA type, such as BPF_THP_VM_HUGEPAGE if VM_HUGEPAGE i=
+s set
+> + *            BPF_THP_VM_NOHUGEPAGE if VM_NOHUGEPAGE is set, or BPF_THP_=
+VM_NONE if
+> + *            neither is set.
+> + * @tva_type: TVA type for current @vma
+> + * @orders: Bitmask of requested THP orders for this allocation
+> + *          - PMD-mapped allocation if PMD_ORDER is set
+> + *          - mTHP allocation otherwise
+> + *
+> + * Return: The suggested THP order from the BPF program for allocation. =
+It will
+> + *         not exceed the highest requested order in @orders. Return -1 =
+to
+> + *         indicate that the original requested @orders should remain un=
+changed.
 
-[auto build test ERROR on bpf-next/net]
+A minor documentation nit: the comment says "Return -1 to indicate that the
+original requested @orders should remain unchanged". It might be slightly
+clearer to say "Return a negative value to fall back to the original
+behavior". This would cover all error codes as well ;)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kuniyuki-Iwashima/tcp-Save-lock_sock-for-memcg-in-inet_csk_accept/20250910-044928
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
-patch link:    https://lore.kernel.org/r/20250909204632.3994767-4-kuniyu%40google.com
-patch subject: [PATCH v7 bpf-next/net 3/6] net-memcg: Introduce net.core.memcg_exclusive sysctl.
-config: um-randconfig-001-20250910 (https://download.01.org/0day-ci/archive/20250910/202509101912.ROjtP2uL-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 7fb1dc08d2f025aad5777bb779dfac1197e9ef87)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250910/202509101912.ROjtP2uL-lkp@intel.com/reproduce)
+> + */
+> +typedef int thp_order_fn_t(struct vm_area_struct *vma,
+> +                          enum bpf_thp_vma_type vma_type,
+> +                          enum tva_type tva_type,
+> +                          unsigned long orders);
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202509101912.ROjtP2uL-lkp@intel.com/
+Sorry if I'm missing some context here since I haven't tracked the whole
+series closely.
 
-All errors (new ones prefixed by >>):
+Regarding the return value for thp_order_fn_t: right now it returns a
+single int order. I was thinking, what if we let it return an unsigned
+long bitmask of orders instead? This seems like it would be more flexible
+down the road, especially if we get more mTHP sizes to choose from. It
+would also make the API more consistent, as bpf_hook_thp_get_orders()
+itself returns an unsigned long ;)
 
-   /usr/bin/ld: warning: .tmp_vmlinux1 has a LOAD segment with RWX permissions
-   /usr/bin/ld: mm/memcontrol.o: in function `mem_cgroup_sk_set':
->> memcontrol.c:(.text+0xa1e0): undefined reference to `init_net'
-   clang: error: linker command failed with exit code 1 (use -v to see invocation)
+Also, for future extensions, it might be a good idea to add a reserved
+flags argument to the thp_order_fn_t signature.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+For example thp_order_fn_t(..., unsigned long flags).
+
+This would give us aforward-compatible way to add new semantics later
+without breaking the ABI and needing a v2. We could just require it to be
+0 for now.
+
+Thanks for the great work!
+Lance
 
