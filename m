@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-67965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEC56B50B76
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 04:45:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0918EB50B6E
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 04:45:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D01A4E15E5
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 02:45:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3917B3AE503
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 02:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86A4263F5F;
-	Wed, 10 Sep 2025 02:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A2325CC69;
+	Wed, 10 Sep 2025 02:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jPiUSt8w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ldw5SZ4g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571ED2571A5
-	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 02:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B58582561A7;
+	Wed, 10 Sep 2025 02:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757472244; cv=none; b=k/I1diuYKPpJORMJwHSyo9RdHCm83slx10Fa01zrMWeictl7NB2gdFHQtoSuxZOGCzZbnN7VdRbY/xt/zIA8SWQ8BTNu7d/SdZC0OFFxB0B9zeX5TDlfeHjihT3KStBnp3ENpbKUqjN4TQO2absX0KumMOqeL2IBi9ZHIsH16dc=
+	t=1757472242; cv=none; b=iDTtACKHIrA9ZHxFfOdwH8VyBtnZfSD9IUsHE5pDSnYmpHmBhITHmeXNBZx2hMYrGr7CFBpRmtX1LsjHkLUqPwvBa71DCeYe59/CM5ElNWooIE1EWymP6KDof85CzCHR9lvGs+U6pS4GdiuCt0MK8+FFTRUYQc6DdOX55Kf5LH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757472244; c=relaxed/simple;
-	bh=Rg8Js/mQ+ji0aVDnd3uUR+wPkIV7f8cZoyAXSG+WzrA=;
+	s=arc-20240116; t=1757472242; c=relaxed/simple;
+	bh=7QXrNRuCbHeHgCYdGUN3dSXlo+bJ6ZwXyeTt5Kf+8Ys=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NDVz2OY60vfHS/Jj63AUIlNO2Xp1WnlEl+RhZUkvoPPwtcm3fNgL+6CZOsSIp2ZdIc5jkjPc3GNd2cWWlr6STVbs824OahLYC3i0I3FRzLY2XVYcn+BsI3ZK5W2BTKdkswYstwBG0nch0A0vvChYCNoNU8ONbuevcJhvD9TGpdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jPiUSt8w; arc=none smtp.client-ip=209.85.215.181
+	 MIME-Version; b=Vd3nIjt4plooO10H+xx8sxtz5vS6AEt8eOACgfwtwMCjfU6VFJVpfTAKsTNRvYWuvorfi6jV45XUw3j6bFLXQgsYQO/LePieUE47RllaxyrG2o1VQomyCrLvYjXYxDaUsiGfw3tYIVhVgXtTmcE6+KFexO3srZZqQOhqNwIqnAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ldw5SZ4g; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b4f9d61e7deso4013826a12.2
-        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 19:44:01 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-77269d19280so5796887b3a.3;
+        Tue, 09 Sep 2025 19:44:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757472241; x=1758077041; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757472240; x=1758077040; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=isRfEajvq74JD8Gx5JZkbk62qSgMtw6IJwcPrIolSGc=;
-        b=jPiUSt8wy1/2nQYp/FRhwxqK1rWZfidNyJ4L8qmqHdtSLMOzXPFWw61l1zO78zVHI+
-         WTJd670C84pHe/CqyT1J15ltYbZP3/l5A9ykgpOs4JBkfiGlfSnnlOS6Lh4zkWgF8CMn
-         IjK7ZaYpvMWH2R/cMln5ljNTWxtMxhJUiYmdZdBbFHfnwwxQ8ws7kbVslr/R5KJ3gyTE
-         fYz4rQhOy5lLOeHIaDKbARlZY5u+4gF8rO1cGA3ipzLELmAsesgJwSkzD6BOwh3OK2Vf
-         L167t3wXFmS4ub49iuqNAtXKIbfuEMR8gzoXONHlhfdE4Eh6jzBmn9Pti6w25bI+550T
-         mWoA==
+        bh=exY9byyl4etH+4IQEKnm6qXO5lYPceGxvCuurSN7fh0=;
+        b=Ldw5SZ4gXJFn2g6UfqJc6MBkftXHELR76cugzw8BHgaiet5kOrpGMIYSIbpTEG1GMA
+         om5CjFT1Mrha/JUemSERtLuCa1SguTjuhuxktK5y8To0TZ2EyLSaYdehk5T4rcFclfm5
+         jNaMpHuzRbodbvUumV5YSqQMoYRTA3vIPS3VloLXGorx1zfCKqECGcHd/aRr+KXP8ZqF
+         mOxZa1rwR5+pgRp9NrtG7Mq49K07n9Dt0vUgCbSWQdcOg40RwmM8fhID4EgmLwJYNarz
+         buNE/tdv1+yrs/G/Oj289gD034V6vkIaTJpxgYRihvPOk+12rD8I5+g1hL3kDM4s74O+
+         Umew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757472241; x=1758077041;
+        d=1e100.net; s=20230601; t=1757472240; x=1758077040;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=isRfEajvq74JD8Gx5JZkbk62qSgMtw6IJwcPrIolSGc=;
-        b=Fb0Qpjgo/thDCU4n0e9UGQJGRbzEjGTjTNDqiOPhtw8cuw1RtyyuJmwiomfrszdWRe
-         wjU9qGLO8n91MVbZaqirukPuQdBLyeJr9CJNjCAtKIdnTgf4TzJlN2fkH0mq1P5fJ7+0
-         feH8ZL57TwqQbjLds3DgI6l+RKEjYJLdXd2VuoVweaWNp1AxzCjJG9PZCnGHtsQ/LQKz
-         ChSxx/2D7pRGejAVSZIFWDackAiTdvlzxchDhpayCk76+AyblpWlvu+7m9qJ0CiAfolO
-         6c8wBUPQZdYi/fp4qgO4OLEUCkze5wsSrfI0bkE6hSIS9Mfl0+JM4mq38E1kHaoo4GQn
-         MmZw==
-X-Forwarded-Encrypted: i=1; AJvYcCWP9QeO0ujghFXM2OitR5JA76aIoMl+O6HZkCGiu8DUXTOpsM0aNqM0ojqMLPE1tDrRD+c=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxe6pD/N4StWo0EkVOvlugjsvRSZWQjuN8ohXgQX2tPnG+2P5PK
-	IOXzWgaRQqPpdm/YXMFwYDnWnvleEvfbbFnKN5+uAi3i9tk/pEDn2O4U
-X-Gm-Gg: ASbGnctWTKH+sl8hsA8A/0/V9BWxvRM+/X7uvJO1mj9OGup7TS8K2kiztbTu2q/poDG
-	9PsCNOCbWVi6NL00bKWhV6lpSO2slhWneIOL47rpv2k3gcDNqi5eSROLgBMg0txtKbRGixDtLaF
-	k8OxFRlXNnFUic/v1VacMeMr8KexX1H6cwfN4RKXgQZLrb8teeWWt34c5Azt3SZ0XObUFUHK+T3
-	PT6okamb8p+YbXa57V9LqUxr3HxSNzbmTO12T78vG3bdqkvNHVk3w/awDSU9rtXHdEoHKOVD4gQ
-	ARs0TMPPHlsEz2ju8AxXagrIwLd7641qsZQdHgww9NbSPtVsyrZOH8yz8pbptJPENhpC7Sk1Rct
-	Vx9VEOgU3lavaiGTKlKeISwynDA==
-X-Google-Smtp-Source: AGHT+IFrrGtrsp5QApHqrAEsH4Lf99kNe3GTHl7qChWDynb5tQqdU4zGL9zb4NWW/Nh5w4cYNQSmBA==
-X-Received: by 2002:a17:902:c943:b0:24e:8118:cc2f with SMTP id d9443c01a7336-251734f2edcmr195946635ad.59.1757472240373;
-        Tue, 09 Sep 2025 19:44:00 -0700 (PDT)
+        bh=exY9byyl4etH+4IQEKnm6qXO5lYPceGxvCuurSN7fh0=;
+        b=KYY1cILgbodxKeWc9Am8SHtWDdGrRUNxsig7H9fnxJZL5gYchN1bigkLCKmKjqgXyt
+         i2DVg8t5uCw3wIif/Xg+darGBgEGWkXRvpq6ZKAx10TssJqsPnbiAr9mZtbFxhSdTxMn
+         BsbGHn0QM6HFt5pZ/B1m+9N991v6sh/5HSwGV+rEJkLBJF1KWy1ATsvPh13s19JodyQS
+         N+RrESXJ24Z+4CGxHVLefiSL61+vNGC0vR9CP5Xv8oI2boQBu2ouf2rSSzTns/QEvJfK
+         LjfzxUfTUfd50j+0KkWkCkAiSlK8QF18g33n6dzecsKKottxxhHSqrcoUnlCi63h2J6C
+         yA6A==
+X-Forwarded-Encrypted: i=1; AJvYcCU1i+jp4SjAtR76GVmzIiK+V7dVgnp51V94qJO3H5s9UZ7EIckDu/gBymHnI3XA7k2Z9sofNOAh7Sjk@vger.kernel.org, AJvYcCU8l1RmIRbR0qsjuM5DZEphvB6rvwgAT11U7syJksCC2Aq/1j76ABji3B1zUtEHUIbeob/YLrKofXM=@vger.kernel.org, AJvYcCWCGvqvHKKmd/bm5FxMWicAjQMzLdh6XS+yIUwJTJ6CocFI9pCtKIbqxpaPb+3T2/9ZORWIFQ5vt8seBto=@vger.kernel.org, AJvYcCWj2tHQMrbcVTRL2EeNGF2JZTigy2i4Ct5GWPZxDRXXEam+u38/1Or0rX2Wk3tb6wHEwb0=@vger.kernel.org, AJvYcCWvTLUiBpN+Urlh9w/ub/vaOjIjT5q+pbbUFaQPgRvsF4N6iRx7YcTnfJxiSfPaWhYBgresAFLAdZ81i+Y=@vger.kernel.org, AJvYcCWw753DhYr0pVRlS+nRgYxBjbYeTatA7bJRwXxOexHA2NUyOZdGU56tRhZI2BWPSoYED9Az/Gj6kWjO@vger.kernel.org, AJvYcCXjflWXr5KYxoAfOfu9/vkaznnSDDK7sa4QO69ZwKHhV4F9tesZAduaRD/WxqWjmqf0HSCbi92FTWsN2Q==@vger.kernel.org, AJvYcCXoqx6SuVDFwPNHFc9XNanDnQNu52D9vjl2SgfULYYpC9i4i0V8tAEnoYdFtIytTj33kytaFisD6dRqKmQZ@vger.kernel.org, AJvYcCXxHJcCcphDtKMasklSdmIqXHw2kIDnQASikfotI3ChdTnD5w6iNUkg25nh4P7DVEjkzs4m2r4q@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyGp+rkuaNbF+WU9eyQHneBaDqV8SlXZGRXtjpdJy2j/UMOCXA
+	7E29+59jdCKJBedhMqMG08yXvcL5Jkv5oZi1TSYHhQi/mBe3Bh1fdthe
+X-Gm-Gg: ASbGncsrBQ7Wdplb2LTNNIYnDRge4bGapAK+oUcPmFHiNWgcJKjJvZ7gvA1EVGOwkBh
+	7SMbnYUeuo3BKHmJWH8bBxXpQvdo7GpGhZTNJTsHPMdzSxpqHl44+xY2k80z2lZJu8SNTzgKF8O
+	QqzsyYnIxyjMjFVoQFzbMedQvqCflMuvQK1ul8Mjb2x1nfzYta50dU+Rh2s3qfiRaXwzIsAMtc8
+	CLuXsU67PzEiQ93OF+a8+bOPGuikPTzkAEY5HuLPwEcYt/AuBwJDzT8m2IrPrT73HLGEa6E3oqs
+	+T/qH4Zg5OWDmDIk3qM6m1lBCa279XNcwuwFQTSjG+ISzB2OzI6jDv/yO/WW966JslM2ktgSE9D
+	012AGcl3IhbYjQ44a+L8Z2D09TyZCtBUmfXKn9AITnKQeByo=
+X-Google-Smtp-Source: AGHT+IF4N06fuW1A2YnqT9YeYfBmdnDVAaiP1zDRDWLaUsyjpra5p/f/1OQFfNYpt7LKVATNwvRwQw==
+X-Received: by 2002:a05:6a21:33a6:b0:252:fbd4:630c with SMTP id adf61e73a8af0-253466f83c8mr21797369637.52.1757472239935;
+        Tue, 09 Sep 2025 19:43:59 -0700 (PDT)
 Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25a2ac085d8sm10840225ad.118.2025.09.09.19.43.56
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b548a602e14sm1057772a12.21.2025.09.09.19.43.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 09 Sep 2025 19:43:58 -0700 (PDT)
 Received: by archie.me (Postfix, from userid 1000)
-	id 4B76441F3D85; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
+	id 614CF41F3D7B; Wed, 10 Sep 2025 09:43:52 +0700 (WIB)
 From: Bagas Sanjaya <bagasdotme@gmail.com>
 To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
@@ -174,11 +174,10 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-	Jani Nikula <jani.nikula@intel.com>,
-	"Mario Limonciello (AMD)" <superm1@kernel.org>
-Subject: [PATCH v2 04/13] Documentation: amd-pstate: Use internal link to kselftest
-Date: Wed, 10 Sep 2025 09:43:19 +0700
-Message-ID: <20250910024328.17911-5-bagasdotme@gmail.com>
+	Jani Nikula <jani.nikula@intel.com>
+Subject: [PATCH v2 05/13] Documentation: blk-mq: Convert block layer docs external links
+Date: Wed, 10 Sep 2025 09:43:20 +0700
+Message-ID: <20250910024328.17911-6-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250910024328.17911-1-bagasdotme@gmail.com>
 References: <20250910024328.17911-1-bagasdotme@gmail.com>
@@ -188,29 +187,58 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=945; i=bagasdotme@gmail.com; h=from:subject; bh=Rg8Js/mQ+ji0aVDnd3uUR+wPkIV7f8cZoyAXSG+WzrA=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnihuCjbtUDpafXJnbOHtXRdvzJjhG/D0b9KEh6svl Jx1Ocjf0VHKwiDGxSArpsgyKZGv6fQuI5EL7WsdYeawMoEMYeDiFICJSHcx/FNfPsFU6huDt7vJ kh1V1uZRLxRT1SOqp3E8VV6+6XDdK15GhiW/r34XtloUdOCT982MLd7bz2VGXmhWZatxbn38c0u qDSMA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2751; i=bagasdotme@gmail.com; h=from:subject; bh=7QXrNRuCbHeHgCYdGUN3dSXlo+bJ6ZwXyeTt5Kf+8Ys=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHnijp3TFftH6q+kyOiIzsCLYVR/ZOd/GUnnS+Yu6/k 6t6/fl6OkpZGMS4GGTFFFkmJfI1nd5lJHKhfa0jzBxWJpAhDFycAjCRydwM/yu/ZhfqF9YvP7NL t0p2f917xpei8yqP3w+TKtx3xMg27gbDX5mQVefmZ+9qe6G15Ils7rRL855MXJGSeHOCjN6Gx61 PyrkA
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 
-Convert kselftest docs link to internal cross-reference.
+Convert external links to block layer docs to use internal linking.
 
-Acked-by: Mario Limonciello (AMD) <superm1@kernel.org>
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
- Documentation/admin-guide/pm/amd-pstate.rst | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ Documentation/block/blk-mq.rst | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
-index e1771f2225d5f0..37082f2493a7c1 100644
---- a/Documentation/admin-guide/pm/amd-pstate.rst
-+++ b/Documentation/admin-guide/pm/amd-pstate.rst
-@@ -798,5 +798,4 @@ Reference
- .. [3] Processor Programming Reference (PPR) for AMD Family 19h Model 51h, Revision A1 Processors
-        https://www.amd.com/system/files/TechDocs/56569-A1-PUB.zip
+diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
+index fc06761b6ea906..4d511feda39cfd 100644
+--- a/Documentation/block/blk-mq.rst
++++ b/Documentation/block/blk-mq.rst
+@@ -87,17 +87,16 @@ IO Schedulers
+ There are several schedulers implemented by the block layer, each one following
+ a heuristic to improve the IO performance. They are "pluggable" (as in plug
+ and play), in the sense of they can be selected at run time using sysfs. You
+-can read more about Linux's IO schedulers `here
+-<https://www.kernel.org/doc/html/latest/block/index.html>`_. The scheduling
+-happens only between requests in the same queue, so it is not possible to merge
+-requests from different queues, otherwise there would be cache trashing and a
+-need to have a lock for each queue. After the scheduling, the requests are
+-eligible to be sent to the hardware. One of the possible schedulers to be
+-selected is the NONE scheduler, the most straightforward one. It will just
+-place requests on whatever software queue the process is running on, without
+-any reordering. When the device starts processing requests in the hardware
+-queue (a.k.a. run the hardware queue), the software queues mapped to that
+-hardware queue will be drained in sequence according to their mapping.
++can read more about Linux's IO schedulers at Documentation/block/index.rst.
++The scheduling happens only between requests in the same queue, so it is not
++possible to merge requests from different queues, otherwise there would be
++cache trashing and a need to have a lock for each queue. After the scheduling,
++the requests are eligible to be sent to the hardware. One of the possible
++schedulers to be selected is the NONE scheduler, the most straightforward one.
++It will just place requests on whatever software queue the process is running
++on, without any reordering. When the device starts processing requests in the
++hardware queue (a.k.a. run the hardware queue), the software queues mapped to
++that hardware queue will be drained in sequence according to their mapping.
  
--.. [4] Linux Kernel Selftests,
--       https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
-+.. [4] Documentation/dev-tools/kselftest.rst
+ Hardware dispatch queues
+ ~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -143,7 +142,7 @@ Further reading
+ 
+ - `NOOP scheduler <https://en.wikipedia.org/wiki/Noop_scheduler>`_
+ 
+-- `Null block device driver <https://www.kernel.org/doc/html/latest/block/null_blk.html>`_
++- Documentation/block/null_blk.rst
+ 
+ Source code documentation
+ =========================
 -- 
 An old man doll... just what I always wanted! - Clara
 
