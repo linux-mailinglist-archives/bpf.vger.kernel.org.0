@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-68000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9682BB513E3
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 12:27:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDD86B513E0
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 12:27:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9CCC161276
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 10:26:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C3BD1C270C8
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 10:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8EA319867;
-	Wed, 10 Sep 2025 10:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BD031A057;
+	Wed, 10 Sep 2025 10:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jcatDgok"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="V3EvF64j"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2053.outbound.protection.outlook.com [40.107.237.53])
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2074.outbound.protection.outlook.com [40.107.212.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CBB8319848;
-	Wed, 10 Sep 2025 10:25:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C03833168EB;
+	Wed, 10 Sep 2025 10:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.74
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757499956; cv=fail; b=NJu8vWqtxfTzcZfZnz+RYjkMmNh/xFez05XS/ljM3F0JXT66meqQUSs4Z0YtVn2gG8rYuAWi1R6gB/DN75Wa8DeyZEHhXcttzyALBZ7JKc7V5fRQVsY1Js8fmQ3RXakuWEOM1ZWfT3Eb01dbfyhMuL7IHDXqveWzHdLao8QLd0M=
+	t=1757499965; cv=fail; b=JSONxALpUQ7oM+hUfmED5hvFgw/wd0q2o73sqeFB4FVWN0u+xoBX8nB2pdzhX45ts+ohOkG3ksaYi6ubd267wNW3EAcczm551ZQZct5mgE4r0zmSZKZpDQm+rOEaE2zhu4NhLlMRy5BDzKjlvfDCF0eYAYX8mOiAwib72t+X7kQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757499956; c=relaxed/simple;
-	bh=nazo57QJUKzzloxe+PZVTh3FcqlvIFzHSu9eXsbDz5M=;
+	s=arc-20240116; t=1757499965; c=relaxed/simple;
+	bh=RGnfpjivlCd47IfeEWWycynYhsHSKlBqS6+/2Sa3ce8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=X0WkOWnoriW9NXp5EwuWehNLdygl7QCuSE5+EpibtF97nwC5FJulEUvyzfz1pImyIGXEs29s+CuJfE0jr+/5KRS08FS0bUiTZGrLwNNA8yXujHAuVokXNPonWeulDAnON2plMcvBxRF3blRIpW9V7tdLoeAFVMEr4beC2dbxNnI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jcatDgok; arc=fail smtp.client-ip=40.107.237.53
+	 MIME-Version:Content-Type; b=Kjzld2Lr5RPU/zhdgFd6FfunDe2TbjNoFMsK8P68Z+pbZvQxQWOIb0nZ5RWw4BGEgs+xZl2dpcSxdz7DqsoKwj/ybNKz5s3YM5G5ku+u9Ca8T0gc8SZEckWZ/AuVlqBx3NwYhs6c3z+4QIq0XKeztPGPEZxbya0tHDnGIyf5tK4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=V3EvF64j; arc=fail smtp.client-ip=40.107.212.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=g5fU0s8QXs0pY6KjWqTtfXWVJdomWtc9DnY7p2hPbD7B4G61u7vZaipqW3tHThDd6drA8ymlkYKQd08xGUz+X8oHlQeqc5+J93Gayq7y5RQK6IkxOwb7fV3FmW4xlQljf0O1Skei6A6wnXYdsValuxNozPQPhAZHtyOjyqkCktKYLmd9HEYv/z5d+E8APowxgutfZifarojW9V3BkBYs6istQCubvlDB51SznApz1hJJ3KSpAiyxI+AUa2PEiIgVWDDcZqAprv0r2twM6jbZTxA0XVLQ1Y2pq7FC8KXPv8ugjytsIuEZBCe4vq07IVo9gB1n0n1nLCcYoaS3/UvIkw==
+ b=Fk4Ztzb2CAKuT2oFoAmVpJs3Jv7HskxTO7cTLQXg5gYWtl3kagiWLaphx2CGkCRTwQ2x0rIa6xSH4xyB3gxAPQAOlGRjCQTLwBaZt74z8gSKEnfFJnEk235VYyTbpavy5JIRf1L5Zm55XCNhms9IEfz2l3ZJ5D1cBYlHsjsCZF7SmJA+W4PEXhi/C4+oTn0beHZD+cKPXnvTDXZFp5pzQ5fJzlyxCE6TExPDhSC0J9CRBPQu5FaR1qi2brwB9SmHtgc/R291zwdxbkjve3963UtQkXd+NT98Ic51bh0F++XfZEYpJSEn3Mg83a6g8HrWew3G55+j8Hlc96viS8U0pA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xdHtfWwkeP09jxPwOFIL2Z9wXiF7nuMuVAjBFcdgbXA=;
- b=FTOQ5O9JmUYNS3rUzEmEdr/7Av+C9bPfL0OkSFkrJegLb/Bj5l4ntRN+/PFoC+RmNGypYtlq7lQxAJk2sZ7DgCpgPMaE5C2RNDChL2gs1A7d+U/e7mXjR91jvRcVu9iB69JQ72yElN8mM+QFLQ6cvMtyCtQqQAonq5+TmbTtjR/ouZam/7vuWa2fEq0riPyqOtjQh9a2F8sZnK56+nE0l5q1DJ4n8cUndVll4NUEqZLEj57S2U07ZGcnwUNd6OiO4LOvlCjtjptKa7v6RbqWhnjIaO7Eu2cYvZKrPbAf0VcN5xlLzr2OUZx/WUy06/PLEznBguCZULnHkEbiV+Q86g==
+ bh=yPn6eJYl5/tDQAea7TzyNQkztRML83XiJ+xSJ6PRF5s=;
+ b=A9NCvM3YdM3RSf+8qiygj+JXahSTX11N3YMeXkD0WhpI4NMd3N2dYfd+nztlaNiCbbJOYb2mqG9EREnlieRE9EEi5IyMWr8v9T3kPVwovDMWLIlJmZmuWdvWBpck/yKQU59pcoAiknJcUnh2N8SS0TXIU4wbKIU6GfaxE1w5Pjnnj2BABXwIKkMbpmcAFujOqhoDglUH9PiVtg2YAoT2aaZDU2ErwyumCC/4dVwKGXwbP79hX5+dKHZBuu9KF8zkB/WvJYLhsEbXMPYzcIy6nxXkdP7wywMjrSLWOeSURyVfeF4SZASmgL39qnnetv4FJoR+EosNicx3yJxCTljodA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xdHtfWwkeP09jxPwOFIL2Z9wXiF7nuMuVAjBFcdgbXA=;
- b=jcatDgokEgknpy8WtxeQDdl2KLvA/7RBeXaeAdTAisiGJyE7mDtLP6wxczdmQ12olFDSBZEuBhyQjJqLSEO7NDAXdiju8uB50vA1qOnQj5tDaD9bK6NN/XlK8pedzQcs6uQ9smmC8JbMP4N+p3C5jQ0LUpIgLzsoLtOEQ5ltMkJ3Cw53wtLlU0mbCUdcwVd8BSew7Zm44U0rYelghktO+RdAhMEPBH9voiD31d2pISAATUPJJcNN0w50w71iA0guz5NQTsYRBbvXtLc04WHWA5M00OXjTfm6h5Mck3jVe9/dHceKxtZ+r0fR0f7G89zueVVJfd5gMq8U1NmC+068oQ==
-Received: from CH2PR04CA0014.namprd04.prod.outlook.com (2603:10b6:610:52::24)
- by DS0PR12MB8562.namprd12.prod.outlook.com (2603:10b6:8:164::13) with
+ bh=yPn6eJYl5/tDQAea7TzyNQkztRML83XiJ+xSJ6PRF5s=;
+ b=V3EvF64jbSWikFuJx5oq/Xr+aT2aFUuGexm083rtPWa3GITd6MVLEez319tlsjkAywGrDeJ9/a7qFA8ckayLlzH03p9TcLMN6o/WEI2CPV8EYQrZnaht8MIu4QsodiZhEwRo/I+XQuuH5Op2RtgaloX/5VxVENmwxru43iQPW3hysAXCNt21fQ7qCMk+uxuWa7k6dY2apEj4NqUFai+1Wmh8tiTRT6jjUcWCgFtidvwPhO2GnZ7urXZasm+QIxn2HGm64ZFngRa+8uG6a/JlojSVMOaldXxblePDBFNJ3uU0tBppOTB/yQ1TyDF/ckZ2qsl8fZiZcq1Nk7iRq7zX/Q==
+Received: from BY1P220CA0012.NAMP220.PROD.OUTLOOK.COM (2603:10b6:a03:59d::8)
+ by DM4PR12MB6568.namprd12.prod.outlook.com (2603:10b6:8:8f::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Wed, 10 Sep
- 2025 10:25:50 +0000
-Received: from CH2PEPF0000009C.namprd02.prod.outlook.com
- (2603:10b6:610:52:cafe::83) by CH2PR04CA0014.outlook.office365.com
- (2603:10b6:610:52::24) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.15 via Frontend Transport; Wed,
- 10 Sep 2025 10:25:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ 2025 10:25:54 +0000
+Received: from CO1PEPF000044F5.namprd05.prod.outlook.com
+ (2603:10b6:a03:59d:cafe::c3) by BY1P220CA0012.outlook.office365.com
+ (2603:10b6:a03:59d::8) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.16 via Frontend Transport; Wed,
+ 10 Sep 2025 10:25:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CH2PEPF0000009C.mail.protection.outlook.com (10.167.244.24) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1PEPF000044F5.mail.protection.outlook.com (10.167.241.75) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9115.13 via Frontend Transport; Wed, 10 Sep 2025 10:25:50 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9115.13 via Frontend Transport; Wed, 10 Sep 2025 10:25:54 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 10 Sep
- 2025 03:25:23 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 03:25:30 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 10 Sep
- 2025 03:25:22 -0700
+ 2025 03:25:29 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 10
- Sep 2025 03:25:16 -0700
+ Sep 2025 03:25:23 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -92,9 +92,9 @@ CC: Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, "Leon
 	<linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>, Gal Pressman
 	<gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea
 	<dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next 03/10] net/mlx5e: Remove unused 'xsk' param of mlx5e_build_xdpsq_param
-Date: Wed, 10 Sep 2025 13:24:44 +0300
-Message-ID: <1757499891-596641-4-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next 04/10] net/mlx5: Store the global doorbell in mlx5_priv
+Date: Wed, 10 Sep 2025 13:24:45 +0300
+Message-ID: <1757499891-596641-5-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
 References: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
@@ -108,117 +108,420 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF0000009C:EE_|DS0PR12MB8562:EE_
-X-MS-Office365-Filtering-Correlation-Id: 807df9c9-960d-4335-8fa2-08ddf0546a20
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F5:EE_|DM4PR12MB6568:EE_
+X-MS-Office365-Filtering-Correlation-Id: 445f40eb-ef85-40e2-1af7-08ddf0546c56
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|1800799024|7416014|376014|36860700013;
+	BCL:0;ARA:13230040|376014|7416014|36860700013|1800799024|82310400026;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?AbeNFkiDLVaA6Ts1q7zPD33kg1L1GOhf6/ecvL+cCgg1fFqzH6xnoujAUiGa?=
- =?us-ascii?Q?hM162lwQ2A0ZBsFF0tUhzzpYWPDKGXk0A7g3ILC7+kTL7P9i/0L0CSORobTy?=
- =?us-ascii?Q?FKuzVD5pIxck4rfnbHi0ED8emEoQ8WjREJVZurPKRJSFlayR6Fpmgl7mVp0b?=
- =?us-ascii?Q?kURHuLszlDHIFW+RfcR4X6iJt1rFbYgCs9uTyguH06d7zShFSez1r2yt1m9O?=
- =?us-ascii?Q?13r8ViiP6jX7jO4uiY+FG3DVPGsMeWcp7MY29tFjHxffqdhAivhqND6hPTiE?=
- =?us-ascii?Q?8kMxPeDPGvWig2t+b0SBGLxvlDHaa4WyWV4aQVKDMe6mB5YAPKcsAfACRu4J?=
- =?us-ascii?Q?Mdv1Y7DDWUP1lH4ytZ/IkuFAczhTK2xS4a6CwLodoKe7p8sve4C+N/oQpT/G?=
- =?us-ascii?Q?Z0KStavbJvbg+23L0/4WeZHsb9B+GOine9avJqFPTXMyA0rBo9ESYBNSPBXs?=
- =?us-ascii?Q?kIfvOFyDls4q6oy8pDxRdW9mVh0QR+wiN1fVtc49U2XeVrc4Fl4M/wJkwSNK?=
- =?us-ascii?Q?CK9bmMIlUmiJzzm+m4Zi4ZxMWDVEz4/ufKHfKRAvDd/2VT4LLsYxrQ7m5Cnw?=
- =?us-ascii?Q?/whGVOgs0RXjwCkLoCk9/1zftVVuVvgSgl+pDI7olhE3R2gQ0TywQ3kgHOo/?=
- =?us-ascii?Q?ie9LCp05VXsF4V/jEhSuREvUGyVAMZpVbs6uXSoOlpqWOYQ7EaPnV0IVlDhv?=
- =?us-ascii?Q?wheVhbkoG6brgbOhfHitYIt1C7c70v0qlrTOR0CBUlvsMR6wtDfrcpSuiF1l?=
- =?us-ascii?Q?Bwk8risf7q8P7qjeLGue02zj/jNXB8AkqsHHT5kGo0i2kX75PmeqGEziRjXj?=
- =?us-ascii?Q?38xumqfBDIqum0X2aofqFpflyGIIh9tzGYj0WFYI4vV21tVcs629DDwk+CAw?=
- =?us-ascii?Q?na+nlRiXlvZF9xiE8bCsH4+CemRR3djUReB2y0z32jFdFo27r0tOjtduWDCr?=
- =?us-ascii?Q?Ev8y8PFK62zbzDyembp9UA/VujuZjAzEUSbbxSEJWKvef4m3SY0sStENwng5?=
- =?us-ascii?Q?t4un+9FoiAqhiSUgyoUtiWInn/qQmZj3+N0OFfbLx3eJxlR+SmLRjbJjmftn?=
- =?us-ascii?Q?aGycR/gaEh0IyVzv5stnUOGfkUpWCkAOzg195T3/Grm+FJpcMxb1UFl5/jcw?=
- =?us-ascii?Q?/bqiBbfVm3czGXvYHogteAKEL9oGDlaFOhFwtYMV56Ex72R/wP9B3MMkUNgC?=
- =?us-ascii?Q?PC200ok93b2kG1Rg8yNsopnVyVXfUcE2enSUghtMobDFmTLPYUGGN6LYACOs?=
- =?us-ascii?Q?fRVLqUg6hxICViv9bVy5dPPR1Y8h/coBMgsfo0jRqPXSX9e4GVNAM/4Y8uSU?=
- =?us-ascii?Q?lOJxyN7CTP311sgs9578qxJTiO5GZyZjfTH34WVqtUtlQ1DaKk/t5uiuNq+y?=
- =?us-ascii?Q?2U6hmQD9PO3LqSnNp9vnEem1i/JYQt1dQfX4Q5ZL8NZNK4SyNwTZCdkjfC0I?=
- =?us-ascii?Q?T6T5IHwSHBZRF7iIV9vUGd9i95/WlkT579g8pOFso56ihER26CKJ56N7I9jY?=
- =?us-ascii?Q?qIGxCXQmFSDRxEMXMs5DVHAqjp5athvKZIIr?=
+	=?us-ascii?Q?LLIncueXclIZi+HLU5y6qvw+VgCjNwbW1PTmDelWUJPuiEyy11Z6/HKTAAyO?=
+ =?us-ascii?Q?egP7UZhNEJeHaRiJTg4Te5CuUg9LUWq/BiJIbXkr7gcg72nRAwJ67NutuqC2?=
+ =?us-ascii?Q?+rNq8rNxBMHQMYDZJwY5nLV54ShWBoR/50fLT+X6b/+JFGdS9mL6WmC2QYgJ?=
+ =?us-ascii?Q?pWGzGi3hv2OG5ADMu9LyZiHus0oThnddV3ByQmMqVDRtSy6lM7Ug7CDBBsQh?=
+ =?us-ascii?Q?dJFRdfPnq5wXZLGayJy4gpMpy14Jz2E1FCjbFi0/QZ1qM8e7w4AFyXDfdkkK?=
+ =?us-ascii?Q?iM3wwT581r3bZdTRmfPSEt7IiHQ1T8MLfiIzn6BAE4HwUX5c3M8lLcY5f4N2?=
+ =?us-ascii?Q?FQji2iBEFXUh2osPcy7BWNYE3y0KpqtSDTaFCpRAZCdbOeNBdYYugtZim6Oz?=
+ =?us-ascii?Q?vXCXRBLkVZqKipmkp8VlaExYAGhhGA+SO4zvsWtgCUEpMyOTMUsOK1TCkYRN?=
+ =?us-ascii?Q?IuIeGl1ZUjRWjOLoxOLMIoNw1Oo9/CD6iRcrCbN9dpR9MPUAiYuEyWWsirQx?=
+ =?us-ascii?Q?Gmi3jYIUX7loqkT+yfObNkl5CEcJvUg+fsbRDkjUM0V8UB4w7mJQdUEAlA16?=
+ =?us-ascii?Q?6Re3JMzu+W7WcSJx6YyyN+iSFS4RT9DWeByhrNTRYkqou1o6PWFN0H6qjwE0?=
+ =?us-ascii?Q?QJiEiEBlHUHQB6ZzIe5sqf8TaTKoUWYjG/pN30Qr44cCm4r8597oxRdnx3GP?=
+ =?us-ascii?Q?jH37gDZ8QjXz6kX1jLohesOcRWfGbTFxJUal0nybZibPqgmajyCtsRcgXoXI?=
+ =?us-ascii?Q?vE6Q7kpZe4JspimIEN1Lt709Pa9ae7iIar7Mj1uSCUWDSwlawwJ54A30v7U6?=
+ =?us-ascii?Q?Rzz2XleSld8n/eXWBajzQK/AnoWuh83Wu+1f80jAwEAsMB9vbxF0c5eRd664?=
+ =?us-ascii?Q?iFPwF6KD1cNKPyWgiBpbVGcnfLS6IXaJm+mnddiqbgrU73qNOw+3SwnBJry3?=
+ =?us-ascii?Q?0Ybg27iTG/O1m8/fxgIMxNuHutPedjYzqdZj1CfeWhpxlOSeavk2bzDWWtw2?=
+ =?us-ascii?Q?Lrsbkn26DHGdrP628Dw3lIZPszmjFZec/hQAw5wVRb40u2XHMKkKV1qjKsv2?=
+ =?us-ascii?Q?k+Tutt58Lfc8rLoKwtzB2fbGcj24UdYabbsmMklOthMltFaHJVsthiVBQXjM?=
+ =?us-ascii?Q?sGPjLk3FKezPfeKd6/92WlHZjStEdPmYRYizdTxFpNEgKAxn8dgWkMhdYUZK?=
+ =?us-ascii?Q?uo8Wlmcynff+lC2FLMddy+ekAhgE9OTv8fzOP+jLB96GiQlrP2GytzBqXati?=
+ =?us-ascii?Q?+fKEtgxd4V6Lnydjwf1KWi0veeKCzSv3sVDFy3+/D3X0EJOG4lHVdg+pgWKD?=
+ =?us-ascii?Q?38h6Y+KgS0f6xOMp7r1yfBpx6xYnzo/HOqycI8kyK/tDrjEDjWgYT8MNgMq5?=
+ =?us-ascii?Q?5fpJaxEmM+4NnhqP1Yeq3T5GHtdA8D7yb4FkIGFvs4hnCnDQWcDqTdNyLhhc?=
+ =?us-ascii?Q?QSALdh5FXFeRKZZYfyUy5KTbsA7W0swtuTdTKpBgDn6/u7oK3BFADVZfvmkf?=
+ =?us-ascii?Q?WKABXdqIDKCxz/fm1M9/mZ6GXd0aYJDQ4lfr?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(7416014)(376014)(36860700013);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(36860700013)(1800799024)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 10:25:50.0497
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 10:25:54.0325
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 807df9c9-960d-4335-8fa2-08ddf0546a20
+X-MS-Exchange-CrossTenant-Network-Message-Id: 445f40eb-ef85-40e2-1af7-08ddf0546c56
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF0000009C.namprd02.prod.outlook.com
+	CO1PEPF000044F5.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8562
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6568
 
 From: Cosmin Ratiu <cratiu@nvidia.com>
 
-This was added in commit [1], but its only use removed in commit [2].
-The parameter is unused, so remove it from the function parameter list.
+The global doorbell is used for more than just Ethernet resources, so
+move it out of mlx5e_hw_objs into a common place (mlx5_priv), to avoid
+non-Ethernet modules (e.g. HWS, ASO) depending on Ethernet structs.
 
-[1] commit 9ded70fa1d81 ("net/mlx5e: Don't prefill WQEs in XDP SQ in the
-multi buffer mode")
-[2] commit 1a9304859b3a ("net/mlx5: XDP, Enable TX side XDP multi-buffer
-support")
+Use this opportunity to consolidate it with the 'uar' pointer already
+there, which was used as an RX doorbell. Underneath the 'uar' pointer is
+identical to 'bfreg->up', so store a single resource and use that
+instead.
+
+For CQ doorbells, care is taken to always use bfreg->up->index instead
+of bfreg->index, which may refer to a subsequent UAR page from the same
+ALLOC_UAR batch on some NICs.
+
+This paves the way for cleanly supporting multiple doorbells in the
+Ethernet driver.
+
 Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
 Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/params.c    | 3 +--
- drivers/net/ethernet/mellanox/mlx5/core/en/params.h    | 1 -
- drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c | 2 +-
- 3 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/mlx5/cq.c                       |  4 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/cq.c          |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/params.c   |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c      |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_common.c   | 11 +----------
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c     | 10 +++++-----
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c          |  4 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c     |  8 ++++----
+ drivers/net/ethernet/mellanox/mlx5/core/main.c        | 11 +++++------
+ .../ethernet/mellanox/mlx5/core/steering/hws/send.c   |  8 ++++----
+ drivers/net/ethernet/mellanox/mlx5/core/wc.c          |  4 ++--
+ include/linux/mlx5/driver.h                           |  3 +--
+ 12 files changed, 29 insertions(+), 40 deletions(-)
 
+diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+index 9c8003a78334..a23b364e24ff 100644
+--- a/drivers/infiniband/hw/mlx5/cq.c
++++ b/drivers/infiniband/hw/mlx5/cq.c
+@@ -648,7 +648,7 @@ int mlx5_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
+ {
+ 	struct mlx5_core_dev *mdev = to_mdev(ibcq->device)->mdev;
+ 	struct mlx5_ib_cq *cq = to_mcq(ibcq);
+-	void __iomem *uar_page = mdev->priv.uar->map;
++	void __iomem *uar_page = mdev->priv.bfreg.up->map;
+ 	unsigned long irq_flags;
+ 	int ret = 0;
+ 
+@@ -923,7 +923,7 @@ static int create_cq_kernel(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *cq,
+ 		 cq->buf.frag_buf.page_shift -
+ 		 MLX5_ADAPTER_PAGE_SHIFT);
+ 
+-	*index = dev->mdev->priv.uar->index;
++	*index = dev->mdev->priv.bfreg.up->index;
+ 
+ 	return 0;
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+index 1fd403713baf..35039a95dcfd 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+@@ -145,7 +145,7 @@ int mlx5_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+ 		mlx5_core_dbg(dev, "failed adding CP 0x%x to debug file system\n",
+ 			      cq->cqn);
+ 
+-	cq->uar = dev->priv.uar;
++	cq->uar = dev->priv.bfreg.up;
+ 	cq->irqn = eq->core.irqn;
+ 
+ 	return 0;
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-index 3cca06a74cf9..31e7f59bc19b 100644
+index 31e7f59bc19b..b6b4ae7c59fa 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-@@ -1229,7 +1229,6 @@ static void mlx5e_build_async_icosq_param(struct mlx5_core_dev *mdev,
- 
- void mlx5e_build_xdpsq_param(struct mlx5_core_dev *mdev,
- 			     struct mlx5e_params *params,
--			     struct mlx5e_xsk_param *xsk,
- 			     struct mlx5e_sq_param *param)
+@@ -810,7 +810,7 @@ static void mlx5e_build_common_cq_param(struct mlx5_core_dev *mdev,
  {
- 	void *sqc = param->sqc;
-@@ -1256,7 +1255,7 @@ int mlx5e_build_channel_param(struct mlx5_core_dev *mdev,
- 	async_icosq_log_wq_sz = mlx5e_build_async_icosq_log_wq_sz(mdev);
+ 	void *cqc = param->cqc;
  
- 	mlx5e_build_sq_param(mdev, params, &cparam->txq_sq);
--	mlx5e_build_xdpsq_param(mdev, params, NULL, &cparam->xdp_sq);
-+	mlx5e_build_xdpsq_param(mdev, params, &cparam->xdp_sq);
- 	mlx5e_build_icosq_param(mdev, icosq_log_wq_sz, &cparam->icosq);
- 	mlx5e_build_async_icosq_param(mdev, async_icosq_log_wq_sz, &cparam->async_icosq);
+-	MLX5_SET(cqc, cqc, uar_page, mdev->priv.uar->index);
++	MLX5_SET(cqc, cqc, uar_page, mdev->priv.bfreg.up->index);
+ 	if (MLX5_CAP_GEN(mdev, cqe_128_always) && cache_line_size() >= 128)
+ 		MLX5_SET(cqc, cqc, cqe_sz, CQE_STRIDE_128_PAD);
+ }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+index 391b4e9c9dc4..7c1d9a9ea464 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+@@ -334,7 +334,7 @@ static int mlx5e_ptp_alloc_txqsq(struct mlx5e_ptp *c, int txq_ix,
+ 	sq->mdev      = mdev;
+ 	sq->ch_ix     = MLX5E_PTP_CHANNEL_IX;
+ 	sq->txq_ix    = txq_ix;
+-	sq->uar_map   = mdev->mlx5e_res.hw_objs.bfreg.map;
++	sq->uar_map   = mdev->priv.bfreg.map;
+ 	sq->min_inline_mode = params->tx_min_inline_mode;
+ 	sq->hw_mtu    = MLX5E_SW2HW_MTU(params, params->sw_mtu);
+ 	sq->stats     = &c->priv->ptp_stats.sq[tc];
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_common.c b/drivers/net/ethernet/mellanox/mlx5/core/en_common.c
+index 6ed3a32b7e22..e9e36358c39d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_common.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_common.c
+@@ -163,17 +163,11 @@ int mlx5e_create_mdev_resources(struct mlx5_core_dev *mdev, bool create_tises)
+ 		goto err_dealloc_transport_domain;
+ 	}
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.h b/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
-index 488ccdbc1e2c..e3edf79dde5f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
-@@ -132,7 +132,6 @@ void mlx5e_build_tx_cq_param(struct mlx5_core_dev *mdev,
- 			     struct mlx5e_cq_param *param);
- void mlx5e_build_xdpsq_param(struct mlx5_core_dev *mdev,
- 			     struct mlx5e_params *params,
--			     struct mlx5e_xsk_param *xsk,
- 			     struct mlx5e_sq_param *param);
- int mlx5e_build_channel_param(struct mlx5_core_dev *mdev,
- 			      struct mlx5e_params *params,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-index d743e823362a..dbd88eb5c082 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-@@ -54,7 +54,7 @@ static void mlx5e_build_xsk_cparam(struct mlx5_core_dev *mdev,
- 				   struct mlx5e_channel_param *cparam)
+-	err = mlx5_alloc_bfreg(mdev, &res->bfreg, false, false);
+-	if (err) {
+-		mlx5_core_err(mdev, "alloc bfreg failed, %d\n", err);
+-		goto err_destroy_mkey;
+-	}
+-
+ 	if (create_tises) {
+ 		err = mlx5e_create_tises(mdev, res->tisn);
+ 		if (err) {
+ 			mlx5_core_err(mdev, "alloc tises failed, %d\n", err);
+-			goto err_destroy_bfreg;
++			goto err_destroy_mkey;
+ 		}
+ 		res->tisn_valid = true;
+ 	}
+@@ -190,8 +184,6 @@ int mlx5e_create_mdev_resources(struct mlx5_core_dev *mdev, bool create_tises)
+ 
+ 	return 0;
+ 
+-err_destroy_bfreg:
+-	mlx5_free_bfreg(mdev, &res->bfreg);
+ err_destroy_mkey:
+ 	mlx5_core_destroy_mkey(mdev, res->mkey);
+ err_dealloc_transport_domain:
+@@ -209,7 +201,6 @@ void mlx5e_destroy_mdev_resources(struct mlx5_core_dev *mdev)
+ 	mdev->mlx5e_res.dek_priv = NULL;
+ 	if (res->tisn_valid)
+ 		mlx5e_destroy_tises(mdev, res->tisn);
+-	mlx5_free_bfreg(mdev, &res->bfreg);
+ 	mlx5_core_destroy_mkey(mdev, res->mkey);
+ 	mlx5_core_dealloc_transport_domain(mdev, res->td.tdn);
+ 	mlx5_core_dealloc_pd(mdev, res->pdn);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index 714cce595692..02a538ec2ecb 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -1532,7 +1532,7 @@ static int mlx5e_alloc_xdpsq(struct mlx5e_channel *c,
+ 	sq->pdev      = c->pdev;
+ 	sq->mkey_be   = c->mkey_be;
+ 	sq->channel   = c;
+-	sq->uar_map   = mdev->mlx5e_res.hw_objs.bfreg.map;
++	sq->uar_map   = mdev->priv.bfreg.map;
+ 	sq->min_inline_mode = params->tx_min_inline_mode;
+ 	sq->hw_mtu    = MLX5E_SW2HW_MTU(params, params->sw_mtu) - ETH_FCS_LEN;
+ 	sq->xsk_pool  = xsk_pool;
+@@ -1617,7 +1617,7 @@ static int mlx5e_alloc_icosq(struct mlx5e_channel *c,
+ 	int err;
+ 
+ 	sq->channel   = c;
+-	sq->uar_map   = mdev->mlx5e_res.hw_objs.bfreg.map;
++	sq->uar_map   = mdev->priv.bfreg.map;
+ 	sq->reserved_room = param->stop_room;
+ 
+ 	param->wq.db_numa_node = cpu_to_node(c->cpu);
+@@ -1702,7 +1702,7 @@ static int mlx5e_alloc_txqsq(struct mlx5e_channel *c,
+ 	sq->priv      = c->priv;
+ 	sq->ch_ix     = c->ix;
+ 	sq->txq_ix    = txq_ix;
+-	sq->uar_map   = mdev->mlx5e_res.hw_objs.bfreg.map;
++	sq->uar_map   = mdev->priv.bfreg.map;
+ 	sq->min_inline_mode = params->tx_min_inline_mode;
+ 	sq->hw_mtu    = MLX5E_SW2HW_MTU(params, params->sw_mtu);
+ 	sq->max_sq_mpw_wqebbs = mlx5e_get_max_sq_aligned_wqebbs(mdev);
+@@ -1778,7 +1778,7 @@ static int mlx5e_create_sq(struct mlx5_core_dev *mdev,
+ 	MLX5_SET(sqc,  sqc, flush_in_error_en, 1);
+ 
+ 	MLX5_SET(wq,   wq, wq_type,       MLX5_WQ_TYPE_CYCLIC);
+-	MLX5_SET(wq,   wq, uar_page,      mdev->mlx5e_res.hw_objs.bfreg.index);
++	MLX5_SET(wq,   wq, uar_page,      mdev->priv.bfreg.index);
+ 	MLX5_SET(wq,   wq, log_wq_pg_sz,  csp->wq_ctrl->buf.page_shift -
+ 					  MLX5_ADAPTER_PAGE_SHIFT);
+ 	MLX5_SET64(wq, wq, dbr_addr,      csp->wq_ctrl->db.dma);
+@@ -2273,7 +2273,7 @@ static int mlx5e_create_cq(struct mlx5e_cq *cq, struct mlx5e_cq_param *param)
+ 	MLX5_SET(cqc, cqc, cq_period_mode, mlx5e_cq_period_mode(param->cq_period_mode));
+ 
+ 	MLX5_SET(cqc,   cqc, c_eqn_or_apu_element, eqn);
+-	MLX5_SET(cqc,   cqc, uar_page,      mdev->priv.uar->index);
++	MLX5_SET(cqc,   cqc, uar_page,      mdev->priv.bfreg.up->index);
+ 	MLX5_SET(cqc,   cqc, log_page_size, cq->wq_ctrl.buf.page_shift -
+ 					    MLX5_ADAPTER_PAGE_SHIFT);
+ 	MLX5_SET64(cqc, cqc, dbr_addr,      cq->wq_ctrl.db.dma);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index f3c714ebd9cb..25499da177bc 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -307,7 +307,7 @@ create_map_eq(struct mlx5_core_dev *dev, struct mlx5_eq *eq,
+ 
+ 	eqc = MLX5_ADDR_OF(create_eq_in, in, eq_context_entry);
+ 	MLX5_SET(eqc, eqc, log_eq_size, eq->fbc.log_sz);
+-	MLX5_SET(eqc, eqc, uar_page, priv->uar->index);
++	MLX5_SET(eqc, eqc, uar_page, priv->bfreg.up->index);
+ 	MLX5_SET(eqc, eqc, intr, vecidx);
+ 	MLX5_SET(eqc, eqc, log_page_size,
+ 		 eq->frag_buf.page_shift - MLX5_ADAPTER_PAGE_SHIFT);
+@@ -320,7 +320,7 @@ create_map_eq(struct mlx5_core_dev *dev, struct mlx5_eq *eq,
+ 	eq->eqn = MLX5_GET(create_eq_out, out, eq_number);
+ 	eq->irqn = pci_irq_vector(dev->pdev, vecidx);
+ 	eq->dev = dev;
+-	eq->doorbell = priv->uar->map + MLX5_EQ_DOORBELL_OFFSET;
++	eq->doorbell = priv->bfreg.up->map + MLX5_EQ_DOORBELL_OFFSET;
+ 
+ 	err = mlx5_debug_eq_add(dev, eq);
+ 	if (err)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c
+index 58bd749b5e4d..129725159a93 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/aso.c
+@@ -100,7 +100,7 @@ static int create_aso_cq(struct mlx5_aso_cq *cq, void *cqc_data)
+ 
+ 	MLX5_SET(cqc,   cqc, cq_period_mode, MLX5_CQ_PERIOD_MODE_START_FROM_EQE);
+ 	MLX5_SET(cqc,   cqc, c_eqn_or_apu_element, eqn);
+-	MLX5_SET(cqc,   cqc, uar_page,      mdev->priv.uar->index);
++	MLX5_SET(cqc,   cqc, uar_page,      mdev->priv.bfreg.up->index);
+ 	MLX5_SET(cqc,   cqc, log_page_size, cq->wq_ctrl.buf.page_shift -
+ 					    MLX5_ADAPTER_PAGE_SHIFT);
+ 	MLX5_SET64(cqc, cqc, dbr_addr,      cq->wq_ctrl.db.dma);
+@@ -129,7 +129,7 @@ static int mlx5_aso_create_cq(struct mlx5_core_dev *mdev, int numa_node,
+ 		return -ENOMEM;
+ 
+ 	MLX5_SET(cqc, cqc_data, log_cq_size, 1);
+-	MLX5_SET(cqc, cqc_data, uar_page, mdev->priv.uar->index);
++	MLX5_SET(cqc, cqc_data, uar_page, mdev->priv.bfreg.up->index);
+ 	if (MLX5_CAP_GEN(mdev, cqe_128_always) && cache_line_size() >= 128)
+ 		MLX5_SET(cqc, cqc_data, cqe_sz, CQE_STRIDE_128_PAD);
+ 
+@@ -163,7 +163,7 @@ static int mlx5_aso_alloc_sq(struct mlx5_core_dev *mdev, int numa_node,
+ 	struct mlx5_wq_param param;
+ 	int err;
+ 
+-	sq->uar_map = mdev->mlx5e_res.hw_objs.bfreg.map;
++	sq->uar_map = mdev->priv.bfreg.map;
+ 
+ 	param.db_numa_node = numa_node;
+ 	param.buf_numa_node = numa_node;
+@@ -203,7 +203,7 @@ static int create_aso_sq(struct mlx5_core_dev *mdev, int pdn,
+ 	MLX5_SET(sqc, sqc, ts_format, ts_format);
+ 
+ 	MLX5_SET(wq,   wq, wq_type,       MLX5_WQ_TYPE_CYCLIC);
+-	MLX5_SET(wq,   wq, uar_page,      mdev->mlx5e_res.hw_objs.bfreg.index);
++	MLX5_SET(wq,   wq, uar_page,      mdev->priv.bfreg.index);
+ 	MLX5_SET(wq,   wq, log_wq_pg_sz,  sq->wq_ctrl.buf.page_shift -
+ 					  MLX5_ADAPTER_PAGE_SHIFT);
+ 	MLX5_SET64(wq, wq, dbr_addr,      sq->wq_ctrl.db.dma);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 0951c7cc1b5f..89b224d76186 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -1340,10 +1340,9 @@ static int mlx5_load(struct mlx5_core_dev *dev)
  {
- 	mlx5e_build_rq_param(mdev, params, xsk, &cparam->rq);
--	mlx5e_build_xdpsq_param(mdev, params, xsk, &cparam->xdp_sq);
-+	mlx5e_build_xdpsq_param(mdev, params, &cparam->xdp_sq);
+ 	int err;
+ 
+-	dev->priv.uar = mlx5_get_uars_page(dev);
+-	if (IS_ERR(dev->priv.uar)) {
+-		mlx5_core_err(dev, "Failed allocating uar, aborting\n");
+-		err = PTR_ERR(dev->priv.uar);
++	err = mlx5_alloc_bfreg(dev, &dev->priv.bfreg, false, false);
++	if (err) {
++		mlx5_core_err(dev, "Failed allocating bfreg, %d\n", err);
+ 		return err;
+ 	}
+ 
+@@ -1454,7 +1453,7 @@ static int mlx5_load(struct mlx5_core_dev *dev)
+ err_irq_table:
+ 	mlx5_pagealloc_stop(dev);
+ 	mlx5_events_stop(dev);
+-	mlx5_put_uars_page(dev, dev->priv.uar);
++	mlx5_free_bfreg(dev, &dev->priv.bfreg);
+ 	return err;
  }
  
- static int mlx5e_init_xsk_rq(struct mlx5e_channel *c,
+@@ -1479,7 +1478,7 @@ static void mlx5_unload(struct mlx5_core_dev *dev)
+ 	mlx5_irq_table_destroy(dev);
+ 	mlx5_pagealloc_stop(dev);
+ 	mlx5_events_stop(dev);
+-	mlx5_put_uars_page(dev, dev->priv.uar);
++	mlx5_free_bfreg(dev, &dev->priv.bfreg);
+ }
+ 
+ int mlx5_init_one_devl_locked(struct mlx5_core_dev *dev)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
+index b0595c9b09e4..24ef7d66fa8a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
+@@ -690,7 +690,7 @@ static int hws_send_ring_alloc_sq(struct mlx5_core_dev *mdev,
+ 	size_t buf_sz;
+ 	int err;
+ 
+-	sq->uar_map = mdev->mlx5e_res.hw_objs.bfreg.map;
++	sq->uar_map = mdev->priv.bfreg.map;
+ 	sq->mdev = mdev;
+ 
+ 	param.db_numa_node = numa_node;
+@@ -764,7 +764,7 @@ static int hws_send_ring_create_sq(struct mlx5_core_dev *mdev, u32 pdn,
+ 	MLX5_SET(sqc, sqc, ts_format, ts_format);
+ 
+ 	MLX5_SET(wq, wq, wq_type, MLX5_WQ_TYPE_CYCLIC);
+-	MLX5_SET(wq, wq, uar_page, mdev->mlx5e_res.hw_objs.bfreg.index);
++	MLX5_SET(wq, wq, uar_page, mdev->priv.bfreg.index);
+ 	MLX5_SET(wq, wq, log_wq_pg_sz, sq->wq_ctrl.buf.page_shift - MLX5_ADAPTER_PAGE_SHIFT);
+ 	MLX5_SET64(wq, wq, dbr_addr, sq->wq_ctrl.db.dma);
+ 
+@@ -940,7 +940,7 @@ static int hws_send_ring_create_cq(struct mlx5_core_dev *mdev,
+ 				  (__be64 *)MLX5_ADDR_OF(create_cq_in, in, pas));
+ 
+ 	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
+-	MLX5_SET(cqc, cqc, uar_page, mdev->priv.uar->index);
++	MLX5_SET(cqc, cqc, uar_page, mdev->priv.bfreg.up->index);
+ 	MLX5_SET(cqc, cqc, log_page_size, cq->wq_ctrl.buf.page_shift - MLX5_ADAPTER_PAGE_SHIFT);
+ 	MLX5_SET64(cqc, cqc, dbr_addr, cq->wq_ctrl.db.dma);
+ 
+@@ -963,7 +963,7 @@ static int hws_send_ring_open_cq(struct mlx5_core_dev *mdev,
+ 	if (!cqc_data)
+ 		return -ENOMEM;
+ 
+-	MLX5_SET(cqc, cqc_data, uar_page, mdev->priv.uar->index);
++	MLX5_SET(cqc, cqc_data, uar_page, mdev->priv.bfreg.up->index);
+ 	MLX5_SET(cqc, cqc_data, log_cq_size, ilog2(queue->num_entries));
+ 
+ 	err = hws_send_ring_alloc_cq(mdev, numa_node, queue, cqc_data, cq);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/wc.c b/drivers/net/ethernet/mellanox/mlx5/core/wc.c
+index 276594586404..999d6216648a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/wc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/wc.c
+@@ -94,7 +94,7 @@ static int create_wc_cq(struct mlx5_wc_cq *cq, void *cqc_data)
+ 
+ 	MLX5_SET(cqc,   cqc, cq_period_mode, MLX5_CQ_PERIOD_MODE_START_FROM_EQE);
+ 	MLX5_SET(cqc,   cqc, c_eqn_or_apu_element, eqn);
+-	MLX5_SET(cqc,   cqc, uar_page,      mdev->priv.uar->index);
++	MLX5_SET(cqc,   cqc, uar_page,      mdev->priv.bfreg.up->index);
+ 	MLX5_SET(cqc,   cqc, log_page_size, cq->wq_ctrl.buf.page_shift -
+ 					    MLX5_ADAPTER_PAGE_SHIFT);
+ 	MLX5_SET64(cqc, cqc, dbr_addr,      cq->wq_ctrl.db.dma);
+@@ -116,7 +116,7 @@ static int mlx5_wc_create_cq(struct mlx5_core_dev *mdev, struct mlx5_wc_cq *cq)
+ 		return -ENOMEM;
+ 
+ 	MLX5_SET(cqc, cqc, log_cq_size, TEST_WC_LOG_CQ_SZ);
+-	MLX5_SET(cqc, cqc, uar_page, mdev->priv.uar->index);
++	MLX5_SET(cqc, cqc, uar_page, mdev->priv.bfreg.up->index);
+ 	if (MLX5_CAP_GEN(mdev, cqe_128_always) && cache_line_size() >= 128)
+ 		MLX5_SET(cqc, cqc, cqe_sz, CQE_STRIDE_128_PAD);
+ 
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index 5a85b6d91ba3..15c434fedff7 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -612,7 +612,7 @@ struct mlx5_priv {
+ 	struct mlx5_ft_pool		*ft_pool;
+ 
+ 	struct mlx5_bfreg_data		bfregs;
+-	struct mlx5_uars_page	       *uar;
++	struct mlx5_sq_bfreg bfreg;
+ #ifdef CONFIG_MLX5_SF
+ 	struct mlx5_vhca_state_notifier *vhca_state_notifier;
+ 	struct mlx5_sf_dev_table *sf_dev_table;
+@@ -658,7 +658,6 @@ struct mlx5e_resources {
+ 		u32                        pdn;
+ 		struct mlx5_td             td;
+ 		u32			   mkey;
+-		struct mlx5_sq_bfreg       bfreg;
+ #define MLX5_MAX_NUM_TC 8
+ 		u32                        tisn[MLX5_MAX_PORTS][MLX5_MAX_NUM_TC];
+ 		bool			   tisn_valid;
 -- 
 2.31.1
 
