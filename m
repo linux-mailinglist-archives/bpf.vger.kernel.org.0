@@ -1,143 +1,117 @@
-Return-Path: <bpf+bounces-68059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9083B522D1
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 22:49:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 157B2B523A3
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 23:41:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95089A083B4
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 20:49:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C0987BB3E3
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 21:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844A233EB0A;
-	Wed, 10 Sep 2025 20:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A96F313535;
+	Wed, 10 Sep 2025 21:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kEVcF0EF"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="kiFd3BT9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C894833A006
-	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 20:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1B63126CF
+	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 21:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757537094; cv=none; b=L7CP/hb14BwvtEHi5jnOXtL8zm+aIqsJigsjD/910TvO3XSMlI7zs2uPMBymZmv0s99s0Pt77nHMTkd/U5p5vLdRCRrd9HEgS0FaKcp3xPXVQ7VUH0wixWQCJqMgC34Dm8LBJWoQsf5mdXSe1Jf4rrM/72ajRXVrwD4w8SyjcSM=
+	t=1757540483; cv=none; b=ALBVfXjpmjKI+Q8D+sVC4L+Zj8ikOGTa4IqdTh0NlxaiHTAvgWG/w3URWnCNf7wR6i2dQSV0fPNpT578lvuuDeFfUAwZLoTkrqiOrX4GKVPN2kNqH7ObRdMXdQ8s5gwUsRxWsHnat/Wia8EwJw1ZkQx2j0Rol1+DPFf9Y2KN0Uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757537094; c=relaxed/simple;
-	bh=PKRrTKZjGDnwCc9xSD/VofdNKOJmPvBt27BWd4yB0Yw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qWmj8EShXAEBnPH42pX+u/g/hf1QyXCuYA5v5gCEQ46dFSUyyWVufmEa5AZ5CxCcfq1sBRCmOrRPtqCr0Jlo5rCZ5xrQ20hE8olE2DTVTyWp9Q2sRkr2wzWep8BOQ7FWLn3H8RA3f5TiRU8zV/cDHWxH0gBctAYj7eNMV3QgLwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kEVcF0EF; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3e4aeaa57b9so49440f8f.1
-        for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 13:44:52 -0700 (PDT)
+	s=arc-20240116; t=1757540483; c=relaxed/simple;
+	bh=rBTNYVsF3YFvmX+4VP6dC8AXXIIfKsebSpVauz6I77Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KuOI30hUz0p698jU6fKgipOE/1HRTNemVptRWtVR/j67FmtCVfxTE90HHONbIbv6hyAjEzTw81+gM4AunsHIMJqv0mA3uByHdBYKOv//LQyrvEA65jG1z7ouHLbO1L5PlzxIvd1qu9885hOjywSJNRMq9NfgmHNJdlMDjv/ipZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=kiFd3BT9; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-24b132bd90dso65065ad.0
+        for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 14:41:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757537091; x=1758141891; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hURlif60FPSjNG3pKdufMNt+U9y26SiGUSn1HYK+xuk=;
-        b=kEVcF0EFinSgGU78S+B/hpxO7gFTN7e8MW2szaA7lNDhzVumqHhzY1HLQcSM4Zz+Ha
-         h8K6g/aPSv0hEA2XMPCcVW+oWULWMM0A+tb/98vSE5eM28BSDtLKGRtdYJbi5NMfJRX0
-         VpHhC5MmI7Y7FUr8MhjJdhWHPETg9TNd9yPjPwd+eVDqsLK8zXO04j7zMD0MQaE9v3PC
-         accUehLsusOWr1OTI7/40lA+Mq455D6Oesymv1ntKzj20vxNfFfiejISJGVH3ov2mFoF
-         IR4fNLibzY/n+Mamo5ZmL6CbNp1FEno8c9+J+bZA+AxNAttuISfrF3iuvKlyjvg8cFpN
-         tKGA==
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1757540479; x=1758145279; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bzId/RkTQL8EC0WDO7Pec0MLfxYUok0E0Fzx4XPk7rs=;
+        b=kiFd3BT9cs2JZzyLlLLN0uZEoNJ088qMuSkl56MQAQMoZxK8cZ4iWKjNAXbOklQjBJ
+         KXGIxng6lA1YaxgW4yEYqWmcVjSy42APmLyW1A0P/W+r+WvnwdUJLmgL+EiTUbZP62Xj
+         MCvVjIptboEvqmARIHcuH5cI8Fb8v1J89nT/yf3V1U/jmajVb1xAhlkiTwUfUBBtW6DW
+         sL7edHOuLrHQWdNdUhw2/+yzOmm0Zmq0qNcxUcbH27fzyHpKsISTPbkr/a8ftjLfLGoo
+         KYoDq9yM5yyY8ZX/oI4yCruN7/wP3uQym1LU1sAJYwJkWZA6AhYgopej0hs1oGXSQjJQ
+         ylRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757537091; x=1758141891;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hURlif60FPSjNG3pKdufMNt+U9y26SiGUSn1HYK+xuk=;
-        b=CrOaIrd4DzzWZmz2IlwNBu8GJAKl99RvYeTOtzqNaW1q0t5e9PrtvHz+a65BZYybgU
-         vA7IJdAYp1hXa2T3q+HADnQHI6PN71DAA6x6ncJrLP+l5nGYAoyTNf5S2DxXJv9ll8Xx
-         fI+M5cqX1VohUbhBQrog4c/ScJFpQZSxiemcE1VZJ52uE3ET5uqOe2rxpioYAVwcgWDX
-         xB/x98x7Jw4JGu+pHEPY5A2SmeIuOUQemuqfCeNi4t6VihK4pQl807un6VMClTWvuVcn
-         5lRNgU6OXmofrny1QvSfnZ6897Z25mPYUD7NuYSzXFKlGbuTU5u6bzkF9iiRDM4uQ25E
-         iAYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXvVxTXrjlHpT1ynGvI634HFYljFLG6jnUYSjbCgoF/MMk0xuXPDWI5vZnQXSHhvX1YZZ4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzelqCNndxRU+6p1MHXK/YEEw8pnK4Z9scn+hUa07WVXQORRCGw
-	lzsk36FIK1dintQqTfvHsrxu/3obGwtCJuf8BTyommQ1p7qII011oYBNsTvXRNhQvFS0pju6dm8
-	HNLXk6RF58XHLB/Rgz3Er/ycBJRnb1W0=
-X-Gm-Gg: ASbGncuMMKRW1i2IyJ7bg4EhZd4sLtLJyl7RGUIjsd6gCTNnuH71x+/lM8RZeacfvt4
-	7FDVnJJB5UJV18OGlXvJ0p0aShJ9iCCUVoucdyqlYfokaQXJ2ospPEuKBwbZJK3v6HTOOctpOmq
-	9islKOzXw1OuiPwmm0cgc0jIK5X1N/7JKC+ks9GJz8XohVo3kDenOMDi99kyFrQjX8voP0HavPa
-	o8sD6ixlQAae96VH1llGTcAu0AOAyuIs6cayrHneqEiWz0=
-X-Google-Smtp-Source: AGHT+IEgKZrxpEMcuKUrNZZ/VjmpOkAy5xtzbBJMsk33KsFm2AIoLuo+xsbMm68dkSaOFsa/gF4LW0lXPvvk+72L35I=
-X-Received: by 2002:adf:9c87:0:b0:3e7:17d4:389b with SMTP id
- ffacd0b85a97d-3e717d43b81mr9837201f8f.52.1757537090882; Wed, 10 Sep 2025
- 13:44:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757540479; x=1758145279;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bzId/RkTQL8EC0WDO7Pec0MLfxYUok0E0Fzx4XPk7rs=;
+        b=s2Bu6wLmwmHdNlz+6pLAYJH4Ngjb4gcjeZ+P9x0s2Abg6cip2Ds1pZerDunqJxQfXL
+         C0Zx29Cs+rRqjO2+P0BsRuMSpMxqiAaWSBNj8YvEuge/J0mXDiF0uwPuN6/b7c2kPts8
+         UM8Z3NI9YgUWqeAPFCfB+JxCqdoO12e78cOdG8NeMXUDN/zY+HcLEu52tB0VTUyMZ23J
+         zGFendjA5Nmz5BKKlW+gs0oHxnk61oRqsOylqZCMqA78UXWTYxtaKNc2j6+o/+d9LAyE
+         Bt9ptZ6Emu+ovp2PeRQUAwmpZVgrE8So4t06uqAVTglfZT0sHQ3ZNQoIAOe+mQ7tHS/N
+         RVwQ==
+X-Gm-Message-State: AOJu0YziqTh3IIos77M0GzFaXk0syem7/EN2VMOFgb7bCEEBiOK35w7K
+	TyKLVf1DRSPwPcuBSyT0NCPa7dNQdVMaGZGq11hDEgDOde1A42W5ufaUSyKy7jrp2h4=
+X-Gm-Gg: ASbGncsdiKjkwIpY5VZz5bp4sfifPha6Ix3lJQhK0Z3kl38e7Yv5SVCZHtvo9pWxy4J
+	X8C2Cv3tGC6sPp961e0Pal9mqvjCy3vFoQKT+ZTBZL1cR0RqEutOlIV/ubUDNyQjYaM3vXzK+Zj
+	0D9TNFYN0RvRvVvdMho6RA016iPIeHQfnP9XkpGpzxXoFnuJ7nYCcujA3S4LMIX7FoOG7NN91xB
+	wyKC68NFTVBAqwlNhXhnmJQ0+4RXMqJ4m7OWrmhnKEpoy9cxC28EbQhIy9xlJAAa9P4MfeCukMP
+	7z25JN+ipotW/BQNkJ8ChFhOoUxR4X9KkCWzApfVkxJ53ugXzd+m/HMOrjXu3LALzPgFtHJ99ip
+	fWdd9Eh/A
+X-Google-Smtp-Source: AGHT+IFc3gLRJ6cR/FpRGzTCp6rzCTj3/EJpFuXvGDWz9QQY3e21hQurVVFTNe86D+WDyYrwdADdpw==
+X-Received: by 2002:a17:902:ecc9:b0:248:f683:e981 with SMTP id d9443c01a7336-25174c234ddmr117757125ad.8.1757540479412;
+        Wed, 10 Sep 2025 14:41:19 -0700 (PDT)
+Received: from t14 ([2001:5a8:4519:2200:5e8f:88f7:48b0:e920])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25a2a924eeasm37135765ad.108.2025.09.10.14.41.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Sep 2025 14:41:19 -0700 (PDT)
+Date: Wed, 10 Sep 2025 14:41:16 -0700
+From: Jordan Rife <jordan@jrife.io>
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Aditi Ghag <aditi.ghag@isovalent.com>
+Subject: Re: [RFC PATCH bpf-next 11/14] bpf: Introduce
+ BPF_SOCK_OPS_UDP_CONNECTED_CB
+Message-ID: <aqvluk774lxbko2znaeozteef246mcvwd4qhvcqsqahr5zdmyw@kmbefshxxm53>
+References: <20250909170011.239356-1-jordan@jrife.io>
+ <20250909170011.239356-12-jordan@jrife.io>
+ <CAAVpQUA8VyP=eHtQ3p4XJYwsU5Qq7L-k1FRGhPN+K9K+OeBZ+w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910024447.64788-1-laoar.shao@gmail.com> <20250910024447.64788-8-laoar.shao@gmail.com>
-In-Reply-To: <20250910024447.64788-8-laoar.shao@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 10 Sep 2025 13:44:39 -0700
-X-Gm-Features: AS18NWC0PddnEh_K4ml7j_4k0fHCbV_INsBk7po365NYjaa9qQUoIAl6ZZzp51o
-Message-ID: <CAADnVQJF6YtzOojGV16hmUpFCiZGxuJAi6=Q4TK=VPH=_93eJA@mail.gmail.com>
-Subject: Re: [PATCH v7 mm-new 07/10] selftests/bpf: add a simple BPF based THP policy
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, ziy@nvidia.com, 
-	baolin.wang@linux.alibaba.com, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	Liam Howlett <Liam.Howlett@oracle.com>, npache@redhat.com, ryan.roberts@arm.com, 
-	dev.jain@arm.com, Johannes Weiner <hannes@cmpxchg.org>, usamaarif642@gmail.com, 
-	gutierrez.asier@huawei-partners.com, Matthew Wilcox <willy@infradead.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Amery Hung <ameryhung@gmail.com>, 
-	David Rientjes <rientjes@google.com>, Jonathan Corbet <corbet@lwn.net>, 21cnbao@gmail.com, 
-	Shakeel Butt <shakeel.butt@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAVpQUA8VyP=eHtQ3p4XJYwsU5Qq7L-k1FRGhPN+K9K+OeBZ+w@mail.gmail.com>
 
-On Tue, Sep 9, 2025 at 7:46=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> w=
-rote:
->
-> +/* Detecting whether a task can successfully allocate THP is unreliable =
-because
-> + * it may be influenced by system memory pressure. Instead of making the=
- result
-> + * dependent on unpredictable factors, we should simply check
-> + * bpf_hook_thp_get_orders()'s return value, which is deterministic.
-> + */
-> +SEC("fexit/bpf_hook_thp_get_orders")
-> +int BPF_PROG(thp_run, struct vm_area_struct *vma, u64 vma_flags, enum tv=
-a_type tva_type,
-> +            unsigned long orders, int retval)
-> +{
+> >         res = __ip4_datagram_connect(sk, uaddr, addr_len);
+> >         if (!res)
+> >                 udp4_hash4(sk);
+> > +       udp_call_bpf(sk, BPF_SOCK_OPS_UDP_CONNECTED_CB);
+> 
+> Why is this called on failure ?
+> 
+> Same for IPv6.
 
-...
+My mistake, it should only be called on success.
 
-> +SEC("struct_ops/thp_get_order")
-> +int BPF_PROG(alloc_in_khugepaged, struct vm_area_struct *vma, enum bpf_t=
-hp_vma_type vma_type,
-> +            enum tva_type tva_type, unsigned long orders)
-> +{
+	if (!res) {
+		udp4_hash4(sk);
+		udp_call_bpf(sk, BPF_SOCK_OPS_UDP_CONNECTED_CB);
+	}
 
-This is a bad idea to mix struct_ops logic with fentry/fexit style.
-struct_ops hook will not be affected by compiler optimizations,
-while fentry depends on a whim of compilers.
-struct_ops can be scoped, while fentry is always global.
-sched-ext already struggles with the later, since some scheds
-need tracing data from other parts of the kernel and they cannot
-be grouped together. All sorts of workarounds were proposed, but
-no good solution in sight. So don't go this route for THP.
-Make everything you need to be struct_ops based and/or pass
-whatever extra data into these ops.
+I'll fix this in a later revision.
 
-Also think of scoping for bpf-thp from the start.
-Currently st_ops/thp_get_order is only one and it's global.
-It's ok for prototypes and experiments, but not ok for landing upstream.
-I think cgroup would a natural scope and different cgroups might
-want their own bpf based THP hints. Once you do that, think through
-how delegation of suggested order will propagate through hierarchy.
+Jordan
 
-bpf-oom seems to be aligning toward the same design principles,
-so don't reinvent the wheel.
 
