@@ -1,77 +1,79 @@
-Return-Path: <bpf+bounces-67972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67973-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B6A9B50BB6
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 04:49:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09212B50BB1
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 04:49:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AD855E769B
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 02:49:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C80B1C63DF4
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 02:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC902580D1;
-	Wed, 10 Sep 2025 02:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A78622594BD;
+	Wed, 10 Sep 2025 02:45:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ncV5+nvU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EjZ/zjBJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909762517B9;
-	Wed, 10 Sep 2025 02:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 992CA254B18;
+	Wed, 10 Sep 2025 02:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757472307; cv=none; b=MMa99Oxrgy1gkEQtGL1Q/2gduBaIs4/OPDWWkKyb2XxbluT0of0lgcTCRL4eqPTtTKPam3FNS3iwNmODDd/Y8myFzo4PXOtB1AxGcRWLGsInf50X2e8rchbATLtqfJXN+iFTLpn7EmVFqUwO359DxVxlI90iaL3fVyd5unaF4Gw=
+	t=1757472318; cv=none; b=UNyHSpiGTNLEyBTn0ANSBabcRrxqve5OFB/1ICL24rzWdfW7Ide/buOU7O2Nt6NFz94yESsTJcEV48hjcYuXWZtcyvFYrbihXAiOpb7fBb7ePXbQci4iWAQWXptVAYlzZKhEyd1U4O9MlsPpStTGaHwwOirdI76OPCnpJmsGQ5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757472307; c=relaxed/simple;
-	bh=7WtIa9KFVwVNuShVf+3LlNgoO4bhXrXBaqav+cjNWzc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=orshDYjP7P1M5O74d/R2BqWIzmHYyUb4o+Vw7UuBOrlTaLjHKtDcz1ewy6hxBxQIsznHRg50unO/Q0g65mamEPc/JVHANW3qmZlyj+XSnjK6UQDubw1sUBLVZlT+TaJwv1JN7xNpQfQBpf9PJ+d38IJE0FxpK+WKFjQsqD2cjLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ncV5+nvU; arc=none smtp.client-ip=209.85.215.173
+	s=arc-20240116; t=1757472318; c=relaxed/simple;
+	bh=pcFc2gUtQLDm00dLqUkZ8NCKAJRxcGiurxms4qqEw7c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=iA7lUv17yiOpgAuHXL8BQwJUXbwW65thhMEajxolA8JcscUISqM23GhO+zrUIMT7Ugw20+ZcMGbfHz/j3qlJf7ujQMkHB0bxJA2u24tFjsZf3Z69czKsMnTouwdYdZnAkeVP1UvDya3OhjB/XV0SShdnUnTtPVEBMtsOwPaZQWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EjZ/zjBJ; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b5488c409d1so581379a12.1;
-        Tue, 09 Sep 2025 19:45:05 -0700 (PDT)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-32b7d165dc6so5694540a91.3;
+        Tue, 09 Sep 2025 19:45:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757472305; x=1758077105; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ECymoV0afChIph3b2IQOw2gRJYGDzpM8kCcLRfRhoGM=;
-        b=ncV5+nvUhkoDRRH5kBE83RLl+tFvsJdBXJinaUMF4oS0orosWLkMcbTk6fDEmYEBiU
-         xCCQhP3FA/hTSdKnTyGjo+agI2Xoy2hPtimNMnpuC1/IbDlFhXuXaQmOtOU8eZMhD/pd
-         qGqcf1B5B6wqPECq1Et0btyLnLS0j+7XNe5pRtrQDP8ltlj2wwN48HPOiatkpYZPJah5
-         pyNHfjcWY8s5fZ36yCjgxzarthQWFf78C9XSv4sWpL4i5Cc9xg1V++s8Bx/vIdng3A5d
-         e4yG8Vb9n66lhUavZcJXIkJJXG53mNnd5z3lCZuFGNZaP6hgzDYZ/nECflQeFbs6kLxr
-         kZYw==
+        d=gmail.com; s=20230601; t=1757472315; x=1758077115; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WhCL43VUSjorkOuOskO9Is7n7PplBlIp0Kbwah6VXOE=;
+        b=EjZ/zjBJLFZVhGiVHg9P9O6vEBPpUGrwUd0EtvSWkhB5VAuWKO87BJO0CHfT9u0oqm
+         +Nv4SI+qPP8ipCXzFUYmDLfpVz21CzB1cgHZDEcHwpZ6vL9F+407cyIjTZfhdSV3LNOO
+         GZDQfOrTzegb9g6s1kQIacSNPKYWa/ojJN0mXfHIdI6bd1jltnnuH2JrMmIs/4vZQAOU
+         EPp4dgaMqlHFMNupW8Qx0BNLiVnMxSohYjsmCiyo1v/iuaAEI4YQvAbj/xV2HpEU4s+S
+         Ab3wB9JTn+Hhg1auSkcGfkN/1AchmUTOPK3W9H9ycNEr5LqtWENoCN3x66wJW2TXL5wo
+         mtxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757472305; x=1758077105;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ECymoV0afChIph3b2IQOw2gRJYGDzpM8kCcLRfRhoGM=;
-        b=Ssn16z1D/1+RZyaIjKncaIQFc8ZwGHbaZUEG/YyyEiX3dpLNgaXSyCi41cITitViFA
-         vh5WLpkWkWNs2E04HycDWjNU+Fu/eNqNlmfoBh36WJ1dSxy+78TiqW3WByCgr3Ec4Gu1
-         neDGN9fRIHQRyJjBQ0RVbKFvQA4m8aMJBn0dvi1/QQdmmUrXqcRCCch1+zC0fqWu/jVB
-         ntNUNjX8kKgqtOTw8KolsOYLZq91H90E8Dz/ONJFgfBDbzkqCKuH/HhovykUC2GGKaV7
-         dHatu7AZtrHWuWdcggln4ZZw6mYUm/CEcIA6niguji9wtSbOVg9Xuv3+TVteRaXytZpr
-         7U9A==
-X-Forwarded-Encrypted: i=1; AJvYcCVDkY9eE5ec6rTbGaKx74LPiWNf/fq175vjM4kQ+jXhiZLx5+rXP4iySHEP+Aleutn9dVD7CIO62LM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9NsgUVCmFAH4tIjw3f9tzaF7r3+nUqjEkUs7viDilzz2NhiSS
-	mNSmZ+cuVWsDL2y2eAb3/T+pkd0TdAqiO6q5BpAzNaoEi5W89hF2eRFs
-X-Gm-Gg: ASbGncuBeR9Arl4nP4NWgOlvoRwTAZ1WoYlFhlnmGwuAnxgQOb1dP3Gm13gwjlfOhvK
-	ImJUV4uuRV5hZgcDR/BKRq9+CovmMUoOXTHIMN77o4XqwKOo8frhV9+FNOaN1cA2I+j/qGFPySG
-	reeB3o84+byr0OZQELEGPvblvwseCIUbPSXtoK9qfTbh7Oj2KbiX18/PMN+EG55+aJqWLUFd+Ag
-	kN+J+eYJz6rh8Wzs7qjQPglSaIfrP1w1bKbKClCisMXz/GbYBdthJSdLCoQ95OJmzF1tP5Bk3wk
-	0u2yrOnuIUywmLpRFGnYkDNQpislnum19i8XHMRpWWJ2WWkYESAKiGsFEe14QXJJ/ID/N167gnR
-	OBDDXHJMVowOghswq5WgahR/IC9w0bhTGagJk2cAb7Pd5KrRZePXn4/URqNFSQSPaTgflhPEhJ/
-	g4k5aIK1l7yezjYQ==
-X-Google-Smtp-Source: AGHT+IGVVMHoxwQuixztdbo1+fcy9gAa8fVWkaDB65TP0G/V80AaCegKULeF4WMABeBE44UXwnfeTg==
-X-Received: by 2002:a17:902:e802:b0:24b:1625:5fa5 with SMTP id d9443c01a7336-2516d33edd9mr221042545ad.11.1757472304575;
-        Tue, 09 Sep 2025 19:45:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757472315; x=1758077115;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WhCL43VUSjorkOuOskO9Is7n7PplBlIp0Kbwah6VXOE=;
+        b=XGVQWWFLsf1ews3Mr+XVguwG8igVcV8uoZ9YbxlJPU3mYPw6T18SJepthGY+cQYHFo
+         KtLa7T6EQiKgmLnGOW/HZKgcK/zk+8hzOJrxJcn9C8lDF+2emV1UEFaGZgnwoqS2uB9p
+         I6sM3VLWfHmM5emkp9m/sNeoteIh55HmAK1U/yNfZkzVXPQY4tnCTc054wyNQdvcHYpM
+         AC5eRY92IhdVC4jEKR/0toq0ng4LhKrGhOxFGSqVcsPCUIcAOG2twbUjZolrQmP2rkED
+         1snQgpdQidhtqWgG9aQJYa3Z9MV9CdfwFskk/UkICVIIWi4+TwJXM1T5wNfx5nP7RNJR
+         hdOw==
+X-Forwarded-Encrypted: i=1; AJvYcCVjApdhAE/Ay72ZOMf/mnSXZgbapfxWMRs+4+nE14d8r4uo9G7yFUDRraChyxOyv2dFRSXsOGk+V0Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxeNkFcgKPr2wtW5yEuNSjjlNJ3QQYkMunfnX9MchlI6GYYd0II
+	WBbhEmsUuFeJ2Hc7MahpGNCcgLTTlqKRBZgvtTu0KdrhbvpecdVgrKza
+X-Gm-Gg: ASbGncsdhfbBdF4Tqn4cHgWZ3mWva2w3N7hvBlEisRqfcX1aMGNmxSZvsjFp3LWwinK
+	fZz9t2IHtpoFoEMDUej34u8Suw7zf1bb2wt0Ed7Jals73vNdkRKIiNtbpRyfF/YWuB1/mQ8Arsw
+	zodwatcq1Te4UTxKHAHIw/Yc8U3X8nVhwqZH3Lfv3PVgujfgQ/EWE7YUyUCppCnJjLxFFgUHzHJ
+	BuRaBqFNia3Mayg8XoSkFg+wTdCtZyYw4JzWE6dPUUGcQlW3lfbnNkGmJSPT/O2qtmsTbT22Q9s
+	YRL8nnEo8t7VX+wATLmRcHc8dmnYtU9EzVi+2bZHeHcDjD+xQbtWTe2tA8JEKc8qOG16MYRguXu
+	PzehnEvbj7R0DzuCky7Sy+kOWkQRPZkYPmCgUiqpxWudF3dcPuom34NjghJn9i/R3Z2IQawSAN7
+	OYIqc=
+X-Google-Smtp-Source: AGHT+IHVMJs3gjlx25QtzwLeozXSFxDxX3vomXFV/6WkSK5g41a+qiePUUHhw5pn9woB4S9xqmZy2A==
+X-Received: by 2002:a17:90b:350b:b0:32b:9d3c:13c4 with SMTP id 98e67ed59e1d1-32d43f8ea76mr19311149a91.24.1757472314798;
+        Tue, 09 Sep 2025 19:45:14 -0700 (PDT)
 Received: from localhost.localdomain ([101.82.183.17])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dbb314bcesm635831a91.12.2025.09.09.19.44.54
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dbb314bcesm635831a91.12.2025.09.09.19.45.05
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 09 Sep 2025 19:45:03 -0700 (PDT)
+        Tue, 09 Sep 2025 19:45:14 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: akpm@linux-foundation.org,
 	david@redhat.com,
@@ -97,313 +99,137 @@ To: akpm@linux-foundation.org,
 Cc: bpf@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-doc@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v7 mm-new 0/9] mm, bpf: BPF based THP order selection
-Date: Wed, 10 Sep 2025 10:44:37 +0800
-Message-Id: <20250910024447.64788-1-laoar.shao@gmail.com>
+	Yafang Shao <laoar.shao@gmail.com>,
+	Lance Yang <ioworker0@gmail.com>
+Subject: [PATCH v7 mm-new 01/10] mm: thp: remove disabled task from khugepaged_mm_slot
+Date: Wed, 10 Sep 2025 10:44:38 +0800
+Message-Id: <20250910024447.64788-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+In-Reply-To: <20250910024447.64788-1-laoar.shao@gmail.com>
+References: <20250910024447.64788-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Background
-==========
+Since a task with MMF_DISABLE_THP_COMPLETELY cannot use THP, remove it from
+the khugepaged_mm_slot to stop khugepaged from processing it.
 
-Our production servers consistently configure THP to "never" due to
-historical incidents caused by its behavior. Key issues include:
-- Increased Memory Consumption
-  THP significantly raises overall memory usage, reducing available memory
-  for workloads.
+After this change, the following semantic relationship always holds:
 
-- Latency Spikes
-  Random latency spikes occur due to frequent memory compaction triggered
-  by THP.
+  MMF_VM_HUGEPAGE is set     == task is in khugepaged mm_slot
+  MMF_VM_HUGEPAGE is not set == task is not in khugepaged mm_slot
 
-- Lack of Fine-Grained Control
-  THP tuning is globally configured, making it unsuitable for containerized
-  environments. When multiple workloads share a host, enabling THP without
-  per-workload control leads to unpredictable behavior.
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Lance Yang <ioworker0@gmail.com>
+---
+ include/linux/khugepaged.h |  1 +
+ kernel/sys.c               |  6 ++++++
+ mm/khugepaged.c            | 19 +++++++++----------
+ 3 files changed, 16 insertions(+), 10 deletions(-)
 
-Due to these issues, administrators avoid switching to madvise or always
-modes—unless per-workload THP control is implemented.
-
-To address this, we propose BPF-based THP policy for flexible adjustment.
-Additionally, as David mentioned, this mechanism can also serve as a
-policy prototyping tool (test policies via BPF before upstreaming them).
-
-Proposed Solution
-=================
-
-This patch introduces a new BPF struct_ops called bpf_thp_ops for dynamic
-THP tuning. It includes a hook thp_get_order(), allowing BPF programs to
-influence THP order selection based on factors such as:
-
-- Workload identity
-  For example, workloads running in specific containers or cgroups.
-- Allocation context
-  Whether the allocation occurs during a page fault, khugepaged, swap or
-  other paths.
-- VMA's memory advice settings
-  MADV_HUGEPAGE or MADV_NOHUGEPAGE
-- Memory pressure
-  PSI system data or associated cgroup PSI metrics
-
-The new interface for the BPF program is as follows:
-
-/**
- * @thp_get_order: Get the suggested THP orders from a BPF program for allocation
- * @vma: vm_area_struct associated with the THP allocation
- * @vma_type: The VMA type, such as BPF_THP_VM_HUGEPAGE if VM_HUGEPAGE is set
- *            BPF_THP_VM_NOHUGEPAGE if VM_NOHUGEPAGE is set, or BPF_THP_VM_NONE
- *            if neither is set.
- * @tva_type: TVA type for current @vma
- * @orders: Bitmask of requested THP orders for this allocation
- *          - PMD-mapped allocation if PMD_ORDER is set
- *          - mTHP allocation otherwise
- *
- * Return: The suggested THP order from the BPF program for allocation. It will
- *         not exceed the highest requested order in @orders. Return -1 to
- *         indicate that the original requested @orders should remain unchanged.
- */
-
-int thp_get_order(struct vm_area_struct *vma,
-                  enum bpf_thp_vma_type vma_type,
-                  enum tva_type tva_type,
-                  unsigned long orders);
-
-Only a single BPF program can be attached at any given time, though it can
-be dynamically updated to adjust the policy. The implementation supports
-anonymous THP, shmem THP, and mTHP, with future extensions planned for
-file-backed THP.
-
-This functionality is only active when system-wide THP is configured to
-madvise or always mode. It remains disabled in never mode. Additionally,
-if THP is explicitly disabled for a specific task via prctl(), this BPF
-functionality will also be unavailable for that task
-
-**WARNING**
-- This feature requires CONFIG_BPF_GET_THP_ORDER (marked EXPERIMENTAL) to
-  be enabled.
-- The interface may change
-- Behavior may differ in future kernel versions
-- We might remove it in the future
-
-Selftests
-=========
-
-BPF CI 
-------
-
-Patch #7: Implements a basic BPF THP policy that restricts THP allocation
-          via khugepaged to tasks within a specified memory cgroup.
-Patch #8: Provides tests for dynamic BPF program updates and replacement.
-Patch #9: Includes negative tests for invalid BPF helper usage, verifying
-          proper verification by the BPF verifier.
-
-Currently, several dependency patches reside in mm-new but haven't been
-merged into bpf-next. To enable BPF CI testing, these dependencies were
-manually applied to bpf-next. All selftests in this series pass 
-successfully [0].
-
-Performance Evaluation
-----------------------
-
-Performance impact was measured given the page fault handler modifications.
-The standard `perf bench mem memset` benchmark was employed to assess page
-fault performance.
-
-Testing was conducted on an AMD EPYC 7W83 64-Core Processor (single NUMA
-node). Due to variance between individual test runs, a script executed
-10000 iterations to calculate meaningful averages.
-
-- Baseline (without this patch series)
-- With patch series but no BPF program attached
-- With patch series and BPF program attached
-
-The results across three configurations show negligible performance impact:
-
-  Number of runs: 10,000
-  Average throughput: 40-41 GB/sec
-
-Production verification
------------------------
-
-We have successfully deployed a variant of this approach across numerous
-Kubernetes production servers. The implementation enables THP for specific
-workloads (such as applications utilizing ZGC [1]) while disabling it for
-others. This selective deployment has operated flawlessly, with no
-regression reports to date.
-
-For ZGC-based applications, our verification demonstrates that shmem THP
-delivers significant improvements:
-- Reduced CPU utilization
-- Lower average latencies
-
-We are continuously extending its support to more workloads, such as
-TCMalloc-based services. [2]
-
-Deployment Steps in our production servers are as follows,
-
-1. Initial Setup:
-- Set THP mode to "never" (disabling THP by default).
-- Attach the BPF program and pin the BPF maps and links.
-- Pinning ensures persistence (like a kernel module), preventing
-disruption under system pressure.
-- A THP whitelist map tracks allowed cgroups (initially empty -> no THP
-allocations).
-
-2. Enable THP Control:
-- Switch THP mode to "always" or "madvise" (BPF now governs actual allocations).
-
-3. Dynamic Management:
-- To permit THP for a cgroup, add its ID to the whitelist map.
-- To revoke permission, remove the cgroup ID from the map.
-- The BPF program can be updated live (policy adjustments require no
-task interruption).
-
-4. To roll back, disable THP and remove this BPF program. 
-
-**WARNING**
-Be aware that the maintainers do not suggest this use case, as the BPF hook
-interface is unstable and might be removed from the upstream kernel—unless
-you have your own kernel team to maintain it ;-)
-
-Future work
-===========
-
-file-backed THP policy
-----------------------
-
-Based on our validation with production workloads, we observed mixed
-results with XFS large folios (also known as file-backed THP):
-
-- Performance Benefits
-  Some workloads demonstrated significant improvements with XFS large
-  folios enabled
-- Performance Regression
-  Some workloads experienced degradation when using XFS large folios
-
-These results demonstrate that File THP, similar to anonymous THP, requires
-a more granular approach instead of a uniform implementation.
-
-We will extend the BPF-based order selection mechanism to support
-file-backed THP allocation policies.
-
-Hooking fork() with BPF for Task Configuration
-----------------------------------------------
-
-The current method for controlling a newly fork()-ed task involves calling
-prctl() (e.g., with PR_SET_THP_DISABLE) to set flags in its mm->flags. This
-requires explicit userspace modification.
-
-A more efficient alternative is to implement a new BPF hook within the
-fork() path. This hook would allow a BPF program to set the task's
-mm->flags directly after mm initialization, leveraging BPF helpers for a
-solution that is transparent to userspace. This is particularly valuable in
-data center environments for fleet-wide management. 
-
-Link: https://github.com/kernel-patches/bpf/pull/9706 [0] 
-Link: https://wiki.openjdk.org/display/zgc/Main#Main-EnablingTr... [1]
-Link: https://google.github.io/tcmalloc/tuning.html#system-level-optimizations [2]
-
-Changes:
-=======:
-
-v6->v7:
-Key Changes Implemented Based on Feedback:
-From Lorenzo:
-  - Rename the hook from get_suggested_order() to bpf_hook_get_thp_order(). 
-  - Rename bpf_thp.c to huge_memory_bpf.c
-  - Focuse the current patchset on THP order selection
-  - Add the BPF hook into thp_vma_allowable_orders()
-  - Make the hook VMA-based and remove the mm parameter
-  - Modify the BPF program to return a single order
-  - Stop passing vma_flags directly to BPF programs
-  - Mark vma->vm_mm as trusted_or_null
-  - Change the MAINTAINER file
-From Andrii:
-  - Mark mm->owner as rcu_or_null to avoid introducing new helpers
-From Barry:
-  - decouple swap from the normal page fault path
-kernel test robot:
-  - Fix a sparse warning
-Shakeel helped clarify the implementation.
-
-RFC v5-> v6: https://lwn.net/Articles/1035116/
-- Code improvement around the RCU usage (Usama)
-- Add selftests for khugepaged fork (Usama)
-- Add performance data for page fault (Usama)
-- Remove the RFC tag
-
-RFC v4->v5: https://lwn.net/Articles/1034265/
-- Add support for vma (David)
-- Add mTHP support in khugepaged (Zi)
-- Use bitmask of all allowed orders instead (Zi)
-- Retrieve the page size and PMD order rather than hardcoding them (Zi)
-
-RFC v3->v4: https://lwn.net/Articles/1031829/
-- Use a new interface get_suggested_order() (David)
-- Mark it as experimental (David, Lorenzo)
-- Code improvement in THP (Usama)
-- Code improvement in BPF struct ops (Amery)
-
-RFC v2->v3: https://lwn.net/Articles/1024545/
-- Finer-graind tuning based on madvise or always mode (David, Lorenzo)
-- Use BPF to write more advanced policies logic (David, Lorenzo)
-
-RFC v1->v2: https://lwn.net/Articles/1021783/
-The main changes are as follows,
-- Use struct_ops instead of fmod_ret (Alexei)
-- Introduce a new THP mode (Johannes)
-- Introduce new helpers for BPF hook (Zi)
-- Refine the commit log
-
-RFC v1: https://lwn.net/Articles/1019290/
-
-Yafang Shao (10):
-  mm: thp: remove disabled task from khugepaged_mm_slot
-  mm: thp: add support for BPF based THP order selection
-  mm: thp: decouple THP allocation between swap and page fault paths
-  mm: thp: enable THP allocation exclusively through khugepaged
-  bpf: mark mm->owner as __safe_rcu_or_null
-  bpf: mark vma->vm_mm as __safe_trusted_or_null
-  selftests/bpf: add a simple BPF based THP policy
-  selftests/bpf: add test case to update THP policy
-  selftests/bpf: add test cases for invalid thp_adjust usage
-  Documentation: add BPF-based THP policy management
-
- Documentation/admin-guide/mm/transhuge.rst    |  46 +++
- MAINTAINERS                                   |   3 +
- include/linux/huge_mm.h                       |  29 +-
- include/linux/khugepaged.h                    |   1 +
- kernel/bpf/verifier.c                         |   8 +
- kernel/sys.c                                  |   6 +
- mm/Kconfig                                    |  12 +
- mm/Makefile                                   |   1 +
- mm/huge_memory.c                              |   3 +-
- mm/huge_memory_bpf.c                          | 243 +++++++++++++++
- mm/khugepaged.c                               |  19 +-
- mm/memory.c                                   |  15 +-
- tools/testing/selftests/bpf/config            |   3 +
- .../selftests/bpf/prog_tests/thp_adjust.c     | 284 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/lsm.c       |   8 +-
- .../selftests/bpf/progs/test_thp_adjust.c     | 114 +++++++
- .../bpf/progs/test_thp_adjust_sleepable.c     |  22 ++
- .../bpf/progs/test_thp_adjust_trusted_owner.c |  30 ++
- .../bpf/progs/test_thp_adjust_trusted_vma.c   |  27 ++
- 19 files changed, 849 insertions(+), 25 deletions(-)
- create mode 100644 mm/huge_memory_bpf.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_sleepable.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_trusted_owner.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_trusted_vma.c
-
+diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
+index eb1946a70cff..6cb9107f1006 100644
+--- a/include/linux/khugepaged.h
++++ b/include/linux/khugepaged.h
+@@ -19,6 +19,7 @@ extern void khugepaged_min_free_kbytes_update(void);
+ extern bool current_is_khugepaged(void);
+ extern int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
+ 				   bool install_pmd);
++bool hugepage_pmd_enabled(void);
+ 
+ static inline void khugepaged_fork(struct mm_struct *mm, struct mm_struct *oldmm)
+ {
+diff --git a/kernel/sys.c b/kernel/sys.c
+index a46d9b75880b..a1c1e8007f2d 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -8,6 +8,7 @@
+ #include <linux/export.h>
+ #include <linux/mm.h>
+ #include <linux/mm_inline.h>
++#include <linux/khugepaged.h>
+ #include <linux/utsname.h>
+ #include <linux/mman.h>
+ #include <linux/reboot.h>
+@@ -2493,6 +2494,11 @@ static int prctl_set_thp_disable(bool thp_disable, unsigned long flags,
+ 		mm_flags_clear(MMF_DISABLE_THP_COMPLETELY, mm);
+ 		mm_flags_clear(MMF_DISABLE_THP_EXCEPT_ADVISED, mm);
+ 	}
++
++	if (!mm_flags_test(MMF_DISABLE_THP_COMPLETELY, mm) &&
++	    !mm_flags_test(MMF_VM_HUGEPAGE, mm) &&
++	    hugepage_pmd_enabled())
++		__khugepaged_enter(mm);
+ 	mmap_write_unlock(current->mm);
+ 	return 0;
+ }
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 4ec324a4c1fe..88ac482fb3a0 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -413,7 +413,7 @@ static inline int hpage_collapse_test_exit_or_disable(struct mm_struct *mm)
+ 		mm_flags_test(MMF_DISABLE_THP_COMPLETELY, mm);
+ }
+ 
+-static bool hugepage_pmd_enabled(void)
++bool hugepage_pmd_enabled(void)
+ {
+ 	/*
+ 	 * We cover the anon, shmem and the file-backed case here; file-backed
+@@ -445,6 +445,7 @@ void __khugepaged_enter(struct mm_struct *mm)
+ 
+ 	/* __khugepaged_exit() must not run from under us */
+ 	VM_BUG_ON_MM(hpage_collapse_test_exit(mm), mm);
++	WARN_ON_ONCE(mm_flags_test(MMF_DISABLE_THP_COMPLETELY, mm));
+ 	if (unlikely(mm_flags_test_and_set(MMF_VM_HUGEPAGE, mm)))
+ 		return;
+ 
+@@ -472,7 +473,8 @@ void __khugepaged_enter(struct mm_struct *mm)
+ void khugepaged_enter_vma(struct vm_area_struct *vma,
+ 			  vm_flags_t vm_flags)
+ {
+-	if (!mm_flags_test(MMF_VM_HUGEPAGE, vma->vm_mm) &&
++	if (!mm_flags_test(MMF_DISABLE_THP_COMPLETELY, vma->vm_mm) &&
++	    !mm_flags_test(MMF_VM_HUGEPAGE, vma->vm_mm) &&
+ 	    hugepage_pmd_enabled()) {
+ 		if (thp_vma_allowable_order(vma, vm_flags, TVA_KHUGEPAGED, PMD_ORDER))
+ 			__khugepaged_enter(vma->vm_mm);
+@@ -1451,16 +1453,13 @@ static void collect_mm_slot(struct khugepaged_mm_slot *mm_slot)
+ 
+ 	lockdep_assert_held(&khugepaged_mm_lock);
+ 
+-	if (hpage_collapse_test_exit(mm)) {
++	if (hpage_collapse_test_exit_or_disable(mm)) {
+ 		/* free mm_slot */
+ 		hash_del(&slot->hash);
+ 		list_del(&slot->mm_node);
+ 
+-		/*
+-		 * Not strictly needed because the mm exited already.
+-		 *
+-		 * mm_flags_clear(MMF_VM_HUGEPAGE, mm);
+-		 */
++		/* If the mm is disabled, this flag must be cleared. */
++		mm_flags_clear(MMF_VM_HUGEPAGE, mm);
+ 
+ 		/* khugepaged_mm_lock actually not necessary for the below */
+ 		mm_slot_free(mm_slot_cache, mm_slot);
+@@ -2507,9 +2506,9 @@ static unsigned int khugepaged_scan_mm_slot(unsigned int pages, int *result,
+ 	VM_BUG_ON(khugepaged_scan.mm_slot != mm_slot);
+ 	/*
+ 	 * Release the current mm_slot if this mm is about to die, or
+-	 * if we scanned all vmas of this mm.
++	 * if we scanned all vmas of this mm, or if this mm is disabled.
+ 	 */
+-	if (hpage_collapse_test_exit(mm) || !vma) {
++	if (hpage_collapse_test_exit_or_disable(mm) || !vma) {
+ 		/*
+ 		 * Make sure that if mm_users is reaching zero while
+ 		 * khugepaged runs here, khugepaged_exit will find
 -- 
 2.47.3
 
