@@ -1,797 +1,410 @@
-Return-Path: <bpf+bounces-67971-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67972-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70196B50BAC
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 04:49:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B6A9B50BB6
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 04:49:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EACED4E77CD
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 02:48:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AD855E769B
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 02:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FD429B20A;
-	Wed, 10 Sep 2025 02:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC902580D1;
+	Wed, 10 Sep 2025 02:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GnGKh6Pc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ncV5+nvU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA44298CB7;
-	Wed, 10 Sep 2025 02:44:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909762517B9;
+	Wed, 10 Sep 2025 02:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757472256; cv=none; b=LhN3NfHNLUQ6OGbCa/NpVuC4Nsefz5DMVXfCAVZ2aaKVxZT5K2l9oYyrlF4u+di7//D7XqgZX1w2O4qYVlHRT8p5xVWRxdg59cVNbl1FJVuUch9BwXZGl4fUQVv+yy3f0qViEk5NnAjLw8FfFJ7+Duj1RTLp57gPQ4INu4Oy/2Q=
+	t=1757472307; cv=none; b=MMa99Oxrgy1gkEQtGL1Q/2gduBaIs4/OPDWWkKyb2XxbluT0of0lgcTCRL4eqPTtTKPam3FNS3iwNmODDd/Y8myFzo4PXOtB1AxGcRWLGsInf50X2e8rchbATLtqfJXN+iFTLpn7EmVFqUwO359DxVxlI90iaL3fVyd5unaF4Gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757472256; c=relaxed/simple;
-	bh=MXABwK0i0SCp2hQDcOsmX0P1tGCerPOJp0g33o7MdJc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bq6e6O3jH1giXLbYphIctLPs8k4ogHFpyuJCS0Wsj0rUf4Votvo406TsHodL9D0tDjrMThSUTyfZR7hEJnBuhdxJGqHlc+d+V0th1E9X1CVtQGhVZSuxelpHdROwtPBP3qDAWAf+9avYZ8Hy9uOrByhXGwy62WGvINOrKDjqaNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GnGKh6Pc; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1757472307; c=relaxed/simple;
+	bh=7WtIa9KFVwVNuShVf+3LlNgoO4bhXrXBaqav+cjNWzc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=orshDYjP7P1M5O74d/R2BqWIzmHYyUb4o+Vw7UuBOrlTaLjHKtDcz1ewy6hxBxQIsznHRg50unO/Q0g65mamEPc/JVHANW3qmZlyj+XSnjK6UQDubw1sUBLVZlT+TaJwv1JN7xNpQfQBpf9PJ+d38IJE0FxpK+WKFjQsqD2cjLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ncV5+nvU; arc=none smtp.client-ip=209.85.215.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7725de6b57dso7269321b3a.0;
-        Tue, 09 Sep 2025 19:44:11 -0700 (PDT)
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b5488c409d1so581379a12.1;
+        Tue, 09 Sep 2025 19:45:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757472251; x=1758077051; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dgdemV9KYgQVQ+LAF8Hf9jr2yRR4WgfpLkTtMfHQpEY=;
-        b=GnGKh6PcANrvlTyaOM9akT60RB18CS1zKKdBz2HumU+NTN8iYE854k5afNDP3ih0xD
-         f7iIJfEj1Ycfl+vcpJMBLVPSJF8xPBe+mfauenjIJLfJdV7xqk/u/hPCBWJfYn1S1LcQ
-         BKoaf7LxFTtdfzN91CTLyCUnwmzWArtAEzwUqhnxwDrsxrbQXQgrgGT2kur4Lylny8Mc
-         ipoD6NGfU+LJZyBp3sdQUmSokWzEhBAD11Tc6dwqYUNj38ED6XeQFzyqQo2Um8CyE+61
-         TFDDiu8MbBK+DzPUw6G5Lbe/dPj5khNav0L1cDuGDT7WdteqAX6Kr/CV0IWhCzOVz9tm
-         /CkA==
+        d=gmail.com; s=20230601; t=1757472305; x=1758077105; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ECymoV0afChIph3b2IQOw2gRJYGDzpM8kCcLRfRhoGM=;
+        b=ncV5+nvUhkoDRRH5kBE83RLl+tFvsJdBXJinaUMF4oS0orosWLkMcbTk6fDEmYEBiU
+         xCCQhP3FA/hTSdKnTyGjo+agI2Xoy2hPtimNMnpuC1/IbDlFhXuXaQmOtOU8eZMhD/pd
+         qGqcf1B5B6wqPECq1Et0btyLnLS0j+7XNe5pRtrQDP8ltlj2wwN48HPOiatkpYZPJah5
+         pyNHfjcWY8s5fZ36yCjgxzarthQWFf78C9XSv4sWpL4i5Cc9xg1V++s8Bx/vIdng3A5d
+         e4yG8Vb9n66lhUavZcJXIkJJXG53mNnd5z3lCZuFGNZaP6hgzDYZ/nECflQeFbs6kLxr
+         kZYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757472251; x=1758077051;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dgdemV9KYgQVQ+LAF8Hf9jr2yRR4WgfpLkTtMfHQpEY=;
-        b=Sm0eqMgLksLnUxqGfRWH/D2U+NsEbrQyLBw5se9hrONG4FlO6C8q1IKMUx6n2u8I1X
-         OdFfL2Rh461kipJCpRQWcjCloMo6PZop56bMP8yHm3CSZDk4UvUCSyoLxZ4ATRFXRG1c
-         whSPfAeW6Tj8KWRqbbXRziQrteYYi+WU1yrdDE+Pu8+1iLbC4jJDqtD8TNUZtiirVmVb
-         hNKqxKYONL2fuEXQrPsV68OBmOUT9Yq5cUoV6n8/XBHo0m09VCXGozyeMjeFHNgZaLdp
-         UfY/G3OZuf++Bq6pJnJStnO5mfWfFD5bu3P/3kU01tJrwPgrYCr7AU3qJhOuhVcXjxmY
-         BRNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUtNSm0DVx5TQdpoP9+VNAbbqQIX9xYbSAq8dGmBo6qZww2nM0DiQUYAz1ozVG6keql5nwEtspUFY/hiHg=@vger.kernel.org, AJvYcCUtdsnw9FVd0QSMwZr2eGYdLuJ1obpRKAKY4D8iGPOYP7H4PZ9vsODkMF2idP2MRcNgXH8RGZsM8V+ZLw==@vger.kernel.org, AJvYcCUu32syl6xKEYcenlRCYl7kUoTVC910+gDKu82CQ4h2Isdnl3HlWc6zdtsf5x+oDNwWfm7zVkWI5U5m@vger.kernel.org, AJvYcCVudV87hmU6+WGpAy299fXfsFbI5r/Pb5DNZNPe+/kNa6ko62bI+9FJ6kcVM2fzLAZ5oTDYZ31xbno=@vger.kernel.org, AJvYcCX+xVNs7eJOkuWT6fLbHg9Plo5Wr6hJAqTQxU7t6iqVxaCZahIypH76p/k0cdCDnjE4lXn32lHDk6eGcJpk@vger.kernel.org, AJvYcCX8TICgp0kYLEkIicF1ClM6qfxQCjnADIOYXZKuZtCqPTppK8BDb816Wfm5yF8ylPsEfJ3rREGhbWqZ@vger.kernel.org, AJvYcCXSdo0Wdciv80TmwB2PO5BQkshbiqfTyxcf5KeQnJ9CZNrpS4bu0GeCj/pc1cbr5dpR9ZfPt4Lv@vger.kernel.org, AJvYcCXTnIv2IGh2MyNW6DD4hGSN0NfLlgCsvcpzbCk4GqlJICvJUdM12O73ArbKq701N5uOf4k=@vger.kernel.org, AJvYcCXoHID4dpIOPRC+V+F0gjwj3l6FpTf8FAj+hI6IUf4pfk9UMtJ/aCCJ5N8dgfjz9kHZv4mND604OQBdHQI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YznCE/TEnZtMs6oqvf60s8GEUg31VsB4JQQK7jrlsQszEl8yiUc
-	YDu3jDqng6bxbbc5xsD0lutGcZ8QXnYHxjrU26L53qy8Z6TwnI93spDR
-X-Gm-Gg: ASbGncu4bUAgv0mZ4v3FXqzVxeo+WV8yh2KIu+tTNEaltnXy3BFpF1PV2mT8HDyCHgZ
-	GqU44GuRs6gJLSqOd5BB6N6DVwNzpl7QHt7Z0Dzxdk8CIG43Iwqj8Q81L7zxk6LwnFlIf5kXFEU
-	/ewQkwigalRAIYC8LFDpwKyJyWqAvMI4w3gN0M6PzPUvmocxOmycvpyVIGiJxbyR61dpCLFmoXO
-	1JbF+kaWFz+RrM6PyASor72/h2bZaVvkkNX4bEH86txtgpnpRF3rpLe9Fqr3lQN9ninRj48QS2+
-	T5JUXkW1YK8GdSNY8Fl30dhK5PT/gM6lKapapEwwlvTgsBN2rqf1184DheF2fe6XApIyQ68SQgA
-	RsUhhwvXe04Zf4pWxhL1R0L4IYg==
-X-Google-Smtp-Source: AGHT+IH5CpmOeMZST4hHHyRGqFzL6C/Mu38vAk4mOqjEouYqk2tCEvsj6RsoOVbJEKBP/4bQCgHfYQ==
-X-Received: by 2002:a05:6a20:1585:b0:24b:954e:388a with SMTP id adf61e73a8af0-2534557a4eemr19004415637.39.1757472250651;
-        Tue, 09 Sep 2025 19:44:10 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dbb47113esm638776a91.24.2025.09.09.19.44.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Sep 2025 19:44:08 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 2E07E41BDD49; Wed, 10 Sep 2025 09:43:53 +0700 (WIB)
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux DAMON <damon@lists.linux.dev>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Linux Power Management <linux-pm@vger.kernel.org>,
-	Linux Block Devices <linux-block@vger.kernel.org>,
-	Linux BPF <bpf@vger.kernel.org>,
-	Linux Kernel Workflows <workflows@vger.kernel.org>,
-	Linux KASAN <kasan-dev@googlegroups.com>,
-	Linux Devicetree <devicetree@vger.kernel.org>,
-	Linux fsverity <fsverity@lists.linux.dev>,
-	Linux MTD <linux-mtd@lists.infradead.org>,
-	Linux DRI Development <dri-devel@lists.freedesktop.org>,
-	Linux Kernel Build System <linux-kbuild@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux Sound <linux-sound@vger.kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	SeongJae Park <sj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Huang Rui <ray.huang@amd.com>,
-	"Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Perry Yuan <perry.yuan@amd.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Joe Perches <joe@perches.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Eric Biggers <ebiggers@kernel.org>,
-	tytso@mit.edu,
-	Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas.schier@linux.dev>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Waiman Long <longman@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Shay Agroskin <shayagr@amazon.com>,
-	Arthur Kiyanovski <akiyano@amazon.com>,
-	David Arinzon <darinzon@amazon.com>,
-	Saeed Bishara <saeedb@amazon.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Alexandru Ciobotaru <alcioa@amazon.com>,
-	The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Bagas Sanjaya <bagasdotme@gmail.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Ranganath V N <vnranganath.20@gmail.com>,
-	Steve French <stfrench@microsoft.com>,
-	Meetakshi Setiya <msetiya@microsoft.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-	Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH v2 13/13] Documentation: checkpatch: Convert kernel docs references
-Date: Wed, 10 Sep 2025 09:43:28 +0700
-Message-ID: <20250910024328.17911-14-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250910024328.17911-1-bagasdotme@gmail.com>
-References: <20250910024328.17911-1-bagasdotme@gmail.com>
+        d=1e100.net; s=20230601; t=1757472305; x=1758077105;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ECymoV0afChIph3b2IQOw2gRJYGDzpM8kCcLRfRhoGM=;
+        b=Ssn16z1D/1+RZyaIjKncaIQFc8ZwGHbaZUEG/YyyEiX3dpLNgaXSyCi41cITitViFA
+         vh5WLpkWkWNs2E04HycDWjNU+Fu/eNqNlmfoBh36WJ1dSxy+78TiqW3WByCgr3Ec4Gu1
+         neDGN9fRIHQRyJjBQ0RVbKFvQA4m8aMJBn0dvi1/QQdmmUrXqcRCCch1+zC0fqWu/jVB
+         ntNUNjX8kKgqtOTw8KolsOYLZq91H90E8Dz/ONJFgfBDbzkqCKuH/HhovykUC2GGKaV7
+         dHatu7AZtrHWuWdcggln4ZZw6mYUm/CEcIA6niguji9wtSbOVg9Xuv3+TVteRaXytZpr
+         7U9A==
+X-Forwarded-Encrypted: i=1; AJvYcCVDkY9eE5ec6rTbGaKx74LPiWNf/fq175vjM4kQ+jXhiZLx5+rXP4iySHEP+Aleutn9dVD7CIO62LM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9NsgUVCmFAH4tIjw3f9tzaF7r3+nUqjEkUs7viDilzz2NhiSS
+	mNSmZ+cuVWsDL2y2eAb3/T+pkd0TdAqiO6q5BpAzNaoEi5W89hF2eRFs
+X-Gm-Gg: ASbGncuBeR9Arl4nP4NWgOlvoRwTAZ1WoYlFhlnmGwuAnxgQOb1dP3Gm13gwjlfOhvK
+	ImJUV4uuRV5hZgcDR/BKRq9+CovmMUoOXTHIMN77o4XqwKOo8frhV9+FNOaN1cA2I+j/qGFPySG
+	reeB3o84+byr0OZQELEGPvblvwseCIUbPSXtoK9qfTbh7Oj2KbiX18/PMN+EG55+aJqWLUFd+Ag
+	kN+J+eYJz6rh8Wzs7qjQPglSaIfrP1w1bKbKClCisMXz/GbYBdthJSdLCoQ95OJmzF1tP5Bk3wk
+	0u2yrOnuIUywmLpRFGnYkDNQpislnum19i8XHMRpWWJ2WWkYESAKiGsFEe14QXJJ/ID/N167gnR
+	OBDDXHJMVowOghswq5WgahR/IC9w0bhTGagJk2cAb7Pd5KrRZePXn4/URqNFSQSPaTgflhPEhJ/
+	g4k5aIK1l7yezjYQ==
+X-Google-Smtp-Source: AGHT+IGVVMHoxwQuixztdbo1+fcy9gAa8fVWkaDB65TP0G/V80AaCegKULeF4WMABeBE44UXwnfeTg==
+X-Received: by 2002:a17:902:e802:b0:24b:1625:5fa5 with SMTP id d9443c01a7336-2516d33edd9mr221042545ad.11.1757472304575;
+        Tue, 09 Sep 2025 19:45:04 -0700 (PDT)
+Received: from localhost.localdomain ([101.82.183.17])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dbb314bcesm635831a91.12.2025.09.09.19.44.54
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 09 Sep 2025 19:45:03 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: akpm@linux-foundation.org,
+	david@redhat.com,
+	ziy@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	npache@redhat.com,
+	ryan.roberts@arm.com,
+	dev.jain@arm.com,
+	hannes@cmpxchg.org,
+	usamaarif642@gmail.com,
+	gutierrez.asier@huawei-partners.com,
+	willy@infradead.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	ameryhung@gmail.com,
+	rientjes@google.com,
+	corbet@lwn.net,
+	21cnbao@gmail.com,
+	shakeel.butt@linux.dev
+Cc: bpf@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-doc@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v7 mm-new 0/9] mm, bpf: BPF based THP order selection
+Date: Wed, 10 Sep 2025 10:44:37 +0800
+Message-Id: <20250910024447.64788-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=24675; i=bagasdotme@gmail.com; h=from:subject; bh=MXABwK0i0SCp2hQDcOsmX0P1tGCerPOJp0g33o7MdJc=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkHniifDTt+7KfV93lzj9/UmiHX46Vxep/YR+33Z39t3 TVtwyU2xo5SFgYxLgZZMUWWSYl8Tad3GYlcaF/rCDOHlQlkCAMXpwBMpIiR4Z9BbEfFppPy21Mr IpLu9zjPf3w1I1814cCLmzM05Rd27U9kZFhjOT/T7nby9gV/jrG7CvuWxxwx6nisFREuV/JNWc0 4kg8A
-X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-checkpatch documentation has pointer references to various style-related
-docs. Convert them from external link to internal cross-references.
+Background
+==========
 
-For reference to docs sections, use section names and reference
-docs path as anchor text.
+Our production servers consistently configure THP to "never" due to
+historical incidents caused by its behavior. Key issues include:
+- Increased Memory Consumption
+  THP significantly raises overall memory usage, reducing available memory
+  for workloads.
 
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- Documentation/dev-tools/checkpatch.rst        | 121 ++++++++++++------
- .../bindings/submitting-patches.rst           |   2 +
- .../driver-api/driver-model/device.rst        |   2 +
- Documentation/filesystems/sysfs.rst           |   2 +
- Documentation/kbuild/reproducible-builds.rst  |   2 +
- Documentation/locking/lockdep-design.rst      |   2 +
- Documentation/process/coding-style.rst        |  15 +++
- Documentation/process/deprecated.rst          |   4 +
- Documentation/process/submitting-patches.rst  |   4 +
- 9 files changed, 113 insertions(+), 41 deletions(-)
+- Latency Spikes
+  Random latency spikes occur due to frequent memory compaction triggered
+  by THP.
 
-diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-index d5c47e560324fb..2ec288d845b81d 100644
---- a/Documentation/dev-tools/checkpatch.rst
-+++ b/Documentation/dev-tools/checkpatch.rst
-@@ -247,7 +247,7 @@ Allocation style
-     number of elements.  sizeof() as the first argument is generally
-     wrong.
- 
--    See: https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html
-+    See: Documentation/core-api/memory-allocation.rst
- 
-   **ALLOC_SIZEOF_STRUCT**
-     The allocation style is bad.  In general for family of
-@@ -260,13 +260,14 @@ Allocation style
- 
-       p = alloc(sizeof(*p), ...)
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#allocating-memory
-+    See: :ref:`"Allocating memory" section on Documentation/process/coding-style.rst
-+    <memory-allocation-style>`.
- 
-   **ALLOC_WITH_MULTIPLY**
-     Prefer kmalloc_array/kcalloc over kmalloc/kzalloc with a
-     sizeof multiply.
- 
--    See: https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html
-+    See: Documentation/core-api/memory-allocation.rst
- 
- 
- API usage
-@@ -287,7 +288,8 @@ API usage
-     Use WARN() and WARN_ON() instead, and handle the "impossible"
-     error condition as gracefully as possible.
- 
--    See: https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
-+    See: :ref:`"BUG() and BUG_ON()" section on
-+    Documentation/process/deprecated.rst <bug-macros-deprecated>`
- 
-   **CONSIDER_KSTRTO**
-     The simple_strtol(), simple_strtoll(), simple_strtoul(), and
-@@ -296,7 +298,9 @@ API usage
-     kstrtoll(), kstrtoul(), and kstrtoull() functions tend to be the
-     correct replacements.
- 
--    See: https://www.kernel.org/doc/html/latest/process/deprecated.html#simple-strtol-simple-strtoll-simple-strtoul-simple-strtoull
-+    See: :ref:`"simple_strtol(), simple_strtoll(), simple_strtoul(),
-+    simple_strtoull() section" on Documentation/process/deprecated.rst
-+    <simple-strtol-family-deprecated>`
- 
-   **CONSTANT_CONVERSION**
-     Use of __constant_<foo> form is discouraged for the following functions::
-@@ -340,7 +344,8 @@ API usage
- 
-     The full list of available RCU APIs can be viewed from the kernel docs.
- 
--    See: https://www.kernel.org/doc/html/latest/RCU/whatisRCU.html#full-list-of-rcu-apis
-+    See: :ref:`"Full list of RCU APIs" section on
-+    Documentation/RCU/whatisRCU.rst <8_whatisRCU>`
- 
-   **DEVICE_ATTR_FUNCTIONS**
-     The function names used in DEVICE_ATTR is unusual.
-@@ -354,7 +359,8 @@ API usage
- 
-     The function names should preferably follow the above pattern.
- 
--    See: https://www.kernel.org/doc/html/latest/driver-api/driver-model/device.html#attributes
-+    See: :ref:`"Attributes" section on
-+    Documentation/driver-api/driver-model/device.rst <device-attributes>`
- 
-   **DEVICE_ATTR_RO**
-     The DEVICE_ATTR_RO(name) helper macro can be used instead of
-@@ -363,7 +369,8 @@ API usage
-     Note that the macro automatically appends _show to the named
-     attribute variable of the device for the show method.
- 
--    See: https://www.kernel.org/doc/html/latest/driver-api/driver-model/device.html#attributes
-+    See: :ref:`"Attributes" section on
-+    Documentation/driver-api/driver-model/device.rst <device-attributes>`
- 
-   **DEVICE_ATTR_RW**
-     The DEVICE_ATTR_RW(name) helper macro can be used instead of
-@@ -372,7 +379,8 @@ API usage
-     Note that the macro automatically appends _show and _store to the
-     named attribute variable of the device for the show and store methods.
- 
--    See: https://www.kernel.org/doc/html/latest/driver-api/driver-model/device.html#attributes
-+    See: :ref:`"Attributes" section on
-+    Documentation/driver-api/driver-model/device.rst <device-attributes>`
- 
-   **DEVICE_ATTR_WO**
-     The DEVICE_AATR_WO(name) helper macro can be used instead of
-@@ -381,7 +389,8 @@ API usage
-     Note that the macro automatically appends _store to the
-     named attribute variable of the device for the store method.
- 
--    See: https://www.kernel.org/doc/html/latest/driver-api/driver-model/device.html#attributes
-+    See: :ref:`"Attributes" section on
-+    Documentation/driver-api/driver-model/device.rst <device-attributes>`
- 
-   **DUPLICATED_SYSCTL_CONST**
-     Commit d91bff3011cf ("proc/sysctl: add shared variables for range
-@@ -443,7 +452,8 @@ API usage
-     lockdep_assert_held() annotations should be preferred over
-     assertions based on spin_is_locked()
- 
--    See: https://www.kernel.org/doc/html/latest/locking/lockdep-design.html#annotations
-+    See: :ref:`"Annotations" section on
-+    Documentation/locking/lockdep-design.rst <lockdep-annotations>`
- 
-   **UAPI_INCLUDE**
-     No #include statements in include/uapi should use a uapi/ path.
-@@ -472,13 +482,15 @@ Comments
-       * for files in net/ and drivers/net/
-       */
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
-+    See: :ref:`Commenting section on Documentation/process/coding-style.rst
-+    <comments-style>`
- 
-   **C99_COMMENTS**
-     C99 style single line comments (//) should not be used.
-     Prefer the block comment style instead.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
-+    See: :ref:`Commenting section on Documentation/process/coding-style.rst
-+    <comments-style>`
- 
-   **DATA_RACE**
-     Applications of data_race() should have a comment so as to document the
-@@ -512,7 +524,8 @@ Commit message
-     The signed-off-by line does not fall in line with the standards
-     specified by the community.
- 
--    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
-+    See: :ref:`Developer's Certificate of Origin 1.1 text on
-+    Documentation/process/submitting-patches.rst <dco-text>`
- 
-   **BAD_STABLE_ADDRESS_STYLE**
-     The email format for stable is incorrect.
-@@ -534,14 +547,16 @@ Commit message
-     The patch is missing a commit description.  A brief
-     description of the changes made by the patch should be added.
- 
--    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
-+    See: :ref:`"Describe your changes" section on
-+    Documentation/process/submitting-patches.rst <describe_changes>`
- 
-   **EMAIL_SUBJECT**
-     Naming the tool that found the issue is not very useful in the
-     subject line.  A good subject line summarizes the change that
-     the patch brings.
- 
--    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
-+    See: :ref:`"Describe your changes" section on
-+    Documentation/process/submitting-patches.rst <describe_changes>`
- 
-   **FROM_SIGN_OFF_MISMATCH**
-     The author's email does not match with that in the Signed-off-by:
-@@ -560,7 +575,8 @@ Commit message
-     line should be added according to Developer's certificate of
-     Origin.
- 
--    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
-+    See: :ref:`"Sign your work - the Developer's Certificate of Origin"
-+    section on Documentation/process/submitting-patches.rst <dco-signoff>`
- 
-   **NO_AUTHOR_SIGN_OFF**
-     The author of the patch has not signed off the patch.  It is
-@@ -569,7 +585,8 @@ Commit message
-     written it or otherwise has the rights to pass it on as an open
-     source patch.
- 
--    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
-+    See: :ref:`"Sign your work - the Developer's Certificate of Origin"
-+    section on Documentation/process/submitting-patches.rst <dco-signoff>`
- 
-   **DIFF_IN_COMMIT_MSG**
-     Avoid having diff content in commit message.
-@@ -599,14 +616,16 @@ Commit message
-       platform_set_drvdata(), but left the variable "dev" unused,
-       delete it.
- 
--    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
-+    See: :ref:`"Describe your changes" section on
-+    Documentation/process/submitting-patches.rst <describe_changes>`
- 
-   **BAD_FIXES_TAG**
-     The Fixes: tag is malformed or does not follow the community conventions.
-     This can occur if the tag have been split into multiple lines (e.g., when
-     pasted in an email program with word wrapping enabled).
- 
--    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
-+    See: :ref:`"Describe your changes" section on
-+    Documentation/process/submitting-patches.rst <describe_changes>`
- 
- 
- Comparison style
-@@ -646,7 +665,8 @@ Indentation and Line Breaks
-     Outside of comments, documentation and Kconfig,
-     spaces are never used for indentation.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#indentation
-+    See: :ref:`"Indentation" section on Documentation/process/coding-style.rst
-+    <indentation-style>`
- 
-   **DEEP_INDENTATION**
-     Indentation with 6 or more tabs usually indicate overly indented
-@@ -678,7 +698,8 @@ Indentation and Line Breaks
-               break;
-       }
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#indentation
-+    See: :ref:`"Indentation" section on Documentation/process/coding-style.rst
-+    <indentation-style>`
- 
-   **LONG_LINE**
-     The line has exceeded the specified maximum length.
-@@ -690,21 +711,24 @@ Indentation and Line Breaks
-     limit to 100 columns.  This is not a hard limit either and it's
-     preferable to stay within 80 columns whenever possible.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
-+    See: :ref:`"Breaking long lines and strings" section on
-+    Documentation/process/coding-style.rst <long-line-break>`
- 
-   **LONG_LINE_STRING**
-     A string starts before but extends beyond the maximum line length.
-     To use a different maximum line length, the --max-line-length=n option
-     may be added while invoking checkpatch.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
-+    See: :ref:`"Breaking long lines and strings" section on
-+    Documentation/process/coding-style.rst <long-line-break>`
- 
-   **LONG_LINE_COMMENT**
-     A comment starts before but extends beyond the maximum line length.
-     To use a different maximum line length, the --max-line-length=n option
-     may be added while invoking checkpatch.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
-+    See: :ref:`"Breaking long lines and strings" section on
-+    Documentation/process/coding-style.rst <long-line-break>`
- 
-   **SPLIT_STRING**
-     Quoted strings that appear as messages in userspace and can be
-@@ -803,7 +827,8 @@ Macros, Attributes and Symbols
-     and enables warnings if they are used as they can lead to
-     non-deterministic builds.
- 
--    See: https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html#timestamps
-+    See: :ref:`"Timestamps" section on
-+    Documentation/kbuild/reproducible-builds.rst <kernel-timestamps>`
- 
-   **DEFINE_ARCH_HAS**
-     The ARCH_HAS_xyz and ARCH_HAVE_xyz patterns are wrong.
-@@ -868,7 +893,8 @@ Macros, Attributes and Symbols
-                         do_this(b, c);          \
-         } while (0)
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#macros-enums-and-rtl
-+    See: :ref:`"Macros, Enums and RTL" section on
-+    Documentation/process/coding-style.rst <macros-style>`
- 
-   **PREFER_FALLTHROUGH**
-     Use the `fallthrough;` pseudo keyword instead of
-@@ -907,7 +933,8 @@ Macros, Attributes and Symbols
- 
-       WARNING: Argument 'a' is not used in function-like macro.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#macros-enums-and-rtl
-+    See: :ref:`"Macros, Enums and RTL" section on
-+    Documentation/process/coding-style.rst <macros-style>`
- 
-   **SINGLE_STATEMENT_DO_WHILE_MACRO**
-     For the multi-statement macros, it is necessary to use the do-while
-@@ -931,7 +958,8 @@ Functions and Variables
-   **CAMELCASE**
-     Avoid CamelCase Identifiers.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#naming
-+    See: :ref:`"Naming" section on Documentation/process/coding-style.rst
-+    <naming-convention>`
- 
-   **CONST_CONST**
-     Using `const <type> const *` is generally meant to be
-@@ -1018,7 +1046,8 @@ Permissions
-     Typically only three permissions are used - 0644 (RW), 0444 (RO)
-     and 0200 (WO).
- 
--    See: https://www.kernel.org/doc/html/latest/filesystems/sysfs.html#attributes
-+    See: :ref:`"Attributes" section on Documentation/filesystems/sysfs.rst
-+    <sysfs-attributes>`
- 
-   **EXECUTE_PERMISSIONS**
-     There is no reason for source files to be executable.  The executable
-@@ -1074,7 +1103,8 @@ Spacing and Brackets
-               body of function
-       }
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces
-+    See: :ref:`"Placing Braces and Spaces" section on
-+    Documentation/process/coding-style.rst <braces-placement>`
- 
-   **BRACKET_SPACE**
-     Whitespace before opening bracket '[' is prohibited.
-@@ -1105,20 +1135,23 @@ Spacing and Brackets
-   **ELSE_AFTER_BRACE**
-     `else {` should follow the closing block `}` on the same line.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces
-+    See: :ref:`"Placing Braces and Spaces" section on
-+    Documentation/process/coding-style.rst <braces-placement>`
- 
-   **LINE_SPACING**
-     Vertical space is wasted given the limited number of lines an
-     editor window can display when multiple blank lines are used.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
-+    See: :ref:`"Spaces" subsection on Documentation/process/coding-style.rst
-+    <spaces-usage>`
- 
-   **OPEN_BRACE**
-     The opening brace should be following the function definitions on the
-     next line.  For any non-functional block it should be on the same line
-     as the last construct.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces
-+    See: :ref:`"Placing Braces and Spaces" section on
-+    Documentation/process/coding-style.rst <braces-placement>`
- 
-   **POINTER_LOCATION**
-     When using pointer data or a function that returns a pointer type,
-@@ -1130,19 +1163,22 @@ Spacing and Brackets
-       unsigned long long memparse(char *ptr, char **retptr);
-       char *match_strdup(substring_t *s);
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
-+    See: :ref:`"Spaces" subsection on Documentation/process/coding-style.rst
-+    <spaces-usage>`
- 
-   **SPACING**
-     Whitespace style used in the kernel sources is described in kernel docs.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
-+    See: :ref:`"Spaces" subsection on Documentation/process/coding-style.rst
-+    <spaces-usage>`
- 
-   **TRAILING_WHITESPACE**
-     Trailing whitespace should always be removed.
-     Some editors highlight the trailing whitespace and cause visual
-     distractions when editing files.
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
-+    See: :ref:`"Spaces" subsection on Documentation/process/coding-style.rst
-+    <spaces-usage>`
- 
-   **UNNECESSARY_PARENTHESES**
-     Parentheses are not required in the following cases:
-@@ -1182,7 +1218,8 @@ Spacing and Brackets
-               ...
-       } while(something);
- 
--    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces
-+    See: :ref:`"Placing Braces and Spaces" section on
-+    Documentation/process/coding-style.rst <braces-placement>`
- 
- 
- Others
-@@ -1216,7 +1253,7 @@ Others
-     DT bindings moved to a json-schema based format instead of
-     freeform text.
- 
--    See: https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-schema.html
-+    See: Documentation/devicetree/bindings/writing-schema.rst
- 
-   **DT_SPLIT_BINDING_PATCH**
-     Devicetree bindings should be their own patch.  This is because
-@@ -1225,7 +1262,9 @@ Others
-     are applied via the same tree), and it makes for a cleaner history in the
-     DT only tree created with git-filter-branch.
- 
--    See: https://www.kernel.org/doc/html/latest/devicetree/bindings/submitting-patches.html#i-for-patch-submitters
-+    See: :ref:`"For patch submitters" section on
-+    Documentation/devicetree/bindings/submitting-patches.rst
-+    <submitting-dt-patches>`
- 
-   **EMBEDDED_FILENAME**
-     Embedding the complete filename path inside the file isn't particularly
-@@ -1253,7 +1292,7 @@ Others
-     The Linux kernel requires the precise SPDX identifier in all source files,
-     and it is thoroughly documented in the kernel docs.
- 
--    See: https://www.kernel.org/doc/html/latest/process/license-rules.html
-+    See: Documentation/process/license-rules.rst
- 
-   **TYPO_SPELLING**
-     Some words may have been misspelled.  Consider reviewing them.
-diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
-index 191085b0d5e8ea..7de63c5ce58fbf 100644
---- a/Documentation/devicetree/bindings/submitting-patches.rst
-+++ b/Documentation/devicetree/bindings/submitting-patches.rst
-@@ -4,6 +4,8 @@
- Submitting Devicetree (DT) binding patches
- ==========================================
- 
-+.. _submitting-dt-patches:
-+
- I. For patch submitters
- =======================
- 
-diff --git a/Documentation/driver-api/driver-model/device.rst b/Documentation/driver-api/driver-model/device.rst
-index 0833be568b06ca..7762d11411c5a9 100644
---- a/Documentation/driver-api/driver-model/device.rst
-+++ b/Documentation/driver-api/driver-model/device.rst
-@@ -35,6 +35,8 @@ A driver can access the lock in the device structure using::
-   void unlock_device(struct device * dev);
- 
- 
-+.. _device-attributes:
-+
- Attributes
- ~~~~~~~~~~
- 
-diff --git a/Documentation/filesystems/sysfs.rst b/Documentation/filesystems/sysfs.rst
-index 624e4f51212e63..a893e67f7fb2bb 100644
---- a/Documentation/filesystems/sysfs.rst
-+++ b/Documentation/filesystems/sysfs.rst
-@@ -51,6 +51,8 @@ With the current sysfs implementation the kobject reference count is
- only modified directly by the function sysfs_schedule_callback().
- 
- 
-+.. _sysfs-attributes:
-+
- Attributes
- ~~~~~~~~~~
- 
-diff --git a/Documentation/kbuild/reproducible-builds.rst b/Documentation/kbuild/reproducible-builds.rst
-index f2dcc39044e66d..b0d273f871772a 100644
---- a/Documentation/kbuild/reproducible-builds.rst
-+++ b/Documentation/kbuild/reproducible-builds.rst
-@@ -13,6 +13,8 @@ The `Reproducible Builds project`_ has more information about this
- general topic.  This document covers the various reasons why building
- the kernel may be unreproducible, and how to avoid them.
- 
-+.. _kernel-timestamps:
-+
- Timestamps
- ----------
- 
-diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
-index 56b90eea27312e..c924dd4216c564 100644
---- a/Documentation/locking/lockdep-design.rst
-+++ b/Documentation/locking/lockdep-design.rst
-@@ -231,6 +231,8 @@ Note: When changing code to use the _nested() primitives, be careful and
- check really thoroughly that the hierarchy is correctly mapped; otherwise
- you can get false positives or false negatives.
- 
-+.. _lockdep-annotations:
-+
- Annotations
- -----------
- 
-diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-index d1a8e5465ed956..4a17c60a9240c0 100644
---- a/Documentation/process/coding-style.rst
-+++ b/Documentation/process/coding-style.rst
-@@ -15,6 +15,8 @@ and NOT read it.  Burn them, it's a great symbolic gesture.
- Anyway, here goes:
- 
- 
-+.. _indentation-style:
-+
- 1) Indentation
- --------------
- 
-@@ -95,6 +97,8 @@ used for indentation, and the above example is deliberately broken.
- Get a decent editor and don't leave whitespace at the end of lines.
- 
- 
-+.. _long-line-break:
-+
- 2) Breaking long lines and strings
- ----------------------------------
- 
-@@ -117,6 +121,8 @@ However, never break user-visible strings such as printk messages because
- that breaks the ability to grep for them.
- 
- 
-+.. _braces-placement:
-+
- 3) Placing Braces and Spaces
- ----------------------------
- 
-@@ -231,6 +237,8 @@ Also, use braces when a loop contains more than a single simple statement:
- 			do_something();
- 	}
- 
-+.. _spaces-usage:
-+
- 3.1) Spaces
- ***********
- 
-@@ -303,6 +311,8 @@ of patches, this may make later patches in the series fail by changing their
- context lines.
- 
- 
-+.. _naming-convention:
-+
- 4) Naming
- ---------
- 
-@@ -594,6 +604,7 @@ fix for this is to split it up into two error labels ``err_free_bar:`` and
- 
- Ideally you should simulate errors to test all exit paths.
- 
-+.. _comments-style:
- 
- 8) Commenting
- -------------
-@@ -792,6 +803,8 @@ Remember: if another thread can find your data structure, and you don't
- have a reference count on it, you almost certainly have a bug.
- 
- 
-+.. _macros-style:
-+
- 12) Macros, Enums and RTL
- -------------------------
- 
-@@ -932,6 +945,8 @@ already inside a debug-related #ifdef section, printk(KERN_DEBUG ...) can be
- used.
- 
- 
-+.. _memory-allocation-style:
-+
- 14) Allocating memory
- ---------------------
- 
-diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
-index 1f7f3e6c9cda9f..8ab538034a29b9 100644
---- a/Documentation/process/deprecated.rst
-+++ b/Documentation/process/deprecated.rst
-@@ -29,6 +29,8 @@ a header file, it isn't the full solution. Such interfaces must either
- be fully removed from the kernel, or added to this file to discourage
- others from using them in the future.
- 
-+.. _bug-macros-deprecated:
-+
- BUG() and BUG_ON()
- ------------------
- Use WARN() and WARN_ON() instead, and handle the "impossible"
-@@ -109,6 +111,8 @@ For more details, also see array3_size() and flex_array_size(),
- as well as the related check_mul_overflow(), check_add_overflow(),
- check_sub_overflow(), and check_shl_overflow() family of functions.
- 
-+.. _simple-strtol-family-deprecated:
-+
- simple_strtol(), simple_strtoll(), simple_strtoul(), simple_strtoull()
- ----------------------------------------------------------------------
- The simple_strtol(), simple_strtoll(),
-diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-index 5778cb9701e14b..387ccb760e1ff8 100644
---- a/Documentation/process/submitting-patches.rst
-+++ b/Documentation/process/submitting-patches.rst
-@@ -393,6 +393,8 @@ e-mail discussions.
- ``git send-email`` will do this for you automatically.
- 
- 
-+.. _dco-signoff:
-+
- Sign your work - the Developer's Certificate of Origin
- ------------------------------------------------------
- 
-@@ -406,6 +408,8 @@ patch, which certifies that you wrote it or otherwise have the right to
- pass it on as an open-source patch.  The rules are pretty simple: if you
- can certify the below:
- 
-+.. _dco-text:
-+
- Developer's Certificate of Origin 1.1
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
+- Lack of Fine-Grained Control
+  THP tuning is globally configured, making it unsuitable for containerized
+  environments. When multiple workloads share a host, enabling THP without
+  per-workload control leads to unpredictable behavior.
+
+Due to these issues, administrators avoid switching to madvise or always
+modes—unless per-workload THP control is implemented.
+
+To address this, we propose BPF-based THP policy for flexible adjustment.
+Additionally, as David mentioned, this mechanism can also serve as a
+policy prototyping tool (test policies via BPF before upstreaming them).
+
+Proposed Solution
+=================
+
+This patch introduces a new BPF struct_ops called bpf_thp_ops for dynamic
+THP tuning. It includes a hook thp_get_order(), allowing BPF programs to
+influence THP order selection based on factors such as:
+
+- Workload identity
+  For example, workloads running in specific containers or cgroups.
+- Allocation context
+  Whether the allocation occurs during a page fault, khugepaged, swap or
+  other paths.
+- VMA's memory advice settings
+  MADV_HUGEPAGE or MADV_NOHUGEPAGE
+- Memory pressure
+  PSI system data or associated cgroup PSI metrics
+
+The new interface for the BPF program is as follows:
+
+/**
+ * @thp_get_order: Get the suggested THP orders from a BPF program for allocation
+ * @vma: vm_area_struct associated with the THP allocation
+ * @vma_type: The VMA type, such as BPF_THP_VM_HUGEPAGE if VM_HUGEPAGE is set
+ *            BPF_THP_VM_NOHUGEPAGE if VM_NOHUGEPAGE is set, or BPF_THP_VM_NONE
+ *            if neither is set.
+ * @tva_type: TVA type for current @vma
+ * @orders: Bitmask of requested THP orders for this allocation
+ *          - PMD-mapped allocation if PMD_ORDER is set
+ *          - mTHP allocation otherwise
+ *
+ * Return: The suggested THP order from the BPF program for allocation. It will
+ *         not exceed the highest requested order in @orders. Return -1 to
+ *         indicate that the original requested @orders should remain unchanged.
+ */
+
+int thp_get_order(struct vm_area_struct *vma,
+                  enum bpf_thp_vma_type vma_type,
+                  enum tva_type tva_type,
+                  unsigned long orders);
+
+Only a single BPF program can be attached at any given time, though it can
+be dynamically updated to adjust the policy. The implementation supports
+anonymous THP, shmem THP, and mTHP, with future extensions planned for
+file-backed THP.
+
+This functionality is only active when system-wide THP is configured to
+madvise or always mode. It remains disabled in never mode. Additionally,
+if THP is explicitly disabled for a specific task via prctl(), this BPF
+functionality will also be unavailable for that task
+
+**WARNING**
+- This feature requires CONFIG_BPF_GET_THP_ORDER (marked EXPERIMENTAL) to
+  be enabled.
+- The interface may change
+- Behavior may differ in future kernel versions
+- We might remove it in the future
+
+Selftests
+=========
+
+BPF CI 
+------
+
+Patch #7: Implements a basic BPF THP policy that restricts THP allocation
+          via khugepaged to tasks within a specified memory cgroup.
+Patch #8: Provides tests for dynamic BPF program updates and replacement.
+Patch #9: Includes negative tests for invalid BPF helper usage, verifying
+          proper verification by the BPF verifier.
+
+Currently, several dependency patches reside in mm-new but haven't been
+merged into bpf-next. To enable BPF CI testing, these dependencies were
+manually applied to bpf-next. All selftests in this series pass 
+successfully [0].
+
+Performance Evaluation
+----------------------
+
+Performance impact was measured given the page fault handler modifications.
+The standard `perf bench mem memset` benchmark was employed to assess page
+fault performance.
+
+Testing was conducted on an AMD EPYC 7W83 64-Core Processor (single NUMA
+node). Due to variance between individual test runs, a script executed
+10000 iterations to calculate meaningful averages.
+
+- Baseline (without this patch series)
+- With patch series but no BPF program attached
+- With patch series and BPF program attached
+
+The results across three configurations show negligible performance impact:
+
+  Number of runs: 10,000
+  Average throughput: 40-41 GB/sec
+
+Production verification
+-----------------------
+
+We have successfully deployed a variant of this approach across numerous
+Kubernetes production servers. The implementation enables THP for specific
+workloads (such as applications utilizing ZGC [1]) while disabling it for
+others. This selective deployment has operated flawlessly, with no
+regression reports to date.
+
+For ZGC-based applications, our verification demonstrates that shmem THP
+delivers significant improvements:
+- Reduced CPU utilization
+- Lower average latencies
+
+We are continuously extending its support to more workloads, such as
+TCMalloc-based services. [2]
+
+Deployment Steps in our production servers are as follows,
+
+1. Initial Setup:
+- Set THP mode to "never" (disabling THP by default).
+- Attach the BPF program and pin the BPF maps and links.
+- Pinning ensures persistence (like a kernel module), preventing
+disruption under system pressure.
+- A THP whitelist map tracks allowed cgroups (initially empty -> no THP
+allocations).
+
+2. Enable THP Control:
+- Switch THP mode to "always" or "madvise" (BPF now governs actual allocations).
+
+3. Dynamic Management:
+- To permit THP for a cgroup, add its ID to the whitelist map.
+- To revoke permission, remove the cgroup ID from the map.
+- The BPF program can be updated live (policy adjustments require no
+task interruption).
+
+4. To roll back, disable THP and remove this BPF program. 
+
+**WARNING**
+Be aware that the maintainers do not suggest this use case, as the BPF hook
+interface is unstable and might be removed from the upstream kernel—unless
+you have your own kernel team to maintain it ;-)
+
+Future work
+===========
+
+file-backed THP policy
+----------------------
+
+Based on our validation with production workloads, we observed mixed
+results with XFS large folios (also known as file-backed THP):
+
+- Performance Benefits
+  Some workloads demonstrated significant improvements with XFS large
+  folios enabled
+- Performance Regression
+  Some workloads experienced degradation when using XFS large folios
+
+These results demonstrate that File THP, similar to anonymous THP, requires
+a more granular approach instead of a uniform implementation.
+
+We will extend the BPF-based order selection mechanism to support
+file-backed THP allocation policies.
+
+Hooking fork() with BPF for Task Configuration
+----------------------------------------------
+
+The current method for controlling a newly fork()-ed task involves calling
+prctl() (e.g., with PR_SET_THP_DISABLE) to set flags in its mm->flags. This
+requires explicit userspace modification.
+
+A more efficient alternative is to implement a new BPF hook within the
+fork() path. This hook would allow a BPF program to set the task's
+mm->flags directly after mm initialization, leveraging BPF helpers for a
+solution that is transparent to userspace. This is particularly valuable in
+data center environments for fleet-wide management. 
+
+Link: https://github.com/kernel-patches/bpf/pull/9706 [0] 
+Link: https://wiki.openjdk.org/display/zgc/Main#Main-EnablingTr... [1]
+Link: https://google.github.io/tcmalloc/tuning.html#system-level-optimizations [2]
+
+Changes:
+=======:
+
+v6->v7:
+Key Changes Implemented Based on Feedback:
+From Lorenzo:
+  - Rename the hook from get_suggested_order() to bpf_hook_get_thp_order(). 
+  - Rename bpf_thp.c to huge_memory_bpf.c
+  - Focuse the current patchset on THP order selection
+  - Add the BPF hook into thp_vma_allowable_orders()
+  - Make the hook VMA-based and remove the mm parameter
+  - Modify the BPF program to return a single order
+  - Stop passing vma_flags directly to BPF programs
+  - Mark vma->vm_mm as trusted_or_null
+  - Change the MAINTAINER file
+From Andrii:
+  - Mark mm->owner as rcu_or_null to avoid introducing new helpers
+From Barry:
+  - decouple swap from the normal page fault path
+kernel test robot:
+  - Fix a sparse warning
+Shakeel helped clarify the implementation.
+
+RFC v5-> v6: https://lwn.net/Articles/1035116/
+- Code improvement around the RCU usage (Usama)
+- Add selftests for khugepaged fork (Usama)
+- Add performance data for page fault (Usama)
+- Remove the RFC tag
+
+RFC v4->v5: https://lwn.net/Articles/1034265/
+- Add support for vma (David)
+- Add mTHP support in khugepaged (Zi)
+- Use bitmask of all allowed orders instead (Zi)
+- Retrieve the page size and PMD order rather than hardcoding them (Zi)
+
+RFC v3->v4: https://lwn.net/Articles/1031829/
+- Use a new interface get_suggested_order() (David)
+- Mark it as experimental (David, Lorenzo)
+- Code improvement in THP (Usama)
+- Code improvement in BPF struct ops (Amery)
+
+RFC v2->v3: https://lwn.net/Articles/1024545/
+- Finer-graind tuning based on madvise or always mode (David, Lorenzo)
+- Use BPF to write more advanced policies logic (David, Lorenzo)
+
+RFC v1->v2: https://lwn.net/Articles/1021783/
+The main changes are as follows,
+- Use struct_ops instead of fmod_ret (Alexei)
+- Introduce a new THP mode (Johannes)
+- Introduce new helpers for BPF hook (Zi)
+- Refine the commit log
+
+RFC v1: https://lwn.net/Articles/1019290/
+
+Yafang Shao (10):
+  mm: thp: remove disabled task from khugepaged_mm_slot
+  mm: thp: add support for BPF based THP order selection
+  mm: thp: decouple THP allocation between swap and page fault paths
+  mm: thp: enable THP allocation exclusively through khugepaged
+  bpf: mark mm->owner as __safe_rcu_or_null
+  bpf: mark vma->vm_mm as __safe_trusted_or_null
+  selftests/bpf: add a simple BPF based THP policy
+  selftests/bpf: add test case to update THP policy
+  selftests/bpf: add test cases for invalid thp_adjust usage
+  Documentation: add BPF-based THP policy management
+
+ Documentation/admin-guide/mm/transhuge.rst    |  46 +++
+ MAINTAINERS                                   |   3 +
+ include/linux/huge_mm.h                       |  29 +-
+ include/linux/khugepaged.h                    |   1 +
+ kernel/bpf/verifier.c                         |   8 +
+ kernel/sys.c                                  |   6 +
+ mm/Kconfig                                    |  12 +
+ mm/Makefile                                   |   1 +
+ mm/huge_memory.c                              |   3 +-
+ mm/huge_memory_bpf.c                          | 243 +++++++++++++++
+ mm/khugepaged.c                               |  19 +-
+ mm/memory.c                                   |  15 +-
+ tools/testing/selftests/bpf/config            |   3 +
+ .../selftests/bpf/prog_tests/thp_adjust.c     | 284 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/lsm.c       |   8 +-
+ .../selftests/bpf/progs/test_thp_adjust.c     | 114 +++++++
+ .../bpf/progs/test_thp_adjust_sleepable.c     |  22 ++
+ .../bpf/progs/test_thp_adjust_trusted_owner.c |  30 ++
+ .../bpf/progs/test_thp_adjust_trusted_vma.c   |  27 ++
+ 19 files changed, 849 insertions(+), 25 deletions(-)
+ create mode 100644 mm/huge_memory_bpf.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_sleepable.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_trusted_owner.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_trusted_vma.c
+
 -- 
-An old man doll... just what I always wanted! - Clara
+2.47.3
 
 
