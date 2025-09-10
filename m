@@ -1,148 +1,150 @@
-Return-Path: <bpf+bounces-68028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 225E1B51CF0
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 18:05:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 573B8B51D62
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 18:19:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D874568382
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 16:04:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72D0B17191C
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 16:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 344E8255F53;
-	Wed, 10 Sep 2025 16:01:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA75333A016;
+	Wed, 10 Sep 2025 16:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="csSiJTW1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eo/cER+n"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFA53164A9;
-	Wed, 10 Sep 2025 16:01:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C7033769E;
+	Wed, 10 Sep 2025 16:16:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757520118; cv=none; b=PTyTNC9P9+S2gbzbQoSC1YnwaiNuvai8eIe2k2O/yyOM5+8UGHF369xj5/yP6gkTjV3Srp2F1zeni35O8bjFIIworDDrn48g3G/1eLVcvRuTDI8P11sVdnXhQwHKOmBrPz6KUJVvhfbpLJicZFp0xpSC2QTorFVpny+tBECtzkw=
+	t=1757521004; cv=none; b=uhel+9aKLf5p6dUjUAbUuxm/s4yxF3I1rrEgwiXS6M1StaKNPaIQ8MAw8Nj5pypx1plaAGTuHRFPiXIAt+okT+D4RfYdVp4C1pJ8yFylD0pe6qFnaVCRZb08UFygQ62MagS+Vphd9Ho74Qrbyw+ulgwb05Q9DyxZTKjnLkBWI9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757520118; c=relaxed/simple;
-	bh=npz/Yr+Bw8qoxYgqMpb/2domnNHGtmZPEz2N9itH4TM=;
+	s=arc-20240116; t=1757521004; c=relaxed/simple;
+	bh=NVFM3neR7N0A2HmQoK+ROHkmwptFlxIoqcQa9WgQUMI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H7GpMfgkzVNcEY3qADn1oKPEWbloawgd/rXJSx3ZNZ7gSDZXcJcipGtAhfWJR7dl3iACXrr0KTQcNYJEh+whT5TLINGrQ4krmItDJmBb+b8BtpvZkqZS2eMz66XmsuiN/bNTERB3wqWxrxFWmHejlW8mbaCxRmETR/uhCYCb+aU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=csSiJTW1; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=USzoxe2aN/UtzmUtNrM82r1HuFi67PhC3AMt/L2dzwA=; b=csSiJTW1VDKCm+YTTmkXo//fiw
-	0YbOyugSS0418HkdmkVpnazY/NFrFnPyY1aQ6B3fSiOvxfUbnDnGM7WePTdiBUI2PcxKQwVDrJmWt
-	PjcnAJ9wbBBcjP0CBu5w9GZxAbU3GTru76rhhMB2wEhqT58ux+7y1f6DUpdqCwiPoYomkdLiVSzfg
-	cyPnBKf1sCleJBA4Z+uR8mSKV0LgyrY3hEjnGSfa8190cCzXVEaU3NT56krfdxLdIzsI3cdyQbY1n
-	cfk+IhpG2iZH2DJm3wgi+TtUAvWiEdau0Qpzs8szENSeZA2m294d5N/CSwCb3MUjSHjvEoJ6s2EZ3
-	7CU3QcNw==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwNGZ-00000005ui6-2RWT;
-	Wed, 10 Sep 2025 16:01:52 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 0888730050D; Wed, 10 Sep 2025 18:01:51 +0200 (CEST)
-Date: Wed, 10 Sep 2025 18:01:50 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Andrea Righi <arighi@nvidia.com>, Ingo Molnar <mingo@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	David Vernet <void@manifault.com>,
-	Changwoo Min <changwoo@igalia.com>, Shuah Khan <shuah@kernel.org>,
-	sched-ext@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Luigi De Matteis <ldematteis123@gmail.com>
-Subject: Re: [PATCH 07/16] sched_ext: Add a DL server for sched_ext tasks
-Message-ID: <20250910160150.GV3245006@noisy.programming.kicks-ass.net>
-References: <20250903095008.162049-1-arighi@nvidia.com>
- <20250903095008.162049-8-arighi@nvidia.com>
- <aLidEvX41Xie5kwY@slm.duckdns.org>
- <20250903200822.GO4067720@noisy.programming.kicks-ass.net>
- <aLin8VayVsYyKXze@slm.duckdns.org>
- <20250903205646.GR4067720@noisy.programming.kicks-ass.net>
- <20250904202858.GN4068168@noisy.programming.kicks-ass.net>
- <aLoH_5TfiTGgQsb0@slm.duckdns.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=U+v0wlSyL7RsWm4Stg0Shij8nRFBtENEU0cfUGoIPlosd6vHhmpnv6s2p29x5VEUDdKhbTEprj3dy/Bt3Bz7SUvPX0yp0v9AubDm5oXrosNfz/6VZCAJDjd4kx0VUUy9YgNH0/TWUtnWQuD74warXIY/qLyAsoaCm0H2dyzY0ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Eo/cER+n; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-76e4fc419a9so5823439b3a.0;
+        Wed, 10 Sep 2025 09:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757521002; x=1758125802; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JB5WUshzKYeKBoYX6JQ+1Pxk+oTXaSsiBLCl8BznXVo=;
+        b=Eo/cER+n3jygBbPbgSvY+hWayAi+QVounCoxBA/Beczp8VxmD+R5EVPwsJBNk992S3
+         Y3qGtDAm8ZK5jHszjk8YygyyIZETKFC9EdbSTXE0vnL0ASsZyTlfn6bmfYFh6FdJhpGV
+         ggg6SFoXOq8XBpghgSNgEl2T2JZzVT4ctZzux/YL5845YMyjHhXBK4Lrsr0Dg2V+YHVf
+         Q8267gKWD/IhFWzkf+u/J7MPTK7lchuHi2NgD4PCaJ5X9aYveLKzXFuhTTBgDofI/UVZ
+         u7xb6w721WlXhnR1+s1+J5YsXnAEzXGHM46Ciu3Rki++VrccuSxOKvhIQXDRHxw8uQHk
+         TAqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757521002; x=1758125802;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JB5WUshzKYeKBoYX6JQ+1Pxk+oTXaSsiBLCl8BznXVo=;
+        b=VqL7aMrC8fVMAF8ZdlH9t6CjtOPGqRzREtqEiB6j1uFpz+0g0WpAEWVrCcmLp2Enh2
+         e4LAv5O6NCuYdQXHlJHb/fHhqXhgKiNTXSD7xb6coo048BOV5Nx2+qVLNoUa1+3+d0R+
+         lo9ALW1U8jnFzOndNvL1C+z/RasqM1cYBnA83F20026jqQYcfcKjxywq4tdpTuKRL1sY
+         Kzug7zpxLaMtbw7rm8w/tlAaCl9GAl/uPlUFjeN52kgr/gYM1+9umv8heuqh8j8Sm9LK
+         +NMf2zrM3bxuRbFJgvN5kTxNtLkwG3gvuE+9kPnhkWvWh7F69tBs7Yo7hmYuk7kjQP5f
+         UQTA==
+X-Forwarded-Encrypted: i=1; AJvYcCU/yII+9e3002EkpEXYYVBzLszZ+bvZut8100rEomw4dnB1POoUHb4glu1poqsProCwfwzOhuHCUwsuz7bR@vger.kernel.org, AJvYcCUznDVscwyL6NONsVtWE/gAEghxQDTckLLFg8h0yt26rvCMGsVOvB4jz8Cko8RRgf6HeWw=@vger.kernel.org, AJvYcCV0cwWke8/FNVDg0ruN1qm+oAUKk+7MZKd7Zxd2TRWF2XxBCdEHV3/2CaTRWaV+GdsiZY6MBnXpTddQ@vger.kernel.org, AJvYcCVWgqOxjZHw5oHCsHg23i0oxaBNwXPAykzXSIfkerfMxHmlLJk4Vy5tyCsruC5kGGmjTGHzlkofCrAnXA==@vger.kernel.org, AJvYcCW3yYoVfe17+AHeoYXvh4BllagSUKkGlJa5snwFoFgNsBVlfjFeipeImz3lr9M/aGXCGXqcoZVx@vger.kernel.org
+X-Gm-Message-State: AOJu0YwES8YfXGQ4IjpQ1IVERrGcApFMG+qYMms2h8SuEymnlx2OX8PR
+	eb5TrL17lJKrnMooDrnTxsVNwjYufX7Oy5EbClu3VOnDkJ+TqFEAKok=
+X-Gm-Gg: ASbGnct0PkWmvpzV3weMbHapnADMGBOYbs4/zdX2sdoEhKEoAlpUqpttCCueSlghx1v
+	j+rB3N2kchu1OCiBroimAyGVg8JUI2hODM6uLZfiabLqvZpY14A2/rqgx6A13adKPRrG4a0AG++
+	NSnvqTEGlaCwm5mYpeda5yeh04XFygNH2DQDNSQceHjgcWeChMlmLRcW5tfvJCdYQtxTAjZH+fu
+	E3686VljGE8ja6Zq/1ZYHUtJ9MvujIf1GORpX9ZlqHHiEC0N/WiHmYG6ubRxNtpAi2TMHltHR2C
+	aNHnW+hz7X73411rjLxkNjrUDbosy8OtsLNV50D1K9dV0qOh/b/dni6SwJPWW2T3Awt1Ph9+1VZ
+	m5UTeXLOJ3JD8KGxj/WuHk+CTehUsp5r98+899nGHo5wQkk7BMDiXuNGDa2xv5kDIgkjQNcYN0k
+	AZnJyZbGMx4JDB/qmP8+lDbNbjHq9Nwx4XQ3dL1xfc4Kcgj0l47T9EFgA5olZInTru8btgHCLjG
+	kibs1Hsm2mGaZY=
+X-Google-Smtp-Source: AGHT+IHqLINn057ngCZaw/jpWSqhs/u7NZ2CDFe0dasDSVTaVkcAUe46x0lZQDpoIcwp7hoWMZQPvg==
+X-Received: by 2002:a17:903:2b05:b0:24e:81d2:cfe2 with SMTP id d9443c01a7336-2516f04ffeamr229403285ad.7.1757521001758;
+        Wed, 10 Sep 2025 09:16:41 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-25a2742590csm32206725ad.8.2025.09.10.09.16.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Sep 2025 09:16:41 -0700 (PDT)
+Date: Wed, 10 Sep 2025 09:16:40 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>,
+	Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	Gal Pressman <gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
+Subject: Re: [PATCH net-next 10/10] net/mlx5e: Use the 'num_doorbells'
+ devlink param
+Message-ID: <aMGkaDoZpmOWUA_L@mini-arch>
+References: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
+ <1757499891-596641-11-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aLoH_5TfiTGgQsb0@slm.duckdns.org>
+In-Reply-To: <1757499891-596641-11-git-send-email-tariqt@nvidia.com>
 
-On Thu, Sep 04, 2025 at 11:43:27AM -1000, Tejun Heo wrote:
-> Hello, Peter.
+On 09/10, Tariq Toukan wrote:
+> From: Cosmin Ratiu <cratiu@nvidia.com>
 > 
-> On Thu, Sep 04, 2025 at 10:28:58PM +0200, Peter Zijlstra wrote:
-> ...
-> >   RUNNABLE:
-> >   1) hold both source and target rq->lock.
-> ...
-> > Now, assuming you have a locking order like:
-> > 
-> >  p->pi_lock
-> >    rq->lock
-> >      dsq->lock
-> > 
-> > When you do something like:
-> > 
-> >   __schedule()
-> >     raw_spin_lock(rq->lock);
-> >     next = pick_next_task() -> pick_task_scx()
-> >       raw_spin_lock(dsq->lock);
-> > 
-> > Then you are, in effect, in the RUNNABLE 1) case above. You hold both
-> > locks. Nothing is going to move your task around while you hold that
-> > dsq->lock. That task is on the dsq, anybody else wanting to also do
-> > anything with that task, will have to first take dsq->lock.
-> >
-> > Therefore, at this point, it is perfectly fine to do:
-> > 
-> > 	set_task_cpu(cpu_of(rq)); // move task here
-> > 
-> > There is no actual concurrency. The only thing there is is
-> > set_task_cpu() complaining you're not following the rules -- but you
-> > are, it just doesn't know -- and we can fix that.
+> Use the new devlink param to control how many doorbells mlx5e devices
+> allocate and use. The maximum number of doorbells configurable is capped
+> to the maximum number of channels. This only applies to the Ethernet
+> part, the RDMA devices using mlx5 manage their own doorbells.
 > 
-> I can't convince myself this is safe. For example, when task_rq_lock()
-> returns, it should guarantee that the rq that the task is currently
-> associated with is locked and the task can't go anywhere. However, as
-> task_rq_lock() isn't interlocked with dsq lock, this won't hold true. I
-> think this will break multiple things subtly - e.g. the assumptions that
-> task_call_func() makes in the comment wouldn't hold anymore,
-> task_sched_runtime()'s test of task_on_rq_queued() would be racy, and so on.
+> Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  Documentation/networking/devlink/mlx5.rst     |  8 ++++++
+>  .../net/ethernet/mellanox/mlx5/core/devlink.c | 26 +++++++++++++++++++
+>  .../ethernet/mellanox/mlx5/core/en_common.c   | 15 ++++++++++-
+>  3 files changed, 48 insertions(+), 1 deletion(-)
 > 
-> ie. Operations protected by deq/enq pair would be fine but anything which is
-> protected only by task_rq_lock/unlock() would become racy, right?
+> diff --git a/Documentation/networking/devlink/mlx5.rst b/Documentation/networking/devlink/mlx5.rst
+> index 60cc9fedf1ef..0650462b3eae 100644
+> --- a/Documentation/networking/devlink/mlx5.rst
+> +++ b/Documentation/networking/devlink/mlx5.rst
+> @@ -45,6 +45,14 @@ Parameters
+>       - The range is between 1 and a device-specific max.
+>       - Applies to each physical function (PF) independently, if the device
+>         supports it. Otherwise, it applies symmetrically to all PFs.
+> +   * - ``num_doorbells``
+> +     - driverinit
+> +     - This controls the number of channel doorbells used by the netdev. In all
+> +       cases, an additional doorbell is allocated and used for non-channel
+> +       communication (e.g. for PTP, HWS, etc.). Supported values are:
+> +       - 0: No channel-specific doorbells, use the global one for everything.
+> +       - [1, max_num_channels]: Spread netdev channels equally across these
+> +         doorbells.
 
-So task_sched_runtime() only cares about 'current' tasks, those will
-never be on a dsq.
+Do you have any guidance on this number? Why would the user want
+`num_doorbells < num_doorbells` vs `num_doorbells == num_channels`?
 
-But yes, things like task_call_func() and sched_setaffinity() will have
-subtle race conditions :/
-
-Still, this seems fixable, and fixing this should get rid of a lot of
-current and proposed ugly.
-
-( while poking at all this, I noticed that I forgot to apply this:
-  https://lkml.kernel.org/r/20241030151255.300069509@infradead.org
-  so I've rebased that and included it in the tree)
-
-/me removes most of the babbling and redirects to the just posted
-series:
-
-  https://lkml.kernel.org/r/20250910154409.446470175@infradead.org
+IOW, why not allocate the same number of doorbells as the number of
+channels and do it unconditionally without devlink param? Are extra
+doorbells causing any overhead in the non-contended case?
 
