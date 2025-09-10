@@ -1,160 +1,106 @@
-Return-Path: <bpf+bounces-68041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD65B51DF3
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 18:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 72462B51E87
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 19:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A22E1C27725
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 16:40:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B7A11C86A75
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 17:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618B8274B2F;
-	Wed, 10 Sep 2025 16:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fOuc/Kis"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55372C11C0;
+	Wed, 10 Sep 2025 17:05:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569AB27145C;
-	Wed, 10 Sep 2025 16:39:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F2C29BD85
+	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 17:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757522362; cv=none; b=fajh1LpAwIMpdSZ7VKciBqXNj0/OBf1rr13l9aB09WCszPvcbuShnhLkR4Vs9zCvL23dFCd1LVgSNHCpUbtC4uqDbvZQVUK4lLmqqVBicqx98+sSG8R+xOtrgljVMksWXRbz/wuYiP5EVw2hoHNDwJHieEddEmNB2JWyEmgk51o=
+	t=1757523918; cv=none; b=A77orJ4VS6owgITQ7YoOZpTmkTw0EsdminbN+XHMmZYVvjJfC3v9GVxyIUfuqc8atDhCYV4FX5sQwQArUUy08HlbTsdXySeqNRSvuUYNaOtfFBLVuo2WPdfgOXx9/KRdJSABoZ/16niXRbDBy7pDkUOJaTcgR2Em0wC1JgQm3hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757522362; c=relaxed/simple;
-	bh=DXaPB6O+MVeURgWOrbQJY23u3LqvdV53/UiDoA5wWxQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RVJnLtEnL2/FKn4hQNa+fEwlIeJfZ7FX+F5D0YJXKkB+M2orQhUEsRSmaCi0gwurrG1xWr3D7MpgyiO8TEFnI8whwPE6Op/dsvlx0NVZ+5F+gwaUnSCPGJCleuSBRMdQg9YfOd1/r1KAHJug/zh3LdKwLTKAAAemI9Bh8rjXVeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fOuc/Kis; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e9e137d69aaso3472317276.0;
-        Wed, 10 Sep 2025 09:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757522360; x=1758127160; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pMR//KJUsKqo+LqzcLScfp4rayMNNk9xWONBV1O4fLI=;
-        b=fOuc/Kis3MlPUfEkm/GgdBAK/CMUTVHc4RZk+04Ob9zSMKOVq9pE19RJfS0Es2kOfE
-         qCsf9WXbvXYuK4q+K9HuAfuhMGw95tpaCaJkFBTlzBdJp0wZKEKFNI6eTwd05vVcvqH5
-         35zdhY+6ILwZAjDzJnW24Q9acwUIiveg57DMv7c2f2fqtsqr/ZWd1ORiCVy5X/kGi3bG
-         HPmSNiNv6gYfgZEdE1LLC1/PDrAmAXQ6QibwBlYTfMIj/g9RYYn4G7bgumjBYwT+drwJ
-         EuvweOnogAxgniKHiZ2zOP55fhRIkj+Jw2Twd0byqz9mwv/YiZMQyQike7PeuH4SJaWG
-         +EHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757522360; x=1758127160;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pMR//KJUsKqo+LqzcLScfp4rayMNNk9xWONBV1O4fLI=;
-        b=lX9uTBKG/cNNQEWoXENl/3iRmgCOStkT6dkQw2J0hWEhLDlkmokXlfS6TJrHuePFJ7
-         Agg6/uf1idBHNnasxiwnO156Gm33D2OLWFRi0iP+ddNsvRY4rEIE4qDpSBIIDq6waLHc
-         BpumQA/b86j6mDsh+uNUA7m+O2tApe5zt7ASAtiqxmHnLcnJPYyTs6BJEi75Cg2XAnl+
-         VB3Qa6JqF2ny0MtCw19FgK/Nt+v7YdoQIITcCWGSCEELTCNLTkoHBR8rMTn4K/ZoZ4jG
-         kkgDmEElgyj3EB+ZAKW1kWTMhVlzKEIvLn2hzaJXnKl5xiBZkKQkt6HTe+tOlUErqvsd
-         tIpw==
-X-Forwarded-Encrypted: i=1; AJvYcCVptrGeFKyqorH15/u0Qcl/TILHhcFcYdeL+q8LlAcqiIaLFQIFKJxRSHyI08hxhf/lnlA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSK7CBi9upDtiXBVSBHxSjyNk9gr1Q8nVoTZ0dLXaFFUKRUkXC
-	qt1D47uiUCyMxMQv8x1eytTfIRwQl6h8P8EpWrh/AnpFaQpn9Cjl95ICCiSGSM4DYOj1ksiwdg7
-	7y/uoiTWa3oPZMa1TbsCEr/ucuWhwYl0=
-X-Gm-Gg: ASbGnctZDpPt2Yi3Csx9wI+yvAQXYUXu0thio6z4fo+8ovgtBWEopFzesr7f8bB5ZEY
-	t2Lq/njwK04+i5CKH+kVJoceFUYifu/VMbzgMVL5Hw1sBZtbUBO2cVzdw1XOwCO4lgddqE+idrL
-	S4mLg391guaOHi9MNriXWvtTVLnmi+WxAeD1N7X24mYE+cJG7nzGqpUSK8VQMzFPXw456FjHbD+
-	e4D3cPzI9c2n+CTNHVR
-X-Google-Smtp-Source: AGHT+IF0OCe3TTI7tEajUuAo/UE9GLq//PAYAMIeiVBcCF0WYiNZGdSd489Cr5MKvf0tWhyJdEeOSVytA1wNkt8HGQ8=
-X-Received: by 2002:a05:6902:2b0a:b0:ea3:c0f8:99c4 with SMTP id
- 3f1490d57ef6-ea3c0f89bcfmr2445705276.13.1757522359600; Wed, 10 Sep 2025
- 09:39:19 -0700 (PDT)
+	s=arc-20240116; t=1757523918; c=relaxed/simple;
+	bh=wG+7LZNX7s5LYYcmQjUqZsUh/cW2Yj3VemW29RyBPIM=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=TdUMpeNm/DzWGv36pwoIFY5RfVcQCOSBRQk68FfeytleWjK7XIOSfnFDnJXFcik+5gNI8I1U1Jc43pTj/s6pSZYlNQT/qsUBzEA7yMlPlxoh60UYP/vAZD4HJ4Wqxp3Nv3pjmFzAW8LTHUnQvhdDHB2IT7iOttE2DEzVXVZnmGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
+Received: from sslproxy08.your-server.de ([78.47.166.52])
+	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <tobias.boehm@hetzner-cloud.de>)
+	id 1uwNvM-000N9f-CG; Wed, 10 Sep 2025 18:44:00 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <tobias.boehm@hetzner-cloud.de>)
+	id 1uwNuh-0008I4-0W;
+	Wed, 10 Sep 2025 18:44:00 +0200
+Message-ID: <4bfab93d-f1ce-4aa7-82fe-16972b47972c@hetzner-cloud.de>
+Date: Wed, 10 Sep 2025 18:43:59 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910034103.650342-1-ameryhung@gmail.com> <20250910034103.650342-2-ameryhung@gmail.com>
- <x4b26sfgbwuxodwbkk5gl5ohczmalycr3qxo2xwctiygzvvydh@fu26veserybx>
-In-Reply-To: <x4b26sfgbwuxodwbkk5gl5ohczmalycr3qxo2xwctiygzvvydh@fu26veserybx>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Wed, 10 Sep 2025 12:39:07 -0400
-X-Gm-Features: AS18NWDLF7H93l9nGXTXsP90-kXw9gkY55g31JI9JQPD-5DIg_KFduJJqpyXQgg
-Message-ID: <CAMB2axO1oKWCq8X+XKdC0BOw5AvwpWbJYWJ2A4bo_cgRmvzEVw@mail.gmail.com>
-Subject: Re: [PATCH net v1 1/2] net/mlx5e: RX, Fix generating skb from
- non-linear xdp_buff for legacy RQ
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, andrew+netdev@lunn.ch, 
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, kuba@kernel.org, 
-	martin.lau@kernel.org, noren@nvidia.com, saeedm@nvidia.com, tariqt@nvidia.com, 
-	mbloch@nvidia.com, cpaasch@openai.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: =?UTF-8?Q?Tobias_B=C3=B6hm?= <tobias.boehm@hetzner-cloud.de>
+Subject: [BUG?] bpf_skb_net_shrink does not unset encapsulation flag
+To: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Content-Language: en-US
+Cc: bpf@vger.kernel.org,
+ Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+Organization: Hetzner Cloud GmbH
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27759/Wed Sep 10 10:27:04 2025)
 
-On Wed, Sep 10, 2025 at 12:24=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.co=
-m> wrote:
->
-> On Tue, Sep 09, 2025 at 08:41:02PM -0700, Amery Hung wrote:
-> > XDP programs can release xdp_buff fragments when calling
-> > bpf_xdp_adjust_tail(). The driver currently assumes the number of
-> > fragments to be unchanged and may generate skb with wrong truesize or
-> > containing invalid frags. Fix the bug by generating skb according to
-> > xdp_buff after the XDP program runs.
-> >
-> > Fixes: ea5d49bdae8b ("net/mlx5e: Add XDP multi buffer support to the no=
-n-linear legacy RQ")
-> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/=
-net/ethernet/mellanox/mlx5/core/en_rx.c
-> > index b8c609d91d11..1d3eacfd0325 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > @@ -1729,6 +1729,7 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq,=
- struct mlx5e_wqe_frag_info *wi
-> >       struct mlx5e_wqe_frag_info *head_wi =3D wi;
-> >       u16 rx_headroom =3D rq->buff.headroom;
-> >       struct mlx5e_frag_page *frag_page;
-> > +     u8 nr_frags_free, old_nr_frags;
-> >       struct skb_shared_info *sinfo;
-> >       u32 frag_consumed_bytes;
-> >       struct bpf_prog *prog;
-> > @@ -1772,17 +1773,25 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *r=
-q, struct mlx5e_wqe_frag_info *wi
-> >               wi++;
-> >       }
-> >
-> > +     old_nr_frags =3D sinfo->nr_frags;
-> > +
-> >       prog =3D rcu_dereference(rq->xdp_prog);
-> >       if (prog && mlx5e_xdp_handle(rq, prog, mxbuf)) {
-> >               if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flag=
-s)) {
-> >                       struct mlx5e_wqe_frag_info *pwi;
-> >
-> > +                     wi -=3D old_nr_frags - sinfo->nr_frags;
-> > +
-> >                       for (pwi =3D head_wi; pwi < wi; pwi++)
-> >                               pwi->frag_page->frags++;
-> >               }
-> >               return NULL; /* page/packet was consumed by XDP */
-> >       }
-> >
-> > +     nr_frags_free =3D old_nr_frags - sinfo->nr_frags;
-> Just double checking that my understanding is correct:
-> bpf_xdp_adjust_tail() can increase the tail only up to fragment limit,
-> right? So this operation can always be >=3D 0.
->
+Hi,
 
-Right, AFAIK bpf programs cannot add fragments to xdp_buff.
+when decapsulating VXLAN packets with bpf_skb_adjust_room and 
+redirecting to a tap device I observed unexpected segmentation.
 
-> If yes:
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
->
-> Thanks,
-> Dragos
+In my setup there is a sched_cls program attached at the ingress path of 
+a physical NIC with GRO enabled. Packets are redirected either directly 
+for plain traffic, or decapsulated beforehand in case of VXLAN. 
+Decapsulation is done by bpf_skb_adjust_room with 
+BPF_F_ADJ_ROOM_DECAP_L3_IPV4.
+
+For both kinds of traffic GRO on the physical NIC works as expected 
+resulting in merged packets.
+
+Large non-decapsulated packets are transmitted directly on the tap 
+interface as expected. But surprisingly, decapsulated packets are being 
+segmented again before transmission.
+
+When analyzing and comparing the call chains I observed that 
+netif_skb_features returns different values for the different kind of 
+traffic.
+
+The tap devices have the following features set:
+
+     dev->features        =   0x1558c9
+     dev->hw_enc_features = 0x10000001
+
+For the non-decapsulated traffic netif_skb_features returns 0x1558c9 but 
+for the decapsulated traffic it returns 0x1. This is same value as the 
+result of "dev->features & dev->hw_enc_features".
+
+In netif_skb_features this operation effectively happens in case 
+skb->encapsulation is set. Inspecting the skb in both cases showed that 
+in case of decapsulation the skb->encapsulation flag was indeed still set.
+
+I wonder if there is a reason that the skb->encapsulation flag is not 
+unset in bpf_skb_net_shrink when BPF_F_ADJ_ROOM_DECAP_* flags are 
+present? Since skb->encapsulation is set in bpf_skb_net_grow when adding 
+space for encapsulation my expectation would be that the flag is also 
+unset when doing the opposite operation.
+
+Thanks,
+Tobias
 
