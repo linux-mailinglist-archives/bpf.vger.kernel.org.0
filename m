@@ -1,108 +1,123 @@
-Return-Path: <bpf+bounces-67956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6975B50A0D
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 03:05:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EBA0B50A80
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 03:51:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A5DF545824
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 01:05:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11AC24E5DCC
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 01:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6151E1A33;
-	Wed, 10 Sep 2025 01:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10527223DCF;
+	Wed, 10 Sep 2025 01:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mgGi8bke"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UWSGX68D"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E961C2324;
-	Wed, 10 Sep 2025 01:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860338F7D;
+	Wed, 10 Sep 2025 01:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757466345; cv=none; b=gCjnXaFSw6lGV7qriffW6yxKQaCnrIvPvgZVwRdFURMqVK45/9KqSzLyy1720rTzvaQyFGU+ef/Eridqlkpj3FhVhlALnR7xlEiXhXRrraIewLdSeCObREQGx6a+AKSKhKfdJb3SjN6Q0wxxBScN0x1yNw2vt+sfxhdgw+jK1G0=
+	t=1757469028; cv=none; b=hZAOIcZXkvOYY2MQ4chZ/1IxCtWKZrmPllA+GwtRYhY/tuagpFfXHXzvqM+I0WuRXmwL3XQ9AtXiZ7zmf/hkYZhmXsQVS4DCtiJ+w29J1muOGcPbhL3xtnHxPtU1fSFwFjF1Ex8nnGw/wWy5tzQSF1KddFzta2xxHUvJmOm5agM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757466345; c=relaxed/simple;
-	bh=fOthtt3sHAR4XK1Blw8fcDEW53BygTROv/INF8rmzWc=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=SkAWt86bO5GIXOfN9pnrW7vKHdElpRdUovjztYPUnDaBw9nLP36DanUGXypxXQLXgyp4cgRQpG/XGHMVYUz3cIsW6r/Lf2QK856Xa0JdShddyrOePlHVy16D0AC01jq4SiakIyeX4p1TB8tWKCpLWHac60+EVJCBdm4d5Hz8kLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mgGi8bke; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 899E6C4CEF4;
-	Wed, 10 Sep 2025 01:05:40 +0000 (UTC)
+	s=arc-20240116; t=1757469028; c=relaxed/simple;
+	bh=1OgbSTWSCN2ga8e8O3v/pIB/AGosGyLQfutcQrc8liI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=kl9uYKY34x/0JoX1HX6f+oBi2I9paddzVEY/u6Lfcn9eJAo9wPll8zcO3u6rznEYQ4UIPXh14kxvCqc9rZApmQNKA/b96UdZzWNjMByUpFOwllhZS0OSVMdq7YsET133gtTp2I3Hd1qv4hXunUKPzb8nYonlU7/8AT0gbG/tzfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UWSGX68D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BCDBC4CEF4;
+	Wed, 10 Sep 2025 01:50:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757466345;
-	bh=fOthtt3sHAR4XK1Blw8fcDEW53BygTROv/INF8rmzWc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mgGi8bkebjd3F7vpKdiW4vKmob23iQCHYOErV/87iaHw1Oaf7i19LUu0ZEMOFc+jt
-	 yJDEDdauZ7P7n6gGM8SqzyfaUxUeL5Wf/lxU7FNT0ixWzt8imm0xGK9HNQ6FhzANAd
-	 1z3R4Rd3kLBUX+rjrrTR7wOwzVzSEwtA+fewJY+rYjIBFsb/e1chXlIXddYzH13Q+h
-	 iCMG6cUXZcvEvv8HcmXBg9VObYe+mP0Z14rIQy83JPHHgFuYZ1Zcy5Lp1RyapPrdAf
-	 st0nPSnlvB49YimrKwsEQhBUudVlQMW8der0yiCxWBMkvp/Y/wJUvC/F9wguoEwQ3K
-	 fKNV+n1evoBGg==
-Date: Wed, 10 Sep 2025 10:05:38 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: jolsa@kernel.org, oleg@redhat.com, andrii@kernel.org,
- linux-kernel@vger.kernel.org, alx@kernel.org, eyal.birger@gmail.com,
- kees@kernel.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- x86@kernel.org, songliubraving@fb.com, yhs@fb.com,
- john.fastabend@gmail.com, haoluo@google.com, rostedt@goodmis.org,
- alan.maguire@oracle.com, David.Laight@ACULAB.COM, thomas@t-8ch.de,
- mingo@kernel.org, rick.p.edgecombe@intel.com
-Subject: Re: [PATCH 6/6] uprobes/x86: Add SLS mitigation to the trampolines
-Message-Id: <20250910100538.9289cc4adfa34d616bc59f39@kernel.org>
-In-Reply-To: <20250821123657.277506098@infradead.org>
-References: <20250821122822.671515652@infradead.org>
-	<20250821123657.277506098@infradead.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1757469027;
+	bh=1OgbSTWSCN2ga8e8O3v/pIB/AGosGyLQfutcQrc8liI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=UWSGX68DIL5b9aTHrltBgGnaULh+BSQ/5hEoy9Qui6U3Zqr3WG6AlMqVx4CWCPjPf
+	 gPHdsYjqY9Tz4RMO3Xi/z7VYXVoNS9+ID9T2P83LjJ4m579bFnBVxNt6BE9KZ2Shrk
+	 6wSzbtHmGFwuPwh3pFQ724fG2K0UniIU0WHVJ1tUuAbi+GzV/M+s/mo1URZMyXfgiD
+	 Mk05icltz6Yc6bfDpxhXPOSfPy4281eLGcp0KcRkvjWeUd430krYF+jOdMIBVE/efE
+	 Mgt4vYbKpxuHhDjXOt7tqhDt9FOxYFrlqe8yfTZsP9iEX8ddXG12PEuQSJyP3W4cBC
+	 cMbdK5EBL/i4g==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70CF2383BF69;
+	Wed, 10 Sep 2025 01:50:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 00/13][pull request] idpf: add XDP support
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175746902998.871782.5828497176944109197.git-patchwork-notify@kernel.org>
+Date: Wed, 10 Sep 2025 01:50:29 +0000
+References: <20250908195748.1707057-1-anthony.l.nguyen@intel.com>
+In-Reply-To: <20250908195748.1707057-1-anthony.l.nguyen@intel.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, andrew+netdev@lunn.ch, netdev@vger.kernel.org,
+ aleksander.lobakin@intel.com, michal.kubiak@intel.com,
+ maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+ przemyslaw.kitszel@intel.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, horms@kernel.org, sdf@fomichev.me,
+ nxne.cnse.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org
 
-On Thu, 21 Aug 2025 14:28:28 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+Hello:
 
-> It is trivial; no reason not to.
+This series was applied to netdev/net-next.git (main)
+by Tony Nguyen <anthony.l.nguyen@intel.com>:
+
+On Mon,  8 Sep 2025 12:57:30 -0700 you wrote:
+> Alexander Lobakin says:
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-Looks good to me :)
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-> ---
->  arch/x86/kernel/uprobes.c |    2 ++
->  1 file changed, 2 insertions(+)
+> Add XDP support (w/o XSk for now) to the idpf driver using the libeth_xdp
+> sublib. All possible verdicts, .ndo_xdp_xmit(), multi-buffer etc. are here.
+> In general, nothing outstanding comparing to ice, except performance --
+> let's say, up to 2x for .ndo_xdp_xmit() on certain platforms and
+> scenarios.
+> idpf doesn't support VLAN Rx offload, so only the hash hint is
+> available for now.
 > 
-> --- a/arch/x86/kernel/uprobes.c
-> +++ b/arch/x86/kernel/uprobes.c
-> @@ -336,6 +336,7 @@ asm (
->  	 * call ret.
->  	 */
->  	"ret\n"
-> +	"int3\n"
->  	".global uretprobe_trampoline_end\n"
->  	"uretprobe_trampoline_end:\n"
->  	".popsection\n"
-> @@ -891,6 +892,7 @@ asm (
->  	"pop %r11\n"
->  	"pop %rcx\n"
->  	"ret\n"
-> +	"int3\n"
->  	".balign " __stringify(PAGE_SIZE) "\n"
->  	".popsection\n"
->  );
-> 
-> 
+> [...]
 
+Here is the summary with links:
+  - [net-next,01/13] xdp, libeth: make the xdp_init_buff() micro-optimization generic
+    https://git.kernel.org/netdev/net-next/c/17d370a70bae
+  - [net-next,02/13] idpf: fix Rx descriptor ready check barrier in splitq
+    https://git.kernel.org/netdev/net-next/c/c20edbacc029
+  - [net-next,03/13] idpf: use a saner limit for default number of queues to allocate
+    https://git.kernel.org/netdev/net-next/c/ea18bcca43f4
+  - [net-next,04/13] idpf: link NAPIs to queues
+    https://git.kernel.org/netdev/net-next/c/bd74a86bc75d
+  - [net-next,05/13] idpf: add 4-byte completion descriptor definition
+    https://git.kernel.org/netdev/net-next/c/cfe5efec9177
+  - [net-next,06/13] idpf: remove SW marker handling from NAPI
+    https://git.kernel.org/netdev/net-next/c/9d39447051a0
+  - [net-next,07/13] idpf: add support for nointerrupt queues
+    https://git.kernel.org/netdev/net-next/c/a0c60b07904c
+  - [net-next,08/13] idpf: prepare structures to support XDP
+    https://git.kernel.org/netdev/net-next/c/ac8a861f632e
+  - [net-next,09/13] idpf: implement XDP_SETUP_PROG in ndo_bpf for splitq
+    https://git.kernel.org/netdev/net-next/c/705457e7211f
+  - [net-next,10/13] idpf: use generic functions to build xdp_buff and skb
+    https://git.kernel.org/netdev/net-next/c/a4d755d1040a
+  - [net-next,11/13] idpf: add support for XDP on Rx
+    https://git.kernel.org/netdev/net-next/c/cba102cd7190
+  - [net-next,12/13] idpf: add support for .ndo_xdp_xmit()
+    https://git.kernel.org/netdev/net-next/c/aaa3ac6480ba
+  - [net-next,13/13] idpf: add XDP RSS hash hint
+    https://git.kernel.org/netdev/net-next/c/88ca0c738c41
 
+You are awesome, thank you!
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
