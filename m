@@ -1,135 +1,210 @@
-Return-Path: <bpf+bounces-68048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA15CB520AC
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 21:11:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28220B520D3
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 21:21:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EC4A1BC67CE
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 19:11:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 108E41C84A6A
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 19:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D982D46B5;
-	Wed, 10 Sep 2025 19:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59AD2D663F;
+	Wed, 10 Sep 2025 19:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MiuHBnNi"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GysDpfYX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 304AE23C4FD;
-	Wed, 10 Sep 2025 19:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C580C2D46C9
+	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 19:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757531489; cv=none; b=G7xPqVF3pstWwLDUhqWnpZ3yy/FsNjV84RZO+iNCNWzPm+5F2Vre7zhxWPqW6RKbX63S1oy5jexTWr/4j4rvtCOQO1y0dKjwcyDQbYqetSTDR0mvXvIR8jrt+atDhexXP3Ulehf4xEtrD4QNgopKGfm4407/X086Lq+p4qWTu5A=
+	t=1757532065; cv=none; b=kaTxLI5TtYXpqeDWjp3R4sPZbbdzje+HTfikQElRzZs8pUe9kWknhlvTOxQo0vclokmLcxUbTXkd2QXPo/XMZIEIMiBAQ7Ebc4EBLF7TYi7Sr6wlZlEWP8R6w8nB3YbZvAmDF5eP5vZs5lvwfz80wS/UA5QZ9l4p295eXSkILDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757531489; c=relaxed/simple;
-	bh=BPdDJRjtV20iUQcq9Et449k+dPo0xsDOfYUW7aNuBdo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oOVNHxL3JMgCGSXkm0ROsVz95R6WLuuH0hQ1pmjR1yOtSnPII8c1tSxBlRtCCIwkyIJQMM3vuYPUY5AC9diVgriXHOHLgG3O3663L4xCkL9rXuiZxYP4FDOpiXjvDLrzQJ6onhKwfLrhLL3MPGTiIlmnIniEImpp//oinV3DlYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MiuHBnNi; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-ea0297e9cd4so2908665276.3;
-        Wed, 10 Sep 2025 12:11:27 -0700 (PDT)
+	s=arc-20240116; t=1757532065; c=relaxed/simple;
+	bh=sBYGs2uL/jBibU5/FMcYVIoNZzFfcXQnjzRFTYs91eI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=cXP03lTqze7amPPbxi8y2/Rjf2zgEMAKuTNbxsT1MTPfwLBg+ZViBRPErHOVa4+v+OjJBvMc0HjjgzOA08q6EuJlgWgx3SaeL8zHqbhMpamx9KghJ2MELc8ttj/3gDYjUNIRvIuRYXj3tIAJ+idmumLEYf8gjlz6d3dgJBH6wto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GysDpfYX; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-32b51b26802so6642566a91.2
+        for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 12:21:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757531487; x=1758136287; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k7Nzdb/Royn0V9ZUHLh9FO9ItFQGh/B7jCmsZS8xz2g=;
-        b=MiuHBnNiYYPcOdABTUNNogPMs/iQpUzYJV+QwSf9yJoav9voIMRCmlQ/gDlYTjKNJo
-         w5ZbSQtXENQu6Lt894fDT++8J5h0X12SN1d5hI7mL1xrpco6TkSR/xa3c66D6JNIM9MH
-         tWUaiGait97Slmb8FJtkARz1qxq3zQhBfadkW/4W3Q2NCBhOPQ9zBTca+MECkoky1fFm
-         wHOtDwNLbfPUr0OyrS8pxj/7WJnSh6prMCT5Ldm4IDHnKNRIWQH+EIp3a37b4R0zo2wt
-         SLXpPo5JyRaTUeeAbvRchqyvfWKc2RI8dIZmYqDTpoV9bYU0b3K68k5KqaHF0BqoUIZv
-         I3NQ==
+        d=google.com; s=20230601; t=1757532062; x=1758136862; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/1WBVdvwIuyJ1BMcrGSObTQQxDhWvlT3oxngQNOdXp8=;
+        b=GysDpfYXimXlqVDpbF0uwL8iaJrhzkzTcGHD9bIjbOixS5x+AMKKt541YfA9FkQW6B
+         vMVbSc1WvRENm685TK2L0BWt53QQknzygRX78aqWGoT08rFsyUJ3vovAkc169TY6vFKK
+         mvOAvNKPLsNq4x+i5SQslzzGwen6gDcuD7yCVD3tJ2uzzml6QR/Z/+XpGYqYin3in60y
+         orfL9HRc1VFGAnuZ8rMYX0s0ZfD1dF0sP+GxSSG1Ird3Uyk14BaYgsnONa32eioSZLKW
+         rh9s8crokCJLwSkHGQhz14Eau5SCAWDvUgI6KJpD6mjCbkiPhXiXsdD4DlaAGNgUI+hb
+         KhIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757531487; x=1758136287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k7Nzdb/Royn0V9ZUHLh9FO9ItFQGh/B7jCmsZS8xz2g=;
-        b=C8T25zJ5XJ5uh3EGQ644DPCrtFP6WyLn9NfFE4+nvFxU4/22nZCwUMA+FYATAn9Od8
-         KAilGyMuZD7LCzUo5eduRVPEsWiNDRHJgUDMO8/YpDpScL+SRlOAEkDU3J1Y2ozAvlD9
-         R4N/6OJ28gUgvU8tKrZ7aZReOpA4LsXiOyS/8n0iLNV8p/xMFvZkdUeMn1EWpOVSijd9
-         Sqv/GHhywr7OwoHqGWbvwesoBkQVbL50FAge6Bio38w/3SDedqIpWvLHtl+H2LUMDctm
-         DqN+ST5OWbWOyS4yJM1Q8IY/RkWEwZKZGdPsXg0qSbUtu+PQZhEi4RGfMstnBnE2hnk7
-         5s0w==
-X-Forwarded-Encrypted: i=1; AJvYcCWi3fxMwxxAamGtjW0QRucSIkWKvbMsUO/yljPMKGuIhM0pRLwpTnnQfIH4mQ2EpmyckBlOGuU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/kvDxOb1QPqZIEBgiiEqww+V9fdEhc9Kd0ekwcMBrKWN7Pw1u
-	5nwBJ9ed133GteaYUbHiTcPUr7bS9DYs5QjJ3+ZpRonQJtH9x3+MHOtX6ZQKwxGU7LPO1ZtVEQg
-	s7dfIX7BcJtxoEaCwrGD7/7QALQhvcGM=
-X-Gm-Gg: ASbGncvgOCm0Bzv4rEle9KSACG+wT70wgc79QzdGSwu6009ETix0MlhauzRqTmBbgjT
-	C0JRMfiVp3YOZlHOy9bcQ3DTbirG0SaoX8t5aJNrjn3oO6fZPH4FI9eav5LqWCFP/BDEEDii9BL
-	pOXTMuf0BTgt1/tYZjC6q+OtT8d0470l+7Kn/sv7ttrSpmFJOJnO02y9aWjk1UKu+f8dCwKrJLN
-	8lM3F/soJRnidjlktChFbGmr1sNTWUQnQ==
-X-Google-Smtp-Source: AGHT+IFsfyvL7fXV7slP9gsfFRDNxdl0LL5jBMDMfelSHrfYbMCAGKy7n+J0zelUcih/TTkmNgszQZiIzJTjWdo73cc=
-X-Received: by 2002:a05:6902:620a:b0:e97:6e5:298 with SMTP id
- 3f1490d57ef6-e9f663f3b45mr14273098276.11.1757531486983; Wed, 10 Sep 2025
- 12:11:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757532062; x=1758136862;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/1WBVdvwIuyJ1BMcrGSObTQQxDhWvlT3oxngQNOdXp8=;
+        b=jd0nkVR6k/u2QNCHp/zIo/jdapZGabTAWRaW6avlyTGJEHuhMV3i9E1II/RJ90mGtJ
+         CTTYsUosfBikEx/gEm1ukqGj2S+0LzzxF6ZHhgCwar8LEjjrTbaO8ywHh8LGTeSxWxi1
+         DN9iksy29BQ1u4ENMsNWnfermKyZroQ7yI0gH4fthKuERZniLeitwVm2TTBgY84rrnwZ
+         ZaCYJIS1LLXritcQD+/qFALvAgIeA0nOtioK6nXWKNx2NYsP1/IrqnG4dvEY3seVjQOQ
+         9CRUPkkmfPb2yyLYCFrncaR7o60LhDcWIxd8omb11Zr9aSiKSjpGQoi/ylaX8VYYusdg
+         Mqhw==
+X-Forwarded-Encrypted: i=1; AJvYcCXoZa7X7NtmBfEJA+0WmnTXjsK09OomXL+bzmBMUW4ippuKaEoWw/Iag90lLeezGkRFu60=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxaoIsouq07tvCsRF1KSuZi3geKfvI4FWmhOF3iM8jT6FR/wQzf
+	boDViFuUufcsu7n7pZKfP1FZIqcOyl4VBABrjwEiDjCflNXqe4rMzAVnGLY69h6X05CZr6bIa2a
+	KW60fpQ==
+X-Google-Smtp-Source: AGHT+IE1vgu40SixS1cgM064xhFVxZVa2Q4XnOMPwQtitvNJYWmnFXcXX/m1+TyuaRIoJ8Yv7VyKjI6c4QE=
+X-Received: from pjbqa11.prod.google.com ([2002:a17:90b:4fcb:b0:32d:a359:8e4d])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:3f8e:b0:32b:9f1e:ef0e
+ with SMTP id 98e67ed59e1d1-32d43f66628mr21695832a91.23.1757532062009; Wed, 10
+ Sep 2025 12:21:02 -0700 (PDT)
+Date: Wed, 10 Sep 2025 19:19:27 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250905173352.3759457-1-ameryhung@gmail.com> <20250905173352.3759457-4-ameryhung@gmail.com>
- <20250908185447.233963c5@kernel.org> <CAMB2axPLuQ75_JSqkR43-UVBUi9Yj7juHFLCkDvSLPL445SZew@mail.gmail.com>
- <20250910110457.152b0460@kernel.org>
-In-Reply-To: <20250910110457.152b0460@kernel.org>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Wed, 10 Sep 2025 15:11:14 -0400
-X-Gm-Features: Ac12FXwPgV-tVy8vogjfnrpHv2alAN4aGjF-GmyoGU8DNuTkVZFl5lSA86A9dkI
-Message-ID: <CAMB2axO8rWWuSAo6pfuU5LRL=v43TJjhs66iCk8K4FALKdwRVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/7] bpf: Support pulling non-linear xdp data
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, stfomichev@gmail.com, 
-	martin.lau@kernel.org, mohsin.bashr@gmail.com, noren@nvidia.com, 
-	dtatulea@nvidia.com, saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, 
-	maciej.fijalkowski@intel.com, kernel-team@meta.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.51.0.384.g4c02a37b29-goog
+Message-ID: <20250910192057.1045711-1-kuniyu@google.com>
+Subject: [PATCH v8 bpf-next/net 0/6] bpf: Allow decoupling memcg from sk->sk_prot->memory_allocated.
+From: Kuniyuki Iwashima <kuniyu@google.com>
+To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
+Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 10, 2025 at 2:04=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Wed, 10 Sep 2025 11:17:52 -0400 Amery Hung wrote:
-> > > Larger note: I wonder if we should support "shifting the buffer down"
-> > > if there's insufficient tailroom. XDP has rather copious headroom,
-> > > but tailroom may be pretty tight, and it may depend on the length of
-> > > the headers. So if there's not enough tailroom but there's enough
-> > > headroom -- should we try to memmove the existing headers?
-> >
-> > I think it should. If users want to reserve space for metadata, they
-> > can check the headroom before pulling data.
-> >
-> > If the kfunc does not do memmove(), users are still able to do so in
-> > XDP programs through bpf_xdp_adjust_head() and memmove(), but it feels
-> > less easy to use IMO.
->
-> Actually, I don't think adjust_head() would even work. The program can
-> adjust head and memmove() the header, but there's no way to "punch out"
-> the end of the head buffer. We can only grow and shrink start of packet
-> and end of packet. After adjust_head + memmove in the prog buffer would
-> look something like:
+Some protocols (e.g., TCP, UDP) have their own memory accounting for
+socket buffers and charge memory to global per-protocol counters such
+as /proc/net/ipv4/tcp_mem.
 
-Ahh. You are right.
+If the socket has sk->sk_memcg, this memory is also charged to the memcg
+as sock in memory.stat.
 
->
->   _ _ _ _ __________ _____ _ _ _ _      ________
->    hroom |  headers | old | troom      |  frag0 |
->   - - - - ---------- ----- - - - -      --------
->
-> and the program has no way to "free" the "old" to let pull grab data
-> from frag0 in its place...
->
-> skb pull helper can allocate a completely fresh buffer, but IDK if
-> drivers are ready to have the head buffer swapped under their feet.
-> So I think that best we can do is have the pull() helper aromatically
-> memmove the headers.
+We do not need to pay costs for two orthogonal memory accounting
+mechanisms.
 
-Agree. Will make the kfunc memmove headers if more spaces are needed.
+This series allows decoupling memcg from the global memory accounting
+(memcg + tcp_mem -> memcg) if socket is configured as such by sysctl
+or BPF prog.
+
+
+Overview of the series:
+
+  patch 1 & 2 prepares for decoupling memcg from sk_prot->memory_allocated
+    based on the SK_MEMCG_EXCLUSIVE flag
+  patch 3 introduces net.core.memcg_exclusive
+  patch 4 & 5 supports flagging SK_MEMCG_EXCLUSIVE via bpf_setsockopt()
+  patch 6 is selftest
+
+
+Changes:
+  v8:
+    * Patch 3: Fix build failure when CONFIG_NET=n
+
+  v7: https://lore.kernel.org/netdev/20250909204632.3994767-1-kuniyu@google.com/
+    * Rename s/ISOLATED/EXCLUSIVE/
+    * Add patch 3 (net.core.memcg_exclusive sysctl)
+    * Reorder the core patch 2 before sysctl + bpf changes
+    * Patch 6
+      * Add test for sysctl
+
+  v6: https://lore.kernel.org/netdev/20250908223750.3375376-1-kuniyu@google.com/
+    * Patch 4
+      * Update commit message
+    * Patch 5
+      * Trace sk_prot->memory_allocated + sk_prot->memory_per_cpu_fw_alloc
+
+  v5: https://lore.kernel.org/netdev/20250903190238.2511885-1-kuniyu@google.com/
+    * Patch 2
+      * Rename new variants to bpf_sock_create_{get,set}sockopt()
+    * Patch 3
+      * Limit getsockopt() to BPF_CGROUP_INET_SOCK_CREATE
+    * Patch 5
+      * Use kern_sync_rcu()
+      * Double NR_SEND to 128
+
+  v4: https://lore.kernel.org/netdev/20250829010026.347440-1-kuniyu@google.com/
+    * Patch 2
+      * Use __bpf_setsockopt() instead of _bpf_setsockopt()
+      * Add getsockopt() for a cgroup with multiple bpf progs running
+    * Patch 3
+      * Only allow inet_create() to set flags
+      * Inherit flags from listener to child in sk_clone_lock()
+      * Support clearing flags
+    * Patch 5
+      * Only use inet_create() hook
+      * Test bpf_getsockopt()
+      * Add serial_ prefix
+      * Reduce sleep() and the amount of sent data
+
+  v3: https://lore.kernel.org/netdev/20250826183940.3310118-1-kuniyu@google.com/
+    * Drop patches for accept() hook
+    * Patch 1
+      * Merge if blocks
+    * Patch2
+      * Drop bpf_func_proto for accept()
+    * Patch 3
+      * Allow flagging without sk->sk_memcg
+      * Inherit SK_BPF_MEMCG_SOCK_ISOLATED in __inet_accept()
+
+  v2: https://lore.kernel.org/bpf/20250825204158.2414402-1-kuniyu@google.com/
+    * Patch 2
+      * Define BPF_CGROUP_RUN_PROG_INET_SOCK_ACCEPT() when CONFIG_CGROUP_BPF=n
+    * Patch 5
+      * Make 2 new bpf_func_proto static
+    * Patch 6
+      * s/mem_cgroup_sk_set_flag/mem_cgroup_sk_set_flags/ when CONFIG_MEMCG=n
+      * Use finer CONFIG_CGROUP_BPF instead of CONFIG_BPF_SYSCALL for ifdef
+
+  v1: https://lore.kernel.org/netdev/20250822221846.744252-1-kuniyu@google.com/
+
+
+Kuniyuki Iwashima (6):
+  tcp: Save lock_sock() for memcg in inet_csk_accept().
+  net-memcg: Allow decoupling memcg from global protocol memory
+    accounting.
+  net-memcg: Introduce net.core.memcg_exclusive sysctl.
+  bpf: Support bpf_setsockopt() for BPF_CGROUP_INET_SOCK_CREATE.
+  bpf: Introduce SK_BPF_MEMCG_FLAGS and SK_BPF_MEMCG_EXCLUSIVE.
+  selftest: bpf: Add test for SK_MEMCG_EXCLUSIVE.
+
+ Documentation/admin-guide/sysctl/net.rst      |   9 +
+ include/net/netns/core.h                      |   3 +
+ include/net/proto_memory.h                    |  15 +-
+ include/net/sock.h                            |  47 +++-
+ include/net/tcp.h                             |  10 +-
+ include/uapi/linux/bpf.h                      |   6 +
+ mm/memcontrol.c                               |  15 +-
+ net/core/filter.c                             |  82 ++++++
+ net/core/sock.c                               |  65 +++--
+ net/core/sysctl_net_core.c                    |  11 +
+ net/ipv4/af_inet.c                            |  37 +++
+ net/ipv4/inet_connection_sock.c               |  26 +-
+ net/ipv4/tcp.c                                |   3 +-
+ net/ipv4/tcp_output.c                         |  10 +-
+ net/mptcp/protocol.c                          |   3 +-
+ net/tls/tls_device.c                          |   4 +-
+ tools/include/uapi/linux/bpf.h                |   6 +
+ .../selftests/bpf/prog_tests/sk_memcg.c       | 261 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/sk_memcg.c  | 146 ++++++++++
+ 19 files changed, 701 insertions(+), 58 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_memcg.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sk_memcg.c
+
+-- 
+2.51.0.384.g4c02a37b29-goog
+
 
