@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-67997-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67998-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A97B4B513D5
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 12:26:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE871B513D4
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 12:26:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5EB482FAF
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 10:25:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4597F4686E5
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 10:26:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966163168EC;
-	Wed, 10 Sep 2025 10:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73289316915;
+	Wed, 10 Sep 2025 10:25:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ImQzCu5/"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="D0MYVZfU"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2051.outbound.protection.outlook.com [40.107.94.51])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2087.outbound.protection.outlook.com [40.107.237.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552A32DCF55;
-	Wed, 10 Sep 2025 10:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D9330C635;
+	Wed, 10 Sep 2025 10:25:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.87
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757499939; cv=fail; b=gNJlx7Dzmf8sY5V/hZEujiOpEMQ1DHAXpCSe2HzG4f8mo1r1enuctP8GFXiI5HYEVA0BFXbACo/4ndNGEo47p1B2io/OIhLldMoEFewtVMeiPTFYB57ZY9T1AFLH1MrIt15GBngX1Ddn3rhBVVhDGvQ8jdGiaMPk1cqn/+c2cCc=
+	t=1757499939; cv=fail; b=t8wN9M+nbvUo0vaFw1rwJ99QeyHIm7QZ1Yrc1FXuI7nM4u/57/eTFrven3DhJVxCUlsLTaVod+XZioxO20JeSTZ0MFNIqKguXpMGf2uqIjI228C2GiGAn1BtxPh2QxMqCvYYZW8JnIDrHJz/mAACQlgbhTzPJFspz8Kj8y917qM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1757499939; c=relaxed/simple;
-	bh=JlZi5/PNbeFXxkE6VxCPR06ES8sJqO03CPHyUDPd5PE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PYNHNpucfErBdgxqjI8FTc3ONnMxRpQYCe9JQZ0sqYnTNIa65CNDjz+ij800k+o6e1jRlK3/7sAUikSBqKFX3TfkR6sNYFufEM3xAgG+7GGEHj0aC5NSX7Gh+yfE69kLhX9oCC2JILL/S+2nd8e1sq06tE5R5ZwX83Ej0twK0lk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ImQzCu5/; arc=fail smtp.client-ip=40.107.94.51
+	bh=P1d3K8e9NGosJK3nnxXCFzCCmEtFYZaJXk06dhdy8tY=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rdG5HI4L5cjM14WXe9UinCv0HrAThZtzEN49ze2rNfisVtWlH0kkGn+CSgQQncjwsEq+yPEwKtcE3nrYNvgNM0rFMioBaS02E2yW67YJ95E8Wr+/IyXvsLebdpz4/3O/1YrHuz53tuwaAXuABo1dnk1XE63byfj7ikYG5S9JKi0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=D0MYVZfU; arc=fail smtp.client-ip=40.107.237.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=G2gCK64xZ/9QIGYIllUlTHdtG2OxPO+bz9qu6PPfuNIFEe73HPIR+H61krNq9Rg15Lojmaz70KGlVSuHyBIBe3tsxWQBW9sRZJu8fd2sSm7c73/Xb/dI8IycH3mbzF0isoowou9aOp3IxU++AzBPjBWP/+LoscKP+JTOtLEi9L6ccarpqng/JGOVfuyg1u7tCwFnAVU0CyjVsm4Y7hxOYu0lO2NOcHHmmBKMMkbrSIcEPVrAtjzSjt57BReHqVLGMwh1Q9qbuplB/RAA1oAcU55rwRfsNfRX9TxEqy5v8q/NOpFtd7+s/WrVGMb3Jf5VxmTikPEECPYsJhpf8vokiw==
+ b=uMklkVw/sh/5t7ijLHVMTYR4Le5GZil3A+mmRDHbkdjsrPdNNGyCUrwvBkUlYJyLmgVnBtUYZclTh4dXNUXI/weOl9yDczTj6hM0s0Z68ij4eikylaqTGd8cZEPp4wMVyepSRBKuEGFWhh1FgfuIE6mTXjZsT70T3x7iKoIhT8aPPPQrmezaCNig8LghYIK4BvYWV2r3R6HrKrG5RTaYvJA1/TpUGf6T0u/M6mgSoSKM7xyzwwkZWtGTDAdqc1uDqE75e/wIsFafVICxvvCTbgYDbFSohBsf2B6ZyUoROA+M+OJMuc4BB47Y1d6DDQXfrawDazG9Zwax74sabZuOOg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hfZBu/zRtsFZWS1ayHQuYM5OJCppBIObo/D9WeNTVgU=;
- b=jEixQVEql4k/Y5pCki+OqkxwcuP5JNo3A7VhIIUU0XFAAK0t1PZIeSoHAK8Z+uYsIjJF/JVigUEQXxvNsZ8hQYTKwPnpd7RlpVT+YG8PjUz8lbZkGvxt2r/iU+UuS373utk6Wx5H1RmfSEAvPhuAeCQgpS4KQkfHKoBZ83ckX8keKl/73IU4Hui08lDsumlC/VkBiD33AjilZlh3lB9yjoyqHPr244tYmMS9/T1F0k5AqmWvSGO7ZrWThulU8IdZWVqzSdRdZvEsuIJsDfDT0SNdU/f/tbROYHvpG5/bxzXWx3gYwgKVSxmoErKoiveqvMj6EUQXsRCDxKJ6SwZiQg==
+ bh=ia2pCsiipcnyk81IrtZjBhhe6S2s1pxR3vlzaq3jN2s=;
+ b=ns120yF9k0DIZi/uFMVDppVVcTXHjyddFsoFkOviNgS8Ac/0kAyGzV6czTJ9Qz89I0KDZOhq6zCq7OO7V3Uk7RLVL3taP2HKyxbDNV9IY9z/9qhjPqAl5IiNUS8b+7cmi2UXhHj800TIuwg7VvjHDTuG/BCkeJeRqKhbg9N8QABfsSBeJtdou+Hv+9bJimkA8y/lxrSSTLoTxHjC1PtHHlyy7VLeXeUnNBDb+iG6uXWICdPhLWtkXgF9u98OAnmjfAwkU3nwuRACXzblggVMW9Z3t6vocFZdPvBExJ077SDW2SEsz4sU/tUIhfiz37WA08O0PCiis62wxtXHDPJysA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hfZBu/zRtsFZWS1ayHQuYM5OJCppBIObo/D9WeNTVgU=;
- b=ImQzCu5/eneuv4ZwevaR88/vf9mA9Hv0ikreRIxSH+hWuMZpkewqEwz0Qu3hEHSCK5B4updkwS/a3gRXT9XpvyHpyOEZQ0xIScAahaO1WSqZ4sqWaR40wD6S+4V6bUtzK/hSCm1x2LWRSVScZqqsjYXSG6AmZWGs222llfhSmTapNRd24Z5cU0JP+rGqavCRqCMBC7DgFpUHIvn38Sii+2P3HvSbXc+sSkfvvWTabesAWJdGD3oqWHKL5iOuDodf1QqQ95YvdsSInQXjLzf19weIiUKtcyja1jP4UDUAy/19FrIndpJmqw/Rg8em6dqZg0d4fwWZ9a/4/ERsYCzL3A==
-Received: from CH2PR04CA0001.namprd04.prod.outlook.com (2603:10b6:610:52::11)
- by BY5PR12MB4099.namprd12.prod.outlook.com (2603:10b6:a03:20f::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Wed, 10 Sep
- 2025 10:25:33 +0000
-Received: from CH2PEPF0000009C.namprd02.prod.outlook.com
- (2603:10b6:610:52:cafe::55) by CH2PR04CA0001.outlook.office365.com
- (2603:10b6:610:52::11) with Microsoft SMTP Server (version=TLS1_3,
+ bh=ia2pCsiipcnyk81IrtZjBhhe6S2s1pxR3vlzaq3jN2s=;
+ b=D0MYVZfU28ZNBOQR8Im7Ugzd+IIheBd+ApABUkVyrsXSCrTaHSJRSq5AfTO31GDvqDiOsYnbD3tFTmfYkx0yA2Mbjsup0VFN6tnZ3srr1SrmJb/3JcmH91TP92BcLb/wYhxKaVaUGEF95zCHKjPieMY7jsmJWPYoO35kNir4sv63znKWNmtJc+W7TdTloP1Bm1B5ZsnxGuthnp4JPiuhrTQSCNEegQehF+Wo+97e5yj6hzTAQOE1gpvUtIPcbVm+1+kffsiczokFpD9vEho25jEBhoKZMXpIGEA9mOcphio7Lb07KmrF/QW2011qI6QwKRGy3s8lD4sXVk0x/0/JSw==
+Received: from MW4PR04CA0329.namprd04.prod.outlook.com (2603:10b6:303:82::34)
+ by DM3PR12MB9435.namprd12.prod.outlook.com (2603:10b6:0:40::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9094.22; Wed, 10 Sep 2025 10:25:34 +0000
+Received: from CO1PEPF000044F0.namprd05.prod.outlook.com
+ (2603:10b6:303:82:cafe::24) by MW4PR04CA0329.outlook.office365.com
+ (2603:10b6:303:82::34) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.15 via Frontend Transport; Wed,
- 10 Sep 2025 10:25:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ 10 Sep 2025 10:25:34 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CH2PEPF0000009C.mail.protection.outlook.com (10.167.244.24) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1PEPF000044F0.mail.protection.outlook.com (10.167.241.70) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9115.13 via Frontend Transport; Wed, 10 Sep 2025 10:25:32 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9115.13 via Frontend Transport; Wed, 10 Sep 2025 10:25:34 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 10 Sep
  2025 03:25:09 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 10 Sep
- 2025 03:25:02 -0700
+ 2025 03:25:09 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 10
- Sep 2025 03:24:56 -0700
+ Sep 2025 03:25:03 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -91,10 +91,12 @@ CC: Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, "Leon
 	<linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>, Gal Pressman
 	<gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea
 	<dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next 00/10] net/mlx5e: Use multiple doorbells
-Date: Wed, 10 Sep 2025 13:24:41 +0300
-Message-ID: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next 01/10] net/mlx5: Fix typo of MLX5_EQ_DOORBEL_OFFSET
+Date: Wed, 10 Sep 2025 13:24:42 +0300
+Message-ID: <1757499891-596641-2-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
+In-Reply-To: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
+References: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -105,146 +107,88 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF0000009C:EE_|BY5PR12MB4099:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6dfa151a-56e2-4068-b775-08ddf0545fca
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F0:EE_|DM3PR12MB9435:EE_
+X-MS-Office365-Filtering-Correlation-Id: 25bbc07d-dbe9-46e2-8aa4-08ddf0546099
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|36860700013|1800799024|82310400026;
+	BCL:0;ARA:13230040|82310400026|36860700013|1800799024|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?zyAA9XzNmB+xYuT9Pdzagooj7KkaZ9xBCGmKV2qIeoXI3APlCapuML3GZA5h?=
- =?us-ascii?Q?BVMDqXi3MTcfm2mv1BeqTKLTCWYvMnTvl1pU6Zilg36RMHpZSf0Ojk2R8fBt?=
- =?us-ascii?Q?0OaiEjtvNB2A6F1AJw6LNnxmfaZgLgaYXn7hmuvSbl5Q7qLuQU4axm1Mp44P?=
- =?us-ascii?Q?tRYhNULyHgiM76FI+G7tCfjgMSXqg4gEfx2zH+COghCpTK3BASe6wfofuLzK?=
- =?us-ascii?Q?ImuIyLI/QnGFMabsIWOG7p9U88+j0q293ck9sq0uU9YXfBd4FAh7hue7c9+F?=
- =?us-ascii?Q?T49Mzh89kEEXrLcRo7LkZryPdEIHQPD33oLetkzJLTg99LiASSzvPpV/COc7?=
- =?us-ascii?Q?uf5n5/P+x5NXh9CzFo/AostWLvLEN0NzC8wXL7pcMKjL+nnkAYHEDfD8q0oM?=
- =?us-ascii?Q?3IbFcRGu4OPqn6zI882f8zlIersw/xCHDk/TZkQKWFBInkBBMXA51YLmRj0F?=
- =?us-ascii?Q?0Qp5u54h2UyXmq6mUQ1b85qgoj/s1JtbhS9mgIxK7UmCLfc6GswkfaG9Uij5?=
- =?us-ascii?Q?prjSi6mpZB9GZa4GBtaOyyKgmi54m9sLys1iMhE7ITRj6J0ooU3OPcsidOhD?=
- =?us-ascii?Q?tpKr2FjJLXtq1KDTE/HlnQDtHST42NLmb3kFLosAR5/w6SDETEBW1gfheHaw?=
- =?us-ascii?Q?gtQpSeNY7scXC+u9GwwwSMzDcJui/a7nAR1UILUird4mjt/KWDhALUPtFTaS?=
- =?us-ascii?Q?m/ALInFo5ZN7dPp8jlBG1Ri/jraSdTKaLoALxyvnQAAoqB/Kzm7ZlcljJHUj?=
- =?us-ascii?Q?aM1vRt0KP11Xxw93GLlS8jo7aWK2gLFhXvTihwCsirAkVexSRy3GBB3u+6yE?=
- =?us-ascii?Q?bOy+hewQubLESnGPW72f066UOY+IIKNi7Vx/PKoo5DaJVSPsKDmFqhv9jvo5?=
- =?us-ascii?Q?Opa0CkQnTiI3zdKPeRzXTWRiLvSaXbkQNnAIJvKGdZ1Lo5LJoyh3ahRGLR7e?=
- =?us-ascii?Q?shjozpFxi/2iZChc5Bqia4PYyZT2bszKBVXxhtxFQnJTimOoUg58mYRV+el6?=
- =?us-ascii?Q?KKbzCEmk22ITtnqyrsCBUTkuFuFO7VZeBJ0wqo5N04+BmmTvsZOOPdU9pTHw?=
- =?us-ascii?Q?7EZPkfDBmm9CEqSnCPLE3P8yd0FZlhT3NlTcIpe423rnb0PXKNZnK5u30/1s?=
- =?us-ascii?Q?KOIR+rYxbmCr78lXgHgej/Rxx22Lx6jC38UQ1tQM++yQ5q3d00BZmuMyvwhk?=
- =?us-ascii?Q?IVH+S2aA1ZsuQqgOpttt85XJho58JKKPaooOsrejpwqDMaUjh0i/prqqixRh?=
- =?us-ascii?Q?mT5pGRVPbcbSZVIuzVRn5kbAOUUglqi1YRRJAtrU1xp3LZejbtYvwf5S9g5/?=
- =?us-ascii?Q?wU/ihGxl3wiAOPil2kDRqRwJmzKiS5ScOZQyAgRubg1XC9fCUL20FYsbtpjT?=
- =?us-ascii?Q?025qtSN1ISIYTQbeAxSqLo4/hKt6WZT/+96q+MQ8C9AdvHnnJb0DBoBuE3HI?=
- =?us-ascii?Q?7iZEjyBVhXyQa9ki2qZacbHMYpxO9zutLShkOIjjXHmcpu4uilBYAo3r8WnW?=
- =?us-ascii?Q?lxGV3dtSNeSbDUiIyaQBui+DKwnmqNfI0yvR?=
+	=?us-ascii?Q?0EDjjjirK/MTnehGHYP2mGs1R0lln5ZovkYsYOpR2PdOI/7LeIyqSVr8ICzb?=
+ =?us-ascii?Q?EyuI6Ppgbks2GFw0c4rTiOeACUkMNc7QX5Eo+YZwc9x3s2j+T/0RsHKskIx4?=
+ =?us-ascii?Q?Pbm3rrLe9t70nwSWhQBQ5I2Ev4vVaf6Ap2JLXY1mQsXTDtxhm5TjujUewTuk?=
+ =?us-ascii?Q?1C6aTJijJkQr6YxgHVd3KXjJ/Vu7sYD9lvA510X8FhVRHl5v/x74bXypzqXR?=
+ =?us-ascii?Q?B+mSOD+TplRAAatKUZLXz4sa6oTWjP7VS0E8vAOhVVAc8uEcXeng6keG0iWU?=
+ =?us-ascii?Q?uV88leNRQuI3NE7VVMfH0BEtbj+Wi9w6giBxNmAbX2TBsSbNAcwfq6lvhLsx?=
+ =?us-ascii?Q?VZdaf8RM19GXef+/Oka/tdyMWzBWKxmCsSvqct3w6XL4hIycD3R0/i6Tzskf?=
+ =?us-ascii?Q?MdYqjZUltd+V/aN0KCqq2xiBozCy3fxVRhbaxYz9jEd1/dmtNkGIR/d0fkaa?=
+ =?us-ascii?Q?jSv1rqW9BrDyigoM2KtdJnKO3w7AZf5MAhb1A5Yg0MHR0N2Nrs+9FDYFktW8?=
+ =?us-ascii?Q?/2NSd40ArFEPJPObE/Y0gwO7bY7RftovgIFe+wW5+ZSZBUt04BieSByfnWiI?=
+ =?us-ascii?Q?xERRYY0wNBydbWVPb70ncY55lQJdw8ZI3JoYNr8T01sXApeTLZlx1KyauYJK?=
+ =?us-ascii?Q?6xcdwPyZXrU/Z1IOtpHSBWhwVj6bAOCoO1a4h/jtF98YRpYzIpO0iooDUp+H?=
+ =?us-ascii?Q?6OWLbQM7tddGFT7vwCBdrOLdrK3oOI0CIFTo8ongiTkYvVvDiSFdZlm20mhp?=
+ =?us-ascii?Q?98gzsA+q9kcsHTK3AdAphaCt+kUrgFi9x5lEzkvfb/1o2snBP5654HMRDd/d?=
+ =?us-ascii?Q?aoGLf8urlz1k3pDcM/BLo3qzDzL3cR9SFT68LSn6/Z1e6NjcStLX7pfmBujH?=
+ =?us-ascii?Q?4xk7esWSYfDaltYvKFC/twp3Gbtgvzcy/Q2nkcAU0BUnPMbSCke7x4pcj9c+?=
+ =?us-ascii?Q?WN980GBfvzFdM9TL/+cihSSyGkOSWCGLVErwP/Cp/g+FFDCyLMtDTsD+KDxQ?=
+ =?us-ascii?Q?JlrLw6pgm/cG6ahWy+K02qXXUbBZqSPjbHMIhcMN8OJdzG+0PTw0aWPnbXCW?=
+ =?us-ascii?Q?JmXRe+OPLurm2DZuUIQ6xTLaQL0d949Vsn5459ameSR1byLUEruYrQYDSrjZ?=
+ =?us-ascii?Q?a2TzmUSceHWK/8sZ7+mYaipnkEMANZTunCp8czEm1wJkGwFcy0Jvb5yzwQy8?=
+ =?us-ascii?Q?sri6hEljqynnySPQiRMGcu/USwRl+yvOh5D9K90l96NmQ7duLTgAnRsoHEvI?=
+ =?us-ascii?Q?jOLGgiKYP0FAalVCPJ01kzwde6YPPhVRGVnoZTeaUJVeRvDfoN1sEgvnDI1l?=
+ =?us-ascii?Q?9BZ9hwZF8DldnvyRUUaJHPoExvuRCwwEn//QBPnLUO2PxctpHaMdA1Zx3mCD?=
+ =?us-ascii?Q?swNZgnXPf25PIZ6Wlbf0tmp9Jy0oHO1oTSi0vl+a0LhMaE78WjufJdEFLMZ/?=
+ =?us-ascii?Q?8H/mpX9jEmeyu2ZM1bUw3MpezkknQfkbZcQEqF2F5c2+/6k/I4orkaOOXCvH?=
+ =?us-ascii?Q?o/3+7VNGG4HHMcy+pxrNmvAdnViuOiDjm/CS?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(36860700013)(1800799024)(82310400026);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 10:25:32.8349
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 10:25:34.3047
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6dfa151a-56e2-4068-b775-08ddf0545fca
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25bbc07d-dbe9-46e2-8aa4-08ddf0546099
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF0000009C.namprd02.prod.outlook.com
+	CO1PEPF000044F0.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4099
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR12MB9435
 
-Hi,
+From: Cosmin Ratiu <cratiu@nvidia.com>
 
-This series by Cosmin adds multiple doorbells usage in mlx5e driver.
-See detailed description by Cosmin below [1].
+Also convert it to a simple define.
 
-Regards,
-Tariq
+Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
+Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-[1]
-mlx5e uses a single MMIO-mapped doorbell per netdevice for all send and
-receive operations. Writes to the doorbell go over the PCIe bus directly
-to the device, which then services the indicated queues.
-
-On certain architectures and with sufficiently high volume of doorbell
-ringing (many cores, many active channels, small MTU, no GSO, etc.), the
-MMIO-mapped doorbell address can become contended, leading to delays in
-servicing writes to that address and a global slowdown of all traffic
-for that netdevice.
-
-mlx5 NICs have supported using multiple doorbells for many years, the
-mlx5_ib driver for the same hardware has been using multiple doorbells
-traditionally.
-
-This patch series extends the mlx5 Ethernet driver to also use multiple
-doorbells to solve the MMIO contention issues. By allocating and using
-more doorbells for all channel queues (TX and RX), the MMIO contention
-on any particular doorbell address is reduced significantly.
-
-The first patches are cleanups:
-net/mlx5: Fix typo of MLX5_EQ_DOORBEL_OFFSET
-net/mlx5: Remove unused 'offset' field from struct mlx5_sq_bfreg'
-net/mlx5e: Remove unused 'xsk' param of mlx5e_build_xdpsq_param
-
-The next patch separates the global doorbell from Ethernet-specific
-resources:
-net/mlx5: Store the global doorbell in mlx5_priv
-
-Next, plumbing to allow a different doorbell to be used for channel TX
-and RX queues:
-net/mlx5e: Prepare for using multiple TX doorbells
-net/mlx5e: Prepare for using different CQ doorbells
-
-Then, enable using multiple doorbells for channel queues:
-net/mlx5e: Use multiple TX doorbells
-net/mlx5e: Use multiple CQ doorbells
-
-Finally, introduce a devlink parameter to control this:
-devlink: Add a 'num_doorbells' driverinit param
-net/mlx5e: Use the 'num_doorbells' devlink param
-
-
-Cosmin Ratiu (10):
-  net/mlx5: Fix typo of MLX5_EQ_DOORBEL_OFFSET
-  net/mlx5: Remove unused 'offset' field from mlx5_sq_bfreg
-  net/mlx5e: Remove unused 'xsk' param of mlx5e_build_xdpsq_param
-  net/mlx5: Store the global doorbell in mlx5_priv
-  net/mlx5e: Prepare for using multiple TX doorbells
-  net/mlx5e: Prepare for using different CQ doorbells
-  net/mlx5e: Use multiple TX doorbells
-  net/mlx5e: Use multiple CQ doorbells
-  devlink: Add a 'num_doorbells' driverinit param
-  net/mlx5e: Use the 'num_doorbells' devlink param
-
- .../networking/devlink/devlink-params.rst     |  3 ++
- Documentation/networking/devlink/mlx5.rst     |  8 ++++
- drivers/infiniband/hw/mlx5/cq.c               |  4 +-
- drivers/net/ethernet/mellanox/mlx5/core/cq.c  |  1 -
- .../net/ethernet/mellanox/mlx5/core/devlink.c | 26 +++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/en.h  |  3 ++
- .../ethernet/mellanox/mlx5/core/en/params.c   |  6 +--
- .../ethernet/mellanox/mlx5/core/en/params.h   |  2 +-
- .../net/ethernet/mellanox/mlx5/core/en/ptp.c  |  6 ++-
- .../net/ethernet/mellanox/mlx5/core/en/ptp.h  |  1 +
- .../net/ethernet/mellanox/mlx5/core/en/trap.c |  1 +
- .../net/ethernet/mellanox/mlx5/core/en/txrx.h |  5 +--
- .../mellanox/mlx5/core/en/xsk/setup.c         |  2 +-
- .../ethernet/mellanox/mlx5/core/en_common.c   | 45 ++++++++++++++++---
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 37 ++++++++++++---
- drivers/net/ethernet/mellanox/mlx5/core/eq.c  |  8 ++--
- .../ethernet/mellanox/mlx5/core/fpga/conn.c   |  1 -
- .../net/ethernet/mellanox/mlx5/core/lib/aso.c |  8 ++--
- .../net/ethernet/mellanox/mlx5/core/main.c    | 11 +++--
- .../mellanox/mlx5/core/steering/hws/send.c    |  8 ++--
- .../mellanox/mlx5/core/steering/sws/dr_send.c |  1 -
- drivers/net/ethernet/mellanox/mlx5/core/wc.c  | 16 ++++---
- include/linux/mlx5/cq.h                       |  1 -
- include/linux/mlx5/driver.h                   |  8 ++--
- include/net/devlink.h                         |  4 ++
- net/devlink/param.c                           |  5 +++
- 26 files changed, 162 insertions(+), 59 deletions(-)
-
-
-base-commit: deb105f49879dd50d595f7f55207d6e74dec34e6
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index 1ab77159409d..f3c714ebd9cb 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -32,9 +32,7 @@ enum {
+ 	MLX5_EQ_STATE_ALWAYS_ARMED	= 0xb,
+ };
+ 
+-enum {
+-	MLX5_EQ_DOORBEL_OFFSET	= 0x40,
+-};
++#define MLX5_EQ_DOORBELL_OFFSET 0x40
+ 
+ /* budget must be smaller than MLX5_NUM_SPARE_EQE to guarantee that we update
+  * the ci before we polled all the entries in the EQ. MLX5_NUM_SPARE_EQE is
+@@ -322,7 +320,7 @@ create_map_eq(struct mlx5_core_dev *dev, struct mlx5_eq *eq,
+ 	eq->eqn = MLX5_GET(create_eq_out, out, eq_number);
+ 	eq->irqn = pci_irq_vector(dev->pdev, vecidx);
+ 	eq->dev = dev;
+-	eq->doorbell = priv->uar->map + MLX5_EQ_DOORBEL_OFFSET;
++	eq->doorbell = priv->uar->map + MLX5_EQ_DOORBELL_OFFSET;
+ 
+ 	err = mlx5_debug_eq_add(dev, eq);
+ 	if (err)
 -- 
 2.31.1
 
