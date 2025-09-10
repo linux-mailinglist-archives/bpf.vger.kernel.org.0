@@ -1,214 +1,172 @@
-Return-Path: <bpf+bounces-68031-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68032-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63BB0B51D90
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 18:25:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E523B51DB1
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 18:30:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDF59171B98
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 16:24:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E63A7B4072
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 16:26:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26EE335BC5;
-	Wed, 10 Sep 2025 16:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762DA31DDB7;
+	Wed, 10 Sep 2025 16:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="C6EP4p06"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JcYn8pFo"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2063.outbound.protection.outlook.com [40.107.220.63])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1B5334383;
-	Wed, 10 Sep 2025 16:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757521471; cv=fail; b=BRxio5eZQSxNZXDXS81cUwZ1eD/QeO9iKZJvRF1oajNE5Rz50zYSyeUKb51D5FuXUjWOQ+amnUgbkBedL+xlHeFFhp3MO1VF2ykKIn0sxqDSS+gjszQKgdteKZ0KWOB2DkxOpjUu/GfTMYmtJ5eqna0kDlTXxDkjXJIDz729EUU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757521471; c=relaxed/simple;
-	bh=E0s3rl7V770k8mFVzgCsm6pwAO8we6LeZdqLNCmz5R8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=QNWsKCqIJKhcAIhCDJyKb1GJGnGBl8tEEs93k/aZJ9E+PnpBdBBdCvCS49267wt5rSCiz+Z/0IqJvZOoipD86hsbNwbdpQ5RHrcP+G9F7AsWQ3AWYs+FjyPJ2Rqqtt9Xasre3djkPZnrcA0fEhrLzJsot2jANmi+oLkfmYf8Cuw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=C6EP4p06; arc=fail smtp.client-ip=40.107.220.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=neAR6T9s/293A5SNcpqMO3w1Pgnb1PM/BdksBYBVwVXoftex585LN6St/NlRWcF4FSvZRv8aGLQIlKaOKB1SeUv+nyHP0MxifA8s+vt0ah0Gvnz6VVmXk4ZSmuFXywhUmwHNYpq51+5aYflso/e2cEv1hByYIef2CC8e29By5cau3zj1GGvNL8+RDrpQH4SuD4vtr/TMDRvzpqmvgXrW+jno7RJ4QDlE3HMW9/utwVf+qjVEESAXCKcPDUFS/s2soKFV0btd5LNOK/an3BqGMG/2bw/3tehuS3wD8c4M/x0oyrH1T/JIDPuwLYS/T6Ivbs2XcM5s87yv7cZBncRYQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L3W9npK3djVla+Ad5wKOrlAVsX2c2qu/CSWnxi7FWes=;
- b=wpy96FInxuSE3+XBazVAyPClmh37sdNqUdaLtqmvvWCG77yaQsCv7QclNxzvU9tVuJrs4n823EsRkmNYOB9vzdw1Aga+3Q+sgWSaYZOeuAI9W5cR8igdfrLiZDWL0H28Xue2k1JF9hfV2Y+DNyCLkqvCdoHmRYnz+S7LXI7RtPov7iMnI9y04wkhHBPaaARyJ0veg0m5pKksbR8/sbjtYNloxMc3tf7XCoFnf9lMtg9xFXRYqicd59ET9Pq4MlVpE8rs8RCmVBmqxT59zLMy/t0QYqna7x/6dmZ49o/cVB9pBflbokLonAvTeitJFN9fQ07cTCBUvJS1+cEgb7316w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L3W9npK3djVla+Ad5wKOrlAVsX2c2qu/CSWnxi7FWes=;
- b=C6EP4p060dtt7gZ2OuJMsOD/iBKV+jD9/uX6latRo1lKeugFmMBbXxQ7G3kVf8Dzmy8Vf09xa74hQJnlgfAgKPeksQZ4bwPcTIUr7IDpy1Aw6lvK8pjyMY8sd2BmUOmbg+nUpbu1UmhRw53XaPDlOxoXNz/NHtopIHnl7lzpj5hWvLXZhYoD+8nisYEqjHuLWv8U7zaR8pdmIIJZn0JxFGf3u/n3f9PCICImmsKlZfd47R8wpmImORELi0DkG464DGMqX4vr/cmPXPl99TSxj6xKmoWBWQrNdeIHd+xGw0Hgnfv4seD+EDadOEEjDdfoirMR2avNO+rhog35MEKT1Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA1PR12MB9031.namprd12.prod.outlook.com (2603:10b6:208:3f9::19)
- by DS4PR12MB9748.namprd12.prod.outlook.com (2603:10b6:8:29e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Wed, 10 Sep
- 2025 16:24:27 +0000
-Received: from IA1PR12MB9031.namprd12.prod.outlook.com
- ([fe80::1fb7:5076:77b5:559c]) by IA1PR12MB9031.namprd12.prod.outlook.com
- ([fe80::1fb7:5076:77b5:559c%6]) with mapi id 15.20.9094.021; Wed, 10 Sep 2025
- 16:24:27 +0000
-Date: Wed, 10 Sep 2025 16:23:56 +0000
-From: Dragos Tatulea <dtatulea@nvidia.com>
-To: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net, 
-	edumazet@google.com, pabeni@redhat.com, kuba@kernel.org, martin.lau@kernel.org, 
-	noren@nvidia.com, saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, 
-	cpaasch@openai.com, kernel-team@meta.com
-Subject: Re: [PATCH net v1 1/2] net/mlx5e: RX, Fix generating skb from
- non-linear xdp_buff for legacy RQ
-Message-ID: <x4b26sfgbwuxodwbkk5gl5ohczmalycr3qxo2xwctiygzvvydh@fu26veserybx>
-References: <20250910034103.650342-1-ameryhung@gmail.com>
- <20250910034103.650342-2-ameryhung@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250910034103.650342-2-ameryhung@gmail.com>
-X-ClientProxiedBy: TL2P290CA0008.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:2::11) To IA1PR12MB9031.namprd12.prod.outlook.com
- (2603:10b6:208:3f9::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4E6335BBE
+	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 16:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757521681; cv=none; b=IBz1OKxUjtVlzZaeXIZCWLJuoQgwWFxpR7AqrhwzkLYRaOmDjtUnho/hovckw+FeoI9lzys+7Nb0B4bosIJafS0frArNBf6M8rVTgpyd0+pJDp2iWb/2dgBrdZSdQutDgDDtAViuQv1V1fsH+7yKpYxpL8lMxLBuZRzGn0+FDAI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757521681; c=relaxed/simple;
+	bh=krweP/zuxTizKviTwyLJflyCL8q71n65c9YQ5FewvQU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SooA0/UDAdQ1Qa/aOYpD7PKmpIOfaal36J9Rqh84UYr6Oyix1q07/OCX9jLxbBh3QdK1nC3jJdXl/uUOuyNywrW40eaaGImYUB+gaW8sA5B4WI1qwx+l0U32nll3Sxue/BHIKNGJnIQSh8CYLeYophzlsliTGBxVLGMWi2xLLUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JcYn8pFo; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757521675;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=v0CqdnwyhrTw0/EQeDLHSK81Cf4JYY7IwhPTKZ3BmOg=;
+	b=JcYn8pFoQscTJ1CmqamfXrLF+Sy5LTTNFJn9Ju0GKUX/nKEkGozIigd2IkdJGJ0sbFoUy+
+	JynPMTOAND46qFXpvWpXftHef7pA95A2w7yCkBWusCVPnOcz/8GY6n7zIelRctgISfZKYH
+	tDF1oNLxgbOW2pE+hEeChUfmH7dBRW0=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	jolsa@kernel.org,
+	yonghong.song@linux.dev,
+	song@kernel.org,
+	eddyz87@gmail.com,
+	dxu@dxuuu.xyz,
+	deso@posteo.net,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v7 0/7] bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu maps
+Date: Thu, 11 Sep 2025 00:27:26 +0800
+Message-ID: <20250910162733.82534-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB9031:EE_|DS4PR12MB9748:EE_
-X-MS-Office365-Filtering-Correlation-Id: 518d50f6-6865-4a67-7405-08ddf0868303
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?d3mSEoEhim0bDmUYiXl504cgzVadFe3hoasLxEAhtkQWPzfj9ipFHU52/+Hi?=
- =?us-ascii?Q?FFzh9MZ+xRZyip9jO4kt3e1Gna4tF+1xWf+XDVQh563qzPYLh2IQ8pS6KuUv?=
- =?us-ascii?Q?yBWlGVsZAmAsSEBeCSXIdQEN07WfOWyLdhFlLiRn/0eE6/YkCDCtp8hzDmMI?=
- =?us-ascii?Q?q2caA4he4rNnQoi8s6DI9NS3LgIQDnqRenOGk1y117ky5SAIRHu2UDcd9hMg?=
- =?us-ascii?Q?kozH1L9vbdtgXF+d1HJpV0pWgkKpfoB9r86GNj/uoAi9ebyfW8QEBMifHVNn?=
- =?us-ascii?Q?bMfxoq/crW0BtwP+R7erIo/w7hzaFxDs+1fbBzVdhOA9xn029OFG5EhlAUP8?=
- =?us-ascii?Q?IXuLvfL+sU0zZf7QcaajkbEkYUHcR9Ggus49viIWjfhugtUq7jYwLUqpBt4x?=
- =?us-ascii?Q?3jOlGPZ+vjo9wgXC+MUzRA1AZpfI1ud/kY7q+RQOemw7bPpTsD1EUKfqhX2p?=
- =?us-ascii?Q?2T37ESdRA06mQ0ZOdAMZ4XSwY3KR/g7ff/g6VlxCrC7+3tynDW+iQ4vFMGtY?=
- =?us-ascii?Q?RaBR+i4/pY02Y3qTXup6dK21gv07ItvqJ8ATu53f6B2h+awLbkqrKiKicDUq?=
- =?us-ascii?Q?X3PbudqlM+ucApPmssJLZTqX3RrPwoLf+yBtU5bLJOyR13c2zXQQYIaN2rw+?=
- =?us-ascii?Q?SkyVNizenwAt+JRJz0I4EX9r7JTkBukM9y1xLEwmKszH5z6+g08fndIdY39v?=
- =?us-ascii?Q?v6Oz0VTdZfWAJfK9Mu0ODMmMbYqvt2VlvkALfl4RKAkPLZK79SxA40Q8P/pl?=
- =?us-ascii?Q?4OTuBCUsE7oRcLEiSa4VNvqKBadWURToxVJ4gUrivfzK/NLHLGCrWzSiEjK0?=
- =?us-ascii?Q?pa8ygGlDPoa2owEtzGhR7ZDdgGwuqsQbxrbPC81HvrxlkoIBt+IUaeb6qi5o?=
- =?us-ascii?Q?QnAvrRY1dw6t8f8vboOWkmg+B2JatYqlXGH3fC3fz/bLtGukp65jN+k4MpPT?=
- =?us-ascii?Q?0TLeR9P5FLVdcehCc1wAA1tgidD33+aoR+5GY2G/jPzkJgOJko8zakqsWtzE?=
- =?us-ascii?Q?P1mDJhR5oKDnbDGI/KZaFckR/wo2ZWcTezAic94FXUiyrCSmN6IN7hjIgohy?=
- =?us-ascii?Q?6XjMHVIhQvD4sSnVoBFSjgivHdtSwPBGkIpjukJlVUIRs+nE5RIFgvPXEf1R?=
- =?us-ascii?Q?9nDdVQrCsTpggYWgOn/8/Et4EnV2aEArbXK0Fk7/VhDoOZDIrSM/3AHQAiwf?=
- =?us-ascii?Q?DqEeU/823mF3dtJ1qQEsV172bZyFugKqvJ/KlQySebP3bLKgW4Fz5NzufqWf?=
- =?us-ascii?Q?Azuqqgd2FdkQ9iH95NliAEsCqrnL8ib1SGQfoPGZ9PpSmh8a+WwlGvafO9j2?=
- =?us-ascii?Q?X9LwptF5p++hPq9NO3AiBVjJo6ySqqjjRnO/hflDbAUoRbLj6nmgXePsPXUj?=
- =?us-ascii?Q?+tkQsSxFQI8jppzdEr+trw7/AWcVahYc1Hh3MJOSjjeqlBkXMk76UBUGSOxc?=
- =?us-ascii?Q?rC/j7U/smt8=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB9031.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?IInPwQ7RCh8SULgxRVf7R6Q9D6FhEyIlL0w2fCEDHl68UnxvQywTDDNTFmnK?=
- =?us-ascii?Q?pJ9eccSUz4afRL5U/nzm4FJxHiVzbfykSGmiA9Xfgtk8FOyW5kW3ygUg8RxM?=
- =?us-ascii?Q?9ZbYHxmC0pJriv0h5CTli3psftVx6WNg/bvENBTHLm6lz08QiZub4NhrNK0N?=
- =?us-ascii?Q?PRw7RvNG0JB/j18n9/+sFrm+kk0zLKBaut3B3f8bUF63xxoQa2ekBvxNkfzU?=
- =?us-ascii?Q?NYR00lkSXjdYDX9VALkIBJ9eGaoJRsd09sJeybSi5vwciCBjO0sUsVJiPeTA?=
- =?us-ascii?Q?PJy1UrsYhDoVnt9JpL93NczMVCLVF41Z0byDnHFUW0trSs6WWkimCC8hswYh?=
- =?us-ascii?Q?Q7kXWaXx3NiCeYziP5pJjkcxNunsehiFyRgd/TNlIrrs43PB9+EmHpQlM7QJ?=
- =?us-ascii?Q?3dM5nbSI19Yuw4hkUxZF2hEsfUPwV1SseL3vA6s7I5OuchwhcetSKKszf9i4?=
- =?us-ascii?Q?GOqUDJkiFsSYoZzCE6OnwJavhlMmSsVKysCUt7ZxayihhMsqPVNDyS/dxvQt?=
- =?us-ascii?Q?Ib1mKLAaxSFBzYcCUIP/NuikWKwko570hp2Te5Oz/HnOYi+C3UrGXFRseWx8?=
- =?us-ascii?Q?ukKWe3ttxSbiFgjgFj8bd/vHGNx05q66biMS915Q1VRbCXEZbZptpHLhyvLo?=
- =?us-ascii?Q?d5+R6T7dZiMpMrCbe30bUPsUHFg9BGxH3EfOuSLgybu3nGRsrETX8jqJ1a6O?=
- =?us-ascii?Q?BSxCbafmQPRKjoKrs27RlPCUQxaaXUyQD7Ceg5sELYxDUbwWiAtLzf2Al+um?=
- =?us-ascii?Q?idhQpGEWeudWMoOBV5kk2LTaQ8jGxzX3ody/3Q2Pf/uRkH6v7UsAMs+20cZt?=
- =?us-ascii?Q?HecooUJRjOJPnTqCyqC/9QYPInpUp+VUPD5pUlYJlpXsTErdz7qbsSmnzBTW?=
- =?us-ascii?Q?jvO/P7ySXu1Y/ex6sCsY1G3Gm6B6JmoN4/FU2Y5wOgx/4MZE9RA9GZRdUDE3?=
- =?us-ascii?Q?PnKyM2aSEhbV4jHieGGrMoATr5RF/f3+jbmLZ4v7GbAsPNgcfI3A4op1Cc+9?=
- =?us-ascii?Q?gqgzZDrMnKA9NGNEsM8tpvqH61V+eORqa26rBhRwaXC7jFtMJI+3BGEOVj8R?=
- =?us-ascii?Q?2o6GQdjkdbhKQKJ/yBOl4Cm62G8iIgG6dBZUtbDJzVRKEXc4ZprlXuWBebei?=
- =?us-ascii?Q?b7Ut4pJ0x8KpYBrgXPra5J+tWVC/PhfkkIRXwsyz7ikSJWjhb0P6KjBFMETw?=
- =?us-ascii?Q?OudxyL+NyS5inf2owEul85L92Rp+l2FTZ8uBwt4MFCzYwzs/HMvvFQl3WbTz?=
- =?us-ascii?Q?asv3+nXzzgv4fya9mtPirDKKzAGVXLjCI1LqE6QoBylFc1T9m2kNtNXSYSmH?=
- =?us-ascii?Q?8/f7d7+XBhfsnNy18NhV38/OpNP+40X4mgRLb88mpCIhsDzUsoadl3ux3g6f?=
- =?us-ascii?Q?YxeLXosyW3+V70mcvJD7znVqKvflVYpjB1K01YDZbcxQTfOwp8wsTDDBKjq8?=
- =?us-ascii?Q?1wwif8upwyaNZccxdWhiInZP48fmfi6RP3Ede+/7MoeDXeGpWuQPMgTXn3Yq?=
- =?us-ascii?Q?PWOmb/+FtAe166q3CwOC/9zgd5mxFXbl90L1vqZZ5teHX1AfCflvblDFGhBB?=
- =?us-ascii?Q?1SqLPtqoWv+0OWeJCEh4oFFbjykH8DDXlQt9Pmr3?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 518d50f6-6865-4a67-7405-08ddf0868303
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB9031.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 16:24:27.5549
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2CT2Ph9VS271IZ3Qt4ywNC6F2uullq6jsZllkqY8HJ/22T2cH+9znr01nC8mk3NPn6moigjoa05Jvj++aw6rpg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PR12MB9748
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 09, 2025 at 08:41:02PM -0700, Amery Hung wrote:
-> XDP programs can release xdp_buff fragments when calling
-> bpf_xdp_adjust_tail(). The driver currently assumes the number of
-> fragments to be unchanged and may generate skb with wrong truesize or
-> containing invalid frags. Fix the bug by generating skb according to
-> xdp_buff after the XDP program runs.
-> 
-> Fixes: ea5d49bdae8b ("net/mlx5e: Add XDP multi buffer support to the non-linear legacy RQ")
-> Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> index b8c609d91d11..1d3eacfd0325 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> @@ -1729,6 +1729,7 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
->  	struct mlx5e_wqe_frag_info *head_wi = wi;
->  	u16 rx_headroom = rq->buff.headroom;
->  	struct mlx5e_frag_page *frag_page;
-> +	u8 nr_frags_free, old_nr_frags;
->  	struct skb_shared_info *sinfo;
->  	u32 frag_consumed_bytes;
->  	struct bpf_prog *prog;
-> @@ -1772,17 +1773,25 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
->  		wi++;
->  	}
->  
-> +	old_nr_frags = sinfo->nr_frags;
-> +
->  	prog = rcu_dereference(rq->xdp_prog);
->  	if (prog && mlx5e_xdp_handle(rq, prog, mxbuf)) {
->  		if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
->  			struct mlx5e_wqe_frag_info *pwi;
->  
-> +			wi -= old_nr_frags - sinfo->nr_frags;
-> +
->  			for (pwi = head_wi; pwi < wi; pwi++)
->  				pwi->frag_page->frags++;
->  		}
->  		return NULL; /* page/packet was consumed by XDP */
->  	}
->  
-> +	nr_frags_free = old_nr_frags - sinfo->nr_frags;
-Just double checking that my understanding is correct:
-bpf_xdp_adjust_tail() can increase the tail only up to fragment limit,
-right? So this operation can always be >= 0.
+This patch set introduces the BPF_F_CPU and BPF_F_ALL_CPUS flags for
+percpu maps, as the requirement of BPF_F_ALL_CPUS flag for percpu_array
+maps was discussed in the thread of
+"[PATCH bpf-next v3 0/4] bpf: Introduce global percpu data"[1].
 
-If yes:
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
- 
-Thanks,
-Dragos
+The goal of BPF_F_ALL_CPUS flag is to reduce data caching overhead in light
+skeletons by allowing a single value to be reused to update values across all
+CPUs. This avoids the M:N problem where M cached values are used to update a
+map on N CPUs kernel.
+
+The BPF_F_CPU flag is accompanied by *flags*-embedded cpu info, which
+specifies the target CPU for the operation:
+
+* For lookup operations: the flag field alongside cpu info enable querying
+  a value on the specified CPU.
+* For update operations: the flag field alongside cpu info enable
+  updating value for specified CPU.
+
+Links:
+[1] https://lore.kernel.org/bpf/20250526162146.24429-1-leon.hwang@linux.dev/
+
+Changes:
+v6 -> v7:
+* Get correct value size for percpu_hash and lru_percpu_hash in
+  update_batch API.
+* Set 'count' as 'max_entries' in test cases for lookup_batch API.
+* Address comment from Alexei:
+  * Move cpu flags check into bpf_map_check_op_flags().
+
+v5 -> v6:
+* Move bpf_map_check_op_flags() from 'bpf.h' to 'syscall.c'.
+* Address comments from Alexei:
+  * Drop the refactoring code of data copying logic for percpu maps.
+  * Drop bpf_map_check_op_flags() wrappers.
+
+v4 -> v5:
+* Address comments from Andrii:
+  * Refactor data copying logic for all percpu maps.
+  * Drop this_cpu_ptr() micro-optimization.
+  * Drop cpu check in libbpf's validate_map_op().
+  * Enhance bpf_map_check_op_flags() using *allowed flags* instead of
+    'extra_flags_mask'.
+
+v3 -> v4:
+* Address comments from Andrii:
+  * Remove unnecessary map_type check in bpf_map_value_size().
+  * Reduce code churn.
+  * Remove unnecessary do_delete check in
+    __htab_map_lookup_and_delete_batch().
+  * Introduce bpf_percpu_copy_to_user() and bpf_percpu_copy_from_user().
+  * Rename check_map_flags() to bpf_map_check_op_flags() with
+    extra_flags_mask.
+  * Add human-readable pr_warn() explanations in validate_map_op().
+  * Use flags in bpf_map__delete_elem() and
+    bpf_map__lookup_and_delete_elem().
+  * Drop "for alignment reasons".
+v3 link: https://lore.kernel.org/bpf/20250821160817.70285-1-leon.hwang@linux.dev/
+
+v2 -> v3:
+* Address comments from Alexei:
+  * Use BPF_F_ALL_CPUS instead of BPF_ALL_CPUS magic.
+  * Introduce these two cpu flags for all percpu maps.
+* Address comments from Jiri:
+  * Reduce some unnecessary u32 cast.
+  * Refactor more generic map flags check function.
+  * A code style issue.
+v2 link: https://lore.kernel.org/bpf/20250805163017.17015-1-leon.hwang@linux.dev/
+
+v1 -> v2:
+* Address comments from Andrii:
+  * Embed cpu info as high 32 bits of *flags* totally.
+  * Use ERANGE instead of E2BIG.
+  * Few format issues.
+
+Leon Hwang (7):
+  bpf: Introduce internal bpf_map_check_op_flags helper function
+  bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_array
+    maps
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_hash
+    and lru_percpu_hash maps
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for
+    percpu_cgroup_storage maps
+  libbpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu maps
+  selftests/bpf: Add cases to test BPF_F_CPU and BPF_F_ALL_CPUS flags
+
+ include/linux/bpf-cgroup.h                    |   4 +-
+ include/linux/bpf.h                           |  44 +++-
+ include/uapi/linux/bpf.h                      |   2 +
+ kernel/bpf/arraymap.c                         |  24 +-
+ kernel/bpf/hashtab.c                          |  77 ++++--
+ kernel/bpf/local_storage.c                    |  22 +-
+ kernel/bpf/syscall.c                          |  65 +++--
+ tools/include/uapi/linux/bpf.h                |   2 +
+ tools/lib/bpf/bpf.h                           |   8 +
+ tools/lib/bpf/libbpf.c                        |  26 +-
+ tools/lib/bpf/libbpf.h                        |  21 +-
+ .../selftests/bpf/prog_tests/percpu_alloc.c   | 233 ++++++++++++++++++
+ .../selftests/bpf/progs/percpu_alloc_array.c  |  32 +++
+ 13 files changed, 471 insertions(+), 89 deletions(-)
+
+--
+2.50.1
+
 
