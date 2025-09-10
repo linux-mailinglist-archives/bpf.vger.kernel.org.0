@@ -1,106 +1,96 @@
-Return-Path: <bpf+bounces-68042-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72462B51E87
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 19:05:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E115BB51ED4
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 19:24:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B7A11C86A75
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 17:05:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEB527B9B8D
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 17:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55372C11C0;
-	Wed, 10 Sep 2025 17:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FBE8320391;
+	Wed, 10 Sep 2025 17:23:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r6O9S5Q2"
 X-Original-To: bpf@vger.kernel.org
-Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F2C29BD85
-	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 17:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4E03126AD;
+	Wed, 10 Sep 2025 17:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757523918; cv=none; b=A77orJ4VS6owgITQ7YoOZpTmkTw0EsdminbN+XHMmZYVvjJfC3v9GVxyIUfuqc8atDhCYV4FX5sQwQArUUy08HlbTsdXySeqNRSvuUYNaOtfFBLVuo2WPdfgOXx9/KRdJSABoZ/16niXRbDBy7pDkUOJaTcgR2Em0wC1JgQm3hs=
+	t=1757525027; cv=none; b=P9yNOU9QVyiWOS/QhWqclXmdW2GWoCCHSSB3imNuS2wIH8roTgzniqodIGLfoeQPg7hL/v90HKj8lnzkQNOLB06kkP0AwpuEeu0pU0tEsfybVFFC/Gul52z+x83Ybfd298dKo3WnklIe5mpOCRw/7w+ihnUKo6Qr22A1CJSzzu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757523918; c=relaxed/simple;
-	bh=wG+7LZNX7s5LYYcmQjUqZsUh/cW2Yj3VemW29RyBPIM=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=TdUMpeNm/DzWGv36pwoIFY5RfVcQCOSBRQk68FfeytleWjK7XIOSfnFDnJXFcik+5gNI8I1U1Jc43pTj/s6pSZYlNQT/qsUBzEA7yMlPlxoh60UYP/vAZD4HJ4Wqxp3Nv3pjmFzAW8LTHUnQvhdDHB2IT7iOttE2DEzVXVZnmGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
-Received: from sslproxy08.your-server.de ([78.47.166.52])
-	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <tobias.boehm@hetzner-cloud.de>)
-	id 1uwNvM-000N9f-CG; Wed, 10 Sep 2025 18:44:00 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <tobias.boehm@hetzner-cloud.de>)
-	id 1uwNuh-0008I4-0W;
-	Wed, 10 Sep 2025 18:44:00 +0200
-Message-ID: <4bfab93d-f1ce-4aa7-82fe-16972b47972c@hetzner-cloud.de>
-Date: Wed, 10 Sep 2025 18:43:59 +0200
+	s=arc-20240116; t=1757525027; c=relaxed/simple;
+	bh=2oZJ4NanHFBpJK7mVTRXGTHVse28QdOdraSCom3vIek=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aK56oWF9oG8YyW0oG77YFBZwLqRIxPknvEFvtguEQKz9pxBgvxIkJCV0rfn7oRxX5343MgA9fJY7TqrzJEiFhOoteJEfDV5tP3f5xqZijVb4ecUOG4SJ77DUVg9vWKWU9X2vne7+zQQS+uS2tKC/t0LPTZgiYy0bscPQKkbMKKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r6O9S5Q2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6391FC4CEEB;
+	Wed, 10 Sep 2025 17:23:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757525027;
+	bh=2oZJ4NanHFBpJK7mVTRXGTHVse28QdOdraSCom3vIek=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=r6O9S5Q2uEm03nX9khvKTs3zwLxAynuxcSNN2DcHEDwglyX7vSXB7VJ4WxQsSzyUt
+	 GMGIx+WAPsTj3Y8w2VXDbln5WqnVwsFu5TUV5j+g0EcLSm+Oy6ZQXKcBWf1ce6B/zN
+	 6qt2mSdMsDr6J2+2kl8o+UApCD1as6lOCjJqZDcYiIaTUw1DmtDDT8Z7uXusQo/+RX
+	 XSEtnT8vQSC9gwAui/qvxbkFk2F/E0CXFPzsibGLNQzHCDjlW713o2VD5vVpO270Cw
+	 Z07Mr/aFxcmEaP7CA9RewabJJkEvkYk8GiAAJNk+1RTfEV9fncPnQBrfV3g1OhzQcy
+	 CpdmRM/d5VtOQ==
+Date: Wed, 10 Sep 2025 10:23:45 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet
+ <corbet@lwn.net>, "Leon Romanovsky" <leon@kernel.org>, Jason Gunthorpe
+ <jgg@ziepe.ca>, Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch
+ <mbloch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
+ Fastabend" <john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
+ <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>, Gal Pressman
+ <gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea
+ <dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
+Subject: Re: [PATCH net-next 10/10] net/mlx5e: Use the 'num_doorbells'
+ devlink param
+Message-ID: <20250910102345.4fd2b49f@kernel.org>
+In-Reply-To: <1757499891-596641-11-git-send-email-tariqt@nvidia.com>
+References: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
+	<1757499891-596641-11-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: =?UTF-8?Q?Tobias_B=C3=B6hm?= <tobias.boehm@hetzner-cloud.de>
-Subject: [BUG?] bpf_skb_net_shrink does not unset encapsulation flag
-To: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-Content-Language: en-US
-Cc: bpf@vger.kernel.org,
- Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Organization: Hetzner Cloud GmbH
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27759/Wed Sep 10 10:27:04 2025)
 
-Hi,
+On Wed, 10 Sep 2025 13:24:51 +0300 Tariq Toukan wrote:
+> @@ -45,6 +45,14 @@ Parameters
+>       - The range is between 1 and a device-specific max.
+>       - Applies to each physical function (PF) independently, if the device
+>         supports it. Otherwise, it applies symmetrically to all PFs.
+> +   * - ``num_doorbells``
+> +     - driverinit
+> +     - This controls the number of channel doorbells used by the netdev. In all
+> +       cases, an additional doorbell is allocated and used for non-channel
+> +       communication (e.g. for PTP, HWS, etc.). Supported values are:
+> +       - 0: No channel-specific doorbells, use the global one for everything.
+> +       - [1, max_num_channels]: Spread netdev channels equally across these
+> +         doorbells.
 
-when decapsulating VXLAN packets with bpf_skb_adjust_room and 
-redirecting to a tap device I observed unexpected segmentation.
+This is not vibing with the changes we merged yesterday (or I fumbled
+the merge):
 
-In my setup there is a sched_cls program attached at the ingress path of 
-a physical NIC with GRO enabled. Packets are redirected either directly 
-for plain traffic, or decapsulated beforehand in case of VXLAN. 
-Decapsulation is done by bpf_skb_adjust_room with 
-BPF_F_ADJ_ROOM_DECAP_L3_IPV4.
+Documentation/networking/devlink/mlx5.rst:13: ERROR: Error parsing content block for the "list-table" directive: uniform two-level bullet list expected, but row 8 does not contain the same number of items as row 1 (3 vs 4).
 
-For both kinds of traffic GRO on the physical NIC works as expected 
-resulting in merged packets.
+Also in this series:
 
-Large non-decapsulated packets are transmitted directly on the tap 
-interface as expected. But surprisingly, decapsulated packets are being 
-segmented again before transmission.
-
-When analyzing and comparing the call chains I observed that 
-netif_skb_features returns different values for the different kind of 
-traffic.
-
-The tap devices have the following features set:
-
-     dev->features        =   0x1558c9
-     dev->hw_enc_features = 0x10000001
-
-For the non-decapsulated traffic netif_skb_features returns 0x1558c9 but 
-for the decapsulated traffic it returns 0x1. This is same value as the 
-result of "dev->features & dev->hw_enc_features".
-
-In netif_skb_features this operation effectively happens in case 
-skb->encapsulation is set. Inspecting the skb in both cases showed that 
-in case of decapsulation the skb->encapsulation flag was indeed still set.
-
-I wonder if there is a reason that the skb->encapsulation flag is not 
-unset in bpf_skb_net_shrink when BPF_F_ADJ_ROOM_DECAP_* flags are 
-present? Since skb->encapsulation is set in bpf_skb_net_grow when adding 
-space for encapsulation my expectation would be that the flag is also 
-unset when doing the opposite operation.
-
-Thanks,
-Tobias
+drivers/net/ethernet/mellanox/mlx5/core/devlink.c:549:11-83: WARNING avoid newline at end of message in NL_SET_ERR_MSG_FMT_MOD
 
