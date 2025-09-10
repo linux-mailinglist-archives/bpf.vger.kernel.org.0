@@ -1,287 +1,409 @@
-Return-Path: <bpf+bounces-68007-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EDEB51403
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 12:29:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C64DCB51523
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 13:12:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FF76483B50
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 10:29:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C10B169F67
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 11:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67ED431DDA4;
-	Wed, 10 Sep 2025 10:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B943176FA;
+	Wed, 10 Sep 2025 11:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qKI4JJlk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ORsD0vJq"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2063.outbound.protection.outlook.com [40.107.237.63])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27AA315D59;
-	Wed, 10 Sep 2025 10:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757500000; cv=fail; b=F0IiV7SI8orBWsBgLraTrtTMK5sFdd2tyLOEVrmpKEGS6HPJFIdU7vz3TC6SP+bAtWP727Na0HYebgjfErzlcWHH0Aded/EU2T0KihjylRLExnW82iUqDDsDwLeB4X2Y19pK+imJstXQ1u3LBHe9WOuDMTRo0xhT7GL8y+Peq+M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757500000; c=relaxed/simple;
-	bh=drY0wh7vF8W7rwicJ2nwWCSRT+L4VtW88sxxNkGRCVE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ls5rEwGGP4QaF+axFoh+8JJpk/7x49ZshaB3Qwi2cXI/VGtCj6qIxXCe8N5a/wv9652ddPGpLJS8MJrd97XSA2a51s4QtKxuO4sN5q37ha7R+RoUWqEw0A+8GzgIYaPBJznSFR7bLVpOAPFsiudeDlMJwaiQl5rXlmna+eqCXX0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qKI4JJlk; arc=fail smtp.client-ip=40.107.237.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=FNsmjrJTkiOTGq92cxtsAR/Iz25aiguX2PylEgYelo7rk3zspNOA8BuERjO6qnPK1X6jvhVdyFvW8dW9zjPqDOmGCNqkUMcM7bj9EEp7rRz9a2mIZpFjbWLJwMB2WrRUNkWWx+9KCJ34g3cO4Vkp7ikHTAvrKdbSQUVKxTa9SRwOq/G6E7JSoGpKN+bwpMfl1DhtGk4PM7qrqFnIR+GPmPFCKZwl0huU49TuVS98hi11tHw1tqfZYnEut5luLU8JjdYew9Obk3+RnuRqymXgCNaSxNAS+yHi/YdCwKoH/2eb7MfW4Ujjne2vYxrfUfW0ulpNlT+/FWaUjn+xiqko8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SF2upw563YS/vkETzj0l8V8bdeEftpbxwqTF5u3Pnbc=;
- b=kcwKxNRp8qTmXU1hdRoh0hOEBF04GoCwKhUqa/LfveVhGQRqSATkrJEN3w9oWuyxrSSUzHg6q937m3Xq2dMJy8ilF4wgaqd8yQGyBU/d9hb/nCvHSGPDIR7rqJMc/aq/MvPe4RydnD7pHyLeQlH/o5W03+1a7m09ycRpIp4fS/ppM2PGEPs2ON/nPiG6YQCMtqMv9NLL6LLMUs6g+2Re9uMtl6BwzvYhpQk3Ze3sMGfHNlAWw9oQTMxr/zkZEnCK07fnGO/Z6L7MAmo0kJz8s28EWaeSwA2+N0dNTJ6ocPtWllQqRyl8weOyukdYYFZBHj1KNMCQGfwaQnU4trBWlw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SF2upw563YS/vkETzj0l8V8bdeEftpbxwqTF5u3Pnbc=;
- b=qKI4JJlk3YN8QFRZSd6EnOw3PjJKTmo/JijLjD5vb2pmRIB+q+2R7Y7cSy1HgrN4eONsxAk/Tr1S6IYA/JHZTv3WeTC/PzFai2EZNoOxIFCLTYQandLzils6dYP98auxZMhkuuMugZTCzNV5+DFNSMq6/GrynpXBnC3UCHoWL6QceFfwxBuNEwhIYB85I2NGmKejcKxU0zfKkanJPWvVgBQFr42v33zeWIlsbQwee1SU11JOH70KyPrlYzL9xXmJSxFdibgJzjahCvXPQtPXRrFxGpH7bT+Qlx4GJSjIwTmSZ1pzjZOMmSonbsJyZkGgUaOXE8IWipzos35azqPEcw==
-Received: from CH5PR02CA0020.namprd02.prod.outlook.com (2603:10b6:610:1ed::25)
- by BN7PPF02710D35B.namprd12.prod.outlook.com (2603:10b6:40f:fc02::6c4) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Wed, 10 Sep
- 2025 10:26:34 +0000
-Received: from CH2PEPF000000A0.namprd02.prod.outlook.com
- (2603:10b6:610:1ed:cafe::77) by CH5PR02CA0020.outlook.office365.com
- (2603:10b6:610:1ed::25) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.15 via Frontend Transport; Wed,
- 10 Sep 2025 10:26:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CH2PEPF000000A0.mail.protection.outlook.com (10.167.244.26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9115.13 via Frontend Transport; Wed, 10 Sep 2025 10:26:34 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 10 Sep
- 2025 03:26:10 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 10 Sep
- 2025 03:26:08 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
- with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 10
- Sep 2025 03:26:02 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, "Leon
- Romanovsky" <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, Saeed Mahameed
-	<saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
-	<mbloch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
- Fastabend" <john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>, Gal Pressman
-	<gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea
-	<dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next 10/10] net/mlx5e: Use the 'num_doorbells' devlink param
-Date: Wed, 10 Sep 2025 13:24:51 +0300
-Message-ID: <1757499891-596641-11-git-send-email-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.8.0
-In-Reply-To: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
-References: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8794530E0D9
+	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 11:12:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757502735; cv=none; b=Y36+gYfefNeAnxTp2ImxQgVOkghmqQPWsdLHwiNiYtKk9sz6C3SshU7JE0u6qfU0dW67+lx9x0gJj9FeBzo6JS+ywNi8KvBpPnL7dbG2PxhDyclHGuysJ79T2mlhvwsSPz2raJVIhjq9uICvxREo0j1SxklbKwwrlRFbxlluRlk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757502735; c=relaxed/simple;
+	bh=15wiv9SDyX8RSPbCbRd2nK87PtB1rgOFQKH3KNcrXBk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EDEGByL1cBcgDqWiq0n7unIjW19i+a6tKuOr6Lxqszeck3j+2dEDM/00PqhP1Wshhg1a1YPxOq0VWNncUpVFSTz/yUKfYBQDptAdDzep7SFYNphB06AXKDVxxEvDCAPGnOuG1w44+kyJNXt86Njz4OS70vUPDIkZ2Xqyawo8GIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ORsD0vJq; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Forwarded-Encrypted: i=1; AJvYcCU4vWiD6/NsvFLlK+FRGFrR7TyTzqVh9WZmw/WAuAeMgArx5NirOC/3eiBMI8Nifc5wNMxIOxcDPYQW@vger.kernel.org, AJvYcCVgWOgT1al73roOn0G11y/BVjP7jg1wsOSn/m3JunhFSgdgqYzFe7d2gIvjeGoC06zdQjYm1lR0AtKvPomh@vger.kernel.org, AJvYcCWYVJ9xxpd78zOLuvWvC2wkgImyqNsvRdKoWK2HJivYrS3XiIRA804LxNDeGgH5RP8In9I=@vger.kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757502718;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F6U12JUXh/Zo09vWXMp+Cb3EE33Oezl/ape3XxZCQqU=;
+	b=ORsD0vJqR0SZy2wzM1S1d7hwdCPESLP5WWr9HOQcboT8YtD4G3cAiW6CPqE/PSjsQyKnz9
+	d1NCgN1RUsf+JBXrztgFSGzY70XbKxgooMy1FmB9c4fEgRW1KzplFxSCbGjNfG1SpUrKgU
+	tzXq6cb58QtCYSWjIHjZkTL2uGGu1+c=
+X-Gm-Message-State: AOJu0Yw4sTpQZ31Kj8uCIB1xN1YeslblJjkxt2oPe0x2iMT6eLjFHlCz
+	PQgbV2It0dhjqDMD4L4JQLfWfD9+h1EXLiD8EKKupMUSIv8ZqVrwTZ8Cu3DVK13HfaUGLVg5PxF
+	eidOsQdNMSms93yqj+UlZbubwRrNzfYc=
+X-Google-Smtp-Source: AGHT+IEzWZymJmEPHG0S7rR0Jqwh2/1XgGul1QNR7j8cLWI/AphVyWcpiEdEIyxAJexGkvhlT+hqG91T0HpQqfbb8F4=
+X-Received: by 2002:a05:6214:2627:b0:736:ee1b:e with SMTP id
+ 6a1803df08f44-73931c496f2mr164321536d6.21.1757502711884; Wed, 10 Sep 2025
+ 04:11:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF000000A0:EE_|BN7PPF02710D35B:EE_
-X-MS-Office365-Filtering-Correlation-Id: a06c17d2-9d71-48e9-81da-08ddf054846d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|376014|1800799024|7416014|82310400026;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?bzf6hY/+kRWpM/SMT0qWSo5n9X7OVJ/J97IJZfsuson+6+4L6lxKDu0F8LcY?=
- =?us-ascii?Q?IQlLU20bw206fAIeEED6DfHvmk18bUOtk/o51Sv2xTOYr4Wr/7FMjD1kXGtE?=
- =?us-ascii?Q?CNBXPSU9gc6f52KV8jv7RC6T/z5wRRTzezc13CuJZFSFW3mHxdIRWHDXE2Zl?=
- =?us-ascii?Q?sURtQ+tJKjK0Az7jpWMUe8DqNM2ZjM5cgP91j1jj105qRLNI1FZ+lnJ4sd7i?=
- =?us-ascii?Q?RyKBzo/eUXQaJSc1m7RupGQvwOErJ8Dxw/H1jaC5Jd2y030Ec19lZObQOcP/?=
- =?us-ascii?Q?q2x9TjvhVaZVHDunLj0ZGeZUc5f9Jx66yaPE+di1NHJRr/ilQBOjtREAt0fb?=
- =?us-ascii?Q?T9oy+c1pueopeMXAHRawwXPBD10uuEku2wOcTIhDxBtsVePAt10G1Ofhof3X?=
- =?us-ascii?Q?XAT0EY0pAgLaAO0cZG8OWCV3I9qN9cwqwKsc868cyHcZPL+dU51HpD8oXwK6?=
- =?us-ascii?Q?eOsHm9r7qh5n5HIozFJ8BzlAB/B4KDEohkPs/Rv8iwIfp1VKgdmjmeSraI8K?=
- =?us-ascii?Q?++0yNoXnHfAWi3Jh8ukYxfaumnkVAvJ5P62vTHt+i1DQXqsZUEyp/Yy8cRun?=
- =?us-ascii?Q?56nJQRUdoZAg0utCQVpB8pULgJASwyqdU8r2j/9CSFy4GBZBnNa9+xbJJ/7L?=
- =?us-ascii?Q?BDJJMSA81bEZJinNO6WbPtSNnjk+FO1dbT/+H+7ul4rEQVawiQu2SCn8HSYl?=
- =?us-ascii?Q?lVySxSENt9BU4pQG1DQpCrvfK/e45kBJ2+i5SS7PwhnzNGrt8aqAfqbnNSJZ?=
- =?us-ascii?Q?c7wyuu1EmUo2hVeffQ8MeQcpLw+EItD16rYPvVwbpIDloL13HvpENFfCzyd4?=
- =?us-ascii?Q?jcLb35LKhQKY4Ezs15ofk1UnjZ/jB3Nwc4TsBl7nNoRcrpg4w3Xnfl3+Nik4?=
- =?us-ascii?Q?SwxwdgJ0Rk6bqOTQmpiwEGbOyBAR4B0h5VlPZpNAu5Y8c5BfnNhxdAYq79UX?=
- =?us-ascii?Q?K2g1dxxFNO/cQzqNLn6zWdDjQtlTevVZ+L8q3oB/LjWejfYcwMB3DEvZgJ2G?=
- =?us-ascii?Q?pNIEkhjkkrrDZzkRm3zsCkRP7tq00ZLGgr/FdV7gm6mMlwU3HnHnb8PaLWsv?=
- =?us-ascii?Q?mt2dR5HF517ESX29TqMrAB3pfoKvtdB58HIrgo2GRJTlXuHXEHuQBi+//Scd?=
- =?us-ascii?Q?DW8rHYteUIk2Oyt9sLocZ+6u3QV5Zyi8EvQAAtx9A0OUPsuo5+T1xXfSKAN5?=
- =?us-ascii?Q?2QaD3Vrkov8OhHODaWXkwjkfU+8dJynm3IC5SeRMxB5GwUN6YvSvxLDjg7Fp?=
- =?us-ascii?Q?Bo9uHsRdsvBq3Hwd+uPlBq43LQMkBaAdBkbxdo/8w3y7p7j1FTEl1iVO+7N2?=
- =?us-ascii?Q?5tGtNlpDn3kkOy+DulZ2pLtoE8TkuJ3tpUbenztIOiupaFCCxEoOHre6GUKj?=
- =?us-ascii?Q?0CzY0JRKJSuvYbqPc3OVjiPHXqKTmQ32RzfimbHPb+oYjgqHZ46hQpEjsY1d?=
- =?us-ascii?Q?5+9Pc4tH6ieUnYKCXoUbaFgbuF5k4rrbF2I2zTd/a9r5ROGFmKysxfkR1zzQ?=
- =?us-ascii?Q?4u7C2geWCV2Vd9iRN7Y/mpF91Riih12rX3Ar?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(376014)(1800799024)(7416014)(82310400026);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 10:26:34.4079
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a06c17d2-9d71-48e9-81da-08ddf054846d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF000000A0.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PPF02710D35B
+References: <20250910024447.64788-1-laoar.shao@gmail.com>
+In-Reply-To: <20250910024447.64788-1-laoar.shao@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
+Date: Wed, 10 Sep 2025 19:11:14 +0800
+X-Gmail-Original-Message-ID: <CABzRoybG8-MXdvTdfFvtdg93rrvMD_yPB-M4PPddk+67Vu3GAg@mail.gmail.com>
+X-Gm-Features: AS18NWC2VzqdpT3C2v7_EKHpEjgrA3Lke5-D1zbQDAQet2rVrZt5DPhVs0E4q3k
+Message-ID: <CABzRoybG8-MXdvTdfFvtdg93rrvMD_yPB-M4PPddk+67Vu3GAg@mail.gmail.com>
+Subject: Re: [PATCH v7 mm-new 0/9] mm, bpf: BPF based THP order selection
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com, 
+	dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com, 
+	gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com, 
+	rientjes@google.com, corbet@lwn.net, 21cnbao@gmail.com, 
+	shakeel.butt@linux.dev, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-From: Cosmin Ratiu <cratiu@nvidia.com>
+Seems like we forgot to CC linux-kernel@vger.kernel.org ;p
 
-Use the new devlink param to control how many doorbells mlx5e devices
-allocate and use. The maximum number of doorbells configurable is capped
-to the maximum number of channels. This only applies to the Ethernet
-part, the RDMA devices using mlx5 manage their own doorbells.
-
-Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
----
- Documentation/networking/devlink/mlx5.rst     |  8 ++++++
- .../net/ethernet/mellanox/mlx5/core/devlink.c | 26 +++++++++++++++++++
- .../ethernet/mellanox/mlx5/core/en_common.c   | 15 ++++++++++-
- 3 files changed, 48 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/networking/devlink/mlx5.rst b/Documentation/networking/devlink/mlx5.rst
-index 60cc9fedf1ef..0650462b3eae 100644
---- a/Documentation/networking/devlink/mlx5.rst
-+++ b/Documentation/networking/devlink/mlx5.rst
-@@ -45,6 +45,14 @@ Parameters
-      - The range is between 1 and a device-specific max.
-      - Applies to each physical function (PF) independently, if the device
-        supports it. Otherwise, it applies symmetrically to all PFs.
-+   * - ``num_doorbells``
-+     - driverinit
-+     - This controls the number of channel doorbells used by the netdev. In all
-+       cases, an additional doorbell is allocated and used for non-channel
-+       communication (e.g. for PTP, HWS, etc.). Supported values are:
-+       - 0: No channel-specific doorbells, use the global one for everything.
-+       - [1, max_num_channels]: Spread netdev channels equally across these
-+         doorbells.
- 
- Note: permanent parameters such as ``enable_sriov`` and ``total_vfs`` require FW reset to take effect
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-index a0b68321355a..50b8cc9bc12b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-@@ -535,6 +535,25 @@ mlx5_devlink_hairpin_queue_size_validate(struct devlink *devlink, u32 id,
- 	return 0;
- }
- 
-+static int mlx5_devlink_num_doorbells_validate(struct devlink *devlink, u32 id,
-+					       union devlink_param_value val,
-+					       struct netlink_ext_ack *extack)
-+{
-+	struct mlx5_core_dev *mdev = devlink_priv(devlink);
-+	u32 val32 = val.vu32;
-+	u32 max_num_channels;
-+
-+	max_num_channels = mlx5e_get_max_num_channels(mdev);
-+	if (val32 > max_num_channels) {
-+		NL_SET_ERR_MSG_FMT_MOD(extack,
-+				       "Requested num_doorbells (%u) exceeds maximum number of channels (%u)\n",
-+				       val32, max_num_channels);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static void mlx5_devlink_hairpin_params_init_values(struct devlink *devlink)
- {
- 	struct mlx5_core_dev *dev = devlink_priv(devlink);
-@@ -614,6 +633,9 @@ static const struct devlink_param mlx5_devlink_eth_params[] = {
- 			     "hairpin_queue_size", DEVLINK_PARAM_TYPE_U32,
- 			     BIT(DEVLINK_PARAM_CMODE_DRIVERINIT), NULL, NULL,
- 			     mlx5_devlink_hairpin_queue_size_validate),
-+	DEVLINK_PARAM_GENERIC(NUM_DOORBELLS,
-+			      BIT(DEVLINK_PARAM_CMODE_DRIVERINIT), NULL, NULL,
-+			      mlx5_devlink_num_doorbells_validate),
- };
- 
- static int mlx5_devlink_eth_params_register(struct devlink *devlink)
-@@ -637,6 +659,10 @@ static int mlx5_devlink_eth_params_register(struct devlink *devlink)
- 
- 	mlx5_devlink_hairpin_params_init_values(devlink);
- 
-+	value.vu32 = MLX5_DEFAULT_NUM_DOORBELLS;
-+	devl_param_driverinit_value_set(devlink,
-+					DEVLINK_PARAM_GENERIC_ID_NUM_DOORBELLS,
-+					value);
- 	return 0;
- }
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_common.c b/drivers/net/ethernet/mellanox/mlx5/core/en_common.c
-index d13cebbc763a..96b744ceaf13 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_common.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_common.c
-@@ -30,6 +30,7 @@
-  * SOFTWARE.
-  */
- 
-+#include "devlink.h"
- #include "en.h"
- #include "lib/crypto.h"
- 
-@@ -140,6 +141,18 @@ static int mlx5e_create_tises(struct mlx5_core_dev *mdev, u32 tisn[MLX5_MAX_PORT
- 	return err;
- }
- 
-+static unsigned int
-+mlx5e_get_devlink_param_num_doorbells(struct mlx5_core_dev *dev)
-+{
-+	const u32 param_id = DEVLINK_PARAM_GENERIC_ID_NUM_DOORBELLS;
-+	struct devlink *devlink = priv_to_devlink(dev);
-+	union devlink_param_value val;
-+	int err;
-+
-+	err = devl_param_driverinit_value_get(devlink, param_id, &val);
-+	return err ? MLX5_DEFAULT_NUM_DOORBELLS : val.vu32;
-+}
-+
- int mlx5e_create_mdev_resources(struct mlx5_core_dev *mdev, bool create_tises)
- {
- 	struct mlx5e_hw_objs *res = &mdev->mlx5e_res.hw_objs;
-@@ -164,7 +177,7 @@ int mlx5e_create_mdev_resources(struct mlx5_core_dev *mdev, bool create_tises)
- 		goto err_dealloc_transport_domain;
- 	}
- 
--	num_doorbells = min(MLX5_DEFAULT_NUM_DOORBELLS,
-+	num_doorbells = min(mlx5e_get_devlink_param_num_doorbells(mdev),
- 			    mlx5e_get_max_num_channels(mdev));
- 	res->bfregs = kcalloc(num_doorbells, sizeof(*res->bfregs), GFP_KERNEL);
- 	if (!res->bfregs) {
--- 
-2.31.1
-
+On Wed, Sep 10, 2025 at 12:02=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
+>
+> Background
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> Our production servers consistently configure THP to "never" due to
+> historical incidents caused by its behavior. Key issues include:
+> - Increased Memory Consumption
+>   THP significantly raises overall memory usage, reducing available memor=
+y
+>   for workloads.
+>
+> - Latency Spikes
+>   Random latency spikes occur due to frequent memory compaction triggered
+>   by THP.
+>
+> - Lack of Fine-Grained Control
+>   THP tuning is globally configured, making it unsuitable for containeriz=
+ed
+>   environments. When multiple workloads share a host, enabling THP withou=
+t
+>   per-workload control leads to unpredictable behavior.
+>
+> Due to these issues, administrators avoid switching to madvise or always
+> modes=E2=80=94unless per-workload THP control is implemented.
+>
+> To address this, we propose BPF-based THP policy for flexible adjustment.
+> Additionally, as David mentioned, this mechanism can also serve as a
+> policy prototyping tool (test policies via BPF before upstreaming them).
+>
+> Proposed Solution
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> This patch introduces a new BPF struct_ops called bpf_thp_ops for dynamic
+> THP tuning. It includes a hook thp_get_order(), allowing BPF programs to
+> influence THP order selection based on factors such as:
+>
+> - Workload identity
+>   For example, workloads running in specific containers or cgroups.
+> - Allocation context
+>   Whether the allocation occurs during a page fault, khugepaged, swap or
+>   other paths.
+> - VMA's memory advice settings
+>   MADV_HUGEPAGE or MADV_NOHUGEPAGE
+> - Memory pressure
+>   PSI system data or associated cgroup PSI metrics
+>
+> The new interface for the BPF program is as follows:
+>
+> /**
+>  * @thp_get_order: Get the suggested THP orders from a BPF program for al=
+location
+>  * @vma: vm_area_struct associated with the THP allocation
+>  * @vma_type: The VMA type, such as BPF_THP_VM_HUGEPAGE if VM_HUGEPAGE is=
+ set
+>  *            BPF_THP_VM_NOHUGEPAGE if VM_NOHUGEPAGE is set, or BPF_THP_V=
+M_NONE
+>  *            if neither is set.
+>  * @tva_type: TVA type for current @vma
+>  * @orders: Bitmask of requested THP orders for this allocation
+>  *          - PMD-mapped allocation if PMD_ORDER is set
+>  *          - mTHP allocation otherwise
+>  *
+>  * Return: The suggested THP order from the BPF program for allocation. I=
+t will
+>  *         not exceed the highest requested order in @orders. Return -1 t=
+o
+>  *         indicate that the original requested @orders should remain unc=
+hanged.
+>  */
+>
+> int thp_get_order(struct vm_area_struct *vma,
+>                   enum bpf_thp_vma_type vma_type,
+>                   enum tva_type tva_type,
+>                   unsigned long orders);
+>
+> Only a single BPF program can be attached at any given time, though it ca=
+n
+> be dynamically updated to adjust the policy. The implementation supports
+> anonymous THP, shmem THP, and mTHP, with future extensions planned for
+> file-backed THP.
+>
+> This functionality is only active when system-wide THP is configured to
+> madvise or always mode. It remains disabled in never mode. Additionally,
+> if THP is explicitly disabled for a specific task via prctl(), this BPF
+> functionality will also be unavailable for that task
+>
+> **WARNING**
+> - This feature requires CONFIG_BPF_GET_THP_ORDER (marked EXPERIMENTAL) to
+>   be enabled.
+> - The interface may change
+> - Behavior may differ in future kernel versions
+> - We might remove it in the future
+>
+> Selftests
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> BPF CI
+> ------
+>
+> Patch #7: Implements a basic BPF THP policy that restricts THP allocation
+>           via khugepaged to tasks within a specified memory cgroup.
+> Patch #8: Provides tests for dynamic BPF program updates and replacement.
+> Patch #9: Includes negative tests for invalid BPF helper usage, verifying
+>           proper verification by the BPF verifier.
+>
+> Currently, several dependency patches reside in mm-new but haven't been
+> merged into bpf-next. To enable BPF CI testing, these dependencies were
+> manually applied to bpf-next. All selftests in this series pass
+> successfully [0].
+>
+> Performance Evaluation
+> ----------------------
+>
+> Performance impact was measured given the page fault handler modification=
+s.
+> The standard `perf bench mem memset` benchmark was employed to assess pag=
+e
+> fault performance.
+>
+> Testing was conducted on an AMD EPYC 7W83 64-Core Processor (single NUMA
+> node). Due to variance between individual test runs, a script executed
+> 10000 iterations to calculate meaningful averages.
+>
+> - Baseline (without this patch series)
+> - With patch series but no BPF program attached
+> - With patch series and BPF program attached
+>
+> The results across three configurations show negligible performance impac=
+t:
+>
+>   Number of runs: 10,000
+>   Average throughput: 40-41 GB/sec
+>
+> Production verification
+> -----------------------
+>
+> We have successfully deployed a variant of this approach across numerous
+> Kubernetes production servers. The implementation enables THP for specifi=
+c
+> workloads (such as applications utilizing ZGC [1]) while disabling it for
+> others. This selective deployment has operated flawlessly, with no
+> regression reports to date.
+>
+> For ZGC-based applications, our verification demonstrates that shmem THP
+> delivers significant improvements:
+> - Reduced CPU utilization
+> - Lower average latencies
+>
+> We are continuously extending its support to more workloads, such as
+> TCMalloc-based services. [2]
+>
+> Deployment Steps in our production servers are as follows,
+>
+> 1. Initial Setup:
+> - Set THP mode to "never" (disabling THP by default).
+> - Attach the BPF program and pin the BPF maps and links.
+> - Pinning ensures persistence (like a kernel module), preventing
+> disruption under system pressure.
+> - A THP whitelist map tracks allowed cgroups (initially empty -> no THP
+> allocations).
+>
+> 2. Enable THP Control:
+> - Switch THP mode to "always" or "madvise" (BPF now governs actual alloca=
+tions).
+>
+> 3. Dynamic Management:
+> - To permit THP for a cgroup, add its ID to the whitelist map.
+> - To revoke permission, remove the cgroup ID from the map.
+> - The BPF program can be updated live (policy adjustments require no
+> task interruption).
+>
+> 4. To roll back, disable THP and remove this BPF program.
+>
+> **WARNING**
+> Be aware that the maintainers do not suggest this use case, as the BPF ho=
+ok
+> interface is unstable and might be removed from the upstream kernel=E2=80=
+=94unless
+> you have your own kernel team to maintain it ;-)
+>
+> Future work
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> file-backed THP policy
+> ----------------------
+>
+> Based on our validation with production workloads, we observed mixed
+> results with XFS large folios (also known as file-backed THP):
+>
+> - Performance Benefits
+>   Some workloads demonstrated significant improvements with XFS large
+>   folios enabled
+> - Performance Regression
+>   Some workloads experienced degradation when using XFS large folios
+>
+> These results demonstrate that File THP, similar to anonymous THP, requir=
+es
+> a more granular approach instead of a uniform implementation.
+>
+> We will extend the BPF-based order selection mechanism to support
+> file-backed THP allocation policies.
+>
+> Hooking fork() with BPF for Task Configuration
+> ----------------------------------------------
+>
+> The current method for controlling a newly fork()-ed task involves callin=
+g
+> prctl() (e.g., with PR_SET_THP_DISABLE) to set flags in its mm->flags. Th=
+is
+> requires explicit userspace modification.
+>
+> A more efficient alternative is to implement a new BPF hook within the
+> fork() path. This hook would allow a BPF program to set the task's
+> mm->flags directly after mm initialization, leveraging BPF helpers for a
+> solution that is transparent to userspace. This is particularly valuable =
+in
+> data center environments for fleet-wide management.
+>
+> Link: https://github.com/kernel-patches/bpf/pull/9706 [0]
+> Link: https://wiki.openjdk.org/display/zgc/Main#Main-EnablingTr... [1]
+> Link: https://google.github.io/tcmalloc/tuning.html#system-level-optimiza=
+tions [2]
+>
+> Changes:
+> =3D=3D=3D=3D=3D=3D=3D:
+>
+> v6->v7:
+> Key Changes Implemented Based on Feedback:
+> From Lorenzo:
+>   - Rename the hook from get_suggested_order() to bpf_hook_get_thp_order(=
+).
+>   - Rename bpf_thp.c to huge_memory_bpf.c
+>   - Focuse the current patchset on THP order selection
+>   - Add the BPF hook into thp_vma_allowable_orders()
+>   - Make the hook VMA-based and remove the mm parameter
+>   - Modify the BPF program to return a single order
+>   - Stop passing vma_flags directly to BPF programs
+>   - Mark vma->vm_mm as trusted_or_null
+>   - Change the MAINTAINER file
+> From Andrii:
+>   - Mark mm->owner as rcu_or_null to avoid introducing new helpers
+> From Barry:
+>   - decouple swap from the normal page fault path
+> kernel test robot:
+>   - Fix a sparse warning
+> Shakeel helped clarify the implementation.
+>
+> RFC v5-> v6: https://lwn.net/Articles/1035116/
+> - Code improvement around the RCU usage (Usama)
+> - Add selftests for khugepaged fork (Usama)
+> - Add performance data for page fault (Usama)
+> - Remove the RFC tag
+>
+> RFC v4->v5: https://lwn.net/Articles/1034265/
+> - Add support for vma (David)
+> - Add mTHP support in khugepaged (Zi)
+> - Use bitmask of all allowed orders instead (Zi)
+> - Retrieve the page size and PMD order rather than hardcoding them (Zi)
+>
+> RFC v3->v4: https://lwn.net/Articles/1031829/
+> - Use a new interface get_suggested_order() (David)
+> - Mark it as experimental (David, Lorenzo)
+> - Code improvement in THP (Usama)
+> - Code improvement in BPF struct ops (Amery)
+>
+> RFC v2->v3: https://lwn.net/Articles/1024545/
+> - Finer-graind tuning based on madvise or always mode (David, Lorenzo)
+> - Use BPF to write more advanced policies logic (David, Lorenzo)
+>
+> RFC v1->v2: https://lwn.net/Articles/1021783/
+> The main changes are as follows,
+> - Use struct_ops instead of fmod_ret (Alexei)
+> - Introduce a new THP mode (Johannes)
+> - Introduce new helpers for BPF hook (Zi)
+> - Refine the commit log
+>
+> RFC v1: https://lwn.net/Articles/1019290/
+>
+> Yafang Shao (10):
+>   mm: thp: remove disabled task from khugepaged_mm_slot
+>   mm: thp: add support for BPF based THP order selection
+>   mm: thp: decouple THP allocation between swap and page fault paths
+>   mm: thp: enable THP allocation exclusively through khugepaged
+>   bpf: mark mm->owner as __safe_rcu_or_null
+>   bpf: mark vma->vm_mm as __safe_trusted_or_null
+>   selftests/bpf: add a simple BPF based THP policy
+>   selftests/bpf: add test case to update THP policy
+>   selftests/bpf: add test cases for invalid thp_adjust usage
+>   Documentation: add BPF-based THP policy management
+>
+>  Documentation/admin-guide/mm/transhuge.rst    |  46 +++
+>  MAINTAINERS                                   |   3 +
+>  include/linux/huge_mm.h                       |  29 +-
+>  include/linux/khugepaged.h                    |   1 +
+>  kernel/bpf/verifier.c                         |   8 +
+>  kernel/sys.c                                  |   6 +
+>  mm/Kconfig                                    |  12 +
+>  mm/Makefile                                   |   1 +
+>  mm/huge_memory.c                              |   3 +-
+>  mm/huge_memory_bpf.c                          | 243 +++++++++++++++
+>  mm/khugepaged.c                               |  19 +-
+>  mm/memory.c                                   |  15 +-
+>  tools/testing/selftests/bpf/config            |   3 +
+>  .../selftests/bpf/prog_tests/thp_adjust.c     | 284 ++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/lsm.c       |   8 +-
+>  .../selftests/bpf/progs/test_thp_adjust.c     | 114 +++++++
+>  .../bpf/progs/test_thp_adjust_sleepable.c     |  22 ++
+>  .../bpf/progs/test_thp_adjust_trusted_owner.c |  30 ++
+>  .../bpf/progs/test_thp_adjust_trusted_vma.c   |  27 ++
+>  19 files changed, 849 insertions(+), 25 deletions(-)
+>  create mode 100644 mm/huge_memory_bpf.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_sle=
+epable.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_tru=
+sted_owner.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust_tru=
+sted_vma.c
+>
+> --
+> 2.47.3
+>
+>
 
