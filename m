@@ -1,266 +1,169 @@
-Return-Path: <bpf+bounces-67954-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67955-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08D87B50984
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 02:04:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9879B50A06
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 02:54:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A3D51B27D83
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 00:04:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 653D15E1CC6
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 00:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A50A930;
-	Wed, 10 Sep 2025 00:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187E51C84DC;
+	Wed, 10 Sep 2025 00:54:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CXUVzznj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bhwOFCEY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE1B710785
-	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 00:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1960E13AD1C
+	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 00:54:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757462647; cv=none; b=WagKSNCZRPDcJLo8gF/ODLoZkdKkJsu7OOevW+g2X+1+M66bsj13DITU7tDYBEeh6aCUKgI5Uc2HPr+QTLTepX21ccY89SYhxqmoG/CU6zy6bQ+LJcgqEXtw4LVOCv2CVXHgh7IjFosMYaCOIxCcUYSRcJoByFLV9Gvgfc5EZZs=
+	t=1757465691; cv=none; b=FxF/Y86CGdhhXU9k3fqHznBhVNH6a0czsqtruZaTMCCq5NVz9xVA1oCvp4Bhs1iyKdmyCKvSl3BnvkHE6goeTxk7nSR2EqipWBJAd9g8DFFxrLBe6QskFCoQad0kbldyVfPwRfszbI4B9BTV9rEl/Ja2dQ/o2vcsudjBE8oH1K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757462647; c=relaxed/simple;
-	bh=4zV5RuNIyXG55ULWhnhF/NYTqg/90+SorMFur54xQaM=;
+	s=arc-20240116; t=1757465691; c=relaxed/simple;
+	bh=zr6E075yfRWWlsNCRH0t0EqsVOTONyJNPXV1Jncxwko=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GNXtltp3NNhauHfYHN4NgCBDjOTcBefLorft+7A6/8Jn66VKV+QTUGXth8fOh3NlYUyeyvhwfb1iKJ1EtoAn1DICasokNboo3TUR/xnyINStNr913JRe/UjQpT7gFNJczBBGT1WanerS0sKC58hfnutYDJ49L1H61QmPnXI2/w8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CXUVzznj; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2445805aa2eso61069285ad.1
-        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 17:04:05 -0700 (PDT)
+	 To:Cc:Content-Type; b=LpLUAbGp4UAZECxr7Uk3JxRaG2PNykU+TVslmDFa6DlJfbYPpE/WZCDhSG9BCk10bt7OEzzxnA8udlVQmZWKak01IGtD5y1lSpAejyWPbLzphvIxWXB46fvPbaqSFP06iKWZBobIKwDCihB8Y5B6fANqlEbeADeRd5T+YG+I6Kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bhwOFCEY; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45b9c35bc0aso54663065e9.2
+        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 17:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757462645; x=1758067445; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757465684; x=1758070484; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4Ja5aRRK67yFY84DIpJGjj5+ToCTaviVbIKyJTpFdU0=;
-        b=CXUVzznjotdBQdnwv9JKEjJp6iBkX1S3nsRGhRrO1g/Vdiuj4AJBBmXUT6HPG1EHsT
-         jLCyBQ7W95q3FYuMkEFL1bP1ataZyAvx3GSr0RNTiiy4u+fwpDlBYiGUWqQLKTk4HRZa
-         n65AAQS25jj6tg6N4casvjj2oAOFTZszSY/QeJOOXUVkGtwoz/kQUseZbMIr3HsUY8VH
-         aL0EqswxqzwYNnzEWXo4BHJM+7NIvsLAGf88TLLEIWzib/oGJ9NjVeBfaol99+A09G09
-         qs992iYVdepsSKxv2eIVyt64oLipQKzYfxN+UXX7I0dOxfKfZ3IKo2fxvHRDd9H0yLrE
-         hkEQ==
+        bh=J4YIuUISh2rDovl13FIKmdNaWq5xsG3/fxm4a5mE6iE=;
+        b=bhwOFCEYqMkstMaOxUkqtnJ/8gufjl5gUiwKo6BAf966eK+PMCyUBfMthk3D6gKjen
+         nAh7J8WUJi87TXDUcQ06c12gzjqph66C9hU4idMnDHQheiXGWVGehNUh07nYMElk+Dwa
+         DylQEW2Yaj9CKbZFaRQPcVBqkUN8S+g84hDtcAO4Fcje4tLz7Qmrakgv37WO7amUMP3U
+         VvlQ7SBuyAPPPrqHKgF3spy9+MMMLVWn7G57HI+n82GBw+ZKCvj9Iy3famvJrBx5DTKL
+         bChe7i+mozsoaKTCG4k6/vW1OZZX4DzX4XPxKEpJOwV4D2CMVNzU4SjQ9HaRsw//3odz
+         9Dgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757462645; x=1758067445;
+        d=1e100.net; s=20230601; t=1757465684; x=1758070484;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4Ja5aRRK67yFY84DIpJGjj5+ToCTaviVbIKyJTpFdU0=;
-        b=u7krAQ2tBJXqehsEga3x2mGhIARtHknc5tu/kNOqcDyQnRvST7tZ/I31G6hLtYeWeY
-         y+VRTfe/iixQxscyN9JiqOl3i2YNxlicpS/1AS3z8x+fQDtbZQiMv9mGILLi3e+V4sLY
-         8lF8zHJvoVsYTDUy7+ZuVh4vdlzO4QkfblDdRPXA/OECr7WVVXUIRCScYgL6uVEJgdz7
-         4hZPp6QImYT/SHfT52MUfDOAcDFJiRLRtlS8CmdRzGlcHfty1LujjtVk0N7BSRBC6izz
-         fso8OAEiYnfSySyHXj2PvOCe7/TqB9NO0OzZRzjGFqeLNB11V30fHSn48cpISHuv4/wd
-         42ew==
-X-Gm-Message-State: AOJu0Yzk5026c4fWyrh4atES69ft3FCYD3lhd64i/NqfqvIiC/+ipo9b
-	smUEE9MQNcmRSZQ1ztFmiQ4F9datu8dQC0xjzLJDxkM6e2/t+hUHW8Zzu6xDYkNjPlwSX8qtM5K
-	G6kq0Aa5jwezwvHZp1ID55QjUs8jcZxKz5zRSKpQqfkU9MX6NL926uJ4A
-X-Gm-Gg: ASbGncv5NnNP/oYi8Oh/Q519ZXQT2yoOcQJUIhETysY9w5R7P8GKHBNoLmHKHFJFbhd
-	aRuxHpsZ8CAhh9HSQKkvpJ/TlldTGRZpxzym5OOVm6CVio5c6VHek/l4InfOwhoTzjx2NTgymoJ
-	xKclg9dyfbynZqQKrwRzwB6ZfoV26jZPnbNQI9cftrIu1HHYP3//wbbaoXgq+DR4wr6biVkMyNA
-	HFF/gyjmQvGV2L4BlywVwbhIIqjyrAVBwek9MpE0JA4
-X-Google-Smtp-Source: AGHT+IE1zcbuYIv4rWiM6Yf7a30YVxQGUJN+yzUzpQbD3OH+04xeheTD0mOt4U7WbsqIOFfpCPJjmO4LifM2Y8vMlK4=
-X-Received: by 2002:a17:903:acc:b0:246:cfc4:9a30 with SMTP id
- d9443c01a7336-25173118d80mr176547935ad.35.1757462644670; Tue, 09 Sep 2025
- 17:04:04 -0700 (PDT)
+        bh=J4YIuUISh2rDovl13FIKmdNaWq5xsG3/fxm4a5mE6iE=;
+        b=iz50eZsS2yhWG5vm2Qkb75eIJqh63eJgq6t/0t9LPuKG5R6Y6/+vBiHyvJXu+b9Htx
+         AY/b3LEEs9+M0pgiGvEub3wI+BhuAhAw4PXxq20Fli652hsMAs+FRQZw3UvSV44Ooj6/
+         AXO/KDZP0kr+5QokCLCJ0HunWlB4cH9BbYUGOqiGKOJPOaBnHIqukkohY1dtbKr3Q56x
+         c3IgMk/OSLhnDTja16f3NsM83O7+UNRMQbAH5IvSOk63SyX/jb/D7G6+x2LHvBkyN85e
+         tEsQvXH1QKVlfoPR12Uh0CndgtWDm3ZGId7HNhEOFTl087guKfvA1kWZXm8choYNIWQi
+         D2vg==
+X-Gm-Message-State: AOJu0Yx8+ztyE1FQaSpmoGYadgjtqMvhQgV0WJYKtAnqlNVBQj1ucqZ8
+	6IYQbls0Eq/7uvRlb8N1WCtCqTF1yuurdFpjEz7Nbh6kYDt0oNYkqDxyIvAWbguILAJ2XgrPCob
+	zeXDRnIsozugl5SsQb3FowRqLjaOH20Y=
+X-Gm-Gg: ASbGncunzKy21z/dv7xrOKi7M1iAlRXUPTjBQNFoXQXglPi6jrrmqjhybxSVJc8VTZd
+	wdIq1A4OD9q1hi2ekl0PBIn45/DxzDCs6LXJjS6/xQev0cAkqVc8N+FfGG25qyhGj5cNtDzpald
+	v3ouLfcIU/3FHur45vh+vhM/MA8umdBKdvZTPedcKV28/2V4rJur9oVc/yoUlbhH3PKosYVC9Eu
+	JAc2Y0sTEVj/dJWnJbzDYCaGTTC3cKyzzR5
+X-Google-Smtp-Source: AGHT+IGvFVCn1t4L2wmjoeDjVhbg8M0XCT28ZW3Z2Lpb7l8zMQmq9161tl+gVWpVXBrzWT29nF1mAL802LsaSJxMSaQ=
+X-Received: by 2002:a05:6000:2510:b0:3e0:152a:87a9 with SMTP id
+ ffacd0b85a97d-3e641c4ec99mr12794790f8f.28.1757465684189; Tue, 09 Sep 2025
+ 17:54:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909170011.239356-1-jordan@jrife.io> <20250909170011.239356-12-jordan@jrife.io>
-In-Reply-To: <20250909170011.239356-12-jordan@jrife.io>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Tue, 9 Sep 2025 17:03:53 -0700
-X-Gm-Features: Ac12FXwbFj82XjsFYqjpS_h3rixgtfK0Hw3QdCZncnZWLUkWeREwv9zScHpVq9E
-Message-ID: <CAAVpQUA8VyP=eHtQ3p4XJYwsU5Qq7L-k1FRGhPN+K9K+OeBZ+w@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 11/14] bpf: Introduce BPF_SOCK_OPS_UDP_CONNECTED_CB
-To: Jordan Rife <jordan@jrife.io>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Aditi Ghag <aditi.ghag@isovalent.com>
+References: <20250905133226.84675-1-leon.hwang@linux.dev> <20250905133226.84675-2-leon.hwang@linux.dev>
+In-Reply-To: <20250905133226.84675-2-leon.hwang@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 9 Sep 2025 17:54:33 -0700
+X-Gm-Features: AS18NWAgpE8qfOkoF07n65pjFDbUdSbtUhivMvufcVXgMHnrpH2buHMK1w3S6m8
+Message-ID: <CAADnVQ+uk+sqZhYPJu78NETidUiCa617Wa_YdnmvefOZnNoeZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Support fentry/fexit for functions with
+ union args
+To: Leon Hwang <leon.hwang@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, kernel-patches-bot@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 9, 2025 at 10:00=E2=80=AFAM Jordan Rife <jordan@jrife.io> wrote=
-:
+On Fri, Sep 5, 2025 at 6:32=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> wr=
+ote:
 >
-> Add the BPF_SOCK_OPS_UDP_CONNECTED_CB callback as a sockops hook where
-> connected UDP sockets can be inserted into a socket map. This is
-> invoked on calls to connect() for UDP sockets right after the socket is
-> hashed. Together with the next patch, this provides the missing piece
-> allowing us to fully manage the contents of a socket hash in an
-> environment where we want to keep track of all UDP and TCP sockets
-> connected to some backend.
+> Currently, functions with 'union' arguments cannot be traced with
+> fentry/fexit:
+
+union-s passed _by value_.
+It's an important detail.
+
 >
-> is_locked_tcp_sock was recently introduced in [1] to prevent access to
-> TCP-specific socket fields in contexts where the socket lock isn't held.
-> This patch extends the use of this field to prevent access to these
-> fields in UDP socket contexts.
+> bpftrace -e 'fentry:release_pages { exit(); }' -v
+> AST node count: 6
+> Attaching 1 probe...
+> ERROR: Error loading BPF program for fentry_vmlinux_release_pages_1.
+> Kernel error log:
+> The function release_pages arg0 type UNION is unsupported.
+> processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 pe=
+ak_states 0 mark_read 0
 >
-> Note: Technically, there should be nothing preventing the use of
->       bpf_sock_ops_setsockopt() and bpf_sock_ops_getsockopt() in this
->       context, but I've avoided removing the is_locked_tcp_sock_ops()
->       guard from these helpers for now to keep the changes in this patch
->       series more focused.
+> ERROR: Loading BPF object(s) failed.
 >
-> [1]: https://lore.kernel.org/all/20250220072940.99994-4-kerneljasonxing@g=
-mail.com/
+> The type of the 'release_pages' argument is defined as:
 >
-> Signed-off-by: Jordan Rife <jordan@jrife.io>
+> typedef union {
+>         struct page **pages;
+>         struct folio **folios;
+>         struct encoded_page **encoded_pages;
+> } release_pages_arg __attribute__ ((__transparent_union__));
+>
+> This patch relaxes the restriction by allowing function arguments of type
+> 'union' to be traced.
+>
+> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 > ---
->  include/net/udp.h              | 43 ++++++++++++++++++++++++++++++++++
->  include/uapi/linux/bpf.h       |  3 +++
->  net/ipv4/udp.c                 |  1 +
->  net/ipv6/udp.c                 |  1 +
->  tools/include/uapi/linux/bpf.h |  3 +++
->  5 files changed, 51 insertions(+)
+>  kernel/bpf/btf.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/include/net/udp.h b/include/net/udp.h
-> index e2af3bda90c9..0f55c489e90f 100644
-> --- a/include/net/udp.h
-> +++ b/include/net/udp.h
-> @@ -18,6 +18,7 @@
->  #ifndef _UDP_H
->  #define _UDP_H
->
-> +#include <linux/filter.h>
->  #include <linux/list.h>
->  #include <linux/bug.h>
->  #include <net/inet_sock.h>
-> @@ -25,6 +26,7 @@
->  #include <net/sock.h>
->  #include <net/snmp.h>
->  #include <net/ip.h>
-> +#include <linux/bpf-cgroup.h>
->  #include <linux/ipv6.h>
->  #include <linux/seq_file.h>
->  #include <linux/poll.h>
-> @@ -661,4 +663,45 @@ struct sk_psock;
->  int udp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool r=
-estore);
->  #endif
->
-> +#ifdef CONFIG_BPF
-> +
-> +/* Call BPF_SOCK_OPS program that returns an int. If the return value
-> + * is < 0, then the BPF op failed (for example if the loaded BPF
-> + * program does not support the chosen operation or there is no BPF
-> + * program loaded).
-> + */
-> +static inline int udp_call_bpf(struct sock *sk, int op)
-> +{
-> +       struct bpf_sock_ops_kern sock_ops;
-> +       int ret;
-> +
-> +       memset(&sock_ops, 0, offsetof(struct bpf_sock_ops_kern, temp));
-> +       if (sk_fullsock(sk)) {
-> +               sock_ops.is_fullsock =3D 1;
-> +               /* sock_ops.is_locked_tcp_sock not set. This prevents
-> +                * access to TCP-specific fields.
-> +                */
-> +               sock_owned_by_me(sk);
-> +       }
-> +
-> +       sock_ops.sk =3D sk;
-> +       sock_ops.op =3D op;
-> +
-> +       ret =3D BPF_CGROUP_RUN_PROG_SOCK_OPS(&sock_ops);
-> +       if (ret =3D=3D 0)
-> +               ret =3D sock_ops.reply;
-> +       else
-> +               ret =3D -1;
-> +       return ret;
-> +}
-> +
-> +#else
-> +
-> +static inline int udp_call_bpf(struct sock *sk, int op, u32 nargs, u32 *=
-args)
-> +{
-> +       return -EPERM;
-> +}
-> +
-> +#endif /* CONFIG_BPF */
-> +
->  #endif /* _UDP_H */
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 22761dea4635..e30515af1f27 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -7122,6 +7122,9 @@ enum {
->                                          * sendmsg timestamp with corresp=
-onding
->                                          * tskey.
->                                          */
-> +       BPF_SOCK_OPS_UDP_CONNECTED_CB,  /* Called on connect() for UDP so=
-ckets
-> +                                        * right after the socket is hash=
-ed.
-> +                                        */
->  };
->
->  /* List of TCP states. There is a build check in net/ipv4/tcp.c to detec=
-t
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index cc3ce0f762ec..2d51d0ead70d 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -2153,6 +2153,7 @@ static int udp_connect(struct sock *sk, struct sock=
-addr *uaddr, int addr_len)
->         res =3D __ip4_datagram_connect(sk, uaddr, addr_len);
->         if (!res)
->                 udp4_hash4(sk);
-> +       udp_call_bpf(sk, BPF_SOCK_OPS_UDP_CONNECTED_CB);
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 64739308902f7..86883b3c97d20 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6762,7 +6762,7 @@ bool btf_ctx_access(int off, int size, enum bpf_acc=
+ess_type type,
+>         /* skip modifiers */
+>         while (btf_type_is_modifier(t))
+>                 t =3D btf_type_by_id(btf, t->type);
+> -       if (btf_type_is_small_int(t) || btf_is_any_enum(t) || __btf_type_=
+is_struct(t))
+> +       if (btf_type_is_small_int(t) || btf_is_any_enum(t) || btf_type_is=
+_struct(t))
+>                 /* accessing a scalar */
+>                 return true;
+>         if (!btf_type_is_ptr(t)) {
+> @@ -7334,7 +7334,7 @@ static int __get_type_size(struct btf *btf, u32 btf=
+_id,
+>         if (btf_type_is_ptr(t))
+>                 /* kernel size of pointer. Not BPF's size of pointer*/
+>                 return sizeof(void *);
+> -       if (btf_type_is_int(t) || btf_is_any_enum(t) || __btf_type_is_str=
+uct(t))
+> +       if (btf_type_is_int(t) || btf_is_any_enum(t) || btf_type_is_struc=
+t(t))
+>                 return t->size;
 
-Why is this called on failure ?
+Did you look at
+commit 720e6a435194 ("bpf: Allow struct argument in trampoline based progra=
+ms")
+that added support for accessing struct passed by value?
 
-Same for IPv6.
+Study it and figure out what part of the verifier you forgot
+to update while adding this support for accessing unions
+passed by value.
+Think it through and update the selftest to make sure it tests
+the support end-to-end and covers the bug in this patch.
 
-
->         release_sock(sk);
->         return res;
->  }
-> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-> index 6a68f77da44b..304b43851e16 100644
-> --- a/net/ipv6/udp.c
-> +++ b/net/ipv6/udp.c
-> @@ -1310,6 +1310,7 @@ static int udpv6_connect(struct sock *sk, struct so=
-ckaddr *uaddr, int addr_len)
->         res =3D __ip6_datagram_connect(sk, uaddr, addr_len);
->         if (!res)
->                 udp6_hash4(sk);
-> +       udp_call_bpf(sk, BPF_SOCK_OPS_UDP_CONNECTED_CB);
->         release_sock(sk);
->         return res;
->  }
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index 22761dea4635..e30515af1f27 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -7122,6 +7122,9 @@ enum {
->                                          * sendmsg timestamp with corresp=
-onding
->                                          * tskey.
->                                          */
-> +       BPF_SOCK_OPS_UDP_CONNECTED_CB,  /* Called on connect() for UDP so=
-ckets
-> +                                        * right after the socket is hash=
-ed.
-> +                                        */
->  };
->
->  /* List of TCP states. There is a build check in net/ipv4/tcp.c to detec=
-t
-> --
-> 2.43.0
->
+pw-bot: cr
 
