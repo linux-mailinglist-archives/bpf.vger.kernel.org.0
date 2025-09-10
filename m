@@ -1,220 +1,198 @@
-Return-Path: <bpf+bounces-67993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-67994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE5AB50DF1
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 08:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E8BAB50E94
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 08:57:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 406B94811A0
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 06:18:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19C3E3A5A16
+	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 06:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BBB2DF3D9;
-	Wed, 10 Sep 2025 06:18:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170E63054D7;
+	Wed, 10 Sep 2025 06:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LJHzqsnS"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1HBmLqIh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBB92673AA;
-	Wed, 10 Sep 2025 06:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6F919D89E
+	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 06:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757485106; cv=none; b=VFm4o+DQuopDLFO0OvVGgw5xJSzMMwMml+S7vIqsVSv2h+3Y/83MfcilOsSCg3u1tghEPpTYnZEkXsLmpPAtyuhvw0VT6zMLzR+CNWfiNHZ2yhQWnOM7it53ypS2tJfdryGgZP10b6+HOd3zoYXtbOsY+VbJO0YneGE0OM9u5Ng=
+	t=1757487427; cv=none; b=kkCWw8V0g+sgyG6YPiwnCtTVnBZAf6cHQtAkzWXcj9C4Nv1JKZkkUEEbqCrfu3AeoS0UkjU6i38VzepXHglBRl3NIca3Z3d5Ec5zcARx2VpQfAnzSyW5sgpq5gWsznqlehNRXG0J2viIsqPUvMwUa3Vgcngl19NQVKPQ4MwXAJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757485106; c=relaxed/simple;
-	bh=J36O/t9pbZpHyekI/cR19In77YQfyzOLXMq7MsVD7Uk=;
+	s=arc-20240116; t=1757487427; c=relaxed/simple;
+	bh=XkfL6d26GRcixEltWh28WuK/QIxalBC2ohB9mDI4ILo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J+8ouZVh0544ymHAOiMfLL6CLG6VsEFiGTk04HMiUQYdNi65M41jwYYjwbUl05HJ9Orrt3PjLZcHiySqAHAAhEkk3q5mAocXDYTS9OEHfJc+KSlihtb3ixRHL4em3hTPdlEhHOnRZelM3Gur8S+MvIej5hBqcVL3/cOoc958fyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LJHzqsnS; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-7220d7dea27so52692616d6.1;
-        Tue, 09 Sep 2025 23:18:24 -0700 (PDT)
+	 To:Cc:Content-Type; b=WLc2QKkZi8rKeSn+3je7hruLguRRmpaBpRP2/WbCKaG1bBpIFLwr9itrOaZVhmi1dcx2BedTZnIeuRokfA4A9Ic+fpKJs+GwAtS3XTnq+CvOSNz+Zqj492IaZBA3Uvabop3zEH6ri2dMPcoUBwp5fBUP6O9pwb/JjF6r+5tOVRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1HBmLqIh; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-24b28de798cso42949025ad.0
+        for <bpf@vger.kernel.org>; Tue, 09 Sep 2025 23:57:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757485104; x=1758089904; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1757487425; x=1758092225; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DYzJL7Hx4cl0FskNvKkVhvtLZ/R9JXw2qBXsF5fYGzI=;
-        b=LJHzqsnSUsNciaQ/5MGGtCAMdloqKa7gIn8zH5ZtYMceKFSz9lqs88taXwj3HsdKLH
-         USuuPxK5h7TvoeeDnj/5wQ3sjKfG5r0an71Zo2PUdTKLcLpq+0iEqmH5+wY5BiWFqoRG
-         MUonQNdb9aysQygh46apU5HNAzz+qIkqwwbnpkpfufaUUhxJiliodFv4HOnJF78Z9gct
-         mcWImqNYrAUQqwJf8gUIyholPsmN8qGLUK3/tVwPgfPIocz09nqGCVIfGnbwtbmNM2+v
-         8jk1MfUncRewgzVbBu2lyPt4kYX8kBTw+c7qLkqzygd9rxzF4TrWC8UlGHvpaj+VUyHe
-         xU3Q==
+        bh=puD1TE/RgTZQnY4bw6FuXLXdkx5MZebuWIxeLzksRCQ=;
+        b=1HBmLqIhlsQH/fmbIXPGvnlowKY10EGkXSHo0jzqjltePjRuxSi1dLb5cNAzzHy8b7
+         k8tUKahasLbBMzsCL0uJeUTWIG1lkMtf/SgVployOBZB6ERnsWsZkvTZnyYMBAwNzREj
+         Zuii8avCUjCh69sqEMdrmLTHdqEbiTd6m3yM9hNkqgPRnjSMcPzVZRYwcAiNPcfmC5i8
+         RCyDiuIpI9/mxILszUUhBKBzPISZB1fkVfzb6lKayapS1RHgnkONOiPaQrFHjCfOflTL
+         D6VyeL94oSvtjXnk0tlOmSl2YezZTmQahQyX9X62jmpEe8lZihDZTEXtuUUsLi+ces9f
+         Et5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757485104; x=1758089904;
+        d=1e100.net; s=20230601; t=1757487425; x=1758092225;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DYzJL7Hx4cl0FskNvKkVhvtLZ/R9JXw2qBXsF5fYGzI=;
-        b=Oi9pxsukS3xgNBnl718s6xj+rsIjzQoKnIn8pb2Jz+RPjOs+iTOk2qP1EaeaI/Ja8k
-         7I/TQuUNoU285O00q1gRQzip9hOhauuzJKy+5pFB2diC++afweaG7FwUQY0+ckWSdBt9
-         I0r+jEJXLF64TCTs9GtGWYZc0fwe2SRvQ1U7kYmu+PwjdqfZJPvz8kwtyXCb5zIDYKQW
-         8RmzApDIo4DLeljlyJFxVjnz/CjMlnO+9dSw0f7fGxPnvOZUrg2eEIe4bZSerg+4HSrB
-         ztmGW/jRhtaNvUqbhLhv5EuIzG4Ty0zNfrU2RNyY9KII5SAQffqS4uU/9WZJyaiezmS/
-         +DMA==
-X-Forwarded-Encrypted: i=1; AJvYcCW3qlbpTj2xCQoDEW0afRcL3RjBFrJg7VHbO3lHoBmiEechgl9o4iX4Hn4uouqzK3mR3Tyg3lImecw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YycCaFpoXMLpW1mMoKRL8KALY22yIG0J7eI5rghOb4IGyth59mm
-	3hzOTOKQgjKBf8IMephm4hiw1BBCAr1F6g4v/fjv0Ph6YhwQgRAzO1iocypqzmBQt7bqhyWiVlN
-	1NsB4NI5DQ/1rGldt0Oe6LxtJyzIm9oA=
-X-Gm-Gg: ASbGncskMjpoJapd9ZKwZ8Bf8VZe1e0sAAVRVGEocU60h/zmzBTsut/tdVcJuPFFhY2
-	Aq8Qvbw6ZFQ0tf1Rvp2RNTCQ45RMcwYgPaGVJKX2gSeKX1LdNelEl/OH5KHL6/V5LzfB93I8u+y
-	SqkRswwZuYARGHsYOnkWtDfVkp/i8E2TalQJU3LZmUD2IrEtqkCDeeyj18e4lKeXn1VH5tgTYoh
-	9oxdYQToDqnu1UjrSCNZ9qEaeAd1YETkLusz3s8RsgQnfvv+2E=
-X-Google-Smtp-Source: AGHT+IFvX8ysVDBbiXtbizZMNGoZJmz5YmPfl+MEXyDzgFg9igYbqr/nnoZNtm5eoSPGvCef4i3c5jWe9oYtmW6CEfo=
-X-Received: by 2002:a05:6214:1c43:b0:720:3cd9:1f7e with SMTP id
- 6a1803df08f44-738f718cb4cmr113550666d6.0.1757485103832; Tue, 09 Sep 2025
- 23:18:23 -0700 (PDT)
+        bh=puD1TE/RgTZQnY4bw6FuXLXdkx5MZebuWIxeLzksRCQ=;
+        b=M2/Wba3prPw7k8hoEaCASSqQXtwgPyq2/UWzsZ/FnjuxLzw19+07jAQEqnbKjHsFIL
+         WlhShvB9TqnTpnQVD6QAMgAhf4PRFDqfnruYw/bGM1wr6rQzWgo4J/N/q/s75gviDq95
+         L8w3/LXz4OeKuN7mmxFbz4axhcvNiWsmElo6CjwKk2/hWyCok/Q0V3pOzvrs882FVclS
+         NQJ7veiasPSMJAWSOzr5b4NkNphYofPDvOCS/CJ0qElaOpu9Nc0LSTO1y2t6zbiDXKte
+         SYrMjDrzczASTSR6AUIE9KGleYwubYYLvUZK7gDa4CBjqUarySbAorvqUXn7hRMBILXG
+         bK+w==
+X-Forwarded-Encrypted: i=1; AJvYcCX4cnqM3qFsbFQ0QcWmzZdj1jrkxJcmpyzO0TXo9PMzh9ENKn9r8NDeQYgQlQali1MKp28=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAe5xmWWvYi+faJMNqXCJku6f2+U5/musDiAu7ydePjpRtsMt8
+	lUBOpHiRaM+TC1VnDb6NhM/VPg2MvRj9AC35Cbm7puZ32Sxx+So+kdTLBt5qHDchsX9bjt/mewR
+	n+TmhaM85Kl5VZ6y9ZM8z3H8+Csh+OlsEddtpSRQU
+X-Gm-Gg: ASbGncvNpTeYD/IxbWfFZN0cFZwxCaxDqMzwGqbJ/ZnJppLsyTKsvtgfP/PdGJUbsB2
+	uZzRljY2DFCqthl5WJo9rhoqwRduK9hzBiJt/1nCvc2vw4Nwo0pk7aBTafHv5vrjvZGNhFceoOO
+	thsevSdgyfuSWRREodqQVHnsRki+pgg+Oznw9FSZiNhHB77NH+Oi7aIdP5KMu1oU/h90hVYiIZW
+	X/RIwm9ICgvtL6rq5UM/WNb1HRjozFaBn+pj2TYIfV6lIg=
+X-Google-Smtp-Source: AGHT+IEMftrHjw5YOZ9yXt3768ya1wIi7X1CjNPJm8ZS33uJQG3R56Og+bzHYVGtSfGjKqtBv8brGrO/cvmOEEIyJUQ=
+X-Received: by 2002:a17:902:e801:b0:24c:9c5c:3096 with SMTP id
+ d9443c01a7336-25174c1cf26mr177648245ad.48.1757487425144; Tue, 09 Sep 2025
+ 23:57:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910024447.64788-1-laoar.shao@gmail.com> <20250910024447.64788-2-laoar.shao@gmail.com>
- <7c890b42-610f-42ec-acf2-b5b9f95209b1@linux.dev>
-In-Reply-To: <7c890b42-610f-42ec-acf2-b5b9f95209b1@linux.dev>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 10 Sep 2025 14:17:47 +0800
-X-Gm-Features: AS18NWAEtXjJHwi77ZRJ7QtvbBT2n7zXaHBMPXJVp87PMZaJZ2j5bODmbGmPrA0
-Message-ID: <CALOAHbDWJMyNQknX9ihGKuAJNQk+MuG8Af4cpLh=0N5mB_-2tg@mail.gmail.com>
-Subject: Re: [PATCH v7 mm-new 01/10] mm: thp: remove disabled task from khugepaged_mm_slot
-To: Lance Yang <lance.yang@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@redhat.com>
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org, 
-	Lance Yang <ioworker0@gmail.com>, baolin.wang@linux.alibaba.com, ziy@nvidia.com, 
-	hannes@cmpxchg.org, corbet@lwn.net, ameryhung@gmail.com, 21cnbao@gmail.com, 
-	shakeel.butt@linux.dev, rientjes@google.com, andrii@kernel.org, 
-	daniel@iogearbox.net, ast@kernel.org, ryan.roberts@arm.com, 
-	gutierrez.asier@huawei-partners.com, willy@infradead.org, 
-	usamaarif642@gmail.com, lorenzo.stoakes@oracle.com, npache@redhat.com, 
-	dev.jain@arm.com, Liam.Howlett@oracle.com
+References: <20250909232623.4151337-1-kuniyu@google.com> <a29689e0-cabc-4fdb-a030-443f0ccfb468@linux.dev>
+In-Reply-To: <a29689e0-cabc-4fdb-a030-443f0ccfb468@linux.dev>
+From: Kuniyuki Iwashima <kuniyu@google.com>
+Date: Tue, 9 Sep 2025 23:56:53 -0700
+X-Gm-Features: Ac12FXzRJjDYcU3YwWkBlBmRCjJa2jeB0pN4hbqXsRkQKANtBfrKnRdCjd3cWMk
+Message-ID: <CAAVpQUDeaiGUdxGQHSMRU3=zwJy7a0hMWXjoRkfdYPqaZLU09Q@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf] tcp_bpf: Call sk_msg_free() when
+ tcp_bpf_send_verdict() fails to allocate psock->cork.
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	syzbot+4cabd1d2fa917a456db8@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 10, 2025 at 1:11=E2=80=AFPM Lance Yang <lance.yang@linux.dev> w=
-rote:
+On Tue, Sep 9, 2025 at 10:15=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
 >
-> Hey Yafang,
->
-> On 2025/9/10 10:44, Yafang Shao wrote:
-> > Since a task with MMF_DISABLE_THP_COMPLETELY cannot use THP, remove it =
-from
-> > the khugepaged_mm_slot to stop khugepaged from processing it.
+> On 9/9/25 4:26 PM, Kuniyuki Iwashima wrote:
+> > syzbot reported the splat below. [0]
 > >
-> > After this change, the following semantic relationship always holds:
+> > The repro does the following:
 > >
-> >    MMF_VM_HUGEPAGE is set     =3D=3D task is in khugepaged mm_slot
-> >    MMF_VM_HUGEPAGE is not set =3D=3D task is not in khugepaged mm_slot
+> >    1. Load a sk_msg prog that calls bpf_msg_cork_bytes(msg, cork_bytes)
+> >    2. Attach the prog to a SOCKMAP
+> >    3. Add a socket to the SOCKMAP
+> >    4. Activate fault injection
+> >    5. Send data less than cork_bytes
 > >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Lance Yang <ioworker0@gmail.com>
+> > At 5., the data is carried over to the next sendmsg() as it is
+> > smaller than the cork_bytes specified by bpf_msg_cork_bytes().
+> >
+> > Then, tcp_bpf_send_verdict() tries to allocate psock->cork to hold
+> > the data, but this fails silently due to fault injection + __GFP_NOWARN=
+.
+> >
+> > If the allocation fails, we need to revert the sk->sk_forward_alloc
+> > change done by sk_msg_alloc().
+> >
+> > Let's call sk_msg_free() when tcp_bpf_send_verdict fails to allocate
+> > psock->cork.
+> >
+> > [0]:
+> > WARNING: net/ipv4/af_inet.c:156 at inet_sock_destruct+0x623/0x730 net/i=
+pv4/af_inet.c:156, CPU#1: syz-executor/5983
+> > Modules linked in:
+> > CPU: 1 UID: 0 PID: 5983 Comm: syz-executor Not tainted syzkaller #0 PRE=
+EMPT(full)
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
+ Google 07/12/2025
+> > RIP: 0010:inet_sock_destruct+0x623/0x730 net/ipv4/af_inet.c:156
+> > Code: 0f 0b 90 e9 62 fe ff ff e8 7a db b5 f7 90 0f 0b 90 e9 95 fe ff ff=
+ e8 6c db b5 f7 90 0f 0b 90 e9 bb fe ff ff e8 5e db b5 f7 90 <0f> 0b 90 e9 =
+e1 fe ff ff 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 9f fc
+> > RSP: 0018:ffffc90000a08b48 EFLAGS: 00010246
+> > RAX: ffffffff8a09d0b2 RBX: dffffc0000000000 RCX: ffff888024a23c80
+> > RDX: 0000000000000100 RSI: 0000000000000fff RDI: 0000000000000000
+> > RBP: 0000000000000fff R08: ffff88807e07c627 R09: 1ffff1100fc0f8c4
+> > R10: dffffc0000000000 R11: ffffed100fc0f8c5 R12: ffff88807e07c380
+> > R13: dffffc0000000000 R14: ffff88807e07c60c R15: 1ffff1100fc0f872
+> > FS:  00005555604c4500(0000) GS:ffff888125af1000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00005555604df5c8 CR3: 0000000032b06000 CR4: 00000000003526f0
+> > Call Trace:
+> >   <IRQ>
+> >   __sk_destruct+0x86/0x660 net/core/sock.c:2339
+> >   rcu_do_batch kernel/rcu/tree.c:2605 [inline]
+> >   rcu_core+0xca8/0x1770 kernel/rcu/tree.c:2861
+> >   handle_softirqs+0x286/0x870 kernel/softirq.c:579
+> >   __do_softirq kernel/softirq.c:613 [inline]
+> >   invoke_softirq kernel/softirq.c:453 [inline]
+> >   __irq_exit_rcu+0xca/0x1f0 kernel/softirq.c:680
+> >   irq_exit_rcu+0x9/0x30 kernel/softirq.c:696
+> >   instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1052 [i=
+nline]
+> >   sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:105=
+2
+> >   </IRQ>
+> >
+> > Fixes: 4f738adba30a ("bpf: create tcp_bpf_ulp allowing BPF to monitor s=
+ocket TX/RX data")
+> > Reported-by: syzbot+4cabd1d2fa917a456db8@syzkaller.appspotmail.com
+> > Closes: https://lore.kernel.org/netdev/68c0b6b5.050a0220.3c6139.0013.GA=
+E@google.com/
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
 > > ---
-> >   include/linux/khugepaged.h |  1 +
-> >   kernel/sys.c               |  6 ++++++
-> >   mm/khugepaged.c            | 19 +++++++++----------
-> >   3 files changed, 16 insertions(+), 10 deletions(-)
+> >   net/ipv4/tcp_bpf.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
-> > index eb1946a70cff..6cb9107f1006 100644
-> > --- a/include/linux/khugepaged.h
-> > +++ b/include/linux/khugepaged.h
-> > @@ -19,6 +19,7 @@ extern void khugepaged_min_free_kbytes_update(void);
-> >   extern bool current_is_khugepaged(void);
-> >   extern int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned lon=
-g addr,
-> >                                  bool install_pmd);
-> > +bool hugepage_pmd_enabled(void);
-> >
-> >   static inline void khugepaged_fork(struct mm_struct *mm, struct mm_st=
-ruct *oldmm)
-> >   {
-> > diff --git a/kernel/sys.c b/kernel/sys.c
-> > index a46d9b75880b..a1c1e8007f2d 100644
-> > --- a/kernel/sys.c
-> > +++ b/kernel/sys.c
-> > @@ -8,6 +8,7 @@
-> >   #include <linux/export.h>
-> >   #include <linux/mm.h>
-> >   #include <linux/mm_inline.h>
-> > +#include <linux/khugepaged.h>
-> >   #include <linux/utsname.h>
-> >   #include <linux/mman.h>
-> >   #include <linux/reboot.h>
-> > @@ -2493,6 +2494,11 @@ static int prctl_set_thp_disable(bool thp_disabl=
-e, unsigned long flags,
-> >               mm_flags_clear(MMF_DISABLE_THP_COMPLETELY, mm);
-> >               mm_flags_clear(MMF_DISABLE_THP_EXCEPT_ADVISED, mm);
-> >       }
-> > +
-> > +     if (!mm_flags_test(MMF_DISABLE_THP_COMPLETELY, mm) &&
-> > +         !mm_flags_test(MMF_VM_HUGEPAGE, mm) &&
-> > +         hugepage_pmd_enabled())
-> > +             __khugepaged_enter(mm);
-> >       mmap_write_unlock(current->mm);
+> > diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+> > index ba581785adb4..ee6a371e65a4 100644
+> > --- a/net/ipv4/tcp_bpf.c
+> > +++ b/net/ipv4/tcp_bpf.c
+> > @@ -408,8 +408,10 @@ static int tcp_bpf_send_verdict(struct sock *sk, s=
+truct sk_psock *psock,
+> >               if (!psock->cork) {
+> >                       psock->cork =3D kzalloc(sizeof(*psock->cork),
+> >                                             GFP_ATOMIC | __GFP_NOWARN);
+> > -                     if (!psock->cork)
+> > +                     if (!psock->cork) {
+> > +                             sk_msg_free(sk, msg);
 >
-> One minor style suggestion for prctl_set_thp_disable():
+> Nothing has been corked yet, does it need to update the "*copied":
 >
-> static int prctl_set_thp_disable(bool thp_disable, unsigned long flags,
->                                  unsigned long arg4, unsigned long arg5)
-> {
->         struct mm_struct *mm =3D current->mm;
+>                                 *copied -=3D sk_msg_free(sk, msg);
+
+Oh exactly, or simply *copied =3D 0 ?
+
+
 >
->         [...]
->         if (mmap_write_lock_killable(current->mm))
->                 return -EINTR;
->         [...]
->         mmap_write_unlock(current->mm);
->         return 0;
-> }
 >
-> It initializes struct mm_struct *mm =3D current->mm; at the beginning, bu=
-t
-> then uses both mm and current->mm. Could you change the calls using
-> current->mm to use the local mm variable for consistency? Just a nit ;)
-
-Nice catch
-
-Hello Andrew, David,
-
-The original commit "prctl: extend PR_SET_THP_DISABLE to optionally
-exclude VM_HUGEPAGE" is still in mm-new branch. The change below is a
-minor cleanup for it.
-
-Could we please fold this change directly into the original commit to
-keep the history clean?
-
-diff --git a/kernel/sys.c b/kernel/sys.c
-index a46d9b7..2250a32 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -2479,7 +2479,7 @@ static int prctl_set_thp_disable(bool
-thp_disable, unsigned long flags,
-        /* Flags are only allowed when disabling. */
-        if ((!thp_disable && flags) || (flags & ~PR_THP_DISABLE_EXCEPT_ADVI=
-SED))
-                return -EINVAL;
--       if (mmap_write_lock_killable(current->mm))
-+       if (mmap_write_lock_killable(mm))
-                return -EINTR;
-        if (thp_disable) {
-                if (flags & PR_THP_DISABLE_EXCEPT_ADVISED) {
-@@ -2493,7 +2493,7 @@ static int prctl_set_thp_disable(bool
-thp_disable, unsigned long flags,
-                mm_flags_clear(MMF_DISABLE_THP_COMPLETELY, mm);
-                mm_flags_clear(MMF_DISABLE_THP_EXCEPT_ADVISED, mm);
-        }
--       mmap_write_unlock(current->mm);
-+       mmap_write_unlock(mm);
-        return 0;
- }
-
-
---=20
-Regards
-Yafang
+> >                               return -ENOMEM;
+> > +                     }
+> >               }
+> >               memcpy(psock->cork, msg, sizeof(*msg));
+> >               return 0;
+>
+>
 
