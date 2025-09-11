@@ -1,76 +1,55 @@
-Return-Path: <bpf+bounces-68162-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68163-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5037CB5395A
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 18:33:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DC2AB5395D
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 18:33:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BCF87BBBE8
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 16:30:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E18EC5A1312
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 16:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E00353376;
-	Thu, 11 Sep 2025 16:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B393277A7;
+	Thu, 11 Sep 2025 16:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="R9ziZbco"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rZLCeYHN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E362206A9
-	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 16:31:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C6324E4BD
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 16:33:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757608296; cv=none; b=H9MkpSevMHOhMEFRHHwqK4fgAO556h1w8yJxQjMPDBFROb6E4DDaWN9Cj/iUY+jYKtjhoFReYcUh4KzPXglwQbNl21eTtS+yypJwp5HXNJhkxemVrHkxsy5Lj30PRXhmJCmYra9dda29r6mEv7kgW7tSCez5ZRSdaBojiDEbBog=
+	t=1757608422; cv=none; b=As20r23WfZ8L+RWPfh7uh8UKyYgxPgpbQCPS7PeZyORI0rdacdYzwzkNmP7JqWzFPsGf3n+S1lOwixOj9q7zn5OmqOE63yGEvyxZEq3eQIN0Am/C+ydvc2EJzhzK5UG2HihAUVnskod9P+NbTI1rOT4QK1ryK+DVgpdOJzb0/sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757608296; c=relaxed/simple;
-	bh=X8Ym7EaLzqN23+0UFG5M9DPXuHBHP2XdryvfovS0alM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XqyUiic080QdjoHq3SS02QvfnUEQfAgGUAUY1NKMwODgRIM9uxi8/CqEHVPo4QAbINsH5lFnBPapb7oFn9/QW4iHO59UtlAeVyqJwyIOzpYq6QRkRB4kyARTBKk5fVohauZoOdxsN/QUZFU+6jaLCr7qa6tmWYLwtmj5yovvxbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=R9ziZbco; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58BFtwnE019098;
-	Thu, 11 Sep 2025 16:31:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=corp-2025-04-25; bh=Oq7W1xl/WQOlGbr/qqJFr1GQg04fN
-	vCC+4DLOEKvyOk=; b=R9ziZbcoQ0Eoew/pFQa5pumN3+vuQWkGZJ+Fl1Zme8ApZ
-	b7S2dnVvC4r9xQIjez5qw7l4cUg92IvqpfzAY5osRtrolfmc6AO/9CfDoo/v+fyn
-	rW6hrqGtfwrLG/x6J44nEQi49xyprb9WtU2OKcpMVNTlxat5I4Du2BNqZX4MyZt/
-	/bXmtusIrAcdzKflBudtzcrA466keXUBWH0BrEn9RA79gt1CY2wIBdxQHZ4DTzhI
-	TCJ0pLuJ32kDVJNZWNrB6tTacqgmL8RzCMAuaoaTZEC7R8k9TLIH0k7SEJBu4C2i
-	A5d21WjdtNyzTdwls2qbl0/pA+H7o+pbddi3DNB0Q==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4922x96kgj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Sep 2025 16:31:07 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58BFtLoG013640;
-	Thu, 11 Sep 2025 16:31:06 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 490bdcv209-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Sep 2025 16:31:06 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 58BGV5ns020404;
-	Thu, 11 Sep 2025 16:31:05 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-154-60-192.vpn.oracle.com [10.154.60.192])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 490bdcv1vf-1;
-	Thu, 11 Sep 2025 16:31:05 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc: martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
-        brauner@kernel.org, bboscaccy@linux.microsoft.com, ameryhung@gmail.com,
-        emil@etsalapatis.com, bpf@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 bpf-next] selftests/bpf: more open-coded gettid syscall cleanup
-Date: Thu, 11 Sep 2025 17:30:56 +0100
-Message-ID: <20250911163056.543071-1-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1757608422; c=relaxed/simple;
+	bh=hld816mspjFZyaw+lLe3MO5JhJCKFGXf8DMDMgOO9d4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PZ5G3rd2d3+t85alQQbY6kBbpmkLahHkSk/f1CP9537H5GP6d9yaz6S4m/vGP+a+l/An0p5O3oi/w5HHQ+wzBdQIZfb+TRo9q3pPKSQ65YUc7dyMEKFeXo5JU1NfVSUBSp42r/TRc7E2AQeeaCL3Qcq4PS4Ra/D+/ro45QO/olI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rZLCeYHN; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757608416;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ew6NFTiJzzarNqTiniDND4hHrdgrezaJj+IqTfHOdFY=;
+	b=rZLCeYHNnY89CIGJ5H+eGzwiKRfFyyhiGLtzqoaZAk9mw0WbfPbpp4JWtJFStqgrgRUGfN
+	Cx6Kv3Wbr3uzTJQNvwWXH7AKflshaKvbJvdOQFcYS+t5Mz1bgk1o5+NtQP5zELhgLt0T8T
+	mTc52Pfs/B2bP5Qd4lZl9jiisLPFNwA=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	menglong8.dong@gmail.com,
+	Leon Hwang <leon.hwang@linux.dev>
+Subject: [RFC PATCH bpf-next v2 0/6] bpf: Extend bpf syscall with common attributes support
+Date: Fri, 12 Sep 2025 00:33:22 +0800
+Message-ID: <20250911163328.93490-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,123 +57,66 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-11_02,2025-09-11_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
- definitions=main-2509110147
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA4MDE2NiBTYWx0ZWRfX/R53MATzBE23
- 6g2ACIZWBqo3ohwyRk/Om8EPo2aUo/r3bqkl4HpzdVE3+8MUb2u9rnC8IIZpl/buYun8BlQyCjt
- lMpm3UevTHMKnGoq1HLwijraFiSCbMYDSQfdyHcnpRjQL3F64BVcqVYnetDyt7NpotteNQ+wzLa
- xF9oWnEDBp88alqK7DwsIBBkphT/g5fpw8dZDFamqg20Uv7sn4wnsHk05UAJvtRX6h8y4IVuKwx
- yZPTqwIFUOjM/MomfL6s+o3vRN2xXvnoD0sJJ6bipPIcqwTkxddMkV4klolvEZNat6oGzdoGUQT
- g38cBHb1haGU+DM/P6I5X6vhNpMyaFfpoFlI0i7cPb3rWdiMXwkgz1EOS71TT52D5AvC4mbXYLR
- OslIehND
-X-Proofpoint-GUID: nBsk-vpWZx6-LdS_RA40uz2wWJ0FHo96
-X-Proofpoint-ORIG-GUID: nBsk-vpWZx6-LdS_RA40uz2wWJ0FHo96
-X-Authority-Analysis: v=2.4 cv=LYY86ifi c=1 sm=1 tr=0 ts=68c2f94b b=1 cx=c_pps
- a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
- a=yJojWOMRYYMA:10 a=yPCof4ZbAAAA:8 a=0AllhwCjRtaCXWdvmIsA:9
+X-Migadu-Flow: FLOW_OUT
 
-commit 0e2fb011a0ba ("selftests/bpf: Clean up open-coded gettid syscall invocations")
+This proposal builds upon the discussion in
+"[PATCH bpf-next v4 0/4] bpf: Improve error reporting for freplace attachment failure"[1],
+and is also relevant to ongoing efforts such as tracing multi-link attach
+failures[2].
 
-addressed the issue that older libc may not have a gettid()
-function call wrapper for the associated syscall.  A few more
-instances have crept into tests, use sys_gettid() instead,
-and poison raw gettid() usage to avoid future issues.
+This patch set introduces support for *common attributes* in the 'bpf()'
+syscall, providing a unified mechanism for passing shared metadata across
+all BPF commands.
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- tools/testing/selftests/bpf/bpf_util.h                        | 3 +++
- tools/testing/selftests/bpf/network_helpers.c                 | 2 +-
- tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c         | 2 +-
- tools/testing/selftests/bpf/prog_tests/kernel_flag.c          | 2 +-
- tools/testing/selftests/bpf/prog_tests/task_local_data.h      | 2 +-
- tools/testing/selftests/bpf/prog_tests/test_task_local_data.c | 2 +-
- 6 files changed, 8 insertions(+), 5 deletions(-)
+The initial set of common attributes includes:
 
-diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
-index 5f6963a320d7..4bc2d25f33e1 100644
---- a/tools/testing/selftests/bpf/bpf_util.h
-+++ b/tools/testing/selftests/bpf/bpf_util.h
-@@ -67,6 +67,9 @@ static inline void bpf_strlcpy(char *dst, const char *src, size_t sz)
- #define sys_gettid() syscall(SYS_gettid)
- #endif
- 
-+/* and poison usage to ensure it does not creep back in. */
-+#pragma GCC poison gettid
-+
- #ifndef ENOTSUPP
- #define ENOTSUPP 524
- #endif
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 72b5c174ab3b..cdf7b6641444 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -457,7 +457,7 @@ int append_tid(char *str, size_t sz)
- 	if (end + 8 > sz)
- 		return -1;
- 
--	sprintf(&str[end], "%07d", gettid());
-+	sprintf(&str[end], "%07ld", sys_gettid());
- 	str[end + 7] = '\0';
- 
- 	return 0;
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c b/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c
-index e0dd966e4a3e..5ad904e9d15d 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c
-@@ -44,7 +44,7 @@ static void test_read_cgroup_xattr(void)
- 	if (!ASSERT_OK_PTR(skel, "read_cgroupfs_xattr__open_and_load"))
- 		goto out;
- 
--	skel->bss->target_pid = gettid();
-+	skel->bss->target_pid = sys_gettid();
- 
- 	if (!ASSERT_OK(read_cgroupfs_xattr__attach(skel), "read_cgroupfs_xattr__attach"))
- 		goto out;
-diff --git a/tools/testing/selftests/bpf/prog_tests/kernel_flag.c b/tools/testing/selftests/bpf/prog_tests/kernel_flag.c
-index a133354ac9bc..97b00c7efe94 100644
---- a/tools/testing/selftests/bpf/prog_tests/kernel_flag.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kernel_flag.c
-@@ -16,7 +16,7 @@ void test_kernel_flag(void)
- 	if (!ASSERT_OK_PTR(lsm_skel, "lsm_skel"))
- 		return;
- 
--	lsm_skel->bss->monitored_tid = gettid();
-+	lsm_skel->bss->monitored_tid = sys_gettid();
- 
- 	ret = test_kernel_flag__attach(lsm_skel);
- 	if (!ASSERT_OK(ret, "test_kernel_flag__attach"))
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_data.h b/tools/testing/selftests/bpf/prog_tests/task_local_data.h
-index a408d10c3688..2de38776a2d4 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_local_data.h
-+++ b/tools/testing/selftests/bpf/prog_tests/task_local_data.h
-@@ -158,7 +158,7 @@ static int __tld_init_data_p(int map_fd)
- 	void *data_alloc = NULL;
- 	int err, tid_fd = -1;
- 
--	tid_fd = syscall(SYS_pidfd_open, gettid(), O_EXCL);
-+	tid_fd = syscall(SYS_pidfd_open, sys_gettid(), O_EXCL);
- 	if (tid_fd < 0) {
- 		err = -errno;
- 		goto out;
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
-index 3b5cd2cd89c7..9fd6306b455c 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
-@@ -63,7 +63,7 @@ void *test_task_local_data_basic_thread(void *arg)
- 	if (!ASSERT_OK_PTR(value2, "tld_get_data"))
- 		goto out;
- 
--	tid = gettid();
-+	tid = sys_gettid();
- 
- 	*value0 = tid + 0;
- 	*value1 = tid + 1;
--- 
-2.39.3
+1. 'log_buf': User-provided buffer for storing log output.
+2. 'log_size': Size of the provided log buffer.
+3. 'log_level': Verbosity level for logging.
+
+With this extension, the 'bpf()' syscall will be able to return meaningful
+error messages (e.g., failures of creating map), improving debuggability
+and user experience.
+
+Changes:
+RFC v1 -> RFC v2:
+* Fix build error reported by test bot.
+* Address comments from Alexei:
+  * Drop new uapi for freplace.
+  * Add common attributes support for prog_load and btf_load.
+  * Add common attributes support for map_create.
+
+Links:
+[1] https://lore.kernel.org/bpf/20250224153352.64689-1-leon.hwang@linux.dev/
+[2] https://lore.kernel.org/bpf/20250703121521.1874196-1-dongml2@chinatelecom.cn/
+
+Leon Hwang (6):
+  bpf: Extend bpf syscall with common attributes support
+  libbpf: Add support for extended bpf syscall
+  bpf: Add common attr support for prog_load and btf_load
+  bpf: Add common attr support for map_create
+  libbpf: Add common attr support for map_create
+  selftests/bpf: Add cases to test map create failure log
+
+ include/linux/bpf.h                           |   3 +-
+ include/linux/bpf_verifier.h                  |   2 +-
+ include/linux/btf.h                           |   3 +-
+ include/linux/syscalls.h                      |   3 +-
+ include/uapi/linux/bpf.h                      |   7 +
+ kernel/bpf/btf.c                              |  12 +-
+ kernel/bpf/log.c                              |  23 +++-
+ kernel/bpf/syscall.c                          | 115 ++++++++++++----
+ kernel/bpf/verifier.c                         |   8 +-
+ tools/include/uapi/linux/bpf.h                |   7 +
+ tools/lib/bpf/bpf.c                           |  61 ++++++++-
+ tools/lib/bpf/bpf.h                           |   6 +-
+ tools/lib/bpf/features.c                      |   8 ++
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/lib/bpf/libbpf_internal.h               |   2 +
+ .../selftests/bpf/prog_tests/map_init.c       | 124 ++++++++++++++++++
+ 16 files changed, 341 insertions(+), 45 deletions(-)
+
+--
+2.50.1
 
 
