@@ -1,104 +1,120 @@
-Return-Path: <bpf+bounces-68095-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68096-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03E6EB52E0A
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 12:11:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F4B6B52E2C
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 12:18:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EF4A161F0E
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 10:11:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA8A217D942
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 10:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5819531283E;
-	Thu, 11 Sep 2025 10:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447443101A5;
+	Thu, 11 Sep 2025 10:18:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KcPTRITn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Zd/CHr04"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C476A31281C;
-	Thu, 11 Sep 2025 10:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9F32E2667
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 10:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757585406; cv=none; b=drzSsKU1d1SRzQ6ar78KN2SL27YqHoNqxnzKuiyQeXiWIIHk4lIRNIigBeUT7KEXMRNnXiCEwaabPLCoq6aC4Znrq6W5Vg7Gy2b58FHbe5RNGcks4mNjHYzUYoe1YjXGF7OZxqF7zIqBexGgwsn9309BNDh3EuQIraCnqbColmU=
+	t=1757585912; cv=none; b=jVy3nDw/zScy3aKsnArzgcuK8YMu3l33OgbwBRscUdLQdCz4+vBZ2UXCYBngZWVLLqQWqAdBJtDymGvPyoI9m4n2fm4Vq0AwcwulukDZUhj7zX14ePDWfKHbUBWHyq5Cl3OEH4CVBgmeAeCTwGg5JAdLbH0L/MzWyo4g1JRsxC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757585406; c=relaxed/simple;
-	bh=eN0nJzuR7cYj/BqQgbUnT7er/x4zP8Te2SGMwzGgFXM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=OiTp+4nTOAG33lY9ti+8KsswSCrzIiVb4CBBoOE9XYIMjx7IZb6QDXC0uQ7qtuYx5BKXSH5gOb+hU3d7ynnhaHWQN3bOcRgLClVsNJiHy7RDuTU8QkLs0L8BuuQ3KYjcAShhdB2jjQTVmshb2Qx1+XE+iaxVpXwbTnSzpHp2di0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KcPTRITn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FA69C4CEF0;
-	Thu, 11 Sep 2025 10:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757585406;
-	bh=eN0nJzuR7cYj/BqQgbUnT7er/x4zP8Te2SGMwzGgFXM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KcPTRITnkVVcTl9bJYhhKTrbCIwAmB/w0+sPxaQWRk/bGiAkNMO1P7kuLaIym774K
-	 Ijau9pSriGMhr4nRPysLx9h6K6L/izZxLrkjmd5OuNInTUa3l0H2+NnSmeIXIQkrym
-	 DwGmdCXycl/fpoFOvJ+MnjTv4kBy+qDIDW9zmihCGwZ+MlfD3V2Y0QtSD2YrwHtSFZ
-	 X47O1gcC+m0ssSqXv1kvFZcPU0CDk2jBTdfktjKrV/PtB7Bdj+dBt/9HzVokv6kXO8
-	 aWcTR0ZtzStEEOV1neATswVuqQ/Y1hniP8esLEG1JaJu2KpmPs66snlKPRocnXmgM1
-	 KNJxyxa4BWS/g==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34017383BF69;
-	Thu, 11 Sep 2025 10:10:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1757585912; c=relaxed/simple;
+	bh=b8kOCoUNiju/FWlmhh2Efh6jL8KK7YKRK8N0sSL+ihY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NZxH05n1IJ7BPuJUAweKw6sdD6kidl1FQoG9TPLPCyEg1RFQYm2PKVZmQDcgaafcYaf8tuPtftXDWfhJKpelhwCbVsKkEoNWLJPKnPWgxIbivQbsgQntTHn+IAPdvbXViyWmU2SutRJATNRG4x97BYnwnvE15nwXeJc24S09cdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Zd/CHr04; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-72226768824so4965326d6.2
+        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 03:18:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1757585909; x=1758190709; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b8kOCoUNiju/FWlmhh2Efh6jL8KK7YKRK8N0sSL+ihY=;
+        b=Zd/CHr04NiV8NK/uaWUmoo6yfow/Cm0ZQqeugNK/LjKfDLdzQSmpFAYY9SDXNibLYe
+         IHyaFVfLCp0VKbQZ+lsvYirwfOp6F5tBBVsAsjb/3lrtPf9W2Vc++e19PWYXIrS7v3eP
+         psh6KU0eZsU5vQ698A5+vN9NAkA6YdzJwTqvolvRWF8TI/3OC1lbSHrQGkqvrLvRpRIR
+         5LrWSTomqCnvN8BOPQn9yW1VYHfGRf2+uJs++Kg/o73obEGTwlg8keD793Z8OG11Ot8w
+         jjkqgYFTCmoQwkBoUXGSi9ffUqopG843/7ZrdJXLqVup9U8qQlF8mZXUdslGaeR+H5FT
+         p+4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757585909; x=1758190709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b8kOCoUNiju/FWlmhh2Efh6jL8KK7YKRK8N0sSL+ihY=;
+        b=NYR5MfSa4WxirRDrI1ohI9v1Bqf20sJqGlSDdHc1wKet/rjhxDkn1hI8kHLHBRF/DA
+         K/jtCFVbp75d1ieWXKb24HRuPbM86SLgK9fQGmWJqeYI7KOnS50XF8KmXe/SpOdBvKEq
+         a1KDY5SbpBsFn8B58oAcS3Ds3+7jxcIciQ4iCUCMinKSb04dcsd0Nf9yscsuDdLgRJk6
+         fwW3jirbJvGoZqUj1b6NMkW93Xh4lwmOrUgglVh17/fOBReRTJDTb/I6YCkwgB9/VxdI
+         CKVFMHRR3Nb0Q7HmgOyvgrHG8F10lC5u4F8lQa1nwsTrQ5ewUKwr46Aibh1PzixD3/qw
+         FYmA==
+X-Forwarded-Encrypted: i=1; AJvYcCWg2xf6lHP/ktlyZA21Gl2cxDH3JE6hW0v8R9G5sHaKboVoyW8YkjGMLdiqXTtL3x3pcUo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxidbJ12ImRmj5i6+p9rGBtYXuvycDfaEmWEsIPNpw5elfeeXh9
+	xteuUJTH98FrgE2yKcA9UQ9wLRmNCGY/MPAzRwJXSHB5A+pSXZC/zu06beTN4eF0b0gl14UahMI
+	MCmXZOBFU7bxiJYvOZld8EgWWmiFoDQ+dCi+sfJ9j
+X-Gm-Gg: ASbGnctq8StwFnvNN5W7KPETBajIQ6NGpbXgkFrSKqamZq9WE8nWLm8WwEpYuSjRCpW
+	vKbQ8l/wz6QHjLGPKpybCMltob9jOAjQNKE6cCnWII1ew3C/R/vzfNTrTos2xNrLojoKu2KHYES
+	D9SRKKkJ+AP3EZ4BfSwqJFKCuiFPagbE5knDbJgE9VwvNh0BmLAUPX1erT7x98uSd/7y44KkDq9
+	vKN+SvKBamAjXvS9HzZZZpPyzyNxJ+CZUs=
+X-Google-Smtp-Source: AGHT+IEqQMhkVh/lYGalDwkpiYZ6f35/G1vtOQ2l6IDxuZ/NsAD8i3LfdKsGnA8/soxwk9WffOfYsUldgmrLaRipwNs=
+X-Received: by 2002:ac8:5e49:0:b0:4b5:e822:36e0 with SMTP id
+ d75a77b69052e-4b5f839047fmr204347991cf.12.1757585908196; Thu, 11 Sep 2025
+ 03:18:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] net: xdp: handle frags with unreadable
- memory
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175758540901.2113906.14410248093757782465.git-patchwork-notify@kernel.org>
-Date: Thu, 11 Sep 2025 10:10:09 +0000
-References: <20250905221539.2930285-1-kuba@kernel.org>
-In-Reply-To: <20250905221539.2930285-1-kuba@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
- pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- sdf@fomichev.me, michael.chan@broadcom.com, anthony.l.nguyen@intel.com,
- marcin.s.wojtas@gmail.com, tariqt@nvidia.com, mbloch@nvidia.com,
- jasowang@redhat.com, bpf@vger.kernel.org, aleksander.lobakin@intel.com,
- pavan.chebbi@broadcom.com, przemyslaw.kitszel@intel.com
+References: <20250908173408.79715-1-chia-yu.chang@nokia-bell-labs.com> <20250908173408.79715-9-chia-yu.chang@nokia-bell-labs.com>
+In-Reply-To: <20250908173408.79715-9-chia-yu.chang@nokia-bell-labs.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 11 Sep 2025 03:18:17 -0700
+X-Gm-Features: Ac12FXyMpCAA7q3vBOdalZhfapQxJhqhSZEIpQwkhEKdjvw-ONLg3xPKC40oLaw
+Message-ID: <CANn89i+2=bNkkf89RysrYxb9DW0Vw9+jSg7FotqtaHZa7tmerA@mail.gmail.com>
+Subject: Re: [PATCH v17 net-next 08/14] tcp: accecn: AccECN needs to know
+ delivered bytes
+To: chia-yu.chang@nokia-bell-labs.com
+Cc: pabeni@redhat.com, linux-doc@vger.kernel.org, corbet@lwn.net, 
+	horms@kernel.org, dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com, 
+	kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com, 
+	jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch, 
+	donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
+	shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
+	ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com, 
+	g.white@cablelabs.com, ingemar.s.johansson@ericsson.com, 
+	mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at, 
+	Jason_Livingood@comcast.com, vidhi_goel@apple.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, Sep 8, 2025 at 10:34=E2=80=AFAM <chia-yu.chang@nokia-bell-labs.com>=
+ wrote:
+>
+> From: Ilpo J=C3=A4rvinen <ij@kernel.org>
+>
+> AccECN byte counter estimation requires delivered bytes
+> which can be calculated while processing SACK blocks and
+> cumulative ACK. The delivered bytes will be used to estimate
+> the byte counters between AccECN option (on ACKs w/o the
+> option).
+>
+> Accurate ECN does not depend on SACK to function; however,
+> the calculation would be more accurate if SACK were there.
+>
+> Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
+> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> Acked-by: Paolo Abeni <pabeni@redhat.com>
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Fri,  5 Sep 2025 15:15:37 -0700 you wrote:
-> Make XDP helpers compatible with unreadable memory. This is very
-> similar to how we handle pfmemalloc frags today. Record the info
-> in xdp_buf flags as frags get added and then update the skb once
-> allocated.
-> 
-> This series adds the unreadable memory metadata tracking to drivers
-> using xdp_build_skb_from*() with no changes on the driver side - hence
-> the only driver changes here are refactoring. Obviously, unreadable memory
-> is incompatible with XDP today, but thanks to xdp_build_skb_from_buf()
-> increasing number of drivers have a unified datapath, whether XDP is
-> enabled or not.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,1/2] net: xdp: pass full flags to xdp_update_skb_shared_info()
-    https://git.kernel.org/netdev/net-next/c/1827f773e416
-  - [net-next,2/2] net: xdp: handle frags with unreadable memory
-    https://git.kernel.org/netdev/net-next/c/6bffdc0f88f8
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
