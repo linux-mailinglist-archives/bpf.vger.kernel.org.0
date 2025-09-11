@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-68124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68125-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3302B52FB5
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 13:14:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 399D2B52FB8
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 13:14:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D83D169350
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 11:14:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E87C23A8EDD
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 11:14:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E6331E100;
-	Thu, 11 Sep 2025 11:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573EC31B13A;
+	Thu, 11 Sep 2025 11:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="gxezcZe9"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="sje16V5F"
 X-Original-To: bpf@vger.kernel.org
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368F63164DC;
-	Thu, 11 Sep 2025 11:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E2563164DC;
+	Thu, 11 Sep 2025 11:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757589010; cv=none; b=HjAw2AFzFRvkWsqg5DE31gne+e1K57VHAswsKlVGOTDl52k6ny28abofw+plyR2ONc3SGXDG76oL+FlMYzs0SSnc+FkwkiY7NYyl8PDWPyqrCxxSK3SVpHLy8IilH8kb2v3EjCXDPAF29uDq5wWZOtSXCIYPaq22tBn0s/Qz7hs=
+	t=1757589017; cv=none; b=gYP4h1F2aSr19Kbni01HBH3kJr1wRvMoBHeTz0MlZmga42HJo5KhjNF7a0/mqFbzGWnzf8+2Lu7HPjfdXAKSsJFNBhge+YMIU7dYLQZM6s9RmIAE6W58Tw4r+WEO4Vd0cPL085IiEaH3Xf7qYF9kHjgaDZ+1JO1SQhWiyeK4uYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757589010; c=relaxed/simple;
-	bh=Putgk0qzrFHVluuAd2dPTdI6LXiA0YtV9hZlaZqtWM0=;
+	s=arc-20240116; t=1757589017; c=relaxed/simple;
+	bh=3qkI+As7kffDfYiHM6aKEXAr9lRsqb+/JBrKG4SnQXw=;
 	h=In-Reply-To:References:From:To:Cc:Subject:MIME-Version:
-	 Content-Disposition:Content-Type:Message-Id:Date; b=vDQE29la62vKdT76HjmULTBD+xJy2rMC+mjM8p2modPyW2RngLPnTadGzbWpHyU6YxeQMAhQmBLNVSJPqJl/UqeFmu+/lcXbQ021QOJlx5mPMHRE9EleWncC++VSJNErLjQIzQBXBvT2LDCb/WFzmjoh0W4U6l0sePYul3Xe+30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=gxezcZe9; arc=none smtp.client-ip=78.32.30.218
+	 Content-Disposition:Content-Type:Message-Id:Date; b=NU8EflgifAI6USyAbnG3NtCMoeibuJQPZ+aq0ozA6txJSXBh+c5vHHCkuouq2kA0GU+lkYyiC5ZAG60ARTyG6AEjTB88iNA5ud5VkzGbYmfybJinF4f8K27llq5Ohll1xlWVQRxPRH2KstY/RV900LezUTRSErAyh0VkZ2qVJVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=sje16V5F; arc=none smtp.client-ip=78.32.30.218
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -37,22 +37,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=mmtrcC40xcucgl7bIClgEBWb0BLF4GjZTQYLQ094U8w=; b=gxezcZe93o6e7CP4CWel5iOmkb
-	p+I5cnEb9rxaKzlU4Puw5zO83SzwDj8f0ompGc+Uwt+uAFaQtMiIjS6RVGk8XTvknS3ouMhVLDPIr
-	nsXp9jq/WcPC+1hD4nwvSKvrpejgqs9JWUPOypvlE12p6vuVvWnSBly3yut3sPlwQEEz23UGbzOk5
-	ztGYxY5hYVlxngmZqcdLd305FO4p/qNPDMf+WIsCWP5y1fmm2kyXhG3Rg7Uq8GO/5+vUZ7VChYYFW
-	+7/LYY937FqrzgYFyCXU4ROkM8PK37zjYCTVEcdm9+Ruma1E+m62Fwg4D9UPDX6fmCghPPlIRV6cV
-	yOhvXESg==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:42836 helo=rmk-PC.armlinux.org.uk)
+	bh=B9mlUuiZUBrX7aQtqBT3TxfiZmcQldNbBylxYkZ/v1U=; b=sje16V5F0iMZanbBcmAqQrsS+H
+	LTbYvk0irpitUgvghLte94X0OH3TP2Y5bsTe/UIo0gCKmSv0XOXenx7QINhtl5Xeppact3h2hAAwn
+	NtWL9vgnOGzBirX2k8nDpp499kJPT3PstKyRxinO0f6ngXDYSeZflQS/WVnsFXu3FJurOmPrTE2Ri
+	3YZ+oZ7Gh1zN7N5ov/ZHJ+TLoCgqBeQIG4JV0tlF1bRjIRyrFRvfvfAXxhGxRasA1gWTb2esYSKjZ
+	szcJpZcwiwG3zJC3diRrLtNw1v8LWpBKxV6063GXeG8eLaQ41esjYsKYVAXRLsLHj8WoPM+/jkH3u
+	3BocF60g==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:42850 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.98.2)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1uwfBk-000000002tM-1WZX;
-	Thu, 11 Sep 2025 12:10:04 +0100
+	id 1uwfBp-000000002tp-1aHi;
+	Thu, 11 Sep 2025 12:10:09 +0100
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.98.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1uwfBi-00000004j8v-3HcH;
-	Thu, 11 Sep 2025 12:10:02 +0100
+	id 1uwfBn-00000004j92-3nj1;
+	Thu, 11 Sep 2025 12:10:08 +0100
 In-Reply-To: <aMKtV6O0WqlmJFN4@shell.armlinux.org.uk>
 References: <aMKtV6O0WqlmJFN4@shell.armlinux.org.uk>
 From: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
@@ -76,8 +76,8 @@ Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Richard Cochran <richardcochran@gmail.com>,
 	Stanislav Fomichev <sdf@fomichev.me>
-Subject: [PATCH net-next v2 06/11] net: stmmac: add __stmmac_release() to
- complement __stmmac_open()
+Subject: [PATCH net-next v2 07/11] net: stmmac: move stmmac_init_ptp()
+ messages into function
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,119 +87,51 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1uwfBi-00000004j8v-3HcH@rmk-PC.armlinux.org.uk>
+Message-Id: <E1uwfBn-00000004j92-3nj1@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Thu, 11 Sep 2025 12:10:02 +0100
+Date: Thu, 11 Sep 2025 12:10:07 +0100
 
-Rename stmmac_release() to __stmmac_release(), providing a new
-stmmac_release() method. Update stmmac_change_mtu() to use
-__stmmac_release(). Move the runtime PM handling into stmmac_open()
-and stmmac_release().
-
-This avoids stmmac_change_mtu() needlessly fiddling with the runtime
-PM state, and will allow future changes to remove code from
-__stmmac_open() and __stmmac_release() that should only happen when
-the net device is administratively brought up or down.
+Move the stmmac_init_ptp() messages from stmmac_hw_setup() to
+stmmac_init_ptp(), which will allow further cleanups.
 
 Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 41 +++++++++++--------
- 1 file changed, 25 insertions(+), 16 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index efce7b37f704..cb058e4c6ea9 100644
+index cb058e4c6ea9..716c7e21baf1 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3965,10 +3965,6 @@ static int __stmmac_open(struct net_device *dev,
- 	if (!priv->tx_lpi_timer)
- 		priv->tx_lpi_timer = eee_timer * 1000;
+@@ -788,8 +788,13 @@ static int stmmac_init_ptp(struct stmmac_priv *priv)
+ 		priv->plat->ptp_clk_freq_config(priv);
  
--	ret = pm_runtime_resume_and_get(priv->device);
--	if (ret < 0)
--		return ret;
--
- 	if ((!priv->hw->xpcs ||
- 	     xpcs_get_an_mode(priv->hw->xpcs, mode) != DW_AN_C73)) {
- 		ret = stmmac_init_phy(dev);
-@@ -3976,7 +3972,7 @@ static int __stmmac_open(struct net_device *dev,
- 			netdev_err(priv->dev,
- 				   "%s: Cannot attach to PHY (error: %d)\n",
- 				   __func__, ret);
--			goto init_phy_error;
-+			return ret;
- 		}
- 	}
- 
-@@ -4028,8 +4024,6 @@ static int __stmmac_open(struct net_device *dev,
- 	stmmac_release_ptp(priv);
- init_error:
- 	phylink_disconnect_phy(priv->phylink);
--init_phy_error:
--	pm_runtime_put(priv->device);
- 	return ret;
- }
- 
-@@ -4043,21 +4037,23 @@ static int stmmac_open(struct net_device *dev)
- 	if (IS_ERR(dma_conf))
- 		return PTR_ERR(dma_conf);
- 
-+	ret = pm_runtime_resume_and_get(priv->device);
-+	if (ret < 0)
-+		goto err;
-+
- 	ret = __stmmac_open(dev, dma_conf);
+ 	ret = stmmac_init_tstamp_counter(priv, STMMAC_HWTS_ACTIVE);
 -	if (ret)
 +	if (ret) {
-+		pm_runtime_put(priv->device);
-+err:
- 		free_dma_desc_resources(priv, dma_conf);
++		if (ret == -EOPNOTSUPP)
++			netdev_info(priv->dev, "PTP not supported by HW\n");
++		else
++			netdev_warn(priv->dev, "PTP init failed\n");
+ 		return ret;
 +	}
  
- 	kfree(dma_conf);
-+
- 	return ret;
- }
+ 	priv->adv_ts = 0;
+ 	/* Check if adv_ts can be enabled for dwmac 4.x / xgmac core */
+@@ -3497,12 +3502,7 @@ static int stmmac_hw_setup(struct net_device *dev, bool ptp_register)
+ 				    ERR_PTR(ret));
+ 	}
  
--/**
-- *  stmmac_release - close entry point of the driver
-- *  @dev : device pointer.
-- *  Description:
-- *  This is the stop entry point of the driver.
-- */
--static int stmmac_release(struct net_device *dev)
-+static void __stmmac_release(struct net_device *dev)
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 	u32 chan;
-@@ -4097,6 +4093,19 @@ static int stmmac_release(struct net_device *dev)
+-	ret = stmmac_init_ptp(priv);
+-	if (ret == -EOPNOTSUPP)
+-		netdev_info(priv->dev, "PTP not supported by HW\n");
+-	else if (ret)
+-		netdev_warn(priv->dev, "PTP init failed\n");
+-	else if (ptp_register)
++	if (stmmac_init_ptp(priv) == 0 && ptp_register)
+ 		stmmac_ptp_register(priv);
  
- 	if (stmmac_fpe_supported(priv))
- 		ethtool_mmsv_stop(&priv->fpe_cfg.mmsv);
-+}
-+
-+/**
-+ *  stmmac_release - close entry point of the driver
-+ *  @dev : device pointer.
-+ *  Description:
-+ *  This is the stop entry point of the driver.
-+ */
-+static int stmmac_release(struct net_device *dev)
-+{
-+	struct stmmac_priv *priv = netdev_priv(dev);
-+
-+	__stmmac_release(dev);
- 
- 	pm_runtime_put(priv->device);
- 
-@@ -5895,7 +5904,7 @@ static int stmmac_change_mtu(struct net_device *dev, int new_mtu)
- 			return PTR_ERR(dma_conf);
- 		}
- 
--		stmmac_release(dev);
-+		__stmmac_release(dev);
- 
- 		ret = __stmmac_open(dev, dma_conf);
- 		if (ret) {
+ 	if (priv->use_riwt) {
 -- 
 2.47.3
 
