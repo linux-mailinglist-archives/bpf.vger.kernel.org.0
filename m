@@ -1,299 +1,174 @@
-Return-Path: <bpf+bounces-68073-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45526B52577
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 03:05:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A1C7B5264F
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 04:13:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9A3C580AEE
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 01:05:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 047301BC7AAD
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 02:13:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126BC189906;
-	Thu, 11 Sep 2025 01:05:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1AFD239E65;
+	Thu, 11 Sep 2025 02:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NCg3KTOk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M1G8t34H"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 069C91DF25C
-	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 01:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A22A22688C
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 02:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757552703; cv=none; b=rlZO03gyZHSgipqffLr3Q524MrzTZrZWe9YnP9yHecEsZSBThFoCBPGlE2MBx0qD+93zT5VhYd7NfYZV3wR1NmYVyeJ6dMRJvXCBN6rI88aHvvgu8QKfrDjeSeAbxsxxz0evDHZezp5FG2fq0GVCceynestLdS5aEEJ3UOk+UzI=
+	t=1757556800; cv=none; b=L08hOE+fxhwM3TyDnhTVWpW9dFrvXD9BmrZoYX41+xHCarj9EiV8PpE3Qw5G01v/44l+VE4jSacsIouwZoz5kgsj8L0/JwMT7P+VrmIPse7F5hIywKIiFgnCMKGB4q0KY8Vk4SXrcBSbYH1oBjiUyAKaM8kjp5X52Pvxw3V7YO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757552703; c=relaxed/simple;
-	bh=qC9RfOXac8uwdLfPF9v9VhEzw3X+ZvgYG5+/AuvierI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L+IX4WADMUKKPmABdqNayUI06xf4VDtZ9f3zCgJUqMorGPclXlHCVW1oDLfCwrXRqgihrfWmX4XemQTK2VlZfq2wYql0CJ477wn0js7w9aQaqiBbQlpcljenyFEdYKGi7Nvcfm+ikOB1hmxRmO94hVeYRbOO+7upZ+v9kyLLLXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NCg3KTOk; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-323266cdf64so123689a91.0
-        for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 18:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757552701; x=1758157501; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OoSq8o9ZUaXHisM0ZuJw1hWdgl2/E9/KXCMMZmDSuLE=;
-        b=NCg3KTOk1/cBCr0Qy/OP0cDeGJLwdBAi8syWwP37xUa21lJgJnR7G8atTSOr6LwIf/
-         EL+t89LAzmul2f17pXdG4+OtQdt4TlRqJZ314wUY6LiMaemtMKNskHU/A5QJ1oY7M9ei
-         CI6hV/5xyCqYBiLr1VAtL/cf+SbuxeQW1d9/yiemKvBPX2DRNtOQIoSyUmmCnwih2T4s
-         oEDZ0sWr3azWqWj9hYLPqyVH1/uXA+wZpkEBQ5QNnzRqqkHCreI3FLgL6gmab9lszoSC
-         qG7Yvf09NoOQ9Xo+y+gjGQ98sSOVbkZoN92UtBYNJPSfAgSBv6fxFKgHZ1XSvq5ofwKe
-         ofPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757552701; x=1758157501;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OoSq8o9ZUaXHisM0ZuJw1hWdgl2/E9/KXCMMZmDSuLE=;
-        b=aJq16oASQiFa9XnS9fBSyfML1uPcqTQogweK1yzemgNjzUb2CRfDaCB+VY96RgqYQL
-         9U975VQq++qR4zSGDAmFQ0DHNX2cis/5y6OubU0gZvIKu/A04IQaoPC+uCMpwMrynDT6
-         rTA+Lq6O+rgJ/qIQ4oszlKhLxGICJIbgvh8d3pLNedJMiPdqKsRzKTEdw2KQ1Svyga3u
-         IAmsZeZyrnveevhLnHsNlEPpBwEJpdrDX0d4r1xwN1kWzDrTYmryZZFbs/BL6MfMNThj
-         N/c7yuZJNN7WXLNGCits0nY1Ja5t0qrwc5krC405DvQS0jw/XCuD470k5U1U9VfhiDxv
-         jP/w==
-X-Gm-Message-State: AOJu0Yw1yUhn25C7uBHG8ShEd23LC1pmECRebm9ogrKQKIyjPdA8BpOT
-	8NUET0kX9MZJ9FWGrAmOsJpQ0eVuVqWlcbWpvXetlUO8wgbg4JYUz+Pk4nIkHQ==
-X-Gm-Gg: ASbGncvq1y5kQTbLHCwPB+NrZl7o++Qyc79qQafTxJFcxLViTSSv/It8GGdEGZiIn92
-	jA+Bbpix8WGehCxPKcylBzA2eCScm6XBN3fYal92a3coyFQZvBsfv02WggfI+MdMVP06niQ1GaU
-	k+mcd5DDAO/EesY2FNtVggiYXzx5UjpTtz+VXWp2f6qVyRThVcHckL6DdfEg/JyBCuc4Ov/RixA
-	hcEwecLYcCpLQo521m6ScVJBVcbpCSijNi6BLzofZloL2PDTIGDcvam9bky7aUR1SF7xHjkiDBH
-	Gxr/LoH7GytEWdWBl3RHJCCZf8DnWTZkop9oJpxBQR/lTmiA47a85zfbmsQfsE7NoJqUR3w8HEf
-	/bM+SeT6lYvJClSyCQdOIRkR4JOE86BHYIw==
-X-Google-Smtp-Source: AGHT+IEWulU3W5c4XVlOXjBG9SCJVMGVTDn7AOZXuMJGogpHeG+J70vB2jZE/th6aJqM2yI899ZTDQ==
-X-Received: by 2002:a17:90a:e7cf:b0:32b:a2b9:b200 with SMTP id 98e67ed59e1d1-32d43f0501bmr20767951a91.13.1757552700829;
-        Wed, 10 Sep 2025 18:05:00 -0700 (PDT)
-Received: from ezingerman-fedora-PF4V722J ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dd61eaa27sm545511a91.1.2025.09.10.18.05.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Sep 2025 18:05:00 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org
-Cc: daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	eddyz87@gmail.com
-Subject: [PATCH bpf-next v1 10/10] bpf: table based bpf_insn_successors()
-Date: Wed, 10 Sep 2025 18:04:35 -0700
-Message-ID: <20250911010437.2779173-11-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250911010437.2779173-1-eddyz87@gmail.com>
-References: <20250911010437.2779173-1-eddyz87@gmail.com>
+	s=arc-20240116; t=1757556800; c=relaxed/simple;
+	bh=MiFkUNNLIs6svqoUo8bA/tnfrB6BFBFyn24WE5dbnC0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FZ2czA6idsjDCxeEW2LjGHhWx2EbiqFuaM1K+BPVbMmRtd6xibyxecr9gaGlhsPJGu2rTWUAua3XGqNSa7akCcNTANRhRH+7dBBVZVEvtYBR6LVa5FaGv5lBDnL15QShXPQkkMlmJasyd7TsjkmGbXePcwQvkplui4VAFqM55IA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M1G8t34H; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <49b70945-7483-4af1-95ba-e128eb9f6d7e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757556786;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5x97LCOYyTXkOfHYlT/QUqsdu9EY9w2HudE5QcAbwMs=;
+	b=M1G8t34H0j0/s6kKNLbIj/nDQ8gNW61ZSNACRNV2OIl3EYf/+ktW1Iv26EI/RWOojX6wwm
+	4SSrTVjmZNyULE2yRObTF4Oi2atDivC4ft5N6eclHcEGgMcWHqB0D+7QD/+C+rl0xOm2zc
+	1zLu7Gvq5NRCnb++mS9mooyudDthQkU=
+Date: Thu, 11 Sep 2025 10:12:48 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v7 mm-new 01/10] mm: thp: remove disabled task from
+ khugepaged_mm_slot
+Content-Language: en-US
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
+ linux-mm@kvack.org, linux-doc@vger.kernel.org,
+ Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org,
+ gutierrez.asier@huawei-partners.com, rientjes@google.com, andrii@kernel.org,
+ david@redhat.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
+ Liam.Howlett@oracle.com, ameryhung@gmail.com, ryan.roberts@arm.com,
+ lorenzo.stoakes@oracle.com, usamaarif642@gmail.com, willy@infradead.org,
+ corbet@lwn.net, npache@redhat.com, dev.jain@arm.com, 21cnbao@gmail.com,
+ shakeel.butt@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+ hannes@cmpxchg.org, kernel test robot <lkp@intel.com>
+References: <20250910024447.64788-2-laoar.shao@gmail.com>
+ <202509110109.PSgSHb31-lkp@intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
+In-Reply-To: <202509110109.PSgSHb31-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Converting bpf_insn_successors() to use lookup table makes it ~1.5
-times faster.
+Hi Yafang,
 
-Also remove unnecessary conditionals:
-- `idx + 1 < prog->len` is unnecessary because after check_cfg() all
-  jump targets are guaranteed to be within a program;
-- `i == 0 || succ[0] != dst` is unnecessary because any client of
-  bpf_insn_successors() can handle duplicate edges:
-  - compute_live_registers()
-  - compute_scc()
+On 2025/9/11 01:27, kernel test robot wrote:
+> Hi Yafang,
+> 
+> kernel test robot noticed the following build errors:
+> 
+> [auto build test ERROR on akpm-mm/mm-everything]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/mm-thp-remove-disabled-task-from-khugepaged_mm_slot/20250910-144850
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+> patch link:    https://lore.kernel.org/r/20250910024447.64788-2-laoar.shao%40gmail.com
+> patch subject: [PATCH v7 mm-new 01/10] mm: thp: remove disabled task from khugepaged_mm_slot
+> config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20250911/202509110109.PSgSHb31-lkp@intel.com/config)
+> compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250911/202509110109.PSgSHb31-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202509110109.PSgSHb31-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>>> kernel/sys.c:2500:6: error: call to undeclared function 'hugepage_pmd_enabled'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+>      2500 |             hugepage_pmd_enabled())
+>           |             ^
+>>> kernel/sys.c:2501:3: error: call to undeclared function '__khugepaged_enter'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+>      2501 |                 __khugepaged_enter(mm);
+>           |                 ^
+>     2 errors generated.
 
-Moving bpf_insn_successors() to liveness.c allows its inlining in
-liveness.c:__update_stack_liveness().
-Such inlining speeds up __update_stack_liveness() by ~40%.
-bpf_insn_successors() is used in both verifier.c and liveness.c.
-perf shows such move does not negatively impact users in verifier.c,
-as these are executed only once before main varification pass.
-Unlike __update_stack_liveness() which can be triggered multiple
-times.
+Oops, seems like hugepage_pmd_enabled() and __khugepaged_enter() are only
+available when CONFIG_TRANSPARENT_HUGEPAGE is enabled ;)
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- include/linux/bpf_verifier.h |  1 +
- kernel/bpf/liveness.c        | 51 +++++++++++++++++++++++++
- kernel/bpf/verifier.c        | 72 +-----------------------------------
- 3 files changed, 53 insertions(+), 71 deletions(-)
+> 
+> 
+> vim +/hugepage_pmd_enabled +2500 kernel/sys.c
+> 
+>    2471	
+>    2472	static int prctl_set_thp_disable(bool thp_disable, unsigned long flags,
+>    2473					 unsigned long arg4, unsigned long arg5)
+>    2474	{
+>    2475		struct mm_struct *mm = current->mm;
+>    2476	
+>    2477		if (arg4 || arg5)
+>    2478			return -EINVAL;
+>    2479	
+>    2480		/* Flags are only allowed when disabling. */
+>    2481		if ((!thp_disable && flags) || (flags & ~PR_THP_DISABLE_EXCEPT_ADVISED))
+>    2482			return -EINVAL;
+>    2483		if (mmap_write_lock_killable(current->mm))
+>    2484			return -EINTR;
+>    2485		if (thp_disable) {
+>    2486			if (flags & PR_THP_DISABLE_EXCEPT_ADVISED) {
+>    2487				mm_flags_clear(MMF_DISABLE_THP_COMPLETELY, mm);
+>    2488				mm_flags_set(MMF_DISABLE_THP_EXCEPT_ADVISED, mm);
+>    2489			} else {
+>    2490				mm_flags_set(MMF_DISABLE_THP_COMPLETELY, mm);
+>    2491				mm_flags_clear(MMF_DISABLE_THP_EXCEPT_ADVISED, mm);
+>    2492			}
+>    2493		} else {
+>    2494			mm_flags_clear(MMF_DISABLE_THP_COMPLETELY, mm);
+>    2495			mm_flags_clear(MMF_DISABLE_THP_EXCEPT_ADVISED, mm);
+>    2496		}
+>    2497	
+>    2498		if (!mm_flags_test(MMF_DISABLE_THP_COMPLETELY, mm) &&
+>    2499		    !mm_flags_test(MMF_VM_HUGEPAGE, mm) &&
+>> 2500		    hugepage_pmd_enabled())
+>> 2501			__khugepaged_enter(mm);
+>    2502		mmap_write_unlock(current->mm);
+>    2503		return 0;
+>    2504	}
+>    2505	
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index c7515da8500c..4c497e839526 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -1049,6 +1049,7 @@ void print_insn_state(struct bpf_verifier_env *env, const struct bpf_verifier_st
- 		      u32 frameno);
- 
- struct bpf_subprog_info *bpf_find_containing_subprog(struct bpf_verifier_env *env, int off);
-+int bpf_jmp_offset(struct bpf_insn *insn);
- int bpf_insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2]);
- void bpf_fmt_stack_mask(char *buf, ssize_t buf_sz, u64 stack_mask);
- bool bpf_calls_callback(struct bpf_verifier_env *env, int insn_idx);
-diff --git a/kernel/bpf/liveness.c b/kernel/bpf/liveness.c
-index 2b2e909ec944..6fb79a63d216 100644
---- a/kernel/bpf/liveness.c
-+++ b/kernel/bpf/liveness.c
-@@ -428,6 +428,57 @@ static void log_mask_change(struct bpf_verifier_env *env, struct callchain *call
- 	bpf_log(&env->log, "\n");
- }
- 
-+int bpf_jmp_offset(struct bpf_insn *insn)
-+{
-+	u8 code = insn->code;
-+
-+	if (code == (BPF_JMP32 | BPF_JA))
-+		return insn->imm;
-+	return insn->off;
-+}
-+
-+inline int bpf_insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
-+{
-+	static const struct opcode_info {
-+		bool can_jump;
-+		bool can_fallthrough;
-+	} opcode_info_tbl[256] = {
-+		[0 ... 255] = {.can_jump = false, .can_fallthrough = true},
-+	#define _J(code, ...) \
-+		[BPF_JMP   | code] = __VA_ARGS__, \
-+		[BPF_JMP32 | code] = __VA_ARGS__
-+
-+		_J(BPF_EXIT,  {.can_jump = false, .can_fallthrough = false}),
-+		_J(BPF_JA,    {.can_jump = true,  .can_fallthrough = false}),
-+		_J(BPF_JEQ,   {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JNE,   {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JLT,   {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JLE,   {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JGT,   {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JGE,   {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JSGT,  {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JSGE,  {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JSLT,  {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JSLE,  {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JCOND, {.can_jump = true,  .can_fallthrough = true}),
-+		_J(BPF_JSET,  {.can_jump = true,  .can_fallthrough = true}),
-+	#undef _J
-+	};
-+	struct bpf_insn *insn = &prog->insnsi[idx];
-+	const struct opcode_info *opcode_info;
-+	int i = 0, insn_sz;
-+
-+	opcode_info = &opcode_info_tbl[BPF_CLASS(insn->code) | BPF_OP(insn->code)];
-+	insn_sz = bpf_is_ldimm64(insn) ? 2 : 1;
-+	if (opcode_info->can_fallthrough)
-+		succ[i++] = idx + insn_sz;
-+
-+	if (opcode_info->can_jump)
-+		succ[i++] = idx + bpf_jmp_offset(insn) + 1;
-+
-+	return i;
-+}
-+
- static struct func_instance *get_outer_instance(struct bpf_verifier_env *env,
- 						struct func_instance *instance)
- {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6efb555a1e8a..9fd75a3e45b3 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3470,15 +3470,6 @@ static int add_subprog_and_kfunc(struct bpf_verifier_env *env)
- 	return 0;
- }
- 
--static int jmp_offset(struct bpf_insn *insn)
--{
--	u8 code = insn->code;
--
--	if (code == (BPF_JMP32 | BPF_JA))
--		return insn->imm;
--	return insn->off;
--}
--
- static int check_subprogs(struct bpf_verifier_env *env)
- {
- 	int i, subprog_start, subprog_end, off, cur_subprog = 0;
-@@ -3505,7 +3496,7 @@ static int check_subprogs(struct bpf_verifier_env *env)
- 			goto next;
- 		if (BPF_OP(code) == BPF_EXIT || BPF_OP(code) == BPF_CALL)
- 			goto next;
--		off = i + jmp_offset(&insn[i]) + 1;
-+		off = i + bpf_jmp_offset(&insn[i]) + 1;
- 		if (off < subprog_start || off >= subprog_end) {
- 			verbose(env, "jump out of range from insn %d to %d\n", i, off);
- 			return -EINVAL;
-@@ -23907,67 +23898,6 @@ static int process_fd_array(struct bpf_verifier_env *env, union bpf_attr *attr,
- 	return 0;
- }
- 
--static bool can_fallthrough(struct bpf_insn *insn)
--{
--	u8 class = BPF_CLASS(insn->code);
--	u8 opcode = BPF_OP(insn->code);
--
--	if (class != BPF_JMP && class != BPF_JMP32)
--		return true;
--
--	if (opcode == BPF_EXIT || opcode == BPF_JA)
--		return false;
--
--	return true;
--}
--
--static bool can_jump(struct bpf_insn *insn)
--{
--	u8 class = BPF_CLASS(insn->code);
--	u8 opcode = BPF_OP(insn->code);
--
--	if (class != BPF_JMP && class != BPF_JMP32)
--		return false;
--
--	switch (opcode) {
--	case BPF_JA:
--	case BPF_JEQ:
--	case BPF_JNE:
--	case BPF_JLT:
--	case BPF_JLE:
--	case BPF_JGT:
--	case BPF_JGE:
--	case BPF_JSGT:
--	case BPF_JSGE:
--	case BPF_JSLT:
--	case BPF_JSLE:
--	case BPF_JCOND:
--	case BPF_JSET:
--		return true;
--	}
--
--	return false;
--}
--
--int bpf_insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
--{
--	struct bpf_insn *insn = &prog->insnsi[idx];
--	int i = 0, insn_sz;
--	u32 dst;
--
--	insn_sz = bpf_is_ldimm64(insn) ? 2 : 1;
--	if (can_fallthrough(insn) && idx + 1 < prog->len)
--		succ[i++] = idx + insn_sz;
--
--	if (can_jump(insn)) {
--		dst = idx + jmp_offset(insn) + 1;
--		if (i == 0 || succ[0] != dst)
--			succ[i++] = dst;
--	}
--
--	return i;
--}
--
- /* Each field is a register bitmask */
- struct insn_live_regs {
- 	u16 use;	/* registers read by instruction */
--- 
-2.47.3
+So, let's wrap the new logic in an #ifdef CONFIG_TRANSPARENT_HUGEPAGE block.
 
+diff --git a/kernel/sys.c b/kernel/sys.c
+index a1c1e8007f2d..c8600e017933 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -2495,10 +2495,13 @@ static int prctl_set_thp_disable(bool 
+thp_disable, unsigned long flags,
+                 mm_flags_clear(MMF_DISABLE_THP_EXCEPT_ADVISED, mm);
+         }
+
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+         if (!mm_flags_test(MMF_DISABLE_THP_COMPLETELY, mm) &&
+             !mm_flags_test(MMF_VM_HUGEPAGE, mm) &&
+             hugepage_pmd_enabled())
+                 __khugepaged_enter(mm);
++#endif
++
+         mmap_write_unlock(current->mm);
+         return 0;
+  }
+
+Cheers,
+Lance
 
