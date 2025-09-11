@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-68068-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58640B52574
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 03:05:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5069B52575
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 03:05:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F9C77B4E4C
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 01:03:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54B703A5B34
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 01:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2543D1EE02F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E14361F4CBB;
 	Thu, 11 Sep 2025 01:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GTgWybsu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P/eOREJZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E5F1C5D6A
-	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 01:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68551DF25C
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 01:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757552697; cv=none; b=hKOEOBxMIn8VQVwcliiufZ7Y3fy2+t2pAY8v5tnjyYVF/r21zkdUhulVVmJZbdfB1jVXNCaFpvH8l8McUutkZWi1plbUj0nToYg7TNlxVnc2KjENZpA2m3hCmDUv3c2YxzQNB7DTJ1hxjbYImY6W9EZDZmJVNUTbuUXjEb36mZc=
+	t=1757552698; cv=none; b=HdM55CCcnM4MeWPAOGX1ezYob6DXPZFuOmMT/RNBGHMTMaNDU+o6GOEQmDn+dqe69fdIs3YE+3yeRQDdmq3LDZcT0dwOLKtD8PilBHOulkT4oHJ0HK7LY029LTFzRNY1M8XoPQYCu3gJ2fDyRRpZFtOWIdSvPvyeXP04RXHz8Zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757552697; c=relaxed/simple;
-	bh=Aqf8kVj6/ARTecvAWCs3T5EcF7oLaN0nwZQyccE6RTg=;
+	s=arc-20240116; t=1757552698; c=relaxed/simple;
+	bh=AJhqYyBaIfXKwEMAkKfkA03K/VdxIi/2ISdYG7GJKVE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tKRHUHlWr69lUG4txHR/7+xIl6ohd9I1uxQvp7Ijn9aH1uVcyT5KTfIrKy/4/5qPvG/D3xyIYrlud3MT0zzxFsHONmpceXPL/c0B/6MsdOhdJRp0h/WSqdlETVj5Y/SGLlPxIUXhAx3pLSkPM4akZDvEGy/IpfR4FT0gpZXQ/ZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GTgWybsu; arc=none smtp.client-ip=209.85.214.170
+	 MIME-Version; b=ZtBRINJyirGLq0bO1AVL9LvCs536rZ6R2bR2nvzAErNOM2dyE3Fd9iBjkltVUREG62Ac6RgSEbe60omMlr3v86ySg+vdFMzKqSuK+7zpwDvir2u0l0CsYCv8LGfbJD2zV4eGOEXQ93bC108KYJKVm9yCDCCuzBnG+eybTAGRviM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P/eOREJZ; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-24457f581aeso1218425ad.0
-        for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 18:04:55 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-32da35469f7so132419a91.1
+        for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 18:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757552695; x=1758157495; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757552696; x=1758157496; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3D+k/D6ELZ0ObojklHlhvYn817RTBkOBY2dyUZggU0s=;
-        b=GTgWybsueVDU83hAzuEuxfHmf53+Koz+/u3lyCX5N4a3xBsAxs83IuPXDTSrAVtxHf
-         Wnv8GQpdyKt2REyuaI/enGFz1teB+7nTRFm52tXp7zbBeznhnEuXkZn1TvD8EjOx2mX/
-         h1V2ezjEJFRSHYI7umNgPBmQbgfnYVrbmLKSwiMDVsCo9Zgwp58DDubidfZqiYJHD7cx
-         M6n4OKRMC4B6nJ9+zIaZkw50KDEt25lwxQG0GhkQVp7yVGfa0UIDOxCTKDVLJEHMYYnS
-         RVEHXASgroxC77Y99Dvpy9lrnzsDtlbxRT+zZvb2MoA1/lAAsUYg/CjY1WLHnmX5Bgi1
-         QoNg==
+        bh=MNh/jLayqOGL4xTE2R92JEeExIrxCgxjfbL5tKeVDys=;
+        b=P/eOREJZ/y59wHrtdI05NXUNLNtRdaVM0nQQ7UwuG84HxJPNvRI9CbeKRjU51t7tKG
+         Rh39O9uWv/MnpN4pN5WUf+VXeX/R1aPfCnWZftHkUYkVFav5QPZNVH3qeWx0ZH1KfUDt
+         /U1QH0rRYY1mDPhbpjX63/6KoDy4/sO3sN2rCuWC5JW+Uh0YS1FbzWW4nUKzUuyfLR1C
+         d8B2lv+2TsHLZx22fn+ubj1tHr2/yDwC9PHeeQ3ns4SiURTd3VOyGzbjFNOVYLnurYUx
+         5pG43IbY8Uh5ersAmyrIEIAAsaSpVR4p/scrj76oi98tMhGBRzMnPUBI7ReXzECJCAq1
+         QQVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757552695; x=1758157495;
+        d=1e100.net; s=20230601; t=1757552696; x=1758157496;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3D+k/D6ELZ0ObojklHlhvYn817RTBkOBY2dyUZggU0s=;
-        b=hPWF7ovooSCK/QndXj6jnJwYKjFnRZPWhrqcPMhm3XzJ8Gvu+F9mHUael+SJP6ePra
-         iOkxF+wmVaYR+Qq9OUtgktybFEbZBjLqyRf9bRRs/xI9aWubgjkj6mu8axA1/6wjP864
-         THcIWhqH/mXnkcqKk/AkYOuwhgmfcM8uijxWytoJNIdpiEou6aDowXFbR7obkLEDE47Z
-         z5cuvV5oHcv+IpNRi8Va7DMckRMzJm8J7MiUIAB8lfymTieG2RxKwJA+wNALnzpVz/x6
-         k+GKRQkS55qlrbcw/+TXsQMDAL/+nJDFGk5nOcLGiP4ELpTn//GOnDQwjrA1g3GoP11k
-         B4BQ==
-X-Gm-Message-State: AOJu0YyLJZQecovcdRo1qwTA7bN2drWYmho/xJftMzb1DTd8noTPdM57
-	DIcdJt5IP8x1D7FWTgQygDG6UjfiZk4epfN9J+PHH4WlTsXJGnYQ3dYq0mJA5A==
-X-Gm-Gg: ASbGncu7E4VbhxlHKQw3hmJGgB5K8p0wiDu10tOc6lQZ8PY2ofPPreJunM2alzHNy51
-	xjGVldyE1KpZqlGv3ZKoWXTBEmqL+a5TFBUiG1G3m9IfQgzS4RJkyZHTAXkdAZTzZJjJRV0VTN7
-	EqKcvgTWuYdjv48Qpv2CMXXn91fVhc8IRGnwq2VZAHtQPdiOR16X04VQDTz7nJYh9OB7oX564xJ
-	NZJB+nx+rI1tShSZWH5GvexuPu/Sq5qmxe0BCyIEAJYxBKyjae0VX3hrFQD/f5vmtuHF234WWNT
-	yPGQhLTRkhbrUmbJCv7QG24imj32R1DzH7tGqOO0qf3VEWD2ksJEsOJVuokLOfXm54OMbIe5NSB
-	WanwjgzRLP9G7OnJuzEiB2YpMK6oKhscLH6kr8XMAX0LN
-X-Google-Smtp-Source: AGHT+IHMFVFXTGrDVd9x5858ClA+Gk2DWA83ey2KUBnYUZZWILbffdfIN3GcvNxLKe0VYjy7GhV1/A==
-X-Received: by 2002:a17:902:dac6:b0:250:de70:cf9c with SMTP id d9443c01a7336-25174ff62d3mr242970875ad.47.1757552695105;
+        bh=MNh/jLayqOGL4xTE2R92JEeExIrxCgxjfbL5tKeVDys=;
+        b=B1zVGfGrUUtwjVzZWT2Pmw5GkExv9yRvXRfgq1j4pgWmXHkoBDe7fgX6PU3emQUn8B
+         d6QFMWTUKaaoEcrHGvkt9SP03T+sk3x2QogGVnNsNHCXEABHw00VPdL9uBwABD7eEPX4
+         kJ+r9ZjluXZUJh8ILsT6jdwFjRYzDavcKYha1qD+8KuhfQENzTeTbZq0P0xe45eyHzGQ
+         eBzMe5YyzDVN757JMSnf/DOo7KRkw8l2YsYp3hOGyMgZUPi8VROT2HeYwrVlNeXHT7c9
+         5jpJ3vaKAhEDLZWyMeY6WtG8sW7f7XWtWQWKLgCORTxlUE76kroTDQEDFGlTvJ55otZp
+         7TrQ==
+X-Gm-Message-State: AOJu0Yxesc7k8HbHHvvSzl0CE+n6lvf50LBOHctKZh19Fg/ZVY5793Ff
+	RE/q1nG8CBe20gpbQpINlNaihEjpXLLZs08sv4ImEd2zqbv2IGqbs7T3cqVEeg==
+X-Gm-Gg: ASbGncvaVInkpieGee9GzgnRvfswi02Ei+R9HYs5u8hsB9Tv51DhQ0acdFaTbvGGtmL
+	J4/P8LDIMZkyNl5CQmh/etFavkcLW998jxDbNOwMi0NtQB3BZLyiQUsHwrxIwJL+JJ6l/2EL9Zm
+	rh56vIQZFHiESoEEfL6TbBtNqteiqNID4FVX92W1HUx5D5oY7GKw5AuhaGfzUt2XGilTf+uRnZk
+	s2xDKywi4LfK4Fr9nu3jS28KmTElPWWpQ9xMsPPiC605iT7rvJTiKR++yTEk41jpLbt53p4zewD
+	P5qzHdw6AmTZlmZA4U0kvVqS2QyI5OKVm0o+PatCgfbBuSZeYO4Vf4GVYkWKIdVA/gZEtbkbBm0
+	dfb/F52APhKCUHexo92ljeHZ1u2V+ATEgeg==
+X-Google-Smtp-Source: AGHT+IF2oGnEIEucMIc8GQyZFqNe8E4LxbbTCrCFd+E4kq16wTWbc/O9xBT7IctOizX/aXzrX0pl3Q==
+X-Received: by 2002:a17:90b:3ccd:b0:327:a638:d21 with SMTP id 98e67ed59e1d1-32d43e2cda6mr24710490a91.0.1757552695947;
         Wed, 10 Sep 2025 18:04:55 -0700 (PDT)
 Received: from ezingerman-fedora-PF4V722J ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dd61eaa27sm545511a91.1.2025.09.10.18.04.54
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dd61eaa27sm545511a91.1.2025.09.10.18.04.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Sep 2025 18:04:54 -0700 (PDT)
+        Wed, 10 Sep 2025 18:04:55 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -81,9 +81,9 @@ Cc: daniel@iogearbox.net,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	eddyz87@gmail.com
-Subject: [PATCH bpf-next v1 04/10] bpf: declare a few utility functions as internal api
-Date: Wed, 10 Sep 2025 18:04:29 -0700
-Message-ID: <20250911010437.2779173-5-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 05/10] bpf: compute instructions postorder per subprogram
+Date: Wed, 10 Sep 2025 18:04:30 -0700
+Message-ID: <20250911010437.2779173-6-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250911010437.2779173-1-eddyz87@gmail.com>
 References: <20250911010437.2779173-1-eddyz87@gmail.com>
@@ -95,183 +95,159 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Namely, rename the following functions and add prototypes to
-bpf_verifier.h:
-- find_containing_subprog -> bpf_find_containing_subprog
-- insn_successors         -> bpf_insn_successors
-- calls_callback          -> bpf_calls_callback
-- fmt_stack_mask          -> bpf_fmt_stack_mask
+The next patch would require doing postorder traversal of individual
+subprograms. Facilitate this by moving env->cfg.insn_postorder
+computation from check_cfg() to a separate pass, as check_cfg()
+descends into called subprograms (and it needs to, because of
+merge_callee_effects() logic).
+
+env->cfg.insn_postorder is used only by compute_live_registers(),
+this function does not track cross subprogram dependencies,
+thus the change does not affect it's operation.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/linux/bpf_verifier.h |  5 +++++
- kernel/bpf/verifier.c        | 34 ++++++++++++++++------------------
- 2 files changed, 21 insertions(+), 18 deletions(-)
+ include/linux/bpf_verifier.h |  6 +++-
+ kernel/bpf/verifier.c        | 67 +++++++++++++++++++++++++++++-------
+ 2 files changed, 59 insertions(+), 14 deletions(-)
 
 diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index ac16da8b49dc..93563564bde5 100644
+index 93563564bde5..bd87e80f9423 100644
 --- a/include/linux/bpf_verifier.h
 +++ b/include/linux/bpf_verifier.h
-@@ -1065,4 +1065,9 @@ void print_verifier_state(struct bpf_verifier_env *env, const struct bpf_verifie
- void print_insn_state(struct bpf_verifier_env *env, const struct bpf_verifier_state *vstate,
- 		      u32 frameno);
- 
-+struct bpf_subprog_info *bpf_find_containing_subprog(struct bpf_verifier_env *env, int off);
-+int bpf_insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2]);
-+void bpf_fmt_stack_mask(char *buf, ssize_t buf_sz, u64 stack_mask);
-+bool bpf_calls_callback(struct bpf_verifier_env *env, int insn_idx);
-+
- #endif /* _LINUX_BPF_VERIFIER_H */
+@@ -665,6 +665,7 @@ struct bpf_subprog_info {
+ 	/* 'start' has to be the first field otherwise find_subprog() won't work */
+ 	u32 start; /* insn idx of function entry point */
+ 	u32 linfo_idx; /* The idx to the main_prog->aux->linfo */
++	u32 postorder_start; /* The idx to the env->cfg.insn_postorder */
+ 	u16 stack_depth; /* max. stack depth used by this function */
+ 	u16 stack_extra;
+ 	/* offsets in range [stack_depth .. fastcall_stack_off)
+@@ -794,7 +795,10 @@ struct bpf_verifier_env {
+ 	struct {
+ 		int *insn_state;
+ 		int *insn_stack;
+-		/* vector of instruction indexes sorted in post-order */
++		/*
++		 * vector of instruction indexes sorted in post-order, grouped by subprogram,
++		 * see bpf_subprog_info->postorder_start.
++		 */
+ 		int *insn_postorder;
+ 		int cur_stack;
+ 		/* current position in the insn_postorder vector */
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 8673b955a6cd..5658e1e1d5c5 100644
+index 5658e1e1d5c5..bdcc20d2fab6 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -2964,7 +2964,7 @@ static int cmp_subprogs(const void *a, const void *b)
- }
- 
- /* Find subprogram that contains instruction at 'off' */
--static struct bpf_subprog_info *find_containing_subprog(struct bpf_verifier_env *env, int off)
-+struct bpf_subprog_info *bpf_find_containing_subprog(struct bpf_verifier_env *env, int off)
+@@ -17834,7 +17834,7 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
+ static int check_cfg(struct bpf_verifier_env *env)
  {
- 	struct bpf_subprog_info *vals = env->subprog_info;
- 	int l, r, m;
-@@ -2989,7 +2989,7 @@ static int find_subprog(struct bpf_verifier_env *env, int off)
- {
- 	struct bpf_subprog_info *p;
+ 	int insn_cnt = env->prog->len;
+-	int *insn_stack, *insn_state, *insn_postorder;
++	int *insn_stack, *insn_state;
+ 	int ex_insn_beg, i, ret = 0;
  
--	p = find_containing_subprog(env, off);
-+	p = bpf_find_containing_subprog(env, off);
- 	if (!p || p->start != off)
- 		return -ENOENT;
- 	return p - env->subprog_info;
-@@ -4196,7 +4196,7 @@ static void fmt_reg_mask(char *buf, ssize_t buf_sz, u32 reg_mask)
+ 	insn_state = env->cfg.insn_state = kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL_ACCOUNT);
+@@ -17847,14 +17847,6 @@ static int check_cfg(struct bpf_verifier_env *env)
+ 		return -ENOMEM;
  	}
- }
- /* format stack slots bitmask, e.g., "-8,-24,-40" for 0x15 mask */
--static void fmt_stack_mask(char *buf, ssize_t buf_sz, u64 stack_mask)
-+void bpf_fmt_stack_mask(char *buf, ssize_t buf_sz, u64 stack_mask)
- {
- 	DECLARE_BITMAP(mask, 64);
- 	bool first = true;
-@@ -4251,8 +4251,6 @@ static void bt_sync_linked_regs(struct backtrack_state *bt, struct bpf_jmp_histo
- 	}
- }
  
--static bool calls_callback(struct bpf_verifier_env *env, int insn_idx);
+-	insn_postorder = env->cfg.insn_postorder =
+-		kvcalloc(insn_cnt, sizeof(int), GFP_KERNEL_ACCOUNT);
+-	if (!insn_postorder) {
+-		kvfree(insn_state);
+-		kvfree(insn_stack);
+-		return -ENOMEM;
+-	}
 -
- /* For given verifier state backtrack_insn() is called from the last insn to
-  * the first insn. Its purpose is to compute a bitmask of registers and
-  * stack slots that needs precision in the parent verifier state.
-@@ -4279,7 +4277,7 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
- 		fmt_reg_mask(env->tmp_str_buf, TMP_STR_BUF_LEN, bt_reg_mask(bt));
- 		verbose(env, "mark_precise: frame%d: regs=%s ",
- 			bt->frame, env->tmp_str_buf);
--		fmt_stack_mask(env->tmp_str_buf, TMP_STR_BUF_LEN, bt_stack_mask(bt));
-+		bpf_fmt_stack_mask(env->tmp_str_buf, TMP_STR_BUF_LEN, bt_stack_mask(bt));
- 		verbose(env, "stack=%s before ", env->tmp_str_buf);
- 		verbose(env, "%d: ", idx);
- 		verbose_insn(env, insn);
-@@ -4480,7 +4478,7 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
- 			 * backtracking, as these registers are set by the function
- 			 * invoking callback.
- 			 */
--			if (subseq_idx >= 0 && calls_callback(env, subseq_idx))
-+			if (subseq_idx >= 0 && bpf_calls_callback(env, subseq_idx))
- 				for (i = BPF_REG_1; i <= BPF_REG_5; i++)
- 					bt_clear_reg(bt, i);
- 			if (bt_reg_mask(bt) & BPF_REGMASK_ARGS) {
-@@ -4919,7 +4917,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env,
- 					     bt_frame_reg_mask(bt, fr));
- 				verbose(env, "mark_precise: frame%d: parent state regs=%s ",
- 					fr, env->tmp_str_buf);
--				fmt_stack_mask(env->tmp_str_buf, TMP_STR_BUF_LEN,
-+				bpf_fmt_stack_mask(env->tmp_str_buf, TMP_STR_BUF_LEN,
- 					       bt_frame_stack_mask(bt, fr));
- 				verbose(env, "stack=%s: ", env->tmp_str_buf);
- 				print_verifier_state(env, st, fr, true);
-@@ -11004,7 +11002,7 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
- 					       "At callback return", "R0");
- 			return -EINVAL;
- 		}
--		if (!calls_callback(env, callee->callsite)) {
-+		if (!bpf_calls_callback(env, callee->callsite)) {
- 			verifier_bug(env, "in callback at %d, callsite %d !calls_callback",
- 				     *insn_idx, callee->callsite);
- 			return -EFAULT;
-@@ -17269,7 +17267,7 @@ static void mark_subprog_changes_pkt_data(struct bpf_verifier_env *env, int off)
+ 	ex_insn_beg = env->exception_callback_subprog
+ 		      ? env->subprog_info[env->exception_callback_subprog].start
+ 		      : 0;
+@@ -17872,7 +17864,6 @@ static int check_cfg(struct bpf_verifier_env *env)
+ 		case DONE_EXPLORING:
+ 			insn_state[t] = EXPLORED;
+ 			env->cfg.cur_stack--;
+-			insn_postorder[env->cfg.cur_postorder++] = t;
+ 			break;
+ 		case KEEP_EXPLORING:
+ 			break;
+@@ -17926,6 +17917,55 @@ static int check_cfg(struct bpf_verifier_env *env)
+ 	return ret;
+ }
+ 
++/*
++ * For each subprogram 'i' fill array env->cfg.insn_subprogram sub-range
++ * [env->subprog_info[i].postorder_start, env->subprog_info[i+1].postorder_start)
++ * with indices of 'i' instructions in postorder.
++ */
++static int compute_postorder(struct bpf_verifier_env *env)
++{
++	u32 cur_postorder, i, top, stack_sz, s, succ_cnt, succ[2];
++	int *stack = NULL, *postorder = NULL, *state = NULL;
++
++	postorder = kvcalloc(env->prog->len, sizeof(int), GFP_KERNEL_ACCOUNT);
++	state = kvcalloc(env->prog->len, sizeof(int), GFP_KERNEL_ACCOUNT);
++	stack = kvcalloc(env->prog->len, sizeof(int), GFP_KERNEL_ACCOUNT);
++	if (!postorder || !state || !stack) {
++		kvfree(postorder);
++		kvfree(state);
++		kvfree(stack);
++		return -ENOMEM;
++	}
++	cur_postorder = 0;
++	for (i = 0; i < env->subprog_cnt; i++) {
++		env->subprog_info[i].postorder_start = cur_postorder;
++		stack[0] = env->subprog_info[i].start;
++		stack_sz = 1;
++		do {
++			top = stack[stack_sz - 1];
++			if (state[top] & EXPLORED) {
++				postorder[cur_postorder++] = top;
++				stack_sz--;
++				continue;
++			}
++			succ_cnt = bpf_insn_successors(env->prog, top, succ);
++			for (s = 0; s < succ_cnt; ++s) {
++				if (!state[succ[s]]) {
++					stack[stack_sz++] = succ[s];
++					state[succ[s]] |= DISCOVERED;
++				}
++			}
++			state[top] |= EXPLORED;
++		} while (stack_sz);
++	}
++	env->subprog_info[i].postorder_start = cur_postorder;
++	env->cfg.insn_postorder = postorder;
++	env->cfg.cur_postorder = cur_postorder;
++	kvfree(stack);
++	kvfree(state);
++	return 0;
++}
++
+ static int check_abnormal_return(struct bpf_verifier_env *env)
  {
- 	struct bpf_subprog_info *subprog;
+ 	int i;
+@@ -24387,9 +24427,6 @@ static int compute_live_registers(struct bpf_verifier_env *env)
  
--	subprog = find_containing_subprog(env, off);
-+	subprog = bpf_find_containing_subprog(env, off);
- 	subprog->changes_pkt_data = true;
+ out:
+ 	kvfree(state);
+-	kvfree(env->cfg.insn_postorder);
+-	env->cfg.insn_postorder = NULL;
+-	env->cfg.cur_postorder = 0;
+ 	return err;
  }
  
-@@ -17277,7 +17275,7 @@ static void mark_subprog_might_sleep(struct bpf_verifier_env *env, int off)
- {
- 	struct bpf_subprog_info *subprog;
+@@ -24692,6 +24729,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 	if (ret < 0)
+ 		goto skip_full_check;
  
--	subprog = find_containing_subprog(env, off);
-+	subprog = bpf_find_containing_subprog(env, off);
- 	subprog->might_sleep = true;
- }
- 
-@@ -17291,8 +17289,8 @@ static void merge_callee_effects(struct bpf_verifier_env *env, int t, int w)
- {
- 	struct bpf_subprog_info *caller, *callee;
- 
--	caller = find_containing_subprog(env, t);
--	callee = find_containing_subprog(env, w);
-+	caller = bpf_find_containing_subprog(env, t);
-+	callee = bpf_find_containing_subprog(env, w);
- 	caller->changes_pkt_data |= callee->changes_pkt_data;
- 	caller->might_sleep |= callee->might_sleep;
- }
-@@ -17362,7 +17360,7 @@ static void mark_calls_callback(struct bpf_verifier_env *env, int idx)
- 	env->insn_aux_data[idx].calls_callback = true;
- }
- 
--static bool calls_callback(struct bpf_verifier_env *env, int insn_idx)
-+bool bpf_calls_callback(struct bpf_verifier_env *env, int insn_idx)
- {
- 	return env->insn_aux_data[insn_idx].calls_callback;
- }
-@@ -19410,7 +19408,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 					goto hit;
- 				}
- 			}
--			if (calls_callback(env, insn_idx)) {
-+			if (bpf_calls_callback(env, insn_idx)) {
- 				if (states_equal(env, &sl->state, cur, RANGE_WITHIN))
- 					goto hit;
- 				goto skip_inf_loop_check;
-@@ -24136,7 +24134,7 @@ static bool can_jump(struct bpf_insn *insn)
- 	return false;
- }
- 
--static int insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
-+int bpf_insn_successors(struct bpf_prog *prog, u32 idx, u32 succ[2])
- {
- 	struct bpf_insn *insn = &prog->insnsi[idx];
- 	int i = 0, insn_sz;
-@@ -24352,7 +24350,7 @@ static int compute_live_registers(struct bpf_verifier_env *env)
- 			u16 new_out = 0;
- 			u16 new_in = 0;
- 
--			succ_num = insn_successors(env->prog, insn_idx, succ);
-+			succ_num = bpf_insn_successors(env->prog, insn_idx, succ);
- 			for (int s = 0; s < succ_num; ++s)
- 				new_out |= state[succ[s]].in;
- 			new_in = (new_out & ~live->def) | live->use;
-@@ -24521,7 +24519,7 @@ static int compute_scc(struct bpf_verifier_env *env)
- 				stack[stack_sz++] = w;
- 			}
- 			/* Visit 'w' successors */
--			succ_cnt = insn_successors(env->prog, w, succ);
-+			succ_cnt = bpf_insn_successors(env->prog, w, succ);
- 			for (j = 0; j < succ_cnt; ++j) {
- 				if (pre[succ[j]]) {
- 					low[w] = min(low[w], low[succ[j]]);
++	ret = compute_postorder(env);
++	if (ret < 0)
++		goto skip_full_check;
++
+ 	ret = check_attach_btf_id(env);
+ 	if (ret)
+ 		goto skip_full_check;
 -- 
 2.47.3
 
