@@ -1,210 +1,391 @@
-Return-Path: <bpf+bounces-68063-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68064-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E06B5248E
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 01:13:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DECBB52571
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 03:05:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6B4DA82792
-	for <lists+bpf@lfdr.de>; Wed, 10 Sep 2025 23:12:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA666580787
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 01:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ECAB307482;
-	Wed, 10 Sep 2025 23:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A091624C5;
+	Thu, 11 Sep 2025 01:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDV75h1c"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IjPRWtqs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234C6376F1
-	for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 23:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B3184D02
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 01:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757545974; cv=none; b=fEmRZpzde4OYVkP2QyG0fLNs1WbRuEtCXKlPmnSbyxk1S1/UZa3cbaorLqNFZe4fZerF5zyVAc3eY+a3qAnuDhY4tKnbIyoObY1PLkWAdCx0EtpN640FZ7FWKqE4TI4eFMljdogIwkxZm7qdFfT3GRm1ztvBeqwa80Ik3D0w+BQ=
+	t=1757552694; cv=none; b=uAk+iIz5Rev+xSpofqNUPOLbbdeiyUTn/Hwwp7IOD1L9lGCvtjAUHXGWZsqtwvla1I+brYfKxf3NkGIufM3iS9fXujDZ2/HtINn6lGVRdybFJLZPgS81RM9sLFN6sNZOPvFB3gEQV8GV773gpedVV0WG/DwiwNE4zAUFPpwhaZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757545974; c=relaxed/simple;
-	bh=BxTGnVsNSzseRDrQm0ndCBhhFHchBSdsndBd/IV4H7w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cx9j6utB3lA3ouyU/Cpd+Zqyw5Due2wog6wWdKm/99OC2e1AvA/A+PJkMoK9TUJSmzQJYEnN7t4Ov9/IL05rYG8XktfofVGzZbRr4+E4v5cC6k8HTrrQ6HuPbuGZy2hpEazBjZY/o6Nrmhj/E0hRTW1XAlOj9joV6korCsEZczc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDV75h1c; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1757552694; c=relaxed/simple;
+	bh=xQZKwVpvWZ9nWPrWcyiRmQN/G4iR/uQeK1ypHAdxY0k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=a4YCVyQWTLZQahcjwwLTSMTejxxaz2tDRuz+ZsbkyRrS8cXc9s1lU0Ha/elVtsZERTkFhKF1SzktAbxJQ1qa11GAfYGx7EpPmqGv4rIfCSgmiM1BCz2dwA0Bt+VX1pzKlX43uIDTB7zvJKwVOAFvbUoyVKZZvzyNgPcFctjL3gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IjPRWtqs; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-24b164146baso458615ad.2
-        for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 16:12:52 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7722c88fc5fso138294b3a.2
+        for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 18:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757545972; x=1758150772; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757552692; x=1758157492; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zUWhuTmgT6EFbZhjn5M879aw3Xbdm+/h4OoBOjzUlfY=;
-        b=EDV75h1c6dONwxNDv8D6AE4YNe+6hcCzuc7pkMkpvj2BJyXggRFr+kLvuoBUB+PRbv
-         nHojfisRWJAVT2jYJC2ZdnjtPdr69w3HrM4cjCle2kVkG0ODExL8xi3JizaPbgm60zB4
-         kobLJRMZSi1xG6nWEFrh1FKO5ZpaPa4YznQoYYKpEABNAimbBBFpLAyw76fw26cyCg85
-         1SCR79bLLAhF8BaYTVDi1nlZkeerwGLAqQDT3RB8KsCjf1Mmu8kKij/9a+2sdSwiGKm7
-         N0+djSx5eL/ZVLixnGMIAbVUcn5ur3iHNzq+JvaCtTh3A/2gZQHN4xi7YUKZ6l1o7P63
-         JmyA==
+        bh=vKRDrKtgFlXYRiOyHC82P/E947gPt98y6YkSCujCiG8=;
+        b=IjPRWtqsQVhEbYMgz6mj+dIZF7HdnHRz5kXLoXpd1BDgjO+KImYMGNhfKEAiwmZi9P
+         BQCJuIb7bVS4YVotBd80fhF40p48yvz5LBRdr45BKrWCI68gzMdgP7lCYbA54dgZVZh5
+         bZgexheuYrKQP1kkE/S3UsXEYGzmFMptpH1beRLMA2HkmLqR4EUxi2Esh7gL0F5LGym4
+         6gn8wRTGYUr4m8p2uo0OuiByj2BRQY1LnPzF0UC/avNMethqdRjEVwK+a++NWs3voc5R
+         BOkFvnUY8s4x+sFzp1+5kBUMcTgE4Z0MFcKcvZ2vynKSgFzxdGuOdz0PQ8aIz7jfg1GQ
+         2pWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757545972; x=1758150772;
+        d=1e100.net; s=20230601; t=1757552692; x=1758157492;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zUWhuTmgT6EFbZhjn5M879aw3Xbdm+/h4OoBOjzUlfY=;
-        b=FENoiDjJCSI8PlP47iHVMLjOeUST27wrVB0R19//7fKGjBaOXSN8wuVBo0SQUrHNxH
-         IayiXoV6RcSaGhWO8Qe6EOgTXMamRljX4TkOJP7xguCLyN9XiQUdPmt2NdQQ8CGAqdIs
-         m9nh8BEgV7Dw9EWEbznVaUQjANtQT/xH9yoMG6GUHvE/f59F/04Qfi4NpEBbY/MovGA+
-         v/1Es6dAhNtLL5vNxZwdFzfEck3nXWutYhaBWOyYdOxg72Rl+2vTxxccRBPGwyE4hMgh
-         IRdIGi87FM4I2yzffp4TFoPkmL37EHqzadV1REr0e5wDyg+kzCNZc5X2lPyH8Fl+IUe1
-         w71Q==
-X-Gm-Message-State: AOJu0YwM44+gr0iChr7lHRpBi9CNmg25e3lPBKE1wGkx6SQQWCG7kCLy
-	hftUE6ueSY+pXXXeyhQI9CHNt4m3roFv/s4FKDS94XaXRpONHdKKobZjY2la1w==
-X-Gm-Gg: ASbGnct/OpXXMzAvKy7MuYDAZPIjVFM9Q5PPU8AiqrPCxDWogehNaPOrtQzSazjnc1Q
-	OLJRAa3xe2dQsL5HuW7JebWYlE1HKlsUQ32mJa3kg6MdcBsmtQD14ayUGALQl1KPNTy3328Bx+f
-	p2omTxaOgheP1VUnzjl4er/Cttd7tunFYGC+i82kCasmrpfnc8h7Ujg9uFHffZdiArnNNZ0Yunv
-	maeMujvI6s81sXx+P6GinTVPoJhzW7CtMpdCoTEIVjHZ44szFcfnvG98EHZS+7MY/puBfNfx4QW
-	G/g8R1cN5vqZfX1KWkyXCwrOvStdZ5RFy+X7eR1Qgiw74gAzOj8D/OzI+PWQvTlYlVVq383xju4
-	/Jj763KdHA3qElI+Z4K6Flyv07QjzKSnmihbfhGrGNhA3bOaAfXKys/ay83Spi0ECHfJngj8NGA
-	==
-X-Google-Smtp-Source: AGHT+IFjtUEVT87+5VzGZFrXURAPd3Fsa3R+Wo+j6Dml4ovrylbqKihKQNpSNtoHkrSYcuzIlir9Zg==
-X-Received: by 2002:a17:903:32ca:b0:24e:6362:8ca5 with SMTP id d9443c01a7336-2516e88795fmr214316275ad.17.1757545972339;
-        Wed, 10 Sep 2025 16:12:52 -0700 (PDT)
-Received: from localhost.localdomain ([2001:558:600a:7:44e6:767e:cc5a:a060])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25be6fc0f23sm3850855ad.48.2025.09.10.16.12.51
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 10 Sep 2025 16:12:51 -0700 (PDT)
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: torvalds@linux-foundation.org
-Cc: bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@kernel.org
-Subject: [GIT PULL] BPF fixes for 6.17-rc6
-Date: Wed, 10 Sep 2025 16:12:50 -0700
-Message-Id: <20250910231250.3511-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+        bh=vKRDrKtgFlXYRiOyHC82P/E947gPt98y6YkSCujCiG8=;
+        b=c5+A4xUysH2OOAPo7yajAEUE0U5JRrOH6KXKbW0JPOb6MIr8otyEPBEKOQh593bPwf
+         x/7HXC8Dda2FBQiPQLXcTVmhr5aiWsM0ixVNbbTDbmMSyo6JdlidOIQQklzKVM4p6/9o
+         NKc2qolWfEqg66uJMya5vO3NwL2kYgD4aCQ2U7zOOYgyZuLLArjaiqKq6JmqkR3lImwG
+         avd/mQlmdQ8KMRxAcb9hw6yRCrhlg5mR7vBZzwAcBKESdMzrrQQvbjo+LoLAF996YVZJ
+         wFh0yIeGIwyl82OvvkFL49gQR3oEcyOoihhfG6jIIP66EcO1xQ2KIdWhLLQm36vB1hGq
+         aVqw==
+X-Gm-Message-State: AOJu0YxMG5Zurw4wJBa0YfN7MZqac0UWd55W1i9SrInoI/PFlu903WcL
+	8oEaYcTIJAfChE2i+y1RK/2isaJSGFzPRTg8mAqig8nBYI6YpA1TdVHfg5rXqg==
+X-Gm-Gg: ASbGncuLqOAH7mNqB4vBoZGeRZoRznts+6eCfI5G2qIiaU5rww45RmyR/PYkzmBDngi
+	LFbe5x9CziTHWst4NztFiojluZshDhCboL9GzAJrvp+0oeKZBurOU5Ws4CRdTvnvn74ASVAAKT/
+	AnpbQuatDQtua/O67aeNNe6ghobQlVqHXPZraphTvPpEtDoJ6SX8GKnDGsXffjHKOVLwE6xknAl
+	cc+gBr4mYfw4gXlsT3RDB0O8C/C20gV+v9r8TLWQgg4Aca7tpSRjI+vz4lK612UoRQLceP0QG23
+	H/iYqdhqBCmopPmmQst3VglAR5CUraNeX3bexB2RplLUUd4ZDR4h9301CVEJ0k61mPstwG90DJ6
+	5ZmP1T7ySrrrTCjCvxbu8ICslMh41CTDgm7QEoNHWi3X6
+X-Google-Smtp-Source: AGHT+IE6yCkOMmheTCTdZXl5IhmaDy+4Cfxy5C+mknY9L796Y9Auxhva6o99oagvmxiQ+KKCzAjexg==
+X-Received: by 2002:a05:6a21:6da6:b0:252:9bf:ad81 with SMTP id adf61e73a8af0-25344132c60mr29109526637.29.1757552691676;
+        Wed, 10 Sep 2025 18:04:51 -0700 (PDT)
+Received: from ezingerman-fedora-PF4V722J ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dd61eaa27sm545511a91.1.2025.09.10.18.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Sep 2025 18:04:51 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org
+Cc: daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	eddyz87@gmail.com
+Subject: [PATCH bpf-next v1 00/10] bpf: replace path-sensitive with path-insensitive live stack analysis
+Date: Wed, 10 Sep 2025 18:04:25 -0700
+Message-ID: <20250911010437.2779173-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi Linus,
+Consider the following program, assuming checkpoint is created for a
+state at instruction (3):
 
-The following changes since commit 8f5ae30d69d7543eee0d70083daf4de8fe15d585:
+  1: call bpf_get_prandom_u32()
+  2: *(u64 *)(r10 - 8) = 42
+  -- checkpoint #1 --
+  3: if r0 != 0 goto +1
+  4: exit;
+  5: r0 = *(u64 *)(r10 - 8)
+  6: exit
 
-  Linux 6.17-rc1 (2025-08-10 19:41:16 +0300)
+The verifier processes this program by exploring two paths:
+ - 1 -> 2 -> 3 -> 4
+ - 1 -> 2 -> 3 -> 5 -> 6
 
-are available in the Git repository at:
+When instruction (5) is processed, the current liveness tracking
+mechanism moves up the register parent links and records a "read" mark
+for stack slot -8 at checkpoint #1, stopping because of the "write"
+mark recorded at instruction (2).
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+This patch set replaces the existing liveness tracking mechanism with
+a path-insensitive data flow analysis. The program above is processed
+as follows:
+ - a data structure representing live stack slots for
+   instructions 1-6 in frame #0 is allocated;
+ - when instruction (2) is processed, record that slot -8 is written at
+   instruction (2) in frame #0;
+ - when instruction (5) is processed, record that slot -8 is read at
+   instruction (5) in frame #0;
+ - when instruction (6) is processed, propagate read mark for slot -8
+   up the control flow graph to instructions 3 and 2.
 
-for you to fetch changes up to 91f34aaae06e425e4644afde92ddff949b6abb54:
+The key difference is that the new mechanism operates on a control
+flow graph and associates read and write marks with pairs of (call
+chain, instruction index). In contrast, the old mechanism operates on
+verifier states and register parent links, associating read and write
+marks with verifier states.
 
-  Merge branch 'bpf-reject-bpf_timer-for-preempt_rt' (2025-09-10 12:34:09 -0700)
+Motivation
+==========
 
-----------------------------------------------------------------
-A number of fixes accumulated due to summer vacations
+As it stands, this patch set makes liveness tracking slightly less
+precise, as it no longer distinguishes individual program paths taken
+by the verifier during symbolic execution.
+See the "Impact on verification performance" section for details.
 
-- Fix out-of-bounds dynptr write in bpf_crypto_crypt() kfunc
-  which was misidentified as a security issue (Daniel Borkmann)
+However, this change is intended as a stepping stone toward the
+following goals:
+ - Short term, integrate precision tracking into liveness analysis and
+   remove the following code:
+   - verifier backedge states accumulation in is_state_visited();
+   - most of the logic for precision tracking;
+   - jump history tracking.
+ - Long term, help with more efficient loop verification handling.
 
-- Update the list of BPF selftests maintainers (Eduard Zingerman)
+ Why integrating precision tracking?
+ -----------------------------------
 
-- Fix selftests warnings with icecc compiler (Ilya Leoshkevich)
+In a sense, precision tracking is very similar to liveness tracking.
+The data flow equations for liveness tracking look as follows:
 
-- Disable XDP/cpumap direct return optimization (Jesper Dangaard Brouer)
+  live_after =
+    U [state[s].live_before for s in insn_successors(i)]
 
-- Fix unexpected get_helper_proto() result in unusual configuration
-  BPF_SYSCALL=y and BPF_EVENTS=n (Jiri Olsa)
+  state[i].live_before =
+    (live_after / state[i].must_write) U state[i].may_read
 
-- Allow fallback to interpreter when JIT support is limited
-  (KaFai Wan)
+While data flow equations for precision tracking look as follows:
 
-- Fix rqspinlock and choose trylock fallback for NMI waiters.
-  Pick the simplest fix. More involved fix is targeted bpf-next.
-  (Kumar Kartikeya Dwivedi)
+  precise_after =
+    U [state[s].precise_before for s in insn_successors(i)]
 
-- Fix cleanup when tcp_bpf_send_verdict() fails to allocate psock->cork
-  (Kuniyuki Iwashima)
+  // if some of the instruction outputs are precise,
+  // assume its inputs to be precise
+  induced_precise =
+    ⎧ state[i].may_read   if (state[i].may_write ∩ precise_after) ≠ ∅
+    ⎨
+    ⎩ ∅                   otherwise
 
-- Disallow bpf_timer in PREEMPT_RT for now. Proper solution
-  is being discussed for bpf-next. (Leon Hwang)
+  state[i].precise_before =
+    (precise_after / state[i].must_write) ∩ induced_precise
 
-- Fix XSK cq descriptor production (Maciej Fijalkowski)
+Where:
+ - `may_read` set represents a union of all possibly read slots
+   (any slot in `may_read` set might be by the instruction);
+ - `must_write` set represents an intersection of all possibly written slots
+   (any slot in `must_write` set is guaranteed to be written by the instruction).
+ - `may_write` set represents a union of all possibly written slots
+   (any slot in `may_write` set might be written by the instruction).
 
-- Tell memcg to use allow_spinning=false path in bpf_timer_init()
-  to avoid lockup in cgroup_file_notify() (Peilin Ye)
+This means that precision tracking can be implemented as a logical
+extension of liveness tracking:
+ - track registers as well as stack slots;
+ - add bit masks to represent `precise_before` and `may_write`;
+ - add above equations for `precise_before` computation;
+ - (linked registers require some additional consideration).
 
-- Fix bpf_strnstr() to handle suffix match cases (Rong Tao)
+Such extension would allow removal of:
+ - precision propagation logic in verifier.c:
+   - backtrack_insn()
+   - mark_chain_precision()
+   - propagate_{precision,backedges}()
+ - push_jmp_history() and related data structures, which are only used
+   by precision tracking;
+ - add_scc_backedge() and related backedge state accumulation in
+   is_state_visited(), superseded by per-callchain function state
+   accumulated by liveness analysis.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-----------------------------------------------------------------
-Alexei Starovoitov (2):
-      Merge branch 'selftests-bpf-fix-expression-result-unused-warnings-with-icecc'
-      Merge branch 'bpf-reject-bpf_timer-for-preempt_rt'
+The hope here is that unifying liveness and precision tracking will
+reduce overall amount of code and make it easier to reason about.
 
-Andrii Nakryiko (1):
-      Merge branch 'fix-bpf_strnstr-len-error'
+ How this helps with loops?
+ --------------------------
 
-Daniel Borkmann (2):
-      bpf: Fix out-of-bounds dynptr write in bpf_crypto_crypt
-      selftests/bpf: Extend crypto_sanity selftest with invalid dst buffer
+As it stands, this patch set shares the same deficiency as the current
+liveness tracking mechanism. Liveness marks on stack slots cannot be
+used to prune states when processing iterator-based loops:
+ - such states still have branches to be explored;
+ - meaning that not all stack slot reads have been discovered.
 
-Eduard Zingerman (1):
-      bpf: Update the list of BPF selftests maintainers
+For example:
 
-Ilya Leoshkevich (1):
-      selftests/bpf: Fix "expression result unused" warnings with icecc
+  1: while(iter_next()) {
+  2:   if (...)
+  3:     r0 = *(u64 *)(r10 - 8)
+  4:   if (...)
+  5:     r0 = *(u64 *)(r10 - 16)
+  6:   ...
+  7: }
 
-Jesper Dangaard Brouer (1):
-      bpf, cpumap: Disable page_pool direct xdp_return need larger scope
+For any checkpoint state created at instruction (1), it is only
+possible to rely on read marks for slots fp[-8] and fp[-16] once all
+child states of (1) have been explored. Thus, when the verifier
+transitions from (7) to (1), it cannot rely on read marks.
 
-Jiri Olsa (1):
-      bpf: Check the helper function is valid in get_helper_proto
+However, sacrificing path-sensitivity makes it possible to run
+analysis defined in this patch set before main verification pass,
+if estimates for value ranges are available.
+E.g. for the following program:
 
-KaFai Wan (1):
-      bpf: Allow fall back to interpreter for programs with stack size <= 512
+  1: while(iter_next()) {
+  2:   r0 = r10
+  3:   r0 += r2
+  4:   r0 = *(u64 *)(r2 + 0)
+  5:   ...
+  6: }
 
-Kumar Kartikeya Dwivedi (1):
-      rqspinlock: Choose trylock fallback for NMI waiters
+If an estimate for `r2` range is available before the main
+verification pass, it can be used to populate read marks at
+instruction (4) and run the liveness analysis. Thus making
+conservative liveness information available during loops verification.
 
-Kuniyuki Iwashima (1):
-      tcp_bpf: Call sk_msg_free() when tcp_bpf_send_verdict() fails to allocate psock->cork.
+Such estimates can be provided by some form of value range analysis.
+Value range analysis is also necessary to address loop verification
+from another angle: computing boundaries for loop induction variables
+and iteration counts.
 
-Leon Hwang (2):
-      bpf: Reject bpf_timer for PREEMPT_RT
-      selftests/bpf: Skip timer cases when bpf_timer is not supported
+The hope here is that the new liveness tracking mechanism will support
+the broader goal of making loop verification more efficient.
 
-Maciej Fijalkowski (1):
-      xsk: Fix immature cq descriptor production
+Validation
+==========
 
-Peilin Ye (1):
-      bpf: Tell memcg to use allow_spinning=false path in bpf_timer_init()
+The change was tested on three program sets:
+ - bpf selftests
+ - sched_ext
+ - Meta's internal set of programs
 
-Rong Tao (2):
-      bpf: Fix bpf_strnstr() to handle suffix match cases better
-      selftests/bpf: Add tests for bpf_strnstr
+Commit [#8] enables a special mode where both the current and new
+liveness analyses are enabled simultaneously. This mode signals an
+error if the new algorithm considers a stack slot dead while the
+current algorithm assumes it is alive. This mode was very useful for
+debugging. At the time of posting, no such errors have been reported
+for the above program sets.
 
- MAINTAINERS                                        |   1 -
- kernel/bpf/Makefile                                |   1 +
- kernel/bpf/core.c                                  |  21 ++--
- kernel/bpf/cpumap.c                                |   4 +-
- kernel/bpf/crypto.c                                |   2 +-
- kernel/bpf/helpers.c                               |  16 ++-
- kernel/bpf/rqspinlock.c                            |   2 +-
- kernel/bpf/verifier.c                              |   6 +-
- net/ipv4/tcp_bpf.c                                 |   5 +-
- net/xdp/xsk.c                                      | 113 ++++++++++++++++++---
- net/xdp/xsk_queue.h                                |  12 +++
- .../testing/selftests/bpf/prog_tests/free_timer.c  |   4 +
- tools/testing/selftests/bpf/prog_tests/timer.c     |   4 +
- .../testing/selftests/bpf/prog_tests/timer_crash.c |   4 +
- .../selftests/bpf/prog_tests/timer_lockup.c        |   4 +
- tools/testing/selftests/bpf/prog_tests/timer_mim.c |   4 +
- .../selftests/bpf/progs/bpf_arena_spin_lock.h      |   4 +-
- tools/testing/selftests/bpf/progs/crypto_sanity.c  |  46 ++++++---
- .../testing/selftests/bpf/progs/linked_list_fail.c |   5 +-
- .../selftests/bpf/progs/string_kfuncs_success.c    |   8 +-
- 20 files changed, 213 insertions(+), 53 deletions(-)
+[#8] "bpf: signal error if old liveness is more conservative than new"
+
+Impact on memory consumption
+============================
+
+Debug patch [1] extends the kernel and veristat to count the amount of
+memory allocated for storing analysis data. This patch is not included
+in the submission. The maximal observed impact for the above program
+sets is 2.6Mb.
+
+Data below is shown in bytes.
+
+For bpf selftests top 5 consumers look as follows:
+
+  File                     Program           liveness mem
+  -----------------------  ----------------  ------------
+  pyperf180.bpf.o          on_event               2629740
+  pyperf600.bpf.o          on_event               2287662
+  pyperf100.bpf.o          on_event               1427022
+  test_verif_scale3.bpf.o  balancer_ingress       1121283
+  pyperf_subprogs.bpf.o    on_event                756900
+
+For sched_ext top 5 consumers loog as follows:
+
+  File       Program                          liveness mem
+  ---------  -------------------------------  ------------
+  bpf.bpf.o  lavd_enqueue                           164686
+  bpf.bpf.o  lavd_select_cpu                        157393
+  bpf.bpf.o  layered_enqueue                        154817
+  bpf.bpf.o  lavd_init                              127865
+  bpf.bpf.o  layered_dispatch                       110129
+
+For Meta's internal set of programs top consumer is 1Mb.
+
+[1] https://github.com/kernel-patches/bpf/commit/085588e787b7998a296eb320666897d80bca7c08
+
+Impact on verification performance
+==================================
+
+Veristat results below are reported using
+`-f insns_pct>1 -f !insns<500` filter and -t option
+(BPF_F_TEST_STATE_FREQ flag).
+
+ master vs patch-set, selftests (out of ~4K programs)
+ ----------------------------------------------------
+
+  File                              Program                                 Insns (A)  Insns (B)  Insns    (DIFF)
+  --------------------------------  --------------------------------------  ---------  ---------  ---------------
+  cpumask_success.bpf.o             test_global_mask_nested_deep_array_rcu       1622       1655     +33 (+2.03%)
+  strobemeta_bpf_loop.bpf.o         on_event                                     2163       2684   +521 (+24.09%)
+  test_cls_redirect.bpf.o           cls_redirect                                36001      42515  +6514 (+18.09%)
+  test_cls_redirect_dynptr.bpf.o    cls_redirect                                 2299       2339     +40 (+1.74%)
+  test_cls_redirect_subprogs.bpf.o  cls_redirect                                69545      78497  +8952 (+12.87%)
+  test_l4lb_noinline.bpf.o          balancer_ingress                             2993       3084     +91 (+3.04%)
+  test_xdp_noinline.bpf.o           balancer_ingress_v4                          3539       3616     +77 (+2.18%)
+  test_xdp_noinline.bpf.o           balancer_ingress_v6                          3608       3685     +77 (+2.13%)
+
+ master vs patch-set, sched_ext (out of 148 programs)
+ ----------------------------------------------------
+
+  File       Program           Insns (A)  Insns (B)  Insns    (DIFF)
+  ---------  ----------------  ---------  ---------  ---------------
+  bpf.bpf.o  chaos_dispatch         2257       2287     +30 (+1.33%)
+  bpf.bpf.o  lavd_enqueue          20735      22101   +1366 (+6.59%)
+  bpf.bpf.o  lavd_select_cpu       22100      24409  +2309 (+10.45%)
+  bpf.bpf.o  layered_dispatch      25051      25606    +555 (+2.22%)
+  bpf.bpf.o  p2dq_dispatch           961        990     +29 (+3.02%)
+  bpf.bpf.o  rusty_quiescent         526        534      +8 (+1.52%)
+  bpf.bpf.o  rusty_runnable          541        547      +6 (+1.11%)
+
+Perf report
+===========
+
+In relative terms, the analysis does not consume much CPU time.
+For example, here is a perf report collected for pyperf180 selftest:
+
+ # Children      Self  Command   Shared Object         Symbol
+ # ........  ........  ........  ....................  ........................................
+        ...
+      1.22%     1.22%  veristat  [kernel.kallsyms]     [k] bpf_update_live_stack
+        ...
+
+Eduard Zingerman (10):
+  bpf: bpf_verifier_state->cleaned flag instead of REG_LIVE_DONE
+  bpf: use compute_live_registers() info in clean_func_state
+  bpf: remove redundant REG_LIVE_READ check in stacksafe()
+  bpf: declare a few utility functions as internal api
+  bpf: compute instructions postorder per subprogram
+  bpf: callchain sensitive stack liveness tracking using CFG
+  bpf: enable callchain sensitive stack liveness tracking
+  bpf: signal error if old liveness is more conservative than new
+  bpf: disable and remove registers chain based liveness
+  bpf: table based bpf_insn_successors()
+
+ Documentation/bpf/verifier.rst                | 264 -------
+ include/linux/bpf_verifier.h                  |  52 +-
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/liveness.c                         | 723 ++++++++++++++++++
+ kernel/bpf/log.c                              |  28 +-
+ kernel/bpf/verifier.c                         | 564 ++++----------
+ .../testing/selftests/bpf/prog_tests/align.c  | 178 ++---
+ .../selftests/bpf/prog_tests/spin_lock.c      |  12 +-
+ .../selftests/bpf/prog_tests/test_veristat.c  |  44 +-
+ .../selftests/bpf/progs/exceptions_assert.c   |  34 +-
+ .../selftests/bpf/progs/iters_state_safety.c  |   4 +-
+ .../selftests/bpf/progs/iters_testmod_seq.c   |   6 +-
+ .../bpf/progs/mem_rdonly_untrusted.c          |   4 +-
+ .../selftests/bpf/progs/verifier_bounds.c     |  38 +-
+ .../bpf/progs/verifier_global_ptr_args.c      |   4 +-
+ .../selftests/bpf/progs/verifier_ldsx.c       |   2 +-
+ .../selftests/bpf/progs/verifier_precision.c  |  16 +-
+ .../selftests/bpf/progs/verifier_scalar_ids.c |  10 +-
+ .../selftests/bpf/progs/verifier_spill_fill.c |  40 +-
+ .../bpf/progs/verifier_subprog_precision.c    |   6 +-
+ .../selftests/bpf/verifier/bpf_st_mem.c       |   4 +-
+ 21 files changed, 1107 insertions(+), 928 deletions(-)
+ create mode 100644 kernel/bpf/liveness.c
+
+-- 
+2.47.3
+
 
