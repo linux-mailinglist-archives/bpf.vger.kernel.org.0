@@ -1,90 +1,91 @@
-Return-Path: <bpf+bounces-68189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3B34B53D85
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 23:09:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D519B53DB9
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 23:26:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AC44AC0F77
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 21:09:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DADDD1752E6
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 21:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DBF02D8788;
-	Thu, 11 Sep 2025 21:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE8B2DF129;
+	Thu, 11 Sep 2025 21:26:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e+ynbbyI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ghMfx6fj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E741DA55
-	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 21:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233EC2DEA7B
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 21:26:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757624992; cv=none; b=Hnc4zJmUDoDQcPjsUGMEXFmHiI/o33W956chvzR1RkYxP0/Q6LQoN1QBzXVrODh5uB5HZqashzbwjAsIu8omM9FvjgJT44I7jl++sil6QgR66uRhePFXPspMYxrONicOuzU4/5sySIEDpmQjr/ZuS49hfWipmjxD4oNntjd6dJ4=
+	t=1757625990; cv=none; b=fwPtSSkkpAchZDSjjDulATGvTla4th2T4AEo3SkwPAPj+okxx8WgtSRsujyMwcUM7bwZDEPSKqwTe4yvjh2qZkML9XoFgjHS+hHt42+z8J/kuyJIngGxfrBAiDqa5rmgVWxTsJfV8vZrl8S5poaiPQ5FYpVq37Khq1Pwm7ZarFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757624992; c=relaxed/simple;
-	bh=42+AewX2K0aBhKb9Jp4C1qMxzFpyBNEkV4nBBMBwXPk=;
+	s=arc-20240116; t=1757625990; c=relaxed/simple;
+	bh=sFo11LJDFbgdEzVFkudN41eUwSXYsUo78kBXh07zsiw=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hy0i7c/8Bh2BF2qlHBpq2XwXX6x7crm4WR9DtJlkFBvFCcZZAunS1Vz+QjBIlM0SqdEJIyXjrFKHroSF3O4XFwAfjmpiiwL40u4v4z8wB7IajKpUbJFkITtAtZlopXLajuMuOV2VrLGfcyLJPXhpfh+ETjSkdup0Jq/nwC/ED00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e+ynbbyI; arc=none smtp.client-ip=209.85.216.49
+	 Content-Type:MIME-Version; b=tR+Tt4osn6gttpipQR5clfGN/KTiumBGbo58YI70h1kiBOiPOVFw490bbRu3o0W1A8MZOTowjS4PMob1opjAxAhzR0c90bIyKphA/sKzBn1kjDsJRvt2mgPNay573WfR4orDkpIJiODpzU+G+tQCLQGiTdb2BGJhvnxDhDCQL4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ghMfx6fj; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-32d3e17d925so1087503a91.2
-        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 14:09:50 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2570bf6058aso16421675ad.0
+        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 14:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757624990; x=1758229790; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757625988; x=1758230788; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=3ZvXk7oObUVKxhZ1q7736GiFkPBmqmJmQ0Y/DU0xscQ=;
-        b=e+ynbbyID92IFNlzq/wWjMjCr0KtVAYYSL6m+gLkqICtlIDMgNRcgcUeG1N8f6veuo
-         FkWL8pGPIy0HgI0D0/kmAdkDOolf2RK4Gkg4k/F8irtVA3zhmw1Ru2tvWeWRKi/dhSEY
-         6672OugLve3W8zpoqSmAM9a1NAQRnE6+3JNfFx2b2eaNbBAmHnatwhEwvvkC/oJdX/9P
-         7172s7338sJ4rnKKRWzPd/NBA6gJFZgO1QZJ2OLkj+zpP94b449GiVlIXg8goPavpEeu
-         Y0eHO/ZzmQJdJS8jWItT5MpeGNmmf8bhxevUHDhcjx/jGrjxrIv9s0oFnm6J4BAdThTi
-         kN5g==
+        bh=EjquTq5MAgSVrD6End1v2/eMfRkFt39jWpb1aBSSPxk=;
+        b=ghMfx6fj9WO+Nv5BBqn+X88j4U89UFiAydPo75OgjEkfnZgvZ1XSjFdkjODZKTLJnu
+         HYKtvr7liK90JhEcM+02jvaeGQlkTr7+kGofCuvl0z1Q/KId171E8/5MA+PDQb/vtFLG
+         wxPaPW5ASqZKFRUFT67o8DuaDhGK6zWejgnadKzsfZtu//TN/wO4N8NtReVG8iY6PMtr
+         MSsTwhBi5cR9wqihhKm5xeXRiFQWuWNdUvHZJSXRMLaWGd1cyA9Ih/gPux+l6Vho8PVn
+         Lxj4ufId6KHJPMcrvnfcNNTKrvRVagJY/BCN7+nYvB+e1s/spc9PZEyaIg9ko80pk/zB
+         FvOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757624990; x=1758229790;
+        d=1e100.net; s=20230601; t=1757625988; x=1758230788;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3ZvXk7oObUVKxhZ1q7736GiFkPBmqmJmQ0Y/DU0xscQ=;
-        b=o1aBwK2YYprs0GG2abI4KxCuy3KqGTY+WZ/Se0YbKfOFtQkfg/6tAzjiwaUTkb0wLo
-         dVz/EVTONJA0Fds4mF0WjHWgx6f5p4r79P9orOjnVe7JKMKaYCW3VzBD7ijGYtM1AftJ
-         NP+zOOY63hsdilHg6VWCKlU40SbqhlHwFHQvcREU/hCPa5vJ2bRZl2d3ggqJ0YIqU0W+
-         IxfJHqjTLIbTzFVRL9ruiRHW6qRjKPz6Ib6uH0wfn+ErP+NmHod1TzFZztd4MAd7rBXR
-         bodj89eyVmoSC2AdfBsqoWM6jG+INUbvj9VYvIUQ6XwsYDlw+P3Ff5+jaGrVOkA5zXUi
-         l1cw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1gn6cbicQ0Bx0DIcBKVGIomeADriwrwbYaYKn418ZnzC6Q70SkYK2I4nD9Y5+CMf+zzs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx7W43mP9Q3P5MKZqDjDukNx+worRNzOmuiF84Blp5VZFQ++zNB
-	IxbL+IqUxIr2w1Pdtl0Y/QpiZTwwXq9RVzc9zgjsiQkwlo33maZQp+Nt
-X-Gm-Gg: ASbGncsLuPvvDKEoG1ydpfyEypF+JB1l4/CHlbKlR1PCT+ut45i15ENG/4z4rzIAsVc
-	sakBk9JCmtdcYtorsvwu6OkBLaGAZNZz20wONeAX+vNnvkcDeKgx++bhLcjnkJAWNTzh1KAPhr6
-	JG2MzoM2ER5WF3+aGJusF566c15vLwTY1Y35RGzsL/0vS5BLhUN6QhBanqHByHeQo6JBl5js3FC
-	EWjtLbZ0vZ8HW/V2H0CRVvT1ilIfXoN5Iuh3uQbVS+/JFW3afHb0/NrvRr5Hw9PHB06sf8saXlf
-	hMXxim09YnsFISstGUHk4Xt5rJejtg/qckvpg41DTY3euHL1QAWIpca04C/dJrhXJv9nbNb+8bH
-	KOLkUBhBo1gFyZ6DJdjw8M9nT8b2RAQ==
-X-Google-Smtp-Source: AGHT+IEppR+vd18tlXbSJVuWb6c+0vIjqzXttlPBKvBI6LHMvtcOm1F6DDbRWwk94Ceu+po18rJ2rw==
-X-Received: by 2002:a17:90b:2d47:b0:32d:17ce:49d5 with SMTP id 98e67ed59e1d1-32de4f8f8b0mr559708a91.23.1757624990087;
-        Thu, 11 Sep 2025 14:09:50 -0700 (PDT)
+        bh=EjquTq5MAgSVrD6End1v2/eMfRkFt39jWpb1aBSSPxk=;
+        b=LUr7Ev7QIN6jvhre1qql+QrM7kkur25iK6MEguGYJ1E9SKEWj7bKCBdBMtzcoBEr93
+         eUVfAYKpsM4UkoENzX0ovjKmQucbOSAYe1cz+8Ls1jyT6F+5d5H7bZtFOoW5orldrkeL
+         M+wQ5gNHFiflvLA0av2qSjXs+KFSzDU/cXLS7LHKSmZGyZs1saILmayK2wJbBidF7GvA
+         ogYiLFZG0u/hv2qvM7i+DOgg0Rfz4NeLxRPwS+IT+LE2oGYxKv+8wCJMFuX/L3QmYTwd
+         Q+W8Ajd3iORCknNNq46r95m0uC9gXsipbDulxjC1QxH4u1YKs2TJCdXvSO+3zhGj7G+d
+         DdGw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzm7bwWBQxXBQWAJkTtf5P+wI4hHnknsrKJnJmgpvlT0UO4DAUR8LLTU+CurfSY8QSegM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCzEnikQSbq4WAE9citdbNMPd1Ep76GeeHaxTcrZUFf3MrgZ/+
+	bxFmUp/74Lazz7eTyWsTZoxgsLOW5DtS8civpqiqfv2+fJHRlwToZBVO
+X-Gm-Gg: ASbGncuC2FjaMFkpUCQT4DEc3LDf8Lug7ThIK97rHy2Wbt0kF9ZwSZIu0hLNwNjBxuo
+	Oag/jAUd1mUzpK4dLx8Sokz0O7KutDgmkczZoZY5R1jhGkidBsZXGWPIEYMBoS6WGfvMqAPhD6l
+	YukAmfyHPb0CVH5mnEQAuUi49wp487SBt2FB6AacxJxYt140IZNtscfgguwlYJAdXosymqcRiP7
+	Ks0cGR5a6kANsSZ32IqgE7v7K5QN2LuAayn04k4qbAw73uvtTCkFILlB1vGdj3pmcRxFf1k49rf
+	/FcUG1nUKRWXrXpWw4yAj2N1gw3GD9ven6/15Ew5Dj9LYu87rexyT64xmS3MWgVFy3vI4eLI8yM
+	mya/+y2v7SLFaiLF2IPrhke/YqxMfjw==
+X-Google-Smtp-Source: AGHT+IEjwfOvzZk84xflzxjLm5xONbXJLauvwJlikYGw0U/j6U74AKTutnNrVqldFjubLYTuTs0HYg==
+X-Received: by 2002:a17:903:1b08:b0:25c:9688:bdca with SMTP id d9443c01a7336-25d26e43a33mr7095795ad.50.1757625988238;
+        Thu, 11 Sep 2025 14:26:28 -0700 (PDT)
 Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dd6306edfsm3723573a91.18.2025.09.11.14.09.49
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25c37295f4fsm28513255ad.42.2025.09.11.14.26.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Sep 2025 14:09:49 -0700 (PDT)
-Message-ID: <03440441db6f719e8576cafe0318aa9994621cab.camel@gmail.com>
-Subject: Re: [syzbot ci] Re: bpf: replace path-sensitive with
- path-insensitive live stack analysis
+        Thu, 11 Sep 2025 14:26:27 -0700 (PDT)
+Message-ID: <c846a153010e40a52e98b8abe9db69f7d4cadd58.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 09/10] bpf: disable and remove registers
+ chain based liveness
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: syzbot ci <syzbot+ci8e503a0d4aea89ba@syzkaller.appspotmail.com>, 
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, 	kernel-team@fb.com, martin.lau@linux.dev,
+To: kernel test robot <lkp@intel.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	andrii@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+ daniel@iogearbox.net, 	martin.lau@linux.dev, kernel-team@fb.com,
  yonghong.song@linux.dev
-Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Date: Thu, 11 Sep 2025 14:09:46 -0700
-In-Reply-To: <68c272e7.050a0220.2ff435.00f3.GAE@google.com>
-References: <68c272e7.050a0220.2ff435.00f3.GAE@google.com>
+Date: Thu, 11 Sep 2025 14:26:24 -0700
+In-Reply-To: <202509112112.wkWw6wJW-lkp@intel.com>
+References: <20250911010437.2779173-10-eddyz87@gmail.com>
+	 <202509112112.wkWw6wJW-lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -95,86 +96,78 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2025-09-10 at 23:57 -0700, syzbot ci wrote:
-> syzbot ci has tested the following series
+On Thu, 2025-09-11 at 22:19 +0800, kernel test robot wrote:
+> Hi Eduard,
 >=20
-> [v1] bpf: replace path-sensitive with path-insensitive live stack analysi=
-s
-> https://lore.kernel.org/all/20250911010437.2779173-1-eddyz87@gmail.com
-> * [PATCH bpf-next v1 01/10] bpf: bpf_verifier_state->cleaned flag instead=
- of REG_LIVE_DONE
-> * [PATCH bpf-next v1 02/10] bpf: use compute_live_registers() info in cle=
-an_func_state
-> * [PATCH bpf-next v1 03/10] bpf: remove redundant REG_LIVE_READ check in =
-stacksafe()
-> * [PATCH bpf-next v1 04/10] bpf: declare a few utility functions as inter=
-nal api
-> * [PATCH bpf-next v1 05/10] bpf: compute instructions postorder per subpr=
-ogram
-> * [PATCH bpf-next v1 06/10] bpf: callchain sensitive stack liveness track=
-ing using CFG
-> * [PATCH bpf-next v1 07/10] bpf: enable callchain sensitive stack livenes=
-s tracking
-> * [PATCH bpf-next v1 08/10] bpf: signal error if old liveness is more con=
-servative than new
-> * [PATCH bpf-next v1 09/10] bpf: disable and remove registers chain based=
- liveness
-> * [PATCH bpf-next v1 10/10] bpf: table based bpf_insn_successors()
+> kernel test robot noticed the following build warnings:
 >=20
-> and found the following issue:
-> KASAN: slab-out-of-bounds Write in compute_postorder
+> [auto build test WARNING on bpf-next/master]
 >=20
-> Full report is available here:
-> https://ci.syzbot.org/series/c42e236b-f40c-4d72-8ae7-da4e21c37e17
+> url:    https://github.com/intel-lab-lkp/linux/commits/Eduard-Zingerman/b=
+pf-bpf_verifier_state-cleaned-flag-instead-of-REG_LIVE_DONE/20250911-090604
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git =
+master
+> patch link:    https://lore.kernel.org/r/20250911010437.2779173-10-eddyz8=
+7%40gmail.com
+> patch subject: [PATCH bpf-next v1 09/10] bpf: disable and remove register=
+s chain based liveness
+> config: x86_64-buildonly-randconfig-003-20250911 (https://download.01.org=
+/0day-ci/archive/20250911/202509112112.wkWw6wJW-lkp@intel.com/config)
+> compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0=
+227cb60147a26a1eeb4fb06e3b505e9c7261)
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20250911/202509112112.wkWw6wJW-lkp@intel.com/reproduce)
 >=20
-> ***
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202509112112.wkWw6wJW-lkp=
+@intel.com/
 >=20
-> KASAN: slab-out-of-bounds Write in compute_postorder
+> All warnings (new ones prefixed by >>):
 >=20
-> tree:      bpf-next
-> URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/b=
-pf-next.git
-> base:      e12873ee856ffa6f104869b8ea10c0f741606f13
-> arch:      amd64
-> compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~e=
-xp1~20250708183702.136), Debian LLD 20.1.8
-> config:    https://ci.syzbot.org/builds/6d2bc952-3d65-4bcd-9a84-1207b810a=
-1b5/config
-> C repro:   https://ci.syzbot.org/findings/338e6ce4-7207-484f-a508-9b00b31=
-21701/c_repro
-> syz repro: https://ci.syzbot.org/findings/338e6ce4-7207-484f-a508-9b00b31=
-21701/syz_repro
+> > > kernel/bpf/verifier.c:19305:11: warning: variable 'err' is uninitiali=
+zed when used here [-Wuninitialized]
+>     19305 |                                 err =3D err ? : push_jmp_hist=
+ory(env, cur, 0, 0);
+>           |                                       ^~~
+>    kernel/bpf/verifier.c:19140:12: note: initialize the variable 'err' to=
+ silence this warning
+>     19140 |         int n, err, states_cnt =3D 0;
+>           |                   ^
+>           |                    =3D 0
+>    1 warning generated.
 >=20
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KASAN: slab-out-of-bounds in compute_postorder+0x802/0xcb0 kernel/bp=
-f/verifier.c:17840
-> Write of size 4 at addr ffff88801f1d4b98 by task syz.0.17/5991
+>=20
+> vim +/err +19305 kernel/bpf/verifier.c
 
-The error is caused by the following program:
-
-  (e5) if r15 (null) 0xffffffff goto pc-1 <---- absence of DISCOVERED/EXPLO=
-RED mark here
-  (71) r1 =3D *(u8 *)(r1 +70)	     	  	leads to instruction being put on st=
-ack second time
-  (85) call pc+2
-  (85) call bpf_get_numa_node_id#42
-  (95) exit
-  (95) exit
-
-And this is the fix:
+This was sloppy on my side, should look as follows:
 
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -17840,6 +17840,7 @@ static int compute_postorder(struct bpf_verifier_en=
-v *env)
-                stack_sz =3D 1;
-                do {
-                        top =3D stack[stack_sz - 1];
-+                       state[top] |=3D DISCOVERED;
-                        if (state[top] & EXPLORED) {
-                                postorder[cur_postorder++] =3D top;
-                                stack_sz--;
+@@ -19297,9 +19297,12 @@ static int is_state_visited(struct bpf_verifier_en=
+v *env, int insn_idx)
+                         * the precision needs to be propagated back in
+                         * the current state.
+                         */
+-                       if (is_jmp_point(env, env->insn_idx))
+-                               err =3D err ? : push_jmp_history(env, cur, =
+0, 0);
+-                       err =3D err ? : propagate_precision(env, &sl->state=
+, cur, NULL);
++                       if (is_jmp_point(env, env->insn_idx)) {
++                               err =3D push_jmp_history(env, cur, 0, 0);
++                               if (err)
++                                       return err;
++                       }
++                       err =3D propagate_precision(env, &sl->state, cur, N=
+ULL);
+                        if (err)
+                                return err;
+                        /* When processing iterator based loops above propa=
+gate_liveness and
+
+
 [...]
 
