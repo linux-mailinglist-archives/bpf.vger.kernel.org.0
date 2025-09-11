@@ -1,94 +1,95 @@
-Return-Path: <bpf+bounces-68200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDB8AB53E72
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 00:07:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD269B53E7C
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 00:07:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 015BB1C86028
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 22:07:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 975E1565B88
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 22:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0E834166B;
-	Thu, 11 Sep 2025 22:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798FC342CBB;
+	Thu, 11 Sep 2025 22:07:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tn79HJpP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RcIqS0OJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C9402E6114
-	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 22:06:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA8A341AC3
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 22:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757628420; cv=none; b=TTabTJMGmC3IpIdgjUkxjM8R9axU34vy+yO+uqB41NN7k3ayrE9iAvTCFvseiW/dVqYUlAZO9tFpGcdbwlQkyYDFIpcrcyXpRGt0ct2ycVmHUXe1HieqnTEuLjp9tcCCC7pbNwJSRbElVa/UKH9jvLr+BCT5pzfeq9ohgg7ndjM=
+	t=1757628477; cv=none; b=rtoFuYCnImkZW3phozI6P/liNiP40/0aWlx096cCpkRK7nu5GGZm+N6KPd82QK6Ki1IHeS/vsKhcCarrdhpXDXjnjw4KwcBclyso9wtW72yrB3Rtv1PnvOBwr2YCq20bdbTQDNlMT66bIy9OFGkwsQeBu6F8U1E9In38C/f6gXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757628420; c=relaxed/simple;
-	bh=ZZJ2grqLL8Fqy5I4BP+Z6fTe+JP94/SaKVMrj4tLpLU=;
+	s=arc-20240116; t=1757628477; c=relaxed/simple;
+	bh=jtcnfarZA6UzrvRtmWR0Evc6ldU/VzjjNKluiCCXV3g=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Se6jI9cZMpy5MhWfUQjfjRBBuKszR4Q3ZmleFwnFkiTjhL2IMvH3VYao5FPsvFq3xJ/03E+eWuVPWFsLTQUbuItWeuvhrtF7YqoVkRjvUmgxE2+SQyzJJp+RruYwo/ddqR2UAmZV1+Fx9KlB2mKSZDsC1VTDAdPd/4ulv5V5Rj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tn79HJpP; arc=none smtp.client-ip=209.85.216.44
+	 Content-Type:MIME-Version; b=giITvBeHDmbDENU4mV/CBwkMRzR2iWnOsFW/2mY/ES5PVW5u+iFzQOtBEAJRqA5jvfJxSr81hRnuAByoQy/Tl+iGkoTA2Q93JFJHIxzFxst3XM3efWNNpxsvmsT3wRrLBl8V6EBRy74NGYpEOBa+Q9QkrE04ygwKLZcN6isZRcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RcIqS0OJ; arc=none smtp.client-ip=209.85.215.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-32bae4bcd63so888253a91.2
-        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 15:06:59 -0700 (PDT)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b54abd46747so253868a12.0
+        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 15:07:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757628419; x=1758233219; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757628475; x=1758233275; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=bonWt9ZGWLjOJbFQA74GLeDy739Dy64l0gYa4dZMRGE=;
-        b=Tn79HJpPGp2h17s4MtCjPbbGvpOHweFwXuHoN+CTxLxX7gOaWrC7EXoCd38LVaGNOO
-         xr1eaBySYag5dBMExTTqMsovoGWfFdo/BBQEF51bIaLZv7bh9R5ukVpCxKoDafNwAJNc
-         D9x9cJ1PQbKKDSkOGF150L7VITKxlEWTgvrjHBXywCmLnsn2oOckFRPl0daQescMNRnm
-         QjQnzEZRGfouNP0svgPypTNGG6mHrNNhbjzzJYW35w8y7u0y3vuENtZhn+sdI+Ffs3Ao
-         oUJ6Eh58UFNc90il0g+tF6WaFgmvqyVXS/h34qtbHPieCSoOIPJnwP51n80ygQJ/d0iH
-         FM8w==
+        bh=PIzLX4YwMmt2w1/Or//9q2o4ZqfSWElSTB34sVpm3Zk=;
+        b=RcIqS0OJWA/zGXGSZ3opfgz7ZnjuLk1z6L5EfBZ/E0HBtVz9JGvaae1M9wfZnxImmX
+         cEvxCErQbi5oINYrixRQBEUJcmiiDjrJLw9TJXyZExXj1CTXgRvScRhZg8d81tci6b3N
+         pqi4eyEpFGzcFyQU8NOZcnA5gHcf0tniNDCRWRePX/5t3aONz2HgAjwnOLrnaOuO4M2T
+         SBVWCbkitv3NHGAY4C3icqiUdmmi+vfZ1UqCR983t1ETWj19TpUrtiBBRRzHbRlOSd1Z
+         1Qbup5ek6OCF5OErElOgFPnvdf0THJ7l94bOEIjARxfzyWNHdu7kfdcWnMS/E/B1EQ5Q
+         q30Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757628419; x=1758233219;
+        d=1e100.net; s=20230601; t=1757628475; x=1758233275;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bonWt9ZGWLjOJbFQA74GLeDy739Dy64l0gYa4dZMRGE=;
-        b=cfNgimlF8A5GB5bz9Bw1dYZ6drMo3JWYlyWVZSYGlECLuX3ZXF54wthnTgKc49eJpB
-         bPLDl0dT/81ocHB3ymhBFUTpfqLNRxNFOAx4cVPaV1rwekRvT1b9igFpP6Y2lb8amo5v
-         zLkUxkI5t7uaQ3fWcT+qEfGi453PRYFA8KS/1LKFKeiZ2Dveewfhtz7/hXyI7gZ0ysgo
-         AkFzWUqOU42jQNhFVIXgi9ABctuubPvp3apQiuh2N3cJ9ENT4wS+gJdGqEXsSP1v1FDj
-         fcIvtAVx3cxDTGts4SfapaulVQR6c8TY4TgHuZ2K+uFAX2suBUx+czMpmU+1dciiup4u
-         51Xw==
-X-Forwarded-Encrypted: i=1; AJvYcCV143yRwx8Oy37SDaWl2edtLYLzKYTnY/aOP4/fkFyfccUCLj+bk92skIZZZqWFkt6+Wrk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6SJfbyYiMN+ovV3qhfe5OlmLkWI9v/OqQsTWIdA/ito9sM8ik
-	FdGJE3dc4E21GaybbkkX0FRnye85fx/+10Rrnm2rvKup3t8PmHAMbDh+
-X-Gm-Gg: ASbGncuW7E1ujCboBuSBQUWDVBSL9jzuuBfZkZ/Flcdw5rI7WzSyB8mXFPmqCiJWvRL
-	1OwLD9twGzc1OmzuwCZi3ii+U0Ez/XEw5hqhGL0mtmMQNiRUM4Sbkq4NVkpodgyELtpUNxKjaQM
-	CzX1OAfvVSir3+tvw6Ht3Vt44CMx8bm0u7pkgauOT77sm7vrEruXV28k9JrHvxqCkTExmFFqfQX
-	y67dMc1D5N8JKGMcuoBIwL4joUyApFK2aPsX3RbcQmrmIsUnFCHRYXxvcIwISdxSduss/KncrXK
-	2CSt8iZBkJPPnx5Dri1vvNXOryg+BzOsD9C7qberj6m23HCL2BKXT1yM5o0R7MkPh69SMqF8azu
-	0BzIuo9cKVh4CxYzk+baBFFSIrOB5xQ==
-X-Google-Smtp-Source: AGHT+IFdY15i8F6EfNnCGUseItDeh0p6MR37I8aTzP+cpxUS/SuvO1rf0YfM/xLlIwhuq2caGPq/8g==
-X-Received: by 2002:a17:90b:4a8e:b0:32b:94a2:b0d6 with SMTP id 98e67ed59e1d1-32de4e7d0d1mr715598a91.3.1757628418576;
-        Thu, 11 Sep 2025 15:06:58 -0700 (PDT)
+        bh=PIzLX4YwMmt2w1/Or//9q2o4ZqfSWElSTB34sVpm3Zk=;
+        b=OMKw5QFmK51b6fpBlv/SMhxQtD7uIZMey21h3o5UuWaUU8dlfP/fCYn/Z0s/I4xA+g
+         S+/4Q8oYNIc9tQcnUj1XAMiHkqeQyMGHy5uToYAkktLb3VBivgYE/2OhGEK4mSpWSjd4
+         rQtR3q0EfPnie5xWYA+pp2npv9y0M5MropR/G7c0o+YAmZfdFaWNu/MPLptOV4jx3oyb
+         FbXj5LvKrPR3UwZ4z5tNx/NzP6ALJJOL14BSxUdTcR3tQdk0E9ZopG5QPtV/GQRJeBfE
+         2N1O1kqlg7COyoQOx9m1vdRbvfP6jNcf7GvPdh4IxEutiCqu3see8C2/KsnbPKtU3P5L
+         I6Ow==
+X-Forwarded-Encrypted: i=1; AJvYcCWejLTi2c9gJk9+M1226h6i6I4TQtM6PaxpZenaW2+6giFWW9Dy1q29JnfaGtHASel0W3E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzlZu3H/6yQ2BqJebXNQA4bSXngs2gf5cQJunCf3pC93gu9CZBq
+	bYqJEvb8hyetRj3v+IZnxeT/iX5o57tsNUrDCkQ2BCgi441XKgBYd/hO
+X-Gm-Gg: ASbGncuKRvcvbCHsbCvP0S3e5G9mEEAJfHLDPQCWhCD1OwCkIzyd0T13HpI2uOvH24X
+	TdAuUjkn2UvMt2kWL5ShBQBqQrt/cd0rTpex19jXl67hx6X/Q0KXDfJBnIzV+GhStfV3rnkggqK
+	/V45ITVWao3y3dtbS5558M9lK9I4U9IiqgqcH5ZdK6ocx4aqVJtJfHq5gdl1hOjTkHz30Zb3m9/
+	PeARKt9yejDHB92AWBzL4Yvylpw0HhJQrOYL9SkFpyx/uzXD3r+tRWv3iuGAPqGk7+rx1C6fbin
+	8U7DLIpUeH5cAbyizXMaMJ7URkt4+lOqudvzNU30irh0E7cyNAD4qxye031PNBLeEdjmgje1cE8
+	3+J8M6g5plQFwX4dj898=
+X-Google-Smtp-Source: AGHT+IGfIKtuAcKICp7ZxJp8lOEaeeLF1BaJMcTC3R/RXVkYiy5e+/ccc4815OulQS5TGLefpo1+Zw==
+X-Received: by 2002:a05:6a20:3c8f:b0:248:7a71:c25 with SMTP id adf61e73a8af0-2602c71ab31mr890725637.50.1757628474841;
+        Thu, 11 Sep 2025 15:07:54 -0700 (PDT)
 Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dd63268dcsm3804654a91.26.2025.09.11.15.06.57
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77607a69a8csm3148324b3a.44.2025.09.11.15.07.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Sep 2025 15:06:58 -0700 (PDT)
-Message-ID: <5f0ef19a7961a6f703ea6e035ca2239865227abc.camel@gmail.com>
-Subject: Re: [syzbot ci] Re: bpf: replace path-sensitive with
- path-insensitive live stack analysis
+        Thu, 11 Sep 2025 15:07:54 -0700 (PDT)
+Message-ID: <6fd0e1fdf651f0728d1daf4fad3d6e4d4c11d221.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 09/10] bpf: disable and remove registers
+ chain based liveness
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: syzbot ci <syzbot+ci8e503a0d4aea89ba@syzkaller.appspotmail.com>,  Andrii
- Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf
- <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Kernel Team
- <kernel-team@fb.com>, Martin KaFai Lau	 <martin.lau@linux.dev>, Yonghong
- Song <yonghong.song@linux.dev>, 	syzbot@lists.linux.dev, syzkaller-bugs
- <syzkaller-bugs@googlegroups.com>
-Date: Thu, 11 Sep 2025 15:06:55 -0700
-In-Reply-To: <CAADnVQKy-M2vZHaJKD1KJw9kqtL+8Ddn7NYcQTQfG4izE82FkA@mail.gmail.com>
-References: <68c272e7.050a0220.2ff435.00f3.GAE@google.com>
-	 <03440441db6f719e8576cafe0318aa9994621cab.camel@gmail.com>
-	 <CAADnVQKy-M2vZHaJKD1KJw9kqtL+8Ddn7NYcQTQfG4izE82FkA@mail.gmail.com>
+Cc: kernel test robot <lkp@intel.com>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ clang-built-linux <llvm@lists.linux.dev>, 	oe-kbuild-all@lists.linux.dev,
+ Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, Yonghong Song	
+ <yonghong.song@linux.dev>
+Date: Thu, 11 Sep 2025 15:07:51 -0700
+In-Reply-To: <CAADnVQKGwghC=+V8u0tSPdkJ1f4usY5LeYUpxnJno=3xW8tYGg@mail.gmail.com>
+References: <20250911010437.2779173-10-eddyz87@gmail.com>
+	 <202509112112.wkWw6wJW-lkp@intel.com>
+	 <c846a153010e40a52e98b8abe9db69f7d4cadd58.camel@gmail.com>
+	 <CAADnVQKGwghC=+V8u0tSPdkJ1f4usY5LeYUpxnJno=3xW8tYGg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -99,87 +100,32 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Thu, 2025-09-11 at 14:58 -0700, Alexei Starovoitov wrote:
-> On Thu, Sep 11, 2025 at 2:09=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >=20
-> > On Wed, 2025-09-10 at 23:57 -0700, syzbot ci wrote:
-> > > syzbot ci has tested the following series
-> > >=20
-> > > [v1] bpf: replace path-sensitive with path-insensitive live stack ana=
-lysis
-> > > https://lore.kernel.org/all/20250911010437.2779173-1-eddyz87@gmail.co=
-m
-> > > * [PATCH bpf-next v1 01/10] bpf: bpf_verifier_state->cleaned flag ins=
-tead of REG_LIVE_DONE
-> > > * [PATCH bpf-next v1 02/10] bpf: use compute_live_registers() info in=
- clean_func_state
-> > > * [PATCH bpf-next v1 03/10] bpf: remove redundant REG_LIVE_READ check=
- in stacksafe()
-> > > * [PATCH bpf-next v1 04/10] bpf: declare a few utility functions as i=
-nternal api
-> > > * [PATCH bpf-next v1 05/10] bpf: compute instructions postorder per s=
-ubprogram
-> > > * [PATCH bpf-next v1 06/10] bpf: callchain sensitive stack liveness t=
-racking using CFG
-> > > * [PATCH bpf-next v1 07/10] bpf: enable callchain sensitive stack liv=
-eness tracking
-> > > * [PATCH bpf-next v1 08/10] bpf: signal error if old liveness is more=
- conservative than new
-> > > * [PATCH bpf-next v1 09/10] bpf: disable and remove registers chain b=
-ased liveness
-> > > * [PATCH bpf-next v1 10/10] bpf: table based bpf_insn_successors()
-> > >=20
-> > > and found the following issue:
-> > > KASAN: slab-out-of-bounds Write in compute_postorder
-> > >=20
-> > > Full report is available here:
-> > > https://ci.syzbot.org/series/c42e236b-f40c-4d72-8ae7-da4e21c37e17
-> > >=20
-> > > ***
-> > >=20
-> > > KASAN: slab-out-of-bounds Write in compute_postorder
-> > >=20
-> > > tree:      bpf-next
-> > > URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/b=
-pf/bpf-next.git
-> > > base:      e12873ee856ffa6f104869b8ea10c0f741606f13
-> > > arch:      amd64
-> > > compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976=
--1~exp1~20250708183702.136), Debian LLD 20.1.8
-> > > config:    https://ci.syzbot.org/builds/6d2bc952-3d65-4bcd-9a84-1207b=
-810a1b5/config
-> > > C repro:   https://ci.syzbot.org/findings/338e6ce4-7207-484f-a508-9b0=
-0b3121701/c_repro
-> > > syz repro: https://ci.syzbot.org/findings/338e6ce4-7207-484f-a508-9b0=
-0b3121701/syz_repro
-> > >=20
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > BUG: KASAN: slab-out-of-bounds in compute_postorder+0x802/0xcb0 kerne=
-l/bpf/verifier.c:17840
-> > > Write of size 4 at addr ffff88801f1d4b98 by task syz.0.17/5991
-> >=20
-> > The error is caused by the following program:
-> >=20
-> >   (e5) if r15 (null) 0xffffffff goto pc-1 <---- absence of DISCOVERED/E=
-XPLORED mark here
->=20
-> (null) ?
-
-The `code` byte is 0xe5, BPF_OP(0xe5) =3D=3D 0xe0, which is an invalid
-opcode.  But opcodes are verified after check_cfg()/compute_postorder().
-
-> Is it jset again? but insn_successors() handles it already.
-> Or pc-1 infinite loop caused it?
-> but we have pc-1 selftest...
-
-It's not infinite, but it causes instruction to be put twice on the
-stack array, and this array is allocated expecting max prog->len
-instructions. KASAN would only catch this error if program really
-needs to consume full stack depth during postorder construction,
-as far as I understand.
+On Thu, 2025-09-11 at 15:00 -0700, Alexei Starovoitov wrote:
 
 [...]
+
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -19297,9 +19297,12 @@ static int is_state_visited(struct bpf_verifie=
+r_env *env, int insn_idx)
+> >                          * the precision needs to be propagated back in
+> >                          * the current state.
+> >                          */
+> > -                       if (is_jmp_point(env, env->insn_idx))
+> > -                               err =3D err ? : push_jmp_history(env, c=
+ur, 0, 0);
+> > -                       err =3D err ? : propagate_precision(env, &sl->s=
+tate, cur, NULL);
+> > +                       if (is_jmp_point(env, env->insn_idx)) {
+> > +                               err =3D push_jmp_history(env, cur, 0, 0=
+);
+> > +                               if (err)
+> > +                                       return err;
+> > +                       }
+> > +                       err =3D propagate_precision(env, &sl->state, cu=
+r, NULL);
+>=20
+> hmm. init err=3D0 instead and avoid explicit if (err)return err ?
+
+Or like that, yes.
 
