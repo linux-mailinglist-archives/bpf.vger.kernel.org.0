@@ -1,131 +1,174 @@
-Return-Path: <bpf+bounces-68201-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD269B53E7C
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 00:07:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD942B53E8C
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 00:12:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 975E1565B88
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 22:07:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA2B61C881CD
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 22:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798FC342CBB;
-	Thu, 11 Sep 2025 22:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8FB534A30D;
+	Thu, 11 Sep 2025 22:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RcIqS0OJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S6Kddh4E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA8A341AC3
-	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 22:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE53D342C9D
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 22:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757628477; cv=none; b=rtoFuYCnImkZW3phozI6P/liNiP40/0aWlx096cCpkRK7nu5GGZm+N6KPd82QK6Ki1IHeS/vsKhcCarrdhpXDXjnjw4KwcBclyso9wtW72yrB3Rtv1PnvOBwr2YCq20bdbTQDNlMT66bIy9OFGkwsQeBu6F8U1E9In38C/f6gXY=
+	t=1757628714; cv=none; b=SvF3X2ia/XjJH2ftjP7PFPQRW8UjeIv732FrzDte6nxaw12WmwSGvQSJV0ZeCtQTu/kHy0RcYwoNYO3KrJaPPKC///VA9CY3bf9T9BpOUYwS+pmaRm6jOmNwpOScyuGfZHqbzwX67wNH+VCda5YoEXMlNsfrZULwQ/UPxQvK0gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757628477; c=relaxed/simple;
-	bh=jtcnfarZA6UzrvRtmWR0Evc6ldU/VzjjNKluiCCXV3g=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=giITvBeHDmbDENU4mV/CBwkMRzR2iWnOsFW/2mY/ES5PVW5u+iFzQOtBEAJRqA5jvfJxSr81hRnuAByoQy/Tl+iGkoTA2Q93JFJHIxzFxst3XM3efWNNpxsvmsT3wRrLBl8V6EBRy74NGYpEOBa+Q9QkrE04ygwKLZcN6isZRcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RcIqS0OJ; arc=none smtp.client-ip=209.85.215.172
+	s=arc-20240116; t=1757628714; c=relaxed/simple;
+	bh=/dtwzvh9M+PgQdX8hypJZzDko9hlbh7/OsgqgQkn4Go=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IGZatFtUGYffQlcXsZGui7fn+pJm4woPayAkSYdZ29TqjsCtXGpvYNeIQ82Q6PdA8YcPBqEvoGFzOuWC8QZXU0EtK400Aewd5xDIHr968QycDA7IXp6o8s4JYDcWxrJ1mfNunCB5c43F2nmY6598jjCCFcBiG1S54ziVa+PhCmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S6Kddh4E; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b54abd46747so253868a12.0
-        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 15:07:55 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-45df7dc1b98so6522815e9.1
+        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 15:11:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757628475; x=1758233275; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=PIzLX4YwMmt2w1/Or//9q2o4ZqfSWElSTB34sVpm3Zk=;
-        b=RcIqS0OJWA/zGXGSZ3opfgz7ZnjuLk1z6L5EfBZ/E0HBtVz9JGvaae1M9wfZnxImmX
-         cEvxCErQbi5oINYrixRQBEUJcmiiDjrJLw9TJXyZExXj1CTXgRvScRhZg8d81tci6b3N
-         pqi4eyEpFGzcFyQU8NOZcnA5gHcf0tniNDCRWRePX/5t3aONz2HgAjwnOLrnaOuO4M2T
-         SBVWCbkitv3NHGAY4C3icqiUdmmi+vfZ1UqCR983t1ETWj19TpUrtiBBRRzHbRlOSd1Z
-         1Qbup5ek6OCF5OErElOgFPnvdf0THJ7l94bOEIjARxfzyWNHdu7kfdcWnMS/E/B1EQ5Q
-         q30Q==
+        d=gmail.com; s=20230601; t=1757628711; x=1758233511; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tls1+yb1vfMgq/iZh3MeTOsXTDuu7dvV5qBYdDLIrks=;
+        b=S6Kddh4Ezlvw7SbSKvNmHSMDpK0XDe2Z7c1EetocW/+A5Smf2WScUc0Oxa3W68fspx
+         1pZoGEkdSngYzcNmmgzOQXLDwLwtTV1eKrDivAS8ivGka4Z6mTmhr2WKo66XS40TNX6q
+         3iJ9/DvJDIdm6+32CgIC9/03Yhz1Q4FHllZMOcPeVnJuDMeeWD23374LEEtaAhrF1HNy
+         Wj4FG8BOPDT49azTv7fnpbFokh5tijrkGGGMRc2CA+/gFQMbb7clrW82pUArjwS0M3BV
+         +XYoWhnb9dgctpVDk6Uky3Ue7HXguC7bjCiBBLQU1lsPmTzxlW5r6LBkRtSk6jFbncS+
+         2pDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757628475; x=1758233275;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PIzLX4YwMmt2w1/Or//9q2o4ZqfSWElSTB34sVpm3Zk=;
-        b=OMKw5QFmK51b6fpBlv/SMhxQtD7uIZMey21h3o5UuWaUU8dlfP/fCYn/Z0s/I4xA+g
-         S+/4Q8oYNIc9tQcnUj1XAMiHkqeQyMGHy5uToYAkktLb3VBivgYE/2OhGEK4mSpWSjd4
-         rQtR3q0EfPnie5xWYA+pp2npv9y0M5MropR/G7c0o+YAmZfdFaWNu/MPLptOV4jx3oyb
-         FbXj5LvKrPR3UwZ4z5tNx/NzP6ALJJOL14BSxUdTcR3tQdk0E9ZopG5QPtV/GQRJeBfE
-         2N1O1kqlg7COyoQOx9m1vdRbvfP6jNcf7GvPdh4IxEutiCqu3see8C2/KsnbPKtU3P5L
-         I6Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCWejLTi2c9gJk9+M1226h6i6I4TQtM6PaxpZenaW2+6giFWW9Dy1q29JnfaGtHASel0W3E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzlZu3H/6yQ2BqJebXNQA4bSXngs2gf5cQJunCf3pC93gu9CZBq
-	bYqJEvb8hyetRj3v+IZnxeT/iX5o57tsNUrDCkQ2BCgi441XKgBYd/hO
-X-Gm-Gg: ASbGncuKRvcvbCHsbCvP0S3e5G9mEEAJfHLDPQCWhCD1OwCkIzyd0T13HpI2uOvH24X
-	TdAuUjkn2UvMt2kWL5ShBQBqQrt/cd0rTpex19jXl67hx6X/Q0KXDfJBnIzV+GhStfV3rnkggqK
-	/V45ITVWao3y3dtbS5558M9lK9I4U9IiqgqcH5ZdK6ocx4aqVJtJfHq5gdl1hOjTkHz30Zb3m9/
-	PeARKt9yejDHB92AWBzL4Yvylpw0HhJQrOYL9SkFpyx/uzXD3r+tRWv3iuGAPqGk7+rx1C6fbin
-	8U7DLIpUeH5cAbyizXMaMJ7URkt4+lOqudvzNU30irh0E7cyNAD4qxye031PNBLeEdjmgje1cE8
-	3+J8M6g5plQFwX4dj898=
-X-Google-Smtp-Source: AGHT+IGfIKtuAcKICp7ZxJp8lOEaeeLF1BaJMcTC3R/RXVkYiy5e+/ccc4815OulQS5TGLefpo1+Zw==
-X-Received: by 2002:a05:6a20:3c8f:b0:248:7a71:c25 with SMTP id adf61e73a8af0-2602c71ab31mr890725637.50.1757628474841;
-        Thu, 11 Sep 2025 15:07:54 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77607a69a8csm3148324b3a.44.2025.09.11.15.07.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Sep 2025 15:07:54 -0700 (PDT)
-Message-ID: <6fd0e1fdf651f0728d1daf4fad3d6e4d4c11d221.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 09/10] bpf: disable and remove registers
- chain based liveness
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: kernel test robot <lkp@intel.com>, bpf <bpf@vger.kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- clang-built-linux <llvm@lists.linux.dev>, 	oe-kbuild-all@lists.linux.dev,
- Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, Yonghong Song	
- <yonghong.song@linux.dev>
-Date: Thu, 11 Sep 2025 15:07:51 -0700
-In-Reply-To: <CAADnVQKGwghC=+V8u0tSPdkJ1f4usY5LeYUpxnJno=3xW8tYGg@mail.gmail.com>
-References: <20250911010437.2779173-10-eddyz87@gmail.com>
-	 <202509112112.wkWw6wJW-lkp@intel.com>
-	 <c846a153010e40a52e98b8abe9db69f7d4cadd58.camel@gmail.com>
-	 <CAADnVQKGwghC=+V8u0tSPdkJ1f4usY5LeYUpxnJno=3xW8tYGg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1757628711; x=1758233511;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tls1+yb1vfMgq/iZh3MeTOsXTDuu7dvV5qBYdDLIrks=;
+        b=TmUWMLC+PTmsSSRvuAaVOBrzzeZRL0CJDrWtY1r3r4AqxUOci/0c3kygFJcFVwZO4C
+         W5rbfx4jxkOke+NuaW7wLd58zw0Dj5XpHHbnjIPIOotuoTzkXymNoHBn2/z9HnpOvaH0
+         2ZX3B4ox2WTXy3+oTdJbkzEc0K35IgIoUq/BPI93+YQRM9/S0TxHwA3Cl1qRMGuHBG3T
+         pcyXl5rjbUi4eR9f8K7OHs130DSBAJn8o75De+o65sZ1Q/AT1dIcg42QL/1oooZLqYKF
+         zmZDh6Rfil8iRz4JnRzZS4y/rVD2pWKNrv2/uZuVubHtV65CfbnRGLC33jiOHHpwzLEZ
+         LLVw==
+X-Forwarded-Encrypted: i=1; AJvYcCWFu0dYfkG97aRCqAiJOQL0iPQLLYWNdCjDp+BnJ7R71gQGIXIBTCsgYGzlG59L1F0t0NU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6cr6D6bKxlaTG7s4WVb0zxqmAQ0HAqcXtxIja3C6SyzTUpi5g
+	qADYN5UOBnzM/K620obQzpbBN7yacKDsD+M9U/73Si1k2bByuKmEoMN6mRTyOjdpqMGGHEP7JT2
+	v5N5py9mXm+ZfeNdPr6U0dULY+77fbw8=
+X-Gm-Gg: ASbGncsTtm3qz/4USRqqOLGZL9KzZxfj8a8HAcgRYXmY3qQWSyHU6y79U+1ZDA+GU3x
+	Vzc5Qt6tRteTA2puSL+uFr5D4RTotSRMpgYU7+isU6nsGQfV6NYjCO9vF+FMxKxmwoXPeITXDfn
+	USidlAWeYfQBZD5g2EhRrSY2df6yz9T3+wVmPQPO9qZkOPTnDv2X/P9VXIdroWDzpT/GzXAKtSe
+	JGvURZN5QEt1I7MW/+eTFzCwXPjJOW7cDBb5O5/vIDu0MM=
+X-Google-Smtp-Source: AGHT+IGDOzDXGaTONtyBMca5RofIcMwXveTWTnti2H6JgsJgzCzIDnWonFIjFrIoP8tZJCUM2ZghM4LjzuPaCH1mugo=
+X-Received: by 2002:a05:600c:1c0c:b0:45d:d099:873 with SMTP id
+ 5b1f17b1804b1-45f212c9668mr7139165e9.6.1757628710902; Thu, 11 Sep 2025
+ 15:11:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <68c272e7.050a0220.2ff435.00f3.GAE@google.com> <03440441db6f719e8576cafe0318aa9994621cab.camel@gmail.com>
+ <CAADnVQKy-M2vZHaJKD1KJw9kqtL+8Ddn7NYcQTQfG4izE82FkA@mail.gmail.com> <5f0ef19a7961a6f703ea6e035ca2239865227abc.camel@gmail.com>
+In-Reply-To: <5f0ef19a7961a6f703ea6e035ca2239865227abc.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 11 Sep 2025 15:11:39 -0700
+X-Gm-Features: AS18NWDxjnr9Upya1b6lQlbmMufgukF6m71ysgUMhCA8QiVyogBvm1XqAdM4WKE
+Message-ID: <CAADnVQKf2zauKO78qqt73=mZZD7-1ejm+C_zOQh7HUw9ExrjJw@mail.gmail.com>
+Subject: Re: [syzbot ci] Re: bpf: replace path-sensitive with path-insensitive
+ live stack analysis
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: syzbot ci <syzbot+ci8e503a0d4aea89ba@syzkaller.appspotmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, syzbot@lists.linux.dev, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-09-11 at 15:00 -0700, Alexei Starovoitov wrote:
+On Thu, Sep 11, 2025 at 3:06=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Thu, 2025-09-11 at 14:58 -0700, Alexei Starovoitov wrote:
+> > On Thu, Sep 11, 2025 at 2:09=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
+> > >
+> > > On Wed, 2025-09-10 at 23:57 -0700, syzbot ci wrote:
+> > > > syzbot ci has tested the following series
+> > > >
+> > > > [v1] bpf: replace path-sensitive with path-insensitive live stack a=
+nalysis
+> > > > https://lore.kernel.org/all/20250911010437.2779173-1-eddyz87@gmail.=
+com
+> > > > * [PATCH bpf-next v1 01/10] bpf: bpf_verifier_state->cleaned flag i=
+nstead of REG_LIVE_DONE
+> > > > * [PATCH bpf-next v1 02/10] bpf: use compute_live_registers() info =
+in clean_func_state
+> > > > * [PATCH bpf-next v1 03/10] bpf: remove redundant REG_LIVE_READ che=
+ck in stacksafe()
+> > > > * [PATCH bpf-next v1 04/10] bpf: declare a few utility functions as=
+ internal api
+> > > > * [PATCH bpf-next v1 05/10] bpf: compute instructions postorder per=
+ subprogram
+> > > > * [PATCH bpf-next v1 06/10] bpf: callchain sensitive stack liveness=
+ tracking using CFG
+> > > > * [PATCH bpf-next v1 07/10] bpf: enable callchain sensitive stack l=
+iveness tracking
+> > > > * [PATCH bpf-next v1 08/10] bpf: signal error if old liveness is mo=
+re conservative than new
+> > > > * [PATCH bpf-next v1 09/10] bpf: disable and remove registers chain=
+ based liveness
+> > > > * [PATCH bpf-next v1 10/10] bpf: table based bpf_insn_successors()
+> > > >
+> > > > and found the following issue:
+> > > > KASAN: slab-out-of-bounds Write in compute_postorder
+> > > >
+> > > > Full report is available here:
+> > > > https://ci.syzbot.org/series/c42e236b-f40c-4d72-8ae7-da4e21c37e17
+> > > >
+> > > > ***
+> > > >
+> > > > KASAN: slab-out-of-bounds Write in compute_postorder
+> > > >
+> > > > tree:      bpf-next
+> > > > URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git=
+/bpf/bpf-next.git
+> > > > base:      e12873ee856ffa6f104869b8ea10c0f741606f13
+> > > > arch:      amd64
+> > > > compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b79=
+76-1~exp1~20250708183702.136), Debian LLD 20.1.8
+> > > > config:    https://ci.syzbot.org/builds/6d2bc952-3d65-4bcd-9a84-120=
+7b810a1b5/config
+> > > > C repro:   https://ci.syzbot.org/findings/338e6ce4-7207-484f-a508-9=
+b00b3121701/c_repro
+> > > > syz repro: https://ci.syzbot.org/findings/338e6ce4-7207-484f-a508-9=
+b00b3121701/syz_repro
+> > > >
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > BUG: KASAN: slab-out-of-bounds in compute_postorder+0x802/0xcb0 ker=
+nel/bpf/verifier.c:17840
+> > > > Write of size 4 at addr ffff88801f1d4b98 by task syz.0.17/5991
+> > >
+> > > The error is caused by the following program:
+> > >
+> > >   (e5) if r15 (null) 0xffffffff goto pc-1 <---- absence of DISCOVERED=
+/EXPLORED mark here
+> >
+> > (null) ?
+>
+> The `code` byte is 0xe5, BPF_OP(0xe5) =3D=3D 0xe0, which is an invalid
+> opcode.  But opcodes are verified after check_cfg()/compute_postorder().
 
-[...]
-
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -19297,9 +19297,12 @@ static int is_state_visited(struct bpf_verifie=
-r_env *env, int insn_idx)
-> >                          * the precision needs to be propagated back in
-> >                          * the current state.
-> >                          */
-> > -                       if (is_jmp_point(env, env->insn_idx))
-> > -                               err =3D err ? : push_jmp_history(env, c=
-ur, 0, 0);
-> > -                       err =3D err ? : propagate_precision(env, &sl->s=
-tate, cur, NULL);
-> > +                       if (is_jmp_point(env, env->insn_idx)) {
-> > +                               err =3D push_jmp_history(env, cur, 0, 0=
-);
-> > +                               if (err)
-> > +                                       return err;
-> > +                       }
-> > +                       err =3D propagate_precision(env, &sl->state, cu=
-r, NULL);
->=20
-> hmm. init err=3D0 instead and avoid explicit if (err)return err ?
-
-Or like that, yes.
+hmm.
+resolve_pseudo_ldimm64() -> bpf_opcode_in_insntable()
+does it before check_cfg.
 
