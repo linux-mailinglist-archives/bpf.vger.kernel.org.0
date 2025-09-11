@@ -1,218 +1,219 @@
-Return-Path: <bpf+bounces-68089-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68090-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F25BB528A2
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 08:19:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E690FB5295A
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 08:58:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FDF117586A
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 06:19:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E05041C21D74
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 06:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100C12580EC;
-	Thu, 11 Sep 2025 06:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z5BDfAn8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6430267386;
+	Thu, 11 Sep 2025 06:57:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F09170826;
-	Thu, 11 Sep 2025 06:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B935266EEA
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 06:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757571555; cv=none; b=Dc8zOxPBv7sG1NDOHx7v/bpTwTSRJNlPzNcNR/8X3miEp6BpHNogdFam9YbqljhqHyIGH3GniF1uKNwtCll7VsU0B3J0+PChb6y+8pKgRKQTRCsLxuqsQC5BQPFyEchvKxXg3fAtJc1TUHqS4f88cq5Qcm/G4ev+wuAGO0bp+Tg=
+	t=1757573866; cv=none; b=a+xIAhb3glmOzCwnuUmPlVj6byVj1LvBpr9KhOrBaCUKd8yF4cpVfMddcMKkpjt53AhmzIEuul9dSvBO5qY4Pl8kpUmUHgpvn1Odgsx+VuTJ7bCvRCfhxRnRG43PMG7Ij325Mk8lCZwqA9DsqYFejhLAm+meUM37p3Ws+1seeIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757571555; c=relaxed/simple;
-	bh=dTD0cGz2Uo1jWSkN9mB1baeUSbg33GlVpDGY7z4S/EQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JfywMLpfLk6CMtL1EIKKsO2GcNgYVDxVJdszrErtxkkZqd67cGZMt+3IyoFGQvURMZ6Jb7KJk+ZyrhX79IGnhgpddnV/1H4xCTgBHdUQycOwHXESzQT1Tn5rjUtQgjoWOlDIeG/WMUtWVRXhS2EBeUM66zfEooIEZxzQA7crDLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z5BDfAn8; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3e34dbc38easo150647f8f.1;
-        Wed, 10 Sep 2025 23:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757571552; x=1758176352; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hpoq7cqtczkWR7khl7tumJVtpoP16XQx+8a/BNaWOWQ=;
-        b=Z5BDfAn8xvCQ7Ije3MCAWiJ/XGK9f0swkUFX8oM6l/5O2rwVZ+imP4jex5DRfqexEC
-         BhN4rkXgA3Q5uOhj9rmZTn7O/oDQ0QfsQw4JwdYGPkW8vOcIwkFmqwgrpRJOgvcsZSPr
-         gcyDG76F4ZwsLNuSxRFFjbdwN/F+RRkFfhvImE71WeXq5c23Q6nUBeG/p6U9GRINphio
-         ozm9rDEwI18ST3qaoMGHcCLDbPxRYQXHySY7EddXJFaHAVHKS5ZKpW5yHq0jo59N2KoM
-         8un8hBX42jypto2QK7dxyBaNkIZBnZFvBvOSpEfuWL3QKOnls3AOqfJH5uQhoW5SYhf9
-         llww==
+	s=arc-20240116; t=1757573866; c=relaxed/simple;
+	bh=VVm23+2rDOtMhhjpZaytq/wtRhRsAUKiq2SaAgIHKtI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=penKgK/wIVwkw9xzWNSROhIwzacufqsRskju5ls3fRX1dgPbKjeOs5e0p1Gn0Uv1+AwLmlLxCHZxjUltmvcpOKRHDG3sSseyi73jFWVl695MCg2k4eYmgE8MMgmxuNkFJr8Z1sUnNvcKYttJJNouh0zuqDz91nuQD1pJmvcW8tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-41a85a4cd4eso5446695ab.1
+        for <bpf@vger.kernel.org>; Wed, 10 Sep 2025 23:57:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757571552; x=1758176352;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1757573864; x=1758178664;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hpoq7cqtczkWR7khl7tumJVtpoP16XQx+8a/BNaWOWQ=;
-        b=GBcgkPN5xG+2UG9zqH59K5Um6l0gIN5X03PaE+mhz2B4Is3AYmUlLNDHB8LiLaC+l5
-         3csbf2xtNj7T26sL7+fmpibPV5lEk/GHUza3+KJ7gtVk4+2JapNg/OGHiqn0d0OO5fkE
-         aq9VxEcMZtyqYXBnoogiKkvn7cvRcx7HPOyaCEitGlUL8+nc7atJy3c8MuC21osCa5Lg
-         z5vqT5tGmPxnAjHUGCBMFhk89OdMMVS8Z2/OX0TCvsmzG0nu9Zy88+iOjiq98gVEcGef
-         40lSfjbRUgx1YOLHixw1h02Te463hAMd4UQ/pDrhRp5BgR66AyTyI9C7goOt9YjVf7/v
-         VaAg==
-X-Forwarded-Encrypted: i=1; AJvYcCW7SS3mreQpXxpL4Z+XMmXK4MO3hCalzzfZMEqD/Vm3q9xpIo89oPleW6/2hU2m9hnOMtu47lw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyaHAOtA5HqbMYnujVkdnjST4iSX6Fpn54w3D97quUv6DS318wX
-	KFG6OVYl4mtwL4o6bSaLnId0eelHJlsZyHsLki75Fss+8shuo6Ogz5KR
-X-Gm-Gg: ASbGncvvxvC5OBnJy1ZVV6uHolGkSDRYRicKsNEcaYjBoOZ3MnY6B08ToTXHQuiH14c
-	C7S5bB+yi19etqeRUEDO13XYlhhCNPhzXKGUfEZb61MoQj7R4RgNQZb7ouuePo53UfqOnHjULie
-	ddFtqKltlb9CjLwuGF3lIV24pLbc2pZy8kOIUVRZ9MDmDjmHMKqgIkbuwwIdIW7uBwHVhz1EvC4
-	lz8Oxuc478Eal0v0b2R7Zncov0VP22z5rVhHIXPyvr5XevfZ+X8gfucMLawJ4OB9b3380XmMvqv
-	lUfl/o8VkXxqro1X8n1oE3UMdZzbhJaUat0ggh99tk6wrWi58+/2Sbqq4WRcuPY82x1OQuHawS/
-	CYrmo1+JJ48zajVuq1fSoN+kYhu8t0Lj63EqfU15TKE6JNA==
-X-Google-Smtp-Source: AGHT+IG5zymW4WVcmYoVjDy8SO33HJRxu7OFm/LAnNIw4AuNNwnvNZHL5mtK6ZyU7Ys+pPZDX1jxyw==
-X-Received: by 2002:a05:6000:4021:b0:3cd:e63a:cfd5 with SMTP id ffacd0b85a97d-3e64ce4fd38mr17882871f8f.56.1757571551605;
-        Wed, 10 Sep 2025 23:19:11 -0700 (PDT)
-Received: from [10.221.203.56] ([165.85.126.46])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45e037b91e6sm10306515e9.14.2025.09.10.23.19.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Sep 2025 23:19:11 -0700 (PDT)
-Message-ID: <5b41324c-34d2-4b19-9713-43e118e5629c@gmail.com>
-Date: Thu, 11 Sep 2025 09:19:11 +0300
+        bh=LG9M6En5TuPR6QTQMmZQf2npH+rIu+hDoGgmYdW26cQ=;
+        b=gJSfSYdCZAbL8fWUfAl829tPtDdBlH4+KhILHpFENvY8rHQVqM9KE826NIRRHnLXTS
+         HquKENPBXzCsQH+gmwSEV+4IZs319qgYDfTJo9cN4fgEvkEI81t26kkVeR9nEs++eVo+
+         uycS9pdXON5uYXH4udGesLnY/lXz0uGAfFfJDbbCipErb6ippBpv3gtgchG0Yc8ghdUu
+         ja/CBSElKBnGrOXNiXChDzfAHKC/xRpkOi1Ne2C287LUNj/zyAL/9QHDZjKqifzmwA4p
+         62LcJo/8mjy88e22+G516Vaxyb8r/cZeajNDX5MoYGW93PNAKXNHXzY+WRjTvPsdRQ2V
+         wNxw==
+X-Forwarded-Encrypted: i=1; AJvYcCWIgcpH+DRQjyKu3luovjGJYoYFDjL+Y+4GczZoYkRyFNN/fd+24wnHk/Z3kjmut2UMIio=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzG5Z1KBRdktbLFvaJQ/TcmXFZzCWtKgl/7qBuu/6cvlbTpbuD
+	0StjRg/MQpiDvpTXFMudOPyBg0OgmL8ObMBpV0lXdRit3TC19MDXu+Mh2tbmlwrlEkKsWYkKmyi
+	rdorWu+BaytcZvhH0cj/g0PoSpFSW5mbSjWiJXozpuJ3EbupIcUEcwWyGKhg=
+X-Google-Smtp-Source: AGHT+IEAh+dieFc2sAs3qZxfQ4/X+h9Wm1acKeoQkXQN5HiJnopvctmEOrniIB21A50C9emxROLD0QbzsAnPTekUjZL+KVUai9Jm
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v1 2/2] net/mlx5e: RX, Fix generating skb from
- non-linear xdp_buff for striding RQ
-To: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, kuba@kernel.org,
- martin.lau@kernel.org, noren@nvidia.com, dtatulea@nvidia.com,
- saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, cpaasch@openai.com,
- kernel-team@meta.com
-References: <20250910034103.650342-1-ameryhung@gmail.com>
- <20250910034103.650342-3-ameryhung@gmail.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250910034103.650342-3-ameryhung@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:190d:b0:412:c994:db15 with SMTP id
+ e9e14a558f8ab-412c994dcd6mr127428115ab.14.1757573863748; Wed, 10 Sep 2025
+ 23:57:43 -0700 (PDT)
+Date: Wed, 10 Sep 2025 23:57:43 -0700
+In-Reply-To: <20250911010437.2779173-1-eddyz87@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68c272e7.050a0220.2ff435.00f3.GAE@google.com>
+Subject: [syzbot ci] Re: bpf: replace path-sensitive with path-insensitive
+ live stack analysis
+From: syzbot ci <syzbot+ci8e503a0d4aea89ba@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, kernel-team@fb.com, 
+	martin.lau@linux.dev, yonghong.song@linux.dev
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+syzbot ci has tested the following series
+
+[v1] bpf: replace path-sensitive with path-insensitive live stack analysis
+https://lore.kernel.org/all/20250911010437.2779173-1-eddyz87@gmail.com
+* [PATCH bpf-next v1 01/10] bpf: bpf_verifier_state->cleaned flag instead of REG_LIVE_DONE
+* [PATCH bpf-next v1 02/10] bpf: use compute_live_registers() info in clean_func_state
+* [PATCH bpf-next v1 03/10] bpf: remove redundant REG_LIVE_READ check in stacksafe()
+* [PATCH bpf-next v1 04/10] bpf: declare a few utility functions as internal api
+* [PATCH bpf-next v1 05/10] bpf: compute instructions postorder per subprogram
+* [PATCH bpf-next v1 06/10] bpf: callchain sensitive stack liveness tracking using CFG
+* [PATCH bpf-next v1 07/10] bpf: enable callchain sensitive stack liveness tracking
+* [PATCH bpf-next v1 08/10] bpf: signal error if old liveness is more conservative than new
+* [PATCH bpf-next v1 09/10] bpf: disable and remove registers chain based liveness
+* [PATCH bpf-next v1 10/10] bpf: table based bpf_insn_successors()
+
+and found the following issue:
+KASAN: slab-out-of-bounds Write in compute_postorder
+
+Full report is available here:
+https://ci.syzbot.org/series/c42e236b-f40c-4d72-8ae7-da4e21c37e17
+
+***
+
+KASAN: slab-out-of-bounds Write in compute_postorder
+
+tree:      bpf-next
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf-next.git
+base:      e12873ee856ffa6f104869b8ea10c0f741606f13
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/6d2bc952-3d65-4bcd-9a84-1207b810a1b5/config
+C repro:   https://ci.syzbot.org/findings/338e6ce4-7207-484f-a508-9b00b3121701/c_repro
+syz repro: https://ci.syzbot.org/findings/338e6ce4-7207-484f-a508-9b00b3121701/syz_repro
+
+==================================================================
+BUG: KASAN: slab-out-of-bounds in compute_postorder+0x802/0xcb0 kernel/bpf/verifier.c:17840
+Write of size 4 at addr ffff88801f1d4b98 by task syz.0.17/5991
+
+CPU: 0 UID: 0 PID: 5991 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:378 [inline]
+ print_report+0xca/0x240 mm/kasan/report.c:482
+ kasan_report+0x118/0x150 mm/kasan/report.c:595
+ compute_postorder+0x802/0xcb0 kernel/bpf/verifier.c:17840
+ bpf_check+0x1f90/0x1d440 kernel/bpf/verifier.c:24437
+ bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2979
+ __sys_bpf+0x528/0x870 kernel/bpf/syscall.c:6029
+ __do_sys_bpf kernel/bpf/syscall.c:6139 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6137 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6137
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f366058eba9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffef8486b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f36607d5fa0 RCX: 00007f366058eba9
+RDX: 0000000000000070 RSI: 0000200000000440 RDI: 0000000000000005
+RBP: 00007f3660611e19 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f36607d5fa0 R14: 00007f36607d5fa0 R15: 0000000000000003
+ </TASK>
+
+Allocated by task 5991:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:388 [inline]
+ __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:405
+ kasan_kmalloc include/linux/kasan.h:260 [inline]
+ __do_kmalloc_node mm/slub.c:4365 [inline]
+ __kvmalloc_node_noprof+0x30d/0x5f0 mm/slub.c:5052
+ kvmalloc_array_node_noprof include/linux/slab.h:1065 [inline]
+ compute_postorder+0xd6/0xcb0 kernel/bpf/verifier.c:17823
+ bpf_check+0x1f90/0x1d440 kernel/bpf/verifier.c:24437
+ bpf_prog_load+0x1318/0x1930 kernel/bpf/syscall.c:2979
+ __sys_bpf+0x528/0x870 kernel/bpf/syscall.c:6029
+ __do_sys_bpf kernel/bpf/syscall.c:6139 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6137 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6137
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff88801f1d4b80
+ which belongs to the cache kmalloc-cg-32 of size 32
+The buggy address is located 0 bytes to the right of
+ allocated 24-byte region [ffff88801f1d4b80, ffff88801f1d4b98)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff88801f1d4e40 pfn:0x1f1d4
+memcg:ffff888026bbb801
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 00fff00000000000 ffff88801a449b40 dead000000000100 dead000000000122
+raw: ffff88801f1d4e40 000000008040003f 00000000f5000000 ffff888026bbb801
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x52cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP), pid 532, tgid 532 (kworker/u10:0), ts 5351847364, free_ts 0
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x240/0x2a0 mm/page_alloc.c:1851
+ prep_new_page mm/page_alloc.c:1859 [inline]
+ get_page_from_freelist+0x21e4/0x22c0 mm/page_alloc.c:3858
+ __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:5148
+ alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2416
+ alloc_slab_page mm/slub.c:2487 [inline]
+ allocate_slab+0x8a/0x370 mm/slub.c:2655
+ new_slab mm/slub.c:2709 [inline]
+ ___slab_alloc+0xbeb/0x1410 mm/slub.c:3891
+ __slab_alloc mm/slub.c:3981 [inline]
+ __slab_alloc_node mm/slub.c:4056 [inline]
+ slab_alloc_node mm/slub.c:4217 [inline]
+ __do_kmalloc_node mm/slub.c:4364 [inline]
+ __kmalloc_noprof+0x305/0x4f0 mm/slub.c:4377
+ kmalloc_noprof include/linux/slab.h:909 [inline]
+ kzalloc_noprof include/linux/slab.h:1039 [inline]
+ lsm_blob_alloc security/security.c:684 [inline]
+ lsm_cred_alloc security/security.c:701 [inline]
+ security_prepare_creds+0x52/0x390 security/security.c:3271
+ prepare_kernel_cred+0x2ee/0x500 kernel/cred.c:617
+ call_usermodehelper_exec_async+0xd0/0x360 kernel/umh.c:88
+ ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff88801f1d4a80: fa fb fb fb fc fc fc fc 00 00 00 fc fc fc fc fc
+ ffff88801f1d4b00: 00 00 00 fc fc fc fc fc fa fb fb fb fc fc fc fc
+>ffff88801f1d4b80: 00 00 00 fc fc fc fc fc fa fb fb fb fc fc fc fc
+                            ^
+ ffff88801f1d4c00: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+ ffff88801f1d4c80: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+==================================================================
 
 
+***
 
-On 10/09/2025 6:41, Amery Hung wrote:
-> XDP programs can change the layout of an xdp_buff through
-> bpf_xdp_adjust_tail() and bpf_xdp_adjust_head(). Therefore, the driver
-> cannot assume the size of the linear data area nor fragments. Fix the
-> bug in mlx5 by generating skb according to xdp_buff after XDP programs
-> run.
-> 
-> Currently, when handling multi-buf XDP, the mlx5 driver assumes the
-> layout of an xdp_buff to be unchanged. That is, the linear data area
-> continues to be empty and fragments remain the same. This may cause
-> the driver to generate erroneous skb or triggering a kernel
-> warning. When an XDP program added linear data through
-> bpf_xdp_adjust_head(), the linear data will be ignored as
-> mlx5e_build_linear_skb() builds an skb without linear data and then
-> pull data from fragments to fill the linear data area. When an XDP
-> program has shrunk the non-linear data through bpf_xdp_adjust_tail(),
-> the delta passed to __pskb_pull_tail() may exceed the actual nonlinear
-> data size and trigger the BUG_ON in it.
-> 
-> To fix the issue, first record the original number of fragments. If the
-> number of fragments changes after the XDP program runs, rewind the end
-> fragment pointer by the difference and recalculate the truesize. Then,
-> build the skb with the linear data area matching the xdp_buff. Finally,
-> only pull data in if there is non-linear data and fill the linear part
-> up to 256 bytes.
-> 
-> Fixes: f52ac7028bec ("net/mlx5e: RX, Add XDP multi-buffer support in Striding RQ")
-> Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> ---
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
 
-Thanks for your patch!
-
->   .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 21 ++++++++++++++++---
->   1 file changed, 18 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> index 1d3eacfd0325..fc881d8d2d21 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> @@ -2013,6 +2013,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->   	u32 byte_cnt       = cqe_bcnt;
->   	struct skb_shared_info *sinfo;
->   	unsigned int truesize = 0;
-> +	u32 pg_consumed_bytes;
->   	struct bpf_prog *prog;
->   	struct sk_buff *skb;
->   	u32 linear_frame_sz;
-> @@ -2066,7 +2067,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->   
->   	while (byte_cnt) {
->   		/* Non-linear mode, hence non-XSK, which always uses PAGE_SIZE. */
-> -		u32 pg_consumed_bytes = min_t(u32, PAGE_SIZE - frag_offset, byte_cnt);
-> +		pg_consumed_bytes = min_t(u32, PAGE_SIZE - frag_offset, byte_cnt);
->   
->   		if (test_bit(MLX5E_RQ_STATE_SHAMPO, &rq->state))
->   			truesize += pg_consumed_bytes;
-> @@ -2082,10 +2083,15 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->   	}
->   
->   	if (prog) {
-> +		u8 nr_frags_free, old_nr_frags = sinfo->nr_frags;
-> +		u32 len;
-> +
->   		if (mlx5e_xdp_handle(rq, prog, mxbuf)) {
->   			if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
->   				struct mlx5e_frag_page *pfp;
->   
-> +				frag_page -= old_nr_frags - sinfo->nr_frags;
-> +
->   				for (pfp = head_page; pfp < frag_page; pfp++)
->   					pfp->frags++;
->   
-> @@ -2096,9 +2102,16 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->   			return NULL; /* page/packet was consumed by XDP */
->   		}
->   
-> +		nr_frags_free = old_nr_frags - sinfo->nr_frags;
-> +		frag_page -= nr_frags_free;
-> +		truesize -= ALIGN(pg_consumed_bytes, BIT(rq->mpwqe.log_stride_sz)) +
-> +			    (nr_frags_free - 1) * ALIGN(PAGE_SIZE, BIT(rq->mpwqe.log_stride_sz));
-
-This is a very complicated calculation resulting zero in the common case 
-nr_frags_free == 0.
-Maybe better do it conditionally under if (nr_frags_free), together with 
-'frag_page -= nr_frags_free;' ?
-
-We never use stride_size > PAGE_SIZE so the second alignment here is 
-redundant.
-
-Also, what about truesize changes due to adjust header, i.e. when we 
-extend the header into the linear part.
-I think 'len' calculated below is missing from truesize.
-> +
-> +		len = mxbuf->xdp.data_end - mxbuf->xdp.data;
-> +
->   		skb = mlx5e_build_linear_skb(
->   			rq, mxbuf->xdp.data_hard_start, linear_frame_sz,
-> -			mxbuf->xdp.data - mxbuf->xdp.data_hard_start, 0,
-> +			mxbuf->xdp.data - mxbuf->xdp.data_hard_start, len,
->   			mxbuf->xdp.data - mxbuf->xdp.data_meta);
->   		if (unlikely(!skb)) {
->   			mlx5e_page_release_fragmented(rq->page_pool,
-> @@ -2123,8 +2136,10 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
->   			do
->   				pagep->frags++;
->   			while (++pagep < frag_page);
-> +
-> +			headlen = min_t(u16, MLX5E_RX_MAX_HEAD - len, skb->data_len);
-> +			__pskb_pull_tail(skb, headlen);
->   		}
-> -		__pskb_pull_tail(skb, headlen);
->   	} else {
->   		dma_addr_t addr;
->   
-
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
