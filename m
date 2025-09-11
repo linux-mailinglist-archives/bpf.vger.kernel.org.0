@@ -1,155 +1,134 @@
-Return-Path: <bpf+bounces-68101-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68102-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F667B52EC1
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 12:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B671B52EFA
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 12:52:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEB4B188E510
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 10:40:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 831C01BC7CBA
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 10:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8350C3101B6;
-	Thu, 11 Sep 2025 10:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40FD430FF13;
+	Thu, 11 Sep 2025 10:52:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G/vy/uXH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nALQ5mM8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4085F30C347
-	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 10:39:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F863347D0;
+	Thu, 11 Sep 2025 10:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757587170; cv=none; b=c3Gn0w5Ak3u8cA5HpI168QYAI4iFBa1D2yx2ia0mRJzAQQVkysnT3cOfDbmJ9xKbYZa0msApdJBamILj6J0iRyW4yfQWp+DTSIB/j98IhVWem+4jb7Nb9o3v8w2PtSqi4tgwviEIA7BLG9O9kw34qXsfcO1AprJvYkIVUGpBmvM=
+	t=1757587921; cv=none; b=O4e45xYhDzCU9EUkyv70YZBFyjAVr/I0cZ3UOv4FW2m2+xk4I+UkMRWDBx2FgSP/IIL7wdHGZTT3/DidN/uDzweu07N/mceQG98lvZ4GMmlhilAyVpnYBhUenW3RCUnL4Lt3esoJFUhC1da8Rt5v8np6Tj76tYwNg0IvZ1Wj0vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757587170; c=relaxed/simple;
-	bh=i3K4Fxf7hfpTZXUakuir9VBvWZAWa30Q3SjDrMBWzpw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kMZe5icW/4oU6jvJdJeL/Flq/bAVYbpHNGLNrlwK1pTemZsDRKOmKl64paZjxA9jveiJAONWf2M7NfbQPaYuRaokZoYWxWCOIjUmbiVBTLXi19W1PKaehYv+h7ZtcGQf3v9rbO9CsXoJTqqCzP+kDT2ye/RHfGx+FQEWnwg1iqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G/vy/uXH; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-80a6937c99bso51730285a.2
-        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 03:39:28 -0700 (PDT)
+	s=arc-20240116; t=1757587921; c=relaxed/simple;
+	bh=XDfnGzQvgAsoBlF/K94mzdMnT8O5TmQEWbVoEbnzsy0=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=l9P5Xhm/0Blxf1RJooxiDn5K7ksYrC6hSQopu4atPPjT7snwYFu5rWzwR3x0MmkViApwi2UJJQxQqmTJUKsmzBsoGYbBe3WIpZz9wusOV69YR03QrAenRhiXW86lBGW1EnU5yzu0gjZ8iiuQKiol4xhGFqTma3srT/4G8mO0YPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nALQ5mM8; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-336cdca667aso4662561fa.0;
+        Thu, 11 Sep 2025 03:51:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757587167; x=1758191967; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n/5NZRakXMPSefxzoUTWOFF7jXrb0Qk67PQkNmcLMfM=;
-        b=G/vy/uXH4hHaInZrUtcu+gbfF2UZyccQx4XnA3wTYLPdasbltn7qXFSemjaE8ktMAa
-         TeWwTnYowdTL3bHAjQ8IlQJmJl8R+4HKZgVnQNCl4VBz0j7FAdZtNkMYOTFZyagPJmII
-         mxzM4xeJ/OA8vH4kq6taAJaboA08DoDCA09qxRFP4/WpS/ibDfDYKtrC1MZLWVeTLajV
-         1YMRyBRe1TIUYzz3mReZALnmrUdiWDCX/zcZbK87z2J/exJDSOGk9ouZSux9etq21L9K
-         pwKow4u2vwEgcuB697KarH8VZcWnv8LVW0WqRkYv4W0wSkUKGd3dvQPC0m1NSHNZdETo
-         JY8w==
+        d=gmail.com; s=20230601; t=1757587918; x=1758192718; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0ixdR1P5S055FmVwQTh6Cai1jKWFGKTiPJeK5lzYK6I=;
+        b=nALQ5mM83NVCEyn4ACzXNXDxXIwmwYmOzWFDKr1MiRsM5qdVlblMXeBTCxOimDdu7J
+         sYCHa80S+9fqxMUJ9d5FwkhWfLmv1j26CsNhxEGnmlFw+P1jf+/lcjIZleMB8mnpzUVp
+         uIUbPKskBniKB+Iz7AULLLmCPivW0k9Hd4mqkwmLiAO+0Kfu9IHFz3wLq+gqY7pukwPe
+         LW9OaJr/4RivNDbqLKsFbeDk5USnZYz6dvO8HG7spYfdhuD8cXkuud2DZVrC3yPrljHd
+         jreD8xEcvQOO40v04Kdxau+lAQWef2l2DEBR7ZIP1kwIMnl0t2IOhlxlSF+TlxUit/ju
+         4AiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757587167; x=1758191967;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n/5NZRakXMPSefxzoUTWOFF7jXrb0Qk67PQkNmcLMfM=;
-        b=qlbEG+3EIGXIj8OyWm3lS/fnmxP81WZG7T6OwgH84hisQd6saXdDuami5/dN/sQuHI
-         llEjHZ1gtkA9J3EOZtAtQCTSRTp9XB2GellEx1u7VeINKwaJ/ZySXx6VXlK/T6TMER5i
-         Qdr2KHtE4hdq5+SNJ7ZVkr1XHNmquzhaYlLwmsd6dp58IIJ46fL6X/UGI99GjpdzH9zp
-         nGs1HS/BPK7+gDaqWpo/OjDeRCBEoX49J7XBdHZUEf+5B1q6JBxNlrinbImrpDFnKGCn
-         16huYsLCDwBKUF55Tc9C3Vdy01xu1vt15YDgVTwfYIFihFBU4twTYdTu0yp5k6eXSCBg
-         rBwg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4R6sZq7ymGs7WnE6FOy7gYKkOMSyiIfiWvIZjESczH5M9dzWQX+qK6P3dAOwDO+edGkQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzP5A5ozgrZMCWCDMoUpDgrPOJ3+sTjK1r6ZYDy1Mcu4tCSTZYr
-	n4JxsWiy/OmH9mZCbuPYDnlQA04xGnsLIXzsNFZ7sq2NVAgZZkMLVtPeuERapq5xamlFCmtApm/
-	sFn0kHz/YUOLSzenS0SCkt/eFtlCHKlMenuOMeuZV
-X-Gm-Gg: ASbGncthfBzWjjko5dJL0ZLA2qvFbPutOG8K+nYct3pA2ZsZKyrLaZNJY6KLDBFVu3D
-	9gH0udIjT/5we702KwpDVdHxUT76FwRncOK+uVjerT6f64wqkkTO6hsVPual5dIwgx8W7LZ37Xp
-	2AH0m26UmwnO5kflCpQGTpzEQNy0znz3DWOAAfMWdfuuEhA9sTfUegOf9Yn2ypZrl5wolGOyAuG
-	qYTT9m/dYOXtKmXpCxzo3yC
-X-Google-Smtp-Source: AGHT+IF13RHUxixDCnJaQJD5HYKG53fEjs1UREQfhmAQiVkkh3Z8KzpXFO+znykAoH6YQe4Wu+wBZD5IVHQdxauw0gI=
-X-Received: by 2002:a05:620a:191a:b0:812:693c:bce4 with SMTP id
- af79cd13be357-813c596ff46mr2299523985a.39.1757587166519; Thu, 11 Sep 2025
- 03:39:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757587918; x=1758192718;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0ixdR1P5S055FmVwQTh6Cai1jKWFGKTiPJeK5lzYK6I=;
+        b=NvWmSNBpcHaLODuQngwLVdPdIpQrsXCLcRhG3fvzyaG6Znt7eds3ZvjJa4i9DD1T4f
+         CKBLGawQDd+P23gFogFh+ItfoxRzV8Bjo6yFrKKtxMqs2SCWyzDOkW6ADfDy4KQiZ1nP
+         a3mOjmoDaKeuLysfNit21b3pzSjqrujYTmidcEkU0MscDuNvcIREii5XQMYbUCMNO9hi
+         Eu+UUGHfE5vno7Uyi4S1j9XpXj3JbibHm++wvA4Dmd/kgvztpBFYzkUKGGYDA9vwBIx8
+         Jw1CWvz5BcKE6QKoQjmKkSVmWspUyNDpTzMQXwKmUMGIMg+Meb6FF+5vuixQhmOxOrep
+         k3NQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV4GBrEiGTPLSKADk4ggLQcA6lETscxVSVtAUUtrfZjYnVRr3F+uTtbJhn1t4zb8mKAXxdknCMK01g=@vger.kernel.org, AJvYcCX8YmzfGwqpW8SQLdLoTnz80mMrXH+nuXn5ksI33mow44mjChCBiIrv7t9P8v+kxi0ShxySZNpTLaoJMxYs@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxjn0VdXAaYMhdo6gDzWphjK2K6EeFJuCAYgZi7h+vpRw+H6x0+
+	mqzC2BF7turLFBkc7NP4IVAxoBWpJ3AIm2OLvIAqTMHRvmCiuUSL0016pftRkG5qZJXFPlSoCUy
+	atSxIOyD/qQ64ltnazrOPbjbyknTs36QgndYTazZr7g==
+X-Gm-Gg: ASbGncsbnV26AK1Xp8NuiL6lDyi6WzoGZbQRW/ys1+lnwe8b7JFYaV2nDha7npCdmiO
+	m1uR8Wd1XFOcmP0KZNKWsJflt76GBVlF/rX9fr4bN6JX0iUNaRB/DqKiCZVVvwlRv+C0wu/4tc6
+	8F2W7qHW8Oth/1GIr4AC9U6j8pNNae918GucuxH3/4+Kk/r1lUWRwPyj0wIGWBScPvUcp43v6sE
+	W8yJtOzf/9TRu/fYBw=
+X-Google-Smtp-Source: AGHT+IHwmeQF/QpdMejZQgqtbEtmtPGeG7MA6HXsyBPQloibGMLBag0P50QIFGu55kfsGA2ooOUfhh9nPeaYGHL3tzQ=
+X-Received: by 2002:a2e:bc08:0:b0:350:580c:dee6 with SMTP id
+ 38308e7fff4ca-350580ce6d8mr547721fa.37.1757587917540; Thu, 11 Sep 2025
+ 03:51:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250908173408.79715-1-chia-yu.chang@nokia-bell-labs.com> <20250908173408.79715-15-chia-yu.chang@nokia-bell-labs.com>
-In-Reply-To: <20250908173408.79715-15-chia-yu.chang@nokia-bell-labs.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 11 Sep 2025 03:39:14 -0700
-X-Gm-Features: Ac12FXwjNGPxnTzV9uOkde1KbfezAZ4pzyFGGkehM4wIScw1o9g0Jk-pKtQTlfw
-Message-ID: <CANn89iJzdnwtJcEwdyAzNF206bYzmHKqNGoBF7G2pR101ZWS+Q@mail.gmail.com>
-Subject: Re: [PATCH v17 net-next 14/14] tcp: accecn: try to fit AccECN option
- with SACK
-To: chia-yu.chang@nokia-bell-labs.com
-Cc: pabeni@redhat.com, linux-doc@vger.kernel.org, corbet@lwn.net, 
-	horms@kernel.org, dsahern@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com, 
-	kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com, 
-	jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch, 
-	donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
-	shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
-	ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com, 
-	g.white@cablelabs.com, ingemar.s.johansson@ericsson.com, 
-	mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at, 
-	Jason_Livingood@comcast.com, vidhi_goel@apple.com
+From: Ariel Silver <arielsilver77@gmail.com>
+Date: Thu, 11 Sep 2025 13:51:45 +0300
+X-Gm-Features: Ac12FXwhLXpMFLrgl-uHRsXdAD7Zedj745SedLjljUtczYbDYAGRw8CjHjbqB_k
+Message-ID: <CACKMdfmZo0520HqP_4tBDd5UVf8UY7r5CycjbGQu+8tcGge99g@mail.gmail.com>
+Subject: [PATCH v2] docs/bpf: clarify ret handling in LSM BPF programs
+To: bpf@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Cc: kpsingh@kernel.org, mattbobrowski@google.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, sdf@fomichev.me, haoluo@google.com, 
+	jolsa@kernel.org, corbet@lwn.net
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 8, 2025 at 10:34=E2=80=AFAM <chia-yu.chang@nokia-bell-labs.com>=
- wrote:
->
-> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
->
-> As SACK blocks tend to eat all option space when there are
-> many holes, it is useful to compromise on sending many SACK
-> blocks in every ACK and attempt to fit the AccECN option
-> there by reducing the number of SACK blocks. However, it will
-> never go below two SACK blocks because of the AccECN option.
->
-> As the AccECN option is often not put to every ACK, the space
-> hijack is usually only temporary. Depending on the reuqired
-> AccECN fields (can be either 3, 2, 1, or 0, cf. Table 5 in
-> AccECN spec) and the NOPs used for alignment of other
-> TCP options, up to two SACK blocks will be reduced. Please
-> find below tables for more details:
->
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
-> | Number of | Required | Remaining |  Number of  |    Final    |
-> |   SACK    |  AccECN  |  option   |  reduced    |  number of  |
-> |  blocks   |  fields  |  spaces   | SACK blocks | SACK blocks |
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
-> |  x (<=3D2)  |  0 to 3  |    any    |      0      |      x      |
-> +-----------+----------+-----------+-------------+-------------+
-> |     3     |    0     |    any    |      0      |      3      |
-> |     3     |    1     |    <4     |      1      |      2      |
-> |     3     |    1     |    >=3D4    |      0      |      3      |
-> |     3     |    2     |    <8     |      1      |      2      |
-> |     3     |    2     |    >=3D8    |      0      |      3      |
-> |     3     |    3     |    <12    |      1      |      2      |
-> |     3     |    3     |    >=3D12   |      0      |      3      |
-> +-----------+----------+-----------+-------------+-------------+
-> |  y (>=3D4)  |    0     |    any    |      0      |      y      |
-> |  y (>=3D4)  |    1     |    <4     |      1      |     y-1     |
-> |  y (>=3D4)  |    1     |    >=3D4    |      0      |      y      |
-> |  y (>=3D4)  |    2     |    <8     |      1      |     y-1     |
-> |  y (>=3D4)  |    2     |    >=3D8    |      0      |      y      |
-> |  y (>=3D4)  |    3     |    <4     |      2      |     y-2     |
-> |  y (>=3D4)  |    3     |    <12    |      1      |     y-1     |
-> |  y (>=3D4)  |    3     |    >=3D12   |      0      |      y      |
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
->
-> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> Co-developed-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
-> Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
+v2: Fixed trailing whitespace (reported by checkpatch.pl)
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Docs currently suggest that all attached BPF LSM programs always run
+and that ret simply carries the previous return code. In reality,
+execution stops as soon as one program returns non-zero. This is
+because call_int_hook() breaks out of the loop when RC != 0, so later
+programs are not executed.
+
+Signed-off-by: arielsilver77@gmail.com <arielsilver77@gmail.com>
+---
+ Documentation/bpf/prog_lsm.rst | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/bpf/prog_lsm.rst b/Documentation/bpf/prog_lsm.rst
+index ad2be02f3..92bfb64c2 100644
+--- a/Documentation/bpf/prog_lsm.rst
++++ b/Documentation/bpf/prog_lsm.rst
+@@ -66,21 +66,17 @@ example:
+
+    SEC("lsm/file_mprotect")
+    int BPF_PROG(mprotect_audit, struct vm_area_struct *vma,
+-            unsigned long reqprot, unsigned long prot, int ret)
++            unsigned long reqprot, unsigned long prot)
+    {
+-       /* ret is the return value from the previous BPF program
+-        * or 0 if it's the first hook.
+-        */
+-       if (ret != 0)
+-           return ret;
+-
+        int is_heap;
+
+        is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
+               vma->vm_end <= vma->vm_mm->brk);
+
+        /* Return an -EPERM or write information to the perf events buffer
+-        * for auditing
++        * for auditing.
++        * Returning a non-zero value will stop the chain of
++        * LSM BPF programs attached to the same hook.
+         */
+        if (is_heap)
+            return -EPERM;
+-- 
+2.50.1
 
