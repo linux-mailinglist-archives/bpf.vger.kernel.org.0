@@ -1,88 +1,76 @@
-Return-Path: <bpf+bounces-68161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB97DB5392E
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 18:27:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5037CB5395A
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 18:33:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B07F1C80491
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 16:27:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BCF87BBBE8
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 16:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50883705A6;
-	Thu, 11 Sep 2025 16:23:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E00353376;
+	Thu, 11 Sep 2025 16:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U1f1WM85"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="R9ziZbco"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDA036CDE6;
-	Thu, 11 Sep 2025 16:23:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E362206A9
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 16:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757607825; cv=none; b=XKM/ME0Je5aZwjfmeVvWLaRtj4XPrjTjl7o0qbezV+u3s+RkkafFW7aGU2uphy7QorjgAEEjTHuu+QH6pxAXij5L1dbLL8sj6TdeARUYFiJp3Oq47ybJLpsf1zNlNhSjP6Dh9B7+SFHjpvyoh8H5kCn9Mk+KcqKDwmuXP6aVGZw=
+	t=1757608296; cv=none; b=H9MkpSevMHOhMEFRHHwqK4fgAO556h1w8yJxQjMPDBFROb6E4DDaWN9Cj/iUY+jYKtjhoFReYcUh4KzPXglwQbNl21eTtS+yypJwp5HXNJhkxemVrHkxsy5Lj30PRXhmJCmYra9dda29r6mEv7kgW7tSCez5ZRSdaBojiDEbBog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757607825; c=relaxed/simple;
-	bh=ZbzwFksgb7H1D0gKuZCJsoT2wb4x1APi3k7nuAZfsng=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HJ9FLqX0ALHZ0NpSe+4tRmsq2f0MtKCkGxlMw5LDCIWZwNJdOCtD9nj+KDfj0vF88tMKVGO0xNayCOzn2IecuqeMp5vnQ0RsUW2+TNaMsHnMXalhiyEXAYCI0RkHBNKHXJjA533mkYqAEqOxYWWQIpIkthQnipBnjvVfD+r5oDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U1f1WM85; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757607823; x=1789143823;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZbzwFksgb7H1D0gKuZCJsoT2wb4x1APi3k7nuAZfsng=;
-  b=U1f1WM85yQKQwYY+y8RMtkrG8IsakMUilozjaQJYOiutRpaYGKx6pKSL
-   IPy8iQTwQlXu3oMyRL0HDPAgYm2bvXAGen0bozuW6gUMPOPPXI6EbbYAI
-   LM/wGtB0roGJ0eCd6txA+mZRPtHjDAGWMDJ2DaoUdZ8LeGbKaCZaYd2vY
-   rYk2v7xki+jEC48TxyWjTfTo18+5xs5judtNmGV4h0v6e050deSqhsSTG
-   inEjrWx9j3+O152MO/WWJoCYhczzi8kzjx50HvLFGUsnSBYbVkm3yl30h
-   sO7kzPZ2KmT1l+NZlloPYV6+i5XKlHlaEVo+gWMRqFox8YAJY3yld7OBO
-   g==;
-X-CSE-ConnectionGUID: NCstvL1wT82bf3CGc1retw==
-X-CSE-MsgGUID: XRKs40YQQOaco0k265bHIQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11549"; a="70635216"
-X-IronPort-AV: E=Sophos;i="6.18,257,1751266800"; 
-   d="scan'208";a="70635216"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2025 09:23:43 -0700
-X-CSE-ConnectionGUID: BYgh7milQWyE4Mf5GqIn9A==
-X-CSE-MsgGUID: iWVXcq3mT628kEEr6mXlZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,257,1751266800"; 
-   d="scan'208";a="173284722"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa009.jf.intel.com with ESMTP; 11 Sep 2025 09:23:38 -0700
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: intel-wired-lan@lists.osuosl.org
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Michal Kubiak <michal.kubiak@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Simon Horman <horms@kernel.org>,
-	nxne.cnse.osdt.itp.upstreaming@intel.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-next 5/5] idpf: enable XSk features and ndo_xsk_wakeup
-Date: Thu, 11 Sep 2025 18:22:33 +0200
-Message-ID: <20250911162233.1238034-6-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250911162233.1238034-1-aleksander.lobakin@intel.com>
-References: <20250911162233.1238034-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1757608296; c=relaxed/simple;
+	bh=X8Ym7EaLzqN23+0UFG5M9DPXuHBHP2XdryvfovS0alM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XqyUiic080QdjoHq3SS02QvfnUEQfAgGUAUY1NKMwODgRIM9uxi8/CqEHVPo4QAbINsH5lFnBPapb7oFn9/QW4iHO59UtlAeVyqJwyIOzpYq6QRkRB4kyARTBKk5fVohauZoOdxsN/QUZFU+6jaLCr7qa6tmWYLwtmj5yovvxbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=R9ziZbco; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58BFtwnE019098;
+	Thu, 11 Sep 2025 16:31:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=Oq7W1xl/WQOlGbr/qqJFr1GQg04fN
+	vCC+4DLOEKvyOk=; b=R9ziZbcoQ0Eoew/pFQa5pumN3+vuQWkGZJ+Fl1Zme8ApZ
+	b7S2dnVvC4r9xQIjez5qw7l4cUg92IvqpfzAY5osRtrolfmc6AO/9CfDoo/v+fyn
+	rW6hrqGtfwrLG/x6J44nEQi49xyprb9WtU2OKcpMVNTlxat5I4Du2BNqZX4MyZt/
+	/bXmtusIrAcdzKflBudtzcrA466keXUBWH0BrEn9RA79gt1CY2wIBdxQHZ4DTzhI
+	TCJ0pLuJ32kDVJNZWNrB6tTacqgmL8RzCMAuaoaTZEC7R8k9TLIH0k7SEJBu4C2i
+	A5d21WjdtNyzTdwls2qbl0/pA+H7o+pbddi3DNB0Q==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4922x96kgj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Sep 2025 16:31:07 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58BFtLoG013640;
+	Thu, 11 Sep 2025 16:31:06 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 490bdcv209-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Sep 2025 16:31:06 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 58BGV5ns020404;
+	Thu, 11 Sep 2025 16:31:05 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-154-60-192.vpn.oracle.com [10.154.60.192])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 490bdcv1vf-1;
+	Thu, 11 Sep 2025 16:31:05 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc: martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+        brauner@kernel.org, bboscaccy@linux.microsoft.com, ameryhung@gmail.com,
+        emil@etsalapatis.com, bpf@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v2 bpf-next] selftests/bpf: more open-coded gettid syscall cleanup
+Date: Thu, 11 Sep 2025 17:30:56 +0100
+Message-ID: <20250911163056.543071-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,210 +78,123 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-11_02,2025-09-11_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
+ definitions=main-2509110147
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA4MDE2NiBTYWx0ZWRfX/R53MATzBE23
+ 6g2ACIZWBqo3ohwyRk/Om8EPo2aUo/r3bqkl4HpzdVE3+8MUb2u9rnC8IIZpl/buYun8BlQyCjt
+ lMpm3UevTHMKnGoq1HLwijraFiSCbMYDSQfdyHcnpRjQL3F64BVcqVYnetDyt7NpotteNQ+wzLa
+ xF9oWnEDBp88alqK7DwsIBBkphT/g5fpw8dZDFamqg20Uv7sn4wnsHk05UAJvtRX6h8y4IVuKwx
+ yZPTqwIFUOjM/MomfL6s+o3vRN2xXvnoD0sJJ6bipPIcqwTkxddMkV4klolvEZNat6oGzdoGUQT
+ g38cBHb1haGU+DM/P6I5X6vhNpMyaFfpoFlI0i7cPb3rWdiMXwkgz1EOS71TT52D5AvC4mbXYLR
+ OslIehND
+X-Proofpoint-GUID: nBsk-vpWZx6-LdS_RA40uz2wWJ0FHo96
+X-Proofpoint-ORIG-GUID: nBsk-vpWZx6-LdS_RA40uz2wWJ0FHo96
+X-Authority-Analysis: v=2.4 cv=LYY86ifi c=1 sm=1 tr=0 ts=68c2f94b b=1 cx=c_pps
+ a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
+ a=yJojWOMRYYMA:10 a=yPCof4ZbAAAA:8 a=0AllhwCjRtaCXWdvmIsA:9
 
-Now that AF_XDP functionality is fully implemented, advertise XSk XDP
-feature and add .ndo_xsk_wakeup() callback to be able to use it with
-this driver.
+commit 0e2fb011a0ba ("selftests/bpf: Clean up open-coded gettid syscall invocations")
 
-Co-developed-by: Michal Kubiak <michal.kubiak@intel.com>
-Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+addressed the issue that older libc may not have a gettid()
+function call wrapper for the associated syscall.  A few more
+instances have crept into tests, use sys_gettid() instead,
+and poison raw gettid() usage to avoid future issues.
+
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- drivers/net/ethernet/intel/idpf/idpf.h      |  7 +++++
- drivers/net/ethernet/intel/idpf/idpf_txrx.h | 10 ++++---
- drivers/net/ethernet/intel/idpf/xsk.h       |  4 +++
- drivers/net/ethernet/intel/idpf/idpf_lib.c  |  2 ++
- drivers/net/ethernet/intel/idpf/idpf_txrx.c |  3 +++
- drivers/net/ethernet/intel/idpf/xdp.c       |  4 ++-
- drivers/net/ethernet/intel/idpf/xsk.c       | 29 +++++++++++++++++++++
- 7 files changed, 55 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/bpf_util.h                        | 3 +++
+ tools/testing/selftests/bpf/network_helpers.c                 | 2 +-
+ tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c         | 2 +-
+ tools/testing/selftests/bpf/prog_tests/kernel_flag.c          | 2 +-
+ tools/testing/selftests/bpf/prog_tests/task_local_data.h      | 2 +-
+ tools/testing/selftests/bpf/prog_tests/test_task_local_data.c | 2 +-
+ 6 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf.h b/drivers/net/ethernet/intel/idpf/idpf.h
-index 6e79fa8556e9..c5ede00c5b2e 100644
---- a/drivers/net/ethernet/intel/idpf/idpf.h
-+++ b/drivers/net/ethernet/intel/idpf/idpf.h
-@@ -978,6 +978,13 @@ static inline void idpf_vport_ctrl_unlock(struct net_device *netdev)
- 	mutex_unlock(&np->adapter->vport_ctrl_lock);
- }
+diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
+index 5f6963a320d7..4bc2d25f33e1 100644
+--- a/tools/testing/selftests/bpf/bpf_util.h
++++ b/tools/testing/selftests/bpf/bpf_util.h
+@@ -67,6 +67,9 @@ static inline void bpf_strlcpy(char *dst, const char *src, size_t sz)
+ #define sys_gettid() syscall(SYS_gettid)
+ #endif
  
-+static inline bool idpf_vport_ctrl_is_locked(struct net_device *netdev)
-+{
-+	struct idpf_netdev_priv *np = netdev_priv(netdev);
++/* and poison usage to ensure it does not creep back in. */
++#pragma GCC poison gettid
 +
-+	return mutex_is_locked(&np->adapter->vport_ctrl_lock);
-+}
-+
- void idpf_statistics_task(struct work_struct *work);
- void idpf_init_task(struct work_struct *work);
- void idpf_service_task(struct work_struct *work);
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.h b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
-index a42aa4669c3c..75b977094741 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_txrx.h
-+++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
-@@ -374,9 +374,10 @@ struct idpf_intr_reg {
-  * @complq: array of completion queues
-  * @xsksq: array of XSk send queues
-  * @intr_reg: See struct idpf_intr_reg
-- * @napi: napi handler
-+ * @csd: XSk wakeup CSD
-  * @total_events: Number of interrupts processed
-  * @wb_on_itr: whether WB on ITR is enabled
-+ * @napi: napi handler
-  * @tx_dim: Data for TX net_dim algorithm
-  * @tx_itr_value: TX interrupt throttling rate
-  * @tx_intr_mode: Dynamic ITR or not
-@@ -406,10 +407,13 @@ struct idpf_q_vector {
- 	__cacheline_group_end_aligned(read_mostly);
+ #ifndef ENOTSUPP
+ #define ENOTSUPP 524
+ #endif
+diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+index 72b5c174ab3b..cdf7b6641444 100644
+--- a/tools/testing/selftests/bpf/network_helpers.c
++++ b/tools/testing/selftests/bpf/network_helpers.c
+@@ -457,7 +457,7 @@ int append_tid(char *str, size_t sz)
+ 	if (end + 8 > sz)
+ 		return -1;
  
- 	__cacheline_group_begin_aligned(read_write);
--	struct napi_struct napi;
-+	call_single_data_t csd;
-+
- 	u16 total_events;
- 	bool wb_on_itr;
+-	sprintf(&str[end], "%07d", gettid());
++	sprintf(&str[end], "%07ld", sys_gettid());
+ 	str[end + 7] = '\0';
  
-+	struct napi_struct napi;
-+
- 	struct dim tx_dim;
- 	u16 tx_itr_value;
- 	bool tx_intr_mode;
-@@ -427,7 +431,7 @@ struct idpf_q_vector {
- 	__cacheline_group_end_aligned(cold);
- };
- libeth_cacheline_set_assert(struct idpf_q_vector, 136,
--			    24 + sizeof(struct napi_struct) +
-+			    56 + sizeof(struct napi_struct) +
- 			    2 * sizeof(struct dim),
- 			    8);
+ 	return 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c b/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c
+index e0dd966e4a3e..5ad904e9d15d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_xattr.c
+@@ -44,7 +44,7 @@ static void test_read_cgroup_xattr(void)
+ 	if (!ASSERT_OK_PTR(skel, "read_cgroupfs_xattr__open_and_load"))
+ 		goto out;
  
-diff --git a/drivers/net/ethernet/intel/idpf/xsk.h b/drivers/net/ethernet/intel/idpf/xsk.h
-index d5338cbef8bd..b622d08c03e8 100644
---- a/drivers/net/ethernet/intel/idpf/xsk.h
-+++ b/drivers/net/ethernet/intel/idpf/xsk.h
-@@ -8,14 +8,17 @@
+-	skel->bss->target_pid = gettid();
++	skel->bss->target_pid = sys_gettid();
  
- enum virtchnl2_queue_type;
- struct idpf_buf_queue;
-+struct idpf_q_vector;
- struct idpf_rx_queue;
- struct idpf_tx_queue;
- struct idpf_vport;
-+struct net_device;
- struct netdev_bpf;
- 
- void idpf_xsk_setup_queue(const struct idpf_vport *vport, void *q,
- 			  enum virtchnl2_queue_type type);
- void idpf_xsk_clear_queue(void *q, enum virtchnl2_queue_type type);
-+void idpf_xsk_init_wakeup(struct idpf_q_vector *qv);
- 
- int idpf_xskfq_init(struct idpf_buf_queue *bufq);
- void idpf_xskfq_rel(struct idpf_buf_queue *bufq);
-@@ -25,5 +28,6 @@ int idpf_xskrq_poll(struct idpf_rx_queue *rxq, u32 budget);
- bool idpf_xsk_xmit(struct idpf_tx_queue *xsksq);
- 
- int idpf_xsk_pool_setup(struct idpf_vport *vport, struct netdev_bpf *xdp);
-+int idpf_xsk_wakeup(struct net_device *dev, u32 qid, u32 flags);
- 
- #endif /* !_IDPF_XSK_H_ */
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
-index 9b8f7a6d65d6..8a941f0fb048 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
-@@ -5,6 +5,7 @@
- #include "idpf_virtchnl.h"
- #include "idpf_ptp.h"
- #include "xdp.h"
-+#include "xsk.h"
- 
- static const struct net_device_ops idpf_netdev_ops;
- 
-@@ -2618,4 +2619,5 @@ static const struct net_device_ops idpf_netdev_ops = {
- 	.ndo_hwtstamp_set = idpf_hwtstamp_set,
- 	.ndo_bpf = idpf_xdp,
- 	.ndo_xdp_xmit = idpf_xdp_xmit,
-+	.ndo_xsk_wakeup = idpf_xsk_wakeup,
- };
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index 67963c0f4541..828f7c444d30 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -1210,6 +1210,8 @@ static int idpf_qp_enable(const struct idpf_queue_set *qs, u32 qid)
- 		if (!idpf_queue_has(XSK, q->txq))
- 			continue;
- 
-+		idpf_xsk_init_wakeup(q_vector);
-+
- 		q->txq->q_vector = q_vector;
- 		q_vector->xsksq[q_vector->num_xsksq++] = q->txq;
- 	}
-@@ -4418,6 +4420,7 @@ static void idpf_vport_intr_map_vector_to_qs(struct idpf_vport *vport)
- 			continue;
- 
- 		qv = idpf_find_rxq_vec(vport, i);
-+		idpf_xsk_init_wakeup(qv);
- 
- 		xdpsq->q_vector = qv;
- 		qv->xsksq[qv->num_xsksq++] = xdpsq;
-diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
-index cde6d56553d2..21ce25b0567f 100644
---- a/drivers/net/ethernet/intel/idpf/xdp.c
-+++ b/drivers/net/ethernet/intel/idpf/xdp.c
-@@ -400,7 +400,9 @@ void idpf_xdp_set_features(const struct idpf_vport *vport)
- 	if (!idpf_is_queue_model_split(vport->rxq_model))
+ 	if (!ASSERT_OK(read_cgroupfs_xattr__attach(skel), "read_cgroupfs_xattr__attach"))
+ 		goto out;
+diff --git a/tools/testing/selftests/bpf/prog_tests/kernel_flag.c b/tools/testing/selftests/bpf/prog_tests/kernel_flag.c
+index a133354ac9bc..97b00c7efe94 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kernel_flag.c
++++ b/tools/testing/selftests/bpf/prog_tests/kernel_flag.c
+@@ -16,7 +16,7 @@ void test_kernel_flag(void)
+ 	if (!ASSERT_OK_PTR(lsm_skel, "lsm_skel"))
  		return;
  
--	libeth_xdp_set_features_noredir(vport->netdev, &idpf_xdpmo);
-+	libeth_xdp_set_features_noredir(vport->netdev, &idpf_xdpmo,
-+					idpf_get_max_tx_bufs(vport->adapter),
-+					libeth_xsktmo);
- }
+-	lsm_skel->bss->monitored_tid = gettid();
++	lsm_skel->bss->monitored_tid = sys_gettid();
  
- static int idpf_xdp_setup_prog(struct idpf_vport *vport,
-diff --git a/drivers/net/ethernet/intel/idpf/xsk.c b/drivers/net/ethernet/intel/idpf/xsk.c
-index ba35dca946d5..fd2cc43ab43c 100644
---- a/drivers/net/ethernet/intel/idpf/xsk.c
-+++ b/drivers/net/ethernet/intel/idpf/xsk.c
-@@ -158,6 +158,11 @@ void idpf_xsk_clear_queue(void *q, enum virtchnl2_queue_type type)
- 	}
- }
+ 	ret = test_kernel_flag__attach(lsm_skel);
+ 	if (!ASSERT_OK(ret, "test_kernel_flag__attach"))
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_data.h b/tools/testing/selftests/bpf/prog_tests/task_local_data.h
+index a408d10c3688..2de38776a2d4 100644
+--- a/tools/testing/selftests/bpf/prog_tests/task_local_data.h
++++ b/tools/testing/selftests/bpf/prog_tests/task_local_data.h
+@@ -158,7 +158,7 @@ static int __tld_init_data_p(int map_fd)
+ 	void *data_alloc = NULL;
+ 	int err, tid_fd = -1;
  
-+void idpf_xsk_init_wakeup(struct idpf_q_vector *qv)
-+{
-+	libeth_xsk_init_wakeup(&qv->csd, &qv->napi);
-+}
-+
- void idpf_xsksq_clean(struct idpf_tx_queue *xdpsq)
- {
- 	struct libeth_xdpsq_napi_stats ss = { };
-@@ -602,3 +607,27 @@ int idpf_xsk_pool_setup(struct idpf_vport *vport, struct netdev_bpf *bpf)
+-	tid_fd = syscall(SYS_pidfd_open, gettid(), O_EXCL);
++	tid_fd = syscall(SYS_pidfd_open, sys_gettid(), O_EXCL);
+ 	if (tid_fd < 0) {
+ 		err = -errno;
+ 		goto out;
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
+index 3b5cd2cd89c7..9fd6306b455c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
+@@ -63,7 +63,7 @@ void *test_task_local_data_basic_thread(void *arg)
+ 	if (!ASSERT_OK_PTR(value2, "tld_get_data"))
+ 		goto out;
  
- 	return ret;
- }
-+
-+int idpf_xsk_wakeup(struct net_device *dev, u32 qid, u32 flags)
-+{
-+	const struct idpf_netdev_priv *np = netdev_priv(dev);
-+	const struct idpf_vport *vport = np->vport;
-+	struct idpf_q_vector *q_vector;
-+
-+	if (unlikely(idpf_vport_ctrl_is_locked(dev)))
-+		return -EBUSY;
-+
-+	if (unlikely(!vport->link_up))
-+		return -ENETDOWN;
-+
-+	if (unlikely(!vport->num_xdp_txq))
-+		return -ENXIO;
-+
-+	q_vector = idpf_find_rxq_vec(vport, qid);
-+	if (unlikely(!q_vector->xsksq))
-+		return -ENXIO;
-+
-+	libeth_xsk_wakeup(&q_vector->csd, qid);
-+
-+	return 0;
-+}
+-	tid = gettid();
++	tid = sys_gettid();
+ 
+ 	*value0 = tid + 0;
+ 	*value1 = tid + 1;
 -- 
-2.51.0
+2.39.3
 
 
