@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-68159-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68160-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F83EB5392C
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 18:27:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E47E7B53935
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 18:28:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 796CBAA0848
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 16:25:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0710AC1AC5
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 16:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1FA6369993;
-	Thu, 11 Sep 2025 16:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF2E36CC92;
+	Thu, 11 Sep 2025 16:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lZO6FTqN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SUiXXDEE"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD184362081;
-	Thu, 11 Sep 2025 16:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0DD368086;
+	Thu, 11 Sep 2025 16:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757607816; cv=none; b=gqJd4z5DXLuKx95Pkk2aMpLee5pW+6peoffnsPzcC9O9nLKcZvWCXDS4dRhiytGpbsXY5x16xG+BEOlaIihRuZNECFg61TecKQe/G+2MlCpEZc7sQZ7IydfF3JKhnovHyasqYCM4g6Q1nukBMZ4mWh6yv0L0zHZ7co8TxS5r3e8=
+	t=1757607822; cv=none; b=FHx2JEBkozHbLz+/eOOxXaJvI8WzUEOlBzvDNdXuJAy2bPNPFuKaBa2kO2fwL+dejmxC5gWoI5XAnQbzqYrLcGEapfc/INmw2ZURNCOqc6xX12VX+ozy+DVNcaSX+AmL2jxfAV9K2hOupLp+IM27y0QWypEqABYSL2qOB5euzBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757607816; c=relaxed/simple;
-	bh=MgxYE9Txu4q24Yg7jW/8Yz/uMzgpZekTVhhatndLkOY=;
+	s=arc-20240116; t=1757607822; c=relaxed/simple;
+	bh=3hFUxq8ZVcWDxBI/HUF57ZS6qwDLKZ0fyM+WgQTxXsc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EBsGSIhuyUJ8R6ZHNopnwxdRyajU2mQpD6PAcLr9ZUmTlBY+kgjl8+ORxtXB9mfqPT8X38PpHEOPD4egIEMWo7upmR4JYsCmCXZsV8y3A9YsRki3eSdpfQleJdHsPl8nQq88oAkNphvO0Nm6vYxSIkbG8qREWU/jC4I3pPm1/Mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lZO6FTqN; arc=none smtp.client-ip=192.198.163.9
+	 MIME-Version; b=O0Aa2jZN/xcG1LhdKSJ024DD2GyMk1yMEcKYpDycn4wHMFZaLgCp2jMgEdM27bb5vJQAuxNouYLDnnINDm4/TGxWcW1Mgq3QKHGfNPAO4qPSeBsWonaqjm79mOh2YCbyN/Y6Ke3mlT6WTwYOQCyTvLJ758Ab76y06P3AvgWXBrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SUiXXDEE; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757607814; x=1789143814;
+  t=1757607820; x=1789143820;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=MgxYE9Txu4q24Yg7jW/8Yz/uMzgpZekTVhhatndLkOY=;
-  b=lZO6FTqNrPtSRKGfB98vNFx8vIAC2Yo8vdqq33wlmqbhVC3/3pXyl16t
-   U57qFodkkQZKy21gH07VKKRxXU4UObRVrTakzM8/IlRO26nvq3iMszeME
-   Bcp7RhYZ5eIqM+9/rn2n07bKM4gnMwMkYsBCl7GNf6pRtwawRMqqE1skH
-   2lv35dKC3zjgwr3WNhmZV2b5/25qGIm2vxTjygC/t7lToo6NEap5fNnG/
-   svZj6ABwhhp1vgHJrpaDRwIE3vKOSCjzpH74hJbtSOt+3esYXoCyNn4t2
-   MLPoFT9jUBMbRS1M46xzsVdl3WZhUDD+3mwOgaYe1gHQ/jfQQx5Ryjk91
-   Q==;
-X-CSE-ConnectionGUID: hp1mqnRuTjqul45oGn7M0g==
-X-CSE-MsgGUID: hD12yZ+RTMWX6js6J0DZYg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11549"; a="70635193"
+  bh=3hFUxq8ZVcWDxBI/HUF57ZS6qwDLKZ0fyM+WgQTxXsc=;
+  b=SUiXXDEESnK9taCcu1D7Gb+D2g0qRcjZDe6Q2uRozKN8JTI7JD4R5nzz
+   ya7s3mQv2p2tIkGkpJrsgxYJfAP+MFGXKyE2kywWkndT0AIbTNPXc9p+3
+   IPDi7LK5xsYvsen60YdtOdSSr9tAqrRrz5Dln0Rg9BCrbwgsHWmZO3yuI
+   JGGaOKZYgl9MvXvFeymhjPlOzYKyFoFSU1Ho8CrCpTHajmrOdCHfLMF8m
+   tj5C2SP5piNYWAA4p/rKdiTCotIiGfWapFLJnv2viV2+6hlTbkZGBxD2Q
+   JQw+/3QRcRtbZCJRPxXXVbexdynzGIQFUCwUU5m1xHNIBHcIYe7FDCf7B
+   g==;
+X-CSE-ConnectionGUID: SG5KWcNmT6uKNCKALeF0+A==
+X-CSE-MsgGUID: B09Bxr/XTiii3z9cXFqiBA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11549"; a="70635206"
 X-IronPort-AV: E=Sophos;i="6.18,257,1751266800"; 
-   d="scan'208";a="70635193"
+   d="scan'208";a="70635206"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2025 09:23:33 -0700
-X-CSE-ConnectionGUID: 5cP969sPSPeBjpjfF5y3gg==
-X-CSE-MsgGUID: r4PtEvbaRFy0XpbKULnvoA==
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2025 09:23:39 -0700
+X-CSE-ConnectionGUID: aeSbfqXKQ/WxAekIpE2K1A==
+X-CSE-MsgGUID: cEMZx5jYRKOKCfQKN5bmfg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.18,257,1751266800"; 
-   d="scan'208";a="173284660"
+   d="scan'208";a="173284700"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa009.jf.intel.com with ESMTP; 11 Sep 2025 09:23:29 -0700
+  by orviesa009.jf.intel.com with ESMTP; 11 Sep 2025 09:23:33 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -77,9 +77,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-next 3/5] idpf: implement XSk xmit
-Date: Thu, 11 Sep 2025 18:22:31 +0200
-Message-ID: <20250911162233.1238034-4-aleksander.lobakin@intel.com>
+Subject: [PATCH iwl-next 4/5] idpf: implement Rx path for AF_XDP
+Date: Thu, 11 Sep 2025 18:22:32 +0200
+Message-ID: <20250911162233.1238034-5-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250911162233.1238034-1-aleksander.lobakin@intel.com>
 References: <20250911162233.1238034-1-aleksander.lobakin@intel.com>
@@ -91,610 +91,446 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement the XSk transmit path using the libeth (libeth_xdp)
-XSk infra.
-When the NAPI poll is called, XSk Tx queues are polled first,
-before regular Tx and Rx. They're generally faster to serve
-and have higher priority comparing to regular traffic.
+Implement Rx packet processing specific to AF_XDP ZC using the libeth
+XSk infra. Initialize queue registers before allocating buffers to
+avoid redundant ifs when updating the queue tail.
 
 Co-developed-by: Michal Kubiak <michal.kubiak@intel.com>
 Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- drivers/net/ethernet/intel/idpf/idpf_txrx.h |  14 +-
- drivers/net/ethernet/intel/idpf/xdp.h       |   1 +
- drivers/net/ethernet/intel/idpf/xsk.h       |   9 +
- drivers/net/ethernet/intel/idpf/idpf_txrx.c | 117 ++++++++--
- drivers/net/ethernet/intel/idpf/xdp.c       |   2 +-
- drivers/net/ethernet/intel/idpf/xsk.c       | 232 ++++++++++++++++++++
- 6 files changed, 354 insertions(+), 21 deletions(-)
+ drivers/net/ethernet/intel/idpf/idpf_txrx.h |  38 ++-
+ drivers/net/ethernet/intel/idpf/xsk.h       |   6 +
+ drivers/net/ethernet/intel/idpf/idpf_lib.c  |   8 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c |  35 ++-
+ drivers/net/ethernet/intel/idpf/xdp.c       |  24 +-
+ drivers/net/ethernet/intel/idpf/xsk.c       | 315 ++++++++++++++++++++
+ 6 files changed, 405 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.h b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
-index 8faf33786747..e8e63027425c 100644
+index e8e63027425c..a42aa4669c3c 100644
 --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.h
 +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
-@@ -285,6 +285,7 @@ struct idpf_ptype_state {
-  *		  queue
-  * @__IDPF_Q_NOIRQ: queue is polling-driven and has no interrupt
-  * @__IDPF_Q_XDP: this is an XDP queue
-+ * @__IDPF_Q_XSK: the queue has an XSk pool installed
-  * @__IDPF_Q_FLAGS_NBITS: Must be last
-  */
- enum idpf_queue_flags_t {
-@@ -297,6 +298,7 @@ enum idpf_queue_flags_t {
- 	__IDPF_Q_PTP,
- 	__IDPF_Q_NOIRQ,
- 	__IDPF_Q_XDP,
-+	__IDPF_Q_XSK,
+@@ -141,6 +141,8 @@ do {								\
+ #define IDPF_TX_FLAGS_TUNNEL		BIT(3)
+ #define IDPF_TX_FLAGS_TSYN		BIT(4)
  
- 	__IDPF_Q_FLAGS_NBITS,
- };
-@@ -363,10 +365,12 @@ struct idpf_intr_reg {
-  * @num_txq: Number of TX queues
-  * @num_bufq: Number of buffer queues
-  * @num_complq: number of completion queues
-+ * @num_xsksq: number of XSk send queues
-  * @rx: Array of RX queues to service
-  * @tx: Array of TX queues to service
-  * @bufq: Array of buffer queues to service
-  * @complq: array of completion queues
-+ * @xsksq: array of XSk send queues
-  * @intr_reg: See struct idpf_intr_reg
-  * @napi: napi handler
-  * @total_events: Number of interrupts processed
-@@ -389,10 +393,12 @@ struct idpf_q_vector {
- 	u16 num_txq;
- 	u16 num_bufq;
- 	u16 num_complq;
-+	u16 num_xsksq;
- 	struct idpf_rx_queue **rx;
- 	struct idpf_tx_queue **tx;
- 	struct idpf_buf_queue **bufq;
- 	struct idpf_compl_queue **complq;
-+	struct idpf_tx_queue **xsksq;
++struct libeth_rq_napi_stats;
++
+ union idpf_tx_flex_desc {
+ 	struct idpf_flex_tx_desc q; /* queue based scheduling */
+ 	struct idpf_flex_tx_sched_desc flow; /* flow based scheduling */
+@@ -491,6 +493,8 @@ struct idpf_tx_queue_stats {
+  * @next_to_clean: Next descriptor to clean
+  * @next_to_alloc: RX buffer to allocate at
+  * @xdp: XDP buffer with the current frame
++ * @xsk: current XDP buffer in XSk mode
++ * @pool: XSk pool if installed
+  * @cached_phc_time: Cached PHC time for the Rx queue
+  * @stats_sync: See struct u64_stats_sync
+  * @q_stats: See union idpf_rx_queue_stats
+@@ -546,7 +550,13 @@ struct idpf_rx_queue {
+ 	u32 next_to_clean;
+ 	u32 next_to_alloc;
  
- 	struct idpf_intr_reg intr_reg;
- 	__cacheline_group_end_aligned(read_mostly);
-@@ -418,7 +424,7 @@ struct idpf_q_vector {
- 
- 	__cacheline_group_end_aligned(cold);
- };
--libeth_cacheline_set_assert(struct idpf_q_vector, 120,
-+libeth_cacheline_set_assert(struct idpf_q_vector, 136,
- 			    24 + sizeof(struct napi_struct) +
- 			    2 * sizeof(struct dim),
- 			    8);
-@@ -578,6 +584,7 @@ libeth_cacheline_set_assert(struct idpf_rx_queue,
-  * @txq_grp: See struct idpf_txq_group
-  * @complq: corresponding completion queue in XDP mode
-  * @dev: Device back pointer for DMA mapping
-+ * @pool: corresponding XSk pool if installed
-  * @tail: Tail offset. Used for both queue models single and split
-  * @flags: See enum idpf_queue_flags_t
-  * @idx: For TX queue, it is used as index to map between TX queue group and
-@@ -631,7 +638,10 @@ struct idpf_tx_queue {
- 		struct idpf_txq_group *txq_grp;
- 		struct idpf_compl_queue *complq;
- 	};
--	struct device *dev;
+-	struct libeth_xdp_buff_stash xdp;
 +	union {
-+		struct device *dev;
-+		struct xsk_buff_pool *pool;
++		struct libeth_xdp_buff_stash xdp;
++		struct {
++			struct libeth_xdp_buff *xsk;
++			struct xsk_buff_pool *pool;
++		};
 +	};
+ 	u64 cached_phc_time;
+ 
+ 	struct u64_stats_sync stats_sync;
+@@ -711,16 +721,20 @@ libeth_cacheline_set_assert(struct idpf_tx_queue, 64,
+ /**
+  * struct idpf_buf_queue - software structure representing a buffer queue
+  * @split_buf: buffer descriptor array
+- * @hdr_buf: &libeth_fqe for header buffers
+- * @hdr_pp: &page_pool for header buffers
+  * @buf: &libeth_fqe for data buffers
+  * @pp: &page_pool for data buffers
++ * @xsk_buf: &xdp_buff for XSk Rx buffers
++ * @pool: &xsk_buff_pool on XSk queues
++ * @hdr_buf: &libeth_fqe for header buffers
++ * @hdr_pp: &page_pool for header buffers
+  * @tail: Tail offset
+  * @flags: See enum idpf_queue_flags_t
+  * @desc_count: Number of descriptors
++ * @thresh: refill threshold in XSk
+  * @next_to_use: Next descriptor to use
+  * @next_to_clean: Next descriptor to clean
+  * @next_to_alloc: RX buffer to allocate at
++ * @pending: number of buffers to refill (Xsk)
+  * @hdr_truesize: truesize for buffer headers
+  * @truesize: truesize for data buffers
+  * @q_id: Queue id
+@@ -734,14 +748,24 @@ libeth_cacheline_set_assert(struct idpf_tx_queue, 64,
+ struct idpf_buf_queue {
+ 	__cacheline_group_begin_aligned(read_mostly);
+ 	struct virtchnl2_splitq_rx_buf_desc *split_buf;
++	union {
++		struct {
++			struct libeth_fqe *buf;
++			struct page_pool *pp;
++		};
++		struct {
++			struct libeth_xdp_buff **xsk_buf;
++			struct xsk_buff_pool *pool;
++		};
++	};
+ 	struct libeth_fqe *hdr_buf;
+ 	struct page_pool *hdr_pp;
+-	struct libeth_fqe *buf;
+-	struct page_pool *pp;
  	void __iomem *tail;
  
  	DECLARE_BITMAP(flags, __IDPF_Q_FLAGS_NBITS);
-diff --git a/drivers/net/ethernet/intel/idpf/xdp.h b/drivers/net/ethernet/intel/idpf/xdp.h
-index 59c0391317c2..479f5ef3c604 100644
---- a/drivers/net/ethernet/intel/idpf/xdp.h
-+++ b/drivers/net/ethernet/intel/idpf/xdp.h
-@@ -18,6 +18,7 @@ void idpf_xdp_copy_prog_to_rqs(const struct idpf_vport *vport,
- int idpf_xdpsqs_get(const struct idpf_vport *vport);
- void idpf_xdpsqs_put(const struct idpf_vport *vport);
+ 	u32 desc_count;
++
++	u32 thresh;
+ 	__cacheline_group_end_aligned(read_mostly);
  
-+u32 idpf_xdpsq_poll(struct idpf_tx_queue *xdpsq, u32 budget);
- bool idpf_xdp_tx_flush_bulk(struct libeth_xdp_tx_bulk *bq, u32 flags);
+ 	__cacheline_group_begin_aligned(read_write);
+@@ -749,6 +773,7 @@ struct idpf_buf_queue {
+ 	u32 next_to_clean;
+ 	u32 next_to_alloc;
  
- /**
++	u32 pending;
+ 	u32 hdr_truesize;
+ 	u32 truesize;
+ 	__cacheline_group_end_aligned(read_write);
+@@ -1079,6 +1104,9 @@ netdev_tx_t idpf_tx_singleq_frame(struct sk_buff *skb,
+ netdev_tx_t idpf_tx_start(struct sk_buff *skb, struct net_device *netdev);
+ bool idpf_rx_singleq_buf_hw_alloc_all(struct idpf_rx_queue *rxq,
+ 				      u16 cleaned_count);
++bool idpf_rx_process_skb_fields(struct sk_buff *skb,
++				const struct libeth_xdp_buff *xdp,
++				struct libeth_rq_napi_stats *rs);
+ int idpf_tso(struct sk_buff *skb, struct idpf_tx_offload_params *off);
+ 
+ void idpf_wait_for_sw_marker_completion(const struct idpf_tx_queue *txq);
 diff --git a/drivers/net/ethernet/intel/idpf/xsk.h b/drivers/net/ethernet/intel/idpf/xsk.h
-index dc42268ba8e0..d08fd51b0fc6 100644
+index d08fd51b0fc6..d5338cbef8bd 100644
 --- a/drivers/net/ethernet/intel/idpf/xsk.h
 +++ b/drivers/net/ethernet/intel/idpf/xsk.h
-@@ -6,9 +6,18 @@
- 
+@@ -7,6 +7,8 @@
  #include <linux/types.h>
  
-+enum virtchnl2_queue_type;
-+struct idpf_tx_queue;
+ enum virtchnl2_queue_type;
++struct idpf_buf_queue;
++struct idpf_rx_queue;
+ struct idpf_tx_queue;
  struct idpf_vport;
  struct netdev_bpf;
+@@ -15,7 +17,11 @@ void idpf_xsk_setup_queue(const struct idpf_vport *vport, void *q,
+ 			  enum virtchnl2_queue_type type);
+ void idpf_xsk_clear_queue(void *q, enum virtchnl2_queue_type type);
  
-+void idpf_xsk_setup_queue(const struct idpf_vport *vport, void *q,
-+			  enum virtchnl2_queue_type type);
-+void idpf_xsk_clear_queue(void *q, enum virtchnl2_queue_type type);
++int idpf_xskfq_init(struct idpf_buf_queue *bufq);
++void idpf_xskfq_rel(struct idpf_buf_queue *bufq);
+ void idpf_xsksq_clean(struct idpf_tx_queue *xdpq);
 +
-+void idpf_xsksq_clean(struct idpf_tx_queue *xdpq);
-+bool idpf_xsk_xmit(struct idpf_tx_queue *xsksq);
-+
++int idpf_xskrq_poll(struct idpf_rx_queue *rxq, u32 budget);
+ bool idpf_xsk_xmit(struct idpf_tx_queue *xsksq);
+ 
  int idpf_xsk_pool_setup(struct idpf_vport *vport, struct netdev_bpf *xdp);
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+index 0559f1da88a9..9b8f7a6d65d6 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+@@ -1424,16 +1424,16 @@ static int idpf_vport_open(struct idpf_vport *vport, bool rtnl)
+ 		goto queues_rel;
+ 	}
  
- #endif /* !_IDPF_XSK_H_ */
+-	err = idpf_rx_bufs_init_all(vport);
++	err = idpf_queue_reg_init(vport);
+ 	if (err) {
+-		dev_err(&adapter->pdev->dev, "Failed to initialize RX buffers for vport %u: %d\n",
++		dev_err(&adapter->pdev->dev, "Failed to initialize queue registers for vport %u: %d\n",
+ 			vport->vport_id, err);
+ 		goto queues_rel;
+ 	}
+ 
+-	err = idpf_queue_reg_init(vport);
++	err = idpf_rx_bufs_init_all(vport);
+ 	if (err) {
+-		dev_err(&adapter->pdev->dev, "Failed to initialize queue registers for vport %u: %d\n",
++		dev_err(&adapter->pdev->dev, "Failed to initialize RX buffers for vport %u: %d\n",
+ 			vport->vport_id, err);
+ 		goto queues_rel;
+ 	}
 diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index 542e09a83bc0..64d5211f6e51 100644
+index 64d5211f6e51..67963c0f4541 100644
 --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
 +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -5,6 +5,7 @@
- #include "idpf_ptp.h"
- #include "idpf_virtchnl.h"
- #include "xdp.h"
-+#include "xsk.h"
+@@ -389,6 +389,11 @@ static void idpf_rx_buf_rel_bufq(struct idpf_buf_queue *bufq)
+ 	if (!bufq->buf)
+ 		return;
  
- #define idpf_tx_buf_next(buf)		(*(u32 *)&(buf)->priv)
- LIBETH_SQE_CHECK_PRIV(u32);
-@@ -53,11 +54,7 @@ void idpf_tx_timeout(struct net_device *netdev, unsigned int txqueue)
- 	}
- }
- 
--/**
-- * idpf_tx_buf_rel_all - Free any empty Tx buffers
-- * @txq: queue to be cleaned
-- */
--static void idpf_tx_buf_rel_all(struct idpf_tx_queue *txq)
-+static void idpf_tx_buf_clean(struct idpf_tx_queue *txq)
- {
- 	struct libeth_sq_napi_stats ss = { };
- 	struct xdp_frame_bulk bq;
-@@ -66,19 +63,30 @@ static void idpf_tx_buf_rel_all(struct idpf_tx_queue *txq)
- 		.bq	= &bq,
- 		.ss	= &ss,
- 	};
--	u32 i;
--
--	/* Buffers already cleared, nothing to do */
--	if (!txq->tx_buf)
--		return;
- 
- 	xdp_frame_bulk_init(&bq);
- 
- 	/* Free all the Tx buffer sk_buffs */
--	for (i = 0; i < txq->buf_pool_size; i++)
-+	for (u32 i = 0; i < txq->buf_pool_size; i++)
- 		libeth_tx_complete_any(&txq->tx_buf[i], &cp);
- 
- 	xdp_flush_frame_bulk(&bq);
-+}
-+
-+/**
-+ * idpf_tx_buf_rel_all - Free any empty Tx buffers
-+ * @txq: queue to be cleaned
-+ */
-+static void idpf_tx_buf_rel_all(struct idpf_tx_queue *txq)
-+{
-+	/* Buffers already cleared, nothing to do */
-+	if (!txq->tx_buf)
++	if (idpf_queue_has(XSK, bufq)) {
++		idpf_xskfq_rel(bufq);
 +		return;
-+
-+	if (idpf_queue_has(XSK, txq))
-+		idpf_xsksq_clean(txq);
-+	else
-+		idpf_tx_buf_clean(txq);
- 
- 	kfree(txq->tx_buf);
- 	txq->tx_buf = NULL;
-@@ -102,6 +110,8 @@ static void idpf_tx_desc_rel(struct idpf_tx_queue *txq)
- 	if (!xdp)
- 		netdev_tx_reset_subqueue(txq->netdev, txq->idx);
- 
-+	idpf_xsk_clear_queue(txq, VIRTCHNL2_QUEUE_TYPE_TX);
-+
- 	if (!txq->desc_ring)
- 		return;
- 
-@@ -122,6 +132,8 @@ static void idpf_tx_desc_rel(struct idpf_tx_queue *txq)
-  */
- static void idpf_compl_desc_rel(struct idpf_compl_queue *complq)
- {
-+	idpf_xsk_clear_queue(complq, VIRTCHNL2_QUEUE_TYPE_TX_COMPLETION);
-+
- 	if (!complq->comp)
- 		return;
- 
-@@ -214,6 +226,8 @@ static int idpf_tx_desc_alloc(const struct idpf_vport *vport,
- 	tx_q->next_to_clean = 0;
- 	idpf_queue_set(GEN_CHK, tx_q);
- 
-+	idpf_xsk_setup_queue(vport, tx_q, VIRTCHNL2_QUEUE_TYPE_TX);
-+
- 	if (!idpf_queue_has(FLOW_SCH_EN, tx_q))
- 		return 0;
- 
-@@ -273,6 +287,9 @@ static int idpf_compl_desc_alloc(const struct idpf_vport *vport,
- 	complq->next_to_clean = 0;
- 	idpf_queue_set(GEN_CHK, complq);
- 
-+	idpf_xsk_setup_queue(vport, complq,
-+			     VIRTCHNL2_QUEUE_TYPE_TX_COMPLETION);
-+
- 	return 0;
- }
- 
-@@ -1077,13 +1094,13 @@ static void idpf_qvec_ena_irq(struct idpf_q_vector *qv)
- static struct idpf_queue_set *
- idpf_vector_to_queue_set(struct idpf_q_vector *qv)
- {
--	bool xdp = qv->vport->xdp_txq_offset;
-+	bool xdp = qv->vport->xdp_txq_offset && !qv->num_xsksq;
- 	struct idpf_vport *vport = qv->vport;
- 	struct idpf_queue_set *qs;
- 	u32 num;
- 
- 	num = qv->num_rxq + qv->num_bufq + qv->num_txq + qv->num_complq;
--	num += xdp ? qv->num_rxq * 2 : 0;
-+	num += xdp ? qv->num_rxq * 2 : qv->num_xsksq * 2;
- 	if (!num)
- 		return NULL;
- 
-@@ -1126,6 +1143,14 @@ idpf_vector_to_queue_set(struct idpf_q_vector *qv)
- 			qs->qs[num].type = VIRTCHNL2_QUEUE_TYPE_TX_COMPLETION;
- 			qs->qs[num++].complq = vport->txqs[idx]->complq;
- 		}
-+	} else {
-+		for (u32 i = 0; i < qv->num_xsksq; i++) {
-+			qs->qs[num].type = VIRTCHNL2_QUEUE_TYPE_TX;
-+			qs->qs[num++].txq = qv->xsksq[i];
-+
-+			qs->qs[num].type = VIRTCHNL2_QUEUE_TYPE_TX_COMPLETION;
-+			qs->qs[num++].complq = qv->xsksq[i]->complq;
-+		}
- 	}
- 
- finalize:
-@@ -1152,6 +1177,29 @@ static int idpf_qp_enable(const struct idpf_queue_set *qs, u32 qid)
- 		return err;
- 	}
- 
-+	if (!vport->xdp_txq_offset)
-+		goto config;
-+
-+	q_vector->xsksq = kcalloc(DIV_ROUND_UP(vport->num_rxq_grp,
-+					       vport->num_q_vectors),
-+				  sizeof(*q_vector->xsksq), GFP_KERNEL);
-+	if (!q_vector->xsksq)
-+		return -ENOMEM;
-+
-+	for (u32 i = 0; i < qs->num; i++) {
-+		const struct idpf_queue_ptr *q = &qs->qs[i];
-+
-+		if (q->type != VIRTCHNL2_QUEUE_TYPE_TX)
-+			continue;
-+
-+		if (!idpf_queue_has(XSK, q->txq))
-+			continue;
-+
-+		q->txq->q_vector = q_vector;
-+		q_vector->xsksq[q_vector->num_xsksq++] = q->txq;
 +	}
 +
-+config:
- 	err = idpf_send_config_queue_set_msg(qs);
- 	if (err) {
- 		netdev_err(vport->netdev, "Could not configure queues in pair %u: %pe\n",
-@@ -1195,6 +1243,9 @@ static int idpf_qp_disable(const struct idpf_queue_set *qs, u32 qid)
+ 	/* Free all the bufs allocated and given to hw on Rx queue */
+ 	for (u32 i = 0; i < bufq->desc_count; i++)
+ 		idpf_rx_page_rel(&bufq->buf[i]);
+@@ -437,11 +442,14 @@ static void idpf_rx_desc_rel(struct idpf_rx_queue *rxq, struct device *dev,
+ 	if (!rxq)
+ 		return;
  
- 	idpf_clean_queue_set(qs);
+-	libeth_xdp_return_stash(&rxq->xdp);
++	if (!idpf_queue_has(XSK, rxq))
++		libeth_xdp_return_stash(&rxq->xdp);
  
-+	kfree(q_vector->xsksq);
-+	q_vector->num_xsksq = 0;
+ 	if (!idpf_is_queue_model_split(model))
+ 		idpf_rx_buf_rel_all(rxq);
+ 
++	idpf_xsk_clear_queue(rxq, VIRTCHNL2_QUEUE_TYPE_RX);
++
+ 	rxq->next_to_alloc = 0;
+ 	rxq->next_to_clean = 0;
+ 	rxq->next_to_use = 0;
+@@ -464,6 +472,7 @@ static void idpf_rx_desc_rel_bufq(struct idpf_buf_queue *bufq,
+ 		return;
+ 
+ 	idpf_rx_buf_rel_bufq(bufq);
++	idpf_xsk_clear_queue(bufq, VIRTCHNL2_QUEUE_TYPE_RX_BUFFER);
+ 
+ 	bufq->next_to_alloc = 0;
+ 	bufq->next_to_clean = 0;
+@@ -751,6 +760,9 @@ static int idpf_rx_bufs_init(struct idpf_buf_queue *bufq,
+ 	};
+ 	int ret;
+ 
++	if (idpf_queue_has(XSK, bufq))
++		return idpf_xskfq_init(bufq);
++
+ 	ret = libeth_rx_fq_create(&fq, &bufq->q_vector->napi);
+ 	if (ret)
+ 		return ret;
+@@ -846,6 +858,8 @@ static int idpf_rx_desc_alloc(const struct idpf_vport *vport,
+ 	rxq->next_to_use = 0;
+ 	idpf_queue_set(GEN_CHK, rxq);
+ 
++	idpf_xsk_setup_queue(vport, rxq, VIRTCHNL2_QUEUE_TYPE_RX);
 +
  	return 0;
  }
  
-@@ -3690,7 +3741,7 @@ static irqreturn_t idpf_vport_intr_clean_queues(int __always_unused irq,
- 	struct idpf_q_vector *q_vector = (struct idpf_q_vector *)data;
+@@ -871,9 +885,10 @@ static int idpf_bufq_desc_alloc(const struct idpf_vport *vport,
+ 	bufq->next_to_alloc = 0;
+ 	bufq->next_to_clean = 0;
+ 	bufq->next_to_use = 0;
+-
+ 	idpf_queue_set(GEN_CHK, bufq);
  
- 	q_vector->total_events++;
--	napi_schedule(&q_vector->napi);
-+	napi_schedule_irqoff(&q_vector->napi);
- 
- 	return IRQ_HANDLED;
++	idpf_xsk_setup_queue(vport, bufq, VIRTCHNL2_QUEUE_TYPE_RX_BUFFER);
++
+ 	return 0;
  }
-@@ -3731,6 +3782,8 @@ void idpf_vport_intr_rel(struct idpf_vport *vport)
- 	for (u32 v_idx = 0; v_idx < vport->num_q_vectors; v_idx++) {
- 		struct idpf_q_vector *q_vector = &vport->q_vectors[v_idx];
  
-+		kfree(q_vector->xsksq);
-+		q_vector->xsksq = NULL;
- 		kfree(q_vector->complq);
- 		q_vector->complq = NULL;
- 		kfree(q_vector->bufq);
-@@ -4214,7 +4267,7 @@ static int idpf_vport_splitq_napi_poll(struct napi_struct *napi, int budget)
+@@ -3381,9 +3396,9 @@ __idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
+ 	return 0;
+ }
+ 
+-static bool idpf_rx_process_skb_fields(struct sk_buff *skb,
+-				       const struct libeth_xdp_buff *xdp,
+-				       struct libeth_rq_napi_stats *rs)
++bool idpf_rx_process_skb_fields(struct sk_buff *skb,
++				const struct libeth_xdp_buff *xdp,
++				struct libeth_rq_napi_stats *rs)
  {
- 	struct idpf_q_vector *q_vector =
- 				container_of(napi, struct idpf_q_vector, napi);
--	bool clean_complete;
-+	bool clean_complete = true;
- 	int work_done = 0;
+ 	struct idpf_rx_queue *rxq;
  
- 	/* Handle case where we are called by netpoll with a budget of 0 */
-@@ -4224,8 +4277,13 @@ static int idpf_vport_splitq_napi_poll(struct napi_struct *napi, int budget)
- 		return 0;
- 	}
+@@ -4242,7 +4257,9 @@ static bool idpf_rx_splitq_clean_all(struct idpf_q_vector *q_vec, int budget,
+ 		struct idpf_rx_queue *rxq = q_vec->rx[i];
+ 		int pkts_cleaned_per_q;
  
--	clean_complete = idpf_rx_splitq_clean_all(q_vector, budget, &work_done);
--	clean_complete &= idpf_tx_splitq_clean_all(q_vector, budget, &work_done);
-+	for (u32 i = 0; i < q_vector->num_xsksq; i++)
-+		clean_complete &= idpf_xsk_xmit(q_vector->xsksq[i]);
-+
-+	clean_complete &= idpf_tx_splitq_clean_all(q_vector, budget,
-+						   &work_done);
-+	clean_complete &= idpf_rx_splitq_clean_all(q_vector, budget,
-+						   &work_done);
+-		pkts_cleaned_per_q = idpf_rx_splitq_clean(rxq, budget_per_q);
++		pkts_cleaned_per_q = idpf_queue_has(XSK, rxq) ?
++				     idpf_xskrq_poll(rxq, budget_per_q) :
++				     idpf_rx_splitq_clean(rxq, budget_per_q);
+ 		/* if we clean as many as budgeted, we must not be done */
+ 		if (pkts_cleaned_per_q >= budget_per_q)
+ 			clean_complete = false;
+@@ -4252,8 +4269,10 @@ static bool idpf_rx_splitq_clean_all(struct idpf_q_vector *q_vec, int budget,
  
- 	/* If work not completed, return budget and polling will return */
- 	if (!clean_complete) {
-@@ -4238,7 +4296,7 @@ static int idpf_vport_splitq_napi_poll(struct napi_struct *napi, int budget)
- 	/* Exit the polling mode, but don't re-enable interrupts if stack might
- 	 * poll us due to busy-polling
- 	 */
--	if (likely(napi_complete_done(napi, work_done)))
-+	if (napi_complete_done(napi, work_done))
- 		idpf_vport_intr_update_itr_ena_irq(q_vector);
- 	else
- 		idpf_vport_intr_set_wb_on_itr(q_vector);
-@@ -4331,6 +4389,20 @@ static void idpf_vport_intr_map_vector_to_qs(struct idpf_vport *vport)
+ 	nid = numa_mem_id();
  
- 		qv_idx++;
- 	}
-+
-+	for (i = 0; i < vport->num_xdp_txq; i++) {
-+		struct idpf_tx_queue *xdpsq;
-+		struct idpf_q_vector *qv;
-+
-+		xdpsq = vport->txqs[vport->xdp_txq_offset + i];
-+		if (!idpf_queue_has(XSK, xdpsq))
-+			continue;
-+
-+		qv = idpf_find_rxq_vec(vport, i);
-+
-+		xdpsq->q_vector = qv;
-+		qv->xsksq[qv->num_xsksq++] = xdpsq;
+-	for (i = 0; i < q_vec->num_bufq; i++)
+-		idpf_rx_clean_refillq_all(q_vec->bufq[i], nid);
++	for (i = 0; i < q_vec->num_bufq; i++) {
++		if (!idpf_queue_has(XSK, q_vec->bufq[i]))
++			idpf_rx_clean_refillq_all(q_vec->bufq[i], nid);
 +	}
+ 
+ 	return clean_complete;
  }
- 
- /**
-@@ -4468,6 +4540,15 @@ int idpf_vport_intr_alloc(struct idpf_vport *vport)
- 					   GFP_KERNEL);
- 		if (!q_vector->complq)
- 			goto error;
-+
-+		if (!vport->xdp_txq_offset)
-+			continue;
-+
-+		q_vector->xsksq = kcalloc(rxqs_per_vector,
-+					  sizeof(*q_vector->xsksq),
-+					  GFP_KERNEL);
-+		if (!q_vector->xsksq)
-+			goto error;
- 	}
- 
- 	return 0;
 diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
-index 180335beaae1..2b8b75a16804 100644
+index 2b8b75a16804..cde6d56553d2 100644
 --- a/drivers/net/ethernet/intel/idpf/xdp.c
 +++ b/drivers/net/ethernet/intel/idpf/xdp.c
-@@ -225,7 +225,7 @@ static int idpf_xdp_parse_cqe(const struct idpf_splitq_4b_tx_compl_desc *desc,
- 	return upper_16_bits(val);
+@@ -46,7 +46,6 @@ static int __idpf_xdp_rxq_info_init(struct idpf_rx_queue *rxq, void *arg)
+ {
+ 	const struct idpf_vport *vport = rxq->q_vector->vport;
+ 	bool split = idpf_is_queue_model_split(vport->rxq_model);
+-	const struct page_pool *pp;
+ 	int err;
+ 
+ 	err = __xdp_rxq_info_reg(&rxq->xdp_rxq, vport->netdev, rxq->idx,
+@@ -55,8 +54,18 @@ static int __idpf_xdp_rxq_info_init(struct idpf_rx_queue *rxq, void *arg)
+ 	if (err)
+ 		return err;
+ 
+-	pp = split ? rxq->bufq_sets[0].bufq.pp : rxq->pp;
+-	xdp_rxq_info_attach_page_pool(&rxq->xdp_rxq, pp);
++	if (idpf_queue_has(XSK, rxq)) {
++		err = xdp_rxq_info_reg_mem_model(&rxq->xdp_rxq,
++						 MEM_TYPE_XSK_BUFF_POOL,
++						 rxq->pool);
++		if (err)
++			goto unreg;
++	} else {
++		const struct page_pool *pp;
++
++		pp = split ? rxq->bufq_sets[0].bufq.pp : rxq->pp;
++		xdp_rxq_info_attach_page_pool(&rxq->xdp_rxq, pp);
++	}
+ 
+ 	if (!split)
+ 		return 0;
+@@ -65,6 +74,11 @@ static int __idpf_xdp_rxq_info_init(struct idpf_rx_queue *rxq, void *arg)
+ 	rxq->num_xdp_txq = vport->num_xdp_txq;
+ 
+ 	return 0;
++
++unreg:
++	xdp_rxq_info_unreg(&rxq->xdp_rxq);
++
++	return err;
  }
  
--static u32 idpf_xdpsq_poll(struct idpf_tx_queue *xdpsq, u32 budget)
-+u32 idpf_xdpsq_poll(struct idpf_tx_queue *xdpsq, u32 budget)
- {
- 	struct idpf_compl_queue *cq = xdpsq->complq;
- 	u32 tx_ntc = xdpsq->next_to_clean;
+ int idpf_xdp_rxq_info_init(struct idpf_rx_queue *rxq)
+@@ -84,7 +98,9 @@ static int __idpf_xdp_rxq_info_deinit(struct idpf_rx_queue *rxq, void *arg)
+ 		rxq->num_xdp_txq = 0;
+ 	}
+ 
+-	xdp_rxq_info_detach_mem_model(&rxq->xdp_rxq);
++	if (!idpf_queue_has(XSK, rxq))
++		xdp_rxq_info_detach_mem_model(&rxq->xdp_rxq);
++
+ 	xdp_rxq_info_unreg(&rxq->xdp_rxq);
+ 
+ 	return 0;
 diff --git a/drivers/net/ethernet/intel/idpf/xsk.c b/drivers/net/ethernet/intel/idpf/xsk.c
-index 2098bf160df7..5c9f6f0a9fae 100644
+index 5c9f6f0a9fae..ba35dca946d5 100644
 --- a/drivers/net/ethernet/intel/idpf/xsk.c
 +++ b/drivers/net/ethernet/intel/idpf/xsk.c
-@@ -4,8 +4,240 @@
- #include <net/libeth/xsk.h>
+@@ -9,6 +9,47 @@
  
- #include "idpf.h"
-+#include "xdp.h"
- #include "xsk.h"
+ static void idpf_xsk_tx_timer(struct work_struct *work);
  
-+static void idpf_xsk_tx_timer(struct work_struct *work);
-+
-+static void idpf_xsk_setup_txq(const struct idpf_vport *vport,
-+			       struct idpf_tx_queue *txq)
++static void idpf_xsk_setup_rxq(const struct idpf_vport *vport,
++			       struct idpf_rx_queue *rxq)
 +{
 +	struct xsk_buff_pool *pool;
-+	u32 qid;
 +
-+	idpf_queue_clear(XSK, txq);
-+
-+	if (!idpf_queue_has(XDP, txq))
++	pool = xsk_get_pool_from_qid(vport->netdev, rxq->idx);
++	if (!pool || !pool->dev || !xsk_buff_can_alloc(pool, 1))
 +		return;
 +
-+	qid = txq->idx - vport->xdp_txq_offset;
++	rxq->pool = pool;
 +
-+	pool = xsk_get_pool_from_qid(vport->netdev, qid);
-+	if (!pool || !pool->dev)
-+		return;
-+
-+	txq->pool = pool;
-+	libeth_xdpsq_init_timer(txq->timer, txq, &txq->xdp_lock,
-+				idpf_xsk_tx_timer);
-+
-+	idpf_queue_assign(NOIRQ, txq, xsk_uses_need_wakeup(pool));
-+	idpf_queue_set(XSK, txq);
++	idpf_queue_set(XSK, rxq);
 +}
 +
-+static void idpf_xsk_setup_complq(const struct idpf_vport *vport,
-+				  struct idpf_compl_queue *complq)
++static void idpf_xsk_setup_bufq(const struct idpf_vport *vport,
++				struct idpf_buf_queue *bufq)
 +{
-+	const struct xsk_buff_pool *pool;
-+	u32 qid;
++	struct xsk_buff_pool *pool;
++	u32 qid = U32_MAX;
 +
-+	idpf_queue_clear(XSK, complq);
++	for (u32 i = 0; i < vport->num_rxq_grp; i++) {
++		const struct idpf_rxq_group *grp = &vport->rxq_grps[i];
 +
-+	if (!idpf_queue_has(XDP, complq))
-+		return;
-+
-+	qid = complq->txq_grp->txqs[0]->idx - vport->xdp_txq_offset;
-+
-+	pool = xsk_get_pool_from_qid(vport->netdev, qid);
-+	if (!pool || !pool->dev)
-+		return;
-+
-+	idpf_queue_set(XSK, complq);
-+}
-+
-+void idpf_xsk_setup_queue(const struct idpf_vport *vport, void *q,
-+			  enum virtchnl2_queue_type type)
-+{
-+	if (!idpf_xdp_enabled(vport))
-+		return;
-+
-+	switch (type) {
-+	case VIRTCHNL2_QUEUE_TYPE_TX:
-+		idpf_xsk_setup_txq(vport, q);
-+		break;
-+	case VIRTCHNL2_QUEUE_TYPE_TX_COMPLETION:
-+		idpf_xsk_setup_complq(vport, q);
-+		break;
-+	default:
-+		break;
++		for (u32 j = 0; j < vport->num_bufqs_per_qgrp; j++) {
++			if (&grp->splitq.bufq_sets[j].bufq == bufq) {
++				qid = grp->splitq.rxq_sets[0]->rxq.idx;
++				goto setup;
++			}
++		}
 +	}
++
++setup:
++	pool = xsk_get_pool_from_qid(vport->netdev, qid);
++	if (!pool || !pool->dev || !xsk_buff_can_alloc(pool, 1))
++		return;
++
++	bufq->pool = pool;
++
++	idpf_queue_set(XSK, bufq);
 +}
 +
-+void idpf_xsk_clear_queue(void *q, enum virtchnl2_queue_type type)
-+{
-+	struct idpf_compl_queue *complq;
-+	struct idpf_tx_queue *txq;
-+
-+	switch (type) {
-+	case VIRTCHNL2_QUEUE_TYPE_TX:
-+		txq = q;
-+		if (!idpf_queue_has_clear(XSK, txq))
+ static void idpf_xsk_setup_txq(const struct idpf_vport *vport,
+ 			       struct idpf_tx_queue *txq)
+ {
+@@ -61,6 +102,12 @@ void idpf_xsk_setup_queue(const struct idpf_vport *vport, void *q,
+ 		return;
+ 
+ 	switch (type) {
++	case VIRTCHNL2_QUEUE_TYPE_RX:
++		idpf_xsk_setup_rxq(vport, q);
++		break;
++	case VIRTCHNL2_QUEUE_TYPE_RX_BUFFER:
++		idpf_xsk_setup_bufq(vport, q);
++		break;
+ 	case VIRTCHNL2_QUEUE_TYPE_TX:
+ 		idpf_xsk_setup_txq(vport, q);
+ 		break;
+@@ -75,9 +122,25 @@ void idpf_xsk_setup_queue(const struct idpf_vport *vport, void *q,
+ void idpf_xsk_clear_queue(void *q, enum virtchnl2_queue_type type)
+ {
+ 	struct idpf_compl_queue *complq;
++	struct idpf_buf_queue *bufq;
++	struct idpf_rx_queue *rxq;
+ 	struct idpf_tx_queue *txq;
+ 
+ 	switch (type) {
++	case VIRTCHNL2_QUEUE_TYPE_RX:
++		rxq = q;
++		if (!idpf_queue_has_clear(XSK, rxq))
 +			return;
 +
-+		idpf_queue_set(NOIRQ, txq);
-+		txq->dev = txq->netdev->dev.parent;
++		rxq->pool = NULL;
 +		break;
-+	case VIRTCHNL2_QUEUE_TYPE_TX_COMPLETION:
-+		complq = q;
-+		idpf_queue_clear(XSK, complq);
++	case VIRTCHNL2_QUEUE_TYPE_RX_BUFFER:
++		bufq = q;
++		if (!idpf_queue_has_clear(XSK, bufq))
++			return;
++
++		bufq->pool = NULL;
 +		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+void idpf_xsksq_clean(struct idpf_tx_queue *xdpsq)
-+{
-+	struct libeth_xdpsq_napi_stats ss = { };
-+	u32 ntc = xdpsq->next_to_clean;
-+	struct xdp_frame_bulk bq;
-+	struct libeth_cq_pp cp = {
-+		.dev	= xdpsq->pool->dev,
-+		.bq	= &bq,
-+		.xss	= &ss,
-+	};
-+	u32 xsk_frames = 0;
-+
-+	xdp_frame_bulk_init(&bq);
-+
-+	while (ntc != xdpsq->next_to_use) {
-+		struct libeth_sqe *sqe = &xdpsq->tx_buf[ntc];
-+
-+		if (sqe->type)
-+			libeth_xdp_complete_tx(sqe, &cp);
-+		else
-+			xsk_frames++;
-+
-+		if (unlikely(++ntc == xdpsq->desc_count))
-+			ntc = 0;
-+	}
-+
-+	xdp_flush_frame_bulk(&bq);
-+
-+	if (xsk_frames)
-+		xsk_tx_completed(xdpsq->pool, xsk_frames);
-+}
-+
-+static noinline u32 idpf_xsksq_complete_slow(struct idpf_tx_queue *xdpsq,
-+					     u32 done)
-+{
-+	struct libeth_xdpsq_napi_stats ss = { };
-+	u32 ntc = xdpsq->next_to_clean;
-+	u32 cnt = xdpsq->desc_count;
-+	struct xdp_frame_bulk bq;
-+	struct libeth_cq_pp cp = {
-+		.dev	= xdpsq->pool->dev,
-+		.bq	= &bq,
-+		.xss	= &ss,
-+		.napi	= true,
-+	};
-+	u32 xsk_frames = 0;
-+
-+	xdp_frame_bulk_init(&bq);
-+
-+	for (u32 i = 0; likely(i < done); i++) {
-+		struct libeth_sqe *sqe = &xdpsq->tx_buf[ntc];
-+
-+		if (sqe->type)
-+			libeth_xdp_complete_tx(sqe, &cp);
-+		else
-+			xsk_frames++;
-+
-+		if (unlikely(++ntc == cnt))
-+			ntc = 0;
-+	}
-+
-+	xdp_flush_frame_bulk(&bq);
-+
-+	xdpsq->next_to_clean = ntc;
-+	xdpsq->xdp_tx -= cp.xdp_tx;
-+
-+	return xsk_frames;
-+}
-+
-+static __always_inline u32 idpf_xsksq_complete(void *_xdpsq, u32 budget)
+ 	case VIRTCHNL2_QUEUE_TYPE_TX:
+ 		txq = q;
+ 		if (!idpf_queue_has_clear(XSK, txq))
+@@ -197,6 +260,31 @@ static __always_inline u32 idpf_xsksq_complete(void *_xdpsq, u32 budget)
+ 	return done_frames;
+ }
+ 
++static u32 idpf_xsk_tx_prep(void *_xdpsq, struct libeth_xdpsq *sq)
 +{
 +	struct idpf_tx_queue *xdpsq = _xdpsq;
-+	u32 tx_ntc = xdpsq->next_to_clean;
-+	u32 tx_cnt = xdpsq->desc_count;
-+	u32 done_frames;
-+	u32 xsk_frames;
++	u32 free;
 +
-+	done_frames = idpf_xdpsq_poll(xdpsq, budget);
-+	if (unlikely(!done_frames))
-+		return 0;
++	libeth_xdpsq_lock(&xdpsq->xdp_lock);
 +
-+	if (likely(!xdpsq->xdp_tx)) {
-+		tx_ntc += done_frames;
-+		if (tx_ntc >= tx_cnt)
-+			tx_ntc -= tx_cnt;
-+
-+		xdpsq->next_to_clean = tx_ntc;
-+		xsk_frames = done_frames;
-+
-+		goto finalize;
-+	}
-+
-+	xsk_frames = idpf_xsksq_complete_slow(xdpsq, done_frames);
-+	if (xsk_frames)
-+finalize:
-+		xsk_tx_completed(xdpsq->pool, xsk_frames);
-+
-+	xdpsq->pending -= done_frames;
-+
-+	return done_frames;
-+}
-+
-+static u32 idpf_xsk_xmit_prep(void *_xdpsq, struct libeth_xdpsq *sq)
-+{
-+	struct idpf_tx_queue *xdpsq = _xdpsq;
++	free = xdpsq->desc_count - xdpsq->pending;
++	if (free < xdpsq->thresh)
++		free += idpf_xsksq_complete(xdpsq, xdpsq->thresh);
 +
 +	*sq = (struct libeth_xdpsq){
 +		.pool		= xdpsq->pool,
@@ -704,38 +540,258 @@ index 2098bf160df7..5c9f6f0a9fae 100644
 +		.lock		= &xdpsq->xdp_lock,
 +		.ntu		= &xdpsq->next_to_use,
 +		.pending	= &xdpsq->pending,
++		.xdp_tx		= &xdpsq->xdp_tx,
 +	};
 +
-+	/*
-+	 * The queue is cleaned, the budget is already known, optimize out
-+	 * the second min() by passing the type limit.
-+	 */
-+	return U32_MAX;
++	return free;
 +}
 +
-+bool idpf_xsk_xmit(struct idpf_tx_queue *xsksq)
+ static u32 idpf_xsk_xmit_prep(void *_xdpsq, struct libeth_xdpsq *sq)
+ {
+ 	struct idpf_tx_queue *xdpsq = _xdpsq;
+@@ -236,8 +324,225 @@ bool idpf_xsk_xmit(struct idpf_tx_queue *xsksq)
+ 
+ LIBETH_XDP_DEFINE_START();
+ LIBETH_XDP_DEFINE_TIMER(static idpf_xsk_tx_timer, idpf_xsksq_complete);
++LIBETH_XSK_DEFINE_FLUSH_TX(static idpf_xsk_tx_flush_bulk, idpf_xsk_tx_prep,
++			   idpf_xdp_tx_xmit);
++LIBETH_XSK_DEFINE_RUN(static idpf_xsk_run_pass, idpf_xsk_run_prog,
++		      idpf_xsk_tx_flush_bulk, idpf_rx_process_skb_fields);
++LIBETH_XSK_DEFINE_FINALIZE(static idpf_xsk_finalize_rx, idpf_xsk_tx_flush_bulk,
++			   idpf_xdp_tx_finalize);
+ LIBETH_XDP_DEFINE_END();
+ 
++static void idpf_xskfqe_init(const struct libeth_xskfq_fp *fq, u32 i)
 +{
-+	u32 free;
++	struct virtchnl2_splitq_rx_buf_desc *desc = fq->descs;
 +
-+	libeth_xdpsq_lock(&xsksq->xdp_lock);
-+
-+	free = xsksq->desc_count - xsksq->pending;
-+	if (free < xsksq->thresh)
-+		free += idpf_xsksq_complete(xsksq, xsksq->thresh);
-+
-+	return libeth_xsk_xmit_do_bulk(xsksq->pool, xsksq,
-+				       min(free - 1, xsksq->thresh),
-+				       libeth_xsktmo, idpf_xsk_xmit_prep,
-+				       idpf_xdp_tx_xmit, idpf_xdp_tx_finalize);
++	desc = &desc[i];
++#ifdef __LIBETH_WORD_ACCESS
++	*(u64 *)&desc->qword0 = i;
++#else
++	desc->qword0.buf_id = cpu_to_le16(i);
++#endif
++	desc->pkt_addr = cpu_to_le64(libeth_xsk_buff_xdp_get_dma(fq->fqes[i]));
 +}
 +
-+LIBETH_XDP_DEFINE_START();
-+LIBETH_XDP_DEFINE_TIMER(static idpf_xsk_tx_timer, idpf_xsksq_complete);
-+LIBETH_XDP_DEFINE_END();
++static bool idpf_xskfq_refill_thresh(struct idpf_buf_queue *bufq, u32 count)
++{
++	struct libeth_xskfq_fp fq = {
++		.pool	= bufq->pool,
++		.fqes	= bufq->xsk_buf,
++		.descs	= bufq->split_buf,
++		.ntu	= bufq->next_to_use,
++		.count	= bufq->desc_count,
++	};
++	u32 done;
++
++	done = libeth_xskfqe_alloc(&fq, count, idpf_xskfqe_init);
++	writel(fq.ntu, bufq->tail);
++
++	bufq->next_to_use = fq.ntu;
++	bufq->pending -= done;
++
++	return done == count;
++}
++
++static bool idpf_xskfq_refill(struct idpf_buf_queue *bufq)
++{
++	u32 count, rx_thresh = bufq->thresh;
++
++	count = ALIGN_DOWN(bufq->pending - 1, rx_thresh);
++
++	for (u32 i = 0; i < count; i += rx_thresh) {
++		if (unlikely(!idpf_xskfq_refill_thresh(bufq, rx_thresh)))
++			return false;
++	}
++
++	return true;
++}
++
++int idpf_xskfq_init(struct idpf_buf_queue *bufq)
++{
++	struct libeth_xskfq fq = {
++		.pool	= bufq->pool,
++		.count	= bufq->desc_count,
++		.nid	= idpf_q_vector_to_mem(bufq->q_vector),
++	};
++	int ret;
++
++	ret = libeth_xskfq_create(&fq);
++	if (ret)
++		return ret;
++
++	bufq->xsk_buf = fq.fqes;
++	bufq->pending = fq.pending;
++	bufq->thresh = fq.thresh;
++	bufq->rx_buf_size = fq.buf_len;
++
++	if (!idpf_xskfq_refill(bufq))
++		netdev_err(bufq->pool->netdev,
++			   "failed to allocate XSk buffers for qid %d\n",
++			   bufq->pool->queue_id);
++
++	bufq->next_to_alloc = bufq->next_to_use;
++
++	idpf_queue_clear(HSPLIT_EN, bufq);
++	bufq->rx_hbuf_size = 0;
++
++	return 0;
++}
++
++void idpf_xskfq_rel(struct idpf_buf_queue *bufq)
++{
++	struct libeth_xskfq fq = {
++		.fqes	= bufq->xsk_buf,
++	};
++
++	libeth_xskfq_destroy(&fq);
++
++	bufq->rx_buf_size = fq.buf_len;
++	bufq->thresh = fq.thresh;
++	bufq->pending = fq.pending;
++}
++
++struct idpf_xskfq_refill_set {
++	struct {
++		struct idpf_buf_queue	*q;
++		u32			buf_id;
++		u32			pending;
++	} bufqs[IDPF_MAX_BUFQS_PER_RXQ_GRP];
++};
++
++static bool idpf_xskfq_refill_set(const struct idpf_xskfq_refill_set *set)
++{
++	bool ret = true;
++
++	for (u32 i = 0; i < ARRAY_SIZE(set->bufqs); i++) {
++		struct idpf_buf_queue *bufq = set->bufqs[i].q;
++		u32 ntc;
++
++		if (!bufq)
++			continue;
++
++		ntc = set->bufqs[i].buf_id;
++		if (unlikely(++ntc == bufq->desc_count))
++			ntc = 0;
++
++		bufq->next_to_clean = ntc;
++		bufq->pending += set->bufqs[i].pending;
++
++		if (bufq->pending > bufq->thresh)
++			ret &= idpf_xskfq_refill(bufq);
++	}
++
++	return ret;
++}
++
++int idpf_xskrq_poll(struct idpf_rx_queue *rxq, u32 budget)
++{
++	struct idpf_xskfq_refill_set set = { };
++	struct libeth_rq_napi_stats rs = { };
++	bool wake, gen, fail = false;
++	u32 ntc = rxq->next_to_clean;
++	struct libeth_xdp_buff *xdp;
++	LIBETH_XDP_ONSTACK_BULK(bq);
++	u32 cnt = rxq->desc_count;
++
++	wake = xsk_uses_need_wakeup(rxq->pool);
++	if (wake)
++		xsk_clear_rx_need_wakeup(rxq->pool);
++
++	gen = idpf_queue_has(GEN_CHK, rxq);
++
++	libeth_xsk_tx_init_bulk(&bq, rxq->xdp_prog, rxq->xdp_rxq.dev,
++				rxq->xdpsqs, rxq->num_xdp_txq);
++	xdp = rxq->xsk;
++
++	while (likely(rs.packets < budget)) {
++		const struct virtchnl2_rx_flex_desc_adv_nic_3 *rx_desc;
++		struct idpf_xdp_rx_desc desc __uninitialized;
++		struct idpf_buf_queue *bufq;
++		u32 bufq_id, buf_id;
++
++		rx_desc = &rxq->rx[ntc].flex_adv_nic_3_wb;
++
++		idpf_xdp_get_qw0(&desc, rx_desc);
++		if (idpf_xdp_rx_gen(&desc) != gen)
++			break;
++
++		dma_rmb();
++
++		bufq_id = idpf_xdp_rx_bufq(&desc);
++		bufq = set.bufqs[bufq_id].q;
++		if (!bufq) {
++			bufq = &rxq->bufq_sets[bufq_id].bufq;
++			set.bufqs[bufq_id].q = bufq;
++		}
++
++		idpf_xdp_get_qw1(&desc, rx_desc);
++		buf_id = idpf_xdp_rx_buf(&desc);
++
++		set.bufqs[bufq_id].buf_id = buf_id;
++		set.bufqs[bufq_id].pending++;
++
++		xdp = libeth_xsk_process_buff(xdp, bufq->xsk_buf[buf_id],
++					      idpf_xdp_rx_len(&desc));
++
++		if (unlikely(++ntc == cnt)) {
++			ntc = 0;
++			gen = !gen;
++			idpf_queue_change(GEN_CHK, rxq);
++		}
++
++		if (!idpf_xdp_rx_eop(&desc) || unlikely(!xdp))
++			continue;
++
++		fail = !idpf_xsk_run_pass(xdp, &bq, rxq->napi, &rs, rx_desc);
++		xdp = NULL;
++
++		if (fail)
++			break;
++	}
++
++	idpf_xsk_finalize_rx(&bq);
++
++	rxq->next_to_clean = ntc;
++	rxq->xsk = xdp;
++
++	fail |= !idpf_xskfq_refill_set(&set);
++
++	u64_stats_update_begin(&rxq->stats_sync);
++	u64_stats_add(&rxq->q_stats.packets, rs.packets);
++	u64_stats_add(&rxq->q_stats.bytes, rs.bytes);
++	u64_stats_update_end(&rxq->stats_sync);
++
++	if (!wake)
++		return unlikely(fail) ? budget : rs.packets;
++
++	if (unlikely(fail))
++		xsk_set_rx_need_wakeup(rxq->pool);
++
++	return rs.packets;
++}
 +
  int idpf_xsk_pool_setup(struct idpf_vport *vport, struct netdev_bpf *bpf)
  {
  	struct xsk_buff_pool *pool = bpf->xsk.pool;
+@@ -245,6 +550,16 @@ int idpf_xsk_pool_setup(struct idpf_vport *vport, struct netdev_bpf *bpf)
+ 	bool restart;
+ 	int ret;
+ 
++	if (pool && !IS_ALIGNED(xsk_pool_get_rx_frame_size(pool),
++				LIBETH_RX_BUF_STRIDE)) {
++		NL_SET_ERR_MSG_FMT_MOD(bpf->extack,
++				       "%s: HW doesn't support frames sizes not aligned to %u (qid %u: %u)",
++				       netdev_name(vport->netdev),
++				       LIBETH_RX_BUF_STRIDE, qid,
++				       xsk_pool_get_rx_frame_size(pool));
++		return -EINVAL;
++	}
++
+ 	restart = idpf_xdp_enabled(vport) && netif_running(vport->netdev);
+ 	if (!restart)
+ 		goto pool;
 -- 
 2.51.0
 
