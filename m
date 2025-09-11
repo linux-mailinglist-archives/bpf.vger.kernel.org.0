@@ -1,81 +1,81 @@
-Return-Path: <bpf+bounces-68181-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68182-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A3AB53AF7
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 20:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B04EB53B4C
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 20:20:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0BD05637B0
-	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 18:02:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E249F17390B
+	for <lists+bpf@lfdr.de>; Thu, 11 Sep 2025 18:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759702356BA;
-	Thu, 11 Sep 2025 18:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D445435A2AD;
+	Thu, 11 Sep 2025 18:19:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJvHoPrB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FjjsmIKs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05B21990A7
-	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 18:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17CF247F4A
+	for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 18:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757613747; cv=none; b=LXIAZNEkBc8izrDHVa2vpEmLweSn4MYIm+vs+M05A8JsgPdM0sBhBhUi2vZPzw7wGR7Jly0jsDpadrQvw5dPk82NHPEvzRBjnrjAYwJk1m6O4SwczkmiujwB2gmCxfijKCmoamIJzYh5OL6zfUk1M8MwaNKIVg0uOuiHe6x5ZFo=
+	t=1757614797; cv=none; b=qnRl1KH7VxuKW8WkHOi6YmLmqGQMZKub7JowAwTUlyoK7yGsM2PCnq/gmo2hlztNByCWhL++adj0kG7Fio/WC+53sRevMyOoMv2zLb/UCiwnLalFiDjzVaah6r4nf1b0OrIrWyK9KnkSs7X3LlxOs8fGf8Z6oxtQKmcBGKqNEo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757613747; c=relaxed/simple;
-	bh=m6nh+nAIDirljgUmS7AoFDFqrIUgIED7D3aZ95+tg9Q=;
+	s=arc-20240116; t=1757614797; c=relaxed/simple;
+	bh=f0yaI6+i0WsG3z7aqKITZCxaNsHFQ0BDBzwnfDuKFJE=;
 	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=b7z8c7J8h9aT5V5w6cenKe2KPJ0QCAYOMhzEQlJSDqu/0W9gFg2nDIZewRwPfYAprWxCMX0FAxeDQZQwvhdPMLyaHNGt+bhjYtYBxcReai8bnw3HQn1N9Mh5x1fZ7sC+tVq1Pd+SXC+1ELj3nlR00VRL8rbmjC8VVi0M4fOGyQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mJvHoPrB; arc=none smtp.client-ip=209.85.210.173
+	 Content-Type:MIME-Version; b=LnLDbZqaEiJfvmG9xUIbcOPsV73Tx53uFku3FNc7a1BeA5mQxGATvZWyT6o192aPGlCczsKlBxHq7tcidAoIBUrNmuJ0ljn0yCzbEYTQA/ZjYQA1bYHquojeT9BxEf+Ad0l4VW9BlJMkwOnLT5HPl7z0oSAJlZxOuPzzZDWFAks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FjjsmIKs; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7742adc1f25so703983b3a.2
-        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 11:02:25 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-323266cdf64so866920a91.0
+        for <bpf@vger.kernel.org>; Thu, 11 Sep 2025 11:19:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757613745; x=1758218545; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757614795; x=1758219595; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m6nh+nAIDirljgUmS7AoFDFqrIUgIED7D3aZ95+tg9Q=;
-        b=mJvHoPrBPHIMn2p8TcLEJgLV7xy4UyvUX4R2N8F6YMhblFQZ2zzaH8y7Pwy+cxylNJ
-         3qTlvDIcEkfCszGgfiOyslTnwLoffnIT1iAZ+BSfY6X71RTAFPTmzFxId09M5j7cKrlZ
-         8NH7ZG+AHev/prh6mH/d6tthjpeElB+2RxVhhpLl5v6hv33TAan+EhN5SHX+2k1gFHaz
-         Hp7MfmoeWA9ft3RIQA4DqeU3TOLqT5vZDb1ZBf9Yc/pWDhn9YvYTT/HQFIknQgwoohSo
-         rBs/WK+uNzgxXBxof69iF5iS/JyVtKdFp4J/dFOuL8CLmTNU0xGZ/uxfHaN8QpB7IcTH
-         RmrA==
+        bh=94yWRXEGEZcW6uSr/b1ykEf3bi+EUY7fVL5wwWS8plA=;
+        b=FjjsmIKsa1U1SwpQgzMry3+cfnSA3hd9JOgNXujhHabo0oAGJIQlSKorXfQ7lojA2i
+         NXukB45QDVTQJkzDL4ybdFFabcTfjKHH2V4MwZoTBu2OB1/oYmQdQ+3VMndxTnwpMO4q
+         nM4PBdubBM4VeTjZFiZWwT8Neq++g5MV9Rm7GFoJcusProWkjpG5jeIT8tuinWVD7Uyw
+         OcpvMWA1GE0fck1cr4ChcaT7SxJ+Z0fF7EwNgbSRgjaS4kjX2UTn++YArxQ0aGs+Zcs0
+         IlvGpcxiBR2329xB0/uNgfcUcEgPbWPJf9E9d773qvzFQWloHsgI89/MAv3r4CGbhqZD
+         w01g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757613745; x=1758218545;
+        d=1e100.net; s=20230601; t=1757614795; x=1758219595;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=m6nh+nAIDirljgUmS7AoFDFqrIUgIED7D3aZ95+tg9Q=;
-        b=EpVMSRAuao9lQdksA6IE5uQc0NNDBAM3lSUongJcwj2dU+XtL6JIElm/X5qi//TE7n
-         vVarHERIVjbHfV3QmSftmZKQypaSce1zbj9e43Pi6Pka+PY6oUi+StAs6XjUuMFrdA5T
-         xmfOps6I8o3gzrJfGtRI1OVHBWPqcoab5bixyx1M8xz9/IvAbcnRm10Lnng+xSLi9xBu
-         AGgg0Lf6uRMI77BNfBHX+kI7WHTjB2sPQ1gRpPPdQbemW1gWrha14dIGqwLm0zbvyU/b
-         7wCBWcO3yjIoQfCRp1Hl7D8pXDFuDsNFiO9vdbNaFU9YdBtN2W9cHsxYndK8gOP8xM/A
-         LRYw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZA0uSfBStfOnPrP8kWNmxXR4Mz88ho6jHSuQwlFACS5T932r7IeTxBonwrHiBUKCM0A4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxf/3J79QYcyUxClpfuaU4kANT7HxMNkmgujw+TF9k4035tSYdE
-	30FPLZczqUzFzyBMvkcJhGTax8nO2QxBGsgUVplWrAaIM6jOEpcCOWT8tqzC/A==
-X-Gm-Gg: ASbGnctYJWP+iKczVYVCUZwZyhUv7IDXugrI79R7VrnCAdSm3+RHCEhn98KFKJBj0hq
-	lVrlG+NublqnaNZzPqnZJ6+A+v4LU8IBnJq3xRWzx0ce6Ztr1sRWm3+UwRAvBrNJ+jST28KuWp7
-	dIA0sRNKJt7MqFyctHnu5VrOrbnrH5zODfZuCAWkRohZB8DWb6vfMx2ZG0gXvSXQQvTW3tvYWPm
-	qH7DsPYBFh+aiJCu5HiKggY7gZtGNfVSNK/K7z0W40dT41EaTmWXNyzKIPjNWchJFwcNAK9CmhC
-	ADsmIJ0s4aNKBj66PPmjiPMWBrK2Nyk6lK24z/Aa8BHhCsLW23bLLkOFK9j8UEJuRN5wIyuU4TD
-	AXJs0K1qxZ9USOsUKXHJEUb8wS5mT9w==
-X-Google-Smtp-Source: AGHT+IGtn9nwNy+zyF5J8gyvol0+0CBkrs/+mkXNwpJfwyScKOUi6cliR52GgNZiHuVU50D20gUhWg==
-X-Received: by 2002:a05:6a00:2393:b0:736:a8db:93bb with SMTP id d2e1a72fcca58-776120648f9mr314011b3a.5.1757613744794;
-        Thu, 11 Sep 2025 11:02:24 -0700 (PDT)
+        bh=94yWRXEGEZcW6uSr/b1ykEf3bi+EUY7fVL5wwWS8plA=;
+        b=QaOjyC84XGUqj3TJf5yYwCnlOe5vjpwL3bnQFq3qPCTMYDg2Qw3UGrdBqTzrg2czBt
+         SxlZ/QXB5MuW4IU6Wx3Xn5NYP9/nrRqo+/Bzgzhf1P20W0+9ZOOtO3X6MNVEWXp0Cjrw
+         5G9wek03ddSLYDn4eH4ffgGwVUSrbYSlSlcJ0U8hY8Q998OaNMXbiG/0R/qCbd8QA/B1
+         HmL22oszt2qZukowfK52+PKujaT/IznlhgGZJMSDnrSjJwWSrWQZfpRBZN4M5gk5yd3S
+         1RwgDTbI9EvIA9WlNDlxrEuwMxOInFGHLXGUJrVDVNhdtlyb7I+EGE2VIQynMozoWOHp
+         nu8A==
+X-Forwarded-Encrypted: i=1; AJvYcCVbFJx1CVLapdzr4YCKTU0B2z4q2p1alsRCYPVek432dX4dbMTtkXzBL1/pT216SEt4qx8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqvunqO4b+NZWzTb9uO8/Gl95knWtKwxSIqCwpznJbKBgXqAgg
+	/PNfLnKMEdlhkbf1NM4CndVDbMqMXB/NktXJ5+uldRjGM8hIFqckgRF+oV7dyA==
+X-Gm-Gg: ASbGncsXxQVjPeXC1zF9Rsa6lMhcLeoogT+0+ppqqKtLZKRzty2Y+knnT9GKJaCYzyF
+	HhVWRJSrfsYF+cM1mpShNqkqRDKL0u9GYi9qqnYj7rbDlNgZLZ+88kZDRd5aKNBDieouR+HKyBn
+	UF5QgMq94Sn35VNMQ30+hwQ4pP9V/xdd8QiaWBNcviUgHmwKrzJKrtJAjWMPWdyGRa96PGRzbno
+	PBW4L7smduTevCigsSryj7eNYbnmTsGSloJT+QYIjCSpbqVScMkcbF66NNeih0pW925UahJ1d0D
+	ZvBoRTjKvBlFH/29jlaw3RfdPQ6zsxTcw3MLkC4NldPzRm89F9iJIU5pzqdYBB181s/A9r/THB1
+	JnwTCRLxs4uqEM1L8vg9hfTRJM+AKzg==
+X-Google-Smtp-Source: AGHT+IHJPpfgS3nvtYot4cTEnhh34DKnEO/VR4Sk1wjSJxZwEUCV/oQyBWvD5LKSGegaFl9Z6gRk8A==
+X-Received: by 2002:a17:90b:3e88:b0:327:dc81:b399 with SMTP id 98e67ed59e1d1-32de4f895e4mr145826a91.9.1757614795294;
+        Thu, 11 Sep 2025 11:19:55 -0700 (PDT)
 Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77607b393f0sm2661194b3a.88.2025.09.11.11.02.23
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dd98e616csm2805627a91.19.2025.09.11.11.19.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Sep 2025 11:02:24 -0700 (PDT)
-Message-ID: <b44d6bb914c55364a5fd682b6594093587912ed7.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v7 5/6] selftests: bpf: use __stderr in stream
- error tests
+        Thu, 11 Sep 2025 11:19:54 -0700 (PDT)
+Message-ID: <137b87da5a7393602ec77d51cfd6398406cda9fb.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v7 6/6] selftests/bpf: Add tests for arena
+ fault reporting
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
  <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
@@ -86,10 +86,10 @@ To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
  <jolsa@kernel.org>,  Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas
  <catalin.marinas@arm.com>, Will Deacon	 <will@kernel.org>, Kumar Kartikeya
  Dwivedi <memxor@gmail.com>, 	bpf@vger.kernel.org
-Date: Thu, 11 Sep 2025 11:02:20 -0700
-In-Reply-To: <20250911145808.58042-6-puranjay@kernel.org>
+Date: Thu, 11 Sep 2025 11:19:51 -0700
+In-Reply-To: <20250911145808.58042-7-puranjay@kernel.org>
 References: <20250911145808.58042-1-puranjay@kernel.org>
-	 <20250911145808.58042-6-puranjay@kernel.org>
+	 <20250911145808.58042-7-puranjay@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -101,13 +101,41 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Thu, 2025-09-11 at 14:58 +0000, Puranjay Mohan wrote:
-> Start using __stderr directly in the bpf programs to test the reporting
-> of may_goto timeout detection and spin_lock dead lock detection.
+> Add selftests for testing the reporting of arena page faults through BPF
+> streams. Two new bpf programs are added that read and write to an
+> unmapped arena address and the fault reporting is verified in the
+> userspace through streams.
+>=20
+> The added bpf programs need to access the user_vm_start in struct
+> bpf_arena, this is done by casting &arena to struct bpf_arena *, but
+> barrier_var() is used on this ptr before accessing ptr->user_vm_start;
+> to stop GCC from issuing an out-of-bound access due to the cast from
+> smaller map struct to larger "struct bpf_arena"
 >=20
 > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 > ---
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+
+
+[...]
+
+> +SEC("syscall")
+> +__arch_x86_64
+> +__arch_arm64
+> +__success __retval(0)
+> +__stderr("ERROR: Arena WRITE access at unmapped address 0x{{.*}}")
+> +__stderr("CPU: {{[0-9]+}} UID: 0 PID: {{[0-9]+}} Comm: {{.*}}")
+> +__stderr("Call trace:\n"
+> +"{{([a-zA-Z_][a-zA-Z0-9_]*\\+0x[0-9a-fA-F]+/0x[0-9a-fA-F]+\n"
+> +"|[ \t]+[^\n]+\n)*}}")
+
+Nit: here and in other tests, the regex is a bit hard to read.
+     How wrong would it be to write it down as follows:
+     __stderr("Call trace:")
+     __stderr("bpf_stream_stage_dump_stack+0x{{.*}}/0x{{.*}}")
+     ?
+     (or at-least add a comment).
 
 [...]
 
