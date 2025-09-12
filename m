@@ -1,308 +1,525 @@
-Return-Path: <bpf+bounces-68217-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F263CB544F4
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 10:17:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C7DB54565
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 10:29:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88595463198
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 08:17:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C56BF1CC2E9B
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 08:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913932D47EE;
-	Fri, 12 Sep 2025 08:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20DEF2D739D;
+	Fri, 12 Sep 2025 08:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="omcd1/dK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CzpdKdUj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52AC2D3EF6
-	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 08:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD722D63E2
+	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 08:29:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757665033; cv=none; b=tfIptIn0iXgStS09z/Bo9wcNt8hxXj+C8olFpa+ZVctKLTQ18WzDSLVgzXUr+awskoQGgPkoCqRgaZbSjKVswLv+9WYXUyquuaY/H8SihHHkhGdjcsHhqHopjqDCItKByxbLpOv9uCqjeHDEOuIBnCJXQXoHy6Uw9gvbG9DYAV4=
+	t=1757665765; cv=none; b=djgvPQ70q+D188JwyUk6y9eJjDv3ZOfPeezSPf7hatYvD5zLM5lFk6YMu6IHZF7roC3MIvTvWNcoKQecjAJRjjPxTxY3wvhxZW0sRaEJ8mR4AE8sDpt4Jdaxx+ji8TsVQzfOAcmR7/QC/oDHTeTzwTOgUgl4NiYsbKZXT1bXQTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757665033; c=relaxed/simple;
-	bh=i9CFVWx0KuQcVLiLCs7JaLronTxZjdKNbsKFJb4KxyU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=TL14VuUaXOot6AVE6LH41xI1JBBDdt5eUdzpV91C68TlGz1isS/hSGai4gNJ55cTkDi2YtBZ3Jy67B1Sx57wZzVhfvOVFG2ZhpT9o6e54EU1ST/Iss0VvDOo5NhSYLmmn9z2yv4zP2nA0pheJnuP8uHIRl5jouKFdEsu5W21Ljo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=omcd1/dK; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-45dfb6cadf3so14538735e9.2
-        for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 01:17:08 -0700 (PDT)
+	s=arc-20240116; t=1757665765; c=relaxed/simple;
+	bh=cSvCveeG5tyLzTPtbHcS98FPLNxeKaOaBYSReQ7ftNI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OR7aSYp16iHBGxEC1aPJr0I/o5V2WdUmImzLtwg6uyNYAz+e/ruUb8I7S5PcuXOkuJ/yTMh+hTAKikL/N2sRORJOQwv+VitgRhxXlHLAhxYxXzjluas/jOtm41s5lPQosK9l/B5G+bynajs4lfa68+yod1GOAQFwPQ56h2+i0n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CzpdKdUj; arc=none smtp.client-ip=209.85.219.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-76c20428924so2287006d6.0
+        for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 01:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1757665027; x=1758269827; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Etxg0IY1htc5QJcqwa87OQjVL3XIqrFRkFeKYdzH19A=;
-        b=omcd1/dKsATdq2FKtt1SBwxT0mpx2BpCAIFklEQ0DUx0/Ul0d+VI7CRYiXO0xGl4do
-         3TlxmevotmEXdtWJUamvKCibuYxMYBas29O0fjXVBLesJ2itsYVHdZRJIPxNQs/XYBr1
-         zmF1Awi35rIRVLEMEbHNOYg8iLjiLN1/49yfETyeavB5E5eHmklZW/ZwOsSkOyaw+mX7
-         YnL/xZj/9mGEsj5XfQmpLZoCq5cxQm7tP4b3eoQCVXuVu565B53LdQ00yaE4TTs2dwCa
-         WTFM3Pep9yxxqN1+akhMQqjMR5YzmGJbti/iYNtJagyqbChEYiVF9sxK5W51M6y6PBpy
-         OD4A==
+        d=gmail.com; s=20230601; t=1757665762; x=1758270562; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UT4GkfQH7Q77VhObaVtW4zsoo1QdteuiKUxVY5qAxx4=;
+        b=CzpdKdUjRq1slL7NGmtL5ifnK1vXkZA00I0ORYEBCNAZeOroGd0CVXvC6yrjaethYz
+         4JdEl8ug0LClddkRaXURob6tiIx1soxTgj2fBgFI0UeeTt7zZdZog8TLop1kFpaLgfLw
+         B2bYt56h64w7ZhlSiRxV8qjlLIoXsAS+Cl6du2fpM68EuqwnJHTNEYMWe/LYoZH9o59c
+         LEI7HZETPd8kOGeHTtLW5jkH41Q4JvSstlo6fyYKh5CFL5f/MDUmRxtYvizcZ21XdUYu
+         idCr2HJ1JUCWPSGbRUg7QkG1ts2JgFngoxk23cgE0T9kQUcSNhEs77sFPI5fKSkvDxck
+         bILA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757665027; x=1758269827;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Etxg0IY1htc5QJcqwa87OQjVL3XIqrFRkFeKYdzH19A=;
-        b=UmJHUlYunIuWMLw6SOn/IFg4ktHbwnCgME6ALjv+d6qj/VyADikYxwrPhVJgvuTELc
-         /qnbhwbVXPmJo+z5LIyav56Ky2RjMMRHBFkVrWbxqu68EcmyXxe8S4VhE+3cpQJlTHyE
-         Eg8ytgP7DV7QccsUkESlVsVtQ9RLPiE1qWyUFK8bxjkTFAix/kvy4mHKenYzt+MJl1px
-         uvtxaR/qLY8OK0r10f2PRlxxrpYKeQeeRvjiJTafqcpeESDosobXFkzTh7RYvSXVmRat
-         BkADLhw4jHWaa9QJC09qmGB6+PZ7kjRcB7LEkaxjXgWifgFl+YaDVE+6mijfYc0zBqFi
-         zGig==
-X-Forwarded-Encrypted: i=1; AJvYcCUe8NcE1/7sjfBhLWc06uUUdAK96qhGnxGe/8ziW4fX5Ml7GHVWssiXaimTuwLIdYHf/AU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrLxxyFEWdHXeceMkc4dUjycaB1Vk66Ea6q/wZzeOOEBy6gF1c
-	P89QVE+6KFhvJDtyyI8GAGRB9Q9zUTRTEKGtpQQqPZnspsyMDt5M0xW25+9NLie98F82TF4RgaK
-	xfTfz
-X-Gm-Gg: ASbGncthu++cVKUOvzJg/EnUf+32QzofCOjzhuYlF2n/mK4JtEMiENBAL5MDyORzPTU
-	tW97q3M/afw0OVJJeyZjOFV5KQ9KTeZFu03R44SuRhyZOBqpBYh1FzshaFTctg3XXQB0yxR/gop
-	AOe1+xvuuUZNUcvVWgNHxVfnDjcSxo9CtwyL/+vH9/YmyEnZywswShjFlH2YNaU9/SyhRiFL4i5
-	pQQh/zVT5tQsop3aQ70mSvHkCEGt23jX/rhl0eIx/dcM8q8ao/DxwFvEDwVBMN4LilvwroUJfV8
-	o7lCROc7kwLYRA3qkYgdpJRjRHtXzswH1f/in3bXjHKDDfH0Cx9DJ4EnH3OC3O1q4571DzaayRK
-	73Jn4q3Xj6FRFllHTTeAn0IKuh8s=
-X-Google-Smtp-Source: AGHT+IG/0RzEIOXstnhWOvUJR4C018nzBGkctjQb2dAgAi3fPX3o+xS6Nw+E9OgCuuiHC/GyGX4w6g==
-X-Received: by 2002:a05:600c:c178:b0:45d:e54b:fa29 with SMTP id 5b1f17b1804b1-45f211c8cd3mr19002855e9.14.1757665026848;
-        Fri, 12 Sep 2025 01:17:06 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45e037d638dsm51062505e9.22.2025.09.12.01.17.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Sep 2025 01:17:06 -0700 (PDT)
-Date: Fri, 12 Sep 2025 11:17:02 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Eduard Zingerman <eddyz87@gmail.com>,
-	bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, daniel@iogearbox.net,
-	martin.lau@linux.dev, kernel-team@fb.com, yonghong.song@linux.dev,
-	eddyz87@gmail.com
-Subject: Re: [PATCH bpf-next v1 09/10] bpf: disable and remove registers
- chain based liveness
-Message-ID: <202509120205.YfzyI2gp-lkp@intel.com>
+        d=1e100.net; s=20230601; t=1757665762; x=1758270562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UT4GkfQH7Q77VhObaVtW4zsoo1QdteuiKUxVY5qAxx4=;
+        b=Z6IwThmIVl30cGRK3MTcmcbXWg8eB6t1GK8sSAD7WjNr7PgYmP/DBauU1GB7xNi3dd
+         h25pHZROxfnFhexXgbjofNQ3Rrhx3O2FDDjLjJAkPkFlQsRDYl5q/mOTbzzm8w06J0eX
+         l4hXVey7sinKsUxl7HFd0Z9PS4Lxo11M1rfsD2YmxsFKRo9m18TrOgytUZq7R6tmcGX0
+         IfsdHe8eJm1rZ1VDT+krBIdVO3svY7L0qOanQDUUeVF0wwDt+Dczgo1Kj/TgbygDFfzH
+         hsbHEPxGoDXMEa5kRz8QCd8YHYMyMmOpRFeQjAD97gH+4FDPLqBC8StFP3QF2nT7M16y
+         hA9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWFRhWybTHess1x2oOTetfK0eIZ070Hzg1KMGGTvv2AVCtjEDnYUtz5DQOiPQmf5qIUKgk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/eJE1Y45tj9VJxpQOKryX8/73ShELBxHQHuD6AbXcXBWqUb3K
+	n7TecjMD2LajtP+vrLcUz/FiSRNuTB55hdz9iRLXPBFy0XdEV/SJkDWHc83XAv3PEpHXMUJyT+e
+	efljM17qyJdRJQJzivrJDGFi9A3wNJ7E=
+X-Gm-Gg: ASbGncul4D/5poXCstAZSyqyTIA5cB+9ThPM0Nh7BSeeTGWjuKY1nsO3VaNMD5YmBFh
+	ag/Cb5afWadCmnfyf8euCQimRf+6bpnUoQE8Ux4Yyu0qyvwQ76gWRI9anP1myVMAdzxk5X7Na7K
+	GLd2uPtgCp9/GgKQURXtA9Ez5+Jyt21GiIVY5o68Lny+Rq5NtNwBTuG1Nol67mOV/t16V6WM2xz
+	btuk32oZfIDU/eO56DY588PNdCDKR8+llWKl/Fg
+X-Google-Smtp-Source: AGHT+IGRwmWY+murcATxsNS4exA4efHW8zui4X5QcN02iFAqtK5Ux8a/+EDSfSqT3Gx34ln92svFIO256LMLgslaL4I=
+X-Received: by 2002:a05:6214:5299:b0:72c:5bd6:69ad with SMTP id
+ 6a1803df08f44-767c78b3792mr24115766d6.58.1757665762135; Fri, 12 Sep 2025
+ 01:29:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250911010437.2779173-10-eddyz87@gmail.com>
+References: <20250910024447.64788-1-laoar.shao@gmail.com> <20250910024447.64788-3-laoar.shao@gmail.com>
+ <4d676324-adc6-4c4c-9d2b-a5e9725bcd6c@lucifer.local>
+In-Reply-To: <4d676324-adc6-4c4c-9d2b-a5e9725bcd6c@lucifer.local>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Fri, 12 Sep 2025 16:28:46 +0800
+X-Gm-Features: AS18NWCZIBNJ5kR6bmNor3-BlvQkjf-BV0EXfoE9syj-39GzEW5YzJqyLvnz89w
+Message-ID: <CALOAHbB_jrsgEMH=HNozW+rASRLwiy9+QtspmSgM7jtZJMthXg@mail.gmail.com>
+Subject: Re: [PATCH v7 mm-new 02/10] mm: thp: add support for BPF based THP
+ order selection
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com, 
+	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
+	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, 
+	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	ameryhung@gmail.com, rientjes@google.com, corbet@lwn.net, 21cnbao@gmail.com, 
+	shakeel.butt@linux.dev, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Eduard,
+On Thu, Sep 11, 2025 at 10:34=E2=80=AFPM Lorenzo Stoakes
+<lorenzo.stoakes@oracle.com> wrote:
+>
+> On Wed, Sep 10, 2025 at 10:44:39AM +0800, Yafang Shao wrote:
+> > This patch introduces a new BPF struct_ops called bpf_thp_ops for dynam=
+ic
+> > THP tuning. It includes a hook bpf_hook_thp_get_order(), allowing BPF
+> > programs to influence THP order selection based on factors such as:
+> > - Workload identity
+> >   For example, workloads running in specific containers or cgroups.
+> > - Allocation context
+> >   Whether the allocation occurs during a page fault, khugepaged, swap o=
+r
+> >   other paths.
+> > - VMA's memory advice settings
+> >   MADV_HUGEPAGE or MADV_NOHUGEPAGE
+> > - Memory pressure
+> >   PSI system data or associated cgroup PSI metrics
+> >
+> > The kernel API of this new BPF hook is as follows,
+> >
+> > /**
+> >  * @thp_order_fn_t: Get the suggested THP orders from a BPF program for=
+ allocation
+> >  * @vma: vm_area_struct associated with the THP allocation
+> >  * @vma_type: The VMA type, such as BPF_THP_VM_HUGEPAGE if VM_HUGEPAGE =
+is set
+> >  *            BPF_THP_VM_NOHUGEPAGE if VM_NOHUGEPAGE is set, or BPF_THP=
+_VM_NONE if
+> >  *            neither is set.
+> >  * @tva_type: TVA type for current @vma
+> >  * @orders: Bitmask of requested THP orders for this allocation
+> >  *          - PMD-mapped allocation if PMD_ORDER is set
+> >  *          - mTHP allocation otherwise
+> >  *
+> >  * Return: The suggested THP order from the BPF program for allocation.=
+ It will
+> >  *         not exceed the highest requested order in @orders. Return -1=
+ to
+> >  *         indicate that the original requested @orders should remain u=
+nchanged.
+> >  */
+> > typedef int thp_order_fn_t(struct vm_area_struct *vma,
+> >                          enum bpf_thp_vma_type vma_type,
+> >                          enum tva_type tva_type,
+> >                          unsigned long orders);
+> >
+> > Only a single BPF program can be attached at any given time, though it =
+can
+> > be dynamically updated to adjust the policy. The implementation support=
+s
+> > anonymous THP, shmem THP, and mTHP, with future extensions planned for
+> > file-backed THP.
+> >
+> > This functionality is only active when system-wide THP is configured to
+> > madvise or always mode. It remains disabled in never mode. Additionally=
+,
+> > if THP is explicitly disabled for a specific task via prctl(), this BPF
+> > functionality will also be unavailable for that task.
+> >
+> > This feature requires CONFIG_BPF_GET_THP_ORDER (marked EXPERIMENTAL) to=
+ be
+> > enabled. Note that this capability is currently unstable and may underg=
+o
+> > significant changes=E2=80=94including potential removal=E2=80=94in futu=
+re kernel versions.
+>
+> Thanks for highlighting.
+>
+> >
+> > Suggested-by: David Hildenbrand <david@redhat.com>
+> > Suggested-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  MAINTAINERS             |   1 +
+> >  include/linux/huge_mm.h |  26 ++++-
+> >  mm/Kconfig              |  12 ++
+> >  mm/Makefile             |   1 +
+> >  mm/huge_memory_bpf.c    | 243 ++++++++++++++++++++++++++++++++++++++++
+> >  5 files changed, 280 insertions(+), 3 deletions(-)
+> >  create mode 100644 mm/huge_memory_bpf.c
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 8fef05bc2224..d055a3c95300 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -16252,6 +16252,7 @@ F:    include/linux/huge_mm.h
+> >  F:   include/linux/khugepaged.h
+> >  F:   include/trace/events/huge_memory.h
+> >  F:   mm/huge_memory.c
+> > +F:   mm/huge_memory_bpf.c
+>
+> THanks!
+>
+> >  F:   mm/khugepaged.c
+> >  F:   mm/mm_slot.h
+> >  F:   tools/testing/selftests/mm/khugepaged.c
+> > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> > index 23f124493c47..f72a5fd04e4f 100644
+> > --- a/include/linux/huge_mm.h
+> > +++ b/include/linux/huge_mm.h
+> > @@ -56,6 +56,7 @@ enum transparent_hugepage_flag {
+> >       TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG,
+> >       TRANSPARENT_HUGEPAGE_DEFRAG_KHUGEPAGED_FLAG,
+> >       TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG,
+> > +     TRANSPARENT_HUGEPAGE_BPF_ATTACHED,      /* BPF prog is attached *=
+/
+> >  };
+> >
+> >  struct kobject;
+> > @@ -270,6 +271,19 @@ unsigned long __thp_vma_allowable_orders(struct vm=
+_area_struct *vma,
+> >                                        enum tva_type type,
+> >                                        unsigned long orders);
+> >
+> > +#ifdef CONFIG_BPF_GET_THP_ORDER
+> > +unsigned long
+> > +bpf_hook_thp_get_orders(struct vm_area_struct *vma, vm_flags_t vma_fla=
+gs,
+> > +                     enum tva_type type, unsigned long orders);
+>
+> Thanks for renaming!
+>
+> > +#else
+> > +static inline unsigned long
+> > +bpf_hook_thp_get_orders(struct vm_area_struct *vma, vm_flags_t vma_fla=
+gs,
+> > +                     enum tva_type tva_flags, unsigned long orders)
+> > +{
+> > +     return orders;
+> > +}
+> > +#endif
+> > +
+> >  /**
+> >   * thp_vma_allowable_orders - determine hugepage orders that are allow=
+ed for vma
+> >   * @vma:  the vm area to check
+> > @@ -291,6 +305,12 @@ unsigned long thp_vma_allowable_orders(struct vm_a=
+rea_struct *vma,
+> >                                      enum tva_type type,
+> >                                      unsigned long orders)
+> >  {
+> > +     unsigned long bpf_orders;
+> > +
+> > +     bpf_orders =3D bpf_hook_thp_get_orders(vma, vm_flags, type, order=
+s);
+> > +     if (!bpf_orders)
+> > +             return 0;
+>
+> I think it'd be easier to just do:
+>
+>         /* The BPF-specified order overrides which order is selected. */
+>         orders &=3D bpf_hook_thp_get_orders(vma, vm_flags, type, orders);
+>         if (!orders)
+>                 return 0;
 
-kernel test robot noticed the following build warnings:
+good suggestion!
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Eduard-Zingerman/bpf-bpf_verifier_state-cleaned-flag-instead-of-REG_LIVE_DONE/20250911-090604
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250911010437.2779173-10-eddyz87%40gmail.com
-patch subject: [PATCH bpf-next v1 09/10] bpf: disable and remove registers chain based liveness
-config: arm-randconfig-r071-20250911 (https://download.01.org/0day-ci/archive/20250912/202509120205.YfzyI2gp-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 21857ae337e0892a5522b6e7337899caa61de2a6)
+>
+> > +
+> >       /*
+> >        * Optimization to check if required orders are enabled early. On=
+ly
+> >        * forced collapse ignores sysfs configs.
+> > @@ -304,12 +324,12 @@ unsigned long thp_vma_allowable_orders(struct vm_=
+area_struct *vma,
+> >                   ((vm_flags & VM_HUGEPAGE) && hugepage_global_enabled(=
+)))
+> >                       mask |=3D READ_ONCE(huge_anon_orders_inherit);
+> >
+> > -             orders &=3D mask;
+> > -             if (!orders)
+> > +             bpf_orders &=3D mask;
+> > +             if (!bpf_orders)
+> >                       return 0
+>
+> With my suggeted change this would remain the same.
+>
+> >       }
+> >
+> > -     return __thp_vma_allowable_orders(vma, vm_flags, type, orders);
+> > +     return __thp_vma_allowable_orders(vma, vm_flags, type, bpf_orders=
+);
+>
+> With my suggeted change this would remain the same.
+>
+> >  }
+> >
+> >  struct thpsize {
+> > diff --git a/mm/Kconfig b/mm/Kconfig
+> > index d1ed839ca710..4d89d2158f10 100644
+> > --- a/mm/Kconfig
+> > +++ b/mm/Kconfig
+> > @@ -896,6 +896,18 @@ config NO_PAGE_MAPCOUNT
+> >
+> >         EXPERIMENTAL because the impact of some changes is still unclea=
+r.
+> >
+> > +config BPF_GET_THP_ORDER
+>
+> Yeah, I think we maybe need to sledgehammer this as already Lance was con=
+fused
+> as to the permenancy of this, and I feel that users might be too, even wi=
+th the
+> '(EXPERIMENTAL)' bit.
+>
+> So maybe
+>
+> config BPF_GET_THP_ORDER_EXPERIMENTAL
+>
+> Just to hammer it home?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202509120205.YfzyI2gp-lkp@intel.com/
+ack
 
-smatch warnings:
-kernel/bpf/verifier.c:19305 is_state_visited() error: uninitialized symbol 'err'.
+>
+> > +     bool "BPF-based THP order selection (EXPERIMENTAL)"
+> > +     depends on TRANSPARENT_HUGEPAGE && BPF_SYSCALL
+> > +
+> > +     help
+> > +       Enable dynamic THP order selection using BPF programs. This
+> > +       experimental feature allows custom BPF logic to determine optim=
+al
+> > +       transparent hugepage allocation sizes at runtime.
+> > +
+> > +       WARNING: This feature is unstable and may change in future kern=
+el
+> > +       versions.
+> > +
+> >  endif # TRANSPARENT_HUGEPAGE
+> >
+> >  # simple helper to make the code a bit easier to read
+> > diff --git a/mm/Makefile b/mm/Makefile
+> > index 21abb3353550..f180332f2ad0 100644
+> > --- a/mm/Makefile
+> > +++ b/mm/Makefile
+> > @@ -99,6 +99,7 @@ obj-$(CONFIG_MIGRATION) +=3D migrate.o
+> >  obj-$(CONFIG_NUMA) +=3D memory-tiers.o
+> >  obj-$(CONFIG_DEVICE_MIGRATION) +=3D migrate_device.o
+> >  obj-$(CONFIG_TRANSPARENT_HUGEPAGE) +=3D huge_memory.o khugepaged.o
+> > +obj-$(CONFIG_BPF_GET_THP_ORDER) +=3D huge_memory_bpf.o
+> >  obj-$(CONFIG_PAGE_COUNTER) +=3D page_counter.o
+> >  obj-$(CONFIG_MEMCG_V1) +=3D memcontrol-v1.o
+> >  obj-$(CONFIG_MEMCG) +=3D memcontrol.o vmpressure.o
+> > diff --git a/mm/huge_memory_bpf.c b/mm/huge_memory_bpf.c
+> > new file mode 100644
+> > index 000000000000..525ee22ab598
+> > --- /dev/null
+> > +++ b/mm/huge_memory_bpf.c
+> > @@ -0,0 +1,243 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * BPF-based THP policy management
+> > + *
+> > + * Author: Yafang Shao <laoar.shao@gmail.com>
+> > + */
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <linux/btf.h>
+> > +#include <linux/huge_mm.h>
+> > +#include <linux/khugepaged.h>
+> > +
+> > +enum bpf_thp_vma_type {
+> > +     BPF_THP_VM_NONE =3D 0,
+> > +     BPF_THP_VM_HUGEPAGE,    /* VM_HUGEPAGE */
+> > +     BPF_THP_VM_NOHUGEPAGE,  /* VM_NOHUGEPAGE */
+> > +};
+>
+> I'm really not so sure how useful this is - can't a user just ascertain t=
+his
+> from the VMA flags themselves?
 
-vim +/err +19305 kernel/bpf/verifier.c
+I assume you are referring to checking flags from vma->vm_flags.
+There is an exception where we cannot use vma->vm_flags: in
+hugepage_madvise(), which calls khugepaged_enter_vma(vma, *vm_flags).
 
-58e2af8b3a6b58 Jakub Kicinski          2016-09-21  19134  static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
-f1bca824dabba4 Alexei Starovoitov      2014-09-29  19135  {
-58e2af8b3a6b58 Jakub Kicinski          2016-09-21  19136  	struct bpf_verifier_state_list *new_sl;
-5564ee3abb2ebe Eduard Zingerman        2025-02-15  19137  	struct bpf_verifier_state_list *sl;
-c9e31900b54cad Eduard Zingerman        2025-06-11  19138  	struct bpf_verifier_state *cur = env->cur_state, *new;
-c9e31900b54cad Eduard Zingerman        2025-06-11  19139  	bool force_new_state, add_new_state, loop;
-d5c95ed86213e4 Eduard Zingerman        2025-09-10  19140  	int n, err, states_cnt = 0;
-5564ee3abb2ebe Eduard Zingerman        2025-02-15  19141  	struct list_head *pos, *tmp, *head;
-aa30eb3260b2de Eduard Zingerman        2024-10-29  19142  
-aa30eb3260b2de Eduard Zingerman        2024-10-29  19143  	force_new_state = env->test_state_freq || is_force_checkpoint(env, insn_idx) ||
-aa30eb3260b2de Eduard Zingerman        2024-10-29  19144  			  /* Avoid accumulating infinitely long jmp history */
-baaebe0928bf32 Eduard Zingerman        2025-06-11  19145  			  cur->jmp_history_cnt > 40;
-f1bca824dabba4 Alexei Starovoitov      2014-09-29  19146  
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19147  	/* bpf progs typically have pruning point every 4 instructions
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19148  	 * http://vger.kernel.org/bpfconf2019.html#session-1
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19149  	 * Do not add new state for future pruning if the verifier hasn't seen
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19150  	 * at least 2 jumps and at least 8 instructions.
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19151  	 * This heuristics helps decrease 'total_states' and 'peak_states' metric.
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19152  	 * In tests that amounts to up to 50% reduction into total verifier
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19153  	 * memory consumption and 20% verifier time speedup.
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19154  	 */
-aa30eb3260b2de Eduard Zingerman        2024-10-29  19155  	add_new_state = force_new_state;
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19156  	if (env->jmps_processed - env->prev_jmps_processed >= 2 &&
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19157  	    env->insn_processed - env->prev_insn_processed >= 8)
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19158  		add_new_state = true;
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19159  
-9242b5f5615c82 Alexei Starovoitov      2018-12-13  19160  	clean_live_states(env, insn_idx, cur);
-9242b5f5615c82 Alexei Starovoitov      2018-12-13  19161  
-c9e31900b54cad Eduard Zingerman        2025-06-11  19162  	loop = false;
-5564ee3abb2ebe Eduard Zingerman        2025-02-15  19163  	head = explored_state(env, insn_idx);
-5564ee3abb2ebe Eduard Zingerman        2025-02-15  19164  	list_for_each_safe(pos, tmp, head) {
-5564ee3abb2ebe Eduard Zingerman        2025-02-15  19165  		sl = container_of(pos, struct bpf_verifier_state_list, node);
-dc2a4ebc0b44a2 Alexei Starovoitov      2019-05-21  19166  		states_cnt++;
-dc2a4ebc0b44a2 Alexei Starovoitov      2019-05-21  19167  		if (sl->state.insn_idx != insn_idx)
-5564ee3abb2ebe Eduard Zingerman        2025-02-15  19168  			continue;
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19169  
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19170  		if (sl->state.branches) {
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19171  			struct bpf_func_state *frame = sl->state.frame[sl->state.curframe];
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19172  
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19173  			if (frame->in_async_callback_fn &&
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19174  			    frame->async_entry_cnt != cur->frame[cur->curframe]->async_entry_cnt) {
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19175  				/* Different async_entry_cnt means that the verifier is
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19176  				 * processing another entry into async callback.
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19177  				 * Seeing the same state is not an indication of infinite
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19178  				 * loop or infinite recursion.
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19179  				 * But finding the same state doesn't mean that it's safe
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19180  				 * to stop processing the current state. The previous state
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19181  				 * hasn't yet reached bpf_exit, since state.branches > 0.
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19182  				 * Checking in_async_callback_fn alone is not enough either.
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19183  				 * Since the verifier still needs to catch infinite loops
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19184  				 * inside async callbacks.
-bfc6bb74e4f16a Alexei Starovoitov      2021-07-14  19185  				 */
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19186  				goto skip_inf_loop_check;
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19187  			}
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19188  			/* BPF open-coded iterators loop detection is special.
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19189  			 * states_maybe_looping() logic is too simplistic in detecting
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19190  			 * states that *might* be equivalent, because it doesn't know
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19191  			 * about ID remapping, so don't even perform it.
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19192  			 * See process_iter_next_call() and iter_active_depths_differ()
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19193  			 * for overview of the logic. When current and one of parent
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19194  			 * states are detected as equivalent, it's a good thing: we prove
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19195  			 * convergence and can stop simulating further iterations.
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19196  			 * It's safe to assume that iterator loop will finish, taking into
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19197  			 * account iter_next() contract of eventually returning
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19198  			 * sticky NULL result.
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19199  			 *
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19200  			 * Note, that states have to be compared exactly in this case because
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19201  			 * read and precision marks might not be finalized inside the loop.
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19202  			 * E.g. as in the program below:
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19203  			 *
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19204  			 *     1. r7 = -16
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19205  			 *     2. r6 = bpf_get_prandom_u32()
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19206  			 *     3. while (bpf_iter_num_next(&fp[-8])) {
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19207  			 *     4.   if (r6 != 42) {
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19208  			 *     5.     r7 = -32
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19209  			 *     6.     r6 = bpf_get_prandom_u32()
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19210  			 *     7.     continue
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19211  			 *     8.   }
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19212  			 *     9.   r0 = r10
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19213  			 *    10.   r0 += r7
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19214  			 *    11.   r8 = *(u64 *)(r0 + 0)
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19215  			 *    12.   r6 = bpf_get_prandom_u32()
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19216  			 *    13. }
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19217  			 *
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19218  			 * Here verifier would first visit path 1-3, create a checkpoint at 3
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19219  			 * with r7=-16, continue to 4-7,3. Existing checkpoint at 3 does
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19220  			 * not have read or precision mark for r7 yet, thus inexact states
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19221  			 * comparison would discard current state with r7=-32
-2793a8b015f7f1 Eduard Zingerman        2023-10-24  19222  			 * => unsafe memory access at 11 would not be caught.
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19223  			 */
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19224  			if (is_iter_next_insn(env, insn_idx)) {
-4f81c16f50baf6 Alexei Starovoitov      2024-03-05  19225  				if (states_equal(env, &sl->state, cur, RANGE_WITHIN)) {
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19226  					struct bpf_func_state *cur_frame;
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19227  					struct bpf_reg_state *iter_state, *iter_reg;
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19228  					int spi;
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19229  
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19230  					cur_frame = cur->frame[cur->curframe];
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19231  					/* btf_check_iter_kfuncs() enforces that
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19232  					 * iter state pointer is always the first arg
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19233  					 */
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19234  					iter_reg = &cur_frame->regs[BPF_REG_1];
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19235  					/* current state is valid due to states_equal(),
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19236  					 * so we can assume valid iter and reg state,
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19237  					 * no need for extra (re-)validations
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19238  					 */
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19239  					spi = __get_spi(iter_reg->off + iter_reg->var_off.value);
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19240  					iter_state = &func(env, iter_reg)->stack[spi].spilled_ptr;
-2a0992829ea386 Eduard Zingerman        2023-10-24  19241  					if (iter_state->iter.state == BPF_ITER_STATE_ACTIVE) {
-c9e31900b54cad Eduard Zingerman        2025-06-11  19242  						loop = true;
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19243  						goto hit;
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19244  					}
-2a0992829ea386 Eduard Zingerman        2023-10-24  19245  				}
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19246  				goto skip_inf_loop_check;
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19247  			}
-011832b97b311b Alexei Starovoitov      2024-03-05  19248  			if (is_may_goto_insn_at(env, insn_idx)) {
-2b2efe1937ca9f Alexei Starovoitov      2024-06-19  19249  				if (sl->state.may_goto_depth != cur->may_goto_depth &&
-2b2efe1937ca9f Alexei Starovoitov      2024-06-19  19250  				    states_equal(env, &sl->state, cur, RANGE_WITHIN)) {
-c9e31900b54cad Eduard Zingerman        2025-06-11  19251  					loop = true;
-011832b97b311b Alexei Starovoitov      2024-03-05  19252  					goto hit;
-011832b97b311b Alexei Starovoitov      2024-03-05  19253  				}
-011832b97b311b Alexei Starovoitov      2024-03-05  19254  			}
-588af0c506ec8e Eduard Zingerman        2025-09-10  19255  			if (bpf_calls_callback(env, insn_idx)) {
-4f81c16f50baf6 Alexei Starovoitov      2024-03-05  19256  				if (states_equal(env, &sl->state, cur, RANGE_WITHIN))
-ab5cfac139ab85 Eduard Zingerman        2023-11-21  19257  					goto hit;
-ab5cfac139ab85 Eduard Zingerman        2023-11-21  19258  				goto skip_inf_loop_check;
-ab5cfac139ab85 Eduard Zingerman        2023-11-21  19259  			}
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19260  			/* attempt to detect infinite loop to avoid unnecessary doomed work */
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19261  			if (states_maybe_looping(&sl->state, cur) &&
-4f81c16f50baf6 Alexei Starovoitov      2024-03-05  19262  			    states_equal(env, &sl->state, cur, EXACT) &&
-ab5cfac139ab85 Eduard Zingerman        2023-11-21  19263  			    !iter_active_depths_differ(&sl->state, cur) &&
-011832b97b311b Alexei Starovoitov      2024-03-05  19264  			    sl->state.may_goto_depth == cur->may_goto_depth &&
-ab5cfac139ab85 Eduard Zingerman        2023-11-21  19265  			    sl->state.callback_unroll_depth == cur->callback_unroll_depth) {
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19266  				verbose_linfo(env, insn_idx, "; ");
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19267  				verbose(env, "infinite loop detected at insn %d\n", insn_idx);
-b4d8239534fddc Eduard Zingerman        2023-10-24  19268  				verbose(env, "cur state:");
-1995edc5f9089e Kumar Kartikeya Dwivedi 2024-12-03  19269  				print_verifier_state(env, cur, cur->curframe, true);
-b4d8239534fddc Eduard Zingerman        2023-10-24  19270  				verbose(env, "old state:");
-1995edc5f9089e Kumar Kartikeya Dwivedi 2024-12-03  19271  				print_verifier_state(env, &sl->state, cur->curframe, true);
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19272  				return -EINVAL;
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19273  			}
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19274  			/* if the verifier is processing a loop, avoid adding new state
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19275  			 * too often, since different loop iterations have distinct
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19276  			 * states and may not help future pruning.
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19277  			 * This threshold shouldn't be too low to make sure that
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19278  			 * a loop with large bound will be rejected quickly.
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19279  			 * The most abusive loop will be:
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19280  			 * r1 += 1
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19281  			 * if r1 < 1000000 goto pc-2
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19282  			 * 1M insn_procssed limit / 100 == 10k peak states.
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19283  			 * This threshold shouldn't be too high either, since states
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19284  			 * at the end of the loop are likely to be useful in pruning.
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19285  			 */
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19286  skip_inf_loop_check:
-4b5ce570dbef57 Andrii Nakryiko         2023-03-09  19287  			if (!force_new_state &&
-98ddcf389d1bb7 Andrii Nakryiko         2023-03-02  19288  			    env->jmps_processed - env->prev_jmps_processed < 20 &&
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19289  			    env->insn_processed - env->prev_insn_processed < 100)
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19290  				add_new_state = false;
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19291  			goto miss;
-2589726d12a1b1 Alexei Starovoitov      2019-06-15  19292  		}
-c9e31900b54cad Eduard Zingerman        2025-06-11  19293  		/* See comments for mark_all_regs_read_and_precise() */
-c9e31900b54cad Eduard Zingerman        2025-06-11  19294  		loop = incomplete_read_marks(env, &sl->state);
-c9e31900b54cad Eduard Zingerman        2025-06-11  19295  		if (states_equal(env, &sl->state, cur, loop ? RANGE_WITHIN : NOT_EXACT)) {
-06accc8779c1d5 Andrii Nakryiko         2023-03-08  19296  hit:
-9f4686c41bdff0 Alexei Starovoitov      2019-04-01  19297  			sl->hit_cnt++;
-a3ce685dd01a78 Alexei Starovoitov      2019-06-28  19298  
-a3ce685dd01a78 Alexei Starovoitov      2019-06-28  19299  			/* if previous state reached the exit with precision and
-a7de265cb2d849 Rafael Passos           2024-04-17  19300  			 * current state is equivalent to it (except precision marks)
-a3ce685dd01a78 Alexei Starovoitov      2019-06-28  19301  			 * the precision needs to be propagated back in
-a3ce685dd01a78 Alexei Starovoitov      2019-06-28  19302  			 * the current state.
-a3ce685dd01a78 Alexei Starovoitov      2019-06-28  19303  			 */
-41f6f64e6999a8 Andrii Nakryiko         2023-12-05  19304  			if (is_jmp_point(env, env->insn_idx))
-baaebe0928bf32 Eduard Zingerman        2025-06-11 @19305  				err = err ? : push_jmp_history(env, cur, 0, 0);
-                                                                                              ^^^
-err needs to be initialized to zero at the start.  Btw, I really
-encourage people to use CONFIG_INIT_STACK_ALL_PATTERN=y in their
-testing.  (In production everyone should use
-CONFIG_INIT_STACK_ALL_ZERO=y).
+At this point, the VM_HUGEPAGE flag has not been set in vma->vm_flags
+yet. Therefore, we must pass the separate *vm_flags variable.
+Perhaps we can simplify the logic with the following change?
 
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 35ed4ab0d7c5..5755de80a4d7 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -1425,6 +1425,8 @@ static int madvise_vma_behavior(struct
+madvise_behavior *madv_behavior)
+        VM_WARN_ON_ONCE(madv_behavior->lock_mode !=3D MADVISE_MMAP_WRITE_LO=
+CK);
 
-23b37d616565c8 Eduard Zingerman        2025-06-11  19306  			err = err ? : propagate_precision(env, &sl->state, cur, NULL);
-f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  19307  			if (err)
-f4d7e40a5b7157 Alexei Starovoitov      2017-12-14  19308  				return err;
-c9e31900b54cad Eduard Zingerman        2025-06-11  19309  			/* When processing iterator based loops above propagate_liveness and
-c9e31900b54cad Eduard Zingerman        2025-06-11  19310  			 * propagate_precision calls are not sufficient to transfer all relevant
-c9e31900b54cad Eduard Zingerman        2025-06-11  19311  			 * read and precision marks. E.g. consider the following case:
+        error =3D madvise_update_vma(new_flags, madv_behavior);
++       if (new_flags & VM_HUGEPAGE)
++               khugepaged_enter_vma(vma);
+ out:
+        /*
+         * madvise() returns EAGAIN if kernel resources, such as
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Let's keep the interface as minimal as possible.
+>
+> > +
+> > +/**
+> > + * @thp_order_fn_t: Get the suggested THP orders from a BPF program fo=
+r allocation
+>
+> orders -> order?
 
+ack
+
+>
+> > + * @vma: vm_area_struct associated with the THP allocation
+> > + * @vma_type: The VMA type, such as BPF_THP_VM_HUGEPAGE if VM_HUGEPAGE=
+ is set
+> > + *            BPF_THP_VM_NOHUGEPAGE if VM_NOHUGEPAGE is set, or BPF_TH=
+P_VM_NONE if
+> > + *            neither is set.
+>
+> Obv as above let's drop this probably :)
+>
+> > + * @tva_type: TVA type for current @vma
+> > + * @orders: Bitmask of requested THP orders for this allocation
+>
+> Shouldn't requested =3D available?
+
+ack
+
+>
+> > + *          - PMD-mapped allocation if PMD_ORDER is set
+> > + *          - mTHP allocation otherwise
+>
+> Not sure these 2 points are super useful.
+
+will remove it.
+
+>
+> > + *
+> > + * Return: The suggested THP order from the BPF program for allocation=
+. It will
+> > + *         not exceed the highest requested order in @orders. Return -=
+1 to
+> > + *         indicate that the original requested @orders should remain =
+unchanged.
+> > + */
+> > +typedef int thp_order_fn_t(struct vm_area_struct *vma,
+> > +                        enum bpf_thp_vma_type vma_type,
+> > +                        enum tva_type tva_type,
+> > +                        unsigned long orders);
+> > +
+> > +struct bpf_thp_ops {
+> > +     thp_order_fn_t __rcu *thp_get_order;
+> > +};
+> > +
+> > +static struct bpf_thp_ops bpf_thp;
+> > +static DEFINE_SPINLOCK(thp_ops_lock);
+> > +
+> > +/*
+> > + * Returns the original @orders if no BPF program is attached or if th=
+e
+> > + * suggested order is invalid.
+> > + */
+> > +unsigned long bpf_hook_thp_get_orders(struct vm_area_struct *vma,
+> > +                                   vm_flags_t vma_flags,
+> > +                                   enum tva_type tva_type,
+> > +                                   unsigned long orders)
+> > +{
+> > +     thp_order_fn_t *bpf_hook_thp_get_order;
+> > +     unsigned long thp_orders =3D orders;
+> > +     enum bpf_thp_vma_type vma_type;
+> > +     int thp_order;
+> > +
+> > +     /* No BPF program is attached */
+> > +     if (!test_bit(TRANSPARENT_HUGEPAGE_BPF_ATTACHED,
+> > +                   &transparent_hugepage_flags))
+> > +             return orders;
+> > +
+> > +     if (vma_flags & VM_HUGEPAGE)
+> > +             vma_type =3D BPF_THP_VM_HUGEPAGE;
+> > +     else if (vma_flags & VM_NOHUGEPAGE)
+> > +             vma_type =3D BPF_THP_VM_NOHUGEPAGE;
+> > +     else
+> > +             vma_type =3D BPF_THP_VM_NONE;
+>
+> As per above, not sure this is all that useful.
+>
+> > +
+> > +     rcu_read_lock();
+> > +     bpf_hook_thp_get_order =3D rcu_dereference(bpf_thp.thp_get_order)=
+;
+> > +     if (!bpf_hook_thp_get_order)
+> > +             goto out;
+> > +
+> > +     thp_order =3D bpf_hook_thp_get_order(vma, vma_type, tva_type, ord=
+ers);
+> > +     if (thp_order < 0)
+> > +             goto out;
+> > +     /*
+> > +      * The maximum requested order is determined by the callsite. E.g=
+.:
+> > +      * - PMD-mapped THP uses PMD_ORDER
+> > +      * - mTHP uses (PMD_ORDER - 1)
+>
+> I don't think this is quite right, highest_order() figures out the highes=
+t set
+> bit, so mTHP can be PMD_ORDER - 1 or less (in theory ofc).
+>
+> I think we can just replace this with something simpler like - 'depending=
+ on
+> where the BPF hook is invoked, we check for either PMD order or mTHP orde=
+rs
+> (less than PMD order)' or something.
+
+ack
+
+>
+> > +      *
+> > +      * We must respect this upper bound to avoid undefined behavior. =
+So the
+> > +      * highest suggested order can't exceed the highest requested ord=
+er.
+> > +      */
+>
+> I think this sentence is also unnecessary.
+
+will remove it.
+
+--=20
+Regards
+Yafang
 
