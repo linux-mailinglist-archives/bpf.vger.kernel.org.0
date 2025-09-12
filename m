@@ -1,147 +1,142 @@
-Return-Path: <bpf+bounces-68261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22629B557A1
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 22:29:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C447B5579F
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 22:29:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2204C5C2182
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 20:29:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD4F65C1E2D
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 20:29:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E7F2D46DB;
-	Fri, 12 Sep 2025 20:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7B672D24B6;
+	Fri, 12 Sep 2025 20:29:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D/xPblQf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SCOTAc8S"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3632C236B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C1E54758
 	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 20:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757708963; cv=none; b=mlmjK6vpG04HRjow0n4osN5pA0JqgTQ/SswsOFMrp7xIpfHtPjLA6r/STBp5hjbc/wHfOummTb6zt+jjoQl0k26kYDgKs2iXKW2Le1g1a4bjs6FT9zbtxxHeBfHlti8avq3I35K5HkbKrMwSW+uccQCDVf4PzDGdHQM4eRPdtg0=
+	t=1757708958; cv=none; b=Zb7FFOF/pXycw7EoySyC/aasCMDX14WQqxEnznkPZmr2BmMY/9CJXKerXriytVuwxHn5+JWqWAqwyK++lwoW8WcSGM/QeTinUDqpB8K7e/5/vqesdzfziRpUx9Rj0kUni2Gl+/UX7DJpEJhMQkkfVM7cTem+lLQHeLM49ZZadnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757708963; c=relaxed/simple;
-	bh=CQSOU4KL00u8OV+8r4IhIf0vi+CEPGM0Nhi//XT63Yk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CLDUvCQFVb1H7naqsTtXNO8XnDQpN/PY6wJvcJnlyrsaLOdm3fAz3nFoSsMoy6K7tywcpj28H895DMDsUZlsKTsz1REe+GuzoWvDGWs5Yc7hk9aAl6tL43blh7emiHm4CTYagXnv7Kt+D2+13Hl+pOCnhULe8b+CMjA4Tr0wZgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D/xPblQf; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7f591ac9-d3e0-4404-987c-40eceaf51fbb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757708943;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=u+gBOvo8OmvEt95Yti7QbgbFG8TM5E2PZ/ZvdEq9MnA=;
-	b=D/xPblQfNNhgfqJE7DlAGb0gleV7x5OawFi5FATZtIVfVPoharw7ndWDbC2rfIGFXXUx14
-	N58SZwUJXAvT+qCDcqA3FE+tj31zplmd0VKDWGrd95hEy4PtW5eNyZJExLI+R//BkmVLO1
-	2t8cUqBrERzex7ltrNApX9vNMlB6AQw=
-Date: Fri, 12 Sep 2025 13:28:55 -0700
+	s=arc-20240116; t=1757708958; c=relaxed/simple;
+	bh=ig+75oh0gcE36/Jn7KdHD0WbkLoPuEorVfB6jtx/TkM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mou0KPqizW6K32tZL2WFhfTCokL5OIGusjvnSLvQmKCyNk++g/ZTkYkg8+RVZeiClFC0u+hmV7dd0GPHMiZg83jHVSqwxNWuVFpdgAs0RJzmrIf0f7XEqCgAO/4LUd269LF73GsZMlbtPmuTDgaRbwTkasahTKjc4XZyx+ve5Oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SCOTAc8S; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-24457f581aeso24168765ad.0
+        for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 13:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757708956; x=1758313756; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=n5hGVlmrXdeXio8Tx5JWPGOjnWVAQcGyTsRhYLQ3TDA=;
+        b=SCOTAc8SUVyF7pSnbLGLG1JCTpTZVzg45/aDU5ZDCTNMYoUqWUHh+gerhevp0k6dME
+         FKc6dmwOcF8k6+GCEBINp9e0aoqqI7BjJJlP285oxs0KsIFN19McvzL8qJL1ZsQm+DLo
+         Tq+Xe/O81zsRvzvr8QcFlwyWpg3hNVbtjkDGIqMG7ZhAivpc9uMombQnt6P6JLGeNAIv
+         LIMG+H8UgaRhIavtUdE2RGCpF8zEaU/x8bhX5F0QFOW/d2UIDF2FPb6UIIK7TvXddN3D
+         MKfvO5Eoteex6etnIm67x2tBW4oFBdgGLeO6CKfl5YqVM+7P2lA8rX/CnAGi4Ni3y81L
+         JReQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757708956; x=1758313756;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n5hGVlmrXdeXio8Tx5JWPGOjnWVAQcGyTsRhYLQ3TDA=;
+        b=S4WjFHdcF+oOD9ra8IZG8SLjWts7LQVKBMSU4kyPjjcmgTCEgf68U8I7Il2bBbwvyC
+         CcOxSN1RW5VUlIfb1jnCWK/1snKy4BiHqxWRv8dNOM+SDu8MpDI2ZNup088bP4Z8zW3M
+         eycPX7dmCkrf/D1/e5B2E7hs/tdYaK1PWpD/g/79KytQwiv/vi9tSDozmzqMS+k7nzT8
+         +CH9EPzLm3eFzuTsd4TI9ok8BZCvZyop83RmUiLRd8SpFSTx6tztA8Ulb9jrnWVtjsQY
+         fl/mq330ANVMH8Ofi9g9PMC88IkacjZ7a3YtXTmRWF0716HOAJ+vkjrT278lg90aGO2U
+         Zk0w==
+X-Forwarded-Encrypted: i=1; AJvYcCXA4ORPFP7rPe21ag85s5qtGrsIXQDWv3QNh2v5Quyg0x3sLLoWiB5C7M3aFX359xNWkac=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoK0MjfXDmRCu9Iq5AQ8nTR5nIeii8UkUVuLedWu50s79hI5w5
+	gwqh8XjEQvYxZeSPQtRM/YnaTVXrkgge4U4GyBNdpl3FTjsrfIgQF58=
+X-Gm-Gg: ASbGncvRdDza6xmaEpy3juUQjdlc42ddC9uKT/d8LBbG8QtFgOv+ITWVCfIy/TauVIh
+	y5Y6Oi4XI09HVWgi5dmRl+BJZxXd7+8eQ57UDBmL/Fpl4dkiRS1bhj8tRUTCjlkyRjrOeJeAfS6
+	tvyrmHyvVCKQWIFe8QAiVL1+65k2HAGzpBJunSawYPG7eWvT3EXixTxYuqqwIRM8Otxk7iuqi54
+	DAjD1VKE445m/7ZH4mdqnyoVQtQ0RFlawcrZE/rh1e10YaSpkZxeqEyuz3ME9+FNj6zn5plj58/
+	fJK4hl9ohzebJb6TFlcEj3jT4wMf+iis0fE5V6aqqoFkTBriKFpfuW8SowQcuiSI91IHY48DeqQ
+	ABuREjr3xNHW/VajVgsHGq3RdMbmgLW9t9uHGG+OSXEn9CP6k0RUkJkNzOLflhVuYzpAbsgkdlR
+	SQZExlNBZIqT8u1J9MRqI4wxtveT/AhxcZ1znzexKiO9PfR0JlnF1Rxs5T4lYO3OkS1KpyZhxMq
+	D3vmuvF86ikW8M=
+X-Google-Smtp-Source: AGHT+IE5E029ZvTMIB7+BwmZTsd0bNjKLBkB1UNmmRztGtGuddSZ2DcTmo3AVdH1yOM1Pj1j7DA19w==
+X-Received: by 2002:a17:903:46c3:b0:244:6a96:6912 with SMTP id d9443c01a7336-25d248c9d3emr46478005ad.20.1757708956187;
+        Fri, 12 Sep 2025 13:29:16 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-25c3a84a5d6sm58975235ad.93.2025.09.12.13.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Sep 2025 13:29:15 -0700 (PDT)
+Date: Fri, 12 Sep 2025 13:29:15 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Tobias =?utf-8?B?QsO2aG0=?= <tobias.boehm@hetzner-cloud.de>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>,
+	netdev@vger.kernel.org, willemdebruijn.kernel@gmail.com
+Subject: Re: [BUG?] bpf_skb_net_shrink does not unset encapsulation flag
+Message-ID: <aMSCm_t9g0WSyB8k@mini-arch>
+References: <4bfab93d-f1ce-4aa7-82fe-16972b47972c@hetzner-cloud.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCHv3 perf/core 0/6] uprobe,bpf: Allow to change app registers
- from uprobe registers
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, x86@kernel.org,
- Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
- John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
-References: <20250909123857.315599-1-jolsa@kernel.org>
- <CAEf4Bzb4ErWn=2SajBcyJxqGEYy0DXmtWuXKLskPGLG-Y9POFA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAEf4Bzb4ErWn=2SajBcyJxqGEYy0DXmtWuXKLskPGLG-Y9POFA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <4bfab93d-f1ce-4aa7-82fe-16972b47972c@hetzner-cloud.de>
 
-On 9/9/25 9:41 AM, Andrii Nakryiko wrote:
-> On Tue, Sep 9, 2025 at 8:39 AM Jiri Olsa <jolsa@kernel.org> wrote:
->>
->> hi,
->> we recently had several requests for tetragon to be able to change
->> user application function return value or divert its execution through
->> instruction pointer change.
->>
->> This patchset adds support for uprobe program to change app's registers
->> including instruction pointer.
->>
->> v3 changes:
->> - deny attach of kprobe,multi with kprobe_write_ctx set [Alexei]
->> - added more tests for denied kprobe attachment
->>
->> thanks,
->> jirka
->>
->>
->> ---
->> Jiri Olsa (6):
->>        bpf: Allow uprobe program to change context registers
->>        uprobe: Do not emulate/sstep original instruction when ip is changed
->>        selftests/bpf: Add uprobe context registers changes test
->>        selftests/bpf: Add uprobe context ip register change test
->>        selftests/bpf: Add kprobe write ctx attach test
->>        selftests/bpf: Add kprobe multi write ctx attach test
->>
+On 09/10, Tobias Böhm wrote:
+> Hi,
 > 
-> For the series:
+> when decapsulating VXLAN packets with bpf_skb_adjust_room and redirecting to
+> a tap device I observed unexpected segmentation.
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> In my setup there is a sched_cls program attached at the ingress path of a
+> physical NIC with GRO enabled. Packets are redirected either directly for
+> plain traffic, or decapsulated beforehand in case of VXLAN. Decapsulation is
+> done by bpf_skb_adjust_room with BPF_F_ADJ_ROOM_DECAP_L3_IPV4.
 > 
-> Question is which tree will this go through? Most changes are in BPF,
-> so probably bpf-next, right?
-
-Hi Jiri.
-
-This series does not apply to current bpf-next, see below.
-
-Could you please respin it with bpf-next tag?
-E.g. "[PATCH v4 bpf-next 0/6] ..."
-
-Thanks!
-
-$ git log -1 --oneline
-a578b54a8ad2 (HEAD -> master, origin/master, origin/HEAD, 
-kernel-patches/bpf-next) Merge branch 
-'bpf-report-arena-faults-to-bpf-streams'
-$ b4 am 20250909123857.315599-1-jolsa@kernel.org
-[...]
-$ git am 
-./v3_20250909_jolsa_uprobe_bpf_allow_to_change_app_registers_from_uprobe_registers.mbx
-Applying: bpf: Allow uprobe program to change context registers
-Applying: uprobe: Do not emulate/sstep original instruction when ip is 
-changed
-error: patch failed: kernel/events/uprobes.c:2768
-error: kernel/events/uprobes.c: patch does not apply
-Patch failed at 0002 uprobe: Do not emulate/sstep original instruction 
-when ip is changed
-[...]
-
+> For both kinds of traffic GRO on the physical NIC works as expected
+> resulting in merged packets.
 > 
->>   include/linux/bpf.h                                        |   1 +
->>   kernel/events/core.c                                       |   4 +++
->>   kernel/events/uprobes.c                                    |   7 +++++
->>   kernel/trace/bpf_trace.c                                   |   7 +++--
->>   tools/testing/selftests/bpf/prog_tests/attach_probe.c      |  28 +++++++++++++++++
->>   tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c |  27 ++++++++++++++++
->>   tools/testing/selftests/bpf/prog_tests/uprobe.c            | 156 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
->>   tools/testing/selftests/bpf/progs/kprobe_write_ctx.c       |  22 +++++++++++++
->>   tools/testing/selftests/bpf/progs/test_uprobe.c            |  38 +++++++++++++++++++++++
->>   9 files changed, 287 insertions(+), 3 deletions(-)
->>   create mode 100644 tools/testing/selftests/bpf/progs/kprobe_write_ctx.c
+> Large non-decapsulated packets are transmitted directly on the tap interface
+> as expected. But surprisingly, decapsulated packets are being segmented
+> again before transmission.
+> 
+> When analyzing and comparing the call chains I observed that
+> netif_skb_features returns different values for the different kind of
+> traffic.
+> 
+> The tap devices have the following features set:
+> 
+>     dev->features        =   0x1558c9
+>     dev->hw_enc_features = 0x10000001
+> 
+> For the non-decapsulated traffic netif_skb_features returns 0x1558c9 but for
+> the decapsulated traffic it returns 0x1. This is same value as the result of
+> "dev->features & dev->hw_enc_features".
+> 
+> In netif_skb_features this operation effectively happens in case
+> skb->encapsulation is set. Inspecting the skb in both cases showed that in
+> case of decapsulation the skb->encapsulation flag was indeed still set.
+> 
+> I wonder if there is a reason that the skb->encapsulation flag is not unset
+> in bpf_skb_net_shrink when BPF_F_ADJ_ROOM_DECAP_* flags are present? Since
+> skb->encapsulation is set in bpf_skb_net_grow when adding space for
+> encapsulation my expectation would be that the flag is also unset when doing
+> the opposite operation.
 
++ Willem and netdev for visibility.
 
