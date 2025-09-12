@@ -1,94 +1,133 @@
-Return-Path: <bpf+bounces-68233-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68234-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5444B54946
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 12:19:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9B6EB54A28
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 12:44:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 778CF1767D7
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 10:19:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EAAC1CC7833
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 10:44:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0AF2EA726;
-	Fri, 12 Sep 2025 10:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A4F2ED87A;
+	Fri, 12 Sep 2025 10:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dD1t2sEM"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87842E612F;
-	Fri, 12 Sep 2025 10:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9992EE612
+	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 10:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757672078; cv=none; b=fTSIyN3iIGLe6YbEavJ0YstCTQ3Qvago+iZC0ZO2kCUCIuy2Dv0NPGibfwaumfdNiDKdrGENiYf7nzLfgwbMUUERQJn68eTEAY0v8Oob5IdZIWOGZjYaXoLQtigJdr6sjxNUv52JkSJuCGwiwEG2VFJXxrkNDGVOphZ9qXt9Tew=
+	t=1757673866; cv=none; b=eloYe/7TwWPPae34MNcdh3AthpGCTrJdK7VCmpFkvGXakgw+p5A9yTyeifwGXYgMTqg18MuK7CTvxfxx3l+GVV2eO1A+rbN/5VGGVx5DVD9PeD3IMtg1zsVSL1qHKNcD3O63X7iCtl32o8VXfIdaKLKlKrQc9XgZO5n8EKxQeZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757672078; c=relaxed/simple;
-	bh=FONjhalyy0nYuO9epq0nCJLGN+e67uZZPQI4FPVQhWk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S5e5/ggFugDjuqlMmrFfPugxO2ZBM2AqhL8ZhlSPdcfRzWTLoark8SjUV1jMb1aqENmZmrYxOWhQH+6WJ83STFZCOI9WBtYc/HYUyQuuusxr/KAVJaJEIbMB9dYdoColOGUUl6i7sIyo6d4fgJVRAUDphmrqseIMIga6RWkcREk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A1AFC4CEF1;
-	Fri, 12 Sep 2025 10:14:35 +0000 (UTC)
-Date: Fri, 12 Sep 2025 11:14:32 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-	arnd@arndb.de, will@kernel.org, peterz@infradead.org,
-	akpm@linux-foundation.org, mark.rutland@arm.com,
-	harisokn@amazon.com, cl@gentwo.org, ast@kernel.org,
-	zhenglifeng1@huawei.com, xueshuai@linux.alibaba.com,
-	joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-	konrad.wilk@oracle.com
-Subject: Re: [PATCH v5 5/5] rqspinlock: Use smp_cond_load_acquire_timeout()
-Message-ID: <aMPyiKuzGh4L4gD8@arm.com>
-References: <20250911034655.3916002-1-ankur.a.arora@oracle.com>
- <20250911034655.3916002-6-ankur.a.arora@oracle.com>
- <aMLdZyjYqFY1xxFD@arm.com>
- <CAP01T74XjRJGzT7BV3PYQOQOwZVud3nL7HfcW3kzU_fPFekNHg@mail.gmail.com>
- <87o6rgk5xd.fsf@oracle.com>
+	s=arc-20240116; t=1757673866; c=relaxed/simple;
+	bh=vUwTSRY6URg0Ifv5PkrWPyp8KD+Bis3cOfMiN8PEwFE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OQzXJggp/WDA3btzY86hsWLpMIRuq640gkO3ReHufbL4QEVwZaJNg0d/tw0AdJE1OU/FoXuThJOVvmx6S5fyqsI+EgvBlZAB11kqGlxZtS2hsOTCRSLGgbl6vOlXuLlIB3G2uER+u4RKsh+GixmSOnLmXwv7vGLS73kmVgClLOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dD1t2sEM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53326C4CEF1;
+	Fri, 12 Sep 2025 10:44:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757673865;
+	bh=vUwTSRY6URg0Ifv5PkrWPyp8KD+Bis3cOfMiN8PEwFE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=dD1t2sEMw4lLy6ePLjsyv8jdcMnoLuVyTWcReQrj+FY6FPnPovil9Q1rjUCJBy0K6
+	 7AtuKkteQUNeewhgN5Qivgduml9s2HjYAJR0iobvtJKPkupHmhSq/GU1KzBYa7VCpO
+	 xf+tF4TlGLxd4dKhahfymifjiD/Qkqjyzf0+hR9ayRy0n6IlbYIZob1i2Wnt4WuhFp
+	 G72MrABkhfNQX6Mn9h7GYVrCAscjv6N61AFyGwzIr7IaXmPQyGRg2xxzL8CIBfIf3x
+	 0LFmFkT2JdrWTi5Uf/1F+8PA2HVL8sr5XKm7aEg/rB0pF9rhCa/6VR8JgqOYbi3/wT
+	 VX395mrV0b1HQ==
+From: Quentin Monnet <qmo@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	bpf@vger.kernel.org,
+	Quentin Monnet <qmo@kernel.org>
+Subject: [PATCH bpf-next] bpftool: Search for tracefs at /sys/kernel/tracing first
+Date: Fri, 12 Sep 2025 11:43:43 +0100
+Message-ID: <20250912104343.58555-1-qmo@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o6rgk5xd.fsf@oracle.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 11, 2025 at 02:58:22PM -0700, Ankur Arora wrote:
-> 
-> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
-> 
-> > On Thu, 11 Sept 2025 at 16:32, Catalin Marinas <catalin.marinas@arm.com> wrote:
-> >>
-> >> On Wed, Sep 10, 2025 at 08:46:55PM -0700, Ankur Arora wrote:
-> >> > Switch out the conditional load inerfaces used by rqspinlock
-> >> > to smp_cond_read_acquire_timeout().
-> >> > This interface handles the timeout check explicitly and does any
-> >> > necessary amortization, so use check_timeout() directly.
-> >>
-> >> It's worth mentioning that the default smp_cond_load_acquire_timeout()
-> >> implementation (without hardware support) only spins 200 times instead
-> >> of 16K times in the rqspinlock code. That's probably fine but it would
-> >> be good to have confirmation from Kumar or Alexei.
-> >>
-> >
-> > This looks good, but I would still redefine the spin count from 200 to
-> > 16k for rqspinlock.c, especially because we need to keep
-> > RES_CHECK_TIMEOUT around which still uses 16k spins to amortize
-> > check_timeout.
-> 
-> By my count that amounts to ~100us per check_timeout() on x86
-> systems I've tested with cpu_relax(). Which seems quite reasonable.
-> 
-> 16k also seems safer on CPUs where cpu_relax() is basically a NOP.
+With "bpftool prog tracelog", bpftool prints messages from the trace
+pipe. To do so, it first needs to find the tracefs mount point to open
+the pipe. Bpftool looks at a few "default" locations, including
+/sys/kernel/debug/tracing and /sys/kernel/tracing.
 
-Does this spin count work for poll_idle()? I don't remember where the
-200 value came from.
+Some of these locations, namely /tracing and /trace, are not standard.
+They are in the list because some users used to hardcode the tracing
+directory to short names; but we have no compelling reason to look at
+these locations. If we fail to find the tracefs at the default
+locations, we have an additional step to find it by parsing /proc/mounts
+anyway, so it's safe to remove these entries from the list of default
+locations to check.
 
+Additionally, Alexei reports that looking for the tracefs at
+/sys/kernel/debug/tracing may automatically mount the file system under
+that location, and generate a kernel log message telling that
+auto-mounting there is deprecated. To avoid this message, let's swap the
+order for checking the potential mount points: try /sys/kernel/tracing
+first, which should be the standard location nowadays. The kernel log
+message may still appear if the tracefs is not mounted on
+/sys/kernel/tracing when we run bpftool.
+
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Closes: https://lore.kernel.org/r/CAADnVQLcMi5YQhZKsU4z3S2uVUAGu_62C33G2Zx_ruG3uXa-Ug@mail.gmail.com/
+Signed-off-by: Quentin Monnet <qmo@kernel.org>
+---
+ tools/bpf/bpftool/tracelog.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/tools/bpf/bpftool/tracelog.c b/tools/bpf/bpftool/tracelog.c
+index 31d806e3bdaa..49828a4f60c2 100644
+--- a/tools/bpf/bpftool/tracelog.c
++++ b/tools/bpf/bpftool/tracelog.c
+@@ -57,10 +57,8 @@ find_tracefs_mnt_single(unsigned long magic, char *mnt, const char *mntpt)
+ static bool get_tracefs_pipe(char *mnt)
+ {
+ 	static const char * const known_mnts[] = {
+-		"/sys/kernel/debug/tracing",
+ 		"/sys/kernel/tracing",
+-		"/tracing",
+-		"/trace",
++		"/sys/kernel/debug/tracing",
+ 	};
+ 	const char *pipe_name = "/trace_pipe";
+ 	const char *fstype = "tracefs";
+@@ -96,11 +94,11 @@ static bool get_tracefs_pipe(char *mnt)
+ 
+ 	p_info("could not find tracefs, attempting to mount it now");
+ 	/* Most of the time, tracefs is automatically mounted by debugfs at
+-	 * /sys/kernel/debug/tracing when we try to access it. If we could not
++	 * /sys/kernel/tracing when we try to access it. If we could not
+ 	 * find it, it is likely that debugfs is not mounted. Let's give one
+ 	 * attempt at mounting just tracefs at /sys/kernel/tracing.
+ 	 */
+-	strcpy(mnt, known_mnts[1]);
++	strcpy(mnt, known_mnts[0]);
+ 	if (mount_tracefs(mnt))
+ 		return false;
+ 
 -- 
-Catalin
+2.43.0
+
 
