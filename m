@@ -1,97 +1,146 @@
-Return-Path: <bpf+bounces-68256-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68257-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81B0AB556F4
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 21:36:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95CB3B5571E
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 21:54:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 780994E15ED
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:36:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A62207B4BB5
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D26E32F770;
-	Fri, 12 Sep 2025 19:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9494A2777F1;
+	Fri, 12 Sep 2025 19:53:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RlHMvKmW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b0Ul7iC5"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AEA327A2E;
-	Fri, 12 Sep 2025 19:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE1326FA54
+	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 19:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757705752; cv=none; b=OR+bq7ySjhxWKNzsim27RPZ+xYdvbVe5pj3FpIuD13idyoBmfGbZhX0SamBtE8NVNzwiRZDcf8FKVbSbpeUaet2VEQolXKRgDEFTva+6CcY4kzFHgDphsQn9Tp3eTpDdNJwppB+RVS1FVonNdRFf2jz1wQIYvEE3W9E8h+OVICY=
+	t=1757706833; cv=none; b=FykPRHd+48QEmSSf0B4+EwTP06BRjoQifdLbgjKOWGSgr25Ryv+u7erFH/Hg3X71hVpRK1fJC2BRra2XMJ3xv3R1YYvTSuvEhlZji6hca7CbLX9svsjGheyOUxhrfLmd1HCYuYcheyl6+0z3VS8k+RagZvApseIF1/2dsT4Yz4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757705752; c=relaxed/simple;
-	bh=EuFoan44y9MtixCT5U0TLvDIdjhgkppaMVmj//N0gIE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NBCSEKA0fVdXU1xE4naycKRef46kf1PfYCIcVPjMqTIMzgL5/JO70a1xB+AfzNNwAW68Devuf3wWd93mHI6mlYtVe8D8sqxLZH+EjYMkJiaIQLfIsScg3t6hK2JzzFTzN0ReDvZhvWJtwFjcwIX7mhrfGbmxvwf4kLclh7O/Zr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RlHMvKmW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA3CC4CEF1;
-	Fri, 12 Sep 2025 19:35:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757705752;
-	bh=EuFoan44y9MtixCT5U0TLvDIdjhgkppaMVmj//N0gIE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RlHMvKmWxpBv6h+cFyw/9EEJlBNsJkahcd3bvPMc/P2PzeVOjiQrnk1W05TfKjNsb
-	 krBRBgl/6ppA1Ec/zw0quRTvAWXiBDov2FFWoA/ac2VYXE+QfSc2NDW1Dp6hTezPTg
-	 1TehB+LHSuHsBkYq5OTN2HJ/CtAW485PEBBdIuIPt0QKR4l8ig5McR09NHe5JAK2AA
-	 e6RCyOdBdJWPKjBH3gBiqtwaWM6mHU6nzXFIX9fjYunHZLHPEncrjdUPOr/MvNbuTA
-	 WZaXVx3XIGZv/DF+jhP5DqS+jBNnvAK79f/cT47vCBBvleG+eYHu+yUa+K6O6JA8wu
-	 CeBELC4tmmIoA==
-Date: Fri, 12 Sep 2025 16:35:49 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>, Leo Yan <leo.yan@arm.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH RESEND] perf: Completely remove possibility to override
- MAX_NR_CPUS
-Message-ID: <aMR2FZWyXekLEK0-@x1>
-References: <b205802edbb6fcc78822f558dff7104e64b29864.1755510867.git.christophe.leroy@csgroup.eu>
- <7ded6ce4-1fcb-4e2d-94ab-5c330de6aea0@csgroup.eu>
+	s=arc-20240116; t=1757706833; c=relaxed/simple;
+	bh=fCUTGtNGsGZ5r8jfbbLtppKMsWLoWvtOButsYG55zPw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HbmGPJT4gE2mFzAJVCFJ0Vq2QLHewFafZZ0qAz//3s9vwOPsqgqXQI6nlmgM8/+OLX4mlJ0X7Z3QQCP4LP9wmlIrNPWtqbuuWgQerJnU7mPG0Rba0Q7yAhbzhCitGYn4nbR4l6BVNQQ2hg3KwtGhVQTTAZc6NgSsP5yL6yKXiJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b0Ul7iC5; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-45df09c7128so19170605e9.1
+        for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 12:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757706830; x=1758311630; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=im9Lq21+8J5Mf+5Q2uEKKjoiHcxVE9gd6Lc8gRvhOVI=;
+        b=b0Ul7iC5cmeUD9YWfGGZMaMMp9dX9sudglDagj4vH5odmnPhHpNkaN1EcBjFKpufv1
+         qj9JezF/sWIU26+/pITBMK+mZpQRWpQ512u7Km0gV0xWvHrwGRHydzYp+GL1vh3rCzn9
+         kR4lrIaVP3N7rv8Qz/SnPTV/qu5HbdOtu//Y8wU56A8f9Kb3JbbX4i0Fc5RJJHMbJM7l
+         dYw4VcpALWDt91paTZijXjcffn9tIuJbXxO1gEUHVvya8BIHKrnepwB4dkFr6A9pJng4
+         89DlwVHweCiIO/w4jT9FguOyHnCemkuHVW7hMKt8HlOquUhqeuUartXixzFPsQDdqRIN
+         uzSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757706830; x=1758311630;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=im9Lq21+8J5Mf+5Q2uEKKjoiHcxVE9gd6Lc8gRvhOVI=;
+        b=Q1jXvcwvC8WoRbbjdJ+8OqEr3rWedMzaeSftoAHqwxVwrOKL+wz46Ab2zmjDJl3+4m
+         3OmeJQWjsg//ghUhhqAhhEEU3tGJylZD/kjhazmcuIqpi14QBe+7dPPAKkGm2yAYW0b0
+         cAJBzdUrFf79s0vnX6hIIgLqZIPA5RDEOZctMlwDbQMKrccxXJlakItNpEEihDZg0vrw
+         YvqdxnX34sSGo51DGgdqj5CjsgCcx6NpHTrdx0RbGBwelA8Q0YINkcubDFL36qPMPvAO
+         svSgUVy5e4EJRkpy6d8p6LPIB06zJOxbNGNbbm/DX/i2cGLvUoL7qmcDMgSXI6lQbhdW
+         zgNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUbog1vrCkoqQKJoxXmuhboZ58qo0wzGQ9ETwqPne1/ZyQJKmbCkMyG7VwCJbI6Uq2CZ2Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyp6t+J/QkM3rmRFY9Krn5NVJNaAdFgJRW/sNL4XZbrla3vMfrm
+	0e+c3yuiINHjtOl2x9zBu8imQHg83jpTjYz1b55jytzh7JrlaQZr+oDf
+X-Gm-Gg: ASbGncuPC8A4qICJ+SqZUUmffxVDHg/VYbrnay4vmijLQ6OxriXX59TvXXv2LEOW3SP
+	2thrzt/iFyYX9CLFBXVqDqrYguceoWCPFPIuPXMJjK7lL949M4jlTpwK+1vsiOIIa10G3+FMTAv
+	nDe2xXXydSLBUk8oz1TtyDrgWVFVBah3nIHKE8M1AbkSDtNGMm8N1fSEmrDzis6VG/VxJLCT6Rk
+	ek6t6BZZ/PlbAoLMTB3wVprBg9NzFmv7vLF5DU7wxjXctxZB7JpmkSBh2141MM61ylg21xN40Uk
+	yVr8j3l3KRhduaQHHBzDxNKtNeQIBBMZJDuq6cHzsDNkAkzqtHXgShShIWhYPVKaMnHLqmn83gJ
+	g3gpdRsc4/ae6QogA/TshiLYPkK5Fzso01wwNkaOOoXDjKZ5zhL2BHG0Go7x4lw==
+X-Google-Smtp-Source: AGHT+IG9aZcd6e5qxsZVmaWzgC1SbVThJULp4P95JK54XvdW/IaMNxg/kygFEwGzo4IyxjxCygpjwA==
+X-Received: by 2002:a05:600c:898:b0:45f:21e6:3ef7 with SMTP id 5b1f17b1804b1-45f21e6403bmr28589515e9.17.1757706829510;
+        Fri, 12 Sep 2025 12:53:49 -0700 (PDT)
+Received: from yanesskka.. (node-188-187-35-212.domolink.tula.net. [212.35.187.188])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45e017bfd14sm74650375e9.21.2025.09.12.12.53.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Sep 2025 12:53:49 -0700 (PDT)
+From: Yana Bashlykova <yana2bsh@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>
+Cc: Yana Bashlykova <yana2bsh@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Tom Rix <trix@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	bpf@vger.kernel.org,
+	llvm@lists.linux.dev,
+	lvc-project@linuxtesting.org
+Subject: [PATCH 6.1 00/15] genetlink: Test Netlink subsystem of Linux v6.1
+Date: Fri, 12 Sep 2025 22:53:23 +0300
+Message-Id: <20250912195339.20635-1-yana2bsh@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7ded6ce4-1fcb-4e2d-94ab-5c330de6aea0@csgroup.eu>
 
-On Fri, Sep 12, 2025 at 10:32:56AM +0200, Christophe Leroy wrote:
-> Le 18/08/2025 à 11:57, Christophe Leroy a écrit :
-> > Commit 21b8732eb447 ("perf tools: Allow overriding MAX_NR_CPUS at
-> > compile time") added the capability to override MAX_NR_CPUS. At
-> > that time it was necessary to reduce the huge amount of RAM used
-> > by static stats variables.
-> > 
-> > But this has been unnecessary since commit 6a1e2c5c2673 ("perf stat:
-> > Remove a set of shadow stats static variables"), and
-> > commit e8399d34d568 ("libperf cpumap: Hide/reduce scope of
-> > MAX_NR_CPUS") broke the build in that case because it failed to
-> > add the guard around the new definition of MAX_NR_CPUS.
-> > 
-> > So cleanup things and remove guards completely to officialise it
-> > is not necessary anymore to override MAX_NR_CPUS.
-> > 
-> > Link: https://lore.kernel.org/all/8c8553387ebf904a9e5a93eaf643cb01164d9fb3.1736188471.git.christophe.leroy@csgroup.eu/
-> > Fixes: e8399d34d568 ("libperf cpumap: Hide/reduce scope of MAX_NR_CPUS")
-> > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
-> Gentle ping
+This series adds comprehensive testing infrastructure for Netlink
+and Generic Netlink
 
-Thanks, applied to perf-tools-next,
+The implementation includes both kernel module and userspace tests to
+verify correct Generic Netlink and Netlink behaviors under
+various conditions.
 
-- Arnaldo
+Yana Bashlykova (15):
+  genetlink: add sysfs test module for Generic Netlink
+  genetlink: add TEST_GENL family for netlink testing
+  genetlink: add PARALLEL_GENL test family
+  genetlink: add test case for duplicate genl family registration
+  genetlink: add test case for family with invalid ops
+  genetlink: add netlink notifier support
+  genetlink: add THIRD_GENL family
+  genetlink: verify unregister fails for non-registered family
+  genetlink: add LARGE_GENL stress test family
+  selftests: net: genetlink: add packet capture test infrastructure
+  selftests: net: genetlink: add /proc/net/netlink test
+  selftests: net: genetlink: add Generic Netlink controller tests
+  selftests: net: genetlink: add large family ID resolution test
+  selftests: net: genetlink: add Netlink and Generic Netlink test suite
+  selftests: net: genetlink: fix expectation for large family resolution
+
+ drivers/net/Kconfig                           |    2 +
+ drivers/net/Makefile                          |    2 +
+ drivers/net/genetlink/Kconfig                 |    8 +
+ drivers/net/genetlink/Makefile                |    3 +
+ .../net-pf-16-proto-16-family-PARALLEL_GENL.c | 1921 ++++++
+ tools/testing/selftests/net/Makefile          |    6 +
+ tools/testing/selftests/net/genetlink.c       | 5152 +++++++++++++++++
+ 7 files changed, 7094 insertions(+)
+ create mode 100644 drivers/net/genetlink/Kconfig
+ create mode 100644 drivers/net/genetlink/Makefile
+ create mode 100644 drivers/net/genetlink/net-pf-16-proto-16-family-PARALLEL_GENL.c
+ create mode 100644 tools/testing/selftests/net/genetlink.c
+
+-- 
+2.34.1
+
 
