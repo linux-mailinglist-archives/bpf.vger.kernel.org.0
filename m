@@ -1,252 +1,141 @@
-Return-Path: <bpf+bounces-68246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91AECB55578
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:30:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C229B55583
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:34:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 349A718953DD
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 17:30:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EAD45A68EA
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 17:34:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92EE32142F;
-	Fri, 12 Sep 2025 17:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D60CE1F8BD6;
+	Fri, 12 Sep 2025 17:34:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DeZhgqmK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jNqRxzX8"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DB11DE4CE
-	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 17:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B894CBA45
+	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 17:34:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757698200; cv=none; b=GzqE0hVNRKd/xEA3Q6CHnFxxC9pvj6WF0NSjNwMQi+zZZbVLDC+iKX/SV7O8X6VMhv14QA7OMr6Q6MXS6EaeV87QHL69xmj5YIGRDM0q08NubR1jx3CCAItePHGM11gc0m5VfAHqpBALpX9oKtL7IQ+PCotAKayo/wxDb3FTk68=
+	t=1757698470; cv=none; b=Ex3u3PsOZdwZfw1EX3cSQ09wYNicUaAzB2CWX/sq06UDZjQkwvmMJLJRwYg5Ay9tl+T2kBCI1HuF6lFeWGOGSqEYlS42FvjsbvVPFRAvBGDbhzrDE2hW6MI0pDJO0onZxsKP+bFNEGF7eJjUyjm8P5q9bse4ppYWP2xVaoJCIYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757698200; c=relaxed/simple;
-	bh=Z1xFc4kWydanc6mTiHOzn4cmKEU6izxR+7X1a1Lgo3E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t8zNd5qsrNifHeoK3CS+HRDDxhDbTvA+Dj4XaDDazI34Mm74ozgVGZLyac/Mrsr0b4ykQVSI0DMeoKcWwL3hl+07gsQRP6rm/0Dbn+zqWkiaPYm7IgegtrVI5C3i/ByXw2gMGYkxLVxlqu/75QzrsaA6iBJrKdJb67AOnoT4PJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DeZhgqmK; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <80b309fe-6ba0-4ca5-a0b7-b04485964f5d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757698185;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RwQTlkyZSo9/pvc8bk9JLJLXcS+5IKS20oI3BS5xNeg=;
-	b=DeZhgqmKh2wTtYqyV2EbZ7nlICrIHLfC1ZZFz7YJakOBKogfBtJKIYcXDvAIsfbBeuZlDr
-	kSmUUjnz7yHAMpKFHEACsArwwaadMfdjzc4Nx8DWYJNXgpJ1TkSIFbUiYkZ3ThTp7YCOnV
-	QCwIpe2daZC+1TBrCCKsr0E+zzyWOfM=
-Date: Fri, 12 Sep 2025 10:29:39 -0700
+	s=arc-20240116; t=1757698470; c=relaxed/simple;
+	bh=oIHIrss8Cf/fKev3+2zhYWHUF2w908OBQ0WxAP2UMu8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d/uS3CJsP7VZf+OZ0CBBQMZv0hKTeZwDfaoS6eO9L+M9T4k4c3gxCH1YH3WGMhbjfBKc8lRaRgA4KolBOGANob6AHXtrynmZz8B3DXNOyCKFMZQI+ACOcRTYf8YSgePLIVLR3I3jQ2v8QU0FNt8JAr1+wABPS0IjYS/y+ctPBKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jNqRxzX8; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3e07ffffb87so1235170f8f.2
+        for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 10:34:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757698467; x=1758303267; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c5LHAOD3RsM7IX6ZQaWQlGO8B8wFFk4TliEC/qZmawU=;
+        b=jNqRxzX8B5ozVtDhrOVgEMngGtsw11GMgFGgRKMzHWdqiUekrnmB+JNKhv5Ve1C1zG
+         pOoyyFvocQyPqGCHLM0VIUxGjQRC2leVKDXWg8Ddso5vw0IMRksUdIbfBtRw+BEVXK0s
+         psQ4LlROycqABQdMWrkQH7luYYIUKdwzXp/fbKOnSbH2cJMksPOVsgWSgLrpYr0v5X03
+         FxeBTk+0Ks1S1Y6jJISozFc3yJHoHB/3lxg6kGnIqE7P50nvXF6B1c8GD2dBMEgbTf97
+         oRuddtAAZKPoNtp+1WgiegjCXO7RDqvYnzwJ7DPssIMHXwujBT6ANkRrIkS4RojNCXp0
+         j7/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757698467; x=1758303267;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c5LHAOD3RsM7IX6ZQaWQlGO8B8wFFk4TliEC/qZmawU=;
+        b=Cj718wdwi3wCOsVzzeyForpr/fGwa5NMKncOsPzUmGMXnYAtluh0DKWJywKT5ZUhJC
+         nNf/pXjTbCTROYc4T9tmohB+8pmRMehApzGtlDXIX3asIbN3qP+Esz9QH6EDaKWuivkM
+         rafSTfY+mJH7qhw8Azmi+RcG1fQ7G73o4O8Dw3fwa5C7rI/WRPfpAcYp/DReSbGQLYKJ
+         Yj/ffhTkg7x0vsmBGHdt8fakbIrVLv0WMF+gbDlbrJoD3fQnQuWc5aHs5t/bbxZc8PVX
+         ETxHKaW5zs6gXAbIhXJs+pOvePv9D50M5NrbLpUiuovvh7AgC+WdI9WKsezeolYw7uo2
+         iclg==
+X-Forwarded-Encrypted: i=1; AJvYcCW2UOLfrkOP7tSNNlBVfmO86XQQenG5kvTH/95qbxT50o+h1RSgMDmjtJA23HX/SXwGutI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2KHXczO4atxVXY6rI8B59CE5N2qkn7qSVacg5UvxqVWH+M3L3
+	xnGzYCVFfYscCee2bP+B3MJDZlqzpXB/FcShBoN0UhXZAqS4MmDCX3qVzPNKtzDAXhF7mfjNpb1
+	OUlZCQ6SPxGpRcSDpvmF1twUP6qcnHko=
+X-Gm-Gg: ASbGncvGZlHRQl9CnzL8g69VSyKhAxOjiBbY9CXuoa/RlBIs3bFscTulZs0FP3M9CeC
+	52REGMcqxO6vGpTvJir1jXVTJ0/XMBiELZldFRyRoulPd02dcFa36yn/0ApfPvdTxtJ5j4K97hh
+	ho6TGhE8AB9k6E3y9ZGoGcX4keaQ1TVHWVXDGFzjJvMxHpTBrSc8ciTSu0G+Ch3ctoX670gC8uz
+	aUQgDK4+yoPLMyOW1dTPmC6HujoqOXpZmlAUEi2OJ/wokY=
+X-Google-Smtp-Source: AGHT+IF84u9tsLSiw4lDvT5XmwWtoH0L/3zRkVWz/Q7BbdJ5SQIMqXyHfKSwJKnSQJcmnQtbE+lOWa60Ml7eykZbfmc=
+X-Received: by 2002:a05:6000:2510:b0:3e7:4277:ddc2 with SMTP id
+ ffacd0b85a97d-3e76579abb9mr3853126f8f.10.1757698466762; Fri, 12 Sep 2025
+ 10:34:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 00/14] bpf: Efficient socket destruction
-To: Jordan Rife <jordan@jrife.io>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev
- <sdf@fomichev.me>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Kuniyuki Iwashima <kuniyu@google.com>, Aditi Ghag
- <aditi.ghag@isovalent.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20250909170011.239356-1-jordan@jrife.io>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250909170011.239356-1-jordan@jrife.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
+ <20250909010007.1660-3-alexei.starovoitov@gmail.com> <2kaahuvnmke2bj27cu4tu3sr5ezeohra56btxj2iu4ijof5dim@thdwhzjjqzgd>
+ <aMRVNqH47mdkl5Ke@casper.infradead.org>
+In-Reply-To: <aMRVNqH47mdkl5Ke@casper.infradead.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 12 Sep 2025 10:34:15 -0700
+X-Gm-Features: AS18NWDOSsJ18D-9VlumoGDeKjZauJ0F3-n9lYvWRCc26bWu4h9-Bjo2I0KS2Vg
+Message-ID: <CAADnVQJbx0Wf4xrAEfQyZhhpC13zJH6NqdFjYQ+StQzzi+Y=Nw@mail.gmail.com>
+Subject: Re: [PATCH slab v5 2/6] mm: Allow GFP_ACCOUNT to be used in alloc_pages_nolock().
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>, Harry Yoo <harry.yoo@oracle.com>, 
+	Michal Hocko <mhocko@suse.com>, Sebastian Sewior <bigeasy@linutronix.de>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Johannes Weiner <hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/9/25 9:59 AM, Jordan Rife wrote:
-> MOTIVATION
-> ==========
-> In Cilium we use SOCK_ADDR hooks (cgroup/connect4, cgroup/sendmsg4, ...)
-> to do socket-level load balancing, translating service VIPs to real
-> backend IPs. This is more efficient than per-packet service VIP
-> translation, but there's a consequence: UDP sockets connected to a stale
-> backend will keep trying to talk to it once its gone instead of traffic
-> being redirected to an active backend. To bridge this gap, we forcefully
-> terminate such sockets from the control plane, forcing applications to
-> recreate these sockets and start talking to an active backend. In the
-> past, we've used netlink + sock_diag for this purpose, but have started
-> using BPF socket iterators coupled with bpf_sock_destroy() in an effort
-> to do most dataplane management in BPF and improve the efficiency of
-> socket termination. bpf_sock_destroy() was introduced by Aditi for this
-> very purpose in [1]. More recently, this kind of forceful socket
-> destruction was extended to cover TCP sockets as well so that they more
-> quickly receive a reset when the backend they're connected to goes away
-> instead of relying on timeouts [2].
-> 
-> When a backend goes away, the process to destroy all sockets connected
-> to that backend looks roughly like this:
-> 
-> for each network namespace:
->      enter the network namespace
->      create a socket iterator
->      for each socket in the network namespace:
->          run the iterator BPF program:
->              if sk was connected to the backend:
->                  bpf_sock_destroy(sk)
-> 
-> Clearly, this creates a lot of repeated work, and it became evident in
-> scale tests that create many sockets or frequent service backend churn
-> that this approach won't scale well.
-> 
-> For a simple illustration, I set up a scenario where there are one
-> hundred different workloads each running in their own network namespace
-> and observed the time it took to iterate through all namespaces and
-> sockets to destroy a handful of connected sockets in those namespaces.
+On Fri, Sep 12, 2025 at 10:15=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
+g> wrote:
+>
+> On Fri, Sep 12, 2025 at 10:11:26AM -0700, Shakeel Butt wrote:
+> > On Mon, Sep 08, 2025 at 06:00:03PM -0700, Alexei Starovoitov wrote:
+> > [...]
+> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > > index d1d037f97c5f..30ccff0283fd 100644
+> > > --- a/mm/page_alloc.c
+> > > +++ b/mm/page_alloc.c
+> > > @@ -7480,6 +7480,7 @@ static bool __free_unaccepted(struct page *page=
+)
+> > >
+> > >  /**
+> > >   * alloc_pages_nolock - opportunistic reentrant allocation from any =
+context
+> > > + * @gfp_flags: GFP flags. Only __GFP_ACCOUNT allowed.
+> >
+> > If only __GFP_ACCOUNT is allowed then why not use a 'bool account' in t=
+he
+> > parameter and add __GFP_ACCOUNT if account is true?
+>
+> It's clearer in the callers to call alloc_pages_nolock(__GFP_ACCOUNT)
+> than it is to call alloc_pages_nolock(true).
+>
+> I can immediately tell what the first one does.  I have no idea what
+> the polarity of 'true' might be (does it mean accounted or unaccounted?)
+> Is it rlated to accounting, GFP_COMP, highmem, whether it's OK to access
+> atomic reserves ... or literally anything else that you might want to
+> select when allocating memory.
+>
+> This use of unadorned booleans is an antipattern.  Nobody should be
+> advocating for such things.
 
-How many sockets were destroyed?
++1.
+We strongly discourage bool in arguments in any function.
+It makes callsites unreadable.
 
-> I repeated this five times, each time increasing the number of sockets
-> in the system's UDP hash by 10x using a script that creates lots of
-> connected sockets.
-> 
->                      +---------+----------------+
->                      | Sockets | Iteration Time |
->                      +---------+----------------+
->                      | 100     | 6.35ms         |
->                      | 1000    | 4.03ms         |
->                      | 10000   | 20.0ms         |
->                      | 100000  | 103ms          |
->                      | 1000000 | 9.38s          |
->                      +---------+----------------+
->                        Namespaces = 100
->                        [CPU] AMD Ryzen 9 9900X
-> 
-> Iteration takes longer as more sockets are added. All the while, CPU
-> utilization is high with `perf top` showing `bpf_iter_udp_batch` at the
-> top:
-> 
->    70.58%  [kernel]                 [k] bpf_iter_udp_batch
-> 
-> Although this example uses UDP sockets, a similar trend should be
-> present with TCP sockets and iterators as well. Even low numbers of
-> sockets and sub-second times can be problematic in clusters with high
-> churn or where a burst of backend deletions occurs.
+We learned it the hard way though :(
+Some of the verifier code became a mess like:
+        err =3D check_load_mem(env, insn, true, false, false, "atomic_load"=
+);
 
-
-For TCP, is it possible to abort the connection in BPF_SOCK_OPS_RTO_CB to stop 
-the retry? RTO is not a per packet event.
-
-Does it have a lot of UDP connected sockets left to iterate in production?
-
-> 
-> This can be slightly improved by doing some extra bookkeeping that lets
-> us skip certain namespaces that we know don't contain sockets connected
-> to the backend, but in general we're boxed in by three limitations:
-> 
-> 1. BPF socket iterators scan through every socket in the system's UDP or
->     TCP socket hash tables to find those belonging to the current network
->     namespace, since by default all namespaces share the same set of
->     global tables. As the number of sockets in a system grows, more time
->     will be spent filtering out unrelated sockets. You could use
->     udp_child_hash_entries and tcp_child_ehash_entries to give each
-
-I assume the sockets that need to be destroyed could be in different child 
-hashtables (i.e. in different netns) even child_[e]hash is used?
-
->     namespace its own table and avoid these noisy neighbor effects, but
->     managing this automatically for each workload is tricky, uses more
->     memory than necessary, and still doesn't avoid unnecessary filtering,
->     because...
-> 2. ...it's necessary to visit all sockets in a network namespace to find
->     the one(s) you're looking for, since there's no predictible order in
->     the system hash tables. Similar to the last point, this creates
->     unnecessary work.
-> 3. bpf_sock_destroy() only works from BPF socket iterator contexts
->     currently.
-> 
-> OVERVIEW
-> ========
-> It would be ideal if we could visit only the set of sockets we're
-> interested in without lots of wasteful filtering. This patch series
-> seeks to enable this with the following changes:
-> 
-> * Making bpf_sock_destroy() work with BPF_MAP_TYPE_SOCKHASH map
->    iterators.
-> * Enabling control over bucketing behavior of BPF_MAP_TYPE_SOCKHASH to
->    ensure that all sockets sharing the same key prefix are grouped in
->    the same bucket.
-> * Adding a key prefix filter to BPF_MAP_TYPE_SOCKHASH map iterators that
->    limits iteration to only the bucket containing keys with the given
->    prefix, and therefore, a single bucket.
-> * A new sockops event, BPF_SOCK_OPS_UDP_CONNECTED_CB, that allows us to
->    automatically insert connected UDP sockets into a
->    BPF_MAP_TYPE_SOCKHASH in the same way
->    BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB does for connect()ed TCP sockets.
-> 
-> This gives us the means to maintain a socket index where we can
-> efficiently retrieve and destroy the set of sockets sharing some common
-> property, in our case the backend address, without any additional
-> iteration or filtering.
-> 
-> The basic idea looks like this:
-> 
-> * `map_extra` may be used to specify the number of bytes from the key
->    that a BPF_MAP_TYPE_SOCKHASH uses to determine a socket's hash bucket.
-> 
->    ```
->    struct sock_hash_key {
->            __u32 bucket_key;
->            __u64 cookie;
->    } __packed;
-> 
->    struct {
->            __uint(type, BPF_MAP_TYPE_SOCKHASH);
->            __uint(max_entries, 16);
->            __ulong(map_extra, offsetof(struct sock_hash_key, cookie));
->            __type(key, struct sock_hash_key);
->            __type(value, __u64);
->    } sock_hash SEC(".maps");
->    ```
-> 
->    In this example, all keys sharing the same `bucket_key` would be
->    bucketed together. In our case, `bucket_key` would be replaced with a
->    backend ID or (destination address, port) tuple.
-
-Before diving into the discussion whether it is a good idea to add another key 
-to a bpf hashmap, it seems that a hashmap does not actually fit your use case. A 
-different data structure (or at least a different way of grouping sk) is needed. 
-Have you considered using the bpf_list_head/bpf_rb_root/bpf_arena? Potentially, 
-the sk could be stored as a __kptr but I don't think it is supported yet, aside 
-from considerations when sk is closed, etc. However, it can store the numeric 
-ip/port and then use the bpf_sk_lookup helper, which can take netns_id. 
-Iteration could potentially be done in a sleepable SEC("syscall") program in 
-test_prog_run, where lock_sock is allowed. TCP sockops has a state change 
-callback (i.e. for tracking TCP_CLOSE) but connected udp does not have it now.
-
-> * `key_prefix` may be used to parametrize a BPF_MAP_TYPE_SOCKHASH map
->    iterator so that it only visits the bucket matching that key prefix.
-> 
->    ```
->    union bpf_iter_link_info {
->            struct {
->                   __u32 map_fd;
->                   union {
->                           /* Parameters for socket hash iterators. */
->                           struct {
->                                    __aligned_u64 key_prefix;
->                                    __u32         key_prefix_len;
->                           } sock_hash;
-> 	         };
->            } map;
-> 	...
->    };
->    ```
-> * The contents of the BPF_MAP_TYPE_SOCKHASH are automatically managed
->    using a sockops program that inserts connected TCP and UDP sockets
->    into the map.
-> 
-
-
+it's on our todo to clean this up.
 
