@@ -1,163 +1,97 @@
-Return-Path: <bpf+bounces-68255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9AD2B556E9
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 21:27:54 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81B0AB556F4
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 21:36:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FFEDAA6540
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:27:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 780994E15ED
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:36:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F63C33472D;
-	Fri, 12 Sep 2025 19:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D26E32F770;
+	Fri, 12 Sep 2025 19:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="o4c6cVOO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RlHMvKmW"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720AC32BF38
-	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 19:27:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AEA327A2E;
+	Fri, 12 Sep 2025 19:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757705265; cv=none; b=jJmpuCbR85tlTAPSglsl8BCw/zc7V9NnERof6cyWY0HeFB3DbMkxxSuaO7Ti9CrFjAQo9FbK4H+vz4C+KsxXrgIqWqgU0kZuwqswoJHEZXGnX2pS9iwCWkVS/bATiWZVokIzskxv/lAm6DKy8heEGGxVhODZAUiqcZMw/RCrRDM=
+	t=1757705752; cv=none; b=OR+bq7ySjhxWKNzsim27RPZ+xYdvbVe5pj3FpIuD13idyoBmfGbZhX0SamBtE8NVNzwiRZDcf8FKVbSbpeUaet2VEQolXKRgDEFTva+6CcY4kzFHgDphsQn9Tp3eTpDdNJwppB+RVS1FVonNdRFf2jz1wQIYvEE3W9E8h+OVICY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757705265; c=relaxed/simple;
-	bh=0kXH3MZfzjdPYKN5GHO+sU36RHfP+mcqOFthuCeDh1U=;
+	s=arc-20240116; t=1757705752; c=relaxed/simple;
+	bh=EuFoan44y9MtixCT5U0TLvDIdjhgkppaMVmj//N0gIE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=leCUf+o8ApCuQzWaBS/4DmnLFqKnaOU5SH0IvjMnMELFaX3XoxPAkbxatPctb46QoDdG+oB9ClazKByuCFzCvN886LoblgGE06PZq/xuiziOM2TmEazW/oXjuJzYS+opoYnEYJwF1wiqonFo5g2mix337lSCorB40FSNFGENJ8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=o4c6cVOO; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 12 Sep 2025 12:27:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757705261;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ExXevDn+7ykaskoO7a8ZpNNYaKFfGSwxcpOAezuUCvI=;
-	b=o4c6cVOO96AdX8Fjafc3zvAlboi73GPkU2UPTpPb0+c7R79fSvoO7fbF4tXTlRlgRso/9Q
-	k/57cS6gIvTBhLNdSI5qr2BXMsK+OzcVrGYP6IiaYY4KtSlUEUsy7z/MQXuvq9ewQEGJQW
-	MYP1JzIqQdKf5gT1ijxwjA4HnQHIers=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz, 
-	harry.yoo@oracle.com, mhocko@suse.com, bigeasy@linutronix.de, andrii@kernel.org, 
-	memxor@gmail.com, akpm@linux-foundation.org, peterz@infradead.org, 
-	rostedt@goodmis.org, hannes@cmpxchg.org, surenb@google.com, roman.gushchin@linux.dev
-Subject: Re: [PATCH slab v5 5/6] slab: Reuse first bit for OBJEXTS_ALLOC_FAIL
-Message-ID: <jftidhymri2af5u3xtcqry3cfu6aqzte3uzlznhlaylgrdztsi@5vpjnzpsemf5>
-References: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
- <20250909010007.1660-6-alexei.starovoitov@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NBCSEKA0fVdXU1xE4naycKRef46kf1PfYCIcVPjMqTIMzgL5/JO70a1xB+AfzNNwAW68Devuf3wWd93mHI6mlYtVe8D8sqxLZH+EjYMkJiaIQLfIsScg3t6hK2JzzFTzN0ReDvZhvWJtwFjcwIX7mhrfGbmxvwf4kLclh7O/Zr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RlHMvKmW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA3CC4CEF1;
+	Fri, 12 Sep 2025 19:35:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757705752;
+	bh=EuFoan44y9MtixCT5U0TLvDIdjhgkppaMVmj//N0gIE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RlHMvKmWxpBv6h+cFyw/9EEJlBNsJkahcd3bvPMc/P2PzeVOjiQrnk1W05TfKjNsb
+	 krBRBgl/6ppA1Ec/zw0quRTvAWXiBDov2FFWoA/ac2VYXE+QfSc2NDW1Dp6hTezPTg
+	 1TehB+LHSuHsBkYq5OTN2HJ/CtAW485PEBBdIuIPt0QKR4l8ig5McR09NHe5JAK2AA
+	 e6RCyOdBdJWPKjBH3gBiqtwaWM6mHU6nzXFIX9fjYunHZLHPEncrjdUPOr/MvNbuTA
+	 WZaXVx3XIGZv/DF+jhP5DqS+jBNnvAK79f/cT47vCBBvleG+eYHu+yUa+K6O6JA8wu
+	 CeBELC4tmmIoA==
+Date: Fri, 12 Sep 2025 16:35:49 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>, Leo Yan <leo.yan@arm.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH RESEND] perf: Completely remove possibility to override
+ MAX_NR_CPUS
+Message-ID: <aMR2FZWyXekLEK0-@x1>
+References: <b205802edbb6fcc78822f558dff7104e64b29864.1755510867.git.christophe.leroy@csgroup.eu>
+ <7ded6ce4-1fcb-4e2d-94ab-5c330de6aea0@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20250909010007.1660-6-alexei.starovoitov@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7ded6ce4-1fcb-4e2d-94ab-5c330de6aea0@csgroup.eu>
 
-+Suren, Roman
-
-On Mon, Sep 08, 2025 at 06:00:06PM -0700, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On Fri, Sep 12, 2025 at 10:32:56AM +0200, Christophe Leroy wrote:
+> Le 18/08/2025 à 11:57, Christophe Leroy a écrit :
+> > Commit 21b8732eb447 ("perf tools: Allow overriding MAX_NR_CPUS at
+> > compile time") added the capability to override MAX_NR_CPUS. At
+> > that time it was necessary to reduce the huge amount of RAM used
+> > by static stats variables.
+> > 
+> > But this has been unnecessary since commit 6a1e2c5c2673 ("perf stat:
+> > Remove a set of shadow stats static variables"), and
+> > commit e8399d34d568 ("libperf cpumap: Hide/reduce scope of
+> > MAX_NR_CPUS") broke the build in that case because it failed to
+> > add the guard around the new definition of MAX_NR_CPUS.
+> > 
+> > So cleanup things and remove guards completely to officialise it
+> > is not necessary anymore to override MAX_NR_CPUS.
+> > 
+> > Link: https://lore.kernel.org/all/8c8553387ebf904a9e5a93eaf643cb01164d9fb3.1736188471.git.christophe.leroy@csgroup.eu/
+> > Fixes: e8399d34d568 ("libperf cpumap: Hide/reduce scope of MAX_NR_CPUS")
+> > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > 
-> Since the combination of valid upper bits in slab->obj_exts with
-> OBJEXTS_ALLOC_FAIL bit can never happen,
-> use OBJEXTS_ALLOC_FAIL == (1ull << 0) as a magic sentinel
-> instead of (1ull << 2) to free up bit 2.
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Gentle ping
 
-Are we low on bits that we need to do this or is this good to have
-optimization but not required?
+Thanks, applied to perf-tools-next,
 
-I do have some questions on the state of slab->obj_exts even before this
-patch for Suren, Roman, Vlastimil and others:
-
-Suppose we newly allocate struct slab for a SLAB_ACCOUNT cache and tried
-to allocate obj_exts for it which failed. The kernel will set
-OBJEXTS_ALLOC_FAIL in slab->obj_exts (Note that this can only be set for
-new slab allocation and only for SLAB_ACCOUNT caches i.e. vec allocation
-failure for memory profiling does not set this flag).
-
-Now in the post alloc hook, either through memory profiling or through
-memcg charging, we will try again to allocate the vec and before that we
-will call slab_obj_exts() on the slab which has:
-
-	unsigned long obj_exts = READ_ONCE(slab->obj_exts);
-
-	VM_BUG_ON_PAGE(obj_exts && !(obj_exts & MEMCG_DATA_OBJEXTS), slab_page(slab));
-
-It seems like the above VM_BUG_ON_PAGE() will trigger because obj_exts
-will have OBJEXTS_ALLOC_FAIL but it should not, right? Or am I missing
-something? After the following patch we will aliasing be MEMCG_DATA_OBJEXTS
-and OBJEXTS_ALLOC_FAIL and will avoid this trigger though which also
-seems unintended.
-
-Next question: OBJEXTS_ALLOC_FAIL is for memory profiling and we never
-set it when memcg is disabled and memory profiling is enabled or even
-with both memcg and memory profiling are enabled but cache does not have
-SLAB_ACCOUNT. This seems unintentional as well, right?
-
-Also I think slab_obj_exts() needs to handle OBJEXTS_ALLOC_FAIL explicitly.
-
-
-> ---
->  include/linux/memcontrol.h | 10 ++++++++--
->  mm/slub.c                  |  2 +-
->  2 files changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 785173aa0739..d254c0b96d0d 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -341,17 +341,23 @@ enum page_memcg_data_flags {
->  	__NR_MEMCG_DATA_FLAGS  = (1UL << 2),
->  };
->  
-> +#define __OBJEXTS_ALLOC_FAIL	MEMCG_DATA_OBJEXTS
->  #define __FIRST_OBJEXT_FLAG	__NR_MEMCG_DATA_FLAGS
->  
->  #else /* CONFIG_MEMCG */
->  
-> +#define __OBJEXTS_ALLOC_FAIL	(1UL << 0)
->  #define __FIRST_OBJEXT_FLAG	(1UL << 0)
->  
->  #endif /* CONFIG_MEMCG */
->  
->  enum objext_flags {
-> -	/* slabobj_ext vector failed to allocate */
-> -	OBJEXTS_ALLOC_FAIL = __FIRST_OBJEXT_FLAG,
-> +	/*
-> +	 * Use bit 0 with zero other bits to signal that slabobj_ext vector
-> +	 * failed to allocate. The same bit 0 with valid upper bits means
-> +	 * MEMCG_DATA_OBJEXTS.
-> +	 */
-> +	OBJEXTS_ALLOC_FAIL = __OBJEXTS_ALLOC_FAIL,
->  	/* the next bit after the last actual flag */
->  	__NR_OBJEXTS_FLAGS  = (__FIRST_OBJEXT_FLAG << 1),
->  };
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 212161dc0f29..61841ba72120 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2051,7 +2051,7 @@ static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
->  	 * objects with no tag reference. Mark all references in this
->  	 * vector as empty to avoid warnings later on.
->  	 */
-> -	if (obj_exts & OBJEXTS_ALLOC_FAIL) {
-> +	if (obj_exts == OBJEXTS_ALLOC_FAIL) {
->  		unsigned int i;
->  
->  		for (i = 0; i < objects; i++)
-> -- 
-> 2.47.3
-> 
+- Arnaldo
 
