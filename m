@@ -1,153 +1,163 @@
-Return-Path: <bpf+bounces-68254-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68255-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1AE0B556D9
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 21:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9AD2B556E9
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 21:27:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C5003AFC7F
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:18:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FFEDAA6540
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:27:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA6D2882BC;
-	Fri, 12 Sep 2025 19:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F63C33472D;
+	Fri, 12 Sep 2025 19:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AC0BcyMj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="o4c6cVOO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FB2CA6F
-	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 19:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720AC32BF38
+	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 19:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757704709; cv=none; b=Zo3Uh0Gylg2R9DQ/0InHooMFpTAkSE2k8EtgFL9i5hD2/vQYlgbjKPsUH15FLfsdaPKFaCgC4varm1Io9uetmgmebLMtYJyCItA45ubmgFbM92ZHyqxzryG8dzDgUqTPT6+rXHmofl24m4bwM+QufVs2MTQdiZuyh5PA/ONZHa4=
+	t=1757705265; cv=none; b=jJmpuCbR85tlTAPSglsl8BCw/zc7V9NnERof6cyWY0HeFB3DbMkxxSuaO7Ti9CrFjAQo9FbK4H+vz4C+KsxXrgIqWqgU0kZuwqswoJHEZXGnX2pS9iwCWkVS/bATiWZVokIzskxv/lAm6DKy8heEGGxVhODZAUiqcZMw/RCrRDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757704709; c=relaxed/simple;
-	bh=kPgvWjeS+/PGpME6U98ELZJhwDTHXRyEO8St914MY08=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uE2vZ+IlrZwQHTBt5ImaD6MrGIYTgzXcAaBX1wTxJC/yIjB8FZ7ji/zk/e551pzbB4eZv4OvduWu02ZyKi6tuK0a8Xa1RzsS1ExNWqXboOmzkS6o5kaTieBhgZ672UNBS7HRaKShg9iIDW36Gb8gReLn6J5O9VTDEgr+5rPO+wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AC0BcyMj; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-77616dce48cso737952b3a.0
-        for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 12:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757704707; x=1758309507; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cUVNsOJ4whxInU6KU3aQgqVcW9IsCSxJw6qewOGufwc=;
-        b=AC0BcyMjpFVN2iR9bDD1idcbKKtQdI6Us3A/1LsGdzLNB+1VXJwTRhcxsRImmpwVhx
-         0so4MQjZxpawt70hLyRGBMteXxUlBRoJlm8QW0uS3fCQ3N0522kvDvLQP+8jfEBrsOrd
-         Q3UJB3MJHDPZqrM8RLRq2jtYKKKMqvr+f2Y1CTo9jh2EXCv6G2xMM0TodsTDF3fLZk2Q
-         Vd1GR6PcrqvoDlcDQN/VjAlHn2xzjk/QesBBt5RbauwQYfjAaQNrg9hjH9D6Fabrl/HA
-         Fm2HhjQ74BUdEMwvmq4PLX0sWEnADtf14ivZ9laoV+jUcOYgjfJxgp47I+nWGMLp1GQt
-         hitA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757704707; x=1758309507;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cUVNsOJ4whxInU6KU3aQgqVcW9IsCSxJw6qewOGufwc=;
-        b=TvvzFAkH0tC8+0ea3aDpFgV1CKapgcnBoc/IiP7YYAaE9RByBRYUf4boyeb4lVzhkC
-         sdVr1m5uXWcd/pasmJQCPTQ4qH0oemMwZ1HBD4fPo9sqx+W6tCCmyR6gvp0Q7BI6R+TK
-         Ym0c83CrxzP2NaCYIqQxg2X0e0B7v29A2Fmj7E2YwT78WAKJV2Be63nsCqXjBp+l1GTH
-         4+oezzDUYl9XHLeIqGPXSPZOplev+rcX0m4C9MmziZV9faXmFegf2JrJBg22EDHfDs9I
-         +zTOP3QwUt5dQVon/AhAxTKU4hFT+EsCG/1jY97VBWBzebb1vPJlT39phS1vVBzw9olR
-         45kA==
-X-Gm-Message-State: AOJu0Yx6rzX9RnppWWrM7971TGURK8jrzTSevl/dy6FgLmuYlMLoMFhF
-	h+QgRqm3o2q8Rdy38Y72ac9uFoUWxUw2IDo2Y1dGNdIr8pU7RZQH9WfGgaBoo1we
-X-Gm-Gg: ASbGncv1Oy7J1DJrfcXHt7eQcXD0VXoR9LcTER+AWqSCu+TvHdjD1hQmbGaS8+Y6S++
-	wr5rkZLu8mbUxs2YB5ePICdVM4hGO4hZtZhrVHfn/Og5L4Vr81bOVrsXBG6JddlQdHWGH3VUofv
-	0Qrj929j5kfkTFfcbZqByeMVX4p3Zwsnaxu9aF0Cd7QBvD3fI4y+2gDv8WEWKfrNuimcO7809bD
-	VVi11aMCIvpoImFJgMluMiyQ7PYylJ4A/+WRZBbUhz7gwbD1eXpRwvlm0l9ddZc+M2pye86vlab
-	+tXycXfe22l3vGC8OavFC5PnhRRPVBSzFpLDC80gDvaLWVNsSeZMM6/bYdKx/1EtN/wuvp4H/H/
-	6eGft6pJzCX9I1+aRhWxBjbtxLUWdNkaWhSJqTkHguuUgQ6nX/7fAE4hp8g==
-X-Google-Smtp-Source: AGHT+IHVA5yxZYOvX+mqWXetuTqCQltm64GwyrqUVSz4HZJd+7RgXqufZ5DDJOlxzt03zEaDxlhPbg==
-X-Received: by 2002:a05:6a20:1586:b0:24c:af7e:e55 with SMTP id adf61e73a8af0-2602a593825mr4626941637.10.1757704706509;
-        Fri, 12 Sep 2025 12:18:26 -0700 (PDT)
-Received: from ezingerman-fedora-PF4V722J.thefacebook.com ([2620:10d:c090:500::4:ca20])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77619453fe8sm2319185b3a.75.2025.09.12.12.18.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Sep 2025 12:18:26 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org
-Cc: daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	eddyz87@gmail.com,
-	Chris Mason <clm@meta.com>
-Subject: [PATCH bpf] bpf: potential double-free of env->insn_aux_data
-Date: Fri, 12 Sep 2025 12:18:16 -0700
-Message-ID: <20250912-patch-insn-data-double-free-v1-1-af05bd85a21a@gmail.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1757705265; c=relaxed/simple;
+	bh=0kXH3MZfzjdPYKN5GHO+sU36RHfP+mcqOFthuCeDh1U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=leCUf+o8ApCuQzWaBS/4DmnLFqKnaOU5SH0IvjMnMELFaX3XoxPAkbxatPctb46QoDdG+oB9ClazKByuCFzCvN886LoblgGE06PZq/xuiziOM2TmEazW/oXjuJzYS+opoYnEYJwF1wiqonFo5g2mix337lSCorB40FSNFGENJ8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=o4c6cVOO; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 12 Sep 2025 12:27:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757705261;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ExXevDn+7ykaskoO7a8ZpNNYaKFfGSwxcpOAezuUCvI=;
+	b=o4c6cVOO96AdX8Fjafc3zvAlboi73GPkU2UPTpPb0+c7R79fSvoO7fbF4tXTlRlgRso/9Q
+	k/57cS6gIvTBhLNdSI5qr2BXMsK+OzcVrGYP6IiaYY4KtSlUEUsy7z/MQXuvq9ewQEGJQW
+	MYP1JzIqQdKf5gT1ijxwjA4HnQHIers=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz, 
+	harry.yoo@oracle.com, mhocko@suse.com, bigeasy@linutronix.de, andrii@kernel.org, 
+	memxor@gmail.com, akpm@linux-foundation.org, peterz@infradead.org, 
+	rostedt@goodmis.org, hannes@cmpxchg.org, surenb@google.com, roman.gushchin@linux.dev
+Subject: Re: [PATCH slab v5 5/6] slab: Reuse first bit for OBJEXTS_ALLOC_FAIL
+Message-ID: <jftidhymri2af5u3xtcqry3cfu6aqzte3uzlznhlaylgrdztsi@5vpjnzpsemf5>
+References: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
+ <20250909010007.1660-6-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Change-ID: 20250912-patch-insn-data-double-free-f7be62b9c4a9
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250909010007.1660-6-alexei.starovoitov@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Function bpf_patch_insn_data() has the following structure:
++Suren, Roman
 
-  static struct bpf_prog *bpf_patch_insn_data(... env ...)
-  {
-        struct bpf_prog *new_prog;
-        struct bpf_insn_aux_data *new_data = NULL;
+On Mon, Sep 08, 2025 at 06:00:06PM -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> Since the combination of valid upper bits in slab->obj_exts with
+> OBJEXTS_ALLOC_FAIL bit can never happen,
+> use OBJEXTS_ALLOC_FAIL == (1ull << 0) as a magic sentinel
+> instead of (1ull << 2) to free up bit 2.
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-        if (len > 1) {
-                new_data = vrealloc(...);  // <--------- (1)
-                if (!new_data)
-                        return NULL;
+Are we low on bits that we need to do this or is this good to have
+optimization but not required?
 
-                env->insn_aux_data = new_data;  // <---- (2)
-        }
+I do have some questions on the state of slab->obj_exts even before this
+patch for Suren, Roman, Vlastimil and others:
 
-        new_prog = bpf_patch_insn_single(env->prog, off, patch, len);
-        if (IS_ERR(new_prog)) {
-                ...
-                vfree(new_data);   // <----------------- (3)
-                return NULL;
-        }
-        ... happy path ...
-  }
+Suppose we newly allocate struct slab for a SLAB_ACCOUNT cache and tried
+to allocate obj_exts for it which failed. The kernel will set
+OBJEXTS_ALLOC_FAIL in slab->obj_exts (Note that this can only be set for
+new slab allocation and only for SLAB_ACCOUNT caches i.e. vec allocation
+failure for memory profiling does not set this flag).
 
-In case if bpf_patch_insn_single() returns an error the `new_data`
-allocated at (1) will be freed at (3). However, at (2) this pointer
-is stored in `env->insn_aux_data`. Which is freed unconditionally
-by verifier.c:bpf_check() on both happy and error paths.
-Thus, leading to double-free.
+Now in the post alloc hook, either through memory profiling or through
+memcg charging, we will try again to allocate the vec and before that we
+will call slab_obj_exts() on the slab which has:
 
-Fix this by removing vfree() call at (3), ownership over `new_data` is
-already passed to `env->insn_aux_data` at this point.
+	unsigned long obj_exts = READ_ONCE(slab->obj_exts);
 
-Fixes: 77620d126739 ("bpf: use realloc in bpf_patch_insn_data")
-Reported-by: Chris Mason <clm@meta.com>
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- kernel/bpf/verifier.c | 1 -
- 1 file changed, 1 deletion(-)
+	VM_BUG_ON_PAGE(obj_exts && !(obj_exts & MEMCG_DATA_OBJEXTS), slab_page(slab));
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9fb1f957a09374e4d148402572b872bec930f34c..92eb0f4e87a4ec3a7e303c6949cb415e3fd0b4ac 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20781,7 +20781,6 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
- 			verbose(env,
- 				"insn %d cannot be patched due to 16-bit range\n",
- 				env->insn_aux_data[off].orig_idx);
--		vfree(new_data);
- 		return NULL;
- 	}
- 	adjust_insn_aux_data(env, new_data, new_prog, off, len);
+It seems like the above VM_BUG_ON_PAGE() will trigger because obj_exts
+will have OBJEXTS_ALLOC_FAIL but it should not, right? Or am I missing
+something? After the following patch we will aliasing be MEMCG_DATA_OBJEXTS
+and OBJEXTS_ALLOC_FAIL and will avoid this trigger though which also
+seems unintended.
 
----
-base-commit: 22f20375f5b71f30c0d6896583b93b6e4bba7279
-change-id: 20250912-patch-insn-data-double-free-f7be62b9c4a9
+Next question: OBJEXTS_ALLOC_FAIL is for memory profiling and we never
+set it when memcg is disabled and memory profiling is enabled or even
+with both memcg and memory profiling are enabled but cache does not have
+SLAB_ACCOUNT. This seems unintentional as well, right?
+
+Also I think slab_obj_exts() needs to handle OBJEXTS_ALLOC_FAIL explicitly.
+
+
+> ---
+>  include/linux/memcontrol.h | 10 ++++++++--
+>  mm/slub.c                  |  2 +-
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 785173aa0739..d254c0b96d0d 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -341,17 +341,23 @@ enum page_memcg_data_flags {
+>  	__NR_MEMCG_DATA_FLAGS  = (1UL << 2),
+>  };
+>  
+> +#define __OBJEXTS_ALLOC_FAIL	MEMCG_DATA_OBJEXTS
+>  #define __FIRST_OBJEXT_FLAG	__NR_MEMCG_DATA_FLAGS
+>  
+>  #else /* CONFIG_MEMCG */
+>  
+> +#define __OBJEXTS_ALLOC_FAIL	(1UL << 0)
+>  #define __FIRST_OBJEXT_FLAG	(1UL << 0)
+>  
+>  #endif /* CONFIG_MEMCG */
+>  
+>  enum objext_flags {
+> -	/* slabobj_ext vector failed to allocate */
+> -	OBJEXTS_ALLOC_FAIL = __FIRST_OBJEXT_FLAG,
+> +	/*
+> +	 * Use bit 0 with zero other bits to signal that slabobj_ext vector
+> +	 * failed to allocate. The same bit 0 with valid upper bits means
+> +	 * MEMCG_DATA_OBJEXTS.
+> +	 */
+> +	OBJEXTS_ALLOC_FAIL = __OBJEXTS_ALLOC_FAIL,
+>  	/* the next bit after the last actual flag */
+>  	__NR_OBJEXTS_FLAGS  = (__FIRST_OBJEXT_FLAG << 1),
+>  };
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 212161dc0f29..61841ba72120 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2051,7 +2051,7 @@ static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
+>  	 * objects with no tag reference. Mark all references in this
+>  	 * vector as empty to avoid warnings later on.
+>  	 */
+> -	if (obj_exts & OBJEXTS_ALLOC_FAIL) {
+> +	if (obj_exts == OBJEXTS_ALLOC_FAIL) {
+>  		unsigned int i;
+>  
+>  		for (i = 0; i < objects; i++)
+> -- 
+> 2.47.3
+> 
 
