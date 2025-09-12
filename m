@@ -1,272 +1,235 @@
-Return-Path: <bpf+bounces-68275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68276-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C9CB55928
-	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 00:26:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A034BB5592D
+	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 00:29:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEEDCB632D5
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 22:24:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 337573B12E8
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 22:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A59A28B4FE;
-	Fri, 12 Sep 2025 22:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA73C1DFD8F;
+	Fri, 12 Sep 2025 22:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hilwuCj6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QJREeph8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502F72765FB
-	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 22:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6E326D4E6
+	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 22:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757715945; cv=none; b=JWldzu/GSVucyEY7oq1ftKaAisvUrpvFN11YF8kHSRT4fVmaByUjBRqESrGd9ORQMZT+/VC89GcywmUpolpTWrcBzyuKNO5IhJkSshTumOga3bLwwqV4X1ydrUXP4esRdj+KXuAp+3pczBFYtGfk4IA4kxNzVdH3LYtSlKWNBCk=
+	t=1757716147; cv=none; b=UywhdUemkGn7H0vobPji6fDXfFdHyfORui4F1VKAnt6ePIUtMKau3JRszEz0adpj9JCz8pfC4j2sfvTgvilmPxCyIvSLznTed2gZvtpxiy44iEi1JlYBlXBEc4VcIP3UiBP7rq4XGoMCa8JcPU2bJmDV5Gg+zYsW8ozvAvPATLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757715945; c=relaxed/simple;
-	bh=FwI+WCSKE5HG3xr7ZmyOW8sVTzLtmQY7Kswik4+arpQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VcRa4mQXuAgDvMY0EBMu8/3tXVdkxg9CWZjpQhhh8LVkR5dgh8PY00Qxf1fQm6JjdHylGlvXq61WDxQhzui6iPFBMIDc7eqZ+zX/vqsClXu3m+Aa029cJ5YV5XQSfaOKaE/rInuoDYPqj+7lSMdZwTAzF+8HhX2wjR6BJHXBD+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hilwuCj6; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-8173e8effa1so158673785a.0
-        for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 15:25:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757715943; x=1758320743; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IfzMYXD5+OWWJnzTVfDJIl3IqMEPtzWckoBOmNSCMkc=;
-        b=hilwuCj6OekogYgcOk+dC+aygGumnD/Qbr7A/nDGLXmDu67nL7xRBLv95L+LF2SNWU
-         wwAYIPt7Sg6AltSw440TbihdWCEf+ffETpYpdW0IQnWc6LhD12eRWKOplSlro8KagHvr
-         n3rYGFVrglB4Itz1dLlFK4Xuo1Yy2YOmydRazLwBQ0JDYeFsoNP6HfNEnS+tP7Wi7jsu
-         bJStl+99e4Cml+Kq4K+DL7/HIRJRbrOhbo8V3nXfreNJNE7Bn2xS9o6HunET/1v5raDs
-         3E9rIPblxvdfouo0kvXICYZ03mX47NF0qKDlKwF80qpJnptQ5pwRHhCAzo2A+0FtZlVk
-         kM4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757715943; x=1758320743;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IfzMYXD5+OWWJnzTVfDJIl3IqMEPtzWckoBOmNSCMkc=;
-        b=uFIivqS+gF5F/OFhY3HGwpKNPKG2ZXbUNS9Bendb4ATiiJhJYTvqfBTSFnyUPIFiIA
-         zdGjP0FSkTvScUqRU9fzax7Bulfkm5j9ZP4g9PW/wI4ZuOfiSUmqJCjc+mk2dYFcKnEP
-         YLj4hR3p8T208fhtudno7R9AxZQaqHBBPtdsZo0nQj624+difzjVg6khbeqLs4w1/R+h
-         5fghDVApAj+yoHUYwZe+FDo/dpyswL8HKX7Th3ht4tZMSwyxq++xwKnQe5Litku00W8q
-         W4nTeNXv7b4kLqenm79Q20v9C2FBXCrYeUCFA1SbuIVTjC/VT5lyLvMil7YeFLshgwlG
-         LosQ==
-X-Gm-Message-State: AOJu0YyQcOCcC/yzwTrRIJRM/NSf0KomyQlhi3C/V5Di+/5hc2dxdUks
-	/qPSJVN0A5+Vn68ZathgZx6cvaVc91HbcpOTPqaCbUFtsKtP7aNoRbo+6bRJ+aHOTskGwA==
-X-Gm-Gg: ASbGnct2zAJz9Tt9ZeupbVDifhs9YhZkZKIz+tUpKsdN16PavZYcfymfaHosFvC1jBM
-	tibkO8xTb9w/8JYcLheWoRFsjIr5L1sthst/UkNMivxpb9tsW562B35++inFLmgFxLFiPkfouFp
-	kTKTVNGT+F0lDsuiImtHX/vhIidN2s70Rea+PxKhFBtOhXJTBkfFYeVU91ovxtS5OyAlFt1WV2c
-	tP31cDdsCrIwGbvyvrpxFYqNDNSLXWcqJzSai/36J8Qc7fILvpVg4A2VSkpgABbWuzb34alr7qY
-	qWVETl0fM82nTFona8zoSTY6FFpIQbvpsPu0w2HpfRqICyQouChjNm48ScOe/K7ExWEAInkmY0b
-	wfy1M+Ret42RCbCd5CahiJfzOZYNd2e4ri+7bqwqO2NWXRR1XiW18R4NMcV1upQO0HH10WmazTU
-	5WXOhvjHH044u8wNYpyepqr8D3dDtVpiQ4Jso0n7MwrT8gIkiio7Oz0xzU72w=
-X-Google-Smtp-Source: AGHT+IGg3Ohj0cka3NMv8jpZpR2hL/U0yANDpl3+efLMgDEhXvomkdNYbM7ZOzQEZbtjUgAv8a7kTA==
-X-Received: by 2002:a05:620a:46ac:b0:815:5815:36a8 with SMTP id af79cd13be357-8240253dfd3mr549652485a.86.1757715943022;
-        Fri, 12 Sep 2025 15:25:43 -0700 (PDT)
-Received: from kerndev.lan (pool-100-15-227-251.washdc.fios.verizon.net. [100.15.227.251])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-820c974d635sm339136985a.25.2025.09.12.15.25.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Sep 2025 15:25:42 -0700 (PDT)
-From: David Windsor <dwindsor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	dwindsor@gmail.com
-Subject: [PATCH 2/2] selftests/bpf: Add cred local storage tests
-Date: Fri, 12 Sep 2025 18:25:39 -0400
-Message-ID: <20250912222539.149952-3-dwindsor@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250912222539.149952-1-dwindsor@gmail.com>
-References: <20250912222539.149952-1-dwindsor@gmail.com>
+	s=arc-20240116; t=1757716147; c=relaxed/simple;
+	bh=5qc69/Di18NCapXBFuAPxOelwmT46G+iXd0AwmaqkgI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fhMCFYeG70DauA+Ys43paF2ptig65po+5avuyiMz/CgzkfeE7XdHKcbzMvHxwOTEfEfHe+WwMtfPgYHYdZvDxC3NRBimBuGt89wFZakSHihIEd0dsY81wfCXA7dPZJvTa4mikIRLVzz042bam8H8Z0JQ/m2FIsWjK8zR7iAC/Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QJREeph8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF128C4CEFE
+	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 22:29:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757716147;
+	bh=5qc69/Di18NCapXBFuAPxOelwmT46G+iXd0AwmaqkgI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QJREeph8PQVrdPaKYj/k7al5W74EstdPNtKPHuR41pGD1o+CxxsXKhHwTfaYYeT4h
+	 UPibCwYiDEWoMFLeJ6J7ehkW7w+mfdnNAP1NokilyO+gNF1r63def9JCiXDigpGb+p
+	 Pw2ytUQBrhuVbbZ3VvpmIFGUp4Ko8rlLCB/E4gO5Z9aK/WDeebZoJBCUq9Ea6RP7A1
+	 6/uR1kcHSkx2wVnjxVdkP+9kwGvtEQCx+ejPiEC6US5XOiqVROsazQDeNdyMYb0Pzp
+	 ylfPyPWbt4IuAjUhs4vkmKa4P+z8+ioMh76/ZDfht6593CcAW1cd2JsXd1ENs0rEUm
+	 CU2hV1/rPYBOg==
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3e34dbc38easo1382274f8f.1
+        for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 15:29:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUJSLalSQ/abUjddlCTSQzz3n9+Olqf6TeGADoSPiT6nNogVfX3MsQZqkMylH/1OQKVk8k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDlPzMnbmpSx4BFJkkeHX5Q56vRhUPL/sVa/9i6TALjpseOdbS
+	3aBlgAAu7x0QCxCq/65EEg6iaGaB+b2JLm/4iSgctTqRB1FAMsQn1ol3y38zdzDTTEv9/rC9I0t
+	xsQtyf+oTAQBOsHot7/qSG/cwDIfWyTgdvoB+2/Wn
+X-Google-Smtp-Source: AGHT+IFHVzz8UZN4jz5Xg0s+AyXjp00JIcZymdoa+3YOgbZlf46gyFqcn3aWBFiPO2IBHuT0zODyLpHkotScSHJ2AF4=
+X-Received: by 2002:a05:6000:2891:b0:3ce:db36:607f with SMTP id
+ ffacd0b85a97d-3e765a04be2mr3619221f8f.37.1757716145394; Fri, 12 Sep 2025
+ 15:29:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250813205526.2992911-1-kpsingh@kernel.org> <689eef40.050a0220.e29e5.0010.GAE@google.com>
+In-Reply-To: <689eef40.050a0220.e29e5.0010.GAE@google.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Sat, 13 Sep 2025 00:28:54 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ4ObNwj6GpZ70Yri1OBmc2cQpZ2B2szURAJKP3q4S5xEQ@mail.gmail.com>
+X-Gm-Features: AS18NWCwPCezEK9cZ8eTHQ7VX79yav-Z1PyPoWyyaVpnt7JFGsdansoz2D25AxY
+Message-ID: <CACYkzJ4ObNwj6GpZ70Yri1OBmc2cQpZ2B2szURAJKP3q4S5xEQ@mail.gmail.com>
+Subject: Re: [syzbot ci] Re: Signed BPF programs
+To: syzbot ci <syzbot+cic1938c6466797c55@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bboscaccy@linux.microsoft.com, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, kys@microsoft.com, 
+	linux-security-module@vger.kernel.org, paul@paul-moore.com, 
+	syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add test coverage for the new BPF_MAP_TYPE_CRED_STORAGE map type.
-The test verifies that credential storage can be created, accessed,
-and persists across credential lifecycle events.
+On Fri, Aug 15, 2025 at 10:26=E2=80=AFAM syzbot ci
+<syzbot+cic1938c6466797c55@syzkaller.appspotmail.com> wrote:
+>
+> syzbot ci has tested the following series
+>
+> [v3] Signed BPF programs
+> https://lore.kernel.org/all/20250813205526.2992911-1-kpsingh@kernel.org
+> * [PATCH v3 01/12] bpf: Update the bpf_prog_calc_tag to use SHA256
+> * [PATCH v3 02/12] bpf: Implement exclusive map creation
+> * [PATCH v3 03/12] libbpf: Implement SHA256 internal helper
+> * [PATCH v3 04/12] libbpf: Support exclusive map creation
+> * [PATCH v3 05/12] selftests/bpf: Add tests for exclusive maps
+> * [PATCH v3 06/12] bpf: Return hashes of maps in BPF_OBJ_GET_INFO_BY_FD
+> * [PATCH v3 07/12] bpf: Move the signature kfuncs to helpers.c
+> * [PATCH v3 08/12] bpf: Implement signature verification for BPF programs
+> * [PATCH v3 09/12] libbpf: Update light skeleton for signing
+> * [PATCH v3 10/12] libbpf: Embed and verify the metadata hash in the load=
+er
+> * [PATCH v3 11/12] bpftool: Add support for signing BPF programs
+> * [PATCH v3 12/12] selftests/bpf: Enable signature verification for some =
+lskel tests
+>
+> and found the following issue:
+> general protection fault in bpf_verify_pkcs7_signature
+>
+> Full report is available here:
+> https://ci.syzbot.org/series/67d9a289-da5c-4051-8c3c-cc32b6ccd77d
+>
+> ***
+>
+> general protection fault in bpf_verify_pkcs7_signature
+>
+> tree:      bpf-next
+> URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/b=
+pf-next.git
+> base:      07866544e410e4c895a729971e4164861b41fad5
+> arch:      amd64
+> compiler:  Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~e=
+xp1~20250616065826.132), Debian LLD 20.1.7
+> config:    https://ci.syzbot.org/builds/1e87aafb-11dc-48f1-a980-c91551ba5=
+2de/config
+> C repro:   https://ci.syzbot.org/findings/0c329233-09a8-4e8b-9e6e-72f234d=
+d85ab/c_repro
+> syz repro: https://ci.syzbot.org/findings/0c329233-09a8-4e8b-9e6e-72f234d=
+d85ab/syz_repro
+>
+> Oops: general protection fault, probably for non-canonical address 0xdfff=
+fc0000000001: 0000 [#1] SMP KASAN PTI
+> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+> CPU: 1 UID: 0 PID: 6001 Comm: syz.0.17 Not tainted 6.17.0-rc1-syzkaller-0=
+0022-g07866544e410-dirty #0 PREEMPT(full)
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.=
+16.2-1 04/01/2014
+> RIP: 0010:bpf_verify_pkcs7_signature+0x31/0x190 kernel/bpf/helpers.c:3835
+> Code: 41 56 41 55 41 54 53 48 89 d3 49 89 f6 49 89 ff 48 bd 00 00 00 00 0=
+0 fc ff df e8 aa b0 e0 ff 4c 8d 63 08 4c 89 e0 48 c1 e8 03 <0f> b6 04 28 84=
+ c0 0f 85 01 01 00 00 41 80 3c 24 00 74 3d 48 89 d8
+> RSP: 0018:ffffc90002f7fa08 EFLAGS: 00010202
+> RAX: 0000000000000001 RBX: 0000000000000000 RCX: ffff888020c51cc0
+> RDX: 0000000000000000 RSI: ffffc90002f7faa0 RDI: ffffc90002f7fac0
+> RBP: dffffc0000000000 R08: 0000000000000018 R09: ffffffff820b8a70
+> R10: ffffc90002f7fac0 R11: fffff520005eff5a R12: 0000000000000008
+> R13: 0000000000000010 R14: ffffc90002f7faa0 R15: ffffc90002f7fac0
+> FS:  00005555895fe500(0000) GS:ffff8881a3c1c000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b30b63fff CR3: 0000000028898000 CR4: 00000000000006f0
+> Call Trace:
+>  <TASK>
+>  bpf_prog_verify_signature+0x2da/0x3b0 kernel/bpf/syscall.c:2815
+>  bpf_prog_load+0xcc4/0x19e0 kernel/bpf/syscall.c:2989
+>  __sys_bpf+0x507/0x860 kernel/bpf/syscall.c:6116
+>  __do_sys_bpf kernel/bpf/syscall.c:6226 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:6224 [inline]
+>  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6224
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f0a4558ebe9
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007fff940250b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> RAX: ffffffffffffffda RBX: 00007f0a457b5fa0 RCX: 00007f0a4558ebe9
+> RDX: 00000000000000a8 RSI: 0000200000000140 RDI: 0000000000000005
+> RBP: 00007f0a45611e19 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007f0a457b5fa0 R14: 00007f0a457b5fa0 R15: 0000000000000003
+>  </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:bpf_verify_pkcs7_signature+0x31/0x190 kernel/bpf/helpers.c:3835
+> Code: 41 56 41 55 41 54 53 48 89 d3 49 89 f6 49 89 ff 48 bd 00 00 00 00 0=
+0 fc ff df e8 aa b0 e0 ff 4c 8d 63 08 4c 89 e0 48 c1 e8 03 <0f> b6 04 28 84=
+ c0 0f 85 01 01 00 00 41 80 3c 24 00 74 3d 48 89 d8
+> RSP: 0018:ffffc90002f7fa08 EFLAGS: 00010202
+> RAX: 0000000000000001 RBX: 0000000000000000 RCX: ffff888020c51cc0
+> RDX: 0000000000000000 RSI: ffffc90002f7faa0 RDI: ffffc90002f7fac0
+> RBP: dffffc0000000000 R08: 0000000000000018 R09: ffffffff820b8a70
+> R10: ffffc90002f7fac0 R11: fffff520005eff5a R12: 0000000000000008
+> R13: 0000000000000010 R14: ffffc90002f7faa0 R15: ffffc90002f7fac0
+> FS:  00005555895fe500(0000) GS:ffff8881a3c1c000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b30b63fff CR3: 0000000028898000 CR4: 00000000000006f0
+> ----------------
+> Code disassembly (best guess):
+>    0:   41 56                   push   %r14
+>    2:   41 55                   push   %r13
+>    4:   41 54                   push   %r12
+>    6:   53                      push   %rbx
+>    7:   48 89 d3                mov    %rdx,%rbx
+>    a:   49 89 f6                mov    %rsi,%r14
+>    d:   49 89 ff                mov    %rdi,%r15
+>   10:   48 bd 00 00 00 00 00    movabs $0xdffffc0000000000,%rbp
+>   17:   fc ff df
+>   1a:   e8 aa b0 e0 ff          call   0xffe0b0c9
+>   1f:   4c 8d 63 08             lea    0x8(%rbx),%r12
+>   23:   4c 89 e0                mov    %r12,%rax
+>   26:   48 c1 e8 03             shr    $0x3,%rax
+> * 2a:   0f b6 04 28             movzbl (%rax,%rbp,1),%eax <-- trapping in=
+struction
+>   2e:   84 c0                   test   %al,%al
+>   30:   0f 85 01 01 00 00       jne    0x137
+>   36:   41 80 3c 24 00          cmpb   $0x0,(%r12)
+>   3b:   74 3d                   je     0x7a
+>   3d:   48 89 d8                mov    %rbx,%rax
+>
+>
+> ***
+>
+> If these findings have caused you to resend the series or submit a
+> separate fix, please add the following tag to your commit message:
+> Tested-by: syzbot@syzkaller.appspotmail.com
+>
 
-Signed-off-by: David Windsor <dwindsor@gmail.com>
----
- .../selftests/bpf/prog_tests/cred_storage.c   | 52 +++++++++++
- .../selftests/bpf/progs/cred_storage.c        | 87 +++++++++++++++++++
- 2 files changed, 139 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cred_storage.c
- create mode 100644 tools/testing/selftests/bpf/progs/cred_storage.c
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 596c0fa7fc90..d0d437f38a70 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2801,6 +2801,9 @@ static int bpf_prog_verify_signature(struct
+bpf_prog *prog, union bpf_attr *attr
+        else
+                key =3D bpf_lookup_user_key(attr->keyring_id, 0);
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cred_storage.c b/tools/testing/selftests/bpf/prog_tests/cred_storage.c
-new file mode 100644
-index 000000000000..1a99f6453a0f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cred_storage.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
++       if (!key)
++               return -EINVAL;
 +
-+#include <test_progs.h>
-+#include <unistd.h>
-+#include <sys/wait.h>
-+
-+#include "cred_storage.skel.h"
-+
-+static void test_cred_lifecycle(void)
-+{
-+	struct cred_storage *skel;
-+	pid_t child;
-+	int status, err;
-+
-+	skel = cred_storage__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		return;
-+
-+	err = cred_storage__attach(skel);
-+	if (!ASSERT_OK(err, "attach"))
-+		goto cleanup;
-+
-+	skel->data->cred_storage_result = -1;
-+
-+	skel->bss->monitored_pid = getpid();
-+
-+	child = fork();
-+	if (child == 0) {
-+		/* forces cred_prepare with new credentials */
-+		exit(0);
-+	} else if (child > 0) {
-+		waitpid(child, &status, 0);
-+
-+		/* give time for cred_free hook to run */
-+		usleep(10000);
-+
-+		/* verify that the dummy value was stored and persisted */
-+		ASSERT_EQ(skel->data->cred_storage_result, 0,
-+			  "cred_storage_dummy_value");
-+	} else {
-+		ASSERT_TRUE(false, "fork failed");
-+	}
-+
-+cleanup:
-+	cred_storage__destroy(skel);
-+}
-+
-+void test_cred_storage(void)
-+{
-+	if (test__start_subtest("lifecycle"))
-+		test_cred_lifecycle();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cred_storage.c b/tools/testing/selftests/bpf/progs/cred_storage.c
-new file mode 100644
-index 000000000000..ae66d3b00d2e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cred_storage.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2025 David Windsor.
-+ */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define DUMMY_STORAGE_VALUE 0xdeadbeef
-+
-+extern struct bpf_local_storage_data *bpf_cred_storage_get(struct bpf_map *map,
-+							   struct cred *cred,
-+							   void *init, int init__sz, __u64 flags) __ksym;
-+
-+__u32 monitored_pid = 0;
-+int cred_storage_result = -1;
-+
-+struct cred_storage {
-+	__u32 value;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CRED_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct cred_storage);
-+} cred_storage_map SEC(".maps");
-+
-+SEC("lsm/cred_prepare")
-+int BPF_PROG(cred_prepare, struct cred *new, const struct cred *old, gfp_t gfp)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct cred_storage init_storage = {
-+		.value = DUMMY_STORAGE_VALUE,
-+	};
-+	struct bpf_local_storage_data *sdata;
-+	struct cred_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	sdata = bpf_cred_storage_get((struct bpf_map *)&cred_storage_map, new, &init_storage,
-+				     sizeof(init_storage), BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!sdata)
-+		return 0;
-+
-+	storage = (struct cred_storage *)sdata->data;
-+	if (!storage)
-+		return 0;
-+
-+	/* Verify the storage was initialized correctly */
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		cred_storage_result = 0;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/cred_free")
-+int BPF_PROG(cred_free, struct cred *cred)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct bpf_local_storage_data *sdata;
-+	struct cred_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	/* Try to retrieve the storage that should have been created in prepare */
-+	sdata = bpf_cred_storage_get((struct bpf_map *)&cred_storage_map, cred,
-+				     NULL, 0, 0);
-+	if (!sdata)
-+		return 0;
-+
-+	storage = (struct cred_storage *)sdata->data;
-+	if (!storage)
-+		return 0;
-+
-+	/* Verify the dummy value is still there during free */
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		cred_storage_result = 0;
-+
-+	return 0;
-+}
--- 
-2.43.0
+        sig =3D kvmemdup_bpfptr(usig, attr->signature_size);
+        if (IS_ERR(sig)) {
+                bpf_key_put(key);
 
+Thanks syzbot!
+
+- KP
+
+> ---
+> This report is generated by a bot. It may contain errors.
+> syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
