@@ -1,117 +1,80 @@
-Return-Path: <bpf+bounces-68248-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68249-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C5D8B55594
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:46:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 270A1B55597
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 19:47:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DE681D62F77
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 17:47:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC3C0AE312C
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 17:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA743164CA;
-	Fri, 12 Sep 2025 17:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B547277004;
+	Fri, 12 Sep 2025 17:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Qe2cX+Zw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="szwTwO06"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E511219004E
-	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 17:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5533F19004E
+	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 17:47:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757699210; cv=none; b=kwdIVyRyRAScJo+FoDIntmB8quP7GZSgxbyxP/DGX/lZZpm4pfsAB/iAv9u7vJEC6ksi+J5kBDaFwLF7vXljMTFgpHa3le4To+jQjh2mFukQs3PFuSGpGUm2j/RYzh7P+GXj7vk8ZGu1/MnBDUBHJ5pvRQ5YXnuwaAvdXtXB2/E=
+	t=1757699255; cv=none; b=NOECgU/hJLCKswO9cnkqsaPHM1w9L5xNPu8fw1an5pvoCHCR1x23tJArESTym2vktMuocXASY7+MERTENdPX2/DH/Kx4HHF07qHeIzXLJaEX7i4gIQUrxH6xJ+CQIZeviu88pTMMnA3OKZzHPGdjAePo8Nx7EWP/Mj1ZJKzLCEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757699210; c=relaxed/simple;
-	bh=0eE5CNvYRuk00/tG+lKvuE8CKlGPcH049Xe0wEcZFHM=;
+	s=arc-20240116; t=1757699255; c=relaxed/simple;
+	bh=A61Su6k/dp1CpP7dEIqbrQHFodSxJ3sWcXDRAOmxb70=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WFMO1jMl24/XPtzAQx9+BejVlQKyBm1k1zepwwLpjoXEXo0besS5n7Gq9yQY2Q45TuxvjE0cl2FJC0aFZvTzLQudUEbpYYjVac5KncIzbpyV5yNQRSq829ejxwd/Yqo/AvepVizQZ0xUhkhot1t5aMzA/YscRNgk1N3ZwCMkVMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Qe2cX+Zw; arc=none smtp.client-ip=91.218.175.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=hFHZtgzVaNZL9QrgzQOpI2iVXLr+lpvXl86Xu1UISDOMu4XiUXq8+3H6Fpylg4OL2Eh0gNz47jYSQ7ehG6EG4waCzERvopzVoLxPza+QkxCy1jvYzBlf9u+K6TQe9Z1+9xFWjmCMqwT6TsOkIOqRps0S1Zk6ZzLvacRsRKW6G+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=szwTwO06; arc=none smtp.client-ip=91.218.175.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 12 Sep 2025 10:46:40 -0700
+Date: Fri, 12 Sep 2025 10:47:26 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757699205;
+	t=1757699251;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vw7f5TtJIYqwNPOyneHeov3n6RLT179M/tH+XL6psMs=;
-	b=Qe2cX+Zw6g/o/Vyywjq1zLa6mXLmwCwRkOo7yknYXmUVxxh4yTZQHIKkPA3GDUlDAJCpo0
-	o1w0bFnPJ0q+wkrUU8W5/3FPVQ7llM6tfnurK+cZ3D5UyE2pFyWBmvIfxoYrBgaN8lxDF6
-	lDw+2UrHRpQ7+R61IHCGY2ASSTRLfSo=
+	bh=wUI9puXoXEZZrLl1P89JxrjIx1+qg9LD/VjY/AoyGf8=;
+	b=szwTwO06r2E5qVvdExD2md6215HmJd6XdwvLUmDx+MavynFdUduMvmdOgcuEJkzBHMhR3L
+	i1tPw4L7zqTd7wb90PyaUiVP9inl42N983nf2Y9VHbMRUyPyUKMLuEI0T4hUFWuN16/Ouf
+	ctElUUUl/eWQp3YwxQ9EGLGRSTV7/kk=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>, bpf <bpf@vger.kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Harry Yoo <harry.yoo@oracle.com>, Michal Hocko <mhocko@suse.com>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz, 
+	harry.yoo@oracle.com, mhocko@suse.com, bigeasy@linutronix.de, andrii@kernel.org, 
+	memxor@gmail.com, akpm@linux-foundation.org, peterz@infradead.org, 
+	rostedt@goodmis.org, hannes@cmpxchg.org
 Subject: Re: [PATCH slab v5 2/6] mm: Allow GFP_ACCOUNT to be used in
  alloc_pages_nolock().
-Message-ID: <jcofoqbchq37v5ypzrolh4yn5qmjikmdgqkhqb7nemkzjh2igk@26kcqwo723xv>
+Message-ID: <fbzqv6b4lvfqjyvpszqa7fzpbytywbjamehjez7yshc26ugdiv@e3edtofa4pwu>
 References: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
  <20250909010007.1660-3-alexei.starovoitov@gmail.com>
- <2kaahuvnmke2bj27cu4tu3sr5ezeohra56btxj2iu4ijof5dim@thdwhzjjqzgd>
- <aMRVNqH47mdkl5Ke@casper.infradead.org>
- <CAADnVQJbx0Wf4xrAEfQyZhhpC13zJH6NqdFjYQ+StQzzi+Y=Nw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJbx0Wf4xrAEfQyZhhpC13zJH6NqdFjYQ+StQzzi+Y=Nw@mail.gmail.com>
+In-Reply-To: <20250909010007.1660-3-alexei.starovoitov@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Sep 12, 2025 at 10:34:15AM -0700, Alexei Starovoitov wrote:
-> On Fri, Sep 12, 2025 at 10:15 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Fri, Sep 12, 2025 at 10:11:26AM -0700, Shakeel Butt wrote:
-> > > On Mon, Sep 08, 2025 at 06:00:03PM -0700, Alexei Starovoitov wrote:
-> > > [...]
-> > > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > > > index d1d037f97c5f..30ccff0283fd 100644
-> > > > --- a/mm/page_alloc.c
-> > > > +++ b/mm/page_alloc.c
-> > > > @@ -7480,6 +7480,7 @@ static bool __free_unaccepted(struct page *page)
-> > > >
-> > > >  /**
-> > > >   * alloc_pages_nolock - opportunistic reentrant allocation from any context
-> > > > + * @gfp_flags: GFP flags. Only __GFP_ACCOUNT allowed.
-> > >
-> > > If only __GFP_ACCOUNT is allowed then why not use a 'bool account' in the
-> > > parameter and add __GFP_ACCOUNT if account is true?
-> >
-> > It's clearer in the callers to call alloc_pages_nolock(__GFP_ACCOUNT)
-> > than it is to call alloc_pages_nolock(true).
-> >
-> > I can immediately tell what the first one does.  I have no idea what
-> > the polarity of 'true' might be (does it mean accounted or unaccounted?)
-> > Is it rlated to accounting, GFP_COMP, highmem, whether it's OK to access
-> > atomic reserves ... or literally anything else that you might want to
-> > select when allocating memory.
-> >
-> > This use of unadorned booleans is an antipattern.  Nobody should be
-> > advocating for such things.
+On Mon, Sep 08, 2025 at 06:00:03PM -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> +1.
-> We strongly discourage bool in arguments in any function.
-> It makes callsites unreadable.
+> Change alloc_pages_nolock() to default to __GFP_COMP when allocating
+> pages, since upcoming reentrant alloc_slab_page() needs __GFP_COMP.
+> Also allow __GFP_ACCOUNT flag to be specified,
+> since most of BPF infra needs __GFP_ACCOUNT except BPF streams.
 > 
-> We learned it the hard way though :(
-> Some of the verifier code became a mess like:
->         err = check_load_mem(env, insn, true, false, false, "atomic_load");
-> 
-> it's on our todo to clean this up.
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-Sounds good.
+Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+
 
