@@ -1,237 +1,173 @@
-Return-Path: <bpf+bounces-68264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DD92B55805
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 23:03:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D51EBB55818
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 23:10:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3801F7C66D2
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 21:03:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8410D1896791
+	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 21:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13FC28489B;
-	Fri, 12 Sep 2025 21:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4BE2DECCD;
+	Fri, 12 Sep 2025 21:10:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MMIvcHCh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EXz/FrYD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0412AC17
-	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 21:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFC127280C
+	for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 21:09:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757710999; cv=none; b=ZlCQHMgsujzVPJVsUiaYb/SjioyI9JX+Jg9/qZnoruH4t2iYcr3CWmgTf1Z4KQ7ft+jz+ou2PIhDzKuRaR+LeGkBjPwRCB/0lH7116VLlwfE62Aauqd9NiXa+AnNtdTRIGFurx7dkwyIgRqij8I0CDwFTl7HR/ut+J9JEPFS6JE=
+	t=1757711402; cv=none; b=QvQUH5roAxg4Lt3hXQOgl++sywLc42hlCVYDhNDG+ZirEV3XnGFZW6uJ/MCNXEyF0QTE8Khwru3i/1gjWrabYzytCu/iirGjIS2F7gAZ37Sz+xWzMMdxMGaomHFWm2eu7AtbZwPII6jxIZ1uZw8av2c6iw2FKOUXpjNUFdhKgTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757710999; c=relaxed/simple;
-	bh=8IVrJasJUbROdeu1YP3DMofoy+EUozqHN/Nt03ongJc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SephrVJSGAK1qpH4OKE4gYqbjDcpKPb0Uo0o4SIOJExNoyUYVvc2bVkgtoAqEM+VXBMYKlYKt7mFPmifmdWboaXdOLWR4AzOPJLRssAT7nrtiNOKIiGC8n4o3ZANT9b0rp0ajcdVRiNgrSQu7zw6qhZVC6Pse3WJYAVWSU8wgWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MMIvcHCh; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4b78657a35aso34541cf.0
-        for <bpf@vger.kernel.org>; Fri, 12 Sep 2025 14:03:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757710995; x=1758315795; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tVJ20harXnfzHnDKK1hOVgN5G5NhgZps321C9eNzyC8=;
-        b=MMIvcHChnkTY5NZVHIIo82z8vHgZX1tRCp12OyNvYC1QwxCCb7g77dwZDFTc4YMSPZ
-         tX+fTKiZxWEqmsLnQP1FOvApsDYc/1txyMSqtBkpzx9OOP2ZK6GL3nwdHy1fSgPEQJBj
-         Q+EdKlhIRYF6QQieiMT3u7Oe+2cxDhMgbmyMAzkDoJCkIdR7mtY1VmckJsdzBI3Pf34S
-         QdSzPy3yUDep+VZo1IZUtLSZyjXntVaLYjf4njWLc6bPaMUPpQ7x/FKx8tWPaqhf89bY
-         lylQ0+v80ZPVo1oGVmTeTTDuN+MHt+alLn8E7zgDv6s7psaoYagfN4mqiP6R1uZ/5dCm
-         ySbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757710995; x=1758315795;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tVJ20harXnfzHnDKK1hOVgN5G5NhgZps321C9eNzyC8=;
-        b=ph6dDqgtPeZW3FLV/8NJdKeh2QC0eMt+hotUTbjqxqGLP/bW32kSlDgSA0QS1RUtRk
-         +mxZKOJVcx3tRaqUB2mLTDuEMacIcB4TBhQSL8bhUsQ9Jjf2QqPsKDd0rdTIwwdU6okB
-         pshyMz5UcyIWuWLrWpkiSF5CRi/zy8E+575lW7PTFhl5JCU2dPwRfjv9TPKmK/nuWEZ6
-         Xygc++KugJU9SjKm0WadaeAw/XnUKYeixxg17HSzGslXU3q8nf0KYZ+aS3WSYAZIpeuU
-         hfDIb+3gw3qFl+W7mNzX0xkUbGUbeV5ODaaSypFJtfya6Oqh9hJf1iG0mz7liAJTe2ni
-         wzWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWKX7rjW+jXhgStKpodN95FS/a5oc89f/btxESLNtDJeLSoEOgyLKhTg1Kr5eQmxBxkADc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8Dx4lA+wuZWHuaQGY3+9CwpHMJV13axC6sHMkQmmkPYh7Ut0Q
-	KUCD9WN4wxaL1yF6xsY3gsfL4cJY1rWePqCZIiYTHjLfTgF2X53tQQjiR+spTLqHXCW51TXXasF
-	trVo73BFB4lJr4/2M2Q8u4XLAESvc52LMHFrzuQHi
-X-Gm-Gg: ASbGnctfqIjuBfk1wbKYDYZQCxR94I0u+LexV0cdp4KclyybHy0lXL7tqXMJ+vSU22T
-	Jr1dCuHd+o6i7xQzIrSBkYFcRp9/xCKNX7mRWJXzGTnqyhJSUsvtwYvX1uA29rQV3+P7q7YjC9j
-	03+NTmAdOLB1FOiSlJ5DeV8LDC95KlFCeiXjKCrHcLow5Rf+EHssxhv/ygkermGr+Lvc7tcQHFu
-	2uF1beidiXbpa5dkCLjyqtiPE1NQ9BmJw==
-X-Google-Smtp-Source: AGHT+IHseG9PtEuPE49/9tbUbIRhif36dOcTKh3RESUYQ0Xj0YcJ9huxjsg7Lumt1ghFNmsQrsmKynduT/0KDy32sIQ=
-X-Received: by 2002:a05:622a:1a08:b0:4b3:19b2:d22 with SMTP id
- d75a77b69052e-4b78baee828mr1134171cf.13.1757710994465; Fri, 12 Sep 2025
- 14:03:14 -0700 (PDT)
+	s=arc-20240116; t=1757711402; c=relaxed/simple;
+	bh=tNcYr5ziqs6D8Tk6SiXuOUEiirhboBKH4zEUjW3nj/E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EH5DZp8NgIZkPalQ0gfdmx+KbBZmD39A1F3Le1RUp4l72i7anL4NK2qDNhzhN07XATES1/fdITvCAz8zrg3q0viuTuZFwarS0isTf59GZ9UIeTlt+nW5ttbZ/o+E4qB6qjw9m7y1Lz+66afk323yCQIOG89ay/1kB+BO5qaxvGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EXz/FrYD; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8c93b586-1ebd-44c1-87d6-bcbb8030f795@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757711398;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=v7SST8umNfuQI1uj5w85mwFvKzhhH3zx+XI2NwpkpMs=;
+	b=EXz/FrYD+KUVjFXdQDMRdidl/sSKPAfYFlPGoTsOsxXoyx66KHRYyhVkbpCatQ1G0+Xckg
+	+0VEO/8KF17Aka1OPF5zg0jc84I4Jol6aMAQFRA6xa7j2s6PDA/5eTSdO1RVA7SsD5/7OC
+	0bMMD8V6Elf1RgNC4tmvEl5voS0kQ2E=
+Date: Fri, 12 Sep 2025 14:09:50 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
- <20250909010007.1660-6-alexei.starovoitov@gmail.com> <jftidhymri2af5u3xtcqry3cfu6aqzte3uzlznhlaylgrdztsi@5vpjnzpsemf5>
-In-Reply-To: <jftidhymri2af5u3xtcqry3cfu6aqzte3uzlznhlaylgrdztsi@5vpjnzpsemf5>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 12 Sep 2025 14:03:03 -0700
-X-Gm-Features: AS18NWBlwC6GnqxcNf8gN0VWwblEoVKW3TIWvmUUYGCzInpHnPoKF5oCvFK5EWQ
-Message-ID: <CAJuCfpGUjaZcs1r9ADKck_Ni7f41kHaiejR01Z0bE8pG0K1uXA@mail.gmail.com>
-Subject: Re: [PATCH slab v5 5/6] slab: Reuse first bit for OBJEXTS_ALLOC_FAIL
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	vbabka@suse.cz, harry.yoo@oracle.com, mhocko@suse.com, bigeasy@linutronix.de, 
-	andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org, 
-	peterz@infradead.org, rostedt@goodmis.org, hannes@cmpxchg.org, 
-	roman.gushchin@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCHv3 perf/core 0/6] uprobe,bpf: Allow to change app registers
+ from uprobe registers
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+ Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+ John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
+References: <20250909123857.315599-1-jolsa@kernel.org>
+ <CAEf4Bzb4ErWn=2SajBcyJxqGEYy0DXmtWuXKLskPGLG-Y9POFA@mail.gmail.com>
+ <7f591ac9-d3e0-4404-987c-40eceaf51fbb@linux.dev> <aMSIr1oItIfWQd5R@krava>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <aMSIr1oItIfWQd5R@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Sep 12, 2025 at 12:27=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.d=
-ev> wrote:
->
-> +Suren, Roman
->
-> On Mon, Sep 08, 2025 at 06:00:06PM -0700, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Since the combination of valid upper bits in slab->obj_exts with
-> > OBJEXTS_ALLOC_FAIL bit can never happen,
-> > use OBJEXTS_ALLOC_FAIL =3D=3D (1ull << 0) as a magic sentinel
-> > instead of (1ull << 2) to free up bit 2.
-> >
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->
-> Are we low on bits that we need to do this or is this good to have
-> optimization but not required?
+On 9/12/25 1:55 PM, Jiri Olsa wrote:
+> On Fri, Sep 12, 2025 at 01:28:55PM -0700, Ihor Solodrai wrote:
+>> On 9/9/25 9:41 AM, Andrii Nakryiko wrote:
+>>> On Tue, Sep 9, 2025 at 8:39 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>>>>
+>>>> hi,
+>>>> we recently had several requests for tetragon to be able to change
+>>>> user application function return value or divert its execution through
+>>>> instruction pointer change.
+>>>>
+>>>> This patchset adds support for uprobe program to change app's registers
+>>>> including instruction pointer.
+>>>>
+>>>> v3 changes:
+>>>> - deny attach of kprobe,multi with kprobe_write_ctx set [Alexei]
+>>>> - added more tests for denied kprobe attachment
+>>>>
+>>>> thanks,
+>>>> jirka
+>>>>
+>>>>
+>>>> ---
+>>>> Jiri Olsa (6):
+>>>>         bpf: Allow uprobe program to change context registers
+>>>>         uprobe: Do not emulate/sstep original instruction when ip is changed
+>>>>         selftests/bpf: Add uprobe context registers changes test
+>>>>         selftests/bpf: Add uprobe context ip register change test
+>>>>         selftests/bpf: Add kprobe write ctx attach test
+>>>>         selftests/bpf: Add kprobe multi write ctx attach test
+>>>>
+>>>
+>>> For the series:
+>>>
+>>> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>>>
+>>> Question is which tree will this go through? Most changes are in BPF,
+>>> so probably bpf-next, right?
+>>
+>> Hi Jiri.
+>>
+>> This series does not apply to current bpf-next, see below.
+>>
+>> Could you please respin it with bpf-next tag?
+>> E.g. "[PATCH v4 bpf-next 0/6] ..."
+>>
+> 
+> hi,
+> the uprobe change it needs to be on top of the optimized uprobes (tip/perf/core)
+> but the bpf selftests patches could be applied on bpf-next/master and disabled
+> in CI until tip/perf/core changes are merged in?
 
-That's a good question. After this change MEMCG_DATA_OBJEXTS and
-OBJEXTS_ALLOC_FAIL will have the same value and they are used with the
-same field (page->memcg_data and slab->obj_exts are aliases). Even if
-page_memcg_data_flags can never be used for slab pages I think
-overlapping these bits is not a good idea and creates additional
-risks. Unless there is a good reason to do this I would advise against
-it.
+Currently the series isn't even picked up by CI properly because it
+doesn't apply. It's not that the tests are failing.
 
->
-> I do have some questions on the state of slab->obj_exts even before this
-> patch for Suren, Roman, Vlastimil and others:
->
-> Suppose we newly allocate struct slab for a SLAB_ACCOUNT cache and tried
-> to allocate obj_exts for it which failed. The kernel will set
-> OBJEXTS_ALLOC_FAIL in slab->obj_exts (Note that this can only be set for
-> new slab allocation and only for SLAB_ACCOUNT caches i.e. vec allocation
-> failure for memory profiling does not set this flag).
->
-> Now in the post alloc hook, either through memory profiling or through
-> memcg charging, we will try again to allocate the vec and before that we
-> will call slab_obj_exts() on the slab which has:
->
->         unsigned long obj_exts =3D READ_ONCE(slab->obj_exts);
->
->         VM_BUG_ON_PAGE(obj_exts && !(obj_exts & MEMCG_DATA_OBJEXTS), slab=
-_page(slab));
->
-> It seems like the above VM_BUG_ON_PAGE() will trigger because obj_exts
-> will have OBJEXTS_ALLOC_FAIL but it should not, right? Or am I missing
-> something? After the following patch we will aliasing be MEMCG_DATA_OBJEX=
-TS
-> and OBJEXTS_ALLOC_FAIL and will avoid this trigger though which also
-> seems unintended.
+If there is a dependency on external (to bpf-next) commit, we could
+add it as a temporary CI patch or just wait for it to be merged in.
 
-You are correct. Current VM_BUG_ON_PAGE() will trigger if
-OBJEXTS_ALLOC_FAIL is set and that is wrong. When
-alloc_slab_obj_exts() fails to allocate the vector it does
-mark_failed_objexts_alloc() and exits without setting
-MEMCG_DATA_OBJEXTS (which it would have done if the allocation
-succeeded). So, any further calls to slab_obj_exts() will generate a
-warning because MEMCG_DATA_OBJEXTS is not set. I believe the proper
-fix would not be to set MEMCG_DATA_OBJEXTS along with
-OBJEXTS_ALLOC_FAIL because the pointer does not point to a valid
-vector but to modify the warning to:
+But if you can make this series applicable to bpf-next without
+tip/perf/core changes, you can do that and add relevant tests to
+`tools/testing/selftests/bpf/DENYLIST`. It's important to not forget
+to remove them later though.
 
-VM_BUG_ON_PAGE(obj_exts && !(obj_exts & (MEMCG_DATA_OBJEXTS |
-OBJEXTS_ALLOC_FAIL)), slab_page(slab));
+> 
+> thanks,
+> jirka
+> 
+> 
+>> Thanks!
+>>
+>> $ git log -1 --oneline
+>> a578b54a8ad2 (HEAD -> master, origin/master, origin/HEAD,
+>> kernel-patches/bpf-next) Merge branch
+>> 'bpf-report-arena-faults-to-bpf-streams'
+>> $ b4 am 20250909123857.315599-1-jolsa@kernel.org
+>> [...]
+>> $ git am ./v3_20250909_jolsa_uprobe_bpf_allow_to_change_app_registers_from_uprobe_registers.mbx
+>> Applying: bpf: Allow uprobe program to change context registers
+>> Applying: uprobe: Do not emulate/sstep original instruction when ip is
+>> changed
+>> error: patch failed: kernel/events/uprobes.c:2768
+>> error: kernel/events/uprobes.c: patch does not apply
+>> Patch failed at 0002 uprobe: Do not emulate/sstep original instruction when
+>> ip is changed
+>> [...]
+>>
+>>>
+>>>>    include/linux/bpf.h                                        |   1 +
+>>>>    kernel/events/core.c                                       |   4 +++
+>>>>    kernel/events/uprobes.c                                    |   7 +++++
+>>>>    kernel/trace/bpf_trace.c                                   |   7 +++--
+>>>>    tools/testing/selftests/bpf/prog_tests/attach_probe.c      |  28 +++++++++++++++++
+>>>>    tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c |  27 ++++++++++++++++
+>>>>    tools/testing/selftests/bpf/prog_tests/uprobe.c            | 156 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+>>>>    tools/testing/selftests/bpf/progs/kprobe_write_ctx.c       |  22 +++++++++++++
+>>>>    tools/testing/selftests/bpf/progs/test_uprobe.c            |  38 +++++++++++++++++++++++
+>>>>    9 files changed, 287 insertions(+), 3 deletions(-)
+>>>>    create mode 100644 tools/testing/selftests/bpf/progs/kprobe_write_ctx.c
+>>
 
-IOW, we expect the obj_ext to be either NULL or have either
-MEMCG_DATA_OBJEXTS or OBJEXTS_ALLOC_FAIL set.
->
-> Next question: OBJEXTS_ALLOC_FAIL is for memory profiling and we never
-> set it when memcg is disabled and memory profiling is enabled or even
-> with both memcg and memory profiling are enabled but cache does not have
-> SLAB_ACCOUNT. This seems unintentional as well, right?
-
-I'm not sure why you think OBJEXTS_ALLOC_FAIL is not set by memory
-profiling (independent of CONFIG_MEMCG state).
-__alloc_tagging_slab_alloc_hook()->prepare_slab_obj_exts_hook()->alloc_slab=
-_obj_exts()
-will attempt to allocate the vector and set OBJEXTS_ALLOC_FAIL if that
-fails.
-
->
-> Also I think slab_obj_exts() needs to handle OBJEXTS_ALLOC_FAIL explicitl=
-y.
-
-Agree, so is my proposal to update the warning sounds right to you?
-
->
->
-> > ---
-> >  include/linux/memcontrol.h | 10 ++++++++--
-> >  mm/slub.c                  |  2 +-
-> >  2 files changed, 9 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 785173aa0739..d254c0b96d0d 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -341,17 +341,23 @@ enum page_memcg_data_flags {
-> >       __NR_MEMCG_DATA_FLAGS  =3D (1UL << 2),
-> >  };
-> >
-> > +#define __OBJEXTS_ALLOC_FAIL MEMCG_DATA_OBJEXTS
-> >  #define __FIRST_OBJEXT_FLAG  __NR_MEMCG_DATA_FLAGS
-> >
-> >  #else /* CONFIG_MEMCG */
-> >
-> > +#define __OBJEXTS_ALLOC_FAIL (1UL << 0)
-> >  #define __FIRST_OBJEXT_FLAG  (1UL << 0)
-> >
-> >  #endif /* CONFIG_MEMCG */
-> >
-> >  enum objext_flags {
-> > -     /* slabobj_ext vector failed to allocate */
-> > -     OBJEXTS_ALLOC_FAIL =3D __FIRST_OBJEXT_FLAG,
-> > +     /*
-> > +      * Use bit 0 with zero other bits to signal that slabobj_ext vect=
-or
-> > +      * failed to allocate. The same bit 0 with valid upper bits means
-> > +      * MEMCG_DATA_OBJEXTS.
-> > +      */
-> > +     OBJEXTS_ALLOC_FAIL =3D __OBJEXTS_ALLOC_FAIL,
-> >       /* the next bit after the last actual flag */
-> >       __NR_OBJEXTS_FLAGS  =3D (__FIRST_OBJEXT_FLAG << 1),
-> >  };
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index 212161dc0f29..61841ba72120 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -2051,7 +2051,7 @@ static inline void handle_failed_objexts_alloc(un=
-signed long obj_exts,
-> >        * objects with no tag reference. Mark all references in this
-> >        * vector as empty to avoid warnings later on.
-> >        */
-> > -     if (obj_exts & OBJEXTS_ALLOC_FAIL) {
-> > +     if (obj_exts =3D=3D OBJEXTS_ALLOC_FAIL) {
-> >               unsigned int i;
-> >
-> >               for (i =3D 0; i < objects; i++)
-> > --
-> > 2.47.3
-> >
 
