@@ -1,211 +1,135 @@
-Return-Path: <bpf+bounces-68290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0286B55FCA
-	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 11:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D949CB56249
+	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 19:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C1B07B779D
-	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 09:12:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DA747ADF3B
+	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 16:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 337982EA49C;
-	Sat, 13 Sep 2025 09:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD621F5852;
+	Sat, 13 Sep 2025 17:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FWHFl+il"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dvjll8GJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C874230BDF;
-	Sat, 13 Sep 2025 09:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915A31D79A5
+	for <bpf@vger.kernel.org>; Sat, 13 Sep 2025 17:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757754865; cv=none; b=HbR6ZFsF16fm5+YEwx5IA8tz4+3vVH9kR/MHl4QYyA7WnqtQp61erCcopvvmuJPII5Ntz/xLqn6Na+rZxr0+nItDiahqQS/y8TuH5Sb3SCTglTMlSfaBYY+IgG7fFQDKmN8YU8JwH28qhhyDEVdvq4u7IC8P38LGqQ9eKiwBl4s=
+	t=1757782874; cv=none; b=me86SkUPuVV4+IzSz7axH5QmvBP8IPY4myErquLIHcOkDXlH9ShE2r4oVk4AolUuHQQL61VcULJzB7CzHRv4nzGVZeZj0i86CU2TZ62fQruPJSXHvk0H8p9dM9V2tybOPSfCbLDT+m1qEpuDzYM3eos1I9H56gz/BBpeAezi/Rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757754865; c=relaxed/simple;
-	bh=+qnsQee1LyeezvoNoW0nM0bf6EfuWq5Ish2LHgXEN7Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Gy9emYCJMHyiC/mTCZI+9wMC14XjzYnIwsQJujFfh+8TeRcBpfGxSz1VeLbqNBsVCUKJaHXPueechr+LkIFdXtR3Nkz1OQ3rRMD+dg17CJqi+b4vQnCtYh9BJx2EL2xI8j1xIRSaZJBqS5rZ1giQq+5OGnwegRop6NVY4US2FJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FWHFl+il; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58D7afXo023364;
-	Sat, 13 Sep 2025 09:14:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=FoiVZdP+olli/54KUOjFx7GwmsNZliJqSYCn3idr9
-	MQ=; b=FWHFl+iljlhYxHEcrTFKQHDYUZ0OLX7b6P6PWWfccwy+jcgwHhoxcDC85
-	KuwzHXvGyX/oXcdzOM6W5IRjsLObM8NQKCnnlxe2NHzE4M07rCgcu+QodSOdTGQG
-	udCf6aeJv6gWYB9G0nZnn4oPvmHSfuHufNuuwXUcX/T0uaeos2JQYjysApEdgy0B
-	Hie6lM+/9a6tf9c/mn8rTNo6f2dG+5AsBIG7bEELi82R9Iki3mmTtN3y6zuScULT
-	iUYVk+kueS/OiQPeXzGw8w/Add81WsStBCH9lF/yurS0jok+Ruz2OB66ppiHnHh/
-	WGpMkkxD8FPKNxFkCKP6VUHQBb3Bg==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49509xrvnn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 13 Sep 2025 09:14:00 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58D9DxbU004683;
-	Sat, 13 Sep 2025 09:13:59 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49509xrvng-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 13 Sep 2025 09:13:59 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58D4emjC001198;
-	Sat, 13 Sep 2025 09:13:58 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 491203xpb7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 13 Sep 2025 09:13:58 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58D9Ds2A47382940
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 13 Sep 2025 09:13:54 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7946020043;
-	Sat, 13 Sep 2025 09:13:54 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C3D0520040;
-	Sat, 13 Sep 2025 09:13:44 +0000 (GMT)
-Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.ibm.com.com (unknown [9.43.33.146])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Sat, 13 Sep 2025 09:13:44 +0000 (GMT)
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
-        andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
-        iii@linux.ibm.com, shuah@kernel.org
-Subject: [PATCH v3 bpf-next] selftests/bpf: Fix arena_spin_lock selftest failure
-Date: Sat, 13 Sep 2025 14:43:37 +0530
-Message-ID: <20250913091337.1841916-1-skb99@linux.ibm.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1757782874; c=relaxed/simple;
+	bh=fAl811+LJx+57xhD3ZDBRMsx59Zi632qqhWlpTaXmmQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=bUFJRMZ2DA0x3MLYO4C5/z1M5zlrIr1vnMs7l/2Uwz37DxGdQlt2tJypu3zUxIEkiGjmlI0yPL6A0SgdtB+I0V9qKkZk4yUAsjjFERO+/3aMiCw4r6m5HKosCgjw0bT5zUOrhlG4AHhS2Trn8uS/eb2KcS10wQas8y3HgYZ3qls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dvjll8GJ; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3e8ef75b146so289939f8f.0
+        for <bpf@vger.kernel.org>; Sat, 13 Sep 2025 10:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757782871; x=1758387671; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
+         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=8jVrbxVggAGGjVPECN0iWVqlzdgucYLKcpcWurPyD3c=;
+        b=Dvjll8GJ0wnD0ppxn4LNP6U8prNscBJo1opMdLj3djyH6IZZ9qgnwIhswWC6Ij937R
+         N7HU3rDW05qtyUGzK2CUDClWIUiTUrmSQJQ64I03lv8uPdUs0iTf906qEYpLQP90er7h
+         QF0VoK2n1mvjPCmj7wx0J8xwenYCXEvkGAxKgsHXWAgVG2TNN4kXRcvyt2PdAeruftEe
+         yqrqi/SGPGgoyRj27+nRrwCDK53ZcfQ/n7lmq2uSTho6XJx/GbmRrjvgAN9EBT5pwFoI
+         FxGiHXQIxR1y9BJ2AK4nnfsh3tU/vTjg6+HEnyt6CBOQrscbTuYzZ4KZwTBK+R87IYSN
+         QkFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757782871; x=1758387671;
+        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
+         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8jVrbxVggAGGjVPECN0iWVqlzdgucYLKcpcWurPyD3c=;
+        b=L504pplLIZqeOP1uDt+ey2J0EhuhFpE6g7Qg+HlmfRwd75eWE/KGmKuW2xukKqKwj1
+         TXJocB0hUs5U4ePCcuClgyrVLAPPfdsYOnwcDcFoUHsAnVNKTEwxmSefQaTRh8+PqB3S
+         52XIDoUMEgyoqj5gAsXuZ+4TdEfLlXQtRUeXsC1JdHqCDIXFAkXHHEUoB6+cwk1rBlKR
+         C51nQQ1mOL3XYl7pwRsfc3h1Eqkmx494aaOQEmzHyeJMJOM4zsijeGMOg9g7TdVCbDW5
+         NII9oyApSP1YaFWuWwE7lXLIfPZj7ferll+GfBCUC2IcD7g4b2tgeg5MPxOQl0v9CV+P
+         8bxA==
+X-Gm-Message-State: AOJu0YyobHYR99AXxeUCgiv2YQwR4Z+hVOxxHcW8A6RVeS1Cu0lSOyoY
+	KNgJUUL2jMVaGgF9MyQMu1T3NiaR/8Z52Jiikn94hPwt7P67hwYl3Kw9
+X-Gm-Gg: ASbGncssntVgUpsQPkV0+W3DR0jkAMy1dh9OS+bt09AvMxIex2uQsaUJYdQna0n2V5K
+	4u4fPoZKp6pcjhA1/d2DmYYFB+J1sYYQ9AJdLWQtztClxHEeQ5BI4auT+BJChPiM++kJH9++gfx
+	qv+iJ+rJmhczv7PIXR4TEI1zl6aNWEv3tse4pXaeu2tNvyFegEoDOaAf1lI0tRgiFALxbgN+p8X
+	k8h+n3GoLZateMqo4qOOPl99spPdYO9Q51QTOyBETppsQ01bkccEuejCqEvICg9eFkJfoSoJ86y
+	QvyT1KUMMFpw7Y84TX9SECr3oLwn9qMlyjNSCyQCP1nDk/FSvlehdoZPYgVZYTMerNjggNiIXSF
+	VMPukEwD2KVHrUhFd5V9KupYMyjwmCmXngG0jaEiX8OiphdUPOYelNzBAjFQF6tooUu7XjAeH7Y
+	BLxkM=
+X-Google-Smtp-Source: AGHT+IHxuiEOQg1v7lYGNdadask14TKYGQh97aQt2avC5UpjAiAMPfP2BgCYtn/tTDqWMXPMlc9qqA==
+X-Received: by 2002:a05:6000:2510:b0:3e4:ea11:f7df with SMTP id ffacd0b85a97d-3e7659db441mr6402177f8f.40.1757782870686;
+        Sat, 13 Sep 2025 10:01:10 -0700 (PDT)
+Received: from [10.33.80.40] (mem-185.47.220.165.jmnet.cz. [185.47.220.165])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3e80da7f335sm4379634f8f.8.2025.09.13.10.01.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Sep 2025 10:01:09 -0700 (PDT)
+Message-ID: <e5d594d0aee93da67a22a42d0e2b4e6e463ab894.camel@gmail.com>
+Subject: [bug report] [regression?] bpf lsm breaks /proc/*/attr/current with
+ security= on commandline
+From: Filip Hejsek <filip.hejsek@gmail.com>
+To: linux-security-module@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+  James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	regressions@lists.linux.dev
+Date: Sat, 13 Sep 2025 19:01:08 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTEzMDAyMCBTYWx0ZWRfX1C1+IaIOaBM7
- A/zHZH/02LNF5rHF+6fw4W+aOT0mqcomI+iMlkXEie8zluqc2k8PzN3kbyn8bT8TqrcfZHv4RNm
- aFKjhRxhbNsunQMW7pFJjmsEV7hUWQAlll3qyVhrrCqqAN4CZ9p1Y4VcwC/F8n7icSCp/FKut+p
- W4b2if0kKK2Gpy1berG2oOIptvwD3a4AKdIUqw5WcBkvNgW46Tm1Otv5WRdbaiEeVsNIX0WABsa
- eZNqtea+PfDtr/DZq5kka1zKoLmP5bh6RWWZtx8HKp+p5l6/OJt165BmjdlBqC0Ptd/6fH+MU6k
- 9WFupfkojN/j60Yk3tKdSwxXH5T6n1W5z3LfkbtQChRnTgTGlX+rnvtP3aM/Xsk3+oi1KBAhm0C
- nWM14lK0
-X-Authority-Analysis: v=2.4 cv=OPYn3TaB c=1 sm=1 tr=0 ts=68c535d8 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=yJojWOMRYYMA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=VDBL6iswcQKEKxwn1pUA:9
-X-Proofpoint-GUID: NAWLiaGerAFNkwaix02iGaKY4vjUsgs3
-X-Proofpoint-ORIG-GUID: XwJnrVJ3HluXiykCE2VXzpV5TVpklbYB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-13_02,2025-09-12_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 clxscore=1015 phishscore=0 suspectscore=0 spamscore=0
- bulkscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509130020
 
-For systems having CONFIG_NR_CPUS set to > 1024 in kernel config
-the selftest fails as arena_spin_lock_irqsave() returns EOPNOTSUPP.
-(eg - incase of powerpc default value for CONFIG_NR_CPUS is 8192)
+Hello,
 
-The selftest is skipped incase bpf program returns EOPNOTSUPP,
-with a descriptive message logged.
+TLDR: because of bpf lsm, putting security=3Dselinux on commandline
+      results in /proc/*/attr/current returning errors.
 
-Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
----
+When the legacy security=3D commandline option is used, the specified lsm
+is added to the end of the lsm list. For example, security=3Dapparmor
+results in the following order of security modules:
 
-Changes since v2:
-* Separated arena_spin_lock selftest fix patch from the arena
-  patchset as it has to go via bpf-next tree.
-* For EOPNOTSUPP set test_skip to 3, to differentiate it from
-  scenarios when run conditions are not met as suggested by Hari.
-* Tweaked message displayed on SKIP to remove display of online
-  cpus.
+   capability,landlock,lockdown,yama,bpf,apparmor
 
-v2:https://lore.kernel.org/all/20250829165135.1273071-1-skb99@linux.ibm.com/
+In particular, the bpf lsm will be ordered before the chosen major lsm.
 
-Changes since v1:
-Addressed comments from Alexei:
-* Removed skel->rodata->nr_cpus = get_nprocs() and its usage to get
-  currently online cpus(as it needs to be updated from userspace).
+This causes reads and writes of /proc/*/attr/current to fail, because
+the bpf hook overrides the apparmor/selinux hook.
 
-v1:https://lore.kernel.org/all/20250805062747.3479221-1-skb99@linux.ibm.com/
+As you can see in the code below, only the first registered hook is
+called (when reading attr/current, lsmid is 0):
 
----
- .../selftests/bpf/prog_tests/arena_spin_lock.c      | 13 +++++++++++++
- tools/testing/selftests/bpf/progs/arena_spin_lock.c |  5 ++++-
- 2 files changed, 17 insertions(+), 1 deletion(-)
+int security_getprocattr(struct task_struct *p, int lsmid, const char *name=
+,
+			 char **value)
+{
+	struct lsm_static_call *scall;
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-index 0223fce4db2b..693fd86fbde6 100644
---- a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-@@ -40,8 +40,13 @@ static void *spin_lock_thread(void *arg)
- 
- 	err = bpf_prog_test_run_opts(prog_fd, &topts);
- 	ASSERT_OK(err, "test_run err");
-+
-+	if (topts.retval == -EOPNOTSUPP)
-+		goto end;
-+
- 	ASSERT_EQ((int)topts.retval, 0, "test_run retval");
- 
-+end:
- 	pthread_exit(arg);
- }
- 
-@@ -63,6 +68,7 @@ static void test_arena_spin_lock_size(int size)
- 	skel = arena_spin_lock__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "arena_spin_lock__open_and_load"))
- 		return;
-+
- 	if (skel->data->test_skip == 2) {
- 		test__skip();
- 		goto end;
-@@ -86,6 +92,13 @@ static void test_arena_spin_lock_size(int size)
- 			goto end_barrier;
- 	}
- 
-+	if (skel->data->test_skip == 3) {
-+		printf("%s:SKIP: CONFIG_NR_CPUS exceed the maximum supported by arena spinlock\n",
-+		       __func__);
-+		test__skip();
-+		goto end_barrier;
-+	}
-+
- 	ASSERT_EQ(skel->bss->counter, repeat * nthreads, "check counter value");
- 
- end_barrier:
-diff --git a/tools/testing/selftests/bpf/progs/arena_spin_lock.c b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-index c4500c37f85e..086b57a426cf 100644
---- a/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-+++ b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-@@ -37,8 +37,11 @@ int prog(void *ctx)
- #if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
- 	unsigned long flags;
- 
--	if ((ret = arena_spin_lock_irqsave(&lock, flags)))
-+	if ((ret = arena_spin_lock_irqsave(&lock, flags))) {
-+		if (ret == -EOPNOTSUPP)
-+			test_skip = 3;
- 		return ret;
-+	}
- 	if (counter != limit)
- 		counter++;
- 	bpf_repeat(cs_count);
--- 
-2.43.5
+	lsm_for_each_hook(scall, getprocattr) {
+		if (lsmid !=3D 0 && lsmid !=3D scall->hl->lsmid->id)
+			continue;
+		return scall->hl->hook.getprocattr(p, name, value);
+	}
+	return LSM_RET_DEFAULT(getprocattr);
+}
 
+Even though the bpf lsm doesn't allow attaching bpf programs to this
+hook, it still prevents the other hooks from being called.
+
+This is maybe a regression, because with the same commandline, reading
+from /proc/*/attr/current probably worked before the introduction of
+bpf lsm.
+
+Regards,
+Filip Hejsek
 
