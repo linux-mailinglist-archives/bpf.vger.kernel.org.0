@@ -1,182 +1,171 @@
-Return-Path: <bpf+bounces-68279-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8382FB55A61
-	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 01:37:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89EAFB55A80
+	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 02:02:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 37F504E0713
-	for <lists+bpf@lfdr.de>; Fri, 12 Sep 2025 23:37:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 563127A36A5
+	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 00:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A4D296BA5;
-	Fri, 12 Sep 2025 23:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F2C28F4;
+	Sat, 13 Sep 2025 00:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kteSnbAB"
 X-Original-To: bpf@vger.kernel.org
-Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4209128489D;
-	Fri, 12 Sep 2025 23:36:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393474A3C
+	for <bpf@vger.kernel.org>; Sat, 13 Sep 2025 00:02:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757720170; cv=none; b=h/H47QwYl0jsejsXu+pEW6EAXnw72476d47+rLbCf/6n3F95MA89vMNsQNF2iV866xmF8CooBu4KREyv+P1JPnpXHhIm2cnA/gdFBK/2m7+7tixPFoOH1TviMH3iWSUGtcTFBFjDgCite8Ff9lTVeFaI6ST7KZga/nSSQAtSm14=
+	t=1757721728; cv=none; b=ZuG7CQL9YlIS8jgvIpYvCIkgpKPGdlH+lLYbcRN5gZ8kWenRjhW8kvgiB2rkU5YseN70cUBBRA7lEu8Mgs6duQJQu0MS/gigNP+eE5KuVqNjmZCkWBy4VKvt4GatvBHP6Eymf/+itTEEUffAadXxqGWOAUjIDxMlJcxgY0tqK/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757720170; c=relaxed/simple;
-	bh=6uGhFrL17N+32Nuc6ZMq/+AyTyb52dRPz7G0SdniNKM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u6Xmv8QgH70DY5lfy8mw/OfMF3SfWw/YeCdCn/oIz1jIroCRZnosc6cAlsfygTYt7VVvLNMK+U47/8ao+T5RrKP+ICPOyqK9JfFvsQ7XT+BrZyddJGdsu4Hn8Hsxb5HnXBra7InAgNNvFn5gJ94z5zNfhpbBK+mp41QVg/qgjeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
-Received: from arnaudlcm-X570-UD.. (unknown [IPv6:2a02:8084:255b:aa00:186b:e316:24ee:afec])
-	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id ADF9741666;
-	Fri, 12 Sep 2025 23:36:05 +0000 (UTC)
-Authentication-Results: Plesk;
-	spf=pass (sender IP is 2a02:8084:255b:aa00:186b:e316:24ee:afec) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=arnaudlcm-X570-UD..
-Received-SPF: pass (Plesk: connection is authenticated)
-From: Arnaud Lecomte <contact@arnaud-lcm.com>
-To: alexei.starovoitov@gmail.com,
-	yonghong.song@linux.dev,
-	song@kernel.org
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	sdf@fomichev.me,
-	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	contact@arnaud-lcm.com
-Subject: [PATCH bpf-next v9 3/3] bpf: fix stackmap overflow check in
- __bpf_get_stackid()
-Date: Sat, 13 Sep 2025 00:35:58 +0100
-Message-ID: <20250912233558.75076-1-contact@arnaud-lcm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250912233509.74996-1-contact@arnaud-lcm.com>
-References: <20250912233509.74996-1-contact@arnaud-lcm.com>
+	s=arc-20240116; t=1757721728; c=relaxed/simple;
+	bh=2IOls+5ihE/wpDfGelo+iaCbrrFYTVgu11uZx6OhzTE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oYaFoD/faQvyZuD/bIAGPUdk/U1FP5wd/OV0qYTOPK/SipKBUjWRtP0NjZmdvybpnHRcMxExrctOqFwEpsPkp8CZzhJZ5HyEZg2dt2NFbZJ1mHHrRvmHjTP4UMlYrpQuskCBSf6ovhEJOAvUG8++Ew4wfGyrDmgJQXLjXYsr3ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kteSnbAB; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 12 Sep 2025 17:01:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757721723;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G1V4E7beL3tEQcs5f1ZIdNtN51ThW+D+Dg6V3YUAVog=;
+	b=kteSnbABvHadBqke0lEmhPuZhA3Nws7R0djm5uvx197+4I4lR/J3g13H82QcB++JKyBXvg
+	/JudcGo/uA1xMk7pNur6IzYVR8jQy0Qf580r7nupFsPOcs7wO5vpfsW9JOCGorZzhrt8N8
+	aiS/QToB6TQvnULaHZddJvc8QtfEVS4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Suren Baghdasaryan <surenb@google.com>, bpf <bpf@vger.kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>, 
+	Harry Yoo <harry.yoo@oracle.com>, Michal Hocko <mhocko@suse.com>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>
+Subject: Re: [PATCH slab v5 5/6] slab: Reuse first bit for OBJEXTS_ALLOC_FAIL
+Message-ID: <e7nh3cxyhmlxds4b2ko36gnxbdfclcxu3eae5irvrd2m6qzqoj@gor7vopfe47z>
+References: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
+ <20250909010007.1660-6-alexei.starovoitov@gmail.com>
+ <jftidhymri2af5u3xtcqry3cfu6aqzte3uzlznhlaylgrdztsi@5vpjnzpsemf5>
+ <CAJuCfpGUjaZcs1r9ADKck_Ni7f41kHaiejR01Z0bE8pG0K1uXA@mail.gmail.com>
+ <CAADnVQJu-mU-Px0FvHqZdTTP+x8ROTXaqHKSXdeS7Gc4LV9zsQ@mail.gmail.com>
+ <shfysi62hb5g7lo44mw4htwxdsdljcp3usu2wvsjpd2a57vvid@tuhj63dixxpn>
+ <CAADnVQ+eD7p4i0B9Q2T-OS_n=AqcrrvYZGY57QOOqKEof6SkDQ@mail.gmail.com>
+ <lv2tkehyh4pihbczb7ghvbkkl4l75ksdx2xjtxf2r7lgzam76h@ekkrlady2et3>
+ <CAADnVQLX_mi9WLygRxwp5PtBFG7L_sqm9sL93ejENWqVO3ar7g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <175772016664.3971.581423742891501353@Plesk>
-X-PPP-Vhost: arnaud-lcm.com
+In-Reply-To: <CAADnVQLX_mi9WLygRxwp5PtBFG7L_sqm9sL93ejENWqVO3ar7g@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stackid()
-when copying stack trace data. The issue occurs when the perf trace
- contains more stack entries than the stack map bucket can hold,
- leading to an out-of-bounds write in the bucket's data array.
+On Fri, Sep 12, 2025 at 02:59:08PM -0700, Alexei Starovoitov wrote:
+> On Fri, Sep 12, 2025 at 2:44 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> >
+> > On Fri, Sep 12, 2025 at 02:31:47PM -0700, Alexei Starovoitov wrote:
+> > > On Fri, Sep 12, 2025 at 2:29 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> > > >
+> > > > On Fri, Sep 12, 2025 at 02:24:26PM -0700, Alexei Starovoitov wrote:
+> > > > > On Fri, Sep 12, 2025 at 2:03 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > > > > >
+> > > > > > On Fri, Sep 12, 2025 at 12:27 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> > > > > > >
+> > > > > > > +Suren, Roman
+> > > > > > >
+> > > > > > > On Mon, Sep 08, 2025 at 06:00:06PM -0700, Alexei Starovoitov wrote:
+> > > > > > > > From: Alexei Starovoitov <ast@kernel.org>
+> > > > > > > >
+> > > > > > > > Since the combination of valid upper bits in slab->obj_exts with
+> > > > > > > > OBJEXTS_ALLOC_FAIL bit can never happen,
+> > > > > > > > use OBJEXTS_ALLOC_FAIL == (1ull << 0) as a magic sentinel
+> > > > > > > > instead of (1ull << 2) to free up bit 2.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > > > > > >
+> > > > > > > Are we low on bits that we need to do this or is this good to have
+> > > > > > > optimization but not required?
+> > > > > >
+> > > > > > That's a good question. After this change MEMCG_DATA_OBJEXTS and
+> > > > > > OBJEXTS_ALLOC_FAIL will have the same value and they are used with the
+> > > > > > same field (page->memcg_data and slab->obj_exts are aliases). Even if
+> > > > > > page_memcg_data_flags can never be used for slab pages I think
+> > > > > > overlapping these bits is not a good idea and creates additional
+> > > > > > risks. Unless there is a good reason to do this I would advise against
+> > > > > > it.
+> > > > >
+> > > > > Completely disagree. You both missed the long discussion
+> > > > > during v4. The other alternative was to increase alignment
+> > > > > and waste memory. Saving the bit is obviously cleaner.
+> > > > > The next patch is using the saved bit.
+> > > >
+> > > > I will check out that discussion and it would be good to summarize that
+> > > > in the commit message.
+> > >
+> > > Disgaree. It's not a job of a small commit to summarize all options
+> > > that were discussed on the list. That's what the cover letter is for
+> > > and there there are links to all previous threads.
+> >
+> > Currently the commit message is only telling what the patch is doing and
+> > is missing the 'why' part and I think adding the 'why' part would make it
+> > better for future readers i.e. less effort to find why this is being
+> > done this way. (Anyways this is just a nit from me)
+> 
+> I think 'why' here is obvious. Free the bit to use it later.
+> From time to time people add a sentence like
+> "this bit will be used in the next patch",
+> but I never do this and sometimes remove it from other people's
+> commits, since "in the next patch" is plenty ambiguous and not helpful.
 
-Reported-by: syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=c9b724fbb41cf2538b7b
-Fixes: ee2a098851bf ("bpf: Adjust BPF stack helper functions to accommodate skip > 0")
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Acked-by: Song Liu <song@kernel.org>
-Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
----
-Changes in v2:
- - Fixed max_depth names across get stack id
+Yes, the part about the freed bit being used in later patch was clear.
+The part about if we really need it was not obvious and if I understand
+the discussion at [1] (relevant text below), it was not required but
+good to have.
+```
+	> I was going to say "add a new flag to enum objext_flags",
+	> but all lower 3 bits of slab->obj_exts pointer are already in use? oh...
+	>
+	> Maybe need a magic trick to add one more flag,
+	> like always align the size with 16?
+	>
+	> In practice that should not lead to increase in memory consumption
+	> anyway because most of the kmalloc-* sizes are already at least
+	> 16 bytes aligned.
 
-Changes in v4:
- - Removed unnecessary empty line in __bpf_get_stackid
+	Yes. That's an option, but I think we can do better.
+	OBJEXTS_ALLOC_FAIL doesn't need to consume the bit.
+```
 
-Changes in v6:
- - Added back trace_len computation in __bpf_get_stackid
+Anyways no objection from me but Harry had a followup request [2]:
+```
+	This will work, but it would be helpful to add a comment clarifying that
+	when bit 0 is set with valid upper bits, it indicates
+	MEMCG_DATA_OBJEXTS, but when the upper bits are all zero, it indicates
+	OBJEXTS_ALLOC_FAIL.
 
-Changes in v7:
- - Removed usefull trace->nr assignation in bpf_get_stackid_pe
- - Added restoration of trace->nr for both kernel and user traces
-   in bpf_get_stackid_pe
+	When someone looks at the code without checking history it might not
+	be obvious at first glance.
+```
 
-Changes in v9:
- - Fixed variable declarations in bpf_get_stackid_pe
- - Added the missing truncate of trace_nr in __bpf_getstackid
+I think the above requested comment would be really useful. Suren is
+fixing the condition of VM_BUG_ON_PAGE() in slab_obj_exts(). With this
+patch, I think, that condition will need to be changed again.
 
-Link to v8: https://lore.kernel.org/all/20250905134833.26791-1-contact@arnaud-lcm.com/
----
----
- kernel/bpf/stackmap.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 9a86b5acac10..ac5ec3253ce6 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -251,8 +251,8 @@ static long __bpf_get_stackid(struct bpf_map *map,
- {
- 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
- 	struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
-+	u32 hash, id, trace_nr, trace_len, i, max_storable;
- 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
--	u32 hash, id, trace_nr, trace_len, i;
- 	bool user = flags & BPF_F_USER_STACK;
- 	u64 *ips;
- 	bool hash_matches;
-@@ -261,7 +261,9 @@ static long __bpf_get_stackid(struct bpf_map *map,
- 		/* skipping more than usable stack trace */
- 		return -EFAULT;
- 
-+	max_storable = map->value_size / stack_map_data_size(map);
- 	trace_nr = trace->nr - skip;
-+	trace_nr = min_t(u32, trace_nr, max_storable);
- 	trace_len = trace_nr * sizeof(u64);
- 	ips = trace->ip + skip;
- 	hash = jhash2((u32 *)ips, trace_len / sizeof(u32), 0);
-@@ -369,6 +371,7 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
- {
- 	struct perf_event *event = ctx->event;
- 	struct perf_callchain_entry *trace;
-+	u32 elem_size, max_depth;
- 	bool kernel, user;
- 	__u64 nr_kernel;
- 	int ret;
-@@ -390,15 +393,16 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
- 		return -EFAULT;
- 
- 	nr_kernel = count_kernel_ip(trace);
-+	elem_size = stack_map_data_size(map);
-+	__u64 nr = trace->nr; /* save original */
- 
- 	if (kernel) {
--		__u64 nr = trace->nr;
--
- 		trace->nr = nr_kernel;
-+		max_depth =
-+			stack_map_calculate_max_depth(map->value_size, elem_size, flags);
-+		trace->nr = min_t(u32, nr_kernel, max_depth);
- 		ret = __bpf_get_stackid(map, trace, flags);
- 
--		/* restore nr */
--		trace->nr = nr;
- 	} else { /* user */
- 		u64 skip = flags & BPF_F_SKIP_FIELD_MASK;
- 
-@@ -407,8 +411,15 @@ BPF_CALL_3(bpf_get_stackid_pe, struct bpf_perf_event_data_kern *, ctx,
- 			return -EFAULT;
- 
- 		flags = (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
-+		max_depth =
-+			stack_map_calculate_max_depth(map->value_size, elem_size, flags);
-+		trace->nr = min_t(u32, trace->nr, max_depth);
- 		ret = __bpf_get_stackid(map, trace, flags);
- 	}
-+
-+	/* restore nr */
-+	trace->nr = nr;
-+
- 	return ret;
- }
- 
--- 
-2.43.0
-
+[1] https://lore.kernel.org/all/CAADnVQLrTJ7hu0Au-XzBu9=GUKHeobnvULsjZtYO3JHHd75MTA@mail.gmail.com/
+[2] https://lore.kernel.org/all/aJtZrgcylnWgfR9r@hyeyoo/
 
