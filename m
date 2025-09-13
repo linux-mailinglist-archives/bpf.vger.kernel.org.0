@@ -1,155 +1,211 @@
-Return-Path: <bpf+bounces-68289-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68290-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 793B7B55F71
-	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 10:23:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0286B55FCA
+	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 11:14:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62FDD1CC0DA5
-	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 08:24:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C1B07B779D
+	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 09:12:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D84C2E92D1;
-	Sat, 13 Sep 2025 08:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 337982EA49C;
+	Sat, 13 Sep 2025 09:14:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FWHFl+il"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3552E62C6
-	for <bpf@vger.kernel.org>; Sat, 13 Sep 2025 08:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C874230BDF;
+	Sat, 13 Sep 2025 09:14:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757751814; cv=none; b=OTbPKwifaMkmlbV7N1evWRQUwtNa1qQmOzxMG1bDiFryV+u5K37IJI41+WpSyTga7mVWHcI4cr83+lEh35Dx5Mi3N990W5wElrRQMV7PieEG0x+ne7aqmB2nxNs3fTxyvzsf+HJQhRLbXSClx091ClCsqBf7WWhkWbyL3rWOkAo=
+	t=1757754865; cv=none; b=HbR6ZFsF16fm5+YEwx5IA8tz4+3vVH9kR/MHl4QYyA7WnqtQp61erCcopvvmuJPII5Ntz/xLqn6Na+rZxr0+nItDiahqQS/y8TuH5Sb3SCTglTMlSfaBYY+IgG7fFQDKmN8YU8JwH28qhhyDEVdvq4u7IC8P38LGqQ9eKiwBl4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757751814; c=relaxed/simple;
-	bh=9Cyk73qCemZLt2TIQWoAm/Fos2OIzYEaVPWTQ0IJGMY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mY/Uv0UfGvyJvOPdZqkBrIJdr7JNuGp3WJQIAZpjas/VR5e8cM1QAJLd46hQ+WjCmtu8N5jAZgB2+ZY7ZudDuiSyyjT14aztlTuXIid398DXt/Gs8WwcK9I0vsl2U6Y5d1RlzuxdzOWLVZtixy/WOqF2ACBKDW8l/NbDWMU76VY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-886e347d26bso309832539f.0
-        for <bpf@vger.kernel.org>; Sat, 13 Sep 2025 01:23:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757751812; x=1758356612;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vl0zIm0bJh13wDJcRfKZ8dttaz6xfqHDCOb+BzqK/pw=;
-        b=VHhtkVYLM9+psjQZCqwsFlE3j/Ch8XhFjkp0nnZiZumEof/uQ+FyGcNXbi7QhZ8tOz
-         twJaalBpjfDj7sFZHNmQY9/iuK5CjovSfRs9sjy1IIvxD59oXP6wKdb41HezXGCMOoFu
-         ulnfDafD3XDMzW0zD2tU/1ZgoHPWjAnYkj39a1/jAIdK0kjuZoHa7YcJFgXiPQdtmlZ8
-         HpmdBzB8SkZucYXoLYI7r+f7M0hdFfMv5owgBSiiW+o+/3yBryfH4iQ+A2qVzOr8B3oc
-         TZTgd2jjePBX9Kri18wiOkq7aT5cGXPu0FHEFNnnMaZLul0kgdWpzFdUGJG6xNhbMryl
-         C3oQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUcMkpLsy85UMRZ8OWgkpUzTGlGTBCSyaA2YtY1r5yhOtlZNooVczuQ0jwxYYAJerlR0sY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLmGVrHIhcWP1vYhm0E/0y/EkcB3VFCyJF00gQrbJFdRKHxSHx
-	5cTOY3pXvaULVy0m50TSqGsI/22c+Yg1yU/z1spXDtsx2DJO9rMTfJFTsgJ278Kad8oAwiXdOcd
-	4mtKs1+WsV7QnD+8+3azJO8UV+Ehisc1sySCOmY6hpqIGr7tG9yiph2PQkhg=
-X-Google-Smtp-Source: AGHT+IFK1fMwzxxD9XGrrmOZqg+lJNUAzsE9p2HV1T+nkudZ47oV4Lb1zki9F6sQ1p+gHrSLBCIYGN6GvLKXLllPBjM6pbmbAsoX
+	s=arc-20240116; t=1757754865; c=relaxed/simple;
+	bh=+qnsQee1LyeezvoNoW0nM0bf6EfuWq5Ish2LHgXEN7Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Gy9emYCJMHyiC/mTCZI+9wMC14XjzYnIwsQJujFfh+8TeRcBpfGxSz1VeLbqNBsVCUKJaHXPueechr+LkIFdXtR3Nkz1OQ3rRMD+dg17CJqi+b4vQnCtYh9BJx2EL2xI8j1xIRSaZJBqS5rZ1giQq+5OGnwegRop6NVY4US2FJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FWHFl+il; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58D7afXo023364;
+	Sat, 13 Sep 2025 09:14:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=FoiVZdP+olli/54KUOjFx7GwmsNZliJqSYCn3idr9
+	MQ=; b=FWHFl+iljlhYxHEcrTFKQHDYUZ0OLX7b6P6PWWfccwy+jcgwHhoxcDC85
+	KuwzHXvGyX/oXcdzOM6W5IRjsLObM8NQKCnnlxe2NHzE4M07rCgcu+QodSOdTGQG
+	udCf6aeJv6gWYB9G0nZnn4oPvmHSfuHufNuuwXUcX/T0uaeos2JQYjysApEdgy0B
+	Hie6lM+/9a6tf9c/mn8rTNo6f2dG+5AsBIG7bEELi82R9Iki3mmTtN3y6zuScULT
+	iUYVk+kueS/OiQPeXzGw8w/Add81WsStBCH9lF/yurS0jok+Ruz2OB66ppiHnHh/
+	WGpMkkxD8FPKNxFkCKP6VUHQBb3Bg==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49509xrvnn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Sep 2025 09:14:00 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58D9DxbU004683;
+	Sat, 13 Sep 2025 09:13:59 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49509xrvng-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Sep 2025 09:13:59 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58D4emjC001198;
+	Sat, 13 Sep 2025 09:13:58 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 491203xpb7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Sep 2025 09:13:58 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58D9Ds2A47382940
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 13 Sep 2025 09:13:54 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7946020043;
+	Sat, 13 Sep 2025 09:13:54 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C3D0520040;
+	Sat, 13 Sep 2025 09:13:44 +0000 (GMT)
+Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.ibm.com.com (unknown [9.43.33.146])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Sat, 13 Sep 2025 09:13:44 +0000 (GMT)
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
+        andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+        iii@linux.ibm.com, shuah@kernel.org
+Subject: [PATCH v3 bpf-next] selftests/bpf: Fix arena_spin_lock selftest failure
+Date: Sat, 13 Sep 2025 14:43:37 +0530
+Message-ID: <20250913091337.1841916-1-skb99@linux.ibm.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1523:b0:422:a9aa:7ff4 with SMTP id
- e9e14a558f8ab-422a9aaa667mr48616895ab.11.1757751812305; Sat, 13 Sep 2025
- 01:23:32 -0700 (PDT)
-Date: Sat, 13 Sep 2025 01:23:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68c52a04.050a0220.2ff435.0372.GAE@google.com>
-Subject: [syzbot] [bpf?] WARNING in convert_ctx_accesses (2)
-From: syzbot <syzbot+136ca59d411f92e821b7@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTEzMDAyMCBTYWx0ZWRfX1C1+IaIOaBM7
+ A/zHZH/02LNF5rHF+6fw4W+aOT0mqcomI+iMlkXEie8zluqc2k8PzN3kbyn8bT8TqrcfZHv4RNm
+ aFKjhRxhbNsunQMW7pFJjmsEV7hUWQAlll3qyVhrrCqqAN4CZ9p1Y4VcwC/F8n7icSCp/FKut+p
+ W4b2if0kKK2Gpy1berG2oOIptvwD3a4AKdIUqw5WcBkvNgW46Tm1Otv5WRdbaiEeVsNIX0WABsa
+ eZNqtea+PfDtr/DZq5kka1zKoLmP5bh6RWWZtx8HKp+p5l6/OJt165BmjdlBqC0Ptd/6fH+MU6k
+ 9WFupfkojN/j60Yk3tKdSwxXH5T6n1W5z3LfkbtQChRnTgTGlX+rnvtP3aM/Xsk3+oi1KBAhm0C
+ nWM14lK0
+X-Authority-Analysis: v=2.4 cv=OPYn3TaB c=1 sm=1 tr=0 ts=68c535d8 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=yJojWOMRYYMA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=VDBL6iswcQKEKxwn1pUA:9
+X-Proofpoint-GUID: NAWLiaGerAFNkwaix02iGaKY4vjUsgs3
+X-Proofpoint-ORIG-GUID: XwJnrVJ3HluXiykCE2VXzpV5TVpklbYB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-13_02,2025-09-12_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 clxscore=1015 phishscore=0 suspectscore=0 spamscore=0
+ bulkscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509130020
 
-Hello,
+For systems having CONFIG_NR_CPUS set to > 1024 in kernel config
+the selftest fails as arena_spin_lock_irqsave() returns EOPNOTSUPP.
+(eg - incase of powerpc default value for CONFIG_NR_CPUS is 8192)
 
-syzbot found the following issue on:
+The selftest is skipped incase bpf program returns EOPNOTSUPP,
+with a descriptive message logged.
 
-HEAD commit:    22f20375f5b7 Merge tag 'pci-v6.17-fixes-3' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1003d642580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=13bd892ec3b155a2
-dashboard link: https://syzkaller.appspot.com/bug?extid=136ca59d411f92e821b7
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1782f362580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c09b12580000
+Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+---
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/fa3fbcfdac58/non_bootable_disk-22f20375.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2e4b3490c173/vmlinux-22f20375.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/884bdc12ee68/Image-22f20375.gz.xz
+Changes since v2:
+* Separated arena_spin_lock selftest fix patch from the arena
+  patchset as it has to go via bpf-next tree.
+* For EOPNOTSUPP set test_skip to 3, to differentiate it from
+  scenarios when run conditions are not met as suggested by Hari.
+* Tweaked message displayed on SKIP to remove display of online
+  cpus.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+136ca59d411f92e821b7@syzkaller.appspotmail.com
+v2:https://lore.kernel.org/all/20250829165135.1273071-1-skb99@linux.ibm.com/
 
-------------[ cut here ]------------
-verifier bug: error during ctx access conversion (0)(1)
-WARNING: CPU: 0 PID: 3603 at kernel/bpf/verifier.c:21452 convert_ctx_accesses+0x9b0/0xb04 kernel/bpf/verifier.c:21452
-Modules linked in:
-CPU: 0 UID: 0 PID: 3603 Comm: syz.2.17 Not tainted syzkaller #0 PREEMPT 
-Hardware name: linux,dummy-virt (DT)
-pstate: 61402009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-pc : convert_ctx_accesses+0x9b0/0xb04 kernel/bpf/verifier.c:21452
-lr : convert_ctx_accesses+0x9b0/0xb04 kernel/bpf/verifier.c:21452
-sp : ffff8000894e39e0
-x29: ffff8000894e39e0 x28: fcf0000012540000 x27: 0000000000000002
-x26: f4ff800083265058 x25: 0000000000000000 x24: 0000000000000000
-x23: ffff8000816c4744 x22: 0000000000000004 x21: 0000000000000002
-x20: 0000000000000004 x19: ffff80008242a948 x18: 0000000000000000
-x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000002
-x14: f6f00000086b0080 x13: 0000000000000400 x12: 000000007e4ab000
-x11: 00000023a2977bad x10: f6f00000086b0080 x9 : fbf0000007523c00
-x8 : 0000000000000001 x7 : f6f00000086b0080 x6 : 0000000000000002
-x5 : 0000000000000297 x4 : 0000000000000297 x3 : f5f0000005c20400
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : f6f00000086b0000
-Call trace:
- convert_ctx_accesses+0x9b0/0xb04 kernel/bpf/verifier.c:21452 (P)
- bpf_check+0x12f8/0x2aac kernel/bpf/verifier.c:24743
- bpf_prog_load+0x634/0xb74 kernel/bpf/syscall.c:2979
- __sys_bpf+0x2e0/0x1a3c kernel/bpf/syscall.c:6029
- __do_sys_bpf kernel/bpf/syscall.c:6139 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:6137 [inline]
- __arm64_sys_bpf+0x24/0x34 kernel/bpf/syscall.c:6137
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x48/0x110 arch/arm64/kernel/syscall.c:49
- el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:151
- el0_svc+0x34/0x10c arch/arm64/kernel/entry-common.c:879
- el0t_64_sync_handler+0xa0/0xe4 arch/arm64/kernel/entry-common.c:898
- el0t_64_sync+0x1a4/0x1a8 arch/arm64/kernel/entry.S:596
----[ end trace 0000000000000000 ]---
+Changes since v1:
+Addressed comments from Alexei:
+* Removed skel->rodata->nr_cpus = get_nprocs() and its usage to get
+  currently online cpus(as it needs to be updated from userspace).
 
+v1:https://lore.kernel.org/all/20250805062747.3479221-1-skb99@linux.ibm.com/
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../selftests/bpf/prog_tests/arena_spin_lock.c      | 13 +++++++++++++
+ tools/testing/selftests/bpf/progs/arena_spin_lock.c |  5 ++++-
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
+index 0223fce4db2b..693fd86fbde6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
++++ b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
+@@ -40,8 +40,13 @@ static void *spin_lock_thread(void *arg)
+ 
+ 	err = bpf_prog_test_run_opts(prog_fd, &topts);
+ 	ASSERT_OK(err, "test_run err");
++
++	if (topts.retval == -EOPNOTSUPP)
++		goto end;
++
+ 	ASSERT_EQ((int)topts.retval, 0, "test_run retval");
+ 
++end:
+ 	pthread_exit(arg);
+ }
+ 
+@@ -63,6 +68,7 @@ static void test_arena_spin_lock_size(int size)
+ 	skel = arena_spin_lock__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "arena_spin_lock__open_and_load"))
+ 		return;
++
+ 	if (skel->data->test_skip == 2) {
+ 		test__skip();
+ 		goto end;
+@@ -86,6 +92,13 @@ static void test_arena_spin_lock_size(int size)
+ 			goto end_barrier;
+ 	}
+ 
++	if (skel->data->test_skip == 3) {
++		printf("%s:SKIP: CONFIG_NR_CPUS exceed the maximum supported by arena spinlock\n",
++		       __func__);
++		test__skip();
++		goto end_barrier;
++	}
++
+ 	ASSERT_EQ(skel->bss->counter, repeat * nthreads, "check counter value");
+ 
+ end_barrier:
+diff --git a/tools/testing/selftests/bpf/progs/arena_spin_lock.c b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
+index c4500c37f85e..086b57a426cf 100644
+--- a/tools/testing/selftests/bpf/progs/arena_spin_lock.c
++++ b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
+@@ -37,8 +37,11 @@ int prog(void *ctx)
+ #if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
+ 	unsigned long flags;
+ 
+-	if ((ret = arena_spin_lock_irqsave(&lock, flags)))
++	if ((ret = arena_spin_lock_irqsave(&lock, flags))) {
++		if (ret == -EOPNOTSUPP)
++			test_skip = 3;
+ 		return ret;
++	}
+ 	if (counter != limit)
+ 		counter++;
+ 	bpf_repeat(cs_count);
+-- 
+2.43.5
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
