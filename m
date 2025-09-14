@@ -1,165 +1,237 @@
-Return-Path: <bpf+bounces-68308-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68309-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9843AB56395
-	for <lists+bpf@lfdr.de>; Sun, 14 Sep 2025 00:24:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DB44B5643E
+	for <lists+bpf@lfdr.de>; Sun, 14 Sep 2025 04:20:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D70911B25CC6
-	for <lists+bpf@lfdr.de>; Sat, 13 Sep 2025 22:24:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24220189DFA4
+	for <lists+bpf@lfdr.de>; Sun, 14 Sep 2025 02:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D025E2BEC4E;
-	Sat, 13 Sep 2025 22:24:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE67C24635E;
+	Sun, 14 Sep 2025 02:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l9RXjM+z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQ3w0joW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E341F2BE652
-	for <bpf@vger.kernel.org>; Sat, 13 Sep 2025 22:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3BDC1D90DD
+	for <bpf@vger.kernel.org>; Sun, 14 Sep 2025 02:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757802251; cv=none; b=IpOqOpz1T++lom/8EWqDpISxsLJHaxFneNlSc28HLwx7N+nXAMp13J79oYt8d+o0paDWX3FofGxfUmrlbCDgAbWtWKLpZGL1UbfSq6e+53qmQjfI+QWxr/I6dQulx4fwGGosYxa5NRBRFEaLOS+Se1ZRMXcPZu5Rj8h2TmD+Pps=
+	t=1757816430; cv=none; b=hFAcfqig2fPJ9mAdbaPbbE8GpKQ/tjykiqqyKQshZpjdfNGYIVa9avTd1uA2+cs1FVDHySxVWhz4D8KMKVVBB1r9+f9dyCuCNn+xIKP4Zlw5ZAcviuB/udRAx54pFoS65H6LXNy69UerTiZ7X0ZcHAoD+DKSTr6lrzhNQLGR3uM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757802251; c=relaxed/simple;
-	bh=6MnyGHDG1rusY3NQB0hLrFzipj3IpjlxWbVDL92fm/U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mZlD4Ky11ZjUlUwKkPPtbRyMIebTe67hzpkRyeZIsLGtgRIP/w3aSqGJ93SHoOmlR5tS7IbzqsWyQQltWqbQMS7jEC3VzqFWw/EQxMht3c5gui5O2KLG9FFRTVNtJ0h3RNNICo6L0OOtRhtrxhUTytxathXGsmjIspATxg8vNjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l9RXjM+z; arc=none smtp.client-ip=209.85.210.169
+	s=arc-20240116; t=1757816430; c=relaxed/simple;
+	bh=OwJEwqEt78Ndzrx3q0hEfkrL76rC49OFN8MA8xI+XWQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HxrXCWCJrq29AQB0hUSrMClVrkx+5WruM7hQ+1T2EhGTidygDDoeC2tanxfz5Qn9DoB0WC7ldk5auXs98PBm9Gb7NjJ3nLa+PksavR7rpKBEr10UZkVd7I4WfQ3ixCC9QgAKdpwIeg7fkzOq/ufjL/uUhLOS2OlHZoUlm1FYSX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQ3w0joW; arc=none smtp.client-ip=209.85.219.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7761578340dso2178821b3a.3
-        for <bpf@vger.kernel.org>; Sat, 13 Sep 2025 15:24:09 -0700 (PDT)
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-777dbedf6f0so3163756d6.1
+        for <bpf@vger.kernel.org>; Sat, 13 Sep 2025 19:20:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757802249; x=1758407049; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wNusiAJMG1RTzATvkpKjGZWnI3GIvk3GTQ3dPlhq+mM=;
-        b=l9RXjM+zBqZhFvQKLgj/fwOK5WtpqpsXnECCs6TmN/JFZ4WK0X+BA0vg8k3j6zEpIj
-         vO2tPj62fYM3Cc3oiRQ+8FV/1vDRBlUpLcyLn3/FlkL7jEe+72rPA3XtDxDfYWVlqLhh
-         kQgvreozYzmX6F8Q60hVRx1P4IC9DawNMgFu/0DsK4peO8ps/Y1oHJsTqXFf5f/4I6+T
-         hKNKzIu0KsimS95l7lKO4aOHcHTDMqrnJAJzswI++nVupQGVNmWenSR8FW6kXi5SYwVp
-         A3eNEiIEuK4Jm2QnRXXqRvDSP1qJZoJF3h4l4dm4mBF7Wb0fIedEqhdRNxopDCs3fjvG
-         gDUg==
+        d=gmail.com; s=20230601; t=1757816428; x=1758421228; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2FLLFKulJIRo/+/A7W+JN2XhQBYj1VMkK/MLnr9PzSo=;
+        b=IQ3w0joW1fkarS2hnpisnEy5L8RoJ6/nUn5mFMedPlOt2NiM0FVRLgw1ooXQJjHsS7
+         0GpA73pdOnvELrpNctEek0ebmx9hXxE57Xs0DX/ctaxkST9tiijenwhAlKz98mHp9zEA
+         eXrOp0CSDx8xEYZL4QVYua3Baaj4ETHPYmnjb9K5/Z8ToQdBF+dJ/0yRdxTq3ZzNwilC
+         vSNnTzodQSz8L1WK56khVpMkDFI7E87OKP4BVZn1S/RZakO+QroasnLsha1Riia/VEer
+         rlt65RJL30uBzDOztM8EaT/B69q06jn9ex0n/OxmYDNOzrm2Ua+qXYZNjo2hiE5+Njxz
+         Ak+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757802249; x=1758407049;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wNusiAJMG1RTzATvkpKjGZWnI3GIvk3GTQ3dPlhq+mM=;
-        b=ZwP4DChzWOZi5cHAt9t4Lh8XgRkejpvl2xos0/uNSFweSAtLttaWPTJsM2Mrhis4J1
-         1G4+QDbo/M+PlO9UtGgRjyfA3MTqmLSlImRbQOQySv0ih5SHKi7b9nF7bnFide4Oo/uT
-         XzhQxzPJBZ0E3HYV7YmOT2MQ/uBBfFPcqo5z7J8D/vLk/FLBt5qScDXYaQUah/8hj47k
-         urMGVuDe33BNIfEYfoDqtPxJgRrsujKIO7rbHmKgb3oVfYMxfqIK/so4z4ZQB/M0wUp4
-         qcuCb4Q/MFkRvjoyPIzinztJCW8U5Wnqh3WYhcNY5t9uGkluGrYIho2ThQlOx6Hnnm59
-         mPdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVZ24gpclKQMqz3y3JnvvHGhtBBESHTbr80UgpTcidIrWpWOplgEYaW1+6CW0vGPH1XFNU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8IrIa0QIKkhLYFwd4+h/yjGs1S0WsAh+VQSNJ3YPhhM3eSFm2
-	4gQZRSwFMx6C0n0qUT1ufQxY0nVUO37eW9Te+0j4Dfosafg+WGQdhcCW
-X-Gm-Gg: ASbGncsMlf3+3ZVvK11ssrDTCTTBKS5udEJFf4FDqNJ7w4LlJ35GSCKtH2hAsZQHdqo
-	+/lgR422e6DHsuV3t5V4ACEykuC42wWoZRSpC1UWnZDFd992jLpwnEXx0FQLlIO3NVvuyTH2m+N
-	Z1U5L648Vxrjb4XAcWtf4iKuggm0KXOEGCW84IrT1nlHyhuxNUO2PLt6QzFBvvWX3ywwl9lrm9N
-	RNAlBv4qN5dlb1QU0ZYRC67BkLc0zxhMDl7hHuacEpcUObi4SiOm3ScMnctof8o0dhs12J/vjGq
-	aUmUfrjX2GDX6xW8wY7CITF2vgMY4UqCBnILG+MAxUjs1i58vbX9gMTvovWDZD/6RoFtqgXWOmA
-	l7SQ0YqQ+aHkYusKdlrsfRIhfq7USAiPCEDm6fqdSDlQj2wa+/emhPdwx5EQ1n1biGHB34/Apby
-	43/m10QGrRJ6uPynvpTXhXRmfbHH356Sl4JKjX
-X-Google-Smtp-Source: AGHT+IH/5SIKYW4a2UvOEi85RoAgE5wgtLyQpdm4OPJOd59TSMw/eqJBPBbkFEJjKYxCPxkTuc8E/g==
-X-Received: by 2002:a05:6a00:4b49:b0:776:21e4:23f with SMTP id d2e1a72fcca58-77621e40333mr4826900b3a.15.1757802249130;
-        Sat, 13 Sep 2025 15:24:09 -0700 (PDT)
-Received: from crl-3.node2.local ([125.63.65.162])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7760793be6csm9326449b3a.14.2025.09.13.15.24.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Sep 2025 15:24:08 -0700 (PDT)
-From: Kriish Sharma <kriish.sharma2006@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org
-Cc: martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kriish Sharma <kriish.sharma2006@gmail.com>,
-	syzbot+c950cc277150935cc0b5@syzkaller.appspotmail.com
-Subject: [PATCH] bpf: verifier: fix WARNING in reg_bounds_sanity_check (2)
-Date: Sat, 13 Sep 2025 22:23:23 +0000
-Message-Id: <20250913222323.894182-1-kriish.sharma2006@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1757816428; x=1758421228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2FLLFKulJIRo/+/A7W+JN2XhQBYj1VMkK/MLnr9PzSo=;
+        b=rTCjAK/T9aKGPAtmsNHh3kPB/kgmzLW25iIsXc/E+1WkjnSGXgZ2XgNq+OBAzUwZJW
+         qfeb58RLIC3iXmCNuVxp55TX6N636ziprNdrGol1VG6+qF0vdzyUHO0AYGnsDywuKupJ
+         tvaV/ilbYYUk972YdRwFdee26QdBBX4a5t0Xg2B3F+N3DHtdxlLU4YvDPXqG3bJvyw4l
+         7HAC6hS64pZqthLr88SKk0pEoNpG/FHVHp+wUkj6mgGYYKtfmSUpvucrNtV/82/9m+yA
+         zS8v/VvA+UZ35sMZrlsVMGnYbmx8oHt5X3Aa6fm9PZyYgR1Qr/XvxN9QfnmSvJWXqWye
+         dWKw==
+X-Forwarded-Encrypted: i=1; AJvYcCX82IogTk7iHewCXWLJFs6SYZaK3KHiC3NpGU+Uz7RF9G/+Tw12VeMUOBBv4E6NCz3rZBs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxH56597UejpG3wyOKAGiFvYhatwoaryIk4ykYDB5u2yHhp3xX5
+	gIVU33ZulZTfxw7AZvAiPlKK9dFbiRQbokN5Uu+VZL9Ba4tBda1SzY187o44KcbYSfiznz5D2JU
+	PLwHnJqzaOFf2TzS6K8tFJ1uMMhxsyzQ=
+X-Gm-Gg: ASbGnctyOuBcWEcgs78dcD13pFP3NV2bQgQTigChumFqtlL9GYn0RSq3D0M521Wlc/4
+	StVl4MV449fLS0VCzDcXUUnWzvkzdIdmsefLFKLo9l+IO816sb70WO9mI0X9ttouYKkbVIr6qBY
+	EVaFUfFJCD5hYqWsr3zDfMex1cjFs0h9fqYh3kokbADeYptA3IToMXZfkJw+SqZPyQAT72hIrBT
+	HNdYzT5S/NYZH6RVW3b9JzsJIXBuE04IS1jqG1w
+X-Google-Smtp-Source: AGHT+IHq6u/4AIG+O1oq71Zy5dzM6cZoHuGdo1nSrFvwbC9QDSx6PwHNBUTam12RFvIzhBOryUKFBBcpe/eyu+MXbrU=
+X-Received: by 2002:ad4:5ced:0:b0:77e:dd3e:a0c9 with SMTP id
+ 6a1803df08f44-77edd3ea3d1mr2130156d6.14.1757816427569; Sat, 13 Sep 2025
+ 19:20:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250910024447.64788-1-laoar.shao@gmail.com> <20250910024447.64788-5-laoar.shao@gmail.com>
+ <a2c122f5-ab6a-4242-9db8-e5175d5b27b3@lucifer.local> <CALOAHbCSudQ9y1UdD4YjuUFGae5bRu8_0bgThJV4WgwLwtcwew@mail.gmail.com>
+ <42226608-bbb1-4d58-9de7-dfbb3a38d064@lucifer.local>
+In-Reply-To: <42226608-bbb1-4d58-9de7-dfbb3a38d064@lucifer.local>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 14 Sep 2025 10:19:51 +0800
+X-Gm-Features: AS18NWBsv--35q_kcFfQDULeKAOuuY0Oif44eGzcMAx_dTI7CPLBxPfXjMJKB3Q
+Message-ID: <CALOAHbAx_Qpt50Knr765Gp63C_ad8m1+kaTFveWkuybhaN3uBw@mail.gmail.com>
+Subject: Re: [PATCH v7 mm-new 04/10] mm: thp: enable THP allocation
+ exclusively through khugepaged
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com, 
+	ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org, 
+	usamaarif642@gmail.com, gutierrez.asier@huawei-partners.com, 
+	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	ameryhung@gmail.com, rientjes@google.com, corbet@lwn.net, 21cnbao@gmail.com, 
+	shakeel.butt@linux.dev, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot reported a "REG INVARIANTS VIOLATION" triggered in reg_bounds_sanity_check()
-due to inconsistent umin/umax and var_off state after min/max updates.
+On Fri, Sep 12, 2025 at 9:48=E2=80=AFPM Lorenzo Stoakes
+<lorenzo.stoakes@oracle.com> wrote:
+>
+> On Fri, Sep 12, 2025 at 02:17:01PM +0800, Yafang Shao wrote:
+> > On Thu, Sep 11, 2025 at 11:58=E2=80=AFPM Lorenzo Stoakes
+> > <lorenzo.stoakes@oracle.com> wrote:
+> > >
+> > > On Wed, Sep 10, 2025 at 10:44:41AM +0800, Yafang Shao wrote:
+> > > > Currently, THP allocation cannot be restricted to khugepaged alone =
+while
+> > > > being disabled in the page fault path. This limitation exists becau=
+se
+> > > > disabling THP allocation during page faults also prevents the execu=
+tion of
+> > > > khugepaged_enter_vma() in that path.
+> > >
+> > > This is quite confusing, I see what you mean - you want to be able to=
+ disable
+> > > page fault THP but not khugepaged THP _at the point of possibly fault=
+ing in a
+> > > THP aligned VMA_.
+> > >
+> > > It seems this patch makes khugepaged_enter_vma() unconditional for an=
+ anonymous
+> > > VMA, rather than depending on the return value specified by
+> > > thp_vma_allowable_order().
+> >
+> > The functions thp_vma_allowable_order(TVA_PAGEFAULT) and
+> > thp_vma_allowable_order(TVA_KHUGEPAGED) are functionally equivalent
+> > within the page fault handler; they always yield the same result.
+> > Consequently, their execution order is irrelevant.
+>
+> It seems hard to definitely demonstrate that by checking !in_pf vs not in=
+ this
+> situation :) but it seems broadly true afaict.
+>
+> So they differ only in that one starts khugepaged, the other tries to
+> establish a THP on fault via create_huge_pmd().
 
-reg_set_min_max() and adjust_reg_min_max_vals() could leave a register state
-partially updated before syncing the bounds, causing verifier_bug() to fire.
+right
 
-This patch ensures reg_bounds_sync() is called after updates, and additionally
-marks registers unbounded if min/max values are inconsistent, so that umin/umax,
-smin/smax, and var_off remain consistent.
+>
+> >
+> > The change reorders these two calls and, in doing so, also moves the
+> > call to vmf_anon_prepare(vmf). This alters the control flow:
+> > - before this change:  The logic checked the return value of
+> > vmf_anon_prepare() between the two thp_vma_allowable_order() calls.
+> >
+> >     thp_vma_allowable_order(TVA_PAGEFAULT);
+> >     ret =3D vmf_anon_prepare(vmf);
+> >     if (ret)
+> >         return ret;
+> >     thp_vma_allowable_order(TVA_KHUGEPAGED);
+>
+> I mean it's also _only if_ the TVA_PAGEFAULT invocation succeeds that the
+> TVA_KHUGEPAGED one happens.
+>
+> >
+> >  - after this change: The logic now executes both
+> > thp_vma_allowable_order() calls first and does not check the return
+> > value of vmf_anon_prepare().
+> >
+> >     thp_vma_allowable_order(TVA_KHUGEPAGED);
+> >     thp_vma_allowable_order(TVA_PAGEFAULT);
+> >     ret =3D vmf_anon_prepare(vmf); // Return value 'ret' is ignored.
+>
+> Hm this is confusing, your code does:
+>
+> +       if (pmd_none(*vmf.pmd)) {
+> +               if (vma_is_anonymous(vma))
+> +                       khugepaged_enter_vma(vma, vm_flags);
+> +               if (thp_vma_allowable_order(vma, vm_flags, TVA_PAGEFAULT,=
+ PMD_ORDER)) {
+> +                       ret =3D create_huge_pmd(&vmf);
+> +                       if (!(ret & VM_FAULT_FALLBACK))
+> +                               return ret;
+> +               }
+>
+> So the ret is absolutely not ignored, but whether it succeeds or not, we =
+still
+> invoke khugepaged_enter_vma().
+>
+> Previously we would not have one this had vmf_anon_prepare() failed in
+> do_huge_pmd_anonymous_page().
+>
+> Which I guess is what you mean?
+>
+> >
+> > This change is safe because the return value of vmf_anon_prepare() can
+> > be safely ignored. This function checks for transient system-level
+> > conditions (e.g., memory pressure, THP availability) that might
+> > prevent an immediate THP allocation. It does not guarantee that a
+> > subsequent allocation will succeed.
+> >
+> > This behavior is consistent with the policy in hugepage_madvise(),
+> > where a VMA is queued for khugepaged before a definitive allocation
+> > check. If the system is under pressure, khugepaged will simply retry
+> > the allocation at a more opportune time.
+>
+> OK. I do note though that the khugepaged being kicked off is at mm_struct=
+ level.
 
-Fixes: d69eb204c255 ("Merge tag 'net-6.17-rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net")
-Reported-by: syzbot+c950cc277150935cc0b5@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=c950cc277150935cc0b5
-Signed-off-by: Kriish Sharma <kriish.sharma2006@gmail.com>
----
- kernel/bpf/verifier.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+The unit of operation for khugepaged is the mm_struct itself. It
+processes the entire mm even when only a single VMA within it is a
+candidate for a THP.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c4f69a9e9af6..8f5f02d39005 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -16299,6 +16299,19 @@ static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state
- 	}
- }
- 
-+/* Ensure that a register's min/max bounds are sane.
-+ * If any of the unsigned/signed bounds are inconsistent, mark the
-+ * register as unbounded to prevent verifier invariant violations.
-+ */
-+static void __maybe_normalize_reg(struct bpf_reg_state *reg)
-+{
-+	if (reg->umin_value > reg->umax_value ||
-+		reg->smin_value > reg->smax_value ||
-+		reg->u32_min_value > reg->u32_max_value ||
-+		reg->s32_min_value > reg->s32_max_value)
-+			__mark_reg_unbounded(reg);
-+}
-+
- /* Adjusts the register min/max values in the case that the dst_reg and
-  * src_reg are both SCALAR_VALUE registers (or we are simply doing a BPF_K
-  * check, in which case we have a fake SCALAR_VALUE representing insn->imm).
-@@ -16325,11 +16338,15 @@ static int reg_set_min_max(struct bpf_verifier_env *env,
- 	regs_refine_cond_op(false_reg1, false_reg2, rev_opcode(opcode), is_jmp32);
- 	reg_bounds_sync(false_reg1);
- 	reg_bounds_sync(false_reg2);
-+	__maybe_normalize_reg(false_reg1);
-+	__maybe_normalize_reg(false_reg2);
- 
- 	/* jump (TRUE) branch */
- 	regs_refine_cond_op(true_reg1, true_reg2, opcode, is_jmp32);
- 	reg_bounds_sync(true_reg1);
- 	reg_bounds_sync(true_reg2);
-+	__maybe_normalize_reg(true_reg1);
-+	__maybe_normalize_reg(true_reg2);
- 
- 	err = reg_bounds_sanity_check(env, true_reg1, "true_reg1");
- 	err = err ?: reg_bounds_sanity_check(env, true_reg2, "true_reg2");
--- 
-2.34.1
+>
+> So us trying to invoke khugepaged on the mm again is about.. something ha=
+ving
+> changed that would previously have prevented us but now doesn't?
+>
+> That is, a product of thp_vma_allowable_order() right?
+>
+> So probably a sysfs change or similar?
+>
+> But I guess it makes sense to hook in BPF whenever this is the case becau=
+se this
+> _could_ be the point at which khugepaged enters the mm, and we want to se=
+lect
+> the allowable order at this time.
+>
+> So on basis of the two checks being effectively equivalent (on assumption=
+ this
+> is always the case) then the change is fairly reasonable.
 
+Yes, that is exactly what I mean.
+
+>
+> Though I would put this information, that the checks are equivalent, in t=
+he
+> commit message so it's really clear.
+
+will add it.
+
+--=20
+Regards
+Yafang
 
