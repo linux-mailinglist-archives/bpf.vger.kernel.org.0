@@ -1,117 +1,129 @@
-Return-Path: <bpf+bounces-68340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4DF4B56B26
-	for <lists+bpf@lfdr.de>; Sun, 14 Sep 2025 20:16:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAD83B56B73
+	for <lists+bpf@lfdr.de>; Sun, 14 Sep 2025 21:01:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAB1D3BBF17
-	for <lists+bpf@lfdr.de>; Sun, 14 Sep 2025 18:15:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2563A189CF2A
+	for <lists+bpf@lfdr.de>; Sun, 14 Sep 2025 19:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CED32E9EC6;
-	Sun, 14 Sep 2025 18:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE392E03EB;
+	Sun, 14 Sep 2025 19:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="W6gCMLKU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fba/28Ew"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B063A2E8E07
-	for <bpf@vger.kernel.org>; Sun, 14 Sep 2025 18:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26A72DFA32;
+	Sun, 14 Sep 2025 19:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757873528; cv=none; b=j9YIdFF2yMpoQyMIr8UrgRD7ExulIC9DvNknOUIn+CNsF37MBlRZOrMmuLzjQgjWM8UAOvr4oepmebmX/NAa3rVdw4T+sMtO+QRDfhgIEkzY7N2MWcpBZVqWM7n+8eZwZVRo54SPyMuKDm/ZC5ih7IlzHGREFYjmiDHVKNvjubU=
+	t=1757876420; cv=none; b=oEdfzGRtMLqRGSxFPrSCIGUOeEHFMe03Rqs9UDfUJBEZ6rZd0dTfZrNBW7sJMHmbJjXiNCVInnGsXb078kYCEPuwhMS00oAgktrDy5A6RDUZByXzl6RjMsd2lAurcUVg7KCMxa0nqzCy5bgc+5dFTRFAJ/NKFqTtPzBIlZdCntE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757873528; c=relaxed/simple;
-	bh=/lWVvuqK7ZPO8OlTvbP03ml/m9hkltI7r5Lnp5abMlk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=SCmdJCYEMirkRKSdKIMV7sYXxKXD2AQFI+QH3GgFerKUiu1C50gZbMECjXdntWhtZajIOpVOw9OpmGBBJNJO/OgFV5ZXUZ+A5uGFup38xIXmjii2v6rkEejqP2xoYm68VOvdPJsYOgqkOamwhVI2RUX3dp+zVHUTchpGxFAjt8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=W6gCMLKU; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-24ced7cfa07so37543575ad.1
-        for <bpf@vger.kernel.org>; Sun, 14 Sep 2025 11:12:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757873526; x=1758478326; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KYSFwqlAy6DXlbte7Dca09XDOUDeXcrwb6x4Txuv9Fo=;
-        b=W6gCMLKUf1Qdm0m8sZSIvC6nlStPHkMem3QGkMeeU/Jyn0BZIb+fvOMieAe2nP8Lct
-         4i8YONekC7OySn9xo4aHCYd5t/D4MkOhXhqsZWnFMVHZIY0svCcsXj9XlYmgWeIRKklj
-         uOaZVw37+qBD7I1Q+2ORHQwtzjoI1mn1JBqPs3sEE6jAKuMk90qf3Jyx2pNhzb3vbGcj
-         PiKtjrre9fwcRdS2nJU20t3vC7mRWXnPcbg2Bj8Ot4ZLQmTuQ5wdI89Ehb+UR9nOGkPp
-         VMSgY+aH56YJ8Pdqb73hmJSFhfCLDANoMsKmw2nIBPKe/sPs3mfsmftvc+sHRpn3HlDS
-         e1dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757873526; x=1758478326;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KYSFwqlAy6DXlbte7Dca09XDOUDeXcrwb6x4Txuv9Fo=;
-        b=qdW9GncNjnop+MaK7//r+imetoi5a6vqP/W/C+RNgzrLnkIYPiyHFa1JDU6ZebN1gI
-         16O5hmA5fy/tZVHwh3kdI1i4wZiya8yps1mjCsEJDw4CJcQPeyAkB3UpqnyAXo8F9+iB
-         DjNkNHO1TSEiFhQkXPuPwvmlUmlnwzaIIscrOsw1ltGecs3o3MaAoy3ho/au+5zxDXv8
-         6mtsRaCZjXnTIebbqDILuWRVc8E3HzJRlXeWOeb9Nfg6GIvHUjfrePaNIux8b1awq5TV
-         YbVwKY2Be0oXKttrStXaPDhm3PqRJXlRelC1X0XYL+hfQbxWh9IDb0vBKZJH9OeaMT8z
-         KPRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXw/0vk7ayw7Tk46N/UeTTUtFLCo+x1z5+3eEqEYA5Dc4RdI54peQ/5xGt9K6IwvnJsBpc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLp8VO9BqXivddPWumr+moWkyQgIjNy/dj3pxt+ceVoV/lZBpd
-	R2hGronyMyyf5IKycLgbFMbz0gm47ua/4S7JvcdXOs/+VM/x4EYLorSyqeLNsUkD3A/c1QLy2Ow
-	ybuNCY9Y8Tg==
-X-Google-Smtp-Source: AGHT+IEEErKdREcN8hd/P7bK3uoM7X5PVPYZyYex0CAoLECSrtA99Rqt2eeKZc9BNuOL1rvt04CzwP6Ktni/
-X-Received: from plsl15.prod.google.com ([2002:a17:903:244f:b0:25b:db75:cd39])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:1590:b0:24e:af92:70c2
- with SMTP id d9443c01a7336-25d24ea0302mr124377165ad.24.1757873526082; Sun, 14
- Sep 2025 11:12:06 -0700 (PDT)
-Date: Sun, 14 Sep 2025 11:11:21 -0700
-In-Reply-To: <20250914181121.1952748-1-irogers@google.com>
+	s=arc-20240116; t=1757876420; c=relaxed/simple;
+	bh=HXWTvZ0Rfo/S/tKkpVHE0VLWYEThtftZvmLT4n48M80=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=sKZYao0agPbp0BH/66x0QPrYmnUx6h56awpNx/BZfK428VwORVeKHjrla7T4MLxEM87jB4m38YKY0nBAZFsm3E+pzQZiryX4pDTyxbzndmeeg5OJAAmrf8PbY9jlOBN7u0zQFvEOPlmMKhcnuMOfZtgN9w063yO2XWHy2DsdQ+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fba/28Ew; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76DF2C4CEFA;
+	Sun, 14 Sep 2025 19:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757876418;
+	bh=HXWTvZ0Rfo/S/tKkpVHE0VLWYEThtftZvmLT4n48M80=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Fba/28EwLh2TRwkN1ZwmwMKwxkikPrdlXpJJzBHqHRg3oq/Kf5N8arIACMg1IeNNq
+	 xLp0oytxQHtqtHwsOLhevzOOOUDes+fclsXbaSK6JJTSWd8OT5TRrIQ0rg+UvZ0s/a
+	 w8YiHHlv4t6CU41zaM+7/pWFMti9XqeTPJ9cycsof+ORyQx3YMv2RAwHifmc2+U5uU
+	 AsSWHIeqxGcH/qPlcoBAd7ou4+DVLcinzYomhpze+x/EcHz3IoQh+0UknF2KUUkesi
+	 xD+hO8KecAPTna8zK88drNO3UjGj1tqv/r7VprCS0R2pqwYpGAGKcrYleSwGG+xrK7
+	 AUACMWhWFhOAg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70C8139B167D;
+	Sun, 14 Sep 2025 19:00:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250914181121.1952748-1-irogers@google.com>
-X-Mailer: git-send-email 2.51.0.384.g4c02a37b29-goog
-Message-ID: <20250914181121.1952748-22-irogers@google.com>
-Subject: [PATCH v4 21/21] perf test: Make stat grep more robust
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@linaro.org>, 
-	Xu Yang <xu.yang_2@nxp.com>, Thomas Falcon <thomas.falcon@intel.com>, 
-	Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org, 
-	Atish Patra <atishp@rivosinc.com>, Beeman Strong <beeman@rivosinc.com>, Leo Yan <leo.yan@arm.com>, 
-	Vince Weaver <vincent.weaver@maine.edu>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 next-next] net/cls_cgroup: Fix task_get_classid()
+ during
+ qdisc run
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175787642000.3528285.12140096607438105996.git-patchwork-notify@kernel.org>
+Date: Sun, 14 Sep 2025 19:00:20 +0000
+References: <20250902062933.30087-1-laoar.shao@gmail.com>
+In-Reply-To: <20250902062933.30087-1-laoar.shao@gmail.com>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, horms@kernel.org, daniel@iogearbox.net,
+ bigeasy@linutronix.de, tgraf@suug.ch, paulmck@kernel.org,
+ razor@blackwall.org, netdev@vger.kernel.org, bpf@vger.kernel.org
 
-If no cycles event is found by grep don't fail the grep.
-Tweak the reg-exp to allow cpu-cycles on ARM.
+Hello:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/shell/stat.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-diff --git a/tools/perf/tests/shell/stat.sh b/tools/perf/tests/shell/stat.sh
-index 8a100a7f2dc1..45041827745d 100755
---- a/tools/perf/tests/shell/stat.sh
-+++ b/tools/perf/tests/shell/stat.sh
-@@ -196,7 +196,7 @@ test_hybrid() {
-   fi
- 
-   # Run default Perf stat
--  cycles_events=$(perf stat -- true 2>&1 | grep -E "/cycles/[uH]*|  cycles[:uH]*  " -c)
-+  cycles_events=$(perf stat -- true 2>&1 | grep -E "cycles/[uH]*|  cycles[:uH]*  " -c || true)
- 
-   # The expectation is that default output will have a cycles events on each
-   # hybrid PMU. In situations with no cycles PMU events, like virtualized, this
+On Tue,  2 Sep 2025 14:29:33 +0800 you wrote:
+> During recent testing with the netem qdisc to inject delays into TCP
+> traffic, we observed that our CLS BPF program failed to function correctly
+> due to incorrect classid retrieval from task_get_classid(). The issue
+> manifests in the following call stack:
+> 
+>         bpf_get_cgroup_classid+5
+>         cls_bpf_classify+507
+>         __tcf_classify+90
+>         tcf_classify+217
+>         __dev_queue_xmit+798
+>         bond_dev_queue_xmit+43
+>         __bond_start_xmit+211
+>         bond_start_xmit+70
+>         dev_hard_start_xmit+142
+>         sch_direct_xmit+161
+>         __qdisc_run+102             <<<<< Issue location
+>         __dev_xmit_skb+1015
+>         __dev_queue_xmit+637
+>         neigh_hh_output+159
+>         ip_finish_output2+461
+>         __ip_finish_output+183
+>         ip_finish_output+41
+>         ip_output+120
+>         ip_local_out+94
+>         __ip_queue_xmit+394
+>         ip_queue_xmit+21
+>         __tcp_transmit_skb+2169
+>         tcp_write_xmit+959
+>         __tcp_push_pending_frames+55
+>         tcp_push+264
+>         tcp_sendmsg_locked+661
+>         tcp_sendmsg+45
+>         inet_sendmsg+67
+>         sock_sendmsg+98
+>         sock_write_iter+147
+>         vfs_write+786
+>         ksys_write+181
+>         __x64_sys_write+25
+>         do_syscall_64+56
+>         entry_SYSCALL_64_after_hwframe+100
+> 
+> [...]
+
+Here is the summary with links:
+  - [v4,next-next] net/cls_cgroup: Fix task_get_classid() during qdisc run
+    https://git.kernel.org/netdev/net-next/c/66048f8b3cc7
+
+You are awesome, thank you!
 -- 
-2.51.0.384.g4c02a37b29-goog
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
