@@ -1,91 +1,91 @@
-Return-Path: <bpf+bounces-68367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39B6BB56ED3
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 05:26:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5464B56ED4
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 05:26:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E026C3BC5B1
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 03:26:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30EB41726F5
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 03:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 732A9256C71;
-	Mon, 15 Sep 2025 03:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7AD25F96B;
+	Mon, 15 Sep 2025 03:26:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aFk4FHcf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hXvA2Jtb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4517D2A1BA
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 03:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AFEBEEAB
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 03:26:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757906785; cv=none; b=tRNucWWpWdLzLY9vpriFQRz7GwKyp3Zo2ebbsWKOlp4Nnk57qqpHJwSTkpyV5gltn2oML1NOGVBpd62unRoHGkRF9TdVm82Y1iXd3XVSzVv5YnCY9xXAH8XjkwjYdkedHKRYrzOmVarb4Aj/WNtzlI3apYwH3LsZSQ6WiPU3jlM=
+	t=1757906786; cv=none; b=oBLS7lBQufQgm2tDrA+T7JqeOdPz29j5aZyetWo2cD0bsWAWxgE3nL9WOqFeq3HiGqubSvNEU9Fj1zpISnU9VKZi51RrHTyeqClaQMCLM0/5AdiAIxm4rQvbFv8reMjQxxKp5oeFeAGVnFwrXPAVlnmADoMOVtvVBIWHymG7z4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757906785; c=relaxed/simple;
-	bh=Mj+12UdoMTDFbNV6bA3CkPVL7LH+CXJWKQeuYHTH9rU=;
+	s=arc-20240116; t=1757906786; c=relaxed/simple;
+	bh=IA7ErIe3fSrpmmbZrhmfYIBPTFxjdXLetBm5xIkRa78=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lwhC4E/TfUDFjyVY5mnvT1Hel7QWG2k+iu8cqtLSOfIt36txWCREkSbJjPrQQITNqQ+WxMRTa5YRYE3Pqh2jFGYKH0YAGgMGp1RODG574aAy82eWf8Vx5LEdMFm7ramVmf7LIFoCZc7QSbczFvtct5sWBbNivHsyQZep3riNYb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aFk4FHcf; arc=none smtp.client-ip=209.85.221.68
+	 MIME-Version; b=cJLFx4Gj77xYANZ/LFeJZsRZZWn6x4Z9Dxu174IByKGjzTQ6YgH03XzsHIclHLFM5WOxuIGG2SX+p/FoyFbwCsOi59J4Ki+Nm2D7rxFz/2zLSr7JaGtgxU1wsBsPGtZY8S+5qHlEmDeJjX9HDv1YOje+YaFEfmY6ZsYcFIuFFu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hXvA2Jtb; arc=none smtp.client-ip=209.85.128.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-3e7636aa65fso3103166f8f.1
-        for <bpf@vger.kernel.org>; Sun, 14 Sep 2025 20:26:23 -0700 (PDT)
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-45de56a042dso23445355e9.3
+        for <bpf@vger.kernel.org>; Sun, 14 Sep 2025 20:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757906781; x=1758511581; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757906782; x=1758511582; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pCPyDFkthuTiuqPTfEdz0Ipni8Q6EAOu+tfy8kJ2J7E=;
-        b=aFk4FHcfBB1fWXV7xqntYDnBnAbLNCDvEBGcuQvmg/tSSLfdddmoVInioOtJcxshsz
-         j3GjhvxzXIm1yfV2+JWi/Ae76xa8r3YxwWqnwaLun+s5CJT+xewpVArK4hA8NjJ28xsW
-         e1WVttkow/KOrS84PCW5u1cfLRv6AlokldjQMumbNxKscORv95sT7unvCsnqDbotlij/
-         7BHlfcJZP6zH+kDxxdqcfE4frqwoT0KXvwevQmTwDFfjoLnSYIPj4S5U9UvPyim5Hral
-         GwxvIPpoeG6+LoLZXKzxavn6zcEiqpMa0MCRXFYgb3mQA4sjRM7bksL3mWkJ9zIsghZv
-         6SBg==
+        bh=5KpssDyJX1P39IXzavoJXTy0ead3IW2zXk9jwql8Jvg=;
+        b=hXvA2JtbKZDTDPgCa30hkFDrORr+aLUEIBdroZ1DgVdQ1b8WSl4n7B/lqBbytXi+kz
+         TV+poOZxUhbC8mTc2N9EWUac9zKazhnZCVdy3g/hzT49KLpXYmjob4XqHV9IHGvfv0/K
+         AkEPgZsWdZ5yUR5kmhuS9b4gnVj7brg3K3LKfGrVulrpHWDo31PIeaIzvXwQNbVJNs5I
+         EPHvy5Cb9gLAyGQBryiLvbxRJFDEbuOr3qo/Q/tD+Kn5L2LgK9vbmXfaSRzqgc6V3ddg
+         Sen0UdXvJzv8yPpPfsENwmQyWeU5BOHUBacPauoC22W+zYQA072IUy7gbrpFvyHpdDyZ
+         gvqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757906781; x=1758511581;
+        d=1e100.net; s=20230601; t=1757906782; x=1758511582;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pCPyDFkthuTiuqPTfEdz0Ipni8Q6EAOu+tfy8kJ2J7E=;
-        b=vHMJT0D+gc2X/6A8PzePuPlMt3d9F2eFngyieiIvZH7UVIozJuE3uoZtSg2lIrNwGx
-         jyi+FXUnO4TeLDCGnfMUWt1x0Lzb5kIJLXXykTb/U/ObNCJXsVTqTgEUxHVVv6EImP7V
-         QOR80MWiwj614dgvhLRR42GEyKHPoMOpDp2z+3Nzw+y9hZsDqG+Pqkx++q0/0LTDsqna
-         Lh0R0c/L/Aw7UoilJ6GthHza9Xjt2wWYrnUhr8nVikyNuNpHiNv3fQgzm5SHRg/qQF+/
-         /h2Ju3rCIbnk15O+SqT3aoyRN/c9gU1gpw3KGCDa8IUxMOhwsgeV2IAC5SOdSeHw2hmy
-         z7UA==
-X-Gm-Message-State: AOJu0Yxtc0O6l5xDzPnUDSeHY5gKnFL6Wfl96R8HWpcFhLEDKTkg3IHn
-	gd7RwdvmcT8mzWZnC+bVPqfgzVCAUdZBKxSYwTDqXazLC6l06rBas/STktJ8a1hG
-X-Gm-Gg: ASbGncsLXxeolMFA5jv0izTGAgywxq/J7fN6WonCwV5vo0wKBalsbAyeEALOYvEHjAi
-	DRPNYAZbm67+DYUWdVAM8JsxdzYak3QEsC8uMSJAa1Xr+8kGVxN6RCSteFLcFdYNNwTs84UtH4B
-	OlAxCgld+ZGbfUZU/aIoC1BvXVAME0AN+fXUiMNeRXvoiseyhHIt4WdUBSBAHeg8hiiYjmjeC25
-	2AGNU1k4TFvCsQwg0JqsAL25smf6MIz4tjgEUnYCVJ2SsacSqJA/uQWD6XSD0IOqSZjhY7yYFcW
-	E2pxHD4gn7SYIOSNpjGl+TmSI8HYbGCuH9zGodQu/W3XPDrYa67Ik98mowpB7p1qKZTo8NLovdq
-	IeeTP2Qvx1R61AuHMDIrHsLnI7efflESBfhXByrwRFRUi0YVmdDj6zZ4=
-X-Google-Smtp-Source: AGHT+IHXDR1de/7TNg6bs2kSdl+iW1SlaW1kBbOJdex1vDW67oc1TNk7wMuF+2BPYv92MgWSzRPohA==
-X-Received: by 2002:a05:6000:2885:b0:3ca:4b59:2714 with SMTP id ffacd0b85a97d-3e7658bc84emr9670328f8f.10.1757906781151;
-        Sun, 14 Sep 2025 20:26:21 -0700 (PDT)
+        bh=5KpssDyJX1P39IXzavoJXTy0ead3IW2zXk9jwql8Jvg=;
+        b=BNY+HKdvhGPwLz9R8Ooci0ZOKOW3hlBCHTmM88X+Rk1FP3d17Rdv7cVLRYmxF6p144
+         TrsxV4VlEfQHYuh2YrG6BwbMEPVaKuMOPn2g1LYeC5PyFdgKI0X5XG0TJfP9LvlLhzCm
+         J49AWzTGWe2xJ0SyYLtJDiRnFqlemlqD3bWDRPERNxxmI4U8YgtFZl4htQEvjtlB43Gx
+         6ODCHcUAkLpXoQcRWpWcx638mfMFCDqgt8JLjbRs6EhirVqc+GBgZl9Cevulq1mX2Kxx
+         aoOfbjOS2bSRDD1yNMA4RUptpKQAlOEoYg9y2yTikvCE4Mrl4hLH1zkH/lXD+3dN+Dls
+         Vrrw==
+X-Gm-Message-State: AOJu0YxwvWh0HeBh4sOyZPPSTLGY4e5EIjm7DhZcnlNDx4zTobQcVtIK
+	AGSJulroKDVZMYwKehxUjoxK2VdYPza5s3pe3K3fGHw0CzwJG1Q+OQS6wq7hV78e
+X-Gm-Gg: ASbGnctbvNdhSEiWwVePD7bzlxhkeIL1yS7FMzlRFwyJFqvTMW3AsYlvLBvCqqLTUrJ
+	IivVBbGsDnUPuY0Uw7Theu+Pxtsr/OMb44zSVCDKs9T/CcZb/kEuRYLZt1JUPDSZuIeU/na92iw
+	j0+SxMgBwHP+LK1SmC1USv2dv841t4/aADO3JDOXQFwn6gVJOA2nXed492n4l9Bima9bJ/G6Axo
+	W7dNjzS9/NAE6LnPfvHl+ahCHhnB9tJZ410sknByxXI8KPSujEB5BblYKRchFyodnb9sEYKOO9y
+	f4NVJRBt/Uug0eN5eXr/jSp4XnFUc1PZ3d1hNxUxLbQlqvEcngbGWqCvx5pONq5KWB9dTFwzIQJ
+	j9AtyzYUWaGZpsKsy+gOf7n7kEEQgNXVe7dNLpsu8srzV
+X-Google-Smtp-Source: AGHT+IFIeD2Mq30+ywKeY6fF8/4Z2Yif9v+zrAccz62V6crOTQsalYVfelYmZ13JyRejdUknQBcgGQ==
+X-Received: by 2002:a05:600c:45d1:b0:45b:47e1:ef6d with SMTP id 5b1f17b1804b1-45f212253f8mr93157305e9.36.1757906782431;
+        Sun, 14 Sep 2025 20:26:22 -0700 (PDT)
 Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45f28c193f9sm76769715e9.2.2025.09.14.20.26.20
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45f2c7f5108sm19151125e9.0.2025.09.14.20.26.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Sep 2025 20:26:20 -0700 (PDT)
+        Sun, 14 Sep 2025 20:26:21 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
-Cc: Dan Schatzberg <dschatzberg@meta.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Tejun Heo <tj@kernel.org>,
+	Dan Schatzberg <dschatzberg@meta.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v3 1/2] bpf: Do not limit bpf_cgroup_from_id to current's namespace
-Date: Mon, 15 Sep 2025 03:26:17 +0000
-Message-ID: <20250915032618.1551762-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Add a test for bpf_cgroup_from_id lookup in non-root cgns
+Date: Mon, 15 Sep 2025 03:26:18 +0000
+Message-ID: <20250915032618.1551762-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250915032618.1551762-1-memxor@gmail.com>
 References: <20250915032618.1551762-1-memxor@gmail.com>
@@ -95,106 +95,189 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3456; i=memxor@gmail.com; h=from:subject; bh=Mj+12UdoMTDFbNV6bA3CkPVL7LH+CXJWKQeuYHTH9rU=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBox4bp7zliyDnQJ2T4aZjd2Pu6EVxHikNAU3VL9 wtG1u005DiJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaMeG6QAKCRBM4MiGSL8R yu+SD/938t6OBtBXHzYIgeIw10r7Cz8Au3K8lhF0LNXlDpLTsQmLPSpQzt3AVZO7yEFJEaU1C9/ HEkcHBCpCZmD1Ozzj3KIP3GVY1WeTszbPsK16CMDpGvHoGNUbk6vaWh+Iavz+u0i97IsOxPN13W F0VJkROh6/9TqmNjCGZWkjt7A+qYeSagy2jtG5rAB2C6v5DX9bAMB1E1YapduOm6OywGjDQ/Rfu 3qW6NNMkQFgYYBDTOR0obHFZNLY8n7vUS7dTu6iPi0xA8pw1ajyRG03hnRnMm+nWu3sBbFUwERF gHxo1YRW2JAcgEbuVscpYsqrrsBa9FU9rvtmQULkijt6mzoBjAqtC8kc9LHsAWhnrKZYcG4PDr+ Vfvjb2qqTJw9uYetLN2bQPuLmGLAqIyeBaGdiiH9E36hF7+7u1PhD/prQypLg9tocFA8dOqVI8n mTR2quXXNh1fMsiyYGYtB1F1opkMPNyyxHYS7UdHhVGEFduSmoT1oKDoHDPcSFIppFqB79E2zvN XZzPh979gx6D6b4TKMRTVPjS9gQ/Sq9Nr6zmbFHSVtnZYivqv+A3degliZgkNwAIftKwpmVPGf8 7vc1pUMMpigCpxddn3y7X+adaZUy//MA8MFyCdgBfIrSw3SkjvbY3BM+zhg1r8PZUdX1bZ5/AOW zOoMMNf74PIWC6A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5914; i=memxor@gmail.com; h=from:subject; bh=IA7ErIe3fSrpmmbZrhmfYIBPTFxjdXLetBm5xIkRa78=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBox4bqgW7TcP0oXSBvpaMQu9uAVESTwuXplvG11 xVWsuxR26GJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCaMeG6gAKCRBM4MiGSL8R yn44EACOsjGKnhkWRjfeIVxlW8G585buXYYW369Ds4LUhcru03kPu40tLD0CXDodbznsScWQ+xd QSBczeuUe8iisszDIlbplV/0J1UCr1y/0QnChU7msyFOwhrUqSDbcpfmbR6y5p87o3j/UDVSNix +VtuWtSiHhwCJpTsXiWX7LXlXEts9xgIHSAU809OYP2CUoZWw9cI7ctOcqEoT77xo/UZV3grrL8 NmgOo4TNZRRFbG64x7Lysw6UpAonWWa3/MQ1WEyoDwbw+YpOeWwG00thTsWY6iJ+tAt2uRPQDFI 346p+8y0uvIjqS9jcsFC0EaNaUN3wfVHSaiaoiGuMTaIX9V2NHKDJRX6fltnkA+ckzV8SOdRh9h +3bbLBJ0lLuCLreYrW6AGg2TGHyGurwymoBl6+0XNeUdTcGrJC2bBisZdlwmfaYxas+xWmvIAxI I/5F7NsLmhnDnbbH5frcXddc9JPRmCMVp71uMkWbnBNrS3QrwtIzasNWz0usIDr5T7igv/leg4J BpYqCIXcyXDRx4VTqwqmSTglx1HGUalQlHuJE8Ih+ZGlc+F8PQhVk+5ZjqkYZkQjUG9ld8d9jsv WJ2w9wKHUoIyRvTa1+aQKX5o/znWxjCDredMOqYl9dw7/KsiKn1Y1sQ6///qrhO1SNc8m6rszO7 xJjeTozp0WiAriQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-The bpf_cgroup_from_id kfunc relies on cgroup_get_from_id to obtain the
-cgroup corresponding to a given cgroup ID. This helper can be called in
-a lot of contexts where the current thread can be random. A recent
-example was its use in sched_ext's ops.tick(), to obtain the root cgroup
-pointer. Since the current task can be whatever random user space task
-preempted by the timer tick, this makes the behavior of the helper
-unreliable.
+Make sure that we only switch the cgroup namespace and enter a new
+cgroup in a child process separate from test_progs, to not mess up the
+environment for subsequent tests.
 
-Refactor out __cgroup_get_from_id as the non-namespace aware version of
-cgroup_get_from_id, and change bpf_cgroup_from_id to make use of it.
+To remove this cgroup, we need to wait for the child to exit, and then
+rmdir its cgroup. If the read call fails, or waitpid succeeds, we know
+the child exited (read call would fail when the last pipe end is closed,
+otherwise waitpid waits until exit(2) is called). We then invoke a newly
+introduced remove_cgroup_pid() helper, that identifies cgroup path using
+the passed in pid of the now dead child, instead of using the current
+process pid (getpid()).
 
-There is no compatibility breakage here, since changing the namespace
-against which the lookup is being done to the root cgroup namespace only
-permits a wider set of lookups to succeed now. The cgroup IDs across
-namespaces are globally unique, and thus don't need to be retranslated.
-
-Reported-by: Dan Schatzberg <dschatzberg@meta.com>
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/cgroup.h |  1 +
- kernel/bpf/helpers.c   |  2 +-
- kernel/cgroup/cgroup.c | 24 ++++++++++++++++++++----
- 3 files changed, 22 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/cgroup_helpers.c  | 20 ++++++
+ tools/testing/selftests/bpf/cgroup_helpers.h  |  1 +
+ .../selftests/bpf/prog_tests/cgrp_kfunc.c     | 71 +++++++++++++++++++
+ .../selftests/bpf/progs/cgrp_kfunc_success.c  | 12 ++++
+ 4 files changed, 104 insertions(+)
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index b18fb5fcb38e..b08c8e62881c 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -650,6 +650,7 @@ static inline void cgroup_kthread_ready(void)
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
+index 15f626014872..20cede4db3ce 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.c
++++ b/tools/testing/selftests/bpf/cgroup_helpers.c
+@@ -412,6 +412,26 @@ void remove_cgroup(const char *relative_path)
+ 		log_err("rmdiring cgroup %s .. %s", relative_path, cgroup_path);
  }
  
- void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen);
-+struct cgroup *__cgroup_get_from_id(u64 id);
- struct cgroup *cgroup_get_from_id(u64 id);
- #else /* !CONFIG_CGROUPS */
- 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index c0c0764a2025..51229aba5318 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2546,7 +2546,7 @@ __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
- {
- 	struct cgroup *cgrp;
- 
--	cgrp = cgroup_get_from_id(cgid);
-+	cgrp = __cgroup_get_from_id(cgid);
- 	if (IS_ERR(cgrp))
- 		return NULL;
- 	return cgrp;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 312c6a8b55bb..6c2d20ac697c 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6343,15 +6343,15 @@ void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
- }
- 
- /*
-- * cgroup_get_from_id : get the cgroup associated with cgroup id
-+ * __cgroup_get_from_id : get the cgroup associated with cgroup id
-  * @id: cgroup id
-  * On success return the cgrp or ERR_PTR on failure
-- * Only cgroups within current task's cgroup NS are valid.
-+ * There are no cgroup NS restrictions.
-  */
--struct cgroup *cgroup_get_from_id(u64 id)
-+struct cgroup *__cgroup_get_from_id(u64 id)
- {
- 	struct kernfs_node *kn;
--	struct cgroup *cgrp, *root_cgrp;
-+	struct cgroup *cgrp;
- 
- 	kn = kernfs_find_and_get_node_by_id(cgrp_dfl_root.kf_root, id);
- 	if (!kn)
-@@ -6373,6 +6373,22 @@ struct cgroup *cgroup_get_from_id(u64 id)
- 
- 	if (!cgrp)
- 		return ERR_PTR(-ENOENT);
-+	return cgrp;
++/*
++ * remove_cgroup_pid() - Remove a cgroup setup by process identified by PID
++ * @relative_path: The cgroup path, relative to the workdir, to remove
++ * @pid: PID to be used to find cgroup_path
++ *
++ * This function expects a cgroup to already be created, relative to the cgroup
++ * work dir. It also expects the cgroup doesn't have any children or live
++ * processes and it removes the cgroup.
++ *
++ * On failure, it will print an error to stderr.
++ */
++void remove_cgroup_pid(const char *relative_path, int pid)
++{
++	char cgroup_path[PATH_MAX + 1];
++
++	format_cgroup_path_pid(cgroup_path, relative_path, pid);
++	if (rmdir(cgroup_path))
++		log_err("rmdiring cgroup %s .. %s", relative_path, cgroup_path);
 +}
 +
-+/*
-+ * cgroup_get_from_id : get the cgroup associated with cgroup id
-+ * @id: cgroup id
-+ * On success return the cgrp or ERR_PTR on failure
-+ * Only cgroups within current task's cgroup NS are valid.
-+ */
-+struct cgroup *cgroup_get_from_id(u64 id)
-+{
-+	struct cgroup *cgrp, *root_cgrp;
-+
-+	cgrp = __cgroup_get_from_id(id);
-+	if (IS_ERR(cgrp))
-+		return cgrp;
+ /**
+  * create_and_get_cgroup() - Create a cgroup, relative to workdir, and get the FD
+  * @relative_path: The cgroup path, relative to the workdir, to join
+diff --git a/tools/testing/selftests/bpf/cgroup_helpers.h b/tools/testing/selftests/bpf/cgroup_helpers.h
+index 182e1ac36c95..3857304be874 100644
+--- a/tools/testing/selftests/bpf/cgroup_helpers.h
++++ b/tools/testing/selftests/bpf/cgroup_helpers.h
+@@ -19,6 +19,7 @@ int cgroup_setup_and_join(const char *relative_path);
+ int get_root_cgroup(void);
+ int create_and_get_cgroup(const char *relative_path);
+ void remove_cgroup(const char *relative_path);
++void remove_cgroup_pid(const char *relative_path, int pid);
+ unsigned long long get_cgroup_id(const char *relative_path);
+ int get_cgroup1_hierarchy_id(const char *subsys_name);
  
- 	root_cgrp = current_cgns_cgroup_dfl();
- 	if (!cgroup_is_descendant(cgrp, root_cgrp)) {
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+index adda85f97058..4b42fbc96efc 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+@@ -4,6 +4,8 @@
+ #define _GNU_SOURCE
+ #include <cgroup_helpers.h>
+ #include <test_progs.h>
++#include <sched.h>
++#include <sys/wait.h>
+ 
+ #include "cgrp_kfunc_failure.skel.h"
+ #include "cgrp_kfunc_success.skel.h"
+@@ -87,6 +89,72 @@ static const char * const success_tests[] = {
+ 	"test_cgrp_from_id",
+ };
+ 
++static void test_cgrp_from_id_ns(void)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, opts);
++	struct cgrp_kfunc_success *skel;
++	struct bpf_program *prog;
++	int pid, pipe_fd[2];
++
++	skel = open_load_cgrp_kfunc_skel();
++	if (!ASSERT_OK_PTR(skel, "open_load_skel"))
++		return;
++
++	if (!ASSERT_OK(skel->bss->err, "pre_mkdir_err"))
++		goto cleanup;
++
++	prog = skel->progs.test_cgrp_from_id_ns;
++
++	if (!ASSERT_OK(pipe(pipe_fd), "pipe"))
++		goto cleanup;
++
++	pid = fork();
++	if (!ASSERT_GE(pid, 0, "fork result")) {
++		close(pipe_fd[0]);
++		close(pipe_fd[1]);
++		goto cleanup;
++	}
++
++	if (pid == 0) {
++		int ret = 0;
++
++		close(pipe_fd[0]);
++
++		if (!ASSERT_GE(cgroup_setup_and_join("cgrp_from_id_ns"), 0, "join cgroup"))
++			exit(1);
++
++		if (!ASSERT_OK(unshare(CLONE_NEWCGROUP), "unshare cgns"))
++			exit(1);
++
++		ret = bpf_prog_test_run_opts(bpf_program__fd(prog), &opts);
++		if (!ASSERT_OK(ret, "test run ret"))
++			exit(1);
++
++		if (!ASSERT_OK(opts.retval, "test run retval"))
++			exit(1);
++
++		if (!ASSERT_EQ(write(pipe_fd[1], &ret, sizeof(ret)), sizeof(ret), "write pipe"))
++			exit(1);
++
++		exit(0);
++	} else {
++		int res;
++
++		close(pipe_fd[1]);
++
++		ASSERT_EQ(read(pipe_fd[0], &res, sizeof(res)), sizeof(res), "read res");
++		ASSERT_EQ(waitpid(pid, NULL, 0), pid, "wait on child");
++
++		remove_cgroup_pid("cgrp_from_id_ns", pid);
++
++		ASSERT_OK(res, "result from run");
++	}
++
++	close(pipe_fd[0]);
++cleanup:
++	cgrp_kfunc_success__destroy(skel);
++}
++
+ void test_cgrp_kfunc(void)
+ {
+ 	int i, err;
+@@ -102,6 +170,9 @@ void test_cgrp_kfunc(void)
+ 		run_success_test(success_tests[i]);
+ 	}
+ 
++	if (test__start_subtest("test_cgrp_from_id_ns"))
++		test_cgrp_from_id_ns();
++
+ 	RUN_TESTS(cgrp_kfunc_failure);
+ 
+ cleanup:
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c b/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
+index 5354455a01be..02d8f160ca0e 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
++++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_success.c
+@@ -221,3 +221,15 @@ int BPF_PROG(test_cgrp_from_id, struct cgroup *cgrp, const char *path)
+ 
+ 	return 0;
+ }
++
++SEC("syscall")
++int test_cgrp_from_id_ns(void *ctx)
++{
++	struct cgroup *cg;
++
++	cg = bpf_cgroup_from_id(1);
++	if (!cg)
++		return 42;
++	bpf_cgroup_release(cg);
++	return 0;
++}
 -- 
 2.51.0
 
