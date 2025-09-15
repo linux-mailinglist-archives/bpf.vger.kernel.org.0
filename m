@@ -1,219 +1,156 @@
-Return-Path: <bpf+bounces-68423-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68424-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C97D7B585BA
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 22:10:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E85BB585BC
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 22:11:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAAAE189C22B
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 20:11:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C9AF2A3989
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 20:11:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31F22882DF;
-	Mon, 15 Sep 2025 20:10:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4592877E9;
+	Mon, 15 Sep 2025 20:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ktctbOBv"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yJYFaFle"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E047127A477
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 20:10:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6538F2747B
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 20:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757967050; cv=none; b=DhObSQyw6wum/Qu2T+fIP4xDcYXcKlgLzMJ/gnkKVzLO8IUnLWrSaTgfwtEult3IQw7xVE27fWdEtE2PSydp+/ku/hNrxAhwvMH3Q8EX7Z26Xs4Xg62j6bvBWrPb/rq1xZk8bMEwSUrCAadHaHJQG6HngoJ1LcfI9GSXTZZ79Ok=
+	t=1757967062; cv=none; b=oJ2tt+gykbXoO5d0IUJ5NunuYiJIQJoE+x9imxrn6cvvzzGLszKh0GJLadj2jkCY5oc4ktEAkpZt9C1hk3PUnt0Rhj3ZV3tBqnB61MIkiN8U/fP+r8WCjj4D6cCy8KMC8Z6a1j4u2/7v3eTuy2ucl3nK7TvmNClFh+bw+pPuB5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757967050; c=relaxed/simple;
-	bh=gombhexvDzLLf/Y1V8p7ZE99vClFYXdoUSu+SwK/MLI=;
+	s=arc-20240116; t=1757967062; c=relaxed/simple;
+	bh=C7yADzXGocb/qE7uG5osiTyGOa5Q91Vr/vq8cRHwFCM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gfdd5gxqogzdclsD6yUZqb/jZXgDgnkybAOZwMjnsoWAh2iOvGL9Pzx0q0ZEHCvUEITuDVEwuYSISx+5NQ3mwQZtyonvuA6td3DLLH9F2lA3gtByRZxW/jFjNLqeLIaCBjiU/XzeFc6/3zAqYTLIWq9VBRuQeQwUOvJYoHvaqcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ktctbOBv; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-32e2794c97eso1423222a91.1
-        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 13:10:48 -0700 (PDT)
+	 To:Cc:Content-Type; b=lw31DZSEC/juWx0r6o6oSqrY6p4sm81tRUn+Sl/tpapSnDscEQq31WbzUhmhMuSKwStEdpC0mBG3Usb+Y8grlcQM50Y0OocbTANYNDAbXDR055mb+Fk9uUOhEpP4lwOLyPQnnV+ZnbDvtG9h5lTxYoak1+FSgaWGO9boMttPsBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yJYFaFle; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-4b78657a35aso3531cf.0
+        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 13:11:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757967048; x=1758571848; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1757967059; x=1758571859; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S9i+RyIAhaSG8LwT953hbKzYwwFHtyc1hiplWTlRZi0=;
-        b=ktctbOBvAEVO4SPE8nyhR111KWcgyYTYrNozOrCBv2D0Dgpgqjoe3AjHa0ep0J5NUu
-         4u4krCZ2iBW5SJsGNrs3OyQ+p3toVSCvp9sg2+UkQiQhKjIaUq6YwDurngElbc4uZsyK
-         kBiyj6jQ9dXrxr4D3NAMBXnhEOaEA2GbTyWf7zwb0ssWG8qOPWQ/XK/ygn1xmShUM98p
-         q+YLqkLCvmXcyv19xvnKMnwEYhMQrBDrWdCKuWOXhqdLUqorkTLBHx8VdkMzHiX/vozQ
-         oMeofnkLFcV41L42bi7jPrnYwP4/oGvd+uxUtrGkfAqI7Z/QKCDpVPU5FBQ0wWjq/FS/
-         g4Gg==
+        bh=C7yADzXGocb/qE7uG5osiTyGOa5Q91Vr/vq8cRHwFCM=;
+        b=yJYFaFledcRKvFuhi6PFJHKg5JNeoDCQYiNF3W0yVa3TDd2RU70myU6kmtxX9fZrE1
+         KPAMX77igCyRNGlSa2s3PAuOT5kmHUVe8JRyVAUESsSV4SnKTQQfl66XUYy4vBbQdZcC
+         /vB3ax6rdKbUtTYPXxyILQPuVIvAK3r/NmOP+CrD4DLJcNPL2I+SBV4ulO5TNpggMDLu
+         mDznUrL6vuCiHX8yaSUPEvVia4jqHeDlXBcTR62tFsFAen88yJBypXGmDJuZlnRk5n9S
+         nX8roixJJvC9NmVVAjmmOJUnJ7Wrciou2f/7xhuazLajMSzpruhAXlp9h1EYa2XbBqJh
+         itpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757967048; x=1758571848;
+        d=1e100.net; s=20230601; t=1757967059; x=1758571859;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S9i+RyIAhaSG8LwT953hbKzYwwFHtyc1hiplWTlRZi0=;
-        b=IS1olhRZatJnXFJcmeGjkzFuaXkgGbw5HIH3qtuFl3pOn8iwB06TKgeBWkmpnXfS2y
-         4cW44iYMqMYdZQSrsWPM4i577UyjU7CEIkojiUwacRjZisHeMT6wv9MtNkmgcpEVRkI6
-         0hp8Rfa4+ugn9GsTgfrOv6NbBGhuNVOhnRkZ8SOkNRZF/z6NOkM98z93aSyuv2S4nzo/
-         Ozy5NEto9bTi3nUfViLw6d0SEqxA0lj3IPM8pSsrhKmBTrqNnbpEQWj/T+lvidk3wyJ+
-         Unf2FjEXmBc2w/ibGEClUriUo0rZN3ax9QuEzJYg6Qvl47nBY78qiIvX2tMge119f10Q
-         +oPw==
-X-Forwarded-Encrypted: i=1; AJvYcCX0XRHMIE+91f34WdFlZInJt6+GP0AFz2fxFBpkmWxKxIjSXtk06gjbq+9hnYq8Z23Ha50=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsqfwqtKk3MMrFcJZS0RnwBJHB2JKcnT29xsTwa0YWDsBtfv1V
-	3dQluPXNxPshS/2TP0BhIPZNZ8qt8TW/xYKPYtsmB/qNlceH5fb6sR+dMOKLVhEfzZFIVa/daLq
-	sH2Y8AJ/OWtSBqeRWLS6Hbu3e90stG5Q=
-X-Gm-Gg: ASbGnctvx1RO8M9co/OBZiljsC6Ez8pA3CSVPm3KSmRjGfbnedz9+v0MaSoaGNuuqZ8
-	WuTXxYV6PLz54NtSw2Cl9z1J4XJPLRHnrrLiRJbu6EmEZ7ky/w4lyIteG05drz5PxT895a3XXNs
-	dtd+FH6haEmBjqfIQ2SEcnkGRN9uimgXagitKqOF1MCCdysh0W+XTxYdR7YRlQUTmez/u13RHzm
-	thyPA8lRRV91WzekdxGtxw=
-X-Google-Smtp-Source: AGHT+IEOvj5/CbVtdXgge48j2eyDX0bRe3AITikVbTf+5sf4C05xN7/hPcAtOwcav6nlH8gwC7+q671/Jhu5CBu7bvc=
-X-Received: by 2002:a17:90b:2dc7:b0:32b:4c71:f423 with SMTP id
- 98e67ed59e1d1-32de5144b01mr13659135a91.32.1757967048096; Mon, 15 Sep 2025
- 13:10:48 -0700 (PDT)
+        bh=C7yADzXGocb/qE7uG5osiTyGOa5Q91Vr/vq8cRHwFCM=;
+        b=gghe2aKO+aEZBjSHI3imsgaBBUJJ9O7hbA/AGavMty4FYYowXSWTpeqIPNWgNds/YH
+         urUkGwQZvHkMh4EB7tMgRoGKoO1OzoD7N2lluvAPxCw61lDyqMebhcWk3K802GZMN0Ui
+         vYRJubliyeHkB9sdBQXUofPJg2co3nbrIRdw3nwXRPikeVLLFtLCBj89LhLUJ+T86imB
+         /v5q7glv/L5XYhj8jKo2SIwv6IR/JTDc0TguMOZk6BKkS6dZMBj3PVMGj+JeZPnpWCV8
+         OuiFtnG+baCoI3dDg1scef2hkHALiHNocqIMNfG6+7LvVveXoQz4/vVOSX5E2ozBLW08
+         xJTA==
+X-Forwarded-Encrypted: i=1; AJvYcCUk/d5EWvChBMNE/cv8QaJXdJdooR4FoKilJSMUscRvLio8F1Ut89IS6HrxdTWEIRbI6PI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGujhi/ftECB9Q5gFRko5xLAMvtQg8dR/wB3bSyKUgxC/45Kmz
+	2k5fa87ivjAqO3uouZa0gKvKnH6ZPOUBpb6rgsoe082wV5cDXluEKx/2q/zzKP4SfQ3PtX3M7kT
+	6D4oMIaXZ7upFazKTXx6mSRv1eDyL61LWtxH2Z/38
+X-Gm-Gg: ASbGnctmQ8CDyJ19fpRKbXfsjI0oj86Wo+qo/N2ZP5VSZgb+2JzQ7tJGaaCPmEtKDo1
+	Y4sRew/mBZanFrrtKCs9oByLYLHuCg28rK9YerBaahYgjwAUbjJK1HE4JYRYL+v6ljQ0zUwcn3Y
+	f6HhvThXBuwpnUs3x5BnBan6SQuKCL/7xDzuVpi5MHgifhakM+51HsFz4ZGTeR1kMkjXHRM6ydW
+	SCh6pVj0ZHY7PhuYdV/Clk=
+X-Google-Smtp-Source: AGHT+IH2ABfXb4DwKPnac3WHtKB/buhhVf/EdUWNCc4f+qA019sh73f6G3fzY2MHaUsZNUbwzHEwRuwgYnb3fDthRSo=
+X-Received: by 2002:ac8:5955:0:b0:4b7:9a9e:833f with SMTP id
+ d75a77b69052e-4b7b2d829a0mr192231cf.7.1757967058696; Mon, 15 Sep 2025
+ 13:10:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909123857.315599-1-jolsa@kernel.org> <CAEf4Bzb4ErWn=2SajBcyJxqGEYy0DXmtWuXKLskPGLG-Y9POFA@mail.gmail.com>
- <7f591ac9-d3e0-4404-987c-40eceaf51fbb@linux.dev> <aMSIr1oItIfWQd5R@krava>
-In-Reply-To: <aMSIr1oItIfWQd5R@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 15 Sep 2025 13:10:33 -0700
-X-Gm-Features: Ac12FXzQ_QY2pjcnJxbRCflvqVRVDb7gMXI27nmWWJqXnfRJav7AB0LAEj67VqU
-Message-ID: <CAEf4BzZ21xFq25Vs0xSmCfb1MSbdz_GLs8B6s+h0Q3kCTmnzSw@mail.gmail.com>
-Subject: Re: [PATCHv3 perf/core 0/6] uprobe,bpf: Allow to change app registers
- from uprobe registers
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, Oleg Nesterov <oleg@redhat.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>
+References: <20250909010007.1660-6-alexei.starovoitov@gmail.com>
+ <jftidhymri2af5u3xtcqry3cfu6aqzte3uzlznhlaylgrdztsi@5vpjnzpsemf5>
+ <CAJuCfpGUjaZcs1r9ADKck_Ni7f41kHaiejR01Z0bE8pG0K1uXA@mail.gmail.com>
+ <CAADnVQJu-mU-Px0FvHqZdTTP+x8ROTXaqHKSXdeS7Gc4LV9zsQ@mail.gmail.com>
+ <shfysi62hb5g7lo44mw4htwxdsdljcp3usu2wvsjpd2a57vvid@tuhj63dixxpn>
+ <CAADnVQ+eD7p4i0B9Q2T-OS_n=AqcrrvYZGY57QOOqKEof6SkDQ@mail.gmail.com>
+ <lv2tkehyh4pihbczb7ghvbkkl4l75ksdx2xjtxf2r7lgzam76h@ekkrlady2et3>
+ <CAADnVQLX_mi9WLygRxwp5PtBFG7L_sqm9sL93ejENWqVO3ar7g@mail.gmail.com>
+ <e7nh3cxyhmlxds4b2ko36gnxbdfclcxu3eae5irvrd2m6qzqoj@gor7vopfe47z>
+ <CAADnVQJuAo5K417ZZ77AA1LM5uZr5O2v1dRrEEue-v39zGVyVw@mail.gmail.com>
+ <rfwbbfu4364xwgrjs7ygucm6ch5g7xvdsdhxi52mfeuew3stgi@tfzlxg3kek3x>
+ <CAJuCfpHJEUypV2HWRHqE598kr-1Nz_DokMz_UgrUnq8YkFcb9w@mail.gmail.com>
+ <CAADnVQJQo6+AwJ_LxARVu37J-5T-7tyn1kA5hMVDGDfEyjF6mQ@mail.gmail.com>
+ <e166705a-e838-4c8f-a8cf-64913e120caa@suse.cz> <CAJuCfpGR2tHhUu=p4X2YKPNot4TJbhuFPRiT8BgOHvtcw=j-Ug@mail.gmail.com>
+ <75bc0c27-3d08-484d-9d22-59bc70f7ee1d@suse.cz> <CAJuCfpHJyGrH91yErLBMPbFBu9dS3Nr_ij2FJdQ5cUnYxAu9Tw@mail.gmail.com>
+In-Reply-To: <CAJuCfpHJyGrH91yErLBMPbFBu9dS3Nr_ij2FJdQ5cUnYxAu9Tw@mail.gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 15 Sep 2025 13:10:47 -0700
+X-Gm-Features: AS18NWCSLNjt4OO-yaU88tQeA8HQXsepTIm4TtQqdSzJ2SipSga5dU21EKuuu4A
+Message-ID: <CAJuCfpE20N31AFdTboQX8GOrD_Pn_=oNB_UtGsFFKBotEb2-1A@mail.gmail.com>
+Subject: Re: [PATCH slab v5 5/6] slab: Reuse first bit for OBJEXTS_ALLOC_FAIL
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	Harry Yoo <harry.yoo@oracle.com>, Michal Hocko <mhocko@suse.com>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 12, 2025 at 1:55=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
+On Mon, Sep 15, 2025 at 8:25=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
 >
-> On Fri, Sep 12, 2025 at 01:28:55PM -0700, Ihor Solodrai wrote:
-> > On 9/9/25 9:41 AM, Andrii Nakryiko wrote:
-> > > On Tue, Sep 9, 2025 at 8:39=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> w=
-rote:
-> > > >
-> > > > hi,
-> > > > we recently had several requests for tetragon to be able to change
-> > > > user application function return value or divert its execution thro=
-ugh
-> > > > instruction pointer change.
-> > > >
-> > > > This patchset adds support for uprobe program to change app's regis=
-ters
-> > > > including instruction pointer.
-> > > >
-> > > > v3 changes:
-> > > > - deny attach of kprobe,multi with kprobe_write_ctx set [Alexei]
-> > > > - added more tests for denied kprobe attachment
-> > > >
-> > > > thanks,
-> > > > jirka
-> > > >
-> > > >
-> > > > ---
-> > > > Jiri Olsa (6):
-> > > >        bpf: Allow uprobe program to change context registers
-> > > >        uprobe: Do not emulate/sstep original instruction when ip is=
- changed
-> > > >        selftests/bpf: Add uprobe context registers changes test
-> > > >        selftests/bpf: Add uprobe context ip register change test
-> > > >        selftests/bpf: Add kprobe write ctx attach test
-> > > >        selftests/bpf: Add kprobe multi write ctx attach test
-> > > >
+> On Mon, Sep 15, 2025 at 8:11=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> =
+wrote:
+> >
+> > On 9/15/25 17:06, Suren Baghdasaryan wrote:
+> > > On Mon, Sep 15, 2025 at 12:51=E2=80=AFAM Vlastimil Babka <vbabka@suse=
+.cz> wrote:
+> > >>
+> > >>
+> > >> Shakeel or Suren, will you sent the fix, including Fixes: ? I can pu=
+t in
+> > >> ahead of this series with cc stable in slab/for-next and it shouldn'=
+t affect
+> > >> the series.
 > > >
-> > > For the series:
-> > >
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > >
-> > > Question is which tree will this go through? Most changes are in BPF,
-> > > so probably bpf-next, right?
+> > > I will post it today. I was planning to include it as a resping of th=
+e
+> > > fixup patchset [1] but if you prefer it separately I can do that too.
+> > > Please let me know your preference.
 > >
-> > Hi Jiri.
+> > I think it will be better for patches touching slab (only) to be separa=
+te,
+> > to avoid conflict potential. [1] seems mm tree material
 > >
-> > This series does not apply to current bpf-next, see below.
+> > > Another fixup patch I'll be adding is the removal of the `if
+> > > (new_slab)` condition for doing mark_failed_objexts_alloc() inside
+> > > alloc_slab_obj_exts() [2].
 > >
-> > Could you please respin it with bpf-next tag?
-> > E.g. "[PATCH v4 bpf-next 0/6] ..."
-> >
+> > Ack, then it's 2 patches for slab :)
 >
-> hi,
-> the uprobe change it needs to be on top of the optimized uprobes (tip/per=
-f/core)
+> Ack. Will post after our meeting today.
 
-Is this what you happened to base it on (and thus diff context has
-that arch_uprobe_optimize), or those changes are needed for correct
-functioning?
+Posted at https://lore.kernel.org/all/20250915200918.3855580-1-surenb@googl=
+e.com/
 
-It seems like some conflict is inevitable, but on uprobe side it's two
-lines of code that would need to be put after arch_uprobe_optimize
-(instead of handler_chain), while on BPF side it's a bit more
-invasive.
-
-So unless tip/perf/core changes are mandatory for correct functioning,
-I'd say let's rebase on top of bpf-next and handle that trivial merge
-conflict during merge window?
-
-> but the bpf selftests patches could be applied on bpf-next/master and dis=
-abled
-> in CI until tip/perf/core changes are merged in?
 >
-> thanks,
-> jirka
->
->
-> > Thanks!
 > >
-> > $ git log -1 --oneline
-> > a578b54a8ad2 (HEAD -> master, origin/master, origin/HEAD,
-> > kernel-patches/bpf-next) Merge branch
-> > 'bpf-report-arena-faults-to-bpf-streams'
-> > $ b4 am 20250909123857.315599-1-jolsa@kernel.org
-> > [...]
-> > $ git am ./v3_20250909_jolsa_uprobe_bpf_allow_to_change_app_registers_f=
-rom_uprobe_registers.mbx
-> > Applying: bpf: Allow uprobe program to change context registers
-> > Applying: uprobe: Do not emulate/sstep original instruction when ip is
-> > changed
-> > error: patch failed: kernel/events/uprobes.c:2768
-> > error: kernel/events/uprobes.c: patch does not apply
-> > Patch failed at 0002 uprobe: Do not emulate/sstep original instruction =
-when
-> > ip is changed
-> > [...]
+> > Thanks,
+> > Vlastimil
 > >
-> > >
-> > > >   include/linux/bpf.h                                        |   1 =
-+
-> > > >   kernel/events/core.c                                       |   4 =
-+++
-> > > >   kernel/events/uprobes.c                                    |   7 =
-+++++
-> > > >   kernel/trace/bpf_trace.c                                   |   7 =
-+++--
-> > > >   tools/testing/selftests/bpf/prog_tests/attach_probe.c      |  28 =
-+++++++++++++++++
-> > > >   tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c |  27 =
-++++++++++++++++
-> > > >   tools/testing/selftests/bpf/prog_tests/uprobe.c            | 156 =
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
-++++++++++++++++-
-> > > >   tools/testing/selftests/bpf/progs/kprobe_write_ctx.c       |  22 =
-+++++++++++++
-> > > >   tools/testing/selftests/bpf/progs/test_uprobe.c            |  38 =
-+++++++++++++++++++++++
-> > > >   9 files changed, 287 insertions(+), 3 deletions(-)
-> > > >   create mode 100644 tools/testing/selftests/bpf/progs/kprobe_write=
-_ctx.c
+> > > [1] https://lore.kernel.org/all/20250909233409.1013367-1-surenb@googl=
+e.com/
+> > > [2] https://elixir.bootlin.com/linux/v6.16.5/source/mm/slub.c#L1996
 > >
 
