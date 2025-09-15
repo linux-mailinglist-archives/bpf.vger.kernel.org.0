@@ -1,89 +1,90 @@
-Return-Path: <bpf+bounces-68442-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C4BAB586F6
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 23:52:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E24DDB5872E
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 00:08:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CDA61B25140
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 21:53:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D1501739D6
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 22:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C8F2C0F87;
-	Mon, 15 Sep 2025 21:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA4329E114;
+	Mon, 15 Sep 2025 22:08:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LC4SiOp+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="efW0/HYg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D863A29E114
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 21:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517EA36D
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 22:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757973157; cv=none; b=eq9CPUeyctYDZTP3MyC1A1gIqT3jAsz24NO7StrQHUbJJXIFfsvB5NdGcLz3zDw4EbW6KwXlLYx0PU2rzuzgb/mKc1vPyWNund5ILKUnd3isJx72Vj4U+t7PIIVX5Nce3m444NOoUT1W0CoohAIKZKjb26cHdSOMWEgqduky5Ag=
+	t=1757974088; cv=none; b=ZZ2ytmT84wkm8towhtdSXXdDIcM4HEHUaI5LddugSiHT04Z5bL3zPwYaed1LkDe+wLQAOzH9CHpG+2vXnMa5w6hDzzhvLxAp7uPMvjqoiksUcUSBLn/Nw/9mKYJkUudY4UzAo53UaslBTpFD4lrAK66evT79Ubx7l2YFldd4kCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757973157; c=relaxed/simple;
-	bh=OVYq/zTK/MJo8p+XGKg8GEVah/o0sf/Uyioik6cc99o=;
+	s=arc-20240116; t=1757974088; c=relaxed/simple;
+	bh=w6JeAypw3raE2m5cxv+zakNvxAEpxnVROsaPCbKwd3s=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=edlO4AwmEoYh/RbV700fxXRNeTOTWxd+Ry71hjriUHID5k7IcX/kirw8R78EJn1ZB7Yb6fPAnNTQ6avadNEZeY2HQYsgs2NED3Y29cMxtXIDP1ATeKbnQyorpUoopvb2XEEpQ4vCg16Q4z6ijjnDh80rg2yhzD4LMu2Gdtlr8FU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LC4SiOp+; arc=none smtp.client-ip=209.85.216.50
+	 Content-Type:MIME-Version; b=C1UUhtm4/UAVodN7uX7tyn1Bzqc/58M9ps/tHqnZC1+Ca6+v8Nfs/qbU4pc8DIATclEEXCwk84Iaiuo1GadhCHk00rgxefitwjH1SwB5oBetUMpWbiSsNaYBaqwTwd49VawftkqEZ2ZkVrISlZvA+zlwfJb5y9Gkq9HbUvwkYkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=efW0/HYg; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-32e64d54508so1444508a91.0
-        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 14:52:35 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-77619f3f41aso2586581b3a.2
+        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 15:08:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757973155; x=1758577955; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757974086; x=1758578886; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Bmy68WaJMY2CpUy/xkhRt0jb6OfzRDq6Ee0t3we2+xU=;
-        b=LC4SiOp+EKf8t3B/BNLm2WEPNBVy2xzd6qx9oVrWhBME02PrghXdYaPl1Ndj5NvFFj
-         pbM+d10+u2YP3JVFvxCmeGktIt9AzwffJbFFaw/jB3OQS8tftmcPs7V1Kp0rFSkHCRYX
-         cKoDkbSv/hiMioopHjyFWG9UkbIupQSA2QONWepcYDB1WjxX7ED52HxQXbpsdvsNGgmd
-         66xTQ7nKtHyH6nVG1bRXSdZNN1X51SuAqqGAf4k2ddbeZCotgT5k3zBFbZ+llhZPXLX8
-         Ho5ju77J4j9ti1VVw/Iv1NgaH4hqTT66PnrMrBXv72SxqG/91jQDCp+gDY5vyQNBQ+hS
-         a4OQ==
+        bh=1ldvvXU+mvTjqdrozHnGxhGhhat8Yzx7FAdBgSgebLs=;
+        b=efW0/HYga7v9gtfTzqOWICnYmlghmuD4JkSPJhrbIMf/7utYn4VPz//TizQK7sXbSE
+         zwLYUC/O4/81caw1jPDuXH16RkFCV8EF63D94G/+Jtn9Y1nHbvmxqjrpgirnnsYB9adB
+         BYN4hzGHiMnDcUmlR5YgncSJssBXV5aBnxUOzTWuZj+Pi+U1TfznMMBn9xcrplHvdoF6
+         XzOqFABjnZALKLNG28HpRMm8+Aihe5m7gEC9n+xD0vqdpw4ImWcwtbLePQbSkFIrcHl/
+         GDznxtb7YY/wL9Gn5p5V8805+hSBRFAKn52O+agxB0KBQ0isi2mn+TJA/UPT/gPFbd6i
+         ucFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757973155; x=1758577955;
+        d=1e100.net; s=20230601; t=1757974086; x=1758578886;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Bmy68WaJMY2CpUy/xkhRt0jb6OfzRDq6Ee0t3we2+xU=;
-        b=iLV4g0lYTIY0Pqc5jIOdBv3A9mV6YPzuCHfLQt1KALJEcPr1ez16gfDX7gjXeJDKef
-         izrK3ITWrSYdMpMm4PcqfaJkN27/fgInfvN0OgEu1ZTXGqCm4r5aJCID9a9EROrdnDxq
-         +Wp9JVQF22LMp/n01QVCGQN7CtXXClNT6xzx0MZ9Sa2Mzxw3RJs1J5TSGtpLlF1Q7ks1
-         3TZqsgUWe4hwz6z2SbLs7hf+KHw5wz+YCWV35sO/X5e1gW+PRnUu2yo0Z5dHUk3WDAem
-         8mbieiswGFf+IQ1dJADwRwm0o02RzL6rgotxrLsY/Aa2GhdBSbBobOXc2xnJxi4p8SDh
-         KmoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVVFQljNmS/iiX2C/D5sy/yMB0t9lSEgOlXEtojDyPIQwrVwZ9uBeHN2uHO1GMq1PplRQ4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbWIOaHRIIkU0we3BFbJrkTmUXjotymLXtsRwzdYxoQ1dKFVZe
-	v9FE0h1sxYd68nZFYw4CMChvRiRRiJE069kTnDdoVU3D4RtSnRX2pg5N
-X-Gm-Gg: ASbGncv96r6KNAGk4z8qYoBe7GvVvG8/kiehqT8r2r+y0lH4QLXmrWImDk1TgkgHSno
-	tpz1WX2J+lOu2RIpOYoQQ0U9p/c8yEVBg2n8ifzQ7sj5j+rNfl2t3HsvpkzBr7SqC6RTSq150/b
-	LHobRi+tpIA3rL5d8VhO0xrVWFt5URWIQN1Lw7wXHqE7XQIa5tiX7VN/D/S7wI0TlIv+hNLStbG
-	r4h50ZCk9AunZqE66nNIaCTkGBwPoZrrRq2AbPDUn6zvioHLVHJdd4B41es7JSrn/T93Bd+BnUq
-	R84EQ3O1TnT+vVjLMneqkP73Pfe60g9baDOhXQnbeoA24aEe+NHhwbG60xtElpp6mIuHPP6M1y7
-	GsrqhyxdKHnUwpNk+vK2Ywl8dJt1qlLYAS8+2zJIgHzvRBw6Zo833xskP5ahubekkaHdMiw==
-X-Google-Smtp-Source: AGHT+IGMW8g7mDbNO48Q/JBm6D3nvYuzVkF/3neR9WrAB0m+ETAtJwPiBFV+IoWi45kF8jb1sTlKmQ==
-X-Received: by 2002:a17:90b:2dc7:b0:32b:9506:1780 with SMTP id 98e67ed59e1d1-32de4eb880dmr15282655a91.9.1757973155044;
-        Mon, 15 Sep 2025 14:52:35 -0700 (PDT)
+        bh=1ldvvXU+mvTjqdrozHnGxhGhhat8Yzx7FAdBgSgebLs=;
+        b=qk9/GHuW0XfW13oEBt8yb+u+XChCV0AfiYuHJHMPIU7uDPIvi+szNNd/dSvhx6Mt17
+         HzicFb/ru0sgMe/7CIyqIIfpyUVCkcDtvlNM7eAx3bBn4uANIS5m9twkctOPe6D3K24e
+         LKavKU/lth8bqwoY7SMl3FbIROs3EuV/pMLbPzmifG8NF+UdeL5yUDUHk5e3gjBVf1bH
+         BJFxVzrVTiTHiM42fYdm2wnjVlxkpxdGLuh5Ak9yBxlub57Tnspy1BZW9rR86vBLrRq+
+         8aTStMqGGrbuXJomfgk8AMMr3QiAFSsipoiPAb0RVEa2rgzLIcYKPI0D8BqtaQedd5bJ
+         WbTA==
+X-Forwarded-Encrypted: i=1; AJvYcCWk0/ncH92BPGQM831rJSrOH5LdY38aRd0vyk3Vx0n14Z1Rh/eOq7VZKrsvKEQj4svr774=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxvFF679jcXxORaLuraeQZ+CWI07AEzlDOafYaBqbitm1VrZCgo
+	QNj67QlZ5kviNaqm0Q8VVCfLqEQzFy2fi+H9x//QWYFar0EpFMLRqtqH
+X-Gm-Gg: ASbGncsz30KBiKKE1gPVe2Yk/6NWyZEKFH9J9ebqdZPY+s8eY46tbtBVGn8AwyK1QOA
+	HXKWZHz4wTTyXFD+aC7f70h8VJL4Zn/ZPdxvgSv/G6OOCWPfp69fnFFggQv1Gm0AHHRsTY3NUCJ
+	UIqgf3d0TOG/SBPAh1wn9ohuhP7Oug6r+zf3mupe2JgQoQIporTRFtbDPa7OTN1fzA4hFtN62c8
+	dAiGI2R7JEN11Ag26HfZsLOpQROwDxO8vjoRldmc9HCrgDd2D+a5aKnq1zBOUZPgCDnJJxAA/Uf
+	m8miS4fl/XoxdfntFqMnnYzeXdaWs+gTDNmNerhutNXy4ugeDjpqRd5LAYNoXq6weBxxSjBFXpF
+	r4mrg7AhU+JSVpH1bWt92hFPOkDICfYh9ifyTADuaqo6zqW8W
+X-Google-Smtp-Source: AGHT+IGAJ2dRBodhuw9SSSSW0/ULhFLVO2Fsl38gBw+QRiAnE6ysqPd17B7KpQBdSHYci5TvGNE2pA==
+X-Received: by 2002:a05:6a00:139d:b0:772:63ba:13b with SMTP id d2e1a72fcca58-7761219c183mr14003938b3a.30.1757974086536;
+        Mon, 15 Sep 2025 15:08:06 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:1da5:13e3:3878:69c5? ([2620:10d:c090:500::4:283f])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b54a387cc5bsm12470037a12.27.2025.09.15.14.52.33
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77607b18419sm14285875b3a.67.2025.09.15.15.08.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Sep 2025 14:52:34 -0700 (PDT)
-Message-ID: <ff4af621e5468144eb696169574e59fd24eb356c.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 7/8] bpf: task work scheduling kfuncs
+        Mon, 15 Sep 2025 15:08:06 -0700 (PDT)
+Message-ID: <630c851aa1116660b20270dc7115c841d131a222.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 8/8] selftests/bpf: BPF task work scheduling
+ tests
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
 	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
 	kernel-team@meta.com, memxor@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Mon, 15 Sep 2025 14:52:33 -0700
-In-Reply-To: <20250915201820.248977-8-mykyta.yatsenko5@gmail.com>
+Date: Mon, 15 Sep 2025 15:08:04 -0700
+In-Reply-To: <20250915201820.248977-9-mykyta.yatsenko5@gmail.com>
 References: <20250915201820.248977-1-mykyta.yatsenko5@gmail.com>
-	 <20250915201820.248977-8-mykyta.yatsenko5@gmail.com>
+	 <20250915201820.248977-9-mykyta.yatsenko5@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -97,84 +98,126 @@ MIME-Version: 1.0
 On Mon, 2025-09-15 at 21:18 +0100, Mykyta Yatsenko wrote:
 > From: Mykyta Yatsenko <yatsenko@meta.com>
 >=20
-> Implementation of the new bpf_task_work_schedule kfuncs, that let a BPF
-> program schedule task_work callbacks for a target task:
->  * bpf_task_work_schedule_signal() - schedules with TWA_SIGNAL
->  * bpf_task_work_schedule_resume() - schedules with TWA_RESUME
->=20
-> Each map value should embed a struct bpf_task_work, which the kernel
-> side pairs with struct bpf_task_work_kern, containing a pointer to
-> struct bpf_task_work_ctx, that maintains metadata relevant for the
-> concrete callback scheduling.
->=20
-> A small state machine and refcounting scheme ensures safe reuse and
-> teardown. State transitions:
->     _______________________________
->     |                             |
->     v                             |
-> [standby] ---> [pending] --> [scheduling] --> [scheduled]
->     ^                             |________________|_________
->     |                                                       |
->     |                                                       v
->     |                                                   [running]
->     |_______________________________________________________|
->=20
-> All states may transition into FREED state:
-> [pending] [scheduling] [scheduled] [running] [standby] -> [freed]
->=20
-> A FREED terminal state coordinates with map-value
-> deletion (bpf_task_work_cancel_and_free()).
->=20
-> Scheduling itself is deferred via irq_work to keep the kfunc callable
-> from NMI context.
->=20
-> Lifetime is guarded with refcount_t + RCU Tasks Trace.
->=20
-> Main components:
->  * struct bpf_task_work_context =E2=80=93 Metadata and state management p=
-er task
-> work.
->  * enum bpf_task_work_state =E2=80=93 A state machine to serialize work
->  scheduling and execution.
->  * bpf_task_work_schedule() =E2=80=93 The central helper that initiates
-> scheduling.
->  * bpf_task_work_acquire_ctx() - Attempts to take ownership of the contex=
-t,
->  pointed by passed struct bpf_task_work, allocates new context if none
->  exists yet.
->  * bpf_task_work_callback() =E2=80=93 Invoked when the actual task_work r=
-uns.
->  * bpf_task_work_irq() =E2=80=93 An intermediate step (runs in softirq co=
-ntext)
-> to enqueue task work.
->  * bpf_task_work_cancel_and_free() =E2=80=93 Cleanup for deleted BPF map =
-entries.
->=20
-> Flow of successful task work scheduling
->  1) bpf_task_work_schedule_* is called from BPF code.
->  2) Transition state from STANDBY to PENDING, mark context as owned by
->  this task work scheduler
->  3) irq_work_queue() schedules bpf_task_work_irq().
->  4) Transition state from PENDING to SCHEDULING.
-
-Nit: having a comment explaining that this transition is a noop at the
-     moment would have been useful, imo.
-
->  5) bpf_task_work_irq() attempts task_work_add(). If successful, state
->  transitions to SCHEDULED.
->  6) Task work calls bpf_task_work_callback(), which transition state to
->  RUNNING.
->  7) BPF callback is executed
->  8) Context is cleaned up, refcounts released, context state set back to
->  STANDBY.
+> Introducing selftests that check BPF task work scheduling mechanism.
+> Validate that verifier does not accepts incorrect calls to
+> bpf_task_work_schedule kfunc.
 >=20
 > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
 
-fwiw, the implementation looks good to me.
+Please don't drop acks.
 
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+
+>  .../selftests/bpf/prog_tests/test_task_work.c | 149 ++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/task_work.c | 107 +++++++++++++
+>  .../selftests/bpf/progs/task_work_fail.c      |  96 +++++++++++
+>  3 files changed, 352 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_task_work=
+.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/task_work.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/task_work_fail.c
+>=20
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_task_work.c b/to=
+ols/testing/selftests/bpf/prog_tests/test_task_work.c
+> new file mode 100644
+> index 000000000000..9c3c7a46a827
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_task_work.c
+
+[...]
+
+> +static void task_work_run(const char *prog_name, const char *map_name)
+> +{
+> +	struct task_work *skel;
+> +	struct bpf_program *prog;
+> +	struct bpf_map *map;
+> +	struct bpf_link *link;
+> +	int err, pe_fd =3D 0, pid, status, pipefd[2];
+> +	char user_string[] =3D "hello world";
+> +
+> +	if (!ASSERT_NEQ(pipe(pipefd), -1, "pipe"))
+> +		return;
+> +
+> +	pid =3D fork();
+> +	if (pid =3D=3D 0) {
+
+Nit: still no check for negative return value.
+
+> +		__u64 num =3D 1;
+> +		int i;
+> +		char buf;
+> +
+> +		close(pipefd[1]);
+> +		read(pipefd[0], &buf, sizeof(buf));
+> +		close(pipefd[0]);
+> +
+> +		for (i =3D 0; i < 10000; ++i)
+> +			num *=3D time(0) % 7;
+> +		(void)num;
+> +		exit(0);
+> +	}
+> +	skel =3D task_work__open();
+> +	if (!ASSERT_OK_PTR(skel, "task_work__open"))
+> +		return;
+> +
+> +	bpf_object__for_each_program(prog, skel->obj) {
+> +		bpf_program__set_autoload(prog, false);
+> +	}
+> +
+> +	prog =3D bpf_object__find_program_by_name(skel->obj, prog_name);
+> +	if (!ASSERT_OK_PTR(prog, "prog_name"))
+> +		goto cleanup;
+> +	bpf_program__set_autoload(prog, true);
+> +	bpf_program__set_type(prog, BPF_PROG_TYPE_PERF_EVENT);
+
+Nit: still no need to set_type.
+
+> +	skel->bss->user_ptr =3D (char *)user_string;
+> +
+> +	err =3D task_work__load(skel);
+> +	if (!ASSERT_OK(err, "skel_load"))
+> +		goto cleanup;
+> +
+> +	pe_fd =3D perf_event_open(PERF_TYPE_HARDWARE, PERF_COUNT_HW_CPU_CYCLES,=
+ pid);
+> +	if (pe_fd =3D=3D -1 && (errno =3D=3D ENOENT || errno =3D=3D EOPNOTSUPP)=
+) {
+> +		printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
+> +		test__skip();
+> +		goto cleanup;
+> +	}
+> +	if (!ASSERT_NEQ(pe_fd, -1, "pe_fd")) {
+> +		fprintf(stderr, "perf_event_open errno: %d, pid: %d\n", errno, pid);
+> +		goto cleanup;
+> +	}
+> +
+> +	link =3D bpf_program__attach_perf_event(prog, pe_fd);
+> +	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
+> +		goto cleanup;
+> +
+> +	close(pipefd[0]);
+> +	write(pipefd[1], user_string, 1);
+> +	close(pipefd[1]);
+> +	/* Wait to collect some samples */
+> +	waitpid(pid, &status, 0);
+> +	pid =3D 0;
+> +	map =3D bpf_object__find_map_by_name(skel->obj, map_name);
+> +	if (!ASSERT_OK_PTR(map, "find map_name"))
+> +		goto cleanup;
+> +	if (!ASSERT_OK(verify_map(map, user_string), "verify map"))
+> +		goto cleanup;
+> +cleanup:
+> +	if (pe_fd >=3D 0)
+> +		close(pe_fd);
+> +	task_work__destroy(skel);
+> +	if (pid) {
+> +		close(pipefd[0]);
+> +		write(pipefd[1], user_string, 1);
+> +		close(pipefd[1]);
+> +		waitpid(pid, &status, 0);
+> +	}
+> +}
 
 [...]
 
