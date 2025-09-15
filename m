@@ -1,102 +1,81 @@
-Return-Path: <bpf+bounces-68372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 508B5B56FB6
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 07:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96C6AB57018
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 08:14:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 987111897E8F
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 05:26:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E712F18994D0
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 06:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B6B248176;
-	Mon, 15 Sep 2025 05:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28F527780E;
+	Mon, 15 Sep 2025 06:14:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ZcAfKFF+";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="e74QhKD2"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="XLpWrbav"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2085.outbound.protection.outlook.com [40.107.96.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C856FC5
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 05:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7782E10FD
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 06:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.85
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757913977; cv=fail; b=LVIK1DvXuisowe7eyK0gcYtyYs0LVyxDHwYxtISxnECXFktLSqF9sMxyKF0ATFEQqRQBZZFJxZlo2yEcoe4RD4mIBuMUgQ1+0JOD0U/DoOoSM30pkrwICXQMdbTRCrpi55+2zagqP0lKkn2EYhlbNrNP6S2rHxRhCoZSE2HIMVE=
+	t=1757916871; cv=fail; b=f6UOTe6PJv/zql3zZaJO31j8+b6nGI9tIQvlHfkAGuDK5MetV5rJI3Byradda33K271sB5G+Jm+66t6Fr2wFbSSxtPLXheeBAzOaWYB9eFmfPLAnafwqq7hVG/rSWdSLpNDTRnI064QbVsF51zJT8dqvMD3MEY0O1n438GOZAAA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757913977; c=relaxed/simple;
-	bh=kVbgv9fwFP2kr8icPYNpxFKuNzeF0+0ojCouoHmavEU=;
+	s=arc-20240116; t=1757916871; c=relaxed/simple;
+	bh=o92QTdZuarsoO9Dzvu2xIEjjXhqllXDerbYBaahh2Ok=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=csYqN8fJYhBaIjceAdUj0LxjTu/ym+1S3HBimeXSn+NUjGkaSFNQ2VlpDL0FzMIzk6vaJnQ/jlGYvRzXj1phl2KvJ6BIFY7IyTqmgTF2yLvK9y1lv/noz+s55R6z4u2Zk7EqfMpZVhz1jzT0qhwukkfS2VKpjoyD9Nb7/ObCvfY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ZcAfKFF+; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=e74QhKD2; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58ENmDTW018645;
-	Mon, 15 Sep 2025 05:25:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=51U572WIwO4+/fy1rE
-	QiREDlkH6+NT5VmECuRI7o6ws=; b=ZcAfKFF+G8S+O+t1lNlAydz6m2mTi2k99J
-	WuzwuiD63pdJlg8G9+cFFevGKcLUs075Jgv/cfkEqf1lDxms72pTVU32vuUfVyK2
-	jASQ5n8cC5XKw/JnM3/O6FqrpHgNmgJ5V19KleR7JXwiIfbgkXPSIddzztAs19xo
-	Gzp4kLUsIIpy4JgEdYFgDraIrencCNPwVuT4KKMQaOrVxB1nceeI3O7kqKfSbCvD
-	xNy8DxxSkTgMqWoQr78blHKlqYYfkvXJ48+dGa04NQPeJqCeUF0ny6Kbw+GpmaEr
-	BwmkdxMdvIH02GKzVBjzFt8EBajuIpJjKSzQJaxFFi3ARJ4Ermsw==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4950gbhg5y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Sep 2025 05:25:38 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58F1smJg015151;
-	Mon, 15 Sep 2025 05:25:36 GMT
-Received: from cy7pr03cu001.outbound.protection.outlook.com (mail-westcentralusazon11010047.outbound.protection.outlook.com [40.93.198.47])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 494y2gtqdn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Sep 2025 05:25:36 +0000
+	 Content-Disposition:In-Reply-To:MIME-Version; b=iaF8gQ1K/ekDZmXbWI8Tl8QDnSCrOZq+SNddA7MSBccBpBkZgEDs++z9FAwpT7XgGwIrOk8Lh55z4Y8C+VBWbqzl/ln0JxxBDF6X63uXR7Emr8TrqbNSSVOppWrmoHc2UAsJrSmuX6Jinw2wNftKyZfK4L9iFAxVCNl12wzrfrQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=XLpWrbav; arc=fail smtp.client-ip=40.107.96.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=C8UZWImWxFujqf5qUbLyP+4+K5YdJIm2xVMEwvvOFvLB7yPWj6TNjyrnKjuTN4SobYfm2NjoME9zmcQUr1O74m24A+EUyHD91XQxljCIASTbgOnLroaVJiWE/Y2JRJfY26MlX67dP/vX6mS+90opbbZl3H2PAz4DKL9EjxzMT/AvaTXpP6vA6igccN6axsqkFaDHKNsmbiCvmQe5TG6r7iyQmwHirt6pxKbgNjceRCUQ+2yd2Gp29PkSGM8nSFMT+aNzyThwLL7CuTVXHEIuHHvU8RhC/wmJhtWwvXbJjX1uUc9AFKxxiOau/vIaJJqfmnsH6G6W3nxH5R5w9+b2rw==
+ b=Dlsb26DlanA/JTm4uk0k06Pt4rc/tePXRFjEstSltIvzwQ2u0o8mhk9xyQz5LB/uYUbjH8zvY57kmwnifi+CkZQwY72hMwn6p9kxKmKixVc2KDr05vmbQZlzgvX+Xk6beCTNElNaRvWZgX+wylPFYLQxifprAkmZsaaAsn3ij1C8P7z0Io8QummvvowVNLrdXZZtxZYkduDTfYS3kBIdzwKi6q+TKIV6gTt7yn4SM3l5wSqHj4LEq778WoMg1+7LlsRSDGAC8zUMY/WcY1Y0yk+0o3NV6uLZ7Z4l9vI/pTzLQvp10VHpfYXFA0Z0wkvGBisClhjDZLGs2LeQQMkILg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=51U572WIwO4+/fy1rEQiREDlkH6+NT5VmECuRI7o6ws=;
- b=TnRiEHKtiDFWdM3uLOrLWqzuLXM51GMQogwqsuvBFLgqnIhm3Tu2hHp/5I4mt6cMgW/R2JS9GWnlq+6s7ACpt0JVD7sA/+LH+JosDaN9BxOgrSLALt12td3hiC6/oOUW/Y0KjyHv4toitQJDdLsrAj02AIRYjUzk5rAeqdi3YsFtuvOxEE0M9mUm/ID0yJzogm4eFaTXNTQS41Gwa2vMo8nStrnhtkP9bEC3BliqWcLzpj16ulOQNkZbp7toznJu5XdN1a52stPHSNTz/ZZSijvXJJtsOsMEeq6acAn+QC9PL54t2kgadLu+zW1d6vhMP2BZKdJIPu/cVxprBGF6FA==
+ bh=qyVWI9dnPj7R7ciSGo/DrX9p4X1pTI/EKDa2L9omrv8=;
+ b=tVmBh3At84DTfcLgn/nOjeg1f9CUQ3aqEQ9jG87lGaczg7IHzIzjOWRC/Na9EcSwGfmaerpi73M6k+yOb3NI4UufMWPAqHEw8ZB6hAVGhBZ8wJK7BLqVbTP/1+hTlam/jK7dfJHkaSXNKZn3K8AlasyMIP3oAimq7hNx2I44N5rlpgLD0XufvcpUN/rbYBoTJfwXp/bCmfk7VfFM+X/Y8LGGJAbPTE+okwidLLKRt/N4jy6OCwaFeNTAN5o3ieBmEVdGikvtFe9dxXmRSNmgRFE/efOZMMdOlK4dB2oK/YvaXi7dvPxjzCRyJDYDG/BXnWrewWejkYqIeIH/+ibzLg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=51U572WIwO4+/fy1rEQiREDlkH6+NT5VmECuRI7o6ws=;
- b=e74QhKD2UOyqQThPI5+Y4Vr5btHUUbZXuoRc/spSE3jixzBu1toG95lkIZallD4x8Hw06CbWkmE4b/dcnNcqQd16IagrLoayS2cQMUBcoPNtBg7wFAFCpTTFAWMJ0MuSdFOHlW3lCXG/IhyQnUDlKbFmR39N/btrpdTfO/7TnHg=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by BN0PR10MB5142.namprd10.prod.outlook.com (2603:10b6:408:114::21) with
+ bh=qyVWI9dnPj7R7ciSGo/DrX9p4X1pTI/EKDa2L9omrv8=;
+ b=XLpWrbavoUSOAAeJoQR/gZaVT9n5Zzyej5nE60SvteiTY3IDedT3voAfrf0Ny6FKqDV4XXl3QYbQaH/Y19b/UdmCK9DzBv+w/hc6zGKYJLvhzx0iEKSXEAbIo2LIeObD1/5GFtHUD1sRCwK7ZqBrsY7bpln0Yy1TUWCmu8Y+2nrZ8KW6qlf9wiqyAXWxGus6NBFGAPzyryn1+IZD5NZANNhqHFjwEGfBaHU8vLf4H9FwHomiQjaNjSw4b7sQ42eWtWtpxXAr7ChM8TAMNAwG5N1dEvTjnYkquK2AsqOageGADI8PQiGaE/dicv94pWCaCHkx6o7z0bN6G++Kb180eA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
+ by DS0PR12MB7629.namprd12.prod.outlook.com (2603:10b6:8:13e::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.22; Mon, 15 Sep
- 2025 05:25:33 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23%7]) with mapi id 15.20.9115.018; Mon, 15 Sep 2025
- 05:25:32 +0000
-Date: Mon, 15 Sep 2025 14:25:26 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
-        shakeel.butt@linux.dev, mhocko@suse.com, bigeasy@linutronix.de,
-        andrii@kernel.org, memxor@gmail.com, akpm@linux-foundation.org,
-        peterz@infradead.org, rostedt@goodmis.org, hannes@cmpxchg.org
-Subject: Re: [PATCH slab v5 2/6] mm: Allow GFP_ACCOUNT to be used in
- alloc_pages_nolock().
-Message-ID: <aMejRksTtWHPZijG@hyeyoo>
-References: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
- <20250909010007.1660-3-alexei.starovoitov@gmail.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Mon, 15 Sep
+ 2025 06:14:25 +0000
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::1b59:c8a2:4c00:8a2c]) by LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::1b59:c8a2:4c00:8a2c%3]) with mapi id 15.20.9115.020; Mon, 15 Sep 2025
+ 06:14:24 +0000
+Date: Mon, 15 Sep 2025 08:14:18 +0200
+From: Andrea Righi <arighi@nvidia.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>,
+	kkd@meta.com, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v1 2/3] bpf: Add support for KF_RET_RCU flag
+Message-ID: <aMeuunTYM8c6jp1m@gpd4>
+References: <20250915024731.1494251-1-memxor@gmail.com>
+ <20250915024731.1494251-3-memxor@gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250909010007.1660-3-alexei.starovoitov@gmail.com>
-X-ClientProxiedBy: SEWP216CA0057.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2ba::18) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+In-Reply-To: <20250915024731.1494251-3-memxor@gmail.com>
+X-ClientProxiedBy: MI2P293CA0006.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:45::18) To LV8PR12MB9620.namprd12.prod.outlook.com
+ (2603:10b6:408:2a1::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -104,122 +83,183 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|BN0PR10MB5142:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9124abd4-df2a-4634-1c7e-08ddf4184ab3
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|DS0PR12MB7629:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4bb35be6-7445-4db5-0658-08ddf41f1e43
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?kdFcN948Qf8vSnGIGm9KMDiMfOPFzNb6/bv8xI/OzhvkbNw0dCY2oB5JW2cO?=
- =?us-ascii?Q?mMVWz6QYjD/sTMnMg/zUG0mDaIwAkGrlh/fqJYkHHyJeCvlH9cdP3Hoku1wG?=
- =?us-ascii?Q?Q9DWpHlYqm46Zr2kuTZH/7oQ6eFSp8VzKHsihhoqjfwBfVWlfQD7CUUL4pVS?=
- =?us-ascii?Q?FjZratmkyCEbEdjbWSEnXaYXeDMSZywQ8VY2uIKOHbuM12ONICYV6u8xrneL?=
- =?us-ascii?Q?YV7w5f/zFheIAt28KCYOg0oI3mR0/AjqtJc2PrIBkAVcGhazzU5LjCwELFWa?=
- =?us-ascii?Q?8e2sPmZy5ABliGSk6cYy2E/egFaxllzJc4mhQAlwnvjMBG0gCNuiHZJD6l85?=
- =?us-ascii?Q?1Bo97zSbOqdUSlvI8HYI1fvy0mEhiTx/iN7WLLfxTDs/RSfZkjf0Wmbi3RMn?=
- =?us-ascii?Q?gN9fYdWNR9vuBMjZ6xAR7MCQtewHkrXOmT4iJ5iTjnu5SUVjPZxhJRVEcVCj?=
- =?us-ascii?Q?92R9inbCDBEU2KSOufcSo8SBnA8coZ0uJC0oiqp+TTSBznG0o/ctGbRIVXmD?=
- =?us-ascii?Q?5HC7f65gcHdIOUpemQCqrVbeCBbBYsctFy7nPhjXzTigred5dQOlnbCQKEFs?=
- =?us-ascii?Q?/ikIUJv7PETzFTja64rpPlIEH4qqekXXMWnlcT+CinhcUhmC3IrBROzGtuY8?=
- =?us-ascii?Q?MyrcbHZ/GR2PyrcCspfMxCz9UdkMU/ZmwCIilr2ukZshfc4q7RFqAnwdVe2C?=
- =?us-ascii?Q?/BaFTfDWvPGt99H1yXPZgR9cHgj70S0FbeNevsOrcajk6IhW1tjg0S+7ifba?=
- =?us-ascii?Q?YnVNRpzFsmbuWPVCdbP+CaEJbjKaFxSMoOeWCfr3dnuVMutoePieKzs288r5?=
- =?us-ascii?Q?TIxsv6+AG/LLHGoej54SeQsvvlIincYfjW1+LEiCYodRcgBhAvoLvqbJB6To?=
- =?us-ascii?Q?51DXP60f5z0dzPYeGUMd3MkD/4KCmcdRN+cNKkBObBkQjlOwtrxr2yFli9w7?=
- =?us-ascii?Q?aVcaqNG60NmVs+LnoVAMT5wRRVO3Uob6KysdHZhh+5uvpCASlXujMG3g/Um2?=
- =?us-ascii?Q?Ky/IcJ2PR8IkelmNRCgjHH8BpS5DbRu7PpSFfONoFJgobcGoAnuDevI8O1SO?=
- =?us-ascii?Q?YhkSwM6QZLNHcbdLHsfAJF1Ck8gaCn6+Idr2NTBrkGY6QeUMnOSjEfLinJHG?=
- =?us-ascii?Q?QpsBWYu/x4ki7O+3F7xu94g71XEI/EEBKD6eVKVoQVmQ4OtMK40WDge0KbKS?=
- =?us-ascii?Q?zGx8/3FYX5B1n++ME1BiVx2wnFpSfy/+KePt0x+H91s/hlPRq4nViZ7wOu6Q?=
- =?us-ascii?Q?xwyv00f/1odorEBOQyoU5SNmjo7J3Sl9CSaiS6kSYTcJDqzBlGdNyZjqU2LM?=
- =?us-ascii?Q?udO6DPDsLd8REP6DHyghHNpUOR17QFzp1Ocsnq+qieltLpTSbxU4xl/1wjzV?=
- =?us-ascii?Q?Q5KQQ3CKZVGJTTVTUdI+YDs3F8SqCWMJ6D0q+CpzXSiWR5+BChpaZ7yHJrND?=
- =?us-ascii?Q?1ElOS5k1w2c=3D?=
+	=?us-ascii?Q?RifWF48AVYxT6Rb47KrLwuKvheemHP0N9WrveGek8axRdzPkfkVMe2XZEquv?=
+ =?us-ascii?Q?tIxQP0vIiirQuVP2FGTGEvY8ilV1rsTtIbQQ9mcC9nNuWdxvGWEbw1nPOZLo?=
+ =?us-ascii?Q?Gq3NUmRotj4bMdLiC+Am8AY8RcgZZEoHrdHsDKtg3gohpkfjzBw9u3TWWYQB?=
+ =?us-ascii?Q?d+2reymJ62hpJH+FE3fAxupAjqjFv4WeQ7Ba8CDUOLEDSy2Two36dd9oKdw8?=
+ =?us-ascii?Q?pWzAoKjRetWH3SzyGIlxt6966RdJc6x2/aJn9fNefsVTtnIUGocBlCB4aXV3?=
+ =?us-ascii?Q?6K/xlg4hUFq8HLTqU9QYuOd2dCRsx9UHWrnSqcHNCNEkvynpwVQESErGmyYK?=
+ =?us-ascii?Q?p2N2rlUL4IhVCOV3s68z0PNOGdfUAyWPqp9rYbfDKOPdP9KAjq0BIgR8veLJ?=
+ =?us-ascii?Q?K1EWJEDMinqshPCU6rsWqTNBcFt69jNvT36cYMqCip6NpDA5CsfWTH7XIqK5?=
+ =?us-ascii?Q?ojnZkQohFu5VUuVxlydMRpT9dxc8x5VUw4l6vXsi8UXpbSqP8sndfMMD7Zc9?=
+ =?us-ascii?Q?M1Yq6OqdC2HdmyipSXDS9deV7A30sq7xn3uQMVmmK8A4neV3UXKt0KP9cF51?=
+ =?us-ascii?Q?Bfvx1jTse4sgCBmYRslellC962oQAdvnxTKyDJOda1OVpD8liHiXiP6wwOpb?=
+ =?us-ascii?Q?w84tbfNRmQFbxQGRbgIFM3/7UjN9AE1sPUrfCBHLXNZbmnGvzdoME9VOLdLZ?=
+ =?us-ascii?Q?RyPeyxYkNY9jPZmpl6Tq9KHuP5wHVH1H5+E7WXJc0XplXPDE3XZ93g9kFqE7?=
+ =?us-ascii?Q?E2D6UD3CM/nEn09wOjItL3i4sIW13sZUeKse1/uos5Zy88GcLPlcqwuPAz7b?=
+ =?us-ascii?Q?zQc1DBc5KKIJnPJgh/kg1BJ9W6elpOWnTf7+ap4Nhsxiaqrnd8VroAkv47lQ?=
+ =?us-ascii?Q?d4RmID0KiqQbJcfwQVoHLuh5UNVRq/Um74n+31h0xL95NBjNt2NG2e/KDtbg?=
+ =?us-ascii?Q?JHF1Zhf1YGWekYw69hgE55QWk7ZLNgX045qQsyEznpVAxLiUPRrF09e1K1KQ?=
+ =?us-ascii?Q?+E82neNL4lyF5ruvE1CMMz3oOl4pCQZzQpL4ZvAK5BmfC4qsbbiEG/ew0GJP?=
+ =?us-ascii?Q?D2Aexnbgi3fCFAFaafdW/z8H+Y6Xxr0SyiLQb6D4rh4tk4zVEkEMW57F+GCr?=
+ =?us-ascii?Q?ZBeRUoaGGSVWo20C2IXER1tje4ccf/K1Wmp53Pib5adY5wMn3Fq7/FiectwY?=
+ =?us-ascii?Q?b1sxLuDKFsLrLnKkoJxU3dSWfJum1EAA8SEtql/xgG8d6Z5dJKOXiy9Y+0qv?=
+ =?us-ascii?Q?rt+kEgLswWDauy5TxcOJubXOFmdsa6PhWfLzscrtt/NuGP3paDUXTk6Z94m8?=
+ =?us-ascii?Q?RxC9v0+9rdQfE6D1iPzM9ZlkaZIGUpSSQEw4NbD/7zD1iHQ5vPfKKCLB1wBq?=
+ =?us-ascii?Q?ihuskCsQlz685FUHdi3peJ0C32XFRvG138Nqr9LP4lKSQeKL3ubJK605vYtE?=
+ =?us-ascii?Q?12DkA4tm9qA=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?GBWhOAFs/cH76KnNwLsOeXvTQoET/y8fXLU4w6TCOwBauKGUPyfYOr+TVubS?=
- =?us-ascii?Q?sHC5M6YOb1tpx2OPuP4szXQh8QWqGoTs/NDyQUBklV/56t2dm1IZ0PqgO0wX?=
- =?us-ascii?Q?km0WZ5/q6lwfwE0JnH01ybCgOY/eNlcKJhMeCvQ7BRd5swc++CAfWpQOJHvy?=
- =?us-ascii?Q?1y/He8hBsODwA4avwz0aD4NRs7Zv9uxnSDXfyHGeZm0fpsRdERdcUFZLHF8w?=
- =?us-ascii?Q?2tUC4GYtBSJgkbzAh4bqmkdXCDplvi+gs5oZPhQEEhr+mpUGzDIK5I+L/jD3?=
- =?us-ascii?Q?YIJMBy90wzgKWVjkOkfntaiIn8KLCHhA2fdeZuef0+Jx/6XpZxC7rZG1I3cD?=
- =?us-ascii?Q?qgtl/2gUJDLiKNRffVHDdjOTHfUt1IhJWhL+vuyVOeKjoK92DahwH8rSNMNt?=
- =?us-ascii?Q?pKQGtveCCZeZ6QHBaJcN7/Q5tOQxkqCcfvzysMncLZNev+wDhLngwPvO+I6y?=
- =?us-ascii?Q?MbYTFw6Uz8+HqT4chidW0qqIgiA6Xatt4c33zbI9mqqIUb1MOhaBg1Gmllkd?=
- =?us-ascii?Q?net0vv7bx3J+u867HWb3ufsn1Y1sRGGAJHaJKELwse+5htiwzBZ34SXxPnlJ?=
- =?us-ascii?Q?EygGbLcFpgRroej+cBgHe+gUaVEbiFCHgQ5OHppjLmLfzuLWblEduGRVEbIE?=
- =?us-ascii?Q?IJ5a3a8MUqBIgM/xnYUKlh8gbaMKDsA0xxoiJkywKGyWUilFeCJwOXNYYukw?=
- =?us-ascii?Q?RPMV4hslY9JRApQ9/WUbJ/rgxZ5KBOk46m2shpGcC4H/KRzs26PGVn0e9tm4?=
- =?us-ascii?Q?v6ttgndtXxyUqdRum/CgHYg5c2441JdwQ7kNTBdRZnjiWjfLiYev8rRZI4NZ?=
- =?us-ascii?Q?RC7PU8ezw7JGTr0UZd5ZgMSHTuT+AoNgCyBpjt7bIl5y0nZ+IxDtdgl1Nxa5?=
- =?us-ascii?Q?+unJerqFrOvYhT+ikqsSVhFM1glQkiiiEPTETbuQTALYQLP+Sa2D0tq6Sskg?=
- =?us-ascii?Q?RP9R4as+j7p7QhCQ54sryncBzm5i8iZ8VYRnuQ25DuYUNznpxjjtb0QeJKSa?=
- =?us-ascii?Q?/gIpa1Wn4pfZK7+ERdJCU+Mr26BZP7cInSDAbEu5dNf1eOxjHCnIYee3lbIH?=
- =?us-ascii?Q?25xTO5yqv5T2AHq3KaoqgMml6r9CtSbzkyEPXWTJvVTvf9jB5TV+FszXLfsX?=
- =?us-ascii?Q?1IjpKlPMgotTe6H6FOFsGg+d43YPBEKom0fb4oNG0E33abausoVD1F4pYc2k?=
- =?us-ascii?Q?Ly85sH00lXF8ajR/YdhgJKNAg0kfb6lPccaPFBF+CZEJIjl8UsP6C+QZ8zkJ?=
- =?us-ascii?Q?zi1l5oKIHG8YIEckm2uD2Jvx9OjbKMvxeYW2SYtPjhRzLhTPt9mT0tLHriBe?=
- =?us-ascii?Q?2jQEGB9jKqEcf4dc9mBEzbYpOKSBFDGSFuq8d+hPjhjyRgj6oSA/W1cv2UjB?=
- =?us-ascii?Q?Uw9gyMIc33yZ8pEL9Z/O9hj82UK4uc5QKjz6ibwogfcqtGvKJRoOh9SNAVbC?=
- =?us-ascii?Q?Jlo3NfffdAaFco466dboGijRypGU6RNTBWFlNX51fPLy5J6kmGqfwpD4zzcO?=
- =?us-ascii?Q?kPBiCBw8Zu67UthROuc4Z2hBGZFX6qzSeY4Fdfd5YvOsRwiNqPOib46n3VtE?=
- =?us-ascii?Q?yQcS/aOBn7NXi2MTXmgyFHWntJCu8FJq6jw2xeCR?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	8cvCPSDWy7LJe94u7hNEQ8xZwWlUX1jhH0r0jqEq7RQc3CCnvOMzXMhOlWyhLIPPou/UwDB0uUvx2aDqje6LGIHBhjxRcWvyiEAGzWvpKZT57BRx1ONJ+K0Aa5khYS7IFvFevMkciJgZ3CHguN8bDDFtse6dyycdEhpdAuXSL/KM0H4D/HZzunNM73vQjVWfIHQSovAOV7qukPSqyZd+MAhwo9kOnVrLbjdJgCuY+or9mZ9Z6msp7ZPsrBim3AtRcc7Wi1wdfl19s9ItUDyo6ewRuUVPqEkoFQOSjazxWlPcw6u8SLlvH8sRfsPYrq/1kqCBTe7g+s1Ed3VkJpvakBdj215b3zSwxJag79pCm9vJA23fk6ViQT+7auCey9l7APLld1hqxCRPwEsvwIhvUMpU6mRIpcDoj39qp+BFSw5KB9NTTkQTnBuCrvDqtokMFQFNsOsW5oqgUIVOw4dLurBBnw7mapM5UlK78+El3qqIXXyV9PE8xvmQpUp0Z8UjObod3sWtBaU2dPKpigmnzbovRawmwu6kFVvgxkm/SQCbnPRXy3EioeJjBeYJwvS6IcbCwB5utB/Bjlu0bzVqKTJeJ8x8u1aqn3mNhCP7CKk=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9124abd4-df2a-4634-1c7e-08ddf4184ab3
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
+	=?us-ascii?Q?y/GcjdEby1egKXqVnq4B6OEBwA9hP6WK4bXzd4QILBw19DNqmO6imZHMwyy9?=
+ =?us-ascii?Q?ZUL75B0t0HI9zZKJs/Oc1EZlToPN8veQ/dezYRxui/tBc34fEMzEOCWCSFuN?=
+ =?us-ascii?Q?8J1GKpYONn7MK0y+U/bOWcFiZPhZSa3/pnmiopjQpilN7mCx2IOGMDziy5zB?=
+ =?us-ascii?Q?uCfhWXOV8mBC3aC0ijiGTEjmY0acUVeWVz1IbbVJh5P2g1agcko5io6r9sW6?=
+ =?us-ascii?Q?IpooANHLHBql76wIXIpJy099Gkvy021kYWzZ08YvI8KI88FYvO4Oe5EQRzsG?=
+ =?us-ascii?Q?hlz9xQQj05NyZ9/WqrFKh8IHDf/l1F71Dcs0aYEKUxD0fVT5z/rcDzO9CnS2?=
+ =?us-ascii?Q?jFZR06HDznttfA/gqIjzJGXcAJjJLHUlZhrzvwWflzrIa1iiSni/y/eEd5nK?=
+ =?us-ascii?Q?sqjuOvb38jmZb7Z27aki/E4DZRwouIwOHoeXTfguDln5gwJuiZuCf+XB7cnd?=
+ =?us-ascii?Q?D2tANyczOHHTOWOrKYEgCthba4qCu6qKtkPX+NfZRaAZYoq3gPAqXqDsydgm?=
+ =?us-ascii?Q?BZcqN0J1sV5fY2oQh71NTm0IgXtMg7z5GVqQrsP+Zi7k876/EfAQS3m91EuC?=
+ =?us-ascii?Q?9Q6nylS/sYkEDLhH/a0pEd3WnWs5f7sNzT7dmuZ/AWDopbw63n60oO2Z3Py4?=
+ =?us-ascii?Q?dimNhyTvVN3TFBw7o2XfTmkk7Axuuwuql8sUSDWoF07IxlIpLIuPjnt3J8C8?=
+ =?us-ascii?Q?gFQNeC6zAKdhnC6k+siaaF5sGmAN6ZDgJ/VVafoJ1Jmqlruf5a0k1rugRbQf?=
+ =?us-ascii?Q?vV9XJBwFU7nzEUrz/Urrqv7+z7l8l6rxDAGoEhq91tn4CnPisWb6APfCMArg?=
+ =?us-ascii?Q?g0L5o5wZYf2/NTPebvgVALIUDoaSg7CcAkDMLA8RRhVwBmboASkNrFeY6Wd0?=
+ =?us-ascii?Q?JsC36u2/RAKWHqqgrbLIoPD5MagdZfIjN4YBSd0FAp+uSjcdyqWdObjt3EVB?=
+ =?us-ascii?Q?LDv0QC6GyJOJXD5bsf4OVJF22LXAJzEFtsPxEO+sC13h7H7z3viJ/ZUGj10Y?=
+ =?us-ascii?Q?wWJ00x9of+LwTeFZtlZuPGExTkXrayYtM47tL1jvEBWFwmTSlCBzYwZ30CKu?=
+ =?us-ascii?Q?sco3pGy041BHBd+AhQS+apZJmwSEWQeK5ZURO68inr1k/we7w9IGOnXhRt43?=
+ =?us-ascii?Q?hD/ommvUMUO51fd9/c0j6en95g09bD3lMafW6ZCDQg3z4K16aW7SIBsUzBkd?=
+ =?us-ascii?Q?Y+za5l5rpeyBB7xtsCsf57Y7fF9s0+aCK5h0Ld42udk8/U7x9yZ+eF7+Fk4P?=
+ =?us-ascii?Q?jyIdZZn0iVjdxoX8Zihaw7sNGntbM07oZ9bJt1KY2A1xiExGLF5oCma44n8K?=
+ =?us-ascii?Q?25AGS4FMnZZQ+TjB88RxrxBoa+PPmEpE67dTX0c7uhCh32J6PYddP5/tXR2g?=
+ =?us-ascii?Q?3fDw8lUDd89RBTMSWylHniowEzD/iBftZkw3Jtth6VD0KIlqu3F/4N2jfbcD?=
+ =?us-ascii?Q?ucqQDwwcPQyIoOqbIM2Z2i3iX13sPCmBajbr7bt4NWUTPzZ/Nq7Jp/5DcRoI?=
+ =?us-ascii?Q?uHC5ZKvK4QKDHvaXraDgN8gyhSXl6qTW6kLavOAwYHsOXidcySAVvLKmFD9H?=
+ =?us-ascii?Q?YVpNW6DLUZn3GcJjv57V4XlQ7kPIJMIcBzNVDINs?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4bb35be6-7445-4db5-0658-08ddf41f1e43
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2025 05:25:32.7892
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2025 06:14:24.8132
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pnLs6vIZP53But4eS+L3QWrfDKSIBhHNkEf5CTT3xIQJ227iao5PzmAoV8RfZ5mczJKti9bhldXq1bZ0YHJfbA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5142
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-15_02,2025-09-12_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
- definitions=main-2509150048
-X-Proofpoint-GUID: IZD7DDcwCNJhuc7i6_2ZHaf2s9GiZw3R
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTEzMDAyNyBTYWx0ZWRfX8AK0tkSbQe3o
- daEmuqTU6pW/RrX7w82d6HnRfX+jeyX6g1TJFSx2ifB1a3+n3epK26vSM43ZZnBJK/rRr51h40J
- ymRenomaz9JSCv3m1/CUTzyJZPKuecB1Jlh3Ob/FKYBlOrHSanigF3T85Kmh8wfXhB6pccPfT/3
- Oay/Ms+vRFLhP4GBB0fl+OWGxvYp8X3VUOImeG+/TvK5x7ehEdxRLuan4yw5oeey0AVLiVHq8oY
- doi5OwlaKcPJklmmRxd0wiSL7T3Yzp/j0aZLbj8HkxiW5aLuqfqwCmyzIpckwLrNue1v6zllW/B
- JMgB+Vywg2eueTc1zrmXW9qFOLPTAd4zdtnqLw2AfaYAeAjapxBfcC7AqxDwKLg5pn0nmVkyBfq
- lN2HOk8GX7DKfC1aiGFGc0HB8CkBeA==
-X-Authority-Analysis: v=2.4 cv=QIloRhLL c=1 sm=1 tr=0 ts=68c7a352 b=1 cx=c_pps
- a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=yJojWOMRYYMA:10 a=GoEa3M9JfhUA:10 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8
- a=G1G0JzpMrRivsycsOdQA:9 a=CjuIK1q_8ugA:10 cc=ntf awl=host:13614
-X-Proofpoint-ORIG-GUID: IZD7DDcwCNJhuc7i6_2ZHaf2s9GiZw3R
+X-MS-Exchange-CrossTenant-UserPrincipalName: J29L2qNUkpa68p3+SvHijiDy7N8NNZXPg6U173W4i9hfPdjws2/dJH4QEJ6pZlEDILRdFy3w6xROYzdBM9bsSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7629
 
-On Mon, Sep 08, 2025 at 06:00:03PM -0700, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+Hi Kumar,
+
+thanks for looking at this! Comment below.
+
+On Mon, Sep 15, 2025 at 02:47:30AM +0000, Kumar Kartikeya Dwivedi wrote:
+> Add a kfunc annotation 'KF_RET_RCU' to signal that the return type must
+> be marked MEM_RCU, to return objects that are RCU protected. Naturally,
+> this must imply that the kfunc is invoked in an RCU critical section,
+> and thus the presence of this flag implies the presence of the
+> KF_RCU_PROTECTED flag. Upcoming kfunc scx_bpf_cpu_curr() [0] will be
+> made to make use of this flag.
+
+I'm not sure we actually need two separate annotations, I can't think of a
+case where KF_RCU_PROTECTED would be useful without also having KF_RET_RCU.
+
+What I mean is: if the kfunc is only meant to be called inside an RCU
+critical section, but doesn't return an RCU-protected pointer, then we can
+simply add rcu_read_lock/unlock() internally in the kfunc. And for kfuncs
+that take RCU-protected arguments we already have KF_RCU.
+
+So it seems sufficient to have a single annotation that implements the
+semantic "this kfunc returns an RCU-protected pointer".
+
+What do you think?
+
+Thanks,
+-Andrea
+
 > 
-> Change alloc_pages_nolock() to default to __GFP_COMP when allocating
-> pages, since upcoming reentrant alloc_slab_page() needs __GFP_COMP.
-> Also allow __GFP_ACCOUNT flag to be specified,
-> since most of BPF infra needs __GFP_ACCOUNT except BPF streams.
+>   [0]: https://lore.kernel.org/all/20250903212311.369697-3-christian.loehle@arm.com
 > 
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
-
-Looks good to me,
-Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
-
--- 
-Cheers,
-Harry / Hyeonggon
+>  Documentation/bpf/kfuncs.rst | 13 +++++++++++--
+>  include/linux/btf.h          |  1 +
+>  kernel/bpf/verifier.c        |  7 +++++++
+>  3 files changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> index 18ba1f7c26b3..7d1b7009338b 100644
+> --- a/Documentation/bpf/kfuncs.rst
+> +++ b/Documentation/bpf/kfuncs.rst
+> @@ -346,10 +346,19 @@ arguments are at least RCU protected pointers. This may transitively imply that
+>  RCU protection is ensured, but it does not work in cases of kfuncs which require
+>  RCU protection but do not take RCU protected arguments.
+>  
+> +2.4.9 KF_RET_RCU flag
+> +---------------------
+> +
+> +The KF_RET_RCU flag is used for kfuncs which return pointers to RCU protected
+> +objects. Since this only works when the invocation of the kfunc is made in an
+> +active RCU critical section, the usage of this flag implies ``KF_RCU_PROTECTED``
+> +flag automatically. This flag may be combined with other return value modifiers,
+> +such as ``KF_RET_NULL``.
+> +
+>  .. _KF_deprecated_flag:
+>  
+> -2.4.9 KF_DEPRECATED flag
+> -------------------------
+> +2.4.10 KF_DEPRECATED flag
+> +-------------------------
+>  
+>  The KF_DEPRECATED flag is used for kfuncs which are scheduled to be
+>  changed or removed in a subsequent kernel release. A kfunc that is
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 9eda6b113f9b..97205b8a938c 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -79,6 +79,7 @@
+>  #define KF_ARENA_RET    (1 << 13) /* kfunc returns an arena pointer */
+>  #define KF_ARENA_ARG1   (1 << 14) /* kfunc takes an arena pointer as its first argument */
+>  #define KF_ARENA_ARG2   (1 << 15) /* kfunc takes an arena pointer as its second argument */
+> +#define KF_RET_RCU      ((1 << 16) | KF_RCU_PROTECTED) /* kfunc returns an RCU protected pointer, implies KF_RCU_PROTECTED */
+>  
+>  /*
+>   * Tag marking a kernel function as a kfunc. This is meant to minimize the
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index aa7c82ab50b9..f1cc602ed556 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -12342,6 +12342,11 @@ static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
+>  	return meta->kfunc_flags & KF_RET_NULL;
+>  }
+>  
+> +static bool is_kfunc_ret_rcu(struct bpf_kfunc_call_arg_meta *meta)
+> +{
+> +	return meta->kfunc_flags & KF_RET_RCU;
+> +}
+> +
+>  static bool is_kfunc_bpf_rcu_read_lock(struct bpf_kfunc_call_arg_meta *meta)
+>  {
+>  	return meta->func_id == special_kfunc_list[KF_bpf_rcu_read_lock];
+> @@ -14042,6 +14047,8 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  
+>  			if (meta.func_id == special_kfunc_list[KF_bpf_get_kmem_cache])
+>  				regs[BPF_REG_0].type |= PTR_UNTRUSTED;
+> +			else if (is_kfunc_ret_rcu(&meta))
+> +				regs[BPF_REG_0].type |= MEM_RCU;
+>  
+>  			if (is_iter_next_kfunc(&meta)) {
+>  				struct bpf_reg_state *cur_iter;
+> -- 
+> 2.51.0
+> 
 
