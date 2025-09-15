@@ -1,236 +1,189 @@
-Return-Path: <bpf+bounces-68444-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43917B58790
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 00:34:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5738FB587C7
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 00:48:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A26071AA76F7
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 22:35:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08EF6484237
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 22:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F242D4B61;
-	Mon, 15 Sep 2025 22:34:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CDDF2D837E;
+	Mon, 15 Sep 2025 22:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="STvMmTiB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ApcF3/lm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AB22D1936
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 22:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BFD523957D
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 22:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757975674; cv=none; b=IjufQRaF2x1rwdCo5Od/klXYDuVHyLZQywMEs9a0HRObz005JpjGBbHJGva7xHXZ0rCSaoj7+qeEpkZwSfQsqLvWHmfQjRy2KkcO/PGsWo0CSwcmOhL4dqBFc8+kJA3getGkOqyVw7qvXyfE9WAR2zO2AQlmopMZx+gIgeUUXrU=
+	t=1757976484; cv=none; b=hfHWXcX4pHP+59i482SOFLsYb4afZdVCaE5vRL1KrtMmS1kwkvQEZVQIvEPslfOC+Lgc0PuW9lz1WZokKrTIcmMogQpylWlaBl2sDgFceVKF16c4ztRzTQuVI2p3nRAOctVVWQenvzj/KxVx4BLqHDhwa3KlPMwHpHl+4lLGGP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757975674; c=relaxed/simple;
-	bh=6579veiTkGV2/lYHARJuh4EC8LZB48bk3/wE8rYugJE=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=X0FtzJFGZIng4zoF1iAPt93Kwurt67il5Kcmq1x7051AnQ0p14BCU6Rs+G5LcgpQbiGtWuwLMAPlSlUB9z5mZV6ikhRSEWmog//qIOzUwO4KHmXDOSqjYGSAkAAMJi2ol1yv+FH9Mbqd2oqrfdVofKrllMqyOc+EwKFiFStHwWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=STvMmTiB; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1757976484; c=relaxed/simple;
+	bh=5UqF3Ysp9JENJ7uuLz3lTDyBwWGPJsirLelAb96xPRU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OsmtIkrT45/WzgyRuz3XAWb4DNhHdGeKXEnqTevuu6WOWJfWBeSsidAOvr2Dm7f8WGYKTFq1bnYRkOkDazJICXm3W1hXKgaBy43IDGCT4Ji2Con/Tfsj24EjmTsC4wNJyajZ6so2vPoCDR9uF8VRVZUcTWrINNpyShC6DJ3aLTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ApcF3/lm; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-26058a9e3b5so19203915ad.2
-        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 15:34:32 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-32e0ef1ba46so1647527a91.1
+        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 15:48:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757975671; x=1758580471; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uKpnrxplEah/+KvC4DDszG3TyPQEFacClkTFr5MjA+4=;
-        b=STvMmTiBZ3GQiC5Hd8eaWWVGkvVI3wNd3Ovau6Ws0SKzGp838ICJZuzN7TaylSquGb
-         FqM3r7HcoIryC5AICQdEE5AZt73bVDVvhuVnscDCtIbxCvrJLcfrrqyVpSBYJPMoIw+W
-         enDpRGovFvBdEelp8f2Cfr4PAo5tzS5+wl9dEknVLI4h8lz57ickBzaRwpgKkB/MsNex
-         yTwF+QPGTwJsmJCYPgertN/L+Nmo8OnItVaLsgD5pQ1E+nuYf0P1ZcMitEAkI/lZLkwy
-         NNFZTKMjajOt+SOSk8MCNyv5fGN50plrfQKsxxeItOsjoDMdVOTYQURPv1gYX0NIvFq2
-         rREQ==
+        d=gmail.com; s=20230601; t=1757976482; x=1758581282; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8K+vUyHnagTGCHkW/l0LZwpJ9q9Aeei9zIs+piSAMHw=;
+        b=ApcF3/lmNvLsXvjsfu4LF7jS7lU5AgMU7Pug+RgcQZEF/BpcMewGf9u4vUrwvz30p/
+         2j64n7afSH7myiRg0C6UPbKr1VlR55Om8aZon3IOzJSZLaPRxnWQx5XMfiAVYoGfkbVm
+         6qf6H0omoLUZfauHPFTFp9LoSKSFOUSt1v8R13zGeHBv14IJSefCnEapVLNEYWybLniG
+         +PZ44H4UDKvY/SDe1A0rQU7JDq6NNzSvBNuOO+Sp/ed6wm5uti5joshaDMeaZhFNU8SP
+         vQ4RDVDHUDO4aCfSrjHoLEkkluy+CYyz2n6QH+mmUAL99IE9i4RHgXx9ILxXp4HeGfe8
+         R/GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757975671; x=1758580471;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=uKpnrxplEah/+KvC4DDszG3TyPQEFacClkTFr5MjA+4=;
-        b=iXHMVk0oJDOMT+Ji3+k9WCZtLuHPPS9eBF5q90GbaA6+LzBN1hFP67l+kQQMDpgnVf
-         X2LaPSURgB+rhJ5YBnqNjeNxzM70XaHqAjrD88SKmij2CLH1N8eKNYRy1wL6M4itcEm5
-         +Dsd66xuVfdav8hxJAZD4MB9VshyleM9UC+xoljJV+erUdw4MIhEq+FDOWz9YASldPzP
-         Gcehv7f/bfEO3Elqge8Fk7BlKsgW05FkxcO3BB9sWV8dPT848MPwfZT6Yy0lkGt8/Zk4
-         73n/WqGMEJ2ztFpOkxKnHHz4Pw106ORe2LvavHpv+akXGuxgPZohVnEHnTFp3C9JXRIV
-         DKIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW7x6CWDPdvQ5BPyzoOcnBiejyc+OU4ey8jLyxcAeFpITcbm0GbQIBJPKxLAsuoNDUWyZ4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yye8q2TxYGwgel8UXq5/QET1VUJZOJgxqDoR4uSSVAdErRrq/YR
-	MFSBrlEZsfDvC7ugY12wfElbxCDM2tLX7xqehB9rGjTPbEVxZY/sapsm
-X-Gm-Gg: ASbGncur8JSjg8p4jvrfM8rGx1hoknZLkwbUxb0vsbZr4GJPL8a7vH0Z3bn54bghRoz
-	gJIPIHOPE84QhIjUe1LvZimT/z0s6NFagV83IzYYR3j2GDRoItFMRY/8RT2w1Ljl/lELmJeiQew
-	cERPCuesVUJHpdVq7eg/4h5OJkBBGpkV1xgm8Nfyfhtd4Q1CyZ3JJw67Ww5TIH5TaLKaURkMeX4
-	mRddg5SUl23C/4jCeGCQAAjLOgCz637BICCO5yH50jEU7FD7d5tNjLUrvT28wMSMm53B44/IrXj
-	3XJJncqetPEJfbtAE97JYBRsCgweNVDM3VP1TweLwg9axL0MzNK+JOrt0iMIEzA38G+QRUw9xVr
-	bDirFWuV0f+Z6KHCD5h9HnuXqETqVKslI+40jHZ+5lMis+OD4CSUyPvKWhtsqMHDZgtPeDw==
-X-Google-Smtp-Source: AGHT+IGQ7pSiimR5YXL8QycRMi8OMI59ZvWOwr/cnQ7GI5YxuakT2T1+t1UKM5ZiCpb4E2/yrkMtAw==
-X-Received: by 2002:a17:902:f602:b0:266:2e6b:f5a9 with SMTP id d9443c01a7336-2662e6bf902mr74474245ad.20.1757975671372;
-        Mon, 15 Sep 2025 15:34:31 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:1da5:13e3:3878:69c5? ([2620:10d:c090:500::4:283f])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-265819a6193sm50361505ad.55.2025.09.15.15.34.29
+        d=1e100.net; s=20230601; t=1757976482; x=1758581282;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8K+vUyHnagTGCHkW/l0LZwpJ9q9Aeei9zIs+piSAMHw=;
+        b=Tbj3/kre8o3TThU2i49uJ6saxZApHX4pvPtuqdhMe5Gu8+/ZxSG0v2LpsxF5vGDza9
+         tnc919w/LsYfNm9c2pqKLr5B4xAq7TRz//x8dz7oGkcTQPo6ZIaIB3unIYoPMQ+THGN0
+         PuWb5cmbMfYo7GUv/M/lMycGZmMXgzw+JnjQPSaftDVzmv5g9pDVHn8xImv0TzWi8vDn
+         ghN+OVTfutvoJRTbDO5D52aFkjD/qYJz7RbFTQ2lkwCWFB2PgQJXFD8iiCSnD4cb2kh0
+         O16mGFQ2Zt4Uo//scbPWn5QUsmrV9ynGyRbpleeOh01sSapQAE5zsl3FOK/yKm0NEuo3
+         Wm/A==
+X-Gm-Message-State: AOJu0YzaUuWNYwvejG1l4X2WnHclsKI3emAjdGqmyk12+WUKCtJ5ICIl
+	LMbHGrBCWDANL63IDWrYR4LTBN3l1ncA31eUfIPql/iGAF8G924I89U9fMFThw==
+X-Gm-Gg: ASbGnculQahNf5g6+kZ6ym1ho7AWj2VkwP88FiqYwDw5jTVRUXqlSeSLqhLx3V7JQwW
+	3jqhhP92X+XelpkhkYQPQ+W/zvflkC7Cglvw8ja7LwGa0caa1r5xaV4HtjEs1lXU/bNXq6xunbJ
+	DE79u4/b1exPunQxZ8y5xWCbMtyyhCqJYL99AS7Yaqw20MJJJfbMhY1mRArrxn62wVdIGrFhdNV
+	fXMX/JdeLKB2kcO0ZWkOBe4xZgq9Uhw9xwqrpgzoiJbOfoa4Ek+1k2vgmFBVjmu34E1eZnzdgTl
+	f2daSbULt7/hwrNZeqqnaGThAMqH1Ixv7xKHgsw4hHe2ECIyILRH1JEKdiHY7Z/4OSug73D9eVp
+	BR5SXZCK/QoLXc4C1nqfF9iI9
+X-Google-Smtp-Source: AGHT+IFj4Kb0bj2s7cASfusQq0lXXQW/RqCm9lTCjvMdEqDtDDqv3xwiA9bm2QBvz8klP9UvpGSqog==
+X-Received: by 2002:a17:90b:4d06:b0:32d:e780:e9d5 with SMTP id 98e67ed59e1d1-32de780ec01mr13932391a91.22.1757976482407;
+        Mon, 15 Sep 2025 15:48:02 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:15::])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dd98b43a7sm15682797a91.13.2025.09.15.15.48.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Sep 2025 15:34:30 -0700 (PDT)
-Message-ID: <81bb1cf72e9c5f56c92ab43636a0626a1046d748.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] WARNING in maybe_exit_scc
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: syzbot <syzbot+3afc814e8df1af64b653@syzkaller.appspotmail.com>, 
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, sdf@fomichev.me, 	song@kernel.org,
- syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Date: Mon, 15 Sep 2025 15:34:28 -0700
-In-Reply-To: <68c85acd.050a0220.2ff435.03a4.GAE@google.com>
-References: <68c85acd.050a0220.2ff435.03a4.GAE@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        Mon, 15 Sep 2025 15:48:02 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	paul.chaignon@gmail.com,
+	kuba@kernel.org,
+	stfomichev@gmail.com,
+	martin.lau@kernel.org,
+	mohsin.bashr@gmail.com,
+	noren@nvidia.com,
+	dtatulea@nvidia.com,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	maciej.fijalkowski@intel.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v3 0/6] Add kfunc bpf_xdp_pull_data
+Date: Mon, 15 Sep 2025 15:47:55 -0700
+Message-ID: <20250915224801.2961360-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2025-09-15 at 11:28 -0700, syzbot wrote:
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    f83ec76bf285 Linux 6.17-rc6
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D137d0e4258000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8f01d8629880e=
-620
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D3afc814e8df1af6=
-4b653
-> compiler:       gcc (Debian 12.2.0-14+deb12u1) 12.2.0, GNU ld (GNU Binuti=
-ls for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D104a947c580=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D14467b6258000=
-0
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/be9b26c66bc1/dis=
-k-f83ec76b.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/53dc5627e608/vmlinu=
-x-f83ec76b.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/398506a67fd8/b=
-zImage-f83ec76b.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+3afc814e8df1af64b653@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> verifier bug: scc exit: no visit info for call chain (1)(1)
-> WARNING: CPU: 1 PID: 6013 at kernel/bpf/verifier.c:1949 maybe_exit_scc+0x=
-768/0x8d0 kernel/bpf/verifier.c:1949
+v2 -> v3
+  Separate mlx5 fixes from the patchset
 
-Both this and [1] are reported for very similar programs:
+  Patch 2
+  - Use headroom for pulling data by shifting metadata and data down
+    (Jakub)
+  - Drop the flags argument (Martin)
 
-<this>                                      <[1]>
----------------------------------------------------------------------------=
------------------
-(b7) r0 =3D -1023213567                       (b7) r0 =3D -1023213567			=
-=09
-(bf) r3 =3D r10				    (bf) r3 =3D r10				=09
-(07) r3 +=3D -512				    (07) r3 +=3D -504				=09
-(72) *(u8 *)(r10 -16) =3D -8		    (72) *(u8 *)(r10 -16) =3D -8		=09
-(71) r4 =3D *(u8 *)(r10 -16)		    (71) r4 =3D *(u8 *)(r10 -16)		=09
-(65) if r4 s> 0xff000000 goto pc+2	    (65) if r4 s> 0xff000000 goto pc+2	=
-=09
-(2d) if r0 > r4 goto pc+5		    (2d) if r0 > r4 goto pc+5		=09
-(20) r0 =3D *(u32 *)skb[60673]		    (20) r0 =3D *(u32 *)skb[60673]		=09
-(7b) *(u64 *)(r3 +0) =3D r0		    (7b) *(u64 *)(r3 +0) =3D r0		=09
-(1d) if r4 =3D=3D r4 goto pc+0		    (1d) if r4 =3D=3D r4 goto pc+0		=09
-(7a) *(u64 *)(r10 -512) =3D -256		    (7a) *(u64 *)(r10 -512) =3D -256		=
-=09
-(db) lock *(u64 *)(r3 +0) |=3D r0		    (db) r0 =3D atomic64_fetch_and((u64 =
-*)(r3 +0), r0)=09
-(b5) if r0 <=3D 0x0 goto pc-2		    (b5) if r0 <=3D 0x0 goto pc-2		=09
-(95) exit				    (95) exit				=09
+  Patch 4 
+  - Support empty linear xdp data for BPF_PROG_TEST_RUN
 
-So, I assume it's the same issue. Looking into it.
+v1 -> v2
+  Rebase onto bpf-next
 
-[1] https://lore.kernel.org/bpf/68c85b0d.050a0220.2ff435.03a5.GAE@google.co=
-m/T/#u
+  Try to build on top of the mlx5 patchset that avoids copying payload
+  to linear part by Christoph but got a kernel panic. Will rebase on
+  that patchset if it got merged first, or seperate the mlx5 fix
+  from this set.
 
+  patch 1
+  - Remove the unnecessary head frag search (Dragos)
+  - Rewind the end frag pointer to simplify the change (Dragos)
+  - Rewind the end frag pointer and recalculate truesize only when the
+    number of frags changed (Dragos)
 
-> Modules linked in:
-> CPU: 1 UID: 0 PID: 6013 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(f=
-ull)
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 08/18/2025
-> RIP: 0010:maybe_exit_scc+0x768/0x8d0 kernel/bpf/verifier.c:1949
-> Code: ff ff e8 cb 8e e7 ff c6 05 0a b5 bf 0e 01 90 48 89 ee 48 89 df e8 f=
-8 41 fb ff 48 c7 c7 a0 9b b5 8b 48 89 c6 e8 59 33 a6 ff 90 <0f> 0b 90 90 e9=
- 4e ff ff ff e8 0a ee 4d 00 e9 7f f9 ff ff 4c 8b 4c
-> RSP: 0018:ffffc900041bf500 EFLAGS: 00010282
-> RAX: 0000000000000000 RBX: ffff888079840000 RCX: ffffffff817a4388
-> RDX: ffff88807d3f8000 RSI: ffffffff817a4395 RDI: 0000000000000001
-> RBP: ffff888079846328 R08: 0000000000000001 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000000 R12: 1ffff92000837ea7
-> R13: 0000000000000000 R14: ffff88805cf87400 R15: dffffc0000000000
-> FS:  000055557c9b5500(0000) GS:ffff8881247b2000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055557c9b5808 CR3: 0000000073b4d000 CR4: 00000000003526f0
-> Call Trace:
->  <TASK>
->  update_branch_counts kernel/bpf/verifier.c:2040 [inline]
->  do_check kernel/bpf/verifier.c:20135 [inline]
->  do_check_common+0x20cc/0xb410 kernel/bpf/verifier.c:23264
->  do_check_main kernel/bpf/verifier.c:23347 [inline]
->  bpf_check+0x869f/0xc670 kernel/bpf/verifier.c:24707
->  bpf_prog_load+0xe41/0x2490 kernel/bpf/syscall.c:2979
->  __sys_bpf+0x4a3f/0x4de0 kernel/bpf/syscall.c:6029
->  __do_sys_bpf kernel/bpf/syscall.c:6139 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:6137 [inline]
->  __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:6137
->  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->  do_syscall_64+0xcd/0x4e0 arch/x86/entry/syscall_64.c:94
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7fd1d078eba9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f=
-7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
- ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffee0400aa8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00007fd1d09d5fa0 RCX: 00007fd1d078eba9
-> RDX: 0000000000000048 RSI: 00002000000017c0 RDI: 0000000000000005
-> RBP: 00007fd1d0811e19 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007fd1d09d5fa0 R14: 00007fd1d09d5fa0 R15: 0000000000000003
->  </TASK>
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
+  patch 3
+  - Fix len == zero behavior. To mirror bpf_skb_pull_data() correctly,
+    the kfunc should do nothing (Stanislav)
+  - Fix a pointer wrap around bug (Jakub)
+  - Use memmove() when moving sinfo->frags (Jakub)
+
+  Link: https://lore.kernel.org/bpf/20250905173352.3759457-1-ameryhung@gmail.com/
+  
+---
+
+Hi all,
+
+This patchset introduces a new kfunc bpf_xdp_pull_data() to allow
+pulling nonlinear xdp data. This may be useful when a driver places
+headers in fragments. When an xdp program would like to keep parsing
+packet headers using direct packet access, it can call
+bpf_xdp_pull_data() to make the header available in the linear data
+area. The kfunc can also be used to decapsulate the header in the
+nonlinear data, as currently there is no easy way to do this.
+
+This patchset also tries to fix an issue in the mlx5 driver. The driver
+curretly assumes the packet layout to be unchanged after xdp program
+runs and may generate packet with corrupted data or trigger kernel warning
+if xdp programs calls layout-changing kfunc such as bpf_xdp_adjust_tail(),
+bpf_xdp_adjust_head() or bpf_xdp_pull_data() introduced in this set.
+
+Tested with the added bpf selftest using bpf test_run and also on
+mlx5 with the tools/testing/selftests/drivers/net/{xdp.py, ping.py}. mlx5
+with striding RQ always pass xdp_buff with empty linear data to xdp
+programs. xdp.test_xdp_native_pass_mb would fail to parse the header before
+this patchset.
+
+Grateful for any feedback (especially the driver part).
+
+Thanks!
+Amery
+
+Amery Hung (6):
+  bpf: Allow bpf_xdp_shrink_data to shrink a frag from head and tail
+  bpf: Support pulling non-linear xdp data
+  bpf: Clear packet pointers after changing packet data in kfuncs
+  bpf: Support specifying linear xdp packet data size for
+    BPF_PROG_TEST_RUN
+  selftests/bpf: Test bpf_xdp_pull_data
+  selftests: drv-net: Pull data before parsing headers
+
+ include/net/xdp_sock_drv.h                    |  21 ++-
+ kernel/bpf/verifier.c                         |  13 ++
+ net/bpf/test_run.c                            |  26 ++-
+ net/core/filter.c                             | 123 +++++++++++--
+ .../bpf/prog_tests/xdp_context_test_run.c     |   4 +-
+ .../selftests/bpf/prog_tests/xdp_pull_data.c  | 174 ++++++++++++++++++
+ .../selftests/bpf/progs/test_xdp_pull_data.c  |  48 +++++
+ .../selftests/net/lib/xdp_native.bpf.c        |  89 +++++++--
+ 8 files changed, 456 insertions(+), 42 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_pull_data.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_pull_data.c
+
+-- 
+2.47.3
+
 
