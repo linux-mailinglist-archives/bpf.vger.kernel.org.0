@@ -1,123 +1,113 @@
-Return-Path: <bpf+bounces-68420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3083B58546
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 21:29:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6432B5857A
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 21:50:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53D764C1FF6
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 19:29:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C2302A2603
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 19:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BE2927FB34;
-	Mon, 15 Sep 2025 19:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3142928725C;
+	Mon, 15 Sep 2025 19:49:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TpKeiY7L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nc9L3fZz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617EE27E7FC
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 19:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688B9287243
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 19:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757964542; cv=none; b=Nwyh3PKgnrU7Gz+q3X0cppKxAAjTsGFMoBLpFP61fmpjv3qbt+owz0/guSmJ08Q2qjRvNHxTBnEQvp2+y+6umHtTufvoHxpEOLofN6mhwKu4vQ87ReRxO12DckAlELTf5OrZZxpkPEkDckfjVtgEK8YafsIhzU7iOZ2AmI/9khI=
+	t=1757965795; cv=none; b=ZY3et0Bf713LXAmiCNmC6sKCt+tekozrYiqCJULMfPf1mFMmRZ6oO2I8Khh4D7pUG4MC2x1LTat0oCjJXuXqRcQJs6NJaxIYf/EFMVXsM941sTWNzMpthqfXpt7xP3RAGLhtji7GROt3eS+hAnMueZMXXEG+S97g6xW+UKL8S9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757964542; c=relaxed/simple;
-	bh=3+LSnB0hm77WzzZOWxYhRFi0LkYXmP1scLAe0mnF6WM=;
+	s=arc-20240116; t=1757965795; c=relaxed/simple;
+	bh=vki4f//YpOA+/DMIEKosPdhpC7X1EIX6rn18AUOJIDw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bsXE5lp1gJTzJolkfoVHsW3mNU44JQBt6EfOs7k6h9/XZgDmuFQxImltOis0ljst2ovEHXJZlxUNTGbKmdnsIgNb9X9y2nVh0QgYT7yeWd1yPn4CW+wTIMNFEs6mgpUuqJ8NcyphBsKOSzeHREcRwH6mQYe7SoAFXbwkZKAygXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TpKeiY7L; arc=none smtp.client-ip=209.85.221.45
+	 To:Cc:Content-Type; b=RYkqIFo395lso9A114DYHnU9L6kN+M8vhLksRYBT10NpUP6OQQe8xegw3Qys+JSRHdAwfja5prBfzhB96hTmIzP0E65hic8+jdYIYG/RPIHGyGn5lNc9CJOLzsAICNkiMFN+PfgnFDuJaTZV7k16VRDJfJVth0oahWm40O07vzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nc9L3fZz; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3dae49b1293so2604019f8f.1
-        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 12:29:00 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-32e6f3ed54dso986248a91.3
+        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 12:49:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757964539; x=1758569339; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757965794; x=1758570594; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S2xMlKKm6nf8tRVENFk2G2ikqGpzESVbYPn0Gjm50Mw=;
-        b=TpKeiY7LkvG+K3u/7LMpTZc/KBxGPEqrgi6h2WDFBYKEttGiLkbDVuIPn44ZCV8nGN
-         HlGsn9r32phvvT/deJcm87Y1Burqmd+2HwEDV6CltsF0UIoumDJAlj8yH1pwk9qFLbkL
-         eshMlyZ2ZDvxeFgjpONXNzXM5hsimpbDOiNqNlcQ4yYt66y2bIQ5rN4nox4x4ZCEhQnR
-         VNd9W/kYzze7wNiylFPbho6Xzfh0DBClfHSKPpxcLUkKtCaGRnFHjHOa/WxkzVPn9+DR
-         bI1pl2tJ3mvXoE+y+vsOdPN/X3+VCwEySE1+FMQtoBqY1cbiz4fXd9kR/p87lCxgPLpg
-         3zFw==
+        bh=n/yBS8xqZruyRHXODDMQkHttngIp9wHEWvRKIBk6FX8=;
+        b=nc9L3fZzeRDgR4liUamusx+uW9r+rY5mn7V9or3lO3n/DX5QhnP1EizcznIIJdAfYG
+         hRYA0lXC+DC3dHF8Vlt7ZKWz0d33EI579c/jj8AnYqs5Rmfbh9pMXwKKZEPDa7mQ40uM
+         UgVzGA9D2k8t3WD5XmCntjIi2V6zcNX6rt9kDlzCGb4UJ1SOJAzrKyzNgz6fvaDPknLj
+         NRa4FzYcJdG8yT2NIWmNQ0ghh73wuxEZ31ir9EMd7e3Jq3D4Kqd7T2gaSVU0yN+pSN94
+         T5g+7ossMGLSLpi2hTYuDdSq4ysdj2zKNjBTvlA/h2D1XYZARICgOt6wdyVTvZTla+zJ
+         +KDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757964539; x=1758569339;
+        d=1e100.net; s=20230601; t=1757965794; x=1758570594;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S2xMlKKm6nf8tRVENFk2G2ikqGpzESVbYPn0Gjm50Mw=;
-        b=K1va9Lor6F55mIwnlKKkwrtg9CC46LZd4xMG+i7CKVKGCfk7rgSwibkdThs5vuwJJn
-         OncKcCR+SZzH8p24pJpZMW0mQ0JvU2A9axl+p3XyUhKZipkIJ6IfH1Ul0Wf6mot9YY5L
-         KJwV/F3DJeOKNSmpjWDOzJCk/HjcVW4BmXabNo8fhTczPyewzjU1xT2CT6K/ZfWgCXvY
-         JU0IbV4Q3nEMOAvA4wRSjdo1W63cB8gWX1jEST6apZh/za0LAhpQxfvVWXMxZvHB/sYm
-         mKFaSD+wU0h5z1DCtPxX+Q1KZm8XjJFT2XYBxwPfXVJfoO7IiexjlxkVuLOizWlMIKMq
-         puWg==
-X-Forwarded-Encrypted: i=1; AJvYcCWTsNIENKjEVRUuWIDiANWTjLgNGW8L2ZNpf73ZddmGq7yPH2fVJny1pOorOYCSsP4KXDI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxrIeKABy0MwgNcnjl75m39WN3B8wn7fLb9zob7Chxd43LmgDcT
-	EknqAUNho2GiO1AjIx8SrLc1PLLVYr4V/bS3HsTihRO0iL3U+PdrdEOkBZubVx9LUG+djl1nHkg
-	x6/6oiiGieaiqcdbx6OTK6mz+gDLDBqc=
-X-Gm-Gg: ASbGncszQqIXJaIIzTeHhixCIrPqi126wqOgz1pEpiICC6XgyB5lQYxexkDxIwZTs8C
-	f1heRm4KLXpRE3J7CNkFSxIFZSvkfFWC1MCxtVim48EOLCfbjFf0oRrwuEor9sS4LlhfRbALjIM
-	njj3b/v1BdoXMHzIYkbRhPBJ13dEzbbhySXx5+nlOxuoUN08NXRmqOLFelAm/eGWKfewOc/j8gB
-	C7nC0pcX4deku9URsGttOEQV54sejRJMQ==
-X-Google-Smtp-Source: AGHT+IEcmBIdCHPVUTeRbmBWBEydiOQEd4gmT8QR2t0o1lIJhv4unjkClYcHgiiTNR77Rdx3KRAOKCKWxA3Q89LsazE=
-X-Received: by 2002:a05:6000:609:b0:3eb:c276:a340 with SMTP id
- ffacd0b85a97d-3ebc276a59amr2864751f8f.5.1757964538384; Mon, 15 Sep 2025
- 12:28:58 -0700 (PDT)
+        bh=n/yBS8xqZruyRHXODDMQkHttngIp9wHEWvRKIBk6FX8=;
+        b=VqSijrhdia4tax8SAjjiazSvail6FMAhQl+otehXBrSk1tm7t7cohiXOGe8XiuNg5j
+         q8VkqH9zrcHRx93uFPttRvJQTdQzWVXOAXuKQsmZZ3vlGBw4pzxVqtDdZvEYGnTJ88XN
+         dLRteaMOlVWmp+aYD1/NsrBf9WQmnGtV7jEeDKSGTWfB5aVm5vu2Hm2HECFeVEc8sYXv
+         BcyEPcpjfyIusfhmfKEZ0Xfr07EmbVLFSVB1/Xf35tRpNYdRpNe49l9QfJK4jhXyRHbt
+         8eQfQODJlbtYIH8/LeWaTV43pu/TSxOVwszj+I40La4aKP9+HVGLvFMWwljngQSmJxer
+         k4eg==
+X-Gm-Message-State: AOJu0YwORd2Ij370OLLVZcplDVNZZiUnojR3+fC0Bxm8zYrXJbK3bLjT
+	jZDdfKyu8JrUSsIpOOeRFNcjmM0L8xrNpcS/eQaUZQh4Adk4JcE3PfB1F0f+oz0k5SDZpp1TOon
+	tHcpu+9bDtdZP+O/3j/Lfx2wxVJzWlI0=
+X-Gm-Gg: ASbGncs89KGCxqCTQiycD1yBYUI2lrzyzrqvYE1qilGwW1lcgBsFOjRgBSLNUao/W3g
+	VhuuAy4DrmxcGLRkOCwubaN/U11bvQWAIpFO4KlebceCS3q88atsfLGygCa1KqDNLPR6p/h3w64
+	ixv8dejDLhe4m3WTO4kvyBYN7Sir4syLuAbRihuXAbhVSZbH1G35g4IqGUBsB2kP8Wi+p+2+Sst
+	Q3I0zcvlaodifQq4KvNdwM=
+X-Google-Smtp-Source: AGHT+IFPR0xNt1SdT9jmYfIls8wuA4gQdU6nOErPR02vY+QbY+RVRV/p069LcMoFMza2ywVDD048srLdsGemFoumkbs=
+X-Received: by 2002:a17:90b:50c5:b0:32e:a10b:ce48 with SMTP id
+ 98e67ed59e1d1-32ea10bd062mr660253a91.12.1757965793696; Mon, 15 Sep 2025
+ 12:49:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250912-patch-insn-data-double-free-v1-1-af05bd85a21a@gmail.com>
- <fdc291d2-ec13-4a54-9fad-bc905edf4ff8@iogearbox.net> <f8337cf1b17b9bf2ee31ebbb5f79ab7290ca4263.camel@gmail.com>
-In-Reply-To: <f8337cf1b17b9bf2ee31ebbb5f79ab7290ca4263.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 15 Sep 2025 12:28:45 -0700
-X-Gm-Features: AS18NWDdJ4UVYcL4qk414ZiFdyO36URvs1dQac0SdDT_9RScJm_ncYdwFRsdz_M
-Message-ID: <CAADnVQK5hiTLOjh9RUk3FxRJ+p2Rf4zkj0+OO6QBtAZS28dEhA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: potential double-free of env->insn_aux_data
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Chris Mason <clm@meta.com>
+References: <20250914215141.15144-1-kpsingh@kernel.org> <20250914215141.15144-5-kpsingh@kernel.org>
+In-Reply-To: <20250914215141.15144-5-kpsingh@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 15 Sep 2025 12:49:39 -0700
+X-Gm-Features: Ac12FXzQ6hNrX8nP9Cv8EeH1bTRHFp3dNUNpYMvmZX34bI4yuZQORu-aBvdlJ5c
+Message-ID: <CAEf4Bza4OF5ihhEr_ihW6FQ5JF=pdHukFtgTprsuxYsasAsoKw@mail.gmail.com>
+Subject: Re: [PATCH v4 04/12] libbpf: Support exclusive map creation
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 15, 2025 at 11:21=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
+On Sun, Sep 14, 2025 at 2:52=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote=
+:
 >
-> On Mon, 2025-09-15 at 13:42 +0200, Daniel Borkmann wrote:
+> Implement setters and getters that allow map to be registered as
+> exclusive to the specified program. The registration should be done
+> before the exclusive program is loaded.
 >
-> [...]
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  tools/lib/bpf/bpf.c      |  4 ++-
+>  tools/lib/bpf/bpf.h      |  5 ++-
+>  tools/lib/bpf/libbpf.c   | 69 ++++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   | 22 +++++++++++++
+>  tools/lib/bpf/libbpf.map |  3 ++
+>  5 files changed, 101 insertions(+), 2 deletions(-)
 >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 9fb1f957a09374e4d148402572b872bec930f34c..92eb0f4e87a4ec3a7e303=
-c6949cb415e3fd0b4ac 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -20781,7 +20781,6 @@ static struct bpf_prog *bpf_patch_insn_data(s=
-truct bpf_verifier_env *env, u32 of
-> > >                     verbose(env,
-> > >                             "insn %d cannot be patched due to 16-bit =
-range\n",
-> > >                             env->insn_aux_data[off].orig_idx);
-> > > -           vfree(new_data);
-> >
-> > I presume you mean bpf-next tree, otherwise we'd be adding a memory lea=
-k into bpf tree?
->
-> Hi Daniel,
->
-> Yes, the tag should be bpf-next.
-> Will resend with the correct tag.
 
-No need to resend.
+LGTM.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+[...]
 
