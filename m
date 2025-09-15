@@ -1,206 +1,244 @@
-Return-Path: <bpf+bounces-68376-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68377-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32DC2B570FB
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 09:14:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C66BB57206
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 09:52:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84A41189D076
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 07:14:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F314B1647E8
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 07:52:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444982D24BF;
-	Mon, 15 Sep 2025 07:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 096F92EB861;
+	Mon, 15 Sep 2025 07:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CtpV2Yml"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TMyhhUjH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="A4A26eiB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TMyhhUjH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="A4A26eiB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECFF13FBB3
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 07:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A973C2EB867
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 07:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757920435; cv=none; b=k/8V1WSdjmEoBPRd9OlVBXF0SoT4bbAcT36x1aCTBnkIDFfv/Ld5uUe/bqlShB0BKmiB0BRR4TMi/6x76B4PiXKgF4MfjVobAcshXUG36Pp6h9gEydtchHdyO1/tNuvuO4N7a7KbuZO009z+xkNZ+NHgY/i6gZxcLbMoHL6HuyQ=
+	t=1757922691; cv=none; b=RE13rCwX3hBBnZI0GRAmZb4LE2QJB+4qnvYLr0XCaxlBSLOGnva0FwF/4kc6w4TpCquWzT7uixT9g9m6CTawNe7+79iKfX45ksiYuavpuVmlJP2EoeYZp1gSsETkuEGZigDAski/JdIte9Jv5PGELJI5OmGCRqKiVDEgavDM/dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757920435; c=relaxed/simple;
-	bh=nkwhqbz5HzneRD2aXzYOw8hL+cZU2yc8POAU5xeyfTA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k/OVX7aalOsv4RCKlBLqZq4SFlw5lrnSwLWcFG0PvUFWYl9IO6ERGGpH/phByHuDxwwhsvhXz5u7nrYkzSfUjoB2Gl8KRbrtmChmRsGacbjTaEk9OBQY3UTBGFGs8MFBT2VQgnlJKwueU1ejf1T1g9/VeCrXz3jTfcBxh9qCI5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CtpV2Yml; arc=none smtp.client-ip=209.85.208.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-62f1987d53aso1541695a12.0
-        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 00:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757920432; x=1758525232; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y1cQG0wO6AwBznY0F59CrW70T4A4vri8eSbTLTcwREI=;
-        b=CtpV2Yml0qFluL7d3Kt93K5AV7UJzyEdLoeCq+eg1+X3JB55QqHBocEWddkl8HjNda
-         pvU6w7u5cUInLh+qYFpkRD4E4ISIEi3SKWQjG2MSIDKTgV8GiYiUJGh0atwzfZBoWlLf
-         WmLMks7spSNOJhmPGXE1kjQPq3gKGu2AdZvFyBLHRAPvuS5fAIgPCsjSuDB40qW6r7c4
-         B5OYO4Mv9wRAxSPh7yXWtpC3gC5egJek6XtOnRAmAAiHMNhysyK7GMfKEvOHeLYBcQSx
-         qkRQWMn90rrCADfKCbx18zoPDUX0KZTQUFp81rS2s4GBOz5KVOoOEbGuPEJ6fUGur+te
-         hpTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757920432; x=1758525232;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y1cQG0wO6AwBznY0F59CrW70T4A4vri8eSbTLTcwREI=;
-        b=My26uJ5jB3mc2+yLqbFTKokMUh+qikOZLWjHkjOVaRBmRbfd8bWzbC9irWbSFbCMqU
-         0DZOQCk5QZiJzMbOF+N4TO22eOkYE15lJdbdrkNn7bUEqtWHj81FulPMtCriTdGO5RN7
-         a9kE9+DKrAVQr69kM/S4ok2KAkrxrlmpzrHQmoIXZNkkTGXL++IONVLileuwJZo/SGOY
-         9/Z9eqiT4ONIzxc96DZV8mTvm1VLwOsLOZPAjlvSva4+vPnJgpMPv6czp8zHBlB6BOrx
-         UxlrKfDqWzj7QHZz2pgOqSxKGdA5Vp6x5mzYYXi4QsVuNbAefFXzDF5YIArxBXyIOVDx
-         h4fA==
-X-Gm-Message-State: AOJu0YxbRXgBwnaaVLfWgoa1AdbMoAVQd6ThpyMIcOeasc37pKjbK4Wd
-	kDjS5g/Oib4Xw1mUgusJPtpZKXxO7c7GTnzKqyNMkHlP/8vbLqVvfhBDJMfnCHovHvhEUKBdqGm
-	9Xstlv2nAeyGnJvWA7F7FFLpRMxpuyRw=
-X-Gm-Gg: ASbGncvcgrUd7xNRd24lvdfKPQiGr5GpXHqncU4B5F0Mzg/qVkAHmeGSYw+iYNvCwce
-	AyaULTa8W1oEhUqmRTxUIzKsM671IIsydQeOKnALaS4bZCotnHMI0L6NuuKJoRrbEw9g1fE0ReN
-	pBkmK66WuRlahzaPGmet+ofiB2PSTqQ8euzcBMLWzcC0Eb1m1W20uZdJSag7yFK2FoJe8MEVcHV
-	/T0TQN0VpsbhvXYPO4ntfO9Co4vzgwDi7jpRBM=
-X-Google-Smtp-Source: AGHT+IElT4FKPME1nd6N+fRQ0XyYIqIBnsA1mD8V52tdFGU4lpsZNG7786/c0vnQfzejrvzicHsR+KofBvV1Av6DxDA=
-X-Received: by 2002:a05:6402:42cc:b0:62c:34ed:bbed with SMTP id
- 4fb4d7f45d1cf-62ed827176bmr11703604a12.19.1757920431983; Mon, 15 Sep 2025
- 00:13:51 -0700 (PDT)
+	s=arc-20240116; t=1757922691; c=relaxed/simple;
+	bh=JBFtUfCq4zHzBKHpeXgHxdyNyyMc9hhSZmUnANBHzcg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G+dC29mODcE9KbficZrxjjinrZfehDDnCVdoPAp9QyAxoYIk95TMxXg4HkSd1jm8vCrgpIyLM2NVlmLFKMeZRKau/ln9ukNf45KkQsEGGBuht8BP5+kYYID4bgYT/T/MmbaAAAMxjDjNsYLzgq1r3yKGpV1LB06vIn6ZzaGcGWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TMyhhUjH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=A4A26eiB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TMyhhUjH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=A4A26eiB; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 483491F7EC;
+	Mon, 15 Sep 2025 07:51:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757922682; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=w1II8JwH5N5skoHHG9OMK3O2Q+vtcUlDHwhtvu+iE+c=;
+	b=TMyhhUjHZ07q8NdOAHO1mMhPm0o0xuvPgjneWVFebHZVB/P7V8SejIG+Lvl/Wh/jmbOihP
+	g11QC9dnhUjp7aQWdHqtMlNp74Y3jZ/EVsrLBXj3gyvcX/mDaJPaTcZz7zLMZEJMqHB1of
+	0xcrH7eRY7RpgfRwoAo3vUi0TLsBPvA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757922682;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=w1II8JwH5N5skoHHG9OMK3O2Q+vtcUlDHwhtvu+iE+c=;
+	b=A4A26eiBz+CksO/yp2GEOsBLuM8+5V7UBmmhUEF2bjkYk6Y5UE2sdOqAdKWrAgRmS65pos
+	QDDe0VGxgctyOaAw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757922682; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=w1II8JwH5N5skoHHG9OMK3O2Q+vtcUlDHwhtvu+iE+c=;
+	b=TMyhhUjHZ07q8NdOAHO1mMhPm0o0xuvPgjneWVFebHZVB/P7V8SejIG+Lvl/Wh/jmbOihP
+	g11QC9dnhUjp7aQWdHqtMlNp74Y3jZ/EVsrLBXj3gyvcX/mDaJPaTcZz7zLMZEJMqHB1of
+	0xcrH7eRY7RpgfRwoAo3vUi0TLsBPvA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757922682;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=w1II8JwH5N5skoHHG9OMK3O2Q+vtcUlDHwhtvu+iE+c=;
+	b=A4A26eiBz+CksO/yp2GEOsBLuM8+5V7UBmmhUEF2bjkYk6Y5UE2sdOqAdKWrAgRmS65pos
+	QDDe0VGxgctyOaAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 26FA51368D;
+	Mon, 15 Sep 2025 07:51:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pUmEB3rFx2h3WwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 15 Sep 2025 07:51:22 +0000
+Message-ID: <e166705a-e838-4c8f-a8cf-64913e120caa@suse.cz>
+Date: Mon, 15 Sep 2025 09:51:21 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250915024731.1494251-1-memxor@gmail.com> <20250915024731.1494251-3-memxor@gmail.com>
- <aMeuunTYM8c6jp1m@gpd4>
-In-Reply-To: <aMeuunTYM8c6jp1m@gpd4>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Mon, 15 Sep 2025 09:13:15 +0200
-X-Gm-Features: AS18NWCtpvrPyV2R2rb65FiA4FRBfS4pWqUymmUwwFs0DMc7maNvVb3dp-63U4U
-Message-ID: <CAP01T74DSRE96FYRCMLghkFJdNPgi-PhoOycQ2fXyYhUF5ngBw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/3] bpf: Add support for KF_RET_RCU flag
-To: Andrea Righi <arighi@nvidia.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
-	kkd@meta.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH slab v5 5/6] slab: Reuse first bit for OBJEXTS_ALLOC_FAIL
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Suren Baghdasaryan <surenb@google.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, bpf <bpf@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, Harry Yoo <harry.yoo@oracle.com>,
+ Michal Hocko <mhocko@suse.com>, Sebastian Sewior <bigeasy@linutronix.de>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>
+References: <20250909010007.1660-6-alexei.starovoitov@gmail.com>
+ <jftidhymri2af5u3xtcqry3cfu6aqzte3uzlznhlaylgrdztsi@5vpjnzpsemf5>
+ <CAJuCfpGUjaZcs1r9ADKck_Ni7f41kHaiejR01Z0bE8pG0K1uXA@mail.gmail.com>
+ <CAADnVQJu-mU-Px0FvHqZdTTP+x8ROTXaqHKSXdeS7Gc4LV9zsQ@mail.gmail.com>
+ <shfysi62hb5g7lo44mw4htwxdsdljcp3usu2wvsjpd2a57vvid@tuhj63dixxpn>
+ <CAADnVQ+eD7p4i0B9Q2T-OS_n=AqcrrvYZGY57QOOqKEof6SkDQ@mail.gmail.com>
+ <lv2tkehyh4pihbczb7ghvbkkl4l75ksdx2xjtxf2r7lgzam76h@ekkrlady2et3>
+ <CAADnVQLX_mi9WLygRxwp5PtBFG7L_sqm9sL93ejENWqVO3ar7g@mail.gmail.com>
+ <e7nh3cxyhmlxds4b2ko36gnxbdfclcxu3eae5irvrd2m6qzqoj@gor7vopfe47z>
+ <CAADnVQJuAo5K417ZZ77AA1LM5uZr5O2v1dRrEEue-v39zGVyVw@mail.gmail.com>
+ <rfwbbfu4364xwgrjs7ygucm6ch5g7xvdsdhxi52mfeuew3stgi@tfzlxg3kek3x>
+ <CAJuCfpHJEUypV2HWRHqE598kr-1Nz_DokMz_UgrUnq8YkFcb9w@mail.gmail.com>
+ <CAADnVQJQo6+AwJ_LxARVu37J-5T-7tyn1kA5hMVDGDfEyjF6mQ@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <CAADnVQJQo6+AwJ_LxARVu37J-5T-7tyn1kA5hMVDGDfEyjF6mQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TAGGED_RCPT(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FREEMAIL_TO(0.00)[gmail.com,google.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,vger.kernel.org,kvack.org,oracle.com,suse.com,linutronix.de,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-On Mon, 15 Sept 2025 at 08:14, Andrea Righi <arighi@nvidia.com> wrote:
->
-> Hi Kumar,
->
-> thanks for looking at this! Comment below.
->
-> On Mon, Sep 15, 2025 at 02:47:30AM +0000, Kumar Kartikeya Dwivedi wrote:
-> > Add a kfunc annotation 'KF_RET_RCU' to signal that the return type must
-> > be marked MEM_RCU, to return objects that are RCU protected. Naturally,
-> > this must imply that the kfunc is invoked in an RCU critical section,
-> > and thus the presence of this flag implies the presence of the
-> > KF_RCU_PROTECTED flag. Upcoming kfunc scx_bpf_cpu_curr() [0] will be
-> > made to make use of this flag.
->
-> I'm not sure we actually need two separate annotations, I can't think of a
-> case where KF_RCU_PROTECTED would be useful without also having KF_RET_RCU.
->
-> What I mean is: if the kfunc is only meant to be called inside an RCU
-> critical section, but doesn't return an RCU-protected pointer, then we can
-> simply add rcu_read_lock/unlock() internally in the kfunc. And for kfuncs
-> that take RCU-protected arguments we already have KF_RCU.
->
-> So it seems sufficient to have a single annotation that implements the
-> semantic "this kfunc returns an RCU-protected pointer".
+On 9/13/25 03:12, Alexei Starovoitov wrote:
+> On Fri, Sep 12, 2025 at 5:36 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>>
+>> > > > Suren is
+>> > > > fixing the condition of VM_BUG_ON_PAGE() in slab_obj_exts(). With this
+>> > > > patch, I think, that condition will need to be changed again.
+>> > >
+>> > > That's orthogonal and I'm not convinced it's correct.
+>> > > slab_obj_exts() is doing the right thing. afaict.
+>> >
+>> > Currently we have
+>> >
+>> > VM_BUG_ON_PAGE(obj_exts && !(obj_exts & MEMCG_DATA_OBJEXTS))
+>> >
+>> > but it should be (before your patch) something like:
+>> >
+>> > VM_BUG_ON_PAGE(obj_exts && !(obj_exts & (MEMCG_DATA_OBJEXTS | OBJEXTS_ALLOC_FAIL)))
+>> >
+>> > After your patch, hmmm, the previous one would be right again and the
+>> > newer one will be the same as the previous due to aliasing. This patch
+>> > doesn't need to touch that VM_BUG. Older kernels will need to move to
+>> > the second condition though.
+>>
+>> Correct. Currently slab_obj_exts() will issue a warning when (obj_exts
+>> == OBJEXTS_ALLOC_FAIL), which is a perfectly valid state indicating
+>> that previous allocation of the vector failed due to memory
+>> exhaustion. Changing that warning to:
+>>
+>> VM_BUG_ON_PAGE(obj_exts && !(obj_exts & (MEMCG_DATA_OBJEXTS |
+>> OBJEXTS_ALLOC_FAIL)))
+>>
+>> will correctly avoid this warning and after your change will still
+>> work. (MEMCG_DATA_OBJEXTS | OBJEXTS_ALLOC_FAIL) when
+>> (MEMCG_DATA_OBJEXTS == OBJEXTS_ALLOC_FAIL) is technically unnecessary
+>> but is good for documenting the conditions we are checking.
+> 
+> I see what you mean. I feel the comment in slab_obj_exts()
+> that explains all that would be better long term than decipher
+> from C code. Both are fine, I guess.
 
-Yeah, that seems reasonable in general, but we already have iterator
-APIs (bpf_iter_task_{new,next,destroy}()) that collectively require
-RCU CS to be open throughout the three calls. That's why I just
-cleaned up the internal logic for KF_RCU_PROTECTED and made KF_RET_RCU
-as what you're suggesting (i.e., fold KF_RCU_PROTECTED into it), which
-I assume will be most useful for the majority of kfuncs that are not
-iterators.
+I guess perhaps both, having "(MEMCG_DATA_OBJEXTS | OBJEXTS_ALLOC_FAIL)" in
+the code (to discover where OBJEXTS_ALLOC_FAIL is important to consider, in
+case the flag layout changes again), and a comment explaining what's going on.
 
->
-> What do you think?
->
-> Thanks,
-> -Andrea
->
-> >
-> >   [0]: https://lore.kernel.org/all/20250903212311.369697-3-christian.loehle@arm.com
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  Documentation/bpf/kfuncs.rst | 13 +++++++++++--
-> >  include/linux/btf.h          |  1 +
-> >  kernel/bpf/verifier.c        |  7 +++++++
-> >  3 files changed, 19 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-> > index 18ba1f7c26b3..7d1b7009338b 100644
-> > --- a/Documentation/bpf/kfuncs.rst
-> > +++ b/Documentation/bpf/kfuncs.rst
-> > @@ -346,10 +346,19 @@ arguments are at least RCU protected pointers. This may transitively imply that
-> >  RCU protection is ensured, but it does not work in cases of kfuncs which require
-> >  RCU protection but do not take RCU protected arguments.
-> >
-> > +2.4.9 KF_RET_RCU flag
-> > +---------------------
-> > +
-> > +The KF_RET_RCU flag is used for kfuncs which return pointers to RCU protected
-> > +objects. Since this only works when the invocation of the kfunc is made in an
-> > +active RCU critical section, the usage of this flag implies ``KF_RCU_PROTECTED``
-> > +flag automatically. This flag may be combined with other return value modifiers,
-> > +such as ``KF_RET_NULL``.
-> > +
-> >  .. _KF_deprecated_flag:
-> >
-> > -2.4.9 KF_DEPRECATED flag
-> > -------------------------
-> > +2.4.10 KF_DEPRECATED flag
-> > +-------------------------
-> >
-> >  The KF_DEPRECATED flag is used for kfuncs which are scheduled to be
-> >  changed or removed in a subsequent kernel release. A kfunc that is
-> > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > index 9eda6b113f9b..97205b8a938c 100644
-> > --- a/include/linux/btf.h
-> > +++ b/include/linux/btf.h
-> > @@ -79,6 +79,7 @@
-> >  #define KF_ARENA_RET    (1 << 13) /* kfunc returns an arena pointer */
-> >  #define KF_ARENA_ARG1   (1 << 14) /* kfunc takes an arena pointer as its first argument */
-> >  #define KF_ARENA_ARG2   (1 << 15) /* kfunc takes an arena pointer as its second argument */
-> > +#define KF_RET_RCU      ((1 << 16) | KF_RCU_PROTECTED) /* kfunc returns an RCU protected pointer, implies KF_RCU_PROTECTED */
-> >
-> >  /*
-> >   * Tag marking a kernel function as a kfunc. This is meant to minimize the
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index aa7c82ab50b9..f1cc602ed556 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -12342,6 +12342,11 @@ static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
-> >       return meta->kfunc_flags & KF_RET_NULL;
-> >  }
-> >
-> > +static bool is_kfunc_ret_rcu(struct bpf_kfunc_call_arg_meta *meta)
-> > +{
-> > +     return meta->kfunc_flags & KF_RET_RCU;
-> > +}
-> > +
-> >  static bool is_kfunc_bpf_rcu_read_lock(struct bpf_kfunc_call_arg_meta *meta)
-> >  {
-> >       return meta->func_id == special_kfunc_list[KF_bpf_rcu_read_lock];
-> > @@ -14042,6 +14047,8 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-> >
-> >                       if (meta.func_id == special_kfunc_list[KF_bpf_get_kmem_cache])
-> >                               regs[BPF_REG_0].type |= PTR_UNTRUSTED;
-> > +                     else if (is_kfunc_ret_rcu(&meta))
-> > +                             regs[BPF_REG_0].type |= MEM_RCU;
-> >
-> >                       if (is_iter_next_kfunc(&meta)) {
-> >                               struct bpf_reg_state *cur_iter;
-> > --
-> > 2.51.0
-> >
+Shakeel or Suren, will you sent the fix, including Fixes: ? I can put in
+ahead of this series with cc stable in slab/for-next and it shouldn't affect
+the series.
 
