@@ -1,148 +1,263 @@
-Return-Path: <bpf+bounces-68399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF3D6B580C5
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 17:34:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C45B5B58165
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 17:59:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67E2B3B02FB
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 15:31:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA8807A1DCB
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 15:57:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A01D81F03EF;
-	Mon, 15 Sep 2025 15:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088BF2367A8;
+	Mon, 15 Sep 2025 15:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mucR6vmA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h/3ENAK0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6733375C0
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 15:26:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC1F2DC786
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 15:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757949963; cv=none; b=N11oZHb5alm3Ggyxaz7Vi20/mpHMdxKwSb3SUBFZJaCDbjxdWM3/L9KmzgQwQGQEGJRZlD1satBM7Fg7y8fF2PHmpPw8O6ngS7Ndp7gYOi/XZL2EMtn7DkQ+KHK2DlvgoqvCxgcAnsHotZsz4JfZC9MkciiQAF498MtPyCrynAA=
+	t=1757951962; cv=none; b=G8md+UmgJO1cltpIB4Q6Wuo0who8Rwop/6NzHyQh5obQ4U/wJV78ISdeYM35tZLG6D2OhIaHkVZgiAij5f2QJLwS2iTqiNZx6ulQnnHryv0SWuEbo6nDADc0Wm/GB+KgoSmu3jn4Y8lKh65pXPOe5bfeVMyxJVy4/bLMs8Uo22s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757949963; c=relaxed/simple;
-	bh=EyXri27Pt/akefOQDUhzfEAoRim6JXs5fhh6q8B4I8Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V7a5yILIsgYYRMhgvCMsVUz1q9EH+GjOQruO3vXXvDPvKvgZ4yWdO4jKms6Mih/4Deb2150pNI7XuixTOf6Z7hCocA7OAtPhrNN7VgcRQCrUtMpBvqv3ocakBDL0eR2WCwdNTyeof2nFIbHAUzRE5ZVf5Q+ANQTDa14Fnxo23KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mucR6vmA; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4b4bcb9638aso976091cf.0
-        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 08:26:01 -0700 (PDT)
+	s=arc-20240116; t=1757951962; c=relaxed/simple;
+	bh=O4x8Ur/RzPXQDt5S/TjrninfMA9ajzPcJmvEer9QxTk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pf9dSUHnbfbnu1866KsdrD7D4BjDsfejh7/PlVFLKKYOZi/TtVv+krMbvMn+WYfmM92BONAygQDzuznmDn9/IxP/os8S7R4G+IMltaYy5dA9g1Xr32qhMm1s9r+bOoAbUs0h4VLfVoP4H8wL+8oXljoPsl8fzooFN2Hj1BU+C7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h/3ENAK0; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-45f29d2357aso12281995e9.2
+        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 08:59:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757949960; x=1758554760; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EyXri27Pt/akefOQDUhzfEAoRim6JXs5fhh6q8B4I8Y=;
-        b=mucR6vmA9vp0ZSpAmwO4LS6zAK7Wb7ZSe3I/P28PbXPaGKPLSOdg3PWSAuPissX/bP
-         JSxHmUbg+idN1BM+1dD15AU5Qr1R3H2ehMxSL9ivIgYWUj+LBD5GpqWxtZWR4S/q4SVC
-         02YsCwWVyN0v32ZFskC70esBc1UH3rb+8tOzzFSb6uuAVxBB79dj4Jzz14TaMELbT+aC
-         fy5eTQA49cG4mPZPPrEUP6oiFOKEUDBy0OvGuiwWrJ1GmZJCIP8lZ8cbEY5GDRRk5vsX
-         jdTXlGrIXhWvLvTgwOCwzcPUIQvythEBAAqt03fkqZFiSUA+K9Tv8ZAyrUYs7q83xbAd
-         LBGQ==
+        d=gmail.com; s=20230601; t=1757951959; x=1758556759; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t0tZvJAwyKdHCDRCfpcUUykZpDHuAJSTyqRj7bXJ6JI=;
+        b=h/3ENAK0qIxJqEvKHuxsg6f75ZHcLW67n04TZ03cuDu/Fe/TGza0er/tmQuomWSSxL
+         rT3f0iQNXd4iQ8Np/87qDZnzNz4GSmJO67W9rWZNDTuF8ZmwCTO2JN4t3ihaciplXj9C
+         MrUCK+AR/CgcIu8ZT7PkOHjrdx6Wn6vkM6XBruzrCh4iGlxTWn31hXHungCnBFi8IxBM
+         SrYxcqrhOuQwGX5w/bo8jfjPN6sFyvUYVP947vwvDGYB9t8NaIillZtQbob8G3GnEP6B
+         UwJ1zocBkBdPa1zhZxKo8ebvpHZQTwEPYTlG26BvAJsie+j40e+raZBw4y+lqHvQTJxI
+         B2uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757949960; x=1758554760;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EyXri27Pt/akefOQDUhzfEAoRim6JXs5fhh6q8B4I8Y=;
-        b=N3rjd9E660K0vlpSjRIaAQgO1p9VmQ8T8/xlP87nXN6HXAIgHBELhhNSBvMwK9ySi8
-         yNwKimiC5tA8URvLm5ybPqPtzEOd7BHxG/bE4zxl4xlr6KpcDk5AJyGOZqo9RqMxuJcn
-         N3oZBXFFhTHBoikw8a2fNLY6r9cq7EJ8uNnrgtPdlkNJgthaJDJddn49ulLmGqKwuiFz
-         Z/Y1HGWmQxIs+yGVpCp3tysNG1TnMrXOfbXftqWLit4RMyUGAFGuB03+P2R3rVJxHUfm
-         9/jUEk4PI4Uhe2EyBWYWbIy7Ppp0KoCVPVTtCCChgwXk971EMEjq47mlWt986a0NRNR2
-         xX+w==
-X-Forwarded-Encrypted: i=1; AJvYcCXvij1UlLT/AjoMrzmw7p0Fx4aM3zocqBtMnzHp92miN2PdeTGTGyyHK1osxJwfTydxQ3U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzW2ngXqPIFp8Zam6h8k4dBqEWN14BUpJGi/KrZH4OsEtKWXEqc
-	QDLy/IaVjAevkc7j5WoV8QmfJhBspjkPzjg8cjtHSu6eYxnpNtXIIzSQEqVkEV9L+dyTh8Gqd4L
-	aew9aHq2oKDmAQXgtmVkQNP5wceoV6pnthLShyBms
-X-Gm-Gg: ASbGnctoBFJ9lw6V1njKaicpVeFoD7xTDHku5QGILnchQexVX0bSHqDEiY/u1LgfwWJ
-	bzfHIH3/XahUY8jYSMrgQKUoucjdofVHWd7Yj8eGNPiRZ0a+Ooi9uhkM13zIcD/bhostvOnlbfK
-	GZ5q5PJFcm57r3Hu5YXsVo3fzMOOurwtH3Wd8NgiOykcDgYTcO2xolohxR2wcoLPZy08BL5NJgW
-	R0r7RXezXtm5wtmllwZq1I=
-X-Google-Smtp-Source: AGHT+IHShM3r6feBapT4gTDKOG5vd5vABusk6ZNc0QTT1nxg+Z0uMrihoDo/4U4rKPGDrTNbMSlHFgTxa0Fo2vgQkOU=
-X-Received: by 2002:ac8:7e91:0:b0:4b7:a274:d54b with SMTP id
- d75a77b69052e-4b7a53bfae4mr5366191cf.12.1757949959762; Mon, 15 Sep 2025
- 08:25:59 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757951959; x=1758556759;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t0tZvJAwyKdHCDRCfpcUUykZpDHuAJSTyqRj7bXJ6JI=;
+        b=AbN3sZEhQMDjWcHmpXL2rWA0XTkrFq2JOVloDKSaUAIDwk0dsNf8nAEvVwSQfKXWkj
+         4OnwvJE57DAfP5KNm61OvF9kMa62YVHs5COnykuyup1QBu4d4QvxJP/ctNcmtL7GcRLM
+         m5+X8/odTc47P66wqrmnO0DgUTehfB58uePaWhWATuXino/DyZQMRjNMO14qVBlHUxWW
+         gpUe5zQmlhHJ/2R/zAe2UdtmTSbeVtB61KMLxpeJO4LtOXxSA50xnVMsi1CEWH0ggnX4
+         5bEQEzeqw6nFBpAwcDQrnfUunyx435x9oPMN5LknLsK5PXPm8+NknlMylb2NrvDql4Z+
+         CxMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUoGAwMSxbk86fbytUbg5Q5n2xivsyATIs2TGjTwbCu0d5gbhL/ERrD/xqRTjsP5MaxB6Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx31qJy8EwxkAymmYVnxfheWnQAjx4QfwnNUqRAJfFDjVtctAOl
+	0wa5x5I3w7hQ0uPlaPbGKPFuNOm5P8IcFVYytR4uhpv+f4FSum0eq+2y
+X-Gm-Gg: ASbGncsFzKQRkwscy738B8/NMTqem3RLb7RMWeRVeaSAM67SGSRF0+p+MX5UxZmoRUf
+	hTxlrakS0vGSyc97v7Gz0z297u4XWJUizEyA/MWb7LTpcet0FGNfINqoWSk50ENxuju61VGJ0BC
+	m/krboDvYqfOgRZFxzjUnSpnX3wttOrAfiRtUKa29Z2surv/sAe124U52vAObiTtH1GvtL2zqVa
+	jNu6Y9pbe56a/uWvZRQAfwFyIyAtAjb8oEk+8xYkRWeeOSy/3Pz21e9PZA68bXsjxRrz52QQBT7
+	SQ/nI23T/+tcZSK+Mqobwf31O0pcE0S3CdCmumwpZz6Qo9nBDl6S66i4xtleSEGBzt46kgxNAL2
+	yKI/m/gQSSFIF7rTmJAki8bUE48fkAtFz0KMqwazrmtqEk8wJ3rJuY1T1rG4L
+X-Google-Smtp-Source: AGHT+IHi/NYuBzIxJ5ot1ObUSc9JAYKeVnVOiVWt3D3oAVHTV2so8XqBPYiB0fQ1nKHKThoaAB5qog==
+X-Received: by 2002:a05:600c:1c9d:b0:45b:6275:42cc with SMTP id 5b1f17b1804b1-45f211ffafbmr104526185e9.28.1757951959000;
+        Mon, 15 Sep 2025 08:59:19 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1126:4:4eb3:9189:a7fd:1180? ([2620:10d:c092:500::6:388e])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45e017b2a32sm186615375e9.18.2025.09.15.08.59.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Sep 2025 08:59:18 -0700 (PDT)
+Message-ID: <ac73378d-290c-4ab0-a604-6de693ce6c6f@gmail.com>
+Date: Mon, 15 Sep 2025 16:59:17 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909010007.1660-6-alexei.starovoitov@gmail.com>
- <jftidhymri2af5u3xtcqry3cfu6aqzte3uzlznhlaylgrdztsi@5vpjnzpsemf5>
- <CAJuCfpGUjaZcs1r9ADKck_Ni7f41kHaiejR01Z0bE8pG0K1uXA@mail.gmail.com>
- <CAADnVQJu-mU-Px0FvHqZdTTP+x8ROTXaqHKSXdeS7Gc4LV9zsQ@mail.gmail.com>
- <shfysi62hb5g7lo44mw4htwxdsdljcp3usu2wvsjpd2a57vvid@tuhj63dixxpn>
- <CAADnVQ+eD7p4i0B9Q2T-OS_n=AqcrrvYZGY57QOOqKEof6SkDQ@mail.gmail.com>
- <lv2tkehyh4pihbczb7ghvbkkl4l75ksdx2xjtxf2r7lgzam76h@ekkrlady2et3>
- <CAADnVQLX_mi9WLygRxwp5PtBFG7L_sqm9sL93ejENWqVO3ar7g@mail.gmail.com>
- <e7nh3cxyhmlxds4b2ko36gnxbdfclcxu3eae5irvrd2m6qzqoj@gor7vopfe47z>
- <CAADnVQJuAo5K417ZZ77AA1LM5uZr5O2v1dRrEEue-v39zGVyVw@mail.gmail.com>
- <rfwbbfu4364xwgrjs7ygucm6ch5g7xvdsdhxi52mfeuew3stgi@tfzlxg3kek3x>
- <CAJuCfpHJEUypV2HWRHqE598kr-1Nz_DokMz_UgrUnq8YkFcb9w@mail.gmail.com>
- <CAADnVQJQo6+AwJ_LxARVu37J-5T-7tyn1kA5hMVDGDfEyjF6mQ@mail.gmail.com>
- <e166705a-e838-4c8f-a8cf-64913e120caa@suse.cz> <CAJuCfpGR2tHhUu=p4X2YKPNot4TJbhuFPRiT8BgOHvtcw=j-Ug@mail.gmail.com>
- <75bc0c27-3d08-484d-9d22-59bc70f7ee1d@suse.cz>
-In-Reply-To: <75bc0c27-3d08-484d-9d22-59bc70f7ee1d@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 15 Sep 2025 08:25:47 -0700
-X-Gm-Features: AS18NWDzXwa6PsADklKbxWJVhOSyinFRXX6id3GB73JJ-8IdNGmacbKtj7E3p8E
-Message-ID: <CAJuCfpHJyGrH91yErLBMPbFBu9dS3Nr_ij2FJdQ5cUnYxAu9Tw@mail.gmail.com>
-Subject: Re: [PATCH slab v5 5/6] slab: Reuse first bit for OBJEXTS_ALLOC_FAIL
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	Harry Yoo <harry.yoo@oracle.com>, Michal Hocko <mhocko@suse.com>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 4/7] bpf: bpf task work plumbing
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com, memxor@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250905164508.1489482-1-mykyta.yatsenko5@gmail.com>
+ <20250905164508.1489482-5-mykyta.yatsenko5@gmail.com>
+ <c67790c49ae9ce4e1f34df324ab0b217ab867f03.camel@gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <c67790c49ae9ce4e1f34df324ab0b217ab867f03.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Sep 15, 2025 at 8:11=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
+On 9/6/25 00:09, Eduard Zingerman wrote:
+> On Fri, 2025-09-05 at 17:45 +0100, Mykyta Yatsenko wrote:
 >
-> On 9/15/25 17:06, Suren Baghdasaryan wrote:
-> > On Mon, Sep 15, 2025 at 12:51=E2=80=AFAM Vlastimil Babka <vbabka@suse.c=
-z> wrote:
-> >>
-> >>
-> >> Shakeel or Suren, will you sent the fix, including Fixes: ? I can put =
-in
-> >> ahead of this series with cc stable in slab/for-next and it shouldn't =
-affect
-> >> the series.
-> >
-> > I will post it today. I was planning to include it as a resping of the
-> > fixup patchset [1] but if you prefer it separately I can do that too.
-> > Please let me know your preference.
+> [...]
 >
-> I think it will be better for patches touching slab (only) to be separate=
-,
-> to avoid conflict potential. [1] seems mm tree material
+>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+>> index 3d080916faf9..4130d8e76dff 100644
+>> --- a/kernel/bpf/arraymap.c
+>> +++ b/kernel/bpf/arraymap.c
+> [...]
 >
-> > Another fixup patch I'll be adding is the removal of the `if
-> > (new_slab)` condition for doing mark_failed_objexts_alloc() inside
-> > alloc_slab_obj_exts() [2].
+>> @@ -439,12 +439,14 @@ static void array_map_free_timers_wq(struct bpf_map *map)
+>>   	/* We don't reset or free fields other than timer and workqueue
+>>   	 * on uref dropping to zero.
+>>   	 */
+>> -	if (btf_record_has_field(map->record, BPF_TIMER | BPF_WORKQUEUE)) {
+>> +	if (btf_record_has_field(map->record, BPF_TIMER | BPF_WORKQUEUE | BPF_TASK_WORK)) {
+> I think that hashtab.c:htab_free_internal_structs needs to be renamed
+> and called here, thus avoiding code duplication.
+Sorry for the delayed follow up on this, just was trying to do it. I'm 
+not sure if it is possible
+to reuse anything from hashtab in arraymap at the moment, there is no 
+header file for hashtab.
+If we are going to introduce a new file to facilitate code reuse between 
+maps, maybe we should go for
+map_intern_helpers.c/h or something like that. WDYT?
 >
-> Ack, then it's 2 patches for slab :)
+>>   		for (i = 0; i < array->map.max_entries; i++) {
+>>   			if (btf_record_has_field(map->record, BPF_TIMER))
+>>   				bpf_obj_free_timer(map->record, array_map_elem_ptr(array, i));
+>>   			if (btf_record_has_field(map->record, BPF_WORKQUEUE))
+>>   				bpf_obj_free_workqueue(map->record, array_map_elem_ptr(array, i));
+>> +			if (btf_record_has_field(map->record, BPF_TASK_WORK))
+>> +				bpf_obj_free_task_work(map->record, array_map_elem_ptr(array, i));
+>>   		}
+>>   	}
+>>   }
+> [...]
+>
+>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>> index a1a9bc589518..73ca21911b30 100644
+>> --- a/kernel/bpf/btf.c
+>> +++ b/kernel/bpf/btf.c
+> [...]
+>
+>> @@ -4034,6 +4037,10 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
+>>   		case BPF_LIST_NODE:
+>>   		case BPF_RB_NODE:
+>>   			break;
+>> +		case BPF_TASK_WORK:
+>> +			WARN_ON_ONCE(rec->task_work_off >= 0);
+>> +			rec->task_work_off = rec->fields[i].offset;
+>> +			break;
+> Nit: let's move this case up to BPF_WORKQUEUE or BPF_REFCOUNT,
+>       so that similar cases are grouped together.
+>
+>>   		default:
+>>   			ret = -EFAULT;
+>>   			goto end;
+> [...]
+>
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 0fbfa8532c39..7da1ca893dfe 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+> [...]
+>
+>> @@ -840,6 +849,9 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
+>>   				continue;
+>>   			bpf_rb_root_free(field, field_ptr, obj + rec->spin_lock_off);
+>>   			break;
+>> +		case BPF_TASK_WORK:
+>> +			bpf_task_work_cancel_and_free(field_ptr);
+>> +			break;
+> Nit: same here, let's keep similar cases together.
+>
+>>   		case BPF_LIST_NODE:
+>>   		case BPF_RB_NODE:
+>>   		case BPF_REFCOUNT:
+> [...]
+>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index a5d19a01d488..6152536a834f 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -2240,6 +2240,8 @@ static void mark_ptr_not_null_reg(struct bpf_reg_state *reg)
+>>   				reg->map_uid = reg->id;
+>>   			if (btf_record_has_field(map->inner_map_meta->record, BPF_WORKQUEUE))
+>>   				reg->map_uid = reg->id;
+>> +			if (btf_record_has_field(map->inner_map_meta->record, BPF_TASK_WORK))
+>> +				reg->map_uid = reg->id;
+> Nit: this can be shorter:
+>
+> 			if (btf_record_has_field(map->inner_map_meta->record,
+> 						 BPF_TIMER | BPF_WORKQUEUE | BPF_TASK_WORK))
+> 				reg->map_uid = reg->id;
+>
+>
+>>   		} else if (map->map_type == BPF_MAP_TYPE_XSKMAP) {
+>>   			reg->type = PTR_TO_XDP_SOCK;
+>>   		} else if (map->map_type == BPF_MAP_TYPE_SOCKMAP ||
+> [...]
+>
+>> @@ -10943,6 +10956,35 @@ static int set_rbtree_add_callback_state(struct bpf_verifier_env *env,
+>>   	return 0;
+>>   }
+>>   
+>> +static int set_task_work_schedule_callback_state(struct bpf_verifier_env *env,
+>> +						 struct bpf_func_state *caller,
+>> +						 struct bpf_func_state *callee,
+>> +						 int insn_idx)
+>> +{
+>> +	struct bpf_map *map_ptr = caller->regs[BPF_REG_3].map_ptr;
+>> +
+>> +	/*
+>> +	 * callback_fn(struct bpf_map *map, void *key, void *value);
+>> +	 */
+>> +	callee->regs[BPF_REG_1].type = CONST_PTR_TO_MAP;
+>> +	__mark_reg_known_zero(&callee->regs[BPF_REG_1]);
+>> +	callee->regs[BPF_REG_1].map_ptr = map_ptr;
+>> +
+>> +	callee->regs[BPF_REG_2].type = PTR_TO_MAP_KEY;
+>> +	__mark_reg_known_zero(&callee->regs[BPF_REG_2]);
+>> +	callee->regs[BPF_REG_2].map_ptr = map_ptr;
+>> +
+>> +	callee->regs[BPF_REG_3].type = PTR_TO_MAP_VALUE;
+>> +	__mark_reg_known_zero(&callee->regs[BPF_REG_3]);
+>> +	callee->regs[BPF_REG_3].map_ptr = map_ptr;
+>> +
+>> +	/* unused */
+>> +	__mark_reg_not_init(env, &callee->regs[BPF_REG_4]);
+>> +	__mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
+>> +	callee->in_callback_fn = true;
+> This should be `callee->in_async_callback_fn = true;` to avoid an
+> infinite loop check in the is_state_visisted() in some cases.
+>
+>> +	return 0;
+>> +}
+>> +
+>>   static bool is_rbtree_lock_required_kfunc(u32 btf_id);
+>>   
+>>   /* Are we currently verifying the callback for a rbtree helper that must
+> [...]
+>
+>> @@ -13171,6 +13235,15 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+>>   					return -EINVAL;
+>>   				}
+>>   			}
+>> +			if (meta->map.ptr && reg->map_ptr->record->task_work_off >= 0) {
+>> +				if (meta->map.ptr != reg->map_ptr ||
+>> +				    meta->map.uid != reg->map_uid) {
+>> +					verbose(env,
+>> +						"bpf_task_work pointer in R2 map_uid=%d doesn't match map pointer in R3 map_uid=%d\n",
+>> +						meta->map.uid, reg->map_uid);
+>> +					return -EINVAL;
+>> +				}
+>> +			}
+> Please merge this with the case for wq_off above.
+>
+>>   			meta->map.ptr = reg->map_ptr;
+>>   			meta->map.uid = reg->map_uid;
+>>   			fallthrough;
+> [...]
 
-Ack. Will post after our meeting today.
-
->
-> Thanks,
-> Vlastimil
->
-> > [1] https://lore.kernel.org/all/20250909233409.1013367-1-surenb@google.=
-com/
-> > [2] https://elixir.bootlin.com/linux/v6.16.5/source/mm/slub.c#L1996
->
 
