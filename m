@@ -1,281 +1,149 @@
-Return-Path: <bpf+bounces-68406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68407-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D794B58215
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 18:30:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C3DB58256
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 18:43:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0696205577
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 16:30:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E95AD7A1ECA
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 16:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F1F296BC4;
-	Mon, 15 Sep 2025 16:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCEB279DBA;
+	Mon, 15 Sep 2025 16:43:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qDxYvZJc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kTVRhyO5"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F0628B407
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 16:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983D91F419B
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 16:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757953745; cv=none; b=cmrsYcx2isY2putX0hQ2OKhhNPhhyafo7QA6C7OEaq+mhorkyqqfkU+OesqfQwiEYggNB/Lnni3ciJGsxr0QVPXqRSO616fxH9t0a8S+nYwL6tTtBUcmnaLdXbaVH4ZYmS5pGa7MNoSdihdvCbHK62Ghe40unNaPF3SCZilajB4=
+	t=1757954628; cv=none; b=oAStWa7AkX80YUJVGlFEOCcdNUqwRS0b08rjR+2mVoSwA8nFThMoBq6oqEld6ERzVTAu5htHQMzlb8b4SRXb6BUPReSB4hps80yerGzTh3aScV3KPFFiDeiZYp8wh4dzyPzUQ+pRVQlMLIGXSHi6y6JE99WqZl/n1M+YoYbO7BE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757953745; c=relaxed/simple;
-	bh=aLpeBnqCepaZQ/iy4/cRezS+ZCnq366+a5vyx/shb9M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pgKtgl8k4dfFQ9AbQUZKR5dJOSNLogvgSeXNwlojLbVW+oqrhkO+etDyWL4gCmAZLVF1rNX0lnQP7K8DCWOB2ZlH+95fIOUWFzTCkzLkcO0aeKt2v9enJzqr9nOJcoX949EzuTBzT1aiPuy/63UPfPJcevgOhInRknD6qrJl02w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qDxYvZJc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44F78C4CEF7;
-	Mon, 15 Sep 2025 16:29:04 +0000 (UTC)
+	s=arc-20240116; t=1757954628; c=relaxed/simple;
+	bh=xkXfYbWIDEUWnyGsAfdnw3AuPZ6KLRDrEvvkbKypt/4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CV5NgZwecM1Vm13zJvWsWDYJ3YuURPA/E2OkyhSr/UNHuujUFVnWgHVGhM+eOukk4hfE2BTCaqU2D4WcEB50QJREBkEg8gWFyRefQPoCABF9aDvawQSm9FKDoXjLo3Up5DJRkyu0dz9IfgZ9WFIkBxMlt8iugmfLEuEB6spKEMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kTVRhyO5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29F37C4CEF1
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 16:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757953744;
-	bh=aLpeBnqCepaZQ/iy4/cRezS+ZCnq366+a5vyx/shb9M=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qDxYvZJcrYmGYfkEVk9Eu6/TziyAOPGDwca/c4HOwY0c6SguqqdO+C4UGtHjUoPi9
-	 KWvM3t3NjgQ7bkrmCdVEldzg0OVzluX/krU69z+yphnUg8fFvEiT8MQknQX5Al6BRJ
-	 97Hxek27L8KtlW5eUaRoAEHyaJafYlyIxLAeeN7o1OwRqMy0I9jZODQbKjcVs9YGkT
-	 ZT/9qFM3s5NMppya56LXknpSBTB0OgQgHGUGPVEAfUDt5tynyo81Tw3wL/CQrvf0xO
-	 oRBJX6iWrwLVl9doGG9yZJkn4y/pDMsc11MoKVTdB7H+gOVRuXS37/vr26EcoeEkRf
-	 G7reXy7GrFt0g==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: bpf@vger.kernel.org
-Cc: Puranjay Mohan <puranjay@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	kkd@meta.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v3 3/3] selftests: bpf: Add tests for signed loads from arena
-Date: Mon, 15 Sep 2025 16:28:47 +0000
-Message-ID: <20250915162848.54282-4-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250915162848.54282-1-puranjay@kernel.org>
-References: <20250915162848.54282-1-puranjay@kernel.org>
+	s=k20201202; t=1757954628;
+	bh=xkXfYbWIDEUWnyGsAfdnw3AuPZ6KLRDrEvvkbKypt/4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=kTVRhyO5NelnSUygWG6OZRSHdiSBfeT6VeHDHKoBelJmA5PaIBfHM/rBd7vgf3uDO
+	 xNwEPK5TOicQSxMTRQ6BZGuWtrD4FoX2CsY5JOYaWZBtyGDw37E+JC5h9TlzcXJNM9
+	 ZeS7p77yQYjQW5G3jGFaJZ7nkva/MapbUUKfeTZuAzd8l0/He0jYxk/bo5enyX41rH
+	 cEBLCAbXGur2nueGY8nYIJ7Q4u77oHobzIb8V5r1ihABtBqmCg2blSja5nte+hgHmC
+	 wuL9cV6b9aXPC0J8g83jRL+BhUcZCpWo1V/hDkRcMTwiY9rp3f19CuNGHRpwC39V1l
+	 v7VOqOq8ExKFg==
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4b60144fc74so48758551cf.2
+        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 09:43:48 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWSTtyj8MszbDtQcImf8uJeFcLUusZvkIsCz82P3xES1ctFN9vrPWTQypo41KDxOS3QFVw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvxU2jAlh/LhOjEw2FPp/gVCaV9yQPRge4sVQPVOXqbSTyWSoP
+	GbphQpx8f4LfGVVpCmgMCDYv1jPLwVoHfWVtl8g3BB2MQZN1XD8uNir8Cp7hKMu+DQjJnyYblUa
+	ofjWQ8pshDSFh4yx+GhcpQULHNqu0q0I=
+X-Google-Smtp-Source: AGHT+IEsS0zMZqCp8O6H3genJnRRjd8gV66oLBJSEuyuaGeiEZx+R6yacFaqmBu8hQlzU/+Pog0FmJsf3ryH4Gp+qYI=
+X-Received: by 2002:a05:622a:5443:b0:4b7:a9e9:88db with SMTP id
+ d75a77b69052e-4b7a9e98f23mr22440971cf.1.1757954627323; Mon, 15 Sep 2025
+ 09:43:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250828013415.2298-1-hengqi.chen@gmail.com> <mb61pjz2nmyu4.fsf@kernel.org>
+In-Reply-To: <mb61pjz2nmyu4.fsf@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Mon, 15 Sep 2025 09:43:35 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5-Q7F9-6hUWJ9XhS37fZrJjk7YNmbHriQM_rDW07X5KA@mail.gmail.com>
+X-Gm-Features: Ac12FXx5WYYzXt5EurpSPAnOZogOP6b42OjKIGjzROGttany-z2VaqbPJozmibQ
+Message-ID: <CAPhsuW5-Q7F9-6hUWJ9XhS37fZrJjk7YNmbHriQM_rDW07X5KA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, arm64: Call bpf_jit_binary_pack_finalize()
+ in bpf_jit_free()
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Hengqi Chen <hengqi.chen@gmail.com>, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, xukuohai@huaweicloud.com, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add tests for loading 8, 16, and 32 bits with sign extension from arena,
-also verify that exception handling is working correctly and correct
-assembly is being generated by the x86 and arm64 JITs.
+Sorry for the late reply.
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- .../selftests/bpf/progs/verifier_ldsx.c       | 176 ++++++++++++++++++
- 1 file changed, 176 insertions(+)
+On Thu, Aug 28, 2025 at 5:10=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
+> wrote:
+[...]
+> Thanks for this patch!
+>
+> So, this is fixing a bug because bpf_jit_binary_pack_finalize() will do
+> kvfree(rw_header); but without it currently, jit_data->header is never
+> freed.
+>
+> But I think we shouldn't use bpf_jit_binary_pack_finalize() here as it
+> copies the whole rw_header to ro_header using  bpf_arch_text_copy()
+> which is an expensive operation (patch_map/unmap in loop +
+> flush_icache_range()) and not needed here because we are going
+> to free ro_header anyway.
+>
+> We only need to copy jit_data->header->size to jit_data->ro_header->size
+> because this size is later used by bpf_jit_binary_pack_free(), see
+> comment above bpf_jit_binary_pack_free().
+>
+> How I suggest we should fix the code and the comment:
+>
+> -- >8 --
+>
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.=
+c
+> index 5083886d6e66b..cb4c50eeada13 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -3093,12 +3093,14 @@ void bpf_jit_free(struct bpf_prog *prog)
+>
+>                 /*
+>                  * If we fail the final pass of JIT (from jit_subprogs),
+> -                * the program may not be finalized yet. Call finalize he=
+re
+> -                * before freeing it.
+> +                * the program may not be finalized yet. Copy the header =
+size
+> +                * from rw_header to ro_header before freeing the ro_head=
+er
+> +                * with bpf_jit_binary_pack_free().
+>                  */
+>                 if (jit_data) {
+>                         bpf_arch_text_copy(&jit_data->ro_header->size, &j=
+it_data->header->size,
+>                                            sizeof(jit_data->header->size)=
+);
+> +                       kvfree(jit_data->header);
+>                         kfree(jit_data);
+>                 }
+>                 prog->bpf_func -=3D cfi_get_offset();
+>
+> -- 8< --
+>
+> Song,
+>
+> Do you think this optimization is worth it or should we just call
+> bpf_jit_binary_pack_finalize() here like this patch is doing?
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_ldsx.c b/tools/testing/selftests/bpf/progs/verifier_ldsx.c
-index 52edee41caf6..6c16904d2afb 100644
---- a/tools/testing/selftests/bpf/progs/verifier_ldsx.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_ldsx.c
-@@ -3,6 +3,7 @@
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
-+#include "bpf_arena_common.h"
- 
- #if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
- 	(defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64) || \
-@@ -10,6 +11,12 @@
- 	defined(__TARGET_ARCH_loongarch)) && \
- 	__clang_major__ >= 18
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARENA);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+	__uint(max_entries, 1);
-+} arena SEC(".maps");
-+
- SEC("socket")
- __description("LDSX, S8")
- __success __success_unpriv __retval(-2)
-@@ -256,6 +263,175 @@ __naked void ldsx_ctx_8(void)
- 	: __clobber_all);
- }
- 
-+SEC("syscall")
-+__description("Arena LDSX Disasm")
-+__success
-+__arch_x86_64
-+__jited("movslq	0x10(%rax,%r12), %r14")
-+__jited("movswq	0x18(%rax,%r12), %r14")
-+__jited("movsbq	0x20(%rax,%r12), %r14")
-+__jited("movslq	0x10(%rdi,%r12), %r15")
-+__jited("movswq	0x18(%rdi,%r12), %r15")
-+__jited("movsbq	0x20(%rdi,%r12), %r15")
-+__arch_arm64
-+__jited("add	x11, x7, x28")
-+__jited("ldrsw	x21, [x11, #0x10]")
-+__jited("add	x11, x7, x28")
-+__jited("ldrsh	x21, [x11, #0x18]")
-+__jited("add	x11, x7, x28")
-+__jited("ldrsb	x21, [x11, #0x20]")
-+__jited("add	x11, x0, x28")
-+__jited("ldrsw	x22, [x11, #0x10]")
-+__jited("add	x11, x0, x28")
-+__jited("ldrsh	x22, [x11, #0x18]")
-+__jited("add	x11, x0, x28")
-+__jited("ldrsb	x22, [x11, #0x20]")
-+__naked void arena_ldsx_disasm(void *ctx)
-+{
-+	asm volatile (
-+	"r1 = %[arena] ll;"
-+	"r2 = 0;"
-+	"r3 = 1;"
-+	"r4 = %[numa_no_node];"
-+	"r5 = 0;"
-+	"call %[bpf_arena_alloc_pages];"
-+	"r0 = addr_space_cast(r0, 0x0, 0x1);"
-+	"r1 = r0;"
-+	"r8 = *(s32 *)(r0 + 16);"
-+	"r8 = *(s16 *)(r0 + 24);"
-+	"r8 = *(s8  *)(r0 + 32);"
-+	"r9 = *(s32 *)(r1 + 16);"
-+	"r9 = *(s16 *)(r1 + 24);"
-+	"r9 = *(s8  *)(r1 + 32);"
-+	"r0 = 0;"
-+	"exit;"
-+	:: __imm(bpf_arena_alloc_pages),
-+	   __imm_addr(arena),
-+	   __imm_const(numa_no_node, NUMA_NO_NODE)
-+	:  __clobber_all
-+	);
-+}
-+
-+SEC("syscall")
-+__description("Arena LDSX Exception")
-+__success __retval(0)
-+__arch_x86_64
-+__arch_arm64
-+__naked void arena_ldsx_exception(void *ctx)
-+{
-+	asm volatile (
-+	"r1 = %[arena] ll;"
-+	"r0 = 0xdeadbeef;"
-+	"r0 = addr_space_cast(r0, 0x0, 0x1);"
-+	"r1 = 0x3fe;"
-+	"*(u64 *)(r0 + 0) = r1;"
-+	"r0 = *(s8 *)(r0 + 0);"
-+	"exit;"
-+	:
-+	:  __imm_addr(arena)
-+	:  __clobber_all
-+	);
-+}
-+
-+SEC("syscall")
-+__description("Arena LDSX, S8")
-+__success __retval(-1)
-+__arch_x86_64
-+__arch_arm64
-+__naked void arena_ldsx_s8(void *ctx)
-+{
-+	asm volatile (
-+	"r1 = %[arena] ll;"
-+	"r2 = 0;"
-+	"r3 = 1;"
-+	"r4 = %[numa_no_node];"
-+	"r5 = 0;"
-+	"call %[bpf_arena_alloc_pages];"
-+	"r0 = addr_space_cast(r0, 0x0, 0x1);"
-+	"r1 = 0x3fe;"
-+	"*(u64 *)(r0 + 0) = r1;"
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-+	"r0 = *(s8 *)(r0 + 0);"
-+#else
-+	"r0 = *(s8 *)(r0 + 7);"
-+#endif
-+	"r0 >>= 1;"
-+	"exit;"
-+	:: __imm(bpf_arena_alloc_pages),
-+	   __imm_addr(arena),
-+	   __imm_const(numa_no_node, NUMA_NO_NODE)
-+	:  __clobber_all
-+	);
-+}
-+
-+SEC("syscall")
-+__description("Arena LDSX, S16")
-+__success __retval(-1)
-+__arch_x86_64
-+__arch_arm64
-+__naked void arena_ldsx_s16(void *ctx)
-+{
-+	asm volatile (
-+	"r1 = %[arena] ll;"
-+	"r2 = 0;"
-+	"r3 = 1;"
-+	"r4 = %[numa_no_node];"
-+	"r5 = 0;"
-+	"call %[bpf_arena_alloc_pages];"
-+	"r0 = addr_space_cast(r0, 0x0, 0x1);"
-+	"r1 = 0x3fffe;"
-+	"*(u64 *)(r0 + 0) = r1;"
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-+	"r0 = *(s16 *)(r0 + 0);"
-+#else
-+	"r0 = *(s16 *)(r0 + 6);"
-+#endif
-+	"r0 >>= 1;"
-+	"exit;"
-+	:: __imm(bpf_arena_alloc_pages),
-+	   __imm_addr(arena),
-+	   __imm_const(numa_no_node, NUMA_NO_NODE)
-+	:  __clobber_all
-+	);
-+}
-+
-+SEC("syscall")
-+__description("Arena LDSX, S32")
-+__success __retval(-1)
-+__arch_x86_64
-+__arch_arm64
-+__naked void arena_ldsx_s32(void *ctx)
-+{
-+	asm volatile (
-+	"r1 = %[arena] ll;"
-+	"r2 = 0;"
-+	"r3 = 1;"
-+	"r4 = %[numa_no_node];"
-+	"r5 = 0;"
-+	"call %[bpf_arena_alloc_pages];"
-+	"r0 = addr_space_cast(r0, 0x0, 0x1);"
-+	"r1 = 0xfffffffe;"
-+	"*(u64 *)(r0 + 0) = r1;"
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-+	"r0 = *(s32 *)(r0 + 0);"
-+#else
-+	"r0 = *(s32 *)(r0 + 4);"
-+#endif
-+	"r0 >>= 1;"
-+	"exit;"
-+	:: __imm(bpf_arena_alloc_pages),
-+	   __imm_addr(arena),
-+	   __imm_const(numa_no_node, NUMA_NO_NODE)
-+	:  __clobber_all
-+	);
-+}
-+
-+/* to retain debug info for BTF generation */
-+void kfunc_root(void)
-+{
-+	bpf_arena_alloc_pages(0, 0, 0, 0, 0);
-+}
-+
- #else
- 
- SEC("socket")
--- 
-2.47.3
+This is a good optimization. However, given this is not a hot path,
+I don't have a strong preference either way. At the moment, most
+other architectures use bpf_jit_binary_pack_finalize(), so it is good
+to just use bpf_jit_binary_pack_finalize and keep the logic
+consistent.
 
+In the longer term, we can consider refactoring bpf_jit_free so that
+multiple architectures can share code. After this patch, bpf_jit_free
+for x86_64 and arm64 are very similar to each other. There are
+likely some opportunities to reduce code duplications.
+
+Thanks,
+Song
 
