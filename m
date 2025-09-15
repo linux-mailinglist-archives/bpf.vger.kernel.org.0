@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-68387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 787B7B57935
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 13:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43351B578B7
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 13:43:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C829446A33
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 11:51:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2714441CE3
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 11:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE834302CD1;
-	Mon, 15 Sep 2025 11:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8878C2F0661;
+	Mon, 15 Sep 2025 11:42:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="E83b+U/X"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="X1VLIDEI"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FDF302CC9
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 11:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D8B1E515
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 11:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757937041; cv=none; b=C+B/YFJykBYsipynKsR8uB92E2lRd3VNsCh5YoSy864J4GeLxd2vJapfu7e82rva0zApAwqMpCdMuPBAtABbUK5LPx8nODXDW/Sd99ArPPtty8Bo83lF/uUSbzycvHOdNWOvkgwU7tMS0+oEZOUeNoVCGmj8CkFWXCfB5CIpQmo=
+	t=1757936575; cv=none; b=sC/z+/7SNp6FgCLYqZTpCLi9WeQoX7pbi+y6AKpp9nFtllUdMZqO62Ey+kDnQdfBkZSubCww/OiMHKANhpD2IKEYAfeKJNVbegFfmZ5aLjXmAs052hW4Yelh/LSzODo34OnZeOPac8HdSnh3ccoosDEkTNcn4raNjsLFpzCSEnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757937041; c=relaxed/simple;
-	bh=GoAhkNOPlRriDwXvY3XuDu8SPjOqVa5ggTiPgrn1M2M=;
+	s=arc-20240116; t=1757936575; c=relaxed/simple;
+	bh=wQa1qw4pySU8mTMEvVUpACsWDwDchOycbQTjFahs72Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TOq1SiXwLCrDbnhF2uHE8Wm4Tklg7v4nNbM2+fiJCsFgtXMjPsGOTF7kKoUozb934Z8RfjcsF3wFR8UuQpoSznNttOjY5FOmoQga9IChRizTkqE8d9ImxVqcPxHJm1k/97qnkq3HqWfa6ijTb9LYTtL8Zh/MEJEHMToxMW1RIwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=E83b+U/X; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=gGsf3AqARICx9n261ripKmf2H/GfqL0kuRmcEuZ7932dvUmtB3thF1oaMdOCfZSc5WEb7AMiDXsDqpTkFGqk7UVq/ltldT36lnTInOhNxA+915InJNL6HLUW16BofKPmPb9y2IDttX7QyhqHNAUQ56lphZo7nDcqQLnOcP1nALo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=X1VLIDEI; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=KsEmW8A3Twso6pY3gac7D6TvwdWlUcR8wIhJKzLFY30=; b=E83b+U/XIWL+e2lzEZ4Q7Q8yAP
-	DsBiWKrjRlS2glca3S0UqcAhb/r0r1YKhfncViohMLTqCWhGbbZgbLzKen8CWsADhlbKLHyQatB3S
-	WsfxESVaCwic34j/z1wpQ5r4eeWXmevoBu8zcbPWbjbMOM6UScJLAD/jwiFRZVeRf9ekm0l733/Sp
-	oil6zRyTb9Ysx9SoD5APSGbowiNTcz2ETmSjhYLR9VnTqX19qg8U+QvgqIvW634lDIXczkVpZYh37
-	35gmPHRHuvT1SZoaewA4l8jbC9zeYnLmrbSNMGbp8ATPirPsm3beT7flJY2q+AD2KAy7l246hwD1z
-	Odnt1H1g==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
+	bh=L0E/sHkiq8805nkXQCFZEFvXIh3E1kEQ9zr0SlDp/uo=; b=X1VLIDEIlsqEoK7Vzk937TS4H7
+	AGEiNDHt+pEm6wczoAOefP+CYFtav/yif1lnhKtR1tfJjRwPg+MY1WZv34W/m1Ex6U+UMeZGL7iN+
+	q/jkHmZwhaKCyh4TvXDCt7EkHquAkZlSS0tCywurLCV0NYHNc0ajdyVM76f0g0Wqs6gRQIIb7LVwL
+	niN+F2VrC3rSPfznCYRO4fCn4MHsu8vaexfsadvKPMBxJlIjARvQBdlcK/E6AyIiH6suRGa/wuzEW
+	S5XuLPf8d9JS/DHv5eymPsRNi34hJch3ZZi6Nje7kul8SZ1Qc1+5hcaCmI2MtXSVC78F3/68W53vG
+	DvXxA8nA==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uy7T4-000DmO-0W;
-	Mon, 15 Sep 2025 13:33:58 +0200
+	id 1uy7bc-000EoM-06;
+	Mon, 15 Sep 2025 13:42:48 +0200
 Received: from localhost ([127.0.0.1])
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uy7T2-0006gv-2J;
-	Mon, 15 Sep 2025 13:33:57 +0200
-Message-ID: <055e1c7a-410f-4843-bec4-e545f032b145@iogearbox.net>
-Date: Mon, 15 Sep 2025 13:33:56 +0200
+	id 1uy7bb-0003vq-1R;
+	Mon, 15 Sep 2025 13:42:47 +0200
+Message-ID: <fdc291d2-ec13-4a54-9fad-bc905edf4ff8@iogearbox.net>
+Date: Mon, 15 Sep 2025 13:42:46 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,18 +63,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpftool: Search for tracefs at
- /sys/kernel/tracing first
-To: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- bpf@vger.kernel.org
-References: <20250912104343.58555-1-qmo@kernel.org>
+Subject: Re: [PATCH bpf] bpf: potential double-free of env->insn_aux_data
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org
+Cc: martin.lau@linux.dev, kernel-team@fb.com, yonghong.song@linux.dev,
+ Chris Mason <clm@meta.com>
+References: <20250912-patch-insn-data-double-free-v1-1-af05bd85a21a@gmail.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -120,46 +114,67 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250912104343.58555-1-qmo@kernel.org>
+In-Reply-To: <20250912-patch-insn-data-double-free-v1-1-af05bd85a21a@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27764/Mon Sep 15 10:26:33 2025)
 
-On 9/12/25 12:43 PM, Quentin Monnet wrote:
-[...]
-> diff --git a/tools/bpf/bpftool/tracelog.c b/tools/bpf/bpftool/tracelog.c
-> index 31d806e3bdaa..49828a4f60c2 100644
-> --- a/tools/bpf/bpftool/tracelog.c
-> +++ b/tools/bpf/bpftool/tracelog.c
-> @@ -57,10 +57,8 @@ find_tracefs_mnt_single(unsigned long magic, char *mnt, const char *mntpt)
->   static bool get_tracefs_pipe(char *mnt)
->   {
->   	static const char * const known_mnts[] = {
-> -		"/sys/kernel/debug/tracing",
->   		"/sys/kernel/tracing",
-> -		"/tracing",
-> -		"/trace",
-> +		"/sys/kernel/debug/tracing",
->   	};
->   	const char *pipe_name = "/trace_pipe";
->   	const char *fstype = "tracefs";
-> @@ -96,11 +94,11 @@ static bool get_tracefs_pipe(char *mnt)
->   
->   	p_info("could not find tracefs, attempting to mount it now");
->   	/* Most of the time, tracefs is automatically mounted by debugfs at
-> -	 * /sys/kernel/debug/tracing when we try to access it. If we could not
-> +	 * /sys/kernel/tracing when we try to access it. If we could not
->   	 * find it, it is likely that debugfs is not mounted. Let's give one
+On 9/12/25 9:18 PM, Eduard Zingerman wrote:
+> Function bpf_patch_insn_data() has the following structure:
+> 
+>    static struct bpf_prog *bpf_patch_insn_data(... env ...)
+>    {
+>          struct bpf_prog *new_prog;
+>          struct bpf_insn_aux_data *new_data = NULL;
+> 
+>          if (len > 1) {
+>                  new_data = vrealloc(...);  // <--------- (1)
+>                  if (!new_data)
+>                          return NULL;
+> 
+>                  env->insn_aux_data = new_data;  // <---- (2)
+>          }
+> 
+>          new_prog = bpf_patch_insn_single(env->prog, off, patch, len);
+>          if (IS_ERR(new_prog)) {
+>                  ...
+>                  vfree(new_data);   // <----------------- (3)
+>                  return NULL;
+>          }
+>          ... happy path ...
+>    }
+> 
+> In case if bpf_patch_insn_single() returns an error the `new_data`
+> allocated at (1) will be freed at (3). However, at (2) this pointer
+> is stored in `env->insn_aux_data`. Which is freed unconditionally
+> by verifier.c:bpf_check() on both happy and error paths.
+> Thus, leading to double-free.
+> 
+> Fix this by removing vfree() call at (3), ownership over `new_data` is
+> already passed to `env->insn_aux_data` at this point.
+> 
+> Fixes: 77620d126739 ("bpf: use realloc in bpf_patch_insn_data")
+> Reported-by: Chris Mason <clm@meta.com>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>   kernel/bpf/verifier.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 9fb1f957a09374e4d148402572b872bec930f34c..92eb0f4e87a4ec3a7e303c6949cb415e3fd0b4ac 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20781,7 +20781,6 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+>   			verbose(env,
+>   				"insn %d cannot be patched due to 16-bit range\n",
+>   				env->insn_aux_data[off].orig_idx);
+> -		vfree(new_data);
 
-nit: Should this comment be tweaked further, or maybe even removed completely
-given the now stale references to debugfs there?
+I presume you mean bpf-next tree, otherwise we'd be adding a memory leak into bpf tree?
 
->   	 * attempt at mounting just tracefs at /sys/kernel/tracing.
->   	 */
-> -	strcpy(mnt, known_mnts[1]);
-> +	strcpy(mnt, known_mnts[0]);
->   	if (mount_tracefs(mnt))
->   		return false;
->   
-
+>   		return NULL;
+>   	}
+>   	adjust_insn_aux_data(env, new_data, new_prog, off, len);
+Thanks,
+Daniel
 
