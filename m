@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-68404-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68405-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED9D2B58211
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 18:30:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96046B58212
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 18:30:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36556200FE1
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 16:30:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05E8F4C233E
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 16:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9B732874FC;
-	Mon, 15 Sep 2025 16:28:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47853288C81;
+	Mon, 15 Sep 2025 16:29:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oj6wQt7r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qdUTmD+E"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39FBB2877F7
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 16:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDE7213E6D
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 16:29:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757953737; cv=none; b=MwoypMVPMGD7FAPoKxJ/baInO8v39KQSE5hkGVvos1MCfPqJb7J4kSwGPrz7Gqr6IVVAKL8F3fihcTRMMLGNjNVsPBOaQb0YxYGBIifgdZLOZOqG1kDaiwM9LkRMRewQXO78d5d+CnMK/aVLHf5vuTlY06md7VZHO+CjM1Adwh0=
+	t=1757953741; cv=none; b=lx0IZ33nsjmtm2hvbxU/Nf8+GYmTFmJzIdD+/DvZ4RrXW2MZN8GYtyQ1Fa+1PRko0tkyF9+cQPV/xXpEVtUeQ3jiRRJkdAVL6UMRCdcbtGUTLVxmqMcLTM+g4QNcjnJ43NYKcUQotJfVW0MEB3/vx3YTFKCKfNsk7fmMQLG7WbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757953737; c=relaxed/simple;
-	bh=EMIVJh26CfgyRHVbXP6tpVz4fi1PYOy8tDVMa2gURbo=;
+	s=arc-20240116; t=1757953741; c=relaxed/simple;
+	bh=cP4Lk6YGep27An8ml7Oo3bCe/cOQhK4OUJP9XgSrO9k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=coNaptOfNQxB1frakTKaIYXyLQ3wSYEiCtPLr0Z1uVUFCo+LwwiAjeDInn6qMGbsbDDLJrbeR6UFfXf0GyfRHhC6nL/W2OYFErcUMPhHE7rzAgOO5uGuGQwH8SAU/U91QmQ9N+2agQIbmwI4aYS34TM6mtUeKPWFxC9BUqDSqVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oj6wQt7r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77975C4CEF1;
-	Mon, 15 Sep 2025 16:28:56 +0000 (UTC)
+	 MIME-Version; b=D77UetokyKLNsWmn7bjdt3v6p2zxZGtd6MX56L5aqbjLW8twXg7amfA4exfq3k2P2rRmafPavtdPW07t3NoL7YSnf7Dyslvf1APOUB4RBC5cux/GHN0dcdHtNra1holc6fBL7Mmke+GI3HjkRp2Tq4ygLTntV90lHvcVypTGgEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qdUTmD+E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB5F8C4CEF1;
+	Mon, 15 Sep 2025 16:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757953736;
-	bh=EMIVJh26CfgyRHVbXP6tpVz4fi1PYOy8tDVMa2gURbo=;
+	s=k20201202; t=1757953741;
+	bh=cP4Lk6YGep27An8ml7Oo3bCe/cOQhK4OUJP9XgSrO9k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oj6wQt7rKb4bmEZwv2GZXXqB3Gm4INpoURl/4TxRJb0qKUbK3YcYsvXdVj65LOah5
-	 G5KIaTwlUK53OgO+DGW0JX/ald62VcrdRABH1QUcVkJ9a0hjTtBvXiiLl/PaYwoikv
-	 s1tDksRCy1NLWxkMUVWb2J5t9S1i4Noc02A24JSe39RG/rjiPRssCzz1HE+I9lbI7q
-	 OZAWHvuTH9YLAlrXRCj9PuZbuD9Vc7U0Xurjw5uDPlSCRUpzFeECZry/ANffClNMNf
-	 d1gF5VO2CwTwz+HCSvOsP/rkIay6bbql/DgK/PmbBGVLKpnD7723mRobraOkXWypb5
-	 XeOC6tdeCtqBw==
+	b=qdUTmD+ETxkJM3EDIP3Zenjrt8BABScezyd5a0PuviJx6hJr6niPEVHFEKkH6j3XA
+	 N5NWfR/aYn2z3bVjmtvqu7/9B0EhotU14LulNfYkzyhrYzDbFksGJbXC+hfwyy3fbI
+	 uy7DwuG7RwKkrYCWxon9c7kvuonVPlgAFg2EzSp/YwN/ra2qYP2w1DBXcXEUPlxZbd
+	 ONUnI3C+ZYpYNClBvQRWxFU4Okrr0EG2uABsWwIX3NaLrhhB0fjjpxOr/TLh54SehX
+	 QOFIOXZqWQaw7xOWndnASDMYcMwPcbitMGXwuMvZ1aWN58rbEVNmIPvKZykf2O3vh4
+	 wR+6pg0vYEuJw==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay@kernel.org>,
@@ -50,11 +50,10 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	kkd@meta.com,
-	kernel-team@meta.com,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH bpf-next v3 1/3] bpf, x86: Add support for signed arena loads
-Date: Mon, 15 Sep 2025 16:28:45 +0000
-Message-ID: <20250915162848.54282-2-puranjay@kernel.org>
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v3 2/3] bpf, arm64: Add support for signed arena loads
+Date: Mon, 15 Sep 2025 16:28:46 +0000
+Message-ID: <20250915162848.54282-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250915162848.54282-1-puranjay@kernel.org>
 References: <20250915162848.54282-1-puranjay@kernel.org>
@@ -66,168 +65,89 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Add support for signed loads from arena which are internally converted
+to loads with mode set BPF_PROBE_MEM32SX by the verifier. The
+implementation is similar to BPF_PROBE_MEMSX and BPF_MEMSX but for
+BPF_PROBE_MEM32SX, arena_vm_base is added to the src register to form
+the address.
 
-Currently, signed load instructions into arena memory are unsupported.
-The compiler is free to generate these, and on GCC-14 we see a
-corresponding error when it happens. The hurdle in supporting them is
-deciding which unused opcode to use to mark them for the JIT's own
-consumption. After much thinking, it appears 0xc0 / BPF_NOSPEC can be
-combined with load instructions to identify signed arena loads. Use
-this to recognize and JIT them appropriately, and remove the verifier
-side limitation on the program if the JIT supports them.
-
-Co-developed-by: Puranjay Mohan <puranjay@kernel.org>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- arch/arm64/net/bpf_jit_comp.c |  5 +++++
- arch/s390/net/bpf_jit_comp.c  |  5 +++++
- arch/x86/net/bpf_jit_comp.c   | 35 ++++++++++++++++++++++++++++++++++-
- include/linux/filter.h        |  3 +++
- kernel/bpf/verifier.c         | 11 ++++++++---
- 5 files changed, 55 insertions(+), 4 deletions(-)
+ arch/arm64/net/bpf_jit_comp.c | 30 +++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
 
 diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 008273a53e04..f2b85a10add2 100644
+index f2b85a10add2..7233acec69ce 100644
 --- a/arch/arm64/net/bpf_jit_comp.c
 +++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -3064,6 +3064,11 @@ bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena)
+@@ -1133,12 +1133,14 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 		return 0;
+ 
+ 	if (BPF_MODE(insn->code) != BPF_PROBE_MEM &&
+-		BPF_MODE(insn->code) != BPF_PROBE_MEMSX &&
+-			BPF_MODE(insn->code) != BPF_PROBE_MEM32 &&
+-				BPF_MODE(insn->code) != BPF_PROBE_ATOMIC)
++	    BPF_MODE(insn->code) != BPF_PROBE_MEMSX &&
++	    BPF_MODE(insn->code) != BPF_PROBE_MEM32 &&
++	    BPF_MODE(insn->code) != BPF_PROBE_MEM32SX &&
++	    BPF_MODE(insn->code) != BPF_PROBE_ATOMIC)
+ 		return 0;
+ 
+ 	is_arena = (BPF_MODE(insn->code) == BPF_PROBE_MEM32) ||
++		   (BPF_MODE(insn->code) == BPF_PROBE_MEM32SX) ||
+ 		   (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC);
+ 
+ 	if (!ctx->prog->aux->extable ||
+@@ -1659,7 +1661,11 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 	case BPF_LDX | BPF_PROBE_MEM32 | BPF_H:
+ 	case BPF_LDX | BPF_PROBE_MEM32 | BPF_W:
+ 	case BPF_LDX | BPF_PROBE_MEM32 | BPF_DW:
+-		if (BPF_MODE(insn->code) == BPF_PROBE_MEM32) {
++	case BPF_LDX | BPF_PROBE_MEM32SX | BPF_B:
++	case BPF_LDX | BPF_PROBE_MEM32SX | BPF_H:
++	case BPF_LDX | BPF_PROBE_MEM32SX | BPF_W:
++		if (BPF_MODE(insn->code) == BPF_PROBE_MEM32 ||
++		    BPF_MODE(insn->code) == BPF_PROBE_MEM32SX) {
+ 			emit(A64_ADD(1, tmp2, src, arena_vm_base), ctx);
+ 			src = tmp2;
+ 		}
+@@ -1671,7 +1677,8 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 			off_adj = off;
+ 		}
+ 		sign_extend = (BPF_MODE(insn->code) == BPF_MEMSX ||
+-				BPF_MODE(insn->code) == BPF_PROBE_MEMSX);
++				BPF_MODE(insn->code) == BPF_PROBE_MEMSX ||
++				 BPF_MODE(insn->code) == BPF_PROBE_MEM32SX);
+ 		switch (BPF_SIZE(code)) {
+ 		case BPF_W:
+ 			if (is_lsi_offset(off_adj, 2)) {
+@@ -1879,9 +1886,11 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = add_exception_handler(insn, ctx, dst);
+-		if (ret)
+-			return ret;
++		if (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC) {
++			ret = add_exception_handler(insn, ctx, dst);
++			if (ret)
++				return ret;
++		}
+ 		break;
+ 
+ 	default:
+@@ -3064,11 +3073,6 @@ bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena)
  		if (!bpf_atomic_is_load_store(insn) &&
  		    !cpus_have_cap(ARM64_HAS_LSE_ATOMICS))
  			return false;
-+		break;
-+	case BPF_LDX | BPF_MEMSX | BPF_B:
-+	case BPF_LDX | BPF_MEMSX | BPF_H:
-+	case BPF_LDX | BPF_MEMSX | BPF_W:
-+		return false;
+-		break;
+-	case BPF_LDX | BPF_MEMSX | BPF_B:
+-	case BPF_LDX | BPF_MEMSX | BPF_H:
+-	case BPF_LDX | BPF_MEMSX | BPF_W:
+-		return false;
  	}
  	return true;
  }
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 8b57d8532f36..cf461d76e9da 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -2967,6 +2967,11 @@ bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena)
- 	case BPF_STX | BPF_ATOMIC | BPF_DW:
- 		if (bpf_atomic_is_load_store(insn))
- 			return false;
-+		break;
-+	case BPF_LDX | BPF_MEMSX | BPF_B:
-+	case BPF_LDX | BPF_MEMSX | BPF_H:
-+	case BPF_LDX | BPF_MEMSX | BPF_W:
-+		return false;
- 	}
- 	return true;
- }
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 8d34a9400a5e..a6550da34268 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1152,11 +1152,38 @@ static void emit_ldx_index(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, u32 i
- 	*pprog = prog;
- }
- 
-+static void emit_ldsx_index(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, u32 index_reg, int off)
-+{
-+	u8 *prog = *pprog;
-+
-+	switch (size) {
-+	case BPF_B:
-+		/* movsx rax, byte ptr [rax + r12 + off] */
-+		EMIT3(add_3mod(0x48, src_reg, dst_reg, index_reg), 0x0F, 0xBE);
-+		break;
-+	case BPF_H:
-+		/* movsx rax, word ptr [rax + r12 + off] */
-+		EMIT3(add_3mod(0x48, src_reg, dst_reg, index_reg), 0x0F, 0xBF);
-+		break;
-+	case BPF_W:
-+		/* movsx rax, dword ptr [rax + r12 + off] */
-+		EMIT2(add_3mod(0x48, src_reg, dst_reg, index_reg), 0x63);
-+		break;
-+	}
-+	emit_insn_suffix_SIB(&prog, src_reg, dst_reg, index_reg, off);
-+	*pprog = prog;
-+}
-+
- static void emit_ldx_r12(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
- {
- 	emit_ldx_index(pprog, size, dst_reg, src_reg, X86_REG_R12, off);
- }
- 
-+static void emit_ldsx_r12(u8 **prog, u32 size, u32 dst_reg, u32 src_reg, int off)
-+{
-+	emit_ldsx_index(prog, size, dst_reg, src_reg, X86_REG_R12, off);
-+}
-+
- /* STX: *(u8*)(dst_reg + off) = src_reg */
- static void emit_stx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
- {
-@@ -2109,13 +2136,19 @@ st:			if (is_imm8(insn->off))
- 		case BPF_LDX | BPF_PROBE_MEM32 | BPF_H:
- 		case BPF_LDX | BPF_PROBE_MEM32 | BPF_W:
- 		case BPF_LDX | BPF_PROBE_MEM32 | BPF_DW:
-+		case BPF_LDX | BPF_PROBE_MEM32SX | BPF_B:
-+		case BPF_LDX | BPF_PROBE_MEM32SX | BPF_H:
-+		case BPF_LDX | BPF_PROBE_MEM32SX | BPF_W:
- 		case BPF_STX | BPF_PROBE_MEM32 | BPF_B:
- 		case BPF_STX | BPF_PROBE_MEM32 | BPF_H:
- 		case BPF_STX | BPF_PROBE_MEM32 | BPF_W:
- 		case BPF_STX | BPF_PROBE_MEM32 | BPF_DW:
- 			start_of_ldx = prog;
- 			if (BPF_CLASS(insn->code) == BPF_LDX)
--				emit_ldx_r12(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
-+				if (BPF_MODE(insn->code) == BPF_PROBE_MEM32SX)
-+					emit_ldsx_r12(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
-+				else
-+					emit_ldx_r12(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
- 			else
- 				emit_stx_r12(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
- populate_extable:
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 4241a885975f..f5c859b8131a 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -78,6 +78,9 @@ struct ctl_table_header;
- /* unused opcode to mark special atomic instruction */
- #define BPF_PROBE_ATOMIC 0xe0
- 
-+/* unused opcode to mark special ldsx instruction. Same as BPF_NOSPEC */
-+#define BPF_PROBE_MEM32SX 0xc0
-+
- /* unused opcode to mark call to interpreter with arguments */
- #define BPF_CALL_ARGS	0xe0
- 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 17fe623400a5..411a3980d7b7 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -21423,10 +21423,14 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 			continue;
- 		case PTR_TO_ARENA:
- 			if (BPF_MODE(insn->code) == BPF_MEMSX) {
--				verbose(env, "sign extending loads from arena are not supported yet\n");
--				return -EOPNOTSUPP;
-+				if (!bpf_jit_supports_insn(insn, true)) {
-+					verbose(env, "sign extending loads from arena are not supported yet\n");
-+					return -EOPNOTSUPP;
-+				}
-+				insn->code = BPF_CLASS(insn->code) | BPF_PROBE_MEM32SX | BPF_SIZE(insn->code);
-+			} else {
-+				insn->code = BPF_CLASS(insn->code) | BPF_PROBE_MEM32 | BPF_SIZE(insn->code);
- 			}
--			insn->code = BPF_CLASS(insn->code) | BPF_PROBE_MEM32 | BPF_SIZE(insn->code);
- 			env->prog->aux->num_exentries++;
- 			continue;
- 		default:
-@@ -21632,6 +21636,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 			if (BPF_CLASS(insn->code) == BPF_LDX &&
- 			    (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
- 			     BPF_MODE(insn->code) == BPF_PROBE_MEM32 ||
-+			     BPF_MODE(insn->code) == BPF_PROBE_MEM32SX ||
- 			     BPF_MODE(insn->code) == BPF_PROBE_MEMSX))
- 				num_exentries++;
- 			if ((BPF_CLASS(insn->code) == BPF_STX ||
 -- 
 2.47.3
 
