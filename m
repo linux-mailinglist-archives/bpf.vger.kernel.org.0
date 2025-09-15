@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-68405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96046B58212
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 18:30:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D794B58215
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 18:30:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05E8F4C233E
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 16:30:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0696205577
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 16:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47853288C81;
-	Mon, 15 Sep 2025 16:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F1F296BC4;
+	Mon, 15 Sep 2025 16:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qdUTmD+E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qDxYvZJc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDE7213E6D
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 16:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F0628B407
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 16:29:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757953741; cv=none; b=lx0IZ33nsjmtm2hvbxU/Nf8+GYmTFmJzIdD+/DvZ4RrXW2MZN8GYtyQ1Fa+1PRko0tkyF9+cQPV/xXpEVtUeQ3jiRRJkdAVL6UMRCdcbtGUTLVxmqMcLTM+g4QNcjnJ43NYKcUQotJfVW0MEB3/vx3YTFKCKfNsk7fmMQLG7WbY=
+	t=1757953745; cv=none; b=cmrsYcx2isY2putX0hQ2OKhhNPhhyafo7QA6C7OEaq+mhorkyqqfkU+OesqfQwiEYggNB/Lnni3ciJGsxr0QVPXqRSO616fxH9t0a8S+nYwL6tTtBUcmnaLdXbaVH4ZYmS5pGa7MNoSdihdvCbHK62Ghe40unNaPF3SCZilajB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757953741; c=relaxed/simple;
-	bh=cP4Lk6YGep27An8ml7Oo3bCe/cOQhK4OUJP9XgSrO9k=;
+	s=arc-20240116; t=1757953745; c=relaxed/simple;
+	bh=aLpeBnqCepaZQ/iy4/cRezS+ZCnq366+a5vyx/shb9M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D77UetokyKLNsWmn7bjdt3v6p2zxZGtd6MX56L5aqbjLW8twXg7amfA4exfq3k2P2rRmafPavtdPW07t3NoL7YSnf7Dyslvf1APOUB4RBC5cux/GHN0dcdHtNra1holc6fBL7Mmke+GI3HjkRp2Tq4ygLTntV90lHvcVypTGgEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qdUTmD+E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB5F8C4CEF1;
-	Mon, 15 Sep 2025 16:29:00 +0000 (UTC)
+	 MIME-Version; b=pgKtgl8k4dfFQ9AbQUZKR5dJOSNLogvgSeXNwlojLbVW+oqrhkO+etDyWL4gCmAZLVF1rNX0lnQP7K8DCWOB2ZlH+95fIOUWFzTCkzLkcO0aeKt2v9enJzqr9nOJcoX949EzuTBzT1aiPuy/63UPfPJcevgOhInRknD6qrJl02w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qDxYvZJc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44F78C4CEF7;
+	Mon, 15 Sep 2025 16:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757953741;
-	bh=cP4Lk6YGep27An8ml7Oo3bCe/cOQhK4OUJP9XgSrO9k=;
+	s=k20201202; t=1757953744;
+	bh=aLpeBnqCepaZQ/iy4/cRezS+ZCnq366+a5vyx/shb9M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qdUTmD+ETxkJM3EDIP3Zenjrt8BABScezyd5a0PuviJx6hJr6niPEVHFEKkH6j3XA
-	 N5NWfR/aYn2z3bVjmtvqu7/9B0EhotU14LulNfYkzyhrYzDbFksGJbXC+hfwyy3fbI
-	 uy7DwuG7RwKkrYCWxon9c7kvuonVPlgAFg2EzSp/YwN/ra2qYP2w1DBXcXEUPlxZbd
-	 ONUnI3C+ZYpYNClBvQRWxFU4Okrr0EG2uABsWwIX3NaLrhhB0fjjpxOr/TLh54SehX
-	 QOFIOXZqWQaw7xOWndnASDMYcMwPcbitMGXwuMvZ1aWN58rbEVNmIPvKZykf2O3vh4
-	 wR+6pg0vYEuJw==
+	b=qDxYvZJcrYmGYfkEVk9Eu6/TziyAOPGDwca/c4HOwY0c6SguqqdO+C4UGtHjUoPi9
+	 KWvM3t3NjgQ7bkrmCdVEldzg0OVzluX/krU69z+yphnUg8fFvEiT8MQknQX5Al6BRJ
+	 97Hxek27L8KtlW5eUaRoAEHyaJafYlyIxLAeeN7o1OwRqMy0I9jZODQbKjcVs9YGkT
+	 ZT/9qFM3s5NMppya56LXknpSBTB0OgQgHGUGPVEAfUDt5tynyo81Tw3wL/CQrvf0xO
+	 oRBJX6iWrwLVl9doGG9yZJkn4y/pDMsc11MoKVTdB7H+gOVRuXS37/vr26EcoeEkRf
+	 G7reXy7GrFt0g==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay@kernel.org>,
@@ -51,9 +51,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v3 2/3] bpf, arm64: Add support for signed arena loads
-Date: Mon, 15 Sep 2025 16:28:46 +0000
-Message-ID: <20250915162848.54282-3-puranjay@kernel.org>
+Subject: [PATCH bpf-next v3 3/3] selftests: bpf: Add tests for signed loads from arena
+Date: Mon, 15 Sep 2025 16:28:47 +0000
+Message-ID: <20250915162848.54282-4-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250915162848.54282-1-puranjay@kernel.org>
 References: <20250915162848.54282-1-puranjay@kernel.org>
@@ -65,89 +65,216 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for signed loads from arena which are internally converted
-to loads with mode set BPF_PROBE_MEM32SX by the verifier. The
-implementation is similar to BPF_PROBE_MEMSX and BPF_MEMSX but for
-BPF_PROBE_MEM32SX, arena_vm_base is added to the src register to form
-the address.
+Add tests for loading 8, 16, and 32 bits with sign extension from arena,
+also verify that exception handling is working correctly and correct
+assembly is being generated by the x86 and arm64 JITs.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- arch/arm64/net/bpf_jit_comp.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ .../selftests/bpf/progs/verifier_ldsx.c       | 176 ++++++++++++++++++
+ 1 file changed, 176 insertions(+)
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index f2b85a10add2..7233acec69ce 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1133,12 +1133,14 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 		return 0;
+diff --git a/tools/testing/selftests/bpf/progs/verifier_ldsx.c b/tools/testing/selftests/bpf/progs/verifier_ldsx.c
+index 52edee41caf6..6c16904d2afb 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_ldsx.c
++++ b/tools/testing/selftests/bpf/progs/verifier_ldsx.c
+@@ -3,6 +3,7 @@
+ #include <linux/bpf.h>
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
++#include "bpf_arena_common.h"
  
- 	if (BPF_MODE(insn->code) != BPF_PROBE_MEM &&
--		BPF_MODE(insn->code) != BPF_PROBE_MEMSX &&
--			BPF_MODE(insn->code) != BPF_PROBE_MEM32 &&
--				BPF_MODE(insn->code) != BPF_PROBE_ATOMIC)
-+	    BPF_MODE(insn->code) != BPF_PROBE_MEMSX &&
-+	    BPF_MODE(insn->code) != BPF_PROBE_MEM32 &&
-+	    BPF_MODE(insn->code) != BPF_PROBE_MEM32SX &&
-+	    BPF_MODE(insn->code) != BPF_PROBE_ATOMIC)
- 		return 0;
+ #if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86) || \
+ 	(defined(__TARGET_ARCH_riscv) && __riscv_xlen == 64) || \
+@@ -10,6 +11,12 @@
+ 	defined(__TARGET_ARCH_loongarch)) && \
+ 	__clang_major__ >= 18
  
- 	is_arena = (BPF_MODE(insn->code) == BPF_PROBE_MEM32) ||
-+		   (BPF_MODE(insn->code) == BPF_PROBE_MEM32SX) ||
- 		   (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC);
- 
- 	if (!ctx->prog->aux->extable ||
-@@ -1659,7 +1661,11 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 	case BPF_LDX | BPF_PROBE_MEM32 | BPF_H:
- 	case BPF_LDX | BPF_PROBE_MEM32 | BPF_W:
- 	case BPF_LDX | BPF_PROBE_MEM32 | BPF_DW:
--		if (BPF_MODE(insn->code) == BPF_PROBE_MEM32) {
-+	case BPF_LDX | BPF_PROBE_MEM32SX | BPF_B:
-+	case BPF_LDX | BPF_PROBE_MEM32SX | BPF_H:
-+	case BPF_LDX | BPF_PROBE_MEM32SX | BPF_W:
-+		if (BPF_MODE(insn->code) == BPF_PROBE_MEM32 ||
-+		    BPF_MODE(insn->code) == BPF_PROBE_MEM32SX) {
- 			emit(A64_ADD(1, tmp2, src, arena_vm_base), ctx);
- 			src = tmp2;
- 		}
-@@ -1671,7 +1677,8 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			off_adj = off;
- 		}
- 		sign_extend = (BPF_MODE(insn->code) == BPF_MEMSX ||
--				BPF_MODE(insn->code) == BPF_PROBE_MEMSX);
-+				BPF_MODE(insn->code) == BPF_PROBE_MEMSX ||
-+				 BPF_MODE(insn->code) == BPF_PROBE_MEM32SX);
- 		switch (BPF_SIZE(code)) {
- 		case BPF_W:
- 			if (is_lsi_offset(off_adj, 2)) {
-@@ -1879,9 +1886,11 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 		if (ret)
- 			return ret;
- 
--		ret = add_exception_handler(insn, ctx, dst);
--		if (ret)
--			return ret;
-+		if (BPF_MODE(insn->code) == BPF_PROBE_ATOMIC) {
-+			ret = add_exception_handler(insn, ctx, dst);
-+			if (ret)
-+				return ret;
-+		}
- 		break;
- 
- 	default:
-@@ -3064,11 +3073,6 @@ bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena)
- 		if (!bpf_atomic_is_load_store(insn) &&
- 		    !cpus_have_cap(ARM64_HAS_LSE_ATOMICS))
- 			return false;
--		break;
--	case BPF_LDX | BPF_MEMSX | BPF_B:
--	case BPF_LDX | BPF_MEMSX | BPF_H:
--	case BPF_LDX | BPF_MEMSX | BPF_W:
--		return false;
- 	}
- 	return true;
++struct {
++	__uint(type, BPF_MAP_TYPE_ARENA);
++	__uint(map_flags, BPF_F_MMAPABLE);
++	__uint(max_entries, 1);
++} arena SEC(".maps");
++
+ SEC("socket")
+ __description("LDSX, S8")
+ __success __success_unpriv __retval(-2)
+@@ -256,6 +263,175 @@ __naked void ldsx_ctx_8(void)
+ 	: __clobber_all);
  }
+ 
++SEC("syscall")
++__description("Arena LDSX Disasm")
++__success
++__arch_x86_64
++__jited("movslq	0x10(%rax,%r12), %r14")
++__jited("movswq	0x18(%rax,%r12), %r14")
++__jited("movsbq	0x20(%rax,%r12), %r14")
++__jited("movslq	0x10(%rdi,%r12), %r15")
++__jited("movswq	0x18(%rdi,%r12), %r15")
++__jited("movsbq	0x20(%rdi,%r12), %r15")
++__arch_arm64
++__jited("add	x11, x7, x28")
++__jited("ldrsw	x21, [x11, #0x10]")
++__jited("add	x11, x7, x28")
++__jited("ldrsh	x21, [x11, #0x18]")
++__jited("add	x11, x7, x28")
++__jited("ldrsb	x21, [x11, #0x20]")
++__jited("add	x11, x0, x28")
++__jited("ldrsw	x22, [x11, #0x10]")
++__jited("add	x11, x0, x28")
++__jited("ldrsh	x22, [x11, #0x18]")
++__jited("add	x11, x0, x28")
++__jited("ldrsb	x22, [x11, #0x20]")
++__naked void arena_ldsx_disasm(void *ctx)
++{
++	asm volatile (
++	"r1 = %[arena] ll;"
++	"r2 = 0;"
++	"r3 = 1;"
++	"r4 = %[numa_no_node];"
++	"r5 = 0;"
++	"call %[bpf_arena_alloc_pages];"
++	"r0 = addr_space_cast(r0, 0x0, 0x1);"
++	"r1 = r0;"
++	"r8 = *(s32 *)(r0 + 16);"
++	"r8 = *(s16 *)(r0 + 24);"
++	"r8 = *(s8  *)(r0 + 32);"
++	"r9 = *(s32 *)(r1 + 16);"
++	"r9 = *(s16 *)(r1 + 24);"
++	"r9 = *(s8  *)(r1 + 32);"
++	"r0 = 0;"
++	"exit;"
++	:: __imm(bpf_arena_alloc_pages),
++	   __imm_addr(arena),
++	   __imm_const(numa_no_node, NUMA_NO_NODE)
++	:  __clobber_all
++	);
++}
++
++SEC("syscall")
++__description("Arena LDSX Exception")
++__success __retval(0)
++__arch_x86_64
++__arch_arm64
++__naked void arena_ldsx_exception(void *ctx)
++{
++	asm volatile (
++	"r1 = %[arena] ll;"
++	"r0 = 0xdeadbeef;"
++	"r0 = addr_space_cast(r0, 0x0, 0x1);"
++	"r1 = 0x3fe;"
++	"*(u64 *)(r0 + 0) = r1;"
++	"r0 = *(s8 *)(r0 + 0);"
++	"exit;"
++	:
++	:  __imm_addr(arena)
++	:  __clobber_all
++	);
++}
++
++SEC("syscall")
++__description("Arena LDSX, S8")
++__success __retval(-1)
++__arch_x86_64
++__arch_arm64
++__naked void arena_ldsx_s8(void *ctx)
++{
++	asm volatile (
++	"r1 = %[arena] ll;"
++	"r2 = 0;"
++	"r3 = 1;"
++	"r4 = %[numa_no_node];"
++	"r5 = 0;"
++	"call %[bpf_arena_alloc_pages];"
++	"r0 = addr_space_cast(r0, 0x0, 0x1);"
++	"r1 = 0x3fe;"
++	"*(u64 *)(r0 + 0) = r1;"
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++	"r0 = *(s8 *)(r0 + 0);"
++#else
++	"r0 = *(s8 *)(r0 + 7);"
++#endif
++	"r0 >>= 1;"
++	"exit;"
++	:: __imm(bpf_arena_alloc_pages),
++	   __imm_addr(arena),
++	   __imm_const(numa_no_node, NUMA_NO_NODE)
++	:  __clobber_all
++	);
++}
++
++SEC("syscall")
++__description("Arena LDSX, S16")
++__success __retval(-1)
++__arch_x86_64
++__arch_arm64
++__naked void arena_ldsx_s16(void *ctx)
++{
++	asm volatile (
++	"r1 = %[arena] ll;"
++	"r2 = 0;"
++	"r3 = 1;"
++	"r4 = %[numa_no_node];"
++	"r5 = 0;"
++	"call %[bpf_arena_alloc_pages];"
++	"r0 = addr_space_cast(r0, 0x0, 0x1);"
++	"r1 = 0x3fffe;"
++	"*(u64 *)(r0 + 0) = r1;"
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++	"r0 = *(s16 *)(r0 + 0);"
++#else
++	"r0 = *(s16 *)(r0 + 6);"
++#endif
++	"r0 >>= 1;"
++	"exit;"
++	:: __imm(bpf_arena_alloc_pages),
++	   __imm_addr(arena),
++	   __imm_const(numa_no_node, NUMA_NO_NODE)
++	:  __clobber_all
++	);
++}
++
++SEC("syscall")
++__description("Arena LDSX, S32")
++__success __retval(-1)
++__arch_x86_64
++__arch_arm64
++__naked void arena_ldsx_s32(void *ctx)
++{
++	asm volatile (
++	"r1 = %[arena] ll;"
++	"r2 = 0;"
++	"r3 = 1;"
++	"r4 = %[numa_no_node];"
++	"r5 = 0;"
++	"call %[bpf_arena_alloc_pages];"
++	"r0 = addr_space_cast(r0, 0x0, 0x1);"
++	"r1 = 0xfffffffe;"
++	"*(u64 *)(r0 + 0) = r1;"
++#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++	"r0 = *(s32 *)(r0 + 0);"
++#else
++	"r0 = *(s32 *)(r0 + 4);"
++#endif
++	"r0 >>= 1;"
++	"exit;"
++	:: __imm(bpf_arena_alloc_pages),
++	   __imm_addr(arena),
++	   __imm_const(numa_no_node, NUMA_NO_NODE)
++	:  __clobber_all
++	);
++}
++
++/* to retain debug info for BTF generation */
++void kfunc_root(void)
++{
++	bpf_arena_alloc_pages(0, 0, 0, 0, 0);
++}
++
+ #else
+ 
+ SEC("socket")
 -- 
 2.47.3
 
