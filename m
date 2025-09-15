@@ -1,113 +1,185 @@
-Return-Path: <bpf+bounces-68421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6432B5857A
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 21:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 000C3B585A2
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 21:57:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C2302A2603
-	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 19:50:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24E40160E1F
+	for <lists+bpf@lfdr.de>; Mon, 15 Sep 2025 19:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3142928725C;
-	Mon, 15 Sep 2025 19:49:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61CBF299957;
+	Mon, 15 Sep 2025 19:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nc9L3fZz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I05tl7Zf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688B9287243
-	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 19:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745F12882A9
+	for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 19:54:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757965795; cv=none; b=ZY3et0Bf713LXAmiCNmC6sKCt+tekozrYiqCJULMfPf1mFMmRZ6oO2I8Khh4D7pUG4MC2x1LTat0oCjJXuXqRcQJs6NJaxIYf/EFMVXsM941sTWNzMpthqfXpt7xP3RAGLhtji7GROt3eS+hAnMueZMXXEG+S97g6xW+UKL8S9s=
+	t=1757966076; cv=none; b=WnhH0IsXogKKgghSG6mCZoVQ1p/FdFCo0+NpSvGQ4PQAaMuaP4DufJNR0pBOi6xNrn81oeuoo83CYxtWkMTz4EcuMy+zWQH+mMk6I97Mq9+8QUx+9jf45l5jJlz77XE8TE17bHritg3yLYuweI5CR/1gUwhrVRDwXD39t2oQTuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757965795; c=relaxed/simple;
-	bh=vki4f//YpOA+/DMIEKosPdhpC7X1EIX6rn18AUOJIDw=;
+	s=arc-20240116; t=1757966076; c=relaxed/simple;
+	bh=1t5HGUdbEnqlFM4BN+7spAJCkMUdNy6xmmpKrD3jxGA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RYkqIFo395lso9A114DYHnU9L6kN+M8vhLksRYBT10NpUP6OQQe8xegw3Qys+JSRHdAwfja5prBfzhB96hTmIzP0E65hic8+jdYIYG/RPIHGyGn5lNc9CJOLzsAICNkiMFN+PfgnFDuJaTZV7k16VRDJfJVth0oahWm40O07vzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nc9L3fZz; arc=none smtp.client-ip=209.85.216.53
+	 To:Cc:Content-Type; b=EBGP8qv2oQa6HMQEkWBhKZ0OkuM+MqQfoaTbWQno/aJtcjT/IoOxJ2keXQkNhuFC61a8fpYJE6nN17JV+ynsXDoxdCYtw/afVQkkEX2Kya6RoYKC3aG1JQeQVcEpsAtR2ZfgYQBhDxEqh6FGFJfpqgLAV+Vd7d6BNAXd28ONVpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I05tl7Zf; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-32e6f3ed54dso986248a91.3
-        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 12:49:54 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-251fc032d1fso51425805ad.3
+        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 12:54:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757965794; x=1758570594; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757966075; x=1758570875; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n/yBS8xqZruyRHXODDMQkHttngIp9wHEWvRKIBk6FX8=;
-        b=nc9L3fZzeRDgR4liUamusx+uW9r+rY5mn7V9or3lO3n/DX5QhnP1EizcznIIJdAfYG
-         hRYA0lXC+DC3dHF8Vlt7ZKWz0d33EI579c/jj8AnYqs5Rmfbh9pMXwKKZEPDa7mQ40uM
-         UgVzGA9D2k8t3WD5XmCntjIi2V6zcNX6rt9kDlzCGb4UJ1SOJAzrKyzNgz6fvaDPknLj
-         NRa4FzYcJdG8yT2NIWmNQ0ghh73wuxEZ31ir9EMd7e3Jq3D4Kqd7T2gaSVU0yN+pSN94
-         T5g+7ossMGLSLpi2hTYuDdSq4ysdj2zKNjBTvlA/h2D1XYZARICgOt6wdyVTvZTla+zJ
-         +KDw==
+        bh=bKMoNUFr15hMIs+DA/sQ+YcEe3uvxbWw0rkaGFS6MZk=;
+        b=I05tl7Zf8txDlXtRshtYw1C9ax2cMQ3SloWmynucveAWTn8oezeHCt5jLguUz9tzxY
+         DnHMn9FugRtz+b6MFp5Lkrv3xWiDS2n5GCwQPRaFyl4+TrD08LcFZFEfm9EVNpePKiM6
+         hYR8hwUaT4Qdgi7JG/2CuIlQ2Zz5Rjf/IzoPhorHpKZDINmr/KuRHRXRQq6Mn4gkY+b1
+         dKOOLpRUrW9nbU/l/eRdXS4ZBdBWLO9z34zWr1+O+vRkG+SspkmQKD3Su2cSOr8SbCBF
+         gGLaumziF7k3225ahhu1Jflvl8b1cn5bF1owOpn1+aKiCksjrpt8uV8LsulW1xyPJ5dg
+         RlVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757965794; x=1758570594;
+        d=1e100.net; s=20230601; t=1757966075; x=1758570875;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n/yBS8xqZruyRHXODDMQkHttngIp9wHEWvRKIBk6FX8=;
-        b=VqSijrhdia4tax8SAjjiazSvail6FMAhQl+otehXBrSk1tm7t7cohiXOGe8XiuNg5j
-         q8VkqH9zrcHRx93uFPttRvJQTdQzWVXOAXuKQsmZZ3vlGBw4pzxVqtDdZvEYGnTJ88XN
-         dLRteaMOlVWmp+aYD1/NsrBf9WQmnGtV7jEeDKSGTWfB5aVm5vu2Hm2HECFeVEc8sYXv
-         BcyEPcpjfyIusfhmfKEZ0Xfr07EmbVLFSVB1/Xf35tRpNYdRpNe49l9QfJK4jhXyRHbt
-         8eQfQODJlbtYIH8/LeWaTV43pu/TSxOVwszj+I40La4aKP9+HVGLvFMWwljngQSmJxer
-         k4eg==
-X-Gm-Message-State: AOJu0YwORd2Ij370OLLVZcplDVNZZiUnojR3+fC0Bxm8zYrXJbK3bLjT
-	jZDdfKyu8JrUSsIpOOeRFNcjmM0L8xrNpcS/eQaUZQh4Adk4JcE3PfB1F0f+oz0k5SDZpp1TOon
-	tHcpu+9bDtdZP+O/3j/Lfx2wxVJzWlI0=
-X-Gm-Gg: ASbGncs89KGCxqCTQiycD1yBYUI2lrzyzrqvYE1qilGwW1lcgBsFOjRgBSLNUao/W3g
-	VhuuAy4DrmxcGLRkOCwubaN/U11bvQWAIpFO4KlebceCS3q88atsfLGygCa1KqDNLPR6p/h3w64
-	ixv8dejDLhe4m3WTO4kvyBYN7Sir4syLuAbRihuXAbhVSZbH1G35g4IqGUBsB2kP8Wi+p+2+Sst
-	Q3I0zcvlaodifQq4KvNdwM=
-X-Google-Smtp-Source: AGHT+IFPR0xNt1SdT9jmYfIls8wuA4gQdU6nOErPR02vY+QbY+RVRV/p069LcMoFMza2ywVDD048srLdsGemFoumkbs=
-X-Received: by 2002:a17:90b:50c5:b0:32e:a10b:ce48 with SMTP id
- 98e67ed59e1d1-32ea10bd062mr660253a91.12.1757965793696; Mon, 15 Sep 2025
- 12:49:53 -0700 (PDT)
+        bh=bKMoNUFr15hMIs+DA/sQ+YcEe3uvxbWw0rkaGFS6MZk=;
+        b=oOkpkOjwVnqF20WxPAhvjlktdedQPWoQrgct+TPdK9IB7DAnl1Zyey2mY6NfgVR6Zq
+         iR8uY6F4+OiZgfXMbEzDM+RZa6XzyDbZ0tPyhD7CiWk/9xIAaHb3OEPuxGCNKbB5uB9L
+         +53vMlLsGp60PKkbfdEKrzlFdcfT7F3AcHeGauwR7E5YLQZlDQCH/mWCrC5gWj1UkoW6
+         8ukM0iPnDpUJezEC0gfQLE+JQG3JeBsNGVV3wag1P7Y/Vat2HrPGzNsL8EP4rCn3Jp0m
+         4CZLTjXO5cpKSRA5KhOvZfyESKRZ44U/MX5afQJt7MGTX8LHJBkgJIV8A6LoPSF1nAm6
+         cEOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX0dIwA+yiQO7bq1SeGpAeMXPEei4ZmCd8ghJthL3nH5CKmFGEakCw0AYClDWds39KKwtU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzpm0nhoZ61hAkjNkrGfDfL1N8snCQ1DpmASunTUOeDvtojISZg
+	sjhSIA6ssgK9VCaSaC2Euw7tEQd/nVJ0eCVWBB7l8d4LuXsNYVzzbO4xtJLe8GJ+EfIMXEOHlf3
+	ufhqZI1bLWGHOa40sxCDyPAcseksXuUQ=
+X-Gm-Gg: ASbGncvo9wO95a89rGalLOCI1F+7LfGpF9RQ3Yw86G+uxsw/npicBw8nNP+bSy1H10K
+	1CcqZgxQI5RWx9bopprmTEUF5utkC4SP3csRHpaIIb0elDGF7A2QCqFLZFszaVZ4dl8wm0CUtpQ
+	F6AIBm4UYuNmDvJjlPYZhCBdkHMacZcsCG+IbYqy5MX/tgFkZiFg35hchew5a1YR/xLrUI+MJLP
+	KLbWdWPm8bJ7XINne/k6iag4WyPty0x8g==
+X-Google-Smtp-Source: AGHT+IGhszUX/wIOL5NPxhRl5wThYAaRRneYHXfDR1OkxzwEwEhfmK0x+kYIpjKOZ/xwWV7ll61KtWzqWi210u8AngA=
+X-Received: by 2002:a17:902:cec6:b0:266:88ae:be6d with SMTP id
+ d9443c01a7336-26688aec242mr56968135ad.6.1757966074538; Mon, 15 Sep 2025
+ 12:54:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250914215141.15144-1-kpsingh@kernel.org> <20250914215141.15144-5-kpsingh@kernel.org>
-In-Reply-To: <20250914215141.15144-5-kpsingh@kernel.org>
+References: <20250913222323.894182-1-kriish.sharma2006@gmail.com>
+In-Reply-To: <20250913222323.894182-1-kriish.sharma2006@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 15 Sep 2025 12:49:39 -0700
-X-Gm-Features: Ac12FXzQ6hNrX8nP9Cv8EeH1bTRHFp3dNUNpYMvmZX34bI4yuZQORu-aBvdlJ5c
-Message-ID: <CAEf4Bza4OF5ihhEr_ihW6FQ5JF=pdHukFtgTprsuxYsasAsoKw@mail.gmail.com>
-Subject: Re: [PATCH v4 04/12] libbpf: Support exclusive map creation
-To: KP Singh <kpsingh@kernel.org>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	bboscaccy@linux.microsoft.com, paul@paul-moore.com, kys@microsoft.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Date: Mon, 15 Sep 2025 12:54:20 -0700
+X-Gm-Features: Ac12FXzojP0XfNu0UL3urOwuEQZBsAsNl-Qq1OLXgb7nho1cime033bbY4rUq2g
+Message-ID: <CAEf4BzY_f=iNKC2CVz-myfe_OERN9XWHiuNG6vng43-MXUAvSw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: verifier: fix WARNING in reg_bounds_sanity_check (2)
+To: Kriish Sharma <kriish.sharma2006@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	syzbot+c950cc277150935cc0b5@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 14, 2025 at 2:52=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote=
-:
+On Sat, Sep 13, 2025 at 3:24=E2=80=AFPM Kriish Sharma
+<kriish.sharma2006@gmail.com> wrote:
 >
-> Implement setters and getters that allow map to be registered as
-> exclusive to the specified program. The registration should be done
-> before the exclusive program is loaded.
+> syzbot reported a "REG INVARIANTS VIOLATION" triggered in reg_bounds_sani=
+ty_check()
+> due to inconsistent umin/umax and var_off state after min/max updates.
 >
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> reg_set_min_max() and adjust_reg_min_max_vals() could leave a register st=
+ate
+> partially updated before syncing the bounds, causing verifier_bug() to fi=
+re.
+>
+> This patch ensures reg_bounds_sync() is called after updates, and additio=
+nally
+> marks registers unbounded if min/max values are inconsistent, so that umi=
+n/umax,
+> smin/smax, and var_off remain consistent.
+>
+> Fixes: d69eb204c255 ("Merge tag 'net-6.17-rc5' of git://git.kernel.org/pu=
+b/scm/linux/kernel/git/netdev/net")
+> Reported-by: syzbot+c950cc277150935cc0b5@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3Dc950cc277150935cc0b5
+> Signed-off-by: Kriish Sharma <kriish.sharma2006@gmail.com>
 > ---
->  tools/lib/bpf/bpf.c      |  4 ++-
->  tools/lib/bpf/bpf.h      |  5 ++-
->  tools/lib/bpf/libbpf.c   | 69 ++++++++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.h   | 22 +++++++++++++
->  tools/lib/bpf/libbpf.map |  3 ++
->  5 files changed, 101 insertions(+), 2 deletions(-)
+>  kernel/bpf/verifier.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 >
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index c4f69a9e9af6..8f5f02d39005 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -16299,6 +16299,19 @@ static void regs_refine_cond_op(struct bpf_reg_s=
+tate *reg1, struct bpf_reg_state
+>         }
+>  }
+>
+> +/* Ensure that a register's min/max bounds are sane.
+> + * If any of the unsigned/signed bounds are inconsistent, mark the
+> + * register as unbounded to prevent verifier invariant violations.
+> + */
+> +static void __maybe_normalize_reg(struct bpf_reg_state *reg)
+> +{
+> +       if (reg->umin_value > reg->umax_value ||
+> +               reg->smin_value > reg->smax_value ||
+> +               reg->u32_min_value > reg->u32_max_value ||
+> +               reg->s32_min_value > reg->s32_max_value)
+> +                       __mark_reg_unbounded(reg);
+> +}
+> +
+>  /* Adjusts the register min/max values in the case that the dst_reg and
+>   * src_reg are both SCALAR_VALUE registers (or we are simply doing a BPF=
+_K
+>   * check, in which case we have a fake SCALAR_VALUE representing insn->i=
+mm).
+> @@ -16325,11 +16338,15 @@ static int reg_set_min_max(struct bpf_verifier_=
+env *env,
+>         regs_refine_cond_op(false_reg1, false_reg2, rev_opcode(opcode), i=
+s_jmp32);
+>         reg_bounds_sync(false_reg1);
+>         reg_bounds_sync(false_reg2);
+> +       __maybe_normalize_reg(false_reg1);
+> +       __maybe_normalize_reg(false_reg2);
+>
+>         /* jump (TRUE) branch */
+>         regs_refine_cond_op(true_reg1, true_reg2, opcode, is_jmp32);
+>         reg_bounds_sync(true_reg1);
+>         reg_bounds_sync(true_reg2);
+> +       __maybe_normalize_reg(true_reg1);
+> +       __maybe_normalize_reg(true_reg2);
 
-LGTM.
+We are actually taking a different approach to this problem. Eduard is
+going to modify verifier logic to use the fact that register' tnum and
+range bounds are incompatible to detect branches that cannot be taken,
+and process it as dead code. This way we don't lose information (like
+with the approach in this patch), but rather take advantage of it to
+improve verification performance.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Thanks for your patch, but I think we should go with the more generic
+solution I outlined above.
 
-[...]
+pw-bot: cr
+
+
+>
+>         err =3D reg_bounds_sanity_check(env, true_reg1, "true_reg1");
+>         err =3D err ?: reg_bounds_sanity_check(env, true_reg2, "true_reg2=
+");
+> --
+> 2.34.1
+>
 
