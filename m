@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-68526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 434DCB59C8D
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:52:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE7BFB59C91
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:53:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00CFB1896841
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 15:53:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67AA0324953
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 15:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671D43570B4;
-	Tue, 16 Sep 2025 15:52:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15A2352FF2;
+	Tue, 16 Sep 2025 15:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YiOO7uSO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ks1VWwLT"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58AD21FE44B
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C061FE44B
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758037949; cv=none; b=k/a95gKD42aslEqVY7f7Uo5V7oMdoSCgZU9WfKy9tCrRSC6tU/sMirCSO0fYTHryawmazIdMC68Vod8/k0RFoghGY1WO+I3VHyhVsh3HkSB17yN0Dl9hbJj4Xz12Jju95nuDKbFjm7N6PH7GAULQS8y2JHMg23hiXpCkIKlWfk4=
+	t=1758037954; cv=none; b=fzg0hFMgnC3qh7fah5k7mChdf9JARWezk49Z/MJhcHh5/KFPg+ZkILMnvKO7vZnrOxxhYNMExZNNtEj1NCgHRhXYauoPVLLp+NBJ4UNDKjCDFXGBKEop7D/hmkToNpiXxYjhHUpYSs5LsUUnDwPTfVrSO8SU4SdNaHJ2EAuED0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758037949; c=relaxed/simple;
-	bh=aM/DH//YQFaeNNDBLGAMYqTAgdJMThO51KwmyXtDxmY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X0D5S2MmfNxzPGNXi3UhgOV72by4R1qrQbzPGS6E7a6s77amm4IBv+vry/ymEJLiUJB3gGbSqXBBhMSstE2E8SYVSQqaGMQm1RoHEnpZptIyzsS+ReLkwLI6n4NQloJToT0L6t6lmR7iuB9dA2O2btovGnE9EbCUr+zSDuOqZmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YiOO7uSO; arc=none smtp.client-ip=95.215.58.189
+	s=arc-20240116; t=1758037954; c=relaxed/simple;
+	bh=+hXZvqi6LNV3jJvzoftmaJUhD4I8rnkbyKCrYu8qGX8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cdagNDuFCWgJkqRKPlhyyX9JU8vd8pA9taFsQT+FNUNNheWiOX42g7e16qxKIf7okYJ6wmlU01Vdp/eWyfOXlBDH9du7+2ILpp0pO0Lu65Ok6EGG1Kec+ailQ1Gw1n5tdXsOGFDbJLPxH1UkYdsRhPldhpSmNt8RO3enq5Z6s7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ks1VWwLT; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758037945;
+	t=1758037950;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=3BCfSb7FMofITDT10phLCv9ZCQ2IaRDKYTeP6xtp9sk=;
-	b=YiOO7uSOjhfBj4SeLQFmPcSiPrCBsFLIVSuHIzKaM/BHeMoMxtRrwTUUOyyV4Ox/QARKZd
-	yow08v0pZJuM3L/CQXPEwAIuq2+wV3x/kg4hE1zgCTpDh7BN4FQzW7cCyPCn+iNXvMn21c
-	H0AYaRLPanmFPqn65w/tlHRdxD5G6fA=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tcyDoKI1I55gsyGOWBcccb0vzEVYkAWuqickrooeuto=;
+	b=Ks1VWwLTmQl0VSHtcF+dQuTb7BBa5syPrziW5LqwZXTN8hWDwGBEjIwhpMvR0xlMVYezI5
+	5wUY6MvfkyTNra+DNK9hKUFulOnOV+9mk3KBejfinm9IHd9Ci8H8+ktxUXSHFogszgl+b5
+	vREnEV2mQsni9uk3N32Rdfhl8QQe1m8=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -59,9 +61,11 @@ Cc: ast@kernel.org,
 	menglong8.dong@gmail.com,
 	leon.hwang@linux.dev,
 	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v2 0/3] bpf: Allow union argument in trampoline based programs
-Date: Tue, 16 Sep 2025 23:52:08 +0800
-Message-ID: <20250916155211.61083-1-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next v2 1/3] bpf: Allow union argument in trampoline based programs
+Date: Tue, 16 Sep 2025 23:52:09 +0800
+Message-ID: <20250916155211.61083-2-leon.hwang@linux.dev>
+In-Reply-To: <20250916155211.61083-1-leon.hwang@linux.dev>
+References: <20250916155211.61083-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,44 +75,108 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-While tracing 'release_pages' with bpfsnoop[0], the verifier reports:
+Currently, functions with 'union' arguments cannot be traced with
+fentry/fexit:
 
+bpftrace -e 'fentry:release_pages { exit(); }' -v
+AST node count: 6
+Attaching 1 probe...
+ERROR: Error loading BPF program for fentry_vmlinux_release_pages_1.
+Kernel error log:
 The function release_pages arg0 type UNION is unsupported.
+processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
 
-However, it should be acceptable to trace functions that have 'union'
-arguments.
+ERROR: Loading BPF object(s) failed.
 
-This patch set enables such support in the verifier by allowing 'union'
-as a valid argument type.
+The type of the 'release_pages' argument is defined as:
 
-Changes:
-v1 -> v2:
-* Add 16B 'union' argument support in x86_64 trampoline.
-* Update selftests using bpf_testmod.
-* Add test case about 16-bytes 'union' argument.
-* Address comments from Alexei:
-  * Study the patch set about 'struct' argument support.
-  * Update selftests to cover more cases.
-v1: https://lore.kernel.org/bpf/20250905133226.84675-1-leon.hwang@linux.dev/
+typedef union {
+	struct page **pages;
+	struct folio **folios;
+	struct encoded_page **encoded_pages;
+} release_pages_arg __attribute__ ((__transparent_union__));
 
-Links:
-[0] https://github.com/bpfsnoop/bpfsnoop
+This patch relaxes the restriction by allowing function arguments of type
+'union' to be traced in verifier.
 
-Leon Hwang (3):
-  bpf: Allow union argument in trampoline based programs
-  bpf, x64: Add union argument support in trampoline
-  selftests/bpf: Add union argument tests using fexit programs
+Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+---
+ include/linux/bpf.h | 3 +++
+ include/linux/btf.h | 5 +++++
+ kernel/bpf/btf.c    | 8 +++++---
+ 3 files changed, 13 insertions(+), 3 deletions(-)
 
- arch/x86/net/bpf_jit_comp.c                   |  2 +-
- include/linux/bpf.h                           |  3 ++
- include/linux/btf.h                           |  5 +++
- kernel/bpf/btf.c                              |  8 +++--
- .../selftests/bpf/prog_tests/tracing_struct.c | 29 ++++++++++++++++
- .../selftests/bpf/progs/tracing_struct.c      | 33 +++++++++++++++++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    | 31 +++++++++++++++++
- 7 files changed, 107 insertions(+), 4 deletions(-)
-
---
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 41f776071ff51..010ecbb798c60 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1119,6 +1119,9 @@ struct bpf_prog_offload {
+ /* The argument is signed. */
+ #define BTF_FMODEL_SIGNED_ARG		BIT(1)
+ 
++/* The argument is a union. */
++#define BTF_FMODEL_UNION_ARG		BIT(2)
++
+ struct btf_func_model {
+ 	u8 ret_size;
+ 	u8 ret_flags;
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 9eda6b113f9b4..255f8c6bd2438 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -404,6 +404,11 @@ static inline bool btf_type_is_struct(const struct btf_type *t)
+ 	return kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
+ }
+ 
++static inline bool __btf_type_is_union(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info) == BTF_KIND_UNION;
++}
++
+ static inline bool __btf_type_is_struct(const struct btf_type *t)
+ {
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_STRUCT;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 64739308902f7..2a85c51412bea 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6762,7 +6762,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 	/* skip modifiers */
+ 	while (btf_type_is_modifier(t))
+ 		t = btf_type_by_id(btf, t->type);
+-	if (btf_type_is_small_int(t) || btf_is_any_enum(t) || __btf_type_is_struct(t))
++	if (btf_type_is_small_int(t) || btf_is_any_enum(t) || btf_type_is_struct(t))
+ 		/* accessing a scalar */
+ 		return true;
+ 	if (!btf_type_is_ptr(t)) {
+@@ -7334,7 +7334,7 @@ static int __get_type_size(struct btf *btf, u32 btf_id,
+ 	if (btf_type_is_ptr(t))
+ 		/* kernel size of pointer. Not BPF's size of pointer*/
+ 		return sizeof(void *);
+-	if (btf_type_is_int(t) || btf_is_any_enum(t) || __btf_type_is_struct(t))
++	if (btf_type_is_int(t) || btf_is_any_enum(t) || btf_type_is_struct(t))
+ 		return t->size;
+ 	return -EINVAL;
+ }
+@@ -7347,6 +7347,8 @@ static u8 __get_type_fmodel_flags(const struct btf_type *t)
+ 		flags |= BTF_FMODEL_STRUCT_ARG;
+ 	if (btf_type_is_signed_int(t))
+ 		flags |= BTF_FMODEL_SIGNED_ARG;
++	if (__btf_type_is_union(t))
++		flags |= BTF_FMODEL_UNION_ARG;
+ 
+ 	return flags;
+ }
+@@ -7384,7 +7386,7 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 		return -EINVAL;
+ 	}
+ 	ret = __get_type_size(btf, func->type, &t);
+-	if (ret < 0 || __btf_type_is_struct(t)) {
++	if (ret < 0 || btf_type_is_struct(t)) {
+ 		bpf_log(log,
+ 			"The function %s return type %s is unsupported.\n",
+ 			tname, btf_type_str(t));
+-- 
 2.50.1
 
 
