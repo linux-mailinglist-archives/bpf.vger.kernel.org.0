@@ -1,264 +1,149 @@
-Return-Path: <bpf+bounces-68461-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68462-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A56B58B26
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 03:28:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEF2CB58B67
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 03:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 702C51B215E7
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 01:28:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FBB84E07BA
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 01:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1178B1FAC34;
-	Tue, 16 Sep 2025 01:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B54AB199230;
+	Tue, 16 Sep 2025 01:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e8Fqr5eV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJ/fQhQ2"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73AE13B293
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 01:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF102DC76B
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 01:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757986092; cv=none; b=pX6VuQ7DZ5w65kw4XBeCFJi3mV8/dGX+48tjJmvdmW7Ys4JsPxY931XdrH+opZPyU4hgnUNQKWGmdpPajUvYtNWcU4DgDCir4n4VJCCOQOBK3ZyubtciN2M0yERU2nx6QyLhz9KVIbq2sgIAYFEPIT+kXm+0cK5Os3aQNjz7vOY=
+	t=1757987176; cv=none; b=MvLZYz/VMNwPaDwUb2+cb+fWGliFVvvxkWkcCvqvleGQkaTZ5iJbsz10sUNnT+BEb9jFCql77XOSvo/QVU/0/cuV+PqnetqQxq+r6VQGdjJYt8X6QIaP4rPge5dhmcH4Gel76HCbe7SoVLJJhOPEn9hmdg0k0mL30PK0D7f3Bcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757986092; c=relaxed/simple;
-	bh=V0yugxsvcLj8XGjY02UDDjUKYpDyhudTfXsjh1q7qrc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pr113gVuEex6yM/daSB5+b9dm9qC75V/y30Sp2KMzq7asZofPfk1MXSbrh+ZKHz7qoll3jT6qVtILwV0xiVBCWgZJQ+ryuHYmL4yVMDccB8Sa4AhgnmW+pPZsbeNlAfFlX3DH7h4lSfazMH8YwG8x9pKRV8zxlWnqzwuh+dXSPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e8Fqr5eV; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1757986089;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cqymUK0o/gtjDA+DSxafe5/sd/gWVsVOQwBD6bvjgNg=;
-	b=e8Fqr5eVPyaB2NyIhk7OUNu08ncffQ0fH2ZnykwCI+A2LHPyFw+fJJd0ql+kynXeM4fe/D
-	TOezK1jG0OEYi1JIs+MErCo+2hMqzLbdi4/7ocIgK8RJKAgI0TMQSNErI5HN1IZlGvsOjw
-	rN7+jn2TWbtVziYLgoduYNTKTQVS1VU=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-413-29APtI7xObGeh3pus7KrmQ-1; Mon,
- 15 Sep 2025 21:28:08 -0400
-X-MC-Unique: 29APtI7xObGeh3pus7KrmQ-1
-X-Mimecast-MFC-AGG-ID: 29APtI7xObGeh3pus7KrmQ_1757986086
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B430E180057A;
-	Tue, 16 Sep 2025 01:28:04 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.143])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 510B419560A2;
-	Tue, 16 Sep 2025 01:28:01 +0000 (UTC)
-Date: Tue, 16 Sep 2025 09:27:59 +0800
-From: Pingfan Liu <piliu@redhat.com>
-To: Philipp Rudo <prudo@redhat.com>
-Cc: kexec@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jeremy Linton <jeremy.linton@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Viktor Malik <vmalik@redhat.com>,
-	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>,
-	Dave Young <dyoung@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org,
-	systemd-devel@lists.freedesktop.org
-Subject: Re: [PATCHv5 08/12] kexec: Factor out routine to find a symbol in ELF
-Message-ID: <aMi9H7Jeuiq8mbyE@fedora>
-References: <20250819012428.6217-1-piliu@redhat.com>
- <20250819012428.6217-9-piliu@redhat.com>
- <20250901163107.5a0c17e6@rotkaeppchen>
+	s=arc-20240116; t=1757987176; c=relaxed/simple;
+	bh=hNu+Rns3AzhO57n02pw3qTeE8Zg7BS8JsBc+YPFA78A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=panGjPXiQbRZzBukZYOUDX/JQBGap1yNL0ow74pcB7O6kwWjbJf++1+w7luNSsZx6pA/FifXuU6S70L0p+xolxaRbDwEaFFVlFlxTbajmzTJInsLBS/Njm5DQ2etmLx7LyibWCzIM2VOIloBR9pR0uxYRdMb0P4uQRWxB0CUT+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EJ/fQhQ2; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-77616dce48cso2585633b3a.0
+        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 18:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757987172; x=1758591972; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UPA1toQr5uAUN1v43j1zuAajDVGqxLAPWCvchR38lKM=;
+        b=EJ/fQhQ2K2ixqTHK450CG9xFLdMGHuR8FJgyaIyLBX0eQWGbYRKDr5bDvvYrMjtU9K
+         NtU7bblu94SkmWa+vW3VN5085wZPpIexGJB7pZ+HMRc5WQMdTvKWv65e/LICq0E/4bqQ
+         U8fS7U/DmsLpzn2tezQVD2T0NJ1vAgkjAFEfxA0GXLSxQ0+pJz4HPV+ZcikW995uV/GD
+         0Rvoks+S+Kuwu110rcEdGUsHkpn07XStiYqGflt4DUsmP/BlxeSUGnARBCL9LN5h5i1y
+         KujbrI8X7yDA9SZVa1n5hG42Zvh2ylHGapt2LT0fJHJYQ7xLvhgiHyUmeVp+uFd+pWoF
+         yVPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757987172; x=1758591972;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UPA1toQr5uAUN1v43j1zuAajDVGqxLAPWCvchR38lKM=;
+        b=W4jtEYHwbsN7joD1aAO8Jd6elImxQ0UpGvwQ3GNES5Xw4NqYPmKDFvZKYDXxLxZbRV
+         gTyqpsZj3RgQI+NkmXsnnCSldhJDap6TDn7JR95UgDy5rUNYUQ7VpRhZpNA4E0PsHH5e
+         lPtSIKL+QKGhLeeekqLGM8KFgFA3FdIFvbRudiTRrafkD+i5yERq9bJ/k5jsSE7gyTqH
+         oETWOUgOQvtpTX5U9RIcolENuJm+YBCE6ymkXJHeV3CRP+TkjDEwsGO0G6liukLyURGN
+         6BECey6r2Ui2iq1vx0KjKC0ozCz+DZUN4StRXwgltRn5Go4Do1BeefVMHUJCG1+APA9K
+         8i0Q==
+X-Gm-Message-State: AOJu0YxtFvxxichDoco2XFBJEArZjAbb597cpHyoWOMtCruXB9zQOIjt
+	XVd9h/MNVXsRcU/4AceYkm8Vw7QHohlxpAcXDYwFcVPaS4RYFmzOvBadBotcoQ==
+X-Gm-Gg: ASbGncteY8T3vU5I/9iTxaMo6Mzl0UAZGJb6EfK1Q6TwkODIqh4hDXrCWa792iTbo/F
+	5Iov/ld9sQJkqdqQvsKArVVPJeKOszBOu4X+WYHqWJU8fG5++8SMKfrEP/ED1H2+oaWUaLLWw9C
+	PZ1q6jDcMb/npYjUA71M+Er042AO0G+crj6+HDzY6drBV3y7q5ocBqUYJJigcU/6uY53b9/Thjj
+	T+M2DiVPZF2k9dZ7CJCliz1xABTVehFuDEt4rk+S4hD1wyULyoszcuH/8sOn5R9fKk644vCQeeq
+	TOP/4yDrsZ4rmqBxWwPi2lKoLUDCHaZnAKNTmrtxD3vHFrr0516opzaYdgGViTwPeomnB+tfGIv
+	vCvtof0OvRzfyQRCONegEbVVk8KCggwZmB16f9kwPuCxsa1QYcs+iMh6q2eLHyIU=
+X-Google-Smtp-Source: AGHT+IER7qsmDirvUDqEQs1xBs7R9YKNdkm4YW+QWuf/8YIZY7n0KTnKwU0FcGZ00OJo4PN1/sUNaQ==
+X-Received: by 2002:a05:6a20:2583:b0:24d:56d5:369e with SMTP id adf61e73a8af0-2602a593376mr19411514637.3.1757987171893;
+        Mon, 15 Sep 2025 18:46:11 -0700 (PDT)
+Received: from localhost.localdomain ([2001:558:600a:7:44e6:767e:cc5a:a060])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b54a36c78b5sm13253263a12.21.2025.09.15.18.46.10
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 15 Sep 2025 18:46:11 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: bpf@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: vbabka@suse.cz,
+	harry.yoo@oracle.com,
+	shakeel.butt@linux.dev,
+	mhocko@suse.com,
+	bigeasy@linutronix.de,
+	andrii@kernel.org,
+	memxor@gmail.com,
+	akpm@linux-foundation.org,
+	peterz@infradead.org,
+	rostedt@goodmis.org,
+	hannes@cmpxchg.org
+Subject: [PATCH slab] slab: Clarify comments regarding pfmemalloc and NUMA preferences
+Date: Mon, 15 Sep 2025 18:46:09 -0700
+Message-Id: <20250916014609.47273-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250901163107.5a0c17e6@rotkaeppchen>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 01, 2025 at 04:31:07PM +0200, Philipp Rudo wrote:
-> On Tue, 19 Aug 2025 09:24:24 +0800
-> Pingfan Liu <piliu@redhat.com> wrote:
-> 
-> > The routine to search a symbol in ELF can be shared, so split it out.
-> > 
-> > Signed-off-by: Pingfan Liu <piliu@redhat.com>
-> > Cc: Baoquan He <bhe@redhat.com>
-> > Cc: Dave Young <dyoung@redhat.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Philipp Rudo <prudo@redhat.com>
-> > To: kexec@lists.infradead.org
-> > ---
-> >  include/linux/kexec.h |  8 ++++
-> >  kernel/kexec_file.c   | 86 +++++++++++++++++++++++--------------------
-> >  2 files changed, 54 insertions(+), 40 deletions(-)
-> > 
-> > diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-> > index 8f7322c932fb5..2998d8da09d86 100644
-> > --- a/include/linux/kexec.h
-> > +++ b/include/linux/kexec.h
-> > @@ -23,6 +23,10 @@
-> >  #include <uapi/linux/kexec.h>
-> >  #include <linux/verification.h>
-> >  
-> > +#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
-> > +#include <linux/module.h>
-> > +#endif
-> > +
-> 
-> What is linux/module.h used for? Plus module.h already gets included a
-> little below, when CONFIG_KEXEC_CORE is set, which should always be the
-> case for those two configs.
-> 
+From: Alexei Starovoitov <ast@kernel.org>
 
-Yes, it should be dropped. Once I placed the declaration of
-elf_find_symbol() here, and later moved it behind.
+Clarify comments regarding pfmemalloc and NUMA preferences
+when ___slab_alloc() operating in !allow_spin mode.
 
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ mm/slub.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-Thanks,
-
-Pingfan
-
-> Thanks
-> Philipp
-> 
-> >  extern note_buf_t __percpu *crash_notes;
-> >  
-> >  #ifdef CONFIG_CRASH_DUMP
-> > @@ -550,6 +554,10 @@ void set_kexec_sig_enforced(void);
-> >  static inline void set_kexec_sig_enforced(void) {}
-> >  #endif
-> >  
-> > +#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
-> > +const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name);
-> > +#endif
-> > +
-> >  #endif /* !defined(__ASSEBMLY__) */
-> >  
-> >  #endif /* LINUX_KEXEC_H */
-> > diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-> > index 4780d8aae24e7..137049e7e2410 100644
-> > --- a/kernel/kexec_file.c
-> > +++ b/kernel/kexec_file.c
-> > @@ -880,6 +880,51 @@ static int kexec_calculate_store_digests(struct kimage *image)
-> >  	return ret;
-> >  }
-> >  
-> > +#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
-> > +const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name)
-> > +{
-> > +	const Elf_Shdr *sechdrs;
-> > +	const Elf_Sym *syms;
-> > +	const char *strtab;
-> > +	int i, k;
-> > +
-> > +	sechdrs = (void *)ehdr + ehdr->e_shoff;
-> > +
-> > +	for (i = 0; i < ehdr->e_shnum; i++) {
-> > +		if (sechdrs[i].sh_type != SHT_SYMTAB)
-> > +			continue;
-> > +
-> > +		if (sechdrs[i].sh_link >= ehdr->e_shnum)
-> > +			/* Invalid strtab section number */
-> > +			continue;
-> > +		strtab = (void *)ehdr + sechdrs[sechdrs[i].sh_link].sh_offset;
-> > +		syms = (void *)ehdr + sechdrs[i].sh_offset;
-> > +
-> > +		/* Go through symbols for a match */
-> > +		for (k = 0; k < sechdrs[i].sh_size/sizeof(Elf_Sym); k++) {
-> > +			if (ELF_ST_BIND(syms[k].st_info) != STB_GLOBAL)
-> > +				continue;
-> > +
-> > +			if (strcmp(strtab + syms[k].st_name, name) != 0)
-> > +				continue;
-> > +
-> > +			if (syms[k].st_shndx == SHN_UNDEF ||
-> > +			    syms[k].st_shndx >= ehdr->e_shnum) {
-> > +				pr_debug("Symbol: %s has bad section index %d.\n",
-> > +						name, syms[k].st_shndx);
-> > +				return NULL;
-> > +			}
-> > +
-> > +			/* Found the symbol we are looking for */
-> > +			return &syms[k];
-> > +		}
-> > +	}
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +#endif
-> > +
-> >  #ifdef CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY
-> >  /*
-> >   * kexec_purgatory_setup_kbuf - prepare buffer to load purgatory.
-> > @@ -1137,49 +1182,10 @@ int kexec_load_purgatory(struct kimage *image, struct kexec_buf *kbuf)
-> >  static const Elf_Sym *kexec_purgatory_find_symbol(struct purgatory_info *pi,
-> >  						  const char *name)
-> >  {
-> > -	const Elf_Shdr *sechdrs;
-> > -	const Elf_Ehdr *ehdr;
-> > -	const Elf_Sym *syms;
-> > -	const char *strtab;
-> > -	int i, k;
-> > -
-> >  	if (!pi->ehdr)
-> >  		return NULL;
-> >  
-> > -	ehdr = pi->ehdr;
-> > -	sechdrs = (void *)ehdr + ehdr->e_shoff;
-> > -
-> > -	for (i = 0; i < ehdr->e_shnum; i++) {
-> > -		if (sechdrs[i].sh_type != SHT_SYMTAB)
-> > -			continue;
-> > -
-> > -		if (sechdrs[i].sh_link >= ehdr->e_shnum)
-> > -			/* Invalid strtab section number */
-> > -			continue;
-> > -		strtab = (void *)ehdr + sechdrs[sechdrs[i].sh_link].sh_offset;
-> > -		syms = (void *)ehdr + sechdrs[i].sh_offset;
-> > -
-> > -		/* Go through symbols for a match */
-> > -		for (k = 0; k < sechdrs[i].sh_size/sizeof(Elf_Sym); k++) {
-> > -			if (ELF_ST_BIND(syms[k].st_info) != STB_GLOBAL)
-> > -				continue;
-> > -
-> > -			if (strcmp(strtab + syms[k].st_name, name) != 0)
-> > -				continue;
-> > -
-> > -			if (syms[k].st_shndx == SHN_UNDEF ||
-> > -			    syms[k].st_shndx >= ehdr->e_shnum) {
-> > -				pr_debug("Symbol: %s has bad section index %d.\n",
-> > -						name, syms[k].st_shndx);
-> > -				return NULL;
-> > -			}
-> > -
-> > -			/* Found the symbol we are looking for */
-> > -			return &syms[k];
-> > -		}
-> > -	}
-> > -
-> > -	return NULL;
-> > +	return elf_find_symbol(pi->ehdr, name);
-> >  }
-> >  
-> >  void *kexec_purgatory_get_symbol_addr(struct kimage *image, const char *name)
-> 
+diff --git a/mm/slub.c b/mm/slub.c
+index 83983de948f3..c995f3bec69d 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4456,9 +4456,17 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 		/*
+ 		 * same as above but node_match() being false already
+ 		 * implies node != NUMA_NO_NODE.
+-		 * Reentrant slub cannot take locks necessary to
+-		 * deactivate_slab, hence ignore node preference.
+-		 * kmalloc_nolock() doesn't allow __GFP_THISNODE.
++		 *
++		 * We don't strictly honor pfmemalloc and NUMA preferences
++		 * when !allow_spin because:
++		 *
++		 * 1. Most kmalloc() users allocate objects on the local node,
++		 *    so kmalloc_nolock() tries not to interfere with them by
++		 *    deactivating the cpu slab.
++		 *
++		 * 2. Deactivating due to NUMA or pfmemalloc mismatch may cause
++		 *    unnecessary slab allocations even when n->partial list
++		 *    is not empty.
+ 		 */
+ 		if (!node_isset(node, slab_nodes) ||
+ 		    !allow_spin) {
+@@ -4547,11 +4555,6 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 		slab = slub_percpu_partial(c);
+ 		slub_set_percpu_partial(c, slab);
+ 
+-		/*
+-		 * Reentrant slub cannot take locks necessary for
+-		 * __put_partials(), hence ignore node preference.
+-		 * kmalloc_nolock() doesn't allow __GFP_THISNODE.
+-		 */
+ 		if (likely(node_match(slab, node) &&
+ 			   pfmemalloc_match(slab, gfpflags)) ||
+ 		    !allow_spin) {
+-- 
+2.47.3
 
 
