@@ -1,242 +1,235 @@
-Return-Path: <bpf+bounces-68470-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68471-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8311EB58E6E
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 08:23:50 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A860BB58EB0
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 08:52:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8261A1BC1594
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 06:24:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6C2724E15BD
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 06:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BA42E0411;
-	Tue, 16 Sep 2025 06:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56CC2DF6F8;
+	Tue, 16 Sep 2025 06:52:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lv6xc298"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PNoDY589"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9C91DB551
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 06:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D43501A2389
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 06:52:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758003810; cv=none; b=aFPRj3sAdi6f0GR/oE35BAmykQXj93E361qVWb1NQZWtya3crjHp7LXOrzylDOytLY1vUoCcT0ZHw6vKHBAMNvLOIt8MhTc0LTsFOvlsJ4FvEQliJGRyAoum+hQlBeXraJTHkp2TCHbi2GeFoba68/hIC+00J02ot0+kf+zLy4Y=
+	t=1758005572; cv=none; b=q3PzguP+pHbXqQkQVbR4vPIr0eIwaWaOnPw/+6wPUQUFGVD/IvKAnIhd54YGK1FvEAAagXGstjYmMY5Kp8pIhL15QTUhfvjOpyvugknmnso9SAma41a1mO4nAxw3ggVgl2sUOo4Kp3FBnCCRjksql06udqM7K7862UhFloOm9Zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758003810; c=relaxed/simple;
-	bh=ATPz90HRMzTO45UePY5i8G0/KGUUiD+EHn3zGHoMIzU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=dpf2qb3kQMnCb17iz3Nel45uAKm3woTfpoVD/upcQz6M8x7xFNT7M6t0Gyz6osVNAMdjKJLAphlXIn2xtLatct+4NP3fXm5/YmWmyPVnZcvqckSa141VY+KiFktvqwkd3TgP0tcJGyAzhK317gFiTtjRMDGUjHBTBo/GIQzMGXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lv6xc298; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-724b9ba6e65so33236307b3.2
-        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 23:23:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758003806; x=1758608606; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jzwxSCgUK/3UElXn+qMCVZOXd6lLimgLpQ+KrGfwqaU=;
-        b=lv6xc298WRJweENer27hHOnZy0J1mSXlDgmMJ1XczXvig9lmT8IYSsn9wC0mwdfdj5
-         e2gtCB9JxtDJOurDvlfbaUzHHwKflOORnpiA5dc+y3kvu3dZCX6i4KBcdxZ17sleigYY
-         gBLX12DMTlSLsrsCCJObjFN4QNvzBCd1Yo26iwrOOeADEc9m77h2TsFWtfwIWY+BUdtD
-         rM2niwRROy03NsATXmlmhT+G43nmno+aSv1AGiF9uvqWiSCfynDgsiD1YkFSoa7d2HNT
-         SCfpVm1fDymRq5fAGHZUjmuj3fXsdACYAKt95DiS0JTGHYdbT0Ib95o1aC3W0qV7NcSh
-         KIEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758003806; x=1758608606;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jzwxSCgUK/3UElXn+qMCVZOXd6lLimgLpQ+KrGfwqaU=;
-        b=PjAbgsVUBl8/JzyyXkNAUfDz+Lo0IDKBUVVgECpKNDYweUgZkXaYEPVilayIEHCXLP
-         d9xOr1dLcks7LK7t2w2gjnlCL+pJV650ht+aVShIMTVhiVin2q6+xn4g8CCUbkYp78ib
-         d6y4Z5UISXefeklvLjRXftOawrSUAIM1wV2IFcczqHG6I5JAf4olWX08oqhDDq+SMM1h
-         KD7VU3+GkoxjTgTgLUSWd66trcZ9eBw/i4LunKqsKMVz4Cz6W0uUFON13RUS45Tatens
-         aBnDGXrvKXCNy8qglr7mcduFdf2/uCbhT/8M1EVh0BAKYAFQfZEhnjVZ6TGBIZ5WMpu4
-         UEsA==
-X-Forwarded-Encrypted: i=1; AJvYcCXAIM6JZi/9ouFX9/hQNWuC15n3PC4nueNHbjsKSPTVvEJxF0sgrvJvhIP9AxIj63y2a34=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTL3V3rhvVAmmCu/Q324vHyO19vT+i89DfPng+81W9O7XtDKkd
-	CY8ypo7T5KEAEopO/Y0w5xBgtHHFNafSGwy8747i5kXWUJFifN1tKjZzj4ThjUzZYg==
-X-Gm-Gg: ASbGncuTxO4NQNHaC1KX2ss0HmZnWth+d+iu4ClMILuXXdnhi4TQoTflF0z5P+ETdCY
-	onX8Bb/1/nuEM/qEIgxnsl8yadYz7D8eP4+WQAAjZQKAM64+dn7xuXAvPb4U29TWX4Htbj5RoK0
-	XEeRdW2K8NWYvhsQUZlwBmv0/yuhCcgua8K2FKXTzM3ab2hu9TyE5MBhTHZ6XjqHsyY/fboflFe
-	+D1KwCUg23RuXHlWj+GFKKvW+f2o0SNJAu3wmTva9zgpIQPprDcEaVbRCuGz6yHLDy0FAQ6hF7T
-	tGw+FUasM1pHCmaGrmAgABxHWu19UnwUW5kHi/jsLFdc2NDbF4rVDsCG5Fy1cR68XJ1Oe6EONMu
-	lKcmyFIFchlt2tsqeHMUPl974e8PFne4lqxooaP8G1JNyfwyvml2YOtRjOTB8R9gQy/wSjbXB8w
-	cVF0p90nInzzLZFQ==
-X-Google-Smtp-Source: AGHT+IFYH7nKR98YSl0bgd4j6elLmVBr5qc5bTleI6LMDXL64/KgQAEWWcRI4ClTxXA+31LnE3T7pA==
-X-Received: by 2002:a05:690c:b13:b0:71f:eb2b:83e0 with SMTP id 00721157ae682-73062ca43c8mr138095197b3.13.1758003805348;
-        Mon, 15 Sep 2025 23:23:25 -0700 (PDT)
-Received: from darker.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-72f7683148dsm38488107b3.23.2025.09.15.23.23.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Sep 2025 23:23:24 -0700 (PDT)
-Date: Mon, 15 Sep 2025 23:23:17 -0700 (PDT)
-From: Hugh Dickins <hughd@google.com>
-To: "Roy, Patrick" <roypat@amazon.co.uk>
-cc: "Thomson, Jack" <jackabt@amazon.co.uk>, 
-    "Kalyazin, Nikita" <kalyazin@amazon.co.uk>, 
-    "Cali, Marco" <xmarcalx@amazon.co.uk>, 
-    "derekmn@amazon.co.uk" <derekmn@amazon.co.uk>, 
-    Elliot Berman <quic_eberman@quicinc.com>, 
-    "willy@infradead.org" <willy@infradead.org>, 
-    "corbet@lwn.net" <corbet@lwn.net>, 
-    "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-    "maz@kernel.org" <maz@kernel.org>, 
-    "oliver.upton@linux.dev" <oliver.upton@linux.dev>, 
-    "joey.gouly@arm.com" <joey.gouly@arm.com>, 
-    "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, 
-    "yuzenghui@huawei.com" <yuzenghui@huawei.com>, 
-    "catalin.marinas@arm.com" <catalin.marinas@arm.com>, 
-    "will@kernel.org" <will@kernel.org>, 
-    "chenhuacai@kernel.org" <chenhuacai@kernel.org>, 
-    "kernel@xen0n.name" <kernel@xen0n.name>, 
-    "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, 
-    "palmer@dabbelt.com" <palmer@dabbelt.com>, 
-    "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, 
-    "alex@ghiti.fr" <alex@ghiti.fr>, 
-    "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>, 
-    "gerald.schaefer@linux.ibm.com" <gerald.schaefer@linux.ibm.com>, 
-    "hca@linux.ibm.com" <hca@linux.ibm.com>, 
-    "gor@linux.ibm.com" <gor@linux.ibm.com>, 
-    "borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>, 
-    "svens@linux.ibm.com" <svens@linux.ibm.com>, 
-    "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, 
-    "luto@kernel.org" <luto@kernel.org>, 
-    "peterz@infradead.org" <peterz@infradead.org>, 
-    "tglx@linutronix.de" <tglx@linutronix.de>, 
-    "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
-    "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>, 
-    "trondmy@kernel.org" <trondmy@kernel.org>, 
-    "anna@kernel.org" <anna@kernel.org>, 
-    "hubcap@omnibond.com" <hubcap@omnibond.com>, 
-    "martin@omnibond.com" <martin@omnibond.com>, 
-    "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, 
-    "brauner@kernel.org" <brauner@kernel.org>, "jack@suse.cz" <jack@suse.cz>, 
-    "akpm@linux-foundation.org" <akpm@linux-foundation.org>, 
-    "david@redhat.com" <david@redhat.com>, 
-    "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>, 
-    "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, 
-    "vbabka@suse.cz" <vbabka@suse.cz>, "rppt@kernel.org" <rppt@kernel.org>, 
-    "surenb@google.com" <surenb@google.com>, 
-    "mhocko@suse.com" <mhocko@suse.com>, "ast@kernel.org" <ast@kernel.org>, 
-    "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-    "andrii@kernel.org" <andrii@kernel.org>, 
-    "martin.lau@linux.dev" <martin.lau@linux.dev>, 
-    "eddyz87@gmail.com" <eddyz87@gmail.com>, 
-    "song@kernel.org" <song@kernel.org>, 
-    "yonghong.song@linux.dev" <yonghong.song@linux.dev>, 
-    "john.fastabend@gmail.com" <john.fastabend@gmail.com>, 
-    "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-    "sdf@fomichev.me" <sdf@fomichev.me>, 
-    "haoluo@google.com" <haoluo@google.com>, 
-    "jolsa@kernel.org" <jolsa@kernel.org>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
-    "jhubbard@nvidia.com" <jhubbard@nvidia.com>, 
-    "peterx@redhat.com" <peterx@redhat.com>, 
-    "jannh@google.com" <jannh@google.com>, 
-    "pfalcato@suse.de" <pfalcato@suse.de>, 
-    "axelrasmussen@google.com" <axelrasmussen@google.com>, 
-    "yuanchu@google.com" <yuanchu@google.com>, 
-    "weixugc@google.com" <weixugc@google.com>, 
-    "hannes@cmpxchg.org" <hannes@cmpxchg.org>, 
-    "zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>, 
-    "shakeel.butt@linux.dev" <shakeel.butt@linux.dev>, 
-    "shuah@kernel.org" <shuah@kernel.org>, 
-    "seanjc@google.com" <seanjc@google.com>, 
-    "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
-    "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
-    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-    "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-    "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-    "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, 
-    "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, 
-    "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
-    "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, 
-    "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
-    "devel@lists.orangefs.org" <devel@lists.orangefs.org>, 
-    "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-    "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-    "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v6 01/11] filemap: Pass address_space mapping to
- ->free_folio()
-In-Reply-To: <20250912091708.17502-2-roypat@amazon.co.uk>
-Message-ID: <7c2677e1-daf7-3b49-0a04-1efdf451379a@google.com>
-References: <20250912091708.17502-1-roypat@amazon.co.uk> <20250912091708.17502-2-roypat@amazon.co.uk>
+	s=arc-20240116; t=1758005572; c=relaxed/simple;
+	bh=f+0aqlZfLs1OabFTgi3kljUtCtVf9262l/kTl8L5HfQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UbtIp80hkq3PZtOrjgoGwuoANRn4uLMxs9ne90cRkDPxzc7UckvMx7vXhCiLJrM+7LvAio6lbg8/U2rHXC1RP92mAbJlLHZMMQ9wD9Nb+dguF2IQluuVh+ptFCssOyGch/RX3iX8ETZ+Ba7RBgLCEbuoOrUGPMZL9WEHYFJ46UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PNoDY589; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1758005570;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2L+P/bpPeYIjZTjawcFVtQKUoZ+hWUiRlIX/n1h+mvE=;
+	b=PNoDY5891tH2mbAVP/CxKMl1zGgcipCPzhwpdAoGVSo6pzD6TLNZlwAx/RNX7Dg3y0Qpbv
+	rVU/1ztotEGS9sfJK7ms4ojrMK2XicbrP9yaKgYmsAi/S8sPPiia9IFefpaU9Pj3GK/G01
+	HjRsUt6/pABBAqIVgps7vsdyxleY3Yg=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-94-n3TAo9g6MG-p5zGiFrRf-w-1; Tue,
+ 16 Sep 2025 02:52:46 -0400
+X-MC-Unique: n3TAo9g6MG-p5zGiFrRf-w-1
+X-Mimecast-MFC-AGG-ID: n3TAo9g6MG-p5zGiFrRf-w_1758005564
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 51E8819560B0;
+	Tue, 16 Sep 2025 06:52:43 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.143])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id E92191800446;
+	Tue, 16 Sep 2025 06:52:40 +0000 (UTC)
+Date: Tue, 16 Sep 2025 14:52:38 +0800
+From: Pingfan Liu <piliu@redhat.com>
+To: Philipp Rudo <prudo@redhat.com>
+Cc: kexec@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Jeremy Linton <jeremy.linton@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Viktor Malik <vmalik@redhat.com>,
+	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>,
+	Dave Young <dyoung@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org,
+	systemd-devel@lists.freedesktop.org
+Subject: Re: [PATCHv5 06/12] kexec: Integrate with the introduced bpf kfuncs
+Message-ID: <aMkJNuORiqSZfpok@fedora>
+References: <20250819012428.6217-1-piliu@redhat.com>
+ <20250819012428.6217-7-piliu@redhat.com>
+ <20250901163042.721db92d@rotkaeppchen>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250901163042.721db92d@rotkaeppchen>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-On Fri, 12 Sep 2025, Roy, Patrick wrote:
-
-> From: Elliot Berman <quic_eberman@quicinc.com>
+On Mon, Sep 01, 2025 at 04:30:42PM +0200, Philipp Rudo wrote:
+> Hi Pingfan,
 > 
-> When guest_memfd removes memory from the host kernel's direct map,
-> direct map entries must be restored before the memory is freed again. To
-> do so, ->free_folio() needs to know whether a gmem folio was direct map
-> removed in the first place though. While possible to keep track of this
-> information on each individual folio (e.g. via page flags), direct map
-> removal is an all-or-nothing property of the entire guest_memfd, so it
-> is less error prone to just check the flag stored in the gmem inode's
-> private data.  However, by the time ->free_folio() is called,
-> folio->mapping might be cleared. To still allow access to the address
-> space from which the folio was just removed, pass it in as an additional
-> argument to ->free_folio, as the mapping is well-known to all callers.
 > 
-> Link: https://lore.kernel.org/all/15f665b4-2d33-41ca-ac50-fafe24ade32f@redhat.com/
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Acked-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> [patrick: rewrite shortlog for new usecase]
-> Signed-off-by: Patrick Roy <roypat@amazon.co.uk>
-> ---
->  Documentation/filesystems/locking.rst |  2 +-
->  fs/nfs/dir.c                          | 11 ++++++-----
->  fs/orangefs/inode.c                   |  3 ++-
->  include/linux/fs.h                    |  2 +-
->  mm/filemap.c                          |  9 +++++----
->  mm/secretmem.c                        |  3 ++-
->  mm/vmscan.c                           |  4 ++--
->  virt/kvm/guest_memfd.c                |  3 ++-
->  8 files changed, 21 insertions(+), 16 deletions(-)
+> On Tue, 19 Aug 2025 09:24:22 +0800
+> Pingfan Liu <piliu@redhat.com> wrote:
 > 
-> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
-> index aa287ccdac2f..74c97287ec40 100644
-> --- a/Documentation/filesystems/locking.rst
-> +++ b/Documentation/filesystems/locking.rst
-> @@ -262,7 +262,7 @@ prototypes::
->  	sector_t (*bmap)(struct address_space *, sector_t);
->  	void (*invalidate_folio) (struct folio *, size_t start, size_t len);
->  	bool (*release_folio)(struct folio *, gfp_t);
-> -	void (*free_folio)(struct folio *);
-> +	void (*free_folio)(struct address_space *, struct folio *);
->  	int (*direct_IO)(struct kiocb *, struct iov_iter *iter);
->  	int (*migrate_folio)(struct address_space *, struct folio *dst,
->  			struct folio *src, enum migrate_mode);
+> > This patch does two things:
+> > First, register as a listener on bpf_copy_to_kernel()
+> > Second, in order that the hooked bpf-prog can call the sleepable kfuncs,
+> > bpf_handle_pefile and bpf_post_handle_pefile are marked as
+> > KF_SLEEPABLE.
+> > 
+> > Signed-off-by: Pingfan Liu <piliu@redhat.com>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Philipp Rudo <prudo@redhat.com>
+> > Cc: Baoquan He <bhe@redhat.com>
+> > Cc: Dave Young <dyoung@redhat.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: bpf@vger.kernel.org
+> > To: kexec@lists.infradead.org
+> > ---
+> >  kernel/kexec_pe_image.c | 67 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 67 insertions(+)
+> > 
+> > diff --git a/kernel/kexec_pe_image.c b/kernel/kexec_pe_image.c
+> > index b0cf9942e68d2..f8debcde6b516 100644
+> > --- a/kernel/kexec_pe_image.c
+> > +++ b/kernel/kexec_pe_image.c
+> > @@ -38,6 +38,51 @@ static struct kexec_res parsed_resource[3] = {
+> >  	{ KEXEC_RES_CMDLINE_NAME, },
+> >  };
+> >  
+> > +/*
+> > + * @name should be one of : kernel, initrd, cmdline
+> > + */
+> > +static int bpf_kexec_carrier(const char *name, struct mem_range_result *r)
+> > +{
+> > +	struct kexec_res *res;
+> > +	int i;
+> > +
+> > +	if (!r || !name)
+> > +		return -EINVAL;
+> > +
+> > +	for (i = 0; i < 3; i++) {
+> > +		if (!strcmp(parsed_resource[i].name, name))
+> > +			break;
+> > +	}
+> > +	if (i >= 3)
+> > +		return -EINVAL;
+> 
+> Can you please replace the magic '3' by ARRAY_SIZE, just like you did
+> below when (un-)registering the listener.
+> 
 
-Beware, that is against the intent of free_folio().
+Yes, I will introduce a macro KEXEC_RES_ARRAY_SIZE to unify all of them.
 
-Since its 2.6.37 origin in 6072d13c4293 ("Call the filesystem back
-whenever a page is removed from the page cache"), freepage() or
-free_folio() has intentionally NOT taken a struct address_space *mapping,
-because that structure may already be freed by the time free_folio() is
-called, if the last folio holding it has now been freed.
+Thanks,
 
-Maybe something has changed since then, or maybe it happens to be safe
-just in the context in which you want to use it; but it is against the
-principle of free_folio().  (Maybe an rcu_read_lock() could be added
-in __remove_mapping() to make it safe nowadays? maybe not welcome.)
+Pingfan
 
-See Documentation/filesystems/vfs.rst:
-free_folio is called once the folio is no longer visible in the
-page cache in order to allow the cleanup of any private data.
-Since it may be called by the memory reclaimer, it should not
-assume that the original address_space mapping still exists, and
-it should not block.
+> Thanks
+> Philipp
+> 
+> > +
+> > +	res = &parsed_resource[i];
+> > +	/*
+> > +	 * Replace the intermediate resource generated by the previous step.
+> > +	 */
+> > +	if (!!res->r)
+> > +		mem_range_result_put(res->r);
+> > +	mem_range_result_get(r);
+> > +	res->r = r;
+> > +	return 0;
+> > +}
+> > +
+> > +static struct carrier_listener kexec_res_listener[3] = {
+> > +	{ .name = KEXEC_RES_KERNEL_NAME,
+> > +	  .alloc_type = 1,
+> > +	  .handler = bpf_kexec_carrier,
+> > +	},
+> > +	{ .name = KEXEC_RES_INITRD_NAME,
+> > +	  .alloc_type = 1,
+> > +	  .handler = bpf_kexec_carrier,
+> > +	},
+> > +	{ .name = KEXEC_RES_CMDLINE_NAME,
+> > +	  /* kmalloc-ed */
+> > +	  .alloc_type = 0,
+> > +	  .handler = bpf_kexec_carrier,
+> > +	},
+> > +};
+> > +
+> >  static bool pe_has_bpf_section(const char *file_buf, unsigned long pe_sz);
+> >  
+> >  static bool is_valid_pe(const char *kernel_buf, unsigned long kernel_len)
+> > @@ -159,6 +204,22 @@ __attribute__((used, optimize("O0"))) void bpf_post_handle_pefile(struct kexec_c
+> >  	dummy += 2;
+> >  }
+> >  
+> > +BTF_KFUNCS_START(kexec_modify_return_ids)
+> > +BTF_ID_FLAGS(func, bpf_handle_pefile, KF_SLEEPABLE)
+> > +BTF_ID_FLAGS(func, bpf_post_handle_pefile, KF_SLEEPABLE)
+> > +BTF_KFUNCS_END(kexec_modify_return_ids)
+> > +
+> > +static const struct btf_kfunc_id_set kexec_modify_return_set = {
+> > +	.owner = THIS_MODULE,
+> > +	.set = &kexec_modify_return_ids,
+> > +};
+> > +
+> > +static int __init kexec_bpf_prog_run_init(void)
+> > +{
+> > +	return register_btf_fmodret_id_set(&kexec_modify_return_set);
+> > +}
+> > +late_initcall(kexec_bpf_prog_run_init);
+> > +
+> >  /*
+> >   * PE file may be nested and should be unfold one by one.
+> >   * Query 'kernel', 'initrd', 'cmdline' in cur_phase, as they are inputs for the
+> > @@ -213,6 +274,9 @@ static void *pe_image_load(struct kimage *image,
+> >  	cmdline_start = cmdline;
+> >  	cmdline_sz = cmdline_len;
+> >  
+> > +	for (int i = 0; i < ARRAY_SIZE(kexec_res_listener); i++)
+> > +		register_carrier_listener(&kexec_res_listener[i]);
+> > +
+> >  	while (is_valid_format(linux_start, linux_sz) &&
+> >  	       pe_has_bpf_section(linux_start, linux_sz)) {
+> >  		struct kexec_context context;
+> > @@ -250,6 +314,9 @@ static void *pe_image_load(struct kimage *image,
+> >  		disarm_bpf_prog();
+> >  	}
+> >  
+> > +	for (int i = 0; i < ARRAY_SIZE(kexec_res_listener); i++)
+> > +		unregister_carrier_listener(kexec_res_listener[i].name);
+> > +
+> >  	/*
+> >  	 * image's kernel_buf, initrd_buf, cmdline_buf are set. Now they should
+> >  	 * be updated to the new content.
+> 
 
-Hugh
 
