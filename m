@@ -1,71 +1,85 @@
-Return-Path: <bpf+bounces-68529-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89C41B59C95
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:53:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAE1FB59CAB
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:57:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08D29324536
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 15:53:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F306E17707C
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 15:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C35352FF2;
-	Tue, 16 Sep 2025 15:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E34371E9F;
+	Tue, 16 Sep 2025 15:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ww6X2mXT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AjxFln4l"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281FD3570B4
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:52:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5060B371EA0
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758037966; cv=none; b=u53+K/KfQscnQV7R1g7vxjQ/DA48yD/E4Hc/ZuxlLbbXgB4BAq2K6RQMisFe0JYOKWjR/POZY+yS+IJL2jceHzCBIFZnijL973zZgK8/A8dAXBeKAiWZlX5JVMsn4FL2Z7zxmnTxekNCKuwRGyUJx8eH44kX4QfAZ5PDkGmafyI=
+	t=1758038218; cv=none; b=CLgmVAupIrSrLpovZRwKyYIEAdXHJia2DAvZtszNmQxGaRtPiD7R6gFWHwz1j3wZ2ZxJHYAgA6aDbOyXOkY36G45WgAaVgPZ1S1VrCzm5NNiWaheKW0vYa0TR+rXv5JxArNY4kw2UVpCcM35ZZTJPKx5pgaqXWQNXVAfgTChsyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758037966; c=relaxed/simple;
-	bh=9Qe62bZWaJrS75Zy2Dycz9dwDd7lbtWMjCefxIgobgg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lciBs41yesaEs770btLaMWzutieqbXXBOEjHS3oiJn7FyjcYobYjNZAQkq+Bs9Gs+n0HVX5vAurspjSZefmdVU1HW9u7ejW/8Oh5qVUgHChPKviC//pUJ/vr4fhCxLNEbMxvfYgqDsbzKkGEdtig47yBllutyVoCFnr3CDnwwdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ww6X2mXT; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758037962;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wY8pDcEkIECvI8QI9y28bkmZkEfrq7HL5M6nvOFerYA=;
-	b=Ww6X2mXTTsHnHYuM0NKnaym4x/8UBm3Cxy/0P7WVQEOBVcQEhQvezgiL1sfnXShbW0f0YV
-	sJ7yYYj7OMl/PqiSczig+f6vr69ILGRQM9E8pA3m5/EVxTc/ySjl5Yr4z9BDCAj8Y8YYJ1
-	ui1upKfCysubDwP4MGGNYdoVy1yJOKc=
-From: Leon Hwang <leon.hwang@linux.dev>
+	s=arc-20240116; t=1758038218; c=relaxed/simple;
+	bh=IRzTmLRNWRkXwuFptgz6+mmRL3Z2PH68tG2vbcPSId8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qb8EDTc9jFDAdL4mYUvwW3Ne4/ewmU+E+3EvTyDk9MJ+2Hkv24Q7mkvtTSoyOnFoYNgcB/dJORgRGFXqvmi9/Itczn/4L3nto1xPtNV5ixwPYNxY2z8YO6L9cjBVdJISMJ7UL1WJkchK3mxQ/BzfJ/G/BbrKF3Y1EN00rScFooc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AjxFln4l; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-24458272c00so60081315ad.3
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 08:56:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758038216; x=1758643016; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yiAINEhVsjWg8ki6Sy+j8WcDazb+q524Nc68fNbvg74=;
+        b=AjxFln4lyiTGkSRtI44zl8OPox8ykTfyKO8IHj77PjF+kr9+8XCbQt9/ar5iJMOxyW
+         TTFWMjXMoCgJr/Q4XnHIrEH6zsy1ucwq4wHkvBHJrauAf7YADvJcnI+bNnZonYVBC4io
+         HkZAgZq9Et8xxa6cK1aBHy5nzwqK3vUzKk0+PpK8sJmYfo4o+YxSJ4eCi1bg2piAuxz5
+         WuOYYnljvwsZEje/hmQ5kEp3Qw2ZE874Q91WRJZHKDaDOqmQ6DViAejw0Bu8cIJDbMF5
+         1NzGPXtuTdGmeU3QOWgKX5JRWJ5YdoX9i42Qst9Odij6AduPpKQjBXtNMcgf5gTNcw0y
+         VHJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758038216; x=1758643016;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yiAINEhVsjWg8ki6Sy+j8WcDazb+q524Nc68fNbvg74=;
+        b=dxOp4uY9gJgABl/ZXxduN2vcdHM6cqP2n/SYKchLGYt9G/6AnaZHvqVNE9zGuPUm6i
+         mt9e26rPOobLBTXOdCVpD4HMcCHuN8yIn6HBf0YrVpnBwP+oV+RbSCKGOztbxqMPZ9qp
+         6r7oCJC1ewYfw4ZPfsJJII+WMLEyHiuK/XT8b9/hGtL2T58hnLG3TBzR1dfxlMaAknp2
+         omjuwMt23AJ+QJAhXK2Qes3iAvHaQ53op9LKoAN2AHCRvJQxdLxezvjYQDO9kdARUzNR
+         Nc3aVLYlbZb0g+MIlU1VnL4GopI9dZfoNm3g2MeQ/rq5xNEf3uXC66ve00H5mKXGpL0x
+         yqBQ==
+X-Gm-Message-State: AOJu0YymRhUo5xdvubPM6cokbrRP6QtUi01g9SXNk2rr5atJroWEpIr2
+	YOu+bHdCDODhoeU/OSVltQvSHiX/VapWJP7OV2zqOE4XQ49QFVONf4j2Sn6VTYGHijzFUuL8
+X-Gm-Gg: ASbGnctDaRK1/BvbgEUjE19OPFxXlU/Q6qv/u479PS5AYrdjqwg5DUjvShLxMGmxdoG
+	o3/Iqu8f8SbzH7pj6Z36e3PFMDmra8bKGBD2050o6fM1fUUZz7GqrwNbSKZvAGtQPwu6D4aMDo8
+	LpVzuIffXiJDryT8HWy2eAqLoIxebr2PfSPcLsx9ebxo5INNjtVE4DswhpBIZy3zsnk76Y/nIES
+	RrO8RlIdmmASR7/zKN5g7TeeMcizOR46dY7bN6zepMFcqyoNc26aZUXdL/PIS5Wok8r5CgBc8fr
+	OFwb4THjB9dyI//vjOpzbl3Qwfryil/LyiYlrUSmDVvh5KFXaN53wbqDBRY8bHgECpJuyZXqMps
+	ZJMztQ5x+u7de2thUKsux9l4zYhF9i99kSeO+8wIDHmIrMxbF7EU4BvkGZoZF
+X-Google-Smtp-Source: AGHT+IE/gas2vRtfvf0jFsXNDu2Tg/is10TY7CsOk25OmfpGAOAy9tXtVXYdoht/7haciXVgTf44kA==
+X-Received: by 2002:a17:902:e545:b0:267:e097:7a9c with SMTP id d9443c01a7336-267e0977cd1mr24188785ad.53.1758038216190;
+        Tue, 16 Sep 2025 08:56:56 -0700 (PDT)
+Received: from laptop.localdomain ([104.250.148.58])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-261d3dd029bsm101320645ad.25.2025.09.16.08.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Sep 2025 08:56:55 -0700 (PDT)
+From: Xing Guo <higuoxing@gmail.com>
 To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
+Cc: linux-kselftest@vger.kernel.org,
 	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	yatsenko@meta.com,
-	puranjay@kernel.org,
-	davidzalman.101@gmail.com,
-	cheick.traore@foss.st.com,
-	chen.dylane@linux.dev,
-	mika.westerberg@linux.intel.com,
 	ameryhung@gmail.com,
-	menglong8.dong@gmail.com,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Add union argument tests using fexit programs
-Date: Tue, 16 Sep 2025 23:52:11 +0800
-Message-ID: <20250916155211.61083-4-leon.hwang@linux.dev>
-In-Reply-To: <20250916155211.61083-1-leon.hwang@linux.dev>
-References: <20250916155211.61083-1-leon.hwang@linux.dev>
+	Xing Guo <higuoxing@gmail.com>
+Subject: [PATCH] selftests/bpf: Add back removed kfuncs declarations
+Date: Tue, 16 Sep 2025 23:56:49 +0800
+Message-ID: <20250916155649.54991-1-higuoxing@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,192 +87,68 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-By referencing
-commit 1642a3945e223 ("selftests/bpf: Add struct argument tests with fentry/fexit programs."),
-test the following cases for union argument support:
+These kfuncs are removed in commit 2f9838e25790
+("selftests/bpf: Cleanup bpf qdisc selftests"), but they are still
+referenced by multiple tests.  Otherwise, we will get the following errors.
 
-* 8B union argument.
-* 16B union argument.
+```
+progs/bpf_qdisc_fail__incompl_ops.c:13:2: error: call to undeclared function 'bpf_qdisc_skb_drop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   13 |         bpf_qdisc_skb_drop(skb, to_free);
+      |         ^
+1 error generated.
+progs/bpf_qdisc_fifo.c:38:3: error: call to undeclared function 'bpf_qdisc_skb_drop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   38 |                 bpf_qdisc_skb_drop(skb, to_free);
+      |                 ^
+progs/bpf_qdisc_fq.c:280:11: error: call to undeclared function 'bpf_skb_get_hash'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  280 |                         hash = bpf_skb_get_hash(skb) & q.orphan_mask;
+      |                                ^
+progs/bpf_qdisc_fq.c:287:11: error: call to undeclared function 'bpf_skb_get_hash'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  287 |                         hash = bpf_skb_get_hash(skb) & q.orphan_mask;
+      |                                ^
+progs/bpf_qdisc_fq.c:375:3: error: call to undeclared function 'bpf_qdisc_skb_drop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  375 |                 bpf_qdisc_skb_drop(skb, to_free);
+      |                 ^
+progs/bpf_qdisc_fifo.c:71:2: error: call to undeclared function 'bpf_qdisc_bstats_update'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   71 |         bpf_qdisc_bstats_update(sch, skb);
+      |         ^
+progs/bpf_qdisc_fifo.c:106:4: error: call to undeclared function 'bpf_kfree_skb'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  106 |                         bpf_kfree_skb(skb);
+      |                         ^
+3 errors generated.
+progs/bpf_qdisc_fq.c:614:3: error: call to undeclared function 'bpf_qdisc_bstats_update'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  614 |                 bpf_qdisc_bstats_update(sch, skb);
+      |                 ^
+progs/bpf_qdisc_fq.c:619:3: error: call to undeclared function 'bpf_qdisc_watchdog_schedule'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  619 |                 bpf_qdisc_watchdog_schedule(sch, cb_ctx.expire, q.timer_slack);
+      |                 ^
+5 errors generated.
+```
 
-cd tools/testing/selftests/bpf
-./test_progs -t tracing_struct/union_args
-472/3   tracing_struct/union_args:OK
-472     tracing_struct:OK
-Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+Fixes: 2f9838e25790 ("selftests/bpf: Cleanup bpf qdisc selftests")
+Signed-off-by: Xing Guo <higuoxing@gmail.com>
 ---
- .../selftests/bpf/prog_tests/tracing_struct.c | 29 ++++++++++++++++
- .../selftests/bpf/progs/tracing_struct.c      | 33 +++++++++++++++++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    | 31 +++++++++++++++++
- 3 files changed, 93 insertions(+)
+ tools/testing/selftests/bpf/progs/bpf_qdisc_common.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-index 19e68d4b35327..6f8c0bfb04155 100644
---- a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-@@ -112,10 +112,39 @@ static void test_struct_many_args(void)
- 	tracing_struct_many_args__destroy(skel);
- }
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
+index 3754f581b328..7e7f2fe04f22 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
+@@ -14,6 +14,12 @@
  
-+static void test_union_args(void)
-+{
-+	struct tracing_struct *skel;
-+	int err;
+ struct bpf_sk_buff_ptr;
+ 
++u32 bpf_skb_get_hash(struct sk_buff *p) __ksym;
++void bpf_kfree_skb(struct sk_buff *p) __ksym;
++void bpf_qdisc_skb_drop(struct sk_buff *p, struct bpf_sk_buff_ptr *to_free) __ksym;
++void bpf_qdisc_watchdog_schedule(struct Qdisc *sch, u64 expire, u64 delta_ns) __ksym;
++void bpf_qdisc_bstats_update(struct Qdisc *sch, const struct sk_buff *skb) __ksym;
 +
-+	skel = tracing_struct__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "tracing_struct__open_and_load"))
-+		return;
-+
-+	err = tracing_struct__attach(skel);
-+	if (!ASSERT_OK(err, "tracing_struct__attach"))
-+		goto out;
-+
-+	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
-+
-+	ASSERT_EQ(skel->bss->ut1_a_a, 1, "ut1:a.arg.a");
-+	ASSERT_EQ(skel->bss->ut1_b, 4, "ut1:b");
-+	ASSERT_EQ(skel->bss->ut1_c, 5, "ut1:c");
-+
-+	ASSERT_EQ(skel->bss->ut2_a, 6, "ut2:a");
-+	ASSERT_EQ(skel->bss->ut2_b_a, 2, "ut2:b.arg.a");
-+	ASSERT_EQ(skel->bss->ut2_b_b, 3, "ut2:b.arg.b");
-+
-+out:
-+	tracing_struct__destroy(skel);
-+}
-+
- void test_tracing_struct(void)
+ static struct qdisc_skb_cb *qdisc_skb_cb(const struct sk_buff *skb)
  {
- 	if (test__start_subtest("struct_args"))
- 		test_struct_args();
- 	if (test__start_subtest("struct_many_args"))
- 		test_struct_many_args();
-+	if (test__start_subtest("union_args"))
-+		test_union_args();
- }
-diff --git a/tools/testing/selftests/bpf/progs/tracing_struct.c b/tools/testing/selftests/bpf/progs/tracing_struct.c
-index c435a3a8328ab..d460732e20239 100644
---- a/tools/testing/selftests/bpf/progs/tracing_struct.c
-+++ b/tools/testing/selftests/bpf/progs/tracing_struct.c
-@@ -18,6 +18,18 @@ struct bpf_testmod_struct_arg_3 {
- 	int b[];
- };
- 
-+union bpf_testmod_union_arg_1 {
-+	char a;
-+	short b;
-+	struct bpf_testmod_struct_arg_1 arg;
-+};
-+
-+union bpf_testmod_union_arg_2 {
-+	int a;
-+	long b;
-+	struct bpf_testmod_struct_arg_2 arg;
-+};
-+
- long t1_a_a, t1_a_b, t1_b, t1_c, t1_ret, t1_nregs;
- __u64 t1_reg0, t1_reg1, t1_reg2, t1_reg3;
- long t2_a, t2_b_a, t2_b_b, t2_c, t2_ret;
-@@ -26,6 +38,9 @@ long t4_a_a, t4_b, t4_c, t4_d, t4_e_a, t4_e_b, t4_ret;
- long t5_ret;
- int t6;
- 
-+long ut1_a_a, ut1_b, ut1_c;
-+long ut2_a, ut2_b_a, ut2_b_b;
-+
- SEC("fentry/bpf_testmod_test_struct_arg_1")
- int BPF_PROG2(test_struct_arg_1, struct bpf_testmod_struct_arg_2, a, int, b, int, c)
- {
-@@ -130,4 +145,22 @@ int BPF_PROG2(test_struct_arg_11, struct bpf_testmod_struct_arg_3 *, a)
- 	return 0;
- }
- 
-+SEC("fexit/bpf_testmod_test_union_arg_1")
-+int BPF_PROG2(test_union_arg_1, union bpf_testmod_union_arg_1, a, int, b, int, c)
-+{
-+	ut1_a_a = a.arg.a;
-+	ut1_b = b;
-+	ut1_c = c;
-+	return 0;
-+}
-+
-+SEC("fexit/bpf_testmod_test_union_arg_2")
-+int BPF_PROG2(test_union_arg_2, int, a, union bpf_testmod_union_arg_2, b)
-+{
-+	ut2_a = a;
-+	ut2_b_a = b.arg.a;
-+	ut2_b_b = b.arg.b;
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index 2beb9b2fcbd87..9cd28de05960c 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -62,6 +62,18 @@ struct bpf_testmod_struct_arg_5 {
- 	long d;
- };
- 
-+union bpf_testmod_union_arg_1 {
-+	char a;
-+	short b;
-+	struct bpf_testmod_struct_arg_1 arg;
-+};
-+
-+union bpf_testmod_union_arg_2 {
-+	int a;
-+	long b;
-+	struct bpf_testmod_struct_arg_2 arg;
-+};
-+
- __bpf_hook_start();
- 
- noinline int
-@@ -128,6 +140,20 @@ bpf_testmod_test_struct_arg_9(u64 a, void *b, short c, int d, void *e, char f,
- 	return bpf_testmod_test_struct_arg_result;
- }
- 
-+noinline int
-+bpf_testmod_test_union_arg_1(union bpf_testmod_union_arg_1 a, int b, int c)
-+{
-+	bpf_testmod_test_struct_arg_result = a.arg.a + b + c;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
-+noinline int
-+bpf_testmod_test_union_arg_2(int a, union bpf_testmod_union_arg_2 b)
-+{
-+	bpf_testmod_test_struct_arg_result = a + b.arg.a + b.arg.b;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
- noinline int
- bpf_testmod_test_arg_ptr_to_struct(struct bpf_testmod_struct_arg_1 *a) {
- 	bpf_testmod_test_struct_arg_result = a->a;
-@@ -398,6 +424,8 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 	struct bpf_testmod_struct_arg_3 *struct_arg3;
- 	struct bpf_testmod_struct_arg_4 struct_arg4 = {21, 22};
- 	struct bpf_testmod_struct_arg_5 struct_arg5 = {23, 24, 25, 26};
-+	union bpf_testmod_union_arg_1 union_arg1 = { .arg = {1} };
-+	union bpf_testmod_union_arg_2 union_arg2 = { .arg = {2, 3} };
- 	int i = 1;
- 
- 	while (bpf_testmod_return_ptr(i))
-@@ -415,6 +443,9 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 	(void)bpf_testmod_test_struct_arg_9(16, (void *)17, 18, 19, (void *)20,
- 					    21, 22, struct_arg5, 27);
- 
-+	(void)bpf_testmod_test_union_arg_1(union_arg1, 4, 5);
-+	(void)bpf_testmod_test_union_arg_2(6, union_arg2);
-+
- 	(void)bpf_testmod_test_arg_ptr_to_struct(&struct_arg1_2);
- 
- 	(void)trace_bpf_testmod_test_raw_tp_null_tp(NULL);
+ 	return (struct qdisc_skb_cb *)skb->cb;
 -- 
-2.50.1
+2.51.0
 
 
