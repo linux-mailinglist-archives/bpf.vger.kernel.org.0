@@ -1,130 +1,134 @@
-Return-Path: <bpf+bounces-68464-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68465-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E15B58BC5
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 04:17:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3D54B58BCC
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 04:21:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60C211BC3533
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 02:17:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 403C3175B9D
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 02:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519562264B0;
-	Tue, 16 Sep 2025 02:17:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992D22309B2;
+	Tue, 16 Sep 2025 02:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VkJhU7Aa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eLGXkptj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301B7CA5E
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 02:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F151D54FA
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 02:21:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757989026; cv=none; b=F5i8a09eV58zk/kY4a2DUCm3mrqebDUB8dXRzOxnb2mVV6xq0/k4oAEleZP5gA1yxa7E5j7FHKLtiILlLCTdPYD6TUY9XkCG506NgfL8jXSLpmsh4bIZ1VywVxHGcPrl7FSMJCla9/hpfFdTDbcp4pIYLQ2U8AajECmMZyIMWs4=
+	t=1757989306; cv=none; b=Ujy/zzFNmm9Lis5UE9K9pKTiJulLQKfYmWRITLQtZHtRlBViJ7+uyRmMdw5IdDBMr9ZCjr/tvoT0kcK1KUQbavfZ3/ZLVFJfyvf+GPA2gBOgeZodTclTKozhVutOlQhD8zVEK8VxTOeLjkzqWQ2WW14/ewLKaBxYT1S+JmRBolQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757989026; c=relaxed/simple;
-	bh=HQuoxTNbIGjELA/n6GJOLKhbzbs44U5TFVQKn+u51F0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dBEIMuLHPZHOwKqe3am93zJ3lgrO29Rymobj4v9u/pJaF4ixv31hOJkZJp/QtrPlV/j/4HIgnSPUB8o2RxhM4AVhT8NHZ2WobMTazz8fZBBH5UksiWH74D16aMk+gckaXMyTIUSyF2ekVTY0EVmwETlPRu0xKkO5vr+kXjqIq5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VkJhU7Aa; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <af23d217-4053-4a42-8f70-4e214f9623bf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757989013;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6S3D96E1J/d1P4QcQftTAA0YEbKqtYTWzhCznEjnyl8=;
-	b=VkJhU7Aagdff2T4PgYi8VcbNlqtHUPuUGwYJRSJxOj3skBqxrnIIq4axmOwyF56PpRXX88
-	/GoyfIhLv+i8p4GVdBcnIEIqNrQndhtSKRKg6FogVy2pLzYy4h0oQdbbY0BBmIKPVlLp6X
-	7AbmN7gRieM556o6ZI2S+E8MFIpJ8VI=
-Date: Tue, 16 Sep 2025 10:16:42 +0800
+	s=arc-20240116; t=1757989306; c=relaxed/simple;
+	bh=4z8nUdzzxiTcMnLWJYmkeo+/fiRjUXV5ARK68QNvWRs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E5PE+NY/icwsxokBrZnvmjZ/rJ4TVDhfJUw9Hnb6a9n2fcEizHKroK/5MM+FdVlOnjjtXgjtzLQAeelgAc1dM9zIo5+WjoH6wr24lwLf13Qug0CTorNeTuFgYFc4MAqpIztkHBK3bmTRg5WpMjimYDl+QrV6wZNI0/r2/dEh5L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eLGXkptj; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-772301f8a4cso6229990b3a.3
+        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 19:21:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757989304; x=1758594104; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xX3fr/WuQNiabPxcBLd8/BQm5Vptb58LpB7WQPRtiGI=;
+        b=eLGXkptjqIsQVtH4Y2DlX+sNIh4Ymumd8G6JKx3nF4pyuGrEoVSff+dDaMvVqFBgvn
+         R/qlihsug7jI3EGfVndN44KfwBH4U3PS2Vzb1MEVguYQ8qIdkMNTCotd39U8ET2biS7q
+         YI2mUprQoiD+XMpB+K9AcsUjL1fQufZ3lqk1+rmP8VNRBoZlZQR6q9vClUGZ62NRoOJo
+         F6887MzkwniaKpSe2R5bej9IphElEyUJ+mqAospXHylZ3ZVDiXHcm+n7311oom5DuRDD
+         ToAd4McGwWNtDRUTantyONFOveFEnFC8WTNjRG9JhU0FhvvfWiUz1bFKcOVArxzj2gdR
+         rZXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757989304; x=1758594104;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xX3fr/WuQNiabPxcBLd8/BQm5Vptb58LpB7WQPRtiGI=;
+        b=cFnwNzFKN37h/GdTh9OVeuanFLDrimBASlzw69xYXYTbszHu6+iiLZTQWjm2RpBIEM
+         y4x+aUDnph8LOCvhNZjTBJ5Y4oqDWacHOZKOFk17h4f0XL4BTRdE3MebXry55/qhev8C
+         4agBWCWAmo1SR5yL5QZbiSlG36fZ4rNa6990ft9nvihbmGMg7VqzcuTvjJNACSgWao/q
+         NZvaBXpLGMHRe7pXWtZzHWBlJzLGiR58lu0bnj6ght3CZHA8lVOcfdrG0CubA2LULOQF
+         BwU/Iz1oCnOirIARLaUhwYqvKg0dWlsv+j4sBaACATCIaUP8erN8/Miu5oKfV6Yj8ko4
+         S6Dg==
+X-Gm-Message-State: AOJu0YxhkTELh+Q3enSdR+H2J/KPHtoR/taE/E8quxR7tIPUHYJ5CpvQ
+	vugCWeSlm2MBiG9M98YX+zFqntBEVN90Acn2svFC6tYmVluPkBvDPVRzZ25oqA==
+X-Gm-Gg: ASbGncupjtibW7TDw+f3Ejjc3ppju6hAcs+E+kSC7el84KzFUZBgXt2LDvRltlpQHA1
+	FMRzpU/xC1FAv9i08yOt2oEn9s1QJE7yXO/SfaSgkOyDVtjHYep+bNRkxoXs0923ImtIZ/zP5V4
+	0JkvK9/2YvPjXIIHg1vzynp/NvFuXEhjTZxXLIA/ovUvPQfNhN+Xp1SQjNiTcbZ9eeiB2ukxgJ/
+	o7OOSEXWqFsIclNpWF/1ViMOxIbEtLWz8zFz1sCVT8lGuQG00Ai5jEBMTyESIElqnJF779qCStn
+	N4OdnHz20SflbodKehaljwlpG/kO6e5oJ6/nAKNIjS0nLS3QCIQFGAT/C5X39Qqmpqxhq4T/foc
+	UqqYysv3wxxz53s1xizPcFtTYf90aAPkaS6cKMK64r7LLegs7X2cXgOVKFx/Tn7g=
+X-Google-Smtp-Source: AGHT+IFl+gbjr4gFVXeMzo3rGVhrYRIL/xECJJeVCPQ0DdA1aYJEJmoCpFjso/oSl6iVCXG5g9ZOnQ==
+X-Received: by 2002:a05:6a00:180b:b0:776:4eba:de33 with SMTP id d2e1a72fcca58-7764ebae064mr12607469b3a.14.1757989303734;
+        Mon, 15 Sep 2025 19:21:43 -0700 (PDT)
+Received: from localhost.localdomain ([2001:558:600a:7:44e6:767e:cc5a:a060])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77607a47601sm14429232b3a.28.2025.09.15.19.21.42
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 15 Sep 2025 19:21:43 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: bpf@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: vbabka@suse.cz,
+	harry.yoo@oracle.com,
+	shakeel.butt@linux.dev,
+	mhocko@suse.com,
+	bigeasy@linutronix.de,
+	andrii@kernel.org,
+	memxor@gmail.com,
+	akpm@linux-foundation.org,
+	peterz@infradead.org,
+	rostedt@goodmis.org,
+	hannes@cmpxchg.org
+Subject: [PATCH slab] slab: Disallow kprobes in ___slab_alloc()
+Date: Mon, 15 Sep 2025 19:21:40 -0700
+Message-Id: <20250916022140.60269-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 1/3] bpftool: Add bpf_token show
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Chris Mason <clm@meta.com>
-Cc: qmo@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- kuba@kernel.org, hawk@kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20250723144442.1427943-1-chen.dylane@linux.dev>
- <20250913162643.879707-1-clm@meta.com>
- <CAEf4BzYDgkEwVo3T_jW2QtjXxCxYPxPMC-+46C12Us+9F2bOFg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAEf4BzYDgkEwVo3T_jW2QtjXxCxYPxPMC-+46C12Us+9F2bOFg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2025/9/16 00:21, Andrii Nakryiko 写道:
+From: Alexei Starovoitov <ast@kernel.org>
 
-Hi Andrii, Chris,
+Disallow kprobes in ___slab_alloc() to prevent reentrance:
+kmalloc() -> ___slab_alloc() -> local_lock_irqsave() ->
+kprobe -> bpf -> kmalloc_nolock().
 
-> On Sat, Sep 13, 2025 at 10:18 AM Chris Mason <clm@meta.com> wrote:
->>
->> On Wed, 23 Jul 2025 22:44:40 +0800 Tao Chen <chen.dylane@linux.dev> wrote:
->>
->> [ ... ]
->>
->>> diff --git a/tools/bpf/bpftool/token.c b/tools/bpf/bpftool/token.c
->>> new file mode 100644
->>> index 00000000000..6312e662a12
->>> --- /dev/null
->>> +++ b/tools/bpf/bpftool/token.c
->>> @@ -0,0 +1,225 @@
->>
->> [ ... ]
->>
->>> +
->>> +static char *get_delegate_value(const char *opts, const char *key)
->>> +{
->>> +     char *token, *rest, *ret = NULL;
->>> +     char *opts_copy = strdup(opts);
->>> +
->>> +     if (!opts_copy)
->>> +             return NULL;
->>> +
->>> +     for (token = strtok_r(opts_copy, ",", &rest); token;
->>> +                     token = strtok_r(NULL, ",", &rest)) {
->>> +             if (strncmp(token, key, strlen(key)) == 0 &&
->>> +                 token[strlen(key)] == '=') {
->>> +                     ret = token + strlen(key) + 1;
->>> +                     break;
->>> +             }
->>> +     }
->>> +     free(opts_copy);
->>> +
->>> +     return ret;
->>
->> The ret pointer is pointing inside opts_copy, but opts_copy gets freed
->> before returning?
-> 
-> Thanks for the bug report, Chris!
-> 
-> Tao, the fix probably should be something along the lines of:
-> 
-> ret = token + strlen(key) + 1 - opts_copy + opts;
-> 
-> to translate that pointer back into the original string? Can you
-> please send a patch?
-> 
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ mm/slub.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Of course, i will fix it, thanks for the bug report.
-
->>
->> -chris
+diff --git a/mm/slub.c b/mm/slub.c
+index c995f3bec69d..922d47b10c2f 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -45,7 +45,7 @@
+ #include <kunit/test-bug.h>
+ #include <linux/sort.h>
+ #include <linux/irq_work.h>
+-
++#include <linux/kprobes.h>
+ #include <linux/debugfs.h>
+ #include <trace/events/kmem.h>
+ 
+@@ -4697,6 +4697,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 
+ 	goto load_freelist;
+ }
++NOKPROBE_SYMBOL(___slab_alloc);
+ 
+ /*
+  * A wrapper for ___slab_alloc() for contexts where preemption is not yet
 -- 
-Best Regards
-Tao Chen
+2.47.3
+
 
