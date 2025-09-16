@@ -1,139 +1,140 @@
-Return-Path: <bpf+bounces-68536-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68537-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5574B59ED9
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 19:08:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A2FB59FB0
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 19:47:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 423AF48539A
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:07:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11A2F1C00EE8
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7AD2FFF96;
-	Tue, 16 Sep 2025 17:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9589A2773DD;
+	Tue, 16 Sep 2025 17:47:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="etd04EL9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c1+ixcXx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFE72F5A12
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 17:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194CE26561D
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 17:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758042471; cv=none; b=N7NLCyRLeFJ1ATG7n7J3C8nR8tu9fkCg04BV7WiqKs3ForVqXRKunClWlIjwGeMZGd9S4n8Va6e4JU94Y3eG9jgTw1f365qFi/9i6YpKgg8RDWMAGL6Wf839ssptuMIiGCiiltf0vfNHykSwZtfUQQRMv3j0OrhCny5P/ZvRVmc=
+	t=1758044836; cv=none; b=J1V4rPYN7sZ1ZGbT2wX/+jajd0N2pCqdAo2nFoNEZpZb5TETnL68AXyOcYKaQ4Sqfdpjq20z6q3k6DWJ8XFLg9uyRn8nbiLiln/hnHRObf7+UORW1NZjZ+ZnpVM8VEHveO6H6JV/ei2QOOIrF6EF5u8MgDLaBPtffS2XIusLUz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758042471; c=relaxed/simple;
-	bh=RHgS+ND+5R6dc2Cm7AnwIcEeZk7Qr58oJgQ9va4pwh4=;
+	s=arc-20240116; t=1758044836; c=relaxed/simple;
+	bh=aLmbkZlhz1WS9XpqHbrwfjTUeFYT2Q1NHeUwS7oznZk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=onD5FcZdv4tD/hTCa4k7Y4I/5V8w2BBuYsLQrdtVRiewhNXILC8ePNv8gCUrRcD3P+P603na5cz8d/3GByJ44AH9SI3fXSGTviTB2D7ZexPu90CvOPa9xPioDh3ZelUcvXC7sSoH+vDbgUsmQpnLcMrT59QVXI9LXEP2i9cMphw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=etd04EL9; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-45f2a69d876so18303005e9.0
-        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 10:07:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758042467; x=1758647267; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o6+3XcAL3z9giV1LrkT6nAX6YMeV+sppNk95XqTT+Fs=;
-        b=etd04EL9S/8PUPugOtRze7wCOuhSyFrxqZ8qBEfBSKjDGC+Yxug+awDd7VK1sVlDDu
-         8TVaHbkdSPrMNnGNdco/pHzgCSl2sK1jSNVmbz/LiUdQQKivzt+cNDjEfmXgZ+geaYMb
-         29AqyEcuIb2Jj3SIGaoMegV7BOyL9w06GrQtTbh52EBf7Q5VSHKu54USCoQ6qSEb0mI/
-         XU4A9JoHd4rdZQvgin3qoKXVbBrMOgg/tCEM4XQITbVh/ckTsIR9+r0ihBfJWb//I3kC
-         ZIeKP70a60fdy8qjJFIKtwnar60ZzR8xlBg2BKhM7aApRDkeCL1qBDpV0v7+kpC0t0kP
-         sMCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758042467; x=1758647267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o6+3XcAL3z9giV1LrkT6nAX6YMeV+sppNk95XqTT+Fs=;
-        b=lBMVgcXd9xWUoOhhCAYICDGF+LLDzOz5i0WQrXQNBLfA7FERrSF/q644qQz5do0+1+
-         qAzwndPXrGMtfB+CnTfY8tyZOBzKdhw8CvfqzAMaOWmeFNB6eR44fbKxozo6fsMbEt6F
-         RErYEIC2zh9NuqQ8gb+16T9d/mvINKm+t8Lr0klbzdLnak4+/iQapKumKIRFGo0wbzwN
-         UQnRVEIIbMVa8YPhSowjWCo4DVDpFQW5JWqLe+6TBstYFVyWLE77zGe8jtQSu5Czrs0j
-         vkgX0dcST0GikIdYwo28ZY6o3CEG1XOq4YSw4Q770Sq89XZwjAnpgMPf/Dxn7U8K2sX8
-         xqJw==
-X-Forwarded-Encrypted: i=1; AJvYcCXOdWoPySKFYUFuEHXpZVgVhbV+QdXAIvjwyI/P2vrrpSlqXdhSWJJaUkH9yBy1cmKLV+w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwrGsrsSfZ5jAdy+X5OFdeIJwWkqgYrEp/PfYWXucR0j6Leqwng
-	qtlBjhgLcV5d8H8cLuqKXZps1wqUVogbUVI1Gc1DMbXyEstjgdn5mynVmukE5nfmbiPR5hZYNuT
-	VUDz2u1HRWKqP+1gkGZubHYarYh8wMf8=
-X-Gm-Gg: ASbGncvgl1f9usPrIJBWioOs3QuNL01eWbts5sWgOwi98to9Sgc2fo+zFwJxhn7zJC/
-	8qOCMkwIXRqWrXUwWKs/C+EJHmLFIV/cWTD2KKAhHoIoUQ0LKcNZAhoA8epbn7solfHpAWbAzxP
-	mIlJpLJdXXiNQsx8Bgvfn9GxEIHKAGsopdT6TRv7ufCZ5f6HC5WqIl7BZSbB23JjMsEcrCvdsNo
-	PuCNIE7Hu+PpL3jvNp/kpd0RuBfWG71
-X-Google-Smtp-Source: AGHT+IFpfePcRjrUCROTA/qMZeDM0oYl4QyH35KqktcZMpXonmsBnXa03WAzUsM0QzWbDIZsMpOXkCjcr6HuKHM/LZU=
-X-Received: by 2002:a7b:c4cc:0:b0:459:db71:74d7 with SMTP id
- 5b1f17b1804b1-45f211fecdamr106914835e9.27.1758042466979; Tue, 16 Sep 2025
- 10:07:46 -0700 (PDT)
+	 To:Cc:Content-Type; b=ljjhMSa8IlVph7UMOGULWIMAgS1p8n7mip+ILJhxHaqbsbvRwxLXjjQJ5JVPu5fc6OktClSUd4ckCBfiiQZAg9Mqgd+IewiMLkUAStW46WkA6axRl68Ok5DdsnN/CiunYD0raEm7wLPYaX53CQfMOGwxbu+Q/ilGtTg3aKyBNao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c1+ixcXx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97F58C4CEFD
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 17:47:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758044835;
+	bh=aLmbkZlhz1WS9XpqHbrwfjTUeFYT2Q1NHeUwS7oznZk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=c1+ixcXxM8sQfs4XzFUJLvPebbv2IfIgNOPhJlESuUQt2/59lq6vQ6fxHGoRSTXDx
+	 hlv2Fzt73lEr1tRaMLnYDeIGprHu0iju6XpyfQDhfayKLbvTsWHObGV9EEIIJX5x1+
+	 IkTL9AjPwk/XPHVlRRsNr38CEayCdT7eUxFI4mHgPQgwAzprfDWnu1I6s5cly+REiT
+	 aTBiJHkUe2a15t4VvckBw44DJVJCf30emdUPMGfpcYk/IJd5UKsoSHfCSlVUojRbwk
+	 yDIHD/PaCF3qWTE/E6Kycs787oH5DwUBrUQekNH6cBuWBOJbEBlnRGuDsVsDzQ6uwC
+	 g76YBugSqDo/w==
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-826fe3b3e2cso310234485a.1
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 10:47:15 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWdWw3JNj6vVNAfFckq9y2BD36qMvjRHUc/xYAbIynRqwUU+W+5bTuumOhBiH+KnhvA1aA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjmYfi+DTreFn0s3Exzza9xDpBXi5JuGAWSvjO/BvDJ0d2JEY3
+	YERMfSd/I9h5p2Pn6uC+RNMkhNKzWJszCU0VPiP9w1lu5wpAdo2D2t2r+yDm2BsJsdejo1XV+zV
+	b+m8AhiRgIWhdGsX4DlibCvVhDdvH9Iw=
+X-Google-Smtp-Source: AGHT+IFezjxFE8oQGXb4mz1uQF6IRvxcY+qF9XaG71lkSWfOy8S3Hq2ksW15fYl1JMPaUJijUrjDvOLcG9O8nCAq79E=
+X-Received: by 2002:a05:620a:4891:b0:82b:f16b:274a with SMTP id
+ af79cd13be357-82bf16b2cacmr414668385a.50.1758044834715; Tue, 16 Sep 2025
+ 10:47:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250916054111.1151487-1-chen.dylane@linux.dev> <20250916054111.1151487-2-chen.dylane@linux.dev>
-In-Reply-To: <20250916054111.1151487-2-chen.dylane@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 16 Sep 2025 10:07:33 -0700
-X-Gm-Features: AS18NWCH37t630t6KW5uArvsRduTtKgiYN9kYTvI-gC5PPhRrI8hLbk4vZT8Wnc
-Message-ID: <CAADnVQKfH6QnLHfsGO_sL10LhTjL+YUWDist2+xGM_PiPjM9Wg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] bpftool: Fix UAF in get_delegate_value
-To: Tao Chen <chen.dylane@linux.dev>
-Cc: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+References: <20250912222539.149952-1-dwindsor@gmail.com> <20250912222539.149952-2-dwindsor@gmail.com>
+ <CAPhsuW4phthSOfSGCrf5iFHqZH8DpTiGW+zgmTJQzNu0LByshw@mail.gmail.com>
+ <CAEXv5_gR1=OcH9dKg3TA1MGkq8dRSNX=phuNK6n6UzD=eh6cjQ@mail.gmail.com>
+ <CAPhsuW44HznMHFZdaxCcdsVrYuYhJOQAPEjETxhm-j_fk18QUw@mail.gmail.com>
+ <CAEXv5_g2xMwSXGJ=X1FEiA8_YQnSXKwHFW3Cv5Ki5wwLkhAfuA@mail.gmail.com>
+ <CAADnVQLuUGaWaThSb94nv8Bb_qgA0cyr9=YmZgxuEtLaQLWzKw@mail.gmail.com>
+ <CAEXv5_griDfE03D1wDLH8chgCz0R2qZ5dAeiG0Rcg5sAicnMsg@mail.gmail.com>
+ <CAEXv5_hKQqFH_7zmxr7moBpt07B-+ZWB=qfWOb+Rn9Vj=7EX+g@mail.gmail.com>
+ <CAPhsuW6vSkYLyjGm60YZvruVKHrT+0tf4ZUdyp5ftd3hZB6cxg@mail.gmail.com> <CAEXv5_jCXKm4L6tJy5X6kjoLpoPqkbRLuhGuEMYNwoW=EYYtsw@mail.gmail.com>
+In-Reply-To: <CAEXv5_jCXKm4L6tJy5X6kjoLpoPqkbRLuhGuEMYNwoW=EYYtsw@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 16 Sep 2025 10:47:03 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6qFXKiZ4+kMWtKK9PO_-Z7=GQLa3wYF73GcXgkDgZVLg@mail.gmail.com>
+X-Gm-Features: AS18NWC8lfPBhjeqHEkvNBXjAkocXr4VFwolRxWKLxCfZWFUN9hHNAHjHoLMGXo
+Message-ID: <CAPhsuW6qFXKiZ4+kMWtKK9PO_-Z7=GQLa3wYF73GcXgkDgZVLg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] bpf: Add BPF_MAP_TYPE_CRED_STORAGE map type and kfuncs
+To: David Windsor <dwindsor@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
+	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 15, 2025 at 10:42=E2=80=AFPM Tao Chen <chen.dylane@linux.dev> w=
-rote:
+On Tue, Sep 16, 2025 at 9:36=E2=80=AFAM David Windsor <dwindsor@gmail.com> =
+wrote:
 >
-> The return value ret pointer is pointing opts_copy, but opts_copy
-> gets freed in get_delegate_value before return, fix this by strdup
-> a new buffer.
+> On Tue, Sep 16, 2025 at 12:16=E2=80=AFPM Song Liu <song@kernel.org> wrote=
+:
+> >
+> > On Tue, Sep 16, 2025 at 8:25=E2=80=AFAM David Windsor <dwindsor@gmail.c=
+om> wrote:
+> > [...]
+> > > >
+> > > > makes sense thanks
+> > > >
+> > >
+> > > Hi,
+> > >
+> > > Thinking about this more, hashmaps are still problematic for this cas=
+e.
+> > >
+> > > Meaning, placing a hook on security_cred_free alone for garbage
+> > > collection / end-of-life processing isn't enough - we still have to
+> > > deal with prepare/commit_creds. This flow works by having
+> > > prepare_creds clone an existing cred object, then commit_creds works
+> > > by swapping old creds with new one atomically, then later freeing the
+> > > original cred. If we are not very careful there will be a period of
+> > > time during which both cred objects could be valid, and I think this
+> > > is worth the feature alone.
+> >
+> > With cred local storage, we still need to deal with prepare/commit cred=
+s,
+> > right? cred local storage only makes sure the storage is allocated and
+> > freed. The BPF LSM programs still need to initiate the data properly
+> > based on the policy. IOW, whether we have cred local storage or not,
+> > it is necessary to handle all the paths that alloc/free the cred. Did I=
+ miss
+> > something here?
+> >
 >
-> Fixes: 2d812311c2b2 ("bpftool: Add bpf_token show")
-> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> ---
->  tools/bpf/bpftool/token.c | 47 ++++++++++++++++++++++-----------------
->  1 file changed, 27 insertions(+), 20 deletions(-)
+> Yes each LSM will have to do whatever it feels it should. Some will
+> initialize their blob's data with one type of data, some another,
+> depends on the LSM's use case. We're just here to provide the storage
+> - bpf cannot use the "classic" LSM storage blob.
 >
-> diff --git a/tools/bpf/bpftool/token.c b/tools/bpf/bpftool/token.c
-> index 82b829e44c8..c47256d8038 100644
-> --- a/tools/bpf/bpftool/token.c
-> +++ b/tools/bpf/bpftool/token.c
-> @@ -28,6 +28,12 @@ static bool has_delegate_options(const char *mnt_ops)
->                strstr(mnt_ops, "delegate_attachs");
->  }
->
-> +static void free_delegate_value(char *value)
-> +{
-> +       if (value)
-> +               free(value);
-> +}
-> +
->  static char *get_delegate_value(const char *opts, const char *key)
->  {
->         char *token, *rest, *ret =3D NULL;
-> @@ -40,7 +46,7 @@ static char *get_delegate_value(const char *opts, const=
- char *key)
->                         token =3D strtok_r(NULL, ",", &rest)) {
->                 if (strncmp(token, key, strlen(key)) =3D=3D 0 &&
->                     token[strlen(key)] =3D=3D '=3D') {
-> -                       ret =3D token + strlen(key) + 1;
-> +                       ret =3D strdup(token + strlen(key) + 1);
+> I was referring to the fact that if we use a hashmap to track state on
+> a per-cred basis there may be a period of time when it could be come
+> stale during the state change from commit -> prepare_creds.
 
-Instead of adding more strdup-s
-strdup(mntent->mnt_opts) once per cmd/map/prog and
-remove another strdrup/free in print_items_per_line().
+I still don't see how cred local storage will make a difference here. If th=
+e
+cred is stale, the data attached to it is also stale. As long as we free th=
+e
+attached data together with the cred, it should just work, no?
 
-pw-bot: cr
+Song
 
