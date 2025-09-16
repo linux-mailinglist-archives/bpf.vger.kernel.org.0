@@ -1,193 +1,171 @@
-Return-Path: <bpf+bounces-68545-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68546-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B83A2B5A193
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 21:44:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CED2B5A1E5
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 22:09:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBB987A52CF
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 19:43:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E76858366D
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 20:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E072DC34D;
-	Tue, 16 Sep 2025 19:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1828E2E0905;
+	Tue, 16 Sep 2025 20:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="iBkp2JzV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iRiQ8XFq"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A98238178
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 19:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4BD71E7C2E
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 20:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758051885; cv=none; b=pmK1LjQqOhKm5W6wC7FktNVfK/aZ+4KWPQudPhLtJzIpVi0iPxWpchDe6xHaaMakSP0tt897w+5x355xd5KKYvKijH5yoUOqVddJN2AKaToNv0HMBlEbTfwHW59dLtqrOMV8ZyeKVrP7+UronOIAIG9pd/2Ylp3DxFDtUtOl/R0=
+	t=1758053362; cv=none; b=EKsmIM/uCnUjsIUOuiwONZADUtQX3tkJ28NIJUGOtNy8Vktb2Q8ufrYzUzT2v0lvOH3lB0+LgDJnBdqXWwUDdb2A+whaRdOSE3zMVfXVopJeIvz18YhvgWkv5s7/DzDVMUg1Ty8BvmEZaXreq6/PjtorIuDst+Gg5APtouDVf6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758051885; c=relaxed/simple;
-	bh=8OOdIA1Btk/BN5er5S4qODSnCxbW0B9UGUxk/MdAPXk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mdxh0ZGF6MvtZP83LPoOYRwomWrY2bKs3ydut0vyXTif/iEEvhS79zQv+VmYL7iSoFtP7jqYvTzgETHI2hEqDcgzIdXixjJ+f88bAu6KyD48FobVRfREx6HjtVBzCiUyhkHfYZiI0rbZ2t4TB5sKVIgwY8ID8y5Q22FcsKTTyMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=iBkp2JzV; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=LWSr+9ptOwVZ28Yhc2EfplzHJuV8lZwVsMLa+L49k30=; b=iBkp2JzV/4GJ2cdHWbdOuCTFFN
-	oGYJfhD0Wg06B+imjW3TO88S+Pgf8TgelyBre/87Qlsnvno5pQN0laikwwSzN00Jf14iS67OvZB3H
-	50BoEprpju+NcU1b3gqfZfdiI1DJpSRThHAkbgAJ59dC/BBm6LjK1u1B1ueR18t1STcObsPDev/Zc
-	5F0tdtM+MHQa2YXxGbUhgUjn9MzvsoVN7criAkOXqMOvrzMwJ6DfYFY4GsY3uUdYy+mRlr5m3D9Ie
-	TSR/hzgOrsY486rQF2CqlVxBl1So1Zbe/qiHNBYcoc3KdJKUqYy6C/FRugQ6hiVG4JlgWjfiCIB5+
-	3Bq6O9iw==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1uybbJ-000FB5-21;
-	Tue, 16 Sep 2025 21:44:29 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1uybbI-00072C-2D;
-	Tue, 16 Sep 2025 21:44:29 +0200
-Message-ID: <2e1f2075-bef0-456f-82c4-483b5db3dd11@iogearbox.net>
-Date: Tue, 16 Sep 2025 21:44:28 +0200
+	s=arc-20240116; t=1758053362; c=relaxed/simple;
+	bh=kFMNafmfpSpgGAMegJTxMGxKwyKl73WNu0BJuqEEnpQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UBX37YUau5gxCum36wV0Q43pI4EFOK7+PA9Y8wnRhSk8cJ8oag2VmwmWjmZFmeXlzslFIMWxLBnNKF81HtwBPxvtcePbQS+PmSIyWig9TWlUGED+tb7QR4Q6GGKq2munOSM4MCO3aJp9POlSxB3nsBOlTBINBl6+f/PhA2Nxh2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iRiQ8XFq; arc=none smtp.client-ip=209.85.208.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-62f1987d49fso2833013a12.2
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 13:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758053358; x=1758658158; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OwgDuv73wPWihlcYppSUjd2n6CEiy9nRrnJYOKb/aJ0=;
+        b=iRiQ8XFqcLfR5wzsB920brG6/P/TCQr8vc/cmq2cszDOGWyQRrHiWB4S8WYxoi//5p
+         am7Nr3IlaVRszskv2aAlGVZPA0YyGokvaPBxa/VGORfy2AtBx8kZsNVmr/DEFWGhyPWv
+         zizocyvrj3DWZogjHeQVK9Iyg9G/OZx/1wWr/1HSENGgOW2eDkzRvdeXicK+er6theA1
+         SPC5p5VGpTk8sUuc5M3K+jiGbMhFicJht6lMrufEsNxshp2sCtDBKPM3pMvyq66Jebi5
+         Tip2ZzzS4mFR5Q8faI/9Ea/b2skYGLhlO45/5hoCKo8DHkhbx/ERBT8Q7Xe2y7w1ojrM
+         ciQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758053358; x=1758658158;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OwgDuv73wPWihlcYppSUjd2n6CEiy9nRrnJYOKb/aJ0=;
+        b=g5dzJqmuS3ZdkZ8W17Z2NvWRTKod1oBMEvqUx9BfpPlfGHP3EoOllKrJeNZfruPsOt
+         jkJFp+iiJo58CZYtPZU8DgPJE5NjMvZSSLOQXmBFw6vu9iCMJXt1abbpLTnguE70iG28
+         WCzkhiSgfYHWzLoRQa6hsnyIwUZbpKi2CScxEhnSKjM8u7t3QYkLVEPoIO07jQvyG23L
+         Wyl24qTc4n+O4IQeHrScF8dJUIiU9Q2jRrhHenla1RkRAORBp95nUdvq78nU1go3ocXA
+         c0Y6V7wz+XQS0nekWeb98mg1sqq6sXK/jREIyPnLWQUwMJlFUqJj+5SvhdgU19+K06DD
+         IwPw==
+X-Gm-Message-State: AOJu0YypAC2wZHFeCJp/ecBeIqkAUE2d2CV1hqJflj2Qir8NRlP7bnfx
+	KSnsWAexyo02A17ZGV2FgONYzbYXoafocwvPM+lpkZO+T9+HSyhS3FNAijPu4/uFRAHpUqFYzt9
+	f4uuVsJBfE7DpGZI6EhGApnqchFoOMuM=
+X-Gm-Gg: ASbGnctuKNHSFqpB3qK/MyIqOyTZVOw4V4H73TXoAJTIrZP3ylV3AwNJ3Ne2HQa0Zrl
+	kt3N4JK5DhUZdRc1TaszDG9yrf4gSwUypOwdNOV/t04uJmi8KJy2tj2vU/5rq7yaro/yN+q7UKl
+	FRZGRHICxkTCf4g0yzpkQLuuEGMpTWcQQSLv1Qrt+hbTGwQzkjZ9ROaiadXIN77TomOT/5WfOgN
+	qNDL8Snf/cXwryQzWve
+X-Google-Smtp-Source: AGHT+IFgA2/lt582shPhXgM0G6UNRqs0b5rDft+89CSQBmTIgBK/jAinuxHTgmmf9O36TkC1kyXMjIyLv+H9IY4rFsg=
+X-Received: by 2002:a05:6402:46c1:b0:627:d1af:8c66 with SMTP id
+ 4fb4d7f45d1cf-62ed823f049mr17631801a12.5.1758053357738; Tue, 16 Sep 2025
+ 13:09:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf 1/3] bpf: Explicitly check accesses to bpf_sock_addr
-To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>
-References: <f5310453da29debecc28fe487cd5638e0b9ae268.1758032885.git.paul.chaignon@gmail.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <f5310453da29debecc28fe487cd5638e0b9ae268.1758032885.git.paul.chaignon@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27765/Tue Sep 16 10:26:41 2025)
+References: <20250915201820.248977-1-mykyta.yatsenko5@gmail.com> <20250915201820.248977-8-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250915201820.248977-8-mykyta.yatsenko5@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 16 Sep 2025 22:08:41 +0200
+X-Gm-Features: AS18NWB7fCequ0PDq5EWpNon3u2hG_GPU65dHePcZPTn_BxdwVu5hBk9VMo_DA4
+Message-ID: <CAP01T75XvsSe81L9Kis4jjra+uaqx+ummgcuoF7+s5iBy9CtZQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 7/8] bpf: task work scheduling kfuncs
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/16/25 5:17 PM, Paul Chaignon wrote:
-> Syzkaller found a kernel warning on the following sock_addr program:
-> 
->      0: r0 = 0
->      1: r2 = *(u32 *)(r1 +60)
->      2: exit
-> 
-> which triggers:
-> 
->      verifier bug: error during ctx access conversion (0)
-> 
-> This is happening because offset 60 in bpf_sock_addr corresponds to an
-> implicit padding of 4 bytes, right after msg_src_ip4. Access to this
-> padding isn't rejected in sock_addr_is_valid_access and it thus later
-> fails to convert the access.
-> 
-> This patch fixes it by explicitly checking the various fields of
-> bpf_sock_addr in sock_addr_is_valid_access.
-> 
-> I checked the other ctx structures and is_valid_access functions and
-> didn't find any other similar cases. Other cases of (properly handled)
-> padding are covered in new tests in a subsequent patch.
-> 
-> Fixes: 1cedee13d25a ("bpf: Hooks for sys_sendmsg")
-> Reported-by: syzbot+136ca59d411f92e821b7@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=136ca59d411f92e821b7
-> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+On Mon, 15 Sept 2025 at 22:18, Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> Implementation of the new bpf_task_work_schedule kfuncs, that let a BPF
+> program schedule task_work callbacks for a target task:
+>  * bpf_task_work_schedule_signal() - schedules with TWA_SIGNAL
+>  * bpf_task_work_schedule_resume() - schedules with TWA_RESUME
+>
+> Each map value should embed a struct bpf_task_work, which the kernel
+> side pairs with struct bpf_task_work_kern, containing a pointer to
+> struct bpf_task_work_ctx, that maintains metadata relevant for the
+> concrete callback scheduling.
+>
+> A small state machine and refcounting scheme ensures safe reuse and
+> teardown. State transitions:
+>     _______________________________
+>     |                             |
+>     v                             |
+> [standby] ---> [pending] --> [scheduling] --> [scheduled]
+>     ^                             |________________|_________
+>     |                                                       |
+>     |                                                       v
+>     |                                                   [running]
+>     |_______________________________________________________|
+>
+> All states may transition into FREED state:
+> [pending] [scheduling] [scheduled] [running] [standby] -> [freed]
+>
+> A FREED terminal state coordinates with map-value
+> deletion (bpf_task_work_cancel_and_free()).
+>
+> Scheduling itself is deferred via irq_work to keep the kfunc callable
+> from NMI context.
+>
+> Lifetime is guarded with refcount_t + RCU Tasks Trace.
+>
+> Main components:
+>  * struct bpf_task_work_context =E2=80=93 Metadata and state management p=
+er task
+> work.
+>  * enum bpf_task_work_state =E2=80=93 A state machine to serialize work
+>  scheduling and execution.
+>  * bpf_task_work_schedule() =E2=80=93 The central helper that initiates
+> scheduling.
+>  * bpf_task_work_acquire_ctx() - Attempts to take ownership of the contex=
+t,
+>  pointed by passed struct bpf_task_work, allocates new context if none
+>  exists yet.
+>  * bpf_task_work_callback() =E2=80=93 Invoked when the actual task_work r=
+uns.
+>  * bpf_task_work_irq() =E2=80=93 An intermediate step (runs in softirq co=
+ntext)
+> to enqueue task work.
+>  * bpf_task_work_cancel_and_free() =E2=80=93 Cleanup for deleted BPF map =
+entries.
+>
+> Flow of successful task work scheduling
+>  1) bpf_task_work_schedule_* is called from BPF code.
+>  2) Transition state from STANDBY to PENDING, mark context as owned by
+>  this task work scheduler
+>  3) irq_work_queue() schedules bpf_task_work_irq().
+>  4) Transition state from PENDING to SCHEDULING.
+>  5) bpf_task_work_irq() attempts task_work_add(). If successful, state
+>  transitions to SCHEDULED.
+>  6) Task work calls bpf_task_work_callback(), which transition state to
+>  RUNNING.
+>  7) BPF callback is executed
+>  8) Context is cleaned up, refcounts released, context state set back to
+>  STANDBY.
+>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->   net/core/filter.c | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index da391e2b0788..9ac58960e59e 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -9284,13 +9284,19 @@ static bool sock_addr_is_valid_access(int off, int size,
->   			return false;
->   		info->reg_type = PTR_TO_SOCKET;
->   		break;
-> -	default:
-> +	case bpf_ctx_range(struct bpf_sock_addr, user_family):
-> +	case bpf_ctx_range(struct bpf_sock_addr, family):
-> +	case bpf_ctx_range(struct bpf_sock_addr, type):
-> +	case bpf_ctx_range(struct bpf_sock_addr, protocol):
->   		if (type == BPF_READ) {
->   			if (size != size_default)
->   				return false;
->   		} else {
->   			return false;
->   		}
-> +		break;
+>
 
-Looks good to me, we can probably also simplify this a bit into:
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-                 if (type != BPF_READ)
-                         return false;
-                 if (size != size_default)
-                         return false;
-                 break;
-
-Also, targeting bpf-next tree seems okay here since the verifier
-can gracefully handle and reject such program (and WARN_ONCE is
-only triggered on CONFIG_DEBUG_KERNEL)?
-
-> +	default:
-> +		return false;
->   	}
->   
->   	return true;
-
-Thanks,
-Daniel
+> [...]
 
