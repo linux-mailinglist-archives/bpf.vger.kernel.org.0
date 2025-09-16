@@ -1,146 +1,186 @@
-Return-Path: <bpf+bounces-68564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82EB5B7DE24
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 14:36:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C16FAB7E1E2
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 14:42:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 769D3462CDA
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 22:29:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6147A326285
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 22:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B28232E2E1;
-	Tue, 16 Sep 2025 22:29:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FB228315D;
+	Tue, 16 Sep 2025 22:34:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WSHnxAnm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AvlKFYK2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DCC332E2DB
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 22:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E28327713
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 22:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758061748; cv=none; b=hieTqTeT5K9pDdcWV1129Cjeb6UvxU5F3kVgT0syEB2bqJEZO5c5e6Dqgn1ZArqWeaerDDz2hqDcQcrHQT1J8OmWpiquJ0MD9wI7GdTkrmcwNr2XQMWFb5pTwpBDrzqu3zVqru5HquOViT4mWXX3UsNe9EcaXauga2zUQMc1+0Q=
+	t=1758062051; cv=none; b=BEhZFQ1PzZzdYCdm0mPHeNQRMOdPfW9v02TCwXHIOuoudcYun3sxeGQTbKOaJB79+Fx08r1nQyrXBuYFTCT/BXE3Fnrj1OZyMlS36/gOI/8ex04wrm39iRdBqaQLtQx+8Hc7FGenbMkzLSg6Sf2pc0+nGERUzc6/SDHmKW1o2K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758061748; c=relaxed/simple;
-	bh=GQRiMPLso4udFX4CB+sEYglBh5mmBczyDU9O0TBC65U=;
+	s=arc-20240116; t=1758062051; c=relaxed/simple;
+	bh=AZDn9JRlstN2zRfzJ49KVLs+4QqpcFAowDMCHXbZQXc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F8Aw3xlPO39b3djebjZDvosTa64aso5LqIBUzXCunBbc2ly6ZAqJ5P1fA+GDhJlAcEPocMwRydNkIPqAoHm7lY26QpMGo4vzgacMQ/NbhsSJAIh7SXHinPjMJOdfnJ4ZfO977b9OWZN2R0Hw4MCYBsZghXyjltdKg9oY1iV4Tnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WSHnxAnm; arc=none smtp.client-ip=209.85.214.171
+	 To:Cc:Content-Type; b=EIYTq7O2p0ueMCx8+KXt7Kd8h3i37QyZKllviVSs1yeE6qV4SuHCPLSEhc9SAp7xEWen+0nZdM7yzWA/LNGS/XlFUKnwE4QGaujgCsJU91L11p4RBEDfOrFQmkTpvReojDZlD0v2pB0JV48R2RYBV57UrqrCkuLsFSKPwDdmfrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AvlKFYK2; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-244582738b5so50388165ad.3
-        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:29:07 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b54c707374fso2061548a12.1
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:34:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758061747; x=1758666547; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758062049; x=1758666849; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4WprOe5/M+42SgMOPYQkTmIUA2Q1389Nu0dnK2gJe/0=;
-        b=WSHnxAnmisQm9BwcqNhUrEh1Mb18UqZhLC3Umb/0KOoNk8zxCMQifaExiwN0eon23A
-         6lPiKFE+EL6UHzah3cpzGfV51V0swQiDYDNmnY+LAxMwkxFK4tpl20gQpSvBWmxG9JdN
-         mDFORNM6fZgmxVwdu42iY3Zc66DUXGMdTG8WxJXfVOEPUfLDbkqpbs81bKymEOo5a5N2
-         xkNsEys5ihXe2SDfxFiD2XK534u0I0ctuCcy/DzYpD0kAOEh13lIpLbvxE9rXBrRTLwy
-         BD9HVs4UeRVjX+0LNyEoN5aKvpEZq2hjo5nKlUJE4XLfohE5vroCKiCbCfoRPwFsuyav
-         ex6A==
+        bh=XPj3viw/ebtEFZmMin4unftmNLl5BtYpClPjEsQnolE=;
+        b=AvlKFYK2295qD1nznJM5Xhb1iFdU9ZPtiMrxbokVXxdv1PlWvBMZconDWba4TuAx6h
+         5idhxYc6ZP9N1zLiP5Sn9pCMSCPOS3v75hT4euA73fqBvRwq6VZLGSQjWW6RCiPb28JB
+         u1EXtgpjMSM8lnfH5FQssbocMoj4Em4HYz1Zc9H/kVj8BeyNC4JB1H7vsGWPqcqSkLgb
+         Nu0mViWpNYmpyYfR7dqXWxVVcRE81eUfvs+gM18HyRI89E3xI/vCbrleuCGaBkUovaJ5
+         euGyDP7xjo7DRI/6ecMtTkaDOurZ5zQvPffWvlgVbpTRa9bQ4WXwTh8HcIPNKE3y5gLe
+         XezA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758061747; x=1758666547;
+        d=1e100.net; s=20230601; t=1758062049; x=1758666849;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4WprOe5/M+42SgMOPYQkTmIUA2Q1389Nu0dnK2gJe/0=;
-        b=Y/mKMh5seeBvyEcghE7r2+ciRIQhzxvZPSx2grBScc4tpVwWO4GizE/E8+VUymQUMi
-         lwY0Ps/K72q3V+DKnzbCc6nE2d95OIj0yTlYxNnjUfmc9RnaTtWO6Q5rqRMzSvHS0VI+
-         aZ3+w/v0DjJnTuzd/8N3XGqWrswSW5SxXj8jE6ZIJJW3GrFAU41As3UrMqxarEloVbwS
-         c1x2NtH70bZtJX3d0X5xeXpiA2NINzcmSRH0yYHAdjY2Gg3gXUguv9XEeU7bdwPCr/LD
-         oIh8q6RwOuCuHnsHzc2OB38fLKC4erLFqTM6eyPVXlLJoEhMkeMVi247FJ0nhrqRHz87
-         2RLA==
-X-Forwarded-Encrypted: i=1; AJvYcCXk2ph2cAcsNZVYAxY+kTiFYrW9FMEfvBy9dzQcSUJ8wjuSOjLmOOo+Dx8ScUy53Z4oEPg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxs7Zp8P6du7H6WkVBO9paBtJo3HbAv1JaNYS9LlWv4xWA48Sb8
-	rzxjC6YktYO2GFwUzqT0ZCQU5URwb5uU/2vfuxHpC8gfbLl3IwBOs70bt2l6QOlzgvM2YCrBoco
-	mTaR+krrDf+YFAi+BOIww2/7z5IIuwS0=
-X-Gm-Gg: ASbGncvfIzidCAkXLAMZuR93DBtvWLgCOCG6E238caY0bh4xdxjpUMnX80Xe7DoxkoZ
-	laaDhF6tHu81f3XU5vPkSruIn+tyYINbHTGtPq9a632s+7SQ6hfNVc8WPH8oRFgBy4HOH+MPvB5
-	m1e428qfg6uI6o5PgmRPxczgXe0O8i6JeWxqP/AKQixVDShsWUWjdpTedOrIxUdfI485seiJH6+
-	4XhWsSf2wgloKhiEikBPy0=
-X-Google-Smtp-Source: AGHT+IHBOnFSbfOjCWswssFIXUYknwoi8bxg+YaSZ0NlMLbN3Szk7M4gcBk+o1k+eZZc+Hhru+MlV+o4dEFHedKtN1s=
-X-Received: by 2002:a17:903:2410:b0:24c:9a51:9a33 with SMTP id
- d9443c01a7336-25d24e9df3dmr201990295ad.22.1758061746563; Tue, 16 Sep 2025
- 15:29:06 -0700 (PDT)
+        bh=XPj3viw/ebtEFZmMin4unftmNLl5BtYpClPjEsQnolE=;
+        b=oq+6zp1K8p8egvWFNstMRwrdsPZ1VGjFnWO06/VqF34kSPijbE4W/Nar8ccKaz8qBY
+         CZJJ/qb4K9JJ8wVBeA/sbiolnfQwcQ/Ym6pA2XRG98TbOXrFRqBhh+JvcakfnDP/N7HJ
+         xS7DI08M91yH9TtXsf+bzV1iYAa0pBNsGJQBz2Vi2iHVBt93FtnvVHQMOYK1TuVuB996
+         m2Wd0I/chen2Il/tmnipBxvKBzQet/i1349uWwdEJio6ryxL6mNMhSvLv2GU95uOVWam
+         rrnpET+/JJShyyK5JpbuHFZPEQb0wTALakvSSalbL09XSWoibxuAUJXz1sRABJ0Wj3eD
+         IwlA==
+X-Gm-Message-State: AOJu0YxiEZ9FYvltFDGsXWLeeHCaCkiM0KZFBce+rgQSyTJUP14YqFbx
+	Xo3lZ97/oTrVqe8sXHGnjQJC47luHq51nYYsMfB2GTtEgtopAA8PuI9yisJoT7tSu3q4nKX6s6Q
+	r+Z4QF0NvL8RWbaw4hhBKHJAol/x8rBo=
+X-Gm-Gg: ASbGncu7iOvD4mebMIF2CY7lFK1hasJZRJlrQQ6yCYAhHR2jXRhBJD0Cg5iqZlPZiuz
+	6fZWjgs8SMJujYPlv8ACxMnvXRwu+29Ev9wqPoiARhj+JFbAbAq9cKQo7ghaTAVztJs61aWQCVA
+	crOAFH8FF2CCFpaJPYxowePwCuE1GYQkr3AqrVALtByfEneewRgzhr/nANRyD4kMFmz7g4feAnB
+	ex7nk0xYBiG6lmrsYuCXQM=
+X-Google-Smtp-Source: AGHT+IGndSWHAk4YUGnLya1KcR+FEe39Pw5pUYyUU82DPq6Ig9PobfsfLeIKlCNRz6PyhGUBosLJ8nA+TiIRGNJ+iAk=
+X-Received: by 2002:a17:90b:5788:b0:32e:59ef:f403 with SMTP id
+ 98e67ed59e1d1-32ee3f202bamr12857a91.17.1758062049382; Tue, 16 Sep 2025
+ 15:34:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250916215301.664963-1-jolsa@kernel.org> <20250916215301.664963-3-jolsa@kernel.org>
-In-Reply-To: <20250916215301.664963-3-jolsa@kernel.org>
+References: <20250916212251.3490455-1-eddyz87@gmail.com>
+In-Reply-To: <20250916212251.3490455-1-eddyz87@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 16 Sep 2025 15:28:52 -0700
-X-Gm-Features: AS18NWDXq8G0jhAXIKx9oMvchpwy_wkQP4mw4ZzusEgUYtrbuckohtBJ2yrw2Bw
-Message-ID: <CAEf4BzYTJcq=Kk6W9Gz90gM=mw2fS2T-QBurUhdjBNinReDSjQ@mail.gmail.com>
-Subject: Re: [PATCHv4 bpf-next 2/6] uprobe: Do not emulate/sstep original
- instruction when ip is changed
-To: Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>
+Date: Tue, 16 Sep 2025 15:33:54 -0700
+X-Gm-Features: AS18NWCn1-QNFZRiO6F2Yt6U94Fq3WaqaIB3k4GYkDzbBBdxzcljzZN1wivPllk
+Message-ID: <CAEf4BzYJW+O6CD5+V1wP3uF0=BBVNLrUwM+co7Pps8HF13p3Ng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: dont report verifier bug for missing
+ bpf_scc_visit on speculative path
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, 
+	syzbot+3afc814e8df1af64b653@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 16, 2025 at 2:53=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Sep 16, 2025 at 2:23=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> If uprobe handler changes instruction pointer we still execute single
-> step) or emulate the original instruction and increment the (new) ip
-> with its length.
+> Syzbot generated a program that triggers a verifier_bug() call in
+> maybe_exit_scc(). maybe_exit_scc() assumes that, when called for a
+> state with insn_idx in some SCC, there should be an instance of struct
+> bpf_scc_visit allocated for that SCC. Turns out the assumption does
+> not hold for speculative execution paths. See example in the next
+> patch.
 >
-> This makes the new instruction pointer bogus and application will
-> likely crash on illegal instruction execution.
+> maybe_scc_exit() is called from update_branch_counts() for states that
+> reach branch count of zero, meaning that path exploration for a
+> particular path is finished. Path exploration can finish in one of
+> three ways:
+> a. Verification error is found. In this case, update_branch_counts()
+>    is called only for non-speculative paths.
+> b. Top level BPF_EXIT is reached. Such instructions are never a part of
+>    an SCC, so compute_scc_callchain() in maybe_scc_exit() will return
+>    false, and maybe_scc_exit() will return early.
+> c. A checkpoint is reached and matched. Checkpoints are created by
+>    is_state_visited(), which calls maybe_enter_scc(), which allocates
+>    bpf_scc_visit instances for checkpoints within SCCs.
 >
-> If user decided to take execution elsewhere, it makes little sense
-> to execute the original instruction, so let's skip it.
+> Hence, for non-speculative symbolic execution paths, the assumption
+> still holds: if maybe_scc_exit() is called for a state within an SCC,
+> bpf_scc_visit instance must exist.
 >
-> Acked-by: Oleg Nesterov <oleg@redhat.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> This patch removes the verifier_bug() call for speculative paths.
+>
+> Fixes: c9e31900b54c ("bpf: propagate read/precision marks over state grap=
+h backedges")
+> Reported-by: syzbot+3afc814e8df1af64b653@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/bpf/68c85acd.050a0220.2ff435.03a4.GAE@goo=
+gle.com/
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  kernel/events/uprobes.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  kernel/bpf/verifier.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
 >
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 7ca1940607bd..2b32c32bcb77 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -2741,6 +2741,13 @@ static void handle_swbp(struct pt_regs *regs)
->
->         handler_chain(uprobe, regs);
->
-> +       /*
-> +        * If user decided to take execution elsewhere, it makes little s=
-ense
-> +        * to execute the original instruction, so let's skip it.
-> +        */
-> +       if (instruction_pointer(regs) !=3D bp_vaddr)
-> +               goto out;
-> +
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 1029380f84db..beaa391e02fb 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1950,9 +1950,24 @@ static int maybe_exit_scc(struct bpf_verifier_env =
+*env, struct bpf_verifier_stat
+>                 return 0;
+>         visit =3D scc_visit_lookup(env, callchain);
+>         if (!visit) {
+> -               verifier_bug(env, "scc exit: no visit info for call chain=
+ %s",
+> -                            format_callchain(env, callchain));
+> -               return -EFAULT;
+> +               /*
+> +                * If path traversal stops inside an SCC, corresponding b=
+pf_scc_visit
+> +                * must exist for non-speculative paths. For non-speculat=
+ive paths
+> +                * traversal stops when:
+> +                * a. Verification error is found, maybe_exit_scc() is no=
+t called.
+> +                * b. Top level BPF_EXIT is reached. Top level BPF_EXIT i=
+s not a member
+> +                *    of any SCC.
+> +                * c. A checkpoint is reached and matched. Checkpoints ar=
+e created by
+> +                *    is_state_visited(), which calls maybe_enter_scc(), =
+which allocates
+> +                *    bpf_scc_visit instances for checkpoints within SCCs=
+.
+> +                * (c) is the only case that can reach this point.
+> +                */
+> +               if (!st->speculative) {
 
-Peter, Ingo,
+grumpy nit:
 
-Are you guys ok with us routing this through the bpf-next tree? We'll
-have a tiny conflict because in perf/core branch there is
-arch_uprobe_optimize() call added after handler_chain(), so git merge
-will be a bit confused, probably. But it should be trivially
-resolvable.
+if (st->speculative)
+    return 0;
 
->         if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
->                 goto out;
->
+... leave the rest untouched ...
+
+?
+
+> +                       verifier_bug(env, "scc exit: no visit info for ca=
+ll chain %s",
+> +                                    format_callchain(env, callchain));
+> +                       return -EFAULT;
+> +               }
+> +               return 0;
+>         }
+>         if (visit->entry_state !=3D st)
+>                 return 0;
 > --
 > 2.51.0
 >
