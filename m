@@ -1,852 +1,309 @@
-Return-Path: <bpf+bounces-68538-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68539-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D3F6B59FD8
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 19:57:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 097A7B59FE2
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 19:58:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7042C580DBF
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:57:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 254CD46730B
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA9627E1B1;
-	Tue, 16 Sep 2025 17:56:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F28727F003;
+	Tue, 16 Sep 2025 17:58:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Oo8soUkv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mSGU7dDy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65084276022
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 17:56:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758045418; cv=none; b=HTQZzRjG3DVrE7hC77ktsqCbom2MbwtRwU9QKz25kPlf7fwUoUsaaxXpbys3LEL7WKPe6CE4xwOPRuSQSxSQrx+fJPBfzv3l3EPfWY1XWS8szFiF+Chfqjq3EjrdvowHjciH670U+IB+t43n9fqsMk+t9S7UD7DH7gaKBZLcR+U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758045418; c=relaxed/simple;
-	bh=cDozfFwW2Mxhy4ok+9q5Hu+CCkTPCzsESjRIPQbL5Us=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c/lf8nXIn/1lhGiforb7FxPimFZDD8LCAiet1ceCPv/QqG1paccD+C31WET/VeB6+FjOBUFBlCY4/CeDb4zXd1Z807WzNmz77izZ3zBVDFYuquRwSheYBHNQ4lgwvHdJue+wfGM99HSW9ZekcPcz9KAAKT5npD7l5rrk8HWo8rM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Oo8soUkv; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2637b6e9149so20075ad.1
-        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 10:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758045416; x=1758650216; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JULZbZSuy+d6SrJ9VTUs3Qg/BN69AXtJydIQcSLLLE0=;
-        b=Oo8soUkvvoqoTHjyCsNywXXbvbpcKdpJbT4SPHsGmv/c6pD/mYUwC7hrjfwBPVxd0z
-         8p9t6boVjKrzSSfVWFVFInl2K/ovWuafBogwth0AUmnRnwW/92dKer87OraHUb6/Kf7r
-         64k5/bhEkZT2A3N/RvbGVzwXevgZjH7mBNWGhtSuipMRNEolAqqvWTs1ThSU6zZ37IZc
-         s5226Y3yH5eYuNrqos0zEp+je50Efp0ugMfHy5m4nNj4Q2so2zDia/sVALikmRg6EqA9
-         cSMOxIhv+6f/8YmC1FVYL3g5G5bKq9tmV86tgKIzMyxsOyxxQIqtSv9WhzA56lIbiSi/
-         zm5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758045416; x=1758650216;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JULZbZSuy+d6SrJ9VTUs3Qg/BN69AXtJydIQcSLLLE0=;
-        b=dDvc+4MK4AFSneJPoWVWZIVm/S61gbVwq9ZmejgLn0LWM7EhhNeQPuCxHhLyloCpv9
-         4pbktFAgxbtqbWBtJxr2YkA4cSw/vngE9tacn4eWKAW4thGBoFnnRf9YjPMaycC/8tO3
-         I6XEC0h43zRUdyuACNSps4xiULH54uq2zidDmCR3PIXDCf46ZIt7tXivkwOETdi453iC
-         f4BZmso+GlP3SOD7cwWLl4+e6ZSRt7HeGqiGjTT571UZ65/W2rsR3WEp0TW6DnDVKPe8
-         CFtVIHj1iQMrklSw37y4MHxp4WZBKG06O1rgCMKwuBpUUhSIvq8qb5v0gIdTAikq1xJn
-         Ei7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWMeohseI4UIVW4YxDTDdn/13+xuHwUTEBokCCEFP01b5cPiGBv3L+cgZGvAL4Ntfk1iJ8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy64f/c3qri5hjOzkzBflVBvja2Ffp9+kbx6uQ1roSjCuYT+7Xn
-	piuXk2NQIsxluhl9tMY4a79SeNuRCgL9MNMQphBPgEwHCICgOMUBCil+IiP2Juc8OMGEyLuPj32
-	qYPOX9GZo3QTldNTolE8tv4RPA7ygycUXRDYOVVub
-X-Gm-Gg: ASbGncsyYM39NDfLTpaJh9w5k7g3DWVZpv7YjJQ3erMgf19CjbS8brFFFZ6Fs2a6cye
-	aSWyh/Qq8buCkUfrCFsyhoikaAeX7QcQ76vikTo4tYF7iTQYkW3QpSkGd4a9BrweTqynvyPjxl4
-	B49LQSBozoDlPywLM0BfrMOenpy68LCTju4L4oMAVxEtsN+QGRZN0gmp9g1IPnXFQPzMe27rstR
-	FFFQiCj2IwEviVq8KKa4mFT2eBBtwHCml+c+3aVL2Y1
-X-Google-Smtp-Source: AGHT+IGQBYa1iWzAf2RA/7yMmjr8biiADm07fpwcaYqZfTZXbtlLY/jjJwGUjYyoV7+Qjuzv/JhRIGg+GyzBQzgbBiU=
-X-Received: by 2002:a17:902:db09:b0:25b:d970:fe45 with SMTP id
- d9443c01a7336-268010a0487mr370405ad.1.1758045414875; Tue, 16 Sep 2025
- 10:56:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1797D2905;
+	Tue, 16 Sep 2025 17:58:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758045522; cv=fail; b=GvG4F2tGYMJRgt1F/jLuxop1jDdxeOBmBA5VBKNRmFbv8+n4I0+Rt66NbubYjIeBLcvImPTt1lISVrEDkT/0LIHuwT0puHR03Vqv7y9jRoGTqiyRCxzuPVIPNXppPcKWs/pcGwc5TwBz8gA3XCPZH8BEMttx2wRSKMwcpO4Xyac=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758045522; c=relaxed/simple;
+	bh=cQHfA4NSiqf0juV8VcZ8AyaHw9XVVbmo93MQMHw1Wak=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=p0AuBa3q8E5LVVC/W5oZEQX3rStQKFHpYYZWEFon/sDbrbnYbyJ8Lnmoj3OxHBeT1DJS/QTl75rk3Fmv/o1pDSmI3KlKxrcDQStj5fSof/uGHUi90VwZgIwCDvq5QJKtsZlwAGUDSEMIL+BcrpgETNwnXfsu6R7G6S/ORj+cGjU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mSGU7dDy; arc=fail smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1758045521; x=1789581521;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=cQHfA4NSiqf0juV8VcZ8AyaHw9XVVbmo93MQMHw1Wak=;
+  b=mSGU7dDySXP4Lhw6vK0hcvEh76Zy+OemI12zLyDDsXuF0GsyNtQcruco
+   gZJjPo161etGm795kbWcbxlO3RPZsnng5xubqDX0720yk+kukwp7R1r5l
+   T/r2rf9sVgdja2xWb4xYlWxMgI3Rq6ftVvFfUNMQsGz6MtAmsVO5z/2O0
+   nBaacF66K9cjrlUa9i2+Xnz+68X5tzWFQihpFtuviwmBLCx+zvyV8ITnB
+   Kkrr3qC32YHPm+D59XqUVfRLgrKOkdG9iCxkfPWl+1Dxqagato6TH9rZm
+   eER8wAaCZk3BvfOH8N/qpR0bOm5ifZsF3ybU+gAuzohD8xwKG6Y/2eKoX
+   w==;
+X-CSE-ConnectionGUID: xo2SoKSNS/O4RfQcCFZ/Mw==
+X-CSE-MsgGUID: amBVhaPTQsKb4FHtQdwqJg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11555"; a="60479517"
+X-IronPort-AV: E=Sophos;i="6.18,269,1751266800"; 
+   d="scan'208";a="60479517"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2025 10:58:40 -0700
+X-CSE-ConnectionGUID: Vue2AJAtRqSTROCTiJKEHQ==
+X-CSE-MsgGUID: WBPTA/sPSXmckBc0G+YNuA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,269,1751266800"; 
+   d="scan'208";a="205797890"
+Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
+  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2025 10:58:39 -0700
+Received: from FMSMSX901.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17; Tue, 16 Sep 2025 10:58:38 -0700
+Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
+ FMSMSX901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17 via Frontend Transport; Tue, 16 Sep 2025 10:58:38 -0700
+Received: from PH0PR06CU001.outbound.protection.outlook.com (40.107.208.67) by
+ edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17; Tue, 16 Sep 2025 10:58:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=d0pM6qxeFHLbm3fwlPeVpFMZHjyReQbpAcPf4ccTjAS38Jfz7IJe/6gBErK0Ib8z5LjYiZ0U8buNKNed7j9j5Lzjm8E1FIjlBHJ3YLPYvGB5YXBFEoQdlpc60Ujt1FpPpaDXD7e3ScpGif/DvTHxVtBxJ8yZgg7gCeMoBIc2Fe0y/OyrGCrrrplcUE215pPDvFFYMVPn8xyCDl5VLelZh4s3yD3OKxd4HdRIwxozU/LYElgdwAzzezW+TfAqvhHqIXgl5wHzZYJoaTMcUTjqVwoQWZa5hV/TLjLBQZpONdU9kFUtnTpwD0cioACGAIdb9pLzNFQtVbFSWrVYEAse1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2nRRCgv00SGdYmg5rkwxgWlPkuKRRZSS8TDvbCHr274=;
+ b=qGwaBYuJLtQnHcf/nVGeXzwE+whGmbYcnffhSRNc85fkhcOJygnfhHnntRjMf15qAGUbKbDETVu40UJtYa0Qx+5gi+vVui4Qr3UG+etab8kreKLAMRVBtMJoGFyz1/1jVAOWf7RM3FJT7L+e1fo14jHKAPBNB9gMmMnvVOkR2jfgfcRYRoJYNYS6AN318rHpEHAlPUek9b8h21Y37xdZ9aRhZWzjuDV7DFmDO9SoSi0rdgHkPmd7Ry/jBI7gCSxoE4oXFD7V38nFz/D4H4McsltoRdcm1IQIDq3upTT/mg0MX6kPNNoX7DCU8RzSKjhCfODuYH2Ecbvx3zNKBmPvvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ PH0PR11MB5950.namprd11.prod.outlook.com (2603:10b6:510:14f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.22; Tue, 16 Sep
+ 2025 17:58:31 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca%4]) with mapi id 15.20.9115.020; Tue, 16 Sep 2025
+ 17:58:31 +0000
+Date: Tue, 16 Sep 2025 19:58:13 +0200
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+CC: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>, Magnus Karlsson
+	<magnus.karlsson@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, "Yonghong
+ Song" <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>,
+	"KP Singh" <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao
+ Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko
+	<mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, "David S. Miller"
+	<davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, "Jesper Dangaard
+ Brouer" <hawk@kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Alexis Lothore <alexis.lothore@bootlin.com>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 03/14] selftests/bpf: test_xsk: Fix memory
+ leaks
+Message-ID: <aMmlNc1z5ULnOjJY@boxer>
+References: <20250904-xsk-v3-0-ce382e331485@bootlin.com>
+ <20250904-xsk-v3-3-ce382e331485@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20250904-xsk-v3-3-ce382e331485@bootlin.com>
+X-ClientProxiedBy: TLZP290CA0014.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:9::13) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250914181121.1952748-1-irogers@google.com> <20250914181121.1952748-21-irogers@google.com>
- <aMljsNZxTw5ZPfeb@J2N7QTR9R3.cambridge.arm.com> <CAP-5=fUx5oyCBtp2NO-h1mTC+ANt=uTOp9tS3rVN=CQFuXo00g@mail.gmail.com>
-In-Reply-To: <CAP-5=fUx5oyCBtp2NO-h1mTC+ANt=uTOp9tS3rVN=CQFuXo00g@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 16 Sep 2025 10:56:43 -0700
-X-Gm-Features: AS18NWCcaAOx1ZC4pD8SFApEfUNpw7DKFVaN-cpmhRizsPZ9P5y9DuABKP36mcM
-Message-ID: <CAP-5=fW_KuGhMhe+81mu8KBKj=TaUV_B428q_nhQEmTqtiwGvg@mail.gmail.com>
-Subject: Re: [PATCH v4 20/21] perf parse-events: Add HW_CYCLES_STR as default
- cycles event string
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	James Clark <james.clark@linaro.org>, Xu Yang <xu.yang_2@nxp.com>, 
-	Thomas Falcon <thomas.falcon@intel.com>, Andi Kleen <ak@linux.intel.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org, Atish Patra <atishp@rivosinc.com>, 
-	Beeman Strong <beeman@rivosinc.com>, Leo Yan <leo.yan@arm.com>, 
-	Vince Weaver <vincent.weaver@maine.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|PH0PR11MB5950:EE_
+X-MS-Office365-Filtering-Correlation-Id: e2848111-4eec-4d4b-4ec7-08ddf54aa5a9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|7053199007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?p36QRdlpcQgU9+b/jLE48qZXsqQ5KSGDqkVV+cKQZYWjebqndcCI/jVzswbO?=
+ =?us-ascii?Q?2IzsucFk4RbAnC5JDi5PWqh1bj3WD9JXuVrJMduUG/EdiEz/nezW6JurVEu5?=
+ =?us-ascii?Q?wJhinMV+oa1Hq0EktO0g+RMNydKISBx093dvqx12SG0kRWPmOM5WG3dw709m?=
+ =?us-ascii?Q?mTXX2l+mSKvRzXo6NdCpgjvybYfogLyx0iQl9gw/wqD54uGJfdR71i2kGhzL?=
+ =?us-ascii?Q?geOBTFej0iAOJpTUERasbKVCfNsDjocPtrLEP9ZcCH1KreeIhHnxogwrza0v?=
+ =?us-ascii?Q?d6wt+h01BksCgA8596YT3e9oGQ99TIgyc4iYRoVc4FFrEfAqksUFmIPVf2sw?=
+ =?us-ascii?Q?aaVJcsnolgX8JTl71LPQ5keWLLReqc+f/FHtpLaHJ+x1UKVrPct4IfU9z8QD?=
+ =?us-ascii?Q?cwSu9R4OTOh6TFMs/GUQpHLLNnR5FdlmAEW2hxuVX1jvsCncpxHXGHfBZ8t5?=
+ =?us-ascii?Q?biAo5YZIguQQo9kv1BqaKfY2UpCXIfph0cFnFMQv+5TGB1iVsnVmUIFWvd6W?=
+ =?us-ascii?Q?UIpShSSL0XITvriXBPPhgE45hOXb4a60qLI0E7kBDm2Y4ciUDxXFFc+HfWHA?=
+ =?us-ascii?Q?eU9EAUJvljJn9AjBWA+4dTgnlfaotWsNgLOLAAUzFW2cSR0TCQgZMUEqEDzz?=
+ =?us-ascii?Q?FRB2pXsxUP5dI6HPVCY5Y2ZpKXajWzX2JODRDXLcCMJexn1XJBivCG4yD/7M?=
+ =?us-ascii?Q?WKiILaT2y3Sl8h25NYPCzsXqmwlSgIAopGi/iYqBsLA51b36y1JNx/G9RhXQ?=
+ =?us-ascii?Q?jaJ70YOlONth2g7U9NxdBkiD7CYORjsahY8mNz0+XT3Y+485xDkUwvheJfwm?=
+ =?us-ascii?Q?MqbpXWib5wBHot9TzUg68lE6vbwmw7SMzvJGY44H1CdaaPsuMeev2/JWRjBY?=
+ =?us-ascii?Q?dkInP+HVwHHb2UEQGTV6HNgvKE1t0SEn6V8fE15/RyTHq7NVJHyKK5o9OIW5?=
+ =?us-ascii?Q?5bkltibsiSIL6k1Heofc4KoCobHTTNEg9hTSCtdYfxnHbsQlFI3whMxc0WE3?=
+ =?us-ascii?Q?HOy9eYT7oW30Q3YROHxWTxjWKO6EfJpr8WfJ60VhFtwUyFuUhVQBQTOz9sF+?=
+ =?us-ascii?Q?CiGVJ1O040HxZYlX8N9LAPdbiUxF22zl2lhWjTbDoi1gA79okDe+M8SrdIFM?=
+ =?us-ascii?Q?8cpyJ6G6/19CrZCuFPrnaqbFgwtHoLbTE/WUxAFfrRvYvrnlfW+r9hhAYj50?=
+ =?us-ascii?Q?DJciKMaY5pRBat6yGMOze4jkpNlXB7ws5QZ1W2raHR7VEqK0GDwHrDrlfr1/?=
+ =?us-ascii?Q?6hDG8uW51MmoVgvXq6T5t92ITx08YBTdEaiPfu+NU3SvrRvI3q8e7UWsDD3s?=
+ =?us-ascii?Q?OIQ9gcwksTl8ekNvIANjeYwcOrZm3ErA2XKC/35Kg/+wjRB5U1jE/W4q6uLW?=
+ =?us-ascii?Q?zVNfr7J3PUoKttsaTSNMKee1FDjP+45OexfweZxqRCalrCz1F4bJVMT0AnDU?=
+ =?us-ascii?Q?FI/ozy7LOJE=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Q51s9Upv7GdduXbvm/KbBfA94p4abZ5N1uxIDycS2Mj9T8FMP650PsZxsioR?=
+ =?us-ascii?Q?3IQ037jvjwYgQCez6hoOZXq1/btHRy9DOXtmjc3/zGjVqdYR1wzi9/J4l/oU?=
+ =?us-ascii?Q?3hiFozShu47pCZTAkhYrj0GQEMpHkawr8+64ZMDaUE2AK3eR7uueOEE950yn?=
+ =?us-ascii?Q?tnhMfXrO4LrP4ADvkNqiymbLZr6n50QYuYzQ+YZoO3DkYB6lmBkHtXaQNSZx?=
+ =?us-ascii?Q?cPP2IrliSbhHoztj3hpMLWsn8t77j38YhmZJgqJ8HG1iRHcIkvEOF8qx1Zix?=
+ =?us-ascii?Q?/sICQa9QBKLf+myEkYVHRhQw4to/nhB+D/JLnVormxtG6BGvQUUcFlHOW909?=
+ =?us-ascii?Q?W1QLi9nuIQAyC5iuZCUjBmElXH0rwhARb6zP0CkDCw8GzjQNgwmplWrpotiK?=
+ =?us-ascii?Q?FvPxHDh7xNOvokU+pHfCcRNE1vnIBDNPKn87gjHB2cPRFX1pcyHLs6lD8+gO?=
+ =?us-ascii?Q?a/mMuICZLTqQ0iZNcMuxbpeosPzOkoisJBoOK/Lcema0DiYxxDmN4ugF4RFH?=
+ =?us-ascii?Q?BZlvBMaEOAlI93C9peGzo1UmHiiEBlZxYvLAMYrFxDIsKl8kilnjyLgW8QkX?=
+ =?us-ascii?Q?C7A2kmgGTGuiQI/R91NQqrx7vWSxqRuQMRcK/XMuiSo1RgT+02XszFMs4hNl?=
+ =?us-ascii?Q?V/VwecfH5Lkk51P3U/hl/8wiX2w/MobvySVVK9wBO2ANflhK/dy/P9bfMLvg?=
+ =?us-ascii?Q?p2Vh4StNO+Q4gH3DNIL9GooX7bwZxhdR0ZNcB5C6YcG26uDIiPCouCv8qbxW?=
+ =?us-ascii?Q?dMPl12BI2De/WzINXCTxAGD87XiN/QFdy9XBZHfplyNW0ZhBvnXsFtRhGVt6?=
+ =?us-ascii?Q?2fctEIX5g9Oy9ijE62+AnPkK+iAYplw7rbLhyrzhwbfIqQvaxj8AgG2ZiENs?=
+ =?us-ascii?Q?o7XYSmEH6E0xTBQf6NvszvdVyHyNzVJPDRKn2ww1vwSMR60TdRpvtBFe7qQc?=
+ =?us-ascii?Q?mu7TPHYWmUpPYJngriUhBQqP/wLSEq4Z0XwUQ8eLRWF+6pvTsTVHtDkL7trC?=
+ =?us-ascii?Q?te9hoJI4GB2gROkrfVtLgsgqOJOzfoJB7ZdJdOArZbryO/8KVs53NuiS99Cc?=
+ =?us-ascii?Q?IoHJbKGvIZS0C9qPW8x0j419H5aogASm8zby4Arb1zD+IPR0rhdInbsT/Z+H?=
+ =?us-ascii?Q?I1ynh9ylVvqXFwr8cxrxPnIMcjURA7Q00PWwLFkdAdwlghKQjk8NVdRcyi6D?=
+ =?us-ascii?Q?oStx0fCpU+apxGjezVs7i62LUwv+4rHLiNyeBS+AuTASef75hl8VdHhCaK9u?=
+ =?us-ascii?Q?8PLTIX2wt81AHbbqoLiORBeJiNLnaCGEJD0U0ywzazAw2jqLXuL99b0R1uex?=
+ =?us-ascii?Q?yxc782jZHhKUWugpvoxBBctPO/x6y+01jWT79d3m9uA+Y+ex9N+Lm+SgmLpy?=
+ =?us-ascii?Q?8NJPYl34Z5oKxXNxJCws2vc8bDsLrpD4ZnFg3whCVD7obtWJO6BsDb7WqnQD?=
+ =?us-ascii?Q?D83mdTvgose4wdOyDl2uL8342dghR9Mp+QXlLQeI+U1e3rVvg5g5yuAqCjmj?=
+ =?us-ascii?Q?hjX24Rz8BIgQgsNDjccvvnr4lyhWmlUEWJ2KAHPeJCHIMt5fRd7bhoBJMj+v?=
+ =?us-ascii?Q?gTGY/lcetcWOO863/7Enus5Q+8kYFuaFkcOJRdxPXrLrowD6BF5CZl8FwM3c?=
+ =?us-ascii?Q?Bw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2848111-4eec-4d4b-4ec7-08ddf54aa5a9
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2025 17:58:31.6171
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u3sA+/TGGRkqtYu1dRFzhHJFlWG4y4Bze7V5TNaj/YM2aMXUMd6rfydz15SW594NJK7D2dzUdiXuHuquR2VRnI4FbXue67iJChrx8XYNSGQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5950
+X-OriginatorOrg: intel.com
 
-On Tue, Sep 16, 2025 at 8:49=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
-te:
->
-> On Tue, Sep 16, 2025 at 6:18=E2=80=AFAM Mark Rutland <mark.rutland@arm.co=
-m> wrote:
-> >
-> > On Sun, Sep 14, 2025 at 11:11:20AM -0700, Ian Rogers wrote:
-> > > ARM managed to significantly overload the meaning of the "cycles"
-> > > event in their PMU kernel drivers through sysfs.
-> >
-> > Ian, please stop phrasing this as if Arm have done something wrong here=
-.
-> >
-> > It's true that some system PMU drivers have events named 'cycles'.
-> >
-> > It's not true that this is "overloading" the meaning of 'cycles'; those
-> > PMU-specific events were never intended to be conflated with the
-> > PERF_TYPE_HARDWARE events which have the same name.
-> >
-> > This was never a problem until the perf tool was changed to handle
-> > events such that it blindly assumed all events were in the same
-> > namespace. I have repeatedly explained that this was a bad idea.
-> >
-> > There is no reason that this should be handled in an ARM-specific way;
-> > if you want the bare 'cycles' event (withj no explcit PMU) to mean
-> > PERF_TYPE_HARDWARE:PERF_COUNT_HW_CPU_CYCLES, then *don't* match that
-> > with other PMU types. We cna specifically identify CPU PMUs which
-> > support that with the extended type ID if necessary.
->
-> Is the "cycles" event meaning uncore events a problem on anything
-> other than ARM, no.
-> Is having more than one event of the same name overloading the name,
-> by my definition yes.
-> Am I implying ARM has done something wrong? Well other than in fixing
-> a problem created by ARM's drivers..
->
-> Firstly, let's not pretend ARM has always elegantly supported the
-> legacy cycles event. When BIG.little came out, as you explained to me,
-> the legacy events would be opened on the first PMU registered with the
-> kernel. You would get legacy events on some fraction of the CPU cores.
-> ARM was reliant on a lot of seemingly correct behavior by having its
-> core PMU drivers appear as uncore ones. I am very much still in the
-> process of trying to clean up the tech debt and mess that falls out
-> from BIG.little and Intel's hybrid.
->
-> The behavior of legacy events with extended types and wildcarding.
-> This was introduced by Intel. The right moment to complain would have
-> been when Intel added the extended type and wildcarding support in the
-> kernel and perf tool. I wasn't even a reviewer on those patches.
->
-> Do ARM do things in their drivers that seem unthought through? Yes,
-> when hex suffixes of physical addresses were added to uncore PMU
-> drivers it was missed that a53 and a57 would also match this wildcard
-> suffix as ARM has unconventional core PMU names and the suffix on
-> those match as hex. We've worked around the issue by saying a hex
-> suffix must be longer than 3 characters but when ARM bumps up its CPU
-> names that will be broken. It seems there is some ambition to reinvent
-> rules when ARM drivers do things and the fallout has all too often had
-> to be fixed and addressed by me, with emails like this for thanks.
+On Thu, Sep 04, 2025 at 12:10:18PM +0200, Bastien Curutchet (eBPF Foundation) wrote:
+> Some tests introduce memory leaks by not freeing all the pkt_stream
+> objects they're creating.
+> 
+> Fix these memory leaks.
 
-Oh wow, this could be broken sooner than expected with Cortex-A720AE:
-https://lore.kernel.org/linux-perf-users/87plbri0k3.wl-kuninori.morimoto.gx=
-@renesas.com/
-*sigh* I'm guessing it is too late for the AE suffix to contain
-non-hex characters.
+I would appreciate being more explicit here as I've been scratching my
+head here.
 
-Thanks,
-Ian
+From what I see the problem is with testapp_stats_rx_dropped() as it's the
+one case that uses replace and receive half of pkt streams, both of which
+overwrite the default pkt stream. So we lose a pointer to one of pkt
+streams and leak it eventually.
 
+Rest of cases should be ok with pkt_stream_restore_default() being called
+after each ->test_func() in run_pkt_test().
 
+Anyways let me hear more on your reasoning, thanks! I'm gonna have a
+second look tomorrow, I might be missing something.
 
-> I'm sorry that you think I'm targeting ARM by fixing the issues your
-> drivers have introduced. It would have been better if ARM's drivers
-> didn't keep introducing issues. I'd repeat my call here that ARM add
-> support for the parse-events test for their PMUs. I don't understand
-> your last paragraph, in the context of the patch series it makes
-> little to no sense as the patch series is very much doing this.
->
-> Finally, doing things this way was prompted by James Clark's concerns
-> and I posted about this exact patch here:
-> https://lore.kernel.org/lkml/CAP-5=3DfUsZCz8Li1noKMODKXTLYFH9FsDCpXqCUxfu=
-1h+s4c6Vw@mail.gmail.com/
-> ie I only added this patch at someone from Linaro's request and
-> received 0 feedback that doing so would be wrong. I don't think it is
-> and recommend this patch series for review.
->
-> Thanks,
-> Ian
->
-> > Mark.
-> >
-> > > In the tool use
-> > > "cpu-cycles" on ARM to avoid wildcard matching on different PMUS. Thi=
-s
-> > > is most commonly done in test code.
-> > >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> > >  tools/perf/builtin-stat.c           |   4 +-
-> > >  tools/perf/tests/code-reading.c     |   4 +-
-> > >  tools/perf/tests/keep-tracking.c    |   2 +-
-> > >  tools/perf/tests/parse-events.c     | 100 ++++++++++++++------------=
---
-> > >  tools/perf/tests/perf-time-to-tsc.c |   2 +-
-> > >  tools/perf/tests/switch-tracking.c  |   2 +-
-> > >  tools/perf/util/evlist.c            |   2 +-
-> > >  tools/perf/util/parse-events.h      |  10 +++
-> > >  tools/perf/util/perf_api_probe.c    |   4 +-
-> > >  9 files changed, 71 insertions(+), 59 deletions(-)
-> > >
-> > > diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> > > index 2c38dd98f6ca..9f522b787ad5 100644
-> > > --- a/tools/perf/builtin-stat.c
-> > > +++ b/tools/perf/builtin-stat.c
-> > > @@ -1957,7 +1957,7 @@ static int add_default_events(void)
-> > >                               "cpu-migrations,"
-> > >                               "page-faults,"
-> > >                               "instructions,"
-> > > -                             "cycles,"
-> > > +                             HW_CYCLES_STR ","
-> > >                               "stalled-cycles-frontend,"
-> > >                               "stalled-cycles-backend,"
-> > >                               "branches,"
-> > > @@ -2043,7 +2043,7 @@ static int add_default_events(void)
-> > >                        * Make at least one event non-skippable so fat=
-al errors are visible.
-> > >                        * 'cycles' always used to be default and non-s=
-kippable, so use that.
-> > >                        */
-> > > -                     if (strcmp("cycles", evsel__name(evsel)))
-> > > +                     if (strcmp(HW_CYCLES_STR, evsel__name(evsel)))
-> > >                               evsel->skippable =3D true;
-> > >               }
-> > >       }
-> > > diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-=
-reading.c
-> > > index 9c2091310191..baa44918f555 100644
-> > > --- a/tools/perf/tests/code-reading.c
-> > > +++ b/tools/perf/tests/code-reading.c
-> > > @@ -649,7 +649,9 @@ static int do_test_code_reading(bool try_kcore)
-> > >       struct map *map;
-> > >       bool have_vmlinux, have_kcore;
-> > >       struct dso *dso;
-> > > -     const char *events[] =3D { "cycles", "cycles:u", "cpu-clock", "=
-cpu-clock:u", NULL };
-> > > +     const char *events[] =3D {
-> > > +             HW_CYCLES_STR, HW_CYCLES_STR ":u", "cpu-clock", "cpu-cl=
-ock:u", NULL
-> > > +     };
-> > >       int evidx =3D 0;
-> > >       struct perf_env host_env;
-> > >
-> > > diff --git a/tools/perf/tests/keep-tracking.c b/tools/perf/tests/keep=
--tracking.c
-> > > index eafb49eb0b56..d54ddb4db47b 100644
-> > > --- a/tools/perf/tests/keep-tracking.c
-> > > +++ b/tools/perf/tests/keep-tracking.c
-> > > @@ -90,7 +90,7 @@ static int test__keep_tracking(struct test_suite *t=
-est __maybe_unused, int subte
-> > >       perf_evlist__set_maps(&evlist->core, cpus, threads);
-> > >
-> > >       CHECK__(parse_event(evlist, "dummy:u"));
-> > > -     CHECK__(parse_event(evlist, "cycles:u"));
-> > > +     CHECK__(parse_event(evlist, HW_CYCLES_STR ":u"));
-> > >
-> > >       evlist__config(evlist, &opts, NULL);
-> > >
-> > > diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse=
--events.c
-> > > index 4e55b0d295bd..7d59648a0591 100644
-> > > --- a/tools/perf/tests/parse-events.c
-> > > +++ b/tools/perf/tests/parse-events.c
-> > > @@ -198,7 +198,7 @@ static int test__checkevent_symbolic_name_config(=
-struct evlist *evlist)
-> > >       TEST_ASSERT_VAL("wrong number of entries", 0 !=3D evlist->core.=
-nr_entries);
-> > >
-> > >       perf_evlist__for_each_evsel(&evlist->core, evsel) {
-> > > -             int ret =3D assert_hw(evsel, PERF_COUNT_HW_CPU_CYCLES, =
-"cycles");
-> > > +             int ret =3D assert_hw(evsel, PERF_COUNT_HW_CPU_CYCLES, =
-HW_CYCLES_STR);
-> > >
-> > >               if (ret)
-> > >                       return ret;
-> > > @@ -884,7 +884,7 @@ static int test__group1(struct evlist *evlist)
-> > >
-> > >               /* cycles:upp */
-> > >               evsel =3D evsel__next(evsel);
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -948,7 +948,7 @@ static int test__group2(struct evlist *evlist)
-> > >                       continue;
-> > >               }
-> > >               /* cycles:k */
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1085,7 +1085,7 @@ static int test__group4(struct evlist *evlist _=
-_maybe_unused)
-> > >
-> > >               /* cycles:u + p */
-> > >               evsel =3D leader =3D (i =3D=3D 0 ? evlist__first(evlist=
-) : evsel__next(evsel));
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1133,7 +1133,7 @@ static int test__group5(struct evlist *evlist _=
-_maybe_unused)
-> > >       for (int i =3D 0; i < num_core_entries(); i++) {
-> > >               /* cycles + G */
-> > >               evsel =3D leader =3D (i =3D=3D 0 ? evlist__first(evlist=
-) : evsel__next(evsel));
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1168,7 +1168,7 @@ static int test__group5(struct evlist *evlist _=
-_maybe_unused)
-> > >       for (int i =3D 0; i < num_core_entries(); i++) {
-> > >               /* cycles:G */
-> > >               evsel =3D leader =3D evsel__next(evsel);
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1202,7 +1202,7 @@ static int test__group5(struct evlist *evlist _=
-_maybe_unused)
-> > >       for (int i =3D 0; i < num_core_entries(); i++) {
-> > >               /* cycles */
-> > >               evsel =3D evsel__next(evsel);
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1231,7 +1231,7 @@ static int test__group_gh1(struct evlist *evlis=
-t)
-> > >
-> > >               /* cycles + :H group modifier */
-> > >               evsel =3D leader =3D (i =3D=3D 0 ? evlist__first(evlist=
-) : evsel__next(evsel));
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1278,7 +1278,7 @@ static int test__group_gh2(struct evlist *evlis=
-t)
-> > >
-> > >               /* cycles + :G group modifier */
-> > >               evsel =3D leader =3D (i =3D=3D 0 ? evlist__first(evlist=
-) : evsel__next(evsel));
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1325,7 +1325,7 @@ static int test__group_gh3(struct evlist *evlis=
-t)
-> > >
-> > >               /* cycles:G + :u group modifier */
-> > >               evsel =3D leader =3D (i =3D=3D 0 ? evlist__first(evlist=
-) : evsel__next(evsel));
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1372,7 +1372,7 @@ static int test__group_gh4(struct evlist *evlis=
-t)
-> > >
-> > >               /* cycles:G + :uG group modifier */
-> > >               evsel =3D leader =3D (i =3D=3D 0 ? evlist__first(evlist=
-) : evsel__next(evsel));
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1417,7 +1417,7 @@ static int test__leader_sample1(struct evlist *=
-evlist)
-> > >
-> > >               /* cycles - sampling group leader */
-> > >               evsel =3D leader =3D (i =3D=3D 0 ? evlist__first(evlist=
-) : evsel__next(evsel));
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1540,7 +1540,7 @@ static int test__pinned_group(struct evlist *ev=
-list)
-> > >
-> > >               /* cycles - group leader */
-> > >               evsel =3D leader =3D (i =3D=3D 0 ? evlist__first(evlist=
-) : evsel__next(evsel));
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1594,7 +1594,7 @@ static int test__exclusive_group(struct evlist =
-*evlist)
-> > >
-> > >               /* cycles - group leader */
-> > >               evsel =3D leader =3D (i =3D=3D 0 ? evlist__first(evlist=
-) : evsel__next(evsel));
-> > > -             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, "cycles");
-> > > +             ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLE=
-S, HW_CYCLES_STR);
-> > >               if (ret)
-> > >                       return ret;
-> > >
-> > > @@ -1759,7 +1759,7 @@ static int test__checkevent_raw_pmu(struct evli=
-st *evlist)
-> > >  static int test__sym_event_slash(struct evlist *evlist)
-> > >  {
-> > >       struct evsel *evsel =3D evlist__first(evlist);
-> > > -     int ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLES, "=
-cycles");
-> > > +     int ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLES, H=
-W_CYCLES_STR);
-> > >
-> > >       if (ret)
-> > >               return ret;
-> > > @@ -1771,7 +1771,7 @@ static int test__sym_event_slash(struct evlist =
-*evlist)
-> > >  static int test__sym_event_dc(struct evlist *evlist)
-> > >  {
-> > >       struct evsel *evsel =3D evlist__first(evlist);
-> > > -     int ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLES, "=
-cycles");
-> > > +     int ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLES, H=
-W_CYCLES_STR);
-> > >
-> > >       if (ret)
-> > >               return ret;
-> > > @@ -1783,7 +1783,7 @@ static int test__sym_event_dc(struct evlist *ev=
-list)
-> > >  static int test__term_equal_term(struct evlist *evlist)
-> > >  {
-> > >       struct evsel *evsel =3D evlist__first(evlist);
-> > > -     int ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLES, "=
-cycles");
-> > > +     int ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLES, H=
-W_CYCLES_STR);
-> > >
-> > >       if (ret)
-> > >               return ret;
-> > > @@ -1795,7 +1795,7 @@ static int test__term_equal_term(struct evlist =
-*evlist)
-> > >  static int test__term_equal_legacy(struct evlist *evlist)
-> > >  {
-> > >       struct evsel *evsel =3D evlist__first(evlist);
-> > > -     int ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLES, "=
-cycles");
-> > > +     int ret =3D assert_hw(&evsel->core, PERF_COUNT_HW_CPU_CYCLES, H=
-W_CYCLES_STR);
-> > >
-> > >       if (ret)
-> > >               return ret;
-> > > @@ -2006,27 +2006,27 @@ static const struct evlist_test test__events[=
-] =3D {
-> > >               /* 7 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{instructions:k,cycles:upp}",
-> > > +             .name  =3D "{instructions:k," HW_CYCLES_STR ":upp}",
-> > >               .check =3D test__group1,
-> > >               /* 8 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{faults:k,branches}:u,cycles:k",
-> > > +             .name  =3D "{faults:k,branches}:u," HW_CYCLES_STR ":k",
-> > >               .check =3D test__group2,
-> > >               /* 9 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "group1{syscalls:sys_enter_openat:H,cycles:k=
-ppp},group2{cycles,1:3}:G,instructions:u",
-> > > +             .name  =3D "group1{syscalls:sys_enter_openat:H," HW_CYC=
-LES_STR ":kppp},group2{" HW_CYCLES_STR ",1:3}:G,instructions:u",
-> > >               .check =3D test__group3,
-> > >               /* 0 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cycles:u,instructions:kp}:p",
-> > > +             .name  =3D "{" HW_CYCLES_STR ":u,instructions:kp}:p",
-> > >               .check =3D test__group4,
-> > >               /* 1 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cycles,instructions}:G,{cycles:G,instructi=
-ons:G},cycles",
-> > > +             .name  =3D "{" HW_CYCLES_STR ",instructions}:G,{" HW_CY=
-CLES_STR ":G,instructions:G}," HW_CYCLES_STR,
-> > >               .check =3D test__group5,
-> > >               /* 2 */
-> > >       },
-> > > @@ -2036,27 +2036,27 @@ static const struct evlist_test test__events[=
-] =3D {
-> > >               /* 3 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cycles,cache-misses:G}:H",
-> > > +             .name  =3D "{" HW_CYCLES_STR ",cache-misses:G}:H",
-> > >               .check =3D test__group_gh1,
-> > >               /* 4 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cycles,cache-misses:H}:G",
-> > > +             .name  =3D "{" HW_CYCLES_STR ",cache-misses:H}:G",
-> > >               .check =3D test__group_gh2,
-> > >               /* 5 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cycles:G,cache-misses:H}:u",
-> > > +             .name  =3D "{" HW_CYCLES_STR ":G,cache-misses:H}:u",
-> > >               .check =3D test__group_gh3,
-> > >               /* 6 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cycles:G,cache-misses:H}:uG",
-> > > +             .name  =3D "{" HW_CYCLES_STR ":G,cache-misses:H}:uG",
-> > >               .check =3D test__group_gh4,
-> > >               /* 7 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cycles,cache-misses,branch-misses}:S",
-> > > +             .name  =3D "{" HW_CYCLES_STR ",cache-misses,branch-miss=
-es}:S",
-> > >               .check =3D test__leader_sample1,
-> > >               /* 8 */
-> > >       },
-> > > @@ -2071,7 +2071,7 @@ static const struct evlist_test test__events[] =
-=3D {
-> > >               /* 0 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cycles,cache-misses,branch-misses}:D",
-> > > +             .name  =3D "{" HW_CYCLES_STR ",cache-misses,branch-miss=
-es}:D",
-> > >               .check =3D test__pinned_group,
-> > >               /* 1 */
-> > >       },
-> > > @@ -2109,7 +2109,7 @@ static const struct evlist_test test__events[] =
-=3D {
-> > >               /* 6 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "task-clock:P,cycles",
-> > > +             .name  =3D "task-clock:P," HW_CYCLES_STR,
-> > >               .check =3D test__checkevent_precise_max_modifier,
-> > >               /* 7 */
-> > >       },
-> > > @@ -2140,17 +2140,17 @@ static const struct evlist_test test__events[=
-] =3D {
-> > >               /* 2 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cycles/name=3D'COMPLEX_CYCLES_NAME:orig=3Dc=
-ycles,desc=3Dchip-clock-ticks'/Duk",
-> > > +             .name  =3D HW_CYCLES_STR "/name=3D'COMPLEX_CYCLES_NAME:=
-orig=3Dcycles,desc=3Dchip-clock-ticks'/Duk",
-> > >               .check =3D test__checkevent_complex_name,
-> > >               /* 3 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cycles//u",
-> > > +             .name  =3D HW_CYCLES_STR "//u",
-> > >               .check =3D test__sym_event_slash,
-> > >               /* 4 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cycles:k",
-> > > +             .name  =3D HW_CYCLES_STR ":k",
-> > >               .check =3D test__sym_event_dc,
-> > >               /* 5 */
-> > >       },
-> > > @@ -2160,17 +2160,17 @@ static const struct evlist_test test__events[=
-] =3D {
-> > >               /* 6 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cycles,cache-misses,branch-misses}:e",
-> > > +             .name  =3D "{" HW_CYCLES_STR ",cache-misses,branch-miss=
-es}:e",
-> > >               .check =3D test__exclusive_group,
-> > >               /* 7 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cycles/name=3Dname/",
-> > > +             .name  =3D HW_CYCLES_STR "/name=3Dname/",
-> > >               .check =3D test__term_equal_term,
-> > >               /* 8 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cycles/name=3Dl1d/",
-> > > +             .name  =3D HW_CYCLES_STR "/name=3Dl1d/",
-> > >               .check =3D test__term_equal_legacy,
-> > >               /* 9 */
-> > >       },
-> > > @@ -2311,7 +2311,7 @@ static const struct evlist_test test__events_pm=
-u[] =3D {
-> > >               /* 9 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cpu/cycles,period=3D100000,config2/",
-> > > +             .name  =3D "cpu/" HW_CYCLES_STR ",period=3D100000,confi=
-g2/",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__checkevent_symbolic_name_config,
-> > >               /* 0 */
-> > > @@ -2335,43 +2335,43 @@ static const struct evlist_test test__events_=
-pmu[] =3D {
-> > >               /* 3 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cpu/instructions/k,cpu/cycles/upp}",
-> > > +             .name  =3D "{cpu/instructions/k,cpu/" HW_CYCLES_STR "/u=
-pp}",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__group1,
-> > >               /* 4 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cpu/cycles/u,cpu/instructions/kp}:p",
-> > > +             .name  =3D "{cpu/" HW_CYCLES_STR "/u,cpu/instructions/k=
-p}:p",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__group4,
-> > >               /* 5 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cpu/cycles/,cpu/cache-misses/G}:H",
-> > > +             .name  =3D "{cpu/" HW_CYCLES_STR "/,cpu/cache-misses/G}=
-:H",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__group_gh1,
-> > >               /* 6 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cpu/cycles/,cpu/cache-misses/H}:G",
-> > > +             .name  =3D "{cpu/" HW_CYCLES_STR "/,cpu/cache-misses/H}=
-:G",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__group_gh2,
-> > >               /* 7 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cpu/cycles/G,cpu/cache-misses/H}:u",
-> > > +             .name  =3D "{cpu/" HW_CYCLES_STR "/G,cpu/cache-misses/H=
-}:u",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__group_gh3,
-> > >               /* 8 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cpu/cycles/G,cpu/cache-misses/H}:uG",
-> > > +             .name  =3D "{cpu/" HW_CYCLES_STR "/G,cpu/cache-misses/H=
-}:uG",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__group_gh4,
-> > >               /* 9 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cpu/cycles/,cpu/cache-misses/,cpu/branch-m=
-isses/}:S",
-> > > +             .name  =3D "{cpu/" HW_CYCLES_STR "/,cpu/cache-misses/,c=
-pu/branch-misses/}:S",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__leader_sample1,
-> > >               /* 0 */
-> > > @@ -2389,7 +2389,7 @@ static const struct evlist_test test__events_pm=
-u[] =3D {
-> > >               /* 2 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cpu/cycles/,cpu/cache-misses/,cpu/branch-m=
-isses/}:D",
-> > > +             .name  =3D "{cpu/" HW_CYCLES_STR "/,cpu/cache-misses/,c=
-pu/branch-misses/}:D",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__pinned_group,
-> > >               /* 3 */
-> > > @@ -2407,13 +2407,13 @@ static const struct evlist_test test__events_=
-pmu[] =3D {
-> > >               /* 5 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cpu/cycles/u",
-> > > +             .name  =3D "cpu/" HW_CYCLES_STR "/u",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__sym_event_slash,
-> > >               /* 6 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cpu/cycles/k",
-> > > +             .name  =3D "cpu/" HW_CYCLES_STR "/k",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__sym_event_dc,
-> > >               /* 7 */
-> > > @@ -2425,19 +2425,19 @@ static const struct evlist_test test__events_=
-pmu[] =3D {
-> > >               /* 8 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "{cpu/cycles/,cpu/cache-misses/,cpu/branch-m=
-isses/}:e",
-> > > +             .name  =3D "{cpu/" HW_CYCLES_STR "/,cpu/cache-misses/,c=
-pu/branch-misses/}:e",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__exclusive_group,
-> > >               /* 9 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cpu/cycles,name=3Dname/",
-> > > +             .name  =3D "cpu/" HW_CYCLES_STR ",name=3Dname/",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__term_equal_term,
-> > >               /* 0 */
-> > >       },
-> > >       {
-> > > -             .name  =3D "cpu/cycles,name=3Dl1d/",
-> > > +             .name  =3D "cpu/" HW_CYCLES_STR ",name=3Dl1d/",
-> > >               .valid =3D test__pmu_cpu_valid,
-> > >               .check =3D test__term_equal_legacy,
-> > >               /* 1 */
-> > > diff --git a/tools/perf/tests/perf-time-to-tsc.c b/tools/perf/tests/p=
-erf-time-to-tsc.c
-> > > index d4437410c99f..7ebcb1f004b2 100644
-> > > --- a/tools/perf/tests/perf-time-to-tsc.c
-> > > +++ b/tools/perf/tests/perf-time-to-tsc.c
-> > > @@ -101,7 +101,7 @@ static int test__perf_time_to_tsc(struct test_sui=
-te *test __maybe_unused, int su
-> > >
-> > >       perf_evlist__set_maps(&evlist->core, cpus, threads);
-> > >
-> > > -     CHECK__(parse_event(evlist, "cycles:u"));
-> > > +     CHECK__(parse_event(evlist, HW_CYCLES_STR ":u"));
-> > >
-> > >       evlist__config(evlist, &opts, NULL);
-> > >
-> > > diff --git a/tools/perf/tests/switch-tracking.c b/tools/perf/tests/sw=
-itch-tracking.c
-> > > index 5be294014d3b..ad3a87978c0d 100644
-> > > --- a/tools/perf/tests/switch-tracking.c
-> > > +++ b/tools/perf/tests/switch-tracking.c
-> > > @@ -332,7 +332,7 @@ static int process_events(struct evlist *evlist,
-> > >  static int test__switch_tracking(struct test_suite *test __maybe_unu=
-sed, int subtest __maybe_unused)
-> > >  {
-> > >       const char *sched_switch =3D "sched:sched_switch";
-> > > -     const char *cycles =3D "cycles:u";
-> > > +     const char *cycles =3D HW_CYCLES_STR ":u";
-> > >       struct switch_tracking switch_tracking =3D { .tids =3D NULL, };
-> > >       struct record_opts opts =3D {
-> > >               .mmap_pages          =3D UINT_MAX,
-> > > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> > > index e8217efdda53..d7e935faeda0 100644
-> > > --- a/tools/perf/util/evlist.c
-> > > +++ b/tools/perf/util/evlist.c
-> > > @@ -112,7 +112,7 @@ struct evlist *evlist__new_default(void)
-> > >               char buf[256];
-> > >               int err;
-> > >
-> > > -             snprintf(buf, sizeof(buf), "%s/cycles/%s", pmu->name,
-> > > +             snprintf(buf, sizeof(buf), "%s/%s/%s", pmu->name, HW_CY=
-CLES_STR,
-> > >                        can_profile_kernel ? "P" : "Pu");
-> > >               err =3D parse_event(evlist, buf);
-> > >               if (err) {
-> > > diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-e=
-vents.h
-> > > index db92cd67bc0f..304676bf32dd 100644
-> > > --- a/tools/perf/util/parse-events.h
-> > > +++ b/tools/perf/util/parse-events.h
-> > > @@ -20,6 +20,16 @@ struct option;
-> > >  struct perf_pmu;
-> > >  struct strbuf;
-> > >
-> > > +/*
-> > > + * The name used for the "cycles" event. A different event name is u=
-sed on ARM
-> > > + * as many ARM PMUs define a "cycles" event.
-> > > + */
-> > > +#if defined(__aarch64__) || defined(__arm__)
-> > > +#define HW_CYCLES_STR "cpu-cycles"
-> > > +#else
-> > > +#define HW_CYCLES_STR "cycles"
-> > > +#endif
-> > > +
-> > >  const char *event_type(size_t type);
-> > >
-> > >  /* Arguments encoded in opt->value. */
-> > > diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_=
-api_probe.c
-> > > index 6ecf38314f01..693bb5891bc4 100644
-> > > --- a/tools/perf/util/perf_api_probe.c
-> > > +++ b/tools/perf/util/perf_api_probe.c
-> > > @@ -74,9 +74,9 @@ static bool perf_probe_api(setup_probe_fn_t fn)
-> > >       if (!ret)
-> > >               return true;
-> > >
-> > > -     pmu =3D perf_pmus__scan_core(/*pmu=3D*/NULL);
-> > > +     pmu =3D perf_pmus__find_core_pmu();
-> > >       if (pmu) {
-> > > -             const char *try[] =3D {"cycles", "instructions", NULL};
-> > > +             const char *try[] =3D {HW_CYCLES_STR, "instructions", N=
-ULL};
-> > >               char buf[256];
-> > >               int i =3D 0;
-> > >
-> > > --
-> > > 2.51.0.384.g4c02a37b29-goog
-> > >
+> 
+> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+> ---
+>  tools/testing/selftests/bpf/test_xsk.c | 32 +++++++++++++++++++++++++++++++-
+>  1 file changed, 31 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_xsk.c b/tools/testing/selftests/bpf/test_xsk.c
+> index 37752b2dad651b36d155051931d7b3b902fac403..e4059c7d0a289449a6b73669fa87f7440b7f55c0 100644
+> --- a/tools/testing/selftests/bpf/test_xsk.c
+> +++ b/tools/testing/selftests/bpf/test_xsk.c
+> @@ -546,6 +546,13 @@ static void pkt_stream_receive_half(struct test_spec *test)
+>  	struct pkt_stream *pkt_stream = test->ifobj_tx->xsk->pkt_stream;
+>  	u32 i;
+>  
+> +	if (test->ifobj_rx->xsk->pkt_stream != test->rx_pkt_stream_default)
+> +		/* Packet stream has already been replaced so we have to release this one.
+> +		 * The newly created one will be freed by the restore_default() at the
+> +		 * end of the test
+> +		 */
+> +		pkt_stream_delete(test->ifobj_rx->xsk->pkt_stream);
+> +
+>  	test->ifobj_rx->xsk->pkt_stream = pkt_stream_generate(pkt_stream->nb_pkts,
+>  							      pkt_stream->pkts[0].len);
+>  	pkt_stream = test->ifobj_rx->xsk->pkt_stream;
+> @@ -573,6 +580,22 @@ static void pkt_stream_even_odd_sequence(struct test_spec *test)
+>  	}
+>  }
+>  
+> +static void release_even_odd_sequence(struct test_spec *test)
+> +{
+> +	struct pkt_stream *later_free_tx = test->ifobj_tx->xsk->pkt_stream;
+> +	struct pkt_stream *later_free_rx = test->ifobj_rx->xsk->pkt_stream;
+> +	int i;
+> +
+> +	for (i = 0; i < test->nb_sockets; i++) {
+> +		/* later_free_{rx/tx} will be freed by restore_default() */
+> +		if (test->ifobj_tx->xsk_arr[i].pkt_stream != later_free_tx)
+> +			pkt_stream_delete(test->ifobj_tx->xsk_arr[i].pkt_stream);
+> +		if (test->ifobj_rx->xsk_arr[i].pkt_stream != later_free_rx)
+> +			pkt_stream_delete(test->ifobj_rx->xsk_arr[i].pkt_stream);
+> +	}
+> +
+> +}
+> +
+>  static u64 pkt_get_addr(struct pkt *pkt, struct xsk_umem_info *umem)
+>  {
+>  	if (!pkt->valid)
+> @@ -1874,6 +1897,7 @@ int testapp_stats_tx_invalid_descs(struct test_spec *test)
+>  int testapp_stats_rx_full(struct test_spec *test)
+>  {
+>  	pkt_stream_replace(test, DEFAULT_UMEM_BUFFERS + DEFAULT_UMEM_BUFFERS / 2, MIN_PKT_SIZE);
+> +	pkt_stream_delete(test->ifobj_rx->xsk->pkt_stream);
+>  	test->ifobj_rx->xsk->pkt_stream = pkt_stream_generate(DEFAULT_UMEM_BUFFERS, MIN_PKT_SIZE);
+>  
+>  	test->ifobj_rx->xsk->rxqsize = DEFAULT_UMEM_BUFFERS;
+> @@ -1885,6 +1909,7 @@ int testapp_stats_rx_full(struct test_spec *test)
+>  int testapp_stats_fill_empty(struct test_spec *test)
+>  {
+>  	pkt_stream_replace(test, DEFAULT_UMEM_BUFFERS + DEFAULT_UMEM_BUFFERS / 2, MIN_PKT_SIZE);
+> +	pkt_stream_delete(test->ifobj_rx->xsk->pkt_stream);
+>  	test->ifobj_rx->xsk->pkt_stream = pkt_stream_generate(DEFAULT_UMEM_BUFFERS, MIN_PKT_SIZE);
+>  
+>  	test->ifobj_rx->use_fill_ring = false;
+> @@ -2043,6 +2068,7 @@ int testapp_xdp_shared_umem(struct test_spec *test)
+>  {
+>  	struct xsk_xdp_progs *skel_rx = test->ifobj_rx->xdp_progs;
+>  	struct xsk_xdp_progs *skel_tx = test->ifobj_tx->xdp_progs;
+> +	int ret;
+>  
+>  	test->total_steps = 1;
+>  	test->nb_sockets = 2;
+> @@ -2053,7 +2079,11 @@ int testapp_xdp_shared_umem(struct test_spec *test)
+>  
+>  	pkt_stream_even_odd_sequence(test);
+>  
+> -	return testapp_validate_traffic(test);
+> +	ret = testapp_validate_traffic(test);
+> +
+> +	release_even_odd_sequence(test);
+> +
+> +	return ret;
+>  }
+>  
+>  int testapp_poll_txq_tmout(struct test_spec *test)
+> 
+> -- 
+> 2.50.1
+> 
 
