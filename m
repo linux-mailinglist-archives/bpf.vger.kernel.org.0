@@ -1,77 +1,78 @@
-Return-Path: <bpf+bounces-68521-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68522-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 519A7B59BDA
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:18:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C9CDB59BE1
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 17:19:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E58367A4CDF
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 15:16:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D10B2A4ED8
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 15:18:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4CF34A337;
-	Tue, 16 Sep 2025 15:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04FC0320A02;
+	Tue, 16 Sep 2025 15:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HXFScTw9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iiXh/eBZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37CA317708
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:17:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E275A1A3172
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758035866; cv=none; b=jOiz+rB5HwOOgN9HPtCnud1Gx3ewJKi/WSB0aMXy9u647P54z/2sJDPujVn0q65TK53KFnZhotV4/owCHY9SP5OVvRFsSn/PYERe89ZdNzkX/LY5f0HBMT/JtAQNf1PyjJE3Emyq+o/FaV9+1aQg8AGw3Y+JHFtmMZAFksty51k=
+	t=1758035916; cv=none; b=hHSAsCkihUZAYYqMv/VLOK7JalScZG1LfIdUmrc92GyxW8pYrbTh4FUABhe+j+L6CEIxXc5PERi/kk8riqjbVL+kKheJHHpVix3hr7xGSA4GR1WlgMqiIXTYRKbeALAeBKsd5RVvJxXUcSH3/2oEcdp5cq0XRhkVHNzVzWHCaXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758035866; c=relaxed/simple;
-	bh=ww2Qo6ksIVrVIiMzunXN8x3X70yIUyDALWMYtl3zSOc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=S2ofxbN16vU5019VOIrKPjIvEF73SEz0fn3BxZYgTVMpwP6tbLzbL8zbUN6l9RCGxG/07gVjLENUFvKEdW94CUoyVgZHv6ryfo5TSSvLoutgHmMXEPcrYiBjvnQO3y/XlNq28fjIAYtTWhJN+FKg83adGyM1wNoBw/roNFrcXWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HXFScTw9; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1758035916; c=relaxed/simple;
+	bh=DZaFIDOROwqGjvBTOyoiX1vrRlxygq9rUZt5qkKBD6A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JD4BZUVvhhz5WOAP0F92v/UfcZChTr7lKRsvK9/wLcXWRVJKj+wmO+Sy/Ov9ZrVPcDfYhdDbypGEI111BHhaLsBRmIx6vjn8HsbXMVrvV538ppIWxBvDSSYS/k9XvEM6Ged5GPnfy9JvUJaaZOqzn2axDBBlvDpEri1760pEURQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iiXh/eBZ; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45f2f7ae386so17038615e9.3
-        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 08:17:44 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-45cb5e5e71eso35149745e9.2
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 08:18:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758035863; x=1758640663; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QVGm5GtBbdu8k9yhNK1mV2mCRVwFrsiON4Hc2d0ZA84=;
-        b=HXFScTw9Vdp0Isq8c7ZIAlMetq9OeRg1nup4q+Dv9ND0nMVebilWv6wr4mFgzEWJTK
-         VqnRiWRUYlIJ6AqQ8TAAi2cTvdAtuAge0GzKwIiNMx9vTU/Ge+Poe49x2U3ygPeIhISF
-         FuUDH+BlR2i42yotFiFNytx3o6ttDZX6evu1z0FGn+GCaWi0UUVzMks6MTJ9MnaL95CV
-         Yg1XigqGRd1A6jLLTATFWLA67HeLFVmoe0oeXktmaaNVKYeHgtXUswpr3EkTWYR0D3xv
-         4H+xKhwFpsdT3zl09QDcQ40mO8p/5bsWjkEifLlIprzNOP1Ibf0cbG4zkrkkN1gGHF/3
-         SeeQ==
+        d=gmail.com; s=20230601; t=1758035913; x=1758640713; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6wruokny0QuM+I6OAFE6sLgY/3Yxbp6GB8c7RMXDda4=;
+        b=iiXh/eBZ+Rsh3Q/WyjeB/GXaTlIocXZfCxOJ+AfC/CxU7cusThZfusrOhudK35Y25U
+         SEEdgk64CZT+Hf66t92XqzAiuyJEoWWLu3BNQsUe5oiqI5kmySp/YyAJE+Lt0Mil22LW
+         zfOHl90Oc/s7XN1M8TToPHggZkCNtazhzMi6Ts8fs5/AYJqWbzFljtQAvUn6BlJrrchH
+         itJV7xHhP1K7yVHuUvARbZabiPilFb4Y2mMWTn93nFaYTSWlNUaKEGKEVijJh/eNkr5f
+         OuV6cV3wmlMDudaduHsIE2tkepGvfHnM7K2KGJBGmmCIVVOTPanPt6HQKYLwU/Ny9l/j
+         JRHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758035863; x=1758640663;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QVGm5GtBbdu8k9yhNK1mV2mCRVwFrsiON4Hc2d0ZA84=;
-        b=T6qNX/ze+iOD6QQIwhEzkRWO/LS7H5/A4M/AD3cLgPrVNjqrmikl1xz+r91EHySZU4
-         VFXGg17Zi9xGL/SJY/fuY++a+AyxU0H0ENSLGGZ3/d3YWjq/PDoernzT4UD5fW7UXZV8
-         PDKcP6CWLtHqo/ldDOTgOFuESr/DrR0/q86x1zsMnMtLdYFOBBu3S8RnN1W/bS5LKfEO
-         jKx6sgDUHpDnXKX6NAcfbwvl2BlrYcWi4pCo7UlCu1lbbIRz4X3VKLiJrBXqHQfOoG6l
-         Nf6l7LBdxpVfZ73IF+UG0CGADphElre4QB5D576YGScvEKXCtkf+KVNUFKmOV54MUoN1
-         rweQ==
-X-Gm-Message-State: AOJu0Yy5p6ZqrufMesC89ALmtn6Ku8glS+m0Yxocbkn+aINAqtdesbva
-	375FIMnkTE5yaU813F06OwCbfedRbRZxJzhvg3+AWIff6977g9Cmlsm8hi/vEDlm
-X-Gm-Gg: ASbGncs1A4GgXBm176sUDovy0MPV0kW9sOqzvX3sDqXTK3sOV9I1mwVpNMc6hbUyUST
-	l24fet0yeyDOCpeyGSqmGhIL12Dgu/PcwsagU0U/WCSD94vsGjbGnaRyDd37wQkP5vaPzdzbBSa
-	Fx6h3CvSUIyGHaEbe22mCJEKe62LCju9rs0sDzKOdVh8IluaFdvAyLiOXmsfc5J3txIKoKVHE+P
-	tJU/95+GRaNafP2Wt5T8AOZGeVKz0Hl20B6JaiD3F5f0MOKgj+bY2GXHQt02ssJ9IkJ4elBfkUW
-	QRGKp1Jq+f7poNb2HwXIL/g77xMGX1HsrSsq8v+N9nL20OGo8eugHduKDlsqW+ClWFIp5rYkY48
-	oVXrAkbBlmwtK7IDj+t9ohzZDGe8ZuZ0TTICkz5agBHyjAAdS2gI/wVCrLNUNO3WedI7+lBrFxv
-	uGtud8sZd4pW/qO9fYRL03
-X-Google-Smtp-Source: AGHT+IFl8/lEyIe/fBzHn7X3DPJolj3EfexriONqfFL49b6lg0vOTjpT3ZL8tty2BR2ItuqBUFYhbw==
-X-Received: by 2002:a5d:64c8:0:b0:3eb:dcf:bfad with SMTP id ffacd0b85a97d-3eb0dcfc667mr6483505f8f.34.1758035862907;
-        Tue, 16 Sep 2025 08:17:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758035913; x=1758640713;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6wruokny0QuM+I6OAFE6sLgY/3Yxbp6GB8c7RMXDda4=;
+        b=REnvFLKl8sUv1Jozch2olS6JlBiso5LX8GLcoyNFVOvrCG7rSHB6O5ZrR92Jt+HXIu
+         aTSSTM7Sf0/XhB3pFcO1M8pLrHwmuakF2A13R4hEuc59bbOQNSOmIU1h9SG6Vaggwybp
+         ZrQrOJIxEvWs9ncjZe80AbSIA+BNAQi2EK2YBSx/hYXAn3Qc1AyJRKGNTj4+re14M9Pm
+         F3s9tmcuaXpFyrgMNfKxmGldLH8l4hiFhAHYazkCb8Z26ok4IMqe9qbLzozoc8Jv3pbf
+         Zy4mKKohaz7aFOC3PXqe1vUr9Vpn/GGaEqUFqZxf2pN4CSfpH2Pyehd3Mbmdl+Ntt3wP
+         Rw7w==
+X-Gm-Message-State: AOJu0YyoM5Qm8JhBaxZ0BKTalbWGjMPRLb0A6iR4inaK+fG0bB6kC639
+	wzQKzM79gz2teKN04QbWxva13x7RWROatGCSSjXhmj65pb0frETiExUer6zfdARi
+X-Gm-Gg: ASbGncvZMP6bOBpeBQ8vJNIvxZjJVH1VtJzOAwXqpTt46aktqlPuWZHr0a/7q4NajBX
+	uzioynn/uxQ9HWgqgWwGINHX7MuoLkeg6mvTatqsBj8QB9v5qUAVxLwHPMj0GR/Q4f4raG/JH7A
+	2oyQjGh3v//5k+l9sakdLPrh+BJsbju+v80X7PfWGgTN4YzTvbXO/7/tUJbkbIZoeJvkxzWGAUe
+	lhtehLX3x9sg/paSL+fm3ki78a0yzQg0Qvod/qvTcJXTB0lEZjH/4Tf8NXX7KVwphK9ti8LOvZy
+	rshMKHV3UAy7jdwW7+5BOdrPOGuevrrH4eZncilQDgidWOmlzQDcqTtjJ+kxGXlv8rUYew4Kfo+
+	46O8nNj5qhgT9cn7NPIsH1alfRgXxQBa8PjYJNHtE6C65i8labR9No8jO//WyqYwRNBOqRF/+Ut
+	xEjL3U3fMT2+Xit3B/zEwj
+X-Google-Smtp-Source: AGHT+IFZEvKpxM1FGT+iThowNyGbsgwPaHFKbxFjUXXvoUTiYP9SELzbQab90AyRIHBg8kpPB1U4eQ==
+X-Received: by 2002:a05:6000:1846:b0:3da:37de:a3c2 with SMTP id ffacd0b85a97d-3e765796575mr16556758f8f.24.1758035913069;
+        Tue, 16 Sep 2025 08:18:33 -0700 (PDT)
 Received: from mail.gmail.com (2a01cb0889497e00b660ca331402f663.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:b660:ca33:1402:f663])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45e01baa70dsm236131385e9.15.2025.09.16.08.17.41
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3e8237cfdddsm15745105f8f.60.2025.09.16.08.18.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Sep 2025 08:17:42 -0700 (PDT)
-Date: Tue, 16 Sep 2025 17:17:40 +0200
+        Tue, 16 Sep 2025 08:18:32 -0700 (PDT)
+Date: Tue, 16 Sep 2025 17:18:30 +0200
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -79,8 +80,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf 1/3] bpf: Explicitly check accesses to bpf_sock_addr
-Message-ID: <f5310453da29debecc28fe487cd5638e0b9ae268.1758032885.git.paul.chaignon@gmail.com>
+Subject: [PATCH bpf 2/3] selftests/bpf: Move macros to bpf_misc.h
+Message-ID: <6d21ac4ab11cceab453fbac8ef8c42260a201a10.1758032885.git.paul.chaignon@gmail.com>
+References: <f5310453da29debecc28fe487cd5638e0b9ae268.1758032885.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,62 +91,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <f5310453da29debecc28fe487cd5638e0b9ae268.1758032885.git.paul.chaignon@gmail.com>
 
-Syzkaller found a kernel warning on the following sock_addr program:
+Move the sizeof_field and offsetofend macros from individual test files
+to the common bpf_misc.h to avoid duplication.
 
-    0: r0 = 0
-    1: r2 = *(u32 *)(r1 +60)
-    2: exit
-
-which triggers:
-
-    verifier bug: error during ctx access conversion (0)
-
-This is happening because offset 60 in bpf_sock_addr corresponds to an
-implicit padding of 4 bytes, right after msg_src_ip4. Access to this
-padding isn't rejected in sock_addr_is_valid_access and it thus later
-fails to convert the access.
-
-This patch fixes it by explicitly checking the various fields of
-bpf_sock_addr in sock_addr_is_valid_access.
-
-I checked the other ctx structures and is_valid_access functions and
-didn't find any other similar cases. Other cases of (properly handled)
-padding are covered in new tests in a subsequent patch.
-
-Fixes: 1cedee13d25a ("bpf: Hooks for sys_sendmsg")
-Reported-by: syzbot+136ca59d411f92e821b7@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=136ca59d411f92e821b7
 Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
- net/core/filter.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/progs/bpf_misc.h             | 4 ++++
+ tools/testing/selftests/bpf/progs/test_cls_redirect.c    | 4 +---
+ tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c | 5 +----
+ tools/testing/selftests/bpf/progs/verifier_ctx.c         | 2 --
+ tools/testing/selftests/bpf/progs/verifier_sock.c        | 4 ----
+ 5 files changed, 6 insertions(+), 13 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index da391e2b0788..9ac58960e59e 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -9284,13 +9284,19 @@ static bool sock_addr_is_valid_access(int off, int size,
- 			return false;
- 		info->reg_type = PTR_TO_SOCKET;
- 		break;
--	default:
-+	case bpf_ctx_range(struct bpf_sock_addr, user_family):
-+	case bpf_ctx_range(struct bpf_sock_addr, family):
-+	case bpf_ctx_range(struct bpf_sock_addr, type):
-+	case bpf_ctx_range(struct bpf_sock_addr, protocol):
- 		if (type == BPF_READ) {
- 			if (size != size_default)
- 				return false;
- 		} else {
- 			return false;
- 		}
-+		break;
-+	default:
-+		return false;
- 	}
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index c1cfd297aabf..749bf235dc07 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -156,6 +156,10 @@
+ #define __imm_ptr(name) [name]"r"(&name)
+ #define __imm_insn(name, expr) [name]"i"(*(long *)&(expr))
  
- 	return true;
++#define sizeof_field(TYPE, MEMBER) sizeof((((TYPE *)0)->MEMBER))
++#define offsetofend(TYPE, MEMBER) \
++	(offsetof(TYPE, MEMBER)	+ sizeof_field(TYPE, MEMBER))
++
+ /* Magic constants used with __retval() */
+ #define POINTER_VALUE	0xbadcafe
+ #define TEST_DATA_LEN	64
+diff --git a/tools/testing/selftests/bpf/progs/test_cls_redirect.c b/tools/testing/selftests/bpf/progs/test_cls_redirect.c
+index f344c6835e84..fa1848650d4b 100644
+--- a/tools/testing/selftests/bpf/progs/test_cls_redirect.c
++++ b/tools/testing/selftests/bpf/progs/test_cls_redirect.c
+@@ -22,6 +22,7 @@
+ 
+ #include "bpf_compiler.h"
+ #include "test_cls_redirect.h"
++#include "bpf_misc.h"
+ 
+ #pragma GCC diagnostic ignored "-Waddress-of-packed-member"
+ 
+@@ -31,9 +32,6 @@
+ #define INLINING __always_inline
+ #endif
+ 
+-#define offsetofend(TYPE, MEMBER) \
+-	(offsetof(TYPE, MEMBER) + sizeof((((TYPE *)0)->MEMBER)))
+-
+ #define IP_OFFSET_MASK (0x1FFF)
+ #define IP_MF (0x2000)
+ 
+diff --git a/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c b/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
+index 5f4e87ee949a..1ecdf4c54de4 100644
+--- a/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
++++ b/tools/testing/selftests/bpf/progs/test_tcp_hdr_options.c
+@@ -14,10 +14,7 @@
+ #include <bpf/bpf_endian.h>
+ #define BPF_PROG_TEST_TCP_HDR_OPTIONS
+ #include "test_tcp_hdr_options.h"
+-
+-#ifndef sizeof_field
+-#define sizeof_field(TYPE, MEMBER) sizeof((((TYPE *)0)->MEMBER))
+-#endif
++#include "bpf_misc.h"
+ 
+ __u8 test_kind = TCPOPT_EXP;
+ __u16 test_magic = 0xeB9F;
+diff --git a/tools/testing/selftests/bpf/progs/verifier_ctx.c b/tools/testing/selftests/bpf/progs/verifier_ctx.c
+index 424463094760..b927906aa305 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_ctx.c
++++ b/tools/testing/selftests/bpf/progs/verifier_ctx.c
+@@ -5,8 +5,6 @@
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
+ 
+-#define sizeof_field(TYPE, MEMBER) sizeof((((TYPE *)0)->MEMBER))
+-
+ SEC("tc")
+ __description("context stores via BPF_ATOMIC")
+ __failure __msg("BPF_ATOMIC stores into R1 ctx is not allowed")
+diff --git a/tools/testing/selftests/bpf/progs/verifier_sock.c b/tools/testing/selftests/bpf/progs/verifier_sock.c
+index 0d5e56dffabb..bf88c644eb30 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_sock.c
++++ b/tools/testing/selftests/bpf/progs/verifier_sock.c
+@@ -5,10 +5,6 @@
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
+ 
+-#define sizeof_field(TYPE, MEMBER) sizeof((((TYPE *)0)->MEMBER))
+-#define offsetofend(TYPE, MEMBER) \
+-	(offsetof(TYPE, MEMBER)	+ sizeof_field(TYPE, MEMBER))
+-
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
+ 	__uint(max_entries, 1);
 -- 
 2.43.0
 
