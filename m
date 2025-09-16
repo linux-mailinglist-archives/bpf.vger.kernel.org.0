@@ -1,132 +1,264 @@
-Return-Path: <bpf+bounces-68460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C36B0B58A71
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 03:00:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20A56B58B26
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 03:28:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74ACF2A5E1D
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 01:00:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 702C51B215E7
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 01:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9BB1E3DCD;
-	Tue, 16 Sep 2025 01:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1178B1FAC34;
+	Tue, 16 Sep 2025 01:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fz3ZZSyk"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e8Fqr5eV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2341E379B
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 01:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73AE13B293
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 01:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757984419; cv=none; b=Dq9WYqS7SjK7wiwWzk0e1VYNoZ1ITeUkIe/9aHpZmMymIAmDkdcvQls1o07QXjdoIG5C807J+m28Pjy1YMLsW989mTFi383ribu/ZzOn1MLhY2bNX+XfQaG/w94IAQxic720OKtXkWD2dUXbOcY/6xwJybYQBTOrf7Z0ds3vDj4=
+	t=1757986092; cv=none; b=pX6VuQ7DZ5w65kw4XBeCFJi3mV8/dGX+48tjJmvdmW7Ys4JsPxY931XdrH+opZPyU4hgnUNQKWGmdpPajUvYtNWcU4DgDCir4n4VJCCOQOBK3ZyubtciN2M0yERU2nx6QyLhz9KVIbq2sgIAYFEPIT+kXm+0cK5Os3aQNjz7vOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757984419; c=relaxed/simple;
-	bh=vJ8uvW5pPBElSePJ5lVixVZCgb687MoeT4SjQWM0OaI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CQ4vMoJDrpZ3LuYZ31QzsKua/GjGHi5io0x+7cgvocb0tmG9Pkkz48Q9UKqhBvoX5y93qyMSRxIf40eRzBAjtgg7Vzbj/pMxa5V03mosDsRx3o3/QhVAh4XMDSLXI4zmppJOHwAj5b1mzbGH7W2IdnZ8AbAuNySbNXR6TXn7VdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fz3ZZSyk; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-45ed646b656so39960375e9.3
-        for <bpf@vger.kernel.org>; Mon, 15 Sep 2025 18:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757984415; x=1758589215; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=40khU2eera/C0wIDlxivIo2NAj0/r96JDxR8+rLtfvE=;
-        b=Fz3ZZSykA8m70exrp3HnCnQcrUl6dWQ0pjDuKlYUNUyt2TIcLPnwYylfrZIEu/Hgdk
-         SZ9nl13CALSMBSos6izzL3rXMgVKAlQz/CYR3jbUMeh1Odah7revUXJ9P5umTlgNFpzE
-         hNPkjp2gMgeZ6M25547y0/mkthI+7nd8wzHNPDDQp9BG+5pCd8K1894KdiD+GmF39uhE
-         TFDjMN/DEuwIEeaoVROOSEsxyHTmnIr6+Cv8mBRcXDl9myBZ27U0qV2Cy++4GwjIT5Ko
-         aXRx6S4JdTH3jVWUSJMQCHhuyFcj+EUiJ6z91cwoqooHQNlS1btFPmzOy0Hks7gkGruC
-         iPGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757984415; x=1758589215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=40khU2eera/C0wIDlxivIo2NAj0/r96JDxR8+rLtfvE=;
-        b=gdUl8cadP7PwXF6i8a1+Jk3aPTAHmStgZGyOEXQMMTewLmTNCUVG9aV/WbFVVipzhZ
-         BaEP+AkVLz7FcCAyC5SwGT273FkumNwbZxI5sg//ftzwdnccuUcS0br49FIYGME0fmo1
-         lWg3IoA03sRpGSE4IUww5LQCSg7Oibn7aWxn2pRbM4F4pySPOmdwOlz/TQPOAC2vyzOp
-         wWQ361mAaETQVnpOk8Y0A5eI/PN0gsBU8pwl2DRnYWAztY9nUMXFSiUWrlfnQP6tUXh5
-         ZVyKeLAbRLSgB20xQvRzctvu9u80jkvqVUorXxt+JIMvGZQ1wo3Pd/CxJI0AJR9uUN02
-         hUmw==
-X-Gm-Message-State: AOJu0Yw3QxlYZqz3DOcefc8PRk3YrS7OlvlOBOd+xKeccec645GzFLij
-	nos2dDSdx8keHlT+ZX6jWRs8eCSoS2urjut8RqIanvH0jeXE9DxYvY9YjEUYFbLeqy+YKjN3S3g
-	n7QC05ssHXRV4qSfArZ2nrefS08549TY=
-X-Gm-Gg: ASbGncuddwqG+BDNbMKnwPZTvlzPfTmKrHZzW5i5FAeIBdfMaSyIfgIUTZXzDyxL/ql
-	32FPORPSgZ8wwmOZ7Hn7ydLFXtS8UsSawajKX3RRygqPIjwyhYOaWL+cRO9a7CuLfxJtq/42gLw
-	rlYfP9d4RKaX4Q7W72kHYVwTqGjieOaJrHCGt1Zoha6u518hAysG23bX91/BYNI5f8FBotwsyv3
-	y11biFnxea/Sn/50RfSHNL6Otas4lcRWlYm
-X-Google-Smtp-Source: AGHT+IFF/jNbJrg7JsqU1KXpSbCfkS4+VN2T8ZW+UmOw9rPbBXYFNDdRXsyuyZNFSfle/Y+OP+wYAkK7vfhDvIB9uf8=
-X-Received: by 2002:a05:6000:240a:b0:3e3:f332:73f7 with SMTP id
- ffacd0b85a97d-3e7657adee4mr12627231f8f.28.1757984414528; Mon, 15 Sep 2025
- 18:00:14 -0700 (PDT)
+	s=arc-20240116; t=1757986092; c=relaxed/simple;
+	bh=V0yugxsvcLj8XGjY02UDDjUKYpDyhudTfXsjh1q7qrc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pr113gVuEex6yM/daSB5+b9dm9qC75V/y30Sp2KMzq7asZofPfk1MXSbrh+ZKHz7qoll3jT6qVtILwV0xiVBCWgZJQ+ryuHYmL4yVMDccB8Sa4AhgnmW+pPZsbeNlAfFlX3DH7h4lSfazMH8YwG8x9pKRV8zxlWnqzwuh+dXSPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e8Fqr5eV; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1757986089;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cqymUK0o/gtjDA+DSxafe5/sd/gWVsVOQwBD6bvjgNg=;
+	b=e8Fqr5eVPyaB2NyIhk7OUNu08ncffQ0fH2ZnykwCI+A2LHPyFw+fJJd0ql+kynXeM4fe/D
+	TOezK1jG0OEYi1JIs+MErCo+2hMqzLbdi4/7ocIgK8RJKAgI0TMQSNErI5HN1IZlGvsOjw
+	rN7+jn2TWbtVziYLgoduYNTKTQVS1VU=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-413-29APtI7xObGeh3pus7KrmQ-1; Mon,
+ 15 Sep 2025 21:28:08 -0400
+X-MC-Unique: 29APtI7xObGeh3pus7KrmQ-1
+X-Mimecast-MFC-AGG-ID: 29APtI7xObGeh3pus7KrmQ_1757986086
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B430E180057A;
+	Tue, 16 Sep 2025 01:28:04 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.143])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 510B419560A2;
+	Tue, 16 Sep 2025 01:28:01 +0000 (UTC)
+Date: Tue, 16 Sep 2025 09:27:59 +0800
+From: Pingfan Liu <piliu@redhat.com>
+To: Philipp Rudo <prudo@redhat.com>
+Cc: kexec@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Jeremy Linton <jeremy.linton@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Simon Horman <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Viktor Malik <vmalik@redhat.com>,
+	Jan Hendrik Farr <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>,
+	Dave Young <dyoung@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org,
+	systemd-devel@lists.freedesktop.org
+Subject: Re: [PATCHv5 08/12] kexec: Factor out routine to find a symbol in ELF
+Message-ID: <aMi9H7Jeuiq8mbyE@fedora>
+References: <20250819012428.6217-1-piliu@redhat.com>
+ <20250819012428.6217-9-piliu@redhat.com>
+ <20250901163107.5a0c17e6@rotkaeppchen>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909010007.1660-1-alexei.starovoitov@gmail.com>
- <20250909010007.1660-7-alexei.starovoitov@gmail.com> <aMgMIQVYnAq2weuE@hyeyoo>
-In-Reply-To: <aMgMIQVYnAq2weuE@hyeyoo>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 15 Sep 2025 18:00:03 -0700
-X-Gm-Features: AS18NWAI9B_2wRiYhYkx2plpF2KQ-My4XIXEQBm9flGJedyurG-fw80e8XPUpbw
-Message-ID: <CAADnVQJSS8+2Zw4kAypC7duWhyd2zQeiu1zbgy8WW-xqnBCgnw@mail.gmail.com>
-Subject: Re: [PATCH slab v5 6/6] slab: Introduce kmalloc_nolock() and kfree_nolock().
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	Vlastimil Babka <vbabka@suse.cz>, Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250901163107.5a0c17e6@rotkaeppchen>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-On Mon, Sep 15, 2025 at 5:53=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wr=
-ote:
->
-> >       if (unlikely(!node_match(slab, node))) {
-> >               /*
-> >                * same as above but node_match() being false already
-> > -              * implies node !=3D NUMA_NO_NODE
-> > +              * implies node !=3D NUMA_NO_NODE.
-> > +              * Reentrant slub cannot take locks necessary to
-> > +              * deactivate_slab, hence ignore node preference.
->
-> nit: the comment is obsolte?
+On Mon, Sep 01, 2025 at 04:31:07PM +0200, Philipp Rudo wrote:
+> On Tue, 19 Aug 2025 09:24:24 +0800
+> Pingfan Liu <piliu@redhat.com> wrote:
+> 
+> > The routine to search a symbol in ELF can be shared, so split it out.
+> > 
+> > Signed-off-by: Pingfan Liu <piliu@redhat.com>
+> > Cc: Baoquan He <bhe@redhat.com>
+> > Cc: Dave Young <dyoung@redhat.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Philipp Rudo <prudo@redhat.com>
+> > To: kexec@lists.infradead.org
+> > ---
+> >  include/linux/kexec.h |  8 ++++
+> >  kernel/kexec_file.c   | 86 +++++++++++++++++++++++--------------------
+> >  2 files changed, 54 insertions(+), 40 deletions(-)
+> > 
+> > diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+> > index 8f7322c932fb5..2998d8da09d86 100644
+> > --- a/include/linux/kexec.h
+> > +++ b/include/linux/kexec.h
+> > @@ -23,6 +23,10 @@
+> >  #include <uapi/linux/kexec.h>
+> >  #include <linux/verification.h>
+> >  
+> > +#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
+> > +#include <linux/module.h>
+> > +#endif
+> > +
+> 
+> What is linux/module.h used for? Plus module.h already gets included a
+> little below, when CONFIG_KEXEC_CORE is set, which should always be the
+> case for those two configs.
+> 
 
-Ohh. Sorry. I clearly remember fixing this comment per
-your feedback. Not sure how I lost this hunk.
+Yes, it should be dropped. Once I placed the declaration of
+elf_find_symbol() here, and later moved it behind.
 
-> Per previous discussion there were two points.
-> Maybe something like this?
->
-> /*
->  * We don't strictly honor pfmemalloc and NUMA preferences when
->  * !allow_spin because:
->  *
->  * 1. Most kmalloc() users allocate objects on the local node,
->  *    so kmalloc_nolock() tries not to interfere with them by
->  *    deactivating the cpu slab.
->  *
->  * 2. Deactivating due to NUMA or pfmemalloc mismatch may cause
->  *    unnecessary slab allocations even when n->partial list is not empty=
-.
->  */
->
-> ...or if you don't feel like it's not worth documenting,
-> just removing the misleading comment is fine.
 
-The above reads great to me.
-Will send a follow up patch in a minute to fold in or keep it separate.
+Thanks,
+
+Pingfan
+
+> Thanks
+> Philipp
+> 
+> >  extern note_buf_t __percpu *crash_notes;
+> >  
+> >  #ifdef CONFIG_CRASH_DUMP
+> > @@ -550,6 +554,10 @@ void set_kexec_sig_enforced(void);
+> >  static inline void set_kexec_sig_enforced(void) {}
+> >  #endif
+> >  
+> > +#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
+> > +const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name);
+> > +#endif
+> > +
+> >  #endif /* !defined(__ASSEBMLY__) */
+> >  
+> >  #endif /* LINUX_KEXEC_H */
+> > diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> > index 4780d8aae24e7..137049e7e2410 100644
+> > --- a/kernel/kexec_file.c
+> > +++ b/kernel/kexec_file.c
+> > @@ -880,6 +880,51 @@ static int kexec_calculate_store_digests(struct kimage *image)
+> >  	return ret;
+> >  }
+> >  
+> > +#if defined(CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY) || defined(CONFIG_KEXEC_PE_IMAGE)
+> > +const Elf_Sym *elf_find_symbol(const Elf_Ehdr *ehdr, const char *name)
+> > +{
+> > +	const Elf_Shdr *sechdrs;
+> > +	const Elf_Sym *syms;
+> > +	const char *strtab;
+> > +	int i, k;
+> > +
+> > +	sechdrs = (void *)ehdr + ehdr->e_shoff;
+> > +
+> > +	for (i = 0; i < ehdr->e_shnum; i++) {
+> > +		if (sechdrs[i].sh_type != SHT_SYMTAB)
+> > +			continue;
+> > +
+> > +		if (sechdrs[i].sh_link >= ehdr->e_shnum)
+> > +			/* Invalid strtab section number */
+> > +			continue;
+> > +		strtab = (void *)ehdr + sechdrs[sechdrs[i].sh_link].sh_offset;
+> > +		syms = (void *)ehdr + sechdrs[i].sh_offset;
+> > +
+> > +		/* Go through symbols for a match */
+> > +		for (k = 0; k < sechdrs[i].sh_size/sizeof(Elf_Sym); k++) {
+> > +			if (ELF_ST_BIND(syms[k].st_info) != STB_GLOBAL)
+> > +				continue;
+> > +
+> > +			if (strcmp(strtab + syms[k].st_name, name) != 0)
+> > +				continue;
+> > +
+> > +			if (syms[k].st_shndx == SHN_UNDEF ||
+> > +			    syms[k].st_shndx >= ehdr->e_shnum) {
+> > +				pr_debug("Symbol: %s has bad section index %d.\n",
+> > +						name, syms[k].st_shndx);
+> > +				return NULL;
+> > +			}
+> > +
+> > +			/* Found the symbol we are looking for */
+> > +			return &syms[k];
+> > +		}
+> > +	}
+> > +
+> > +	return NULL;
+> > +}
+> > +
+> > +#endif
+> > +
+> >  #ifdef CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY
+> >  /*
+> >   * kexec_purgatory_setup_kbuf - prepare buffer to load purgatory.
+> > @@ -1137,49 +1182,10 @@ int kexec_load_purgatory(struct kimage *image, struct kexec_buf *kbuf)
+> >  static const Elf_Sym *kexec_purgatory_find_symbol(struct purgatory_info *pi,
+> >  						  const char *name)
+> >  {
+> > -	const Elf_Shdr *sechdrs;
+> > -	const Elf_Ehdr *ehdr;
+> > -	const Elf_Sym *syms;
+> > -	const char *strtab;
+> > -	int i, k;
+> > -
+> >  	if (!pi->ehdr)
+> >  		return NULL;
+> >  
+> > -	ehdr = pi->ehdr;
+> > -	sechdrs = (void *)ehdr + ehdr->e_shoff;
+> > -
+> > -	for (i = 0; i < ehdr->e_shnum; i++) {
+> > -		if (sechdrs[i].sh_type != SHT_SYMTAB)
+> > -			continue;
+> > -
+> > -		if (sechdrs[i].sh_link >= ehdr->e_shnum)
+> > -			/* Invalid strtab section number */
+> > -			continue;
+> > -		strtab = (void *)ehdr + sechdrs[sechdrs[i].sh_link].sh_offset;
+> > -		syms = (void *)ehdr + sechdrs[i].sh_offset;
+> > -
+> > -		/* Go through symbols for a match */
+> > -		for (k = 0; k < sechdrs[i].sh_size/sizeof(Elf_Sym); k++) {
+> > -			if (ELF_ST_BIND(syms[k].st_info) != STB_GLOBAL)
+> > -				continue;
+> > -
+> > -			if (strcmp(strtab + syms[k].st_name, name) != 0)
+> > -				continue;
+> > -
+> > -			if (syms[k].st_shndx == SHN_UNDEF ||
+> > -			    syms[k].st_shndx >= ehdr->e_shnum) {
+> > -				pr_debug("Symbol: %s has bad section index %d.\n",
+> > -						name, syms[k].st_shndx);
+> > -				return NULL;
+> > -			}
+> > -
+> > -			/* Found the symbol we are looking for */
+> > -			return &syms[k];
+> > -		}
+> > -	}
+> > -
+> > -	return NULL;
+> > +	return elf_find_symbol(pi->ehdr, name);
+> >  }
+> >  
+> >  void *kexec_purgatory_get_symbol_addr(struct kimage *image, const char *name)
+> 
+
 
