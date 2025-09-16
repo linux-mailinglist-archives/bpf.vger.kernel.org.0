@@ -1,175 +1,176 @@
-Return-Path: <bpf+bounces-68519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CC89B59AAE
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 16:45:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7FFFB59B1E
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 16:59:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA3584A07B2
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 14:40:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E2F518834DA
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 14:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA753338F3F;
-	Tue, 16 Sep 2025 14:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AACF3340D90;
+	Tue, 16 Sep 2025 14:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ci9CI1Mg"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BF132A822;
-	Tue, 16 Sep 2025 14:40:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0C723643E
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 14:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758033618; cv=none; b=njzW4Z0prAxdCY3R2ZGitsra44b2SG+WrURQwIZiMOQfMXjEBK+6Ce1TsRIS11ZXBL70auAtGo8efrcJWk4W7YvwiNfZ+MQ79AUSL8RygkYhUbcK7LE3hbxSSvffygaOKV0eHhALrnxp5Ph7Tb3ftA8K3BaxgqXGUMKZY/70v4g=
+	t=1758034752; cv=none; b=N69Weu854O/jUhET+Md+04AMAjZmFDiD3MpYHY+KlulcN2U2/r50M6Fuo0K572nCpC5+TXNletPcgV2Goaon4ZAHYscGHeMsTwaX8+jfRetZnJ/Muxjt4x2veMrc7dXiI967qj5Fhm5DSv6Ex0ul3ECu2uu8Is2v8pKoYWLZ/zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758033618; c=relaxed/simple;
-	bh=gfzjKHmXyuPeOdGXpJgtnCmPqY9UIzAtg8jvhEkYweA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GVNepqJF/RWKDu1iTpe9y7QZ9iQUvwfpgH3VtxsdZ/uKhifxtiqCczpIVx58GWtSTrutSXPDTKm4qcq+n/MaUlkupYAL3QjNrjRi3J1dzSmZ+MlVXhQwqAtHNwbU/iCSA6CS9HY7or1oLrtgA9MANgfVNBcgToBZk151gDcT+e4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay10.hostedemail.com (Postfix) with ESMTP id 65CF2C01EB;
-	Tue, 16 Sep 2025 14:40:12 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf14.hostedemail.com (Postfix) with ESMTPA id F423D32;
-	Tue, 16 Sep 2025 14:40:06 +0000 (UTC)
-Date: Tue, 16 Sep 2025 10:41:09 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Ingo Molnar <mingo@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>, Indu Bhagat <indu.bhagat@oracle.com>,
- "Jose E. Marchesi" <jemarch@gnu.org>, Beau Belgrave
- <beaub@linux.microsoft.com>, Jens Remus <jremus@linux.ibm.com>, Linus
- Torvalds <torvalds@linux-foundation.org>, Andrew Morton
- <akpm@linux-foundation.org>, Florian Weimer <fweimer@redhat.com>, Sam James
- <sam@gentoo.org>, Kees Cook <kees@kernel.org>, "Carlos O'Donell"
- <codonell@redhat.com>
-Subject: Re: [RESEND][PATCH v15 0/4] perf: Support the deferred unwinding
- infrastructure
-Message-ID: <20250916104109.23319785@gandalf.local.home>
-In-Reply-To: <20250908132106.435b0e6f@gandalf.local.home>
-References: <20250908171412.268168931@kernel.org>
-	<20250908132106.435b0e6f@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1758034752; c=relaxed/simple;
+	bh=PR0zmaOZJBbt+XAHa8hctTIc/eGT/MN9AEEioSCGn0k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bke9oq5n1WGq+yTGE+GsQO2GP5bybCaE7ZlYvFqi31w9hkm4Iu+iR66xsaQe7T99Cv+cY58AYaJrJgZjhQpS+JSIECu/3SWNV+RevP+kZy+vyCDairK7L3jRBmbfC/uyRmaO0oAeVxWQKksOxlJh45MkMzi1ox1B7yKLzBZhB0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ci9CI1Mg; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-46070cf4dc5so2621575e9.1
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 07:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758034748; x=1758639548; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZxAAsfbNQ4UmN7WPYIVbS5YnVkLnDKyxCgQcXMA76KI=;
+        b=ci9CI1Mg80ytIg8nUbIt/je2cXx6P1N0Ie9rGBQbKsbzXXhdYQFEduSmd3+KXMWZsK
+         AaFeFsDFreccY54FR7oGOPa3Ii5DzjDkFWEpoksnC9xIbj3FrtKs/GKEd4lrRYCfmJfp
+         mEYguPbtmziBNIf6W8reIpr45yrg5JRnT1tEngjtPjL0nWlKRw7CTr49WOmJj9ewFgPF
+         YTQOwJxKwDxo54JIsPZirB9bSUQ0XFywfdzuoFX1+/pO9W5fzp12HalIOzkyrSL5PMXi
+         SagpmqJAknYj3rDZd0+N3aJyqG5ROc5uPvKX/lWBobw2pOTSX2Z0nkEOrxYsz9Nss8Gr
+         2/cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758034748; x=1758639548;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZxAAsfbNQ4UmN7WPYIVbS5YnVkLnDKyxCgQcXMA76KI=;
+        b=KVz39mJV/QqNsedCQN6xm3T0hHlZZTEBwCcaWtLMn4XyRb/Tr4RUypxpDjGgT1MRDA
+         FJzcorslJ7fFJOmoVNFmwlLCmtpTTx5oE0Y1syvT7dD3bQTFnCIrC1zvHZut5Y4/hXFL
+         Z1nJhqsXb3PzrK1lcus2H9pD7wdTE+Ui15FrFNOtd4Ddrc+MDKgi2nTupW5rfRv78sNu
+         wLSoYELwDDdmCnr02o8yVjujclSoHu0GEgtPsYB6ORhBQiKrR3AaUmNlVTAqcuoXmgrc
+         wYjRRShBaog9Um98t+UFxmt5sGq2WU4sxnbEj+u6iBATUYYjIZIWQ7nATF9bzgA+AMmY
+         zc1A==
+X-Forwarded-Encrypted: i=1; AJvYcCW11YblExCM+QfQykTZwx24Y5KNqfmB8l1a+t3XtWbjneo9G/UScG+mATRXErhbOedbnC0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzpzVTPtCQ6ncZI2ovpOEihhDZcMaErxCvK8hjDtEFEIHlkuenx
+	FBn8RmSBlP4JEqGKwvFlOPDqu46bMIpd6WgLj2UctGKYVp+adjD6S9DVdJ6xetV/ZQ7eofZNHv5
+	G6uCTALomH36BULELKBkWQYOJ4tzus2I=
+X-Gm-Gg: ASbGncveexeAR4htzm+U2susHYq2Uar2xFRtlzQg0IYK39qZK0ALoZ9GLlX0qwNa0XO
+	+qijLZvuyC/QCt1wXtC1CUGghqO9/Z5FJKlH2nF68gcuKornEW9OmWy7iKKE4QGYRKjR8NJ8Aox
+	eF3yVDzC3360rbMO5waIPtHAK2Balv/qGnc33oNjjY+Q+sPfvvkT7T8Y/E+2Uq1z+qrCBLib/Gs
+	hzhyemUuw0l/0WT56ydWVMsU4hUfSHt
+X-Google-Smtp-Source: AGHT+IHPDJzbK4gi0+IOKq/h082l6PYRTjMh+LBhmtZ3jehnQsgrNIrZIXGE2fBs1X31GKHcGB6UlpVdv6cgyugWjCM=
+X-Received: by 2002:a05:600c:ad7:b0:45d:d2cd:de36 with SMTP id
+ 5b1f17b1804b1-45f211d58bemr121275885e9.12.1758034747579; Tue, 16 Sep 2025
+ 07:59:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: pyy6rgtqegeqi3jdemgsdm7ck3yew9ci
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: F423D32
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19WhsgEy8OEelHNoL9yCz7b/iIPLhhTcDk=
-X-HE-Tag: 1758033606-892710
-X-HE-Meta: U2FsdGVkX1+Wae5HRlmQzBDdp67xlqk7aFahS+acc70QJ0haIxoEHjpaV3GRTwZqPZ4uy2hYvDa8zVQ4QDTdnrLe1CYo1WvUIlI1WysND4EpdFqwJhczwX61CBthdDhdUGkGTHwQ9axvsLaEdast3D0PXbn1MkWgFnJ48kV/oMroPx8mR2t5mnlS0fbplzayhCxdz6NZoQDa+/KbjsCyxH25BqfWiv/CJh9APbiOkCEWreh5cjAsesI++eYrksWypEfNPTVuXnIiUdbBzbtalQgEYDIR/t1HXoJO+RjzjgueCicdM2QZmnTkdiMDYc0d17y42dAZRk9DumYtLKHW7AiqtJrMVyOrG6/swoVcBRgMYRmEcDuY7vPw1xHHmMfMGTIhd2JLhH7+el77fG8QCw==
+References: <20250828013415.2298-1-hengqi.chen@gmail.com> <mb61pjz2nmyu4.fsf@kernel.org>
+ <CAPhsuW5-Q7F9-6hUWJ9XhS37fZrJjk7YNmbHriQM_rDW07X5KA@mail.gmail.com> <mb61p4it2a7cu.fsf@kernel.org>
+In-Reply-To: <mb61p4it2a7cu.fsf@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 16 Sep 2025 07:58:55 -0700
+X-Gm-Features: AS18NWBygMCz5oy9aosrsO-kdEiLZSHYQA2BAfQbh8CROertx3YlCrXQT55BsrM
+Message-ID: <CAADnVQLjCT46WmdOpNUDMA-QxmFQJj185Pi2jdNnzYUcEuhX1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, arm64: Call bpf_jit_binary_pack_finalize()
+ in bpf_jit_free()
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Song Liu <song@kernel.org>, Hengqi Chen <hengqi.chen@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Peter,
+On Tue, Sep 16, 2025 at 5:51=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
+> wrote:
+>
+> Song Liu <song@kernel.org> writes:
+>
+> > Sorry for the late reply.
+> >
+> > On Thu, Aug 28, 2025 at 5:10=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
+.org> wrote:
+> > [...]
+> >> Thanks for this patch!
+> >>
+> >> So, this is fixing a bug because bpf_jit_binary_pack_finalize() will d=
+o
+> >> kvfree(rw_header); but without it currently, jit_data->header is never
+> >> freed.
+> >>
+> >> But I think we shouldn't use bpf_jit_binary_pack_finalize() here as it
+> >> copies the whole rw_header to ro_header using  bpf_arch_text_copy()
+> >> which is an expensive operation (patch_map/unmap in loop +
+> >> flush_icache_range()) and not needed here because we are going
+> >> to free ro_header anyway.
+> >>
+> >> We only need to copy jit_data->header->size to jit_data->ro_header->si=
+ze
+> >> because this size is later used by bpf_jit_binary_pack_free(), see
+> >> comment above bpf_jit_binary_pack_free().
+> >>
+> >> How I suggest we should fix the code and the comment:
+> >>
+> >> -- >8 --
+> >>
+> >> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_co=
+mp.c
+> >> index 5083886d6e66b..cb4c50eeada13 100644
+> >> --- a/arch/arm64/net/bpf_jit_comp.c
+> >> +++ b/arch/arm64/net/bpf_jit_comp.c
+> >> @@ -3093,12 +3093,14 @@ void bpf_jit_free(struct bpf_prog *prog)
+> >>
+> >>                 /*
+> >>                  * If we fail the final pass of JIT (from jit_subprogs=
+),
+> >> -                * the program may not be finalized yet. Call finalize=
+ here
+> >> -                * before freeing it.
+> >> +                * the program may not be finalized yet. Copy the head=
+er size
+> >> +                * from rw_header to ro_header before freeing the ro_h=
+eader
+> >> +                * with bpf_jit_binary_pack_free().
+> >>                  */
+> >>                 if (jit_data) {
+> >>                         bpf_arch_text_copy(&jit_data->ro_header->size,=
+ &jit_data->header->size,
+> >>                                            sizeof(jit_data->header->si=
+ze));
+> >> +                       kvfree(jit_data->header);
+> >>                         kfree(jit_data);
+> >>                 }
+> >>                 prog->bpf_func -=3D cfi_get_offset();
+> >>
+> >> -- 8< --
+> >>
+> >> Song,
+> >>
+> >> Do you think this optimization is worth it or should we just call
+> >> bpf_jit_binary_pack_finalize() here like this patch is doing?
+> >
+> > This is a good optimization. However, given this is not a hot path,
+> > I don't have a strong preference either way. At the moment, most
+> > other architectures use bpf_jit_binary_pack_finalize(), so it is good
+> > to just use bpf_jit_binary_pack_finalize and keep the logic
+> > consistent.
+>
+> So, in that case we can merge this patch.
+>
+> Acked-by: Puranjay Mohan <puranjay@kernel.org>
 
-It's been over 3 weeks since the original has been sent. And last week I
-broke it up to only hold the kernel changes. Can you please take a look at
-it?
-
-I have updated the user space side with Namhyung Kim's updates:
-
-   https://lore.kernel.org/all/20250908175319.841517121@kernel.org/
-
-Also, the two patches to enable deferred unwinding in x86 has been ignored
-for almost three weeks as well:
-
-  https://lore.kernel.org/linux-trace-kernel/20250827193644.527334838@kernel.org/
-
--- Steve
-
-
-On Mon, 8 Sep 2025 13:21:06 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> Peter, can you take a look at these patches please. I believe you're the
-> only one that really maintains this code today.
-> 
-> -- Steve
-> 
-> 
-> On Mon, 08 Sep 2025 13:14:12 -0400
-> Steven Rostedt <rostedt@kernel.org> wrote:
-> 
-> > [
-> >   This is simply a resend of version 15 of this patch series
-> >   but with only the kernel changes. I'm separating out the user space
-> >   changes to their own series.
-> >   The original v15 is here:
-> >     https://lore.kernel.org/linux-trace-kernel/20250825180638.877627656@kernel.org/
-> > ]
-> > 
-> > This patch set is based off of perf/core of the tip tree:
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-> > 
-> > To run this series, you can checkout this repo that has this series as well as the above:
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git  unwind/perf-test
-> > 
-> > This series implements the perf interface to use deferred user space stack
-> > tracing.
-> > 
-> > Patch 1 adds a new API interface to the user unwinder logic to allow perf to
-> > get the current context cookie for it's task event tracing. Perf's task event
-> > tracing maps a single task per perf event buffer and it follows the task
-> > around, so it only needs to implement its own task_work to do the deferred
-> > stack trace. Because it can still suffer not knowing which user stack trace
-> > belongs to which kernel stack due to dropped events, having the cookie to
-> > create a unique identifier for each user space stack trace to know which
-> > kernel stack to append it to is useful.
-> > 
-> > Patch 2 adds the per task deferred stack traces to perf. It adds a new event
-> > type called PERF_RECORD_CALLCHAIN_DEFERRED that is recorded when a task is
-> > about to go back to user space and happens in a location that pages may be
-> > faulted in. It also adds a new callchain context called PERF_CONTEXT_USER_DEFERRED
-> > that is used as a place holder in a kernel callchain to append the deferred
-> > user space stack trace to.
-> > 
-> > Patch 3 adds the user stack trace context cookie in the kernel callchain right
-> > after the PERF_CONTEXT_USER_DEFERRED context so that the user space side can
-> > map the request to the deferred user space stack trace.
-> > 
-> > Patch 4 adds support for the per CPU perf events that will allow the kernel to
-> > associate each of the per CPU perf event buffers to a single application. This
-> > is needed so that when a request for a deferred stack trace happens on a task
-> > that then migrates to another CPU, it will know which CPU buffer to use to
-> > record the stack trace on. It is possible to have more than one perf user tool
-> > running and a request made by one perf tool should have the deferred trace go
-> > to the same perf tool's perf CPU event buffer. A global list of all the
-> > descriptors representing each perf tool that is using deferred stack tracing
-> > is created to manage this.
-> > 
-> > 
-> > Josh Poimboeuf (1):
-> >       perf: Support deferred user callchains
-> > 
-> > Steven Rostedt (3):
-> >       unwind deferred: Add unwind_user_get_cookie() API
-> >       perf: Have the deferred request record the user context cookie
-> >       perf: Support deferred user callchains for per CPU events
-> > 
-> > ----
-> >  include/linux/perf_event.h            |  11 +-
-> >  include/linux/unwind_deferred.h       |   5 +
-> >  include/uapi/linux/perf_event.h       |  25 +-
-> >  kernel/bpf/stackmap.c                 |   4 +-
-> >  kernel/events/callchain.c             |  14 +-
-> >  kernel/events/core.c                  | 421 +++++++++++++++++++++++++++++++++-
-> >  kernel/unwind/deferred.c              |  21 ++
-> >  tools/include/uapi/linux/perf_event.h |  25 +-
-> >  8 files changed, 518 insertions(+), 8 deletions(-)  
-> 
-
+It's out of patchwork.
+Hengqi,
+pls repost.
 
