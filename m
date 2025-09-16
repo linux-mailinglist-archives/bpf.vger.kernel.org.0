@@ -1,299 +1,327 @@
-Return-Path: <bpf+bounces-68498-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68499-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 661FFB596BD
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 14:58:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7549B59731
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 15:15:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2281A3A8438
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 12:58:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1101A1C01277
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 13:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B354021D3DC;
-	Tue, 16 Sep 2025 12:58:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05DA3315D55;
+	Tue, 16 Sep 2025 13:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gZ8fiS7h";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="lKXPYdee"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LPyX9AI5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9BhiQLFY";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LPyX9AI5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9BhiQLFY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99EFE2192F2
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 12:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758027521; cv=fail; b=e8fegVI5c5HNVeRRzdroefyg568Km77mbtMsSgiAKJaRGeTENLleOKXLckPmoci+PTTq4m98HG1sCWMgKZM9Zwmjhm8KvHQ8SdntH+VsTpymQrQaINFgLvKbZlxn7euCN6lsDuYXZq4T/YqkOz5Geg5D/hpRjUdFWCKSHDFzegU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758027521; c=relaxed/simple;
-	bh=c02CB+pTd+fprB3JeLJ/ITJpicu4hmL5gV8iwReM9Mw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=YgZr8Bw2ALqUns0BBrFdSm4p1ND4+2aNq1T93qZh+4wYGplwJipNKDNV9N9HjodnAyN724tXwpgPNLeqdsk+o5VSzPG7eYylbFsaeeUxze9qmRgEy14S+hXOYM0TO4YsPpOfBJug3KJUSW/itNN3+wDkg2Y3faF10Ra/RKgLlEE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=gZ8fiS7h; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=lKXPYdee; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58G1g0sj002433;
-	Tue, 16 Sep 2025 12:58:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=6Q6tOb7d3ErJfegv1T
-	bPcWALzOI6Y8yKALqqkSlRwaU=; b=gZ8fiS7h7RyAbXDEPQoP1qrLK2pjmchPTk
-	7MD997thhtbDp3+25psJ/L5yaka5wjJ26uBxpaa6KvGc8aoRsS6+DiQGjO7Cjg0l
-	TMcuvk97pxxber4UNYS6H6jVwQPIkDNKWEJE5fzANfF64BoFmwMNNYDqnhcOO9DU
-	ebU0zMztDIFxO6DBTorE8cn5+YcA5MczzvQRBt28AcNbW5IYB7pNqzc87T2/iXnd
-	24Zu0AufUFvi99t1yyjNJ3yUGEdqA4venjtJhTwKL387IhmUqLIBxiR+nEbGompi
-	UZS3BQBz3zivmqRibZ3MTEli8YtIUxV0y2FLeZvTN51C3z4OeDyA==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 49515v4hcb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Sep 2025 12:58:17 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58GBnEQD033667;
-	Tue, 16 Sep 2025 12:58:16 GMT
-Received: from sn4pr0501cu005.outbound.protection.outlook.com (mail-southcentralusazon11011032.outbound.protection.outlook.com [40.93.194.32])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 494y2cb2dn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Sep 2025 12:58:16 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hzLUSiwjfzzegXyAVPPl37/z7AgpjdipuVT724K0zTdhv9X6Oo6UzaqCN0uozyME0XvO7s53H9wb+teqrhlkWpanQn29xA9mpJY4z0uL4gXMDuiGD4r9EM+vUL+I5cT09pta4ZRJil+6QqDFSct7X1zKX19YX/xaJY14lLBV1gtUQ/GwCTEYgvo6RvAKn4B+aoHlpR7szIbuCtuZqEuOfpkVLbApFrHpTr7YxMWjbS718P85X8cTVd7gjwYQ4Vp13g3UvBLYXxkKfY+p+DXVTp23kpjqhHuUPUmeNJ5j0Vcji0bUkV8T22US2FDTITjIftbjZaot5AmKp2g0CLe7Tg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6Q6tOb7d3ErJfegv1TbPcWALzOI6Y8yKALqqkSlRwaU=;
- b=OIcXKI/0OAzsOIRWdw+9Xp8H+sBQ2EIAIHFMbviaSKa1GU20zOEMvH5aSQG7sIn1Jb99kLqBNLwm7HJ32gzI/kncO7htwtOWEDxJIU7/ND87g6cFbaQjF28wx5n32xUqsKZAww8qqJ0OWFMhFgbmo0sBMgwG4/lcB1QIt4YQUtYIiYszCN0ek72zsJDaDVruZ9/SWckWZA1Eej0CJ27H0nzGlngGmtlS8X0z+kxILccP4pcIRkf6tZyrFVulvTmHr+JPOVcRaUrvhU4d/JNuvz7fTAq9DUFoJy6eIWJvGy7mvKwCBIxXOE83xhwpomlEMZ+0ZZCT8aCviOcO3hUDGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Q6tOb7d3ErJfegv1TbPcWALzOI6Y8yKALqqkSlRwaU=;
- b=lKXPYdee9fgfVNTQTFb5slnubrCh9ZnfgL4PWxvZF723XjD8Tq1hqOA6LWrri9Q2t8tj3mdHHFpKLiG1cmi3rAUsgDH9YgmFLpmz+z5W6fGkY7M1Hych9b/lu3tQaw4jCr2jU+WEInZoMS4FrNumq1vjaQK/59svtHLwiRGEp0o=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by BY5PR10MB4385.namprd10.prod.outlook.com (2603:10b6:a03:20a::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.22; Tue, 16 Sep
- 2025 12:58:14 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::f238:6143:104c:da23%7]) with mapi id 15.20.9115.018; Tue, 16 Sep 2025
- 12:58:13 +0000
-Date: Tue, 16 Sep 2025 21:58:04 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
-        linux-mm@kvack.org, shakeel.butt@linux.dev, mhocko@suse.com,
-        bigeasy@linutronix.de, andrii@kernel.org, memxor@gmail.com,
-        akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
-        hannes@cmpxchg.org
-Subject: Re: [PATCH slab] slab: Disallow kprobes in ___slab_alloc()
-Message-ID: <aMlZ8Au2MBikJgta@hyeyoo>
-References: <20250916022140.60269-1-alexei.starovoitov@gmail.com>
- <47aca3ca-a65b-4c0b-aaff-3a7bb6e484fe@suse.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47aca3ca-a65b-4c0b-aaff-3a7bb6e484fe@suse.cz>
-X-ClientProxiedBy: SEWP216CA0066.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2ba::14) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CEB223DCE
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 13:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758028421; cv=none; b=YFWWlKN/Di1ZCjRKo8DHyDZNkfLA7uHfw1A7FD8n335XmejqSNWWimSVQIjVJPeNGUTMVeA6uOtv7CiNF1kyw4aCLLD+KrIZ2n23q7OmUsOKLrsGBLnc5C6qrYKhDd0eD/fmZPZOET0LkWpVfW/YR+9ANvR9SUvyg/VxX68maRM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758028421; c=relaxed/simple;
+	bh=4o7qSK/cvfDtcOixPWf3KbBabV+PmXn/sLmNmpCzEiw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TNA6wCAcSTxhb3/B6M/wNaCZRiBzXcfriDvzv/kf7VxS7FgGyfwBN2+RG9WLpn4BkFAz9zfQNLlHo4FxUrQSwUGHsgXNqfs1bw42RtqHMm+gssN6Gs7fRTOjqPH6u7rmQPfs1DY+QE9RcxpdZhIirDyeS7Kacjj3Fhry7os7I+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LPyX9AI5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9BhiQLFY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LPyX9AI5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9BhiQLFY; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7BB1422747;
+	Tue, 16 Sep 2025 13:13:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758028417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=wTE/HGV+1nQSTiQBPspjYtsWmlzNpej7zVyZftOFzwE=;
+	b=LPyX9AI5JH5nZRJFfqegQ2S+NznsnoAOOgIaVHjOimyc0i+Q6QJrqyQDBoUfkdEImTIIB8
+	xtVA9a1QOBRFFiayPTId5fhdbeminYDct7LfM5JGHxF+WihHTduHsVbVOW5UjqfHNFbD6H
+	x8KsO4Ld6VQBt45Dpv2n7IfjlBPclN0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758028417;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=wTE/HGV+1nQSTiQBPspjYtsWmlzNpej7zVyZftOFzwE=;
+	b=9BhiQLFYzya6HzL3QU0jynLrrGXIe9G0EXMVMTEL0BxkRZOQ6AcCEjr3KZjFrVbCiliN1u
+	gsJkkFqPH7gKp0DQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LPyX9AI5;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9BhiQLFY
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758028417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=wTE/HGV+1nQSTiQBPspjYtsWmlzNpej7zVyZftOFzwE=;
+	b=LPyX9AI5JH5nZRJFfqegQ2S+NznsnoAOOgIaVHjOimyc0i+Q6QJrqyQDBoUfkdEImTIIB8
+	xtVA9a1QOBRFFiayPTId5fhdbeminYDct7LfM5JGHxF+WihHTduHsVbVOW5UjqfHNFbD6H
+	x8KsO4Ld6VQBt45Dpv2n7IfjlBPclN0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758028417;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=wTE/HGV+1nQSTiQBPspjYtsWmlzNpej7zVyZftOFzwE=;
+	b=9BhiQLFYzya6HzL3QU0jynLrrGXIe9G0EXMVMTEL0BxkRZOQ6AcCEjr3KZjFrVbCiliN1u
+	gsJkkFqPH7gKp0DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 568F3139CB;
+	Tue, 16 Sep 2025 13:13:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id D2PNFIFiyWjwDAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 16 Sep 2025 13:13:37 +0000
+Message-ID: <e7d1c20c-7164-4319-ac7e-9df0072a12ad@suse.cz>
+Date: Tue, 16 Sep 2025 15:13:37 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|BY5PR10MB4385:EE_
-X-MS-Office365-Filtering-Correlation-Id: f101fe90-5f67-4df2-e09c-08ddf520b1e0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?E2nl9n9UAB5Fmc83G5UdD4NM+zuQK0VP5y3JBGBLCOpexxxcs5fMJhfiKrHk?=
- =?us-ascii?Q?/i9CAlZUxqlueZXekFbji8EkK0bnJFlXBNTwZxP8RrEUkEGkIZZ04Y3wJFRg?=
- =?us-ascii?Q?0qkKuWMGiG/PHvrAxj9mlkPNw/HMx2YQVCuaGLaT4bOVuykglNrure2Yezy9?=
- =?us-ascii?Q?vzMX8SH89DNOW8Uaz0BmAGJtABu2fKX8LIGIfL5DZANx7rzloOIiJsr/wpVG?=
- =?us-ascii?Q?W3/9ExUEHxv5/IofAoMnHXsOWhEtE3k3otBsAJBgv1E9AlsMb8RT5S8WDyXU?=
- =?us-ascii?Q?pyPvUXe9Rtx2lGWxmNhQtGxOhhnOUyjJ7INp9rxVc8bwahXDMnbxS3FrM4Sj?=
- =?us-ascii?Q?143AhSk3Sl7VXRyBxeEGGdF9HBU9nmUmXuvkVM4ZiFfwNjeNaHL4nL8N+GtO?=
- =?us-ascii?Q?ZPA4jAcIdpepELmDmTTkPAfDLCERFukdb/GfMl4wARPCtoYc/UT/JlglEpbr?=
- =?us-ascii?Q?vA7MaE+rdxxpojO0t+yAZAi5c87QKFpVnrLP40WzIrtkS2TcfNo66RrGJCjT?=
- =?us-ascii?Q?OmUZlJZ4Z9c5ywSsr6Z1IIrrCITUZtJ1+VitsgVBCa4/dzPuLwow5KC/Fv5U?=
- =?us-ascii?Q?ZVTZQdgJ7yXqL01y4wyKfsQcjmRyGLdUC6zduvGER+x2B0jLkEo1HE1xTEWA?=
- =?us-ascii?Q?QIPz9ECRYh3lIa2yHjHIbyidKO7NtViAI+DY8lVFyIS520q6iywGyCEWTeM/?=
- =?us-ascii?Q?PVUlbdajulZZBBtuZaqS5waW+iRSeTDn0RVn99PX2JRsoIf7FLxUja/88bQs?=
- =?us-ascii?Q?nMdCUBEcqotLCVa8ChVpOUFluN5PbcO4H70qE8e49RvjumY7Pb/pwwy2QXpp?=
- =?us-ascii?Q?GaoBfZIb5nU8K342Mp6TN6itVR3nMkwKe9OFRHB4D7CtAH14rVA2iRklSj29?=
- =?us-ascii?Q?XXkQMKbPqojY3cTCajOkBrXg8aqRGk6TZpTL0lmTbxgBjQCouFk1JQpaxU+S?=
- =?us-ascii?Q?XSLieLUnucNtFHaym1AxpTrw+paHgEI0lxvfLYS+EK5Id84M20uAgl/YLElZ?=
- =?us-ascii?Q?ija2pZP5fNAeBo+329xe1dvHK1B/ByhQh6TSd55lfudzxQLJRBHVeHfdMm8I?=
- =?us-ascii?Q?Re0r9+Z9+8zN05yffYl7FiqgdYWyXMwSq17vNen1/CgS1lsVeMHF3xunkgSG?=
- =?us-ascii?Q?jvMeMJzLRib9y3oVEU/s1Rptc8u3u7zWEWfHgWnK0NyQMJWFrDRtHc/NXcP4?=
- =?us-ascii?Q?a+wipMtVqnv4Icnbh6x0ojLEekBPZGR5DBpqu2LDCnBzoELly191DwUJIDKV?=
- =?us-ascii?Q?DGnwwQJjTJBzCTxqDsZBY0rh8B4nhGuwH3RXgwPzXUf3jYQEaw4pxdloqvRJ?=
- =?us-ascii?Q?NuS5gnbzy1Xd7aj3fffmkARHNrsvPZUFQ6FeerWZKbPDxhw7oHmM3BV3/XB8?=
- =?us-ascii?Q?0FyuKOE87PIBzqWK8uWG2VAfBz8CtOb+esp+ACseSSSQZ6dl53Ou1hWrpQlo?=
- =?us-ascii?Q?lryrnDVJIJc=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?B1uyCROtG6CZ6JY9+lGkFk48nQopLdnITzDELrmRtnU18xgN8a7UNcsWoSam?=
- =?us-ascii?Q?Jb09TOx9nQ+2m4FNno61qhCckV3HnIRMl7lmIgTRhlOEgzM+zx6F4NX0bNrs?=
- =?us-ascii?Q?HP4gjiS1NizSwhfJiKTIthTzQDXZh1KnuWXrAnIpt+vqVUo8ThmP+KqIylXo?=
- =?us-ascii?Q?QWiO0BdjYCSLBecqzaGuPrrp/dAIhibwEA/fU0HXF8hJCI7KJA3iYyYlFNKY?=
- =?us-ascii?Q?yBsdWXdpA6aiwOIsJ28kcl9jOIFkBznsHXKOaPf0oZ/VWRjsTM5qBpBQNaIJ?=
- =?us-ascii?Q?NUioemxD5KtPD5uNbG0SDeGoaOpuOx8ucWVGUpCwLvk3tATD+5/vZnkJgxMk?=
- =?us-ascii?Q?sbeb24IP6+umth+RWtZfV3hEMMczhWSmUctCZ7uR5+ArPEq+svG7oYGTrREI?=
- =?us-ascii?Q?MG10qXx/6UcDEm2JptqO5acn9d93WllGKb7AMq3uAaNRcM8BNil9A3to3I/H?=
- =?us-ascii?Q?hxmJuVmwa/5cknCwNpThXRTAloFTECieYmRtbGOsGnpQ8qT/MAsbmimIuvHz?=
- =?us-ascii?Q?Yz/vPLOtW+XpQ6E+wkjyxLEWCCvzzzD1GVbui9YwMaHju5l83MPsWAgZl5bC?=
- =?us-ascii?Q?WiwBNborJ7+dF+YMRsI//OGya7E6nVofFBLNtsEG9xxorBrpBWFeVDLoDsC5?=
- =?us-ascii?Q?ALgd+++aqsbrgQmfwrqOqcnILbkNBcr1n8lSz3W8GJPzq1mf1RYUGb8tEOiy?=
- =?us-ascii?Q?4kjyvNj5UMqR3UNk7ngEIUnkzlfOFgeLXQe2P17IGYxcpi4X1cEKEydLdW+4?=
- =?us-ascii?Q?0T+NdRs/bxef6XXtapNVtT/7WCaP3/0ktjCJyh6MkX6DpFhLimZyU944ye+D?=
- =?us-ascii?Q?ks7+KPKMzSaIfzrW7U+XYkOMVTDAKJSbw+tjxN8tye3T8gkA6+xF1E1hdf7p?=
- =?us-ascii?Q?jFE8cMh04n9AWjYf2E+otkHANmFXuEYps7gtWFM/dc6jGM4frkNW4lURf7Zk?=
- =?us-ascii?Q?DFnqZ3dfc2qRL0Ganpu/xsPwDQ/85iEC/UdxsFWcBp0JpuAwo2qiyklANae8?=
- =?us-ascii?Q?lh4vA91apgvkmlkVCTPOcIpsvPQ4NQ/R8/aceaT9CQGiJUdRqG7Yo5v9yrkb?=
- =?us-ascii?Q?yKmi3gEuvPtI8wi6QWi793bSzbJc/nA2hnfDxeKtPKE0ylplJaBia6PqJqdI?=
- =?us-ascii?Q?03WtR9vGCKcH3dTy1CytE6Kba2cmhIUjujsjp32Vv/edYSXaNee+Dl9hgGmS?=
- =?us-ascii?Q?/Bdyb50wJWG2I0Fa/c4jyIFsYbHzdM9CFw8qK+8zx+3Kjy2EM0mKpCQlztKp?=
- =?us-ascii?Q?jbWbpy+hBBzHMstJt9J8Ct8mMpDfaNrIPyRFFjzAuCvU3BgGKHTK2zNkuaGW?=
- =?us-ascii?Q?FJ2yaGzfxWTO5r3TXYeMT/HY6Yvbn0AgxUKwp6jGSwl5pC6ntUeglkWl/3ZV?=
- =?us-ascii?Q?tSwCaxXT16W3Zkzdi6pn7yQTWQp7HPzotvLFXzJ96mNX0l44f6KD8FSj2S/V?=
- =?us-ascii?Q?RiUhOl4B8teTBg4VpPAgJwxAfa7c1JwHh55g6KFzarZrAqLzpbx8G1YY5hrU?=
- =?us-ascii?Q?o+wmoNNqIPfig7f3NVV0njtZpBPGC6nQNsi2QjUB4Bn+tjh2gnDIr92W+jDA?=
- =?us-ascii?Q?2jBxXcQHizQhaLXSDwfSQK3QIOquYBwmS3EJ6Nlm?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	GHB2PJ+BIlorYsBazx5NdiGxEBHb2BEdvIP9C4M+mNs2HxmNxZayllapaCpkusvQD5xDmgSY3t7NkSUxrnLjABNgJbjJn6DEUVZuV0MUdB2Bfi1NqzPMAC3R7CRvY8pCaM7ZSrNkBpWGBNV1stgqxA7Lb+GiJolPZuoOMtY5cwrI7VMLI3Fc6zUoOAJJ/dY//AMclW3OBKf8ZMH5OUsnqhspm67bt6vjFTMvvjdjBX2wom8aEJs8x/X/Fes3CbWkCdEtY6B3OVYAbMl92L9Nfwlc2iSeCo36pGBp/Q2mfAvpTJzeNTfxlOiMHPS9bh/K7HTSQy0iVOJ9WcxKVjQp86AeRjch1++KuUSJe+LVPwHuYacl+N2dV+l34ch3jjFfTxt9I0uKpK46kJQSjEXE9f9gXet+4tXviYbD5PxY2NfMbpGy3ob4dmed7e8BRuUzBrTU39lAi+wsxdiKOMx+lUUqcVUP/u5Kcl3biMAcnVZgHH+h+uQtWTrCARy0B7qHKJP3C6T6icb8lYNSmtV/KbHPy09aJuBiXUnw5WBd37zQElB80frwZTCjT07Uiy8UISWXIYkBvBe4SB1bPZxUPF00EF5r5e2OuEBzqekryxA=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f101fe90-5f67-4df2-e09c-08ddf520b1e0
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2025 12:58:13.0130
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3MG51v/C0+MZElZrWDFOJvolanm2GIASIyCyyno50gA5CDKKnGSlFLLvsfhsWjUOFR7O6VyyXpTLR5BHV3Hclg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4385
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-16_02,2025-09-12_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
- definitions=main-2509160120
-X-Proofpoint-GUID: GhsGY-NOGkfracihYLgyFpYyH8JgR8ZL
-X-Authority-Analysis: v=2.4 cv=RtzFLDmK c=1 sm=1 tr=0 ts=68c95ee9 b=1 cx=c_pps
- a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=yJojWOMRYYMA:10 a=GoEa3M9JfhUA:10 a=VwQbUJbxAAAA:8 a=sSRawksTRETSTNy7ju0A:9
- a=CjuIK1q_8ugA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTEzMDAzMyBTYWx0ZWRfX55I2JvMpYJQb
- N9uAB3YejuGBe8GI6CgZJgivdA39lSAH88Ktx5yDQrteaINp5s3Hcek0Ugc3xA8/gkPLhXgwZF+
- XgUSUPp/useSIjHcP/19Me5sMmNwJb5jOkzXaXQtUBTgRotlaK2IZlWu8CMdSO/ki2qAbSOebB0
- IrIwQqUSflQp1ST7yvD+O/KHy/riumJtn0sufGaS+RIi/vkoOZ9YYLr0R9dBQhJAdcll8bfLLQx
- E9+GDvMqMCgF5km/tNChhR/JVUPvzpneIvPTF658NJ8MLlYEXg6Rcc0vqAzPvTlr24uQyqvs3k+
- nTl8fgnAJX6liz5yk8JQgFcyCDx5jZSgFhy0JLuuvrTOaPVyEMIhHvdJP7gjjejRGOBDDLAY0d4
- ednkkzoM
-X-Proofpoint-ORIG-GUID: GhsGY-NOGkfracihYLgyFpYyH8JgR8ZL
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH slab] slab: Disallow kprobes in ___slab_alloc()
+Content-Language: en-US
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
+ linux-mm@kvack.org, shakeel.butt@linux.dev, mhocko@suse.com,
+ bigeasy@linutronix.de, andrii@kernel.org, memxor@gmail.com,
+ akpm@linux-foundation.org, peterz@infradead.org, rostedt@goodmis.org,
+ hannes@cmpxchg.org
+References: <20250916022140.60269-1-alexei.starovoitov@gmail.com>
+ <47aca3ca-a65b-4c0b-aaff-3a7bb6e484fe@suse.cz> <aMlZ8Au2MBikJgta@hyeyoo>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <aMlZ8Au2MBikJgta@hyeyoo>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,kvack.org,linux.dev,suse.com,linutronix.de,kernel.org,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 7BB1422747
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 
-On Tue, Sep 16, 2025 at 12:40:12PM +0200, Vlastimil Babka wrote:
-> On 9/16/25 04:21, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> > 
-> > Disallow kprobes in ___slab_alloc() to prevent reentrance:
-> > kmalloc() -> ___slab_alloc() -> local_lock_irqsave() ->
-> > kprobe -> bpf -> kmalloc_nolock().
-> > 
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+On 9/16/25 14:58, Harry Yoo wrote:
+> On Tue, Sep 16, 2025 at 12:40:12PM +0200, Vlastimil Babka wrote:
+>> On 9/16/25 04:21, Alexei Starovoitov wrote:
+>> > From: Alexei Starovoitov <ast@kernel.org>
+>> > 
+>> > Disallow kprobes in ___slab_alloc() to prevent reentrance:
+>> > kmalloc() -> ___slab_alloc() -> local_lock_irqsave() ->
+>> > kprobe -> bpf -> kmalloc_nolock().
+>> > 
+>> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>> 
+>> I wanted to fold this in "slab: Introduce kmalloc_nolock() and kfree_nolock()."
+>> and update comments to explain the NOKPROBE_SYMBOL(___slab_alloc);
+>> 
+>> But now I'm not sure if we still need to invent the lockdep classes for PREEMPT_RT anymore:
+>> 
+>> > /*
+>> >  * ___slab_alloc()'s caller is supposed to check if kmem_cache::kmem_cache_cpu::lock
+>> >  * can be acquired without a deadlock before invoking the function.
+>> >  *
+>> >  * Without LOCKDEP we trust the code to be correct. kmalloc_nolock() is
+>> >  * using local_lock_is_locked() properly before calling local_lock_cpu_slab(),
+>> >  * and kmalloc() is not used in an unsupported context.
+>> >  *
+>> >  * With LOCKDEP, on PREEMPT_RT lockdep does its checking in local_lock_irqsave().
+>> >  * On !PREEMPT_RT we use trylock to avoid false positives in NMI, but
+>> >  * lockdep_assert() will catch a bug in case:
+>> >  * #1
+>> >  * kmalloc() -> ___slab_alloc() -> irqsave -> NMI -> bpf -> kmalloc_nolock()
+>> >  * or
+>> >  * #2
+>> >  * kmalloc() -> ___slab_alloc() -> irqsave -> tracepoint/kprobe -> bpf -> kmalloc_nolock()
+>> 
+>> AFAICS see we now eliminated this possibility.
 > 
-> I wanted to fold this in "slab: Introduce kmalloc_nolock() and kfree_nolock()."
-> and update comments to explain the NOKPROBE_SYMBOL(___slab_alloc);
+> Right.
 > 
-> But now I'm not sure if we still need to invent the lockdep classes for PREEMPT_RT anymore:
+>> >  * On PREEMPT_RT an invocation is not possible from IRQ-off or preempt
+>> >  * disabled context. The lock will always be acquired and if needed it
+>> >  * block and sleep until the lock is available.
+>> >  * #1 is possible in !PREEMPT_RT only.
+>> 
+>> Yes because this in kmalloc_nolock_noprof()
+>> 
+>>         if (IS_ENABLED(CONFIG_PREEMPT_RT) && (in_nmi() || in_hardirq()))
+>>                 /* kmalloc_nolock() in PREEMPT_RT is not supported from irq */
+>>                 return NULL;
+>> 
+>> 
+>> >  * #2 is possible in both with a twist that irqsave is replaced with rt_spinlock:
+>> >  * kmalloc() -> ___slab_alloc() -> rt_spin_lock(kmem_cache_A) ->
+>> >  *    tracepoint/kprobe -> bpf -> kmalloc_nolock() -> rt_spin_lock(kmem_cache_B)
+>> And this is no longer possible, so can we just remove these comments and drop
+>> "slab: Make slub local_(try)lock more precise for LOCKDEP" now?
 > 
-> > /*
-> >  * ___slab_alloc()'s caller is supposed to check if kmem_cache::kmem_cache_cpu::lock
-> >  * can be acquired without a deadlock before invoking the function.
-> >  *
-> >  * Without LOCKDEP we trust the code to be correct. kmalloc_nolock() is
-> >  * using local_lock_is_locked() properly before calling local_lock_cpu_slab(),
-> >  * and kmalloc() is not used in an unsupported context.
-> >  *
-> >  * With LOCKDEP, on PREEMPT_RT lockdep does its checking in local_lock_irqsave().
-> >  * On !PREEMPT_RT we use trylock to avoid false positives in NMI, but
-> >  * lockdep_assert() will catch a bug in case:
-> >  * #1
-> >  * kmalloc() -> ___slab_alloc() -> irqsave -> NMI -> bpf -> kmalloc_nolock()
-> >  * or
-> >  * #2
-> >  * kmalloc() -> ___slab_alloc() -> irqsave -> tracepoint/kprobe -> bpf -> kmalloc_nolock()
+> Makes sense and sounds good to me.
 > 
-> AFAICS see we now eliminated this possibility.
-
-Right.
-
-> >  * On PREEMPT_RT an invocation is not possible from IRQ-off or preempt
-> >  * disabled context. The lock will always be acquired and if needed it
-> >  * block and sleep until the lock is available.
-> >  * #1 is possible in !PREEMPT_RT only.
+> Also in the commit mesage should be adjusted too:
+>> kmalloc_nolock() can be called from any context and can re-enter
+>> into ___slab_alloc():
+>>  kmalloc() -> ___slab_alloc(cache_A) -> irqsave -> NMI -> bpf ->
+>>     kmalloc_nolock() -> ___slab_alloc(cache_B)
+>> or
+>>  kmalloc() -> ___slab_alloc(cache_A) -> irqsave -> tracepoint/kprobe -> bpf ->
+>>    kmalloc_nolock() -> ___slab_alloc(cache_B)
 > 
-> Yes because this in kmalloc_nolock_noprof()
+> The lattter path is not possible anymore,
 > 
->         if (IS_ENABLED(CONFIG_PREEMPT_RT) && (in_nmi() || in_hardirq()))
->                 /* kmalloc_nolock() in PREEMPT_RT is not supported from irq */
->                 return NULL;
+>> Similarly, in PREEMPT_RT local_lock_is_locked() returns true when per-cpu
+>> rt_spin_lock is locked by current _task_. In this case re-entrance into
+>> the same kmalloc bucket is unsafe, and kmalloc_nolock() tries a different
+>> bucket that is most likely is not locked by the current task.
+>> Though it may be locked by a different task it's safe to rt_spin_lock() and
+>> sleep on it.
 > 
+> and this paragraph is no longer valid either?
+
+Thanks for confirming! Let's see if Alexei agrees or we both missed
+something.
+
+>> >  * local_lock_is_locked() prevents the case kmem_cache_A == kmem_cache_B
+>> >  */
+>> 
+>> However, what about the freeing path?
+>> Shouldn't we do the same with __slab_free() to prevent fast path messing up
+>> an interrupted slow path?
 > 
-> >  * #2 is possible in both with a twist that irqsave is replaced with rt_spinlock:
-> >  * kmalloc() -> ___slab_alloc() -> rt_spin_lock(kmem_cache_A) ->
-> >  *    tracepoint/kprobe -> bpf -> kmalloc_nolock() -> rt_spin_lock(kmem_cache_B)
-> And this is no longer possible, so can we just remove these comments and drop
-> "slab: Make slub local_(try)lock more precise for LOCKDEP" now?
-
-Makes sense and sounds good to me.
-
-Also in the commit mesage should be adjusted too:
-> kmalloc_nolock() can be called from any context and can re-enter
-> into ___slab_alloc():
->  kmalloc() -> ___slab_alloc(cache_A) -> irqsave -> NMI -> bpf ->
->     kmalloc_nolock() -> ___slab_alloc(cache_B)
-> or
->  kmalloc() -> ___slab_alloc(cache_A) -> irqsave -> tracepoint/kprobe -> bpf ->
->    kmalloc_nolock() -> ___slab_alloc(cache_B)
-
-The lattter path is not possible anymore,
-
-> Similarly, in PREEMPT_RT local_lock_is_locked() returns true when per-cpu
-> rt_spin_lock is locked by current _task_. In this case re-entrance into
-> the same kmalloc bucket is unsafe, and kmalloc_nolock() tries a different
-> bucket that is most likely is not locked by the current task.
-> Though it may be locked by a different task it's safe to rt_spin_lock() and
-> sleep on it.
-
-and this paragraph is no longer valid either?
-
-> >  * local_lock_is_locked() prevents the case kmem_cache_A == kmem_cache_B
-> >  */
+> Hmm right, but we have:
 > 
-> However, what about the freeing path?
-> Shouldn't we do the same with __slab_free() to prevent fast path messing up
-> an interrupted slow path?
+> (in_nmi() || !USE_LOCKLESS_FAST_PATH()) && local_lock_is_locked()
 
-Hmm right, but we have:
+Yes, but like in the alloc case, this doesn't trigger in the
+!in_nmi() && !PREEMPT_RT case, i.e. a kprobe handler on !PREEMPT_RT, right?
 
-(in_nmi() || !USE_LOCKLESS_FAST_PATH()) && local_lock_is_locked()
+But now I think I see another solution here. Since we're already under
+"if (!allow_spin)" we could stick a very ugly goto there to skip the
+fastpath if we don't defer_free()?
+(apparently declaration under a goto label is a C23 extension)
 
-check in do_slab_free() if !allow_spin?
+diff --git a/mm/slub.c b/mm/slub.c
+index 6e858a6e397c..212c0e3e5007 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -6450,6 +6450,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+ {
+        /* cnt == 0 signals that it's called from kfree_nolock() */
+        bool allow_spin = cnt;
++       __maybe_unused unsigned long flags;
+        struct kmem_cache_cpu *c;
+        unsigned long tid;
+        void **freelist;
+@@ -6489,6 +6490,9 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+                        return;
+                }
+                cnt = 1; /* restore cnt. kfree_nolock() frees one object at a time */
++
++               /* prevent a fastpath interrupting a slowpath */
++               goto no_lockless;
+        }
+ 
+        if (USE_LOCKLESS_FAST_PATH()) {
+@@ -6501,8 +6505,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+                        goto redo;
+                }
+        } else {
+-               __maybe_unused unsigned long flags = 0;
+-
++no_lockless:
+                /* Update the free list under the local lock */
+                local_lock_cpu_slab(s, flags);
+                c = this_cpu_ptr(s->cpu_slab);
 
--- 
-Cheers,
-Harry / Hyeonggon
+
+
+
+
+
+ 
+
 
