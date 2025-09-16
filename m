@@ -1,221 +1,240 @@
-Return-Path: <bpf+bounces-68485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2528B590BF
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 10:33:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D11B591DE
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 11:15:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B32C81BC5B78
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 08:33:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D7FD18969AE
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 09:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288B0283C82;
-	Tue, 16 Sep 2025 08:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186FE29898B;
+	Tue, 16 Sep 2025 09:14:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="rgYECUny"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SA7ew/eV"
 X-Original-To: bpf@vger.kernel.org
-Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010011.outbound.protection.outlook.com [52.101.46.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0932D136E3F;
-	Tue, 16 Sep 2025 08:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758011547; cv=fail; b=dJjKRt5sfeLs6ILqohKR6k2cv3lInpDyHR4TZljVkuHercX5kbtCzQUpwK+j4oGbuG3sgX+mUzhETZq0E+L5EqrAWr7jC9SfZyWe1QnFJ9Beuo3+8Q6b47H9YxI/YZKvN3QwAInYTjU22gYWrUHQpep58eknDbMV/iKPvH2njfY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758011547; c=relaxed/simple;
-	bh=DIqfJKxOp+EmGT2OoMPXSBSOjkW0erCmjnLUXhg7ruU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Ffz3K0bCMvJ6xM8KdYf7dAEzcg2yLqetOTv0BPHzJODT+CJpjZArj1kGibWyVhvBmgBJ+BGj1sl4HpaoQGPcZ6KaByEqWtHt+U8idpPQTeZ4GYaZwD7NHCRRtneNs0bnlNCIwo3cJJx2Fhk34KorsIEevO08nKRjK8aDTMwr1lg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=rgYECUny; arc=fail smtp.client-ip=52.101.46.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CugL8mZjCsPbrNUZkcwBWUNGdSqVJnyadNcmBpta5MLCx2l//FuL+9ndC+FJWgB+uexEpVzNJNApuGF7LkovsZPUqqxtW+BCpZZqfGMSl3ZPvlyDMOeiPoomgDVvs5kr/L2sz7cbKyaslQ4Bc98pLNh7MYjoKPHY15Rbpi/uehcQx8/XeeARbji1ioZBEpqCmPc0BpuYqQ1m7DvG6h/hJe8wcGEv0BhxZ7h9OnmXY/JGZZksp+buqUdS6BshUPzMROQlB53F3RemQh1FVS8g1V5qpUoaBDXZ09V18mM7xcENYIT/Bi9geAypjLUnAXLMaebhNXvztzfTUsPHhorkLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DIqfJKxOp+EmGT2OoMPXSBSOjkW0erCmjnLUXhg7ruU=;
- b=VtYwAUmxW+nbfy965DjWO1jOUTviD0KefsTiyLAz+CVOThZGV2+7PW/52KTe6AErUxxlxoCLoygh1YiF65Ksnbat2NQrv2ugsT8AkdbpUh6y4glyNKttElAYRd0ylFmlnRWewmwrUK5E4Fz91Y4TMBGCC4VySBCMBhexjn5StPIOmA2CiWecdZ4Qa3C+kQGEBwpO18jBVKwkEoeZCcrK1tpfwa+PJIT0pTx6ZcGEbwd/2GCa5EGB4GJNgYI3G3E0eDNB2YXWSlTbVJ5hDt4PcxxctLP1sT+iP43JKSuYCiBtFOjeMXVNdikttlCdB6EE5v/1+mOGk+EZimif1mzpsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DIqfJKxOp+EmGT2OoMPXSBSOjkW0erCmjnLUXhg7ruU=;
- b=rgYECUnyQ9WsBOAABZ/jZ6H9Cz02My2tpogOD2nFAy6oWm8bAdKBdLqiPQfQkgpNDGPf4x3Si6HtuBnGr/IvUROkrjUarI/omabja3dc2tXHZYLTYbKDz9YxGNC9abdL660eUzLoXn+xN+UirpWGX4Z4jSnu7+hL6uL3GQDmx7rxeNhVXrAUPDU0Vm4jF/Ajn1vlvD0uTsol7Ur0OFjVJan2pE51tZm9qDSv2affmMO4s3CoOTJ+3eUaqKA5QLBgRPbLActapSQQtdyAkn/5XLnQiMONlbsS4xwYZYq02Ou9nJQmiztkOzhH6ydomqgL/+lnWyzjSBUR3wKlvESapA==
-Received: from DS5PPF266051432.namprd12.prod.outlook.com
- (2603:10b6:f:fc00::648) by CY5PR12MB6407.namprd12.prod.outlook.com
- (2603:10b6:930:3c::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.22; Tue, 16 Sep
- 2025 08:32:23 +0000
-Received: from DS5PPF266051432.namprd12.prod.outlook.com
- ([fe80::6d92:929f:6838:fba9]) by DS5PPF266051432.namprd12.prod.outlook.com
- ([fe80::6d92:929f:6838:fba9%4]) with mapi id 15.20.9115.020; Tue, 16 Sep 2025
- 08:32:23 +0000
-From: Cosmin Ratiu <cratiu@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>, "stfomichev@gmail.com"
-	<stfomichev@gmail.com>
-CC: "corbet@lwn.net" <corbet@lwn.net>, "andrew+netdev@lunn.ch"
-	<andrew+netdev@lunn.ch>, "hawk@kernel.org" <hawk@kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "leon@kernel.org" <leon@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>, "ast@kernel.org"
-	<ast@kernel.org>, "jiri@resnulli.us" <jiri@resnulli.us>, "pabeni@redhat.com"
-	<pabeni@redhat.com>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, Jiri Pirko <jiri@nvidia.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Dragos Tatulea
-	<dtatulea@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, "daniel@iogearbox.net"
-	<daniel@iogearbox.net>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, Saeed
- Mahameed <saeedm@nvidia.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "kuba@kernel.org" <kuba@kernel.org>, Gal Pressman
-	<gal@nvidia.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>
-Subject: Re: [PATCH net-next 10/10] net/mlx5e: Use the 'num_doorbells' devlink
- param
-Thread-Topic: [PATCH net-next 10/10] net/mlx5e: Use the 'num_doorbells'
- devlink param
-Thread-Index: AQHcIj1kTZykFGrCMUe+G7il+UN0QLSMmBkAgAjsRAA=
-Date: Tue, 16 Sep 2025 08:32:22 +0000
-Message-ID: <a36bc123aa1021a5aeca0494f4b8ea140ef789d0.camel@nvidia.com>
-References: <1757499891-596641-1-git-send-email-tariqt@nvidia.com>
-	 <1757499891-596641-11-git-send-email-tariqt@nvidia.com>
-	 <aMGkaDoZpmOWUA_L@mini-arch>
-In-Reply-To: <aMGkaDoZpmOWUA_L@mini-arch>
-Reply-To: Cosmin Ratiu <cratiu@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS5PPF266051432:EE_|CY5PR12MB6407:EE_
-x-ms-office365-filtering-correlation-id: a8b3eacb-1f79-4b91-34e2-08ddf4fb8f0f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|7416014|376014|366016|1800799024|38070700021;
-x-microsoft-antispam-message-info:
- =?utf-8?B?V2lEd1ROcXB4NVgxVEdpa0Q4ZWlCcVlnNmpVMElaRlI0L2RlZGd0WUZ3YVQ5?=
- =?utf-8?B?R2RRRGNQNGRZejhiWDdqVWhUK0lmODZlNlkzdjgvbkJTS3daUjlqaEdlRnVL?=
- =?utf-8?B?LzdwdEZ4cytDQ09FeVlSaTlpU1d5VEh0RDZGU3kzcDBqb2RIY2xiZ1R1QUV0?=
- =?utf-8?B?ZXpJQXBVM3dRaVJxZkoxMEt2YXJyeHQ4Wkdac29yeHFKYjJ4MzR3VERtajBU?=
- =?utf-8?B?UmZJYUFDKzhGbkMrbHFzWVRZT0pFV2dDNTFMRjdLQmVWS3NKSWowUmlIZXd4?=
- =?utf-8?B?Nlc4RFdMM2VWSWlhbG1kbHcrN0RvVU9TTS8ydlBSTEFXZXNMUFNPbTJvUWpk?=
- =?utf-8?B?TzU1RGo5QjRud2NXN2dsakNpaEFXZWZ4c0luRklSUkpFY0hMeWpFQTJ6V1d6?=
- =?utf-8?B?QzR4Qi92a2lqczhDQ3JjK2I0TmZ5elVsVlRyRENRVXFOc1d1RVBudFMrN1JW?=
- =?utf-8?B?TmFISjZ2akRzM1FlcUl2ck5Ta1RVcWZkb1BUQmh5cFd0d3BkYkkvK2NWNHVQ?=
- =?utf-8?B?RHZLV1pUaTEvTTlWL016Qyt2bzFrdWhnTjU4TFlDRFlNQ2ZuV0VManRYd3dk?=
- =?utf-8?B?UzhjbDd4WklZSVZhTkxlTGpReXdYNEZxc2Q4TTVJY2hyZ1RWRWcyeWd4OFkw?=
- =?utf-8?B?YkRsU1FiRDhRU2c3RDhuVUJYbVVDWkNDVWdmSzlJemovRTUrbTJKTElFVHdV?=
- =?utf-8?B?Mkh2SVQyaEpGZ0VwRnpQQk5tQVZyYjJRbDhPcytUTkZzOWFKeHFHQStJWVcw?=
- =?utf-8?B?T3JYaitIdGQxbFc0NnhFTThFSm5XQWpYLzZXd3VtVjJ2QllOSHUrVU1DeVE5?=
- =?utf-8?B?TVY0VitKbEdxNHBrZUhGVHVoRzVQWHh4MDczeno4c045ZmsrYmkzajBpYWZM?=
- =?utf-8?B?ZlVtUWJjYTRRNU9zN3JtallRcE1GOEtQcXJsTnhGa3dCb0JHNkYvN1NvTEJ0?=
- =?utf-8?B?RnlPZS94cU1udHV2b1hsdnNkYW1IK0pFZ2hXN3h4NkprL2RxMVBNVktEZEFP?=
- =?utf-8?B?MnhvUkJDKzVvaVFyZlE1NDE5a2pxNStZazBSSlZON1FTQ0ttMEg3eXJ1ZThm?=
- =?utf-8?B?UkRlQmY2TEt2ZXVLNGw2VXBmM3N4am5URmNzeHUzMGVaVTVvODREUnFoWjhh?=
- =?utf-8?B?VzJxT1kxUjJDTVFCNGdnUm5uZXVtblVOWkZGUkNtNUV5VjFUMGhUeVJZY1Vi?=
- =?utf-8?B?ZnE1TGtIMlJBZVI4KzR4ZVJUbzFLSWhlaTJWdENuUmZzZzdtMlEzSDF2RTd3?=
- =?utf-8?B?N1lSSjk3b2pPNXUxclBWU0RjcEowWXRvNEZNK2JLeGFET3Y3NHAvNEUwTTVL?=
- =?utf-8?B?MENUVUtjeFNEN0I4Q216S2JNOGk3UGR4SlhLNGF4WDZZcVpJRFg1bWRRdmNw?=
- =?utf-8?B?cklZKzB0TzVvUXNHTUt2UWFEMUIvdC9WcjJ0MVhCZHF5YmIyL0VzcXVuOU0w?=
- =?utf-8?B?cTlCOE5qNjZOYnl1M2xjc01IekNDWTZDcFI3dHVWMmhpSGp1UlRIckRvbjRt?=
- =?utf-8?B?cUo1eGdkK1FFbGE1MDVlbHAzc1VWR0dLS2lUa2ptQXJWT0FpR0JyU2E3UGNa?=
- =?utf-8?B?bTVIcS9QcUJkdVRuYnJQQ1ErdmpWamJBeGlKalZkNGMwSHcxZ1ZuRVhpdHpn?=
- =?utf-8?B?SVhaNWZ0QTM3M2U1U2VET2EvU1h2Zll4V01ESWNUU2c2ZHNXTGpFUyt4dmZB?=
- =?utf-8?B?Z3NaQTlkRjVjQ09SNmZ4RmFFaXhZb0haU3NZK21hSkxjZzZubzBGUXFFc0xR?=
- =?utf-8?B?V05MVjFjT1NUb3JFdkVvZ3A2Y2dETUxjUWEvNWRXUGNlVk96K3FrQ2F4YjNy?=
- =?utf-8?B?aHJsTU9Td1E0L09HNVdtV0NHT2YwUXgrVzNEVFpoUVk2TjJGWXZ3OSttRndG?=
- =?utf-8?B?SUw3R1NENWFOK21qcWFzWm1EYkpBa21EN0NGL1RIMUI5L1FUeDFXU1NKRUNi?=
- =?utf-8?B?Sk93WVpVNDhiMFlPM2xaUTJkYTBudlYxVUwyRzZRK09IMzcwa1UzRjVDc21s?=
- =?utf-8?B?NW9NNnlOS3d3PT0=?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS5PPF266051432.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?blEzWTJPQkp4UVhMcnR1aGxYQitpeUlTS3dLMHVRUUJGeUhBWDZXWjhrS3RH?=
- =?utf-8?B?RG81eUJCYldTdEZaS3JjZEdKVTRVbVRWd0RtZm4yWFQ0QnBtR2g5NFRZNUxQ?=
- =?utf-8?B?UmNUcG96bzNrZDBCYnJYa3NPTVlsRHV2SG0zalBlVUNvUVREb3RtL1lXcllw?=
- =?utf-8?B?eHc3eGx6MVNQSXE2ZGhCeTU1K3lkU3U2QlVzRmFMdzlmRE1oRGRlRVlmY256?=
- =?utf-8?B?VzhDSWRsQXdQSGxpeEhUVVZZTWU5OU5BMG1FeFFGdzJKT0F3aXlaNXFUVDRm?=
- =?utf-8?B?S2Q1MFIwTk1lRGpMajRhZklmeDlybjFKZnVzVDhZZ2NrYzZyd25YWWdYbDFT?=
- =?utf-8?B?bW1pNTZKYWNRNjBJT2VnT3h2a2hMOVZFRFNUQitSN1diMEc5a0ROMWdBSGk1?=
- =?utf-8?B?cGRDVFVpYkRBdWpORWEvcVZZSVFyWVg4STRrMVBMVE5EUEJHZnFkV3dPVHc4?=
- =?utf-8?B?dTUwVUQwcGN3UHhNdGVVdEEzN2I3Z2lMcUVEVExoaVc1aDlvWC9VKzh6WXhQ?=
- =?utf-8?B?ei9WTkhwZ3YxOGtzRDJBV3JRM1NjVnBoWVpld2JXd3c4aXU2TjNsakZ5Ni8y?=
- =?utf-8?B?MktjR0tMM3BrbUovblc1RENvZXd6SlJPclhFbDNibTRkWForbUVtUDZaelRt?=
- =?utf-8?B?MHF1czNwdUMzeGR4MFlIekdCSDhUNUo3aGtOVWdxejErMEtiK0xEaEVCdnNm?=
- =?utf-8?B?UGR0NXlDK1FuVEhPTVhBRFVpQThLbUxyQUFnK3pTcE5IbVdHZ0xyckxJUVIx?=
- =?utf-8?B?aGI0OFE4aUpRbkhUUlp0UGIzeTNNa0tKMmwwb1AzZkFoWjRERE44WXdEa1cv?=
- =?utf-8?B?WUNNOVFOZjE4SGVhY0Jnc1ZBNWZCSUZ6OHFQekxKQVNLdWJjK05EMmFsR0NS?=
- =?utf-8?B?ZzNOQ1R1VXcrZWtleThqQWFWMUc3MmJhdkFlcjhONFNrcTd1OTVkeDdJYzNt?=
- =?utf-8?B?azlmMHFucDhOZTdPa1FtclY5a0FJcHJzbjk3VStQeFVPRVhIY016Z3NmZ1g3?=
- =?utf-8?B?cWY1TnQwVlhEMCtEM3dScHVIRlp0RVJ6WkFlSGJMdnBObUNFQTk3YlNaQytF?=
- =?utf-8?B?Z010eUlGcTBYOVRkV3FlZ2t0dkRGWkNyZXJ5K2FoN2VsNGI3WGM3aHBpcnlR?=
- =?utf-8?B?SEJDWEU3QjJtZXZzSDRjL1hUaFE4Mi9zTzVnTTczY3BtU1ZWbTlRWG9kcEZ4?=
- =?utf-8?B?Z1d6WUJvRGE2WVE0VDlDNHdGYnE3K1RxWDB5ZFhBdG1DRjNMZ3R6Zi9NanBX?=
- =?utf-8?B?ZU5uSlR4UnVNUFhoZzlhcVBUODhacnFvS2RGOGJGTGlBcG5JM2J5T2c4MTZt?=
- =?utf-8?B?WEtjdzg5S0F6ZVlKbWh4SW1laENZa3F6L1BlWmxPdEVMMlFCL01xbEM4Vmt6?=
- =?utf-8?B?eFBRQTYzVklFVDJoTGF6WWxWVnF5dXpCV3pxbmYrNHEyNHVzNmFQOUN1QkNX?=
- =?utf-8?B?QUN5VkFjeW9HbHhtSUp6Rm55dytYUmR0RTBFaEVpQ28xRVV2K1ZDU29XbWU5?=
- =?utf-8?B?OUplK25HcEVuN0EveDVYcDF1dlFEUWpydE1WeUJHWnU3QTU2K2dsd1o5TkRG?=
- =?utf-8?B?TEtxK1grc2V0MmxEQlNnano0ZW9TcUVDSG1mRkx1blVZOWRZVmxNekJDeGdU?=
- =?utf-8?B?VWRhTjJkTGJOSmRhMU5NUlJ4Ty9QZWpIL2l6cWxXRDlUL3ZLeEdIdlEwNG5h?=
- =?utf-8?B?cUtIQUdUcllhVk9sbytWemgreGZkM1RMUGc1TUlDTVJ1Ky9KejV3ZHVaR3B5?=
- =?utf-8?B?bEtpOXUyYkdwb0o4VmpiRXZuV0EwTGZmSlhGbnFHYjdVd2tMUzFVRWlxNDVs?=
- =?utf-8?B?OFRNUnMwOXBkSnBlemNtTnUweGRmRXRXYzIxNHJVU0s1bGQzcHZIbnRBdWti?=
- =?utf-8?B?cjljbnJacDViTEZxTjRnQ1RhRVRXV1FBVURTV1cyNzNDSTZmZzg1VzdSaGRp?=
- =?utf-8?B?NzkxV0hMUlB3UUJ2T1ZtSjUvaUxBSDRqV0FvS3hpMXdxUzZsa1kwUm9rc0l4?=
- =?utf-8?B?YXJNR09vek5qQ2k3bGt2Q2ViQS9rV0YzS09MYTBZN3dJVXp6WVo0T2FFTUlE?=
- =?utf-8?B?bGVCVVBaSmVGclpjay9McUhUbW5scGZvTFdWdFFUQnMvQ2RnZWllcngwbUhW?=
- =?utf-8?Q?2fQYIy+OAzxR7xbOvOFwW6r5/?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AF29E7440900D3479BA4927F9D1F72E3@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127A310E9
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 09:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758014093; cv=none; b=A9+DZsjbEG0aJyIlTws0BmoJEVmsDlK/NAy+3DHEFxXzr983xmyfLF3FywuH95arAuV1DrmxnlQoXUj80kezSZaccpbOvvG9WfFSvJUyEfzhxDplzm0PLi4GMQv6X+j0yS4ipXcmV50qEd40fW90ojhMOFgko8oQ/GpaT4ef7bU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758014093; c=relaxed/simple;
+	bh=t7JA6AMNc/SslXLubb+B4OGmYInEP2xAEldF8ytxiqw=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=LJqSoIsRA/DGFyrr8RYhecwXaMHPezcKczPrZjrvTKb2BO41VTr3nvDCGT1v/BBwzqbCnmSz4vHm8Dyf3sVaobR+tIF7zGBVYr8fFTksMkcxbO0G9VL5nW6EwWHPz17S4wJrPY/npnH1ghZh5ff9Nc9rovduFcSrScAgMZZeWCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SA7ew/eV; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-77459bc5d18so3992832b3a.2
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 02:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758014091; x=1758618891; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Oy3gQMyU/E1i5AJcLQlonxALYGjighiI1yeoujTpolk=;
+        b=SA7ew/eVWcjut7JPTDE7SYXj0SDrIWRUNsRb2S18vVI+VlAI2Kb4dZFLe8HD4qJkNm
+         zB+mniJXS83kSAo8Ft+QPwkiARJZ9ZnagHAEaeeSNTudZgI1Hi6kXOt+XSDwkXmfkf56
+         tHjUh3JPiku1NebIEgD+HvesJ1J2umOCak7gjb6+yndgJCcUHFK3p4BFUBBy0wXzNdm8
+         X07q8J6ZJsSDfnlV7YojCvtrkK/+BEsdC/vBstZRWq2HpV/YQWPeJ6DDgqzMoh22LAIl
+         m7nt33aePraYeccZ46kUO/SH6pKRRsyOxuDNNiu1nc2R7qvPXcDPiGovHK+A7ufgAAhk
+         VSIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758014091; x=1758618891;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Oy3gQMyU/E1i5AJcLQlonxALYGjighiI1yeoujTpolk=;
+        b=YmHWbF127oniEUXFDNCXMs4+nCU6Us8I3rSqJRRtpmgydfEbipq7zrV0Qg5B0kpUAA
+         CvwMHZ8QJUobjeIlR2f9QipEsXvcIGv4Etpj0YsLDqJIPqnWfiKHMf8i8Dp+141xx2/b
+         hZiJJLG6srxom74raUfRXLPU+uFy7zmo8KCzifpbbZTr4kwAkH4QhmfFFqqMca9bZ+D1
+         BGn9u0pWrnRS3o4cDgwnLBDA3XB1bznwGp1jrwU+Fd2wsux8mfB0+8k6DL5i+e/7iNu4
+         eZSr3/xgtPAPWEis6o0QI7UTYL3DWlP/WDi6Nv6Gg9uDVig42CN5UL3KK3GTqAQguMkR
+         V6uQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVO7dUbZ8ZnHli8Lq3a+1RbRVGrNhrefcQk2L+cZvaT5oPi2oS+miOaWgPpo6aKg/s/Z1M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXX/MMa4pgwpsmVHBondRFCMhJyFeBtvoE3zUyqXZ00yideP2N
+	QUo1YvBZo/ezxtAXk+/kFCbnY5gUnA1YuDp+zPqmpTZFwcJjrlGw0JYl1nJlXtEu
+X-Gm-Gg: ASbGncsgrB8AvO6mW3Y3Vg8rhpZ9XW6EI9OwxgGTG1vLQBAHe8QP13D3XlqUIrSw4yi
+	EHDUo8VRidHLB8YJsD0W9NH/5QMR8YtdoKKnLimYUuTuNw1IW0O7uKy7QNa0T0d19PoMav8Ap3j
+	sZZf4vCIN7h7jwOlWpJ1uLYqSSKPfsEROhoSN2zuDt9ooJR0I/Pb2vzQJfT0SjmOOvNB4jv+NPO
+	bWyPmZHea8qE0a+9c0917LpTWLaF6KXDn7JlbLinf+kJXdXlHszc664F3TS9rsKODBYLiZ++hQH
+	SOxTI5EGVOAfQusL3adbVwLHucGVJcmnmnG0dCNoTxsgQX71Vckuywek/yTFgzR5H3xPvBy4QS1
+	qBQZAwRPccYUXj7+3yvQ=
+X-Google-Smtp-Source: AGHT+IFRwBAv+gM3FW6NQ8wDnj8ZpAYAq5LHxgZZmC0m3Ji+oSMyylDVJKE7igYS2ZaruefyUntvig==
+X-Received: by 2002:a05:6a00:22d3:b0:772:8dd7:f55f with SMTP id d2e1a72fcca58-7761218839fmr17315128b3a.25.1758014091227;
+        Tue, 16 Sep 2025 02:14:51 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-776075fdd83sm15555183b3a.0.2025.09.16.02.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Sep 2025 02:14:50 -0700 (PDT)
+Message-ID: <c42dd869d9ba23f14681448581a9c8c7ec23105b.camel@gmail.com>
+Subject: Re: [syzbot] [bpf?] WARNING in maybe_exit_scc
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: syzbot <syzbot+3afc814e8df1af64b653@syzkaller.appspotmail.com>, 
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, 	haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, 	linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, sdf@fomichev.me, 	song@kernel.org,
+ syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Date: Tue, 16 Sep 2025 02:14:47 -0700
+In-Reply-To: <b1717a5b75475b8e14afaee4825a40a3808bd0cb.camel@gmail.com>
+References: <68c85acd.050a0220.2ff435.03a4.GAE@google.com>
+		 <81bb1cf72e9c5f56c92ab43636a0626a1046d748.camel@gmail.com>
+	 <b1717a5b75475b8e14afaee4825a40a3808bd0cb.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS5PPF266051432.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8b3eacb-1f79-4b91-34e2-08ddf4fb8f0f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2025 08:32:23.0345
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZqTrdS3OcvHUhc3MUsbpgahkxo+fZVhY+uusOKVDkwoobiOFqjHilmLLYHuJ3ns85vM9hpzB4JjEYO05Q6R8Pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6407
 
-T24gV2VkLCAyMDI1LTA5LTEwIGF0IDA5OjE2IC0wNzAwLCBTdGFuaXNsYXYgRm9taWNoZXYgd3Jv
-dGU6DQo+ID4gK8KgwqDCoMKgwqDCoCAtIDA6IE5vIGNoYW5uZWwtc3BlY2lmaWMgZG9vcmJlbGxz
-LCB1c2UgdGhlIGdsb2JhbCBvbmUgZm9yDQo+ID4gZXZlcnl0aGluZy4NCj4gPiArwqDCoMKgwqDC
-oMKgIC0gWzEsIG1heF9udW1fY2hhbm5lbHNdOiBTcHJlYWQgbmV0ZGV2IGNoYW5uZWxzIGVxdWFs
-bHkNCj4gPiBhY3Jvc3MgdGhlc2UNCj4gPiArwqDCoMKgwqDCoMKgwqDCoCBkb29yYmVsbHMuDQo+
-IA0KPiBEbyB5b3UgaGF2ZSBhbnkgZ3VpZGFuY2Ugb24gdGhpcyBudW1iZXI/IFdoeSB3b3VsZCB0
-aGUgdXNlciB3YW50DQo+IGBudW1fZG9vcmJlbGxzIDwgbnVtX2Rvb3JiZWxsc2AgdnMgYG51bV9k
-b29yYmVsbHMgPT0gbnVtX2NoYW5uZWxzYD8NCj4gDQo+IElPVywgd2h5IG5vdCBhbGxvY2F0ZSB0
-aGUgc2FtZSBudW1iZXIgb2YgZG9vcmJlbGxzIGFzIHRoZSBudW1iZXIgb2YNCj4gY2hhbm5lbHMg
-YW5kIGRvIGl0IHVuY29uZGl0aW9uYWxseSB3aXRob3V0IGRldmxpbmsgcGFyYW0/IEFyZSBleHRy
-YQ0KPiBkb29yYmVsbHMgY2F1c2luZyBhbnkgb3ZlcmhlYWQgaW4gdGhlIG5vbi1jb250ZW5kZWQg
-Y2FzZT8NCg0KSW4gbW9zdCBjYXNlcywgYWRkaXRpb25hbCBkb29yYmVsbHMgYXJlIGFuIG92ZXJo
-ZWFkIGFuZCBub3QgcmVxdWlyZWQuDQpGb3IgdGhlIGxhc3QgMTArIHllYXJzLCBtbHg1IGhhcyBi
-ZWVuIHJ1bm5pbmcgd2l0aCBhIHNpbmdsZSBkb29yYmVsbA0KZm9yIGFsbCBjaGFubmVscy4gQnV0
-IGFzIHRoZSBudW1iZXIgb2YgY29yZXMgYW5kIGNoYW5uZWxzIGdyZXcsDQpib3R0bGVuZWNrcyB3
-ZXJlIGRpc2NvdmVyZWQgb24gc29tZSBwbGF0Zm9ybXMuIFRodXMgdGhlIG5lZWQgZm9yIHRoaXMN
-CnNlcmllcy4NCg0KVGhpcyBzZXJpZXMgcHJvcG9zZXMgOCBhcyB0aGUgbmV3IGRlZmF1bHQgYW5k
-IHdlIGV4cGVjdCBub2JvZHkgd291bGQNCm5lZWQgdG8gdG91Y2ggdGhpcyBrbm9iIGV4Y2VwdCBp
-biBleHRyZW1lIGNhc2VzLCBidXQgSSB0aGluayBpdCdzIG5pY2UNCmZvciBpdCB0byBleGlzdC4g
-UmVncmVzc2lvbiB0ZXN0aW5nIHNob3dlZCBsaXR0bGUgdG8gbm8gaW1wYWN0IG9uIG1vc3QNCnBs
-YXRmb3JtcyB3aGVyZSAxIGRvb3JiZWxsIHdhcyBlbm91Z2gsIGFuZCBhIHNpZ25pZmljYW50IGlt
-cHJvdmVtZW50IG9uDQpwbGF0Zm9ybXMgdGhhdCBzaG93ZWQgTU1JTyBib3R0bGVuZWNrcy4NCg0K
-SSdsbCBhZGQgc29tZSBudW1iZXJzIGluIHRoZSBuZXh0IHZlcnNpb24ncyBjb3ZlciBsZXR0ZXIu
-DQoNCkNvc21pbi4NCg==
+On Mon, 2025-09-15 at 16:40 -0700, Eduard Zingerman wrote:
+> On Mon, 2025-09-15 at 15:34 -0700, Eduard Zingerman wrote:
+>=20
+> [...]
+>=20
+> > > verifier bug: scc exit: no visit info for call chain (1)(1)
+> > > WARNING: CPU: 1 PID: 6013 at kernel/bpf/verifier.c:1949 maybe_exit_sc=
+c+0x768/0x8d0 kernel/bpf/verifier.c:1949
+> >=20
+> > Both this and [1] are reported for very similar programs:
+> >=20
+> > <this>                                      <[1]>
+> > -----------------------------------------------------------------------=
+---------------------
+> > (b7) r0 =3D -1023213567                       (b7) r0 =3D -1023213567
+> > (bf) r3 =3D r10				    (bf) r3 =3D r10
+> > (07) r3 +=3D -512				    (07) r3 +=3D -504
+> > (72) *(u8 *)(r10 -16) =3D -8		    (72) *(u8 *)(r10 -16) =3D -8
+> > (71) r4 =3D *(u8 *)(r10 -16)		    (71) r4 =3D *(u8 *)(r10 -16)
+> > (65) if r4 s> 0xff000000 goto pc+2	    (65) if r4 s> 0xff000000 goto pc=
++2
+> > (2d) if r0 > r4 goto pc+5		    (2d) if r0 > r4 goto pc+5
+> > (20) r0 =3D *(u32 *)skb[60673]		    (20) r0 =3D *(u32 *)skb[60673]
+> > (7b) *(u64 *)(r3 +0) =3D r0		    (7b) *(u64 *)(r3 +0) =3D r0
+> > (1d) if r4 =3D=3D r4 goto pc+0		    (1d) if r4 =3D=3D r4 goto pc+0
+> > (7a) *(u64 *)(r10 -512) =3D -256		    (7a) *(u64 *)(r10 -512) =3D -256
+> > (db) lock *(u64 *)(r3 +0) |=3D r0		    (db) r0 =3D atomic64_fetch_and((=
+u64 *)(r3 +0), r0)
+> > (b5) if r0 <=3D 0x0 goto pc-2		    (b5) if r0 <=3D 0x0 goto pc-2
+> > (95) exit				    (95) exit
+> >=20
+> > So, I assume it's the same issue. Looking into it.
+> >=20
+> > [1] https://lore.kernel.org/bpf/68c85b0d.050a0220.2ff435.03a5.GAE@googl=
+e.com/T/#u
+>=20
+> Minimal reproducer:
+>=20
+>   SEC("socket")
+>   __caps_unpriv(CAP_BPF)
+>   __naked void syzbot_bug(void)
+>   {
+>         asm volatile (
+>         "r0 =3D 100;"
+>   "1:"
+>         "*(u64 *)(r10 - 512) =3D r0;"
+>         "if r0 <=3D 0x0 goto 1b;"
+>         "exit;"
+>         ::: __clobber_all);
+>   }
+>=20
+> And corresponding verifier log:
+>=20
+>   Live regs before insn:
+>         0: .......... (b7) r0 =3D 100
+>     1   1: 0......... (7b) *(u64 *)(r10 -512) =3D r0
+>     1   2: 0......... (b5) if r0 <=3D 0x0 goto pc-2
+>         3: 0......... (95) exit
+>   Global function syzbot_bug() doesn't return scalar. Only those are supp=
+orted.
+>   0: R1=3Dctx() R10=3Dfp0
+>   ; asm volatile ( @ verifier_and.c:118
+>   0: (b7) r0 =3D 100                      ; R0_w=3D100
+>   1: (7b) *(u64 *)(r10 -512) =3D r0       ; R0_w=3D100 R10=3Dfp0 fp-512_w=
+=3D100
+>   2: (b5) if r0 <=3D 0x0 goto pc-2
+>   mark_precise: frame0: last_idx 2 first_idx 0 subseq_idx -1
+>   mark_precise: frame0: regs=3Dr0 stack=3D before 1: (7b) *(u64 *)(r10 -5=
+12) =3D r0
+>   mark_precise: frame0: regs=3Dr0 stack=3D before 0: (b7) r0 =3D 100
+>   2: R0_w=3D100
+>   3: (95) exit
+>=20
+>   from 2 to 1 (speculative execution): R0_w=3Dscalar() R1=3Dctx() R10=3Df=
+p0 fp-512_w=3D100
+>   1: R0_w=3Dscalar() R1=3Dctx() R10=3Dfp0 fp-512_w=3D100
+>   1: (7b) *(u64 *)(r10 -512) =3D r0
+>   verifier bug: scc exit: no visit info for call chain (1)
+>   processed 5 insns (limit 1000000) max_states_per_insn 0 total_states 0 =
+peak_states 0 mark_read 0
+>=20
+> [...]
+
+Here is what happens:
+- Verification process starts and gets to instruction (2) w/o creating
+  any checkpoints.
+- A speculative execution of the false branch is pushed onto states
+  stack; main execution process predicts the branch as false and
+  continues to exit. Still no checkpoints.
+- Speculative execution branch is popped from stack and proceeds from
+  instruction (1).
+- Speculative execution immediately terminates, because verifier
+  detects an infinite loop and signals an error.
+- update_branch_counts() is called for speculative execution state and
+  its branches count reaches zero.
+- update_branch_counts() -> maybe_exit_scc() is called for a state
+  with insn_idx in SCC #1.
+- maybe_exit_scc() assumes that when it is called for a state with
+  insn_idx in some SCC, there should be an instance of struct
+  bpf_scc_visit allocated for this SCC, which is not the case here.
+ =20
+Why the assumption about bpf_scc_visit existence is made by
+maybe_exit_scc()?
+While performing non-speculative symbolic execution there are three
+ways to terminate execution path:
+a. Verification error is found. In this case update_branch_counts() is
+   not called and bpf_scc_visit existence does not matter.
+b. Top level BPF_EXIT is reached. Exit instructions are never a part of
+   an SCC, so compute_scc_callchain() in maybe_scc_exit() will return
+   false and maybe_scc_exit() will return early.
+c. A checkpoint is reached and matched. Checkpoints are created by
+   is_state_visited(), which calls maybe_enter_scc(), which allocates
+   bpf_scc_visit instances for checkpoints within SCCs.
+
+Hence, for non-speculative symbolic execution paths there is no way to
+reach a state when maybe_scc_exit() is called for a state within an
+SCC, but bpf_scc_visit instance does not exist.
+
+However, the above logic falls short for speculative symbolic
+execution paths, because verification errors (option (a) above) lead
+to update_branch_counts() calls. And the test case above demonstrates
+exactly that scenario.
+
+I'll send a patch disabling bpf_scc_visit existence assertion for
+speculative paths in the morning. Something along the lines:
+
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1950,6 +1950,8 @@ static int maybe_exit_scc(struct bpf_verifier_env *en=
+v, struct bpf_verifier_stat
+                return 0;
+        visit =3D scc_visit_lookup(env, callchain);
+        if (!visit) {
++               if (st->speculative)
++                       return 0;
+                verifier_bug(env, "scc exit: no visit info for call chain %=
+s",
+                             format_callchain(env, callchain));
+                return -EFAULT;
+
 
