@@ -1,377 +1,460 @@
-Return-Path: <bpf+bounces-68540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 579B2B5A04E
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 20:12:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77121B5A063
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 20:16:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ECF3320923
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 18:12:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24D2C3B73AC
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 18:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980822BD58A;
-	Tue, 16 Sep 2025 18:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6AC0287273;
+	Tue, 16 Sep 2025 18:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NfGGKyvs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="W6PBt8Kw";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FOA+ybL8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sZTjyur5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UHuc1L3v"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01FD2D2383
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 18:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758046359; cv=none; b=bNiJv8k4D5Qxe/YNpkkUkzRMDgAl5XkHuosXODpDry+zgzoUPcE3LDi+JmLpVD94dkMi97Wq/xtV5UWDj/Lhdlv5wIwRi5aAzkhn5csUCJS74pCiWIDmzgSUio1CzmOqBVKpNU+Ft4/5EEWbLQZla6mUzCeGwOA1ltYyri6XSbU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758046359; c=relaxed/simple;
-	bh=AukZFA9U35C+KhmaAhLeA78th0G1aXA8LSZiiq8PqMs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cRScrmAGPqyWhYBpYoEwpju5lLuujXXcVDhkC+oa//6PZEHu4nvhd0ongI4GAPtpTX3QMVi8WcK2GMboJ8atz1kZzVTQPgeMaOANQcxoacbWx3peFl6yuc3GtQYSB07i+kx81dLEu1BY9bKzDvJ15IHZwJ8NqnqJSevSsVle62k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NfGGKyvs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=W6PBt8Kw; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FOA+ybL8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sZTjyur5; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D93DD21DF1;
-	Tue, 16 Sep 2025 18:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1758046355; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=T1HlN82lSb+QuNxCfB33fFErUCYTRryWcL+zpFAMs5M=;
-	b=NfGGKyvsDlFS9Xj6Q8vyILiveg5TJcSHEPT8mDsMbfjH5VlMF/6yq7BnsKKFj41kJ8Yquy
-	e20jBmVtMSUIoSV6mqJ9S3m9mCQrBwdofk0eWsQDuLy0VSxsXZvLa+9vJVxb7CEp7AuuAw
-	5h8e0Rgw+tNjgIw23Hki9LmfiAEfA3Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1758046355;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=T1HlN82lSb+QuNxCfB33fFErUCYTRryWcL+zpFAMs5M=;
-	b=W6PBt8Kwvgc4yO7aNIVjPZxaCmtEWDPcgIqAxG0NHINE5v3BzxjobiHs0sqRFXJZ+vc7nb
-	ux11RagMncknySBQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FOA+ybL8;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=sZTjyur5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1758046354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=T1HlN82lSb+QuNxCfB33fFErUCYTRryWcL+zpFAMs5M=;
-	b=FOA+ybL8BZlX2K2mo2b9BF+IQ83X9jkrpYOHZ5eBIFkJgShcuKjWnxaTjaR4fj2hnq0fWs
-	kvsuB7y20lg08PRJFmCN3Gl9XAXx/hKzleJ25w8qc8oZLX5b8LNqoVYBUVZk7FEGAR5/kT
-	CvhTr9pHH4XLNWLo54pOvS70M0kTCXg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1758046354;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=T1HlN82lSb+QuNxCfB33fFErUCYTRryWcL+zpFAMs5M=;
-	b=sZTjyur5ov0dcmw9AbnI9w4fWOWcwdZlkFeM4LCRyoXQt0Xg5ba/YknYQrsd+fijwBYgsl
-	VnmxFPvGCGmDa7BQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B94BA13A63;
-	Tue, 16 Sep 2025 18:12:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pvdsLJKoyWhbGAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 16 Sep 2025 18:12:34 +0000
-Message-ID: <0beac436-1905-4542-aebe-92074aaea54f@suse.cz>
-Date: Tue, 16 Sep 2025 20:12:34 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECC82494F8;
+	Tue, 16 Sep 2025 18:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758046586; cv=fail; b=u8S8b1YZipN2qMwHLQ6v4J/Ich4/m5ZvhR4neesz6mH9joJ6r9vLgulPv1HttgC1cvs82a4y0jmTu82BPKNp0X1M6EcpSpl/RxaaJ9pF3pwxvva0or38tfE4gCmkDzfvEwXg5QvQMYt1L4J6lLYXx6Wx8jlr4co2gsaoS33SFsM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758046586; c=relaxed/simple;
+	bh=WJblEtYt2WcC9ad0R1iTyfL6prHMpAevnc2ZGBUJX60=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=BaVniXfM+XtfdqSaLXZuVmzI3MaeOiZaYZNvXLSSj8HjZZfj2wmv7rkix/XI7D3ybq/gv1fx7cbGQ0TgFkSFzeFyJMB8BPBo1dvc40FskvIlQSDGHdIyd8EXzxvIlw2y7s1/nqBX16g2AtHlZVYS7h+nzefcB7vshdKTJDJG2tc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UHuc1L3v; arc=fail smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1758046584; x=1789582584;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=WJblEtYt2WcC9ad0R1iTyfL6prHMpAevnc2ZGBUJX60=;
+  b=UHuc1L3vR9DzjkV7tI/CYX4Q3LmjGsMYDqITYNi5AdwYne5MFE9UqCnQ
+   qWa+2NV1S1p2yamNwcThm+srH2K7TOPM6lFkY+qWrVZMZvosZ6M2ZBv37
+   OonmJ7RHsBKQkpYK6+mW2EsGJa4Jzty6FSA7XiAShiOuoFPhxHL5aTn9M
+   8/NM2liwUzdtAM3OZQ+a+LYCoRQI95S/H5GnDDuvbQUx0j6uPLqUuJMUY
+   7l21Bme0gFmtwAv88Fu59gsfJz2gfSVrWjWPjqdtUv1eR1GfBrtnaKwFW
+   46mgLdaV2CEeCJr35KA2q++q0rPJw7Z1vNNlb0jMkkpbtAf2CLQFaj+0Q
+   w==;
+X-CSE-ConnectionGUID: VxQyd/7qRWyQnLLMdQUmjA==
+X-CSE-MsgGUID: e75L3Bu6T1OonZgqUgUkuA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11555"; a="71705762"
+X-IronPort-AV: E=Sophos;i="6.18,269,1751266800"; 
+   d="scan'208";a="71705762"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2025 11:16:23 -0700
+X-CSE-ConnectionGUID: A6/eyw+vSdiK6tJk0Hmh0A==
+X-CSE-MsgGUID: CKDj5EHjTpuH6cLtfEA0zA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,269,1751266800"; 
+   d="scan'208";a="198710081"
+Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2025 11:16:23 -0700
+Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17; Tue, 16 Sep 2025 11:16:22 -0700
+Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
+ FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17 via Frontend Transport; Tue, 16 Sep 2025 11:16:22 -0700
+Received: from BN8PR05CU002.outbound.protection.outlook.com (52.101.57.42) by
+ edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17; Tue, 16 Sep 2025 11:16:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=IiF7odI8IZMvBQvKWJSAtH+B9cagLzZ0vPm5zIOtaDuMYqRM+VIidEmntad1cQIGc2abCWaF0RecwFlmRcUu20/4nQ07RQIhLALa+D76qAPoY1J/PphDuKhb96fro4zfNCFDDvkeMPxMkFKkU/OQBeQVcp4v/ZIbC3OhsKC3NGW30Oeindmylj/98lXZ5rpYp6iB/ygpS+/EBJ8HJr8hxe4UYQc/0YdmkIwrnhFTur+y4j9ouEwNTUcpjupzHu4WmeFn82MJXZsGs54XqH8FjqqqEbMPgvBlNWAamrqxm8/KyLm/0JdytohZ7tHPYUqOQCrNB5U6o8o7WRtkmREk1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XKC/CRcBdBeyW0guvcQt0akJe08VPdfEFyMFoVVTFaE=;
+ b=EkN7RQ0WSL2dOYlSX/K3VU3/KRBOdgeGvKUDVLOPXUwn0qyysfVU8Z57Ti5YNT20bA2mI0ZdyKvPUt456aLXFOIt+DF+yhAcSkD/EN3hiPd3zuOp3WGv5F7UzLxxye5ZbpGeJelh5oAIm1eU9jx4zby/TNWNIohhR8MBJDJN/HeiibUpfENlYVaRw0J7dDBDrL9O421ko2PGH1Ubz53CYpGEcKgOJwGaph7Y4CjZJ1cfpr3ldBgYk9d8jHG57ShVwLsfqSWdQ9boB1gck9TgUBBPBS1mnzgrMquE8S3LAYY+spVm0o+gtOiVSr80mamWdtHni4ojwTFOJ1Dogj998g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ MN6PR11MB8219.namprd11.prod.outlook.com (2603:10b6:208:471::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9115.23; Tue, 16 Sep 2025 18:16:20 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca%4]) with mapi id 15.20.9115.020; Tue, 16 Sep 2025
+ 18:16:19 +0000
+Date: Tue, 16 Sep 2025 20:16:02 +0200
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+CC: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>, Magnus Karlsson
+	<magnus.karlsson@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, "Yonghong
+ Song" <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>,
+	"KP Singh" <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao
+ Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko
+	<mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, "David S. Miller"
+	<davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, "Jesper Dangaard
+ Brouer" <hawk@kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Alexis Lothore <alexis.lothore@bootlin.com>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 14/14] selftests/bpf: test_xsk: Integrate
+ test_xsk.c to test_progs framework
+Message-ID: <aMmpYilJr35/acaP@boxer>
+References: <20250904-xsk-v3-0-ce382e331485@bootlin.com>
+ <20250904-xsk-v3-14-ce382e331485@bootlin.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20250904-xsk-v3-14-ce382e331485@bootlin.com>
+X-ClientProxiedBy: TL2P290CA0024.ISRP290.PROD.OUTLOOK.COM (2603:1096:950:3::8)
+ To DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH slab] slab: Disallow kprobes in ___slab_alloc()
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Harry Yoo <harry.yoo@oracle.com>, bpf <bpf@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>, Shakeel Butt <shakeel.butt@linux.dev>,
- Michal Hocko <mhocko@suse.com>, Sebastian Sewior <bigeasy@linutronix.de>,
- Andrii Nakryiko <andrii@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>,
- Johannes Weiner <hannes@cmpxchg.org>
-References: <20250916022140.60269-1-alexei.starovoitov@gmail.com>
- <47aca3ca-a65b-4c0b-aaff-3a7bb6e484fe@suse.cz> <aMlZ8Au2MBikJgta@hyeyoo>
- <e7d1c20c-7164-4319-ac7e-9df0072a12ad@suse.cz>
- <CAADnVQLNm+0ZwX2MN_JK3ookGxpOGxEdwaaroQk+rGB401E8Jg@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <CAADnVQLNm+0ZwX2MN_JK3ookGxpOGxEdwaaroQk+rGB401E8Jg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: D93DD21DF1
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	TAGGED_RCPT(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[oracle.com,vger.kernel.org,kvack.org,linux.dev,suse.com,linutronix.de,kernel.org,gmail.com,linux-foundation.org,infradead.org,goodmis.org,cmpxchg.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -3.01
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|MN6PR11MB8219:EE_
+X-MS-Office365-Filtering-Correlation-Id: aeead6a7-ed16-42a3-d26e-08ddf54d226c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?/BRCrmZ2futXboLI58DAtecElQ9ihLhVGiSv3mUMTZDwIXUdCI3Yr+pNo+nh?=
+ =?us-ascii?Q?lSvqAIHkoOX87EdhRNu98A7oFhgZxpBLMLPrFv5Tf163hwsOlSRfEiB0Wbu4?=
+ =?us-ascii?Q?HAk0efvUSj5WLoWU7iogVW7tiwP+mwxTJNSBlFjzUUWiYHQxwkmVFQoFnaQT?=
+ =?us-ascii?Q?XgvfD8A2X7+1Qs9kS8TE9aJA/axWqH/OqqmXUIEN1ujBOAYmO5HG9bAh2gnR?=
+ =?us-ascii?Q?Ld0Cx28uF9UoqbgON5UM3xFSNbwySeUah2WcTFKqDez0LnxCwYK5VWUi1+Df?=
+ =?us-ascii?Q?luNKlOQ6yq3f346pAcmpKgPC1YIoHFuCMpWGGl5232ZNW3aabgwvTxpSlvH2?=
+ =?us-ascii?Q?D/K9KFxg1DhL3x/+t9DnTkfWsnRB+qqiBlSyg4Gpdt3jtisP0dSl1KCfj4N5?=
+ =?us-ascii?Q?OD73MSd5CuRQEwHi3zM4HWFRxzuwNSd8SVqOx/08qdQQmaooXTBXAkjF+EmP?=
+ =?us-ascii?Q?OlAaycZYpXMoOpHAexntGC1CuvaZiOeGTetZwZcyTPkZYhqN+joPDsbWYq6e?=
+ =?us-ascii?Q?wV/lptAI70A3AsWqEsVmL9+Ij0i7TYf1MuFUSQVtEVYMr6JiBmqeR1LCiQQq?=
+ =?us-ascii?Q?jXZ/yfd0bShbdjyQTtNwNDF6vHWmOrJmurDx/GEnm5G0VYB+xIGLNTfJuRQB?=
+ =?us-ascii?Q?oLiYr1gnVPlZhzst0TohQSy/hhyK1tXoFTRY3kQPGqwvXA1P61+9cdlg34le?=
+ =?us-ascii?Q?9TM10+b6TnUYnUxgLjbYp7mDUrugHG+b9iJgaKZPVfwTlySSSeunRIfyiK8t?=
+ =?us-ascii?Q?Id+cpFZNwPxNvUEOiAKhmrggUeQRNVTi2/73JuRtGWmllKv9pD9B4XhmP34A?=
+ =?us-ascii?Q?GGsgWEk7CMTuLzkQjMCcqFV6o/mfC32822V8Hu8f7HcIlomBzIW5ZFlmx5hr?=
+ =?us-ascii?Q?9H3gkCdPm5gzNNI/Ho9jx4g0kWpDy18PF1A1KAYCVRlEU7DdhPNmisMi3zyS?=
+ =?us-ascii?Q?aYhyFeBldxvDC5nJPjB+VWMLtIpFdoQpdrY8e4Mt5kvgX9qPeoNZItGs1pbE?=
+ =?us-ascii?Q?bvn0Y8EtIfMKbl+4y5cOzgibVQGlTg3rO6FlNcoRnwBil4F01/coNdtmwq3y?=
+ =?us-ascii?Q?jDVTgrMsXJQ+NVu3lBiYwkUeYcu1Zp9OKMtV1IC//Z8cXRZLkwXPrWOduZBq?=
+ =?us-ascii?Q?O0vJIKLKFJ6mLhqwGyLejE2YQNXtxMwen7jwoofTqJBycR5uwIe2lRryyWZL?=
+ =?us-ascii?Q?KmWNw1402LIy3sQVaOQgc2hIYWD7a1WlFrsuo27MGzAXkNXMSm0XFm1M9OUf?=
+ =?us-ascii?Q?e+LGi2UkazxbhUurxNSwg/TDf2i3E2rHfeXeu1fmXR2EbQ96MS775o5K9bAG?=
+ =?us-ascii?Q?KFqsI+FFOqc/BrXNAJUraNHYXqmPIlX7nTXDcp1xcE+9RkMalKzY42niH+Cu?=
+ =?us-ascii?Q?VpwAjIgSC/vtvMDE4I7mrxaH27JWtkX681mqSIyJpySe1q8o4jEpz6x6fsdh?=
+ =?us-ascii?Q?NEu9IaNV+Hs=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?evt4pPZ2DrpmoKhSN0pLJdYslKG+HPIgMuGZWtQg39Hth7csareBy+sJbgcp?=
+ =?us-ascii?Q?MXxonV7Sb3k9+vHZZ2wLMKpOLiw6Ey+2IA/11tbUXIewHaP6+IbXxaFtgumJ?=
+ =?us-ascii?Q?LCmTdiH2gyUDAWPFZouBZQPnQLSuK0WIblKWi3SOJr9KiH4hAgWuQGol51n9?=
+ =?us-ascii?Q?9RkpFKVIbTM/hw5/1NojkgEXrj8XZRhjv6Apq8vfax/M5hOc2YnPKaPZ+3W4?=
+ =?us-ascii?Q?7nBiDUJH0ylgSp/QL+EadZ8R0zbzfIaTkSsLzsRAaatk/O4OEDyksLDlNj/T?=
+ =?us-ascii?Q?CL6GQyw+dSwrqZCmyy80k8gWqJUuAjRVLGkOrZDRbUX8ZPhvTcBpSmmUjZCF?=
+ =?us-ascii?Q?IgUbm2EZcRuv0IzsvnxmLmVFAqn+V0K9zyYE3Vuhd0quo84PSNDUJfFkAVSu?=
+ =?us-ascii?Q?7TiSBBQYWZTOBH2gAZf++rgbNYmFK79Xs6tIGWCr2bKgaqO5mdS5juPFIqwB?=
+ =?us-ascii?Q?LCSzmYqLXLrUVRqpgIB3XbCly5F89Yb5L+hVSDGNKQtL25wr73hpvogdSxQZ?=
+ =?us-ascii?Q?RDF02F0YeUNt4Z0wuNRULIMVaM297DPDnkzQ0xEMZXW1Wfi0V7hdlFWVao+Z?=
+ =?us-ascii?Q?ShHiCz/EPe5nT/FKrQPxxtSOYJcomvPuCyeYnb7DCwc3bqRhtEtxtX9WgyrS?=
+ =?us-ascii?Q?BiVBtvL0uRWpdHfsbWCVeYS5XJ+bzCMSWPl/EKmA7Y+NoG6M7tq7LgWDOBB5?=
+ =?us-ascii?Q?KT63iwOSvIpAt95Lb+NtQbUe+QXXj1TDyBDCVnX4NwmDfL939Lm9J2zORlcm?=
+ =?us-ascii?Q?190FH/axhWpEebH2uS73o6fXtuTJM9BpSmPfNjiS3SKdGELe97Zdyu8hisZf?=
+ =?us-ascii?Q?HW9K9N/lYL1djUr1yPK/JifoJozRxb+bT0ZH5VB59Yxvm2l+Od97kjMH+TFL?=
+ =?us-ascii?Q?x/XxGMlhEZMIjCwArPoveuNTnoTErFPcPlUW6+0hQOEY2SjuweKBSfgX/0IN?=
+ =?us-ascii?Q?WoBYaUhwwRHDr26dZgUZveSrchvN4HO1rApQWfobvaqAA1p+PqR0tVAKFpdb?=
+ =?us-ascii?Q?SUCp0nKRw7FDnmVkwSxWyLSWpbJQzOP/E2yocNUfk3RCnFtBSC1m5QYWiVW3?=
+ =?us-ascii?Q?YbMWR1GJbbcvcyjIP1r1lREz6USyAC8OpCVMhU5K5i8uhSP9qgM+DnNCHWx6?=
+ =?us-ascii?Q?Rca3RKc90qlSUwwQxlTrc0EAEC7LDa/pguvNvT5a5nk8vLbnbteEV9s/eLuB?=
+ =?us-ascii?Q?1ZLQehClYQuH7B1nEclKpGqWtn+LiYkoxN50CCtaaiatibLYg5pE6QKxbjpq?=
+ =?us-ascii?Q?U30y7gyMXrqmXd1kfm0ICk2M47s+uEFOcA9H3SoJvCX+VQPhzUjrlELijb/R?=
+ =?us-ascii?Q?W0zJVlIyTJ/0a2PeN699meYbmZriwrrWOfahBpcYcLSxT2UZDRKCqgkZK3h2?=
+ =?us-ascii?Q?jAffJo7Wwf/+gX4XxlSkaQ2bNyl6FUOk0/XEkkrAmDpKKXUpGFv13xpbJye3?=
+ =?us-ascii?Q?0s+MSkOHOoA985l9Oeht/094QHO9mL7ws5MH3MpgGM9qVNnEIvbMmxrgXpLf?=
+ =?us-ascii?Q?h4IpA132epvXv6lykOK8RxRbAAXsFCoYuDuUgbp1u47V0nsVH6XjlLmL/wje?=
+ =?us-ascii?Q?C6bLULsWx62t3yRje9OoJPk/huOovhDASWit78NqGcrfvAeeRSCRuJhL5t0g?=
+ =?us-ascii?Q?XQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: aeead6a7-ed16-42a3-d26e-08ddf54d226c
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2025 18:16:19.8606
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2ETl1KipttAbZHpJnyeB9O/E4fhJJFrAL3RHALzFzzSc5uDeoBiOiD6N6J6xdmqsrXnkh2nGVnfRWRdLb5REi4VaZlP+90a5odPFlgSjt7Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR11MB8219
+X-OriginatorOrg: intel.com
 
-On 9/16/25 18:18, Alexei Starovoitov wrote:
-> On Tue, Sep 16, 2025 at 6:13 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->>
->> On 9/16/25 14:58, Harry Yoo wrote:
->> > On Tue, Sep 16, 2025 at 12:40:12PM +0200, Vlastimil Babka wrote:
->> >> On 9/16/25 04:21, Alexei Starovoitov wrote:
->> >> > From: Alexei Starovoitov <ast@kernel.org>
->> >> >
->> >> > Disallow kprobes in ___slab_alloc() to prevent reentrance:
->> >> > kmalloc() -> ___slab_alloc() -> local_lock_irqsave() ->
->> >> > kprobe -> bpf -> kmalloc_nolock().
->> >> >
->> >> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->> >>
->> >> I wanted to fold this in "slab: Introduce kmalloc_nolock() and kfree_nolock()."
->> >> and update comments to explain the NOKPROBE_SYMBOL(___slab_alloc);
->> >>
->> >> But now I'm not sure if we still need to invent the lockdep classes for PREEMPT_RT anymore:
->> >>
->> >> > /*
->> >> >  * ___slab_alloc()'s caller is supposed to check if kmem_cache::kmem_cache_cpu::lock
->> >> >  * can be acquired without a deadlock before invoking the function.
->> >> >  *
->> >> >  * Without LOCKDEP we trust the code to be correct. kmalloc_nolock() is
->> >> >  * using local_lock_is_locked() properly before calling local_lock_cpu_slab(),
->> >> >  * and kmalloc() is not used in an unsupported context.
->> >> >  *
->> >> >  * With LOCKDEP, on PREEMPT_RT lockdep does its checking in local_lock_irqsave().
->> >> >  * On !PREEMPT_RT we use trylock to avoid false positives in NMI, but
->> >> >  * lockdep_assert() will catch a bug in case:
->> >> >  * #1
->> >> >  * kmalloc() -> ___slab_alloc() -> irqsave -> NMI -> bpf -> kmalloc_nolock()
->> >> >  * or
->> >> >  * #2
->> >> >  * kmalloc() -> ___slab_alloc() -> irqsave -> tracepoint/kprobe -> bpf -> kmalloc_nolock()
->> >>
->> >> AFAICS see we now eliminated this possibility.
->> >
->> > Right.
->> >
->> >> >  * On PREEMPT_RT an invocation is not possible from IRQ-off or preempt
->> >> >  * disabled context. The lock will always be acquired and if needed it
->> >> >  * block and sleep until the lock is available.
->> >> >  * #1 is possible in !PREEMPT_RT only.
->> >>
->> >> Yes because this in kmalloc_nolock_noprof()
->> >>
->> >>         if (IS_ENABLED(CONFIG_PREEMPT_RT) && (in_nmi() || in_hardirq()))
->> >>                 /* kmalloc_nolock() in PREEMPT_RT is not supported from irq */
->> >>                 return NULL;
->> >>
->> >>
->> >> >  * #2 is possible in both with a twist that irqsave is replaced with rt_spinlock:
->> >> >  * kmalloc() -> ___slab_alloc() -> rt_spin_lock(kmem_cache_A) ->
->> >> >  *    tracepoint/kprobe -> bpf -> kmalloc_nolock() -> rt_spin_lock(kmem_cache_B)
->> >> And this is no longer possible, so can we just remove these comments and drop
->> >> "slab: Make slub local_(try)lock more precise for LOCKDEP" now?
->> >
->> > Makes sense and sounds good to me.
->> >
->> > Also in the commit mesage should be adjusted too:
->> >> kmalloc_nolock() can be called from any context and can re-enter
->> >> into ___slab_alloc():
->> >>  kmalloc() -> ___slab_alloc(cache_A) -> irqsave -> NMI -> bpf ->
->> >>     kmalloc_nolock() -> ___slab_alloc(cache_B)
->> >> or
->> >>  kmalloc() -> ___slab_alloc(cache_A) -> irqsave -> tracepoint/kprobe -> bpf ->
->> >>    kmalloc_nolock() -> ___slab_alloc(cache_B)
->> >
->> > The lattter path is not possible anymore,
->> >
->> >> Similarly, in PREEMPT_RT local_lock_is_locked() returns true when per-cpu
->> >> rt_spin_lock is locked by current _task_. In this case re-entrance into
->> >> the same kmalloc bucket is unsafe, and kmalloc_nolock() tries a different
->> >> bucket that is most likely is not locked by the current task.
->> >> Though it may be locked by a different task it's safe to rt_spin_lock() and
->> >> sleep on it.
->> >
->> > and this paragraph is no longer valid either?
->>
->> Thanks for confirming! Let's see if Alexei agrees or we both missed
->> something.
+On Thu, Sep 04, 2025 at 12:10:29PM +0200, Bastien Curutchet (eBPF Foundation) wrote:
+> test_xsk.c isn't part of the test_progs framework.
 > 
-> Not quite.
-> This patch prevents
-> kmalloc() -> ___slab_alloc() -> local_lock_irqsave() ->
->     kprobe -> bpf
+> Integrate the tests defined by test_xsk.c into the test_progs framework
+> through a new file : prog_tests/xsk.c. ZeroCopy mode isn't tested in it
+> as veth peers don't support it.
 > 
-> to make sure kprobe cannot be inserted in the _middle_ of
-> freelist operations.
-> kprobe/tracepoint outside of freelist is not a concern,
-> and
-> malloc() -> ___slab_alloc() -> local_lock_irqsave() ->
->    tracepoint -> bpf
+> Move test_xsk{.c/.h} to prog_tests/.
 > 
-> is still possible. Especially on RT.
-
-Hm I see. I wrongly reasoned as if NOKPROBE_SYMBOL(___slab_alloc) covers the
-whole scope of ___slab_alloc() but that's not the case. Thanks for clearin
-that up.
-
-> I thought about whether do_slab_free() should be marked as NOKPROBE,
-> but that's not necessary. There is freelist manipulation
-> there under local_lock_cpu_slab(), but it's RT only,
-> and there is no fast path there.
-
-There's __update_cpu_freelist_fast() called from do_slab_free() for !RT?
-
->>
->> >> >  * local_lock_is_locked() prevents the case kmem_cache_A == kmem_cache_B
->> >> >  */
->> >>
->> >> However, what about the freeing path?
->> >> Shouldn't we do the same with __slab_free() to prevent fast path messing up
->> >> an interrupted slow path?
->> >
->> > Hmm right, but we have:
->> >
->> > (in_nmi() || !USE_LOCKLESS_FAST_PATH()) && local_lock_is_locked()
->>
->> Yes, but like in the alloc case, this doesn't trigger in the
->> !in_nmi() && !PREEMPT_RT case, i.e. a kprobe handler on !PREEMPT_RT, right?
->>
->> But now I think I see another solution here. Since we're already under
->> "if (!allow_spin)" we could stick a very ugly goto there to skip the
->> fastpath if we don't defer_free()?
->> (apparently declaration under a goto label is a C23 extension)
->>
->> diff --git a/mm/slub.c b/mm/slub.c
->> index 6e858a6e397c..212c0e3e5007 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -6450,6 +6450,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
->>  {
->>         /* cnt == 0 signals that it's called from kfree_nolock() */
->>         bool allow_spin = cnt;
->> +       __maybe_unused unsigned long flags;
->>         struct kmem_cache_cpu *c;
->>         unsigned long tid;
->>         void **freelist;
->> @@ -6489,6 +6490,9 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
->>                         return;
->>                 }
->>                 cnt = 1; /* restore cnt. kfree_nolock() frees one object at a time */
->> +
->> +               /* prevent a fastpath interrupting a slowpath */
->> +               goto no_lockless;
+> Add the find_bit library to test_progs sources in the Makefile as it is
+> is used by test_xsk.c
 > 
-> I'm missing why this is needed.
+> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+> ---
+>  tools/testing/selftests/bpf/Makefile               |  13 +-
+>  .../selftests/bpf/{ => prog_tests}/test_xsk.c      |   0
+>  .../selftests/bpf/{ => prog_tests}/test_xsk.h      |   0
+>  tools/testing/selftests/bpf/prog_tests/xsk.c       | 146 +++++++++++++++++++++
+>  tools/testing/selftests/bpf/xskxceiver.c           |   2 +-
+>  5 files changed, 158 insertions(+), 3 deletions(-)
 > 
-> do_slab_free() does:
->                 if ((in_nmi() || !USE_LOCKLESS_FAST_PATH()) &&
->                     local_lock_is_locked(&s->cpu_slab->lock)) {
->                         defer_free(s, head); return;
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 4bb4f3ee822c1adce0fbd82725b40983695d38b9..1af7d4b9fe54b777131bce0cbb8ca328c885c23a 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -541,6 +541,8 @@ TRUNNER_TEST_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.test.o,	\
+>  				 $$(notdir $$(wildcard $(TRUNNER_TESTS_DIR)/*.c)))
+>  TRUNNER_EXTRA_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o,		\
+>  				 $$(filter %.c,$(TRUNNER_EXTRA_SOURCES)))
+> +TRUNNER_LIB_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o,		\
+> +				 $$(filter %.c,$(TRUNNER_LIB_SOURCES)))
+>  TRUNNER_EXTRA_HDRS := $$(filter %.h,$(TRUNNER_EXTRA_SOURCES))
+>  TRUNNER_TESTS_HDR := $(TRUNNER_TESTS_DIR)/tests.h
+>  TRUNNER_BPF_SRCS := $$(notdir $$(wildcard $(TRUNNER_BPF_PROGS_DIR)/*.c))
+> @@ -672,6 +674,10 @@ $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
+>  	$$(call msg,EXT-OBJ,$(TRUNNER_BINARY),$$@)
+>  	$(Q)$$(CC) $$(CFLAGS) -c $$< $$(LDLIBS) -o $$@
+>  
+> +$(TRUNNER_LIB_OBJS): $(TRUNNER_OUTPUT)/%.o:$(TOOLSDIR)/lib/%.c
+> +	$$(call msg,LIB-OBJ,$(TRUNNER_BINARY),$$@)
+> +	$(Q)$$(CC) $$(CFLAGS) -c $$< $$(LDLIBS) -o $$@
+> +
+>  # non-flavored in-srctree builds receive special treatment, in particular, we
+>  # do not need to copy extra resources (see e.g. test_btf_dump_case())
+>  $(TRUNNER_BINARY)-extras: $(TRUNNER_EXTRA_FILES) | $(TRUNNER_OUTPUT)
+> @@ -685,6 +691,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): | $(TRUNNER_BPF_OBJS)
+>  
+>  $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
+>  			     $(TRUNNER_EXTRA_OBJS) $$(BPFOBJ)		\
+> +			     $(TRUNNER_LIB_OBJS)			\
+>  			     $(RESOLVE_BTFIDS)				\
+>  			     $(TRUNNER_BPFTOOL)				\
+>  			     $(OUTPUT)/veristat				\
+> @@ -718,6 +725,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c		\
+>  			 json_writer.c 		\
+>  			 flow_dissector_load.h	\
+>  			 ip_check_defrag_frags.h
+> +TRUNNER_LIB_SOURCES := find_bit.c
+>  TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
+>  		       $(OUTPUT)/liburandom_read.so			\
+>  		       $(OUTPUT)/xdp_synproxy				\
+> @@ -755,6 +763,7 @@ endif
+>  TRUNNER_TESTS_DIR := map_tests
+>  TRUNNER_BPF_PROGS_DIR := progs
+>  TRUNNER_EXTRA_SOURCES := test_maps.c
+> +TRUNNER_LIB_SOURCES :=
+>  TRUNNER_EXTRA_FILES :=
+>  TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
+>  TRUNNER_BPF_CFLAGS :=
+> @@ -776,8 +785,8 @@ $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
+>  	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
+>  
+>  # Include find_bit.c to compile xskxceiver.
+> -EXTRA_SRC := $(TOOLSDIR)/lib/find_bit.c
+> -$(OUTPUT)/xskxceiver: $(EXTRA_SRC) test_xsk.c test_xsk.h xskxceiver.c xskxceiver.h $(OUTPUT)/network_helpers.o $(OUTPUT)/xsk.o $(OUTPUT)/xsk_xdp_progs.skel.h $(BPFOBJ) | $(OUTPUT)
+> +EXTRA_SRC := $(TOOLSDIR)/lib/find_bit.c prog_tests/test_xsk.c prog_tests/test_xsk.h
+> +$(OUTPUT)/xskxceiver: $(EXTRA_SRC) xskxceiver.c xskxceiver.h $(OUTPUT)/network_helpers.o $(OUTPUT)/xsk.o $(OUTPUT)/xsk_xdp_progs.skel.h $(BPFOBJ) | $(OUTPUT)
+>  	$(call msg,BINARY,,$@)
+>  	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
+>  
+> diff --git a/tools/testing/selftests/bpf/test_xsk.c b/tools/testing/selftests/bpf/prog_tests/test_xsk.c
+> similarity index 100%
+> rename from tools/testing/selftests/bpf/test_xsk.c
+> rename to tools/testing/selftests/bpf/prog_tests/test_xsk.c
+> diff --git a/tools/testing/selftests/bpf/test_xsk.h b/tools/testing/selftests/bpf/prog_tests/test_xsk.h
+> similarity index 100%
+> rename from tools/testing/selftests/bpf/test_xsk.h
+> rename to tools/testing/selftests/bpf/prog_tests/test_xsk.h
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xsk.c b/tools/testing/selftests/bpf/prog_tests/xsk.c
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..7ce5ddd7d3fc848df27534f00a6a9f82fbc797c5
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/xsk.c
+> @@ -0,0 +1,146 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <net/if.h>
+> +#include <stdarg.h>
+> +
+> +#include "network_helpers.h"
+> +#include "test_progs.h"
+> +#include "test_xsk.h"
+> +#include "xsk_xdp_progs.skel.h"
+> +
+> +#define VETH_RX "veth0"
+> +#define VETH_TX "veth1"
+> +#define MTU	1500
+> +
+> +int setup_veth(bool busy_poll)
+> +{
+> +	SYS(fail,
+> +	"ip link add %s numtxqueues 4 numrxqueues 4 type veth peer name %s numtxqueues 4 numrxqueues 4",
+> +	VETH_RX, VETH_TX);
+> +	SYS(fail, "sysctl -wq net.ipv6.conf.%s.disable_ipv6=1", VETH_RX);
+> +	SYS(fail, "sysctl -wq net.ipv6.conf.%s.disable_ipv6=1", VETH_TX);
+> +
+> +	if (busy_poll) {
+> +		SYS(fail, "echo 2 > /sys/class/net/%s/napi_defer_hard_irqs", VETH_RX);
+> +		SYS(fail, "echo 200000 > /sys/class/net/%s/gro_flush_timeout", VETH_RX);
+> +		SYS(fail, "echo 2 > /sys/class/net/%s/napi_defer_hard_irqs", VETH_TX);
+> +		SYS(fail, "echo 200000 > /sys/class/net/%s/gro_flush_timeout", VETH_TX);
+> +	}
+> +
+> +	SYS(fail, "ip link set %s mtu %d", VETH_RX, MTU);
+> +	SYS(fail, "ip link set %s mtu %d", VETH_TX, MTU);
+> +	SYS(fail, "ip link set %s up", VETH_RX);
+> +	SYS(fail, "ip link set %s up", VETH_TX);
+> +
+> +	return 0;
+> +
+> +fail:
+> +	return -1;
+> +}
+> +
+> +void delete_veth(void)
+> +{
+> +	SYS_NOFAIL("ip link del %s", VETH_RX);
+> +	SYS_NOFAIL("ip link del %s", VETH_TX);
+> +}
+> +
+> +int configure_ifobj(struct ifobject *tx, struct ifobject *rx)
+> +{
+> +	rx->ifindex = if_nametoindex(VETH_RX);
+> +	if (!ASSERT_OK_FD(rx->ifindex, "get RX ifindex"))
+> +		return -1;
+> +
+> +	tx->ifindex = if_nametoindex(VETH_TX);
+> +	if (!ASSERT_OK_FD(tx->ifindex, "get TX ifindex"))
+> +		return -1;
+> +
+> +	tx->shared_umem = false;
+> +	rx->shared_umem = false;
+> +
+> +
+> +	return 0;
+> +}
+> +
+> +static void test_xsk(const struct test_spec *test_to_run, enum test_mode mode)
+> +{
+> +	struct ifobject *ifobj_tx, *ifobj_rx;
+> +	struct test_spec test;
+> +	int ret;
+> +
+> +	ifobj_tx = ifobject_create();
+> +	if (!ASSERT_OK_PTR(ifobj_tx, "create ifobj_tx"))
+> +		return;
+> +
+> +	ifobj_rx = ifobject_create();
+> +	if (!ASSERT_OK_PTR(ifobj_rx, "create ifobj_rx"))
+> +		goto delete_tx;
+> +
+> +	if (!ASSERT_OK(setup_veth(false), "setup veth"))
+> +		goto delete_rx;
+> +
+> +	if (!ASSERT_OK(configure_ifobj(ifobj_tx, ifobj_rx), "conigure ifobj"))
+> +		goto delete_veth;
+> +
+> +	ret = get_hw_ring_size(ifobj_tx->ifname, &ifobj_tx->ring);
+> +	if (!ret) {
+> +		ifobj_tx->hw_ring_size_supp = true;
+> +		ifobj_tx->set_ring.default_tx = ifobj_tx->ring.tx_pending;
+> +		ifobj_tx->set_ring.default_rx = ifobj_tx->ring.rx_pending;
+> +	}
+> +
+> +	if (!ASSERT_OK(init_iface(ifobj_rx, worker_testapp_validate_rx), "init RX"))
+> +		goto delete_veth;
+> +	if (!ASSERT_OK(init_iface(ifobj_tx, worker_testapp_validate_tx), "init TX"))
+> +		goto delete_veth;
+> +
+> +	test_init(&test, ifobj_tx, ifobj_rx, 0, &tests[0]);
+> +
+> +	test.tx_pkt_stream_default = pkt_stream_generate(DEFAULT_PKT_CNT, MIN_PKT_SIZE);
+> +	if (!ASSERT_OK_PTR(test.tx_pkt_stream_default, "TX pkt generation"))
+> +		goto delete_veth;
+> +	test.rx_pkt_stream_default = pkt_stream_generate(DEFAULT_PKT_CNT, MIN_PKT_SIZE);
+> +	if (!ASSERT_OK_PTR(test.rx_pkt_stream_default, "RX pkt generation"))
+> +		goto delete_veth;
+> +
+> +
+> +	test_init(&test, ifobj_tx, ifobj_rx, mode, test_to_run);
+> +	ret = test.test_func(&test);
+> +	if (ret != TEST_SKIP)
+> +		ASSERT_OK(ret, "Run test");
+> +	pkt_stream_restore_default(&test);
+> +
+> +	if (ifobj_tx->hw_ring_size_supp)
+> +		hw_ring_size_reset(ifobj_tx);
+> +
+> +	pkt_stream_delete(test.tx_pkt_stream_default);
+> +	pkt_stream_delete(test.rx_pkt_stream_default);
+> +	xsk_xdp_progs__destroy(ifobj_tx->xdp_progs);
+> +	xsk_xdp_progs__destroy(ifobj_rx->xdp_progs);
+> +
+> +delete_veth:
+> +	delete_veth();
+> +delete_rx:
+> +	ifobject_delete(ifobj_rx);
+> +delete_tx:
+> +	ifobject_delete(ifobj_tx);
+> +}
+> +
+> +void test_ns_xsk_skb(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> +		if (test__start_subtest(tests[i].name))
+> +			test_xsk(&tests[i], TEST_MODE_SKB);
+
+Ouff. Feels not optimal to setup everything per each test case. Was there
+any stopper from keeping the veth pair per each test mode?
+
+> +	}
+> +}
+> +
+> +void test_ns_xsk_drv(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> +		if (test__start_subtest(tests[i].name))
+> +			test_xsk(&tests[i], TEST_MODE_DRV);
+> +	}
+> +}
+> +
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+> index 0d8e240864c747253d72319efeecd46f0fdeff03..4c8b931d9e3d5b5723df87922551d1b5b97293b1 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.c
+> +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> @@ -90,7 +90,7 @@
+>  #include <sys/mman.h>
+>  #include <sys/types.h>
+>  
+> -#include "test_xsk.h"
+> +#include "prog_tests/test_xsk.h"
+>  #include "xsk_xdp_progs.skel.h"
+>  #include "xsk.h"
+>  #include "xskxceiver.h"
 > 
-> It's the same check as in kmalloc_nolock() to avoid invalid:
-> freelist ops -> nmi -> bpf -> __update_cpu_freelist_fast.
+> -- 
+> 2.50.1
 > 
-> The big comment in kmalloc_nolock() applies here too.
-
-But with nmi that's variant of #1 of that comment.
-
-Like for ___slab_alloc() we need to prevent #2 with no nmi?
-example on !RT:
-
-kmalloc() -> ___slab_alloc() -> irqsave -> tracepoint/kprobe -> bpf ->
-kfree_nolock() -> do_slab_free()
-
-in_nmi() || !USE_LOCKLESS_FAST_PATH()
-false || false, we proceed, no checking of local_lock_is_locked()
-
-if (USE_LOCKLESS_FAST_PATH()) { - true (!RT)
--> __update_cpu_freelist_fast()
-
-Am I missing something?
-
-> I didn't copy paste it.
-> Maybe worth adding a reference like:
-> /* See comment in kmalloc_nolock() why fast path should be skipped
-> in_nmi() && lock_is_locked() */
-> 
-> So this patch with NOKPROBE_SYMBOL(___slab_alloc)
-> is enough, afaict.
-> Maybe expand a comment with the above details while folding?
-
 
