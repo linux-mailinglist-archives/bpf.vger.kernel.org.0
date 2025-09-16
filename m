@@ -1,90 +1,89 @@
-Return-Path: <bpf+bounces-68566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68567-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7379BB7E876
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 14:51:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D76C9B7EB31
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 14:58:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19244189184A
-	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 22:42:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A1231889253
+	for <lists+bpf@lfdr.de>; Tue, 16 Sep 2025 22:46:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773442BE053;
-	Tue, 16 Sep 2025 22:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168E829B20D;
+	Tue, 16 Sep 2025 22:45:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R68aJfKz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rozeolhu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914132BEFEE
-	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 22:42:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C02C1C84A6
+	for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 22:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758062545; cv=none; b=RMkhtwcVdzB+e5FVS8sGSgjILLqwLmFkTFrtv0RJXIJeQZz9Ono7egBWA9+3IMF1nMCKX7/Z2xAHgQ+VYnPz2rwgJvFXg1YcRKT2Cj9PYf6ENS7F1Yo08Mxzz4z+/dkcF0cBU8oHEGK2b72aQbqoBJq0BD2sdBgIDFKSjogBesM=
+	t=1758062754; cv=none; b=n2xDU7C4K2b24BIAhNMFXo8GcGlPqOF1JIZOXD6IKFgKjGH64DFrobk7tKuxcPlzzt0avB18LYa8ODwBrthoYf1qWWujvj5Hwt8/Zd8gVhDbCp3BGvYze+Toeu1qk+smqVvO3RHXrebydDaL4atqBqNRJBKbmr3jp2T8kiMhenE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758062545; c=relaxed/simple;
-	bh=haldCVuvjO2lqBVr9ZGuUD05ifs7dMo0m4Gcyj8Dfew=;
+	s=arc-20240116; t=1758062754; c=relaxed/simple;
+	bh=CVGQSejNM0kqDxvi5CCnLuXhIXZU8Q7NsqgYZHQR4mA=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=j+oi/cIMTnAt3zK8BOxLDtvT1jYPAEwVdwGnYI0asu7wt2+HHn84VeHe4G8B9lBwJApQqs47xNDqIKksTL1gznAEKZ+w31gk6v20sSl7mpiwevXN9BqSzhfV0nYqjaVsFGv//viSoe8ZqJ8HMM9JbaBWlAjt33jY22cBOrQwUMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R68aJfKz; arc=none smtp.client-ip=209.85.210.179
+	 Content-Type:MIME-Version; b=CtCh8wDPc4vIT8TMsg2kc3vu+At7nkup4DqLONZRDKADUCoE0Yi5U06zTq7t39axPHioN9oDt2TqF2Jm3RpiBE1rgWJrikjXD4wIxayG4NOR+thW3lx1Nc89YsBmxVo9A1BVl0szydwjuCpXxGrRFNRcYug/HW35hE+E9AeQWJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rozeolhu; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-77b91ed5546so365798b3a.2
-        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:42:23 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-25669596955so62018785ad.0
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 15:45:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758062543; x=1758667343; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758062752; x=1758667552; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=NeqLuLjCCjLncW/lSedt5sAbSbFXOMNawocV0CX+MjA=;
-        b=R68aJfKzjOmHnSPC6/9Y8KXyHJ1gxvf62vDGJk/g0CnuzuMNSrU5KLx6pDRLPSQF/k
-         XMlAiBK6465GBE8FANRzjFcgJeYXwlevgNzBcKnPU3G27CehhpjoSAvLjLoqeODdkifd
-         MedML3Q6RR8tdgh0bitXKo7DhRhMm+cNbXn1jrzuInWyViVP2QWGlNmJ5T62K5MgKqWO
-         vZvyP/hIu+vKUaJ4hEWXlHKCB3vhTLLSUCCPWKB4SLgv0xDGrH8eWTbi8g8DcylufltP
-         AI3kFOBmE5cSyZriJKIW2k+mVWjq6aOdbCPXE46nPFzvfRfcDgG8W956rlBYu+plkL2A
-         RbZQ==
+        bh=sFpkXuJ44WWuUXPKFCvaa4NH4gkZQ5KGZfr9yDw0adg=;
+        b=Rozeolhu3C0rUFT3T+i9Xzqy16QwNH8f8LmGqCtYVwF08ysK3/OM5GKEJc8fZjBAqP
+         Kh5X0booPu/5oopsfPec9b6w3guoNg/ADX6LvLVHKfhVGy2WQEtv+Gl/5Huv2U1GTWI+
+         lhnegVzMHmylVTvvZmB4NGLHVrEcl61rgSB3waVuo/xpoTOzh20IwLB91zKC6z6keXhj
+         lInfIWHSG4P6XmefjSymnDCm69opFGdLO7l7qLJAj2SGz2Uwhz+uTYWesQpV1s07KtWE
+         38HNloW7wsbuZw8kutEdoaa16DMq2bfTwK7nBKrHy2uUDpOfDLH0n0N4nyCVC3LHo7ZD
+         bdLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758062543; x=1758667343;
+        d=1e100.net; s=20230601; t=1758062752; x=1758667552;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NeqLuLjCCjLncW/lSedt5sAbSbFXOMNawocV0CX+MjA=;
-        b=ZUeMxL3yA630lyUWNpsM0yp7hU+pTYFEYdTb/bcEpg+nzBi4E65N8dt3BKT3qI3ylh
-         H8uuFeKUKNlnRxx0roNgv3s6N7in5FjjHTfuiXiunyt6dcIs8nNE4W2C7QDXamXtz87T
-         EIltepHX7Z+uUoZ2jJDjGHA5iSe2Er6AbRqvmJAIOw/SIC/6V6PYnwybJOdgTfScY8qs
-         9pm0JIrLRzkUZvGxfaK37ZswDKJxH5gYwY0uFDvNlZLTUMUma/3ldhQOmYxiEn4M0g+O
-         FFk9Tvq+YSBySo7RUpUNmOyfJKY+RjvG6gm4QufbWAiwP1sAcjT+7tKmSDCcRtJJzs7u
-         J9tA==
-X-Gm-Message-State: AOJu0Yx1TYHukziHvMS4gv4/A1zWiQgzlOpuLpZqmFb5jKS2If68kbu3
-	0mEHQvtWijnH95+5qpNBJLrtRGpkM2FuLkMsZeaIXFEi7rcj1+lxSKgl
-X-Gm-Gg: ASbGnctGCTgtynzy/ZeSKFwS046Nuqd54oixzZRntQIg1pnT0R2biQMgJXBRC/C90i1
-	++Ms1sywWUwVys8EmQEXcSdDiCjET70N9+ONWH3TPV8acKCjaTBIhyyVvtnfjV0RLobi+V1WnOF
-	Vze907KTXH6mqgcDvAmpLcz3I5tH4Kopb8xzw6q2wpk3KpEqSDcEBz6Uol1jnPvmVPn17lmQZef
-	zMuPsF1/2tpEpYSf5PerjWraf862B3UEpm4zfiupigcKPqZ5GwuK/fLsKFkY7hd5IufEFS+G/aB
-	MV7RVQO7Yi7Y4t0EwP4frJjyv79URH5xn0audGpK05SmV5kJl+q0a5EGgTWdAinWeXUKFzZh39u
-	psJd+IqFKEj/qcYEfCWUaPdgHMbRV3rAKEOFVXCk5eaaisw==
-X-Google-Smtp-Source: AGHT+IHpd/QUDBL2DUkqQZQTfOlohd0ZHJEPgQVMM0SpSpyMtHM31XfZpJoE3GjgJdEyVno7TuBz4Q==
-X-Received: by 2002:a05:6a00:1790:b0:772:7c7e:cc27 with SMTP id d2e1a72fcca58-7761209bd95mr18665338b3a.5.1758062542761;
-        Tue, 16 Sep 2025 15:42:22 -0700 (PDT)
+        bh=sFpkXuJ44WWuUXPKFCvaa4NH4gkZQ5KGZfr9yDw0adg=;
+        b=uSvzwVReichD9K2N4gUDrD1YhPaO4NxqPwS9H3DQi/FBMkMDN7efQMvnWfKSC+n+t/
+         QHrOjuwUJc15nBqJo5B+6Dzgg6f+T4ckHY2OKZ2/qcIfQzr2FZsBbV5TnWESSKXrlzuI
+         z/Aju7Iwt4ZXaVv1NV4IkiQlkIBuTZ/Tae41xdZma1IgKqRgtawhwGhdCfHEeJAte7EO
+         Xp1KHw+j3ct3MAoz2bDVNSoTcDjehYs0iXFkYi/krqvKO1UBajITx7uPM9IgSP6jnZyp
+         Ax3MmGIirEFILLerhCye5m49L8e6OT2njFa7EuL4ilbJA0ZpLG0wXLW8attISiOJmKAz
+         Ax0A==
+X-Forwarded-Encrypted: i=1; AJvYcCXz8VNW2M9tFXfs5ccGxzW1QZWLhvEr2t2xNoMYOEkgbVnxH6vfRIJw2LZ/JSDXSxN255A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJSAR+v4yGU2zWLfHBIrlIDXXnwAIuPumJP0qlevEUKQ8aB7J/
+	22GhuoyZIgmDBFzTbE9IcFe3CQsLsTWx1LoCR5fi/AyS9liCMhXS3lzN+Dzbknm5
+X-Gm-Gg: ASbGncsQO4l0DfFLiyWuytpAhjcGH+McZaRsVq1bcXuKMwYAJPVhypI6JLez1MGcOL2
+	XHoJhF9OjuGAAIRa63yEE6IXVv6NDTAcD3h+PyShDbM+cudimtWfCnl2cfKrCKTPFTNHNZYUHf+
+	KjyYfsGAUmN3OvKmfmfBkWhIDjaLAcsj9vT5jt8KK32B9AA/YC1PM4+T/xTSpN1Qkpb7mjgmOD2
+	DajA9VcQaT8Q0scw9svrJZZlMa8S+Jz6COr/QmFQ1MeqH31yw90Q7vMkzJ4Hn/C8Oj/JoGNZ3kr
+	X50RV1qb0NAgA3FbdqPqRl1XhrbDdo8S/0tUcY3v9R+kTwy3mFCOYt98ISfrww1y/fs7PXkn0We
+	4gCW+yUQ8PMoEPCBNx8yM+dyFS7PnVZtkND0f5lfhMW38FaY9gk7f0ifz
+X-Google-Smtp-Source: AGHT+IHBJVSTvQR+gblCcfnW/VZ1OIUs7DFC3wAOo44AFOmHWLUbc+BwuOqlIJmBa7r347vIi6Plqg==
+X-Received: by 2002:a17:902:dac4:b0:265:9878:4852 with SMTP id d9443c01a7336-26598784d45mr122072675ad.15.1758062752439;
+        Tue, 16 Sep 2025 15:45:52 -0700 (PDT)
 Received: from ?IPv6:2a03:83e0:115c:1:2a1:9747:e67f:953a? ([2620:10d:c090:500::4:432])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77607a47d7fsm17291236b3a.31.2025.09.16.15.42.21
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25d49093074sm144754485ad.149.2025.09.16.15.45.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Sep 2025 15:42:22 -0700 (PDT)
-Message-ID: <e011fbe6e1e715243b9d1166d7a125036cbb6b9b.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: dont report verifier bug for
- missing bpf_scc_visit on speculative path
+        Tue, 16 Sep 2025 15:45:52 -0700 (PDT)
+Message-ID: <f746dce74aeb5de06fc25905523becccb88c55d9.camel@gmail.com>
+Subject: Re: [PATCH bpf 1/3] bpf: Explicitly check accesses to bpf_sock_addr
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, 	martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev, 
-	syzbot+3afc814e8df1af64b653@syzkaller.appspotmail.com
-Date: Tue, 16 Sep 2025 15:42:20 -0700
-In-Reply-To: <CAEf4BzYJW+O6CD5+V1wP3uF0=BBVNLrUwM+co7Pps8HF13p3Ng@mail.gmail.com>
-References: <20250916212251.3490455-1-eddyz87@gmail.com>
-	 <CAEf4BzYJW+O6CD5+V1wP3uF0=BBVNLrUwM+co7Pps8HF13p3Ng@mail.gmail.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>
+Date: Tue, 16 Sep 2025 15:45:51 -0700
+In-Reply-To: <f5310453da29debecc28fe487cd5638e0b9ae268.1758032885.git.paul.chaignon@gmail.com>
+References: 
+	<f5310453da29debecc28fe487cd5638e0b9ae268.1758032885.git.paul.chaignon@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
@@ -95,65 +94,46 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Tue, 2025-09-16 at 15:33 -0700, Andrii Nakryiko wrote:
+On Tue, 2025-09-16 at 17:17 +0200, Paul Chaignon wrote:
+> Syzkaller found a kernel warning on the following sock_addr program:
+>=20
+>     0: r0 =3D 0
+>     1: r2 =3D *(u32 *)(r1 +60)
+>     2: exit
+>=20
+> which triggers:
+>=20
+>     verifier bug: error during ctx access conversion (0)
+>=20
+> This is happening because offset 60 in bpf_sock_addr corresponds to an
+> implicit padding of 4 bytes, right after msg_src_ip4. Access to this
+> padding isn't rejected in sock_addr_is_valid_access and it thus later
+> fails to convert the access.
+>=20
+> This patch fixes it by explicitly checking the various fields of
+> bpf_sock_addr in sock_addr_is_valid_access.
+>=20
+> I checked the other ctx structures and is_valid_access functions and
+> didn't find any other similar cases. Other cases of (properly handled)
+> padding are covered in new tests in a subsequent patch.
+>=20
+> Fixes: 1cedee13d25a ("bpf: Hooks for sys_sendmsg")
+> Reported-by: syzbot+136ca59d411f92e821b7@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3D136ca59d411f92e821b7
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+> ---
+
+Double checked other context types with holes and paddings:
+- bpf_sk_lookup
+- bpf_sock
+- __sk_buff
+- sk_reuseport_md
+
+And agree with Paul's conclusion.
+(Note, however, that bpf_sock and __sk_buff explicitly refer to
+ padding offsets).
+
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
 [...]
-
-> > @@ -1950,9 +1950,24 @@ static int maybe_exit_scc(struct bpf_verifier_en=
-v *env, struct bpf_verifier_stat
-> >                 return 0;
-> >         visit =3D scc_visit_lookup(env, callchain);
-> >         if (!visit) {
-> > -               verifier_bug(env, "scc exit: no visit info for call cha=
-in %s",
-> > -                            format_callchain(env, callchain));
-> > -               return -EFAULT;
-> > +               /*
-> > +                * If path traversal stops inside an SCC, corresponding=
- bpf_scc_visit
-> > +                * must exist for non-speculative paths. For non-specul=
-ative paths
-> > +                * traversal stops when:
-> > +                * a. Verification error is found, maybe_exit_scc() is =
-not called.
-> > +                * b. Top level BPF_EXIT is reached. Top level BPF_EXIT=
- is not a member
-> > +                *    of any SCC.
-> > +                * c. A checkpoint is reached and matched. Checkpoints =
-are created by
-> > +                *    is_state_visited(), which calls maybe_enter_scc()=
-, which allocates
-> > +                *    bpf_scc_visit instances for checkpoints within SC=
-Cs.
-> > +                * (c) is the only case that can reach this point.
-> > +                */
-> > +               if (!st->speculative) {
->=20
-> grumpy nit:
->=20
-> if (st->speculative)
->     return 0;
->=20
-> ... leave the rest untouched ...
->=20
-> ?
-
-I did this on purpose.  In the comment above I explain why the error
-is valid only for non-speculative path, so want to have code and
-comment in sync. Tried inverting the comment to explain why it's not
-an error on a speculative path and it is confusing.
-
->=20
-> > +                       verifier_bug(env, "scc exit: no visit info for =
-call chain %s",
-> > +                                    format_callchain(env, callchain));
-> > +                       return -EFAULT;
-> > +               }
-> > +               return 0;
-> >         }
-> >         if (visit->entry_state !=3D st)
-> >                 return 0;
-> > --
-> > 2.51.0
-> >=20
 
