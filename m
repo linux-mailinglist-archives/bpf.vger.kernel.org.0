@@ -1,77 +1,78 @@
-Return-Path: <bpf+bounces-68642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69979B7EB39
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 14:58:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31825B7ECD7
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:02:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D71761C04414
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 08:08:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7388A16B7BA
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 08:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E492306D58;
-	Wed, 17 Sep 2025 08:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E5A215F7D;
+	Wed, 17 Sep 2025 08:08:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hMsJW/KX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nU9ln9p+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E245D21CA1F
-	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 08:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38E1A24A07C
+	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 08:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758096433; cv=none; b=jWN+SIBSP+LwaGAhphvOAJdH9Lr48wMBG+EfLuL5Qhd7QHKqIjb863M84ky28M6Km255Tu/YpZfN3GSDZCbLu8Xvv579NDiA3TlTI/zQGTDoKTQAVGWhhPDYDzfDotiEWTbBFiFeGOm4fpbCUkoFORdL1LLBk2XXTsysxVnp4S8=
+	t=1758096485; cv=none; b=lYc4IZYJl81DTYw4UQcx0mTqE9sol6gHCbcD87j4rHsAFxdDZq1f5cADDrx5s8uj02LWPuOIpentlgb1Rg4XImP/bfoZsg9nmJRJVYcNgk5vcqI+NTvN/2SRRGxBFap27Bg8hoxnKRfRvkERGHwhx802vk9p6sGjfSNN2YX7+rM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758096433; c=relaxed/simple;
-	bh=d5bMICGZt1/Kv2FE70ThI+bNKN0SeFLnX98pGQ/9krg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RroKGkIEaYZHlJXtCcudf0mr4Ne+NEZfLIn+MRQ8C68fAYkiJ3Lf4MShV8y9EAUcI0CxyZgACFCSMXjsvuEdMF4U8+HpZJraolnp2S3DYG/uB9MkEFA9w3+bOHHYmJpEvhQaozKlAyMHYT8CCDZbOFkhGyC8YInZ5V13WtH55ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hMsJW/KX; arc=none smtp.client-ip=209.85.221.48
+	s=arc-20240116; t=1758096485; c=relaxed/simple;
+	bh=PWofUjmw+XjtRUIAT3Hi26wZ2+m7yciIuj1DtrXYuvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lru5m8om85KXrxZldEvCgNPO0zuyeHE1+d/BBNh1nFshDxEn3J3lIqAgXDO6839DwVEJb69R8CpsFrUnM/znouL0ztC7G3tz69lyUrkq8WlwJGvpfb+ojwOyIEctncnWL5ez/iorcfKbaIWgmU57xifoZ35iZOgt0z1+v64df9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nU9ln9p+; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3eb08d8d9e7so448963f8f.0
-        for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 01:07:11 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3eb0a50a4c3so1959827f8f.1
+        for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 01:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758096430; x=1758701230; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uP/fYPFYw8jqJYXcDwGTRw6nICKSA/0keLHin7n4N+I=;
-        b=hMsJW/KXsHz5SeUG19bydfMbcM9NfIcqrI7fIAI5Z6pRS+DCD4oFnrWhx0S46OF6s3
-         TMAb7lyFAIvbFovkazlds8hQzA31/5tuX/r4TBpzqJljyH2HDiWxvKklJbZB/7dfcakm
-         hiRdy36QWfZsLSBm5jnS0U7egXTvpLhYuLq9KXJvEEQOwGEuygKtadvUqUg5orr2gDk7
-         +IckYX80lVTTY4/eGzNiaKuGclqYdwo3YQ6p6Dn8WUL6FMyZMESyUSRMaHXnLUmqLuXq
-         OmxvaMOPerEmzkhhqsef+SmFyL1LqlrlpjDyWyhc/kC/HzGStNPOXFsV784MfjkPKtZa
-         YPOA==
+        d=gmail.com; s=20230601; t=1758096482; x=1758701282; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DeHYSQMhobBGeL0062IBYDFq9yjWkMlMlFRKc6p1v1A=;
+        b=nU9ln9p+7Aej2dZhLuq9OmPT/X4+A0OdHGWmAD6qLRjpgxpKPy56cjNO1uIeE3UWF/
+         Wp6XkW6QJK/oI3vutxcptRuSXxdoBZkcjr1uafvOj+QniKcwFeK5XWqngzkIUyTARMO7
+         dXQ5glBfmnjUTx5mhDXU+vtA1L7t6zVbJVU+ysY6+VjX/V2xcznI+cJLdZ4cuLxa+DoX
+         kEWrgjLiviKX+F6vgAUV8IFzplgBksUqonniazWpZG0XaxRbr/lCiTMcfDoWosFdIVtg
+         5HdUtMj1lwBstn4JB6JuGcVuqKCydGZBc+tr9UNd1l6lr4lPahgzqua1PxC6f2HQ8m42
+         fJOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758096430; x=1758701230;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uP/fYPFYw8jqJYXcDwGTRw6nICKSA/0keLHin7n4N+I=;
-        b=opTmwSJ/v8xjoVWUa3I39KoltsH8QDflweoZ8DyMjvHsUIdQe16XMrlv84iNnfWsvu
-         dtFs8M0a80SIQpVgi1sxM40RTWwsD5PgjpY9xiWbXc88WF6WGtKopbFUCHSOumDxwnJk
-         30hY6ODpsUbCTJjL3B45CzUO1VLFNMnaN0jWhxtw7NkTQf35L4CzaUZeKZUa42nckZO0
-         tQgOCHsBuFy58ojIPhRuudD0tmQKpg7/isHyB/WHmEylVMZGQ1+linDVbo7P362cAj85
-         vASXa+1qy8NYSoMKVwPvHkX184EkzvGV+lJ6kyymef4QfRuE5miucqvolY4g19M7yZ+X
-         9GsA==
-X-Gm-Message-State: AOJu0YzTHkzI+XUXn5BprBTa9dbp1QH0983CLKMJ6JIL5XyRu1iFT4Ig
-	cuuCn7WMgIhfuIcSIbgcFzxMIfz/PKBg8JfNb/7SJyRYZCxenuUvlMzc/AUk3vg2
-X-Gm-Gg: ASbGnctrQVXgCkFn/45x3YsZnuE0bvrvaAfFy37nb3odfJD6Sxnk+mR0tF4lmXha/XA
-	F7wJFa4kf39iYvPJB017aV/YSlxrQIbGnBeEj6CIvvy93R6g81GNei4t10MEMtmtXuoJlk1H8qW
-	E5P7Niwi+5CFmKausTN/dnxc4UmyjB7/5gw6pdDOWkvOB1Riyq5rgY9to0voXooggHfTv9tpRl5
-	RnWm/kHVEQOuY4VLX0ixpNwjswSRE+3vJBt9/kyKYMp8GwKqa6ho48AEgH+FIKpdaspp4fgieZ0
-	K8YblaGrA4/BUCt23dwoL/BHlXVSFPi7AbTEkPsvIXft+pjJNz1XLO+17/m0DSO1GBOvyWxWU+/
-	UcJiWDek0bb+Gy7Qv5t9xv/DPKD2DUZsspr1xQjpbAeo96h+6xVcSvUKPx1EcMIbvyKUQwqfYlT
-	JxQi1JC3tszkJOFrFYadem
-X-Google-Smtp-Source: AGHT+IHk0SfONHJ1G1mcjpK5mO2023lnmNXVdZGtAoeYnMbrO9boM8qbzKyMSlmIMtMChPxHk9emWg==
-X-Received: by 2002:a05:6000:22ca:b0:3ec:db87:ff53 with SMTP id ffacd0b85a97d-3ecdfa65da0mr1053635f8f.12.1758096430081;
-        Wed, 17 Sep 2025 01:07:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758096482; x=1758701282;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DeHYSQMhobBGeL0062IBYDFq9yjWkMlMlFRKc6p1v1A=;
+        b=fFK0x+I4DqfNbIQd9nohiLzDm9D/pquT0DTuV/7BwZVpDL/iWKW8ayS26EJE+61d+H
+         cG5Myg3gymAuf5CixiNsVdTnd41BcuSgRV7mNIo8qCmVOw20dDQRsLW+3CLMy5BUeX17
+         xiquhwlLeKeZP0lEmptZAbxI6KdDljU/ZhfEpi2CsJxBJS0oltWJmBJz+qA296Jf9VrW
+         ZzYurLNVTrfDS5gLeR0l7kjX+KTUU/qh4fYW3ZILlcLSrPvxJsYeLUzTfWT6y0NckH5i
+         i0xb4/bC7qLTBgC8BNs36okvIKvCy6NMV++KADlDtLvLqgrC4G0IUyMv/2/GHBTBGM3H
+         dZAQ==
+X-Gm-Message-State: AOJu0Yz8xk3oqltr7SPKmhhJ6XxuV40u3ksYvSjOavs3Q8ova0FqZvSC
+	oLI3q6O1aLVeH9/ZswD5y8Rd2H8Q79/hjF+gD9Mn3A5Q68DdlcTvaod7ZHS7n2dw
+X-Gm-Gg: ASbGnctX6EMz3LP3q4nu9cbeOYRHS+EEMlXEi/KdOAOG498YRbEQvK8+v3+vPQBp/o2
+	hEIPCbTPdvCHd3YB1kwoMX1asbmtnk5j/bgDrwzgb4BaLIShXzhx7mv9H+FG1lVbaWRIpl24mCH
+	dbWSkXTjZ+zJSwexFnRjg0Mv5g/HjhDzhdMxwoTEt0/XFuXoGgvIsGGvJ85gHsUJ0bqjBibcNNV
+	kHFAw8ENMZ+bjyYON+P7MEY5QKYVDZChtCo2xzgR3Qp3fpX0NEnKjzLGSgZvQRUe97lznOTE+PM
+	WO4n/y9D7rrSUQqGj4IgfIZE+8toItlyPyHwF1K2pxGFKbQLAyqvFWnsH6j8Oq2s0aGJLTMp2Av
+	AJzIGU8I9bLUyghxBXM/Kc9iyguGBnBeVihpgsCuF26OjqPNaACQSdruRM1k/rBVW59+S1eFioA
+	sPwHj5dxeAWtbdbLGEP+VO
+X-Google-Smtp-Source: AGHT+IGsAMtPn6JOWZY/3XUO96WzI8IE9XbQlmfJP5RHsy6gnxxVSUl89ULi53G40cVMhcWAWg3SWA==
+X-Received: by 2002:a05:6000:1844:b0:3da:37de:a3c0 with SMTP id ffacd0b85a97d-3ecdf9b9dd5mr1054756f8f.15.1758096482368;
+        Wed, 17 Sep 2025 01:08:02 -0700 (PDT)
 Received: from mail.gmail.com (2a01cb0889497e00f6fdfecb9884ca93.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:f6fd:fecb:9884:ca93])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3e9b1ab74b8sm14118854f8f.5.2025.09.17.01.07.09
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3eb9a95d225sm9958555f8f.54.2025.09.17.01.08.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Sep 2025 01:07:09 -0700 (PDT)
-Date: Wed, 17 Sep 2025 10:07:08 +0200
+        Wed, 17 Sep 2025 01:08:01 -0700 (PDT)
+Date: Wed, 17 Sep 2025 10:08:00 +0200
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -79,8 +80,10 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 0/3] Avoid warning on bpf_sock_addr padding access
-Message-ID: <cover.1758094761.git.paul.chaignon@gmail.com>
+Subject: [PATCH bpf-next v2 1/3] bpf: Explicitly check accesses to
+ bpf_sock_addr
+Message-ID: <b58609d9490649e76e584b0361da0abd3c2c1779.1758094761.git.paul.chaignon@gmail.com>
+References: <cover.1758094761.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,29 +92,67 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1758094761.git.paul.chaignon@gmail.com>
 
-This patchset fixes bpf_sock_addr padding access to avoid a kernel
-warning and improves our selftests coverage for these ctx padding cases.
+Syzkaller found a kernel warning on the following sock_addr program:
 
-Changes in v2:
-  - Rebased on top of bpf-next.
-  - Added selftests for paddings in bpf_sock and sk_reuseport_md.
-  - Simplified sock_addr_is_valid_access's logic, as suggested by Daniel.
-  - Removed a tab copied from existing code and spotted by Eduard.
+    0: r0 = 0
+    1: r2 = *(u32 *)(r1 +60)
+    2: exit
 
-Paul Chaignon (3):
-  bpf: Explicitly check accesses to bpf_sock_addr
-  selftests/bpf: Move macros to bpf_misc.h
-  selftest/bpf: Test accesses to ctx padding
+which triggers:
 
- net/core/filter.c                             | 16 ++++++----
- tools/testing/selftests/bpf/progs/bpf_misc.h  |  4 +++
- .../selftests/bpf/progs/test_cls_redirect.c   |  4 +--
- .../bpf/progs/test_tcp_hdr_options.c          |  5 +--
- .../selftests/bpf/progs/verifier_ctx.c        | 32 +++++++++++++++++--
- .../selftests/bpf/progs/verifier_sock.c       |  4 ---
- 6 files changed, 46 insertions(+), 19 deletions(-)
+    verifier bug: error during ctx access conversion (0)
 
+This is happening because offset 60 in bpf_sock_addr corresponds to an
+implicit padding of 4 bytes, right after msg_src_ip4. Access to this
+padding isn't rejected in sock_addr_is_valid_access and it thus later
+fails to convert the access.
+
+This patch fixes it by explicitly checking the various fields of
+bpf_sock_addr in sock_addr_is_valid_access.
+
+I checked the other ctx structures and is_valid_access functions and
+didn't find any other similar cases. Other cases of (properly handled)
+padding are covered in new tests in a subsequent patch.
+
+Fixes: 1cedee13d25a ("bpf: Hooks for sys_sendmsg")
+Reported-by: syzbot+136ca59d411f92e821b7@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=136ca59d411f92e821b7
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+---
+ net/core/filter.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 63f3baee2daf..8342f810ad85 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -9284,13 +9284,17 @@ static bool sock_addr_is_valid_access(int off, int size,
+ 			return false;
+ 		info->reg_type = PTR_TO_SOCKET;
+ 		break;
+-	default:
+-		if (type == BPF_READ) {
+-			if (size != size_default)
+-				return false;
+-		} else {
++	case bpf_ctx_range(struct bpf_sock_addr, user_family):
++	case bpf_ctx_range(struct bpf_sock_addr, family):
++	case bpf_ctx_range(struct bpf_sock_addr, type):
++	case bpf_ctx_range(struct bpf_sock_addr, protocol):
++		if (type != BPF_READ)
+ 			return false;
+-		}
++		if (size != size_default)
++			return false;
++		break;
++	default:
++		return false;
+ 	}
+ 
+ 	return true;
 -- 
 2.43.0
 
