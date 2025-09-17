@@ -1,121 +1,161 @@
-Return-Path: <bpf+bounces-68670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F1DFB80601
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 17:09:07 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67FCDB805B0
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 17:05:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74CC51C80DDC
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:02:18 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 11E094E31B4
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9078335935;
-	Wed, 17 Sep 2025 14:58:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60807335922;
+	Wed, 17 Sep 2025 15:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7eM08Ec"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j0Qm89mB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D472EE608
-	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 14:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84891F9F70
+	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 15:04:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758121098; cv=none; b=SgrHEzG/2f1/BNAY/Ae2eL76l8hImDAc7bxkKUbeirKbERYg1Yo2pMFVhwOUUN7jTwhODhQOO3QulOFjREOtp68aDhwhm+1Fymm42ro+71Ld2BPAlVV4h5ELdUDl5C42wfhtFGL4urobe3OYS3QWnvOLQt86ARWga+rQai+IJ+A=
+	t=1758121459; cv=none; b=G7xsb9vScNlqZP3Tt5UFsJwQ4sk5PfkvLmpMHgXMlPJ8wuJhYiiDX+javRcZpaxqIkZr/1RRCKEYi6nYtiBUl/D2HxYSy7lh8v5kv/1mp6Fy2ohXtRtWkiSQhW7ljtDHEJj1FwzdV1LFLHOzEAGK2jQDN6+puLHZTOTROVlEMhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758121098; c=relaxed/simple;
-	bh=89RqL3dKNRzXAN5gswG3FpeqGJw8aAV8f7M32uLMJ3w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JIdoQO+VX1LOW4iVMkdXdOpxAtGbpePVsd9RgaVlCmTbXDg4vG5J42LqpEBJApwYXKjwpxt2fPHAHbq+q/OO/hZmyijlJr5Vow+EQ1lO3098bhf/vkPkaBfh00lTxgaTHzkV9ZQps8j3MXgNutH57v8Ato5t9nS9S/qnZrO3GZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c7eM08Ec; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b07d4d24d09so563078366b.2
-        for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 07:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758121094; x=1758725894; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zY99cLVt0d3tdNy7XCHIQG67f12UlCGnFw1dUkPjQvI=;
-        b=c7eM08EcRH4rAbKOzEekE4h6Gapvslq41rbHNshADDNJOxK5XqncvuLPcfIebpcPBm
-         BqzUSIBT2FtkD5tcJZyRPSJ+3QLJpJpyThvGEBCe52ukdbHP8EbiN0rGBnevGA0x9Q1E
-         ye6Mqt/f+77KOJckzu0WN6+jNRkx9C5unJ1ZH8hL3dNvMR1ZyO1zkHCfrg7dwrhqTzEV
-         FBQBqgNSH3sMIGBqGIrcbsW66eqbFfwUHNMTBsmLDpVulgMuaw3LvihgxsnXgRNZYXxf
-         ItvGDCvQa/whHLGHMTglJ7LRWUNLP2x6UZQUJWKuzxTdaDOM+1lKhJNjwDnswq5JrPxS
-         NvuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758121094; x=1758725894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zY99cLVt0d3tdNy7XCHIQG67f12UlCGnFw1dUkPjQvI=;
-        b=aTiZuV9HfJwzwk/F/GLZePmC7+WO412cjypSjzmE0M/nNscYMN0d+pK96U/5DlDAOP
-         UuNn9EQMWbcoNqhbAtYDdMCfXZZU+aVwv47K2xyIVqoomElYeUkQKqtPrhbFuB+hklbP
-         4AkcxZcVRGe6G11Vg5PgZSw6WKnMwI6G6L2W3hmBXcvb46gO3bH1nRtEYdMnTC/Scwb3
-         PsxS3jnoYuRHEczILfmjGokrqTkmxqmrYpMlPn1wHEjUobQtZHXU5ORCNhSzsFHZMBYY
-         5ByTjw9TkarpJP56Hf64veUr0giWF7p+Z8SUwKciM5ZeDM/CU7tgd6m3vrtbphZutQqt
-         1Jog==
-X-Forwarded-Encrypted: i=1; AJvYcCVM+Xt+AVnR8BesTuE3aauiwLiUaL4RUhN636SlWsRM+xvfBxrBHwg+EVqG5yrWfjxs0fc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzxatTdaTTkVRtVqU0G1wji4Z2RGknFYKp5SwO2Mx/tkB05Ls+b
-	u8HtSebEAyCIxlCjRky8MnH4MZ76FhQ9y2sHnFNxJcob5A4erbzAjX8bZ4OmfVdTxvoSVgRHf6+
-	I2Pj1j1JLuU9p71rDMOd/AgImnSYti5c=
-X-Gm-Gg: ASbGnctZWLKe40jd4O/3r1mdlAK2dm6D6GHQSI9qsWu0DniC1zx+FblUptgDGlFxlyN
-	nn5r9rOSaQ8zPHq6AMfJoP9502+cQojDlycYswi1UNPlwJReiK2/t9mYEvP37fPB+z/37JXMmSQ
-	EH073e9XWESpEhng6S8HacvQAKGDkxij82GjYvsV6oFVs4mDSRyZZE8fUuHcVvmqsx1bkZKEvSK
-	UJ2JOHzumMSA61Be8s00fzcZSTWWhKtceV70/nt
-X-Google-Smtp-Source: AGHT+IGnt2+Oy4GmTBEsaUMczsVN+lHEMBC4UvW+VABXiL7v+Qp6AqSwuvDpHRUL57kCRit85yRN/j7PCWeczSP3VEg=
-X-Received: by 2002:a17:907:3fa7:b0:b10:aab8:3816 with SMTP id
- a640c23a62f3a-b1bb8ab9007mr298555066b.32.1758121093782; Wed, 17 Sep 2025
- 07:58:13 -0700 (PDT)
+	s=arc-20240116; t=1758121459; c=relaxed/simple;
+	bh=GX5NrIfIAOUmZ/eOlfovSF1AUAW61m4HMC6Vvs6750E=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=Me33rKCZsjwTz0r+jESE6zdOM4xka9p+gUdvE9h5jFz1XV3GwXTHW7G8rLNK3JE2e3SMeEBw8pu7fUVPoSjMPf4ZQVwhOLu2CZCUvSe7ZAOh0BHcwHiHkYz6Irx1LJiq61pgtxFDeubEsyWaT+PkJILW5ceU2cOtqHNmvKKqOXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j0Qm89mB; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250916233651.258458-1-mykyta.yatsenko5@gmail.com>
- <3b65db27f2cd4575875a090f9cce0ca0f138daea.camel@gmail.com>
- <CAADnVQLe+5C8MH9SEU2MxHP9iaCHJHXdnuXTHkqvnVwsHTynwA@mail.gmail.com>
- <5e2fff56d3465ca921dbee96f512bf0443f66346.camel@gmail.com> <bf202c1aabb6247cdc6c651c6cac3ff3982115db.camel@gmail.com>
-In-Reply-To: <bf202c1aabb6247cdc6c651c6cac3ff3982115db.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 17 Sep 2025 07:58:01 -0700
-X-Gm-Features: AS18NWDF5efzHiGEZCP6sZEnoSZWp4Nbdvt27WoWNu8Rbc441CgjTSB-UfNGrTw
-Message-ID: <CAADnVQ+UAr=kcw_dom=DqqcBWrxK1yWTn2dsabLq9_wopw8Cmw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 0/8] bpf: Introduce deferred task context execution
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
-	Kernel Team <kernel-team@meta.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Mykyta Yatsenko <yatsenko@meta.com>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758121451;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XYrz7Ak/1t1R9m4IRV6IKtUlLyVTLmx5gwMJlsySbO8=;
+	b=j0Qm89mB5kkGZDmxUNAPrA5jYyKqFDTBZKqhzLxmdbGBMBFHBFvP5RIl7XNxVE+ByLx3Un
+	1fyXAQI5E0T1SQ1EEb0fjNpdL1Jp5er08LpTp6SJisBD2hqlnBNffE2t0PdbuEPvJy9Br1
+	NvDaet2fD5LKnfg2ijeaO+ZE7u9aVm8=
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 17 Sep 2025 23:04:03 +0800
+Message-Id: <DCV61D159UAO.1Q81016E9ENBL@linux.dev>
+Cc: <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+ <daniel@iogearbox.net>, <jolsa@kernel.org>, <yonghong.song@linux.dev>,
+ <song@kernel.org>, <eddyz87@gmail.com>, <dxu@dxuuu.xyz>, <deso@posteo.net>,
+ <kernel-patches-bot@fb.com>
+Subject: Re: [PATCH bpf-next v7 3/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
+ flags support for percpu_array maps
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Leon Hwang" <leon.hwang@linux.dev>
+To: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+References: <20250910162733.82534-1-leon.hwang@linux.dev>
+ <20250910162733.82534-4-leon.hwang@linux.dev>
+ <CAEf4Bzb2WMEbw0x7RQQh6v43_OUcXGX-W_uDPGc6zO6nO5ZdXQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb2WMEbw0x7RQQh6v43_OUcXGX-W_uDPGc6zO6nO5ZdXQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 16, 2025 at 9:51=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2025-09-16 at 21:44 -0700, Eduard Zingerman wrote:
+On Wed Sep 17, 2025 at 7:44 AM +08, Andrii Nakryiko wrote:
+> On Wed, Sep 10, 2025 at 9:28=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev>=
+ wrote:
+>>
+>> Introduce support for the BPF_F_ALL_CPUS flag in percpu_array maps to
+>> allow updating values for all CPUs with a single value for both
+>> update_elem and update_batch APIs.
+>>
+>> Introduce support for the BPF_F_CPU flag in percpu_array maps to allow:
+>>
+>> * update value for specified CPU for both update_elem and update_batch
+>> APIs.
+>> * lookup value for specified CPU for both lookup_elem and lookup_batch
+>> APIs.
+>>
+>> The BPF_F_CPU flag is passed via:
+>>
+>> * map_flags of lookup_elem and update_elem APIs along with embedded cpu
+>> info.
+>> * elem_flags of lookup_batch and update_batch APIs along with embedded
+>> cpu info.
+>>
+>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>> ---
+>>  include/linux/bpf.h   |  9 +++++++--
+>>  kernel/bpf/arraymap.c | 24 +++++++++++++++++++++---
+>>  kernel/bpf/syscall.c  |  2 +-
+>>  3 files changed, 29 insertions(+), 6 deletions(-)
+>>
 >
 > [...]
 >
-> > In v4 the function invocation looked like:
-> >
-> >   err =3D check_map_field_pointer(env, regno, BPF_TIMER, map->record->t=
-imer_off, "bpf_timer");
-> >
+>>
+>> -int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value)
+>> +int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value, =
+u64 map_flags)
+>>  {
+>>         struct bpf_array *array =3D container_of(map, struct bpf_array, =
+map);
+>>         u32 index =3D *(u32 *)key;
+>> @@ -313,11 +313,18 @@ int bpf_percpu_array_copy(struct bpf_map *map, voi=
+d *key, void *value)
+>>         size =3D array->elem_size;
+>>         rcu_read_lock();
+>>         pptr =3D array->pptrs[index & array->index_mask];
+>> +       if (map_flags & BPF_F_CPU) {
+>> +               cpu =3D map_flags >> 32;
+>> +               copy_map_value_long(map, value, per_cpu_ptr(pptr, cpu));
+>> +               check_and_init_map_value(map, value);
+>> +               goto unlock;
 >
-> One option is to pass an address:
+> goto is not how I'd structure this logic, I think if/else is a more
+> logical structure here, but this works, I suppose...
 >
->   err =3D check_map_field_pointer(env, regno, BPF_TIMER, &map->record->ti=
-mer_off, "bpf_timer");
->
-> But still looks a bit ugly.
 
-and then check that this pointer is > PAGE_SIZE and only then
-access it ?
-I guess that works, but why not something like:
-map->record ? map->record->timer_off : -1
+My intention is to avoid putting the existing code inside a new 'else'
+block, even if it would only affect indentation.
+
+This way, the original code block stays intact, and git-blame will still
+point to the commit that introduced it.
+
+>> +       }
+>>         for_each_possible_cpu(cpu) {
+>>                 copy_map_value_long(map, value + off, per_cpu_ptr(pptr, =
+cpu));
+>>                 check_and_init_map_value(map, value + off);
+>>                 off +=3D size;
+>>         }
+>> +unlock:
+>>         rcu_read_unlock();
+>>         return 0;
+>>  }
+>> @@ -390,7 +397,7 @@ int bpf_percpu_array_update(struct bpf_map *map, voi=
+d *key, void *value,
+>>         int cpu, off =3D 0;
+>>         u32 size;
+>>
+>> -       if (unlikely(map_flags > BPF_EXIST))
+>> +       if (unlikely((u32)map_flags > BPF_F_ALL_CPUS))
+>
+> this will let through BPF_F_LOCK, no? which is not what you intended,
+> right? So you need to check for
+>
+> (map_flags & BPF_F_LOCK) || (u32)map_flags > BPF_F_ALL_CPUS
+>
+
+Right.
+
+I'll update it in next revision.
+
+Thanks,
+Leon
 
