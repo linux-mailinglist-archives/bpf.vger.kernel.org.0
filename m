@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-68659-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68660-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB79B7EF40
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46F1CB7EF73
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:08:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDE9018902D5
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 13:01:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 706D018925AA
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 13:02:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6170F323404;
-	Wed, 17 Sep 2025 12:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D239A332A57;
+	Wed, 17 Sep 2025 12:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mTVtCYdl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/PC3TTo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B5E72602;
-	Wed, 17 Sep 2025 12:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42239332A48;
+	Wed, 17 Sep 2025 12:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758113790; cv=none; b=CtQuA5es7y4yMNRe9rf2WJnMNnbjTH3jxX0E92yjkiwUorAZkwmojUQgNwg/XBcrY384UbtWNlRO86nXIkFfQPlPoUpm+X9rTBuF5Xpm7wHtUQbXzVaZVlkSnNqZWA5U78i0E0MDBfEVuSY5sr3KqUIIuFrAKZZZGOwjKZgQ0QA=
+	t=1758113809; cv=none; b=iztCd3TcQ5gclgkoLIT0bte2oKLiQJXfq9yEoGY8ct/CRSDkkyWurFDf1xOAuJmT0hMI4v6eekc5d/LxqNdjk18oGzSPq/zIv/uZqfNYUCj5rQ148KkHYS3tJJJ/llII62pp4tG88xIal5zbF7N8fT7/nSKBHRzsuL7I/iPODyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758113790; c=relaxed/simple;
-	bh=k2wqPIFujf/Dp1epMnjgxvJ7N6cO8qkCH5rM8yVfHs0=;
+	s=arc-20240116; t=1758113809; c=relaxed/simple;
+	bh=zEj2Rp5RyjDVROtWpXDizElasqtxRk4iUytBJagOPEA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jzYjLdei4qzvcUVs7uX0zluABqAuN8FwKQdzLvcjGhobGSpCyMmGjRt+5kPCHF5Zr3gRRznpzpVxGDWL5pDSSUxkKjycRtUVUTTeI12azPdKA95Sty34kiei29/fgwpA6yXUJ/uS+hL9gsFSSCBUUI+dlE2YKbx+wJhkFV/NKVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mTVtCYdl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B243FC4CEF0;
-	Wed, 17 Sep 2025 12:56:25 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=OagbvW+bUWMW+x3ALyl+5fweevgQ3PY1d8+0yLcV9uovczkfZRQp4b4BOX4A1A3Jusc9cYKdbmSdnlil4gOghNi/cNYoYoSDmCf4ojJyU+x2O0b/au3jyrzWlPhvdvmsEhW2HrJLXiATnis0eTv/4HSDH+DfsS8fB9Fw+laR6l4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/PC3TTo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33A91C4CEF0;
+	Wed, 17 Sep 2025 12:56:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758113790;
-	bh=k2wqPIFujf/Dp1epMnjgxvJ7N6cO8qkCH5rM8yVfHs0=;
+	s=k20201202; t=1758113807;
+	bh=zEj2Rp5RyjDVROtWpXDizElasqtxRk4iUytBJagOPEA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mTVtCYdlQF7xM7ybu+e/Cdru0o3PB2TG89J0chxHNDpcr3HFZXYSdTBA7dnTc4ECa
-	 vAuGkPhTQClGJKdaaEv2Pyh4oL6TXhc+ERi1ue9tm5uqUWLf/xvy0Nf/UG+jf1JfIp
-	 Lpm6TvOtdntWCMgkYHiSz+ncIDhGnVdRuLeyRrrp7bBu+kRribB7kcHZ+c25vzO2hQ
-	 X/+BsadUOTy9R3sfs73+oZQ4ybcRs566Yw+Gpz/l/goZfaCmAw9uiy3+WmidGRAcc3
-	 6gnwueDoDf1dsUJuKPn0drYyywHtcSAQ+/MuoPZ14g/apr+VH+KDN0sWvql8fU1icP
-	 Sx07uZzyFFc4Q==
-Date: Wed, 17 Sep 2025 13:56:23 +0100
+	b=V/PC3TToIpCiYCLixtG9bxfOoxSmZNunsRNfIuI216czk9XQfcLnlmY/z0Nj0A3OL
+	 CBnJqlEq9/EgmcxydSJ6Cel7fCmZvBCDDGR/4ymTjlxLEWcrKOMdAtYdDZxHMNyyNU
+	 hkmXjHDx1XWhKlHGpN02/cqy/LyQAi0LkzXs7LemV9sLyrnZMOmQbLyslyyzQc+rE2
+	 P+UEjjDEiIO6ttCVinYjNdi8L1TXG3ewjbtQsQvqgUFIIMirPxomTrukncdDzaO7ne
+	 KfQ3FCWXVoPHBXrPnZOv95Vqx2i+txPfrNJsXM74Gqbk9fgVfiTCzWkwdTfkq77XYE
+	 PezoyfUxMoMHg==
+Date: Wed, 17 Sep 2025 13:56:41 +0100
 From: Simon Horman <horms@kernel.org>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
@@ -60,11 +60,11 @@ Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Gal Pressman <gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>,
 	Dragos Tatulea <dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
 	Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH net-next V2 09/10] devlink: Add a 'num_doorbells'
- driverinit param
-Message-ID: <20250917125623.GJ394836@horms.kernel.org>
+Subject: Re: [PATCH net-next V2 10/10] net/mlx5e: Use the 'num_doorbells'
+ devlink param
+Message-ID: <20250917125641.GK394836@horms.kernel.org>
 References: <1758031904-634231-1-git-send-email-tariqt@nvidia.com>
- <1758031904-634231-10-git-send-email-tariqt@nvidia.com>
+ <1758031904-634231-11-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,20 +73,19 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1758031904-634231-10-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1758031904-634231-11-git-send-email-tariqt@nvidia.com>
 
-On Tue, Sep 16, 2025 at 05:11:43PM +0300, Tariq Toukan wrote:
+On Tue, Sep 16, 2025 at 05:11:44PM +0300, Tariq Toukan wrote:
 > From: Cosmin Ratiu <cratiu@nvidia.com>
 > 
-> This parameter can be used by drivers to configure a different number of
-> doorbells.
+> Use the new devlink param to control how many doorbells mlx5e devices
+> allocate and use. The maximum number of doorbells configurable is capped
+> to the maximum number of channels. This only applies to the Ethernet
+> part, the RDMA devices using mlx5 manage their own doorbells.
 > 
 > Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
 > Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-
-Thank you for exposing this via devlink.
 
 Reviewed-by: Simon Horman <horms@kernel.org>
 
