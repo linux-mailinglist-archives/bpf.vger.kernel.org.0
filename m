@@ -1,150 +1,146 @@
-Return-Path: <bpf+bounces-68706-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68707-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FB0AB81CC5
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 22:40:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A64BAB81D61
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 22:51:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50C197B70EA
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 20:38:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 235091C22E8A
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 20:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BECE2E6CD6;
-	Wed, 17 Sep 2025 20:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E4F29A323;
+	Wed, 17 Sep 2025 20:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e6arFysZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="McA1NfiN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3537E2288D5
-	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 20:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D06208A7
+	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 20:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758141582; cv=none; b=gJUGtk31YHmWagPYIDGdwGZktd+7aKN0b4otkYU8NQi+rC6jNwr6I6/NxZS7S9soBRUxDnaHb/0+ESFel4rH/4XU6Bg3edx8CGODoLmqfFHetoRCzYwQJOn9DtnUHAE6IN0OhBDFOxU7hGWbk/5wJpBUa8MD0i8awSlmkc0oYv8=
+	t=1758142292; cv=none; b=JjPa8Oxm5DbY6fCzEw0tavgpR9fzSTOZqqK0/7BK8iyDCHvxMH0bzmVUILVHHZZxy3K+6hOCaUCVc/VEM/TlRPJZoMbmYZqR9bMrMel8S48subvThRxPusKFMqJq0h3ww5yPZrdY9FrjEigtl3rw5ELpq+AA4O4ubsIVc39pdko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758141582; c=relaxed/simple;
-	bh=QS7EDN2hyVYczke+XTorDZBFk8JUkzdgAlHMz5S5vbU=;
+	s=arc-20240116; t=1758142292; c=relaxed/simple;
+	bh=dNCXmFofP5R+c6Iy8mrO189tPCHb906L6cSKl/jkn/Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ng1H/9gCcB4eFI+eJ8g/3KUwJLZKS1S7+MACrriSSz8NIvoeNwImqgwHugbp1AbbrF9Vf/RdNrZ4legPD7+04LnBkgPDSQhouT52bDe4QSbeyJMlPw8tY9Ps728GGP9X/q8F1DYScd90r0/f21LgYVAyuOV9FeUWC8Dj0En4ioo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e6arFysZ; arc=none smtp.client-ip=209.85.214.172
+	 To:Cc:Content-Type; b=jxLGMmR0lTKUt85wtfzHl7OuA0OZT8LU4s0V6IBE70YugEh0VUiyMFwvzUmIiEpZeI2VL+whMBQz6d07ASCOEmSZJ6WAuKlVJzrPdXPcqQheieZObNpXtlv0XttWXI8G8AdHwxrCs8MHld8i6K6okrrvscdDexQ1p1iiIC4zkec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=McA1NfiN; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-266fa7a0552so2285705ad.3
-        for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 13:39:40 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-32e60fa6928so191834a91.1
+        for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 13:51:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758141580; x=1758746380; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758142290; x=1758747090; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lGEnmh5du0Pzq6Rdo2bcTmUhls2o/6YOwMX0nbfB/uI=;
-        b=e6arFysZxHdNH582TIqYOwc5koU0ncQKpz7JlMvpDEsRXNzvne9JwKcL4ovbc562GA
-         CGYymMmoFsA65FSIiPNlZtkSCiPxYgalHQ1YCogT395uRSPXnMbGtd+QA69LjvQB9VDw
-         xPiPPHwG5y8JfZzuuRDokOv9lLp3BmR2UUgXau+UJnO2qZTeblkQLxClPbF4YFR7GxWH
-         lxG33JUL1llSeGmJJD25ZVwU38RbVFqzgbB/+sTspE9VWfNUs5X/nSx4C763an6jb7Cz
-         p7GY4MkWFY/Uege7QYNtnVN3nULSPVtznMrXE3O/RrR4cViN2YUQJqts0JBZkE5xRwQm
-         wj1Q==
+        bh=tGCZVzaGvYkcaTstDShU2hIAQRmvwh1Vgc/YLEqtaJA=;
+        b=McA1NfiNEX25mEhWWDWsI7sm4GYqvC6RUAjmKFrP2NQKUOL8v1Hi4T7NMJNNF/TFEN
+         glS3nPCevE9dGIprOZh0yNTrTuI6SHeRQzsIVNnPZo3zSK3BNLR5l4NLXaYtmmlernTj
+         G3FrPHcnnlNiDeQKW/5CUzGJFg095DT11S9O7uFry12dkMClY2oPzAhZmvm8W92TGFe0
+         hV4xiv3x3aIpuS9HTXYqUxIkF2MptGT7/fwwbr88OPYylFjKECcQwuTzbSq5eHlCw5b3
+         9TW4H1YFxHi65lKcYfhAxCeuFOO+I9BxMpLpOzVdA/U044921aNT4lN+ivOeFN2KU/kx
+         tKaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758141580; x=1758746380;
+        d=1e100.net; s=20230601; t=1758142290; x=1758747090;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lGEnmh5du0Pzq6Rdo2bcTmUhls2o/6YOwMX0nbfB/uI=;
-        b=d8rxaTTXScLjOGZs80w5iujLML0l2WBpGSi4Zdq1j7sgLsFGv+3oxvkAOcZSQ/v44m
-         LzSLQhzyftVYYwOiFQhcKBk8MyqusPqngoRPe32G4AtJ3tyrX29LPBaWcu/Qb/1Ej/Pj
-         QO+FrqZiIKfUyqrWZKKoalDThYsAbUF3bBt3B4alTMF54jbcdjeU0vHsfyHlbROa9fXB
-         SS5a/jDCj9aJVJlSOC/EeyAYCys5/qRhTyPL+n5ythE7UvWz2JILzqO68ZCOkmy+Jh6I
-         AiG0NluyfvUKjv3MbX4PkHJedWfS+HorEP1ogwcv+hxC/VmmvahhYIfRSHjwVUyvQocx
-         FvyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhryZvZei/sXN0eazP4Fhum7kZnvNdPGFF2kKWSr8pmiJBdb5mbSc22wkSSQBvyhDwaIA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxPibei0VCpfZsfayiJCTgcmSSFUgjPrcmW5dIcfSlIj05nhLX
-	HPx50x3t5fSS2z8QmHg4j3qSOjyY1pku5fU608tk7cRyMSnpeK7cUKG2dsd/M9p9qbFfiYWiYb6
-	ZWvSgWmFYoEUdU2cK02IUlzkOPCf4buU=
-X-Gm-Gg: ASbGnctou5LAa935hGycOmFz6JQ5tGN6Bf5ZRvGaG/BHakD3hDTyv2PP3IoiVrHMmMR
-	GXEKk0llP99Pgznc/B9DspWNkONZfreJTSzBeiJtiPDfq+eaXLWwFaDTEqf3M4z8ez5urK4v2Ts
-	Lz5HQzDeIfBaWEZq0BKp6gMP2Su0wotTixJY8nVKm7wWpJezVf4uUwmW4vDcSv/crVhc6UUSmVR
-	lf7boQqWu1Rp57MopAhN4c=
-X-Google-Smtp-Source: AGHT+IFCjBIo2LxFLHCk72jsv748T0MS5ckTGyI25wwKlTOVqXJtYjuiiRuy/eB6sCxepmMCfVOb2q7/usGIKFDHafk=
-X-Received: by 2002:a17:902:ecd1:b0:265:3c3a:6117 with SMTP id
- d9443c01a7336-26813902e03mr34835355ad.41.1758141580272; Wed, 17 Sep 2025
- 13:39:40 -0700 (PDT)
+        bh=tGCZVzaGvYkcaTstDShU2hIAQRmvwh1Vgc/YLEqtaJA=;
+        b=Bg5cEF0XQs21aOw6xGyVuXFOS6wSQ1ZNHUS4xNE6SxY5nUok1ajRhpa3hEPi5dHFce
+         5BmA/tY4McRNZJ1c0c8Wfw/5WNGE1Trn57fx7xALsN9hu/Q1GY3wza2KSZHiRUdiL1k4
+         iAO+ovmpszNEuxODNfWe1dM01sdVvr+kfqMztcieG6yxOykTd+fYvanMhqOFEQUez2QG
+         QateXlwNR7VSORZoHB4DiQS8tlKRheXTYweAsvcrlM7+EALs2twOUJ60kFLURo8uLLXd
+         EmLsr4JvcIkDTB7U9KALmeFvkRiN+F+uprewjNS2m0cRor5sjQ7WiV1VUr1BuY7dxDbc
+         VEsA==
+X-Forwarded-Encrypted: i=1; AJvYcCWqloxWDudNzdkuhvSKGSKveYbTMcBugQhdH27iL2YlUQ/ZOFM19qR2e3xkCa9YVE9aQ3Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw48vkQizm0I5XySIniAfoLQzpkzTqmKjwDTcdW7Al2xiC5XjRt
+	eJ4HFAuAnlP4o573HSyadQdtuAuOwlG7v9qQclaZbqiLtqMv9aJdETXIpE/8JWxiDo18c1haazG
+	0SJXzEUtmRl+mRyaOPk3JRAAYNUU2wAY=
+X-Gm-Gg: ASbGncv/jxvJwjCvFnK1jyb1lUrlP8y3LQKPIxz9fknbT452iTQwqZI9PID8E3ocA74
+	mGvFZwl49/PtrFH5igHeoUckkAY61x8+QsysIarhtL2HwwcQynJaBMQBZH7n052ToypVoPUyayY
+	jpOIibJFl+UFLhaLtv1zSVpl/ce40xUr87DBswoZbIOwqRcsRkM2+hwIbkOvg5LyC1KG3j6tvzB
+	fPPLGB1wd/KcSMUHs2V86/kRvY7wdfl0g==
+X-Google-Smtp-Source: AGHT+IGhf9lZhac4b3C+JjBIPVJTIVHElz1gNDcHwLUFH9MLbWvCPa6fozkZpkAoht8Rp9hk3AIg1WKmPFMQkC610Hw=
+X-Received: by 2002:a17:90b:3952:b0:32d:d8de:191e with SMTP id
+ 98e67ed59e1d1-32ee3e91c16mr3599343a91.10.1758142290273; Wed, 17 Sep 2025
+ 13:51:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250917124334.1783090-1-quic_ckantibh@quicinc.com>
-In-Reply-To: <20250917124334.1783090-1-quic_ckantibh@quicinc.com>
+References: <20250916233651.258458-1-mykyta.yatsenko5@gmail.com>
+ <3b65db27f2cd4575875a090f9cce0ca0f138daea.camel@gmail.com>
+ <CAADnVQLe+5C8MH9SEU2MxHP9iaCHJHXdnuXTHkqvnVwsHTynwA@mail.gmail.com>
+ <5e2fff56d3465ca921dbee96f512bf0443f66346.camel@gmail.com>
+ <bf202c1aabb6247cdc6c651c6cac3ff3982115db.camel@gmail.com> <CAADnVQ+UAr=kcw_dom=DqqcBWrxK1yWTn2dsabLq9_wopw8Cmw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+UAr=kcw_dom=DqqcBWrxK1yWTn2dsabLq9_wopw8Cmw@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 17 Sep 2025 13:39:27 -0700
-X-Gm-Features: AS18NWBXZ1nEHppxud1nVARiIukjsn7kY8G9VoaFK9LqDvO9oKmSoZ2g1n-IO-w
-Message-ID: <CAEf4BzbM+mG5EYQKdp1r4mntP2bXTb-KgJWg4ir6zzrSRrQURA@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: increase probe_name buffer size to avoid format-truncation
-To: Sanjay Chitroda <quic_ckantibh@quicinc.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Sanjay Chitroda <sanjayembeddese@gmail.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 17 Sep 2025 13:51:18 -0700
+X-Gm-Features: AS18NWBhoK2CQlvHdjvaFUK1TNkSzmkOhi5hSijpXBHi-nESWrabVN6lzDmy9UY
+Message-ID: <CAEf4BzarLFHDi3RXp9Gg0tF4YeZPJGAkTpNGTwaQCzxczQFn=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 0/8] bpf: Introduce deferred task context execution
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 17, 2025 at 5:44=E2=80=AFAM Sanjay Chitroda
-<quic_ckantibh@quicinc.com> wrote:
+On Wed, Sep 17, 2025 at 7:58=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> This patch increases the size of the `probe_name` buffer in
-> `probe_kern_syscall_wrapper()` from `MAX_EVENT_NAME_LEN` to
-> `MAX_EVENT_NAME_LEN * 2`.
+> On Tue, Sep 16, 2025 at 9:51=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >
+> > On Tue, 2025-09-16 at 21:44 -0700, Eduard Zingerman wrote:
+> >
+> > [...]
+> >
+> > > In v4 the function invocation looked like:
+> > >
+> > >   err =3D check_map_field_pointer(env, regno, BPF_TIMER, map->record-=
+>timer_off, "bpf_timer");
+> > >
+> >
+> > One option is to pass an address:
+> >
+> >   err =3D check_map_field_pointer(env, regno, BPF_TIMER, &map->record->=
+timer_off, "bpf_timer");
+> >
+> > But still looks a bit ugly.
 >
-> The change addresses a build failure in perf builds caused by GCC's
-> -Werror=3Dformat-truncation warning:
->
->   libbpf.c:11052:45: error: '%s' directive output may be truncated writin=
-g up to 63 bytes into a region of size between 34 and 53 [-Werror=3Dformat-=
-truncation]
->
+> and then check that this pointer is > PAGE_SIZE and only then
+> access it ?
+> I guess that works, but why not something like:
+> map->record ? map->record->timer_off : -1
 
-We write into that buffer with snprintf() which will handle truncation
-and leave properly zero terminated string. GCC being overly aggressive
-with its warning? Or am I missing something?
+The point of that refactored check_map_field_pointer() was to contain
+all the error handling, and now we'll be splitting a bit of
+preliminary error handling into every caller, which isn't great.
 
-pw-bot: cr
+Furthermore, map->record can be NULL or ERR_PTR() (see map_check_btf,
+it can return error-in-pointer), so yay, more bugs like this.
 
+So let's bite the bullet, and have helper as simple as just:
 
-> The warning is triggered by a `snprintf()` call that formats a string
-> using syscall names and other identifiers. In some cases, the buffer
-> size is insufficient, leading to potential truncation.
->
-> Debug builds pass because they do not treat warnings as errors, but
-> perf builds fail due to `-Werror`.
->
-> Increasing the buffer size ensures that the formatted string fits
-> safely, resolving the issue without affecting functionality.
->
-> Signed-off-by: Sanjay Chitroda <quic_ckantibh@quicinc.com>
-> ---
->  tools/lib/bpf/libbpf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 8f5a81b672e1..9413e86476da 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -11290,7 +11290,7 @@ int probe_kern_syscall_wrapper(int token_fd)
->
->                 return pfd >=3D 0 ? 1 : 0;
->         } else { /* legacy mode */
-> -               char probe_name[MAX_EVENT_NAME_LEN];
-> +               char probe_name[MAX_EVENT_NAME_LEN * 2];
->
->                 gen_probe_legacy_event_name(probe_name, sizeof(probe_name=
-), syscall_name, 0);
->                 if (add_kprobe_event_legacy(probe_name, false, syscall_na=
-me, 0) < 0)
-> --
-> 2.34.1
->
+ check_map_field_pointer(env, regno, BPF_TIMER)
+
+And internally resolve BPF_TIMER into "bpf_timer" string (for error
+reporting) and into corresponding field offset (for getting actual
+offset within map value).
+
+BPF_TIMER, BPF_RES_SPIN_LOCK, etc are currently bits instead of
+tightly packed enum, so we can either go with two simple functions
+that do a switch, or we can introduce a new internal enum and just do
+array lookup. Unless we think this is performance critical, I'd go
+with simple switch.
 
