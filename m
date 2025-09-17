@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-68655-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68656-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00D83B7ED96
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:03:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5438B7EBF1
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 14:59:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC56A520DAE
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 12:58:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0A237B7D2E
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 12:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4510F328970;
-	Wed, 17 Sep 2025 12:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F1732E75E;
+	Wed, 17 Sep 2025 12:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uc+k6k0Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E3BYJEyu"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD8431960C;
-	Wed, 17 Sep 2025 12:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C468232E747;
+	Wed, 17 Sep 2025 12:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758113670; cv=none; b=Oy4kyToJpeeCS6TTf4+cz1ANel0/Q3HrlGzFoIVXC97Tv5gSc/n926j2yQBCEUp1cLv10b1UR3bTuwinmFdmhpk1NBb9mhqZgwUDLn+DhY5xpjKsdXhXq4+DIs6N6WRVKGBt8u/8INJu4yuFaQgEJgBmN7uokR7a5S+9i2QfOEY=
+	t=1758113689; cv=none; b=EDawOLsV5gseakTEaJNNMB5n01n3YKXvEQ2lCIMVcAHMLjqOxD/rqFSFrKbxUg1EDBdHSUwA0nWdVi5yR/wj79bmBi5x+dStqGRKT3TkeYym1i4drgqO1N/+02PWrV9Omdr4x63JPxA4DF1ZSUUNFjIyge1LJ4Vij6WfT2z3p6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758113670; c=relaxed/simple;
-	bh=sVMnZ/XoaVF8BFfXwYscb7C1MtSGlVlOGFmPHaCYVWI=;
+	s=arc-20240116; t=1758113689; c=relaxed/simple;
+	bh=QKyCgcFoodzH/FjHW6Oo6xspEoVjKBY4bFc4QI/M+Lo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cK01uIl0qbRRuw9Cc6t3w3QJ/4P9+HX6FbfXvTLaEIKY2m9vPkx6I8mX33TmAhNv2xPmU4cCUlb99SWNq4ZLEwqdJmWo4ecwaX7Csqe8PZIEJrFYpfXqzLOCNboAFB51kXB0rK6l4aQYnVnkgGZoev47fUIp+bbNxziyPyrWJh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uc+k6k0Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B91B1C4CEF5;
-	Wed, 17 Sep 2025 12:54:25 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=lcT1//uofUZvtgos10ojkPQ7gEtgeg8Cto3dstwVUukJs96toSb6w6dzzemjQEsnAMQE+sHTUY03NQcrACpAfS9GgK/++CER2ox1yhxoiAnczkCuPUfMafUr/5u+BRomlmklmI8nPjmtKlaASEspHALf3feqHU7lVBqT27UqGsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E3BYJEyu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F0F7C4CEF0;
+	Wed, 17 Sep 2025 12:54:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758113670;
-	bh=sVMnZ/XoaVF8BFfXwYscb7C1MtSGlVlOGFmPHaCYVWI=;
+	s=k20201202; t=1758113689;
+	bh=QKyCgcFoodzH/FjHW6Oo6xspEoVjKBY4bFc4QI/M+Lo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Uc+k6k0YFjZ75VNnNMDb4iMV60bSzPazda22/it2KlfvzclSAhbcHwFwHNgRNyaXn
-	 qeOM8vF5G/yYI8BDNvoDnnfN1u7Op0x2pVORNn3RffDo7/3f5Oe7uOBEKgJJtzdP9L
-	 7+oLn+1U4Qkttc+v7bXhFfotCAbvx6vyJBNUdaWRwzLFtSrVkt1gUKig/y6sNZkx/m
-	 QJ1zXDh/zmwmyVrTB0FU2V0/xkk5QwcDz9MRzsz7ni5MVs7R+R2l9Y42GY6he8H5+2
-	 vx8I0RabvwdwnNzkiqT/EizqlzNRzX2SCSZhO7W9JhNc35F8A37z77mepfnA3Ogoxw
-	 OyU4m27kMilPw==
-Date: Wed, 17 Sep 2025 13:54:23 +0100
+	b=E3BYJEyum9F9Q9bMawWXWL3Po3Ae+atpsDwX3Q+FQ75o8JTZ/2kkUo3PqeTZ+1/D+
+	 2UkXr1resBwbZJQV25aHZFcI0Ub8i4GeZVlRfq80lde8kBUypbzt6CFgm8/m959PVd
+	 q6TufeMBhErGqmhZRTtAS5ZlyRnf9M+9rrx78/OkMTIftqTYBS7VkaBCtdK1yKvuZE
+	 wl9tSSREmvXChtnHrPT+8mu0U4nE8x+DDSUeyMXp4hEo6ppYvz5CO1JivPT1FqbAeu
+	 ypGY14Snsf+iSzoSFEkRwCNBABSgrYkz55x+Tr6SFLH3K1ssPR7gPF9DWAWLiPVGeg
+	 aiM6n8LLloK8g==
+Date: Wed, 17 Sep 2025 13:54:43 +0100
 From: Simon Horman <horms@kernel.org>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
@@ -60,11 +60,11 @@ Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Gal Pressman <gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>,
 	Dragos Tatulea <dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
 	Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH net-next V2 05/10] net/mlx5e: Prepare for using multiple
- TX doorbells
-Message-ID: <20250917125423.GF394836@horms.kernel.org>
+Subject: Re: [PATCH net-next V2 06/10] net/mlx5e: Prepare for using different
+ CQ doorbells
+Message-ID: <20250917125443.GG394836@horms.kernel.org>
 References: <1758031904-634231-1-git-send-email-tariqt@nvidia.com>
- <1758031904-634231-6-git-send-email-tariqt@nvidia.com>
+ <1758031904-634231-7-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,27 +73,29 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1758031904-634231-6-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1758031904-634231-7-git-send-email-tariqt@nvidia.com>
 
-On Tue, Sep 16, 2025 at 05:11:39PM +0300, Tariq Toukan wrote:
+On Tue, Sep 16, 2025 at 05:11:40PM +0300, Tariq Toukan wrote:
 > From: Cosmin Ratiu <cratiu@nvidia.com>
 > 
-> The driver allocates a single doorbell per device and uses
-> it for all Send Queues (SQs). This can become a bottleneck due to the
-> high number of concurrent MMIO accesses when ringing the same doorbell
-> from many channels.
+> Completion queues (CQs) in mlx5 use the same global doorbell, which may
+> become contended when accessed concurrently from many cores.
 > 
-> This patch makes the doorbells used by channel queues configurable.
+> This patch prepares the CQ management code for supporting different
+> doorbells per CQ. This will be used in downstream patches to allow
+> separate doorbells to be used by channels CQs.
 > 
-> mlx5e_channel_pick_doorbell() is added to select the doorbell to be used
-> for a given channel, picking the default for now.
+> The main change is moving the 'uar' pointer from struct mlx5_core_cq to
+> struct mlx5e_cq, as the uar page to be used is better off stored
+> directly there. Other users of mlx5_core_cq also store the UAR to be
+> used separately and therefore the pointer being removed is dead weight
+> for them. As evidence, in this patch there are two users which set the
+> mcq.uar pointer but didn't use it, Software Steering and old Innova CQ
+> creation code. Instead, they rang the doorbell directly from another
+> pointer.
 > 
-> When opening a channel, the selected doorbell is saved to the channel
-> struct and used whenever channel-related queues are created.
-> 
-> Finally, 'uar_page' is added to 'struct mlx5e_create_sq_param' to
-> control which doorbell to use when allocating an SQ, since that can
-> happen outside channel context (e.g. for PTP).
+> The 'uar' pointer added to struct mlx5e_cq remains in a hot cacheline
+> (as before), because it may get accessed for each packet.
 > 
 > Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
 > Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
