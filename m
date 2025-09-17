@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-68622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C811B7FB9F
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 16:05:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62BBAB7C4C5
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 13:56:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC8DF1C01637
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 04:45:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C2A32A8605
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 04:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC215237172;
-	Wed, 17 Sep 2025 04:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021DD2367AC;
+	Wed, 17 Sep 2025 04:51:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HF4+8g+U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KXiM7ktY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E910019DF6A
-	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 04:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D03B231A21
+	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 04:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758084273; cv=none; b=LOT6ANhdf8C3Je3VpdTpVIia/28+MnoYftGZ4h9zLANMrz21hOK9yXIV1jRYTCD6kjQAENnp/e51JWLyy9nshxczyInByUJnNqeeDTlnR97jwagZMoX7f+gQhhODNHW1MCj9QfIUVa7vdLlV91TEVVIKPOr4/yMcSG3FG5hjKu8=
+	t=1758084666; cv=none; b=QkzpPfjonfygRE9CvoUT34J/7Fh5mbZY8y943dCJp1N0Ejp1Mq1pkDso+n8yqhqomOBbs5CNnECG07Q2A9fNj+d9kpbQBk2cbqQGMd1rE60FkVhoXWDAWpSPP57Q4ZcwtpuSLKVDa9oo4CvJekm9aRS9I0UKtaWeYnIQKVmph78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758084273; c=relaxed/simple;
-	bh=nrI/9zb0JPgkb5gmo6nChZ1+0qv01/J0ZWCDNwCYmxs=;
+	s=arc-20240116; t=1758084666; c=relaxed/simple;
+	bh=m4OYt4T61H0r1d3DBrOPc9Raadvl2oXOydODxCa004g=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lTEYYrJPxuPDSF3ZJTYSetjf2L/L/E4OrfZjugq0rHEyfmS5gKa2JhULIc3UVzB8McjqPjszNbojOh4LXSYPtmawp+kDHH1AD20sJv0WWQS/LzbCECNiDVH8cofYe+egRGkwC3gf3BNqRF6x4BhwMxIps3aY/SPLb+U/yXw5y0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HF4+8g+U; arc=none smtp.client-ip=209.85.216.41
+	 Content-Type:MIME-Version; b=XGre4x77BycbVU08TQxaS6zGvpvY21klaR0OtwqFwEnl5sXp9FbYT9yWJrU0UO+Bxlg47UMwM2dK+2AkfP/YIZTIXzMJLCfibOq4afY5hhbxZ1gKqypsz/UyGyrZL4wAVS5UAR5bzTTW9iDyrBw67rGv0ZuhHENKvJ3wrE9C8f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KXiM7ktY; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-32ec2f001abso735014a91.2
-        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 21:44:31 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-77b0a93e067so1192867b3a.2
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 21:51:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758084271; x=1758689071; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758084663; x=1758689463; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=eqYcvZxCAO5c01hsQClqHTc5/zD1nK7qGmmR/kkiikI=;
-        b=HF4+8g+UofmKU1luuTJ9T9Pd5PXrBV5LnDAeeDprGCYhOj1vBpct04CWsxFGSXgUSJ
-         77Af0HaOK3WYPNgqwk90upJnsbfmUSZb0gci3VgRE01ZO/9bspvbvMcGUhqMjD3zEnXp
-         IqKlv98rwBYCg9YiSpM4dj/SpY4qX4XDXFq1mdm445yjB/KXTSHfyy/CFGNnpm+ynWCB
-         6DWPDHn248ixc+8ucWXyEY+xaJyHpHJ+yrMZQ6WXqPIRsP48R8UrhLty2Z4WKdRCdco4
-         YPr3a1PjnxSEGbjv94i5ilQNRezto69UDSkOprY9jFTkCU0ipZofOvUNFhUptCf0F02F
-         pcYg==
+        bh=TIJEfYJZthAGbzZBYyT8ykZD4iPiRThZGMW3pUavVl0=;
+        b=KXiM7ktYSz69OhXaACs+Z7ImTYld4HwrFhIHEsWL6c4/wB3kBo645wDtwYxxzQI0kW
+         T2i/0HjbSd2AiRoMh1xs8ZVgAO3WQXByfC/Ca25bF4NBts3t9zdq6HDgsu06r+qp2tt4
+         JSLs6LBtU3LzQadywDemvXo0oIaC/GAjA23g5OMDVM8gY70Wgd1HAQDwtp33OjIZ6Qrj
+         Bc9Ujpv/GwS8Y3w1t3BmGelj1aiz/l8UdOe9AIYzQy8hYOjFZ0UW2Swgl9658F4KQGp8
+         4e7xtev+88A98su6FHY4lh6mGqGkxHHsWs50nu2rAqvwDh5A24fcFEHr+m3G6IuiP/GV
+         4S1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758084271; x=1758689071;
+        d=1e100.net; s=20230601; t=1758084663; x=1758689463;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=eqYcvZxCAO5c01hsQClqHTc5/zD1nK7qGmmR/kkiikI=;
-        b=gRuxysfHsHqW901b44KgXvTkL6/LZuUA21NqNCEghRz4owbx6yXkWTv6CmHg0htp0h
-         /sYghN0nUbIOB6BIgbGC8fLqvRN+Y46PeWNHgeod8sA74tJHcavU3Esbzldo+titTZ9r
-         ijghjRFd8hznjn0QWAqf3IUTi8KCYOctwEBYf6Tfqc9PMkV4iofWyEErK2s5pJJ8EPPV
-         dng/scPuy3yyntOpWs/r8BHN3h/u2PXkfk1Wsm1YV8HOCHbGw/2EAic3vD70NotjGUaX
-         2c0YI/n0xw1fsvn5P90R2qe3WVarcVoec5KJBTodlVgsJp3SFirrAh3OKV3JgSAoT5op
-         /ZMg==
-X-Forwarded-Encrypted: i=1; AJvYcCUXYS0DJ6J7Ao8BCsepicmFNX8fG8vk0sd77bzZMvdk8gjtjhUSY9LZbvkAreLuYCLiKew=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzzNGOro2Sfx0n7qhFmSzMNq7K3AAcfhvkoFMcRubp5h3mp8GhJ
-	BgolRcNM9ABpEBmVYf2dfyMrAyQz/QtdwGjkgMyp8lqAnqTJqb8pyR3n
-X-Gm-Gg: ASbGncudxm7/3Oe+NJ+YDvP5/X/Hsxq/OX10ThRP8r4BcZo48T3/nkcnpN8mnzUyqOn
-	aeBH6yyb5N3/+Mo/jIOmypLI7vSwcBmwSR8fPEkbQ6UCzxuwQk9xJ24+FMWE9h8Hci6Bvr617tz
-	0WoQJ/7RbcODggjlqRDX0CI/IADVLapvazLV8qGNyjQUVbNzm7Up2wnZ38cvO59KQq7fJcdTd5x
-	aQXsULWcLZKVZleQJJn1O4KTKkZ77Oq73cjuW94DaSnL1wD9zUmx9Cz6SZoaAovp/08A3b9DYF6
-	07/W0EMcOh4o+FaLH9vAhTT4UygqtpNkbUg7pR8qnFvO4MopSAp2niqbven4wM84MB7Q7HpgksH
-	W6IriVL0D+G7Iv3pfUko=
-X-Google-Smtp-Source: AGHT+IFunPjD2aOHjFEZDAMjPJ1XcWGmqC/uToF4HJN9bPYkbAzCOLkWDeycZl2C5fqReVQDOx8GjQ==
-X-Received: by 2002:a17:90b:2d8c:b0:32e:3829:a71c with SMTP id 98e67ed59e1d1-32ee3eecc0emr977513a91.16.1758084271098;
-        Tue, 16 Sep 2025 21:44:31 -0700 (PDT)
+        bh=TIJEfYJZthAGbzZBYyT8ykZD4iPiRThZGMW3pUavVl0=;
+        b=UqFtvEPJepg1MrS0sJ5/GNOU9capUfPe2i7wa2Z1///esPS6XCFTIj3oRtIm+F2ET5
+         yE9qh0GaEjHW4rmijLDzpyX/eM7JDbcPgEn3j61qNZVKdlBTv/4Cnd84RweKmWsBoSSt
+         eWaCsDwQR5lxwnFed90bou9DwA/preEeVvgExq+BmMCuwTKM9gCh8aBTWc+yd49w9e/t
+         XyRWqR0fFqrYRSt5h1BqT891Ncj5SkynLa1/0wz/YeN1XfsIE/x3YfoUfPsk2yiNyhQ7
+         CBK0c6CzxTrgalrHn2oYafADV8dJU+smd+/pRIIi7DuHS/tIBbU+tnh5wnTFccS7l69O
+         /IzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUpLzRSgXbKSqJuFKx/HF4+2w+UUWUeyJBzzKjp0pkKrJ6OB2d9zcjYlzgxjgfe/og6H8k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcCx9oOsreELxrCphx8FBeJVowXkZrR+vyl4G8uCivMswHO0VG
+	DaA55oe3Juf1PV8Yd7dole+o20coGvlXhIHa/zlqWHwRJOMhGiWL8MsH
+X-Gm-Gg: ASbGncuXyUd8ZOPQHIENs8Mc1tqo1jSaU22r39ii2ExrVOWdkmNRzIbzWeTX+sNOxbE
+	JbsGAw+2cU5SilyaK0MEtNlQpZO/Nz1FaYj3xiscGaZfpMs6qH9E7TAtJFuQN6q+7uDnqP+IT+6
+	pzNHResWr1FXbK5puRGtDiZ8oER1jLMdS8/ytAaEil8OKlNg4taW13NskRDVOtAM7GUPrRkHLu0
+	gvU0eFu4b7sOjIasoDCTiLatSxb4ZzZlTtLVyplSNJfVfgWN9zw6nnDYp04LFPl5nhwIe3eBfy2
+	fDBslqE1b+Bn7KyN3YC3uvjV43PTkXCrDkz4W7vdob6BA93Se/6b4qiSilJ8xZM9GnZI629En4d
+	O47kL+3dLAuaYFg6UW0E=
+X-Google-Smtp-Source: AGHT+IGRVvvpHAmN4qIJwnmckCt1zMPGL3dXR8GQXd/DHkrRmJZcQQge8RoC7qTUlU/tHM/kzSHN8w==
+X-Received: by 2002:a05:6a00:a8e:b0:774:1f59:89de with SMTP id d2e1a72fcca58-77bf75bda2fmr920348b3a.11.1758084663394;
+        Tue, 16 Sep 2025 21:51:03 -0700 (PDT)
 Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32ed266ed36sm1127945a91.2.2025.09.16.21.44.29
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7761f8b1bdasm12206339b3a.60.2025.09.16.21.51.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Sep 2025 21:44:30 -0700 (PDT)
-Message-ID: <5e2fff56d3465ca921dbee96f512bf0443f66346.camel@gmail.com>
+        Tue, 16 Sep 2025 21:51:03 -0700 (PDT)
+Message-ID: <bf202c1aabb6247cdc6c651c6cac3ff3982115db.camel@gmail.com>
 Subject: Re: [PATCH bpf-next v5 0/8] bpf: Introduce deferred task context
  execution
 From: Eduard Zingerman <eddyz87@gmail.com>
@@ -83,11 +83,12 @@ Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf <bpf@vger.kernel.org>,
  Daniel Borkmann	 <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>,
  Kernel Team	 <kernel-team@meta.com>, Kumar Kartikeya Dwivedi
  <memxor@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>
-Date: Tue, 16 Sep 2025 21:44:27 -0700
-In-Reply-To: <CAADnVQLe+5C8MH9SEU2MxHP9iaCHJHXdnuXTHkqvnVwsHTynwA@mail.gmail.com>
+Date: Tue, 16 Sep 2025 21:51:00 -0700
+In-Reply-To: <5e2fff56d3465ca921dbee96f512bf0443f66346.camel@gmail.com>
 References: <20250916233651.258458-1-mykyta.yatsenko5@gmail.com>
-	 <3b65db27f2cd4575875a090f9cce0ca0f138daea.camel@gmail.com>
-	 <CAADnVQLe+5C8MH9SEU2MxHP9iaCHJHXdnuXTHkqvnVwsHTynwA@mail.gmail.com>
+		 <3b65db27f2cd4575875a090f9cce0ca0f138daea.camel@gmail.com>
+		 <CAADnVQLe+5C8MH9SEU2MxHP9iaCHJHXdnuXTHkqvnVwsHTynwA@mail.gmail.com>
+	 <5e2fff56d3465ca921dbee96f512bf0443f66346.camel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
@@ -98,89 +99,20 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Tue, 2025-09-16 at 21:37 -0700, Alexei Starovoitov wrote:
-> On Tue, Sep 16, 2025 at 4:55=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >=20
-> > On Wed, 2025-09-17 at 00:36 +0100, Mykyta Yatsenko wrote:
-> >=20
-> > [...]
-> >=20
-> > > Changelog:
-> > > ---
-> > > v4 -> v5
-> > > v4:
-> > > https://lore.kernel.org/all/20250915201820.248977-1-mykyta.yatsenko5@=
-gmail.com/
-> > >  * Fix invalid/null pointer dereference bug, reported by syzbot
-> > >  * Nits in selftests
-> >=20
-> > Note for reviewrs, this is the part that takes care of syzbot report:
-> >=20
-> >    /* Check if @regno is a pointer to a specific field in a map value *=
-/
-> >    static int check_map_field_pointer(struct bpf_verifier_env *env, u32=
- regno,
-> >   -                                  enum btf_field_type field_type, u3=
-2 field_off,
-> >   -                                  const char *struct_name)
-> >   +                                  enum btf_field_type field_type, u3=
-2 rec_off)
-> >    {
-> >           struct bpf_reg_state *regs =3D cur_regs(env), *reg =3D &regs[=
-regno];
-> >           bool is_const =3D tnum_is_const(reg->var_off);
-> >           struct bpf_map *map =3D reg->map_ptr;
-> >           u64 val =3D reg->var_off.value;
-> >   +       const char *struct_name =3D btf_field_type_name(field_type);
-> >   +       int field_off;
-> >=20
-> >           if (!is_const) {
-> >                   verbose(env,
-> >   @@ -8545,6 +8546,8 @@ static int check_map_field_pointer(struct bpf_v=
-erifier_env *env, u32 regno,
-> >                   verbose(env, "map '%s' has no valid %s\n", map->name,=
- struct_name);
-> >                   return -EINVAL;
-> >           }
-> >   +       /* Now it's safe to dereference map->record */
-> >   +       field_off =3D *(int *)((void *)map->record + rec_off);
+On Tue, 2025-09-16 at 21:44 -0700, Eduard Zingerman wrote:
+
+[...]
+
+> In v4 the function invocation looked like:
 >=20
-> I don't follow. Why does it have to be so weird?
-> The syzbot flagged that:
-> if (btf_record_has_field(map->record, ...)
-> if (map->record->timer_off
-> crashes.
+>   err =3D check_map_field_pointer(env, regno, BPF_TIMER, map->record->tim=
+er_off, "bpf_timer");
 >=20
-> and the workaround is to do:
-> *(int *)((void *)map->record + rec_off)
-> ?!
->=20
-> That's quite ugly.
-> Is this the case of compiler assuming non-null and hoists load?
-> Then barrier() will solve it?
 
-In v4 the function invocation looked like:
+One option is to pass an address:
 
-  err =3D check_map_field_pointer(env, regno, BPF_TIMER, map->record->timer=
-_off, "bpf_timer");
+  err =3D check_map_field_pointer(env, regno, BPF_TIMER, &map->record->time=
+r_off, "bpf_timer");
 
-As it turns out, map->record can be NULL if there are no special
-fields in the map. In current kernel code this is handled by the
-following part:
-
-static int process_timer_func(struct bpf_verifier_env *env, int regno,
-			      struct bpf_call_arg_meta *meta)
-{
-        ...
-        // btf_record_has_field checks if map->record is NULL and returns e=
-rror
-	if (!btf_record_has_field(map->record, BPF_TIMER)) {
-		...
-	}
-	if (map->record->timer_off !=3D val + reg->off) {
-		...
-	}
-        ...
-}
+But still looks a bit ugly.
 
