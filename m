@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-68676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5F0B80905
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 17:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F44EB80974
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 17:33:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88CC846781B
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:29:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C3EE16C121
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0111330C111;
-	Wed, 17 Sep 2025 15:28:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326E7335950;
+	Wed, 17 Sep 2025 15:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VzbT8W8n"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Fbq2AHxG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9179430C100;
-	Wed, 17 Sep 2025 15:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9511369B4;
+	Wed, 17 Sep 2025 15:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758122930; cv=none; b=LcnHPGGkKms+fF9zAI0C5h8Pu9bMf1bLrsu9n0PEF6ni1xAIh05CPvVKAIePVSzhDJUR8DyoA1O/he8h94/bWmrwN6wCa9CY+U46N42YTcfPrR1UKnpy92DiooQJ2YSi9Do2e4vn0BQAKsW1FPjVqMlloSTuXng+YSU/erebO2c=
+	t=1758123184; cv=none; b=Pvmwd8jrvgnqWCsseJ43bUzhDIR73KrnKwKOhjB7EFklknTjAUM+U6tR4/Lf0jHtB/q5el2l29FOkGvwViZWHlbL75LK5b5DURUcoWgj4be0Mf3LTOLTjPOaYs1Gvu0X2L5aiM/gCp1+D6DDZrSCgxgD3XnDqvnH5EqA0cOTNsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758122930; c=relaxed/simple;
-	bh=VpoFPhTwmm+WWukzSN7f5WNcO6XoGwtY7ZzuWmn9+lg=;
+	s=arc-20240116; t=1758123184; c=relaxed/simple;
+	bh=Hc351q4nYxBtizLPpdMYPsra/T/ADj1HoY+Za3zpojg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZyY6hzavTXa1oolB5KE0MEO2eZiLn/ykQOnWhYbHCyozFD5QYM6+/WoIU9pfUO4nbffrhVSVxSqEKZx+jilMl8Gd2MRm+ZZ4sJiYVaR5t7x6dIjqZvfedq3kYg7kyo0v6vsP+zu4V4NH1HdM/hSBNkWU/BWzjWkQa0IW8TZOKZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VzbT8W8n; arc=none smtp.client-ip=185.171.202.116
+	 In-Reply-To:Content-Type; b=GTtWW73ZQKHtoazL92kYnGic9eMb9cA7NH0/n0RbTiECoHCPItp1J2pT/UFbK7VR9/2WdM0n9plVyvZ0Q4Df74e4pzyfH9dVahmTH0QRLL6rni9LxV+C5hqHcpNsmiL5LOYk+Fl9Q9g8KVG4bP7MxzKZ/4PtZNsIU3sGnMsCZoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Fbq2AHxG; arc=none smtp.client-ip=185.246.84.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 28151C0078E;
-	Wed, 17 Sep 2025 15:28:29 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 5878A1A0E8F;
+	Wed, 17 Sep 2025 15:33:01 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 9801A6063E;
-	Wed, 17 Sep 2025 15:28:45 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BADAB102F1BF4;
-	Wed, 17 Sep 2025 17:28:28 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 2A93D6063E;
+	Wed, 17 Sep 2025 15:33:01 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 36D80102F1BF4;
+	Wed, 17 Sep 2025 17:32:55 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1758122924; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1758123180; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=BFIVUZm5xuzuhfpRFg3QFSYuUBaBVnTUcSVoLhOrwf4=;
-	b=VzbT8W8n/UBPmcEza93b9wYmwQXZ05Yy8SthzG0kUy+NcfHlsxg7W9HcgcKVoWjhL7FE2E
-	Outq7VvZEGdkcqxNqc0m1OstRoquJTw6VgFfU88C0LlZdYF7bKL+Av7MxsWzxUPoj4SBW8
-	8HYzaNOh26u/Au9nqoJ5SiB+kJEAjuP/2tWHEZofJEVISWpoWHcR6eSH138JJDIV7McPjb
-	KNpoefIhS6ZtOlmXqHLo/dOnT8KclXhVjSfTw7zcxk8C5/lP7yagBp38SRAYsA5Tau/o25
-	J7YpionBrmZnKqLY0gjXfGvbSAgCwiJBGhd7+QH3pYGVtFd8cCMouQ+xrzNDiQ==
-Message-ID: <be4cd796-e47e-444a-97b9-b1d537e495f3@bootlin.com>
-Date: Wed, 17 Sep 2025 17:28:25 +0200
+	bh=KvBFi2h1uOxbQSe3Qg7pMz9oi1pLN3OKIQs0ZmF1Qzk=;
+	b=Fbq2AHxGtY47IIcSa4Culc0rQoPlBe6J/KabnGGAnkRHAImzIyRedtbsPZLnBcuH928DBF
+	zqdZk+la6iUXkeNOEFqwVW2en9mAgIB+TjRSRQcwum+LM48/+2zWzuAm0zW+U/WE3Niskn
+	sLrFBtXum9AmBL6yoAP5mHAHQPaBz30jp7tKLyaGBDwTSXJo/iQ1fG7WA51k2/xJPCwqg2
+	LFLMZgY9FO2gSSfsWGmPDgf+XJKxnHnLVi90kOzUGCGI24PrcDtW52tX6mCRKLZTW6/WTm
+	sEUV2z180ESgNff9cRCU+VULMjFt7a+91OrnBMr4zfIdF1KAExOCtcm3kgV5mg==
+Message-ID: <6ac21f07-45ef-4e80-bedf-c0470df47bc7@bootlin.com>
+Date: Wed, 17 Sep 2025 17:32:55 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,8 +57,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 01/14] selftests/bpf: test_xsk: Split
- xskxceiver
+Subject: Re: [PATCH bpf-next v3 03/14] selftests/bpf: test_xsk: Fix memory
+ leaks
 To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
  Magnus Karlsson <magnus.karlsson@intel.com>,
@@ -77,46 +77,39 @@ Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
  bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20250904-xsk-v3-0-ce382e331485@bootlin.com>
- <20250904-xsk-v3-1-ce382e331485@bootlin.com> <aMlyUX999WOmUNMP@boxer>
+ <20250904-xsk-v3-3-ce382e331485@bootlin.com> <aMmlNc1z5ULnOjJY@boxer>
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 Content-Language: en-US
-In-Reply-To: <aMlyUX999WOmUNMP@boxer>
+In-Reply-To: <aMmlNc1z5ULnOjJY@boxer>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-Hi Maciej,
+Hi Maciej
 
-On 9/16/25 4:21 PM, Maciej Fijalkowski wrote:
-> On Thu, Sep 04, 2025 at 12:10:16PM +0200, Bastien Curutchet (eBPF Foundation) wrote:
->> AF_XDP features are tested by the test_xsk.sh script but not by the
->> test_progs framework. The tests used by the script are defined in
->> xksxceiver.c which can't be integrated in the test_progs framework as is.
+On 9/16/25 7:58 PM, Maciej Fijalkowski wrote:
+> On Thu, Sep 04, 2025 at 12:10:18PM +0200, Bastien Curutchet (eBPF Foundation) wrote:
+>> Some tests introduce memory leaks by not freeing all the pkt_stream
+>> objects they're creating.
 >>
->> Extract these test definitions from xskxceiver{.c/.h} to put them in new
->> test_xsk{.c/.h} files.
->> Keep the main() function and its unshared dependencies in xksxceiver to
->> avoid impacting the test_xsk.sh script which is often used to test real
->> hardware.
->>
->> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
->> ---
+>> Fix these memory leaks.
 > 
-> Hi Bastien,
+> I would appreciate being more explicit here as I've been scratching my
+> head here.
 > 
-> after this patch the way summary is reported is different.
-> 
-> Before:
-> # 16 skipped test(s) detected. Consider enabling relevant config options to improve coverage.
-> # Totals: pass:53 fail:3 xfail:0 xpass:0 skip:16 error:0
-> 
-> After:
-> # Planned tests != run tests (72 != 53)
-> # Totals: pass:53 fail:0 xfail:0 xpass:0 skip:0 error:0
-> 
-> We lose the count of failed tests. Could you take a look?
 
-Good catch, I'll take a look at it.
+Indeed it lacks details sorry. IIRC I spotted these with valgrind, maybe 
+I can add valgrind's output to the commit log in next iteration.
+
+>  From what I see the problem is with testapp_stats_rx_dropped() as it's the
+> one case that uses replace and receive half of pkt streams, both of which
+> overwrite the default pkt stream. So we lose a pointer to one of pkt
+> streams and leak it eventually.
+> 
+
+Exactly, we lose pointers in some cases when xsk->pkt_stream gets 
+replaced by a new stream. testapp_stats_rx_dropped() is the most 
+convoluted of these cases.
 
 Best regards,
 -- 
