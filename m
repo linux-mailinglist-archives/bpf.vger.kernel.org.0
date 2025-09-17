@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-68658-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68659-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A00AB7EEFB
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:06:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB79B7EF40
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 15:08:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7174A1886D2D
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 13:00:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDE9018902D5
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 13:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A48E330D3F;
-	Wed, 17 Sep 2025 12:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6170F323404;
+	Wed, 17 Sep 2025 12:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RyRjjmIy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mTVtCYdl"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A94333A81;
-	Wed, 17 Sep 2025 12:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B5E72602;
+	Wed, 17 Sep 2025 12:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758113735; cv=none; b=pV36G2Ggg1wRMEj2YPgVV7cBE+qCV7nZCrZTx7ZuX9TRAGRTl4bWSE9p/JEvSL0zWzqyfFwpfHVXehbb28cjxBPbpGbvwwNPWesKKzQAjlhMyV7s0ddvnrjkgrECNxE4HRL93SPTnNj0mYhpZpi8DcipO4RMwSSC8FMJmQfddMs=
+	t=1758113790; cv=none; b=CtQuA5es7y4yMNRe9rf2WJnMNnbjTH3jxX0E92yjkiwUorAZkwmojUQgNwg/XBcrY384UbtWNlRO86nXIkFfQPlPoUpm+X9rTBuF5Xpm7wHtUQbXzVaZVlkSnNqZWA5U78i0E0MDBfEVuSY5sr3KqUIIuFrAKZZZGOwjKZgQ0QA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758113735; c=relaxed/simple;
-	bh=1rii4oGpASM1QR26Rz8kSoIQSEaQubBQ533eyDSQ9m4=;
+	s=arc-20240116; t=1758113790; c=relaxed/simple;
+	bh=k2wqPIFujf/Dp1epMnjgxvJ7N6cO8qkCH5rM8yVfHs0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EfPTTtqRhd5Rexv1IPEtcPUQH5qeyQRlxUCVtDmt6VtKyP1X85AgteW+y9NqcT3UhhwVp4ubIM/muR2I30aQiTkWShM1Bv0XDvR0QhkuYh3xihyh9paphjL5d80bbtwNMyZ0/88/20YOg6+B6xmMgRQYLyzX5/rv//b3KZru/L8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RyRjjmIy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63718C4CEF7;
-	Wed, 17 Sep 2025 12:55:30 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=jzYjLdei4qzvcUVs7uX0zluABqAuN8FwKQdzLvcjGhobGSpCyMmGjRt+5kPCHF5Zr3gRRznpzpVxGDWL5pDSSUxkKjycRtUVUTTeI12azPdKA95Sty34kiei29/fgwpA6yXUJ/uS+hL9gsFSSCBUUI+dlE2YKbx+wJhkFV/NKVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mTVtCYdl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B243FC4CEF0;
+	Wed, 17 Sep 2025 12:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758113734;
-	bh=1rii4oGpASM1QR26Rz8kSoIQSEaQubBQ533eyDSQ9m4=;
+	s=k20201202; t=1758113790;
+	bh=k2wqPIFujf/Dp1epMnjgxvJ7N6cO8qkCH5rM8yVfHs0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RyRjjmIy23OBUZVcu5h9WGQJmMAWCnBwHmsGcrv5Lx4BuzcahCCSfuitvcLlurEU2
-	 LufL1DV9AwvCocoH65ie2ly+gvov4gzEEm+0+oIefB3g3MlCEnYkxm7lqN1AXns4F6
-	 tMoCHIqNNfTWUv3KApJJKyc3dUikXRlHH35GjL1aXFPSPj+oan34jFy9GCwpJihtjH
-	 wAM+MwoYTyFgRlkucGarHf81G0vV7n71d5DNB9KjRK+J6n5Zr/S2rZiw8e5sSx00U9
-	 bkUZ7p5tPRfOWQYQUvZODBIhDYMdB+7ty2fN4SN5OgabVv/na2TkqGF6g8lDeGqe4R
-	 pLATKqOFe8G2g==
-Date: Wed, 17 Sep 2025 13:55:28 +0100
+	b=mTVtCYdlQF7xM7ybu+e/Cdru0o3PB2TG89J0chxHNDpcr3HFZXYSdTBA7dnTc4ECa
+	 vAuGkPhTQClGJKdaaEv2Pyh4oL6TXhc+ERi1ue9tm5uqUWLf/xvy0Nf/UG+jf1JfIp
+	 Lpm6TvOtdntWCMgkYHiSz+ncIDhGnVdRuLeyRrrp7bBu+kRribB7kcHZ+c25vzO2hQ
+	 X/+BsadUOTy9R3sfs73+oZQ4ybcRs566Yw+Gpz/l/goZfaCmAw9uiy3+WmidGRAcc3
+	 6gnwueDoDf1dsUJuKPn0drYyywHtcSAQ+/MuoPZ14g/apr+VH+KDN0sWvql8fU1icP
+	 Sx07uZzyFFc4Q==
+Date: Wed, 17 Sep 2025 13:56:23 +0100
 From: Simon Horman <horms@kernel.org>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
@@ -60,10 +60,11 @@ Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Gal Pressman <gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>,
 	Dragos Tatulea <dtatulea@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
 	Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH net-next V2 08/10] net/mlx5e: Use multiple CQ doorbells
-Message-ID: <20250917125528.GI394836@horms.kernel.org>
+Subject: Re: [PATCH net-next V2 09/10] devlink: Add a 'num_doorbells'
+ driverinit param
+Message-ID: <20250917125623.GJ394836@horms.kernel.org>
 References: <1758031904-634231-1-git-send-email-tariqt@nvidia.com>
- <1758031904-634231-9-git-send-email-tariqt@nvidia.com>
+ <1758031904-634231-10-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,27 +73,20 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1758031904-634231-9-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1758031904-634231-10-git-send-email-tariqt@nvidia.com>
 
-On Tue, Sep 16, 2025 at 05:11:42PM +0300, Tariq Toukan wrote:
+On Tue, Sep 16, 2025 at 05:11:43PM +0300, Tariq Toukan wrote:
 > From: Cosmin Ratiu <cratiu@nvidia.com>
 > 
-> Channel doorbells are now also used by all channel CQs.
-> 
-> A new 'uar' parameter is added to 'struct mlx5e_create_cq_param',
-> which is then used in mlx5e_alloc_cq.
-> 
-> A single UAR page has two TX doorbells and a single CQ doorbell, so
-> every consecutive pair of 'struct mlx5_sq_bfreg' (TX doorbells)
-> uses the same underlying 'struct mlx5_uars_page' (CQ doorbell).
-> So by using c->bfreg->up, CQs from every consecutive channel pair will
-> share the same CQ doorbell.
-> 
-> Non-channel associated CQs keep using the global CQ doorbell.
+> This parameter can be used by drivers to configure a different number of
+> doorbells.
 > 
 > Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
 > Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+
+Thank you for exposing this via devlink.
 
 Reviewed-by: Simon Horman <horms@kernel.org>
 
