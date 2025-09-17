@@ -1,120 +1,101 @@
-Return-Path: <bpf+bounces-68607-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68608-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 332F4B7C7EF
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 14:04:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA15AB7CA1F
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 14:06:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC6711B243DC
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 02:38:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50F9B174570
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 02:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC8612222D8;
-	Wed, 17 Sep 2025 02:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4EC22F6178;
+	Wed, 17 Sep 2025 02:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SgeB0ro/"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fesirg5k"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588DA101F2
-	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 02:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449A02F60CD;
+	Wed, 17 Sep 2025 02:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758076682; cv=none; b=jbBUEw/YEbAqxyKkpnw5QDWcSEDuwU55geppcnANdc1IpSKhkarQ8XA8PoRfVmsLB31iRYwc5c7rUPrWRixBePu22goRMwkvjFcy9OkiNuYsV3B4xWC/CfufntIuMWDBw0R+Og3+LecqfocPU117FlJ6ZHTqmz0R1pAZb0okcOQ=
+	t=1758076814; cv=none; b=MNiY4pxQ9lGF/A4Ox80V36WM+q+fMpuFvVwIvmvdBjJ0Xu+pcuI9lTKHLZEhPYBj2+WhrJVSWPXx8FvnMD+ZDfC8R5wjTzI5S+wFXcHMD3ZS1JN/LxxcyDGL/6ebOogAcpX4Fxae1N/a5wq0n4CwhZXN2McsTtzFO2gr9eOt9WM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758076682; c=relaxed/simple;
-	bh=+Oqv1htTU1oUQjoIW05xzrckf/ASgORwl3N7cCZXE1I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UcMy1E7jK75i8hWOOdPzt3qHKp0zavJBszE5dV8Y5MNhceAUiuFs3xjXJn8qKUZxXGmy9LdT4S/HpgkZaAty9E5U+oxweE4xMq0i+K9djysSYv5CPK6O6KkVVWNZamszPtXftCleKIn9FhdaHOvkpbMqYvOhh1dBoSArLxMEeP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SgeB0ro/; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b8d641d6-9afc-4bfe-bf50-25ac4a3702a1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758076668;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p3MY+R4WlGn4rtSW55R1LJoHIL+0MIVP772CgyYCMxU=;
-	b=SgeB0ro/uuX3tDAlrYKbDux+d4sXbPUojiloZ7f+4R1MxgMa6Dk0dhrp62MhLOYXFKrWgw
-	LO50glCVjyagbyRBpecTHT8TSQimV9YRjUL96CU5JFGSBHnoc8QnAO+6EtbUCoTlaq3Pkn
-	bArAlUljAap/rTfb4Z1g0eTOWkC9kM8=
-Date: Wed, 17 Sep 2025 10:37:38 +0800
+	s=arc-20240116; t=1758076814; c=relaxed/simple;
+	bh=+jZ7a6Pk13YHDpGs8wTheZPKmacywLo2rDy2h3k/AKs=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=lCFiRUpv/QB4DR2n0hczhKg2AKk5v4LwONfD/g0vwV2xkmRYq6imfKWd3oRqoVElEgcjmo6FI+0GmigZhMmG1jWo/KHS4ko1KmLXOO+Yeo5X1UwIJONbRxTK/Cd2isNZpmMyajhQsnQxYwXQI6a8jew/1yehf8ABBDkk1m7j+PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fesirg5k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA03AC4CEFA;
+	Wed, 17 Sep 2025 02:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758076813;
+	bh=+jZ7a6Pk13YHDpGs8wTheZPKmacywLo2rDy2h3k/AKs=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Fesirg5kgQLTK51Yra+Cs7NyC4D0uT6CrsK2yI1aFs99mBAetN1RNUSRz2Vh1O1Xg
+	 1XTCrL+eW4m6kZadXl8URTjEv8qLKY/K59bmyrcszP6EG5nmV2HMd5/2kxFO/m34Ye
+	 A6TslhzP3g15MnaJhn7JpS7uYMy+qFiefQg0x8TrlLNihdDa6RvmaVxWnOxvBE6Ctl
+	 moNrptV9UuZR1t81oQGI0yClpznpt0hxF4vAKlh6j0UFN1vBZLs6kPkN3Ys1/kJ5UV
+	 SfODSPnYgi42iMUPcuscS8hAxZaU1QIXpAUbxCf61hB9VgYbXTrnUna1PKyVl7NuiT
+	 cZYP2sc3R/ZhA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB6BA39D0C1A;
+	Wed, 17 Sep 2025 02:40:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/2] bpftool: Fix UAF in get_delegate_value
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <20250916054111.1151487-1-chen.dylane@linux.dev>
- <20250916054111.1151487-2-chen.dylane@linux.dev>
- <CAADnVQKfH6QnLHfsGO_sL10LhTjL+YUWDist2+xGM_PiPjM9Wg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAADnVQKfH6QnLHfsGO_sL10LhTjL+YUWDist2+xGM_PiPjM9Wg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH 0/2] riscv, bpf: fix reads of thread_info.cpu
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: 
+ <175807681449.1444719.15338254509817798982.git-patchwork-notify@kernel.org>
+Date: Wed, 17 Sep 2025 02:40:14 +0000
+References: <20250812090256.757273-2-rkrcmar@ventanamicro.com>
+In-Reply-To: <20250812090256.757273-2-rkrcmar@ventanamicro.com>
+To: =?utf-8?b?UmFkaW0gS3LEjW3DocWZIDxya3JjbWFyQHZlbnRhbmFtaWNyby5jb20+?=@codeaurora.org
+Cc: linux-riscv@lists.infradead.org, bpf@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bjorn@kernel.org, pulehui@huawei.com,
+ puranjay@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+ aou@eecs.berkeley.edu, alex@ghiti.fr, memxor@gmail.com,
+ linux-kernel@vger.kernel.org
 
-在 2025/9/17 01:07, Alexei Starovoitov 写道:
-> On Mon, Sep 15, 2025 at 10:42 PM Tao Chen <chen.dylane@linux.dev> wrote:
->>
->> The return value ret pointer is pointing opts_copy, but opts_copy
->> gets freed in get_delegate_value before return, fix this by strdup
->> a new buffer.
->>
->> Fixes: 2d812311c2b2 ("bpftool: Add bpf_token show")
->> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->> ---
->>   tools/bpf/bpftool/token.c | 47 ++++++++++++++++++++++-----------------
->>   1 file changed, 27 insertions(+), 20 deletions(-)
->>
->> diff --git a/tools/bpf/bpftool/token.c b/tools/bpf/bpftool/token.c
->> index 82b829e44c8..c47256d8038 100644
->> --- a/tools/bpf/bpftool/token.c
->> +++ b/tools/bpf/bpftool/token.c
->> @@ -28,6 +28,12 @@ static bool has_delegate_options(const char *mnt_ops)
->>                 strstr(mnt_ops, "delegate_attachs");
->>   }
->>
->> +static void free_delegate_value(char *value)
->> +{
->> +       if (value)
->> +               free(value);
->> +}
->> +
->>   static char *get_delegate_value(const char *opts, const char *key)
->>   {
->>          char *token, *rest, *ret = NULL;
->> @@ -40,7 +46,7 @@ static char *get_delegate_value(const char *opts, const char *key)
->>                          token = strtok_r(NULL, ",", &rest)) {
->>                  if (strncmp(token, key, strlen(key)) == 0 &&
->>                      token[strlen(key)] == '=') {
->> -                       ret = token + strlen(key) + 1;
->> +                       ret = strdup(token + strlen(key) + 1);
+Hello:
+
+This series was applied to riscv/linux.git (for-next)
+by Paul Walmsley <pjw@kernel.org>:
+
+On Tue, 12 Aug 2025 11:02:54 +0200 you wrote:
+> Hello,
 > 
-> Instead of adding more strdup-s
-> strdup(mntent->mnt_opts) once per cmd/map/prog and
-> remove another strdrup/free in print_items_per_line().
+> These patches are related to a recently queued series [1] that fixes the
+> same bugs in normal code.  That series finishes with a patch that would
+> have exposed the BPF bugs, but luckily it won't get merged until v6.18.
 > 
-> pw-bot: cr
+> I don't know enough about BPF to verify that it emits the correct code
+> now, so any pointers are welcome.
+> 
+> [...]
 
-will remove it in v2, thanks.
+Here is the summary with links:
+  - [1/2] riscv, bpf: use lw when reading int cpu in BPF_MOV64_PERCPU_REG
+    https://git.kernel.org/riscv/c/ad5348c76591
+  - [2/2] riscv, bpf: use lw when reading int cpu in bpf_get_smp_processor_id
+    https://git.kernel.org/riscv/c/8a16586fa7b8
 
+You are awesome, thank you!
 -- 
-Best Regards
-Tao Chen
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
