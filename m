@@ -1,137 +1,84 @@
-Return-Path: <bpf+bounces-68710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBC65B81E5E
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 23:12:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A39D3B81F25
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 23:24:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 788583A7497
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 21:12:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AB507BDB85
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 21:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1634C302CBD;
-	Wed, 17 Sep 2025 21:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7B6304963;
+	Wed, 17 Sep 2025 21:22:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mWKZcHut"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pIzvUw3I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4575A18D656
-	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 21:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D492D2749CE;
+	Wed, 17 Sep 2025 21:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758143554; cv=none; b=bUdVujGEXZ4DWSEziBQJZbpuRLuXpnUS7HV7j8Mvr87kQU46znJcy3NKnfGLSdqEnuI/rhRLu//+r9s/0DsE2MPa4UqFt3+6l9+LDlTeUm/oF7hJTWrXoWrTWubqwNOH44bBh2cAPk4OMWc33TbHzazdDScTYsW6twI4Qtyokrg=
+	t=1758144161; cv=none; b=Qv3VHvPxJ1QzRw840APn+sgOLsOIDoavjhU38OfFWRhk9EM7IWoJQE6LMzZ4c0+pUgCBVQY3BO52N3iIoEZ3SqV0sCxTNST4h2X3K5LYlVqvbt9/z+H7TqojdzljOdU6S52bozXFemOc/vhSNuY3pBsL5fqP3rhe369nwz/zvcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758143554; c=relaxed/simple;
-	bh=RC3dqTa0+HoRBYxgO59V3/qfOlTCoBQEoCmJziD8RWo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bk4bV5TFr5HWchFPwzvF9QHryEvwgZzgn9JPGNxVELFP8jSA2vy8L8+HURB6A4H89gKHwCSk/sKUnEl173rNWR4MczY06u1BQ9LrbgfPyPi+8eB2PIKZoS0J8VzbZ0pYWYT2tXYL9Zn1G2IBSsxiwhMkHf3SWJb42vRLNA8ZKBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mWKZcHut; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-269639879c3so2163105ad.2
-        for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 14:12:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758143553; x=1758748353; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dCPsIBs3cCxgpCeomkGN40vlj32nmQbzRTZm6GwTvHs=;
-        b=mWKZcHut8W1qhIyuUzCBW0hqTy+99cCBvFXjvBlz2TBHbq3I/YIujETx+B4DVaVY49
-         O4zvenkvWEUsNGTMik6/ksYsZPBb0UmT2a1WwrNq1bUCaZQAk37HFSJMkexyJAJf4wup
-         xT9MZc68tlKBL3JEecDzDeZQMgtIsVrmmM0lMFHJy7EZd8jdu8Gn9JcMwCo8fFtmiz3s
-         Mz5ZnOalEfpt0H4x3owgu/pcqTiQb1ur54+2HJO7GdeeQYjpFclT7STP8tnNN1UtFTv9
-         FgnkqGOuMtJfGOM+QS40ICe55hnyu3MctHBmbfHka+YgRKrJ9EgR3/374roaShFMPpRE
-         U4wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758143553; x=1758748353;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dCPsIBs3cCxgpCeomkGN40vlj32nmQbzRTZm6GwTvHs=;
-        b=lA9O4C1CC+4aaUSUnQyqXPZRc8I9wLGu73KyNozeaq5o/iJ4B0QyAIEADqQeVFTH0+
-         +HQJ0CypUudte3IObTtk641kPEWNvZ1vUG1nAKdbBZ4gTzb4suCdyLYRU91LpZkJkmja
-         42u1chw5wXRkzWvXqp/rky+Bk/OVEuX4m4F3UcbF3rpl614JRMui9c7hxepXyOGHBeOt
-         dCQNDFNZZcy0Z817vmxJXyH2GvA6P8DqGncQpqA7uI7E1A45iISsF1FAS3A6ZQxntGja
-         AC4vDVTF2+rVZQ82z0zNWBN6UzNexF1HDhLY4yihc9WKeBSjaIVM/97iEd0UHeIZmi03
-         etpQ==
-X-Gm-Message-State: AOJu0YxIdlKEWLB8UVd8Acs1ASqsZuR+aTj40EVYPXdNFsfGO8XJaCG5
-	9ZlhmtIe1gPfxfw2VOmXmzBkH8B5SC0ui8FIfNEnFGJxT2iyFE843+mDUO5EHI4aqCQ1iksngkG
-	XgNPcNrLfeiMTcbqviZ0hhMBtzvCnmF7Iqw==
-X-Gm-Gg: ASbGncspjwPDxo1oCp1np5J8NfL2Yx1KnkbiEWYbWUdMOUqdi8t451RVwvKOeyzv96j
-	Y6HlzexTHs/pZbdcWQ7TXkpu9ElJbF36ObfzU1CiA72HQ6iXPiSeZBS221RdUPsn3tPX2l1jDYv
-	3yYOjM83h9KAaUKnzONooyZCCt7r4MtZ5viXMURE0L5AqwkOp7VkrIPXGGh3WQpzJ2T/NsmHcGf
-	nv+I7s39MARSXn2+SNjEbI=
-X-Google-Smtp-Source: AGHT+IHk0D8i8IstMTV0cZp4yche+F44qByQT3FkgnhzkXmkNKq+U6gCoYV2EuOSlXk7sMfdVZfQKkPG75Ba8eA1C/U=
-X-Received: by 2002:a17:903:17c6:b0:269:74bf:f19a with SMTP id
- d9443c01a7336-26974bff7ddmr24672915ad.11.1758143552639; Wed, 17 Sep 2025
- 14:12:32 -0700 (PDT)
+	s=arc-20240116; t=1758144161; c=relaxed/simple;
+	bh=VhFn1wpwrS1RDDHi1pYQzMzqmS3pgxJXwPkAvzdGmLM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Q/pq33TlU/HG+zboWtRkYzF5X3AOgJtrrhluqBCVne57LS7ROaYcHLZ7Lt25bdaRsDNZOIZ0WRjLwq3mD5956WNf+RkilKYTJVP9Hdb5C+NlyTKqTJLS8F49VkHt7W/9auz7hosqJYJOlPVrFny7JURINvkoh+KrsHJb5y6N8js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pIzvUw3I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A44B8C4CEE7;
+	Wed, 17 Sep 2025 21:22:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758144161;
+	bh=VhFn1wpwrS1RDDHi1pYQzMzqmS3pgxJXwPkAvzdGmLM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=pIzvUw3I0UOxJ6ri0qF8bQvssPEiHWybKK6nGydjeutCXElYZ9adAh3YJ3EyL0YFZ
+	 mnnxRj5kO/X/R71T18nqEOh3fQb4w6qAQbwyrun5vWoe9iGmgn41r56qrZ6ALIuFFt
+	 Zb8tHdUmZB7cQs/bbSeq3QptZMe0+bdYXiJZ1diC2ZhrLI34FL7t681u3PAKTe5PtP
+	 XsOYEOgAPB7cIAFjMf62RhzPYp2zZCboUspqGLFZ4FtUQIh55mbbfCXjPwL4Hvguxp
+	 o6+BpsoGJfGEsvdQVU2JuWs8Y8tkAfLpoJwG5TFaoImj8K/zsupfyy269wS+vOlIm6
+	 ZI7zD4pcQ/Ekg==
+Date: Wed, 17 Sep 2025 14:22:39 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>, noren@nvidia.com
+Cc: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
+ daniel@iogearbox.net, paul.chaignon@gmail.com, stfomichev@gmail.com,
+ martin.lau@kernel.org, mohsin.bashr@gmail.com, dtatulea@nvidia.com,
+ saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com,
+ maciej.fijalkowski@intel.com, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v3 0/6] Add kfunc bpf_xdp_pull_data
+Message-ID: <20250917142239.245e9ed2@kernel.org>
+In-Reply-To: <a9ce1249-f459-440f-a234-bdb8dd4238f2@linux.dev>
+References: <20250915224801.2961360-1-ameryhung@gmail.com>
+	<a9ce1249-f459-440f-a234-bdb8dd4238f2@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250911163328.93490-1-leon.hwang@linux.dev> <20250911163328.93490-4-leon.hwang@linux.dev>
-In-Reply-To: <20250911163328.93490-4-leon.hwang@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 17 Sep 2025 14:12:19 -0700
-X-Gm-Features: AS18NWBc6XkdiZs4liA3A07LFlIzmSjnJyPPkPjhu6vC_88uEGliX6IFexS1XjM
-Message-ID: <CAEf4BzaRYeT4wzU7uCuYLF-7THnXL2KgbF3kkg-8fLE3phM-5w@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 3/6] bpf: Add common attr support for
- prog_load and btf_load
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, menglong8.dong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Sep 11, 2025 at 9:33=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
->
-> The log buffer of common attributes would be confusing with the one in
-> 'union bpf_attr' for BPF_PROG_LOAD and BPF_BTF_LOAD.
->
-> In order to clarify the usage of these two 'log_buf's, they both can be
-> used for logging if:
->
-> * They are same, including 'log_buf', 'log_level' and 'log_size'.
-> * One of them is missing, then another one will be used for logging.
->
+On Wed, 17 Sep 2025 11:50:01 -0700 Martin KaFai Lau wrote:
+> On 9/15/25 3:47 PM, Amery Hung wrote:
+> >   include/net/xdp_sock_drv.h                    |  21 ++-
+> >   kernel/bpf/verifier.c                         |  13 ++
+> >   net/bpf/test_run.c                            |  26 ++-
+> >   net/core/filter.c                             | 123 +++++++++++--
+> >   .../bpf/prog_tests/xdp_context_test_run.c     |   4 +-
+> >   .../selftests/bpf/prog_tests/xdp_pull_data.c  | 174 ++++++++++++++++++
+> >   .../selftests/bpf/progs/test_xdp_pull_data.c  |  48 +++++
+> >   .../selftests/net/lib/xdp_native.bpf.c        |  89 +++++++--  
+> 
+> I think the next re-spin should be ready. Jakub, can this be landed to 
+> bpf-next/master alone and will be available in net-next after the upcoming merge 
+> window, considering it is almost rc7?
 
-I agree with the logic above, but I'm not sure whether we need to
-plumb common_attrs all the way into bpf_vlog_init, tbh. There are only
-two commands that can have log specified through both bpf_attr and
-bpf_common_attrs. I'd have those two commands check and resolve the
-log buffer pointer, size and flags on their own (sure, a bit of
-duplicated logic, but we won't have any new command having to do that,
-so that's fine in my book).
-
-And then I'd keep bpf_vlog_init completely unaware of common_attrs
-(which eventually have more stuff in it that's irrelevant to logging).
-
-This seems cleaner than plumbing this through so deeply.
-
-> If they both have 'log_buf' but they are not same, a log message will be
-> written to the log buffer of 'union bpf_attr'.
->
-
-Meh, whatever, this is unlikely user error, just error out with
--EINVAL or something. Let's not invent "log here, but not here" logic.
-
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
->  include/linux/bpf.h          |  3 ++-
->  include/linux/bpf_verifier.h |  2 +-
->  include/linux/btf.h          |  3 ++-
->  kernel/bpf/btf.c             | 12 +++++++-----
->  kernel/bpf/log.c             | 23 ++++++++++++++++++++++-
->  kernel/bpf/syscall.c         | 14 ++++++++------
->  kernel/bpf/verifier.c        |  8 ++++----
->  7 files changed, 46 insertions(+), 19 deletions(-)
->
-
-[...]
+Nimrod, are you waiting for these before you send you dyn_ptr flavor of
+XDP tests? Other than Nimrod's work I don't see a problem.
 
