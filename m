@@ -1,118 +1,148 @@
-Return-Path: <bpf+bounces-68623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62BBAB7C4C5
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 13:56:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F123B804E4
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 16:57:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C2A32A8605
-	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 04:51:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C432F7B68A9
+	for <lists+bpf@lfdr.de>; Wed, 17 Sep 2025 04:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021DD2367AC;
-	Wed, 17 Sep 2025 04:51:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF4725F995;
+	Wed, 17 Sep 2025 04:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KXiM7ktY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j86jvfpd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D03B231A21
-	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 04:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1606423D7EB
+	for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 04:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758084666; cv=none; b=QkzpPfjonfygRE9CvoUT34J/7Fh5mbZY8y943dCJp1N0Ejp1Mq1pkDso+n8yqhqomOBbs5CNnECG07Q2A9fNj+d9kpbQBk2cbqQGMd1rE60FkVhoXWDAWpSPP57Q4ZcwtpuSLKVDa9oo4CvJekm9aRS9I0UKtaWeYnIQKVmph78=
+	t=1758084708; cv=none; b=Ji3JeawvJGxy8/7/129bNUcwBGCWRwp/82z8urfuLhFEE2G7sd7n2S01L6u2iXj1jaCZ/3XKnWljl3KfeYHr4FXNt1VIxMX8N28quUgcLPDoiY4nsyR6CgUgD0bL2ilf62uoeueLBtxSn7zAGB+oG9pHK6hZEiduvweDNVXL8FA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758084666; c=relaxed/simple;
-	bh=m4OYt4T61H0r1d3DBrOPc9Raadvl2oXOydODxCa004g=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XGre4x77BycbVU08TQxaS6zGvpvY21klaR0OtwqFwEnl5sXp9FbYT9yWJrU0UO+Bxlg47UMwM2dK+2AkfP/YIZTIXzMJLCfibOq4afY5hhbxZ1gKqypsz/UyGyrZL4wAVS5UAR5bzTTW9iDyrBw67rGv0ZuhHENKvJ3wrE9C8f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KXiM7ktY; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1758084708; c=relaxed/simple;
+	bh=r0BM1z3v+ETdgaEO3IBUJs2XmPYvA5caqeW53JycuWc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WU06r24zjOKgSQtbI1+szVZBybGXgQmp+5dH+1zTH2GicAYrNG0+Ba9i2mopcRN06SuY8C362jWuW2gjy6kDNm8+G13mGY1fabtDGr6qoMn8iB8D6zMvGBNsX3TOo6Vs1neMxgThALOtHQjhAXA7M1EnyxZOQnE8KvXr1U9LZH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j86jvfpd; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-77b0a93e067so1192867b3a.2
-        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 21:51:03 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-24c8ef94e5dso4779255ad.1
+        for <bpf@vger.kernel.org>; Tue, 16 Sep 2025 21:51:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758084663; x=1758689463; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TIJEfYJZthAGbzZBYyT8ykZD4iPiRThZGMW3pUavVl0=;
-        b=KXiM7ktYSz69OhXaACs+Z7ImTYld4HwrFhIHEsWL6c4/wB3kBo645wDtwYxxzQI0kW
-         T2i/0HjbSd2AiRoMh1xs8ZVgAO3WQXByfC/Ca25bF4NBts3t9zdq6HDgsu06r+qp2tt4
-         JSLs6LBtU3LzQadywDemvXo0oIaC/GAjA23g5OMDVM8gY70Wgd1HAQDwtp33OjIZ6Qrj
-         Bc9Ujpv/GwS8Y3w1t3BmGelj1aiz/l8UdOe9AIYzQy8hYOjFZ0UW2Swgl9658F4KQGp8
-         4e7xtev+88A98su6FHY4lh6mGqGkxHHsWs50nu2rAqvwDh5A24fcFEHr+m3G6IuiP/GV
-         4S1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758084663; x=1758689463;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=gmail.com; s=20230601; t=1758084706; x=1758689506; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TIJEfYJZthAGbzZBYyT8ykZD4iPiRThZGMW3pUavVl0=;
-        b=UqFtvEPJepg1MrS0sJ5/GNOU9capUfPe2i7wa2Z1///esPS6XCFTIj3oRtIm+F2ET5
-         yE9qh0GaEjHW4rmijLDzpyX/eM7JDbcPgEn3j61qNZVKdlBTv/4Cnd84RweKmWsBoSSt
-         eWaCsDwQR5lxwnFed90bou9DwA/preEeVvgExq+BmMCuwTKM9gCh8aBTWc+yd49w9e/t
-         XyRWqR0fFqrYRSt5h1BqT891Ncj5SkynLa1/0wz/YeN1XfsIE/x3YfoUfPsk2yiNyhQ7
-         CBK0c6CzxTrgalrHn2oYafADV8dJU+smd+/pRIIi7DuHS/tIBbU+tnh5wnTFccS7l69O
-         /IzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUpLzRSgXbKSqJuFKx/HF4+2w+UUWUeyJBzzKjp0pkKrJ6OB2d9zcjYlzgxjgfe/og6H8k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcCx9oOsreELxrCphx8FBeJVowXkZrR+vyl4G8uCivMswHO0VG
-	DaA55oe3Juf1PV8Yd7dole+o20coGvlXhIHa/zlqWHwRJOMhGiWL8MsH
-X-Gm-Gg: ASbGncuXyUd8ZOPQHIENs8Mc1tqo1jSaU22r39ii2ExrVOWdkmNRzIbzWeTX+sNOxbE
-	JbsGAw+2cU5SilyaK0MEtNlQpZO/Nz1FaYj3xiscGaZfpMs6qH9E7TAtJFuQN6q+7uDnqP+IT+6
-	pzNHResWr1FXbK5puRGtDiZ8oER1jLMdS8/ytAaEil8OKlNg4taW13NskRDVOtAM7GUPrRkHLu0
-	gvU0eFu4b7sOjIasoDCTiLatSxb4ZzZlTtLVyplSNJfVfgWN9zw6nnDYp04LFPl5nhwIe3eBfy2
-	fDBslqE1b+Bn7KyN3YC3uvjV43PTkXCrDkz4W7vdob6BA93Se/6b4qiSilJ8xZM9GnZI629En4d
-	O47kL+3dLAuaYFg6UW0E=
-X-Google-Smtp-Source: AGHT+IGRVvvpHAmN4qIJwnmckCt1zMPGL3dXR8GQXd/DHkrRmJZcQQge8RoC7qTUlU/tHM/kzSHN8w==
-X-Received: by 2002:a05:6a00:a8e:b0:774:1f59:89de with SMTP id d2e1a72fcca58-77bf75bda2fmr920348b3a.11.1758084663394;
-        Tue, 16 Sep 2025 21:51:03 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7761f8b1bdasm12206339b3a.60.2025.09.16.21.51.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Sep 2025 21:51:03 -0700 (PDT)
-Message-ID: <bf202c1aabb6247cdc6c651c6cac3ff3982115db.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v5 0/8] bpf: Introduce deferred task context
- execution
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf <bpf@vger.kernel.org>,
-  Alexei Starovoitov	 <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann	 <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>,
- Kernel Team	 <kernel-team@meta.com>, Kumar Kartikeya Dwivedi
- <memxor@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>
-Date: Tue, 16 Sep 2025 21:51:00 -0700
-In-Reply-To: <5e2fff56d3465ca921dbee96f512bf0443f66346.camel@gmail.com>
-References: <20250916233651.258458-1-mykyta.yatsenko5@gmail.com>
-		 <3b65db27f2cd4575875a090f9cce0ca0f138daea.camel@gmail.com>
-		 <CAADnVQLe+5C8MH9SEU2MxHP9iaCHJHXdnuXTHkqvnVwsHTynwA@mail.gmail.com>
-	 <5e2fff56d3465ca921dbee96f512bf0443f66346.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+        bh=PomNopRC9hhdTDziVEXzXCCqU+neR5Nm4xVGY2tZiAc=;
+        b=j86jvfpdRYn4K1To19AewgdiKe76HsrUqFhZUvCq9TxYGtdfgsWlVN5xi8aRgC9pUp
+         rP21ZHRqWS3C7v5bBsv2H/iuq4ddHcq0Xi+JgyyEOovVfBm6omg22tKYhSzMLikL8XLI
+         AbhKfCO7SG3onjvMZA8w4uVIXODXPpDBPY46P5PJhM7o0aIT9cCbDbmh5x+PLyyzwU/r
+         uuNavuvNnDYEHFyFQI2vWXEOqaoki/1GdBg3ujrpNApe6J086+2p1JpKqJ3NySag/omr
+         /IPI1OSUd8fOvgQU14o0HwFovtYHImHhT+s70IF1gxTAu0vVMs/He6bxzbqSgiHfk41V
+         ZaXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758084706; x=1758689506;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PomNopRC9hhdTDziVEXzXCCqU+neR5Nm4xVGY2tZiAc=;
+        b=jUuPSM4R8O4G9Ww6tcOCi9HPzIcf3aNPPKwfsOc86Wk/hdH58YaR1bhptzbx4qGg9Z
+         0U2aLLFB9d9Yez1u7LThdElVR0n5V3lgjmWH/Z+bzbZ6NaGBBMAt8BaLa3o7E0upN1Ff
+         1sYqrGTqyx7zxp2QenuNblp1+SR4xINcLzft9A3+jYOXhnLb8garXGIeYRRFmlMjSXYo
+         QxqOjbrpz6rNgAirrqx84UnT+IwyeJD/7iDwh2RQZ9bhWpOn3EfNghxbIC448vGyc2br
+         JWCBrSqk6cjFkCzp4SbXRti12T0dcZYpQmfQkRW4r1tSaC7hjNuho9lfHb8fJRMEOHeS
+         OVoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVHF8FI2mk6jgpR2Vam2X63vwkuXA3AknxE1Oz73G2TwOWa+spTCqVA8QFF7xNyGj36OF4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3KoOl9FgToXX9szGE9XH51wBmtvscIjAPTZbOrEA78/koStsb
+	Vo3OeJ4Rirylu1TUy6GB6u59b41PBQpp+fAs6phYA8fXOU1VS7QA9aHD
+X-Gm-Gg: ASbGncvCJmp532Tb1rnSs/IhXhltTbVQecjE6Y9Lq7IjhMqdPm3CZfhIy2J0EoR1O/H
+	/RfxfcT99cXH4huxlX4HAieF2C10a90YnLas0H7EuEty9yd+PgegpGnlESE9k4z50Tfxmru2wrZ
+	hwU6rqzEht/e809yjll3yHUJi9iWJ2hKWGsSDJ5bDWT3lVzXl12LAm/dG2jG7rPZwnzUd+QKEAR
+	ZHsBEnXKdKH3qmJuz8uQcuA35bcfbPSSnlCYl5/LHl5ouLW/DDZpFoQMxvA8GNJjPsU0uDI6+ZJ
+	jrj2taqlSHQuo0cvJM+/UfFqbEndPVtg+cWmkzu7l0XdHeWqYCn6iOy3IS5dqhdF8fiHLgVF5g/
+	md9cctC4NyVx4yAekiVZaPl2CMF96TBkf/os=
+X-Google-Smtp-Source: AGHT+IHqwB+BlY3rWgk8rhcN0LrntVQe58H9HcE3/7TgHxNyREQzuV1avYFWrpZpSdOu/6j6IpZ+rQ==
+X-Received: by 2002:a17:902:d48b:b0:24c:e9de:ee11 with SMTP id d9443c01a7336-26810a02830mr10613185ad.17.1758084706253;
+        Tue, 16 Sep 2025 21:51:46 -0700 (PDT)
+Received: from [10.22.65.172] ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25c36dbb159sm175668425ad.13.2025.09.16.21.51.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Sep 2025 21:51:45 -0700 (PDT)
+Message-ID: <c6e2c3c6-2ce5-4b52-8429-bcda39e452ab@gmail.com>
+Date: Wed, 17 Sep 2025 12:51:41 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] bpf: support nested rcu critical sections
+Content-Language: en-US
+To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org
+Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Puranjay Mohan <puranjay12@gmail.com>,
+ kernel-team@fb.com
+References: <20250916113622.19540-1-puranjay@kernel.org>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <20250916113622.19540-1-puranjay@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2025-09-16 at 21:44 -0700, Eduard Zingerman wrote:
+
+
+On 16/9/25 19:36, Puranjay Mohan wrote:
+> Currently, nested rcu critical sections are rejected by the verifier and
+> rcu_lock state is managed by a boolean variable. Add support for nested
+> rcu critical sections by make active_rcu_locks a counter similar to
+> active_preempt_locks. bpf_rcu_read_lock() increments this counter and
+> bpf_rcu_read_unlock() decrements it, MEM_RCU -> PTR_UNTRUSTED transition
+> happens when active_rcu_locks drops to 0.
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
 
 [...]
 
-> In v4 the function invocation looked like:
->=20
->   err =3D check_map_field_pointer(env, regno, BPF_TIMER, map->record->tim=
-er_off, "bpf_timer");
->=20
+> @@ -13863,7 +13863,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  	preempt_disable = is_kfunc_bpf_preempt_disable(&meta);
+>  	preempt_enable = is_kfunc_bpf_preempt_enable(&meta);
+>
+> -	if (env->cur_state->active_rcu_lock) {
+> +	if (env->cur_state->active_rcu_locks) {
+>  		struct bpf_func_state *state;
+>  		struct bpf_reg_state *reg;
+>  		u32 clear_mask = (1 << STACK_SPILL) | (1 << STACK_ITER);
+> @@ -13874,22 +13874,22 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  		}
+>
+>  		if (rcu_lock) {
+> -			verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
+> -			return -EINVAL;
+> +			env->cur_state->active_rcu_locks++;
 
-One option is to pass an address:
+Could we add a check for the maximum of 'active_rcu_locks'?
 
-  err =3D check_map_field_pointer(env, regno, BPF_TIMER, &map->record->time=
-r_off, "bpf_timer");
+From a cracker's perspective, this could potentially be abused to
+stall the kernel or trigger a deadlock. Underneath 'rcu_read_lock()',
+there are several RCU functions that tracing programs are able to
+attach to. If those functions are traced, a deadlock can be triggered.
 
-But still looks a bit ugly.
+This scenario was already discussed in the thread:
+"[BUG] Deadlock triggered by bpfsnoop funcgraph feature"[1].
+
+[1]
+https://lore.kernel.org/bpf/a08c7c19-1831-481f-9160-0583d850347a@linux.dev/
+
+Thanks,
+Leon
+
+[...]
 
