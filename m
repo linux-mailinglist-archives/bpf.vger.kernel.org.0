@@ -1,142 +1,145 @@
-Return-Path: <bpf+bounces-68746-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68744-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40EDDB837A8
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 10:11:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE4CCB836E8
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 10:06:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F04413B9B55
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 08:11:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DC5B1C23AE2
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 08:05:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1A42F4A14;
-	Thu, 18 Sep 2025 08:08:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE782ED85D;
+	Thu, 18 Sep 2025 08:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hFIUlkbm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NS/LbBwJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43412F3C32
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 08:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2612A221265
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 08:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758182887; cv=none; b=B5RLEgjNgkTcfyLilPu/39x6VTgkX/Z2YDvhSrElUwI9WpwgDFOUXfo2JQrXWlDbvnfDZFbfu4JzqhSe/rGW6EkGZETZVjSQ3AgkaDJ4/4AZnFJPlWIw+FIT5hW3bIMMNipoAs2CCu369XYi8sqwt3tDJeqnLI+PWl7O9dHu2ng=
+	t=1758182711; cv=none; b=hYQQ5oc0GX5GmESLcYY0Ip12S7MzB+7dHudaA5Nzfz0aK4wUwZleJevxRlFk1vrXEugGqkG9HhqyHgj4MRbOBJam4up2EPCfXdJYcNjpaORklf+ajAuXyA2oT8QvPJxCR5xUWRaPYTPUHz4S8OjrFL85PzAVzlPg0Plz7pkFZIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758182887; c=relaxed/simple;
-	bh=1yC27wxXhKzjbkzZpZR3Ai96oSEiCjx7Z+SO0xTeWt0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lVYo34dtDEqurr88fJyy9pkvZcM0vQqA0rfTM/lqp9+aB1enMmavsf5irG4bvp5/g8WgmPEB0UpwzqflUK9419+23zV5aonc0Vxik/yMXx7T5iZUfTyPtgTOdPATldW4N2mwW/Kqjy8GiaymVHXxO84tcpLWQv2d08AjWrhLLwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hFIUlkbm; arc=none smtp.client-ip=185.246.84.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 1334B1A0E8D;
-	Thu, 18 Sep 2025 08:08:03 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id D27D56062C;
-	Thu, 18 Sep 2025 08:08:02 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 13040102F1818;
-	Thu, 18 Sep 2025 10:07:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1758182881; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=NUIQ6q5npgVP/axVpG0xCOPzetUw8W0RvK8A/nQzlw0=;
-	b=hFIUlkbmI55oIwEzk9k1G/kcOFNdJO/vkCWLWKCMLFiTXTvDSAFaicR8XxupBDsn/bSqgJ
-	foA0BdU1dlIzw2iUVOvM9GQvOuatXUEpWQNNVm0IILlA7dOpMcLPBkJ4RgEEvE6t8k+xH9
-	rT2wzVKuFajqOh+Fsb2nmUjogZhljUxwrHfcQbrxW0f/FXFEaovDHgP38HRsmCTnGPzHwr
-	fCaljv1gxc9UEMHoAK/KDxR9SDlUee+9nPRbIf88tzAnIaBR0HV8k+RNLvMc5laHI/0fK+
-	Wxlmnujl93gKe+jwBuViXKTn/oHsIy0cCnHGb9XEvkCvjytsoqPc3NU1nfOnOA==
-Message-ID: <9c96720e-091c-434e-9060-c47ea59ad91e@bootlin.com>
-Date: Thu, 18 Sep 2025 10:07:47 +0200
+	s=arc-20240116; t=1758182711; c=relaxed/simple;
+	bh=oQ9nZjgfmvsLpZcd6hpcdVA2Dax83oIwaefm8i+Prpw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WR+DsYs/JfcsbxcEyf9PQ+C5DDGKHkoC7sjfnMjQogz12mWv08x4a3zCQ1Vw+iHTaNBb+UWWTrNkfm2iLS8TvGTmFh5Xzg1sovMGXHBGTufXO411guCMlaLH3jxnXeBPtm5VLeGWRJNWgW4EiWWsXqc2Qre1FoXJ/rtFn83QYPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NS/LbBwJ; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3dae49b117bso419245f8f.1
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 01:05:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758182708; x=1758787508; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CIaSqEb5EXQIggAwfQ6VKOWwq5DPVRIV17TJq0tIu7o=;
+        b=NS/LbBwJpBaqvx8Y+7EaXpEeaWokMiyhW19l5xuy+ELMyzqp6PGVFJQ2CDBXY6qA/E
+         Lj6sNzCMXUWv61H94AiVUUPYIjZsMVPT7pDXxId3Mh5Cp+bA6iMqzm/yxkeymAfuE28v
+         W82n3MixzErXByiONY/+WJ0QGBrPr4fX/qWP+NMh5IYJ21wX2HeQ8UytVuWurstP2zYO
+         csAq84JBEc5Xyp0Iyj3NrMJj8m5sRjH4WB0A2KMlpbKxwqptja67CGb6hlO9bwcAOpLJ
+         g90Xp+IzyKryxp37CLvTszZE9rtlE4XpLA4LkVKapxLCetGQMU9LJCrHLE2H+jZ0wk5U
+         GNZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758182708; x=1758787508;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CIaSqEb5EXQIggAwfQ6VKOWwq5DPVRIV17TJq0tIu7o=;
+        b=pd7JjbTQ1Q6g5fK4b+1t2NI/QUGLFE8/bhoqFUIa9tjj88adFbcjQ8JPwIkgcX8fB8
+         frfL6+ii0DI1vKHHL4EHdNPIE6iJP2R95KESjIyUqNmr2+XSwgsbQbZM4hQvu6+lspYC
+         wFfnWfS0TZSx917hbLeWEWbBdC+V4AJ6MoZnYFcZiYLR5yU35NVWJlZrRo/DeBl1Z3sp
+         1T6Gim4DCGXpuKMj6uWUfBvePVuouK96zAVM7ld80CMxXhf9cfq3L5i3cOrQyj7ll1Uf
+         WU9/TP6xcMM/B/XPIFenvkovBZjoQ+k2174mMz9GW51/f+Fcl0+JiDciuEp/Ra6yG/68
+         ay/g==
+X-Gm-Message-State: AOJu0YxhueNAT/ILgJcK0Dc1xmcam3dGLlaopNOaUNqyidb5rm9/3Ed6
+	bTmfQElKrwVhYmYhZl2m0S0qjG/9gNyTJNsTErkElVq3qmKTqL8s7e3Z
+X-Gm-Gg: ASbGncsmuy9OuZvTmQZ4X4X+bSwknAOJz4arOOcuqyHaZPHK4DjbOJKPgf5pgMOQkYN
+	AU38kEvkvdssjWf00oQLEiQ20G20SGMWFU6U1vZd8FYaahi/vCqWqkHKU0y0E5zcyGU4+t9Nd0Y
+	MR5ituHlVD1d7Rbp9sAtlkKYiSjvzFCi359YfNo2wH3aconkOrQIkO196vxebJ4XANZKWQci41e
+	WDU3X9Qzn6JjaJhrczTq/uh8PkSEvDeYzAz/WisUuOFHokR54FST33jh2wYY/WOntYuJSEqFuP7
+	aYJWoqCpDywRVp+CTqsUL8RB2G/J6vzze5vp9fHEw9FCJH/cD6/JAWRK14ksP8NP08V0F3IphR4
+	yg3tsiUTo08CzctAwfQqUR/fywgEd42NSAJEu/7HRqW/neZuM98s=
+X-Google-Smtp-Source: AGHT+IHh9rlNTHbjR2Z3MQjq1Gd0277qnp/w2/v9u42yGgYbNUhhJuL5gzXBxv7T+t8KHHdnXhxU9g==
+X-Received: by 2002:a05:6000:438a:b0:3ec:42ad:58f with SMTP id ffacd0b85a97d-3ecdfa4c665mr3986655f8f.59.1758182707971;
+        Thu, 18 Sep 2025 01:05:07 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3ee1385adebsm745831f8f.42.2025.09.18.01.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Sep 2025 01:05:07 -0700 (PDT)
+Date: Thu, 18 Sep 2025 08:11:22 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Quentin Monnet <qmo@kernel.org>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH v2 bpf-next 12/13] bpftool: Recognize insn_array map type
+Message-ID: <aMu+qqortm0Vv4UA@mail.gmail.com>
+References: <20250913193922.1910480-1-a.s.protopopov@gmail.com>
+ <20250913193922.1910480-13-a.s.protopopov@gmail.com>
+ <0ef006c7-fb6d-4a97-b42d-f70c91a8cf72@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 03/14] selftests/bpf: test_xsk: Fix memory
- leaks
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250904-xsk-v3-0-ce382e331485@bootlin.com>
- <20250904-xsk-v3-3-ce382e331485@bootlin.com> <aMmlNc1z5ULnOjJY@boxer>
- <6ac21f07-45ef-4e80-bedf-c0470df47bc7@bootlin.com> <aMr+/NDFQsGChdI4@boxer>
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <aMr+/NDFQsGChdI4@boxer>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0ef006c7-fb6d-4a97-b42d-f70c91a8cf72@kernel.org>
 
-On 9/17/25 8:33 PM, Maciej Fijalkowski wrote:
-> On Wed, Sep 17, 2025 at 05:32:55PM +0200, Bastien Curutchet wrote:
->> Hi Maciej
->>
->> On 9/16/25 7:58 PM, Maciej Fijalkowski wrote:
->>> On Thu, Sep 04, 2025 at 12:10:18PM +0200, Bastien Curutchet (eBPF Foundation) wrote:
->>>> Some tests introduce memory leaks by not freeing all the pkt_stream
->>>> objects they're creating.
->>>>
->>>> Fix these memory leaks.
->>>
->>> I would appreciate being more explicit here as I've been scratching my
->>> head here.
->>>
->>
->> Indeed it lacks details sorry. IIRC I spotted these with valgrind, maybe I
->> can add valgrind's output to the commit log in next iteration.
->>
->>>   From what I see the problem is with testapp_stats_rx_dropped() as it's the
->>> one case that uses replace and receive half of pkt streams, both of which
->>> overwrite the default pkt stream. So we lose a pointer to one of pkt
->>> streams and leak it eventually.
->>>
->>
->> Exactly, we lose pointers in some cases when xsk->pkt_stream gets replaced
->> by a new stream. testapp_stats_rx_dropped() is the most convoluted of these
->> cases.
+On 25/09/16 09:33PM, Quentin Monnet wrote:
+> 2025-09-13 19:39 UTC+0000 ~ Anton Protopopov <a.s.protopopov@gmail.com>
+> > Teach bpftool to recognize instruction array map type.
+> > 
+> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> > ---
+> >  tools/bpf/bpftool/Documentation/bpftool-map.rst | 2 +-
+> >  tools/bpf/bpftool/map.c                         | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+> > index 252e4c538edb..3377d4a01c62 100644
+> > --- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
+> > +++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+> > @@ -55,7 +55,7 @@ MAP COMMANDS
+> >  |     | **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
+> >  |     | **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
+> >  |     | **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage**
+> > -|     | **task_storage** | **bloom_filter** | **user_ringbuf** | **cgrp_storage** | **arena** }
+> > +|     | **task_storage** | **bloom_filter** | **user_ringbuf** | **cgrp_storage** | **arena** | **insn_array** }
 > 
-> pkt_stream_restore_default() is supposed to delete overwritten pkt_stream
-> and set ::pkt_stream to default one, explicit pkt_stream_delete() in bunch
-> of tests is redundant IMHO.
 > 
-> Per my understanding testapp_stats_rx_dropped() and
-> testapp_xdp_shared_umem() need fixing. First generate pkt_stream twice and
-> second generates pkt_stream on each xsk from xsk_arr, where normally
-> xsk_arr[0] gets pkt_streams and xsk_arr[1] have them NULLed.
+> Thanks Anton!
+> That's a long line. As you'll likely respin your series, could you wrap
+> and start a new line, please?
+
+Thanks, fixed! (I will resend the series as v3 now due to kbuild-bot issue.)
+
 > 
-
-I took another look at it, and I agree with you: the pkt_stream_delete() 
-calls I added in testapp_stats_rx_full() and testapp_stats_fill_empty() 
-don't seem necessary.
-It still feels a bit strange to overwrite a pointer without freeing it 
-right away, but I don't have a strong opinion on this. I'm fine with 
-only fixing testapp_stats_rx_dropped() and testapp_xdp_shared_umem() in 
-the next iteration.
-
-
-Best regards,
--- 
-Bastien Curutchet, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+> >  
+> >  DESCRIPTION
+> >  ===========
+> > diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> > index c9de44a45778..79b90f274bef 100644
+> > --- a/tools/bpf/bpftool/map.c
+> > +++ b/tools/bpf/bpftool/map.c
+> > @@ -1477,7 +1477,7 @@ static int do_help(int argc, char **argv)
+> >  		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
+> >  		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
+> >  		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage |\n"
+> > -		"                 task_storage | bloom_filter | user_ringbuf | cgrp_storage | arena }\n"
+> > +		"                 task_storage | bloom_filter | user_ringbuf | cgrp_storage | arena | insn_array }\n"
+> 
+> 
+> Same here. Other than these:
+> 
+> Acked-by: Quentin Monnet <qmo@kernel.org>
 
