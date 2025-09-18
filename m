@@ -1,145 +1,380 @@
-Return-Path: <bpf+bounces-68853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10EE4B86BAD
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 21:42:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5702B86BB6
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 21:43:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C61A01B28710
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 19:43:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 339BB464B05
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 19:43:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E8E2E1C69;
-	Thu, 18 Sep 2025 19:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554742E1EFD;
+	Thu, 18 Sep 2025 19:43:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uTraG5KV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IAOZGew6"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EAC52D374D;
-	Thu, 18 Sep 2025 19:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B2522D4C8
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 19:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758224569; cv=none; b=kYbJkLAg1wgDNQel6cCAjROwaRCdn6JE3w3KQpAY5zF7gpFQa1CyPNgTcQEIpCHQAvJjgOBP3ZuuC4teF1NqZykeML3ASJXT8YTyew/YH4I0dowJ/rypcCr3r9YO7kIKdrpZyBkBr8++FGOTzc4fJgi3CMdvo70QA3UKSFQh6c0=
+	t=1758224609; cv=none; b=GN1sx6piz2pBjZisCKRXVxPy3E8zycr7m1u3HsKbev7qm9Mg/WqQYQYoXvzyURr6z1qFpZr6At9QA07zErDJGRbH5TNbr6Ww2SOx5mqCL7n66vvBl74WbMYM6JkT2+CLpGS7Vp5wvHJ2bIIoYkiOAKT9ks3HzGPC9W6Iuv5IQXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758224569; c=relaxed/simple;
-	bh=80s6EU2PHaHFue3+G09GZK98h4BmkrZlLT7WXXnyY3Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mV1HOgPzTkFwSQt1x6zK5fyAjrOw/dlSmaAI9denrwZZXOqCzMVVGCBEsaEWxIA/LKiAb1SdpGesyT1VNskzGTwCUx0nMsafXhc/xdhKFUSAA4m6tinRhXmnBgins1jSUrGg5u5iUYrA8UzMORdiOSZ+cuSZnh2N2KKvKF5uRjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uTraG5KV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B097EC4CEE7;
-	Thu, 18 Sep 2025 19:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758224569;
-	bh=80s6EU2PHaHFue3+G09GZK98h4BmkrZlLT7WXXnyY3Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uTraG5KVrM9q6OFeTaJV+aEPHYI4rOJGKWFXc93LgVImNtlkPgm9zsOGuGnOa46An
-	 Vs2IWSrfYN1Hxy4jgIwOt+xJx6xfEBkTwz76KbwcgF06E7Cn2LOMUL5oQJgnttZAUV
-	 H8bm/SlxpbZ/w/pOHI7Zv/LyEadATKp1Iy3JkCdgq2NG2U73Tf4Oij1lm/XdBwLwLT
-	 s9oen8O3FEewQaM4Z3/KaMkTCbAxT/1MwRd80sxjk/KIlPmhuZh9R/H8y1fg0ZWask
-	 5kMVtaKYZ7JnQuXNY47clmxnGRb0n3j5Rcy5f9CQULBpe5y6gTroM9iIaQkniXGMdW
-	 66+L4fidi7h3A==
-Date: Thu, 18 Sep 2025 20:42:42 +0100
-From: Will Deacon <will@kernel.org>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-	arnd@arndb.de, catalin.marinas@arm.com, peterz@infradead.org,
-	akpm@linux-foundation.org, mark.rutland@arm.com,
-	harisokn@amazon.com, cl@gentwo.org, ast@kernel.org,
-	memxor@gmail.com, zhenglifeng1@huawei.com,
-	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
-	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH v5 1/5] asm-generic: barrier: Add
- smp_cond_load_relaxed_timeout()
-Message-ID: <aMxgsh3AVO5_CCqf@willie-the-truck>
-References: <20250911034655.3916002-1-ankur.a.arora@oracle.com>
- <20250911034655.3916002-2-ankur.a.arora@oracle.com>
+	s=arc-20240116; t=1758224609; c=relaxed/simple;
+	bh=7oqERi05BDM41kYuRXU/Ce4ZHasAcEi/Km8+BK0j3os=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R99T0I+e9SNF/HRE8v1DzlGQuwxQUP3KP84cMrO8WLSIiIgOZ7fS0ZVeZj07K1/xt5ZyU0jLm+vyp1InOoAreS3KRLYMA3n5VjBGNG7bpa3EZbVQHxWjW2EEewNa1DIQQKHpGbXYNrm7O7tVFkHBxSAc0v4486n5gUKpNJUI2WI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IAOZGew6; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-71d5fe46572so15094087b3.1
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 12:43:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758224607; x=1758829407; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4GZVKPpOdFCbsWISOjzAzYr8joLlGjS++6os8dk7SJg=;
+        b=IAOZGew6i2oH3bjzAn1zMMjqAMf9T3FWW5OTyziLo+WAkB3F6m0f3fz/UC66nq5oi7
+         C8MWkWn1L3DVGmX5gzziLbXMUlKxOQg2XxPvzWIM9/K6YOca5cyh1dbjAE7fZSrdmESI
+         DPrAN2BhVvTu9L7pnUxgrYJYk0PmmwgPCLweEG0tZDMngcEBDWmJ+/SqgYtMUCSlxP6E
+         YckSyOPaCoCPPdIJE3rm0GR5pI4/gdAI2rxeXc/+b1o9IXP+RaOyrJeQrbsNGDZfwLPW
+         LDYMHktekdc525sHqjnO0OESgvnlJyE32CtndV+5DUc0y5I0c1KBQfoyyZABOwEdT0Ci
+         m9kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758224607; x=1758829407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4GZVKPpOdFCbsWISOjzAzYr8joLlGjS++6os8dk7SJg=;
+        b=uNukArA/ub44X8PptX1RfD9vxvL/XRPxLJnhkt84Yn1K0Aocb8g4qp9pZzgW+KBUMy
+         qOwsC9Ntee2XMEpSE7kdorWmxR4zF60nA7Pi06yKCamJAet91Ifxm5qAh08SJOqbakI5
+         fJDyKQpyggUZGO+f+O/SYiYO7DxWxxwzwaJZF5ZKaKkfjcijuJNwIQKQ/YP6ceJhufap
+         H5mNv6ZfmDYcH1feRFUhLhsJ9/05ap2fTdQvspAlBAZeVXEiTf8QISzcj06HI6W9b37u
+         KmbLIUpIh/50RY7wD9SexnqdFwWSEwqUnfOjvs19bHoO7GD1ljKLHTWqzXYn1wQT+f7t
+         WajA==
+X-Gm-Message-State: AOJu0Yzwc7yRxWNDnF+2eXjt6myZVL3yRYhjsaHlCLFJhP50U7uD0xA2
+	8o190y6eKNZ3mCMu8aYQ1GsTvy1TV7Vy2culqaAwZ4pr0YU4TqaNVBK2LfMx8I9iPCfHbScETxE
+	+CSo+PVC9iTbMjWM6k5EWtHt7MxH2bWM=
+X-Gm-Gg: ASbGnctgGPjPK9S3POijAsoU5Sic4b3QPFhnTRXZlXndcMQB5VBfGv9ZsUNLwdpYGJN
+	JJ4BVvksTMSonR1VNBxiqYcBeFSvSHxmJNX8LIlvfcFM18Bq+Ex8+FMCA0JhOMg1XwhKkvVKzYH
+	VrscTa3ZQQo+KgR6bEAggwbllUwc4vufGGN54le1LYOt5d7HiM8SR0MCuBrxwpUXI8LMPt6fDXG
+	XmlHu5uJuQFuazQ+GcfJ0f65vU6fpnAq5If64ZWuw==
+X-Google-Smtp-Source: AGHT+IErZdK7Wo9oZcaphTc8DlzmrW27709aHRXoe/1ib/I7sJKpdI4x2TK+T8MXOn7iJ+yBVtOTRUNE8TcmbIjZCqY=
+X-Received: by 2002:a05:690c:6887:b0:720:8df:f7a9 with SMTP id
+ 00721157ae682-73cc45b4c49mr10492087b3.5.1758224606716; Thu, 18 Sep 2025
+ 12:43:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250911034655.3916002-2-ankur.a.arora@oracle.com>
+References: <20250917225513.3388199-1-ameryhung@gmail.com> <20250917225513.3388199-6-ameryhung@gmail.com>
+ <aMvuHBb0+IIiXXuG@boxer>
+In-Reply-To: <aMvuHBb0+IIiXXuG@boxer>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Thu, 18 Sep 2025 12:43:13 -0700
+X-Gm-Features: AS18NWAmywcDsGBkYvYDOTx6VQJxG8PGAz3JxqwO5sgOSloCNddPr-kNmCnoJNY
+Message-ID: <CAMB2axNx_NDkC+nZdpOB5kPmq0Sf1=d2g4NjkPnxEURfuV2eKA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 5/6] selftests/bpf: Test bpf_xdp_pull_data
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, paul.chaignon@gmail.com, 
+	kuba@kernel.org, stfomichev@gmail.com, martin.lau@kernel.org, 
+	mohsin.bashr@gmail.com, noren@nvidia.com, dtatulea@nvidia.com, 
+	saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 10, 2025 at 08:46:51PM -0700, Ankur Arora wrote:
-> Add smp_cond_load_relaxed_timeout(), which extends
-> smp_cond_load_relaxed() to allow waiting for a duration.
-> 
-> The additional parameter allows for the timeout check.
-> 
-> The waiting is done via the usual cpu_relax() spin-wait around the
-> condition variable with periodic evaluation of the time-check.
-> 
-> The number of times we spin is defined by SMP_TIMEOUT_SPIN_COUNT
-> (chosen to be 200 by default) which, assuming each cpu_relax()
-> iteration takes around 20-30 cycles (measured on a variety of x86
-> platforms), amounts to around 4000-6000 cycles.
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: linux-arch@vger.kernel.org
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reviewed-by: Haris Okanovic <harisokn@amazon.com>
-> Tested-by: Haris Okanovic <harisokn@amazon.com>
-> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> ---
->  include/asm-generic/barrier.h | 35 +++++++++++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
-> 
-> diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
-> index d4f581c1e21d..8483e139954f 100644
-> --- a/include/asm-generic/barrier.h
-> +++ b/include/asm-generic/barrier.h
-> @@ -273,6 +273,41 @@ do {									\
->  })
->  #endif
->  
-> +#ifndef SMP_TIMEOUT_SPIN_COUNT
-> +#define SMP_TIMEOUT_SPIN_COUNT		200
-> +#endif
-> +
-> +/**
-> + * smp_cond_load_relaxed_timeout() - (Spin) wait for cond with no ordering
-> + * guarantees until a timeout expires.
-> + * @ptr: pointer to the variable to wait on
-> + * @cond: boolean expression to wait for
-> + * @time_check_expr: expression to decide when to bail out
-> + *
-> + * Equivalent to using READ_ONCE() on the condition variable.
-> + */
-> +#ifndef smp_cond_load_relaxed_timeout
-> +#define smp_cond_load_relaxed_timeout(ptr, cond_expr, time_check_expr)	\
-> +({									\
-> +	typeof(ptr) __PTR = (ptr);					\
-> +	__unqual_scalar_typeof(*ptr) VAL;				\
-> +	u32 __n = 0, __spin = SMP_TIMEOUT_SPIN_COUNT;			\
-> +									\
-> +	for (;;) {							\
-> +		VAL = READ_ONCE(*__PTR);				\
-> +		if (cond_expr)						\
-> +			break;						\
-> +		cpu_relax();						\
-> +		if (++__n < __spin)					\
-> +			continue;					\
-> +		if (time_check_expr)					\
-> +			break;						\
+On Thu, Sep 18, 2025 at 4:34=E2=80=AFAM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> On Wed, Sep 17, 2025 at 03:55:12PM -0700, Amery Hung wrote:
+> > Test bpf_xdp_pull_data() with xdp packets with different layouts. The
+> > xdp bpf program first checks if the layout is as expected. Then, it
+> > calls bpf_xdp_pull_data(). Finally, it checks the 0xbb marker at offset
+> > 1024 using directly packet access.
+> >
+> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/xdp_pull_data.c  | 176 ++++++++++++++++++
+> >  .../selftests/bpf/progs/test_xdp_pull_data.c  |  48 +++++
+> >  2 files changed, 224 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_pull_dat=
+a.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_pull_dat=
+a.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_pull_data.c b/t=
+ools/testing/selftests/bpf/prog_tests/xdp_pull_data.c
+> > new file mode 100644
+> > index 000000000000..c16801b73fed
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/xdp_pull_data.c
+> > @@ -0,0 +1,176 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <test_progs.h>
+> > +#include <network_helpers.h>
+> > +#include "test_xdp_pull_data.skel.h"
+> > +
+> > +#define PULL_MAX     (1 << 31)
+> > +#define PULL_PLUS_ONE        (1 << 30)
+> > +
+> > +#define XDP_PACKET_HEADROOM 256
+> > +
+> > +/* Find sizes of struct skb_shared_info and struct xdp_frame so that
+> > + * we can calculate the maximum pull lengths for test cases
+>
+> do you really need this hack? Wouldn't it be possible to find these sizes
+> via BTF?
 
-There's a funny discrepancy here when compared to the arm64 version in
-the next patch. Here, if we time out, then the value returned is
-potentially quite stale because it was read before the last cpu_relax().
-In the arm64 patch, the timeout check is before the cmpwait/cpu_relax(),
-which I think is better.
+It is possible. I will use kernel BTF to find the sizes.
 
-Regardless, I think having the same behaviour for the two implementations
-would be a good idea.
+>
+> > + */
+> > +static int find_xdp_sizes(struct test_xdp_pull_data *skel, int frame_s=
+z)
+> > +{
+> > +     LIBBPF_OPTS(bpf_test_run_opts, topts);
+> > +     struct xdp_md ctx =3D {};
+> > +     int prog_fd, err;
+> > +     __u8 *buf;
+> > +
+> > +     buf =3D calloc(frame_sz, sizeof(__u8));
+> > +     if (!ASSERT_OK_PTR(buf, "calloc buf"))
+> > +             return -ENOMEM;
+> > +
+> > +     topts.data_in =3D buf;
+> > +     topts.data_out =3D buf;
+> > +     topts.data_size_in =3D frame_sz;
+> > +     topts.data_size_out =3D frame_sz;
+> > +     /* Pass a data_end larger than the linear space available to make=
+ sure
+> > +      * bpf_prog_test_run_xdp() will fill the linear data area so that
+> > +      * xdp_find_data_hard_end can infer the size of struct skb_shared=
+_info
+>
+> what is xdp_find_data_hard_end ?
 
-Will
+It is supposed to be the XDP program, xdp_find_sizes. Will remove it
+as we use BTF to find sizes.
+
+>
+> > +      */
+> > +     ctx.data_end =3D frame_sz;
+> > +     topts.ctx_in =3D &ctx;
+> > +     topts.ctx_out =3D &ctx;
+> > +     topts.ctx_size_in =3D sizeof(ctx);
+> > +     topts.ctx_size_out =3D sizeof(ctx);
+> > +
+> > +     prog_fd =3D bpf_program__fd(skel->progs.xdp_find_sizes);
+> > +     err =3D bpf_prog_test_run_opts(prog_fd, &topts);
+> > +     ASSERT_OK(err, "bpf_prog_test_run_opts");
+> > +
+> > +     free(buf);
+> > +
+> > +     return err;
+> > +}
+> > +
+> > +/* xdp_pull_data_prog will directly read a marker 0xbb stored at buf[1=
+024]
+> > + * so caller expecting XDP_PASS should always pass pull_len no less th=
+an 1024
+> > + */
+> > +static void run_test(struct test_xdp_pull_data *skel, int retval,
+> > +                  int frame_sz, int buff_len, int meta_len, int data_l=
+en,
+> > +                  int pull_len)
+> > +{
+> > +     LIBBPF_OPTS(bpf_test_run_opts, topts);
+> > +     struct xdp_md ctx =3D {};
+> > +     int prog_fd, err;
+> > +     __u8 *buf;
+> > +
+> > +     buf =3D calloc(buff_len, sizeof(__u8));
+> > +     if (!ASSERT_OK_PTR(buf, "calloc buf"))
+> > +             return;
+> > +
+> > +     buf[meta_len + 1023] =3D 0xaa;
+> > +     buf[meta_len + 1024] =3D 0xbb;
+> > +     buf[meta_len + 1025] =3D 0xcc;
+> > +
+> > +     topts.data_in =3D buf;
+> > +     topts.data_out =3D buf;
+> > +     topts.data_size_in =3D buff_len;
+> > +     topts.data_size_out =3D buff_len;
+> > +     ctx.data =3D meta_len;
+> > +     ctx.data_end =3D meta_len + data_len;
+> > +     topts.ctx_in =3D &ctx;
+> > +     topts.ctx_out =3D &ctx;
+> > +     topts.ctx_size_in =3D sizeof(ctx);
+> > +     topts.ctx_size_out =3D sizeof(ctx);
+> > +
+> > +     skel->bss->data_len =3D data_len;
+> > +     if (pull_len & PULL_MAX) {
+> > +             int headroom =3D XDP_PACKET_HEADROOM - meta_len - skel->b=
+ss->xdpf_sz;
+> > +             int tailroom =3D frame_sz - XDP_PACKET_HEADROOM -
+> > +                            data_len - skel->bss->sinfo_sz;
+> > +
+> > +             pull_len =3D pull_len & PULL_PLUS_ONE ? 1 : 0;
+>
+> nit: pull_len =3D !!(pull_len & PULL_PLUS_ONE);
+>
+> > +             pull_len +=3D headroom + tailroom + data_len;
+> > +     }
+> > +     skel->bss->pull_len =3D pull_len;
+> > +
+> > +     prog_fd =3D bpf_program__fd(skel->progs.xdp_pull_data_prog);
+> > +     err =3D bpf_prog_test_run_opts(prog_fd, &topts);
+> > +     ASSERT_OK(err, "bpf_prog_test_run_opts");
+> > +     ASSERT_EQ(topts.retval, retval, "xdp_pull_data_prog retval");
+> > +
+> > +     if (retval =3D=3D XDP_DROP)
+> > +             goto out;
+> > +
+> > +     ASSERT_EQ(ctx.data_end, meta_len + pull_len, "linear data size");
+> > +     ASSERT_EQ(topts.data_size_out, buff_len, "linear + non-linear dat=
+a size");
+> > +     /* Make sure data around xdp->data_end was not messed up by
+> > +      * bpf_xdp_pull_data()
+> > +      */
+> > +     ASSERT_EQ(buf[meta_len + 1023], 0xaa, "data[1023]");
+> > +     ASSERT_EQ(buf[meta_len + 1024], 0xbb, "data[1024]");
+> > +     ASSERT_EQ(buf[meta_len + 1025], 0xcc, "data[1025]");
+> > +out:
+> > +     free(buf);
+> > +}
+> > +
+> > +static void test_xdp_pull_data_basic(void)
+> > +{
+> > +     u32 pg_sz, max_meta_len, max_data_len;
+> > +     struct test_xdp_pull_data *skel;
+> > +
+> > +     skel =3D test_xdp_pull_data__open_and_load();
+> > +     if (!ASSERT_OK_PTR(skel, "test_xdp_pull_data__open_and_load"))
+> > +             return;
+> > +
+> > +     pg_sz =3D sysconf(_SC_PAGE_SIZE);
+> > +
+> > +     if (find_xdp_sizes(skel, pg_sz))
+> > +             goto out;
+> > +
+> > +     max_meta_len =3D XDP_PACKET_HEADROOM - skel->bss->xdpf_sz;
+> > +     max_data_len =3D pg_sz - XDP_PACKET_HEADROOM - skel->bss->sinfo_s=
+z;
+> > +
+> > +     /* linear xdp pkt, pull 0 byte */
+> > +     run_test(skel, XDP_PASS, pg_sz, 2048, 0, 2048, 2048);
+>
+> you're passing pg_sz to avoid repeated syscalls I assume? Is it worth to =
+pass
+> prog_fd as well?
+
+The performance is not too much of a concern here as it is selftest. I
+would not add prog_fd to avoid confusion.
+
+>
+> > +
+> > +     /* multi-buf pkt, pull results in linear xdp pkt */
+> > +     run_test(skel, XDP_PASS, pg_sz, 2048, 0, 1024, 2048);
+> > +
+> > +     /* multi-buf pkt, pull 1 byte to linear data area */
+> > +     run_test(skel, XDP_PASS, pg_sz, 9000, 0, 1024, 1025);
+> > +
+> > +     /* multi-buf pkt, pull 0 byte to linear data area */
+> > +     run_test(skel, XDP_PASS, pg_sz, 9000, 0, 1025, 1025);
+> > +
+> > +     /* multi-buf pkt, empty linear data area, pull requires memmove *=
+/
+> > +     run_test(skel, XDP_PASS, pg_sz, 9000, 0, 0, PULL_MAX);
+> > +
+> > +     /* multi-buf pkt, no headroom */
+> > +     run_test(skel, XDP_PASS, pg_sz, 9000, max_meta_len, 1024, PULL_MA=
+X);
+> > +
+> > +     /* multi-buf pkt, no tailroom, pull requires memmove */
+> > +     run_test(skel, XDP_PASS, pg_sz, 9000, 0, max_data_len, PULL_MAX);
+> > +
+>
+> nit: double empty line
+
+Will add:
+
+/* Test cases with invalid pull length */
+
+>
+> > +
+> > +     /* linear xdp pkt, pull more than total data len */
+> > +     run_test(skel, XDP_DROP, pg_sz, 2048, 0, 2048, 2049);
+> > +
+> > +     /* multi-buf pkt with no space left in linear data area */
+> > +     run_test(skel, XDP_DROP, pg_sz, 9000, max_meta_len, max_data_len,
+> > +              PULL_MAX | PULL_PLUS_ONE);
+> > +
+> > +     /* multi-buf pkt, empty linear data area */
+> > +     run_test(skel, XDP_DROP, pg_sz, 9000, 0, 0, PULL_MAX | PULL_PLUS_=
+ONE);
+> > +
+> > +     /* multi-buf pkt, no headroom */
+> > +     run_test(skel, XDP_DROP, pg_sz, 9000, max_meta_len, 1024,
+> > +              PULL_MAX | PULL_PLUS_ONE);
+> > +
+> > +     /* multi-buf pkt, no tailroom */
+> > +     run_test(skel, XDP_DROP, pg_sz, 9000, 0, max_data_len,
+> > +              PULL_MAX | PULL_PLUS_ONE);
+> > +
+> > +out:
+> > +     test_xdp_pull_data__destroy(skel);
+> > +}
+> > +
+> > +void test_xdp_pull_data(void)
+> > +{
+> > +     if (test__start_subtest("xdp_pull_data"))
+> > +             test_xdp_pull_data_basic();
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/test_xdp_pull_data.c b/t=
+ools/testing/selftests/bpf/progs/test_xdp_pull_data.c
+> > new file mode 100644
+> > index 000000000000..dd901bb109b6
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_xdp_pull_data.c
+> > @@ -0,0 +1,48 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include  "vmlinux.h"
+> > +#include <bpf/bpf_helpers.h>
+> > +
+> > +int xdpf_sz;
+> > +int sinfo_sz;
+> > +int data_len;
+> > +int pull_len;
+> > +
+> > +#define XDP_PACKET_HEADROOM 256
+> > +
+> > +SEC("xdp.frags")
+> > +int xdp_find_sizes(struct xdp_md *ctx)
+> > +{
+> > +     xdpf_sz =3D sizeof(struct xdp_frame);
+> > +     sinfo_sz =3D __PAGE_SIZE - XDP_PACKET_HEADROOM -
+> > +                (ctx->data_end - ctx->data);
+> > +
+> > +     return XDP_PASS;
+> > +}
+
+Will remove this XDP program
+
+Thank you for your review!
+
+[...]
+
+> > --
+> > 2.47.3
+> >
 
