@@ -1,263 +1,229 @@
-Return-Path: <bpf+bounces-68805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68807-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF508B85EB8
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 18:13:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37AE7B85F6E
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 18:22:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2BEF3A4B08
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 16:09:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD7BE7C3C9A
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 16:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82022F619B;
-	Thu, 18 Sep 2025 16:09:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32067311C01;
+	Thu, 18 Sep 2025 16:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PzkRqSfj"
+	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="L/MI4hPj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013060.outbound.protection.outlook.com [52.101.83.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D843112B4
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 16:09:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758211765; cv=none; b=qZsABhfWRudVj6mZPOqRe2sTcavDL4JhkcCG9sHbIynF+955Hdd+s7rqpFP/kpR92u8pS7/uB9nLuuvBE0HiNAKdsAbV4ZurfHFV0drSNQe+qBq/WnF/4pGT+FPMrV47Cr5hsh7i16nOWaU8n1UdX+wMmsHFcWRCvTQuptbw+Fk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758211765; c=relaxed/simple;
-	bh=gv/fnGF2e3yrQmrZP/Sqj+9SQ69Xmh5suEdNy99nMQI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BHUTUqy+ek/H/CulwcMINzxAXaGpuqjby1QLX537z3pNYRuKp7I1PwsGqCFxxMqe2xsEV8fhdqXTS+tnvHv8sASRjy2AgDw0B36GQl7924FTOYeOmQmGjQnIRGj9tIsn7iKG1/ZgzJQkOD7nz8IpXRVZEjQuo/oCv9fcYhahnVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PzkRqSfj; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <dbea9a14-e010-4e2f-a34d-4e2fd14a31f6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758211761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=w1TWlDtYCxWcxhvCHcRdPXSMSA7gCc30GGMDrJv929c=;
-	b=PzkRqSfjXYlYpjSxvXmZWuaQQSeh05z6URhBj8CqGtA4q5QQ04+F2ap3JcYgJ+PppsXJH5
-	DLMZli8P/sqmwznzjpwllneBCONpQiiMTTbLLYOx1zoBtccwIE31q5Kt7cQmSTbMkNI93i
-	qMyRh5whf74kP1SQrDIQPGbGdHqyMys=
-Date: Fri, 19 Sep 2025 00:09:12 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D6E312836;
+	Thu, 18 Sep 2025 16:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.60
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758212502; cv=fail; b=aIALtu5qMeN49IUN3dcZN1jxwAeTFzub+42G+yxENub9RuiIUN9t9XX1fAUb6px9Cc7DjDeOXNtbkog75GiKR0IInU43ZcYBdqHYFnRPuk6MM6icaM8GhFQPeZmTZZkYq0xZCBKjQWDci2Etawck/8B5ADSZnD5ixKXCC+CiP7s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758212502; c=relaxed/simple;
+	bh=VxEvj2noUBZZ3VLVLhObYr+XwHtnWlwRBEaKarmbvnU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=hYOZHeFTASMxSMTI3XrfIB+MH68dmaDN3eTZAhLg1UcRo7od8IRPZUGkap5BP0wpx2jnJojTeikTIYZEeSBxjeoADyYZ0Zql2OzEAvLLt8qZWDqOQ+FRvgVLB0nupNCreFILG1cyiRx+FpkUDh+SNF9iw3JRTHdFw92ZDdwSdSw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=L/MI4hPj; arc=fail smtp.client-ip=52.101.83.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=UoJ01TUgqIlwBxmAluHaNKNQk+MTKp/BC3IKsDEkhxZia+gzQ0g5x7KrsQkyOkUCmBGvnpVHwDnbAbcMOumDmgGntXAJl9iFC7QP1sAp/J1ssohQ2Wm5gaQ0RE2SZ9oICHs5911tqTp1uLY9YDXq74goBHHg9O+3pI3HJ8Vg5Cp+HyRpYSLaBxuXClG66cdwGAa1+5va+b2vDd+uOAfQgdTuUuW0C2jEaKaZHWS4qoQhijii+QtlufA1wZpcKtetvVC3ye7BQYCKqVF8ZRApWxo57A4THKx5KgEJ3gE1fuF7NmvzAHu14m9zAxKW0YtvXvgE6vUquOTGLWqwMq1Xqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y697nvhJ3awJ0wOZdYsic+UlfgJM1iAIkamvrbSgEvM=;
+ b=rcljBqaFEM5JItc4EEUlnvSR4eJ4L69CwF25n3yZemqIw8KeG9zdI918l2JxgasJbJZwGH2zTNxSrA4KwwOGWWY7oQwjkmGQ0KDfw5FzLo9S4XUfdtKB4qGRJf9iW6EjOusF4pW5kMLr/ktp+xE8diDFYbsUdTzKADvbNxJw120ZxQ8w3CM4D1MVq570ieElOUtNe1blWA5n8TRQ9hlMTiw2ALbwjO36G2wYfbCjrIZBI58Vj/xUdCNFFLndBE6QHLqH8KhZ7hnoSn/sWqlsgiGCvMy0KVGE5RgU2GzE58qqFIYwzW4voCj7gJ4ns2EKsNCoSuSEOk+/jsU+Eo+92w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.240) smtp.rcpttodomain=amazon.com
+ smtp.mailfrom=nokia-bell-labs.com; dmarc=pass (p=reject sp=reject pct=100)
+ action=none header.from=nokia-bell-labs.com; dkim=none (message not signed);
+ arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y697nvhJ3awJ0wOZdYsic+UlfgJM1iAIkamvrbSgEvM=;
+ b=L/MI4hPj6+wQRtG1whkQyb5KIe7EEU9itkhIYRQ0flwA7QmjHGPlCDuj8EOV7nLWGvgDKKRX4lX2ZR8eoX0A7yKtQHP/doC/3AoZS7qLqSuauwI1Cw5HE49ycMryNm0D/RBiUZ4Oy5QRiF+K9Dzr9Zt4b6L+ptIOmk4Ks16gQ703vWnN/r1XkhkPIJ7F23FqJVFtsS/HZAJbUH1fndabiZGPwepWyIt54sTemIRhN+SQ2HHsd2YBRso2bp8355Zmx62XhQ9FF8vTUW6DSQTgF7gwZQrubAq7vRt9mUw52d9DcyfhFptfJaFMNn5w4eWZ4XSChEfZN2zfFSCAlIteLA==
+Received: from DB9PR05CA0002.eurprd05.prod.outlook.com (2603:10a6:10:1da::7)
+ by PA1PR07MB11096.eurprd07.prod.outlook.com (2603:10a6:102:501::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9137.13; Thu, 18 Sep
+ 2025 16:21:37 +0000
+Received: from DB3PEPF0000885D.eurprd02.prod.outlook.com
+ (2603:10a6:10:1da:cafe::1b) by DB9PR05CA0002.outlook.office365.com
+ (2603:10a6:10:1da::7) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9137.13 via Frontend Transport; Thu,
+ 18 Sep 2025 16:21:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.240)
+ smtp.mailfrom=nokia-bell-labs.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nokia-bell-labs.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia-bell-labs.com
+ designates 131.228.2.240 as permitted sender)
+ receiver=protection.outlook.com; client-ip=131.228.2.240;
+ helo=fihe3nok0735.emea.nsn-net.net; pr=C
+Received: from fihe3nok0735.emea.nsn-net.net (131.228.2.240) by
+ DB3PEPF0000885D.mail.protection.outlook.com (10.167.242.8) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9137.12
+ via Frontend Transport; Thu, 18 Sep 2025 16:21:37 +0000
+Received: from sarah.nbl.nsn-rdnet.net (sarah.nbl.nsn-rdnet.net [10.0.73.150])
+	by fihe3nok0735.emea.nsn-net.net (Postfix) with ESMTP id CFCC220107;
+	Thu, 18 Sep 2025 19:21:35 +0300 (EEST)
+From: chia-yu.chang@nokia-bell-labs.com
+To: pabeni@redhat.com,
+	edumazet@google.com,
+	linux-doc@vger.kernel.org,
+	corbet@lwn.net,
+	horms@kernel.org,
+	dsahern@kernel.org,
+	kuniyu@amazon.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	dave.taht@gmail.com,
+	jhs@mojatatu.com,
+	kuba@kernel.org,
+	stephen@networkplumber.org,
+	xiyou.wangcong@gmail.com,
+	jiri@resnulli.us,
+	davem@davemloft.net,
+	andrew+netdev@lunn.ch,
+	donald.hunter@gmail.com,
+	ast@fiberby.net,
+	liuhangbin@gmail.com,
+	shuah@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	ij@kernel.org,
+	ncardwell@google.com,
+	koen.de_schepper@nokia-bell-labs.com,
+	g.white@cablelabs.com,
+	ingemar.s.johansson@ericsson.com,
+	mirja.kuehlewind@ericsson.com,
+	cheshire@apple.com,
+	rs.ietf@gmx.at,
+	Jason_Livingood@comcast.com,
+	vidhi_goel@apple.com
+Cc: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+Subject: [PATCH v2 net-next 00/14] AccECN protocol case handling series
+Date: Thu, 18 Sep 2025 18:21:19 +0200
+Message-Id: <20250918162133.111922-1-chia-yu.chang@nokia-bell-labs.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf: Add union argument tests
- using fexit programs
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, yatsenko@meta.com, puranjay@kernel.org,
- davidzalman.101@gmail.com, cheick.traore@foss.st.com,
- mika.westerberg@linux.intel.com, ameryhung@gmail.com,
- menglong8.dong@gmail.com, kernel-patches-bot@fb.com
-References: <20250916155211.61083-1-leon.hwang@linux.dev>
- <20250916155211.61083-4-leon.hwang@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <20250916155211.61083-4-leon.hwang@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB3PEPF0000885D:EE_|PA1PR07MB11096:EE_
+X-MS-Office365-Filtering-Correlation-Id: 575ca6f8-8501-4526-cf90-08ddf6cf712f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|1800799024|7416014|376014|36860700013|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?ODVlSkRFSGtBZFRrTXoyR2VVTDMxTGF0RmJxM1R3L2tNZmpNakI2MnhMQ0Js?=
+ =?utf-8?B?QW43aWpzR0p3b3M1Uk14RE4xTUlZbFFxb3Zsc1puQ3U0dXdLZTYwTHNLVTRh?=
+ =?utf-8?B?L25SRkRKZ2JJOHBrOTI5Q3o3Nmk2Q1h5bEtkYWRldkc1VWVuQmVtd0tSL3ZU?=
+ =?utf-8?B?OCswRFJmRnlnMnFyYjVYWGJ4a0t3aTVydkxKb0trMFZML2RUWDBYc2xvT1I0?=
+ =?utf-8?B?QmhnNEh1RWdxaFhXcEs4eHZLNFpZYlUvMVdUYjdiSkFoYXl6UzFPZjk1eDVQ?=
+ =?utf-8?B?c3lOd1IwcFFEam05eHF3OS9sK1dwOFc5T2hIemorTmpIdlBSQkwvVXlKeURh?=
+ =?utf-8?B?Y1d0R21YN0c4dHJlTmtvOVlnVkdKZ1kvbUt5VDdtTng3TFVNU29NSzhiWDRx?=
+ =?utf-8?B?cCtJc0tKdHNNY0k1c3hraXkyMFNEL0krM1hYNzRlVTRrVUl3ZGp3bjhEMGgy?=
+ =?utf-8?B?Nk1MS3pWdzBiSmpPQVdhMGU5TW5HMmdGUTZlSG03QkdMV0gyM3FvdEx1TTEy?=
+ =?utf-8?B?ZG5YMXNsRzYrWEhFczJKSEdYMkp2K3BiSkpIZUhEa055VUgvTVFUcGxJZmQw?=
+ =?utf-8?B?UElvTEwyZXkrZjFCczhtbGFMdnlhdnhHK0dKUGMyTHBzUmYvMEpxMkl5Sm9D?=
+ =?utf-8?B?aDQrTjdjazl0d0V1R2dFWi81N2RrV0JOWnJBWlRoNGdWSjJpQjVNeTYyTE1m?=
+ =?utf-8?B?MFVxakkyOVIyN1o4cDJJNXFMVC9US2JjOHRCRXFDR3ljbHJ6ZzRTRlFrMkZk?=
+ =?utf-8?B?QjZzbG1PQjRkbVY1SDdNUzN0NW45UlloeFltNzlsYmF1cllNS3hZVEtkd29V?=
+ =?utf-8?B?QjNuN1FIeXZJaFhDVHkrZlRwQXo1QlgxS1lNSm8wOU0zM3JTWjYvckZQOS9x?=
+ =?utf-8?B?SHZNU0dwTjd5cEdXS3RTK2NPVkZCVmFEdldZNnorcFBoRlhDYVJ0djhEOFdJ?=
+ =?utf-8?B?b1RGTm1Wd3VCMDVEUzEybjRYeWk1OEFVVktQVzBHRWZsNlFna0ZGSXFMeTNn?=
+ =?utf-8?B?YmgyRXdpSFJvUVg0N1A5MVhJTXNDZHhWWHhaMER2L1l0WkQ4K1Z0eDdZeVlH?=
+ =?utf-8?B?d3BsVGc5S0UxSGlCeDlDZksyTVdqWHlNSXpHOHpoYm94SEY3Vkk2MkpyUi96?=
+ =?utf-8?B?ZW9OSmJEWEdqQklMdC9TRmhubVZiNXUva3BPajZJYTlMYW1VZWViUytEdXNE?=
+ =?utf-8?B?SHFpcU1aMEhLOERHTUo2aXRYRGdONU95ZkhTWlo2MTdLOUVJeTdWUFhZUEJH?=
+ =?utf-8?B?SndhbGFGbDRHK0FDcVlkcHhNWVdZRXI0YWFjamQ1SGpYMXJ4Vjdna3NqVWZ3?=
+ =?utf-8?B?NmNIeEk3ZklOSkJLQVNIa1NRWHRyRVlnSHQzTTF6Wm5QU296UUNTWk1TS1U1?=
+ =?utf-8?B?SUN4U05GLys5Y2gwSUxtSlVpVTlVYTNCV1l2ZDVjL3d2SkZUd25mcVFkZkNO?=
+ =?utf-8?B?NkRsdEYrb3ArVkFhVnVMZFd0S2ZDSU82WmhmUzIrdm9GMEpYYm1jNGxtZDJ3?=
+ =?utf-8?B?VE4rOURmMU11K2FLWUcwNzA2SHpUZ2svMCtoZ3NMR0dkb3FhTXNXemlXUWZh?=
+ =?utf-8?B?a3E5aExUTFFzeWU4VE1jVmtTTmNIaGx4TzcvaW8wTnZXUWEzWVZLYVE1eUJE?=
+ =?utf-8?B?dk5CdUthVmdONXcwTE5vanRIcEJjSTRjQ2I3V05QbEYvbVl6KzB6dFhRdkxG?=
+ =?utf-8?B?L2tpeno0bDU2U1AyQXZXaWk2Mmc1NE1YRzQvVkJlcXhuTnMzc3dTZ1NKSEI1?=
+ =?utf-8?B?QkdQa0tzeTNYdTFBdkhRaFlsc3Z1a21pd1A3TTBic2NtOG1aTnZjc09pMzFo?=
+ =?utf-8?B?OXkvTm5Jbmh4aFNHSUlUbzhZcDhPMGpqeXZBRTFvaVFhUzZybmxTbEpJblU0?=
+ =?utf-8?B?UEhIaTJRZ2hXNHVvTGlHN3l4NTI0UWtZbmk1UTQrVm8vcXlaczBab2Q4dVpX?=
+ =?utf-8?B?R0RGbXUxZDB3RzRYWk9sNmhyd0liT2hYTWFQWU9sanQ3WTNSOXFTWnRDM2xG?=
+ =?utf-8?B?ZS9BQ2ZSMXZNV01ndkZVUmpwNnYzVUpnZUFUZDI1R2M4RXBjMHlFcVJNcW5w?=
+ =?utf-8?B?clF2a1hLMFN3MFJYVEd2Kzk0SCtiQ1h5eldJUT09?=
+X-Forefront-Antispam-Report:
+	CIP:131.228.2.240;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0735.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(7416014)(376014)(36860700013)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nokia-bell-labs.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2025 16:21:37.3307
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 575ca6f8-8501-4526-cf90-08ddf6cf712f
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.240];Helo=[fihe3nok0735.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TreatMessagesAsInternal-DB3PEPF0000885D.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA1PR07MB11096
 
-在 2025/9/16 23:52, Leon Hwang 写道:
-> By referencing
-> commit 1642a3945e223 ("selftests/bpf: Add struct argument tests with fentry/fexit programs."),
-> test the following cases for union argument support:
-> 
+From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 
-Can we use ‘commit 1642a3945e22’ with 12 chars, maybe it's minor nit 
-anyways or not.
+Hello,
 
-> * 8B union argument.
-> * 16B union argument.
-> 
-> cd tools/testing/selftests/bpf
-> ./test_progs -t tracing_struct/union_args
-> 472/3   tracing_struct/union_args:OK
-> 472     tracing_struct:OK
-> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
->   .../selftests/bpf/prog_tests/tracing_struct.c | 29 ++++++++++++++++
->   .../selftests/bpf/progs/tracing_struct.c      | 33 +++++++++++++++++++
->   .../selftests/bpf/test_kmods/bpf_testmod.c    | 31 +++++++++++++++++
->   3 files changed, 93 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-> index 19e68d4b35327..6f8c0bfb04155 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-> @@ -112,10 +112,39 @@ static void test_struct_many_args(void)
->   	tracing_struct_many_args__destroy(skel);
->   }
->   
-> +static void test_union_args(void)
-> +{
-> +	struct tracing_struct *skel;
-> +	int err;
-> +
-> +	skel = tracing_struct__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "tracing_struct__open_and_load"))
-> +		return;
-> +
-> +	err = tracing_struct__attach(skel);
-> +	if (!ASSERT_OK(err, "tracing_struct__attach"))
-> +		goto out;
-> +
-> +	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
-> +
-> +	ASSERT_EQ(skel->bss->ut1_a_a, 1, "ut1:a.arg.a");
-> +	ASSERT_EQ(skel->bss->ut1_b, 4, "ut1:b");
-> +	ASSERT_EQ(skel->bss->ut1_c, 5, "ut1:c");
-> +
-> +	ASSERT_EQ(skel->bss->ut2_a, 6, "ut2:a");
-> +	ASSERT_EQ(skel->bss->ut2_b_a, 2, "ut2:b.arg.a");
-> +	ASSERT_EQ(skel->bss->ut2_b_b, 3, "ut2:b.arg.b");
-> +
-> +out:
-> +	tracing_struct__destroy(skel);
-> +}
-> +
->   void test_tracing_struct(void)
->   {
->   	if (test__start_subtest("struct_args"))
->   		test_struct_args();
->   	if (test__start_subtest("struct_many_args"))
->   		test_struct_many_args();
-> +	if (test__start_subtest("union_args"))
-> +		test_union_args();
->   }
-> diff --git a/tools/testing/selftests/bpf/progs/tracing_struct.c b/tools/testing/selftests/bpf/progs/tracing_struct.c
-> index c435a3a8328ab..d460732e20239 100644
-> --- a/tools/testing/selftests/bpf/progs/tracing_struct.c
-> +++ b/tools/testing/selftests/bpf/progs/tracing_struct.c
-> @@ -18,6 +18,18 @@ struct bpf_testmod_struct_arg_3 {
->   	int b[];
->   };
->   
-> +union bpf_testmod_union_arg_1 {
-> +	char a;
-> +	short b;
-> +	struct bpf_testmod_struct_arg_1 arg;
-> +};
-> +
-> +union bpf_testmod_union_arg_2 {
-> +	int a;
-> +	long b;
-> +	struct bpf_testmod_struct_arg_2 arg;
-> +};
-> +
->   long t1_a_a, t1_a_b, t1_b, t1_c, t1_ret, t1_nregs;
->   __u64 t1_reg0, t1_reg1, t1_reg2, t1_reg3;
->   long t2_a, t2_b_a, t2_b_b, t2_c, t2_ret;
-> @@ -26,6 +38,9 @@ long t4_a_a, t4_b, t4_c, t4_d, t4_e_a, t4_e_b, t4_ret;
->   long t5_ret;
->   int t6;
->   
-> +long ut1_a_a, ut1_b, ut1_c;
-> +long ut2_a, ut2_b_a, ut2_b_b;
-> +
->   SEC("fentry/bpf_testmod_test_struct_arg_1")
->   int BPF_PROG2(test_struct_arg_1, struct bpf_testmod_struct_arg_2, a, int, b, int, c)
->   {
-> @@ -130,4 +145,22 @@ int BPF_PROG2(test_struct_arg_11, struct bpf_testmod_struct_arg_3 *, a)
->   	return 0;
->   }
->   
-> +SEC("fexit/bpf_testmod_test_union_arg_1")
-> +int BPF_PROG2(test_union_arg_1, union bpf_testmod_union_arg_1, a, int, b, int, c)
-> +{
-> +	ut1_a_a = a.arg.a;
-> +	ut1_b = b;
-> +	ut1_c = c;
-> +	return 0;
-> +}
-> +
-> +SEC("fexit/bpf_testmod_test_union_arg_2")
-> +int BPF_PROG2(test_union_arg_2, int, a, union bpf_testmod_union_arg_2, b)
-> +{
-> +	ut2_a = a;
-> +	ut2_b_a = b.arg.a;
-> +	ut2_b_b = b.arg.b;
-> +	return 0;
-> +}
-> +
->   char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> index 2beb9b2fcbd87..9cd28de05960c 100644
-> --- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> @@ -62,6 +62,18 @@ struct bpf_testmod_struct_arg_5 {
->   	long d;
->   };
->   
-> +union bpf_testmod_union_arg_1 {
-> +	char a;
-> +	short b;
-> +	struct bpf_testmod_struct_arg_1 arg;
-> +};
-> +
-> +union bpf_testmod_union_arg_2 {
-> +	int a;
-> +	long b;
-> +	struct bpf_testmod_struct_arg_2 arg;
-> +};
-> +
->   __bpf_hook_start();
->   
->   noinline int
-> @@ -128,6 +140,20 @@ bpf_testmod_test_struct_arg_9(u64 a, void *b, short c, int d, void *e, char f,
->   	return bpf_testmod_test_struct_arg_result;
->   }
->   
-> +noinline int
-> +bpf_testmod_test_union_arg_1(union bpf_testmod_union_arg_1 a, int b, int c)
-> +{
-> +	bpf_testmod_test_struct_arg_result = a.arg.a + b + c;
-> +	return bpf_testmod_test_struct_arg_result;
-> +}
-> +
-> +noinline int
-> +bpf_testmod_test_union_arg_2(int a, union bpf_testmod_union_arg_2 b)
-> +{
-> +	bpf_testmod_test_struct_arg_result = a + b.arg.a + b.arg.b;
-> +	return bpf_testmod_test_struct_arg_result;
-> +}
-> +
->   noinline int
->   bpf_testmod_test_arg_ptr_to_struct(struct bpf_testmod_struct_arg_1 *a) {
->   	bpf_testmod_test_struct_arg_result = a->a;
-> @@ -398,6 +424,8 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
->   	struct bpf_testmod_struct_arg_3 *struct_arg3;
->   	struct bpf_testmod_struct_arg_4 struct_arg4 = {21, 22};
->   	struct bpf_testmod_struct_arg_5 struct_arg5 = {23, 24, 25, 26};
-> +	union bpf_testmod_union_arg_1 union_arg1 = { .arg = {1} };
-> +	union bpf_testmod_union_arg_2 union_arg2 = { .arg = {2, 3} };
->   	int i = 1;
->   
->   	while (bpf_testmod_return_ptr(i))
-> @@ -415,6 +443,9 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
->   	(void)bpf_testmod_test_struct_arg_9(16, (void *)17, 18, 19, (void *)20,
->   					    21, 22, struct_arg5, 27);
->   
-> +	(void)bpf_testmod_test_union_arg_1(union_arg1, 4, 5);
-> +	(void)bpf_testmod_test_union_arg_2(6, union_arg2);
-> +
->   	(void)bpf_testmod_test_arg_ptr_to_struct(&struct_arg1_2);
->   
->   	(void)trace_bpf_testmod_test_raw_tp_null_tp(NULL);
+Plesae find the v2 AccECN case handling patch series, which covers
+several excpetional case handling of Accurate ECN spec (RFC9768),
+adds new identifiers to be used by CC modules, adds ecn_delta into
+rate_sample, and keeps the ACE counter for computation, etc.
 
+This patch series is part of the full AccECN patch series, which is available at
+https://github.com/L4STeam/linux-net-next/commits/upstream_l4steam/
+
+Best regards,
+Chia-Yu
+
+---
+Chia-Yu Chang (11):
+  tcp: L4S ECT(1) identifier and NEEDS_ACCECN for CC modules
+  tcp: disable RFC3168 fallback identifier for CC modules
+  tcp: accecn: handle unexpected AccECN negotiation feedback
+  tcp: accecn: retransmit downgraded SYN in AccECN negotiation
+  tcp: move increment of num_retrans
+  tcp: accecn: retransmit SYN/ACK without AccECN option or non-AccECN
+    SYN/ACK
+  tcp: accecn: unset ECT if receive or send ACE=0 in AccECN negotiaion
+  tcp: accecn: fallback outgoing half link to non-AccECN
+  tcp: accecn: verify ACE counter in 1st ACK after AccECN negotiation
+  tcp: accecn: stop sending AccECN opt when loss ACK w/ option
+  tcp: accecn: enable AccECN
+
+Ilpo Järvinen (3):
+  tcp: try to avoid safer when ACKs are thinned
+  gro: flushing when CWR is set negatively affects AccECN
+  tcp: accecn: Add ece_delta to rate_sample
+
+ .../networking/net_cachelines/tcp_sock.rst    |  1 +
+ include/linux/tcp.h                           |  4 +-
+ include/net/inet_ecn.h                        | 20 +++-
+ include/net/tcp.h                             | 30 +++++-
+ include/net/tcp_ecn.h                         | 85 ++++++++++++-----
+ net/ipv4/sysctl_net_ipv4.c                    |  2 +-
+ net/ipv4/tcp.c                                |  2 +
+ net/ipv4/tcp_cong.c                           |  9 +-
+ net/ipv4/tcp_input.c                          | 91 +++++++++++++------
+ net/ipv4/tcp_minisocks.c                      | 40 +++++---
+ net/ipv4/tcp_offload.c                        |  3 +-
+ net/ipv4/tcp_output.c                         | 38 +++++---
+ 12 files changed, 239 insertions(+), 86 deletions(-)
 
 -- 
-Best Regards
-Tao Chen
+2.34.1
+
 
