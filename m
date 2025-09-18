@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-68840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68841-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AAF4B86830
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 20:49:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBF3FB86841
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 20:49:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1D9916A47B
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 18:48:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57F227C0376
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 18:48:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DA92D3A9C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7832D24BC;
 	Thu, 18 Sep 2025 18:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="itjplROj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mtk6ciKw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5B529A9CD
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 18:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D862E2D29D7
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 18:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758221288; cv=none; b=usqSY53Vif9NOV4YyDbolMvtlPG9oBPEBJrPCKxrj7H5JsFYktiFKyRElqn1gQmPyihyvryPYjQLoN1TP7Cr9ZuOAyeSHh+ZmIMjCXNVSuXuAbF09yGBcRlMWCPG5cniqSDHZd/5m0QovCHHVFzsu1xDw1uOpUe6BKMu+bqC7P4=
+	t=1758221289; cv=none; b=hM7MoT5E/SsC20inuytCmExlsHv2dEX8+nSY0SnBo0/oQuVSR3/cZLwEt6rSfog08K5EB4+eWXqXMnPRZLFJ+QkvFk+SSHwHpRMyW6FYknGEHXGHhzXq30wnMJZDIuZ2GhW93pbIN0qhb4qoAwn5uRE3z+GuOG3EiKTIen/8nJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758221288; c=relaxed/simple;
-	bh=+dIgtOL6B11dhU9LUTehvO0482fIII//FtqSfrn3iL4=;
+	s=arc-20240116; t=1758221289; c=relaxed/simple;
+	bh=FlmJy/7Xd/2pwSTTC6rgG49jDSNFNFq0mOFAPJK6ZAA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kkd/FOTED2daUMmLuSyAejpvvR6+u8AwiGj23ObeCI8xPe7INBMzn5xXldewl35B+esSj7kkMi3RQS6iwiSkqWTfux421iz3XI0uG0PIi+zTm6K8SB+pkDrncZfwkRP6mFMxOnkSiXVLpNSyM0c6awMbjgbcBPlC+GelHOTNBT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=itjplROj; arc=none smtp.client-ip=209.85.215.175
+	 MIME-Version:Content-Type; b=LJYHs4vFp3dtFcIPtJgLPmzcndybJ9gkZPdIQrK1Vj2M9U0uvVrsjluLY3Z9Ve07b7tsLC9kDamU1mEDObPGwv4pI/pCUD42DZb1sGXje+w2ODqgMZrVkRc0Q0pnUlUtM/Bu/v5fgYLSRd0/z25F9DMCa9WehZX8/NUGAZIb/Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mtk6ciKw; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b4ee87cc81eso1219806a12.1
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 11:48:06 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2445824dc27so13646715ad.3
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 11:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758221286; x=1758826086; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758221287; x=1758826087; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uBQEJwDEzUlEBvdgiHs9qbExKnPUtOGsBsiGHvYGFFw=;
-        b=itjplROjZccfssRuzGtxwIUY9qPgFAXVClIMtWi+h9FFwg30Pmqkc+9Jr1whNyJRar
-         F4rbMfNA+UOjmyGuOIMHh0YnjC2Sa/0Iob/jpkfvOcwRJJ4AwH/im45QyEbzO99I7I/H
-         c7jq+aEj90OU+ceTZnPKH4zxZCgfRibvwNnf06OVvwX+N0ERqFKO/qqg97LxqAXjgLzJ
-         9Dnl/O84RwzekN4Dh9rIpIisC+2I+Lwn+PjbLFZ5qlqsmLX1IQjIPq0MXmpmkj7Wi21u
-         IeEEahtG8XVbINSGdf1CHRi5zuSTd5UPZCK1TcdqdjN8oqMjTeVpsd4EUf6Q+keUb7Sm
-         Q8rQ==
+        bh=yNHL0Vsc8z7LZGkZI+uZAC5R+ShkWy60mDY+U+Rewbs=;
+        b=mtk6ciKwWGLabtpXn18LODkXFeRwiiDie08ADmauVc6Yl48+SceU/qaB7KDeOliaxI
+         oMxFzzmgQjz/YVbSOZgqGoUo0bVO+K64e4j9S521S2mEPnWVerE1EcbJ9vjotP++ctSj
+         kcXgZM9xiNP+fajJSACGB299QuQjuO1oKOYEx2O1mHJcgWknR2Q5rs8N8AKRPeW9fBan
+         1cwtgIQc+BjKgD139ZWaj93JM4oJfYSTjQSdj01vGHZvlBU+EoJ50ob3eRZ2vDAatSbt
+         WjeQrbKOWG6DnLtPm+pQPxBuU5/nGzOdblIHnrsWYCONoEpEQKYyE15nCqqKY9b8ZZdi
+         HP8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758221286; x=1758826086;
+        d=1e100.net; s=20230601; t=1758221287; x=1758826087;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uBQEJwDEzUlEBvdgiHs9qbExKnPUtOGsBsiGHvYGFFw=;
-        b=xN5RLhVVBGXRQG+bivB6Zc9lNBkfs2md+6akpnp90N27i4v1L3u3zR4rn1YikEd0Fb
-         Z/HKTz6pnmns+BuvMrFZfTobly7qVPNDHz7Ch6fTTgxHiNPZKU1QcDv/Zm7fKuHYXtbz
-         I5ctvxJlCNiEARn8p9FnsjtIp4q5NIrQUbCHdF/0Ah94giO5gVDRYtoo5mYDGpTRNOd7
-         FGDFPQh2iOFQbc5tIG1sHW0rob7gLx0uR0/mbPn1uQnrN7uV9VPnc3hHgt9HPNzK09PI
-         KAdMBl/DpY9NrdlRFQEfam7CL/jLNylgkZdeRTitE3mbva8c8RqZqWdKEAYctCHVgslm
-         AIfQ==
-X-Gm-Message-State: AOJu0YwOB+GM6Vkm6v99JtFs+29rJCwhR1MgVCmYAxDLkHd1meT+oKon
-	jzwJ7M5q6BWK3kHsHmLFbVMuPTE6HSCHZSU/MSVBs0z6M87PaQgV/+QX18NhDgAw
-X-Gm-Gg: ASbGncsbThWKVfZfk/pG5GyA28tjnrNA5hU8j8T5EnRhufEyRo8cMP68dw0AO1FIXfm
-	qOZ70F/nBUkiSt/a/JrTs6o/PaUM38f3oPVbEUVuCSX0iMvdRxOeo6AOTOq0bzxTYEUX2K5+ieI
-	2bzKK9x5O6wg8wfoTeic35Z8QFzdAP7XZ0IwYsCpNAnCBPJe2M+m6VtB2r86yFA8mKS/YfN0ggk
-	WCSYhUbXJTb+iJ9F1mWUmBobYxg6aQqhWXtJdGZSNISIdEenv+8QoadifJmihosxBu+FlXG7Rbx
-	iX+7qHRP+5iU1XuRbGQZLx5E0A1jG7O9BcniibfFYwCIfKys6kj16v//5ZHpMfvrs+eK+KU9X+V
-	nmdRYqu1hOol7Fv1PdZwoOKYwwdn1hK5v3wdnSf1FhNHx6Q==
-X-Google-Smtp-Source: AGHT+IEnmodh+MgQNGAey7XnAoQtPoVQiopsm4Yq9GVHE4eIkLakbB714YxN5Bi4goVS85+qA3w3rQ==
-X-Received: by 2002:a17:902:fc44:b0:265:89c:251b with SMTP id d9443c01a7336-269ba50106amr6842375ad.29.1758221286252;
+        bh=yNHL0Vsc8z7LZGkZI+uZAC5R+ShkWy60mDY+U+Rewbs=;
+        b=g04dqM1KuSYqnsOgk2SJ5YkpI9e2FpS15tfeqPdE0j79DxGo+07TIrbMh+9smWdvvS
+         +IY5GNfynIUdaY1oZi7/N6hUd1EOL1O2VsQsI0XYlIgUQwtN804sSWjhiaFrxuBZf/IE
+         eiWgn6qErCXyeag0hGCmUkFBIBNvtmHAcuZ97Tn0kh7tOGIiVxdFWuZvadvb4FFveWVJ
+         kR/2nwpBfXZhZoF2W3PEL1gtUgo62GYt6FMOTIndoyfe70hKQ4I6KT9gHIl+UfucEMhl
+         Dh70y45byna/XteJX0NJuUrttpZhn6JpXMDJ651GzKW9gA5niat+n6vBK1/u9tVjNh6p
+         kx2w==
+X-Gm-Message-State: AOJu0YygXG0ZEVEePbWUwAwX1RG6W+tczqEEuZpdJpC9nNiKEJNJKgaE
+	RHoK8XsqEz6Lh8eYalEEqOFr44SchmYxOeJyOnpQo7whkse8BEOFuul4x5UKpz4p
+X-Gm-Gg: ASbGncv/584cC4UII0uhTqKpP4m/HorwMoxf5uvUGrJGoHADg7YuxUH+f0W5Ua58SG0
+	qwNiN3/oAw9qQmrlcjFvnNuKSa0CMzeH81Uz8NQnzZhFoSTOgOkg0MB1zwJGVmKsidZUyvU2vDQ
+	SfGPaI5uiKyrjJwrz8HC2XxTEMEQTuhVhsjU5GXpb7tgS6mPVBJcEvpo4n4UKXynrq/DB6xYvji
+	yGV/WF+MSpKT5lQTkMMPNgPE+qHg619eoykg8PRgUkiFa3mLVlWfNsBwNew1KCXfxZYcPh2Daf6
+	KDsGk0x8Fem46wZt+TOScHJB2ikMchZpp7bLbJcgRLV87YnHixoxQ1NNLmO5enU9hhW8JncpV5s
+	we/irI/q/OfRk8mrn3zC1pgqhj/ZPzNSWjls=
+X-Google-Smtp-Source: AGHT+IH22fQFecfLN0MpqSXxoxkKZfWDp3ENXCyFGzcrC/Unp14tAdWDm8rGeDRxu1YPbplWTgCeYw==
+X-Received: by 2002:a17:903:19e7:b0:264:f714:8dce with SMTP id d9443c01a7336-269ba5081d8mr7945835ad.36.1758221286993;
         Thu, 18 Sep 2025 11:48:06 -0700 (PDT)
 Received: from honey-badger ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269802e00b3sm32361505ad.90.2025.09.18.11.48.05
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269802e00b3sm32361505ad.90.2025.09.18.11.48.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Sep 2025 11:48:05 -0700 (PDT)
+        Thu, 18 Sep 2025 11:48:06 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -81,9 +81,9 @@ Cc: andrii@kernel.org,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 02/12] bpf: use compute_live_registers() info in clean_func_state
-Date: Thu, 18 Sep 2025 11:47:31 -0700
-Message-ID: <20250918-callchain-sensitive-liveness-v2-2-214ed2653eee@gmail.com>
+Subject: [PATCH bpf-next v2 03/12] bpf: remove redundant REG_LIVE_READ check in stacksafe()
+Date: Thu, 18 Sep 2025 11:47:32 -0700
+Message-ID: <20250918-callchain-sensitive-liveness-v2-3-214ed2653eee@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250918-callchain-sensitive-liveness-v2-0-214ed2653eee@gmail.com>
 References: <20250918-callchain-sensitive-liveness-v2-0-214ed2653eee@gmail.com>
@@ -96,58 +96,34 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-Prepare for bpf_reg_state->live field removal by leveraging
-insn_aux_data->live_regs_before instead of bpf_reg_state->live in
-compute_live_registers(). This is similar to logic in
-func_states_equal(). No changes in verification performance for
-selftests or sched_ext.
+stacksafe() is called in exact == NOT_EXACT mode only for states that
+had been porcessed by clean_verifier_states(). The latter replaces
+dead stack spills with a series of STACK_INVALID masks. Such masks are
+already handled by stacksafe().
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ kernel/bpf/verifier.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 861628f4baf8788b80a5cf5eba182db3372bdce2..42157709fd6b2ceb5ac056f1008d7a34f4aac292 100644
+index 42157709fd6b2ceb5ac056f1008d7a34f4aac292..edda360a3c370e5fbe036ae55c9b16cd37a58486 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -18464,15 +18464,16 @@ static bool check_scalar_ids(u32 old_id, u32 cur_id, struct bpf_idmap *idmap)
- }
+@@ -18760,13 +18760,6 @@ static bool stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old,
+ 		     cur->stack[spi].slot_type[i % BPF_REG_SIZE]))
+ 			return false;
  
- static void clean_func_state(struct bpf_verifier_env *env,
--			     struct bpf_func_state *st)
-+			     struct bpf_func_state *st,
-+			     u32 ip)
- {
-+	u16 live_regs = env->insn_aux_data[ip].live_regs_before;
- 	enum bpf_reg_liveness live;
- 	int i, j;
+-		if (!(old->stack[spi].spilled_ptr.live & REG_LIVE_READ)
+-		    && exact == NOT_EXACT) {
+-			i += BPF_REG_SIZE - 1;
+-			/* explored state didn't use this */
+-			continue;
+-		}
+-
+ 		if (old->stack[spi].slot_type[i % BPF_REG_SIZE] == STACK_INVALID)
+ 			continue;
  
- 	for (i = 0; i < BPF_REG_FP; i++) {
--		live = st->regs[i].live;
- 		/* liveness must not touch this register anymore */
--		if (!(live & REG_LIVE_READ))
-+		if (!(live_regs & BIT(i)))
- 			/* since the register is unused, clear its state
- 			 * to make further comparison simpler
- 			 */
-@@ -18493,11 +18494,13 @@ static void clean_func_state(struct bpf_verifier_env *env,
- static void clean_verifier_state(struct bpf_verifier_env *env,
- 				 struct bpf_verifier_state *st)
- {
--	int i;
-+	int i, ip;
- 
- 	st->cleaned = true;
--	for (i = 0; i <= st->curframe; i++)
--		clean_func_state(env, st->frame[i]);
-+	for (i = 0; i <= st->curframe; i++) {
-+		ip = frame_insn_idx(st, i);
-+		clean_func_state(env, st->frame[i], ip);
-+	}
- }
- 
- /* the parentage chains form a tree.
 
 -- 
 2.51.0
