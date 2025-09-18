@@ -1,160 +1,339 @@
-Return-Path: <bpf+bounces-68794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C927EB84DDE
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 15:35:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E2FB84E46
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 15:43:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 751BD3B9845
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 13:35:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E99C6216E3
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 13:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4CCB308F31;
-	Thu, 18 Sep 2025 13:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF1A30C0E8;
+	Thu, 18 Sep 2025 13:43:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Uxz/gRGB"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BGc3dmFg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B06AC308F0D
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 13:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3FC82253A1
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 13:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758202512; cv=none; b=fEO8sKd5qtebP7L4dt4enfAVPo8+53gWnpRPLSkfiIpXuQW/HhqFY+te0qx5LWonYNSkGhU238EXYfAOb8jATwIr1OHiJt689KfO2IIeWTaDAMJlF2b7cuxWJZIboZjjSOQgGBPn9WyS4JeE2Y/NtDDbeBGRvtPMNeVSdRFvlAU=
+	t=1758203011; cv=none; b=AfVf5XTRAZ6bYLccdmm1sJ3HX3XThtq4GKIOITnbL5xMZH7N/pSHpYi8T35tl5+Q58QpR2B9uUxpH/SIDzIzkQrHKQsDFqilNQCrIm/MLX0jbkKhorIHwYhVbyIdIYvWd2ZDk2JrlYw/iHjGXiar2PqR2U1+7N34+nY89+N55MI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758202512; c=relaxed/simple;
-	bh=fAwbvtxv0yxYzUyTrUPBthDj0WzMiVdnsl4hRpevSc8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ENwZOhknp9qjwO53sa3Ty/kMYeOxM+BVBMisPDozpaXnrCgYvpcJ6izlHgO1M07BJ68IbYQc+zC3/JGj4FO9WXmiC1JHosPXf+8TTVj2Y0d3Y44qLnYuBSlCBxIw3NKAanZnv+Y/xNWgZkuH0xO2L8tT+FO1f47rVmwNH1Rv1SM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Uxz/gRGB; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <457b805f-ea5c-460e-b93f-b7b63f3358af@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758202507;
+	s=arc-20240116; t=1758203011; c=relaxed/simple;
+	bh=/j3JEnYxrrS+kiGBphtOhYTCAqxIQSWlcgQfGd2nk7Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rg7sstgooGDkqpPFqNQsls8cUvpoPYHbWcPdNi9HTRyCN9uTVorshV9wzaNGObSIowxHBnYY4PWSEcXVLgLVQOql9ciWy3+yEzzQ1Lli36NiXbzUU2TY8h9iQz4d1Yc/UlpIHxSI0W1jtrtyJbBZz73f9XtbckJ1JWl7GxCVMak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BGc3dmFg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1758203008;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A7h5hhwXpE9R2dmZ7dBQ21qFNe8mjOdRa/SiXX2IBDE=;
-	b=Uxz/gRGBDZxwobYS6mlhBBRauctYIuXKvgfOWeST0WwcDqeQFHaW6tnOtRszG72tBYD1Zh
-	DBTiR23NdRRWYJx2IfWis78YnfGeEBUd8cmS3JGNRs2f6xD+V9YxBn72PEtp1+Yil0OkIN
-	gxh3iYv9LPPSM5Vd1yNLdMt14Jl/q78=
-Date: Thu, 18 Sep 2025 21:34:54 +0800
+	bh=0x6r56VSTtFzI1KR80IkhiQu7zSpN7Rqke7zLSWIcUg=;
+	b=BGc3dmFgnF0BMEmBOM5YHbF4rEfXXJlrzuaq3xdMt4kpvEDVfjnbgm5K8ifJ+Eimdp8iYY
+	2c8tpWRQkTJPyOiYx9ldCqAJ++jL12YdI0isEw7LjGkJHxhoWph3zjN1Cala2KSlTV1MJM
+	duAkP+CgOBmQz++aWDhus1Rxh4k/ihI=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-528-_V9_ryH_NsuKAb-PO06euA-1; Thu,
+ 18 Sep 2025 09:43:26 -0400
+X-MC-Unique: _V9_ryH_NsuKAb-PO06euA-1
+X-Mimecast-MFC-AGG-ID: _V9_ryH_NsuKAb-PO06euA_1758203004
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0D47C1956089;
+	Thu, 18 Sep 2025 13:43:23 +0000 (UTC)
+Received: from rotkaeppchen (unknown [10.45.225.227])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 1148C1955F21;
+	Thu, 18 Sep 2025 13:43:14 +0000 (UTC)
+Date: Thu, 18 Sep 2025 15:43:11 +0200
+From: Philipp Rudo <prudo@redhat.com>
+To: Pingfan Liu <piliu@redhat.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Andrii
+ Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
+ Song <yonghong.song@linux.dev>, Jeremy Linton <jeremy.linton@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Simon Horman <horms@kernel.org>, Gerd
+ Hoffmann <kraxel@redhat.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
+ Viktor Malik <vmalik@redhat.com>, Jan Hendrik Farr <kernel@jfarr.cc>,
+ Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>, Andrew Morton
+ <akpm@linux-foundation.org>, kexec@lists.infradead.org,
+ bpf@vger.kernel.org, systemd-devel@lists.freedesktop.org
+Subject: Re: [PATCHv5 00/12] kexec: Use BPF lskel to enable kexec to load PE
+ format boot image
+Message-ID: <20250918154311.3be690d4@rotkaeppchen>
+In-Reply-To: <aMjEyfrNSuA3IBR7@fedora>
+References: <20250819012428.6217-1-piliu@redhat.com>
+	<20250901162929.11af536d@rotkaeppchen>
+	<aMjEyfrNSuA3IBR7@fedora>
+Organization: Red Hat inc.
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add lookup_and_delete_elem for
- BPF_MAP_STACK_TRACE
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20250909163223.864120-1-chen.dylane@linux.dev>
- <CAEf4BzZ2Fg+AmFA-K3YODE27br+e0-rLJwn0M5XEwfEHqpPKgQ@mail.gmail.com>
- <CAADnVQ+s8B7-fvR1TNO-bniSyKv57cH_ihRszmZV7pQDyV=VDQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAADnVQ+s8B7-fvR1TNO-bniSyKv57cH_ihRszmZV7pQDyV=VDQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-在 2025/9/18 09:35, Alexei Starovoitov 写道:
-> On Wed, Sep 17, 2025 at 3:16 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->>
->>
->> P.S. It seems like a good idea to switch STACKMAP to open addressing
->> instead of the current kind-of-bucket-chain-but-not-really
->> implementation. It's fixed size and pre-allocated already, so open
->> addressing seems like a great approach here, IMO.
+Hi Pingfan,
+
+On Tue, 16 Sep 2025 10:00:41 +0800
+Pingfan Liu <piliu@redhat.com> wrote:
+
+> On Mon, Sep 01, 2025 at 04:29:29PM +0200, Philipp Rudo wrote:
+> Hi Philipp,
 > 
-> That makes sense. It won't have backward compat issues.
-> Just more reliable stack_id.
+> Thank you for deep insight, please see the comments
 > 
-> Fixed value_size is another footgun there.
-> Especially for collecting user stack traces.
-> We can switch the whole stackmap to bpf_mem_alloc()
-> or wait for kmalloc_nolock().
-> But it's probably a diminishing return.
+> > Hi Pingfan,
+> > 
+> > thanks for sharing the updated version of the series. There are a few
+> > small nits you can find in my comments to the individual patches.
+> > 
+> > I also took an other look at the bigger picture. The way I see it the
+> > series contains two major changes.
+> > 
+> > 1. A generic mechanism to parse and run bpf programs during kexec.  
 > 
-> bpf_get_stack() also isn't great with a copy into
-> perf_callchain_entry, then 2nd copy into on stack/percpu buf/ringbuf,
-> and 3rd copy of correct size into ringbuf (optional).
+> Thanks for your suggestion. This makes the whole design look more
+> natural. Without it, using the PE format parser as a frontend to the
+> image parser looks a bit awkward.
 > 
-> Also, I just realized we have another nasty race there.
-> In the past bpf progs were run in preempt disabled context,
-> but we forgot to adjust bpf_get_stack[id]() helpers when everything
-> switched to migrate disable.
+> > 2. A new loader for UEFI Applications building up on 1.
+> > 
+> > Both those changes are currently smashed together as "PE image loader",
+> > which IMHO is quite confusing. It's correct that UEFI Apps are PE
+> > files. But the PE format is also used in many other ways and in the end
+> > we are only interested in this specific use case. Plus the generic
+> > mechanism to parse and run bpf programs during kexec can also be used
+> > with any other file format, not just PE.
+> > 
+> > In addition I noticed that hooking into kexec_file while loading the
+> > image is too late. The problem is that in
+> > kernel/kexec_file.c:kimage_file_prepare_segments the cmdline is
+> > measured for IMA before the image is loaded. But we allow the
+> > bpf_prog to change the cmdline. When that is done the IMA measurement
+> > no longer is correct. So we need a new hook to run the bpf programs
+> > after the initrd and cmdline were read but before the IMA measurement is
+> > done.
+> >   
 > 
-> The return value from get_perf_callchain() may be reused
-> if another task preempts and requests the stack.
-> We have partially incorrect comment in __bpf_get_stack() too:
->          if (may_fault)
->                  rcu_read_lock(); /* need RCU for perf's callchain below */
+> This should be a issue when turning on IMA measurement on cmdline. And it
+> can be perfectly addressed with your suggestion.
 > 
-> rcu can be preemptable. so rcu_read_lock() makes
-> trace = get_perf_callchain(...)
-> accessible, but that per-cpu trace buffer can be overwritten.
-> It's not an issue for CONFIG_PREEMPT_NONE=y, but that doesn't
-> give much comfort.
+> > So my suggestions are:
+> > 
+> > 1. Extend the kexec_file_ops by a new 'get_bpf_prog' hook.  
+> 
+> I'm not sure I agree with you on this.  We both agree that the generic
+> mechanism to parse and run BPF programs should be independent of the
+> image parser and belong in kexec_file.c. However, kexec_file_ops is
+> still a concept that belongs to the image parser layer. So I think that
+> moving the logic to kexec_file.c is good enough.
 
-Hi Alexei,
+I'm not sure I get your point here. My rational is, that the bpf_prog
+can be included in different file formats. So we still need a mechanism
+to parse it from the different formats. Plus we need a file_ops that is
+"responsible" for a file type. All in all it makes most sense to me to
+have a file_ops that only has a .probe and .get_bpf_prog.
 
-Can we fix it like this?
+But yes, maybe I'm missing something. I'm curious on seeing your v6.
 
--       if (may_fault)
--               rcu_read_lock(); /* need RCU for perf's callchain below */
-+       preempt_diable();
-
-         if (trace_in)
-                 trace = trace_in;
-@@ -455,8 +454,7 @@ static long __bpf_get_stack(struct pt_regs *regs, 
-struct task_struct *task,
-                                            crosstask, false);
-
-         if (unlikely(!trace) || trace->nr < skip) {
--               if (may_fault)
--                       rcu_read_unlock();
-+               preempt_enable();
-                 goto err_fault;
-         }
-
-@@ -475,9 +473,7 @@ static long __bpf_get_stack(struct pt_regs *regs, 
-struct task_struct *task,
-                 memcpy(buf, ips, copy_len);
-         }
-
--       /* trace/ips should not be dereferenced after this point */
--       if (may_fault)
--               rcu_read_unlock();
-+       preempt_enable();
+Thanks
+Philipp
 
 > 
-> Modern day bpf api would probably be
-> - get_callchain_entry()/put() kfuncs to expose low level mechanism
-> with safe acq/rel of temp buffer.
-> - then another kfuncs to perf_callchain_kernel/user into that buffer.
+> > 2. Move the mechanism to run bpf progs from kexec_pe_image.c to
+> >    kexec_file.c (with the new hook in the file_ops there shouldn't be
+> >    any problems).  
 > 
-> and with bpf_mem_alloc and hash kfuncs the bpf prog can
-> implement either bpf_get_stack() equivalent or much better
-> bpf_get_stackid() with variable length stack traces and so on.
+> Yes, the logic of loading and runing bpf progs should be placed in
+> kexec_file.c.
+> 
+> > 3. Rename CONFIG_KEXEC_PE_IMAGE to CONFIG_KEXEC_BPF  
+> 
+> OK.
+> 
+> > 4. Rename kexec_pe_image.c (and the functions within) to
+> >    kexec_uefi_app.c 
+> >   
+> 
+> OK.
+> 
+> Thanks for your careful review and good suggestion.
+> 
+> 
+> Best Regards,
+> 
+> Pingfan
+> 
+> > Thanks
+> > Philipp
+> > 
+> > On Tue, 19 Aug 2025 09:24:16 +0800
+> > Pingfan Liu <piliu@redhat.com> wrote:
+> >   
+> > > Cc systemd-devel@lists.freedesktop.org so any UKI expert can comment
+> > > 
+> > > *** Review the history ***
+> > > 
+> > > Nowadays UEFI PE bootable image is more and more popular on the distribution.
+> > > But it is still an open issue to load that kind of image by kexec with IMA enabled
+> > > 
+> > > There are several approaches to reslove this issue, but none of them are
+> > > accepted in upstream till now.
+> > > 
+> > > The summary of those approaches:
+> > >   -1. UEFI service emulator for UEFI stub
+> > >   -2. PE format parser in kernel
+> > > 
+> > > For the first one, I have tried a purgatory-style emulator [1]. But it
+> > > confronts the hardware scaling trouble.  For the second one, there are two
+> > > choices, one is to implement it inside the kernel, the other is inside the user
+> > > space.  Both zboot-format [2] and UKI-format [3] parsers are rejected due to
+> > > the concern that the variant format parsers will inflate the kernel code.  And
+> > > finally, we have these kinds of parsers in the user space 'kexec-tools'.
+> > > 
+> > > 
+> > > *** The approach in this series ***
+> > > 
+> > > This approach allows the various PE boot image to be parsed in the bpf-prog,
+> > > as a result, the kexec kernel code to remain relatively stable.
+> > > 
+> > > Benefits
+> > > And it abstracts architecture independent part and 
+> > > the API is limitted 
+> > > 
+> > > To protect against malicious attacks on the BPF loader in user space, it
+> > > employs BPF lskel to load and execute BPF programs from within the
+> > > kernel.
+> > > 
+> > > Each type of PE image contains a dedicated section '.bpf', which stores
+> > > the bpf-prog designed to parse the format.  This ensures that the PE's
+> > > signature also protects the integrity of the '.bpf' section.
+> > > 
+> > > 
+> > > The parsing process operates as a pipeline. The current BPF program
+> > > parser attaches to bpf_handle_pefile() and detaches at the end of the
+> > > current stage via disarm_bpf_prog(). The results parsed by the current
+> > > BPF program are buffered in the kernel through prepare_nested_pe() and
+> > > then delivered to the next stage. For each stage of the pipeline, the
+> > > BPF bytecode is stored in the '.bpf' section of the PE file. That means
+> > > a vmlinuz.efi embeded in UKI format can be handled.
+> > > 
+> > > 
+> > > Special thanks to Philipp Rudo, who spent significant time evaluating
+> > > the practicality of my solution, and to Viktor Malik, who guided me
+> > > toward using BPF light skeleton to prevent malicious attacks from user
+> > > space.
+> > > 
+> > > *** Test result ***
+> > > Configured with RHEL kernel debug file, which turns on most of locking,
+> > > memory debug option, I have not seen any warning or bug for 1000 times.
+> > > 
+> > > Test approach:
+> > > -1. compile kernel
+> > > -2. get the zboot image with bpf-prog by 'make -C tools/kexec zboot'
+> > > -3. compile kexec-tools from https://github.com/pfliu/kexec-tools/pull/new/pe_bpf
+> > > 
+> > > The rest process is the common convention to use kexec.
+> > > 
+> > > 
+> > > [1]: https://lore.kernel.org/lkml/20240819145417.23367-1-piliu@redhat.com/T/
+> > > [2]: https://lore.kernel.org/kexec/20230306030305.15595-1-kernelfans@gmail.com/
+> > > [3]: https://lore.kernel.org/lkml/20230911052535.335770-1-kernel@jfarr.cc/
+> > > [4]: https://lore.kernel.org/linux-arm-kernel/20230921133703.39042-2-kernelfans@gmail.com/T/
+> > > 
+> > > v4 -> v5
+> > >   - rebased onto Linux 6.17-rc2
+> > >   - [1/12], use a separate CONFIG_KEEP_COMPRESSOR to decide the section
+> > >     of decompressor method
+> > >   - [10/12], add Catalin's acked-by (Thanks Catalin!)
+> > > 
+> > > v3 -> v4
+> > >   - Use dynamic allocator in decompression ([4/12])
+> > >   - Fix issue caused by Identical Code Folding ([5/12])
+> > >   - Integrate the image generator tool in the kernel tree ([11,12/12])
+> > >   - Address the issue according to Philipp's comments in v3 reviewing.
+> > >     Thanks Philipp!
+> > > 
+> > > RFCv2 -> v3
+> > >   - move the introduced bpf kfuncs to kernel/bpf/* and mark them sleepable
+> > >   - use listener and publisher model to implement bpf_copy_to_kernel()
+> > >   - keep each introduced kfunc under the control of memcg
+> > > 
+> > > RFCv1 -> RFCv2
+> > >   - Use bpf kfunc instead of helper
+> > >   - Use C source code to generate the light skeleton file
+> > > 
+> > > 
+> > > *** BLURB HERE ***
+> > > 
+> > > Pingfan Liu (12):
+> > >   kexec_file: Make kexec_image_load_default global visible
+> > >   lib/decompress: Keep decompressor when CONFIG_KEEP_COMPRESSOR
+> > >   bpf: Introduce bpf_copy_to_kernel() to buffer the content from bpf-prog
+> > >   bpf: Introduce decompressor kfunc
+> > >   kexec: Introduce kexec_pe_image to parse and load PE file
+> > >   kexec: Integrate with the introduced bpf kfuncs
+> > >   kexec: Introduce a bpf-prog lskel to parse PE file
+> > >   kexec: Factor out routine to find a symbol in ELF
+> > >   kexec: Integrate bpf light skeleton to load zboot image
+> > >   arm64/kexec: Add PE image format support
+> > >   tools/kexec: Introduce a bpf-prog to parse zboot image format
+> > >   tools/kexec: Add a zboot image building tool
+> > > 
+> > >  arch/arm64/Kconfig                           |   1 +
+> > >  arch/arm64/include/asm/kexec.h               |   1 +
+> > >  arch/arm64/kernel/machine_kexec_file.c       |   3 +
+> > >  include/linux/bpf.h                          |  42 ++
+> > >  include/linux/decompress/mm.h                |   7 +
+> > >  include/linux/kexec.h                        |  10 +
+> > >  kernel/Kconfig.kexec                         |   9 +
+> > >  kernel/Makefile                              |   2 +
+> > >  kernel/bpf/Makefile                          |   3 +
+> > >  kernel/bpf/helpers.c                         | 230 +++++++++
+> > >  kernel/bpf/helpers_carrier.c                 | 215 +++++++++
+> > >  kernel/kexec_bpf/Makefile                    |  71 +++
+> > >  kernel/kexec_bpf/kexec_pe_parser_bpf.c       |  67 +++
+> > >  kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h | 147 ++++++
+> > >  kernel/kexec_file.c                          |  88 ++--
+> > >  kernel/kexec_pe_image.c                      | 463 +++++++++++++++++++
+> > >  lib/Kconfig                                  |   3 +
+> > >  lib/decompress.c                             |   6 +-
+> > >  tools/kexec/Makefile                         |  90 ++++
+> > >  tools/kexec/pe.h                             | 177 +++++++
+> > >  tools/kexec/zboot_image_builder.c            | 280 +++++++++++
+> > >  tools/kexec/zboot_parser_bpf.c               | 158 +++++++
+> > >  22 files changed, 2029 insertions(+), 44 deletions(-)
+> > >  create mode 100644 kernel/bpf/helpers_carrier.c
+> > >  create mode 100644 kernel/kexec_bpf/Makefile
+> > >  create mode 100644 kernel/kexec_bpf/kexec_pe_parser_bpf.c
+> > >  create mode 100644 kernel/kexec_bpf/kexec_pe_parser_bpf.lskel.h
+> > >  create mode 100644 kernel/kexec_pe_image.c
+> > >  create mode 100644 tools/kexec/Makefile
+> > >  create mode 100644 tools/kexec/pe.h
+> > >  create mode 100644 tools/kexec/zboot_image_builder.c
+> > >  create mode 100644 tools/kexec/zboot_parser_bpf.c
+> > > 
+> > > 
+> > > base-commit: c17b750b3ad9f45f2b6f7e6f7f4679844244f0b9  
+> >   
+> 
 
-
--- 
-Best Regards
-Tao Chen
 
