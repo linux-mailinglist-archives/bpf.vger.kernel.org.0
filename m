@@ -1,163 +1,92 @@
-Return-Path: <bpf+bounces-68779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00A06B84A3E
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 14:45:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B557EB84BCC
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 15:06:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABFCE2A3133
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 12:45:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B1087A5185
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 13:04:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8E0303A3E;
-	Thu, 18 Sep 2025 12:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B093081DD;
+	Thu, 18 Sep 2025 13:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KPQxAtkX"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NpLQ5586"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D90211C
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 12:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AADFD3081CD;
+	Thu, 18 Sep 2025 13:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758199547; cv=none; b=in2vhPGfMUWn3lhk+aM3t95bcgonsv6ROzXeeYsKdaBCCQ6gevo5VuWpRG19yMdktcUZURthyyL72xGJ0RcZASjQVVlvVL1zveheFw2osBhcf8BYnv/xmzax4dP7tT9Eyicfv9Vzm+KIFwDklm7RfLMkZXwZT4itT7/f0NcN88U=
+	t=1758200754; cv=none; b=T8j6xKxHe2QKTMx8hlTqwnhKkMeGsllkyaHsrzgxjdWaYzhPS5Lf61NH+VQ8U067dDyAq5yoHSnUP3uo+xPzBdNnaqTyqbVpI8aK5B2rNeaK7Reud1LmjUFQoaP3Fkyi+SiL/aITohNTovz7JD/rzP/b7EYG4ud1ap+WhA1j0zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758199547; c=relaxed/simple;
-	bh=mzKwFIqsGgXwEtbhpffy+ppn9zPepgeKleABiPhbzog=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B9Rjatop/DeGeGyTMuqBDw3/h5BFuj25/dVcwA4Bau4IO7vLMZBVFRbB0/s0mZ6FQ1OU72EsFcYZjdDwmnMjZqt17vggEo0+U1LzesAI8chvDuG1iBx8hpj7Li2IRgYfdwavu9jGNFA5dSHDFREFw/VD3qTwCNRIjmXIRBkJLgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KPQxAtkX; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2d9320eb-6be9-43e4-a63e-08e7ab1427e3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758199532;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nGVg+fRknMB/K4YFDGb3eZrXnElVFr/VOGzCAPGLxQQ=;
-	b=KPQxAtkXhPrj0tPDM2EfRpbVX1DCaMlCLevMwlE9WFx3vBJ82s8j9MRHr9g3k/OLZp2TIq
-	K5hY9toagB78O4PAtjLuNYtKTE+cSF0490N0h/7U44AipAW0/nXFQdYXb60lFfp0AfORMj
-	lqugtJvtAexNVqTYyaXDCqNvVGy68rQ=
-Date: Thu, 18 Sep 2025 20:45:23 +0800
+	s=arc-20240116; t=1758200754; c=relaxed/simple;
+	bh=XoYGtPHukdd25GBUBWtfnmJWMGcLVLP9TqwVDZmOWf4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WyQcKnybnFbfQnVWJCGNcXnH66Y9pUwSPIvHVZcfV6XC+zgZZv9ImaENdKXUh/070WISzYP5fu+jDR+MxuCvIViMOi45k/9ep5keM0TOr2QYp5kA5o9NYqd+jzCfcIfUKb3Rcg705xFnu30Qj5LiGvy0ggWyJvv3w6zwtIp5if8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NpLQ5586; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=2OUKW+7mtsPUgfqsMcetzwE/6SVcXcNuSgS0ac5rs4c=; b=NpLQ55866HVrCy1XxWWFmQmaaV
+	FVnLaQJCteP1u8utacN0kRyKyLASkIoT1IMF62GdhVFV7jHWVwcehpxNSFhH8NJlLGbZY5nl9C/Kd
+	/xnwr1rN7u3RNEjZNPXTlZB7D/QMxMSWukuxPGuyKd9d5ARqLSiGOXceRFCHbphrX7AXE8PiBRUjH
+	AuxY+yppN40JlHpf57phP2MfdXJupB2i09mLtLVgA1wJOeR6ZOCNfdVgLYZQu0B2ggoirPk28RaAI
+	Ei8Ef8Z1jIBbnJdtqjAuUdjVt3M9vPAFczZXTlEQVpIm+JopE9KzvC1ACSUmn1/3cQEJCHnQw47PH
+	cEQOfWpg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uzEKW-00000007bxb-2wZx;
+	Thu, 18 Sep 2025 13:05:44 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 5E98D3003C4; Thu, 18 Sep 2025 15:05:43 +0200 (CEST)
+Date: Thu, 18 Sep 2025 15:05:43 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: jolsa@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+	kees@kernel.org, samitolvanen@google.com, rppt@kernel.org,
+	luto@kernel.org, mhiramat@kernel.org, ast@kernel.org,
+	andrii@kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH] x86/ibt: make is_endbr() notrace
+Message-ID: <20250918130543.GM3245006@noisy.programming.kicks-ass.net>
+References: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add lookup_and_delete_elem for
- BPF_MAP_STACK_TRACE
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250909163223.864120-1-chen.dylane@linux.dev>
- <CAEf4BzZ2Fg+AmFA-K3YODE27br+e0-rLJwn0M5XEwfEHqpPKgQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAEf4BzZ2Fg+AmFA-K3YODE27br+e0-rLJwn0M5XEwfEHqpPKgQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
 
-在 2025/9/18 06:16, Andrii Nakryiko 写道:
-> On Tue, Sep 9, 2025 at 9:32 AM Tao Chen <chen.dylane@linux.dev> wrote:
->>
->> The stacktrace map can be easily full, which will lead to failure in
->> obtaining the stack. In addition to increasing the size of the map,
->> another solution is to delete the stack_id after looking it up from
+On Thu, Sep 18, 2025 at 08:09:39PM +0800, Menglong Dong wrote:
+> is_endbr() is called in __ftrace_return_to_handler -> fprobe_return ->
+> kprobe_multi_link_exit_handler -> is_endbr.
 > 
-> This is not a "solution", really. Just another partially broken
-> workaround to an already broken STACKMAP map (and there is no fixing
-> it, IMO).
->
+> It is not protected by the "bpf_prog_active", so it can't be traced by
+> kprobe-multi, which can cause recurring and panic the kernel. Fix it by
+> make it notrace.
 
-Actually it is. But in our use case, we used continuous profiling with 
-perf_event, the result looks better when we got the stack_id and deleted 
-it to alleviate the data size pressure in the map. And there is no high 
-requirement for the accuracy of stack information for us.
+This is very much a riddle wrapped in an enigma. Notably
+kprobe_multi_link_exit_handler() does not call is_endbr(). Nor is that
+cryptic next line sufficient to explain why its a problem.
 
-> When a user is doing lookup_and_delete for that element, another BPF
-> program can reuse that slot, and user space will delete the stack that
-> is, effectively, still in use.
-> 
-> <rant>
-> 
-> I also just looked at the bpf_stackmap_copy() implementation, and even
-> lookup behavior appears broken. We temporarily remove the bucket while
-> copying, just to put it back a bit later. Meanwhile another BPF
-> program can put something into that bucket and we'll just silently
-> discard that new value later. That was a new one for me, but whatever,
+I suspect the is_endbr() you did mean is the one in
+arch_ftrace_get_symaddr(), but who knows.
 
-Yes, it is a problem.
+Also, depending on compiler insanity, it is possible the thing
+out-of-lines things like __is_endbr(), getting you yet another
+__fentry__ site.
 
-> as I said STACKMAP cannot be used reliably anyways.
-> 
-> </rant>
-> 
-> But let's stay constructive here. Some vague proposals below.
-> 
-> Really, STACKMAP should have used some form of refcounting and let
-> users put those refs, instead of just unconditionally removing the
-> element. I wonder if we can retrofit this and treat lookup/delete as
-> get/put instead? This would work well for a typical use pattern where
-> we send stack_id through ringbuf of some sort and user space fetches
-> stack trace by that ID. Each bpf_get_stackid() would be treated as
-> refcount bump, and each lookup_and_delete or just delete would be
-> treated as refcount put.
-> 
-> Also, it would be better for STACKMAP to be a proper hashmap and
-> handle collisions properly.
-> 
-> The above two changes would probably make STACKMAP actually usable as
-> "a stack trace bank" producing 4-byte IDs that are easily added to
-> fixed-sized ringbuf samples as an extra field. This model sometimes is
-> way more convenient than getting bpf_get_stack() and copying it into
-> ringbuf (which is currently the only way to have reliable stack traces
-> with BPF, IMO).
-> 
-> So, tl;dr. Maybe instead of pretending like we are fixing something
-> about STACKMAP with slightly-more-atomic (but not really)
-> lookup_and_delete support, maybe let's try to actually make STACKMAP
-> usable?.. (it's way harder than this patch, but has more value, IMO)
-> 
-
-The idea looks great. I will try to make improvements in this direction, 
-though there will be certain challenges for me right now.
-
-> What does everyone think?
-> 
-> P.S. It seems like a good idea to switch STACKMAP to open addressing
-> instead of the current kind-of-bucket-chain-but-not-really
-> implementation. It's fixed size and pre-allocated already, so open
-> addressing seems like a great approach here, IMO.
-> 
->> the user, so extend the existing bpf_map_lookup_and_delete_elem()
->> functionality to stacktrace map types.
->>
->> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->> ---
->>   include/linux/bpf.h   |  2 +-
->>   kernel/bpf/stackmap.c | 16 ++++++++++++++--
->>   kernel/bpf/syscall.c  |  8 +++++---
->>   3 files changed, 20 insertions(+), 6 deletions(-)
->>
-> 
-> As for the patch in question, I think the logic is correct :) I find
-> bpf_stackmap_copy_and_delete() name bad and misleading, though,
-> because it's more of "maybe also delete". Maybe
-> bpf_stackmap_extract()? Don't know, it's minor nit anyways.
-> 
-> [...]Will rename it in v2. The original idea in this patch was just to
-make it convenient for users to delete the stackid when they obtain it.
-
--- 
-Best Regards
-Tao Chen
+Please try again.
 
