@@ -1,217 +1,176 @@
-Return-Path: <bpf+bounces-68861-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68862-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52788B86E33
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 22:21:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46EF3B86FC7
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 23:00:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1B871C20CED
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 20:22:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFB095818B4
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 21:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D169631D363;
-	Thu, 18 Sep 2025 20:21:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184F72F5A2E;
+	Thu, 18 Sep 2025 21:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HieRAthe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="emZ+exrG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD602D63FF;
-	Thu, 18 Sep 2025 20:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102872F3632
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 21:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758226894; cv=none; b=qKdJnA1YLkQydCErlN8ga6i9euOY9I2htwqyPWTlmCpBnjAc/FB730eNaVGHr8ExNmsVG5p3Fetg8HuGjzqxj2kbjQQXmCf0O9WGNLCcuN9U6YnLiBuOi+us9+ZlmG901uFokqpPMHkLrABkhwZey9ADImRv23RI69PFiaCxshU=
+	t=1758229226; cv=none; b=rhCxL/b6/TN0OD7jtfV+w4UEP1lgB9dPKEG7lxe5sdjcrXp5+Kv1vNAhL5Hgs5J7IC2//LGN1IWKc7Bi1dLHIfeCII8JLgiSV97hoVAqQIuj9wbnOTDh+yVnHDLzpXljQKhpnwLXL2g6oWahMAHFMMnIT7HKLjjgTeP1VVCwnps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758226894; c=relaxed/simple;
-	bh=qP3MQwM1EJ5Gl9Y7CUEowkPmBRxV9f3jSqmnplG0VdM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nFL/BX/Zg/afwPcSUNk7IKzyJ3IZGcymR3cmqSetMg1m0DiLZwew31dtHmjIExm+CzIIjDgaKW7ZfwfuihO2bWJHsHmOBO+/Qr+lMHpYnLuds0jOBGPLhtF9OKj6m02FGJGxzn0PGm3ZDwZvRh+IHQ6nX3X/9N7xtXbZUnEGbrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HieRAthe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F889C4CEFA;
-	Thu, 18 Sep 2025 20:21:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758226893;
-	bh=qP3MQwM1EJ5Gl9Y7CUEowkPmBRxV9f3jSqmnplG0VdM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HieRAtheU5vVyO0d5vlDxkmm48RkpTsr//AeI0V2zteg8QCexEI2Jtz0O8TSNFUE9
-	 kUquWWzeDw7+4JIu6biklnBx4qNpB7U9ffrqjdd0TP4OdcxbkyOb4Dqmt6Y/91NB9C
-	 A+ux3oIEFvGRN9Vp5TWR//wTmLWE0W0w4A8QFbk1dEWHrrmQOn4joi/a4SlFm2120m
-	 PuW6/Y44NqxWjR7/4eDN/f0TVQ1Vqfw3FIF5333VpqgxYlPumDb18T2C+EvlJ3fAr6
-	 f1oroXfTYkRKJMzwPsh34GBorkUDauXKVjBQoKTeoNiY5+6DuSY6yM4r3t+km9GrJK
-	 UJar4yMGrmVJA==
-Date: Thu, 18 Sep 2025 21:21:16 +0100
-From: Will Deacon <will@kernel.org>
-To: "Roy, Patrick" <roypat@amazon.co.uk>
-Cc: "Thomson, Jack" <jackabt@amazon.co.uk>,
-	"Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
-	"Cali, Marco" <xmarcalx@amazon.co.uk>,
-	"derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
-	"willy@infradead.org" <willy@infradead.org>,
-	"corbet@lwn.net" <corbet@lwn.net>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"maz@kernel.org" <maz@kernel.org>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"joey.gouly@arm.com" <joey.gouly@arm.com>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-	"kernel@xen0n.name" <kernel@xen0n.name>,
-	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"alex@ghiti.fr" <alex@ghiti.fr>,
-	"agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-	"gerald.schaefer@linux.ibm.com" <gerald.schaefer@linux.ibm.com>,
-	"hca@linux.ibm.com" <hca@linux.ibm.com>,
-	"gor@linux.ibm.com" <gor@linux.ibm.com>,
-	"borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>,
-	"svens@linux.ibm.com" <svens@linux.ibm.com>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-	"hpa@zytor.com" <hpa@zytor.com>,
-	"trondmy@kernel.org" <trondmy@kernel.org>,
-	"anna@kernel.org" <anna@kernel.org>,
-	"hubcap@omnibond.com" <hubcap@omnibond.com>,
-	"martin@omnibond.com" <martin@omnibond.com>,
-	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"jack@suse.cz" <jack@suse.cz>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"david@redhat.com" <david@redhat.com>,
-	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-	"vbabka@suse.cz" <vbabka@suse.cz>,
-	"rppt@kernel.org" <rppt@kernel.org>,
-	"surenb@google.com" <surenb@google.com>,
-	"mhocko@suse.com" <mhocko@suse.com>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"martin.lau@linux.dev" <martin.lau@linux.dev>,
-	"eddyz87@gmail.com" <eddyz87@gmail.com>,
-	"song@kernel.org" <song@kernel.org>,
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"kpsingh@kernel.org" <kpsingh@kernel.org>,
-	"sdf@fomichev.me" <sdf@fomichev.me>,
-	"haoluo@google.com" <haoluo@google.com>,
-	"jolsa@kernel.org" <jolsa@kernel.org>,
-	"jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"jhubbard@nvidia.com" <jhubbard@nvidia.com>,
-	"peterx@redhat.com" <peterx@redhat.com>,
-	"jannh@google.com" <jannh@google.com>,
-	"pfalcato@suse.de" <pfalcato@suse.de>,
-	"axelrasmussen@google.com" <axelrasmussen@google.com>,
-	"yuanchu@google.com" <yuanchu@google.com>,
-	"weixugc@google.com" <weixugc@google.com>,
-	"hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-	"zhengqi.arch@bytedance.com" <zhengqi.arch@bytedance.com>,
-	"shakeel.butt@linux.dev" <shakeel.butt@linux.dev>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-	"devel@lists.orangefs.org" <devel@lists.orangefs.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v6 05/11] KVM: guest_memfd: Add flag to remove from
- direct map
-Message-ID: <aMxpvI6Aj8mDsRNm@willie-the-truck>
-References: <20250912091708.17502-1-roypat@amazon.co.uk>
- <20250912091708.17502-6-roypat@amazon.co.uk>
+	s=arc-20240116; t=1758229226; c=relaxed/simple;
+	bh=m2AY+dTHUFCIVPNKpFfyxspidRLOgvX/vcvm37BiScg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NuN8woybFQSWiN8ehRvRoTo7ILHsgNCJFL6BP6DTysFJDHQQBrJQ41quGAxEaPAuj+28P2QQFHGtNJssIGy8IE/o653Nhs9kDj2P78L2apPxslx/mUSzO+63Wp+XxgDHRZNvFYSjj9+LnoazGDYm8WWBElidaXnA/5ru/xep61A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=emZ+exrG; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-77d64726e47so996952b3a.3
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 14:00:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758229224; x=1758834024; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BWNrKzoKGn0Mg3+cCGhe36Q1YywPLG4pBTqfXb9sGs0=;
+        b=emZ+exrGMWd35nk7rvVZWxTL5lBlL4HIqmvD0OiLbTUl+AH69D07vWGFxUBtm64q6i
+         gWj5l5MYnHMmX5RtVi2QFAL9hCO7u7tslknc+Sd7glpjomI+27oVpLLiRtKG1NsfpKom
+         hhe/6Q1MShFKcXIvnKBY2Vsb8JP2gwczs8BorhTKkZpIeDHfaxDhHiL+zdC5EwecAzxp
+         gVk9rs84bJ6oopM/T7f20vcuRxiLktMJ/+Uq9gkfFhqW5VjY/YJmrZjsWdVJnCwQqbNi
+         KTvkYEzXrZvgvzEsnnfETABRs1U8DRGlnVomHxw8/F9ck4wmGjChnX2G1vajflv0OlJl
+         bbTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758229224; x=1758834024;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BWNrKzoKGn0Mg3+cCGhe36Q1YywPLG4pBTqfXb9sGs0=;
+        b=C767RHseyoA6HDH8xxXJK0lrC/kkU4RQKtri0CtT41mewu6Q9X3cwuqJUjOq+3xRho
+         isYHii8XalFd2gL6I8JsPzghUECONNb4B9ZcnvYdVCxdVr6Y52LM77vZHL5OjMnTYtMa
+         txs9l1nsbk+2LlJvZcRNXLeFfbioW1H90jxQNBYz1JAOKbMK8T2Xv3U+ELHTxKFaJvSc
+         NhOKZ1fsE3S2hQSN3r4dn82FBllbG1+70YDJBvq6JXmj4QQxJOHiKygg4NUAuE1VCz9c
+         dPKVExEaKrT0xxhaR8+aGSxD5hus/NqtCzjd8FImTpBFhnpaqlfNpkpUYUeL8s5QQ6Un
+         zl3w==
+X-Forwarded-Encrypted: i=1; AJvYcCXTAesX6bvstm/h9ERVCwcZRtNbz0CN62A88c5W7YBuRh4gkGqds8Dd6UJYrvg13cLg8yI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdWtxR457I9N8FDTrOetHCGmk01pJEKgFoM+2KATGBY2IcrwMe
+	VBDO6MhlJsfsIwvNf/D7Rxkwd4Jg00RuEnsueaZkZVQkL7VIFRm0cYUqpNijVdPT
+X-Gm-Gg: ASbGncvqgUOIr807TB1Vf9qekicoxeWNVDpCkRmY8ex1jxheAbn9hHIzEAiLXMIhL4U
+	SU0iTphyQ0tMTqeusrHxPACAT3HjYn1kj2thT1Rfy47DNSf3+/N6bEzIZgbyCaMN1OzrUQi4nGG
+	hf3HB6ePylkrYF83GunzJejdZK6KvtpNHq5aaW/RLfN7cM+JTWt3rb0pjE4WufFaFTTxy6gmeCl
+	tdcAST+M6RTw35MC7aZl5G+a0sihaUAnIDv11UgFknqqxeTp+XiTqr0tnRa3xUMQKTQ1USAhATw
+	rddMxH0mKj3tJtA7f0Cdy8gv9cL3RBEKSm12PiCfKeK+hbjNtgECU+7yG2G1aNSvJbrT2Vrx9mX
+	a4r4TDnKlbD7rkkE+Q2Onaf7Xy352mQzkRSL5wG6hdBnzsZtv
+X-Google-Smtp-Source: AGHT+IHKB1TdMLCYCaaR8+McqBs+0wf8x3+gEjCVrNk3wB3sKpdXrgszgkvzjjmaMF7jAlXi340iNg==
+X-Received: by 2002:a05:6a20:4303:b0:263:1475:667a with SMTP id adf61e73a8af0-2925e423832mr1368263637.21.1758229224162;
+        Thu, 18 Sep 2025 14:00:24 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77cfbb7c3bbsm3224797b3a.7.2025.09.18.14.00.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Sep 2025 14:00:23 -0700 (PDT)
+Message-ID: <412f49fa12de7c7f5d0461b56fd4e0b6882fa0ad.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Enforce RCU protection for
+ KF_RCU_PROTECTED
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: Andrea Righi <arighi@nvidia.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>, Tejun
+ Heo <tj@kernel.org>, kkd@meta.com, 	kernel-team@meta.com
+Date: Thu, 18 Sep 2025 14:00:20 -0700
+In-Reply-To: <20250917032755.4068726-2-memxor@gmail.com>
+References: <20250917032755.4068726-1-memxor@gmail.com>
+	 <20250917032755.4068726-2-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250912091708.17502-6-roypat@amazon.co.uk>
 
-Hi Patrick,
+On Wed, 2025-09-17 at 03:27 +0000, Kumar Kartikeya Dwivedi wrote:
+> Currently, KF_RCU_PROTECTED only applies to iterator APIs and that too
+> in a convoluted fashion: the presence of this flag on the kfunc is used
+> to set MEM_RCU in iterator type, and the lack of RCU protection results
+> in an error only later, once next() or destroy() methods are invoked on
+> the iterator. While there is no bug, this is certainly a bit
+> unintuitive, and makes the enforcement of the flag iterator specific.
+>=20
+> In the interest of making this flag useful for other upcoming kfuncs,
+> e.g. scx_bpf_cpu_curr() [0][1], add enforcement for invoking the kfunc
+> in an RCU critical section in general.
+>=20
+> This would also mean that iterator APIs using KF_RCU_PROTECTED will
+> error out earlier, instead of throwing an error for lack of RCU CS
+> protection when next() or destroy() methods are invoked.
+>=20
+> In addition to this, if the kfuncs tagged KF_RCU_PROTECTED return a
+> pointer value, ensure that this pointer value is only usable in an RCU
+> critical section. There might be edge cases where the return value is
+> special and doesn't need to imply MEM_RCU semantics, but in general, the
+> assumption should hold for the majority of kfuncs, and we can revisit
+> things if necessary later.
+>=20
+>   [0]: https://lore.kernel.org/all/20250903212311.369697-3-christian.loeh=
+le@arm.com
+>   [1]: https://lore.kernel.org/all/20250909195709.92669-1-arighi@nvidia.c=
+om
+>=20
+> Tested-by: Andrea Righi <arighi@nvidia.com>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
 
-We chatted briefly at KVM Forum, so I wanted to chime in here too from
-the arm64 side.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-On Fri, Sep 12, 2025 at 09:17:37AM +0000, Roy, Patrick wrote:
-> Add GUEST_MEMFD_FLAG_NO_DIRECT_MAP flag for KVM_CREATE_GUEST_MEMFD()
-> ioctl. When set, guest_memfd folios will be removed from the direct map
-> after preparation, with direct map entries only restored when the folios
-> are freed.
-> 
-> To ensure these folios do not end up in places where the kernel cannot
-> deal with them, set AS_NO_DIRECT_MAP on the guest_memfd's struct
-> address_space if GUEST_MEMFD_FLAG_NO_DIRECT_MAP is requested.
-> 
-> Add KVM_CAP_GUEST_MEMFD_NO_DIRECT_MAP to let userspace discover whether
-> guest_memfd supports GUEST_MEMFD_FLAG_NO_DIRECT_MAP. Support depends on
-> guest_memfd itself being supported, but also on whether linux supports
-> manipulatomg the direct map at page granularity at all (possible most of
-> the time, outliers being arm64 where its impossible if the direct map
-> has been setup using hugepages, as arm64 cannot break these apart due to
-> break-before-make semantics, and powerpc, which does not select
-> ARCH_HAS_SET_DIRECT_MAP, which also doesn't support guest_memfd anyway
-> though).
-> 
-> Note that this flag causes removal of direct map entries for all
-> guest_memfd folios independent of whether they are "shared" or "private"
-> (although current guest_memfd only supports either all folios in the
-> "shared" state, or all folios in the "private" state if
-> GUEST_MEMFD_FLAG_MMAP is not set). The usecase for removing direct map
-> entries of also the shared parts of guest_memfd are a special type of
-> non-CoCo VM where, host userspace is trusted to have access to all of
-> guest memory, but where Spectre-style transient execution attacks
-> through the host kernel's direct map should still be mitigated.  In this
-> setup, KVM retains access to guest memory via userspace mappings of
-> guest_memfd, which are reflected back into KVM's memslots via
-> userspace_addr. This is needed for things like MMIO emulation on x86_64
-> to work.
-> 
-> Do not perform TLB flushes after direct map manipulations. This is
-> because TLB flushes resulted in a up to 40x elongation of page faults in
-> guest_memfd (scaling with the number of CPU cores), or a 5x elongation
-> of memory population. TLB flushes are not needed for functional
-> correctness (the virt->phys mapping technically stays "correct",  the
-> kernel should simply not use it for a while). On the other hand, it means
-> that the desired protection from Spectre-style attacks is not perfect,
-> as an attacker could try to prevent a stale TLB entry from getting
-> evicted, keeping it alive until the page it refers to is used by the
-> guest for some sensitive data, and then targeting it using a
-> spectre-gadget.
+[...]
 
-I'm really not keen on this last part (at least, for arm64).
+> @@ -14037,6 +14045,8 @@ static int check_kfunc_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn,
+> =20
+>  			if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_get_kmem_cache])
+>  				regs[BPF_REG_0].type |=3D PTR_UNTRUSTED;
+> +			else if (is_kfunc_rcu_protected(&meta))
+> +				regs[BPF_REG_0].type |=3D MEM_RCU;
+> =20
+>  			if (is_iter_next_kfunc(&meta)) {
+>  				struct bpf_reg_state *cur_iter;
 
-If you're not going to bother invalidating the TLB after unmapping from
-the direct map because of performance reasons, you're better off just
-leaving the direct map intact and getting even better performance. On
-arm64, that would mean you could use block mappings too.
+The code below this hunk looks as follows:
 
-On the other hand, if you actually care about the security properties
-from the unmap then you need the invalidation so that the mapping
-doesn't linger around. With "modern" CPU features such as pte
-aggregation and shared TLB walk caches it's not unlikely that these
-entries will persist a lot longer than you think and it makes the
-security benefits of this series impossible to reason about.
+			if (is_iter_next_kfunc(&meta)) {
+				struct bpf_reg_state *cur_iter;
 
-As a compromise, could we make the TLB invalidation an architecture
-opt-in so that we can have it enabled on arm64, please?
+				cur_iter =3D get_iter_from_state(env->cur_state, &meta);
 
-Will
+				if (cur_iter->type & MEM_RCU) /* KF_RCU_PROTECTED */
+					regs[BPF_REG_0].type |=3D MEM_RCU;
+				else
+					regs[BPF_REG_0].type |=3D PTR_TRUSTED;
+			}
+
+Do we want to reduce it to:
+
+			if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_get_kmem_cache])
+				regs[BPF_REG_0].type |=3D PTR_UNTRUSTED;
+			else if (is_kfunc_rcu_protected(&meta))
+				regs[BPF_REG_0].type |=3D MEM_RCU;
+			else if (is_iter_next_kfunc(&meta))
+				regs[BPF_REG_0].type |=3D PTR_TRUSTED;
+
+And mark relevant iterator next (and destroy?) functions as KF_RCU_PROTECTE=
+D?
+(bpf_iter_css_next, bpf_iter_task_next, bpf_iter_scx_dsq_next).
+
+I ask, because setting |=3D MEM_RCU in two places of this if branch
+looks a bit iffy.
+
+[...]
 
