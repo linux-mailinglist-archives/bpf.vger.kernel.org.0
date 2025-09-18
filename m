@@ -1,245 +1,148 @@
-Return-Path: <bpf+bounces-68796-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68797-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70979B84E4C
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 15:44:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D2F4B84F3C
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 16:03:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 252F91780F2
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 13:44:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEF061C844AE
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 14:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39474211C;
-	Thu, 18 Sep 2025 13:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23CA830B535;
+	Thu, 18 Sep 2025 14:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q0p/+6zz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c66BuhDU"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF1F2D3752
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 13:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C993090D5
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 14:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758203043; cv=none; b=ZDMAMJaUYEZTw6SxtuyzC0lwhwvOTGu+SejmHGNyhV5/jw1ysKIlGCwXxzbCQKLAudLmURWFjnDq39pRPElhoX2c4LTUBcON/eBlsnVL2Qp4F/lEUiyiGCaImQRJGimWrXQ1120cVaukknBCytsC71Y0Y/rH7UMtkb3ir71tKxc=
+	t=1758204165; cv=none; b=V3TiqvlnPNt93S8TESNgU0L5yDaacZNJkn9DmC0gjV2h51khFeI75eR9PgSSquu69P5EFOjfcBdJ9Vdb3FxaSUEwvIStr7NL8xbCEor2RXZWBw8fn+7/ta7GfFGM9PvclJa64+3RW3+kO2gIwvvehKhdXMFfv2KCM1WMvKpsrp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758203043; c=relaxed/simple;
-	bh=6+pEBWsAwMB6bKj5yLCNgjpJI4phyW1qCZgVsyCUI+I=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cxec9rn6kXMYLtmkh7jsju9lsP3RUtAGWFuKo0y7GGUK4LFaZRP8jCdWKJplqZiG8+UFkobie4Frtg5DEFtn9wGICm3M5zkFxSCpUA9vY26GORsw6CGkF7aChbEnJTHDFrAmR8We3S08vVYMQ/bOPBAjxsTCaYeEtamHLLenTeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q0p/+6zz; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1758203041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c6DJ2s18FdX+Nqa8e5WVMJEqWKLADAlvemQSEP0DBOU=;
-	b=Q0p/+6zzuV5Sl1NlT30UKhhaJAOfQZ0S2/GcMyS1uQbGUJtDpo8hONlt0ZP+PnoFwibPyZ
-	hMe/MufYJLcPzU0J7Pin3LzdeLmoLrwHTN8NPTlCc9agnNuAKh7HLR2K7fCMJr6Fge0YLB
-	al0UG4vOmCe4PgKH56GFdUtvVLrZ/N4=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-574-ptIdZqmxMSy0YJFQVGXz6Q-1; Thu,
- 18 Sep 2025 09:43:56 -0400
-X-MC-Unique: ptIdZqmxMSy0YJFQVGXz6Q-1
-X-Mimecast-MFC-AGG-ID: ptIdZqmxMSy0YJFQVGXz6Q_1758203034
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 54FCB1956054;
-	Thu, 18 Sep 2025 13:43:53 +0000 (UTC)
-Received: from rotkaeppchen (unknown [10.45.225.227])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0ABDC300018D;
-	Thu, 18 Sep 2025 13:43:45 +0000 (UTC)
-Date: Thu, 18 Sep 2025 15:43:42 +0200
-From: Philipp Rudo <prudo@redhat.com>
-To: Pingfan Liu <piliu@redhat.com>
-Cc: kexec@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Jeremy Linton
- <jeremy.linton@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Simon Horman
- <horms@kernel.org>, Gerd Hoffmann <kraxel@redhat.com>, Vitaly Kuznetsov
- <vkuznets@redhat.com>, Viktor Malik <vmalik@redhat.com>, Jan Hendrik Farr
- <kernel@jfarr.cc>, Baoquan He <bhe@redhat.com>, Dave Young
- <dyoung@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
- bpf@vger.kernel.org, systemd-devel@lists.freedesktop.org
-Subject: Re: [PATCHv5 06/12] kexec: Integrate with the introduced bpf kfuncs
-Message-ID: <20250918154342.0589fd4b@rotkaeppchen>
-In-Reply-To: <aMkJNuORiqSZfpok@fedora>
-References: <20250819012428.6217-1-piliu@redhat.com>
-	<20250819012428.6217-7-piliu@redhat.com>
-	<20250901163042.721db92d@rotkaeppchen>
-	<aMkJNuORiqSZfpok@fedora>
-Organization: Red Hat inc.
+	s=arc-20240116; t=1758204165; c=relaxed/simple;
+	bh=7DxiVZomtHttdNtYwiCoYKvuHHIGERwqhwTSvLZkurI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=B6XZAdtxm8JVneEw/5KseUPq3apwGMAUx0UvgHg/7LX6IT741AJe2uPseier7lDexSCkH46/AU0z1MP/N1Nb3u7SDuTBzcWzi04wt1nCmbeFTNhfSWYKF10RjuYlLv6UGtIHchVU6Bpv3spoXFqt+RoDqi9KgA+UzVGrl5jw3kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c66BuhDU; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-45df7dc1b98so6407245e9.1
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 07:02:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758204162; x=1758808962; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rksf7AtwrCN8O553SwtijdEzlwIt06/Sc9MwW1CdYCM=;
+        b=c66BuhDUsh8GdHxZ7uRYmjO+8zXRTE+de2u/S52/m2XFCB3CGOjNVKngr7d4MqvDuf
+         LPpNJ7Jmspu0dzJOVJZwqrconin2Q+Wm5JQz30P8SqHza9XuVX2CuJpAYGwL/wEdWizb
+         dgF9p6VXSGRNom+nMhrd95Wla0qfoA09pS5UlKFwGnSi7dLbH0ygT1icqXcE47CaBrRk
+         ZV3kSsw2nH039IDrunNRLpBUzTqvvpJRfZF3+GSJ4zCpnM5d1OxxHjq8Wd+FhYh+RthJ
+         XnRT7EWR1c98LX7QXMt3UD5bSsY3XRVGrkrnELTDQxpeCGxXjj1/p0rrXuJY5dMoOZZg
+         7H/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758204162; x=1758808962;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rksf7AtwrCN8O553SwtijdEzlwIt06/Sc9MwW1CdYCM=;
+        b=SlK+Fo0o49RH04xM+ZE8Jf8qjSQIirSBpoHjlQ/+hNB193EOQBpukr+qxWgtgsSHzN
+         GJ79/vJeDYaIxqoW5oeWHKG2ZhwKBqSualJofurZbQTkrre7Bh+0N4vR5XF/HYHx5NbC
+         fWfQRs4hTwOitU9Kj7zQiXGcZiiMScBorRI8Ma7B2tFXwIXcJA4gK6yzmYJZNY+zX9Wn
+         SaNlcBWywKRKUBWWrCqX0vHQq7OLHxUw/zhmVW1v31w/Mg0hgyT9NiegwwO03/S/nWVb
+         opz6iSM77ScMT2edhQuVnygy7hqc+M5NvddBN30dRsoqG1EoLKzpBmv4sSbdP7CnBdG/
+         VZnQ==
+X-Gm-Message-State: AOJu0YwsRVz9ckMuRgQXJQGoryA3KvRQDPLAVpYX9WAEC4BPasqgut9d
+	czSTq9Hv0wQaRqG604VEUL8yJl3D+rdKPFmZI6LN+/sBgE01se+PsaMH
+X-Gm-Gg: ASbGnct2bh7IzB9Vl1ayC0JvD67yM8XCrvYijdr7uhODLGrCwUkG8IMmF59p+/rkHwO
+	LZoYhywAh2Ag2eMUgMb3kEhrlzBPiqIJW3ucM/3ATxHpzjQoJ6IBiDkhxWVDo6FmQCsuSjE/1PK
+	M+hIuSksMTA72EVd5FunqkxoINwDkUZt7redU/IsAzImrEP3Q0llhoL3l3y8bhdcFhY9H96iaOP
+	P13D4/F71fzNWL5bIJ65dXZlzCEz5GJJgtJgm0id/hJE44ZE0vWj55AoWZrwqQBz7caVqVUBgpH
+	m/L2nAmk0vWa2VR2OVWPCo/h5qDyycVJGClWxGMZrtW1ET20adnI7jn+A+JDIOaRtWg0vBv+sNO
+	cBK3bggGr3yrwKrPVOQikswsdx9A3TUV9KBOB0N/oxzsL0ZPfXWL7+GaVr2M7IQ==
+X-Google-Smtp-Source: AGHT+IHwuKyIZuqe2cs9ZUKLBw9kMNkGN6o03avjpI8gBP5oBi4u2l4hzG9xH2Vjdz9aHsTfOUouOw==
+X-Received: by 2002:a05:600c:c87:b0:45d:d5c6:482 with SMTP id 5b1f17b1804b1-46205cc836cmr63774875e9.18.1758204162248;
+        Thu, 18 Sep 2025 07:02:42 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c0c3:1131::10de? ([2620:10d:c092:400::5:ce66])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-464f4f9f41csm48878195e9.15.2025.09.18.07.02.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Sep 2025 07:02:41 -0700 (PDT)
+Message-ID: <d19a97a8-be96-4ce4-a56e-bfb22546dfc0@gmail.com>
+Date: Thu, 18 Sep 2025 15:02:40 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 7/8] bpf: task work scheduling kfuncs
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin Lau <kafai@meta.com>, Kernel Team <kernel-team@meta.com>,
+ Eduard <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+ Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250916233651.258458-1-mykyta.yatsenko5@gmail.com>
+ <20250916233651.258458-8-mykyta.yatsenko5@gmail.com>
+ <CAADnVQLFZrpBzhYaufdbxCo-QJqNqAH88YcZqvnFpNU44MA3ZA@mail.gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAADnVQLFZrpBzhYaufdbxCo-QJqNqAH88YcZqvnFpNU44MA3ZA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Pingfan,
-
-On Tue, 16 Sep 2025 14:52:38 +0800
-Pingfan Liu <piliu@redhat.com> wrote:
-
-> On Mon, Sep 01, 2025 at 04:30:42PM +0200, Philipp Rudo wrote:
-> > Hi Pingfan,
-> > 
-> > 
-> > On Tue, 19 Aug 2025 09:24:22 +0800
-> > Pingfan Liu <piliu@redhat.com> wrote:
-> >   
-> > > This patch does two things:
-> > > First, register as a listener on bpf_copy_to_kernel()
-> > > Second, in order that the hooked bpf-prog can call the sleepable kfuncs,
-> > > bpf_handle_pefile and bpf_post_handle_pefile are marked as
-> > > KF_SLEEPABLE.
-> > > 
-> > > Signed-off-by: Pingfan Liu <piliu@redhat.com>
-> > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > Cc: Philipp Rudo <prudo@redhat.com>
-> > > Cc: Baoquan He <bhe@redhat.com>
-> > > Cc: Dave Young <dyoung@redhat.com>
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > Cc: bpf@vger.kernel.org
-> > > To: kexec@lists.infradead.org
-> > > ---
-> > >  kernel/kexec_pe_image.c | 67 +++++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 67 insertions(+)
-> > > 
-> > > diff --git a/kernel/kexec_pe_image.c b/kernel/kexec_pe_image.c
-> > > index b0cf9942e68d2..f8debcde6b516 100644
-> > > --- a/kernel/kexec_pe_image.c
-> > > +++ b/kernel/kexec_pe_image.c
-> > > @@ -38,6 +38,51 @@ static struct kexec_res parsed_resource[3] = {
-> > >  	{ KEXEC_RES_CMDLINE_NAME, },
-> > >  };
-> > >  
-> > > +/*
-> > > + * @name should be one of : kernel, initrd, cmdline
-> > > + */
-> > > +static int bpf_kexec_carrier(const char *name, struct mem_range_result *r)
-> > > +{
-> > > +	struct kexec_res *res;
-> > > +	int i;
-> > > +
-> > > +	if (!r || !name)
-> > > +		return -EINVAL;
-> > > +
-> > > +	for (i = 0; i < 3; i++) {
-> > > +		if (!strcmp(parsed_resource[i].name, name))
-> > > +			break;
-> > > +	}
-> > > +	if (i >= 3)
-> > > +		return -EINVAL;  
-> > 
-> > Can you please replace the magic '3' by ARRAY_SIZE, just like you did
-> > below when (un-)registering the listener.
-> >   
-> 
-> Yes, I will introduce a macro KEXEC_RES_ARRAY_SIZE to unify all of them.
-
-Why do you want to introduce a new macro? Why not simply use
-ARRAY_SIZE(parsed_resource)?
-
-Thanks
-Philipp
-
-> Thanks,
-> 
-> Pingfan
-> 
-> > Thanks
-> > Philipp
-> >   
-> > > +
-> > > +	res = &parsed_resource[i];
-> > > +	/*
-> > > +	 * Replace the intermediate resource generated by the previous step.
-> > > +	 */
-> > > +	if (!!res->r)
-> > > +		mem_range_result_put(res->r);
-> > > +	mem_range_result_get(r);
-> > > +	res->r = r;
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static struct carrier_listener kexec_res_listener[3] = {
-> > > +	{ .name = KEXEC_RES_KERNEL_NAME,
-> > > +	  .alloc_type = 1,
-> > > +	  .handler = bpf_kexec_carrier,
-> > > +	},
-> > > +	{ .name = KEXEC_RES_INITRD_NAME,
-> > > +	  .alloc_type = 1,
-> > > +	  .handler = bpf_kexec_carrier,
-> > > +	},
-> > > +	{ .name = KEXEC_RES_CMDLINE_NAME,
-> > > +	  /* kmalloc-ed */
-> > > +	  .alloc_type = 0,
-> > > +	  .handler = bpf_kexec_carrier,
-> > > +	},
-> > > +};
-> > > +
-> > >  static bool pe_has_bpf_section(const char *file_buf, unsigned long pe_sz);
-> > >  
-> > >  static bool is_valid_pe(const char *kernel_buf, unsigned long kernel_len)
-> > > @@ -159,6 +204,22 @@ __attribute__((used, optimize("O0"))) void bpf_post_handle_pefile(struct kexec_c
-> > >  	dummy += 2;
-> > >  }
-> > >  
-> > > +BTF_KFUNCS_START(kexec_modify_return_ids)
-> > > +BTF_ID_FLAGS(func, bpf_handle_pefile, KF_SLEEPABLE)
-> > > +BTF_ID_FLAGS(func, bpf_post_handle_pefile, KF_SLEEPABLE)
-> > > +BTF_KFUNCS_END(kexec_modify_return_ids)
-> > > +
-> > > +static const struct btf_kfunc_id_set kexec_modify_return_set = {
-> > > +	.owner = THIS_MODULE,
-> > > +	.set = &kexec_modify_return_ids,
-> > > +};
-> > > +
-> > > +static int __init kexec_bpf_prog_run_init(void)
-> > > +{
-> > > +	return register_btf_fmodret_id_set(&kexec_modify_return_set);
-> > > +}
-> > > +late_initcall(kexec_bpf_prog_run_init);
-> > > +
-> > >  /*
-> > >   * PE file may be nested and should be unfold one by one.
-> > >   * Query 'kernel', 'initrd', 'cmdline' in cur_phase, as they are inputs for the
-> > > @@ -213,6 +274,9 @@ static void *pe_image_load(struct kimage *image,
-> > >  	cmdline_start = cmdline;
-> > >  	cmdline_sz = cmdline_len;
-> > >  
-> > > +	for (int i = 0; i < ARRAY_SIZE(kexec_res_listener); i++)
-> > > +		register_carrier_listener(&kexec_res_listener[i]);
-> > > +
-> > >  	while (is_valid_format(linux_start, linux_sz) &&
-> > >  	       pe_has_bpf_section(linux_start, linux_sz)) {
-> > >  		struct kexec_context context;
-> > > @@ -250,6 +314,9 @@ static void *pe_image_load(struct kimage *image,
-> > >  		disarm_bpf_prog();
-> > >  	}
-> > >  
-> > > +	for (int i = 0; i < ARRAY_SIZE(kexec_res_listener); i++)
-> > > +		unregister_carrier_listener(kexec_res_listener[i].name);
-> > > +
-> > >  	/*
-> > >  	 * image's kernel_buf, initrd_buf, cmdline_buf are set. Now they should
-> > >  	 * be updated to the new content.  
-> >   
-> 
+On 9/18/25 02:53, Alexei Starovoitov wrote:
+> On Tue, Sep 16, 2025 at 4:37 PM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+> I haven't groked the state transitions yet, so commenting on
+> only one part...
+>
+>> +
+>> +static void bpf_task_work_ctx_free_rcu_gp(struct rcu_head *rcu)
+>> +{
+>> +       struct bpf_task_work_ctx *ctx = container_of(rcu, struct bpf_task_work_ctx, rcu);
+>> +
+>> +       /* bpf_mem_free expects migration to be disabled */
+>> +       migrate_disable();
+>> +       bpf_mem_free(&bpf_global_ma, ctx);
+>> +       migrate_enable();
+>> +}
+>> +
+>> +static void bpf_task_work_ctx_free_mult_rcu_gp(struct rcu_head *rcu)
+>> +{
+>> +       if (rcu_trace_implies_rcu_gp())
+>> +               bpf_task_work_ctx_free_rcu_gp(rcu);
+>> +       else
+>> +               call_rcu(rcu, bpf_task_work_ctx_free_rcu_gp);
+>> +}
+>> +
+> ...
+>
+>> +static void bpf_task_work_ctx_put(struct bpf_task_work_ctx *ctx)
+>> +{
+>> +       if (!refcount_dec_and_test(&ctx->refcnt))
+>> +               return;
+>> +
+>> +       bpf_task_work_ctx_reset(ctx);
+>> +       call_rcu_tasks_trace(&ctx->rcu, bpf_task_work_ctx_free_mult_rcu_gp);
+>> +}
+> This is overkill.
+> bpf_mem_free() always waits for rcu_tasks_trace before
+> freeing into the global slab.
+> Also there is bpf_mem_free_rcu() that waits for both RCUs.
+> Just use it and delete these 3 funcs.
+I think we still need to keep bpf_task_work_ctx_put() because of refcnt, 
+which is needed to maintain the context struct in memory when 
+cancel_and_free() races with scheduling, as scheduling codepath may 
+defer (irq_work and task_work) so RCU can be called while we are waiting 
+on, for example, irq_work callback. I'll remove 
+bpf_task_work_ctx_free_mult_rcu_gp() and 
+bpf_task_work_ctx_free_rcu_gp()in v7.
 
 
