@@ -1,148 +1,115 @@
-Return-Path: <bpf+bounces-68797-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68798-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D2F4B84F3C
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 16:03:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0AD9B85725
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 17:07:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEF061C844AE
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 14:03:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0BAA7E027C
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 15:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23CA830B535;
-	Thu, 18 Sep 2025 14:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC47AD23;
+	Thu, 18 Sep 2025 15:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c66BuhDU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X6QDDAQ9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C993090D5
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 14:02:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515E61F4C8C
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 15:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758204165; cv=none; b=V3TiqvlnPNt93S8TESNgU0L5yDaacZNJkn9DmC0gjV2h51khFeI75eR9PgSSquu69P5EFOjfcBdJ9Vdb3FxaSUEwvIStr7NL8xbCEor2RXZWBw8fn+7/ta7GfFGM9PvclJa64+3RW3+kO2gIwvvehKhdXMFfv2KCM1WMvKpsrp8=
+	t=1758207745; cv=none; b=r1BzGTTZPFYSsOOav/iHzfVAHnUTIyVMi66sm4C+WIzXW1wsr+VF7YBVpDG2svTXSqwYCbZmTL+UOZMCbgC2E1YYjJotL+MTmfeFrAWfbB6/iOWc8RSKiZ6DE3wDzx+NebrRyxFNB88Bk1mcvftf03h0aDU7+zQIe8gAnzj6owo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758204165; c=relaxed/simple;
-	bh=7DxiVZomtHttdNtYwiCoYKvuHHIGERwqhwTSvLZkurI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B6XZAdtxm8JVneEw/5KseUPq3apwGMAUx0UvgHg/7LX6IT741AJe2uPseier7lDexSCkH46/AU0z1MP/N1Nb3u7SDuTBzcWzi04wt1nCmbeFTNhfSWYKF10RjuYlLv6UGtIHchVU6Bpv3spoXFqt+RoDqi9KgA+UzVGrl5jw3kE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c66BuhDU; arc=none smtp.client-ip=209.85.128.42
+	s=arc-20240116; t=1758207745; c=relaxed/simple;
+	bh=GMBjwL5rNJGzKXtNvgN4rsLO3pDIFkmGav0nqio3e2M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cKTirnt2ePDFlxIO4WgzXAW5zTHIszdqgw+mp5rCZIe7ZlifuP67QSqz3Qk/0gnH+h9YbDDLKi1EMFTv6AzlKLIeO2CG91dBBvLbet13Ij8g61lhc50EblnIrBZCBz/FyZj5OMp9abdUJuV10BXPk9mVpybqD0r+mz51tSqXCEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X6QDDAQ9; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-45df7dc1b98so6407245e9.1
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 07:02:43 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3ece0e4c5faso1255365f8f.1
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 08:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758204162; x=1758808962; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rksf7AtwrCN8O553SwtijdEzlwIt06/Sc9MwW1CdYCM=;
-        b=c66BuhDUsh8GdHxZ7uRYmjO+8zXRTE+de2u/S52/m2XFCB3CGOjNVKngr7d4MqvDuf
-         LPpNJ7Jmspu0dzJOVJZwqrconin2Q+Wm5JQz30P8SqHza9XuVX2CuJpAYGwL/wEdWizb
-         dgF9p6VXSGRNom+nMhrd95Wla0qfoA09pS5UlKFwGnSi7dLbH0ygT1icqXcE47CaBrRk
-         ZV3kSsw2nH039IDrunNRLpBUzTqvvpJRfZF3+GSJ4zCpnM5d1OxxHjq8Wd+FhYh+RthJ
-         XnRT7EWR1c98LX7QXMt3UD5bSsY3XRVGrkrnELTDQxpeCGxXjj1/p0rrXuJY5dMoOZZg
-         7H/g==
+        d=gmail.com; s=20230601; t=1758207742; x=1758812542; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DRG/uowhqCyGpV4093a/IK9HLZVeJ9SFOKB4su2qz4Q=;
+        b=X6QDDAQ9KDmiu3LcjJSG/HY8kb2Zz33en6wEg1DHVKOtBJG8TIIrhUjSJZuYZbz7RX
+         CpftpG3P+qTZaOBdKTetX7oRtsdXikW7ajPEBMTB6LPORcG1P2RJoKyrOpOUn7P3DfQs
+         Ab2PAQzKUNRd9JJ2PYWjlu0x+gih/YP9V8E0P53w5TuwwJ5KflKoW/TR+fExLCjLvP3l
+         6YkxZLwGetb09gRgFP1Uc3/NEXMEgUKb1vIdvK1vyigc3kmGBsIVaoYvSmkQ7D+4OHAN
+         dTEI7nzrSWG456d329O2qH6A4l8/T4CqsysV6f/1FXDPjxxaEHeRHl3i1GljqfJXo1uX
+         THKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758204162; x=1758808962;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rksf7AtwrCN8O553SwtijdEzlwIt06/Sc9MwW1CdYCM=;
-        b=SlK+Fo0o49RH04xM+ZE8Jf8qjSQIirSBpoHjlQ/+hNB193EOQBpukr+qxWgtgsSHzN
-         GJ79/vJeDYaIxqoW5oeWHKG2ZhwKBqSualJofurZbQTkrre7Bh+0N4vR5XF/HYHx5NbC
-         fWfQRs4hTwOitU9Kj7zQiXGcZiiMScBorRI8Ma7B2tFXwIXcJA4gK6yzmYJZNY+zX9Wn
-         SaNlcBWywKRKUBWWrCqX0vHQq7OLHxUw/zhmVW1v31w/Mg0hgyT9NiegwwO03/S/nWVb
-         opz6iSM77ScMT2edhQuVnygy7hqc+M5NvddBN30dRsoqG1EoLKzpBmv4sSbdP7CnBdG/
-         VZnQ==
-X-Gm-Message-State: AOJu0YwsRVz9ckMuRgQXJQGoryA3KvRQDPLAVpYX9WAEC4BPasqgut9d
-	czSTq9Hv0wQaRqG604VEUL8yJl3D+rdKPFmZI6LN+/sBgE01se+PsaMH
-X-Gm-Gg: ASbGnct2bh7IzB9Vl1ayC0JvD67yM8XCrvYijdr7uhODLGrCwUkG8IMmF59p+/rkHwO
-	LZoYhywAh2Ag2eMUgMb3kEhrlzBPiqIJW3ucM/3ATxHpzjQoJ6IBiDkhxWVDo6FmQCsuSjE/1PK
-	M+hIuSksMTA72EVd5FunqkxoINwDkUZt7redU/IsAzImrEP3Q0llhoL3l3y8bhdcFhY9H96iaOP
-	P13D4/F71fzNWL5bIJ65dXZlzCEz5GJJgtJgm0id/hJE44ZE0vWj55AoWZrwqQBz7caVqVUBgpH
-	m/L2nAmk0vWa2VR2OVWPCo/h5qDyycVJGClWxGMZrtW1ET20adnI7jn+A+JDIOaRtWg0vBv+sNO
-	cBK3bggGr3yrwKrPVOQikswsdx9A3TUV9KBOB0N/oxzsL0ZPfXWL7+GaVr2M7IQ==
-X-Google-Smtp-Source: AGHT+IHwuKyIZuqe2cs9ZUKLBw9kMNkGN6o03avjpI8gBP5oBi4u2l4hzG9xH2Vjdz9aHsTfOUouOw==
-X-Received: by 2002:a05:600c:c87:b0:45d:d5c6:482 with SMTP id 5b1f17b1804b1-46205cc836cmr63774875e9.18.1758204162248;
-        Thu, 18 Sep 2025 07:02:42 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c0c3:1131::10de? ([2620:10d:c092:400::5:ce66])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-464f4f9f41csm48878195e9.15.2025.09.18.07.02.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Sep 2025 07:02:41 -0700 (PDT)
-Message-ID: <d19a97a8-be96-4ce4-a56e-bfb22546dfc0@gmail.com>
-Date: Thu, 18 Sep 2025 15:02:40 +0100
+        d=1e100.net; s=20230601; t=1758207742; x=1758812542;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DRG/uowhqCyGpV4093a/IK9HLZVeJ9SFOKB4su2qz4Q=;
+        b=nt4SfLqXy62qeE/Thce1+ksCbvwqx93N9hfu56Hw/0nSyMe64jD/8iZTJyZMnwFwtZ
+         EdalYAUtQmuBhgfePd+8QxZjjTemJL3XW3l8aawTOZZ110wa2spvMniXE22AvcIy+Bnv
+         lIzV2+6cS9ro6N40sivj2ra2gE7kKEY/TXXwZwBHgVXc2bpUMIbYgsaORhoLiskQgwqy
+         kDodbOlGr06O7MWQUdJ0JRuxJPpxRODTFq85Mgsi29i3zX6sslNanF4Yd0/+XlTEhqcc
+         iyY3QVnoW6s7KO7HrlNGps7GBdVYMK6GgpdStzqt+GQnfHDaVqDR+8GbwyroXOwMhn9g
+         IiQA==
+X-Gm-Message-State: AOJu0YxbbpQ82e918PAJu2Nr9pX+NTou9fgz1gCk4TNqdt0bWEBzdTGq
+	Boy7NEDPx9YcYA/UkLVYh752HBUYN36f1a+pxlPznWAvLp9KBVADo/snHFOjWSNSKypdtl3eL/B
+	quhLKX27yNoHwpPGwyGSjDpD87as0Wb0=
+X-Gm-Gg: ASbGncs6PUxjULr9uKbFRKpS/YIfQmbAVtEPvQxC1cdfp5y75/24avfH/pP7nEyGXkk
+	U0VipFyPtWXcfo9YQqZQcmVSzU8ccNxspNBG78l4Zil6PZTMirPuaRMrA8sdl3r7/3WMROyRbD8
+	Xi7lcTH2oKPZ+dTQQAnbEbmjubEI0zluTKczaSC5mWBBlm8e8TWrvxhjRHuvFEcDXPSTP7TL0Zv
+	4LyhY5qnFS6xgjFG4OEkol8+eB7Nx+dCWgnff9d5kr0f9eohnW3
+X-Google-Smtp-Source: AGHT+IGoNMpd0JrmtAOuR27fpO0X8XGdxncTcdaGK89bgB2G1NuN6zaNag6dLHNX1p146txWND1l6IlME4y60j/Us8k=
+X-Received: by 2002:a5d:5d13:0:b0:3eb:5245:7c1f with SMTP id
+ ffacd0b85a97d-3ecdf9afcf4mr4846404f8f.2.1758207742279; Thu, 18 Sep 2025
+ 08:02:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v5 7/8] bpf: task work scheduling kfuncs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin Lau <kafai@meta.com>, Kernel Team <kernel-team@meta.com>,
- Eduard <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Mykyta Yatsenko <yatsenko@meta.com>
-References: <20250916233651.258458-1-mykyta.yatsenko5@gmail.com>
- <20250916233651.258458-8-mykyta.yatsenko5@gmail.com>
- <CAADnVQLFZrpBzhYaufdbxCo-QJqNqAH88YcZqvnFpNU44MA3ZA@mail.gmail.com>
-Content-Language: en-US
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-In-Reply-To: <CAADnVQLFZrpBzhYaufdbxCo-QJqNqAH88YcZqvnFpNU44MA3ZA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20250918093606.454541-1-a.s.protopopov@gmail.com>
+In-Reply-To: <20250918093606.454541-1-a.s.protopopov@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 18 Sep 2025 08:02:10 -0700
+X-Gm-Features: AS18NWBy8dkyH1kKIgzUtjqr9M80HpC5xNha3_H9FnvnPeleW35Uap_RORM8aU4
+Message-ID: <CAADnVQLso776xFQTzPFahmV=JbE3Ca8jQ7UdPuMChjJAK_echg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix build with new LLVM
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Puranjay Mohan <puranjay@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/18/25 02:53, Alexei Starovoitov wrote:
-> On Tue, Sep 16, 2025 at 4:37 PM Mykyta Yatsenko
-> <mykyta.yatsenko5@gmail.com> wrote:
-> I haven't groked the state transitions yet, so commenting on
-> only one part...
+On Thu, Sep 18, 2025 at 2:30=E2=80=AFAM Anton Protopopov
+<a.s.protopopov@gmail.com> wrote:
 >
->> +
->> +static void bpf_task_work_ctx_free_rcu_gp(struct rcu_head *rcu)
->> +{
->> +       struct bpf_task_work_ctx *ctx = container_of(rcu, struct bpf_task_work_ctx, rcu);
->> +
->> +       /* bpf_mem_free expects migration to be disabled */
->> +       migrate_disable();
->> +       bpf_mem_free(&bpf_global_ma, ctx);
->> +       migrate_enable();
->> +}
->> +
->> +static void bpf_task_work_ctx_free_mult_rcu_gp(struct rcu_head *rcu)
->> +{
->> +       if (rcu_trace_implies_rcu_gp())
->> +               bpf_task_work_ctx_free_rcu_gp(rcu);
->> +       else
->> +               call_rcu(rcu, bpf_task_work_ctx_free_rcu_gp);
->> +}
->> +
-> ...
+> The progs/stream.c BPF program now uses arena helpers, so it includes
+> bpf_arena_common.h, which conflicts with the declarations generated
+> in vmlinux.h. This leads to the following build errors with the recent
+> LLVM:
 >
->> +static void bpf_task_work_ctx_put(struct bpf_task_work_ctx *ctx)
->> +{
->> +       if (!refcount_dec_and_test(&ctx->refcnt))
->> +               return;
->> +
->> +       bpf_task_work_ctx_reset(ctx);
->> +       call_rcu_tasks_trace(&ctx->rcu, bpf_task_work_ctx_free_mult_rcu_gp);
->> +}
-> This is overkill.
-> bpf_mem_free() always waits for rcu_tasks_trace before
-> freeing into the global slab.
-> Also there is bpf_mem_free_rcu() that waits for both RCUs.
-> Just use it and delete these 3 funcs.
-I think we still need to keep bpf_task_work_ctx_put() because of refcnt, 
-which is needed to maintain the context struct in memory when 
-cancel_and_free() races with scheduling, as scheduling codepath may 
-defer (irq_work and task_work) so RCU can be called while we are waiting 
-on, for example, irq_work callback. I'll remove 
-bpf_task_work_ctx_free_mult_rcu_gp() and 
-bpf_task_work_ctx_free_rcu_gp()in v7.
+>     In file included from progs/stream.c:8:
+>     .../tools/testing/selftests/bpf/bpf_arena_common.h:47:15: error: conf=
+licting types for 'bpf_arena_alloc_pages'
+>        47 | void __arena* bpf_arena_alloc_pages(void *map, void __arena *=
+addr, __u32 page_cnt,
+>           |               ^
+>     .../tools/testing/selftests/bpf/tools/include/vmlinux.h:229284:14: no=
+te: previous declaration is here
+>      229284 | extern void *bpf_arena_alloc_pages(void *p__map, void *addr=
+__ign, u32 page_cnt, int node_id, u64 flags) __weak __ksym;
+>             |              ^
+>
+>     ... etc
 
+I suspect you're using old pahole.
+New one can transfer __arena tags into vmlinux.h
+
+pw-bot: cr
 
