@@ -1,50 +1,73 @@
-Return-Path: <bpf+bounces-68738-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68740-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEDCBB8345A
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 09:10:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F536B836AF
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 10:04:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 288253ABAE6
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 07:10:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A0893B9429
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 08:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4893D2E9751;
-	Thu, 18 Sep 2025 07:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C8F2F0685;
+	Thu, 18 Sep 2025 08:03:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EAcRJFa3"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="XPy0yXI+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A472D9EDD;
-	Thu, 18 Sep 2025 07:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B802EE272;
+	Thu, 18 Sep 2025 08:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758179423; cv=none; b=HbAOe/8LftTh4oFn3sZ5Ja5c6D5BNpp6+ZvDpF8d2S1ivXQbbktTU/be5LaOI+Q/bdXT5RMRtuPYaC5/WYy80hVni8l0Ms+SOIw3irXklf8GqM3X/xfjuVgPclFLjLZQ2RQIUgVTj2YQ5wX4KOuGb65xT0Na2BNP9e+iAKbBQf4=
+	t=1758182638; cv=none; b=KY2zEwTN0S2Qy0gVmfFouB1FrYSOlSRc12xarHSC4IRSxBUHtxUkkwAV0JP/kKQTu+ohQIuws5OFrAFUw+vacnxXM5vIk1RmsvduMil1Ud2ckQOI2AoVEA+PKjAbXfMv94b+idRCjKiRXQATEJ2lsHm97QqFyjjziKgmmfO2hfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758179423; c=relaxed/simple;
-	bh=LiZ93zvkp46r1toaeBlfPU0LVdOnahqMwxuP9qT0VbE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=VOjWaT/4HFlTRvVpJM8ewHjwq182xxmjlHJ3D/PkDJR5Y5whC1cPHQwAsMgkCpiDu1ncczoLlf/0hu+hsAi3N6r2JvQBp6Rk2tYl0qIz9VvqZ9hOkZPnKKt6qtOR/1u9FWCKd+8/J1BqKm6jNxXZZSYojomP7Wjudz2Pxqzn53s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EAcRJFa3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CAD7C4CEE7;
-	Thu, 18 Sep 2025 07:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758179423;
-	bh=LiZ93zvkp46r1toaeBlfPU0LVdOnahqMwxuP9qT0VbE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=EAcRJFa3bQoSQApRP9ELx2FiJsWkDJnzr89P3MBFar0LWXpefnMRpWvSWwUQVY/5Z
-	 c41KamhzcbsKSFtQRb69l7QY1dJeaOdmnjsO96MuYYPZsWWfr+aouZcqxCUzMjGFAI
-	 6aGntNq0J/uGCseQNtzCb9v6XCQyjhDuW/LPGLz2dW080uXwdwf7iP9bYn0cd6hY4t
-	 lvXgT3ZDEUID/BSuqviQtWiFpAT1FdtQaISvweU7RE4QoU7shSe4x3f0XBMBbQhUwR
-	 eiF0MSS1mfLoZIfDVnx9Fv6eeOTOFSVMgazX6+w2EfgkWy6MtFEtm3xwQba9Xd1xYC
-	 X8eAhKZ4e7ykQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADF5739D0C28;
-	Thu, 18 Sep 2025 07:10:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1758182638; c=relaxed/simple;
+	bh=YQZTH7tPL5tZOiDigTtIiUXnn7Zl/OqHBVf/WRWvy6E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rBrPJPDGbMb5vAxvtrOoAhbIzGHjWqJ5gE5ENKuMM5YMnAQO2ePDPajOPD8m1aKhenuFLvEqge+KL4AAxc9m+1SEn2JuIVW5sWcvYE9O03dJM3UF3TOe8UdhiiH4mhlW4PegUnSJPbxdS5RntdlAfBVRbto3EJTdEHAW+rF9vno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=XPy0yXI+; arc=none smtp.client-ip=115.124.30.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1758182627; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=o8zVttKRsDZXMwAMsefgpttoLLuOJgFi3OBVDXrLxLA=;
+	b=XPy0yXI+VKFx1rEAnVYam6AopG2UyZ/bVTc5JPYb6zo3NAaVH971WOqnttHLq5eflayqZm8GI37RscD0H+ktVP8ZnWO5WMIPigESe8fwCdcfBSxF2rvAKmpqhBKdEX3WwkSfpoE+QnPoQJz3l3o7jq+llAuVdEC/wKNpfQqIw5A=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WoFEU0W_1758182622 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Thu, 18 Sep 2025 16:03:45 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	pabeni@redhat.com,
+	song@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	yhs@fb.com,
+	edumazet@google.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	jolsa@kernel.org,
+	mjambigi@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	wintera@linux.ibm.com,
+	dust.li@linux.alibaba.com,
+	tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com
+Cc: bpf@vger.kernel.org,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	netdev@vger.kernel.org,
+	sidraya@linux.ibm.com,
+	jaka@linux.ibm.com
+Subject: [PATCH bpf-next v2 0/4] net/smc: Introduce smc_hs_ctrl
+Date: Thu, 18 Sep 2025 16:03:37 +0800
+Message-ID: <20250918080342.25041-1-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,70 +75,72 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v19 net-next 00/10] AccECN protocol patch series
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175817942351.2297937.1388609037846556434.git-patchwork-notify@kernel.org>
-Date: Thu, 18 Sep 2025 07:10:23 +0000
-References: <20250916082434.100722-1-chia-yu.chang@nokia-bell-labs.com>
-In-Reply-To: <20250916082434.100722-1-chia-yu.chang@nokia-bell-labs.com>
-To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>
-Cc: pabeni@redhat.com, edumazet@google.com, linux-doc@vger.kernel.org,
- corbet@lwn.net, horms@kernel.org, dsahern@kernel.org, kuniyu@amazon.com,
- bpf@vger.kernel.org, netdev@vger.kernel.org, dave.taht@gmail.com,
- jhs@mojatatu.com, kuba@kernel.org, stephen@networkplumber.org,
- xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
- andrew+netdev@lunn.ch, donald.hunter@gmail.com, ast@fiberby.net,
- liuhangbin@gmail.com, shuah@kernel.org, linux-kselftest@vger.kernel.org,
- ij@kernel.org, ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
- g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
- mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
- Jason_Livingood@comcast.com, vidhi_goel@apple.com
 
-Hello:
+This patch aims to introduce BPF injection capabilities for SMC and
+includes a self-test to ensure code stability.
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+Since the SMC protocol isn't ideal for every situation, especially
+short-lived ones, most applications can't guarantee the absence of
+such scenarios. Consequently, applications may need specific strategies
+to decide whether to use SMC. For example, an application might limit SMC
+usage to certain IP addresses or ports.
 
-On Tue, 16 Sep 2025 10:24:24 +0200 you wrote:
-> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> 
-> Hello,
-> 
-> Please find the v19 AccECN protocol patch series, which covers the core
-> functionality of Accurate ECN, AccECN negotiation, AccECN TCP options,
-> and AccECN failure handling. The Accurate ECN draft can be found in
-> https://datatracker.ietf.org/doc/html/draft-ietf-tcpm-accurate-ecn-28, and it
-> will be RFC9768.
-> 
-> [...]
+To maintain the principle of transparent replacement, we want applications
+to remain unaffected even if they need specific SMC strategies. In other
+words, they should not require recompilation of their code.
 
-Here is the summary with links:
-  - [v19,net-next,01/10] tcp: AccECN core
-    https://git.kernel.org/netdev/net-next/c/542a495cbaa6
-  - [v19,net-next,02/10] tcp: accecn: AccECN negotiation
-    https://git.kernel.org/netdev/net-next/c/3cae34274c79
-  - [v19,net-next,03/10] tcp: accecn: add AccECN rx byte counters
-    https://git.kernel.org/netdev/net-next/c/9a0112774455
-  - [v19,net-next,04/10] tcp: accecn: AccECN needs to know delivered bytes
-    https://git.kernel.org/netdev/net-next/c/a92543d59762
-  - [v19,net-next,05/10] tcp: sack option handling improvements
-    https://git.kernel.org/netdev/net-next/c/77a4fdf43c5e
-  - [v19,net-next,06/10] tcp: accecn: AccECN option
-    https://git.kernel.org/netdev/net-next/c/b5e74132dfbe
-  - [v19,net-next,07/10] tcp: accecn: AccECN option send control
-    https://git.kernel.org/netdev/net-next/c/aa55a7dde7ec
-  - [v19,net-next,08/10] tcp: accecn: AccECN option failure handling
-    https://git.kernel.org/netdev/net-next/c/b40671b5ee58
-  - [v19,net-next,09/10] tcp: accecn: AccECN option ceb/cep and ACE field multi-wrap heuristics
-    https://git.kernel.org/netdev/net-next/c/fe2cddc648f0
-  - [v19,net-next,10/10] tcp: accecn: try to fit AccECN option with SACK
-    https://git.kernel.org/netdev/net-next/c/e7e9da850a46
+Additionally, we need to ensure the scalability of strategy implementation.
+While using socket options or sysctl might be straightforward, it could
+complicate future expansions.
 
-You are awesome, thank you!
+Fortunately, BPF addresses these concerns effectively. Users can write
+their own strategies in eBPF to determine whether to use SMC, and they can
+easily modify those strategies in the future.
+
+This is a rework of the series from [1]. Changes since [1] are limited to
+the SMC parts:
+
+1. Rename smc_ops to smc_hs_ctrl and change interface name.
+2. Squash SMC patches, removing standalone non-BPF hook capability.
+3. Fix typos
+
+[1]: https://lore.kernel.org/bpf/20250123015942.94810-1-alibuda@linux.alibaba.com/#t
+
+v2 -> v1:
+  - Removed the fixes patch, which have already been merged on current branch.
+  - Fixed compilation warning of smc_call_hsbpf() when CONFIG_SMC_HS_CTRL_BPF
+    is not enabled.
+  - Changed the default value of CONFIG_SMC_HS_CTRL_BPF to Y.
+  - Fix typo and renamed some variables
+
+D. Wythe (4):
+  bpf: export necessary symbols for modules with struct_ops
+  net/smc: bpf: Introduce generic hook for handshake flow
+  libbpf: fix error when st-prefix_ops and ops from differ btf
+  bpf/selftests: add selftest for bpf_smc_hs_ctrl
+
+ include/net/netns/smc.h                       |   3 +
+ include/net/smc.h                             |  53 +++
+ kernel/bpf/bpf_struct_ops.c                   |   2 +
+ kernel/bpf/syscall.c                          |   1 +
+ net/ipv4/tcp_output.c                         |  36 +-
+ net/smc/Kconfig                               |  10 +
+ net/smc/Makefile                              |   1 +
+ net/smc/af_smc.c                              |  10 +
+ net/smc/smc_hs_bpf.c                          | 137 ++++++
+ net/smc/smc_hs_bpf.h                          |  31 ++
+ net/smc/smc_sysctl.c                          |  91 ++++
+ tools/lib/bpf/libbpf.c                        |  37 +-
+ tools/testing/selftests/bpf/config            |   4 +
+ .../selftests/bpf/prog_tests/test_bpf_smc.c   | 396 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_smc.c   | 117 ++++++
+ 15 files changed, 896 insertions(+), 33 deletions(-)
+ create mode 100644 net/smc/smc_hs_bpf.c
+ create mode 100644 net/smc/smc_hs_bpf.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.45.0
 
 
