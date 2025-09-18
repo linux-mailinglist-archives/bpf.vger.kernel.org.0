@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-68848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68849-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7467B86857
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 20:49:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF087B8683C
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 20:49:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C678624727
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 18:49:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 437651C26658
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 18:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256102D97AA;
-	Thu, 18 Sep 2025 18:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102502DA76C;
+	Thu, 18 Sep 2025 18:48:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M53A40T/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OcQpdyvv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FDE925A651
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 18:48:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56892D6E7A
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 18:48:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758221298; cv=none; b=I3rlGDynaJKmxf2HKHIniQZmR8d45Lx1CfLAVxezCqSJX4VmHmWuqtVnsO1l3jw311mxVY0xtG23TOAHoDDbczECYlsJATTwyZP0+xMwHjHRymAUbNzgGOiCD5UoryYzds5evFe133DcR1Af1U2ujh8fpo9tzEFhQuhiEale1lk=
+	t=1758221299; cv=none; b=n7cV3HH5tU5EiantNa6/ZRAMGuoMbhqBYeLpx5+Sd0Q/56SZLfS/cq68gv3AvB70wG7p0d64Vjt8XxBQ7CnnTwl6T0/I/SJiYrPq/upy06d5sfI241Ay561XRD2GZjoMEa82f3NwQUjZ+g4TW9EDK62JYRJ5i6Buw+YYz+hnr6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758221298; c=relaxed/simple;
-	bh=EkBeQGTuDaZ79Q2ecvGEx65bDVoyEJuvY9i2yeEFSkM=;
+	s=arc-20240116; t=1758221299; c=relaxed/simple;
+	bh=cdVaweJn8L+JzNRh+KQkBuOz5Q13abiwYbtEkM9oa84=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=le5tfbMi8fZ4vPxZMp4WeS/hn14Nt1l+7cPaRVqKONBvNyIUpyskV1PnLULsHm5U9DoFnyrs916SoVM6OwXSfEnFQBLihIK4ehh93DF14rkqbIIxI9WCWd4cekapmyj8cjXOp9dtSXCQxsa3k60qewDAPLBR87ePgjy+oN83xzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M53A40T/; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version:Content-Type; b=L90Q0WedbTWNlI/sWmgaQ2s2CtqH/K3wCt4XO/xECif86/RkQK7N+FxcqX+A2hKcLavx3YwHUt0gh9nljFGhV/7Sht5nyXWMvTYcnhRXTfLZGPfTGcCBtS09ooR1B8xJ5ZtIat70XoQ0xjBfPhaNKt7NYBLecwtCAx0z3dw6qyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OcQpdyvv; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-267dff524d1so9468435ad.3
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 11:48:15 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2445806e03cso15600675ad.1
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 11:48:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758221295; x=1758826095; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758221296; x=1758826096; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cfQ3O9dXlpK4VR5fFuu+IQ06TAo3XVY4wnlw+2/U3Jk=;
-        b=M53A40T/B+/orzEAOuBLsd9KJTV/r/9irORCwhRF00qEV050BWCzq0aDzTjL5S/5LI
-         eLQ3f92lY1wI7ch5e8S0miyusuhUSLUvRAlRZyZXWOxk8sWRJxzAU4+IfE9NYuogl3Qp
-         F/lTLE+N3leyzbg7LWuUE7gG+tQqctQB40fEn4ngN6zivEsxclyxiZLx4l6Gb6aNubCC
-         wOZOruDupTSdgPm39R2DXLj/w5Zo3kCNlYbkhi0QIbYJ6KV3kzv7ajXb+wcuiypwxW37
-         6yuH/yn+7adjtxmvvhspPP7uuqy+AMSm7A+GrwjAKX1qJk76q+cJkrfvUUKqhw9jhzsn
-         9uUQ==
+        bh=85uJrw7xpQFyO88LPpL2d50WU+CpQKOz/FGeE7vNbzc=;
+        b=OcQpdyvvGPDDO3ujz6WDo6aVXXZkRpcdw8Ow4177HIls5MViN6745OitqoDW7NScyY
+         S1lW8HovZjHa67i9498ekxbA2MQ5TdowlGky+nFzZ7wudo/fXIxO/b20kyrQcFotR0fn
+         ZZI8WRlvp3DDboKQuMlZXn0GZyV3puoc+/fSE12gNJZF3ZUI2kyegSAS/M/KnOHEdUeL
+         dh5Mrl6hrkwCivbsHiGJouXr57yx6FozlQ0Z9MMbJwQ5T9aVJtQSonR1h6jU7CA61eJs
+         +KuT2wtNtwOpp1Q8/9fUOtM24LahnTLwZizF8MZCm6wStksuP1t2NYdnB9KO+/4rC+Fp
+         9KmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758221295; x=1758826095;
+        d=1e100.net; s=20230601; t=1758221296; x=1758826096;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cfQ3O9dXlpK4VR5fFuu+IQ06TAo3XVY4wnlw+2/U3Jk=;
-        b=et7T/ECuXhNxaHwoGfAPZ/K5Ai1qTGgGMBtE4Ubp9jAUqj9rYbdvS8Dtdrz7UDOGNe
-         bTTl1cqvI2Bmk7JYKUtgIuubV4Jo3nOIjAZ3lL8HmVmFMdme+J0Pa6IVg1vluT1P21J+
-         K2IjjOTE7BZwpJGfFwHwi3yK7hEK0cRcnmE/6EgPa5lAvn847mEirm/0kJMVQNaMvvXe
-         VFTn0VB/if4gCTBeBfwoWilndzuQw/lLTbRCvvOLr7O/0XDQ0tNRHqojvpbUv1NtabH6
-         GscsjEoJVj/P650lo9gC/tfAWxQyfvxxzm+fJ47Yh0iTlRB4sNDrlZeRPGr6BfO+R1QF
-         8p3Q==
-X-Gm-Message-State: AOJu0YzKRVgnG9I2t1dOrBwGVxz4NirHev9E9ic6AmhhIOncpDLtG6m3
-	FGUnbYK5aGWnixNugZXXUzFkfp7uQaP6wXLNJg2PAUyyxkau04iSylR9fC3S9sIO
-X-Gm-Gg: ASbGncvLpeQnV3D+tyUkb014SixiO4s8KpFEfzldPoNhyFdR5awz1wQm1tVaf4Cy1kK
-	hyweZauVUkNSd6DpDUp4QmyS2nacfMXOGjX7iE7F8+2gGNbat1nX1oxywmi65NwhJEX8+59xexi
-	xheDwMerQ2gz4DgugfG6V/xbKOZWFdfMSQHRiXOjo9btJh51oXAy66T+fM3RDi4oOroTRjmGaRL
-	p4DlKVdiHG8+1bswp6atflQMr0Txq9qKwngEo9ROOPPvNSjRdHZ8lMrgxWEP0vQ8iERUG8qkKQf
-	V8IbMKkrqlzrhcppj1UquK3dcAl/plGgCbuTEgqw2QuKV7qCKXqGet90bZYXnb1yxtSeEPb04je
-	aaM59oZ+3LPyplHBlIVQJuolvjBCCHBDoauQ=
-X-Google-Smtp-Source: AGHT+IGuQY6pRNLfDnru59bfjk5brqm9wvCvZ6iL3azqYNKg/kFB2Sl+tgi88qhujXg8yUbQ5JgGSA==
-X-Received: by 2002:a17:902:ea09:b0:242:9bc4:f1ca with SMTP id d9443c01a7336-269ba57efcemr8262735ad.57.1758221294515;
-        Thu, 18 Sep 2025 11:48:14 -0700 (PDT)
+        bh=85uJrw7xpQFyO88LPpL2d50WU+CpQKOz/FGeE7vNbzc=;
+        b=AHIG7k3iYWI7ajmoPgltD7oGO1U01Q9bHf6axpxSUQhKh5VzMyArA2+0hYt8bk9Hir
+         zERQh8Fif+hG48DBPwfLrhsZ/dgdBK6mJQ+0jypZH4mV0k9b8dsiVyB7D5TLsIy5Z9UC
+         L6BUj0VV/GGAxP8ynd9oIln/KdMUoI+QZft7LTVVCV4DWnlm6IxHw/2MbQ87ON6Y3DcN
+         rylETbpDlV0C+9wUZ14pwOTWTBFL9BAqK2afhVQE2gZbbkCp8EEp7XSZya4oXWQ6S4Xr
+         kVJ5GZcvV+wD7Zakur/IpxiVGDZbB0f9kKLsTfNFaoMbgzD6p4yd2yOpMLD8KgotVyt6
+         lMvg==
+X-Gm-Message-State: AOJu0YyKfTNietSBeGAho9409zLL3Bgdb6UsCrijnSL4thcik4ZS+o4V
+	lZ1LsBwCY2WXAOhhYZx7oASeoN/jysTyHdjvLTkxl5jejFYHL6shXQjIPqpMOgxi
+X-Gm-Gg: ASbGncstYgHZi1/g1ioAMX3aIv1V8bzZLjOIOZ/zVf6w6Z3aJYHd8xPjl+cheEgGpq/
+	bYJGBfHeWUkWA1XIwC69UPx0sCCD1iRfpCyZYIqo7xIvnVG7y0v3PCVVO/5NfgUFxgkExN2Lmz/
+	DB+0cfWLF/f5IlitGfg2Owb3zKfAzWLT4/aDOrDKh5XErnrIafRp5TucOJqjNyWckiOfIHWKqw1
+	PZR5bRt+p9YGuO7gzRT1wTGSsBuyBHC33lypGob9SdHf5N4NWUPb0PVtLjG+nTu/yN6Wu/rmIn0
+	qZSyPSki72wHSfMW2tYX4jIobbOxgI5VEXga3BMcHFiGU2oNX6PoPgD1shg4lsHfhtRF5bQF5Ct
+	j4p2d5E9Q4x7v5jxKzItlRlb6UzZv397abQLJ8WT5vvwEXQ==
+X-Google-Smtp-Source: AGHT+IEs9i9F+x6/UKaD/mv7ypZZvfcPYLtpVvtQALcRvNcNFpbdE31vNsydur7u2GnbD3ARQqNTKQ==
+X-Received: by 2002:a17:902:db0e:b0:24c:ca55:6d90 with SMTP id d9443c01a7336-269ba5762dfmr6505905ad.61.1758221295749;
+        Thu, 18 Sep 2025 11:48:15 -0700 (PDT)
 Received: from honey-badger ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269802e00b3sm32361505ad.90.2025.09.18.11.48.13
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269802e00b3sm32361505ad.90.2025.09.18.11.48.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Sep 2025 11:48:14 -0700 (PDT)
+        Thu, 18 Sep 2025 11:48:15 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -81,9 +81,9 @@ Cc: andrii@kernel.org,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 11/12] selftests/bpf: __not_msg() tag for test_loader framework
-Date: Thu, 18 Sep 2025 11:47:40 -0700
-Message-ID: <20250918-callchain-sensitive-liveness-v2-11-214ed2653eee@gmail.com>
+Subject: [PATCH bpf-next v2 12/12] selftests/bpf: test cases for callchain sensitive live stack tracking
+Date: Thu, 18 Sep 2025 11:47:41 -0700
+Message-ID: <20250918-callchain-sensitive-liveness-v2-12-214ed2653eee@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250918-callchain-sensitive-liveness-v2-0-214ed2653eee@gmail.com>
 References: <20250918-callchain-sensitive-liveness-v2-0-214ed2653eee@gmail.com>
@@ -96,538 +96,344 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-This patch adds tags __not_msg(<msg>) and __not_msg_unpriv(<msg>).
-Test fails if <msg> is found in verifier log.
-
-If __msg_not() is situated between __msg() tags framework matches
-__msg() tags first, and then checks that <msg> is not present in a
-portion of a log between bracketing __msg() tags.
-__msg_not() tags bracketed by a same __msg() group are effectively
-unordered.
-
-The idea is borrowed from LLVM's CheckFile with its CHECK-NOT syntax.
+- simple propagation of read/write marks;
+- joining read/write marks from conditional branches;
+- avoid must_write marks in when same instruction accesses different
+  stack offsets on different execution paths;
+- avoid must_write marks in case same instruction accesses stack
+  and non-stack pointers on different execution paths;
+- read/write marks propagation to outer stack frame;
+- independent read marks for different callchains ending with the same
+  function;
+- bpf_calls_callback() dependent logic in
+  liveness.c:bpf_stack_slot_alive().
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- .../bpf/prog_tests/prog_tests_framework.c          | 125 +++++++++++++
- tools/testing/selftests/bpf/progs/bpf_misc.h       |   9 +
- tools/testing/selftests/bpf/test_loader.c          | 201 ++++++++++++++++-----
- tools/testing/selftests/bpf/test_progs.h           |  17 ++
- 4 files changed, 302 insertions(+), 50 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/verifier.c  |   2 +
+ .../selftests/bpf/progs/verifier_live_stack.c      | 294 +++++++++++++++++++++
+ 2 files changed, 296 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/prog_tests_framework.c b/tools/testing/selftests/bpf/prog_tests/prog_tests_framework.c
-index 14f2796076e0c2bd056138ee1433a937305b1708..7607cfc2408c2d49a051fd195666a653afb6c6f0 100644
---- a/tools/testing/selftests/bpf/prog_tests/prog_tests_framework.c
-+++ b/tools/testing/selftests/bpf/prog_tests/prog_tests_framework.c
-@@ -54,3 +54,128 @@ void test_prog_tests_framework(void)
- 		return;
- 	clear_test_state(state);
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index e35c216dbaf21cf05a88475a247ef91f60d424ed..28e81161e6fca9efa69aa42b137d300c541f6da1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -46,6 +46,7 @@
+ #include "verifier_ldsx.skel.h"
+ #include "verifier_leak_ptr.skel.h"
+ #include "verifier_linked_scalars.skel.h"
++#include "verifier_live_stack.skel.h"
+ #include "verifier_load_acquire.skel.h"
+ #include "verifier_loops1.skel.h"
+ #include "verifier_lwt.skel.h"
+@@ -184,6 +185,7 @@ void test_verifier_ld_ind(void)               { RUN(verifier_ld_ind); }
+ void test_verifier_ldsx(void)                  { RUN(verifier_ldsx); }
+ void test_verifier_leak_ptr(void)             { RUN(verifier_leak_ptr); }
+ void test_verifier_linked_scalars(void)       { RUN(verifier_linked_scalars); }
++void test_verifier_live_stack(void)           { RUN(verifier_live_stack); }
+ void test_verifier_loops1(void)               { RUN(verifier_loops1); }
+ void test_verifier_lwt(void)                  { RUN(verifier_lwt); }
+ void test_verifier_map_in_map(void)           { RUN(verifier_map_in_map); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_live_stack.c b/tools/testing/selftests/bpf/progs/verifier_live_stack.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..c0e80850926827ca52f73dd6da6deb7f13d1ea70
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_live_stack.c
+@@ -0,0 +1,294 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
 +
-+static void dummy_emit(const char *buf, bool force) {}
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
 +
-+void test_prog_tests_framework_expected_msgs(void)
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, long long);
++} map SEC(".maps");
++
++SEC("socket")
++__log_level(2)
++__msg("(0) frame 0 insn 2 +written -8")
++__msg("(0) frame 0 insn 1 +live -24")
++__msg("(0) frame 0 insn 1 +written -8")
++__msg("(0) frame 0 insn 0 +live -8,-24")
++__msg("(0) frame 0 insn 0 +written -8")
++__msg("(0) live stack update done in 2 iterations")
++__naked void simple_read_simple_write(void)
 +{
-+	struct expected_msgs msgs;
-+	int i, j, error_cnt;
-+	const struct {
-+		const char *name;
-+		const char *log;
-+		const char *expected;
-+		struct expect_msg *pats;
-+	} cases[] = {
-+		{
-+			.name = "simple-ok",
-+			.log = "aaabbbccc",
-+			.pats = (struct expect_msg[]) {
-+				{ .substr = "aaa" },
-+				{ .substr = "ccc" },
-+				{}
-+			}
-+		},
-+		{
-+			.name = "simple-fail",
-+			.log = "aaabbbddd",
-+			.expected = "MATCHED    SUBSTR: 'aaa'\n"
-+				    "EXPECTED   SUBSTR: 'ccc'\n",
-+			.pats = (struct expect_msg[]) {
-+				{ .substr = "aaa" },
-+				{ .substr = "ccc" },
-+				{}
-+			}
-+		},
-+		{
-+			.name = "negative-ok-mid",
-+			.log = "aaabbbccc",
-+			.pats = (struct expect_msg[]) {
-+				{ .substr = "aaa" },
-+				{ .substr = "foo", .negative = true },
-+				{ .substr = "bar", .negative = true },
-+				{ .substr = "ccc" },
-+				{}
-+			}
-+		},
-+		{
-+			.name = "negative-ok-tail",
-+			.log = "aaabbbccc",
-+			.pats = (struct expect_msg[]) {
-+				{ .substr = "aaa" },
-+				{ .substr = "foo", .negative = true },
-+				{}
-+			}
-+		},
-+		{
-+			.name = "negative-ok-head",
-+			.log = "aaabbbccc",
-+			.pats = (struct expect_msg[]) {
-+				{ .substr = "foo", .negative = true },
-+				{ .substr = "ccc" },
-+				{}
-+			}
-+		},
-+		{
-+			.name = "negative-fail-head",
-+			.log = "aaabbbccc",
-+			.expected = "UNEXPECTED SUBSTR: 'aaa'\n",
-+			.pats = (struct expect_msg[]) {
-+				{ .substr = "aaa", .negative = true },
-+				{ .substr = "bbb" },
-+				{}
-+			}
-+		},
-+		{
-+			.name = "negative-fail-tail",
-+			.log = "aaabbbccc",
-+			.expected = "UNEXPECTED SUBSTR: 'ccc'\n",
-+			.pats = (struct expect_msg[]) {
-+				{ .substr = "bbb" },
-+				{ .substr = "ccc", .negative = true },
-+				{}
-+			}
-+		},
-+		{
-+			.name = "negative-fail-mid-1",
-+			.log = "aaabbbccc",
-+			.expected = "UNEXPECTED SUBSTR: 'bbb'\n",
-+			.pats = (struct expect_msg[]) {
-+				{ .substr = "aaa" },
-+				{ .substr = "bbb", .negative = true },
-+				{ .substr = "ccc" },
-+				{}
-+			}
-+		},
-+		{
-+			.name = "negative-fail-mid-2",
-+			.log = "aaabbb222ccc",
-+			.expected = "UNEXPECTED SUBSTR: '222'\n",
-+			.pats = (struct expect_msg[]) {
-+				{ .substr = "aaa" },
-+				{ .substr = "222", .negative = true },
-+				{ .substr = "bbb", .negative = true },
-+				{ .substr = "ccc" },
-+				{}
-+			}
-+		}
-+	};
-+
-+	for (i = 0; i < ARRAY_SIZE(cases); i++) {
-+		if (test__start_subtest(cases[i].name)) {
-+			error_cnt = env.subtest_state->error_cnt;
-+			msgs.patterns = cases[i].pats;
-+			msgs.cnt = 0;
-+			for (j = 0; cases[i].pats[j].substr; j++)
-+				msgs.cnt++;
-+			validate_msgs(cases[i].log, &msgs, dummy_emit);
-+			fflush(stderr);
-+			env.subtest_state->error_cnt = error_cnt;
-+			if (cases[i].expected)
-+				ASSERT_HAS_SUBSTR(env.subtest_state->log_buf, cases[i].expected, "expected output");
-+			else
-+				ASSERT_STREQ(env.subtest_state->log_buf, "", "expected no output");
-+			test__end_subtest();
-+		}
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index 7905396c9cc4e26d272cd5f236e41d2cf2294030..ce75d6f27ee7c2667d7ed1f0d5af9db39d848bc4 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -33,7 +33,14 @@
-  *                   e.g. "foo{{[0-9]+}}"  matches strings like "foo007".
-  *                   Extended POSIX regular expression syntax is allowed
-  *                   inside the brackets.
-+ * __not_msg         Message not expected to be found in verifier log.
-+ *                   If __msg_not is situated between __msg tags
-+ *                   framework matches __msg tags first, and then
-+ *                   checks that __msg_not is not present in a portion of
-+ *                   a log between bracketing __msg tags.
-+ *                   Same regex syntax as for __msg is supported.
-  * __msg_unpriv      Same as __msg but for unprivileged mode.
-+ * __not_msg_unpriv  Same as __not_msg but for unprivileged mode.
-  *
-  * __stderr          Message expected to be found in bpf stderr stream. The
-  *                   same regex rules apply like __msg.
-@@ -121,12 +128,14 @@
-  * __caps_unpriv     Specify the capabilities that should be set when running the test.
-  */
- #define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" XSTR(__COUNTER__) "=" msg)))
-+#define __not_msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_not_msg=" XSTR(__COUNTER__) "=" msg)))
- #define __xlated(msg)		__attribute__((btf_decl_tag("comment:test_expect_xlated=" XSTR(__COUNTER__) "=" msg)))
- #define __jited(msg)		__attribute__((btf_decl_tag("comment:test_jited=" XSTR(__COUNTER__) "=" msg)))
- #define __failure		__attribute__((btf_decl_tag("comment:test_expect_failure")))
- #define __success		__attribute__((btf_decl_tag("comment:test_expect_success")))
- #define __description(desc)	__attribute__((btf_decl_tag("comment:test_description=" desc)))
- #define __msg_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_msg_unpriv=" XSTR(__COUNTER__) "=" msg)))
-+#define __not_msg_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_not_msg_unpriv=" XSTR(__COUNTER__) "=" msg)))
- #define __xlated_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_xlated_unpriv=" XSTR(__COUNTER__) "=" msg)))
- #define __jited_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_jited=" XSTR(__COUNTER__) "=" msg)))
- #define __failure_unpriv	__attribute__((btf_decl_tag("comment:test_expect_failure_unpriv")))
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index e065b467d5090e89c22c5e7a6dba0138a8ebecaf..74ecc281bb8c12435318a06919f4cf6192faa4cd 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -2,7 +2,6 @@
- /* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
- #include <linux/capability.h>
- #include <stdlib.h>
--#include <regex.h>
- #include <test_progs.h>
- #include <bpf/btf.h>
- 
-@@ -20,10 +19,12 @@
- #define TEST_TAG_EXPECT_FAILURE "comment:test_expect_failure"
- #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
- #define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg="
-+#define TEST_TAG_EXPECT_NOT_MSG_PFX "comment:test_expect_not_msg="
- #define TEST_TAG_EXPECT_XLATED_PFX "comment:test_expect_xlated="
- #define TEST_TAG_EXPECT_FAILURE_UNPRIV "comment:test_expect_failure_unpriv"
- #define TEST_TAG_EXPECT_SUCCESS_UNPRIV "comment:test_expect_success_unpriv"
- #define TEST_TAG_EXPECT_MSG_PFX_UNPRIV "comment:test_expect_msg_unpriv="
-+#define TEST_TAG_EXPECT_NOT_MSG_PFX_UNPRIV "comment:test_expect_not_msg_unpriv="
- #define TEST_TAG_EXPECT_XLATED_PFX_UNPRIV "comment:test_expect_xlated_unpriv="
- #define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level="
- #define TEST_TAG_PROG_FLAGS_PFX "comment:test_prog_flags="
-@@ -65,18 +66,6 @@ enum load_mode {
- 	NO_JITED	= 1 << 1,
- };
- 
--struct expect_msg {
--	const char *substr; /* substring match */
--	regex_t regex;
--	bool is_regex;
--	bool on_next_line;
--};
--
--struct expected_msgs {
--	struct expect_msg *patterns;
--	size_t cnt;
--};
--
- struct test_subspec {
- 	char *name;
- 	bool expect_failure;
-@@ -216,7 +205,8 @@ static int compile_regex(const char *pattern, regex_t *regex)
- 	return 0;
- }
- 
--static int __push_msg(const char *pattern, bool on_next_line, struct expected_msgs *msgs)
-+static int __push_msg(const char *pattern, bool on_next_line, bool negative,
-+		      struct expected_msgs *msgs)
- {
- 	struct expect_msg *msg;
- 	void *tmp;
-@@ -232,6 +222,7 @@ static int __push_msg(const char *pattern, bool on_next_line, struct expected_ms
- 	msg = &msgs->patterns[msgs->cnt];
- 	msg->on_next_line = on_next_line;
- 	msg->substr = pattern;
-+	msg->negative = negative;
- 	msg->is_regex = false;
- 	if (strstr(pattern, "{{")) {
- 		err = compile_regex(pattern, &msg->regex);
-@@ -250,16 +241,16 @@ static int clone_msgs(struct expected_msgs *from, struct expected_msgs *to)
- 
- 	for (i = 0; i < from->cnt; i++) {
- 		msg = &from->patterns[i];
--		err = __push_msg(msg->substr, msg->on_next_line, to);
-+		err = __push_msg(msg->substr, msg->on_next_line, msg->negative, to);
- 		if (err)
- 			return err;
- 	}
- 	return 0;
- }
- 
--static int push_msg(const char *substr, struct expected_msgs *msgs)
-+static int push_msg(const char *substr, bool negative, struct expected_msgs *msgs)
- {
--	return __push_msg(substr, false, msgs);
-+	return __push_msg(substr, false, negative, msgs);
- }
- 
- static int push_disasm_msg(const char *regex_str, bool *on_next_line, struct expected_msgs *msgs)
-@@ -270,7 +261,7 @@ static int push_disasm_msg(const char *regex_str, bool *on_next_line, struct exp
- 		*on_next_line = false;
- 		return 0;
- 	}
--	err = __push_msg(regex_str, *on_next_line, msgs);
-+	err = __push_msg(regex_str, *on_next_line, false, msgs);
- 	if (err)
- 		return err;
- 	*on_next_line = true;
-@@ -482,12 +473,22 @@ static int parse_test_spec(struct test_loader *tester,
- 			spec->auxiliary = true;
- 			spec->mode_mask |= UNPRIV;
- 		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_MSG_PFX))) {
--			err = push_msg(msg, &spec->priv.expect_msgs);
-+			err = push_msg(msg, false, &spec->priv.expect_msgs);
-+			if (err)
-+				goto cleanup;
-+			spec->mode_mask |= PRIV;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_NOT_MSG_PFX))) {
-+			err = push_msg(msg, true, &spec->priv.expect_msgs);
- 			if (err)
- 				goto cleanup;
- 			spec->mode_mask |= PRIV;
- 		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_MSG_PFX_UNPRIV))) {
--			err = push_msg(msg, &spec->unpriv.expect_msgs);
-+			err = push_msg(msg, false, &spec->unpriv.expect_msgs);
-+			if (err)
-+				goto cleanup;
-+			spec->mode_mask |= UNPRIV;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_NOT_MSG_PFX_UNPRIV))) {
-+			err = push_msg(msg, true, &spec->unpriv.expect_msgs);
- 			if (err)
- 				goto cleanup;
- 			spec->mode_mask |= UNPRIV;
-@@ -764,44 +765,141 @@ static void emit_stdout(const char *bpf_stdout, bool force)
- 	fprintf(stdout, "STDOUT:\n=============\n%s=============\n", bpf_stdout);
- }
- 
--static void validate_msgs(char *log_buf, struct expected_msgs *msgs,
--			  void (*emit_fn)(const char *buf, bool force))
-+static const char *match_msg(struct expect_msg *msg, const char **log)
- {
--	const char *log = log_buf, *prev_match;
-+	const char *match = NULL;
- 	regmatch_t reg_match[1];
--	int prev_match_line;
--	int match_line;
--	int i, j, err;
-+	int err;
-+
-+	if (!msg->is_regex) {
-+		match = strstr(*log, msg->substr);
-+		if (match)
-+			*log = match + strlen(msg->substr);
-+	} else {
-+		err = regexec(&msg->regex, *log, 1, reg_match, 0);
-+		if (err == 0) {
-+			match = *log + reg_match[0].rm_so;
-+			*log += reg_match[0].rm_eo;
-+		}
-+	}
-+	return match;
++	asm volatile (
++	"r1 = *(u64 *)(r10 - 8);"
++	"r2 = *(u64 *)(r10 - 24);"
++	"*(u64 *)(r10 - 8) = r1;"
++	"r0 = 0;"
++	"exit;"
++	::: __clobber_all);
 +}
 +
-+static int count_lines(const char *start, const char *end)
++SEC("socket")
++__log_level(2)
++__msg("(0) frame 0 insn 1 +live -8")
++__not_msg("(0) frame 0 insn 1 +written")
++__msg("(0) live stack update done in 2 iterations")
++__msg("(0) frame 0 insn 1 +live -16")
++__msg("(0) frame 0 insn 1 +written -32")
++__msg("(0) live stack update done in 2 iterations")
++__naked void read_write_join(void)
 +{
-+	const char *tmp;
-+	int n = 0;
-+
-+	for (tmp = start; tmp < end; ++tmp)
-+		if (*tmp == '\n')
-+			n++;
-+	return n;
++	asm volatile (
++	"call %[bpf_get_prandom_u32];"
++	"if r0 > 42 goto 1f;"
++	"r0 = *(u64 *)(r10 - 8);"
++	"*(u64 *)(r10 - 32) = r0;"
++	"*(u64 *)(r10 - 40) = r0;"
++	"exit;"
++"1:"
++	"r0 = *(u64 *)(r10 - 16);"
++	"*(u64 *)(r10 - 32) = r0;"
++	"exit;"
++	:: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
 +}
 +
-+struct match {
-+	const char *start;
-+	const char *end;
-+	int line;
-+};
++SEC("socket")
++__log_level(2)
++__msg("2: (25) if r0 > 0x2a goto pc+1")
++__msg("7: (95) exit")
++__msg("(0) frame 0 insn 2 +written -16")
++__msg("(0) live stack update done in 2 iterations")
++__msg("7: (95) exit")
++__not_msg("(0) frame 0 insn 2")
++__msg("(0) live stack update done in 1 iterations")
++__naked void must_write_not_same_slot(void)
++{
++	asm volatile (
++	"call %[bpf_get_prandom_u32];"
++	"r1 = -8;"
++	"if r0 > 42 goto 1f;"
++	"r1 = -16;"
++"1:"
++	"r2 = r10;"
++	"r2 += r1;"
++	"*(u64 *)(r2 + 0) = r0;"
++	"exit;"
++	:: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
 +
++SEC("socket")
++__log_level(2)
++__msg("(0) frame 0 insn 0 +written -8,-16")
++__msg("(0) live stack update done in 2 iterations")
++__msg("(0) frame 0 insn 0 +written -8")
++__msg("(0) live stack update done in 2 iterations")
++__naked void must_write_not_same_type(void)
++{
++	asm volatile (
++	"*(u64*)(r10 - 8) = 0;"
++	"r2 = r10;"
++	"r2 += -8;"
++	"r1 = %[map] ll;"
++	"call %[bpf_map_lookup_elem];"
++	"if r0 != 0 goto 1f;"
++	"r0 = r10;"
++	"r0 += -16;"
++"1:"
++	"*(u64 *)(r0 + 0) = 42;"
++	"exit;"
++	:
++        : __imm(bpf_get_prandom_u32),
++	  __imm(bpf_map_lookup_elem),
++	  __imm_addr(map)
++	: __clobber_all);
++}
++
++SEC("socket")
++__log_level(2)
++__msg("(2,4) frame 0 insn 4 +written -8")
++__msg("(2,4) live stack update done in 2 iterations")
++__msg("(0) frame 0 insn 2 +written -8")
++__msg("(0) live stack update done in 2 iterations")
++__naked void caller_stack_write(void)
++{
++	asm volatile (
++	"r1 = r10;"
++	"r1 += -8;"
++	"call write_first_param;"
++	"exit;"
++	::: __clobber_all);
++}
++
++static __used __naked void write_first_param(void)
++{
++	asm volatile (
++	"*(u64 *)(r1 + 0) = 7;"
++	"r0 = 0;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__log_level(2)
++/* caller_stack_read() function */
++__msg("2: .12345.... (85) call pc+4")
++__msg("5: .12345.... (85) call pc+1")
++__msg("6: 0......... (95) exit")
++/* read_first_param() function */
++__msg("7: .1........ (79) r0 = *(u64 *)(r1 +0)")
++__msg("8: 0......... (95) exit")
++/* update for callsite at (2) */
++__msg("(2,7) frame 0 insn 7 +live -8")
++__msg("(2,7) live stack update done in 2 iterations")
++__msg("(0) frame 0 insn 2 +live -8")
++__msg("(0) live stack update done in 2 iterations")
++/* update for callsite at (5) */
++__msg("(5,7) frame 0 insn 7 +live -16")
++__msg("(5,7) live stack update done in 2 iterations")
++__msg("(0) frame 0 insn 5 +live -16")
++__msg("(0) live stack update done in 2 iterations")
++__naked void caller_stack_read(void)
++{
++	asm volatile (
++	"r1 = r10;"
++	"r1 += -8;"
++	"call read_first_param;"
++	"r1 = r10;"
++	"r1 += -16;"
++	"call read_first_param;"
++	"exit;"
++	::: __clobber_all);
++}
++
++static __used __naked void read_first_param(void)
++{
++	asm volatile (
++	"r0 = *(u64 *)(r1 + 0);"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("socket")
++__flag(BPF_F_TEST_STATE_FREQ)
++__log_level(2)
++/* read_first_param2() function */
++__msg(" 9: .1........ (79) r0 = *(u64 *)(r1 +0)")
++__msg("10: .......... (b7) r0 = 0")
++__msg("11: 0......... (05) goto pc+0")
++__msg("12: 0......... (95) exit")
 +/*
-+ * Positive messages are matched sequentially, each next message
-+ * is looked for starting from the end of a previous matched one.
++ * The purpose of the test is to check that checkpoint in
++ * read_first_param2() stops path traversal. This will only happen if
++ * verifier understands that fp[0]-8 at insn (12) is not alive.
 + */
-+static void match_positive_msgs(const char *log, struct expected_msgs *msgs, struct match *matches)
++__msg("12: safe")
++__msg("processed 20 insns")
++__naked void caller_stack_pruning(void)
 +{
-+	const char *prev_match;
-+	int i, line;
- 
--	prev_match_line = -1;
--	match_line = 0;
- 	prev_match = log;
-+	line = 0;
-+	for (i = 0; i < msgs->cnt; i++) {
-+		struct expect_msg *msg = &msgs->patterns[i];
-+		const char *match = NULL;
++	asm volatile (
++	"call %[bpf_get_prandom_u32];"
++	"if r0 == 42 goto 1f;"
++	"r0 = %[map] ll;"
++"1:"
++	"*(u64 *)(r10 - 8) = r0;"
++	"r1 = r10;"
++	"r1 += -8;"
++	/*
++	 * fp[0]-8 is either pointer to map or a scalar,
++	 * preventing state pruning at checkpoint created for call.
++	 */
++	"call read_first_param2;"
++	"exit;"
++	:
++	: __imm(bpf_get_prandom_u32),
++	  __imm_addr(map)
++	: __clobber_all);
++}
 +
-+		if (msg->negative)
-+			continue;
++static __used __naked void read_first_param2(void)
++{
++	asm volatile (
++	"r0 = *(u64 *)(r1 + 0);"
++	"r0 = 0;"
++	/*
++	 * Checkpoint at goto +0 should fire,
++	 * as caller stack fp[0]-8 is not alive at this point.
++	 */
++	"goto +0;"
++	"exit;"
++	::: __clobber_all);
++}
 +
-+		match = match_msg(msg, &log);
-+		if (match) {
-+			line += count_lines(prev_match, match);
-+			matches[i].start = match;
-+			matches[i].end   = log;
-+			matches[i].line  = line;
-+			prev_match = match;
-+		}
-+	}
++SEC("socket")
++__flag(BPF_F_TEST_STATE_FREQ)
++__failure
++__msg("R1 type=scalar expected=map_ptr")
++__naked void caller_stack_pruning_callback(void)
++{
++	asm volatile (
++	"r0 = %[map] ll;"
++	"*(u64 *)(r10 - 8) = r0;"
++	"r1 = 2;"
++	"r2 = loop_cb ll;"
++	"r3 = r10;"
++	"r3 += -8;"
++	"r4 = 0;"
++	/*
++	 * fp[0]-8 is either pointer to map or a scalar,
++	 * preventing state pruning at checkpoint created for call.
++	 */
++	"call %[bpf_loop];"
++	"r0 = 42;"
++	"exit;"
++	:
++	: __imm(bpf_get_prandom_u32),
++	  __imm(bpf_loop),
++	  __imm_addr(map)
++	: __clobber_all);
++}
++
++static __used __naked void loop_cb(void)
++{
++	asm volatile (
++	/*
++	 * Checkpoint at function entry should not fire, as caller
++	 * stack fp[0]-8 is alive at this point.
++	 */
++	"r6 = r2;"
++	"r1 = *(u64 *)(r6 + 0);"
++	"*(u64*)(r10 - 8) = 7;"
++	"r2 = r10;"
++	"r2 += -8;"
++	"call %[bpf_map_lookup_elem];"
++	/*
++	 * This should stop verifier on a second loop iteration,
++	 * but only if verifier correctly maintains that fp[0]-8
++	 * is still alive.
++	 */
++	"*(u64 *)(r6 + 0) = 0;"
++	"r0 = 0;"
++	"exit;"
++	:
++	: __imm(bpf_map_lookup_elem),
++	  __imm(bpf_get_prandom_u32)
++	: __clobber_all);
 +}
 +
 +/*
-+ * Each negative messages N located between positive messages P1 and P2
-+ * is matched in the span P1.end .. P2.start. Consequently, negative messages
-+ * are unordered within the span.
++ * Because of a bug in verifier.c:compute_postorder()
++ * the program below overflowed traversal queue in that function.
 + */
-+static void match_negative_msgs(const char *log, struct expected_msgs *msgs, struct match *matches)
++SEC("socket")
++__naked void syzbot_postorder_bug1(void)
 +{
-+	const char *start = log, *end, *next, *match;
-+	const char *log_end = log + strlen(log);
-+	int i, j, next_positive;
-+
- 	for (i = 0; i < msgs->cnt; i++) {
- 		struct expect_msg *msg = &msgs->patterns[i];
--		const char *match = NULL, *pat_status;
--		bool wrong_line = false;
--
--		if (!msg->is_regex) {
--			match = strstr(log, msg->substr);
--			if (match)
--				log = match + strlen(msg->substr);
--		} else {
--			err = regexec(&msg->regex, log, 1, reg_match, 0);
--			if (err == 0) {
--				match = log + reg_match[0].rm_so;
--				log += reg_match[0].rm_eo;
-+
-+		/* positive message bumps span start */
-+		if (!msg->negative) {
-+			start = matches[i].end ?: start;
-+			continue;
-+		}
-+
-+		/* count stride of negative patterns and adjust span end */
-+		end = log_end;
-+		for (next_positive = i + 1; next_positive < msgs->cnt; next_positive++) {
-+			if (!msgs->patterns[next_positive].negative) {
-+				end = matches[next_positive].start;
-+				break;
- 			}
- 		}
- 
--		if (match) {
--			for (; prev_match < match; ++prev_match)
--				if (*prev_match == '\n')
--					++match_line;
--			wrong_line = msg->on_next_line && prev_match_line >= 0 &&
--				     prev_match_line + 1 != match_line;
-+		/* try matching negative messages within identified span */
-+		for (j = i; j < next_positive; j++) {
-+			next = start;
-+			match = match_msg(msg, &next);
-+			if (match && next <= end) {
-+				matches[j].start = match;
-+				matches[j].end = next;
-+			}
- 		}
- 
--		if (!match || wrong_line) {
-+		/* -1 to account for i++ */
-+		i = next_positive - 1;
-+	}
++	asm volatile (
++	"r0 = 0;"
++	"if r0 != 0 goto -1;"
++	"exit;"
++	::: __clobber_all);
 +}
-+
-+void validate_msgs(const char *log_buf, struct expected_msgs *msgs,
-+		   void (*emit_fn)(const char *buf, bool force))
-+{
-+	struct match matches[msgs->cnt];
-+	struct match *prev_match = NULL;
-+	int i, j;
-+
-+	memset(matches, 0, sizeof(*matches) * msgs->cnt);
-+	match_positive_msgs(log_buf, msgs, matches);
-+	match_negative_msgs(log_buf, msgs, matches);
-+
-+	for (i = 0; i < msgs->cnt; i++) {
-+		struct expect_msg *msg = &msgs->patterns[i];
-+		struct match *match = &matches[i];
-+		const char *pat_status;
-+		bool unexpected;
-+		bool wrong_line;
-+		bool no_match;
-+
-+		no_match   = !msg->negative && !match->start;
-+		wrong_line = !msg->negative &&
-+			     msg->on_next_line &&
-+			     prev_match && prev_match->line + 1 != match->line;
-+		unexpected = msg->negative && match->start;
-+		if (no_match || wrong_line || unexpected) {
- 			PRINT_FAIL("expect_msg\n");
- 			if (env.verbosity == VERBOSE_NONE)
- 				emit_fn(log_buf, true /*force*/);
-@@ -811,8 +909,10 @@ static void validate_msgs(char *log_buf, struct expected_msgs *msgs,
- 					pat_status = "MATCHED   ";
- 				else if (wrong_line)
- 					pat_status = "WRONG LINE";
--				else
-+				else if (no_match)
- 					pat_status = "EXPECTED  ";
-+				else
-+					pat_status = "UNEXPECTED";
- 				msg = &msgs->patterns[j];
- 				fprintf(stderr, "%s %s: '%s'\n",
- 					pat_status,
-@@ -822,12 +922,13 @@ static void validate_msgs(char *log_buf, struct expected_msgs *msgs,
- 			if (wrong_line) {
- 				fprintf(stderr,
- 					"expecting match at line %d, actual match is at line %d\n",
--					prev_match_line + 1, match_line);
-+					prev_match->line + 1, match->line);
- 			}
- 			break;
- 		}
- 
--		prev_match_line = match_line;
-+		if (!msg->negative)
-+			prev_match = match;
- 	}
- }
- 
-diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-index df2222a1806fd1604fc55ce50038548cd13304de..eebfc18cdcd21d2641bd42870a3364065ab290b5 100644
---- a/tools/testing/selftests/bpf/test_progs.h
-+++ b/tools/testing/selftests/bpf/test_progs.h
-@@ -7,6 +7,7 @@
- #include <errno.h>
- #include <string.h>
- #include <assert.h>
-+#include <regex.h>
- #include <stdlib.h>
- #include <stdarg.h>
- #include <time.h>
-@@ -546,4 +547,20 @@ extern void test_loader_fini(struct test_loader *tester);
- 	test_loader_fini(&tester);					       \
- })
- 
-+struct expect_msg {
-+	const char *substr; /* substring match */
-+	regex_t regex;
-+	bool is_regex;
-+	bool on_next_line;
-+	bool negative;
-+};
-+
-+struct expected_msgs {
-+	struct expect_msg *patterns;
-+	size_t cnt;
-+};
-+
-+void validate_msgs(const char *log_buf, struct expected_msgs *msgs,
-+		   void (*emit_fn)(const char *buf, bool force));
-+
- #endif /* __TEST_PROGS_H */
 
 -- 
 2.51.0
