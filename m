@@ -1,149 +1,363 @@
-Return-Path: <bpf+bounces-68747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 773C4B8394A
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 10:47:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D73B8399B
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 10:52:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A1C01C02171
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 08:48:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 433725866CB
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 08:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46DF32F5306;
-	Thu, 18 Sep 2025 08:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B10CD2FE588;
+	Thu, 18 Sep 2025 08:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M0cR9NE0"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BiQ9DS9j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3F1226173
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 08:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758185253; cv=none; b=rp24YXTBZFJd/WjkjALA5ew5iGrUKjpYGxO4qqFSuFczNFyAAjS4AghBxqVb01aTCsgK5eKXSdFvqPKVFkjGFCCzNLYPe6Eukql1c0yKsuhnMBxgtxe0VaNfJ/d91sNj+X97HnqcyBJTmXHVXpFDICXBo5LnoqLMaWcKYdlzu9g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758185253; c=relaxed/simple;
-	bh=L45ZHUW76JMrGXCpZTDkbXpqy+oHe8GXZEgOVfexB8o=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hZlH8nEEeoNL8UHZA9MUVuGLONqmAp6XmTPOUa9EF0FbJavaRP6amkpRVzjtJ+5wBHjktoxaxYgUh+eN5lxBF4/zP8NHSfcSEVWoPRQ5OSE7aHKN3xvc3b2bx/5D5MPH/g6lFsv859HS9y2pb1jgLK97Xl/mQOJSaIqLO/um6VY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M0cR9NE0; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b03fa5c5a89so137223366b.2
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 01:47:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758185250; x=1758790050; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4dUuZLCrIMKFDhECHW6CRsaOlZAc9dyj1qs/1GGZce0=;
-        b=M0cR9NE0W9Y1xN7+c4xlGTZwwhVigM/FIVmgKAIyZvwqF3Np4p7DxnWa2VF+gezaFy
-         svZvKYCwUdmmAyap3TRZCZTt0eHvCqiX+5uMjpoX6Dp9KLOLcH/pD5INZwpurGQ9ZbXP
-         vRobPnSAwwQ5I/V+z3lQ32nk0GeSoJHXbVB/WZrUX8WinuxqUdZdp4HcG2rvvVNfLnrb
-         X+HxqJhjEPs9oHLaKCYMB6hgsPHKB3DMzSWKIM/MHV6GHofzL6XA/3RRzGQLMxlLtAw9
-         aOS2FP2noNdiE/Zlk8JvO0Zb8Erbwee2waGIetr0UyAVy/whOhE8sSBQ/qe5zt/hJ6kp
-         TgHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758185250; x=1758790050;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4dUuZLCrIMKFDhECHW6CRsaOlZAc9dyj1qs/1GGZce0=;
-        b=EFoR0yajbtloHlOkGsvMlnlJqYZr5GnaDTG1IKvx/oc23r2jytCGN6ODF70vatKwG/
-         7fg1sjLlX2R5QEOgbscACliqngZzud8M0QTx7m/ws0YR84bQSvD318/CHmNnjKgQE5Fv
-         VF4ivcVjeHzZ3HgYYjO9qPPCM67879YT+a24rxTxMremN8SqfU8yXUkQsTkNiDDNVgNN
-         oVTdMAtSunGsxI976d/s+jTTaGb1KMv9QWsvCCnlF3pSSLHI32DDQjX2E8chl4uxgHSF
-         bhvrPOO/gJ3yuZF/LLaATGwk4Ox260AfVzd1SlNLpmKwaI+m4ltkkf/ZX2gy4ZUhrD4n
-         6fjw==
-X-Forwarded-Encrypted: i=1; AJvYcCUP053qUVuI/LdhuFg0ll11EoaF3pI1lafohYgw/Ckm3TPNXrdSj67FcHa7V9TNn7NS4ck=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5t7AhAue7pBOl10SK2x0ORKP7kO5ip7L7XtXx26ALlKQIqEQC
-	OZc0U58bQcmxwoHYeakFTS2aVtpFltyEnEhbkFVarkv4O6JNsV3UndjB
-X-Gm-Gg: ASbGncutZJEtnhez91IkjiCT3K9U4v5ofeBNd2oSHp3uFTL16givQ3eHsUI4JUdqdLK
-	zIb2mL6pt2d2ef7D/v+t+YivMR9aYar4xBCh4rUkT7a/gezKSqVdQwXjmJ8WAAVQ4aZpoKEBgW8
-	amtr9tbEq/SbTWVRMjDPTBF6f6fNgwvyU6ce5rIasoWQfxDrmwo8im3QYgBCQ1kwrqr3KkPTgTI
-	2iaRvXU2QTa3EK6dcYykb7oBTWsowgRRMgxjMBgJjGVWy6+tOVCn1No6ff/cltTD51mpIbafTtX
-	US2RwmvFizBvngJJBrM5PU+ZQL1zIu+JVyXY0Xm2cPcIWjhyMWRpp7MYiyhwL5JQ9uEdscgqjh9
-	3RzlgeEi9LmjNJzfOphVL9Eh1UwThbEY/I37ucajZJIo5QswoJGxrVg==
-X-Google-Smtp-Source: AGHT+IGSY6T0zgBstKzdppw+beER6+Ou6Xf+HZr5uZODjknR4sf0RTrkDM+Z+jzltMePgD/ZZBp0rA==
-X-Received: by 2002:a17:907:3e8c:b0:b04:76ed:3ff5 with SMTP id a640c23a62f3a-b1bb6802513mr591131566b.40.1758185250193;
-        Thu, 18 Sep 2025 01:47:30 -0700 (PDT)
-Received: from krava (37-188-233-225.red.o2.cz. [37.188.233.225])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b1fc5f44bb1sm148036466b.21.2025.09.18.01.47.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Sep 2025 01:47:29 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 18 Sep 2025 10:47:15 +0200
-To: Fuyu Zhao <zhaofuyu@vivo.com>
-Cc: Song Liu <song@kernel.org>, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev,
-	haoluo@google.com, eddyz87@gmail.com, kpsingh@kernel.org,
-	sdf@fomichev.me, rostedt@goodmis.org, mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com, shuah@kernel.org,
-	willemb@google.com, kerneljasonxing@gmail.com,
-	paul.chaignon@gmail.com, chen.dylane@linux.dev, memxor@gmail.com,
-	martin.kelly@crowdstrike.com, ameryhung@gmail.com,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	yikai.lin@vivo.com
-Subject: Re: [RFC PATCH bpf-next v1 0/3] bpf: Add BPF program type for
- overriding tracepoint probes
-Message-ID: <aMvHE-iW5eAwf4km@krava>
-References: <20250917072242.674528-1-zhaofuyu@vivo.com>
- <CAPhsuW47BVGsszGU=27gKa1XOYLH+de1FgrHPVL4mftB2CvX9g@mail.gmail.com>
- <b23ef4e0-afa1-4d94-b4aa-28c02c3499c6@vivo.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA96E2F2918;
+	Thu, 18 Sep 2025 08:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758185550; cv=fail; b=ptD/NicGoeyR91odCcMSmOcTtFeToW1bkqYM6jFOZibeYn2O7gKkpAo+xrQzozJT3cXynS1BwrAzP5ULVsjzw/A920M4ZvsIWbVFaMiH/fGLUnwCVuJYuryM3vwKo3HLZtZHZKeDY4p/9dWqto/+Rrf0UG7GQndojQDF3XL00vQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758185550; c=relaxed/simple;
+	bh=RUng57FEIfxez8tkSlsgUNizIRNwwkdrmvoamV5M1wY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=XLBZ9Y0M17Pp290DBBdGGAm0WXUvc2zkwvdb/m1G7WAIrOHjnDUwLL0jEuR7DZ3cZyayUlToq7j6Z06ADPMYmQH0pEE0RCiy/9lpJS62u1K2bPSFxb0dxuVd2xAsDbW1XWQS2QFZtPnzhtP8vBgAgbFZOWF6tb6CZyU9E7OymxM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BiQ9DS9j; arc=fail smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1758185548; x=1789721548;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=RUng57FEIfxez8tkSlsgUNizIRNwwkdrmvoamV5M1wY=;
+  b=BiQ9DS9j8t2Ec6dO4bwAIbXE7tcCw9KK5WCNEQ3hDC2Nn84Q08u++3P0
+   JfehaBvuduADSAW1K7RKBg6KddYwgU8CrvhQKaEIwTdnklgpJ67xAAWQO
+   yjZ+8OUqg4+UuZUB1Snl0MKMO/FfyVhhUMmacx760jil4FffXxSAP5DYx
+   sLai+Ahgplz8JJrokj4hbX0r7atTCYgcrc5W+WvUipdYFcSv7+myL3VKD
+   dapoU8NY+jQ7LYXMUb1dZ6QW1J9+u97JX8J5Bg6f6b1hH6q/5q6rkBKdC
+   Mru08WrEo32IsCuLJO65g6b/UtZetlXfArtbqSkoEiMZWmVaLGqsiSde1
+   Q==;
+X-CSE-ConnectionGUID: sNoerLNATpOdTKhxcsJVZA==
+X-CSE-MsgGUID: b+Nqci5ASxmzTGoaee9hGQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11556"; a="71933995"
+X-IronPort-AV: E=Sophos;i="6.18,274,1751266800"; 
+   d="scan'208";a="71933995"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2025 01:52:28 -0700
+X-CSE-ConnectionGUID: QncvlS4FTuW8q1jJbbdLkQ==
+X-CSE-MsgGUID: HjjiLtNzQCGqB9Y/RqK5GA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,274,1751266800"; 
+   d="scan'208";a="174763292"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2025 01:52:28 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17; Thu, 18 Sep 2025 01:52:26 -0700
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17 via Frontend Transport; Thu, 18 Sep 2025 01:52:26 -0700
+Received: from BN8PR05CU002.outbound.protection.outlook.com (52.101.57.40) by
+ edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17; Thu, 18 Sep 2025 01:52:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=W2tDnrVYiW39d1sba6539UvoSJ0QILvaX6vNV/4vyfzHOOfYrW6MnR3HokVUglEXTBT2Apvw4NV1Xm2Co1lHDPDZTX/EG0YGf3rOo49gW/YR8h1pO9GPP7aJ4O7i4xHmofbXOaq9AYp8E3wUXSEivEElz3oRPSc3BizAh9BWvyZZfK6ZQ/AfpOdeN+9Wv53XkKCyapdQ/nUU/xc0z+qvHUdA9RVl+E0fQUAQJkupzItw+gFCQJkQNhRuG9AS/MuHCfNqddkaH/ovuwckgSN0Kx5ruFmFETOrAMB3GGYA67O9N/cryWEghe1RDwLdW23+ONtg1rV7OgDobr/Gtsivmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2YGoz5bJP//vRhbLKCorCL9cm/zCPKy1dX3tYsDS3FY=;
+ b=WrwOixzlPUZDNq1iNOF1jFgLkCNBSx0pFakUpJS9ecxoUmf059COPHhZ4F+3FGAvfpi9RLF+YEHixt3PBxPlYmw7k3U0Nz3Ylqo4kSvbAyPl3vrhJoCkHnkZympYdQ2SYj6tN5gM/3O7rLOOIRkQISHrbZfOMQSjyqjom5PYq9R3RiTzxawaqEjVd6rsnJm/aNZBpeL7tOPOzolipH0zKsJBfv5jGIPTKm6HFZCh5o7iPfNzL0mRaNadkjOTmnzVk2buVAi1xk2Ewkw6FQwDiNS7LgbjUUvQl0Nt6A7QWB77P2E6/T+AxytJEzT1b8p6Zq7OLNSrgzh1qAeDeFfJVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ PH0PR11MB5077.namprd11.prod.outlook.com (2603:10b6:510:3b::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9137.14; Thu, 18 Sep 2025 08:52:23 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca%4]) with mapi id 15.20.9137.012; Thu, 18 Sep 2025
+ 08:52:23 +0000
+Date: Thu, 18 Sep 2025 10:52:08 +0200
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Amery Hung <ameryhung@gmail.com>
+CC: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<alexei.starovoitov@gmail.com>, <andrii@kernel.org>, <daniel@iogearbox.net>,
+	<paul.chaignon@gmail.com>, <kuba@kernel.org>, <stfomichev@gmail.com>,
+	<martin.lau@kernel.org>, <mohsin.bashr@gmail.com>, <noren@nvidia.com>,
+	<dtatulea@nvidia.com>, <saeedm@nvidia.com>, <tariqt@nvidia.com>,
+	<mbloch@nvidia.com>, <kernel-team@meta.com>
+Subject: Re: [PATCH bpf-next v4 1/6] bpf: Allow bpf_xdp_shrink_data to shrink
+ a frag from head and tail
+Message-ID: <aMvIONMZ9CFqyNnM@boxer>
+References: <20250917225513.3388199-1-ameryhung@gmail.com>
+ <20250917225513.3388199-2-ameryhung@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20250917225513.3388199-2-ameryhung@gmail.com>
+X-ClientProxiedBy: TLZP290CA0008.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:9::20) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b23ef4e0-afa1-4d94-b4aa-28c02c3499c6@vivo.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|PH0PR11MB5077:EE_
+X-MS-Office365-Filtering-Correlation-Id: b2cf8efb-dc4a-46ec-8dea-08ddf690af43
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|7416014|7053199007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?IE+D49G9JNRlrkWASDJnbcAQVXsXAczYRjzGgMgdK8cQbiNZwNS8wD+cUDZA?=
+ =?us-ascii?Q?gNAMvUWGE2ELE6zG6bTJEvHcJ6IFlvsjubYMsEbxvED2NL2v1LXZPRMfx3Ie?=
+ =?us-ascii?Q?0mbgcH2sw5+m3aIxasF0kLrteW4ZLKaBF74wG05ROpHvaQUVkB8Cbas07349?=
+ =?us-ascii?Q?PO0hvZMGGKEA6hywlG/uU0RMSPOGLYwKU5WKGywAO0l1XLMhE00Teckwm+mX?=
+ =?us-ascii?Q?vevtgm2j7B5HKBp1vgyqvAjfIIw9HGGNjjCP8j7JyG4hNDONWandt4OrdPKm?=
+ =?us-ascii?Q?azlG8HNzuHj8a8713/LRPqw6rTjE7tikzNWjFy/BrPucZ4TzlzI21fZswP06?=
+ =?us-ascii?Q?8am7R7S7U4WRg5XvoBEA1yGki25s2VJJ7EUk7vcKbJ6rRLjv8hyMPLyWBmFn?=
+ =?us-ascii?Q?eSwJSvSxdQtv2xVY89/A7ghiDU99EdLTDEczpXOq+VgtYfBPg3j6YI0jqwNW?=
+ =?us-ascii?Q?FaSKwdIM1w7YwFe2fIIgsLUD6f+U2yIzkekZdetUGiPuMhW+osdfBZXDhpoE?=
+ =?us-ascii?Q?XeAvgZX4A2CKBStqfslCC5WPv/NVStpGjzNDSApYcD/8rX1g7nUufGagn8Ac?=
+ =?us-ascii?Q?8eA792pfXSHewptGgpzvPtpmW0hCgJ8OeIjCcuy+0r7fOX+hxT4eHThl5of2?=
+ =?us-ascii?Q?33KJpIwD5AuT7mNaImdRruzxZC04HCgkXq2mvo8pxy/SrxF8ng0Ya98zUai4?=
+ =?us-ascii?Q?8GJ4EozqlsbM/DZqX9YQlqyIsL5lAHHt+ycHSCtb3yXm5EeqZEZ7+w04Lf+y?=
+ =?us-ascii?Q?fx/c+eH5tH9/rblf/P8aM52GfkUSNvovZN48tPAQtyp6/8SoAcpHFISUSTEr?=
+ =?us-ascii?Q?nQRCuWLu/ONatxIj9CjnqgBh9j3D31dvAiaJPqWEQ6nzj5LwbijGTbKCy47o?=
+ =?us-ascii?Q?DWvDboeujfDJbwyYBIrZ9oE0HR/jiWMwo4LL4o+10E+4mOabzCxcEJCkLZAJ?=
+ =?us-ascii?Q?qFNyFjd62yu7hTg5dSwsyCWOnWGdcm9s+Gmd+sm3tVFt+gc7znxUh4fqca11?=
+ =?us-ascii?Q?R8gCq2d+ub58Ty44ykq1xUH6u635Q4ZZm2+RLI2WdnlI6ptYSOEY06sfB0aS?=
+ =?us-ascii?Q?rLrac0FWHQjGXhKuLKdZPMT5jy210HujGznGmB/1Kz1oN6Sn5zSMWIyrfWpF?=
+ =?us-ascii?Q?0PjpApAeSD3yPVOWXDoJ3RmNGTIO5m9HlCR/XPOa7jkUeMDo99eCEf/pZx1K?=
+ =?us-ascii?Q?MPUMtNUNI66Abawsoy7RFUM4U0QHnn7lthrvVEnYwfiOkHHxERlHtw+NS2pk?=
+ =?us-ascii?Q?3AduPJSQB55wl62SgYsNo/jLEUWt9sUw9ECzbHveUoUxVEk7q3xI01B8uQ65?=
+ =?us-ascii?Q?5KYgUtUoYqQgk7D2rZQsJuzcC3U2aGjMHlWW/lMHpyTlIDdG/mbYJ+a/EV11?=
+ =?us-ascii?Q?7N7tfrnofnFIqohXdt0WVVB+OcMFCb7AwndfByWEUniq1sNNhGAXjCY3RwvH?=
+ =?us-ascii?Q?T1a4drWLyoY=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?atrtga0V1NZLHfcPGlRmoCrDVS/OYk1W0L3DirNbCn/k0fiBK79BvurUTbjF?=
+ =?us-ascii?Q?S0IkwPRJ1QsC2ZNwj2yrxvqzsAQSG80BF5nJiMKkXcWG78EwVqc09QY+eDao?=
+ =?us-ascii?Q?WnMPu1/RTp6zIADetUoqHLMqN8FuOB0dDTNaDhiKvg0KclIzNfkLO/nC4C6a?=
+ =?us-ascii?Q?P5flJsyD/bZwPKWy2VrzG3IaZ5BM3ZscyeC5F1T4VKAEOoTJIs2k+OcKjL4M?=
+ =?us-ascii?Q?L+ZPEejCzG7V5fApQipwoPxtVbRYxTwCmjWF36QQeizB1T1z2TJ+LOdl6rUW?=
+ =?us-ascii?Q?v1EztKPdRQeOELCkUmhVB88v4m1Mxk8be/m0SKZMH2HaFgxE1OxbBc0Co/yi?=
+ =?us-ascii?Q?qxIaKgXKqZ1b2qCe+0JQeEgW4UObnrzjq8ZEfY0dRcD0YaIEWcCEVSf9A/rU?=
+ =?us-ascii?Q?4XhZWbCalaEgh+2NrcZr8f7UdT17e4VpQihCMCP0WE5FIkQFHhHtPZRpUXdp?=
+ =?us-ascii?Q?XsOvwdh3SnLBcAoAXLBJi1rNpJ/SCCN5E+D2yg7d6B0VuByW1RTPys73knMi?=
+ =?us-ascii?Q?hY1Pv1Fk+g1wxtug/1FyVNulfO7lAZ+GX94p/sr0QPxM2QR4WZ4iXxY2oVmY?=
+ =?us-ascii?Q?KnqbTAa43NAFrCtvV5/HfiBABHAcGq87ngLtu9O7/2OqMHsmTe2z/s238xrZ?=
+ =?us-ascii?Q?8b1fM9fycGpdBfwzkfpgwYKfBJF1HDVoCfawKV7+6kIy12QHk0dNYvv76Bgj?=
+ =?us-ascii?Q?j7vGlfSRHS0K8s5w2BptgO/ZxJEb2jn97dccDLgopmHHbRDR7yhNACdk/5uc?=
+ =?us-ascii?Q?ZMsdNXqwgTtr4ZL7X2F4lltIBXD4tVtyHTi8lub8GvH7dnlhtphW94tJzhSB?=
+ =?us-ascii?Q?x1wRNoD+MEUlbKTGH3I8QfXp14PZaLr41gPpAe3/5M7r26YyP3eIZn7CLle8?=
+ =?us-ascii?Q?agqScGhbC1pex7d7/x5dIVAuY7QLk7qFoznYbhtAFoUS+RCkSW/i0AjvOsuy?=
+ =?us-ascii?Q?gyOApV7CVoySufFMwEREUOGEfHd5gwMGxIGkayUovCCBW7PCqSDNzQV02WGr?=
+ =?us-ascii?Q?rlwd5Hri1ctq9Dn28vz/z29Vr0X1IDCzmdPAj67cYy50I6MFByCHkeWTsf0T?=
+ =?us-ascii?Q?/BVE0/ojviQ/BPJh9LQEzmV97eWJx9q2O7EWuqX8ISFdBN0V1DcEQh9MMQYr?=
+ =?us-ascii?Q?clDvjOYxJ8UoMxJWTncTSTygqmVm5uhBY4spd8/qTj1jTqwf//ahlLHFSAJf?=
+ =?us-ascii?Q?fPc9pojwicndgp+7mQBZJlxDMczGJdgBGj2Z82rRlAPWHNU5vyKEc1n7gU5k?=
+ =?us-ascii?Q?GnwiBbO8TJbty0KT4kFrlAwAyD0sYKIK4GZvKGh0bufCfJoxZfs+GjUsrQV0?=
+ =?us-ascii?Q?CJhUw9NXqFh4LGZ7yunonp3hAtpYpVvlJPmZmM+0AdC5Fv9axh82QbXrWMUZ?=
+ =?us-ascii?Q?KufIdfCNQIJDC3jQQqXXiGGGbvffHLRtM2fMDww1ZDZOB6VUzu/6xB2CP/ly?=
+ =?us-ascii?Q?J/oa2sJzMT/avGx2mnTjc6GTBxjeg5fNJyRSfWgCCbMTkRZkb06GoJfIbhJu?=
+ =?us-ascii?Q?47SJ41wl0qcS2w6wEGZot8yFtFB+hxB3O/iMSyDuw0u8nsXDlvXX1jv8ccv4?=
+ =?us-ascii?Q?IQf/d46aFd/cHstj2LM53kaB6Zf61YCuxXJh6DIspzJIeoYjw7KXnqGP3wQX?=
+ =?us-ascii?Q?cw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2cf8efb-dc4a-46ec-8dea-08ddf690af43
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2025 08:52:23.4218
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y/lXNeTgEKRv//mM4JB84kWxYsTHSzaXugzsk1gKAv6mDOXPdof7NA7nrxbbcPbbyUyY+O2o+T1MsY0SmcrLEysHyakEq9e+WKf0xe8viqc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5077
+X-OriginatorOrg: intel.com
 
-On Thu, Sep 18, 2025 at 04:05:51PM +0800, Fuyu Zhao wrote:
+On Wed, Sep 17, 2025 at 03:55:08PM -0700, Amery Hung wrote:
+> Move skb_frag_t adjustment into bpf_xdp_shrink_data() and extend its
+> functionality to be able to shrink an xdp fragment from both head and
+> tail. In a later patch, bpf_xdp_pull_data() will reuse it to shrink an
+> xdp fragment from head.
 > 
+> Additionally, in bpf_xdp_frags_shrink_tail(), breaking the loop when
+> bpf_xdp_shrink_data() returns false (i.e., not releasing the current
+> fragment) is not necessary as the loop condition, offset > 0, has the
+> same effect. Remove the else branch to simplify the code.
 > 
-> On 9/18/2025 4:02 AM, Song Liu wrote:
-> > On Wed, Sep 17, 2025 at 12:23 AM Fuyu Zhao <zhaofuyu@vivo.com> wrote:
-> >>
-> >> Hi everyone,
-> >>
-> >> This patchset introduces a new BPF program type that allows overriding
-> >> a tracepoint probe function registered via register_trace_*.
-> >>
-> >> Motivation
-> >> ----------
-> >> Tracepoint probe functions registered via register_trace_* in the kernel
-> >> cannot be dynamically modified, changing a probe function requires recompiling
-> >> the kernel and rebooting. Nor can BPF programs change an existing
-> >> probe function.
-> >>
-> >> Overiding tracepoint supports a way to apply patches into kernel quickly
-> >> (such as applying security ones), through predefined static tracepoints,
-> >> without waiting for upstream integration.
-> > 
-> > IIUC, this work solves the same problem as raw tracepoint (raw_tp) or raw
-> > tracepoint with btf (tp_btf).
-> > 
-> > Did I miss something?
-> > 
-> > Thanks,
-> > Song
+> Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> ---
+>  include/net/xdp_sock_drv.h | 21 ++++++++++++++++++---
+>  net/core/filter.c          | 28 +++++++++++++++++-----------
+>  2 files changed, 35 insertions(+), 14 deletions(-)
 > 
-> As I understand it, raw tracepoints (raw_tp) and raw tracepoint (raw_tp)
-> are designed mainly for tracing the kernel. The goal of this work is to
-> provide a way to override the tracepoint callback, so that kernel behavior
-> can be adjusted dynamically.
+> diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+> index 513c8e9704f6..4f2d3268a676 100644
+> --- a/include/net/xdp_sock_drv.h
+> +++ b/include/net/xdp_sock_drv.h
+> @@ -160,13 +160,23 @@ static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
+>  	return ret;
+>  }
+>  
+> -static inline void xsk_buff_del_tail(struct xdp_buff *tail)
+> +static inline void xsk_buff_del_frag(struct xdp_buff *xdp)
+>  {
+> -	struct xdp_buff_xsk *xskb = container_of(tail, struct xdp_buff_xsk, xdp);
+> +	struct xdp_buff_xsk *xskb = container_of(xdp, struct xdp_buff_xsk, xdp);
+>  
+>  	list_del(&xskb->list_node);
+>  }
+>  
+> +static inline struct xdp_buff *xsk_buff_get_head(struct xdp_buff *first)
+> +{
+> +	struct xdp_buff_xsk *xskb = container_of(first, struct xdp_buff_xsk, xdp);
+> +	struct xdp_buff_xsk *frag;
+> +
+> +	frag = list_first_entry(&xskb->pool->xskb_list, struct xdp_buff_xsk,
+> +				list_node);
+> +	return &frag->xdp;
+> +}
+> +
+>  static inline struct xdp_buff *xsk_buff_get_tail(struct xdp_buff *first)
+>  {
+>  	struct xdp_buff_xsk *xskb = container_of(first, struct xdp_buff_xsk, xdp);
+> @@ -389,8 +399,13 @@ static inline struct xdp_buff *xsk_buff_get_frag(const struct xdp_buff *first)
+>  	return NULL;
+>  }
+>  
+> -static inline void xsk_buff_del_tail(struct xdp_buff *tail)
+> +static inline void xsk_buff_del_frag(struct xdp_buff *xdp)
+> +{
+> +}
+> +
+> +static inline struct xdp_buff *xsk_buff_get_head(struct xdp_buff *first)
+>  {
+> +	return NULL;
+>  }
+>  
+>  static inline struct xdp_buff *xsk_buff_get_tail(struct xdp_buff *first)
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 63f3baee2daf..0b82cb348ce0 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4153,27 +4153,31 @@ static int bpf_xdp_frags_increase_tail(struct xdp_buff *xdp, int offset)
+>  	return 0;
+>  }
+>  
+> -static void bpf_xdp_shrink_data_zc(struct xdp_buff *xdp, int shrink,
+> +static void bpf_xdp_shrink_data_zc(struct xdp_buff *xdp, int shrink, bool tail,
+>  				   enum xdp_mem_type mem_type, bool release)
+>  {
+> -	struct xdp_buff *zc_frag = xsk_buff_get_tail(xdp);
+> +	struct xdp_buff *zc_frag = tail ? xsk_buff_get_tail(xdp) :
+> +					  xsk_buff_get_head(xdp);
+>  
+>  	if (release) {
+> -		xsk_buff_del_tail(zc_frag);
+> +		xsk_buff_del_frag(zc_frag);
+>  		__xdp_return(0, mem_type, false, zc_frag);
+>  	} else {
+> -		zc_frag->data_end -= shrink;
+> +		if (tail)
+> +			zc_frag->data_end -= shrink;
+> +		else
+> +			zc_frag->data += shrink;
+>  	}
+>  }
+>  
+>  static bool bpf_xdp_shrink_data(struct xdp_buff *xdp, skb_frag_t *frag,
+> -				int shrink)
+> +				int shrink, bool tail)
+>  {
+>  	enum xdp_mem_type mem_type = xdp->rxq->mem.type;
+>  	bool release = skb_frag_size(frag) == shrink;
+>  
+>  	if (mem_type == MEM_TYPE_XSK_BUFF_POOL) {
+> -		bpf_xdp_shrink_data_zc(xdp, shrink, mem_type, release);
+> +		bpf_xdp_shrink_data_zc(xdp, shrink, tail, mem_type, release);
+>  		goto out;
+>  	}
+>  
+> @@ -4181,6 +4185,12 @@ static bool bpf_xdp_shrink_data(struct xdp_buff *xdp, skb_frag_t *frag,
+>  		__xdp_return(skb_frag_netmem(frag), mem_type, false, NULL);
+>  
+>  out:
+> +	if (!release) {
+> +		if (!tail)
+> +			skb_frag_off_add(frag, shrink);
+> +		skb_frag_size_sub(frag, shrink);
+> +	}
 
-hi,
-what's the use case for this? also I'd think you can do that just by
-unregister the callback you want to override and register new one?
+Hi Amery,
 
-thanks,
-jirka
+it feels a bit off to have separate conditions around @release. How about
+something below?
+
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 0b82cb348ce0..b1fca279c1de 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4175,20 +4175,17 @@ static bool bpf_xdp_shrink_data(struct xdp_buff *xdp, skb_frag_t *frag,
+ {
+ 	enum xdp_mem_type mem_type = xdp->rxq->mem.type;
+ 	bool release = skb_frag_size(frag) == shrink;
++	bool zc = mem_type == MEM_TYPE_XSK_BUFF_POOL;
+ 
+-	if (mem_type == MEM_TYPE_XSK_BUFF_POOL) {
++	if (zc)
+ 		bpf_xdp_shrink_data_zc(xdp, shrink, tail, mem_type, release);
+-		goto out;
+-	}
+-
+-	if (release)
+-		__xdp_return(skb_frag_netmem(frag), mem_type, false, NULL);
+ 
+-out:
+ 	if (!release) {
+ 		if (!tail)
+ 			skb_frag_off_add(frag, shrink);
+ 		skb_frag_size_sub(frag, shrink);
++	} else if (!zc) {
++		__xdp_return(skb_frag_netmem(frag), mem_type, false, NULL);
+ 	}
+ 
+ 	return release;
+
+> +
+>  	return release;
+>  }
+>  
+> @@ -4198,12 +4208,8 @@ static int bpf_xdp_frags_shrink_tail(struct xdp_buff *xdp, int offset)
+>  
+>  		len_free += shrink;
+>  		offset -= shrink;
+> -		if (bpf_xdp_shrink_data(xdp, frag, shrink)) {
+> +		if (bpf_xdp_shrink_data(xdp, frag, shrink, true))
+>  			n_frags_free++;
+> -		} else {
+> -			skb_frag_size_sub(frag, shrink);
+> -			break;
+> -		}
+>  	}
+>  	sinfo->nr_frags -= n_frags_free;
+>  	sinfo->xdp_frags_size -= len_free;
+> -- 
+> 2.47.3
+> 
 
