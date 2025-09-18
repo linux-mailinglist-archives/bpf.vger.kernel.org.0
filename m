@@ -1,164 +1,110 @@
-Return-Path: <bpf+bounces-68731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A57B82A63
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 04:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D317B82C83
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 05:43:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB7491B25A05
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 02:26:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8898E1BC36D7
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 03:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13BA6224AE8;
-	Thu, 18 Sep 2025 02:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF35723C4F1;
+	Thu, 18 Sep 2025 03:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O82Wc8su"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RDj2d8FV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B1A199934
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 02:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B881434BA27
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 03:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758162342; cv=none; b=bFScKokIi373VTBxu1EDN6WKxO1fy/xxZQAXcn+tP3R9kUIwm/YcrAPoXOm8uD57yJxMtq+BDteixIqOMDuqNhxim8fiscfe5IT1XFMUPmpbE8XOsLF5hYewK5UkPGDptQKktnsNLQ9SvOVH/yuRgwFcuoL7toqTwONNr89muJ8=
+	t=1758166982; cv=none; b=i6YlL2tVZcHCUPwpbkEeH1rGdb3Ms61ZHVLo8X45sSqE/U+/UVHUJyg8a7g+MQcQdbJLiTjX4i9QE0V6PSr2HoLveb1oYdXJhLAerGD54BHdwFi7he7PiprzwPIpwqrl/7201QWtXX607ib83lyauS8iydMvflJ5Ymfv7ilwE8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758162342; c=relaxed/simple;
-	bh=wlZTf3NJnH5mVdJnc5Nsv3XhqHq7lIfDW9F4W0DwgXg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TvcrUmPfL9CyR2LruJnoXv3vZKbrhSCigSuFvR2G8WbL9zPSZiv/MA5Ns2iqASK8FQRyLb/y8YMVxSYYPP9cDk9/6hYqqaCIS3KsP9WhZX2ZkmRX/MSXVeODJcEJz0I2DR4OHC7R1x0SV5tWFFB83MIdFR+q8gJWFFawn2E5pPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O82Wc8su; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-76e4fc419a9so473319b3a.0
-        for <bpf@vger.kernel.org>; Wed, 17 Sep 2025 19:25:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758162340; x=1758767140; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LoGnYSZgAtcI6RX+2p0NHTfZxcoF4uSXniUMX1MCOd8=;
-        b=O82Wc8sucNuRvIBPLG0uH+JWyTh5Yw75jswXwOGbs8QSGAUiYzwNYXj1Ms1OqMSAf3
-         4xgf+Wb0C6FefoMEFJdDhev1InzIuK2N4LHoLlxhIOJNdQ/8QcmRRph3cWSBRYjIFrau
-         53MXkYYqQDFghSXHz4+eJCWr5zhqZXTTj3hmMxX0tqs1adh5tR6NBYVyvlaCw3dbmcTp
-         kP4gkZmD5+M+AZ7ksaJyHgBmkZDAoJ/CyE/Ss7QdOPUpAWczNKWUD3yFr/Qa0gVQWN0t
-         Yd1QOFRsyajwfbfTw2lVetD5gsq4yXQRf1Bz3prnXUq0N6DPNP0TeOGL3L4W1fWkMxOF
-         b4bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758162340; x=1758767140;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LoGnYSZgAtcI6RX+2p0NHTfZxcoF4uSXniUMX1MCOd8=;
-        b=H3JDYtU+ZpC/WLI1KcfLL5/kEWyspGOjdd6rMPu9/DRfL7MqD4CGotKswwWAzmRrBZ
-         QTFL8ANZrvzEFycFzNN9Ki2M3DaLWc167y3nnFeKtXR+sqNjK1bsG6/LkVak1DwtqClV
-         dP2Lr4zO8+5xohXu5VvA8DsiYdWbvOiCxICRby/kX/oV1RaZtLlma1Ae2byELK7Bxn+6
-         //Y5Xb+MSVXNN6wC2GhIl/IKDFoPM021uZBupgDEZGx8sXlgcI1SDEIh9lUkbpM7Eege
-         uDEOFvtIeXS8i8NJ/3SVqTL6rccD2bgs5oxro9Ni68oC8qt8TICCHJXOfuAnl758RKOE
-         9QWA==
-X-Forwarded-Encrypted: i=1; AJvYcCVzFSdavRIHetP8DHY5XgJtmyblmdT5XGSWt13pk2YtDcoNDE54Iip2Q9XItGSNktM78pY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwrgdYsdyytKFXmIMC/jmw63zINSnGw7lZ855M2eVo7klXts5u0
-	qo9gKtCYwUw1br1iKUGO6lohk/a5udFMA9iUSZtfSLAcY0LtKpWuzsPI
-X-Gm-Gg: ASbGnctf9K2earQAsl2ym0AvemfOavpNTZGPbLeWQiDFFCg3Jimh65AFsPKzb8RNVPF
-	T2OgUv3w+mT/hJ76RzgDWoMk5o+yi15IAAzfMP7T/PiXTDYc6lJYu+ApmG9If1MsumF24y/lFgQ
-	WxNsegGYaNk5okTBLJHVORuL0GT72NxRgg+b8yXLahLEMNAS9x+62I2R2zIobmp7t1Y1cDceK8l
-	mjG8X5mbgpTftOQ86KBQglg8Jd5+bP3D8dwMz6c/Ao5rt8bD2TRUz8byI7Y+6vKKsH/iy6h3Uaz
-	HRG+xJs6mCEw+jqakRY+Jbz2LKLGcIEXiGyDQNjOFX+9qLSs+iMyBfwmNUxNgs/XqZEtHYFkFJ6
-	rflTWL+AEwCeeyq8A4gWA31d7leL/hSpveHa6QrDG51O1mlPInvmAiqhS1TMz4+co
-X-Google-Smtp-Source: AGHT+IH23/QNjkr0XnhixJWtwUO4UB9d4Bf0pTas5dB4eHXbG2y1CVq0dg2PWctitOEwl7D5dcIDHQ==
-X-Received: by 2002:a05:6a20:7d9b:b0:243:fedf:b413 with SMTP id adf61e73a8af0-27aa1c7a8e8mr5592385637.33.1758162340322;
-        Wed, 17 Sep 2025 19:25:40 -0700 (PDT)
-Received: from [10.22.65.172] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77cff229940sm720528b3a.99.2025.09.17.19.25.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Sep 2025 19:25:39 -0700 (PDT)
-Message-ID: <2866fd41-96aa-4528-800b-f8c110f43401@gmail.com>
-Date: Thu, 18 Sep 2025 10:25:36 +0800
+	s=arc-20240116; t=1758166982; c=relaxed/simple;
+	bh=s4dfE2ydAYBlYjHVdDfk+h9Z3FJxFihOYgYp4QN06Tg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TW0kWpXroYxO/ELnbKI9sH7Ih909x8lePekKkevCnAuGXXM3UQbFgmXqsfeeNW3ri2IHC2Au8vMlhvgYoJN8NhF/4lSp7qdH/Old6ZmoxvXyZ9s5mHMG0/QGJo8MdZOV/3fQ7Q2AXxU7XYokNLw36XBJ5RyKytQFQyOflNgHm3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RDj2d8FV; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758166976;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=nVGCwcKDJxCDUj9E4BqZOP0bEOF1M+F7b6XV7R4YWLw=;
+	b=RDj2d8FVLZ7gFmwZbmXHqKcKYWAnHlHdXRekR2Ja85XOCPHFo/Lwkr3Jz7UMkWcC1wRUWn
+	TSI/jGmmHm0k5kGnUh6cvV3tZJ7kADtiFKRWcQHMhVE+kmHH133kQBF0+4yx1FokdKzYA1
+	h2gmiR740RKpOyOPT7CAdsujlEz4c7Y=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	ameryhung@gmail.com,
+	menglong8.dong@gmail.com,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v3 0/2] bpf: Allow union argument in trampoline based programs
+Date: Thu, 18 Sep 2025 11:42:41 +0800
+Message-ID: <20250918034243.205940-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpf: support nested rcu critical sections
-Content-Language: en-US
-To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org
-Cc: kkd@meta.com, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, kernel-team@fb.com
-References: <20250916113622.19540-1-puranjay@kernel.org>
- <c6e2c3c6-2ce5-4b52-8429-bcda39e452ab@gmail.com>
- <mb61pa52tqiq8.fsf@kernel.org>
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <mb61pa52tqiq8.fsf@kernel.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+While tracing 'release_pages' with bpfsnoop[0], the verifier reports:
 
+The function release_pages arg0 type UNION is unsupported.
 
-On 17/9/25 22:03, Puranjay Mohan wrote:
-> Leon Hwang <hffilwlqm@gmail.com> writes:
->
->> On 16/9/25 19:36, Puranjay Mohan wrote:
->>> Currently, nested rcu critical sections are rejected by the verifier and
->>> rcu_lock state is managed by a boolean variable. Add support for nested
->>> rcu critical sections by make active_rcu_locks a counter similar to
->>> active_preempt_locks. bpf_rcu_read_lock() increments this counter and
->>> bpf_rcu_read_unlock() decrements it, MEM_RCU -> PTR_UNTRUSTED transition
->>> happens when active_rcu_locks drops to 0.
->>>
->>> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
->>> ---
->>
->> [...]
->>
->>> @@ -13863,7 +13863,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>>  	preempt_disable = is_kfunc_bpf_preempt_disable(&meta);
->>>  	preempt_enable = is_kfunc_bpf_preempt_enable(&meta);
->>>
->>> -	if (env->cur_state->active_rcu_lock) {
->>> +	if (env->cur_state->active_rcu_locks) {
->>>  		struct bpf_func_state *state;
->>>  		struct bpf_reg_state *reg;
->>>  		u32 clear_mask = (1 << STACK_SPILL) | (1 << STACK_ITER);
->>> @@ -13874,22 +13874,22 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>>  		}
->>>
->>>  		if (rcu_lock) {
->>> -			verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
->>> -			return -EINVAL;
->>> +			env->cur_state->active_rcu_locks++;
->>
->> Could we add a check for the maximum of 'active_rcu_locks'?
->>
->> From a cracker's perspective, this could potentially be abused to
->> stall the kernel or trigger a deadlock. Underneath 'rcu_read_lock()',
->> there are several RCU functions that tracing programs are able to
->> attach to. If those functions are traced, a deadlock can be triggered.
->>
->
-> IIUC what you are saying is that if I attach a BPF tracing program to
-> something under rcu_read_lock() and then call bpf_rcu_read_lock() in the
-> BPF program then there could recursion? Wouldn't that be triggered even
-> with a single call to bpf_rcu_read_lock() ?
->
+However, it should be acceptable to trace functions that have 'union'
+arguments.
 
-The recursion can happen, yes. But BPF tracing programs won't run
-recursively.
+This patch set enables such support in the verifier by allowing 'union'
+as a valid argument type.
 
-However, the deadlock I ran into wasn’t caused directly by recursive BPF
-programs, and I haven’t yet tracked down the exact root cause.
+Changes:
+v2 -> v3:
+* Address comments from Alexei:
+  * Reuse the existing flag BTF_FMODEL_STRUCT_ARG.
+  * Update the comment of the flag BTF_FMODEL_STRUCT_ARG.
 
-That said, even a single call to bpf_rcu_read_lock() can potentially
-trigger a deadlock.
+v1 -> v2:
+* Add 16B 'union' argument support in x86_64 trampoline.
+* Update selftests using bpf_testmod.
+* Add test case about 16-bytes 'union' argument.
+* Address comments from Alexei:
+  * Study the patch set about 'struct' argument support.
+  * Update selftests to cover more cases.
+v1: https://lore.kernel.org/bpf/20250905133226.84675-1-leon.hwang@linux.dev/
 
-So I think it would be better to add bpf_rcu_read_lock() and
-bpf_rcu_read_unlock() to the btf_id_deny list, similar to
-__rcu_read_lock() and __rcu_read_unlock().
+Links:
+[0] https://github.com/bpfsnoop/bpfsnoop
 
-Thanks,
-Leon
+Leon Hwang (2):
+  bpf: Allow union argument in trampoline based programs
+  selftests/bpf: Add union argument tests using fexit programs
+
+ include/linux/bpf.h                           |  2 +-
+ kernel/bpf/btf.c                              |  8 ++---
+ .../selftests/bpf/prog_tests/tracing_struct.c | 29 ++++++++++++++++
+ .../selftests/bpf/progs/tracing_struct.c      | 33 +++++++++++++++++++
+ .../selftests/bpf/test_kmods/bpf_testmod.c    | 31 +++++++++++++++++
+ 5 files changed, 98 insertions(+), 5 deletions(-)
+
+--
+2.51.0
+
 
