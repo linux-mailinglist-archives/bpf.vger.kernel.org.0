@@ -1,110 +1,174 @@
-Return-Path: <bpf+bounces-68865-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68866-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F69B87261
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 23:34:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14E9AB872A9
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 23:38:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 446167E4531
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 21:34:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEEAF2A88EB
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 21:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA672D7DD3;
-	Thu, 18 Sep 2025 21:34:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637D42F3601;
+	Thu, 18 Sep 2025 21:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gmmxjsEF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBnwc3vm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E18986342
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 21:34:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30FBA1F4181
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 21:38:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758231263; cv=none; b=QKb/5xuDQdIkLRERu0ctjtuTUjRaWGoVFjcQztBURU03x7AP93F9Nlu8mo0IZmYxH8532VbEK+jc2CsFL7L649AYxW4KeHEcc2XbbEsB9NKM+4N7dWyh5l9LTfeqSIAoG0VTeNw8feaPKdpibpw074EKy8jPjwTIUq9UfJ0yqbI=
+	t=1758231488; cv=none; b=hWsh/8KJQSiNAMVJRJc9iRS5DQC0Q51SpMXh40aSEB9IItxhkh+uzZlkzgxNhF+ejtCtK2MKyqt4XEmO4EbY/t1dyFTY2wCJXCZhwakxfixdQuw7b5CSNijCzHnmdevJf67NaUN6a3Pm0Sj0pDbK6pUKt2L32B7wkUyzEis+aAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758231263; c=relaxed/simple;
-	bh=jiF8RftuTYW8SH2reimzhAXZq/kvD82kmvfYRQxK36E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=b1RLJ2f7Y3JSIBuqEMnxbm1bppersWRrrseUhiujdqX5KLQYCznaKX1/Ox7mulDF89dvFKCTOWJaQBMQUFPwi34SRLPtxh8bYSxh77zbOn0F1DipEGCre7FPxKTmBYGqHhZVZK+V/W/Fq+PLmbGVt2c5XRNDgdW8K4ez3Q11nbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gmmxjsEF; arc=none smtp.client-ip=209.85.215.176
+	s=arc-20240116; t=1758231488; c=relaxed/simple;
+	bh=aLRIj83J3nZOYtGnFYIE1Mdff31X4sn+sRAaTHSaA2I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VMKcPtYyR2QKziS+h9vh3EI4Sq4xeNrSCV0g3yzbCoT0pgaj0TLWVv77CjcItua37haFnJoOphO9cRCw1NPcCXGJ5VWBqTUOjbbxzmk5qCp0bfuMiN9AwlCg5XH31URcbYHDaJ1tRY7ecMl53TTNVhxosSQw/b4JDYnlc3EXb8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SBnwc3vm; arc=none smtp.client-ip=209.85.218.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b4fb8d3a2dbso1177374a12.3
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 14:34:22 -0700 (PDT)
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-afcb7ae6ed0so214958266b.3
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 14:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758231262; x=1758836062; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jiF8RftuTYW8SH2reimzhAXZq/kvD82kmvfYRQxK36E=;
-        b=gmmxjsEF8zKSqGi4g1OjRHK3U69n7OO+2V2rS4IVmAYHzyPkBEDjCZjHsMaH7ZIzY3
-         SUf8kHyMs1q15BGzRIqgwKKdHNJ70s/3Pii/Emtvx0dGal54LPg2dB9fV9TnzJ0JGeTz
-         eGp4SJMvhjPXyEacOk1c/gej3FPtECenLymhhen5QmKGy5x/b4Vew9+nkZStFZaeQV4y
-         xBJQPMpOjFhC5VIkuvytex4V7AsEjLAW7Bxl3shoFenDBm82LM+7qDoQygVq4/tzaraJ
-         DakqYkD3eA45KnCf0/xbrNSXMNhvmK8eeFuI3wUpCdw24f0qYnEDf8r8+0w2C6isvNSG
-         GVeA==
+        d=gmail.com; s=20230601; t=1758231485; x=1758836285; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3OFQ1V3H1P4XT4IRMp4KnVxz0HMzUAvUltBhtdE75Ds=;
+        b=SBnwc3vmt5gmvxEqlH7hnmi/RTROdkhMJ4qSIRH+X44rVo3rezOsNxLwGz2Nszq0u/
+         ealhjNaYEtAk33329rTF3ZFoLq0uaL9KC8QYakmrVRehSyrC11hylYxL+/UNO+AEqc60
+         NJVs3p/e8qO2PH69RGOj4CBRDHGjZQQ38DH8dWxFk6SWa6+1GXpCrQM/D1UuksTPx8pQ
+         N51CAhJrxa0rfFfFqIpo1IDjCzH502ivtYIJgVR59IvPerQ7KlblFoqq4o9E+Yu1AO+o
+         +7dLkeLczyFAt+M/Z6czX08Z6TE28uAzH8emoudxEvgKMMHuZou15T8/MriVYsB+NNQe
+         EMnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758231262; x=1758836062;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jiF8RftuTYW8SH2reimzhAXZq/kvD82kmvfYRQxK36E=;
-        b=tc/YZbzMu6AVjt0f/6czLWGE1l9+2RDcbcQk2yuqLDa53UVjZFC44uGxpubR9e1Be0
-         vnsgErM95Uz4unsIGDm2ncbnjlB0ecY1CiIZpH1qyFPJfJRuQiwBMTO/AVYc/aZ6o4+Z
-         rET4t1B++Ql90HBco+jv4y7CFU4k5bnz/IGhA4QW7PDRhKgq5xYiRj+rKjGSCDleAE6t
-         jRp8J3sdjwOy+tVSynGsad70FiBalEYziF0MaOu2zVDiiXMJ0FM862LKbl7Vr8JGjaFk
-         1FljktNGiv33A7+DOELcu4uv/7puquI20FmSfS/u1VTi9EJLQCcSKeIjPF3G/9fgmhKP
-         BwbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW+yqFNBejtgNRUfLmO5yPCIJYirwuTfjxcdUhzJ5GjaT1/t5Bj78BL9ZAZzV6tLh/1bNk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzfKYK5oQxi5PQaFVWflotcIMCvb5yhPe19Ettv9+p2dwBxI+0P
-	0DgoTwJP8N7kLQOf4/i/oIMh02ZDBtVnTMwhEG4MWVE/MAu15abgm3d2
-X-Gm-Gg: ASbGncshQcqhC9zPJHUD5k19kGeIOlw6XPveUMqqNm/zH+pJTj2Uqxn8idsVJtHiCky
-	i+Dnv9lQocZELOcjrOzxRq05TzRsxJHJ0QqjzCb6ibmu4gnVmDNJ+Hf8ZhPu4u7vHGytE76y/Dv
-	+8J99LK1qfQXVibEbpEpwrk2705KVqtmn1Bf7YIFQ+w2vmLLFdh+MT6aUaAxw7EFC0tpAwzJVcy
-	SiWaIww3OK46DAop7S5mgp12ONF+b7ySoeCgfbmqaS5/PGaj8LspQRd6bo6PK+nB1L/VRekjOIB
-	tvkxVoyNqZ1O895cixOsMIg2NKuytdArjZmsBoku5/olnVY0cYJj3hzYwHiDWbsy5ZoIetfoDDT
-	bdKYUyA11xqh+Pkr1/IpVguCD6tEVO4/KLLbJqbSxrv5BEQHjpkKEyxPYBIjS2bgG1Wc+NjMdVC
-	XA6QBxmS8kT66o
-X-Google-Smtp-Source: AGHT+IGCb58xoAgjaWavHnxvSPHuWP+PjL2weVZ1bnupLdvwd4X/prAUel+aziXgurEsu3Q4RbpL5A==
-X-Received: by 2002:a17:902:c402:b0:251:5900:9803 with SMTP id d9443c01a7336-269ba455012mr13021895ad.21.1758231261772;
-        Thu, 18 Sep 2025 14:34:21 -0700 (PDT)
-Received: from ?IPv6:2605:8d80:5825:6b48:8e77:6389:4ddb:e856? ([2605:8d80:5825:6b48:8e77:6389:4ddb:e856])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2698016bf96sm34447665ad.38.2025.09.18.14.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Sep 2025 14:34:21 -0700 (PDT)
-Message-ID: <05487a3c7d8f24d2f71e1860aebbfc5b15d7d677.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests for
- KF_RCU_PROTECTED
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
- Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>,  Andrea Righi
- <arighi@nvidia.com>, kkd@meta.com, kernel-team@meta.com
-Date: Thu, 18 Sep 2025 14:34:20 -0700
-In-Reply-To: <20250917032755.4068726-3-memxor@gmail.com>
-References: <20250917032755.4068726-1-memxor@gmail.com>
-	 <20250917032755.4068726-3-memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1758231485; x=1758836285;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3OFQ1V3H1P4XT4IRMp4KnVxz0HMzUAvUltBhtdE75Ds=;
+        b=t7B2oduiji7HfIibDebCuTyESZfs59HNtciMPfUVTS3IXL49WYLF8m3VI9nzFUk9bV
+         WfXzBGVyt/QBooVVDgUMhHZbD23AMvHGInKpEzrOdpS/G+CXzgaVPsSRofkWdTJf+POl
+         h7JWlbZKnQlLozIutYFgFV994EorDkSywgZ7TaHdGmb/8Ngl7sAqruINdZWmzOBeBKjE
+         et9HmdF+Ux/A3yu89dnL83m4PrLzbAwUSl+sfzJtTr3YLyVZl7SBvYZ4Fg+mMQuGqkfk
+         tNLeZtBZtudphPGzlGKC+ojc1TX/RWgbaIwqBrgDfGDiQ4C8FTAGkKu+2WFgUDb/xf3e
+         P0fw==
+X-Gm-Message-State: AOJu0Yxnf8drUiSLigyGmFhwKh1R8ehuGNUZfrmmQc2AeWa8IYRSJ88P
+	HfRQj4Lzngqsjdw21VqnNI4DK5/xXSwS1JeyfI1OqiKnVtHtIHC6V0t98UW7K/eGa/CJ7e27iIG
+	c7nlqv7cskjmQSOgz2tqRyRZt4eWu3nA=
+X-Gm-Gg: ASbGnctuVc8TPzU+F67lWFv0/bNNEr4Dvw2zVO7X+rxUtYExLB39mvVb2ZZeYLFiXDD
+	TcUhlakHjZ9d1Me6766xSwGUr3eulTHCcF+4J0bXgQOkm81jfPC3ilTq+BeAoighfg/UzgRhhho
+	02A6nGQPGciNFmYtoN3JZKwWxnSpuyzXzqWTVep0atoYvuUVL+DxdTTSCqmkZ39kWsmt/CVbDo/
+	UbABkFavfXxQQRD+4MDPmDoAgaPFnsJzlLPEIlaR0lkKK5zyyYQ8IO6oR8=
+X-Google-Smtp-Source: AGHT+IFHMPLLqT+3zpcBz8i/CxFtBttiM2EVDcbBZBQEUwD8A95HzYc0Qz51WLstnQ28q6a8NZC60psDI350h3OsexU=
+X-Received: by 2002:a17:907:3d86:b0:b04:8ed3:9e81 with SMTP id
+ a640c23a62f3a-b24f442b590mr82116466b.31.1758231485236; Thu, 18 Sep 2025
+ 14:38:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250917032755.4068726-1-memxor@gmail.com> <20250917032755.4068726-2-memxor@gmail.com>
+ <412f49fa12de7c7f5d0461b56fd4e0b6882fa0ad.camel@gmail.com>
+In-Reply-To: <412f49fa12de7c7f5d0461b56fd4e0b6882fa0ad.camel@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 18 Sep 2025 23:37:27 +0200
+X-Gm-Features: AS18NWBVIpfyYBw5o7xi5A9JqVWQvUCWCfNq-qwbQpgmHU8MExnX2rhyJDX8cck
+Message-ID: <CAP01T77Nmwq1ZYpk2rJGLmOZezSBFOa0n8zyZn2gdj3UcE7XvA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Enforce RCU protection for KF_RCU_PROTECTED
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Andrea Righi <arighi@nvidia.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	kkd@meta.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 2025-09-17 at 03:27 +0000, Kumar Kartikeya Dwivedi wrote:
-> Add a couple of test cases to ensure RCU protection is kicked in
-> automatically, and the return type is as expected.
->=20
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+On Thu, 18 Sept 2025 at 23:00, Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> On Wed, 2025-09-17 at 03:27 +0000, Kumar Kartikeya Dwivedi wrote:
+> > Currently, KF_RCU_PROTECTED only applies to iterator APIs and that too
+> > in a convoluted fashion: the presence of this flag on the kfunc is used
+> > to set MEM_RCU in iterator type, and the lack of RCU protection results
+> > in an error only later, once next() or destroy() methods are invoked on
+> > the iterator. While there is no bug, this is certainly a bit
+> > unintuitive, and makes the enforcement of the flag iterator specific.
+> >
+> > In the interest of making this flag useful for other upcoming kfuncs,
+> > e.g. scx_bpf_cpu_curr() [0][1], add enforcement for invoking the kfunc
+> > in an RCU critical section in general.
+> >
+> > This would also mean that iterator APIs using KF_RCU_PROTECTED will
+> > error out earlier, instead of throwing an error for lack of RCU CS
+> > protection when next() or destroy() methods are invoked.
+> >
+> > In addition to this, if the kfuncs tagged KF_RCU_PROTECTED return a
+> > pointer value, ensure that this pointer value is only usable in an RCU
+> > critical section. There might be edge cases where the return value is
+> > special and doesn't need to imply MEM_RCU semantics, but in general, the
+> > assumption should hold for the majority of kfuncs, and we can revisit
+> > things if necessary later.
+> >
+> >   [0]: https://lore.kernel.org/all/20250903212311.369697-3-christian.loehle@arm.com
+> >   [1]: https://lore.kernel.org/all/20250909195709.92669-1-arighi@nvidia.com
+> >
+> > Tested-by: Andrea Righi <arighi@nvidia.com>
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>
+> [...]
+>
+> > @@ -14037,6 +14045,8 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >
+> >                       if (meta.func_id == special_kfunc_list[KF_bpf_get_kmem_cache])
+> >                               regs[BPF_REG_0].type |= PTR_UNTRUSTED;
+> > +                     else if (is_kfunc_rcu_protected(&meta))
+> > +                             regs[BPF_REG_0].type |= MEM_RCU;
+> >
+> >                       if (is_iter_next_kfunc(&meta)) {
+> >                               struct bpf_reg_state *cur_iter;
+>
+> The code below this hunk looks as follows:
+>
+>                         if (is_iter_next_kfunc(&meta)) {
+>                                 struct bpf_reg_state *cur_iter;
+>
+>                                 cur_iter = get_iter_from_state(env->cur_state, &meta);
+>
+>                                 if (cur_iter->type & MEM_RCU) /* KF_RCU_PROTECTED */
+>                                         regs[BPF_REG_0].type |= MEM_RCU;
+>                                 else
+>                                         regs[BPF_REG_0].type |= PTR_TRUSTED;
+>                         }
+>
+> Do we want to reduce it to:
+>
+>                         if (meta.func_id == special_kfunc_list[KF_bpf_get_kmem_cache])
+>                                 regs[BPF_REG_0].type |= PTR_UNTRUSTED;
+>                         else if (is_kfunc_rcu_protected(&meta))
+>                                 regs[BPF_REG_0].type |= MEM_RCU;
+>                         else if (is_iter_next_kfunc(&meta))
+>                                 regs[BPF_REG_0].type |= PTR_TRUSTED;
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+I thought so too but we cannot do this. Suppose that the RCU read lock
+is dropped and reacquired between new() and next(). Right now, we rely
+on MEM_RCU in iter->type stack object that gets invalidated properly.
+With such a change we'd lose the ability to track continued protection
+using RCU while the iterator is alive on the stack, and continue to
+mark returned pointers as MEM_RCU.
 
-[...]
+>
+> And mark relevant iterator next (and destroy?) functions as KF_RCU_PROTECTED?
+> (bpf_iter_css_next, bpf_iter_task_next, bpf_iter_scx_dsq_next).
+>
+> I ask, because setting |= MEM_RCU in two places of this if branch
+> looks a bit iffy.
+>
+> [...]
 
