@@ -1,183 +1,163 @@
-Return-Path: <bpf+bounces-68780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56105B84ADD
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 14:51:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00A06B84A3E
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 14:45:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31AF13A779B
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 12:51:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABFCE2A3133
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 12:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930C8304BAB;
-	Thu, 18 Sep 2025 12:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8E0303A3E;
+	Thu, 18 Sep 2025 12:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="FauBYyuV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KPQxAtkX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f100.google.com (mail-qv1-f100.google.com [209.85.219.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E522FB622
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 12:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D90211C
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 12:45:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758199901; cv=none; b=tleRnLLY6ZGo5Sr2FUeGbuzidxcB7VleqBBh2uLS/92Q+nYU3OHFBAdz3q+WH8o1eWrEAx1z+G6kyQVuhiE26kZFzKv77Em0RX39FLK0OW9UoxxcFrqT3GwDtnszBHp+qHEgH++1KapQfYndBxtGI5pYo26QkYggPQ1hu1LHBbI=
+	t=1758199547; cv=none; b=in2vhPGfMUWn3lhk+aM3t95bcgonsv6ROzXeeYsKdaBCCQ6gevo5VuWpRG19yMdktcUZURthyyL72xGJ0RcZASjQVVlvVL1zveheFw2osBhcf8BYnv/xmzax4dP7tT9Eyicfv9Vzm+KIFwDklm7RfLMkZXwZT4itT7/f0NcN88U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758199901; c=relaxed/simple;
-	bh=kQvQlJ4Ntkejel7Bjw96+PBXVk0IMsnf/Ap3QHrmNCI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DvrO2JRz14oHYhMCmUgvkNbmEyuymMpmnCDoxTXPFhLECeXZf1oF6gwqfvYw1MG8ucGXEKLtk0bRgaapns8l+AG9XZFXKoYZC/h6B5ev/60+ywaoJaq/+JIkQwfjILavm8BrZqvVee1R88bviQS9PrfifaTQeXyMrbS9usNUz+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=FauBYyuV; arc=none smtp.client-ip=209.85.219.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qv1-f100.google.com with SMTP id 6a1803df08f44-78f58f4230cso8062216d6.1
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 05:51:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758199898; x=1758804698;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:dkim-signature:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lgi+BTeRK9OMV3Te7iHLbRBW1UdG0wv6serJphMr1ec=;
-        b=GK1N8FX54utE3kS/y4HQ7bIatEmaWKdW7ng14fUvMWcQZ2NgNz52gcj/VJzUil5d/L
-         U4OxHEwSVGoK+ApdhqwJ00Xu1ikBmwnhmgSj3II7ZJCkf4V3D0mGg+HZAOv3R+Oac6eH
-         LypOxE95cACGclyCP70hRlxseA75G5hBGDbikKJZ9FeGqh6G79xkL0sMcN2az75J9G6B
-         NKFjTEmPJiNovUYHqs1jhowZIFLr8wdn/OwafHV1eifeXknhUgzOqNETIsRez/iF1/8x
-         fVnmkctiQR2S+XrXYI9dP6O2e8GoBHlnoMr8rTfmN9x6npMLmbIUZDS5uw63ac+B7LwD
-         NYCA==
-X-Forwarded-Encrypted: i=1; AJvYcCX5Tw+31li31fk54VRWVGNK/nEmBOQ6pkMKBTxOB2+/nTWrUl65t3xnHc5sHZBHsbUfbYg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKgdRvoz3wkI679xLlec7QvvJKW7R1HXFxzLj9HNotlXK4973b
-	zL8mo4oXXc0wqeDUYxlF6KEyPHJRfzBgMDmLxRKZxa6+EaB/qYnEtJbouoPha544M05lsXe7b3H
-	kW8ScFDbMNno4P7LIaFR0HTK6BQ5ePFXDoGGTaEMjBfKLn3Hkw7y6uv2QkjuaEVYhCWwAb4kSpS
-	vj2VpOXfV86YNwhZ61La6ax4McYJNFm9B4/oXjRkjAfWy4+EmDZu5adfMUIG8j8NIU2ldHuKrKK
-	4wh
-X-Gm-Gg: ASbGncvlUhZLHDCef8kOYRr5/3zRijfLN+DCdqZTeGrGt+trzJisy48BLMgT1t2Yg+B
-	w7QwZJAvPIX0MXX708xNRTUXb7tZvqE1bCHPqqBCqIt/kxRVic8/xy8KKW2tvSZvi6ILr5H2735
-	tq53Mh7aF4u2EI/bINPt9Goef4pXMa5jvN7YC+ccTZUtsup1mcQmdTeb8hO1YEDSYJyIVx9djCh
-	+kTWPrRgRQ+hox2cta8aQNmpw3REluBunu1UEUXRA3c20nS2Iiuq/rE/DUqF07pOR1HEGANOzCG
-	ebWsTzT6TnwkjRGJybOkOXO0+zZ1f2pSonzeNiioTkNnzy1BUMKd6cEf2bCzFkZnrjn2sVieR0i
-	DSt3LQaUQs1ob+6CX24MshpzhfuT7Ntv+LRrOulDehwh6q0jrwGDRgmZT3u6272f8rz6sEUjVAO
-	s=
-X-Google-Smtp-Source: AGHT+IGSo4YO+VMV5/UwSqzvvntgHz3lbPovsve96JngJqcVyPTf/nAwuejCXQBmUecu+KeQa8T7679iNbRK
-X-Received: by 2002:a05:6214:40e:b0:766:769e:8c8b with SMTP id 6a1803df08f44-78ece93e269mr56726386d6.46.1758199898342;
-        Thu, 18 Sep 2025 05:51:38 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-119.dlp.protect.broadcom.com. [144.49.247.119])
-        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-79350777108sm1740156d6.34.2025.09.18.05.51.38
-        for <bpf@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Sep 2025 05:51:38 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-8178135137fso194339885a.2
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 05:51:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1758199898; x=1758804698; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lgi+BTeRK9OMV3Te7iHLbRBW1UdG0wv6serJphMr1ec=;
-        b=FauBYyuV9RU3PYdBbhT/xbRKdmsvPRJY5jeIF2P1+iA28OnnPvQOPbf5azb6HNYg1o
-         RP9t3pwCs3pdwDb2SMQd961YZdOTfkLdKHfjnQW9u7IP63dgEj7F2GhfwfI9DoS+CZzS
-         uNO1Q5WMPI2CmP+xTUgeh+DVYPVKYw+A1Ri/U=
-X-Forwarded-Encrypted: i=1; AJvYcCX+OD+YRXctf47XlfZgybp34o4Zf1qn1zsCnbn9TdQ9Qpk9dgs6TSSnGVdTal6mTXb5B7w=@vger.kernel.org
-X-Received: by 2002:a05:620a:2685:b0:82e:6ec8:9899 with SMTP id af79cd13be357-8310ef30b26mr617475585a.48.1758199897494;
-        Thu, 18 Sep 2025 05:51:37 -0700 (PDT)
-X-Received: by 2002:a05:620a:2685:b0:82e:6ec8:9899 with SMTP id af79cd13be357-8310ef30b26mr617472985a.48.1758199896971;
-        Thu, 18 Sep 2025 05:51:36 -0700 (PDT)
-Received: from photon-dev-haas.. ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-836278b77fasm159592685a.23.2025.09.18.05.51.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Sep 2025 05:51:36 -0700 (PDT)
-From: Ajay Kaher <ajay.kaher@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: pv-drivers@vmware.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	ajay.kaher@broadcom.com,
-	alexey.makhalov@broadcom.com,
-	sankararaman.jayaraman@broadcom.com,
-	ronak.doshi@broadcom.com,
-	florian.fainelli@broadcom.com,
-	vamsi-krishna.brahmajosyula@broadcom.com,
-	tapas.kundu@broadcom.com,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH v6.6-v6.12] vmxnet3: unregister xdp rxq info in the reset path
-Date: Thu, 18 Sep 2025 12:37:32 +0000
-Message-Id: <20250918123732.502171-1-ajay.kaher@broadcom.com>
-X-Mailer: git-send-email 2.40.4
+	s=arc-20240116; t=1758199547; c=relaxed/simple;
+	bh=mzKwFIqsGgXwEtbhpffy+ppn9zPepgeKleABiPhbzog=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=B9Rjatop/DeGeGyTMuqBDw3/h5BFuj25/dVcwA4Bau4IO7vLMZBVFRbB0/s0mZ6FQ1OU72EsFcYZjdDwmnMjZqt17vggEo0+U1LzesAI8chvDuG1iBx8hpj7Li2IRgYfdwavu9jGNFA5dSHDFREFw/VD3qTwCNRIjmXIRBkJLgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KPQxAtkX; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2d9320eb-6be9-43e4-a63e-08e7ab1427e3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758199532;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nGVg+fRknMB/K4YFDGb3eZrXnElVFr/VOGzCAPGLxQQ=;
+	b=KPQxAtkXhPrj0tPDM2EfRpbVX1DCaMlCLevMwlE9WFx3vBJ82s8j9MRHr9g3k/OLZp2TIq
+	K5hY9toagB78O4PAtjLuNYtKTE+cSF0490N0h/7U44AipAW0/nXFQdYXb60lFfp0AfORMj
+	lqugtJvtAexNVqTYyaXDCqNvVGy68rQ=
+Date: Thu, 18 Sep 2025 20:45:23 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add lookup_and_delete_elem for
+ BPF_MAP_STACK_TRACE
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250909163223.864120-1-chen.dylane@linux.dev>
+ <CAEf4BzZ2Fg+AmFA-K3YODE27br+e0-rLJwn0M5XEwfEHqpPKgQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <CAEf4BzZ2Fg+AmFA-K3YODE27br+e0-rLJwn0M5XEwfEHqpPKgQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+X-Migadu-Flow: FLOW_OUT
 
-From: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+在 2025/9/18 06:16, Andrii Nakryiko 写道:
+> On Tue, Sep 9, 2025 at 9:32 AM Tao Chen <chen.dylane@linux.dev> wrote:
+>>
+>> The stacktrace map can be easily full, which will lead to failure in
+>> obtaining the stack. In addition to increasing the size of the map,
+>> another solution is to delete the stack_id after looking it up from
+> 
+> This is not a "solution", really. Just another partially broken
+> workaround to an already broken STACKMAP map (and there is no fixing
+> it, IMO).
+>
 
-[ Upstream commit 0dd765fae295832934bf28e45dd5a355e0891ed4 ]
+Actually it is. But in our use case, we used continuous profiling with 
+perf_event, the result looks better when we got the stack_id and deleted 
+it to alleviate the data size pressure in the map. And there is no high 
+requirement for the accuracy of stack information for us.
 
-vmxnet3 does not unregister xdp rxq info in the
-vmxnet3_reset_work() code path as vmxnet3_rq_destroy()
-is not invoked in this code path. So, we get below message with a
-backtrace.
+> When a user is doing lookup_and_delete for that element, another BPF
+> program can reuse that slot, and user space will delete the stack that
+> is, effectively, still in use.
+> 
+> <rant>
+> 
+> I also just looked at the bpf_stackmap_copy() implementation, and even
+> lookup behavior appears broken. We temporarily remove the bucket while
+> copying, just to put it back a bit later. Meanwhile another BPF
+> program can put something into that bucket and we'll just silently
+> discard that new value later. That was a new one for me, but whatever,
 
-Missing unregister, handled but fix driver
-WARNING: CPU:48 PID: 500 at net/core/xdp.c:182
-__xdp_rxq_info_reg+0x93/0xf0
+Yes, it is a problem.
 
-This patch fixes the problem by moving the unregister
-code of XDP from vmxnet3_rq_destroy() to vmxnet3_rq_cleanup().
+> as I said STACKMAP cannot be used reliably anyways.
+> 
+> </rant>
+> 
+> But let's stay constructive here. Some vague proposals below.
+> 
+> Really, STACKMAP should have used some form of refcounting and let
+> users put those refs, instead of just unconditionally removing the
+> element. I wonder if we can retrofit this and treat lookup/delete as
+> get/put instead? This would work well for a typical use pattern where
+> we send stack_id through ringbuf of some sort and user space fetches
+> stack trace by that ID. Each bpf_get_stackid() would be treated as
+> refcount bump, and each lookup_and_delete or just delete would be
+> treated as refcount put.
+> 
+> Also, it would be better for STACKMAP to be a proper hashmap and
+> handle collisions properly.
+> 
+> The above two changes would probably make STACKMAP actually usable as
+> "a stack trace bank" producing 4-byte IDs that are easily added to
+> fixed-sized ringbuf samples as an extra field. This model sometimes is
+> way more convenient than getting bpf_get_stack() and copying it into
+> ringbuf (which is currently the only way to have reliable stack traces
+> with BPF, IMO).
+> 
+> So, tl;dr. Maybe instead of pretending like we are fixing something
+> about STACKMAP with slightly-more-atomic (but not really)
+> lookup_and_delete support, maybe let's try to actually make STACKMAP
+> usable?.. (it's way harder than this patch, but has more value, IMO)
+> 
 
-Fixes: 54f00cce1178 ("vmxnet3: Add XDP support.")
-Signed-off-by: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
-Signed-off-by: Ronak Doshi <ronak.doshi@broadcom.com>
-Link: https://patch.msgid.link/20250320045522.57892-1-sankararaman.jayaraman@broadcom.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-[Ajay: Modified to apply on v6.6, v6.12]
-Signed-off-by: Ajay Kaher <ajay.kaher@broadcom.com>
----
- drivers/net/vmxnet3/vmxnet3_drv.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+The idea looks great. I will try to make improvements in this direction, 
+though there will be certain challenges for me right now.
 
-diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
-index 6793fa09f9d1a..3df6aabc7e339 100644
---- a/drivers/net/vmxnet3/vmxnet3_drv.c
-+++ b/drivers/net/vmxnet3/vmxnet3_drv.c
-@@ -2033,6 +2033,11 @@ vmxnet3_rq_cleanup(struct vmxnet3_rx_queue *rq,
- 
- 	rq->comp_ring.gen = VMXNET3_INIT_GEN;
- 	rq->comp_ring.next2proc = 0;
-+
-+	if (xdp_rxq_info_is_reg(&rq->xdp_rxq))
-+		xdp_rxq_info_unreg(&rq->xdp_rxq);
-+	page_pool_destroy(rq->page_pool);
-+	rq->page_pool = NULL;
- }
- 
- 
-@@ -2073,11 +2078,6 @@ static void vmxnet3_rq_destroy(struct vmxnet3_rx_queue *rq,
- 		}
- 	}
- 
--	if (xdp_rxq_info_is_reg(&rq->xdp_rxq))
--		xdp_rxq_info_unreg(&rq->xdp_rxq);
--	page_pool_destroy(rq->page_pool);
--	rq->page_pool = NULL;
--
- 	if (rq->data_ring.base) {
- 		dma_free_coherent(&adapter->pdev->dev,
- 				  rq->rx_ring[0].size * rq->data_ring.desc_size,
+> What does everyone think?
+> 
+> P.S. It seems like a good idea to switch STACKMAP to open addressing
+> instead of the current kind-of-bucket-chain-but-not-really
+> implementation. It's fixed size and pre-allocated already, so open
+> addressing seems like a great approach here, IMO.
+> 
+>> the user, so extend the existing bpf_map_lookup_and_delete_elem()
+>> functionality to stacktrace map types.
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   include/linux/bpf.h   |  2 +-
+>>   kernel/bpf/stackmap.c | 16 ++++++++++++++--
+>>   kernel/bpf/syscall.c  |  8 +++++---
+>>   3 files changed, 20 insertions(+), 6 deletions(-)
+>>
+> 
+> As for the patch in question, I think the logic is correct :) I find
+> bpf_stackmap_copy_and_delete() name bad and misleading, though,
+> because it's more of "maybe also delete". Maybe
+> bpf_stackmap_extract()? Don't know, it's minor nit anyways.
+> 
+> [...]Will rename it in v2. The original idea in this patch was just to
+make it convenient for users to delete the stackid when they obtain it.
+
 -- 
-2.39.5
+Best Regards
+Tao Chen
 
