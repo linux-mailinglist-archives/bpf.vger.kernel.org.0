@@ -1,89 +1,111 @@
-Return-Path: <bpf+bounces-68801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9C72B85AB0
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 17:36:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0DE5B85B55
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 17:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 800B21887C51
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 15:32:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DEB7583926
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 15:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2582312839;
-	Thu, 18 Sep 2025 15:31:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3D6313E31;
+	Thu, 18 Sep 2025 15:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Hg0CQx3B"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C159730CDAC;
-	Thu, 18 Sep 2025 15:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CFC2313E16
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 15:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758209496; cv=none; b=nKmkHqjKuH01FUco/sO2z9cjEbwz59cfdOZN1hYCKgkA+VC57tP7DeLexnGpvEoaPgJPinGELTvsPCXcH9VpWheZfOy78A2bdfsEs+gWebTDU5o4GDLdD6k0YDkyCbDa4PaXsqx93f4ap2Ijv0ZRQ4e/mUeXPBsi2HF2FVoTxaw=
+	t=1758209906; cv=none; b=tC+rr0m9icCB0NZ+WW7k8z+tVywE87hkaqdk7L2uP4Xw9ndqx+50A/0GyFblaE3DrdZ8cCFAuEGp1R7fEE6KeqmIA6ILkR7WzYSyzRH7nKeLj0KZf4AuQoN4SgQdofIt8z3QG6U2D8SrSEOm1ULvRPjvdrEV43/eT4JyO0FG7ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758209496; c=relaxed/simple;
-	bh=QZCy1OJjqBJh0gFIG7MWM+0jYLNNxOxd2PqQq5mo5Yo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PnMScQxMII1i3+DAU1yEd0Zax+66YwGRoljzWM49Yw37sDMZD1aOBYX4T9O7hL4C+0LBhLJZ8dU2VETwrYz/+Fbp+TY9xR2Oj5N+jClZZsIMR+KW4i/vRKjXdCubPJmgHnMFzSAAM7r2wbA26ZOskSgjArNBzf0RBG60op8DMng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf05.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay02.hostedemail.com (Postfix) with ESMTP id 90BC213A0CD;
-	Thu, 18 Sep 2025 15:31:31 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf05.hostedemail.com (Postfix) with ESMTPA id 26ACE20016;
-	Thu, 18 Sep 2025 15:31:26 +0000 (UTC)
-Date: Thu, 18 Sep 2025 11:32:34 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Fuyu Zhao <zhaofuyu@vivo.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, yonghong.song@linux.dev, haoluo@google.com,
- eddyz87@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- mhiramat@kernel.org, mathieu.desnoyers@efficios.com, shuah@kernel.org,
- willemb@google.com, kerneljasonxing@gmail.com, paul.chaignon@gmail.com,
- chen.dylane@linux.dev, memxor@gmail.com, martin.kelly@crowdstrike.com,
- ameryhung@gmail.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- yikai.lin@vivo.com
-Subject: Re: [RFC PATCH bpf-next v1 0/3] bpf: Add BPF program type for
- overriding tracepoint probes
-Message-ID: <20250918113234.3f9e556a@gandalf.local.home>
-In-Reply-To: <9cb5b3d5-97bb-4165-9a84-394d3d45a20e@vivo.com>
-References: <20250917072242.674528-1-zhaofuyu@vivo.com>
-	<CAPhsuW47BVGsszGU=27gKa1XOYLH+de1FgrHPVL4mftB2CvX9g@mail.gmail.com>
-	<b23ef4e0-afa1-4d94-b4aa-28c02c3499c6@vivo.com>
-	<aMvHE-iW5eAwf4km@krava>
-	<9cb5b3d5-97bb-4165-9a84-394d3d45a20e@vivo.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1758209906; c=relaxed/simple;
+	bh=QxbNlar7fm1Yy9OxNxskgOfzkarK1UdyObICuS2M3zg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=onQvWBK4ydUDPF6P9N0uqF5+pfscUdWogc6eH17o76wGSphNo33Pog+kIpfUN232RxtDrbRXdLtLSX9gJDebvE11gOfCgZH6ejr+x9HTJBrqlgxsKGstJwaVKMpJIBxSAz8AxWV1o9QSvMBicY3ebzSYKzgIh3DSjv+Agf3uRhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Hg0CQx3B; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: xexywcpfgjs6zafak66u594a4iimzte3
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 26ACE20016
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/5VKD1WZaH+qlJjD8FFIkR8XM8YVm/Fvc=
-X-HE-Tag: 1758209485-346587
-X-HE-Meta: U2FsdGVkX1/j1e4fDuVmFwYkOTLvvV2NOP6rFhn6Fkk6YvTNGBQsKDcC8yTW9CMKh9nnzfqWO430S3SN+A1gNHnPGJbdafl1IgHkggXCdvGXv3cV4YAjThA8kjwC/6+Ta1tMmod474GzfgIzXP2sGMDt4FTW704Q1mC7O6aRUK2aOt0h9KPmkcWRcOghUTCdRyhfAndY2VCWXPVZ5GvCtSubejUa1vn64VQ2rb+BHZXYqoLTJ7QLwzJdssI8sEbZpBmk9X92AzVZK8w/nOoNGIZy9XxvXLkd4i2r2qlcUbpZKsOUkpqsxz1YsvF0CdyPc/7DSIVfOImbMgwZUwVtBXaS3KBmlrnP
+Mime-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758209901;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kHVjPe0bsRPHEcmpUvli3nZUAnkCPxHuWoXX/AW5fbs=;
+	b=Hg0CQx3BiVE78dcSvKzcQzBc3Qacu7gB1JP+HQdxVniF+Y8PRIcXyLEKnpo5HwMqVMaJ1x
+	QqqtPIBCfNhPHNnCSAEMM2CEoQfx0uKBRHFsB1mVgAPkyuQv0ZXum6SES86stFjl0DbeOW
+	Ql4Zi+WI+0C+BoHNcTAhJGcYI56PNTA=
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 18 Sep 2025 23:38:02 +0800
+Message-Id: <DCW1DXJPQF4W.1SJVD456I2LT1@linux.dev>
+Cc: <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+ <daniel@iogearbox.net>, <jolsa@kernel.org>, <yonghong.song@linux.dev>,
+ <song@kernel.org>, <eddyz87@gmail.com>, <dxu@dxuuu.xyz>, <deso@posteo.net>,
+ <kernel-patches-bot@fb.com>
+Subject: Re: [PATCH bpf-next v7 5/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
+ flags support for percpu_cgroup_storage maps
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Leon Hwang" <leon.hwang@linux.dev>
+To: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+References: <20250910162733.82534-1-leon.hwang@linux.dev>
+ <20250910162733.82534-6-leon.hwang@linux.dev>
+ <CAEf4BzaknkgAFfxA5WorX-2kZa=MHCB=MNXBvf6tDvQOb36o0A@mail.gmail.com>
+ <DCV64CLD2WRC.VLHMKT6BLL7G@linux.dev>
+ <CAEf4BzZvmwExwaWFAj2b1BpUQM2G_KK9EF9GjGK7A11wO5JRKQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZvmwExwaWFAj2b1BpUQM2G_KK9EF9GjGK7A11wO5JRKQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 18 Sep 2025 21:15:57 +0800
-Fuyu Zhao <zhaofuyu@vivo.com> wrote:
+>> >> @@ -216,7 +222,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_m=
+ap *_map, void *key,
+>> >>         int cpu, off =3D 0;
+>> >>         u32 size;
+>> >>
+>> >> -       if (map_flags !=3D BPF_ANY && map_flags !=3D BPF_EXIST)
+>> >> +       if ((u32)map_flags & ~(BPF_ANY | BPF_EXIST | BPF_F_CPU | BPF_=
+F_ALL_CPUS))
+>> >>                 return -EINVAL;
+>> >
+>> > shouldn't bpf_map_check_op_flags() be used here to validate cpu number
+>> > and BPF_F_CPU and BPF_F_ALL_CPUS exclusivity?..
+>> >
+>>
+>> bpf_map_check_op_flags() has been called in
+>> syscall.c::map_update_elem().
+>
+> ah, I actually tried to double-check that by looking at earlier
+> patches, but still missed that. Never mind then.
+>
 
-> As for the reason not to unregister and register a new callback:
-> callbacks registered directly inside the kernel cannot be unregistered from
-> user space. From user space, we can only attach additional callbacks
-> with BPF programs, but can not remove or replace the ones already
-> registered in the kernel. Therefore, an override mechanism is needed.
+Sorry for the earlier unclear explanation.
 
-The fact that user space cannot unregister or override the current
-callbacks, to me is a feature and not a bug.
+Let me restate:
 
--- Steve
+1. Patch #1 introduces bpf_map_check_op_flags().
+2. Patch #1 also updates map_update_elem() to call
+   bpf_map_check_op_flags().
+3. Patch #2 extends bpf_map_check_op_flags() to validate the CPU flags
+   and CPU number.
+
+When updating elements of percpu cgroup_storage maps, map_update_elem()
+calls bpf_map_check_op_flags() before
+bpf_percpu_cgroup_storage_update() being invoked.
+
+So, the CPU flags and CPU number are already validated in
+map_update_elem(), and don=E2=80=99t need to be re-checked here.
+
+Thanks,
+Leon
 
