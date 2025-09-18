@@ -1,147 +1,128 @@
-Return-Path: <bpf+bounces-68857-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68858-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB509B86D4B
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 22:05:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CCA6B86D5A
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 22:08:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75C783AE03A
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 20:05:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A6D07BA875
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 20:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B50830BF65;
-	Thu, 18 Sep 2025 20:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CE230DEDC;
+	Thu, 18 Sep 2025 20:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MHXnZyZM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ej9xJCeB"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B8E280A5F;
-	Thu, 18 Sep 2025 20:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A8BA2D3732;
+	Thu, 18 Sep 2025 20:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758225929; cv=none; b=HbZXbSLEKrHNqLINKwNO2319IhPWt+0bxCY9AdGoxMp6BvuGYshZKuV5/+4xeEjcGFGP94EuCi4RBwNBvOd+DiyltAI5rpDkMGCWVxXmiJ1zE7QeH1hbxdHRo4N8gqiPYm012ly7AVbc5GGyYK2g8l+5Ymw1C3lOejPwIMRlIVE=
+	t=1758226083; cv=none; b=qr9wl9cA50Lf11OGn317t+VKJblzvr3FU9TOLwAbG0U4LgH4iDU72BspsiMp5bF17YCbm09qAp5dkbbWVrneAs6/ZotckfFv2H/E/EB7maT46ecLMyiYxAX8RbM1snzICELj23QmoLrBibxuj99fe27UrGnq+aLirOlc6lYqGcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758225929; c=relaxed/simple;
-	bh=PQIMs0F7qBnCSupIdEq0faegbRGXgcQzWl1UXppJGbM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VnImUSR/RIAwJLuBRqZv4ofEQnMwuxQBuW5aqE8yYCv/FL4Hjmtb7VBn6wLdcbqYqRjVQ07FLEXORtKYSXc82/H1mWc3sPS1KCyW6hhT14MUkx+E+ypfEtcSjmWxY/Ycx2nFHTIF1Ki/oYcWvpoZGNsKKhRDjHwluaasPMmp6GI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MHXnZyZM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02954C4CEE7;
-	Thu, 18 Sep 2025 20:05:25 +0000 (UTC)
+	s=arc-20240116; t=1758226083; c=relaxed/simple;
+	bh=CJRyTJIRPIX0eh440mEW1jpFJXr/Iju/cx81g5d1C30=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=IxAJV6BFR+MD1I9rgWa4FG5W/c1P4MZBPztFDDht0fKOoR4l0033t3SDA+PEs1H4Xzg+2NCxaNIgvbXblpH+u+aohYQlfv9hl4dSQQ9+Ahp+m4M2EPLB+JnRNtoUx0uhS/PyStApgt5h/3Kx170kgPL5QTLhia30Y82i8Xsx8Zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ej9xJCeB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCCABC4CEE7;
+	Thu, 18 Sep 2025 20:07:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758225929;
-	bh=PQIMs0F7qBnCSupIdEq0faegbRGXgcQzWl1UXppJGbM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MHXnZyZM8mmUiXmySeoga6YEwlAuUym90fpQsvxBtazDC9J2vBBK/2cKyENL8ZZu7
-	 NyuC/fsSYikHLmuHuihMMB9G6jgy1k6E6R/xJ8DcdfGUS26EiL+MjosTAKllF7m1TY
-	 Or/Wfzxgl59lHT/058iyjD8l/XIRejR8pT57ChS07D6CAA9XWqvQ8UelMJVcipOUpg
-	 8owRDGRgOYOKt2HGSDMbRQCc4tV5mAe7T4V/lkdZ5jMimDyaPTmtZBtQsaI20kCCA4
-	 Q5y4Ei6XDYcM90nA/5ag4RXb5hSaDJJSx15phpSANwIbrq4gv1DOnqX+aJCy0pCC95
-	 kLAJU8qUUKb/A==
-Date: Thu, 18 Sep 2025 21:05:22 +0100
-From: Will Deacon <will@kernel.org>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-	arnd@arndb.de, catalin.marinas@arm.com, peterz@infradead.org,
-	akpm@linux-foundation.org, mark.rutland@arm.com,
-	harisokn@amazon.com, cl@gentwo.org, ast@kernel.org,
-	memxor@gmail.com, zhenglifeng1@huawei.com,
-	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
-	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH v5 2/5] arm64: barrier: Add
- smp_cond_load_relaxed_timeout()
-Message-ID: <aMxmAuK-adVaVezk@willie-the-truck>
-References: <20250911034655.3916002-1-ankur.a.arora@oracle.com>
- <20250911034655.3916002-3-ankur.a.arora@oracle.com>
+	s=k20201202; t=1758226082;
+	bh=CJRyTJIRPIX0eh440mEW1jpFJXr/Iju/cx81g5d1C30=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=ej9xJCeBs6ClvjwIP9iH/tAS6gRbaowVApM9Foi1h0U+6WpQcPTNUfhLDAKYjMqmM
+	 DP/rLqwtMJL6BDjJRayI2FwqzS67DeoDcuvMGJVdIdKIbfZFQRjb3xpXSp6j50zAEm
+	 5tbwIQKQ121YNfCWxIstNF6xXdo/nJFhfmFTxHUnPygDuNH72U1ZnvcRt8kWO01Z9F
+	 7j3iAR3q6FOWKFTTAZO/eiAddO9vreeAgpvo+pyWFjFIHkSKYbSZQpQKwE7zqeeXsM
+	 CvgaFQ6tl9PQSRiwy+1c4arJtfoUYm6k6CyU+t+asdY/wnX/hc0H3xm2W8KBm7dMWG
+	 d6+1xNUyt5P+w==
+Message-ID: <226947cd-a28d-4c09-81cb-0fa0a21c7075@kernel.org>
+Date: Thu, 18 Sep 2025 21:07:58 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250911034655.3916002-3-ankur.a.arora@oracle.com>
+User-Agent: Mozilla Thunderbird
+From: Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH bpf-next v3 2/2] bpftool: Fix UAF in get_delegate_value
+To: Tao Chen <chen.dylane@linux.dev>, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250918120908.1255263-1-chen.dylane@linux.dev>
+ <20250918120908.1255263-2-chen.dylane@linux.dev>
+Content-Language: en-GB
+In-Reply-To: <20250918120908.1255263-2-chen.dylane@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Sep 10, 2025 at 08:46:52PM -0700, Ankur Arora wrote:
-> Add smp_cond_load_relaxed_timeout(), a timed variant of
-> smp_cond_load_relaxed().
+2025-09-18 20:09 UTC+0800 ~ Tao Chen <chen.dylane@linux.dev>
+> The return value ret pointer is pointing opts_copy, but opts_copy
+> gets freed in get_delegate_value before return, fix this by free
+> the mntent->mnt_opts strdup memory after show delegate value.
 > 
-> This uses __cmpwait_relaxed() to do the actual waiting, with the
-> event-stream guaranteeing that we wake up from WFE periodically
-> and not block forever in case there are no stores to the cacheline.
-> 
-> For cases when the event-stream is unavailable, fallback to
-> spin-waiting.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reviewed-by: Haris Okanovic <harisokn@amazon.com>
-> Tested-by: Haris Okanovic <harisokn@amazon.com>
-> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> Fixes: 2d812311c2b2 ("bpftool: Add bpf_token show")
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 > ---
->  arch/arm64/include/asm/barrier.h | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
+>  tools/bpf/bpftool/token.c | 90 +++++++++++++++------------------------
+>  1 file changed, 35 insertions(+), 55 deletions(-)
 > 
-> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
-> index f5801b0ba9e9..4f0d9ed7a072 100644
-> --- a/arch/arm64/include/asm/barrier.h
-> +++ b/arch/arm64/include/asm/barrier.h
-> @@ -219,6 +219,29 @@ do {									\
->  	(typeof(*ptr))VAL;						\
->  })
+> diff --git a/tools/bpf/bpftool/token.c b/tools/bpf/bpftool/token.c
+> index 82b829e44c8..20c4c78a8a8 100644
+> --- a/tools/bpf/bpftool/token.c
+> +++ b/tools/bpf/bpftool/token.c
+
+
+> @@ -69,38 +73,29 @@ static void print_items_per_line(const char *input, int items_per_line)
+>  		printf("%-20s", str);
+>  		cnt++;
+>  	}
+> -
+> -	free(strs);
+>  }
 >  
-> +/* Re-declared here to avoid include dependency. */
-> +extern bool arch_timer_evtstrm_available(void);
-> +
-> +#define smp_cond_load_relaxed_timeout(ptr, cond_expr, time_check_expr)	\
-> +({									\
-> +	typeof(ptr) __PTR = (ptr);					\
-> +	__unqual_scalar_typeof(*ptr) VAL;				\
-> +	bool __wfe = arch_timer_evtstrm_available();			\
-> +									\
-> +	for (;;) {							\
-> +		VAL = READ_ONCE(*__PTR);				\
-> +		if (cond_expr)						\
-> +			break;						\
-> +		if (time_check_expr)					\
-> +			break;						\
-> +		if (likely(__wfe))					\
-> +			__cmpwait_relaxed(__PTR, VAL);			\
-> +		else							\
-> +			cpu_relax();					\
+>  #define ITEMS_PER_LINE 4
+>  static void show_token_info_plain(struct mntent *mntent)
+>  {
+> -	char *value;
+> +	char *opts, *value;
 
-It'd be an awful lot nicer if we could just use the generic code if
-wfe isn't available. One option would be to make that available as
-e.g. __smp_cond_load_relaxed_timeout_cpu_relax() and call it from the
-arch code when !arch_timer_evtstrm_available() but a potentially cleaner
-version would be to introduce something like cpu_poll_relax() and use
-that in the core code.
 
-So arm64 would do:
+Thank you! I just have style nits: can you move the declaration of
+"opts" and "value" inside of the for loop, please? They're not used
+outside of it.
 
-#define SMP_TIMEOUT_SPIN_COUNT	1
-#define cpu_poll_relax(ptr, val)	do {				\
-	if (arch_timer_evtstrm_available())				\
-		__cmpwait_relaxed(ptr, val);				\
-	else								\
-		cpu_relax();						\
-} while (0)
 
-and then the core code would have:
+>  
+>  	printf("token_info  %s", mntent->mnt_dir);
+>  
+> -	printf("\n\tallowed_cmds:");
+> -	value = get_delegate_value(mntent->mnt_opts, "delegate_cmds");
+> -	print_items_per_line(value, ITEMS_PER_LINE);
+> -
+> -	printf("\n\tallowed_maps:");
+> -	value = get_delegate_value(mntent->mnt_opts, "delegate_maps");
+> -	print_items_per_line(value, ITEMS_PER_LINE);
+> -
+> -	printf("\n\tallowed_progs:");
+> -	value = get_delegate_value(mntent->mnt_opts, "delegate_progs");
+> -	print_items_per_line(value, ITEMS_PER_LINE);
+> +	for (size_t i = 0; i < ARRAY_SIZE(sets); i++) {
 
-#ifndef cpu_poll_relax
-#define cpu_poll_relax(p, v)	cpu_relax()
-#endif
 
-and could just use cpu_poll_relax() in the generic implementation of
-smp_cond_load_relaxed_timeout().
+And could you please move the declaration of variable "i" to the top of
+the function, for consistency with the rest of the code?
 
-Will
+Same comments for the JSON function.
+
+Thanks,
+Quentin
 
