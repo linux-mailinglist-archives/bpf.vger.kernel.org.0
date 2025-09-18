@@ -1,94 +1,143 @@
-Return-Path: <bpf+bounces-68872-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68873-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2691AB87458
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 00:41:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49AA1B8762B
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 01:30:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8524558256B
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 22:41:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 047E81C27EF6
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 23:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348972F7ACA;
-	Thu, 18 Sep 2025 22:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74847286D70;
+	Thu, 18 Sep 2025 23:30:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pz832gEi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QXuhhvEv"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE07F2288D5
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 22:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1AB2F2E
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 23:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758235209; cv=none; b=BjR620L31OjGrA98BpVPqGxCwDLEjbdU3FXCO6ixISMmN0f4LBTCeNuS4gNo0fnXlAsREit0uvkBPYOkmXiQo6T53m9ssUgKqRFMlYtMapIBw5knT1H1RO/2QuwxFkICAQWjUDNhtu43K1vZEa8/TZTKlc6hhXwcf5qH1dsr/U4=
+	t=1758238202; cv=none; b=Fy5IQJZZTHeGQwQVziwL58573T/II4XNNWQupbOOc+SgkifWKT0gZXubcvrS5CB85GSHGgSJfqW99ZBAlVxgvHK5HWa36ReRMKyDwnFiOlPPe/4HX4h5GI1fJKmFaxeXAYW+UTJ1QNUf6zBOLSXDsdooAH2Fic/17ORws15OYcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758235209; c=relaxed/simple;
-	bh=ZJX+HnEBvDNEqpmtG9H3b7QgUO6zFa9ogNYkofUql58=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=O35y94Pi11SsjHn2VNkVLemAcv+iefbW0DVl2Whvy9hIxh5xEgEynueEs7twcRbotRBESdCCP+uZRKVVaimiw+a71qoWLa8t4sdB7/uQ0IOxvshZ1cFkpBjbU8kvSrAdzGIzereClzMCqqenP1kcoET+7GYhBmHUJrGPThEiKpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pz832gEi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F842C4CEE7;
-	Thu, 18 Sep 2025 22:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758235209;
-	bh=ZJX+HnEBvDNEqpmtG9H3b7QgUO6zFa9ogNYkofUql58=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Pz832gEisUnLsQuazKv9igQDdC79iq+vYKKf4Sd/JOSzmicbfpkQaF3hNnXLIfysp
-	 M3lG1/2AFhmZAAuaSyTK+0X0+5tRYLeLNEI2qgZuKQCpGbB5cVBf3GvYL9ByLhMp16
-	 d7gFzHXn/LuYKFmzAbk9EYrsWxSK8aGwxG0v5X2K7uNbosbO822Dxn6t67BA5tNROc
-	 BGxg2UAx3pWLp/DPQi2Vk3x1pNuwkSL1gAEN0nafVFO/IE+5cWVKpQEnfS04Cuz3K+
-	 tu8tR0xtZ12bIJFT3aeUy0ONA25DXfdv48EYuBosl8snkiw7O1pAlRiaIsITPM3vMy
-	 XS9AzUoX6jdyw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 4794539D0C20;
-	Thu, 18 Sep 2025 22:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1758238202; c=relaxed/simple;
+	bh=n4EgfhLvMbMZE6nqhsNhp7+hJGGf7NHnBqXPzzOxTGQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=J8gYppbD+MJDkDdlgV9RWKbhYZzDuKcaTwLSf9CHYD2ODWqipNy0EjfimrQEgsq3sK8wgNtBqRHGqaLEnXyNipq7K9/2lxwntKLXt1X5gKRGXaZYwy+2+PeTM/jp3UseWEC+v1wvBXmYi4bmJYgMINbPxWot+x3UMCyedynqRrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QXuhhvEv; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-32b8919e7c7so1744047a91.2
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 16:30:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758238200; x=1758843000; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CtSE/vivfhzb5bG1iK3Lr//FWW6En9tprv0275yO75o=;
+        b=QXuhhvEvVAxPYbYd6s0SNWX5qhZgggx1olfDHzHDWSn04aCRUCbKkmgiDUyUb2FSSC
+         ytIWszZFnq7E5ZVGNwBwPIYsKYW5hlvi79wraKitGUVwuK0/TxuKqrqO0qbFRtf1spgU
+         SvCUHZt6x+qAS7qI2+bVDNxyQU7FnIvNFELthI32c+AjNLeAL1cR1XEaLODnK+Vw0wtw
+         LH/B7v44XKUKiYUwr/25vLCICHJ5H+wFavVi95JLf2fimWEYjHa36Q+vGaKDtGfLD8Zu
+         rDPflcPlmAVPXlUVlh9p0eJGm26UBwbMMFNQSkJmRcRaTc6r6dZtX9XoDX2vuETv5Kvq
+         8bFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758238200; x=1758843000;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CtSE/vivfhzb5bG1iK3Lr//FWW6En9tprv0275yO75o=;
+        b=vMo3NE07TjRy3dpqf+vIzjus98jShZXPSgFssR6E2sXyfyy1YpVXlEXsXIPZ6gA1B9
+         WLDh7250xq2oLHBgfpX9RdtknqU96kvaWdmw7G4LeGlixp2dh9eNDdzJhSJJVH1hGXKA
+         jJDUcYXHgewu8rOvsXPF7ytaOo2qrlW5+TpB7Wc51AMvZct04EFNjvKuKwYaRxhTFZVu
+         awhijbLWSmSpNt393MNA/PRijR6xb3hVMLejMyV7qV7X4JdE7uIZdSabcSksObO8/lvX
+         HwihRs0CrMzKF0KRsz8XsMxgvUAccfLAbUcBZ62hQLBY5e05KUXXobhUuV1663y11+pU
+         nC1g==
+X-Forwarded-Encrypted: i=1; AJvYcCXuwUpFCXv5wPDpcBW5WJaFPZlIUWQNzyBljK0PfobqoJ/B8LAqN67vbwvvc/YY8nrrtk0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZ7KhC9591Z7f9YRpXyH1eaSzEdl0J3wFLIfdTvSvHrPhgmyrq
+	ZRPL6hKurBb7dk60lLSieYKrQR/TJKC+bB07kJXZRmTwiAfSo+eHCsTFio62AO4f
+X-Gm-Gg: ASbGnct1RIM2zRQ+BXJ37qqCznQrchhWqMkbO80fnqfTx9xgKak+J6Jai8ejEMA1DVz
+	v1lFsab/0keAM7tEwpIVUqgiUzOiaEfKMFtmY+mercjzQR5p1sK3Q+05cL0HctV42oElxCMVakV
+	79dEIouFhmVEZTcHcQ6oj7FXM/8DVwHUBsr0I1vbb8LMmAaZ9TFnPyqbYUwqQkHeijRoo3vytta
+	V9Mo5vhnI+wen8PAZZHq3SmrcpO1JkonW3UoPqKOp8UkppabRJtmG5va3QLfhziLPvcpSmKSLBH
+	dW2SUdZMFN9nxOAac9IFl63pV1RkYZDo0KoZxCb9HnSCRGb1nl3vJWHWP05lVo9ISRFbP5p9QU6
+	tUIS8pNUeaMLdEy1Ibun/Rrbq7Vs+TVeMCII3/w==
+X-Google-Smtp-Source: AGHT+IFqdAW6QWbRPmXmLjcDfdF205+YVUpNchhUsl3kSUwHe+RbArF51anCuXYmVylicN71EZfJcQ==
+X-Received: by 2002:a17:90b:3d0f:b0:32e:7497:4a4c with SMTP id 98e67ed59e1d1-33098345c1amr1601091a91.18.1758238199834;
+        Thu, 18 Sep 2025 16:29:59 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b55138043b6sm1393714a12.26.2025.09.18.16.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Sep 2025 16:29:59 -0700 (PDT)
+Message-ID: <5d1f41605348e45e60c95a75bdbb286efa3ef3ac.camel@gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 4/6] bpf: Add common attr support for
+ map_create
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
+	menglong8.dong@gmail.com
+Date: Thu, 18 Sep 2025 16:29:56 -0700
+In-Reply-To: <20250911163328.93490-5-leon.hwang@linux.dev>
+References: <20250911163328.93490-1-leon.hwang@linux.dev>
+	 <20250911163328.93490-5-leon.hwang@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/2] Update KF_RCU_PROTECTED
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175823520925.2974709.5913309884000579325.git-patchwork-notify@kernel.org>
-Date: Thu, 18 Sep 2025 22:40:09 +0000
-References: <20250917032755.4068726-1-memxor@gmail.com>
-In-Reply-To: <20250917032755.4068726-1-memxor@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
- tj@kernel.org, arighi@nvidia.com, kkd@meta.com, kernel-team@meta.com
 
-Hello:
+On Fri, 2025-09-12 at 00:33 +0800, Leon Hwang wrote:
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+[...]
 
-On Wed, 17 Sep 2025 03:27:53 +0000 you wrote:
-> Currently, KF_RCU_PROTECTED only applies to iterator APIs and that too
-> in a convoluted fashion: the presence of this flag on the kfunc is used
-> to set MEM_RCU in iterator type, and the lack of RCU protection results
-> in an error only later, once next() or destroy() methods are invoked on
-> the iterator. While there is no bug, this is certainly a bit unintuitive,
-> and makes the enforcement of the flag iterator specific.
-> 
-> [...]
+> @@ -1355,6 +1356,18 @@ static int map_create(union bpf_attr *attr, bool k=
+ernel)
+>  	if (err)
+>  		return -EINVAL;
+> =20
+> +	if (common_attrs->log_buf) {
+> +		log =3D kvzalloc(sizeof(*log), GFP_KERNEL);
+> +		if (!log)
+> +			return -ENOMEM;
+> +		err =3D bpf_vlog_init(log, BPF_LOG_FIXED, u64_to_user_ptr(common_attrs=
+->log_buf),
+> +				    common_attrs->log_size, NULL);
 
-Here is the summary with links:
-  - [bpf-next,v3,1/2] bpf: Enforce RCU protection for KF_RCU_PROTECTED
-    https://git.kernel.org/bpf/bpf-next/c/1512231b6cc8
-  - [bpf-next,v3,2/2] selftests/bpf: Add tests for KF_RCU_PROTECTED
-    https://git.kernel.org/bpf/bpf-next/c/8b788d663861
+Maybe use common_attrs->log_level instead of BPF_LOG_FIXED?
+Just for consistent behavior with program and btf load operations.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +		if (err) {
+> +			kvfree(log);
+> +			return err;
+> +		}
+> +	}
+> +
+>  	/* check BPF_F_TOKEN_FD flag, remember if it's set, and then clear it
+>  	 * to avoid per-map type checks tripping on unknown flag
+>  	 */
 
+[...]
 
+> @@ -1565,6 +1605,10 @@ static int map_create(union bpf_attr *attr, bool k=
+ernel)
+>  	bpf_map_free(map);
+>  put_token:
+>  	bpf_token_put(token);
+> +	if (err && log)
+> +		(void) bpf_vlog_finalize(log, &log_true_size);
+> +	if (log)
+> +		kvfree(log);
+>  	return err;
+>  }
+
++1 to Andrii's suggestion to report log size back,
+just for consistency reasons.
 
