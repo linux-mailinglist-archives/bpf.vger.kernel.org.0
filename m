@@ -1,191 +1,110 @@
-Return-Path: <bpf+bounces-68864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8E48B8702C
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 23:09:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89F69B87261
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 23:34:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93ABC166990
-	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 21:09:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 446167E4531
+	for <lists+bpf@lfdr.de>; Thu, 18 Sep 2025 21:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF22F2E0937;
-	Thu, 18 Sep 2025 21:09:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA672D7DD3;
+	Thu, 18 Sep 2025 21:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VOLg5oRe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gmmxjsEF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D469E26C3A7
-	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 21:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E18986342
+	for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 21:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758229776; cv=none; b=jnfBKgppsZI9vKH7Coo0HsgFU0RlUIdqZ8DKtpGaElvsMsiXrvWZR5F131tJfly+xbekQKqWKlRHjOzvkovYRNK/lcURttF3cum5M5v1hR+KpaxVlHem1HHlshr2ZYv8p0WI8WGT9SU/3OkdhAzph/V9SwRSj6T+bKsk0PjnMdo=
+	t=1758231263; cv=none; b=QKb/5xuDQdIkLRERu0ctjtuTUjRaWGoVFjcQztBURU03x7AP93F9Nlu8mo0IZmYxH8532VbEK+jc2CsFL7L649AYxW4KeHEcc2XbbEsB9NKM+4N7dWyh5l9LTfeqSIAoG0VTeNw8feaPKdpibpw074EKy8jPjwTIUq9UfJ0yqbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758229776; c=relaxed/simple;
-	bh=BUBhRHQYachcUfHM2JE8WYVTtxGN7nE0eOSCfVzYoB0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HggOrFmj77JhoV9dqXtfqV3/u6+rjm9XyrDHvwQRj0h7aOWQyaHg6jYZxrhu1eRwU/nBB4294x8Ccu7zQpeQIgqZmxLlm+5HuxmHvwIeFDt7LYvHCw4mlLuy4L/wm2acQcvU2ZFA8gycFRZpPh6J+wvV349wwJ633bjbHvw1CCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VOLg5oRe; arc=none smtp.client-ip=209.85.215.170
+	s=arc-20240116; t=1758231263; c=relaxed/simple;
+	bh=jiF8RftuTYW8SH2reimzhAXZq/kvD82kmvfYRQxK36E=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=b1RLJ2f7Y3JSIBuqEMnxbm1bppersWRrrseUhiujdqX5KLQYCznaKX1/Ox7mulDF89dvFKCTOWJaQBMQUFPwi34SRLPtxh8bYSxh77zbOn0F1DipEGCre7FPxKTmBYGqHhZVZK+V/W/Fq+PLmbGVt2c5XRNDgdW8K4ez3Q11nbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gmmxjsEF; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b49b56a3f27so874499a12.1
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 14:09:34 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b4fb8d3a2dbso1177374a12.3
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 14:34:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758229774; x=1758834574; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lZuEpjO+uICzOSM+LTukobLFvVeO80Y+qoR/gMqzSuk=;
-        b=VOLg5oRefmZ1a9XDq9diWMx8QliafxO2ko1WUqIEd2kVNcbrWGq9DwNJNZK1i2mpqK
-         shaY+38qZ7uiZiWpp2kyULoSSeHHm3Kr4CsqMYHxRFSpYLYHO0Np/uf8Lq7ozsTrui3h
-         dTGmDOoOBqLibZJO9f5Ukn2BOf1yNqoFTnZhJHx5T2cXWiGBEKIP9FqQclQBySat4SM+
-         dYyNrx17HhjMhyFno/soyDyzT2ohq3InaCnWyuLDo8kTFnCB7hutCoXIrlOa4kZJRxzh
-         Wc2moecgZ0lBVcFuFyQ8OoNpHFHAIFcNWui6uQ0C6XGtXRVyd4tJnJ6zUn0xJVSmWbND
-         HLqQ==
+        d=gmail.com; s=20230601; t=1758231262; x=1758836062; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jiF8RftuTYW8SH2reimzhAXZq/kvD82kmvfYRQxK36E=;
+        b=gmmxjsEF8zKSqGi4g1OjRHK3U69n7OO+2V2rS4IVmAYHzyPkBEDjCZjHsMaH7ZIzY3
+         SUf8kHyMs1q15BGzRIqgwKKdHNJ70s/3Pii/Emtvx0dGal54LPg2dB9fV9TnzJ0JGeTz
+         eGp4SJMvhjPXyEacOk1c/gej3FPtECenLymhhen5QmKGy5x/b4Vew9+nkZStFZaeQV4y
+         xBJQPMpOjFhC5VIkuvytex4V7AsEjLAW7Bxl3shoFenDBm82LM+7qDoQygVq4/tzaraJ
+         DakqYkD3eA45KnCf0/xbrNSXMNhvmK8eeFuI3wUpCdw24f0qYnEDf8r8+0w2C6isvNSG
+         GVeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758229774; x=1758834574;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lZuEpjO+uICzOSM+LTukobLFvVeO80Y+qoR/gMqzSuk=;
-        b=iv4KEkuClj69Naz7Nzbyj4Gs4M5NqOpudnXcX9OZ4UMJiSQwP3z97iMmZpCOMo61Bu
-         rUdPnid0Ru3gk0tIPM7bQxap/lFxXVku3ggGBtS9Ek9TBN8h02Ym2zzSV7lHFsc8ET/+
-         SB2C4Jnb2pcOJIoKdDXd+E9UmuJnQoK7Vw/LzwURp3rUY7SKx4c0WSnLmccjaaCVuKbR
-         x+hocjb3UIkqv9t8MqE/eGyj0EajI/1JG094NHXDGUmscWreAWeimZyFZIZD9uANupvh
-         JDhXjUlJDtyPW8303HfDaTlmM3mItIsIQRP2uRDklIZgIxJ/AB5YEX92uT5nMgjL7Tgb
-         q2ig==
-X-Forwarded-Encrypted: i=1; AJvYcCWof8hha18U+vVC5iukxm9makRa0ZM2cZe3hidEfSKdHi8Ds+w0cRE85luGdJkQfDSJHI8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4beA11RJI7q9ltpUNG8hVNXVPMS4M/wkBIHTlqLlmit7rkN3q
-	MfVN8+Ca12M3v8sUa6YR5UlE6kUjMcnbUi61K/lS2FCojShrQF3V4P9n
-X-Gm-Gg: ASbGncuyb/ws1JM09oMvkP/JjDjmZeSeWEz8M1xgpaPmcA1tiwzYF+PknHLHBeyZC/y
-	uJfD0GGjfIvjGlalhjYEH6n+g2ZMTF0H37KiaKTMlfFnb/xvv6l4YUStVM5wJQ5cCkHw/j2vSlU
-	9WoN+lYhHfcnz1+MVJAw0gDWueUeryb5fVQWwk11+dI0liyqm62iafVBO3CQT9BehkJSBZn9zqU
-	r8iwqpkeIk5d2yMhQGhUDWLE7Dld9SiNIkeNZgTy+7/RugP6/ZSe8NV3b3x6/ZQUq9eRFjP98Ri
-	OsUKgU5Esuj4vGCg/MGXZJx+FlMAAOukdKWe32JoiXSfO0qGJ5I9WMyBGHcvCgt6JQuPcAu55Qe
-	88CNN84NXhjRxz2AqTj3kgvZD5Sn3JqtH0We4yRq/XOo7sMjk2pGLOrwyhxPTeYjuiiEdmut3Zq
-	K9sjvQUmb5+g==
-X-Google-Smtp-Source: AGHT+IH6VFShmK0xRMZw5ZVuoigO9a0jb7JDOaG0QqbueMw9wvD47CsQiUtCzasafcgw6arTr6Jbdw==
-X-Received: by 2002:a05:6a20:7347:b0:249:f8ac:2e6e with SMTP id adf61e73a8af0-2925a2c7cffmr1363504637.5.1758229774004;
-        Thu, 18 Sep 2025 14:09:34 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1156:a:1c9c:f459:a4f0:f86a? ([2620:10d:c090:500::4:d5f1])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77cfe66995esm3287952b3a.50.2025.09.18.14.09.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Sep 2025 14:09:33 -0700 (PDT)
-Message-ID: <395da6e0-15ed-47b8-88b7-93df61061e7d@gmail.com>
-Date: Thu, 18 Sep 2025 14:09:00 -0700
+        d=1e100.net; s=20230601; t=1758231262; x=1758836062;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jiF8RftuTYW8SH2reimzhAXZq/kvD82kmvfYRQxK36E=;
+        b=tc/YZbzMu6AVjt0f/6czLWGE1l9+2RDcbcQk2yuqLDa53UVjZFC44uGxpubR9e1Be0
+         vnsgErM95Uz4unsIGDm2ncbnjlB0ecY1CiIZpH1qyFPJfJRuQiwBMTO/AVYc/aZ6o4+Z
+         rET4t1B++Ql90HBco+jv4y7CFU4k5bnz/IGhA4QW7PDRhKgq5xYiRj+rKjGSCDleAE6t
+         jRp8J3sdjwOy+tVSynGsad70FiBalEYziF0MaOu2zVDiiXMJ0FM862LKbl7Vr8JGjaFk
+         1FljktNGiv33A7+DOELcu4uv/7puquI20FmSfS/u1VTi9EJLQCcSKeIjPF3G/9fgmhKP
+         BwbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW+yqFNBejtgNRUfLmO5yPCIJYirwuTfjxcdUhzJ5GjaT1/t5Bj78BL9ZAZzV6tLh/1bNk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfKYK5oQxi5PQaFVWflotcIMCvb5yhPe19Ettv9+p2dwBxI+0P
+	0DgoTwJP8N7kLQOf4/i/oIMh02ZDBtVnTMwhEG4MWVE/MAu15abgm3d2
+X-Gm-Gg: ASbGncshQcqhC9zPJHUD5k19kGeIOlw6XPveUMqqNm/zH+pJTj2Uqxn8idsVJtHiCky
+	i+Dnv9lQocZELOcjrOzxRq05TzRsxJHJ0QqjzCb6ibmu4gnVmDNJ+Hf8ZhPu4u7vHGytE76y/Dv
+	+8J99LK1qfQXVibEbpEpwrk2705KVqtmn1Bf7YIFQ+w2vmLLFdh+MT6aUaAxw7EFC0tpAwzJVcy
+	SiWaIww3OK46DAop7S5mgp12ONF+b7ySoeCgfbmqaS5/PGaj8LspQRd6bo6PK+nB1L/VRekjOIB
+	tvkxVoyNqZ1O895cixOsMIg2NKuytdArjZmsBoku5/olnVY0cYJj3hzYwHiDWbsy5ZoIetfoDDT
+	bdKYUyA11xqh+Pkr1/IpVguCD6tEVO4/KLLbJqbSxrv5BEQHjpkKEyxPYBIjS2bgG1Wc+NjMdVC
+	XA6QBxmS8kT66o
+X-Google-Smtp-Source: AGHT+IGCb58xoAgjaWavHnxvSPHuWP+PjL2weVZ1bnupLdvwd4X/prAUel+aziXgurEsu3Q4RbpL5A==
+X-Received: by 2002:a17:902:c402:b0:251:5900:9803 with SMTP id d9443c01a7336-269ba455012mr13021895ad.21.1758231261772;
+        Thu, 18 Sep 2025 14:34:21 -0700 (PDT)
+Received: from ?IPv6:2605:8d80:5825:6b48:8e77:6389:4ddb:e856? ([2605:8d80:5825:6b48:8e77:6389:4ddb:e856])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2698016bf96sm34447665ad.38.2025.09.18.14.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Sep 2025 14:34:21 -0700 (PDT)
+Message-ID: <05487a3c7d8f24d2f71e1860aebbfc5b15d7d677.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests for
+ KF_RCU_PROTECTED
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai
+ Lau <martin.lau@kernel.org>, Tejun Heo <tj@kernel.org>,  Andrea Righi
+ <arighi@nvidia.com>, kkd@meta.com, kernel-team@meta.com
+Date: Thu, 18 Sep 2025 14:34:20 -0700
+In-Reply-To: <20250917032755.4068726-3-memxor@gmail.com>
+References: <20250917032755.4068726-1-memxor@gmail.com>
+	 <20250917032755.4068726-3-memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v6 1/8] bpf: refactor special field-type
- detection
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
- kernel-team@meta.com, eddyz87@gmail.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-References: <20250918132615.193388-1-mykyta.yatsenko5@gmail.com>
- <20250918132615.193388-2-mykyta.yatsenko5@gmail.com>
-Content-Language: en-US
-From: Amery Hung <ameryhung@gmail.com>
-In-Reply-To: <20250918132615.193388-2-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-
-
-On 9/18/25 6:26 AM, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
->
-> Reduce code duplication in detection of the known special field types in
-> map values. This refactoring helps to avoid copying a chunk of code in
-> the next patch of the series.
->
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+On Wed, 2025-09-17 at 03:27 +0000, Kumar Kartikeya Dwivedi wrote:
+> Add a couple of test cases to ensure RCU protection is kicked in
+> automatically, and the return type is as expected.
+>=20
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->   kernel/bpf/btf.c | 56 +++++++++++++++++-------------------------------
->   1 file changed, 20 insertions(+), 36 deletions(-)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 64739308902f..a1a9bc589518 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3488,44 +3488,28 @@ static int btf_get_field_type(const struct btf *btf, const struct btf_type *var_
->   			      u32 field_mask, u32 *seen_mask,
->   			      int *align, int *sz)
->   {
-> -	int type = 0;
-> +	const struct {
-> +		enum btf_field_type type;
-> +		const char *const name;
-> +	} field_types[] = { { BPF_SPIN_LOCK, "bpf_spin_lock" },
-> +			    { BPF_RES_SPIN_LOCK, "bpf_res_spin_lock" },
-> +			    { BPF_TIMER, "bpf_timer" },
-> +			    { BPF_WORKQUEUE, "bpf_wq" }};
-> +	int type = 0, i;
->   	const char *name = __btf_name_by_offset(btf, var_type->name_off);
-> +	const char *field_type_name;
-> +	enum btf_field_type field_type;
->   
-> -	if (field_mask & BPF_SPIN_LOCK) {
-> -		if (!strcmp(name, "bpf_spin_lock")) {
-> -			if (*seen_mask & BPF_SPIN_LOCK)
-> -				return -E2BIG;
-> -			*seen_mask |= BPF_SPIN_LOCK;
-> -			type = BPF_SPIN_LOCK;
-> -			goto end;
-> -		}
-> -	}
-> -	if (field_mask & BPF_RES_SPIN_LOCK) {
-> -		if (!strcmp(name, "bpf_res_spin_lock")) {
-> -			if (*seen_mask & BPF_RES_SPIN_LOCK)
-> -				return -E2BIG;
-> -			*seen_mask |= BPF_RES_SPIN_LOCK;
-> -			type = BPF_RES_SPIN_LOCK;
-> -			goto end;
-> -		}
-> -	}
-> -	if (field_mask & BPF_TIMER) {
-> -		if (!strcmp(name, "bpf_timer")) {
-> -			if (*seen_mask & BPF_TIMER)
-> -				return -E2BIG;
-> -			*seen_mask |= BPF_TIMER;
-> -			type = BPF_TIMER;
-> -			goto end;
-> -		}
-> -	}
-> -	if (field_mask & BPF_WORKQUEUE) {
-> -		if (!strcmp(name, "bpf_wq")) {
-> -			if (*seen_mask & BPF_WORKQUEUE)
-> -				return -E2BIG;
-> -			*seen_mask |= BPF_WORKQUEUE;
-> -			type = BPF_WORKQUEUE;
-> -			goto end;
-> -		}
-> +	for (i = 0; i < ARRAY_SIZE(field_types); ++i) {
-> +		field_type = field_types[i].type;
-> +		field_type_name = field_types[i].name;
-> +		if (!(field_mask & field_type) || strcmp(name, field_type_name))
-> +			continue;
-> +		if (*seen_mask & field_type)
-> +			return -E2BIG;
-> +		*seen_mask |= field_type;
-> +		type = field_type;
-> +		goto end;
->   	}
->   	field_mask_test_name(BPF_LIST_HEAD, "bpf_list_head");
 
-How about extending the scope of the refactor by also handling 
-btf_get_field_type in the loop? For example, add a "bool is_unique" to 
-field_types and check seen_mask when is_unique == true.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
->   	field_mask_test_name(BPF_LIST_NODE, "bpf_list_node");
-
+[...]
 
