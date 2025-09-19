@@ -1,241 +1,212 @@
-Return-Path: <bpf+bounces-68932-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68933-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25C37B898C5
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 14:54:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85F23B898D4
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 14:55:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C454F620A0C
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 12:54:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 474295A34ED
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 12:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C7C21B19D;
-	Fri, 19 Sep 2025 12:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D5C238C36;
+	Fri, 19 Sep 2025 12:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IfsnRFjm"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="m5tCggpO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from OS8PR02CU002.outbound.protection.outlook.com (mail-japanwestazon11012009.outbound.protection.outlook.com [40.107.75.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4530935942
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 12:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758286440; cv=none; b=SyB44IrYPF5i82FICbEf0GpPxz9a4aMzSFGBbXxTRR9XligdTsswEB3vDvdZtpndU7Gxa2f+yB4letNiUu57gVdD2A10Guc8sncxXUo8m8PmNbcAMrmbQInUYXoe9E/20mciaQlPXhfJJzcEF8eQGEYNRl17D7aG9xPoEMb3ZW4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758286440; c=relaxed/simple;
-	bh=OQMWPd8ZLmEVPyJ8L2EAOr1dOvBWKRPT25iV8BVEZeQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YZ4cmRlmGNxJZPyVg439qW+RazNFDAexO61F5KfnLO1CDPBHpAgRzNcoqyEgy/+VUlmBGHO5fB6JYSWx7TGLk3UCuuwNnDqhhmx9fkK85wYsXrAgmkRDefqtzb+Psd53c5rHGOt9zn9xYbYumVAlMgezby0fkqK7ZVmklYtdg58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IfsnRFjm; arc=none smtp.client-ip=209.85.218.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-b149efbed4eso337794766b.1
-        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 05:53:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758286436; x=1758891236; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7tB7LlnkiscLpo3gkcuwWhYvknilidlR1GUjxm0/lGo=;
-        b=IfsnRFjmlTOfazY2dWR9m5Icrre2yQMUTCiNxFXKTHoKkshbEFFZWzJD6mymyv1ejy
-         kiH/ERjS9eDLP7P7FT4f2Wu+z/Mifr3+ATL3JCDePIJQ2HR/MIeABG/BSE84WXAxVfVp
-         nAzxmPYg7EsF4bBwWdlGOMDCKFTFT3Eaw4BXqh5+e8mIVnM4UCBHBk8I5++AEkr1aCj3
-         Q4uXR8l3/XTC5Hfk5vpBiTgaAruDAEVG3c1qmaKfxpnVJ85nMvp4/W+U0o/Dd5EVUoRb
-         lUk6r9ezX5qEzFsYVJvxZsiWfc7/n5AxH3J2P0dg6ZN6GQFzyaogFrBK/X5/Wdi/3d/k
-         5T5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758286436; x=1758891236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7tB7LlnkiscLpo3gkcuwWhYvknilidlR1GUjxm0/lGo=;
-        b=gb/yMIb1b9ePyiamfdM64flbJcR4n4eY4p7AT4YPRL5gVe2wbgJIPeJws41Gwfdvrc
-         B0d6719fczGeIkJfyfr0SDLAKiUUzQtmmarpLj+VqgpTUVT7mBOAPmoHb+7ESP/WTAlU
-         PhlBNcq+LrSoZgYdDH+eJ3SzFC+n+I66ytie0S69y6D3mnc5yUaNMEDmnIzocKlpy17U
-         4k75ys+TzhO537dlN4JMbh5InH953YnisCu427eSlqiKpc298lYnvuYzZtn3oYJAxDCr
-         G3GI04YNkCcI2fENLmqKKViD59DDaWyDye+zPhEMjxGAWcP15ru7jfwsOnn82fuJUBmb
-         9jIw==
-X-Forwarded-Encrypted: i=1; AJvYcCX0WdwGlK0chY24hJvDbo7qkzWHPtNTzqBiM7BYytF3dK489mKmVkn2fnYMUoXh0b/Hxps=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywcs9nsZJw12DM8nxhYuqdSn6I1ilOO1WV/YSNA3Id0MZptzGWx
-	zJFfjdHlrmWMS6WTFMqP9RxBvsBfIlBUqhaqFhSYsgoTIeWBPsNThg0fWqH79F818bXOv4/lkJO
-	FDNLKamjrnPOlJR47D7tnxK6EeuFG2uekdj+4
-X-Gm-Gg: ASbGncv/GCBRmyv1m3t6glzB+UXtS1G1pRHjGg0IiA9C+NYzf7j26LpQ4dUBl0zx0Kc
-	a+0jSMXVrqvwWkwMfM6ErsPXCqlsK45gPsqd8eVd7rrDI+YdoFVA52X+QE2qNtnbmQRDQASeBCV
-	2lg5GqCjpNOByX2XAcZgRfY4omEhQrybYc1OBLLDgLcKUQWzy7drUvT4Hsj4Z3MkUwr/LbVm9iO
-	DxSBb1yO52wzrbQRuZFznJmAlwTSWhh7L8XOwtl
-X-Google-Smtp-Source: AGHT+IFsxrzOWNwUPdSvUUlSZPK2jbK78kbW0CS7rD3NKOzSDwXJDerL4/iWn1UBqea6zobugbAnGVkNCeJOQV0hvE0=
-X-Received: by 2002:a17:906:fe08:b0:b0c:99b8:8ac5 with SMTP id
- a640c23a62f3a-b24f4428a64mr284073466b.44.1758286436218; Fri, 19 Sep 2025
- 05:53:56 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17EA223DF1;
+	Fri, 19 Sep 2025 12:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.75.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758286472; cv=fail; b=BWs7v337kqD5V8V3dbV7TSP6AtDTF1SNzWxfGV3zKlRgDbPsn+Nf//xKqG/67HhXuPPPQxr+qw84wpTiaSCO+BkyRiunhNqHJn47clJzHEy0yvB/yMaP1LNnPQ90AmbMezoYhNCxpe8FXduWN0hI42bFDaaY1FL2WOFR+qru6d8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758286472; c=relaxed/simple;
+	bh=ZCV7LY8xlJU0wLxJoU2OinvQkN7xmZJS8gYnM45d7KQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=tz6brNn8Fg4vY4scTymIgpGSIHmuowAJF6KY0qGhXskjOurNimtmhBsSbpxhVANnDX/lYpoe+Ojlo83ZR3vAaUBEH21EuTZTaH4mi7a7bbIdAEYyelOFgHWiLEJJbozw/vbEhT5z3x84xi1YLGaFOtcvXaXigENS8rmKpxwEoZ8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=m5tCggpO; arc=fail smtp.client-ip=40.107.75.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=G34tHaGWnYWjqwwU0+30crkv5y5ZrCYLsMIKOdgJOA3FRwzdj3W2ywIDrly4KKK8CXgU/lCTDOK+2khnqytH6TWeoQ1tRbtfHRT0NeJuEvgORGPdNb5VSzpCzfDQLXMC8JDXYGHGoo/Av6X78aBgvBk2WimCYIUgx695Dk6iaoSpbMHS/WzzUIFlghjqBObClgz6c0Ns8dv3yMtKXm2fwrrWEW34dvYpIGKZYDu4DMwinvxJ80dnDEDqwlfherWMyv3YN/L1YAoaB5UJa5kKlg5LaAeTcvuNRHqwjaXZEUxRYlGiLDxCBLxgqFaocuTbXS5y2C+YrPXUsh6p6pFrvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DO867iXFZxUCgrYqdvFYvPzTFJqa4G8CNxZQYavv9qI=;
+ b=NGqCt4rSzxnlgP379piLO6qPIUZ/8pZJmo4K9vfqSXgGyJBb4Y56u7ruGL0Tu0SRlDbfvJpN+fsIbT5EqZoPHiPyGnkN1uXdG7ngCPv7pOxTAex8md+wWQHwG9cC34ejMXBRXOnFpBaj+nfnZ4jeqVLfyTnLIncQ+HEzQkLBTVoFZMb9nuOaX5kzt8Wp0WJIs2Mi94A6lHBq6vdwJ+U3Kc0efe9NrUQsXX4UP9pf1fcDI8AeymnEhEGyV8OFFKY4rLVoNOy43mQsaPC3XGlaQ0y6Lh5ysuPop1+MoLMyHXkbw7myHp959dN3Eudj83w7cKwRT2f8r0Xjli6NLf5RAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DO867iXFZxUCgrYqdvFYvPzTFJqa4G8CNxZQYavv9qI=;
+ b=m5tCggpODhbm+Eu8rBywz/znHmJTHbQZrjQz0Ow5RgB0bTyNV2tdnDr3MrCTdY3GDGo3O1ZhitbWzpLFEyRjh1RoI3wTxgnU0kBdZqdukpywAx+kY9B7MbPWDL56rIl+0Ur52iFoV161VrytO0IlCqB66iPZY6hZF9F+J0ODpBu83Gz3o1uCvdJvISTdd1westD5NvVapZbcGHXNcTvZLg6aK+doHZJHdTQXHo3HrOOdfErpUjtQe36v55pvxOEMSVfgZjBgqgELJ9e3j3tdEnKgGYv6puk9xVs9KoEAwr5/UICJbxqrNzDMp2vR9pDnEO5d21NaHWgabtt3UJ2Tcg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB4742.apcprd06.prod.outlook.com (2603:1096:301:b5::13)
+ by TYSPR06MB6471.apcprd06.prod.outlook.com (2603:1096:400:480::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9137.13; Fri, 19 Sep
+ 2025 12:54:27 +0000
+Received: from PUZPR06MB4742.apcprd06.prod.outlook.com
+ ([fe80::206c:c661:9838:5571]) by PUZPR06MB4742.apcprd06.prod.outlook.com
+ ([fe80::206c:c661:9838:5571%4]) with mapi id 15.20.9137.015; Fri, 19 Sep 2025
+ 12:54:27 +0000
+Message-ID: <c4a62603-11bb-4e93-bc7e-75f8b4574c63@vivo.com>
+Date: Fri, 19 Sep 2025 20:54:19 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v1 0/3] bpf: Add BPF program type for
+ overriding tracepoint probes
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ haoluo@google.com, jolsa@kernel.org, eddyz87@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+ shuah@kernel.org, willemb@google.com, kerneljasonxing@gmail.com,
+ paul.chaignon@gmail.com, chen.dylane@linux.dev, memxor@gmail.com,
+ martin.kelly@crowdstrike.com, ameryhung@gmail.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ yikai.lin@vivo.com
+References: <20250917072242.674528-1-zhaofuyu@vivo.com>
+ <20250917153055.6fee814f@gandalf.local.home>
+ <e8e8b5e2-35fe-43cc-ba41-c84ccba189f7@vivo.com>
+ <20250918112425.23d4d379@gandalf.local.home>
+From: Fuyu Zhao <zhaofuyu@vivo.com>
+In-Reply-To: <20250918112425.23d4d379@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI2PR06CA0006.apcprd06.prod.outlook.com
+ (2603:1096:4:186::19) To PUZPR06MB4742.apcprd06.prod.outlook.com
+ (2603:1096:301:b5::13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250918132615.193388-1-mykyta.yatsenko5@gmail.com>
- <20250918132615.193388-8-mykyta.yatsenko5@gmail.com> <CAADnVQJfGqKpOhQpx_a-kKfv34XRE=hDZAN=u-=CVppUF5wfzA@mail.gmail.com>
- <171ddd7f-a100-4800-b0f3-1ac8e25c13d8@gmail.com>
-In-Reply-To: <171ddd7f-a100-4800-b0f3-1ac8e25c13d8@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 19 Sep 2025 14:53:19 +0200
-X-Gm-Features: AS18NWB4PFYOYQmzjOTMDz-NlRLgu4s7J3MePPSKsNnUSI_s57VSg3aj5oh-gik
-Message-ID: <CAP01T76m5DLzy5TKjrDOG5JQqjtSZOHkJtMRx8vNbWZSK4CGnQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 7/8] bpf: task work scheduling kfuncs
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
-	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
-	Mykyta Yatsenko <yatsenko@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB4742:EE_|TYSPR06MB6471:EE_
+X-MS-Office365-Filtering-Correlation-Id: 54defc9b-af17-4b9e-b30e-08ddf77baa25
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?MVkrRjJSOVowc0ovVmxQaGhDaUxKZVNkMFdYNmJJbWJSejE0SmZ4RFphaVV4?=
+ =?utf-8?B?blNZVnJockFDMEwyWHdtajVIMU8yTXBzeWpsQU16RmhKVGtwWDJRVktoMkJ0?=
+ =?utf-8?B?SXJFUG9ya2tzZFRHS2hUY0IwZlBPMUtCOUFWVXVkeGpyREFLeDQ3M0Fpcjc1?=
+ =?utf-8?B?elpGcEhJdXVKYXNXSVhXc21LSk8rdzd0Rlk4TW5tYnpNMkVhWTVlTkEyN3Bn?=
+ =?utf-8?B?Nk93ajB5YmhUMEhoZW9Vc205MjFId1FnREFpeUdDY0RUSm9rZThFRUpraWNY?=
+ =?utf-8?B?YnZDT2xRSVkvOHQ1dzdOVWJhRGJBT1k4amVJNXRXaW5uaTJRdEJNTmRFZmFl?=
+ =?utf-8?B?ZjZHZXBFZ1VWY1JxemJkbGd0VjNON3I0aW9rOXpVZUNJOFc0QXh2bXQ3VkxT?=
+ =?utf-8?B?WDdmYk5IYTg0MnZERG0ybTkrR0ZkZDkrTkVEQmF1R2djVFA3U1U2VE9ZOFZW?=
+ =?utf-8?B?YjMybjRTWS82N2ZXRm5GdWs4cEUrYTZtc01iOXdkUkZ0d1ZKNENIK243T2Np?=
+ =?utf-8?B?bzNDSDNscWNta3R4QjdCNHZmSy9IWUFxdVA0anNBeU1iQlZ5bXEzZEFXUVN0?=
+ =?utf-8?B?ZHo1bnpZSXl4dXhNTUdmeHl2ZVBDanFyYURJNDYyTkpqMFV4V09NbkZUc2tH?=
+ =?utf-8?B?NHdKaUIyOHdFbnoxTWhMSkZaNzRkbkhpcXJYVDBFZU5VQkY1aXQ3OFFTTjFi?=
+ =?utf-8?B?S0QyTUNHRzZBTW5JM2lQK0JLOHRhU21UNWhsaFJhNVJ1dlFMQzhQMDNNM0Ni?=
+ =?utf-8?B?bWlmRTdFU3c5U2s2WGk4UkdSVXhoNWNlOG8wS2EvUHhnaEloSnExY3dJV2pa?=
+ =?utf-8?B?VVlablArT2VLVkpFcklZbFoyK29FQURtWm9zdWxVUkwrdWdWZVRCSmwrMlNq?=
+ =?utf-8?B?THhGditqV1YrZlZhQVR4T0hvVXFHbE5QYjNFWEVFbkUweDZzS3gydTE0dzYv?=
+ =?utf-8?B?MFltcHNubS9jUitIVTk0TmtRai9yQjhKZmFFdmVHN2FRbUkvNFJ4OTZtRzNk?=
+ =?utf-8?B?MEhTRE0zV1BidXNSeGd0YUt2Zm5xaFpBMHdOS093MW80M21CMkExNXlZVkEr?=
+ =?utf-8?B?SjZuRHQ1dEpvRm1vK0FOTFhOMWI0d1hGTjFqaUxNa2twWldmK0grNFpaTlR4?=
+ =?utf-8?B?MlR4OXRVdVpsMDdUZHluN3FuSEtnRUF5VE1qVkRCK1l2WWtXQkk4VUFoUUY0?=
+ =?utf-8?B?YklUREZPL2pVMVZFUFN4cVhsYjRsaWRwdDBBTERNV09OTEpybnBlWnJiQlV5?=
+ =?utf-8?B?cnRJdFNhWEpWR0c1azdLcDZmREpnTld5K1hEVGF3VUlKYTFuY0wyRXdYa1Nt?=
+ =?utf-8?B?UEt6eHNYMlR1LzVvSThYQjJ2RUU3MVI1YmE5Ri8xc3pvRHpYWGtnNjM2K3Jx?=
+ =?utf-8?B?cnNORFNSa2p4TUtqRGlhVCs2dXdDc1pQUlNLTWRyaG93Y2JQYWs2T3VIQ0R2?=
+ =?utf-8?B?NDFXNGtHdXVKa3hZNjZwYTNaajkxS1hqWlNiTHB1RCtVdStKVVdOTHpFMnRY?=
+ =?utf-8?B?N2dEZ3NVWkpxUVNYa0F4MDRUQkN1TC84NmZDQVdUUk1IaC90aXBlWVU3S20x?=
+ =?utf-8?B?aTJiYmxMS1hhcFhwVHQ4dytZd2REckhCa2dQZDRSTllsRkVOdG1LMmIrdmZD?=
+ =?utf-8?B?OU9jQlRvWlJhV24xYlpJaUVMcUY0UTRlejdGVFZDeVZON0hQZXJac3pZWGJ2?=
+ =?utf-8?B?VEh0ZEtPbmtUZGV4czJNUVVoa3VIVEMzRVhUcHhXYWdDcTVRWW1hV00xYmts?=
+ =?utf-8?B?cmFmVHczOTEwL2Y3ZVdzazBFQmowQWU5dGs3cnNsK1Q2NXk2TXBEbDRrVHky?=
+ =?utf-8?B?eTNQUjFYdGgyNEdLV3JsVE5peEFEa2R3WlhvV3kzWm00YnVSS2hSamZ5MDZI?=
+ =?utf-8?B?d09mTisxenN5azB0MkxIVFl2bU9SQWVBM2Z5NFNqOUdVSWhVRFpYODdxVHFS?=
+ =?utf-8?Q?7iWhJ1nxeTo=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB4742.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eFZNb2JyUG44TnFQT1ljSWRQMWlGZ014eEg4Q0lJd3JSa3FSdHcyZjhQbFZu?=
+ =?utf-8?B?V0RMbStnQ1V0STdHNEVVUkdqZXhvVUQrVTlHYnF5K09INmVNek11U2lSQXJ5?=
+ =?utf-8?B?MTN2RGJ5cU5LaDlFeXdWV29DVFg2aW1xR3Bub29XWHJXN0JlbnprSTFKUkZw?=
+ =?utf-8?B?YVBhdmFsemM0VmFpa1pPdk1yT1NXWlp5WCtXWUVmcGtBcE14SnloakFGZFBR?=
+ =?utf-8?B?elBObDRKazJrd1I3RDk2aUdDWHhTS0JJdVJvaWlRSkF4V2g4TTRFYXB4WFBT?=
+ =?utf-8?B?YUJVWGQ3WWZYNU1Da2owcGNiUG1kUTNlZUdNeEQrL0o3cHRTWjcyUkFLVTVT?=
+ =?utf-8?B?QlRPRXA1Y0NnUEVVc2I4OWVCU2Y1RXBPZ1ZnSzUrUjdLTU5hY2JKUER4N2Ew?=
+ =?utf-8?B?a1c1THlLcGhZaTNJKzFzTDNybEJOeWNUaEozQXlMYTZ3cTgzZ0N1M1M2SVdJ?=
+ =?utf-8?B?Y0Jtc0RCMWlNRVI3TS8zb3FDaHVqUlhQZStNWjlHUmFqYUFwNzc5bWhlSGJq?=
+ =?utf-8?B?QzltbEZUSktnSzJ2Rk45emJHMkoxanVHUTZuWUNNQXh3bTM0bjAvd2dMTURG?=
+ =?utf-8?B?MUVLYXI1UWkydkgyN0srdi9CM3ZlbUhlc2tNdzZLcTJPVFE4RjBQQU5ySHJU?=
+ =?utf-8?B?WnVTNDJSUEZDVWV6MEZnQ1NndjhwRVVyRi81VkJEYnZrQUU5UGNpQUllTE9V?=
+ =?utf-8?B?NUZxeEdML0doWFNMdDlwVVdsVldXZXdFR2RtM1IzMFR4UThOS01zNjJKaHJS?=
+ =?utf-8?B?cGJhV2pBV0lGS2hpRE1neEhXYVVsdmpMN0hpckJKSk5Oa1NsQlliWFRSVnJ4?=
+ =?utf-8?B?bCt0d28yVktaK1lVeFJPSHd2NW5KQUkvN2M5eCs4M3MzSjJTaGxCdng4TzJM?=
+ =?utf-8?B?TzJXMDNQViswbW5ZZ2htTWF0YWwyZERlVzhxZC9KSHAveFFiRWt1dGt6RGZC?=
+ =?utf-8?B?SDcvQjVqMEJhNWRtZCs5UXhLVHJuNitZKytKc3UrMzhsZGdKU1QvMkM3U2ww?=
+ =?utf-8?B?c21UVExBaDR3c2x4Z21XbkFFOGxKNU9jdmJKWGVMdzhHekVWV250NWF0Wk41?=
+ =?utf-8?B?V2hmVDlNckZmUnNjUjVyT3hxcVppVXQybktkaVhjWTRHSk5oS3VJTG9CdTBC?=
+ =?utf-8?B?K3NaU1RuV1duZmc1NHh2R2V2M21pbTV1ZnRnZnI3ekJoWCtId1pqZXZ4ajBq?=
+ =?utf-8?B?YVcwVThTTm1Rd00yd3ByYW5hVmlmOWViNE5CSUpDN3hVQUoyclFiSjlQNVVt?=
+ =?utf-8?B?WTJSQitOMHV3ZTU1LytCQXZvY0MxUVBETHBYR0wya3Vsc3paTlZLVUFQUmtB?=
+ =?utf-8?B?NTEvT0k5YlFRallQYmFNQmxaT0FDOTZSRE9XdnNJYU55d05qY1IyNjhWTWl0?=
+ =?utf-8?B?V1VxQ244T0laaml5UlpoM2dCR1VrNkxlNVhrTFVjZEIrNjlLeGRIZTdJQmhK?=
+ =?utf-8?B?THJ6T2M5RUQ1Y0FEWXBrVnFoRTAvTWNweFdKelpWRVNxbjJPSFZFbG5TS29y?=
+ =?utf-8?B?dC9IcUt5WFRlbzdzZEZ3bndJUjNqZEVzVklQRkpRMjlYV1VFZ3lwT3lKOEtk?=
+ =?utf-8?B?TVRJNklJR2MvczJQNTkyV0xmb1lxK1pvZEFEbXRvV0VkVUxQbThHcUpwWVFI?=
+ =?utf-8?B?bFF1NXN6STVDYy9WOFROU3NpKzBOMlpKN1E3QlUxVGZZVDV1QW1ZdFVjZjdD?=
+ =?utf-8?B?OGNFN0oyVnlzVzhvWnJnR3FWdUpxTU1DT2lqd0NjdkIxSGlQZ2NST3o1OGZF?=
+ =?utf-8?B?Ui9GS3VCblFwTHZzNVkwQUVqMWJRVmlESHlKa0ttZm9HVDdPRjZ1Mno0VHZM?=
+ =?utf-8?B?cVg3VlI3R09JOWFKU2VwYzFwUk04NkhUdzRtMkhRcXJFUENHZEltUkNqd3g0?=
+ =?utf-8?B?V1l5RzYrL3RHOTc2VnRWYjFZcnROVWhTaWNkVWk1L2RkUjVTRGhIcnd1OGQ1?=
+ =?utf-8?B?VTAzUVRETmpiS2dMU25kSUdnK3dJZ3FocXlBUXVNeUVROWlaMGUwa2llZXJq?=
+ =?utf-8?B?Z3hoMG9FUXlvV3lERlBQNGdVT3ZlejV2NTE3cm5keThCRDkySFBNekVGVDJy?=
+ =?utf-8?B?MWhRZm1ZOUl1VjFBQTlHNm1sRmlEN3AvT3RNQy9MNFNaZndrYlhtc2VuQTRl?=
+ =?utf-8?Q?7+GfzqyeTX+t2u8ZEYYpGvoe7?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54defc9b-af17-4b9e-b30e-08ddf77baa25
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB4742.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2025 12:54:26.8244
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3H/5nzeQrD1XSokxUBzKVt/MFj8vaE8DDS0e++jDKkUhaf4kK7gqXBN/2R2ZteIpnBZOQMKYfq05dmaXCdb2eQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6471
 
-On Fri, 19 Sept 2025 at 14:27, Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
->
-> On 9/19/25 01:56, Alexei Starovoitov wrote:
-> > On Thu, Sep 18, 2025 at 6:26=E2=80=AFAM Mykyta Yatsenko
-> > <mykyta.yatsenko5@gmail.com> wrote:
-> >> +static struct bpf_task_work_ctx *bpf_task_work_acquire_ctx(struct bpf=
-_task_work *tw,
-> >> +                                                          struct bpf_=
-map *map)
-> >> +{
-> >> +       struct bpf_task_work_ctx *ctx;
-> >> +
-> >> +       /* early check to avoid any work, we'll double check at the en=
-d again */
-> >> +       if (!atomic64_read(&map->usercnt))
-> >> +               return ERR_PTR(-EBUSY);
-> >> +
-> >> +       ctx =3D bpf_task_work_fetch_ctx(tw, map);
-> >> +       if (IS_ERR(ctx))
-> >> +               return ctx;
-> >> +
-> >> +       /* try to get ref for task_work callback to hold */
-> >> +       if (!bpf_task_work_ctx_tryget(ctx))
-> >> +               return ERR_PTR(-EBUSY);
-> >> +
-> >> +       if (cmpxchg(&ctx->state, BPF_TW_STANDBY, BPF_TW_PENDING) !=3D =
-BPF_TW_STANDBY) {
-> >> +               /* lost acquiring race or map_release_uref() stole it =
-from us, put ref and bail */
-> >> +               bpf_task_work_ctx_put(ctx);
-> >> +               return ERR_PTR(-EBUSY);
-> >> +       }
-> >> +
-> >> +       /*
-> >> +        * Double check that map->usercnt wasn't dropped while we were
-> >> +        * preparing context, and if it was, we need to clean up as if
-> >> +        * map_release_uref() was called; bpf_task_work_cancel_and_fre=
-e()
-> >> +        * is safe to be called twice on the same task work
-> >> +        */
-> >> +       if (!atomic64_read(&map->usercnt)) {
-> >> +               /* drop ref we just got for task_work callback itself =
-*/
-> >> +               bpf_task_work_ctx_put(ctx);
-> >> +               /* transfer map's ref into cancel_and_free() */
-> >> +               bpf_task_work_cancel_and_free(tw);
-> >> +               return ERR_PTR(-EBUSY);
-> >> +       }
-> >> +
-> >> +       return ctx;
-> >> +}
-> > If I understood the logic correctly the usercnt handling
-> > is very much best effort: "let's try to detect usercnt=3D=3D0
-> > and clean thing up, but if we don't detect it should be ok too".
-> > I think it distracts from the main state transition logic.
-> > I think it's better to remove both map->usercnt checks
-> > and comment how the race with release_uref() is handled
-> > through the state transitions.
-> >
-> > Why above usercnt=3D=3D0 check is racy?
-> > Because usercnt could have become zero right after this atomic64_read()=
-.
-> > Then valid ctx (though maybe detached) would have been returned
-> > to bpf_task_work_schedule(), and it would proceed with
-> > irq_work_queue().
-> > tw->ctx either already xchg-ed to NULL or will be soon.
-> >
-> > The bpf_task_work_irq() callback would fire eventually it will do
-> >   + if (cmpxchg(&ctx->state, BPF_TW_PENDING, BPF_TW_SCHEDULING) !=3D
-> > BPF_TW_PENDING) {
-> >
-> > if releas_uref() already did bpf_task_work_cancel_and_free()
-> > then ctx->state =3D=3D BPF_TW_FREED and
-> >    +   bpf_task_work_ctx_put(ctx);
-> >    +   return;
-> >    + }
-> > will be called on this detached ctx.
-> >
-> > but xchg(&ctx->state, BPF_TW_FREED) might not have been done.
-> > so the code will proceed...
-> > and further it looks correct when it comes to handling
-> > races with cancel_and_free().
-> >
-> > The point that usercnt=3D=3D0 or not doesn't change thing.
-> > We don't check it in the steps after acquire_ctx().
-> > It looks to me these two checks in bpf_task_work_acquire_ctx()
-> > don't fix any race.
-> > It seems to me they can be removed without affecting correctness,
-> > and if so, let's remove them to avoid misleading
-> > readers and ourselves in the future that they matter.
-> >
-> > Note, similar usercnt checks in bpf_timer are not analogous,
-> > since they're done under lock with async->cb manipulations.
-> >
-> >
-> > Also I believe Eduard requested stess test to be part of patchset.
-> > Please include it. I'd like to see what kind of stress testing
-> > was done. Patch 8 is just basic sanity.
-> An example of race condition I'm handling is:
-> Imagine usercnt gets to 0, and then for some map value cancel_and_free()
-> (detach context) races with bpf_task_work_fetch_ctx() (attach context),
-> if this race resolves to context first being detached (by
-> cancel_and_free())
-> and then new one attached (by scheduling codepath).
-> Detached context state is set to FREED and it's deallocated.
-> But newly attached context state is STANDBY (cancel_and_free() has never
-> seen it)
-> and map holds the refcnt to it, which never go to 0, as cancel_and_free()
-> for the element has been already called, so we never free it.
->
-> It's not a problem if usercnt goes to 0 after we attached a context,
-> because cancel_and_free() will detach and
-> put the refcnt, and scheduling codepath will see the FREED state.
->
-> Other thing is checking usercnt =3D=3D 0 before context initialization -
-> that's preventing allocation and attach a context to a map that has
-> already done cleanup. Cleanup won't happen again and this new context
-> is leaked.
->
-> Trying to summarize:
->   1) First check for usercnt =3D=3D 0 is needed so that we don't allocate
-> contexts
-> for map that has already cleaned up.
->   2) Second check is needed in case of clean up is triggered during conte=
-xt
-> initialization/attach, potentially leading to newly attached context leak=
-,
-> as cancel_and_free() was called for old context and won't be called for
-> new one.
->   3) After context initialization/attach is done, we don't need checking
-> for usercnt,
-> as cancel_and_free() will detach and transition to FREED. The state
-> transition will
-> be seen by scheduling codepath.
 
-I agree, I don't see how we can avoid checking usercnt. Maybe we don't
-need to check it twice, i.e. optimistically first and then again after
-cmpxchg and can only do it once.
-Since this is not a common case it's nbd that we have to put and
-deallocate stuff. But if we don't do usercnt check at all, we will
-leak memory.
-Once usercnt drops to zero and task work lingers in map value, nothing
-will come and free it anymore, short of user deleting the map value
-manually, which is not guaranteed.
+
+On 9/18/2025 11:24 PM, Steven Rostedt wrote:
+> On Thu, 18 Sep 2025 20:33:22 +0800
+> Fuyu Zhao <zhaofuyu@vivo.com> wrote:
+> 
+>> At the moment, I don’t have a solid real-world example to provide.
+>> This work is still in an exploratory stage.
+> 
+> We shouldn't be in the business of "if you build it, they will come".
+> Unless there is a concrete use case now, I would not be adding anything.
+> 
+> My entire workflow for what I created in the tracing system was "I have a
+> need, I will implement it". The "need" came first. I then wrote code to
+> satisfy that need. It should not be the other way around.
+> 
+> -- Steve
+
+Thanks a lot for the feedback and guidance.
+
+I understand your point that new functionality should be driven by real
+needs rather than exploratory ideas.
+
+I’ll keep looking into this. If I find a concrete use case that
+demonstrates clear value, I’ll bring it back for discussion.
+
+Thanks again.
+
 
