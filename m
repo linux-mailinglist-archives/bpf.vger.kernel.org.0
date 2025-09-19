@@ -1,283 +1,145 @@
-Return-Path: <bpf+bounces-68975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A192B8B54A
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 23:28:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D96BB8B577
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 23:32:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F622A022F4
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 21:28:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ECC25A73ED
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 21:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11AB22D0617;
-	Fri, 19 Sep 2025 21:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2BDA2D46AC;
+	Fri, 19 Sep 2025 21:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nHxCz1S6"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="JUZ/vuyz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E1D23FC54
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 21:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E1529BDAD;
+	Fri, 19 Sep 2025 21:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758317318; cv=none; b=PRwG2z7YhsPwrwJmIkg0qMLsxaEyGzNylIXV7SMXidS0KIi7o9tOVD5iVYV6WTuR4GxrFw00dkYgAj2nazlEJv/YowFTYXNQ2gDll13mMTJlpd9df5/zPISyBB2SS6qaEI0bup0auHNxLD9nKtnY9OUKv44E4Qr4J1SQhV42qS4=
+	t=1758317530; cv=none; b=Gcvic9Oc0HOPg8Ldy0R8ZUsxHt2sOxzQXv8yVy+jiIYY7NsUyiW/i/Mf+1x+yly6JhEuQLq3T2q6RH6Cgu2CYwMyse3BLEn9H+HZ3F5oucYt5OT6TABwZEw7MCV4o+s69SJRDJwmQSQDgBRsbkbiOhLGBm7UdOYP2MFJL8nBxXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758317318; c=relaxed/simple;
-	bh=Uw4VgCFQ45ucHVft297B/h5SB6oYPwTf2mQlhvGWZKE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AmTA+01lrD1QI9DyOhJXI9S2LOmvIA4wRlIFVHUAfkEQ70ZBuTrot1M/w9DkOnmDzr9u5HZhFeDTwpD+Xx4i14A//GAka6HJw3ieaBvNvWyy2JlZbSbgkwfYXevZKBKb4MHaQnky55dzaF/VhUvGulunHD+xBtiloQkFsDD4w20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nHxCz1S6; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-32eb45ab7a0so2435926a91.0
-        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 14:28:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758317316; x=1758922116; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A7uU4VqdItPNCbV0vqy9aUvcj6VKOwzP5JwOuft1inQ=;
-        b=nHxCz1S69oLNbHvQ4V5zPnbwJ3BEGPHYgw3AQFgWmDiW7fCirvtjIDfXnCJfOrxz2g
-         kA0aTrJ6ZdnwNvfRJzpvFcx9wkh+dAJQxtm3QiniJmTPAsOiLeGOcQDAo6LNcWvFKB+j
-         PKMxZcefS8lO+R/kORCb1uv1HkLP+qMg2owTujvFgDcL48XiO828YBaJRDir9x4skGpe
-         Gt0r9fvZAGTTfUJq0ztVRugzhbg3o6fwX04utXM+6qDi3mpfvUBCRZ8kDHEdijdcwcB8
-         eOFkhZrnhPY+YSDICqsYN1S4Ym86jGzeYmpWQIc8Im4/1n3kpKTzZZQaMzGMWs+GimZq
-         iddg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758317316; x=1758922116;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A7uU4VqdItPNCbV0vqy9aUvcj6VKOwzP5JwOuft1inQ=;
-        b=RzqklegjPyOOrYMnr4n2CHlKJVhw6llE3l4izmZXvIlbOlYmSKJdvn4UhLJGaNXUyB
-         0j/NxsDrHiKpE9L8c2e5VDjKARubj1WsRjuwAx6u71xCZFBC8vWYGApwSVe/Tr3sIN4F
-         Nca7JGqDPfgJfYmFny0VOroHmirDDcCOemNxISEiDsxR/A9IesAG8Iz5ceP1hxCKcKVh
-         2t6lZjYdiTtqotLoC5dsFc6AYUOWiZDaNdEEC2+Jea5eOTxFXPbn6Odo4whkgR18BbYy
-         0tMAzKaQvExPsqdBoGK6ZZcH0xpHLRoFUL9ia0a2lzHZZsRg6SD8EbMSc2YyIifPTLOZ
-         oO0A==
-X-Gm-Message-State: AOJu0YwWRl3q918M+DGbSxKcbSO0ssMMlVhiSE3y/OJZw/zNIYSryko7
-	WvfU4tN3DMWxWk7atJP/RfMwVHdgs2Kx+RFoZ8gxR4LDpH3B2ntIAkpzSGVihyTnZD+OfBDFvJf
-	sYrNhzP1KfZwIoK/5sIwAgLlrj9trA9w=
-X-Gm-Gg: ASbGnctM0MaaO80I/VDGqMG65adLnfsrkK2s1rgEin7tJ/9XYyVzLlb1Dah7BDDWNHY
-	GmNYyaErGSNsWS9Y6Dpi3yYLoX2vW14/xuY/0lAt57w53LmIk1FuymaKFP3pDrEMhPY/xeN1KE6
-	WxBcwoHkxsmVAH8NoYIVIeD5PJjcQoi2icbaZWhw6XZQOxOZ+Hq7lRVgmmfxv6s6Ux5V3ito1vb
-	wGHt8okhtdNLo9OZjlN2q36MKYLnm8OWA==
-X-Google-Smtp-Source: AGHT+IF6hHYull/0Inh6818aB0oHWX/ygfNnH3FQKh8GwE7ONLfoNUegCfxW0ChS9ykp/gdmZSEMDv2pdWNq1DI6uhw=
-X-Received: by 2002:a17:90b:1a8c:b0:32b:d8bf:c785 with SMTP id
- 98e67ed59e1d1-3309834a0c4mr6492385a91.20.1758317316097; Fri, 19 Sep 2025
- 14:28:36 -0700 (PDT)
+	s=arc-20240116; t=1758317530; c=relaxed/simple;
+	bh=1zLJrqegpzA8usYuymvT/Lt9C1d4kpC+uKnAo9UESAo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pUT4AgFOtovXrroO12JkevrD1k9FyqO0T90Wf832KAfJWv87J80gGnCUsWaoG9BvvOJ6hHi53/h1YSCT/7LehAaGs0shm5sZUc0CP6xxqz5Gw7oL+37s35/BZynNBA2eCckEB6ZxAXfOtSLrpkFQNrUOwwldjH2azxe/ZisR90I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=JUZ/vuyz; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=ofVTDNaeXlFfj4t9Mgc6jAqO2rL3ttz6rKTuuSKot3g=; b=JUZ/vuyzVIIEfN6UvA2WD7cijd
+	Hp7aoLJWqXyOWjnwXiDD9As8Dw5nPQUwo0N7krYWvVc5p/mQOwt4roKbMYePQ0P8/khn2g5GTo4sm
+	AfQkRW73295G11eXwnhj2jk+COT9W6m4Ilkhe3Sh1Kag2xPhpjT7WH1gwkNz9Zx6HkT5yxp8sk5pe
+	WU6FgIhywt1K20vu5cOOzQmr5gQzDeIz6gvmNZqlnVDANEHTK/2jI/N3GeUlHNcv2EdOWXzrip5ot
+	BuAGu3xuslG6gHv5cL6dHFhvRWPTekGEpMs0DYCadnnAi5jyagcNbb/ttv07T8FbrQCKk5P67/F4h
+	n88/J3Sg==;
+Received: from localhost ([127.0.0.1])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1uzihu-000NpU-0a;
+	Fri, 19 Sep 2025 23:31:54 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	razor@blackwall.org,
+	pabeni@redhat.com,
+	willemb@google.com,
+	sdf@fomichev.me,
+	john.fastabend@gmail.com,
+	martin.lau@kernel.org,
+	jordan@jrife.io,
+	maciej.fijalkowski@intel.com,
+	magnus.karlsson@intel.com
+Subject: [PATCH net-next 00/20] netkit: Support for io_uring zero-copy and AF_XDP
+Date: Fri, 19 Sep 2025 23:31:33 +0200
+Message-ID: <20250919213153.103606-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241206110622.1161752-1-houtao@huaweicloud.com> <20241206110622.1161752-7-houtao@huaweicloud.com>
-In-Reply-To: <20241206110622.1161752-7-houtao@huaweicloud.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 19 Sep 2025 14:28:21 -0700
-X-Gm-Features: AS18NWAJS_7AjWbxHbh3sjCmsSyuLZcgC0gH26nO0A9tAns2t2wrr7Gl0-6O4uA
-Message-ID: <CAEf4BzaSbd2kKWL7ZT0WctsdiWq7wJG5NXT3TGxJzBGnP91T3A@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 6/9] bpf: Switch to bpf mem allocator for LPM trie
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, houtao1@huawei.com, 
-	xukuohai@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27767/Fri Sep 19 10:26:55 2025)
 
-On Fri, Dec 6, 2024 at 2:54=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
-te:
->
-> From: Hou Tao <houtao1@huawei.com>
->
-> Multiple syzbot warnings have been reported. These warnings are mainly
-> about the lock order between trie->lock and kmalloc()'s internal lock.
-> See report [1] as an example:
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> WARNING: possible circular locking dependency detected
-> 6.10.0-rc7-syzkaller-00003-g4376e966ecb7 #0 Not tainted
-> ------------------------------------------------------
-> syz.3.2069/15008 is trying to acquire lock:
-> ffff88801544e6d8 (&n->list_lock){-.-.}-{2:2}, at: get_partial_node ...
->
-> but task is already holding lock:
-> ffff88802dcc89f8 (&trie->lock){-.-.}-{2:2}, at: trie_update_elem ...
->
-> which lock already depends on the new lock.
->
-> the existing dependency chain (in reverse order) is:
->
-> -> #1 (&trie->lock){-.-.}-{2:2}:
->        __raw_spin_lock_irqsave
->        _raw_spin_lock_irqsave+0x3a/0x60
->        trie_delete_elem+0xb0/0x820
->        ___bpf_prog_run+0x3e51/0xabd0
->        __bpf_prog_run32+0xc1/0x100
->        bpf_dispatcher_nop_func
->        ......
->        bpf_trace_run2+0x231/0x590
->        __bpf_trace_contention_end+0xca/0x110
->        trace_contention_end.constprop.0+0xea/0x170
->        __pv_queued_spin_lock_slowpath+0x28e/0xcc0
->        pv_queued_spin_lock_slowpath
->        queued_spin_lock_slowpath
->        queued_spin_lock
->        do_raw_spin_lock+0x210/0x2c0
->        __raw_spin_lock_irqsave
->        _raw_spin_lock_irqsave+0x42/0x60
->        __put_partials+0xc3/0x170
->        qlink_free
->        qlist_free_all+0x4e/0x140
->        kasan_quarantine_reduce+0x192/0x1e0
->        __kasan_slab_alloc+0x69/0x90
->        kasan_slab_alloc
->        slab_post_alloc_hook
->        slab_alloc_node
->        kmem_cache_alloc_node_noprof+0x153/0x310
->        __alloc_skb+0x2b1/0x380
->        ......
->
-> -> #0 (&n->list_lock){-.-.}-{2:2}:
->        check_prev_add
->        check_prevs_add
->        validate_chain
->        __lock_acquire+0x2478/0x3b30
->        lock_acquire
->        lock_acquire+0x1b1/0x560
->        __raw_spin_lock_irqsave
->        _raw_spin_lock_irqsave+0x3a/0x60
->        get_partial_node.part.0+0x20/0x350
->        get_partial_node
->        get_partial
->        ___slab_alloc+0x65b/0x1870
->        __slab_alloc.constprop.0+0x56/0xb0
->        __slab_alloc_node
->        slab_alloc_node
->        __do_kmalloc_node
->        __kmalloc_node_noprof+0x35c/0x440
->        kmalloc_node_noprof
->        bpf_map_kmalloc_node+0x98/0x4a0
->        lpm_trie_node_alloc
->        trie_update_elem+0x1ef/0xe00
->        bpf_map_update_value+0x2c1/0x6c0
->        map_update_elem+0x623/0x910
->        __sys_bpf+0x90c/0x49a0
->        ...
->
-> other info that might help us debug this:
->
->  Possible unsafe locking scenario:
->
->        CPU0                    CPU1
->        ----                    ----
->   lock(&trie->lock);
->                                lock(&n->list_lock);
->                                lock(&trie->lock);
->   lock(&n->list_lock);
->
->  *** DEADLOCK ***
->
-> [1]: https://syzkaller.appspot.com/bug?extid=3D9045c0a3d5a7f1b119f7
->
-> A bpf program attached to trace_contention_end() triggers after
-> acquiring &n->list_lock. The program invokes trie_delete_elem(), which
-> then acquires trie->lock. However, it is possible that another
-> process is invoking trie_update_elem(). trie_update_elem() will acquire
-> trie->lock first, then invoke kmalloc_node(). kmalloc_node() may invoke
-> get_partial_node() and try to acquire &n->list_lock (not necessarily the
-> same lock object). Therefore, lockdep warns about the circular locking
-> dependency.
->
-> Invoking kmalloc() before acquiring trie->lock could fix the warning.
-> However, since BPF programs call be invoked from any context (e.g.,
-> through kprobe/tracepoint/fentry), there may still be lock ordering
-> problems for internal locks in kmalloc() or trie->lock itself.
->
-> To eliminate these potential lock ordering problems with kmalloc()'s
-> internal locks, replacing kmalloc()/kfree()/kfree_rcu() with equivalent
-> BPF memory allocator APIs that can be invoked in any context. The lock
-> ordering problems with trie->lock (e.g., reentrance) will be handled
-> separately.
->
-> Three aspects of this change require explanation:
->
-> 1. Intermediate and leaf nodes are allocated from the same allocator.
-> Since the value size of LPM trie is usually small, using a single
-> alocator reduces the memory overhead of the BPF memory allocator.
->
-> 2. Leaf nodes are allocated before disabling IRQs. This handles cases
-> where leaf_size is large (e.g., > 4KB - 8) and updates require
-> intermediate node allocation. If leaf nodes were allocated in
-> IRQ-disabled region, the free objects in BPF memory allocator would not
-> be refilled timely and the intermediate node allocation may fail.
->
-> 3. Paired migrate_{disable|enable}() calls for node alloc and free. The
-> BPF memory allocator uses per-CPU struct internally, these paired calls
-> are necessary to guarantee correctness.
->
-> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->  kernel/bpf/lpm_trie.c | 71 +++++++++++++++++++++++++++++--------------
->  1 file changed, 48 insertions(+), 23 deletions(-)
->
-> diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-> index 9ba6ae145239..f850360e75ce 100644
-> --- a/kernel/bpf/lpm_trie.c
-> +++ b/kernel/bpf/lpm_trie.c
-> @@ -15,6 +15,7 @@
->  #include <net/ipv6.h>
->  #include <uapi/linux/btf.h>
->  #include <linux/btf_ids.h>
-> +#include <linux/bpf_mem_alloc.h>
->
->  /* Intermediate node */
->  #define LPM_TREE_NODE_FLAG_IM BIT(0)
-> @@ -22,7 +23,6 @@
->  struct lpm_trie_node;
->
->  struct lpm_trie_node {
-> -       struct rcu_head rcu;
->         struct lpm_trie_node __rcu      *child[2];
->         u32                             prefixlen;
->         u32                             flags;
-> @@ -32,6 +32,7 @@ struct lpm_trie_node {
->  struct lpm_trie {
->         struct bpf_map                  map;
->         struct lpm_trie_node __rcu      *root;
-> +       struct bpf_mem_alloc            ma;
->         size_t                          n_entries;
->         size_t                          max_prefixlen;
->         size_t                          data_size;
-> @@ -287,17 +288,18 @@ static void *trie_lookup_elem(struct bpf_map *map, =
-void *_key)
+Containers use virtual netdevs to route traffic from a physical netdev
+in the host namespace. They do not have access to the physical netdev
+in the host and thus can't use memory providers or AF_XDP that require
+reconfiguring/restarting queues in the physical netdev.
 
-Hey Hao,
+This patchset adds the concept of queue peering to virtual netdevs that
+allow containers to use memory providers and AF_XDP at _native speed_!
+These mapped queues are bound to a real queue in a physical netdev and
+act as a proxy.
 
-We recently got a warning from trie_lookup_elem() triggered by
+Memory providers and AF_XDP operations takes an ifindex and queue id,
+so containers would pass in an ifindex for a virtual netdev and a queue
+id of a mapped queue, which then gets proxied to the underlying real
+queue. Peered queues are created and bound to a real queue atomically
+through a generic ynl netdev operation.
 
-rcu_dereference_check(trie->root, rcu_read_lock_bh_held())
+We have implemented support for this concept in netkit and tested the
+latter against Nvidia ConnectX-6 (mlx5) as well as Broadcom BCM957504
+(bnxt_en) 100G NICs. For more details see the individual patches.
 
-check in trie_lookup_elem, when LPM trie map was used from a sleepable
-BPF program.
+Daniel Borkmann (10):
+  net: Add ndo_{peer,unpeer}_queues callback
+  net, ethtool: Disallow mapped real rxqs to be resized
+  xsk: Move NETDEV_XDP_ACT_ZC into generic header
+  xsk: Move pool registration into single function
+  xsk: Add small helper xp_pool_bindable
+  xsk: Change xsk_rcv_check to check netdev/queue_id from pool
+  xsk: Proxy pool management for mapped queues
+  netkit: Add single device mode for netkit
+  netkit: Document fast vs slowpath members via macros
+  netkit: Add xsk support for af_xdp applications
 
-It seems like it can be just converted to bpf_rcu_lock_held(), because
-with your switch to bpf_mem_alloc all the nodes are now both RCU and
-RCU Tasks Trace protected, is my thinking correct?
+David Wei (10):
+  net, ynl: Add bind-queue operation
+  net: Add peer to netdev_rx_queue
+  net: Add ndo_queue_create callback
+  net, ynl: Implement netdev_nl_bind_queue_doit
+  net, ynl: Add peer info to queue-get response
+  net: Proxy net_mp_{open,close}_rxq for mapped queues
+  netkit: Implement rtnl_link_ops->alloc
+  netkit: Implement ndo_queue_create
+  netkit: Add io_uring zero-copy support for TCP
+  tools, ynl: Add queue binding ynl sample application
 
-Can you please double check? Thanks!
+ Documentation/netlink/specs/netdev.yaml |  54 ++++
+ drivers/net/netkit.c                    | 362 ++++++++++++++++++++----
+ include/linux/netdevice.h               |  15 +-
+ include/net/netdev_queues.h             |   1 +
+ include/net/netdev_rx_queue.h           |  55 ++++
+ include/net/xdp_sock_drv.h              |   8 +-
+ include/uapi/linux/if_link.h            |   6 +
+ include/uapi/linux/netdev.h             |  20 ++
+ net/core/netdev-genl-gen.c              |  14 +
+ net/core/netdev-genl-gen.h              |   1 +
+ net/core/netdev-genl.c                  | 144 +++++++++-
+ net/core/netdev_rx_queue.c              |  15 +-
+ net/ethtool/channels.c                  |  10 +-
+ net/xdp/xsk.c                           |  27 +-
+ net/xdp/xsk.h                           |   5 +-
+ net/xdp/xsk_buff_pool.c                 |  29 +-
+ tools/include/uapi/linux/netdev.h       |  20 ++
+ tools/net/ynl/samples/bind.c            |  56 ++++
+ 18 files changed, 750 insertions(+), 92 deletions(-)
+ create mode 100644 tools/net/ynl/samples/bind.c
 
-[...]
+-- 
+2.43.0
+
 
