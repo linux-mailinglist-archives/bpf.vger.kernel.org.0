@@ -1,130 +1,128 @@
-Return-Path: <bpf+bounces-68913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68915-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6756B881F4
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 09:12:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 489F3B8823F
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 09:20:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13EFB7B1124
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 07:10:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D5E65800EC
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 07:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6B52C0F7D;
-	Fri, 19 Sep 2025 07:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C36C32BEC2B;
+	Fri, 19 Sep 2025 07:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gKL9PODl"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Pq7cfChK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7270B2BEC3D
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 07:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE8A275112;
+	Fri, 19 Sep 2025 07:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758265930; cv=none; b=rrTXLjPdR7qPXvWZe+dPttBT0EMIOztDN3CVSUvLYkWzqki1Wl1BxPPwr1X5C+Ae27GoQ41eHmbLfLk6arpBMzIRP1Cj4ZRNUOhMXWevvIytNvqpI4oCyj/ypBCkcOUXDmMUc7phnqoFLjaAiZhiSPbJt4q1PlXIwFWgSPFFewk=
+	t=1758266410; cv=none; b=bco63NPPDZKxwaDEHumzy0gKUa/0wEJb/nwVGzxZtRNWLPu0SnWXa/DoJ/aLCywzmfQQVdjtWXtKuZRmqsw8aHHsDPJ3XDdZ8a5z/1uBRMsTBVpJAxha82dpfHeLGy9mBRfwe2F/rmnIUYXtOS//ACpZla+64ep420/iT9B0bZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758265930; c=relaxed/simple;
-	bh=5HUTBORN3JSRILvP9oTyyZem9YsSTv6PD5i0mpuBCDI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rWExz7B7CDehElLFmr/PZ+vMBq3lyiskfNyEnCgWlZwEIUi+LiV11L+Lo4o0nC4HJpEBlPUUJDwHqWsX1WWrBd3U4fRC/aMFKkSbp4Co8sm7APXQHaVLXzfK/7NVMUFianB+RZE4JjLva8gCXabXJJ/yxqTVPOxz0jNdIzrlBmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gKL9PODl; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3ee12807d97so1296168f8f.0
-        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 00:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758265927; x=1758870727; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W0zW4EgMrNY4xfO0+/4xP+wy5KEVkTr1c2+0ATCeQYo=;
-        b=gKL9PODlFSIof7IvRFj08Pi0YA6UZu6y0TtN4KBI8j5VBn8wl4ob331C9HZ7fz7v8J
-         COCqQLzriSdN0uvQgrVFBcmgY61H43jT5962pYNvO/5EOWt5dzWvdDUN4yNfNlWlbMNR
-         umCuSPTEx0YMCDxWzeUuL4P/8ZesCIkbvs5dLpMZun7rrMv4O6bGbGhbT0kBqLWEq5wQ
-         7gcoKRxXVvd2HfyGqij6NroKCVB7In7KfFjIVIZcVRFjZrVD8o+EhoK3xHPrJ5JT/LBs
-         zpmTe3i7iuIHOVEjgMGklDDUwXr2b/8alBY5m7fJgl+NdK8r9JGUKQrMwJjfGppekrPY
-         xDLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758265927; x=1758870727;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W0zW4EgMrNY4xfO0+/4xP+wy5KEVkTr1c2+0ATCeQYo=;
-        b=IGv6ERqhalyQ0UJAzAVOjpX8Y+ZxIinHC25ObV8dNaZ7IhCNsdsYfZfj4762pTpJuT
-         as72Kf+nfRsAZvGXRiz8oWKwm0ZTfBm1/RvmfK37ekMG9K2H/iUME2R02UjkwYLj+sWq
-         2JE/6OTi7MjLQdeb7+hZa5LkuAGxs6J8ib+N+QsysheFDhiQbfS8WjCpnD1qbAfNSPZB
-         RxM3CN22+BebcUvhRK8loeAbq1p5yzBLmnCBxM2LVUqp9eovh46UYpCyqNOsQ0uJYmOQ
-         uhBULU1a9wbYoStDofqbPVb5RQ00NpsaUNoa2PDR/s+6NkHxKq9QPKuqpv2cmtsCd70R
-         WOjg==
-X-Gm-Message-State: AOJu0Yx8/N0vsAvHy1hsEdmTW4tMiISrW2uwz8aZ/bPEwCmDx95MT1cR
-	HJWegDN8j88pFRbNRkyKR7F1dO+TEaQjkXf4CJd/1DibJK+4k6IUduAIjp5Cdg==
-X-Gm-Gg: ASbGncuZyIG7Le6+WeakDHSdwnMN0xORJYalP10PQXmDH0Z7vNZ0GWK/Y1qMQwZFtQm
-	P7IEzbV/jsEgHr7/Uf7VSi5huFLJfxnMHIvzQsiNwTr8dmAZIc8HpTgEt5z+NIyyqzMivpt+Q2p
-	918S56r/OSjxUJgpkp5EOyytiCKl8MydSyYjiwayitIZx29WqQLBBIOnduWSuBnw1Mj1Gxpmg9M
-	LPx5l7vo1H1VytQH9Ug3R3bHqh3RmcMWp7zyDbiIl+azuAOu0ilblhxmiibWB2MueoQcs54T0eT
-	1TwG318UEK/itjf2NTRPzlQ4/JEEo7EO5k67uj06VRR5HN1KXmkAbX5NOWyN7oyhPr/DsIba+Bs
-	kx5dI9TydJsMhMpa8xWBp8rn4Jt1PzN9S
-X-Google-Smtp-Source: AGHT+IFKyqhvhvq9QIQYXJGM0k4aNBPtsu2ydZgIs/AOziw7EBDVhQwItP5mJ2/QjXYWpFvgkXQGig==
-X-Received: by 2002:a05:6000:2509:b0:3e9:b7a5:5dc9 with SMTP id ffacd0b85a97d-3ee7e1061fbmr1751187f8f.23.1758265926413;
-        Fri, 19 Sep 2025 00:12:06 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-464f0aac3fdsm69416225e9.1.2025.09.19.00.12.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Sep 2025 00:12:05 -0700 (PDT)
-Date: Fri, 19 Sep 2025 07:18:18 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v3 bpf-next 01/13] bpf: fix the return value of push_stack
-Message-ID: <aM0Duq2W3Wsv7GsG@mail.gmail.com>
-References: <20250918093850.455051-1-a.s.protopopov@gmail.com>
- <20250918093850.455051-2-a.s.protopopov@gmail.com>
- <da197caec5cf8d4aed067c94bbb13ed62252ad62.camel@gmail.com>
+	s=arc-20240116; t=1758266410; c=relaxed/simple;
+	bh=b6Tw3mttVPfCDgGtYbSaC/pZphbcciOixdTxHxNmyqI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VLOkc2LI6BEJlfPLX5pRCdot94c+0qbu4gtjrHHOG+ndclBovUIj3EEDDvZ64U3uL2NIFA6EtBmNEvrPrjwLsoqn2AQ+w1IstopcksX6K1aL+nYGZ8OX9gORf/bzDA+1UOJvMQSM+0eLnf3Ole8uOIs3jHNQRiyc94wbP6hxnzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Pq7cfChK; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=MU
+	L1gPQPoyj/ZgGBhJEEFe6Bn2eA41tvMvWxnkv0EIU=; b=Pq7cfChK2PIDayrf7p
+	7HknrJMWIl/u8kfWKGp7MbqaZ5hvgvPNfxVlTxWL4iUAbf81CzIqHai7jD9xA+cD
+	t3kJh3WDhc9npGQ8ezsM7nfhQ3IhgfOy091/icAxIyxEEYzrxGdLPbQ5H52DGUIE
+	PHyAN65PS3gY2+xOlqr3tAXd8=
+Received: from localhost.localdomain (unknown [])
+	by gzsmtp2 (Coremail) with SMTP id PSgvCgAnJDXmA81oI1x_Dg--.54587S2;
+	Fri, 19 Sep 2025 15:19:04 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	mhiramat@kernel.org
+Subject: [BUG] Failed to obtain stack trace via bpf_get_stackid on ARM64 architecture 
+Date: Fri, 19 Sep 2025 15:19:02 +0800
+Message-Id: <20250919071902.554223-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <da197caec5cf8d4aed067c94bbb13ed62252ad62.camel@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:PSgvCgAnJDXmA81oI1x_Dg--.54587S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7try8XFy8WFWUWry8JF18Krg_yoW8ZF4Dpa
+	sxZa4akF4rZw43tFW7Ar45XF1Svrs7ZryUCF1rGr13CF4DX3y8JF1xKFW2vFn8urZYg343
+	Z3W7tFy7K397Za7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UtcTLUUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbipRHJeGjHvNu7WQABsu
 
-On 25/09/18 05:17PM, Eduard Zingerman wrote:
-> On Thu, 2025-09-18 at 09:38 +0000, Anton Protopopov wrote:
-> > In [1] Eduard mentioned that on push_stack failure verifier code
-> > should return -ENOMEM instead of -EFAULT. After checking with the
-> > other call sites I've found that code randomly returns either -ENOMEM
-> > or -EFAULT. This patch unifies the return values for the push_stack
-> > (and similar push_async_cb) functions such that error codes are
-> > always assigned properly.
-> > 
-> >   [1] https://lore.kernel.org/bpf/20250615085943.3871208-1-a.s.protopopov@gmail.com
-> > 
-> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > ---
-> 
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> > @@ -14256,7 +14255,7 @@ sanitize_speculative_path(struct bpf_verifier_env *env,
-> >  			mark_reg_unknown(env, regs, insn->src_reg);
-> >  		}
-> >  	}
-> > -	return branch;
-> > +	return IS_ERR(branch) ? PTR_ERR(branch) : 0;
-> 
-> Nit: this is the same as PTR_ERR_OR_ZERO.
+When I use bpf_program__attach_kprobe_multi_opts to hook a BPF program that contains the bpf_get_stackid function on the arm64 architecture,
+I find that the stack trace cannot be obtained. The trace->nr in __bpf_get_stackid is 0, and the function returns -EFAULT.
 
-thanks, fixed
+For example:
+diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+index 9e1ca8e34913..844fa88cdc4c 100644
+--- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
++++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+@@ -36,6 +36,15 @@ __u64 kretprobe_test6_result = 0;
+ __u64 kretprobe_test7_result = 0;
+ __u64 kretprobe_test8_result = 0;
+ 
++typedef __u64 stack_trace_t[2];
++
++struct {
++       __uint(type, BPF_MAP_TYPE_STACK_TRACE);
++       __uint(max_entries, 1024);
++       __type(key, __u32);
++       __type(value, stack_trace_t);
++} stacks SEC(".maps");
++
+ static void kprobe_multi_check(void *ctx, bool is_return)
+ {
+        if (bpf_get_current_pid_tgid() >> 32 != pid)
+@@ -100,7 +109,9 @@ int test_kretprobe(struct pt_regs *ctx)
+ SEC("kprobe.multi")
+ int test_kprobe_manual(struct pt_regs *ctx)
+ {
++       int id = bpf_get_stackid(ctx, &stacks, 0);
+        kprobe_multi_check(ctx, false);
++       bpf_printk("stackid: %d\n", id);
+        return 0;
+ }
 
-> >  }
-> >  
-> >  static int sanitize_ptr_alu(struct bpf_verifier_env *env,
-> 
-> [...]
+./test_progs -t kprobe_multi_test/attach_api_pattern
+#155/4   kprobe_multi_test/attach_api_pattern:OK
+#155     kprobe_multi_test:OK
+#156     kprobe_multi_testmod_test:OK
+Summary: 2/1 PASSED, 0 SKIPPED, 0 FAILED
+
+cat /sys/kernel/debug/tracing/trace
+test_progs-68315   [004] ...1. 13377.097527: bpf_trace_printk: stackid: -14
+......
+
+Test Version:
+6ff4a0fa3e1 ("bpf, arm64: Call bpf_jit_binary_pack_finalize() in bpf_jit_free()")
+Linux localhost.localdomain 6.17.0-rc5+ #2 SMP PREEMPT_DYNAMIC Fri Sep 19 10:29:07 CST 2025 aarch64 aarch64 aarch64 GNU/Linux
+clang version 17.0.6 ( 17.0.6-30.p03.ky11)
+gcc (GCC) 12.3.1 (kylin 12.3.1-62.p02.ky11)
+GNU Make 4.4.1
+
 
