@@ -1,60 +1,62 @@
-Return-Path: <bpf+bounces-68930-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68931-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14BAAB8975D
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 14:33:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F02EB89771
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 14:35:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDA525A11A8
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 12:33:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E10EE7ACA52
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 12:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4211E2853;
-	Fri, 19 Sep 2025 12:33:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7C71E32CF;
+	Fri, 19 Sep 2025 12:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q8mKJFGj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TZff96pM"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A9A1B4236;
-	Fri, 19 Sep 2025 12:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C361B4F2C;
+	Fri, 19 Sep 2025 12:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758285182; cv=none; b=VEvwPDDyyL/XRK6TwUxhnwD5uRuiS4Ggy1Viw3qc+pCYUGDkmyYsIR8ewQS44tx+3cGsUJOdyinGltxA1fhintTgVpg8CAz+3iMiUBNXwoff+kdCD3Cs9TxEBUFAfFgZP9/KW0nHACxBdvj/uR/u+LB0IyF/RvryqM4Ysbx96j8=
+	t=1758285309; cv=none; b=lNXH33jC39SA6MI8WvKS/c/iK7LIRIB/kP+SrlKD1jMgLbny10cbwb4MHLxBAmFJvxP1HrLyzvx6GzUIiOIZ4Zh9LiRu17OynC/8RD+UEA7HD1a+rPDALV1ZgZ9KZxB0lRukX6WURd7Xtc3oQZiAeT8qopodvpwB0kyrMXfMARg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758285182; c=relaxed/simple;
-	bh=OeUYaF3sIx2rzEitBeJ0U/Ak9lOUSf7wNKaGWHsQd8E=;
+	s=arc-20240116; t=1758285309; c=relaxed/simple;
+	bh=B/LAeSfpF+38Ojzu+TVsThBEqCYyFGk+412u00MRL1Y=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=aLa8PaNl7k8RJcy0az07JUjpxomcPyDJVLWzyQYLz5T+u/td0LVmEbphbZPp2wCe/ziyEwdnP6vl4I6nA42gtpsXM2HGDvRQfd+U686NNBhgmzfjxno1hhkVB0pDvTcBSQn2gbDEAFpjWjC+y0AwxW08BilxMaYcHsNTcs2rqcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q8mKJFGj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC48C4CEF0;
-	Fri, 19 Sep 2025 12:32:57 +0000 (UTC)
+	 Mime-Version:Content-Type; b=er+x6w2jPi4NtcoDxY36VhwwjZZI8Sz45OljifuVN/r4UPjmh9i6eFjSKTuE8ArB1P6Wua2fJ2BM15EClFDd7QsYRKWF/oP9BR/8nqLMYhig35ltxO0CFLHKfDYRDx25Cr/AGqeLuIfQ62zrPgJiCSXyuhEixAUppMMmW8vqA7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TZff96pM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D401C4CEF0;
+	Fri, 19 Sep 2025 12:35:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758285181;
-	bh=OeUYaF3sIx2rzEitBeJ0U/Ak9lOUSf7wNKaGWHsQd8E=;
+	s=k20201202; t=1758285308;
+	bh=B/LAeSfpF+38Ojzu+TVsThBEqCYyFGk+412u00MRL1Y=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=q8mKJFGjRL0+kr0AS6/Rk/ttNABBy5QXrhTw8GPBZfcDEJcyza78ldv3rLMsJ9CU4
-	 1N6MNbLMDHzIpx9gAhy523M7a1tHT6fjr1d4o8rPqXWX5dpm/veUwXnQeI60iNmixQ
-	 mLsTHaP/q+JBZkD5/kQhJldj/hkCNlnljI7W2eXPOyPaG5ixZ7J4TyUKXg8CVDu8XQ
-	 58qeFzFAh9xnEf1l8mRt/UdT1IlUU5pujdaKz5mMLQ2xuBTAtzR76HTKcDGskrWG0Y
-	 Q1lM0uMZsTlS0FkJVBFitz49tLnBdG+HLKKv8vlbF1086m81GuxEnPCBXOPrtVd14F
-	 7eO+nI0sDztBg==
-Date: Fri, 19 Sep 2025 21:32:55 +0900
+	b=TZff96pMxFcA0LMfL1fVfinD2uaCwHCmZg1t87v+5E8XBkg9tRMbQ2vFeQJL2jttY
+	 s5bIpg2XKyrSzU4F0wpsp3Q6y5OpLqPL2Yp9wCU7ZnAlMScIPGeNdTLdTfjFLP8DCi
+	 UGmcDzTsj+ljEONK7BhrUagg0OZM27qhNlE/xN195gpUikwEwrrVaMPJMH3bK/H3J1
+	 cor3J+RnkgqxC16xS7H5buD7l9wdhNsSjDJSGdr+QdXEKsO/f5Ua5JylO4zsYj/P/v
+	 n6ByozH1Fmhqa9oGwYDCTkppIIH7qU7KPRkTzH2bMWoGkn5QRQTB0GRic8OZP+Xg6y
+	 nYGmSyzoeXuRg==
+Date: Fri, 19 Sep 2025 21:35:02 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: peterz@infradead.org, jolsa@kernel.org, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
- x86@kernel.org, hpa@zytor.com, kees@kernel.org, samitolvanen@google.com,
- rppt@kernel.org, luto@kernel.org, ast@kernel.org, andrii@kernel.org,
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Menglong Dong <menglong8.dong@gmail.com>, jolsa@kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ kees@kernel.org, samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
+ mhiramat@kernel.org, ast@kernel.org, andrii@kernel.org,
  linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Subject: Re: [PATCH] x86/ibt: make is_endbr() notrace
-Message-Id: <20250919213255.db643846f6dddfe409f03e55@kernel.org>
-In-Reply-To: <5925436.DvuYhMxLoT@7940hx>
+Message-Id: <20250919213502.2d621c5b19e059134d0f8991@kernel.org>
+In-Reply-To: <20250918165656.GA3409427@noisy.programming.kicks-ass.net>
 References: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
-	<20250919175255.f7c2c77fa03665a42b148046@kernel.org>
-	<5925436.DvuYhMxLoT@7940hx>
+	<20250918130543.GM3245006@noisy.programming.kicks-ass.net>
+	<CADxym3ae8NGRt70rVO8ZyHa3BvWhczUkRs=dVn=rTRMVzrU9tA@mail.gmail.com>
+	<20250918165656.GA3409427@noisy.programming.kicks-ass.net>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -65,53 +67,56 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Fri, 19 Sep 2025 16:58:57 +0800
-Menglong Dong <menglong8.dong@gmail.com> wrote:
+On Thu, 18 Sep 2025 18:56:56 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-> On 2025/9/19 16:52 Masami Hiramatsu <mhiramat@kernel.org> write:
-> > On Thu, 18 Sep 2025 20:09:39 +0800
-> > Menglong Dong <menglong8.dong@gmail.com> wrote:
+> On Thu, Sep 18, 2025 at 09:32:27PM +0800, Menglong Dong wrote:
+> > On Thu, Sep 18, 2025 at 9:05???PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Thu, Sep 18, 2025 at 08:09:39PM +0800, Menglong Dong wrote:
+> > > > is_endbr() is called in __ftrace_return_to_handler -> fprobe_return ->
+> > > > kprobe_multi_link_exit_handler -> is_endbr.
+> > > >
+> > > > It is not protected by the "bpf_prog_active", so it can't be traced by
+> > > > kprobe-multi, which can cause recurring and panic the kernel. Fix it by
+> > > > make it notrace.
+> > >
+> > > This is very much a riddle wrapped in an enigma. Notably
+> > > kprobe_multi_link_exit_handler() does not call is_endbr(). Nor is that
+> > > cryptic next line sufficient to explain why its a problem.
+> > >
+> > > I suspect the is_endbr() you did mean is the one in
+> > > arch_ftrace_get_symaddr(), but who knows.
 > > 
-> > > is_endbr() is called in __ftrace_return_to_handler -> fprobe_return ->
-> > > kprobe_multi_link_exit_handler -> is_endbr.
-> > > 
-> > > It is not protected by the "bpf_prog_active", so it can't be traced by
-> > > kprobe-multi, which can cause recurring and panic the kernel. Fix it by
-> > > make it notrace.
+> > Yeah, I mean
+> > kprobe_multi_link_exit_handler -> ftrace_get_entry_ip ->
+> > arch_ftrace_get_symaddr -> is_endbr
+> > actually. And CONFIG_X86_KERNEL_IBT is enabled of course.
 > > 
-> > Ah, OK. This is fprobe's issue. fprobe depends on fgraph to check
-> > recursion, but fgraph only detects the recursion in the entry handler.
-> > Thus it happens in the exit handler, fprobe does not check the recursion.
+> > >
+> > > Also, depending on compiler insanity, it is possible the thing
+> > > out-of-lines things like __is_endbr(), getting you yet another
+> > > __fentry__ site.
 > > 
-> > But since the fprobe provides users to register callback at exit, it
-> > should check the recursion in return path too.
+> > The panic happens when I run the bpf bench testing:
+> >   ./bench kretprobe-multi-all
+> > 
+> > And skip the "is_endbr" fix this problem.
 > 
-> That's a good idea to provide recursion checking for the exit handler,
-> which is able to solve this problem too.
-> 
-> If so, we don't need to check the recursion on the kprobe-multi anymore.
-> Do we?
+> But why does it panic? Supposedly you've done the analysis; but then
+> forgot to write it down?
 
-Yes, but *if possible*, please avoid calling such functions from fprobe
-callbacks. This just prevents kernel crash from such recursion, but that
-means it is not possible to trace such functions.
+Yeah, that is an fprobe's bug. It should not panic. I sent a fix.
+
+https://lore.kernel.org/all/175828305637.117978.4183947592750468265.stgit@devnote2/
 
 Thank you,
 
-
 > 
-> Thanks!
-> Menglong Dong
-> 
-> > 
-> > Thanks,
-> > 
-> > -- 
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> 
-> 
-> 
+> Why is kprobe_multi_link_exit_handler() special; doesn't the issue also
+> exist with kprobe_multi_link_handler() ? If so, removing __fentry__
+> isn't going to help much, you can just stick an actual kprobe in
+> is_endbr(), right?
 > 
 
 
