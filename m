@@ -1,229 +1,279 @@
-Return-Path: <bpf+bounces-68902-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68903-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1FD0B87BD4
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 04:44:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0721B87BF9
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 04:49:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADFAA3B2CF7
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 02:43:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 401D41B240FD
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 02:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E670A2586FE;
-	Fri, 19 Sep 2025 02:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05634258EE5;
+	Fri, 19 Sep 2025 02:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MKBdAU1o"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eYMR3My2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5B3221294
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 02:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A875C2459FD
+	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 02:49:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758249829; cv=none; b=HsllNQ684R5txKUkdUU+JzAQAucdfOnj9Buo+g7wuBZ+wxFh5hDp5jgZ9fc1WM8tayEBdva3puRKMe9DWB8Y5cOt5k5e9zkKcn8RQY1P3aB6kv30SR2yDpbWt2NMq58z7B7k8NucivzOOhyrzeEUdWpha4lXVEeV/PfVj8svg6Y=
+	t=1758250162; cv=none; b=OWKOz7ocrGQlKYV5TZrmV0gPoTlGguoW/JWnZz2WGOaDx3KLlPgus67aZi9UnWoFLf33FqbU7ZFLVZq48qeoy9+o8fgagsU/qJzQ4rb/IB5kdR+O2Mi2HXzA6d3fFI3zhTvN/MgiDXmLy0CwxkB1lY7deDeEKB8eQ9DRtFPKSw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758249829; c=relaxed/simple;
-	bh=GDZO4fpRU9wSaTK0EdkpfoIEuo0Xs0ua7agbpazvbFc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tMnhxL3AvgiyvHO4jDqqNa1IL5I1gLurto8sCaoEpt+3tTaSJ7nU9zExjOlcBxZb906xi4WFi05ROx2PcTdJcstf05KQ/xcEo4jdaqVxmkb3doMEpWFFCf6AwzKpVzF+sI/KLRDqmFWimayztPQ8DHmeuOFdttZdRzRJnpkTIRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MKBdAU1o; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-3305c08d9f6so1242756a91.1
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 19:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758249826; x=1758854626; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Soz4JX15SRGUkBtt0ayqGs44vNxXP9Mldj6k8YW6gYM=;
-        b=MKBdAU1o8V/HlUv12rYImmkZGiVlXrk71TVSO3aMVK/sR/W0+OQAafk8NU4BJwQXnd
-         BX5U9TS4/peyIh5UuLRfZhgYXjvBZdxUXO8ASeepthYrAsLLqzmsvAfXBq1APIWBplPt
-         WeIGQWZZr3uKXH03cfdfr3ctzepHDT4kEfC7tbSZYeWbXy1kSmsYnfGdw8sONCTYb7Nh
-         UpmXQtFowyvCL/mhl+9DEDRXpMciLoNxtL0mSF770Az2/3Cuhctxgd3vddCHelsRLP+b
-         C59mxk5bnhfGlNqNsuXKTz9+hqP4IGc6zrGxfjC9ZJL/1yHCd67gB/A6+TWp0RA5Pa+b
-         sZXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758249826; x=1758854626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Soz4JX15SRGUkBtt0ayqGs44vNxXP9Mldj6k8YW6gYM=;
-        b=LcAKx2VR+7Z9iSFD9pJBgllZA8NPlnJ+i91kRrKVXmiUDpJbVUKAE1MVS00uXdgQMX
-         DT0n5aZ9WLkecz8iZKBws84jq0w3++DiNI6IB/Dg0vYyHQB0RzWVWlEFdydJ98s82I+r
-         iZkgGk47aahlpWAJnHFz/8p8LhakfZdVogq/tEy45xBeeSU+izeb8vOV2mGlp8h3XNxx
-         AHn6TICjRbaxxqEZ/Z0Z8F0VG8B2p+SdrnUz/o6XGTBlpXXCDOmAxc6s9lJQVS4elo24
-         lkfaYyMTUBwb8LJKXVE1JDJ/fabSTgUgdJ3iHXDNSLO5sil6DjtxaBF+SfbUKk4lxfQS
-         5PEg==
-X-Forwarded-Encrypted: i=1; AJvYcCV2LW3wJ6b/YUX729jHgezLcHfzOvb3+mpIKnDAe29d1HiP+AGc9Tg4KxjfPVClY2domS0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZ5yINrE0WUaQUqlTxOr8VWOymb0NPMlMcuLtjTbvnvCrceEvv
-	dlsCfx8nargXR/wJSSIfZI7WCArmq81Irf7Az1kwi17WsCm2+T0hJMrECYCdqU5uxJKl5XDlwoG
-	30kmw6ZyN6ZS6RcCYPoF4h2HQimtUzWqrbzujtoW7
-X-Gm-Gg: ASbGncvGKCjj9UgKMMbgsdHJsyOnpaed9Chyhcm4EtE9OgFywf9slQQBU849KU8HWBr
-	TeaR5tffqmpi20DeZVbcsAJJJGmQiNXq9z7LZVTo2KRgDFfCx45dH/HDIwKvJZWJc7v6q0pCDq6
-	o94k6SS3fJkjwBa3W+sf1qnRox/locPE73B8leFvAMY9O2kRxL7WOsw73kgCPUFLEuywtR8nLx7
-	Rx9GGwXQl61Mw6u2ltp52Yy0jUnolfqS/8q/ySdpzgudz3c0tG+YO7puA==
-X-Google-Smtp-Source: AGHT+IE8KAeqGER8zXyWKpAah4whuUHXcS4vaVD+MjnwjHhbtVKouIyr/3rvlvLcl8Tgl8dxdzxfromlhTvKskQjJHQ=
-X-Received: by 2002:a17:90a:e7d2:b0:32d:f315:7b51 with SMTP id
- 98e67ed59e1d1-33093571d94mr2365970a91.12.1758249825940; Thu, 18 Sep 2025
- 19:43:45 -0700 (PDT)
+	s=arc-20240116; t=1758250162; c=relaxed/simple;
+	bh=CS3SrhHGAuGkBr7hmqNoYLasrhOBrVQu2ZjclyYK/Jw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B5HlQ2weDB+TPWxRd+mLPX8d6nILPN9swaX+hMAIxoFOgUt2ra4+AJp+AOj7PzZRKuy4ZmgltJ7xA0KOU/hIjkT9MesKwM7L5M0zIIhdhixKg89QbSYn6SPDjC0AuL8XJ/DdShHUSoAtmpHIvmLPqWZDVfQTL3AdmPbpzSNCWx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eYMR3My2; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 18 Sep 2025 19:49:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758250147;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QqZyQZcoeHlrOOiTQqItbAzvsXWRLXScDq7yxQ6zIhg=;
+	b=eYMR3My2q96I0w45HjiMc5eI+Tbb/qiY3f/qo5BwzEzCQO5RiSnBpuHfyj7mt61J+J3bY3
+	PWXDdbCGHKao6O98bht2HJa0iu4W8ploFpkw0O6vbWMpeGFcdtG1FziqynjrtUwpaaBeQy
+	mU2yaeddKDsJyFN2Isg5hUKU4R/IHi8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Peilin Ye <yepeilin@google.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
+Message-ID: <5qi2llyzf7gklncflo6gxoozljbm4h3tpnuv4u4ej4ztysvi6f@x44v7nz2wdzd>
+References: <20250905201606.66198-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250917191417.1056739-1-kuniyu@google.com> <20250917191417.1056739-7-kuniyu@google.com>
- <a706bb87-46e1-4524-8d35-8f22569a73e7@linux.dev> <CAAVpQUCoMkkGrPfqiL4C_3i5EG_THaYb0gT+qF7jyxreBJTSZw@mail.gmail.com>
- <eacd9a90-8c80-4e23-a193-f09d96fe24ee@linux.dev> <CAAVpQUBPxhBSPwW3jKVGNunmz7-MHwnRgL1RCjSA-WqvnJmGDg@mail.gmail.com>
-In-Reply-To: <CAAVpQUBPxhBSPwW3jKVGNunmz7-MHwnRgL1RCjSA-WqvnJmGDg@mail.gmail.com>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Thu, 18 Sep 2025 19:43:34 -0700
-X-Gm-Features: AS18NWBTsusIJpSJZk1FvmHCfdeBTRTop720OB2n1nE7hVTkRsKcrhb3WAlZw40
-Message-ID: <CAAVpQUBmhMzESPMOBzr=e+kORPZi5XCHR7_DgqtijsyKsmPviw@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next/net 6/6] selftest: bpf: Add test for SK_MEMCG_EXCLUSIVE.
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250905201606.66198-1-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Sep 18, 2025 at 7:28=E2=80=AFPM Kuniyuki Iwashima <kuniyu@google.co=
-m> wrote:
->
-> On Thu, Sep 18, 2025 at 6:14=E2=80=AFPM Martin KaFai Lau <martin.lau@linu=
-x.dev> wrote:
-> >
-> > On 9/17/25 6:17 PM, Kuniyuki Iwashima wrote:
-> > >>> +
-> > >>> +close:
-> > >>> +     for (i =3D 0; i < ARRAY_SIZE(sk); i++)
-> > >>> +             close(sk[i]);
-> > >>> +
-> > >>> +     if (test_case->type =3D=3D SOCK_DGRAM) {
-> > >>> +             /* UDP recv queue is destroyed after RCU grace period=
-.
-> > >>> +              * With one kern_sync_rcu(), memory_allocated[0] of t=
-he
-> > >>> +              * isoalted case often matches with memory_allocated[=
-1]
-> > >>> +              * of the preceding non-exclusive case.
-> > >>> +              */
-> > >> I don't think I understand the double kern_sync_rcu() below.
-> > > With one kern_sync_rcu(), when I added bpf_printk() for memory_alloca=
-ted,
-> > > I sometimes saw two consecutive non-zero values, meaning memory_alloc=
-ated[0]
-> > > still see the previous test case result (memory_allocated[1]).
-> > > ASSERT_LE() succeeds as expected, but somewhat unintentionally.
-> > >
-> > > bpf_trace_printk: memory_allocated: 0 <-- non exclusive case
-> > > bpf_trace_printk: memory_allocated: 4160
-> > > bpf_trace_printk: memory_allocated: 4160 <-- exclusive case's
-> > > memory_allocated[0]
-> > > bpf_trace_printk: memory_allocated: 0
-> > > bpf_trace_printk: memory_allocated: 0
-> > > bpf_trace_printk: memory_allocated: 0
-> > >
-> > > One kern_sync_rcu() is enough to kick call_rcu() + sk_destruct() but
-> > > does not guarantee that it completes, so if the queue length was too =
-long,
-> > > the memory_allocated does not go down fast enough.
-> > >
-> > > But now I don't see the flakiness with NR_SEND 32, and one
-> > > kern_sync_rcu() might be enough unless the env is too slow...?
-> >
-> > Ah, got it. I put you in the wrong path. It needs rcu_barrier() instead=
-.
-> >
-> > Is recv() enough? May be just recv(MSG_DONTWAIT) to consume it only for=
- UDP
-> > socket? that will slow down the udp test... only read 1 byte and the re=
-maining
-> > can be MSG_TRUNC?
->
-> recv() before close() seems to work with fewer sockets (with the same
-> bytes of send()s and without kern_sync_rcu()).
->
-> And the test time was mostly the same with "no recv() + 1 kern_sync_rcu()=
-"
-> case (2~2.5s on my qemu), so draining seems better.
+On Fri, Sep 05, 2025 at 01:16:06PM -0700, Shakeel Butt wrote:
+> Generally memcg charging is allowed from all the contexts including NMI
+> where even spinning on spinlock can cause locking issues. However one
+> call chain was missed during the addition of memcg charging from any
+> context support. That is try_charge_memcg() -> memcg_memory_event() ->
+> cgroup_file_notify().
+> 
+> The possible function call tree under cgroup_file_notify() can acquire
+> many different spin locks in spinning mode. Some of them are
+> cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
+> just skip cgroup_file_notify() from memcg charging if the context does
+> not allow spinning.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Oh no, with NR_PAGES 128, "no recv() + 1kern_syn_rcu()" didn't
-show the leftover at all, regardless of NR_SOCKETS=3D=3D2 or 64.
-But this might be only on my setup, and recv() before close()
-could be stable on any setup theoretically.
+Here I am just pasting the irq_work based prototype which is build
+tested only for now and sharing it early to show how it looks. Overall I
+think it is adding too much complexity which is not worth it. We have to
+add per-cpu irq_work and then for each memcg we have to add per-cpu
+lockless node to queue the deferred event update. Also more reasoning is
+needed to make sure the updates are not missed by the deferred work.
 
-fwiw, I put the latest code here.
-https://github.com/q2ven/linux/commits/514_tcp_decouple_memcg
+Anyways, this is the early prototype. Unless there are comments on how
+to make it better, I will ask Andrew to just pick the previous patch I
+sent.
 
->
-> #define NR_PAGES        128
-> #define NR_SOCKETS      2
-> #define BUF_TOTAL       (NR_PAGES * 4096 / (NR_SOCKETS / 2))
-> #define BUF_SINGLE      1024
-> #define NR_SEND         (BUF_TOTAL / BUF_SINGLE)
->
-> NR_SOCKET=3D=3D64
->       test_progs-1380    [008] ...11  2121.731176: bpf_trace_printk:
-> memory_allocated: 0
->       test_progs-1380    [008] ...11  2121.737700: bpf_trace_printk:
-> memory_allocated: 576
->       test_progs-1380    [008] ...11  2121.743436: bpf_trace_printk:
-> memory_allocated: 64
->       test_progs-1380    [008] ...11  2121.749984: bpf_trace_printk:
-> memory_allocated: 64
->       test_progs-1380    [008] ...11  2121.755763: bpf_trace_printk:
-> memory_allocated: 64
->       test_progs-1380    [008] ...11  2121.762171: bpf_trace_printk:
-> memory_allocated: 64
->
-> NR_SOCKET=3D=3D2
->       test_progs-1424    [009] ...11  2352.990520: bpf_trace_printk:
-> memory_allocated: 0
->       test_progs-1424    [009] ...11  2352.997395: bpf_trace_printk:
-> memory_allocated: 514
->       test_progs-1424    [009] ...11  2353.001910: bpf_trace_printk:
-> memory_allocated: 2
->       test_progs-1424    [009] ...11  2353.008947: bpf_trace_printk:
-> memory_allocated: 2
->       test_progs-1424    [009] ...11  2353.012988: bpf_trace_printk:
-> memory_allocated: 2
->       test_progs-1424    [009] ...11  2353.019988: bpf_trace_printk:
-> memory_allocated: 0
->
-> While NR_PAGES sets to 128, the actual allocated page was around 300 for
-> TCP and 500 for UDP.  I reduced NR_PAGES to 64, then TCP consumed 160
-> pages, and UDP consumed 250, but test time didn't change.
->
-> >
-> > btw, does the test need 64 sockets? is it because of the per socket snd=
-/rcvbuf
-> > limitation?
->
-> I chose 64 for UDP that does not tune rcvbuf automatically, but I saw an =
-error
-> when I increased the number of send() bytes and set SO_RCVBUF anyway,
-> so any number of sockets is fine now.
->
-> I'll use 2 sockets but will keep for-loops so that we can change NR_SOCKE=
-TS
-> easily when the test gets flaky.
->
->
-> >
-> > Another option is to trace SEC("fexit/__sk_destruct") to ensure all the=
- cleanup
-> > is done but seems overkill if recv() can do.
->
-> Agreed, draining before close() would be enough.
+
+From d58d772f306454f0dffa94bfb32195496c450892 Mon Sep 17 00:00:00 2001
+From: Shakeel Butt <shakeel.butt@linux.dev>
+Date: Thu, 18 Sep 2025 19:25:37 -0700
+Subject: [PATCH] memcg: add support for deferred max memcg event
+
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+ include/linux/memcontrol.h |  3 ++
+ mm/memcontrol.c            | 85 ++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 84 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 16fe0306e50e..3f803957e05d 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -69,6 +69,7 @@ struct mem_cgroup_id {
+ 	refcount_t ref;
+ };
+ 
++struct deferred_events_percpu;
+ struct memcg_vmstats_percpu;
+ struct memcg1_events_percpu;
+ struct memcg_vmstats;
+@@ -268,6 +269,8 @@ struct mem_cgroup {
+ 
+ 	struct memcg_vmstats_percpu __percpu *vmstats_percpu;
+ 
++	struct deferred_events_percpu __percpu *deferred_events;
++
+ #ifdef CONFIG_CGROUP_WRITEBACK
+ 	struct list_head cgwb_list;
+ 	struct wb_domain cgwb_domain;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e090f29eb03b..a34cb728c5c6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -132,6 +132,63 @@ bool mem_cgroup_kmem_disabled(void)
+ 	return cgroup_memory_nokmem;
+ }
+ 
++struct deferred_events_percpu {
++	atomic_t max_events;
++	struct mem_cgroup *memcg_owner;
++	struct llist_node lnode;
++};
++
++struct defer_memcg_events {
++	struct llist_head memcg_llist;
++	struct irq_work work;
++};
++
++static void process_deferred_events(struct irq_work *work)
++{
++	struct defer_memcg_events *events = container_of(work,
++						struct defer_memcg_events, work);
++	struct llist_node *lnode;
++
++	while (lnode = llist_del_first_init(&events->memcg_llist)) {
++		int i, num;
++		struct deferred_events_percpu *eventsc;
++
++		eventsc = container_of(lnode, struct deferred_events_percpu, lnode);
++
++		if (!atomic_read(&eventsc->max_events))
++			continue;
++		num = atomic_xchg(&eventsc->max_events, 0);
++		if (!num)
++			continue;
++		for (i = 0; i < num; i++)
++			memcg_memory_event(eventsc->memcg_owner, MEMCG_MAX);
++	}
++}
++
++static DEFINE_PER_CPU(struct defer_memcg_events, postpone_events) = {
++	.memcg_llist = LLIST_HEAD_INIT(memcg_llist),
++	.work = IRQ_WORK_INIT(process_deferred_events),
++};
++
++static void memcg_memory_max_event_queue(struct mem_cgroup *memcg)
++{
++	int cpu;
++	struct defer_memcg_events *devents;
++	struct deferred_events_percpu *dmemcg_events;
++
++	cpu = get_cpu();
++	devents = per_cpu_ptr(&postpone_events, cpu);
++	dmemcg_events = per_cpu_ptr(memcg->deferred_events, cpu);
++
++	atomic_inc(&dmemcg_events->max_events);
++	// barrier here to make sure that if following llist_add returns false,
++	// the corresponding llist_del_first_init will see our increment.
++	if (llist_add(&dmemcg_events->lnode, &devents->memcg_llist))
++		irq_work_queue(&devents->work);
++
++	put_cpu();
++}
++
+ static void memcg_uncharge(struct mem_cgroup *memcg, unsigned int nr_pages);
+ 
+ static void obj_cgroup_release(struct percpu_ref *ref)
+@@ -2307,12 +2364,13 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	bool drained = false;
+ 	bool raised_max_event = false;
+ 	unsigned long pflags;
++	bool allow_spinning = gfpflags_allow_spinning(gfp_mask);
+ 
+ retry:
+ 	if (consume_stock(memcg, nr_pages))
+ 		return 0;
+ 
+-	if (!gfpflags_allow_spinning(gfp_mask))
++	if (!allow_spinning)
+ 		/* Avoid the refill and flush of the older stock */
+ 		batch = nr_pages;
+ 
+@@ -2348,7 +2406,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (!gfpflags_allow_blocking(gfp_mask))
+ 		goto nomem;
+ 
+-	memcg_memory_event(mem_over_limit, MEMCG_MAX);
++	if (allow_spinning)
++		memcg_memory_event(mem_over_limit, MEMCG_MAX);
++	else
++		memcg_memory_max_event_queue(mem_over_limit);
+ 	raised_max_event = true;
+ 
+ 	psi_memstall_enter(&pflags);
+@@ -2414,8 +2475,12 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 * If the allocation has to be enforced, don't forget to raise
+ 	 * a MEMCG_MAX event.
+ 	 */
+-	if (!raised_max_event)
+-		memcg_memory_event(mem_over_limit, MEMCG_MAX);
++	if (!raised_max_event) {
++		if (allow_spinning)
++			memcg_memory_event(mem_over_limit, MEMCG_MAX);
++		else
++			memcg_memory_max_event_queue(mem_over_limit);
++	}
+ 
+ 	/*
+ 	 * The allocation either can't fail or will lead to more memory
+@@ -3689,6 +3754,7 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
+ 		free_mem_cgroup_per_node_info(memcg->nodeinfo[node]);
+ 	memcg1_free_events(memcg);
+ 	kfree(memcg->vmstats);
++	free_percpu(memcg->deferred_events);
+ 	free_percpu(memcg->vmstats_percpu);
+ 	kfree(memcg);
+ }
+@@ -3704,6 +3770,7 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+ {
+ 	struct memcg_vmstats_percpu *statc;
+ 	struct memcg_vmstats_percpu __percpu *pstatc_pcpu;
++	struct deferred_events_percpu *devents;
+ 	struct mem_cgroup *memcg;
+ 	int node, cpu;
+ 	int __maybe_unused i;
+@@ -3729,6 +3796,11 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+ 	if (!memcg->vmstats_percpu)
+ 		goto fail;
+ 
++	memcg->deferred_events = alloc_percpu_gfp(struct deferred_events_percpu,
++						  GFP_KERNEL_ACCOUNT);
++	if (!memcg->deferred_events)
++		goto fail;
++
+ 	if (!memcg1_alloc_events(memcg))
+ 		goto fail;
+ 
+@@ -3738,6 +3810,11 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+ 		statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+ 		statc->parent_pcpu = parent ? pstatc_pcpu : NULL;
+ 		statc->vmstats = memcg->vmstats;
++
++		devents = per_cpu_ptr(memcg->deferred_events, cpu);
++		atomic_set(&devents->max_events, 0);
++		devents->memcg_owner = memcg;
++		init_llist_node(&devents->lnode);
+ 	}
+ 
+ 	for_each_node(node)
+-- 
+2.47.3
+
 
