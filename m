@@ -1,251 +1,225 @@
-Return-Path: <bpf+bounces-69007-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96EE9B8B92A
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 00:50:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2566CB8B9A9
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 01:10:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 57F574E333B
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 22:50:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9336F586B5F
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 23:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C8D2BEC2A;
-	Fri, 19 Sep 2025 22:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB602D3740;
+	Fri, 19 Sep 2025 23:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B7ORJ2E2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ekGm6keo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCD620DD72
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 22:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E821FF5E3
+	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 23:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758322244; cv=none; b=Eh0NJYgz9rBlPc4o+STZx5Frjsg3bzR7DW3ywSZgNn4U+S5hvZPM1wabZv3qs0dED0cm8d3Un5Q2eOpKXWqhUiVzUNlUYVkozyzR1wcaALWvwe39G6tkaiYATU1HrCGmDoSnvTQW4xzZIVkqYOwvu4/T82X3n41rxqdPpuBdvuI=
+	t=1758323395; cv=none; b=Bz9zOZ0w0ECn+HQ/pMzbTguOB7UXI665JivU6vj3uEvcmir/ZRqHJkmUdvx16nliq32BdQaJM7ACrv9mFqqwecz4C2K1lR/NqpEImlJdrGXGbViJ1Ja9ye2fH2UVRq/gIOUcl2Hv22oVusTqMdNC/mq74MEsKsDE1CqIrgna2WI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758322244; c=relaxed/simple;
-	bh=srk3tQGCt+JcCjtRzkedwXeQ0nOjYEJiSBZjD2j21lY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MmA0Q5XY6SeJJrXLViab/xtOyuTjRXYUQuHKG0ulrGAH5qKXpKLXG1hUWPlYGV4FpalZp/oLOfuUJyGUWxwjF8c2KuYu1nhZitm28WbHDLJrmOYFDIeLSJS0itHH5tEkFJ7iqIse/UxsA7iFJnvBLAeq1eLrynSeocvVzvS2URM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B7ORJ2E2; arc=none smtp.client-ip=209.85.216.53
+	s=arc-20240116; t=1758323395; c=relaxed/simple;
+	bh=HY9tKDOUJ7QjRHaaoRji1oijbaIozebjreGllM14yTU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ouxnsiklvdlobnBcDkZNv1+vjKU6ruMMghtjeF+kBQov1xC4qGwIH1bne7Xn8lvLJBFL06m6iaq7qVuWYzSK4MpYlAIwOPFV0PRreXQTxWl3E9pHo2MwZJqxB3S/wbJi941Bf5z2laNVLbVREJd4bMsww/sMr0MpDyGS2/Jlwfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ekGm6keo; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-32df5cae0b1so2900340a91.2
-        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 15:50:42 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b54dd647edcso2472574a12.1
+        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 16:09:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758322242; x=1758927042; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ncxVAcplLY/qj8J+x8rmUBGn4YTMqx5VPLaWAJCfbS4=;
-        b=B7ORJ2E2Oy+/0j6/ZhBYAEm4m4VIYwvRvCIQ30rT45HEaIro4bqdYlIuC5sYSwqs3Q
-         HTjKNEuaeAEf9MSTqiuKGwxb6m6tp3ZaTVQ6dSJugLzG90Fq88uUF2cBIUkKHfqviET4
-         TyV8jaoLXOihe8tH6jPONEDuc8fiOQczqvV1AzVEiEsdR9YIyVN+bdeXx0ejqz2uxT61
-         STOw432nZG1+Pf7nrbGxsyXj6YdQU9yvDRPQbWb8FbbaJpVE9Zbbd9dkJ3WBr+ijSI6G
-         klK8NpZmQgy2OXcFWpI+Am8rZyb6Ve9GxgiTVW+C7/mvR2ijRW6dVPxOS4OcVonAoF81
-         woKw==
+        d=gmail.com; s=20230601; t=1758323393; x=1758928193; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/L7k1EaQS0ZD0+t3qmhtzo/Q2KAQtQIeCgBHKEa6ORk=;
+        b=ekGm6keo99H3fOSY1H8Ls+gyC2Om+SMR8daEx3Hyxk+BB1oWYlglHDTnsLR0mJJHKN
+         IdG4HMVdZg3RMzWe+/jgRf4NiJKkZ2CE5rKDvhxow20wPPbwVOi1+35toWFnn8JmoE6h
+         Gb8wpPcFd1AW2FPr7rfS4Wcq1SrLbiJtKTbPzO7qC/Ue8h3QsMR1MLRuCW+4ZMThWOQ7
+         X8NqP4WT0qw2DCPhw6xA2ahlg1q3IFBaYv/zwDd3vT9wehZ4Ll3vDWeAgktGjm1Ii/ZK
+         a69dN7WNWYfFNLOZ5lniBq01CvNAQ62lohav8+bjNxG7CcPo3EZc2HN7KzmCOZI5W5sU
+         wONA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758322242; x=1758927042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ncxVAcplLY/qj8J+x8rmUBGn4YTMqx5VPLaWAJCfbS4=;
-        b=Fsc0P10MuBq93Fhc0McYKn1BeG9OxtCrg4o3jvwSKzYNPQx4SdDZa24xMxlKZ+1Ugw
-         XxVn2gG74eD8aOIT86rvRYCwlqRQOB/G2d1GVrQ1huishqUClsP5pRBZRRzR+fXJWB9U
-         ogLG7Up/yhbN+RIUUwxX+AA5GQRar9LmimDNbklCkzwP7438L1L83fLkX0G33OrMXSA8
-         Xx+4Or7jUcRqzXiRjfxj9xz9QQM2K5ZcVOj+Tz3Dg4RYMpQA60slqhPv3u2X0UAToXpK
-         tGYOEX4oNrQKLHb0mdEQaIUZ3phc9mtSnaZrS68s2a1lqJ3omoZJFo3boSOEMpufXSfu
-         Uc9g==
-X-Forwarded-Encrypted: i=1; AJvYcCWFIsS+9O2W8/OoSDqAU3aYjNbOuQk1nonrPuLp7LkoMRbJKQ7kfPUR+bdusq2fQl3P/EA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2LK4SBNpAIr2f5uD8BMcIY0yP9MyNDVLTLOn5xopANNX30rTe
-	9pS+L5se4aPVlxwobrpx1eycE0xpDmWQ+LuJfHxgy2okc6j7fcXMxWpBmP/nCKWiI9ntAvSA/rr
-	wUPpDJYmf5rWSwQs3wZGe340fuUOOE7Q=
-X-Gm-Gg: ASbGncv6JaxlJE55vFFb/qyp3sEDurGl+hcalMoI54HxNmuytmO/EcbDpXBhNFWm8vr
-	457qTNN+HuQnRg4P2sDZL7YGlneX1xJoV66OKuc3VPeeDiqGjdgMTxAcbs3imcwSXdKKleUmJvP
-	wbskoxHRHxuTEqWB1W/wk949AwAJHfdfyKYBuechRcwBi9iFlduVPX1fOnmMCtH+wsjnB6h14c1
-	58Nh7ztVcfCrxLjIji/H50=
-X-Google-Smtp-Source: AGHT+IF0peO2YY7Fw7O86xxZEWLeF6XAmeRdd1HdOlgIP8gzwZrUeI0z2siyG4o8DrOw0Ek2J9Gr0WIbw/FEo7HPk90=
-X-Received: by 2002:a17:90b:164d:b0:32e:e150:8937 with SMTP id
- 98e67ed59e1d1-33097fd4137mr6903544a91.6.1758322241976; Fri, 19 Sep 2025
- 15:50:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758323393; x=1758928193;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/L7k1EaQS0ZD0+t3qmhtzo/Q2KAQtQIeCgBHKEa6ORk=;
+        b=MVXZJMWBxpERcRPVM+eKOvRz1/r9dq3geB+st1mdkWMxLCpzxYNK42ib+Z6InGwiF7
+         +paggVmGh53wGD5nfDCt9+RH6YCEaj+T8J2rYgzDzUo1IOuqDO4h39pT1nFrGPqBLElT
+         lZCGwAFa7P8fuibkElFzYBmZ6yZ8prh+jhL64491mnG2T5a51/7VNlfULtpqqIgevnbX
+         4rk3OOWqb+wj+WfGa2UCvuYoG4mAkoRp8ORNgyI4GoxN9wq5zOHjd6wDvC9TZo+63mMV
+         gl/WsjPd0qtODfSYSZ1pmzqTeUO+PYZgV4KjnQb21udJl+6l+LIC4Gh/F196rZAcFkOv
+         at/Q==
+X-Gm-Message-State: AOJu0YwGdhPZe4io9oCUtqviXHmJyJOu2A2f9Ycmo7ZuXUwfSTrPQbS3
+	THP1VJpXwKIXuslpvNXb+CsXC2/FcysPlpuf6jl7maPmHdxiERxYMuwgsSWZCA==
+X-Gm-Gg: ASbGncvT3dkL3zO5aECUtkztIvnXcLoMxGSL6Mdmb5a/YpyFvbq96kZjn/pRebxSbG1
+	4tFzJYTjvPqwUZioF8dlGprCvVrGaRtX98SX2PRlI2A/5dvMcfp0pUrfxcrRM2TZkKnG5NVNpW6
+	BQZRHFRQ3j6Weg1sqE3gZ2ip5D95T2SjshidaZV123P+7PDZctB5b0bGSI9wtJfvdmcDr2KvFs1
+	nnX2Rk6ZfVKoHfFuGb4120NWZV3ayRtLuP2s9jNVzH1v1ZM3BQ1ji4kxnx6aWG0ZFwsbKt3n5tP
+	5CDpBllhc5BaeEMJ06CAsRbPUZZjR96UaCsIGnNJE2EC8r+nMsQjwDoJUZhIFn4i7pLJzuxTbxP
+	SqXi+EdF2a7YKn7oYGumGKcM=
+X-Google-Smtp-Source: AGHT+IFLpeOrj/nM+g1tMb8cPBc/YjoloBZYqdtW8eereIYIr/KyYHj23arg+PRGEX534VD6XTHt5A==
+X-Received: by 2002:a17:902:db10:b0:266:272b:7277 with SMTP id d9443c01a7336-269ba58f44bmr78810725ad.59.1758323393062;
+        Fri, 19 Sep 2025 16:09:53 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:1::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2698016bf8bsm66067135ad.44.2025.09.19.16.09.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Sep 2025 16:09:52 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	paul.chaignon@gmail.com,
+	kuba@kernel.org,
+	stfomichev@gmail.com,
+	martin.lau@kernel.org,
+	mohsin.bashr@gmail.com,
+	noren@nvidia.com,
+	dtatulea@nvidia.com,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	maciej.fijalkowski@intel.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v6 0/7] Add kfunc bpf_xdp_pull_data
+Date: Fri, 19 Sep 2025 16:09:45 -0700
+Message-ID: <20250919230952.3628709-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250912233409.74900-1-contact@arnaud-lcm.com>
-In-Reply-To: <20250912233409.74900-1-contact@arnaud-lcm.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 19 Sep 2025 15:50:27 -0700
-X-Gm-Features: AS18NWB6NPyeHNKO4NrOq2GJyJN3R_ig8aHwgj1n_phhmlyfG-EirSUmkSi9Dy4
-Message-ID: <CAEf4BzZ-ovqXqLJ5oJ95n9prFnXsLOkO1UvdycUcON77=Akv-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 1/3] bpf: refactor max_depth computation in bpf_get_stack()
-To: Arnaud Lecomte <contact@arnaud-lcm.com>
-Cc: alexei.starovoitov@gmail.com, yonghong.song@linux.dev, song@kernel.org, 
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, sdf@fomichev.me, 
-	syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 12, 2025 at 4:34=E2=80=AFPM Arnaud Lecomte <contact@arnaud-lcm.=
-com> wrote:
->
-> A new helper function stack_map_calculate_max_depth() that
-> computes the max depth for a stackmap.
->
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> Acked-by: Song Liu <song@kernel.org>
-> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
-> ---
-> Changes in v2:
->  - Removed the checking 'map_size % map_elem_size' from
->    stack_map_calculate_max_depth
->  - Changed stack_map_calculate_max_depth params name to be more generic
->
-> Changes in v3:
->  - Changed map size param to size in max depth helper
->
-> Changes in v4:
->  - Fixed indentation in max depth helper for args
->
-> Changes in v5:
->  - Bound back trace_nr to num_elem in __bpf_get_stack
->  - Make a copy of sysctl_perf_event_max_stack
->    in stack_map_calculate_max_depth
->
-> Changes in v6:
->  - Restrained max_depth computation only when required
->  - Additional cleanup from Song in __bpf_get_stack
->
-> Changes in v7:
->  - Removed additional cleanup from v6
->
-> Changes in v9:
->  - Fixed incorrect removal of num_elem in get stack
->
-> Link to v8: https://lore.kernel.org/all/20250905134625.26531-1-contact@ar=
-naud-lcm.com/
-> ---
-> ---
->  kernel/bpf/stackmap.c | 39 +++++++++++++++++++++++++++------------
->  1 file changed, 27 insertions(+), 12 deletions(-)
->
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 3615c06b7dfa..a794e04f5ae9 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -42,6 +42,28 @@ static inline int stack_map_data_size(struct bpf_map *=
-map)
->                 sizeof(struct bpf_stack_build_id) : sizeof(u64);
->  }
->
-> +/**
-> + * stack_map_calculate_max_depth - Calculate maximum allowed stack trace=
- depth
-> + * @size:  Size of the buffer/map value in bytes
-> + * @elem_size:  Size of each stack trace element
-> + * @flags:  BPF stack trace flags (BPF_F_USER_STACK, BPF_F_USER_BUILD_ID=
-, ...)
-> + *
-> + * Return: Maximum number of stack trace entries that can be safely stor=
-ed
-> + */
-> +static u32 stack_map_calculate_max_depth(u32 size, u32 elem_size, u64 fl=
-ags)
-> +{
-> +       u32 skip =3D flags & BPF_F_SKIP_FIELD_MASK;
-> +       u32 max_depth;
-> +       u32 curr_sysctl_max_stack =3D READ_ONCE(sysctl_perf_event_max_sta=
-ck);
-> +
-> +       max_depth =3D size / elem_size;
-> +       max_depth +=3D skip;
-> +       if (max_depth > curr_sysctl_max_stack)
-> +               return curr_sysctl_max_stack;
-> +
-> +       return max_depth;
-> +}
-> +
->  static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
->  {
->         u64 elem_size =3D sizeof(struct stack_map_bucket) +
-> @@ -300,20 +322,17 @@ static long __bpf_get_stackid(struct bpf_map *map,
->  BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, ma=
-p,
->            u64, flags)
->  {
-> -       u32 max_depth =3D map->value_size / stack_map_data_size(map);
-> -       u32 skip =3D flags & BPF_F_SKIP_FIELD_MASK;
-> +       u32 elem_size =3D stack_map_data_size(map);
->         bool user =3D flags & BPF_F_USER_STACK;
->         struct perf_callchain_entry *trace;
->         bool kernel =3D !user;
-> +       u32 max_depth;
->
->         if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
->                                BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID=
-)))
->                 return -EINVAL;
->
-> -       max_depth +=3D skip;
-> -       if (max_depth > sysctl_perf_event_max_stack)
-> -               max_depth =3D sysctl_perf_event_max_stack;
-> -
-> +       max_depth =3D stack_map_calculate_max_depth(map->value_size, elem=
-_size, flags);
->         trace =3D get_perf_callchain(regs, 0, kernel, user, max_depth,
->                                    false, false);
->
-> @@ -406,7 +425,7 @@ static long __bpf_get_stack(struct pt_regs *regs, str=
-uct task_struct *task,
->                             struct perf_callchain_entry *trace_in,
->                             void *buf, u32 size, u64 flags, bool may_faul=
-t)
->  {
-> -       u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
-> +       u32 trace_nr, copy_len, elem_size, max_depth;
->         bool user_build_id =3D flags & BPF_F_USER_BUILD_ID;
->         bool crosstask =3D task && task !=3D current;
->         u32 skip =3D flags & BPF_F_SKIP_FIELD_MASK;
-> @@ -438,10 +457,7 @@ static long __bpf_get_stack(struct pt_regs *regs, st=
-ruct task_struct *task,
->                 goto clear;
->         }
->
-> -       num_elem =3D size / elem_size;
-> -       max_depth =3D num_elem + skip;
-> -       if (sysctl_perf_event_max_stack < max_depth)
-> -               max_depth =3D sysctl_perf_event_max_stack;
-> +       max_depth =3D stack_map_calculate_max_depth(size, elem_size, flag=
-s);
->
->         if (may_fault)
->                 rcu_read_lock(); /* need RCU for perf's callchain below *=
-/
-> @@ -461,7 +477,6 @@ static long __bpf_get_stack(struct pt_regs *regs, str=
-uct task_struct *task,
->         }
->
->         trace_nr =3D trace->nr - skip;
-> -       trace_nr =3D (trace_nr <=3D num_elem) ? trace_nr : num_elem;
+v6 -> v5
+  patch 6
+  - v5 selftest failed on S390 when changing how tailroom occupied by
+    skb_shared_info is calculated. Revert selftest to v4, where we get
+    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) by running an XDP
+    program
 
-Is this also part of refactoring? If yes, it deserves a mention on why
-it's ok to just drop this.
+v5 -> v4
+  patch 1
+  - Add a new patch clearing pfmemalloc bit in xdp->frags when all frags
+    are freed in bpf_xdp_adjust_tail() (Maciej)
 
-pw-bot: cr
+  patch 2
+  - Refactor bpf_xdp_shrink_data() (Maciej)
 
+  patch 3
+  - Clear pfmemalloc when all frags are freed in bpf_xdp_pull_data()
+    (Maciej)
 
+  patch 6
+  - Use BTF to get sizes of skb_shared_info and xdp_frame (Maciej)
 
->         copy_len =3D trace_nr * elem_size;
->
->         ips =3D trace->ip + skip;
-> --
-> 2.43.0
->
+  Link: https://lore.kernel.org/bpf/20250919182100.1925352-1-ameryhung@gmail.com/
+
+v3 -> v4
+  patch 2
+  - Improve comments (Jakub)
+  - Drop new_end and len_free to simplify code (Jakub)
+
+  patch 4
+  - Instead of adding is_xdp to bpf_test_init, move lower-bound check
+    of user_size to callers (Martin)
+  - Simplify linear data size calculation (Martin)
+
+  patch 5
+  - Add static function identifier (Martin)
+  - Free calloc-ed buf (Martin)
+
+  Link: https://lore.kernel.org/bpf/20250917225513.3388199-1-ameryhung@gmail.com/
+
+v2 -> v3
+  Separate mlx5 fixes from the patchset
+
+  patch 2
+  - Use headroom for pulling data by shifting metadata and data down
+    (Jakub)
+  - Drop the flags argument (Martin)
+
+  patch 4 
+  - Support empty linear xdp data for BPF_PROG_TEST_RUN
+
+  Link: https://lore.kernel.org/bpf/20250915224801.2961360-1-ameryhung@gmail.com/
+
+v1 -> v2
+  Rebase onto bpf-next
+
+  Try to build on top of the mlx5 patchset that avoids copying payload
+  to linear part by Christoph but got a kernel panic. Will rebase on
+  that patchset if it got merged first, or separate the mlx5 fix
+  from this set.
+
+  patch 1
+  - Remove the unnecessary head frag search (Dragos)
+  - Rewind the end frag pointer to simplify the change (Dragos)
+  - Rewind the end frag pointer and recalculate truesize only when the
+    number of frags changed (Dragos)
+
+  patch 3
+  - Fix len == zero behavior. To mirror bpf_skb_pull_data() correctly,
+    the kfunc should do nothing (Stanislav)
+  - Fix a pointer wrap around bug (Jakub)
+  - Use memmove() when moving sinfo->frags (Jakub)
+
+  Link: https://lore.kernel.org/bpf/20250905173352.3759457-1-ameryhung@gmail.com/
+  
+---
+
+Hi all,
+
+This patchset introduces a new kfunc bpf_xdp_pull_data() to allow
+pulling nonlinear xdp data. This may be useful when a driver places
+headers in fragments. When an xdp program would like to keep parsing
+packet headers using direct packet access, it can call
+bpf_xdp_pull_data() to make the header available in the linear data
+area. The kfunc can also be used to decapsulate the header in the
+nonlinear data, as currently there is no easy way to do this.
+
+Tested with the added bpf selftest using bpf test_run and also on
+mlx5 with the tools/testing/selftests/drivers/net/{xdp.py, ping.py}.
+mlx5 with striding RQ enabled always passse xdp_buff with empty linear
+data to xdp programs. xdp.test_xdp_native_pass_mb would fail to parse
+the header before this patchset.
+
+Thanks!
+Amery
+
+Amery Hung (7):
+  bpf: Clear pfmemalloc flag when freeing all fragments
+  bpf: Allow bpf_xdp_shrink_data to shrink a frag from head and tail
+  bpf: Support pulling non-linear xdp data
+  bpf: Clear packet pointers after changing packet data in kfuncs
+  bpf: Support specifying linear xdp packet data size for
+    BPF_PROG_TEST_RUN
+  selftests/bpf: Test bpf_xdp_pull_data
+  selftests: drv-net: Pull data before parsing headers
+
+ include/net/xdp.h                             |   5 +
+ include/net/xdp_sock_drv.h                    |  21 +-
+ kernel/bpf/verifier.c                         |  13 ++
+ net/bpf/test_run.c                            |   9 +-
+ net/core/filter.c                             | 135 +++++++++++--
+ .../bpf/prog_tests/xdp_context_test_run.c     |   4 +-
+ .../selftests/bpf/prog_tests/xdp_pull_data.c  | 179 ++++++++++++++++++
+ .../selftests/bpf/progs/test_xdp_pull_data.c  |  48 +++++
+ .../selftests/net/lib/xdp_native.bpf.c        |  89 +++++++--
+ 9 files changed, 463 insertions(+), 40 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_pull_data.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_pull_data.c
+
+-- 
+2.47.3
+
 
