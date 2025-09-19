@@ -1,117 +1,92 @@
-Return-Path: <bpf+bounces-68936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68937-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAEA5B8A1A0
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 16:54:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4ACDB8A3A1
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 17:16:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB7557C190D
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 14:53:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DC055A0D23
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 15:13:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE183164CB;
-	Fri, 19 Sep 2025 14:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WZp7WRWy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC3A3164C1;
+	Fri, 19 Sep 2025 15:13:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6983164C1
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 14:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B6E253B64
+	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 15:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758293507; cv=none; b=D0nczamfXdvuXO/LtwDU6kmD/JMeZUPNzGvSVYXwldtnMdNrBcRgjxzNLqr/W5fXhobzfepXdl3GOA8OJgwwR3AwD4wqdtSPITae/EMPPYh2f6b0RR9ES2I2FBgHOkWxDIk2FZqfFBNmHm8CR+sZLmuMNhJ9e4jeD5/DDw3cPGA=
+	t=1758294794; cv=none; b=GU1Z4TtajxG9FUqtTyj9eDllWO8zZ+1GBujCPIP6Utpp6ww4d1CaQfNWDVepqsXwMcXAKVVOXw30o792GnDNzhvbal4xBMt0BW2RPMZI3n2NxZBv+DKFAhdGE7dZzY7fSan9rdBSKzSRJjjKeColGJKd/EeKrefv9zzMbJqlWuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758293507; c=relaxed/simple;
-	bh=XLtyCqwpNowP4VzbbN1ugCLImYAQfN5fXYP6pghiWy4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XWjCEX7HzP6L7i5Oc3wcargW9+JE1UISkHASx02rSvFl3nivDATDlovgBg5xuqhsWdB8+IBw50LT7ZlDUL8/2XAdee9Jy/wUEv/4HBU71mSaraYsHpoQEuz0uMn2xwAA+KN3m9D7eJxPQ7smZ72zjmJUnvR4MGVTV32b1pgG3eQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WZp7WRWy; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-45f2c9799a3so17143215e9.0
-        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 07:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758293504; x=1758898304; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OXkaYxofxS/TVReDSmRXXtZcB+ohz8S1SkvwFahN0qw=;
-        b=WZp7WRWyxiopypvI7tkanV7R9Pp9kmBBF2aoFgyhHMv5K6+KlkSQ6CbtKibHYp0UrU
-         FIW41e8NlJBpoiyIaCfhHteyZStCu3XX5IqfKcRdZ0WPRVssE/hDbu5sJCuzZtgnDDQI
-         BSH29g/fIfIBcn0lS/U2W5f1wqQlR3nknDmnTcv64nUCwqRRmtFNXA0nvDndEL+gKtoR
-         Vb8zHI6cXB1Z6YruRXBsAjASv9HBREVO4dE5GWuf1vngVX2ktXzBP+qmL7/8bHNR4abR
-         KOOl7/NOWKyqNkSlWyfiBHeZc+oBamfMVplQPt8lLwvy/s+mWAJYqcZKtSJjTt3W1iTC
-         xTRw==
+	s=arc-20240116; t=1758294794; c=relaxed/simple;
+	bh=Tt+hRZooDzLpwPZoAJVDMSCHMuIqNfWoy/TUKxU2GfQ=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Kke2QLslH/ng0ULZQIE+g2MahLMfHKGPY5wODefdexrrPy0FTFbR7aPEw76/Novvws27m8ezObg8S1RrmgI9oJ1KiMAZ8cQaXR/BmrD6xZ0xL6g8cDwxxfGW8YFUWGGeLKl/02sc1FUcDbj93PqkIuirC+YY41m6t7YKvEdHQI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-4241c41110eso47690865ab.1
+        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 08:13:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758293504; x=1758898304;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OXkaYxofxS/TVReDSmRXXtZcB+ohz8S1SkvwFahN0qw=;
-        b=LT8mbAFSn/P3SXKau5udXlhkQmWUJPV/Jav/xCnRjL2LJGWHvYlCht4blyISGrhMlQ
-         f+n8fk8YvmGANctqgmBtbHsel3F46shqcf3ZDOOZhYDo99dDdKbqI5Ulzlk46ueYAD9t
-         wP8dZ6COyWKECMC9T4c0xc4ZpTOv6s74rxuvWYMXEZVFrJ+raJrrg3YymVoghPKU0t7d
-         CrPyUtupqnqKq2C2DAiq84ceSiFOkWqviZb+leoFdQHttrQlFYlRap235UpvEno8IXUE
-         ZYx/dGmj82CJ4jlfyyUBboKy0Rlt7F5IBggQIDR1JQF8hGFA+cEc1XINfPDFTtMapnxz
-         QjIQ==
-X-Gm-Message-State: AOJu0YwbhlnV8S4rmdlJejDP56Fg/zpS66el92ejYX/mRxz8EoZvGhP7
-	aUaVeJ9kIiJ9wLzq6m0wsm+542Bj279hhi9VfPwBOiPx91GPVHkdRRdU
-X-Gm-Gg: ASbGncuMw2oa1aNBcgSrSlQ0Q0NsB3ZmmW66FV3NLxvoZEZUPwzW13/JFousiOQWCG1
-	qFMpgJsMD5DCPLdPAFZLsGtC7SM/SFYTEKZh9CJMwhH9+halPMZt/8285xXD2PsZCuyvvYC5s7l
-	Uj1VM+R1QzCBVh28jXWdZ+jdYxzoOrmTGADAP6mTwGf2HDGSyWN+irUS05o2e9bKjS+xSs016h/
-	ENYWRqHJ15AQsUyxzIMa6hGRATIKFlcLWPocWdCDv73AMdtTS9uuo/CvQncQIa42WEVu2QGcCJo
-	/bRMNqT7U5RiRCTgDDUcTpp2vm04hpADBWkQiTbro1gSMdEp/91M1q2aZV5YQ3+5LboJ8ENsF8o
-	2tO66uN/OHWQx+kC0+bu9sV1FuqWhzwew
-X-Google-Smtp-Source: AGHT+IH/Sen20rysC28idmLu72T6Iy1FjgjpXkbsxOfvdMYNppfyJUEd90sUOjawoV34mEQsGaLSYg==
-X-Received: by 2002:a05:600c:8b4b:b0:456:1a69:94fa with SMTP id 5b1f17b1804b1-467e7f7d89dmr29855795e9.13.1758293503818;
-        Fri, 19 Sep 2025 07:51:43 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45f32181a47sm87754675e9.1.2025.09.19.07.51.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Sep 2025 07:51:43 -0700 (PDT)
-Date: Fri, 19 Sep 2025 14:57:54 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v3 bpf-next 00/13] BPF indirect jumps
-Message-ID: <aM1vcrxBSbyQrdq1@mail.gmail.com>
-References: <20250918093850.455051-1-a.s.protopopov@gmail.com>
- <938446871de1d0b91ca7eb56dd75442b1d58b4b4.camel@gmail.com>
+        d=1e100.net; s=20230601; t=1758294792; x=1758899592;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pdVbcA7nmK1fnCSLRQe6g3pMqB2Icbe7/rxf0Y74n4I=;
+        b=Q4dIz8duMJpLGEzVXe+lt4XKVd2bVeZkLGAkoiupkUNo5eZWPG4K0Zx6TNa64hiIdw
+         mP1EMAPFaoHpqGdFsGglYM18WuPuMKulO5Pmg40XoXMljrsH9ylHpeKO9Kl8jYJUNrFQ
+         FI4osuLzOnWd83r2a2RbMG6FCxql9oJA/L1BlZUy54NHuddflHikhZvlVRZRmSOVuqyu
+         HBtOw5likv4zc9VvQMNPxNrtLM2LnUR+A9E9TcwOlYBuUaETlt8ESb8VmlT35fyb6z9y
+         JiTtVbwuf5E0cegPVUzZqE26qNm7A8NH2ZYYzpk93scYXFIIVkR2hy8/mqBwsbV7ev0F
+         LBBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXi85XyJvy+TKXy8uXLUr7WQ/EZD3BmBL7VO92unH75H5ry/DqYb8OH5IbH7w0GWQryVPw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+xLrADDGIRt+xaaAW1eYYBaEVeXDrFDhshWriq1HmHZd/ydBu
+	cX4n+FIV66n4fT4EdV60mwmarTfdR9v0zDqqMC1dL4e7J11JMRVhtVMym8MArDUdebx96lnz8aT
+	02WxclVbtsWTWEdTm7NEg+yAh6gTk3Ck3DvMMIqozamZs8VrXGPwEHdheOW8=
+X-Google-Smtp-Source: AGHT+IFIiUlKXGs3lu1PngiLaqqMui66INNfwYaJjXTuOGZYLDGxFw6Uuh2OsxLvLi27v0agrmaVGMRQIFpMuFzN864d8ZGPIRLk
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <938446871de1d0b91ca7eb56dd75442b1d58b4b4.camel@gmail.com>
+X-Received: by 2002:a05:6e02:1d8d:b0:423:fb73:315f with SMTP id
+ e9e14a558f8ab-424818f7ff9mr62320655ab.6.1758294784388; Fri, 19 Sep 2025
+ 08:13:04 -0700 (PDT)
+Date: Fri, 19 Sep 2025 08:13:04 -0700
+In-Reply-To: <aM1moP0fr7GrlbWZ@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68cd7300.050a0220.13cd81.0000.GAE@google.com>
+Subject: Re: [syzbot] [bpf?] WARNING in do_check (2)
+From: syzbot <syzbot+e1fa4a4a9361f2f3bbd6@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, paul.chaignon@gmail.com, 
+	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-25/09/18 11:46PM, Eduard Zingerman wrote:
-> On Thu, 2025-09-18 at 09:38 +0000, Anton Protopopov wrote:
-> > This patchset implements a new type of map, instruction set, and uses
-> > it to build support for indirect branches in BPF (on x86). (The same
-> > map will be later used to provide support for indirect calls and static
-> > keys.) See [1], [2] for more context.
-> 
-> With this patch-set on top of the bpf-next at commit [1],
-> I get a KASAN bug report [2] when running `./test_progs -t tailcalls`.
-> Does not happen w/o this series applied.
-> Kernel is compiled with gcc 15.2.1, selftests are compiled with clang
-> 20.1.8 (w/o gotox support).
-> 
-> [1] 3547a61ee2fe ("Merge branch 'update-kf_rcu_protected'")
-> [2] https://gist.github.com/eddyz87/8f82545db32223d8a80d2ca69a47bbc2
-> 
-> [...]
+Hello,
 
-Can't reproduce on my setup yet (but with the other set of compilers,
-will try to reproduce with ~ your versions).
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+
+Reported-by: syzbot+e1fa4a4a9361f2f3bbd6@syzkaller.appspotmail.com
+Tested-by: syzbot+e1fa4a4a9361f2f3bbd6@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         a3c73d62 bpf: dont report verifier bug for missing bpf..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=13928d04580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4d8792ecb6308d0f
+dashboard link: https://syzkaller.appspot.com/bug?extid=e1fa4a4a9361f2f3bbd6
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
 
