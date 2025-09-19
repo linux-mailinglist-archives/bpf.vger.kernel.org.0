@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-68980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68983-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 767F8B8B57D
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 23:32:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 924C7B8B592
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 23:33:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A47965A7BBA
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 21:32:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EE2B5C02D5
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 21:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F1292D592E;
-	Fri, 19 Sep 2025 21:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 689922D7DC8;
+	Fri, 19 Sep 2025 21:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="adBndu3I"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="pFjPb+cy"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FC22BD5A1;
-	Fri, 19 Sep 2025 21:32:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32DD22D063D;
+	Fri, 19 Sep 2025 21:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758317530; cv=none; b=A25UOyP3yiniCiDB+nzZDZOsLFNHutamm+EEAFKTxvr9aqBCyhPYhJh9g6pWvEFprMgZ/ftXA5pyRUCKbmkwDXArHwMAp90/HWE/yQrkV1mHvi89E7xVkdhEOisozXVYx3fPApk2QRpzr/QmtXyqtLV+r5tosH6BbQwrG1ct4bc=
+	t=1758317531; cv=none; b=oYgHWkKoIiHdKPfWJFrA9VPgovGchpRB7YT7sbo5X0WZDDzQKff8pPGrh4dGGGx8TLXXozUiJyLu4RIoCsQeoHI16yf2wSWVM6pgP9DpR9Z3d2D0bZ/NlRQv2Yd9x67LEN4x0IeJa26bLK5/LGHgWFhEHroMYWqjPsZd6oomVaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758317530; c=relaxed/simple;
-	bh=/E77UpHv/HKwE/YmkWEdxCihzq+S1kHmFYr7hK7b5G4=;
+	s=arc-20240116; t=1758317531; c=relaxed/simple;
+	bh=usdW0SQcq55RuopFtcXe2iNq5lsGjiQOeFVKc4CZpk8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F6B7AH5Ad7oSR6QHAgcSGNuQ2wani1mu7K7NIfivYm+mPakm0HyS5o64XHsdyd7NB6K2E95DAKUnRA6Bl9w+somB7GpH4kh0MiMreenfCEEmoA9tk8bASAzxINJbTqloO9AyEqybICi+WXxpwOlB+ndpA4uad3OfealP7SGLSYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=adBndu3I; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=ZqfCgcyFtXEMe1YZUxBKVTfbCHEILS8EQhwbdwNP4VZ+lfbcbsnzN0wwRL+M0Syz2Pcf4zArfQtbfZV2HzsSpdLmemTCpCj6qoNtA4GmEgDrU3LVsKg4dGH0S3QXyHU3L8+vDeZL4JIsNkvlwbguU59Kwa0i2OiqvCsa8jNzNHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=pFjPb+cy; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,18 +36,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=g9nPKTWZafwAz6Th6419DPE6gjosXLUGUoGbmMvZly8=; b=adBndu3I4k5kSG/oy0ejWxF+U7
-	7QLGDKJZmR5m4zf6iSt7m2B8zjGDuctcjNnt/QGBBCnbyVEDNJqFHm2SxxLIjT3j7Sx+sC5FagzYW
-	uTZrI1Y/yxaDUqfL9QXjV3TQaWWWjhpBuQS9z3rHszd01rRDZn3FLs7kURz40HuwBRq7IUeU54IAx
-	U7QveCilRaA48FZSLMTgUb9csFtUxALMLAa5tCFgIQkxl9uNAaUQTz1jc1JqoEF6g6sgoYZrEkPgf
-	+Z6qlI7Y58EV2jt6qDu2rgD1mYU7gkS9ho28+iK5ciYyPqO+0Pl49q6+dC2Qf45Woc+3gZKuBigOQ
-	89yOM1bA==;
+	bh=oppZc5jiprD9oT98ObGJpSbUSe/d1l7YpT9BhIRilrY=; b=pFjPb+cyzPo0irop8VK9UwOoFR
+	4aSfmpAQGxcdQ+/KOvChQvoWYtXwzwy9TlZasO6VkNpr6dUvs4m7hu2sS3epE0CQySeoWrIorPTaz
+	qY2YhkXweiB9sbOx4RbhJQ4Ka7NnuNcwY79kJswfWokli8ooJihEdCo5PD7s2gui1kTfVbqhFgv6V
+	twbCFtxBKzKjBnTW0AT93CbMrogDBWJDiN6WruoDy+Rqi4qQ2FU3xaNSp7sjcvQp43RTNhUiOqknh
+	ha2Oz7j+nLARI0A3mJnoKntH1HZcxbM25iqJRJZaKdBpeEiYPDCPieRMFZEyIVLmCguEueV4fDs3v
+	AX2BSdDg==;
 Received: from localhost ([127.0.0.1])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uzihz-000Nq5-2Q;
-	Fri, 19 Sep 2025 23:31:59 +0200
+	id 1uzii0-000NqH-2q;
+	Fri, 19 Sep 2025 23:32:00 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -63,9 +63,9 @@ Cc: bpf@vger.kernel.org,
 	maciej.fijalkowski@intel.com,
 	magnus.karlsson@intel.com,
 	David Wei <dw@davidwei.uk>
-Subject: [PATCH net-next 05/20] net, ynl: Implement netdev_nl_bind_queue_doit
-Date: Fri, 19 Sep 2025 23:31:38 +0200
-Message-ID: <20250919213153.103606-6-daniel@iogearbox.net>
+Subject: [PATCH net-next 06/20] net, ynl: Add peer info to queue-get response
+Date: Fri, 19 Sep 2025 23:31:39 +0200
+Message-ID: <20250919213153.103606-7-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250919213153.103606-1-daniel@iogearbox.net>
 References: <20250919213153.103606-1-daniel@iogearbox.net>
@@ -80,145 +80,173 @@ X-Virus-Scanned: Clear (ClamAV 1.0.9/27767/Fri Sep 19 10:26:55 2025)
 
 From: David Wei <dw@davidwei.uk>
 
-Implement netdev_nl_bind_queue_doit() that creates a mapped rxq in a
-virtual netdev and then binds it to a real rxq in a physical netdev
-by setting the peer pointer in netdev_rx_queue.
+Add a nested peer field to the queue-get response that returns the
+peered ifindex and queue id. If the queried queue is a mapped queue
+in a virtual netdev, the nested fields for dmabuf/io-uring/xsk will
+be filled in, too.
+
+Example:
+
+  # ip netns exec foo ./pyynl/cli.py \
+      --spec ~/netlink/specs/netdev.yaml \
+      --do queue-get \
+      --json '{"ifindex": 3, "id": 1, "type": "rx"}'
+  {'id': 1, 'ifindex': 3, 'peer': {'id': 15, 'ifindex': 4}, 'io-uring': {}, 'type': 'rx'}
 
 Signed-off-by: David Wei <dw@davidwei.uk>
 Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- net/core/netdev-genl.c | 117 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 117 insertions(+)
+ Documentation/netlink/specs/netdev.yaml | 17 +++++++++++++++++
+ include/uapi/linux/netdev.h             |  9 +++++++++
+ net/core/netdev-genl.c                  | 23 ++++++++++++++++++++++-
+ tools/include/uapi/linux/netdev.h       |  9 +++++++++
+ 4 files changed, 57 insertions(+), 1 deletion(-)
 
+diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+index 99a430ea8a9a..1467c36f6b5f 100644
+--- a/Documentation/netlink/specs/netdev.yaml
++++ b/Documentation/netlink/specs/netdev.yaml
+@@ -297,6 +297,17 @@ attribute-sets:
+   -
+     name: xsk-info
+     attributes: []
++  -
++    name: peer-info
++    attributes:
++      -
++        name: id
++        doc: Queue index of the netdevice to which the peer queue belongs.
++        type: u32
++      -
++        name: ifindex
++        doc: ifindex of the netdevice to which the peer queue belongs.
++        type: u32
+   -
+     name: queue
+     attributes:
+@@ -338,6 +349,11 @@ attribute-sets:
+         doc: XSK information for this queue, if any.
+         type: nest
+         nested-attributes: xsk-info
++      -
++        name: peer
++        doc: Whether this queue was bound to another peer queue.
++        type: nest
++        nested-attributes: peer-info
+   -
+     name: qstats
+     doc: |
+@@ -706,6 +722,7 @@ operations:
+             - dmabuf
+             - io-uring
+             - xsk
++            - peer
+       dump:
+         request:
+           attributes:
+diff --git a/include/uapi/linux/netdev.h b/include/uapi/linux/netdev.h
+index 05e17765a39d..73d1590e4696 100644
+--- a/include/uapi/linux/netdev.h
++++ b/include/uapi/linux/netdev.h
+@@ -150,6 +150,14 @@ enum {
+ 	NETDEV_A_XSK_INFO_MAX = (__NETDEV_A_XSK_INFO_MAX - 1)
+ };
+ 
++enum {
++	NETDEV_A_PEER_INFO_ID = 1,
++	NETDEV_A_PEER_INFO_IFINDEX,
++
++	__NETDEV_A_PEER_INFO_MAX,
++	NETDEV_A_PEER_INFO_MAX = (__NETDEV_A_PEER_INFO_MAX - 1)
++};
++
+ enum {
+ 	NETDEV_A_QUEUE_ID = 1,
+ 	NETDEV_A_QUEUE_IFINDEX,
+@@ -158,6 +166,7 @@ enum {
+ 	NETDEV_A_QUEUE_DMABUF,
+ 	NETDEV_A_QUEUE_IO_URING,
+ 	NETDEV_A_QUEUE_XSK,
++	NETDEV_A_QUEUE_PEER,
+ 
+ 	__NETDEV_A_QUEUE_MAX,
+ 	NETDEV_A_QUEUE_MAX = (__NETDEV_A_QUEUE_MAX - 1)
 diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
-index b0aea27bf84e..ed0ce3dbfc6f 100644
+index ed0ce3dbfc6f..c20922539216 100644
 --- a/net/core/netdev-genl.c
 +++ b/net/core/netdev-genl.c
-@@ -1122,6 +1122,123 @@ int netdev_nl_bind_tx_doit(struct sk_buff *skb, struct genl_info *info)
+@@ -393,6 +393,7 @@ netdev_nl_queue_fill_one(struct sk_buff *rsp, struct net_device *netdev,
+ 	struct pp_memory_provider_params *params;
+ 	struct netdev_rx_queue *rxq;
+ 	struct netdev_queue *txq;
++	struct nlattr *nest;
+ 	void *hdr;
  
- int netdev_nl_bind_queue_doit(struct sk_buff *skb, struct genl_info *info)
- {
-+	u32 src_ifidx, src_qid, dst_ifidx, dst_qid;
-+	struct netdev_rx_queue *src_rxq, *dst_rxq;
-+	struct net_device *src_dev, *dst_dev;
-+	struct netdev_nl_sock *priv;
-+	struct sk_buff *rsp;
-+	int err = 0;
-+	void *hdr;
-+
-+	if (GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_PAIR_SRC_IFINDEX) ||
-+	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_PAIR_SRC_QUEUE_ID) ||
-+	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_QUEUE_PAIR_DST_IFINDEX))
-+		return -EINVAL;
-+
-+	src_ifidx = nla_get_u32(info->attrs[NETDEV_A_QUEUE_PAIR_SRC_IFINDEX]);
-+	src_qid = nla_get_u32(info->attrs[NETDEV_A_QUEUE_PAIR_SRC_QUEUE_ID]);
-+	dst_ifidx = nla_get_u32(info->attrs[NETDEV_A_QUEUE_PAIR_DST_IFINDEX]);
-+	if (dst_ifidx == src_ifidx) {
-+		NL_SET_ERR_MSG(info->extack,
-+			       "Destination driver cannot be same as source driver");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	priv = genl_sk_priv_get(&netdev_nl_family, NETLINK_CB(skb).sk);
-+	if (IS_ERR(priv))
-+		return PTR_ERR(priv);
-+
-+	rsp = genlmsg_new(GENLMSG_DEFAULT_SIZE, GFP_KERNEL);
-+	if (!rsp)
-+		return -ENOMEM;
-+
-+	hdr = genlmsg_iput(rsp, info);
-+	if (!hdr) {
-+		err = -EMSGSIZE;
-+		goto err_genlmsg_free;
-+	}
-+
-+	mutex_lock(&priv->lock);
-+
-+	src_dev = netdev_get_by_index_lock(genl_info_net(info), src_ifidx);
-+	if (!src_dev) {
-+		err = -ENODEV;
-+		goto err_unlock_sock;
-+	}
-+	if (!netif_device_present(src_dev)) {
-+		err = -ENODEV;
-+		goto err_unlock_src_dev;
-+	}
-+	if (!src_dev->dev.parent) {
-+		err = -EOPNOTSUPP;
-+		NL_SET_ERR_MSG(info->extack,
-+			       "Source driver is a virtual device");
-+		goto err_unlock_src_dev;
-+	}
-+	if (!src_dev->queue_mgmt_ops) {
-+		err = -EOPNOTSUPP;
-+		NL_SET_ERR_MSG(info->extack,
-+			       "Source driver does not support queue management operations");
-+		goto err_unlock_src_dev;
-+	}
-+	if (src_qid >= src_dev->num_rx_queues) {
-+		err = -ERANGE;
-+		NL_SET_ERR_MSG(info->extack,
-+			       "Source driver queue out of range");
-+		goto err_unlock_src_dev;
-+	}
-+
-+	src_rxq = __netif_get_rx_queue(src_dev, src_qid);
-+	if (src_rxq->peer) {
-+		err = -EBUSY;
-+		NL_SET_ERR_MSG(info->extack,
-+			       "Source driver queue already bound");
-+		goto err_unlock_src_dev;
-+	}
-+
-+	dst_dev = netdev_get_by_index_lock(genl_info_net(info), dst_ifidx);
-+	if (!dst_dev) {
-+		err = -ENODEV;
-+		goto err_unlock_src_dev;
-+	}
-+	if (!dst_dev->queue_mgmt_ops ||
-+	    !dst_dev->queue_mgmt_ops->ndo_queue_create) {
-+		err = -EOPNOTSUPP;
-+		NL_SET_ERR_MSG(info->extack,
-+			       "Destination driver does not support queue management operations");
-+		goto err_unlock_dst_dev;
-+	}
-+
-+	err = dst_dev->queue_mgmt_ops->ndo_queue_create(dst_dev);
-+	if (err <= 0) {
-+		NL_SET_ERR_MSG(info->extack,
-+			       "Destination driver unable to create a new queue");
-+		goto err_unlock_dst_dev;
-+	}
-+
-+	dst_qid = err - 1;
-+	dst_rxq = __netif_get_rx_queue(dst_dev, dst_qid);
-+
-+	netdev_rx_queue_peer(src_dev, src_rxq, dst_rxq);
-+
-+	nla_put_u32(rsp, NETDEV_A_QUEUE_PAIR_DST_QUEUE_ID, dst_qid);
-+	genlmsg_end(rsp, hdr);
-+
-+	netdev_unlock(dst_dev);
-+	netdev_unlock(src_dev);
-+	mutex_unlock(&priv->lock);
-+
-+	return genlmsg_reply(rsp, info);
-+
-+err_unlock_dst_dev:
-+	netdev_unlock(dst_dev);
-+err_unlock_src_dev:
-+	netdev_unlock(src_dev);
-+err_unlock_sock:
-+	mutex_unlock(&priv->lock);
-+err_genlmsg_free:
-+	nlmsg_free(rsp);
-+	return err;
- }
+ 	hdr = genlmsg_iput(rsp, info);
+@@ -410,6 +411,27 @@ netdev_nl_queue_fill_one(struct sk_buff *rsp, struct net_device *netdev,
+ 		if (nla_put_napi_id(rsp, rxq->napi))
+ 			goto nla_put_failure;
  
- void netdev_nl_sock_priv_init(struct netdev_nl_sock *priv)
++		if (netdev_rx_queue_peered(netdev, q_idx)) {
++			struct netdev_rx_queue *p_rxq;
++			struct net_device *p_netdev = netdev;
++			u32 p_q_idx = q_idx;
++
++			nest = nla_nest_start(rsp, NETDEV_A_QUEUE_PEER);
++			if (!nest)
++				goto nla_put_failure;
++			p_rxq = __netif_get_rx_queue_peer(&p_netdev, &p_q_idx);
++			if (nla_put_u32(rsp, NETDEV_A_PEER_INFO_ID, p_q_idx) ||
++			    nla_put_u32(rsp, NETDEV_A_PEER_INFO_IFINDEX, p_netdev->ifindex))
++				goto nla_put_failure;
++			nla_nest_end(rsp, nest);
++
++			if (!netdev->dev.parent) {
++				netdev = p_netdev;
++				q_idx = p_q_idx;
++				rxq = p_rxq;
++			}
++		}
++
+ 		params = &rxq->mp_params;
+ 		if (params->mp_ops &&
+ 		    params->mp_ops->nl_fill(params->mp_priv, rsp, rxq))
+@@ -419,7 +441,6 @@ netdev_nl_queue_fill_one(struct sk_buff *rsp, struct net_device *netdev,
+ 			if (nla_put_empty_nest(rsp, NETDEV_A_QUEUE_XSK))
+ 				goto nla_put_failure;
+ #endif
+-
+ 		break;
+ 	case NETDEV_QUEUE_TYPE_TX:
+ 		txq = netdev_get_tx_queue(netdev, q_idx);
+diff --git a/tools/include/uapi/linux/netdev.h b/tools/include/uapi/linux/netdev.h
+index 05e17765a39d..73d1590e4696 100644
+--- a/tools/include/uapi/linux/netdev.h
++++ b/tools/include/uapi/linux/netdev.h
+@@ -150,6 +150,14 @@ enum {
+ 	NETDEV_A_XSK_INFO_MAX = (__NETDEV_A_XSK_INFO_MAX - 1)
+ };
+ 
++enum {
++	NETDEV_A_PEER_INFO_ID = 1,
++	NETDEV_A_PEER_INFO_IFINDEX,
++
++	__NETDEV_A_PEER_INFO_MAX,
++	NETDEV_A_PEER_INFO_MAX = (__NETDEV_A_PEER_INFO_MAX - 1)
++};
++
+ enum {
+ 	NETDEV_A_QUEUE_ID = 1,
+ 	NETDEV_A_QUEUE_IFINDEX,
+@@ -158,6 +166,7 @@ enum {
+ 	NETDEV_A_QUEUE_DMABUF,
+ 	NETDEV_A_QUEUE_IO_URING,
+ 	NETDEV_A_QUEUE_XSK,
++	NETDEV_A_QUEUE_PEER,
+ 
+ 	__NETDEV_A_QUEUE_MAX,
+ 	NETDEV_A_QUEUE_MAX = (__NETDEV_A_QUEUE_MAX - 1)
 -- 
 2.43.0
 
