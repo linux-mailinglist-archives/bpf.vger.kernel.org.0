@@ -1,329 +1,245 @@
-Return-Path: <bpf+bounces-69000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69001-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 772AFB8B759
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 00:16:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 640C1B8B775
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 00:23:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 330B35A17C2
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 22:16:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA10B5A7833
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 22:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E552D5951;
-	Fri, 19 Sep 2025 22:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 683732D3ED0;
+	Fri, 19 Sep 2025 22:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S3BERBnF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fjuE7i6c"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7D15C96
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 22:15:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A1002D063D
+	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 22:22:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758320156; cv=none; b=fYCAorgmJf7UXSas+0VkUM7iQJqAAe9eVhjC1CfXjYUyKpHAn7GQ/fb/ek3QI/IeR1QIDysEACf6dyJPEPpW7CL9HoDo4jRVq4r3s6r5FmTyWv40sEsvl49YtMFfUjvtr6tgRScdvYIgnHdGqK7EGri0EoY5UocpZa38vcDpAh4=
+	t=1758320578; cv=none; b=Lbz/hMWf3kxufwkApS+UVEapGY7QxMRLtazC7stKTbCRlC/4ITOYp4o5wBgsbGuLZC+yBt8BZFU2t5Dbls+UVRgf0xZdFXzwRkdrWBmEi+fd31mR1BIDs5U02uyEWomqCZ6K379hMzoB4q6Jn4MJVVuwbCwK8tdngAtBIPynXFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758320156; c=relaxed/simple;
-	bh=XyootmgLv94+Gy6k5KdIOn9j4pUkYBifYt9ZDg77pwE=;
+	s=arc-20240116; t=1758320578; c=relaxed/simple;
+	bh=IIFhRI+TsAvfZeudshXo/wh+vjAohK8Azb1V5DPNy1g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U/FyyLvNCnWdapDWo+6NUR+t/928fH20faZbCLmZp9f5Nsj4lW1ofb331fWCJrRsvr35IHa0Un0ROQAXn+z3nFWQi26quFe8i/AtjKKPo5L5qkPDMAEOOjW7YAjWLvxa5icVRtdvuWqVpq7TTk1wqoxy8mspfil/1GAFHN66Q/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S3BERBnF; arc=none smtp.client-ip=209.85.215.171
+	 To:Cc:Content-Type; b=SzEeD/Z5Oy/BSgzI2dUlj6LdkJvm8spZRzEjBB6dGnWSTta7cggaJ1oRGyFRNhJLaLu5b3hDz/rxAcWjFjJyP/qdyQzY9MlYrQ9rU0/1jDF3HzqF34/NwjItvbYge64YU6g5cHHEUofue4fIXUPsZNL+ehq2KDWL0IQWbBAgKkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fjuE7i6c; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b4c1fc383eeso1807033a12.1
-        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 15:15:54 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-32326e2f0b3so2236465a91.2
+        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 15:22:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758320154; x=1758924954; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758320576; x=1758925376; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ujx1Ir738tmFjVSQJD/txn3QAD2H99LyLRg03qE+w+U=;
-        b=S3BERBnFB+Mai/CBOA0BzqplZPuGeJGBtYcXWtPSdt23T8ppFTHavgZYrhnqITD9g9
-         ywfcXjGAb+XBNyuGGvdAd0kw2HMv0YRfewn3dSeHn4Y6BPgXxQhanZP32ytINiYh+bA9
-         bHSA29IAWekqhW1DgtmYw0uD8CSQ/NP5QlN++VZfuIXkurSGhGq635ThFmUFnLsyatT/
-         YZShP8drfPouVX2oOHtPgstu+3CKL2fo4j8CKHv1H6qJI6Lc7CpW63cD90wA9Ngh8Cln
-         ED8+j7xdh2NHs7p43Xh1WhzADCuo8DviIFUxmAQnhsGOl+jSGeVmRIm+UDVCaAay35+Y
-         7hAg==
+        bh=NVttn2DL6ng5pXY1yjZwV7ysZJbj/h4XmkfTp1L7SEY=;
+        b=fjuE7i6cq82w5A2FP1tYBkDoCPnfg/eHw14jY1pUMVxStk+Fd027yGDAYhcZx9O+A0
+         foeL5IQi7v8bWuzxXO97smPqN5oUGrC0pEtbnYVSidpJvxRW7hzMK7q6cZH45YLihJXv
+         KvE8C6kw5kW5LcHMmIvLy9TcK45+NRae3k/LyfTl67ncAb4COUYw4KLO/p1OKZHuS1m4
+         Z3apRnLo7tm9iwaq7Np+a01d/tjudplw96pcWLtXO5a3B6NmiLDiXEi9bzFgDa+c9WAj
+         tKyw0LJmhCzjc7O8DEwGm2zzIjUMNlqANyAPJyuzO5zXJUluh37H5OZmPND5+us1DXPs
+         dlBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758320154; x=1758924954;
+        d=1e100.net; s=20230601; t=1758320576; x=1758925376;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ujx1Ir738tmFjVSQJD/txn3QAD2H99LyLRg03qE+w+U=;
-        b=phuBOW5NM6g2URLHc5M3c3PyjfHOMbcc3PiCespybELqFJBlFqM2Zg78SiGB4zriEi
-         9i7fmHHCr3HNmPW8uI4m609DznwYisDSsOS62hbXivNQ17AffgXncUHWtU5mzuIhzuVv
-         nDDNfaJAlNfXJI6ucg5FF5UH+pTPpLO9PXgnoEsoEQpLOPjODj2e0cU38ChLlShCGszu
-         R93ccjJ7GxzB0JaqfNUS3rH/BShKd0jC2TXpiMHm0eZY3YKbcaN/M66UoYa5uZUQckSP
-         ChwL3VRGB95atoVpVG0sINt40LnNBxJB3j9wLj009ViVtFCfSL4Fm+sR9I8bsQJcrvmx
-         3HQg==
-X-Gm-Message-State: AOJu0Yzthoq38ac/OQWf+HaKvCMCZZK0WPn4DN/l/hdhLFk/9lTKeXw+
-	I0BBZm5H/bXbuXUX6S7WTq6mxR4Vg7YKIM5lTfJck+GCI/BvKxksvKtkJVfrBUrbd9mcZ1aoDp7
-	W5aydNlJTawVXGK13na4XcOGsVG/tSwU=
-X-Gm-Gg: ASbGncv2jnQYNZOX17esC7yFu1tNBKpU3/Jfft8h5X2ZM0E4v+ecVBysSEN9ZD9Adv7
-	pU/upTInhP608XgIOLTytAJk+FJScJIJLa/lEs7qLtcYk1Jk1/yiCTYjSD9hyTSN1w/ZxNKQgD5
-	PNFiFfrjgAUMKn83+N8P6xKC1QEMK2i94AsGbexDEhb7n89C/dzsn2RgavkBJIe4NUHTBIABFVx
-	6hXyl6pghep+faYc5YMu/6HnTSAE8fLRw==
-X-Google-Smtp-Source: AGHT+IECKd/GHWseyORxZ91dOYPAhKL/+IkDewnJuGx1GuQxt/3H3AcpfQSdLAzIhOcZAXVXX8xVdzmgPU4zHvgW1Rk=
-X-Received: by 2002:a17:90b:3905:b0:32e:9da9:3e6c with SMTP id
- 98e67ed59e1d1-3309834b4f7mr5723487a91.23.1758320153934; Fri, 19 Sep 2025
- 15:15:53 -0700 (PDT)
+        bh=NVttn2DL6ng5pXY1yjZwV7ysZJbj/h4XmkfTp1L7SEY=;
+        b=RQYG+R/H8RdglrXh0PT5pRsKJdcXZsuraPpV27AXkazBiL6cEiYkvOBuusviD4faOp
+         fLf3pndxcOsLPKyIzE6MSFY6ZCZTlXcVJdOe1NpRgOCGvzDUFHl/IbC7StOKzAdPBJxr
+         nw3qj5oNKDAjUqMb/woPIayWvW1b3oJZq8UOMMM82WY3TVCg+88v+3YH5i6xvCSZue8u
+         UuNRHA7JrP1NNqrUTFx4fEmm+ARkopW80H4jHuBnsIaNUO8/I5cNkIJ0OTUJ87uXKnjK
+         FELmpIHWuPU37W2kJ61PRsgOyldZLtCMvACTuilqG4d3arvPr2lT515nCKb0eSyWbL0+
+         TGug==
+X-Forwarded-Encrypted: i=1; AJvYcCUtqVB2d4hjpujT1ekFTwGeYyuvD5BXBaGabm9c9QwoMCkKOg2NC3Zefw9eYT7/xWp3cLI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzz9jE+hYBb0swufrnAnVFuge2VhF+tOeqxGok3nohSN8vog0Lf
+	rdV0H8p7g0lLoAoW3VhzkErbl16viPO4yJfg3bI8IHLwWwMdBBq5hG4r6E/NgLK0l7GRJZ0Y5oc
+	EwGZZLG3j+SDZzPnIJ1z6NC9gE+rIetI=
+X-Gm-Gg: ASbGnctjjXwc3LCQAtIKL3JtTqnqqzdwqIZwcASnf7cm/AGJQujWxbRbrz9UZcJBIG4
+	zzIHWnO3IQBT6V8550szrAM7jNewEux4wwF5lpiZFvj+bXIpIKlTUa5P1PBoLdqANV8nR0s7S4i
+	d9djrYDN4I54Ah1pLH7ji71Mj0Ek24j1LC9cSlFd8uzXT/aBEAxx1+krE9dqQkf/KeCjstt9qAU
+	+8vidDgY+BQcm/GKEcMvvc=
+X-Google-Smtp-Source: AGHT+IFTIxD0jJKO5G+pCCu1K6n7tVBYK28In98bQte8IZQWbsnwJnU5AjMBK6qo5Bs//UE/GcpJn8fuw07r+SjjOXU=
+X-Received: by 2002:a17:90b:5623:b0:32e:ca03:3ba with SMTP id
+ 98e67ed59e1d1-3309834c0afmr5496340a91.22.1758320575534; Fri, 19 Sep 2025
+ 15:22:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250905150641.2078838-1-xukuohai@huaweicloud.com> <20250905150641.2078838-4-xukuohai@huaweicloud.com>
-In-Reply-To: <20250905150641.2078838-4-xukuohai@huaweicloud.com>
+References: <20250918080342.25041-1-alibuda@linux.alibaba.com> <20250918080342.25041-4-alibuda@linux.alibaba.com>
+In-Reply-To: <20250918080342.25041-4-alibuda@linux.alibaba.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 19 Sep 2025 15:15:38 -0700
-X-Gm-Features: AS18NWBOa3kRS4CIxnhQ1iKphnhHAfhyMXzVDLE5JDbhoX6cwJq4muyT3qZ6bWw
-Message-ID: <CAEf4Bzb65VnL5nESxkGGZCgW0Ow+apwTsqzpFv2s+rd3Y6YkAQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf/benchs: Add producer and
- overwrite bench for ring buffer
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, 
-	Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Willem de Bruijn <willemb@google.com>, 
-	Jason Xing <kerneljasonxing@gmail.com>, Paul Chaignon <paul.chaignon@gmail.com>, 
-	Tao Chen <chen.dylane@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Martin Kelly <martin.kelly@crowdstrike.com>
+Date: Fri, 19 Sep 2025 15:22:41 -0700
+X-Gm-Features: AS18NWAZO1oRArFwgyo_d1_MJyN-C4gXYDi5ATwBewZOaAmKd2Jx5fB2DEmP76o
+Message-ID: <CAEf4BzY5oowUpq2x3Uz+TNi=8GJgc1FDzS-u5UqZwNXvkWtSEw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] libbpf: fix error when st-prefix_ops and
+ ops from differ btf
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org, sdf@google.com, 
+	haoluo@google.com, yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, jolsa@kernel.org, mjambigi@linux.ibm.com, 
+	wenjia@linux.ibm.com, wintera@linux.ibm.com, dust.li@linux.alibaba.com, 
+	tonylu@linux.alibaba.com, guwen@linux.alibaba.com, bpf@vger.kernel.org, 
+	davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, 
+	sidraya@linux.ibm.com, jaka@linux.ibm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 5, 2025 at 8:13=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com>=
- wrote:
+On Thu, Sep 18, 2025 at 1:03=E2=80=AFAM D. Wythe <alibuda@linux.alibaba.com=
+> wrote:
 >
-> From: Xu Kuohai <xukuohai@huawei.com>
+> When a struct_ops named xxx_ops was registered by a module, and
+> it will be used in both built-in modules and the module itself,
+> so that the btf_type of xxx_ops will be present in btf_vmlinux
+> instead of in btf_mod, which means that the btf_type of
+> bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
 >
-> Add rb-prod test for bpf ring buffer to bench producer performance
-> without counsumer thread. And add --rb-overwrite option to bench
-> ring buffer in overwrite mode.
+> Here are four possible case:
 >
-> For reference, below are bench numbers collected from x86_64 and
-> arm64 CPUs.
+> +--------+---------------+-------------+---------------------------------=
++
+> |        | st_ops_xxx_ops| xxx_ops     |                                 =
+|
+> +--------+---------------+-------------+---------------------------------=
++
+> | case 0 | btf_vmlinux   | bft_vmlinux | be used and reg only in vmlinux =
+|
+> +--------+---------------+-------------+---------------------------------=
++
+> | case 1 | btf_vmlinux   | bpf_mod     | INVALID                         =
+|
+> +--------+---------------+-------------+---------------------------------=
++
+> | case 2 | btf_mod       | btf_vmlinux | reg in mod but be used both in  =
+|
+> |        |               |             | vmlinux and mod.                =
+|
+> +--------+---------------+-------------+---------------------------------=
++
+> | case 3 | btf_mod       | btf_mod     | be used and reg only in mod     =
+|
+> +--------+---------------+-------------+---------------------------------=
++
 >
-> - AMD EPYC 9654 (x86_64)
+> At present, cases 0, 1, and 3 can be correctly identified, because
+> st_ops_xxx_ops is searched from the same btf with xxx_ops. In order to
+> handle case 2 correctly without affecting other cases, we cannot simply
+> change the search method for st_ops_xxx_ops from find_btf_by_prefix_kind(=
+)
+> to find_ksym_btf_id(), because in this way, case 1 will not be
+> recognized anymore.
 >
->   Ringbuf, overwrite mode with multi-producer contention, no consumer
->   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->   rb-prod nr_prod 1    32.295 =C2=B1 0.004M/s (drops 0.000 =C2=B1 0.000M/=
-s)
->   rb-prod nr_prod 2    9.591 =C2=B1 0.003M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 3    8.895 =C2=B1 0.002M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 4    9.206 =C2=B1 0.003M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 8    9.220 =C2=B1 0.002M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 12   4.595 =C2=B1 0.022M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 16   4.348 =C2=B1 0.016M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 20   3.957 =C2=B1 0.017M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 24   3.787 =C2=B1 0.014M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 28   3.603 =C2=B1 0.011M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 32   3.707 =C2=B1 0.011M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 36   3.562 =C2=B1 0.012M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 40   3.616 =C2=B1 0.012M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 44   3.598 =C2=B1 0.016M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 48   3.555 =C2=B1 0.014M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 52   3.463 =C2=B1 0.020M/s (drops 0.000 =C2=B1 0.000M/s=
-)
+> To address the issue, we always look for st_ops_xxx_ops first,
+> figure out the btf, and then look for xxx_ops with the very btf to avoid
+
+What's "very btf"? Commit message would benefit from a little bit of
+proof-reading, if you can. It's a bit hard to follow, even if it's
+more or less clear at the end what problem you are trying to solve.
+
+Also, I'd suggest to send this fix as a separate patch and not block
+it on the overall patch set, which probably will take longer. This fix
+is independent, so we can land it much faster.
+
+> such issue.
 >
-> - HiSilicon Kunpeng 920 (arm64)
->
->   Ringbuf, overwrite mode with multi-producer contention, no consumer
->   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->   rb-prod nr_prod 1    14.687 =C2=B1 0.058M/s (drops 0.000 =C2=B1 0.000M/=
-s)
->   rb-prod nr_prod 2    22.263 =C2=B1 0.007M/s (drops 0.000 =C2=B1 0.000M/=
-s)
->   rb-prod nr_prod 3    5.736 =C2=B1 0.003M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 4    4.934 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 8    4.661 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 12   3.753 =C2=B1 0.013M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 16   3.706 =C2=B1 0.018M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 20   3.660 =C2=B1 0.015M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 24   3.610 =C2=B1 0.016M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 28   3.238 =C2=B1 0.010M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 32   3.270 =C2=B1 0.018M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 36   2.892 =C2=B1 0.021M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 40   2.995 =C2=B1 0.018M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 44   2.830 =C2=B1 0.019M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 48   2.877 =C2=B1 0.015M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->   rb-prod nr_prod 52   2.814 =C2=B1 0.015M/s (drops 0.000 =C2=B1 0.000M/s=
-)
->
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  tools/testing/selftests/bpf/bench.c           |  2 +
->  .../selftests/bpf/benchs/bench_ringbufs.c     | 95 +++++++++++++++++--
->  .../bpf/benchs/run_bench_ringbufs.sh          |  4 +
->  .../selftests/bpf/progs/ringbuf_bench.c       | 10 ++
->  4 files changed, 103 insertions(+), 8 deletions(-)
+>  tools/lib/bpf/libbpf.c | 37 ++++++++++++++++++-------------------
+>  1 file changed, 18 insertions(+), 19 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftest=
-s/bpf/bench.c
-> index bd29bb2e6cb5..a98063f6436a 100644
-> --- a/tools/testing/selftests/bpf/bench.c
-> +++ b/tools/testing/selftests/bpf/bench.c
-> @@ -541,6 +541,7 @@ extern const struct bench bench_trig_uretprobe_multi_=
-nop5;
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index fe4fc5438678..50ca13833511 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1013,35 +1013,34 @@ find_struct_ops_kern_types(struct bpf_object *obj=
+, const char *tname_raw,
+>         const struct btf_member *kern_data_member;
+>         struct btf *btf =3D NULL;
+>         __s32 kern_vtype_id, kern_type_id;
+> -       char tname[256];
+> +       char tname[256], stname[256];
+>         __u32 i;
 >
->  extern const struct bench bench_rb_libbpf;
->  extern const struct bench bench_rb_custom;
-> +extern const struct bench bench_rb_prod;
->  extern const struct bench bench_pb_libbpf;
->  extern const struct bench bench_pb_custom;
->  extern const struct bench bench_bloom_lookup;
-> @@ -617,6 +618,7 @@ static const struct bench *benchs[] =3D {
->         /* ringbuf/perfbuf benchmarks */
->         &bench_rb_libbpf,
->         &bench_rb_custom,
-> +       &bench_rb_prod,
->         &bench_pb_libbpf,
->         &bench_pb_custom,
->         &bench_bloom_lookup,
-> diff --git a/tools/testing/selftests/bpf/benchs/bench_ringbufs.c b/tools/=
-testing/selftests/bpf/benchs/bench_ringbufs.c
-> index e1ee979e6acc..6d58479fac91 100644
-> --- a/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
-> +++ b/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
-> @@ -19,6 +19,7 @@ static struct {
->         int ringbuf_sz; /* per-ringbuf, in bytes */
->         bool ringbuf_use_output; /* use slower output API */
->         int perfbuf_sz; /* per-CPU size, in pages */
-> +       bool overwrite;
->  } args =3D {
->         .back2back =3D false,
->         .batch_cnt =3D 500,
-> @@ -27,6 +28,7 @@ static struct {
->         .ringbuf_sz =3D 512 * 1024,
->         .ringbuf_use_output =3D false,
->         .perfbuf_sz =3D 128,
-> +       .overwrite =3D false,
->  };
+>         snprintf(tname, sizeof(tname), "%.*s",
+>                  (int)bpf_core_essential_name_len(tname_raw), tname_raw);
 >
->  enum {
-> @@ -35,6 +37,7 @@ enum {
->         ARG_RB_BATCH_CNT =3D 2002,
->         ARG_RB_SAMPLED =3D 2003,
->         ARG_RB_SAMPLE_RATE =3D 2004,
-> +       ARG_RB_OVERWRITE =3D 2005,
->  };
+> -       kern_type_id =3D find_ksym_btf_id(obj, tname, BTF_KIND_STRUCT,
+> -                                       &btf, mod_btf);
+> -       if (kern_type_id < 0) {
+> -               pr_warn("struct_ops init_kern: struct %s is not found in =
+kernel BTF\n",
+> -                       tname);
+> -               return kern_type_id;
+> -       }
+> -       kern_type =3D btf__type_by_id(btf, kern_type_id);
+> +       snprintf(stname, sizeof(stname), "%s%.*s", STRUCT_OPS_VALUE_PREFI=
+X,
+> +                (int)strlen(tname), tname);
 >
->  static const struct argp_option opts[] =3D {
-> @@ -43,6 +46,7 @@ static const struct argp_option opts[] =3D {
->         { "rb-batch-cnt", ARG_RB_BATCH_CNT, "CNT", 0, "Set BPF-side recor=
-d batch count"},
->         { "rb-sampled", ARG_RB_SAMPLED, NULL, 0, "Notification sampling"}=
-,
->         { "rb-sample-rate", ARG_RB_SAMPLE_RATE, "RATE", 0, "Notification =
-sample rate"},
-> +       { "rb-overwrite", ARG_RB_OVERWRITE, NULL, 0, "Overwrite mode"},
->         {},
->  };
->
-> @@ -72,6 +76,9 @@ static error_t parse_arg(int key, char *arg, struct arg=
-p_state *state)
->                         argp_usage(state);
->                 }
->                 break;
-> +       case ARG_RB_OVERWRITE:
-> +               args.overwrite =3D true;
-> +               break;
->         default:
->                 return ARGP_ERR_UNKNOWN;
+> -       /* Find the corresponding "map_value" type that will be used
+> -        * in map_update(BPF_MAP_TYPE_STRUCT_OPS).  For example,
+> -        * find "struct bpf_struct_ops_tcp_congestion_ops" from the
+> -        * btf_vmlinux.
+> +       /* Look for the corresponding "map_value" type that will be used
+> +        * in map_update(BPF_MAP_TYPE_STRUCT_OPS) first, figure out the b=
+tf
+> +        * and the mod_btf.
+> +        * For example, find "struct bpf_struct_ops_tcp_congestion_ops".
+>          */
+> -       kern_vtype_id =3D find_btf_by_prefix_kind(btf, STRUCT_OPS_VALUE_P=
+REFIX,
+> -                                               tname, BTF_KIND_STRUCT);
+> +       kern_vtype_id =3D find_ksym_btf_id(obj, stname, BTF_KIND_STRUCT, =
+&btf, mod_btf);
+>         if (kern_vtype_id < 0) {
+> -               pr_warn("struct_ops init_kern: struct %s%s is not found i=
+n kernel BTF\n",
+> -                       STRUCT_OPS_VALUE_PREFIX, tname);
+> +               pr_warn("struct_ops init_kern: struct %s is not found in =
+kernel BTF\n", stname);
+>                 return kern_vtype_id;
 >         }
-> @@ -95,8 +102,30 @@ static inline void bufs_trigger_batch(void)
+>         kern_vtype =3D btf__type_by_id(btf, kern_vtype_id);
 >
->  static void bufs_validate(void)
->  {
-> -       if (env.consumer_cnt !=3D 1) {
-> -               fprintf(stderr, "rb-libbpf benchmark needs one consumer!\=
-n");
-> +       bool bench_prod =3D !strcmp(env.bench_name, "rb-prod");
-> +
-> +       if (args.overwrite && !bench_prod) {
-> +               fprintf(stderr, "overwite mode only works with benchmakr =
-rb-prod!\n");
-> +               exit(1);
+> +       kern_type_id =3D btf__find_by_name_kind(btf, tname, BTF_KIND_STRU=
+CT);
+> +       if (kern_type_id < 0) {
+> +               pr_warn("struct_ops init_kern: struct %s is not found in =
+kernel BTF\n", tname);
+> +               return kern_type_id;
 > +       }
+> +       kern_type =3D btf__type_by_id(btf, kern_type_id);
 > +
-> +       if (bench_prod && env.consumer_cnt !=3D 0) {
-> +               fprintf(stderr, "rb-prod benchmark does not need consumer=
-!\n");
-> +               exit(1);
-> +       }
-> +
-> +       if (bench_prod && args.back2back) {
-> +               fprintf(stderr, "back-to-back mode makes no sense for rb-=
-prod!\n");
-> +               exit(1);
-> +       }
-> +
-> +       if (bench_prod && args.sampled) {
-> +               fprintf(stderr, "sampling mode makes no sense for rb-prod=
-!\n");
-> +               exit(1);
-> +       }
-> +
-> +       if (!bench_prod && env.consumer_cnt !=3D 1) {
-> +               fprintf(stderr, "benchmarks excluding rb-prod need one co=
-nsumer!\n");
->                 exit(1);
+>         /* Find "struct tcp_congestion_ops" from
+>          * struct bpf_struct_ops_tcp_congestion_ops {
+>          *      [ ... ]
+> @@ -1054,8 +1053,8 @@ find_struct_ops_kern_types(struct bpf_object *obj, =
+const char *tname_raw,
+>                         break;
+>         }
+>         if (i =3D=3D btf_vlen(kern_vtype)) {
+> -               pr_warn("struct_ops init_kern: struct %s data is not foun=
+d in struct %s%s\n",
+> -                       tname, STRUCT_OPS_VALUE_PREFIX, tname);
+> +               pr_warn("struct_ops init_kern: struct %s data is not foun=
+d in struct %s\n",
+> +                       tname, stname);
+>                 return -EINVAL;
 >         }
 >
-> @@ -132,8 +161,10 @@ static void ringbuf_libbpf_measure(struct bench_res =
-*res)
->         res->drops =3D atomic_swap(&ctx->skel->bss->dropped, 0);
->  }
+> --
+> 2.45.0
 >
-> -static struct ringbuf_bench *ringbuf_setup_skeleton(void)
-> +static struct ringbuf_bench *ringbuf_setup_skeleton(int bench_prod)
-
-int because C doesn't support bool?...
-
-but really, do we need another benchmark just to set overwritable
-mode?... can't you adapt existing benchmarks to optionally set
-overwritable mode?
-
-
-(and please drop sdf@google.com from CC for the next revision, that
-email doesn't exist anymore)
-
-[...]
 
