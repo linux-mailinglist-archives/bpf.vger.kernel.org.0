@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-68985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68986-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F0BAB8B598
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 23:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D5C82B8B59E
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 23:33:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D6445C042C
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 21:33:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D3B25A4404
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 21:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DF72D9494;
-	Fri, 19 Sep 2025 21:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DA42D97BE;
+	Fri, 19 Sep 2025 21:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="VsP/rTlA"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="fnukwFJz"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3707C2D4B7C;
-	Fri, 19 Sep 2025 21:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DCC2D73A9;
+	Fri, 19 Sep 2025 21:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758317532; cv=none; b=ahgo9DH4mShZB19zMXx5hYcqmAdphWKzTMhZghwQoiuTaj0nEliRI+Kj+j6vah5HKnMZfKzyAWuAxJNUoFVWh40FxqWIQhNwfEZVcOhwcWe8mAJ6wsKALvX3MnhWG7NxAtUyZ9Vis+U8Ns/QURXQMCcVa9yhdoxYPUf1kubRy/Y=
+	t=1758317533; cv=none; b=bTblullWEoJfIt46OJErmhu9T29Lmi2fSk1vP687136Ddizb6GF9INeUTsg/6Vv/X0uxYY4/kWxlojznjdQ1nPcVOe3+xcHh0KdzriglhcjhsOzgXGQRLzNNn18j1yal1qgpUeUpnUXbuBrFJbmeuRYLD16AZQIKdYDV+lOcyo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758317532; c=relaxed/simple;
-	bh=R8aiLOYeNL/h5cx2U0ga2tp2KtzPu7DqAlXH117v3/8=;
+	s=arc-20240116; t=1758317533; c=relaxed/simple;
+	bh=nMAJGDVXaD2zPl2n/jzjIhtWZKiqCfdsAvbhTrDqyT4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ODj1G8IJtNSKREGO0nuV248Vln8wgceqwvIMoJsZFX2sKi36cQ5bP37pfsIdFVg2X6Odj3hJFmU+QXxfw04MSZK5e/vXZdBLiJp7ScqCbJqJpa/zJBj96LzN8s0XFrQlgo9IRBtjqp+4CwGkkgiJLMjzVKBOq09ulVnn9D4s+Y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=VsP/rTlA; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=qYQGwt2iUkt21IsKz/nq6Y4oby8gW/PgZC6aQk+g36xkbHo+AFg5hPb1/Zg7ov+T8WHUTqmdeQbK+p6eTGqm8ZI22nYku99RYccdMO2ZpGKbbyM8NQrmlaJ0llF0gtbmGpxIFEQ9U6kjR3SvREYtNuBJq59BI1NRJ/sUAk0zp+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=fnukwFJz; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,18 +36,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=TxnsToPeELm1rQ6uE9aXNYDEsYc9L9TF1br3cHSrCOM=; b=VsP/rTlABk1vmvL5bgl61Il/O5
-	ZFGvnO/XJG++TErxC5hFca0sTFgij5HZz74O2g6itQXcMLLXaAP1V2wSnFLuMjbbGoK4gayrcr19P
-	05DZ61hE7LmhDr/28cDYIAoZz6KHEPrb+ox5o8QcsvyxEHU9EU/Yfrs+afxaZuHCR5pqNQE0GKKDL
-	q1VUEIAVxi+/J3pUIgZSfnPYk6M5+OW0R9sc3xs1olpGa7dX7NTAzAfFxCZg80yPG2GdRrN/Dl/EL
-	unHZxybSS1y5qcilszkzSAN2KD0APAFmBqEC4Hyy789Bskjx3d1EdwG+uGbBkFO43BUntSzmb9zA/
-	nh3/K3Yw==;
+	bh=+hQ02ZsJbvhhhXA30y8P6qWQNd/mW3tXz98hNKXP74A=; b=fnukwFJzlbIPIP1QKCOTz1XX+i
+	AaTjBZOXPxGqQsBBxyf8BaB3LmwjOFLzItRkW0HcpRvqVRLAFrRRAWhhmwtGGIOhfDBtzFH0BCiyo
+	ZiAIat/eKklianq3b7OjHxcbsZReI8PexWO/+zABCDBqGU0CkUDNCaB39xk1Lz36ck1uqY0Bpuqis
+	ClrBWINiWwvy0xcM4RLB2KbYdklu77X5fvETNFaClt3ryvWi2+O586kw7tKm31u7FCadgZ+72LKon
+	y3luM/XCSzu6YIWKrmJvghv80IGboSFYUromWV/x5VS1dGyNXXLC2M1gnY1kel9sguKsWxeyPrMXO
+	kpqIfEYA==;
 Received: from localhost ([127.0.0.1])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1uzii3-000Nqv-1z;
-	Fri, 19 Sep 2025 23:32:03 +0200
+	id 1uzii4-000NrD-1i;
+	Fri, 19 Sep 2025 23:32:04 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -63,9 +63,9 @@ Cc: bpf@vger.kernel.org,
 	maciej.fijalkowski@intel.com,
 	magnus.karlsson@intel.com,
 	David Wei <dw@davidwei.uk>
-Subject: [PATCH net-next 09/20] xsk: Move NETDEV_XDP_ACT_ZC into generic header
-Date: Fri, 19 Sep 2025 23:31:42 +0200
-Message-ID: <20250919213153.103606-10-daniel@iogearbox.net>
+Subject: [PATCH net-next 10/20] xsk: Move pool registration into single function
+Date: Fri, 19 Sep 2025 23:31:43 +0200
+Message-ID: <20250919213153.103606-11-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250919213153.103606-1-daniel@iogearbox.net>
 References: <20250919213153.103606-1-daniel@iogearbox.net>
@@ -78,56 +78,87 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27767/Fri Sep 19 10:26:55 2025)
 
-Move NETDEV_XDP_ACT_ZC into xdp_sock_drv.h header such that external code
-can reuse it, and rename it into more generic NETDEV_XDP_ACT_XSK.
+Small refactor to move the pool registration into xsk_reg_pool_at_qid,
+such that the netdev and queue_id can be registered there. No change
+in functionality.
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Co-developed-by: David Wei <dw@davidwei.uk>
 Signed-off-by: David Wei <dw@davidwei.uk>
 ---
- include/net/xdp_sock_drv.h | 4 ++++
- net/xdp/xsk_buff_pool.c    | 6 +-----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ net/xdp/xsk.c           |  5 +++++
+ net/xdp/xsk_buff_pool.c | 16 +++-------------
+ 2 files changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 513c8e9704f6..47120666d8d6 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -12,6 +12,10 @@
- #define XDP_UMEM_MIN_CHUNK_SHIFT 11
- #define XDP_UMEM_MIN_CHUNK_SIZE (1 << XDP_UMEM_MIN_CHUNK_SHIFT)
- 
-+#define NETDEV_XDP_ACT_XSK	(NETDEV_XDP_ACT_BASIC |		\
-+				 NETDEV_XDP_ACT_REDIRECT |	\
-+				 NETDEV_XDP_ACT_XSK_ZEROCOPY)
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 72e34bd2d925..82ad89f6ba35 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -141,6 +141,11 @@ int xsk_reg_pool_at_qid(struct net_device *dev, struct xsk_buff_pool *pool,
+ 			      dev->real_num_rx_queues,
+ 			      dev->real_num_tx_queues))
+ 		return -EINVAL;
++	if (xsk_get_pool_from_qid(dev, queue_id))
++		return -EBUSY;
 +
- struct xsk_cb_desc {
- 	void *src;
- 	u8 off;
++	pool->netdev = dev;
++	pool->queue_id = queue_id;
+ 
+ 	if (queue_id < dev->real_num_rx_queues)
+ 		dev->_rx[queue_id].pool = pool;
 diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index aa9788f20d0d..26165baf99f4 100644
+index 26165baf99f4..375696f895d4 100644
 --- a/net/xdp/xsk_buff_pool.c
 +++ b/net/xdp/xsk_buff_pool.c
-@@ -158,10 +158,6 @@ static void xp_disable_drv_zc(struct xsk_buff_pool *pool)
- 	}
- }
+@@ -169,32 +169,24 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
  
--#define NETDEV_XDP_ACT_ZC	(NETDEV_XDP_ACT_BASIC |		\
--				 NETDEV_XDP_ACT_REDIRECT |	\
--				 NETDEV_XDP_ACT_XSK_ZEROCOPY)
+ 	force_zc = flags & XDP_ZEROCOPY;
+ 	force_copy = flags & XDP_COPY;
 -
- int xp_assign_dev(struct xsk_buff_pool *pool,
- 		  struct net_device *netdev, u16 queue_id, u16 flags)
- {
-@@ -203,7 +199,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
+ 	if (force_zc && force_copy)
+ 		return -EINVAL;
+ 
+-	if (xsk_get_pool_from_qid(netdev, queue_id))
+-		return -EBUSY;
+-
+-	pool->netdev = netdev;
+-	pool->queue_id = queue_id;
+ 	err = xsk_reg_pool_at_qid(netdev, pool, queue_id);
+ 	if (err)
+ 		return err;
+ 
+ 	if (flags & XDP_USE_SG)
+ 		pool->umem->flags |= XDP_UMEM_SG_FLAG;
+-
+ 	if (flags & XDP_USE_NEED_WAKEUP)
+ 		pool->uses_need_wakeup = true;
+-	/* Tx needs to be explicitly woken up the first time.  Also
+-	 * for supporting drivers that do not implement this
+-	 * feature. They will always have to call sendto() or poll().
++	/* Tx needs to be explicitly woken up the first time. Also
++	 * for supporting drivers that do not implement this feature.
++	 * They will always have to call sendto() or poll().
+ 	 */
+ 	pool->cached_need_wakeup = XDP_WAKEUP_TX;
+ 
+ 	dev_hold(netdev);
+-
+ 	if (force_copy)
  		/* For copy-mode, we are done. */
  		return 0;
- 
--	if ((netdev->xdp_features & NETDEV_XDP_ACT_ZC) != NETDEV_XDP_ACT_ZC) {
-+	if ((netdev->xdp_features & NETDEV_XDP_ACT_XSK) != NETDEV_XDP_ACT_XSK) {
+@@ -203,12 +195,10 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
  		err = -EOPNOTSUPP;
  		goto err_unreg_pool;
  	}
+-
+ 	if (netdev->xdp_zc_max_segs == 1 && (flags & XDP_USE_SG)) {
+ 		err = -EOPNOTSUPP;
+ 		goto err_unreg_pool;
+ 	}
+-
+ 	if (dev_get_min_mp_channel_count(netdev)) {
+ 		err = -EBUSY;
+ 		goto err_unreg_pool;
 -- 
 2.43.0
 
