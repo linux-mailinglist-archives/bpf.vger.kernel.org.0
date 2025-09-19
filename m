@@ -1,116 +1,150 @@
-Return-Path: <bpf+bounces-68927-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68928-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27E75B89467
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 13:29:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB716B8954F
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 13:57:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB0663BC34F
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 11:29:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96F281C278E0
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 11:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055C930DD10;
-	Fri, 19 Sep 2025 11:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A3E30DEA3;
+	Fri, 19 Sep 2025 11:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="baPpSguH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DzlEMCBM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6062D94BD
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 11:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED0030CB48;
+	Fri, 19 Sep 2025 11:57:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758281353; cv=none; b=VUiaVjQLXQh+c363FzCYRZ9Zbp6aQmQFebpwlcjP3ibx8nfhkSjl6CkV0463kK2js4dG8t7HttIUxxCE1n15aG3YX8g/PEG4tXwTze2y0iz5uTar4WsrLKUX76mW4MJ68B+w1DzAWIID1g5T0aMkdA5lOuKQAQ/bDUOG+QWAxbQ=
+	t=1758283062; cv=none; b=Ugm6QqxEDBrABCS2UlDvk9YpvdbeBapXWuHafmyvfFbK/K+75IsurtnDphUtcbqfZuu4pJ6puwu+416ZAl0cgd9fSxcoQY1N4V54WZv6XZTBRMOKX7OzAnti+g1IvdOteeb9JKYIoQ8Dgcy5WqyvWa610sj2dNRrTJ+hRWxotAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758281353; c=relaxed/simple;
-	bh=hoyRD8cY6+eAWp0Ym0oqTHL+yd0Dp6KCPwO2D3eCKJ0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Er1ysE7YdDdCFC8QufMrlpRk05L13TcDQicCWqkv1kVQVHFZ/Xo7D2njNAC2cASh7pyaHmL5dJrB38VRWewTkElIYrGY6TgTBxmijDPTjEipWUwSsQ36znnnqk6y+hb/20ZvretHM1Yl0Wnc8DbzhUeiTssd1Ok77HtfX24Zp0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=baPpSguH; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-ea473582bcaso3457005276.1
-        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 04:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1758281351; x=1758886151; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=G7lPhtBvPOvEeVY2Tw1J4kWk3fxAvD+cbqglxKZ4L5k=;
-        b=baPpSguH8CfCw51lUwZAi/EBle9vHTKVGZghlCMQ1aSKCDkTGXSnMyt62sqhIOYLVS
-         D2aspQ7wqNL2Y26urF7lCY1dj5WPs4rn5BcMWF7RO2/qTm/0iFeUz3eRBDDTA4et8BSO
-         cLeLBSh5Nyiss4zTJB1iOP4xJLl39Rv4eTrSEKeYRBY/0oCiTLxwKeWxqqWoLgRM3Pes
-         VUOMydwke5rpcTX/SXmG+SP8E/8FEbq1QEeZM6XS5HwiAnY0ofy99NXCADBZkI3JSQ+/
-         o9vFxrAX/w6cfdbLcbBZSx0ZUj6AHIeWDL/4lOQhtxgiP/XCo0A050JmuoOgHeb8mPc4
-         7TLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758281351; x=1758886151;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G7lPhtBvPOvEeVY2Tw1J4kWk3fxAvD+cbqglxKZ4L5k=;
-        b=Ba+jHtvdPJRfIXSoaYN52FOHemP+fXc5zcbDpZ6yIRTDOeNIWP8OLndE3OXtsds58a
-         R3dPXZI9Fh094pvTI8cdvlMroyDm81I4+oX9LPe70WeCdvqxZCRfV6TmHjtyU+20kAKH
-         +OCVkGeE/2eTEhWXGGxmKJX9PEeERa1hA4xvibaJwosqtbkNgWxN/eItfdy+Zlisqm9X
-         aKL5SUS01g9/P+KZcp0DXMKtYBaFws5W8235w1R6VBCeDPOJujqcgHGM/QuOva9DHFBx
-         7g53ppvKpKKcDUsNm5TdPm8/VMSQSJY2LjYmQcw2LUcHKzwSBq6clKXhWgjuWAR72Un3
-         zepg==
-X-Forwarded-Encrypted: i=1; AJvYcCUdLtdQexXxdFqNFy/ruuWQQEV0bXxJHhcNiuiSHpDIikwS1HuQ73JrYd7wDivbsmSx5Y4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwtXDc8hZEnDgI5NMNehTvqkt4xuNwBz3PMp8upcBG/xCYIkH+8
-	rhLeZiAM0nmNZ/0QG7v4bY3kg55F9dFCCVpTpeFjy/uXxNi5MQcukWIcPC9521BY4bIs1h9kzRq
-	cIk3f
-X-Gm-Gg: ASbGncu69ydXg8A9P8LmCAOOgTjDbpiBI2ZYZ9kr9UMmxTQ6mI+tYlEt/kr/7R99/js
-	NLO0Uj5QssnXjw18J8FmwYJmzcoy07bTRUGbCJsAZ9xB4vgi5JHzPq0dGf244xKPhgQwHXi68XE
-	XupIIo4cMWTR/l/PqEUAbS8co33mrZ16fBdFYhVrrow6r2rEHvk3OWq+WG2b+VD0Qz6lerLLy3L
-	Xme654sNq5NmL7PA0XHH4Zx7zMJAWG3mk+d4trSQv/RckScf0DHSlrStUKdc71B5KWDBjSgoKgm
-	9ghjKWYgQvaJUVSFMhDLuDiBtRYs0Redv8fTrs6xvS9Xa6VoUELgaYq3sWaPmIIXOtpVm9jserX
-	dcXoNj+4sSP1CgQ==
-X-Google-Smtp-Source: AGHT+IG343kCVS+/qgurkYvvVqrq3Jkl6cJnzpfAyvWHus5fb7J8doUVLBe/IYPk5awTCYhicojNVg==
-X-Received: by 2002:a05:690c:9506:b0:733:aa00:3860 with SMTP id 00721157ae682-739708ca5b2mr47901377b3.23.1758281350992;
-        Fri, 19 Sep 2025 04:29:10 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac6:d677:2432::39b:31])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-739716bdc47sm13585717b3.12.2025.09.19.04.29.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Sep 2025 04:29:10 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
- KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman <eddyz87@gmail.com>,
-  Song Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,
-  John Fastabend <john.fastabend@gmail.com>,  KP Singh
- <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao Luo
- <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Mykola Lysenko
- <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>,  bpf@vger.kernel.org,
-  linux-kselftest@vger.kernel.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/5] selftests/bpf: sockmap_redir: Fix OOB
- handling
-In-Reply-To: <01f6c3f5-be73-4505-8a34-212dee30b5fc@rbox.co> (Michal Luczaj's
-	message of "Fri, 5 Sep 2025 13:19:46 +0200")
-References: <20250905-redir-test-pass-drop-v1-0-9d9e43ff40df@rbox.co>
-	<20250905-redir-test-pass-drop-v1-2-9d9e43ff40df@rbox.co>
-	<01f6c3f5-be73-4505-8a34-212dee30b5fc@rbox.co>
-Date: Fri, 19 Sep 2025 13:29:08 +0200
-Message-ID: <87348iu1dn.fsf@cloudflare.com>
+	s=arc-20240116; t=1758283062; c=relaxed/simple;
+	bh=Lcy/LWJQGp1/4CfwoBEK/ZhTJbVy7tMzyjNO9hVTaMU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Kz5E4C0Tgbc97XCD72RfNDhizpGTYwlYqqLj6OB/lDPSs15QC/z72Aqy1GCmAlOrmOEEW82lCX966m73T7ftNG1L6JUwZm6rBq+XAZUuGW2gBAQ69aRd9N4uqH63YsQ32VAv+gGMHP67uLrwJGb+dFe8vFf7TMf7SioSP3+jvYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DzlEMCBM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B10BC4CEF0;
+	Fri, 19 Sep 2025 11:57:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758283062;
+	bh=Lcy/LWJQGp1/4CfwoBEK/ZhTJbVy7tMzyjNO9hVTaMU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=DzlEMCBMTdGBAMyDFjAFalB2ZZnO8+6CUxsS5eJYbk7dUBh96KvFwC7fbALMHqdfE
+	 erRyehOSNupMvxnpg2zQglmHtRZ29+VerLJQl7RsKLS9XvafqULUPB8vqeFdhytodS
+	 PLWwd77MHueYpfG1AC3PbfRy/hC9Pgw6jJ9rVgI1FZKeptKgaeOF82Cm1ybMxhYCEI
+	 GXYm3e7st+lVz/3miMX6Zco386UoSRYuL98drNowG34PXORFLF5Zd/oAxqrokYsJiH
+	 YdMj4Gu11Ryff8yvgrHhdifJP1i6FuR9mHaMnRiijDhF7Z2Ec6bbO8WfPrCLqQF81T
+	 2QlhRhlWazKZA==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@kernel.org>,
+	Menglong Dong <menglong8.dong@gmail.com>
+Cc: jolsa@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	kees@kernel.org,
+	samitolvanen@google.com,
+	rppt@kernel.org,
+	luto@kernel.org,
+	mhiramat@kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH] tracing: fgraph: Protect return handler from recursion loop
+Date: Fri, 19 Sep 2025 20:57:36 +0900
+Message-ID: <175828305637.117978.4183947592750468265.stgit@devnote2>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
+References: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 05, 2025 at 01:19 PM +02, Michal Luczaj wrote:
-> On 9/5/25 13:11, Michal Luczaj wrote:
->> In some test cases, OOB packets might have been left unread. Flush them out
->> and introduce additional checks.
->> 
->> Signed-off-by: Michal Luczaj <mhal@rbox.co>
->
-> Sorry, this should also have:
->
-> Fixes: f0709263a07e ("selftests/bpf: Add selftest for sockmap/hashmap
-> redirection")
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-I'm not sure if we're backporting selftest changes to stable.
+function_graph_enter_regs() prevents itself from recursion by
+ftrace_test_recursion_trylock(), but __ftrace_return_to_handler(),
+which is called at the exit, does not prevent such recursion.
+Therefore, while it can prevent recursive calls from
+fgraph_ops::entryfunc(), it is not able to prevent recursive calls
+to fgraph from fgraph_ops::retfunc(), resulting in a recursive loop.
+This can lead an unexpected recursion bug reported by Menglong.
+
+ is_endbr() is called in __ftrace_return_to_handler -> fprobe_return
+  -> kprobe_multi_link_exit_handler -> is_endbr.
+
+To fix this issue, acquire ftrace_test_recursion_trylock() in the
+__ftrace_return_to_handler() after unwind the shadow stack to mark
+this section must prevent recursive call of fgraph inside user-defined
+fgraph_ops::retfunc().
+
+This is essentially a fix to commit 4346ba160409 ("fprobe: Rewrite
+fprobe on function-graph tracer"), because before that fgraph was
+only used from the function graph tracer. Fprobe allowed user to run
+any callbacks from fgraph after that commit.
+
+Reported-by: Menglong Dong <menglong8.dong@gmail.com>
+Closes: https://lore.kernel.org/all/20250918120939.1706585-1-dongml2@chinatelecom.cn/
+Fixes: 4346ba160409 ("fprobe: Rewrite fprobe on function-graph tracer")
+Cc: stable@vger.kernel.org
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ kernel/trace/fgraph.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index 1e3b32b1e82c..08dde420635b 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -815,6 +815,7 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+ 	unsigned long bitmap;
+ 	unsigned long ret;
+ 	int offset;
++	int bit;
+ 	int i;
+ 
+ 	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer, &offset);
+@@ -829,6 +830,15 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+ 	if (fregs)
+ 		ftrace_regs_set_instruction_pointer(fregs, ret);
+ 
++	bit = ftrace_test_recursion_trylock(trace.func, ret);
++	/*
++	 * This must be succeeded because the entry handler returns before
++	 * modifying the return address if it is nested. Anyway, we need to
++	 * avoid calling user callbacks if it is nested.
++	 */
++	if (WARN_ON_ONCE(bit < 0))
++		goto out;
++
+ #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
+ 	trace.retval = ftrace_regs_get_return_value(fregs);
+ #endif
+@@ -852,6 +862,8 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+ 		}
+ 	}
+ 
++	ftrace_test_recursion_unlock(bit);
++out:
+ 	/*
+ 	 * The ftrace_graph_return() may still access the current
+ 	 * ret_stack structure, we need to make sure the update of
+
 
