@@ -1,156 +1,137 @@
-Return-Path: <bpf+bounces-68884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84977B87AF8
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 04:08:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861B0B87B32
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 04:17:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4713A1C249E3
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 02:08:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 248D53B68B3
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 02:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D6724167B;
-	Fri, 19 Sep 2025 02:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 786FB244693;
+	Fri, 19 Sep 2025 02:17:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dM/y0rd8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uQ1+JcVA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A2B1E5B7B;
-	Fri, 19 Sep 2025 02:08:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82E7273F9
+	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 02:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758247707; cv=none; b=mfppu3j5Ss2Xt/mZ7o15haTsQUW8DbbqbrOGHRAtrVtbpc4s30kQzkDeWBPRP0Vcolw3iyshYj+5HpBuTkPxHTgONBIDEce6sBDw3ZAr7fhNMoMIabprFjVQ4i7T1rvE69rZAs8vO7Br3F7zORtUSCky3zcrhDCyYN3/HsOF7kI=
+	t=1758248273; cv=none; b=EKWsAZnJffuU1tk4mIH+bAZgq1YiJ4F2ItVxbBfhe3oTOtX9OKCAYYAVuEjCE+OqF45imsyeH1eZ5iiqRLasJmwfiWcpcTBATR2It2mMHe8g92hO6eo5BTVD4N8L18oQBPuLU2Q+zm/1TtBUSqvrKI1EHx0oHOb+xI37dX/QK50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758247707; c=relaxed/simple;
-	bh=5O+SIGhkMyMmuCiwUMfFEw1KmCrM/gjkalNI7yAalyM=;
+	s=arc-20240116; t=1758248273; c=relaxed/simple;
+	bh=8/9X/yl89henGnUcBx4/BE+c1JkAukEdDa3OSuQkd2U=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YmoiG4O2P5QTO3N/PoUWApxdOJg2aWINJ9219ebYs80epl3JFizjUjW9EEgo6F0e/ugNA9J4wJ/p1Q/jY3I5I/Nvby1UVPlsyR/EEF4itx1YPjXrcT8D6In2VtnwzbRO7psmRJqv+7FfwqPtDE9jLI20PYfg1T4jwqBleB8363g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dM/y0rd8; arc=none smtp.client-ip=95.215.58.172
+	 In-Reply-To:Content-Type; b=AVSQ4dEM/yGzUdd/iagt0lWTDPgN+3Lo34feeGvWdNSjuoFAlwT+wDwpRp7vKBH0KHKmi4OmXhrnFl0sTY+hNqUxJkNifUSl4/V/TFEb2pMxI4IOj7KA+9rehfhov7Jnm1z8BOyDC8ij3OG+qgLXT2mPCJjlFJtkMnKSJHgS1Ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uQ1+JcVA; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f2fd90a9-bc7d-43b8-ac5e-9d233219dcfb@linux.dev>
+Message-ID: <ef942138-7318-4ac9-bf53-ec646c426c82@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758247702;
+	t=1758248268;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7tZscgbFVsEFOWM0JAk5UA5kEEjC9yHFCKayOOMGeKM=;
-	b=dM/y0rd8XN5hSogJYtcmrpiytG/B6jbviWIcMucYxiDU3b1yJTlyCT0X+jucrJ/QgUed6g
-	onPmGzhRRIFX9XzGqQjMMlQRv960fJ9ASYAOlp/RJWvuTzrl88Ljcnay1iuxsr2SFTZpRl
-	YfT1lUxkRHP+pwD60Ooij/AclXkWdLM=
-Date: Fri, 19 Sep 2025 10:08:12 +0800
+	bh=QND3Wr17IEapmHXCoB1iRboFSwrJThe5CdhfJG8oOGY=;
+	b=uQ1+JcVATbyCSETKErS/bSDdzEsha2vI15YCaBeT0csK7FNUNjxgmWj4uE6UHKeH9h/yNm
+	s2nUCzqf1Q6IraYoeUCfsvcXpBZBj8YmZutdZI6r8HMMCdv0iozIkf3tvPsWYZE1y695FM
+	HuCsFRYxCPNLQYoej/R6gG1wpYiWZq0=
+Date: Fri, 19 Sep 2025 10:17:41 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add lookup_and_delete_elem for
- BPF_MAP_STACK_TRACE
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20250909163223.864120-1-chen.dylane@linux.dev>
- <CAEf4BzZ2Fg+AmFA-K3YODE27br+e0-rLJwn0M5XEwfEHqpPKgQ@mail.gmail.com>
- <CAADnVQ+s8B7-fvR1TNO-bniSyKv57cH_ihRszmZV7pQDyV=VDQ@mail.gmail.com>
- <457b805f-ea5c-460e-b93f-b7b63f3358af@linux.dev>
- <CAADnVQLwV=fUkgLF3uTmevA97WX2FH4vG-7=97Px0H_WJOJieQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/2] bpftool: Fix UAF in get_delegate_value
+To: Quentin Monnet <qmo@kernel.org>, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250918120908.1255263-1-chen.dylane@linux.dev>
+ <20250918120908.1255263-2-chen.dylane@linux.dev>
+ <226947cd-a28d-4c09-81cb-0fa0a21c7075@kernel.org>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAADnVQLwV=fUkgLF3uTmevA97WX2FH4vG-7=97Px0H_WJOJieQ@mail.gmail.com>
+In-Reply-To: <226947cd-a28d-4c09-81cb-0fa0a21c7075@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-在 2025/9/19 10:01, Alexei Starovoitov 写道:
-> On Thu, Sep 18, 2025 at 6:35 AM Tao Chen <chen.dylane@linux.dev> wrote:
+在 2025/9/19 04:07, Quentin Monnet 写道:
+> 2025-09-18 20:09 UTC+0800 ~ Tao Chen <chen.dylane@linux.dev>
+>> The return value ret pointer is pointing opts_copy, but opts_copy
+>> gets freed in get_delegate_value before return, fix this by free
+>> the mntent->mnt_opts strdup memory after show delegate value.
 >>
->> 在 2025/9/18 09:35, Alexei Starovoitov 写道:
->>> On Wed, Sep 17, 2025 at 3:16 PM Andrii Nakryiko
->>> <andrii.nakryiko@gmail.com> wrote:
->>>>
->>>>
->>>> P.S. It seems like a good idea to switch STACKMAP to open addressing
->>>> instead of the current kind-of-bucket-chain-but-not-really
->>>> implementation. It's fixed size and pre-allocated already, so open
->>>> addressing seems like a great approach here, IMO.
->>>
->>> That makes sense. It won't have backward compat issues.
->>> Just more reliable stack_id.
->>>
->>> Fixed value_size is another footgun there.
->>> Especially for collecting user stack traces.
->>> We can switch the whole stackmap to bpf_mem_alloc()
->>> or wait for kmalloc_nolock().
->>> But it's probably a diminishing return.
->>>
->>> bpf_get_stack() also isn't great with a copy into
->>> perf_callchain_entry, then 2nd copy into on stack/percpu buf/ringbuf,
->>> and 3rd copy of correct size into ringbuf (optional).
->>>
->>> Also, I just realized we have another nasty race there.
->>> In the past bpf progs were run in preempt disabled context,
->>> but we forgot to adjust bpf_get_stack[id]() helpers when everything
->>> switched to migrate disable.
->>>
->>> The return value from get_perf_callchain() may be reused
->>> if another task preempts and requests the stack.
->>> We have partially incorrect comment in __bpf_get_stack() too:
->>>           if (may_fault)
->>>                   rcu_read_lock(); /* need RCU for perf's callchain below */
->>>
->>> rcu can be preemptable. so rcu_read_lock() makes
->>> trace = get_perf_callchain(...)
->>> accessible, but that per-cpu trace buffer can be overwritten.
->>> It's not an issue for CONFIG_PREEMPT_NONE=y, but that doesn't
->>> give much comfort.
+>> Fixes: 2d812311c2b2 ("bpftool: Add bpf_token show")
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   tools/bpf/bpftool/token.c | 90 +++++++++++++++------------------------
+>>   1 file changed, 35 insertions(+), 55 deletions(-)
 >>
->> Hi Alexei,
->>
->> Can we fix it like this?
->>
->> -       if (may_fault)
->> -               rcu_read_lock(); /* need RCU for perf's callchain below */
->> +       preempt_diable();
->>
->>           if (trace_in)
->>                   trace = trace_in;
->> @@ -455,8 +454,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
->> struct task_struct *task,
->>                                              crosstask, false);
->>
->>           if (unlikely(!trace) || trace->nr < skip) {
->> -               if (may_fault)
->> -                       rcu_read_unlock();
->> +               preempt_enable();
->>                   goto err_fault;
->>           }
->>
->> @@ -475,9 +473,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
->> struct task_struct *task,
->>                   memcpy(buf, ips, copy_len);
->>           }
->>
->> -       /* trace/ips should not be dereferenced after this point */
->> -       if (may_fault)
->> -               rcu_read_unlock();
->> +       preempt_enable();
+>> diff --git a/tools/bpf/bpftool/token.c b/tools/bpf/bpftool/token.c
+>> index 82b829e44c8..20c4c78a8a8 100644
+>> --- a/tools/bpf/bpftool/token.c
+>> +++ b/tools/bpf/bpftool/token.c
 > 
-> That should do it. Don't see an issue at first glance.
+> 
+>> @@ -69,38 +73,29 @@ static void print_items_per_line(const char *input, int items_per_line)
+>>   		printf("%-20s", str);
+>>   		cnt++;
+>>   	}
+>> -
+>> -	free(strs);
+>>   }
+>>   
+>>   #define ITEMS_PER_LINE 4
+>>   static void show_token_info_plain(struct mntent *mntent)
+>>   {
+>> -	char *value;
+>> +	char *opts, *value;
+> 
+> 
+> Thank you! I just have style nits: can you move the declaration of
+> "opts" and "value" inside of the for loop, please? They're not used
+> outside of it.
+>
 
-Ok, i will send a patch later, thanks.
+No problem, will change it in v4, thanks.
 
+> 
+>>   
+>>   	printf("token_info  %s", mntent->mnt_dir);
+>>   
+>> -	printf("\n\tallowed_cmds:");
+>> -	value = get_delegate_value(mntent->mnt_opts, "delegate_cmds");
+>> -	print_items_per_line(value, ITEMS_PER_LINE);
+>> -
+>> -	printf("\n\tallowed_maps:");
+>> -	value = get_delegate_value(mntent->mnt_opts, "delegate_maps");
+>> -	print_items_per_line(value, ITEMS_PER_LINE);
+>> -
+>> -	printf("\n\tallowed_progs:");
+>> -	value = get_delegate_value(mntent->mnt_opts, "delegate_progs");
+>> -	print_items_per_line(value, ITEMS_PER_LINE);
+>> +	for (size_t i = 0; i < ARRAY_SIZE(sets); i++) {
+> 
+> 
+> And could you please move the declaration of variable "i" to the top of
+> the function, for consistency with the rest of the code?>
+
+also will change it in v4, thanks.
+
+> Same comments for the JSON function.
+> 
+> Thanks,
+> Quentin
 -- 
 Best Regards
 Tao Chen
