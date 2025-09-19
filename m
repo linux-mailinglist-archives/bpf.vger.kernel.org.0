@@ -1,112 +1,155 @@
-Return-Path: <bpf+bounces-68911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BED6B88052
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 08:46:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9204EB88121
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 08:59:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D23103A9872
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 06:46:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC3F47B6D75
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 06:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD3925A33A;
-	Fri, 19 Sep 2025 06:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56BC277C95;
+	Fri, 19 Sep 2025 06:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P6pYNDbX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JOFEOp7g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99AEA221294
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 06:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBCF525A33A
+	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 06:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758264409; cv=none; b=sZzbnq3FP0xI+WhSgWo5BEAadui36Le7LgqyhJJJWd6bqgRPOj9N83WhsfkoFlyiRkVkCUk+edi49E2OGcGICJPcf3cRPic6CPDkAEMltUButw3ZqilIZ82wazj0QIeJXHeKoqyai2CKOMkRM2OMXmkzt4TqfFIHFJqV+Y4oJD0=
+	t=1758265160; cv=none; b=MP/PPPkErFoBH3GP+E02KVctPVRgjnJQgMjptWQUwjsEWLTLkH5pbZMyJZC8TeP7FTsf2c9N0c/EapakkXnzLouk5Ooxcg8yU9sMj2p+W+ANZud35GKUn66KMLwLD+NpxjmQc41KGeXFVFmfFvVlmCCAgWY/t5TaZLP3etmf/jY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758264409; c=relaxed/simple;
-	bh=tiwJc2DbcE23uybIVlR444JTUoVRrHB+WBciYS4uQJw=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=G7LglAmc2oDdVTv4pMnaO8Ab274HUMan9gLKZ9A8HPoVavN7l7zlUhdG3VzW99/am8uP6kgAttEnXrwkMyjdPimrE5RqOdnjkYFZVt5f8EQG/1/EJaO9Udrzl1CNqOhPaOhxTKZIytF6iPQH4XNFGytGBfT7yEesMAoDPnbZ0j0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P6pYNDbX; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1758265160; c=relaxed/simple;
+	bh=wnxEozwp9Bdep39+GjvGOAZnBoHTXYEdsD/ceiqfLXw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h6FYeYMScSiU8Vviec5yLrcA+hxsVA92zLBKLKCGZIhdoBSJwyf2nUjKvI0uqtD+w+rcu7sQ3YYBKz3gozrXXdT0coigF3o8vnZXhT78XqHc8negDAdcUFarqW7CAgV0szaG9I9oIHjzUVKfUqoe9EXRKrDWpqbGanwYHIGcqK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JOFEOp7g; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-24456ce0b96so20220735ad.0
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 23:46:47 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-45cb6428c46so16657705e9.1
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 23:59:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758264407; x=1758869207; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tiwJc2DbcE23uybIVlR444JTUoVRrHB+WBciYS4uQJw=;
-        b=P6pYNDbXsUKAiwk+XAGWZUWsmYBZWeheTAJ0dnkELLlwWCdC7WSluyApW7KhBsoz9b
-         omoChrK4ChRrWW+gA5a4Vi/G1zZHCpi5WflHo4R+U36+DLk7bj29cf9Z+o3kB28GUXaP
-         NToBGpW47xlezhedXr54JsIB25LxmKsCzfqOdo2Q/ZbKh9g6Dg1YAZHvt9z2tAtYSkHL
-         9et236dhHEULseGU4DyLSWarWmeUUAG23h5uHA8es94KrisOdDhEHjRrikhYI5Q8Zn5l
-         bQKCpTG2nHokoLsAICVxSyi7K7g4GkinQC3TmLntxfjr2gMz4a7E+EG9RGiP1ExvEUvb
-         /upg==
+        d=gmail.com; s=20230601; t=1758265157; x=1758869957; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=e2xeMqnFot671S/pDE72VnBUeGHxy+CYGfl6qJaAdas=;
+        b=JOFEOp7gt2uy6brD2RiArH7lx8UUZlfryV39y07Doh0qd44a2wesjaJSc1b5DWPpX4
+         iJ9EAWRZgt/VmsLHhKuhQEd7otnNdnnP/+2AjIA7hf6ly5QA3SfSO0TYJ5nSgGVpRsB/
+         Hxy8HsG+aVu9j1zESzQ5woFXO9P9h/Azlqo0bROjYebgXp83xMibFBuI4q3rF+yJJWfm
+         IaEI9gIA94z70qWQa6wfeH0iSARx16MLYboUfDo16nvgXDEFeKzkiyi3cjF9zFK8qBZb
+         5rIw71fYYvXg5/nxwxGXJm8EWpqrl5L5reZGhB8g+FdQrxIxn2rn1SfJcKU4d/y9P1bL
+         ceRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758264407; x=1758869207;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=tiwJc2DbcE23uybIVlR444JTUoVRrHB+WBciYS4uQJw=;
-        b=SB+ZPbZii5599cTF4Vp00lquPWP2z69PDNhlCzAEkmvy2iRuccyKH2OIub74KBBtmI
-         MKIgzfdrOgmRb98uXYXArBqdVbwXhtsTPxnzZHEPCj7eO1rIE6/17012K2mPCpXWERyi
-         1f0yopBmD3IKNiknc0KzZhceYqH8RJj+mHe5rapXAjekzPFfNNtgFZs88VKD0BfxXgP5
-         Tfm5SoBrFojTpNdSnW7KcKmIfc1DEgOzA9ES1pNwzTXtTLMo5WAPFOYBrLssY1C+T4qo
-         AU8I/5dctsalSCM9xN1OKmVdUMvvCyiaofTP0X4ZTBY1V4LWcY6oZLA5F64Y+xywchvV
-         b+hA==
-X-Forwarded-Encrypted: i=1; AJvYcCUXmqiPar5cT6C33GfArDLtAMqs4c1USqw4cPfdG9brhRQ1yMVXacHpgrNJRII/JAVo1XI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzE++TlYmYC2WYnmbixPD2JivK8BRk0bVOcm1gv8ZhzelOJ1u0X
-	QXyWEYq4bMbeCrS5aROy+sSFBYo1i/Bt4TaaSd89EpWFGVyapf6nLGwq
-X-Gm-Gg: ASbGncs8SiL/148pEhLuDYomxkJsgzKaPe1hTJREnkUKWGf13qvwzqES291fobg5cmI
-	Q84M0yZD/LT6zUAjtpfH0XuhOvsYvWQ63wsWS0rziOJuaPcNGkTaJstZgrQnjTkk53Kr+dn1XAg
-	qSXLE7MWq6c1D8zeR4A3Pb9nDg5RmTzupMjZ8Dhtc1Vxb2qYp7lRKOfJhsY2pZrOhdjUSLcorM7
-	3r/9sqZ2+q5azkBrrnlS6lGownLqr8HKqpMOFj/ZOp2UWhOsLq9lInyMGuTTKPJ6JWZ4/N9Vn5S
-	CSkE2oh7FIBzuOW5TEGO8Rcw1we0eypWGAGt6Ur5eyFjLBUpEHsp7lzVE/Vn7R/JYs1Gnm9s7td
-	W16IIatdYlORLRJH8n5k=
-X-Google-Smtp-Source: AGHT+IH30pwfkRtYtRoDAkk0F0GDT8+fwCzlBoSaAujLDgKbpnTFrdDytXimnyhVlb/JE1B06URrqg==
-X-Received: by 2002:a17:902:fc8f:b0:248:aa0d:bb22 with SMTP id d9443c01a7336-269b6ca3806mr39319955ad.0.1758264406781;
-        Thu, 18 Sep 2025 23:46:46 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-26980302b20sm44880095ad.101.2025.09.18.23.46.46
+        d=1e100.net; s=20230601; t=1758265157; x=1758869957;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e2xeMqnFot671S/pDE72VnBUeGHxy+CYGfl6qJaAdas=;
+        b=mrR8htZGz4EKwlzwgPefX/fbw+/6QNUTvxirh3ZyDK398jnoNkfh064w9go+KADCFr
+         UozQkiwyiwFd+qQMrqrQLdZvshKX21ZwHtc4rvjcJ+BWXZykeAQ6lgRy8zdbkYswBMH/
+         5eiCtwE2E5L4IetuuoPv6f35xfphQszx4+9nDhLkS85hT6LJLRL0DMAQW3r6uejXwjPF
+         3SMYqWYaMy/obiZ/vdorc5MDZFdxpQvRZWuUW9reGNEmB35mNNUKQBvUpDBIb6eCpyDR
+         hkHeaJrzZ6Ak5TJWuUBzJ5JYFQoRkkxnmxr1Zwc0imj34jMboqC9KBdK9PQEOmQ6j6Ig
+         C4fw==
+X-Gm-Message-State: AOJu0YxmP9pq7yoyyyM0qeqb+zfaNcpxWNwLYEAvwCN35LotqlYmTSwE
+	l7jUEJLh570AMNA4zzVVr01VN8w+lK9EBM5k8WB1zbJaloGT9PJAmYWw
+X-Gm-Gg: ASbGncuUj1zSc22cJ1zR5aYZUpW02r312b3Mqv2C4rayWsDTc50YeVOXg9/LDYm1/YR
+	MbyO8rwOKfhcQO04qD7fQP4trAdhtXG0z4/4N57IwT0yum+V7cU5WSvN7QeNYvC1bK4/4nNUDBw
+	tNPwpQy5USaFzRCvGTQueFlw+Z4oxq7hCYQavpJRZK/ELRJ8PFNfad0lm3+Vu9oFrI25ZRmJW2a
+	pkSHJr71UxtGh8z7ySkpCtg3Tt5Asx2iNSviFZFffouGG3mNNWk/DhCskEZ0I4SRIQSa3aFFEP9
+	6riE97Jt6oRN52yaOSGMVOY7lHzpa11aUm9zP0GEBMAKQ7+yw6ejEAAkmrFYOhjzzS/IqtwdagG
+	M0M3ZmU2cnzCG8o2b/kuau2gtWCwVMq96
+X-Google-Smtp-Source: AGHT+IFeOyrhaQsM68kUMkBHtoUSbKNiK3ijMPiMdG4hpNFynfd3mFSDsf8pyqgyGH6AfJRNnbOlYw==
+X-Received: by 2002:a05:600c:4743:b0:45b:7d24:beac with SMTP id 5b1f17b1804b1-467e6f36818mr17413215e9.10.1758265156752;
+        Thu, 18 Sep 2025 23:59:16 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-460942b6c3csm65928605e9.1.2025.09.18.23.59.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Sep 2025 23:46:46 -0700 (PDT)
-Message-ID: <938446871de1d0b91ca7eb56dd75442b1d58b4b4.camel@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 00/13] BPF indirect jumps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
- Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
- Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Date: Thu, 18 Sep 2025 23:46:43 -0700
-In-Reply-To: <20250918093850.455051-1-a.s.protopopov@gmail.com>
+        Thu, 18 Sep 2025 23:59:16 -0700 (PDT)
+Date: Fri, 19 Sep 2025 07:05:28 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Quentin Monnet <qmo@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH v3 bpf-next 05/13] bpf: support instructions arrays with
+ constants blinding
+Message-ID: <aM0AuFAnqGJgI0Kf@mail.gmail.com>
 References: <20250918093850.455051-1-a.s.protopopov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+ <20250918093850.455051-6-a.s.protopopov@gmail.com>
+ <0be32d7a07dbcc54b77fe8d9ffd283977126c0ff.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0be32d7a07dbcc54b77fe8d9ffd283977126c0ff.camel@gmail.com>
 
-On Thu, 2025-09-18 at 09:38 +0000, Anton Protopopov wrote:
-> This patchset implements a new type of map, instruction set, and uses
-> it to build support for indirect branches in BPF (on x86). (The same
-> map will be later used to provide support for indirect calls and static
-> keys.) See [1], [2] for more context.
+On 25/09/18 11:35PM, Eduard Zingerman wrote:
+> On Thu, 2025-09-18 at 09:38 +0000, Anton Protopopov wrote:
+> 
+> [...]
+> 
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index a7ad4fe756da..5c1e4e37d1f8 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -21578,6 +21578,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+> >  	struct bpf_insn *insn;
+> >  	void *old_bpf_func;
+> >  	int err, num_exentries;
+> > +	int old_len, subprog_start_adjustment = 0;
+> >  
+> >  	if (env->subprog_cnt <= 1)
+> >  		return 0;
+> > @@ -21652,7 +21653,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+> >  		func[i]->aux->func_idx = i;
+> >  		/* Below members will be freed only at prog->aux */
+> >  		func[i]->aux->btf = prog->aux->btf;
+> > -		func[i]->aux->subprog_start = subprog_start;
+> > +		func[i]->aux->subprog_start = subprog_start + subprog_start_adjustment;
+> >  		func[i]->aux->func_info = prog->aux->func_info;
+> >  		func[i]->aux->func_info_cnt = prog->aux->func_info_cnt;
+> >  		func[i]->aux->poke_tab = prog->aux->poke_tab;
+> > @@ -21705,7 +21706,15 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+> >  		func[i]->aux->might_sleep = env->subprog_info[i].might_sleep;
+> >  		if (!i)
+> >  			func[i]->aux->exception_boundary = env->seen_exception;
+> > +
+> > +		/*
+> > +		 * To properly pass the absolute subprog start to jit
+> > +		 * all instruction adjustments should be accumulated
+> > +		 */
+> > +		old_len = func[i]->len;
+> >  		func[i] = bpf_int_jit_compile(func[i]);
+> > +		subprog_start_adjustment += func[i]->len - old_len;
+> > +
+> >  		if (!func[i]->jited) {
+> >  			err = -ENOTSUPP;
+> >  			goto out_free;
+> 
+> This change makes sense, however, would it be possible to move
+> bpf_jit_blind_constants() out from jit to verifier.c:do_check,
+> somewhere after do_misc_fixups?
+> Looking at the source code, bpf_jit_blind_constants() is the first
+> thing any bpf_int_jit_compile() does.
+> Another alternative is to add adjust_subprog_starts() call to this
+> function. Wdyt?
 
-With this patch-set on top of the bpf-next at commit [1],
-I get a KASAN bug report [2] when running `./test_progs -t tailcalls`.
-Does not happen w/o this series applied.
-Kernel is compiled with gcc 15.2.1, selftests are compiled with clang
-20.1.8 (w/o gotox support).
-
-[1] 3547a61ee2fe ("Merge branch 'update-kf_rcu_protected'")
-[2] https://gist.github.com/eddyz87/8f82545db32223d8a80d2ca69a47bbc2
-
-[...]
+Yes, it makes total sense. Blinding was added to x86 jit initially and then
+every other jit copy-pasted it.  I was considering to move blinding up some
+time back (see https://lore.kernel.org/bpf/20250318143318.656785-1-aspsk@isovalent.com/),
+but then I've decided to avoid this, as this requires to patch every JIT, and I
+am not sure what is the way to test such a change (any hints?)
 
