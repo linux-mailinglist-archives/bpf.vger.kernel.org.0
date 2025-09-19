@@ -1,125 +1,241 @@
-Return-Path: <bpf+bounces-68931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F02EB89771
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 14:35:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C37B898C5
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 14:54:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E10EE7ACA52
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 12:33:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C454F620A0C
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 12:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7C71E32CF;
-	Fri, 19 Sep 2025 12:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C7C21B19D;
+	Fri, 19 Sep 2025 12:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TZff96pM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IfsnRFjm"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C361B4F2C;
-	Fri, 19 Sep 2025 12:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4530935942
+	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 12:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758285309; cv=none; b=lNXH33jC39SA6MI8WvKS/c/iK7LIRIB/kP+SrlKD1jMgLbny10cbwb4MHLxBAmFJvxP1HrLyzvx6GzUIiOIZ4Zh9LiRu17OynC/8RD+UEA7HD1a+rPDALV1ZgZ9KZxB0lRukX6WURd7Xtc3oQZiAeT8qopodvpwB0kyrMXfMARg=
+	t=1758286440; cv=none; b=SyB44IrYPF5i82FICbEf0GpPxz9a4aMzSFGBbXxTRR9XligdTsswEB3vDvdZtpndU7Gxa2f+yB4letNiUu57gVdD2A10Guc8sncxXUo8m8PmNbcAMrmbQInUYXoe9E/20mciaQlPXhfJJzcEF8eQGEYNRl17D7aG9xPoEMb3ZW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758285309; c=relaxed/simple;
-	bh=B/LAeSfpF+38Ojzu+TVsThBEqCYyFGk+412u00MRL1Y=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=er+x6w2jPi4NtcoDxY36VhwwjZZI8Sz45OljifuVN/r4UPjmh9i6eFjSKTuE8ArB1P6Wua2fJ2BM15EClFDd7QsYRKWF/oP9BR/8nqLMYhig35ltxO0CFLHKfDYRDx25Cr/AGqeLuIfQ62zrPgJiCSXyuhEixAUppMMmW8vqA7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TZff96pM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D401C4CEF0;
-	Fri, 19 Sep 2025 12:35:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758285308;
-	bh=B/LAeSfpF+38Ojzu+TVsThBEqCYyFGk+412u00MRL1Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TZff96pMxFcA0LMfL1fVfinD2uaCwHCmZg1t87v+5E8XBkg9tRMbQ2vFeQJL2jttY
-	 s5bIpg2XKyrSzU4F0wpsp3Q6y5OpLqPL2Yp9wCU7ZnAlMScIPGeNdTLdTfjFLP8DCi
-	 UGmcDzTsj+ljEONK7BhrUagg0OZM27qhNlE/xN195gpUikwEwrrVaMPJMH3bK/H3J1
-	 cor3J+RnkgqxC16xS7H5buD7l9wdhNsSjDJSGdr+QdXEKsO/f5Ua5JylO4zsYj/P/v
-	 n6ByozH1Fmhqa9oGwYDCTkppIIH7qU7KPRkTzH2bMWoGkn5QRQTB0GRic8OZP+Xg6y
-	 nYGmSyzoeXuRg==
-Date: Fri, 19 Sep 2025 21:35:02 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Menglong Dong <menglong8.dong@gmail.com>, jolsa@kernel.org,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- kees@kernel.org, samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
- mhiramat@kernel.org, ast@kernel.org, andrii@kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] x86/ibt: make is_endbr() notrace
-Message-Id: <20250919213502.2d621c5b19e059134d0f8991@kernel.org>
-In-Reply-To: <20250918165656.GA3409427@noisy.programming.kicks-ass.net>
-References: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
-	<20250918130543.GM3245006@noisy.programming.kicks-ass.net>
-	<CADxym3ae8NGRt70rVO8ZyHa3BvWhczUkRs=dVn=rTRMVzrU9tA@mail.gmail.com>
-	<20250918165656.GA3409427@noisy.programming.kicks-ass.net>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1758286440; c=relaxed/simple;
+	bh=OQMWPd8ZLmEVPyJ8L2EAOr1dOvBWKRPT25iV8BVEZeQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YZ4cmRlmGNxJZPyVg439qW+RazNFDAexO61F5KfnLO1CDPBHpAgRzNcoqyEgy/+VUlmBGHO5fB6JYSWx7TGLk3UCuuwNnDqhhmx9fkK85wYsXrAgmkRDefqtzb+Psd53c5rHGOt9zn9xYbYumVAlMgezby0fkqK7ZVmklYtdg58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IfsnRFjm; arc=none smtp.client-ip=209.85.218.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-b149efbed4eso337794766b.1
+        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 05:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758286436; x=1758891236; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7tB7LlnkiscLpo3gkcuwWhYvknilidlR1GUjxm0/lGo=;
+        b=IfsnRFjmlTOfazY2dWR9m5Icrre2yQMUTCiNxFXKTHoKkshbEFFZWzJD6mymyv1ejy
+         kiH/ERjS9eDLP7P7FT4f2Wu+z/Mifr3+ATL3JCDePIJQ2HR/MIeABG/BSE84WXAxVfVp
+         nAzxmPYg7EsF4bBwWdlGOMDCKFTFT3Eaw4BXqh5+e8mIVnM4UCBHBk8I5++AEkr1aCj3
+         Q4uXR8l3/XTC5Hfk5vpBiTgaAruDAEVG3c1qmaKfxpnVJ85nMvp4/W+U0o/Dd5EVUoRb
+         lUk6r9ezX5qEzFsYVJvxZsiWfc7/n5AxH3J2P0dg6ZN6GQFzyaogFrBK/X5/Wdi/3d/k
+         5T5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758286436; x=1758891236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7tB7LlnkiscLpo3gkcuwWhYvknilidlR1GUjxm0/lGo=;
+        b=gb/yMIb1b9ePyiamfdM64flbJcR4n4eY4p7AT4YPRL5gVe2wbgJIPeJws41Gwfdvrc
+         B0d6719fczGeIkJfyfr0SDLAKiUUzQtmmarpLj+VqgpTUVT7mBOAPmoHb+7ESP/WTAlU
+         PhlBNcq+LrSoZgYdDH+eJ3SzFC+n+I66ytie0S69y6D3mnc5yUaNMEDmnIzocKlpy17U
+         4k75ys+TzhO537dlN4JMbh5InH953YnisCu427eSlqiKpc298lYnvuYzZtn3oYJAxDCr
+         G3GI04YNkCcI2fENLmqKKViD59DDaWyDye+zPhEMjxGAWcP15ru7jfwsOnn82fuJUBmb
+         9jIw==
+X-Forwarded-Encrypted: i=1; AJvYcCX0WdwGlK0chY24hJvDbo7qkzWHPtNTzqBiM7BYytF3dK489mKmVkn2fnYMUoXh0b/Hxps=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywcs9nsZJw12DM8nxhYuqdSn6I1ilOO1WV/YSNA3Id0MZptzGWx
+	zJFfjdHlrmWMS6WTFMqP9RxBvsBfIlBUqhaqFhSYsgoTIeWBPsNThg0fWqH79F818bXOv4/lkJO
+	FDNLKamjrnPOlJR47D7tnxK6EeuFG2uekdj+4
+X-Gm-Gg: ASbGncv/GCBRmyv1m3t6glzB+UXtS1G1pRHjGg0IiA9C+NYzf7j26LpQ4dUBl0zx0Kc
+	a+0jSMXVrqvwWkwMfM6ErsPXCqlsK45gPsqd8eVd7rrDI+YdoFVA52X+QE2qNtnbmQRDQASeBCV
+	2lg5GqCjpNOByX2XAcZgRfY4omEhQrybYc1OBLLDgLcKUQWzy7drUvT4Hsj4Z3MkUwr/LbVm9iO
+	DxSBb1yO52wzrbQRuZFznJmAlwTSWhh7L8XOwtl
+X-Google-Smtp-Source: AGHT+IFsxrzOWNwUPdSvUUlSZPK2jbK78kbW0CS7rD3NKOzSDwXJDerL4/iWn1UBqea6zobugbAnGVkNCeJOQV0hvE0=
+X-Received: by 2002:a17:906:fe08:b0:b0c:99b8:8ac5 with SMTP id
+ a640c23a62f3a-b24f4428a64mr284073466b.44.1758286436218; Fri, 19 Sep 2025
+ 05:53:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20250918132615.193388-1-mykyta.yatsenko5@gmail.com>
+ <20250918132615.193388-8-mykyta.yatsenko5@gmail.com> <CAADnVQJfGqKpOhQpx_a-kKfv34XRE=hDZAN=u-=CVppUF5wfzA@mail.gmail.com>
+ <171ddd7f-a100-4800-b0f3-1ac8e25c13d8@gmail.com>
+In-Reply-To: <171ddd7f-a100-4800-b0f3-1ac8e25c13d8@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 19 Sep 2025 14:53:19 +0200
+X-Gm-Features: AS18NWB4PFYOYQmzjOTMDz-NlRLgu4s7J3MePPSKsNnUSI_s57VSg3aj5oh-gik
+Message-ID: <CAP01T76m5DLzy5TKjrDOG5JQqjtSZOHkJtMRx8vNbWZSK4CGnQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 7/8] bpf: task work scheduling kfuncs
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 18 Sep 2025 18:56:56 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Fri, 19 Sept 2025 at 14:27, Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
+> On 9/19/25 01:56, Alexei Starovoitov wrote:
+> > On Thu, Sep 18, 2025 at 6:26=E2=80=AFAM Mykyta Yatsenko
+> > <mykyta.yatsenko5@gmail.com> wrote:
+> >> +static struct bpf_task_work_ctx *bpf_task_work_acquire_ctx(struct bpf=
+_task_work *tw,
+> >> +                                                          struct bpf_=
+map *map)
+> >> +{
+> >> +       struct bpf_task_work_ctx *ctx;
+> >> +
+> >> +       /* early check to avoid any work, we'll double check at the en=
+d again */
+> >> +       if (!atomic64_read(&map->usercnt))
+> >> +               return ERR_PTR(-EBUSY);
+> >> +
+> >> +       ctx =3D bpf_task_work_fetch_ctx(tw, map);
+> >> +       if (IS_ERR(ctx))
+> >> +               return ctx;
+> >> +
+> >> +       /* try to get ref for task_work callback to hold */
+> >> +       if (!bpf_task_work_ctx_tryget(ctx))
+> >> +               return ERR_PTR(-EBUSY);
+> >> +
+> >> +       if (cmpxchg(&ctx->state, BPF_TW_STANDBY, BPF_TW_PENDING) !=3D =
+BPF_TW_STANDBY) {
+> >> +               /* lost acquiring race or map_release_uref() stole it =
+from us, put ref and bail */
+> >> +               bpf_task_work_ctx_put(ctx);
+> >> +               return ERR_PTR(-EBUSY);
+> >> +       }
+> >> +
+> >> +       /*
+> >> +        * Double check that map->usercnt wasn't dropped while we were
+> >> +        * preparing context, and if it was, we need to clean up as if
+> >> +        * map_release_uref() was called; bpf_task_work_cancel_and_fre=
+e()
+> >> +        * is safe to be called twice on the same task work
+> >> +        */
+> >> +       if (!atomic64_read(&map->usercnt)) {
+> >> +               /* drop ref we just got for task_work callback itself =
+*/
+> >> +               bpf_task_work_ctx_put(ctx);
+> >> +               /* transfer map's ref into cancel_and_free() */
+> >> +               bpf_task_work_cancel_and_free(tw);
+> >> +               return ERR_PTR(-EBUSY);
+> >> +       }
+> >> +
+> >> +       return ctx;
+> >> +}
+> > If I understood the logic correctly the usercnt handling
+> > is very much best effort: "let's try to detect usercnt=3D=3D0
+> > and clean thing up, but if we don't detect it should be ok too".
+> > I think it distracts from the main state transition logic.
+> > I think it's better to remove both map->usercnt checks
+> > and comment how the race with release_uref() is handled
+> > through the state transitions.
+> >
+> > Why above usercnt=3D=3D0 check is racy?
+> > Because usercnt could have become zero right after this atomic64_read()=
+.
+> > Then valid ctx (though maybe detached) would have been returned
+> > to bpf_task_work_schedule(), and it would proceed with
+> > irq_work_queue().
+> > tw->ctx either already xchg-ed to NULL or will be soon.
+> >
+> > The bpf_task_work_irq() callback would fire eventually it will do
+> >   + if (cmpxchg(&ctx->state, BPF_TW_PENDING, BPF_TW_SCHEDULING) !=3D
+> > BPF_TW_PENDING) {
+> >
+> > if releas_uref() already did bpf_task_work_cancel_and_free()
+> > then ctx->state =3D=3D BPF_TW_FREED and
+> >    +   bpf_task_work_ctx_put(ctx);
+> >    +   return;
+> >    + }
+> > will be called on this detached ctx.
+> >
+> > but xchg(&ctx->state, BPF_TW_FREED) might not have been done.
+> > so the code will proceed...
+> > and further it looks correct when it comes to handling
+> > races with cancel_and_free().
+> >
+> > The point that usercnt=3D=3D0 or not doesn't change thing.
+> > We don't check it in the steps after acquire_ctx().
+> > It looks to me these two checks in bpf_task_work_acquire_ctx()
+> > don't fix any race.
+> > It seems to me they can be removed without affecting correctness,
+> > and if so, let's remove them to avoid misleading
+> > readers and ourselves in the future that they matter.
+> >
+> > Note, similar usercnt checks in bpf_timer are not analogous,
+> > since they're done under lock with async->cb manipulations.
+> >
+> >
+> > Also I believe Eduard requested stess test to be part of patchset.
+> > Please include it. I'd like to see what kind of stress testing
+> > was done. Patch 8 is just basic sanity.
+> An example of race condition I'm handling is:
+> Imagine usercnt gets to 0, and then for some map value cancel_and_free()
+> (detach context) races with bpf_task_work_fetch_ctx() (attach context),
+> if this race resolves to context first being detached (by
+> cancel_and_free())
+> and then new one attached (by scheduling codepath).
+> Detached context state is set to FREED and it's deallocated.
+> But newly attached context state is STANDBY (cancel_and_free() has never
+> seen it)
+> and map holds the refcnt to it, which never go to 0, as cancel_and_free()
+> for the element has been already called, so we never free it.
+>
+> It's not a problem if usercnt goes to 0 after we attached a context,
+> because cancel_and_free() will detach and
+> put the refcnt, and scheduling codepath will see the FREED state.
+>
+> Other thing is checking usercnt =3D=3D 0 before context initialization -
+> that's preventing allocation and attach a context to a map that has
+> already done cleanup. Cleanup won't happen again and this new context
+> is leaked.
+>
+> Trying to summarize:
+>   1) First check for usercnt =3D=3D 0 is needed so that we don't allocate
+> contexts
+> for map that has already cleaned up.
+>   2) Second check is needed in case of clean up is triggered during conte=
+xt
+> initialization/attach, potentially leading to newly attached context leak=
+,
+> as cancel_and_free() was called for old context and won't be called for
+> new one.
+>   3) After context initialization/attach is done, we don't need checking
+> for usercnt,
+> as cancel_and_free() will detach and transition to FREED. The state
+> transition will
+> be seen by scheduling codepath.
 
-> On Thu, Sep 18, 2025 at 09:32:27PM +0800, Menglong Dong wrote:
-> > On Thu, Sep 18, 2025 at 9:05???PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, Sep 18, 2025 at 08:09:39PM +0800, Menglong Dong wrote:
-> > > > is_endbr() is called in __ftrace_return_to_handler -> fprobe_return ->
-> > > > kprobe_multi_link_exit_handler -> is_endbr.
-> > > >
-> > > > It is not protected by the "bpf_prog_active", so it can't be traced by
-> > > > kprobe-multi, which can cause recurring and panic the kernel. Fix it by
-> > > > make it notrace.
-> > >
-> > > This is very much a riddle wrapped in an enigma. Notably
-> > > kprobe_multi_link_exit_handler() does not call is_endbr(). Nor is that
-> > > cryptic next line sufficient to explain why its a problem.
-> > >
-> > > I suspect the is_endbr() you did mean is the one in
-> > > arch_ftrace_get_symaddr(), but who knows.
-> > 
-> > Yeah, I mean
-> > kprobe_multi_link_exit_handler -> ftrace_get_entry_ip ->
-> > arch_ftrace_get_symaddr -> is_endbr
-> > actually. And CONFIG_X86_KERNEL_IBT is enabled of course.
-> > 
-> > >
-> > > Also, depending on compiler insanity, it is possible the thing
-> > > out-of-lines things like __is_endbr(), getting you yet another
-> > > __fentry__ site.
-> > 
-> > The panic happens when I run the bpf bench testing:
-> >   ./bench kretprobe-multi-all
-> > 
-> > And skip the "is_endbr" fix this problem.
-> 
-> But why does it panic? Supposedly you've done the analysis; but then
-> forgot to write it down?
-
-Yeah, that is an fprobe's bug. It should not panic. I sent a fix.
-
-https://lore.kernel.org/all/175828305637.117978.4183947592750468265.stgit@devnote2/
-
-Thank you,
-
-> 
-> Why is kprobe_multi_link_exit_handler() special; doesn't the issue also
-> exist with kprobe_multi_link_handler() ? If so, removing __fentry__
-> isn't going to help much, you can just stick an actual kprobe in
-> is_endbr(), right?
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+I agree, I don't see how we can avoid checking usercnt. Maybe we don't
+need to check it twice, i.e. optimistically first and then again after
+cmpxchg and can only do it once.
+Since this is not a common case it's nbd that we have to put and
+deallocate stuff. But if we don't do usercnt check at all, we will
+leak memory.
+Once usercnt drops to zero and task work lingers in map value, nothing
+will come and free it anymore, short of user deleting the map value
+manually, which is not guaranteed.
 
