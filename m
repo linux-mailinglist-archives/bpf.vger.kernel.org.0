@@ -1,129 +1,186 @@
-Return-Path: <bpf+bounces-68874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FB13B8774A
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 02:17:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46048B878AE
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 02:56:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BD35561786
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 00:17:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 316287B4A3E
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 00:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF1A5D8F0;
-	Fri, 19 Sep 2025 00:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02AF71E9B1A;
+	Fri, 19 Sep 2025 00:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FT2xMIRz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bKm4omKl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15EFC79F2
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 00:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42955CDF1
+	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 00:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758241042; cv=none; b=jq9Z4QZmL/77P54O/dv5S3K50YmJTw8Iuv7WSzLCD4ZO4zONQjWTDK6njq7SsFhGI4y20VV29FnNKNjdyQ2mEYIf2gO8bk6aInucnjG0ZwplRPBqflwy0eRMd0mqfQXq4y7kl/IshZ0v1xyfJS3B76/C7gdCvIPn82y/4n9CX2A=
+	t=1758243402; cv=none; b=MvYiBtuH1lSMdhtpyzZlOhllagRkBhXGnV16QY58t8flnW96SZx73v5nNAGWs9hqe9op/P6kuMHE28NCRmqtTz50mZFvhh0rc4jCcFJsn2iZGdIhJL3jclE+3LZq+ZU8FO0IdzfplVuBE89cw+wsb9wnqCTyefJd0MSyqh2fztA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758241042; c=relaxed/simple;
-	bh=XyQ8utEgb2gtu3XP0e+jagGerOUqxsPi8aagWcZNH0w=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XlBKyhEUdX0+fJ7/Gtz4hBliQSFs3ebLrBPzBvOyYC+87TjWbNRPUxpuek3nZlpb6LPieoOu/eFlf8q/p9ftMekK89381CgD0Wwz39FnMGu+Kf692w6PtCw0X7i19wfQQ08vHay301TRYXeBZA3ZXTMRJiLJe6jARb85Kll6lXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FT2xMIRz; arc=none smtp.client-ip=209.85.214.178
+	s=arc-20240116; t=1758243402; c=relaxed/simple;
+	bh=4B8cjQRAwSCdBrm+sJvKE57pT1at5yiaGYH8yNgsXfw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qncb8BrF+gqt5d6Xd0Kj6kZEEXOO7B9uv1ZtGMWDVizEgTmOv7h0405D6aiILz4rx1PXqTApboDRWzGVpxM3K/DRclr7cyA0Kc7Riu525addTuQ57DAKBE0wRQ1xe8KBtUSAKG1L6n2kx/3/PHVW9UNQ5HzL2Oo9sRyE2tRQpt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bKm4omKl; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2445806df50so13143295ad.1
-        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 17:17:20 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3ee64bc6b85so322690f8f.3
+        for <bpf@vger.kernel.org>; Thu, 18 Sep 2025 17:56:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758241040; x=1758845840; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1758243399; x=1758848199; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EKNZvCvGGYDpV9eyXm4ZZLw/G3tMwq8mKMaG6vPCa+E=;
-        b=FT2xMIRzLann8CM4MGmeyi7CXh4QWzXpy8BCKSvwD2luwKIRiOjdhooXYbOQbfhigj
-         C0QkKjRM6YHZPCB9Afwvr+A7+WklgUzxwXn/NHjU789qT2DHH8yftgTpnt9VuW/4jXf2
-         DIIW1c6/koLNBTMn2VoLz3y9wUesJsHiqYMUoJ9RgjdrFeM+bAplOsE6PIadlZNwxuXF
-         +zEBKU68medYywOoMICpZsEGmCPZL1mqHjqqRjPehfDeGxg3Uor39nkbcWxzwW8eJ3fw
-         Q7yCndRw5HD2WjKa3g8kxhiT+Q33rDgA5YrnVaxnoKRXW2zSF1VZo7Vh8GEHyhfhu1sO
-         HcfA==
+        bh=6GlFEK40Km1Msy8fsLA6LJXdQUx60HOB1nzavbHIq30=;
+        b=bKm4omKl21FohGhEzOEPco309QxFUH/k18b0yGtS3wKNeaLnlSvtAdnhWY+cKE+NMu
+         GC4vWr+Wmj4EAyfswA+n9Z6LGEzmJupp1JEoJuHeZEgel1HZt0eLNT+ir3Mm00j7h0X0
+         UD4nDV+yfSAXNHORSw3vpBqun6z7y2He3a/WJGAtmSqxhh9eF/M+iryxymc60xFb5xsl
+         L/9JlCblVkAvI812h+KnjVa1yb74adA208i4Ak9espB77nfDmb0C3yDfLBGKLvz9OS1E
+         ejsw8nGvDsKhNb7DloMkPZoOt5KGghi8wyG77Zxi8wvSDYhX57e5urI0P64S19j4lWkj
+         q8mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758241040; x=1758845840;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=EKNZvCvGGYDpV9eyXm4ZZLw/G3tMwq8mKMaG6vPCa+E=;
-        b=A29h8p0PbQGcGrX3KH96+1rC+7sZ5EXTWXmb/a4IxaWP3bze3rBO7ccIxXArBAZ296
-         lRWLAMqMvHnh1XKIPb4vMWJ6LfkSDA2eIpw5zfs/8kBx/y/COuhXLjHjGSV3ILbZWW2u
-         btXxACwE7oJmCnCuBRicd07/+y90pZT0bgBGGghVhEr8BK+ztFQulU8X/tzOH9eNQ0YM
-         Ma0lk0SKQ9i0F79ZHAue+S6qekZAucm11TFLpkqSoNv2kMAKWbsd38nQkBzKKMh3/wEX
-         TNF7qoCBcuMAlIz9A3JqoUeA/CNAUGpOv96vr5GkCyrsMSKDahUaRVHkGrnWumQuSTXr
-         OWEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUnz3zCj2fCDcxXdzZYTTBLl5BgwP6tZyVp4lfL9Acqzb4MsTwFrxo60ledRTXZcPVHVmA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/BktlrZvuSrJEh5CQNeSBWr3OHfRwOLzypEi+9lUZUogocPOd
-	01oPmsSFt2ZzGpkLMyf9gPtcBk5C57yuw2adGxTeO/qJ9vT5WWIozJbV
-X-Gm-Gg: ASbGncuJ2l1HttP1QU5uFSCCC4FQ1M8rSY4mEZR+zoGVcijV5rVGsYE4nuD/Ua4S7ag
-	qUnr8BRxyFBs897Or/2NAUMKDEU8HOY30ld0Jue83c/d0JJUV344poaks/apQP9g0fPP/Zm3agT
-	+xZw7R9h0FvWS9CqaUZ3LREqPGt/3UM3SsUy55G3hfO38dbsCyj6yO+3/gsrkF9IB/Mu7QMH9wa
-	ynUTfUWrKXEZe9Ej4JXkJupAhX+zj7VHnjibYLMJuANdYxe1BiS0exhdJ5gEykHZeSwqWMWNldE
-	gJCdczKzDOoXuKqcKN156y7vxSrq1paQZSP29/6BNUzqz+LvK5vv7tgO4yeXB2+057of6Aem/kN
-	RimSRCAxuRK9Q7t50qFA=
-X-Google-Smtp-Source: AGHT+IFGGYr+RZvCK02As+zMTvv0cPKU+9Ysii/q/wUWWgF3QBGMF7hpeoy52LFAWRWk5RaApkHDPQ==
-X-Received: by 2002:a17:902:8bc3:b0:269:b2a5:8827 with SMTP id d9443c01a7336-269ba467eebmr13866275ad.16.1758241040313;
-        Thu, 18 Sep 2025 17:17:20 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269803303fesm36940325ad.122.2025.09.18.17.17.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Sep 2025 17:17:19 -0700 (PDT)
-Message-ID: <da197caec5cf8d4aed067c94bbb13ed62252ad62.camel@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 01/13] bpf: fix the return value of
- push_stack
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
- Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
- Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Date: Thu, 18 Sep 2025 17:17:16 -0700
-In-Reply-To: <20250918093850.455051-2-a.s.protopopov@gmail.com>
-References: <20250918093850.455051-1-a.s.protopopov@gmail.com>
-	 <20250918093850.455051-2-a.s.protopopov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1758243399; x=1758848199;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6GlFEK40Km1Msy8fsLA6LJXdQUx60HOB1nzavbHIq30=;
+        b=LuwVMo4cuF8EMGBUHz13aGYDKMgW87XrjSOlNRkM8Od6ful/TQbhZdJOimiFMIIjiZ
+         S3A3dMeOZm8z+iYf1pHVgapBXDK0ZEFhrjAJOzavdFzT8rWMDqqxDLsEOkqTJxQ5FBA/
+         D1JG2laUdFRXsnYPSel7b1IL7MwvHC92sBBhRUFkKQipnBSsH9Ck9gHwhP4oFd4P+BLg
+         gK/GQ028e4bhg3Quz6atvbmq7rT3PKDqQAKlQCHrXxBoa8jtxXbAC5demqG9z8GpHAFo
+         V62lJz7YtNIxcqdo3frkhiLR8Ilp4O24fMwIYcgkVcQKSQB9K5u7/OPygc1rGSmpZgBp
+         k2pw==
+X-Gm-Message-State: AOJu0YxhAUYxPHBwq94iNMPpOgOjFx2qtr6oWYaGlOdbFpgrbYsWa+w9
+	qzwX0Ks8lebQ11zPK84zjQV5CxD+j1DhPL+xn58oJCYTC60YEM+G3kHAJxhAZb/d324RU2Zp9KM
+	GX6k9HENe4g45s2M1YGVlpSZAasHVBYo=
+X-Gm-Gg: ASbGncvT41jxhtddHw56ipQ4BwJU8+UB08B12WVUtKUdB+9iYCwjkoL01phFTAQDtKZ
+	XxYth9q4XGktShM03JnTY7NM9z+M63CCdO6TehxVKUgF2Yt6mSKmBZ6OJIg2voMk/SJC08kaudN
+	1xNwjOUudmTFY0yhNLo1hGkgT4GqJET8ScTh835QOOYTWQj2MkT/pZ/3TLoxsxyPvoufcEkfFkD
+	ohF0XanV2elTGJF8vXSpa3TCdE5jMidf2k/WuAX2KljFFoxVbO3gM8=
+X-Google-Smtp-Source: AGHT+IHSVgeSDZ9Rop1g3BSndi26b73bU+owJQUzoSj4bBUEN0HrBt+8Uthd5+j11VsEo/ufhVa+PW37jNJIP7o1c2M=
+X-Received: by 2002:a05:6000:40e1:b0:3e7:620e:529e with SMTP id
+ ffacd0b85a97d-3ee87ac994bmr762713f8f.43.1758243398907; Thu, 18 Sep 2025
+ 17:56:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250918132615.193388-1-mykyta.yatsenko5@gmail.com> <20250918132615.193388-8-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250918132615.193388-8-mykyta.yatsenko5@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 18 Sep 2025 17:56:27 -0700
+X-Gm-Features: AS18NWDo-UQgFu-xgL8S3jDeUL8oW0YkI91EIPE7tZzMM2c3VauXWrTzONQlYB8
+Message-ID: <CAADnVQJfGqKpOhQpx_a-kKfv34XRE=hDZAN=u-=CVppUF5wfzA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 7/8] bpf: task work scheduling kfuncs
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-09-18 at 09:38 +0000, Anton Protopopov wrote:
-> In [1] Eduard mentioned that on push_stack failure verifier code
-> should return -ENOMEM instead of -EFAULT. After checking with the
-> other call sites I've found that code randomly returns either -ENOMEM
-> or -EFAULT. This patch unifies the return values for the push_stack
-> (and similar push_async_cb) functions such that error codes are
-> always assigned properly.
->=20
->   [1] https://lore.kernel.org/bpf/20250615085943.3871208-1-a.s.protopopov=
-@gmail.com
->=20
-> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> ---
+On Thu, Sep 18, 2025 at 6:26=E2=80=AFAM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
+> +static struct bpf_task_work_ctx *bpf_task_work_acquire_ctx(struct bpf_ta=
+sk_work *tw,
+> +                                                          struct bpf_map=
+ *map)
+> +{
+> +       struct bpf_task_work_ctx *ctx;
+> +
+> +       /* early check to avoid any work, we'll double check at the end a=
+gain */
+> +       if (!atomic64_read(&map->usercnt))
+> +               return ERR_PTR(-EBUSY);
+> +
+> +       ctx =3D bpf_task_work_fetch_ctx(tw, map);
+> +       if (IS_ERR(ctx))
+> +               return ctx;
+> +
+> +       /* try to get ref for task_work callback to hold */
+> +       if (!bpf_task_work_ctx_tryget(ctx))
+> +               return ERR_PTR(-EBUSY);
+> +
+> +       if (cmpxchg(&ctx->state, BPF_TW_STANDBY, BPF_TW_PENDING) !=3D BPF=
+_TW_STANDBY) {
+> +               /* lost acquiring race or map_release_uref() stole it fro=
+m us, put ref and bail */
+> +               bpf_task_work_ctx_put(ctx);
+> +               return ERR_PTR(-EBUSY);
+> +       }
+> +
+> +       /*
+> +        * Double check that map->usercnt wasn't dropped while we were
+> +        * preparing context, and if it was, we need to clean up as if
+> +        * map_release_uref() was called; bpf_task_work_cancel_and_free()
+> +        * is safe to be called twice on the same task work
+> +        */
+> +       if (!atomic64_read(&map->usercnt)) {
+> +               /* drop ref we just got for task_work callback itself */
+> +               bpf_task_work_ctx_put(ctx);
+> +               /* transfer map's ref into cancel_and_free() */
+> +               bpf_task_work_cancel_and_free(tw);
+> +               return ERR_PTR(-EBUSY);
+> +       }
+> +
+> +       return ctx;
+> +}
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+If I understood the logic correctly the usercnt handling
+is very much best effort: "let's try to detect usercnt=3D=3D0
+and clean thing up, but if we don't detect it should be ok too".
+I think it distracts from the main state transition logic.
+I think it's better to remove both map->usercnt checks
+and comment how the race with release_uref() is handled
+through the state transitions.
 
-> @@ -14256,7 +14255,7 @@ sanitize_speculative_path(struct bpf_verifier_env=
- *env,
->  			mark_reg_unknown(env, regs, insn->src_reg);
->  		}
->  	}
-> -	return branch;
-> +	return IS_ERR(branch) ? PTR_ERR(branch) : 0;
+Why above usercnt=3D=3D0 check is racy?
+Because usercnt could have become zero right after this atomic64_read().
+Then valid ctx (though maybe detached) would have been returned
+to bpf_task_work_schedule(), and it would proceed with
+irq_work_queue().
+tw->ctx either already xchg-ed to NULL or will be soon.
 
-Nit: this is the same as PTR_ERR_OR_ZERO.
+The bpf_task_work_irq() callback would fire eventually it will do
+ + if (cmpxchg(&ctx->state, BPF_TW_PENDING, BPF_TW_SCHEDULING) !=3D
+BPF_TW_PENDING) {
 
->  }
-> =20
->  static int sanitize_ptr_alu(struct bpf_verifier_env *env,
+if releas_uref() already did bpf_task_work_cancel_and_free()
+then ctx->state =3D=3D BPF_TW_FREED and
+  +   bpf_task_work_ctx_put(ctx);
+  +   return;
+  + }
+will be called on this detached ctx.
 
-[...]
+but xchg(&ctx->state, BPF_TW_FREED) might not have been done.
+so the code will proceed...
+and further it looks correct when it comes to handling
+races with cancel_and_free().
+
+The point that usercnt=3D=3D0 or not doesn't change thing.
+We don't check it in the steps after acquire_ctx().
+It looks to me these two checks in bpf_task_work_acquire_ctx()
+don't fix any race.
+It seems to me they can be removed without affecting correctness,
+and if so, let's remove them to avoid misleading
+readers and ourselves in the future that they matter.
+
+Note, similar usercnt checks in bpf_timer are not analogous,
+since they're done under lock with async->cb manipulations.
+
+
+Also I believe Eduard requested stess test to be part of patchset.
+Please include it. I'd like to see what kind of stress testing
+was done. Patch 8 is just basic sanity.
 
