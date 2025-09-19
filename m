@@ -1,136 +1,157 @@
-Return-Path: <bpf+bounces-68883-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-68884-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72783B87AE9
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 04:04:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84977B87AF8
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 04:08:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DA914E7924
-	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 02:03:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4713A1C249E3
+	for <lists+bpf@lfdr.de>; Fri, 19 Sep 2025 02:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7BC2512DE;
-	Fri, 19 Sep 2025 02:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D6724167B;
+	Fri, 19 Sep 2025 02:08:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F4/cBJfq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dM/y0rd8"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6376123E334
-	for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 02:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A2B1E5B7B;
+	Fri, 19 Sep 2025 02:08:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758247351; cv=none; b=YzUt/GqveWTi77kTzipipAF8+Al7D3nwWYOWCoJ0jVX3lRVAU/r9hVh7Ve0QIqfqmqPxMER8TPHeGISS9c5dVkn2UFkCJ2Vc8DblYmVJypHXR2A2Rn0IkFHx9xmvZwgp/LjmrQgctlq309NmdAW048C6ZHxNUUvry+RXiUgaQLI=
+	t=1758247707; cv=none; b=mfppu3j5Ss2Xt/mZ7o15haTsQUW8DbbqbrOGHRAtrVtbpc4s30kQzkDeWBPRP0Vcolw3iyshYj+5HpBuTkPxHTgONBIDEce6sBDw3ZAr7fhNMoMIabprFjVQ4i7T1rvE69rZAs8vO7Br3F7zORtUSCky3zcrhDCyYN3/HsOF7kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758247351; c=relaxed/simple;
-	bh=czB3OBNupJGBVl1J7sAT0nni9wuTaORmtCjhauycnjA=;
+	s=arc-20240116; t=1758247707; c=relaxed/simple;
+	bh=5O+SIGhkMyMmuCiwUMfFEw1KmCrM/gjkalNI7yAalyM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CdSUbGpQWK4Qgl/mcj6bcoJVb504zOSo6MIxYtQ0ZaIGodJKpBYuaO9Ffk9Q7hDyWx9/Aa3OFwi4BC1sGyM3GoC5zGWaB4RNwLLAIdhPixOXU4KVkp3NIKkvI+oxvYEYqyUeR3vnanwW1Q0a8enjMnmwGZsVieGv2NukU4eLIJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F4/cBJfq; arc=none smtp.client-ip=95.215.58.180
+	 In-Reply-To:Content-Type; b=YmoiG4O2P5QTO3N/PoUWApxdOJg2aWINJ9219ebYs80epl3JFizjUjW9EEgo6F0e/ugNA9J4wJ/p1Q/jY3I5I/Nvby1UVPlsyR/EEF4itx1YPjXrcT8D6In2VtnwzbRO7psmRJqv+7FfwqPtDE9jLI20PYfg1T4jwqBleB8363g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dM/y0rd8; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a5d2fb43-9b2d-4172-b8f0-071c810e63e4@linux.dev>
+Message-ID: <f2fd90a9-bc7d-43b8-ac5e-9d233219dcfb@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758247344;
+	t=1758247702;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zVSrAK1Yv2vPbcKG+6F8mNIDu+rHp+xvNKs5QnQh5B0=;
-	b=F4/cBJfq9z7yqz5VtL9Q4HmgHT1wprCQTJVT5qNQmk5A89OfBLqHhQXbWw+tmCgOQ74oQZ
-	sz5RRiBoqqdIEZ+ykbXH/s9JNWRnrc8IXCyL4kr8UYvmNLiMVXZb+x+yG3vPgFapl1iZ4R
-	CQABlzj/kAsXI2WeHfiz1Q48duj+Ga8=
-Date: Fri, 19 Sep 2025 10:01:51 +0800
+	bh=7tZscgbFVsEFOWM0JAk5UA5kEEjC9yHFCKayOOMGeKM=;
+	b=dM/y0rd8XN5hSogJYtcmrpiytG/B6jbviWIcMucYxiDU3b1yJTlyCT0X+jucrJ/QgUed6g
+	onPmGzhRRIFX9XzGqQjMMlQRv960fJ9ASYAOlp/RJWvuTzrl88Ljcnay1iuxsr2SFTZpRl
+	YfT1lUxkRHP+pwD60Ooij/AclXkWdLM=
+Date: Fri, 19 Sep 2025 10:08:12 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf: Add union argument tests
- using fexit programs
-Content-Language: en-US
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add lookup_and_delete_elem for
+ BPF_MAP_STACK_TRACE
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Tao Chen <chen.dylane@linux.dev>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
  Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- Mykyta Yatsenko <yatsenko@meta.com>, Puranjay Mohan <puranjay@kernel.org>,
- davidzalman.101@gmail.com, cheick.traore@foss.st.com,
- mika.westerberg@linux.intel.com, Amery Hung <ameryhung@gmail.com>,
- Menglong Dong <menglong8.dong@gmail.com>, kernel-patches-bot@fb.com
-References: <20250916155211.61083-1-leon.hwang@linux.dev>
- <20250916155211.61083-4-leon.hwang@linux.dev>
- <dbea9a14-e010-4e2f-a34d-4e2fd14a31f6@linux.dev>
- <bd40f8ce-37ed-48b0-b2ad-69eff76a4c20@linux.dev>
- <CAADnVQJNA7YvfDx1Go+ga+6HmwdLKnwuLz3duVZ=s7eNpNr8VQ@mail.gmail.com>
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20250909163223.864120-1-chen.dylane@linux.dev>
+ <CAEf4BzZ2Fg+AmFA-K3YODE27br+e0-rLJwn0M5XEwfEHqpPKgQ@mail.gmail.com>
+ <CAADnVQ+s8B7-fvR1TNO-bniSyKv57cH_ihRszmZV7pQDyV=VDQ@mail.gmail.com>
+ <457b805f-ea5c-460e-b93f-b7b63f3358af@linux.dev>
+ <CAADnVQLwV=fUkgLF3uTmevA97WX2FH4vG-7=97Px0H_WJOJieQ@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAADnVQJNA7YvfDx1Go+ga+6HmwdLKnwuLz3duVZ=s7eNpNr8VQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <CAADnVQLwV=fUkgLF3uTmevA97WX2FH4vG-7=97Px0H_WJOJieQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-
-
-On 19/9/25 09:53, Alexei Starovoitov wrote:
-> On Thu, Sep 18, 2025 at 6:47 PM Leon Hwang <leon.hwang@linux.dev> wrote:
+在 2025/9/19 10:01, Alexei Starovoitov 写道:
+> On Thu, Sep 18, 2025 at 6:35 AM Tao Chen <chen.dylane@linux.dev> wrote:
 >>
->>
->>
->> On 19/9/25 00:09, Tao Chen wrote:
->>> 在 2025/9/16 23:52, Leon Hwang 写道:
->>>> By referencing
->>>> commit 1642a3945e223 ("selftests/bpf: Add struct argument tests with
->>>> fentry/fexit programs."),
->>>> test the following cases for union argument support:
+>> 在 2025/9/18 09:35, Alexei Starovoitov 写道:
+>>> On Wed, Sep 17, 2025 at 3:16 PM Andrii Nakryiko
+>>> <andrii.nakryiko@gmail.com> wrote:
 >>>>
+>>>>
+>>>> P.S. It seems like a good idea to switch STACKMAP to open addressing
+>>>> instead of the current kind-of-bucket-chain-but-not-really
+>>>> implementation. It's fixed size and pre-allocated already, so open
+>>>> addressing seems like a great approach here, IMO.
 >>>
->>> Can we use ‘commit 1642a3945e22’ with 12 chars, maybe it's minor nit
->>> anyways or not.
+>>> That makes sense. It won't have backward compat issues.
+>>> Just more reliable stack_id.
 >>>
->> Thank you for pointing this out.
+>>> Fixed value_size is another footgun there.
+>>> Especially for collecting user stack traces.
+>>> We can switch the whole stackmap to bpf_mem_alloc()
+>>> or wait for kmalloc_nolock().
+>>> But it's probably a diminishing return.
+>>>
+>>> bpf_get_stack() also isn't great with a copy into
+>>> perf_callchain_entry, then 2nd copy into on stack/percpu buf/ringbuf,
+>>> and 3rd copy of correct size into ringbuf (optional).
+>>>
+>>> Also, I just realized we have another nasty race there.
+>>> In the past bpf progs were run in preempt disabled context,
+>>> but we forgot to adjust bpf_get_stack[id]() helpers when everything
+>>> switched to migrate disable.
+>>>
+>>> The return value from get_perf_callchain() may be reused
+>>> if another task preempts and requests the stack.
+>>> We have partially incorrect comment in __bpf_get_stack() too:
+>>>           if (may_fault)
+>>>                   rcu_read_lock(); /* need RCU for perf's callchain below */
+>>>
+>>> rcu can be preemptable. so rcu_read_lock() makes
+>>> trace = get_perf_callchain(...)
+>>> accessible, but that per-cpu trace buffer can be overwritten.
+>>> It's not an issue for CONFIG_PREEMPT_NONE=y, but that doesn't
+>>> give much comfort.
 >>
->> I’ll update my script to generate the commit information in the proper
->> format.
+>> Hi Alexei,
+>>
+>> Can we fix it like this?
+>>
+>> -       if (may_fault)
+>> -               rcu_read_lock(); /* need RCU for perf's callchain below */
+>> +       preempt_diable();
+>>
+>>           if (trace_in)
+>>                   trace = trace_in;
+>> @@ -455,8 +454,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
+>> struct task_struct *task,
+>>                                              crosstask, false);
+>>
+>>           if (unlikely(!trace) || trace->nr < skip) {
+>> -               if (may_fault)
+>> -                       rcu_read_unlock();
+>> +               preempt_enable();
+>>                   goto err_fault;
+>>           }
+>>
+>> @@ -475,9 +473,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
+>> struct task_struct *task,
+>>                   memcpy(buf, ips, copy_len);
+>>           }
+>>
+>> -       /* trace/ips should not be dereferenced after this point */
+>> -       if (may_fault)
+>> -               rcu_read_unlock();
+>> +       preempt_enable();
 > 
-> Since you're going to respin please rewrite the whole commit log
-> in both patches.
-> There is no need to talk about patch 1642a3945e223 at all.
-> It doesn't matter what you used to get inspiration from.
-> Also don't say things like:
-> 
-> cd tools/testing/selftests/bpf
-> ./test_progs -t tracing_struct/union_args
-> 472/3   tracing_struct/union_args:OK
-> 472     tracing_struct:OK
-> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> of course they suppose to pass. Above is not useful in the commit log.
-> 
-> Instead describe what the test is for and what it's doing.
-> > Similar in patch 1 trim bpftrace output.
-> Only mention the relevant parts. The command line and the error.
-> Things like:
-> 
-> processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> peak_states 0 mark_read 0
-> 
-> are not useful.
+> That should do it. Don't see an issue at first glance.
 
-Got it.
+Ok, i will send a patch later, thanks.
 
-I’ll respin with updated commit logs:
-
-* Patch #1: trim bpftrace output to only include the relevant command
-  line and error.
-* Patch #2: drop references to commit 1642a3945e223 and test output, and
-  instead describe what the test is for and what it does.
-
-Thanks,
-Leon
-
+-- 
+Best Regards
+Tao Chen
 
