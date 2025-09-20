@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-69109-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69110-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DB83B8CC90
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 18:19:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5489AB8CF03
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 20:50:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DC777A1D5D
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 16:17:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34E541B26E20
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 18:51:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D81C221714;
-	Sat, 20 Sep 2025 16:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB0331327D;
+	Sat, 20 Sep 2025 18:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hxxKvr2x"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GX6KB4gn"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA6AE2C859
-	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 16:18:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 266193126AE
+	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 18:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758385131; cv=none; b=Ov6Z/JlCKRjds0Zqbs24uPtdIlVDLmrQAxD8I73TogHOF0pKLtFjD9rrzWo/9myLnp7NH1PBuZzDQXvr0nOxGcsznCYKMqJkfdUtvGXL2lD1To20dL8Y+GH2U18m14M7OXcp5jSmEjFDGS8lWgDYZ21JU4I2pQdQr4Lxd2Fx/Qg=
+	t=1758394233; cv=none; b=mucTZROdIyGra9YNWwTQfDfsZqqOTTJZqY4zCylJA3vJaBDonRg4FJZgzlAzKFeSVajNO1VMT0Su2G7kj6HDhC2jPJvgfEGyoWK2sZV5PYipLlOJ6Qv3ry+6GTyiW+zM7GjDQIXV7T+RFox7j1+taXHrddBlj2PWN1jUw5nGgyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758385131; c=relaxed/simple;
-	bh=SeEvx0LOb1wghwCn6KbMiY3T+xz/mM46uK144pUfVQw=;
+	s=arc-20240116; t=1758394233; c=relaxed/simple;
+	bh=n2wqC0IGgkvLWgz5KVU5Y61pAoOG8M2NrtN+OM9gwyc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IBCS6/BJID3Za7BLbqh31y1nS7DCFD3XCYewkAX4KJnEPugE5ETThBLla+EMeedp8n6qr+g8aG1b7+NtMrY8TKc7/+/7TpqP1+s+JngxOYzsjueETzf+/9Ewgo3PBJEOmL+getbvdADvktTUc/lUyLnxMcmKYT0p+Y23f9XwBoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hxxKvr2x; arc=none smtp.client-ip=95.215.58.172
+	 In-Reply-To:Content-Type; b=qpjct/KWn0kaRmzgCLQCnpS82sLX7/5i5ONi5wLT8qR7SnelljMZA+ipB3u8Qj/4MnvhP1dqYQAU9BI5ZlHjI2p6nIZjsIxTCMjfT+4LZ1aqyb62SLjQlXQo8l0en0wcl3bPAbhmuztLrhyDxUdDvELgUikCgJ8htemtJ8r6Po4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GX6KB4gn; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <eb9f421d-0464-4b94-8825-6d96609aaee8@linux.dev>
+Message-ID: <9ba2b2fb-e92c-4b0d-bf39-d655ab8e9f1e@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758385125;
+	t=1758394226;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xn2FbOx9UvFLPxughq+tS2Mw78lAUyn7+2UiQDk7S9c=;
-	b=hxxKvr2x5V/fVRcYZyLdm/zellBQYm2o5pqjv96hojh+7JhrER6dkNPcWs9q6OYxs7jB5Q
-	sErFKbItlFpWREocwjPJc/Q0H2CJj4AJqlfVTDY9jViUYbjPvAeaFdoPmEgbCXirVRpK98
-	JgxmiGWEmDryggnaXNBA9KvNK/L1Yuc=
-Date: Sat, 20 Sep 2025 09:18:40 -0700
+	bh=z8GYkezBpHIV3ba1SOFL8R/MLN47+ScSXn6gifOOr4E=;
+	b=GX6KB4gnv6kvLFPBGtjUBgQwGUaBLByy8v5V8ZY0IZIwwRKPwHNeGrRxIp5GUEqG5rK8QN
+	RU0qzKfK3KBLiKd8UfOzovBnjleql1yZycrjiSb6BmsiXsLS3Nk+/HGB+JcmzdYQXld3x7
+	NhHalRJ8aBPGu1zGZrqqp9tHP3BVaOE=
+Date: Sat, 20 Sep 2025 11:50:17 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,8 +91,37 @@ On 9/20/25 8:56 AM, Alexei Starovoitov wrote:
 > Can we revert this instead?
 > Why do we need these sections if we're not doing anything with them?
 
-Yes, we can revert at llvm side. It does not add any value to libbpf.
-Will submit a llvm pull request soon.
+I did further investigation and it looks like it is hard to revert.
+To make things work at llvm level, we need to revert the following two llvm commits:
+   https://github.com/llvm/llvm-project/commit/87c73f498d3e98c7b6471f81e25b7e08106053fe
+and then
+   https://github.com/llvm/llvm-project/commit/d9489fd073c0e100c6fbb1e5aef140b00cf62b81
+
+The commit
+   https://github.com/llvm/llvm-project/commit/d9489fd073c0e100c6fbb1e5aef140b00cf62b81
+lets BPFMCAsmInfo derives from MCAsmInfoELF, and the commit
+   https://github.com/llvm/llvm-project/commit/87c73f498d3e98c7b6471f81e25b7e08106053fe
+push printSwitchToSection() to each variant of MCAsmInfo. The MCAsmInfo itself contains
+
++  virtual void printSwitchToSection(const MCSection &, uint32_t Subsection,
++                                    const Triple &, raw_ostream &) const {}
+
+and
+MCAsmInfoCOFF, MCAsmInfoDarwin and MCAsmInfoELF have their own specific
+implementation.
+
+So if just revert d9489fd073c0e100c6fbb1e5aef140b00cf62b81, then at BPF backend,
+printSwitchToSection() will be a noop. This will miss a lot of '.seciton ...'
+cases. For example, there are totally 89 llvm BPF selftest failures.
+
+For example, for jump table support, all '.jumptables' section name will not in
+asm code. Another example, '.BTF' section name will miss as well.
+
+So to make the thing work, reverting both commits are necessary.
+But tt will be hard to revert llvm commit 87c73f498d3e98c7b6471f81e25b7e08106053fe
+since it contains lots of non-BPF changes.
+
+So I recommend to fix the problem at libbpf level.
 
 >
 >> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
