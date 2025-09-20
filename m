@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-69068-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C949B8BC4A
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 03:08:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1308FB8BC53
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 03:09:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BE7E5618EB
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 01:08:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A413CB63C11
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 01:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28C32DF6FA;
-	Sat, 20 Sep 2025 01:00:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC942E1747;
+	Sat, 20 Sep 2025 01:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rHDkIf7b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qz9prfzs"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2356B2DF714;
-	Sat, 20 Sep 2025 01:00:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F181D6188;
+	Sat, 20 Sep 2025 01:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758330011; cv=none; b=DmQ3VMsK2giyFQgaCG99HHNdeN2Ga7wWSkb6k7f8DWnA4wPACsqMU+VUpVJveIfFQKO88HP4GPmlMeO5oelOqjAWts2PeSdPufjzokm4neGZ6CHEMNV3YAnlTB073GDwCFXqLEHqy/N6kudJdC7/YEVhzYYmtO9To15Nwm3AKU4=
+	t=1758330012; cv=none; b=Z+bA+LqV884aXXwTDW2cFecUxP1Jso2KgpnxWKHj35ylHbNibgL01G8lcoYMPCybRAhL5A9NZ1YWsM2v/TGY7F10HEGKV7jpka/cEq3vodwzo+BT830N+LT6m2uVC5Rtp3fATS+pjkfE0RyJ8AIQ6SvbM8ABSlcXfsgIgsklzY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758330011; c=relaxed/simple;
-	bh=1h7JbbWJxult9FJRkXv1UbPtXhywndlgT7Un/HQmmHs=;
+	s=arc-20240116; t=1758330012; c=relaxed/simple;
+	bh=KzmSiQNYCYgYK7tUFP2/hc9AJ6o5wRY/9mkPeVJPJtE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oKfyTMwkSHp51tX5FzMfSm9d8tzcE+hkj7QPFarSGdfahM9EtQO/HimpwcuFdW4orsdDxE909oOB6Sbw54zOHjH3c6AjZJYw40GkSf/s/iOQenjA4elOK75WHvTPogRtP7AnEdqD6cSaHWlHALK2L7EGvkiRPMLPXx6Rysci7AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rHDkIf7b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDBAAC4CEF0;
-	Sat, 20 Sep 2025 01:00:10 +0000 (UTC)
+	 MIME-Version; b=R0ox2jZT3Me1rwqf4yXA3SeMWSXXecVUqxY18CNT9DkcNHwjCCSF5vdXNez8f/1SqBAejlh/z2qehmKFySrorRqZBHw4IHiugI/joHiXMTHEekx96N3ajHYAl5VyRvvjxt6CuH/ZkdHSBduHXVbsln8RJniqez92QUAaIzCCa/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qz9prfzs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4A0FC4CEF5;
+	Sat, 20 Sep 2025 01:00:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758330011;
-	bh=1h7JbbWJxult9FJRkXv1UbPtXhywndlgT7Un/HQmmHs=;
+	s=k20201202; t=1758330012;
+	bh=KzmSiQNYCYgYK7tUFP2/hc9AJ6o5wRY/9mkPeVJPJtE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rHDkIf7b/2PQbKWdpIoxyBeQ1g6s1voGXdqiRjAtC4YNVW1Jg/+O5AbRL4V14yXPl
-	 GuW297mjNSTvDhd43AFVXRXlhTMt2FY8sJ+T/ioXzx/6sndNeSwy9dvVvAVo+MUr/v
-	 XYZub0/o5NlDjSHCZc0qGb//h1E6FxXU7qsy/Kpn01BLPqOr1QlkPhIfcIvQJ45tHu
-	 kI9FyQ9TeLI8DdZKfPMm28LZNm8YahJ2AKY8vRVQukQ46KIRJK3Yo+SDgTO7Yhoafn
-	 cgOo/QKHp0GSHYo5oaf3FiW7Ct0DY4Fjxi5bwG6BTiYhKqbHXBleYd+bv6EuSgCsN8
-	 hePPCGj5fBEaQ==
+	b=Qz9prfzsxSkS4/BGMqnu+AeztlVY8vTiivaFoQnqfnTY48aPzmbhIAnmXU7/eImiT
+	 VK9U+BWsMuQxbFQ0AZfcQrdQdBcikEBocqx24/KmPPZ3uJPRyYU9Ormpft7kcq1iTx
+	 skMhfYgyM2ungaKD6qk7yRK70cryQmLfWITweemZ6/c8+PXSxmkPNnmSnKdvplHEv0
+	 oPV+T+xdSyxU5MHOL2iR23lg9qr5kgD8mzVSqu1uhN7uKS2MerRM2qBkr2dRICrDNa
+	 19xWUV6VnTYLlnhytT8j3Cqj9VYEJlRS4FBF7HC/wCL0TEpRREunkMzP5gsPkFGiwl
+	 W8ZG7PqUWo8Gg==
 From: Tejun Heo <tj@kernel.org>
 To: void@manifault.com,
 	arighi@nvidia.com,
@@ -50,9 +50,9 @@ Cc: linux-kernel@vger.kernel.org,
 	memxor@gmail.com,
 	bpf@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 34/46] sched_ext: When calling ops.dispatch() @prev must be on the same scx_sched
-Date: Fri, 19 Sep 2025 14:58:57 -1000
-Message-ID: <20250920005931.2753828-35-tj@kernel.org>
+Subject: [PATCH 35/46] sched_ext: Dispatch from all scx_sched instances
+Date: Fri, 19 Sep 2025 14:58:58 -1000
+Message-ID: <20250920005931.2753828-36-tj@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250920005931.2753828-1-tj@kernel.org>
 References: <20250920005931.2753828-1-tj@kernel.org>
@@ -64,40 +64,50 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The @prev parameter passed into ops.dispatch() is expected to be on the
-same sched. Passing in @prev which isn't on the sched can spuriously
-trigger failures that can kill the scheduler. Pass in @prev iff it's on
-the same sched.
+The cgroup sub-sched support involves invasive changes to many areas of
+sched_ext. The overall scaffolding is now in place and the next step is
+implementing sub-sched enable/disable.
+
+To enable partial testing and verification, update balance_one() to
+dispatch from all scx_sched instances until it finds a task to run. This
+should keep scheduling working when sub-scheds are enabled with tasks on
+them. This will be replaced by BPF-driven hierarchical operation.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/ext.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/sched/ext.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index efe01ba84e2d..714b45a55112 100644
+index 714b45a55112..75a4b05fced4 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -2182,8 +2182,9 @@ static bool scx_dispatch_sched(struct scx_sched *sch, struct rq *rq,
- 			       struct task_struct *prev)
+@@ -2239,7 +2239,7 @@ static bool scx_dispatch_sched(struct scx_sched *sch, struct rq *rq,
+ 
+ static int balance_one(struct rq *rq, struct task_struct *prev)
  {
- 	struct scx_dsp_ctx *dspc = this_cpu_ptr(scx_dsp_ctx);
--	bool prev_on_scx = prev->sched_class == &ext_sched_class;
- 	int nr_loops = SCX_DSP_MAX_LOOPS;
-+	bool prev_on_sch = (prev->sched_class == &ext_sched_class) &&
-+		sch == rcu_access_pointer(prev->scx.sched);
+-	struct scx_sched *sch = scx_root;
++	struct scx_sched *sch = scx_root, *pos;
  
- 	if (consume_global_dsq(sch, rq))
- 		return true;
-@@ -2205,7 +2206,7 @@ static bool scx_dispatch_sched(struct scx_sched *sch, struct rq *rq,
- 		dspc->nr_tasks = 0;
+ 	lockdep_assert_rq_held(rq);
+ 	rq->scx.flags |= SCX_RQ_IN_BALANCE;
+@@ -2283,9 +2283,13 @@ static int balance_one(struct rq *rq, struct task_struct *prev)
+ 	if (rq->scx.local_dsq.nr)
+ 		goto has_tasks;
  
- 		SCX_CALL_OP(sch, SCX_KF_DISPATCH, dispatch, rq,
--			    cpu_of(rq), prev_on_scx ? prev : NULL);
-+			    cpu_of(rq), prev_on_sch ? prev : NULL);
+-	/* dispatch @sch */
+-	if (scx_dispatch_sched(sch, rq, prev))
+-		goto has_tasks;
++	/*
++	 * TEMPORARY - Dispatch all scheds. This will be replaced by BPF-driven
++	 * hierarchical operation.
++	 */
++	list_for_each_entry_rcu(pos, &scx_sched_all, all)
++		if (scx_dispatch_sched(pos, rq, prev))
++			goto has_tasks;
  
- 		flush_dispatch_buf(sch, rq);
- 
+ 	/*
+ 	 * Didn't find another task to run. Keep running @prev unless
 -- 
 2.51.0
 
