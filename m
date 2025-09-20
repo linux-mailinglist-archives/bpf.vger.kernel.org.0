@@ -1,151 +1,140 @@
-Return-Path: <bpf+bounces-69107-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69108-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BD27B8CC66
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 17:57:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B86B8CC7C
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 18:00:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF8243AF7A2
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 15:57:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5623189559A
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 16:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A4F2F5472;
-	Sat, 20 Sep 2025 15:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4670D223707;
+	Sat, 20 Sep 2025 16:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KYxh/lxP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FJkk2yMe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E942836A0
-	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 15:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1424320B7E1
+	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 16:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758383829; cv=none; b=Cn/FHMSLxWjrINYD0W0XV+eFn3tl9vY+TuGZ1zjKx3PUC3SKQBTY+lpvc/Sh/U6psPyg8K/2ibSlHggBxiRCq+bdk9ok4wfX7rOQlzR3gNeEvKz8JEiwdgLnbktP9EiSNXUY8rNnxxwF0fgzXYSqpqkgkmoNZ2zo8ecYALuEuNA=
+	t=1758384034; cv=none; b=BgIycg/jmJA8c1o/aaxXejD0J2Jm3TSWwN92qgVSjLqMfM0ymAF800tDo2Y+x4E4R0oJVIlkksvsbUsP5Q5LWdZ86vPKTQc5pMPLvRjmzUaSlUjWdMKweWWXIT+k1/90mPnTRYtShX+hvDRcD8CCFoPW6JfL2fMVN/PzNn6MINM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758383829; c=relaxed/simple;
-	bh=AQBj9kWJnBNzivMSpd2Div0+z2rPQXFUWRGTn23wAgI=;
+	s=arc-20240116; t=1758384034; c=relaxed/simple;
+	bh=t+xMFzUNan4OAS3RwaNnsiNLjDi+tEvw4/Wobhi9LYU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IiSi2YMCActyEi6M8f3IPyXxwCapk8czB+v7WZ8ce4WOd6PggLrJVIE5FtOLqJhJ7wOg5Jks0lJnk5FecJjsaa1AKcz2ykr0aLbPqCGoLqxJbV9DiKhXIDTkzUrJEgdlTMfDpiMIhttkelrV4jHvpVMjPZTb2yDlhEkBRPskHw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KYxh/lxP; arc=none smtp.client-ip=209.85.128.43
+	 To:Cc:Content-Type; b=GS5IwfS2svL5YaqNLo0iVMEvSLe5mgm41Z9gr+GRTaXU+G/EaH3T7nXxLneQLkygypWybbqyRDHKjNhxWRAg/yeyeucGgo13Y3f4U+h7rRNlDXeXplvgR5thPb/XzcNnET0DdbjZw7RYWRtwC6NM1IgVpKvq2jS6eGxwyvcVIDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FJkk2yMe; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45df0cde41bso19803605e9.3
-        for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 08:57:07 -0700 (PDT)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3ee15505cdeso1785192f8f.0
+        for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 09:00:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758383826; x=1758988626; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758384031; x=1758988831; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XJKrHjM2zPx/eikfNCBvrnVsffjY7Q7oScehGkXaVbo=;
-        b=KYxh/lxPdeUy1tjvNfcm8jKWpdtmPihrikgqLsbZWvDrVkvKi3xJxmhrBw2XWUkqaM
-         3CtlE4wFa8QKFefb/3tx3Bn4XKsh3l6sh7Aukxeoc3c4lFopR5zwPwZXIw6nJalOacTh
-         IQm3xQFQNGBuUPwb0Sg662sWOzw2qtOYAsWASDd12od0vVTKy/oNKdevUS3VuZZTOzEm
-         V5DDlG+nPZlaVp8XAkEuCKg+c2D9iEEIvLUCwlm6cN6ca9Bw02IMNXsfK6TBzMHHV9Dn
-         5cOJ9iEt2JMNTlwa7wiY4W2SA4euc4r17q17CWsDgQDg1ScvCngCoutraM4mfQ27ldSu
-         qxAg==
+        bh=V9u1CGKyYBGrrt60O813LKsYEsL0X6fimnM3s4fCuWM=;
+        b=FJkk2yMeMzx5rxyT97jjg7vaTeEGziR2zH1DJ1WaV4MXiygCqjD5gvZE+FuhW9p9FO
+         UbdrfkFCPkU7KuJLlEKBG8AR4FFd3eG0XOwXSQPA05jHHAnUhcR3pUMvbOMaLWuWIgPt
+         ut4lsA+pU/n2rTdFZa9gjzJcebO0wJcPM3pJ4M2Coq51ZKKbBEk/1pzYcH1dxAhHnTm3
+         1BOaSt0xpCP7dYs/4VMIKL9q3SG7Pnfzlv8UKIVMLhz0QaQdcDxmgJ9VrH/wIU3jNPjz
+         +FNmEcDPhhkS6vdH7O5vsLCLPXtyi+yA8pb9+q8CSG7I21Qe6C20qnTofwW6rgyYaGHH
+         d44A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758383826; x=1758988626;
+        d=1e100.net; s=20230601; t=1758384031; x=1758988831;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XJKrHjM2zPx/eikfNCBvrnVsffjY7Q7oScehGkXaVbo=;
-        b=egpQa9WgQVa8RI+Nm/pQomRBgLUPtxn5J7zIK9yIPa6nkZCca4prbX0zBcQ1g6B6ua
-         +UQt3O5HfWzgll+iupULjzZhuNf0WhwcWu/nwvJdoaLfEXa0Cgc9BQxuQcj+i1btFBZV
-         oNtAMtEgkT2cZE+CrjNAcOpGgGfOHpuzvEEDRSnAOe54rXY7hr7JK3KCOb0t2hSVpDvd
-         1BggxGOTYL1E8rgCpH906/FMMflb6vZmgSt8MHEZbkaZdHWxDvYJfEP1YGnRisgnQyCj
-         VhnbjXWxNbxSX0tCAndn1UW1eaXPBmLNS3UrO76U5YxyFD7nGOqybU8xXgDih39CRVs5
-         /oWg==
-X-Gm-Message-State: AOJu0YzDBF9z4+RiNvWefnzyatAabRXcFVd7DiBG1HbhDpg+SXYBuEY4
-	n4nHFbTADS7KfYt7fp8MhdO7ftnaZRKwW0qwMzf4YwzY5aFcHb7e6QrmtnaRgP9S7HN2HUmbbtC
-	kB1LWebvb2nJt0E/6X7T92bM6RnFFpN3gLQ==
-X-Gm-Gg: ASbGncutMqJs6U09OoztFtvEOG+x1k3zloVvMTlRWZlN9mthXRMpjqYDKds9M35yIyS
-	PgMafnukn6iR1q5gsWbPQOdDMGwFE3X6UVqQCUQDHMQ6ytqBCMdAQG+uNdsg/Zpw47tuOIKOYea
-	esFxeQtOh3TKPPqzSMydOHbj2d5Z8NXBtUg9rREZIU9y7pwmfRn8Df+Pw7Zqs7kGbMm9tTHyFZF
-	BzDS+RfviU6WN36KvizezE9pMLk7FJ4me2G
-X-Google-Smtp-Source: AGHT+IFN9DpsKIAOmo3ntHnZHKiP605IwlGdmWolTTFF8ubM2yl+6yvWEBH84dN5jNIsAU9FXPODkCIMnTqWY4LWOXE=
-X-Received: by 2002:a05:600c:3114:b0:456:13b6:4b18 with SMTP id
- 5b1f17b1804b1-467ebbc0427mr72238035e9.31.1758383826018; Sat, 20 Sep 2025
- 08:57:06 -0700 (PDT)
+        bh=V9u1CGKyYBGrrt60O813LKsYEsL0X6fimnM3s4fCuWM=;
+        b=VnQio/Qf+Kiqy+E8hzLn7sjF47x+RoUwxkeg3qMejSAto9KQLmX6yfaxhnjxWZdmnn
+         MWc8UX5Thv/cYx16KFvwYCkwbSKmPrb+M3/c52DbHM8lK/xgT8DPb8IKj28B+0tsK0E8
+         YidSIHmJOLQVGwAaH5p8WGkkmnoIme2sAljmNHdhTdCZJppQ1Ghq4Cdh4frYx9zOxLFV
+         jnK44FboM2JIDw3Y/qTkGL6BH915MkBUFIpi72OEE4kzNevjpT4VxFxHbEV00OBbBgIg
+         1LszNdIRbiW070j9FarisrLLDKwlSrm4Zr0bHJi7Sm6EZlxlKuB/zJmm++oQA8DJYPic
+         NrMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUJFLjwrfaSllAFUM3bvhmhFur+NjAB5xuzVJPFA7N7FwSKbTR72qDmA+pgp+yXqKzFU3Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqQ3/r7+4eQUX6KLqeJ0N3utTxYH4xyKue0reJV8bn9ZGiFofe
+	Sv8kTN7wjB0dmyORp2JUn/b6ZW51QwdaXbDCpKG9kdRsTZV1b4STeQP7/aUOPlbIC/skU0gTsG+
+	Yt2QwCOd0UjGVffKQ7TN6Eh/ZDk5gZ/U=
+X-Gm-Gg: ASbGncsRhNQZb06tiDep0OI0dhvklngpyr4gSW3XUuNIqgkXQmEXbct2eR71jnPYyU9
+	9IGQF/z91EO7tE0piKRYsiYvlqDEWXjQiRJpOLRJOjk9ir20BxKzkWYj0DHvAkS3xZZiRUVQRt6
+	J80ffRqDya7nezbVg0Q98if9UzRPUsTFzupdSdZLWgMYPi2z4phwYXW9c2sz4rBcuZqd3fIwA59
+	O0t5WRWzljJ00L2xDRzgAm89D/o7w4C6SUo
+X-Google-Smtp-Source: AGHT+IFZBCve7+KXW4bfo2jvFwJICpmLMxwD5eIG5lPNkjimbgEgNO2cLyKlGEwHyNejKakihXZBhKcpzMKwfVoBJ4Q=
+X-Received: by 2002:a05:6000:2881:b0:3ea:87f8:da4e with SMTP id
+ ffacd0b85a97d-3ede1d9f615mr9356449f8f.29.1758384031242; Sat, 20 Sep 2025
+ 09:00:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250920153531.3675700-1-yonghong.song@linux.dev>
-In-Reply-To: <20250920153531.3675700-1-yonghong.song@linux.dev>
+References: <20250919163054.60723-1-vincent.mc.li@gmail.com>
+ <CAADnVQJi93AiYf7+eF2z4kSKfJujgvF-7ZorccEfgvMHoLjM=Q@mail.gmail.com> <CAK3+h2z4icrwcwoobMJCgO_YiPMFsbwbNvYOkYU-V_xMYpZvJg@mail.gmail.com>
+In-Reply-To: <CAK3+h2z4icrwcwoobMJCgO_YiPMFsbwbNvYOkYU-V_xMYpZvJg@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sat, 20 Sep 2025 08:56:53 -0700
-X-Gm-Features: AS18NWCehyps27OOW4kX3Ap1PB54S6kFP7tFNKGZhzUQBgiz_kv9rgEUSKtc3Lg
-Message-ID: <CAADnVQJ-28Oy9OoKXtnDOZBxkDofuwfWS-cdSFHd1uqpOmNLmQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Silence newly-added and unused sections
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+Date: Sat, 20 Sep 2025 09:00:20 -0700
+X-Gm-Features: AS18NWAmrX7d_WSMeukw0FTZ0PsrNvW51KgxG08_3HIIMp_OS_R5Bk4L-fGZgds
+Message-ID: <CAADnVQKVyFThFz_kcCj0WSQX8zWJ7tysKActKiXJ7iFNNW+U1A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, x86: No bpf_arch_text_poke() for kernel text
+To: Vincent Li <vincent.mc.li@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	X86 ML <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Sep 20, 2025 at 8:35=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
+On Sat, Sep 20, 2025 at 6:34=E2=80=AFAM Vincent Li <vincent.mc.li@gmail.com=
+> wrote:
 >
-> With latest llvm22, when building bpf selftest, I got the following info
-> emitted by libbpf:
->   ...
->   libbpf: elf: skipping unrecognized data section(14) .comment
->   libbpf: elf: skipping section(15) .note.GNU-stack (size 0)
->   ...
->
-> The reason is due to llvm patch [1]. Previously, bpf class BPFMCAsmInfo
-> inherits class MCAsmInfo. With [1], BPFMCAsmInfo inherits class
-> MCAsmInfoELF. Such a change added two more sections in the bpf binary, e.=
-g.
->   [Nr] Name              Type            Address          Off    Size   E=
-S Flg Lk Inf Al
->   ...
->   [23] .comment          PROGBITS        0000000000000000 0035ac 00006d 0=
-1  MS  0   0  1
->   [24] .note.GNU-stack   PROGBITS        0000000000000000 003619 000000 0=
-0      0   0  1
->   ...
->
-> Adding the above two sections in elf section ignore list can avoid the
-> above info dump during selftest build.
->
->   [1] https://github.com/llvm/llvm-project/commit/d9489fd073c0e100c6fbb1e=
-5aef140b00cf62b81
+> On Fri, Sep 19, 2025 at 7:59=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Sep 19, 2025 at 9:31=E2=80=AFAM Vincent Li <vincent.mc.li@gmail=
+.com> wrote:
+> > >
+> > > kernel function replies on ftrace to poke kernel functions.
+> > >
+> > > Signed-off-by: Vincent Li <vincent.mc.li@gmail.com>
+> > > ---
+> > >  arch/x86/net/bpf_jit_comp.c | 10 ++++++----
+> > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.=
+c
+> > > index 8d34a9400a5e..63b9c8717bf3 100644
+> > > --- a/arch/x86/net/bpf_jit_comp.c
+> > > +++ b/arch/x86/net/bpf_jit_comp.c
+> > > @@ -643,10 +643,12 @@ static int __bpf_arch_text_poke(void *ip, enum =
+bpf_text_poke_type t,
+> > >  int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+> > >                        void *old_addr, void *new_addr)
+> > >  {
+> > > -       if (!is_kernel_text((long)ip) &&
+> > > -           !is_bpf_text_address((long)ip))
+> > > -               /* BPF poking in modules is not supported */
+> > > -               return -EINVAL;
+> > > +       if (!is_bpf_text_address((long)ip))
+> > > +               /* Only poking bpf text is supported. Since kernel fu=
+nction
+> > > +                * entry is set up by ftrace, we reply on ftrace to p=
+oke kernel
+> > > +                * functions. BPF poking in modules is not supported.
+> > > +                */
+> >
+> > Not true. Pls study kernel/bpf/trampoline.c and how it's used.
+> >
+> oops :). I  copied and pasted  from arm64
+> arch/arm64/net/bpf_jit_comp.c and thought it applies to x86 too, sorry
+> about that.
 
-Can we revert this instead?
-Why do we need these sections if we're not doing anything with them?
-
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  tools/lib/bpf/libbpf.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 5161c2b39875..34aed7904039 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -3788,6 +3788,14 @@ static bool ignore_elf_section(Elf64_Shdr *hdr, co=
-nst char *name)
->         if (is_sec_name_dwarf(name))
->                 return true;
->
-> +       /* .comment section */
-> +       if (strcmp(name, ".comment") =3D=3D 0)
-> +               return true;
-> +
-> +       /* .note.GNU-stack section */
-> +       if (strcmp(name, ".note.GNU-stack") =3D=3D 0)
-> +               return true;
-> +
->         if (str_has_pfx(name, ".rel")) {
->                 name +=3D sizeof(".rel") - 1;
->                 /* DWARF section relocations */
-> --
-> 2.47.3
->
+arm64 is different, since it has hw restriction on how far the jump can
+reach. It has to do a very special dance.
 
