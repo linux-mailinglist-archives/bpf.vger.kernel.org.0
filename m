@@ -1,215 +1,139 @@
-Return-Path: <bpf+bounces-69082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0680B8BDA7
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 04:48:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 305F3B8BDBF
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 04:57:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DA167C85D8
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 02:48:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76CCF7B5414
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 02:55:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22077202C5D;
-	Sat, 20 Sep 2025 02:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD08213E6D;
+	Sat, 20 Sep 2025 02:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dGch4222"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Myu2MLxj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DBB1CAA79
-	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 02:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECFB51FC104
+	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 02:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758336493; cv=none; b=oYYhl2uj7E+bj0sOvoauGcLHiBwelyRpQHkSgO+g6xnKk82tatQmA33pnBfUyeSMyQCfU/jtFP5B+13dl8qRRdrBKhbPqeE7kPWDILp4+1rU9UmnlTfOOT2u6Q39ygonWE15XP/L0JSQFQIUHi1OsTpb2nnacbpxYvyD4hLV0mQ=
+	t=1758336994; cv=none; b=AAmnLFsPw3BCQEr0t4QZoSqPi2UvveqpJwOFdwt1nD1wP1Mq2QA66N88PMlsmvapJ9DlAV9FkPH17epYqacQwrD29h99C5P0YJg1MXddcDOoQKxJQSKcEu+J1f/ujZEO4xi6adoRyZtbOwSnUJR4vFQJUsWJG/576PuHyIQmPPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758336493; c=relaxed/simple;
-	bh=Ton40rAlvuh4011vTiJ3OoCLQVC0Li7m27f1HUP1kPw=;
+	s=arc-20240116; t=1758336994; c=relaxed/simple;
+	bh=SABrXAfD/yGBv4BOgjgu3huM+0XurmfkG7O4hOZ1p5I=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u6bRDan0kVe1JbCsyWsgjO1SC5CQvgWtiM/Ob17iwQJZu+/fh5OXptP7EvljtIxtBMvcF2D3kdLDx/VjfI++dscIFMjOypjJBL93N+q2l2a63s6TMQawYtdXqUAcEGDYSBRRtVDw7U5VkjmwwuTIJ+o8cObBYLipfnfh0TRjiAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dGch4222; arc=none smtp.client-ip=209.85.221.48
+	 To:Cc:Content-Type; b=gZhsPWYYIZef+HG55pVZ1Yv3TnRM6z+sCb2BkiSlwtSdTi9OLxQI9eeLLNqPRqazav0pvnXJCEH9EVImd/C+3jd0kk9FDjhaHQrGelKadrv4xECt97cBP7qdAgd0OG89HgyQwz1Tsf94eNtkIYo+IdQLPo2qQrA5whiYjdJ68z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Myu2MLxj; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3f0134ccc0cso1271350f8f.1
-        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 19:48:10 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3ee155e0c08so1380396f8f.2
+        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 19:56:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758336489; x=1758941289; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758336991; x=1758941791; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VA73xWwtqoqelJv447Pz6QfkkHHxd9uLfHHkEXnpMbo=;
-        b=dGch4222kZeCkdeSkke+cEUaVB9Wy7oMUMqiPUdtlEmcpxmH/9gUqQEZA/vBSpZu67
-         Jmfh/sVgWe1FsL/uVGNCgBOBiLT2eveW2xhOn2dFGnd1Q5wWwxfS/SqilOixIUCM+v/0
-         hwGtXQWvFYdBzx/qUB/2jUcPL3GdW9+ztMWgg/MksZ/HU15IXooTzZHAbAn2UspeXVw7
-         tbV7kA+OqNlfVqezj9QqzJ1DUsDyDFNSbZQO++cXAdNwOH07+eD2aN+79JcmtqQS1+Ql
-         JEZfSHz9OZLSjPrz/G02iTXOkElep5GLeImltyBoL9DJXDm4LIw0bgKQddhbVKBc8hte
-         G8Xg==
+        bh=K+JSfjQG3dPuPVsnceUeFZXrh8/X6Psk2dyqFGUkfL0=;
+        b=Myu2MLxjcSzKdG1GiIkbYLRZidy4/J7LYDYag/LWnxuos+0nMnEFdgPo2RnzSSspft
+         LmXzyixFRoPIYSgtrPOeGwYIYasE9MJvKO9lJRIJXJ2JIb2vYH5BTGktLgzOvd2N4NBF
+         GD/a13vnhh66UfJp1onuDSp0euLd2yvAr0XVMj/gy88OwoIZxNiobujLiXFSju9ieEbY
+         LO2zQWkgKfXP8gLaHqcryVe1/0xPr63pFai6zuzJrR4JtP+vvWITNt2L0XlqpVZZO7eI
+         ULGvv491ffJq0PJUz2fIVYuELvufogbb0x8b3nCOeQRs/ghzLlKtOAJRnti1Jo0Xw3Vu
+         fpAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758336489; x=1758941289;
+        d=1e100.net; s=20230601; t=1758336991; x=1758941791;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VA73xWwtqoqelJv447Pz6QfkkHHxd9uLfHHkEXnpMbo=;
-        b=Ng6J+U3d4JDs4/P9WZqc/eov8oAc1bjfdmIQW9Eo3/zv5kHnxBiQg+BRmE1NVKWZyH
-         epjTlc2IrlZFtRJMzCFirxW+DB5kAi0XysMscAMa7C2JXpJyaACkbKa/Eq/Nrrv0PK3r
-         7mjBKKKMtbB0vzcXTbU1uFE+dBinmq7WXWyxYAASMB5lT/ehIsJdVIEXkHxUi+DG4DMN
-         T/wOBWcSp3kg7hq7bBJuqMu11XVpSa/n/jKMp/au4C6MiKvMWQ7kN5CTepISyFbuDXGO
-         u+00gHDPBG2wXPg2lScJDXE+h7rn8ZGas0qKPG+sM2AFOrLcTNU/wJc9yy33BMRbUX2Z
-         QxmA==
-X-Forwarded-Encrypted: i=1; AJvYcCUD8Jd/+YqMScpXGaRVxKDp6nU92Eu+a+bu+ZnL+bJJ+MidWZxAJWaawJt44wnmryGJ5uQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzduIZ28l0onB5aLtE6kGD1iK8nSx86mhZTScBd0GS7aKX7sKlD
-	cQ0BbgGNu2YBrAwE63wXWQ1dDtAl3YIXHgBE54dC3DvM3NCYjphlmZKHBahfb5/gd7NsnbeLrtS
-	IgfV42n1Q1iKpae8xoUFtdBZbtn31WoA=
-X-Gm-Gg: ASbGncuEtr/GwKth8JncQZmJPDT7rzSNHMNwso+a9LzJV/C/Ed6e+rxRrdKQrrQJe9i
-	m3V/MflsqlaDNwXFPc7NJxXHYna6HUI5N/vKkVdGB3FcY74zyHRhdm/n3jAWkJMH9rzR5ZaJZvt
-	v2gdjfBdoKNBeFp21S2BSeMBIcmDkQ/BDsvQx7eZy7y0EnuTExu1itVjieRItp9wQcz3vKkeoWz
-	jG3cvhurAsEKxMzyq3SlA0/4Yh/qtMYKePd2I9Owb68WeI=
-X-Google-Smtp-Source: AGHT+IGp9bGYRkTkDW6fd6bXtrx6LP9cUZ+4VQjJn95/G+cQmyMR8Z4+A9CZYe+F8G2SGIDbt3ooSazH/OpX/66QP8A=
-X-Received: by 2002:a05:6000:2211:b0:3e9:2189:c2c3 with SMTP id
- ffacd0b85a97d-3ee83da0048mr5003952f8f.33.1758336488882; Fri, 19 Sep 2025
- 19:48:08 -0700 (PDT)
+        bh=K+JSfjQG3dPuPVsnceUeFZXrh8/X6Psk2dyqFGUkfL0=;
+        b=PevxW2zH0m3l0kMGgCutATHp2Y2Nr/T8YupfBilVlR1tQX1GPUei9EKahOTeLRTd8d
+         15Go3QGkqSOo4wg7yFPdfIMEbw0S2kDAcE6huJsBJ7iuaO41vJ7v8sF6jcjFffzaYHsW
+         9+PpJhNyHP253dCeyCNYL8mEWunqf4I+botW/w6cbf9qYv7Pu5paLXEKanBWgdCuyZKt
+         jUsGbq+bh2Eev94XkSeSugYTS/H06MzNff9etgfuLvWDOt+GkGcFH/axjXAxBWl/3i7R
+         jxUCxpfwz8M1cspT1yMTTRiex8fB52SUHst2dsn/D6MNkwxnz66BBnFRCkpW3aZQQlSu
+         1+gg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdhVqbKwCUyuSHZhTfBVVRO7mevpV0w4zGjzDWMKCryQc4+TpDRBTya/RrdzsaIKFkZXg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYQs5fCERfoEhNnxyF+IDwjSDwENg79ksrbo7CLs3rwLCfPM35
+	guh4KlLue/NRSzslW00KQmFS4hc+zdMw8BWEm6YuZXQjfdxHWzrtWS1aWM+M5lpmXLa+A9HyfdV
+	dQZU1VGoUZsTjntL//W1yfj3kuxFnnDw=
+X-Gm-Gg: ASbGncuS3ukRlLg6vpc0GILG7UvFJz+legaED33tjIT6Ot+JCI3XDMjLIcCMUmymFb1
+	Dj8OfzMcWeqE0Jyx7vOpBzYfSus2Hxjq+WgpZDUkMf1cIKkjGrwhoAZ5n8R0Qe1gZe+N3ydebtJ
+	HagGb9aqd/DtJ72WYzAO4NDrYbNz12zFpKrF23dQhcp+612STcEFtpcxW/3DRUKOK+47UljEOOD
+	FnfKAGE5rUttMvxo5d2oxlBEwBp4KyC9XVO
+X-Google-Smtp-Source: AGHT+IERAcHZfTN6VLJmmNbMRxg87FE7AYDMD8mBCCmzVyFm3fyh8f+KisZCrkCo2ZtgOPFOA9so43qHA5KIJr1Z9YY=
+X-Received: by 2002:a05:6000:2c06:b0:3ec:e276:5f43 with SMTP id
+ ffacd0b85a97d-3ee7e1069c3mr3959667f8f.18.1758336991216; Fri, 19 Sep 2025
+ 19:56:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250905201606.66198-1-shakeel.butt@linux.dev> <5qi2llyzf7gklncflo6gxoozljbm4h3tpnuv4u4ej4ztysvi6f@x44v7nz2wdzd>
-In-Reply-To: <5qi2llyzf7gklncflo6gxoozljbm4h3tpnuv4u4ej4ztysvi6f@x44v7nz2wdzd>
+References: <20250919071902.554223-1-yangfeng59949@163.com>
+In-Reply-To: <20250919071902.554223-1-yangfeng59949@163.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 19 Sep 2025 19:47:57 -0700
-X-Gm-Features: AS18NWDH3QBNef0yPtwliaQkmE3uG7opfcVN1SH_V692E7Q9oKx5y5fjeVYAS8M
-Message-ID: <CAADnVQK_wvu-KBgF6dNq=F5qNk-ons-w3UenJNaew6h9qTBpGw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Peilin Ye <yepeilin@google.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Meta kernel team <kernel-team@meta.com>
+Date: Fri, 19 Sep 2025 19:56:20 -0700
+X-Gm-Features: AS18NWC_zRwQ0ew3oT6b8x8FGxU5FvpZ1QgwjLnU8fS_VUvLw3WzNDgL7YILOro
+Message-ID: <CAADnVQKrnYCaUCd+BNvZQmR0-6CSu2GBa=TCCCjPLSNfb_Ddvg@mail.gmail.com>
+Subject: Re: [BUG] Failed to obtain stack trace via bpf_get_stackid on ARM64 architecture
+To: Feng Yang <yangfeng59949@163.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 18, 2025 at 7:49=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
+On Fri, Sep 19, 2025 at 12:19=E2=80=AFAM Feng Yang <yangfeng59949@163.com> =
+wrote:
 >
-> On Fri, Sep 05, 2025 at 01:16:06PM -0700, Shakeel Butt wrote:
-> > Generally memcg charging is allowed from all the contexts including NMI
-> > where even spinning on spinlock can cause locking issues. However one
-> > call chain was missed during the addition of memcg charging from any
-> > context support. That is try_charge_memcg() -> memcg_memory_event() ->
-> > cgroup_file_notify().
-> >
-> > The possible function call tree under cgroup_file_notify() can acquire
-> > many different spin locks in spinning mode. Some of them are
-> > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let'=
-s
-> > just skip cgroup_file_notify() from memcg charging if the context does
-> > not allow spinning.
-> >
-> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> When I use bpf_program__attach_kprobe_multi_opts to hook a BPF program th=
+at contains the bpf_get_stackid function on the arm64 architecture,
+> I find that the stack trace cannot be obtained. The trace->nr in __bpf_ge=
+t_stackid is 0, and the function returns -EFAULT.
 >
-> Here I am just pasting the irq_work based prototype which is build
-> tested only for now and sharing it early to show how it looks. Overall I
-> think it is adding too much complexity which is not worth it. We have to
-> add per-cpu irq_work and then for each memcg we have to add per-cpu
-> lockless node to queue the deferred event update. Also more reasoning is
-> needed to make sure the updates are not missed by the deferred work.
+> For example:
+> diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/tes=
+ting/selftests/bpf/progs/kprobe_multi.c
+> index 9e1ca8e34913..844fa88cdc4c 100644
+> --- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> +++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> @@ -36,6 +36,15 @@ __u64 kretprobe_test6_result =3D 0;
+>  __u64 kretprobe_test7_result =3D 0;
+>  __u64 kretprobe_test8_result =3D 0;
 >
-> Anyways, this is the early prototype. Unless there are comments on how
-> to make it better, I will ask Andrew to just pick the previous patch I
-> sent.
->
->
-> From d58d772f306454f0dffa94bfb32195496c450892 Mon Sep 17 00:00:00 2001
-> From: Shakeel Butt <shakeel.butt@linux.dev>
-> Date: Thu, 18 Sep 2025 19:25:37 -0700
-> Subject: [PATCH] memcg: add support for deferred max memcg event
->
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
->  include/linux/memcontrol.h |  3 ++
->  mm/memcontrol.c            | 85 ++++++++++++++++++++++++++++++++++++--
->  2 files changed, 84 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 16fe0306e50e..3f803957e05d 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -69,6 +69,7 @@ struct mem_cgroup_id {
->         refcount_t ref;
->  };
->
-> +struct deferred_events_percpu;
->  struct memcg_vmstats_percpu;
->  struct memcg1_events_percpu;
->  struct memcg_vmstats;
-> @@ -268,6 +269,8 @@ struct mem_cgroup {
->
->         struct memcg_vmstats_percpu __percpu *vmstats_percpu;
->
-> +       struct deferred_events_percpu __percpu *deferred_events;
+> +typedef __u64 stack_trace_t[2];
 > +
->  #ifdef CONFIG_CGROUP_WRITEBACK
->         struct list_head cgwb_list;
->         struct wb_domain cgwb_domain;
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e090f29eb03b..a34cb728c5c6 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -132,6 +132,63 @@ bool mem_cgroup_kmem_disabled(void)
->         return cgroup_memory_nokmem;
->  }
->
-> +struct deferred_events_percpu {
-> +       atomic_t max_events;
-> +       struct mem_cgroup *memcg_owner;
-> +       struct llist_node lnode;
-> +};
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_STACK_TRACE);
+> +       __uint(max_entries, 1024);
+> +       __type(key, __u32);
+> +       __type(value, stack_trace_t);
+> +} stacks SEC(".maps");
 > +
-> +struct defer_memcg_events {
-> +       struct llist_head memcg_llist;
-> +       struct irq_work work;
-> +};
-> +
-> +static void process_deferred_events(struct irq_work *work)
-> +{
-> +       struct defer_memcg_events *events =3D container_of(work,
-> +                                               struct defer_memcg_events=
-, work);
-> +       struct llist_node *lnode;
-> +
-> +       while (lnode =3D llist_del_first_init(&events->memcg_llist)) {
-> +               int i, num;
-> +               struct deferred_events_percpu *eventsc;
-> +
-> +               eventsc =3D container_of(lnode, struct deferred_events_pe=
-rcpu, lnode);
-> +
-> +               if (!atomic_read(&eventsc->max_events))
-> +                       continue;
-> +               num =3D atomic_xchg(&eventsc->max_events, 0);
-> +               if (!num)
-> +                       continue;
-> +               for (i =3D 0; i < num; i++)
-> +                       memcg_memory_event(eventsc->memcg_owner, MEMCG_MA=
-X);
-> +       }
-> +}
-> +
-> +static DEFINE_PER_CPU(struct defer_memcg_events, postpone_events) =3D {
-> +       .memcg_llist =3D LLIST_HEAD_INIT(memcg_llist),
-> +       .work =3D IRQ_WORK_INIT(process_deferred_events),
-> +};
+>  static void kprobe_multi_check(void *ctx, bool is_return)
+>  {
+>         if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
+> @@ -100,7 +109,9 @@ int test_kretprobe(struct pt_regs *ctx)
+>  SEC("kprobe.multi")
+>  int test_kprobe_manual(struct pt_regs *ctx)
+>  {
+> +       int id =3D bpf_get_stackid(ctx, &stacks, 0);
 
-Why all these per cpu stuff ? I don't understand what it helps with.
-To have max_events per-cpu?
-Just one global llist and irq_work will do just fine.
-and global max_events too.
+ftrace_partial_regs() supposed to work on x86 and arm64,
+but since multi-kprobe is the only user...
+I suspect the arm64 implementation wasn't really tested.
+Or maybe there is some other issue.
 
-In some previous thread there was a question about atomiciting
-of atomic_long. It's normal 32-bit atomic on 32-bit archs.
+Masami, Jiri,
+thoughts?
 
