@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-69078-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69079-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84FCFB8BC84
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 03:11:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42E98B8BC8A
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 03:11:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70B761897779
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 01:11:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E62011C22D5F
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 01:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1659B2E427C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED23E2E765E;
 	Sat, 20 Sep 2025 01:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b+BvtDp0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UKKjnFEU"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A1B5230264;
-	Sat, 20 Sep 2025 01:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B3B82E6CC7;
+	Sat, 20 Sep 2025 01:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758330021; cv=none; b=FLmlIt8rEiA0Jx+TjIBO/ATTvfuy7+MH41CHvzsFBgL+lQxdddHftTauLlecO9/YUShQgtIPRt9PD/WXdeaT/FKizr9WGwjiZC2cb5WUto6xQTWPlBQeE94yC0zoWEqH9/cILX3x+i2UTuJouTc8C696DPb75+OWK02+fDWmLjQ=
+	t=1758330022; cv=none; b=r1g5tFAwZ+dQ4927s6i+EI8lcLZSN7j78jp9uKtIc7LVk6YbzBv3kMCEyYHuO+fSl+ScMlmmtQ+oaV9MuFbdb4d/V15fVtFACbN2KRUqAkErh+n50Irs8TfXQBXaj/dcm0Zj6D3C6SKvy9LRsPhV13qQTe1+G1GUhsZ5gnKiDC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758330021; c=relaxed/simple;
-	bh=B/Q0AEuxbLjwxnFtA2f7DqgvK0KFO/hLFsyma70t6UM=;
+	s=arc-20240116; t=1758330022; c=relaxed/simple;
+	bh=lEIMCk3ilAs8TY+TybyMcfYO/HF7q96MAMMCY3VfSC4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t3AAY5DEAlMnIfRxl16AYnzx+gTZbPVGRZJ55IobBe8oO/et6QAwpMYz9ASnTd0rgNdUgJsdJsCjkYyV5JyAlreM187TEJBQoqMeK3wuG/7Ylb9M2SKk62atV+wiGKUB4c8O7A6DKuC3joh0EciERXPjDmFutqV5TcVaSh1cx78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b+BvtDp0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F738C4CEF0;
-	Sat, 20 Sep 2025 01:00:21 +0000 (UTC)
+	 MIME-Version; b=dMiKQCiBTMvsvJNUulfULC4aA9x0jjszFRvKVWjXyPIoQ8gyJ1PNtD6QJFMoT56C9WORvJndFKVBoiilutQtgzHTMlzLJcjT5TJUteoadAkr85T5qnL74jWG71hSTCBdtrqUW52CzlvoWuUiWDbpVq/Js3RlI8htizqKWOY0FCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UKKjnFEU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 114ADC4CEF0;
+	Sat, 20 Sep 2025 01:00:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758330021;
-	bh=B/Q0AEuxbLjwxnFtA2f7DqgvK0KFO/hLFsyma70t6UM=;
+	s=k20201202; t=1758330022;
+	bh=lEIMCk3ilAs8TY+TybyMcfYO/HF7q96MAMMCY3VfSC4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b+BvtDp0DxBnwkaLvXxmLYgO/dQxxAhs2vNAtoLPZnVRzpKPi2q9PToHPfPReqYH6
-	 1zRY5o8rla0gQ05xdYb5R44YVau5b5Ow4wsG9vOnVk/rGkhfebJVZx7pUqkpgCtIlx
-	 SNomP7FmNYoGYu98/HJ5cxU30nkZCP9ggRJ3OuGVsXQ7Mi2bs/vLq40E7PvpLEu2xY
-	 jHeauCFgZZd74Y3+wtxt6P0MMj2fqM5+k8M20WDPNMB5gQfU7AdycuU8a0e4fKGvI7
-	 FvPXRYfeAsWTbrrTs0LAr7rE5TF2lG8VlVXpD+0DrnZnAbmHBde0olGUGFqyJJr90j
-	 8M/VMF6mIEcCw==
+	b=UKKjnFEUEzauHjpdJWzmvqpX6KLW0rFmAUZZSvREVpniknhBmUgw/9hQq1PMAUQwG
+	 SoyvtFHMHidlmxUXoXQHI8FVZ8BQQ4E7LxLM7MEEhJidbVwlabB0FpGxPS/VNeUl7y
+	 ZpJ9nwvIDNXHLn7+N8WNdWe1FsfMYtqvf9wZRjyYrQ8P+b0PRyqUad8yj7MeL1LgOq
+	 gKqmLQN0A02KpLk34QUf572nCAKzXBQBkJPSVBMYOKPe9FayxfibptvGydCKbHxxx6
+	 yz2O443T754j3WIc2S0QltCvDN0Iy6Dm5crP2o8Gzp5dp9b/kTA0HzJr/zSOIhZKpV
+	 8Uskm7jfHi9yw==
 From: Tejun Heo <tj@kernel.org>
 To: void@manifault.com,
 	arighi@nvidia.com,
@@ -50,9 +50,9 @@ Cc: linux-kernel@vger.kernel.org,
 	memxor@gmail.com,
 	bpf@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 44/46] sched_ext: Factor out scx_link_sched() and scx_unlink_sched()
-Date: Fri, 19 Sep 2025 14:59:07 -1000
-Message-ID: <20250920005931.2753828-45-tj@kernel.org>
+Subject: [PATCH 45/46] sched_ext: Add rhashtable lookup for sub-schedulers
+Date: Fri, 19 Sep 2025 14:59:08 -1000
+Message-ID: <20250920005931.2753828-46-tj@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250920005931.2753828-1-tj@kernel.org>
 References: <20250920005931.2753828-1-tj@kernel.org>
@@ -64,108 +64,158 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Factor out scx_link_sched() and scx_unlink_sched() functions to reduce
-code duplication in the scheduler enable/disable paths.
+Add rhashtable-based lookup for sub-schedulers indexed by cgroup_id to
+enable efficient scheduler discovery in preparation for multiple scheduler
+support. The hash table allows quick lookup of the appropriate scheduler
+instance when processing tasks from different cgroups.
 
-No functional change.
+This extends scx_link_sched() to register sub-schedulers in the hash table
+and scx_unlink_sched() to remove them. A new scx_find_sub_sched() function
+provides the lookup interface.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/ext.c | 53 +++++++++++++++++++++++++++-------------------
- 1 file changed, 31 insertions(+), 22 deletions(-)
+ kernel/sched/ext.c          | 54 +++++++++++++++++++++++++++++++++----
+ kernel/sched/ext_internal.h |  2 ++
+ 2 files changed, 51 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 4558bec72508..058315fc524b 100644
+index 058315fc524b..0d865e017115 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -4221,6 +4221,33 @@ static void refresh_watchdog(void)
+@@ -27,6 +27,16 @@ struct scx_sched __rcu *scx_root;
+  */
+ static LIST_HEAD(scx_sched_all);
+ 
++#ifdef CONFIG_EXT_SUB_SCHED
++static const struct rhashtable_params scx_sched_hash_params = {
++	.key_len		= sizeof_field(struct scx_sched, ops.sub_cgroup_id),
++	.key_offset		= offsetof(struct scx_sched, ops.sub_cgroup_id),
++	.head_offset		= offsetof(struct scx_sched, hash_node),
++};
++
++static struct rhashtable scx_sched_hash;
++#endif
++
+ /*
+  * - We want to visit and perform sleepable operations on every task.
+  *
+@@ -201,6 +211,12 @@ static struct scx_sched *scx_parent(struct scx_sched *sch)
+ }
+ 
+ #ifdef CONFIG_EXT_SUB_SCHED
++static struct scx_sched *scx_find_sub_sched(u64 cgroup_id)
++{
++	return rhashtable_lookup(&scx_sched_hash, &cgroup_id,
++				 scx_sched_hash_params);
++}
++
+ static void scx_set_task_sched(struct task_struct *p, struct scx_sched *sch)
+ {
+ 	rcu_assign_pointer(p->scx.sched, sch);
+@@ -233,6 +249,11 @@ static struct scx_sched *scx_next_descendant_pre(struct scx_sched *pos,
+ 	return NULL;
+ }
+ #else	/* CONFIG_EXT_SUB_SCHED */
++static struct scx_sched *scx_find_sub_sched(u64 cgroup_id)
++{
++	return NULL;
++}
++
+ static void scx_set_task_sched(struct task_struct *p, struct scx_sched *sch)
+ {
+ }
+@@ -4221,26 +4242,41 @@ static void refresh_watchdog(void)
  		cancel_delayed_work_sync(&scx_watchdog_work);
  }
  
-+static void scx_link_sched(struct scx_sched *sch)
-+{
-+	scoped_guard(raw_spinlock_irq, &scx_sched_lock) {
-+#ifdef CONFIG_EXT_SUB_SCHED
-+		struct scx_sched *parent = scx_parent(sch);
-+		if (parent)
-+			list_add_tail(&sch->sibling, &parent->children);
-+#endif	/* CONFIG_EXT_SUB_SCHED */
-+		list_add_tail_rcu(&sch->all, &scx_sched_all);
-+	}
-+
-+	refresh_watchdog();
-+}
-+
-+static void scx_unlink_sched(struct scx_sched *sch)
-+{
-+	scoped_guard(raw_spinlock_irq, &scx_sched_lock) {
-+#ifdef CONFIG_EXT_SUB_SCHED
-+		if (scx_parent(sch))
-+			list_del_init(&sch->sibling);
-+#endif	/* CONFIG_EXT_SUB_SCHED */
-+		list_del_rcu(&sch->all);
-+	}
-+
-+	refresh_watchdog();
-+}
-+
+-static void scx_link_sched(struct scx_sched *sch)
++static int scx_link_sched(struct scx_sched *sch)
+ {
+ 	scoped_guard(raw_spinlock_irq, &scx_sched_lock) {
  #ifdef CONFIG_EXT_SUB_SCHED
- static DECLARE_WAIT_QUEUE_HEAD(scx_unlink_waitq);
+ 		struct scx_sched *parent = scx_parent(sch);
+-		if (parent)
++		int ret;
++
++		if (parent) {
++			ret = rhashtable_lookup_insert_fast(&scx_sched_hash,
++					&sch->hash_node, scx_sched_hash_params);
++			if (ret) {
++				scx_error(sch, "failed to insert into scx_sched_hash (%d)", ret);
++				return ret;
++			}
++
+ 			list_add_tail(&sch->sibling, &parent->children);
++		}
+ #endif	/* CONFIG_EXT_SUB_SCHED */
++
+ 		list_add_tail_rcu(&sch->all, &scx_sched_all);
+ 	}
  
-@@ -4385,12 +4412,7 @@ static void scx_sub_disable(struct scx_sched *sch)
- 	 */
- 	synchronize_rcu_expedited();
+ 	refresh_watchdog();
++	return 0;
+ }
  
--	raw_spin_lock_irq(&scx_sched_lock);
--	list_del_init(&sch->sibling);
--	list_del_rcu(&sch->all);
--	raw_spin_unlock_irq(&scx_sched_lock);
--
--	refresh_watchdog();
-+	scx_unlink_sched(sch);
- 
- 	mutex_unlock(&scx_enable_mutex);
- 
-@@ -4549,11 +4571,7 @@ static void scx_root_disable(struct scx_sched *sch)
- 	if (sch->ops.exit)
- 		SCX_CALL_OP(sch, SCX_KF_UNLOCKED, exit, NULL, ei);
- 
--	raw_spin_lock_irq(&scx_sched_lock);
--	list_del_rcu(&sch->all);
--	raw_spin_unlock_irq(&scx_sched_lock);
--
--	refresh_watchdog();
-+	scx_unlink_sched(sch);
- 
- 	/*
- 	 * scx_root clearing must be inside cpus_read_lock(). See
-@@ -5215,11 +5233,7 @@ static int scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
+ static void scx_unlink_sched(struct scx_sched *sch)
+ {
+ 	scoped_guard(raw_spinlock_irq, &scx_sched_lock) {
+ #ifdef CONFIG_EXT_SUB_SCHED
+-		if (scx_parent(sch))
++		if (scx_parent(sch)) {
++			rhashtable_remove_fast(&scx_sched_hash, &sch->hash_node,
++					       scx_sched_hash_params);
+ 			list_del_init(&sch->sibling);
++		}
+ #endif	/* CONFIG_EXT_SUB_SCHED */
+ 		list_del_rcu(&sch->all);
+ 	}
+@@ -5233,7 +5269,9 @@ static int scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
  	 */
  	rcu_assign_pointer(scx_root, sch);
  
--	raw_spin_lock_irq(&scx_sched_lock);
--	list_add_tail_rcu(&sch->all, &scx_sched_all);
--	raw_spin_unlock_irq(&scx_sched_lock);
--
--	refresh_watchdog();
-+	scx_link_sched(sch);
+-	scx_link_sched(sch);
++	ret = scx_link_sched(sch);
++	if (ret)
++		goto err_disable;
  
  	scx_idle_enable(ops);
  
-@@ -5486,12 +5500,7 @@ static int scx_sub_enable(struct sched_ext_ops *ops, struct bpf_link *link)
+@@ -5500,7 +5538,9 @@ static int scx_sub_enable(struct sched_ext_ops *ops, struct bpf_link *link)
  		goto out_put_cgrp;
  	}
  
--	raw_spin_lock_irq(&scx_sched_lock);
--	list_add_tail(&sch->sibling, &parent->children);
--	list_add_tail_rcu(&sch->all, &scx_sched_all);
--	raw_spin_unlock_irq(&scx_sched_lock);
--
--	refresh_watchdog();
-+	scx_link_sched(sch);
+-	scx_link_sched(sch);
++	ret = scx_link_sched(sch);
++	if (ret)
++		goto err_disable;
  
  	if (sch->level >= SCX_SUB_MAX_DEPTH) {
  		scx_error(sch, "max nesting depth %d violated",
+@@ -6287,6 +6327,10 @@ void __init init_sched_ext_class(void)
+ 	register_sysrq_key('S', &sysrq_sched_ext_reset_op);
+ 	register_sysrq_key('D', &sysrq_sched_ext_dump_op);
+ 	INIT_DELAYED_WORK(&scx_watchdog_work, scx_watchdog_workfn);
++
++#ifdef CONFIG_EXT_SUB_SCHED
++	BUG_ON(rhashtable_init(&scx_sched_hash, &scx_sched_hash_params));
++#endif	/* CONFIG_EXT_SUB_SCHED */
+ }
+ 
+ 
+diff --git a/kernel/sched/ext_internal.h b/kernel/sched/ext_internal.h
+index f6d5867230bd..7a26c7c89e1f 100644
+--- a/kernel/sched/ext_internal.h
++++ b/kernel/sched/ext_internal.h
+@@ -980,6 +980,8 @@ struct scx_sched {
+ 	struct list_head	all;
+ 
+ #ifdef CONFIG_EXT_SUB_SCHED
++	struct rhash_head	hash_node;
++
+ 	struct list_head	children;
+ 	struct list_head	sibling;
+ 	struct cgroup		*cgrp;
 -- 
 2.51.0
 
