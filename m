@@ -1,143 +1,186 @@
-Return-Path: <bpf+bounces-69100-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69101-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 605DDB8C92D
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 15:34:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9490CB8C936
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 15:39:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A8CA7E7A6B
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 13:34:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38FF9561F40
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 13:39:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DF52116E0;
-	Sat, 20 Sep 2025 13:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 240E92D321B;
+	Sat, 20 Sep 2025 13:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AkIFRKXO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j9miTtBs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894E4433A6
-	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 13:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD7A1FDA
+	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 13:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758375277; cv=none; b=FfDx85kGsvZLqbash2n3VGnEOxEjequr33kJS/lm6gSurBurgtXNb9BisjijLzvMiRf+CSGtrV7pXdEhrbTLfcEt98VL8AXfD+7J54KknNiIeO9DLlD1RXGbB6Q8so3vbCTAwFyfLzNhikeWDv4jPrdXnrKvmcZXMobBZ8ES9yQ=
+	t=1758375592; cv=none; b=qDOZKDzlvCgirBV+P6fgcIvlJVCCiLnngXkVdQW+8ow/l24dTO8UCQlW9iDZi/HTNKz2hy7Foc5biZYVG5bw7E2SrURTuKCAhMMt6lFesJe8CduI7lz8Wzk7OGV50hetKsYXK+JiLa4UXYxAGnFQd7etswJ4GhVye0WNhJCgCiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758375277; c=relaxed/simple;
-	bh=YnAuweZujrmQTV+1zFDHhxD3VmIyWXRjgIpz5Yo0okI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RZJ39f8Qg51jjF1Ro8pHAkbOv61iTft3QQrrgU4bAbfm/XKkYx5ne3FV93kBAQL6+3+4j1n8a0eAdRyLA5AcGTfHHO4cClpk5uurDSfmrQPQOhVasTN5Jsxls2b8n8W2eVftRK6IoO7HiI7lBZePR+isgGkQDmXw1JiCMuCh+Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AkIFRKXO; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4b5eee40cc0so29852441cf.0
-        for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 06:34:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758375274; x=1758980074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zQXZzHFfrKN8b1InafhMgULAsd5Yx+CYgRuUypJTSSE=;
-        b=AkIFRKXOiZ81ibWTpUYeXREbmCqf01Xy8pFG+6nC1cvg7AujoE0B2kmmi5vdzWrKFJ
-         f04GhDRH4AfrSy6KAE8ALqWREml0X1KBio7x4tn/gnAxDsakhXJSnBbxw24tX2wQIqyO
-         QqGQvDy8MZrLci56h/nM7iYyFWAp6MewGsOAtLpO/y83WnIv5I8vIImPTpU08uWPZuhz
-         uZvCx9XJth7/PJOwEru+ama04DyP+d824rSycEK2LGZHMYypc8oNJQFcXHSgsZ3cJa9g
-         kfzUebJW88/9nA5Obz8M2lDP/BlLYbCUVudwRcl24MnkNy4SpdwU3yqi2TzWzVJnR2Od
-         LVWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758375274; x=1758980074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zQXZzHFfrKN8b1InafhMgULAsd5Yx+CYgRuUypJTSSE=;
-        b=u1ctNnAGk9VQmGCMXCcokA+GrX0rCV1GJJl0KwCLsSQeYtBsyli+ukUvR4wlpT6r0p
-         xbHxeJjsUFNISmY1JjO8ULr6vhNX9DZ3bqGLVNZRqxBntVLIbi6uOvwy6wuqdMsqyHFZ
-         axlus09Ob74pg8a2gfS92Aq7H6We0LS3NwTRxlQxnVhWIOQW86oFlSXtxpYM6RZRnJR8
-         IfTTl3POzP1U599DPWcQ15RRp9fsbegpH6zft1VSALxGyaYZVnsKCoU1FH2OXdkRxCZO
-         TCbMyWJX8f3RnmWykTSTbhsc6zw1//DlzX8b7gDBCAtPZkjNVnzNHaBjelsDk0MAwOk4
-         +XTA==
-X-Forwarded-Encrypted: i=1; AJvYcCWBZ6ixYHv7nylICiykUX2mFcCyj44T0Iv7qHt1Y57vSbROivFqKCVNtpSzpUBRb8Vc/FY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYjGGqsVVFL/A3eD8v0uCPIG0KZFhzYkJLsNp7VvIuRyJ/4PB9
-	rKjQ4RX2BvyS+P9pDoZeTri+CnnOXhWYpBAjp34cGge64ri5//h7ipr+63927cl9jOEuj5OtZ+4
-	dgWbN4ETSKnCyv10tiUDIyOKVizAaK5g=
-X-Gm-Gg: ASbGncutce0S90+7CpXcUFURwzK5dOtCuaXpv0dlM61tS/WdmCRvCo8U646i3U2z/BB
-	GsuPafD8Hy2rQE89vUCxKClkqdIuJKJIvqheVCdevP+ondb+nzNQ9RagVfED/40PJCDg3BvHvl/
-	SiK4+LqTHOpF0HQ+jzYzSUNcdK4MGQs4IFtTu/GBmBUSTT8aZ3PY9R3UmhhMePKWdflQYjfPUp5
-	vGj33I=
-X-Google-Smtp-Source: AGHT+IHnD/grWuYTvxXVAXhog/+z2x2R887yNFiDBaRrVsGeuDWkUgulKiiDFlI9xEhymWc3a0xM+dtYR5IO52jFFXg=
-X-Received: by 2002:a05:622a:17cb:b0:4b5:dada:9132 with SMTP id
- d75a77b69052e-4c073c995femr67939211cf.75.1758375274321; Sat, 20 Sep 2025
- 06:34:34 -0700 (PDT)
+	s=arc-20240116; t=1758375592; c=relaxed/simple;
+	bh=vhatMoi86OKMpWxvskXKZC7VlxiSVzvWwTKeUzAGgvs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EkMKMg54k9sVKROp6texo5q5/X8eMrQaWdAVwBvwcqVf/OOKxUrQFSCYKBvQ68S3DHmUeIR/PJTnEe7idkecA9uElBWdfyysNrbUem+rEBstnonoayymDE2+7UVwaCKrdNsbfTuWRNdVQns9V0BWXTeMLfb8x054llCUWzHfXbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j9miTtBs; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758375586;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=It9UI/TMJBEgD2UXuop7eAdekHSY37VHQP9TQSTg0JA=;
+	b=j9miTtBslxi6VnfkiOGr0qI0lWZzuCm9iHKVGjip+auTlPS1jiAWU6TGRHP/hfVKR63Dm9
+	0Fj9573seTXfhwvuFizKdb8XBf+dObJTF1z1eV/9Tslh4H5R428ZXLhS3n5506YoM9LnPS
+	y3cyGRtRs4qvB39JZjJO3W5jn2LtMts=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+ Steven Rostedt <rostedt@kernel.org>,
+ Menglong Dong <menglong8.dong@gmail.com>, jolsa@kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, kees@kernel.org,
+ samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
+ mhiramat@kernel.org, ast@kernel.org, andrii@kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject:
+ Re: [PATCH] tracing: fgraph: Protect return handler from recursion loop
+Date: Sat, 20 Sep 2025 21:39:25 +0800
+Message-ID: <5974303.DvuYhMxLoT@7950hx>
+In-Reply-To: <175828305637.117978.4183947592750468265.stgit@devnote2>
+References:
+ <20250918120939.1706585-1-dongml2@chinatelecom.cn>
+ <175828305637.117978.4183947592750468265.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250919163054.60723-1-vincent.mc.li@gmail.com> <CAADnVQJi93AiYf7+eF2z4kSKfJujgvF-7ZorccEfgvMHoLjM=Q@mail.gmail.com>
-In-Reply-To: <CAADnVQJi93AiYf7+eF2z4kSKfJujgvF-7ZorccEfgvMHoLjM=Q@mail.gmail.com>
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Sat, 20 Sep 2025 06:34:23 -0700
-X-Gm-Features: AS18NWBiJ7eXP0rk8jb1klAWt4vKpK5JWKCWNQ-A2dPL72ZBU5xsp_okqMjpebU
-Message-ID: <CAK3+h2z4icrwcwoobMJCgO_YiPMFsbwbNvYOkYU-V_xMYpZvJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf, x86: No bpf_arch_text_poke() for kernel text
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Sep 19, 2025 at 7:59=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Sep 19, 2025 at 9:31=E2=80=AFAM Vincent Li <vincent.mc.li@gmail.c=
-om> wrote:
-> >
-> > kernel function replies on ftrace to poke kernel functions.
-> >
-> > Signed-off-by: Vincent Li <vincent.mc.li@gmail.com>
-> > ---
-> >  arch/x86/net/bpf_jit_comp.c | 10 ++++++----
-> >  1 file changed, 6 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > index 8d34a9400a5e..63b9c8717bf3 100644
-> > --- a/arch/x86/net/bpf_jit_comp.c
-> > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -643,10 +643,12 @@ static int __bpf_arch_text_poke(void *ip, enum bp=
-f_text_poke_type t,
-> >  int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
-> >                        void *old_addr, void *new_addr)
-> >  {
-> > -       if (!is_kernel_text((long)ip) &&
-> > -           !is_bpf_text_address((long)ip))
-> > -               /* BPF poking in modules is not supported */
-> > -               return -EINVAL;
-> > +       if (!is_bpf_text_address((long)ip))
-> > +               /* Only poking bpf text is supported. Since kernel func=
-tion
-> > +                * entry is set up by ftrace, we reply on ftrace to pok=
-e kernel
-> > +                * functions. BPF poking in modules is not supported.
-> > +                */
->
-> Not true. Pls study kernel/bpf/trampoline.c and how it's used.
->
-oops :). I  copied and pasted  from arm64
-arch/arm64/net/bpf_jit_comp.c and thought it applies to x86 too, sorry
-about that.
+On 2025/9/19 19:57, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> function_graph_enter_regs() prevents itself from recursion by
+> ftrace_test_recursion_trylock(), but __ftrace_return_to_handler(),
+> which is called at the exit, does not prevent such recursion.
+> Therefore, while it can prevent recursive calls from
+> fgraph_ops::entryfunc(), it is not able to prevent recursive calls
+> to fgraph from fgraph_ops::retfunc(), resulting in a recursive loop.
+> This can lead an unexpected recursion bug reported by Menglong.
+> 
+>  is_endbr() is called in __ftrace_return_to_handler -> fprobe_return
+>   -> kprobe_multi_link_exit_handler -> is_endbr.
+> 
+> To fix this issue, acquire ftrace_test_recursion_trylock() in the
+> __ftrace_return_to_handler() after unwind the shadow stack to mark
+> this section must prevent recursive call of fgraph inside user-defined
+> fgraph_ops::retfunc().
+> 
+> This is essentially a fix to commit 4346ba160409 ("fprobe: Rewrite
+> fprobe on function-graph tracer"), because before that fgraph was
+> only used from the function graph tracer. Fprobe allowed user to run
+> any callbacks from fgraph after that commit.
+> 
+> Reported-by: Menglong Dong <menglong8.dong@gmail.com>
+> Closes: https://lore.kernel.org/all/20250918120939.1706585-1-dongml2@chinatelecom.cn/
+> Fixes: 4346ba160409 ("fprobe: Rewrite fprobe on function-graph tracer")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  kernel/trace/fgraph.c |   12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> index 1e3b32b1e82c..08dde420635b 100644
+> --- a/kernel/trace/fgraph.c
+> +++ b/kernel/trace/fgraph.c
+> @@ -815,6 +815,7 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+>  	unsigned long bitmap;
+>  	unsigned long ret;
+>  	int offset;
+> +	int bit;
+>  	int i;
+>  
+>  	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer, &offset);
+> @@ -829,6 +830,15 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+>  	if (fregs)
+>  		ftrace_regs_set_instruction_pointer(fregs, ret);
+>  
+> +	bit = ftrace_test_recursion_trylock(trace.func, ret);
+> +	/*
+> +	 * This must be succeeded because the entry handler returns before
+> +	 * modifying the return address if it is nested. Anyway, we need to
+> +	 * avoid calling user callbacks if it is nested.
+> +	 */
+> +	if (WARN_ON_ONCE(bit < 0))
+> +		goto out;
 
-       if (!__bpf_address_lookup((unsigned long)ip, &size, &offset, namebuf=
-))
-                /* Only poking bpf text is supported. Since kernel function
-                 * entry is set up by ftrace, we reply on ftrace to poke ke=
-rnel
-                 * functions.
-                 */
-                return -ENOTSUPP;
+Hi, the logic seems right, but the warning is triggered when
+I try to run the bpf bench testing:
 
-> pw-bot: cr
+$ ./benchs/run_bench_trigger.sh kretprobe-multi-all
+[   20.619642] NOTICE: Automounting of tracing to debugfs is deprecated and will be removed in 2030
+[  139.509036] ------------[ cut here ]------------
+[  139.509180] WARNING: CPU: 2 PID: 522 at kernel/trace/fgraph.c:839 ftrace_return_to_handler+0x2b9/0x2d0
+[  139.509411] Modules linked in: virtio_net
+[  139.509514] CPU: 2 UID: 0 PID: 522 Comm: bench Not tainted 6.17.0-rc5-g1fe6d652bfa0 #106 NONE 
+[  139.509720] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.17.0-1-1 04/01/2014
+[  139.509948] RIP: 0010:ftrace_return_to_handler+0x2b9/0x2d0
+[  139.510086] Code: e8 0c 08 0e 00 0f 0b 49 c7 c1 00 73 20 81 e9 d1 fe ff ff 40 f6 c6 10 75 11 49 c7 c3 ef ff ff ff ba 10 00 00 00 e9 57 fe ff ff <0f> 0b e9 a5 fe ff ff e8 1b 72 0d 01 66 66 2e 0f 1f 84 00 00 00 00
+[  139.510536] RSP: 0018:ffffc9000012cef8 EFLAGS: 00010002
+[  139.510664] RAX: ffff88810f709800 RBX: ffffc900007c3678 RCX: 0000000000000003
+[  139.510835] RDX: 0000000000000008 RSI: 0000000000000018 RDI: 0000000000000000
+[  139.511007] RBP: 0000000000000000 R08: 0000000000000034 R09: ffffffff82550319
+[  139.511184] R10: ffffc9000012cf50 R11: fffffffffffffff7 R12: 0000000000000000
+[  139.511357] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[  139.511532] FS:  00007fe58276fb00(0000) GS:ffff8884ab3b8000(0000) knlGS:0000000000000000
+[  139.511724] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  139.511865] CR2: 0000562a28314b67 CR3: 00000001143f9000 CR4: 0000000000750ef0
+[  139.512038] PKRU: 55555554
+[  139.512106] Call Trace:
+[  139.512177]  <IRQ>
+[  139.512232]  ? irq_exit_rcu+0x4/0xb0
+[  139.512322]  return_to_handler+0x1e/0x50
+[  139.512422]  ? idle_cpu+0x9/0x50
+[  139.512506]  ? sysvec_apic_timer_interrupt+0x69/0x80
+[  139.512638]  ? idle_cpu+0x9/0x50
+[  139.512731]  ? irq_exit_rcu+0x3a/0xb0
+[  139.512833]  ? ftrace_stub_direct_tramp+0x10/0x10
+[  139.512961]  ? sysvec_apic_timer_interrupt+0x69/0x80
+[  139.513101]  </IRQ>
+[  139.513168]  <TASK>
+
+> +
+>  #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
+>  	trace.retval = ftrace_regs_get_return_value(fregs);
+>  #endif
+> @@ -852,6 +862,8 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+>  		}
+>  	}
+>  
+> +	ftrace_test_recursion_unlock(bit);
+> +out:
+>  	/*
+>  	 * The ftrace_graph_return() may still access the current
+>  	 * ret_stack structure, we need to make sure the update of
+> 
+> 
+> 
+
+
+
+
 
