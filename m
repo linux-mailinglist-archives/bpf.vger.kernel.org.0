@@ -1,96 +1,131 @@
-Return-Path: <bpf+bounces-69085-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D0E5B8BF27
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 06:32:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 122A5B8BF72
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 06:58:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65AEC162E96
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 04:32:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1CFD1C03EED
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 04:58:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EEE221B9C0;
-	Sat, 20 Sep 2025 04:32:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I8NnZzbJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F63722652D;
+	Sat, 20 Sep 2025 04:58:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D73B1B7F4
-	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 04:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A7B2F872
+	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 04:58:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758342720; cv=none; b=GKD2Bzp48aNDtZVs1fA52WxF2WBb6YOwihiNBEc2XLQ3+XL0AOslD6X1x+SUskp7lIqAczYi/W5XB2SQBWKwsi9f7VTA5+vQqV4BHlmnporuLTHK0YQc+LHNLbHAmxpni4Giisuh/WeEol2pvRHwX5OXe+9F2mGTbkbvwdpaYt4=
+	t=1758344302; cv=none; b=WshRE6VXr9fKFScx+CGy+v5gDd1RI3v2sNTtx1zH29gaw3Rvm6YghJAdxgd8TU7xlU8e+nBYMBfzTwgfJFPjGK1tchtGP6njsAzkgoZY4jFY2BAtcwMvquZ7Zxa33Kw6ftLEz3VxdAhz2xEuJWEJrX571bJvHtiqnlucNvsLIx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758342720; c=relaxed/simple;
-	bh=/HHc4tXH8rjyY4NZiel1Lg0aj36HRddVSdgAZEWoriA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PjCjeMtvFA+nL6ZMs9mXRP+9tjmYOsWhdslMRNw6KmMxMECoMO5m/c6y4ChrLEaY7kmueUZ2aiFf8vQdHkHwsOmJq+sYVK1/xbRxkpSlvc5YUb9Fz3964h9qQq/WggB2oGof0It3OMkmM6kwyF9UBR+oUxpuM9+Jc6/BHnc+3mM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I8NnZzbJ; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 19 Sep 2025 21:31:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758342706;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U7Oqwm27EVC3hegeL8o9rPQpBwMcTLBc733/TDvrqNg=;
-	b=I8NnZzbJ2dD4btg1IUawDHxKrOqJfngGHi+zHOtn3M+Avc93+yeIKyVifm0k7Ituth24jD
-	v1ABEIEgPqY2t9LKb+wsRUs39CNi7xQP/MQvDA4PocieQPmN4G9lhK+3tnxWs7fjokgrf8
-	yWMAjK2Ngj4kBM79bYSfryXJBtZbTVY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Peilin Ye <yepeilin@google.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
-Message-ID: <eba3aiglp2hmj65sd4vsmav26o45orrlog2ifexd44yovygcdg@43wfk6dbgqda>
-References: <20250905201606.66198-1-shakeel.butt@linux.dev>
- <5qi2llyzf7gklncflo6gxoozljbm4h3tpnuv4u4ej4ztysvi6f@x44v7nz2wdzd>
- <CAADnVQK_wvu-KBgF6dNq=F5qNk-ons-w3UenJNaew6h9qTBpGw@mail.gmail.com>
+	s=arc-20240116; t=1758344302; c=relaxed/simple;
+	bh=u6OOuLBE6v6wViD8SVkyzeKDSdt28GwjOQSCslc/5Z4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=scK9+wx7KGdn62xU7by97OZ7ZnW62y4Nh8vzpeiL7Q1rfuAOtgYs1lcDQGhO603+RTyhtvZ5xevVeK7PzAd2XJRs74mZWCmfk6VDGd/X+/kpl6IxdUp4mtcv58hAGPOdjDuuYRuq1u/DOjGdkQiY/p79zJDQ3gj58eNZL5lBFGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 00CBC10881060; Fri, 19 Sep 2025 21:58:05 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: Fix selftest verifier_arena_large failure
+Date: Fri, 19 Sep 2025 21:58:05 -0700
+Message-ID: <20250920045805.3288551-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQK_wvu-KBgF6dNq=F5qNk-ons-w3UenJNaew6h9qTBpGw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 19, 2025 at 07:47:57PM -0700, Alexei Starovoitov wrote:
-> On Thu, Sep 18, 2025 at 7:49 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> >
-[...]
-> > +
-> > +static DEFINE_PER_CPU(struct defer_memcg_events, postpone_events) = {
-> > +       .memcg_llist = LLIST_HEAD_INIT(memcg_llist),
-> > +       .work = IRQ_WORK_INIT(process_deferred_events),
-> > +};
-> 
-> Why all these per cpu stuff ? I don't understand what it helps with.
-> To have max_events per-cpu?
-> Just one global llist and irq_work will do just fine.
-> and global max_events too.
+With latest llvm22, I got the following verification failure:
 
-Right, global llist and irq_work will work but max_events has to be
-per-memcg. In addition we will need llist_node per-memcg and I think we
-will need to do a similar cmpxchg trick I did in css_rstat_updated() to
-eliminate the potential race of llist_node of a given memcg i.e.
-multiple CPUs trying to add llist_node of a memcg to the global llist.
+  ...
+  ; int big_alloc2(void *ctx) @ verifier_arena_large.c:207
+  0: (b4) w6 =3D 1                        ; R6_w=3D1
+  ...
+  ; if (err) @ verifier_arena_large.c:233
+  53: (56) if w6 !=3D 0x0 goto pc+62      ; R6=3D0
+  54: (b7) r7 =3D -4                      ; R7_w=3D-4
+  55: (18) r8 =3D 0x7f4000000000          ; R8_w=3Dscalar()
+  57: (bf) r9 =3D addr_space_cast(r8, 0, 1)       ; R8_w=3Dscalar() R9_w=3D=
+arena
+  58: (b4) w6 =3D 5                       ; R6_w=3D5
+  ; pg =3D page[i]; @ verifier_arena_large.c:238
+  59: (bf) r1 =3D r7                      ; R1_w=3D-4 R7_w=3D-4
+  60: (07) r1 +=3D 4                      ; R1_w=3D0
+  61: (79) r2 =3D *(u64 *)(r9 +0)         ; R2_w=3Dscalar() R9_w=3Darena
+  ; if (*pg !=3D i) @ verifier_arena_large.c:239
+  62: (bf) r3 =3D addr_space_cast(r2, 0, 1)       ; R2_w=3Dscalar() R3_w=3D=
+arena
+  63: (71) r3 =3D *(u8 *)(r3 +0)          ; R3_w=3Dscalar(smin=3Dsmin32=3D=
+0,smax=3Dumax=3Dsmax32=3Dumax32=3D255,var_off=3D(0x0; 0xff))
+  64: (5d) if r1 !=3D r3 goto pc+51       ; R1_w=3D0 R3_w=3D0
+  ; bpf_arena_free_pages(&arena, (void __arena *)pg, 2); @ verifier_arena=
+_large.c:241
+  65: (18) r1 =3D 0xff11000114548000      ; R1_w=3Dmap_ptr(map=3Darena,ks=
+=3D0,vs=3D0)
+  67: (b4) w3 =3D 2                       ; R3_w=3D2
+  68: (85) call bpf_arena_free_pages#72675      ;
+  69: (b7) r1 =3D 0                       ; R1_w=3D0
+  ; page[i + 1] =3D NULL; @ verifier_arena_large.c:243
+  70: (7b) *(u64 *)(r8 +8) =3D r1
+  R8 invalid mem access 'scalar'
+  processed 61 insns (limit 1000000) max_states_per_insn 0 total_states 6=
+ peak_states 6 mark_read 2
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+  #489/5   verifier_arena_large/big_alloc2:FAIL
 
-This can work but I am still debating if this additional complexity is
-worth it as compared to the original patch where we skip
-cgroup_file_notify() for !allow_spinning condition.
+The main reason is that 'r8' in insn '70' is not an arena pointer.
+Further debugging at llvm side shows that llvm commit ([1]) caused
+the failure. For the original code:
+  page[i] =3D NULL;
+  page[i + 1] =3D NULL;
+the llvm transformed it to something like below at source level:
+  __builtin_memset(&page[i], 0, 16)
+Such transformation prevents llvm BPFCheckAndAdjustIR pass from
+generating proper addr_space_cast insns ([2]).
+
+Adding support in llvm BPFCheckAndAdjustIR pass should work, but
+not sure that such a pattern exists or not in real applications.
+At the same time, simply adding a memory barrier between two 'page'
+assignment can fix the issue.
+
+  [1] https://github.com/llvm/llvm-project/pull/155415
+  [2] https://github.com/llvm/llvm-project/pull/84410
+
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ tools/testing/selftests/bpf/progs/verifier_arena_large.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_large.c b/t=
+ools/testing/selftests/bpf/progs/verifier_arena_large.c
+index 9dbdf123542d..f19e15400b3e 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_arena_large.c
++++ b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+@@ -240,6 +240,7 @@ int big_alloc2(void *ctx)
+ 			return 5;
+ 		bpf_arena_free_pages(&arena, (void __arena *)pg, 2);
+ 		page[i] =3D NULL;
++		barrier();
+ 		page[i + 1] =3D NULL;
+ 		cond_break;
+ 	}
+--=20
+2.47.3
+
 
