@@ -1,155 +1,212 @@
-Return-Path: <bpf+bounces-69110-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69111-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5489AB8CF03
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 20:50:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1A3EB8D02B
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 22:03:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34E541B26E20
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 18:51:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 882BF567F14
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 20:03:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB0331327D;
-	Sat, 20 Sep 2025 18:50:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GX6KB4gn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77AAB26A1A3;
+	Sat, 20 Sep 2025 20:02:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 266193126AE
-	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 18:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9C638F80;
+	Sat, 20 Sep 2025 20:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758394233; cv=none; b=mucTZROdIyGra9YNWwTQfDfsZqqOTTJZqY4zCylJA3vJaBDonRg4FJZgzlAzKFeSVajNO1VMT0Su2G7kj6HDhC2jPJvgfEGyoWK2sZV5PYipLlOJ6Qv3ry+6GTyiW+zM7GjDQIXV7T+RFox7j1+taXHrddBlj2PWN1jUw5nGgyQ=
+	t=1758398576; cv=none; b=NlAT+hsKDfFmtxdWti9PLpH0SQAqyNO6u7xlqnU8ZtnQspOTptOIBNub/whiMF8xGA4r+9MqXlifI7RusF4VkpFzhyCZ7PZpVpLpvoq7+gQOj9lfxCAD8UGs2ChJkaazGbNf81OSYSrQzujUEAX6WyEGpLi16sdOqWmHlJhMJ3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758394233; c=relaxed/simple;
-	bh=n2wqC0IGgkvLWgz5KVU5Y61pAoOG8M2NrtN+OM9gwyc=;
+	s=arc-20240116; t=1758398576; c=relaxed/simple;
+	bh=x3JB1v3KZ1cGdhM58EiWjajQtoAvx9upe9pLRZvbJUY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qpjct/KWn0kaRmzgCLQCnpS82sLX7/5i5ONi5wLT8qR7SnelljMZA+ipB3u8Qj/4MnvhP1dqYQAU9BI5ZlHjI2p6nIZjsIxTCMjfT+4LZ1aqyb62SLjQlXQo8l0en0wcl3bPAbhmuztLrhyDxUdDvELgUikCgJ8htemtJ8r6Po4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GX6KB4gn; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <9ba2b2fb-e92c-4b0d-bf39-d655ab8e9f1e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758394226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z8GYkezBpHIV3ba1SOFL8R/MLN47+ScSXn6gifOOr4E=;
-	b=GX6KB4gnv6kvLFPBGtjUBgQwGUaBLByy8v5V8ZY0IZIwwRKPwHNeGrRxIp5GUEqG5rK8QN
-	RU0qzKfK3KBLiKd8UfOzovBnjleql1yZycrjiSb6BmsiXsLS3Nk+/HGB+JcmzdYQXld3x7
-	NhHalRJ8aBPGu1zGZrqqp9tHP3BVaOE=
-Date: Sat, 20 Sep 2025 11:50:17 -0700
+	 In-Reply-To:Content-Type; b=ngpnHA6GL3ojtRaILqko0JFBM6n1gfQEhCpzqwMZrjL8cPned1ux58T608WAQwtig85tklZtW4PHLrXVK5j4lsiBCH7lqGnDpN7bDS80lXZ/3z9q7jNOMAwg027xPg1j7GPXBUg4pBNr6WcDKMCjqI9AfyM94bhwUDs2ogg79Qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from [IPV6:2a02:8084:255c:180:4427:c5ba:9c20:84d3] (unknown [IPv6:2a02:8084:255c:180:4427:c5ba:9c20:84d3])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id CD02C414D3;
+	Sat, 20 Sep 2025 20:02:50 +0000 (UTC)
+Authentication-Results: Plesk;
+        spf=pass (sender IP is 2a02:8084:255c:180:4427:c5ba:9c20:84d3) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=[IPV6:2a02:8084:255c:180:4427:c5ba:9c20:84d3]
+Received-SPF: pass (Plesk: connection is authenticated)
+Message-ID: <6c6ae616-d6ed-443a-a492-96081763883e@arnaud-lcm.com>
+Date: Sat, 20 Sep 2025 21:02:49 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] libbpf: Silence newly-added and unused sections
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20250920153531.3675700-1-yonghong.song@linux.dev>
- <CAADnVQJ-28Oy9OoKXtnDOZBxkDofuwfWS-cdSFHd1uqpOmNLmQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQJ-28Oy9OoKXtnDOZBxkDofuwfWS-cdSFHd1uqpOmNLmQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v9 1/3] bpf: refactor max_depth computation in
+ bpf_get_stack()
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: alexei.starovoitov@gmail.com, yonghong.song@linux.dev, song@kernel.org,
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
+ syzbot+c9b724fbb41cf2538b7b@syzkaller.appspotmail.com,
+ syzkaller-bugs@googlegroups.com
+References: <20250912233409.74900-1-contact@arnaud-lcm.com>
+ <CAEf4BzZ-ovqXqLJ5oJ95n9prFnXsLOkO1UvdycUcON77=Akv-w@mail.gmail.com>
+Content-Language: en-US
+From: "Lecomte, Arnaud" <contact@arnaud-lcm.com>
+In-Reply-To: 
+ <CAEf4BzZ-ovqXqLJ5oJ95n9prFnXsLOkO1UvdycUcON77=Akv-w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-PPP-Message-ID: <175839857193.28688.2015574734372317159@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
 
-
-On 9/20/25 8:56 AM, Alexei Starovoitov wrote:
-> On Sat, Sep 20, 2025 at 8:35 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->> With latest llvm22, when building bpf selftest, I got the following info
->> emitted by libbpf:
->>    ...
->>    libbpf: elf: skipping unrecognized data section(14) .comment
->>    libbpf: elf: skipping section(15) .note.GNU-stack (size 0)
->>    ...
+On 19/09/2025 23:50, Andrii Nakryiko wrote:
+> On Fri, Sep 12, 2025 at 4:34 PM Arnaud Lecomte <contact@arnaud-lcm.com> wrote:
+>> A new helper function stack_map_calculate_max_depth() that
+>> computes the max depth for a stackmap.
 >>
->> The reason is due to llvm patch [1]. Previously, bpf class BPFMCAsmInfo
->> inherits class MCAsmInfo. With [1], BPFMCAsmInfo inherits class
->> MCAsmInfoELF. Such a change added two more sections in the bpf binary, e.g.
->>    [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
->>    ...
->>    [23] .comment          PROGBITS        0000000000000000 0035ac 00006d 01  MS  0   0  1
->>    [24] .note.GNU-stack   PROGBITS        0000000000000000 003619 000000 00      0   0  1
->>    ...
->>
->> Adding the above two sections in elf section ignore list can avoid the
->> above info dump during selftest build.
->>
->>    [1] https://github.com/llvm/llvm-project/commit/d9489fd073c0e100c6fbb1e5aef140b00cf62b81
-> Can we revert this instead?
-> Why do we need these sections if we're not doing anything with them?
-
-I did further investigation and it looks like it is hard to revert.
-To make things work at llvm level, we need to revert the following two llvm commits:
-   https://github.com/llvm/llvm-project/commit/87c73f498d3e98c7b6471f81e25b7e08106053fe
-and then
-   https://github.com/llvm/llvm-project/commit/d9489fd073c0e100c6fbb1e5aef140b00cf62b81
-
-The commit
-   https://github.com/llvm/llvm-project/commit/d9489fd073c0e100c6fbb1e5aef140b00cf62b81
-lets BPFMCAsmInfo derives from MCAsmInfoELF, and the commit
-   https://github.com/llvm/llvm-project/commit/87c73f498d3e98c7b6471f81e25b7e08106053fe
-push printSwitchToSection() to each variant of MCAsmInfo. The MCAsmInfo itself contains
-
-+  virtual void printSwitchToSection(const MCSection &, uint32_t Subsection,
-+                                    const Triple &, raw_ostream &) const {}
-
-and
-MCAsmInfoCOFF, MCAsmInfoDarwin and MCAsmInfoELF have their own specific
-implementation.
-
-So if just revert d9489fd073c0e100c6fbb1e5aef140b00cf62b81, then at BPF backend,
-printSwitchToSection() will be a noop. This will miss a lot of '.seciton ...'
-cases. For example, there are totally 89 llvm BPF selftest failures.
-
-For example, for jump table support, all '.jumptables' section name will not in
-asm code. Another example, '.BTF' section name will miss as well.
-
-So to make the thing work, reverting both commits are necessary.
-But tt will be hard to revert llvm commit 87c73f498d3e98c7b6471f81e25b7e08106053fe
-since it contains lots of non-BPF changes.
-
-So I recommend to fix the problem at libbpf level.
-
->
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>> Acked-by: Song Liu <song@kernel.org>
+>> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
 >> ---
->>   tools/lib/bpf/libbpf.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
+>> Changes in v2:
+>>   - Removed the checking 'map_size % map_elem_size' from
+>>     stack_map_calculate_max_depth
+>>   - Changed stack_map_calculate_max_depth params name to be more generic
 >>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 5161c2b39875..34aed7904039 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -3788,6 +3788,14 @@ static bool ignore_elf_section(Elf64_Shdr *hdr, const char *name)
->>          if (is_sec_name_dwarf(name))
->>                  return true;
+>> Changes in v3:
+>>   - Changed map size param to size in max depth helper
 >>
->> +       /* .comment section */
->> +       if (strcmp(name, ".comment") == 0)
->> +               return true;
+>> Changes in v4:
+>>   - Fixed indentation in max depth helper for args
+>>
+>> Changes in v5:
+>>   - Bound back trace_nr to num_elem in __bpf_get_stack
+>>   - Make a copy of sysctl_perf_event_max_stack
+>>     in stack_map_calculate_max_depth
+>>
+>> Changes in v6:
+>>   - Restrained max_depth computation only when required
+>>   - Additional cleanup from Song in __bpf_get_stack
+>>
+>> Changes in v7:
+>>   - Removed additional cleanup from v6
+>>
+>> Changes in v9:
+>>   - Fixed incorrect removal of num_elem in get stack
+>>
+>> Link to v8: https://lore.kernel.org/all/20250905134625.26531-1-contact@arnaud-lcm.com/
+>> ---
+>> ---
+>>   kernel/bpf/stackmap.c | 39 +++++++++++++++++++++++++++------------
+>>   1 file changed, 27 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+>> index 3615c06b7dfa..a794e04f5ae9 100644
+>> --- a/kernel/bpf/stackmap.c
+>> +++ b/kernel/bpf/stackmap.c
+>> @@ -42,6 +42,28 @@ static inline int stack_map_data_size(struct bpf_map *map)
+>>                  sizeof(struct bpf_stack_build_id) : sizeof(u64);
+>>   }
+>>
+>> +/**
+>> + * stack_map_calculate_max_depth - Calculate maximum allowed stack trace depth
+>> + * @size:  Size of the buffer/map value in bytes
+>> + * @elem_size:  Size of each stack trace element
+>> + * @flags:  BPF stack trace flags (BPF_F_USER_STACK, BPF_F_USER_BUILD_ID, ...)
+>> + *
+>> + * Return: Maximum number of stack trace entries that can be safely stored
+>> + */
+>> +static u32 stack_map_calculate_max_depth(u32 size, u32 elem_size, u64 flags)
+>> +{
+>> +       u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+>> +       u32 max_depth;
+>> +       u32 curr_sysctl_max_stack = READ_ONCE(sysctl_perf_event_max_stack);
 >> +
->> +       /* .note.GNU-stack section */
->> +       if (strcmp(name, ".note.GNU-stack") == 0)
->> +               return true;
+>> +       max_depth = size / elem_size;
+>> +       max_depth += skip;
+>> +       if (max_depth > curr_sysctl_max_stack)
+>> +               return curr_sysctl_max_stack;
 >> +
->>          if (str_has_pfx(name, ".rel")) {
->>                  name += sizeof(".rel") - 1;
->>                  /* DWARF section relocations */
+>> +       return max_depth;
+>> +}
+>> +
+>>   static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+>>   {
+>>          u64 elem_size = sizeof(struct stack_map_bucket) +
+>> @@ -300,20 +322,17 @@ static long __bpf_get_stackid(struct bpf_map *map,
+>>   BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+>>             u64, flags)
+>>   {
+>> -       u32 max_depth = map->value_size / stack_map_data_size(map);
+>> -       u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+>> +       u32 elem_size = stack_map_data_size(map);
+>>          bool user = flags & BPF_F_USER_STACK;
+>>          struct perf_callchain_entry *trace;
+>>          bool kernel = !user;
+>> +       u32 max_depth;
+>>
+>>          if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+>>                                 BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
+>>                  return -EINVAL;
+>>
+>> -       max_depth += skip;
+>> -       if (max_depth > sysctl_perf_event_max_stack)
+>> -               max_depth = sysctl_perf_event_max_stack;
+>> -
+>> +       max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
+>>          trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
+>>                                     false, false);
+>>
+>> @@ -406,7 +425,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>>                              struct perf_callchain_entry *trace_in,
+>>                              void *buf, u32 size, u64 flags, bool may_fault)
+>>   {
+>> -       u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
+>> +       u32 trace_nr, copy_len, elem_size, max_depth;
+>>          bool user_build_id = flags & BPF_F_USER_BUILD_ID;
+>>          bool crosstask = task && task != current;
+>>          u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+>> @@ -438,10 +457,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>>                  goto clear;
+>>          }
+>>
+>> -       num_elem = size / elem_size;
+>> -       max_depth = num_elem + skip;
+>> -       if (sysctl_perf_event_max_stack < max_depth)
+>> -               max_depth = sysctl_perf_event_max_stack;
+>> +       max_depth = stack_map_calculate_max_depth(size, elem_size, flags);
+>>
+>>          if (may_fault)
+>>                  rcu_read_lock(); /* need RCU for perf's callchain below */
+>> @@ -461,7 +477,6 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>>          }
+>>
+>>          trace_nr = trace->nr - skip;
+>> -       trace_nr = (trace_nr <= num_elem) ? trace_nr : num_elem;
+> Is this also part of refactoring? If yes, it deserves a mention on why
+> it's ok to just drop this.
+>
+> pw-bot: cr
+>
+Yes it is also part of the refactoring as stack_map_calculate_max_depth 
+now already curtains the trace->nr to the max possible number of 
+elements, there is no need to do the clamping twice. This is valid 
+assuming that get_perf_callchain and get_callchain_entry_for_task 
+correctly set this limit.
+>
+>>          copy_len = trace_nr * elem_size;
+>>
+>>          ips = trace->ip + skip;
 >> --
->> 2.47.3
+>> 2.43.0
 >>
-
+Thanks,
+Arnaud
 
