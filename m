@@ -1,112 +1,189 @@
-Return-Path: <bpf+bounces-69033-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69034-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32C9DB8BB75
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 02:58:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3BCB8BB7B
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 02:59:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE7E55A5BFE
-	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 00:58:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC97C1C218D8
+	for <lists+bpf@lfdr.de>; Sat, 20 Sep 2025 01:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE0BB1D514B;
-	Sat, 20 Sep 2025 00:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429341DD543;
+	Sat, 20 Sep 2025 00:59:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ngg3OnaW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AQsK3vz8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1D5189
-	for <bpf@vger.kernel.org>; Sat, 20 Sep 2025 00:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4691189;
+	Sat, 20 Sep 2025 00:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758329895; cv=none; b=tPmv98HEx5Wbd0YGmDMyFIgtdxb5IlNJro6QOH8S3hgMZv04vnR0HixbbK8KcfhWDwD6AHOFtAI/1nUGZqohToQWejrZVeYIxOEChg83tntW4eTKUOkTQ8w9XVmfn0951Ghb9+c7mu53djcx5601OMvwgJ4RR8hUYm2BNU4nykE=
+	t=1758329974; cv=none; b=udJdpm3cUgtclpAk/SvHAplJLd4GEvYleq2NIgPxjsLQrN7daTguqTg+IM3rtfmeRJ/Vr1Mm0BOBiEFkWpqPXfU7zDKv5B1UiNbUrhT9YImgNl48B4Vg1nMOoKkiv3a0NTNLPremfx5ZZ1NskI/ytasoNemrX4o58p5wYnw4Dac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758329895; c=relaxed/simple;
-	bh=Iai6wRz486L51hwOayj1XiHEmU2t+IFD6qv3XQjOv2Q=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YCUcA3tsfe6h117UQgdhmVSHrhhBCkEhlFQPPkJqLsVZ8r1uyKqmzEQNrZSKe9rt5A8heVigGC9Tiq9wvy90neY2tiOC41u3xTQvC2MEhcVhv6HASG1WPfTx+KpHZKesQqQV07EeR93KT+C63L8EM5v1zlVuOP4tMDnVIUrcQT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ngg3OnaW; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-271067d66fbso1890575ad.3
-        for <bpf@vger.kernel.org>; Fri, 19 Sep 2025 17:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758329893; x=1758934693; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Iai6wRz486L51hwOayj1XiHEmU2t+IFD6qv3XQjOv2Q=;
-        b=ngg3OnaW53aEz20fuSaraRiXv+ufSOAFjPmQwhU8xcNtW1FkRUiw3pMpHYkRv34ZIt
-         gAiTNm0Y1vU+Q6js7xGrJXM/O8KC+WqPtKeR2OFsEmWgZ29f7xPQ03Wc+aQvOqSHFzjo
-         7YMuTu2RYtBEG5LqCXVyyu8a04lx4Tz1ZAfLqQoSp9N0QXaWnB+WCiYx08hoIufdpxeD
-         fsSe9MGJWKTsMpApE1HJKa0Heo7JL7cpIz/BMwToGOULYuHJQKa74Q+1Rr1I9oBYERU+
-         k0J0uZ5JbqqG5TXqvRNH5rpkDh9DzvdZmqONftol4R5ZDZ4SsjOaLhg3qkA2HPdjSbPP
-         C/pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758329893; x=1758934693;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Iai6wRz486L51hwOayj1XiHEmU2t+IFD6qv3XQjOv2Q=;
-        b=vl0jMoJVS7etQSW96LHOmhrHlztOZnN0k1f3oUth+7dd9PNysp54QnNXrAeXKN9Nje
-         88GgSD86GTI3kHReuCHLXE8+Dt3ACjns7TELNc2thbAO6noEAU1ci3k2kipUxjkreK/P
-         dTSOi0iLoe6/g9K4WZUGeGMyygykp8JiDy/MkrlZaGot1dPhaqQZiEn1JjzklF2L/S5i
-         c+ylKEWmN3G0RZEwpKmeT1mMl0uiDGQHjCKkMPQUFHsjDh+RNfB1AEmqXpwkubmOaCw7
-         kR/NlLNA2cZDZsqoXGQQN4AKK5xWRxngMiMOzeZFWMR4zwu8t+fckKGymq2IDleeHDe6
-         JHew==
-X-Forwarded-Encrypted: i=1; AJvYcCWm7MRdrBmEP01emsctC85Spxrmu3UgRy3CxLh2huaO0/D65C5ccAdhjG/PywxgSpsYr4k=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx7efy0FUre9Zn+jjR+bWYv8n3ZsjgVkk29xkLGmpJtov8fqZj+
-	q6M1QZRA/0tI4tfyurZnvQAoZ0HjHY5nSzQAhNBGudeGdMKn+Dwimnfi
-X-Gm-Gg: ASbGnctyDd4nxRdErByos4sBJb/yyTmSjIDy+nHlDRzEYLF74z/PAO+m+xnvZ+dwrNj
-	FcEOBFny31HCkER/rx86ABsDFxoXLhzvtpdv7ryPkht1cwPDlkyXBuQqDgE2t3wM7CZvjz8xg3T
-	Fx49YypNlI9Sfz3ysSxy2uRXVQuBgf/fhNGuH+qxRJ4kmytxOUZ9T1dvSq3u8EDutkwY7PQUeDK
-	Tcmb+dv+0eo+E7SuHlT0CPHF+YyrDJEMLrsuW7th/jhN7f1a6yXkMr+WgN7ooacJfMKIm/UH/Mj
-	KMgnMavU6GKo5RoJACL9/YtDDoaKR+LfWGM4ni/s5R4+M7OpxHqeaV9vseirob4iJf7C0fzbtMt
-	RruGROA5QVnfHomH00Qo=
-X-Google-Smtp-Source: AGHT+IHDFjgTtNgTwqeZrPno98rEZQ48O4ugKQF3iej7HxMt/u4solclxMnjqZctFv3uEL4gJneErQ==
-X-Received: by 2002:a17:902:f645:b0:269:91b2:e9d6 with SMTP id d9443c01a7336-269ba52d9c4mr63184445ad.46.1758329893043;
-        Fri, 19 Sep 2025 17:58:13 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33060619245sm6693637a91.1.2025.09.19.17.58.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Sep 2025 17:58:12 -0700 (PDT)
-Message-ID: <71cc9b1aaae03dc948f2543b44efab2ed6c1b74f.camel@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 13/13] selftests/bpf: add selftests for
- indirect jumps
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
- Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
- Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
- Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Date: Fri, 19 Sep 2025 17:58:10 -0700
-In-Reply-To: <20250918093850.455051-14-a.s.protopopov@gmail.com>
-References: <20250918093850.455051-1-a.s.protopopov@gmail.com>
-	 <20250918093850.455051-14-a.s.protopopov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1758329974; c=relaxed/simple;
+	bh=7f3fbvQTyEsq18CdpsqT2qA5MjINTgb5ovRcNITX7Nk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xl3EFU2rxrft6mDTPVeWVdGepL8kFSEdzmTDUOZIjvqnMVkSG7HWIiPiIEsKC11ATWi0Tm2YAJVQJK4cVJyc4OXganc6D/B71NL1tu5nSSH2esby/ZsyW1q2L9ziiK/WNqB0POwczw6a/SVNsYOggvVKhltapGQxZ6pUkupjPAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AQsK3vz8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 190A8C4CEF0;
+	Sat, 20 Sep 2025 00:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758329974;
+	bh=7f3fbvQTyEsq18CdpsqT2qA5MjINTgb5ovRcNITX7Nk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AQsK3vz8IPO8dvtJ4YpLrCer74PXijKhmPig9lsu1Cz/P22QlVSIXbZ9snZ95/N+c
+	 TpVVXmtVFmEBCHg3T2IVY+jxijRNo48rpbI1u/ic4ISnCSyNEPHXJTrHYR0ZnediYt
+	 +mrpS3igGZC5hgB37IYr3YuB3z6p4yrBiBpyAGNq4YPzyFRlLJ3LAbU6EtvRZZzLw7
+	 7Ug847JdZCrrqlzVTRzlB9F7MqZLjmL0fqm9CriAMxcKs+Y4NF7ldcs7g96U6Xsc0D
+	 HRXWgE3ZDtU/LeWuducDWD8Pn8d/LqfB5GjHboBAumrUJ9oG8LmHc7mGjJimLj1neO
+	 NlYOiuD+hbIzw==
+From: Tejun Heo <tj@kernel.org>
+To: void@manifault.com,
+	arighi@nvidia.com,
+	multics69@gmail.com
+Cc: linux-kernel@vger.kernel.org,
+	sched-ext@lists.linux.dev,
+	memxor@gmail.com,
+	bpf@vger.kernel.org
+Subject: [PATCHSET RFC] sched_ext: Implement cgroup sub-scheduler support
+Date: Fri, 19 Sep 2025 14:58:23 -1000
+Message-ID: <20250920005931.2753828-1-tj@kernel.org>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2025-09-18 at 09:38 +0000, Anton Protopopov wrote:
-> Add selftests for indirect jumps. All the indirect jumps are
-> generated from C switch statements, so, if compiled by a compiler
-> which doesn't support indirect jumps, then should pass as well.
->=20
-> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> ---
+This patchset implements cgroup sub-scheduler support for sched_ext,
+enabling multiple schedulers to operate hierarchically within the cgroup
+tree. This capability supports multi-tenant server environments and other
+scenarios where systems must be partitioned to serve distinct workloads,
+each requiring specialized scheduling policies.
 
-Patch #8 adds a lot of error conditions that are effectively untested
-at the moment. I think we need to figure out a way to express gotox
-tests in inline assembly, independent of clang version, and add a
-bunch of correctness tests.
+Traditional approaches rely on hard partitioning via cpuset, but this
+approach lacks the dynamism required by modern workloads. Users typically
+care less about specific CPU assignments and more about optimizations
+available on larger machines: opportunistic over-commit, improved latency
+for critical workloads while preserving bandwidth fairness, control
+mechanisms beyond simple CPU time (such as memory bandwidth isolation),
+and intelligent placement to optimize cache locality.
 
-[...]
+The cgroup sub-scheduler approach enables schedulers to attach anywhere
+in the cgroup hierarchy, with parent schedulers dynamically controlling
+CPU allocation to their children. This design provides BPF-driven
+flexibility while eliminating the constraints of hard partitioning.
+
+This early-stage implementation demonstrates the fundamental building
+blocks for hierarchical scheduler operation. While the enqueue path and
+other components require further development, this patchset establishes
+the core mechanisms for nested scheduler operation and is developed
+enough to showcase all essential components.
+
+The framework supports scheduling hierarchies up to SCX_SUB_MAX_DEPTH
+levels (currently set to 4). Enable and disable operations selectively
+bypass only tasks within the affected subtree, minimizing system-wide
+disruptions while providing reasonable isolation for child scheduler
+failures.
+
+To see how this looks from the BPF scheduler perspective, examine the
+scx_qmap.bpf.c changes in the final patch, which demonstrate simple
+nested dispatch implementation.
+
+Patch Organization:
+
+Standalone fixes (01-07):
+ 01 sched_ext: Use rhashtable_lookup() instead of rhashtable_lookup_fast()
+ 02 sched_ext: Improve SCX_KF_DISPATCH comment
+ 03 sched_ext: Fix stray scx_root usage in task_can_run_on()
+ 04 sched_ext: Use bitfields for boolean warning flags
+ 05 sched_ext: Add SCX_EFLAG_INITIALIZED to indicate successful initialization
+ 06 sched_ext: Make qmap dump operation non-destructive
+ 07 tools/sched_ext: scx_qmap: Make debug output quieter by default
+
+Preparation patches (08-22):
+ 08 sched_ext: Separate out scx_kick_cpu() and add sch to its name
+ 09 sched_ext: Add the sch parameter to __bstr_format()
+ 10 sched_ext: Add the sch parameter to ext_idle helpers
+ 11 sched_ext: Drop kf_cpu_valid
+ 12 sched_ext: Add the sch parameter to scx_dsq_insert_preamble()
+ 13 sched_ext: Drop scx_kf_exit() and scx_kf_error()
+ 14 sched_ext: Misc updates around scx_sched instance pointer handling
+ 15 sched_ext: Keep dying tasks on a separate list
+ 16 sched_ext: Implement cgroup subtree iteration for scx_task_iter
+ 17 sched_ext: Add kargs to scx_fork()
+ 18 sched/core: Swap the order between sched_post_fork() and wake_up_new_task()
+ 19 cgroup: Expose some cgroup helpers
+ 20 sched_ext: Update p->scx.disallow warning in scx_init_task()
+ 21 sched_ext: Minor reorganization of enable/disable paths
+ 22 sched_ext: Factor out scx_claim_exit() from scx_disable()
+
+Core sub-scheduler implementation (23-40):
+ 23 sched_ext: Introduce cgroup sub-sched support
+ 24 HACK_NOT_FOR_UPSTREAM: BPF: Implement prog grouping hack
+ 25 sched_ext: Introduce scx_task_sched()/_rcu()
+ 26 sched_ext: Introduce scx_prog_sched()
+ 27 sched_ext: Ignore insertions of not owned tasks into sub-sched DSQs
+ 28 sched_ext: scx_dsq_move() should validate the task belongs to the dsq
+ 29 sched_ext: Refactor task init/exit helpers
+ 30 sched_ext: Make scx_prio_less() handle multiple schedulers
+ 31 sched_ext: Move bypass_depth into scx_sched
+ 32 sched_ext: Make bypass mode sub-sched aware
+ 33 sched_ext: Factor out scx_dispatch_sched()
+ 34 sched_ext: When calling ops.dispatch(), prev must be on the correct sched
+ 35 sched_ext: Dispatch from all scx_sched instances
+ 36 sched_ext: Move scx_dsp_ctx and scx_dsp_max_batch into scx_sched
+ 37 sched_ext: Make watchdog sub-sched aware
+ 38 sched_ext: Convert scx_dump_state() spinlock to raw spinlock
+ 39 sched_ext: Support dumping multiple schedulers and add scheduler identification
+ 40 sched_ext: Implement cgroup sub-sched enabling and disabling
+
+Nested dispatch implementation (41-46):
+ 41 HACK_NOT_FOR_UPSTREAM: sched_ext: Work around @aux__prog prototype mismatch
+ 42 sched_ext: Wrap global DSQs in per-node structure
+ 43 sched_ext: Add bypass DSQ for sub-schedulers
+ 44 sched_ext: Factor out scx_link_sched() and scx_unlink_sched()
+ 45 sched_ext: Add rhashtable lookup for sub-schedulers
+ 46 sched_ext: Add basic building blocks for nested sub-scheduler dispatching
+
+Implementation Notes:
+- Patches 01-07: Independent fixes to be separated after merge window
+- Patches 08-22: Infrastructure preparation (mostly sched_ext, one cgroup change)
+- Patch 23: Skeletal sub-scheduler support (create/destroy only)
+- Patches 24,41: Temporary BPF hacks requiring proper upstream solution
+- Patches 25-39: Task migration and multi-scheduler operation mechanisms
+- Patch 40: Full sub-scheduler enable/disable with ops.dispatch() support
+  (enqueue path not yet implemented)
+- Patches 42-46: Nested dispatch infrastructure and scx_bpf_dispatch_sched()
+
+The patches are available in the git repository:
+git://git.kernel.org/pub/scm/linux/kernel/git/tj/sched_ext.git scx-sub-sched
+
+ include/linux/bpf.h                      |    5
+ include/linux/cgroup-defs.h              |    4
+ include/linux/cgroup.h                   |   65
+ include/linux/sched.h                    |    2
+ include/linux/sched/ext.h                |   21
+ init/Kconfig                             |    4
+ kernel/bpf/syscall.c                     |   23
+ kernel/cgroup/cgroup-internal.h          |    6
+ kernel/cgroup/cgroup.c                   |   55
+ kernel/exit.c                            |    1
+ kernel/fork.c                            |    6
+ kernel/sched/core.c                      |    2
+ kernel/sched/ext.c                       | 2362 ++++++++++++++++++++++++-------
+ kernel/sched/ext.h                       |    4
+ kernel/sched/ext_idle.c                  |  197 ++
+ kernel/sched/ext_internal.h              |  223 ++
+ kernel/sched/sched.h                     |    7
+ tools/sched_ext/include/scx/common.bpf.h |   90 -
+ tools/sched_ext/include/scx/compat.bpf.h |    7
+ tools/sched_ext/scx_qmap.bpf.c           |  146 +
+ tools/sched_ext/scx_qmap.c               |   36
+ 21 files changed, 2556 insertions(+), 710 deletions(-)
 
