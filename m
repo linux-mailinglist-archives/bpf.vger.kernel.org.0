@@ -1,185 +1,171 @@
-Return-Path: <bpf+bounces-69160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69161-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D408CB8DDFC
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 18:03:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1587B8E3B4
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 21:12:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7592016E2F1
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 16:03:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4027189828E
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 19:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FAA1E5B7A;
-	Sun, 21 Sep 2025 16:03:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8579C2367AD;
+	Sun, 21 Sep 2025 19:12:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="LTPyEKun"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F8mR7XgO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 814AB34BA28
-	for <bpf@vger.kernel.org>; Sun, 21 Sep 2025 16:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB027282E1
+	for <bpf@vger.kernel.org>; Sun, 21 Sep 2025 19:12:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758470621; cv=none; b=F/LBA+FXqGc1FaiKBUV1KXbS28aLhPQZT0tr+ZdsRwNoQF5gvI/rJOHnmL41mMnUvai7XprcrbACIJ+yvMYurfQPb/Cms8XdYYCElR/PzPrGSYOExEP1bh7IQIE0V0PPfsXSdN35vGDaYmG0QBeiiJFlPr7PsdzhakuOEiyQx5E=
+	t=1758481953; cv=none; b=VWRiqwHzFtNd4v5UJD5Qoiy5tQCijjX13fwGrCUrzrrKfrjfcDHUEY8EO34Ufnplb7DjJwvuw+uRCCLFiv93UG/4S5FvZI9wdjVnJXkl5kK3jzKH3yTjHpTaw94L29EPmes0WWZpjjUOveS6Pv6BcczD5SCC/WUy9nufgnIhT9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758470621; c=relaxed/simple;
-	bh=Nyv3nu9ra+VnkLcWi4fYDcC/tqIyFF5rY8/59rRkprI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mu+oSDqL5QQk+gb153anMnWB0iK3ZYH5cp2UzoL1fyTJjhcbI+Tn5rZq2Eemfv9KEDK1talH5pYONPv+kj/LMrko+KpJ3oCsvkg/QKFPu8/11qL18vKZkHR/HJ3WCtxIp8BqedZa2T2TcbKJkMP+2yd9cVMnSrcKc9VTvjNk8u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=LTPyEKun; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b520539e95bso191100a12.3
-        for <bpf@vger.kernel.org>; Sun, 21 Sep 2025 09:03:39 -0700 (PDT)
+	s=arc-20240116; t=1758481953; c=relaxed/simple;
+	bh=W/iq39lgU/NA9p5HGaQ4t0v1Xju0saU+1/8JX79EhBA=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qra1plXpRt2GFPUEvS08JJL6d7FrPbAOBTTtkwtaqxxm8hBf8mQYOXhmV1y8M+KE6qeeHjt8lryxMqmVBmri3BpMz21K5kath2FkNYiLZgw+/rME4Cn3o7dBWBKABiXBbpkjMhOenWGhBd1f8BsuqXXR9HxCBt+MblMcNALv7lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F8mR7XgO; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b5516ee0b0bso1798757a12.1
+        for <bpf@vger.kernel.org>; Sun, 21 Sep 2025 12:12:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1758470619; x=1759075419; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=m8vv2Le2VJrRxnfPklYATsMJpEaKnulCkTyhGkgWhWU=;
-        b=LTPyEKunRJqMGjbdXUgzNLIalrK30rf3VEL3LynfI9XTB2cEmjQf30UY94NFyWnNvl
-         0Y0ef+iVnf+l1ml08mVHXVL9N8lz+R8UqyE59xWs6my/uMYLmoQyhFxy8dQHKHvhne2V
-         D0GLg9VX2J8MzPm4DFW2fO6Ltb/bkYvqy5jjbGYRPSeKkWH1jWxHrp1RFo6r3ZoL5jkq
-         KKvsbSNcmUM5TokDct86vRi/Mqf0vvmwBc+Ucn05fTZ8Jhb7fuv4+pJDKoMn6K/qDwfS
-         lJzfLRyZqAilwnCXn3pAwHIudKOw6jkZXHdyUg6/pT0YzsjHTDvg3RbM+OMxRAkYW/uA
-         9c9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758470619; x=1759075419;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1758481951; x=1759086751; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m8vv2Le2VJrRxnfPklYATsMJpEaKnulCkTyhGkgWhWU=;
-        b=nUEwmm0oTVT9w9S99bqRGkcSZx6ZwNznZvpCZjVW9Fi5ExQij5jAejqu22Ppi2nEer
-         e/bcskegGvLhK30u+xjbR/E+S6YT6lIOQbfExfUyJZAy5Uzq95Wxto9W+5RhYG27IWJ9
-         PGkRX9OCnMPdbjAKaBTyFxXKwCaNDNfws5ox8U72GQUl+p3SO3+sqPG7zT49ZkRi08m2
-         qk2/gIODxyX+xVdX9loHoMnbpPUhYDaXgNZ/p0UV1fBRbtJVZKiC65VAReml/QsmKRVD
-         mDURyw4OL/H9Y1xvRxh69G7WSlbGpWRGB/qMsVP+qXy2vmFhiwS0E1c4Gtt61QzsDSj+
-         rwgA==
-X-Forwarded-Encrypted: i=1; AJvYcCWEYD/pv0PmJqm8JjGGwJgOfKmzjcSJ97PajJmMXeZ2DCl72birgyCm8dcf/8Fsnge07SA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz6mfWWFiHMjRPxJEt4HBQ1iO3IKFVuwEXS/37eX6CN0zi+inzV
-	6RWJDL0w3MrAhlt3Y9s0uddVdN2eRlWBYuAq49KZVIfoVfLORdNCfXPzCE8HB/q9ik4=
-X-Gm-Gg: ASbGnctUAdV+WM1PBPdWC/rJikfNDNrS+6+Q5hxgMFJD9xUJhKEyv4yinhbgz/BRiCd
-	fdXNNJxsYcGZXE+qTWasxrmHVWVqxTF+Mmx3pOL/jKf3IRMY/fiPgi3Eo+CHURqUIEzlLw+VGWI
-	tUNegeUTc4YwkIlPVEoFYk9+VI/nczPO6pBion0sZa/hfzhdHsV1kA/j4y3Qmt1yClg2Qfeb3h4
-	LgUBXTLn0JnntfajYRkPVuDzib1JHq+rO5R52XKKMpkP2gUDN+6ShhFQFKRqlC1Z6tg46vlRGWN
-	SSZC/TIHEXedsdCvR30VvfvujSxViHWewWMM2vVcUmA8ePNFaG+N/lc1sa/gBDjSdXao0omhfnc
-	UfKdmgwVZ
-X-Google-Smtp-Source: AGHT+IGO1cuQkOPmn4UyOI5kFKI36eTSHeG8iJchXXEH6ggKPqiEmnDaBeCZE+RPDXwV2gVC+zSVyA==
-X-Received: by 2002:a05:6a00:c96:b0:776:6e9e:3ccd with SMTP id d2e1a72fcca58-77e4f48e9a9mr6592843b3a.7.1758470618633;
-        Sun, 21 Sep 2025 09:03:38 -0700 (PDT)
-Received: from t14 ([2001:5a8:4519:2200:4345:519b:ccab:7b30])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77cfbb79c05sm10322652b3a.4.2025.09.21.09.03.37
+        bh=ikpKvhuCkzVcFDlfjNUH5e49bXHzls1vrOqXMJ3tOE4=;
+        b=F8mR7XgOybCR12g0it/GYzjfi3lcs8ZFbL3igGJPDkpN40J4b6EHkR/6Qutmb4ex3a
+         PyvocTXt4+T5vAAJEZKLUsQLL73d07x9J9Qa9cbFn/U564mCTmXUZaLXjehXpKO1YVd/
+         0NUSmpTdG/Fh4+1Wk5N/a0qXJXeCRGjettI/g9v024k3DfPm95dJSRlf49a1AQAZPG5I
+         0NF7ezJP5wE2b5TJjv4QkCDz4oW3lrqFJB6L7KnZoupEJgrCRameLg33kX6zQkpS2gv9
+         bYev4uRd3LstYUV+158BCcifLVYzRXju4QueNrr+nZDa6F2RcIf7xt0Qqa9PPOFNza3i
+         9o/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758481951; x=1759086751;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ikpKvhuCkzVcFDlfjNUH5e49bXHzls1vrOqXMJ3tOE4=;
+        b=OVgm1UUCw8XLuQhUwR4JCM56UQ95FCdx9CCmB1hD+ChK8ntodDyHjmm1kSXQR6XW0F
+         5IJl15ylfCziaHt2PY56dlQQTyRpzRRfIc6T7Avh5/cQAGQCcSdUrXPJ9sZxN1XWYnpu
+         ku31mFjnALC5QlfvxD43xNEyoVfm6HpjNvP99kBsG9HPrqtpQltrSRa4tODnlANhxOdR
+         XQeWZ3Mb2gGakpyC1S6TbT/aptJff5rvVoUyduDXSaFpu54FJjnQe4Y1UdQej8WhsXI7
+         P/7VIT1okVHqTKacDcjMLWmp22RElI6jB0KF125ABX9HoMfEcX2OLA5EHspdUw0+xtUS
+         vSfg==
+X-Forwarded-Encrypted: i=1; AJvYcCWJiCFQaItd77OmnJNdxu9PwR6cOHFnk3SgjIU7UUc84DcCdH/j1mlu5Ml0RbZq0PCxYPY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzljQp4yOUgnprqiB8Q7655vxRr0TOdbUASHxuJNHMAfOEc37Iu
+	8i0ieQ5dD2yT93WAvs9WHLUU9Go4kzLcQGCE5YtrivwtDdIyI2jU/Oj1xbWnsw==
+X-Gm-Gg: ASbGncuQE4BHjnZ1PUSEWMk4WKLgHJCdIqGfN/BpW5mxnoedmeseMhfBKkPjMegzGYa
+	9NZzUpWaEX8BmB5havMWeMRRfqEIo3B8ekxjAaK4ZNdFnU7ItsFE4sFqg+crJfq/hSLcRRsWdEh
+	0IwE7j2ZTKCTDfy4472pXrkxG/2MPpNbsxmEY5rrw52YspW++UOd7TU3h9FH4BAWByjZB0akXvm
+	tSn2NW8apmJCoBZsX/4L1z8uXbKPQgluOZvWZ64JccPH6JQ56pM+CLVzcYX3oI6/QV5ApF3JIYf
+	Wu4ASMtqbNbW9A6oznZQ1YOBJthNClkJUcbWygofKM15PzDIj0fmFsRg3J6xFE9zXIfgCKxJPuS
+	vg7uBHY8JRfHThslH1tA=
+X-Google-Smtp-Source: AGHT+IEE/7Qu+seYGSuyEb5ynpY1pTdcjNmd1co/6KxkmaXKfVhZ5UP9+x1Dr6Npo2iQhqFlNtI2Gg==
+X-Received: by 2002:a17:902:f711:b0:265:a159:2bab with SMTP id d9443c01a7336-269ba271a17mr118149045ad.0.1758481950899;
+        Sun, 21 Sep 2025 12:12:30 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269803601e3sm111431155ad.144.2025.09.21.12.12.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Sep 2025 09:03:38 -0700 (PDT)
-Date: Sun, 21 Sep 2025 09:03:35 -0700
-From: Jordan Rife <jordan@jrife.io>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
-	Aditi Ghag <aditi.ghag@isovalent.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 00/14] bpf: Efficient socket destruction
-Message-ID: <ilrnfpmoawkbsz2qnyne7haznfjxek4oqeyl7x5cmtds5sdvxe@dy6fs3ej4rbr>
-References: <20250909170011.239356-1-jordan@jrife.io>
- <80b309fe-6ba0-4ca5-a0b7-b04485964f5d@linux.dev>
+        Sun, 21 Sep 2025 12:12:30 -0700 (PDT)
+Message-ID: <4aaabc828a1b768ab03c68ae521e55993b808f43.camel@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 08/13] bpf, x86: add support for indirect
+ jumps
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org, Alexei
+ Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Anton
+ Protopopov <aspsk@isovalent.com>,  Daniel Borkmann <daniel@iogearbox.net>,
+ Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
+Date: Sun, 21 Sep 2025 12:12:27 -0700
+In-Reply-To: <61861bfd86d150b86c674ef7bea2b23e3482e1f2.camel@gmail.com>
+References: <20250918093850.455051-1-a.s.protopopov@gmail.com>
+		 <20250918093850.455051-9-a.s.protopopov@gmail.com>
+	 <61861bfd86d150b86c674ef7bea2b23e3482e1f2.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <80b309fe-6ba0-4ca5-a0b7-b04485964f5d@linux.dev>
 
-Hi Martin,
+On Fri, 2025-09-19 at 17:28 -0700, Eduard Zingerman wrote:
 
-Thanks for taking a look.
+[...]
 
-> How many sockets were destroyed?
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 5c1e4e37d1f8..839260e62fa9 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
 
-Between 1 and 5 per trial IIRC during this test. Generally, there would
-be a small set of sockets to destroy for a given backend relative to the
-total number UDP/TCP sockets on a system.
+[...]
 
-> For TCP, is it possible to abort the connection in BPF_SOCK_OPS_RTO_CB to
-> stop the retry? RTO is not a per packet event.
+> > +/* gotox *dst_reg */
+> > +static int check_indirect_jump(struct bpf_verifier_env *env, struct bp=
+f_insn *insn)
+> > +{
+> > +	struct bpf_verifier_state *other_branch;
+> > +	struct bpf_reg_state *dst_reg;
+> > +	struct bpf_map *map;
+> > +	u32 min_index, max_index;
+> > +	int err =3D 0;
+> > +	u32 *xoff;
+> > +	int n;
+> > +	int i;
+> > +
+> > +	dst_reg =3D reg_state(env, insn->dst_reg);
+> > +	if (dst_reg->type !=3D PTR_TO_INSN) {
+> > +		verbose(env, "R%d has type %d, expected PTR_TO_INSN\n",
+> > +			     insn->dst_reg, dst_reg->type);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	map =3D dst_reg->map_ptr;
+> > +	if (verifier_bug_if(!map, env, "R%d has an empty map pointer", insn->=
+dst_reg))
+> > +		return -EFAULT;
+> > +
+> > +	if (verifier_bug_if(map->map_type !=3D BPF_MAP_TYPE_INSN_ARRAY, env,
+> > +			    "R%d has incorrect map type %d", insn->dst_reg, map->map_type))
+> > +		return -EFAULT;
+> > +
+> > +	err =3D indirect_jump_min_max_index(env, insn->dst_reg, map, &min_ind=
+ex, &max_index);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	xoff =3D kvcalloc(max_index - min_index + 1, sizeof(u32), GFP_KERNEL_=
+ACCOUNT);
+> > +	if (!xoff)
+> > +		return -ENOMEM;
+>=20
+> Let's keep a buffer for this allocation in `env` and realloc it when need=
+ed.
+> Would be good to avoid allocating memory each time this gotox is visited.
 
-To clarify, are you suggesting bpf_sock_destroy() from that context or
-something else? If the former, bpf_sock_destroy() only works from socket
-iterator contexts today, so that's one adjustment that would have to be
-made. It seems like this could work, but I'd have to think more about
-how to mark certain sockets for destruction (possibly using socket
-storage or some auxiliary map).
+On a second thought, maybe put this array into bpf_subprog_info for
+each function and avoid copy/sort on each gotox instruction as well?
 
-> Does it have a lot of UDP connected sockets left to iterate in production?
+> > +
+> > +	n =3D copy_insn_array_uniq(map, min_index, max_index, xoff);
+> > +	if (n < 0) {
+> > +		err =3D n;
+> > +		goto free_off;
+> > +	}
+> > +	if (n =3D=3D 0) {
+> > +		verbose(env, "register R%d doesn't point to any offset in map id=3D%=
+d\n",
+> > +			     insn->dst_reg, map->id);
+> > +		err =3D -EINVAL;
+> > +		goto free_off;
+> > +	}
 
-It's hard to say for certain (my perspective is as a cloud provider,
-but I've seen customers do strange things). It seems unlikely anyone is
-creating, e.g., 1M UDP sockets on the same host. In practice, TCP would
-be more of a concern. Still, it would be nice to have a more efficient
-means to destroy a small set of sockets vs doing full UDP/TCP hash
-traversals.
-
-> I assume the sockets that need to be destroyed could be in different child
-> hashtables (i.e. in different netns) even child_[e]hash is used?
-
-Correct. You would have to do a hash traversal in all namespaces that
-contain at least one connection to a given backend. This might hurt or
-help depending on the use case and depending on how sparse the hashes
-are, but might cut down on visiting / filtering out sockets from other
-namespaces.
-
-> Before diving into the discussion whether it is a good idea to add another
-> key to a bpf hashmap, it seems that a hashmap does not actually fit your use
-> case. A different data structure (or at least a different way of grouping
-> sk) is needed. Have you considered using the
-
-If I were to design my ideal data structure for grouping sockets
-(ignoring current BPF limitations), it would look quite similar to the
-modified SOCK_HASH in this series. Really what would be ideal is
-something more like a multihash where a single key maps to a set of
-sockets, but that felt much too specific to this use case and doesn't
-fit well within the BPF map paradigm. The modification to SOCK_HASH with
-the key prefix stuff kind of achieves and felt like a good starting
-point.
-
-> bpf_list_head/bpf_rb_root/bpf_arena? Potentially, the sk could be stored as
-> a __kptr but I don't think it is supported yet, aside from considerations
-> when sk is closed, etc. However, it can store the numeric ip/port and then
-> use the bpf_sk_lookup helper, which can take netns_id. Iteration could
-> potentially be done in a sleepable SEC("syscall") program in test_prog_run,
-> where lock_sock is allowed. TCP sockops has a state change callback (i.e.
-
-You could create a data structure tailored for efficient iteration over
-a group of ip/port pairs, although I'm not sure how you would acquire
-the socket lock unless, e.g., bpf_sock_destroy or a sleepable variant
-thereof acquires the lock itself in that context after the sk lookup?
-E.g. (pseudocode):
-
-...
-for each (ip,port,ns) in my custom data structure:
-    sk = bpf_sk_lookup_tcp(ip, port, ns)
-    if (sk)
-    	bpf_sock_destroy_sleepable(sk) // acquires socket lock?
-...
-
-Or maybe just mark the socket for destruction in the test_prog_run
-program (sock storage?) and later call bpf_sock_destroy in a sockops
-context next time the socket is used.
-
-Either way, I think the constraints around which contexts
-bpf_sock_destroy supports might need to be relaxed.
-
-> for tracking TCP_CLOSE) but connected udp does not have it now.
-
-Overall, the SOCK_HASH changes felt like a natural starting point, but
-I'm happy to discuss some alternatives. I like the idea of being able to
-combine bpf_rb_root/bpf_arena + bpf_sk_lookup + bpf_sock_destroy, and it
-seems like an interesting direction to explore.
-
-Thanks again, I really appreciate the input.
-
-Jordan
+[...]
 
