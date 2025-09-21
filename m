@@ -1,388 +1,106 @@
-Return-Path: <bpf+bounces-69146-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69147-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B3D1B8DC26
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 15:32:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65809B8DD56
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 17:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22EF81897893
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 13:32:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21BF2164DBE
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 15:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264852D94AD;
-	Sun, 21 Sep 2025 13:32:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61561BC4E;
+	Sun, 21 Sep 2025 15:31:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aRhQUKtG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="amdpVqlV"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1C72D63E5;
-	Sun, 21 Sep 2025 13:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2212341AA
+	for <bpf@vger.kernel.org>; Sun, 21 Sep 2025 15:31:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758461527; cv=none; b=EYKqip3DbE/v+mWctUEf/4wFdM9atnJ7IVzmRIFiN0kpWevXXb+hnoomae/efgrmpvfvf1RdPWUdywcyOOC/yEdcIANrCSAnKeURr52ttVmU5o52d3Hbzca7pbE77Xzv1IoVMRxvonD7h+Oh0unN1fLplEXw9VHVbllQan6Bq9Y=
+	t=1758468691; cv=none; b=GQXw3odLHpDmEHEYD7bW5KygYoeMaMBFq2q7EPdJ6Z1eLspNQgQkTo2KWQ7bx3cx0L48QTRjpwPQqMOV5r8vpPf1H+cS0SPieAC5HCOMn/1N+kXWSSNfpmfdyc4gDW+yfkXOIPaam+yLvtnU4gV8T5VPeIAditCv6fu2o9IuEiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758461527; c=relaxed/simple;
-	bh=pQb3RwgC86+8bieGKn+WORSbUrrfSz5gKwb+kLvhqWo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M5faYv6TDiBZV8dsD+LvaZW1uyhsluuUbSI6OUSmhiJ7NS/wB3V9Hu88HtVsBCSiQeCBcPRY7d6mefgDdSH8PhYp0FmftcTh1O8A1toOwpLWSU298kWRHRpQmWspmNVfUcxYNNdSbbUrgV9oL/wWr2SsQ2iBgYepvmPhMRv+hrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aRhQUKtG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34878C4CEF0;
-	Sun, 21 Sep 2025 13:32:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758461527;
-	bh=pQb3RwgC86+8bieGKn+WORSbUrrfSz5gKwb+kLvhqWo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aRhQUKtG/f4nbp8bMSZS8llF1fKv4OqxpWVwDkLUT+3YY/Wec74Mupjqz1Y4Buo+1
-	 5fwU/MM5NGyx2dLpzHukhmShKbYkYDQ+yTAWsla251TV2j16X5KYrJXZMKQ/jZJNfv
-	 LZ+CBSSNtErHEvS6mUzcHMVhft0GaP21jFSBzervDtO+hWZIyaUHr5uj9rXX2mv/6R
-	 OKhCVBvMIDBb3NWCrWwk2fCBqo1byUyFcqtsdd4ZMU+YmJcVMTz3RpDaLLeiwfSCup
-	 H4DTuLN63scDMVLfZMQul5iZ5/DEO6/ts/UKcct6s4+T+g3kfofARDngH3Hno4Bi07
-	 GWAJBKSMxMrng==
-From: KP Singh <kpsingh@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Cc: bboscaccy@linux.microsoft.com,
-	paul@paul-moore.com,
-	kys@microsoft.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v5 12/12] selftests/bpf: Enable signature verification for some lskel tests
-Date: Sun, 21 Sep 2025 15:31:33 +0200
-Message-ID: <20250921133133.82062-13-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250921133133.82062-1-kpsingh@kernel.org>
-References: <20250921133133.82062-1-kpsingh@kernel.org>
+	s=arc-20240116; t=1758468691; c=relaxed/simple;
+	bh=7NCxv/9RiVkI4je3zWn63xsUqo8Q/S8SLXjy/jyDnPA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZI+WhMwM6Q0e1vn2pct6e6M2n/yzQes9hJPpcnM5WAo6irNTzPSvPyqyqyWGA0rR0sFQJmexj4WGCdKyO9H5VDKSylNy8fpXqEncfCa3KdB7jV7nWGu7bt4lS30516BAZ2vJ1EyGxmEMcDjlbtbPEOPGMUYAVpau7q8A5aGHbsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=amdpVqlV; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-468973c184bso11415665e9.3
+        for <bpf@vger.kernel.org>; Sun, 21 Sep 2025 08:31:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758468688; x=1759073488; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7NCxv/9RiVkI4je3zWn63xsUqo8Q/S8SLXjy/jyDnPA=;
+        b=amdpVqlVMxMWDehDaLSFAPFz03X2Px3BviI+5Xt5BDZNxO3OyraEeq134R+0WJqM1L
+         pWFOUN9qlxB76Z1sMM0ShbERAcRS12tAdX0fAahDObsUBi2G20savy87ixeoUntSPCOx
+         VriRkzensmK0cQH4s7AMV0eTZBQHkeTRl0B88Z4h+CqbtVGejyOCFS01yzxdfWpyW0pm
+         RxT94cKRvpayQKDowW8e3+TUoMgRKz15QCA2LAQjSkK760cv+lmOOo5YuTQty1V9k+jh
+         n5spTOVqxi80dOvU2ZIDP+UhOGBEpMXPzjGQhYC+ZB8knpkOnrXv5k6uBQ8Td0vQaOJY
+         Gxcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758468688; x=1759073488;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7NCxv/9RiVkI4je3zWn63xsUqo8Q/S8SLXjy/jyDnPA=;
+        b=hC+YIsDEYiYsZykWIcXJisE03kbQfnnzWb4wuC0BA1GJD61esyricDJXc4HZ7W6/vQ
+         sD5XxCYTTxLyZ+SJNWr+Zj6Mb4sYucqxARirzNIaBi4K6QooqhWdfgLhxb3Yu+vJAQeE
+         HTCt1kJQk7jJ1xoXsO+8nbZCCdEB3qd80PjMtSu0rD8UoSCVIheCoMPgvI10EW60mLHV
+         XbhfUmG/EZ3hJ0Wk6hdraGeiF2pEERUveFesPMlP7M2mS01GmtvjiqrFiakiTFw3BokI
+         OxSoJg6fd93rckhn6dhNmVMF4tp2PHUSU0AXMU+p6TcGD9ohBFhdBiwhW0kx/wZ7OCxc
+         9T7w==
+X-Gm-Message-State: AOJu0Yxu8MOoxRpSQgtQOv+qwXwqv8av1rMn9Rlo6I0mdVLnvBQQVHsM
+	Iuy4PnarvoTPhdtbkC61WlbYaLEFJOlWQBSrhL8LHrkzksph3z2gV7++021xew4TnLwtyRM3yAB
+	IS4P7aYEWYbqwREXUclNvYMYF9Hh99Mc=
+X-Gm-Gg: ASbGncveNXDE4Ym6yim46m+stlHv6xmUWXMQ8TkGX3UQ+gLaxSvWmYdng5u+TfMPjOW
+	hMUTfHiyNB3sO1ziu5j/CGA+V0zvN+MJdAA0McdzaSHDYBqz99Wdn05oBqCkOpKjxd9vmZ4PnJa
+	sJGqU4lS21qEb3B5VZSpde9efP8Vhcg9JST5aoj6Co9xJeEGOYN4EkUHSFtde/SCvDUheq2Mr/p
+	icvwfB48h5CZO8urt2rjjzPq89qaZR7Uxpr
+X-Google-Smtp-Source: AGHT+IFLDfCcS1KEU0zLGmnheBCJTR0xfgWuncwrkWZKOCe0PLEWQcbu/yMyLpB4WNBEi2oUGL+MFWe/fqSt5J8fK0M=
+X-Received: by 2002:a05:600c:8b21:b0:45d:d56c:4ab5 with SMTP id
+ 5b1f17b1804b1-467e63be56fmr99171845e9.5.1758468687821; Sun, 21 Sep 2025
+ 08:31:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250921133133.82062-1-kpsingh@kernel.org>
+In-Reply-To: <20250921133133.82062-1-kpsingh@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 21 Sep 2025 08:31:16 -0700
+X-Gm-Features: AS18NWCiKg8ZihT9tribG8q0rpDMrWLrdCn2ggSw-LMPm2iRIOMNJ9fehq0ibXU
+Message-ID: <CAADnVQJdue2iX1fq+cBM8xkDHa8N3EXBZ-avFQ3VuasQ153fXg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/12] Signed BPF programs
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
+	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Paul Moore <paul@paul-moore.com>, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The test harness uses the verify_sig_setup.sh to generate the required
-key material for program signing.
+On Sun, Sep 21, 2025 at 6:31=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrote=
+:
+>
+> # v4 -> v5
+>
+> * bpftool comments
+> * Cleanup noise in calc_tag diff.
 
-Generate key material for signing LSKEL some lskel programs and use
-xxd to convert the verification certificate into a C header file.
+The patches 1-7 were already applied.
+Please rebase and repost 8-12.
+Also use [PATCH bpf-next v6] in the subject,
+otherwise CI runs only half of the tests.
 
-Finally, update the main test runner to load this
-certificate into the session keyring via the add_key() syscall before
-executing any tests. Use the session keyring in the tests with signed
-programs.
-
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- tools/testing/selftests/bpf/.gitignore        |  1 +
- tools/testing/selftests/bpf/Makefile          | 35 ++++++++++++++++---
- .../selftests/bpf/prog_tests/atomics.c        | 10 ++++--
- .../selftests/bpf/prog_tests/fentry_fexit.c   | 15 ++++++--
- .../selftests/bpf/prog_tests/fentry_test.c    |  9 +++--
- .../selftests/bpf/prog_tests/fexit_test.c     |  9 +++--
- tools/testing/selftests/bpf/test_progs.c      | 13 +++++++
- .../testing/selftests/bpf/verify_sig_setup.sh | 11 ++++--
- 8 files changed, 89 insertions(+), 14 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 3d8378972d26..be1ee7ba7ce0 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -44,3 +44,4 @@ xdp_redirect_multi
- xdp_synproxy
- xdp_hw_metadata
- xdp_features
-+verification_cert.h
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 11d2a368db3e..0b6ee902bce5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -496,15 +496,16 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
- 		test_subskeleton.skel.h test_subskeleton_lib.skel.h	\
- 		test_usdt.skel.h
- 
--LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
--	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
-+LSKELS := fexit_sleep.c trace_printk.c trace_vprintk.c map_ptr_kern.c 	\
- 	core_kern.c core_kern_overflow.c test_ringbuf.c			\
- 	test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c
- 
-+LSKELS_SIGNED := fentry_test.c fexit_test.c atomics.c
-+
- # Generate both light skeleton and libbpf skeleton for these
- LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
- 	kfunc_call_test_subprog.c
--SKEL_BLACKLIST += $$(LSKELS)
-+SKEL_BLACKLIST += $$(LSKELS) $$(LSKELS_SIGNED)
- 
- test_static_linked.skel.h-deps := test_static_linked1.bpf.o test_static_linked2.bpf.o
- linked_funcs.skel.h-deps := linked_funcs1.bpf.o linked_funcs2.bpf.o
-@@ -535,6 +536,7 @@ HEADERS_FOR_BPF_OBJS := $(wildcard $(BPFDIR)/*.bpf.h)		\
- # $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, bpf_gcc, etc)
- define DEFINE_TEST_RUNNER
- 
-+LSKEL_SIGN := -S -k $(PRIVATE_KEY) -i $(VERIFICATION_CERT)
- TRUNNER_OUTPUT := $(OUTPUT)$(if $2,/)$2
- TRUNNER_BINARY := $1$(if $2,-)$2
- TRUNNER_TEST_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.test.o,	\
-@@ -550,6 +552,7 @@ TRUNNER_BPF_SKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.skel.h,	\
- 					       $$(TRUNNER_BPF_SRCS)))
- TRUNNER_BPF_LSKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.lskel.h, $$(LSKELS) $$(LSKELS_EXTRA))
- TRUNNER_BPF_SKELS_LINKED := $$(addprefix $$(TRUNNER_OUTPUT)/,$(LINKED_SKELS))
-+TRUNNER_BPF_LSKELS_SIGNED := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.lskel.h, $$(LSKELS_SIGNED))
- TEST_GEN_FILES += $$(TRUNNER_BPF_OBJS)
- 
- # Evaluate rules now with extra TRUNNER_XXX variables above already defined
-@@ -604,6 +607,15 @@ $(TRUNNER_BPF_LSKELS): %.lskel.h: %.bpf.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
- 	$(Q)$$(BPFTOOL) gen skeleton -L $$(<:.o=.llinked3.o) name $$(notdir $$(<:.bpf.o=_lskel)) > $$@
- 	$(Q)rm -f $$(<:.o=.llinked1.o) $$(<:.o=.llinked2.o) $$(<:.o=.llinked3.o)
- 
-+$(TRUNNER_BPF_LSKELS_SIGNED): %.lskel.h: %.bpf.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
-+	$$(call msg,GEN-SKEL,$(TRUNNER_BINARY) (signed),$$@)
-+	$(Q)$$(BPFTOOL) gen object $$(<:.o=.llinked1.o) $$<
-+	$(Q)$$(BPFTOOL) gen object $$(<:.o=.llinked2.o) $$(<:.o=.llinked1.o)
-+	$(Q)$$(BPFTOOL) gen object $$(<:.o=.llinked3.o) $$(<:.o=.llinked2.o)
-+	$(Q)diff $$(<:.o=.llinked2.o) $$(<:.o=.llinked3.o)
-+	$(Q)$$(BPFTOOL) gen skeleton $(LSKEL_SIGN) $$(<:.o=.llinked3.o) name $$(notdir $$(<:.bpf.o=_lskel)) > $$@
-+	$(Q)rm -f $$(<:.o=.llinked1.o) $$(<:.o=.llinked2.o) $$(<:.o=.llinked3.o)
-+
- $(LINKED_BPF_OBJS): %: $(TRUNNER_OUTPUT)/%
- 
- # .SECONDEXPANSION here allows to correctly expand %-deps variables as prerequisites
-@@ -653,6 +665,7 @@ $(TRUNNER_TEST_OBJS:.o=.d): $(TRUNNER_OUTPUT)/%.test.d:			\
- 			    $(TRUNNER_EXTRA_HDRS)			\
- 			    $(TRUNNER_BPF_SKELS)			\
- 			    $(TRUNNER_BPF_LSKELS)			\
-+			    $(TRUNNER_BPF_LSKELS_SIGNED)		\
- 			    $(TRUNNER_BPF_SKELS_LINKED)			\
- 			    $$(BPFOBJ) | $(TRUNNER_OUTPUT)
- 
-@@ -667,6 +680,7 @@ $(foreach N,$(patsubst $(TRUNNER_OUTPUT)/%.o,%,$(TRUNNER_EXTRA_OBJS)),	\
- $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
- 		       %.c						\
- 		       $(TRUNNER_EXTRA_HDRS)				\
-+		       $(VERIFY_SIG_HDR)				\
- 		       $(TRUNNER_TESTS_HDR)				\
- 		       $$(BPFOBJ) | $(TRUNNER_OUTPUT)
- 	$$(call msg,EXT-OBJ,$(TRUNNER_BINARY),$$@)
-@@ -697,6 +711,18 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 
- endef
- 
-+VERIFY_SIG_SETUP := $(CURDIR)/verify_sig_setup.sh
-+VERIFY_SIG_HDR := verification_cert.h
-+VERIFICATION_CERT   := $(BUILD_DIR)/signing_key.der
-+PRIVATE_KEY := $(BUILD_DIR)/signing_key.pem
-+
-+$(VERIFICATION_CERT) $(PRIVATE_KEY): $(VERIFY_SIG_SETUP)
-+	$(Q)mkdir -p $(BUILD_DIR)
-+	$(Q)$(VERIFY_SIG_SETUP) genkey $(BUILD_DIR)
-+
-+$(VERIFY_SIG_HDR): $(VERIFICATION_CERT)
-+	$(Q)xxd -i -n test_progs_verification_cert $< > $@
-+
- # Define test_progs test runner.
- TRUNNER_TESTS_DIR := prog_tests
- TRUNNER_BPF_PROGS_DIR := progs
-@@ -716,6 +742,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c		\
- 			 disasm.c		\
- 			 disasm_helpers.c	\
- 			 json_writer.c 		\
-+			 $(VERIFY_SIG_HDR)		\
- 			 flow_dissector_load.h	\
- 			 ip_check_defrag_frags.h
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
-@@ -725,7 +752,7 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
- 		       $(OUTPUT)/uprobe_multi				\
- 		       $(TEST_KMOD_TARGETS)				\
- 		       ima_setup.sh 					\
--		       verify_sig_setup.sh				\
-+		       $(VERIFY_SIG_SETUP)				\
- 		       $(wildcard progs/btf_dump_test_case_*.c)		\
- 		       $(wildcard progs/*.bpf.o)
- TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
-diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/tools/testing/selftests/bpf/prog_tests/atomics.c
-index 13e101f370a1..92b5f378bfb8 100644
---- a/tools/testing/selftests/bpf/prog_tests/atomics.c
-+++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
-@@ -165,11 +165,17 @@ static void test_xchg(struct atomics_lskel *skel)
- void test_atomics(void)
- {
- 	struct atomics_lskel *skel;
-+	int err;
- 
--	skel = atomics_lskel__open_and_load();
--	if (!ASSERT_OK_PTR(skel, "atomics skeleton load"))
-+	skel = atomics_lskel__open();
-+	if (!ASSERT_OK_PTR(skel, "atomics skeleton open"))
- 		return;
- 
-+	skel->keyring_id = KEY_SPEC_SESSION_KEYRING;
-+	err = atomics_lskel__load(skel);
-+	if (!ASSERT_OK(err, "atomics skeleton load"))
-+		goto cleanup;
-+
- 	if (skel->data->skip_tests) {
- 		printf("%s:SKIP:no ENABLE_ATOMICS_TESTS (missing Clang BPF atomics support)",
- 		       __func__);
-diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-index 130f5b82d2e6..5ef1804e44df 100644
---- a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-@@ -12,13 +12,24 @@ void test_fentry_fexit(void)
- 	int err, prog_fd, i;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts);
- 
--	fentry_skel = fentry_test_lskel__open_and_load();
-+	fentry_skel = fentry_test_lskel__open();
- 	if (!ASSERT_OK_PTR(fentry_skel, "fentry_skel_load"))
- 		goto close_prog;
--	fexit_skel = fexit_test_lskel__open_and_load();
-+
-+	fentry_skel->keyring_id	= KEY_SPEC_SESSION_KEYRING;
-+	err = fentry_test_lskel__load(fentry_skel);
-+	if (!ASSERT_OK(err, "fentry_skel_load"))
-+		goto close_prog;
-+
-+	fexit_skel = fexit_test_lskel__open();
- 	if (!ASSERT_OK_PTR(fexit_skel, "fexit_skel_load"))
- 		goto close_prog;
- 
-+	fexit_skel->keyring_id	= KEY_SPEC_SESSION_KEYRING;
-+	err = fexit_test_lskel__load(fexit_skel);
-+	if (!ASSERT_OK(err, "fexit_skel_load"))
-+		goto close_prog;
-+
- 	err = fentry_test_lskel__attach(fentry_skel);
- 	if (!ASSERT_OK(err, "fentry_attach"))
- 		goto close_prog;
-diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_test.c b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-index aee1bc77a17f..ec882328eb59 100644
---- a/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-@@ -43,8 +43,13 @@ static void fentry_test(void)
- 	struct fentry_test_lskel *fentry_skel = NULL;
- 	int err;
- 
--	fentry_skel = fentry_test_lskel__open_and_load();
--	if (!ASSERT_OK_PTR(fentry_skel, "fentry_skel_load"))
-+	fentry_skel = fentry_test_lskel__open();
-+	if (!ASSERT_OK_PTR(fentry_skel, "fentry_skel_open"))
-+		goto cleanup;
-+
-+	fentry_skel->keyring_id	= KEY_SPEC_SESSION_KEYRING;
-+	err = fentry_test_lskel__load(fentry_skel);
-+	if (!ASSERT_OK(err, "fentry_skel_load"))
- 		goto cleanup;
- 
- 	err = fentry_test_common(fentry_skel);
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_test.c b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-index 1c13007e37dd..94eed753560c 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-@@ -43,8 +43,13 @@ static void fexit_test(void)
- 	struct fexit_test_lskel *fexit_skel = NULL;
- 	int err;
- 
--	fexit_skel = fexit_test_lskel__open_and_load();
--	if (!ASSERT_OK_PTR(fexit_skel, "fexit_skel_load"))
-+	fexit_skel = fexit_test_lskel__open();
-+	if (!ASSERT_OK_PTR(fexit_skel, "fexit_skel_open"))
-+		goto cleanup;
-+
-+	fexit_skel->keyring_id	= KEY_SPEC_SESSION_KEYRING;
-+	err = fexit_test_lskel__load(fexit_skel);
-+	if (!ASSERT_OK(err, "fexit_skel_load"))
- 		goto cleanup;
- 
- 	err = fexit_test_common(fexit_skel);
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 309d9d4a8ace..02a85dda30e6 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -14,12 +14,14 @@
- #include <netinet/in.h>
- #include <sys/select.h>
- #include <sys/socket.h>
-+#include <linux/keyctl.h>
- #include <sys/un.h>
- #include <bpf/btf.h>
- #include <time.h>
- #include "json_writer.h"
- 
- #include "network_helpers.h"
-+#include "verification_cert.h"
- 
- /* backtrace() and backtrace_symbols_fd() are glibc specific,
-  * use header file when glibc is available and provide stub
-@@ -1928,6 +1930,13 @@ static void free_test_states(void)
- 	}
- }
- 
-+static __u32 register_session_key(const char *key_data, size_t key_data_size)
-+{
-+	return syscall(__NR_add_key, "asymmetric", "libbpf_session_key",
-+			(const void *)key_data, key_data_size,
-+			KEY_SPEC_SESSION_KEYRING);
-+}
-+
- int main(int argc, char **argv)
- {
- 	static const struct argp argp = {
-@@ -1961,6 +1970,10 @@ int main(int argc, char **argv)
- 	/* Use libbpf 1.0 API mode */
- 	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
- 	libbpf_set_print(libbpf_print_fn);
-+	err = register_session_key((const char *)test_progs_verification_cert,
-+				   test_progs_verification_cert_len);
-+	if (err < 0)
-+		return err;
- 
- 	traffic_monitor_set_print(traffic_monitor_print_fn);
- 
-diff --git a/tools/testing/selftests/bpf/verify_sig_setup.sh b/tools/testing/selftests/bpf/verify_sig_setup.sh
-index f2cac42298ba..09179fb551f0 100755
---- a/tools/testing/selftests/bpf/verify_sig_setup.sh
-+++ b/tools/testing/selftests/bpf/verify_sig_setup.sh
-@@ -32,7 +32,7 @@ usage()
- 	exit 1
- }
- 
--setup()
-+genkey()
- {
- 	local tmp_dir="$1"
- 
-@@ -45,9 +45,14 @@ setup()
- 
- 	openssl x509 -in ${tmp_dir}/signing_key.pem -out \
- 		${tmp_dir}/signing_key.der -outform der
-+}
- 
--	key_id=$(cat ${tmp_dir}/signing_key.der | keyctl padd asymmetric ebpf_testing_key @s)
-+setup()
-+{
-+	local tmp_dir="$1"
- 
-+	genkey "${tmp_dir}"
-+	key_id=$(cat ${tmp_dir}/signing_key.der | keyctl padd asymmetric ebpf_testing_key @s)
- 	keyring_id=$(keyctl newring ebpf_testing_keyring @s)
- 	keyctl link $key_id $keyring_id
- }
-@@ -105,6 +110,8 @@ main()
- 
- 	if [[ "${action}" == "setup" ]]; then
- 		setup "${tmp_dir}"
-+	elif [[ "${action}" == "genkey" ]]; then
-+		genkey "${tmp_dir}"
- 	elif [[ "${action}" == "cleanup" ]]; then
- 		cleanup "${tmp_dir}"
- 	elif [[ "${action}" == "fsverity-create-sign" ]]; then
--- 
-2.43.0
-
+pw-bot: cr
 
