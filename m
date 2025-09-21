@@ -1,140 +1,114 @@
-Return-Path: <bpf+bounces-69162-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69163-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECC25B8E603
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 23:08:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4CF9B8E940
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 00:52:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC0663B8F78
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 21:08:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 534F517A465
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 22:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435BB2765E8;
-	Sun, 21 Sep 2025 21:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wolber.net header.i=@wolber.net header.b="O+t5Okyi";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="J7OYAISj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E84274B28;
+	Sun, 21 Sep 2025 22:52:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8834D185955;
-	Sun, 21 Sep 2025 21:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521231D5174;
+	Sun, 21 Sep 2025 22:52:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758488894; cv=none; b=urSu+/rMp7aRjF9TqGY003h7i3p/4EPQRn29GyoL0JO+1VZEi1epFNTmqYxkjEMtPWIPs3MNDbuJ5IejX6NRxxo3i9AXw8IAktm3du2OeIsqIfQoiOIRi498UxtNziBKklfyUy8uphQ+VFBOp+4q1WqW+QSCFoLpNN2ume5goV8=
+	t=1758495140; cv=none; b=JUdtsyDyfXbTfNB4y5b1YsDNhZbQGrPcJbKmZHynnULF3ADx4hJfMVnV22Mb4Lb5445YFHpGrTO/CAVRjfaF6g8IycvB6xM14ITKiN/nJhpyoAQu5MfjsHqc8HU7nudRFZo4P6QdWrBPuCZ99DJpGc4so2sns4/ZgZaKNHYnyeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758488894; c=relaxed/simple;
-	bh=qOSGdF6leebqlCaCu8EDW3SnUS0vexy+XgNqzR/Dc08=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=nTMVjC4Rnr6PdThqdMkE1sf/4Y8m41/RNFHlgy1dQBr7TnK65ZlSRObPt/nvUqVTs3qmcQnO6kT3B3ga99OHqjNNcIOg7GrYJA+fym09HY6fgYrEYBbbYP26aoHdNR+YMj9lbzeDl1+oa5hz6WUjvntO+20iEfYV13i4SuPxN/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wolber.net; spf=pass smtp.mailfrom=wolber.net; dkim=pass (2048-bit key) header.d=wolber.net header.i=@wolber.net header.b=O+t5Okyi; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=J7OYAISj; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wolber.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolber.net
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 8EE8414000D0;
-	Sun, 21 Sep 2025 17:08:11 -0400 (EDT)
-Received: from phl-imap-03 ([10.202.2.93])
-  by phl-compute-02.internal (MEProxy); Sun, 21 Sep 2025 17:08:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolber.net; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1758488891;
-	 x=1758575291; bh=qOSGdF6leebqlCaCu8EDW3SnUS0vexy+XgNqzR/Dc08=; b=
-	O+t5OkyishpEBU64ngGj2QXgDOaAOBeUbmgWUQMCmKwx1Npjnm180g3HpjbuJz7L
-	oOUmtHVzHzvR+TMPdjkII8WZK0ZQfH53fauABngziZI2MhaBq4mIy8qF0p1fQmiD
-	zYPYqP/TtXCzh+zkr0U19xV9bU0ytCbarD+/v9sEtxkhmyYY1dGwEGPblxgvkuhl
-	pcTacxOMfKnsjkE4MzHvMkKT9QIcdt6P+CL0Z2uzn7e8f1MouVLSEBfDq65mDwYY
-	UwGbCOFIb+zEXcQmRct/VdA6NGq+1r/Gwxb83mHEABwi8fEJrOkGZbkSWiNFjTzZ
-	WXdwdlD1mjbPjseDQufUQg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1758488891; x=
-	1758575291; bh=qOSGdF6leebqlCaCu8EDW3SnUS0vexy+XgNqzR/Dc08=; b=J
-	7OYAISjmKUZ/1/ExByetMJrNDQcvG1dVGu4Ls5/GrGeFO72phduhmnhjT0QErykQ
-	ZP3fO6ABW+uWhMvcpoWTwPfm74WObvU9bgLQQ+aim3VpwJsZAIdPtO76zJvtVxuk
-	VNl0Wr+8kPCCS0oxGUbOhnBmokETBMSjt6cxJVTxXnZZs4zDGaRmmnFZZ9HgwIny
-	ZpQgM9UdgvrAigul3WudCubZMq+ByvronsY7gXO8UlL2kZs2SB4+RfjsagZCset8
-	ssKtMikD7Yt++vKJrQVvdAGrtA58wm+PjTQTXbF3n03EdaAvfumBKlTv7EchTlSy
-	v5Eav4tf+LjvLjuIfygJg==
-X-ME-Sender: <xms:OmnQaCgCwMYVVEs2RoGBfACA1aOmnQMQJAmILe9dRRbiZVr5vrUcIQ>
-    <xme:OmnQaDD3hhanCV1noJMk8yjWE95fXSEB5uVNdvfsbs1Ys2RRR7XYbDMunsmLW4iVs
-    zEAhvdc9SLDjoWAed0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdehiedtudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggfgtgffkfevuffhvffofhgjsehtqhertdertdejnecuhfhrohhmpedfvehhuhgt
-    khcuhgholhgsvghrfdcuoegthhhutghkseifohhlsggvrhdrnhgvtheqnecuggftrfgrth
-    htvghrnhepgefhieelvdfgvedvfffgudehueeukefgfeefhfeiudejieevheekgffhtddt
-    udetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheptg
-    hhuhgtkhesfiholhgsvghrrdhnvghtpdhnsggprhgtphhtthhopedvkedpmhhouggvpehs
-    mhhtphhouhhtpdhrtghpthhtohepmhgrrhhtihhnrdhkvghllhihsegtrhhofigushhtrh
-    hikhgvrdgtohhmpdhrtghpthhtohepmhgrthhhihgvuhdruggvshhnohihvghrshesvghf
-    fhhitghiohhsrdgtohhmpdhrtghpthhtohepshgufhesfhhomhhitghhvghvrdhmvgdprh
-    gtphhtthhopegrmhgvrhihhhhunhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepvggu
-    ugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehkvghrnhgvlhhjrghsohhngi
-    hinhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepmhgvmhigohhrsehgmhgrihhlrdgt
-    ohhmpdhrtghpthhtohepphgruhhlrdgthhgrihhgnhhonhesghhmrghilhdrtghomhdprh
-    gtphhtthhopehrohhsthgvughtsehgohhoughmihhsrdhorhhg
-X-ME-Proxy: <xmx:OmnQaGE5h0i6QZg9hxcX-SEfitPDqL5I_2ejrbQuP80ODAf8zwM2jw>
-    <xmx:OmnQaIl1OmCwuSDFd94Uvl7vNXRASMJTnG8AL5e8mCZXHDdKx0V9-Q>
-    <xmx:OmnQaJB07OP3kO9qObmlNkKBu3KTsOSCWw7EI-qchDkswFz8cMGYNA>
-    <xmx:OmnQaHHr4bXuh7fQYtHbKovrDNI14xD7pXyyDFjRY5qTJlN-WTIiUQ>
-    <xmx:O2nQaLrNsk7LQNO7Q0QB7jXw20IHlRLcR67HCtWbvzeFkSy3Gjgj8ayd>
-Feedback-ID: i5cf64821:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 86B6318E0069; Sun, 21 Sep 2025 17:08:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1758495140; c=relaxed/simple;
+	bh=l6iB8zEC32wE/0xRKZAEOKfkRmHgBdDZEOE8AUayh/M=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=a69G/B+j5BEJAkplJZu1jd385q0NNXHZURByOzI8/xKHABlsK2Tly2g5ylI/zQgfAn4XwJAFqrM5WoxF7mNl0LTYXmH4m0Y0tkNjrSdOL30XXWBBfV1p/vocGI/D/Wr5boOw9Nsv/rR8oFHjwTvnTBji2d/+GzarEyxcr1bzyDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay08.hostedemail.com (Postfix) with ESMTP id A1129140436;
+	Sun, 21 Sep 2025 22:52:07 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id 47E512002B;
+	Sun, 21 Sep 2025 22:52:04 +0000 (UTC)
+Date: Sun, 21 Sep 2025 18:52:03 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
+ <rostedt@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>,
+ jolsa@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ kees@kernel.org, samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
+ ast@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Subject: Re: [PATCH] tracing: fgraph: Protect return handler from recursion
+ loop
+Message-ID: <20250921185203.561676ad@batman.local.home>
+In-Reply-To: <20250921130519.d1bf9ba2713bd9cb8a175983@kernel.org>
+References: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
+	<175828305637.117978.4183947592750468265.stgit@devnote2>
+	<20250919112746.09fa02c7@gandalf.local.home>
+	<20250921130519.d1bf9ba2713bd9cb8a175983@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sun, 21 Sep 2025 21:08:09 +0000
-Message-Id: <DCYSABMLGCUG.3T4ZQDGWFW6KY@wolber.net>
-Cc: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
- <martin.lau@linux.dev>, <song@kernel.org>, <yonghong.song@linux.dev>,
- <haoluo@google.com>, <jolsa@kernel.org>, <eddyz87@gmail.com>,
- <kpsingh@kernel.org>, <sdf@fomichev.me>, <mhiramat@kernel.org>,
- <mathieu.desnoyers@efficios.com>, <shuah@kernel.org>, <willemb@google.com>,
- <kerneljasonxing@gmail.com>, <paul.chaignon@gmail.com>,
- <chen.dylane@linux.dev>, <memxor@gmail.com>,
- <martin.kelly@crowdstrike.com>, <ameryhung@gmail.com>,
- <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
- <linux-trace-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
- <yikai.lin@vivo.com>
-Subject: Re: [RFC PATCH bpf-next v1 0/3] bpf: Add BPF program type for
- overriding tracepoint probes
-From: "Chuck Wolber" <chuck@wolber.net>
-To: "Steven Rostedt" <rostedt@goodmis.org>, "Fuyu Zhao" <zhaofuyu@vivo.com>
-X-Mailer: aerc 0.21.0
-References: <20250917072242.674528-1-zhaofuyu@vivo.com>
- <20250917153055.6fee814f@gandalf.local.home>
- <e8e8b5e2-35fe-43cc-ba41-c84ccba189f7@vivo.com>
- <20250918112425.23d4d379@gandalf.local.home>
-In-Reply-To: <20250918112425.23d4d379@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: ymjgf5r4ph4miwi3whi5e3di6tdf3psp
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 47E512002B
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18P5y9ZRtFgbQJyiNAHzWvyyES5VKcbakI=
+X-HE-Tag: 1758495124-875404
+X-HE-Meta: U2FsdGVkX1+FbqB4YdQR/TVeMe3gUqMQgNczUCEbyU4RO+OheBoWHICpYVR8RknLRiSrRM1TlcgSHtu1NbdyBvpJ8KfZGGEkzIaC4ySNsM70lTDqTibAYq2HF4tO7YDYjNmofIXm7fBuDsX1hgTjzo4avFePDe84OJ9ig/K/rG3+Ta+dvZ/T4mcXpU6oCM0Bm+n/ap+5kq1qELckN/HmYimKjF9ndkvDS4U2bF/YOGcw1tpXYNz/BwG28M6seXMtkrsHFT0VVTSqVKIUbwfdw3dXliOTII4YnFhveGRuqV4J5XL9Z+2jr1gypyDNqjKYjwniGyw+0lLlRjFrHcHVq3QRjCpDDCuk
 
-On Thu Sep 18, 2025 at 3:29 PM UTC, Steven Rostedt wrote:
->
-> My entire workflow for what I created in the tracing system was "I have a
-> need, I will implement it". The "need" came first. I then wrote code to
-> satisfy that need. It should not be the other way around.
+On Sun, 21 Sep 2025 13:05:19 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-Tagging on to this sentiment - the kernel's design is emergent and will alw=
-ays
-remain so.
+>  
+> > The reason I would say not to have the warn on, is because we don't have a
+> > warn on for recursion happening at the entry handler. Because this now is
+> > exposed by fprobe allowing different routines to be called at exit than
+> > what is used in entry, it can easily be triggered.  
+> 
+> At the entry, if it detect recursion, it exits soon. But here we have to
+> process stack unwind to get the return address. This recursion_trylock()
+> is to mark this is in the critical section, not detect it.
 
-Speculative features have a very low probability of reflecting the required
-design language. On the other hand, if someone needs a thing, the need will
-drive the use of conformal design language.
+Ah, because the first instance of the exit callback sets the recursion
+bit. This will cause recursed entry calls to detect the recursion bit
+and return without setting the exit handler to be called.
 
-..Ch:W..
+That is, by setting the recursion bit in the exit handler, it will cause
+a recursion in entry to fail before the exit is called again.
 
+I'd like to update the comment:
+
++	bit = ftrace_test_recursion_trylock(trace.func, ret);
++	/*
++	 * This must be succeeded because the entry handler returns before
++	 * modifying the return address if it is nested. Anyway, we need to
++	 * avoid calling user callbacks if it is nested.
++	 */
++	if (WARN_ON_ONCE(bit < 0))
++		goto out;
++
+
+to:
+
+	/*
+	 * Setting the recursion bit here will cause the graph entry to
+	 * detect recursion before the exit handle will. If the ext
+	 * handler detects recursion, something went wrong.
+	 */
+	if (WARN_ON_ONCE(bit < 0))
+
+-- Steve
 
