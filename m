@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-69141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96415B8DC05
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 15:32:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 423ADB8DC23
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 15:32:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA455178E48
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 13:32:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D60D7B175A
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 13:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130FC2D8DC3;
-	Sun, 21 Sep 2025 13:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1DB2D8DDF;
+	Sun, 21 Sep 2025 13:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/QVmR2O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i8M0Evw+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89AFE23ABBF;
-	Sun, 21 Sep 2025 13:31:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127B92D8760;
+	Sun, 21 Sep 2025 13:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758461515; cv=none; b=td7fVr5lZQMh35QIKaZ+YvAQQrQ7qPUZWAgCya9b0jG+O6JXEZ7hZGaKFfIKvxpIB+gbrJzd12cA+KntfJxe2jQY0hWJgJybEqoVwBIyaW1il36GLm0+iJQ3rGgkbHpoJrRloNB+p5LCabrzVN+IWIT2NnANOsXupB1F8mQihq4=
+	t=1758461518; cv=none; b=fk8IS7dYEwsrnCyXx9nNTOvIDGBuMBgZEueIYydjyYO0s017pO/xGvD66ktACc2RNpl04ukm4iQCNoJlyBoRzkTx41OV5nRoKbO7sWbHr7HpNQUrW2lfOsA0BFVHtf+tCAk45n1pnj4eHmFaDVO3SxUNBcEvzFs3hcrecDEZ2gM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758461515; c=relaxed/simple;
-	bh=pAChMVD4/N0CC0jmhmAo6kN7oDPK2tzoyUxc0Q9A99s=;
+	s=arc-20240116; t=1758461518; c=relaxed/simple;
+	bh=40vlSe4LU8O92Psk4m3mfKTCP6eCBzgjheSoREKguAI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F/+lzRXYFy3zCX1bCxtYvbzQzDGAHjCcjtONKwveeiNkeLi6pidF9hYt+iuHugRsOJop4NwhEsE+HfJLruxtiP3lEemY9uo1muLON4spO0IIDaO3LwDpfzdO/AIWsIYCixVBNj2Sv1yGNpsWffiZyL/pWTB4Ygzu3B6W14OIg34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/QVmR2O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF488C116B1;
-	Sun, 21 Sep 2025 13:31:52 +0000 (UTC)
+	 MIME-Version; b=pk2RA0FJky6NMWWIhLM8z3kM+cQ9ghRCORQIaRZ4dmS1D11oGaTBCx992tgklEmJalMghGfeW9A8c+pErLIef/5bn6n7h6ugGCXYUp9z/PMoilbwEXO+ghuy75H7IkcAURvz0FfGof2kkv/XNcZwXrw2iashAei0deqi29LURe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i8M0Evw+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82A25C116C6;
+	Sun, 21 Sep 2025 13:31:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758461515;
-	bh=pAChMVD4/N0CC0jmhmAo6kN7oDPK2tzoyUxc0Q9A99s=;
+	s=k20201202; t=1758461517;
+	bh=40vlSe4LU8O92Psk4m3mfKTCP6eCBzgjheSoREKguAI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L/QVmR2OoDJg057CQCw0ULetIjbOWvgT0UzFeMcbYOE8VZx7860iIve6JPpuvlS9e
-	 UOJZqDQks9amNt5RDzf0iAzpRzbBv2S96XM+AI27QU2lErUPEMRwTabso0UNB7mENZ
-	 UJidBPPQLQhQlonNmUstlJq8l4zaWlccoAKqf4JeF3TJwNOCaHM9R/QcOFOal59F+o
-	 22HXELNxuodgUXkGf7mXOkSqeXW4gThAyqTc7AiiWIhSUY7iHswWLvTp0nMPxAhRQX
-	 vBEVYt0jw9+kOJenuqPjbuwLRyqf+3tUgWOwfoRhMdW3ZVaKJmab1OwMKZnIZyBv6R
-	 TQIilV/dfYpXg==
+	b=i8M0Evw+KV70kdW2VN1cODaycU7OxoaVXV4kOEal2nNPLw4bChCRJMX1XH0vts3nX
+	 V1xL0Oo/4k1wOO/8fxFZPu3EaMSK9iN09Um39QQMiSmdt2KLHC7LaGmg2AsfvV+L5x
+	 07G9X/kP+qeSaO3e0rN448H9NPD1HslYxLBmgQFoVoULFYUVRgb98F3Ad/7RvTW4VE
+	 zpX/Awhd6ov0MEERQ+he3IVcbEmb7MvvOfExd5Z1qBdGWf5n8tfko2Lod3KRx8d2FQ
+	 QXfUleCT0ENCL5ENqo3T3MrXcxtEGznKUYzR/3/JO9crdToPnyN7kO/EkgT6xBPHHJ
+	 Xk+iLni59stfA==
 From: KP Singh <kpsingh@kernel.org>
 To: bpf@vger.kernel.org,
 	linux-security-module@vger.kernel.org
@@ -50,10 +50,11 @@ Cc: bboscaccy@linux.microsoft.com,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
+	syzbot@syzkaller.appspotmail.com,
 	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v5 07/12] bpf: Move the signature kfuncs to helpers.c
-Date: Sun, 21 Sep 2025 15:31:28 +0200
-Message-ID: <20250921133133.82062-8-kpsingh@kernel.org>
+Subject: [PATCH v5 08/12] bpf: Implement signature verification for BPF programs
+Date: Sun, 21 Sep 2025 15:31:29 +0200
+Message-ID: <20250921133133.82062-9-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250921133133.82062-1-kpsingh@kernel.org>
 References: <20250921133133.82062-1-kpsingh@kernel.org>
@@ -65,451 +66,202 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-No functional changes, except for the addition of the headers for the
-kfuncs so that they can be used for signature verification.
+This patch extends the BPF_PROG_LOAD command by adding three new fields
+to `union bpf_attr` in the user-space API:
 
+  - signature: A pointer to the signature blob.
+  - signature_size: The size of the signature blob.
+  - keyring_id: The serial number of a loaded kernel keyring (e.g.,
+    the user or session keyring) containing the trusted public keys.
+
+When a BPF program is loaded with a signature, the kernel:
+
+1.  Retrieves the trusted keyring using the provided `keyring_id`.
+2.  Verifies the supplied signature against the BPF program's
+    instruction buffer.
+3.  If the signature is valid and was generated by a key in the trusted
+    keyring, the program load proceeds.
+4.  If no signature is provided, the load proceeds as before, allowing
+    for backward compatibility. LSMs can chose to restrict unsigned
+    programs and implement a security policy.
+5.  If signature verification fails for any reason,
+    the program is not loaded.
+
+Tested-by: syzbot@syzkaller.appspotmail.com
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- include/linux/bpf.h      |  32 +++++++
- kernel/bpf/helpers.c     | 166 +++++++++++++++++++++++++++++++++++
- kernel/trace/bpf_trace.c | 183 ---------------------------------------
- 3 files changed, 198 insertions(+), 183 deletions(-)
+ crypto/asymmetric_keys/pkcs7_verify.c |  1 +
+ include/linux/verification.h          |  1 +
+ include/uapi/linux/bpf.h              | 10 ++++++
+ kernel/bpf/helpers.c                  |  2 +-
+ kernel/bpf/syscall.c                  | 45 ++++++++++++++++++++++++++-
+ tools/include/uapi/linux/bpf.h        | 10 ++++++
+ tools/lib/bpf/bpf.c                   |  2 +-
+ 7 files changed, 68 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index e0c2c78a5faa..dfc1a27b56d5 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3424,6 +3424,38 @@ static inline int bpf_fd_reuseport_array_update_elem(struct bpf_map *map,
- #endif /* CONFIG_BPF_SYSCALL */
- #endif /* defined(CONFIG_INET) && defined(CONFIG_BPF_SYSCALL) */
+diff --git a/crypto/asymmetric_keys/pkcs7_verify.c b/crypto/asymmetric_keys/pkcs7_verify.c
+index f0d4ff3c20a8..6d6475e3a9bf 100644
+--- a/crypto/asymmetric_keys/pkcs7_verify.c
++++ b/crypto/asymmetric_keys/pkcs7_verify.c
+@@ -429,6 +429,7 @@ int pkcs7_verify(struct pkcs7_message *pkcs7,
+ 		/* Authattr presence checked in parser */
+ 		break;
+ 	case VERIFYING_UNSPECIFIED_SIGNATURE:
++	case VERIFYING_BPF_SIGNATURE:
+ 		if (pkcs7->data_type != OID_data) {
+ 			pr_warn("Invalid unspecified sig (not pkcs7-data)\n");
+ 			return -EKEYREJECTED;
+diff --git a/include/linux/verification.h b/include/linux/verification.h
+index 4f3022d081c3..dec7f2beabfd 100644
+--- a/include/linux/verification.h
++++ b/include/linux/verification.h
+@@ -36,6 +36,7 @@ enum key_being_used_for {
+ 	VERIFYING_KEY_SIGNATURE,
+ 	VERIFYING_KEY_SELF_SIGNATURE,
+ 	VERIFYING_UNSPECIFIED_SIGNATURE,
++	VERIFYING_BPF_SIGNATURE,
+ 	NR__KEY_BEING_USED_FOR
+ };
+ #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 0987b52d5648..f3b173e48b0f 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1611,6 +1611,16 @@ union bpf_attr {
+ 		 * continuous.
+ 		 */
+ 		__u32		fd_array_cnt;
++		/* Pointer to a buffer containing the signature of the BPF
++		 * program.
++		 */
++		__aligned_u64   signature;
++		/* Size of the signature buffer in bytes. */
++		__u32 		signature_size;
++		/* ID of the kernel keyring to be used for signature
++		 * verification.
++		 */
++		__s32		keyring_id;
+ 	};
  
-+#if defined(CONFIG_KEYS) && defined(CONFIG_BPF_SYSCALL)
-+
-+struct bpf_key *bpf_lookup_user_key(s32 serial, u64 flags);
-+struct bpf_key *bpf_lookup_system_key(u64 id);
-+void bpf_key_put(struct bpf_key *bkey);
-+int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
-+			       struct bpf_dynptr *sig_p,
-+			       struct bpf_key *trusted_keyring);
-+
-+#else
-+static inline struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags)
-+{
-+	return NULL;
-+}
-+
-+static inline struct bpf_key *bpf_lookup_system_key(u64 id)
-+{
-+	return NULL;
-+}
-+
-+static inline void bpf_key_put(struct bpf_key *bkey)
-+{
-+}
-+
-+static inline int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
-+					     struct bpf_dynptr *sig_p,
-+					     struct bpf_key *trusted_keyring)
-+{
-+	return -EOPNOTSUPP;
-+}
-+#endif /* defined(CONFIG_KEYS) && defined(CONFIG_BPF_SYSCALL) */
-+
- /* verifier prototypes for helper functions called from eBPF programs */
- extern const struct bpf_func_proto bpf_map_lookup_elem_proto;
- extern const struct bpf_func_proto bpf_map_update_elem_proto;
+ 	struct { /* anonymous struct used by BPF_OBJ_* commands */
 diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index c0c0764a2025..922dae3afa63 100644
+index 922dae3afa63..03bea5343f4b 100644
 --- a/kernel/bpf/helpers.c
 +++ b/kernel/bpf/helpers.c
-@@ -25,6 +25,7 @@
- #include <linux/kasan.h>
- #include <linux/bpf_verifier.h>
- #include <linux/uaccess.h>
+@@ -3898,7 +3898,7 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
+ 
+ 	return verify_pkcs7_signature(data, data_len, sig, sig_len,
+ 				      trusted_keyring->key,
+-				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
++				      VERIFYING_BPF_SIGNATURE, NULL,
+ 				      NULL);
+ #else
+ 	return -EOPNOTSUPP;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index cf7173b1bb83..8a3c3d26f6e2 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -39,6 +39,7 @@
+ #include <linux/tracepoint.h>
+ #include <linux/overflow.h>
+ #include <linux/cookie.h>
 +#include <linux/verification.h>
  
- #include "../../lib/kstrtox.h"
- 
-@@ -3747,6 +3748,163 @@ __bpf_kfunc int bpf_strstr(const char *s1__ign, const char *s2__ign)
- {
- 	return bpf_strnstr(s1__ign, s2__ign, XATTR_SIZE_MAX);
+ #include <net/netfilter/nf_bpf_link.h>
+ #include <net/netkit.h>
+@@ -2785,8 +2786,44 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
+ 	}
  }
-+#ifdef CONFIG_KEYS
-+/**
-+ * bpf_lookup_user_key - lookup a key by its serial
-+ * @serial: key handle serial number
-+ * @flags: lookup-specific flags
-+ *
-+ * Search a key with a given *serial* and the provided *flags*.
-+ * If found, increment the reference count of the key by one, and
-+ * return it in the bpf_key structure.
-+ *
-+ * The bpf_key structure must be passed to bpf_key_put() when done
-+ * with it, so that the key reference count is decremented and the
-+ * bpf_key structure is freed.
-+ *
-+ * Permission checks are deferred to the time the key is used by
-+ * one of the available key-specific kfuncs.
-+ *
-+ * Set *flags* with KEY_LOOKUP_CREATE, to attempt creating a requested
-+ * special keyring (e.g. session keyring), if it doesn't yet exist.
-+ * Set *flags* with KEY_LOOKUP_PARTIAL, to lookup a key without waiting
-+ * for the key construction, and to retrieve uninstantiated keys (keys
-+ * without data attached to them).
-+ *
-+ * Return: a bpf_key pointer with a valid key pointer if the key is found, a
-+ *         NULL pointer otherwise.
-+ */
-+__bpf_kfunc struct bpf_key *bpf_lookup_user_key(s32 serial, u64 flags)
+ 
++static int bpf_prog_verify_signature(struct bpf_prog *prog, union bpf_attr *attr,
++				     bool is_kernel)
 +{
-+	key_ref_t key_ref;
-+	struct bpf_key *bkey;
++	bpfptr_t usig = make_bpfptr(attr->signature, is_kernel);
++	struct bpf_dynptr_kern sig_ptr, insns_ptr;
++	struct bpf_key *key = NULL;
++	void *sig;
++	int err = 0;
 +
-+	if (flags & ~KEY_LOOKUP_ALL)
-+		return NULL;
++	if (system_keyring_id_check(attr->keyring_id) == 0)
++		key = bpf_lookup_system_key(attr->keyring_id);
++	else
++		key = bpf_lookup_user_key(attr->keyring_id, 0);
 +
-+	/*
-+	 * Permission check is deferred until the key is used, as the
-+	 * intent of the caller is unknown here.
-+	 */
-+	key_ref = lookup_user_key(serial, flags, KEY_DEFER_PERM_CHECK);
-+	if (IS_ERR(key_ref))
-+		return NULL;
++	if (!key)
++		return -EINVAL;
 +
-+	bkey = kmalloc(sizeof(*bkey), GFP_KERNEL);
-+	if (!bkey) {
-+		key_put(key_ref_to_ptr(key_ref));
-+		return NULL;
++	sig = kvmemdup_bpfptr(usig, attr->signature_size);
++	if (IS_ERR(sig)) {
++		bpf_key_put(key);
++		return -ENOMEM;
 +	}
 +
-+	bkey->key = key_ref_to_ptr(key_ref);
-+	bkey->has_ref = true;
++	bpf_dynptr_init(&sig_ptr, sig, BPF_DYNPTR_TYPE_LOCAL, 0,
++			attr->signature_size);
++	bpf_dynptr_init(&insns_ptr, prog->insnsi, BPF_DYNPTR_TYPE_LOCAL, 0,
++			prog->len * sizeof(struct bpf_insn));
 +
-+	return bkey;
++	err = bpf_verify_pkcs7_signature((struct bpf_dynptr *)&insns_ptr,
++					 (struct bpf_dynptr *)&sig_ptr, key);
++
++	bpf_key_put(key);
++	kvfree(sig);
++	return err;
 +}
 +
-+/**
-+ * bpf_lookup_system_key - lookup a key by a system-defined ID
-+ * @id: key ID
-+ *
-+ * Obtain a bpf_key structure with a key pointer set to the passed key ID.
-+ * The key pointer is marked as invalid, to prevent bpf_key_put() from
-+ * attempting to decrement the key reference count on that pointer. The key
-+ * pointer set in such way is currently understood only by
-+ * verify_pkcs7_signature().
-+ *
-+ * Set *id* to one of the values defined in include/linux/verification.h:
-+ * 0 for the primary keyring (immutable keyring of system keys);
-+ * VERIFY_USE_SECONDARY_KEYRING for both the primary and secondary keyring
-+ * (where keys can be added only if they are vouched for by existing keys
-+ * in those keyrings); VERIFY_USE_PLATFORM_KEYRING for the platform
-+ * keyring (primarily used by the integrity subsystem to verify a kexec'ed
-+ * kerned image and, possibly, the initramfs signature).
-+ *
-+ * Return: a bpf_key pointer with an invalid key pointer set from the
-+ *         pre-determined ID on success, a NULL pointer otherwise
-+ */
-+__bpf_kfunc struct bpf_key *bpf_lookup_system_key(u64 id)
-+{
-+	struct bpf_key *bkey;
-+
-+	if (system_keyring_id_check(id) < 0)
-+		return NULL;
-+
-+	bkey = kmalloc(sizeof(*bkey), GFP_ATOMIC);
-+	if (!bkey)
-+		return NULL;
-+
-+	bkey->key = (struct key *)(unsigned long)id;
-+	bkey->has_ref = false;
-+
-+	return bkey;
-+}
-+
-+/**
-+ * bpf_key_put - decrement key reference count if key is valid and free bpf_key
-+ * @bkey: bpf_key structure
-+ *
-+ * Decrement the reference count of the key inside *bkey*, if the pointer
-+ * is valid, and free *bkey*.
-+ */
-+__bpf_kfunc void bpf_key_put(struct bpf_key *bkey)
-+{
-+	if (bkey->has_ref)
-+		key_put(bkey->key);
-+
-+	kfree(bkey);
-+}
-+
-+/**
-+ * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
-+ * @data_p: data to verify
-+ * @sig_p: signature of the data
-+ * @trusted_keyring: keyring with keys trusted for signature verification
-+ *
-+ * Verify the PKCS#7 signature *sig_ptr* against the supplied *data_ptr*
-+ * with keys in a keyring referenced by *trusted_keyring*.
-+ *
-+ * Return: 0 on success, a negative value on error.
-+ */
-+__bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
-+			       struct bpf_dynptr *sig_p,
-+			       struct bpf_key *trusted_keyring)
-+{
-+#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
-+	struct bpf_dynptr_kern *data_ptr = (struct bpf_dynptr_kern *)data_p;
-+	struct bpf_dynptr_kern *sig_ptr = (struct bpf_dynptr_kern *)sig_p;
-+	const void *data, *sig;
-+	u32 data_len, sig_len;
-+	int ret;
-+
-+	if (trusted_keyring->has_ref) {
-+		/*
-+		 * Do the permission check deferred in bpf_lookup_user_key().
-+		 * See bpf_lookup_user_key() for more details.
-+		 *
-+		 * A call to key_task_permission() here would be redundant, as
-+		 * it is already done by keyring_search() called by
-+		 * find_asymmetric_key().
-+		 */
-+		ret = key_validate(trusted_keyring->key);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	data_len = __bpf_dynptr_size(data_ptr);
-+	data = __bpf_dynptr_data(data_ptr, data_len);
-+	sig_len = __bpf_dynptr_size(sig_ptr);
-+	sig = __bpf_dynptr_data(sig_ptr, sig_len);
-+
-+	return verify_pkcs7_signature(data, data_len, sig, sig_len,
-+				      trusted_keyring->key,
-+				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
-+				      NULL);
-+#else
-+	return -EOPNOTSUPP;
-+#endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
-+}
-+#endif /* CONFIG_KEYS */
+ /* last field in 'union bpf_attr' used by this command */
+-#define BPF_PROG_LOAD_LAST_FIELD fd_array_cnt
++#define BPF_PROG_LOAD_LAST_FIELD keyring_id
  
- __bpf_kfunc_end_defs();
- 
-@@ -3788,6 +3946,14 @@ BTF_ID_FLAGS(func, bpf_throw)
- #ifdef CONFIG_BPF_EVENTS
- BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
- #endif
-+#ifdef CONFIG_KEYS
-+BTF_ID_FLAGS(func, bpf_lookup_user_key, KF_ACQUIRE | KF_RET_NULL | KF_SLEEPABLE)
-+BTF_ID_FLAGS(func, bpf_lookup_system_key, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_key_put, KF_RELEASE)
-+#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
-+BTF_ID_FLAGS(func, bpf_verify_pkcs7_signature, KF_SLEEPABLE)
-+#endif
-+#endif
- BTF_KFUNCS_END(generic_btf_ids)
- 
- static const struct btf_kfunc_id_set generic_kfunc_set = {
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 606007c387c5..f2360579658e 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -22,7 +22,6 @@
- #include <linux/bsearch.h>
- #include <linux/sort.h>
- #include <linux/key.h>
--#include <linux/verification.h>
- #include <linux/namei.h>
- 
- #include <net/bpf_sk_storage.h>
-@@ -1241,188 +1240,6 @@ static const struct bpf_func_proto bpf_get_func_arg_cnt_proto = {
- 	.arg1_type	= ARG_PTR_TO_CTX,
- };
- 
--#ifdef CONFIG_KEYS
--__bpf_kfunc_start_defs();
--
--/**
-- * bpf_lookup_user_key - lookup a key by its serial
-- * @serial: key handle serial number
-- * @flags: lookup-specific flags
-- *
-- * Search a key with a given *serial* and the provided *flags*.
-- * If found, increment the reference count of the key by one, and
-- * return it in the bpf_key structure.
-- *
-- * The bpf_key structure must be passed to bpf_key_put() when done
-- * with it, so that the key reference count is decremented and the
-- * bpf_key structure is freed.
-- *
-- * Permission checks are deferred to the time the key is used by
-- * one of the available key-specific kfuncs.
-- *
-- * Set *flags* with KEY_LOOKUP_CREATE, to attempt creating a requested
-- * special keyring (e.g. session keyring), if it doesn't yet exist.
-- * Set *flags* with KEY_LOOKUP_PARTIAL, to lookup a key without waiting
-- * for the key construction, and to retrieve uninstantiated keys (keys
-- * without data attached to them).
-- *
-- * Return: a bpf_key pointer with a valid key pointer if the key is found, a
-- *         NULL pointer otherwise.
-- */
--__bpf_kfunc struct bpf_key *bpf_lookup_user_key(s32 serial, u64 flags)
--{
--	key_ref_t key_ref;
--	struct bpf_key *bkey;
--
--	if (flags & ~KEY_LOOKUP_ALL)
--		return NULL;
--
--	/*
--	 * Permission check is deferred until the key is used, as the
--	 * intent of the caller is unknown here.
--	 */
--	key_ref = lookup_user_key(serial, flags, KEY_DEFER_PERM_CHECK);
--	if (IS_ERR(key_ref))
--		return NULL;
--
--	bkey = kmalloc(sizeof(*bkey), GFP_KERNEL);
--	if (!bkey) {
--		key_put(key_ref_to_ptr(key_ref));
--		return NULL;
--	}
--
--	bkey->key = key_ref_to_ptr(key_ref);
--	bkey->has_ref = true;
--
--	return bkey;
--}
--
--/**
-- * bpf_lookup_system_key - lookup a key by a system-defined ID
-- * @id: key ID
-- *
-- * Obtain a bpf_key structure with a key pointer set to the passed key ID.
-- * The key pointer is marked as invalid, to prevent bpf_key_put() from
-- * attempting to decrement the key reference count on that pointer. The key
-- * pointer set in such way is currently understood only by
-- * verify_pkcs7_signature().
-- *
-- * Set *id* to one of the values defined in include/linux/verification.h:
-- * 0 for the primary keyring (immutable keyring of system keys);
-- * VERIFY_USE_SECONDARY_KEYRING for both the primary and secondary keyring
-- * (where keys can be added only if they are vouched for by existing keys
-- * in those keyrings); VERIFY_USE_PLATFORM_KEYRING for the platform
-- * keyring (primarily used by the integrity subsystem to verify a kexec'ed
-- * kerned image and, possibly, the initramfs signature).
-- *
-- * Return: a bpf_key pointer with an invalid key pointer set from the
-- *         pre-determined ID on success, a NULL pointer otherwise
-- */
--__bpf_kfunc struct bpf_key *bpf_lookup_system_key(u64 id)
--{
--	struct bpf_key *bkey;
--
--	if (system_keyring_id_check(id) < 0)
--		return NULL;
--
--	bkey = kmalloc(sizeof(*bkey), GFP_ATOMIC);
--	if (!bkey)
--		return NULL;
--
--	bkey->key = (struct key *)(unsigned long)id;
--	bkey->has_ref = false;
--
--	return bkey;
--}
--
--/**
-- * bpf_key_put - decrement key reference count if key is valid and free bpf_key
-- * @bkey: bpf_key structure
-- *
-- * Decrement the reference count of the key inside *bkey*, if the pointer
-- * is valid, and free *bkey*.
-- */
--__bpf_kfunc void bpf_key_put(struct bpf_key *bkey)
--{
--	if (bkey->has_ref)
--		key_put(bkey->key);
--
--	kfree(bkey);
--}
--
--#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
--/**
-- * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
-- * @data_p: data to verify
-- * @sig_p: signature of the data
-- * @trusted_keyring: keyring with keys trusted for signature verification
-- *
-- * Verify the PKCS#7 signature *sig_ptr* against the supplied *data_ptr*
-- * with keys in a keyring referenced by *trusted_keyring*.
-- *
-- * Return: 0 on success, a negative value on error.
-- */
--__bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
--			       struct bpf_dynptr *sig_p,
--			       struct bpf_key *trusted_keyring)
--{
--	struct bpf_dynptr_kern *data_ptr = (struct bpf_dynptr_kern *)data_p;
--	struct bpf_dynptr_kern *sig_ptr = (struct bpf_dynptr_kern *)sig_p;
--	const void *data, *sig;
--	u32 data_len, sig_len;
--	int ret;
--
--	if (trusted_keyring->has_ref) {
--		/*
--		 * Do the permission check deferred in bpf_lookup_user_key().
--		 * See bpf_lookup_user_key() for more details.
--		 *
--		 * A call to key_task_permission() here would be redundant, as
--		 * it is already done by keyring_search() called by
--		 * find_asymmetric_key().
--		 */
--		ret = key_validate(trusted_keyring->key);
--		if (ret < 0)
--			return ret;
--	}
--
--	data_len = __bpf_dynptr_size(data_ptr);
--	data = __bpf_dynptr_data(data_ptr, data_len);
--	sig_len = __bpf_dynptr_size(sig_ptr);
--	sig = __bpf_dynptr_data(sig_ptr, sig_len);
--
--	return verify_pkcs7_signature(data, data_len, sig, sig_len,
--				      trusted_keyring->key,
--				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
--				      NULL);
--}
--#endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
--
--__bpf_kfunc_end_defs();
--
--BTF_KFUNCS_START(key_sig_kfunc_set)
--BTF_ID_FLAGS(func, bpf_lookup_user_key, KF_ACQUIRE | KF_RET_NULL | KF_SLEEPABLE)
--BTF_ID_FLAGS(func, bpf_lookup_system_key, KF_ACQUIRE | KF_RET_NULL)
--BTF_ID_FLAGS(func, bpf_key_put, KF_RELEASE)
--#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
--BTF_ID_FLAGS(func, bpf_verify_pkcs7_signature, KF_SLEEPABLE)
--#endif
--BTF_KFUNCS_END(key_sig_kfunc_set)
--
--static const struct btf_kfunc_id_set bpf_key_sig_kfunc_set = {
--	.owner = THIS_MODULE,
--	.set = &key_sig_kfunc_set,
--};
--
--static int __init bpf_key_sig_kfuncs_init(void)
--{
--	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
--					 &bpf_key_sig_kfunc_set);
--}
--
--late_initcall(bpf_key_sig_kfuncs_init);
--#endif /* CONFIG_KEYS */
--
- static const struct bpf_func_proto *
- bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
  {
+@@ -2950,6 +2987,12 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ 	/* eBPF programs must be GPL compatible to use GPL-ed functions */
+ 	prog->gpl_compatible = license_is_gpl_compatible(license) ? 1 : 0;
+ 
++	if (attr->signature) {
++		err = bpf_prog_verify_signature(prog, attr, uattr.is_kernel);
++		if (err)
++			goto free_prog;
++	}
++
+ 	prog->orig_prog = NULL;
+ 	prog->jited = 0;
+ 
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 0987b52d5648..f3b173e48b0f 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1611,6 +1611,16 @@ union bpf_attr {
+ 		 * continuous.
+ 		 */
+ 		__u32		fd_array_cnt;
++		/* Pointer to a buffer containing the signature of the BPF
++		 * program.
++		 */
++		__aligned_u64   signature;
++		/* Size of the signature buffer in bytes. */
++		__u32 		signature_size;
++		/* ID of the kernel keyring to be used for signature
++		 * verification.
++		 */
++		__s32		keyring_id;
+ 	};
+ 
+ 	struct { /* anonymous struct used by BPF_OBJ_* commands */
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 19ad7bcf0c2f..339b19797237 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -240,7 +240,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+ 		  const struct bpf_insn *insns, size_t insn_cnt,
+ 		  struct bpf_prog_load_opts *opts)
+ {
+-	const size_t attr_sz = offsetofend(union bpf_attr, fd_array_cnt);
++	const size_t attr_sz = offsetofend(union bpf_attr, keyring_id);
+ 	void *finfo = NULL, *linfo = NULL;
+ 	const char *func_info, *line_info;
+ 	__u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
 -- 
 2.43.0
 
