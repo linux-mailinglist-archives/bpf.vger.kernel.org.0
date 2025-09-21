@@ -1,44 +1,51 @@
-Return-Path: <bpf+bounces-69163-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69164-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4CF9B8E940
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 00:52:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D9F4B8E955
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 01:01:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 534F517A465
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 22:52:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BEF07AC098
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 22:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E84274B28;
-	Sun, 21 Sep 2025 22:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFBB2472AA;
+	Sun, 21 Sep 2025 23:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VLV2eMtq"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521231D5174;
-	Sun, 21 Sep 2025 22:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA691A76BB;
+	Sun, 21 Sep 2025 23:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758495140; cv=none; b=JUdtsyDyfXbTfNB4y5b1YsDNhZbQGrPcJbKmZHynnULF3ADx4hJfMVnV22Mb4Lb5445YFHpGrTO/CAVRjfaF6g8IycvB6xM14ITKiN/nJhpyoAQu5MfjsHqc8HU7nudRFZo4P6QdWrBPuCZ99DJpGc4so2sns4/ZgZaKNHYnyeQ=
+	t=1758495663; cv=none; b=gpB3a3s/bxT0bDNrrwTS+d3nHdX/4CDaecL0yhevhoGpFcx0iPXX7OJg6e9agUUA/qZce+PmxyjNTUPdwda76HoWnSQjveaTlGfeeETOdypc2f8UJIwz2r9pfGdJWVPikGP/jMNJk9Z8Ahx9avApXtBttHTuM7v2t0yCSUTEIe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758495140; c=relaxed/simple;
-	bh=l6iB8zEC32wE/0xRKZAEOKfkRmHgBdDZEOE8AUayh/M=;
+	s=arc-20240116; t=1758495663; c=relaxed/simple;
+	bh=NGcq/u9PxpBZ7j6rtjeYb6cF6phAz6BmvCZx6ODT5E0=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a69G/B+j5BEJAkplJZu1jd385q0NNXHZURByOzI8/xKHABlsK2Tly2g5ylI/zQgfAn4XwJAFqrM5WoxF7mNl0LTYXmH4m0Y0tkNjrSdOL30XXWBBfV1p/vocGI/D/Wr5boOw9Nsv/rR8oFHjwTvnTBji2d/+GzarEyxcr1bzyDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id A1129140436;
-	Sun, 21 Sep 2025 22:52:07 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf09.hostedemail.com (Postfix) with ESMTPA id 47E512002B;
-	Sun, 21 Sep 2025 22:52:04 +0000 (UTC)
-Date: Sun, 21 Sep 2025 18:52:03 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
+	 MIME-Version:Content-Type; b=Rp49u3+CTwdqB7pwiY4s/Pk7bdyE8SCHDipkQvRLZhNO7MFDrmby0rbTScf2gainYP72gaisfww91zGBpy4MawacNY6cTtM6KWHVChVFSVXWwGtv0Z58V0tvN1dGOC5wChp5GRcP8Ry5n4D6wZyFOP33PmjVevQgIFXQ086DWpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VLV2eMtq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8A9AC4CEE7;
+	Sun, 21 Sep 2025 23:01:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758495663;
+	bh=NGcq/u9PxpBZ7j6rtjeYb6cF6phAz6BmvCZx6ODT5E0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=VLV2eMtq64xW9boInMnL9+i7ixAZjH8E2GFLs5LOtCBFi9Ce9y2hXTSvzOBRYSBSp
+	 8AOYyqjnFIN4qgjLI7GfLoXIGV8lUwsc6vF6ZT5YX6IzwpP5jj4bReGxVC9byiJHpY
+	 rmCK3k/R1QcMtgGsBINI8RfiR3Wpa4he+qDXW+Y2iAOZos8VENqW67tTsCkOFZ4H3m
+	 zR9I+5o0GUS4bUFG3SDZSjjHgJqTsU0ZnlI/hUkd6caVOdPBz7UnICBxNCnBy4bhvv
+	 orNJrGeFp+QEvCTS3eiaP/6YqWUO4/5w63IXA0ePbdbk90DL/PMECcJsGWf5JoVb7J
+	 s50uQT8ksw8lQ==
+Date: Sun, 21 Sep 2025 19:00:56 -0400
+From: Steven Rostedt <rostedt@kernel.org>
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
- <rostedt@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>,
+Cc: Menglong Dong <menglong.dong@linux.dev>, Peter Zijlstra
+ <peterz@infradead.org>, Menglong Dong <menglong8.dong@gmail.com>,
  jolsa@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
  dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
  kees@kernel.org, samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
@@ -46,12 +53,12 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
  bpf@vger.kernel.org
 Subject: Re: [PATCH] tracing: fgraph: Protect return handler from recursion
  loop
-Message-ID: <20250921185203.561676ad@batman.local.home>
-In-Reply-To: <20250921130519.d1bf9ba2713bd9cb8a175983@kernel.org>
+Message-ID: <20250921190056.2a17d4cc@batman.local.home>
+In-Reply-To: <20250921130647.9bd0cba7d49b15d0b0ebe6f7@kernel.org>
 References: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
 	<175828305637.117978.4183947592750468265.stgit@devnote2>
-	<20250919112746.09fa02c7@gandalf.local.home>
-	<20250921130519.d1bf9ba2713bd9cb8a175983@kernel.org>
+	<5974303.DvuYhMxLoT@7950hx>
+	<20250921130647.9bd0cba7d49b15d0b0ebe6f7@kernel.org>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -61,54 +68,76 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: ymjgf5r4ph4miwi3whi5e3di6tdf3psp
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 47E512002B
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18P5y9ZRtFgbQJyiNAHzWvyyES5VKcbakI=
-X-HE-Tag: 1758495124-875404
-X-HE-Meta: U2FsdGVkX1+FbqB4YdQR/TVeMe3gUqMQgNczUCEbyU4RO+OheBoWHICpYVR8RknLRiSrRM1TlcgSHtu1NbdyBvpJ8KfZGGEkzIaC4ySNsM70lTDqTibAYq2HF4tO7YDYjNmofIXm7fBuDsX1hgTjzo4avFePDe84OJ9ig/K/rG3+Ta+dvZ/T4mcXpU6oCM0Bm+n/ap+5kq1qELckN/HmYimKjF9ndkvDS4U2bF/YOGcw1tpXYNz/BwG28M6seXMtkrsHFT0VVTSqVKIUbwfdw3dXliOTII4YnFhveGRuqV4J5XL9Z+2jr1gypyDNqjKYjwniGyw+0lLlRjFrHcHVq3QRjCpDDCuk
 
-On Sun, 21 Sep 2025 13:05:19 +0900
+On Sun, 21 Sep 2025 13:06:47 +0900
 Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-
->  
-> > The reason I would say not to have the warn on, is because we don't have a
-> > warn on for recursion happening at the entry handler. Because this now is
-> > exposed by fprobe allowing different routines to be called at exit than
-> > what is used in entry, it can easily be triggered.  
+> > 
+> > Hi, the logic seems right, but the warning is triggered when
+> > I try to run the bpf bench testing:  
 > 
-> At the entry, if it detect recursion, it exits soon. But here we have to
-> process stack unwind to get the return address. This recursion_trylock()
-> is to mark this is in the critical section, not detect it.
+> Hmm, this is strange. Let me check why this happens.
+> 
+> Thank you,
+> 
+> > 
+> > $ ./benchs/run_bench_trigger.sh kretprobe-multi-all
+> > [   20.619642] NOTICE: Automounting of tracing to debugfs is deprecated and will be removed in 2030
+> > [  139.509036] ------------[ cut here ]------------
+> > [  139.509180] WARNING: CPU: 2 PID: 522 at kernel/trace/fgraph.c:839 ftrace_return_to_handler+0x2b9/0x2d0
+> > [  139.509411] Modules linked in: virtio_net
+> > [  139.509514] CPU: 2 UID: 0 PID: 522 Comm: bench Not tainted 6.17.0-rc5-g1fe6d652bfa0 #106 NONE 
+> > [  139.509720] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.17.0-1-1 04/01/2014
+> > [  139.509948] RIP: 0010:ftrace_return_to_handler+0x2b9/0x2d0
+> > [  139.510086] Code: e8 0c 08 0e 00 0f 0b 49 c7 c1 00 73 20 81 e9 d1 fe ff ff 40 f6 c6 10 75 11 49 c7 c3 ef ff ff ff ba 10 00 00 00 e9 57 fe ff ff <0f> 0b e9 a5 fe ff ff e8 1b 72 0d 01 66 66 2e 0f 1f 84 00 00 00 00
+> > [  139.510536] RSP: 0018:ffffc9000012cef8 EFLAGS: 00010002
+> > [  139.510664] RAX: ffff88810f709800 RBX: ffffc900007c3678 RCX: 0000000000000003
+> > [  139.510835] RDX: 0000000000000008 RSI: 0000000000000018 RDI: 0000000000000000
+> > [  139.511007] RBP: 0000000000000000 R08: 0000000000000034 R09: ffffffff82550319
+> > [  139.511184] R10: ffffc9000012cf50 R11: fffffffffffffff7 R12: 0000000000000000
+> > [  139.511357] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > [  139.511532] FS:  00007fe58276fb00(0000) GS:ffff8884ab3b8000(0000) knlGS:0000000000000000
+> > [  139.511724] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  139.511865] CR2: 0000562a28314b67 CR3: 00000001143f9000 CR4: 0000000000750ef0
+> > [  139.512038] PKRU: 55555554
+> > [  139.512106] Call Trace:
+> > [  139.512177]  <IRQ>
+> > [  139.512232]  ? irq_exit_rcu+0x4/0xb0
+> > [  139.512322]  return_to_handler+0x1e/0x50
+> > [  139.512422]  ? idle_cpu+0x9/0x50
+> > [  139.512506]  ? sysvec_apic_timer_interrupt+0x69/0x80
+> > [  139.512638]  ? idle_cpu+0x9/0x50
+> > [  139.512731]  ? irq_exit_rcu+0x3a/0xb0
+> > [  139.512833]  ? ftrace_stub_direct_tramp+0x10/0x10
+> > [  139.512961]  ? sysvec_apic_timer_interrupt+0x69/0x80
+> > [  139.513101]  </IRQ>
+> > [  139.513168]  <TASK>
+> >   
+> > > +
+> > >  #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
+> > >  	trace.retval = ftrace_regs_get_return_value(fregs);
+> > >  #endif
+> > > @@ -852,6 +862,8 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+> > >  		}
+> > >  	}
+> > >  
+> > > +	ftrace_test_recursion_unlock(bit);
+> > > +out:
+> > >  	/*
+> > >  	 * The ftrace_graph_return() may still access the current
+> > >  	 * ret_stack structure, we need to make sure the update of
 
-Ah, because the first instance of the exit callback sets the recursion
-bit. This will cause recursed entry calls to detect the recursion bit
-and return without setting the exit handler to be called.
 
-That is, by setting the recursion bit in the exit handler, it will cause
-a recursion in entry to fail before the exit is called again.
+Hmm, I wonder if this has to do with the "TRANSITION BIT". The
+ftrace_test_recursion_trylock() allows one level of recursion. This is
+to handle the case of an interrupt happening after the recursion bit is
+set and traces something before it updates the context in the preempt
+count. This would cause a false positive of the recursion test. To
+handle this case, it allows a single level of recursion.
 
-I'd like to update the comment:
-
-+	bit = ftrace_test_recursion_trylock(trace.func, ret);
-+	/*
-+	 * This must be succeeded because the entry handler returns before
-+	 * modifying the return address if it is nested. Anyway, we need to
-+	 * avoid calling user callbacks if it is nested.
-+	 */
-+	if (WARN_ON_ONCE(bit < 0))
-+		goto out;
-+
-
-to:
-
-	/*
-	 * Setting the recursion bit here will cause the graph entry to
-	 * detect recursion before the exit handle will. If the ext
-	 * handler detects recursion, something went wrong.
-	 */
-	if (WARN_ON_ONCE(bit < 0))
+I originally was going to mention this, but I still can't see how this
+would affect it. Because if the entry were to allow one level of
+recursion, so would the exit. I still see the entry preventing the exit
+to be called. But perhaps there's an combination that I missed?
 
 -- Steve
 
