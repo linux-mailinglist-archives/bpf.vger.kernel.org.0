@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-69150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E01BB8DD92
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 17:45:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE942B8DDA4
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 17:45:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AD973A4C91
-	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 15:45:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0667D189AB70
+	for <lists+bpf@lfdr.de>; Sun, 21 Sep 2025 15:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9B972153E7;
-	Sun, 21 Sep 2025 15:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BD11F5858;
+	Sun, 21 Sep 2025 15:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lR1BZj/g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bBnSv4Pk"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A30420E6E2;
-	Sun, 21 Sep 2025 15:45:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251CA213E7A;
+	Sun, 21 Sep 2025 15:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758469503; cv=none; b=LrTM9e4CvKbqEpe2tzfEdH5FbS7b2Ya+jFQHZgjQPLXABqg4fPfb9Fn/HMntB/CuUp72K3kV3LxSjh02VkN+DWyehYguKSwizWA6sskn7ZS3eeZ1+8leMRK7CXkGKlkuR4P8idpevGse4WwGrThxxN7WXlgJsNFarzmH7LzlH8k=
+	t=1758469505; cv=none; b=KOFuMZisrN0UvTG57rvsZ1GQaYlYephY7+Eb/nDTwZpE1r8+JXH5e8+A3pVLF8+VhyVctrj048+KsS4ducjadwl+9s1l7G3laDHYf3s7WR2GVJF7tx0tiKqmln+Wr+0h+hfs4Zfx5aDJFvllXMRJhB5tVy9T3CJ+Akoc8j5Xxy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758469503; c=relaxed/simple;
-	bh=RD4Eksupqy51vhCP3PXBc44t4YTaDSTGpYm5QhEO5iA=;
+	s=arc-20240116; t=1758469505; c=relaxed/simple;
+	bh=MTmj9Br1zVegrHMHsoIGl8X577XJ8S07l78lx+winNk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D8nS+PWswPSH2cxJ/zDcqAsW81CIYazpdZqC49xfHA2mjlBD2X/1+CYVJDxwIAF7Bm9rCsqWldE9tR/bBOP1zmojXLs9+8g92zI/BHm2f2X+YeT7X+raYh0J629ZexPxH3L+Eq3HONrzz4MYD7w+JEgcYaJQHTUzoLU0ZL5HWGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lR1BZj/g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3288C4CEE7;
-	Sun, 21 Sep 2025 15:45:00 +0000 (UTC)
+	 MIME-Version; b=B5tPIciFoOuIKf0ghdrOaIbuhxK+c9Cv/5ed5m+IQLrrXU2LgHgdyd6j2tKpHZbDb1F1tBZwfWQ3FVLme292jU6LVG28OckWxKut4ZcNTG8LPSBGxg+XE+8rANn6p6PKm8FyyFiKkNvDQRclAp8vVhJEOGsk9JllplmwEmhupt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bBnSv4Pk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16806C116B1;
+	Sun, 21 Sep 2025 15:45:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758469502;
-	bh=RD4Eksupqy51vhCP3PXBc44t4YTaDSTGpYm5QhEO5iA=;
+	s=k20201202; t=1758469505;
+	bh=MTmj9Br1zVegrHMHsoIGl8X577XJ8S07l78lx+winNk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lR1BZj/gSmrL1tXVS5kvMp7wVR5Tzsk+I43QvvLxsv8431uylV7FbZ/L3RErLHXtG
-	 ICsE5VZJXuGClHF7F0HF6mgK/MZVXqUlB7JcR1z4vtfCgV7lPVB2vudBa14yK39/y+
-	 TNZlWdM0V21Gy5dtgd/E4thm7wv9Jv+xSmD4UvQeyeMeg8K8aNizFy1naXQafhWzXd
-	 MdLU5mPl6rpG4LHcZdK//sR+dC8l9BaSfWoji0F6OzykPuWemoS9HhCSeA/EOlje7F
-	 bBWrRJ6Eoc6g40XVD3Wl7gcTuI40T5M1Ymacox1O4GB3Emw14CdZbRiezE+ll6N4t5
-	 FjcW6GOuAbdtw==
+	b=bBnSv4PkCMlmwPvFgYjtAiW3qGNA0mU0++js6r2AK2DFDJs9xNp1Li56B1tkL0WxU
+	 WbIgCpoPyeqHHOpNxuFywDxOgxuk+6YuLdVg/TGMClRo8W0fC8TyCPObJKkNB/+RvA
+	 iybLfOkZkmxk8UYudp6mu07p6ntBh/23qK5qFKusaXPNjB1soqQRSB2sUIVYxnXZiB
+	 UsSPbQKJl82zQjDj4/mS8fRdY3QOAYVdWQT4q0Cq/8zwkkl+98Tv7mjPiOz+Po4yE/
+	 ywjWf+OG1XywJ7nZI3COeZQQKzS8FfMKQ89l6Rhi+RhrwlAz0BqDednk4vSxzPnDev
+	 H4smWxfqEi+kg==
 From: KP Singh <kpsingh@kernel.org>
 To: bpf@vger.kernel.org,
 	linux-security-module@vger.kernel.org
@@ -51,9 +51,9 @@ Cc: bboscaccy@linux.microsoft.com,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v6 2/5] libbpf: Update light skeleton for signing
-Date: Sun, 21 Sep 2025 17:44:49 +0200
-Message-ID: <20250921154452.8881-3-kpsingh@kernel.org>
+Subject: [PATCH v6 3/5] libbpf: Embed and verify the metadata hash in the loader
+Date: Sun, 21 Sep 2025 17:44:50 +0200
+Message-ID: <20250921154452.8881-4-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250921154452.8881-1-kpsingh@kernel.org>
 References: <20250921154452.8881-1-kpsingh@kernel.org>
@@ -65,168 +65,186 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-* The metadata map is created with as an exclusive map (with an
-excl_prog_hash) This restricts map access exclusively to the signed
-loader program, preventing tampering by other processes.
+To fulfill the BPF signing contract, represented as Sig(I_loader ||
+H_meta), the generated trusted loader program must verify the integrity
+of the metadata. This signature cryptographically binds the loader's
+instructions (I_loader) to a hash of the metadata (H_meta).
 
-* The map is then frozen, making it read-only from userspace.
+The verification process is embedded directly into the loader program.
+Upon execution, the loader loads the runtime hash from struct bpf_map
+i.e. BPF_PSEUDO_MAP_IDX and compares this runtime hash against an
+expected hash value that has been hardcoded directly by
+bpf_obj__gen_loader.
 
-* BPF_OBJ_GET_INFO_BY_ID instructs the kernel to compute the hash of the
-  metadata map (H') and store it in bpf_map->sha.
+The load from bpf_map can be improved by calling
+BPF_OBJ_GET_INFO_BY_FD from the kernel context after BPF_OBJ_GET_INFO_BY_FD
+has been updated for being called from the kernel context.
 
-* The loader is then loaded with the signature which is then verified by
-  the kernel.
+The following instructions are generated:
 
-loading signed programs prebuilt into the kernel are not currently
-supported. These can supported by enabling BPF_OBJ_GET_INFO_BY_ID to be
-called from the kernel.
+    ld_imm64 r1, const_ptr_to_map // insn[0].src_reg == BPF_PSEUDO_MAP_IDX
+    r2 = *(u64 *)(r1 + 0);
+    ld_imm64 r3, sha256_of_map_part1 // constant precomputed by
+bpftool (part of H_meta)
+    if r2 != r3 goto out;
+
+    r2 = *(u64 *)(r1 + 8);
+    ld_imm64 r3, sha256_of_map_part2 // (part of H_meta)
+    if r2 != r3 goto out;
+
+    r2 = *(u64 *)(r1 + 16);
+    ld_imm64 r3, sha256_of_map_part3 // (part of H_meta)
+    if r2 != r3 goto out;
+
+    r2 = *(u64 *)(r1 + 24);
+    ld_imm64 r3, sha256_of_map_part4 // (part of H_meta)
+    if r2 != r3 goto out;
+    ...
 
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- tools/lib/bpf/skel_internal.h | 76 +++++++++++++++++++++++++++++++++--
- 1 file changed, 72 insertions(+), 4 deletions(-)
+ tools/lib/bpf/bpf_gen_internal.h |  2 ++
+ tools/lib/bpf/gen_loader.c       | 55 ++++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf.h           |  3 +-
+ 3 files changed, 59 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
-index 4d5fa079b5d6..7f784c32b967 100644
---- a/tools/lib/bpf/skel_internal.h
-+++ b/tools/lib/bpf/skel_internal.h
-@@ -13,10 +13,15 @@
- #include <unistd.h>
- #include <sys/syscall.h>
- #include <sys/mman.h>
-+#include <linux/keyctl.h>
- #include <stdlib.h>
- #include "bpf.h"
- #endif
+diff --git a/tools/lib/bpf/bpf_gen_internal.h b/tools/lib/bpf/bpf_gen_internal.h
+index 6ff963a491d9..49af4260b8e6 100644
+--- a/tools/lib/bpf/bpf_gen_internal.h
++++ b/tools/lib/bpf/bpf_gen_internal.h
+@@ -4,6 +4,7 @@
+ #define __BPF_GEN_INTERNAL_H
  
-+#ifndef SHA256_DIGEST_LENGTH
-+#define SHA256_DIGEST_LENGTH 32
-+#endif
-+
- #ifndef __NR_bpf
- # if defined(__mips__) && defined(_ABIO32)
- #  define __NR_bpf 4355
-@@ -64,6 +69,11 @@ struct bpf_load_and_run_opts {
- 	__u32 data_sz;
- 	__u32 insns_sz;
- 	const char *errstr;
-+	void *signature;
-+	__u32 signature_sz;
-+	__s32 keyring_id;
-+	void * excl_prog_hash;
-+	__u32 excl_prog_hash_sz;
+ #include "bpf.h"
++#include "libbpf_internal.h"
+ 
+ struct ksym_relo_desc {
+ 	const char *name;
+@@ -50,6 +51,7 @@ struct bpf_gen {
+ 	__u32 nr_ksyms;
+ 	int fd_array;
+ 	int nr_fd_array;
++	int hash_insn_offset[SHA256_DWORD_SIZE];
  };
  
- long kern_sys_bpf(__u32 cmd, void *attr, __u32 attr_size);
-@@ -220,14 +230,19 @@ static inline int skel_map_create(enum bpf_map_type map_type,
- 				  const char *map_name,
- 				  __u32 key_size,
- 				  __u32 value_size,
--				  __u32 max_entries)
-+				  __u32 max_entries,
-+				  const void *excl_prog_hash,
-+				  __u32 excl_prog_hash_sz)
+ void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps);
+diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
+index 113ae4abd345..376eef292d3a 100644
+--- a/tools/lib/bpf/gen_loader.c
++++ b/tools/lib/bpf/gen_loader.c
+@@ -110,6 +110,7 @@ static void emit2(struct bpf_gen *gen, struct bpf_insn insn1, struct bpf_insn in
+ 
+ static int add_data(struct bpf_gen *gen, const void *data, __u32 size);
+ static void emit_sys_close_blob(struct bpf_gen *gen, int blob_off);
++static void emit_signature_match(struct bpf_gen *gen);
+ 
+ void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps)
  {
--	const size_t attr_sz = offsetofend(union bpf_attr, map_extra);
-+	const size_t attr_sz = offsetofend(union bpf_attr, excl_prog_hash_size);
- 	union bpf_attr attr;
- 
- 	memset(&attr, 0, attr_sz);
- 
- 	attr.map_type = map_type;
-+	attr.excl_prog_hash = (unsigned long) excl_prog_hash;
-+	attr.excl_prog_hash_size = excl_prog_hash_sz;
-+
- 	strncpy(attr.map_name, map_name, sizeof(attr.map_name));
- 	attr.key_size = key_size;
- 	attr.value_size = value_size;
-@@ -300,6 +315,35 @@ static inline int skel_link_create(int prog_fd, int target_fd,
- 	return skel_sys_bpf(BPF_LINK_CREATE, &attr, attr_sz);
+@@ -152,6 +153,8 @@ void bpf_gen__init(struct bpf_gen *gen, int log_level, int nr_progs, int nr_maps
+ 	/* R7 contains the error code from sys_bpf. Copy it into R0 and exit. */
+ 	emit(gen, BPF_MOV64_REG(BPF_REG_0, BPF_REG_7));
+ 	emit(gen, BPF_EXIT_INSN());
++	if (OPTS_GET(gen->opts, gen_hash, false))
++		emit_signature_match(gen);
  }
  
-+static inline int skel_obj_get_info_by_fd(int fd)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, info);
-+	__u8 sha[SHA256_DIGEST_LENGTH];
-+	struct bpf_map_info info;
-+	__u32 info_len = sizeof(info);
-+	union bpf_attr attr;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.hash = (long) &sha;
-+	info.hash_size = SHA256_DIGEST_LENGTH;
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.info.bpf_fd = fd;
-+	attr.info.info = (long) &info;
-+	attr.info.info_len = info_len;
-+	return skel_sys_bpf(BPF_OBJ_GET_INFO_BY_FD, &attr, attr_sz);
-+}
-+
-+static inline int skel_map_freeze(int fd)
-+{
-+	const size_t attr_sz = offsetofend(union bpf_attr, map_fd);
-+	union bpf_attr attr;
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.map_fd = fd;
-+
-+	return skel_sys_bpf(BPF_MAP_FREEZE, &attr, attr_sz);
-+}
- #ifdef __KERNEL__
- #define set_err
- #else
-@@ -308,12 +352,13 @@ static inline int skel_link_create(int prog_fd, int target_fd,
+ static int add_data(struct bpf_gen *gen, const void *data, __u32 size)
+@@ -368,6 +371,8 @@ static void emit_sys_close_blob(struct bpf_gen *gen, int blob_off)
+ 	__emit_sys_close(gen);
+ }
  
- static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
++static int compute_sha_udpate_offsets(struct bpf_gen *gen);
++
+ int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps)
  {
--	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, fd_array);
-+	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, keyring_id);
- 	const size_t test_run_attr_sz = offsetofend(union bpf_attr, test);
- 	int map_fd = -1, prog_fd = -1, key = 0, err;
- 	union bpf_attr attr;
- 
--	err = map_fd = skel_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map", 4, opts->data_sz, 1);
-+	err = map_fd = skel_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map", 4, opts->data_sz, 1,
-+				       opts->excl_prog_hash, opts->excl_prog_hash_sz);
- 	if (map_fd < 0) {
- 		opts->errstr = "failed to create loader map";
- 		set_err;
-@@ -327,11 +372,34 @@ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
- 		goto out;
- 	}
- 
-+#ifndef __KERNEL__
-+	err = skel_map_freeze(map_fd);
-+	if (err < 0) {
-+		opts->errstr = "failed to freeze map";
-+		set_err;
-+		goto out;
+ 	int i;
+@@ -394,6 +399,12 @@ int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps)
+ 			      blob_fd_array_off(gen, i));
+ 	emit(gen, BPF_MOV64_IMM(BPF_REG_0, 0));
+ 	emit(gen, BPF_EXIT_INSN());
++	if (OPTS_GET(gen->opts, gen_hash, false)) {
++		gen->error = compute_sha_udpate_offsets(gen);
++		if (gen->error)
++			return gen->error;
 +	}
-+	err = skel_obj_get_info_by_fd(map_fd);
-+	if (err < 0) {
-+		opts->errstr = "failed to fetch obj info";
-+		set_err;
-+		goto out;
-+	}
-+#endif
 +
- 	memset(&attr, 0, prog_load_attr_sz);
- 	attr.prog_type = BPF_PROG_TYPE_SYSCALL;
- 	attr.insns = (long) opts->insns;
- 	attr.insn_cnt = opts->insns_sz / sizeof(struct bpf_insn);
- 	attr.license = (long) "Dual BSD/GPL";
-+#ifndef __KERNEL__
-+	attr.signature = (long) opts->signature;
-+	attr.signature_size = opts->signature_sz;
-+#else
-+	if (opts->signature || opts->signature_sz)
-+		pr_warn("signatures are not supported from bpf_preload\n");
-+#endif
-+	attr.keyring_id = opts->keyring_id;
- 	memcpy(attr.prog_name, "__loader.prog", sizeof("__loader.prog"));
- 	attr.fd_array = (long) &map_fd;
- 	attr.log_level = opts->ctx->log_level;
+ 	pr_debug("gen: finish %s\n", errstr(gen->error));
+ 	if (!gen->error) {
+ 		struct gen_loader_opts *opts = gen->opts;
+@@ -446,6 +457,27 @@ void bpf_gen__free(struct bpf_gen *gen)
+ 	_val;							\
+ })
+ 
++static int compute_sha_udpate_offsets(struct bpf_gen *gen)
++{
++	__u64 sha[SHA256_DWORD_SIZE];
++	__u64 sha_dw;
++	int i, err;
++
++	err = libbpf_sha256(gen->data_start, gen->data_cur - gen->data_start, sha, SHA256_DIGEST_LENGTH);
++	if (err < 0) {
++		pr_warn("sha256 computation of the metadata failed");
++		return err;
++	}
++	for (i = 0; i < SHA256_DWORD_SIZE; i++) {
++		struct bpf_insn *insn =
++			(struct bpf_insn *)(gen->insn_start + gen->hash_insn_offset[i]);
++		sha_dw = tgt_endian(sha[i]);
++		insn[0].imm = (__u32)sha_dw;
++		insn[1].imm = sha_dw >> 32;
++	}
++	return 0;
++}
++
+ void bpf_gen__load_btf(struct bpf_gen *gen, const void *btf_raw_data,
+ 		       __u32 btf_raw_size)
+ {
+@@ -557,6 +589,29 @@ void bpf_gen__map_create(struct bpf_gen *gen,
+ 		emit_sys_close_stack(gen, stack_off(inner_map_fd));
+ }
+ 
++static void emit_signature_match(struct bpf_gen *gen)
++{
++	__s64 off;
++	int i;
++
++	for (i = 0; i < SHA256_DWORD_SIZE; i++) {
++		emit2(gen, BPF_LD_IMM64_RAW_FULL(BPF_REG_1, BPF_PSEUDO_MAP_IDX,
++						 0, 0, 0, 0));
++		emit(gen, BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_1, i * sizeof(__u64)));
++		gen->hash_insn_offset[i] = gen->insn_cur - gen->insn_start;
++		emit2(gen, BPF_LD_IMM64_RAW_FULL(BPF_REG_3, 0, 0, 0, 0, 0));
++
++		off =  -(gen->insn_cur - gen->insn_start - gen->cleanup_label) / 8 - 1;
++		if (is_simm16(off)) {
++			emit(gen, BPF_MOV64_IMM(BPF_REG_7, -EINVAL));
++			emit(gen, BPF_JMP_REG(BPF_JNE, BPF_REG_2, BPF_REG_3, off));
++		} else {
++			gen->error = -ERANGE;
++			emit(gen, BPF_JMP_IMM(BPF_JA, 0, 0, -1));
++		}
++	}
++}
++
+ void bpf_gen__record_attach_target(struct bpf_gen *gen, const char *attach_name,
+ 				   enum bpf_attach_type type)
+ {
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index e978bc093c39..5118d0a90e24 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -1857,9 +1857,10 @@ struct gen_loader_opts {
+ 	const char *insns;
+ 	__u32 data_sz;
+ 	__u32 insns_sz;
++	bool gen_hash;
+ };
+ 
+-#define gen_loader_opts__last_field insns_sz
++#define gen_loader_opts__last_field gen_hash
+ LIBBPF_API int bpf_object__gen_loader(struct bpf_object *obj,
+ 				      struct gen_loader_opts *opts);
+ 
 -- 
 2.43.0
 
