@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-69244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81A9CB92272
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 18:14:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6371B92290
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 18:16:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DFD57A7227
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:12:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 284CF3B98A1
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B258A3112A3;
-	Mon, 22 Sep 2025 16:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8E6311595;
+	Mon, 22 Sep 2025 16:15:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="CKytm1SF"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="QFOm30+V"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93AF30C36E;
-	Mon, 22 Sep 2025 16:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8B82C0297;
+	Mon, 22 Sep 2025 16:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758557660; cv=none; b=ccBWTlUCaY292DoxeCcEs+oUmUZuRg1mzyGPSDV0h6yxYDuyydcb0s1uf7q7GNfDFz4mfbzLl3OCtvbd9gvAUb+JrOsQtaqwD5PKmVmtLyvNk2r84VbTuLZawzn1Jo1sqttm63y0rctFht+3DnJ0SBPgThtZTIKT+wbkCUifuoo=
+	t=1758557717; cv=none; b=XDL1xYbH+3hmxSn/TvsLXWUUbS2uyVLgd+vFUPIC1MtN3B/qK6gBBxWTkxUneyigaWA2NtFL7gKBm2CwadEb5rDaHx+jPJDoEzhwbfEltThF7JyBWBzyMKa4JRm/1dtBUCgZdNs84ly2y/3w58tjoE0fYFLw9wMWhm+NaNB+GE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758557660; c=relaxed/simple;
-	bh=3OFolmxdTeqkTmKN2f6a0TdgobmxRs7g1uQwbpoqZUE=;
+	s=arc-20240116; t=1758557717; c=relaxed/simple;
+	bh=qUJSPm8DiaD2CuexSbbo4EyeNJEm9ysp5nWrCCxDAXk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c4IkGdTDWEjehrmMrjlHxdSHCre4qJWOSTqYHNeNGd90sJACp32hsovzP859C5Qp4+VQ3sWjyjchE9krEmGx+Y+juAYPN60Ks7dNP3U8+qlGhqj1arMb8lUdaJzvfnxB2gLAz8g/MZnWj/a1+h+CZ17rLGlBlZ/wBvIrH/Uz41g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=CKytm1SF; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=nI50ulQvifqGrUsi/N7Wk3zqBcJrRzNOAoX7bOdJyhmAhD7YW+NJ4B7AA0B14X3uh5PHBfLJjnc87RL16iWL/uGFz0jd0IhMs6FpTmK8bi8obSjTph5SeX8WRjHf/gTpxsj1JTpCOQfor2Eui2NaIksGDeTekKNHiSINX6Aqv8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=QFOm30+V; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=gL1NwOtkFSVen/UKpnltwxbuUneF5jP0zAW0IBZD1KA=; b=CKytm1SFJn/HLUAKLzSP00sefA
-	srE5LhPRufw57bM4jFxJ5+cr4Rzuw3gPifoFLoKNONgjyKHevdyr56i373hpX7lAJ1XDzW6LsFBB7
-	SBLFXw8RCMzytTAsHPhsWFB/5yHrROQEuXyUZ7rKWMZZIwuuzKmiXJopOZbGFc1bItPg9Cl9QAbtv
-	7YMKHJTcgm+gV5hMLFYeevD3jr1mPRRJ/I+Wd6BKs3mgFvX11ZV41bRZ9caFhSmCcQYGxWe8y3+pE
-	x+uPDEsqZ27UuUnVmMcH2RVTTY3DtmSdYtfNdfBIdgIM/FRaE6mbKtgwnCIbHb9uUQX4xyk+d00vt
-	rizG9Ang==;
+	bh=Lj18gndnKjV/lioDLiQhqrxeFzrIk6ZTH6FXErwMvOI=; b=QFOm30+VhZRoo8f5PzgfQK0VC6
+	El+1uQi31NSMrJgyi1VHSb10mmHCzffYh63T3LDdSOIxKvB2uIysu2hBqE8yeJ3pI+K/GDIJWVdJ5
+	LRm3kRg4wPA920PTHLwTUSekwmwdWrQAi9BbJKKXWzMAU42B+RYMCV30FgUtSgdr4bdbYgqVw+Dkk
+	MgRGkKUP5CMise7g7iu3mrG8vX7cz7HUUeWrifoXQ2GxwG8CQ5cm3s6bK/3Cj9EPyBxVeBc3UUHQB
+	FJySR5/tMZaRILB1YA4p9FI8qjCIkbyszPMrO9KvFuroe7BJ6d8bAqHzHWnIVuYW6ueZ3i0d8Wm8o
+	WPWuBk/A==;
 Received: from sslproxy01.your-server.de ([78.46.139.224])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1v0jB0-000D0I-2R;
-	Mon, 22 Sep 2025 18:14:06 +0200
+	id 1v0jBx-000D9B-1i;
+	Mon, 22 Sep 2025 18:15:05 +0200
 Received: from localhost ([127.0.0.1])
 	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1v0jAz-000My0-1G;
-	Mon, 22 Sep 2025 18:14:05 +0200
-Message-ID: <4c203fd0-dbe7-4da5-baa6-fee17b446b8c@iogearbox.net>
-Date: Mon, 22 Sep 2025 18:14:05 +0200
+	id 1v0jBw-0004lN-0j;
+	Mon, 22 Sep 2025 18:15:04 +0200
+Message-ID: <15740fe5-65bf-46fa-adbd-a87eb703d6b4@iogearbox.net>
+Date: Mon, 22 Sep 2025 18:15:04 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,15 +63,16 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 03/20] net: Add ndo_queue_create callback
-To: Stanislav Fomichev <stfomichev@gmail.com>
+Subject: Re: [PATCH net-next 10/20] xsk: Move pool registration into single
+ function
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
  davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com,
  willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
- martin.lau@kernel.org, jordan@jrife.io, maciej.fijalkowski@intel.com,
- magnus.karlsson@intel.com, David Wei <dw@davidwei.uk>
+ martin.lau@kernel.org, jordan@jrife.io, magnus.karlsson@intel.com,
+ David Wei <dw@davidwei.uk>
 References: <20250919213153.103606-1-daniel@iogearbox.net>
- <20250919213153.103606-4-daniel@iogearbox.net> <aNFzlHafjUFOvkG3@mini-arch>
+ <20250919213153.103606-11-daniel@iogearbox.net> <aNFywr++x9VIgT7W@boxer>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -117,39 +118,66 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <aNFzlHafjUFOvkG3@mini-arch>
+In-Reply-To: <aNFywr++x9VIgT7W@boxer>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27770/Mon Sep 22 10:26:19 2025)
 
-On 9/22/25 6:04 PM, Stanislav Fomichev wrote:
-> On 09/19, Daniel Borkmann wrote:
->> From: David Wei <dw@davidwei.uk>
+On 9/22/25 6:01 PM, Maciej Fijalkowski wrote:
+> On Fri, Sep 19, 2025 at 11:31:43PM +0200, Daniel Borkmann wrote:
+>> Small refactor to move the pool registration into xsk_reg_pool_at_qid,
+>> such that the netdev and queue_id can be registered there. No change
+>> in functionality.
 >>
->> Add ndo_queue_create() to netdev_queue_mgmt_ops that will create a new
->> rxq specifically for mapping to a real rxq. The intent is for only
->> virtual netdevs i.e. netkit and veth to implement this ndo. This will
->> be called from ynl netdev fam bind-queue op to atomically create a
->> mapped rxq and bind it to a real rxq.
->>
->> Signed-off-by: David Wei <dw@davidwei.uk>
->> Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
 >> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>> Co-developed-by: David Wei <dw@davidwei.uk>
+>> Signed-off-by: David Wei <dw@davidwei.uk>
 >> ---
->>   include/net/netdev_queues.h | 1 +
->>   1 file changed, 1 insertion(+)
+>>   net/xdp/xsk.c           |  5 +++++
+>>   net/xdp/xsk_buff_pool.c | 16 +++-------------
+>>   2 files changed, 8 insertions(+), 13 deletions(-)
 >>
->> diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
->> index cd00e0406cf4..6b0d2416728d 100644
->> --- a/include/net/netdev_queues.h
->> +++ b/include/net/netdev_queues.h
->> @@ -149,6 +149,7 @@ struct netdev_queue_mgmt_ops {
->>   						  int idx);
->>   	struct device *		(*ndo_queue_get_dma_dev)(struct net_device *dev,
->>   							 int idx);
->> +	int			(*ndo_queue_create)(struct net_device *dev);
+>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+>> index 72e34bd2d925..82ad89f6ba35 100644
+>> --- a/net/xdp/xsk.c
+>> +++ b/net/xdp/xsk.c
+>> @@ -141,6 +141,11 @@ int xsk_reg_pool_at_qid(struct net_device *dev, struct xsk_buff_pool *pool,
+>>   			      dev->real_num_rx_queues,
+>>   			      dev->real_num_tx_queues))
+>>   		return -EINVAL;
+>> +	if (xsk_get_pool_from_qid(dev, queue_id))
+>> +		return -EBUSY;
+>> +
+>> +	pool->netdev = dev;
+>> +	pool->queue_id = queue_id;
+>>   
+>>   	if (queue_id < dev->real_num_rx_queues)
+>>   		dev->_rx[queue_id].pool = pool;
+>> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+>> index 26165baf99f4..375696f895d4 100644
+>> --- a/net/xdp/xsk_buff_pool.c
+>> +++ b/net/xdp/xsk_buff_pool.c
+>> @@ -169,32 +169,24 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
+>>   
+>>   	force_zc = flags & XDP_ZEROCOPY;
+>>   	force_copy = flags & XDP_COPY;
+>> -
+>>   	if (force_zc && force_copy)
+>>   		return -EINVAL;
+>>   
+>> -	if (xsk_get_pool_from_qid(netdev, queue_id))
+>> -		return -EBUSY;
+>> -
+>> -	pool->netdev = netdev;
+>> -	pool->queue_id = queue_id;
+>>   	err = xsk_reg_pool_at_qid(netdev, pool, queue_id);
+>>   	if (err)
+>>   		return err;
+>>   
+>>   	if (flags & XDP_USE_SG)
+>>   		pool->umem->flags |= XDP_UMEM_SG_FLAG;
+>> -
 > 
-> kdoc is missing
-
-same, will address in v2, thanks for spotting!
+> IMHO all of the stuff below looks like unnecessary code churn.
+Ack, will drop it in v2, thx!
 
