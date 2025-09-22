@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-69247-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69248-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E832B922FE
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 18:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBB52B92366
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 18:24:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE80E3B829E
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:18:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EEF43B4345
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:24:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE86C30C36E;
-	Mon, 22 Sep 2025 16:17:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7F4311586;
+	Mon, 22 Sep 2025 16:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="oHC3x2Va"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="mKOzgg0V"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99C32FE566;
-	Mon, 22 Sep 2025 16:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057F21400E;
+	Mon, 22 Sep 2025 16:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758557878; cv=none; b=Gfr5Cbm0MIhdKmP2E2PPmrWz+yvcqQx8JamtvG/Us0/dWCmtr6uyuTTYI1QtMTI0FnLUrV6c9KwKDLIQKIChOVPspNB4N85yOrZSC1UaG4q1Ln7qFAjN5cfIHFqsjFeLn4Yp8u3wcfu2vQ1RtJczV2uZa2U+jDfElA1DR91i1lM=
+	t=1758558245; cv=none; b=muboZtqPwdgfQXaXpzwXcM5F6iiMb3q32WP4fbOjzCGtIPC7Sb+VcnTfMRvHFaBZT1ja4hWNPmaQnyxRBwQe4zlX51zF7Ia+CRSwgTpYhCTwwgd6UQQaEfdUg+/Ql6qP+mEvS7zhD55Cy6EkIya8ZvHlaQk2o6//4AKUmyT+A3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758557878; c=relaxed/simple;
-	bh=UVj7e3xffpmZ2GuxLKCltlstn+DfT0CVLVIGM64Nodo=;
+	s=arc-20240116; t=1758558245; c=relaxed/simple;
+	bh=iPuBC0q/YbK0jU2JihzOnmtN3XlxacmqRGdAA3IcZBA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WCMkOPaG+em8E5zZGWgmk8A5KUKXbjnq+13pL8iSBXYXoRtF2EaDhLDIiG77sBmvwJgc7ADs3FobQabhlMaCyWSGE/4O2fojUmJ2zjpFw/iNd4vSSe5VWLfBSuz2G2W4taiWa2m4xdILOXgMKrIgLUCjY8kgt3pfOxwr5JoefKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=oHC3x2Va; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=JrAavslQkm3IlaMs8/iacu5bxX17GLr3fgEot9pWD9J0lR64s6G8KSVwiaYE/zozR0Ew7iyPc7OYJNdVmlpfeKwzf3bphhmPMUag1x2rAUWIdhMm4K/JkJnaXXi4NnYvTZCzw6B7qf92A9dPn/JXXmv+IDI0iui6vzVHMbdXhC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=mKOzgg0V; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Kd23XL+MRbcg74QiROh25Z7SwcUF6CW6p9GPqb6lm2g=; b=oHC3x2VaQZSb2B5LHJ5GiIhjYD
-	UdblC8G9jT6y3RjDaKXePcYh4EzGaBpnFXxylSt90KUD+TpjLQmqgIKPlwKrkh+NPMQEUKvoVSeyQ
-	y2RU3PWn4qPwn2GrU1y2wbREdTm2vwcURTEGCZcJtmmMginkJGqCNpkSCYCf4Bz8T8Rfcoqg0ec8s
-	rKWlvlO7eanvOa4YX/dYt1vpPM029Ohaipeqatk54z2TneXivEA0VeZaM5KLPjtCT6B1p2kBjnYrZ
-	7pahwy9eZYAoQN26T/yB6ltBCjKoSLd0/3CvcWRwodP8Dm8qQyZX2VdMvhiS4Dq+qOBDxLBASi61q
-	G0c/N3WA==;
+	bh=SKJ7Xy/NbPPg1Hxlk+H+BKoiWUOuu5iLIMeaGY4D96M=; b=mKOzgg0Vfe8gTsyD0pCchqxXED
+	rueoohbNLgi0lUghGyTEXhuNE8YlnzH8o6iKQzTZYNKkibyfMVsAuy1cU6H8qWvksOr0Jli0yR/MC
+	8zHrTRakEVXHHYrjUqxFa6I+ILtmhuPlohRekiL6TxCdrMZYqNlM4OMJoqzfkot+RAbmQ58GRPyGP
+	2N05Eh3vdmswjyksJ1g/EUSp/MxOCPEBrq4uvVrIdpTB8+lhLMC57Ht2NjMvZ/CH+OlakPoQcTPBL
+	AE4VM1xl9KC3Rp/cot72t9vnur5xR+3Z00Nk/V3ZS7j5qrpfw1LeHim8OB3eB37KG1V2rY3aaQtSU
+	9+K4RlOQ==;
 Received: from sslproxy01.your-server.de ([78.46.139.224])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1v0jEa-000E9Z-0a;
-	Mon, 22 Sep 2025 18:17:48 +0200
+	id 1v0jKM-000F4M-1I;
+	Mon, 22 Sep 2025 18:23:46 +0200
 Received: from localhost ([127.0.0.1])
 	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1v0jEY-000Pdm-2o;
-	Mon, 22 Sep 2025 18:17:47 +0200
-Message-ID: <9d05079d-7cbc-4f94-9068-4db30e55aa42@iogearbox.net>
-Date: Mon, 22 Sep 2025 18:17:47 +0200
+	id 1v0jKK-000I50-2o;
+	Mon, 22 Sep 2025 18:23:45 +0200
+Message-ID: <0984a479-9615-4580-86fb-d173252908d5@iogearbox.net>
+Date: Mon, 22 Sep 2025 18:23:44 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,15 +63,18 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 11/20] xsk: Add small helper xp_pool_bindable
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
- davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com,
- willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
- martin.lau@kernel.org, jordan@jrife.io, magnus.karlsson@intel.com,
- David Wei <dw@davidwei.uk>
+Subject: Re: [PATCH net-next 18/20] netkit: Add io_uring zero-copy support for
+ TCP
+To: zf <zf15750701@gmail.com>, netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
+ razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
+ john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
+ maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+ David Wei <dw@davidwei.uk>, yangzhenze@bytedance.com,
+ Dongdong Wang <wangdongdong.6@bytedance.com>
 References: <20250919213153.103606-1-daniel@iogearbox.net>
- <20250919213153.103606-12-daniel@iogearbox.net> <aNFzYE5w8XGEz5Wr@boxer>
+ <20250919213153.103606-19-daniel@iogearbox.net>
+ <e9c6903c-e440-46b3-860e-8782bfe4efb2@gmail.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -117,57 +120,26 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <aNFzYE5w8XGEz5Wr@boxer>
+In-Reply-To: <e9c6903c-e440-46b3-860e-8782bfe4efb2@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27770/Mon Sep 22 10:26:19 2025)
 
-On 9/22/25 6:03 PM, Maciej Fijalkowski wrote:
-> On Fri, Sep 19, 2025 at 11:31:44PM +0200, Daniel Borkmann wrote:
->> Add another small helper called xp_pool_bindable and move the current
->> dev_get_min_mp_channel_count test into this helper. Pass in the pool
->> object, such that we derive the netdev from the prior registered pool.
+On 9/22/25 5:17 AM, zf wrote:
+> 在 2025/9/20 05:31, Daniel Borkmann 写道:
+[...]
+>> Remote io_uring client:
 >>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> Co-developed-by: David Wei <dw@davidwei.uk>
->> Signed-off-by: David Wei <dw@davidwei.uk>
->> ---
->>   net/xdp/xsk_buff_pool.c | 7 ++++++-
->>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>    # ./iou-zcrx -c -h 1.2.3.4 -p 5000 -l 12840 -z 65536
 >>
->> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
->> index 375696f895d4..d2109d683fe5 100644
->> --- a/net/xdp/xsk_buff_pool.c
->> +++ b/net/xdp/xsk_buff_pool.c
->> @@ -54,6 +54,11 @@ int xp_alloc_tx_descs(struct xsk_buff_pool *pool, struct xdp_sock *xs)
->>   	return 0;
->>   }
->>   
->> +static bool xp_pool_bindable(struct xsk_buff_pool *pool)
->> +{
->> +	return dev_get_min_mp_channel_count(pool->netdev) == 0;
->> +}
+>> We have tested the above against a dual-port Nvidia ConnectX-6 (mlx5)
+>> 100G NIC as well as Broadcom BCM957504 (bnxt_en) 100G NIC, both
+>> supporting TCP header/data split. For Cilium, the plan is to open
+>> up support for io_uring in zero-copy mode for regular Kubernetes Pods
+>> when Cilium is configured with netkit datapath mode.
 > 
-> Is this really a must have in this patchset? You don't seem to make use of
-> it anywhere.
-
-That is needed given we need to look at the pool's netdev which then is
-the one of the phys device.
-
->>   struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
->>   						struct xdp_umem *umem)
->>   {
->> @@ -199,7 +204,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
->>   		err = -EOPNOTSUPP;
->>   		goto err_unreg_pool;
->>   	}
->> -	if (dev_get_min_mp_channel_count(netdev)) {
->> +	if (!xp_pool_bindable(pool)) {
->>   		err = -EBUSY;
->>   		goto err_unreg_pool;
->>   	}
->> -- 
->> 2.43.0
->>
-
+>  From what we have learned, mlx supports TCP header/data split starting from CX7, relying on the hw rx gro. I would like to ask, can CX6 use TCP header/data split? Can you share your CX6's mlx driver information and FW information? I will test it. If CX6 can support, this one is even better for me. Thanks.
+I'll double check with David, but this is a typo here and needs to say CX7,
+the af-xdp work was done on CX6. So we'll correct in v2, thanks (& sorry for
+the confusion)!
 
