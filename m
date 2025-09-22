@@ -1,240 +1,112 @@
-Return-Path: <bpf+bounces-69172-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69173-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5194B8F183
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 08:17:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8EF6B8F1EC
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 08:23:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 606243BEC72
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 06:17:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92DC7189E1B2
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 06:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0868D265292;
-	Mon, 22 Sep 2025 06:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="USGKQsdM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF4F27467D;
+	Mon, 22 Sep 2025 06:23:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B76EF9C1;
-	Mon, 22 Sep 2025 06:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548D8221299;
+	Mon, 22 Sep 2025 06:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758521822; cv=none; b=aMd75sraX5/FQAQy4xQ1OspxqB6RGOU5JrYun8V7R6O2uAQQ8amIREjOrB/9zkcX7hV3rdaeWsEVyJHDzfXTBa+ttfd2oPwhkB3HO0OTGYwyi/SsXY/v+0FrGjV8B51FkQcVv6Q6mbj00m82JraNN8RwZZCYTvE32dgykwKwEQc=
+	t=1758522181; cv=none; b=LsFiwn39YiIXSSYqrhEHre9JVXUgbqVunAeMbszD66fCEIKHI9TdkgSZOBjduNysTF4yG967mxEwnb7GfsTDKT3YYPdbOt3RFm7TeneDzuuSnF9NA5j1t52FoNX3+ceEX7HkETwfDKZdT34rFohE0KcS5wyH1jS/P1EYf7Eg91s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758521822; c=relaxed/simple;
-	bh=ReX9fghXWIdTSFPdcDsEfBlBggwbg9JPtGadk0nMDQ4=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=IxsaNJIwML6TKwaYonacekUkWELchh8GHaBaxDLJE6Z0umw6estbuMWGI8aOb0Lym7Xqg5gpjr5HVeQxprKI97461hWo7rb6TbrF9c9PuOL/rOEWkBg3atsxYTyV7a/7fo3mUrhKmtAWKY+/4YCNH1pIN/iGFfuyrMls5Us2vRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=USGKQsdM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7331C4CEF0;
-	Mon, 22 Sep 2025 06:16:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758521821;
-	bh=ReX9fghXWIdTSFPdcDsEfBlBggwbg9JPtGadk0nMDQ4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=USGKQsdMRuCNygvGpPF5ORQFbbq/eSRtbRiwQOnHH0Wly7y8BHrXf70qaUoZsjByO
-	 78Wqvw3XHzl1yFmugdmkP/QNsvbP3yPUZCKgvq4MCkEniSTpgH4YeNrKoZoutwh3jW
-	 GkF2LKi7+7UCAA8LPdw/SUVej6OysNGhgZxgUyMgSdin+Nk1rbjR9/Ss7syCNMBd3G
-	 dfmBICTCi69eVNqKtgt6/cvFfKbfLDoh+OA7T6G8Auurwq/p8fYDwyqcJSKFafareO
-	 fK9YwAI5xW+EMYWoyXIPvcKDjnz90fv7SvbYVYXCFEuEedeh83/NS28f0Yu45oOtFC
-	 eqvy9kcOTkJjg==
-Date: Mon, 22 Sep 2025 15:16:55 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Steven
- Rostedt <rostedt@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- kees@kernel.org, samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
- ast@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH] tracing: fgraph: Protect return handler from recursion
- loop
-Message-Id: <20250922151655.1792fa0abc6c3a8d98d052c9@kernel.org>
-In-Reply-To: <aM5bizfTTTAH5Xoa@krava>
-References: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
-	<175828305637.117978.4183947592750468265.stgit@devnote2>
-	<20250919112746.09fa02c7@gandalf.local.home>
-	<aM5bizfTTTAH5Xoa@krava>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1758522181; c=relaxed/simple;
+	bh=KQ1leaj5E8Gkg9eOuDixRaXiAbGw+Q16aS6Wxzp/CLM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mNLvI/EGud/es8qfF8JKiYEkEctn+d4Zg2+7iIOBM3e3Ul3eAb1EvR+4fYVgkZYPiSz5X+73o9OVlwH45vwF9+05hYKjiwwh5SwaCdJpuEczJU5M7lWPS8v8gvX3RMKWtm9URz932ndsfzCC89LE+O595sqHCqnEGxozasLNMlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 8efc18ec977c11f0b29709d653e92f7d-20250922
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_MISS
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
+	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED, SN_EXISTED
+	SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:73680881-81b2-483e-a4cc-4248df5742ee,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.45,REQID:73680881-81b2-483e-a4cc-4248df5742ee,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6493067,CLOUDID:3e0c31d6808fdfd6be2a69de8f2dd8a5,BulkI
+	D:250922142250KV4QC9ZA,BulkQuantity:0,Recheck:0,SF:17|19|24|38|44|66|78|10
+	2|850,TC:nil,Content:0|50,EDM:-3,IP:-2,URL:99|1,File:nil,RT:nil,Bulk:nil,Q
+	S:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,
+	ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,
+	TF_CID_SPAM_FAS
+X-UUID: 8efc18ec977c11f0b29709d653e92f7d-20250922
+X-User: duanchenghao@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <duanchenghao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 2007902817; Mon, 22 Sep 2025 14:22:47 +0800
+From: Chenghao Duan <duanchenghao@kylinos.cn>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	bjorn@kernel.org,
+	pulehui@huawei.com,
+	puranjay@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu
+Cc: martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	alex@ghiti.fr,
+	bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	duanchenghao@kylinos.cn
+Subject: [PATCH v2 0/1] riscv: bpf: Fix uninitialized symbol 'retval_off'
+Date: Mon, 22 Sep 2025 14:22:43 +0800
+Message-Id: <20250922062244.822937-1-duanchenghao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sat, 20 Sep 2025 09:45:15 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
+v2:
+Adjust the commit log
 
-> On Fri, Sep 19, 2025 at 11:27:46AM -0400, Steven Rostedt wrote:
-> > On Fri, 19 Sep 2025 20:57:36 +0900
-> > "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-> > 
-> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > function_graph_enter_regs() prevents itself from recursion by
-> > > ftrace_test_recursion_trylock(), but __ftrace_return_to_handler(),
-> > > which is called at the exit, does not prevent such recursion.
-> > > Therefore, while it can prevent recursive calls from
-> > > fgraph_ops::entryfunc(), it is not able to prevent recursive calls
-> > > to fgraph from fgraph_ops::retfunc(), resulting in a recursive loop.
-> > > This can lead an unexpected recursion bug reported by Menglong.
-> > > 
-> > >  is_endbr() is called in __ftrace_return_to_handler -> fprobe_return
-> > >   -> kprobe_multi_link_exit_handler -> is_endbr.  
-> > 
-> > So basically its if the handler for the return part calls something that it
-> > is tracing, it can trigger the recursion?
-> > 
-> > > 
-> > > To fix this issue, acquire ftrace_test_recursion_trylock() in the
-> > > __ftrace_return_to_handler() after unwind the shadow stack to mark
-> > > this section must prevent recursive call of fgraph inside user-defined
-> > > fgraph_ops::retfunc().
-> > > 
-> > > This is essentially a fix to commit 4346ba160409 ("fprobe: Rewrite
-> > > fprobe on function-graph tracer"), because before that fgraph was
-> > > only used from the function graph tracer. Fprobe allowed user to run
-> > > any callbacks from fgraph after that commit.
-> > 
-> > I would actually say it's because before this commit, the return handler
-> > callers never called anything that the entry handlers didn't already call.
-> > If there was recursion, the entry handler would catch it (and the entry
-> > tells fgraph if the exit handler should be called).
-> > 
-> > The difference here is with fprobes, you can have the exit handler calling
-> > functions that the entry handler does not, which exposes more cases where
-> > recursion could happen.
-> 
-> so IIUC we have return kprobe multi probe on is_endbr and now we do:
-> 	
-> 	is_endbr()
-> 	{ -> function_graph_enter_regs installs return probe
-> 	  ...
-> 	} -> __ftrace_return_to_handler
-> 	       fprobe_return
-> 	         kprobe_multi_link_exit_handler
-> 	           is_endbr
-> 		   { -> function_graph_enter_regs installs return probe
-> 		     ...
-> 		   } -> __ftrace_return_to_handler
-> 		          fprobe_return
-> 		            kprobe_multi_link_exit_handler
-> 			      is_endbr
-> 			      { -> function_graph_enter_regs installs return probe
-> 			        ...
-> 			      } -> __ftrace_return_to_handler
-> 			           ... recursion
-> 
-> 
-> with the fix:
-> 
-> 	is_endbr()
-> 	{ -> function_graph_enter_regs installs return probe
-> 	  ...
-> 	} -> __ftrace_return_to_handler
-> 	       fprobe_return
-> 	         kprobe_multi_link_exit_handler
-> 	           ...
-> 	           is_endbr
-> 		   { ->  function_graph_enter_regs
-> 		           ftrace_test_recursion_trylock fails and we do NOT install return probe
->                      ...
-> 		   }
-> 
-> 
-> there's is_endbr call also in kprobe_multi_link_handler, but it won't
-> trigger recursion, because function_graph_enter_regs already uses
-> ftrace_test_recursion_trylock 
-> 
-> 
-> if above is correct then the fix looks good to me
-> 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
+URL for version v1:
+https://lore.kernel.org/all/20250820062520.846720-1-duanchenghao@kylinos.cn/
 
-Hi Jiri,
+Chenghao Duan (1):
+  riscv: bpf: Fix uninitialized symbol 'retval_off'
 
-I found ftrace_test_recursion_trylock() allows one nest level, can you
-make sure it is OK?
-
-Thank you,
-
-> 
-> thanks,
-> jirka
-> 
-> 
-> > 
-> > > 
-> > > Reported-by: Menglong Dong <menglong8.dong@gmail.com>
-> > > Closes: https://lore.kernel.org/all/20250918120939.1706585-1-dongml2@chinatelecom.cn/
-> > > Fixes: 4346ba160409 ("fprobe: Rewrite fprobe on function-graph tracer")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > ---
-> > >  kernel/trace/fgraph.c |   12 ++++++++++++
-> > >  1 file changed, 12 insertions(+)
-> > > 
-> > > diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-> > > index 1e3b32b1e82c..08dde420635b 100644
-> > > --- a/kernel/trace/fgraph.c
-> > > +++ b/kernel/trace/fgraph.c
-> > > @@ -815,6 +815,7 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
-> > >  	unsigned long bitmap;
-> > >  	unsigned long ret;
-> > >  	int offset;
-> > > +	int bit;
-> > >  	int i;
-> > >  
-> > >  	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer, &offset);
-> > > @@ -829,6 +830,15 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
-> > >  	if (fregs)
-> > >  		ftrace_regs_set_instruction_pointer(fregs, ret);
-> > >  
-> > > +	bit = ftrace_test_recursion_trylock(trace.func, ret);
-> > > +	/*
-> > > +	 * This must be succeeded because the entry handler returns before
-> > > +	 * modifying the return address if it is nested. Anyway, we need to
-> > > +	 * avoid calling user callbacks if it is nested.
-> > > +	 */
-> > > +	if (WARN_ON_ONCE(bit < 0))
-> > 
-> > I'm not so sure we need the warn on here. We should probably hook it to the
-> > recursion detection infrastructure that the function tracer has.
-> > 
-> > The reason I would say not to have the warn on, is because we don't have a
-> > warn on for recursion happening at the entry handler. Because this now is
-> > exposed by fprobe allowing different routines to be called at exit than
-> > what is used in entry, it can easily be triggered.
-> > 
-> > -- Steve
-> > 
-> > 
-> > 
-> > > +		goto out;
-> > > +
-> > >  #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
-> > >  	trace.retval = ftrace_regs_get_return_value(fregs);
-> > >  #endif
-> > > @@ -852,6 +862,8 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
-> > >  		}
-> > >  	}
-> > >  
-> > > +	ftrace_test_recursion_unlock(bit);
-> > > +out:
-> > >  	/*
-> > >  	 * The ftrace_graph_return() may still access the current
-> > >  	 * ret_stack structure, we need to make sure the update of
-> > 
-
+ arch/riscv/net/bpf_jit_comp64.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.25.1
+
 
