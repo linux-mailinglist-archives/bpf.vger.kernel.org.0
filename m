@@ -1,177 +1,281 @@
-Return-Path: <bpf+bounces-69213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69214-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B33B4B9110F
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 14:08:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E68B916E9
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 15:38:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C4FB423FE2
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 12:08:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C85AD18974B4
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 13:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468B2306B06;
-	Mon, 22 Sep 2025 12:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B516430CDA6;
+	Mon, 22 Sep 2025 13:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall.org header.i=@blackwall.org header.b="WRFNRSbW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FwT8Ol8B"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CF6305E14
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 12:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72EA2283FE9
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 13:38:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758542849; cv=none; b=j2A0viboeiSJYubkbIMkVZsaI6QR8VRE0gA6VbMNRDASMq2ogDow8+5ve6+7/DaWi3eV4Ez2SV1KO0k0PUcrnBN8nFg58HRTaOzrB+7KBnANkVB44d0rp9TOfn7utn0o7DVgG3R/xvuEK0p97xQD3REygQ3WotIc4sPshGwr/ng=
+	t=1758548300; cv=none; b=CSOsjo/ZdHRyfiVwbB6UrQlnn2WVSn27RiOMIRcMMZX5yiOYhZWqQ+6KFvNXp4WwHIheCjgELjwykuSLIiGrh7/Wu4AFeAdAWQTt63sX75jxpMVXrGn1YCBAzC/Wi6Ln/9yn13CQw80h7jK1mJEds4zXONhLSt1DTjW7ZaPmjCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758542849; c=relaxed/simple;
-	bh=DVcPbszETqDHHK8qlzPBuEKPE7LbZrIWqmngLLuVmgs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lkqb8e3fGqdjZv1xWg42WDjaFMXzn6snpqPwIr5lA7T6vmXsJYreFRb871I5Qnvoi0GaJbvZypbj2yXv5eqCR0IseJEWbLlEmEaobsI+EFMGE+obmvlx6aTDQEZ6tDJCLcKmPPbsOASZJk99iSUWCZUBny9t4ik4v5dcOOmtB9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall.org header.i=@blackwall.org header.b=WRFNRSbW; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-57cfe6656dcso1319526e87.1
-        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 05:07:27 -0700 (PDT)
+	s=arc-20240116; t=1758548300; c=relaxed/simple;
+	bh=oH4AoBve0xbicZociklSp6XKp0C3amTsaF8P8uMO+V8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P+dwcBTFG2DXlqpYPHkXm9VqARX/SFXy8rfFds0TjlaENsFnmSb6YmuXFAtoIzmvRPAYe8Axyv9u6e29KFMDPYyJ00vFpE0t7iU1uGhlo2hj/x0nLRhDldnFIXtO2ahXFRff9xwZAFqlpFvC6wadMce7AWZUzI8L4P/ny/XZbgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FwT8Ol8B; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3ee1381b835so2901643f8f.1
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 06:38:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall.org; s=google; t=1758542846; x=1759147646; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8jM2pnJ1B8JxuL/d0YmLtjvLcDHew5XSTZjid5H7F9Q=;
-        b=WRFNRSbWuYmbC8bojHAF8Zaqqgt5L5w0yX42qFF/d529b+juL25t/jQun99zglGsZW
-         y1kUAueRbrEWcWsj6tuYgYA0aEJSDHyB36bhSINCu7K65Lrt4l3rb1L1hNc4az+HYt2O
-         ZvW8MoW1f5toGOxzAqHT9x4ip5Zg6FBNAVWXzFPWkdZ1hhZ8uYDRaLyykoq7jeVTJ5/4
-         tjscWS0PBp0fya9RU3W1hwFG8ld3hSR4+HJ0h9zZ4S9ob5xLKHFopxmzl8al+7bzNQSu
-         r99rfoWnjO46VFC+5+bZ76c8YDevqWp1rlmFp+I7hdr8MiHJHIRqdAR1+sHv0MzXFZrM
-         02CA==
+        d=gmail.com; s=20230601; t=1758548297; x=1759153097; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pjtr/WBwKkdc0dNJq3VYkWPcGQdd+yuTUcmaT9L1px0=;
+        b=FwT8Ol8BPEMqAE9zksNEIHsbaa9dq8/OszNXWV3OjA5edSdeTM6sLS6f97RAKovNVX
+         vn3vYkXiOSxVlbk8JLgLrkHRmH0pxtcOcHSy8gjRIBMNyR9494hT4vCWmV7vf9TPrMA0
+         CCkDP5g1H1GIMx3daUjoOEwzUdny/MEE0Od6ReAd82M4sBzp50bAuaPX25KCLUNXwnus
+         IcxQXM2Ov/i0UbwzrTyyYRqKATqT6n1JLoWB7ifTlXjxXe4cWP+OUo2Xb3F/jFhcJlik
+         5QKcbZ6DY6L2MUbAhtN5n7OoWGGrGrF6aguRQcjlnt4VcGakTBUwaI3tQLnVq21M5iKN
+         0G4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758542846; x=1759147646;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8jM2pnJ1B8JxuL/d0YmLtjvLcDHew5XSTZjid5H7F9Q=;
-        b=b0uxuMiX4A9z4937v5vLZehpyK/A+/rgJx21ApkacjfF0qsXql6x960Vm7F8Fyp0CS
-         U6LOg/2lU2dFXBv1S7WZj+AGk1o/ONBAzK+a3z/d+qe9s6o51o8K3CSnbvgRs3wC1syj
-         pL0cVTfvEWHTBcDzF4JL5QsUXeXt4F2rKASrm8z9/+qvGgf6n2uUnOcvKaK6gy+1Em0z
-         G0K4eqIGVIPQsjolSccAqyY8yiLoqxJdbILecS20v7CDnFTsLe2QWdvjzfQdu4/i6FOh
-         HGJaUIqqepfNhLOWY2Jd2iH4SVejBXwd+Ugv+S66mMePVqx1edeIYRONAOmdMek+SqmL
-         Zm3w==
-X-Gm-Message-State: AOJu0Yyspyjy8ux5M2M+uSRc804P8Oz5urkDQXBhCdoG92qwGb9u0PyK
-	mnet0Rqj36LBhzOo+ZaDGxeItdu8HoghjYu7J1oQgRdVrd58QBvFdUc6wsKt9IOt58A=
-X-Gm-Gg: ASbGncsEuks1TqoEAEDN068JWRsrKNEJj/VBaic0D8mAs3YoKEamcvRyMlrBQYLLplV
-	tUqxT8zI+UY7pwX+NknjCnI9AnJdPqY1/lXaOdSDBu71pfsijnmWZGguy/zFYDWiEEBU0+iujN2
-	f1gW50nhSxhPUNtQu6k+Wt3+P6am7nBey/Iz/TghmmyAoH7DcqqMlCAj7Rsnr+MnTwLmqdMM86b
-	ljjOblRdshu5nfPrZD1JLPG4l21+RYyNIKB6FOpLeH6RPcr4DOMaemdy/Rcn+ZboC8DWkn8/8pR
-	nYFvUf1+u6k9YZVn9XbUiVZkJ5hZH3aP70dU7h/j2/vyv592LM/i66hAu6ysWAnlFDhyoumIBZK
-	kzWZkjkQg4Pq637hXQZMvj7HTM4Ctn0lqPs+U/qkRSnMLDnmGwJrgSIhjcqBCKdq1VgH7BnleTm
-	Jy1g==
-X-Google-Smtp-Source: AGHT+IGD/jn0d6LdkWrAOucGmU5CI1mFNI4XovrTeMWdsjpZHgr8vX7aDRSEomQXgS6HuxCZugjO1Q==
-X-Received: by 2002:a05:6512:350d:b0:57d:a4e9:5b00 with SMTP id 2adb3069b0e04-57da4e95c80mr1678442e87.30.1758542846178;
-        Mon, 22 Sep 2025 05:07:26 -0700 (PDT)
-Received: from [100.115.92.205] (176.111.185.210.kyiv.nat.volia.net. [176.111.185.210])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-578a9668043sm3191553e87.110.2025.09.22.05.05.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Sep 2025 05:07:25 -0700 (PDT)
-Message-ID: <51de8bdf-e8e9-418b-8d6e-c559b8e831df@blackwall.org>
-Date: Mon, 22 Sep 2025 15:05:25 +0300
+        d=1e100.net; s=20230601; t=1758548297; x=1759153097;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pjtr/WBwKkdc0dNJq3VYkWPcGQdd+yuTUcmaT9L1px0=;
+        b=ntnkJzA+gCEhnNpvoj1zcbxhB6oAtf5tpod/e1/FqlOl+z7Mjh92eomaG3pzJGNGyq
+         It9UghFWSQsffMKb3Hp/zntQG4reG8IydK+x4y1uW5n1YIM4ysX+eW6iv1ybMUpRY0vF
+         Nr7FL9BAFg7BlDccd+L/FGE6GvF8tcHDHYvTJbWa8+uWrWe/UhqFToaw3cAdb1YtmR1S
+         OVMcC5FDm6OiBDKZnN4mQVN1m9jjba0HdtJLz4Zo9gdVnKBpbe12egkc3bWQk2Syg6kj
+         snRgePWpHibmFr6xbkXr+zf32P0HYfBjhNH1dW5LdSUn+Ew+QLx9BMaLn7YtynFLsOE4
+         x9TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXCmfW2QPuZbUFdiBn93j23GqDzOI+f2FTaBoECSJQeVLeb4T3mApGFtMAmiPj/odrEOuQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxvAwmuDGMudfQMHe7sugqCu6UCOlfgQzMQHLwnMDOP2NBC9I0w
+	KW31HLkDKwgPWt/C/Bfq99zxoJamr55AWDjiUhVT618QXObXckTI/G0u
+X-Gm-Gg: ASbGncvp1V3/KMoJhBIXuafekA6envMgGLcdFSjNA/VXwJLQ/SU13XhDoeBSMDFExel
+	8f3IyBlsGd5MXLvW6EhJtGl0e/LZ0BrK8bOGqnk/+D1wRQgMOIdiovx9t7gcQsUk3KfLT2yKOJL
+	aXiVFCIB16N35W8J+ONCeAhanyb/z9I/BdYiFN0Q+T1BFwJv/T/9Isg0TXKXuhHfwaJz1QFMkK2
+	9o63URqVjEBUkT/x52rtAPPJZATUQorPo+8yMiUnySCS9ULyxwvgvB6K117i29JLYuVTI7PXwB0
+	tuxYpIA0W4tIZoYKrhDP89KZQPbjx3GCeg5NBn0HWVB68XuXrslQ6Tt92sEr+VmpSt5+78BWh/Q
+	zZH2TqtR886RXc4YSqxmNrQ==
+X-Google-Smtp-Source: AGHT+IFb8QVE1JPoVN1bc6+jCc1wg3npty3iJ1lDuKaGOl7ScBmdTGUwgEUhvmpVwnZrFYD9+VLSQA==
+X-Received: by 2002:a5d:5d03:0:b0:3ec:4e41:fd86 with SMTP id ffacd0b85a97d-3ee86d6cf94mr10071515f8f.50.1758548296402;
+        Mon, 22 Sep 2025 06:38:16 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4613dccb5e2sm241428795e9.17.2025.09.22.06.38.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Sep 2025 06:38:15 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 22 Sep 2025 15:38:13 +0200
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@kernel.org>,
+	Menglong Dong <menglong8.dong@gmail.com>, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, kees@kernel.org,
+	samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
+	ast@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH] tracing: fgraph: Protect return handler from recursion
+ loop
+Message-ID: <aNFRRa3m6Qm8zzQu@krava>
+References: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
+ <175828305637.117978.4183947592750468265.stgit@devnote2>
+ <20250919112746.09fa02c7@gandalf.local.home>
+ <aM5bizfTTTAH5Xoa@krava>
+ <20250922151655.1792fa0abc6c3a8d98d052c9@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 00/20] netkit: Support for io_uring zero-copy and
- AF_XDP
-To: Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
- pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
- john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com
-References: <20250919213153.103606-1-daniel@iogearbox.net>
-Content-Language: en-US
-From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20250919213153.103606-1-daniel@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250922151655.1792fa0abc6c3a8d98d052c9@kernel.org>
 
-On 9/20/25 00:31, Daniel Borkmann wrote:
-> Containers use virtual netdevs to route traffic from a physical netdev
-> in the host namespace. They do not have access to the physical netdev
-> in the host and thus can't use memory providers or AF_XDP that require
-> reconfiguring/restarting queues in the physical netdev.
+On Mon, Sep 22, 2025 at 03:16:55PM +0900, Masami Hiramatsu wrote:
+> On Sat, 20 Sep 2025 09:45:15 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
 > 
-> This patchset adds the concept of queue peering to virtual netdevs that
-> allow containers to use memory providers and AF_XDP at _native speed_!
-> These mapped queues are bound to a real queue in a physical netdev and
-> act as a proxy.
+> > On Fri, Sep 19, 2025 at 11:27:46AM -0400, Steven Rostedt wrote:
+> > > On Fri, 19 Sep 2025 20:57:36 +0900
+> > > "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> > > 
+> > > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > 
+> > > > function_graph_enter_regs() prevents itself from recursion by
+> > > > ftrace_test_recursion_trylock(), but __ftrace_return_to_handler(),
+> > > > which is called at the exit, does not prevent such recursion.
+> > > > Therefore, while it can prevent recursive calls from
+> > > > fgraph_ops::entryfunc(), it is not able to prevent recursive calls
+> > > > to fgraph from fgraph_ops::retfunc(), resulting in a recursive loop.
+> > > > This can lead an unexpected recursion bug reported by Menglong.
+> > > > 
+> > > >  is_endbr() is called in __ftrace_return_to_handler -> fprobe_return
+> > > >   -> kprobe_multi_link_exit_handler -> is_endbr.  
+> > > 
+> > > So basically its if the handler for the return part calls something that it
+> > > is tracing, it can trigger the recursion?
+> > > 
+> > > > 
+> > > > To fix this issue, acquire ftrace_test_recursion_trylock() in the
+> > > > __ftrace_return_to_handler() after unwind the shadow stack to mark
+> > > > this section must prevent recursive call of fgraph inside user-defined
+> > > > fgraph_ops::retfunc().
+> > > > 
+> > > > This is essentially a fix to commit 4346ba160409 ("fprobe: Rewrite
+> > > > fprobe on function-graph tracer"), because before that fgraph was
+> > > > only used from the function graph tracer. Fprobe allowed user to run
+> > > > any callbacks from fgraph after that commit.
+> > > 
+> > > I would actually say it's because before this commit, the return handler
+> > > callers never called anything that the entry handlers didn't already call.
+> > > If there was recursion, the entry handler would catch it (and the entry
+> > > tells fgraph if the exit handler should be called).
+> > > 
+> > > The difference here is with fprobes, you can have the exit handler calling
+> > > functions that the entry handler does not, which exposes more cases where
+> > > recursion could happen.
+> > 
+> > so IIUC we have return kprobe multi probe on is_endbr and now we do:
+> > 	
+> > 	is_endbr()
+> > 	{ -> function_graph_enter_regs installs return probe
+> > 	  ...
+> > 	} -> __ftrace_return_to_handler
+> > 	       fprobe_return
+> > 	         kprobe_multi_link_exit_handler
+> > 	           is_endbr
+> > 		   { -> function_graph_enter_regs installs return probe
+> > 		     ...
+> > 		   } -> __ftrace_return_to_handler
+> > 		          fprobe_return
+> > 		            kprobe_multi_link_exit_handler
+> > 			      is_endbr
+> > 			      { -> function_graph_enter_regs installs return probe
+> > 			        ...
+> > 			      } -> __ftrace_return_to_handler
+> > 			           ... recursion
+> > 
+> > 
+> > with the fix:
+> > 
+> > 	is_endbr()
+> > 	{ -> function_graph_enter_regs installs return probe
+> > 	  ...
+> > 	} -> __ftrace_return_to_handler
+> > 	       fprobe_return
+> > 	         kprobe_multi_link_exit_handler
+> > 	           ...
+> > 	           is_endbr
+> > 		   { ->  function_graph_enter_regs
+> > 		           ftrace_test_recursion_trylock fails and we do NOT install return probe
+> >                      ...
+> > 		   }
+> > 
+> > 
+> > there's is_endbr call also in kprobe_multi_link_handler, but it won't
+> > trigger recursion, because function_graph_enter_regs already uses
+> > ftrace_test_recursion_trylock 
+> > 
+> > 
+> > if above is correct then the fix looks good to me
+> > 
+> > Acked-by: Jiri Olsa <jolsa@kernel.org>
 > 
-> Memory providers and AF_XDP operations takes an ifindex and queue id,
-> so containers would pass in an ifindex for a virtual netdev and a queue
-> id of a mapped queue, which then gets proxied to the underlying real
-> queue. Peered queues are created and bound to a real queue atomically
-> through a generic ynl netdev operation.
+> Hi Jiri,
 > 
-> We have implemented support for this concept in netkit and tested the
-> latter against Nvidia ConnectX-6 (mlx5) as well as Broadcom BCM957504
-> (bnxt_en) 100G NICs. For more details see the individual patches.
-> 
-> Daniel Borkmann (10):
->    net: Add ndo_{peer,unpeer}_queues callback
->    net, ethtool: Disallow mapped real rxqs to be resized
->    xsk: Move NETDEV_XDP_ACT_ZC into generic header
->    xsk: Move pool registration into single function
->    xsk: Add small helper xp_pool_bindable
->    xsk: Change xsk_rcv_check to check netdev/queue_id from pool
->    xsk: Proxy pool management for mapped queues
->    netkit: Add single device mode for netkit
->    netkit: Document fast vs slowpath members via macros
->    netkit: Add xsk support for af_xdp applications
-> 
-> David Wei (10):
->    net, ynl: Add bind-queue operation
->    net: Add peer to netdev_rx_queue
->    net: Add ndo_queue_create callback
->    net, ynl: Implement netdev_nl_bind_queue_doit
->    net, ynl: Add peer info to queue-get response
->    net: Proxy net_mp_{open,close}_rxq for mapped queues
->    netkit: Implement rtnl_link_ops->alloc
->    netkit: Implement ndo_queue_create
->    netkit: Add io_uring zero-copy support for TCP
->    tools, ynl: Add queue binding ynl sample application
-> 
->   Documentation/netlink/specs/netdev.yaml |  54 ++++
->   drivers/net/netkit.c                    | 362 ++++++++++++++++++++----
->   include/linux/netdevice.h               |  15 +-
->   include/net/netdev_queues.h             |   1 +
->   include/net/netdev_rx_queue.h           |  55 ++++
->   include/net/xdp_sock_drv.h              |   8 +-
->   include/uapi/linux/if_link.h            |   6 +
->   include/uapi/linux/netdev.h             |  20 ++
->   net/core/netdev-genl-gen.c              |  14 +
->   net/core/netdev-genl-gen.h              |   1 +
->   net/core/netdev-genl.c                  | 144 +++++++++-
->   net/core/netdev_rx_queue.c              |  15 +-
->   net/ethtool/channels.c                  |  10 +-
->   net/xdp/xsk.c                           |  27 +-
->   net/xdp/xsk.h                           |   5 +-
->   net/xdp/xsk_buff_pool.c                 |  29 +-
->   tools/include/uapi/linux/netdev.h       |  20 ++
->   tools/net/ynl/samples/bind.c            |  56 ++++
->   18 files changed, 750 insertions(+), 92 deletions(-)
->   create mode 100644 tools/net/ynl/samples/bind.c
-> 
+> I found ftrace_test_recursion_trylock() allows one nest level, can you
+> make sure it is OK?
 
-I have reviewed the set and it looks good to me. To be fair, I have reviewed
-it privately before as well. I really like the changes, we have discussed some
-of the ideas implemented before. Personally I especially like the io_uring support
-and think that some new interesting use cases will come out of it.
+hum, I recall being surprised by that already in the past,
+I thought we fixed that somehow, will check later today
 
-Nice work, for the set:
-Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
+thanks,
+jirka
 
-Cheers,
-  Nik
-
+> 
+> Thank you,
+> 
+> > 
+> > thanks,
+> > jirka
+> > 
+> > 
+> > > 
+> > > > 
+> > > > Reported-by: Menglong Dong <menglong8.dong@gmail.com>
+> > > > Closes: https://lore.kernel.org/all/20250918120939.1706585-1-dongml2@chinatelecom.cn/
+> > > > Fixes: 4346ba160409 ("fprobe: Rewrite fprobe on function-graph tracer")
+> > > > Cc: stable@vger.kernel.org
+> > > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > ---
+> > > >  kernel/trace/fgraph.c |   12 ++++++++++++
+> > > >  1 file changed, 12 insertions(+)
+> > > > 
+> > > > diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> > > > index 1e3b32b1e82c..08dde420635b 100644
+> > > > --- a/kernel/trace/fgraph.c
+> > > > +++ b/kernel/trace/fgraph.c
+> > > > @@ -815,6 +815,7 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+> > > >  	unsigned long bitmap;
+> > > >  	unsigned long ret;
+> > > >  	int offset;
+> > > > +	int bit;
+> > > >  	int i;
+> > > >  
+> > > >  	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer, &offset);
+> > > > @@ -829,6 +830,15 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+> > > >  	if (fregs)
+> > > >  		ftrace_regs_set_instruction_pointer(fregs, ret);
+> > > >  
+> > > > +	bit = ftrace_test_recursion_trylock(trace.func, ret);
+> > > > +	/*
+> > > > +	 * This must be succeeded because the entry handler returns before
+> > > > +	 * modifying the return address if it is nested. Anyway, we need to
+> > > > +	 * avoid calling user callbacks if it is nested.
+> > > > +	 */
+> > > > +	if (WARN_ON_ONCE(bit < 0))
+> > > 
+> > > I'm not so sure we need the warn on here. We should probably hook it to the
+> > > recursion detection infrastructure that the function tracer has.
+> > > 
+> > > The reason I would say not to have the warn on, is because we don't have a
+> > > warn on for recursion happening at the entry handler. Because this now is
+> > > exposed by fprobe allowing different routines to be called at exit than
+> > > what is used in entry, it can easily be triggered.
+> > > 
+> > > -- Steve
+> > > 
+> > > 
+> > > 
+> > > > +		goto out;
+> > > > +
+> > > >  #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
+> > > >  	trace.retval = ftrace_regs_get_return_value(fregs);
+> > > >  #endif
+> > > > @@ -852,6 +862,8 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+> > > >  		}
+> > > >  	}
+> > > >  
+> > > > +	ftrace_test_recursion_unlock(bit);
+> > > > +out:
+> > > >  	/*
+> > > >  	 * The ftrace_graph_return() may still access the current
+> > > >  	 * ret_stack structure, we need to make sure the update of
+> > > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
