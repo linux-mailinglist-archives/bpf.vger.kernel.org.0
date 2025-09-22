@@ -1,155 +1,216 @@
-Return-Path: <bpf+bounces-69268-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69269-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88FF4B9343D
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 22:48:19 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8AF3B934E0
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 22:58:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C4E516A195
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 20:48:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 91D6D4E1F74
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 20:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE772C159D;
-	Mon, 22 Sep 2025 20:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8D42E8DE1;
+	Mon, 22 Sep 2025 20:58:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cBirfv6j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gwrEXRLu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B33E24E4C6
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 20:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB04AA95E
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 20:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758574085; cv=none; b=IpZJV1ESkZx4ncMLv7GdapS2hMsUTLL4SGpb6rvvs0LRvWTGiNW9oqjVYrXYyXXuS5t19rHQKfcIcEElddzp+ln+TIE+FxG02Iz1Qn8Y65oRX0jkEXDterhIBe+MXLVginCeJMdHgxWi4BvvJIFEZk41nyF3eQ6TefbU4llZXc4=
+	t=1758574719; cv=none; b=BifO9Rr3Rt/bYkbpa8WeJjq7QYOf/cN1OjlLp8TY8EzKmAAKhRLwUZq2GutDP6g+zkBHNJ0mfvP1ZI1ogaReSYNzXhbPHUdtZUlu3I/KdJD6R6OiMh4QhmBN5Gc1NZAQomed4wsgmisAamKk+kerx8/B3cfi/egoLeDOimrO47A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758574085; c=relaxed/simple;
-	bh=pE10PShoxNlFwAuYiz+gEtT3x6OgXhVGNZoXiBF2uwg=;
+	s=arc-20240116; t=1758574719; c=relaxed/simple;
+	bh=P/EYxKGUt4KlDQqc4dEWoyq9uVkW2ANWEyhW33wPUUc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YdmNw7xFNWyvsB+QrPWfuUX1+HscR/Ka+Qb0mC1ajDWenJkYsy6pfNvIEjgRBTBf0DyGkgVG8CxQIJ72iaBItxu1HeV4XJeKyhdQDAs8BrWld3Cf3i9tqVtx9TKfSH1CqsJvHvjDnBoQukr3fuAXJO/44BacSfMw6EiMZl8HsPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cBirfv6j; arc=none smtp.client-ip=209.85.214.169
+	 To:Cc:Content-Type; b=QPbar+yOiyPrI8HeM686hIhoGX6c5F4ADizDO514b3pUeykfGRQ2W8Qfs2WsBIOMtIvOfvnyJEH5ei2rn2UsWvjMcqmIl2Vvqup7xbbeeo7EHrhhqRi2mu2cXpKMFUACG8x0mSbzcAeVGYNGTjFm0LQaP3w+MtOgC2LhZUjNMB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gwrEXRLu; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-273a0aeed57so21759755ad.1
-        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 13:48:02 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-3322e6360bbso2076293a91.0
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 13:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758574082; x=1759178882; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758574717; x=1759179517; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mRupgu2oLIRJ4YbwydOEX0rzUmWrxjSy6aJdxKz3zYU=;
-        b=cBirfv6jWy8u9WTREiNseQmsYvd1hKHw316OWDLFZrQIkhn5JVMyWeKBMUSmTv4Pn8
-         G+glio0whtwBlMqLPteSE7XoiHPtfOI1haargHIpgmA7q/UlbdNvGXUR7bn5bXUm3Usg
-         NQ3XE7Jpk0OE95rvfv8W8/s/vWtrSMWWxD5jAY/40o4ybM35QfnBFII3FWEXBwez3WHM
-         HMJzSNQyMqPrp2Htmdh91hX9Q6bQC2OFeJS0g3sBKAZ3o1Nz5tWbfJISM9pN6RP2LMHH
-         Fa97Ie8m2nbhxuxnFWdww2i4frkTBeW1ZTOfrTJE0Z14nqRJAJE9n6vXd4UVT/fM3K7N
-         Of3w==
+        bh=Cyg+CfbJEgucw+GOG7zODfpjV9/l3Y90q5rDgYgLXfk=;
+        b=gwrEXRLu5PPgCBN/gXbp43k0sykMVoB/Wc7pIiiib4y2slEE/LU1FR+ksYJBsFG0rH
+         Wbch4zEGp+F97H+ZJfQ+YN2OlG8p0lFHWQk0oG54ZrmEoaa1s65+QulHXxgzAupLczBc
+         YaHoyAt+R4mhPCaM4vabGOEeQOq0VP23zBOLJTDeHhUr30weZSbNkpp5tPGNh5LUDumR
+         1DgtCsh86NOaaCaBfQ000Ic/kQH9zMQu4hWdOvqTcaFFNaZMcKEubxIOOkk+D2cp+RN/
+         IrLRXWYYT6M7YPVOq6quUCh0BE66EMWmdLW1yT03um5MSET9nj4VNv6fpsBIqc2XpM1n
+         NuWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758574082; x=1759178882;
+        d=1e100.net; s=20230601; t=1758574717; x=1759179517;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mRupgu2oLIRJ4YbwydOEX0rzUmWrxjSy6aJdxKz3zYU=;
-        b=pNd+K/XQZoJObznoyEClNRso8RkhgVcw9IfzkZasbqEjvE/9lA7BRAwA6tJHU3DS+M
-         sZyC5bWa6U/9przGMtlYqcp2kqL6SR3mq/0DSSWmNl5Pd7WAZQQfVRHbTJtAS7e3fJdf
-         OCnutYhGb2XoSAhMuQsQsIxQIdu8s9ptXdxQ3ClkS/VyzOi87iC+sIq7clk7DgkEfJlS
-         sl801LTDgiTyn32KLOe052PxLg2hlGTWl6wUwBBogzXMoQrHQzCxJfzU/vM0JOw8MEHP
-         s5PITAadxKMmUHUfw/eG0DHa7FfKULKN/QLOJiSP+2ESPvuROC7LcbfG1YkfoVkdCBAu
-         udhA==
-X-Forwarded-Encrypted: i=1; AJvYcCVSPaCMqjmifc3W93KK9amifnQbZV/CuGclVSOA4QhixpLGIuKl3F9z0uQPhZUeGkSuOR4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yynn+LLdU7QT3Wf18CmlX4Ix/wa3KzwGaka/0h7wJFO3e4O0oaC
-	4TOtAtLoTMHLaq4eN3PFm9IBGxBIXtx3tY4D40Xwwp3HcGKmANjXs1zKRpUJw8RhWnZTg6oFKIS
-	BScCRx/qp/riPieA8x6Ja2Pmc0APf4Dw=
-X-Gm-Gg: ASbGnct7lMhy5EdGGu/cp2ZlkWxldGjFfMTrS/jfN0/NBRWTmnLjJT6QgVzQ+Y+jnZs
-	C3dTwVyVrMI9qgmPU3fukia4HveAe1dia+bZqbEK+eEWOpY3p90g7Pny7RyH/cV0t7Z6umzyaiZ
-	r/n8YctOKjsKh5SgXlIKWgcx4D7vjsj/uQ6UM3Sgcj99dt7TnFC9BODmxtARGProKWdobwYcH6O
-	SUgDmvLl/F1pF/sXalBuLY=
-X-Google-Smtp-Source: AGHT+IEUuRWAd6fG0rfybE+0nP/IJA4IiQhjz/jt+hdzGma+ca+nrEuDJjaAUdoxzJ1xY3vBRwKee/XUZdJVl1Lpshw=
-X-Received: by 2002:a17:902:f64f:b0:274:823c:8642 with SMTP id
- d9443c01a7336-27cd7464367mr926955ad.10.1758574082268; Mon, 22 Sep 2025
- 13:48:02 -0700 (PDT)
+        bh=Cyg+CfbJEgucw+GOG7zODfpjV9/l3Y90q5rDgYgLXfk=;
+        b=Q3JCT6wBXutGqj2JJyiL1hn61quxmShVCa55kxliWZBbPYED1AggaRgp78gnDPM+6Q
+         KJMAJfZFSApQhatCiN7Nfpo1CE+dig+SKTfqjHTg3xXpb0M2L5XBnGR0Ljf/1Ei73ac8
+         BQwJ3yPmIZIfHryDRMViP6GP1j/hfzlRqoYA+5ILlR9qbL0+0RdUXQCDkZdFFQDalj5s
+         2j/dRnukY0alzUv4b8bSUcHf7aZscCUpyyhTgsWjAbbg8Z99fwRMn5zX9hwd5YXjkFIC
+         14u5gCVGEgd0dt9h2RebkYikb8nOARFqWBbmkjyI58OGY4lzsgFeEVTNDzbOpUlyBqJH
+         QZDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCURFRUdvqn3u1lc+T2sFjAE9lxpeWOuG6t6N4qzGNwrqTG2dxiTjcvyC5oJR0sMLraBSYk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQV9kOgwOnRp2Pgi7zIftlmrM8DHbWkEKXAB9Kr8o7n8jj7GHc
+	7YZ8Bm22QUlXx9FprJT2qhJldEUVuyLR/y1NAFTsEbYMRUKw+pPs72CbDnN+GzgawzyOJ/28C7c
+	z2vSUN9h4KlediMaQGtJ90LGZ3sWc+oo=
+X-Gm-Gg: ASbGncuVRQ/bQN2EQUa4NSn989KgXDKf1GEcXZoKbLpkxGgH66zYqdcYGoA0HGHxhrX
+	1hGtrteuWQz62kimfvavGgKhm8/pG997LIIp7HBeq0zQpVAxoqyJkyXcGrw6Ys5ANA89Wb5MweU
+	10HSHWJTbCWzAfNPFi8r84QbcPbnneJtTB+em8RZ3DgXRzvJEmZocrVSDlCp7ZSa2SAE7NHdJ6m
+	ECwbwmuU3WMM61M0K7peHU=
+X-Google-Smtp-Source: AGHT+IGL9vPdRVkkKOqUJtNXq5UND6cfJRafkIFi74NGkbo62GVIzwufNt9wpETV57+hWfbc3Yfj3PA1LgxMyK1lu5g=
+X-Received: by 2002:a17:90b:5650:b0:32e:aaac:907 with SMTP id
+ 98e67ed59e1d1-332a94df129mr296854a91.5.1758574717173; Mon, 22 Sep 2025
+ 13:58:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250916215301.664963-1-jolsa@kernel.org> <20250916215301.664963-3-jolsa@kernel.org>
- <CAEf4BzYTJcq=Kk6W9Gz90gM=mw2fS2T-QBurUhdjBNinReDSjQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYTJcq=Kk6W9Gz90gM=mw2fS2T-QBurUhdjBNinReDSjQ@mail.gmail.com>
+References: <20250922140317.1468691-1-chen.dylane@linux.dev> <20250922140317.1468691-2-chen.dylane@linux.dev>
+In-Reply-To: <20250922140317.1468691-2-chen.dylane@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 22 Sep 2025 13:47:47 -0700
-X-Gm-Features: AS18NWDxAmgOz0mcGrQMXGNUADECY-kaOgTXybxwa3vFyGGUnDZr74-MswLax0s
-Message-ID: <CAEf4BzYfh_oqMOCq8G1S48Ym3th4+wQS1=ZTgRE3OTQrAJnCMQ@mail.gmail.com>
-Subject: Re: [PATCHv4 bpf-next 2/6] uprobe: Do not emulate/sstep original
- instruction when ip is changed
-To: Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>
+Date: Mon, 22 Sep 2025 13:58:22 -0700
+X-Gm-Features: AS18NWAKfciGnImUAyNfbcv-dsltpq9HmGDY7Qw5FgXfnyWV2jcScfFt47-sxBA
+Message-ID: <CAEf4BzbwkmeiRb5v3TRLxNEywvtn7tynYu850E-sh8Z--hM-dg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: Add stacktrace map
+ lookup_and_delete_elem test case
+To: Tao Chen <chen.dylane@linux.dev>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 16, 2025 at 3:28=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Sep 22, 2025 at 7:03=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wr=
+ote:
 >
-> On Tue, Sep 16, 2025 at 2:53=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrot=
-e:
-> >
-> > If uprobe handler changes instruction pointer we still execute single
-> > step) or emulate the original instruction and increment the (new) ip
-> > with its length.
-> >
-> > This makes the new instruction pointer bogus and application will
-> > likely crash on illegal instruction execution.
-> >
-> > If user decided to take execution elsewhere, it makes little sense
-> > to execute the original instruction, so let's skip it.
-> >
-> > Acked-by: Oleg Nesterov <oleg@redhat.com>
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/events/uprobes.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > index 7ca1940607bd..2b32c32bcb77 100644
-> > --- a/kernel/events/uprobes.c
-> > +++ b/kernel/events/uprobes.c
-> > @@ -2741,6 +2741,13 @@ static void handle_swbp(struct pt_regs *regs)
-> >
-> >         handler_chain(uprobe, regs);
-> >
-> > +       /*
-> > +        * If user decided to take execution elsewhere, it makes little=
- sense
-> > +        * to execute the original instruction, so let's skip it.
-> > +        */
-> > +       if (instruction_pointer(regs) !=3D bp_vaddr)
-> > +               goto out;
-> > +
+> Add tests for stacktrace map lookup and delete:
+> 1. use bpf_map_lookup_and_delete_elem to lookup and delete the target
+>    stack_id,
+> 2. lookup the deleted stack_id again to double check.
 >
-> Peter, Ingo,
+> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> ---
+>  .../selftests/bpf/prog_tests/stacktrace_map.c | 21 ++++++++++++++++++-
+>  .../selftests/bpf/progs/test_stacktrace_map.c |  8 +++++++
+>  2 files changed, 28 insertions(+), 1 deletion(-)
 >
-> Are you guys ok with us routing this through the bpf-next tree? We'll
-> have a tiny conflict because in perf/core branch there is
-> arch_uprobe_optimize() call added after handler_chain(), so git merge
-> will be a bit confused, probably. But it should be trivially
-> resolvable.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c b/to=
+ols/testing/selftests/bpf/prog_tests/stacktrace_map.c
+> index 84a7e405e91..d50659fc25e 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
+> @@ -3,7 +3,7 @@
+>
+>  void test_stacktrace_map(void)
+>  {
+> -       int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
+> +       int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd, =
+stack_key_map_fd;
+>         const char *prog_name =3D "oncpu";
+>         int err, prog_fd, stack_trace_len;
+>         const char *file =3D "./test_stacktrace_map.bpf.o";
+> @@ -11,6 +11,8 @@ void test_stacktrace_map(void)
+>         struct bpf_program *prog;
+>         struct bpf_object *obj;
+>         struct bpf_link *link;
+> +       __u32 stack_id;
+> +       char val_buf[PERF_MAX_STACK_DEPTH * sizeof(struct bpf_stack_build=
+_id)];
+>
+>         err =3D bpf_prog_test_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj, =
+&prog_fd);
+>         if (CHECK(err, "prog_load", "err %d errno %d\n", err, errno))
+> @@ -41,6 +43,10 @@ void test_stacktrace_map(void)
+>         if (CHECK_FAIL(stack_amap_fd < 0))
+>                 goto disable_pmu;
+>
+> +       stack_key_map_fd =3D bpf_find_map(__func__, obj, "stack_key_map")=
+;
+> +       if (CHECK_FAIL(stack_key_map_fd < 0))
 
-Ping. Any objections for landing this patch in bpf-next?
+please don't use CHECK*() macros, they are superseded by more targeted
+ASSERT_xxx() ones
 
+pw-bot: cr
+
+
+> +               goto disable_pmu;
+> +
+>         /* give some time for bpf program run */
+>         sleep(1);
 >
-> >         if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
-> >                 goto out;
-> >
-> > --
-> > 2.51.0
-> >
+> @@ -68,6 +74,19 @@ void test_stacktrace_map(void)
+>                   "err %d errno %d\n", err, errno))
+>                 goto disable_pmu;
+>
+> +       err =3D bpf_map_lookup_elem(stack_key_map_fd, &key, &stack_id);
+> +       if (CHECK(err, "stack_key_map lookup", "err %d errno %d\n", err, =
+errno))
+> +               goto disable_pmu;
+> +
+> +       err =3D bpf_map_lookup_and_delete_elem(stackmap_fd, &stack_id, &v=
+al_buf);
+> +       if (CHECK(err, "stackmap lookup and delete",
+> +                 "err %d errno %d\n", err, errno))
+> +               goto disable_pmu;
+> +
+> +       err =3D bpf_map_lookup_elem(stackmap_fd, &stack_id, &val_buf);
+> +       CHECK((!err || errno !=3D ENOENT), "stackmap lookup deleted stack=
+_id",
+> +             "err %d errno %d\n", err, errno);
+
+bpf_map_lookup_elem() returns error code directly, no need to use
+errno, just check that err =3D=3D -ENOENT
+
+> +
+>  disable_pmu:
+>         bpf_link__destroy(link);
+>  close_prog:
+> diff --git a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c b/to=
+ols/testing/selftests/bpf/progs/test_stacktrace_map.c
+> index 47568007b66..3bede76c151 100644
+> --- a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
+> +++ b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
+> @@ -38,6 +38,13 @@ struct {
+>         __type(value, stack_trace_t);
+>  } stack_amap SEC(".maps");
+>
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(max_entries, 1);
+> +       __type(key, __u32);
+> +       __type(value, __u32);
+> +} stack_key_map SEC(".maps");
+> +
+>  /* taken from /sys/kernel/tracing/events/sched/sched_switch/format */
+>  struct sched_switch_args {
+>         unsigned long long pad;
+> @@ -64,6 +71,7 @@ int oncpu(struct sched_switch_args *ctx)
+>         /* The size of stackmap and stackid_hmap should be the same */
+>         key =3D bpf_get_stackid(ctx, &stackmap, 0);
+>         if ((int)key >=3D 0) {
+> +               bpf_map_update_elem(&stack_key_map, &val, &key, 0);
+
+ugh... you'd just use a global variable if this test was used through
+skeleton... maybe convert the test to skeleton and get rid of all
+those unnecessary bpf_find_map() calls as well?
+
+>                 bpf_map_update_elem(&stackid_hmap, &key, &val, 0);
+>                 stack_p =3D bpf_map_lookup_elem(&stack_amap, &key);
+>                 if (stack_p)
+> --
+> 2.48.1
+>
 
