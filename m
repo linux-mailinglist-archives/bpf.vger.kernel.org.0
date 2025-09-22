@@ -1,102 +1,177 @@
-Return-Path: <bpf+bounces-69234-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69235-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B79AB9215D
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 17:56:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC773B92178
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 17:57:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CCF52A3D47
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 15:56:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11D6B4421D5
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 15:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F13930EF92;
-	Mon, 22 Sep 2025 15:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF9030C36B;
+	Mon, 22 Sep 2025 15:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UU2d17AE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U7F94CZG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F40530E0E6
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 15:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE2013D2B2;
+	Mon, 22 Sep 2025 15:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758556552; cv=none; b=Ly4zJ2B4frteDMXB50QS+w4Pjxze84JOnu2IL4VE+qoUPzAR0EazUhPhSk9k0/mDXDzdNQXKDyLNsAnNFFbBTDoy9wf7C0uTdm1Lly03TromcaFKJQTEgWbhRV0qKhV3SLcyPaT7ZJQTfLjL/xfvVAf4KtvksBZdihH2UNxL/AM=
+	t=1758556584; cv=none; b=hbCV7dVmcmwMVhJyTzk9iTitx+TGsfjfcetXXcQbUoucAUTx2tik+VRxvrmmOxgYJKMsNHQ6agqaX3ZW8INMgjCoR4Q7LqlOxUzmVyOLT6fXsJHQ4+l+j6f89Y2uCSq1D79QGADIa8rSXaA3cTQ/fiuPqdJO8D3sXVUZNC6pdJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758556552; c=relaxed/simple;
-	bh=zKhd5kbeKppM9tP5IFjWUEKG0aqUGHUSQZU5BziWV5Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Jvd8DpM2nMDLIKXL1sFunOQlLUxOm2kG3o6DeqaDRHeqGb7A/ngpjxifpW/ZGhVfTvzQLmIHQRGP+i0VQAJ+97K9pilRFmKl4E3Ebjg7ndP0v+7w6pevfpz4X9pHb+jws6hh4Zf04umcctK904tJIet/8EqwduL+fRHTInhQdSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UU2d17AE; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-3324fdfd54cso1448550a91.0
-        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 08:55:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758556551; x=1759161351; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zKhd5kbeKppM9tP5IFjWUEKG0aqUGHUSQZU5BziWV5Q=;
-        b=UU2d17AEdgZo0hXBP+da84jso5VtjRDy7WPhwcBVdUCWRg86ZDW7jUJ2DAIpo1xhui
-         rZUz4KZtEK1ttsDq0XDWvl1iQxN9Wv83BiTASUVoamOmNmE9H0gB1SqVra6O4sqyi6qY
-         PVmXU09CortLhpbUCBEYqnINwXSUjVhzzdDU97p3xkvbBYLtU2pgiAgTg+GJJO2lc0t5
-         S3nTjLUDoiOmybue9k5KAkEDOzAOapn7vDWsCvRDc3Fwvd/7s/8zfPzrFKA6RmQI4EqS
-         3YR8dd3LFEGXGtCmJciU8IY+8vd+XoM/UQzMkF1baskDJ4xyZJgItmZpOi+vgStraXMJ
-         mIDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758556551; x=1759161351;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zKhd5kbeKppM9tP5IFjWUEKG0aqUGHUSQZU5BziWV5Q=;
-        b=oZ3Dtj478rmOE2A+GS32VcnQGxEVFgTNC0jjWbLbkcmHljYravEpr0al4sjLLEbnnh
-         wbjCSO74yw1ZblVTgMyJiZhuh17U4dj7pGpKcgSCpLSjium/VwLOQB+VO6x2nac96IeK
-         WbH2N7sxRDUETrdg5uerMdkDb9ZKbOyagbXoydhgp7TCM/bsoBF3gRZC5Nm6vZqS3d71
-         aLWB3B3Ev38yo77nfuq9BZM3j1m3mJ8z0PEXdDbsqV8tAt9jjj2McKd/r9/ff08gtyUo
-         6iqfC2NpfDmLflPGTwC21hp1z6iVXwOFGsfzAU04f8J8a+ctlzblnVDhUmVgCRVb2I44
-         9p6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUFZYqSP0eAN+thqQuIn1GdAVOuPAOTLQCT1803wvX2BVpzjZtQH7YZTPZhEj4FmgpdiAk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxAgv6SCNv6FX32v072kJpv/HwxBjXFnrv4wBy1aKBsHognUNY
-	lZfSDxp1DWDA/sQuwmEvAVT3ftJQGvLHMcikUOf+R4fZdy35ovxem0c5/L+0bPkrK5JXWgJxEKV
-	ey5n03X5f9TGDtf7j+hUAWSedukbAYTNnnA==
-X-Gm-Gg: ASbGncs68Jm3n9CaEAU/STMW1ZE0ZdLQ22X8z114AyIYdIoTC7Eez526nv1cT6flDsa
-	KFY5NSPqHY/osy2lBjZQ0zdUb9Kp1BAuTZEBYeycNxOhjB6LmpTPRFc3m6JQ8hAWgn5WlTJdT1y
-	M8QLoTq8ale6Vp1Dk0Gn9L3lVOwMS+H41sFSWrkC6Gv0DLeG6pkfovZlSGHX0eI61XNg0xziZxt
-	ADxy+//hqARx/j9xe5Q3Nk=
-X-Google-Smtp-Source: AGHT+IH/craAUuC/Ixwy2yPxGrtrESRbjWs3dZ3PdaVtMPq8BSoZaDjBShXnKIrESsMMpNfHvaum0Bou7tkghT7mhMM=
-X-Received: by 2002:a17:90b:5547:b0:330:4604:3ae8 with SMTP id
- 98e67ed59e1d1-330983416fcmr14935056a91.21.1758556550651; Mon, 22 Sep 2025
- 08:55:50 -0700 (PDT)
+	s=arc-20240116; t=1758556584; c=relaxed/simple;
+	bh=A6td5LYxhItzS+7GkGUIeiplez2Gyg59sgZwyjPm6Rs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d/+UEjhD510AkQRG7P7vkGNzSDQvFiqy/IZLfHhEDsHUlCU9Ryn6scNlSTTE0yrQTfki7fB1bByENW28eHWbTuhy43bV7vwGtgGHGlZM7oWEvxQ30l8B+in7ktBuqa/49NKwKXd/2vm2Y3SB6ZOhke4YG3DV4S2+9wD2sWbn8eA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U7F94CZG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55A9AC4CEF0;
+	Mon, 22 Sep 2025 15:56:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758556583;
+	bh=A6td5LYxhItzS+7GkGUIeiplez2Gyg59sgZwyjPm6Rs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=U7F94CZGzy39yWMnpePBwU1gAZA6GtnNm5q+R2fJLT4HR32EAcFKOI5IJ2xzGPx8G
+	 ZlR+IorUm91M5N+ibx/KQfekktoMKN4Rz6K2FVBAKMAFbQcNQV6Dsb75Gfd96BUWg5
+	 eIlDggoK1y8rbZBKwwwdieyIQdnyz8spf5GVqiZgpg10zoVqkYGpWmanQWoIwojifh
+	 noOvNDu7DXpWScIj3NPn8L/lXRRtyeMBEynT8PC6xERBL+K813kxbijUkLkeWg1brJ
+	 7wMKAzsn/NSzP90e0Tts4xYJ5RxKUoZ8Bbh68hRndyEymRCvUAQvF2nfDTHHsA6L5p
+	 A4YorxVN+bKDg==
+Date: Mon, 22 Sep 2025 17:56:21 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Donald Hunter <donald.hunter@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next 2/6] net: xdp: Add xmo_rx_checksum callback
+Message-ID: <aNFxpVGo7YdHKMMn@lore-desk>
+References: <20250920-xdp-meta-rxcksum-v1-0-35e76a8a84e7@kernel.org>
+ <20250920-xdp-meta-rxcksum-v1-2-35e76a8a84e7@kernel.org>
+ <aNFupGy1QxlhRSUE@mini-arch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250922131725.378691-1-quic_ckantibh@quicinc.com>
-In-Reply-To: <20250922131725.378691-1-quic_ckantibh@quicinc.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 22 Sep 2025 08:55:36 -0700
-X-Gm-Features: AS18NWA6PUw6EJIsjtt8GzyvEAwdmMm-NuBlC2YazjESbIsx1mYkY0Xf2wO7h-4
-Message-ID: <CAEf4Bzagg84sok_Ho7Z-eaEst8go47f1fxSdtAWy0M4cPN04zw@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: increase probe_name buffer size to avoid format-truncation
-To: Sanjay Chitroda <quic_ckantibh@quicinc.com>
-Cc: linux-kernel@vger.kernel.org, andrii@kernel.org, sanjayembeddese@gmail.com, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="oLV4KCwzri5jB3PU"
+Content-Disposition: inline
+In-Reply-To: <aNFupGy1QxlhRSUE@mini-arch>
+
+
+--oLV4KCwzri5jB3PU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Adding back bpf@
+> On 09/20, Lorenzo Bianconi wrote:
+> > Introduce xmo_rx_checksum netdev callback in order allow the eBPF
+> > program bounded to the device to retrieve the RX checksum result comput=
+ed
+> > by the hw NIC.
+> >=20
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  include/net/xdp.h |  6 ++++++
+> >  net/core/xdp.c    | 29 +++++++++++++++++++++++++++++
+> >  2 files changed, 35 insertions(+)
+> >=20
+> > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > index 6fd294fa6841d59c3d7dc4475e09e731996566b0..481b39976ac8c8d4db2de39=
+055c72ba8d0d511c3 100644
+> > --- a/include/net/xdp.h
+> > +++ b/include/net/xdp.h
+> > @@ -581,6 +581,10 @@ void xdp_attachment_setup(struct xdp_attachment_in=
+fo *info,
+> >  			   NETDEV_XDP_RX_METADATA_VLAN_TAG, \
+> >  			   bpf_xdp_metadata_rx_vlan_tag, \
+> >  			   xmo_rx_vlan_tag) \
+> > +	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_CHECKSUM, \
+> > +			   NETDEV_XDP_RX_METADATA_CHECKSUM, \
+> > +			   bpf_xdp_metadata_rx_checksum, \
+> > +			   xmo_rx_checksum)
+> > =20
+> >  enum xdp_rx_metadata {
+> >  #define XDP_METADATA_KFUNC(name, _, __, ___) name,
+> > @@ -644,6 +648,8 @@ struct xdp_metadata_ops {
+> >  			       enum xdp_rss_hash_type *rss_type);
+> >  	int	(*xmo_rx_vlan_tag)(const struct xdp_md *ctx, __be16 *vlan_proto,
+> >  				   u16 *vlan_tci);
+> > +	int	(*xmo_rx_checksum)(const struct xdp_md *ctx, u8 *ip_summed,
+> > +				   u32 *cksum_meta);
+> >  };
+> > =20
+> >  #ifdef CONFIG_NET
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index 9100e160113a9a1e2cb88e7602e85c5f36a9f3b9..3edab2d5e5c7c2013b1ef98=
+c949a83655eb94349 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -961,6 +961,35 @@ __bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const=
+ struct xdp_md *ctx,
+> >  	return -EOPNOTSUPP;
+> >  }
+> > =20
+> > +/**
+> > + * bpf_xdp_metadata_rx_checksum - Read XDP frame RX checksum.
+> > + * @ctx: XDP context pointer.
+> > + * @ip_summed: Return value pointer indicating checksum result.
+> > + * @cksum_meta: Return value pointer indicating checksum result metada=
+ta.
+> > + *
+> > + * In case of success, ``ip_summed`` is set to the RX checksum result.=
+ Possible
+> > + * values are:
+> > + * ``CHECKSUM_NONE``
+> > + * ``CHECKSUM_UNNECESSARY``
+> > + * ``CHECKSUM_COMPLETE``
+> > + * ``CHECKSUM_PARTIAL``
+>=20
+> What do you think about adding new UAPI enum here? Similar to
+> xdp_rss_hash_type for the hash. The values can match the internal
+> CHECKSUM_XXX ones with (BUILD_BUG_ONs to enforce the relationship).
+> Will be a bit nicer api-wise to have an enum than an opaque u8.
 
-On Mon, Sep 22, 2025 at 6:17=E2=80=AFAM Sanjay Chitroda
-<quic_ckantibh@quicinc.com> wrote:
->
-> Yes, This is due to GCC being overly aggressive with its warning.
-> Also, Here is regression commit:
-> https://github.com/torvalds/linux/commit/4dde20b1aa85d69c4281eaac9a7cf
->
+ack, fine. I will fix it v1.
 
-It's not a regression, (potential) truncation is expected and is fine.
+Regards,
+Lorenzo
+
+
+--oLV4KCwzri5jB3PU
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCaNFxpQAKCRA6cBh0uS2t
+rDlFAP9f4DjX1fOKxrEiOYqDgqgqHd37X+FW2Ruk7neFu2Lh3gEAvTvJwg8PnFeY
+ayPyTpytuunY9VYrc/mA8PIfy/FidgU=
+=lFKD
+-----END PGP SIGNATURE-----
+
+--oLV4KCwzri5jB3PU--
 
