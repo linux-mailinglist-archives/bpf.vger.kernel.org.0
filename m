@@ -1,99 +1,124 @@
-Return-Path: <bpf+bounces-69220-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69221-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 543A6B91A01
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:17:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B92A5B91A07
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C38C4235FC
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 14:17:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8FF87A801B
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 14:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BF420E011;
-	Mon, 22 Sep 2025 14:17:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA1A224AF2;
+	Mon, 22 Sep 2025 14:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fJVmMbFn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i4GKRddX"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA83191F66;
-	Mon, 22 Sep 2025 14:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9350213E9C
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 14:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758550644; cv=none; b=AAfANixkKRvGaKHqA5dr7x1KbuItQJkSdBTD6H3lelMxnV9GpDMRMDaCztrAkOH1yWyQ99hBqODo/7GzCJX2vLHtZPVcCXE1BplqNN3aVqXGCcRzG4G1KdZCNAIttcZjRmGn0vHnus3uPNH/e0wBSsjlhQ+kHXqWtkQgkVktQK8=
+	t=1758550646; cv=none; b=UMBVkBjHZvx/StOg6YbNgf9FBnvtw3tryjowKJ64CMThT4w7Ca9HNN2gMCTN9igxo9iDHLPAUB3Uq4Emy0jq2y6DPbYyc8LPp8ySpn7W+dw26Z3Tb+SzZ7ZisL1xsWKZyDEqv5qXzX6JcgViC3m4h6n7AZEaUhRSN5SmbiNVHrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758550644; c=relaxed/simple;
-	bh=gn8LLxkIVjhTNakRHlp3LSM2QyH8Sg2TELVlWw65SjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SnKw4KrZn+lgiU4Cii9cYR2wXv0HZCPmYKE9nOTC4leAG5oGbSfore8LfxGLQA4ovZ4RT3CnVNWutrkyGoOAQrHGdfpytzMCj+oPTby3wUrNpWlB1+jh3E5zhWEoFomzI9ttptJCMeE6J9leVSekfM+s+IAsACJIpu4qBneDZ0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fJVmMbFn; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=PgurSM8v6g4XqceJ5reSyG+7GSpIjEQay/9SsuDXPGA=; b=fJVmMbFn82hQOQlJn8i7wEAqMo
-	gIYPHmDMHX1ccIwKVsRyoMEEwEzsQxYo/VoQPeD/jPETtuusCXpyCo+vvUR+ORfz6Trv7m3sYvgdy
-	35nTRXyTUIC+muQVKIJxXk7Vl9ZPyWsu9P4y2/63nVyT4C4rPHTvJRf2pG3j0nLy66mRnN9thvT/y
-	92XzdLRjNlhsIHgkol5PbliP0vxmIq33BIzw4tGjLHKXlinDbGYa6af/45ZNCYTapl0FP072aiYnO
-	L1YhCXOmnmsQQfwaDs5VORIz4NoP9ssCD+piMYohzxsBZwUNhqYosCl1SE0dD9HvhjWh1bYkIrDyv
-	fxabBk5A==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0hLp-00000009Kva-36Qu;
-	Mon, 22 Sep 2025 14:17:09 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 4920F30057E; Mon, 22 Sep 2025 16:17:08 +0200 (CEST)
-Date: Mon, 22 Sep 2025 16:17:08 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Indu Bhagat <indu.bhagat@oracle.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Jens Remus <jremus@linux.ibm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
-	Kees Cook <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>
-Subject: Re: [RESEND][PATCH v15 0/4] perf: Support the deferred unwinding
- infrastructure
-Message-ID: <20250922141708.GB70318@noisy.programming.kicks-ass.net>
-References: <20250908171412.268168931@kernel.org>
- <20250918114610.GZ3419281@noisy.programming.kicks-ass.net>
- <20250918111853.5dc424df@gandalf.local.home>
- <20250918172414.GC3409427@noisy.programming.kicks-ass.net>
- <20250918173220.GA3475922@noisy.programming.kicks-ass.net>
- <20250918151018.7281647b@batman.local.home>
- <pde32olzdlqvbom5bya5exndcrfgsw7lmffy6uav5yoplonzj3@ddb2b5sihlpx>
- <20250922072307.GQ4067720@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1758550646; c=relaxed/simple;
+	bh=LXmOnMpve6GxjgBFXNKQalpJi0RKrsDhUYu4/Zoevu0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eR76UsELxRc1svUZ47LV4uAtLryckYU6m24p9jhoRyVd5EgAeKVIM4mrfwJEJnvgL96mbD2ysuxtBbhhwYTZKrH+PSCuAqa3s/J4k4BXVk6roblYcuwb0wm7Q6ATAJghu+Tx+2WUW36yYBYVZJzWbtUyHaUtSKGrzwY6cjjZuy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i4GKRddX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8724C4CEF0
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 14:17:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758550646;
+	bh=LXmOnMpve6GxjgBFXNKQalpJi0RKrsDhUYu4/Zoevu0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=i4GKRddXgbb/Y2rHalJ+fUK0kRKkgxELH1XdG0RDkjIG9o/PkmaDDixVLlH8X2bLf
+	 e0tjzTeMQ52horO0xy3wtnCZYwQf4eqPix+F/GniFPocrbu5gu+87J8e09kszbKg7X
+	 gfWlPlsHCnvNmjdz9dyATSKx2hGEBoc7c2Dr7pdITQPtKKJb4DK+r3Oawzqz3pJB0a
+	 aw+1bl2apVln4iUs3Xdl84ddq3DPQ1pciSRNV+VpxEPFlt30JY83z2E9+0G0JZQ+81
+	 JehMq+hjlxjYNi3wyD3LeB0b5Ni2acwKZRO0vA3/65j2vwRBIH8XseM6quAdnsvJFZ
+	 U9L7jwSrckTXQ==
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-81076e81a23so612580685a.3
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 07:17:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWLnWQ/KZPAyTEPcjh+hm7sCh/2SRPV3YpFxo4lub6c6Djpst04icRItnSFNuWySdSg1fU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQTcr6+WEJXcfjkHLUnmegFky47Bzmc89GgN9J7JW7pVHse2CU
+	CMrm4kMx6NtidPN6VfzS8pn7n9X/3Mt19BVzbvQR6IFXwMH7OGd98yPsBt+AS5wXQ7szeduitlk
+	fUJTX0lyHiXqFMe7dMw4rSgc3V9zh0fw=
+X-Google-Smtp-Source: AGHT+IHXXVlQy19IGcMdH/qTYJF9S+WnglG7aaMckm8xjDbblJy1XNpne1jnd703XLZA3yJmkKNQErw24+OBt8OsEtk=
+X-Received: by 2002:a05:620a:5642:b0:7f8:d5ac:3bc8 with SMTP id
+ af79cd13be357-83ba438b455mr1120199085a.28.1758550645799; Mon, 22 Sep 2025
+ 07:17:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250922072307.GQ4067720@noisy.programming.kicks-ass.net>
+References: <20250922082241.2204-1-liujing@cmss.chinamobile.com>
+In-Reply-To: <20250922082241.2204-1-liujing@cmss.chinamobile.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 22 Sep 2025 16:17:14 +0200
+X-Gmail-Original-Message-ID: <CAPhsuW7gg-hdOSrUZpQHoVUgZs3Uj+cXt7CmXpKgoTWSTDgRog@mail.gmail.com>
+X-Gm-Features: AS18NWCZrd-7acvqxQLd1HwRpkuE-l-KLC0Ib0UFejy8mQhjDP5lBMfzeQ1W_U8
+Message-ID: <CAPhsuW7gg-hdOSrUZpQHoVUgZs3Uj+cXt7CmXpKgoTWSTDgRog@mail.gmail.com>
+Subject: Re: [PATCH] bpf: The main function in the file tools/bpf/bpf_dbg.c
+ does not call fclose() to close the opened files at the end, leading to
+ issues such as memory leaks.
+To: liujing <liujing@cmss.chinamobile.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 22, 2025 at 09:23:07AM +0200, Peter Zijlstra wrote:
+A few logistics:
 
-> I'll go stick it in the pile. Thanks!
+1. Please tag your patch with [PATCH bpf-next <version>] or
+[PATCH bpf <version>] so that the CI can apply it to the right tree.
+2. Please write better commit log. The subject should include "what";
+while the "why" part should go to the later part of the commit log.
+For example:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git unwind/cleanup
+bpf_debug: Close opened files
 
-I'll let the robot have a chew and post tomorrow or so.
+Add fclose calls to the main function to openeed files, so that we
+do not memory leak.
+
+On Mon, Sep 22, 2025 at 10:22=E2=80=AFAM liujing <liujing@cmss.chinamobile.=
+com> wrote:
+>
+> Signed-off-by: liujing <liujing@cmss.chinamobile.com>
+
+3. Please sign off with your full real name.
+
+> ---
+>  tools/bpf/bpf_dbg.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/bpf/bpf_dbg.c b/tools/bpf/bpf_dbg.c
+> index 00e560a17baf..ac834b6d78a8 100644
+> --- a/tools/bpf/bpf_dbg.c
+> +++ b/tools/bpf/bpf_dbg.c
+> @@ -1388,11 +1388,18 @@ static int run_shell_loop(FILE *fin, FILE *fout)
+>  int main(int argc, char **argv)
+>  {
+>         FILE *fin =3D NULL, *fout =3D NULL;
+> +       int result;
+>
+>         if (argc >=3D 2)
+>                 fin =3D fopen(argv[1], "r");
+>         if (argc >=3D 3)
+>                 fout =3D fopen(argv[2], "w");
+>
+> -       return run_shell_loop(fin ? : stdin, fout ? : stdout);
+> +       result =3D run_shell_loop(fin ? : stdin, fout ? : stdout);
+> +
+> +       if (fin && fin !=3D stdin)
+
+We can simply do "if (fin)", right?
 
