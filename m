@@ -1,126 +1,132 @@
-Return-Path: <bpf+bounces-69183-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69184-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAE50B8F471
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 09:23:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C2AB8F592
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 09:54:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0CE7189F141
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 07:23:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F79917E384
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 07:54:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E5E2F5326;
-	Mon, 22 Sep 2025 07:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1B62F745F;
+	Mon, 22 Sep 2025 07:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T3Ym5TLa"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kJAqmp7N"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79FDD212578;
-	Mon, 22 Sep 2025 07:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8806E2F83DB
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 07:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758525805; cv=none; b=heUG2bUYvfv9awBQ/9q/HEEcqFi3mr24k4guqt8wRsoAnhP7QRAjyvBsCN64EXNl6kq+e1g9QwGoFBp8Ek+Yey4OifxFFG8nJhfKw/eg3YJ4j+T58LN8DaQE+iq0I+jok9byOKgSoPdPz8E8gnwfyZNWXvsKZjLGYPAOsCUxEyY=
+	t=1758527676; cv=none; b=Q16Yjp8or+DUyawkcOIfiVGR3ugbcj1E4ampQ3LENU2KTbpzh//DnM5po0riDF7vmtDkamM/xzhiv5uJSrWPL0NBTCess8hQIQGOpdoTbhbB25JrFSrqUsiU8ao9WP5JFgbc1sQTlDXYNGtYtzC97UHLl8VouUdLjb8phx10pQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758525805; c=relaxed/simple;
-	bh=4gSyreMsz1SzvIt6bu5X0lC8HZlBc0UBFd5PiUnExYs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PwI8Uw3UMtR7sZNZLensq+vOz7AFdBZitU/ujUz4UNCeRReaw0vcutQffxO3AQzXv2ivrfX0fZtPkoBF0rpq5vnZKuLfHfOdsKZ64VCWtHO7DNEAuoY6DzMsRUhlSSq1f3A+XXw2CszYusZNk3ibJHc8FSW9TbRf0ggstNL2+2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=T3Ym5TLa; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=q5KkD/XraiOQEskxvcqMgy2jL5L1tqkNah5t780SQt0=; b=T3Ym5TLazEK0t2f+z5h2KQHIMi
-	1j2dupNIlqDkh4Ghy4uyic8EuujRhsK4rRD5H0U5BsaQMmbOSXPwTDTsXSBwxIV9siwWfHiE9DSsQ
-	2Gm218In5mNsgrdj8cJeqLw6jXW45JSkOwDX0Z9zv5PphZWmycVKtKed4/+S2L9l1eETz0iO63m86
-	V1erXovLcT987e3QUqu+QM+6QVIzA3SgD9l6NZgHeXdrWHJJKV7l7UCX/wL0gxo6bnmOL7MlYLzBB
-	9hB6O+50/tEF+Po8UpnMThPmYXBMCX6wHN/7pJt8aIlnH6flF0dYzGiu89BJcCvFz99t6xyWd9R9b
-	rsiwe3rQ==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0atA-00000002q7Z-2WsD;
-	Mon, 22 Sep 2025 07:23:08 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id AC94A300230; Mon, 22 Sep 2025 09:23:07 +0200 (CEST)
-Date: Mon, 22 Sep 2025 09:23:07 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Steven Rostedt <rostedt@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	x86@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Indu Bhagat <indu.bhagat@oracle.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Jens Remus <jremus@linux.ibm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Florian Weimer <fweimer@redhat.com>, Sam James <sam@gentoo.org>,
-	Kees Cook <kees@kernel.org>, Carlos O'Donell <codonell@redhat.com>
-Subject: Re: [RESEND][PATCH v15 0/4] perf: Support the deferred unwinding
- infrastructure
-Message-ID: <20250922072307.GQ4067720@noisy.programming.kicks-ass.net>
-References: <20250908171412.268168931@kernel.org>
- <20250918114610.GZ3419281@noisy.programming.kicks-ass.net>
- <20250918111853.5dc424df@gandalf.local.home>
- <20250918172414.GC3409427@noisy.programming.kicks-ass.net>
- <20250918173220.GA3475922@noisy.programming.kicks-ass.net>
- <20250918151018.7281647b@batman.local.home>
- <pde32olzdlqvbom5bya5exndcrfgsw7lmffy6uav5yoplonzj3@ddb2b5sihlpx>
+	s=arc-20240116; t=1758527676; c=relaxed/simple;
+	bh=R28uxE32gqNwzcXDbG30ZDmSivgFql4fRGlFePdTlx0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CVff7ZQQYrxakTd8Gjz3VJop0aakA41ifp4H9lEwVDHabRVLsXa4ppONRHTlw7CONxbE7ppsDfxTDqUHnyGo1ufkItBlPbMABltgdfN9dvdqLJhQriqq2VPlLunuwmNmvG6oFQdNmiLbGm2Ge7QBAa7sIs8+uaVvh9i1GACYlO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kJAqmp7N; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758527662;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=/F+if3ZmRE6mryxGtP8tu86KfXMMdeV8BX6DdblMOk4=;
+	b=kJAqmp7NaxLfxx26YA6GVjs4ktc1ebWFEKRMDv4BWqK1OxIn6erNAm8cmR23qOYFb0kAix
+	QyuuQqZ/KJEdkj9zV0u7CjV+OibDS+I5EO3cNCtBfEgrM3eKjOtEwe64XQDSJEPsdQxba+
+	v0kHkr4jM1Wh3labWYO68T5uRjLuBag=
+From: Tao Chen <chen.dylane@linux.dev>
+To: song@kernel.org,
+	jolsa@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Tao Chen <chen.dylane@linux.dev>
+Subject: [PATCH bpf-next] bpf: Add preempt_disable to protect get_perf_callchain
+Date: Mon, 22 Sep 2025 15:53:33 +0800
+Message-ID: <20250922075333.1452803-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <pde32olzdlqvbom5bya5exndcrfgsw7lmffy6uav5yoplonzj3@ddb2b5sihlpx>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Sep 19, 2025 at 04:34:02PM -0700, Josh Poimboeuf wrote:
-> On Thu, Sep 18, 2025 at 03:10:18PM -0400, Steven Rostedt wrote:
-> > On Thu, 18 Sep 2025 19:32:20 +0200
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > > > Now, task_work_run() is in the exit_to_user_mode_loop() which is notably
-> > > > *before* exit_to_user_mode() which does the unwind_reset_info().
-> > > > 
-> > > > What happens if we get an NMI requesting an unwind after
-> > > > unwind_reset_info() while still very much being in the kernel on the way
-> > > > out?  
-> > > 
-> > > AFAICT it will try and do a task_work_add(TWA_RESUME) from NMI context,
-> > > and this will fail horribly.
-> > > 
-> > > If you do something like:
-> > > 
-> > > 	twa_mode = in_nmi() ? TWA_NMI_CURRENT : TWA_RESUME;
-> > > 	task_work_add(foo, twa_mode);
-> > > 
-> > > it might actually work.
-> > 
-> > Ah, the comment for TWA_RESUME didn't express this restriction.
-> > 
-> > That does look like that would work as the way I expected task_work to
-> > handle this case.
-> 
-> BTW, I remember Peter had a fix for TWA_NMI_CURRENT, I guess it got lost
-> in the shuffle or did something else happen in the meantime?
-> 
->   https://lore.kernel.org/20250122124228.GO7145@noisy.programming.kicks-ass.net
+As Alexei suggested, the return value from get_perf_callchain() may be
+reused if another task preempts and requests the stack after BPF program
+switched to migrate disable.
 
-Oh, yeah, I had completely forgotten about all that :-)
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+---
+ kernel/bpf/stackmap.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-I'll go stick it in the pile. Thanks!
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 2e182a3ac4c..07892320906 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -314,8 +314,10 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+ 	if (max_depth > sysctl_perf_event_max_stack)
+ 		max_depth = sysctl_perf_event_max_stack;
+ 
++	preempt_disable();
+ 	trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
+ 				   false, false);
++	preempt_enable();
+ 
+ 	if (unlikely(!trace))
+ 		/* couldn't fetch the stack trace */
+@@ -443,9 +445,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 	if (sysctl_perf_event_max_stack < max_depth)
+ 		max_depth = sysctl_perf_event_max_stack;
+ 
+-	if (may_fault)
+-		rcu_read_lock(); /* need RCU for perf's callchain below */
+-
++	preempt_disable();
+ 	if (trace_in)
+ 		trace = trace_in;
+ 	else if (kernel && task)
+@@ -455,8 +455,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 					   crosstask, false);
+ 
+ 	if (unlikely(!trace) || trace->nr < skip) {
+-		if (may_fault)
+-			rcu_read_unlock();
++		preempt_enable();
+ 		goto err_fault;
+ 	}
+ 
+@@ -474,10 +473,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 	} else {
+ 		memcpy(buf, ips, copy_len);
+ 	}
+-
+-	/* trace/ips should not be dereferenced after this point */
+-	if (may_fault)
+-		rcu_read_unlock();
++	preempt_enable();
+ 
+ 	if (user_build_id)
+ 		stack_map_get_build_id_offset(buf, trace_nr, user, may_fault);
+-- 
+2.48.1
+
 
