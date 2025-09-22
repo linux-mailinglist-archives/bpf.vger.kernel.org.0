@@ -1,183 +1,130 @@
-Return-Path: <bpf+bounces-69245-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69246-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6371B92290
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 18:16:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA6AB92297
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 18:16:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 284CF3B98A1
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:16:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29C2C3A5055
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8E6311595;
-	Mon, 22 Sep 2025 16:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EA43101BB;
+	Mon, 22 Sep 2025 16:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="QFOm30+V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E0af/bYl"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8B82C0297;
-	Mon, 22 Sep 2025 16:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0A52E2850
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 16:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758557717; cv=none; b=XDL1xYbH+3hmxSn/TvsLXWUUbS2uyVLgd+vFUPIC1MtN3B/qK6gBBxWTkxUneyigaWA2NtFL7gKBm2CwadEb5rDaHx+jPJDoEzhwbfEltThF7JyBWBzyMKa4JRm/1dtBUCgZdNs84ly2y/3w58tjoE0fYFLw9wMWhm+NaNB+GE8=
+	t=1758557792; cv=none; b=nymTKWunNhHGaEyl/qAFNsd6XY24txs0J6XOQdT1ssUsGcpehZUZqN1O3ysuayW2kj6LkcbHs02AD0TTKU4hpFoSzrmQHBIGMiKP3gI1NEib0rJIL+9iUGu/ZWhBPQyWYscaW02p8Ez3/sBOOGUgJHoDZARJ/lzILbwk4GHpg1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758557717; c=relaxed/simple;
-	bh=qUJSPm8DiaD2CuexSbbo4EyeNJEm9ysp5nWrCCxDAXk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nI50ulQvifqGrUsi/N7Wk3zqBcJrRzNOAoX7bOdJyhmAhD7YW+NJ4B7AA0B14X3uh5PHBfLJjnc87RL16iWL/uGFz0jd0IhMs6FpTmK8bi8obSjTph5SeX8WRjHf/gTpxsj1JTpCOQfor2Eui2NaIksGDeTekKNHiSINX6Aqv8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=QFOm30+V; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Lj18gndnKjV/lioDLiQhqrxeFzrIk6ZTH6FXErwMvOI=; b=QFOm30+VhZRoo8f5PzgfQK0VC6
-	El+1uQi31NSMrJgyi1VHSb10mmHCzffYh63T3LDdSOIxKvB2uIysu2hBqE8yeJ3pI+K/GDIJWVdJ5
-	LRm3kRg4wPA920PTHLwTUSekwmwdWrQAi9BbJKKXWzMAU42B+RYMCV30FgUtSgdr4bdbYgqVw+Dkk
-	MgRGkKUP5CMise7g7iu3mrG8vX7cz7HUUeWrifoXQ2GxwG8CQ5cm3s6bK/3Cj9EPyBxVeBc3UUHQB
-	FJySR5/tMZaRILB1YA4p9FI8qjCIkbyszPMrO9KvFuroe7BJ6d8bAqHzHWnIVuYW6ueZ3i0d8Wm8o
-	WPWuBk/A==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1v0jBx-000D9B-1i;
-	Mon, 22 Sep 2025 18:15:05 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1v0jBw-0004lN-0j;
-	Mon, 22 Sep 2025 18:15:04 +0200
-Message-ID: <15740fe5-65bf-46fa-adbd-a87eb703d6b4@iogearbox.net>
-Date: Mon, 22 Sep 2025 18:15:04 +0200
+	s=arc-20240116; t=1758557792; c=relaxed/simple;
+	bh=k6e9yacPcaxNeR/G/vDl+4Sc9IVXtSREsF2s4eg/GBw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pl9VctTdoGJM4xdZFJQZjIeweUX1K9ESZKJ6lF8qXadvOIoxJUCbgyOeqLmK4XDt4QquwJmTjDK03aat0nkpuzb1XWXYtHxceKfSV59sk2mZPPgQx+jI1Rt2jTn6YMElaTi5qXh9kI797GZtK3EQSenSYpCnnHniKwXIQPhK4sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E0af/bYl; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3c68ac7e18aso2596333f8f.2
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 09:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758557789; x=1759162589; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rbZ9yx48UvonI3ViWHBtvsY4obV/dViz8JZGysXqUo0=;
+        b=E0af/bYlmWQrByBf2h9zSkzMlOZx7VA13Hup0nP66dk40tpznbfrPA7ke5CQMn7ggE
+         TzZGfuVJwDw5CBtMz9ea9uZjyNdWcXJhtS2/pI+Hw80vvcTcH+SxBX0CiYvBhum2UCvv
+         DkVm5kH74JE05LWCDHAI9j4pJ/mNTxDTwgYthRf2Qsf/AGsPm9GkRM2kZq2/Zl13vsl8
+         sPVLGOzsMPg2OpqkKtUzJDNpUsaDS0t7QR/J9xwiYlVmzOgMgpDiADzlrLfAUA12yxIu
+         0Iru9mlN5E6APZr663YNq7NqUfpx+RJ1HEfbxKi7stSswM1gzW85KmIvDaROerRV5lmj
+         YAXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758557789; x=1759162589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rbZ9yx48UvonI3ViWHBtvsY4obV/dViz8JZGysXqUo0=;
+        b=ozhhQPGWtwrWpAGCFyE/zDpB2e7yjnxx9aPSJLpipgmvFMIDRfYDL+A0XFDMtkc+Hm
+         i99EmEHYlAYuHu6LB7H6f3qAyh1a15Wl+aSbgpTrpkYd54f2NDeGfp3+rNYhCK3K/Tpq
+         syAq5ndiMkvu0OTKELTj4h3MYuXPW3yJQA9MAjBOygoJ9Rs18p8mwtb85C9vpUxDhDGc
+         fPVEkXuxR7T4mTo0yFRBpV0kwXFhOBD4RIam8vkJDNCIOkG9Furz+a8zx0DorbPlKThf
+         oIFRT2u11ez/vWH9VEtTyy3WrjaB2KbOojnLEBTK8VBEGGTMG6Gf8B8RdjECvpIBnzCC
+         Sj+Q==
+X-Gm-Message-State: AOJu0YwLcExBx1InaZFKbPB/HbXvD/QuvN5L3XkW3lVK81Rjrr7WMmT/
+	rs6ySwmWzGduBh5z31iWRa+SHDxqVDVSHidR6EelNPcs667K4Zv5EAdg8njQF5ONlvgTFFaLoo8
+	FJwW5pBvP1VHPxPw7OXVbTAVAnDCNH08=
+X-Gm-Gg: ASbGnctZ/sR6vedzBH1apV9LEgt64vJ0z8c6XXYJ6sjnHHHmzC60jrcISfMgD28evZB
+	kqUFbpDELCdWUy5FctARV8At4k3Vz2fvFajzc42veho5iz5h57SMwf/yOFJiNKH0L9+HqRvRSR+
+	RrBlzqyOqxXzWZrpnzhe1RrMKWqinD4WmF5g3XtdWqffjvKV3a5j8P0L4DwhCNNFZoEpsfcu/YT
+	V6UyKWEz2PZYDad77mRjLk=
+X-Google-Smtp-Source: AGHT+IEGENQU4mW1g3Kc4syDm8FFK5ur6pWHP2TjkeQiI5esKuI7Rk/KWjw+L8PVKQDqynUfLo29fAVwn1qz3YbKfJU=
+X-Received: by 2002:a5d:408d:0:b0:3f2:dc6e:6a89 with SMTP id
+ ffacd0b85a97d-3f2dc6e726fmr5794102f8f.57.1758557789326; Mon, 22 Sep 2025
+ 09:16:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 10/20] xsk: Move pool registration into single
- function
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
- davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com,
- willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
- martin.lau@kernel.org, jordan@jrife.io, magnus.karlsson@intel.com,
- David Wei <dw@davidwei.uk>
-References: <20250919213153.103606-1-daniel@iogearbox.net>
- <20250919213153.103606-11-daniel@iogearbox.net> <aNFywr++x9VIgT7W@boxer>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <aNFywr++x9VIgT7W@boxer>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27770/Mon Sep 22 10:26:19 2025)
+References: <20250913193922.1910480-1-a.s.protopopov@gmail.com>
+ <20250913193922.1910480-4-a.s.protopopov@gmail.com> <CAADnVQJsuxh5HrNKW_-_yuO5FqLQ8S4A4YN9bZfRHhO5pt5Dtg@mail.gmail.com>
+ <aNEnLZzOyEuNOtXu@mail.gmail.com>
+In-Reply-To: <aNEnLZzOyEuNOtXu@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 22 Sep 2025 09:16:17 -0700
+X-Gm-Features: AS18NWACIdXsFs8BdUQOaTpohYarT6i1P0pMN4zZEp3X9uptD691MH-dkJDdBpc
+Message-ID: <CAADnVQKK80Vvph7W7PSwG_GAPwXZO_wNYOKt6h9LHjHhPcjHPA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 03/13] bpf, x86: add new map type:
+ instructions array
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/22/25 6:01 PM, Maciej Fijalkowski wrote:
-> On Fri, Sep 19, 2025 at 11:31:43PM +0200, Daniel Borkmann wrote:
->> Small refactor to move the pool registration into xsk_reg_pool_at_qid,
->> such that the netdev and queue_id can be registered there. No change
->> in functionality.
->>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> Co-developed-by: David Wei <dw@davidwei.uk>
->> Signed-off-by: David Wei <dw@davidwei.uk>
->> ---
->>   net/xdp/xsk.c           |  5 +++++
->>   net/xdp/xsk_buff_pool.c | 16 +++-------------
->>   2 files changed, 8 insertions(+), 13 deletions(-)
->>
->> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
->> index 72e34bd2d925..82ad89f6ba35 100644
->> --- a/net/xdp/xsk.c
->> +++ b/net/xdp/xsk.c
->> @@ -141,6 +141,11 @@ int xsk_reg_pool_at_qid(struct net_device *dev, struct xsk_buff_pool *pool,
->>   			      dev->real_num_rx_queues,
->>   			      dev->real_num_tx_queues))
->>   		return -EINVAL;
->> +	if (xsk_get_pool_from_qid(dev, queue_id))
->> +		return -EBUSY;
->> +
->> +	pool->netdev = dev;
->> +	pool->queue_id = queue_id;
->>   
->>   	if (queue_id < dev->real_num_rx_queues)
->>   		dev->_rx[queue_id].pool = pool;
->> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
->> index 26165baf99f4..375696f895d4 100644
->> --- a/net/xdp/xsk_buff_pool.c
->> +++ b/net/xdp/xsk_buff_pool.c
->> @@ -169,32 +169,24 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
->>   
->>   	force_zc = flags & XDP_ZEROCOPY;
->>   	force_copy = flags & XDP_COPY;
->> -
->>   	if (force_zc && force_copy)
->>   		return -EINVAL;
->>   
->> -	if (xsk_get_pool_from_qid(netdev, queue_id))
->> -		return -EBUSY;
->> -
->> -	pool->netdev = netdev;
->> -	pool->queue_id = queue_id;
->>   	err = xsk_reg_pool_at_qid(netdev, pool, queue_id);
->>   	if (err)
->>   		return err;
->>   
->>   	if (flags & XDP_USE_SG)
->>   		pool->umem->flags |= XDP_UMEM_SG_FLAG;
->> -
-> 
-> IMHO all of the stuff below looks like unnecessary code churn.
-Ack, will drop it in v2, thx!
+On Mon, Sep 22, 2025 at 3:32=E2=80=AFAM Anton Protopopov
+<a.s.protopopov@gmail.com> wrote:
+> > > +int bpf_insn_array_init(struct bpf_map *map, const struct bpf_prog *=
+prog)
+> > > +{
+> > > +       struct bpf_insn_array *insn_array =3D cast_insn_array(map);
+> > > +       int i;
+> > > +
+> > > +       if (!valid_offsets(insn_array, prog))
+> > > +               return -EINVAL;
+> > > +
+> > > +       /*
+> > > +        * There can be only one program using the map
+> > > +        */
+> > > +       mutex_lock(&insn_array->state_mutex);
+> > > +       if (insn_array->state !=3D INSN_ARRAY_STATE_FREE) {
+> > > +               mutex_unlock(&insn_array->state_mutex);
+> > > +               return -EBUSY;
+> > > +       }
+> > > +       insn_array->state =3D INSN_ARRAY_STATE_INIT;
+> > > +       mutex_unlock(&insn_array->state_mutex);
+> >
+> > only verifier calls this helpers, no?
+> > Why all the mutexes here and below ?
+> > All the mutexes is a big red flag to me.
+> > Will stop any further comments here.
+>
+> Mutex came here from the future patch for static keys.
+> I will see how to rewrite this with just an atomic state.
+
+I don't follow. Who will be calling them other than the verifier?
+Some kfunc? I couldn't find that in the patch set.
+If so, add synchronization logic in the patch set that
+actually needs it. This one doesn't not. So don't add
+any mutex or atomics here.
 
