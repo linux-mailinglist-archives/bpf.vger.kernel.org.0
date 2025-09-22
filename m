@@ -1,193 +1,149 @@
-Return-Path: <bpf+bounces-69271-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69272-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4859B936BD
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 00:02:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C43B937BE
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 00:31:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96CEB3B4A4B
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 22:02:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1A154445B6
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 22:31:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF488286D52;
-	Mon, 22 Sep 2025 22:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFCD27F018;
+	Mon, 22 Sep 2025 22:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZIesPBQ0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nXk+Kjyz"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32851E502
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 22:02:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C802B9A7
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 22:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758578542; cv=none; b=WiXzbUhUl/uON8YRjAVlOUUJLmK2JyrTiN5PQ2Ep8Ex2cAPm0kR9xr6jNLHdxYF2YZ9RZcosuuhWsj4Y+OHfPaRMF8+DI7TsOgh4nTjNZ+iFhA8dJJn/tijN/z1826E4t456ZM/GxJ4OF1FPY19UPraV1HmntOkZIjW3wTdEfc4=
+	t=1758580266; cv=none; b=bdi0Z1nU0q2z/CkP2wIQlGyZNGKRcEARyPWvkLVEG3coMxvQR4irUcTDa0PFgU+HuFIu+ml9M5tuQt+Shz3bhFpPGUUgFllK6KqaHImTJPVrVjz3+Pv7GQRVhFHunJrQLk9Kks8+2aQL1dJArincy0T6JFRUrSY1uz9lPyPN1C8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758578542; c=relaxed/simple;
-	bh=LWWy1NSMrdokOxRy9TWCPxhDNVSdaHvZSyTj7oBWRf8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RjkW73+b0Hfx8CKErVNoBQInp8qXGNbEaiMhemiSDOc9AGqOgbLcw7fwkAW9/XRZxf+y8hRv3xifqzP5YQay1feA1dn9SQsybun6AKWc/+8dSuyMhVlPDxWUDi+jD5sM3ZVSRNtkTGWmw+wUAplKpa29LUQT+g1VXyBAeg+Skdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZIesPBQ0; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758578536;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=LvQMnsu791EG1tpjwy9I3544++reF65dwLMnGRELwws=;
-	b=ZIesPBQ0zAl1Vmukqxmtt0XIK/MVh1ffyqQa8stAcXpFk9CsnyvK3u7hKV5bkDVd50Tz9d
-	518QauXNlAT2j4sE8owNxzkvVG0kvid9zfQUuEIbqqYr7Or6i+wsuhQ7AAQ3ymIsoYuF80
-	BhhlByeyTe56tg6TFdwmWHKUtJCGNNw=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peilin Ye <yepeilin@google.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>,
-	Michal Hocko <mhocko@suse.com>
-Subject: [PATCH v2] memcg: skip cgroup_file_notify if spinning is not allowed
-Date: Mon, 22 Sep 2025 15:02:03 -0700
-Message-ID: <20250922220203.261714-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1758580266; c=relaxed/simple;
+	bh=f0Pf+/Nz8S8Bgu/9V/G5zu53Iw6Z7pQM1xGQ4Qrv/rQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oZsRxl7QoPyxNI7MlqC0yYMgrJHKbEwfeURaVMPOHp6Ne/7DVwbGlBgOmngTI5/vawtD1nBXtNcwsS2DjepQ0MbcqJIAe6ydC6B9gDACVLteHt1lgV5d+RqXrMdmd8r++kEMlq6jZXq2buMqH3fuyFHbUEQ64tKerinx8MritdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nXk+Kjyz; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-723ad237d1eso45821277b3.1
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 15:31:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758580264; x=1759185064; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WbtiN+WRaWrszvI4A9cJYkitcyxTdDcwVBjMTfPz09w=;
+        b=nXk+KjyzxdB7ECI3DSN/XtsU/9bTQodwoFKlf3Hah+7J4pqKWNinspaLgiaV13h29K
+         w6PIHpowizatZ3kMBcRq//R/lSfXZ4u/zPsmXUgBlg7VvxpNIUDXZBKkHnxNGf80+Zaw
+         5hS345nwQKCSUScfLe+QfSVH1XBEGrCxtwYsmbia/AT8bjbt7UE6mpglPUgrnoBUjOP9
+         zQ+lPMcueFsRtx3gLbgA0GogrzyASPRBjLm8EM6TVhqnuL1Vvzn8U4W5YruMfS50l8fU
+         EY/Lkq5aPych8U7t2hWlwhDfCMA444Iz1wxh/DMNYr3gm3DK3bv/PF6VcjFxVnxRhEU2
+         OPkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758580264; x=1759185064;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WbtiN+WRaWrszvI4A9cJYkitcyxTdDcwVBjMTfPz09w=;
+        b=FpTghlPzwdIb5d6neqMH5ZM1/BY090/Zvkn4rnwKO1gUMMMeocgWlV1/E5gcdFOaiw
+         Tnn/QEPXC+agpvLTKIEmCxEz45yBhCCngfKqWb72NSvvIO9KpvQ51Dl0IPkZtCfQYmra
+         GMxbWDdEane9g2TWWZ/Cwcb6jJ4M926qpqysIXTRfUYZvNlLgidJ80TfSI/lqREPZ15P
+         BDkVBL8ylsT9FscSo4U85LlgHMOTFKLPRhN6OMSGXDA8AfhAl6ECdbftHgm12QIMORFL
+         9yoB/5m8gtWv2q8wvLj+d3tz5ujuCCzxPZzN7+AXj7xWJAWCqR56Si9OPAbvkO31zJAA
+         RK7g==
+X-Gm-Message-State: AOJu0YwNN08d4vvVMgoy85mcaWHYC6q1QVDHxpBQzWHXM5f5M+jYa4jm
+	TeH82edZYU5GZ2hb3t8CpWK1+8jiXlY8LydBMaogTiO2hod1Za1jzLIuRW1OgPt05taDP18fk2o
+	mQh3f+v4tGGwuQ61FIaI5hKYxfoN6V58=
+X-Gm-Gg: ASbGncvEr6yW01U/pXpOig9iKLav0F1QOs3EIk9kZZePaycw2blNXyPboL8OdP0Z3Zf
+	WTUy0HGXGBUODWClHP51XlVcrMgr88/sqgw4oUZyyb4bzgfbi32+zkl0eZc+rSN4oR+qxWTEV7Q
+	TqVmAXaTQlZZLyVH0pkqmQOpKYpoBcQWJpzyaJPRxgprGJjEPMMcKaUE8NfX+46zxTLclXcWoJc
+	XaAisVkjBNTyrtdEiGczm8=
+X-Google-Smtp-Source: AGHT+IFdH1w+ZNyAYLaHh3rhpX284bCYkkpquZUVSDR4yfWiQ2pvfmbptj19EIZR1rn5jw+Ke1XbuMsRmKdrWNNs1DU=
+X-Received: by 2002:a05:690c:6108:b0:730:72a:7991 with SMTP id
+ 00721157ae682-75891e0901dmr3078527b3.4.1758580264279; Mon, 22 Sep 2025
+ 15:31:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250919230952.3628709-1-ameryhung@gmail.com> <20250919230952.3628709-6-ameryhung@gmail.com>
+ <10e5dd51-701d-498b-b1eb-68b23df191d9@linux.dev> <CAMB2axPU6Aoj6hfJcsS0W7CDL=bvAFLtPm2ZrsJef3w+aNoAXg@mail.gmail.com>
+ <f870f375-f9a5-4c36-80df-8062ec3eddd3@linux.dev>
+In-Reply-To: <f870f375-f9a5-4c36-80df-8062ec3eddd3@linux.dev>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Mon, 22 Sep 2025 15:30:52 -0700
+X-Gm-Features: AS18NWBHImg6Ly3imtzQWTz-SmTtiB9vYWNL_EUtmU52MWLBZC06W9_OT3aaWKI
+Message-ID: <CAMB2axNNc0p6kXgNQjQs-jsZ-NkKR==hY6OtoU6mxdHy-YqbvA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 5/7] bpf: Support specifying linear xdp packet
+ data size for BPF_PROG_TEST_RUN
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, paul.chaignon@gmail.com, 
+	kuba@kernel.org, stfomichev@gmail.com, martin.lau@kernel.org, 
+	mohsin.bashr@gmail.com, noren@nvidia.com, dtatulea@nvidia.com, 
+	saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, 
+	maciej.fijalkowski@intel.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Generally memcg charging is allowed from all the contexts including NMI
-where even spinning on spinlock can cause locking issues. However one
-call chain was missed during the addition of memcg charging from any
-context support. That is try_charge_memcg() -> memcg_memory_event() ->
-cgroup_file_notify().
+On Mon, Sep 22, 2025 at 1:04=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 9/22/25 12:48 PM, Amery Hung wrote:
+> >>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> >>> index 4a862d605386..0cbd3b898c45 100644
+> >>> --- a/net/bpf/test_run.c
+> >>> +++ b/net/bpf/test_run.c
+> >>> @@ -665,7 +665,7 @@ static void *bpf_test_init(const union bpf_attr *=
+kattr, u32 user_size,
+> >>>        void __user *data_in =3D u64_to_user_ptr(kattr->test.data_in);
+> >>>        void *data;
+> >>>
+> >>> -     if (user_size < ETH_HLEN || user_size > PAGE_SIZE - headroom - =
+tailroom)
+> >>> +     if (user_size > PAGE_SIZE - headroom - tailroom)
+> >>>                return ERR_PTR(-EINVAL);
+> >>>
+> >>>        size =3D SKB_DATA_ALIGN(size);
+> >>> @@ -1001,6 +1001,9 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog=
+, const union bpf_attr *kattr,
+> >>>            kattr->test.cpu || kattr->test.batch_size)
+> >>>                return -EINVAL;
+> >>>
+> >>> +     if (size < ETH_HLEN)
+> >>> +             return -EINVAL;
+> >>> +
+> >>>        data =3D bpf_test_init(kattr, kattr->test.data_size_in,
+> >>>                             size, NET_SKB_PAD + NET_IP_ALIGN,
+> >>>                             SKB_DATA_ALIGN(sizeof(struct skb_shared_i=
+nfo)));
+> >>> @@ -1246,13 +1249,15 @@ int bpf_prog_test_run_xdp(struct bpf_prog *pr=
+og, const union bpf_attr *kattr,
+> >>
+> >> I just noticed it. It still needs a "size < ETH_HLEN" test at the begi=
+nning of
+> >> test_run_xdp. At least the do_live mode should still needs to have ETH=
+_HLEN bytes.
+> >
+> > Make sense. I will add the check for live mode.
+>
+> The earlier comment wasn't clear, my bad. no need to limit the ETH_HLEN t=
+est to
+> live mode only. multi-frags or not, kattr->test.data_size_in should not b=
+e <
+> ETH_HLEN.
+>
 
-The possible function call tree under cgroup_file_notify() can acquire
-many different spin locks in spinning mode. Some of them are
-cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
-just skip cgroup_file_notify() from memcg charging if the context does
-not allow spinning.
+Right. It seems the current size check is also off. It allows empty
+xdp_buff as long as metadata is larger than ETH_HLEN.
 
-Alternative approach was also explored where instead of skipping
-cgroup_file_notify(), we defer the memcg event processing to irq_work
-[1]. However it adds complexity and it was decided to keep things simple
-until we need more memcg events with !allow_spinning requirement.
-
-Link: https://lore.kernel.org/all/5qi2llyzf7gklncflo6gxoozljbm4h3tpnuv4u4ej4ztysvi6f@x44v7nz2wdzd/ [1]
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
-Changes since v1:
-- Add warning if !allow_spinning is used with memcg events other than
-  MEMCG_MAX (requested by Roman)
-
- include/linux/memcontrol.h | 26 +++++++++++++++++++-------
- mm/memcontrol.c            |  7 ++++---
- 2 files changed, 23 insertions(+), 10 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 16fe0306e50e..873e510d6f8d 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1001,22 +1001,28 @@ static inline void count_memcg_event_mm(struct mm_struct *mm,
- 	count_memcg_events_mm(mm, idx, 1);
- }
- 
--static inline void memcg_memory_event(struct mem_cgroup *memcg,
--				      enum memcg_memory_event event)
-+static inline void __memcg_memory_event(struct mem_cgroup *memcg,
-+					enum memcg_memory_event event,
-+					bool allow_spinning)
- {
- 	bool swap_event = event == MEMCG_SWAP_HIGH || event == MEMCG_SWAP_MAX ||
- 			  event == MEMCG_SWAP_FAIL;
- 
-+	/* For now only MEMCG_MAX can happen with !allow_spinning context. */
-+	VM_WARN_ON_ONCE(!allow_spinning && event != MEMCG_MAX);
-+
- 	atomic_long_inc(&memcg->memory_events_local[event]);
--	if (!swap_event)
-+	if (!swap_event && allow_spinning)
- 		cgroup_file_notify(&memcg->events_local_file);
- 
- 	do {
- 		atomic_long_inc(&memcg->memory_events[event]);
--		if (swap_event)
--			cgroup_file_notify(&memcg->swap_events_file);
--		else
--			cgroup_file_notify(&memcg->events_file);
-+		if (allow_spinning) {
-+			if (swap_event)
-+				cgroup_file_notify(&memcg->swap_events_file);
-+			else
-+				cgroup_file_notify(&memcg->events_file);
-+		}
- 
- 		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 			break;
-@@ -1026,6 +1032,12 @@ static inline void memcg_memory_event(struct mem_cgroup *memcg,
- 		 !mem_cgroup_is_root(memcg));
- }
- 
-+static inline void memcg_memory_event(struct mem_cgroup *memcg,
-+				      enum memcg_memory_event event)
-+{
-+	__memcg_memory_event(memcg, event, true);
-+}
-+
- static inline void memcg_memory_event_mm(struct mm_struct *mm,
- 					 enum memcg_memory_event event)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e090f29eb03b..4deda33625f4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2307,12 +2307,13 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	bool drained = false;
- 	bool raised_max_event = false;
- 	unsigned long pflags;
-+	bool allow_spinning = gfpflags_allow_spinning(gfp_mask);
- 
- retry:
- 	if (consume_stock(memcg, nr_pages))
- 		return 0;
- 
--	if (!gfpflags_allow_spinning(gfp_mask))
-+	if (!allow_spinning)
- 		/* Avoid the refill and flush of the older stock */
- 		batch = nr_pages;
- 
-@@ -2348,7 +2349,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (!gfpflags_allow_blocking(gfp_mask))
- 		goto nomem;
- 
--	memcg_memory_event(mem_over_limit, MEMCG_MAX);
-+	__memcg_memory_event(mem_over_limit, MEMCG_MAX, allow_spinning);
- 	raised_max_event = true;
- 
- 	psi_memstall_enter(&pflags);
-@@ -2415,7 +2416,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 * a MEMCG_MAX event.
- 	 */
- 	if (!raised_max_event)
--		memcg_memory_event(mem_over_limit, MEMCG_MAX);
-+		__memcg_memory_event(mem_over_limit, MEMCG_MAX, allow_spinning);
- 
- 	/*
- 	 * The allocation either can't fail or will lead to more memory
--- 
-2.47.3
-
+>
 
