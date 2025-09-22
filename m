@@ -1,64 +1,91 @@
-Return-Path: <bpf+bounces-69209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7B3EB90450
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 12:50:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CFC2B9053A
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 13:17:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6772E3B2CD7
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 10:47:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4362118998E7
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 11:17:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4992A2882BD;
-	Mon, 22 Sep 2025 10:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BF1F2FFDD7;
+	Mon, 22 Sep 2025 11:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hp6NooUD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YpMc8bjP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA909179A3;
-	Mon, 22 Sep 2025 10:47:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25ED2219A79
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 11:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758538033; cv=none; b=oZmEAnc1Qn4C2J2w0omziWzbEeFtn+lbo7lbPcjVf2FVeh0reFRdTKPraAM0cdL4slpx5Yt8CkzTmK0k3FE1QkU1Tsg/POXtsIudAl2ENanDVfbBljpL2OOD+xqEhOMeuENA3xwIjOvNC+oBJV76WzS+8qTIhS2/qbfpwo4UZgw=
+	t=1758539828; cv=none; b=RxomFd4Q9L8WmEQUIA83bULSUpNV++hObCoo2WT/8q835pH5e0vmsEf9bHnrb50sDKjZeuLRJNss84xBrmmg3dCsCu3xmfvkr1aJJLz0Xw8uWcSVTIqKTSdJNIOUEOt9hhj0HTwOeVWp0B38LSdfoHJx5Hy+Uw1RAmOZWeoOhk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758538033; c=relaxed/simple;
-	bh=5wrwo5Dx5awItaR1obuaJIJiS37s0dpVkSAowpkf4PM=;
+	s=arc-20240116; t=1758539828; c=relaxed/simple;
+	bh=w6YwY5vmKus00bBj/e3FJTj7WCtO3igJ6hLmCin2MiE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xe1TiKGvu9qiaZjnRWH46uQ70zPuOZY6FdYmyrLGoP/B0gHyOdvcKpQHk0MlPEQPTY8dUqvQjD3LooiqusE7jvlqiA2Yx1C1aHE6ck/X+xy4QNDv4j00O9YL2ovABrYR2/MMCZuLE5CXY0+OC0ZetxVU2CGwp6cmvoJ0zn2TGaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hp6NooUD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD375C4CEF0;
-	Mon, 22 Sep 2025 10:47:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758538033;
-	bh=5wrwo5Dx5awItaR1obuaJIJiS37s0dpVkSAowpkf4PM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hp6NooUDuR6ilyAslj7UVm2g2vpSqNkg+z+eMVhbwssw1WXb1E/8Ia14HGZb+l8M0
-	 T/RgvS/XYaOX7f7Nu369N4YDMiCKrMFpqLdx9n/RDXH/6To4XDG3117gyNQRb4FeCx
-	 J8JR2sv8SN1RPwqlWGRqMQ0dYlEj47fwzIXsr0Amr4xf9sK7Sd09jpLURop3jznx2H
-	 nel+4I8KqdQgG/fl6bXshFzmlhjkN8A8slYGzdSByIM0YASn3kFCvUYP70cFZraduW
-	 1B7P8FERT9KL9Zbips19SUJY7oFRIJvR0tNi4GpDYkCdCMxIJgUDXnVDlXFdqL2rUW
-	 1iKX9VieytiRg==
-Date: Mon, 22 Sep 2025 11:47:06 +0100
-From: Will Deacon <will@kernel.org>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-	arnd@arndb.de, catalin.marinas@arm.com, peterz@infradead.org,
-	akpm@linux-foundation.org, mark.rutland@arm.com,
-	harisokn@amazon.com, cl@gentwo.org, ast@kernel.org,
-	memxor@gmail.com, zhenglifeng1@huawei.com,
-	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
-	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH v5 1/5] asm-generic: barrier: Add
- smp_cond_load_relaxed_timeout()
-Message-ID: <aNEpKjjwO_Ms6U7S@willie-the-truck>
-References: <20250911034655.3916002-1-ankur.a.arora@oracle.com>
- <20250911034655.3916002-2-ankur.a.arora@oracle.com>
- <aMxgsh3AVO5_CCqf@willie-the-truck>
- <87qzw2f1rv.fsf@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NW4lHCNINBcGzSmXM4Ra76IzOnaahxoP+FD03rbuk8jhn8YVymdWyUd02vmHOoZFJlOTN1GITgwAyk/HkO3LADi9VFPeYecn/fpuHmueBP2TSCRoIMCGqkdVjPJPOSDxaodXZ4dbAlAbVfz30rcwEX75QMG331MplbUAOV/IYAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YpMc8bjP; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-46c78a1784dso3284615e9.0
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 04:17:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758539825; x=1759144625; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YTlxhWqrZh7egDtJ3L2cCvngzXZ86KR/jKo3mxorcAk=;
+        b=YpMc8bjPqLRh/orwj+xuxcilFOvxMXJnOMgsTtIsl+yucbF59FMpH4w8daCkDoebLw
+         VJOyow8aY51cjAEwu+0NIdycyRD+OgyMmbdyH6/zrzzwu9WHNmK+X2exF/3fNTf99sgW
+         EjL5cuKgzGWjs7+vjVfJAMqAYIQTdcxlP5m5SG0yvtx/8woy17nP0068VrzpvsBNyBFM
+         qvorlLt8nuoWdDAqEwoXfGQk5a+PTQsYibDafZMn+oj4lsbDEcZJKT73PkV0b5kzfdJz
+         hT6HgGTo1XKmtmXghhxZA8Y+/5Bx0VufiI9QiM9V1vLnfSfONJnoWlm3AcDspe1iDy6I
+         Tjew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758539825; x=1759144625;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YTlxhWqrZh7egDtJ3L2cCvngzXZ86KR/jKo3mxorcAk=;
+        b=bIrgS6BJUzkCZ5EcshB9hnCBGTuXHRbbNjvepmk5s/ArXri7KXe6GGvuQlhc6D0wUV
+         ObxWj7ulTQx4ZDIfTTb5F1gJ5ei9Ss1C2mSAgkHk0Jlldf8nvyxSpQGamCzsSI5UN0x9
+         TPQmRV3D/Au8FEpqjigfm7IVrKXZ74+f6pGpDJ4RjVgru5WRVZbla9n0+aV3v9XmozGe
+         8HbXtcexrUDpA+zInTJ5evt+hVyGhVgauwVCwBAOk5SY1PjNRqbXOEPUTVnLPJ/OqByB
+         MyBRmFWMJ9oUgH0yh2Kqi/YlpsNFm6Cf4DaTaA2X+En33/PUUsFNoPSSs2/S8e747+3W
+         U0vw==
+X-Forwarded-Encrypted: i=1; AJvYcCXfYQo3Qw87htNTcrkgvYOijsCoxAccuPo6wqc1VsKPnWBafidq2pbm63RnmaBoxMO9VMk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyaUGZ0EQ08yOrMZDYwM/zgKlz3CS7fNoyI1jKWvB2UMqWGJP6o
+	IjdzfTtzzQlceDbQuikAh9ldApQDTzQYIy+YFTr6JGWVwKiDokPns8bZ
+X-Gm-Gg: ASbGncs5gK6GvPTUaUMfverviGfUHH9E76Geayr/ze/fvskJbeXbpAPyB565R9FNvFi
+	iuAejVQzzbt4d49FDOClvgoFsB4yMPvZplvXy6W6Bv/itcYAXyfPZvOk/ICXRl0wjSvO/4QusN5
+	ybex32nE2ll2vjFSaxvzBkawitzTiQODUcipvIjqPfWKIs47aPpd8yvx+3ptHuXJvhVjFj+/ciT
+	rOeu8e5pCsKpe5leuDvqhqUnfrhCH8F6XStbHsieywOldVe/DxbjDi0/poId5dq2eRmRMhBZ3ZE
+	gQhmGpeF0/QZWr4BmVJji3fqFsh2Owf/gQlW8QLK5Nn8qiVcWsKB8CvdlunsI9M/uziMf6Gi7eS
+	fARLf+jhMH3nUAtytu1VpbaIoze/dtZ3jVgYTQAgL/rB7xYJ1CXxLMkZ6hOD+W4nd5B3E47kM2b
+	NNQVnYBC9p0mGTZLDaCq4SM9avNcc8hGE=
+X-Google-Smtp-Source: AGHT+IF3Msd8ZoPMJEs7K/zv+zF43VhoJYGAT779uFAi/spPfWjaRb9gxGyuHHyUSSki7SqM8rn4Gw==
+X-Received: by 2002:a05:600c:1c03:b0:46d:fe0b:d55a with SMTP id 5b1f17b1804b1-46dfe0bd756mr14051695e9.33.1758539825257;
+        Mon, 22 Sep 2025 04:17:05 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e006cf0c3fccad951b0.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:6cf0:c3fc:cad9:51b0])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-464f0d8a2bfsm205116075e9.2.2025.09.22.04.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Sep 2025 04:17:04 -0700 (PDT)
+Date: Mon, 22 Sep 2025 13:17:02 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: syzbot <syzbot+e1fa4a4a9361f2f3bbd6@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
+	song@kernel.org, syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] WARNING in do_check (2)
+Message-ID: <aNEwLpylAfkgj3L-@mail.gmail.com>
+References: <aM1moP0fr7GrlbWZ@mail.gmail.com>
+ <68cd7300.050a0220.13cd81.0000.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,62 +94,27 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87qzw2f1rv.fsf@oracle.com>
+In-Reply-To: <68cd7300.050a0220.13cd81.0000.GAE@google.com>
 
-On Fri, Sep 19, 2025 at 04:41:56PM -0700, Ankur Arora wrote:
-> Will Deacon <will@kernel.org> writes:
-> > On Wed, Sep 10, 2025 at 08:46:51PM -0700, Ankur Arora wrote:
-> >> +	for (;;) {							\
-> >> +		VAL = READ_ONCE(*__PTR);				\
-> >> +		if (cond_expr)						\
-> >> +			break;						\
-> >> +		cpu_relax();						\
-> >> +		if (++__n < __spin)					\
-> >> +			continue;					\
-> >> +		if (time_check_expr)					\
-> >> +			break;						\
-> >
-> > There's a funny discrepancy here when compared to the arm64 version in
-> > the next patch. Here, if we time out, then the value returned is
-> > potentially quite stale because it was read before the last cpu_relax().
-> > In the arm64 patch, the timeout check is before the cmpwait/cpu_relax(),
-> > which I think is better.
-> 
-> So, that's a good point. But, the return value being stale also seems to
-> be incorrect.
-> 
-> > Regardless, I think having the same behaviour for the two implementations
-> > would be a good idea.
-> 
-> Yeah agreed.
-> 
-> As you outlined in the other mail, how about something like this:
-> 
-> #ifndef smp_cond_load_relaxed_timeout
-> #define smp_cond_load_relaxed_timeout(ptr, cond_expr, time_check_expr)	\
-> ({									\
-> 	typeof(ptr) __PTR = (ptr);					\
-> 	__unqual_scalar_typeof(*ptr) VAL;				\
-> 	u32 __n = 0, __poll = SMP_TIMEOUT_POLL_COUNT;			\
-> 									\
-> 	for (;;) {							\
-> 		VAL = READ_ONCE(*__PTR);				\
-> 		if (cond_expr)						\
-> 			break;						\
-> 		cpu_poll_relax();					\
-> 		if (++__n < __poll)					\
-> 			continue;					\
-> 		if (time_check_expr) {					\
-> 			VAL = READ_ONCE(*__PTR);			\
-> 			break;						\
-> 		}							\
-> 		__n = 0;						\
-> 	}								\
-> 	(typeof(*ptr))VAL;						\
-> })
-> #endif
+#syz dup: [syzbot] [bpf?] WARNING in maybe_exit_scc
 
-That looks better to me, thanks.
-
-Will
+On Fri, Sep 19, 2025 at 08:13:04AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> 
+> Reported-by: syzbot+e1fa4a4a9361f2f3bbd6@syzkaller.appspotmail.com
+> Tested-by: syzbot+e1fa4a4a9361f2f3bbd6@syzkaller.appspotmail.com
+> 
+> Tested on:
+> 
+> commit:         a3c73d62 bpf: dont report verifier bug for missing bpf..
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13928d04580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=4d8792ecb6308d0f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e1fa4a4a9361f2f3bbd6
+> compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+> 
+> Note: no patches were applied.
+> Note: testing is done by a robot and is best-effort only.
 
