@@ -1,93 +1,89 @@
-Return-Path: <bpf+bounces-69252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86B8EB9259A
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 19:09:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94404B9268E
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 19:25:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 453734E1282
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 17:09:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8950F7AE12B
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 17:24:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124D43128D7;
-	Mon, 22 Sep 2025 17:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A537F313E23;
+	Mon, 22 Sep 2025 17:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bQbC6712"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GdfgeFgq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432642D739F
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 17:09:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6DB313D45
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 17:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758560972; cv=none; b=SV8EcixjHR6FfTDVzIOIkYqEyzkLg1j2yIMTUiPKXWZvBM3GwllJS+QHAXIs0Hg+B6Kk41FPUzma0OCnS02bArr3b3MhUrg6vR441/MfGNBx76/jt65tr34sNVQysdhdQ00M4Z54KaGkE7G0K6MqDZmBY8wQ+TT5/j+Q5yLiI4o=
+	t=1758561935; cv=none; b=SrnzWZvjqMRu0g7EpzLrOvhgR3p/ORbfa6Xu5EFN1V9Vt5VW1XhJ3My/y87ep9zn1rbhftibCZ3AyqyVIAwBGVJFXn/TWsVSag1AiaFa+iwKIZ9zG/qJXmjZPrHdEXKwS3rGy9KX4ki44/+LJynUZxQkyW4LyGe/QW2nJBpoSts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758560972; c=relaxed/simple;
-	bh=fT/psD7+Vz56LrFxpZ7ZEzjPhzQjHq7F9NH1iMHhNGc=;
+	s=arc-20240116; t=1758561935; c=relaxed/simple;
+	bh=KAuXbOltxNgy8WInrPjwl+hbP8S2O9ZOc7MtIOcbUTY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P7GRA5r4E9OIfcVEq78Ni9TZ+z/AfmwmmFFa/BppwC+eUF6ncMHjhQgCz/ApPdGkYGxDvLTqcOcFgK0k9iAX6Vx+GmDLlyzV33HvbilqtBSzpiyuLQMOVcsbueWG3Gk/lBhi00LJwE6AiN5h3Iiss4XG7YBMGQICs9p5v5xgdaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bQbC6712; arc=none smtp.client-ip=209.85.216.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=PlK1OdxoLnIGVozmT99MqdOt9F5UEc6xhvTfQqQlUvVYn7XBY9zx9J/R1ywa5nr2bfr/Wbl9dW0xcPjIlKdl8TLl6hyGIIUkOHzbPeZX9UzKgP555L9HiSSNvL1tM4nDXkC58DHqcZNGUZ3ITzACqJu9SMa2P6Sr7XnXpfOmjD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GdfgeFgq; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-3305c08d9f6so3423117a91.1
-        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 10:09:31 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-77d94c6562fso4592739b3a.2
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 10:25:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758560970; x=1759165770; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758561933; x=1759166733; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sMIgCfI8Zy6cU8RYUy/WiEQmMhMNer21IBatYzMRFPE=;
-        b=bQbC6712jZYU5b+mfawQGA4nEWQP0x8lkJi+Wuq8gOPqQUAl1R80wSSXU+75EWC9tv
-         n12vaxszJtUQ9sTw0QQ9MojBQkoCb9qEXJa8yjPL/vwpIWIKiMGy84iOKNRPVQ1ju6tQ
-         upwvm14BFUiON6gBiH01XV2izHO77DEovChFEUrSiRUYkvaA1ww16O+ArKGt8Qefx2Of
-         lbUdhOfPlk5W3VeWsrGzSUkDHO3s1jt2KaW/l5Wp24FRNRPh9++sRrQTdVEmeRu5bx/S
-         TRRhoicZzxRc7NaMbTWF26ohJMOq31fXgcADB6Mdua0bWjLM4cr4EfUPGyMlAXCqKW/u
-         MG/g==
+        bh=83D95CBgRcD/U9iqxIg7crplJ8r4aQkclY9VPZZgyWQ=;
+        b=GdfgeFgqOxVh2urQIERiJYDbexbhDKKS86F8lmwn9GDnzp6T8PNznoW+twB6zBw7yF
+         282f8+lfpdMh/4DtbXZpWbxiMTZ8lK4N6xyClpjCQhxZYCkETC5UVP/T81e0kumc+KJN
+         cSA3ugGwDR2ajBvObtrNJl452Mr+uO19KJYS7Dg02uikWDeYpnZfPPNAohCmyVA4rqqY
+         hUoBfOol0bwi4jNDUHoiExz2xyFEwkLTUG0QU0p+uM1h0+7v/UvVqoVbtEMW1gHe8t1z
+         SKAFMIuVgq28rKIcW+CTnGrNLDqU9S5O2E5BSezT6IYqLE2lfy4z4vkeRXtGcTKfCMz0
+         XiRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758560970; x=1759165770;
+        d=1e100.net; s=20230601; t=1758561933; x=1759166733;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sMIgCfI8Zy6cU8RYUy/WiEQmMhMNer21IBatYzMRFPE=;
-        b=Oy1+Q1Djc48IP+bW2Yl4i5RnrzM7iPm8XoB1/J6FFCJIpSrMzmNWM17Gl40cIgtMGD
-         eoJc9jYYuVUW5Ipwuzv8rTIZq3U9/mm6OfWcrOSaGEmLBviro5EtFz0n0slkJYk+Wtsj
-         ubIuQlKBDQnSmAqJTT9Bs4YrfL+IXi4N2rmQFMywU0KrUZCy/nVxEwv/iQjunsaiGMOB
-         J4/vuytgGQDoYGF+8lu+jR8CwQNkb/TS2fFQc7leTA3OB3EmatMzz/0qnBVfYtEQz+8m
-         /gDXjYjK221vBa9ZAgzvKMwjvDVqEc6LX2ngV+Qwwg4i2OJoenKuVcErT5VjuHWRRO1H
-         3YVg==
-X-Forwarded-Encrypted: i=1; AJvYcCXuUeuVzuHEoxaKrqIHcjfwQX6vT19GZdaQODk7JnGw7KXN1RVGY+4QYOrJfcIdxEAKEvM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwplMyFwy1knZtniTwxnKg28/tRVZTq0cI78nOMGBWf9patzV0C
-	ii8IV5JRefHqw2vXlHyif4C5xh+tBZyL/TNMTW7Le1txgbnkc387CLdrqfvl
-X-Gm-Gg: ASbGncsZhmXYDtvYY1rHGh+aK23ZNRqOzFeq3jyZojx0XgL8ZBmgjEgOzF29xSasa01
-	ggxJkQpZOXXlzJrFFrl57QkUwBvh/SUtq/HzmilQtSX9aY5GPeIZE/HipyXcxxQTGrshq6ptJ3P
-	xuT7DxfE0OgGJZLuNy0DxRvTLZTBpOzcKMhvbbWQL8M+b5ZIRluwjexc1iLnOKxj7fEUyYmOqOt
-	3H+2NETsvTQ/aMA/7VoY6b7FzBX20xP9i4syJA4bvbwYguv97beUXMzvtloY7AFqnrOPpFQSAT7
-	+B6XDn4U2FPjSO/qktlfUeOvOIHN+9geX1DT+rc8KTlSmlJOh8LrzM5w/KI0isT0MyS8MIHw4UO
-	K8LjTbkk8IzAM1QY6RzAsNRNrBbI/NOBHize+8U7wzxhzj3/aiXBALnPoZ2OUIKe17SxTKtP2bZ
-	cRTINrbMS0S5UJsPFpD84C5owv6YBpxRTT0OYunBSG1Q/auZRzjSayc+uoEG3s5PrZ3pzo7CIp5
-	KX2
-X-Google-Smtp-Source: AGHT+IHlsA5stse+g6GM9QGHO/6DxDq7onh84HX4mDJJ7uM4MVYbwwbSHEc2sG845ZZJPboq6R2g1Q==
-X-Received: by 2002:a17:90b:2250:b0:32e:7ff6:6dbd with SMTP id 98e67ed59e1d1-33090a1034bmr18932796a91.0.1758560970376;
-        Mon, 22 Sep 2025 10:09:30 -0700 (PDT)
+        bh=83D95CBgRcD/U9iqxIg7crplJ8r4aQkclY9VPZZgyWQ=;
+        b=iuTdSulDIK7MOGkDt4z09TTwBhRMPA0/5CGwnDAe5IQeEe7QCRQkrByDcqWg+I3oxD
+         PlzVOuzugk1qUTw3sW5uwULQm4GCN+FL/J1Ici0MYmQA/TUdmIIeh4z8HlEmL97jcNpm
+         Qp4cB7gSBiWuUq4FcgmzYgHx9DeaJCqbsB5XF6m1/8fTfdQ8MpwA4ur59FijRS6m8SlL
+         sxypBTTVGiMKa1rjvA/MC+Vl1Ol0PWNWDgxpAbZ1qGQJaROgebP88m63Z32amRE/8CFm
+         79tJ2/s6ooV+eQoxHfTU9tA9vIPoDRboKUMaII0c58mwIafUHXI3KufbrBc9ykgEU10C
+         JeHQ==
+X-Gm-Message-State: AOJu0YyLRX/VChS9jeIJZg1Ff1Sr+rg65IHl39GLggstMFQ9MXMSAAcW
+	Gj6vMUI7CEFvlohUTsl6wt5XCZfcEtr6AkdgKOFXWDQYmAwtpHiXMHs=
+X-Gm-Gg: ASbGnct/B5evrEx2MOOUgG+cLTa42A6AMSxdco2dyNtwgwSt3v0jtFsoxxVDvO/Vwwk
+	KTGmBKj1vcEGz17gHf668rUdgcUiNysGjD+UfyhfeB9417NyX79QqzihnMk71CCPVvD1NXJG64z
+	azivI4yHtpJeCQUSmfyLaBvvWLcP2+q1//cVtiSxIsjRr/X9CuKvNCrMpLzjlyjNDhurwEqbmb5
+	eQj39Ocbf+OcfjSsmOZUJRkuXUu9y0MQIIlVpPS74Kdb3Zo9uz6qv3IYxu3+gJxVC50rZwPg1nw
+	/bLfn//EWXVyjrJqO/YXNPgzRyQmUoDd2sLgRM4VL97+CKK5iV8KdVnFRAcdidPvBwCs7MKZEWN
+	9AzTo+PCGVfzOUkHtRplZh7KSfPeohxuGuMT+nIPQ0HCI6NswB4gYhEoWD8KsUTScLAMRD04jE5
+	o8xjQbV4Hnc6n/Z1oBsQLEi4v5AnISq+27skV6zO1689GESG6c3amAdQ8jQsFZbbhzjIRo0EgkC
+	jD2ouJBSSn3QGo=
+X-Google-Smtp-Source: AGHT+IE3N4rdtpdpacqN7GPlaTxmCFciYnc2RQAsf/slc5/UFJiPbgXgxGoXXCf5+yEOTyvFNLZkig==
+X-Received: by 2002:a05:6a00:3c8f:b0:776:1de4:aee6 with SMTP id d2e1a72fcca58-77e4e5c5230mr13372885b3a.16.1758561933075;
+        Mon, 22 Sep 2025 10:25:33 -0700 (PDT)
 Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-332a68ca99esm31215a91.1.2025.09.22.10.09.29
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-77cfc2481d7sm13257873b3a.32.2025.09.22.10.25.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Sep 2025 10:09:30 -0700 (PDT)
-Date: Mon, 22 Sep 2025 10:09:29 -0700
+        Mon, 22 Sep 2025 10:25:32 -0700 (PDT)
+Date: Mon, 22 Sep 2025 10:25:32 -0700
 From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-	davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com,
-	willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
-	martin.lau@kernel.org, jordan@jrife.io,
-	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-	David Wei <dw@davidwei.uk>
-Subject: Re: [PATCH net-next 20/20] tools, ynl: Add queue binding ynl sample
- application
-Message-ID: <aNGCyWRneDXiUWjv@mini-arch>
-References: <20250919213153.103606-1-daniel@iogearbox.net>
- <20250919213153.103606-21-daniel@iogearbox.net>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, netdev@vger.kernel.org,
+	magnus.karlsson@intel.com, kerneljasonxing@gmail.com
+Subject: Re: [PATCH bpf-next 1/3] xsk: avoid overwriting skb fields for
+ multi-buffer traffic
+Message-ID: <aNGGjMFT_bsByxcZ@mini-arch>
+References: <20250922152600.2455136-1-maciej.fijalkowski@intel.com>
+ <20250922152600.2455136-2-maciej.fijalkowski@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -96,14 +92,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250919213153.103606-21-daniel@iogearbox.net>
+In-Reply-To: <20250922152600.2455136-2-maciej.fijalkowski@intel.com>
 
-On 09/19, Daniel Borkmann wrote:
-> From: David Wei <dw@davidwei.uk>
+On 09/22, Maciej Fijalkowski wrote:
+> We are unnecessarily setting a bunch of skb fields per each processed
+> descriptor, which is redundant for fragmented frames.
 > 
-> Add a ynl sample application that calls bind-queue to bind a real rxq
-> to a mapped rxq in a virtual netdev.
+> Let us set these respective members for first fragment only.
+> 
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  net/xdp/xsk.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 72e34bd2d925..72194f0a3fc0 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -758,6 +758,10 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  				goto free_err;
+>  
+>  			xsk_set_destructor_arg(skb, desc->addr);
+> +			skb->dev = dev;
+> +			skb->priority = READ_ONCE(xs->sk.sk_priority);
+> +			skb->mark = READ_ONCE(xs->sk.sk_mark);
+> +			skb->destructor = xsk_destruct_skb;
+>  		} else {
+>  			int nr_frags = skb_shinfo(skb)->nr_frags;
+>  			struct xsk_addr_node *xsk_addr;
+> @@ -826,14 +830,10 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  
+>  			if (meta->flags & XDP_TXMD_FLAGS_LAUNCH_TIME)
+>  				skb->skb_mstamp_ns = meta->request.launch_time;
+> +			xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
+>  		}
+>  	}
+>  
+> -	skb->dev = dev;
+> -	skb->priority = READ_ONCE(xs->sk.sk_priority);
+> -	skb->mark = READ_ONCE(xs->sk.sk_mark);
+> -	skb->destructor = xsk_destruct_skb;
+> -	xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
+>  	xsk_inc_num_desc(skb);
 
-Any reason ynl python cli is not enough? Can we use it instead and update the
-respective instructions (example) in patch 19?
+What about IFF_TX_SKB_NO_LINEAR case? I'm not super familiar with
+it, but I don't see priority/mark being set over there after this change.
 
