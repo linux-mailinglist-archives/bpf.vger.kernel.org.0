@@ -1,241 +1,227 @@
-Return-Path: <bpf+bounces-69255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F0DB92782
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 19:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5E16B92793
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 19:48:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E28D91904FD5
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 17:47:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D56B19050BC
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 17:48:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BA23126BF;
-	Mon, 22 Sep 2025 17:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E0A3168EE;
+	Mon, 22 Sep 2025 17:48:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="joKgfAjB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TbLtNcFA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7AA8634F
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 17:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07081316196
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 17:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758563214; cv=none; b=TkHBsonm9OGO7zZeM6NbPMPgMU3x/fm98y758SJeKnNxpNIKLqUV2JR74rpDSEYFF2wG0vMcSy1RH4E8BmmeFqAhAJA4P2o1F3AT5jcZBhA0fUjV5LWvip+jv6yK4UHSvXSEJIX64N7r9boEOxabr0OhVLaeBOwFVKvFFzkRLIM=
+	t=1758563305; cv=none; b=f/uxq0CGjxTqf/zkS2Z7Z22rs4uJGsxFxA8Gtmp2GxYZeEi5AQs95BmD+ivmcMaDc/emquuX2/1PsUUm8k5OV6i480RavxyNup6Tk3nOItMsKwrWfTq4OxRnj1KJyUSE0SWAQW+IBt1rCdsmHHzmOvCozGaspJ9IsrVtrouNlbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758563214; c=relaxed/simple;
-	bh=1Uu0YzEwaTr/Q540ag2EGNQrFBJuVIiwb71rS/qZMX8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CYV6F6MUVAr36xegL+/3ZXNE4rx3lblngzWo+L0EeFnIwHlJllN1F9T5fMakyQsnP61UBivCVd0nGDD4ECCIDjzocrh7O4qhKzznY3SQDaO8tAsTmEDEuXBWgeTjB3my2a/pf9eHToRCnx2JlQ1quelYN9V5Ny39pBxs/H3d2bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=joKgfAjB; arc=none smtp.client-ip=209.85.128.180
+	s=arc-20240116; t=1758563305; c=relaxed/simple;
+	bh=1w4FXAPOpO6lZePfVgvRDrGvKETBniGKn/1UgGH2E1M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Eu9HoCDPDbiAjRCOiX/OYEKjL6eLwdz9+SYQVg0p5VzrKPJZQSzDB+CdkadU4RD+M6MCsYeTcDr+9lbaHjJu49GIpcVYkFxdAl78YW1Q1wkzXiwekAaLIOoNYeYnLCYxyybY/15vOi4cgX6V0ZCNsg0q+qJnxaJRKLGvdo+gtuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TbLtNcFA; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-72e565bf2f0so36678597b3.3
-        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 10:46:52 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b54d23714adso3660429a12.0
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 10:48:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758563212; x=1759168012; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eHCpNXjzK4vjqWyITZQZXGAhxF9CSpOnc360flcFvFE=;
-        b=joKgfAjBpPECvK80NAd/2KhvNp6UGJCU+aX1/vkoQiJHbGaLtMDSdJnR5oDUvFxAtY
-         TAkd7qrO3JEvWlUYaFgbNcK5yYWFmRHAPOyYekOSi6eS3Jva813FYD0lyytw1ShUhYA4
-         v3OYUR5RVHvPFW+xMCAJriNxhUVeaupgy2Zq/sxHNeS7RFkE6doMf3mWwd9K4Bwe75GY
-         vH2mlKUwZyYiRrBQZO3sD2rLy0omlI/30eWdF4Frw7OiY9IqWdw+h3HnJv9RDdFCdh78
-         c5EL1jQ2ocHhq4w8/ibfsTafCkxkQweSOLMQ2jBzvXVlEXVxFVfiQxIfKDVAEDkWQfCp
-         XGPg==
+        d=gmail.com; s=20230601; t=1758563303; x=1759168103; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6i11OsMA+MsaYaarT5KCIEcTCRNZhOeBzabcsiYfVKs=;
+        b=TbLtNcFATnbfXMZ7ZOXJ9Dvj+G8MXuN/4BtZy2FklojqYfFPLOUOkxPrPgkqUl6RN0
+         gLFGoQCZ3OnA5MpTOQ2OgrZrbwuUyrMPdEbtUYjkn3OdApUobn6EL2c5+FF3n4AGECd+
+         fnhX9ntkOwIoJkoGVB09y+oRbd6MwMme8we1SqPWryiqwHb8xyzQ2CSYVu8MQw7Yb4HZ
+         dAsg3zBlfm0SsccJnTvw4yGbP/nHwOCfwMZHQPUTskDMYnWe2RvQERIBKdG+bbr4qGSo
+         4vDsRaTvJJPHEDp4BZbNqC8JVyPT0oaVoudRtoxJ/3HtiMcKNm++fxeLzRJw18Bmo3F5
+         cpgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758563212; x=1759168012;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eHCpNXjzK4vjqWyITZQZXGAhxF9CSpOnc360flcFvFE=;
-        b=lQW+7sgz+EqD9J8ZsQbqTNrpMH0fFQ/Yi3wcKP00XjORIBA46VdDMzAIrCfZzS3kSt
-         wtJg6Q90ugR80zyKO6A4MvVS7uGZkvEfzzawbF6cdafD+RyTRzH/G9fNtthAO9dQhnsI
-         73fo1XxyZ8rZLi7nKICaSUhZf2zYb/7bkYU48N8e/Vtnd5o9rPChyLgafJc01VeGSgXW
-         P29hblIkR9bNudNuViF1apoeR5Xl5ki5CIBAVoaCd9053TCC85XA4Dfglkqs/0Tjvoru
-         e9JvaZZVbA5GVhXbTl7Kh1h/QlKOgt4sjILN3cHoxOLqlnbfrt0jaKQPo6dFHWhkh47a
-         4Wng==
-X-Gm-Message-State: AOJu0YzNwwRko9g6d3QhMYi7WacbVBXb3Y859qR6CbI/nBy1dOCQpQep
-	8RmmnHdjrTD7oDJ15Ug6pV7uaUB54s6X8VAyR62txaThTBkfgEh485n1kBCEPm5zFYRbKl5TVCZ
-	Z1GTQFo54ExsyF3eZLMKItONfxfpzUTE=
-X-Gm-Gg: ASbGncstepplba42c40+iy8cYXNhs7XHDYVMn9wYpc4rkgHW8ACL4uRnf0WBBRtOfJw
-	e5JglKkI30rNxjdSL4Xf2Y1rndy2gs+1MPQQAOnzlZmtkhqhE6umdVVOD8gyZ9LyFDUrP+p3+Ll
-	6Jeqc0wFU3ZI/EBvQY3JtvLnR7Iy3WPA0jatsZ3urXOkfgu1+kYZCKeVJvqGtnhbys4kUQz8eW6
-	1SSt785R4ZSwiF2b6Eb1kE=
-X-Google-Smtp-Source: AGHT+IFMhlXiLGOZ7dFStpyLWJUA1kJ8zHpWmMnZhUx/GAT0w2n349xwsIY6W7PusLnkJppK4nu/PhOSKjh8Ctk3W/Y=
-X-Received: by 2002:a05:690c:48c9:b0:730:67c0:eff8 with SMTP id
- 00721157ae682-73d0b595ac5mr123807887b3.0.1758563211624; Mon, 22 Sep 2025
- 10:46:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758563303; x=1759168103;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6i11OsMA+MsaYaarT5KCIEcTCRNZhOeBzabcsiYfVKs=;
+        b=SzVuGCdlj5hBEagTuAGEn+Sfu5ssGt8NC21RMl+faq2SVGlVRSffOpmGOi5+juoN1l
+         smInujgHXGUnJ6nL5OUTfXTHbcgBn/tp770QHLKdk6aDUnoFLW0Qzl0NyVoeaCa82NVN
+         p3vnYVIxSNOXkcDqFsQuIHRxWEqN9A+9tUM+ffDkgAsMtVn6Yghw57HBH33m18QOSH1W
+         XbhJepnUgm61iZTt1irr3/uSO+I/EnnZNqxoxqCwDUyHczhZFJKT3TQOQMMLv9PQFIka
+         wNzdkAlVgU1D0bQvWqHKlIgmIp9KsMKnseFdS9RUMlvOqigorLuWnPik4yLp1Frch4ZY
+         m0Zg==
+X-Gm-Message-State: AOJu0YxmWCoCdfYxW2FDuvyhD+f1iN/YiLXXSXO/+fBiam32KGwW+M+t
+	Ge72LGqUHH9+bQ0QPD1tS5esf5fn0X+JuhOXDeaS7rb07DAism1ZNkBFAB4F
+X-Gm-Gg: ASbGncvUH3WdRo3R6AWS0LDPolKpFkFM2wfzXA3sn1n3fKzgqWTAfooJzJaae82aVzL
+	BRR7tN2AQZrg3cdy4ClI5RXkhi60W65GxhVluyPd8L+Sf03IHwuKMYCxTmMZiJCdgzGrgNNn2Ev
+	39aMQKxCARKLrbTlABDVNSy/JdWK+/IRX3bbzmU6u6Q0QJeRxM9inQHwhiI1aNhTzstw4avMt1y
+	XAmzQUEFbKTt2l64TrPuMOVu7WHXBlqfvc6P3yL+ge9kvGMpMx4oti4gfdk/oxm1UdKIyd7beZp
+	3bpPGlwH+rKJAxE6nIpx/ZZbyfQ16VxtO8tQFFCaf+/joisFRbwC9oAGfLevHFCyjvxDDKFQrtU
+	CUGgl3uya7yQthy1GuBS3FP84Sv8pebYP60kVUndZYXjz1l7TkRTWi9qqQ1jIsOJ877EhANwkah
+	zuJ5OKtkNHPBrc7E9tB8ikWHFVuhqldEzcmVzQAk4TJLeOE0KpbUNuFI+tgNHDe31PL3nrIpXd7
+	pOF
+X-Google-Smtp-Source: AGHT+IHUDy0ZQufI3qCkAjkE0KSsNFLxHCvTa+GOcUP4Sluj+Gp0eJPhppj2B88gBhPgIcCi1FwgVQ==
+X-Received: by 2002:a17:902:ce09:b0:267:c1ae:8f04 with SMTP id d9443c01a7336-269b92f5037mr139480765ad.20.1758563303003;
+        Mon, 22 Sep 2025 10:48:23 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-269802dec24sm139429825ad.95.2025.09.22.10.48.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Sep 2025 10:48:22 -0700 (PDT)
+Date: Mon, 22 Sep 2025 10:48:22 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, netdev@vger.kernel.org,
+	magnus.karlsson@intel.com, kerneljasonxing@gmail.com
+Subject: Re: [PATCH bpf-next 2/3] xsk: remove @first_frag from xsk_build_skb()
+Message-ID: <aNGL5qS8aIfcSDnD@mini-arch>
+References: <20250922152600.2455136-1-maciej.fijalkowski@intel.com>
+ <20250922152600.2455136-3-maciej.fijalkowski@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250919230952.3628709-1-ameryhung@gmail.com> <aNFlpcGxd9yI6qLJ@boxer>
-In-Reply-To: <aNFlpcGxd9yI6qLJ@boxer>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 22 Sep 2025 10:46:39 -0700
-X-Gm-Features: AS18NWDnfkg0_XUQt9K1B34B1VfkZy9WZbSKnIrwHvDBa0v7gEPnBaIBRxDdxB4
-Message-ID: <CAMB2axPh4Ax=+1vzzm_AiWN8KKMwydLh=aUhqpd2x8rLT18yzw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 0/7] Add kfunc bpf_xdp_pull_data
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, paul.chaignon@gmail.com, 
-	kuba@kernel.org, stfomichev@gmail.com, martin.lau@kernel.org, 
-	mohsin.bashr@gmail.com, noren@nvidia.com, dtatulea@nvidia.com, 
-	saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250922152600.2455136-3-maciej.fijalkowski@intel.com>
 
-On Mon, Sep 22, 2025 at 8:06=E2=80=AFAM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Fri, Sep 19, 2025 at 04:09:45PM -0700, Amery Hung wrote:
-> > v6 -> v5
-> >   patch 6
-> >   - v5 selftest failed on S390 when changing how tailroom occupied by
-> >     skb_shared_info is calculated. Revert selftest to v4, where we get
-> >     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) by running an XDP
-> >     program
->
-> Hi Amery, could you shed more light on this? Would be nice to stick with
-> BTF approach as it looked clean to me. Was this due to SMP_CACHE_BYTES
-> being different between archs?
+On 09/22, Maciej Fijalkowski wrote:
+> Devices that set IFF_TX_SKB_NO_LINEAR will not execute branch that
+> handles metadata, as we set @first_frag only for !IFF_TX_SKB_NO_LINEAR
+> code in xsk_build_skb().
+> 
+> Same functionality can be achieved with checking if xsk_get_num_desc()
+> returns 0. To replace current usage of @first_frag with
+> XSKCB(skb)->num_descs check, pull out the code from
+> xsk_set_destructor_arg() that initializes sk_buff::cb and call it before
+> skb_store_bits() in branch that creates skb against first processed
+> frag. This so error path has the XSKCB(skb)->num_descs initialized and
+> can free skb in case skb_store_bits() failed.
+> 
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  net/xdp/xsk.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 72194f0a3fc0..064238400036 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -605,6 +605,13 @@ static u32 xsk_get_num_desc(struct sk_buff *skb)
+>  	return XSKCB(skb)->num_descs;
+>  }
+>  
+> +static void xsk_init_cb(struct sk_buff *skb)
+> +{
+> +	BUILD_BUG_ON(sizeof(struct xsk_addr_head) > sizeof(skb->cb));
+> +	INIT_LIST_HEAD(&XSKCB(skb)->addrs_list);
+> +	XSKCB(skb)->num_descs = 0;
+> +}
+> +
+>  static void xsk_destruct_skb(struct sk_buff *skb)
+>  {
+>  	struct xsk_tx_metadata_compl *compl = &skb_shinfo(skb)->xsk_meta;
+> @@ -620,9 +627,6 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+>  
+>  static void xsk_set_destructor_arg(struct sk_buff *skb, u64 addr)
+>  {
+> -	BUILD_BUG_ON(sizeof(struct xsk_addr_head) > sizeof(skb->cb));
+> -	INIT_LIST_HEAD(&XSKCB(skb)->addrs_list);
+> -	XSKCB(skb)->num_descs = 0;
+>  	skb_shinfo(skb)->destructor_arg = (void *)(uintptr_t)addr;
+>  }
+>  
+> @@ -672,7 +676,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+>  			return ERR_PTR(err);
+>  
+>  		skb_reserve(skb, hr);
+> -
+> +		xsk_init_cb(skb);
+>  		xsk_set_destructor_arg(skb, desc->addr);
+>  	} else {
+>  		xsk_addr = kmem_cache_zalloc(xsk_tx_generic_cache, GFP_KERNEL);
+> @@ -725,7 +729,6 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  	struct xsk_tx_metadata *meta = NULL;
+>  	struct net_device *dev = xs->dev;
+>  	struct sk_buff *skb = xs->skb;
+> -	bool first_frag = false;
+>  	int err;
+>  
+>  	if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
+> @@ -742,8 +745,6 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  		len = desc->len;
+>  
+>  		if (!skb) {
+> -			first_frag = true;
+> -
+>  			hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
+>  			tr = dev->needed_tailroom;
+>  			skb = sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
+> @@ -752,6 +753,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  
+>  			skb_reserve(skb, hr);
+>  			skb_put(skb, len);
+> +			xsk_init_cb(skb);
+>  
+>  			err = skb_store_bits(skb, 0, buffer, len);
+>  			if (unlikely(err))
+> @@ -797,7 +799,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  			list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
+>  		}
+>  
+> -		if (first_frag && desc->options & XDP_TX_METADATA) {
+> +		if (!xsk_get_num_desc(skb) && desc->options & XDP_TX_METADATA) {
+>  			if (unlikely(xs->pool->tx_metadata_len == 0)) {
+>  				err = -EINVAL;
+>  				goto free_err;
+> @@ -839,7 +841,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  	return skb;
+>  
+>  free_err:
+> -	if (first_frag && skb)
 
-Right.
+[..]
 
-I think it would be simpler to just find the tailroom occupied by
-skb_shared_info by running an XDP program instead of trying to
-duplicate how the kernel derives that size in the user space.
+> +	if (skb && !xsk_get_num_desc(skb))
+>  		kfree_skb(skb);
+>  
+>  	if (err == -EOVERFLOW) {
 
-WDYT?
+For IFF_TX_SKB_NO_LINEAR case, the 'goto free_err' is super confusing.
+xsk_build_skb_zerocopy either returns skb or an IS_ERR. Can we
+add a separate label to jump directly to 'if err == -EOVERFLOW' for
+the IFF_TX_SKB_NO_LINEAR case?
 
->
-> >
-> > v5 -> v4
-> >   patch 1
-> >   - Add a new patch clearing pfmemalloc bit in xdp->frags when all frag=
-s
-> >     are freed in bpf_xdp_adjust_tail() (Maciej)
-> >
-> >   patch 2
-> >   - Refactor bpf_xdp_shrink_data() (Maciej)
-> >
-> >   patch 3
-> >   - Clear pfmemalloc when all frags are freed in bpf_xdp_pull_data()
-> >     (Maciej)
-> >
-> >   patch 6
-> >   - Use BTF to get sizes of skb_shared_info and xdp_frame (Maciej)
-> >
-> >   Link: https://lore.kernel.org/bpf/20250919182100.1925352-1-ameryhung@=
-gmail.com/
-> >
-> > v3 -> v4
-> >   patch 2
-> >   - Improve comments (Jakub)
-> >   - Drop new_end and len_free to simplify code (Jakub)
-> >
-> >   patch 4
-> >   - Instead of adding is_xdp to bpf_test_init, move lower-bound check
-> >     of user_size to callers (Martin)
-> >   - Simplify linear data size calculation (Martin)
-> >
-> >   patch 5
-> >   - Add static function identifier (Martin)
-> >   - Free calloc-ed buf (Martin)
-> >
-> >   Link: https://lore.kernel.org/bpf/20250917225513.3388199-1-ameryhung@=
-gmail.com/
-> >
-> > v2 -> v3
-> >   Separate mlx5 fixes from the patchset
-> >
-> >   patch 2
-> >   - Use headroom for pulling data by shifting metadata and data down
-> >     (Jakub)
-> >   - Drop the flags argument (Martin)
-> >
-> >   patch 4
-> >   - Support empty linear xdp data for BPF_PROG_TEST_RUN
-> >
-> >   Link: https://lore.kernel.org/bpf/20250915224801.2961360-1-ameryhung@=
-gmail.com/
-> >
-> > v1 -> v2
-> >   Rebase onto bpf-next
-> >
-> >   Try to build on top of the mlx5 patchset that avoids copying payload
-> >   to linear part by Christoph but got a kernel panic. Will rebase on
-> >   that patchset if it got merged first, or separate the mlx5 fix
-> >   from this set.
-> >
-> >   patch 1
-> >   - Remove the unnecessary head frag search (Dragos)
-> >   - Rewind the end frag pointer to simplify the change (Dragos)
-> >   - Rewind the end frag pointer and recalculate truesize only when the
-> >     number of frags changed (Dragos)
-> >
-> >   patch 3
-> >   - Fix len =3D=3D zero behavior. To mirror bpf_skb_pull_data() correct=
-ly,
-> >     the kfunc should do nothing (Stanislav)
-> >   - Fix a pointer wrap around bug (Jakub)
-> >   - Use memmove() when moving sinfo->frags (Jakub)
-> >
-> >   Link: https://lore.kernel.org/bpf/20250905173352.3759457-1-ameryhung@=
-gmail.com/
-> >
-> > ---
-> >
-> > Hi all,
-> >
-> > This patchset introduces a new kfunc bpf_xdp_pull_data() to allow
-> > pulling nonlinear xdp data. This may be useful when a driver places
-> > headers in fragments. When an xdp program would like to keep parsing
-> > packet headers using direct packet access, it can call
-> > bpf_xdp_pull_data() to make the header available in the linear data
-> > area. The kfunc can also be used to decapsulate the header in the
-> > nonlinear data, as currently there is no easy way to do this.
-> >
-> > Tested with the added bpf selftest using bpf test_run and also on
-> > mlx5 with the tools/testing/selftests/drivers/net/{xdp.py, ping.py}.
-> > mlx5 with striding RQ enabled always passse xdp_buff with empty linear
-> > data to xdp programs. xdp.test_xdp_native_pass_mb would fail to parse
-> > the header before this patchset.
-> >
-> > Thanks!
-> > Amery
-> >
-> > Amery Hung (7):
-> >   bpf: Clear pfmemalloc flag when freeing all fragments
-> >   bpf: Allow bpf_xdp_shrink_data to shrink a frag from head and tail
-> >   bpf: Support pulling non-linear xdp data
-> >   bpf: Clear packet pointers after changing packet data in kfuncs
-> >   bpf: Support specifying linear xdp packet data size for
-> >     BPF_PROG_TEST_RUN
-> >   selftests/bpf: Test bpf_xdp_pull_data
-> >   selftests: drv-net: Pull data before parsing headers
-> >
-> >  include/net/xdp.h                             |   5 +
-> >  include/net/xdp_sock_drv.h                    |  21 +-
-> >  kernel/bpf/verifier.c                         |  13 ++
-> >  net/bpf/test_run.c                            |   9 +-
-> >  net/core/filter.c                             | 135 +++++++++++--
-> >  .../bpf/prog_tests/xdp_context_test_run.c     |   4 +-
-> >  .../selftests/bpf/prog_tests/xdp_pull_data.c  | 179 ++++++++++++++++++
-> >  .../selftests/bpf/progs/test_xdp_pull_data.c  |  48 +++++
-> >  .../selftests/net/lib/xdp_native.bpf.c        |  89 +++++++--
-> >  9 files changed, 463 insertions(+), 40 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_pull_dat=
-a.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_pull_dat=
-a.c
-> >
-> > --
-> > 2.47.3
-> >
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 72e34bd2d925..f56182c61c99 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -732,7 +732,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 		skb = xsk_build_skb_zerocopy(xs, desc);
+ 		if (IS_ERR(skb)) {
+ 			err = PTR_ERR(skb);
+-			goto free_err;
++			goto out;
+ 		}
+ 	} else {
+ 		u32 hr, tr, len;
+@@ -842,6 +842,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 	if (first_frag && skb)
+ 		kfree_skb(skb);
+ 
++out:
+ 	if (err == -EOVERFLOW) {
+ 		/* Drop the packet */
+ 		xsk_inc_num_desc(xs->skb);
+
+After that, it seems we can look at skb_shinfo(skb)->nr_frags? Instead
+of adding new xsk_init_cb, seems more robust?
 
