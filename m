@@ -1,177 +1,155 @@
-Return-Path: <bpf+bounces-69242-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69244-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F31C6B92263
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 18:14:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81A9CB92272
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 18:14:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD06C16EB19
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:14:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DFD57A7227
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7309D2E8B74;
-	Mon, 22 Sep 2025 16:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B258A3112A3;
+	Mon, 22 Sep 2025 16:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AzhjT8vK"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="CKytm1SF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2B930DD0E
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 16:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93AF30C36E;
+	Mon, 22 Sep 2025 16:14:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758557640; cv=none; b=YdNvY7tRMSHKlwU47QrPTcWSg3rP7F/oZcphX7yVCo65za55Xf4gwkHEq0rbX7UcFrqjlAEiu8Ezmcb1S5zV4fB0BRvTIiCZQRFMqXaGVbjt3r06JfVIHqd/B50F2Tn7tIrQth8qXvdaTSGcYdoM4SXJNf4f5t4pzx37j6QJtHQ=
+	t=1758557660; cv=none; b=ccBWTlUCaY292DoxeCcEs+oUmUZuRg1mzyGPSDV0h6yxYDuyydcb0s1uf7q7GNfDFz4mfbzLl3OCtvbd9gvAUb+JrOsQtaqwD5PKmVmtLyvNk2r84VbTuLZawzn1Jo1sqttm63y0rctFht+3DnJ0SBPgThtZTIKT+wbkCUifuoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758557640; c=relaxed/simple;
-	bh=rhU1EkqA5p7stFHqmVeFq5bD3W2ZGIzF1O0/+YaG3D4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MYgsdw76z8rtzygvLmdPGNLKjNGmqEZyuhW8J3xy5cwIWuSmawO9DZ4aYNZrrDTDnEv3bA30rTx7UwI1UlVlbLQgZwiX31qMnro5VBvwd3KMs5DN61dkZhARz3Ze/RJFBa7seNAy7B80NU3qBfzarkSjqgil7CVcoTUugQeAgxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AzhjT8vK; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-32b8919e7c7so5174801a91.2
-        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 09:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758557638; x=1759162438; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lmsic5OB/cDHdMmcKpW0RUCraKQS5ZGd9mFKkXSwuLc=;
-        b=AzhjT8vKklr9FoS8nr1ug/5q6QWCBTkVEQnaPV1hj/hUNpKePls88itYGpx1Tuzfel
-         UyAC+UJIMeeWr4ENi1vWCtPPEkNWtloQbmGAxay+RBt21XdNFJFnxrCQcWLL2WUlLDC/
-         17KqG4tLOOeJahNzp3T87Kj9FB78O2ul7gdYqbyDBTavhH0jdIiYXLjG8a619pVg1trq
-         EwtRawZF7sm3RRjekCs/R8VbSw10urMXwSwsf/lyMF+gsG/DryV8MVwiczH6j3N63V8A
-         EqogYGKvyGGTGgT2qCK8T1dbTlB0/1gMgQVslo0ybRY3rTYVSxy8wxJgGnM3xGdJVMDW
-         29mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758557638; x=1759162438;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lmsic5OB/cDHdMmcKpW0RUCraKQS5ZGd9mFKkXSwuLc=;
-        b=WVJ5Leh3T48aj7XiqBVxaljO470dysSXHuthO2R9gN+B8x9+Q/I0xr3S7+DCZfyUH2
-         dcODA8aDcZPIbxok8Dx6EMHA4QZ9P8bXva6B+ug3/4LT71GeXvNaJQzPleSgrhQ2cLVH
-         Jtyte+b6GL7TJCfc9rZBr177lCA4TS6/UwzdIBpX/XLGxNuhljp1njCvXPOdgjOqWyOU
-         UcYoekEtsPBTNjT4yYH6P47phEXIaRzz+gqsRT4eUNBcGc3EHsT4hHhclphpxJzi9G7X
-         D7dxujREltWWb4lY++FoTu2roEKD7grH1qP1+rfIQC1bI8trjNU+CcBW3/2sqyzXFTG6
-         AxcQ==
-X-Gm-Message-State: AOJu0YwwKR71a9yt93WuYFm4k9++MF/aTN0S2on3DdS058FV/U8hIIwZ
-	gmBW6ZLkp86M5sU84RePhJ+Wa2cmzMIPxLGjCEvfRpY8CKRu+AHh+PZUxY13erufGOoGnYJGJXy
-	PvhQjqq60YEveVIV9nKPNSe2O6mMlB5o=
-X-Gm-Gg: ASbGncvrCpsYpZ2aVLUCPtqjvEA8Ep2k2vaOjUnJVMb83SBjUqnEf/Bfm6sejIAMbk+
-	bqYQJUCXjuYCfZk2TcGrkoVfB5QGmCFlQ9ktUjlU/qvg/IaCMYROBN5fRxAlwumKJSEoJOyU+6Z
-	4yPyFftSptEp5qGDt/KvvVYAnqXazzTABilyMbRy3PK8wIMLWoHdvFuvBS63HVcxS9CY9JvYvxf
-	ZWLk9QHfk/GlzyaDlRaiH+Pv7XKh7q7QA==
-X-Google-Smtp-Source: AGHT+IEcdCyUUJlvhe2PgVY5uYhm5D26IyS6YaWyyTFe8pdOHx+N30lXCGhExBjfe8/1w49wadzJCsO45TC5OYaXdyo=
-X-Received: by 2002:a17:90b:2b48:b0:32e:87fa:d95f with SMTP id
- 98e67ed59e1d1-3309838e014mr15496482a91.32.1758557637530; Mon, 22 Sep 2025
- 09:13:57 -0700 (PDT)
+	s=arc-20240116; t=1758557660; c=relaxed/simple;
+	bh=3OFolmxdTeqkTmKN2f6a0TdgobmxRs7g1uQwbpoqZUE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c4IkGdTDWEjehrmMrjlHxdSHCre4qJWOSTqYHNeNGd90sJACp32hsovzP859C5Qp4+VQ3sWjyjchE9krEmGx+Y+juAYPN60Ks7dNP3U8+qlGhqj1arMb8lUdaJzvfnxB2gLAz8g/MZnWj/a1+h+CZ17rLGlBlZ/wBvIrH/Uz41g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=CKytm1SF; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=gL1NwOtkFSVen/UKpnltwxbuUneF5jP0zAW0IBZD1KA=; b=CKytm1SFJn/HLUAKLzSP00sefA
+	srE5LhPRufw57bM4jFxJ5+cr4Rzuw3gPifoFLoKNONgjyKHevdyr56i373hpX7lAJ1XDzW6LsFBB7
+	SBLFXw8RCMzytTAsHPhsWFB/5yHrROQEuXyUZ7rKWMZZIwuuzKmiXJopOZbGFc1bItPg9Cl9QAbtv
+	7YMKHJTcgm+gV5hMLFYeevD3jr1mPRRJ/I+Wd6BKs3mgFvX11ZV41bRZ9caFhSmCcQYGxWe8y3+pE
+	x+uPDEsqZ27UuUnVmMcH2RVTTY3DtmSdYtfNdfBIdgIM/FRaE6mbKtgwnCIbHb9uUQX4xyk+d00vt
+	rizG9Ang==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v0jB0-000D0I-2R;
+	Mon, 22 Sep 2025 18:14:06 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v0jAz-000My0-1G;
+	Mon, 22 Sep 2025 18:14:05 +0200
+Message-ID: <4c203fd0-dbe7-4da5-baa6-fee17b446b8c@iogearbox.net>
+Date: Mon, 22 Sep 2025 18:14:05 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910162733.82534-1-leon.hwang@linux.dev> <20250910162733.82534-5-leon.hwang@linux.dev>
- <CAEf4BzZJ3fEd6EaBV5M8QX=bTtL7bx0OM1E3o5HAgCemfuFQEQ@mail.gmail.com>
- <40840553-6c0a-494d-8429-863c4a6608f9@linux.dev> <CAEf4BzYTse1=pAYcM6y_vKbm74ZDtSu2Daj3sLewvKz16WF9NA@mail.gmail.com>
- <DCZEVCZLG1IW.2MPQVMF4L3D91@linux.dev>
-In-Reply-To: <DCZEVCZLG1IW.2MPQVMF4L3D91@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 22 Sep 2025 09:13:40 -0700
-X-Gm-Features: AS18NWBCnz3iXJVuISS4fWM9lRZ9iQLLstP8_3Bf3lSWO8aRK1mJkvuHoqpBXw4
-Message-ID: <CAEf4BzY8zPBbmjP6ooihyeqeJGdfgdh9KiW3XQGqv1qYWcefXg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 4/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
- flags support for percpu_hash and lru_percpu_hash maps
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, jolsa@kernel.org, yonghong.song@linux.dev, 
-	song@kernel.org, eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net, 
-	kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 03/20] net: Add ndo_queue_create callback
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+ davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com,
+ willemb@google.com, sdf@fomichev.me, john.fastabend@gmail.com,
+ martin.lau@kernel.org, jordan@jrife.io, maciej.fijalkowski@intel.com,
+ magnus.karlsson@intel.com, David Wei <dw@davidwei.uk>
+References: <20250919213153.103606-1-daniel@iogearbox.net>
+ <20250919213153.103606-4-daniel@iogearbox.net> <aNFzlHafjUFOvkG3@mini-arch>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <aNFzlHafjUFOvkG3@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27770/Mon Sep 22 10:26:19 2025)
 
-On Mon, Sep 22, 2025 at 7:50=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
->
-> On Sat Sep 20, 2025 at 6:31 AM +08, Andrii Nakryiko wrote:
-> > On Thu, Sep 18, 2025 at 10:25=E2=80=AFPM Leon Hwang <leon.hwang@linux.d=
-ev> wrote:
-> >>
-> >>
-> >>
-> >> >> @@ -1724,7 +1742,7 @@ __htab_map_lookup_and_delete_batch(struct bpf=
-_map *map,
-> >> >>         value_size =3D htab->map.value_size;
-> >> >>         size =3D round_up(value_size, 8);
-> >> >>         if (is_percpu)
-> >> >> -               value_size =3D size * num_possible_cpus();
-> >> >> +               value_size =3D (elem_map_flags & BPF_F_CPU) ? size =
-: size * num_possible_cpus();
-> >> >
-> >> > if (is_percpu && !(elem_map_flags & BPF_F_CPU))
-> >> >     value_size =3D size * num_possible_cpus();
-> >> >
-> >> > ?
-> >> >
-> >>
-> >> After looking at it again, I=E2=80=99d like to keep my approach.
-> >>
-> >> When 'elem_map_flags & BPF_F_CPU' is set, 'value_size' has to be
-> >> assigned to 'size' ('round_up(value_size, 8)') instead of keeping
-> >> 'htab->map.value_size'.
-> >>
-> >
-> > isn't that what will happen here as well? There is
-> >
-> > size =3D round_up(value_size, 8);
-> >
-> > right before that if
-> >
->
-> As for percpu maps, both 'size' and 'value_size' need to be 8-byte
-> aligned here, because 'map.value_size' itself is not guarenteed to be
-> aligned.
->
-> In 'htab_map_alloc_check()', there is no alignment check for percpu
-> maps.
->
-> So 'map.value_size' can be unaligned.
->
-> Let's look at how 'value_size' is used:
->
-> values =3D kvmalloc_array(value_size, bucket_size, GFP_USER | __GFP_NOWAR=
-N);
-> dst_val =3D values;
-> hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
->         if (is_percpu) {
->                 if (elem_map_flags & BPF_F_CPU) {
->                         copy_map_value_long(&htab->map, dst_val, per_cpu_=
-ptr(pptr, cpu));
->                 }
->         }
->         dst_val +=3D value_size;
-> }
-> copy_to_user(uvalues + total * value_size, values,
->              value_size * bucket_cnt)
->
-> Here, 'value_size' determines how values are laid out and copied.
->
+On 9/22/25 6:04 PM, Stanislav Fomichev wrote:
+> On 09/19, Daniel Borkmann wrote:
+>> From: David Wei <dw@davidwei.uk>
+>>
+>> Add ndo_queue_create() to netdev_queue_mgmt_ops that will create a new
+>> rxq specifically for mapping to a real rxq. The intent is for only
+>> virtual netdevs i.e. netkit and veth to implement this ndo. This will
+>> be called from ynl netdev fam bind-queue op to atomically create a
+>> mapped rxq and bind it to a real rxq.
+>>
+>> Signed-off-by: David Wei <dw@davidwei.uk>
+>> Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
+>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>> ---
+>>   include/net/netdev_queues.h | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
+>> index cd00e0406cf4..6b0d2416728d 100644
+>> --- a/include/net/netdev_queues.h
+>> +++ b/include/net/netdev_queues.h
+>> @@ -149,6 +149,7 @@ struct netdev_queue_mgmt_ops {
+>>   						  int idx);
+>>   	struct device *		(*ndo_queue_get_dma_dev)(struct net_device *dev,
+>>   							 int idx);
+>> +	int			(*ndo_queue_create)(struct net_device *dev);
+> 
+> kdoc is missing
 
-So in my mind (and maybe it's wrong, tell me), BPF_F_CPU turns a
-per-CPU map lookup into an effectively non-per-cpu one. So I'm not
-sure we need to do 8 byte alignment of value/key sizes when BPF_F_CPU
-is specified.
-
-But if people would like to keep 8 byte alignment anyways for
-BPF_F_CPU, that's fine too, I guess.
-
-> As a result, when 'is_percpu && (elem_map_flags & BPF_F_CPU)',
-> 'value_size' must be assigned to 'size' in order to make sure it's
-> 8-byte aligned.
->
-> Thanks,
-> Leon
+same, will address in v2, thanks for spotting!
 
