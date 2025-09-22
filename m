@@ -1,211 +1,146 @@
-Return-Path: <bpf+bounces-69230-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69231-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E45EDB91E69
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 17:27:10 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8D49B91FE9
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 17:39:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A323422E4D
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 15:26:52 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 778E84E1215
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 15:39:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D3152E2847;
-	Mon, 22 Sep 2025 15:26:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DDAA2EAB64;
+	Mon, 22 Sep 2025 15:39:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N7Y2j3Tq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QBlmArr3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB352E3360;
-	Mon, 22 Sep 2025 15:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DADC2EA72B
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 15:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758554795; cv=none; b=dvlyfTdTVF8lyH1QwP7oluVAs2ogIpT1vD7JtoKVDF/NHZ5IxzNVkb3fEe93KBNhOfx2xSb3gKgmz1sVJwzw0COxJdgihvAUkl1HpzXtetbdboLn7oHkbp9vZp+IDuOkVfU0oTrl0U05PsMScSunxM1c97jDV7ev1YSnWajrvVI=
+	t=1758555545; cv=none; b=HrIGHuIl+SMxEtTY5C6ZQaF/Ht8La+uZyPs1JxhI3CMhAyeC7WSUuzjf4hX5zdUPxuvSLi+mR5+Nn5jG7xIpmBzsMwNUCVkbXwvG9M9D/tDBtc2BNKzCOgyrKm8dsxfEU7nxep50PQZW6sWFKmcgtnzAWZTPA4nsiX+84ULe92o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758554795; c=relaxed/simple;
-	bh=r+U+Xow8gQkcWwszhPh0pl4kZjueOXormgmuZ9qI7MM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=d5EAjKL9f+QcVqxeTSkNoRtIc3dy3dG841Pk9iXBGBhA+NzfHakRhagkBW15fo0EgjdfouUHyT2RSgH3bcdKa9CzSBYQHhq1l16HvjFSt4TatCKR0vm4aklE1G/9WU5mi9i7fqletFF69ikbIfda0wnJnjXVSgl4ERLqntM2Q+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N7Y2j3Tq; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1758554794; x=1790090794;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=r+U+Xow8gQkcWwszhPh0pl4kZjueOXormgmuZ9qI7MM=;
-  b=N7Y2j3Tq42iGEaELk+Uy3Asw4ekszsKbvlRyTKUfLSUanqXBiUBJky1O
-   JUPKZ2DXwCepSj/hv+g5sa7EfnL9s/ImpTA/2YfvFLu1Vq7W0DuGrE0Sp
-   I4FIOyOraLrA1Fo25aFpn25FIZxZ0om1EE5XpiGeGMYiLoL0FqNq7KXXK
-   tzay2MYcauRFP1XAjZGC959r28hNVvHXNH1Zx3DsBQ4TMOTtfpSE5UMSL
-   HCfdoj7q/zFlUjZV3CDBTQrQBrWflnCn++E7QyoQgbG8CcSUsfVdafdNK
-   0C4YHcPVtPsXEcDi1LgAT/bHEcLSHpKJgQE+WSwwvenc9S9hVq6luOoTw
-   A==;
-X-CSE-ConnectionGUID: DEZsFGMmSXybQMU99jngiw==
-X-CSE-MsgGUID: BdtFtX0RR7mkfhY8vMMpzA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11561"; a="63449220"
-X-IronPort-AV: E=Sophos;i="6.18,285,1751266800"; 
-   d="scan'208";a="63449220"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2025 08:26:34 -0700
-X-CSE-ConnectionGUID: ZVGq9DsAQhyU7FDbflIfxA==
-X-CSE-MsgGUID: qmT8uUzUSv+qk607w/r+ug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,285,1751266800"; 
-   d="scan'208";a="207242248"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orviesa002.jf.intel.com with ESMTP; 22 Sep 2025 08:26:32 -0700
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org
-Cc: netdev@vger.kernel.org,
-	magnus.karlsson@intel.com,
-	stfomichev@gmail.com,
-	kerneljasonxing@gmail.com,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next 3/3] xsk: wrap generic metadata handling onto separate function
-Date: Mon, 22 Sep 2025 17:26:00 +0200
-Message-Id: <20250922152600.2455136-4-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20250922152600.2455136-1-maciej.fijalkowski@intel.com>
-References: <20250922152600.2455136-1-maciej.fijalkowski@intel.com>
+	s=arc-20240116; t=1758555545; c=relaxed/simple;
+	bh=+pi56O3b51xWpK/gynXOWLU473m1ZZ7txSI/RgTjuqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cnZsPHmsUjaOhsAz8q7J2aIPN2dNYl2BVqqkAmw833bFDyv2WncalicCm05TuZhZktPxkiDRQef4mB0Hk9An0juOgwNz2QP48e3rUV/NalhfeOOmx4sEGnwpU891pMF3KycoUMwMiW7+x0JUe5Xxi6ttCjWZIc7DlCJqwbe8iUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QBlmArr3; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-77f2077d1c8so1461479b3a.0
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 08:39:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758555544; x=1759160344; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/+2ag/iV4mxazDtCnvPykVJFi1jwwbRDl7dA4X3Ytkc=;
+        b=QBlmArr31oLL8Kd3LI497dLTRX/SlDIDr77UHPMRb0qMIjWX1jN1pGgWAVgp0n3wK8
+         5iLJ9+1fMAN22qftQ+idM7DmNplpXnuuU6SrQ3fj2iYSNofBsyVxeJG6KV4bi3MO1MmL
+         VaSBYmTAelgPP4vIWp1EeF4QkeePuT4BfpmRxv5EVT/24XGrJ4VVtn+Z81eAh5ukZxSy
+         zEj/99O4KL2z79o/YVrqjulLaD4jaC2uSlUy6L7BTmf6cmNWcv/wUXgpllef9xGfuJc6
+         04BOvmM7dPeIUJ6a/1a+JsPQgFbTWRh0L5qFs8X1QoeRJ7BpfBpuZeUdON9Kva4MwLN9
+         ITXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758555544; x=1759160344;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/+2ag/iV4mxazDtCnvPykVJFi1jwwbRDl7dA4X3Ytkc=;
+        b=FhJEQajf74q/Fs+t0quJWH/l/7Teoe0SDZtHk2yIpY+JiIoz5sM3iG2lin7nOcuEj3
+         erROq1YYs/1CklX3SZayekvJ6u1BKkC81CaSaUZq4qYaG9gN7QgWV5DO5fb2I8XYDNeo
+         cQmyykUW1iHgg0l9t11zm3etwneVKLwCUZBfR7gakasjteujL4M7GP305otE+N693Cws
+         nrZGcXCS4GZt/yKasuHIJb8+3dbesO3lxDmg6BwHvLplyabEhLWvuePg1I4VqW3t5Dv+
+         +rd7II7QrKCVB99QCN1oiSNn/entgzsGt6v0uKlMn76Q9PtRzThKgtk3LVamKzOvcimi
+         i7Vw==
+X-Forwarded-Encrypted: i=1; AJvYcCUZTNR88+oMjVeQcfg8fKiTP8P87ScdDZUvHQPGGC6krkk7Z261Zq154bPD2iBwKK3dBG0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwBreJp73lZ1H048nueLJNUPQSAQZ3cRlKFI8eDi2kMARF6Iew9
+	El+c032JCoFDK+LmImK/Oj3voN5bO9ZJqPbW5bczZhqGC8ztmuwo3UM=
+X-Gm-Gg: ASbGncuUbVv28n12Ll8sOqX8vLZSB9ojd6+NN69o4RICHsKWwdzeRPKINNFGQeJRSRh
+	qHZ7LyfcAAblbs4zFS32rl8R16Q0qSVS/kF4+gbEJ69jc31RktPzEzF4HyRojjrmJUl5Otnatr+
+	DMzKinVUtOyA95E6vI7LtTmjOOP2C+1V+on2S+gv6h4xTLlt9A32mUrtICl5pcCM2FUB7aUGzV3
+	9Qlt79Vjt1sHYOi29VAVzFpTuRror/og0pHrPvLi0pGQX6l4GhjaVHYxfsr4OHU6CbYwXWz0LDb
+	7ZB9U+sa56wydiCC0cbvkrR2bUWLXdcEQ1P25UT7Yw0p8F9THsV5YDtF6Jwm4hoETq3x4luJgqQ
+	EIqjMtrV6fGjnXA7AxFfdkeNZx8x3XInKCwcXZJwUV7nnNq5gnbCxUyT41RtwfUdj5+cP+4Ha4d
+	pdB2BohGDFezlEJGCfKrp8wrrtet773loGwX1fJ1aVqxRd2DdqMBZEkWWLAJZHuiFq2b/UBue5P
+	umh
+X-Google-Smtp-Source: AGHT+IE3TS2ZT2iVwXx8IVuVRd65DCwplvU4zTMTt2k1/M2gr1xCgjuzcB7lSRGACmTncGG25EZblA==
+X-Received: by 2002:a05:6a20:4327:b0:245:ffe1:5619 with SMTP id adf61e73a8af0-292189dd44emr15040347637.23.1758555543694;
+        Mon, 22 Sep 2025 08:39:03 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id 41be03b00d2f7-b55149526cfsm10207767a12.36.2025.09.22.08.39.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Sep 2025 08:39:03 -0700 (PDT)
+Date: Mon, 22 Sep 2025 08:39:02 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Donald Hunter <donald.hunter@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next 1/6] netlink: specs: Add XDP RX checksum
+ capability to XDP metadata specs
+Message-ID: <aNFtljcYeLK3uVo3@mini-arch>
+References: <20250920-xdp-meta-rxcksum-v1-0-35e76a8a84e7@kernel.org>
+ <20250920-xdp-meta-rxcksum-v1-1-35e76a8a84e7@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250920-xdp-meta-rxcksum-v1-1-35e76a8a84e7@kernel.org>
 
-xsk_build_skb() has gone wild with its size and one of the things we can
-do about it is to pull out a branch that takes care of metadata handling
-and make it a separate function. Consider this as a good start of
-cleanup.
+On 09/20, Lorenzo Bianconi wrote:
+> Introduce XDP RX checksum capability to XDP metadata specs. XDP RX
+> checksum will be use by devices capable of exposing receive checksum
+> result via bpf_xdp_metadata_rx_checksum().
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  Documentation/netlink/specs/netdev.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+> index e00d3fa1c152d7165e9485d6d383a2cc9cef7cfd..00699bf4a7fdb67c6b9ee3548098b0c933fd39a4 100644
+> --- a/Documentation/netlink/specs/netdev.yaml
+> +++ b/Documentation/netlink/specs/netdev.yaml
+> @@ -61,6 +61,11 @@ definitions:
+>          doc: |
+>            Device is capable of exposing receive packet VLAN tag via
+>            bpf_xdp_metadata_rx_vlan_tag().
+> +      -
+> +        name: checksum
+> +        doc: |
+> +          Device is capable of exposing receive checksum result via
+> +          bpf_xdp_metadata_rx_checksum().
+>    -
+>      type: flags
+>      name: xsk-flags
 
-No functional changes here.
-
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- net/xdp/xsk.c | 83 ++++++++++++++++++++++++++++-----------------------
- 1 file changed, 46 insertions(+), 37 deletions(-)
-
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 064238400036..7121d4f99915 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -723,10 +723,48 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
- 	return skb;
- }
- 
-+static int xsk_skb_metadata(struct sk_buff *skb, void *buffer,
-+			    struct xdp_desc *desc, struct xsk_buff_pool *pool,
-+			    u32 hr)
-+{
-+	struct xsk_tx_metadata *meta = NULL;
-+
-+	if (unlikely(pool->tx_metadata_len == 0))
-+		return -EINVAL;
-+
-+	meta = buffer - pool->tx_metadata_len;
-+	if (unlikely(!xsk_buff_valid_tx_metadata(meta)))
-+		return -EINVAL;
-+
-+	if (meta->flags & XDP_TXMD_FLAGS_CHECKSUM) {
-+		if (unlikely(meta->request.csum_start +
-+			     meta->request.csum_offset +
-+			     sizeof(__sum16) > desc->len))
-+			return -EINVAL;
-+
-+		skb->csum_start = hr + meta->request.csum_start;
-+		skb->csum_offset = meta->request.csum_offset;
-+		skb->ip_summed = CHECKSUM_PARTIAL;
-+
-+		if (unlikely(pool->tx_sw_csum)) {
-+			int err;
-+
-+			err = skb_checksum_help(skb);
-+			if (err)
-+				return err;
-+		}
-+	}
-+
-+	if (meta->flags & XDP_TXMD_FLAGS_LAUNCH_TIME)
-+		skb->skb_mstamp_ns = meta->request.launch_time;
-+	xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
-+
-+	return 0;
-+}
-+
- static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 				     struct xdp_desc *desc)
- {
--	struct xsk_tx_metadata *meta = NULL;
- 	struct net_device *dev = xs->dev;
- 	struct sk_buff *skb = xs->skb;
- 	int err;
-@@ -764,6 +802,13 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 			skb->priority = READ_ONCE(xs->sk.sk_priority);
- 			skb->mark = READ_ONCE(xs->sk.sk_mark);
- 			skb->destructor = xsk_destruct_skb;
-+
-+			if (desc->options & XDP_TX_METADATA) {
-+				err = xsk_skb_metadata(skb, buffer, desc,
-+						       xs->pool, hr);
-+				if (unlikely(err))
-+					goto free_err;
-+			}
- 		} else {
- 			int nr_frags = skb_shinfo(skb)->nr_frags;
- 			struct xsk_addr_node *xsk_addr;
-@@ -798,42 +843,6 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 			xsk_addr->addr = desc->addr;
- 			list_add_tail(&xsk_addr->addr_node, &XSKCB(skb)->addrs_list);
- 		}
--
--		if (!xsk_get_num_desc(skb) && desc->options & XDP_TX_METADATA) {
--			if (unlikely(xs->pool->tx_metadata_len == 0)) {
--				err = -EINVAL;
--				goto free_err;
--			}
--
--			meta = buffer - xs->pool->tx_metadata_len;
--			if (unlikely(!xsk_buff_valid_tx_metadata(meta))) {
--				err = -EINVAL;
--				goto free_err;
--			}
--
--			if (meta->flags & XDP_TXMD_FLAGS_CHECKSUM) {
--				if (unlikely(meta->request.csum_start +
--					     meta->request.csum_offset +
--					     sizeof(__sum16) > len)) {
--					err = -EINVAL;
--					goto free_err;
--				}
--
--				skb->csum_start = hr + meta->request.csum_start;
--				skb->csum_offset = meta->request.csum_offset;
--				skb->ip_summed = CHECKSUM_PARTIAL;
--
--				if (unlikely(xs->pool->tx_sw_csum)) {
--					err = skb_checksum_help(skb);
--					if (err)
--						goto free_err;
--				}
--			}
--
--			if (meta->flags & XDP_TXMD_FLAGS_LAUNCH_TIME)
--				skb->skb_mstamp_ns = meta->request.launch_time;
--			xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
--		}
- 	}
- 
- 	xsk_inc_num_desc(skb);
--- 
-2.43.0
-
+nit: let's fold it into patch 2? Will be easier to git blame the
+feature..
 
