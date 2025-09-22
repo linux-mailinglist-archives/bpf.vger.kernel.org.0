@@ -1,93 +1,97 @@
-Return-Path: <bpf+bounces-69287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75AC9B9393D
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 01:26:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E32BEB9395A
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 01:34:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55D2D19075FD
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 23:27:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BBBB2A052B
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 23:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29A343128AC;
-	Mon, 22 Sep 2025 23:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C27532C11E6;
+	Mon, 22 Sep 2025 23:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P5jfoG8R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gQpujcvL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C978E2F8BE7
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 23:26:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD414277C8F
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 23:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758583594; cv=none; b=bELk8vSKwR7xtT4ufHP/2Vx/WBt6gGiVNGitSD2WfnAvKYj/2K9deLOuGI/zzqk48+VDiCpZPYJWPHSirs8fuf7Tl3vlQi/O9Ay7lc6f0BRzVXh1km/eUP3qpN4zxxZ0lLKkCxtZCPkWOfaDhb1JOU8PjVufSZ+RG0zz9H6k0Bk=
+	t=1758584040; cv=none; b=ZcSsL79HXzhlGXBZry62su9O/guCOd/SzwMpG7M4u4BOGn2vZ/V//8BPiAAoH7QKQhHHIrDd456PEjCHsh7ZdjdIhHg86ecYJUIJPw8d26VsAf+1KQfgxo4Up0XUMRABq2YjsMhTB/S6CaHMyjryZRc/CCrszwS1t75lrf54wQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758583594; c=relaxed/simple;
-	bh=jOv6FJhSXW7zSqQ6ZFJsveSwG6TrdXwTCfR6Vnu8bi4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RxzPEjb3SC4vcOt1BIctXayNuDVLb/uOfhFaMt6mPZaZalxbfwG2BE7Esk+l0cU6j2ZtTh6geWcxhi9MsMImjaOthy7O3hv9Dca8DFB+msEGHP+sb5dMSZbrrMtDKRKzfiob2kdsa/O2m0/5SG6HyfXxdepbqnRrgNMAEgC6qfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P5jfoG8R; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1758584040; c=relaxed/simple;
+	bh=7L0b8xVcWKGl2Um96G9TEeLLcPaAZLg//CEHJzPw1vY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uH64hVwaMh+Rrf3QLCl4xwxzhOSBl1rU0YHs/AotX9hvkzLVCHqvAkO1QjQoIXu2xrHrZHfl+c52Ax1b8VjDSUuE/8F46+FbG0sAo1DrM4YqFLvBh2Nw3V7Lh1YpPkeeoK29OyYHlreZzV6/7rir2L1i/WeHHrJ0HjjY8DVNkrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gQpujcvL; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-afcb78ead12so754508866b.1
-        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 16:26:32 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-244580523a0so59112185ad.1
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 16:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758583591; x=1759188391; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N0FXMcJdBrsoc6XCfW7QthBXIc3QuzJPPn0xJO64Mj8=;
-        b=P5jfoG8RYlqCYQF8PQkRFj9i6/ZqJAbZsYI/1lEcjvwdFajfZ2N2ILyLLy8MlDv3OL
-         yFzsotYLhgaR8oqgmhRIHenCgQEUhYYtcyE8/M7n/wFmkS8fLV/zwmbR7CevWJqzSq9x
-         de7E9qup+HcbEwQuziRrbRuCQ7MM6TQMdIpghx702MdfZcV17IrdXWddopyMSyN8OxJR
-         OhlpJOXOrYlIL2MrYhVn9tD9zRRAThClRar4qal368NnL4EkW3GxNaleAy0uoeQAm5ZC
-         sUyiTMrac4oZwJFSNA2ExdLzynB6NKi7Tj9RucoB41yvAoggEmdwjUB5bENFgMU3IFkr
-         d3GA==
+        d=gmail.com; s=20230601; t=1758584038; x=1759188838; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bNuyT4UIadhF83LQiFA1J7XTqOmNSKvnywAckACKVBw=;
+        b=gQpujcvLXCskSaMnAGo6srcLwlaHjthv5ZMZiTFg2e/6eKJJXZDK5w40zo4ZvoN+W0
+         Nll58W0Ri36t4lYwVVg62hBrWPjzJ3iu9gL+8P48hq2B8WhrxsqqGhCx6STlccAA/rvA
+         SdZUPYyYxHiom3NS2a6Z5K+ze1ADzAvbLrAZTndKaqG8vB/do00q9N6sUp0+Dd3aWFZd
+         Cbt9b8cX+sM48LKwOJ6nIv0WXrH3d9MvxnxWur/KM+WHSyiozrZi0l/fX8RXlAE8+zqY
+         Ve2JhQhuVgle4FoscCyhUrHUOYJnsia2+uOW9IfsxcUYnGLqO3/PRHNd9ytderA0lsfJ
+         39hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758583591; x=1759188391;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N0FXMcJdBrsoc6XCfW7QthBXIc3QuzJPPn0xJO64Mj8=;
-        b=lu0bgYesip+U5a1ImVRqJbS7sfsvurnrGKJpPzD77yjUfaTv5UyfAUFqSgXwQcqqo9
-         J3eoMZtt+GDkLq5yiBvWFwRgpCWrhmWPP0CXyHdcnmGt0Mhz6CwrFyNBX02xPJi2zKDk
-         4o/klggJ9fmc6oCwVwPMwi3xp+yrlqnKgCf1Uq18TvPmCO7aG0+ME6iiYSEhaoWOHezN
-         kBubUTtS0RbYU7Cbwklkp7wNgtFDiu3AD4DMnlFdWOMkAPsY5CEiDNMiQEQOpIotLurp
-         7jlD7+jjPkn46RaW8wihEhd4BSYKl5/akwc/TlZUjTLHVKMBLtpe50iWj/iLgPYp4auz
-         Deiw==
-X-Gm-Message-State: AOJu0YwiMup2Zcy30DyFlTCNT4tiUwxiABUAWWYTQTxUqI/cm52XHFb+
-	3s0bPYWnOIGzq319tx0ZxLo4N7nXychShBZE2LcgNPr5tCP3lvkbhiF31h2wSQ==
-X-Gm-Gg: ASbGncvhMKAZTCsHFotlmyUjq4LA045tv7YPzFPH/LsfwHJMX/SiPTYTJNRHuXjkyyt
-	Fb8EE0nQN4F0WdRMaokgs3v3Ixx7xxATBosvvveIlWvrrhgj0FSKLFh0Nb6azpCXC6KJGBZ3vEt
-	UBT4o7CLC4XiIVC0d0b8bgcmpwl4n/a0EXeLQJrTL+G58uAxa7uV2VM6TmO8laRVHB7MdQ9t1U4
-	HEr2cM87aLUn86taiwmGD6/PQZIbvTDVzm5QgCvFGz8ssaAyoCykJITM1hINnpqFlPxySckzvP+
-	269xL3t70TI3wGOO9mQAnQjBLHAbjPGcYpLlKDc51BDSSG9cEFh1wsqXvnaCunjwruSTEFprCmf
-	8Cy0S7m0LTJ84Ccpws7Xt
-X-Google-Smtp-Source: AGHT+IEtkgE+P8McL/rS6MDeILDu2lBSqUV4opkaK/rB9tihS9Ie8DVnudT8VXqEfOCTV/oWMcBDkg==
-X-Received: by 2002:a17:907:3f99:b0:af1:f259:254d with SMTP id a640c23a62f3a-b302679e5bdmr31240266b.8.1758583590992;
-        Mon, 22 Sep 2025 16:26:30 -0700 (PDT)
-Received: from localhost ([2a02:8109:a307:d900:29a2:6d8:baf5:4284])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b1fd1102d7asm1208942866b.76.2025.09.22.16.26.30
+        d=1e100.net; s=20230601; t=1758584038; x=1759188838;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bNuyT4UIadhF83LQiFA1J7XTqOmNSKvnywAckACKVBw=;
+        b=F6ZYZa4U5IePhn35KmpzFnCGWLikTuC5CBkM+l4tLpMBp/veOwOhLTwngRZGQx0+tz
+         dbzPGrqVW/JTA2ad68ETFj9pN5qxXaw2YlKCawB0TKEpdJEFVyRqnQK3VsZ684D8avd4
+         TVlcRs6M8zNWNqvHV5S8Sn7r6SghsorG+UMnDoJmhwTVl/h8th9RHeGDiCBISZDo/StO
+         eNuTlvJ8rfT7qI2zsxA3++pJNxeWaXcZoEGYwP82LFOK5j18kZYdGcVwb0VSvkdIh4Fg
+         D5oCLPFRAxEAMS68/kKKnz5Mm/WvVuAAFNwgrqsWazX3adENDpugt78+am/pnnxcObOy
+         th3g==
+X-Gm-Message-State: AOJu0YxuXJnapF79mXxKx7SuLksZk37OocEogpcTB48wXZWz1IaB1dFr
+	QpMvCqNMKkrJosCTMtdtCymYrrgCSmMSJAfxC2G9yaTVA2X57iAQTvGglLHpSA==
+X-Gm-Gg: ASbGncu1HxRIhR5zj/UdDI9//FRLml2eNLxjvf4FOZxhSneOl/5/jKp7AYn4H3yZpM+
+	HAlGec8NRHcCBZioaVcSwqCcLFOtw0kmLnmR1uP4YXJQSxO0Av1OSEa3tzCLn9eGDydRbOFo2K+
+	aAWpFR8XUicFa0lIB6HCJAyGJamfhjiRh1x8vkd8x2fkkjzd1tmtHn2TeAQub655iIqVNjaV4zL
+	RzUBPp1peuMistvy5dMYUOXVUlGROjonGlc8fMROs0Mou/IgRCcAeYpZIKDX3Fjt+i9Emd7DSTI
+	/XJpI0srgLMWgScKkPG4820wPaBoO9FeZKdi8g5K4qDmNtc6OYK08qly0uK7Yh+YSs0yhxJTiT0
+	4e2bGmhqN/Vr6VQ==
+X-Google-Smtp-Source: AGHT+IHhQ89LwsOFfsaS/aRK00/dCrokkNfeWSP99FUsxwIhdesxbkrNbiw0MU1Ga5/z28uybnAB7Q==
+X-Received: by 2002:a17:902:e945:b0:246:80b1:8c87 with SMTP id d9443c01a7336-27cc61b8d7bmr6664055ad.43.1758584037621;
+        Mon, 22 Sep 2025 16:33:57 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:74::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269803587absm140655065ad.137.2025.09.22.16.33.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Sep 2025 16:26:30 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
+        Mon, 22 Sep 2025 16:33:57 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
 	andrii@kernel.org,
 	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com,
-	memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v7 9/9] selftests/bpf: add bpf task work stress tests
-Date: Tue, 23 Sep 2025 00:26:10 +0100
-Message-ID: <20250922232611.614512-10-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250922232611.614512-1-mykyta.yatsenko5@gmail.com>
-References: <20250922232611.614512-1-mykyta.yatsenko5@gmail.com>
+	paul.chaignon@gmail.com,
+	kuba@kernel.org,
+	stfomichev@gmail.com,
+	martin.lau@kernel.org,
+	mohsin.bashr@gmail.com,
+	noren@nvidia.com,
+	dtatulea@nvidia.com,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	maciej.fijalkowski@intel.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v7 0/8] Add kfunc bpf_xdp_pull_data
+Date: Mon, 22 Sep 2025 16:33:48 -0700
+Message-ID: <20250922233356.3356453-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -96,238 +100,136 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+v7 -> v6
+  patch 5 (new patch)
+  - Rename variables in bpf_prog_test_run_xdp()
 
-Add stress tests for BPF task-work scheduling kfuncs. The tests spawn
-multiple threads that concurrently schedule task_work callbacks against
-the same and different map values to exercise the kfuncs under high
-contention.
-Verify callbacks are reliably enqueued and executed with no drops.
+  patch 6
+  - Fix bugs (Martin)
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+v6 -> v5
+  patch 6
+  - v5 selftest failed on S390 when changing how tailroom occupied by
+    skb_shared_info is calculated. Revert selftest to v4, where we get
+    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) by running an XDP
+    program
+
+  Link: https://lore.kernel.org/bpf/20250919230952.3628709-1-ameryhung@gmail.com/
+
+v5 -> v4
+  patch 1
+  - Add a new patch clearing pfmemalloc bit in xdp->frags when all frags
+    are freed in bpf_xdp_adjust_tail() (Maciej)
+
+  patch 2
+  - Refactor bpf_xdp_shrink_data() (Maciej)
+
+  patch 3
+  - Clear pfmemalloc when all frags are freed in bpf_xdp_pull_data()
+    (Maciej)
+
+  patch 6
+  - Use BTF to get sizes of skb_shared_info and xdp_frame (Maciej)
+
+  Link: https://lore.kernel.org/bpf/20250919182100.1925352-1-ameryhung@gmail.com/
+
+v3 -> v4
+  patch 2
+  - Improve comments (Jakub)
+  - Drop new_end and len_free to simplify code (Jakub)
+
+  patch 4
+  - Instead of adding is_xdp to bpf_test_init, move lower-bound check
+    of user_size to callers (Martin)
+  - Simplify linear data size calculation (Martin)
+
+  patch 5
+  - Add static function identifier (Martin)
+  - Free calloc-ed buf (Martin)
+
+  Link: https://lore.kernel.org/bpf/20250917225513.3388199-1-ameryhung@gmail.com/
+
+v2 -> v3
+  Separate mlx5 fixes from the patchset
+
+  patch 2
+  - Use headroom for pulling data by shifting metadata and data down
+    (Jakub)
+  - Drop the flags argument (Martin)
+
+  patch 4 
+  - Support empty linear xdp data for BPF_PROG_TEST_RUN
+
+  Link: https://lore.kernel.org/bpf/20250915224801.2961360-1-ameryhung@gmail.com/
+
+v1 -> v2
+  Rebase onto bpf-next
+
+  Try to build on top of the mlx5 patchset that avoids copying payload
+  to linear part by Christoph but got a kernel panic. Will rebase on
+  that patchset if it got merged first, or separate the mlx5 fix
+  from this set.
+
+  patch 1
+  - Remove the unnecessary head frag search (Dragos)
+  - Rewind the end frag pointer to simplify the change (Dragos)
+  - Rewind the end frag pointer and recalculate truesize only when the
+    number of frags changed (Dragos)
+
+  patch 3
+  - Fix len == zero behavior. To mirror bpf_skb_pull_data() correctly,
+    the kfunc should do nothing (Stanislav)
+  - Fix a pointer wrap around bug (Jakub)
+  - Use memmove() when moving sinfo->frags (Jakub)
+
+  Link: https://lore.kernel.org/bpf/20250905173352.3759457-1-ameryhung@gmail.com/
+  
 ---
- .../bpf/prog_tests/task_work_stress.c         | 130 ++++++++++++++++++
- .../selftests/bpf/progs/task_work_stress.c    |  73 ++++++++++
- 2 files changed, 203 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/task_work_stress.c
- create mode 100644 tools/testing/selftests/bpf/progs/task_work_stress.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_work_stress.c b/tools/testing/selftests/bpf/prog_tests/task_work_stress.c
-new file mode 100644
-index 000000000000..6acd276f10e0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/task_work_stress.c
-@@ -0,0 +1,130 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include <string.h>
-+#include <stdio.h>
-+#include "task_work_stress.skel.h"
-+#include <linux/bpf.h>
-+#include <linux/perf_event.h>
-+#include <sys/syscall.h>
-+#include <time.h>
-+#include <stdlib.h>
-+#include <stdatomic.h>
-+
-+struct test_data {
-+	int prog_fd;
-+	atomic_int exit;
-+};
-+
-+void *runner(void *test_data)
-+{
-+	struct test_data *td = test_data;
-+	int err = 0;
-+	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+
-+	while (!err && !atomic_load(&td->exit))
-+		err = bpf_prog_test_run_opts(td->prog_fd, &opts);
-+
-+	return NULL;
-+}
-+
-+static int get_env_int(const char *str, int def)
-+{
-+	const char *s = getenv(str);
-+	char *end;
-+	int retval;
-+
-+	if (!s || !*s)
-+		return def;
-+	errno = 0;
-+	retval = strtol(s, &end, 10);
-+	if (errno || *end || retval < 0)
-+		return def;
-+	return retval;
-+}
-+
-+static void task_work_run(bool enable_delete)
-+{
-+	struct task_work_stress *skel;
-+	struct bpf_program *scheduler, *deleter;
-+	int nthreads = 16;
-+	int test_time_s = get_env_int("BPF_TASK_WORK_TEST_TIME", 2);
-+	pthread_t tid[nthreads], tid_del;
-+	bool started[nthreads], started_del = false;
-+	struct test_data td_sched = { .exit = 0 }, td_del = { .exit = 1 };
-+	int i, err;
-+
-+	skel = task_work_stress__open();
-+	if (!ASSERT_OK_PTR(skel, "task_work__open"))
-+		return;
-+
-+	scheduler = bpf_object__find_program_by_name(skel->obj, "schedule_task_work");
-+	bpf_program__set_autoload(scheduler, true);
-+
-+	deleter = bpf_object__find_program_by_name(skel->obj, "delete_task_work");
-+	bpf_program__set_autoload(deleter, true);
-+
-+	err = task_work_stress__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	for (i = 0; i < nthreads; ++i)
-+		started[i] = false;
-+
-+	td_sched.prog_fd = bpf_program__fd(scheduler);
-+	for (i = 0; i < nthreads; ++i) {
-+		if (pthread_create(&tid[i], NULL, runner, &td_sched) != 0) {
-+			fprintf(stderr, "could not start thread");
-+			goto cancel;
-+		}
-+		started[i] = true;
-+	}
-+
-+	if (enable_delete)
-+		atomic_store(&td_del.exit, 0);
-+
-+	td_del.prog_fd = bpf_program__fd(deleter);
-+	if (pthread_create(&tid_del, NULL, runner, &td_del) != 0) {
-+		fprintf(stderr, "could not start thread");
-+		goto cancel;
-+	}
-+	started_del = true;
-+
-+	/* Run stress test for some time */
-+	sleep(test_time_s);
-+
-+cancel:
-+	atomic_store(&td_sched.exit, 1);
-+	atomic_store(&td_del.exit, 1);
-+	for (i = 0; i < nthreads; ++i) {
-+		if (started[i])
-+			pthread_join(tid[i], NULL);
-+	}
-+
-+	if (started_del)
-+		pthread_join(tid_del, NULL);
-+
-+	ASSERT_GT(skel->bss->callback_scheduled, 0, "work scheduled");
-+	/* Some scheduling attempts should have failed due to contention */
-+	ASSERT_GT(skel->bss->schedule_error, 0, "schedule error");
-+
-+	if (enable_delete) {
-+		/* If delete thread is enabled, it has cancelled some callbacks */
-+		ASSERT_GT(skel->bss->delete_success, 0, "delete success");
-+		ASSERT_LT(skel->bss->callback_success, skel->bss->callback_scheduled, "callbacks");
-+	} else {
-+		/* Without delete thread number of scheduled callbacks is the same as fired */
-+		ASSERT_EQ(skel->bss->callback_success, skel->bss->callback_scheduled, "callbacks");
-+	}
-+
-+cleanup:
-+	task_work_stress__destroy(skel);
-+}
-+
-+void test_task_work_stress(void)
-+{
-+	if (test__start_subtest("no_delete"))
-+		task_work_run(false);
-+	if (test__start_subtest("with_delete"))
-+		task_work_run(true);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/task_work_stress.c b/tools/testing/selftests/bpf/progs/task_work_stress.c
-new file mode 100644
-index 000000000000..90fca06fff56
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/task_work_stress.c
-@@ -0,0 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <string.h>
-+#include <stdbool.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+
-+#define ENTRIES 128
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 callback_scheduled = 0;
-+__u64 callback_success = 0;
-+__u64 schedule_error = 0;
-+__u64 delete_success = 0;
-+
-+struct elem {
-+	__u32 count;
-+	struct bpf_task_work tw;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__uint(max_entries, ENTRIES);
-+	__type(key, int);
-+	__type(value, struct elem);
-+} hmap SEC(".maps");
-+
-+static int process_work(struct bpf_map *map, void *key, void *value)
-+{
-+	__sync_fetch_and_add(&callback_success, 1);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int schedule_task_work(void *ctx)
-+{
-+	struct elem empty_work = {.count = 0};
-+	struct elem *work;
-+	int key = 0, err;
-+
-+	key = bpf_ktime_get_ns() % ENTRIES;
-+	work = bpf_map_lookup_elem(&hmap, &key);
-+	if (!work) {
-+		bpf_map_update_elem(&hmap, &key, &empty_work, BPF_NOEXIST);
-+		work = bpf_map_lookup_elem(&hmap, &key);
-+		if (!work)
-+			return 0;
-+	}
-+	err = bpf_task_work_schedule_signal(bpf_get_current_task_btf(), &work->tw, &hmap,
-+					    process_work, NULL);
-+	if (err)
-+		__sync_fetch_and_add(&schedule_error, 1);
-+	else
-+		__sync_fetch_and_add(&callback_scheduled, 1);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int delete_task_work(void *ctx)
-+{
-+	int key = 0, err;
-+
-+	key = bpf_get_prandom_u32() % ENTRIES;
-+	err = bpf_map_delete_elem(&hmap, &key);
-+	if (!err)
-+		__sync_fetch_and_add(&delete_success, 1);
-+	return 0;
-+}
+Hi all,
+
+This patchset introduces a new kfunc bpf_xdp_pull_data() to allow
+pulling nonlinear xdp data. This may be useful when a driver places
+headers in fragments. When an xdp program would like to keep parsing
+packet headers using direct packet access, it can call
+bpf_xdp_pull_data() to make the header available in the linear data
+area. The kfunc can also be used to decapsulate the header in the
+nonlinear data, as currently there is no easy way to do this.
+
+Tested with the added bpf selftest using bpf test_run and also on
+mlx5 with the tools/testing/selftests/drivers/net/{xdp.py, ping.py}.
+mlx5 with striding RQ enabled always passse xdp_buff with empty linear
+data to xdp programs. xdp.test_xdp_native_pass_mb would fail to parse
+the header before this patchset.
+
+Thanks!
+Amery
+
+Amery Hung (8):
+  bpf: Clear pfmemalloc flag when freeing all fragments
+  bpf: Allow bpf_xdp_shrink_data to shrink a frag from head and tail
+  bpf: Support pulling non-linear xdp data
+  bpf: Clear packet pointers after changing packet data in kfuncs
+  bpf: Make variables in bpf_prog_test_run_xdp less confusing
+  bpf: Support specifying linear xdp packet data size for
+    BPF_PROG_TEST_RUN
+  selftests/bpf: Test bpf_xdp_pull_data
+  selftests: drv-net: Pull data before parsing headers
+
+ include/net/xdp.h                             |   5 +
+ include/net/xdp_sock_drv.h                    |  21 +-
+ kernel/bpf/verifier.c                         |  13 ++
+ net/bpf/test_run.c                            |  37 ++--
+ net/core/filter.c                             | 135 +++++++++++--
+ .../bpf/prog_tests/xdp_context_test_run.c     |   4 +-
+ .../selftests/bpf/prog_tests/xdp_pull_data.c  | 179 ++++++++++++++++++
+ .../selftests/bpf/progs/test_xdp_pull_data.c  |  48 +++++
+ .../selftests/net/lib/xdp_native.bpf.c        |  89 +++++++--
+ 9 files changed, 479 insertions(+), 52 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_pull_data.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_pull_data.c
+
 -- 
-2.51.0
+2.47.3
 
 
