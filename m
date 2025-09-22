@@ -1,281 +1,150 @@
-Return-Path: <bpf+bounces-69214-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69215-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6E68B916E9
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 15:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B62ADB918E2
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 16:00:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C85AD18974B4
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 13:38:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05ACC1899901
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 14:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B516430CDA6;
-	Mon, 22 Sep 2025 13:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0934B15B971;
+	Mon, 22 Sep 2025 14:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FwT8Ol8B"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jORAcFgm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72EA2283FE9
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 13:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6C9286A9
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 14:00:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758548300; cv=none; b=CSOsjo/ZdHRyfiVwbB6UrQlnn2WVSn27RiOMIRcMMZX5yiOYhZWqQ+6KFvNXp4WwHIheCjgELjwykuSLIiGrh7/Wu4AFeAdAWQTt63sX75jxpMVXrGn1YCBAzC/Wi6Ln/9yn13CQw80h7jK1mJEds4zXONhLSt1DTjW7ZaPmjCI=
+	t=1758549627; cv=none; b=Q+pF0OIxHlefQz61ZYV/B28rgY5ItBafWrbDZg9ybCG3uhtcbk88Wtslpz2XRXO6lqCpvPo6y0kmaEyExr2l++r/gxNb/M5/0ip/xsENvbbH8WdUzQhRswZ8YRFLbtQe83ClAVLxBrG0hRh/xMQUxUrzg2T+30eCrsTEekjNazo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758548300; c=relaxed/simple;
-	bh=oH4AoBve0xbicZociklSp6XKp0C3amTsaF8P8uMO+V8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P+dwcBTFG2DXlqpYPHkXm9VqARX/SFXy8rfFds0TjlaENsFnmSb6YmuXFAtoIzmvRPAYe8Axyv9u6e29KFMDPYyJ00vFpE0t7iU1uGhlo2hj/x0nLRhDldnFIXtO2ahXFRff9xwZAFqlpFvC6wadMce7AWZUzI8L4P/ny/XZbgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FwT8Ol8B; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3ee1381b835so2901643f8f.1
-        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 06:38:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758548297; x=1759153097; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pjtr/WBwKkdc0dNJq3VYkWPcGQdd+yuTUcmaT9L1px0=;
-        b=FwT8Ol8BPEMqAE9zksNEIHsbaa9dq8/OszNXWV3OjA5edSdeTM6sLS6f97RAKovNVX
-         vn3vYkXiOSxVlbk8JLgLrkHRmH0pxtcOcHSy8gjRIBMNyR9494hT4vCWmV7vf9TPrMA0
-         CCkDP5g1H1GIMx3daUjoOEwzUdny/MEE0Od6ReAd82M4sBzp50bAuaPX25KCLUNXwnus
-         IcxQXM2Ov/i0UbwzrTyyYRqKATqT6n1JLoWB7ifTlXjxXe4cWP+OUo2Xb3F/jFhcJlik
-         5QKcbZ6DY6L2MUbAhtN5n7OoWGGrGrF6aguRQcjlnt4VcGakTBUwaI3tQLnVq21M5iKN
-         0G4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758548297; x=1759153097;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pjtr/WBwKkdc0dNJq3VYkWPcGQdd+yuTUcmaT9L1px0=;
-        b=ntnkJzA+gCEhnNpvoj1zcbxhB6oAtf5tpod/e1/FqlOl+z7Mjh92eomaG3pzJGNGyq
-         It9UghFWSQsffMKb3Hp/zntQG4reG8IydK+x4y1uW5n1YIM4ysX+eW6iv1ybMUpRY0vF
-         Nr7FL9BAFg7BlDccd+L/FGE6GvF8tcHDHYvTJbWa8+uWrWe/UhqFToaw3cAdb1YtmR1S
-         OVMcC5FDm6OiBDKZnN4mQVN1m9jjba0HdtJLz4Zo9gdVnKBpbe12egkc3bWQk2Syg6kj
-         snRgePWpHibmFr6xbkXr+zf32P0HYfBjhNH1dW5LdSUn+Ew+QLx9BMaLn7YtynFLsOE4
-         x9TQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXCmfW2QPuZbUFdiBn93j23GqDzOI+f2FTaBoECSJQeVLeb4T3mApGFtMAmiPj/odrEOuQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvAwmuDGMudfQMHe7sugqCu6UCOlfgQzMQHLwnMDOP2NBC9I0w
-	KW31HLkDKwgPWt/C/Bfq99zxoJamr55AWDjiUhVT618QXObXckTI/G0u
-X-Gm-Gg: ASbGncvp1V3/KMoJhBIXuafekA6envMgGLcdFSjNA/VXwJLQ/SU13XhDoeBSMDFExel
-	8f3IyBlsGd5MXLvW6EhJtGl0e/LZ0BrK8bOGqnk/+D1wRQgMOIdiovx9t7gcQsUk3KfLT2yKOJL
-	aXiVFCIB16N35W8J+ONCeAhanyb/z9I/BdYiFN0Q+T1BFwJv/T/9Isg0TXKXuhHfwaJz1QFMkK2
-	9o63URqVjEBUkT/x52rtAPPJZATUQorPo+8yMiUnySCS9ULyxwvgvB6K117i29JLYuVTI7PXwB0
-	tuxYpIA0W4tIZoYKrhDP89KZQPbjx3GCeg5NBn0HWVB68XuXrslQ6Tt92sEr+VmpSt5+78BWh/Q
-	zZH2TqtR886RXc4YSqxmNrQ==
-X-Google-Smtp-Source: AGHT+IFb8QVE1JPoVN1bc6+jCc1wg3npty3iJ1lDuKaGOl7ScBmdTGUwgEUhvmpVwnZrFYD9+VLSQA==
-X-Received: by 2002:a5d:5d03:0:b0:3ec:4e41:fd86 with SMTP id ffacd0b85a97d-3ee86d6cf94mr10071515f8f.50.1758548296402;
-        Mon, 22 Sep 2025 06:38:16 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4613dccb5e2sm241428795e9.17.2025.09.22.06.38.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Sep 2025 06:38:15 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 22 Sep 2025 15:38:13 +0200
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@kernel.org>,
-	Menglong Dong <menglong8.dong@gmail.com>, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, kees@kernel.org,
-	samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
-	ast@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH] tracing: fgraph: Protect return handler from recursion
- loop
-Message-ID: <aNFRRa3m6Qm8zzQu@krava>
-References: <20250918120939.1706585-1-dongml2@chinatelecom.cn>
- <175828305637.117978.4183947592750468265.stgit@devnote2>
- <20250919112746.09fa02c7@gandalf.local.home>
- <aM5bizfTTTAH5Xoa@krava>
- <20250922151655.1792fa0abc6c3a8d98d052c9@kernel.org>
+	s=arc-20240116; t=1758549627; c=relaxed/simple;
+	bh=txu02aOEWFd5cRrk/D9uytjfj1brvBTdGo5LruCYJ3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rTsHGWpCFIKPcWAgncQNiZm30jh+yTZNuHHZ7KrlRf6mZRBYsn+y7wg67UwPviq0l6y8+uR1tCnD8JKWlN0uGmbZddDVrcfh1kxbZwHm+BaIBkQqupQawubZFqouM+XM/3AxkZGCI045pvJ3zjoTfskljN7+BuUWRwW9Tbe59WY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jORAcFgm; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b3a8c61c-feba-4e2b-ba2d-b86f206e1035@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758549623;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oK3TqsMlnl2qHt67syvIkShvhS5cC+G6UTnvhWS/dG4=;
+	b=jORAcFgmN0FIX8gEORPfH+ogZfO1WL3cCo1+lqRWFx5UZy7T0NT9ctmiMryWnQCGVHooxe
+	16xu+TBGI0WYjnBY6hdvcV2ill+jiC/ZaKVVfz4XrSCDC1hzqMm1WT52lIR2fdQmkh0/5H
+	UFyKWNx3WwL23iXqU7KRrQMUxLGldF4=
+Date: Mon, 22 Sep 2025 22:00:11 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250922151655.1792fa0abc6c3a8d98d052c9@kernel.org>
+Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add stacktrace map
+ lookup_and_delete_elem test case
+To: Leon Hwang <hffilwlqm@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250920155211.1354348-1-chen.dylane@linux.dev>
+ <20250920155211.1354348-2-chen.dylane@linux.dev>
+ <f1d2d0fc-c541-4acc-b5d6-34f2bba37aea@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <f1d2d0fc-c541-4acc-b5d6-34f2bba37aea@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Sep 22, 2025 at 03:16:55PM +0900, Masami Hiramatsu wrote:
-> On Sat, 20 Sep 2025 09:45:15 +0200
-> Jiri Olsa <olsajiri@gmail.com> wrote:
+在 2025/9/22 10:42, Leon Hwang 写道:
 > 
-> > On Fri, Sep 19, 2025 at 11:27:46AM -0400, Steven Rostedt wrote:
-> > > On Fri, 19 Sep 2025 20:57:36 +0900
-> > > "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-> > > 
-> > > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > 
-> > > > function_graph_enter_regs() prevents itself from recursion by
-> > > > ftrace_test_recursion_trylock(), but __ftrace_return_to_handler(),
-> > > > which is called at the exit, does not prevent such recursion.
-> > > > Therefore, while it can prevent recursive calls from
-> > > > fgraph_ops::entryfunc(), it is not able to prevent recursive calls
-> > > > to fgraph from fgraph_ops::retfunc(), resulting in a recursive loop.
-> > > > This can lead an unexpected recursion bug reported by Menglong.
-> > > > 
-> > > >  is_endbr() is called in __ftrace_return_to_handler -> fprobe_return
-> > > >   -> kprobe_multi_link_exit_handler -> is_endbr.  
-> > > 
-> > > So basically its if the handler for the return part calls something that it
-> > > is tracing, it can trigger the recursion?
-> > > 
-> > > > 
-> > > > To fix this issue, acquire ftrace_test_recursion_trylock() in the
-> > > > __ftrace_return_to_handler() after unwind the shadow stack to mark
-> > > > this section must prevent recursive call of fgraph inside user-defined
-> > > > fgraph_ops::retfunc().
-> > > > 
-> > > > This is essentially a fix to commit 4346ba160409 ("fprobe: Rewrite
-> > > > fprobe on function-graph tracer"), because before that fgraph was
-> > > > only used from the function graph tracer. Fprobe allowed user to run
-> > > > any callbacks from fgraph after that commit.
-> > > 
-> > > I would actually say it's because before this commit, the return handler
-> > > callers never called anything that the entry handlers didn't already call.
-> > > If there was recursion, the entry handler would catch it (and the entry
-> > > tells fgraph if the exit handler should be called).
-> > > 
-> > > The difference here is with fprobes, you can have the exit handler calling
-> > > functions that the entry handler does not, which exposes more cases where
-> > > recursion could happen.
-> > 
-> > so IIUC we have return kprobe multi probe on is_endbr and now we do:
-> > 	
-> > 	is_endbr()
-> > 	{ -> function_graph_enter_regs installs return probe
-> > 	  ...
-> > 	} -> __ftrace_return_to_handler
-> > 	       fprobe_return
-> > 	         kprobe_multi_link_exit_handler
-> > 	           is_endbr
-> > 		   { -> function_graph_enter_regs installs return probe
-> > 		     ...
-> > 		   } -> __ftrace_return_to_handler
-> > 		          fprobe_return
-> > 		            kprobe_multi_link_exit_handler
-> > 			      is_endbr
-> > 			      { -> function_graph_enter_regs installs return probe
-> > 			        ...
-> > 			      } -> __ftrace_return_to_handler
-> > 			           ... recursion
-> > 
-> > 
-> > with the fix:
-> > 
-> > 	is_endbr()
-> > 	{ -> function_graph_enter_regs installs return probe
-> > 	  ...
-> > 	} -> __ftrace_return_to_handler
-> > 	       fprobe_return
-> > 	         kprobe_multi_link_exit_handler
-> > 	           ...
-> > 	           is_endbr
-> > 		   { ->  function_graph_enter_regs
-> > 		           ftrace_test_recursion_trylock fails and we do NOT install return probe
-> >                      ...
-> > 		   }
-> > 
-> > 
-> > there's is_endbr call also in kprobe_multi_link_handler, but it won't
-> > trigger recursion, because function_graph_enter_regs already uses
-> > ftrace_test_recursion_trylock 
-> > 
-> > 
-> > if above is correct then the fix looks good to me
-> > 
-> > Acked-by: Jiri Olsa <jolsa@kernel.org>
 > 
-> Hi Jiri,
+> On 20/9/25 23:52, Tao Chen wrote:
+>> ...
+>> test_stacktrace_map:PASS:compare_stack_ips stackmap vs. stack_amap 0 nsec
+>> test_stacktrace_map:PASS:stack_key_map lookup 0 nsec
+>> test_stacktrace_map:PASS:stackmap lookup and detele 0 nsec
+>> test_stacktrace_map:PASS:stackmap lookup deleted stack_id 0 nsec
+>>   #397     stacktrace_map:OK
+>> ...
 > 
-> I found ftrace_test_recursion_trylock() allows one nest level, can you
-> make sure it is OK?
+> As they suppose to pass, they are meaningless in the commit log.
+> 
+> Please describe what the test is for and what it is doing instead.
+> 
 
-hum, I recall being surprised by that already in the past,
-I thought we fixed that somehow, will check later today
+will reedit the commit message in v4, thanks.
 
-thanks,
-jirka
+>>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   .../selftests/bpf/prog_tests/stacktrace_map.c | 22 ++++++++++++++++++-
+>>   .../selftests/bpf/progs/test_stacktrace_map.c |  8 +++++++
+>>   2 files changed, 29 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
+>> index 84a7e405e91..7d38afe5cfc 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
+>> @@ -3,7 +3,7 @@
+>>   
+>>   void test_stacktrace_map(void)
+>>   {
+>> -	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
+>> +	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd, stack_key_map_fd;
+>>   	const char *prog_name = "oncpu";
+>>   	int err, prog_fd, stack_trace_len;
+>>   	const char *file = "./test_stacktrace_map.bpf.o";
+>> @@ -11,6 +11,9 @@ void test_stacktrace_map(void)
+>>   	struct bpf_program *prog;
+>>   	struct bpf_object *obj;
+>>   	struct bpf_link *link;
+>> +	__u32 stack_id;
+>> +	char val_buf[PERF_MAX_STACK_DEPTH *
+>> +		sizeof(struct bpf_stack_build_id)];
+> 
+> Nit: minor indentation issue here.
+> 
+> 'val_buf' should stay on a single line, since up to 100 characters per
+> line are allowed.
+> 
 
+will change it in v4, thanks.
+
+> NOTE: keep inverted Christmas tree style.
 > 
-> Thank you,
+> Thanks,
+> Leon
 > 
-> > 
-> > thanks,
-> > jirka
-> > 
-> > 
-> > > 
-> > > > 
-> > > > Reported-by: Menglong Dong <menglong8.dong@gmail.com>
-> > > > Closes: https://lore.kernel.org/all/20250918120939.1706585-1-dongml2@chinatelecom.cn/
-> > > > Fixes: 4346ba160409 ("fprobe: Rewrite fprobe on function-graph tracer")
-> > > > Cc: stable@vger.kernel.org
-> > > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > ---
-> > > >  kernel/trace/fgraph.c |   12 ++++++++++++
-> > > >  1 file changed, 12 insertions(+)
-> > > > 
-> > > > diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-> > > > index 1e3b32b1e82c..08dde420635b 100644
-> > > > --- a/kernel/trace/fgraph.c
-> > > > +++ b/kernel/trace/fgraph.c
-> > > > @@ -815,6 +815,7 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
-> > > >  	unsigned long bitmap;
-> > > >  	unsigned long ret;
-> > > >  	int offset;
-> > > > +	int bit;
-> > > >  	int i;
-> > > >  
-> > > >  	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer, &offset);
-> > > > @@ -829,6 +830,15 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
-> > > >  	if (fregs)
-> > > >  		ftrace_regs_set_instruction_pointer(fregs, ret);
-> > > >  
-> > > > +	bit = ftrace_test_recursion_trylock(trace.func, ret);
-> > > > +	/*
-> > > > +	 * This must be succeeded because the entry handler returns before
-> > > > +	 * modifying the return address if it is nested. Anyway, we need to
-> > > > +	 * avoid calling user callbacks if it is nested.
-> > > > +	 */
-> > > > +	if (WARN_ON_ONCE(bit < 0))
-> > > 
-> > > I'm not so sure we need the warn on here. We should probably hook it to the
-> > > recursion detection infrastructure that the function tracer has.
-> > > 
-> > > The reason I would say not to have the warn on, is because we don't have a
-> > > warn on for recursion happening at the entry handler. Because this now is
-> > > exposed by fprobe allowing different routines to be called at exit than
-> > > what is used in entry, it can easily be triggered.
-> > > 
-> > > -- Steve
-> > > 
-> > > 
-> > > 
-> > > > +		goto out;
-> > > > +
-> > > >  #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
-> > > >  	trace.retval = ftrace_regs_get_return_value(fregs);
-> > > >  #endif
-> > > > @@ -852,6 +862,8 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
-> > > >  		}
-> > > >  	}
-> > > >  
-> > > > +	ftrace_test_recursion_unlock(bit);
-> > > > +out:
-> > > >  	/*
-> > > >  	 * The ftrace_graph_return() may still access the current
-> > > >  	 * ret_stack structure, we need to make sure the update of
-> > > 
+>>   
+>>   	err = bpf_prog_test_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj, &prog_fd);
+>>   	if (CHECK(err, "prog_load", "err %d errno %d\n", err, errno))
+>> @@ -41,6 +44,10 @@ void test_stacktrace_map(void)
+>>   	if (CHECK_FAIL(stack_amap_fd < 0))
+>>   		goto disable_pmu;
+>>   
+>> +	stack_key_map_fd = bpf_find_map(__func__, obj, "stack_key_map");
+>> +	if (CHECK_FAIL(stack_key_map_fd < 0))
+>> +		goto disable_pmu;
+>> +
+>>   	/* give some time for bpf program run */
+>>   	sleep(1);
+>>   
 > 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> [...]
+
+
+-- 
+Best Regards
+Tao Chen
 
