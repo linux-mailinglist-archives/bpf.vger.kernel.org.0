@@ -1,109 +1,187 @@
-Return-Path: <bpf+bounces-69266-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69267-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9F4FB9329E
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 22:04:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCAB1B93365
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 22:24:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA2B71907436
-	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 20:05:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 979101903F33
+	for <lists+bpf@lfdr.de>; Mon, 22 Sep 2025 20:25:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90AD3311959;
-	Mon, 22 Sep 2025 20:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B1331A56C;
+	Mon, 22 Sep 2025 20:24:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kBXlNV/M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ISFI2PrX"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9DB2F5320
-	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 20:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7FB2F28FA
+	for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 20:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758571467; cv=none; b=RGrqASuk+gM9m/bp8gy+4ILZXcfH2KMVFD8eBaHFIM4pzFJfFcVhpRKu3tw6cV+nPOe5qeGGp9i1qrnXE/65c8xQGuZMl6YpYEziXdmxo+JoPUxogq2Ij4+oFWILQt+MUKsRLRgOoYJUKE/XxACV1PB58jzCQ0XR3nyk4Bopb8g=
+	t=1758572669; cv=none; b=TJ4TR7DRKU2V/Zjqet6QHsjHoFqBfbL+oWg5g2zhTPKwhpxi54gOYkT8tHAoURl60VqAkqlXoHtTkcVejuFLr+cfm+x9TAwbHbOUQInmdaMAuOf/EQCV3ZrjiprIAlXBLx5JFknbetafzKgunwfSE1+gZnE1123cYwoXiwCXIaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758571467; c=relaxed/simple;
-	bh=nEWUEPU9ZaGtLMvGM/0LN7V+or/Ug2aPSdhvsvhwit4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r/abZoCb0Siyt2LsaejUhIH9pHkrjXIRZjTQkSRFxj8Qfk8EOAdzHWNSMMOrDBkNa4MnxozPYrF9r//6srzn3Bu11XblmILLVLTJId/SjW6qZkVDdzjM5674Vk2uyCNJCGR9PDA5BUKXks9LV7A5VgYN4eCGGNXIgVTmdx+PrUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kBXlNV/M; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f870f375-f9a5-4c36-80df-8062ec3eddd3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758571453;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RbuGqL0IYOWc1/oaCHbaa4DTqV5D4FcE0xJf+txHDaM=;
-	b=kBXlNV/MlPQ9EYTKQxRiSl20Og3/J+Qlfb6j08aR0Z4J5ucCmsHPfa6wXnXmPT5fQgjYvJ
-	7l3IANVW6Ox9HHKxFhCr7HD83haQK5XtxGRofNnFzCm9C1QlO+AgbTNGCOQJ5CN3gbw+Mw
-	Cc6ci5BkhtdH2oPX+tXec1DnMaCJ61U=
-Date: Mon, 22 Sep 2025 13:04:04 -0700
+	s=arc-20240116; t=1758572669; c=relaxed/simple;
+	bh=H87w2oCtE9zuPw62HUu9GfYhRNsSkglIlHZai8e/jqE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ld8Qrdz+C0fAoMVp7Oye0Sdv++bnJj8885lEqeWRGUljDer16HawgO0ncv+BsuguJxyfCDVMJbfQ0PYlkfOstrNo6UMC8C6CxrcUBUxIhXuuMkF6fg0CuI8f1KWBf89qPccabbIPNTHi3xNbfZt+v7klxhg8Jr41LIrHy/pcDX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ISFI2PrX; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-45df0cde41bso32456725e9.3
+        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 13:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758572666; x=1759177466; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1bDLoqIL0L4GyiEGOgjMbKPRDrLNrCGOIHn9aW7KylI=;
+        b=ISFI2PrXrhlPUdevx7SkPRj0PSJ13ul6pkp6qE2tQx2Ra50iAFo04RpBv80NJi/hNu
+         ChA/rp6Fg3Og069GvYLSI35gydmnOTxSzoKvSO2jFYOLNeYbXU2NdQ9Jd0oEc3mtm2Xp
+         57dlxg5o3PwrRpYvZjzdkAtGcHxkMhygpVy7H48iSzkTwTTnPorg4nP87KF97Onxy105
+         Wco5ODJ7EzF3vqrxRo4YBi1cN94Q1thw6LeuobfvDroKBfP/YOKgVonZrQyRPuB+ghQR
+         VOMLM4t1/t4QRUyaPQk4R+mgPO3RNIbb/HIYe1Hx5nd9Wv1fuUdJ7XRIjH3tD+qypiwz
+         Gjkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758572666; x=1759177466;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1bDLoqIL0L4GyiEGOgjMbKPRDrLNrCGOIHn9aW7KylI=;
+        b=wp20VrOKzHHM6ODug96jSRhFftJfdL4kAMS/rz3SM8cJIcoST/FwGptzZsrsC/pzO0
+         7tzt2h9+mj26heqcDD0yCQv0CsLG9iEcT5f4SCkw6j/OaBHhYU6y/Xq1ClkfoUJz2VfH
+         bvLYal7JP5BWaR+0H/F/mZcPK3tXIfRECsWUABLdQcDBEphbxLstRg7PweNjUJ4bJby6
+         436vxHC7/4EQaZoNTGo5gPtqDYaHoeD2FysEnlJkOccUJexoAPcq0dM+rtb6ajRIeDwj
+         wEhTwRarU0LWHSTi9Aw/nzGC0AFBzTe4s9TKr9SafSlxMbJy25s2JYmLTKnNHDRbdCVt
+         78og==
+X-Gm-Message-State: AOJu0Yw7Ch5DdgySasnBazPlGx9T3CfSED1fuNYCvNZU6IaXezGuORN1
+	sxQyoPQ4gHUahkarVGq7Hroj7RkV1Db3kKSXtAerLbpx+hKR1KZ8fpmM1Nx/1kfi/SSqdIGfcjr
+	9n9sYKE9DBqcXb6XmOHr6brkx8TocBzKK+w==
+X-Gm-Gg: ASbGncs6fAstW7O76Qb5GW8qRC1tlHlBfyEj7J5kX3HFguj+ldnBjFT6yjiHd9y88yT
+	oR6RhbSpwtDRwqn3O3v/8Z2HMVZkaJkJWI/3CAKLLN79kg/QvUKWpo/l53J5VILNvwBfXTUVyll
+	ir9U2qs8n4ZBwNPyIxh3j/YjJJtZnAL+V55NmxvB1H2UYmThyBoy0C7E7y342Hopm1ZtGmR8QTv
+	CsjYN4IL9lWFj8eDzpyMg2jxV61fBHduhtf6AJC2PKY3uM=
+X-Google-Smtp-Source: AGHT+IGGHxRFsYeQnCVUTqP+r/iaX+KCTmp9/4dEg670jhwS9QTh/iB7Yx1FxWScVNN70hhuJm/3nEEgj1/MkuwZfig=
+X-Received: by 2002:a05:6000:4212:b0:3ee:15d5:614f with SMTP id
+ ffacd0b85a97d-405cb7bbc70mr16368f8f.46.1758572666015; Mon, 22 Sep 2025
+ 13:24:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 5/7] bpf: Support specifying linear xdp packet
- data size for BPF_PROG_TEST_RUN
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
- paul.chaignon@gmail.com, kuba@kernel.org, stfomichev@gmail.com,
- martin.lau@kernel.org, mohsin.bashr@gmail.com, noren@nvidia.com,
- dtatulea@nvidia.com, saeedm@nvidia.com, tariqt@nvidia.com,
- mbloch@nvidia.com, maciej.fijalkowski@intel.com, kernel-team@meta.com
-References: <20250919230952.3628709-1-ameryhung@gmail.com>
- <20250919230952.3628709-6-ameryhung@gmail.com>
- <10e5dd51-701d-498b-b1eb-68b23df191d9@linux.dev>
- <CAMB2axPU6Aoj6hfJcsS0W7CDL=bvAFLtPm2ZrsJef3w+aNoAXg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <CAMB2axPU6Aoj6hfJcsS0W7CDL=bvAFLtPm2ZrsJef3w+aNoAXg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250913193922.1910480-1-a.s.protopopov@gmail.com>
+ <20250913193922.1910480-4-a.s.protopopov@gmail.com> <CAADnVQJsuxh5HrNKW_-_yuO5FqLQ8S4A4YN9bZfRHhO5pt5Dtg@mail.gmail.com>
+ <aNEnLZzOyEuNOtXu@mail.gmail.com> <CAADnVQKK80Vvph7W7PSwG_GAPwXZO_wNYOKt6h9LHjHhPcjHPA@mail.gmail.com>
+ <aNGJT6IosAI7HP+B@mail.gmail.com> <CAADnVQJ=qN+x9vTwU=yskvwoe7vAqe=c7U6nLaKmP1u+jn0s3w@mail.gmail.com>
+ <aNGiIgC7+t+YIM8j@mail.gmail.com>
+In-Reply-To: <aNGiIgC7+t+YIM8j@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 22 Sep 2025 13:24:14 -0700
+X-Gm-Features: AS18NWDdfOpApxIn3qNVk1EHF1GnjeEdBIzAAuC3YkaJu7dvSUeZfKSAhRPJRiA
+Message-ID: <CAADnVQK2s6nPCAPy+HDfG0MgPYSkFH0mPobO4HNP+ymueN9Seg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 03/13] bpf, x86: add new map type:
+ instructions array
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/22/25 12:48 PM, Amery Hung wrote:
->>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->>> index 4a862d605386..0cbd3b898c45 100644
->>> --- a/net/bpf/test_run.c
->>> +++ b/net/bpf/test_run.c
->>> @@ -665,7 +665,7 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
->>>        void __user *data_in = u64_to_user_ptr(kattr->test.data_in);
->>>        void *data;
->>>
->>> -     if (user_size < ETH_HLEN || user_size > PAGE_SIZE - headroom - tailroom)
->>> +     if (user_size > PAGE_SIZE - headroom - tailroom)
->>>                return ERR_PTR(-EINVAL);
->>>
->>>        size = SKB_DATA_ALIGN(size);
->>> @@ -1001,6 +1001,9 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->>>            kattr->test.cpu || kattr->test.batch_size)
->>>                return -EINVAL;
->>>
->>> +     if (size < ETH_HLEN)
->>> +             return -EINVAL;
->>> +
->>>        data = bpf_test_init(kattr, kattr->test.data_size_in,
->>>                             size, NET_SKB_PAD + NET_IP_ALIGN,
->>>                             SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
->>> @@ -1246,13 +1249,15 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
->>
->> I just noticed it. It still needs a "size < ETH_HLEN" test at the beginning of
->> test_run_xdp. At least the do_live mode should still needs to have ETH_HLEN bytes.
-> 
-> Make sense. I will add the check for live mode.
+On Mon, Sep 22, 2025 at 12:17=E2=80=AFPM Anton Protopopov
+<a.s.protopopov@gmail.com> wrote:
+>
+> On 25/09/22 10:57AM, Alexei Starovoitov wrote:
+> > On Mon, Sep 22, 2025 at 10:31=E2=80=AFAM Anton Protopopov
+> > <a.s.protopopov@gmail.com> wrote:
+> > >
+> > > On 25/09/22 09:16AM, Alexei Starovoitov wrote:
+> > > > On Mon, Sep 22, 2025 at 3:32=E2=80=AFAM Anton Protopopov
+> > > > <a.s.protopopov@gmail.com> wrote:
+> > > > > > > +int bpf_insn_array_init(struct bpf_map *map, const struct bp=
+f_prog *prog)
+> > > > > > > +{
+> > > > > > > +       struct bpf_insn_array *insn_array =3D cast_insn_array=
+(map);
+> > > > > > > +       int i;
+> > > > > > > +
+> > > > > > > +       if (!valid_offsets(insn_array, prog))
+> > > > > > > +               return -EINVAL;
+> > > > > > > +
+> > > > > > > +       /*
+> > > > > > > +        * There can be only one program using the map
+> > > > > > > +        */
+> > > > > > > +       mutex_lock(&insn_array->state_mutex);
+> > > > > > > +       if (insn_array->state !=3D INSN_ARRAY_STATE_FREE) {
+> > > > > > > +               mutex_unlock(&insn_array->state_mutex);
+> > > > > > > +               return -EBUSY;
+> > > > > > > +       }
+> > > > > > > +       insn_array->state =3D INSN_ARRAY_STATE_INIT;
+> > > > > > > +       mutex_unlock(&insn_array->state_mutex);
+> > > > > >
+> > > > > > only verifier calls this helpers, no?
+> > > > > > Why all the mutexes here and below ?
+> > > > > > All the mutexes is a big red flag to me.
+> > > > > > Will stop any further comments here.
+> > > > >
+> > > > > Mutex came here from the future patch for static keys.
+> > > > > I will see how to rewrite this with just an atomic state.
+> > > >
+> > > > I don't follow. Who will be calling them other than the verifier?
+> > > > Some kfunc? I couldn't find that in the patch set.
+> > > > If so, add synchronization logic in the patch set that
+> > > > actually needs it. This one doesn't not. So don't add
+> > > > any mutex or atomics here.
+> > >
+> > > The usage of this map is as follows:
+> > >
+> > >   1. A user creates it and fills in the values using the map_update_e=
+lement (syscall)
+> > >   2. Then the program is loaded
+> > >
+> > > The map <-> program is 1:1 relation, so I want to prevent users from
+> > >
+> > >   1. Updating the map after the program started loading
+> > >   2. Allowing two programs to use the same map (while, say, loading s=
+imultaneously)
+> >
+> > Then the user space should freeze the map after updating and
+> > before loading.
+> > As far as 1-1 relation, we just landed exclusive map support
+> > that ties a map to one specific program.
+> > This mechanism can be used or 1-1 can be established by the kernel
+> > internally.
+>
+> I've actually first did it via frozen, and then removed it after Andrii's
+> comments. Will get it back and remove all other mutexes
 
-The earlier comment wasn't clear, my bad. no need to limit the ETH_HLEN test to 
-live mode only. multi-frags or not, kattr->test.data_size_in should not be < 
-ETH_HLEN.
+What was Andrii's concern with freeze ?
+It seems like a good fit to me. User space updates and freezes,
+because it shouldn't be updating it anymore. Normal jmp tables
+in ELF are readonly too.
 
-
+> > > At the same time I want map to be reusable for the same program for t=
+he case
+> > > when the program failed to load and is reloaded with the log buffer.
+> > > So there should be some synchronisation mechanism.
+> > >
+> > > (In future patchset, the bpf(STATIC_KEY_UPDATE) syscall needs to exec=
+ute. It
+> > > needs to be sure that the map was successfully loaded with the progra=
+m. But
+> > > you're right that this doesn't make sense to leak part of this patch =
+into this
+> > > patchset.)
+> >
+> > Even when that bit will be available it won't be modifying the map.
+> > At best it will flip flag or bit whether the branch is nop or jmp.
+> > I still don't see a need for mutexes.
+>
+> ok
 
