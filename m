@@ -1,62 +1,64 @@
-Return-Path: <bpf+bounces-69301-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69302-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B875DB93A95
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 02:01:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F8A0B93C20
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 02:54:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 814F22E15AB
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 00:01:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5448E19C1520
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 00:54:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96FBC4F5E0;
-	Tue, 23 Sep 2025 00:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0003E1D54E2;
+	Tue, 23 Sep 2025 00:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nbi9ITEc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RLVvj/TC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618662F85B
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 00:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA841922F5
+	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 00:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758585656; cv=none; b=ICzsgPEyFd62egtRe9knk7rRjWzu0zmMKKNvf28iQRVr+k4/0wmZd4JxHkubQs0Db4CcF2tvQUoIw7L0/4YdewYA1JOpWfVARy/CMROT5aVPlitL3BqHiWFppA1GyeFgtBe0iKZ5KQCh2zWu7oFOFlKYMJdync/O3UZNAuBJzdA=
+	t=1758588864; cv=none; b=kVLmOTKybh4++F8OdiZLcVye2Bp5n7bcNwNtUeBjE41hvbgk9jl7kHAIIvontyKXC4oMWjKIcjzFoFcsJRUnjB8zOmK/F8v3TLhRk6a77Y5f0Rnbz8dn0Z6O66G9iwRU4y6avAoTaaJ0TWgJAwsbXwUmHM/27cJGbXVM2xEEGqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758585656; c=relaxed/simple;
-	bh=Iuj3ujrNKyTx8OvoiktIH9vvg+ZikwuYukI5bLzJ5hY=;
+	s=arc-20240116; t=1758588864; c=relaxed/simple;
+	bh=cH8cB7MUaOsFskeCczK0vEO2HA8nvAXBQBQ1InPq7oI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XnSKRulZ5I7XrrpC5o90CeTz9p/LodTGxtojxMnFKzmRArSeZLmQX/BhJ8xLNpyk4aAsYhRoocfgCJUj1WvJUe06/rGpw/yaLTErb6CJWowcOf5JLq8REKUkN4oTXwvQChXXFOnWwAV8ByixcGcS/1tM5PyHWzEkrjJbOacYOBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nbi9ITEc; arc=none smtp.client-ip=91.218.175.188
+	 Content-Type:Content-Disposition:In-Reply-To; b=twz0nWkvhYXNkI9j2egTRhVC6KOIfABGh5XqzVvGslULPzGk7FI4DvzB+qzwYiNr2R5P7TcxkaPZmsq0lohmo0mbdtFOH14GrOibkC/03TTPA6LTVVdLbad7GA645e9dI6m+4bIu7URx/lNe5DHeSxbqpe+bQPwlMBBLqZANoaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RLVvj/TC; arc=none smtp.client-ip=95.215.58.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 22 Sep 2025 17:00:47 -0700
+Date: Mon, 22 Sep 2025 17:54:07 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758585652;
+	t=1758588856;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hCni9d/eLTgrwvyJGOCo83l5nU1UneMhuwcVyu2h7ZU=;
-	b=nbi9ITEca9rnd1tCCtP0aY+2jP9DfRuQMRhbjpXws3XvI9iUVKTjrzdZQoaHsMVQmiVlyB
-	QswcSVIRWORB4DTVq21V9uuCChILFasgsvPjCHjwUeTdVPMZtSM0nIm1k/tUTzHVpF0Jft
-	bOxd5Ys5tT3QGW6ugPwD/FNxVmVWlIQ=
+	bh=Wudc80E3D8qUTNG+QznXhR4S6Gy17+QjkwuFxCcm5RI=;
+	b=RLVvj/TCoeZbKaGMqe4n0h6FRuVjrwrb5Z3ePJg++N21VuvPAFnsErVyM6QHUpdv0FUYSr
+	uXRQMa9jwVq54Mkdku0KPEu/42lVuyN0xuQ/ha+zU6zu7+vWpNChYladVxHsdhLu9saBj3
+	Wt9TDI5fTmue29TNopRXvtXsDylKXK4=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Peilin Ye <yepeilin@google.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2] memcg: skip cgroup_file_notify if spinning is not
- allowed
-Message-ID: <24cnhpqz7d6rnkyowfmlgbcx6mt3qaztsxfwgtwafnktbeikya@bex2bp33mub6>
-References: <20250922220203.261714-1-shakeel.butt@linux.dev>
- <20250922160443.f48bb14e2d055e6e954cd874@linux-foundation.org>
- <552lz3qxc3z45r446rfndi7gx6nsht5iuhrhaszljofka2zrfs@odxfnm2blgdd>
- <20250922165509.3fe07892054bb9e149e7cc06@linux-foundation.org>
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v10 bpf-next/net 3/6] net-memcg: Introduce
+ net.core.memcg_exclusive sysctl.
+Message-ID: <pmti7ebtl7zfom5ndqcvpdwjxlkrvmly2ol64llabcwfk7bdg2@mc3pigkg2ppq>
+References: <20250920000751.2091731-1-kuniyu@google.com>
+ <20250920000751.2091731-4-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,59 +67,21 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250922165509.3fe07892054bb9e149e7cc06@linux-foundation.org>
+In-Reply-To: <20250920000751.2091731-4-kuniyu@google.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Sep 22, 2025 at 04:55:09PM -0700, Andrew Morton wrote:
-> On Mon, 22 Sep 2025 16:39:53 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> 
-> > On Mon, Sep 22, 2025 at 04:04:43PM -0700, Andrew Morton wrote:
-> > > On Mon, 22 Sep 2025 15:02:03 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > > 
-> > > > Generally memcg charging is allowed from all the contexts including NMI
-> > > > where even spinning on spinlock can cause locking issues. However one
-> > > > call chain was missed during the addition of memcg charging from any
-> > > > context support. That is try_charge_memcg() -> memcg_memory_event() ->
-> > > > cgroup_file_notify().
-> > > > 
-> > > > The possible function call tree under cgroup_file_notify() can acquire
-> > > > many different spin locks in spinning mode. Some of them are
-> > > > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
-> > > > just skip cgroup_file_notify() from memcg charging if the context does
-> > > > not allow spinning.
-> > > > 
-> > > > Alternative approach was also explored where instead of skipping
-> > > > cgroup_file_notify(), we defer the memcg event processing to irq_work
-> > > > [1]. However it adds complexity and it was decided to keep things simple
-> > > > until we need more memcg events with !allow_spinning requirement.
-> > > > 
-> > > > Link: https://lore.kernel.org/all/5qi2llyzf7gklncflo6gxoozljbm4h3tpnuv4u4ej4ztysvi6f@x44v7nz2wdzd/ [1]
-> > > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > > > Acked-by: Michal Hocko <mhocko@suse.com>
-> > > 
-> > > Fixes a possible kernel deadlock, yes?
-> > > 
-> > > Is a cc:stable appropriate and can we identify a Fixes: target?
-> > > 
-> > > Thanks.
-> > > 
-> > > (Did it ever generate lockdep warnings?)
-> > 
-> > The report is here:
-> > https://lore.kernel.org/all/20250905061919.439648-1-yepeilin@google.com/
-> > 
-> > I am not sure about the Fixes tag though or more like which one to put
-> > in the Fixes as we recently started supporting memcg charging for NMI
-> > context or allowing bpf programs to do memcg charged allocations in
-> > recursive context (see the above report for this recursive call chain).
-> > There is no single commit which can be blamed here.
-> 
-> I tend to view the Fixes: as us suggesting which kernel versions should
-> be patched.  I'm suspecting that's 6.16+, so using the final relevant
-> patch in that release as a Fixes: target would work.
-> 
+On Sat, Sep 20, 2025 at 12:07:17AM +0000, Kuniyuki Iwashima wrote:
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 814966309b0e..348e599c3fbc 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -2519,6 +2519,7 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
+>  #ifdef CONFIG_MEMCG
+>  	/* sk->sk_memcg will be populated at accept() time */
+>  	newsk->sk_memcg = NULL;
+> +	mem_cgroup_sk_set_flags(newsk, mem_cgroup_sk_get_flags(sk));
 
-Sounds good. Let use the following.
+Why do you need to set the flag here? Will doing in __inet_accept only
+be too late i.e. protocol accounting would have happened?
 
-Fixes: 3ac4638a734a ("memcg: make memcg_rstat_updated nmi safe")
 
