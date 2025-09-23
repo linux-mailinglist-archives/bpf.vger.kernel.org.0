@@ -1,76 +1,78 @@
-Return-Path: <bpf+bounces-69476-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69477-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19A0AB976DC
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 22:00:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1269AB976E5
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 22:01:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E44D83B484A
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 20:00:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5534C2E50B6
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 20:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554FC308F23;
-	Tue, 23 Sep 2025 20:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621C830AD0B;
+	Tue, 23 Sep 2025 20:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lcNpm8dZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O5X82eTK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FFC1AA1D2
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 20:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43EE01ACEDF
+	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 20:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758657641; cv=none; b=KFvL+EtrUin7DLlrBwthrq+ohS/inYrMMOpqFyehPlW4qFh/gNmD7zEP1s4kY5AYuRFZVY5zksSvPisk4GiNVR4KkN4PhuKjC8cJuwPPxCjqRW3B0ipKQnGigrbz7l5k1L6DqKkbj9tDwhUae0oLF6Wj8B1RyaQ9QCMzDQ3ju+Q=
+	t=1758657647; cv=none; b=SjoZRBcMoRzbgc0VUVcVCvcpBtAuuUzDTA2QPScoWqUdYVHQIQEGZFFPN3fhTXzZIiD4bV8O97MKt65S86cJwfZ82JM1CFvLtME8vG3c0z0aRnSl3IY5kCQzqyi9fBMVXDSecZKCyNOXk9t/g7jHL6IptORJxubYbMbCXbdGoKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758657641; c=relaxed/simple;
-	bh=DUqNL0BxXw9yb60YTESlG8jt6nJyQ3pOZOLBywKCkqA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E8b8Oru+FYMWcquF4LKCeTm21ok2dUbr5yCOwyCWY+DNZhLlShdwX9x+RXCy78bK333otUCsA3eK9Fi3fHWLZtDL1J1nkilaWTIDiG+9pmwYynn+w4WqnWQpCBD3PTDhiR+Mze/YNOmMyDhCuIUx+8mJX5jRuEzD+XRR+r1cnb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lcNpm8dZ; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1758657647; c=relaxed/simple;
+	bh=yC887JdsZIuNAU3KH0iM0jpa/sF+QL795+nxAjAlvwo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=YmGlYsIAHIo82lX2ZV/1sg06B7pr0AFWu9rnptLbdSbXLtK6oEiGiDMtTpsnY6dD3ZLpTy1dNzwkZGs2XuFxNF1QjfEa+yZEOtdDZA/FYvntPtxjcHtKx7tmfYPyy+GyhiavLSAZfcSy/y0Jn5iTYLOgL7lSyWZbHKvFZ0UbzLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O5X82eTK; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b2b8b6a1429so44645266b.1
-        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 13:00:40 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b2a55c5ddadso46058366b.2
+        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 13:00:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758657639; x=1759262439; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MMlXrZQAEQaYYcackbMrUxU4ktpxJHOJCKry2TD8zSM=;
-        b=lcNpm8dZWF5OfS0HG6HWS+OcptiMhZrL5K7rWXoxiO0aYfHbsyU/vb4j/BZKPfbGDB
-         nf+iZ+DO8U9onqu2AJ3rvCsoSBDcPlM3+HW9dv5hy8TknhnbSVWSheHg6jE41UDG6bOC
-         sY06ZNBeBKk2KTzH2SMfYAOahulTaDuUeYyNDviGKQBPh4AuzsHncPwaFaW/bq+1Lyz0
-         i9BTGA1m65P/qxGjyAwLOKNac3Bm5vv0Z4E2GXTMSSiEF463dSLINFpOY641UUcP9XUH
-         Gb9FXnd5IkJbLzTzuzxYkFOtw6DcsKVAQay1fPoKtGIK6ARKIAwoqHLa8HymNyBlp++2
-         WbZA==
+        d=gmail.com; s=20230601; t=1758657645; x=1759262445; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9kxnKEunBUq6lbDqWLItziPs2zbuhFcil+VxDU1uLZ8=;
+        b=O5X82eTK2Ic9pgW05Mpn9VtUYSRhRrD5rv8wLaoL5KvlQwIptkBt3mDTMWiU38R6wB
+         v9a2MFTMc+e4hIZtXJnkHHAQXsE8IYw8QaRMHV4jeZ37YmLN5uWArwXGGSAgIxrrn3d/
+         O/z36Sa2X7NOPsTnPuBKzigDBDVfFIghVVxNdi4ANvaScoOUA3S4VszsD8wNxl1dWFE/
+         BDulN5aO7QCT+obG5cABp2M14IAyrJdwURTQ8JdZak6x0lflIV92fw6NykI8rouycb9P
+         T3km9rpRd1jQmbiLZk+UUV86EBE23sGtvrwKJyZIFZVqRSg0ng67T8NY9AwVIMDc026Y
+         vAbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758657639; x=1759262439;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MMlXrZQAEQaYYcackbMrUxU4ktpxJHOJCKry2TD8zSM=;
-        b=Y7d/QN30EhAz3c6sgL6DSg0B31LQKXy8yT3+xXG/AmJzzkrqBdLTEeyulLjArNWZSw
-         RCxY4IBepl4G3AjXdOZCByre2RAq4fZEszhQzKETVw/wR3YhGUIZt72cbL1g5SfVn9uL
-         48/JWSFN+zJDMcpThn7YCmrhyBxf1rxqAVOurtepPYfG2GvN6r2OjrTYJREcz37Lco3P
-         JMubM1YFLNZDc5Ss7tXUiSc0p3WeOk9Fr9YNKlKmTtBGQ6eI2EZCz4/hvbpjRAxqoyZq
-         p+WNqs2BM+2U5bAOfHapgJc00Fx83sZCpVQv4pozZIZGEcsptTIzYuV6XHgtao+uzXQ6
-         G2hw==
-X-Forwarded-Encrypted: i=1; AJvYcCVsMCZj/e1GjM4difjLWYp6yGThxCSalFY9DvkmCQzMjlqTR5gdcKE4lfwRe4QU6TPDfe4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yya99M2cFuwzS72aedtw1/6I4NrwOtK24qsMllbDqIT7S3hJKNA
-	ffdKJBDrkivBLCkN0OluLQN5ol6Cg0qnFhSm+mP8Qa2ukH1HvyuC30wI
-X-Gm-Gg: ASbGnctTjLDk+fFrkJhqXYm26NTFERlSQD2qpICJQEnCbFXDu7j6ZYalNjvvCeiRrR7
-	loazkprLw7P9Om6PdP+oPXYxZdYf8IMxWVOtzIJsbitPh6zuQJhYKQ72RaqoO2n19sXsJv1wWLm
-	YqTGsnATlI8IOI/mKjXrMBtR/EqxF4YMv0F7SVe09MuCeyeQ1bwnin8hp65INnvdFLtcuodM5OD
-	EIuGRNtlyxANs7lJonAVPyUC0BGtAUaVH9z8EOfEHTdtVV3mMDa9IFkJwaHyBe9IOHBKcjhA6X6
-	Fy7iWggx5j1aZZRAhvabGTHWx8IcA0ADiu6FElc8f+SVJm5wl0EStzyZATdFrzm02O4y76ehdnb
-	SRWdJvc/W9lAsVjSJzrVbIDM0
-X-Google-Smtp-Source: AGHT+IHN5XcNp/1KJalZXV/5R5ZCq+blsOxXx3/x4YcOoDnXFZxHCB5DKHENkTDjUloqq8JYpW2v8w==
-X-Received: by 2002:a17:907:7b8c:b0:afe:ae6c:4141 with SMTP id a640c23a62f3a-b302689ce0emr142054966b.2.1758657638404;
-        Tue, 23 Sep 2025 13:00:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758657645; x=1759262445;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9kxnKEunBUq6lbDqWLItziPs2zbuhFcil+VxDU1uLZ8=;
+        b=d1D8J70DOes0tkVh7zb7kKGfbCc+vQrWdrBJAKYqblDvbQNkHTwndd9NhgwrNI76Vu
+         jMmvuuc4/o17YUO16ydNTCOY/s5qrebCG/pgb0g6B4TIWqXG/brbAk8NZXFjIwiu88b2
+         ZxgynsHKWDbbnE30FlubjVZaqP6wlT8kWRT0y73z1msye3FMBecrFJspIaU85m8MOF5h
+         Z60h1CH2C5Pxr4kkOgkiTqBIGbw+2uyaVD9jA0PuD0eJdgEgzaH75AEV48noAdS0uEQT
+         r7ZML/oSOyx3dr/TCs7v2JYI6A30pAiK7QDQXgHOixp9ErHhSHdZdTNZCVUKKzjOafRh
+         W2Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCWEbzJ6xRICuH+LOmlokSEci+mU7PYknLk2cESe09ChFrygLW+7twvAhanVUZia1mGf5ns=@vger.kernel.org
+X-Gm-Message-State: AOJu0YytKsw2wz7XJagN7hgdZVKxgLf49aOt8ixNXv4RXjrd+O3/IWom
+	m1ogV/K6GckvSY0oWkXX5eWODCkYaTYRd+UKVXVwuvpg9Onisrqqkwse
+X-Gm-Gg: ASbGncvYZgMl7qASpaHyOoyRv5RkEFqyOQ3dtGPXskI8/XKYDT9jtqVz3zYQy/xLyCO
+	wPeLafQJcJf0bubBQL/ZtAAMUFYQHywNcq/6GTx96GmLDjpEgYeMYyuf4LJxNh941HVAZpvQ1e3
+	abwPYlA0+4uk359QQ5b277sQXzGrN1ivq32EyljLV2ofQjVOkmQC2BxqBdkScpG73cshpmXVX9e
+	bpXn/AHftsXi5+S0SnNTrcVCgVJ1xVOL0gXEeK1W9g0np/VhKTu5rkm8bjS/aObbIYjN/4uP8Kz
+	3hUqzcRDKw6yyg7cuXFL4HmGyUb35+9YP0ZftnqcxwrkQJdHZo19cT9Wm7H5zyk8wyfAs3J/PZN
+	5JuFzxLq/LXMie/sh8NclT1MrJEUq7vx8tWqfHfMuaXU=
+X-Google-Smtp-Source: AGHT+IH0sk2UMFhq8ILkVNhalVb23fPwThZEi+o2vb0yPrbkfalsoc549TsjUa62bG1KSNKQmFvZBw==
+X-Received: by 2002:a17:907:3ea1:b0:ad8:8c0c:bb3d with SMTP id a640c23a62f3a-b302745d8acmr203295566b.3.1758657644360;
+        Tue, 23 Sep 2025 13:00:44 -0700 (PDT)
 Received: from bhk ([165.50.1.144])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b2ac72dbe92sm672074066b.111.2025.09.23.13.00.35
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b2ac72dbe92sm672074066b.111.2025.09.23.13.00.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Sep 2025 13:00:38 -0700 (PDT)
+        Tue, 23 Sep 2025 13:00:44 -0700 (PDT)
 From: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -98,10 +100,12 @@ Cc: horms@kernel.org,
 	bpf@vger.kernel.org,
 	linux-kernel-mentees@lists.linuxfoundation.org,
 	Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
-Subject: [PATCH RFC 0/4] Add XDP RX queue index metadata via kfuncs
-Date: Tue, 23 Sep 2025 22:00:11 +0100
-Message-ID: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
+Subject: [PATCH RFC 1/4] netlink: specs: Add XDP RX queue index to XDP metadata
+Date: Tue, 23 Sep 2025 22:00:12 +0100
+Message-ID: <20250923210026.3870-2-mehdi.benhadjkhelifa@gmail.com>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
+References: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -110,31 +114,30 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
----
-Mehdi Ben Hadj Khelifa (4):
-  netlink: specs: Add XDP RX queue index to XDP metadata
-  net: xdp: Add xmo_rx_queue_index callback
-  uapi: netdev: Add XDP RX queue index metadata flags
-  net: veth: Implement RX queue index XDP hint
+Devices will be able to communicate received packets
+queue index with bpf_xdp_metadata_rx_queue_index().
 
- Documentation/netlink/specs/netdev.yaml |  5 +++++
- drivers/net/veth.c                      | 12 ++++++++++++
- include/net/xdp.h                       |  5 +++++
- include/uapi/linux/netdev.h             |  3 +++
- net/core/xdp.c                          | 15 +++++++++++++++
- tools/include/uapi/linux/netdev.h       |  3 +++
- 6 files changed, 43 insertions(+)
- ---
- base-commit: 07e27ad16399afcd693be20211b0dfae63e0615f
- this is the commit of tag: v6.17-rc7 on the mainline.
- This patch series is intended to make a base for setting
- queue_index in the xdp_rxq_info struct in bpf/cpumap.c to
- the right index. Although that part I still didn't figure
- out yet,I m searching for my guidance to do that as well
- as for the correctness of the patches in this series.
- 
- Best Regards,
- Mehdi Ben Hadj Khelifa
+Signed-off-by: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+---
+ Documentation/netlink/specs/netdev.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+index c035dc0f64fd..25fe17ea1625 100644
+--- a/Documentation/netlink/specs/netdev.yaml
++++ b/Documentation/netlink/specs/netdev.yaml
+@@ -61,6 +61,11 @@ definitions:
+         doc: |
+           Device is capable of exposing receive packet VLAN tag via
+           bpf_xdp_metadata_rx_vlan_tag().
++      -
++        name: queue-index
++        doc: |
++          Device is capable of exposing receive packet queue index via
++          bpf_xdp_metadata_rx_queue_index().
+   -
+     type: flags
+     name: xsk-flags
 -- 
 2.51.0
 
