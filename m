@@ -1,189 +1,190 @@
-Return-Path: <bpf+bounces-69350-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69351-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC1DAB95077
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 10:40:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFCFCB951B8
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 11:02:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D17E54E2D0B
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 08:40:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48DA83A4781
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 09:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42C531D389;
-	Tue, 23 Sep 2025 08:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mqJXKFfe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C8F31D388;
+	Tue, 23 Sep 2025 09:02:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D931F313D49
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 08:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC772ECD33
+	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 09:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758616813; cv=none; b=IwHf4wNj5pRcqEifDI4k1QzOQxfIjjWbX53oqus/aTbuyLm/6gmAh7CHLBxVWyl8DPNGXK56Clhqa6zr5Utx932GBcMT1gk0CyoabkNNkl4DoD/5h3hYFaLrIqTdcOgDK2Ex3dfJXvhsj6BL7+dR+FMebt1IPe7u78mzKQ6aiDw=
+	t=1758618154; cv=none; b=s9//fj6sT8JITAudXV8wARhHNN9KQTTcV1DLM/wUk2gQG+FMh2DIac/sR8yQiIjtD/UEoNiGTlPygEQt+QZlY+ByMfpRUSg/xHz2eouKbeeyN2LT1/d6+zGgCGw6YdSqTttQyfoT9QuwwQmRHH2KOL5J8z3tKiPCySRoeLwMzWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758616813; c=relaxed/simple;
-	bh=AODaK73CD16jKk+03UbKIxye6WRkDa/4oiNXkx8hylY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VXfRhI5/scP9V19SlMeGf6PrnqCQWaYAfrBgO+IOUMjfbOk6kHYQdMblT+t0hS+c+H/EGcCgcoov2QYzyJK7D6wm/HS2ie3MPXnEgYQwzN8KyActQY68Zbu0SJvPG9jCCvK9gBJZaEOsZY/SX46hFfhv5376eZJjU9JixpHmqIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mqJXKFfe; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-4257b2781d8so7682595ab.1
-        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 01:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758616811; x=1759221611; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=symkmqcspqr8o30esRANp+CrU+zjLpKuDVPbjsgdgTo=;
-        b=mqJXKFfeOlmjGd4katIQhwLygvADaX2FFjghshA1zs2vlw4QG5XmQQnAe2skKuXtjJ
-         IGfIDuz5AZ00WB8tyEycLyZ5pE6Z9rYCkoFDzLixOo1u5Q0dCvj5Hzcr0qJjjtDLVTen
-         mLcNS56PnNBuGZ2Cw4p3jltxCk3/q4o7FNRhDvVTjhgTQgvdERAJeoq/2Z3aNgAEj2vR
-         OUYmA+flvHDq9rCi7CPtY6EXJtkj05nEsh4uvc0+0QxxpJkUye5RFUfyXcEb7wWP1GdR
-         2LbRLO4gZ4Xm79ORpl+UZyPihQgn0ltDLDriHX2cMXyD0YWt9Io13l9aIp896Y5jsjVB
-         bkqA==
+	s=arc-20240116; t=1758618154; c=relaxed/simple;
+	bh=9cdjBUOvaenS1SvUrOQfePrP4+lJYNoP0MFF0Iphy6w=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=dAnN4u3a680PFA6Zh4fCYiE+YJ66DQyk9maWTLF/ncoEBq9ncjnYMiHDryg7i8JVvsg9U/OalJGBJXgCOZJduLY6o/RzhigBv2UDu2NylfompiVpgg/1Sdz4SbBLa2CrfJIKlo4cGvRSQXs4WZgC5hwaMkFaEfGSK2Z8AQ+cL4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-4248d44a345so42676025ab.1
+        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 02:02:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758616811; x=1759221611;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=symkmqcspqr8o30esRANp+CrU+zjLpKuDVPbjsgdgTo=;
-        b=I9nv3BZbChLDmJE4gNeHumMCCRJMvFKTw1conmk5PGlqgILvOhf6gfeX21xUrjMdQO
-         QxVbGIUICr3BQeo9qTHLCaa2SSKcVvyYB8RzuqQPSxeZP/wuXceaqJ5+3QXWQgT4Dxfp
-         7BjxwtsWNrqthprnvsOxYzO8ue77a8Yj05XPFo98jJFpcvldX9TyXypkuxMHMJxlI5vE
-         XYVDFy57oA+mSPCHtw0YfmDJb8lgBjUDalUEJ0t+KtOQLsJl3tnuX1MlsONe46r8fiHr
-         B5jVsmdL9mzpvRh3Pp0qDW/pYyyGN4OQfW/JsFXfgGNDvd2A2brXsaqKeA7pTJAcB1hi
-         2ukg==
-X-Forwarded-Encrypted: i=1; AJvYcCWl/Mtr4LCQh/h7WzEkSQlvNsaA6d9qurmupfQrV22ayVyoVfg7f58k7NJbOsJLSDMXbQ4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyT3L6oWd180fTJJgQAKr0K/r/7bOR74fvtekW2k0ccqJJWDki3
-	y2O+2ulVpmC42mBKji6PenJNmDWuGOPa63tEGYw7/M+SqUkbhEpouazV6SveidqxdRE0eDpVU6c
-	hGZMW8U6/vmWvTLll2L+TQb/waOnnXV4=
-X-Gm-Gg: ASbGnct39OLiWoLkGNudzWYzkkIK8GVdGs/o7ZGyKwxMrScebWwQmkAlUt+DpvSgXNa
-	4H6XSgjT1ZbiAwGA799/x+49kTsIkx3NPzQOzVGiKzsGIrEbK3nruQ1npNn9NCC2V1a/nohn1WP
-	Qlb/XIpX5vsdo0ExOxtiacqiZm6hGtUBy2SIudOndkJQ8S28mIV8A+9M6ekjXKodZlgXXWtNb8o
-	+JG6XI=
-X-Google-Smtp-Source: AGHT+IE3jRaBDdbMyWwEkuj8pSWIpAJgLExbngsiP4kHQqEPNAVBKry0yg2HISVOBCHlDB/pgKQkleS3bwg0mZdCy7s=
-X-Received: by 2002:a92:cd85:0:b0:425:73c6:9041 with SMTP id
- e9e14a558f8ab-42581ea5bacmr26341995ab.17.1758616810906; Tue, 23 Sep 2025
- 01:40:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758618151; x=1759222951;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uqLnm2IV4iRJ0QPNc8H+0uuFGcNyE2JfSTTgxiSiusk=;
+        b=kMQI8HZEifrkRCR5Q0l77RNZKfkAfm54ybU/W9MVhNLKXX/bdqkoZ8n2qSdlOBg4H9
+         W7wvmK00kw2NrTd8wmp+DZEoZ4iGS8sKfdosV8nm/uIkh9y3DJr4N8OMw208lpCsATKB
+         ij9LarJpnUMrMGn8mXfor0lpnVxebzUuP4nS4XrrOmMk8JWsReY3W2SMt8Y4nR0keTpU
+         VzSexBGIuWg22+HAJKHGcsj0e4W/VrlyHM2MufmUZq4FxxCR1Tk9gdGH1bkRoZ8MAWnx
+         jPFv636IeSIDM7kYOEDSrj8ntlOrqUYcR3cr403hHWdGAyx9NxvFVTJ4daYJvYtl1cHs
+         41Uw==
+X-Forwarded-Encrypted: i=1; AJvYcCVsbfKTuMc0QZDenm2zEQuh4fa/dGyWL6mq05QkSsidrV+X3xvFd1GHxFYO+Rf9uNVz8kU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRMm8lwgxg0mrBOHG4QcdJGTgxTz1+/rjzdBQLrHqxwERx8gVw
+	BcXUkVLgV5rLAVVAE1MM1bslOC8hYiBnUuK+tLAYYapTqJvE5plBynNOk1DePxQrQKRKQrmuhxa
+	wr1hGh4VzzF9hDz/9XtOHFfGLJKF9xBIa2PIF6tsAaNk5Cx6v3+4YZ0STjs8=
+X-Google-Smtp-Source: AGHT+IH/l6Q4yau15bir0aQevIA+o0yPxgBau9pNkmSLV48NAAVuv9PTR5A+vOkJCwt2wa/NyZGWgMZT2tbsWxkmsC7DGxWDlpQm
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250922152600.2455136-1-maciej.fijalkowski@intel.com>
- <20250922152600.2455136-2-maciej.fijalkowski@intel.com> <aNGGjMFT_bsByxcZ@mini-arch>
-In-Reply-To: <aNGGjMFT_bsByxcZ@mini-arch>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 23 Sep 2025 16:39:33 +0800
-X-Gm-Features: AS18NWDqyMqOt5QmgHBQT5tt0U_VJkVVcTst6vX4-fZ9dkU0tjhEdt1jvkyAvgQ
-Message-ID: <CAL+tcoCN2Lux970eMyXk_SjWsH9M38zsbaJ9o25tJn94DGLMwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] xsk: avoid overwriting skb fields for
- multi-buffer traffic
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org, 
-	magnus.karlsson@intel.com
+X-Received: by 2002:a05:6e02:258a:b0:423:b2b8:99c6 with SMTP id
+ e9e14a558f8ab-42581ea4925mr21839885ab.21.1758618151577; Tue, 23 Sep 2025
+ 02:02:31 -0700 (PDT)
+Date: Tue, 23 Sep 2025 02:02:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
+Subject: [syzbot] [bpf?] general protection fault in print_reg_state
+From: syzbot <syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 23, 2025 at 1:25=E2=80=AFAM Stanislav Fomichev <stfomichev@gmai=
-l.com> wrote:
->
-> On 09/22, Maciej Fijalkowski wrote:
-> > We are unnecessarily setting a bunch of skb fields per each processed
-> > descriptor, which is redundant for fragmented frames.
-> >
-> > Let us set these respective members for first fragment only.
-> >
-> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > ---
-> >  net/xdp/xsk.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index 72e34bd2d925..72194f0a3fc0 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
-> > @@ -758,6 +758,10 @@ static struct sk_buff *xsk_build_skb(struct xdp_so=
-ck *xs,
-> >                               goto free_err;
-> >
-> >                       xsk_set_destructor_arg(skb, desc->addr);
-> > +                     skb->dev =3D dev;
-> > +                     skb->priority =3D READ_ONCE(xs->sk.sk_priority);
-> > +                     skb->mark =3D READ_ONCE(xs->sk.sk_mark);
-> > +                     skb->destructor =3D xsk_destruct_skb;
-> >               } else {
-> >                       int nr_frags =3D skb_shinfo(skb)->nr_frags;
-> >                       struct xsk_addr_node *xsk_addr;
-> > @@ -826,14 +830,10 @@ static struct sk_buff *xsk_build_skb(struct xdp_s=
-ock *xs,
-> >
-> >                       if (meta->flags & XDP_TXMD_FLAGS_LAUNCH_TIME)
-> >                               skb->skb_mstamp_ns =3D meta->request.laun=
-ch_time;
-> > +                     xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->=
-xsk_meta);
-> >               }
-> >       }
-> >
-> > -     skb->dev =3D dev;
-> > -     skb->priority =3D READ_ONCE(xs->sk.sk_priority);
-> > -     skb->mark =3D READ_ONCE(xs->sk.sk_mark);
-> > -     skb->destructor =3D xsk_destruct_skb;
-> > -     xsk_tx_metadata_to_compl(meta, &skb_shinfo(skb)->xsk_meta);
-> >       xsk_inc_num_desc(skb);
->
-> What about IFF_TX_SKB_NO_LINEAR case? I'm not super familiar with
-> it, but I don't see priority/mark being set over there after this change.
+Hello,
 
-Agreed. NO_LINEAR is used for VM. Aside from what you mentioned, with
-this adjustment the initialization of skb is not finished here, which
-leads to 1) failure in __dev_direct_xmit() due to unknown skb->dev, 2)
-losing the chance to set its own destructor, etc. Those fields work
-for either linear drivers (like virtio_net) or physical drivers.
+syzbot found the following issue on:
 
-Testing on my VM, I saw the following splat appearing on the screen as
-I pointed out earlier:
-[   91.389269] RIP: 0010:__dev_direct_xmit+0x32/0x1e0
-[   91.389659] Code: e5 41 57 41 56 49 89 fe 41 55 41 54 53 48 83 ec
-18 89 75 c4 48 8b 5f 10 65 48 8b 05 d0 f3 b7 01 48 89 45 d0 31 c0 c6
-45 cf 00 <48> 8b 83 a8 00 00 00 a8 01 0f 84 90 01 00 00 48 8b 83 a8 00
-00 00
-[   91.391095] RSP: 0018:ffffc9000482bce8 EFLAGS: 00010246
-[   91.391538] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000000=
-00001
-[   91.392107] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8881204=
-40700
-[   91.392663] RBP: ffffc9000482bd28 R08: 000000000000003c R09: 00000000000=
-00001
-[   91.393230] R10: 0000000000001000 R11: 0000000000000000 R12: ffff8881204=
-40700
-[   91.393800] R13: ffff888101ed4e00 R14: ffff888120440700 R15: ffff888123b=
-f2c00
-[   91.394360] FS:  00007f2094609540(0000) GS:ffff88907bec2000(0000)
-knlGS:0000000000000000
-[   91.394992] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   91.395447] CR2: 00000000000000a8 CR3: 0000000113d0d000 CR4: 00000000003=
-506f0
-[   91.396015] Call Trace:
-[   91.396226]  <TASK>
-[   91.396415]  __xsk_generic_xmit+0x315/0x3c0
-[   91.396767]  __xsk_sendmsg.constprop.0.isra.0+0x16f/0x1a0
-[   91.397208]  xsk_sendmsg+0x25/0x40
-[   91.397496]  __sys_sendto+0x210/0x220
-[   91.397811]  ? srso_return_thunk+0x5/0x5f
-[   91.398343]  ? _sched_setscheduler.isra.0+0x7b/0xb0
-[   91.398935]  __x64_sys_sendto+0x24/0x30
-[   91.399433]  x64_sys_call+0x8d4/0x1fc0
-[   91.399937]  do_syscall_64+0x5d/0x2e0
-[   91.400437]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+HEAD commit:    cec1e6e5d1ab Merge tag 'sched_ext-for-6.17-rc7-fixes' of g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=175418e2580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8f01d8629880e620
+dashboard link: https://syzkaller.appspot.com/bug?extid=d36d5ae81e1b0a53ef58
+compiler:       gcc (Debian 12.2.0-14+deb12u1) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113bf8e2580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1608c27c580000
 
-Thanks,
-Jason
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-cec1e6e5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2833a04dba30/vmlinux-cec1e6e5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/632491f232df/bzImage-cec1e6e5.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com
+
+Oops: general protection fault, probably for non-canonical address 0xdffffc000000000c: 0000 [#1] SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000060-0x0000000000000067]
+CPU: 1 UID: 0 PID: 6117 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:print_reg_state+0x2dc/0x1010 kernel/bpf/log.c:719
+Code: c1 ea 03 80 3c 02 00 0f 85 5c 0c 00 00 48 ba 00 00 00 00 00 fc ff df 4c 8b 7b 08 49 8d 47 60 48 89 c1 48 89 04 24 48 c1 e9 03 <0f> b6 14 11 84 d2 74 06 0f 8e 45 0b 00 00 41 0f b6 57 60 48 8b 44
+RSP: 0018:ffffc90004e67398 EFLAGS: 00010206
+RAX: 0000000000000060 RBX: ffff8880275a5000 RCX: 000000000000000c
+RDX: dffffc0000000000 RSI: ffffffff81daeb8b RDI: 0000000000000005
+RBP: ffffc90004e674b0 R08: 0000000000000005 R09: 0000000000000002
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff888037df0000
+R13: 0000000000000003 R14: 1ffff920009cce79 R15: 0000000000000000
+FS:  0000555587b13500(0000) GS:ffff8880d67b2000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000200000000100 CR3: 0000000033bb5000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ print_verifier_state+0x234/0x1170 kernel/bpf/log.c:775
+ do_check kernel/bpf/verifier.c:20071 [inline]
+ do_check_common+0x283e/0xb410 kernel/bpf/verifier.c:23264
+ do_check_main kernel/bpf/verifier.c:23347 [inline]
+ bpf_check+0x869f/0xc670 kernel/bpf/verifier.c:24707
+ bpf_prog_load+0xe41/0x2490 kernel/bpf/syscall.c:2979
+ __sys_bpf+0x4a3f/0x4de0 kernel/bpf/syscall.c:6029
+ __do_sys_bpf kernel/bpf/syscall.c:6139 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6137 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:6137
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0x4e0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f1041d8eec9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd44cefdd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f1041fe5fa0 RCX: 00007f1041d8eec9
+RDX: 0000000000000094 RSI: 0000200000000100 RDI: 0000000000000005
+RBP: 00007f1041e11f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f1041fe5fa0 R14: 00007f1041fe5fa0 R15: 0000000000000003
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:print_reg_state+0x2dc/0x1010 kernel/bpf/log.c:719
+Code: c1 ea 03 80 3c 02 00 0f 85 5c 0c 00 00 48 ba 00 00 00 00 00 fc ff df 4c 8b 7b 08 49 8d 47 60 48 89 c1 48 89 04 24 48 c1 e9 03 <0f> b6 14 11 84 d2 74 06 0f 8e 45 0b 00 00 41 0f b6 57 60 48 8b 44
+RSP: 0018:ffffc90004e67398 EFLAGS: 00010206
+RAX: 0000000000000060 RBX: ffff8880275a5000 RCX: 000000000000000c
+RDX: dffffc0000000000 RSI: ffffffff81daeb8b RDI: 0000000000000005
+RBP: ffffc90004e674b0 R08: 0000000000000005 R09: 0000000000000002
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff888037df0000
+R13: 0000000000000003 R14: 1ffff920009cce79 R15: 0000000000000000
+FS:  0000555587b13500(0000) GS:ffff8880d67b2000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000200000000100 CR3: 0000000033bb5000 CR4: 0000000000352ef0
+----------------
+Code disassembly (best guess):
+   0:	c1 ea 03             	shr    $0x3,%edx
+   3:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   7:	0f 85 5c 0c 00 00    	jne    0xc69
+   d:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
+  14:	fc ff df
+  17:	4c 8b 7b 08          	mov    0x8(%rbx),%r15
+  1b:	49 8d 47 60          	lea    0x60(%r15),%rax
+  1f:	48 89 c1             	mov    %rax,%rcx
+  22:	48 89 04 24          	mov    %rax,(%rsp)
+  26:	48 c1 e9 03          	shr    $0x3,%rcx
+* 2a:	0f b6 14 11          	movzbl (%rcx,%rdx,1),%edx <-- trapping instruction
+  2e:	84 d2                	test   %dl,%dl
+  30:	74 06                	je     0x38
+  32:	0f 8e 45 0b 00 00    	jle    0xb7d
+  38:	41 0f b6 57 60       	movzbl 0x60(%r15),%edx
+  3d:	48                   	rex.W
+  3e:	8b                   	.byte 0x8b
+  3f:	44                   	rex.R
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
