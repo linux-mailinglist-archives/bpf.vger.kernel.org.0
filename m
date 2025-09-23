@@ -1,141 +1,204 @@
-Return-Path: <bpf+bounces-69455-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69456-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1A4EB96C55
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:13:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E07EB96D0D
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:26:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43D8217A7F2
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:13:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90B687A4012
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42888307486;
-	Tue, 23 Sep 2025 16:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AC2322C98;
+	Tue, 23 Sep 2025 16:25:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="nrKQX8Ra"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SwupfOZ0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94CFC2E1F1C
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 16:13:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DB51E89C
+	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 16:25:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758644030; cv=none; b=E5bdphJ9ZYsf55yALV7uOGSCMu5bPAwG5KRotCsJ2Hzy3tPEqwuwhG9WyWwFqVuzSG/uciLmQDeszps81xU9leiObKXRyKgw75kgECc+CmxRUHOvxrT5g7nUGm7FcgFVYXjd1k/tHKl6l9OjrGDb1ufWs/MqeE/wAxxoP2nKIn4=
+	t=1758644757; cv=none; b=TMq3tl7WP/qPblKziWeE+AVWS099vD4bfXGx4OxMplMNQ7kMy+Dnxa7FYcgpVL6RD1eHyV+PvNNKkQdQ0vkuI0L3rlhVuosU3MnP0d/p2FOe39lGwQzcrAdS/y6tqEKsROR0M1R5JUG4mr3RhTZLDKJ5vQvsNbw59eifzc7vjkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758644030; c=relaxed/simple;
-	bh=guRLQeQsWS6kFmB8Bg7C/sA6CM0vOmn9YkSOY/l5WDg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U7bw399RMFD/xXZ2CIZNaE3Fbb6wBZlQj6d/6RpEeRUkCu1GhV6TrXQ+vKQd6CbkypSQwxYMcM3jN2nDIgSl057NXTnwBJLwt2a/5luswATiDYp4VKwl2zdod2U730DfrTZQJKvyZdEoCANTYaCQXlHvynmhs5SjjelIePmvkog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=nrKQX8Ra; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-77f38a9de0bso2273462b3a.0
-        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 09:13:49 -0700 (PDT)
+	s=arc-20240116; t=1758644757; c=relaxed/simple;
+	bh=N5mgVPRo+CPk2ySaxtFkjus+k/V2WydmtZQlE+k35h4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H4zHXJsYa6zcnhT88hN0AyqaQh+cxwuV5NWBdNlN77nN4XsQxBRuNR7aD7IX8igKhNgIxYNnDMhem7DiPY0yfwJIRKd9xQ+qedQdgGJQb2jdGdELQ3pK3JSQnnxcwuxyq5kvcFRW3Obnt3LRZZNQ0d+eSEMSjd/NZQnUBciHQ2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SwupfOZ0; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3f44000626bso2262480f8f.3
+        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 09:25:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1758644029; x=1759248829; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xhKIiC03x/bFFowHfSrWNW2Fi78ULcqlgNZuGQXpIAs=;
-        b=nrKQX8RabJ91elBd0+Km8eIvkurnH74L5kcvbHfCwzRC50Sj6GE4V7e2cVJWhCPIIN
-         cLqj32xM8brNOr+QyJiZekLRGZAtGRu66S8/X/nUNcoh8XLbTUFC1HlKjnCAw6yykwqE
-         1HThU8JESDM24VD04vAz3mSG+YDd9IOgruSYEji/e8Mhk9jr7t1PojvkI/UXMwLBiJTH
-         6aier0UOUs5z8avT4hRNsNfc++nsPYpzAoZjCKMw7eem3KZU0FCokN3L3PeQ7cPkZkjr
-         NB1WvJjam5gK9zLXMC/O6n8b/TiW4cU/zq8Ds2WjPCkRshBuRNnfMxGIgz91RBaQ1R5H
-         4D2g==
+        d=gmail.com; s=20230601; t=1758644754; x=1759249554; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=IvBR/uuNoM05F0Kk2G6oFxp0yBhFbfSrXeNiw0n2Ztw=;
+        b=SwupfOZ0T2gm1tYUiw7SBXyroHOI4oAqQrS7wKbxqu1fh9SGZBd+Bl/1JW7auj6sMn
+         IFqadrkhyItkwDeC33IfnQsF2+E9R2X3rAOvMmAaI1vzTVijHX8x89VQVMRG6kcD1JRj
+         9hoyGWNpZsJAqaTqBw5N1Svx22wEKif6aZ4DtJcVSmsVvlxFW71s/3kxCMoKsxFQfiwJ
+         xMgSTbhwEo/Qc0IjpgU5EsGnCaeB+qDYM7kYZKg+GmDG3kBd2Ddd/u0P0HEoLqCU7WB8
+         zQdGpRNadH+/R8v0pokBgY2yXOvBJY0e9otj/VJ3vmVKG9iVoqV5ykQ+yeB/dvE9uFxP
+         AbWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758644029; x=1759248829;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1758644754; x=1759249554;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xhKIiC03x/bFFowHfSrWNW2Fi78ULcqlgNZuGQXpIAs=;
-        b=a3jeCQScNc1YnvcphgCHC7ZG9yP9GQGV3fm9YuTv3vOfOVbEtWIz2puZU6lL3G89Ne
-         M4W6u9HE+YyaU4Vy5j3szjm8c4cyFCjKVx4pQdWgsXl16fxsXKgDTZXMgDXu3Dm3uvr8
-         pstYlcJOYeHi0Gin0QC1g0ss+FhwzpwEVJ7eu563oU6WOVTN5LKh61U4bwhdf8KEv3Ah
-         1iTBJ5H7VWBh904icDK04S82uN1i5J4vSEWNMFsSP+uveXK+qRYyKxBZwS/bF8LFqHLG
-         wYNdvEQeNhGBgDSUjj/ZMGtJEbueIEmjjUJAdJfQ/+6Jwfa3gDOB6c591z0c06Tbj31/
-         rzvg==
-X-Forwarded-Encrypted: i=1; AJvYcCVW6QhbWzCZe99Zc+LpD6o6kdED5g8ulnwKH0bwOzSfUoagU6sGdw2J8MogtIaEYHbmvWU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwH0/HFCMr8+htEEXUlSTljsiGi4o2B1RsXQzORvoGIkt4eMg+k
-	DOgM8tGo80QbqrVaTNdk3QuPHhUJJYZtFo/tH6Dxb8SN+c1lJUJb+loUBKLA+JWrTh8=
-X-Gm-Gg: ASbGncvQvF0apCl92yXWsb19yJ15kQQI3VEOKo6CTOPYu+zJ5351fubWkXEQ0QPRR9P
-	3BEzUEpMCRLN+us7t87/7C99bflo48hUz0JnV0Xo5dsXrbw2nS4y1SHQFKus1nopU2T17QMWpFF
-	M5HmCOnD3X3wBCG1Qm21DVi9je6qEhlNdnkN8HvHM2fqIvbRDG0oAZZCbl4otWDM8G0aUrxeV68
-	RVz396oX3cTcECBrTnjgc2XT5KYqP72VuIctYNwW1TCBklcVfTS10STH1fAzQLGwO79KH368lX5
-	Sm4UXQmmXpJWS6xYTOV7ktk5yWVg29TWW9DmOxBtmjARZQ4tA4QbUJHis1jUVgdYb39Kt+A5MsJ
-	dgU5o3sI1dt6PF4VTb6EBlK9ZFD7utzR0hQSNi0nempV4oDpLdH4Ze8KCHPDEDMxa
-X-Google-Smtp-Source: AGHT+IFUkImeersmBBFN6zTgf+WqABsEK5LuZ0POd29k47Z8BYCSZNZvo1Coyn/+vMgnP17dqWFJqw==
-X-Received: by 2002:a05:6a20:c89:b0:2d5:264c:e484 with SMTP id adf61e73a8af0-2d5266b6b4bmr2513208637.25.1758644028850;
-        Tue, 23 Sep 2025 09:13:48 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1156:1:ce1:3e76:c55d:88cf? ([2620:10d:c090:500::7:1c14])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77ea933bfeasm12741223b3a.53.2025.09.23.09.13.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Sep 2025 09:13:48 -0700 (PDT)
-Message-ID: <ec3a75bd-8879-4832-aad1-0e2aa096ec5e@davidwei.uk>
-Date: Tue, 23 Sep 2025 09:13:46 -0700
+        bh=IvBR/uuNoM05F0Kk2G6oFxp0yBhFbfSrXeNiw0n2Ztw=;
+        b=YC8R+0jj71BXVSsXnwrM6qNMZ2OIvUzqycgAlgewupJABLyjT9Te6LjYQ//FJN9nh7
+         NL2mJ6UEO3uyVzwbiuIzNxW6yzrfX/QBt8kK8xidT62K+FmTDtyoqUAucEkhdwsgi4WG
+         cQfKpPiwueqQbt2eMCObPM8+bI39RtyeZ5t0oXiD5BF5GclHLKR01UsWk+1PpCaxedl8
+         2MgVXLJH6Cj5d7Nlx7EODMO8NiURZDNWrSwMo4ZdohRpLTiTL6/wsgERCFKppnF5H08j
+         MLVyarjDkphaTfz8JKbeicGO4SYWt55gWykM3sKylrDAhZtcUPvgR16cLU5nKtwCJNy0
+         xMxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXIU/7HPp9OykgRHyS/zipWSVa9aHvqMHF4CJwcdHo9EaGDL1KwXJPs9NOr0NsI4kyEDHs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwkLv75k369OP4ugDSrd5XcCKJ8fKfM4JhQcEr0TvTe9wXzL9Wf
+	DjtJ5jRnUXXsyoZcbalB/T6rYJWikztxFHHbtZk+BVQ5sJXGbErGVORF
+X-Gm-Gg: ASbGncvGZ6qeA5LuS+ukPDabMxvyXcnpjVmrBZ2xNh+e6VJq7Dn5MgfgA/6LRDCVGrF
+	t1T1EEXzQYZYwE33YopX1RKguDThAfn4vRfItJJ0WqXaz919tT+qvQZjRbAFi++WJm8j9/440eh
+	jTQwL3hSRZSj3cmc3VJjAYk/v/6TuTTXY8l/B89lSmKq5uLmyt948c8ioBFyBOtt+zrQUaeEQex
+	xuJutTwJk5og3CEqs8+HcuXe0tQHac8URDuDeLVn6W/aQlWeBY3BHOvfJ318qT2tlecD6I49SDl
+	bQjSgd0t35ZIZoVptzQlJ+JVIgDYTM+Rh5zjFS1gIuHSrxNbKEbMPXg/i0amxSn5kT/6GVm9K8o
+	m1DmxnTGOvgI=
+X-Google-Smtp-Source: AGHT+IHrFSATwyg3qRX5k56eKwBNcVQdxs7GBs4B3KV5AJlT4F8HQe8L3ySqDT1kugqd/sLfdFZJ1w==
+X-Received: by 2002:a05:6000:430c:b0:3f0:2ab8:710f with SMTP id ffacd0b85a97d-405c3c3e243mr2955512f8f.8.1758644754154;
+        Tue, 23 Sep 2025 09:25:54 -0700 (PDT)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3fd84338ca2sm9347726f8f.42.2025.09.23.09.25.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Sep 2025 09:25:53 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 23 Sep 2025 18:25:52 +0200
+To: Menglong Dong <menglong.dong@linux.dev>
+Cc: Jiri Olsa <olsajiri@gmail.com>, mhiramat@kernel.org,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH 2/2] tracing: fprobe: optimization for entry only case
+Message-ID: <aNLKEJc6Bh-dC3ab@krava>
+References: <20250923092001.1087678-1-dongml2@chinatelecom.cn>
+ <4681686.LvFx2qVVIh@7940hx>
+ <aNKRoKTAmKpafk4F@krava>
+ <5938379.DvuYhMxLoT@7950hx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 01/20] net, ynl: Add bind-queue operation
-To: Jakub Kicinski <kuba@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
- razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
- john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com
-References: <20250919213153.103606-1-daniel@iogearbox.net>
- <20250919213153.103606-2-daniel@iogearbox.net>
- <20250922181728.4aa70650@kernel.org>
-Content-Language: en-US
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20250922181728.4aa70650@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5938379.DvuYhMxLoT@7950hx>
 
-On 2025-09-22 18:17, Jakub Kicinski wrote:
-> On Fri, 19 Sep 2025 23:31:34 +0200 Daniel Borkmann wrote:
->> Subject: [PATCH net-next 01/20] net, ynl: Add bind-queue operation
+On Tue, Sep 23, 2025 at 09:34:20PM +0800, Menglong Dong wrote:
+> On 2025/9/23 20:25, Jiri Olsa wrote:
+> > On Tue, Sep 23, 2025 at 07:16:55PM +0800, menglong.dong@linux.dev wrote:
+> > > On 2025/9/23 19:10 Jiri Olsa <olsajiri@gmail.com> write:
+> > > > On Tue, Sep 23, 2025 at 05:20:01PM +0800, Menglong Dong wrote:
+> > > > > For now, fgraph is used for the fprobe, even if we need trace the entry
+> > > > > only. However, the performance of ftrace is better than fgraph, and we
+> > > > > can use ftrace_ops for this case.
+> > > > > 
+> > > > > Then performance of kprobe-multi increases from 54M to 69M. Before this
+> > > > > commit:
+> > > > > 
+> > > > >   $ ./benchs/run_bench_trigger.sh kprobe-multi
+> > > > >   kprobe-multi   :   54.663 ± 0.493M/s
+> > > > > 
+> > > > > After this commit:
+> > > > > 
+> > > > >   $ ./benchs/run_bench_trigger.sh kprobe-multi
+> > > > >   kprobe-multi   :   69.447 ± 0.143M/s
+> > > > > 
+> > > > > Mitigation is disable during the bench testing above.
+> > > > > 
+> > > > > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > > > > ---
+> > > > >  kernel/trace/fprobe.c | 88 +++++++++++++++++++++++++++++++++++++++----
+> > > > >  1 file changed, 81 insertions(+), 7 deletions(-)
+> > > > > 
+> > > > > diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> > > > > index 1785fba367c9..de4ae075548d 100644
+> > > > > --- a/kernel/trace/fprobe.c
+> > > > > +++ b/kernel/trace/fprobe.c
+> > > > > @@ -292,7 +292,7 @@ static int fprobe_fgraph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops
+> > > > >  				if (node->addr != func)
+> > > > >  					continue;
+> > > > >  				fp = READ_ONCE(node->fp);
+> > > > > -				if (fp && !fprobe_disabled(fp))
+> > > > > +				if (fp && !fprobe_disabled(fp) && fp->exit_handler)
+> > > > >  					fp->nmissed++;
+> > > > >  			}
+> > > > >  			return 0;
+> > > > > @@ -312,11 +312,11 @@ static int fprobe_fgraph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops
+> > > > >  		if (node->addr != func)
+> > > > >  			continue;
+> > > > >  		fp = READ_ONCE(node->fp);
+> > > > > -		if (!fp || fprobe_disabled(fp))
+> > > > > +		if (unlikely(!fp || fprobe_disabled(fp) || !fp->exit_handler))
+> > > > >  			continue;
+> > > > >  
+> > > > >  		data_size = fp->entry_data_size;
+> > > > > -		if (data_size && fp->exit_handler)
+> > > > > +		if (data_size)
+> > > > >  			data = fgraph_data + used + FPROBE_HEADER_SIZE_IN_LONG;
+> > > > >  		else
+> > > > >  			data = NULL;
+> > > > > @@ -327,7 +327,7 @@ static int fprobe_fgraph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops
+> > > > >  			ret = __fprobe_handler(func, ret_ip, fp, fregs, data);
+> > > > >  
+> > > > >  		/* If entry_handler returns !0, nmissed is not counted but skips exit_handler. */
+> > > > > -		if (!ret && fp->exit_handler) {
+> > > > > +		if (!ret) {
+> > > > >  			int size_words = SIZE_IN_LONG(data_size);
+> > > > >  
+> > > > >  			if (write_fprobe_header(&fgraph_data[used], fp, size_words))
+> > > > > @@ -384,6 +384,70 @@ static struct fgraph_ops fprobe_graph_ops = {
+> > > > >  };
+> > > > >  static int fprobe_graph_active;
+> > > > >  
+> > > > > +/* ftrace_ops backend (entry-only) */
+> > > > > +static void fprobe_ftrace_entry(unsigned long ip, unsigned long parent_ip,
+> > > > > +	struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> > > > > +{
+> > > > > +	struct fprobe_hlist_node *node;
+> > > > > +	struct rhlist_head *head, *pos;
+> > > > > +	struct fprobe *fp;
+> > > > > +
+> > > > > +	guard(rcu)();
+> > > > > +	head = rhltable_lookup(&fprobe_ip_table, &ip, fprobe_rht_params);
+> > > > 
+> > > > hi,
+> > > > so this is based on yout previous patch, right?
+> > > >   fprobe: use rhltable for fprobe_ip_table
+> > > > 
+> > > > would be better to mention that..  is there latest version of that somewhere?
+> > > 
+> > > Yeah, this is based on that version. That patch is applied
+> > > to: https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git/log/?h=probes%2Ffor-next
+> > > 
+> > > And I do the testing on that branches.
+> > 
+> > did you run 'test_progs -t kprobe_multi' ? it silently crashes the
+> > kernel for me.. attaching config
 > 
-> We use "ynl" for changes to ynl itself. If you're just adding to
-> the YAML specs or using them there's no need to mention YNL.
-> Please remove in all the subjects.
+> Hi. I have tested the whole test_progs and it passed.
 > 
->> +  -
->> +    name: queue-pair
->> +    attributes:
->> +      -
->> +        name: src-ifindex
->> +        doc: netdev ifindex of the physical device
->> +        type: u32
->> +        checks:
->> +          min: 1
+> In fact, your config will panic even without this patch.
+> Please don't enable CONFIG_X86_KERNEL_IBT, the recursion
+> of the is_endbr() still exist until this series apply:
 > 
-> max: s32-max ?
-> 
->> +      -
->> +        name: src-queue-id
->> +        doc: netdev queue id of the physical device
->> +        type: u32
-> 
-> 
->> @@ -772,6 +795,20 @@ operations:
->>             attributes:
->>               - id
->>   
->> +    -
->> +      name: bind-queue
->> +      doc: Bind a physical netdev queue to a virtual one
-> 
-> Would be good to have a few sentences of documentation here.
-> All netdev APIs currently carry queue id with type.
-> I'm guessing the next few patches would explain but whether
-> you're attaching rx, tx, or both should really be explained here :)
+>   tracing: fprobe: Protect return handler from recursion loop
 
-Got it, will expand the docs.
+ugh, I thought it's there already, thanks
 
+jirka
 
