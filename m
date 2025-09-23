@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-69429-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92037B963E7
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:29:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7DD2B96462
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:33:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52DDB440865
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 14:26:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C69CC19C743E
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 14:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16679329F23;
-	Tue, 23 Sep 2025 14:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA6D32CF9F;
+	Tue, 23 Sep 2025 14:22:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NGZCLjZG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OX4sPfBT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CD83294FD;
-	Tue, 23 Sep 2025 14:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE6632951D;
+	Tue, 23 Sep 2025 14:22:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758637316; cv=none; b=XgKPSTAi7NXbaLnmTrGzie8g9MZqrexuYaEoj09Ejvyn0VVtJhWWvfS4snCzPmY38QSbbf4qoTrvDyUDoq/xKz83s2sZrECgftET0HHg2h1dqLYnGS5CrgDyqt+pU/Aiorajq/RZupN2gCnbFdc75SGqwdgxB48uawMYG9GSjsI=
+	t=1758637324; cv=none; b=lTMqZDnvSxqpEWsHuoxabftxRytPOn+M+ByPuNp2IOrzYV33rirnW7CJSCQ6pvpNld8M5HBSHzQVwgpAL6LaZ9Nbx7lSYagKEZRha/l5a8Kr/CYXVo3KpYLDc6hH9CP3mf7BnNnbvFtFaY42LWv7NC4lfpo1krB82nkKRMv5zYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758637316; c=relaxed/simple;
-	bh=IOkf+dURDETQ7kOjDcCR/fZHWRdctmeYkirYqvh5ji4=;
+	s=arc-20240116; t=1758637324; c=relaxed/simple;
+	bh=/tPpaG65gLbvD7rU4GOXgMQxivskQwWOEjt2Xk9cxII=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=levz+FXWX91ant2d6rhzn+v9pQ9GupuSrU+hL5zo1KXtN80Shu25LZHnHPGERBviDo6Fpq2WT/xMvpYavxXwFnzzODZ7ilTngBnnKSpVoKtb3NoqDxxk9V+ABhng58GfvmlTutYki82BCNFTFBhFGW8d8NH/iX8kEqUMHaZvxnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NGZCLjZG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6A47C113D0;
-	Tue, 23 Sep 2025 14:21:55 +0000 (UTC)
+	 MIME-Version; b=vCAeDdFLoJSU9rO7oIIM4A4xu8xgTQd3F9bnSuNgcXyuGaX7cjn60AN3S9QJR/88NIgXUhHu8Dy2su/pzIEPOU+CMnlYIWRR+tlBO+EuZQgklJlrfCZZNiE7glse9GFiLzS0gpGUqqtwjN2rnkPLYmsWhkVWaRQLNECH7gfDoW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OX4sPfBT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C42CC113CF;
+	Tue, 23 Sep 2025 14:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758637316;
-	bh=IOkf+dURDETQ7kOjDcCR/fZHWRdctmeYkirYqvh5ji4=;
+	s=k20201202; t=1758637324;
+	bh=/tPpaG65gLbvD7rU4GOXgMQxivskQwWOEjt2Xk9cxII=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NGZCLjZGPRJdy7hRXo0SkUkOrj3qXYCsSsoPE0c8CMJjLywd3xkRtQscNzjTItTAn
-	 X8iGFhF5ZvoSk9g33xQiY+1ZIXcEX9tw46jezZZCiTWTTqcUVrtOrW60DGLNwzJQ3L
-	 4DrKU2l2P6CZYgv/Qif18Fc7Y6rqZKG+mA3mHoUdN7ulXss/aLhhoMCZXnSvOyj7/f
-	 l/Q3igSoQNK/w6hgFpIYzl12hGlkUrfKKKzitQvNHhAOrPX6hIv6PDogMH+6MJ3tU3
-	 jfiZ7ldroLqvomvb1EMMbHYiXe8SaAMUXNv0vi9MxeDSAE3jxS4g0gcEE/42fyQjwa
-	 B3MI5Xp7XNblQ==
+	b=OX4sPfBTV+8CTfM3Idwl5WTLtfiK3ifO9ACtJgyVxrM7e2gOYrUIx3tS530p53tCo
+	 eHbOhfLYa0wD4/XLppz7b8P/IO4ZmcDXmPdjr6dXnykEBmegczWtE3f7WmZy94Hsf5
+	 yjGF1ERZsszXvrweaN0nrai25TX026nu7REBV57ZV9hRT5Nb2VanXW7Nrp4OAuI98E
+	 Cny0yfPgiuHskPSoJNJ4kQ6YrVTxUuCx1UmZbxZLxLkf4bTVD6lM0EMCMCzErlUUA1
+	 NKTxfRm+05U+96+v1DGmk+IJPcdSnZDjkwAPGe9ezY7Pj+3twSy60TdP1ahVq1CeN0
+	 9kzS/QTm1YKpA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id DCC45CE1437; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
+	id DF8EECE14C5; Tue, 23 Sep 2025 07:20:37 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -53,9 +53,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org
-Subject: [PATCH 15/34] rcu: Add noinstr-fast rcu_read_{,un}lock_tasks_trace() APIs
-Date: Tue, 23 Sep 2025 07:20:17 -0700
-Message-Id: <20250923142036.112290-15-paulmck@kernel.org>
+Subject: [PATCH 16/34] rcu: Remove now-unused rcu_task_ipi_delay and TASKS_TRACE_RCU_READ_MB
+Date: Tue, 23 Sep 2025 07:20:18 -0700
+Message-Id: <20250923142036.112290-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
@@ -67,15 +67,10 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When expressing RCU Tasks Trace in terms of SRCU-fast, it was
-necessary to keep a nesting count and per-CPU srcu_ctr structure
-pointer in the task_struct structure, which is slow to access.
-But an alternative is to instead make rcu_read_lock_tasks_trace() and
-rcu_read_unlock_tasks_trace(), which match the underlying SRCU-fast
-semantics, avoiding the task_struct accesses.
-
-When all callers have switched to the new API, the previous
-rcu_read_lock_trace() and rcu_read_unlock_trace() APIs will be removed.
+Now that RCU Tasks Trace being defined in terms of SRCU-fast,
+the rcupdate.rcu_task_ipi_delay kernel boot parameter and the
+TASKS_TRACE_RCU_READ_MB Kconfig option are no longer used.  This commit
+therefore removes them.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
@@ -83,57 +78,97 @@ Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/rcupdate_trace.h | 37 ++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ .../admin-guide/kernel-parameters.txt          |  7 -------
+ kernel/rcu/Kconfig                             | 18 ------------------
+ kernel/rcu/tasks.h                             |  5 -----
+ .../selftests/rcutorture/configs/rcu/TRACE01   |  1 -
+ .../selftests/rcutorture/configs/rcu/TRACE02   |  1 -
+ 5 files changed, 32 deletions(-)
 
-diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-index 0bd47f12ecd17b..b87151e6b23881 100644
---- a/include/linux/rcupdate_trace.h
-+++ b/include/linux/rcupdate_trace.h
-@@ -34,6 +34,43 @@ static inline int rcu_read_lock_trace_held(void)
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 54d31a5e46e1cf..40fc198bed4db9 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6078,13 +6078,6 @@
+ 			dynamically) adjusted.	This parameter is intended
+ 			for use in testing.
  
- #ifdef CONFIG_TASKS_TRACE_RCU
+-	rcupdate.rcu_task_ipi_delay= [KNL]
+-			Set time in jiffies during which RCU tasks will
+-			avoid sending IPIs, starting with the beginning
+-			of a given grace period.  Setting a large
+-			number avoids disturbing real-time workloads,
+-			but lengthens grace periods.
+-
+ 	rcupdate.rcu_task_lazy_lim= [KNL]
+ 			Number of callbacks on a given CPU that will
+ 			cancel laziness on that CPU.  Use -1 to disable
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index eeaa1cd47c6c4c..73a6cc364628b5 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -313,24 +313,6 @@ config RCU_NOCB_CPU_CB_BOOST
+ 	  Say Y here if you want to set RT priority for offloading kthreads.
+ 	  Say N here if you are building a !PREEMPT_RT kernel and are unsure.
  
-+/**
-+ * rcu_read_lock_tasks_trace - mark beginning of RCU-trace read-side critical section
-+ *
-+ * When synchronize_rcu_tasks_trace() is invoked by one task, then that
-+ * task is guaranteed to block until all other tasks exit their read-side
-+ * critical sections.  Similarly, if call_rcu_trace() is invoked on one
-+ * task while other tasks are within RCU read-side critical sections,
-+ * invocation of the corresponding RCU callback is deferred until after
-+ * the all the other tasks exit their critical sections.
-+ *
-+ * For more details, please see the documentation for srcu_read_lock_fast().
-+ */
-+static inline struct srcu_ctr __percpu *rcu_read_lock_tasks_trace(void)
-+{
-+	struct srcu_ctr __percpu *ret = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-+
-+	if (IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
-+		smp_mb();
-+	return ret;
-+}
-+
-+/**
-+ * rcu_read_unlock_tasks_trace - mark end of RCU-trace read-side critical section
-+ * @scp: return value from corresponding rcu_read_lock_tasks_trace().
-+ *
-+ * Pairs with the preceding call to rcu_read_lock_tasks_trace() that
-+ * returned the value passed in via scp.
-+ *
-+ * For more details, please see the documentation for rcu_read_unlock().
-+ */
-+static inline void rcu_read_unlock_tasks_trace(struct srcu_ctr __percpu *scp)
-+{
-+	if (!IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
-+		smp_mb();
-+	srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
-+}
-+
- /**
-  * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
-  *
+-config TASKS_TRACE_RCU_READ_MB
+-	bool "Tasks Trace RCU readers use memory barriers in user and idle"
+-	depends on RCU_EXPERT && TASKS_TRACE_RCU
+-	default PREEMPT_RT || NR_CPUS < 8
+-	help
+-	  Use this option to further reduce the number of IPIs sent
+-	  to CPUs executing in userspace or idle during tasks trace
+-	  RCU grace periods.  Given that a reasonable setting of
+-	  the rcupdate.rcu_task_ipi_delay kernel boot parameter
+-	  eliminates such IPIs for many workloads, proper setting
+-	  of this Kconfig option is important mostly for aggressive
+-	  real-time installations and for battery-powered devices,
+-	  hence the default chosen above.
+-
+-	  Say Y here if you hate IPIs.
+-	  Say N here if you hate read-side memory barriers.
+-	  Take the default if you are unsure.
+-
+ config RCU_LAZY
+ 	bool "RCU callback lazy invocation functionality"
+ 	depends on RCU_NOCB_CPU
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index a3c16e65e16812..833e180db744f2 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -161,11 +161,6 @@ static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
+ static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
+ #endif
+ 
+-/* Avoid IPIing CPUs early in the grace period. */
+-#define RCU_TASK_IPI_DELAY (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) ? HZ / 2 : 0)
+-static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
+-module_param(rcu_task_ipi_delay, int, 0644);
+-
+ /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
+ #define RCU_TASK_BOOT_STALL_TIMEOUT (HZ * 30)
+ #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+index 85b407467454a2..18efab346381a4 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE01
+@@ -10,5 +10,4 @@ CONFIG_PROVE_LOCKING=n
+ #CHECK#CONFIG_PROVE_RCU=n
+ CONFIG_FORCE_TASKS_TRACE_RCU=y
+ #CHECK#CONFIG_TASKS_TRACE_RCU=y
+-CONFIG_TASKS_TRACE_RCU_READ_MB=y
+ CONFIG_RCU_EXPERT=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02 b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02
+index 9003c56cd76484..8da390e8282977 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02
+@@ -9,6 +9,5 @@ CONFIG_PROVE_LOCKING=y
+ #CHECK#CONFIG_PROVE_RCU=y
+ CONFIG_FORCE_TASKS_TRACE_RCU=y
+ #CHECK#CONFIG_TASKS_TRACE_RCU=y
+-CONFIG_TASKS_TRACE_RCU_READ_MB=n
+ CONFIG_RCU_EXPERT=y
+ CONFIG_DEBUG_OBJECTS=y
 -- 
 2.40.1
 
