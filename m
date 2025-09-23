@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-69393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F473B95A06
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 13:24:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B9E0B95A09
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 13:24:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7268D19C29A5
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 11:24:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 256771712FD
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 11:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BD0321F54;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F403F321F5A;
 	Tue, 23 Sep 2025 11:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U8RZGVw6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KmxE8haS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB9D321459
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 11:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 675DE3218D0
+	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 11:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758626664; cv=none; b=jhPCFoYi4x4ki7JkX2kJufMur58UOo34vvIxSjjvWx/DiHqN6Lu2b4VBbJBKLDC4ppfQG2tdZJ9rJvpz09vu3d2nCEU9o7aSZOwDP9ew13JIt9G2A6gkBdYo0bIShKPm/8ikerGewf2+stCDN6gS29O6Zyo+7KQhGoT6qmcn8Hs=
+	t=1758626664; cv=none; b=IplMQQI/OpBXnu8NeLbVsPrsjZXBE/V/ccAUPa8P08FLWraE4+XIz1urewJ/7W/z+UWzr03pa2IpmGvKsERRN4Wuqhag2LUnygqYGPlR+8kx3FWTy2n4uQcvsTnU9YtPZUrEU2srQIslr+t+Z6EH+PFMgKgrDpjq7/QC1uXypjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758626664; c=relaxed/simple;
-	bh=RHU9ccplZRNP4z1DGuiAdGdOgZaHfN9svQ11WE7AcQ0=;
+	bh=evdacfZwRlgDC7JgYKu3Ayj+24mLoSicv0Tbl0D7lQk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sajEWwa0xgLQWu8NJ5QL0kkn0lWx11+vJVAkhaKjmSQGtEkHVTGHEh1kaD5LTdt2yVJn0KSG9Z4/dfCLkUBW7+sTLL1N/AlUAZ2vvdX+YhTvEM7XIwZXwBm4CsTXODGD27m7FlJdMH+9/Mg0XY0SWG4QZ6MPka8j/OGw+ws2Za0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U8RZGVw6; arc=none smtp.client-ip=209.85.208.54
+	 MIME-Version; b=dZ+G9Uq0UqztrNrHqkYu/WsujqC4+ybRVW3wwClHoYGvvkBKpeficzsUZOudBrZjSbQPZyo9w0/3y3afKV4eJ7VUm/wdDnStaj2SoWniSHCediq6RaW/XRSYGtAlrr29H86d+bRJaSKWwekciDU106gTyijNiZSDnNZaV+JXY0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KmxE8haS; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-62fd0d29e2bso5982405a12.1
-        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 04:24:20 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b0787fdb137so836468666b.0
+        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 04:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758626659; x=1759231459; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758626661; x=1759231461; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qyTbvr4Prd4mSlXpfHKJbO2MVsB+d/QX+Mw458FrTr8=;
-        b=U8RZGVw6zuvSfGaW8MslWy3bmLw0016wLEHFQY8L2NjvlPsP1vGRZBr3dcWwKBgJQ5
-         jZgkYrL4vUAb+ShO3f0qGkeCajmWyhZk4J9VV+tDLjyGmmemYV2Qdr2MwD6zdixAg6N4
-         oPKB1yvXRWUvHIBk8RHHp1GsCpl36z0kULfgdSo/BPkzhxWEa+ePVLPrZ7eaVZYgyB57
-         SKSQ8cag0s/jehp3mQE3nT7Aoq4R0QW+AGo6GbJoWvSqkwb0c66IXL2Ia0cJVSjMANo7
-         mqSdGXtqiDxuN9lGlK2eBeSlPMiDhLRPc6S/ODR5MxUrRGXerA+TqQ85nPbxT5arHZy5
-         +BwQ==
+        bh=7Ej+IqPfCCXkujjDk6U64eXr5CXpcq6SG4SjvBftbao=;
+        b=KmxE8haSmn6Ez9J0v67PiXwlmcgbcMVio9vOcOjy8j491j9oqt/L1dNr19Rn4SJy7T
+         7/34e/D7BIYxH/npFGYx2VGi5Vg+SXR+18irUnDFRONprW8+9wrPsVDdU8iAQHrT2D9J
+         JD8Ir7UwEWbIPyGkP2USMPYd5XJBBfd8ctULiqhvk9fhIn+FlYdsmUI6QOZlvWp+SXRb
+         HfVz74YWd7tazZbDM+4Np/2bU/UEpdqYUj2gXZdNigZZ3ip4Aya9gDORlqCw9tkzsSVJ
+         2yzAxi6HmbBLuIBPVOWanHVCtMJnkr0eoT2mgGTfNjkc7n0a38aApebodQuO2kgqX5DV
+         vA6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758626659; x=1759231459;
+        d=1e100.net; s=20230601; t=1758626661; x=1759231461;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qyTbvr4Prd4mSlXpfHKJbO2MVsB+d/QX+Mw458FrTr8=;
-        b=CKn9o2g4GVoY5Ol7FzUvsXw/kpBYlhTbULkPo1xxugzgH3bzXkEHyiJXrOnCbo6Et1
-         Ap89490vxNSMp/UHVmqM5qHS0ZKnGDsDYXUFh7YoqTmHUnTy/NycaB5r3kCi+2bA/si/
-         kMLuwLIe4Rl3d1+ln5cG8sAjyygp5h0Rcv6pTBFnooLuM+3DikRmKgqRnk7cczBqZeYk
-         hGhoxMirNh1H7g2DXDoTTFqJ7GRPXViJbvNHl407XwI0XOokOFpGMHIPhZS/48Y4TEMy
-         aWKE7d4F8X2gTDzDd+ZMAFUW66HypEEwZSa7gDNZUOolJGXn/DJOSlINulad7iGVD34K
-         m01A==
-X-Gm-Message-State: AOJu0YxZ0NXPTMpEoLR9JkW2Dm1d4gOGz2HCEUeIiR6lhq7CEUjnf3Xb
-	qR1pSha6yWgXjSBTXuAsTjs0HHSeJdEXer9ed4lGTd0pA3I75fwty6tBEOfAAg==
-X-Gm-Gg: ASbGncuflOWPfwRla8CLFhCttWFTbfDXM6edx91F266PoUChotMJ6tRFvVtwajsC5mL
-	4oZx0drkNLDHchz1dBKMkzzGCC+aJbtdNEq2oEqP51ccTL1qrX7iRpfVyDtV+PfV6Th0Q03koN4
-	cWzOdUvQmLg9SgiBOoTV+EglpV+0A+ZOIoKKTgMQ2elKR4tj/Fx2xZU/nu70NqJEDY6URJPUgrr
-	Ag7EkTLevXhTESXD7urYNk5hR5xkmSBs7SxXRUVm7O70LcoD+DZDGFrYh21W4jJtbWrd9zUdKJ7
-	FcBIz+/m6oDYuYuaIMacHfrc9xskwMkpIZVElD2SF9IHDesE2+0Jp+xDRGUkG07mP/5gSHv7m8H
-	XNcdE2SITi6242RB3+gGbK7GEDodOPX0=
-X-Google-Smtp-Source: AGHT+IGe4mHo3ein5TXV7d6sPz2iyriESMWlYfoDQpq/Spdlvmxp8Q+RNkhdWaJyKNqBDHblqNpTKQ==
-X-Received: by 2002:a05:6402:1ec4:b0:62f:386d:aedb with SMTP id 4fb4d7f45d1cf-63467a1a3b0mr1806430a12.36.1758626659162;
-        Tue, 23 Sep 2025 04:24:19 -0700 (PDT)
+        bh=7Ej+IqPfCCXkujjDk6U64eXr5CXpcq6SG4SjvBftbao=;
+        b=a26vmotuju4IoVaQN0ns+1PyIsGps4tc4JtlnFOhbvc8vduUffBum89Yjm3+UtN+J6
+         C31+cV7mprHZFQINcrn6tvQtxXDV4dPxpuHA+3gk9Z+WXcGUpYiLTR51s0lTgV6r2DlC
+         H4VA/E7dxU9oLGFuiU3MHYJCE/qMKpd5UWWST0JvF3xFGgsykduuA8sDA+AHd3UVBQLn
+         MaCy8BMZCyuBZnN/2oCR2gsLCRQqxwJlVzjOYFkyjyCU0kbZbmN5/qLtHh2stKYJGjcd
+         ZCpKzptuuXDu6moNQniCQavm6xZobXCkVD4Co6Ct/BlMX6ppzw7uONLCkwwRms1IoT57
+         4UXQ==
+X-Gm-Message-State: AOJu0Yy/DzUHyaTE8LA5jQrcgQD367fIUE8vpljhiwy2gFH/G1gM9lyj
+	eOlqIagWa2ffSCDV4erOVl44POOiq3F9bcVeX8ZAQQvLFZB72glppc35TcvDqA==
+X-Gm-Gg: ASbGncsx1IlDD5R5BQ5m1Ja+j1IeCNyYmx7wk9K/6FAwYaZFt1dsrll8v+d86PbsEyk
+	RkEBmLxiEHOIS9al44YEJtHB0iazZBabuT8DrX8KacejpPO3WKGLl5TZuYmkWJ20//bXhCM+o7c
+	cUb1gsUo+o5p63r2yocygCitoHqBsqadeplS1YpMkRS3g1A2e8aA0movXwek93o5kdhSiDy5jlP
+	NTQq7LYMcOhBR+hp0qjkOJG2Fx+Oc1sQ2gIMqRNAzltoydyDFDpCINTD0xgI4OOC40qpAJFh0wE
+	+0IHMpY1IVH/BQssDQbrmE2t8HmlM93+Ze/c3Fm2p4tRloQS+MX+8U8OOX92z0VZxIkHh9EOeWR
+	lcf76lCz421frRiTAacmE2calcHx1zCY=
+X-Google-Smtp-Source: AGHT+IHJIe++cPh+kouDDh9ZSzPEF1vX8hD8cJ+aXs3xE4aaKQgUuke4qnY5Orm/QuSBmI1GOpHPfw==
+X-Received: by 2002:a17:907:25ca:b0:b24:7806:b59 with SMTP id a640c23a62f3a-b302b4160c1mr205738066b.55.1758626660490;
+        Tue, 23 Sep 2025 04:24:20 -0700 (PDT)
 Received: from localhost ([2a02:8109:a307:d900:29a2:6d8:baf5:4284])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-63437329a16sm3164883a12.21.2025.09.23.04.24.18
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b2cdbd3f7fcsm416012966b.66.2025.09.23.04.24.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Sep 2025 04:24:18 -0700 (PDT)
+        Tue, 23 Sep 2025 04:24:20 -0700 (PDT)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	eddyz87@gmail.com,
 	memxor@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v8 7/9] bpf: task work scheduling kfuncs
-Date: Tue, 23 Sep 2025 12:24:02 +0100
-Message-ID: <20250923112404.668720-8-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v8 8/9] selftests/bpf: BPF task work scheduling tests
+Date: Tue, 23 Sep 2025 12:24:03 +0100
+Message-ID: <20250923112404.668720-9-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250923112404.668720-1-mykyta.yatsenko5@gmail.com>
 References: <20250923112404.668720-1-mykyta.yatsenko5@gmail.com>
@@ -94,419 +94,396 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Implementation of the new bpf_task_work_schedule kfuncs, that let a BPF
-program schedule task_work callbacks for a target task:
- * bpf_task_work_schedule_signal() - schedules with TWA_SIGNAL
- * bpf_task_work_schedule_resume() - schedules with TWA_RESUME
-
-Each map value should embed a struct bpf_task_work, which the kernel
-side pairs with struct bpf_task_work_kern, containing a pointer to
-struct bpf_task_work_ctx, that maintains metadata relevant for the
-concrete callback scheduling.
-
-A small state machine and refcounting scheme ensures safe reuse and
-teardown. State transitions:
-    _______________________________
-    |                             |
-    v                             |
-[standby] ---> [pending] --> [scheduling] --> [scheduled]
-    ^                             |________________|_________
-    |                                                       |
-    |                                                       v
-    |                                                   [running]
-    |_______________________________________________________|
-
-All states may transition into FREED state:
-[pending] [scheduling] [scheduled] [running] [standby] -> [freed]
-
-A FREED terminal state coordinates with map-value
-deletion (bpf_task_work_cancel_and_free()).
-
-Scheduling itself is deferred via irq_work to keep the kfunc callable
-from NMI context.
-
-Lifetime is guarded with refcount_t + RCU Tasks Trace.
-
-Main components:
- * struct bpf_task_work_context – Metadata and state management per task
-work.
- * enum bpf_task_work_state – A state machine to serialize work
- scheduling and execution.
- * bpf_task_work_schedule() – The central helper that initiates
-scheduling.
- * bpf_task_work_acquire_ctx() - Attempts to take ownership of the context,
- pointed by passed struct bpf_task_work, allocates new context if none
- exists yet.
- * bpf_task_work_callback() – Invoked when the actual task_work runs.
- * bpf_task_work_irq() – An intermediate step (runs in softirq context)
-to enqueue task work.
- * bpf_task_work_cancel_and_free() – Cleanup for deleted BPF map entries.
-
-Flow of successful task work scheduling
- 1) bpf_task_work_schedule_* is called from BPF code.
- 2) Transition state from STANDBY to PENDING, mark context as owned by
- this task work scheduler
- 3) irq_work_queue() schedules bpf_task_work_irq().
- 4) Transition state from PENDING to SCHEDULING (noop if transition
- successful)
- 5) bpf_task_work_irq() attempts task_work_add(). If successful, state
- transitions to SCHEDULED.
- 6) Task work calls bpf_task_work_callback(), which transition state to
- RUNNING.
- 7) BPF callback is executed
- 8) Context is cleaned up, refcounts released, context state set back to
- STANDBY.
+Introducing selftests that check BPF task work scheduling mechanism.
+Validate that verifier does not accepts incorrect calls to
+bpf_task_work_schedule kfunc.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/helpers.c | 292 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 290 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/test_task_work.c | 150 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/task_work.c | 107 +++++++++++++
+ .../selftests/bpf/progs/task_work_fail.c      |  96 +++++++++++
+ 3 files changed, 353 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_task_work.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_work.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_work_fail.c
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 6d072fffa89e..4c84297ba669 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -26,6 +26,8 @@
- #include <linux/bpf_verifier.h>
- #include <linux/uaccess.h>
- #include <linux/verification.h>
-+#include <linux/task_work.h>
-+#include <linux/irq_work.h>
- 
- #include "../../lib/kstrtox.h"
- 
-@@ -3904,6 +3906,265 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_p,
- 
- typedef int (*bpf_task_work_callback_t)(struct bpf_map *map, void *key, void *value);
- 
-+enum bpf_task_work_state {
-+	/* bpf_task_work is ready to be used */
-+	BPF_TW_STANDBY = 0,
-+	/* irq work scheduling in progress */
-+	BPF_TW_PENDING,
-+	/* task work scheduling in progress */
-+	BPF_TW_SCHEDULING,
-+	/* task work is scheduled successfully */
-+	BPF_TW_SCHEDULED,
-+	/* callback is running */
-+	BPF_TW_RUNNING,
-+	/* associated BPF map value is deleted */
-+	BPF_TW_FREED,
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_task_work.c b/tools/testing/selftests/bpf/prog_tests/test_task_work.c
+new file mode 100644
+index 000000000000..666585270fbf
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_task_work.c
+@@ -0,0 +1,150 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <test_progs.h>
++#include <string.h>
++#include <stdio.h>
++#include "task_work.skel.h"
++#include "task_work_fail.skel.h"
++#include <linux/bpf.h>
++#include <linux/perf_event.h>
++#include <sys/syscall.h>
++#include <time.h>
++
++static int perf_event_open(__u32 type, __u64 config, int pid)
++{
++	struct perf_event_attr attr = {
++		.type = type,
++		.config = config,
++		.size = sizeof(struct perf_event_attr),
++		.sample_period = 100000,
++	};
++
++	return syscall(__NR_perf_event_open, &attr, pid, -1, -1, 0);
++}
++
++struct elem {
++	char data[128];
++	struct bpf_task_work tw;
 +};
 +
-+struct bpf_task_work_ctx {
-+	enum bpf_task_work_state state;
-+	refcount_t refcnt;
-+	struct callback_head work;
-+	struct irq_work irq_work;
-+	/* bpf_prog that schedules task work */
-+	struct bpf_prog *prog;
-+	/* task for which callback is scheduled */
-+	struct task_struct *task;
-+	/* the map and map value associated with this context */
++static int verify_map(struct bpf_map *map, const char *expected_data)
++{
++	int err;
++	struct elem value;
++	int processed_values = 0;
++	int k, sz;
++
++	sz = bpf_map__max_entries(map);
++	for (k = 0; k < sz; ++k) {
++		err = bpf_map__lookup_elem(map, &k, sizeof(int), &value, sizeof(struct elem), 0);
++		if (err)
++			continue;
++		if (!ASSERT_EQ(strcmp(expected_data, value.data), 0, "map data")) {
++			fprintf(stderr, "expected '%s', found '%s' in %s map", expected_data,
++				value.data, bpf_map__name(map));
++			return 2;
++		}
++		processed_values++;
++	}
++
++	return processed_values == 0;
++}
++
++static void task_work_run(const char *prog_name, const char *map_name)
++{
++	struct task_work *skel;
++	struct bpf_program *prog;
 +	struct bpf_map *map;
-+	void *map_val;
-+	enum task_work_notify_mode mode;
-+	bpf_task_work_callback_t callback_fn;
-+	struct rcu_head rcu;
-+} __aligned(8);
++	struct bpf_link *link;
++	int err, pe_fd = 0, pid, status, pipefd[2];
++	char user_string[] = "hello world";
 +
-+/* Actual type for struct bpf_task_work */
-+struct bpf_task_work_kern {
-+	struct bpf_task_work_ctx *ctx;
++	if (!ASSERT_NEQ(pipe(pipefd), -1, "pipe"))
++		return;
++
++	pid = fork();
++	if (pid == 0) {
++		__u64 num = 1;
++		int i;
++		char buf;
++
++		close(pipefd[1]);
++		read(pipefd[0], &buf, sizeof(buf));
++		close(pipefd[0]);
++
++		for (i = 0; i < 10000; ++i)
++			num *= time(0) % 7;
++		(void)num;
++		exit(0);
++	}
++	ASSERT_GT(pid, 0, "fork() failed");
++
++	skel = task_work__open();
++	if (!ASSERT_OK_PTR(skel, "task_work__open"))
++		return;
++
++	bpf_object__for_each_program(prog, skel->obj) {
++		bpf_program__set_autoload(prog, false);
++	}
++
++	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
++	if (!ASSERT_OK_PTR(prog, "prog_name"))
++		goto cleanup;
++	bpf_program__set_autoload(prog, true);
++	skel->bss->user_ptr = (char *)user_string;
++
++	err = task_work__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto cleanup;
++
++	pe_fd = perf_event_open(PERF_TYPE_HARDWARE, PERF_COUNT_HW_CPU_CYCLES, pid);
++	if (pe_fd == -1 && (errno == ENOENT || errno == EOPNOTSUPP)) {
++		printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n", __func__);
++		test__skip();
++		goto cleanup;
++	}
++	if (!ASSERT_NEQ(pe_fd, -1, "pe_fd")) {
++		fprintf(stderr, "perf_event_open errno: %d, pid: %d\n", errno, pid);
++		goto cleanup;
++	}
++
++	link = bpf_program__attach_perf_event(prog, pe_fd);
++	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
++		goto cleanup;
++
++	close(pipefd[0]);
++	write(pipefd[1], user_string, 1);
++	close(pipefd[1]);
++	/* Wait to collect some samples */
++	waitpid(pid, &status, 0);
++	pid = 0;
++	map = bpf_object__find_map_by_name(skel->obj, map_name);
++	if (!ASSERT_OK_PTR(map, "find map_name"))
++		goto cleanup;
++	if (!ASSERT_OK(verify_map(map, user_string), "verify map"))
++		goto cleanup;
++cleanup:
++	if (pe_fd >= 0)
++		close(pe_fd);
++	task_work__destroy(skel);
++	if (pid) {
++		close(pipefd[0]);
++		write(pipefd[1], user_string, 1);
++		close(pipefd[1]);
++		waitpid(pid, &status, 0);
++	}
++}
++
++void test_task_work(void)
++{
++	if (test__start_subtest("test_task_work_hash_map"))
++		task_work_run("oncpu_hash_map", "hmap");
++
++	if (test__start_subtest("test_task_work_array_map"))
++		task_work_run("oncpu_array_map", "arrmap");
++
++	if (test__start_subtest("test_task_work_lru_map"))
++		task_work_run("oncpu_lru_map", "lrumap");
++
++	RUN_TESTS(task_work_fail);
++}
+diff --git a/tools/testing/selftests/bpf/progs/task_work.c b/tools/testing/selftests/bpf/progs/task_work.c
+new file mode 100644
+index 000000000000..23217f06a3ec
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/task_work.c
+@@ -0,0 +1,107 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++
++#include <vmlinux.h>
++#include <string.h>
++#include <stdbool.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++#include "errno.h"
++
++char _license[] SEC("license") = "GPL";
++
++const void *user_ptr = NULL;
++
++struct elem {
++	char data[128];
++	struct bpf_task_work tw;
 +};
 +
-+static void bpf_task_work_ctx_reset(struct bpf_task_work_ctx *ctx)
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} hmap SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} arrmap SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_LRU_HASH);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} lrumap SEC(".maps");
++
++static int process_work(struct bpf_map *map, void *key, void *value)
 +{
-+	if (ctx->prog) {
-+		bpf_prog_put(ctx->prog);
-+		ctx->prog = NULL;
-+	}
-+	if (ctx->task) {
-+		bpf_task_release(ctx->task);
-+		ctx->task = NULL;
-+	}
-+}
++	struct elem *work = value;
 +
-+static bool bpf_task_work_ctx_tryget(struct bpf_task_work_ctx *ctx)
-+{
-+	return refcount_inc_not_zero(&ctx->refcnt);
-+}
-+
-+static void bpf_task_work_ctx_put(struct bpf_task_work_ctx *ctx)
-+{
-+	if (!refcount_dec_and_test(&ctx->refcnt))
-+		return;
-+
-+	bpf_task_work_ctx_reset(ctx);
-+
-+	/* bpf_mem_free expects migration to be disabled */
-+	migrate_disable();
-+	bpf_mem_free(&bpf_global_ma, ctx);
-+	migrate_enable();
-+}
-+
-+static void bpf_task_work_cancel(struct bpf_task_work_ctx *ctx)
-+{
-+	/*
-+	 * Scheduled task_work callback holds ctx ref, so if we successfully
-+	 * cancelled, we put that ref on callback's behalf. If we couldn't
-+	 * cancel, callback will inevitably run or has already completed
-+	 * running, and it would have taken care of its ctx ref itself.
-+	 */
-+	if (task_work_cancel(ctx->task, &ctx->work))
-+		bpf_task_work_ctx_put(ctx);
-+}
-+
-+static void bpf_task_work_callback(struct callback_head *cb)
-+{
-+	struct bpf_task_work_ctx *ctx = container_of(cb, struct bpf_task_work_ctx, work);
-+	enum bpf_task_work_state state;
-+	u32 idx;
-+	void *key;
-+
-+	/* Read lock is needed to protect ctx and map key/value access */
-+	guard(rcu_tasks_trace)();
-+	/*
-+	 * This callback may start running before bpf_task_work_irq() switched to
-+	 * SCHEDULED state, so handle both transition variants SCHEDULING|SCHEDULED -> RUNNING.
-+	 */
-+	state = cmpxchg(&ctx->state, BPF_TW_SCHEDULING, BPF_TW_RUNNING);
-+	if (state == BPF_TW_SCHEDULED)
-+		state = cmpxchg(&ctx->state, BPF_TW_SCHEDULED, BPF_TW_RUNNING);
-+	if (state == BPF_TW_FREED) {
-+		bpf_task_work_ctx_put(ctx);
-+		return;
-+	}
-+
-+	key = (void *)map_key_from_value(ctx->map, ctx->map_val, &idx);
-+
-+	migrate_disable();
-+	ctx->callback_fn(ctx->map, key, ctx->map_val);
-+	migrate_enable();
-+
-+	bpf_task_work_ctx_reset(ctx);
-+	(void)cmpxchg(&ctx->state, BPF_TW_RUNNING, BPF_TW_STANDBY);
-+
-+	bpf_task_work_ctx_put(ctx);
-+}
-+
-+static void bpf_task_work_irq(struct irq_work *irq_work)
-+{
-+	struct bpf_task_work_ctx *ctx = container_of(irq_work, struct bpf_task_work_ctx, irq_work);
-+	enum bpf_task_work_state state;
-+	int err;
-+
-+	guard(rcu_tasks_trace)();
-+
-+	if (cmpxchg(&ctx->state, BPF_TW_PENDING, BPF_TW_SCHEDULING) != BPF_TW_PENDING) {
-+		bpf_task_work_ctx_put(ctx);
-+		return;
-+	}
-+
-+	err = task_work_add(ctx->task, &ctx->work, ctx->mode);
-+	if (err) {
-+		bpf_task_work_ctx_reset(ctx);
-+		/*
-+		 * try to switch back to STANDBY for another task_work reuse, but we might have
-+		 * gone to FREED already, which is fine as we already cleaned up after ourselves
-+		 */
-+		(void)cmpxchg(&ctx->state, BPF_TW_SCHEDULING, BPF_TW_STANDBY);
-+		bpf_task_work_ctx_put(ctx);
-+		return;
-+	}
-+
-+	/*
-+	 * It's technically possible for just scheduled task_work callback to
-+	 * complete running by now, going SCHEDULING -> RUNNING and then
-+	 * dropping its ctx refcount. Instead of capturing extra ref just to
-+	 * protected below ctx->state access, we rely on RCU protection to
-+	 * perform below SCHEDULING -> SCHEDULED attempt.
-+	 */
-+	state = cmpxchg(&ctx->state, BPF_TW_SCHEDULING, BPF_TW_SCHEDULED);
-+	if (state == BPF_TW_FREED)
-+		bpf_task_work_cancel(ctx); /* clean up if we switched into FREED state */
-+}
-+
-+static struct bpf_task_work_ctx *bpf_task_work_fetch_ctx(struct bpf_task_work *tw,
-+							 struct bpf_map *map)
-+{
-+	struct bpf_task_work_kern *twk = (void *)tw;
-+	struct bpf_task_work_ctx *ctx, *old_ctx;
-+
-+	ctx = READ_ONCE(twk->ctx);
-+	if (ctx)
-+		return ctx;
-+
-+	ctx = bpf_mem_alloc(&bpf_global_ma, sizeof(struct bpf_task_work_ctx));
-+	if (!ctx)
-+		return ERR_PTR(-ENOMEM);
-+
-+	memset(ctx, 0, sizeof(*ctx));
-+	refcount_set(&ctx->refcnt, 1); /* map's own ref */
-+	ctx->state = BPF_TW_STANDBY;
-+
-+	old_ctx = cmpxchg(&twk->ctx, NULL, ctx);
-+	if (old_ctx) {
-+		/*
-+		 * tw->ctx is set by concurrent BPF program, release allocated
-+		 * memory and try to reuse already set context.
-+		 */
-+		bpf_mem_free(&bpf_global_ma, ctx);
-+		return old_ctx;
-+	}
-+
-+	return ctx; /* Success */
-+}
-+
-+static struct bpf_task_work_ctx *bpf_task_work_acquire_ctx(struct bpf_task_work *tw,
-+							   struct bpf_map *map)
-+{
-+	struct bpf_task_work_ctx *ctx;
-+
-+	ctx = bpf_task_work_fetch_ctx(tw, map);
-+	if (IS_ERR(ctx))
-+		return ctx;
-+
-+	/* try to get ref for task_work callback to hold */
-+	if (!bpf_task_work_ctx_tryget(ctx))
-+		return ERR_PTR(-EBUSY);
-+
-+	if (cmpxchg(&ctx->state, BPF_TW_STANDBY, BPF_TW_PENDING) != BPF_TW_STANDBY) {
-+		/* lost acquiring race or map_release_uref() stole it from us, put ref and bail */
-+		bpf_task_work_ctx_put(ctx);
-+		return ERR_PTR(-EBUSY);
-+	}
-+
-+	/*
-+	 * If no process or bpffs is holding a reference to the map, no new callbacks should be
-+	 * scheduled. This does not address any race or correctness issue, but rather is a policy
-+	 * choice: dropping user references should stop everything.
-+	 */
-+	if (!atomic64_read(&map->usercnt)) {
-+		/* drop ref we just got for task_work callback itself */
-+		bpf_task_work_ctx_put(ctx);
-+		/* transfer map's ref into cancel_and_free() */
-+		bpf_task_work_cancel_and_free(tw);
-+		return ERR_PTR(-EBUSY);
-+	}
-+
-+	return ctx;
-+}
-+
-+static int bpf_task_work_schedule(struct task_struct *task, struct bpf_task_work *tw,
-+				  struct bpf_map *map, bpf_task_work_callback_t callback_fn,
-+				  struct bpf_prog_aux *aux, enum task_work_notify_mode mode)
-+{
-+	struct bpf_prog *prog;
-+	struct bpf_task_work_ctx *ctx;
-+	int err;
-+
-+	BTF_TYPE_EMIT(struct bpf_task_work);
-+
-+	prog = bpf_prog_inc_not_zero(aux->prog);
-+	if (IS_ERR(prog))
-+		return -EBADF;
-+	task = bpf_task_acquire(task);
-+	if (!task) {
-+		err = -EBADF;
-+		goto release_prog;
-+	}
-+
-+	ctx = bpf_task_work_acquire_ctx(tw, map);
-+	if (IS_ERR(ctx)) {
-+		err = PTR_ERR(ctx);
-+		goto release_all;
-+	}
-+
-+	ctx->task = task;
-+	ctx->callback_fn = callback_fn;
-+	ctx->prog = prog;
-+	ctx->mode = mode;
-+	ctx->map = map;
-+	ctx->map_val = (void *)tw - map->record->task_work_off;
-+	init_task_work(&ctx->work, bpf_task_work_callback);
-+	init_irq_work(&ctx->irq_work, bpf_task_work_irq);
-+
-+	irq_work_queue(&ctx->irq_work);
++	bpf_copy_from_user_str(work->data, sizeof(work->data), (const void *)user_ptr, 0);
 +	return 0;
-+
-+release_all:
-+	bpf_task_release(task);
-+release_prog:
-+	bpf_prog_put(prog);
-+	return err;
 +}
 +
- /**
-  * bpf_task_work_schedule_signal - Schedule BPF callback using task_work_add with TWA_SIGNAL mode
-  * @task: Task struct for which callback should be scheduled
-@@ -3918,7 +4179,7 @@ __bpf_kfunc int bpf_task_work_schedule_signal(struct task_struct *task, struct b
- 					      void *map__map, bpf_task_work_callback_t callback,
- 					      void *aux__prog)
- {
--	return 0;
-+	return bpf_task_work_schedule(task, tw, map__map, callback, aux__prog, TWA_SIGNAL);
- }
- 
- /**
-@@ -3935,13 +4196,38 @@ __bpf_kfunc int bpf_task_work_schedule_resume(struct task_struct *task, struct b
- 					      void *map__map, bpf_task_work_callback_t callback,
- 					      void *aux__prog)
- {
--	return 0;
-+	return bpf_task_work_schedule(task, tw, map__map, callback, aux__prog, TWA_RESUME);
- }
- 
- __bpf_kfunc_end_defs();
- 
-+static void bpf_task_work_cancel_scheduled(struct irq_work *irq_work)
++int key = 0;
++
++SEC("perf_event")
++int oncpu_hash_map(struct pt_regs *args)
 +{
-+	struct bpf_task_work_ctx *ctx = container_of(irq_work, struct bpf_task_work_ctx, irq_work);
++	struct elem empty_work = { .data = { 0 } };
++	struct elem *work;
++	struct task_struct *task;
++	int err;
 +
-+	bpf_task_work_cancel(ctx); /* this might put task_work callback's ref */
-+	bpf_task_work_ctx_put(ctx); /* and here we put map's own ref that was transferred to us */
++	task = bpf_get_current_task_btf();
++	err = bpf_map_update_elem(&hmap, &key, &empty_work, BPF_NOEXIST);
++	if (err)
++		return 0;
++	work = bpf_map_lookup_elem(&hmap, &key);
++	if (!work)
++		return 0;
++
++	bpf_task_work_schedule_resume(task, &work->tw, &hmap, process_work, NULL);
++	return 0;
 +}
 +
- void bpf_task_work_cancel_and_free(void *val)
- {
-+	struct bpf_task_work_kern *twk = val;
-+	struct bpf_task_work_ctx *ctx;
-+	enum bpf_task_work_state state;
++SEC("perf_event")
++int oncpu_array_map(struct pt_regs *args)
++{
++	struct elem *work;
++	struct task_struct *task;
 +
-+	ctx = xchg(&twk->ctx, NULL);
-+	if (!ctx)
-+		return;
++	task = bpf_get_current_task_btf();
++	work = bpf_map_lookup_elem(&arrmap, &key);
++	if (!work)
++		return 0;
++	bpf_task_work_schedule_signal(task, &work->tw, &arrmap, process_work, NULL);
++	return 0;
++}
 +
-+	state = xchg(&ctx->state, BPF_TW_FREED);
-+	if (state == BPF_TW_SCHEDULED) {
-+		/* run in irq_work to avoid locks in NMI */
-+		init_irq_work(&ctx->irq_work, bpf_task_work_cancel_scheduled);
-+		irq_work_queue(&ctx->irq_work);
-+		return;
-+	}
++SEC("perf_event")
++int oncpu_lru_map(struct pt_regs *args)
++{
++	struct elem empty_work = { .data = { 0 } };
++	struct elem *work;
++	struct task_struct *task;
++	int err;
 +
-+	bpf_task_work_ctx_put(ctx); /* put bpf map's ref */
- }
- 
- BTF_KFUNCS_START(generic_btf_ids)
-@@ -4086,6 +4372,8 @@ BTF_ID_FLAGS(func, bpf_strnstr);
- BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
- #endif
- BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_task_work_schedule_signal, KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_task_work_schedule_resume, KF_TRUSTED_ARGS)
- BTF_KFUNCS_END(common_btf_ids)
- 
- static const struct btf_kfunc_id_set common_kfunc_set = {
++	task = bpf_get_current_task_btf();
++	work = bpf_map_lookup_elem(&lrumap, &key);
++	if (work)
++		return 0;
++	err = bpf_map_update_elem(&lrumap, &key, &empty_work, BPF_NOEXIST);
++	if (err)
++		return 0;
++	work = bpf_map_lookup_elem(&lrumap, &key);
++	if (!work || work->data[0])
++		return 0;
++	bpf_task_work_schedule_resume(task, &work->tw, &lrumap, process_work, NULL);
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/task_work_fail.c b/tools/testing/selftests/bpf/progs/task_work_fail.c
+new file mode 100644
+index 000000000000..77fe8f28facd
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/task_work_fail.c
+@@ -0,0 +1,96 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++
++#include <vmlinux.h>
++#include <string.h>
++#include <stdbool.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") = "GPL";
++
++const void *user_ptr = NULL;
++
++struct elem {
++	char data[128];
++	struct bpf_task_work tw;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} hmap SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} arrmap SEC(".maps");
++
++static int process_work(struct bpf_map *map, void *key, void *value)
++{
++	struct elem *work = value;
++
++	bpf_copy_from_user_str(work->data, sizeof(work->data), (const void *)user_ptr, 0);
++	return 0;
++}
++
++int key = 0;
++
++SEC("perf_event")
++__failure __msg("doesn't match map pointer in R3")
++int mismatch_map(struct pt_regs *args)
++{
++	struct elem *work;
++	struct task_struct *task;
++
++	task = bpf_get_current_task_btf();
++	work = bpf_map_lookup_elem(&arrmap, &key);
++	if (!work)
++		return 0;
++	bpf_task_work_schedule_resume(task, &work->tw, &hmap, process_work, NULL);
++	return 0;
++}
++
++SEC("perf_event")
++__failure __msg("arg#1 doesn't point to a map value")
++int no_map_task_work(struct pt_regs *args)
++{
++	struct task_struct *task;
++	struct bpf_task_work tw;
++
++	task = bpf_get_current_task_btf();
++	bpf_task_work_schedule_resume(task, &tw, &hmap, process_work, NULL);
++	return 0;
++}
++
++SEC("perf_event")
++__failure __msg("Possibly NULL pointer passed to trusted arg1")
++int task_work_null(struct pt_regs *args)
++{
++	struct task_struct *task;
++
++	task = bpf_get_current_task_btf();
++	bpf_task_work_schedule_resume(task, NULL, &hmap, process_work, NULL);
++	return 0;
++}
++
++SEC("perf_event")
++__failure __msg("Possibly NULL pointer passed to trusted arg2")
++int map_null(struct pt_regs *args)
++{
++	struct elem *work;
++	struct task_struct *task;
++
++	task = bpf_get_current_task_btf();
++	work = bpf_map_lookup_elem(&arrmap, &key);
++	if (!work)
++		return 0;
++	bpf_task_work_schedule_resume(task, &work->tw, NULL, process_work, NULL);
++	return 0;
++}
 -- 
 2.51.0
 
