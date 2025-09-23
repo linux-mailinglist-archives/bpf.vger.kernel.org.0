@@ -1,96 +1,138 @@
-Return-Path: <bpf+bounces-69471-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69472-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38608B974CE
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 21:10:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F21EB9753F
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 21:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 966C93AE2FC
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 19:10:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7467C19C8743
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 19:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13AE7302CB0;
-	Tue, 23 Sep 2025 19:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 483AC3043B9;
+	Tue, 23 Sep 2025 19:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TyP6gk4p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WRuk6BEA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E56078F39
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 19:10:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D491DF72C
+	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 19:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758654617; cv=none; b=MXGDFiYRTLc1IarO7tGhH/gjjwr/tUsIfnYmwqb3dkOijQgpo5cpVF1py0LWtTFOLYVluUDinJjR91Ci5pBsBAWeOtKZKCl/ldBKHOu5Kb/10oxINhjHlc9liLy4+i8Q9HzihyZ8tKI0qInPWGpU8sR9Gii/5HQueza9pgC1VMo=
+	t=1758655438; cv=none; b=ZacVLVFGl3RzQLDMN95Goc6aQDABOFVM3ogL67VW3xyCJvEG2cCKQYmbYf7g0PYzCZiwtsACBUU/jeNdMp2hdnO/57DjX7HvD3us5cybrqBwL/rHMLc+fp5Syyy+aTjBSFIi53TZhC0E9eJNY+WHBW6zAB+1Do1/B3A5X3VXZZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758654617; c=relaxed/simple;
-	bh=1J9lyT6PQXnxc+PcXgJ7bXnxmxH9tfKR19qV/0SRg2w=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Kxz+31GWUSyh9sbVV1ksrKLXy7SBMcNd3OkmAOz98qSzv0wgSLU4FkNdk69gU/6yShhCeiUBGs77f64XsuHtL0XuizDJXxM0ObaYJpmf2zSFn9C/Wiuok9q8s2CTp0PwaEBUOs1o2tYJcaGXGqz0o/phr1hSsxHEm2EQUc/S1u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TyP6gk4p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 048A7C4CEF5;
-	Tue, 23 Sep 2025 19:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758654616;
-	bh=1J9lyT6PQXnxc+PcXgJ7bXnxmxH9tfKR19qV/0SRg2w=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=TyP6gk4p6iI6Iz6bTMXXPB7Ct96CLSov8YnJElT5Ty1rewk0gJt/zaLt+WxjPOc76
-	 92IXDZrlnNR5MyhJbqfe3GP2kZ6EKWRXT7+U+0HSNvki/TiVhKA5Ke0Z4RVZx4q5tK
-	 guvkFH1kAByLPIag/F7K46nDyyE9Il91jefpQHDoDzh1tzK/fAq+IKWY6hBj9HLA8j
-	 JEDGHCfurSBTkwThCo9tE/8vpKRIg6Z00dydVSKmOdTo1owsdEg2NY3CNne2yWLxTk
-	 alaB5UZfiQTIStXgx2Qh8a3qrjo/nsu4bzy0kxXxitpqoDejr4Zp6ANk3a46QWsdjw
-	 8hHOGTBXnZKwg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D8639D0C20;
-	Tue, 23 Sep 2025 19:10:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1758655438; c=relaxed/simple;
+	bh=LRBey+Wso4WI7nXLbVLoJP/j9B8XR/yd5YE842494Og=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iZEO7C355bO52kdexgV9apXrRHfHDF2NpJzcMllKXfu1pTzVtCW2o8M1Js9U9Yz/K85QUcn3si+hZSo3U0l5ON71ghcHFy7sgN8eQIXMdDCs/7C6hebSo52ZB/O3+PchsInZK15slF+TcB2nvt316OpiLrZsbeoNbKQUILK5CNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WRuk6BEA; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-46e23a6617dso8563325e9.0
+        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 12:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758655435; x=1759260235; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LRBey+Wso4WI7nXLbVLoJP/j9B8XR/yd5YE842494Og=;
+        b=WRuk6BEAyG5qd/meHhAM7eAqaL4r5/fTvTQySSK8FWKMWz/phX3T8Bmp5q/Eq0P/Hy
+         BY01guXAPPgv8Ar/955Q2cy0dFp0spY0ubCvaE9qllh5ppuue09ewDd7vBAK9mEz9g/m
+         uZ+EFqLTh2Xh67Fcfj7u4QKfuDTUrpam5XWflOds4o9hSPM6vOsq2k3qyZjA0fIt0tF9
+         7AELidGe1q03KzEBdwXFv4J8PcdVHeYgXNc3Jr05WkF+L5uc8OUUb+MnCqyVgP9329BP
+         +2nJQ1cP+bM72QQOzpVnJ1v01Bp6QVcUiK4DvXykNtzaq2554VYieYn2d+d2rVPBis2S
+         6MOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758655435; x=1759260235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LRBey+Wso4WI7nXLbVLoJP/j9B8XR/yd5YE842494Og=;
+        b=HK8PhnV77kEZprLadWYVMtH6QkBsC2Mm15goDS4jQvNkVOocUkiJ2K9kHOgToYiHT5
+         YNVKhqUDuaK8F2lYZIeOqAXWECC4yPFZ50ImU7Lo1kI4Fa1pzLjIQ5lWrTENtNf94gQz
+         NgqVtR/KupKuTNWTIOFKwdweO5N96958HvY6HIabg9HnuaE1v18Xoapv+il16PwA4h2a
+         4Krge9II09B1NQNGKNcX8WTO7xo9AaVw6PfptmGK1xZ4uimqYPYU47NCSLggGW+a0H+3
+         6kP3ugo5ZdF5WRE6MIcI4Ar+50KM0/KZWNpX+1oLQHgMLJWCSBqRXvXaKlhEO8QLrD8t
+         DduQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX1DKMIW9FO/11MKGq2HXscOoaFpz2QECfXP+kQUI3sOrnOQ650DiFGiLxk1GfmrhU9YtQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwSWjGkRFkuffYnItXdD6wV1KT0zY9bUgNIW4QD0Q10gtbe7/j6
+	kz4lnKOHfZS2wf8L5OMHAJQHXisPQC+U4zQKct1prwZT9cxyA4bPfbTCA/6UDBTLRNjqysqaskF
+	ZStBx1hCqMptZLWy9vccEoIVWHzk/C+I=
+X-Gm-Gg: ASbGncuckZuSDLBU0jlP8uivTOTrtrUCVFNQjbSqdWkwCL+33YHNHbf2H2dc/4J/zOC
+	IL4ITxvn4rf5Zjfb2GhYggphn0ZqTOSXM2gsW4M62yTg4mC/1e2/4y8IxuBtmvjklrzr+0l2hVu
+	T2TtHjr48Hrt8JKcZn5gXfDzFWE/niLZZVHHupnWR/THTjsQ5n8cacemK8xYOH6pp845Vwnlww6
+	UN3Rls=
+X-Google-Smtp-Source: AGHT+IEROyvN89zXwrTLvHEBfh+lTjpX1gLN5zjZ4UthmYExEG2GOLLm8ftHboFI82Own50+u3ZOPpnUc08RGvIFLxs=
+X-Received: by 2002:a05:6000:2f84:b0:3f7:b7ac:f3d2 with SMTP id
+ ffacd0b85a97d-405cb7bb76bmr3258549f8f.43.1758655435354; Tue, 23 Sep 2025
+ 12:23:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 0/3] Signed loads from Arena
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175865461300.1891567.3835370629018390163.git-patchwork-notify@kernel.org>
-Date: Tue, 23 Sep 2025 19:10:13 +0000
-References: <20250923110157.18326-1-puranjay@kernel.org>
-In-Reply-To: <20250923110157.18326-1-puranjay@kernel.org>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com, kkd@meta.com,
- kernel-team@meta.com
+References: <20250922095705.252519-1-dongml2@chinatelecom.cn>
+ <CAPhsuW7THs9G+QV5_g+tMvXTAqVJ7jha-m70f675e9phK1Pryg@mail.gmail.com> <CADxym3b=hU4DuuhA_DAs6VYNUTp7spTsTWamMaxDGSxjoiuwbg@mail.gmail.com>
+In-Reply-To: <CADxym3b=hU4DuuhA_DAs6VYNUTp7spTsTWamMaxDGSxjoiuwbg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 23 Sep 2025 12:23:44 -0700
+X-Gm-Features: AS18NWASmv7blurpmrNo9VunWCEk5u9gzididl1CMRVq8cti29RRJ98n7ZkNCbQ
+Message-ID: <CAADnVQLZMwNUF0PwoCyLUC6tWVuyx80qJF692VgnGoJVm_M=eQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: remove is_return in struct bpf_session_run_ctx
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, Sep 22, 2025 at 7:11=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+>
+> On Mon, Sep 22, 2025 at 10:08=E2=80=AFPM Song Liu <song@kernel.org> wrote=
+:
+> >
+> > On Mon, Sep 22, 2025 at 11:57=E2=80=AFAM Menglong Dong <menglong8.dong@=
+gmail.com> wrote:
+> > >
+> > > The "data" in struct bpf_session_run_ctx is always 8-bytes aligned.
+> > > Therefore, we can store the "is_return" to the last bit of the "data"=
+,
+> > > which can make bpf_session_run_ctx 8-bytes aligned and save memory.
+> >
+> > Does this really save anything? AFAICT, bpf_session_run_ctx is
+> > only allocated on the stack. Therefore, we don't save any memory
+> > unless there is potential risk of stack overflow.
+>
+> Hi, Song. My original intention is to save the usage of the
+> stack to prevent potential stack overflow,
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+8 bytes won't matter, but wasting 8 bytes for 1 bit is indeed annoying.
 
-On Tue, 23 Sep 2025 11:01:48 +0000 you wrote:
-> Changelog:
-> 
-> v3 -> v4:
-> v3: https://lore.kernel.org/all/20250915162848.54282-1-puranjay@kernel.org/
-> - Update bpf_jit_supports_insn() in riscv jit to reject signed arena loads (Eduard)
-> - Fix coding style related to braces usage in an if statement in x86 jit (Eduard)
-> 
-> [...]
+> especially when we
+> trace all the kernel functions with kprobe-multi.
 
-Here is the summary with links:
-  - [bpf-next,v4,1/3] bpf, x86: Add support for signed arena loads
-    https://git.kernel.org/bpf/bpf-next/c/a91ae3c89311
-  - [bpf-next,v4,2/3] bpf, arm64: Add support for signed arena loads
-    https://git.kernel.org/bpf/bpf-next/c/eab2a71f3a6a
-  - [bpf-next,v4,3/3] selftests: bpf: Add tests for signed loads from arena
-    https://git.kernel.org/bpf/bpf-next/c/f61654912404
+What do you mean? kprobe-multi won't recurse,
+so tracing all or a few functions is the same concern
+from stack overflow pov, no ?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> The most thing for me is that the unaligned field in the struct
+> looks very awkward, and it consumes 8-bytes only for a bit.
 
-
+let's keep it as-is. If stack overflow is indeed an issue we need
+a generic way to detect it and prevent it.
+We've been thinking whether vmap stack guard pages
+can become JIT's extable-like things, so when stack overflow
+happens we unwind stack and stop bpf prog instead of panicing.
 
