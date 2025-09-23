@@ -1,65 +1,63 @@
-Return-Path: <bpf+bounces-69466-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69467-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C20DDB96E54
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 19:01:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9496CB97093
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 19:32:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A825E32130A
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 17:01:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4D79189DDA2
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 17:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88E3E242917;
-	Tue, 23 Sep 2025 17:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 297A127F74C;
+	Tue, 23 Sep 2025 17:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dXFVUQ2n"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oZUT18DM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C3C1D5ABF;
-	Tue, 23 Sep 2025 17:01:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F22189;
+	Tue, 23 Sep 2025 17:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758646870; cv=none; b=It2YQH4CC8k0SElaIJ92orL4f3JFu4roC+VmDYbSDrkTtpxjdRZ3oHVtkLJ6lCM5vB1G84r7CoFANsQ7a4hkvQMeWOV/L+YN+1Y/xjmT/H8p5hQkUVJ/3kCJmNlO19OEOQ2qZcZTnzutAc/Hve1ALkoaM4xavA16jwq5dOWLBo0=
+	t=1758648743; cv=none; b=PT2VxCxog7M7lzvNm2bR8j4/orlABfzuIaKxfDIfr7in6p4wwc56uRGEwG/R30MMTv1a6bWeF907awc+7pa05703J+9XCOz+VSlvaOPPPfRUC5GjiuPxUxmzX/JAiDAu2BqrrQ2eTgES5oy9dyzNfMVULVvP3LO94afx4ujeyEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758646870; c=relaxed/simple;
-	bh=lmrO4EM0uSIgPvRyMTakRDy6DZ3TQz0ccaeq5VlOVp8=;
+	s=arc-20240116; t=1758648743; c=relaxed/simple;
+	bh=qDfwgoffu2EeFB9AZbmHrdtAcXU1sHnw0HMH4EM3IgE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ssdxl7wFyKRghR9w+79V6w1l8N2B6GZka2DowxWj/NAWjTkTy+KJYI8gswYV/LNlVBUPHsazwcXQpfppTi0kGyDmv3piR/EQnElpMghCO1dAYNpq3/TmQG4ZbxtHBi+XZFjE5YySx0kPp6NwnKkgcbXXaFprqxKde5k1B9FfOuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dXFVUQ2n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73489C4CEF7;
-	Tue, 23 Sep 2025 17:01:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758646869;
-	bh=lmrO4EM0uSIgPvRyMTakRDy6DZ3TQz0ccaeq5VlOVp8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=dXFVUQ2nvAULYrLl1erVJHzt+/3VPF5bm8tjFdQaHFtlXdyvjqNPjfjqjPbsD0xOx
-	 Ra/ERhP0xu1FBw/uN1q2Dfe81Pcw3V507dCarYrFetUaPBJVfn4Sy06mmXxLwytW6O
-	 Vs4dlUsCBD4V9m32ZQ4ammA2R1WCPug7md1czUx9TVS066f7ycS/LstSRpp3ehHgt6
-	 MebbwiG5Lt7C0bXj8j0bl7PUHijlVwEg1vYzq/vNdj/KRWVQ6/c63FUmxr3pBwwqG8
-	 2avkQZDJqZxQb1fBDBFSzDoshmpUfy/fBPgbv6vQxB11ronQCiIUVCLLEr241BGjVl
-	 D5vyDoBJF4tzw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D3C9ECE0857; Tue, 23 Sep 2025 10:01:06 -0700 (PDT)
-Date: Tue, 23 Sep 2025 10:01:06 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joe Perches <joe@perches.com>
-Cc: rcu@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Andy Whitcroft <apw@canonical.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH 20/34] checkpatch: Deprecate rcu_read_{,un}lock_trace()
-Message-ID: <6777d949-e1f7-454d-8c10-247dcbf8c6fa@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y4J0O4g9No70WL/vUUs4/HOyCwHEk6Xst5rUyagXTpLG2NQYUi//nHh6oETfXsWzzUslFpXyzZaVWGjSB0DYJL9UMJKsdHmVDYE2piaY5HaBeCEghfamvMUvf9qTMlaQek+idv8+6iYWLmzQf109MCPfgKFlNr7F7d5Op7mYoMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oZUT18DM; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=VWa7qC5SSeQMnGbOf5FkOuUwpXg+L6IZkiID9iWP6KM=; b=oZUT18DMWbRT0tC8FhEqRwIDag
+	TuOyaeEpOj8Mvma54Eqh16HkyYOu5VH0B0Idq8L/BB5TRKsekePSU6SnnocOqVe7AqZpy6iiGZxM7
+	pG/4aSragiKLe6fzCIdb2MldnHcEBZDavDHGXJ/JH8sHxJ5tVv0BKex/eckcxKdAZSQHx1Fzr7uFr
+	ZsxwCAu+UpOGgpq1fFEm7Zu7k/70Xgsh2TSqYkJmYK2GYDg4AE7+0KSSgsyEK10ihE6r8vHLosUau
+	nOj9bHuZmO0A0UOk9ay7aKTpOUi/a6EYEjCZyMMAlwNHSlk98sRn6eANg8lIO8brDq/E0+okl32wl
+	BpIkQLRg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v16sD-00000008XDu-1xhP;
+	Tue, 23 Sep 2025 17:32:17 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 52C4E3001F7; Tue, 23 Sep 2025 19:32:16 +0200 (CEST)
+Date: Tue, 23 Sep 2025 19:32:16 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH 15/34] rcu: Add noinstr-fast
+ rcu_read_{,un}lock_tasks_trace() APIs
+Message-ID: <20250923173216.GU3245006@noisy.programming.kicks-ass.net>
 References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
- <20250923142036.112290-20-paulmck@kernel.org>
- <a54094681531e526c7e055cc5f58d0f6d480c119.camel@perches.com>
+ <20250923142036.112290-15-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,46 +66,84 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a54094681531e526c7e055cc5f58d0f6d480c119.camel@perches.com>
+In-Reply-To: <20250923142036.112290-15-paulmck@kernel.org>
 
-On Tue, Sep 23, 2025 at 08:47:13AM -0700, Joe Perches wrote:
-> On Tue, 2025-09-23 at 07:20 -0700, Paul E. McKenney wrote:
-> > Uses of rcu_read_lock_trace() and rcu_read_unlock_trace()
-> > are better served by the new rcu_read_lock_tasks_trace() and
-> > rcu_read_unlock_tasks_trace() APIs.  Therefore, mark the old APIs as
-> > deprecated.
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On Tue, Sep 23, 2025 at 07:20:17AM -0700, Paul E. McKenney wrote:
+> When expressing RCU Tasks Trace in terms of SRCU-fast, it was
+> necessary to keep a nesting count and per-CPU srcu_ctr structure
+> pointer in the task_struct structure, which is slow to access.
+> But an alternative is to instead make rcu_read_lock_tasks_trace() and
+> rcu_read_unlock_tasks_trace(), which match the underlying SRCU-fast
+> semantics, avoiding the task_struct accesses.
 > 
-> Acked-by: Joe Perches <joe@perches.com>
+> When all callers have switched to the new API, the previous
+> rcu_read_lock_trace() and rcu_read_unlock_trace() APIs will be removed.
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: <bpf@vger.kernel.org>
+> ---
+>  include/linux/rcupdate_trace.h | 37 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+> 
+> diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+> index 0bd47f12ecd17b..b87151e6b23881 100644
+> --- a/include/linux/rcupdate_trace.h
+> +++ b/include/linux/rcupdate_trace.h
+> @@ -34,6 +34,43 @@ static inline int rcu_read_lock_trace_held(void)
+>  
+>  #ifdef CONFIG_TASKS_TRACE_RCU
+>  
+> +/**
+> + * rcu_read_lock_tasks_trace - mark beginning of RCU-trace read-side critical section
+> + *
+> + * When synchronize_rcu_tasks_trace() is invoked by one task, then that
+> + * task is guaranteed to block until all other tasks exit their read-side
+> + * critical sections.  Similarly, if call_rcu_trace() is invoked on one
+> + * task while other tasks are within RCU read-side critical sections,
+> + * invocation of the corresponding RCU callback is deferred until after
+> + * the all the other tasks exit their critical sections.
+> + *
+> + * For more details, please see the documentation for srcu_read_lock_fast().
+> + */
+> +static inline struct srcu_ctr __percpu *rcu_read_lock_tasks_trace(void)
+> +{
+> +	struct srcu_ctr __percpu *ret = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
+> +
+> +	if (IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
+> +		smp_mb();
 
-Thank you, and I will apply on my next rebase.
+I am somewhat confused by the relation between noinstr and smp_mb()
+here. Subject mentions is, but Changelog is awfully silent again.
 
-							Thanx, Paul
+Furthermore I note that this is a positive while unlock is a negative
+relation between the two. Which adds even more confusion.
 
-> > Cc: Andy Whitcroft <apw@canonical.com>
-> > Cc: Joe Perches <joe@perches.com>
-> > Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> > Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: <bpf@vger.kernel.org>
-> > ---
-> >  scripts/checkpatch.pl | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > index e722dd6fa8ef3d..3bb7d35a5cfcba 100755
-> > --- a/scripts/checkpatch.pl
-> > +++ b/scripts/checkpatch.pl
-> > @@ -860,6 +860,8 @@ our %deprecated_apis = (
-> >  	"kunmap"				=> "kunmap_local",
-> >  	"kmap_atomic"				=> "kmap_local_page",
-> >  	"kunmap_atomic"				=> "kunmap_local",
-> > +	"rcu_read_lock_trace"			=> "rcu_read_lock_tasks_trace",
-> > +	"rcu_read_unlock_trace"			=> "rcu_read_unlock_tasks_trace",
-> >  );
-> >  
-> >  #Create a search pattern for all these strings to speed up a loop below
+> +	return ret;
+> +}
+> +
+> +/**
+> + * rcu_read_unlock_tasks_trace - mark end of RCU-trace read-side critical section
+> + * @scp: return value from corresponding rcu_read_lock_tasks_trace().
+> + *
+> + * Pairs with the preceding call to rcu_read_lock_tasks_trace() that
+> + * returned the value passed in via scp.
+> + *
+> + * For more details, please see the documentation for rcu_read_unlock().
+> + */
+> +static inline void rcu_read_unlock_tasks_trace(struct srcu_ctr __percpu *scp)
+> +{
+> +	if (!IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
+> +		smp_mb();
+> +	srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
+> +}
+> +
+>  /**
+>   * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
+>   *
+> -- 
+> 2.40.1
+> 
 
