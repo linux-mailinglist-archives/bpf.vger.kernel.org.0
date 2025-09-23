@@ -1,204 +1,146 @@
-Return-Path: <bpf+bounces-69456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E07EB96D0D
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:26:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CDF7B96D31
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:27:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90B687A4012
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:24:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 804104A01A5
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:26:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AC2322C98;
-	Tue, 23 Sep 2025 16:25:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8520C322DD1;
+	Tue, 23 Sep 2025 16:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SwupfOZ0"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="LID7HP6c"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DB51E89C
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 16:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281E0321F32;
+	Tue, 23 Sep 2025 16:26:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758644757; cv=none; b=TMq3tl7WP/qPblKziWeE+AVWS099vD4bfXGx4OxMplMNQ7kMy+Dnxa7FYcgpVL6RD1eHyV+PvNNKkQdQ0vkuI0L3rlhVuosU3MnP0d/p2FOe39lGwQzcrAdS/y6tqEKsROR0M1R5JUG4mr3RhTZLDKJ5vQvsNbw59eifzc7vjkQ=
+	t=1758644806; cv=none; b=cvks4yk5sHXcoKTOFe1vCucitehfvUIQvUT7F/M4CMj7C0qW21qtxKXPkRCKcltzCckjnd5Mv7sIiodaH9tEqvFXTnITRm/Fk/kbiC/Iie94fkj//j58Pycpi0ib38bFiKQIOvPpoSKpJkD7s8H/hzlQgt9HTobv2ePNue96Ve0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758644757; c=relaxed/simple;
-	bh=N5mgVPRo+CPk2ySaxtFkjus+k/V2WydmtZQlE+k35h4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H4zHXJsYa6zcnhT88hN0AyqaQh+cxwuV5NWBdNlN77nN4XsQxBRuNR7aD7IX8igKhNgIxYNnDMhem7DiPY0yfwJIRKd9xQ+qedQdgGJQb2jdGdELQ3pK3JSQnnxcwuxyq5kvcFRW3Obnt3LRZZNQ0d+eSEMSjd/NZQnUBciHQ2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SwupfOZ0; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3f44000626bso2262480f8f.3
-        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 09:25:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758644754; x=1759249554; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=IvBR/uuNoM05F0Kk2G6oFxp0yBhFbfSrXeNiw0n2Ztw=;
-        b=SwupfOZ0T2gm1tYUiw7SBXyroHOI4oAqQrS7wKbxqu1fh9SGZBd+Bl/1JW7auj6sMn
-         IFqadrkhyItkwDeC33IfnQsF2+E9R2X3rAOvMmAaI1vzTVijHX8x89VQVMRG6kcD1JRj
-         9hoyGWNpZsJAqaTqBw5N1Svx22wEKif6aZ4DtJcVSmsVvlxFW71s/3kxCMoKsxFQfiwJ
-         xMgSTbhwEo/Qc0IjpgU5EsGnCaeB+qDYM7kYZKg+GmDG3kBd2Ddd/u0P0HEoLqCU7WB8
-         zQdGpRNadH+/R8v0pokBgY2yXOvBJY0e9otj/VJ3vmVKG9iVoqV5ykQ+yeB/dvE9uFxP
-         AbWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758644754; x=1759249554;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IvBR/uuNoM05F0Kk2G6oFxp0yBhFbfSrXeNiw0n2Ztw=;
-        b=YC8R+0jj71BXVSsXnwrM6qNMZ2OIvUzqycgAlgewupJABLyjT9Te6LjYQ//FJN9nh7
-         NL2mJ6UEO3uyVzwbiuIzNxW6yzrfX/QBt8kK8xidT62K+FmTDtyoqUAucEkhdwsgi4WG
-         cQfKpPiwueqQbt2eMCObPM8+bI39RtyeZ5t0oXiD5BF5GclHLKR01UsWk+1PpCaxedl8
-         2MgVXLJH6Cj5d7Nlx7EODMO8NiURZDNWrSwMo4ZdohRpLTiTL6/wsgERCFKppnF5H08j
-         MLVyarjDkphaTfz8JKbeicGO4SYWt55gWykM3sKylrDAhZtcUPvgR16cLU5nKtwCJNy0
-         xMxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXIU/7HPp9OykgRHyS/zipWSVa9aHvqMHF4CJwcdHo9EaGDL1KwXJPs9NOr0NsI4kyEDHs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwkLv75k369OP4ugDSrd5XcCKJ8fKfM4JhQcEr0TvTe9wXzL9Wf
-	DjtJ5jRnUXXsyoZcbalB/T6rYJWikztxFHHbtZk+BVQ5sJXGbErGVORF
-X-Gm-Gg: ASbGncvGZ6qeA5LuS+ukPDabMxvyXcnpjVmrBZ2xNh+e6VJq7Dn5MgfgA/6LRDCVGrF
-	t1T1EEXzQYZYwE33YopX1RKguDThAfn4vRfItJJ0WqXaz919tT+qvQZjRbAFi++WJm8j9/440eh
-	jTQwL3hSRZSj3cmc3VJjAYk/v/6TuTTXY8l/B89lSmKq5uLmyt948c8ioBFyBOtt+zrQUaeEQex
-	xuJutTwJk5og3CEqs8+HcuXe0tQHac8URDuDeLVn6W/aQlWeBY3BHOvfJ318qT2tlecD6I49SDl
-	bQjSgd0t35ZIZoVptzQlJ+JVIgDYTM+Rh5zjFS1gIuHSrxNbKEbMPXg/i0amxSn5kT/6GVm9K8o
-	m1DmxnTGOvgI=
-X-Google-Smtp-Source: AGHT+IHrFSATwyg3qRX5k56eKwBNcVQdxs7GBs4B3KV5AJlT4F8HQe8L3ySqDT1kugqd/sLfdFZJ1w==
-X-Received: by 2002:a05:6000:430c:b0:3f0:2ab8:710f with SMTP id ffacd0b85a97d-405c3c3e243mr2955512f8f.8.1758644754154;
-        Tue, 23 Sep 2025 09:25:54 -0700 (PDT)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3fd84338ca2sm9347726f8f.42.2025.09.23.09.25.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Sep 2025 09:25:53 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 23 Sep 2025 18:25:52 +0200
-To: Menglong Dong <menglong.dong@linux.dev>
-Cc: Jiri Olsa <olsajiri@gmail.com>, mhiramat@kernel.org,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH 2/2] tracing: fprobe: optimization for entry only case
-Message-ID: <aNLKEJc6Bh-dC3ab@krava>
-References: <20250923092001.1087678-1-dongml2@chinatelecom.cn>
- <4681686.LvFx2qVVIh@7940hx>
- <aNKRoKTAmKpafk4F@krava>
- <5938379.DvuYhMxLoT@7950hx>
+	s=arc-20240116; t=1758644806; c=relaxed/simple;
+	bh=KrrHFMCnA6aF9D42XKfDP34xwEGQRzGrpfvKFl2dIlg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gfpx7nQAorQ5XAFJ0VqPD1PbASlmzJEAEpILRWAKgXN5jQrIFJ65SAvZ/C53HymV7hK15qOrYM756yk3CNcHC9gB96ODUNsrf4eZaY1kzYrVMvEHLQs7A9qWX09EtwCsOxDdhHV9NM+A7GPWf97fWsf9xktV/l9V0EjFu0JSEic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=LID7HP6c; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=nxbdRgQK7ciHStyImT6Z+i9IRJCZrEuPc/ZPzT/mo1c=; b=LID7HP6cYkhRWPwIQiarJCoQYr
+	Zg+DgrnU7iHE3z6Pq9f4BQHHFYTDTe8UVgrh3Rs9Dwn1nBoGW+Lzpb9De8dIeDRarmJx3ehwoJzBm
+	xfhsvy+ZOxW1q2Db3qNHZKEgYmYpvwb2FuKa9E4cBC0bNZoCqBkwpzGTcPJBnX86bRWwvEjG2tO3g
+	l7yYJOCFpfho9+gNKEm0R8exMBjRz67gMy50zmclZ45MWiWnyF7GbBeCeOCws49kcvXYcS1izI4oP
+	tW3+0DDBkxdd6UmO+8EgEimV4F0sMckWhPUxreOZZEVhBh7dm6JakHQOZgj8dtZXs0aOKzQs7polP
+	GePrgqUQ==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v15qL-000OF5-0q;
+	Tue, 23 Sep 2025 18:26:17 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v15qJ-000ECX-39;
+	Tue, 23 Sep 2025 18:26:16 +0200
+Message-ID: <3715920a-a8b6-4025-9f8f-ba847a5eb7f5@iogearbox.net>
+Date: Tue, 23 Sep 2025 18:26:15 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5938379.DvuYhMxLoT@7950hx>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 04/20] net: Add ndo_{peer,unpeer}_queues callback
+To: David Wei <dw@davidwei.uk>, Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+ razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
+ john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
+ maciej.fijalkowski@intel.com, magnus.karlsson@intel.com
+References: <20250919213153.103606-1-daniel@iogearbox.net>
+ <20250919213153.103606-5-daniel@iogearbox.net>
+ <20250922182350.4a585fff@kernel.org>
+ <dc23879e-1c63-4158-b002-c291548055cb@davidwei.uk>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <dc23879e-1c63-4158-b002-c291548055cb@davidwei.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27771/Tue Sep 23 10:26:39 2025)
 
-On Tue, Sep 23, 2025 at 09:34:20PM +0800, Menglong Dong wrote:
-> On 2025/9/23 20:25, Jiri Olsa wrote:
-> > On Tue, Sep 23, 2025 at 07:16:55PM +0800, menglong.dong@linux.dev wrote:
-> > > On 2025/9/23 19:10 Jiri Olsa <olsajiri@gmail.com> write:
-> > > > On Tue, Sep 23, 2025 at 05:20:01PM +0800, Menglong Dong wrote:
-> > > > > For now, fgraph is used for the fprobe, even if we need trace the entry
-> > > > > only. However, the performance of ftrace is better than fgraph, and we
-> > > > > can use ftrace_ops for this case.
-> > > > > 
-> > > > > Then performance of kprobe-multi increases from 54M to 69M. Before this
-> > > > > commit:
-> > > > > 
-> > > > >   $ ./benchs/run_bench_trigger.sh kprobe-multi
-> > > > >   kprobe-multi   :   54.663 ± 0.493M/s
-> > > > > 
-> > > > > After this commit:
-> > > > > 
-> > > > >   $ ./benchs/run_bench_trigger.sh kprobe-multi
-> > > > >   kprobe-multi   :   69.447 ± 0.143M/s
-> > > > > 
-> > > > > Mitigation is disable during the bench testing above.
-> > > > > 
-> > > > > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> > > > > ---
-> > > > >  kernel/trace/fprobe.c | 88 +++++++++++++++++++++++++++++++++++++++----
-> > > > >  1 file changed, 81 insertions(+), 7 deletions(-)
-> > > > > 
-> > > > > diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> > > > > index 1785fba367c9..de4ae075548d 100644
-> > > > > --- a/kernel/trace/fprobe.c
-> > > > > +++ b/kernel/trace/fprobe.c
-> > > > > @@ -292,7 +292,7 @@ static int fprobe_fgraph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops
-> > > > >  				if (node->addr != func)
-> > > > >  					continue;
-> > > > >  				fp = READ_ONCE(node->fp);
-> > > > > -				if (fp && !fprobe_disabled(fp))
-> > > > > +				if (fp && !fprobe_disabled(fp) && fp->exit_handler)
-> > > > >  					fp->nmissed++;
-> > > > >  			}
-> > > > >  			return 0;
-> > > > > @@ -312,11 +312,11 @@ static int fprobe_fgraph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops
-> > > > >  		if (node->addr != func)
-> > > > >  			continue;
-> > > > >  		fp = READ_ONCE(node->fp);
-> > > > > -		if (!fp || fprobe_disabled(fp))
-> > > > > +		if (unlikely(!fp || fprobe_disabled(fp) || !fp->exit_handler))
-> > > > >  			continue;
-> > > > >  
-> > > > >  		data_size = fp->entry_data_size;
-> > > > > -		if (data_size && fp->exit_handler)
-> > > > > +		if (data_size)
-> > > > >  			data = fgraph_data + used + FPROBE_HEADER_SIZE_IN_LONG;
-> > > > >  		else
-> > > > >  			data = NULL;
-> > > > > @@ -327,7 +327,7 @@ static int fprobe_fgraph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops
-> > > > >  			ret = __fprobe_handler(func, ret_ip, fp, fregs, data);
-> > > > >  
-> > > > >  		/* If entry_handler returns !0, nmissed is not counted but skips exit_handler. */
-> > > > > -		if (!ret && fp->exit_handler) {
-> > > > > +		if (!ret) {
-> > > > >  			int size_words = SIZE_IN_LONG(data_size);
-> > > > >  
-> > > > >  			if (write_fprobe_header(&fgraph_data[used], fp, size_words))
-> > > > > @@ -384,6 +384,70 @@ static struct fgraph_ops fprobe_graph_ops = {
-> > > > >  };
-> > > > >  static int fprobe_graph_active;
-> > > > >  
-> > > > > +/* ftrace_ops backend (entry-only) */
-> > > > > +static void fprobe_ftrace_entry(unsigned long ip, unsigned long parent_ip,
-> > > > > +	struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> > > > > +{
-> > > > > +	struct fprobe_hlist_node *node;
-> > > > > +	struct rhlist_head *head, *pos;
-> > > > > +	struct fprobe *fp;
-> > > > > +
-> > > > > +	guard(rcu)();
-> > > > > +	head = rhltable_lookup(&fprobe_ip_table, &ip, fprobe_rht_params);
-> > > > 
-> > > > hi,
-> > > > so this is based on yout previous patch, right?
-> > > >   fprobe: use rhltable for fprobe_ip_table
-> > > > 
-> > > > would be better to mention that..  is there latest version of that somewhere?
-> > > 
-> > > Yeah, this is based on that version. That patch is applied
-> > > to: https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git/log/?h=probes%2Ffor-next
-> > > 
-> > > And I do the testing on that branches.
-> > 
-> > did you run 'test_progs -t kprobe_multi' ? it silently crashes the
-> > kernel for me.. attaching config
+On 9/23/25 6:06 PM, David Wei wrote:
+> On 2025-09-22 18:23, Jakub Kicinski wrote:
+>> On Fri, 19 Sep 2025 23:31:37 +0200 Daniel Borkmann wrote:
+>>> Add ndo_{peer,unpeer}_queues() callback which can be used by virtual drivers
+>>> that implement rxq mapping to a real rxq to update their internal state or
+>>> exposed capability flags from the set of rxq mappings.
+>>
+>> Why is this something that virtual drivers implement?
+>> I'd think that queue forwarding can be almost entirely implemented
+>> in the core.
 > 
-> Hi. I have tested the whole test_progs and it passed.
-> 
-> In fact, your config will panic even without this patch.
-> Please don't enable CONFIG_X86_KERNEL_IBT, the recursion
-> of the is_endbr() still exist until this series apply:
-> 
->   tracing: fprobe: Protect return handler from recursion loop
+> I believe Daniel needs it for AF_XDP.
 
-ugh, I thought it's there already, thanks
-
-jirka
+Yes, in case of af_xdp we basically need to propagate related capabilities
+of the netdev, so that we can expose the given xdp flags in this case
+further to netkit which implements ndo_bpf etc. Thinking about it, maybe
+an alternative could be that netkit always exposes NETDEV_XDP_ACT_XSK etc
+and we catch it in netkit's ndo_bpf + ndo_xsk_wakeup implementation when
+checking peer queue's dev, and let it fail there instead. I'll play a bit
+with this idea instead, perhaps this simplifies things.
 
