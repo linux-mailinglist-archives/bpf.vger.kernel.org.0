@@ -1,77 +1,64 @@
-Return-Path: <bpf+bounces-69462-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8CE6B96DDC
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:44:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6C3BB96E3C
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:59:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D72694E29AF
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:44:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CDB8487DE0
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750E332859B;
-	Tue, 23 Sep 2025 16:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD1A329F38;
+	Tue, 23 Sep 2025 16:59:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="U8YDgu7f"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GzrhKLZ+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3005226CE26;
-	Tue, 23 Sep 2025 16:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22FE3294E5
+	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 16:59:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758645865; cv=none; b=bkKftqiUUdwz0ofAWLD4fuCeOZvYhBsATknBzdjerXYgx589a4keDb7NzyWvxWi3lclM8ictEEdN5NEmmDyGjgpJynq4+jNFu37qULNHIbGM2Dge7aoHV2umkN1WbSp9jIsjC9cqRJocb6IencWsslyrT+vtTFo3xngozrgxTW4=
+	t=1758646768; cv=none; b=UzFOtpUczZFASTLatHrHMNoLYJf351zA1rdQUtAypj/NqGyXNuMSTHLRRkwk1CIrFAtt3bwhsQ0nHvpRotDTDCexQDj5Y1pGVtr/PV3ByrQg17+GIls/duSk75b2BOOK0RIzIqdR379Zaqwk1oVcL3ebT6kX7t6m45lOboxI+U4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758645865; c=relaxed/simple;
-	bh=wwQGUX67SXUgd19z026AaJfNPsdTs79YkoW7C9G6CGw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tMmlaa9SnK18cJ7bYnsRGh+6wZGozUbQCN8UI2oMWTJSUjvbUUVGTF4WE4NRZIyku20igi7ur+3xhCbuLcgSPWNWwedGmfs4FFQxLbU2A/jh/6io8jhxnwGODGzbuuYfAwp4rmY2Ic7X+94Vmhs1QU8rl3dGWF4Z0gVJlT6rH4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=U8YDgu7f; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4cWQmZ63KFz9t7M;
-	Tue, 23 Sep 2025 18:44:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
-	t=1758645854;
+	s=arc-20240116; t=1758646768; c=relaxed/simple;
+	bh=K/ZCU1eJBBJdR9bV6TAwFdLIncqWyiSGMRxeMC80UsY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D2i5ZMfJ+MjmjUIFAxah09ujDVx7cwk9v/KxzVk9PFU9bD7HQ83jyMPHgA1e+xVfo+7zTbA0BHlH7jSanh8z6OKPhv0se3cNc3yI1Yr5PzW+l84WMxALhwfBnAYM8J1CLPnOAlgbklzCKDTx9S6JstO9vwyGqABtPGRPvSE4ZWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GzrhKLZ+; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758646754;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=q1u+lufeuVfPK5/r4HgAV14Pb6sm9+d0eSksOaw4q24=;
-	b=U8YDgu7fzxRDvgBqxZLyNR6b9+ccFF9crov0/UC5TNq4c6FuPRzfdDfM6TERcPhVt40uq3
-	TCObwDvQ3DEFmzXI16Q74ECeU68MqC+8kkyFoL49UoMk/5WxJ5rFDEowKu4ahIyFOoVqEj
-	zEaD+JHWmT+aa6EEwMNFlAK9m5xk9F0r0wESydegqZVMEnebnH+ASMmeDwst3XqZ11wpLy
-	0bFuefHl9Caq6Zvnn8CMcBoyiDSirx2pWUnZAaIVEJGbhb7i0WtNzpL48XHR2/ddMoyaQF
-	yQkZEjik0FTKIs2X/gGMy+OsQXQOhXp2XhRD17QTTSrQLlPqtaGPH1vIuWKjJg==
-From: Brahmajit Das <listout@listout.xyz>
-To: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com
-Cc: listout@listout.xyz,
-	andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+ndBCOQVAB6Y7mAfT3C3LN8ZO/tnpRIQ18JbmZHfdak=;
+	b=GzrhKLZ+/ri3mn+FnSn+ZT5EGm+EcY0ZC5YEwsc2RBkZmKmkNAX8CFeJ43XeZIVkFOsSER
+	bmQ3Hjsaf94pgEF3f84u84yd8kNupSp8lc1mYCeLDs4K4zsEX5El/Dtw/4ntCrrKIPTysb
+	lmX6l0i3UST7yBPyXLvcjNVn4oS181Y=
+From: Tao Chen <chen.dylane@linux.dev>
+To: ast@kernel.org,
 	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
 	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
+	andrii@kernel.org,
 	martin.lau@linux.dev,
-	sdf@fomichev.me,
+	eddyz87@gmail.com,
 	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [PATCH 1/1] bpf: fix NULL pointer dereference in print_reg_state()
-Date: Tue, 23 Sep 2025 22:13:57 +0530
-Message-ID: <20250923164357.1578295-1-listout@listout.xyz>
-In-Reply-To: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
-References: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Tao Chen <chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v5 1/3] bpf: Add lookup_and_delete_elem for BPF_MAP_STACK_TRACE
+Date: Wed, 24 Sep 2025 00:58:47 +0800
+Message-ID: <20250923165849.1524622-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,47 +66,128 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Syzkaller reported a general protection fault due to a NULL pointer
-dereference in print_reg_state() when accessing reg->map_ptr without
-checking if it is NULL.
+The stacktrace map can be easily full, which will lead to failure in
+obtaining the stack. In addition to increasing the size of the map,
+another solution is to delete the stack_id after looking it up from
+the user, so extend the existing bpf_map_lookup_and_delete_elem()
+functionality to stacktrace map types.
 
-The existing code assumes reg->map_ptr is always valid before
-dereferencing reg->map_ptr->name, reg->map_ptr->key_size, and
-reg->map_ptr->value_size.
-
-Fix this by adding explicit NULL checks before accessing reg->map_ptr
-and its members. This prevents crashes when reg->map_ptr is NULL,
-improving the robustness of the BPF verifier's verbose logging.
-
-Reported-by: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com
-Signed-off-by: Brahmajit Das <listout@listout.xyz>
+Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 ---
- kernel/bpf/log.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ include/linux/bpf.h   |  2 +-
+ kernel/bpf/stackmap.c | 16 ++++++++++++++--
+ kernel/bpf/syscall.c  |  8 +++++---
+ 3 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
-index 38050f4ee400..b38efbbf22cf 100644
---- a/kernel/bpf/log.c
-+++ b/kernel/bpf/log.c
-@@ -716,11 +716,12 @@ static void print_reg_state(struct bpf_verifier_env *env,
- 	if (type_is_non_owning_ref(reg->type))
- 		verbose_a("%s", "non_own_ref");
- 	if (type_is_map_ptr(t)) {
--		if (reg->map_ptr->name[0])
-+		if (reg->map_ptr != NULL && reg->map_ptr->name[0] != '\0')
- 			verbose_a("map=%s", reg->map_ptr->name);
--		verbose_a("ks=%d,vs=%d",
--			  reg->map_ptr->key_size,
--			  reg->map_ptr->value_size);
-+		if (reg->map_ptr != NULL)
-+			verbose_a("ks=%d,vs=%d",
-+					reg->map_ptr->key_size,
-+					reg->map_ptr->value_size);
- 	}
- 	if (t != SCALAR_VALUE && reg->off) {
- 		verbose_a("off=");
+Change list:
+ v1 -> v2:
+  - typo s/detele/delete/.(Jiri)
+  - make sure following lookup fails after deleting the stack_id with NOENT.(Jiri)
+  - use '&key' directly as the update value.(Jiri)
+  v1: https://lore.kernel.org/bpf/20250908113622.810652-1-chen.dylane@linux.dev
+ v2 -> v3:
+  - rename bpf_stackmap_copy_and_delete with bpf_stackmap_extract.(Andrii)
+  v2: https://lore.kernel.org/bpf/20250909163223.864120-1-chen.dylane@linux.dev
+ v3 -> v4:
+  - describe what the test is for in commit message.(Leon)
+  - 'val_buf' should stay on a single line.(Leon)
+  v3: https://lore.kernel.org/bpf/20250920155211.1354348-1-chen.dylane@linux.dev
+ v4 -> v5:
+  - refactor stacktrace_map with skeleton in patch2.(Andrii)
+  - replace CHECK*() with ASSERT_xx() and just check err from bpf_map_lookup_elem
+    only.(Andrii)
+  v4: https://lore.kernel.org/bpf/20250922140317.1468691-1-chen.dylane@linux.dev
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 8f6e87f0f3a..9d6f7671ba1 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2703,7 +2703,7 @@ int bpf_percpu_hash_update(struct bpf_map *map, void *key, void *value,
+ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
+ 			    u64 flags);
+ 
+-int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value);
++int bpf_stackmap_extract(struct bpf_map *map, void *key, void *value, bool delete);
+ 
+ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
+ 				 void *key, void *value, u64 map_flags);
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 3615c06b7df..2e182a3ac4c 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -646,7 +646,15 @@ static void *stack_map_lookup_elem(struct bpf_map *map, void *key)
+ }
+ 
+ /* Called from syscall */
+-int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
++static int stack_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
++					    void *value, u64 flags)
++{
++	return bpf_stackmap_extract(map, key, value, true);
++}
++
++/* Called from syscall */
++int bpf_stackmap_extract(struct bpf_map *map, void *key, void *value,
++			 bool delete)
+ {
+ 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
+ 	struct stack_map_bucket *bucket, *old_bucket;
+@@ -663,7 +671,10 @@ int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
+ 	memcpy(value, bucket->data, trace_len);
+ 	memset(value + trace_len, 0, map->value_size - trace_len);
+ 
+-	old_bucket = xchg(&smap->buckets[id], bucket);
++	if (delete)
++		old_bucket = bucket;
++	else
++		old_bucket = xchg(&smap->buckets[id], bucket);
+ 	if (old_bucket)
+ 		pcpu_freelist_push(&smap->freelist, &old_bucket->fnode);
+ 	return 0;
+@@ -754,6 +765,7 @@ const struct bpf_map_ops stack_trace_map_ops = {
+ 	.map_free = stack_map_free,
+ 	.map_get_next_key = stack_map_get_next_key,
+ 	.map_lookup_elem = stack_map_lookup_elem,
++	.map_lookup_and_delete_elem = stack_map_lookup_and_delete_elem,
+ 	.map_update_elem = stack_map_update_elem,
+ 	.map_delete_elem = stack_map_delete_elem,
+ 	.map_check_btf = map_check_no_btf,
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0fbfa8532c3..c380a2576fc 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -318,7 +318,7 @@ static int bpf_map_copy_value(struct bpf_map *map, void *key, void *value,
+ 	} else if (map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE) {
+ 		err = bpf_percpu_cgroup_storage_copy(map, key, value);
+ 	} else if (map->map_type == BPF_MAP_TYPE_STACK_TRACE) {
+-		err = bpf_stackmap_copy(map, key, value);
++		err = bpf_stackmap_extract(map, key, value, false);
+ 	} else if (IS_FD_ARRAY(map) || IS_FD_PROG_ARRAY(map)) {
+ 		err = bpf_fd_array_map_lookup_elem(map, key, value);
+ 	} else if (IS_FD_HASH(map)) {
+@@ -1627,7 +1627,8 @@ struct bpf_map *bpf_map_inc_not_zero(struct bpf_map *map)
+ }
+ EXPORT_SYMBOL_GPL(bpf_map_inc_not_zero);
+ 
+-int __weak bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
++int __weak bpf_stackmap_extract(struct bpf_map *map, void *key, void *value,
++				bool delete)
+ {
+ 	return -ENOTSUPP;
+ }
+@@ -2158,7 +2159,8 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ 	} else if (map->map_type == BPF_MAP_TYPE_HASH ||
+ 		   map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+ 		   map->map_type == BPF_MAP_TYPE_LRU_HASH ||
+-		   map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
++		   map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH ||
++		   map->map_type == BPF_MAP_TYPE_STACK_TRACE) {
+ 		if (!bpf_map_is_offloaded(map)) {
+ 			bpf_disable_instrumentation();
+ 			rcu_read_lock();
 -- 
-2.51.0
+2.48.1
 
 
