@@ -1,146 +1,373 @@
-Return-Path: <bpf+bounces-69457-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69458-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CDF7B96D31
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:27:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96235B96D34
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:27:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 804104A01A5
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:26:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 379C77A38D8
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8520C322DD1;
-	Tue, 23 Sep 2025 16:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13AF0322757;
+	Tue, 23 Sep 2025 16:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="LID7HP6c"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gjcHBYQM"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281E0321F32;
-	Tue, 23 Sep 2025 16:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112AE1B423C
+	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 16:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758644806; cv=none; b=cvks4yk5sHXcoKTOFe1vCucitehfvUIQvUT7F/M4CMj7C0qW21qtxKXPkRCKcltzCckjnd5Mv7sIiodaH9tEqvFXTnITRm/Fk/kbiC/Iie94fkj//j58Pycpi0ib38bFiKQIOvPpoSKpJkD7s8H/hzlQgt9HTobv2ePNue96Ve0=
+	t=1758644860; cv=none; b=LCoWJsOfaaAnHID9BvPm1epp+bKjBqeV4kLlVFzwFyRHHpEHOVMOpO+sT4YcJSEX+QroWZv9uKWCJ8U4OXxaDLKyrtHe1pbLAc5a4RAnpkzhfuFCiMG+qJnwS1RzSzsrVLMpH3HehbF93g6Y4yWe0qNuSM0G7dOPh63ErewrPPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758644806; c=relaxed/simple;
-	bh=KrrHFMCnA6aF9D42XKfDP34xwEGQRzGrpfvKFl2dIlg=;
+	s=arc-20240116; t=1758644860; c=relaxed/simple;
+	bh=q/FCAaFblffDuWbHWqf5av57+M+Vy5Pog09CvPnrriA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gfpx7nQAorQ5XAFJ0VqPD1PbASlmzJEAEpILRWAKgXN5jQrIFJ65SAvZ/C53HymV7hK15qOrYM756yk3CNcHC9gB96ODUNsrf4eZaY1kzYrVMvEHLQs7A9qWX09EtwCsOxDdhHV9NM+A7GPWf97fWsf9xktV/l9V0EjFu0JSEic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=LID7HP6c; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=nxbdRgQK7ciHStyImT6Z+i9IRJCZrEuPc/ZPzT/mo1c=; b=LID7HP6cYkhRWPwIQiarJCoQYr
-	Zg+DgrnU7iHE3z6Pq9f4BQHHFYTDTe8UVgrh3Rs9Dwn1nBoGW+Lzpb9De8dIeDRarmJx3ehwoJzBm
-	xfhsvy+ZOxW1q2Db3qNHZKEgYmYpvwb2FuKa9E4cBC0bNZoCqBkwpzGTcPJBnX86bRWwvEjG2tO3g
-	l7yYJOCFpfho9+gNKEm0R8exMBjRz67gMy50zmclZ45MWiWnyF7GbBeCeOCws49kcvXYcS1izI4oP
-	tW3+0DDBkxdd6UmO+8EgEimV4F0sMckWhPUxreOZZEVhBh7dm6JakHQOZgj8dtZXs0aOKzQs7polP
-	GePrgqUQ==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1v15qL-000OF5-0q;
-	Tue, 23 Sep 2025 18:26:17 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1v15qJ-000ECX-39;
-	Tue, 23 Sep 2025 18:26:16 +0200
-Message-ID: <3715920a-a8b6-4025-9f8f-ba847a5eb7f5@iogearbox.net>
-Date: Tue, 23 Sep 2025 18:26:15 +0200
+	 In-Reply-To:Content-Type; b=NB9ccUf7QeF6ZxixLpwZ5ap1QhrLquIXb71msqeOn0kyesd0+OVv3d+3ZcnfCwiYwDwsOiLOetQSK7sMqkbmRKozsC9zEJG/G3jV9DXaOldZo/MY0v+kyu/AIvYkdGat92w8/lwyxgWuq6W9cwC6BQ8r9+zExsB4lffl+JlV9lE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gjcHBYQM; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <da547182-563c-463b-8ac5-ac4b9064cb6f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758644855;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nql6fitPcEBbu94qpJiqOV95xENQik8imnuiE8p7e80=;
+	b=gjcHBYQMBcsyZcI8jti6zzi7yF64THaj6PU/bVQ65zYPZD5Xq3yRLoYTZotMnLSYnSNFxS
+	XTsaDoRzDH+9BJQRIaRXaOTs14wGqYrfu4vWiZlHV5SqS7TBEtWtPQ+lDYKlSCDoeFAgtg
+	J5dqelSkzitAM9vLkX1C8F/wYonKB0Y=
+Date: Wed, 24 Sep 2025 00:27:26 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 04/20] net: Add ndo_{peer,unpeer}_queues callback
-To: David Wei <dw@davidwei.uk>, Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
- razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
- john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com
-References: <20250919213153.103606-1-daniel@iogearbox.net>
- <20250919213153.103606-5-daniel@iogearbox.net>
- <20250922182350.4a585fff@kernel.org>
- <dc23879e-1c63-4158-b002-c291548055cb@davidwei.uk>
+Subject: Re: [RFC PATCH bpf-next v2 4/6] bpf: Add common attr support for
+ map_create
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, menglong8.dong@gmail.com
+References: <20250911163328.93490-1-leon.hwang@linux.dev>
+ <20250911163328.93490-5-leon.hwang@linux.dev>
+ <CAEf4BzbX_j5guUYuNNgR4dANR11tzLriDGOCOfxS9zRFmQdi7g@mail.gmail.com>
 Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <dc23879e-1c63-4158-b002-c291548055cb@davidwei.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27771/Tue Sep 23 10:26:39 2025)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAEf4BzbX_j5guUYuNNgR4dANR11tzLriDGOCOfxS9zRFmQdi7g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 9/23/25 6:06 PM, David Wei wrote:
-> On 2025-09-22 18:23, Jakub Kicinski wrote:
->> On Fri, 19 Sep 2025 23:31:37 +0200 Daniel Borkmann wrote:
->>> Add ndo_{peer,unpeer}_queues() callback which can be used by virtual drivers
->>> that implement rxq mapping to a real rxq to update their internal state or
->>> exposed capability flags from the set of rxq mappings.
+
+
+On 2025/9/18 05:39, Andrii Nakryiko wrote:
+> On Thu, Sep 11, 2025 at 9:33 AM Leon Hwang <leon.hwang@linux.dev> wrote:
 >>
->> Why is this something that virtual drivers implement?
->> I'd think that queue forwarding can be almost entirely implemented
->> in the core.
-> 
-> I believe Daniel needs it for AF_XDP.
+>> Currently, many 'BPF_MAP_CREATE' failures return '-EINVAL' without
+>> providing any explanation to user space.
+>>
+>> With the extended BPF syscall support introduced in the previous patch,
+>> detailed error messages can now be reported. This allows users to
+>> understand the specific reason for a failed map creation, rather than
+>> just receiving a generic '-EINVAL'.
+>>
+>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>> ---
+>>  kernel/bpf/syscall.c | 82 ++++++++++++++++++++++++++++++++++----------
+>>  1 file changed, 63 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 5e5cf0262a14e..2f5e6005671b5 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -1340,12 +1340,13 @@ static bool bpf_net_capable(void)
+>>
+>>  #define BPF_MAP_CREATE_LAST_FIELD map_token_fd
+>>  /* called via syscall */
+>> -static int map_create(union bpf_attr *attr, bool kernel)
+>> +static int map_create(union bpf_attr *attr, bool kernel, struct bpf_common_attr *common_attrs)
+>>  {
+>> +       u32 map_type = attr->map_type, log_true_size;
+>> +       struct bpf_verifier_log *log = NULL;
+>>         const struct bpf_map_ops *ops;
+>>         struct bpf_token *token = NULL;
+>>         int numa_node = bpf_map_attr_numa_node(attr);
+>> -       u32 map_type = attr->map_type;
+>>         struct bpf_map *map;
+>>         bool token_flag;
+>>         int f_flags;
+>> @@ -1355,6 +1356,18 @@ static int map_create(union bpf_attr *attr, bool kernel)
+>>         if (err)
+>>                 return -EINVAL;
+>>
+>> +       if (common_attrs->log_buf) {
+>> +               log = kvzalloc(sizeof(*log), GFP_KERNEL);
+>> +               if (!log)
+>> +                       return -ENOMEM;
+>> +               err = bpf_vlog_init(log, BPF_LOG_FIXED, u64_to_user_ptr(common_attrs->log_buf),
+>> +                                   common_attrs->log_size, NULL);
+>> +               if (err) {
+>> +                       kvfree(log);
+>> +                       return err;
+>> +               }
+>> +       }
+>
+> what if we keep bpf_verifier_log on stack? It's 1KB, should be still
+> fine to be on kernel stack, no?
+>
 
-Yes, in case of af_xdp we basically need to propagate related capabilities
-of the netdev, so that we can expose the given xdp flags in this case
-further to netkit which implements ndo_bpf etc. Thinking about it, maybe
-an alternative could be that netkit always exposes NETDEV_XDP_ACT_XSK etc
-and we catch it in netkit's ndo_bpf + ndo_xsk_wakeup implementation when
-checking peer queue's dev, and let it fail there instead. I'll play a bit
-with this idea instead, perhaps this simplifies things.
+I'm going to follow Alexei's suggestion.
+
+>
+>> +
+>>         /* check BPF_F_TOKEN_FD flag, remember if it's set, and then clear it
+>>          * to avoid per-map type checks tripping on unknown flag
+>>          */
+>> @@ -1363,16 +1376,24 @@ static int map_create(union bpf_attr *attr, bool kernel)
+>>
+>>         if (attr->btf_vmlinux_value_type_id) {
+>>                 if (attr->map_type != BPF_MAP_TYPE_STRUCT_OPS ||
+>> -                   attr->btf_key_type_id || attr->btf_value_type_id)
+>> -                       return -EINVAL;
+>> +                   attr->btf_key_type_id || attr->btf_value_type_id) {
+>> +                       bpf_log(log, "Invalid use of btf_vmlinux_value_type_id.\n");
+>
+> I don't know how far we want to go here, but I'd split the original
+> check into map type check and key_type/value_type check, and log a bit
+> more meaningful error:
+>
+> a) btf_vmlinux_value_type_id can only be used with struct_ops maps.
+>
+> and
+>
+> b) btf_vmlinux_value_type_id is mutually exclusive with
+> btf_key_type_id and btf_value_type_id
+>
+
+Sure.
+
+It would be better to separate it like this.
+
+>> +                       err = -EINVAL;
+>> +                       goto put_token;
+>
+> there is no token just yet, add new label for finalizing log?
+>
+
+Ack.
+
+>> +               }
+>>         } else if (attr->btf_key_type_id && !attr->btf_value_type_id) {
+>> -               return -EINVAL;
+>> +               bpf_log(log, "Invalid btf_value_type_id.\n");
+>> +               err = -EINVAL;
+>> +               goto put_token;
+>
+> ditto about token
+>
+
+Ack.
+
+>>         }
+>>
+>>         if (attr->map_type != BPF_MAP_TYPE_BLOOM_FILTER &&
+>>             attr->map_type != BPF_MAP_TYPE_ARENA &&
+>> -           attr->map_extra != 0)
+>> -               return -EINVAL;
+>> +           attr->map_extra != 0) {
+>> +               bpf_log(log, "Invalid map_extra.\n");
+>> +               err = -EINVAL;
+>> +               goto put_token;
+
+It'll be changed to the new label.
+
+>> +       }
+>>
+>>         f_flags = bpf_get_file_flag(attr->map_flags);
+>>         if (f_flags < 0)
+>> @@ -1380,17 +1401,26 @@ static int map_create(union bpf_attr *attr, bool kernel)
+>>
+>>         if (numa_node != NUMA_NO_NODE &&
+>>             ((unsigned int)numa_node >= nr_node_ids ||
+>> -            !node_online(numa_node)))
+>> -               return -EINVAL;
+>> +            !node_online(numa_node))) {
+>> +               bpf_log(log, "Invalid or offline numa_node.\n");
+>
+>
+> nit: just "invalid numa_node" ?
+>
+
+Ack.
+
+>> +               err = -EINVAL;
+>> +               goto put_token;
+
+It'll be changed to the new label.
+
+>> +       }
+>>
+>>         /* find map type and init map: hashtable vs rbtree vs bloom vs ... */
+>>         map_type = attr->map_type;
+>> -       if (map_type >= ARRAY_SIZE(bpf_map_types))
+>> -               return -EINVAL;
+>> +       if (map_type >= ARRAY_SIZE(bpf_map_types)) {
+>> +               bpf_log(log, "Invalid map_type.\n");
+>> +               err = -EINVAL;
+>> +               goto put_token;
+
+It'll be changed to the new label.
+
+>> +       }
+>>         map_type = array_index_nospec(map_type, ARRAY_SIZE(bpf_map_types));
+>>         ops = bpf_map_types[map_type];
+>> -       if (!ops)
+>> -               return -EINVAL;
+>> +       if (!ops) {
+>> +               bpf_log(log, "Invalid map_type.\n");
+>> +               err = -EINVAL;
+>> +               goto put_token;
+
+It'll be changed to the new label.
+
+>> +       }
+>>
+>>         if (ops->map_alloc_check) {
+>>                 err = ops->map_alloc_check(attr);
+>> @@ -1399,13 +1429,20 @@ static int map_create(union bpf_attr *attr, bool kernel)
+>>         }
+>>         if (attr->map_ifindex)
+>>                 ops = &bpf_map_offload_ops;
+>> -       if (!ops->map_mem_usage)
+>> -               return -EINVAL;
+>> +       if (!ops->map_mem_usage) {
+>> +               bpf_log(log, "map_mem_usage is required.\n");
+>
+>
+> this is kernel bug, actually, so let's log "bug: " prefix? same above
+> with the second "Invalid map_type." message?
+>
+> and actually, given these are kernel bugs and shouldn't happen, I
+> wonder if we should log anything here at all?
+>
+
+As it's a kernel bug if no map_mem_usage, would it be better to
+WARN_ONCE here instead of reporting a log?
+
+>> +               err = -EINVAL;
+>> +               goto put_token;
+
+It'll be changed to the new label.
+
+>> +       }
+>>
+>>         if (token_flag) {
+>>                 token = bpf_token_get_from_fd(attr->map_token_fd);
+>> -               if (IS_ERR(token))
+>> -                       return PTR_ERR(token);
+>> +               if (IS_ERR(token)) {
+>> +                       bpf_log(log, "Invalid map_token_fd.\n");
+>> +                       err = PTR_ERR(token);
+>> +                       token = NULL;
+>> +                       goto put_token;
+>
+> ditto, no token
+>
+
+It'll be changed to the new label.
+
+>> +               }
+>>
+>>                 /* if current token doesn't grant map creation permissions,
+>>                  * then we can't use this token, so ignore it and rely on
+>> @@ -1487,8 +1524,10 @@ static int map_create(union bpf_attr *attr, bool kernel)
+>>
+>>         err = bpf_obj_name_cpy(map->name, attr->map_name,
+>>                                sizeof(attr->map_name));
+>> -       if (err < 0)
+>> +       if (err < 0) {
+>> +               bpf_log(log, "Invalid map_name.\n");
+>>                 goto free_map;
+>> +       }
+>>
+>>         preempt_disable();
+>>         map->cookie = gen_cookie_next(&bpf_map_cookie);
+>> @@ -1511,6 +1550,7 @@ static int map_create(union bpf_attr *attr, bool kernel)
+>>
+>>                 btf = btf_get_by_fd(attr->btf_fd);
+>>                 if (IS_ERR(btf)) {
+>> +                       bpf_log(log, "Invalid btf_fd.\n");
+>>                         err = PTR_ERR(btf);
+>>                         goto free_map;
+>>                 }
+>> @@ -1565,6 +1605,10 @@ static int map_create(union bpf_attr *attr, bool kernel)
+>>         bpf_map_free(map);
+>>  put_token:
+>>         bpf_token_put(token);
+>> +       if (err && log)
+>> +               (void) bpf_vlog_finalize(log, &log_true_size);
+>
+> so we'll just drop this size on the floor and never report it to the user?
+>
+>
+> a) let's either teach bpf_vlog_finalize that log_true_size pointer can
+> be NULL (and optional),
+> or b) let's report it back to user through that same commont_attrs
+> struct, just like we do it for verifier and btf logs?
+>
+
+Reporting it back to user looks better to me.
+
+>
+> Also, what if complicating error handling with this goto jumping, can
+> we make use of __cleanup() attribute to do this automatically? Then
+> we'd just allocate (or see above, maybe just init on the stack) log
+> struct, and declare it with cleanup callback that will do this
+> vlog_finalize and, maybe, report back the log actual size?
+>
+
+It does seem feasible to simplify error handling with __cleanup().
+
+Instead of initializing log directly on the stack, we could introduce a
+small wrapper:
+
+struct bpf_log_wrapper {
+    struct bpf_verifier_log *log;
+};
+
+with a destructor:
+
+static void bpf_log_wrapper_destructor(struct bpf_log_wrapper *w)
+{
+    u32 log_true_size;
+
+    if (w->log) {
+        (void) bpf_vlog_finalize(w->log, &log_true_size);
+        kfree(w->log);
+    }
+}
+
+In this demo snippet I skipped handling log_true_size, but in practice
+it should be dealt with properly.
+
+Then, for example, in map_create():
+
+struct bpf_log_wrapper log_wrapper __cleanup(bpf_log_wrapper_destructor)
+= {};
+
+if (common_attrs->log_buf) {
+    log_wrapper.log = kzalloc(...);
+}
+
+I’ll give this approach a try in the next revision.
+
+Thanks,
+Leon
 
