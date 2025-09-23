@@ -1,185 +1,137 @@
-Return-Path: <bpf+bounces-69460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41392B96DB5
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:40:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0965B96DC7
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 18:42:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D77E87A70D9
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:38:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70ACE3B112B
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 16:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD10A328591;
-	Tue, 23 Sep 2025 16:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B886328599;
+	Tue, 23 Sep 2025 16:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eH6+wENt"
+	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="yDYyqEZR"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C383D31B104
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 16:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B459925A34F;
+	Tue, 23 Sep 2025 16:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758645616; cv=none; b=CZ1BIhK9GFdqcDeCvcXOl7k6u8cR33cLbniH7bzd42EEdLWDUYNLDzZ1jKrVuJ0ODiiP68eIjmOsGf/eZcGqHJkuBG9PrhX2PwHT9R3LjtsQqwxSroOCxI0HJm1NgwxiWxkL+pfYOjNf71uWOc7bvteQ+vkmf3twWx1QBATUPIc=
+	t=1758645751; cv=none; b=cwB5kHHazwOwH8sSbkzx6IdDC18H+C9+UxZZTxIah5UzDu2Kh3gnfUzr8Du83GagCMMyk92Pu0N0cOzqIGmAoKEoBtnBkYsYROvHbaPvaBgGwxqqXhJIY2fekep37QHsNrhT0B+pl+XRRHxpgWrOGoHuzg24jqMYau6nLXnargY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758645616; c=relaxed/simple;
-	bh=B5R10vSzW7QvOSW0pH4EUOrDCm+O+lC98oFAcdBJECU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J50AUJ0qqrI6/ZD2uqqqxiZM6j9+utu+MRNMBibaqSEfLkmaFOVMRSJnnKVhGNkD+Rs+zghPWkhjUVzzBpS1EvnoonS8bKLaRg3GeJMwkiB3frDGy8imhJYRuKJ5HF2LuOPNd91xCQGviNxxm4mAWrzlWGJnAKvaty5glYEPF5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eH6+wENt; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2e8a73a9-67b9-4d87-844a-c43571055605@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758645611;
+	s=arc-20240116; t=1758645751; c=relaxed/simple;
+	bh=DvOjd7uurH6rsixweYJiRWI6hX++v3CAQUr8GbDx0EE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Rvk4pNM8hllMwK+CT2lTEXX0CK+qffMm4pIWjjPyprtLa9BBFZNCeNCefAqtvoXgQKE5i+33XMueuySFccWpVA37/M0ghy4kwa2ZkTjBiM/yHAqDppw0uMgVUa/5s/m65kPcTZHgCjzFmF4q7WuWmiWceEpA0A7hAv64nBCqFeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=yDYyqEZR; arc=none smtp.client-ip=80.241.56.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4cWQkM1C09z9tRS;
+	Tue, 23 Sep 2025 18:42:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
+	t=1758645739;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tgdmwUFP1TxgY5YVNxX2Bwzs9UbKZtDazUizAj9xwwI=;
-	b=eH6+wENtuLzK4+QkYovTId+JplvAdu9t+dGuSmN8BUpGS5geCDBSpZCJ+cOQeYT9NevJVE
-	gkXFZPfmzMtv4QyjP0QVbzS5mvgAOVqqyVXPV+8X/4B84n8pz4gzNX8EKBrtZWAl8t1E1h
-	8xqlgOZx9qcE5YfwDgyQorH+7LOA8/c=
-Date: Wed, 24 Sep 2025 00:40:01 +0800
+	bh=lmmrxfPm9Zhb/sagqXwU5Na5q9iLweF8bB3KFYMUa+s=;
+	b=yDYyqEZR8LZnac0rNBQOO37sSIHKSlYgnajP+JTWZOEUwFXjPPXhpUcNiNSosPBiXiI9S6
+	IY3pCPQfSIHbik+aaWV2VMsHnL31+8MnTMoQ0jwvbPoCzMnaSl5onRKxwovzsZQy+FwEWG
+	pLFbFq0gsL2rv/BSUVyC0I9MKnnI304zfsvSN6a5xa7WZGrF1lX6avcHsc07DjpKpiPN/w
+	O4Jlb/44O7Nnq56sYY8wnqfVwauUYES9DOdNnoCpy/m6MFfp/ItlgKZi33qaLcMyydZSzG
+	O8x9hYHtQmTF8BfyKt7XV/vh8VaduK6LkpXEdBazfoZlwroZedLu8uCz9SGWCw==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=none;
+	spf=pass (outgoing_mbo_mout: domain of listout@listout.xyz designates 2001:67c:2050:b231:465::1 as permitted sender) smtp.mailfrom=listout@listout.xyz
+From: Brahmajit Das <listout@listout.xyz>
+To: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com
+Cc: listout@listout.xyz,
+	andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	song@kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: [PATCH 1/1] bpf: fix NULL pointer dereference in print_reg_state()
+Date: Tue, 23 Sep 2025 22:11:44 +0530
+Message-ID: <20250923164144.1573636-1-listout@listout.xyz>
+In-Reply-To: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
+References: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v2 5/6] libbpf: Add common attr support for
- map_create
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, menglong8.dong@gmail.com
-References: <20250911163328.93490-1-leon.hwang@linux.dev>
- <20250911163328.93490-6-leon.hwang@linux.dev>
- <CAEf4BzZ5R-H+XL6TPftv6KGFnowA1yeCXii7OZ9uq_A-zFrjJg@mail.gmail.com>
- <CAEf4BzY233bt3NdVu8tp7VVmyNWVk-DQB+wQ-uchBJA4Ya3p-g@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAEf4BzY233bt3NdVu8tp7VVmyNWVk-DQB+wQ-uchBJA4Ya3p-g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 4cWQkM1C09z9tRS
 
+Syzkaller reported a general protection fault due to a NULL pointer
+dereference in print_reg_state() when accessing reg->map_ptr without
+checking if it is NULL.
 
+The existing code assumes reg->map_ptr is always valid before
+dereferencing reg->map_ptr->name, reg->map_ptr->key_size, and
+reg->map_ptr->value_size.
 
-On 2025/9/18 05:46, Andrii Nakryiko wrote:
-> On Wed, Sep 17, 2025 at 2:45 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->>
->> On Thu, Sep 11, 2025 at 9:33 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>>
->>> With the previous patch adding common attribute support for
->>> BPF_MAP_CREATE, it is now possible to retrieve detailed error messages
->>> when map creation fails by using the 'log_buf' field from the common
->>> attributes.
->>>
->>> This patch extends 'bpf_map_create_opts' with two new fields, 'log_buf'
->>> and 'log_size', allowing users to capture and inspect these log messages.
->>>
->>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->>> ---
->>>  tools/lib/bpf/bpf.c | 16 +++++++++++++++-
->>>  tools/lib/bpf/bpf.h |  5 ++++-
->>>  2 files changed, 19 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
->>> index 27845e287dd5c..5b58e981a7669 100644
->>> --- a/tools/lib/bpf/bpf.c
->>> +++ b/tools/lib/bpf/bpf.c
->>> @@ -218,7 +218,9 @@ int bpf_map_create(enum bpf_map_type map_type,
->>>                    const struct bpf_map_create_opts *opts)
->>>  {
->>>         const size_t attr_sz = offsetofend(union bpf_attr, map_token_fd);
->>> +       struct bpf_common_attr common_attrs;
->>>         union bpf_attr attr;
->>> +       __u64 log_buf;
->>
->>
->> const char *
->>
+Fix this by adding explicit NULL checks before accessing reg->map_ptr
+and its members. This prevents crashes when reg->map_ptr is NULL,
+improving the robustness of the BPF verifier's verbose logging.
 
-Ack.
+Reported-by: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com
+Signed-off-by: Brahmajit Das <listout@listout.xyz>
+---
+ kernel/bpf/log.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
->>>         int fd;
->>>
->>>         bump_rlimit_memlock();
->>> @@ -249,7 +251,19 @@ int bpf_map_create(enum bpf_map_type map_type,
->>>
->>>         attr.map_token_fd = OPTS_GET(opts, token_fd, 0);
->>>
->>> -       fd = sys_bpf_fd(BPF_MAP_CREATE, &attr, attr_sz);
->>> +       log_buf = (__u64) OPTS_GET(opts, log_buf, NULL);
->>
->> no u64 casting just yet
->>
+diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
+index 38050f4ee400..a2368b21486a 100644
+--- a/kernel/bpf/log.c
++++ b/kernel/bpf/log.c
+@@ -3,6 +3,7 @@
+  * Copyright (c) 2016 Facebook
+  * Copyright (c) 2018 Covalent IO, Inc. http://covalent.io
+  */
++#include "linux/printk.h"
+ #include <uapi/linux/btf.h>
+ #include <linux/kernel.h>
+ #include <linux/types.h>
+@@ -716,11 +717,12 @@ static void print_reg_state(struct bpf_verifier_env *env,
+ 	if (type_is_non_owning_ref(reg->type))
+ 		verbose_a("%s", "non_own_ref");
+ 	if (type_is_map_ptr(t)) {
+-		if (reg->map_ptr->name[0])
++		if (reg->map_ptr != NULL && reg->map_ptr->name[0] != '\0')
+ 			verbose_a("map=%s", reg->map_ptr->name);
+-		verbose_a("ks=%d,vs=%d",
+-			  reg->map_ptr->key_size,
+-			  reg->map_ptr->value_size);
++		if (reg->map_ptr != NULL)
++			verbose_a("ks=%d,vs=%d",
++					reg->map_ptr->key_size,
++					reg->map_ptr->value_size);
+ 	}
+ 	if (t != SCALAR_VALUE && reg->off) {
+ 		verbose_a("off=");
+-- 
+2.51.0
 
-Ack.
-
->>> +       if (log_buf) {
->>> +               if (!feat_supported(NULL, FEAT_EXTENDED_SYSCALL))
->>> +                       return libbpf_err(-EOPNOTSUPP);
->>
->> um.. I'm thinking that it would be better usability for libbpf to
->> ignore provided log if kernel doesn't support this feature just yet.
->> Then users don't have to care, they will just opportunistically
->> provide buffer and get extra error log, if kernel supports this
->> feature. Otherwise, log won't be touched, instead of failing an API
->> call.
->>
-
-Agreed.
-
-These two 'if's will be merged into one:
-
-if (log_buf && feat_supported(NULL, FEAT_EXTENDED_SYSCALL)) {
-    ...
-}
-
->>> +
->>> +               memset(&common_attrs, 0, sizeof(common_attrs));
->>> +               common_attrs.log_buf = log_buf;
->>
->> ptr_to_u64(log_buf) here
->>
-
-Ack.
-
->>> +               common_attrs.log_size = OPTS_GET(opts, log_size, 0);
->>> +               fd = sys_bpf_extended(BPF_MAP_CREATE, &attr, attr_sz, &common_attrs,
->>> +                                     sizeof(common_attrs));
->>> +       } else {
->>> +               fd = sys_bpf_fd(BPF_MAP_CREATE, &attr, attr_sz);
->>> +       }
->>>         return libbpf_err_errno(fd);
->>>  }
->>>
->>> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
->>> index 38819071ecbe7..3b54d6feb5842 100644
->>> --- a/tools/lib/bpf/bpf.h
->>> +++ b/tools/lib/bpf/bpf.h
->>> @@ -55,9 +55,12 @@ struct bpf_map_create_opts {
->>>         __s32 value_type_btf_obj_fd;
->>>
->>>         __u32 token_fd;
->>> +
->>> +       const char *log_buf;
->>> +       __u32 log_size;
->
-> also, what about that log_level ?
->
-
-Should we really introduce log_level here?
-
-I don’t think it makes sense, because logging in map_create is too
-simple for different log levels on the kernel side to have any
-meaningful effect.
-
-Thanks,
-Leon
 
