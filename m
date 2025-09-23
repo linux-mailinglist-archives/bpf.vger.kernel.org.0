@@ -1,124 +1,103 @@
-Return-Path: <bpf+bounces-69303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C524B93C83
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 03:03:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBFC9B93D06
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 03:17:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB7BE2E18CD
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 01:03:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B561F19C1AA1
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 01:18:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82E01DF72C;
-	Tue, 23 Sep 2025 01:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629BE1EE7B7;
+	Tue, 23 Sep 2025 01:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HUgiQ5Yc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="txPGHGvZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B4514C5B0
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 01:03:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70CF14A0BC;
+	Tue, 23 Sep 2025 01:17:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758589420; cv=none; b=EMhLzYh8JxY2GBtffSoypVdXavDocgyoo3VYkGcIxLJ0w5XhwwFayJ9TgI6ujWjS+9Avk58ztb8ZGtPj71Oih/Uy6z6rU1BONZSsRDpHDUSVeh8e7l4gbYEVoJeovdiazjXwGKXkO5vijLuIhc4Lbj9iheRSvxDbTZyF///hDuc=
+	t=1758590250; cv=none; b=Ns7Ik96jLtq/wSxUA0hYpoJ0GysmcLGu6/jQ0r+VhQ9S0lZwizML3rilqtz524w0qhjk4xV2hj1AsaTs3kSRwHHV5538aEM0HXEmxhX/04m8QuY27vjcggv8CNPl1rbrpbdqzBQBrpOvnyRRyK/aMgdqYdQyS3Pg92UUPakQ4to=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758589420; c=relaxed/simple;
-	bh=i6Of2jAUL+zQjJ8mC94XwylCjFmErxMFeVoMP3a6500=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DQUVSYcM7gQ+Tk2rR0pZr6Kq8EggmYJILoz0sKdYA1Mp1i6+VAeC3SIrku+I6rzuGdAGb0gDkxXOC8KcueM9p0IVR9fFcMCF0tXA7MoRBGCQ60u1lD0WP6PS07Yv48DBoSgLgcUhHiWmorxsLLsHkaE246J35NLU5vOXbL5NrYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HUgiQ5Yc; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b5518177251so2317904a12.0
-        for <bpf@vger.kernel.org>; Mon, 22 Sep 2025 18:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758589418; x=1759194218; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x33yQCiS8yD4t00RGUcUdYXvxGF8NkkkcCi7P/JHd/M=;
-        b=HUgiQ5YcWjQFquCPubpxmHoqDYVyL8Pl9u40e4LEBO1Hz4pTehTPy/LrzenufVT+1n
-         HNtF67XfHYdXCIsiALwkPMC4x7wiNo06LakgR2uDEToKI9mi6zjJOAx2c9GK6OfZ5qMy
-         HXAEBLTFi+EPoqAO932P8UvVWU9rIe/VM2qmRQC0jjvqe3eT8Svd0iTlzXoxWlvRLa9G
-         KAmOY6LELFQBNuWWLcVbFJiiqgFDWtsgCNBgD4R1A5WXqRvP1aeZFO+Dh4yEd1yLvD96
-         EsmVDZvHXLgA1VerIWja67jAv/jsoggADxLHjdHCWEXgIEsKlidPgiL3GvI7teVVbpYH
-         0x9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758589418; x=1759194218;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x33yQCiS8yD4t00RGUcUdYXvxGF8NkkkcCi7P/JHd/M=;
-        b=uwKrfYW2PeP+Hl44t93J2K1YaqEG+Kz80ACng2BkrG2j/OwuuC3jM9NgGCtJY/s/ki
-         dJStAqAgbqbDgbbLtcX897cZ7KpPp60ABKaXseFRPaPiKI6xEfWwOmPtDvr6IqAJxIOo
-         MNMojc7ec597SlVkX9saM/h2EXTPnmbq0b8cXC2OkSFuGI7+kDCeaoVe+wktVsxlc1Dr
-         kvVuROkaBV+ADBKQ2O85JxVV3pTpOZ+ksCzkHMLewOTh/O0uPqYVrUEsw146SCYbsQkd
-         e44QCItyjDIoOGNvPmkoVHKgxmJmFPXt2JCNg/GTnahvz6g0/12x79QoYKENLNQJYRJe
-         +5eg==
-X-Forwarded-Encrypted: i=1; AJvYcCVub7JpU86NVBr8p7FCnTW11WHMO+rZzIVZzzV47ZoSL8y+wM9Uu90AyPin1VBYbym3TJo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YydEWwqF0WqghlyjHbl8FvnjxicOUeanIWkJBg1MjuONioOij24
-	JZgH908N3JnYi4+CjJ0ofqM5AFcQlXH+8Ke6qoW+umKB2j/CJaeo0fXyN/GigA1nauwCR39otdn
-	HaKn2+ovusyai+Q5QEjOOP1lN9uYZWzsfUNlyLE1z
-X-Gm-Gg: ASbGncsZij68UfMuoS2yYXw9rLk5mEKCGhh7IcR/M/bS9aP+xH3/slJ7LeYlfUbAQP4
-	+YsKOU+4s2S/mVx0Z3p2ZKZ+3+BuzJtgoHHTVvx6pKOQYvRZdMuMbDL4xtCJ5jg3+k4EDEVPsOu
-	RVIKyc2AH7ni/VrAut4FnpKt/NKHbeb8rRvriZsv4iJkxZTIYxNfY9UyRlTjXphB9HqSko/bJST
-	dLTlVg=
-X-Google-Smtp-Source: AGHT+IF4V7vLCAX99zE2i1WgDrb/NvJZo/98rUrRoBuo4S05a+IOKORc6ElcP1wyehzVZqK2h4N0L8kJZulAJ8PxgQE=
-X-Received: by 2002:a17:90b:2d8b:b0:32e:a54a:be5d with SMTP id
- 98e67ed59e1d1-332a91baa9fmr956929a91.2.1758589417994; Mon, 22 Sep 2025
- 18:03:37 -0700 (PDT)
+	s=arc-20240116; t=1758590250; c=relaxed/simple;
+	bh=X6VoqCMha7mh35RsNAZnPf3eqhRxDFtLDqghwBjaH0Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=u/GwqVME3GSe1akTxLTdVBmFl0kxLgV/GitJIAehg1thg9F+BMiGc127iFUbWRSbyq/EcCwLJBP2erzeRMqINPgfyPzA5Q3n8DUrQp4WIgKGZrNrbT73BO1/fUk/DDIy743P8UmEepb2jMTbvhJ3UU0K/naYoa4F1LH6/Mcarf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=txPGHGvZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1038C116B1;
+	Tue, 23 Sep 2025 01:17:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758590250;
+	bh=X6VoqCMha7mh35RsNAZnPf3eqhRxDFtLDqghwBjaH0Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=txPGHGvZkwwD5mONGl8SzVVoqzF6Nkw1f5EqYVWib9fn4tZvnML4THTIJN8/cHYC7
+	 JrFSwK+4+hc21kNADrrXEvKBR6XyHXC6NIOnDwSE0v2HxJ9wXw1Shw++Ty8i8sWzAd
+	 AX7rNT5JtGWcSgR6NNFUX5epm2QYXzv6zwk3G7S5KiODAk5az2VZitgrEcjI0lwFvE
+	 2/ulpSbTcxbNfBVwRyI8cNmDcdKV87qBtQa7lj22VqTam6vT/fUq1Q1mRs6qPs86sN
+	 pst5SuJWnkUEJRHHPDhg345MCC9QfY1NuGm9s5xarMzAGDqqUxRKowQ0+2/Ns1QbEh
+	 KRyOtkRuetwkQ==
+Date: Mon, 22 Sep 2025 18:17:28 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+ razor@blackwall.org, pabeni@redhat.com, willemb@google.com,
+ sdf@fomichev.me, john.fastabend@gmail.com, martin.lau@kernel.org,
+ jordan@jrife.io, maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+ David Wei <dw@davidwei.uk>
+Subject: Re: [PATCH net-next 01/20] net, ynl: Add bind-queue operation
+Message-ID: <20250922181728.4aa70650@kernel.org>
+In-Reply-To: <20250919213153.103606-2-daniel@iogearbox.net>
+References: <20250919213153.103606-1-daniel@iogearbox.net>
+	<20250919213153.103606-2-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250920000751.2091731-1-kuniyu@google.com> <20250920000751.2091731-4-kuniyu@google.com>
- <pmti7ebtl7zfom5ndqcvpdwjxlkrvmly2ol64llabcwfk7bdg2@mc3pigkg2ppq>
-In-Reply-To: <pmti7ebtl7zfom5ndqcvpdwjxlkrvmly2ol64llabcwfk7bdg2@mc3pigkg2ppq>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Mon, 22 Sep 2025 18:03:25 -0700
-X-Gm-Features: AS18NWA4Ta5V2LkgBMhN9GY-RVQdhXUu2iIiDrc6jXD7aYqae5HSof66nqd6WU4
-Message-ID: <CAAVpQUBZSK6ptrRgruj0BGXBqDUOu3MKYKfD9FkWFn55OduwOw@mail.gmail.com>
-Subject: Re: [PATCH v10 bpf-next/net 3/6] net-memcg: Introduce
- net.core.memcg_exclusive sysctl.
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Neal Cardwell <ncardwell@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Sep 22, 2025 at 5:54=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Sat, Sep 20, 2025 at 12:07:17AM +0000, Kuniyuki Iwashima wrote:
-> > diff --git a/net/core/sock.c b/net/core/sock.c
-> > index 814966309b0e..348e599c3fbc 100644
-> > --- a/net/core/sock.c
-> > +++ b/net/core/sock.c
-> > @@ -2519,6 +2519,7 @@ struct sock *sk_clone_lock(const struct sock *sk,=
- const gfp_t priority)
-> >  #ifdef CONFIG_MEMCG
-> >       /* sk->sk_memcg will be populated at accept() time */
-> >       newsk->sk_memcg =3D NULL;
-> > +     mem_cgroup_sk_set_flags(newsk, mem_cgroup_sk_get_flags(sk));
->
-> Why do you need to set the flag here? Will doing in __inet_accept only
-> be too late i.e. protocol accounting would have happened?
+On Fri, 19 Sep 2025 23:31:34 +0200 Daniel Borkmann wrote:
+> Subject: [PATCH net-next 01/20] net, ynl: Add bind-queue operation
 
-Currently, we only allow bpf_setsockopt() during socket(2) not
-to make things complicated as explained in patch 4.
+We use "ynl" for changes to ynl itself. If you're just adding to 
+the YAML specs or using them there's no need to mention YNL.
+Please remove in all the subjects.
 
-So, this is to preserve the listener's flag set by bpf_setsockopt()
-since network applications basically assume setsockopt() for a
-listener socket is inherited to its child sockets.
+> +  -
+> +    name: queue-pair
+> +    attributes:
+> +      -
+> +        name: src-ifindex
+> +        doc: netdev ifindex of the physical device
+> +        type: u32
+> +        checks:
+> +          min: 1
+
+max: s32-max ?
+
+> +      -
+> +        name: src-queue-id
+> +        doc: netdev queue id of the physical device
+> +        type: u32
+
+
+> @@ -772,6 +795,20 @@ operations:
+>            attributes:
+>              - id
+>  
+> +    -
+> +      name: bind-queue
+> +      doc: Bind a physical netdev queue to a virtual one
+
+Would be good to have a few sentences of documentation here.
+All netdev APIs currently carry queue id with type.
+I'm guessing the next few patches would explain but whether
+you're attaching rx, tx, or both should really be explained here :)
 
