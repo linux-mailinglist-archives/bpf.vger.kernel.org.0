@@ -1,110 +1,94 @@
-Return-Path: <bpf+bounces-69480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69481-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E430B976FD
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 22:02:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18C76B97844
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 22:45:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF8767B4EEF
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 20:00:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E54619C538D
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 20:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C8530CD87;
-	Tue, 23 Sep 2025 20:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A2730AD10;
+	Tue, 23 Sep 2025 20:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c4jOnM9Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ORs4JD8W"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4324930C617
-	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 20:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6428B2FD1B1
+	for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 20:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758657658; cv=none; b=n3D6db/c7ttXRrAgTBexukMqWOj1euBW45l9RLDZGobVE62Zkjn/COtID8mwnFDxZf+yMbj1GALLRWn90VEZBTIYZKjTPV+5/95PeNkfQ+rzCFKX4dRaGQ4GucSKSvE2w+V+Kjcwcj6rT+6KEEvvlRJHqTXivjcdyuv8preJZbk=
+	t=1758660316; cv=none; b=o8cWrzAoajC5rUWza8FGCvMJxByCWHATAjbk574svwQEtRWS936ec/zLoK/6yXcDl11v55n/ikGQv98/d2FvY/2i9DljK9qJNCCoL3SAz95qmJEr1U3NNvdMhz4MUon5HE3XMv+NSfV31qcZOHwJGN3BNZvbV+H4nFCsYY/5oiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758657658; c=relaxed/simple;
-	bh=za6eoflza+eI0daPO52VrArrXQQh9oKqLFL2yU7G4qY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zm6p8CfojwXez2r1shtwlqfnRt8NDsMa1WuBMrTZZFtRoaXqpAIT05LyBlNJJ/zDuiVcgs4WS2sqTr0q3K8Rgji1zg+nMEHb3/OtePkhj8s5sPcJpPCZTlsJI8xDbI9TLECq5zd2s+i9F7pMZO4dI40r7eu2av9nNk25x+mO9uQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c4jOnM9Q; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1758660316; c=relaxed/simple;
+	bh=nGwmEIjf0Z80ZC/Qqkye+v7lXX7+Uyfj55BEPrjCfjk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gfqnMpJSgCbnk+UIxLiEuj6fK8ATRWrCN4zrhT1ufl5NK/RTMRAEYCmNznLjfynpLl+0OIAho1aBunXYaH32VO8v293/wjOBZ/VZ2Vt14OTkkhuRF4yKd3Gc7Ksp7wOJoetnN4nE5UXA7+f1aeUd2objZUXc5X4bmBRYMzXJOdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ORs4JD8W; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b2a1a166265so49778566b.2
-        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 13:00:57 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-267dff524d1so44702525ad.3
+        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 13:45:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758657656; x=1759262456; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jvM5EG3LMIQuZITndtrZP0Eki684ON50PFEBay054lA=;
-        b=c4jOnM9QEkWDqPrR+CsDuHhhX2WaAYDyMzb0l2y9LULpcKUAItkDpwx5lt6sjg4kE+
-         UyPAFDmu4aR2C5snhubvV28QfEVemUgyCWRvisVCCCtw36vDRb/fgyIausDx0hNS7+xB
-         57jqpD25HqdsXSXljGRYdGUfnjEXAFbQ7tRukTAtUzlFgb7gjcHlLxIdbLmijBrHhplW
-         QXCoglWLdYwq97XzTljwFvTr1dlmJZse6/8/FGPS3aNtVUUL+cq8i55XS+mWTpYQcdLZ
-         suuPqkJnieST71cj0UPW5T8J/XmqrgQFIarUYWIDiIAHpbJN4c6bRBxXmyh+4IEipQrM
-         Z5Vg==
+        d=gmail.com; s=20230601; t=1758660314; x=1759265114; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sipScXl1CFAIZEiqAz6v2zuPdeVOTifZUwgP7G5st/0=;
+        b=ORs4JD8Wq/POKafG29v8kG7lpNbTfeh62uOMPMZa3MrkfXUFlFPRvg95ct0NJ1UrMm
+         LZ5HwUAW0eNIzXL7+4s6lxO0j6/gvRMRdgnlwGwfe9FCHh0xiyDRXJMi3ilgSIKm/QM6
+         luv3G1al2u2FzioMDZwy3W+PF1kxxsO8QHINbx7D0mbUxPQZGfYmKzHRuLUYNEpohoNQ
+         8UvOAhQePxRRuq2iveUfhotQCBG2/+QUTOK13fjvEnkIjPGAC4CsEuYKwfwYtPj+32Vu
+         RkdT4s6VKwSm6KIJGwK8uqhL2h95jQU2rGJju/4RY9cFVB16H2lNTrp3CS1vAYfDDaIa
+         ywuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758657656; x=1759262456;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jvM5EG3LMIQuZITndtrZP0Eki684ON50PFEBay054lA=;
-        b=E4M9ampBVQmBIpUxx3NNCN8XeFccVd2HTHl1MfgehJ7a1KmmMUizBblzIKwxF3YF7m
-         OKwo059gUWhc41hENen1zEb2/Vs1VLg7G9caX5NxYpLQc1JIHThPH2dvDjwereQljYo4
-         uQL99IWQLSY7rgT3Jox7hDdrmVVWs85o3CKrKFFX/dY8r26w7Sni+cyX5RWmfA0H0XAD
-         2V8hOdG/GY7W8O8GKCMinVBs3c5cvLpupM+EaNknLRXSCcl874mbe7cFOn69g9v2jABw
-         lgUIAoofIBR1paBnC+JkipoYGGYeCXFQb+ks+LvJr6x6y0TCaIKTfLMbY8fG0Lksw/FQ
-         tC1w==
-X-Forwarded-Encrypted: i=1; AJvYcCVnLgCxwVh6tqtM0Pf+/FH3KpBUfys+i4yrhYDUNRd7lTSBSoEBAMdlwaOyD8bINnvB0Q8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqqVCFI0EVTTFcx7ncPrtGuatz9wMOfuPs1t/JYY8nkzCuVBqg
-	fYVXeqTN8oCVQRkLhRkQ1uGMFeMhyk6ocdTPBqOuYwRMh3yrcfrk+6JW
-X-Gm-Gg: ASbGncs6Pk1hGAmYVW4o0a+4XTHYhA0DfViAyqCVixSKMq5lXtu2Q1O0mqJhbflsZdD
-	qWCUbUw9gvVY0qQJj2CuohiGFCUc8kGaoXt20LK6VfB7AV6hMfpCxapiHSBm8pkl48dsr4xeDfQ
-	8eHo3csdq4Wj7U7dq0lMA3VOkNxDdDcok7ue68e/GZWS03IUvYPoKzlcXs7k293d6VtnxZnyy5a
-	P1s+aOKdO14g9Th67JdXabWQ6pdCuhO+uzH7axWIoT5bMoTSm6tBEsy/psd5mI8s9ypZL+BQnGU
-	F41/PcKdmVlb8xbASvgwO49eCBPq9x8GJ8MdI+VdFBmh3TH7XC8FusF6nxSfWHdqeB8aHZ8CqIi
-	ZCpDhdk98KxFmk3RGn28Cph2T
-X-Google-Smtp-Source: AGHT+IFnbqnzDpvcF1npAo3gJlRiN0aWJNOZlV40ujMaGftot7QGowUdecTibpSbqF5TWABjiIk+nA==
-X-Received: by 2002:a17:907:3f1b:b0:afe:88ac:ab9 with SMTP id a640c23a62f3a-b302c10a6acmr180708366b.9.1758657655543;
-        Tue, 23 Sep 2025 13:00:55 -0700 (PDT)
-Received: from bhk ([165.50.1.144])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b2ac72dbe92sm672074066b.111.2025.09.23.13.00.53
+        d=1e100.net; s=20230601; t=1758660314; x=1759265114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sipScXl1CFAIZEiqAz6v2zuPdeVOTifZUwgP7G5st/0=;
+        b=kLm8lMhBY96OTAclskT+NXehU4A9koSV+dVQSi2Tk4Z2FBNv/+JO3qBCEVINi0B9c+
+         6ewGbfWYoYP6CbfleHjH3m+VShhp7LzvMwFr18ZOpwojl7J5gpF31M7BDh1NhCv2iUeI
+         HuuyALx+EMZChOnTKX+Y6jqWoA1xxJYPyoqtTWrqdCw89+f6fTVYvpwlAVAKiHTUjC7P
+         n3VwDJTXBS0Hdy9XN4rH6bxrtAouOgIJ/1cv/xNzBLwjZ4nJOrPCdWproZiogtUnLdz0
+         MBO3wpcrB2cGyTi/27nfhpYZQPI+6yWv6MKbVzVT21rWv1a8o3TXZgioLTFxF/drLPl8
+         wvKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUWucWGmDTgtCZqYbkRW+F/RchsfwkX8yjTKk4yZi0ruUMdYFcAOppnBH2KPsw4LPHGkFY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyF6FtAjSC8me7MfWhCokxpPOOkgluX9kt/qwt4QGuYgxtY7aiE
+	Bj6BLlYaXSw6j4DybsddAAojMUWfksZegi7fZGQfnQQJLLcqaLN0bxQ=
+X-Gm-Gg: ASbGnctqv29R+NWDYdpRg/vQmQUU7b868vtsn/rDHvMsz2bzoM9zB4JixskUN9Q901X
+	9tegusckLukDL9QEh6v9k/QeHMvcOyHwL4n1WdayM2OhHUTTUY+jBGirEEQ47p1MzTKRgnKTdHT
+	AodxeIfLTJE9A8eprlB3La6n+SRIdgFlcYeCOieJ39q/cBii6bQuWT2wUnEoFJIcCRc9+FBR1Wn
+	+dfnfUzfFN8WZ92liAScZXZYG/VtxB+xRKThO2Ntjsz2kcQcL2Q/QgymzjTnWvjtzJFpBOqH9dM
+	Jlzt5vlpd8lpp9UyTfKXEwuXN3W5Ue5LjEjSKI0OewAy2nJhz+D/T1XNcSz3hv1GMVd//B3g+QJ
+	Bg2OnKwG5isx9+fgbRAZwL3MdUTJZBPEMzBL6c2p95aqjlSt2oMm4YSuVuKt7GLwO7DGGBw0Mtj
+	0sS0LUKuJSo/TKq/lbH0oGzdL9sKshgRtcHrjaG/RlOxItUek4WLAIcC+cv5vpyQtJprzp4fBQ8
+	39i
+X-Google-Smtp-Source: AGHT+IFlpvsj7lKaK/ZqzoeecXc8ehWZkc0IxVgAN+LI3oeEEkFfcubTmnGuNVbCi3mV+UCdDzJmEg==
+X-Received: by 2002:a17:903:190:b0:277:9193:f2da with SMTP id d9443c01a7336-27cc0dbb137mr49147325ad.5.1758660314194;
+        Tue, 23 Sep 2025 13:45:14 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2698016c098sm166380315ad.33.2025.09.23.13.45.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Sep 2025 13:00:55 -0700 (PDT)
-From: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	donald.hunter@gmail.com,
-	andrew+netdev@lunn.ch,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	matttbe@kernel.org,
-	chuck.lever@oracle.com,
-	jdamato@fastly.com,
-	skhawaja@google.com,
-	dw@davidwei.uk,
-	mkarsten@uwaterloo.ca,
-	yoong.siang.song@intel.com,
-	david.hunter.linux@gmail.com,
-	skhan@linuxfoundation.org
-Cc: horms@kernel.org,
-	sdf@fomichev.me,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
-Subject: [PATCH RFC 4/4] net: veth: Implement RX queue index XDP hint
-Date: Tue, 23 Sep 2025 22:00:15 +0100
-Message-ID: <20250923210026.3870-5-mehdi.benhadjkhelifa@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
+        Tue, 23 Sep 2025 13:45:13 -0700 (PDT)
+Date: Tue, 23 Sep 2025 13:45:13 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, donald.hunter@gmail.com, andrew+netdev@lunn.ch,
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+	john.fastabend@gmail.com, matttbe@kernel.org,
+	chuck.lever@oracle.com, jdamato@fastly.com, skhawaja@google.com,
+	dw@davidwei.uk, mkarsten@uwaterloo.ca, yoong.siang.song@intel.com,
+	david.hunter.linux@gmail.com, skhan@linuxfoundation.org,
+	horms@kernel.org, sdf@fomichev.me, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH RFC 0/4] Add XDP RX queue index metadata via kfuncs
+Message-ID: <aNMG2X2GLDLBIjzB@mini-arch>
 References: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -112,47 +96,34 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
 
-Implement xmo_rx_queue_index callback in veth driver
-to export queue_index for use in eBPF programs.
+On 09/23, Mehdi Ben Hadj Khelifa wrote:
+> ---
+> Mehdi Ben Hadj Khelifa (4):
+>   netlink: specs: Add XDP RX queue index to XDP metadata
+>   net: xdp: Add xmo_rx_queue_index callback
+>   uapi: netdev: Add XDP RX queue index metadata flags
+>   net: veth: Implement RX queue index XDP hint
+> 
+>  Documentation/netlink/specs/netdev.yaml |  5 +++++
+>  drivers/net/veth.c                      | 12 ++++++++++++
+>  include/net/xdp.h                       |  5 +++++
+>  include/uapi/linux/netdev.h             |  3 +++
+>  net/core/xdp.c                          | 15 +++++++++++++++
+>  tools/include/uapi/linux/netdev.h       |  3 +++
+>  6 files changed, 43 insertions(+)
+>  ---
+>  base-commit: 07e27ad16399afcd693be20211b0dfae63e0615f
+>  this is the commit of tag: v6.17-rc7 on the mainline.
+>  This patch series is intended to make a base for setting
+>  queue_index in the xdp_rxq_info struct in bpf/cpumap.c to
+>  the right index. Although that part I still didn't figure
+>  out yet,I m searching for my guidance to do that as well
+>  as for the correctness of the patches in this series.
 
-Signed-off-by: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
----
- drivers/net/veth.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index a3046142cb8e..be76dd292819 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1692,6 +1692,17 @@ static int veth_xdp_rx_vlan_tag(const struct xdp_md *ctx, __be16 *vlan_proto,
- 	return err;
- }
- 
-+static int veth_xdp_rx_queue_index(const struct xdp_md *ctx, u32 *queue_index)
-+{
-+	const struct veth_xdp_buff *_ctx = (void *)ctx;
-+
-+	if (!_ctx->xdp.rxq)
-+		return -ENODATA;
-+
-+	*queue_index = _ctx->xdp.rxq->queue_index;
-+	return 0;
-+}
-+
- static const struct net_device_ops veth_netdev_ops = {
- 	.ndo_init            = veth_dev_init,
- 	.ndo_open            = veth_open,
-@@ -1717,6 +1728,7 @@ static const struct xdp_metadata_ops veth_xdp_metadata_ops = {
- 	.xmo_rx_timestamp		= veth_xdp_rx_timestamp,
- 	.xmo_rx_hash			= veth_xdp_rx_hash,
- 	.xmo_rx_vlan_tag		= veth_xdp_rx_vlan_tag,
-+	.xmo_rx_queue_index		= veth_xdp_rx_queue_index,
- };
- 
- #define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HW_CSUM | \
--- 
-2.51.0
-
+But why do you need a kfunc getter? You can already get rxq index
+via xdp_md rx_queue_index.
 
