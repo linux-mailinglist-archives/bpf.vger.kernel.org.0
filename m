@@ -1,149 +1,120 @@
-Return-Path: <bpf+bounces-69467-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69468-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9496CB97093
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 19:32:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D05F8B97168
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 19:48:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4D79189DDA2
-	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 17:32:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E540918847E7
+	for <lists+bpf@lfdr.de>; Tue, 23 Sep 2025 17:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 297A127F74C;
-	Tue, 23 Sep 2025 17:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DFF62848BA;
+	Tue, 23 Sep 2025 17:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oZUT18DM"
+	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="kaw/iEkp"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F22189;
-	Tue, 23 Sep 2025 17:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5579D189;
+	Tue, 23 Sep 2025 17:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758648743; cv=none; b=PT2VxCxog7M7lzvNm2bR8j4/orlABfzuIaKxfDIfr7in6p4wwc56uRGEwG/R30MMTv1a6bWeF907awc+7pa05703J+9XCOz+VSlvaOPPPfRUC5GjiuPxUxmzX/JAiDAu2BqrrQ2eTgES5oy9dyzNfMVULVvP3LO94afx4ujeyEo=
+	t=1758649681; cv=none; b=BK+SYmUQeLgLnmd6hqZpIdjKVbOtZfeF/YyhQExoqFifme6HZY2wApWNzN/ZD01M4eN68DUZUP5b0sXKh1iAq4NoblyO9iQicTodutdAN80nir9bwx67WE6kQMQqw+cdIYehN/wV6TrYkNotrxteH7TxFAP907aDFb2EqmhS084=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758648743; c=relaxed/simple;
-	bh=qDfwgoffu2EeFB9AZbmHrdtAcXU1sHnw0HMH4EM3IgE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y4J0O4g9No70WL/vUUs4/HOyCwHEk6Xst5rUyagXTpLG2NQYUi//nHh6oETfXsWzzUslFpXyzZaVWGjSB0DYJL9UMJKsdHmVDYE2piaY5HaBeCEghfamvMUvf9qTMlaQek+idv8+6iYWLmzQf109MCPfgKFlNr7F7d5Op7mYoMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oZUT18DM; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=VWa7qC5SSeQMnGbOf5FkOuUwpXg+L6IZkiID9iWP6KM=; b=oZUT18DMWbRT0tC8FhEqRwIDag
-	TuOyaeEpOj8Mvma54Eqh16HkyYOu5VH0B0Idq8L/BB5TRKsekePSU6SnnocOqVe7AqZpy6iiGZxM7
-	pG/4aSragiKLe6fzCIdb2MldnHcEBZDavDHGXJ/JH8sHxJ5tVv0BKex/eckcxKdAZSQHx1Fzr7uFr
-	ZsxwCAu+UpOGgpq1fFEm7Zu7k/70Xgsh2TSqYkJmYK2GYDg4AE7+0KSSgsyEK10ihE6r8vHLosUau
-	nOj9bHuZmO0A0UOk9ay7aKTpOUi/a6EYEjCZyMMAlwNHSlk98sRn6eANg8lIO8brDq/E0+okl32wl
-	BpIkQLRg==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v16sD-00000008XDu-1xhP;
-	Tue, 23 Sep 2025 17:32:17 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 52C4E3001F7; Tue, 23 Sep 2025 19:32:16 +0200 (CEST)
-Date: Tue, 23 Sep 2025 19:32:16 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH 15/34] rcu: Add noinstr-fast
- rcu_read_{,un}lock_tasks_trace() APIs
-Message-ID: <20250923173216.GU3245006@noisy.programming.kicks-ass.net>
-References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
- <20250923142036.112290-15-paulmck@kernel.org>
+	s=arc-20240116; t=1758649681; c=relaxed/simple;
+	bh=0U+qcw47Gb99mmWIilRmZ+BdsLzSaKAFRWUHM7uLbcI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=DUFnaIs3uBrLzkZft+CzpGincdHuUlBaYBrCIhvOHuimnHL1uB+2ZfTQJLClGFD8gifNzxsxjfU6ZV+tV2xjgp3S8T7SjmMj3GTUfIiJbVIhPS34jX7pvNMkNSVhTBLPVr5+LQifVkqEscJ/wKSmhWxP/keb/N14I+PXX5xFX/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=kaw/iEkp; arc=none smtp.client-ip=80.241.56.161
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4cWSB32zhjz9tN3;
+	Tue, 23 Sep 2025 19:47:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
+	t=1758649675;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VFyFey55MDpnI+OOuv4n39LgjuIXGj/u0Ei1n9svAKM=;
+	b=kaw/iEkpfdJt9kjnA4wVXjnQ5PPji9vfmo+aQ9t2DtbiDMrvAzwb421BF4YcZNRG1bHaIF
+	q2qO0LWVnpFAMLYhKeuitNfXSh9/0VC1IUQCbCxr762uqkNX56N0wVFc87/2bki2BVOjnd
+	OTUVWvoIGoWB+BmUhI8VK+Fr3zNkXGUoJnJsQvHrS4VvpSeJ7IgTMejWWShFItshoVP8QZ
+	xbv2C+bApilKXtWZknRU7pfECgd1Jgq2+g/2ZZgFDFrJpNt/ePhlGn4qN6ENVhvoHrwj/U
+	ShJRcnemXYV4AbMcZ64zycXBAKKltcjKRnhK6yYpviNe66OuG1jlj2+ENa1JWg==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=none;
+	spf=pass (outgoing_mbo_mout: domain of listout@listout.xyz designates 2001:67c:2050:b231:465::2 as permitted sender) smtp.mailfrom=listout@listout.xyz
+From: Brahmajit Das <listout@listout.xyz>
+To: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	song@kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: [PATCH v2] bpf: fix NULL pointer dereference in print_reg_state()
+Date: Tue, 23 Sep 2025 23:17:38 +0530
+Message-ID: <20250923174738.1713751-1-listout@listout.xyz>
+In-Reply-To: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
+References: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250923142036.112290-15-paulmck@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4cWSB32zhjz9tN3
 
-On Tue, Sep 23, 2025 at 07:20:17AM -0700, Paul E. McKenney wrote:
-> When expressing RCU Tasks Trace in terms of SRCU-fast, it was
-> necessary to keep a nesting count and per-CPU srcu_ctr structure
-> pointer in the task_struct structure, which is slow to access.
-> But an alternative is to instead make rcu_read_lock_tasks_trace() and
-> rcu_read_unlock_tasks_trace(), which match the underlying SRCU-fast
-> semantics, avoiding the task_struct accesses.
-> 
-> When all callers have switched to the new API, the previous
-> rcu_read_lock_trace() and rcu_read_unlock_trace() APIs will be removed.
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: <bpf@vger.kernel.org>
-> ---
->  include/linux/rcupdate_trace.h | 37 ++++++++++++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
-> 
-> diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-> index 0bd47f12ecd17b..b87151e6b23881 100644
-> --- a/include/linux/rcupdate_trace.h
-> +++ b/include/linux/rcupdate_trace.h
-> @@ -34,6 +34,43 @@ static inline int rcu_read_lock_trace_held(void)
->  
->  #ifdef CONFIG_TASKS_TRACE_RCU
->  
-> +/**
-> + * rcu_read_lock_tasks_trace - mark beginning of RCU-trace read-side critical section
-> + *
-> + * When synchronize_rcu_tasks_trace() is invoked by one task, then that
-> + * task is guaranteed to block until all other tasks exit their read-side
-> + * critical sections.  Similarly, if call_rcu_trace() is invoked on one
-> + * task while other tasks are within RCU read-side critical sections,
-> + * invocation of the corresponding RCU callback is deferred until after
-> + * the all the other tasks exit their critical sections.
-> + *
-> + * For more details, please see the documentation for srcu_read_lock_fast().
-> + */
-> +static inline struct srcu_ctr __percpu *rcu_read_lock_tasks_trace(void)
-> +{
-> +	struct srcu_ctr __percpu *ret = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-> +
-> +	if (IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
-> +		smp_mb();
+Syzkaller reported a general protection fault due to a NULL pointer
+dereference in print_reg_state() when accessing reg->map_ptr without
+checking if it is NULL.
 
-I am somewhat confused by the relation between noinstr and smp_mb()
-here. Subject mentions is, but Changelog is awfully silent again.
+The existing code assumes reg->map_ptr is always valid before
+dereferencing reg->map_ptr->name, reg->map_ptr->key_size, and
+reg->map_ptr->value_size.
 
-Furthermore I note that this is a positive while unlock is a negative
-relation between the two. Which adds even more confusion.
+Fix this by adding explicit NULL checks before accessing reg->map_ptr
+and its members. This prevents crashes when reg->map_ptr is NULL,
+improving the robustness of the BPF verifier's verbose logging.
 
-> +	return ret;
-> +}
-> +
-> +/**
-> + * rcu_read_unlock_tasks_trace - mark end of RCU-trace read-side critical section
-> + * @scp: return value from corresponding rcu_read_lock_tasks_trace().
-> + *
-> + * Pairs with the preceding call to rcu_read_lock_tasks_trace() that
-> + * returned the value passed in via scp.
-> + *
-> + * For more details, please see the documentation for rcu_read_unlock().
-> + */
-> +static inline void rcu_read_unlock_tasks_trace(struct srcu_ctr __percpu *scp)
-> +{
-> +	if (!IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR))
-> +		smp_mb();
-> +	srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
-> +}
-> +
->  /**
->   * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
->   *
-> -- 
-> 2.40.1
-> 
+Reported-by: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com
+Signed-off-by: Brahmajit Das <listout@listout.xyz>
+---
+ kernel/bpf/log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
+index f50533169cc3..5ffb8d778b92 100644
+--- a/kernel/bpf/log.c
++++ b/kernel/bpf/log.c
+@@ -704,7 +704,7 @@ static void print_reg_state(struct bpf_verifier_env *env,
+ 		verbose_a("ref_obj_id=%d", reg->ref_obj_id);
+ 	if (type_is_non_owning_ref(reg->type))
+ 		verbose_a("%s", "non_own_ref");
+-	if (type_is_map_ptr(t)) {
++	if (type_is_map_ptr(t) && reg->map_ptr) {
+ 		if (reg->map_ptr->name[0])
+ 			verbose_a("map=%s", reg->map_ptr->name);
+ 		verbose_a("ks=%d,vs=%d",
+-- 
+2.51.0
+
 
