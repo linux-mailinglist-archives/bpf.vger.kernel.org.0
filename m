@@ -1,206 +1,240 @@
-Return-Path: <bpf+bounces-69640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE943B9CB5F
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 01:47:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64F18B9CB7D
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 01:51:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F8FF7ABD61
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 23:45:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CC6819C6BE7
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 23:52:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73C70280339;
-	Wed, 24 Sep 2025 23:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9427429BD83;
+	Wed, 24 Sep 2025 23:51:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e5F3Idm2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GYb1xXtm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF60611E
-	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 23:47:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D33E22422E
+	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 23:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758757646; cv=none; b=LiWD5ID/uDwTjx4o0h5DcV2oDuz5nb4zFJJQB/tiZNA7J7o+Oqgo5jCAxBlyJ9XgXYgQB0stVbZDwozY3Pprv5W/EbPIebYCsvti/O+4cXkyCvjSkxLJOPxwn5p/c9lJar63okk1vo1Wn1BVcbEHcpC/OmhxsSZVoa3DoQFSdac=
+	t=1758757902; cv=none; b=PsZXUwrn+yQlaJLwZzxR/wyD4iuoZxoSdUux29je6JVxZvkQEiS2PzI1z8c1r+h7QCh8cgYqXbUcCP7y4Yvwzl0QVwO6wUyONx4iv1JbFVqfQUztzuU+5hTs0mZamkNinztGTdvBxdRQK90opMLzO+rddF05IgdzziGTv8RUA/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758757646; c=relaxed/simple;
-	bh=cfoUnd2M+2T9ElOvPsxUJZH8+vQVuyjSGb+BHYuvsBc=;
+	s=arc-20240116; t=1758757902; c=relaxed/simple;
+	bh=V+e6NgtRg4CTyrBn62z+8s5V2ApNRZeSiEjo1YkIuws=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MWcqSBNNMcZ1eBEJ9ofm0ykc++HNHRv3GLOCwmODRneb5+kgBG45QPSUvysZZGIJDcGv2/LRESLAI4Yhx9wm3KssIXnAz97G7a/5ZyMLF5lTbplVtHiiYErqQ5MAXss0SICTlzD2aJi3w+/JIN/57vG2tywMDQHFn7G793TR6Zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e5F3Idm2; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=phJaFG/DytbEcF0vF+sebieZ53d/66x9I6YgTZVdjIAby+5hguMLVGWNGNWZT/yGMacK8zMw1LVxXOPVaBofTNawGn9ObjSRDXS7gELb72iPa6Dq2lGJt71Cdvl0IQhpl0rbA7tKW5d93yvvq4u9tNqub4+SO/13SxjFR45z/OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GYb1xXtm; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-323266cdf64so391820a91.0
-        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 16:47:24 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-33226dc4fc9so467625a91.1
+        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 16:51:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758757644; x=1759362444; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758757900; x=1759362700; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/rIxgYFslFdTriOpon5q7I9jk53MQAFrPHSDtDrAiQQ=;
-        b=e5F3Idm2xt3IlieBT4xPxUJQCXbMGM4bbrO1AuN3DigIR8UXtEH6neH2JMRp5UsQEM
-         BFx8CocVucxeWD9PnWNeB83Ep3WpZ2T4hBIfaZbktKAXAtL2BD404ICO+wsWdjPXHrAS
-         +tLKhzrkqgKPYM+9IB9yN+skry/q2H2UAWTO09yPWxZ9uourjnbUPbV6/wO4LIWmQjDs
-         DnrAlOH0W8RGXBubzUw9Gi9/+XPQM7F1nYv06/bCGr6y0Psvbu+VkKmWWHaR1FS+Wm/r
-         DZxOICo8Qn2j/k2hL5mvL3KQgUgALXagMHwuZtodzxbl9W3Nge5Xo7zrjfhNoGMIdrru
-         7bFQ==
+        bh=3qZtM7pCTlUkcsOWvT5z6LUI0aFsIPK03lrsjPZe2kA=;
+        b=GYb1xXtmvl9O47kiLUnTJOZz2+m0vQuz5ThhxoElZaeJxBt1vw8vV4jdsP1sS3A62X
+         KDSh2DT9IwMvK2StGeVSZrCOnDKHON0mJvbKIsWigMsKdtFloNGykhM9eKzVp9Gt7emS
+         nNsa8UgGasNiI/FeS18TlXeOYzGBBHBLBi7Mzo60FzDYwwkmG1CLattbt4Hb2q0ZqmUP
+         Zh1EVJ1ybW6uJAAWTdx6RqsnihIeOBUddjSvlGX3GybZTk4VYdwNrzTGVS8A9pbOjCGn
+         3QR7MjFN88uBJDUN46CzW1oIMkhnJNvdaO5CE4UXKEl2qtK9lR0ChLQzl25LYqhiz/Yg
+         EJBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758757644; x=1759362444;
+        d=1e100.net; s=20230601; t=1758757900; x=1759362700;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/rIxgYFslFdTriOpon5q7I9jk53MQAFrPHSDtDrAiQQ=;
-        b=ozzyDmoGahxwaOdbsoFS4B+dU0gLJZ+tOkm0wvpa9wdxLSSTQ1OQaYIN9vIjbMrd0a
-         +whFsS5qL6u9lCboOcvLInijyJG3+4cw0aF3b9uLrjabzMnIS2Wxdqlpg4om9MkZDght
-         qHFj6wcVNbhbppMoucdPI16I8LdcxqIjT0YsZYYoZL+pGV5wrhCRhbg5kwrqnqllBHhE
-         b9cNKcQ83495iiQZn7YAInDg1Qp7N3cBWEm64ysdHOdnxqoMrJ8U3wubUEspzAP+s7p8
-         ig4x+WRM2CywJ5t0QzODkZ91hkP54spJfBSuWofsniXVV//qePclAikcv+aJLO/L+ev/
-         muSg==
-X-Gm-Message-State: AOJu0YwwYhCDkKyou1sPxPUZoi8o5erw9NvTWO2tAVle9OZ0CeOf4wlb
-	9s9RgAmD8qEiRflL9qUFJxHsWl/8IZ9euWeYUeOxZlxXakmG3/xwSR/IGZc1oJqTh2G+mMTZi9n
-	GZIyEZjaNjPtIZ5pmdm/tiLhs2ec/hAc=
-X-Gm-Gg: ASbGncuuWu24jh1g7HRPTJc3z+PA/rIErSf+uDNiouq3gGAX+kcpO+QfE6siIYh0QHS
-	50TjGWLd9wwhxHnZ3mxKREDN3YhhI5i22C77rK6/BUQpVwEyXIbPt5GA4VnNIKdGQvfKJWVPXwz
-	uZtJgSNVqEOSLIVY+ocsLInLNM0tssB74CaYfe7zVyv3Xw6oI4txvSArbOn5dmbIjcVBtQvh4Q9
-	SYNFfllOg7pyc/ilM8zi8LDjNnmUcHkpA==
-X-Google-Smtp-Source: AGHT+IH2puZzv8WCT8RZQnzg+yAGQBgLAPZtxf2xYI0qRwRH3ZIDoMVJWWs+JDzXzjcOYA4y5w9tP9pjnb9Wk9rOsKM=
-X-Received: by 2002:a17:90b:1b4b:b0:32e:dd8c:dd18 with SMTP id
- 98e67ed59e1d1-3342a2f9055mr1465378a91.17.1758757643534; Wed, 24 Sep 2025
- 16:47:23 -0700 (PDT)
+        bh=3qZtM7pCTlUkcsOWvT5z6LUI0aFsIPK03lrsjPZe2kA=;
+        b=JR2U1gj3L8pGgRKwmFQGimEWIK91fgdxyn7sC2GjJ1OAVZfwrOedIcKmem6F8mJBDu
+         K69/+3NjdVWG4dtm+maFhHQANmroglFZY/NM38gekzbkqYJms2HsfKcIoeMShShjWff7
+         rmRKVO7HjAF5FUvxw9p9S70hJgk1OBfbw2BM1wXUvdEla/B9paMHBADwRi3DrIjle9eW
+         d1FgrD4GfcbNrJ4INvv51Kn73rm7MsSDxwsyrxQrfV5/iG+0E4HnldWgxL1xfTvJI51C
+         07nRRdkAtpa8MWlCKiv0nxGShG2v/FChrQEcsCvrKRMzBL64MnF3O8ZsW9A9jjst8RcE
+         g9TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXJXW0vYOUQHdri8ZM4cRi2F5G+nz2LdJPT1SDNwq8iXwAg7yInJsq8iFUC/zv4NGU0Y/Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyU13ESb6E38i9AfldW/4JCmOzUyGZ7upgVvh0/Xw4/sXg3amgJ
+	7Q98zYbtPn7WY7JsBfqmpljYrJRGXaBlKYjtneKy+ggglimhxPOstimaWppAfsERghLtW5LfVAX
+	ooX2N0T4JlIWbL6cus47olVUOxUcPQNk=
+X-Gm-Gg: ASbGncvN8gJn5dzMk22BVQEjPGb//Ukv9+Fkf+kBepnpbIrtx5SjHT7nKYsulbQ8jO8
+	310PZYOzx6FNBWLXCP3qomrjv4B/PSkVifdTEU9vVIt+B9u9bMyVuR3WkxFT7UlwdoVarDjici3
+	zvvCjDU2RMaXLqw82tphs+6hVIFRW09newijBNznwNiVALLtWunQ3M+25GrxNRzcD3pdDZMPAHQ
+	Hm67wTqTjSTapfBNR5AbcA=
+X-Google-Smtp-Source: AGHT+IEuvoGh6upSehZjqtCEOtXpeSMCsy4dC04ky2MHe0YehOImO+HBp78e6xe42TwvL3GACsG7jOrXHXRW9We/7TU=
+X-Received: by 2002:a17:90b:4b4c:b0:32e:3830:65e1 with SMTP id
+ 98e67ed59e1d1-3342a2f01e3mr1561148a91.33.1758757899836; Wed, 24 Sep 2025
+ 16:51:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910162733.82534-1-leon.hwang@linux.dev> <20250910162733.82534-5-leon.hwang@linux.dev>
- <CAEf4BzZJ3fEd6EaBV5M8QX=bTtL7bx0OM1E3o5HAgCemfuFQEQ@mail.gmail.com>
- <40840553-6c0a-494d-8429-863c4a6608f9@linux.dev> <CAEf4BzYTse1=pAYcM6y_vKbm74ZDtSu2Daj3sLewvKz16WF9NA@mail.gmail.com>
- <DCZEVCZLG1IW.2MPQVMF4L3D91@linux.dev> <CAEf4BzY8zPBbmjP6ooihyeqeJGdfgdh9KiW3XQGqv1qYWcefXg@mail.gmail.com>
- <1229077e-ad10-4e38-8312-936bf8bc5222@linux.dev>
-In-Reply-To: <1229077e-ad10-4e38-8312-936bf8bc5222@linux.dev>
+References: <20250918080342.25041-1-alibuda@linux.alibaba.com>
+ <20250918080342.25041-4-alibuda@linux.alibaba.com> <CAEf4BzY5oowUpq2x3Uz+TNi=8GJgc1FDzS-u5UqZwNXvkWtSEw@mail.gmail.com>
+ <20250924080634.GA14633@j66a10360.sqa.eu95>
+In-Reply-To: <20250924080634.GA14633@j66a10360.sqa.eu95>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 24 Sep 2025 16:47:09 -0700
-X-Gm-Features: AS18NWAQ0wcOiByLx_6Irttgf6bSx1KhybEGH2UePnpZ49fpnqeuzC-EGcXNCnw
-Message-ID: <CAEf4BzY8JB5n=OQUMisBRWeqTTWWnGuo8AtbxzyZdqA2D72T0w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 4/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
- flags support for percpu_hash and lru_percpu_hash maps
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, jolsa@kernel.org, yonghong.song@linux.dev, 
-	song@kernel.org, eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net, 
-	kernel-patches-bot@fb.com
+Date: Wed, 24 Sep 2025 16:51:24 -0700
+X-Gm-Features: AS18NWCjKLKT8_-PtXMG6XiZlDV75Kg21s5qtPwsoXf4y_w3GqcRtwgvOcVLMeQ
+Message-ID: <CAEf4Bza=qH6CLULLoVy1nKUicDG1zi4rW-sXU8fhgU6V+E8+kg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] libbpf: fix error when st-prefix_ops and
+ ops from differ btf
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org, sdf@google.com, 
+	haoluo@google.com, yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, jolsa@kernel.org, mjambigi@linux.ibm.com, 
+	wenjia@linux.ibm.com, wintera@linux.ibm.com, dust.li@linux.alibaba.com, 
+	tonylu@linux.alibaba.com, guwen@linux.alibaba.com, bpf@vger.kernel.org, 
+	davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, 
+	sidraya@linux.ibm.com, jaka@linux.ibm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 22, 2025 at 7:45=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
+On Wed, Sep 24, 2025 at 1:06=E2=80=AFAM D. Wythe <alibuda@linux.alibaba.com=
+> wrote:
 >
->
->
-> On 23/9/25 00:13, Andrii Nakryiko wrote:
-> > On Mon, Sep 22, 2025 at 7:50=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
-v> wrote:
-> >>
-> >> On Sat Sep 20, 2025 at 6:31 AM +08, Andrii Nakryiko wrote:
-> >>> On Thu, Sep 18, 2025 at 10:25=E2=80=AFPM Leon Hwang <leon.hwang@linux=
-.dev> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>>>> @@ -1724,7 +1742,7 @@ __htab_map_lookup_and_delete_batch(struct bp=
-f_map *map,
-> >>>>>>         value_size =3D htab->map.value_size;
-> >>>>>>         size =3D round_up(value_size, 8);
-> >>>>>>         if (is_percpu)
-> >>>>>> -               value_size =3D size * num_possible_cpus();
-> >>>>>> +               value_size =3D (elem_map_flags & BPF_F_CPU) ? size=
- : size * num_possible_cpus();
-> >>>>>
-> >>>>> if (is_percpu && !(elem_map_flags & BPF_F_CPU))
-> >>>>>     value_size =3D size * num_possible_cpus();
-> >>>>>
-> >>>>> ?
-> >>>>>
-> >>>>
-> >>>> After looking at it again, I=E2=80=99d like to keep my approach.
-> >>>>
-> >>>> When 'elem_map_flags & BPF_F_CPU' is set, 'value_size' has to be
-> >>>> assigned to 'size' ('round_up(value_size, 8)') instead of keeping
-> >>>> 'htab->map.value_size'.
-> >>>>
-> >>>
-> >>> isn't that what will happen here as well? There is
-> >>>
-> >>> size =3D round_up(value_size, 8);
-> >>>
-> >>> right before that if
-> >>>
-> >>
-> >> As for percpu maps, both 'size' and 'value_size' need to be 8-byte
-> >> aligned here, because 'map.value_size' itself is not guarenteed to be
-> >> aligned.
-> >>
-> >> In 'htab_map_alloc_check()', there is no alignment check for percpu
-> >> maps.
-> >>
-> >> So 'map.value_size' can be unaligned.
-> >>
-> >> Let's look at how 'value_size' is used:
-> >>
-> >> values =3D kvmalloc_array(value_size, bucket_size, GFP_USER | __GFP_NO=
-WARN);
-> >> dst_val =3D values;
-> >> hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
-> >>         if (is_percpu) {
-> >>                 if (elem_map_flags & BPF_F_CPU) {
-> >>                         copy_map_value_long(&htab->map, dst_val, per_c=
-pu_ptr(pptr, cpu));
-> >>                 }
-> >>         }
-> >>         dst_val +=3D value_size;
-> >> }
-> >> copy_to_user(uvalues + total * value_size, values,
-> >>              value_size * bucket_cnt)
-> >>
-> >> Here, 'value_size' determines how values are laid out and copied.
-> >>
+> On Fri, Sep 19, 2025 at 03:22:41PM -0700, Andrii Nakryiko wrote:
+> > On Thu, Sep 18, 2025 at 1:03=E2=80=AFAM D. Wythe <alibuda@linux.alibaba=
+.com> wrote:
+> > >
+> > >
+> > > At present, cases 0, 1, and 3 can be correctly identified, because
+> > > st_ops_xxx_ops is searched from the same btf with xxx_ops. In order t=
+o
+> > > handle case 2 correctly without affecting other cases, we cannot simp=
+ly
+> > > change the search method for st_ops_xxx_ops from find_btf_by_prefix_k=
+ind()
+> > > to find_ksym_btf_id(), because in this way, case 1 will not be
+> > > recognized anymore.
+> > >
+> > > To address the issue, we always look for st_ops_xxx_ops first,
+> > > figure out the btf, and then look for xxx_ops with the very btf to av=
+oid
 > >
-> > So in my mind (and maybe it's wrong, tell me), BPF_F_CPU turns a
-> > per-CPU map lookup into an effectively non-per-cpu one. So I'm not
-> > sure we need to do 8 byte alignment of value/key sizes when BPF_F_CPU
-> > is specified.
+> > What's "very btf"? Commit message would benefit from a little bit of
+> > proof-reading, if you can. It's a bit hard to follow, even if it's
+> > more or less clear at the end what problem you are trying to solve.
 > >
-> > But if people would like to keep 8 byte alignment anyways for
-> > BPF_F_CPU, that's fine too, I guess.
+> > Also, I'd suggest to send this fix as a separate patch and not block
+> > it on the overall patch set, which probably will take longer. This fix
+> > is independent, so we can land it much faster.
 > >
 >
-> 'value_size' should be 8-byte aligned here.
+> Thanks a lot for your suggestion. I'll improve the commit message.
 >
-> For example, if 'value_size' is *1* when BPF_F_CPU is specified:
->
-> values =3D kvmalloc_array();  /* 5 bytes (value_size * bucket_size) memor=
-y */
-> copy_map_value_long();      /* copies 8 bytes, writing past the
->                                allocated 5 bytes of memory */
->
-> To stay consistent with 'copy_map_value_long()', 'value_size' itself
-> needs to be 8-byte aligned.
->
-> That leaves us with two options:
->
-> 1. Keep 'value_size' unaligned, switch 'copy_map_value_long()' to
->    'copy_map_value()'.
+> It's fine to send this patch separately, I'm concerned it won't be
+> verifiable in isolation without the other patches. But if you feel
+> it's okay to proceed, I'm happy to do so.
 
-Yes, this. As I said, I think BPF_F_CPU makes lookup effectively
-non-per-CPU, so we should handle that consistently with no-per-CPU map
-lookups.
+I think the issue is pretty clear, I don't mind fixing it outside of
+the patch set introducing this mixed vmlinux vs module BTF. So yes,
+please send a patch (unless you already did, as I'm catching up on
+emails)
 
-> 2. Require 'value_size' to be 8-byte aligned.
 >
-> WDYT?
->
-> Thanks,
-> Leon
+> > > such issue.
+> > >
+> > > Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
+> > > Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c | 37 ++++++++++++++++++-------------------
+> > >  1 file changed, 18 insertions(+), 19 deletions(-)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index fe4fc5438678..50ca13833511 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -1013,35 +1013,34 @@ find_struct_ops_kern_types(struct bpf_object =
+*obj, const char *tname_raw,
+> > >         const struct btf_member *kern_data_member;
+> > >         struct btf *btf =3D NULL;
+> > >         __s32 kern_vtype_id, kern_type_id;
+> > > -       char tname[256];
+> > > +       char tname[256], stname[256];
+> > >         __u32 i;
+> > >
+> > >         snprintf(tname, sizeof(tname), "%.*s",
+> > >                  (int)bpf_core_essential_name_len(tname_raw), tname_r=
+aw);
+> > >
+> > > -       kern_type_id =3D find_ksym_btf_id(obj, tname, BTF_KIND_STRUCT=
+,
+> > > -                                       &btf, mod_btf);
+> > > -       if (kern_type_id < 0) {
+> > > -               pr_warn("struct_ops init_kern: struct %s is not found=
+ in kernel BTF\n",
+> > > -                       tname);
+> > > -               return kern_type_id;
+> > > -       }
+> > > -       kern_type =3D btf__type_by_id(btf, kern_type_id);
+> > > +       snprintf(stname, sizeof(stname), "%s%.*s", STRUCT_OPS_VALUE_P=
+REFIX,
+> > > +                (int)strlen(tname), tname);
+> > >
+> > > -       /* Find the corresponding "map_value" type that will be used
+> > > -        * in map_update(BPF_MAP_TYPE_STRUCT_OPS).  For example,
+> > > -        * find "struct bpf_struct_ops_tcp_congestion_ops" from the
+> > > -        * btf_vmlinux.
+> > > +       /* Look for the corresponding "map_value" type that will be u=
+sed
+> > > +        * in map_update(BPF_MAP_TYPE_STRUCT_OPS) first, figure out t=
+he btf
+> > > +        * and the mod_btf.
+> > > +        * For example, find "struct bpf_struct_ops_tcp_congestion_op=
+s".
+> > >          */
+> > > -       kern_vtype_id =3D find_btf_by_prefix_kind(btf, STRUCT_OPS_VAL=
+UE_PREFIX,
+> > > -                                               tname, BTF_KIND_STRUC=
+T);
+> > > +       kern_vtype_id =3D find_ksym_btf_id(obj, stname, BTF_KIND_STRU=
+CT, &btf, mod_btf);
+> > >         if (kern_vtype_id < 0) {
+> > > -               pr_warn("struct_ops init_kern: struct %s%s is not fou=
+nd in kernel BTF\n",
+> > > -                       STRUCT_OPS_VALUE_PREFIX, tname);
+> > > +               pr_warn("struct_ops init_kern: struct %s is not found=
+ in kernel BTF\n", stname);
+> > >                 return kern_vtype_id;
+> > >         }
+> > >         kern_vtype =3D btf__type_by_id(btf, kern_vtype_id);
+> > >
+> > > +       kern_type_id =3D btf__find_by_name_kind(btf, tname, BTF_KIND_=
+STRUCT);
+> > > +       if (kern_type_id < 0) {
+> > > +               pr_warn("struct_ops init_kern: struct %s is not found=
+ in kernel BTF\n", tname);
+> > > +               return kern_type_id;
+> > > +       }
+> > > +       kern_type =3D btf__type_by_id(btf, kern_type_id);
+> > > +
+> > >         /* Find "struct tcp_congestion_ops" from
+> > >          * struct bpf_struct_ops_tcp_congestion_ops {
+> > >          *      [ ... ]
+> > > @@ -1054,8 +1053,8 @@ find_struct_ops_kern_types(struct bpf_object *o=
+bj, const char *tname_raw,
+> > >                         break;
+> > >         }
+> > >         if (i =3D=3D btf_vlen(kern_vtype)) {
+> > > -               pr_warn("struct_ops init_kern: struct %s data is not =
+found in struct %s%s\n",
+> > > -                       tname, STRUCT_OPS_VALUE_PREFIX, tname);
+> > > +               pr_warn("struct_ops init_kern: struct %s data is not =
+found in struct %s\n",
+> > > +                       tname, stname);
+> > >                 return -EINVAL;
+> > >         }
+> > >
+> > > --
+> > > 2.45.0
+> > >
 
