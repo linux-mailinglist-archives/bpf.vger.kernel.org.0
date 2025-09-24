@@ -1,149 +1,158 @@
-Return-Path: <bpf+bounces-69577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69578-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3388AB9AA7F
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 17:31:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BB5B9AB3D
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 17:37:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AB3E3A3B72
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 15:30:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E84718841EF
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 15:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC4C30F941;
-	Wed, 24 Sep 2025 15:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ABF33115A0;
+	Wed, 24 Sep 2025 15:34:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="e5akja/T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rHzkX9St"
 X-Original-To: bpf@vger.kernel.org
-Received: from fra-out-003.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-003.esa.eu-central-1.outbound.mail-perimeter.amazon.com [3.72.182.33])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88189307AFA;
-	Wed, 24 Sep 2025 15:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.72.182.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC96C307AFA;
+	Wed, 24 Sep 2025 15:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758727759; cv=none; b=iYIUcMVcmqu7iveiWDNMvT6bW8+AhJ4sN1T9b0XYZaVVKQYl0MKPXHt4hkd4jtfGbNIDFqNznrfne17ckjI1D/n+oim9SEYhBLjgA0qoz2SS6dF60JW97k8NoGu5qJ2IUwNdY30bmuMBVSPPZOHBkvuiuSq4mubaOLV2v6u2M04=
+	t=1758728057; cv=none; b=IX2aF39L7T4MnsfQijM/cED4rteJIZvoMbrjLIWjchdpzubFjS6ZZKiBWmEK/OVFJDFcbkI8i1IWdPDm+x6J5IF7jIcHqCI5fR8FFrR62ofnj7IKoeleh0oFJ/zXScrFirXHxRFHSZbXAniYEHzA7sUrN+r658/9FaN5hs2VwJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758727759; c=relaxed/simple;
-	bh=xYwtDKmp/Zq0jOTCpG7R8cZcsQAosKrhHZ6MWIe4xuU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=NZWsJ6AKiLfKynqDA68uH8Zhj0ssVeGzKnUxSgnCD51hWKvsx+pm5J7H5b1SNzJi0512QxUpBne2IsKqrJAoTmgRwm0DREpzQ4Kk6oQKwJNBvdlIwEAyHYxHxMIPt5YMk+yBgAi47XzMcFs337vvaGvjOC2Lctnn7UVLf7Z2iRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (2048-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=e5akja/T; arc=none smtp.client-ip=3.72.182.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
-  s=amazoncorp2; t=1758727757; x=1790263757;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=xYwtDKmp/Zq0jOTCpG7R8cZcsQAosKrhHZ6MWIe4xuU=;
-  b=e5akja/TG+PPyD+foNY0somRRp9ihxaoJ85iYC5Q+8VPXAfBv6U+yWqI
-   kGnIHm2WeCOodMOuWHTWxX/6ztHBr80Vsgr/ecFq3qTF7OYB9vU71L4yS
-   E+S7hXDeynLF6XZJqqcRq/G4rriME+iK8s9gMHrJJNe+9Hc/wx/svd/ow
-   /B3/xNoPo3M+EoGWBw+xySyqbiFI/0c9RRKbrlNfxYUK5fv7Gl8tQvOWF
-   vPnqXiKLTzqNLO6B646obWPaj20Q8KE634lajOPoro7tXggQkI/odjD1D
-   cdp1PDfso91LJztHYMhKPbtcyfQxIm5xd+N8W3ytq3AriWNMlyVdgJkrG
-   g==;
-X-CSE-ConnectionGUID: H1Nwja16SO+mJPPrYIM6Uw==
-X-CSE-MsgGUID: 6BUVeHZ3T1iQWbqFFphHSA==
-X-IronPort-AV: E=Sophos;i="6.18,290,1751241600"; 
-   d="scan'208";a="2615965"
-Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
-  by internal-fra-out-003.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2025 15:29:14 +0000
-Received: from EX19MTAEUB002.ant.amazon.com [54.240.197.232:7826]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.45.166:2525] with esmtp (Farcaster)
- id f979d79c-010c-49b7-9e97-d5be296685f6; Wed, 24 Sep 2025 15:29:14 +0000 (UTC)
-X-Farcaster-Flow-ID: f979d79c-010c-49b7-9e97-d5be296685f6
-Received: from EX19D015EUB004.ant.amazon.com (10.252.51.13) by
- EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Wed, 24 Sep 2025 15:29:13 +0000
-Received: from EX19D015EUB004.ant.amazon.com (10.252.51.13) by
- EX19D015EUB004.ant.amazon.com (10.252.51.13) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Wed, 24 Sep 2025 15:29:13 +0000
-Received: from EX19D015EUB004.ant.amazon.com ([fe80::2dc9:7aa9:9cd3:fc8a]) by
- EX19D015EUB004.ant.amazon.com ([fe80::2dc9:7aa9:9cd3:fc8a%3]) with mapi id
- 15.02.2562.020; Wed, 24 Sep 2025 15:29:13 +0000
-From: "Roy, Patrick" <roypat@amazon.co.uk>
-To: "patrick.roy@campus.lmu.de" <patrick.roy@campus.lmu.de>
-CC: "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-	"ackerleytng@google.com" <ackerleytng@google.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "andrii@kernel.org"
-	<andrii@kernel.org>, "ast@kernel.org" <ast@kernel.org>, "bp@alien8.de"
-	<bp@alien8.de>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>, "corbet@lwn.net"
-	<corbet@lwn.net>, "daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"david@redhat.com" <david@redhat.com>, "derekmn@amazon.co.uk"
-	<derekmn@amazon.co.uk>, "eddyz87@gmail.com" <eddyz87@gmail.com>,
-	"haoluo@google.com" <haoluo@google.com>, "hpa@zytor.com" <hpa@zytor.com>,
-	"Thomson, Jack" <jackabt@amazon.co.uk>, "jannh@google.com"
-	<jannh@google.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "jhubbard@nvidia.com"
-	<jhubbard@nvidia.com>, "joey.gouly@arm.com" <joey.gouly@arm.com>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "jolsa@kernel.org"
-	<jolsa@kernel.org>, "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>, "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-doc@vger.kernel.org"
-	<linux-doc@vger.kernel.org>, "linux-fsdevel@vger.kernel.org"
-	<linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>, "luto@kernel.org"
-	<luto@kernel.org>, "martin.lau@linux.dev" <martin.lau@linux.dev>,
-	"maz@kernel.org" <maz@kernel.org>, "mhocko@suse.com" <mhocko@suse.com>,
-	"mingo@redhat.com" <mingo@redhat.com>, "oliver.upton@linux.dev"
-	<oliver.upton@linux.dev>, "pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"peterx@redhat.com" <peterx@redhat.com>, "peterz@infradead.org"
-	<peterz@infradead.org>, "pfalcato@suse.de" <pfalcato@suse.de>, "Roy, Patrick"
-	<roypat@amazon.co.uk>, "rppt@kernel.org" <rppt@kernel.org>, "sdf@fomichev.me"
-	<sdf@fomichev.me>, "seanjc@google.com" <seanjc@google.com>,
-	"shuah@kernel.org" <shuah@kernel.org>, "song@kernel.org" <song@kernel.org>,
-	"surenb@google.com" <surenb@google.com>, "suzuki.poulose@arm.com"
-	<suzuki.poulose@arm.com>, "tabba@google.com" <tabba@google.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "vbabka@suse.cz" <vbabka@suse.cz>,
-	"will@kernel.org" <will@kernel.org>, "willy@infradead.org"
-	<willy@infradead.org>, "x86@kernel.org" <x86@kernel.org>, "Cali, Marco"
-	<xmarcalx@amazon.co.uk>, "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>
-Subject: Re: [PATCH v7 00/12] Direct Map Removal Support for guest_memfd
-Thread-Topic: [PATCH v7 00/12] Direct Map Removal Support for guest_memfd
-Thread-Index: AQHcLWf7p6lrgf1yqEyGzQxUogXjVw==
-Date: Wed, 24 Sep 2025 15:29:13 +0000
-Message-ID: <20250924152912.11563-1-roypat@amazon.co.uk>
-References: <20250924151101.2225820-1-patrick.roy@campus.lmu.de>
-In-Reply-To: <20250924151101.2225820-1-patrick.roy@campus.lmu.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1758728057; c=relaxed/simple;
+	bh=lUZuxPLPBDGO00HWidrCHdCMvKz0T1VhhIVqtlgz3mo=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=fjmW5b6PzT1TeJJb5J2+5QPKX+Ix1MSkdki8YwNqBkbcVC1/ORqc6kCFisU6bJmMj5ddP623bc9FlVVUM2Ym5hTQxGnfJc3UAYUha6qi5ItfLTgcPaGYHgTjxXJqoLj57hB7KsJnkxpAPFobRPLAUhrp5jTLoNjpj5UgXJEOeOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rHzkX9St; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B435DC4CEE7;
+	Wed, 24 Sep 2025 15:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758728056;
+	bh=lUZuxPLPBDGO00HWidrCHdCMvKz0T1VhhIVqtlgz3mo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rHzkX9StnWCCLKEaIcwoJxUUnBQHkEaH22wijFJc9HcuqRmjkFS6LG3U4Tck2/M8w
+	 nU2aahpaXY7vY7qxjp/hfBmnladUZ9x57PGdpz/FVI2O1PToRlhvvzRfGlqWcYYOAu
+	 qu24BWmHQVwEyFiL1QaLcAYGpupSMHo8NIiwoh7Va9v3E02qXT71h8G60ZDb/IjtJA
+	 ZuyJvkKMDOvOuRVgkRDSdrOexx/mnRul0TCfh77TK8jk1rT7hEgzZdW9jL5WPyUG18
+	 KXJ7NKOGVEO+7BOXJOuDPKlj9et5M8gtCTRgG6R1O0mJlfr3BGVlZ/2VCj5H92N06e
+	 +3d4Sd3jXY8Nw==
+Date: Thu, 25 Sep 2025 00:34:10 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
+ <rostedt@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>,
+ jolsa@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ kees@kernel.org, samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
+ ast@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] tracing: fgraph: Protect return handler from
+ recursion loop
+Message-Id: <20250925003410.de2ef839f6ef3921ee08a955@kernel.org>
+In-Reply-To: <175852292275.307379.9040117316112640553.stgit@devnote2>
+References: <175852291163.307379.14414635977719513326.stgit@devnote2>
+	<175852292275.307379.9040117316112640553.stgit@devnote2>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-_sigh_=0A=
-=0A=
-I tried to submit this iteration from a personal email, because amazon's ma=
-il=0A=
-server was scrambling the "From" header and I couldn't figure out why (and =
-also=0A=
-because I am leaving Amazon next month and wanted replies to go into an inb=
-ox=0A=
-to which I'll continue to have access). And then after posting the first 4=
-=0A=
-emails I hit "daily mail quota exceeded", and had to submit the rest of the=
-=0A=
-patch series from the amazon email anyway. Sorry about the resulting mess (=
-i=0A=
-think the threading got slightly messed up as a result of this). I'll somet=
-hing=0A=
-else out for the next iteration.=0A=
-=0A=
+Hi Steve,
+
+Can you pick this ? Or I will do?
+
+Thanks,
+
+On Mon, 22 Sep 2025 15:35:22 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> function_graph_enter_regs() prevents itself from recursion by
+> ftrace_test_recursion_trylock(), but __ftrace_return_to_handler(),
+> which is called at the exit, does not prevent such recursion.
+> Therefore, while it can prevent recursive calls from
+> fgraph_ops::entryfunc(), it is not able to prevent recursive calls
+> to fgraph from fgraph_ops::retfunc(), resulting in a recursive loop.
+> This can lead an unexpected recursion bug reported by Menglong.
+> 
+>  is_endbr() is called in __ftrace_return_to_handler -> fprobe_return
+>   -> kprobe_multi_link_exit_handler -> is_endbr.
+> 
+> To fix this issue, acquire ftrace_test_recursion_trylock() in the
+> __ftrace_return_to_handler() after unwind the shadow stack to mark
+> this section must prevent recursive call of fgraph inside user-defined
+> fgraph_ops::retfunc().
+> 
+> This is essentially a fix to commit 4346ba160409 ("fprobe: Rewrite
+> fprobe on function-graph tracer"), because before that fgraph was
+> only used from the function graph tracer. Fprobe allowed user to run
+> any callbacks from fgraph after that commit.
+> 
+> Reported-by: Menglong Dong <menglong8.dong@gmail.com>
+> Closes: https://lore.kernel.org/all/20250918120939.1706585-1-dongml2@chinatelecom.cn/
+> Fixes: 4346ba160409 ("fprobe: Rewrite fprobe on function-graph tracer")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  Changes in v2:
+>   - Do not warn on failing ftrace_test_recursion_trylock() because it
+>     allows one-level nest.
+> ---
+>  kernel/trace/fgraph.c |   12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> index 1e3b32b1e82c..484ad7a18463 100644
+> --- a/kernel/trace/fgraph.c
+> +++ b/kernel/trace/fgraph.c
+> @@ -815,6 +815,7 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+>  	unsigned long bitmap;
+>  	unsigned long ret;
+>  	int offset;
+> +	int bit;
+>  	int i;
+>  
+>  	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer, &offset);
+> @@ -829,6 +830,15 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+>  	if (fregs)
+>  		ftrace_regs_set_instruction_pointer(fregs, ret);
+>  
+> +	bit = ftrace_test_recursion_trylock(trace.func, ret);
+> +	/*
+> +	 * This can fail because ftrace_test_recursion_trylock() allows one nest
+> +	 * call. If we are already in a nested call, then we don't probe this and
+> +	 * just return the original return address.
+> +	 */
+> +	if (unlikely(bit < 0))
+> +		goto out;
+> +
+>  #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
+>  	trace.retval = ftrace_regs_get_return_value(fregs);
+>  #endif
+> @@ -852,6 +862,8 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+>  		}
+>  	}
+>  
+> +	ftrace_test_recursion_unlock(bit);
+> +out:
+>  	/*
+>  	 * The ftrace_graph_return() may still access the current
+>  	 * ret_stack structure, we need to make sure the update of
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
