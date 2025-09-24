@@ -1,209 +1,243 @@
-Return-Path: <bpf+bounces-69532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86C35B9976C
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 12:41:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A82DDB9977C
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 12:43:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D10774A1631
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 10:41:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C10F325B84
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 10:43:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB862E03EB;
-	Wed, 24 Sep 2025 10:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9222E0413;
+	Wed, 24 Sep 2025 10:43:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="NSo2ei98"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E7C/iIV1"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62872D8DD9;
-	Wed, 24 Sep 2025 10:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758710488; cv=none; b=R04LzK0CzMq+i7Udsk9u35ua2epsrw61qwqvFwQqFLkaPdlYIj++2sq9WsYpMQd+aSL1UCuyWLpe1FXqJPaxJjsFEvOJqjm5MD5TQghXzLQ4HEUnKN7/a/Bq3NtcXaxweR7XTEpUvGChZz3331uRVSc9/CqdZS8C4ziCiYS2wQU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758710488; c=relaxed/simple;
-	bh=SXNkwbM4Ppq5SlqoyIdFSADrFFQzosrp23uUX1mVuoc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YT6dCSOSCD4pgNgKLwjXyCEFiBlJMCKPAN4SLYlFK+v/Xs+pDtSeCYeQw5/MqtnjNHcpHSwN8AmkU+Q4euqSZBtI8u6k+S6IeF0IYiHtdrp4W5lVVMV/+FSm7rAmx2vid94SGhjVBG1OLldq1umhSfgzL+QnyvnFHTBXRf1n7r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=NSo2ei98; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=t9qSVhFeLdVxOnAZTYy4HBDY+NnG6XKevYGfnTG+roQ=; b=NSo2ei98yj4Ck8wf5C+ussNO7y
-	IcX5WoIzErWas3UIajQVtzITYXvVbjM+iXfGoLptg5gCLuKiRiOM/rCxwoBppnOvfQGuI/UEJrMB3
-	qkDyobwOvVEkvid/HhTluHZWgyRElgxblmI8kWtkMi++JyMy0j/JtnSEx3cYrx4busBFdXgQh17Ib
-	ouuPs0PgCuaOp1CBx75JjQ7p9ra1qJFDl8S3OrIoI6Hnu/pekhHgh4Wk1DO8XVQwNnD7R/lZ/8pqd
-	gkemb/5WtDnoJT1CJCwvzsv5Y3EZrQwyD1ogjS2URzbV9S7YaG2733e5+gXkT/YJq0IVDiQ4AFW1y
-	u73C7ZNg==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1v1Mvl-000NXK-2c;
-	Wed, 24 Sep 2025 12:41:01 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1v1Mvk-0004xd-27;
-	Wed, 24 Sep 2025 12:41:00 +0200
-Message-ID: <5d139efa-c78e-4323-b79d-bbf566ac19b8@iogearbox.net>
-Date: Wed, 24 Sep 2025 12:41:00 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6609A2D948E;
+	Wed, 24 Sep 2025 10:43:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758710605; cv=fail; b=AkValLvqgdMWjw9eQnXxuA3TdFPQ2GYdUekS4H6LdbmVbVIxIWp1JXC25ZNWNRuunz9z+qecmczTwn9t0hNDd51FFHwyyHHZ5HnOtMZ0HbYAfhK4Bwl1YdJt/e4JBaVxMzfAM/g48Cqnm9E5sj8ENhdUZjaRxucZ3JFP8uKG5mI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758710605; c=relaxed/simple;
+	bh=J3ew8oz5LnxenwEGJMdKATOcJluT5/q3pckP1D738+4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=eLOIYuAm+8e0kfcKK/29EV0kfB0F6JrmdGRVojaz1JpHk2eygPLFdE4nWp2v/qRzWCVGAMUZ3qvW6iRiICVf1v0kX/jRXwh4rkfuItqOPDR9YPbKwyj9Jec1DZoLUZY8Rx6aymug2HVg8StVsTdBgtRg7ou5bpn2wWCU/tj3SGY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E7C/iIV1; arc=fail smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1758710600; x=1790246600;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=J3ew8oz5LnxenwEGJMdKATOcJluT5/q3pckP1D738+4=;
+  b=E7C/iIV17NZ36w7xB8TKCwIlCyTJze48G4/xe9Gf/DBgVin3js2aAvy6
+   3lqJXEQ22Vcn+qefiVW3M/fy784ozl8vJKNMOR6W8vzfSdIqdZFfwN3j2
+   jUdRgjh/oaJ2JsuGnVFFD/ro7wIoPdCJo7aUDkHZ8LTT5wfuuENw0H2/O
+   qNIJ8zZlyUd2OEOaeV5Tn6As/geKS/mJF7LbjSMEAM5QV8qAomnJ5VdB/
+   s2jEqysv7smn9gWT8ryX5Wr4cgHdh/LlkHxh8IC9UbhCSueE608W+pZJH
+   sd1rsP+CRjbbMn3AKfItla8kRRR6mt31aRSjomlU0fg96iTtaSEry5BEd
+   w==;
+X-CSE-ConnectionGUID: B3mpA6I9TNGIvvdjn1euEA==
+X-CSE-MsgGUID: IqYrgXz9QReeL18pmNPl/A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11561"; a="60220751"
+X-IronPort-AV: E=Sophos;i="6.18,290,1751266800"; 
+   d="scan'208";a="60220751"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2025 03:43:20 -0700
+X-CSE-ConnectionGUID: TZpa1Dv1TM6cDjXFMPAKhw==
+X-CSE-MsgGUID: KpceE+fSQCWA8FfX8NYj1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,290,1751266800"; 
+   d="scan'208";a="177447682"
+Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2025 03:43:19 -0700
+Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Wed, 24 Sep 2025 03:43:19 -0700
+Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
+ FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27 via Frontend Transport; Wed, 24 Sep 2025 03:43:19 -0700
+Received: from PH0PR06CU001.outbound.protection.outlook.com (40.107.208.17) by
+ edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.17; Wed, 24 Sep 2025 03:43:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=PJaDSB8aZWOckw3ky6RKlfJuJpjj6kguI0sZmIrfWXDuZUjimiB8sh7eFt2wiZzAgCT6VsQMSgQ9VP9FH2OIL5uY6ZsPBMG06tK6ijhY8eFY99sOO7a+bkx/CbSeErOqS8eq71rfIgMUKAoL6VEI6K3r1UIm/8ojLI9HY3t8/hB2XymGvPjt9KuBK5M9CyMbsXdhkYH7wSucfLTszmzdyoRY1vu9XB3FPmQRIy3wuhezkjY/p+7TkVRT3N1zfO97n0PwLraqJJDloohoSdj9orLMg0Zki2tWQRhhdBQRxy7m0w4ZbuJhOqpfDhSHRmkOX+z9KXJoXrW9FkydYeCRnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Jpvag8rrslXnSNnFWFATtqEahvdddO+gHhqtGP6nf4Y=;
+ b=TGl/wR8vDn3jP0eKeyieOzqUiOoE2Bw9egHxDCP3Bp5X2XohYdRoNuXhWMZPcaf3QVBNZTx7ge0Kfqh1owrwOwkj0vCmm5NZMGZ6Vb846Ca2ba2BVPcaaMrBO/cz2WBd+hApFzyAPhXE9WLio5OTv0QULNP96bQKpNMY0/tg7Fq5BZshMqGySIq8hSIAy8qOKQliUAFpcavhNs0gbVQJTNvSzYWk1Ts6C6YPF+BsyCBqrIN38uSop19Nwz9IQF3tgKVsrE6FdecJ439eEpbHNX4dKa6bpYtMeAoPJ7g4v9s3lwbJgEGH5YxL/eYBEUb5knUFJ9CF5qpRRxydwVcAtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DM4PR11MB6455.namprd11.prod.outlook.com (2603:10b6:8:ba::17) by
+ PH8PR11MB6830.namprd11.prod.outlook.com (2603:10b6:510:22e::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9137.19; Wed, 24 Sep 2025 10:43:12 +0000
+Received: from DM4PR11MB6455.namprd11.prod.outlook.com
+ ([fe80::304a:afb1:cd4:3425]) by DM4PR11MB6455.namprd11.prod.outlook.com
+ ([fe80::304a:afb1:cd4:3425%7]) with mapi id 15.20.9137.018; Wed, 24 Sep 2025
+ 10:43:12 +0000
+From: "R, Ramu" <ramu.r@intel.com>
+To: "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+CC: "Lobakin, Aleksander" <aleksander.lobakin@intel.com>, "Kubiak, Michal"
+	<michal.kubiak@intel.com>, "Fijalkowski, Maciej"
+	<maciej.fijalkowski@intel.com>, "Nguyen, Anthony L"
+	<anthony.l.nguyen@intel.com>, "Kitszel, Przemyslaw"
+	<przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "Simon
+ Horman" <horms@kernel.org>, NXNE CNSE OSDT ITP Upstreaming
+	<nxne.cnse.osdt.itp.upstreaming@intel.com>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [Intel-wired-lan] [PATCH iwl-next 2/5] idpf: add XSk pool
+ initialization
+Thread-Topic: [Intel-wired-lan] [PATCH iwl-next 2/5] idpf: add XSk pool
+ initialization
+Thread-Index: AQHcIzh3Exe4hN7y+EaPlI6WCGw+O7SiAVwwgAA3KhA=
+Date: Wed, 24 Sep 2025 10:43:11 +0000
+Message-ID: <DM4PR11MB64556B4964ADE393E42C3009981CA@DM4PR11MB6455.namprd11.prod.outlook.com>
+References: <20250911162233.1238034-1-aleksander.lobakin@intel.com>
+ <20250911162233.1238034-3-aleksander.lobakin@intel.com>
+ <PH0PR11MB50136480A130C818932FE6DB961CA@PH0PR11MB5013.namprd11.prod.outlook.com>
+In-Reply-To: <PH0PR11MB50136480A130C818932FE6DB961CA@PH0PR11MB5013.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR11MB6455:EE_|PH8PR11MB6830:EE_
+x-ms-office365-filtering-correlation-id: cbcadf96-e1ea-4dcc-f126-08ddfb5728aa
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016|38070700021|7053199007;
+x-microsoft-antispam-message-info: =?us-ascii?Q?DgOxAVvCzhbJ16w+qCbFXiNdrKaRQwLci6zteANGLjWfiQuJSJcTDxw3P82y?=
+ =?us-ascii?Q?JuE3Asz6RC3e4eklrNoC27kF9s6xo3c7z9DtarnmOfzh/g0LCG9zwbA2Vnt1?=
+ =?us-ascii?Q?kAj1rHYCnQRO20mHbSCBc65vXTMRnMzsxMe7gboQW+xLQK4Oebq8TKK3eLOo?=
+ =?us-ascii?Q?zv8fu4lyU4NHryf9OjSNabU0R0S+Hula50wZSysyymwYqQCOhcjInSH+Zbvx?=
+ =?us-ascii?Q?kuGIuOsnzSYckuV4JGxeAeqBt5LXQjLGc3ovpykidrsbVgn1OT4oOjUpTe37?=
+ =?us-ascii?Q?ehb8G5qb1ifUgJ7bC//nHCVP46IutrEknXgNqOKNZPYeO0xIM7yKreUi+kc1?=
+ =?us-ascii?Q?/LNLopAnDUjOLFL49wkeCnsDLFxKIWe8e48OiLfZLnv0KpOvZLJ2kp+wOzqh?=
+ =?us-ascii?Q?quHcv1nKF0F8Gq9jmybZ2pQSOokWrUtkfN2zzXqE+uuVjUUCKWiOilQsgVsU?=
+ =?us-ascii?Q?+2T7V0IEGJPfT3TdzKC1xTeE2tbkEdCavShgh6pcA9MS52tOR+1lPw7GJPv/?=
+ =?us-ascii?Q?ENU6XxhYLzK7NOKPSjhGJVgOKKQ0q9nxndWTwzp8uD8BSgoSu6d8SQIeShRP?=
+ =?us-ascii?Q?gK99cs5hWWXaVE1kEGT5J1KhDTya3O+rMLsqATVRb3GyAB7xfR99FOIMuCCU?=
+ =?us-ascii?Q?RfbZGQ/joEtOgQUpmyJgIkU7tyPuGnevFXYNfSyUnkO4b3skUXk0haEIUL3v?=
+ =?us-ascii?Q?IteZXqVk1Zuj70q6n9nU+nB1WbOLo9D1KpWbQkoRIDLQqWMHXLqu/KPlUUbI?=
+ =?us-ascii?Q?w0S9m6eXrhQ+18nSj0cmAYaHPo0uZ1HzF1wcfL0yE2e4Hgqm7sCTh0XtanmH?=
+ =?us-ascii?Q?gNDHYTqPP0Sh0AifmhmMN6JczI6lW1CHnJtPcvsvZe69QghXvohDgYBlDfGR?=
+ =?us-ascii?Q?Rk8wM9lua5/aCb5L2qVPog4ieFToPJ8DbCgiKef+cQp27JWkIlqUqTmQFz+w?=
+ =?us-ascii?Q?2lr8HvZWLjfuHTd6hTQw08uAY+iTGzihC8IszoTOCGVeHdlSE2YWp0W1fKX9?=
+ =?us-ascii?Q?lKtmDyzVGYp3BbzuLJ/m18817PGfIWMWnaOII9B4GUZnp3y56KAiV28Bdk86?=
+ =?us-ascii?Q?YLXih2EiSUmcVP6bbVS+n2sF3J8k8Z6ZntKqNUiUPsr7J/xCI3VSIvbHmB43?=
+ =?us-ascii?Q?lmJmljAzh+CtCL59sfXDFynp429xLQKHoAHMJp+miFMthquxOvlxCIVlgit2?=
+ =?us-ascii?Q?iKnGTedX5rAdZVg6P8xLyb3+BRJu3vMIut+ntiT9g+5iB7YrB9XJU0gxDeiE?=
+ =?us-ascii?Q?yC6Fa1y1fd4QlPN91nW6mJDB5uY38ZG/+u6qM24RxrCvz1Y3Ljr9/Iv4pWGn?=
+ =?us-ascii?Q?CTrPjchf1kv8Krt6qW1bAVlvVopOyy/LrzkPOAfHmNK1SBWDe/AotffEcQpC?=
+ =?us-ascii?Q?ieOuWew/DPh07ZL72VYdegd+Ii+aKUqosZ5VAGByJPTnxAAI4vlxHyWk9yVs?=
+ =?us-ascii?Q?8TJgMzZ2JTJ/ittj28ri4Jr01o1hSbqkBUJSqUPWDt84KwhqjNsy0swD/Kd1?=
+ =?us-ascii?Q?+HMhlx4mcpb6V3Q=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6455.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(38070700021)(7053199007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?t1VEHSZfgEzKMReInzz7dxX4j+fmHUKS7mcNjCkVx3c+VLoWNQkmuoKyqB8g?=
+ =?us-ascii?Q?oPkk6AYpIAp0XZ1YKxxPh0g+GLdqtyunieTdV1xUUkK0CcgXZODFIAanqj+A?=
+ =?us-ascii?Q?/mOgI5eqxgCVLcOyPhHNUBnn9UY/HgdZhw1vA6Yr11stjjzjYilpHtquK1Ti?=
+ =?us-ascii?Q?p/12K25mXP3uUJry1T2tCwSV7hyrXRh2qjPw2dZkP0FY3PgUojJtPh0hX0sX?=
+ =?us-ascii?Q?2xzL8BYBGyh4DCnHfhmDuLEUJcK9YnpOZGusFUiDv7g8zLWtLLOOG8UR0+Sr?=
+ =?us-ascii?Q?go34q3TbrIQATxN8qAE1/VPmgB4UaHQAmkq9cgk1dK/bPY/LVArhUicNoArI?=
+ =?us-ascii?Q?KQWIfPOzF4JqA9x4TMwhFKxx3jte5IcindQ/5j3U6JsaHzN7MeJIDciEN5WW?=
+ =?us-ascii?Q?5aoVZdA+08kJfHsOpv4cB0dT7nxd+2dorYDNK/63ACtp/ODTcxq+n4Vx542C?=
+ =?us-ascii?Q?/oCZRUdXdqfHQ1PeOEw+ZQzAWhqLGlqxuyShzuH3QG+kqHuaXdHcUg20sV/H?=
+ =?us-ascii?Q?PWJmITeRv6VA+UUE3DnkyTeRhtEHUs8ogas5csPbKpi1RNY+FETjFvwQiDMx?=
+ =?us-ascii?Q?XlJpa0yjjxeUWsn0cIxyUcxd1zLC96UCGV4Ry9G9ewGeErNuAbDOZ/wgT3dk?=
+ =?us-ascii?Q?dx1ER0vw5qBGciKWktPgKJpzCYKV0ITaqsFOKGD21SSj5tRkybxIlkf/KPsg?=
+ =?us-ascii?Q?TD8iqhtGmINQHH0ShFwqC7FICsn17Lb0FJUZVFvCBnZs5/B/bplHvRGH4o13?=
+ =?us-ascii?Q?aSPdqyaE+YICeFHQfi2kxeUy264Um0UhpTSREoAP0QiqaKfQhWUPuZgW+w/0?=
+ =?us-ascii?Q?zl8fsMzUnyQzS3MBnkSNcMK+a+LxQZenuaOdTVWDbiir0EOLgc1/txcbiBIW?=
+ =?us-ascii?Q?0MUlX84vCF20Z6oCypM5qB3b84Zyo7KeSbczKKAPvgzD14/6k3YXRHnJdN7N?=
+ =?us-ascii?Q?oNjT5nt2bA0t/8s7Bykkp46hOdm/89la773yOp+DaVM4TuV0uXBrOkzoRtRA?=
+ =?us-ascii?Q?4Pr4mzMgvkXjl5Qi9zgAMX0AuJQogz17DBmPXBQ7tFq4/roWMJmElFjdk3+A?=
+ =?us-ascii?Q?tOZV2IPuv5o39cI8b6872VENqEgMZRL1Vf4H9yenBJanu3ML3GTo5xNpCgrB?=
+ =?us-ascii?Q?gywdK3vMkpp4dDjKFUTa0fqeFwfSGT0wezsc35HlExFKijf2SZbGM/geUg0i?=
+ =?us-ascii?Q?kMukKU/ciYv++0lWjZiAc9MiU731/pEFgyurd5c9u0nSM35bBtqzJ10QNn+X?=
+ =?us-ascii?Q?VUFKef+GvAbmKtGz9OKTfx8fbVXMna+4RGHTHKRIro1LjVUjHgQlEn807VHs?=
+ =?us-ascii?Q?LUkSLrWdOw26q1bKzH3Zo4+2+KLpf7qCT2hW7Ayk5xDX5nuw+O+p2AHP+gJl?=
+ =?us-ascii?Q?9Lq6lSWKdOZuGFJntOuv6Zo0idENV7V0Tv68rJGE/PFFzTuwmU9MJCC/Pqdi?=
+ =?us-ascii?Q?SylNsjfmsiqpvJJkh1eI7MG/WOhqeclga+PEzz6rmybuvI8AAdAUuOH9SW7T?=
+ =?us-ascii?Q?171L6ogaZb16GmO9DopNd0UtL9+qRMjmfR4zDTUUspZQkM2sMIYyMQRoJcrf?=
+ =?us-ascii?Q?UWK7TjDNYqvK5aKGbtY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 19/20] netkit: Add xsk support for af_xdp
- applications
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
- razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
- john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
- David Wei <dw@davidwei.uk>
-References: <20250919213153.103606-1-daniel@iogearbox.net>
- <20250919213153.103606-20-daniel@iogearbox.net> <87zfalpf8w.fsf@toke.dk>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <87zfalpf8w.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27772/Wed Sep 24 10:26:55 2025)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6455.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbcadf96-e1ea-4dcc-f126-08ddfb5728aa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2025 10:43:11.8845
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: W3Z0DTtB+k/L7YWlx/+x7ZSNkTv7V8bt5nC/QgglzvBZZEP7Uif1pHCPV/CUU2/wmzHukBzv06KsZclmIDCbcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6830
+X-OriginatorOrg: intel.com
 
-On 9/23/25 1:42 PM, Toke Høiland-Jørgensen wrote:
-> Daniel Borkmann <daniel@iogearbox.net> writes:
-> 
->> Enable support for AF_XDP applications to operate on a netkit device.
->> The goal is that AF_XDP applications can natively consume AF_XDP
->> from network namespaces. The use-case from Cilium side is to support
->> Kubernetes KubeVirt VMs through QEMU's AF_XDP backend. KubeVirt is a
->> virtual machine management add-on for Kubernetes which aims to provide
->> a common ground for virtualization. KubeVirt spawns the VMs inside
->> Kubernetes Pods which reside in their own network namespace just like
->> regular Pods.
->>
->> Raw QEMU AF_XDP backend example with eth0 being a physical device with
->> 16 queues where netkit is bound to the last queue (for multi-queue RSS
->> context can be used if supported by the driver):
->>
->>    # ethtool -X eth0 start 0 equal 15
->>    # ethtool -X eth0 start 15 equal 1 context new
->>    # ethtool --config-ntuple eth0 flow-type ether \
->>              src 00:00:00:00:00:00 \
->>              src-mask ff:ff:ff:ff:ff:ff \
->>              dst $mac dst-mask 00:00:00:00:00:00 \
->>              proto 0 proto-mask 0xffff action 15
->>    # ip netns add foo
->>    # ip link add numrxqueues 2 nk type netkit single
->>    # ynl-bind eth0 15 nk
->>    # ip link set nk netns foo
->>    # ip netns exec foo ip link set lo up
->>    # ip netns exec foo ip link set nk up
->>    # ip netns exec foo qemu-system-x86_64 \
->>            -kernel $kernel \
->>            -drive file=${image_name},index=0,media=disk,format=raw \
->>            -append "root=/dev/sda rw console=ttyS0" \
->>            -cpu host \
->>            -m $memory \
->>            -enable-kvm \
->>            -device virtio-net-pci,netdev=net0,mac=$mac \
->>            -netdev af-xdp,ifname=nk,id=net0,mode=native,queues=1,start-queue=1,inhibit=on,map-path=$dir/xsks_map \
->>            -nographic
-> 
-> So AFAICT, this example relies on the control plane installing an XDP
-> program on the physical NIC which will redirect into the right socket;
-> and since in this example, qemu will install the XSK socket at index 1
-> in the xsk map, that XDP program will also need to be aware of the queue
-> index mapping. I can see from your qemu commit[0] that there's support
-> on the qemu side for specifying an offset into the map to avoid having
-> to do this translation in the XDP program, but at the very least that
-> makes this example incomplete, no?
-> 
-> However, even with a complete example, this breaks isolation in the
-> sense that the entire XSK map is visible inside the pod, so a
-> misbehaving qemu could interfere with traffic on other queues (by
-> clearing the map, say). Which seems less than ideal?
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> Alexander Lobakin
+> Sent: Thursday, September 11, 2025 9:53 PM
+> To: intel-wired-lan@lists.osuosl.org
+> Cc: Lobakin, Aleksander <aleksander.lobakin@intel.com>; Kubiak, Michal
+> <michal.kubiak@intel.com>; Fijalkowski, Maciej
+> <maciej.fijalkowski@intel.com>; Nguyen, Anthony L
+> <anthony.l.nguyen@intel.com>; Kitszel, Przemyslaw
+> <przemyslaw.kitszel@intel.com>; Andrew Lunn <andrew+netdev@lunn.ch>;
+> David S. Miller <davem@davemloft.net>; Eric Dumazet
+> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+> <pabeni@redhat.com>; Alexei Starovoitov <ast@kernel.org>; Daniel
+> Borkmann <daniel@iogearbox.net>; Simon Horman <horms@kernel.org>;
+> NXNE CNSE OSDT ITP Upstreaming
+> <nxne.cnse.osdt.itp.upstreaming@intel.com>; bpf@vger.kernel.org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: [Intel-wired-lan] [PATCH iwl-next 2/5] idpf: add XSk pool initia=
+lization
+>=20
+> From: Michal Kubiak <michal.kubiak@intel.com>
+>=20
+> Add functionality to setup an XSk buffer pool, including ability to stop,
+> reconfig and start only selected queues, not the whole device.
+> Pool DMA mapping is managed by libeth_xdp.
+>=20
+> Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+>  drivers/net/ethernet/intel/idpf/Makefile      |   1 +
+>  drivers/net/ethernet/intel/idpf/idpf_txrx.h   |   7 +
+>  drivers/net/ethernet/intel/idpf/xdp.h         |   2 +
+>  drivers/net/ethernet/intel/idpf/xsk.h         |  14 +
+>  .../net/ethernet/intel/idpf/idpf_ethtool.c    |   8 +-
+>  drivers/net/ethernet/intel/idpf/idpf_txrx.c   | 299 ++++++++++++++++++
+>  drivers/net/ethernet/intel/idpf/xdp.c         |  14 +
+>  drivers/net/ethernet/intel/idpf/xsk.c         |  57 ++++
+>  8 files changed, 398 insertions(+), 4 deletions(-)  create mode 100644
 
-For getting to a first starting point to connect all things with KubeVirt,
-bind mounting the xsk map from Cilium into the VM launcher Pod which acts
-as a regular K8s Pod while not perfect, its not a big issue given its out
-of reach from the application sitting inside the VM (and some of the
-control plane aspects are baked in the launcher Pod already), so the
-isolation barrier is still VM. Eventually my goal is to have a xdp/xsk
-redirect extension where we don't need to have the xsk map, and can just
-derive the target xsk through the rxq we received traffic on.
-
-> Taking a step back, for AF_XDP we already support decoupling the
-> application-side access to the redirected packets from the interface,
-> through the use of sockets. Meaning that your use case here could just
-> as well be served by the control plane setting up AF_XDP socket(s) on
-> the physical NIC and passing those into qemu, in which case we don't
-> need this whole queue proxying dance at all.
-
-Cilium should not act as a proxy handing out xsk sockets. Existing
-applications expect a netdev from kernel side and should not need to
-rewrite just to implement one CNI's protocol. Also, all the memory
-should not be accounted against Cilium but rather the application Pod
-itself which is consuming af_xdp. Further, on up/downgrades we expect
-the data plane to being completely decoupled from the control plane,
-if Cilium would own the sockets that would be disruptive which is nogo.
-
-> So, erm, what am I missing that makes this worth it (for AF_XDP; I can
-> see how it is useful for other things)? :)
-Yeap there are other use cases we've seen from Cilium users as well,
-e.g. running dpdk applications on top of af_xdp in regular k8s Pods.
+Tested-by: Ramu R <ramu.r@intel.com>
 
