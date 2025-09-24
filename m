@@ -1,139 +1,270 @@
-Return-Path: <bpf+bounces-69508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A0EDB9859D
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 08:09:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB86EB98602
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 08:26:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECB4B2E4BD5
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 06:09:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62E2C7A5161
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 06:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD4623E350;
-	Wed, 24 Sep 2025 06:09:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979072405F8;
+	Wed, 24 Sep 2025 06:26:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Xj8X9cOV"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="jl+RxqI2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE3D21FF29
-	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 06:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373D31C4A17;
+	Wed, 24 Sep 2025 06:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758694185; cv=none; b=DwJAndlMQ2Q8858gxTf6huC39/jh/LATxhF47o5VqEaGwEeJOrL7HC7SFZdquD+aKjvXLTNU3WaOnwHwLwWSCze2YXTx0NpKESAKYoa9LIlMnMIEufhRvjcSXZhNRzf11ySdsMWwsTEJpxupqBn+axR+bV4sTLcw0FlARvQsP3k=
+	t=1758695202; cv=none; b=jIKQ9RGFK0goUPNneOZX8xec8JYR4mXhoExodcnovaFyTDdXrXG2nKeTFwE9LpozJ8D7mjQyBZh7PVY7IIAT7MbOLUjhS6tboDiKdBvZ/nf275S3VrT1h+y5XkPFNNpHAblGj/Bym45JsKCrT4pzH3HUrrKPSZcGYtXVAiWanks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758694185; c=relaxed/simple;
-	bh=EhcXvjDksM360UK0Vc1kfwj42Glaw8DRfiy1mwD5d2o=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=V5nY3tOcLc5FI4mKHcHpT9ZZjaoTrUzZOkqQylu770kSMCg+o91roDSJklAld/Dwc8Nm+0cgWNhUd9wWURqZutxcQp5kNanN3S5zHt7yxYNT4NwnnQt67TIwI0B7P425MDhZyoH1lTKcNyyboPM77KanKpzSVwpKH4mpTeBY/e8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tavip.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Xj8X9cOV; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tavip.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-330a4d5c4efso4299744a91.0
-        for <bpf@vger.kernel.org>; Tue, 23 Sep 2025 23:09:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758694183; x=1759298983; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VesomAbu95SiSwEJQVEDMDpoIPq0ZwIbbU6hCVXWd88=;
-        b=Xj8X9cOVm5A73FG9phTGQteR+C/LYOjdZQGakP1LJ+GRAC7AbJEgXCyPV49o/PUNN4
-         PWhLX6WjA7oQajBUQRj0tEVJnLp9cDvQ++aq1BlmvS2lHoHalZrmvcJ7nW3Hw9Y1GroA
-         2X/oCIJ5LL4PepWjnJy4gf8eVWiX+eGmpcqs3vXe0WrUuhRda/pDACUz91cNvXHSLgCG
-         mz/U7aoAwo7dGmJMSr9fVtVk9aEvM37RrbcDTJEpoIsAKTryXvodL2oIIOVvYTNuIMJq
-         vi4Jf/9YfoKwgX2mH4655/JQGZAma1Wr56SJaAQBaDS4/cmlEFqZ4F4WJfDY1boDEm+B
-         8vZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758694183; x=1759298983;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VesomAbu95SiSwEJQVEDMDpoIPq0ZwIbbU6hCVXWd88=;
-        b=TFHHJLGDEZYysVLFLqL0YyhzwltYReEPju6EK173y2OKvXMssw0SZYutgW+B5JipnZ
-         yMUUc8k5uZRYY0/DSIVV6JfoB+yhMenO+DFrTPT0J58bbuML2bJFU5Y3EsyynCOQj6iB
-         6kmM2ikEgW4G9DGepg4pnE2FGTajfbo3nf53wu3n9bFWT9W6SKLwikIpFcdaORrkE5qT
-         qQNHXV5pB7Ozjg1iuKvCvYiaG7mEEV6FIdGumtpkaDFaMIFViKNjISa+EBdoWn9v2rbb
-         YdKkagKG2OvMaqvAyOSvC8w+qbOXhz1pXLM17Sj/mcjCwXV6LnaflTFdRUVT5PqqvLyj
-         TE9A==
-X-Forwarded-Encrypted: i=1; AJvYcCWrWDREfNqY5NG7KQF0Mb2uHJ9CRC78js5/xAtL9NMG0zMgNckCQdJff4a2slPpQFoS8Xo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaU509ZUBxlasI7FDMphp7ig/no2kILWCmPMneNgnAZMdsI6pg
-	+MtIv1f+/gYY7gVYhU7P+97S7G5N9xR4/yCdF/XxzYdJfacxTBkW91NdfkF8HP/N4Gh9mlils8x
-	kVQ==
-X-Google-Smtp-Source: AGHT+IHPYYt8LHeRbkdZ6BC5gEw24RQTAxzur79wWGM+UNPt7dswDqktCbgAAACHQQTYTv0OWU5feY1szQ==
-X-Received: from pjbqe17.prod.google.com ([2002:a17:90b:4f91:b0:330:55ed:d836])
- (user=tavip job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:33c8:b0:32e:7c34:70cf
- with SMTP id 98e67ed59e1d1-332a95e9348mr5433618a91.36.1758694183313; Tue, 23
- Sep 2025 23:09:43 -0700 (PDT)
-Date: Wed, 24 Sep 2025 06:08:42 +0000
+	s=arc-20240116; t=1758695202; c=relaxed/simple;
+	bh=oePUICDiPVKN9B/TKw8so6b3+qv38ospFzPDbOaKvsE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=cM4+xn5/fatX4H0wHdeijgbbiUBYS5mXuFG6BgS1Gqb4AlDy9uOyc+JkSldNtF7pngAxw8A6IC3ToP5c6kJDTnLT9iobQER87hBp30EiEMY+aZ1pTKQhNrh0KFN43fedTXP5ntaYwp636x9GbYVYv1Aosmk7ytvaLdFsgQmnHZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=jl+RxqI2; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=oZ
+	d4WpX2+1Jdxq+9g1RYCBdLuAcNtaFiBB36fTsymVk=; b=jl+RxqI2Nnd+2JBT58
+	Idh2LEuqdwVrMCciEsHTAr8ic3pmlxAr62skYcqlHi5eaTDf9ukNi0/+9oRc7yZb
+	jgdAUhSiQYYTgoTwEZHoch+uxwhQcTE0oqpua3nDXl4LHTbokLi2xbsAB5x1WMfa
+	IC2u3ilZ9/JcghYYm7Xf42TxQ=
+Received: from localhost.localdomain (unknown [])
+	by gzsmtp3 (Coremail) with SMTP id PigvCgDnhx_hjtNowN2fEA--.57610S2;
+	Wed, 24 Sep 2025 14:25:38 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: mhiramat@kernel.org
+Cc: alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	song@kernel.org,
+	yangfeng59949@163.com,
+	yonghong.song@linux.dev
+Subject: Re: [BUG] Failed to obtain stack trace via bpf_get_stackid on ARM64 architecture
+Date: Wed, 24 Sep 2025 14:25:36 +0800
+Message-Id: <20250924062536.471231-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20250924003215.365db154e1fc79163d9d80fe@kernel.org>
+References: <20250924003215.365db154e1fc79163d9d80fe@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.51.0.534.gc79095c0ca-goog
-Message-ID: <20250924060843.2280499-1-tavip@google.com>
-Subject: [PATCH net] xdp: use multi-buff only if receive queue supports page pool
-From: Octavian Purdila <tavip@google.com>
-To: kuba@kernel.org
-Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com, 
-	horms@kernel.org, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, sdf@fomichev.me, uniyu@google.com, 
-	ahmed.zaki@intel.com, aleksander.lobakin@intel.com, toke@redhat.com, 
-	lorenzo@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Octavian Purdila <tavip@google.com>, syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:PigvCgDnhx_hjtNowN2fEA--.57610S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3ArW8CF4xXr43KF13WF15Arb_yoWxAF43pF
+	WDA3WakFZ0qrWjqwnFqw15XF9akws3ZryUuryrGw13CFnFvFy3Jr9rKFya9rn8Ar4qgw1a
+	vF42yasxK3y5ZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRzWlhUUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiTgzReGjStyW8TwABsx
 
-When a BPF program that supports BPF_F_XDP_HAS_FRAGS is issuing
-bpf_xdp_adjust_tail and a large packet is injected via /dev/net/tun a
-crash occurs due to detecting a bad page state (page_pool leak).
+On Wed, 24 Sep 2025 00:32:15 +0900 Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-This is because xdp_buff does not record the type of memory and
-instead relies on the netdev receive queue xdp info. Since the TUN/TAP
-driver is using a MEM_TYPE_PAGE_SHARED memory model buffer, shrinking
-will eventually call page_frag_free. But with current multi-buff
-support for BPF_F_XDP_HAS_FRAGS programs buffers are allocated via the
-page pool.
+> On Mon, 22 Sep 2025 10:15:31 +0800
+> Feng Yang <yangfeng59949@163.com> wrote:
+> 
+> > On Sun, 21 Sep 2025 22:30:37 +0900 Masami Hiramatsu wrote:
+> > 
+> > > On Fri, 19 Sep 2025 19:56:20 -0700
+> > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > 
+> > > > On Fri, Sep 19, 2025 at 12:19 AM Feng Yang <yangfeng59949@163.com> wrote:
+> > > > >
+> > > > > When I use bpf_program__attach_kprobe_multi_opts to hook a BPF program that contains the bpf_get_stackid function on the arm64 architecture,
+> > > > > I find that the stack trace cannot be obtained. The trace->nr in __bpf_get_stackid is 0, and the function returns -EFAULT.
+> > > > >
+> > > > > For example:
+> > > > > diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> > > > > index 9e1ca8e34913..844fa88cdc4c 100644
+> > > > > --- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> > > > > +++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> > > > > @@ -36,6 +36,15 @@ __u64 kretprobe_test6_result = 0;
+> > > > >  __u64 kretprobe_test7_result = 0;
+> > > > >  __u64 kretprobe_test8_result = 0;
+> > > > >
+> > > > > +typedef __u64 stack_trace_t[2];
+> > > > > +
+> > > > > +struct {
+> > > > > +       __uint(type, BPF_MAP_TYPE_STACK_TRACE);
+> > > > > +       __uint(max_entries, 1024);
+> > > > > +       __type(key, __u32);
+> > > > > +       __type(value, stack_trace_t);
+> > > > > +} stacks SEC(".maps");
+> > > > > +
+> > > > >  static void kprobe_multi_check(void *ctx, bool is_return)
+> > > > >  {
+> > > > >         if (bpf_get_current_pid_tgid() >> 32 != pid)
+> > > > > @@ -100,7 +109,9 @@ int test_kretprobe(struct pt_regs *ctx)
+> > > > >  SEC("kprobe.multi")
+> > > > >  int test_kprobe_manual(struct pt_regs *ctx)
+> > > > >  {
+> > > > > +       int id = bpf_get_stackid(ctx, &stacks, 0);
+> > > > 
+> > > > ftrace_partial_regs() supposed to work on x86 and arm64,
+> > > > but since multi-kprobe is the only user...
+> > > 
+> > > It should be able to unwind stack. It saves sp, pc, lr, fp.
+> > > 
+> > > 	regs->sp = afregs->sp;
+> > > 	regs->pc = afregs->pc;
+> > > 	regs->regs[29] = afregs->fp;
+> > > 	regs->regs[30] = afregs->lr;
+> > > 
+> > > > I suspect the arm64 implementation wasn't really tested.
+> > > > Or maybe there is some other issue.
+> > > 
+> > > It depends on how bpf_get_stackid() works. Some registers for that
+> > > function may not be saved.
+> > > 
+> > > If it returns -EFAULT, the get_perf_callchain() returns NULL.
+> > > 
+> > 
+> > During my test, the reason for returning -EFAULT was that trace->nr was 0.
+> > 
+> > static long __bpf_get_stackid(struct bpf_map *map,
+> > 			      struct perf_callchain_entry *trace, u64 flags)
+> > {
+> > 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
+> > 	struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
+> > 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+> > 	u32 hash, id, trace_nr, trace_len;
+> > 	bool user = flags & BPF_F_USER_STACK;
+> > 	u64 *ips;
+> > 	bool hash_matches;
+> > 
+> > 	if (trace->nr <= skip)
+> > 		/* skipping more than usable stack trace */
+> > 		return -EFAULT;
+> > 	......
+> 
+> Hmm. The "trace" is returned from get_perf_callchain()
+> 
+> get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
+> 		   u32 max_stack, bool crosstask, bool add_mark)
+> {
+> ...
+> 
+> 	if (kernel && !user_mode(regs)) {
+> 		if (add_mark)
+> 			perf_callchain_store_context(&ctx, PERF_CONTEXT_KERNEL);
+> 		perf_callchain_kernel(&ctx, regs);
+> 	}
+> 
+> So this means `perf_callchain_kernel(&ctx, regs);` fails to unwind stack.
+> 
+> perf_callchain_kernel() -> arch_stack_walk() -> kunwind_stack_walk()
+> 
+> That is `kunwind_init_from_regs()` and `do_kunwind()`.
+> 
+> 	if (regs) {
+> 		if (task != current)
+> 			return -EINVAL;
+> 		kunwind_init_from_regs(&state, regs);
+> 	} else if (task == current) {
+> 		kunwind_init_from_caller(&state);
+> 	} else {
+> 		kunwind_init_from_task(&state, task);
+> 	}
+> 
+> 	return do_kunwind(&state, consume_state, cookie);
+> 
+> For initialization, it should be OK because it only refers pc and 
+> fp(regs[29]), which are recovered by ftrace_partial_regs().
+> 
+> static __always_inline void
+> kunwind_init_from_regs(struct kunwind_state *state,
+> 		       struct pt_regs *regs)
+> {
+> 	kunwind_init(state, current);
+> 
+> 	state->regs = regs;
+> 	state->common.fp = regs->regs[29];
+> 	state->common.pc = regs->pc;
+> 	state->source = KUNWIND_SOURCE_REGS_PC;
+> }
+> 
+> And do_kunwind() should work increase trace->nr before return
+> unless `kunwind_recover_return_address()` fails.
+> 
+> static __always_inline int
+> do_kunwind(struct kunwind_state *state, kunwind_consume_fn consume_state,
+> 	   void *cookie)
+> {
+> 	int ret;
+> 
+> 	ret = kunwind_recover_return_address(state);
+> 	if (ret)
+> 		return ret;
+> 
+> 	while (1) {
+> 		if (!consume_state(state, cookie)) <--- this increases trace->nr (*).
+> 			return -EINVAL;
+> 		ret = kunwind_next(state);
+> 		if (ret == -ENOENT)
+> 			return 0;
+> 		if (ret < 0)
+> 			return ret;
+> 	}
+> }
+> 
+> (*) consume_state() == arch_kunwind_consume_entry() 
+>   ->  data->consume_entry == callchain_trace() -> perf_callchain_store().
+> 
+> Hmm, can you also dump the regs and insert pr_info() to find
+> which function fails?
+> 
+> Thanks,
+> 
 
-To fix this issue check that the receive queue memory mode is of
-MEM_TYPE_PAGE_POOL before using multi-buffs.
+After testing, it was found that the stack could not be obtained because user_mode(regs) returned 1. 
+Referring to the arch_ftrace_fill_perf_regs function in your email 
+(https://lore.kernel.org/all/173518997908.391279.15910334347345106424.stgit@devnote2/), 
+I made the following modification: by setting the value of pstate, the stack can now be obtained successfully.
 
-Reported-by: syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/netdev/6756c37b.050a0220.a30f1.019a.GAE@google.com/
-Fixes: e6d5dbdd20aa ("xdp: add multi-buff support for xdp running in generic mode")
-Signed-off-by: Octavian Purdila <tavip@google.com>
----
- net/core/dev.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 8d49b2198d07..b195ee3068c2 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5335,13 +5335,18 @@ static int
- netif_skb_check_for_xdp(struct sk_buff **pskb, const struct bpf_prog *prog)
+diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+index 058a99aa44bd..f2814175e958 100644
+--- a/arch/arm64/include/asm/ftrace.h
++++ b/arch/arm64/include/asm/ftrace.h
+@@ -159,11 +159,13 @@ ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
  {
- 	struct sk_buff *skb = *pskb;
-+	struct netdev_rx_queue *rxq;
- 	int err, hroom, troom;
+        struct __arch_ftrace_regs *afregs = arch_ftrace_regs(fregs);
  
--	local_lock_nested_bh(&system_page_pool.bh_lock);
--	err = skb_cow_data_for_xdp(this_cpu_read(system_page_pool.pool), pskb, prog);
--	local_unlock_nested_bh(&system_page_pool.bh_lock);
--	if (!err)
--		return 0;
-+	rxq = netif_get_rxqueue(skb);
-+	if (rxq->xdp_rxq.mem.type == MEM_TYPE_PAGE_POOL) {
-+		local_lock_nested_bh(&system_page_pool.bh_lock);
-+		err = skb_cow_data_for_xdp(this_cpu_read(system_page_pool.pool),
-+					   pskb, prog);
-+		local_unlock_nested_bh(&system_page_pool.bh_lock);
-+		if (!err)
-+			return 0;
-+	}
- 
- 	/* In case we have to go down the path and also linearize,
- 	 * then lets do the pskb_expand_head() work just once here.
--- 
-2.51.0.534.gc79095c0ca-goog
+        memcpy(regs->regs, afregs->regs, sizeof(afregs->regs));
+        regs->sp = afregs->sp;
+        regs->pc = afregs->pc;
+        regs->regs[29] = afregs->fp;
+        regs->regs[30] = afregs->lr;
++       regs->pstate = PSR_MODE_EL1h;
+        return regs;
+ }
+However, I'm not sure if there will be any other impacts...
+
+By the way, during my testing, I also noticed that when executing bpf_get_stackid via kprobes or tracepoints, 
+the command bpftrace -e 'kprobe:bpf_get_stackid {printf("bpf_get_stackid\n");}' produces no output. 
+However, it does output something when bpf_get_stackid is invoked via uprobes. 
+This phenomenon also occurs on the x86 architecture, could this be a bug as well?
+
+Thanks.
 
 
