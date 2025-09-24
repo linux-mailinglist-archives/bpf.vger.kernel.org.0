@@ -1,158 +1,222 @@
-Return-Path: <bpf+bounces-69578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44BB5B9AB3D
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 17:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D679B9ABDF
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 17:42:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E84718841EF
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 15:35:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 657731890A54
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 15:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ABF33115A0;
-	Wed, 24 Sep 2025 15:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A19D1311AC;
+	Wed, 24 Sep 2025 15:39:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rHzkX9St"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DesiKDyt"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC96C307AFA;
-	Wed, 24 Sep 2025 15:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED07C30FC3B
+	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 15:39:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758728057; cv=none; b=IX2aF39L7T4MnsfQijM/cED4rteJIZvoMbrjLIWjchdpzubFjS6ZZKiBWmEK/OVFJDFcbkI8i1IWdPDm+x6J5IF7jIcHqCI5fR8FFrR62ofnj7IKoeleh0oFJ/zXScrFirXHxRFHSZbXAniYEHzA7sUrN+r658/9FaN5hs2VwJU=
+	t=1758728348; cv=none; b=tcIfR5yTcTyJxFoPgCo/6kObAeiQjAN88Gl15EQWXayBo+C2J2hxEm7brKoGE5pgWhyTf7DTyJggU7Na31A6Se5a1xlmWY+i2CBt+F6zYJfXAOs+4+zvzYv53sQOp/AGdTjEJxFO9D+mEZ9gp/mTYOdJhNyJUsZU3Yq/hxe9Dxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758728057; c=relaxed/simple;
-	bh=lUZuxPLPBDGO00HWidrCHdCMvKz0T1VhhIVqtlgz3mo=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=fjmW5b6PzT1TeJJb5J2+5QPKX+Ix1MSkdki8YwNqBkbcVC1/ORqc6kCFisU6bJmMj5ddP623bc9FlVVUM2Ym5hTQxGnfJc3UAYUha6qi5ItfLTgcPaGYHgTjxXJqoLj57hB7KsJnkxpAPFobRPLAUhrp5jTLoNjpj5UgXJEOeOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rHzkX9St; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B435DC4CEE7;
-	Wed, 24 Sep 2025 15:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758728056;
-	bh=lUZuxPLPBDGO00HWidrCHdCMvKz0T1VhhIVqtlgz3mo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rHzkX9StnWCCLKEaIcwoJxUUnBQHkEaH22wijFJc9HcuqRmjkFS6LG3U4Tck2/M8w
-	 nU2aahpaXY7vY7qxjp/hfBmnladUZ9x57PGdpz/FVI2O1PToRlhvvzRfGlqWcYYOAu
-	 qu24BWmHQVwEyFiL1QaLcAYGpupSMHo8NIiwoh7Va9v3E02qXT71h8G60ZDb/IjtJA
-	 ZuyJvkKMDOvOuRVgkRDSdrOexx/mnRul0TCfh77TK8jk1rT7hEgzZdW9jL5WPyUG18
-	 KXJ7NKOGVEO+7BOXJOuDPKlj9et5M8gtCTRgG6R1O0mJlfr3BGVlZ/2VCj5H92N06e
-	 +3d4Sd3jXY8Nw==
-Date: Thu, 25 Sep 2025 00:34:10 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
- <rostedt@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>,
- jolsa@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- kees@kernel.org, samitolvanen@google.com, rppt@kernel.org, luto@kernel.org,
- ast@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] tracing: fgraph: Protect return handler from
- recursion loop
-Message-Id: <20250925003410.de2ef839f6ef3921ee08a955@kernel.org>
-In-Reply-To: <175852292275.307379.9040117316112640553.stgit@devnote2>
-References: <175852291163.307379.14414635977719513326.stgit@devnote2>
-	<175852292275.307379.9040117316112640553.stgit@devnote2>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1758728348; c=relaxed/simple;
+	bh=UsXqmKWvjG6h1YBmLwPbbkwWjuTwnzGRTj5iHBI5Ud0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SCd+W/e4/NUnKCH1ldx9igluwW6lh+MYHaZPY8F2gujVswJJSQNxbDVz+TGphhDij/HBllCTu/zzylCecnBclMiiFYCyawT6WwFOv33mOkaaTEbC/Yq3RQlob1zUVIisNOggLOuxrFnrGSK48yy8YT6DRdy9nvN0k6Riq/MpsF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DesiKDyt; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1758728346;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=I3hnbNQr+CMB/T5Lrt4+Z4OuC6HJ7S7MgiA4J3LQveE=;
+	b=DesiKDythzfEMsXjJKtkdWWRYVRFEV0zlaruMTJpFUIVSQlf+Zw5ZlAU7P1Y601p+YHdOk
+	3cGieETkTrcphGxihJUmQwA7B39pM14RgTzSkvi8+p/nYTGfSqvFdED3+JeWclsbfAj6l5
+	p3kYLzGcLg8LkOk+0+ZX+HEtRsykevA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-88-5yNu6eaPM_WpLTAJvpYUIA-1; Wed, 24 Sep 2025 11:39:04 -0400
+X-MC-Unique: 5yNu6eaPM_WpLTAJvpYUIA-1
+X-Mimecast-MFC-AGG-ID: 5yNu6eaPM_WpLTAJvpYUIA_1758728343
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3f3c118cbb3so211f8f.3
+        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 08:39:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758728343; x=1759333143;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I3hnbNQr+CMB/T5Lrt4+Z4OuC6HJ7S7MgiA4J3LQveE=;
+        b=TMPKqcUOlOQymWwE2ApSLpY9ZSlgVFwgsNU89e3MymI0UoEgKlB6ocIC2Dh2+HNE43
+         47IOugoiPAYRsVIJK6+E3QlBvY7nToFUYPObFJF3uMyNf3zxCI0l//aAmsA1U+Hu/Rm0
+         Wtbgvq4813JUEEkMCwUtsnTRTUqZ3qihM4hTC+TAOUjGt7t1VSuP/czUxqiT9+FI0oDY
+         V3CLmIEVE+EATUDeOPgTrfLbZrmEQsRH+fYHmOStFqnyVwJKqV3/HRgLdmvo6FKTYLvq
+         J+eAqRNE+buChhUgtJgNrzZHNJeppJrzSiBFVy1eewnFrxUZgHj/PV81ijfsO8KgzPFb
+         RoqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXmZleZjDCN7M3aIcNlJKzvJN2/u5KDb0FeXDzRTbTn7/cfZ9EBQHUgQGPc1hhVlBz8Yo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzofk1DAKvrT1pzBdW0q8Vr8jgdpY3FHtF1tlkhTKjoaFmDBhxa
+	GMb/3VKpQ5Bc9ZTxHDwlpcYaQED1CK+CbjI8bHdnI3fsKPJ9MamXLZVk70BvUUkroO4n09pI9dh
+	P5kY1rl+3wVe0QEDJ3qTN3BlEKyvImZFOHfCFcyLx4FqPMxY67Vby47VykiIjaQ==
+X-Gm-Gg: ASbGncskw3GG6FBSdgOsbn8Y35W9qbGzeFoYrnwEWNPPASzskCdQwCv5JhhqlVYDXb+
+	ggJE/7V3p3cTtlBtkfsHY5Rjmw6DfcqZzGZfElrHxfEB0Q2X/5uy2A2K/BtoJVKBt6OzWvAl3JA
+	uOetFDTNB85fJwUdHgToLhwuApEAKe/VTj9DLGgjxb8j4JySrzT8/0d6GD9L+5ajNcJwiU4OFvq
+	vYjqM/DuUopk/ZVm+EaUd4LdEzid2a/KbvfOEI7ou8ScDjgHmatKKMGStRv+WlVF6o9+VOsVDgp
+	OgzuDegqWE0hAY8oNQ9tXlN71zAqusCbRtuSYQdsaEtf/mtr7wYdEUQC1fCrKsQ7ZB53XpbQsh/
+	NaaH5UJ7SAUKgQZ+1Sh33mq1tNnAHnqjhvpdI+i9wlZQB5pDHIc/biFr2M4OhIgE1jw==
+X-Received: by 2002:a05:6000:3102:b0:405:3028:1bce with SMTP id ffacd0b85a97d-40e4886dea7mr389117f8f.32.1758728343215;
+        Wed, 24 Sep 2025 08:39:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHgd4QFIbHl+KGwltRD/ttCSG+TyRobItnmS8e1jCrWLoT42l4oEjJc1CeO+4N34B2hOAK5lg==
+X-Received: by 2002:a05:6000:3102:b0:405:3028:1bce with SMTP id ffacd0b85a97d-40e4886dea7mr389052f8f.32.1758728342727;
+        Wed, 24 Sep 2025 08:39:02 -0700 (PDT)
+Received: from ?IPV6:2003:d8:2f14:2400:afc:9797:137c:a25b? (p200300d82f1424000afc9797137ca25b.dip0.t-ipconnect.de. [2003:d8:2f14:2400:afc:9797:137c:a25b])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3ee073f3d68sm28588947f8f.10.2025.09.24.08.38.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Sep 2025 08:39:02 -0700 (PDT)
+Message-ID: <be77e0e7-4cb6-4a10-86f2-50e8d001fd84@redhat.com>
+Date: Wed, 24 Sep 2025 17:38:58 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 00/12] Direct Map Removal Support for guest_memfd
+To: "Roy, Patrick" <roypat@amazon.co.uk>,
+ "patrick.roy@campus.lmu.de" <patrick.roy@campus.lmu.de>
+Cc: "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+ "ackerleytng@google.com" <ackerleytng@google.com>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "andrii@kernel.org" <andrii@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+ "bp@alien8.de" <bp@alien8.de>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+ "corbet@lwn.net" <corbet@lwn.net>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>,
+ "haoluo@google.com" <haoluo@google.com>, "hpa@zytor.com" <hpa@zytor.com>,
+ "Thomson, Jack" <jackabt@amazon.co.uk>, "jannh@google.com"
+ <jannh@google.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+ "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+ "joey.gouly@arm.com" <joey.gouly@arm.com>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "jolsa@kernel.org" <jolsa@kernel.org>,
+ "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+ "luto@kernel.org" <luto@kernel.org>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "maz@kernel.org" <maz@kernel.org>, "mhocko@suse.com" <mhocko@suse.com>,
+ "mingo@redhat.com" <mingo@redhat.com>,
+ "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+ "pbonzini@redhat.com" <pbonzini@redhat.com>,
+ "peterx@redhat.com" <peterx@redhat.com>,
+ "peterz@infradead.org" <peterz@infradead.org>,
+ "pfalcato@suse.de" <pfalcato@suse.de>, "rppt@kernel.org" <rppt@kernel.org>,
+ "sdf@fomichev.me" <sdf@fomichev.me>, "seanjc@google.com"
+ <seanjc@google.com>, "shuah@kernel.org" <shuah@kernel.org>,
+ "song@kernel.org" <song@kernel.org>, "surenb@google.com"
+ <surenb@google.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+ "tabba@google.com" <tabba@google.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "vbabka@suse.cz"
+ <vbabka@suse.cz>, "will@kernel.org" <will@kernel.org>,
+ "willy@infradead.org" <willy@infradead.org>, "x86@kernel.org"
+ <x86@kernel.org>, "Cali, Marco" <xmarcalx@amazon.co.uk>,
+ "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+ "yuzenghui@huawei.com" <yuzenghui@huawei.com>
+References: <20250924151101.2225820-1-patrick.roy@campus.lmu.de>
+ <20250924152912.11563-1-roypat@amazon.co.uk>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20250924152912.11563-1-roypat@amazon.co.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Steve,
+On 24.09.25 17:29, Roy, Patrick wrote:
+> _sigh_
 
-Can you pick this ? Or I will do?
+Happens to the best of us :)
 
-Thanks,
+> 
+> I tried to submit this iteration from a personal email, because amazon's mail
+> server was scrambling the "From" header and I couldn't figure out why (and also
+> because I am leaving Amazon next month and wanted replies to go into an inbox
+> to which I'll continue to have access). And then after posting the first 4
+> emails I hit "daily mail quota exceeded", and had to submit the rest of the
+> patch series from the amazon email anyway. Sorry about the resulting mess (i
+> think the threading got slightly messed up as a result of this). I'll something
+> else out for the next iteration.
 
-On Mon, 22 Sep 2025 15:35:22 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> function_graph_enter_regs() prevents itself from recursion by
-> ftrace_test_recursion_trylock(), but __ftrace_return_to_handler(),
-> which is called at the exit, does not prevent such recursion.
-> Therefore, while it can prevent recursive calls from
-> fgraph_ops::entryfunc(), it is not able to prevent recursive calls
-> to fgraph from fgraph_ops::retfunc(), resulting in a recursive loop.
-> This can lead an unexpected recursion bug reported by Menglong.
-> 
->  is_endbr() is called in __ftrace_return_to_handler -> fprobe_return
->   -> kprobe_multi_link_exit_handler -> is_endbr.
-> 
-> To fix this issue, acquire ftrace_test_recursion_trylock() in the
-> __ftrace_return_to_handler() after unwind the shadow stack to mark
-> this section must prevent recursive call of fgraph inside user-defined
-> fgraph_ops::retfunc().
-> 
-> This is essentially a fix to commit 4346ba160409 ("fprobe: Rewrite
-> fprobe on function-graph tracer"), because before that fgraph was
-> only used from the function graph tracer. Fprobe allowed user to run
-> any callbacks from fgraph after that commit.
-> 
-> Reported-by: Menglong Dong <menglong8.dong@gmail.com>
-> Closes: https://lore.kernel.org/all/20250918120939.1706585-1-dongml2@chinatelecom.cn/
-> Fixes: 4346ba160409 ("fprobe: Rewrite fprobe on function-graph tracer")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  Changes in v2:
->   - Do not warn on failing ftrace_test_recursion_trylock() because it
->     allows one-level nest.
-> ---
->  kernel/trace/fgraph.c |   12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-> index 1e3b32b1e82c..484ad7a18463 100644
-> --- a/kernel/trace/fgraph.c
-> +++ b/kernel/trace/fgraph.c
-> @@ -815,6 +815,7 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
->  	unsigned long bitmap;
->  	unsigned long ret;
->  	int offset;
-> +	int bit;
->  	int i;
->  
->  	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer, &offset);
-> @@ -829,6 +830,15 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
->  	if (fregs)
->  		ftrace_regs_set_instruction_pointer(fregs, ret);
->  
-> +	bit = ftrace_test_recursion_trylock(trace.func, ret);
-> +	/*
-> +	 * This can fail because ftrace_test_recursion_trylock() allows one nest
-> +	 * call. If we are already in a nested call, then we don't probe this and
-> +	 * just return the original return address.
-> +	 */
-> +	if (unlikely(bit < 0))
-> +		goto out;
-> +
->  #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
->  	trace.retval = ftrace_regs_get_return_value(fregs);
->  #endif
-> @@ -852,6 +862,8 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
->  		}
->  	}
->  
-> +	ftrace_test_recursion_unlock(bit);
-> +out:
->  	/*
->  	 * The ftrace_graph_return() may still access the current
->  	 * ret_stack structure, we need to make sure the update of
-> 
-
+I had luck recovering from temporary mail server issues in the past by 
+sending the remainder as "--in-reply-to=" with message-id of cover 
+letter and using "--no-thread" IIRC.
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cheers
+
+David / dhildenb
+
 
