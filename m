@@ -1,195 +1,155 @@
-Return-Path: <bpf+bounces-69632-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69633-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED7BDB9C59C
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 00:25:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08909B9C5C3
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 00:31:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80D5A3266B9
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 22:25:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6786E4C09BE
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 22:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B9BA296BA5;
-	Wed, 24 Sep 2025 22:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F40E28D850;
+	Wed, 24 Sep 2025 22:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SRfjKh/O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ABFD28D839
-	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 22:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395D922DFA4
+	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 22:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758752722; cv=none; b=Leq8IIoz+MQlZgRYzSMYg2GC8iCGxdBiAPJ/4cVTJYy2klCkYvLOCa+e41eoMWlQCNjpbs0jV6zhd8MBaRHCc0gXpqa2Q+gQjYFqBD3vdBxMAA4WFFavE1IRHENwWfHGhdkFEoGpYho/HgmRF53kQAux5luyyh8y/PA9+kOZtmg=
+	t=1758753096; cv=none; b=EXXt1Wh10gCOQ18qY8LrYtoDnLpu5QGSS9F/e8gVTdiAkg0J+hFIJM2M41KNkcaw1ZSfe6BPYpconFYS9a9DorTKphICCwxXttbjPwSh5OeTEsjogn98u6z80CDcIr3iFXsDfZ2cIRwL5cjXbgLcUZa8NIhZmzwDpqn1GPz4M+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758752722; c=relaxed/simple;
-	bh=WZFQ4QbS4tuIRsIHYIq1heNMZZWIkgtQ3sE2KKCJL7g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j+aRJj7ZFxzeSkSBeA9QJOcU+ZvKAsjkxG7Ev6lI8WUVepat3Ry7Ohb9qfVdTk5X+J3rHBFDVG9SSYLM7drJZO/sSDRolHbBhKFH7PZ1khYW4WRnJG2qvvFqlxtgEMgJKoJRjsVhrNADwkLNCqRFOqBovRONsqwcu37X0Nh1f+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+	s=arc-20240116; t=1758753096; c=relaxed/simple;
+	bh=E3mp818XeEDGifzwzdOnw8G4qn3w2nYXo2kiXHXmH1I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YJbHLHFK01kOpGnAcUZXo+phONCB03/ezmxmh2dNvJsmEEy0W1OiiPTEMMoJT2HZxq7BT7aJe7ujdgQ9wFwplEpU0nvA3qDAP1UtblLKNZTpvT7Wf8GG5avoVvea5YAJ7Oc8vL8AUVAvRRPt7FLu8SFHjWp6Fl2mclupwalZ69k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SRfjKh/O; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-b553412a19bso269735a12.1
-        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 15:25:20 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2697899a202so11915425ad.0
+        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 15:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758753094; x=1759357894; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NWJ481WqwYt03Qs8yEQYxXt74IruS1KgxQpyoMD3fOU=;
+        b=SRfjKh/Oa3qxnxurXBHLFYIKs7j1n9CLuhpwWHyYUxayMNFcNQVXm4ZASByYSs9Lbk
+         UT1NcZXphV3AcX1QZwHuB+i0IQxjOHFIGekrxQeZ/k9qIlf4pvJSlt2Frf+XtH3CpO7M
+         8kbiBObSyIDfnpr/7/A3T9TztmBRgfKYvoFRtGkm877SIQWugPpJBRRZtqVwXw6dKEK/
+         pPfLTqVhpueuVrrB21n8NBKHfE6Lyvz4T10wCpJit5xP5jWQxjZIatn6DLt1pjcqAVis
+         KMGYztjABG5OSGd+81koCGFMBFGIIDqCI2YGpjTPXXfh8jO890vihlBAdjDIFjTC4ywg
+         KL1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758752720; x=1759357520;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tOxR1T/V0SqrOvtqSwQkNFCuPzO0g7fl8l2lrbsCB4U=;
-        b=kuzEwwMuUy6b7OkgMrIt0URC0iPwpQanddaf0AByzF4CrBCg1dx/x3wjxXfHo9ZUf+
-         vsqfF4ywJj/F0zA/jgSiuPGzy2QVQtIumpTKFXGSKMJaNARXa2S+bAk0DczJBYOVcIY+
-         hTsaQGzprTZHO1pFFT+W45gMeuea5oLHQhON5C+AUDZo6J5mW7nOy9T09Ykf1Hmj2Mti
-         GNA4qSkWrsaP3tl1KJ9SDAnIdPAlnHV/WUPUO9tfqhiYBgi0ASR4AAPw/4AagkEyRX+T
-         Fu/FQuRIWxLDU/sJ0kGrvEPJNc5OQnUeh7uCknXyM49r7kKJxVUogFO7zhQPqcKCHkxg
-         4cjw==
-X-Forwarded-Encrypted: i=1; AJvYcCWFZRHjbq3RclJ0Bxefx1hEgx0si39/poSzkL1DwaYrVvFLMLOV8lNtjjYWd5ZqLgC90s0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDOOV28NOEqG70kwnKjnulYNMwz5fJkofpayN/k8QU4iPt603T
-	PntiBfTrdfP1vceIMZM3XS5bnx9nRv4jiWcx5T+41vE/SnUy2AhPC2TRld87
-X-Gm-Gg: ASbGncsNzDMjCpPHpP6EZ8P/fYCYI9VmgN/Raoul5HlahJD1D7v2x/JqgXEO6uSeRXj
-	xv1ip4CrAqdEd/uU764MmFcYZwRzLkdkhOBEYYn9DW7ZZ2J4ASSLxbqrLPWgo43FSa1vWztgoev
-	rOwFKLnca+89NIjCFWvam0jl+aWH7FEmeNzEIM4/jIpJra+sl+sLqP0z3WWDyJK6PLC6/T5xNcH
-	DgcmziQmR8HGEVaGJpR8G4PDyklF0wi+mxe40d8r9vgMfVYZySMBFIQd2vHeCpyVOoAyU7KV2So
-	yKdnxncGVk6ubwLMzmwbqVh2ppDUny0iFC87CMk2Z84kDndvDIxCA66Xn2NNwXXhAp147tJeFD6
-	HsFpmAH+y7bQkI5ES+WilQy11SBhhA+UpViljOdNEx2TVhdQNmXUQKylQDdFr/CL3lb34oPGA0/
-	A8Dbjd+iaROlMvM3q/olH3g2W5RfzdoKmccnkFRAt52gaYwpUlfQZxPm5tZ/mvm7JE+g7pR/jdz
-	aY0OKsvkjdu/vg=
-X-Google-Smtp-Source: AGHT+IH39Y4AoWan18Zria3PfzUeTAXFMAr1O7HUFYefIPRhyAPFja93UNsI1NeluaQqtNNXWutFyA==
-X-Received: by 2002:a17:903:3201:b0:264:a34c:c62 with SMTP id d9443c01a7336-27ed4affb23mr11790205ad.61.1758752719615;
-        Wed, 24 Sep 2025 15:25:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758753094; x=1759357894;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NWJ481WqwYt03Qs8yEQYxXt74IruS1KgxQpyoMD3fOU=;
+        b=eLmRPVFFdE19L9OaXZqY7m2hrOBZw9sF6DB0SZs19KKkF0R+0QArxEZy5kap5Nwk77
+         gQp80SpfeuHI1AgbHYYyGfZbCCIzv6TihG5r3joymZPST6LkHkDc9Uc9aBwHefMY+s1X
+         0nuQyhfSnxp/gHiOuObVtqPJJ9D+i3lnaFHzVwLjVgx9EZF/WN/L9gXHDTcvNDAXKyln
+         12IDCftKakktowwLmkMMvtsqN/ehhjyokyRU5AvorHRB4iXqGMGrxgWmBuxp80JClgD8
+         cLo06xT8cqCjxFvfCFBGwnn8xXkbl+viKAhi60g5RigLJL3ryqljTRJon1xLrCoA4oVh
+         VLSw==
+X-Forwarded-Encrypted: i=1; AJvYcCXYTToeM+TJwQmiZPt+h4qiYgu6vmAsZmp35GxPX8DxrXvs6E2F+4eXkC8vDYXl6BBD8nk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy03GQ1Uc8IAPobV1DaXfhz80MLV/0VfTBzXqeYyHjfzcIXkgvi
+	SkLUKNQ6ivOZhqKRPk9BdjiXQ1A0JMKVvuSM5OnOZsOB6SYGNlaX+/E=
+X-Gm-Gg: ASbGncuwxdwEVAar/MqD7LS/+gpa/7gp1QYVCvr1fLiuWTp3FYTJ30NplvJLQrS7e2Q
+	dgx5orQ+J2EKqC2tZdEwc3mZRny6mgIOXuPf+KlFJVRcF4/oj8QRTmGbyoi7Uy8fI1mbo63nV4u
+	rJsN/FCqb6Pb8RgofdGNrs35+II7TCU/WUBqeVjxxj3e/XiPT27wV4SbOZuIpRUkGXCTN3wkkAg
+	Llr1BULXwqsrkoa9ujEC3wDZmrhdSr12ryzKUKx2GNAw5MW/UjJnf65RRYBR+XvyRfj7ER7vKHY
+	EC8F9nQTo71NFbTGbhYJfQZfDtnUfh9E2E/H71EFWLDvRtCQIfhqFP0zUjxO41cKv0wE7+a2psF
+	Uk35exIGEuyOsM1RKBQbPJwc2/Rc/7W0PO++49lfQVp9q0sbJX/Pz6mIzPW1OiFaKu9eIDz0S7Y
+	hzyGNIXzOgTXOF2Zq7Q4DKxOqUjCv9mIemCjVBMOsmYYMtBJs9lZEUBFySasm4dL5MBJaly3SVn
+	yhv
+X-Google-Smtp-Source: AGHT+IGqXSUCi05Q6A/shBANKJJ+7L6thhmdeK778FmwuGU+D6HEICoXlQ65iZTp1I/QU4cKU7BZPQ==
+X-Received: by 2002:a17:902:8210:b0:267:44e6:11d6 with SMTP id d9443c01a7336-27ed6aca024mr3396525ad.6.1758753094437;
+        Wed, 24 Sep 2025 15:31:34 -0700 (PDT)
 Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-3347224b6d0sm119663a91.11.2025.09.24.15.25.19
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-27ed6886f4esm3083585ad.80.2025.09.24.15.31.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Sep 2025 15:25:19 -0700 (PDT)
-From: Stanislav Fomichev <sdf@fomichev.me>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	andrew+netdev@lunn.ch,
-	shuah@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	sdf@fomichev.me,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next] selftests: drv-net: Enable BTF
-Date: Wed, 24 Sep 2025 15:25:18 -0700
-Message-ID: <20250924222518.1826863-1-sdf@fomichev.me>
-X-Mailer: git-send-email 2.51.0
+        Wed, 24 Sep 2025 15:31:34 -0700 (PDT)
+Date: Wed, 24 Sep 2025 15:31:33 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, donald.hunter@gmail.com, andrew+netdev@lunn.ch,
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+	john.fastabend@gmail.com, matttbe@kernel.org,
+	chuck.lever@oracle.com, jdamato@fastly.com, skhawaja@google.com,
+	dw@davidwei.uk, mkarsten@uwaterloo.ca, yoong.siang.song@intel.com,
+	david.hunter.linux@gmail.com, skhan@linuxfoundation.org,
+	horms@kernel.org, sdf@fomichev.me, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH RFC 0/4] Add XDP RX queue index metadata via kfuncs
+Message-ID: <aNRxRRSfjOzSPNks@mini-arch>
+References: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
+ <aNMG2X2GLDLBIjzB@mini-arch>
+ <f103da72-0973-4a45-af81-ec1537422433@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f103da72-0973-4a45-af81-ec1537422433@gmail.com>
 
-Commit fec2e55bdef ("selftests: drv-net: Pull data before parsing headers")
-added __ksym external symbol to xdp_native.bpf.c which now requires
-a kernel with BTF. Enable BTF for driver selftests.
+On 09/24, Mehdi Ben Hadj Khelifa wrote:
+> On 9/23/25 9:45 PM, Stanislav Fomichev wrote:
+> > On 09/23, Mehdi Ben Hadj Khelifa wrote:
+> > > ---
+> > > Mehdi Ben Hadj Khelifa (4):
+> > >    netlink: specs: Add XDP RX queue index to XDP metadata
+> > >    net: xdp: Add xmo_rx_queue_index callback
+> > >    uapi: netdev: Add XDP RX queue index metadata flags
+> > >    net: veth: Implement RX queue index XDP hint
+> > > 
+> > >   Documentation/netlink/specs/netdev.yaml |  5 +++++
+> > >   drivers/net/veth.c                      | 12 ++++++++++++
+> > >   include/net/xdp.h                       |  5 +++++
+> > >   include/uapi/linux/netdev.h             |  3 +++
+> > >   net/core/xdp.c                          | 15 +++++++++++++++
+> > >   tools/include/uapi/linux/netdev.h       |  3 +++
+> > >   6 files changed, 43 insertions(+)
+> > >   ---
+> > >   base-commit: 07e27ad16399afcd693be20211b0dfae63e0615f
+> > >   this is the commit of tag: v6.17-rc7 on the mainline.
+> > >   This patch series is intended to make a base for setting
+> > >   queue_index in the xdp_rxq_info struct in bpf/cpumap.c to
+> > >   the right index. Although that part I still didn't figure
+> > >   out yet,I m searching for my guidance to do that as well
+> > >   as for the correctness of the patches in this series.
+> 
+> > But why do you need a kfunc getter? You can already get rxq index
+> > via xdp_md rx_queue_index.
+> 
+> Hi Stanislav, When i was looking at the available information or recent
+> similar patches to populate the queue_index in xdp_rxq_info inside of
+> the cpu map of an ebpf program to run xdp. i stumbled upon this:
+> https://lkml.rescloud.iu.edu/2506.1/02808.html
+> 
+> which suggests that in order to that, a struct called "xdp_rx_meta" should
+> be the route to do that. In my navigation of code i only found
+> the closest thing to that is xdp_rx_metadata which is an enum. I tried to
+> follow was done for other metadata there like timestamp in order to see if
+> that gets me closer to do that. which was stupid with the information that i
+> have now but for my lack of experience (this is my first patch) i tried to
+> reason with the code.So yeah, since xdp_md is the structure for transfering
+> metadata to ebpf programs that use xdp. it's useless to have a kfunc to
+> expose queue_index since it's already present there. But how would one try
+> to populate the queue_index in xdp_rxq_info in cpu_map_bpf_prog_run_xdp()?
+> Any sort of hints or guides would be much appreciated.
+> Thank you for your time.
 
-Before:
-
-  # TAP version 13
-  # 1..10
-  # # Exception| Traceback (most recent call last):
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/net/lib/py/ksft.py", line 244, in ksft_run
-  # # Exception|     case(*args)
-  # # Exception|     ~~~~^^^^^^^
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/drivers/net/./xdp.py", line 231, in test_xdp_native_pass_sb
-  # # Exception|     _test_pass(cfg, bpf_info, 256)
-  # # Exception|     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/drivers/net/./xdp.py", line 209, in _test_pass
-  # # Exception|     prog_info = _load_xdp_prog(cfg, bpf_info)
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/drivers/net/./xdp.py", line 114, in _load_xdp_prog
-  # # Exception|     cmd(
-  # # Exception|     ~~~^
-  # # Exception|     f"ip link set dev {cfg.ifname} mtu {bpf_info.mtu} xdpdrv obj {abs_path} sec {bpf_info.xdp_sec}",
-  # # Exception|     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  # # Exception|     shell=True
-  # # Exception|     ^^^^^^^^^^
-  # # Exception|     )
-  # # Exception|     ^
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/net/lib/py/utils.py", line 75, in __init__
-  # # Exception|     self.process(terminate=False, fail=fail, timeout=timeout)
-  # # Exception|     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/net/lib/py/utils.py", line 95, in process
-  # # Exception|     raise CmdExitFailure("Command failed: %s\nSTDOUT: %s\nSTDERR: %s" %
-  # # Exception|                          (self.proc.args, stdout, stderr), self)
-  # # Exception| net.lib.py.utils.CmdExitFailure: Command failed: ip link set dev eni30773np1 mtu 1500 xdpdrv obj /home/sdf/src/linux/tools/testing/selftests/net/lib/xdp_native.bpf.o sec xdp
-  # # Exception| STDOUT: b''
-  # # Exception| STDERR: b"libbpf: kernel BTF is missing at '/sys/kernel/btf/vmlinux', was CONFIG_DEBUG_INFO_BTF enabled?\nlibbpf: failed to find '.BTF' ELF section in /lib/modules/6.17.0-rc6-virtme/build/vmlinux\nlibbpf: failed to find valid kernel BTF\nlib
-  bpf: Error loading vmlinux BTF: -3\nlibbpf: failed to load object '/home/sdf/src/linux/tools/testing/selftests/net/lib/xdp_native.bpf.o'\n"
-  # not ok 1 xdp.test_xdp_native_pass_sb
-  ...
-
-After:
-
-  # TAP version 13
-  # 1..10
-  # ok 1 xdp.test_xdp_native_pass_sb
-  # ok 2 xdp.test_xdp_native_pass_mb
-  # ok 3 xdp.test_xdp_native_drop_sb
-  # ok 4 xdp.test_xdp_native_drop_mb
-  # ok 5 xdp.test_xdp_native_tx_sb
-  # ok 6 xdp.test_xdp_native_tx_mb
-  # # Ignoring SIGTERM (cnt: 2), already exiting...
-  # # Ignoring SIGTERM (cnt: 3), already exiting...
-  # # Exception| Traceback (most recent call last):
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/net/lib/py/ksft.py", line 244, in ksft_run
-  # # Exception|     case(*args)
-  # # Exception|     ~~~~^^^^^^^
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/drivers/net/./xdp.py", line 506, in test_xdp_native_adjst_taa
-  # # Exception|     res = _test_xdp_native_tail_adjst(
-  # # Exception|         cfg,
-  # # Exception|         pkt_sz_lst,
-  # # Exception|         offset_lst,
-  # # Exception|     )
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/drivers/net/./xdp.py", line 467, in _test_xdp_native_tail_adt
-  # # Exception|     recvd_str = _exchg_udp(cfg, port, test_str)
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/drivers/net/./xdp.py", line 72, in _exchg_udp
-  # # Exception|     with bkg(rx_udp_cmd, exit_wait=True) as nc:
-  # # Exception|          ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/net/lib/py/utils.py", line 137, in __exit__
-  # # Exception|     return self.process(terminate=terminate, fail=self.check_fail)
-  # # Exception|            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/net/lib/py/utils.py", line 85, in process
-  # # Exception|     stdout, stderr = self.proc.communicate(timeout)
-  # # Exception|                      ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
-  # # Exception|   File "/usr/lib/python3.13/subprocess.py", line 1222, in communicate
-  # # Exception|     stdout, stderr = self._communicate(input, endtime, timeout)
-  # # Exception|                      ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
-  # # Exception|   File "/usr/lib/python3.13/subprocess.py", line 2128, in _communicate
-  # # Exception|     ready = selector.select(timeout)
-  # # Exception|   File "/usr/lib/python3.13/selectors.py", line 398, in select
-  # # Exception|     fd_event_list = self._selector.poll(timeout)
-  # # Exception|   File "/home/sdf/src/linux/tools/testing/selftests/net/lib/py/ksft.py", line 208, in _ksft_intr
-  # # Exception|     raise KsftTerminate()
-  # # Exception| net.lib.py.ksft.KsftTerminate
-  # # Stopping tests due to KsftTerminate.
-  # not ok 7 xdp.test_xdp_native_adjst_tail_grow_data
-  # # Totals: pass:6 fail:1 xfail:0 xpass:0 skip:0 error:0
-
-Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
----
- tools/testing/selftests/drivers/net/config | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/tools/testing/selftests/drivers/net/config b/tools/testing/selftests/drivers/net/config
-index f27172ddee0a..da5a5a94fa6a 100644
---- a/tools/testing/selftests/drivers/net/config
-+++ b/tools/testing/selftests/drivers/net/config
-@@ -5,3 +5,5 @@ CONFIG_NETCONSOLE=m
- CONFIG_NETCONSOLE_DYNAMIC=y
- CONFIG_NETCONSOLE_EXTENDED_LOG=y
- CONFIG_XDP_SOCKETS=y
-+CONFIG_DEBUG_INFO_BTF=y
-+CONFIG_DEBUG_INFO_BTF_MODULES=n
--- 
-2.51.0
-
+I don't really understand what queue_index means for the cpu map. It is
+a kernel thread doing work, there is no queue. Maybe whoever added
+the todo can clarify?
 
