@@ -1,91 +1,95 @@
-Return-Path: <bpf+bounces-69581-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EABD4B9ABF7
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 17:43:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1BDB9ACC6
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 18:00:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDFAF188806C
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 15:42:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 976632A4E1A
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 16:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4286330DEC4;
-	Wed, 24 Sep 2025 15:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511A122256B;
+	Wed, 24 Sep 2025 16:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J0Ry6iG2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lJxutCxs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C4D17B418
-	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 15:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20DB3128DE
+	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 16:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758728544; cv=none; b=cEKxW1Lfse20/1vmGMEY0EuwaIp3+NT4GOMTQPoCXDQUtfxaJXRjxr4Pn6fhupOnyF5E4hlGq90d3BG50Uc4GYHi+gBzCBK6qf+LShHg3eDwG2ywGyB9lUjzQeRq5jKKsewzefArEglxUPPUOjC5sgc+tFSjnheHWpKMUG4yv8U=
+	t=1758729633; cv=none; b=f/286CJusny/sEelj3M6oTu2ULmnyevQqlvxqgPHSZbJC6jLxcttRueenJFbrIOkw0Yo0vEq/c1Zp+702X2w3pFIcPel3C/Cx4ot5U94R6TnIdmFAK8Nw/dIwY5+mssRcM/7+br2Y7DBB4UKo3bETeUqFgMJklzkAkVI15ZTzMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758728544; c=relaxed/simple;
-	bh=20vf8MIfcOOTOyvo/9xRmTDvKyBmElpBdVToJq0DjdU=;
+	s=arc-20240116; t=1758729633; c=relaxed/simple;
+	bh=jEEjzmNz+gmk5ZgeibUNddmKR2RxdfJxzRrshLcdK0s=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KcOzWtqImG2TtKpmJNfR+MoFP/BvIIPeEQVQSDsDd6gYLxI4xCZriyvtMlCLYvkwb+EKQUcej43tihwcp8j3H6uQ/Y0d1jXCwBdIWFN58uRvSfJkM8mvcjsyhkuUuBt9H9f8FH6LRYqp2fVFRA24JgLgyMNBaFgYWcwu8LJxT+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J0Ry6iG2; arc=none smtp.client-ip=209.85.221.42
+	 Content-Type:Content-Disposition:In-Reply-To; b=ac9qDHFoA3Poto+kTMKa/Bk1w8lP8tGW9BK75sJToKtWZFdSra5+pziX6wZWIcdHCyU24Ne9PD7AonShf9oNDkxrWtSNCjrEePoSXm8TS6BC2wBp5o3RCD2UhS1zdaBDs40PVJPonNFkuADhEpY1eUmOrWpLtEK/lBhmYo7t4G8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lJxutCxs; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3ee130237a8so20006f8f.0
-        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 08:42:22 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-46b303f755aso39837365e9.1
+        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 09:00:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758728541; x=1759333341; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758729629; x=1759334429; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L/zCkLJ/tAP0MvUebDdhfKxISOr0VaRLT4RSkHZQ/bE=;
-        b=J0Ry6iG2r/SifHFUCWPHtJZ3IX64ZxxR+0cnwmJiHyWVHvNoQFJzurF0RatrAlUlqV
-         7iCq8Hu6S9A7N6sUoxB3NAwOm95kEetwkeyjBQYJuTeEuBL//z5VNbc73/U7JL76Pc35
-         kpy4iFLJXY59QPX1vuNFF+X/c2chQu+g40z5rOkwiRKEreckxK3A/gGvWvobdu3nIh6T
-         pNGkVDV4Nl5eEjCEemXAmoaATtddQww0uBod7gdb0XN5DZrh6NpJmdnpXbnAk+izvvNm
-         f0Y3QmR5h9kBjNNk8rdRLQ1OHaND+i6ePj762aOpcwpcbdb+fcyHgjO2OfDnv9iIW/rl
-         o6Lg==
+        bh=750rYEAHSQ0UWuveAndSH+YLhrYLDuMy4II+d7YdJQE=;
+        b=lJxutCxs3RZMFeCOOS2VTbsDXy7S9D/5OVh2iuo0bwAN3PJRKHX9n7hVerFj11aX3s
+         96KTehdHee/QXiBSGdzxgkdEAGsXVUyoGCjqjPmhdPsgnRAkD9NJ8FTuNhThGx4St3Wp
+         239cC1fzNJi9dWsrYcB+P8OKPOuxVfx9STNs6bOx2hrn5jlqvDVBJjhqiTt6SkEOjCbY
+         LiiYxml+zSh8kXr9uzJ3vk0ZlHzbcW5hJwlPfMONE7XDz8ACoiN0KhUes4o5yttog3oV
+         QkNNlNT/p0zo14xF3L8xD7CIW4yqlRHxNwqEjcNwZhS0L7QFLhmF0P9HGXX8IdLHmveB
+         ZPog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758728541; x=1759333341;
+        d=1e100.net; s=20230601; t=1758729629; x=1759334429;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L/zCkLJ/tAP0MvUebDdhfKxISOr0VaRLT4RSkHZQ/bE=;
-        b=oCE18ZeurwzxAhBFWx8Jsnr4oW+cJoBryP9RMiARo0C6HRhypvEsRuySzuTEodqvEU
-         lmMz8+xcd/oK+IwNG2zOOPKzK/K1sZQpGITQ/fENvO7y0xVPH8yZSOH2COcFw8VwSbce
-         cd6ykVsuNXOJfdViaGL9ex3AkfwWwGImmFGQPNCvJjCPntagsMhiYEoPGWKASTCcmGEP
-         RGWPIMbcVYDdD9YitGOReS5nq9xpteQUyvOKRbS3xGAkI4Q/9H+vsPRqI7VGbxQS36RH
-         rPT/Wu5SqFpxqibPUHAbldq0Gp8cLiL3NosDby+ej3SiVuGM1hy8wZbiTZqC5AB4H7nt
-         WKOw==
-X-Forwarded-Encrypted: i=1; AJvYcCVLBHu44xVGqj7hVON3a6A/t8caPq+4N0Bv5Tmj/CMgdFMOl1nl3+bbLlDRCUlxBOokeWc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWKL/jxbF1Xuo3/POs0wfWilPsoTOpB5iUp69n7cvc33+eFIhF
-	xXpn9/vfBFydyzohs6hq+9a5dY9j2Lertq6bEVFpeFxdfuSY/bs1BKCa
-X-Gm-Gg: ASbGncth6Yi3Chmfm0TTkovwluiZL6U16fDWpith2IR8jCAV/KEB09f0JQ66UCxUU6L
-	RvThy5IK5cDBKHVSxLlCY79JtqI/DrMVaCGf35BnwkTYxQv5Bw9s3aNt02Ko5ypRC0ve/5/m7iP
-	z86wR0/Die3SASlbi1han+/X92r8gyLZ/TZXDqyLcROZF3HPk25kgGVygUWlfVp+Vv3+njGWnWf
-	SVB+I1sZcRARkctPQkovH0JEuKchkGWAw7h1TLRgNcc6kCB4Dq7oP6qtCwxaeWnG2JZ/wFvWFSV
-	yyW59mNL49HcKRMn+rFUWqPrJFhuOXxwmuicLC3RymHMA+NFav61cZjXJJ0MSdebMgs3GEUg
-X-Google-Smtp-Source: AGHT+IGLTOf1jm7exVsmcXsctHj+zPS0JPgI2KUuGj0PB5VIe8D8ekaVPCFkj/mn7VqohMIXLmygfw==
-X-Received: by 2002:a05:6000:2404:b0:3ea:e0fd:290a with SMTP id ffacd0b85a97d-40e458a947bmr353578f8f.12.1758728541123;
-        Wed, 24 Sep 2025 08:42:21 -0700 (PDT)
+        bh=750rYEAHSQ0UWuveAndSH+YLhrYLDuMy4II+d7YdJQE=;
+        b=hy+wocjt99hT7fGq3QNJysJkg4lPaSscdNIVPtTMAwjc2vKzZb2+cEDkATWnAKxNbm
+         rVtNkDOuK896lrvPU5Vorz91guYl7h8LLhThtCOF2gWRRbYjONvila0hAIFIotTxBIRm
+         6Sh7I3/k0c8D+VdTNcnz2mW5UC5j6pHBYLydpl9XWlJp6w55xPLeGQ3N2kh/vRdvDSr5
+         7DmzzgK2h66uRUtB9UobuBKZjvya6P+5HtX7u+MFMvSz3YrwplrITwSlnyL3MGW3CyTG
+         51A3kFqplwZDCBJGCzTScZwnIS6J1uk2KnYZzewOgkGTeYZjKie2dpte/mK2Ew0USQP0
+         o1IA==
+X-Forwarded-Encrypted: i=1; AJvYcCWj6HhanRteQfrN8iZSpHAaG7UlvcrccH0nE6O3QVJqVn68OGpN8gatGYltXmUtgtPXu1E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwrrGcQ1FOx8LxULFsJMX5tHoJFebtGeCIxynS9eWs0lhjVdHOr
+	QrfH3pVfejsXyrb2b8gJ7Cy2676yiGj2eeZm/H0IGO3i8KZZb59WRPzW
+X-Gm-Gg: ASbGncvVNaavzrPSXmx1s7nofrkEZL4HFW3cF2gnbgCCsRv3BNF7LHh1CRr2kdoUWqw
+	AuwSwbWtEIFAxZTtAkOnxt3Q5q6zXsfXi/jiRuJgEg/1GyKpDBcgkIkVZVRZmfzAY41AtcjZ6dV
+	LclnjsXyRg56h8T0IpgamHaA4CRQzesMNSjgmb5FXe8KhS3K/HD2ZWX9NehzYJ7TP8TCbOPM7s7
+	uMiK/nySH8Y1fq0wmuwEkXu9keG/HG0qrPRfCG+Phc6QpLDZJ0l0rj4lXnh2Nmbv8X/p70cv4cx
+	MOdhKo8pOI/aipdfeqti63vAYYSNcq7RjMDjROQJY+rBYVM4QzDbn8G5eZORJPJ39MR+NcFC
+X-Google-Smtp-Source: AGHT+IGS1uVQdvHmWTJ9aInOCYB0BEj+cPbPcp0L0eplHLPsYT5p2wId+q3+D0Z2kfEz6FOGX5pf3g==
+X-Received: by 2002:a05:600c:1d16:b0:45d:f7cb:70f4 with SMTP id 5b1f17b1804b1-46e329bca25mr3761415e9.13.1758729629203;
+        Wed, 24 Sep 2025 09:00:29 -0700 (PDT)
 Received: from krava ([2a02:8308:a00c:e200::31e0])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e2ab61eecsm36596225e9.20.2025.09.24.08.42.20
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3ee07407d33sm28837786f8f.18.2025.09.24.09.00.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Sep 2025 08:42:20 -0700 (PDT)
+        Wed, 24 Sep 2025 09:00:28 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 24 Sep 2025 17:42:18 +0200
-To: Feng Yang <yangfeng59949@163.com>
-Cc: mhiramat@kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
-	ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
-	kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev,
-	sdf@fomichev.me, song@kernel.org, yonghong.song@linux.dev
-Subject: Re: [BUG] Failed to obtain stack trace via bpf_get_stackid on ARM64
- architecture
-Message-ID: <aNQRWlNIno3ThMkv@krava>
-References: <20250924003215.365db154e1fc79163d9d80fe@kernel.org>
- <20250924062536.471231-1-yangfeng59949@163.com>
+Date: Wed, 24 Sep 2025 18:00:26 +0200
+To: Steven Rostedt <rostedt@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Florent Revest <revest@google.com>,
+	Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Menglong Dong <menglong8.dong@gmail.com>
+Subject: Re: [PATCH 2/9] ftrace: Add register_ftrace_direct_hash function
+Message-ID: <aNQVmrGCW08zF9Kp@krava>
+References: <20250923215147.1571952-1-jolsa@kernel.org>
+ <20250923215147.1571952-3-jolsa@kernel.org>
+ <20250924050415.4aefcb91@batman.local.home>
+ <aNQCDwYcG0Qo00Vg@krava>
+ <20250924110703.2a0ced1b@batman.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,47 +98,30 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250924062536.471231-1-yangfeng59949@163.com>
+In-Reply-To: <20250924110703.2a0ced1b@batman.local.home>
 
-On Wed, Sep 24, 2025 at 02:25:36PM +0800, Feng Yang wrote:
-
-SNIP
-
-> > Hmm, can you also dump the regs and insert pr_info() to find
-> > which function fails?
-> > 
-> > Thanks,
-> > 
+On Wed, Sep 24, 2025 at 11:07:03AM -0400, Steven Rostedt wrote:
+> On Wed, 24 Sep 2025 16:37:03 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
 > 
-> After testing, it was found that the stack could not be obtained because user_mode(regs) returned 1. 
-> Referring to the arch_ftrace_fill_perf_regs function in your email 
-> (https://lore.kernel.org/all/173518997908.391279.15910334347345106424.stgit@devnote2/), 
-> I made the following modification: by setting the value of pstate, the stack can now be obtained successfully.
+> > I have bpf changes using this that I did not post yet, but even with that
+> > there's probably no reason to export this.. will remove
 > 
-> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-> index 058a99aa44bd..f2814175e958 100644
-> --- a/arch/arm64/include/asm/ftrace.h
-> +++ b/arch/arm64/include/asm/ftrace.h
-> @@ -159,11 +159,13 @@ ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
->  {
->         struct __arch_ftrace_regs *afregs = arch_ftrace_regs(fregs);
->  
->         memcpy(regs->regs, afregs->regs, sizeof(afregs->regs));
->         regs->sp = afregs->sp;
->         regs->pc = afregs->pc;
->         regs->regs[29] = afregs->fp;
->         regs->regs[30] = afregs->lr;
-> +       regs->pstate = PSR_MODE_EL1h;
->         return regs;
->  }
-> However, I'm not sure if there will be any other impacts...
+> I'm interested in seeing these patches, as the ftrace hashes were
+> supposed to be opaque from other parts of the kernel.
 
-nice, the test works for me with this change.. could you please send
-formal patch? I can polish and send out the test [1]
+branch:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=bpf/tracing_multi
 
-thanks,
+used in this commit:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/commit/?h=bpf/tracing_multi&id=8814108949537edaae84fbeee1cbc28280590b7f
+
+background.. it's poc code for bpf tracing-multi attachment. Most likely we will
+go with Menglong change instead [1], but it could use this direct interface in a
+same way for speeding up the attachment
+
 jirka
 
 
-[1] https://github.com/kernel-patches/bpf/pull/9845/commits/11b31cd465a83b8719cb06331c8e81794cca40fa
+[1] https://lore.kernel.org/bpf/20250528034712.138701-1-dongml2@chinatelecom.cn/
 
