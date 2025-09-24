@@ -1,145 +1,135 @@
-Return-Path: <bpf+bounces-69536-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69538-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B6F0B99929
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 13:27:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 160B3B99B21
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 13:57:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4A5F64E0299
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 11:27:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA38A18968C6
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 11:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2D42E7BCC;
-	Wed, 24 Sep 2025 11:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D0B2FFDCE;
+	Wed, 24 Sep 2025 11:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q1GHCSDT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V/N+RtPG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA3F2877DB;
-	Wed, 24 Sep 2025 11:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE0A2E54DB
+	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 11:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758713268; cv=none; b=Ug4cQ2Tin06vo4mx8WH75TDSKb3mfkWCO67U9JWqhg0dlllA1zqaO9Mas9vL525gYnxv4VKQq3058CdkXcfJpzFE5gfMdXFHTF6sOheEE7hiGxlZD4kFzDcKIv4aWUWVGHiRVna/F6Eu6mbW4MvKKUKpoqEp17l1dx21D3Wma/k=
+	t=1758715068; cv=none; b=V9lC7fUyiQd3vKezAbuA639wiok31vs9jsKy7EvhtDukPz3a8YBrNOOpFgfjjyTr11z8RvymrZ4pJTeyZr59qY+htlvew+Bryb34tZ5me59wUwspdFAV1uNwTDWwuDMBr1hS4fn/eHMCeUVj8BdvmyECL88/eF/H/8u7FATBmuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758713268; c=relaxed/simple;
-	bh=zUOu4ulqC4rhaNoCJYCbjYRifBVTQcO9unlaf/FjJeg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=OLb9nlbV/wEdcB7u3qF/UDp3A/Hy+JkKhYYnBnPKCgEfc31WDaf9zeylWaUX1WP4IPkQNicoC3jij6TtBTno5Uy5pdv1r1Zpj0M21TOZ5stWmJUE2YSLQVulWtKPg9PfWWjGf6DL4/UDVkXem8O17nZgHp2lzmjB7eXA1CE/zGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q1GHCSDT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B269C4CEE7;
-	Wed, 24 Sep 2025 11:27:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758713268;
-	bh=zUOu4ulqC4rhaNoCJYCbjYRifBVTQcO9unlaf/FjJeg=;
-	h=Date:From:To:Cc:Subject:From;
-	b=q1GHCSDT+MOwapCSBbVSBjXHPzxohwqhD6ghy/G3OgJRFIHuv8RGZBjwEygTcy1Q+
-	 8G+BWUXA4apBc2GNKhZ6t595GwY3oRBQwgwJI46eTvL9AqVqdMh0TO/pBZ8l9ziGvf
-	 n1IpiAWrf1hT9wNWysnO9fiNAgv6f+irKb2rSmxR1s4h8CIwC0af32pWTQM+sFuDkh
-	 59SdxUKu/lvo8LA+tiZsrJ7U0eniPbuM4xYy8CH34sepx/QUAYVWbezTTuDwf9nI1F
-	 2ZEPETikj7xe9gogAGMflFhT1z3Dsl5xUlbKG5DF/CMPJxbdw0B6EalglN2oa4qaQA
-	 gioFM7PK1QLTg==
-Date: Wed, 24 Sep 2025 13:27:44 +0200
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Networking <netdev@vger.kernel.org>
-Cc: Amery Hung <ameryhung@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: linux-next: manual merge of the bpf-next tree with the net-next tree
-Message-ID: <aNPVsFPIJUbcepia@finisterre.sirena.org.uk>
+	s=arc-20240116; t=1758715068; c=relaxed/simple;
+	bh=rCaaygTqPB/F/lNFSnYb2RQvpeb3V5C//V4uRrp3SqA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z/PEJx4GlnBr2GoyFqek5UbZttPlZFL97CbOau718E94OMhFHmywHwWRLCMK2zzHke1vaGbyW9Y7Yc3NWh8qYsklV5rLzryKvRHdkUOeNj7xLYL88XAy5jhKFrHIFrJpKwzrEnOxsTKonCrH02KGyV75Q6xpdwxoYbpY+bI8f7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V/N+RtPG; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-46de78b595dso17882965e9.1
+        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 04:57:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758715062; x=1759319862; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/NmlER6pzMnFDPqlXu62wTlJEIIcU+BcxzvdYsha9Lk=;
+        b=V/N+RtPG9QozsVAszq6HqyGn82Z29mXfIjCiywsPUMvOcwCWGGni3w8pdmgPtUQ/mO
+         SPz+iI4br2PyjOdxDLmzS1Zp6iB+J5d+aAgiK1i6JRubhfyXzQV0eoba0ukUrCKO4l8n
+         mUucHouEeEWaWwXs82w4tYQIKdx7uFnFqFvMX9jnMpDXbBLXlFLzgb1KQLdq9FG9DLYf
+         FerXlNki3uy5zxJDaLnqrDfne+zrvbInnalg0iPXS3hnEcCEs8dUo5v/rltXe1Q0dDrL
+         5ZAfFfMrSgs+Gthoy4vldjyKcWA3lhsEEYKbe31yHUgzqgRkmFH3+n+6JvW/y79ARmdY
+         vO8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758715062; x=1759319862;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/NmlER6pzMnFDPqlXu62wTlJEIIcU+BcxzvdYsha9Lk=;
+        b=KTjc5gVWCjfW1vH5/wzu7d1fAtu8CmhDBEQG4ZY3+g93oh6+fzduOdSVBUocgUD8Kn
+         BkYQ/QXnSpiUJzE4cSzYjiqJyCUJYYYFKjp53ctnrsgpLljQcqu2gDZ8eSdDAXIb0tzZ
+         4YOu5ziU8UzqkV4x69hCfOi4vp80yFgiPwHz3bToUufvcD2EqxLCvCmpZFpe3988gjlP
+         QqyoeLaL281mE0yOufiEPq2tt+VJzDbi4PiSTaCYYpl1J5RcaOcQbns+k3eWjoSl4lTW
+         aybwuEMdB59nKTm35G1ojmQTirlDKbaVxIpohoe/3mYglKLovoVUAg6rjGACQPuuJv/C
+         yFYw==
+X-Gm-Message-State: AOJu0YwUhaPWlZn9cWD57zu9PiMDzPHn/Inut+uCrUDFL9bKVT4QLWr9
+	Zf7J3yB/UBQiINuwR2Lj1pRrCX6qWi24Pn/JOFH3pWoTbTcjNVjCgh4xvxdssed6
+X-Gm-Gg: ASbGncvV7S8Zs9uYdD7sBJTnwiD0APG/7eCYtitdDXqD97J1pWqZRumrDaQb/4dQJp2
+	M1shPy6/mcOHm/qhM3hHMOq9ljOjMhs31RqatMznfYX9xpqzwpulS5b2Z1XhUhqTcqKVmGN5gmp
+	b6qXm11ZiBGV5bCcj01MFMog0qfnuWkkathAetN+7GVGGzR1PargRITx1fYmviBKhDUSw5UxJO3
+	vESwnYAjf7JGSkTidPiZacJPRNFQ9aQVZ5YdwUQGTHdhAHET94rwCQGKKgxUQ2iVU/MXIszY3pP
+	DeGvoBm5gP5TXuiwqOvRAcshLJNWTlYXJ7ABVTdR6Q3Qe14qYjQIFxez7HODE7egOHClDTNyaau
+	RX59hA3TWz1J57apuv2LbmA==
+X-Google-Smtp-Source: AGHT+IF0pMsM+IqQ3bz4qVyMENhf26RLwW0NsZTDet/BpfoE2XrzBQux5HzjS6R6eehQyOaxlu4XsA==
+X-Received: by 2002:a05:600c:3b82:b0:45b:8477:de1a with SMTP id 5b1f17b1804b1-46e1d974657mr65760105e9.7.1758715061484;
+        Wed, 24 Sep 2025 04:57:41 -0700 (PDT)
+Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e2a9b6e1bsm33086405e9.10.2025.09.24.04.57.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Sep 2025 04:57:41 -0700 (PDT)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next v1 1/2] selftests/bpf: fix flaky bpf_cookie selftest
+Date: Wed, 24 Sep 2025 12:56:59 +0100
+Message-ID: <20250924115700.42457-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Ms46dy0Odeo4DFZW"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
---Ms46dy0Odeo4DFZW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Problem:
+bpf_cookie selftest fails if it runs after task_work selftest:
+perf_event_open fails with errno=EINVAL.
+EINVAL indicates incorrect/invalid input argument, which in case of
+bpf_cookie can only point to sample_freq attribute.
 
-Hi all,
+Possible root cause:
+When running task_work test, we can see that perf subsystem lowers
+kernel.perf_event_max_sample_rate which probably is the side-effect of
+the test that make bpf_cookie fail.
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+Solution:
+Set perf_event_open sampling rate attribute for bpf_cookie the same as
+task_work - this is the most reliable solution for this, changing
+task_work sampling rate resulted in task_work test becoming flaky.
 
-  include/net/xdp.h
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/testing/selftests/bpf/prog_tests/bpf_cookie.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-between commits:
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+index 4a0670c056ba..53a3bf435479 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+@@ -450,8 +450,8 @@ static void pe_subtest(struct test_bpf_cookie *skel)
+ 	attr.size = sizeof(attr);
+ 	attr.type = PERF_TYPE_SOFTWARE;
+ 	attr.config = PERF_COUNT_SW_CPU_CLOCK;
+-	attr.freq = 1;
+-	attr.sample_freq = 10000;
++	attr.sample_period = 100000;
++
+ 	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+ 	if (!ASSERT_GE(pfd, 0, "perf_fd"))
+ 		goto cleanup;
+-- 
+2.51.0
 
-  1827f773e4168 ("net: xdp: pass full flags to xdp_update_skb_shared_info()=
-")
-  6bffdc0f88f85 ("net: xdp: handle frags with unreadable memory")
-
-=66rom the net-next tree and commit:
-
-  8f12d1137c238 ("bpf: Clear pfmemalloc flag when freeing all fragments")
-
-=66rom the bpf-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-diff --cc include/net/xdp.h
-index 6fd294fa6841d,f288c348a6c13..0000000000000
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@@ -126,16 -115,11 +126,21 @@@ static __always_inline void xdp_buff_se
-  	xdp->flags |=3D XDP_FLAGS_FRAGS_PF_MEMALLOC;
-  }
- =20
- +static __always_inline void xdp_buff_set_frag_unreadable(struct xdp_buff =
-*xdp)
- +{
- +	xdp->flags |=3D XDP_FLAGS_FRAGS_UNREADABLE;
- +}
- +
- +static __always_inline u32 xdp_buff_get_skb_flags(const struct xdp_buff *=
-xdp)
- +{
- +	return xdp->flags;
- +}
- +
-+ static __always_inline void xdp_buff_clear_frag_pfmemalloc(struct xdp_buf=
-f *xdp)
-+ {
-+ 	xdp->flags &=3D ~XDP_FLAGS_FRAGS_PF_MEMALLOC;
-+ }
-+=20
-  static __always_inline void
-  xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rx=
-q)
-  {
-
---Ms46dy0Odeo4DFZW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmjT1a8ACgkQJNaLcl1U
-h9DXBAf9HJYzJ29925w09ryPHc1ZVs6mgTV3WZnR8ULVwjvt/6M7Y90NQPsqefMT
-Ai9auaIqaTiC8tRsLcX74XgHqABq4jjf/gLcKu+zw3GRPO8lFn2lbyFTXenC25J3
-60eISD4nmb2vi04U0dNv891ffKuddE0Qq5E8NZYRHVN4hNmTOhuixXvlRESZvzv3
-PS9dIysY5DIUlUQPpvho9vNYvI4Vwm4psrcE+03iveELDeMrFjIOlvn3YTCQHEEt
-cakP8JjikRglrFev+ZLqqQGjuD/ZJeqA9KdgSWiOBx0wQE5aHMZqgk/6W79crvMi
-QyjPYVWN60AGM9Ir9abjALIZRrawEg==
-=ez26
------END PGP SIGNATURE-----
-
---Ms46dy0Odeo4DFZW--
 
