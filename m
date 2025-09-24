@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-69618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0618DB9C3FB
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 23:16:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86D60B9C3FE
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 23:16:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3A53327144
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 21:16:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A3971BC0D05
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 21:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321CA281370;
-	Wed, 24 Sep 2025 21:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078D527EFEF;
+	Wed, 24 Sep 2025 21:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HatGGRro"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mkpGq4vt"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60ECB25B1CE;
-	Wed, 24 Sep 2025 21:16:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8338C24E016
+	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 21:16:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758748564; cv=none; b=aSy2OsJrk7TjNQeuScdW96c+6Z4zTMKB7d3pBcyr4g98fgOQ6V9Ev4tWncU+wC0FZwQmB2jxSj+l9FtqBTCXPN5/7y59zAvIxyPtJpZbH6aC2fWU1i9DYiBK+rp9TuXCFTi+eDoqkVfIwkZ0eA/oLRENjmQ41mLVeyXWvmzmsSE=
+	t=1758748573; cv=none; b=SygmyNaMuo4+ZAqKm+QuluAG5k82U77pBtWQ+S+7C1iT532k8Qa93S8uQDeqWLx0lWllCxQB6P7fOxjZbyxbCQKHDV/E/3E0PjrlL+TxlosIo24uRRVunqF8oCDjc2zCYNF05Rn17f/4G2cSbNG0+0fLNE6l3YSM9qZVH7lJhtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758748564; c=relaxed/simple;
-	bh=4+tjgcv1kcysAsBQl25lYPrEQGhq9dj0OORP1sz8UBg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cu5klOHVvCZYJocpfmVYf4U3aThJHLtARtSct+f2Lfb/IbetShENGYsufE9fw0Fa+NTR4WSIfRFOlSp00kJalOVLMbjxqCTozF5nWtTVUaQDME0UJzQB/6ZGLA/wkKEyjRrzpsXhvgm2r78C41pYuyLKjSJdjbzQIAnWFW87DJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HatGGRro; arc=none smtp.client-ip=91.218.175.173
+	s=arc-20240116; t=1758748573; c=relaxed/simple;
+	bh=STqillM6f/jIFpGJSB05uY551NjX8hPLHPiaDwbf23Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=uUqAzRSzhC8C67l3yaWuFvXQb6mlauSrbcQz/qByfPcUWaUj5+99Kwoh0910sf44un5Ee/aKL9eOhd3WjsldKdK7Y7Esfg8XfGFYyS5qFPNzdMOoUU++hXrLiTOaDCP+IvpgoPYk3MDcAvfNNGj/fpA1YdV4O07Mnux26laXS9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mkpGq4vt; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758748559;
+	t=1758748569;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=9PGwQHPnVpeQv56lh681eq2C/g3Am9ZKx7kA4WrGWTQ=;
-	b=HatGGRroypv/k/ZBYvQ71/gLNpd2rGPmjlG6rEieX+rFD0CjG++jgGN/LnENxBIZ+b/lD1
-	9R1/cSDxVDFZPBHjevX7F3oNaMIbw7sY7qVO4GFat9cYc3PjF3ScUhouDA+ZAVWSzk4rom
-	fM68gsnjDrAeTIFaijwxZBUAhXBAC6M=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jCH1crvCjrOLG0+crYaC0fGE0gz336E9xFncWxN+qko=;
+	b=mkpGq4vt6wO4UYtg1K88GSy78spAuVex2pKbiBkTXu/D1Hx2HgKvMDnPsdr1Jv1BykR/VA
+	V2VJMiLu/nh21wu5L3T1X/97S8l0NKQe8OLWMrtDqk9Gv7sxUzd3S1NpB2dhqbNGtJYkdL
+	m73V+Yqe2WHd/FatHauITwBIkhKzspU=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: dwarves@vger.kernel.org,
 	alan.maguire@oracle.com,
@@ -50,9 +52,11 @@ Cc: bpf@vger.kernel.org,
 	eddyz87@gmail.com,
 	tj@kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH dwarves v1 0/2] btf_encoder: KF_IMPLICIT_PROG_AUX_ARG support
-Date: Wed, 24 Sep 2025 14:15:10 -0700
-Message-ID: <20250924211512.1287298-1-ihor.solodrai@linux.dev>
+Subject: [PATCH dwarves v1 1/2] btf_encoder: refactor btf_encoder__add_func_proto
+Date: Wed, 24 Sep 2025 14:15:11 -0700
+Message-ID: <20250924211512.1287298-2-ihor.solodrai@linux.dev>
+In-Reply-To: <20250924211512.1287298-1-ihor.solodrai@linux.dev>
+References: <20250924211512.1287298-1-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,26 +66,201 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This series implements KF_IMPLICIT_PROG_AUX_ARG kfunc flag in pahole's
-BTF encoding.
+btf_encoder__add_func_proto() essentially implements two independent
+code paths depending on input arguments: one for struct ftype and the
+other for struct btf_encoder_func_state.
 
-The kfunc flag indicates that the last argument of a BPF kfunc is a
-pointer to struct bpf_prog_aux implicitly set by the verifier.
+Split btf_encoder__add_func_proto() into two variants:
+  * btf_encoder__add_func_proto_for_ftype()
+  * btf_encoder__add_func_proto_for_state()
 
-BTF function prototype of such a function must omit its last parameter
-(expected to be of `struct bpf_prog_aux *` type), despite it being
-present in the kernel declaration of the kfunc.
+And factor out common btf_encoder__emit_func_proto() subroutine.
 
-See also a the patch series for BPF:
-"bpf: implicit bpf_prog_aux argument for kfuncs"
+No functional changes.
 
-Ihor Solodrai (2):
-  btf_encoder: refactor btf_encoder__add_func_proto
-  btf_encoder: implement KF_IMPLICIT_PROG_AUX_ARG kfunc flag handling
+Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+---
+ btf_encoder.c | 132 ++++++++++++++++++++++++++++----------------------
+ 1 file changed, 75 insertions(+), 57 deletions(-)
 
- btf_encoder.c | 172 ++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 116 insertions(+), 56 deletions(-)
-
+diff --git a/btf_encoder.c b/btf_encoder.c
+index 03bc3c7..4906943 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -815,82 +815,100 @@ static inline bool is_kfunc_state(struct btf_encoder_func_state *state)
+ 	return state && state->elf && state->elf->kfunc;
+ }
+ 
+-static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct ftype *ftype,
+-					   struct btf_encoder_func_state *state)
+-{
++static int32_t btf_encoder__emit_func_proto(struct btf_encoder *encoder, uint32_t type_id, uint16_t nr_params) {
+ 	const struct btf_type *t;
+-	struct btf *btf;
+-	struct parameter *param;
++	uint32_t ret;
++
++	ret = btf__add_func_proto(encoder->btf, type_id);
++	if (ret > 0) {
++		t = btf__type_by_id(encoder->btf, ret);
++		btf_encoder__log_type(encoder, t, false, false, "return=%u args=(%s", t->type, !nr_params ? "void)\n" : "");
++	} else {
++		btf__log_err(encoder->btf, BTF_KIND_FUNC_PROTO, NULL, true, ret,
++			     "return=%u vlen=%u Error emitting BTF type",
++			     type_id, nr_params);
++	}
++
++	return ret;
++}
++
++static int32_t btf_encoder__add_func_proto_for_ftype(struct btf_encoder *encoder, struct ftype *ftype)
++{
+ 	uint16_t nr_params, param_idx;
++	struct parameter *param;
+ 	int32_t id, type_id;
++	const char *name;
++
++	assert(ftype != NULL);
++
++	/* add btf_type for func_proto */
++	nr_params = ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
++	type_id = btf_encoder__tag_type(encoder, ftype->tag.type);
++
++	id = btf_encoder__emit_func_proto(encoder, type_id, nr_params);
++	if (id < 0)
++		return id;
++
++	/* add parameters */
++	param_idx = 0;
++
++	ftype__for_each_parameter(ftype, param) {
++		name = parameter__name(param);
++		type_id = param->tag.type == 0 ? 0 : encoder->type_id_off + param->tag.type;
++		++param_idx;
++		if (btf_encoder__add_func_param(encoder, name, type_id, param_idx == nr_params))
++			return -1;
++	}
++
++	++param_idx;
++	if (ftype->unspec_parms)
++		if (btf_encoder__add_func_param(encoder, NULL, 0, param_idx == nr_params))
++			return -1;
++
++	return id;
++}
++
++static int32_t btf_encoder__add_func_proto_for_state(struct btf_encoder *encoder, struct btf_encoder_func_state *state)
++{
++	uint16_t nr_params, param_idx;
+ 	char tmp_name[KSYM_NAME_LEN];
++	int32_t id, type_id;
+ 	const char *name;
++	struct btf *btf;
+ 
+-	assert(ftype != NULL || state != NULL);
++	assert(state != NULL);
+ 
+ 	if (is_kfunc_state(state) && encoder->tag_kfuncs && encoder->encode_attributes)
+ 		if (btf__add_bpf_arena_type_tags(encoder->btf, state) < 0)
+ 			return -1;
+ 
+-	/* add btf_type for func_proto */
+-	if (ftype) {
+-		btf = encoder->btf;
+-		nr_params = ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
+-		type_id = btf_encoder__tag_type(encoder, ftype->tag.type);
+-	} else if (state) {
+-		encoder = state->encoder;
+-		btf = state->encoder->btf;
+-		nr_params = state->nr_parms;
+-		type_id = state->ret_type_id;
+-	} else {
+-		return 0;
+-	}
++	encoder = state->encoder;
++	btf = state->encoder->btf;
++	nr_params = state->nr_parms;
++	type_id = state->ret_type_id;
+ 
+-	id = btf__add_func_proto(btf, type_id);
+-	if (id > 0) {
+-		t = btf__type_by_id(btf, id);
+-		btf_encoder__log_type(encoder, t, false, false, "return=%u args=(%s", t->type, !nr_params ? "void)\n" : "");
+-	} else {
+-		btf__log_err(btf, BTF_KIND_FUNC_PROTO, NULL, true, id,
+-			     "return=%u vlen=%u Error emitting BTF type",
+-			     type_id, nr_params);
++	id = btf_encoder__emit_func_proto(encoder, type_id, nr_params);
++	if (id < 0)
+ 		return id;
+-	}
+ 
+ 	/* add parameters */
+ 	param_idx = 0;
+-	if (ftype) {
+-		ftype__for_each_parameter(ftype, param) {
+-			const char *name = parameter__name(param);
+-
+-			type_id = param->tag.type == 0 ? 0 : encoder->type_id_off + param->tag.type;
+-			++param_idx;
+-			if (btf_encoder__add_func_param(encoder, name, type_id,
+-							param_idx == nr_params))
+-				return -1;
+-		}
+ 
+-		++param_idx;
+-		if (ftype->unspec_parms)
+-			if (btf_encoder__add_func_param(encoder, NULL, 0,
+-							param_idx == nr_params))
+-				return -1;
+-	} else {
+-		for (param_idx = 0; param_idx < nr_params; param_idx++) {
+-			struct btf_encoder_func_parm *p = &state->parms[param_idx];
++	for (param_idx = 0; param_idx < nr_params; param_idx++) {
++		struct btf_encoder_func_parm *p = &state->parms[param_idx];
+ 
+-			name = btf__name_by_offset(btf, p->name_off);
++		name = btf__name_by_offset(btf, p->name_off);
+ 
+-			/* adding BTF data may result in a move of the
+-			 * name string memory, so make a temporary copy.
+-			 */
+-			strncpy(tmp_name, name, sizeof(tmp_name) - 1);
++		/* adding BTF data may result in a move of the
++		 * name string memory, so make a temporary copy.
++		 */
++		strncpy(tmp_name, name, sizeof(tmp_name) - 1);
+ 
+-			if (btf_encoder__add_func_param(encoder, tmp_name, p->type_id,
+-							param_idx == nr_params))
+-				return -1;
+-		}
++		if (btf_encoder__add_func_param(encoder, tmp_name, p->type_id,
++						param_idx == nr_params))
++			return -1;
+ 	}
++
+ 	return id;
+ }
+ 
+@@ -1349,7 +1367,7 @@ static int32_t btf_encoder__add_func(struct btf_encoder *encoder,
+ 	uint16_t idx;
+ 	int err;
+ 
+-	btf_fnproto_id = btf_encoder__add_func_proto(encoder, NULL, state);
++	btf_fnproto_id = btf_encoder__add_func_proto_for_state(encoder, state);
+ 	name = func->name;
+ 	if (btf_fnproto_id >= 0)
+ 		btf_fn_id = btf_encoder__add_ref_type(encoder, BTF_KIND_FUNC, btf_fnproto_id,
+@@ -1686,7 +1704,7 @@ static int btf_encoder__encode_tag(struct btf_encoder *encoder, struct tag *tag,
+ 	case DW_TAG_enumeration_type:
+ 		return btf_encoder__add_enum_type(encoder, tag, conf_load);
+ 	case DW_TAG_subroutine_type:
+-		return btf_encoder__add_func_proto(encoder, tag__ftype(tag), NULL);
++		return btf_encoder__add_func_proto_for_ftype(encoder, tag__ftype(tag));
+         case DW_TAG_unspecified_type:
+ 		/* Just don't encode this for now, converting anything with this type to void (0) instead.
+ 		 *
 -- 
 2.51.0
 
