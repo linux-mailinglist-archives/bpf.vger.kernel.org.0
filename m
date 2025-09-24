@@ -1,170 +1,173 @@
-Return-Path: <bpf+bounces-69545-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69546-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796C6B9A48C
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 16:37:40 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CE60B9A56E
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 16:50:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C7A0168A76
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 14:37:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3D0BB4E2056
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 14:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98875309F12;
-	Wed, 24 Sep 2025 14:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E12D309F09;
+	Wed, 24 Sep 2025 14:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XL7VXdKB"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="xcbeB/MI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2AA308F05
-	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 14:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC1E27456;
+	Wed, 24 Sep 2025 14:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758724629; cv=none; b=FTK3JDAutyw9PYrsVbwnaLdp9LlsrCnFU/gGWobxI1n0SNdPjS3509EnoTHcTlxZXziR2RCNzfXE/b4BF8auHSJZ+i0w6nSkINBYg5RiZM9PBBXc3oLEDtWifRNlhM6tgMqVGIBB62qDeIJ+woxT+TwDqk/JQZL4eahWLRAoJU0=
+	t=1758725406; cv=none; b=h2ru1X+CtsT3VIWdgXmEr01WCDbV3ndK/URm/HU90KsMMkVLCk5/2gwPdomJVHCUBmUqFaM/BIAC7wt2SUmG5Yo7tCYDF85+qMNtt94l7g4IB1EUPhPokRDXyzEktcyadat2LQKZQUQgEo6+yaHGh3qTSXqIlnMznu5uiXWsjTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758724629; c=relaxed/simple;
-	bh=sIBMYcw18+Ht8eXVyZ8dR0xLQoQqWvukpqCuFy0av6A=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NFRUec/z/F8SGZYYdBlhDB5YBpG3muC6iokpQ87AcmI2VsBfvmSVoibYnO32m7r/7475PlZlAiABRnFKMniFkYRPrGAQNb/z3HDYDA304j0Sl0Skm1Jw7GtJvZVc9eXP5f+N0lcmAlCdD38L4zIsFi5WqY6GUjh5GmF8jV8FzrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XL7VXdKB; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3f44000626bso3058360f8f.3
-        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 07:37:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758724626; x=1759329426; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5HShbJ4pb0uvOuUwE85U36B7c1llkadxegnV9SHJtyg=;
-        b=XL7VXdKB3JM/deiApRhDlMQkiHB3F+D7w6mocXHXJiUGYZnVQ0rZTVfA+oM1vT+O5s
-         r8Ih0w7Mgqmieo7PAZGGcFX2pyHQgR1iSYN+hpI7HjRAhv/bQ49BJFHVnIU/u+KgkK06
-         5+a/iAnEmeb/+1wCzXYYyqrkyQ3XIwvn+3uH7NqhIZH9HNGzG+DVMvle4dk+N8sxhy1x
-         n/JFrYrqDMLpafKLwjTRBU1guVTcXqv8jVkz9E2LUGAHmlWj2MKkOh9q2k+BWBq3HYKh
-         Tax8e5bxHbk2PN2u/zoRIJGFKHRKB1yPpt8F7etb+VlBjr8LIClh5xyphPnLsSdwrIqM
-         X9Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758724626; x=1759329426;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5HShbJ4pb0uvOuUwE85U36B7c1llkadxegnV9SHJtyg=;
-        b=fYNDaNlSqvTBg7Cn49eCOSilIdajeJ2JX0EIc51Wnj0kcr1tZuab9mXjdxPoHsK6/C
-         xjpO8udXHtoPJoJj5y/yKWwl0iepJ5WdHor1w/IfWI9o6knuAI85cTBvruBnyJhPApss
-         mdyCjWIehCxd1lGSb90ptpgYs+sR6eQMSqUdKdq1wCApvgxnT1N6/1e2OiQo6SUtI3vT
-         BZWFlwKYJuPd7EvMIigamNOT0ax+XVod/sxefw1Y7qE4gZ8PUHiyVKWFjMHVZ2peHZ4k
-         0fSeYn/Ly4osvkevIKiVCdFiDkMTfKGdvY0AuuiGLrz4uKRhecXWoLi2zv//xU2lDniC
-         DlMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUBkJFZnLdzuQlTnZxbyxiUSJnWeVzHrlFwh8WPn/L7GP3oXu6qLkq6s2gkZyIC4AZ25bc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxp1/hsQyj4MSzYdONpc8TdS8oD82qPRpRaQ78qLDfBxANgzP9I
-	nx4bYzp6MS/2TZZJwIumHpXDH9dnbvYi/8BBktIAo+AVc7RYtIKXG4Q0WMDFh5wv2kQ=
-X-Gm-Gg: ASbGncv51l6EusbnEz4QMzEYzMO4uzS+CNNNF8B8dluZa+WW0vusSOFqjO8adjOJ6a0
-	NutuWvagJE5uO6xowdG+U0kyKfd3qcci0VZ8O+YGLORsYJATZP+zhLX2RmVrdRx+CHLMqjzAa3H
-	7NzcxlYfcmZnsTPMk39GPwZflIRnjFlCLUC9PDhEvz8igszcH0Cb0xhY/igJlUK/uI43MCixtyk
-	V0JIzt9dUAbypf8S4nL/2WEeZCY4ix9G/67PixGHnxuruRHqyPRD7vwV3jjzK9DnumpiyixOvvZ
-	0xQE+O7EC+aecDmfhs2OFqtBsTRCBq3cGDgz6+Iim2ei2vVNa3hEXQHJ1vdfg+L7kK6tagLk
-X-Google-Smtp-Source: AGHT+IGEO49EkOTURq2dd80B/jZaZg6Lr95kVlEuO3QoAtObbHlJjeJCYscX19kjXmpcKNM1wSiX9Q==
-X-Received: by 2002:a05:6000:3105:b0:3fb:9950:b9fe with SMTP id ffacd0b85a97d-40e48a56cb5mr155880f8f.47.1758724625481;
-        Wed, 24 Sep 2025 07:37:05 -0700 (PDT)
-Received: from krava ([2a02:8308:a00c:e200::31e0])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3fb8ebb0d91sm15724812f8f.54.2025.09.24.07.37.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Sep 2025 07:37:05 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 24 Sep 2025 16:37:03 +0200
-To: Steven Rostedt <rostedt@kernel.org>
-Cc: Florent Revest <revest@google.com>, Mark Rutland <mark.rutland@arm.com>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Menglong Dong <menglong8.dong@gmail.com>
-Subject: Re: [PATCH 2/9] ftrace: Add register_ftrace_direct_hash function
-Message-ID: <aNQCDwYcG0Qo00Vg@krava>
-References: <20250923215147.1571952-1-jolsa@kernel.org>
- <20250923215147.1571952-3-jolsa@kernel.org>
- <20250924050415.4aefcb91@batman.local.home>
+	s=arc-20240116; t=1758725406; c=relaxed/simple;
+	bh=nqIIO7txybV7R91UDPW32xrfVvjRQAGIDMf2qgiDNzM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QzlrUPPkTd7fLB2IrU8/4BZpET7xtgbAf7A04SYAR8pjtj9KhZNY11qZO+KPSqGJkyhb6AARprI+PJIhuq8A5JXfigCM00+l7sIOT67z51rTCq8LCR1aj4YPhgcIjFcUZ3bOTDbAM2ZC+aZHQQrLuKXF0+aUBIN2SvCr8NMBGbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=xcbeB/MI; arc=none smtp.client-ip=185.246.84.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 3B6861A0F81;
+	Wed, 24 Sep 2025 14:50:00 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 00BD460634;
+	Wed, 24 Sep 2025 14:50:00 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C441E102F18D8;
+	Wed, 24 Sep 2025 16:49:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1758725398; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=5Yy6cV7CI+4JraO3JP09oFw2D7jO5gkDGtxirbXHjaM=;
+	b=xcbeB/MI+amkstuwxBY1vgM1i16KDyFZwzbh1A3A0wKjy+8lBJpjX0CHaQU9iD15Y2vmgQ
+	4n/6aK/Bf4p8sviXKJS0i2D9qVvcXqTZt5pz0R0ZQYhlTmIhSSr6iCxUoLLovmdn9IqMEL
+	ovYGLtEkC6vzLM4Bh2G60xL5iTBUhn8bzrq8KnN5OE0VrbFkUSrws4/JPTHhbO0tg2M7g1
+	67ylyYBvWDtD0jRExy1B4qLJF/sGNG8D4KuZmVW0Uhh7FtEIp8gOwougR5nJfBQHqLRFtP
+	8WJUOnOqK5AcPBeMMS8Uv9fFGe7/GIbH4sP7aOyuijXyd9sIa2xntSZ3WzjgYA==
+From: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+Subject: [PATCH bpf-next v4 00/15] selftests/bpf: Integrate test_xsk.c to
+ test_progs framework
+Date: Wed, 24 Sep 2025 16:49:35 +0200
+Message-Id: <20250924-xsk-v4-0-20e57537b876@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250924050415.4aefcb91@batman.local.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAP8E1GgC/2XMQQ6CMBCF4auYrq1pZ1pLXXkP4wLKII1KCSUEQ
+ 7i7TVlodDl58/0LizR4iuy0W9hAk48+dOlQ+x1zbdndiPs63QwEaAGy4HO8c+EaK8gaXUvF0mc
+ /UOPnXLmwqm94R/PIrmlpfRzD8Mr5SeY9l1BiLk2SC27QKAO2tFjZcxXC+PDdwYVnLkzwUVbAp
+ iApadwRla41SP2v8FupTWFSjrAAQpSq+FHrur4B2SMApw4BAAA=
+X-Change-ID: 20250218-xsk-0cf90e975d14
+To: =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
+ Magnus Karlsson <magnus.karlsson@intel.com>, 
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+X-Mailer: b4 0.14.2
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Wed, Sep 24, 2025 at 05:04:15AM -0400, Steven Rostedt wrote:
-> On Tue, 23 Sep 2025 23:51:40 +0200
-> Jiri Olsa <jolsa@kernel.org> wrote:
-> 
-> > Adding register_ftrace_direct_hash function that registers
-> > all entries (ip -> direct) provided in hash argument.
-> > 
-> > The difference to current register_ftrace_direct is
-> >  - hash argument that allows to register multiple ip -> direct
-> >    entries at once
-> 
-> I'm a bit confused. How is this different? Doesn't
-> register_ftrace_direct() register multiple ip -> direct entries at once
-> too? But instead of using a passed in hash, it uses the hash from
-> within the ftrace_ops.
+Hi all,
 
-right, but that assumes that we can touch the hash in ftrace_ops directly,
-but register_ftrace_direct_hash semantics is bit different, because it allows
-to register new (ip,addr) entries on already 'running' ftrace_ops, in which
-case you can't change the ftrace_ops hash directly
+The test_xsk.sh script covers many AF_XDP use cases. The tests it runs
+are defined in xksxceiver.c. Since this script is used to test real
+hardware, the goal here is to leave it as it is, and only integrate the
+tests that run on veth peers into the test_progs framework.
 
-> 
-> >  - we can call register_ftrace_direct_hash multiple times on the
-> >    same ftrace_ops object, becase after first registration with
-> >    register_ftrace_function_nolock, it uses ftrace_update_ops to
-> >    update the ftrace_ops object
-> 
-> OK, I don't like the name "register" here. "register" should be for the
-> first instance and then it is registered. If you call it multiple times
-> on the same ops without "unregister" it should give an error.
-> 
-> Perhaps call this "update_ftrace_direct()" where it can update a direct
-> ftrace_ops from?
+Some tests are flaky so they can't be integrated in the CI as they are.
+I think that fixing their flakyness would require a significant amount of
+work. So, as first step, I've excluded them from the list of tests
+migrated to the CI (cf PATCH 14). If these tests get fixed at some
+point, integrating them into the CI will be straightforward.
 
-I agree the 'register' naming is confusing in here.. but we still need to
-use 3 functions for register/unregister/modify operations, so perhaps:
+I noticed a small error on a function's return value while investigating
+on the report's summary issue pointed out by Maciej in previous iteration,
+the new PATCH 3 fixes it.
 
-   update_ftrace_direct_add(ops, hash)
-   update_ftrace_direct_del(ops, hash)
-   update_ftrace_direct_mod(ops, hash)
+PATCH 1 extracts test_xsk[.c/.h] from xskxceiver[.c/.h] to make the
+tests available to test_progs.
+PATCH 2 to 7 fix small issues in the current test
+PATCH 8 to 13 handle all errors to release resources instead of calling
+exit() when any error occurs.
+PATCH 14 isolates some flaky tests
+PATCH 15 integrate the non-flaky tests to the test_progs framework
 
-?
+Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+---
+Changes in v4:
+- Fix test_xsk.sh's summary report.
+- Merge PATCH 11 & 12 together, otherwise PATCH 11 fails to build.
+- Split old PATCH 3 in two patches. The first one fixes
+  testapp_stats_rx_dropped(), the second one fixes
+  testapp_xdp_shared_umem(). The unecessary frees (in
+  testapp_stats_rx_full() and testapp_stats_fill_empty() are removed)
+- Link to v3: https://lore.kernel.org/r/20250904-xsk-v3-0-ce382e331485@bootlin.com
 
-> 
-> > 
-> > This change will allow us to have simple ftrace_ops for all bpf
-> > direct interface users in following changes.
-> 
-> After applying all the patches, I have this:
-> 
-> $ git grep register_ftrace_direct_hash
-> include/linux/ftrace.h:int register_ftrace_direct_hash(struct ftrace_ops *ops, struct ftrace_hash *hash);
-> include/linux/ftrace.h:int unregister_ftrace_direct_hash(struct ftrace_ops *ops, struct ftrace_hash *hash);
-> include/linux/ftrace.h:int register_ftrace_direct_hash(struct ftrace_ops *ops, struct ftrace_hash *hash)
-> include/linux/ftrace.h:int unregister_ftrace_direct_hash(struct ftrace_ops *ops, struct ftrace_hash *hash)
-> kernel/trace/ftrace.c:  err = register_ftrace_direct_hash(ops, hash);
-> kernel/trace/ftrace.c:  err = unregister_ftrace_direct_hash(ops, hash);
-> kernel/trace/ftrace.c:int register_ftrace_direct_hash(struct ftrace_ops *ops, struct ftrace_hash *hash)
-> kernel/trace/ftrace.c:EXPORT_SYMBOL_GPL(register_ftrace_direct_hash);
-> kernel/trace/ftrace.c:int unregister_ftrace_direct_hash(struct ftrace_ops *ops, struct ftrace_hash *hash)
-> kernel/trace/ftrace.c:EXPORT_SYMBOL_GPL(unregister_ftrace_direct_hash);
-> 
-> Where I do not see it is used outside of ftrace.c. Why is it exported?
+Changes in v3:
+- Rebase on latest bpf-next_base to integrate commit c9110e6f7237 ("selftests/bpf:
+Fix count write in testapp_xdp_metadata_copy()").
+- Move XDP_METADATA_COPY_* tests from flaky-tests to nominal tests
+- Link to v2: https://lore.kernel.org/r/20250902-xsk-v2-0-17c6345d5215@bootlin.com
 
-I have bpf changes using this that I did not post yet, but even with that
-there's probably no reason to export this.. will remove
+Changes in v2:
+- Rebase on the latest bpf-next_base and integrate the newly added tests
+  to the work (adjust_tail* and tx_queue_consumer tests)
+- Re-order patches to split xkxceiver sooner.
+- Fix the bug reported by Maciej.
+- Fix verbose mode in test_xsk.sh by keeping kselftest (remove PATCH 1,
+  7 and 8)
+- Link to v1: https://lore.kernel.org/r/20250313-xsk-v1-0-7374729a93b9@bootlin.com
 
-thanks,
-jirka
+---
+Bastien Curutchet (eBPF Foundation) (15):
+      selftests/bpf: test_xsk: Split xskxceiver
+      selftests/bpf: test_xsk: Initialize bitmap before use
+      selftests/bpf: test_xsk: Fix __testapp_validate_traffic()'s return value
+      selftests/bpf: test_xsk: fix memory leak in testapp_stats_rx_dropped()
+      selftests/bpf: test_xsk: fix memory leak in testapp_xdp_shared_umem()
+      selftests/bpf: test_xsk: Wrap test clean-up in functions
+      selftests/bpf: test_xsk: Release resources when swap fails
+      selftests/bpf: test_xsk: Add return value to init_iface()
+      selftests/bpf: test_xsk: Don't exit immediately when xsk_attach fails
+      selftests/bpf: test_xsk: Don't exit immediately when gettimeofday fails
+      selftests/bpf: test_xsk: Don't exit immediately when workers fail
+      selftests/bpf: test_xsk: Don't exit immediately if validate_traffic fails
+      selftests/bpf: test_xsk: Don't exit immediately on allocation failures
+      selftests/bpf: test_xsk: Isolate flaky tests
+      selftests/bpf: test_xsk: Integrate test_xsk.c to test_progs framework
+
+ tools/testing/selftests/bpf/Makefile              |   11 +-
+ tools/testing/selftests/bpf/prog_tests/test_xsk.c | 2595 ++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/test_xsk.h |  294 +++
+ tools/testing/selftests/bpf/prog_tests/xsk.c      |  146 ++
+ tools/testing/selftests/bpf/xskxceiver.c          | 2696 +--------------------
+ tools/testing/selftests/bpf/xskxceiver.h          |  156 --
+ 6 files changed, 3174 insertions(+), 2724 deletions(-)
+---
+base-commit: 1bd67e08d0f3fcb8cc69a73fb7aab9f048be4b8e
+change-id: 20250218-xsk-0cf90e975d14
+
+Best regards,
+-- 
+Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+
 
