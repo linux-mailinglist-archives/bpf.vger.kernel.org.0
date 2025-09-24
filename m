@@ -1,229 +1,327 @@
-Return-Path: <bpf+bounces-69638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22A49B9C888
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 01:25:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F07BB9C96C
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 01:32:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EEED64E3312
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 23:25:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E28E816BA7F
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 23:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA3A72BD5A8;
-	Wed, 24 Sep 2025 23:24:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD6C2BD5A8;
+	Wed, 24 Sep 2025 23:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C5pgjaOj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BFVp6Ewz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16A4296BB3
-	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 23:24:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10AC28935A
+	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 23:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758756287; cv=none; b=QXG/bZyhEa3um2eyeQzaBh/lAX/QBaV91bQghp0vag47odnVIRwoQRptJMYBmSTfJ/mMuAR2cX6IttVqohwBdgphNvCYQ46OlbXBWw/7i2qDGwUSwJ2L/Iawljeak+9ArRoH05kAA1NPvQuCCaV60BGPZufDVz1OjiVHedDmaD4=
+	t=1758756724; cv=none; b=tp3mGhE5/kYJyrRbyhq3mBbjG9f4nAfcNwb3Mjicu9gzNHm/9xfWYiK7T2Cs+83E3qS3Dj/OUKmFbuTa0b6mzUe+l9MKZp3HB5SrXoEhvzNHn+j/0PhF8M09u+kDBJTyCRj3/F5PrFeRtTLK16Zy4QiUFGk/TAIVzXeNcMNF9ZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758756287; c=relaxed/simple;
-	bh=jaQTaJ4mYwHZIzYYD9MZVWoeMd3U8prEmCe/Sz2asJI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZhDMXSpMBBrJIbUJdSaOibEbjwgCwA38JxuZqlIkhXg/cR/SY0PnO+WP3gQaGMSYhPZjUYC5MUQRNWubJ5cpLsuDQGhPo4kJX2zMh+Y8eJfO9cB5j2TJwiLiSt1rSopmxZvgpsmz04KfgC8Xd+B+YUwo2+yh7c63Sjr+HcOeYyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C5pgjaOj; arc=none smtp.client-ip=209.85.222.176
+	s=arc-20240116; t=1758756724; c=relaxed/simple;
+	bh=lj0l7+BirGeLird5uKbBQD2J7LyQwT1x96rHoasXYLc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qKuJIJx2MYssjSSd5798vDZq2E16p6vze58fsrpFaUKo9wdQTUH5tXGVjiqGUGYBVJiFlgxpaS3ED/w7NLfLObZqGkAcU1G+4QxbjCL6kfODtyGzQlmuAHz7ZvM+ElnJ929H4+CVs+LxYC1/4KERyyWeXgwegGkiE4dQvCJiDc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BFVp6Ewz; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-84ab207c37cso33593085a.2
-        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 16:24:45 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3304a57d842so308689a91.3
+        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 16:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758756284; x=1759361084; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1758756721; x=1759361521; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fhxvs9hARKBT28uRXK2/9g46kPCnOYI+QDN0T6RZ7PI=;
-        b=C5pgjaOjnjLCyt1/dXB1iHOHahrN5q/U98S0flynxEgcR8xdlEpIvNZ0iF+r8PQvRh
-         csajHqfYlUoJLHTUS7mwPpFj0kNL/gvbMW0OTIlj45ru373KKNL5vmYr+BqQnOrI0Wdf
-         uu/Sbm/KuJPDWun0vcrRIcXco6IFz1a13DmYcsCgpYLXAGpl2i0TQI+4hcz4J/UIUnNM
-         5ezeUHq+RF1jY5muBgCaB682Ro+GWuD4jIW9yrX5pXs9l7pExN5+qFp4VuegOSZeUeIz
-         khJv0eURBXLCtmYFO0wgyYZexzx/vUIG95mhlvoOp/NQI//fJBEQqxYGU/nFcxMLw1em
-         MJuA==
+        bh=tiTWBIBBubRN9otW82Nfq+sKRJTpI0EqqY5OOcEQf2Q=;
+        b=BFVp6EwzKhDaJzP68rfSoK46nAEw0DTEg4+ud/XW+LDK2JfKH15wid5AoGcrUPwIT3
+         H2Bry82c9G2TWYg8SFj5W3+lUhBEt+Boi9rBIvKtxH51thQM3AZXzJSkVuHEPmQhYoPU
+         VAJGHlBRqFy2nE2DcI9Yi3icRa01FBDsyiK0RJyLmiQDIHtOrHgFRuQxXYC4DXE62h3K
+         XbGD6ucCSoqTuW2xhQmu1ER/F3AZUYScvaEryfDuJb784/8a0VhXTowiQxSfy4H1ooCc
+         OlZvaUA3SRShds2JLiuQVOL8r0mlnppcpsoGVAMX8PAbgsm/PvbZidoo6Vnx25FUgQ6m
+         Cp1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758756284; x=1759361084;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1758756721; x=1759361521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fhxvs9hARKBT28uRXK2/9g46kPCnOYI+QDN0T6RZ7PI=;
-        b=fEJdkBkmdyPNgwI77bXFAvPhn1iuE1DugbtWjuY74UdaMJmSxqDtFvExsT6XJExrBR
-         cMNhClRe5s3v9z6F6Y6OhxZ9iSZhRhKg3crTVLAMt2AwYG2Q6xZRIp6WMD4eOAUYlXuw
-         k6dDsNVex2WtyR4wBKeTAts2vns+rM9/AgId2H7HkKXoxJGf70AFrse4RjpSgnlOtJ1D
-         LM8tP/wfOPyLdki85VRonbaX6nDx+hs0eaLl4nS/29gNwX+JrVc42gTM7L/jLh85QT/R
-         tTsAMwe2bTkDAJQKpiHgCTOsjbwWhfTQzmcPqIje5vuq8gTt0Ijol7bBkRPktlflGV2g
-         sKsA==
-X-Gm-Message-State: AOJu0Yxb5VTRElJtPgWZz1RjeHROfF2JEelqyuNqXBruDUWbeIlgpUgH
-	LXiFDcdTdPcIpVcIh6GfBHX/XBQgnQH0KZB7zOu1K+CEezegFPsoTiM4k/K+IYIPauI=
-X-Gm-Gg: ASbGncv4EDqer87lo1b3WI5YmhdXe/2c0JqeE9Rvf/GKIiLs+E3iC2G5+/r3blYhEox
-	uWgYZJ2mafSYQ6OLIBJdKozPr6zmBmfSTtJJmzzvNqbOkYxoNWMwPYumrpoMfPOgMd0yZaAuDs3
-	wN2oA2/7mstEyVRvanpGUZ/luG0F3eScIExOLn93D1Y2RnG/a+npCUbI1btC5I/l/6hcVKXVVO6
-	pPH1MrNPxawwMXi/TtHa9eLhNTQesi1GfI+I0eqteRyP+Q0oePrDD8Akbk3A9nWOeQzHk+SZGA3
-	ku5PmtpJ4XAzDe8iKj16yppgYFB3ISaD0n3+xgYXwDh/EEQ/HBq9kL067DD6+xqoMKLrgQb1Tla
-	MA683wU6ZOMMg1EGJgri1zdVOzLb1uOWkkgJVZT85x4fo0Ay+zu2kBwBxoUNyfnHXMYQ8cxw0+x
-	9zEHInhL64MBsYzev986IHKRn8eoI=
-X-Google-Smtp-Source: AGHT+IERx8EReqdB+AR4i0YygQ81NTk02G9COW9XUNRRcYHmx70BU4ZhZixQqD4M4PCXNTKY/arATA==
-X-Received: by 2002:a05:620a:1a89:b0:858:a4dd:d18b with SMTP id af79cd13be357-85ae65dc29cmr174803885a.51.1758756284448;
-        Wed, 24 Sep 2025 16:24:44 -0700 (PDT)
-Received: from kerndev.lan (pool-100-15-227-251.washdc.fios.verizon.net. [100.15.227.251])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-85c336ad64bsm14213285a.59.2025.09.24.16.24.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Sep 2025 16:24:44 -0700 (PDT)
-From: David Windsor <dwindsor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kpsingh@kernel.org,
-	john.fastabend@gmail.com,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	dwindsor@gmail.com,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add tests for dentry kfuncs
-Date: Wed, 24 Sep 2025 19:24:34 -0400
-Message-ID: <20250924232434.74761-3-dwindsor@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250924232434.74761-1-dwindsor@gmail.com>
-References: <20250924232434.74761-1-dwindsor@gmail.com>
+        bh=tiTWBIBBubRN9otW82Nfq+sKRJTpI0EqqY5OOcEQf2Q=;
+        b=hdm08ZpUEqiAKEMd7pR6hjePAIKjxwofaIgU2/yoZ8r5/jtFqgVyCZK6UzdgEzudbd
+         w1k8PKF4xsWeHVkz9lVivkkDwvltHzXgVmJrX3S8FAE7VsnyzyjQQS0nnLTfAedRl/gq
+         /BiOKB1Hk5SXrRYCaPT/6ngLbN5uocK5JZAL0orZYYwasDTfzT9Yi7CA6FYMK9dzGdpv
+         JmrRe8HlfmUivWxBRXgdjt1eqDEtHBqnDtJRWRhCCI+yOstco1/Io40zjDgGZA/ESp5X
+         orM3vO0tsXJevqpE1JYDpqTDRCaCyQiUalu6DCmFvRnuNgEMRH9YmXGfi7tyuGlxDcvN
+         N+9Q==
+X-Gm-Message-State: AOJu0YwV7g527ObNHLbe5BDM7nZp8c4iynnRzBcWNL70yrnpLc6nArUt
+	4jfH1cGhgGGjf0RfaFjGf9uquqX7WD3+TbGG+uTGU4IDcj3QT1FANvFt9hlryhp+ctKKOY3pK1m
+	82yQbRfkOWOzWFFvwzdMRXLQAkfL9wGmACtUJ
+X-Gm-Gg: ASbGnctuyn41Ce9DJF6FGHSgpgD/fVD4Ej7r75QNv5dTpowAOKnmfjEyRWkOe2pKgRk
+	zENCiIsYuI1moc+OHuf5IqvMri6z9uXdideNf5RlAAW9aQpbr7HY1w3Z7piMe04//wAX6V97p4b
+	QYuxb+hWfnp0jLp89aUIQtyvGGUrxXeKKi62XylSVTC7nsmJAj3i6DZWPeQyX7tgv+wDotkzy58
+	8/wdodXogSC/SQ0Knnu31k=
+X-Google-Smtp-Source: AGHT+IFhje/9sAekI5tk0xeEntxW8MrBDpXx/OUEUczfAzEwhCYbRX3VdotbHU16o3NlcUZkJBdbYDypo7SG/y/pgm8=
+X-Received: by 2002:a17:90b:4d88:b0:32d:d714:b3eb with SMTP id
+ 98e67ed59e1d1-3342a2437b9mr1453033a91.4.1758756721092; Wed, 24 Sep 2025
+ 16:32:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241206110622.1161752-1-houtao@huaweicloud.com>
+ <20241206110622.1161752-7-houtao@huaweicloud.com> <CAEf4BzaSbd2kKWL7ZT0WctsdiWq7wJG5NXT3TGxJzBGnP91T3A@mail.gmail.com>
+ <acebb5f8-d669-5fa7-aad5-41f6ec508609@huaweicloud.com>
+In-Reply-To: <acebb5f8-d669-5fa7-aad5-41f6ec508609@huaweicloud.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 24 Sep 2025 16:31:46 -0700
+X-Gm-Features: AS18NWDcIjgKXGXqJyyMH8F2JacFLnHKys_BX1QZYla5DH6W4k2IGWxQDX4l71I
+Message-ID: <CAEf4BzaoP-aL1EABf9G=StReMxhVL=5JUJNDKOPDOg-9=+-m5A@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 6/9] bpf: Switch to bpf mem allocator for LPM trie
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, houtao1@huawei.com, 
+	xukuohai@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add BPF selftests that exercise the new dentry kfuncs via an LSM program
-attached to the file_open hook.
+On Mon, Sep 22, 2025 at 6:33=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
+>
+>
+>
+> On 9/20/2025 5:28 AM, Andrii Nakryiko wrote:
+> > On Fri, Dec 6, 2024 at 2:54=E2=80=AFAM Hou Tao <houtao@huaweicloud.com>=
+ wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> Multiple syzbot warnings have been reported. These warnings are mainly
+> >> about the lock order between trie->lock and kmalloc()'s internal lock.
+> >> See report [1] as an example:
+> >>
+> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> >> WARNING: possible circular locking dependency detected
+> >> 6.10.0-rc7-syzkaller-00003-g4376e966ecb7 #0 Not tainted
+> >> ------------------------------------------------------
+> >> syz.3.2069/15008 is trying to acquire lock:
+> >> ffff88801544e6d8 (&n->list_lock){-.-.}-{2:2}, at: get_partial_node ...
+> >>
+> >> but task is already holding lock:
+> >> ffff88802dcc89f8 (&trie->lock){-.-.}-{2:2}, at: trie_update_elem ...
+> >>
+> >> which lock already depends on the new lock.
+> >>
+> >> the existing dependency chain (in reverse order) is:
+> >>
+> >> -> #1 (&trie->lock){-.-.}-{2:2}:
+> >>        __raw_spin_lock_irqsave
+> >>        _raw_spin_lock_irqsave+0x3a/0x60
+> >>        trie_delete_elem+0xb0/0x820
+> >>        ___bpf_prog_run+0x3e51/0xabd0
+> >>        __bpf_prog_run32+0xc1/0x100
+> >>        bpf_dispatcher_nop_func
+> >>        ......
+> >>        bpf_trace_run2+0x231/0x590
+> >>        __bpf_trace_contention_end+0xca/0x110
+> >>        trace_contention_end.constprop.0+0xea/0x170
+> >>        __pv_queued_spin_lock_slowpath+0x28e/0xcc0
+> >>        pv_queued_spin_lock_slowpath
+> >>        queued_spin_lock_slowpath
+> >>        queued_spin_lock
+> >>        do_raw_spin_lock+0x210/0x2c0
+> >>        __raw_spin_lock_irqsave
+> >>        _raw_spin_lock_irqsave+0x42/0x60
+> >>        __put_partials+0xc3/0x170
+> >>        qlink_free
+> >>        qlist_free_all+0x4e/0x140
+> >>        kasan_quarantine_reduce+0x192/0x1e0
+> >>        __kasan_slab_alloc+0x69/0x90
+> >>        kasan_slab_alloc
+> >>        slab_post_alloc_hook
+> >>        slab_alloc_node
+> >>        kmem_cache_alloc_node_noprof+0x153/0x310
+> >>        __alloc_skb+0x2b1/0x380
+> >>        ......
+> >>
+> >> -> #0 (&n->list_lock){-.-.}-{2:2}:
+> >>        check_prev_add
+> >>        check_prevs_add
+> >>        validate_chain
+> >>        __lock_acquire+0x2478/0x3b30
+> >>        lock_acquire
+> >>        lock_acquire+0x1b1/0x560
+> >>        __raw_spin_lock_irqsave
+> >>        _raw_spin_lock_irqsave+0x3a/0x60
+> >>        get_partial_node.part.0+0x20/0x350
+> >>        get_partial_node
+> >>        get_partial
+> >>        ___slab_alloc+0x65b/0x1870
+> >>        __slab_alloc.constprop.0+0x56/0xb0
+> >>        __slab_alloc_node
+> >>        slab_alloc_node
+> >>        __do_kmalloc_node
+> >>        __kmalloc_node_noprof+0x35c/0x440
+> >>        kmalloc_node_noprof
+> >>        bpf_map_kmalloc_node+0x98/0x4a0
+> >>        lpm_trie_node_alloc
+> >>        trie_update_elem+0x1ef/0xe00
+> >>        bpf_map_update_value+0x2c1/0x6c0
+> >>        map_update_elem+0x623/0x910
+> >>        __sys_bpf+0x90c/0x49a0
+> >>        ...
+> >>
+> >> other info that might help us debug this:
+> >>
+> >>  Possible unsafe locking scenario:
+> >>
+> >>        CPU0                    CPU1
+> >>        ----                    ----
+> >>   lock(&trie->lock);
+> >>                                lock(&n->list_lock);
+> >>                                lock(&trie->lock);
+> >>   lock(&n->list_lock);
+> >>
+> >>  *** DEADLOCK ***
+> >>
+> >> [1]: https://syzkaller.appspot.com/bug?extid=3D9045c0a3d5a7f1b119f7
+> >>
+> >> A bpf program attached to trace_contention_end() triggers after
+> >> acquiring &n->list_lock. The program invokes trie_delete_elem(), which
+> >> then acquires trie->lock. However, it is possible that another
+> >> process is invoking trie_update_elem(). trie_update_elem() will acquir=
+e
+> >> trie->lock first, then invoke kmalloc_node(). kmalloc_node() may invok=
+e
+> >> get_partial_node() and try to acquire &n->list_lock (not necessarily t=
+he
+> >> same lock object). Therefore, lockdep warns about the circular locking
+> >> dependency.
+> >>
+> >> Invoking kmalloc() before acquiring trie->lock could fix the warning.
+> >> However, since BPF programs call be invoked from any context (e.g.,
+> >> through kprobe/tracepoint/fentry), there may still be lock ordering
+> >> problems for internal locks in kmalloc() or trie->lock itself.
+> >>
+> >> To eliminate these potential lock ordering problems with kmalloc()'s
+> >> internal locks, replacing kmalloc()/kfree()/kfree_rcu() with equivalen=
+t
+> >> BPF memory allocator APIs that can be invoked in any context. The lock
+> >> ordering problems with trie->lock (e.g., reentrance) will be handled
+> >> separately.
+> >>
+> >> Three aspects of this change require explanation:
+> >>
+> >> 1. Intermediate and leaf nodes are allocated from the same allocator.
+> >> Since the value size of LPM trie is usually small, using a single
+> >> alocator reduces the memory overhead of the BPF memory allocator.
+> >>
+> >> 2. Leaf nodes are allocated before disabling IRQs. This handles cases
+> >> where leaf_size is large (e.g., > 4KB - 8) and updates require
+> >> intermediate node allocation. If leaf nodes were allocated in
+> >> IRQ-disabled region, the free objects in BPF memory allocator would no=
+t
+> >> be refilled timely and the intermediate node allocation may fail.
+> >>
+> >> 3. Paired migrate_{disable|enable}() calls for node alloc and free. Th=
+e
+> >> BPF memory allocator uses per-CPU struct internally, these paired call=
+s
+> >> are necessary to guarantee correctness.
+> >>
+> >> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >> ---
+> >>  kernel/bpf/lpm_trie.c | 71 +++++++++++++++++++++++++++++-------------=
+-
+> >>  1 file changed, 48 insertions(+), 23 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
+> >> index 9ba6ae145239..f850360e75ce 100644
+> >> --- a/kernel/bpf/lpm_trie.c
+> >> +++ b/kernel/bpf/lpm_trie.c
+> >> @@ -15,6 +15,7 @@
+> >>  #include <net/ipv6.h>
+> >>  #include <uapi/linux/btf.h>
+> >>  #include <linux/btf_ids.h>
+> >> +#include <linux/bpf_mem_alloc.h>
+> >>
+> >>  /* Intermediate node */
+> >>  #define LPM_TREE_NODE_FLAG_IM BIT(0)
+> >> @@ -22,7 +23,6 @@
+> >>  struct lpm_trie_node;
+> >>
+> >>  struct lpm_trie_node {
+> >> -       struct rcu_head rcu;
+> >>         struct lpm_trie_node __rcu      *child[2];
+> >>         u32                             prefixlen;
+> >>         u32                             flags;
+> >> @@ -32,6 +32,7 @@ struct lpm_trie_node {
+> >>  struct lpm_trie {
+> >>         struct bpf_map                  map;
+> >>         struct lpm_trie_node __rcu      *root;
+> >> +       struct bpf_mem_alloc            ma;
+> >>         size_t                          n_entries;
+> >>         size_t                          max_prefixlen;
+> >>         size_t                          data_size;
+> >> @@ -287,17 +288,18 @@ static void *trie_lookup_elem(struct bpf_map *ma=
+p, void *_key)
+> > Hey Hao,
+>
+> Hi Andrii,
+>
+> Actually my name is Hou Tao :)
 
-Signed-off-by: David Windsor <dwindsor@gmail.com>
----
- .../selftests/bpf/prog_tests/dentry_lsm.c     | 48 +++++++++++++++++
- .../testing/selftests/bpf/progs/dentry_lsm.c  | 51 +++++++++++++++++++
- 2 files changed, 99 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/dentry_lsm.c
- create mode 100644 tools/testing/selftests/bpf/progs/dentry_lsm.c
+Oops, I'm sorry for butchering your name, Hou!
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dentry_lsm.c b/tools/testing/selftests/bpf/prog_tests/dentry_lsm.c
-new file mode 100644
-index 000000000000..3e8c68017954
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/dentry_lsm.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 David Windsor <dwindsor@gmail.com> */
-+
-+#include <test_progs.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <limits.h>
-+#include <string.h>
-+#include "dentry_lsm.skel.h"
-+
-+void test_dentry_lsm(void)
-+{
-+	struct dentry_lsm *skel;
-+	char test_file[PATH_MAX];
-+	int fd, ret;
-+
-+	skel = dentry_lsm__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "dentry_lsm__open_and_load"))
-+		return;
-+
-+	ret = dentry_lsm__attach(skel);
-+	if (!ASSERT_OK(ret, "dentry_lsm__attach"))
-+		goto cleanup;
-+
-+	/* Create a temporary file to trigger file_open LSM hook */
-+	ret = snprintf(test_file, sizeof(test_file), "/tmp/bpf_test_file_%d", getpid());
-+	if (!ASSERT_GT(ret, 0, "snprintf"))
-+		goto cleanup_link;
-+	if (!ASSERT_LT(ret, sizeof(test_file), "snprintf"))
-+		goto cleanup_link;
-+
-+	fd = open(test_file, O_CREAT | O_RDWR, 0644);
-+	if (!ASSERT_GE(fd, 0, "open"))
-+		goto cleanup_link;
-+	close(fd);
-+
-+	/* Test passes if BPF program loaded and ran without error */
-+
-+	/* Clean up test file */
-+	unlink(test_file);
-+
-+cleanup_link:
-+	unlink(test_file);
-+cleanup:
-+	dentry_lsm__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/dentry_lsm.c b/tools/testing/selftests/bpf/progs/dentry_lsm.c
-new file mode 100644
-index 000000000000..fa6d65d2c50f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/dentry_lsm.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 David Windsor <dwindsor@gmail.com> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+extern struct dentry *bpf_dget(struct dentry *dentry) __ksym;
-+extern void bpf_dput(struct dentry *dentry) __ksym;
-+extern struct dentry *bpf_dget_parent(struct dentry *dentry) __ksym;
-+extern struct dentry *bpf_d_find_alias(struct inode *inode) __ksym;
-+extern struct dentry *bpf_file_dentry(struct file *file) __ksym;
-+extern struct vfsmount *bpf_file_vfsmount(struct file *file) __ksym;
-+
-+SEC("lsm.s/file_open")
-+int BPF_PROG(file_open, struct file *file)
-+{
-+	struct dentry *dentry, *parent, *alias, *dentry_ref;
-+	struct vfsmount *vfs_mnt;
-+
-+	if (!file)
-+		return 0;
-+
-+	dentry = bpf_file_dentry(file);
-+	if (dentry) {
-+		dentry_ref = bpf_dget(dentry);
-+		if (dentry_ref)
-+			bpf_dput(dentry_ref);
-+
-+		parent = bpf_dget_parent(dentry);
-+		if (parent)
-+			bpf_dput(parent);
-+	}
-+
-+	if (file->f_inode) {
-+		alias = bpf_d_find_alias(file->f_inode);
-+		if (alias)
-+			bpf_dput(alias);
-+	}
-+
-+	vfs_mnt = bpf_file_vfsmount(file);
-+	if (vfs_mnt) {
-+		/* Test that we can access vfsmount */
-+		(void)vfs_mnt;
-+	}
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.43.0
+> >
+> > We recently got a warning from trie_lookup_elem() triggered by
+> >
+> > rcu_dereference_check(trie->root, rcu_read_lock_bh_held())
+> >
+> > check in trie_lookup_elem, when LPM trie map was used from a sleepable
+> > BPF program.
+> >
+> > It seems like it can be just converted to bpf_rcu_lock_held(), because
+> > with your switch to bpf_mem_alloc all the nodes are now both RCU and
+> > RCU Tasks Trace protected, is my thinking correct?
+> >
+> > Can you please double check? Thanks!
+>
+> No. Although the node is freed after one RCU GP and one RCU Task Trace
+> GP, the reuse of node happens after one RCU GP. Therefore, for the
+> sleepable program when it looks up the trie, it may find and try to read
+> a reused node, the returned result will be unexpected due to the reuse.
+>
 
+That's two different things, no? Because we do lookup without lock,
+it's possible for (non-sleepable or sleepable, doesn't matter) BPF
+program to update/delete trie node while some other BPF program looks
+it up without locking. I don't think anything fundamentally changes
+here. We have similar behavior for other BPF maps (hashmap, for
+example), regardless of sleepable or not.
+
+But the problem here is specifically about overly eager
+rcu_dereference_check check. That memory is not going to be freed, so
+it's "safe" to dereference it, even if it might be reused for another
+node.
+
+Either that, or we need to disable LPM trie map for sleepable until we
+somehow fix this memory reuse, no?
+
+> >
+> > [...]
+>
 
