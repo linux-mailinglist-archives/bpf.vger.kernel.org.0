@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-69637-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E402B9C885
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 01:24:56 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A49B9C888
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 01:25:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 740424E3306
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 23:24:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EEED64E3312
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 23:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E6C29CB3A;
-	Wed, 24 Sep 2025 23:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA3A72BD5A8;
+	Wed, 24 Sep 2025 23:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MQgRLCDI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C5pgjaOj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C030D28488A
-	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 23:24:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16A4296BB3
+	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 23:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758756286; cv=none; b=ava3G/LQ9zNIZlCxl54tUVftw951xYma4vRgUaUUaAgyw+tlsdLeRp2XlaqfxyMELzuXZDTxUTb6xTIHCNYwr0KCcQ19zJDvATHoAGNYW7VBN2w9F26px9Qd/d60wSQ6Wo+BJtAZHX7hX368M7Icn560AriuBUMucNU6B8hHvF0=
+	t=1758756287; cv=none; b=QXG/bZyhEa3um2eyeQzaBh/lAX/QBaV91bQghp0vag47odnVIRwoQRptJMYBmSTfJ/mMuAR2cX6IttVqohwBdgphNvCYQ46OlbXBWw/7i2qDGwUSwJ2L/Iawljeak+9ArRoH05kAA1NPvQuCCaV60BGPZufDVz1OjiVHedDmaD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758756286; c=relaxed/simple;
-	bh=Hwj4ckhb5DTcc8UE9wkW8Nw57797AjnMiK+e62cBtSE=;
+	s=arc-20240116; t=1758756287; c=relaxed/simple;
+	bh=jaQTaJ4mYwHZIzYYD9MZVWoeMd3U8prEmCe/Sz2asJI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o6hBGJf/f4xI3sirxFxSqNE4z4LVcWgExjQtQLOIVQp/5PAR7ixyh1jAwA+98P3JkoYP2eJ52XOHTFUsvcvL0sfzAfvTzceivkyMZUMmpVujYK9KbUOYWnjqcDj+9cCUoP4XONWXpt8JOikp/pW7PBfgkKxlvJadXD1i5ETZz/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MQgRLCDI; arc=none smtp.client-ip=209.85.222.178
+	 MIME-Version; b=ZhDMXSpMBBrJIbUJdSaOibEbjwgCwA38JxuZqlIkhXg/cR/SY0PnO+WP3gQaGMSYhPZjUYC5MUQRNWubJ5cpLsuDQGhPo4kJX2zMh+Y8eJfO9cB5j2TJwiLiSt1rSopmxZvgpsmz04KfgC8Xd+B+YUwo2+yh7c63Sjr+HcOeYyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C5pgjaOj; arc=none smtp.client-ip=209.85.222.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-84d8e2587d6so30443985a.1
-        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 16:24:44 -0700 (PDT)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-84ab207c37cso33593085a.2
+        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 16:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758756283; x=1759361083; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758756284; x=1759361084; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+Y6EMmIcmPN+na3Sl1GzqFT2rkaqC+6JSJKayEapinw=;
-        b=MQgRLCDI4Leblks5s5JdkhcruDNrM8we3xTxNnpGub0PwkDkcsc4vaXMh36qhU3pft
-         cKbCBEKp0svuACUodaj1tvZCXzxBCvNkqArJeumK8ZEauNSeLZZcvjqTT8Ybjzr+hCbs
-         pIMyed3aaleVX9HMePpgw4xAxai9fRgTXRH21ToqANI3ZveKvGBsXos1QhmrofPaSXa7
-         m05OyzSedRL8upGCaiPKxwl2q9oNz7OyBzfHtw0ne0QmUI7COk9Ut9vUpNDmZ9HkhTV9
-         +7kUj1V1ajX6Xw6TFMsDOtXDppOwG+AUFN/gnIraqKh9KFWGsPGZQAzyKH0ZU24/eYE2
-         j9Hw==
+        bh=fhxvs9hARKBT28uRXK2/9g46kPCnOYI+QDN0T6RZ7PI=;
+        b=C5pgjaOjnjLCyt1/dXB1iHOHahrN5q/U98S0flynxEgcR8xdlEpIvNZ0iF+r8PQvRh
+         csajHqfYlUoJLHTUS7mwPpFj0kNL/gvbMW0OTIlj45ru373KKNL5vmYr+BqQnOrI0Wdf
+         uu/Sbm/KuJPDWun0vcrRIcXco6IFz1a13DmYcsCgpYLXAGpl2i0TQI+4hcz4J/UIUnNM
+         5ezeUHq+RF1jY5muBgCaB682Ro+GWuD4jIW9yrX5pXs9l7pExN5+qFp4VuegOSZeUeIz
+         khJv0eURBXLCtmYFO0wgyYZexzx/vUIG95mhlvoOp/NQI//fJBEQqxYGU/nFcxMLw1em
+         MJuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758756283; x=1759361083;
+        d=1e100.net; s=20230601; t=1758756284; x=1759361084;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+Y6EMmIcmPN+na3Sl1GzqFT2rkaqC+6JSJKayEapinw=;
-        b=Vx/73Rkm2T5kIGZB25gWV0oD2iWMe0MfTbHinWs0Vz5Qe5cbEDhBYomHg3souRVyWS
-         aGcRBYaeB3h929u13RhmZ3qg3Edn+aP2O8pC+8CYY/RMSGvzOZDYKOiMn4H4yHN+l787
-         qsYPg0R+FWEKkEDKVxnmvIeotjs7sYgeX6knWebY/mSac2pGh9RWVWiHBPJgOTQqx20i
-         bfLmZlv0crCRpW1YJGZplEEnjB+mecSF51TTVBTnN2f2TXWlZcSZUpFwz39XtM+kMEB0
-         X45avh4g6hpxoDl3sq7VFfOt1NitDewAhl9RaQijMD2jSx4W/U3hiNmyr6ADWt3I7SyM
-         AeGg==
-X-Gm-Message-State: AOJu0Yw+JuL98jxsjw+WObNElBR+nuzjASWAa3QORffqmu5orkGZnnRz
-	J4RKmdSUWPKghxfwihfxQCLBZAQXe15UxttdV1vqnmD8u6TJanEmV8LPZdOm5MEm9d0=
-X-Gm-Gg: ASbGnct5z8VsE2B4EM1ce1tlBdclXJvY+u57MtMsOVEzXzOXriWs9O+LyuloCwb57LX
-	MaflEjD+TWN5JY3RFjgRryJQ2szGPoXxSNPlPhRJCHbkXYTktBZdktUSC/vp1/ZYhdbNbYZA9Rh
-	L8BbYQ9xc9CnDQw79OgvDiVrJQu72UfvmFHgg1s4p02vDGJFN5x1r7xAQjR5+//NfDzcExuKhaJ
-	EWkQzPVsX7JqSr0gZQNUEBdl9qUIxyOx1aYbhgCMEwbdPsfpXTb2V3qZa5DOdKseUt2WSgT6q91
-	9z7ADYazNuwLuKQpFa4m96ynSIptRIg6ha2tpbkircCcSMLevZZJlSD6WgCgUmECjUe9TFEgayN
-	+cnXmCY/16C8hEeFvijqHIoezFYQOI1oA02MrUXGJEMIrhALeF0aEiSUIPiu/1/O75zVDE6DGDq
-	7O8BY4EWp1L16AxR6CrEUQ4gsaOZg=
-X-Google-Smtp-Source: AGHT+IHDUMqGg8lGvUVV3/0K130ob6QpaUMxuL0wG0YcMB+sfiZMR0SDmArQInyj/I2Nfd9qxcCPug==
-X-Received: by 2002:a05:620a:4051:b0:84b:3c5a:e449 with SMTP id af79cd13be357-85ae7cd4d89mr171227285a.60.1758756283424;
-        Wed, 24 Sep 2025 16:24:43 -0700 (PDT)
+        bh=fhxvs9hARKBT28uRXK2/9g46kPCnOYI+QDN0T6RZ7PI=;
+        b=fEJdkBkmdyPNgwI77bXFAvPhn1iuE1DugbtWjuY74UdaMJmSxqDtFvExsT6XJExrBR
+         cMNhClRe5s3v9z6F6Y6OhxZ9iSZhRhKg3crTVLAMt2AwYG2Q6xZRIp6WMD4eOAUYlXuw
+         k6dDsNVex2WtyR4wBKeTAts2vns+rM9/AgId2H7HkKXoxJGf70AFrse4RjpSgnlOtJ1D
+         LM8tP/wfOPyLdki85VRonbaX6nDx+hs0eaLl4nS/29gNwX+JrVc42gTM7L/jLh85QT/R
+         tTsAMwe2bTkDAJQKpiHgCTOsjbwWhfTQzmcPqIje5vuq8gTt0Ijol7bBkRPktlflGV2g
+         sKsA==
+X-Gm-Message-State: AOJu0Yxb5VTRElJtPgWZz1RjeHROfF2JEelqyuNqXBruDUWbeIlgpUgH
+	LXiFDcdTdPcIpVcIh6GfBHX/XBQgnQH0KZB7zOu1K+CEezegFPsoTiM4k/K+IYIPauI=
+X-Gm-Gg: ASbGncv4EDqer87lo1b3WI5YmhdXe/2c0JqeE9Rvf/GKIiLs+E3iC2G5+/r3blYhEox
+	uWgYZJ2mafSYQ6OLIBJdKozPr6zmBmfSTtJJmzzvNqbOkYxoNWMwPYumrpoMfPOgMd0yZaAuDs3
+	wN2oA2/7mstEyVRvanpGUZ/luG0F3eScIExOLn93D1Y2RnG/a+npCUbI1btC5I/l/6hcVKXVVO6
+	pPH1MrNPxawwMXi/TtHa9eLhNTQesi1GfI+I0eqteRyP+Q0oePrDD8Akbk3A9nWOeQzHk+SZGA3
+	ku5PmtpJ4XAzDe8iKj16yppgYFB3ISaD0n3+xgYXwDh/EEQ/HBq9kL067DD6+xqoMKLrgQb1Tla
+	MA683wU6ZOMMg1EGJgri1zdVOzLb1uOWkkgJVZT85x4fo0Ay+zu2kBwBxoUNyfnHXMYQ8cxw0+x
+	9zEHInhL64MBsYzev986IHKRn8eoI=
+X-Google-Smtp-Source: AGHT+IERx8EReqdB+AR4i0YygQ81NTk02G9COW9XUNRRcYHmx70BU4ZhZixQqD4M4PCXNTKY/arATA==
+X-Received: by 2002:a05:620a:1a89:b0:858:a4dd:d18b with SMTP id af79cd13be357-85ae65dc29cmr174803885a.51.1758756284448;
+        Wed, 24 Sep 2025 16:24:44 -0700 (PDT)
 Received: from kerndev.lan (pool-100-15-227-251.washdc.fios.verizon.net. [100.15.227.251])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-85c336ad64bsm14213285a.59.2025.09.24.16.24.42
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-85c336ad64bsm14213285a.59.2025.09.24.16.24.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Sep 2025 16:24:42 -0700 (PDT)
+        Wed, 24 Sep 2025 16:24:44 -0700 (PDT)
 From: David Windsor <dwindsor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -87,9 +87,9 @@ Cc: ast@kernel.org,
 	jack@suse.cz,
 	dwindsor@gmail.com,
 	linux-fsdevel@vger.kernel.org
-Subject: [PATCH bpf-next 1/2] bpf: Add dentry kfuncs for BPF LSM programs
-Date: Wed, 24 Sep 2025 19:24:33 -0400
-Message-ID: <20250924232434.74761-2-dwindsor@gmail.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Add tests for dentry kfuncs
+Date: Wed, 24 Sep 2025 19:24:34 -0400
+Message-ID: <20250924232434.74761-3-dwindsor@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250924232434.74761-1-dwindsor@gmail.com>
 References: <20250924232434.74761-1-dwindsor@gmail.com>
@@ -101,145 +101,128 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add six new BPF kfuncs that enable BPF LSM programs to safely interact
-with dentry objects:
-
-- bpf_dget(): Acquire reference on dentry
-- bpf_dput(): Release reference on dentry
-- bpf_dget_parent(): Get referenced parent dentry
-- bpf_d_find_alias(): Find referenced alias dentry for inode
-- bpf_file_dentry(): Get dentry from file
-- bpf_file_vfsmount(): Get vfsmount from file
-
-All kfuncs are currently restricted to BPF_PROG_TYPE_LSM programs.
+Add BPF selftests that exercise the new dentry kfuncs via an LSM program
+attached to the file_open hook.
 
 Signed-off-by: David Windsor <dwindsor@gmail.com>
 ---
- fs/bpf_fs_kfuncs.c | 104 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 104 insertions(+)
+ .../selftests/bpf/prog_tests/dentry_lsm.c     | 48 +++++++++++++++++
+ .../testing/selftests/bpf/progs/dentry_lsm.c  | 51 +++++++++++++++++++
+ 2 files changed, 99 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/dentry_lsm.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dentry_lsm.c
 
-diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
-index 1e36a12b88f7..988e408fe7b3 100644
---- a/fs/bpf_fs_kfuncs.c
-+++ b/fs/bpf_fs_kfuncs.c
-@@ -169,6 +169,104 @@ __bpf_kfunc int bpf_get_file_xattr(struct file *file, const char *name__str,
- 	return bpf_get_dentry_xattr(dentry, name__str, value_p);
- }
- 
-+/**
-+ * bpf_dget - get a reference on a dentry
-+ * @dentry: dentry to get a reference on
-+ *
-+ * Get a reference on the supplied *dentry*. The referenced dentry pointer
-+ * acquired by this BPF kfunc must be released using bpf_dput().
-+ *
-+ * This BPF kfunc may only be called from BPF LSM programs.
-+ *
-+ * Return: A referenced dentry pointer. On error, NULL is returned.
-+ */
-+__bpf_kfunc struct dentry *bpf_dget(struct dentry *dentry)
+diff --git a/tools/testing/selftests/bpf/prog_tests/dentry_lsm.c b/tools/testing/selftests/bpf/prog_tests/dentry_lsm.c
+new file mode 100644
+index 000000000000..3e8c68017954
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/dentry_lsm.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 David Windsor <dwindsor@gmail.com> */
++
++#include <test_progs.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <limits.h>
++#include <string.h>
++#include "dentry_lsm.skel.h"
++
++void test_dentry_lsm(void)
 +{
-+	return dget(dentry);
++	struct dentry_lsm *skel;
++	char test_file[PATH_MAX];
++	int fd, ret;
++
++	skel = dentry_lsm__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "dentry_lsm__open_and_load"))
++		return;
++
++	ret = dentry_lsm__attach(skel);
++	if (!ASSERT_OK(ret, "dentry_lsm__attach"))
++		goto cleanup;
++
++	/* Create a temporary file to trigger file_open LSM hook */
++	ret = snprintf(test_file, sizeof(test_file), "/tmp/bpf_test_file_%d", getpid());
++	if (!ASSERT_GT(ret, 0, "snprintf"))
++		goto cleanup_link;
++	if (!ASSERT_LT(ret, sizeof(test_file), "snprintf"))
++		goto cleanup_link;
++
++	fd = open(test_file, O_CREAT | O_RDWR, 0644);
++	if (!ASSERT_GE(fd, 0, "open"))
++		goto cleanup_link;
++	close(fd);
++
++	/* Test passes if BPF program loaded and ran without error */
++
++	/* Clean up test file */
++	unlink(test_file);
++
++cleanup_link:
++	unlink(test_file);
++cleanup:
++	dentry_lsm__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/dentry_lsm.c b/tools/testing/selftests/bpf/progs/dentry_lsm.c
+new file mode 100644
+index 000000000000..fa6d65d2c50f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/dentry_lsm.c
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 David Windsor <dwindsor@gmail.com> */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
++
++extern struct dentry *bpf_dget(struct dentry *dentry) __ksym;
++extern void bpf_dput(struct dentry *dentry) __ksym;
++extern struct dentry *bpf_dget_parent(struct dentry *dentry) __ksym;
++extern struct dentry *bpf_d_find_alias(struct inode *inode) __ksym;
++extern struct dentry *bpf_file_dentry(struct file *file) __ksym;
++extern struct vfsmount *bpf_file_vfsmount(struct file *file) __ksym;
++
++SEC("lsm.s/file_open")
++int BPF_PROG(file_open, struct file *file)
++{
++	struct dentry *dentry, *parent, *alias, *dentry_ref;
++	struct vfsmount *vfs_mnt;
++
++	if (!file)
++		return 0;
++
++	dentry = bpf_file_dentry(file);
++	if (dentry) {
++		dentry_ref = bpf_dget(dentry);
++		if (dentry_ref)
++			bpf_dput(dentry_ref);
++
++		parent = bpf_dget_parent(dentry);
++		if (parent)
++			bpf_dput(parent);
++	}
++
++	if (file->f_inode) {
++		alias = bpf_d_find_alias(file->f_inode);
++		if (alias)
++			bpf_dput(alias);
++	}
++
++	vfs_mnt = bpf_file_vfsmount(file);
++	if (vfs_mnt) {
++		/* Test that we can access vfsmount */
++		(void)vfs_mnt;
++	}
++
++	return 0;
 +}
 +
-+/**
-+ * bpf_dput - put a reference on a dentry
-+ * @dentry: dentry to put a reference on
-+ *
-+ * Put a reference on the supplied *dentry*.
-+ *
-+ * This BPF kfunc may only be called from BPF LSM programs.
-+ */
-+__bpf_kfunc void bpf_dput(struct dentry *dentry)
-+{
-+	dput(dentry);
-+}
-+
-+/**
-+ * bpf_dget_parent - get a reference on the parent dentry
-+ * @dentry: dentry to get the parent of
-+ *
-+ * Get a reference on the parent of the supplied *dentry*. The referenced
-+ * dentry pointer acquired by this BPF kfunc must be released using bpf_dput().
-+ *
-+ * This BPF kfunc may only be called from BPF LSM programs.
-+ *
-+ * Return: A referenced parent dentry pointer. On error, NULL is returned.
-+ */
-+__bpf_kfunc struct dentry *bpf_dget_parent(struct dentry *dentry)
-+{
-+	return dget_parent(dentry);
-+}
-+
-+/**
-+ * bpf_d_find_alias - find an alias dentry for an inode
-+ * @inode: inode to find an alias for
-+ *
-+ * Find an alias dentry for the supplied *inode*. The referenced dentry pointer
-+ * acquired by this BPF kfunc must be released using bpf_dput().
-+ *
-+ * This BPF kfunc may only be called from BPF LSM programs.
-+ *
-+ * Return: A referenced alias dentry pointer. On error, NULL is returned.
-+ */
-+__bpf_kfunc struct dentry *bpf_d_find_alias(struct inode *inode)
-+{
-+	return d_find_alias(inode);
-+}
-+
-+/**
-+ * bpf_file_dentry - get the dentry associated with a file
-+ * @file: file to get the dentry from
-+ *
-+ * Get the dentry associated with the supplied *file*. This is a trusted
-+ * accessor that allows BPF programs to safely obtain a dentry pointer
-+ * from a file structure. The returned pointer is borrowed and does not
-+ * require bpf_dput().
-+ *
-+ * This BPF kfunc may only be called from BPF LSM programs.
-+ *
-+ * Return: A dentry pointer. On error, NULL is returned.
-+ */
-+__bpf_kfunc struct dentry *bpf_file_dentry(struct file *file)
-+{
-+	return file_dentry(file);
-+}
-+
-+/**
-+ * bpf_file_vfsmount - get the vfsmount associated with a file
-+ * @file: file to get the vfsmount from
-+ *
-+ * Get the vfsmount associated with the supplied *file*. This is a trusted
-+ * accessor that allows BPF programs to safely obtain a vfsmount pointer
-+ * from a file structure. The returned pointer is borrowed and does not
-+ * require any release function.
-+ *
-+ * This BPF kfunc may only be called from BPF LSM programs.
-+ *
-+ * Return: A vfsmount pointer. On error, NULL is returned.
-+ */
-+__bpf_kfunc struct vfsmount *bpf_file_vfsmount(struct file *file)
-+{
-+	return file->f_path.mnt;
-+}
-+
-+
- __bpf_kfunc_end_defs();
- 
- static int bpf_xattr_write_permission(const char *name, struct inode *inode)
-@@ -367,6 +465,12 @@ BTF_ID_FLAGS(func, bpf_get_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_set_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_remove_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_dget, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_dput, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_dget_parent, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_d_find_alias, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_file_dentry, KF_TRUSTED_ARGS | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_file_vfsmount, KF_TRUSTED_ARGS | KF_RET_NULL)
- BTF_KFUNCS_END(bpf_fs_kfunc_set_ids)
- 
- static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
++char _license[] SEC("license") = "GPL";
 -- 
 2.43.0
 
