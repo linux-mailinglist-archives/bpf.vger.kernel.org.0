@@ -1,132 +1,275 @@
-Return-Path: <bpf+bounces-69511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A9C1B9887F
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 09:27:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3232FB988BE
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 09:31:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2163217D716
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 07:27:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27AF1188BC35
+	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 07:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E22275844;
-	Wed, 24 Sep 2025 07:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A2827B4EE;
+	Wed, 24 Sep 2025 07:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MQ2xqMfw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rGiVML9Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31E54C98
-	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 07:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E094F27A45C;
+	Wed, 24 Sep 2025 07:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758698827; cv=none; b=msVJZi6wcg0YCPOLvfsQ8211OAn8dum7O5kMXF+F8MfO6CEoJe2m6oGf5VVIuEaBnnijtlzsW4rGe9ztOMUKHFD8bpeNRx0wXYMKU+ar+pOxoBqcTk5n3+xEqXwT3xPjpkLPvz80sqCGRCAtn8BSXOtVnxnmFUuP4GDDp/i0C8c=
+	t=1758699111; cv=none; b=ep7nof7ewGMOCXYxoDQuC/TPCBSBAKxPNCZmD+JO5s15hZTIB0L2Rq1DkQi0bEw5Z0dW5gabT6NnbbVoffZJ9WSWGBPR9DANBfkxiFtiDhr6oG/c7SSqDy1izfqbf+j1waSUZ4XAn6IBfALxQNDmyIjwgX6c7qyxXZPh6BIK5is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758698827; c=relaxed/simple;
-	bh=kKd/0SH7KLlnWPyQwzrOFgEvD1tK7cplUSpXrS5xxdM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SIEjJ4bKtupEGm1Ky713iP+DG5W/GaFgAbzhdVrtza2zkVWXdHPTFDMEv/NKcDqjcXDK/c6spgdSMQFLI2Zz+t4ZzGDUhTgS3hpRlgInMITBBJPHTSemy1gzgY4iqEjklw+/i2+YAT/HCXNNXKiKppiByAm/Xoz4eLpji0lIycQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MQ2xqMfw; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3fa528f127fso434303f8f.1
-        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 00:27:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758698824; x=1759303624; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kKd/0SH7KLlnWPyQwzrOFgEvD1tK7cplUSpXrS5xxdM=;
-        b=MQ2xqMfwKSCpWzkmz23Dcawi/IIP0gToOZ6xCmyE3Y2nYPjrr6Z0Z/a+MWfuYlXIWv
-         ETJrhTXypWBsoSLBqqv85GbcnppQegkLhdIFdvnk0HpDwEeHH03YteWWkeST91Dw99qk
-         OHVCKjcSgtZaUtRnJ0tJ3zS9WpZmH86omv1WMtY4CjoVFjDUoEAxWqOVVP/dFwvP/JhL
-         ON+mF6EaAibdh7y0tz8ZxZ9LFE57X/sFdoNUID+zgHUGlNdwn9Hgckb82zpeNrlERmMJ
-         PCiwg+Mu8OT05qOgklVG7Pd5HOO7eA2Qrnr+LqMJ7DAPOZr4L2JGClvkpjp2ljx2Bhvd
-         UEEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758698824; x=1759303624;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kKd/0SH7KLlnWPyQwzrOFgEvD1tK7cplUSpXrS5xxdM=;
-        b=W3mxmgCApqZFqKWuVtjDkgr0nrYPZnUve9hxsGHwe9hpoWJ9AQSmDPT+QkwBs0fTLO
-         c2v+ikeDF1BgWMaZ//xzJhmCE5lnBi5jsT/bT7lhh7X9dck4HN/YU30oyj4XPWZCGkK0
-         VUPp0b+EGCjFzcfzijyvB+F3c4xVHAd/72xfg5BK5pxcWlkQaLE/LCgh89yj0qcKStm0
-         N386P3OPV2XEeG+Vm31S2KumyR5Khb4s6Hv4j2dlL6xXY8ZrLLw82IjR/irAVCDex4LG
-         NH7zaIpmftW/v4fxaviViBjO6psMmkk+MrSjvPjx/NTNVEMA29bRnOC/2lhvcH8Nc9Tb
-         3RAA==
-X-Forwarded-Encrypted: i=1; AJvYcCVxvBlyZ1awzTtOo1HQtJ7l3FlCB2fABxYzBn2ADZvrwR/Ly8RswdemGUiW/beCOQBNHsw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YymcMHeeM1GhHdS7c7Z4dzb0T5h+8j9NJ0p9fMlPKhcbkUSmXBk
-	JlfEbcV6zb0y5fRBNNDETN4PJarqRrQj2yjgHG2xiMgCqocgd4jYzGyUVWvWZyjDrtHqd4q3O7z
-	1lwKc7G/vOJh3rkoVOsFx0I8QgoIJqwg=
-X-Gm-Gg: ASbGncuSb3czPKYqi9xnir0Knq0BQI+4Kze/D1GWK61c944TzvoyDHyM4PmgYlvpHPe
-	Ik450ANZqYs3iFfCVVYuhtj/4/Zrv9FY6aLV0hPH/3nktiULWh4gOwIcnJqSB4Oc2/wKkGQTdwW
-	AlxTkusYfLtRaxpuy7UNM3mhEUkVk70Je4z6OXS19ejGxxHsNCfXh+OaYoBtbNuL9MxC3nNJTBX
-	fKNF5qX
-X-Google-Smtp-Source: AGHT+IGLNNRnatkzs2PS9mwCeAmAu3km/CQA86BU9lC7p8aF9rucMtWvbE7HDIL2to7RDbr3cdFo5QyUqY3OjgTsdaY=
-X-Received: by 2002:adf:a157:0:b0:400:818:bafd with SMTP id
- ffacd0b85a97d-40aa86a7c1emr917618f8f.0.1758698823899; Wed, 24 Sep 2025
- 00:27:03 -0700 (PDT)
+	s=arc-20240116; t=1758699111; c=relaxed/simple;
+	bh=6nLTiBX+i6oDy3bJ9KcSTG8qddcnQz069pUKyFpruNE=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=N+8pAfdPnCo1xP4Yh6qjPnMb1iuvkscLhCTxKaCwVhozUVYsSLgCBOlOms9V273pZtwfwghK+TzMn/qri89uEZmytzbjRGnb478vpMty6A9CtrW53BWEy72W6oXGCyE0Fvqi5cxuw00rYUsFz/+adQ01QFIySoSRzYnb7XJf18k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rGiVML9Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76F35C4CEE7;
+	Wed, 24 Sep 2025 07:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758699110;
+	bh=6nLTiBX+i6oDy3bJ9KcSTG8qddcnQz069pUKyFpruNE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rGiVML9QjFVU43RaOxBF69imHHooIM4DLJkySilzAJfgBpyYFSFUloJyzxepb6hJC
+	 xpYEu1x/zpqc4zC7uD4ZqHD1MB2NIMVRYiQSeMUFbelkZV4xBsG7+25IdXB+mb/X+P
+	 fXp69t5/LE4dDxDZm4as66ZLfLkVRl2rQ77n4aUw9HuYAIVys3ouShZfmzUz82jD8n
+	 fTYuL1YizKu3kWTbMOJZU7oX1K6tGd5l37xiWvmi4fC6hqBJtdIiKRlnSRL4Rijd54
+	 kKBHZmsfsWkzZvLy6JO3ByPgVoKmi5UT7jidK9Ki8oMA6jVw54yVgeThYJLquJWd6A
+	 HHKSwUIKoED/w==
+Date: Wed, 24 Sep 2025 16:31:46 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Feng Yang <yangfeng59949@163.com>
+Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org,
+ bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
+ haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
+ song@kernel.org, yonghong.song@linux.dev
+Subject: Re: [BUG] Failed to obtain stack trace via bpf_get_stackid on ARM64
+ architecture
+Message-Id: <20250924163146.28530774c4a16656d814c8ff@kernel.org>
+In-Reply-To: <20250924062536.471231-1-yangfeng59949@163.com>
+References: <20250924003215.365db154e1fc79163d9d80fe@kernel.org>
+	<20250924062536.471231-1-yangfeng59949@163.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250822140553.46273-1-arighi@nvidia.com> <aNOQkZjLNwQOlioo@gpd4>
-In-Reply-To: <aNOQkZjLNwQOlioo@gpd4>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 24 Sep 2025 00:26:52 -0700
-X-Gm-Features: AS18NWD0XANWSdUTmSwk5htgTTGLq1huKkchko52JM6L8ODxigS2EoOokmPGSxE
-Message-ID: <CAADnVQLBtpsS_rkgoq7rOOXBzp4epAKy6PrObMdCUrvNkTJf2Q@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Mark kfuncs as __noclone
-To: Andrea Righi <arighi@nvidia.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Sep 23, 2025 at 11:33=E2=80=AFPM Andrea Righi <arighi@nvidia.com> w=
-rote:
->
-> On Fri, Aug 22, 2025 at 04:05:53PM +0200, Andrea Righi wrote:
-> > Some distributions (e.g., CachyOS) support building the kernel with -O3=
-,
-> > but doing so may break kfuncs, resulting in their symbols not being
-> > properly exported.
-> >
-> > In fact, with gcc -O3, some kfuncs may be optimized away despite being
-> > annotated as noinline. This happens because gcc can still clone the
-> > function during IPA optimizations, e.g., by duplicating or inlining it
-> > into callers, and then dropping the standalone symbol. This breaks BTF
-> > ID resolution since resolve_btfids relies on the presence of a global
-> > symbol for each kfunc.
-> >
-> > Currently, this is not an issue for upstream, because we don't allow
-> > building the kernel with -O3, but it may be safer to address it anyway,
-> > to prevent potential issues in the future if compilers become more
-> > aggressive with optimizations.
-> >
-> > Therefore, add __noclone to __bpf_kfunc to ensure kfuncs are never
-> > cloned and remain distinct, globally visible symbols, regardless of
-> > the optimization level.
-> >
-> > Fixes: 57e7c169cd6af ("bpf: Add __bpf_kfunc tag for marking kernel func=
-tions as kfuncs")
-> > Signed-off-by: Andrea Righi <arighi@nvidia.com>
->
-> Gentle ping.
->
-> Anyone has any concerns with this? Do you think we can apply it (so we
-> don't have to keep carrying it out of tree)? :)
+On Wed, 24 Sep 2025 14:25:36 +0800
+Feng Yang <yangfeng59949@163.com> wrote:
 
-The patch expired in pw.
-Pls resubmit with [PATCH bpf-next] subject.
+> On Wed, 24 Sep 2025 00:32:15 +0900 Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> 
+> > On Mon, 22 Sep 2025 10:15:31 +0800
+> > Feng Yang <yangfeng59949@163.com> wrote:
+> > 
+> > > On Sun, 21 Sep 2025 22:30:37 +0900 Masami Hiramatsu wrote:
+> > > 
+> > > > On Fri, 19 Sep 2025 19:56:20 -0700
+> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > > 
+> > > > > On Fri, Sep 19, 2025 at 12:19 AM Feng Yang <yangfeng59949@163.com> wrote:
+> > > > > >
+> > > > > > When I use bpf_program__attach_kprobe_multi_opts to hook a BPF program that contains the bpf_get_stackid function on the arm64 architecture,
+> > > > > > I find that the stack trace cannot be obtained. The trace->nr in __bpf_get_stackid is 0, and the function returns -EFAULT.
+> > > > > >
+> > > > > > For example:
+> > > > > > diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> > > > > > index 9e1ca8e34913..844fa88cdc4c 100644
+> > > > > > --- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> > > > > > +++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> > > > > > @@ -36,6 +36,15 @@ __u64 kretprobe_test6_result = 0;
+> > > > > >  __u64 kretprobe_test7_result = 0;
+> > > > > >  __u64 kretprobe_test8_result = 0;
+> > > > > >
+> > > > > > +typedef __u64 stack_trace_t[2];
+> > > > > > +
+> > > > > > +struct {
+> > > > > > +       __uint(type, BPF_MAP_TYPE_STACK_TRACE);
+> > > > > > +       __uint(max_entries, 1024);
+> > > > > > +       __type(key, __u32);
+> > > > > > +       __type(value, stack_trace_t);
+> > > > > > +} stacks SEC(".maps");
+> > > > > > +
+> > > > > >  static void kprobe_multi_check(void *ctx, bool is_return)
+> > > > > >  {
+> > > > > >         if (bpf_get_current_pid_tgid() >> 32 != pid)
+> > > > > > @@ -100,7 +109,9 @@ int test_kretprobe(struct pt_regs *ctx)
+> > > > > >  SEC("kprobe.multi")
+> > > > > >  int test_kprobe_manual(struct pt_regs *ctx)
+> > > > > >  {
+> > > > > > +       int id = bpf_get_stackid(ctx, &stacks, 0);
+> > > > > 
+> > > > > ftrace_partial_regs() supposed to work on x86 and arm64,
+> > > > > but since multi-kprobe is the only user...
+> > > > 
+> > > > It should be able to unwind stack. It saves sp, pc, lr, fp.
+> > > > 
+> > > > 	regs->sp = afregs->sp;
+> > > > 	regs->pc = afregs->pc;
+> > > > 	regs->regs[29] = afregs->fp;
+> > > > 	regs->regs[30] = afregs->lr;
+> > > > 
+> > > > > I suspect the arm64 implementation wasn't really tested.
+> > > > > Or maybe there is some other issue.
+> > > > 
+> > > > It depends on how bpf_get_stackid() works. Some registers for that
+> > > > function may not be saved.
+> > > > 
+> > > > If it returns -EFAULT, the get_perf_callchain() returns NULL.
+> > > > 
+> > > 
+> > > During my test, the reason for returning -EFAULT was that trace->nr was 0.
+> > > 
+> > > static long __bpf_get_stackid(struct bpf_map *map,
+> > > 			      struct perf_callchain_entry *trace, u64 flags)
+> > > {
+> > > 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
+> > > 	struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
+> > > 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+> > > 	u32 hash, id, trace_nr, trace_len;
+> > > 	bool user = flags & BPF_F_USER_STACK;
+> > > 	u64 *ips;
+> > > 	bool hash_matches;
+> > > 
+> > > 	if (trace->nr <= skip)
+> > > 		/* skipping more than usable stack trace */
+> > > 		return -EFAULT;
+> > > 	......
+> > 
+> > Hmm. The "trace" is returned from get_perf_callchain()
+> > 
+> > get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
+> > 		   u32 max_stack, bool crosstask, bool add_mark)
+> > {
+> > ...
+> > 
+> > 	if (kernel && !user_mode(regs)) {
+> > 		if (add_mark)
+> > 			perf_callchain_store_context(&ctx, PERF_CONTEXT_KERNEL);
+> > 		perf_callchain_kernel(&ctx, regs);
+> > 	}
+> > 
+> > So this means `perf_callchain_kernel(&ctx, regs);` fails to unwind stack.
+> > 
+> > perf_callchain_kernel() -> arch_stack_walk() -> kunwind_stack_walk()
+> > 
+> > That is `kunwind_init_from_regs()` and `do_kunwind()`.
+> > 
+> > 	if (regs) {
+> > 		if (task != current)
+> > 			return -EINVAL;
+> > 		kunwind_init_from_regs(&state, regs);
+> > 	} else if (task == current) {
+> > 		kunwind_init_from_caller(&state);
+> > 	} else {
+> > 		kunwind_init_from_task(&state, task);
+> > 	}
+> > 
+> > 	return do_kunwind(&state, consume_state, cookie);
+> > 
+> > For initialization, it should be OK because it only refers pc and 
+> > fp(regs[29]), which are recovered by ftrace_partial_regs().
+> > 
+> > static __always_inline void
+> > kunwind_init_from_regs(struct kunwind_state *state,
+> > 		       struct pt_regs *regs)
+> > {
+> > 	kunwind_init(state, current);
+> > 
+> > 	state->regs = regs;
+> > 	state->common.fp = regs->regs[29];
+> > 	state->common.pc = regs->pc;
+> > 	state->source = KUNWIND_SOURCE_REGS_PC;
+> > }
+> > 
+> > And do_kunwind() should work increase trace->nr before return
+> > unless `kunwind_recover_return_address()` fails.
+> > 
+> > static __always_inline int
+> > do_kunwind(struct kunwind_state *state, kunwind_consume_fn consume_state,
+> > 	   void *cookie)
+> > {
+> > 	int ret;
+> > 
+> > 	ret = kunwind_recover_return_address(state);
+> > 	if (ret)
+> > 		return ret;
+> > 
+> > 	while (1) {
+> > 		if (!consume_state(state, cookie)) <--- this increases trace->nr (*).
+> > 			return -EINVAL;
+> > 		ret = kunwind_next(state);
+> > 		if (ret == -ENOENT)
+> > 			return 0;
+> > 		if (ret < 0)
+> > 			return ret;
+> > 	}
+> > }
+> > 
+> > (*) consume_state() == arch_kunwind_consume_entry() 
+> >   ->  data->consume_entry == callchain_trace() -> perf_callchain_store().
+> > 
+> > Hmm, can you also dump the regs and insert pr_info() to find
+> > which function fails?
+> > 
+> > Thanks,
+> > 
+> 
+> After testing, it was found that the stack could not be obtained because user_mode(regs) returned 1. 
+> Referring to the arch_ftrace_fill_perf_regs function in your email 
+> (https://lore.kernel.org/all/173518997908.391279.15910334347345106424.stgit@devnote2/), 
+> I made the following modification: by setting the value of pstate, the stack can now be obtained successfully.
+> 
+> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+> index 058a99aa44bd..f2814175e958 100644
+> --- a/arch/arm64/include/asm/ftrace.h
+> +++ b/arch/arm64/include/asm/ftrace.h
+> @@ -159,11 +159,13 @@ ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
+>  {
+>         struct __arch_ftrace_regs *afregs = arch_ftrace_regs(fregs);
+>  
+>         memcpy(regs->regs, afregs->regs, sizeof(afregs->regs));
+>         regs->sp = afregs->sp;
+>         regs->pc = afregs->pc;
+>         regs->regs[29] = afregs->fp;
+>         regs->regs[30] = afregs->lr;
+> +       regs->pstate = PSR_MODE_EL1h;
+
+Good catch! 
+
+>         return regs;
+>  }
+> However, I'm not sure if there will be any other impacts...
+> 
+> By the way, during my testing, I also noticed that when executing bpf_get_stackid via kprobes or tracepoints, 
+> the command bpftrace -e 'kprobe:bpf_get_stackid {printf("bpf_get_stackid\n");}' produces no output. 
+
+That is strange. since normal kprobes passes full pt_regs.
+
+> However, it does output something when bpf_get_stackid is invoked via uprobes. 
+> This phenomenon also occurs on the x86 architecture, could this be a bug as well?
+
+Yes, it must be a bug.
+
+Thanks!
+
+> 
+> Thanks.
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
