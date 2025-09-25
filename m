@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-69691-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69692-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52345B9EA0A
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:27:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56137B9EA0E
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:27:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E0207B3059
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:25:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 164113AED2F
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:27:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD99F2EB5B9;
-	Thu, 25 Sep 2025 10:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18232EA741;
+	Thu, 25 Sep 2025 10:26:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C12E26F28B;
-	Thu, 25 Sep 2025 10:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92352EB85F;
+	Thu, 25 Sep 2025 10:26:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758795998; cv=none; b=gjMNGq4F2KcXh81HR1HlslXwRxZJNB2aojlknrJOUAAfF6fiRGmnXaj6XcugRrAVJuPArvCyVow6ooNkTEzfodAgo7NafmcMA6vGwfGi7tdmrgSRmLOJslssknL39SvunwGtJhIMyaUTKG2rDNYVtEbBp5cQhUWs5nAnijouaLk=
+	t=1758796001; cv=none; b=M7lPvGpVrmHJBUm/x2ZnH8mFvOY+83KRvp9t5brA6GKfNWWtd1Ri81TZq3JQfKs2xXeB67Ps9BItjnC1cETP4CIV6Hh9vBlKh3ywxEUoH5216leGJOGZ8FwEYZYEdkYH4CvE9RkLqW5OnMEDUGM2TbQKVxqi7IDD5ITRLDstMQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758795998; c=relaxed/simple;
-	bh=XU+JsDm+NACkjK6KgkBIoEW0aBxNnr3czBMcHn+kAFw=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bdZ69WUZwZiwmsuaxKIu+5YUYCbE4BZPeKRrCnz7weosMu9iSX71l0YqBd/7/ctn7x3DITA20BTA9LrOPWW9UbMFm6IMsQQUvuGDLE+klHbAVnUGBpIqE/niVrjZ3Z24PwhRIFeHjLDH54Rn9AfbXamdGYhBnZvObJ1mYOAmbl0=
+	s=arc-20240116; t=1758796001; c=relaxed/simple;
+	bh=vNDVZkxHA2mAyiZ+UlvQxAZSagxQ4O7RbrAShEgaA5E=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=uxJRAqR8DGpSKFPnVh+a2foW+MVy5wT4lip0qnRYAOgtRXX/PhJqROu5mWn29MCZ4cie9bhzb6fKRwbcWce3w31w46CZoL1lbU1x7cK9HhI4LUEOGSMW/YmhlQo2a3NBCwFINhfuPNGcIUxa4FnGfM8+lwAyKdhgK3H8znoyCFA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38F8F1692;
-	Thu, 25 Sep 2025 03:26:27 -0700 (PDT)
-Received: from e132581.arm.com (e132581.arm.com [10.1.196.87])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C61A93F694;
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E1D01E5E;
 	Thu, 25 Sep 2025 03:26:31 -0700 (PDT)
+Received: from e132581.arm.com (e132581.arm.com [10.1.196.87])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 99FF13F694;
+	Thu, 25 Sep 2025 03:26:35 -0700 (PDT)
 From: Leo Yan <leo.yan@arm.com>
-Subject: [PATCH 0/8] perf build: Support building with Clang
-Date: Thu, 25 Sep 2025 11:26:24 +0100
-Message-Id: <20250925-perf_build_android_ndk-v1-0-8b35aadde3dc@arm.com>
+Date: Thu, 25 Sep 2025 11:26:25 +0100
+Subject: [PATCH 1/8] tools build: Align warning options with perf
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -43,11 +43,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIANAY1WgC/x3MQQqEMAxA0atI1lOoSkC9yjCU1kQNDlVSFKF4d
- 4vLt/g/Q2IVTjBUGZRPSbLFgvpTwbj4OLMRKobGNmj7Gs3OOrlwyJ+cj6SbkIu0GrQ2YBvYdz1
- CiXflSa53/P3d9wOY32O2aAAAAA==
-X-Change-ID: 20250915-perf_build_android_ndk-500b53bea895
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250925-perf_build_android_ndk-v1-1-8b35aadde3dc@arm.com>
+References: <20250925-perf_build_android_ndk-v1-0-8b35aadde3dc@arm.com>
+In-Reply-To: <20250925-perf_build_android_ndk-v1-0-8b35aadde3dc@arm.com>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>, 
  Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
  Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
@@ -65,62 +64,45 @@ To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
  llvm@lists.linux.dev, bpf@vger.kernel.org, Leo Yan <leo.yan@arm.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1758795991; l=2161;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1758795991; l=1150;
  i=leo.yan@arm.com; s=20250604; h=from:subject:message-id;
- bh=XU+JsDm+NACkjK6KgkBIoEW0aBxNnr3czBMcHn+kAFw=;
- b=VaDG4JssfwIwKfVis2IGMb3HXC/byRBlxX87NQBY9L6PLPT9dhDxgMh51YLs9KIYrXvqTwL3n
- FKBnLR7EDZ2BFkIHJi1P+0LLnQTCwKIVweN//eHuFHJ/ocslDjdWEVh
+ bh=vNDVZkxHA2mAyiZ+UlvQxAZSagxQ4O7RbrAShEgaA5E=;
+ b=45BvuWlEAyqOvdVoU5EgxBA7EfKXLauMQSTIGDpVunB+YcsWV90oMQ8Qf64Xsx85qVe+rE5SF
+ PVqdpCaccyXCgvyvwVf4KiAeTxwWtYWH+2eb6DlTI/AzBdSLj4YxFUG
 X-Developer-Key: i=leo.yan@arm.com; a=ed25519;
  pk=k4BaDbvkCXzBFA7Nw184KHGP5thju8lKqJYIrOWxDhI=
 
-This series adds support for building perf with Clang, following the
-discussion in [1]. Because the Android NDK uses Clang by default,
-enabling Clang builds naturally covers Android as well.
+The feature test programs are built without enabling '-Wall -Werror'
+options. As a result, a feature may appear to be available, but later
+building in perf can fail with stricter checks.
 
-The series is organized as follows:
+Make the feature test program use the same warning options as perf.
 
-  - Patches 1–2: Fix two bugs found with Clang.
-  - Patches 3–6: Address Clang build warnings. Because these warnings
-    do not break the build, no Fixes tag is added to avoid backporting.
-  - Patches 7–8: Enable Clang in the Makefile and update the
-    documentation.
-
-Testing:
-
-  - Clang 15.0.7 on Ubuntu 22.04.5: native and cross-compiling (aarch64)
-  - Clang 18.1.3 on Ubuntu 24.04.2: native and cross-compiling (aarch64)
-  - Android NDK r27d (latest LTS): cross-compiling (aarch64)
-
-[1] https://lore.kernel.org/linux-perf-users/20240715143342.52236-1-leo.yan@arm.com/
-
+Fixes: 1925459b4d92 ("tools build: Fix feature Makefile issues with 'O='")
 Signed-off-by: Leo Yan <leo.yan@arm.com>
 ---
-Leo Yan (8):
-      tools build: Align warning options with perf
-      perf python: split Clang options when invoking Popen
-      bpftool: Conditionally add -Wformat-signedness flag
-      perf test coresight: Dismiss clang warning for memcpy thread
-      perf test coresight: Dismiss clang warning for thread loop
-      perf test coresight: Dismiss clang warning for unroll loop thread
-      perf build: Support build with clang
-      perf docs: Document building with Clang
+ tools/build/feature/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- tools/bpf/bpftool/Makefile                         | 12 +++-
- tools/build/feature/Makefile                       |  4 +-
- tools/perf/Documentation/Build.txt                 | 18 +++++
- tools/perf/Documentation/android.txt               | 82 +++-------------------
- tools/perf/Makefile.config                         | 32 ++++++++-
- .../shell/coresight/memcpy_thread/memcpy_thread.c  |  2 +
- .../shell/coresight/thread_loop/thread_loop.c      |  4 +-
- .../unroll_loop_thread/unroll_loop_thread.c        |  4 +-
- tools/perf/util/setup.py                           |  5 +-
- 9 files changed, 81 insertions(+), 82 deletions(-)
----
-base-commit: c17dda8013495d8132c976cbf349be9949d0fbd1
-change-id: 20250915-perf_build_android_ndk-500b53bea895
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index b41a42818d8ac232ade78ecb41363d26ce2a9471..bd615a708a0aa89ddbe87401f04bd736e384a9c4 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -316,10 +316,10 @@ $(OUTPUT)test-libcapstone.bin:
+ 	$(BUILD) # -lcapstone provided by $(FEATURE_CHECK_LDFLAGS-libcapstone)
+ 
+ $(OUTPUT)test-compile-32.bin:
+-	$(CC) -m32 -o $@ test-compile.c
++	$(CC) -m32 -Wall -Werror -o $@ test-compile.c
+ 
+ $(OUTPUT)test-compile-x32.bin:
+-	$(CC) -mx32 -o $@ test-compile.c
++	$(CC) -mx32 -Wall -Werror -o $@ test-compile.c
+ 
+ $(OUTPUT)test-zlib.bin:
+ 	$(BUILD) -lz
 
-Best regards,
 -- 
-Leo Yan <leo.yan@arm.com>
+2.34.1
 
 
