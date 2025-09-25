@@ -1,108 +1,230 @@
-Return-Path: <bpf+bounces-69682-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69683-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EE29B9E79D
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:44:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7C62B9E7F1
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:49:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A59634C3604
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 09:44:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D52A17A5A4F
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 09:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B562EBB93;
-	Thu, 25 Sep 2025 09:43:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD702727FD;
+	Thu, 25 Sep 2025 09:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="ejb1ZWzK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XEKpyGIM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D072EA159
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 09:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C98621A92F
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 09:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758793425; cv=none; b=dS++Qo4MztMKUK9vtGUjeGgmlBCJ8gs8ybeWPtD7YmwB7vA7gWc8ntBq0w4eFuU2/Y2jz2bJ+wUlZn1uLtO1Yzx8uwK+lKfu9uk67HH5l4UCFRzNhy0yBLxGRDLDahA14gxSDBE8E5tMChEvm92fvgFKvD947q5qIcjxxvmdLMs=
+	t=1758793786; cv=none; b=NCxPPA05F5Xl7w7eciS8JGu7VYslsdbwiUNEJ6TgcpYPSYJJRa7mO1jhoKSeFXHvYYpYxa4vaDXkg3OrRbeHfDvfJTvh+MLut7C1n0iTJDa6+UmQlaOg33V8MQwBKUcQeL5nrPoVv5Kq0x4gXhbHm8120koADDxlpCrQHhE18N0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758793425; c=relaxed/simple;
-	bh=Do01lFFcNDYlGWQcYjdNtP19mQ6XNKmi0AumEvwX5Ps=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=kRxG48A0NniwZir/9XNqWlTjt+5+jEW8x3TTzaE1aZA3XVMxjXJ3qvj3fMFiV9l9+qYE1TPjtJuoAB/c6tt7IIL+Eo6vksbeSza6d0INQhKkyKidjQMyFvBvpXbq3v2/Kq9jhub38wzKmN7OKHgwp3Ayx44W3nc8+JoetmL8L18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=ejb1ZWzK; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b30ead58e0cso128554366b.0
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 02:43:43 -0700 (PDT)
+	s=arc-20240116; t=1758793786; c=relaxed/simple;
+	bh=8Ar+LW16cuafXplhrJrUtsg6Y0P549XzFqMr05t7WHs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ckEEu3hr3hdicCM0OSBRO4wqTWDOKnDZqmFQY1vMWH/ZqdQVICisUYiN9CgUD7RDJ6KTJ9rVth3LNB05HOskdXu6HlHV2tZnREhWhkwFSiYqYD0fP1d/PHNK2sMjI6+7E+2ugJJxHUt79G2dg46ww+BZvsGC7w9+AIgGmiyx7Pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XEKpyGIM; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3f1aff41e7eso807863f8f.0
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 02:49:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1758793422; x=1759398222; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DCZnhATrsjVbGiYUB4fIkwGkbNdpLbfL2naMCtBsqWk=;
-        b=ejb1ZWzKMQ+OA0tMn5zstNHptY7noPUmqwPqyJDNU6aDYIMvt82QRnT8xTJD1ihoBJ
-         7B9vxKxH4awaIV9NdCiNG7td5miuaQwWTJ67rPZjL17tB+dGU4/nAavaqqOKayT3XInq
-         T5Jw2XsDJhkD9NhyngmlA35CLrEyjiv1rWsToTy0ZIKcDv2eqTx4gLPCC/vOBquSKFHy
-         FLp5lZxdg00uEZamVjC3azW2I7TZU4ulhoFrclmb3Wsw1I+dGt/O2kXLcTzgy/K5hMP9
-         1PpxnH+8PGuBYRS95j71ZzV751T+29yVszYhKL1VfjQbSWT+IYt+jf5cnxGrczW5+eSW
-         QcPg==
+        d=gmail.com; s=20230601; t=1758793783; x=1759398583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xAdB0h6gywyYGEbcKZEpB8tiADjT0Zg7QlPCyUrAOtk=;
+        b=XEKpyGIMZUrpgF9oIsujNdtSj4k/VSkSfIzAkzjWUxj0H6Y/SMWD1RbXfErURNXU0D
+         o7zEodBsBdwiAX34eDRxol6XTXv24VZHaodDP9iaYMcLfFxpROo/iiuyfqGgAEeI4h0A
+         CYiCFdQ9C9/pLqK5YM3LjHRreTnLuFHfslkHohaG6f9e+Zgt7srZWBl22zMra6+u0d/E
+         Wi2R/LwGByUajOyFDCEzYW7WUfIhWJ4d9/h8KXs/XOzYR7/Ei20FsRSRl8iy9bZsWuF/
+         aBbanQVbnbfA7oIw0KPE5zehwk0jNGO1h+4+eOn04kn/Ck3pkgnowwmpLWW7WSWMREW6
+         t/DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758793422; x=1759398222;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DCZnhATrsjVbGiYUB4fIkwGkbNdpLbfL2naMCtBsqWk=;
-        b=wJOmlgjGBf+d+7A2QJPZtHpCpU/JJCWN2O6R6gUYEDsk5COAjf26bGDXhNkmRbyzZC
-         Fc+AJsEUKqTP8ZwbOSqgogHRuJyN/4gmt5H1eHnE0F7idOGPKdtB/GL/p1FfSmLLe8dV
-         NHFfLU2E+t2nl+piwY9YhEV/Q0+lP/NLh4DJ+c7d+wX0JS5BY3ZzG4Ng+yuvn1BrDkoE
-         qQz3xjduRWa95l0PN8kApifRrzJEVbep60m1SxATMg+LZMonmluDR1hKJN9tZr0Ettso
-         gFmFlKR1bKt3jWHrmVZ4z0rMaos43Fak0V8+FeBe6ehWjgVLRA08B5Ltzsg/gCKAuyQk
-         GN2A==
-X-Forwarded-Encrypted: i=1; AJvYcCWNVkS5q25vgspUqjRKfsN/pGm4v+F/TzxiV6unoE0IvCe5JCQu4FIPUC5utkvsibvHjUg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzREN8DolC6CSircVPbti2ehhPfYB/1N3yx2ip4comCztmMMIXy
-	eWE11xuyDB+hZSV60GlW4jJf94i63ziJ4E9ZiMc9CfDoN5kHflFariBRiV6AeI+OpHM=
-X-Gm-Gg: ASbGncuJr8FdUGfyyysJuXr4Z/b/+X8yeFhgBtwI5PMSlvthUGNicobHrJ3BjuT7BYD
-	SYvNXH4xG49Pvs583nzQs+exy1lOdQuvlGlhuFZYtuQvQHjmBjhpl5jL3XsJkS0GUvSzIfHxZHq
-	4yfI3KkAmDE+TU9Og3DuI/mk8uSMTf/TwyxLG0kGmwzEo/voa0+2KhqZS6+RDbRpZMRtPXSGXLm
-	jaIfpQTN60GgO1/FBxWdNiwjGMQ+MxjXgaqSsvaux1hgpwVwV0qhhHZAF5wPGMDNA7nDF+TxL/0
-	WzTuMHYfje7ayAElWK+PQkL0dwuDRnr16y6hZFxHOC63esci67wZyEDNqcLCrpFG4sA1bB2iI3p
-	vRmXQ4IYEL1rNlZ4=
-X-Google-Smtp-Source: AGHT+IHtjYY4u3ev2M33gy9xtE76ugh5Zae/dWOU8GUtMm4PBGTQ07Z0LKjhRfz3yyXn30W6EI50iw==
-X-Received: by 2002:a17:907:94c2:b0:b2d:604d:acc9 with SMTP id a640c23a62f3a-b34ba93cd00mr280580766b.35.1758793421736;
-        Thu, 25 Sep 2025 02:43:41 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac6:d677:295f::41f:5e])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b35446f74fbsm129383166b.51.2025.09.25.02.43.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 02:43:41 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
-Cc: davem@davemloft.net,  edumazet@google.com,  kuba@kernel.org,
-  pabeni@redhat.com,  donald.hunter@gmail.com,  andrew+netdev@lunn.ch,
-  ast@kernel.org,  daniel@iogearbox.net,  hawk@kernel.org,
-  john.fastabend@gmail.com,  matttbe@kernel.org,  chuck.lever@oracle.com,
-  jdamato@fastly.com,  skhawaja@google.com,  dw@davidwei.uk,
-  mkarsten@uwaterloo.ca,  yoong.siang.song@intel.com,
-  david.hunter.linux@gmail.com,  skhan@linuxfoundation.org,
-  horms@kernel.org,  sdf@fomichev.me,  netdev@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  bpf@vger.kernel.org,
-  linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH RFC 0/4] Add XDP RX queue index metadata via kfuncs
-In-Reply-To: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com> (Mehdi Ben
-	Hadj Khelifa's message of "Tue, 23 Sep 2025 22:00:11 +0100")
-References: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
-Date: Thu, 25 Sep 2025 11:43:39 +0200
-Message-ID: <87h5wq50l0.fsf@cloudflare.com>
+        d=1e100.net; s=20230601; t=1758793783; x=1759398583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xAdB0h6gywyYGEbcKZEpB8tiADjT0Zg7QlPCyUrAOtk=;
+        b=KzvS/GzVuZO15Orj5ytoC86e73TjhrUa3Zx4EIOmxrE02S7ZAgHrD7GiXSNHRhz72e
+         mAO9vxqU9zK2GjhVHSDsUPM9RtEzLXPVPZW9sS7vixfA9I0PqnJb92jqZ0MzR2Bnrp0b
+         NKXWWiP0px8BPC2YKef99HnB7TG10sFfHLJYWBwO+ytx0j9+KtIsx5y70vlTBLxV0BZ+
+         5wZPcOdMzvJ+GkkY0RgUlZGVnGcCLcfk0zeVOqxnE86O94sL0I1Njcl1t0RFsmvjl1kH
+         4JJXZln3XYFv/EDOQQdZOMlcGQpvKttU+c/GD6C3hHo8DVf2TrmZxTJO9lOW8gXvSrLz
+         eXOQ==
+X-Gm-Message-State: AOJu0Yy9Bf6oK+JzfjH5MsUMdxI+iguIERjAfZ8p5SKkoRpCXiKib1cC
+	cI9LAxDkYUDjAklcjh26Y4IA0WcvnIuDZFz68kA6BUZdG8P4oDyUtDJ0GDVfoiFv8SDDJ5gtvhy
+	wDYMFFgqUewcrYN/XOWbN6BRkQ2nnjKkBKpQrVdZGsQ==
+X-Gm-Gg: ASbGnctS9ZXVnD9w3iceqekaUp03Q1yBEEEukyiuldzHpN7Pt24al3ytD4pqo+8oEfi
+	mGV0RWbg8ayXMP50OFFwKqmrob0DEwV2A4/L6Cac5vn81XSstqTnaFuUJ/7NCP6mHyFG33+aEkh
+	cPXyOmCiXaLwY5DyMLe5gozbNzGeaHzXgz3fUfZCUKhjUcIE/Qy20TY6Tu/Y/jBfFbrWPEGTaJa
+	cTrjQ==
+X-Google-Smtp-Source: AGHT+IEo0J7byEs7BdWOXsGPzkT2J09Ix+etXUhkwQcB9QQkq4MZ1w/7V+zQyT9gfSuagZLTrmn+cv5Vxa5I6YBHVns=
+X-Received: by 2002:a05:6000:220f:b0:3ec:3cac:7dfd with SMTP id
+ ffacd0b85a97d-40e44c3da28mr2914145f8f.26.1758793782363; Thu, 25 Sep 2025
+ 02:49:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20250924211716.1287715-1-ihor.solodrai@linux.dev> <20250924211716.1287715-2-ihor.solodrai@linux.dev>
+In-Reply-To: <20250924211716.1287715-2-ihor.solodrai@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 25 Sep 2025 10:49:31 +0100
+X-Gm-Features: AS18NWDI0PcoHJucBujAEwrYnqvMKkwuEPh-avG_8_H40XT5_nl48CsvY_ofg7w
+Message-ID: <CAADnVQLvuubey0A0Fk=bzN-=JG2UUQHRqBijZpuvqMQ+xy4W4g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/6] bpf: implement KF_IMPLICIT_PROG_AUX_ARG flag
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, dwarves <dwarves@vger.kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 23, 2025 at 10:00 PM +01, Mehdi Ben Hadj Khelifa wrote:
->  This patch series is intended to make a base for setting
->  queue_index in the xdp_rxq_info struct in bpf/cpumap.c to
->  the right index. Although that part I still didn't figure
->  out yet,I m searching for my guidance to do that as well
->  as for the correctness of the patches in this series.
+On Wed, Sep 24, 2025 at 10:17=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux=
+.dev> wrote:
+>
+> Define KF_IMPLICIT_PROG_AUX_ARG and handle it in the BPF verifier.
+>
+> The mechanism of patching is exactly the same as for __prog parameter
+> annotation: in check_kfunc_args() detect the relevant parameter and
+> remember regno in cur_aux(env)->arg_prog.
+>
+> Then the (unchanged in this patch) fixup_kfunc_call() adds a mov
+> instruction to set the actual pointer to prog_aux.
+>
+> The caveat for KF_IMPLICIT_PROG_AUX_ARG is in implicitness. We have to
+> separately check that the number of arguments is under
+> MAX_BPF_FUNC_REG_ARGS.
+>
+> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> ---
+>  include/linux/btf.h   |  3 +++
+>  kernel/bpf/verifier.c | 43 ++++++++++++++++++++++++++++++++++++-------
+>  2 files changed, 39 insertions(+), 7 deletions(-)
+>
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index f06976ffb63f..479ee96c2c97 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -79,6 +79,9 @@
+>  #define KF_ARENA_RET    (1 << 13) /* kfunc returns an arena pointer */
+>  #define KF_ARENA_ARG1   (1 << 14) /* kfunc takes an arena pointer as its=
+ first argument */
+>  #define KF_ARENA_ARG2   (1 << 15) /* kfunc takes an arena pointer as its=
+ second argument */
+> +/* kfunc takes a pointer to struct bpf_prog_aux as the last argument,
+> + * passed implicitly in BPF */
 
-What is the use case/movtivation behind this work?
+This is neither networking nor kernel comment style.
+Pls use proper kernel comment style in a new code,
+and reformat old net/bpf style when adjusting old comments.
+
+> +#define KF_IMPLICIT_PROG_AUX_ARG (1 << 16)
+
+The name is too verbose imo.
+How about
+KF_HIDDEN_PROG_ARG
+or
+KF_PROG_LAST_ARG
+
+"Implicit" is not 100% correct, since it's very explicit
+in kfunc definition in C, but removed from BTF.
+"Hidden" is also not an exact fit for the same reasons.
+Hence my preference is KF_PROG_LAST_ARG.
+
+"aux" part is also an implementation detail.
+
+>  /*
+>   * Tag marking a kernel function as a kfunc. This is meant to minimize t=
+he
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index e892df386eed..f1f9ea21f99b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -11948,6 +11948,11 @@ static bool is_kfunc_rcu_protected(struct bpf_kf=
+unc_call_arg_meta *meta)
+>         return meta->kfunc_flags & KF_RCU_PROTECTED;
+>  }
+>
+> +static bool is_kfunc_with_implicit_prog_aux_arg(struct bpf_kfunc_call_ar=
+g_meta *meta)
+> +{
+> +       return meta->kfunc_flags & KF_IMPLICIT_PROG_AUX_ARG;
+> +}
+> +
+>  static bool is_kfunc_arg_mem_size(const struct btf *btf,
+>                                   const struct btf_param *arg,
+>                                   const struct bpf_reg_state *reg)
+> @@ -12029,6 +12034,18 @@ static bool is_kfunc_arg_prog(const struct btf *=
+btf, const struct btf_param *arg
+>         return btf_param_match_suffix(btf, arg, "__prog");
+>  }
+>
+> +static int set_kfunc_arg_prog_regno(struct bpf_verifier_env *env, struct=
+ bpf_kfunc_call_arg_meta *meta, u32 regno)
+> +{
+> +       if (meta->arg_prog) {
+> +               verifier_bug(env, "Only 1 prog->aux argument supported pe=
+r-kfunc");
+> +               return -EFAULT;
+> +       }
+> +       meta->arg_prog =3D true;
+> +       cur_aux(env)->arg_prog =3D regno;
+> +
+> +       return 0;
+> +}
+> +
+>  static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
+>                                           const struct btf_param *arg,
+>                                           const char *name)
+> @@ -13050,6 +13067,21 @@ static int check_kfunc_args(struct bpf_verifier_=
+env *env, struct bpf_kfunc_call_
+>                 return -EINVAL;
+>         }
+>
+> +       /* KF_IMPLICIT_PROG_AUX_ARG means that the kfunc has one less arg=
+ument in BTF,
+> +        * so we have to set_kfunc_arg_prog_regno() outside the arg check=
+ loop.
+> +        */
+
+Use kernel comment style.
+
+> +       if (is_kfunc_with_implicit_prog_aux_arg(meta)) {
+> +               if (nargs + 1 > MAX_BPF_FUNC_REG_ARGS) {
+> +                       verifier_bug(env, "A kfunc with KF_IMPLICIT_PROG_=
+AUX_ARG flag has %d > %d args",
+> +                                    nargs + 1, MAX_BPF_FUNC_REG_ARGS);
+> +                       return -EFAULT;
+> +               }
+> +               u32 regno =3D nargs + 1;
+
+Variable declaration should be first in the block
+followed by a blank line.
+
+Also I would remove this double "> MAX_BPF_FUNC_REG_ARGS" check.
+Move if (is_kfunc_with_prog_last_arg(meta))
+couple lines above before the check,
+and actual_nargs =3D nargs + 1;
+if (actual_nargs > MAX_BPF_FUNC_REG_ARGS)
+to cover both cases.
+I wouldn't worry that verbose() isn't too specific.
+If it prints nargs and actual_nargs whoever develops a kfunc
+can get an idea.
+Also in the future there is a good chance we will add more
+KF_FOO_LAST_ARG flags to cleanup other *_impl() kfuncs
+that have a special last argument, like bpf_rbtree_add_impl.
+If all of them copy paste "> MAX_BPF_FUNC_REG_ARGS" check
+it will be too verbose. Hence one nargs check for them all.
+
+pw-bot: cr
 
