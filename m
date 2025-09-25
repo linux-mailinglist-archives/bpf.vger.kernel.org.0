@@ -1,137 +1,189 @@
-Return-Path: <bpf+bounces-69701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69710-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48A15B9EA55
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:29:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D2E0B9EF1B
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 13:38:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1A8A4C78B9
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:29:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 600621BC4068
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:39:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78BCD2ECD37;
-	Thu, 25 Sep 2025 10:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 535C32FB96C;
+	Thu, 25 Sep 2025 11:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VeA/hF1f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XeIL2a5R"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D0D2EC569
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E192EB5B5
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 11:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758796095; cv=none; b=C2AicIsP2xclkGD7nC6Xjr5SQDCEZ7L/KOtmq95yNvL29YC+55bgKY/KOuTvY+ANBHjHDhXzdkSh5qfYCCz5Kr780H8lSO2V41fBp+wmxLwqR3BNJHZAnOnKPfu8PRx8YHDQ2aslZ4bA5bXLwfRQgrd/K30jgFaoGdjsvLm7dRU=
+	t=1758800321; cv=none; b=Q4gJZuXT3ILLuFPvcUybqKEKBopv8yLH1m+nPGGV7Kj8M7kLWBnGhh24H/wEVuHk8NGBwxtrXF3ScfIOEwnGXetqs8z06+S7SHCxR4hWsFfIyhkkQvFS9BBv+S5CVGj8h1E7ixIHHK2PsTCaXbtLaMrtnvgww+ttG2odCSJG4x4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758796095; c=relaxed/simple;
-	bh=fCJa3DLjw9wWm3YVXWypadAkRQz6cPsnPd46/rToZIY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hmI1s21RYPCTEHsWsfEWT+FjBfsYp+nkb7kPKCLyEgl8GMWzPj9dTwuMww2smZ964a11fMZVlGeI9Qljn2xjPsGbu2ch5EKZi2rDgGD33lr3ODIeHI1gfIQTYjRkKB+O9ly0BOYejy/wi2j+OyqtVp99ydmcu3fdrARKxJTdSpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VeA/hF1f; arc=none smtp.client-ip=209.85.208.51
+	s=arc-20240116; t=1758800321; c=relaxed/simple;
+	bh=MPmpW9KjecilXj0o57I2sOWYamYKOiiwJaTMsr/IhRo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lD0r7LDoiEWd4sMSkZ/ZzXu7RVQu+T3XA+HCjm8r3PeH8E+mkddNJll5DSoltWF2ecwxPWIzdKueJXG6ggfWiJsdYMGVTttPEeQ9/acQkr5VKmcBS2yOa1jbbow41SG3YaEtAcfUj4meqn3/CgVTErx5zPbmGDnHQMcFWEcWGdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XeIL2a5R; arc=none smtp.client-ip=209.85.222.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-634578d2276so78097a12.3
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 03:28:12 -0700 (PDT)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-856701dc22aso84331885a.3
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 04:38:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758796091; x=1759400891; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AkkQhkQp0131ZIKNy1iXUtHUjD1n/PLL5NGGdY7hx9Y=;
-        b=VeA/hF1fEafh2ltsyw6VMP+CM6z9Ok0mpZb5lPZoE9yLpUYM1BIXGB6sBuKxiMMHiV
-         2kEpgRuQnT83ZD+Opev6Ql3UbcSvzoo3W/YyEzk/5hrKPGnjHGlljVTKNXXpd4Z2tbSV
-         OfyIXr7WMUG3K7Hx7Y2HHAEN0N58LdMkWQksHMRzxuqXElaKngDOgYoB6AiCR7w1QaqD
-         4KPSfdwG+a9H/PVxpDo8d0tTBdP8jE6R29VQTdl93X6IvWrlb29Q9q60Nwpz2LJAQg5c
-         jWUpxjH0YD6NGyr/Kf7z5EwnJWFEXVehf5QuDrUgAtiKlMb88QGu6xpNHqKaIIrALQMJ
-         fNXQ==
+        d=gmail.com; s=20230601; t=1758800318; x=1759405118; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dxqroIT0bJ4gLlcnSWTcG5okvXIsZwteqLXkgpBpuRM=;
+        b=XeIL2a5RQJ5n8jZntrgyvcAMUK6NqAscvEFjbwXK6epKeAxVf+d2PfzsUj/kYBi4m+
+         5bwV/6eB7edGWr5vWsGB1HKbL0G04mp6XdEVIDs3uGraS4KZF3HcOO7eC/gDcN6tCcnI
+         AOcsgITC/GkKOnmaUaDxzK7W0mYiXxcNlZMoBjDtHhZn5dE12RDgYM0/GJv8le5yDR+I
+         Va/RVmFbLlHtgBwhIpCPPWWwdag8AdhUnBSy5ClHnSFvren4Fhij+op/B0hfLiOH57cf
+         I7IPHE2KkxK7eQ3zkWd3S9KeoU4H/bz/KJcCSf6H4dQb8JH/MZOao+IW3PyyNacIQCZl
+         /THQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758796091; x=1759400891;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AkkQhkQp0131ZIKNy1iXUtHUjD1n/PLL5NGGdY7hx9Y=;
-        b=YYnV9Hpzkuk3TyYXfRXMNeEo+kUk+zWixq6T21yRfstHGRMdpVN3Q7nqfg6gIp92Vl
-         b5bWtSjNjHd1IdZmvqX8Ln6kMI19X+T6RbFhUf32USMIF2reZPf/cZ/863MNMuSD4SI7
-         WIpklNbPztAuls4v2lu+CqIQskKdGZOLaUEs2RHKsY4SzQp4jKW8enxqH91yvHv+yOCP
-         WIMKQmiH/2GwAvP/J+01s0N8sgNU6OGdE6q21lxT3vayiA15OIX0muDERrGVlaM4i6ml
-         HSCXEphMN6LWYSw9M8y87Kc7j6nDlGnDz0Iqhm/SiSnt6Hluk8Y6B/RRGN+2ZmoIYduQ
-         KSVA==
-X-Forwarded-Encrypted: i=1; AJvYcCVunvORuZ4vtcwwHconkgbt/UcWD3eKbO4XqlupcZoWAG55yEOgi0KgP3RGUhvOQv2PRDk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywj3RidAbqvcyqxB8x56mRgOO0QUi8tId0dC7h6yFstUv2SuvIL
-	fX+FfgBqfzzok4adWEEHzZSJtuZbpsZt6sPVtB9GhCnC65Wia72LFF4L
-X-Gm-Gg: ASbGnct0THh4BgAgM8QZEsrkzxhZ1NR8w0uq9LOkvPdXs6crHwxmPwlxLVfjq2XnA/5
-	Br+uie6YaPfPCYCZTsht3KLK6GQeUCXCokdL5/MHctar9fvkpSHA+FNsUzsGFhxLzUPSofpPKzw
-	CdkWrzJLXAWWO+w6uahP4V8fybfzyav5yY/4K0+eXZWxODgs8vh4MTIsQRu05P/Qv0BbwmiaKXN
-	ca1swmyTW2i+bM9Lz5RaWz6MXG4ppwun9Fe2+m5TLTLyuaLfVh9luAdXVER2hC58fLB/vAV5XN8
-	AVAspJ/fdBKYuZAaYjOAHvO+1ODSFc/hhpvhJQfBfD9J6Vo2Zay7KAwecKRiJ4fggfRe2ItbSin
-	zeCdxxga68WBdRoT8YMjm4r6F6ZXj1h/0RA6RFI6Mq/Q=
-X-Google-Smtp-Source: AGHT+IEJRAjZWd8i/spFohWijM9GpkErorZXWbmJA8bf0ZF8n/1FpAdkOBR7e4k1rIrGaK9+GbCQ4A==
-X-Received: by 2002:a17:907:9493:b0:b0e:e45:f934 with SMTP id a640c23a62f3a-b34ba350c67mr180986166b.4.1758796091304;
-        Thu, 25 Sep 2025 03:28:11 -0700 (PDT)
-Received: from [192.168.1.105] ([165.50.112.244])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b3545a9769bsm139873366b.99.2025.09.25.03.28.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Sep 2025 03:28:10 -0700 (PDT)
-Message-ID: <e85e7bb2-6229-4b04-9c2a-7a7b79497c6c@gmail.com>
-Date: Thu, 25 Sep 2025 12:28:07 +0100
+        d=1e100.net; s=20230601; t=1758800318; x=1759405118;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dxqroIT0bJ4gLlcnSWTcG5okvXIsZwteqLXkgpBpuRM=;
+        b=QbfMQxNeG8mDF+LjkMFtToFuEtnCTsePAU9GdYbo4k5HU8Z0Hluq8mEmtjxKXGWx7c
+         7U4S454SeUSR4jGczGsN7dDItXx/KsHjf0wSJY/vw5/K+zuaeOHpTBGiEHdxaorhkiw7
+         /LN8OqILBuSE20elV7dqzQzV4H8XSlq0DdzFEJa9JLnyfZa4UDPjm/odXmMBZpl1oFYs
+         9hhaDN3EzuL3JSbkB4fyll5D4fgd6uiunnL6iNqVKQIDB88XyzzohSnC5VddwA08pBYP
+         9+vbJSrqIANHMa9ytxYRoCoBu/JXK3N8NvS7I8+z5u+Ug60FwxVEBJ0ZB8OHW2IemA+g
+         d3vg==
+X-Forwarded-Encrypted: i=1; AJvYcCXU6MfbUKDBoY2e3DS7Eejj2ET+ikK/MPzSMQaFOiiC7Pzb/h4mxlV8jFh/9UruZ22177A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwnUqZfvFCBiP/MOFrzZ6GJ3OxPzllAqe8v9kFj2lnlU3or2CJc
+	gRRISq0lW+iFtJNCF8YpJeVdtN9GhZIdam4g+KZyUofL/TSSMyT0aVaqRPlg9uLs2fTStbmaM2Z
+	1Sko0GzDurfJkCwwkZlPaJ4R3h9WZ4Jc=
+X-Gm-Gg: ASbGnctpWfZerF889JaJGiEVI2QR4Bt+NmpDStcAJJA4qPWoDxdzWYrXiOP2F9TfAbI
+	J82M6Ejfjv9w9I688/TRkw9LEk3nJesFksGttSLybJLUi3txh7PdWGgWaKUtaXnWyMJGPOmARCE
+	e5QKRTr262EsD0TILMqsNeTd8LmfD3fws8GY4jhShMRF4rSmiebiLfOR6FsrMlzmskpksKywRC3
+	C+bd+DWU9PVsSLtd9E9wRP6Dnxoa2lnBySS2DQs
+X-Google-Smtp-Source: AGHT+IEjqFiMZ84yVMmL8aqHzutnqyfPVAvHhHZi1w2Zyv0MzO2zv3PyHq0KNksiUWqn8ZVtvz5/v5ORndsZtS+GvZ0=
+X-Received: by 2002:ad4:5742:0:b0:7e4:ee39:738 with SMTP id
+ 6a1803df08f44-7fc45d03d94mr42335986d6.67.1758800317940; Thu, 25 Sep 2025
+ 04:38:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/4] Add XDP RX queue index metadata via kfuncs
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, donald.hunter@gmail.com, andrew+netdev@lunn.ch,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, matttbe@kernel.org, chuck.lever@oracle.com,
- jdamato@fastly.com, skhawaja@google.com, dw@davidwei.uk,
- mkarsten@uwaterloo.ca, yoong.siang.song@intel.com,
- david.hunter.linux@gmail.com, skhan@linuxfoundation.org, horms@kernel.org,
- sdf@fomichev.me, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
-References: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
- <87h5wq50l0.fsf@cloudflare.com>
- <0cddb596-a70b-48d4-9d8e-c6cb76abd9d2@gmail.com>
- <87348a4yyd.fsf@cloudflare.com>
-Content-Language: en-US
-From: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
-In-Reply-To: <87348a4yyd.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250910024447.64788-1-laoar.shao@gmail.com> <20250910024447.64788-3-laoar.shao@gmail.com>
+ <CABzRoyaFv4ciJwcdU=1qQNvSWE_PPQonn7ehE7Zz_PHNHfN4gA@mail.gmail.com>
+In-Reply-To: <CABzRoyaFv4ciJwcdU=1qQNvSWE_PPQonn7ehE7Zz_PHNHfN4gA@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 25 Sep 2025 19:38:01 +0800
+X-Gm-Features: AS18NWAPI6UtnnMnTVeKsaXnI6UeT7SK4r6__DsbeZCo6L2UhwRp_pLiTM-6Da0
+Message-ID: <CALOAHbA=On41GnxAQOh__5ff20NSCO3bzG6trOd=+tymeJndbg@mail.gmail.com>
+Subject: Re: [PATCH v7 mm-new 02/10] mm: thp: add support for BPF based THP
+ order selection
+To: Lance Yang <lance.yang@linux.dev>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com, 
+	dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com, 
+	gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com, 
+	rientjes@google.com, corbet@lwn.net, 21cnbao@gmail.com, 
+	shakeel.butt@linux.dev, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/25/25 11:18 AM, Jakub Sitnicki wrote:
-> On Thu, Sep 25, 2025 at 11:54 AM +01, Mehdi Ben Hadj Khelifa wrote:
->> On 9/25/25 10:43 AM, Jakub Sitnicki wrote:
->>> On Tue, Sep 23, 2025 at 10:00 PM +01, Mehdi Ben Hadj Khelifa wrote:
->>>>    This patch series is intended to make a base for setting
->>>>    queue_index in the xdp_rxq_info struct in bpf/cpumap.c to
->>>>    the right index. Although that part I still didn't figure
->>>>    out yet,I m searching for my guidance to do that as well
->>>>    as for the correctness of the patches in this series.
->>> What is the use case/movtivation behind this work?
->>
->> The goal of the work is to have xdp programs have the correct packet RX queue
->> index after being redirected through cpumap because currently the queue_index
->> gets unset or more accurately set to 0 as a default in xdp_rxq_info. This is my
->> current understanding.I still have to know how I can propogate that HW hint from
->> the NICs to the function where I need it.
-> 
-> This explains what this series does, the desired end state of
-> information passing, but not why is does it - how that information is
-> going to be consumed? To what end?
+On Thu, Sep 25, 2025 at 6:06=E2=80=AFPM Lance Yang <lance.yang@linux.dev> w=
+rote:
+>
+> On Wed, Sep 10, 2025 at 10:53=E2=80=AFAM Yafang Shao <laoar.shao@gmail.co=
+m> wrote:
+> >
+> > This patch introduces a new BPF struct_ops called bpf_thp_ops for dynam=
+ic
+> > THP tuning. It includes a hook bpf_hook_thp_get_order(), allowing BPF
+> > programs to influence THP order selection based on factors such as:
+> > - Workload identity
+> >   For example, workloads running in specific containers or cgroups.
+> > - Allocation context
+> >   Whether the allocation occurs during a page fault, khugepaged, swap o=
+r
+> >   other paths.
+> > - VMA's memory advice settings
+> >   MADV_HUGEPAGE or MADV_NOHUGEPAGE
+> > - Memory pressure
+> >   PSI system data or associated cgroup PSI metrics
+> >
+> > The kernel API of this new BPF hook is as follows,
+> >
+> > /**
+> >  * @thp_order_fn_t: Get the suggested THP orders from a BPF program for=
+ allocation
+> >  * @vma: vm_area_struct associated with the THP allocation
+> >  * @vma_type: The VMA type, such as BPF_THP_VM_HUGEPAGE if VM_HUGEPAGE =
+is set
+> >  *            BPF_THP_VM_NOHUGEPAGE if VM_NOHUGEPAGE is set, or BPF_THP=
+_VM_NONE if
+> >  *            neither is set.
+> >  * @tva_type: TVA type for current @vma
+> >  * @orders: Bitmask of requested THP orders for this allocation
+> >  *          - PMD-mapped allocation if PMD_ORDER is set
+> >  *          - mTHP allocation otherwise
+> >  *
+> >  * Return: The suggested THP order from the BPF program for allocation.=
+ It will
+> >  *         not exceed the highest requested order in @orders. Return -1=
+ to
+> >  *         indicate that the original requested @orders should remain u=
+nchanged.
+> >  */
+> > typedef int thp_order_fn_t(struct vm_area_struct *vma,
+> >                            enum bpf_thp_vma_type vma_type,
+> >                            enum tva_type tva_type,
+> >                            unsigned long orders);
+> >
+> > Only a single BPF program can be attached at any given time, though it =
+can
+> > be dynamically updated to adjust the policy. The implementation support=
+s
+> > anonymous THP, shmem THP, and mTHP, with future extensions planned for
+> > file-backed THP.
+> >
+> > This functionality is only active when system-wide THP is configured to
+> > madvise or always mode. It remains disabled in never mode. Additionally=
+,
+> > if THP is explicitly disabled for a specific task via prctl(), this BPF
+> > functionality will also be unavailable for that task.
+> >
+> > This feature requires CONFIG_BPF_GET_THP_ORDER (marked EXPERIMENTAL) to=
+ be
+> > enabled. Note that this capability is currently unstable and may underg=
+o
+> > significant changes=E2=80=94including potential removal=E2=80=94in futu=
+re kernel versions.
+> >
+> > Suggested-by: David Hildenbrand <david@redhat.com>
+> > Suggested-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+>
+> I've tested this patch on my machine, and it works as expected. Using BPF
+> hooks to control THP is a great step forward!
+>
+> Tested-by: Lance Yang <lance.yang@linux.dev>
 
-In my vision,The queue index propagated correctly through cpumap can 
-help xdp programs use it for things such as per queue load 
-balancing,Adaptive RSS tuning and even maybe for DDoS mitigation where 
-they can drop traffic per queue.I mean if these aren't correct intents 
-or if they don't justify the added code, I can abort working on it. Even 
-if they weren't I need more guidance on how I can have that metadata 
-from HW hints...
-Best Regards,
-Mehdi
+Thanks for your test. I will post a new version ASAP.
 
+>
+> This work also inspires some ideas for another useful hook for THP that I
+> might propose in the future, once this series is settled and merged ;)
+
+Excited to see it!
+
+--=20
+Regards
+Yafang
 
