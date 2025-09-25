@@ -1,190 +1,264 @@
-Return-Path: <bpf+bounces-69722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E29EEBA0178
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 16:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D80DDBA0269
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:12:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01AFD19C4F7C
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 14:57:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B3CC1C2233A
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 15:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C996B2E1EE2;
-	Thu, 25 Sep 2025 14:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C7DA31282D;
+	Thu, 25 Sep 2025 15:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hfiu3FKo"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="rGKfUvhS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64838F54
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 14:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B2E311C1E;
+	Thu, 25 Sep 2025 15:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758812220; cv=none; b=G2RVLa+KB/Yhvc62EACmz4YP1fFsRbxK26Ms797Z84yiStYnrdtuHoNqhttWDyRh3CrUOwq0qpjGNUxu7MJdvozN3p8t1RFFtZMzmO0LuNNVv0vpSqhLGj2R5xSMRGVDTl+Yi9NXQIqbEeThfrPg2ksuHqAt+DolRM9J5QbJdR8=
+	t=1758812703; cv=none; b=Ot5dpMaCgVdW2ZhxzxqyJqLD3T/cpid+SHoD/zK5HvNeaht5unGFXf4IAYbcjfaEJe/hozA3jzigCPntJYyikZnFVI9lWcEwcDIjM7neajJAzC2PkmdRuD4KP0CBaMHeaWO7Hj2JyDlhZ5jiKe6X1yUX9AGKLjngr7U1E9+3Td4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758812220; c=relaxed/simple;
-	bh=iXjdYy/Oe5sVP96M1v1HO37ho1pc8PIfeIRa6Jk7gsk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HnKqm0f/wkIVfeZ74mlDJruLwyJ3JvHW9HG4MCxTGP3EBHgbwoSn6NaSRMfdOhJPxTejhWxsRwBBZShCuIBLd5zSdAToUmK0PW6MI4qm0sIWbauJwoeHW1RM0guS52u+S1ZTp+lBfd/ZwgQgg6MyV+cLzVHLW6qlXD12c6g14cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hfiu3FKo; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45dd513f4ecso6886965e9.3
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 07:56:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758812217; x=1759417017; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vQLgyQTTgUDea9nF4s1X9HICWryIv9j0DFy7IvOKWt0=;
-        b=hfiu3FKoJ0+bIORChplDlPZzuM2+HuuaqZoAvJA1CH6hy48Ts8+VvMEUjcvVHAusxX
-         sBTqceF1dmm13bGbmx6jAB2ZJZO36bE7c1Po6DvSJa4dsoAQqPBaZ5IBHQLXOxTeHTGK
-         4l6GAcwpCTzFHJfV8NXjDAmtVZVQSj5eIDFW+74DRzPo/F8kUuxxSyTUGHG9sKscMehg
-         thw1CtLyj7/vShcVFIYbb+kR84kshDsFHefOgKyFntSf+7pKS/FM2N70BZuHI07d8IiS
-         00jS8yTBdPnbguET0tHlwX0wX5t3tMAaZFjxX7aonbabNGlxIIRNvnOk4j17fgTErD8b
-         Hdrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758812217; x=1759417017;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vQLgyQTTgUDea9nF4s1X9HICWryIv9j0DFy7IvOKWt0=;
-        b=k0sq+wXCUhLum/85cQIPogc2rIiViXNyEKPqOfW93mIxXgERtrBW3wBgHmUJU9//hg
-         GJHfEpHv923WPBRLgB2OgAk6hWD/GeR1sBW4h7Oto8eTUn45ZVAwbDHprNbXKCRqPN+d
-         bFRbwrqyz+EID4iUUzjmuu4nBhmx+E0ZcPaAnpTA34tcdKfptFo1mIblu7L8SRcNuB/g
-         tehD0iUstF5H6vke+ZD0Z2fXsziEbH0hh4PAvkJkZJYnG5a9ybKfdv4mMPKxeZ6fwAzY
-         xBEbAh6D9E6zslkwqj0cK5i317D9SpdDjrQ04UHExYpZRw3FibPMi9tQ2jYVvGDc3pAU
-         43BA==
-X-Forwarded-Encrypted: i=1; AJvYcCUq4i6Sk+e24CSDgy8rzQCUGyLEzecZFfdZ2ZurK4jBGBTAZKvP3PrYb3WPBiSceQ9p0TA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YztyLsRScWcz7u6Mo7uaFOxCigPKf3acZEmfz0M4irwKUwdXLPh
-	JYoKFf2FkNe2ksq72FO25XIRCLZYXq0U1XICpgf/GIG1w/2Mo1zAosbV
-X-Gm-Gg: ASbGnctpnqjhwzGq23A+ujYD/KAf54qdkI8+qaXPcjh5E9uaZM1s+Ue8WUaGTpmZVew
-	oY0tBTX3wst3HG+T3oYlmAcd+oWxtS7++0w32cQV5/fEHJE3MEEKIJIhEEtA32FNq9T+xv3sdTo
-	4H9FW5al7mnNJ2XsxsJtfN74a2evVUqepGc9PJc/a/b/dstIdJdWuEFuyPmkpBXqtt8+XdqDMh7
-	bHIlSChy7djqx3x166TG62nmGOk6WXnp8+IBSBFEVUajylYJVauk/yxnIyh+qIKndwRzgeRqJFC
-	o9vYq+EMsOUjxDZruRxuAWmyS2oBUwcJetvZwNPpjXLg3f18QDZy9zsQVptCSVYYBMYv0hLcgAP
-	LwP9yMzBFuGPB3nvT1b9iwB0V710VVU4bPQun8fd2cfBheU2u27W8w3VWnA==
-X-Google-Smtp-Source: AGHT+IEzGD5aTIxkgOT3hW9heRIa+e6bI+J2eP+kb7/6OWm0dTSB2R32Wm5QMktzASbLVZB/YT64hQ==
-X-Received: by 2002:a05:600c:1553:b0:46e:39e4:1721 with SMTP id 5b1f17b1804b1-46e39e41ae1mr1183735e9.12.1758812216424;
-        Thu, 25 Sep 2025 07:56:56 -0700 (PDT)
-Received: from [10.33.80.40] (mem-185.47.220.165.jmnet.cz. [185.47.220.165])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e33bede2csm36381395e9.17.2025.09.25.07.56.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 07:56:55 -0700 (PDT)
-Message-ID: <cd35aa283cf010188a3b0e318f2c16655224767c.camel@gmail.com>
-Subject: Re: [bug report] [regression?] bpf lsm breaks /proc/*/attr/current
- with security= on commandline
-From: Filip Hejsek <filip.hejsek@gmail.com>
-To: Paul Moore <paul@paul-moore.com>
-Cc: linux-security-module@vger.kernel.org, James Morris <jmorris@namei.org>,
-  "Serge E. Hallyn"	 <serge@hallyn.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, 	regressions@lists.linux.dev
-Date: Thu, 25 Sep 2025 16:56:55 +0200
-In-Reply-To: <CAHC9VhRu=-J5xdKgYOJ1eqQ6EiMoEJ3M+cjDU8AHrts-=DoTvg@mail.gmail.com>
-References: <e5d594d0aee93da67a22a42d0e2b4e6e463ab894.camel@gmail.com>
-	 <CAHC9VhRu=-J5xdKgYOJ1eqQ6EiMoEJ3M+cjDU8AHrts-=DoTvg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+	s=arc-20240116; t=1758812703; c=relaxed/simple;
+	bh=ZUmA5g3BZdtkkQzAyxPcPgH/CExuKMSZgLOzO2vj6sw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GxV7JZRMBHsUM1OdSTEwr0mNJRlZv8qKFVFI2SfzxIfq/n25Xn5/n63kQxupWHMHlsElPLnnpRPijvi1nig49ECO7U2eu15VkxryWDhCe/MJii9MhQDENYRAjP3Din0elzd0MDoqmJTEOjbFtVBGyagMUDNbhXeeCZwz4gfVCak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=rGKfUvhS; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=qLwM3MlL3IIwt9UZSY1QYh/F3mEc/jCvsT/k+vTJVdE=; b=rGKfUvhSKTl+tneE8WdOVj2THv
+	32mR6pFYzq6Ce/cYz+bzMSBJiU/M4X5clHaxw1O2/SECLxCBtgSYOcvTK+BDWSJBhNVJUcLxleFr6
+	wBRocnBf+SdpO/2EHWlkkQdsh+nUkQ2kQbvfVZjaoavzTqRSW9S5A7GwzcT1JEeeAZr5JAonS4vo/
+	LyV5Pdk7m8zn0ONtJeKhUGE0LF7mBoC/WpzriDLj7J2oyP9U2b+yMpFhAcnR40Zl+Kd/9TYfdZ2w5
+	VUAgetqetQMf49l/gK+lyi1mvHsQ0ZCAzEXsKKwDLv8NACVWJ4hgDAuWLOSdr9WyVA9fKCZezQaNL
+	Gx839A9Q==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v1nWc-00033c-0x;
+	Thu, 25 Sep 2025 17:04:50 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v1nWZ-000Cz3-0f;
+	Thu, 25 Sep 2025 17:04:48 +0200
+Message-ID: <5ad26663-a3cc-4bf4-9d6f-8213ac8e8ce6@iogearbox.net>
+Date: Thu, 25 Sep 2025 17:04:46 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] selftests/bpf: Prepare to add -Wsign-compare for
+ bpf tests
+To: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>,
+ andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ shuah@kernel.org, matttbe@kernel.org, martineau@kernel.org,
+ geliang@kernel.org, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ linux@jordanrome.com, ameryhung@gmail.com, toke@redhat.com,
+ houtao1@huawei.com, emil@etsalapatis.com, yatsenko@meta.com,
+ isolodrai@meta.com, a.s.protopopov@gmail.com, dxu@dxuuu.xyz,
+ memxor@gmail.com, vmalik@redhat.com, bigeasy@linutronix.de, tj@kernel.org,
+ gregkh@linuxfoundation.org, paul@paul-moore.com,
+ bboscaccy@linux.microsoft.com, James.Bottomley@HansenPartnership.com,
+ mrpre@163.com, jakub@cloudflare.com
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+ mptcp@lists.linux.dev, linux-kernel-mentees@lists.linuxfoundation.org,
+ skhan@linuxfoundation.org, david.hunter.linux@gmail.com
+References: <20250925103559.14876-1-mehdi.benhadjkhelifa@gmail.com>
+ <20250925103559.14876-4-mehdi.benhadjkhelifa@gmail.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20250925103559.14876-4-mehdi.benhadjkhelifa@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27773/Thu Sep 25 10:27:35 2025)
 
-On Wed, 2025-09-24 at 17:24 -0400, Paul Moore wrote:
-> On Sat, Sep 13, 2025 at 1:01=E2=80=AFPM Filip Hejsek <filip.hejsek@gmail.=
-com> wrote:
-> >=20
-> > Hello,
-> >=20
-> > TLDR: because of bpf lsm, putting security=3Dselinux on commandline
-> >       results in /proc/*/attr/current returning errors.
-> >=20
-> > When the legacy security=3D commandline option is used, the specified l=
-sm
-> > is added to the end of the lsm list. For example, security=3Dapparmor
-> > results in the following order of security modules:
-> >=20
-> >    capability,landlock,lockdown,yama,bpf,apparmor
-> >=20
-> > In particular, the bpf lsm will be ordered before the chosen major lsm.
-> >=20
-> > This causes reads and writes of /proc/*/attr/current to fail, because
-> > the bpf hook overrides the apparmor/selinux hook.
->=20
-> What kernel are you using?
+On 9/25/25 12:35 PM, Mehdi Ben Hadj Khelifa wrote:
+> -Change only variable types for correct sign comparisons
+> 
+> Signed-off-by: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
 
-I'm using Arch Linux kernel, which is very close to mainline. I have
-also tested my own build from git sources (I used a stripped down
-config which I based on config from Arch). Example in QEMU:
+Pls write some better commit messages and not just copy/paste the same $subj/
+message every time; proper sentences w/o the weird " -" indent. Also say why
+this is needed in the commit message, and add a reference to the commit which
+initially added this as a TODO, i.e. 495d2d8133fd ("selftests/bpf: Attempt to
+build BPF programs with -Wsign-compare"). If you group these, then maybe also
+include the parts of the compiler-emitted warnings during build which are
+relevant to the code changes you do here.
 
-$ qemu-system-x86_64 -nodefaults -accel kvm -cpu host -smp cpus=3D2 -m 1G -=
-display none -kernel ~/git/linux/arch/x86/boot/bzImage -initrd ./initramfs.=
-img -serial mon:stdio -append 'console=3DttyS0 security=3Dselinux'
-:: mounting '' on real root
-mount: /new_root: no valid filesystem type specified.
-ERROR: Failed to mount '' on real root
-You are now being dropped into an emergency shell.
-sh: can't access tty; job control turned off
-[rootfs ~]# uname -a
-Linux archlinux 6.17.0-rc7-00020-gcec1e6e5d1ab #3 SMP PREEMPT_DYNAMIC Thu S=
-ep 25 16:28:02 CEST 2025 x86_64 GNU/Linux
-[rootfs ~]# mount -t securityfs securityfs /sys/kernel/security
-[rootfs ~]# cat /proc/cmdline
-console=3DttyS0 security=3Dselinux
-[rootfs ~]# cat /sys/kernel/security/lsm; echo
-capability,landlock,lockdown,yama,bpf,selinux
-[rootfs ~]# cat /proc/self/attr/current
-cat: read error: Invalid argument
+> ---
+>   tools/testing/selftests/bpf/progs/test_xdp_dynptr.c          | 2 +-
+>   tools/testing/selftests/bpf/progs/test_xdp_loop.c            | 2 +-
+>   tools/testing/selftests/bpf/progs/test_xdp_noinline.c        | 4 ++--
+>   tools/testing/selftests/bpf/progs/uprobe_multi.c             | 4 ++--
+>   .../selftests/bpf/progs/uprobe_multi_session_recursive.c     | 5 +++--
+>   .../selftests/bpf/progs/verifier_iterating_callbacks.c       | 2 +-
+>   6 files changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c b/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
+> index 67a77944ef29..12ad0ec91021 100644
+> --- a/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
+> +++ b/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
+> @@ -89,7 +89,7 @@ static __always_inline int handle_ipv4(struct xdp_md *xdp, struct bpf_dynptr *xd
+>   	struct vip vip = {};
+>   	int dport;
+>   	__u32 csum = 0;
+> -	int i;
+> +	size_t i;
+>   
+>   	__builtin_memset(eth_buffer, 0, sizeof(eth_buffer));
+>   	__builtin_memset(iph_buffer_tcp, 0, sizeof(iph_buffer_tcp));
+> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_loop.c b/tools/testing/selftests/bpf/progs/test_xdp_loop.c
+> index 93267a68825b..e9b7bbff5c23 100644
+> --- a/tools/testing/selftests/bpf/progs/test_xdp_loop.c
+> +++ b/tools/testing/selftests/bpf/progs/test_xdp_loop.c
+> @@ -85,7 +85,7 @@ static __always_inline int handle_ipv4(struct xdp_md *xdp)
+>   	struct vip vip = {};
+>   	int dport;
+>   	__u32 csum = 0;
+> -	int i;
+> +	size_t i;
+>   
+>   	if (iph + 1 > data_end)
+>   		return XDP_DROP;
+> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
+> index fad94e41cef9..85ef3c0a3e20 100644
+> --- a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
+> +++ b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
+> @@ -372,7 +372,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
+>   
+>   	next_iph_u16 = (__u16 *) iph;
+>   	__pragma_loop_unroll_full
+> -	for (int i = 0; i < sizeof(struct iphdr) >> 1; i++)
+> +	for (size_t i = 0; i < sizeof(struct iphdr) >> 1; i++)
+>   		csum += *next_iph_u16++;
+>   	iph->check = ~((csum & 0xffff) + (csum >> 16));
+>   	if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct iphdr)))
+> @@ -423,7 +423,7 @@ int send_icmp_reply(void *data, void *data_end)
+>   	iph->check = 0;
+>   	next_iph_u16 = (__u16 *) iph;
+>   	__pragma_loop_unroll_full
+> -	for (int i = 0; i < sizeof(struct iphdr) >> 1; i++)
+> +	for (size_t i = 0; i < sizeof(struct iphdr) >> 1; i++)
+>   		csum += *next_iph_u16++;
+>   	iph->check = ~((csum & 0xffff) + (csum >> 16));
+>   	return swap_mac_and_send(data, data_end);
+> diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
+> index 44190efcdba2..f99957773c3a 100644
+> --- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
+> +++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
+> @@ -20,13 +20,13 @@ __u64 uretprobe_multi_func_3_result = 0;
+>   
+>   __u64 uprobe_multi_sleep_result = 0;
+>   
+> -int pid = 0;
+> +__u32 pid = 0;
+>   int child_pid = 0;
+>   int child_tid = 0;
+>   int child_pid_usdt = 0;
+>   int child_tid_usdt = 0;
+>   
+> -int expect_pid = 0;
+> +__u32 expect_pid = 0;
+>   bool bad_pid_seen = false;
+>   bool bad_pid_seen_usdt = false;
+>   
+> diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c b/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
+> index 8fbcd69fae22..017f1859ebe8 100644
+> --- a/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
+> +++ b/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
+> @@ -3,6 +3,7 @@
+>   #include <bpf/bpf_helpers.h>
+>   #include <bpf/bpf_tracing.h>
+>   #include <stdbool.h>
+> +#include <stddef.h>
+>   #include "bpf_kfuncs.h"
+>   #include "bpf_misc.h"
+>   
+> @@ -10,8 +11,8 @@ char _license[] SEC("license") = "GPL";
+>   
+>   int pid = 0;
+>   
+> -int idx_entry = 0;
+> -int idx_return = 0;
+> +size_t idx_entry = 0;
+> +size_t idx_return = 0;
+>   
+>   __u64 test_uprobe_cookie_entry[6];
+>   __u64 test_uprobe_cookie_return[3];
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+> index 75dd922e4e9f..72f9f8c23c93 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+> @@ -593,7 +593,7 @@ int loop_inside_iter_volatile_limit(const void *ctx)
+>   {
+>   	struct bpf_iter_num it;
+>   	int *v, sum = 0;
+> -	__u64 i = 0;
+> +	__s32 i = 0;
+>   
+>   	bpf_iter_num_new(&it, 0, ARR2_SZ);
+>   	while ((v = bpf_iter_num_next(&it))) {
 
-(Note: In this example, uname reports archlinux, but that's only
-because I based the config on Arch config, it's not actually an Arch
-kernel.)
-
-Maybe the different behavior is caused by a different config? You can
-find the Arch config at [1]. Based on Fedora package sources, I think
-their config has
-
-   CONFIG_LSM=3D"lockdown,yama,integrity,selinux,bpf,landlock,ipe"
-
-while the Arch config has
-
-   CONFIG_LSM=3D"landlock,lockdown,yama,integrity,bpf"
-
-.
-
-[1]: https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/raw/=
-main/config?ref_type=3Dheads
-
->   Things appear to work correctly on my
-> kernel that is tracking upstream (Fedora Rawhide + some unrelated
-> bits):
->=20
-> % uname -a
-> Linux dev-rawhide-1.lan 6.17.0-0.rc7.250923gd1ab3.57.1.secnext.fc44.x86_6=
-4 #1 SM
-> P PREEMPT_DYNAMIC Tue Sep 23 10:07:14 EDT 2025 x86_64 GNU/Linux
-> % cat /proc/cmdline
-> BOOT_IMAGE=3D(hd0,gpt4)/boot/vmlinuz-6.17.0-0.rc7.250923gd1ab3.57.1.secne=
-xt.fc44.x
-> 86_64 root=3DUUID=3D285029fa-4431-45e9-af1b-298ab0caf16a ro console=3Dtty=
-S0 mitigation
-> s=3Doff security=3Dselinux
-> % cat /sys/kernel/security/lsm; echo ""
-> lockdown,capability,yama,selinux,bpf,landlock,ipe,ima,evm
-> % id -Z
-> unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-> % cat /proc/self/attr/current; echo ""
-> unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
->=20
-> I even ran it against the LSM initialization rework that has been
-> proposed, but has not yet been accepted/merged, and that worked the
-> same as above.
->=20
-> Is this a distro kernel with a lot of "special" patches which aren't
-> present upstream?
 
