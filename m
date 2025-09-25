@@ -1,248 +1,159 @@
-Return-Path: <bpf+bounces-69643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E00FCB9CC18
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 01:59:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08123B9CC28
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 02:01:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 771EA382F0E
-	for <lists+bpf@lfdr.de>; Wed, 24 Sep 2025 23:59:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDE1F3834F0
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 00:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E692C21E8;
-	Wed, 24 Sep 2025 23:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 916721D555;
+	Thu, 25 Sep 2025 00:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="abO9AIqF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMCK7c6o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C136283FE9
-	for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 23:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434D81C27
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 00:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758758286; cv=none; b=m0jNlT8QO3WfR56IbXaz2YvIwNVz8UrjotaJ9sYg1e+N1K57c5TbvBqTsU6xgVydPCnpDiJOyLxdhLn7tPO1rfCBeTrkbVPuyw+OH3L2ovyTjozR8BM0KqwK/Fb1TTO6OtX/4kiRFAJU6APMe5gaEOwN6AtFnlBBwhMgETJrH1U=
+	t=1758758473; cv=none; b=i6GQe60Wjxy4QKftW/pqGvYw+txW9Y3eJ/HQpbcavpvyEW3CnUJmJqD9UL5nfFOAJ8FnmZRQ7wDBpJ1IlOLwPmQKFUwLNgg43PcizbiXWi7DxbIN2rREEwMq0MI6lVH0cmfsoi6PaalM3qM5zOSKp5BI69oVhl4oYvajdiBABD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758758286; c=relaxed/simple;
-	bh=z0WIuLDPgkN4KYjb0Po2mx4mE+ivZGzw+XlJjBQHbm8=;
+	s=arc-20240116; t=1758758473; c=relaxed/simple;
+	bh=vfqTlBsCykWU2/ICVUpbbBnnZrxFMXPnUnK/cJEJSkI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iUsZN4U1kx+dEJdnwlbmtj08ITWowJJa3VSn8EHfjBAL9IlMBNGnb5b+tilN5DEdYHDR2CsXFrClQM3bOAh3f4GZhgyx2IX3vjdaNSlonPHsEzlgpGHHHgdg/AaID3hdkNVqyqAm7OC4tUdaeDwGtHg47OpRvGdlQU89XL1Xbho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=abO9AIqF; arc=none smtp.client-ip=209.85.216.46
+	 To:Cc:Content-Type; b=KuIEIIH2O6BNCfyn6SYGL8MkO0HnckdyVnNPBnWvxc6D+UUvm3wTcVSb24U7UgxfmDiKLAaI8CsWH2xZnnoVVxPv0B+XYB0QXdxPxWICjTJyg5jkGp1l89EhO5yI12yQnvC8D93MN3gvVCIMaFjESjrBKXFk5Gx4YMURfOvz4Mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMCK7c6o; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-323266cdf64so396102a91.0
-        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 16:58:04 -0700 (PDT)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3306d3ab2e4so445791a91.3
+        for <bpf@vger.kernel.org>; Wed, 24 Sep 2025 17:01:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758758283; x=1759363083; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1758758470; x=1759363270; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EhouQfqTyzGm+wWvVbF6V1ffiRFm6W4WSPB23TB9w6Q=;
-        b=abO9AIqF8bhD69IKkxnsK9JttgVRlVrONgJ3weOZj07S0eL27MUznCdYIioTLl+omm
-         TYIgdJVPdY88DfZglx/WnCbQZJoiKfrEOPsu3Fch2vClqKA6KeSgKO92BBkUYYtOvPCt
-         +es0sMDjg2+s1c+KRcfCJ0DIdhg7ak7kdB98NRokb2ii+ovaGCq6Sstqf7MlYqmZJPau
-         TIHRDzws0dTjoS9xBTdiE9Lia/fleWgdwDYePX3utgHDnTIQwAJ9odDrd5hD+H0K77ds
-         MBfJ1ZvWfXUUUSUepDp6h2i2gj3+dAL3ePdV8yNhF+cR2NpIbq5rw2VCjfYCPnR11Isr
-         ag7A==
+        bh=lOOkSAipkXlUEZv41Dc6N7hcKEneGLgQRNGCyM6Wv1k=;
+        b=gMCK7c6oHHfcPkLlrgRj9a3n2jMxjbaP0JCOvmOXsVuEj9KFMsC7+THFUSF96vGXxY
+         o5baMo1ejuJrddL89q7yeWXKoPv18WiObiI4DFbXapcj+25l0nhI7lnGMaLbjFcc1lgE
+         hT/ZWU2UoRHW+R1/aLHYLyCDNFEF2SoEI9ypLOlUZpcqnA1ScwYW8c4s4iTwmZsN3wa9
+         rulhXlcWskj/jrC+Dw8RvhLSniWv1g6Y96V7J3XsbrrGR2s+VTpN71S/iebCvAjYLGN7
+         GtYcmyQ+Eud20z26KRLdW0qMiGAhLiimoqbKhYdf6FJheenAa1v/qIP59YRDzQw2TMoP
+         1+Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758758283; x=1759363083;
+        d=1e100.net; s=20230601; t=1758758470; x=1759363270;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EhouQfqTyzGm+wWvVbF6V1ffiRFm6W4WSPB23TB9w6Q=;
-        b=WMyqHom2T0Heyaq1LULvy9oe20vPwbmHKn630wKEUFYyagV7dJrruqTnxMtEyYygOP
-         RV9985/Lx5owNeOLrNJKusmTQ8h3F9iJFqVewKEOjbt4g2zdD8yomTkNSALNBad7bD4A
-         f0GNbWYNL/h15WjVVRUqjtBTfu3xMitWGmUK/9YgicsizldTxTREW9//8fbUTtMhAzJs
-         T1LwyjsgZBKiVEapNoeLGl8sukbBRLTm3zplhCMdXp7I4IEDnZ65wsuILS//K/LN7fXx
-         tqQMbxAFrpLeazSikxlqFaHbAcy3GlcwF/cnDak8mqXmQ+XUcYjzV4Z/8bOo2kYTgYu7
-         er5g==
-X-Gm-Message-State: AOJu0Yw6pET8M0J5w1pOmV/BKXzDBdniHHnopYjVr3VPs+sepuSChSxf
-	3+kC8MiEybOLD2gdVj4IaRirDiQutsIextVJXqFVMNa57HMj+mDcIHZupASMRLBfZHgeLr6UzyF
-	tVSL2Q+cBV6GtYirNKR6upR9GAZKKM5I=
-X-Gm-Gg: ASbGncssmv3Il+Xb0+fcWmWLNA/5gLGDC66biUpLdjjw0hvBGY929I/MfKCpx95PZJZ
-	VtFP73vhofUNKAFSQx9fJRcBIoOawynhbtvgQa7jo2DBBxX25NP3kFZ2f+GBkKm7sIrYQxagGMR
-	EzP6B9XzjezAd7goQcycICx7wXswdgN0cb0cCAIV+61jj+x1Yuh21enWRpoAkzKG6owi+GNleY8
-	rVTBZXWyRd7ebcxtSAk3fw=
-X-Google-Smtp-Source: AGHT+IHrW9SCNzgk4q0d7GlkrqeGrCO5CjlEIGeRA4Gqj6C1jwigtqm0teXtQ2jQkh5k9ma+UBLt0gPMPmQz2U+fBy0=
-X-Received: by 2002:a17:90b:3b45:b0:32b:4c71:f423 with SMTP id
- 98e67ed59e1d1-3342a3208d1mr1239999a91.32.1758758283393; Wed, 24 Sep 2025
- 16:58:03 -0700 (PDT)
+        bh=lOOkSAipkXlUEZv41Dc6N7hcKEneGLgQRNGCyM6Wv1k=;
+        b=BFgkxxYzR2duAlLvNpWyb0ZPHVUt0CAIn5Z1fUeomgNkuaT8gKEVuTy2Mw1Lvp3ooS
+         g/Hz7W2USYtDuiKoeL7Ah7su9L5KTRmM3A9UC5yoqvhpqs01CGcigi6IaNA8eHcYcpeP
+         rCo5fHWkmJ1/Hrt4Eod9TZ3O9rwkihb4Q7BpFxJVdySkeYqu+zBbu4/Yr2Ymc87jDC3e
+         GMDv8lzCs/HwBfBf3zLsVcIj8lyQlELAV2ZXxEEy+ILymT362s+m5X8kFQMME7ALTjcF
+         JybAEj/zr8DCUWbXA1LBA345R/9hYzi7KWIAs+KGJoAaCv8s0vZD4yxi79E+hArYLqd/
+         WncA==
+X-Gm-Message-State: AOJu0YyhTZMeizwVUL25ENpmgfI9ypWmwlkiz6R6bJT74C+iVZjWrbnl
+	8jZGUt/KLJitm88mxkdlDY3SKT+JYtrw/OWgiQORg9itfTxOdNNtCcQq/MPPp0KQiy4Zv8osa6W
+	61X04K8cMewSG6NEwvpUfnbfo9X/FCZ0=
+X-Gm-Gg: ASbGncstwneHA0T0tGLlgBcwa8McoD9vAdkRO3OvxUgl7ABIqvo8PVG/SlQwOo1kIE0
+	u3InGvQSPcfGVcRwUWKUFuIuJSTbcO9n2dDemxLgUCAWxxFmljIen3jZ+t1wzmIBsKcFMugjv7h
+	bweStFP4LXZlnK6oAQT9+BN+oqs4tmgkCUQ3JHlWAcZK8qJBnT/cZYNHvRDX+4aw6U3aMj9TSE3
+	7z1gDnNVg5IILmfIl/SCsZ5vEKRMpgHBw==
+X-Google-Smtp-Source: AGHT+IEmC7jztJd9qdlCLLqYQpgzvWm6zcSREndHVRhgCUj1bI+htTA9jEhwcGZGnsn9ULZYPguQ40IPqsR1l9er4s4=
+X-Received: by 2002:a17:90b:1c81:b0:334:29f0:a7e4 with SMTP id
+ 98e67ed59e1d1-3342a2bf175mr1484486a91.21.1758758469768; Wed, 24 Sep 2025
+ 17:01:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250911163328.93490-1-leon.hwang@linux.dev> <20250911163328.93490-3-leon.hwang@linux.dev>
- <CAEf4BzZp8vb3EYwvSCbewdZi0eKZjW5sJkDnm6YfPqaRbjf2NA@mail.gmail.com> <d535ef7e-a7fb-41be-8550-bb0c0af045f9@linux.dev>
-In-Reply-To: <d535ef7e-a7fb-41be-8550-bb0c0af045f9@linux.dev>
+References: <20250911163328.93490-1-leon.hwang@linux.dev> <20250911163328.93490-4-leon.hwang@linux.dev>
+ <CAEf4BzaRYeT4wzU7uCuYLF-7THnXL2KgbF3kkg-8fLE3phM-5w@mail.gmail.com> <b16183df-2915-4369-a0ae-ea484924ad79@linux.dev>
+In-Reply-To: <b16183df-2915-4369-a0ae-ea484924ad79@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 24 Sep 2025 16:57:49 -0700
-X-Gm-Features: AS18NWBHWLO8JVgR8fJY55my3k6xUhAEWFfGs5TWBdE6bTVA8FehAJxd6KJA-hM
-Message-ID: <CAEf4BzbKHL+_m-tJ5qddUEJixSN+MSueDNNtf2L843cRFKTknQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 2/6] libbpf: Add support for extended bpf syscall
+Date: Wed, 24 Sep 2025 17:00:55 -0700
+X-Gm-Features: AS18NWA5tYPqPw9qCALwBtbytqL9JTAsYT5M3cexOOn6LrK7Zze_w3ioL6Xslcs
+Message-ID: <CAEf4BzYv6auU970HQ_8VMd-jiNC7ArKRewpSZ1tpCZj4A9WE7w@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 3/6] bpf: Add common attr support for
+ prog_load and btf_load
 To: Leon Hwang <leon.hwang@linux.dev>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, menglong8.dong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 23, 2025 at 8:36=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
+On Tue, Sep 23, 2025 at 8:50=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
 rote:
 >
 >
 >
-> On 2025/9/17 08:06, Andrii Nakryiko wrote:
+> On 2025/9/18 05:12, Andrii Nakryiko wrote:
 > > On Thu, Sep 11, 2025 at 9:33=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
 v> wrote:
 > >>
-> >> To support the extended 'bpf()' syscall introduced in the previous com=
-mit,
-> >> this patch adds the following APIs:
+> >> The log buffer of common attributes would be confusing with the one in
+> >> 'union bpf_attr' for BPF_PROG_LOAD and BPF_BTF_LOAD.
 > >>
-> >> 1. *Internal:*
+> >> In order to clarify the usage of these two 'log_buf's, they both can b=
+e
+> >> used for logging if:
 > >>
-> >>    * 'sys_bpf_extended()'
-> >>    * 'sys_bpf_fd_extended()'
-> >>      These wrap the raw 'syscall()' interface to support passing exten=
-ded
-> >>      attributes.
-> >>
-> >> 2. *Exported:*
-> >>
-> >>    * 'probe_sys_bpf_extended()'
-> >>      This function checks whether the running kernel supports the exte=
-nded
-> >>      'bpf()' syscall with common attributes.
-> >>
-> >> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> >> ---
-> >>  tools/lib/bpf/bpf.c             | 45 ++++++++++++++++++++++++++++++++=
-+
-> >>  tools/lib/bpf/bpf.h             |  1 +
-> >>  tools/lib/bpf/features.c        |  8 ++++++
-> >>  tools/lib/bpf/libbpf.map        |  2 ++
-> >>  tools/lib/bpf/libbpf_internal.h |  2 ++
-> >>  5 files changed, 58 insertions(+)
+> >> * They are same, including 'log_buf', 'log_level' and 'log_size'.
+> >> * One of them is missing, then another one will be used for logging.
 > >>
 > >
-> > (ran out of time, will continue reviewing the rest of patches
-> > tomorrow, so please don't yet send new revision)
+> > I agree with the logic above, but I'm not sure whether we need to
+> > plumb common_attrs all the way into bpf_vlog_init, tbh. There are only
+> > two commands that can have log specified through both bpf_attr and
+> > bpf_common_attrs. I'd have those two commands check and resolve the
+> > log buffer pointer, size and flags on their own (sure, a bit of
+> > duplicated logic, but we won't have any new command having to do that,
+> > so that's fine in my book).
 > >
-> >> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> >> index ab40dbf9f020f..27845e287dd5c 100644
-> >> --- a/tools/lib/bpf/bpf.c
-> >> +++ b/tools/lib/bpf/bpf.c
-> >> @@ -69,6 +69,51 @@ static inline __u64 ptr_to_u64(const void *ptr)
-> >>         return (__u64) (unsigned long) ptr;
-> >>  }
-> >>
-> >> +static inline int sys_bpf_extended(enum bpf_cmd cmd, union bpf_attr *=
-attr,
-> >> +                                  unsigned int size,
-> >> +                                  struct bpf_common_attr *common_attr=
-s,
-> >> +                                  unsigned int size_common)
-> >> +{
-> >> +       cmd =3D common_attrs ? cmd | BPF_COMMON_ATTRS : cmd & ~BPF_COM=
-MON_ATTRS;
-> >> +       return syscall(__NR_bpf, cmd, attr, size, common_attrs, size_c=
-ommon);
-> >> +}
-> >> +
-> >> +static inline int sys_bpf_fd_extended(enum bpf_cmd cmd, union bpf_att=
-r *attr,
-> >
-> > please shorten to sys_bpf_ext() and sys_bpf_ext_fd() (also note ext bef=
-ore fd)
+> > And then I'd keep bpf_vlog_init completely unaware of common_attrs
+> > (which eventually have more stuff in it that's irrelevant to logging).
 > >
 >
-> The short ones look good to me.
+> To avoid modifying bpf_vlog_init directly, one option would be to
+> introduce a new helper, e.g. bpf_vlog_init2 or
+> bpf_vlog_init_with_cattrs, to handle the case with common_attrs.
 >
-> >
-> >> +                                     unsigned int size,
-> >> +                                     struct bpf_common_attr *common_a=
-ttrs,
-> >> +                                     unsigned int size_common)
-> >> +{
-> >> +       int fd;
-> >> +
-> >> +       fd =3D sys_bpf_extended(cmd, attr, size, common_attrs, size_co=
-mmon);
-> >> +       return ensure_good_fd(fd);
-> >> +}
-> >> +
-> >> +int probe_sys_bpf_extended(int token_fd)
-> >> +{
-> >> +       const size_t attr_sz =3D offsetofend(union bpf_attr, prog_toke=
-n_fd);
-> >> +       struct bpf_common_attr common_attrs;
-> >> +       struct bpf_insn insns[] =3D {
-> >> +               BPF_MOV64_IMM(BPF_REG_0, 0),
-> >> +               BPF_EXIT_INSN(),
-> >> +       };
-> >> +       union bpf_attr attr;
-> >> +
-> >> +       memset(&attr, 0, attr_sz);
-> >> +       attr.prog_type =3D BPF_PROG_TYPE_SOCKET_FILTER;
-> >> +       attr.license =3D ptr_to_u64("GPL");
-> >> +       attr.insns =3D ptr_to_u64(insns);
-> >> +       attr.insn_cnt =3D (__u32)ARRAY_SIZE(insns);
-> >> +       attr.prog_token_fd =3D token_fd;
-> >> +       if (token_fd)
-> >> +               attr.prog_flags |=3D BPF_F_TOKEN_FD;
-> >> +       libbpf_strlcpy(attr.prog_name, "libbpf_sysbpftest", sizeof(att=
-r.prog_name));
-> >> +       memset(&common_attrs, 0, sizeof(common_attrs));
-> >> +
-> >> +       return sys_bpf_fd_extended(BPF_PROG_LOAD, &attr, attr_sz, &com=
-mon_attrs,
-> >> +                                  sizeof(common_attrs));
-> >
-> > I think we can set up this feature detector such that we get -EINVAL
-> > due to BPF_COMMON_ATTRS not supported on old kernels, while -EFAULT on
-> > newer kernels due to NULL passed in common_attrs. This would be cheap
-> > and simple. Try it.
-> >
+> This way, bpf_vlog_init_with_cattrs could be used for BPF_PROG_LOAD and
+> BPF_BTF_LOAD, while the existing bpf_vlog_init remains unchanged and
+> could be used for BPF_MAP_CREATE.
 >
-> Let me give that a try.
->
-> >> +}
-> >> +
-> >>  static inline int sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
-> >>                           unsigned int size)
-> >>  {
-> >> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> >> index 7252150e7ad35..38819071ecbe7 100644
-> >> --- a/tools/lib/bpf/bpf.h
-> >> +++ b/tools/lib/bpf/bpf.h
-> >> @@ -35,6 +35,7 @@
-> >>  extern "C" {
-> >>  #endif
-> >>
-> >> +LIBBPF_API int probe_sys_bpf_extended(int token_fd);
-> >
-> > why adding this as a public UAPI?
-> >
->
-> If we don=E2=80=99t mark it with LIBBPF_API, the build fails when compili=
-ng libbpf.
->
-> My intention here wasn=E2=80=99t to introduce a new public UAPI, but simp=
-ly to
-> provide a way for 'features.c' to probe whether the kernel supports the
-> extended BPF syscall, without directly exposing 'sys_bpf_fd_extended()'.
->
-> Do you have a suggestion on how we can perform this probe without
-> introducing a new LIBBPF_API symbol?
+> That would avoid duplicating the log handling logic, while also keeping
+> the separation between the two cases clear.
 
-see libbpf_internal.h, it's not the first non-UAPI global function we
-have in libbpf.
-
-Just don't add this function to libbpf.map and it should be fine
+We  are talking about duplicating 1-2 if conditions. One-time thing,
+we won't be having any more commands going forward that will allow
+specifying log in two different ways. Let's not add a zoo of
+bpf_vlog_xxx constructors
 
 >
+> > This seems cleaner than plumbing this through so deeply.
+> >
+> >> If they both have 'log_buf' but they are not same, a log message will =
+be
+> >> written to the log buffer of 'union bpf_attr'.
+> >>
+> >
+> > Meh, whatever, this is unlikely user error, just error out with
+> > -EINVAL or something. Let's not invent "log here, but not here" logic.
+> >
+>
+> In that case, we can return -EUSERS, as Alexei suggested earlier.
+>
+
+TIL about -EUSERS, works for me
+
 > Thanks,
 > Leon
 
