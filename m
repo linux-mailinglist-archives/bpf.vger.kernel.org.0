@@ -1,275 +1,213 @@
-Return-Path: <bpf+bounces-69707-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69709-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22911B9EDA6
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 13:03:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1137B9EDE8
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 13:11:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D1257AE016
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:01:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 687B21B274D4
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D802F5A20;
-	Thu, 25 Sep 2025 11:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F202EE60F;
+	Thu, 25 Sep 2025 11:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="agBtVbfR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HCZJ7YF3"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 731C52EE274
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 11:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0DC2F60CB
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 11:11:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758798181; cv=none; b=lXbNLGZ/Ft5PVtLNDauLSoKDefrv88L4WAvgGZ0fCdyFgnbx4royZplPKls2t/rEw0kKebMPlMLrtm/T+iRZA1F0KaTOt4ebI4hBJGtrP8yRtEUaAeP7ugEZNapjpzK1YNLBB8mcPURXqzvQ6cOj72E9lWHNbV9biV1+tqb+BhA=
+	t=1758798688; cv=none; b=VQqbINcACO1DRCe1VyuS2Ve30jn+QFZgA8/Q5fGaX7ZCQzt44L6U/3l9cri7GAv+CoRQt++DJ1B/gxz7PKj/2uc2byQHOjqub0H9t90yXQGEqwfyRa2sFj8vKBNjiEv15uwlXUHdPtleg2Il+tNMr+8G/VGwPMySIq56Jc6WFxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758798181; c=relaxed/simple;
-	bh=SPatiG92lX3auhrm3NKSVGGSWaunSoiZhUXuxVMKexQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f5IskWWTALPgeHXznhM/IJQkyM/8ycdoeWtyZWxMI9tZ2LUsNMQbVkD/zm1bsdmdv+UYYk3AJLo4du89MvRQg1zNPj+It4qesqmRawWeRHtiGhyO2Ow4oHUCYGdOm60BtQZwNA8G73Te6f1DdHnVNSL+WWzmY6rSgUvCgd8ARVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=agBtVbfR; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1758798178;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=r/0to4OyeGm89Kw4M6wzRihwRzmpUZBpw2U3yaSo+SQ=;
-	b=agBtVbfR/CDX62ZoTjQe3JL2DvpN2tvcwRsuc9yztOA828Br8uHlzDG56G03045wsv/U/8
-	Typ9Sex658vDfJ509O5ol2e8YOCFIWXlwaGBxwOeXsdvKVJZpSuZ53LsjBKm7ehK8Mgi+4
-	qtg1lZOXLuEQoq+WBusxCzLO0WBEEk0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-148-Sr-BeAPANhGpxEVbdtTMmg-1; Thu, 25 Sep 2025 07:02:57 -0400
-X-MC-Unique: Sr-BeAPANhGpxEVbdtTMmg-1
-X-Mimecast-MFC-AGG-ID: Sr-BeAPANhGpxEVbdtTMmg_1758798176
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-46d8ef3526dso5137765e9.1
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 04:02:57 -0700 (PDT)
+	s=arc-20240116; t=1758798688; c=relaxed/simple;
+	bh=aFS8/Z+4YfMdijSZ5GrdCI0jNYlHJMYb3wHEbERFPAU=;
+	h=From:Content-Type:Mime-Version:Subject:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=SVcx9WmFVWLs/ndzW+IO3xzXvuVO5uSQli1Lo6WaThIr0wx9T+NmmlJRe+yiuHgPyf3FOXJ2CQbLO9fCwlhxYcYIyGoirptMkv4TiHWBFJNtmvehHsP3Y0hZenbjphgZR1NzJmkCs+h/lYWOMJjiQ5JgWrzsol1AJM9VrFz06qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HCZJ7YF3; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b29ebf9478bso116379866b.0
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 04:11:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758798685; x=1759403485; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:subject:mime-version:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QvQogmF7KDfaqKuZyAZb/az+I8jfHzFzp3VlhyK97YQ=;
+        b=HCZJ7YF3Q909CDICAekGBg8Q0ndeSNJptwkftzTBHcPtM4RnEPdE0wj17CzUQ1u7sW
+         ozj461GUwcvFblsLshqybv2Q2xzlXu1Pm3A93hsx9uqL9ZRB4EGNQ6mwDCkFnvBbf2Xj
+         ffej7fr42xNWDp5i7MODVswjeNlaOqfRuyueoqFdeGuDpO9rUiW1eeo3+LEMWKqWluKK
+         WupMecxBQsU//E8txJD66RlyBIrkXAFhLY2J5tjsWJVKaHiky+paSjuEgwbcC+BC5H+J
+         5Z/mhZQsMdnWhOx+rGKOX/pUnYSU5AdVNygXNdFyBB9RtOngcveiKQyOBVUoGcnYRSxw
+         gcnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758798176; x=1759402976;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r/0to4OyeGm89Kw4M6wzRihwRzmpUZBpw2U3yaSo+SQ=;
-        b=Y36aK9D9fEkD/0cegXG3CNuXqKlIMNnWnnYL3wVi9h/+mvNTymNu2ubkllK23cHLec
-         9ZAV4ahrKq5IUxeHIZLoQ6ZbOxX4ggR0Ca9T0oqgHexvMFqVfUBjGLVee/MRkBThd7Kg
-         WWcBcf2kFbbSG0B9ZDzR4SP7LbgVupegvKHV2DRYhl/rNzS+hplm+HM7HUr1+E44LAjP
-         q3s1hCaWJ1XCNXJIW2PrsOnB5YejwJViT0/ZtfhYwmmoiv4DI6Err0fjs4nxZPNMbi26
-         D3NwMN3lV7cod5+GrgmxxxVHrvhRaZ1xwZKq5NuM5whbCIfF67u/lQHOByB4COp0ht0R
-         J3Wg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwE/1hXGv05225Ji6nWzEN3Y27MyrpGbcwsaMsDM7tShODn6BwAwmFx8ZwDYhsZHU1rAQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwpVsqKCOvxNPWm0rcawQ58NhObm94R+aZ5cDZFOycy/FewfakW
-	fckmwGyRXit1HQMoGs2LzGnl9MJCQxyRFawMXAwjybtRiMVoufCdzsG51p4i9Cp/LT4vDkdtVQP
-	xU3KjtSULlcxlA3ttgDQ5/D7DIyNkYiNxRGbH9qVUHf6Q3+JALuI5gw==
-X-Gm-Gg: ASbGncuNaq3DfRw90Vi1NpQXx2CjH3UIOOUyEcjPT2AaWrFavPGXQuZRQ0CKCyJDobh
-	DepP8V2yr4TQNOoMbr3XQtPVUo8aNHwfPEjeq6WZhcJImKcDP2OPLSFVKBdSwHlOzmGRciN7MHw
-	5QnKJungCqqRnewekCLjh0YD1QYF+OQqi5f8OQ8nOB+JrPf2ocVOnaxh7AMgGw7nXotPsdR59u2
-	1KhiYo1r5VUi+VqUm/clrlr5WKxKTU4y8QmzvV592h5j6TnyCZijPUrbtccVFwVTm4fi1NXA7Uv
-	nSgTEuiu6nZC7p2GpY3hBlirTJlQ8ycBm1EmN94mjP/ZwgAI78DOWNb+wkEG2qpnwyKC2o5sf/+
-	ZyMAsv+Yo0ias/+0lWIS2bPy1rpEUH6AnBGlX93JZpYdDU0zIH90zCrgu0poNlvqDY7y4
-X-Received: by 2002:a5d:64e6:0:b0:3ea:6680:8fb5 with SMTP id ffacd0b85a97d-40e458a939fmr2659862f8f.2.1758798175610;
-        Thu, 25 Sep 2025 04:02:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHaRjs0B05ZyXvh1d6jlu1Ktfb++k8xqGa0tdnYe8v/SeU1yGa2CE1nYchZ3/8IlcM8uOiw9Q==
-X-Received: by 2002:a5d:64e6:0:b0:3ea:6680:8fb5 with SMTP id ffacd0b85a97d-40e458a939fmr2659768f8f.2.1758798174621;
-        Thu, 25 Sep 2025 04:02:54 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08? (p200300d82f3ff800c1015c9f3bc93d08.dip0.t-ipconnect.de. [2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fb72facf9sm2650164f8f.13.2025.09.25.04.02.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Sep 2025 04:02:53 -0700 (PDT)
-Message-ID: <cf57bdec-6a2d-4d6a-b27c-991a7e2833ab@redhat.com>
-Date: Thu, 25 Sep 2025 13:02:51 +0200
+        d=1e100.net; s=20230601; t=1758798685; x=1759403485;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:subject:mime-version:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QvQogmF7KDfaqKuZyAZb/az+I8jfHzFzp3VlhyK97YQ=;
+        b=b7CPDmnKi+/9RUmWZ6thm1RkeDgRIszJQ7OGZq3274a27+RdKU/5W63M6/p8aE0DlO
+         Jhwcq2UJp3Fql1MJsNBmnD4AdnUz7URm3p9QwLo+3JPuE1kY+Xx8LXA+smcDjBiQD87z
+         aeLuM7dfYpnYd2Qa68d1A1ShfzuUtPgZKucUvUYI6Gktf+V11589pEZ2NwqPAXSA63Tv
+         9KoiL9cXBPNjE+FonzYP09Z/rxwgEMg2arOIdwTusR48XpznsXw4jgMbTjZ1rs+kDogI
+         h8MjPe+39vdqWTfRmhaAtP3lDr3t9DQ3iXLYzGoygwKbsd7JXrBeeEnesNbZcK75J7RA
+         ZhuQ==
+X-Gm-Message-State: AOJu0Yx1NEIwZ9fVfcaji4DHFihT2OQfk5ENY19OH9W+/ThYCuiy9sdk
+	3daZmQmVgYrcgLmULv4cqd/c6868qu+NSjFbu1qRboKfFr8NTKTtt64k
+X-Gm-Gg: ASbGnctj/qwTuIbZvKjKle8NkUa+0DQDIhWhsGjVFMn7xpR6FAal4LYo6PCID0roq5+
+	+B/vbUnBkDQ+f3hy8G9AftYuA44IKlWJvnIGr3SY30R31T4wBfy/tx7wPOoSlhWmBFgmEpnRBvN
+	VZXqKkB2xYEJRjliwpG9Zd1FFdN7QZa2R2/FYfAktUFaGQRp3iX86cfajWtXL6gzDW0Mi/wHTII
+	o9p/R83NRmLDlYaNTJfXMduonfV6m6AZHSCh9ML03LGlUqpnQbRjHpNi4OT0Erzt7M9hPxO0S0W
+	/L6fqIRPGhi6IC6qF44SqvFZZZAe8Zaan45bLsJvDld4xGSb5vIV1+CMyDHPihkW3lp7ZC16fQo
+	zDo4uXMAtnc+sxBXq3OMU4w9iYaIJ/Wm1LdI=
+X-Google-Smtp-Source: AGHT+IF7e6v1oucsOSMv2oJagF2isfYqo1TpOa4sH3qFriZ86IF0GVua3IC15lrQKP5GEg8vTGrCTw==
+X-Received: by 2002:a17:907:9405:b0:b10:1af1:dc2a with SMTP id a640c23a62f3a-b34bb9ea00bmr344466266b.38.1758798684375;
+        Thu, 25 Sep 2025 04:11:24 -0700 (PDT)
+Received: from smtpclient.apple ([209.38.224.166])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b353e5d7351sm148481466b.7.2025.09.25.04.11.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 25 Sep 2025 04:11:23 -0700 (PDT)
+From: Nick Zavaritsky <mejedi@gmail.com>
+X-Google-Original-From: Nick Zavaritsky <MeJedi@gmail.com>
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 06/12] KVM: guest_memfd: add module param for disabling
- TLB flushing
-To: "Roy, Patrick" <roypat@amazon.co.uk>
-Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>,
- "corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>,
- "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
- "joey.gouly@arm.com" <joey.gouly@arm.com>,
- "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
- "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
- "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
- "will@kernel.org" <will@kernel.org>, "tglx@linutronix.de"
- <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>,
- "bp@alien8.de" <bp@alien8.de>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
- "luto@kernel.org" <luto@kernel.org>,
- "peterz@infradead.org" <peterz@infradead.org>,
- "willy@infradead.org" <willy@infradead.org>,
- "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
- "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
- "vbabka@suse.cz" <vbabka@suse.cz>, "rppt@kernel.org" <rppt@kernel.org>,
- "surenb@google.com" <surenb@google.com>, "mhocko@suse.com"
- <mhocko@suse.com>, "song@kernel.org" <song@kernel.org>,
- "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "andrii@kernel.org" <andrii@kernel.org>,
- "martin.lau@linux.dev" <martin.lau@linux.dev>,
- "eddyz87@gmail.com" <eddyz87@gmail.com>,
- "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
- "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
- "kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@fomichev.me"
- <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>,
- "jgg@ziepe.ca" <jgg@ziepe.ca>, "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
- "peterx@redhat.com" <peterx@redhat.com>, "jannh@google.com"
- <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>,
- "shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com"
- <seanjc@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "Cali, Marco" <xmarcalx@amazon.co.uk>,
- "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
- "Thomson, Jack" <jackabt@amazon.co.uk>,
- "derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
- "tabba@google.com" <tabba@google.com>,
- "ackerleytng@google.com" <ackerleytng@google.com>
-References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
- <20250924152214.7292-1-roypat@amazon.co.uk>
- <20250924152214.7292-3-roypat@amazon.co.uk>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20250924152214.7292-3-roypat@amazon.co.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81\))
+Subject: Re: [PATCH 1/1] bpftool: Formatting defined by user:fmt: decl tag
+In-Reply-To: <fccfa1f1-75a6-4094-9389-7e01b20833b2@kernel.org>
+Date: Thu, 25 Sep 2025 13:11:11 +0200
+Cc: bpf@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ Yonghong Song <yonghong.song@linux.dev>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3EB389B2-437D-40AF-8D6A-9332795C0587@gmail.com>
+References: <20250921132503.9384-1-mejedi@gmail.com>
+ <20250921132503.9384-2-mejedi@gmail.com>
+ <fccfa1f1-75a6-4094-9389-7e01b20833b2@kernel.org>
+To: Quentin Monnet <qmo@kernel.org>
+X-Mailer: Apple Mail (2.3826.700.81)
 
-On 24.09.25 17:22, Roy, Patrick wrote:
-> Add an option to not perform TLB flushes after direct map manipulations.
-> TLB flushes result in a up to 40x elongation of page faults in
-> guest_memfd (scaling with the number of CPU cores), or a 5x elongation
-> of memory population, which is inacceptable when wanting to use direct
-> map removed guest_memfd as a drop-in replacement for existing workloads.
-> 
-> TLB flushes are not needed for functional correctness (the virt->phys
-> mapping technically stays "correct", the kernel should simply not use it
-> for a while), so we can skip them to keep performance in-line with
-> "traditional" VMs.
-> 
-> Enabling this option means that the desired protection from
-> Spectre-style attacks is not perfect, as an attacker could try to
-> prevent a stale TLB entry from getting evicted, keeping it alive until
-> the page it refers to is used by the guest for some sensitive data, and
-> then targeting it using a spectre-gadget.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Patrick Roy <roypat@amazon.co.uk>
-> ---
->   include/linux/kvm_host.h | 1 +
->   virt/kvm/guest_memfd.c   | 3 ++-
->   virt/kvm/kvm_main.c      | 3 +++
->   3 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 73a15cade54a..4d2bc18860fc 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -2298,6 +2298,7 @@ extern unsigned int halt_poll_ns;
->   extern unsigned int halt_poll_ns_grow;
->   extern unsigned int halt_poll_ns_grow_start;
->   extern unsigned int halt_poll_ns_shrink;
-> +extern bool guest_memfd_tlb_flush;
->   
->   struct kvm_device {
->   	const struct kvm_device_ops *ops;
-> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-> index b7129c4868c5..d8dd24459f0d 100644
-> --- a/virt/kvm/guest_memfd.c
-> +++ b/virt/kvm/guest_memfd.c
-> @@ -63,7 +63,8 @@ static int kvm_gmem_folio_zap_direct_map(struct folio *folio)
->   	if (!r) {
->   		unsigned long addr = (unsigned long) folio_address(folio);
->   		folio->private = (void *) ((u64) folio->private & KVM_GMEM_FOLIO_NO_DIRECT_MAP);
-> -		flush_tlb_kernel_range(addr, addr + folio_size(folio));
-> +		if (guest_memfd_tlb_flush)
-> +			flush_tlb_kernel_range(addr, addr + folio_size(folio));
->   	}
->   
->   	return r;
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index b5e702d95230..753c06ebba7f 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -95,6 +95,9 @@ unsigned int halt_poll_ns_shrink = 2;
->   module_param(halt_poll_ns_shrink, uint, 0644);
->   EXPORT_SYMBOL_GPL(halt_poll_ns_shrink);
->   
-> +bool guest_memfd_tlb_flush = true;
-> +module_param(guest_memfd_tlb_flush, bool, 0444);
 
-The parameter name is a bit too generic. I think you somehow have to 
-incorporate the "direct_map" aspects.
 
-Also, I wonder if this could be a capability per vm/guest_memfd?
+> On 23. Sep 2025, at 13:22, Quentin Monnet <qmo@kernel.org> wrote:
+>=20
+> Note: For future submissions please make sure to add the maintainers =
+in
+> copy for your message, "./scripts/get_maintainer.pl =
+tools/bpf/bpftool/"
+> will give you the list.
+>=20
+>=20
+> 2025-09-21 13:24 UTC+0000 ~ Nick Zavaritsky <mejedi@gmail.com>
+>> Certain data types get exceptionally unwieldy when formatted by =
+bpftool,
+>> e.g. IP6 addresses.
+>>=20
+>> Introduce custom formatting in bpftool driven by user:fmt: decl tag.
+>> When a type is tagged user:fmt:ip, the value is formatted as IP4 or =
+IP6
+>> address depending on the value size.
+>>=20
+>> When a type is tagged user:fmt:be, the value is interpreted as a
+>> big-endian integer (2, 4 or 8 bytes).
+>=20
+>=20
+> Hi, thanks for this!
+>=20
+> I'm not sure I understand correctly. The 'user:fmt:*' tags are not =
+used
+> yet, correct? So you're proposing to add it to existing code to get a
+> fancier bpftool output. Do you mean adding it to your own executables?
+> Or to existing kernel structures/types?
 
-Then, you could also nicely document the semantics, considerations, 
-impact etc :)
+I don=E2=80=99t intend to touch existing kernel types. This feature =
+targets ebpf
+projects that wish to make it easier for humans to process bpftool dumps
+of their maps.
 
--- 
-Cheers
+By having it in bpftool, we eliminate the need for custom post
+processing. Bpftool can =E2=80=9Cmake it easier for humans=E2=80=9D more =
+reliably since
+it has access to BTF (and tags). It is hard to write a generic post
+processor that improves the presentation of e.g. IP addresses.
+Pattern-matching will work for IPv6 addresses. For ports and IPv4
+addresses not so much, unless wrapper structures are introduced (e.g.
+struct{__be32 ip4addr;}). Wrapper structures will make ebpf code using
+them look funny.
 
-David / dhildenb
+How can this feature get discovered? Having annotated types declared in
+bpftool headers will surely help.
+
+>=20
+>=20
+>>=20
+>> Example:
+>>=20
+>> typedef struct in6_addr bpf_in6_addr
+>>    __attribute__((__btf_decl_tag__("user:fmt:ip")));
+>> bpf_in6_addr in6;
+>>=20
+>> $ bpftool map dump name .data
+>> [{
+>>        "value": {
+>>            ".data": [{
+>>                    "in6": "2001:db8:130f::9c0:876a:130b"
+>>                }
+>>            ]
+>>        }
+>>    }
+>> ]
+>>=20
+>> versus
+>>=20
+>> $ bpftool map dump name .data
+>> [{
+>>        "value": {
+>>            ".data": [{
+>>                    "in6": {
+>>                        "in6_u": {
+>>                            "u6_addr8": =
+[32,1,13,184,19,15,0,0,0,0,9,192,135,106,19,11
+>>                            ],
+>>                            "u6_addr16": =
+[288,47117,3859,0,0,49161,27271,2835
+>>                            ],
+>>                            "u6_addr32": =
+[3087860000,3859,3221815296,185821831
+>>                            ]
+>>                        }
+>>                    }
+>>                }
+>>            ]
+>>        }
+>>    }
+>> ]
+>=20
+> My concern with the example above is that 1) this may be a breaking
+> change for existing scripts parsing map dumps, and 2) we lose the
+> structure and byte representation for in6 (in this example), which =
+means
+> less post-processing for humans, but potentially more for tooling.
+>=20
+> If you mean to use the BTF tags as opt-in in your own maps, then =
+that's
+> probably OK. If you mean to change it in existing structures, I don't
+> know - maybe I'd add the custom representation _in addition_ to the
+> existing one, rather than in place.
+>=20
+> Quentin
+
 
 
