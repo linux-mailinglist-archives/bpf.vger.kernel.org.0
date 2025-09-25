@@ -1,138 +1,154 @@
-Return-Path: <bpf+bounces-69760-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69761-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F37EBA0F47
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:52:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2705EBA0F75
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 20:00:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11CA762591A
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:51:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA8F07A8916
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:58:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8FA3074A7;
-	Thu, 25 Sep 2025 17:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D3C3128AC;
+	Thu, 25 Sep 2025 18:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lOe2r/pl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RTFHOfxp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C4527510B
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 17:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C8E4271A94
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 18:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758822703; cv=none; b=ckUWALbJtvHhdUNy3dBSgFKGeMDSxcpo5jtVfR6BnOY8VFlBVuqi3jHFpAsVOEkSKZ9T83dU+gnlUj97g7XHdqODuk8byxoj2q7zM5FZimpuZjbyQSN/itlfpeFcGVkpXET14BRjGdr23pOrnLPhqVsIsZSut5Huh8bbQPdBUZU=
+	t=1758823228; cv=none; b=I47qWbguUrb0aIxu8JZb8p3MhX9CsE5UOC/cFiXhSPGp+95sjIGGmdiqvKmUASzKevxbH5livLpn2CDjHQbg1tsLyHPPIWxn2Rr0Ie9iZXVyjCyUXCGktQ3t1JoagA+0XdbI0g9E5xv78Rc3yY7BHckKi9kWbBvClRf/J8dr4rA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758822703; c=relaxed/simple;
-	bh=eFBj+NoRKyq6AH3ee4KSftiKcIQfTiMoqJOXeFXkdY0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YBJkqUJTEtcwM9hW+YdfYt18CDlHad3fOvd5ADcoYEx0S/nED5qMCLJN+d0XtEjLYt+tQdpislGK7opP7C95rK/Zr2tOwN5ajB4nIHthDxNGTT8XOeA0xmWKG6WDwWk0Eu2lh6koKSW3v3sFYb6R2lywx+DNcyfczyrMlyAblBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lOe2r/pl; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758822689;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mqpGJZ8+w8yeo86Csrw9+o+7ikJ4DiTggwOMxAIVJ5Q=;
-	b=lOe2r/plgHrxiTmNZ3v9xGHsiIijtOLwC0YoSRRIrfA8i+lbGrq/XJoGneNIzDG7JSbebs
-	bi1ix7i9kv90HlmPp6yb/+ubL9al9hyCUyY/F0CbMfZLjUpNhtbVJFvq0huTjbLXKszGIW
-	GQ9ZHBnfVOTEVSNoPK19iMjZFakXI1M=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v6 3/3] selftests/bpf: Add stacktrace map lookup_and_delete_elem test case
-Date: Fri, 26 Sep 2025 01:50:30 +0800
-Message-ID: <20250925175030.1615837-3-chen.dylane@linux.dev>
-In-Reply-To: <20250925175030.1615837-1-chen.dylane@linux.dev>
-References: <20250925175030.1615837-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1758823228; c=relaxed/simple;
+	bh=L2BcYyWDTOEUzWsdYyJv+HOsCNdtUdd8cbQVDtSWkJs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rHnLJgPBUZmOAoUy1r0sKD7tHugarpu9ZgyxaAz8Q2+GmYUtNbwMa6fTwBF+VDEZoiZ7WIcRVA9/9q8EapwIc7XSH008FydCVIMdpSf0yGAUxUExG0e72bDOCULaD1mYvPrJVT2HVQvF8lWFF36EDi06Bd6Q403N67zjubOktls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RTFHOfxp; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-32b8919e7c7so1609308a91.2
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 11:00:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758823226; x=1759428026; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5UR7A4j6sdHK0HJW0KPqFlfvSz2vgaALw9Xdvvlzhok=;
+        b=RTFHOfxpeiDFx7RfzMtSkjJfl3VJ6RM10ILzHouCxjcVQF5tRDNvDa2il0ztN+wh52
+         9eFfkOV1I1yzM7dJDZ7KmExeX1i7u9GlL0kTzcSHMRFRK/zOykt/mYJIJCOAlx7YuLXG
+         ZeD7V3nGYKzhaIByt3Orb+7PNRMsHjWd6WeMkBfZHvpIGC7qADS0lxXFTVeCkofAqbJ+
+         djPhrihEVjm/US7zPjrXkQGDaRUva1SzZGvX8kVyjzylcRRe6ffZlkEeFeghWPxj/mKt
+         2HxClwVmbHM8Fy+IDEWJVv8IIyPxUm45qDgNfi8uGanZtQlz+xfbgE2AGYgveHWm9In6
+         In/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758823226; x=1759428026;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5UR7A4j6sdHK0HJW0KPqFlfvSz2vgaALw9Xdvvlzhok=;
+        b=SZuupPNtkHtKPMqce93nQrcHpOKh8EYPYshx7qPfutU00Wd+j5Cf2y1Hl3qNvGEuTN
+         EizFBvY/yxh131EDAmi4ZhdzCUdolUX1uZAf0vFOutmWlSVWEX6Fb1iSYQ239wlanbOc
+         w1VbVr+Fhrg9K5LETDqz51YaOLiWJkheTOKZLCOtWNIEHvkwFSPlZHAVvzv+8JBcNaPR
+         OtmYbD0VEMgg40doThbz1R55kMgX7EOfgZ3t2EaH+stNkj6BpvjpgCqccGH9apvVb57q
+         TmOB+1CwJL5V2fKzvuV3/NcgQRjbkbVRO4OazSF9ZvjuQn0ozWoQHTJTAQfVT+n9PwV5
+         8fOQ==
+X-Gm-Message-State: AOJu0YxtYyQicp2Kkw1u9Q6b3Qgyq3qggvfzzmNsnejPI9swayHO7Zwl
+	NK4jnh5jH9VDFflGU/w1d/MMYq/ESa/F9p1FngYfvntXsCypWPx5ffai1yR2T4/Dke4uEfGbIAD
+	wJsCRtTWaHOp5mM+f23tBOiRdP9VwHmA=
+X-Gm-Gg: ASbGnct/hm0XnReBCfhPVmpU58gE68B5f71o1ofr7rv4bN6uyK6Q9g86hu62HjWM/DB
+	QZiTlMWeJs7s3oHDeTSKiiznluTAT0N9ATn7ojg9OZ4+zw8qEsGSsgtE30ZvBZQ8ScJTCo5xHFi
+	SWX8wo7wDQXypTnZDZDst1DFA+QVsAPYqZR2KfYkWgM3UHuyuBhJ7cUk156p5f9VQab8NQOfO11
+	mV6jC6YZwHqKIMeW+NFt9TarcYs6zPiFw==
+X-Google-Smtp-Source: AGHT+IE3xVOyU8i8lVYZrkuVf+RCCmd74wE9ZTCJ3RVJRj6D+lZy45Y+IOhNPx8YuV9xsYdVuQvhZCLIHSl940YWDz4=
+X-Received: by 2002:a17:90b:314c:b0:32e:5cba:ae26 with SMTP id
+ 98e67ed59e1d1-3342a2ae68cmr4503015a91.23.1758823225626; Thu, 25 Sep 2025
+ 11:00:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250924142954.129519-1-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250924142954.129519-1-mykyta.yatsenko5@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Sep 2025 11:00:11 -0700
+X-Gm-Features: AS18NWBvx6aaAOTSl6hQJ9o_5tTLiWvRpG39bJSsWxCfYrZYnvRmamSoALBLwTM
+Message-ID: <CAEf4BzZBqj09xup-MWed3yEzTBpw1=PdnL=4fyk6gDGDjA-sUA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] selftests/bpf: fix flaky bpf_cookie selftest
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add tests for stacktrace map lookup and delete:
-1. use bpf_map_lookup_and_delete_elem to lookup and delete the target
-   stack_id,
-2. lookup the deleted stack_id again to double check.
+On Wed, Sep 24, 2025 at 7:29=E2=80=AFAM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> Problem:
+> bpf_cookie selftest fails if it runs after task_work selftest:
+> perf_event_open fails with errno=3DEINVAL.
+> EINVAL indicates incorrect/invalid input argument, which in case of
+> bpf_cookie can only point to sample_freq attribute.
+>
+> Possible root cause:
+> When running task_work test, we can see that perf subsystem lowers
+> kernel.perf_event_max_sample_rate which probably is the side-effect of
+> the test that make bpf_cookie fail.
+>
+> Solution:
+> Set perf_event_open sampling rate attribute for bpf_cookie the same as
+> task_work - this is the most reliable solution for this, changing
+> task_work sampling rate resulted in task_work test becoming flaky.
+>
 
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- .../testing/selftests/bpf/prog_tests/stacktrace_map.c | 11 ++++++++++-
- tools/testing/selftests/bpf/progs/stacktrace_map.c    |  2 ++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+All of the above is not very convincing, tbh. (and in parts just makes
+no sense at all)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-index 0a79bf1d354..ec93918fe3c 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-@@ -7,7 +7,8 @@ void test_stacktrace_map(void)
- 	struct stacktrace_map *skel;
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
- 	int err, stack_trace_len;
--	__u32 key, val, duration = 0;
-+	__u32 key, val, stack_id, duration = 0;
-+	__u64 stack[PERF_MAX_STACK_DEPTH];
- 
- 	skel = stacktrace_map__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-@@ -60,6 +61,14 @@ void test_stacktrace_map(void)
- 		  "err %d errno %d\n", err, errno))
- 		goto out;
- 
-+	stack_id = skel->bss->stack_id;
-+	err = bpf_map_lookup_and_delete_elem(stackmap_fd, &stack_id,  stack);
-+	if (!ASSERT_OK(err, "lookup and delete target stack_id"))
-+		goto out;
-+
-+	err = bpf_map_lookup_elem(stackmap_fd, &stack_id, stack);
-+	if (!ASSERT_EQ(err, -ENOENT, "lookup deleted stack_id"))
-+		goto out;
- out:
- 	stacktrace_map__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/stacktrace_map.c b/tools/testing/selftests/bpf/progs/stacktrace_map.c
-index 47568007b66..0c77df05be7 100644
---- a/tools/testing/selftests/bpf/progs/stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/progs/stacktrace_map.c
-@@ -50,6 +50,7 @@ struct sched_switch_args {
- 	int next_prio;
- };
- 
-+__u32 stack_id;
- SEC("tracepoint/sched/sched_switch")
- int oncpu(struct sched_switch_args *ctx)
- {
-@@ -64,6 +65,7 @@ int oncpu(struct sched_switch_args *ctx)
- 	/* The size of stackmap and stackid_hmap should be the same */
- 	key = bpf_get_stackid(ctx, &stackmap, 0);
- 	if ((int)key >= 0) {
-+		stack_id = key;
- 		bpf_map_update_elem(&stackid_hmap, &key, &val, 0);
- 		stack_p = bpf_map_lookup_elem(&stack_amap, &key);
- 		if (stack_p)
--- 
-2.48.1
+A better fix would be to change all those perf_event triggering
+dependent tests from just doing some fixed amount of work (like 1
+million loop iterations) to time-based waiting for BPF program to be
+triggered. And if it's not triggered within a reasonable amount of
+time -- only then erroring out.
 
+I dropped this patch for now, and applied the second one only.
+
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/bpf_cookie.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/=
+testing/selftests/bpf/prog_tests/bpf_cookie.c
+> index 4a0670c056ba..75f4dff7d042 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+> @@ -450,8 +450,7 @@ static void pe_subtest(struct test_bpf_cookie *skel)
+>         attr.size =3D sizeof(attr);
+>         attr.type =3D PERF_TYPE_SOFTWARE;
+>         attr.config =3D PERF_COUNT_SW_CPU_CLOCK;
+
+test_task_work test is using HARDWARE/HW_CPU_CYCLES, what does these
+two independent perf events have to do with each other? This "fix"
+makes no sense to me, it's just hoping for the better.
+
+
+> -       attr.freq =3D 1;
+> -       attr.sample_freq =3D 10000;
+> +       attr.sample_period =3D 100000;
+>         pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG=
+_FD_CLOEXEC);
+>         if (!ASSERT_GE(pfd, 0, "perf_fd"))
+>                 goto cleanup;
+> --
+> 2.51.0
+>
 
