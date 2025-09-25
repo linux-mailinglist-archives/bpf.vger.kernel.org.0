@@ -1,127 +1,144 @@
-Return-Path: <bpf+bounces-69685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8520B9E82A
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:53:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27623B9E26D
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:57:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 241D77ACF08
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 09:51:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E20053B476B
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 08:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF942D7DD1;
-	Thu, 25 Sep 2025 09:53:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4016279DB1;
+	Thu, 25 Sep 2025 08:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UHklCjot"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BHDiEPeN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FEF2874E4
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 09:53:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BF9E55A
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 08:57:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758793999; cv=none; b=OQREa1uPLTbTOnwinmP/AvLMStZOmX6ug8aDmGo1yRdvHEicxasseosf7KhZC0vr1N3Uv+2zQ1/h+H3Ylo2yb6x84bYz8at462cEIkxWIOvLZeu7kDHJlg0ntcxPN8if80cAtMKi0imkm8QOfl/Tzkq0lJ2BWEtcFNGoPnhiWc0=
+	t=1758790658; cv=none; b=g9qj40/qRn/DZ20mDK2USfHGLJW9C/bIKtWJzqGnc32n0ZsJMv/o9hpmkaixwqrF/fOFnIcRt1yTc1abD3SAQejfdELgKvzy2njO+dR0G8TyKVt+C3whBWOMGs2WKUxVdHrh8brjfPQ2GcUiDeGGl5IMsYWLjfJRMbmslMLCUus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758793999; c=relaxed/simple;
-	bh=lu9Tc9pURgZ0381dUEwXBCbkX3e5TEeN4qRYRoLV158=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aldyctXvQOomN8dbRIqDDjSijWGQ5ln9fNAWUSGQrwlDC8lqhcIFQBczFu2uNzfvSjJMTrZx949WxwXYVSpMVjMVs4HUerp81z+kjnGl9n2GSkogsEdBFWVHftanCfJfeWCHBX1NFa4v2gQqp9xtT06lpOnfR2S4o4qTkyVYFbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UHklCjot; arc=none smtp.client-ip=209.85.221.53
+	s=arc-20240116; t=1758790658; c=relaxed/simple;
+	bh=QQ2vjrQn/Zieqm61suYuD8VfLZgZWU8v8LJfcKU4ZZk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JTY6ZHg7jgnO+LpXKb1ziumrEx6adoGgnHXkoVRMNjQgW5HKT0YNVoXJjVUNjBWADdfzSk6kw4lZZP5cGDNydEtH2K98BUyL6iEGdQUWSa7C7pXxdV5ThtkTbIJ1ywzh1NGbUPDjOzv/obPM2EH3QAAw8XHbJTWMdqrFAmBiFMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BHDiEPeN; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3f2ae6fadb4so778770f8f.1
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 02:53:17 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b2b8b6a1429so10165266b.1
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 01:57:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758793996; x=1759398796; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YZcpU2w/VB5YKX06iIgQfBUU6i35jTYfqMGO23xOBP4=;
-        b=UHklCjotzVCgszSSsq1v32EDLcxKlRu4szU1a2b3oaBr9pZhVGP0NIOY64YBiSGtzQ
-         H8lYKnwa1VzQFAtLSHuTZ6/sBQ9II9ThxzRy6kBMWtokey5FALe2AxmtQfgiI3b7CRZA
-         +EsbO0lIzzsSTEu9kL0peL068UUyjUSflva/xP0G+oYhQVN7UcP9PILSimUf5DbdgW6P
-         T/uLENxBPymw+kq5ZNQzlitN0miER0HWXlhE8uco4YU/E9zDR80guRW5h+tlRRnMcuc/
-         yaAPZc93j6gR9Q7kOpVlojdVVj8bLun/Ta4geqfG0mR4SP6T8Z70ZesYD2Hn9WzGEOSP
-         0I+A==
+        d=gmail.com; s=20230601; t=1758790654; x=1759395454; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J1ieKdh8ZnL9X5ENVHhQYpO7ehaHx1VKRXFWr/P98Bs=;
+        b=BHDiEPeNjx7s5Cw3qnHAcG0G2+VJpqG7zkFKViiXqASTpsPj9NnKR0r2JoUMFJ1n1E
+         talS9PQKEpCbAx3F0qNbbK08xrzMYWixi9M9YKcwA/LlLnAgklC7o+koibOOz6yU42ha
+         yKaVew5HXBImky6/Uwobgbqx5XY0fuyfHmwwuX8wczaNVCQR16x4w8DPRKH4g4uqGAFa
+         HpmQuLV9NDczZDLsKs+ksFLI+uXPZiawxPV9mrJYC66J6iezcY2hOyh6i+4t7Rdagnqs
+         aWXtfl4qcia0yL4pF+yVYw9cgKBh4g2573Dmv1MIGsZt+qsEqp2maXMiUxiyEc63Otpy
+         6Xug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758793996; x=1759398796;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YZcpU2w/VB5YKX06iIgQfBUU6i35jTYfqMGO23xOBP4=;
-        b=XUf+DIHNubEjHDd27E9WQ/45XE1P+G4RaPIP3T5S4EGwH43/Hp6h2KzR0lE9B7PVch
-         O86JjfP6K6pdlQ+B0tTkPfZ3q01sLQVKvtTZ5REzyAMmVgpmQq5zpijC7Yhc5TtxqDi8
-         R7bemdfaZaASGs0pO7hlqQsfKBQfVgkMY9Ufy9sUkDcisf7ozDTlCbCZfhCMLLbH4Wvn
-         GlxGRa6n5Yj8fqDSLJ/HbygdS2j9uZGl0QwlRqBNYVCf2ICTKytmVDkX+U9F6bNTeqZH
-         mLA8PsSH6V5Gxw0jsdzxuaR+gsu4LqZ7QOxKykSv760n4H5y/8AuMFJGJDkFZliIAwkL
-         D2Dw==
-X-Gm-Message-State: AOJu0YwhNykR6EFlF6F9h8ufcDoLqdBYnTdYWhNEAtDQ4f1R2HhUIjJZ
-	aKBAXc7OfeawGI4ZzrTReeEabfoL/1L9fVUNQXNWK/23REThhwJadJl49Jq15oQgu7BTkPd7esn
-	9+OGs7kPdq+CHIwtcjrryatOoji/SDKhn4/dD3qfAAA==
-X-Gm-Gg: ASbGncueWwUIUefcz+GrNz3eZ47K65SLWis/Si/4ujacr4Ys2e7gzhSD3iOdTh8Ra3/
-	5S77PbtalaEzfcuQvPfCop/drdYRQrj/N/rhLLQCBK/jgmRytl+6hCjRH21BKaMTowkW0js+1Zb
-	vCfpoqiZgR5eL68bLxxefXlrZLgl5ELQpwgtmgSkxljfXQXMiM6G9R21Ndh9C4STosCiLMAeVLz
-	jAXqsDWhz+9u2aU
-X-Google-Smtp-Source: AGHT+IEmU8rnXWa62/3qZo+R7CiKruEkD4ZCa9MZ8GPj2WiUPf+P7ttT+U2icSZcwgkOfcyw7mPkVrfynUcxItvgZY4=
-X-Received: by 2002:a05:6000:25c3:b0:3b7:8da6:1bb4 with SMTP id
- ffacd0b85a97d-40e4accc86fmr2650916f8f.58.1758793995865; Thu, 25 Sep 2025
- 02:53:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758790654; x=1759395454;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J1ieKdh8ZnL9X5ENVHhQYpO7ehaHx1VKRXFWr/P98Bs=;
+        b=n3BR3eteN5JhEsM4IxOQfVN7OmH+CaJ6LdZyJ7zFmcjvwV6rM+k2PCP0vhKY/ZVORV
+         Icbt8PrD2uiBcigzq+KBb9P3RUDW+Ah2H+wvfU5DbCdjr8BVSQyRaQA4LlY6fzZicSES
+         5ayz7392OkQJM2KSldGpNk2uJQKNXRbE5MzUn+y30O13CQXfJgJvgHvHnmEitg11Dp4h
+         sIjrq2HsLCzZYDbPhpULqqlh3k1/981i9+wbmIQn37939oM63HYAORHxI8zGjNMd0sHc
+         zjxxHvlh1zSxpZpemY9BZRSKpz3wwD3Y5w1cbC+bohR93pqvSNyJg8+a+trc6RDmmYcT
+         zZTg==
+X-Forwarded-Encrypted: i=1; AJvYcCXqfRAaub0kGgQFYMasN+wpduxiYFQt4JsfYQvH8DxfDCgAwp5bn4xrExRziBVXyUc7+3s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyomZniff/GF+93iH8fG7zESrgAYmYZbL3/2PI+Z4sJcjnH1vAM
+	/LB0dIIQzaSrTf1yaJzN8n88v753BcemI1/lArZMb+GlW/Be3u83To0R
+X-Gm-Gg: ASbGncs4n1HkfWYOuo8W1AJYm6O0PO8oYzBAj8984Iq82O8jesqS7/vjsTTqvESkFyg
+	GFZKNb/5CM/uZuO+VAFd/tM0R10cbosgQHTYlQFjfwgZ7QV7Y54bCKq5dXVYZlKgczYDgegwEV+
+	XgmSMUsl7/z1xZyYr6Ay5NrhdtCJqvE5APfFPxSWEDOMrWYuLqwBMmPc6jP5nUhq5G2XPM8Prkf
+	dGaQQyHxEuXaXTJI0teF8c66VmM2y98fDVnQ+Z7ZwTYhOKZfZbbG9YjMGNWctp7QpKzlhW0iryj
+	AaRRYgF1qzspoaaZb2WVP+dIKpSDci7gOTaBUfJOxEnLrcBBB6te4P3gtu9NZ+QdAAd15OM0o9N
+	zUNL8x2u4aHksEsfiosOdOMRZieEOXTHW9oy7YqfcLqU=
+X-Google-Smtp-Source: AGHT+IHgxhg/8L0HWZrIRreMxlREkgm0qw2qxTqKaDyvZUongIqmZ+eF5XRwzrB4DjOfUfKpvkk3Ig==
+X-Received: by 2002:a17:906:f599:b0:b0c:ac7d:474f with SMTP id a640c23a62f3a-b34bfe4619bmr131647766b.10.1758790653822;
+        Thu, 25 Sep 2025 01:57:33 -0700 (PDT)
+Received: from [192.168.1.105] ([165.50.112.244])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b353efb8903sm123418466b.33.2025.09.25.01.57.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Sep 2025 01:57:33 -0700 (PDT)
+Message-ID: <9773fb16-d497-4d67-804d-0c6e70def886@gmail.com>
+Date: Thu, 25 Sep 2025 10:57:30 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250924211716.1287715-1-ihor.solodrai@linux.dev> <20250924211716.1287715-4-ihor.solodrai@linux.dev>
-In-Reply-To: <20250924211716.1287715-4-ihor.solodrai@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 25 Sep 2025 10:53:03 +0100
-X-Gm-Features: AS18NWDbLB5YJC0TDfFpCPIYOHpFNKW8roC_ShfUbE2jyM3iqoVhOozM0foMtQw
-Message-ID: <CAADnVQLG1=xr9OWKZna0hjfswZ+pZ8RM3fAtsVd+aYW7xaFFcQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/6] selftests/bpf: update bpf_wq_set_callback macro
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, dwarves <dwarves@vger.kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 0/4] Add XDP RX queue index metadata via kfuncs
+To: Stanislav Fomichev <stfomichev@gmail.com>, lorenzo@kernel.org
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, donald.hunter@gmail.com, andrew+netdev@lunn.ch,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, matttbe@kernel.org, chuck.lever@oracle.com,
+ jdamato@fastly.com, skhawaja@google.com, dw@davidwei.uk,
+ mkarsten@uwaterloo.ca, yoong.siang.song@intel.com,
+ david.hunter.linux@gmail.com, skhan@linuxfoundation.org, horms@kernel.org,
+ sdf@fomichev.me, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
+References: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
+ <aNMG2X2GLDLBIjzB@mini-arch> <f103da72-0973-4a45-af81-ec1537422433@gmail.com>
+ <aNRxRRSfjOzSPNks@mini-arch>
+Content-Language: en-US
+From: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+In-Reply-To: <aNRxRRSfjOzSPNks@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Sep 24, 2025 at 10:17=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux=
-.dev> wrote:
->
-> Subsequent patch introduces bpf_wq_set_callback kfunc with an
-> implicit bpf_prog_aux argument.
->
-> To ensure backward compatibility add a weak declaration and make
-> bpf_wq_set_callback macro to check for the new kfunc first.
->
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> ---
->  tools/testing/selftests/bpf/bpf_experimental.h | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
-ng/selftests/bpf/bpf_experimental.h
-> index d89eda3fd8a3..341408d017ea 100644
-> --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> @@ -583,8 +583,13 @@ extern int bpf_wq_start(struct bpf_wq *wq, unsigned =
-int flags) __weak __ksym;
->  extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
->                 int (callback_fn)(void *map, int *key, void *value),
->                 unsigned int flags__k, void *aux__ign) __ksym;
-> +extern int bpf_wq_set_callback(struct bpf_wq *wq,
-> +               int (callback_fn)(void *map, int *key, void *value),
-> +               unsigned int flags) __weak __ksym;
->  #define bpf_wq_set_callback(timer, cb, flags) \
-> -       bpf_wq_set_callback_impl(timer, cb, flags, NULL)
-> +       (bpf_wq_set_callback ? \
-> +               bpf_wq_set_callback(timer, cb, flags) : \
-> +               bpf_wq_set_callback_impl(timer, cb, flags, NULL))
+On 9/24/25 11:31 PM, Stanislav Fomichev wrote:
+> On 09/24, Mehdi Ben Hadj Khelifa wrote:
+>> On 9/23/25 9:45 PM, Stanislav Fomichev wrote:
+>>> On 09/23, Mehdi Ben Hadj Khelifa wrote:
+>>>> ---
+>>>> Mehdi Ben Hadj Khelifa (4):
+>>>>     netlink: specs: Add XDP RX queue index to XDP metadata
+>>>>     net: xdp: Add xmo_rx_queue_index callback
+>>>>     uapi: netdev: Add XDP RX queue index metadata flags
+>>>>     net: veth: Implement RX queue index XDP hint
+>>>>
+>>>>    Documentation/netlink/specs/netdev.yaml |  5 +++++
+>>>>    drivers/net/veth.c                      | 12 ++++++++++++
+>>>>    include/net/xdp.h                       |  5 +++++
+>>>>    include/uapi/linux/netdev.h             |  3 +++
+>>>>    net/core/xdp.c                          | 15 +++++++++++++++
+>>>>    tools/include/uapi/linux/netdev.h       |  3 +++
+>>>>    6 files changed, 43 insertions(+)
+>>>>    ---
+>>>>    base-commit: 07e27ad16399afcd693be20211b0dfae63e0615f
+>>>>    this is the commit of tag: v6.17-rc7 on the mainline.
+>>>>    This patch series is intended to make a base for setting
+>>>>    queue_index in the xdp_rxq_info struct in bpf/cpumap.c to
+>>>>    the right index. Although that part I still didn't figure
+>>>>    out yet,I m searching for my guidance to do that as well
+>>>>    as for the correctness of the patches in this series.
+>>
+>>>
+> I don't really understand what queue_index means for the cpu map. It is
+> a kernel thread doing work, there is no queue. Maybe whoever added
+> the todo can clarify?
 
-There is also drivers/hid/bpf/progs/hid_bpf_helpers.h
-Pls double check that hid-bpf still compiles and works.
+Hi Lorenzo,
+Can you help us clarify the todo added in cpu_map_bpf_prog_run_xdp() in 
+this commit: 
+github.com/torvalds/linux/commit/9216477449f33cdbc9c9a99d49f500b7fbb81702 ?
+
+Regards,
+Mehdi
 
