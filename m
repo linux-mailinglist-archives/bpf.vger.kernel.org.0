@@ -1,182 +1,251 @@
-Return-Path: <bpf+bounces-69726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52D4EBA0605
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A573FBA0661
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:40:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A3BB5E0836
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 15:29:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77E365E21E6
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 15:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15DAF2FB0B5;
-	Thu, 25 Sep 2025 15:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212003054FD;
+	Thu, 25 Sep 2025 15:32:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="D0vjJBg8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y7dbd/IP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7918C2E7652
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 15:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F016303C9B
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 15:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758814118; cv=none; b=lviE6vDZkRNBUpstIOx+I3ia0/34j3b7q2pOTu9f7B/VZJHVTrS9I650B0dFQoXOnsRvjlEbPqT+1an4M8jsH7N3ue3vydWFu7OouB94ardU3eHy3tyWBHMXezh6wvYfALNeyd9LpLrNVLKKlrcz1OFG7jRCgxozkL41Md/r/2E=
+	t=1758814339; cv=none; b=rKdFWE4hodWvYjP5iN/wWNhRdpLhJFGzaKXlO4+ECr6+D1FMA8jKf/J8ljux1L7nbQCdQEZ+0YAfSvla2cQ3oAaGVRpUmMpGaWpuBB+RVWL3JRJa4ahGhMvTnIImBB6JCbLcMj67fe0wFyX4+Yaa/0MjOb1ezTTbZLzIbiaf/JY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758814118; c=relaxed/simple;
-	bh=wtyjj5HMg9V/mCMmvfB3/zw/BDFGlntNz9YE/LdNiug=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AhaCFiXF6gJ3sDSJCqL3vQf1TVMIouxoQCnNfYAT+2tQOh3zevyKQjqgm20GlKtMOcRRp9FAhcy61sUz241+VEirrt0HMDLxXMfz1m9zYACJaqYGNZZVD3mP1L+LVh64/YQXnUiB3K/yI/tMPbCsg8Y3nL7YdWzBymk0NF4OtUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=D0vjJBg8; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-afcb7ae31caso155011966b.3
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 08:28:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1758814115; x=1759418915; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YKobXdLFkGKMm2/irUXr6fbBOfkB6Qw77372NdUM/PE=;
-        b=D0vjJBg86V8jogxZYYZ65zYu083rRHpJI9I2/kdawyNMHYzmv2DPiFz11K8gZoxLT2
-         AeZH1gYjC5gbg3xHGnTaw940a84b/CFIQ7gLgoLHPepNLqBMVwT1Acl4r3Jm7vowDUEU
-         2eBks7aeOEHfpRoRGtE5s2RzeQq9yZc4i/tEnvJ1uRkHIGmpQdBDfxXxlwOeIB1J7HOp
-         cNumbnFObAHelUXStdWU/Sn0aRvJvcWLhz7UAQo6sxjeU2g2rVimsvxcMDOUfqhIafkF
-         PXMkSu4m1XZ1FUmCnIo1buVUjM67VmTt5BHtUT67Znecl0G1HfeMw6GMnUvI3+x8gUi0
-         xS3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758814115; x=1759418915;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YKobXdLFkGKMm2/irUXr6fbBOfkB6Qw77372NdUM/PE=;
-        b=OTy0y6dN4VdNiCWCmv5Thes4wtMdpWZ5R3ggF63InGqzgRpjtsinbqaS4JazbXJrYV
-         uekCn7Fwg9F2XkmvdVPHnVi0K86i0Q8Kvu7+gD9t0VJdWxg8GYQQauW+/RwjwsTPuaMx
-         s83OzA0gcTLhob25Ti8xTSrM6fG1nbGt9jOxuQPmC8LzaI9//dMWSsrg99laaw8svLeT
-         nPZaMwZ7hamQVJTM8CzRqTaJrJBv6aBgO7NsUkcdiDPlwTTOSlTtCcNAOiRUV7kpEXZG
-         KSdH+Jgn6//zriY5MDhlm3xzLUXFdJDOkaotcBGm5rlucHgUPozuq+YVAA5gpfC9k8L9
-         Umzw==
-X-Forwarded-Encrypted: i=1; AJvYcCUpQGcZYk7m2Sds8Ds7chEgHXLs5Bsno+QwWvVum73GShyo3TX/zKfe3N16oKb3nOYw2jk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEZxEMYMcjWhrJl/41eeWauWtsU+/b7AD8m3cOJ1N2PWzYUPQ8
-	yYZh6BiTAx8EG5jQxYFxWpa+9NNYub9qGR5wIXRUBx1cYeq4kJzm2iS2PWF8Jcgk3SwgWIx6+Sc
-	Z2InvJROmLuQEMcbcWKi8xPhpQDZax2Eq0dvT49Za
-X-Gm-Gg: ASbGnctvsiMkl5nwplEUnk1t0iAStivkA2IPmdpYdvehIjhceVUPfr70inlkkb5sYdE
-	Wqgajh/RWKNaZqJHgvSZ1sa5+/HVe9nT9H08T+lnS0xlnK/MsFtP0mVfH4upD0y9YaAvRHHJf4o
-	KmYEdGtdeZEE6vVeb01rZ9X86joFc2OjM3TSiDU57G5ZCtKOn6NMJpRpgeFYVthFMm4KWORmZCC
-	/V+GPc=
-X-Google-Smtp-Source: AGHT+IFO/fjLqIN4PDy2/c1HOCYYPOmuvQn62UY5lq01KtaWtEk2UAQPpnbUb4D5Ky8gx7kKy7wdQoLN/VdJ1kbDa3c=
-X-Received: by 2002:a17:907:3e1d:b0:b03:d5ca:b16 with SMTP id
- a640c23a62f3a-b34b80b2a29mr424706466b.23.1758814114617; Thu, 25 Sep 2025
- 08:28:34 -0700 (PDT)
+	s=arc-20240116; t=1758814339; c=relaxed/simple;
+	bh=NgT10FpEpSYYmbnmgt3MhuxO1JnJEvfawqPO+Byo8xI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=u96ufgAlvIaJVUtIXBX2+OOAriEInPXBImDF52mzBdHhR1toJG9hHHMjiwL5iGVPiPPJnRkO33eLlTYUG2rlxA1zV0E5U1ePDtMirk66ttEijg//ZnVgkhGbquxJZdHVRiH6yb2AZRtYyljSTbCHkr3HRrr+qye+7/WDNK97Ku4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y7dbd/IP; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <933a66f3e0e1f642ef53726abe617c4d138a91fa.camel@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758814325;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IVM3/TjrAx73b+FFU6cSE3KCrtsxDRhadpXezuUiniY=;
+	b=Y7dbd/IP+lKkGHLIMsxvGvDQN+1VTUeP2StrY8X6sHD1Kd0cnjplNEVjwvAMXKMLL5+suv
+	rERCckBKYVHnK0EZJCLgPViCOQ8VfQg+2bERKw2mIuiowcFBYJSl5GqF/wcHJ5Q31aYCgr
+	RWDAWjp1VXVduDScsJh34vVJ6g/6gds=
+Subject: Re: [PATCH v2] bpf: fix NULL pointer dereference in
+ print_reg_state()
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: KaFai Wan <kafai.wan@linux.dev>
+To: Brahmajit Das <listout@listout.xyz>, Alexei Starovoitov
+	 <alexei.starovoitov@gmail.com>
+Cc: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com, Andrii Nakryiko
+ <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf
+ <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eduard
+ <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, John Fastabend
+ <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, KP Singh
+ <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Song Liu
+ <song@kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>, 
+ Yonghong Song <yonghong.song@linux.dev>
+Date: Thu, 25 Sep 2025 23:31:41 +0800
+In-Reply-To: <wz6god46aom7lfyuvhju67w47czdznzflec3ilqs6f7fpyf3di@k5wliusgqlut>
+References: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
+	 <20250923174738.1713751-1-listout@listout.xyz>
+	 <CAADnVQ+SkF2jL6NZLTF7ZKwNOfOtpMqr0ubjXpF1K0+EkHdJHw@mail.gmail.com>
+	 <qj5y7pjdx2f5alp7sfx2gepfylkk2bytiyeoiapyp3dpzwloyk@aljz7o77tt3m>
+	 <9051652cf548271da9c349758cbd70aaa3cee444.camel@linux.dev>
+	 <wz6god46aom7lfyuvhju67w47czdznzflec3ilqs6f7fpyf3di@k5wliusgqlut>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e5d594d0aee93da67a22a42d0e2b4e6e463ab894.camel@gmail.com>
- <CAHC9VhRu=-J5xdKgYOJ1eqQ6EiMoEJ3M+cjDU8AHrts-=DoTvg@mail.gmail.com> <cd35aa283cf010188a3b0e318f2c16655224767c.camel@gmail.com>
-In-Reply-To: <cd35aa283cf010188a3b0e318f2c16655224767c.camel@gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Thu, 25 Sep 2025 11:28:21 -0400
-X-Gm-Features: AS18NWBarlzZOSQr7OCNIDNef4KOm0vks6D5xuABgZBWI2HDW6eEgkpbJbc9oXw
-Message-ID: <CAHC9VhQ-c65UJS+dRaRFn_D=Sq++QXePTsCkN+cV5BVQEbf9fQ@mail.gmail.com>
-Subject: Re: [bug report] [regression?] bpf lsm breaks /proc/*/attr/current
- with security= on commandline
-To: Filip Hejsek <filip.hejsek@gmail.com>
-Cc: linux-security-module@vger.kernel.org, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Sep 25, 2025 at 10:56=E2=80=AFAM Filip Hejsek <filip.hejsek@gmail.c=
-om> wrote:
-> On Wed, 2025-09-24 at 17:24 -0400, Paul Moore wrote:
-> > On Sat, Sep 13, 2025 at 1:01=E2=80=AFPM Filip Hejsek <filip.hejsek@gmai=
-l.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > TLDR: because of bpf lsm, putting security=3Dselinux on commandline
-> > >       results in /proc/*/attr/current returning errors.
-> > >
-> > > When the legacy security=3D commandline option is used, the specified=
- lsm
-> > > is added to the end of the lsm list. For example, security=3Dapparmor
-> > > results in the following order of security modules:
-> > >
-> > >    capability,landlock,lockdown,yama,bpf,apparmor
-> > >
-> > > In particular, the bpf lsm will be ordered before the chosen major ls=
-m.
-> > >
-> > > This causes reads and writes of /proc/*/attr/current to fail, because
-> > > the bpf hook overrides the apparmor/selinux hook.
-> >
-> > What kernel are you using?
->
-> I'm using Arch Linux kernel, which is very close to mainline. I have
-> also tested my own build from git sources (I used a stripped down
-> config which I based on config from Arch). Example in QEMU:
->
-> $ qemu-system-x86_64 -nodefaults -accel kvm -cpu host -smp cpus=3D2 -m 1G=
- -display none -kernel ~/git/linux/arch/x86/boot/bzImage -initrd ./initramf=
-s.img -serial mon:stdio -append 'console=3DttyS0 security=3Dselinux'
-> :: mounting '' on real root
-> mount: /new_root: no valid filesystem type specified.
-> ERROR: Failed to mount '' on real root
-> You are now being dropped into an emergency shell.
-> sh: can't access tty; job control turned off
-> [rootfs ~]# uname -a
-> Linux archlinux 6.17.0-rc7-00020-gcec1e6e5d1ab #3 SMP PREEMPT_DYNAMIC Thu=
- Sep 25 16:28:02 CEST 2025 x86_64 GNU/Linux
-> [rootfs ~]# mount -t securityfs securityfs /sys/kernel/security
-> [rootfs ~]# cat /proc/cmdline
-> console=3DttyS0 security=3Dselinux
-> [rootfs ~]# cat /sys/kernel/security/lsm; echo
-> capability,landlock,lockdown,yama,bpf,selinux
-> [rootfs ~]# cat /proc/self/attr/current
-> cat: read error: Invalid argument
->
-> (Note: In this example, uname reports archlinux, but that's only
-> because I based the config on Arch config, it's not actually an Arch
-> kernel.)
->
-> Maybe the different behavior is caused by a different config? You can
-> find the Arch config at [1]. Based on Fedora package sources, I think
-> their config has
->
->    CONFIG_LSM=3D"lockdown,yama,integrity,selinux,bpf,landlock,ipe"
->
-> while the Arch config has
->
->    CONFIG_LSM=3D"landlock,lockdown,yama,integrity,bpf"
+On Wed, 2025-09-24 at 23:58 +0530, Brahmajit Das wrote:
+> On 25.09.2025 01:38, KaFai Wan wrote:
+> > On Wed, 2025-09-24 at 21:10 +0530, Brahmajit Das wrote:
+> > > On 24.09.2025 09:32, Alexei Starovoitov wrote:
+> > > > On Wed, Sep 24, 2025 at 1:43=E2=80=AFAM Brahmajit Das
+> > > > <listout@listout.xyz>
+> > > > wrote:
+> > > > >=20
+> > > > > Syzkaller reported a general protection fault due to a NULL
+> > > > > pointer
+> > > > > dereference in print_reg_state() when accessing reg->map_ptr
+> > > > > without
+> > > > > checking if it is NULL.
+> > > > >=20
+> > > ...snip...
+> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (type_is_map_ptr(t)) {
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (type_is_map_ptr(t) && r=
+eg->map_ptr) {
+> > > >=20
+> > > > You ignored earlier feedback.
+> > > > Fix the root cause, not the symptom.
+> > > >=20
+> > > > pw-bot: cr
+> > >=20
+> > > I'm not sure if I'm headed the write direction but it seems like
+> > > in
+> > > check_alu_op, we are calling adjust_scalar_min_max_vals when we
+> > > get
+> > > an
+> > > BPF_NEG as opcode. Which has a call to __mark_reg_known when
+> > > opcode
+> > > is
+> > > BPF_NEG. And __mark_reg_known clears map_ptr with
+> > >=20
+> > > 	/* Clear off and union(map_ptr, range) */
+> > > 	memset(((u8 *)reg) + sizeof(reg->type), 0,
+> > > 	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 offsetof(struct bpf_reg_state, =
+var_off) -
+> > > sizeof(reg-
+> > > > type));
+> > >=20
+> >=20
+> > I think you are right. The following code can reproduce the error.
+> >=20
+> > 	asm volatile ("					\
+> > 	r0 =3D %[map_hash_48b] ll;			\
+> > 	r0 =3D -r0;					\
+> > 	exit;						\
+> > "	:
+> > 	: __imm_addr(map_hash_48b)
+> > 	: __clobber_all);
+> >=20
+> >=20
+> > BPF_NEG calls __mark_reg_known(dst_reg, 0) which clears the 'off'
+> > and
+> > 'union(map_ptr, range)' of dst_reg, but keeps the 'type', which is
+> > CONST_PTR_TO_MAP.
+> >=20
+> > Perhaps we can only allow the SCALAR_VALUE type to run BPF_NEG as
+> > an
+> > opcode, while for other types same as the before BPF_NEG.
+> >=20
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index e892df386eed..dbf9f1efc6e7 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -15346,13 +15346,15 @@ static bool
+> > is_safe_to_compute_dst_reg_range(struct bpf_insn *insn,
+> > =C2=A0	switch (BPF_OP(insn->code)) {
+> > =C2=A0	case BPF_ADD:
+> > =C2=A0	case BPF_SUB:
+> > -	case BPF_NEG:
+> > =C2=A0	case BPF_AND:
+> > =C2=A0	case BPF_XOR:
+> > =C2=A0	case BPF_OR:
+> > =C2=A0	case BPF_MUL:
+> > =C2=A0		return true;
+> > =C2=A0
+> > +	case BPF_NEG:
+> > +		return base_type(src_reg->type) =3D=3D SCALAR_VALUE;
+> > +
+> >=20
+> >=20
+> > --=20
+> > Thanks,
+> > KaFai
+>=20
+> Before even going into adjust_scalar_min_max_vals we have a check in
+> check_alu_op, which I think is not being respected. Going to expand
+> on
+> this below as response to Alexei.
+>=20
+> On 24.09.2025 18:28, Alexei Starovoitov wrote:
+> > On Wed, Sep 24, 2025 at 4:41=E2=80=AFPM Brahmajit Das <listout@listout.=
+xyz>
+> > wrote:
+> > >=20
+> > > On 24.09.2025 09:32, Alexei Starovoitov wrote:
+> > > > On Wed, Sep 24, 2025 at 1:43=E2=80=AFAM Brahmajit Das
+> > > > <listout@listout.xyz> wrote:
+> > > > >=20
+> > > > > Syzkaller reported a general protection fault due to a NULL
+> > > > > pointer
+> > > > > dereference in print_reg_state() when accessing reg->map_ptr
+> > > > > without
+> > > > > checking if it is NULL.
+> > > > >=20
+> > > ...snip...
+> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (type_is_map_ptr(t)) {
+> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (type_is_map_ptr(t) && r=
+eg->map_ptr) {
+> > > >=20
+> > > > You ignored earlier feedback.
+> > > > Fix the root cause, not the symptom.
+> > > >=20
+> > > > pw-bot: cr
+> > >=20
+> > > I'm not sure if I'm headed the write direction but it seems like
+> > > in
+> > > check_alu_op, we are calling adjust_scalar_min_max_vals when we
+> > > get an
+> > > BPF_NEG as opcode. Which has a call to __mark_reg_known when
+> > > opcode is
+> > > BPF_NEG. And __mark_reg_known clears map_ptr with
+> >=20
+> > Looks like we're getting somewhere.
+> > It seems the verifier is not clearing reg->type.
+> > adjust_scalar_min_max_vals() should be called on scalar types only.
+>=20
+> Right, there is a check in check_alu_op
+>=20
+> 		if (is_pointer_value(env, insn->dst_reg)) {
+> 			verbose(env, "R%d pointer arithmetic
+> prohibited\n",
+> 				insn->dst_reg);
+> 			return -EACCES;
+> 		}
+>=20
+> is_pointer_value calls __is_pointer_value which takes bool
+> allow_ptr_leaks as the first argument. Now for some reason in this
+> case
+> allow_ptr_leaks is being passed as true, as a result
+> __is_pointer_value
+> (and in turn is_pointer_value) returns false when even when register
+> type is CONST_PTR_TO_MAP.
+>=20
 
-That's interesting, you're running a LSM that isn't normally run in
-your distro and you're not properly initializing it (no policy load).
-Both are acceptable, but you're definitely operating in the
-corner-iest of corner cases ;)
+IIUC, `env->allow_ptr_leaks` set true means privileged mode (
+CAP_PERFMON or CAP_SYS_ADMIN ), false for unprivileged mode.=20
 
-I'd have to look at the relevant code, but I suspect that with
-"selinux" missing from the CONFIG_LSM list and you manually specifying
-it on the kernel command line with "security=3Dselinux" you are getting
-it placed at the very end as opposed to what I saw (I have "selinux"
-in my CONFIG_LSM list).  It's further complicated by the fact that the
-procfs call into the LSM's security_getprocattr() hook is going to
-pass a 0/zero into the hook as the @lsmid which means "first
-available".
 
-Considering that the "security=3D" parameter is a legacy option, I'd
-encourage you to try the "lsm=3D" parameter (make sure you specify the
-full list of LSMs you want, in order) to see if that works.  The
-"security=3D" option predates both the concept of multiple simultaneous
-LSMs as well as the uniqueness that is the BPF LSM.  Assuming that
-"lsm=3D" works for you, and I would expect it to work, I think that is
-the right solution here; new or unusual systems really shouldn't be
-using "security=3D" at this point.
+We can use __is_pointer_value to check if the register type is a
+pointer. For pointers, we check as before (before checking BPF_NEG
+separately), and for scalars, it remains unchanged.=C2=A0Perhaps this way w=
+e
+can fix the error.
+
+if (opcode =3D=3D BPF_NEG) {
+	if (__is_pointer_value(false, &regs[insn->dst_reg])) {
+		err =3D check_reg_arg(env, insn->dst_reg, DST_OP);
+	} else {
+		err =3D check_reg_arg(env, insn->dst_reg,
+DST_OP_NO_MARK);
+		err =3D err ?: adjust_scalar_min_max_vals(env, insn,
+						&regs[insn->dst_reg],
+						regs[insn->dst_reg]);
+	}
+} else {
+
 
 --=20
-paul-moore.com
+Thanks,
+KaFai
 
