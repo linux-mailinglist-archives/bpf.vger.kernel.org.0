@@ -1,75 +1,77 @@
-Return-Path: <bpf+bounces-69750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75391BA0B92
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:00:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5548ABA0B96
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:00:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56FA03A45AD
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:00:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 672357B42C6
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 16:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B171A306B15;
-	Thu, 25 Sep 2025 17:00:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137E119F40B;
+	Thu, 25 Sep 2025 17:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dJ/UgMLe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JG4/9Smv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787853081A9
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 17:00:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011C730B508
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 17:00:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758819617; cv=none; b=sDO+gIONqGYpE0RfGuyP+P21/3G9WBc2ArW5fK4sZFO1q3dl6/oJHGPBezULk4yea2s1vYYchSnZvhAhzZpeijoOhLBdBdoolyOJpi9Esfez2IofqJtc6TCiEuhsvfAPHO4QQmD6nsw6P9mJKIyAZJWEMkuReJM8wVRZOzeKL9k=
+	t=1758819619; cv=none; b=LgNyXP2na6KLeK/J1riH+GYYGPVUgUK79t4EAK+FE0nVyB6TVPfPvsLVU6lYmJx6cqEYeUDX1FVtA1tSSdPfCOetz6bwKMfQOGMrnjGMGASs5GZz4HbjbE37EVwhQzB1ZHtWB+TcKEvTxGNYr4TBFviXzCzIcwsg1dfhNWC2AsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758819617; c=relaxed/simple;
-	bh=SPvutgf/0wlSxzU/BGGR07xozaCO3CWXty8/w3Fcp54=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VcOXKjSK3on/KXC76RT7dkmADIc1eUIcTGZhBLR8HcvELOof03Z6KZGG7cFP6Iz5UcPcl340v8dNcwxg4BqSslAysbdWL8ZuAVR67mjnI1Huj9MrjHeDEIYUntNIwJIwqajaxMiIKxlW0oUoQabBIdxxCM/tzISE/T7BOdI1HH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dJ/UgMLe; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1758819619; c=relaxed/simple;
+	bh=WNxAnmCw4P1TtKlBwI2Ow+v7MaCfjNgBJ6uifpDB/70=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dgwsnxAfCr7d+rAKYwb07/VgDozFfwlfWW4Vr8p66/yk0aA3ixGA1Ay3lqvSRsc+VNJYI6s3XjvipkxueHmMX7P73ly/lpCpTsC3HiX0RcPv1hkqucD2Y7olXLFk6x7Tj7k04WwN19oonZ1KxdTasQ5kOdk/Y/aqCMusmeBkYiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JG4/9Smv; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-26a0a694ea8so11423295ad.3
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:00:15 -0700 (PDT)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-77f207d0891so1264434b3a.1
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:00:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758819614; x=1759424414; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wyDMrFJ10ozuZKJidiIpM+48MXCub922AW0orXQAw94=;
-        b=dJ/UgMLesl4e/UR6ScLdpZmcKEUnIPFFeato/M0guf6lPfmPXEfaSmu9xFKz4ua5KG
-         PrpbYqP9w6vvezHHoaRToOj7q3imKLy8bK5X7VN/WXLrfyrgTrlsUhA7faG3GIkorQWq
-         w0HDyDgwyQIKFuInD/hb5e44TqxUAfo+7wtcNxKS6X633PcloZS51BRatf3uoC/sR529
-         svPDukhNNTIQe7WUStYgrVfLodgn/C6gKcc/65HMyKzLs2u6zbpAB9RfbUzHQ+ohe41o
-         3s32zzkVV0rhzMQ5PScijs4ToGUTaWJpApGRvUH7wjQ5EBI784bNQdjqT2lZKJgBYsx4
-         0daw==
+        d=gmail.com; s=20230601; t=1758819616; x=1759424416; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QJ5kMbOBwIZudleYReSesMHzWocvI5qVkxY80vlrovE=;
+        b=JG4/9Smv0i9lA64Q928iGiX6nn/o3A2O6sCpvHqXfGj+D1rh/UpNE8Mbx9j+MiJVtp
+         WFWbTPz2fui6R8OOD/luCjoO8SaeAsk5iH/x4PKuHDOVpoDcQXCRkZKt8oAo1PCrtjcJ
+         csyNLxiT/mFSm5k48YmW1r/+I0TEtkoXlw7UCngpxz9Y+Xt3r4CSy8LX1xG8s0z88xST
+         Dv8xy7izmRZ2pk79dpKGPVfatkv4pGm/hMcwD58U54mRHedaQ9H2W6IIlOVWISBS9t+j
+         V75hIUyhhhlWFMmBuqEIa0MhO5yxv6KLqQGgleBKdsn7ehpJbPDZRJ8awB+fbOQcNLNY
+         Jwow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758819614; x=1759424414;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wyDMrFJ10ozuZKJidiIpM+48MXCub922AW0orXQAw94=;
-        b=GAen8J+64eeko9JqZ8xSTLRgeXc8kftqzQADRZOLQY/3iwsR44Cfgl+4BpDevqqZNw
-         U39NGFfbI9PqRgPrCoeTgabOTZnJHyzGqEIM3GRcjXK9xZwr4hCWRzfZTeXHNJhlBwWv
-         2rhkObPOJUFkIIqY4T/P0r8uR06HDt+apZVi9PSX7UcZxs2+EXVLU6RAu6y870STM11B
-         FediQ/C7picgm3v5kT8dmll+q2lqyKUqwbEYPoAFy7w2EyYzAW63CpiYSIuGxripoPpF
-         oyy0Pd4b4vDX7rKZJBtTi21imljn6unnzrkP9pr7gXSX0yx9f4sVvK6TybpMsPwn6OMz
-         WoIw==
-X-Gm-Message-State: AOJu0YyjmfwH1C0j4xIsiugvlWM1x4vDcG4vyIFPP8JKtXGBlNm+47ca
-	vDhwTpByivT7NaY3go9ue9AKZUc62elWZwVwwwjlc24tTC94IkTGmkzCq5Ir8A==
-X-Gm-Gg: ASbGncuuhQkRQW0kXLMlsTvzCXj4wvgDnfGhz3Q77MlYfSbb8ps3/HXPgmwWLDnW4/9
-	S+WA/yw76YsB4nNQHXUFaG8Jxg5VlnjwLM1ZBl3e2zgtC/ccc9aXqRdSYhkDl8VIz5JrjIC/8JW
-	l+p0LoXqhszayv62Vn+xDnK5vulwYbYALb9Fjh8KDMsMMO/NUNhUDiL6PjN5Hivgx97lHmGv3JH
-	EJzc+b7gHDPsOA1JrrTt9E72Czm/bOvyaoMo4D/f/wbzrqMgS17lPputZy9V/3saNiBAOZpV2c0
-	WJ2gbmlTsyAeKGbJGONln0SwgZ5T1rdtKINEahwk2m63C/jLl0ONFg9iVg7Qkn5qwpVEjL1Ntq6
-	gSlhLtRzrOxhOYTt01UuTmTA=
-X-Google-Smtp-Source: AGHT+IECup8tv/RPmEj9LeHqIi9Nezmq0eALAm1L5tBiIgzTFrtGP33k18mujwoJhJTZsvz//a8CCQ==
-X-Received: by 2002:a17:903:3d0e:b0:269:6e73:b90a with SMTP id d9443c01a7336-27ed49d0298mr42964225ad.15.1758819614292;
-        Thu, 25 Sep 2025 10:00:14 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:7::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-27ed69beeafsm29744395ad.126.2025.09.25.10.00.13
+        d=1e100.net; s=20230601; t=1758819616; x=1759424416;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QJ5kMbOBwIZudleYReSesMHzWocvI5qVkxY80vlrovE=;
+        b=RSM/4Y8w5rYx+RpzG5m7Er0TLM8JyaaD4ON6oaU0C8hPyU/17d7tgZ9pHAhDFNYCKe
+         tpSNuSDhYxtQbYCY33LtQ/wFmQOVBtMgSJcynu9qn8xjN683wLuj+ZGLW/ddRWfw29S1
+         I6ZNiFCh+7WLL8jLGl+8oSf7VwTZ0IHhvBe5LMO8tkuVJi08uWDDNouE6baKD+elVPHf
+         D1yJeLONvhey6rS+sZoGyELaAU4a5I9i55CJH5LrCuCSCVZUF454yyk7jlz5l9LNUHI3
+         m6xyjqWp6ZzvdUbK35+7X/9Aq0LsFQapdz+XWPbt8L1+8+0sXTDIaJjTX7Fnx1oEITi6
+         /mMw==
+X-Gm-Message-State: AOJu0Yxqat3E/mZD8fq+TLQQSHFRHNpiqsa9J4CIMSV24ArtmqZTWKaa
+	OMJT0PvNurNmFID90O7fUhN30QXyIXUvclmTz4ChWxo6yZ+ixHX9+9vP1YJqMw==
+X-Gm-Gg: ASbGncsp24r8FM6JGZkHQjb6hSxrtaEHNi5ruUKynsI81vfPpB+ev/9QQkRYCBp+v/T
+	dHcvEsbun6o08kQYc9sIljl0SB85LsRdBqQehlQjBppfbg4cq2+Xp6IMfgtGVsyGCD+xxgKgDp6
+	ne3nDrXydDWKul9Fl3VBPxKwoEh0uBuUoThngPSFI733BgCwHhMbORNv8efA/myhXB6HCUSFfjG
+	EK3BtQcDNSpu/i4FGHHlvN+iZGysCtv97/GSOlxAOY8x+qTjmArS80sQLEhBx1Bk7PXQIyH47cw
+	Otz49a+7Rt89L+AB5tzwBYrOSIDZo7c6DZEKS9ISwCTYmXHSsAUUxW7p9eDQsHGcFDUJtKm3z2l
+	iu18gyWMMz4LD
+X-Google-Smtp-Source: AGHT+IF64W5FA8cGGFwXqDnRK2BW/s5biCaOMMt7UPRhhyPKNl8ixpKfpsD7Kltnj/s+mxRuFg050g==
+X-Received: by 2002:a05:6a20:d305:b0:2f1:302d:1275 with SMTP id adf61e73a8af0-2f1302d14d4mr1255040637.17.1758819615743;
+        Thu, 25 Sep 2025 10:00:15 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:1::])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-781023cb593sm2434880b3a.39.2025.09.25.10.00.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 10:00:13 -0700 (PDT)
+        Thu, 25 Sep 2025 10:00:15 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -78,10 +80,12 @@ Cc: netdev@vger.kernel.org,
 	daniel@iogearbox.net,
 	martin.lau@kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next 1/2] bpf: Emit struct bpf_xdp_sock type in vmlinux BTF
-Date: Thu, 25 Sep 2025 10:00:12 -0700
-Message-ID: <20250925170013.1752561-1-ameryhung@gmail.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Test changing packet data from global functions with a kfunc
+Date: Thu, 25 Sep 2025 10:00:13 -0700
+Message-ID: <20250925170013.1752561-2-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20250925170013.1752561-1-ameryhung@gmail.com>
+References: <20250925170013.1752561-1-ameryhung@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,30 +94,65 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Similar to other BPF UAPI struct, force emit BTF of struct bpf_xdp_sock
-so that it is defined in vmlinux.h.
-
-In a later patch, a selftest will use vmlinux.h to get the definition of
-struct bpf_xdp_sock instead of bpf.h.
+The verifier should invalidate all packet pointers after a packet data
+changing kfunc is called. So, similar to commit 3f23ee5590d9
+("selftests/bpf: test for changing packet data from global functions"),
+test changing packet data from global functions to make sure packet
+pointers are indeed invalidated.
 
 Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
- net/core/filter.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../selftests/bpf/progs/verifier_sock.c       | 30 ++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index b20d59bb19b8..2af0a5f1d748 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -7439,6 +7439,8 @@ u32 bpf_xdp_sock_convert_ctx_access(enum bpf_access_type type,
- 				      offsetof(struct xdp_sock, FIELD)); \
- 	} while (0)
+diff --git a/tools/testing/selftests/bpf/progs/verifier_sock.c b/tools/testing/selftests/bpf/progs/verifier_sock.c
+index bf88c644eb30..0bed5715c9e1 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_sock.c
++++ b/tools/testing/selftests/bpf/progs/verifier_sock.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Converted from tools/testing/selftests/bpf/verifier/sock.c */
  
-+	BTF_TYPE_EMIT(struct bpf_xdp_sock);
+-#include <linux/bpf.h>
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
+ 
+@@ -1068,6 +1068,34 @@ int invalidate_pkt_pointers_from_global_func(struct __sk_buff *sk)
+ 	return TCX_PASS;
+ }
+ 
++__noinline
++long xdp_pull_data2(struct xdp_md *x, __u32 len)
++{
++	return bpf_xdp_pull_data(x, len);
++}
 +
- 	switch (si->off) {
- 	case offsetof(struct bpf_xdp_sock, queue_id):
- 		BPF_XDP_SOCK_GET(queue_id);
++__noinline
++long xdp_pull_data1(struct xdp_md *x, __u32 len)
++{
++	return xdp_pull_data2(x, len);
++}
++
++/* global function calls bpf_xdp_pull_data(), which invalidates packet
++ * pointers established before global function call.
++ */
++SEC("xdp")
++__failure __msg("invalid mem access")
++int invalidate_xdp_pkt_pointers_from_global_func(struct xdp_md *x)
++{
++	int *p = (void *)(long)x->data;
++
++	if ((void *)(p + 1) > (void *)(long)x->data_end)
++		return TCX_DROP;
++	xdp_pull_data1(x, 0);
++	*p = 42; /* this is unsafe */
++	return TCX_PASS;
++}
++
+ __noinline
+ int tail_call(struct __sk_buff *sk)
+ {
 -- 
 2.47.3
 
