@@ -1,142 +1,186 @@
-Return-Path: <bpf+bounces-69687-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DF76B9E87E
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:01:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43AE1B9E690
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:37:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EDE81BC1727
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:01:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B45C64C76BA
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 09:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106302EA179;
-	Thu, 25 Sep 2025 10:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BE7279907;
+	Thu, 25 Sep 2025 09:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="me7MDBbx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hsHSPkon"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB652882B6
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E988225EF97
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 09:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758794477; cv=none; b=FPt4EoF+2WT/mNviZH2FynsXWSkSLw+RjtXYwSBgT9JhiNDrZF1clb7BvN9VHvvlB47ux820dsbloI7qiRg4q9TMnMHNQDf+h9BcwZysiG22WQuNwa8yDDblw9/uV/gTycMzO3+CZS5MCPIqjSBTIRwrn3NO3UGzTYXAR2LWVoY=
+	t=1758792972; cv=none; b=XTEFogwIokbGodpgWqmid1q+317CG8fio0RYck6JmgpSrXStQBPV3829LoR1Cr7V2CC2AciO7oidiynrKTTpxvK4FHugwtEUlOZjpx8P8P0hXFpgnsXRGSfrG4d3SY0XsI1Mr+SSy3cM+41tGdPseugY9xmBUyeO+DJlUtM4bgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758794477; c=relaxed/simple;
-	bh=MmaMbvm0BD9NGLBFscAIFMVqjCmdg8rnqQ4WZdh20jg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qYEZrzTX0piqOE6rBC15iYT6CMHUuUf+A1xwYYihEO1XyLdOLwJs4cqGeu8lECtrkwJWB3IB7eYgiGcGMy/ZF4rqckQ5pnHwD+MNz8SFxfJRGDQwrxHMvYYevyv1cMC1BRoPxErF1dMfk6GxiUhFgztQQckn1bgkUFRLyt3aRTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=me7MDBbx; arc=none smtp.client-ip=209.85.221.45
+	s=arc-20240116; t=1758792972; c=relaxed/simple;
+	bh=rvmn/9fNBwLXiR/naWUZlKBH+/yw0HMGHd9myyptFrE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JB5eZtFs+NcPeK7J0QzVOqVmNSF1Qyz8+sp8jCKYfRK2nfEiq9teGu7pB8kYhhyFFlJIdwNDDrfMQduQ2QOfH0Dby8MxQDhbIKp3Y99XI88Si1oyKbI1ZjRvPO5GzjDu8U7RW4rt1qqEctJVLREPPnGsQvl6JMzI9cJP0e1PLSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hsHSPkon; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3ee1221ceaaso493944f8f.3
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 03:01:15 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-634578d2276so72373a12.3
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 02:36:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758794474; x=1759399274; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ua5lAPnVTXrXgCW85PYKdWzoS2UhfrJn6AOwiqTs+L0=;
-        b=me7MDBbxXUkYk/48dM6L9kTINAkz84AfsffG60w0KJNtx+nUhhY4FmKUe6Jxn+crey
-         vwnxtgb9oK7oH18SfMCxe6x6Pby2cafFqcH90iVfo3sm1+sUfO/8t7z+yAJrKS/JT5eO
-         Yw8SZk98nZKQo5sM2S8SO3jZBO0FtSLbJ2c4rN98oia5IzrO6OxKedsT27UHZ4siTGvU
-         qm8OZLLUCPtWgfuaxAgwHfdSAoiUPJO2N+HJR3jFUMsbwcVbRnPhibW8RCTYFvargrzH
-         LQHqlfQvXHyefM0VGiAsjmd3j+RrspBg9Na2TwlRvXbm+Gjf4i5SvI+L95NlMrfm4Pgl
-         DBHg==
+        d=gmail.com; s=20230601; t=1758792969; x=1759397769; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JrLk5BVUfi64hDu8MSXp4iRz7KC+EB7RrIoytg966TM=;
+        b=hsHSPkoniy4OM3osSYrthKjNlU3U8eRIKniZJr+FZNd9fkcLB/uwwvTJd3uKtY8c1E
+         YUE2361b46Ye8Lr0720uCToRQEc6e8+4Wl+aGmLcr1iIYE0WMnklFDXmyMeQAyeYzbQQ
+         uaRVeEKdAcoCQTu4N2kau8It8VrdxJWkBtfVnA+QzPrcDwWc23VwnhgOBTslar2Qukk8
+         c5Vzfo3X1Ys4yQ7UKdJSg27RgDXt1XmFMPsAXDqr6tg4JUk7gKh5GkOI29KEPS+nOLQn
+         4R1rHedWPpuUC4DXV7BA6DcZOpM5Go3jQgxhGLr1NO8m/jhhRtenf9evBMgW/nxx6RfN
+         FBpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758794474; x=1759399274;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ua5lAPnVTXrXgCW85PYKdWzoS2UhfrJn6AOwiqTs+L0=;
-        b=aI8lOIO7fL9EaTmsisymBGfB96Ht04ux9AkLnXgyjmGPC0T2oiKt0citfPYQri144t
-         CMOFWPADT+KAK/wKNYLTLbflOun8UWq0Z+Z3F/dTLFRWHOmI6U2p8OPSM57eGV1Kzyb1
-         4g6GfM/lftYjj+I6vUD71We26x+x4ptnfNUzSPVhAJNb1ierlzCAu1ihdPYAj2y2y+UR
-         KE+Ttr2rpC0QafS7kZI7NOYQe4XgHLcoD5tDuS+MDRHiqzuzHuW5xod7cue8VMB6XDN4
-         DRQOzVd2D544o1hU8bZjGPlF+m0Tm7VkEieox8Rr9I1Xv2fCxKTl+9LsqPNo5C0OK1lw
-         E7tQ==
-X-Gm-Message-State: AOJu0YyUyFS99YfpuRQNOLwj4qzXeWOXBKejXuUJB8TMoW3mYk61v1SI
-	ycExD1NDgSCOGJZBlhZtxflo48AAbg61GViY9+EkW+OkxK2I1V8/aJJ+f2+d+iqWJEJ0Dshz5tu
-	IVTXtei0RIZ8uoOt1QcknXP+kdNDp3YM=
-X-Gm-Gg: ASbGncuRrO3zt2qpNCqFiuSERuK5wO7Vxuw4hVijYnpjS3g5waGPslL0rX/n18VRMwe
-	4J8iAGWT/qXUMtz/noNgGC8BFLbgFucVcDIV7PlUn+JcOlEgmOEYLRP/W54Y8ibYwrlVvW4KBSt
-	e04O+tMmwdogO6n51wivkYM5+MsgTM0nTUm9AdCudV9c3VbhV09rWh7myhShN6CoqU07wBUF2sQ
-	FwQfQ==
-X-Google-Smtp-Source: AGHT+IGtR2czsdkyEmAICV40coZ6c28sg3u9AZr4AKSP8hxkY5faznN8s+d+okKrk1LIYnfpOO2+/acK3rYiukENt30=
-X-Received: by 2002:a5d:588c:0:b0:3ee:15b9:97c4 with SMTP id
- ffacd0b85a97d-40e4cc63177mr2528966f8f.52.1758794474154; Thu, 25 Sep 2025
- 03:01:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758792969; x=1759397769;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JrLk5BVUfi64hDu8MSXp4iRz7KC+EB7RrIoytg966TM=;
+        b=qdgPiwjoWJaz5YByKO/ddcBURC1SVvQIxX/92I4+AKUiU9op1fSJJ+31zoJkbNP7KI
+         EGJFvZDWB5riZIcFSeNa6ZAoJIS2u9t3BaLtguckiSbEaOlUQUiX5hMKiOyWsMiRPPFJ
+         9vdazYmwjOtS/mgiY3n9fROVnUYW5BEI+ecbpORaA9vZpBpgiiEcPQCs6ZK6clbh38nD
+         Dtf1AkzTS57M/5GPqdZL+/DaxxuHdT3ostF/FZOFz+G77jOkImIO2BYsIrCaleYirPJh
+         m7dUQ4kPMsNZSLV2kB3Dr5fBN9/EN1nflYO1iKesBfjBoib5gZt6mJqFghZ1N4fi6XhW
+         5j/g==
+X-Gm-Message-State: AOJu0YxDmhxZlsvtP8lpVHxnPoyROWLQL5wwjEsnkspAl1hV1ECKTVDm
+	LthW4kb8vLjSLkZh30Ih7IJXtQyYoSoPP10mnCQAaO0+BAtCde7UsDrE
+X-Gm-Gg: ASbGnctp7TsqYWSW8YlI0I2nC0SlKwjw/nPWDTD/Ikx0xR2qhWIpoEJccloDY3MjEyF
+	CgHfsvkpjnQzy/TwMkhgLk0UfvcxpSsDFfwceVHb/YsbElb3BDHTYYPKqLHjgO3rKk10IFAeQP5
+	72UHZN55GDOIowcN9odXemZivc9iZA6euO6IMarvTf0YlafKfvo+9TlJCxuthZ2sZADee9hdZfh
+	yOqXzCJ7F/DfK6PMLhEXAQJTYUz5eqJoP+1nQ15C8nxqmEQGQqO/FUmBTU0wKtM9GFzU0uQYZiP
+	mX/q09P0GgrR8GnXrgDsv8NpKQROZZpEYhDOVRTV7wsLcRa49r71U6QuDfLgtgyi2IfBqiygCMJ
+	zy6nDELLx7ST9vXdlt0YeDJSDcisw5PLuSM17+g==
+X-Google-Smtp-Source: AGHT+IEn+TRY3f3rNpLqKcwo/IFO0X1TqRBrGc61qVTD+XlR37lk96NhcpagZXDaWeHbktL+5wxb3A==
+X-Received: by 2002:a05:6402:4389:b0:628:d1b5:d207 with SMTP id 4fb4d7f45d1cf-6349f9d26b0mr1238596a12.2.1758792969099;
+        Thu, 25 Sep 2025 02:36:09 -0700 (PDT)
+Received: from bhk ([165.50.112.244])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-634a3ae321csm941225a12.24.2025.09.25.02.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Sep 2025 02:36:08 -0700 (PDT)
+From: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+To: andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	matttbe@kernel.org,
+	martineau@kernel.org,
+	geliang@kernel.org,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org,
+	linux@jordanrome.com,
+	ameryhung@gmail.com,
+	toke@redhat.com,
+	houtao1@huawei.com,
+	emil@etsalapatis.com,
+	yatsenko@meta.com,
+	isolodrai@meta.com,
+	a.s.protopopov@gmail.com,
+	dxu@dxuuu.xyz,
+	memxor@gmail.com,
+	vmalik@redhat.com,
+	bigeasy@linutronix.de,
+	tj@kernel.org,
+	gregkh@linuxfoundation.org,
+	paul@paul-moore.com,
+	bboscaccy@linux.microsoft.com,
+	James.Bottomley@HansenPartnership.com,
+	mrpre@163.com,
+	jakub@cloudflare.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	netdev@vger.kernel.org,
+	mptcp@lists.linux.dev,
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	skhan@linuxfoundation.org,
+	david.hunter.linux@gmail.com,
+	Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+Subject: [PATCH v3 0/3] selftests/bpf: Prepare to add -Wsign-compare for bpf selftests
+Date: Thu, 25 Sep 2025 11:35:38 +0100
+Message-ID: <20250925103559.14876-1-mehdi.benhadjkhelifa@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250924211716.1287715-1-ihor.solodrai@linux.dev> <20250924211716.1287715-6-ihor.solodrai@linux.dev>
-In-Reply-To: <20250924211716.1287715-6-ihor.solodrai@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 25 Sep 2025 11:01:03 +0100
-X-Gm-Features: AS18NWBuk_kSerlDHBMCegasZ7D_viImTdL1RG35VfP-zH03EO5RnHpv-wkb75c
-Message-ID: <CAADnVQLVeZd0JOz-GBgZfi=t5kvtH_z1Ri2w6b-AW7DHgEBv5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/6] bpf: mark bpf_stream_vprink kfunc with KF_IMPLICIT_PROG_AUX_ARG
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, dwarves <dwarves@vger.kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 24, 2025 at 10:17=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux=
-.dev> wrote:
->
-> Update bpf_stream_vprink macro in libbpf and fix call sites in
+This series is preparing to add the -Wsign-compare C compilation flag to
+the Makefile for bpf selftests as requested by a TODO to help avoid
+implicit type conversions and have predictable behavior.
 
-'t' is missing in bpf_stream_vprintk().
+Changelog:
 
-> the relevant selftests.
->
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> ---
->  kernel/bpf/helpers.c                            | 2 +-
->  kernel/bpf/stream.c                             | 3 +--
->  tools/lib/bpf/bpf_helpers.h                     | 4 ++--
->  tools/testing/selftests/bpf/progs/stream_fail.c | 6 +++---
->  4 files changed, 7 insertions(+), 8 deletions(-)
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 6b46acfec790..875195a0ea72 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -4378,7 +4378,7 @@ BTF_ID_FLAGS(func, bpf_strnstr);
->  #if defined(CONFIG_BPF_LSM) && defined(CONFIG_CGROUPS)
->  BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
->  #endif
-> -BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
-> +BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS | KF_IMPLICIT_PRO=
-G_AUX_ARG)
+Changes from v2:
 
-This kfunc will be in part of 6.17 release in a couple days,
-so backward compat work is necessary.
-I don't think we can just remove the arg.
+-Split up the patch into a patch series as suggested by vivek
 
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -316,7 +316,7 @@ enum libbpf_tristate {
->  })
->
->  extern int bpf_stream_vprintk(int stream_id, const char *fmt__str, const=
- void *args,
-> -                             __u32 len__sz, void *aux__prog) __weak __ks=
-ym;
-> +                             __u32 len__sz) __weak __ksym;
+-Include only changes to variable types with no casting by my mentor
+david
 
-CI is complaining of conflicting types for 'bpf_stream_vprintk',
-since it's using pahole master.
-It will stop complaining once pahole changes are merged,
-but this issue will affect all developers until they
-update pahole.
-Not sure how to keep backward compat.
+-Removed the -Wsign-compare in Makefile to avoid compilation errors
+until adding casting for rest of comparisons.
+
+Link:https://lore.kernel.org/bpf/20250924195731.6374-1-mehdi.benhadjkhelifa@gmail.com/T/#u
+
+Changes from v1:
+
+- Fix CI failed builds where it failed due to do missing .c and
+.h files in my patch for working in mainline.
+
+Link:https://lore.kernel.org/bpf/20250924162408.815137-1-mehdi.benhadjkhelifa@gmail.com/T/#u
+
+Mehdi Ben Hadj Khelifa (3):
+  selftests/bpf: Prepare to add -Wsign-compare for bpf tests
+  selftests/bpf: Prepare to add -Wsign-compare for bpf tests
+  selftests/bpf: Prepare to add -Wsign-compare for bpf tests
+
+ tools/testing/selftests/bpf/progs/test_global_func11.c       | 2 +-
+ tools/testing/selftests/bpf/progs/test_global_func12.c       | 2 +-
+ tools/testing/selftests/bpf/progs/test_global_func13.c       | 2 +-
+ tools/testing/selftests/bpf/progs/test_global_func9.c        | 2 +-
+ tools/testing/selftests/bpf/progs/test_map_init.c            | 2 +-
+ tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_opt.c   | 2 +-
+ .../selftests/bpf/progs/test_parse_tcp_hdr_opt_dynptr.c      | 2 +-
+ tools/testing/selftests/bpf/progs/test_skb_ctx.c             | 2 +-
+ tools/testing/selftests/bpf/progs/test_snprintf.c            | 2 +-
+ tools/testing/selftests/bpf/progs/test_sockmap_strp.c        | 2 +-
+ tools/testing/selftests/bpf/progs/test_tc_tunnel.c           | 2 +-
+ tools/testing/selftests/bpf/progs/test_xdp.c                 | 2 +-
+ tools/testing/selftests/bpf/progs/test_xdp_dynptr.c          | 2 +-
+ tools/testing/selftests/bpf/progs/test_xdp_loop.c            | 2 +-
+ tools/testing/selftests/bpf/progs/test_xdp_noinline.c        | 4 ++--
+ tools/testing/selftests/bpf/progs/uprobe_multi.c             | 4 ++--
+ .../selftests/bpf/progs/uprobe_multi_session_recursive.c     | 5 +++--
+ .../selftests/bpf/progs/verifier_iterating_callbacks.c       | 2 +-
+ 18 files changed, 22 insertions(+), 21 deletions(-)
+
+-- 
+2.51.0
+
 
