@@ -1,159 +1,156 @@
-Return-Path: <bpf+bounces-69751-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69752-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5548ABA0B96
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AFB50BA0CCB
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:19:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 672357B42C6
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 16:58:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75F757BBB7E
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137E119F40B;
-	Thu, 25 Sep 2025 17:00:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E66307ACE;
+	Thu, 25 Sep 2025 17:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JG4/9Smv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bhkVkFqU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011C730B508
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 17:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2072E7BD2
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 17:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758819619; cv=none; b=LgNyXP2na6KLeK/J1riH+GYYGPVUgUK79t4EAK+FE0nVyB6TVPfPvsLVU6lYmJx6cqEYeUDX1FVtA1tSSdPfCOetz6bwKMfQOGMrnjGMGASs5GZz4HbjbE37EVwhQzB1ZHtWB+TcKEvTxGNYr4TBFviXzCzIcwsg1dfhNWC2AsQ=
+	t=1758820531; cv=none; b=Jo0viEehu7CLfp8wSBED+ClqfjIsjXGRrHLDjL3sbQP4Z0pv2OHA3sI6lljxp/Fycr/rumO6gw6Kbf6crhSQB99rEP8tkSBx812m+Ka0Fqzrpev4PlZAsdR6h0W/tKWBErExmfh5ilGdPM1/VoTkGJtgG33nNSJt0GabOPGtuhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758819619; c=relaxed/simple;
-	bh=WNxAnmCw4P1TtKlBwI2Ow+v7MaCfjNgBJ6uifpDB/70=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dgwsnxAfCr7d+rAKYwb07/VgDozFfwlfWW4Vr8p66/yk0aA3ixGA1Ay3lqvSRsc+VNJYI6s3XjvipkxueHmMX7P73ly/lpCpTsC3HiX0RcPv1hkqucD2Y7olXLFk6x7Tj7k04WwN19oonZ1KxdTasQ5kOdk/Y/aqCMusmeBkYiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JG4/9Smv; arc=none smtp.client-ip=209.85.210.174
+	s=arc-20240116; t=1758820531; c=relaxed/simple;
+	bh=brKcv+SZBosARsBrRsCIGSFwpsXb1IgnE59o8tm6UmQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sAC57D/bsZeSvgv1M11282AR+8eQ1AuOE7OdyJ+IQaZ7bJIZrgiuCiCZ8/A9r9KgbLxnLe37G2sK0vi8VtFPlOWV76yzyIou3ZLkBH11KMWIqLP9bcc2/HW1d9bM1s9J3fuiE3lMDSKoiwjX0yF+1Dfxa9xevj05KlvHfZ/4H60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bhkVkFqU; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-77f207d0891so1264434b3a.1
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:00:16 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-32e715cbad3so1431516a91.3
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:15:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758819616; x=1759424416; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1758820529; x=1759425329; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QJ5kMbOBwIZudleYReSesMHzWocvI5qVkxY80vlrovE=;
-        b=JG4/9Smv0i9lA64Q928iGiX6nn/o3A2O6sCpvHqXfGj+D1rh/UpNE8Mbx9j+MiJVtp
-         WFWbTPz2fui6R8OOD/luCjoO8SaeAsk5iH/x4PKuHDOVpoDcQXCRkZKt8oAo1PCrtjcJ
-         csyNLxiT/mFSm5k48YmW1r/+I0TEtkoXlw7UCngpxz9Y+Xt3r4CSy8LX1xG8s0z88xST
-         Dv8xy7izmRZ2pk79dpKGPVfatkv4pGm/hMcwD58U54mRHedaQ9H2W6IIlOVWISBS9t+j
-         V75hIUyhhhlWFMmBuqEIa0MhO5yxv6KLqQGgleBKdsn7ehpJbPDZRJ8awB+fbOQcNLNY
-         Jwow==
+        bh=fP3e5XpX/mv2mFcDefKMMzsu7+cgHOTBv7hjzKJz3UM=;
+        b=bhkVkFqUiFJIrcVibiFv+ckkP44eLYCXZ62emN0VTfyb7uS5dqjCVI6is8Z4T7wDoz
+         GWpR4dVxoEzImmdEsCJ2G1AiwyWJH2C+Sx1iw/ZHbpeJbMpFKk3wyR7tv1btl4x7qasG
+         vWU6aZZUSBVfe/ftx+sgNsOXQqxTZMFEZGCuRiexmSif0Oyu7T5XXEXngldC6mNh/ieV
+         dIXmFiLoPOaAJ39HMpm6iDL/bixp/+x+RowoSHuCA+efAYFPMvgVkORErw/Y6TteUSFC
+         OphAnc9lM2llEZT1TYlSAz7gtES9KkXY+N9rfDmNaw7BcRRC7AbI39mo2tE3UlsJ9VA8
+         R/YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758819616; x=1759424416;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1758820529; x=1759425329;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QJ5kMbOBwIZudleYReSesMHzWocvI5qVkxY80vlrovE=;
-        b=RSM/4Y8w5rYx+RpzG5m7Er0TLM8JyaaD4ON6oaU0C8hPyU/17d7tgZ9pHAhDFNYCKe
-         tpSNuSDhYxtQbYCY33LtQ/wFmQOVBtMgSJcynu9qn8xjN683wLuj+ZGLW/ddRWfw29S1
-         I6ZNiFCh+7WLL8jLGl+8oSf7VwTZ0IHhvBe5LMO8tkuVJi08uWDDNouE6baKD+elVPHf
-         D1yJeLONvhey6rS+sZoGyELaAU4a5I9i55CJH5LrCuCSCVZUF454yyk7jlz5l9LNUHI3
-         m6xyjqWp6ZzvdUbK35+7X/9Aq0LsFQapdz+XWPbt8L1+8+0sXTDIaJjTX7Fnx1oEITi6
-         /mMw==
-X-Gm-Message-State: AOJu0Yxqat3E/mZD8fq+TLQQSHFRHNpiqsa9J4CIMSV24ArtmqZTWKaa
-	OMJT0PvNurNmFID90O7fUhN30QXyIXUvclmTz4ChWxo6yZ+ixHX9+9vP1YJqMw==
-X-Gm-Gg: ASbGncsp24r8FM6JGZkHQjb6hSxrtaEHNi5ruUKynsI81vfPpB+ev/9QQkRYCBp+v/T
-	dHcvEsbun6o08kQYc9sIljl0SB85LsRdBqQehlQjBppfbg4cq2+Xp6IMfgtGVsyGCD+xxgKgDp6
-	ne3nDrXydDWKul9Fl3VBPxKwoEh0uBuUoThngPSFI733BgCwHhMbORNv8efA/myhXB6HCUSFfjG
-	EK3BtQcDNSpu/i4FGHHlvN+iZGysCtv97/GSOlxAOY8x+qTjmArS80sQLEhBx1Bk7PXQIyH47cw
-	Otz49a+7Rt89L+AB5tzwBYrOSIDZo7c6DZEKS9ISwCTYmXHSsAUUxW7p9eDQsHGcFDUJtKm3z2l
-	iu18gyWMMz4LD
-X-Google-Smtp-Source: AGHT+IF64W5FA8cGGFwXqDnRK2BW/s5biCaOMMt7UPRhhyPKNl8ixpKfpsD7Kltnj/s+mxRuFg050g==
-X-Received: by 2002:a05:6a20:d305:b0:2f1:302d:1275 with SMTP id adf61e73a8af0-2f1302d14d4mr1255040637.17.1758819615743;
-        Thu, 25 Sep 2025 10:00:15 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:1::])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-781023cb593sm2434880b3a.39.2025.09.25.10.00.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 10:00:15 -0700 (PDT)
-From: Amery Hung <ameryhung@gmail.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Test changing packet data from global functions with a kfunc
-Date: Thu, 25 Sep 2025 10:00:13 -0700
-Message-ID: <20250925170013.1752561-2-ameryhung@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250925170013.1752561-1-ameryhung@gmail.com>
-References: <20250925170013.1752561-1-ameryhung@gmail.com>
+        bh=fP3e5XpX/mv2mFcDefKMMzsu7+cgHOTBv7hjzKJz3UM=;
+        b=cO/vSBgwlqmaiug1Q7Lqdro+zyGV8Isc9dogBnIzZAvHQT7lHw9HoSZ0mn9cDw326K
+         nJaMfsnZhSYFLWRJGajxvIDt5s19Zx65j3EsM3OGmGaTZZvjkeyFu5HZwcHwXRK9Ic75
+         mu8rBH3NcBqb7ii3ux2DhfOgWgl7aPn9NS/MEZMy6v08VQsPsLSk9m0EZ9affOcSMP1W
+         B+UyPc3z8x7we251po/NFWc1fIZrNFcWx7dxSKbsMoaGIuVJ5MRuGJGkzgWZLlNU3/kE
+         +ePLgJTJkVkXhrx32r12qzhMHwwaPotqaHFO/ovmAH7PdSHUDMqusP25cahyZcCwHkoa
+         mmnw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDQNota4JsLbaZaqee4kvIRRd/FJ0iGy3Z9wR2t29NncfECQ7GoPy7uQQzc+8tOsX5MH8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDD/WajgPlmPz66Bdws8H4F7K9aY5Lzp8Rx8vgm3QJD98BKnkk
+	MtmxqF0GVDSmNb47K2ZrHMcHSd0j+5J42jzpRb8DBSpeRqCR1pf8HYODossRdHsOG06fh0lD33l
+	2j7iFdkvk/OxXI0vTDR0jDY1A3VFC2Yg=
+X-Gm-Gg: ASbGnct4fPHcbxsI5ttv32dxXA0Jw7Fjkdi+ScjDsBJZ8kCCDIVQun5B6lIcGgTkWJu
+	/16LBkyfIwaoOd7bbmZQQrZZAHiMUr70s+KsVT93RfiEEtVQHteGsuqL+Sr5xoCUUYOrxr45zTa
+	yBRyRI4E0fJyBZn/Kpl3TwuRUuwqNu561jgKRH3hVs+CrDaUEbhlH1l3J6JdMZdrZg1aknUM1gH
+	qxSukZ33sXCoWrOCl2d0yw=
+X-Google-Smtp-Source: AGHT+IEhH2YUTxIE9+nyCzayweg/wqeGqERQgiT8DAxYtFLnlo+kjlkgLrEKgyglDHa3hJjWMuPZHtd3BK+jEN4ANwA=
+X-Received: by 2002:a17:90b:1c04:b0:32e:d600:4fe9 with SMTP id
+ 98e67ed59e1d1-3342a20be0emr4706103a91.4.1758820528547; Thu, 25 Sep 2025
+ 10:15:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250924211512.1287298-1-ihor.solodrai@linux.dev>
+ <20250924211512.1287298-3-ihor.solodrai@linux.dev> <4fb8a812fdd01f115a99317c8e46ad055b5bf102.camel@gmail.com>
+ <a7f28918-7eda-42e9-ae41-446b7a2d9759@linux.dev> <b92d892f6a09fc7a411838ccf03dfebbba96384b.camel@gmail.com>
+In-Reply-To: <b92d892f6a09fc7a411838ccf03dfebbba96384b.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Sep 2025 10:15:14 -0700
+X-Gm-Features: AS18NWBrxfrNowky9yFmZ92ieSPJ0nogD7mzjj0Dmg02YrBfmCtvZRzyfhSKmNg
+Message-ID: <CAEf4BzaaJLDDLqO64iuCVkMoT3jTnrCrRe-UB4_e0BWqa+FuNw@mail.gmail.com>
+Subject: Re: [PATCH dwarves v1 2/2] btf_encoder: implement KF_IMPLICIT_PROG_AUX_ARG
+ kfunc flag handling
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves@vger.kernel.org, 
+	alan.maguire@oracle.com, acme@kernel.org, andrii <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, tj@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The verifier should invalidate all packet pointers after a packet data
-changing kfunc is called. So, similar to commit 3f23ee5590d9
-("selftests/bpf: test for changing packet data from global functions"),
-test changing packet data from global functions to make sure packet
-pointers are indeed invalidated.
+On Thu, Sep 25, 2025 at 6:28=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Wed, 2025-09-24 at 20:59 -0700, Ihor Solodrai wrote:
+>
+> [...]
+>
+> > I'm not sure how generic KF_IMPLICIT_ARG would even work.
+> > Any *implicit* parameter requires a very concrete implementation in
+> > the verifier: an actual pointer of a particular type is injected after
+> > the verification.
+>
+> Does not seem complicated:
+>
+> - In pahole generate a special decl_tag for bpftool.
+> - In bpftool, don't emit last argument to vmlinux.h, if that flag is pres=
+ent.
+> - on kernel side, when checking kfunc args, also check for the flag
+>   and switch over types recorded for last function parameter in BTF.
+>   If kernel knows how to handle it, great, if it does not, emit
+>   verifier error.
+> - Not sure, but likely, the change on the libbpf side will be needed,
+>   as it compares function prototypes between program and kernel BTFs.
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
----
- .../selftests/bpf/progs/verifier_sock.c       | 30 ++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+this is exactly the thing I'd like to avoid: setting up special CO-RE
+matching rules for these few special kfuncs
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_sock.c b/tools/testing/selftests/bpf/progs/verifier_sock.c
-index bf88c644eb30..0bed5715c9e1 100644
---- a/tools/testing/selftests/bpf/progs/verifier_sock.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_sock.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Converted from tools/testing/selftests/bpf/verifier/sock.c */
- 
--#include <linux/bpf.h>
-+#include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- 
-@@ -1068,6 +1068,34 @@ int invalidate_pkt_pointers_from_global_func(struct __sk_buff *sk)
- 	return TCX_PASS;
- }
- 
-+__noinline
-+long xdp_pull_data2(struct xdp_md *x, __u32 len)
-+{
-+	return bpf_xdp_pull_data(x, len);
-+}
-+
-+__noinline
-+long xdp_pull_data1(struct xdp_md *x, __u32 len)
-+{
-+	return xdp_pull_data2(x, len);
-+}
-+
-+/* global function calls bpf_xdp_pull_data(), which invalidates packet
-+ * pointers established before global function call.
-+ */
-+SEC("xdp")
-+__failure __msg("invalid mem access")
-+int invalidate_xdp_pkt_pointers_from_global_func(struct xdp_md *x)
-+{
-+	int *p = (void *)(long)x->data;
-+
-+	if ((void *)(p + 1) > (void *)(long)x->data_end)
-+		return TCX_DROP;
-+	xdp_pull_data1(x, 0);
-+	*p = 42; /* this is unsafe */
-+	return TCX_PASS;
-+}
-+
- __noinline
- int tail_call(struct __sk_buff *sk)
- {
--- 
-2.47.3
-
+>
+> E.g., for bpf_wq_set_callback keep the definition as is:
+>
+> __bpf_kfunc int bpf_wq_set_callback(struct bpf_wq *wq,
+>                                     int (callback_fn)(void *map, int *key=
+, void *value),
+>                                     unsigned int flags,
+>                                     struct bpf_prog_aux *aux)
+>
+> Kernel BTF will have it with full set of parameters.
+> But because of the flag, it will be printed w/o last parameter in
+> vmlinux.h:
+>
+> extern int bpf_wq_set_callback(struct bpf_wq *wq,
+>                                     int (callback_fn)(void *map, int *key=
+, void *value),
+>                                     unsigned int flags) __weak __ksym
+>
+> On kernel side check_kfunc_args() will have access to complete BTF
+> declaration, so it can:
+> - check presence of the flag
+> - lookup bpf_prog_aux from the kernel side BTF
+> - call set_kfunc_arg_prog_regno.
+>
+> > So we have to do a type check on pahole side to catch invalid kfunc
+> > declarations. And the verifier of course must be very strict about
+> > where it can pass pointers to kernel objects.
+>
+> Type checks on pahole side will require upgrades to both kernel and
+> pahole, when new implicit parameter types are added. I'd try to avoid
+> that.
+>
+> Also, do we plan to have several implicit parameters passed to a same
+> function?
 
