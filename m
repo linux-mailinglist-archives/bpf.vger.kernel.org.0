@@ -1,293 +1,138 @@
-Return-Path: <bpf+bounces-69775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69776-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE5E4BA131F
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 21:32:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92463BA1358
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 21:35:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99FFA16ECC9
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:32:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50C60178FDD
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5546B31CA6D;
-	Thu, 25 Sep 2025 19:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119F531D721;
+	Thu, 25 Sep 2025 19:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VPC/q4Ir"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ku4TOjn9"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D65B54F81
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 19:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E896831B816
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 19:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758828753; cv=none; b=uG9fZXrgehy0/4zT/2/SbgrgBvXSWcjL9rMsFjk0mJQG9VF6n2y47uxWy3fVfifKoPYLGf/Te8BTFlLyg3hBe8T49NMFX4iBrFVBhrnHEg4S42eEs3B4PjtMtZu39nAxcTEzSY5F5Up6k0V2D+HLo5+9mp5EoB1w02HIhtweG1E=
+	t=1758828912; cv=none; b=bImF3ltYPNOI1OIlZI0o09LYH91euPBhlEq4uzJRypj7YDau2mLAI8f52lvsBjFqQuzSMJWmyneJfcfFELaNXyKwZu6y+95aBu5ZV/zxbB8xw+3empPHykKt7q3aqmPysx9VOr2mV1Z6gqrhDedX9FX68XEl9Ith+DumnckxErc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758828753; c=relaxed/simple;
-	bh=jpqmsgmAQIqXP57KiX7lxY1y974aUYb01QrMbrU8Ahg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lVfcVtSkAci8Yw5PadAfVsKFwuXDvGSuFiIQgHRuL1Ow2xv8eYAzP9h0t6qZFMC6kQkPDoOfhokv1AjjtPZMM/kN3VnWXsDiy7rRedLSrHQ3HK4tYMyolgYDCb2scaaof7Y5QNOt3izOsYqxvxKPb6QLuMytQjbC/g22nDoutnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VPC/q4Ir; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1758828750;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=D5jCgvyWVjXaOxE5qhMkjeDubZJSnlT/2ztleqWrFCE=;
-	b=VPC/q4IrPAbIk/S46tksLxrLnh+d4t1igIOUTnIkjkm1PqFaDWFzp1/cdg97WN9HiS5xIy
-	oRH9o59Ikn+Xna/Ve+8YJaD7bKKDNzv0jXmhQXPTYCbFOY1AlaMuliAsHb38IZ74l5v8dB
-	K2cezcHf6Syjr5OaxFqmX69Y+2Ys0SE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-397-xeXljOYzMxqUY5wVDHhO2Q-1; Thu, 25 Sep 2025 15:32:28 -0400
-X-MC-Unique: xeXljOYzMxqUY5wVDHhO2Q-1
-X-Mimecast-MFC-AGG-ID: xeXljOYzMxqUY5wVDHhO2Q_1758828748
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-46e19f9d18cso8136725e9.1
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 12:32:28 -0700 (PDT)
+	s=arc-20240116; t=1758828912; c=relaxed/simple;
+	bh=QnRG682A4kA/LPWdSxvyk13q+U5Oj2UjRF3fKjiZm8k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qwEpUCr01JP/qPyJTAMEUERfuZreljygmpUoFHhZzFdh1kcgWcTeZWkrl13C8oExonUiV8YNjDRtdRmGqVD1UGFPFSk2Uhehz6CeOL9bJfnzeyJ4S6RDXVSKVMuGC+q07hjCOp33oqDesYwZQMArMwGKAkSFPxkjib32Kht1Ljo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ku4TOjn9; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b35f6f43351so182432266b.1
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 12:35:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758828909; x=1759433709; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QnRG682A4kA/LPWdSxvyk13q+U5Oj2UjRF3fKjiZm8k=;
+        b=ku4TOjn9rU8lldngxboZTX1h1hpYiVGZ8KCU5cKwn7TshmRSklzi7I/+pO2RCBnRhi
+         K31JI8y+go/MwuBzdw5V7GyD2ie+cZH/XnaLvJdDAQ1DSZgwMZ7bUSZoNw/Drq0KihLs
+         vu/Kc6PQoY+hfKlN++G1+4OWLBKkUlo5Eiq6G2b9U7G9OjzSpIWF1QmbX1rzB0IGCdBF
+         h+FOHQg/2qNfkwj3r8qcezvjStBP0bbgJ4NU3q2NNE6Yp3DT9yhB07vI4s2MmnmCZ/zG
+         8c6ZFtdub6Olib7VFPkEB4XHszawhos1BxQWgCJV45JT18424mGxFl1IqytPtesg3k1I
+         FrBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758828747; x=1759433547;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D5jCgvyWVjXaOxE5qhMkjeDubZJSnlT/2ztleqWrFCE=;
-        b=FxLl0/icOEo3+D+fxMZ2fJ+1/ldzzEL+40TX5+ZL4PDFN0vLEzQl4muTBZdZuDimrB
-         wKRx36NP0rvCuQlhX/3+3KQw/KeQIaxWFtUMPw8L6OxEzxD3UjXbulK08OF5lR8AnhTu
-         sQNMCMw+PRXARfbhAcEmYlxc4N3OifHvKeWLYccgfYR36lY4iOBvxvenJbAsv0sRUuUk
-         qsyT/nuhripinyQqDfoMNJpQj3ZqZ3RORHxk+N9m889r18jwbMcHfQWO1EnBXxqTBLnp
-         PIE2vL2ny8JFxzUCwwDFAPlkgGJBraoeZ2f+QgsiH5qtFi5zEVCK2xF6/0LCf+W1jw/x
-         WQ9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVDUAsuYIxYRpgyXv/oLRq6eIShQ77460p3Q1IJ+OwnODwNgivHnR+hvs/2f+5NSPRudfA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUWZt9lssRGMKLPLgY8MLC4xEERwWsrAQSg3qiovANkVJm5ZP2
-	T+omFieRX2CK70YkuzEJCUG0xxmlWQwcCULHfygWXLhLXpXpGCPDoOrr+P2CQtdcqjxn/tIvoiX
-	tNWW+zfQL/1WwzzX9+G4Jiv74NtVfHf0rzXneqS3Cnqze/7mPp8gUDQ==
-X-Gm-Gg: ASbGnctd0s6DrKPQgkbIQ5qo4CLZXJrWQEarKDMBwhqAXaXP+KGsI9PrHjiJSVf19rz
-	sGNsbOLXLqpf0avgEswHeoB7TNQbSZStQj1aE82/H0pjJl2Zs971Gw+bv2FZlbJHTAgrZgFk/JA
-	Zg21aeMzYUYOkqvC4B4S8HgwNdTjrXntKLlNbnZMC9v4WhMWsqiHu8b2oNlQDLPQQ+gphOsby1Z
-	cn6hu2Ffdsm8SAMi4M0sxspmriOXnjk4clqoFefqjGDl1CgiV+azlnI/mY4uLqohyT0Q6Vp5w0l
-	s/bNzWKlGdUYvI7YaTNjd1scax0Ehlu47W5z4Nup/RJyGBcUr1HFiWQcyYekLpFRILcld+mTrZv
-	ugdSj7f7A8tGm7BY4shRKjS9AtMlUv01us+xtmKhunaE0dI6ybNTGa1ForeYdmuCl7WCD
-X-Received: by 2002:a05:6000:3102:b0:3f9:1571:fe04 with SMTP id ffacd0b85a97d-40e4b1a06b4mr4993224f8f.48.1758828747380;
-        Thu, 25 Sep 2025 12:32:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEFUL795NU1gcu1A2U+hWPDoMkyU660Ad1UyOUZxyr2NlakU+3syyUj7XJkeC88am/EkGOIvw==
-X-Received: by 2002:a05:6000:3102:b0:3f9:1571:fe04 with SMTP id ffacd0b85a97d-40e4b1a06b4mr4993145f8f.48.1758828746777;
-        Thu, 25 Sep 2025 12:32:26 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08? (p200300d82f3ff800c1015c9f3bc93d08.dip0.t-ipconnect.de. [2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-410f2007372sm3193903f8f.16.2025.09.25.12.32.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Sep 2025 12:32:26 -0700 (PDT)
-Message-ID: <1b34dd89-cbbb-474e-be75-808e174c8ed9@redhat.com>
-Date: Thu, 25 Sep 2025 21:32:22 +0200
+        d=1e100.net; s=20230601; t=1758828909; x=1759433709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QnRG682A4kA/LPWdSxvyk13q+U5Oj2UjRF3fKjiZm8k=;
+        b=c7Z9EkwR7FjGqzPKh2DYoaMiySBBhoY7gBT2ILk5l+YxHG45nMm7hdayZjoj71qRIK
+         sJ1YDP5S4YQlGEwd8+asnWYnbGksnp0OwNAe7ikCcai1c5eWMZ4b7EDSbWxrjleWMt56
+         O2UJLZunWw8CUk/IzDMTu8iqfmVlN1Ayv1itJSxFyQ1XcfwDhHyWnavsxBeYXeymLJe7
+         NaGPi7ediwC/sG8bZBJTFS0QVrqV42v8KYfdsMrjWHPOk3eFo81DNhtT2hO46LB+Zl5q
+         aT07htast7Q5RYdnwM9Cgu8GYUa8GwiyG8MJuANDsvYt6YeDfL8e4SRn/RFOLbwmhUBq
+         bmZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUC7SHqJC3PQ9Yr6STspU3if7d1E+7TveBA2G2twdQVJ03cHGzWVL+796PlUu+uga1bmhc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGHjL516sXcRIAftOv3JVdznWQbIIoYEZqp1rHJRsqvvo3MqsB
+	3RcXJfC8zdCXmb2P68hyN9wScwRtICMBZDbWEt1NrxXIRuG75Txcg66h1E8IGQ7+uoZ/dgUyINN
+	ZWiZdNRWv9tMDMxFT7UrZfHrb0E5869g=
+X-Gm-Gg: ASbGncv1dBufvj7Yt/IVAYSwbyY125kqKguBnnBBjkrLtG8fbRD3uylpzD7D741bqny
+	sBDjn1GySyhaFGkgdFJm255rMtRHFOKCjg+1FoLoVjDj1iSWLb5w+4MTSU/F4aS3ONwKrGbah31
+	A4n9qzJRsQ3vEMLBvXcBmgiCKdAXaF6Ss6DJgS2X6UVNlpJz/vkP4rA1tSnKs9vOAvKP8Vmt2bO
+	Au1OA==
+X-Google-Smtp-Source: AGHT+IFc0CIZpFjAF3DTy6qb/xhOnpmAzDyWjQAVM+jv0r/V/nSSMRPe9emJtXzeTyPjJUA/xSwFUapr5KWsDi28/cI=
+X-Received: by 2002:a17:907:6093:b0:b28:f64f:2fd3 with SMTP id
+ a640c23a62f3a-b34ba639a5bmr452557766b.35.1758828907994; Thu, 25 Sep 2025
+ 12:35:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 06/12] KVM: guest_memfd: add module param for disabling
- TLB flushing
-To: "Roy, Patrick" <roypat@amazon.co.uk>
-Cc: "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
- "ackerleytng@google.com" <ackerleytng@google.com>,
- "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "andrii@kernel.org" <andrii@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
- "bp@alien8.de" <bp@alien8.de>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
- "corbet@lwn.net" <corbet@lwn.net>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
- "eddyz87@gmail.com" <eddyz87@gmail.com>,
- "haoluo@google.com" <haoluo@google.com>, "hpa@zytor.com" <hpa@zytor.com>,
- "Thomson, Jack" <jackabt@amazon.co.uk>, "jannh@google.com"
- <jannh@google.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
- "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
- "joey.gouly@arm.com" <joey.gouly@arm.com>,
- "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
- "jolsa@kernel.org" <jolsa@kernel.org>,
- "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
- "kpsingh@kernel.org" <kpsingh@kernel.org>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
- "luto@kernel.org" <luto@kernel.org>,
- "martin.lau@linux.dev" <martin.lau@linux.dev>,
- "maz@kernel.org" <maz@kernel.org>, "mhocko@suse.com" <mhocko@suse.com>,
- "mingo@redhat.com" <mingo@redhat.com>,
- "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
- "pbonzini@redhat.com" <pbonzini@redhat.com>,
- "peterx@redhat.com" <peterx@redhat.com>,
- "peterz@infradead.org" <peterz@infradead.org>,
- "pfalcato@suse.de" <pfalcato@suse.de>, "rppt@kernel.org" <rppt@kernel.org>,
- "sdf@fomichev.me" <sdf@fomichev.me>, "seanjc@google.com"
- <seanjc@google.com>, "shuah@kernel.org" <shuah@kernel.org>,
- "song@kernel.org" <song@kernel.org>, "surenb@google.com"
- <surenb@google.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
- "tabba@google.com" <tabba@google.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "vbabka@suse.cz"
- <vbabka@suse.cz>, "will@kernel.org" <will@kernel.org>,
- "willy@infradead.org" <willy@infradead.org>, "x86@kernel.org"
- <x86@kernel.org>, "Cali, Marco" <xmarcalx@amazon.co.uk>,
- "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
- "yuzenghui@huawei.com" <yuzenghui@huawei.com>
-References: <cf57bdec-6a2d-4d6a-b27c-991a7e2833ab@redhat.com>
- <20250925155051.2959-1-roypat@amazon.co.uk>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20250925155051.2959-1-roypat@amazon.co.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250924211716.1287715-1-ihor.solodrai@linux.dev>
+ <20250924211716.1287715-2-ihor.solodrai@linux.dev> <CAADnVQLvuubey0A0Fk=bzN-=JG2UUQHRqBijZpuvqMQ+xy4W4g@mail.gmail.com>
+ <6a6403ec-166a-4d48-8bf5-f43ae1759e5f@linux.dev> <CAEf4BzbYXADoUge5C7zhzZAEDESE7YJFwW_jO4-F5L3j-bwPMw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbYXADoUge5C7zhzZAEDESE7YJFwW_jO4-F5L3j-bwPMw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 25 Sep 2025 20:34:56 +0100
+X-Gm-Features: AS18NWDZKKqxw3yu_dCVfo31fiofhrysGJgq2X0xvlERiaqjb9uGQOJHFbaHPR0
+Message-ID: <CAADnVQL+28vPquMgw+hZMT1P6NkE5jLUXf=HDNj65N9np1rgfw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/6] bpf: implement KF_IMPLICIT_PROG_AUX_ARG flag
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	dwarves <dwarves@vger.kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 25.09.25 17:50, Roy, Patrick wrote:
-> On Thu, 2025-09-25 at 12:02 +0100, David Hildenbrand wrote:
->> On 24.09.25 17:22, Roy, Patrick wrote:
->>> Add an option to not perform TLB flushes after direct map manipulations.
->>> TLB flushes result in a up to 40x elongation of page faults in
->>> guest_memfd (scaling with the number of CPU cores), or a 5x elongation
->>> of memory population, which is inacceptable when wanting to use direct
->>> map removed guest_memfd as a drop-in replacement for existing workloads.
->>>
->>> TLB flushes are not needed for functional correctness (the virt->phys
->>> mapping technically stays "correct", the kernel should simply not use it
->>> for a while), so we can skip them to keep performance in-line with
->>> "traditional" VMs.
->>>
->>> Enabling this option means that the desired protection from
->>> Spectre-style attacks is not perfect, as an attacker could try to
->>> prevent a stale TLB entry from getting evicted, keeping it alive until
->>> the page it refers to is used by the guest for some sensitive data, and
->>> then targeting it using a spectre-gadget.
->>>
->>> Cc: Will Deacon <will@kernel.org>
->>> Signed-off-by: Patrick Roy <roypat@amazon.co.uk>
->>> ---
->>>    include/linux/kvm_host.h | 1 +
->>>    virt/kvm/guest_memfd.c   | 3 ++-
->>>    virt/kvm/kvm_main.c      | 3 +++
->>>    3 files changed, 6 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
->>> index 73a15cade54a..4d2bc18860fc 100644
->>> --- a/include/linux/kvm_host.h
->>> +++ b/include/linux/kvm_host.h
->>> @@ -2298,6 +2298,7 @@ extern unsigned int halt_poll_ns;
->>>    extern unsigned int halt_poll_ns_grow;
->>>    extern unsigned int halt_poll_ns_grow_start;
->>>    extern unsigned int halt_poll_ns_shrink;
->>> +extern bool guest_memfd_tlb_flush;
->>>
->>>    struct kvm_device {
->>>        const struct kvm_device_ops *ops;
->>> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
->>> index b7129c4868c5..d8dd24459f0d 100644
->>> --- a/virt/kvm/guest_memfd.c
->>> +++ b/virt/kvm/guest_memfd.c
->>> @@ -63,7 +63,8 @@ static int kvm_gmem_folio_zap_direct_map(struct folio *folio)
->>>        if (!r) {
->>>                unsigned long addr = (unsigned long) folio_address(folio);
->>>                folio->private = (void *) ((u64) folio->private & KVM_GMEM_FOLIO_NO_DIRECT_MAP);
->>> -             flush_tlb_kernel_range(addr, addr + folio_size(folio));
->>> +             if (guest_memfd_tlb_flush)
->>> +                     flush_tlb_kernel_range(addr, addr + folio_size(folio));
->>>        }
->>>
->>>        return r;
->>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->>> index b5e702d95230..753c06ebba7f 100644
->>> --- a/virt/kvm/kvm_main.c
->>> +++ b/virt/kvm/kvm_main.c
->>> @@ -95,6 +95,9 @@ unsigned int halt_poll_ns_shrink = 2;
->>>    module_param(halt_poll_ns_shrink, uint, 0644);
->>>    EXPORT_SYMBOL_GPL(halt_poll_ns_shrink);
->>>
->>> +bool guest_memfd_tlb_flush = true;
->>> +module_param(guest_memfd_tlb_flush, bool, 0444);
->>
->> The parameter name is a bit too generic. I think you somehow have to
->> incorporate the "direct_map" aspects.
-> 
-> Fair :)
-> 
->> Also, I wonder if this could be a capability per vm/guest_memfd?
-> 
-> I don't really have any opinions on how to expose this knob, but I
-> thought capabilities should be additive? (e.g. we only have
-> KVM_ENABLE_EXTENSION(), and then having a capability with a negative
-> polarity "enable to _not_ do TLB flushes" is a bit weird in my head).
+On Thu, Sep 25, 2025 at 6:23=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> I do see the benefit of having the generic "KF_MAGIC_ARG(s)" flag on
+> the kernel side of things and having access to full BTF information
+> for parameters to let verifier know what specific kind of magic
+> argument that kfunc has, though. So as an alternative, maybe we can
+> create both a kfunc definition *meant for BPF programs* (i.e., without
+> magic argument(s)), and then have a full original definition (produced
+> by pahole, it will need to understand KF_MAGIC_ARGS anyways) with full
+> type information *for internal BPF verifier needs*. I don't know
+> what's the best way to do that, maybe just a special ".magic" suffix,
+> just to let the verifier easily find that? On the kernel side, if
+> kfunc has BPF_MAGIC_ARGS kflag we just look up "my_fancy_kfunc.magic"
+> FUNC definition?
 
-Well, you are enabling the "skip-tlbflush" feature :) So a kernel that 
-knows that extension could skip tlb flushes.
+Interesting idea. Maybe to simplify backward compat the pahole can
+emit two BTFs: kfunc_foo(args), kfunc_foo_impl(args, void *aux)
+into vmlinux BTF.
+bpftool will emit both in vmlinux.h and bpf side doesn't need to change.
+libbpf doesn't need to change either.
+The verifier would need a special check to resolve two kfunc BTFs
+name into one kallsym name, since both kfuncs is one actual function
+on the kernel.
+bpf_wq_set_callback_impl() definition doesn't change. Only:
+-BTF_ID_FLAGS(func, bpf_wq_set_callback_impl)
++BTF_ID_FLAGS(func, bpf_wq_set_callback_impl, KF_PROG_ARG)
 
-So I wouldn't see this as "perform-tlbflush" but "skip-tlbflush" / 
-"no-tlbflush"
+and the verifier can check that the last arg is aux__prog when
+KF_PROG_ARG is specified.
 
-> Then again, if people are fine having TLB flushes be opt-in instead of
-> opt-out (Will's comment on v6 makes me believe that the opt-out itself
-> might already be controversial for arm64), a capability would work.
+The runtime performance will be slightly better too, since
+no need for wrappers like:
 
-Yeah, I think this definitely should be opt-in: opt-in to slightly less 
-security in a given timeframe by performing less tlb flushes.
++__bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
++ int (callback_fn)(void *map, int *key, void *value),
++ unsigned int flags,
++ void *aux__prog)
++{
++ return bpf_wq_set_callback(wq, callback_fn, flags, aux__prog);
++}
 
--- 
-Cheers
-
-David / dhildenb
-
+It's just one jmpl insn, but still.
 
