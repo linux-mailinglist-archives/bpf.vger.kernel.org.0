@@ -1,241 +1,245 @@
-Return-Path: <bpf+bounces-69771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F299BA11AD
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 20:58:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07CDFBA11E3
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 21:08:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFC346C1CB2
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 18:58:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC5D91C24E7D
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9B831B10B;
-	Thu, 25 Sep 2025 18:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E464631B803;
+	Thu, 25 Sep 2025 19:07:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EHOXC3Yf"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="O91EGX/i"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5AC2F25FE;
-	Thu, 25 Sep 2025 18:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80510319875
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 19:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758826702; cv=none; b=m61c+O9Ecl4iyaDe6AWVy1QUcJwQMku3jOWu4kqjSXIbYOjCGqbGdwa/+DMrYOkIPdOhliVf9aYb95d/rb9+OKDurCUCjWa62zgGtgdmbD1Ee6OJfk7fOL0OzgtzxYTPuh1KcNk6xvS3v3p+M6/GtJMM5AFa4Hh6oLvdgWtG1is=
+	t=1758827277; cv=none; b=tMJjlMDXXrgLZKGMB9oHTRMg3YWu/fYRa1fqwvNLE6746PfFydosraZv0ROw+htLgI5ymszaxESOkjJKdt0MRS+25GYeQu5Ujiby77O9Ze0QqWk8DqJsiT0sS3pfog1ZRPlyoXVL6gzutilk5JM6mym0Q9pqbd+Xvw2rFjR/97A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758826702; c=relaxed/simple;
-	bh=4XwZqpYqbX+3v35Bk1RuPIRomzQUZdJDuZfAGxzI5nw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hMnG2aZT/vqRtolv6ciiJYGcRz4DWb+mvwtIYiQ0a6vVig99MqzW/0gGc2GkFI9WqBKpR1w8pEs+iyfJOXdXLdsJ2dfSh/W2VfmAUgQWtN5JtB2zXNVksH3r9R8P7zrnOeIjkmz7jPWMKr91DBqcCt0AiFzMT/vaRbJvKaFU4nQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EHOXC3Yf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5536EC4CEF0;
-	Thu, 25 Sep 2025 18:58:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758826700;
-	bh=4XwZqpYqbX+3v35Bk1RuPIRomzQUZdJDuZfAGxzI5nw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=EHOXC3Yfbh03OE+Lp2Dyx5LhXMRL1A485SnEwgO6e1/iR1Mii8DPDeiJtik6TPfOA
-	 TfJwHZ5xIyoweItNEEV5I4yMntfRaXEF6kyuDmynT09WMliWDY6vcAVtfA1EorNQNo
-	 Pf1eGCSAz45bYoY41iTywC5A/Udu9HFMSxmSltsoO9XFmm46JLKDJl8Gp9/Ik6Nhoz
-	 CcmrvW0lrR4+yDKKtojvF5LiayeabWekIaX3f56I6ojyNvVgGn5NUOgOC+Pdn2ihUO
-	 HA6u132AIeJ0B5gc2XdLyNeqYeSAguiOveMnNQefNVfZNNKRKVc06q/ayFGrXgeaoA
-	 DfrFWR/wVyyjQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B7E53CE1591; Thu, 25 Sep 2025 11:58:17 -0700 (PDT)
-Date: Thu, 25 Sep 2025 11:58:17 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH 01/34] rcu: Re-implement RCU Tasks Trace in terms of
- SRCU-fast
-Message-ID: <36f40819-d2ac-4185-9f1c-1d01940b1d8a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop>
- <20250923142036.112290-1-paulmck@kernel.org>
- <CAEf4Bzan+yAzKcBG8VWFWOwR6PigRAjmQB8KrcRwheZnRaTEyQ@mail.gmail.com>
+	s=arc-20240116; t=1758827277; c=relaxed/simple;
+	bh=KoOuFDKSPX2klwRtvL8Njx5yrBi2bJBopsiE7v/B7qs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HfpndAqu4KHQ18Q1iguBfrgDPpv9ZrVTKhYwxSR+hhax8Wt/3yZe8wTFEuIxlCUM59DTRvXMI/BP8IBIqtB8QMaBaEIuWFETEJnlvV2DXbu4n0Db87yj/TrUyfTCCBObyEHnmy9vm71n01cv8HCoLJz7t/dgL3D+5pERO4Id+aM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=O91EGX/i; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-634a3327ff7so2294691a12.1
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 12:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1758827274; x=1759432074; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AnE2Gq1iLGz1QD5Hyp8/IV1Uxk92c5IOYXKZcLObpV0=;
+        b=O91EGX/iZNbrpETfZYwAgHl5GkSJF//ti0ApumUs6lqWdSxgXxnUYZZ+MGWQsikJ4a
+         NyctULfZROtgDRkKAQe9L8gTF8PWIzZbyDog1jmhyRbPOmo7YnuZ4z2ALjQ3Cf7Cl543
+         dhfQzl/UznG9QXgPQCsAZJxtvSNQLKPRYrAaAZdXSS0gGdGrlJ7PYL5uciNG/1g9szJr
+         ydA1UyLgKzsIeVOJ7S2OCSM1ppL+AlZ5+TeCDiJM2ziCwLNfxdeYICIWCJ49mbW04RQ9
+         9ye9KS5qQXwkw7pgJn6oRU6OJH7FVwd+P0X9b+OWnIY8SRu+Xyg0odUW21FZrvMe3SeA
+         kpPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758827274; x=1759432074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AnE2Gq1iLGz1QD5Hyp8/IV1Uxk92c5IOYXKZcLObpV0=;
+        b=h66hzvI1n4XY4wHC5wgph1eD5NsWfQoym3rVKittLqA65HWr3+5sw76eCfNiKtqHdB
+         M7eHpeCZl59Vg7Y4PkRqdMSj+TOyepFnCCT7yEl4wi2bXdycKSe9StiMabzyZQ55wrb8
+         ueChEpZTn8BFqVQEkb1ggzJcaiSlifN4/MbnjhJOl7fGmFBu5U/CbtsWP07xt3cRph/h
+         83Ty9QWu6wQ/QBvxLvg6FL1UA1XIokNb9n3GiMDGMQIgSwr9JDJwNtiIu7u0JJ9m+xam
+         ITw6jMY6FMT1ZzWt85VIpKcTV2j0qbQiBK91SZFeON4YVlQDsLggYX4KJPNiN3ZURioZ
+         l04w==
+X-Forwarded-Encrypted: i=1; AJvYcCWDVoyOPtkzwDCUQ89z7jmOlHfUXbKgG1XERjjhbwDuQrML/Sn5Et48Bpgvqwip3aGbvIs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzU9JWEVz3lgaydqpaTapZ1kum10GpQ5zD6lQYzHmNgplHSrkfb
+	Pj0qgM3d/oeSTF4D7FedVj6+H49pvvRFmPiXNUjZTmzrx5m8DxGOg2EC/F2czT4JIcHg42dzwsA
+	5QoGH7xV6WIn4uOcmxr+yxyGistOvgPwi4SdvrpKO
+X-Gm-Gg: ASbGncv+PRot1dhJBmdd6O+c374AoqCGp0ngVlMRf79Lr7ru0yNJx9oV/mbS7Fw5zUg
+	BxT1HhGwQY/1oRvHcnZ1ihBxXvC/qcr98TLHxXgx03q82bKme/M5pEWgEbl5ibnWUXfMzB8Fvfz
+	OTZm+vcfF2yfkPc7EitxUnJtZsefDgOlaVooY5yL8UoqLd2brRlGcKn175MlTJ1UYsLXs55g2he
+	WS7dVU=
+X-Google-Smtp-Source: AGHT+IGLc7hFNG8WuXb2SfufhUFhhl1/ya5jRSzbJcWtufW9tGBtXFiVuposkEkIcCeVdtoUErBBP6Keqv0SnBd3hsE=
+X-Received: by 2002:a05:6402:2685:b0:62b:2f0:974f with SMTP id
+ 4fb4d7f45d1cf-6349fa06340mr3619141a12.15.1758827273663; Thu, 25 Sep 2025
+ 12:07:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzan+yAzKcBG8VWFWOwR6PigRAjmQB8KrcRwheZnRaTEyQ@mail.gmail.com>
+References: <e5d594d0aee93da67a22a42d0e2b4e6e463ab894.camel@gmail.com>
+ <CAHC9VhRu=-J5xdKgYOJ1eqQ6EiMoEJ3M+cjDU8AHrts-=DoTvg@mail.gmail.com>
+ <cd35aa283cf010188a3b0e318f2c16655224767c.camel@gmail.com>
+ <CAHC9VhQ-c65UJS+dRaRFn_D=Sq++QXePTsCkN+cV5BVQEbf9fQ@mail.gmail.com> <9df66167c205e341bd5896376e06950aa7bd7240.camel@gmail.com>
+In-Reply-To: <9df66167c205e341bd5896376e06950aa7bd7240.camel@gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Thu, 25 Sep 2025 15:07:40 -0400
+X-Gm-Features: AS18NWDrz8xrbmHXwU1qY0zPoiMU7YlGfdslHp8uO3WfwIh7peya76l18x6AcR4
+Message-ID: <CAHC9VhThNjmKjaJL_G-ow-eBEwTyn6nNe8irOu8yDWMrGhOnAA@mail.gmail.com>
+Subject: Re: [bug report] [regression?] bpf lsm breaks /proc/*/attr/current
+ with security= on commandline
+To: Filip Hejsek <filip.hejsek@gmail.com>
+Cc: linux-security-module@vger.kernel.org, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 25, 2025 at 11:39:18AM -0700, Andrii Nakryiko wrote:
-> On Tue, Sep 23, 2025 at 7:22 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Thu, Sep 25, 2025 at 12:25=E2=80=AFPM Filip Hejsek <filip.hejsek@gmail.c=
+om> wrote:
+> On Thu, 2025-09-25 at 11:28 -0400, Paul Moore wrote:
+> > On Thu, Sep 25, 2025 at 10:56=E2=80=AFAM Filip Hejsek <filip.hejsek@gma=
+il.com> wrote:
+> > > On Wed, 2025-09-24 at 17:24 -0400, Paul Moore wrote:
+> > > > On Sat, Sep 13, 2025 at 1:01=E2=80=AFPM Filip Hejsek <filip.hejsek@=
+gmail.com> wrote:
+> > > > >
+> > > > > Hello,
+> > > > >
+> > > > > TLDR: because of bpf lsm, putting security=3Dselinux on commandli=
+ne
+> > > > >       results in /proc/*/attr/current returning errors.
+> > > > >
+> > > > > When the legacy security=3D commandline option is used, the speci=
+fied lsm
+> > > > > is added to the end of the lsm list. For example, security=3Dappa=
+rmor
+> > > > > results in the following order of security modules:
+> > > > >
+> > > > >    capability,landlock,lockdown,yama,bpf,apparmor
+> > > > >
+> > > > > In particular, the bpf lsm will be ordered before the chosen majo=
+r lsm.
+> > > > >
+> > > > > This causes reads and writes of /proc/*/attr/current to fail, bec=
+ause
+> > > > > the bpf hook overrides the apparmor/selinux hook.
+> > > >
+> > > > What kernel are you using?
+> > >
+> > > I'm using Arch Linux kernel, which is very close to mainline. I have
+> > > also tested my own build from git sources (I used a stripped down
+> > > config which I based on config from Arch). Example in QEMU:
+> > >
+> > > $ qemu-system-x86_64 -nodefaults -accel kvm -cpu host -smp cpus=3D2 -=
+m 1G -display none -kernel ~/git/linux/arch/x86/boot/bzImage -initrd ./init=
+ramfs.img -serial mon:stdio -append 'console=3DttyS0 security=3Dselinux'
+> > > :: mounting '' on real root
+> > > mount: /new_root: no valid filesystem type specified.
+> > > ERROR: Failed to mount '' on real root
+> > > You are now being dropped into an emergency shell.
+> > > sh: can't access tty; job control turned off
+> > > [rootfs ~]# uname -a
+> > > Linux archlinux 6.17.0-rc7-00020-gcec1e6e5d1ab #3 SMP PREEMPT_DYNAMIC=
+ Thu Sep 25 16:28:02 CEST 2025 x86_64 GNU/Linux
+> > > [rootfs ~]# mount -t securityfs securityfs /sys/kernel/security
+> > > [rootfs ~]# cat /proc/cmdline
+> > > console=3DttyS0 security=3Dselinux
+> > > [rootfs ~]# cat /sys/kernel/security/lsm; echo
+> > > capability,landlock,lockdown,yama,bpf,selinux
+> > > [rootfs ~]# cat /proc/self/attr/current
+> > > cat: read error: Invalid argument
+> > >
+> > > (Note: In this example, uname reports archlinux, but that's only
+> > > because I based the config on Arch config, it's not actually an Arch
+> > > kernel.)
+> > >
+> > > Maybe the different behavior is caused by a different config? You can
+> > > find the Arch config at [1]. Based on Fedora package sources, I think
+> > > their config has
+> > >
+> > >    CONFIG_LSM=3D"lockdown,yama,integrity,selinux,bpf,landlock,ipe"
+> > >
+> > > while the Arch config has
+> > >
+> > >    CONFIG_LSM=3D"landlock,lockdown,yama,integrity,bpf"
 > >
-> > This commit saves more than 500 lines of RCU code by re-implementing
-> > RCU Tasks Trace in terms of SRCU-fast.  Follow-up work will remove
-> > more code that does not cause problems by its presence, but that is no
-> > longer required.
+> > That's interesting, you're running a LSM that isn't normally run in
+> > your distro and you're not properly initializing it (no policy load).
+> > Both are acceptable, but you're definitely operating in the
+> > corner-iest of corner cases ;)
 > >
-> > This variant places smp_mb() in rcu_read_{,un}lock_trace(), which will
-> > be removed on common-case architectures in a later commit.
+> > I'd have to look at the relevant code, but I suspect that with
+> > "selinux" missing from the CONFIG_LSM list and you manually specifying
+> > it on the kernel command line with "security=3Dselinux" you are getting
+> > it placed at the very end as opposed to what I saw (I have "selinux"
+> > in my CONFIG_LSM list).  It's further complicated by the fact that the
+> > procfs call into the LSM's security_getprocattr() hook is going to
+> > pass a 0/zero into the hook as the @lsmid which means "first
+> > available".
 > >
-> > [ paulmck: Apply kernel test robot, Boqun Feng, and Zqiang feedback. ]
-> >
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Tested-by: kernel test robot <oliver.sang@intel.com>
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: <bpf@vger.kernel.org>
-> > ---
-> >  include/linux/rcupdate_trace.h | 107 ++++--
-> >  include/linux/sched.h          |   1 +
-> >  kernel/rcu/srcutiny.c          |  13 +-
-> >  kernel/rcu/tasks.h             | 617 +--------------------------------
-> >  4 files changed, 104 insertions(+), 634 deletions(-)
-> >
-> 
-> makes sense to me overall, but I had a few questions below
-> 
-> > diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-> > index e6c44eb428ab63..3f46cbe6700038 100644
-> > --- a/include/linux/rcupdate_trace.h
-> > +++ b/include/linux/rcupdate_trace.h
-> > @@ -12,28 +12,28 @@
-> >  #include <linux/rcupdate.h>
-> >  #include <linux/cleanup.h>
-> >
-> > -extern struct lockdep_map rcu_trace_lock_map;
-> > +#ifdef CONFIG_TASKS_TRACE_RCU
-> > +extern struct srcu_struct rcu_tasks_trace_srcu_struct;
-> > +#endif // #ifdef CONFIG_TASKS_TRACE_RCU
-> >
-> > -#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> > +#if defined(CONFIG_DEBUG_LOCK_ALLOC) && defined(CONFIG_TASKS_TRACE_RCU)
-> >
-> >  static inline int rcu_read_lock_trace_held(void)
-> >  {
-> > -       return lock_is_held(&rcu_trace_lock_map);
-> > +       return srcu_read_lock_held(&rcu_tasks_trace_srcu_struct);
-> >  }
-> >
-> > -#else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
-> > +#else // #if defined(CONFIG_DEBUG_LOCK_ALLOC) && defined(CONFIG_TASKS_TRACE_RCU)
-> >
-> >  static inline int rcu_read_lock_trace_held(void)
-> >  {
-> >         return 1;
-> >  }
-> >
-> > -#endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
-> > +#endif // #else // #if defined(CONFIG_DEBUG_LOCK_ALLOC) && defined(CONFIG_TASKS_TRACE_RCU)
-> 
-> nit: // #else // #if... looks very unconventional
+> > Considering that the "security=3D" parameter is a legacy option, I'd
+> > encourage you to try the "lsm=3D" parameter (make sure you specify the
+> > full list of LSMs you want, in order) to see if that works.
+>
+> Yes, that works.
+>
+> The problem isn't that there wouldn't be any working configuration. The
+> problem is that a userspace program (in my case CRIU) was broken and I
+> had to spend time figuring out what the cause of the issue was. I'm not
+> the only one who encountered this issue [1].
 
-Perhaps so, but it is much easier to deal with.
+Arguably, when a Linux distro that is enabling new features, e.g.
+multiple LSMs and/or the BPF LSM, they have an obligation to migrate
+away from legacy/deprecated configuration knobs to properly use those
+new features.
 
-> >  #ifdef CONFIG_TASKS_TRACE_RCU
-> >
-> > -void rcu_read_unlock_trace_special(struct task_struct *t);
-> > -
-> >  /**
-> >   * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
-> >   *
-> > @@ -50,12 +50,14 @@ static inline void rcu_read_lock_trace(void)
-> >  {
-> >         struct task_struct *t = current;
-> >
-> > -       WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
-> > -       barrier();
-> > -       if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
-> > -           t->trc_reader_special.b.need_mb)
-> > -               smp_mb(); // Pairs with update-side barriers
-> > -       rcu_lock_acquire(&rcu_trace_lock_map);
-> > +       if (t->trc_reader_nesting++) {
-> > +               // In case we interrupted a Tasks Trace RCU reader.
-> > +               rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
-> 
-> why is this a "try_lock" variant instead of a no-try "lock_acquire"
-> one? Some lockdep special treatment for nested locking?
+With the "security=3D" command line option only supporting one LSM, it's
+going to be hard to do the right thing in all situations; someone is
+always going to be upset with the placement in a multi-LSM system.
+Perhaps it's time to make a push to properly deprecate and eventually
+remove the "security=3D" command line option; it would definitely
+simplify the kernel code.
 
-Because rcu_read_lock_trace() cannot participate in anywhere near the
-variety of deadlocks that (say) read_lock() can.  So we tell lockdep
-that this is a try-lock variant so that it won't spew false-positive
-deadlock diagnostics.
+> So in reporting this issue, I was just hoping to help future users
+> avoid the same problem. If you think this is a waste of time, feel free
+> to ignore this (and sorry I didn't make this clear in the first email).
+>
+> Lastly, I will offer a few thoughts:
+>  * The fact that the security parameter can break programs like this is
+>    highly non-obvious and undocumented.
 
-> > +               return;
-> > +       }
-> > +       barrier();  // nesting before scp to protect against interrupt handler.
-> > +       t->trc_reader_scp = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-> > +       smp_mb(); // Placeholder for more selective ordering
-> >  }
-> >
-> >  /**
-> 
-> [...]
-> 
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index 2b272382673d62..89d3646155525f 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -939,6 +939,7 @@ struct task_struct {
-> >
-> >  #ifdef CONFIG_TASKS_TRACE_RCU
-> >         int                             trc_reader_nesting;
-> > +       struct srcu_ctr __percpu        *trc_reader_scp;
-> >         int                             trc_ipi_to_cpu;
-> >         union rcu_special               trc_reader_special;
-> >         struct list_head                trc_holdout_list;
-> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > index e3b64a5e0ec7e1..3450c3751ef7ad 100644
-> > --- a/kernel/rcu/srcutiny.c
-> > +++ b/kernel/rcu/srcutiny.c
-> > @@ -106,15 +106,15 @@ void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
-> >         newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
-> >         WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
-> >         preempt_enable();
-> > -       if (!newval && READ_ONCE(ssp->srcu_gp_waiting) && in_task())
-> > +       if (!newval && READ_ONCE(ssp->srcu_gp_waiting) && in_task() && !irqs_disabled())
-> 
-> this seems like something that probably should be done in a separate
-> patch with an explanation on why?
-> 
-> >                 swake_up_one(&ssp->srcu_wq);
-> >  }
-> >  EXPORT_SYMBOL_GPL(__srcu_read_unlock);
-> >
-> >  /*
-> >   * Workqueue handler to drive one grace period and invoke any callbacks
-> > - * that become ready as a result.  Single-CPU and !PREEMPTION operation
-> > - * means that we get away with murder on synchronization.  ;-)
-> > + * that become ready as a result.  Single-CPU operation and preemption
-> > + * disabling mean that we get away with murder on synchronization.  ;-)
-> >   */
-> >  void srcu_drive_gp(struct work_struct *wp)
-> >  {
-> > @@ -141,7 +141,12 @@ void srcu_drive_gp(struct work_struct *wp)
-> >         WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
-> >         WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
-> >         preempt_enable();
-> > -       swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
-> > +       do {
-> > +               // Deadlock issues prevent __srcu_read_unlock() from
-> > +               // doing an unconditional wakeup, so polling is required.
-> > +               swait_event_timeout_exclusive(ssp->srcu_wq,
-> > +                                             !READ_ONCE(ssp->srcu_lock_nesting[idx]), HZ / 10);
-> > +       } while (READ_ONCE(ssp->srcu_lock_nesting[idx]));
-> 
-> ditto, generic srcu change, driven by RCU Tasks Trace transformation,
-> but probably worth calling it out separately?
+https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
 
-Good point for both, will extract them to their own commits.
+I'll agree that the documentation probably should carry a stronger
+warning, but it is marked as deprecated.
 
-							Thanx, Paul
+>  * The BPF LSM hook which causes this breakage is useless, because a
+>    BPF program cannot be attached to it. I think it would make sense to
+>    just remove it.
 
-> >         preempt_disable();  // Needed for PREEMPT_LAZY
-> >         WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
-> >         WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
-> 
-> [...]
+That would be a decision the BPF LSM maintainer would need to make.
+There is precedent for doing things like this in the BPF LSM, and I
+would tend to agree that this hook probably has little use for the
+usual BPF LSMs.
+
+>  * Switching to using /proc/*/attr/<lsm>/* solves the problem from the
+>    userspace side. Unfortunately, selinux does not have its
+>    subdirectory in attr.
+
+This is a legacy carryover from the early days of the LSM framework
+and SELinux.  By the time there was a need for LSM specific entries in
+procfs there was already a significant amount of userspace that relied
+on getting SELinux info from /proc/*/attr; migrating to
+/proc/*/attr/selinux (or any other path for that matter) would have
+broken too many things.
+
+The good news is that there are a number of reasons why we want to get
+away from using procfs for these things anyway, and we recently added
+a few LSM syscalls to both solve the procfs problems and better
+support multiple LSMs.  LWN.net wrote a nice article on the syscalls
+which you can find at the link below:
+
+* https://lwn.net/Articles/919059
+
+--=20
+paul-moore.com
 
