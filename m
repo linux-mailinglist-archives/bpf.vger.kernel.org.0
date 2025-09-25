@@ -1,230 +1,114 @@
-Return-Path: <bpf+bounces-69683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7C62B9E7F1
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:49:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02F4EB9E80F
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:51:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D52A17A5A4F
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 09:48:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1857425B5B
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 09:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD702727FD;
-	Thu, 25 Sep 2025 09:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66888279DC9;
+	Thu, 25 Sep 2025 09:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XEKpyGIM"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="LU6oAXxM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C98621A92F
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 09:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D1827979A
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 09:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758793786; cv=none; b=NCxPPA05F5Xl7w7eciS8JGu7VYslsdbwiUNEJ6TgcpYPSYJJRa7mO1jhoKSeFXHvYYpYxa4vaDXkg3OrRbeHfDvfJTvh+MLut7C1n0iTJDa6+UmQlaOg33V8MQwBKUcQeL5nrPoVv5Kq0x4gXhbHm8120koADDxlpCrQHhE18N0=
+	t=1758793869; cv=none; b=B+jI8DZo1S7iJoQimmNdkX1MHxW3RTFAcWonpErk0Gj7Z71u8FbEL6oKbapf/TXXk4EyACrl7QcpMIWle8rBcElM6uem7HYQu+E3Qk9v5df7LMmEQgUk2ZMPfDO3cKjwixlXuTNXXioUDHIQXd9/7lrKEZX12IVa3kIQ4WerU0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758793786; c=relaxed/simple;
-	bh=8Ar+LW16cuafXplhrJrUtsg6Y0P549XzFqMr05t7WHs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ckEEu3hr3hdicCM0OSBRO4wqTWDOKnDZqmFQY1vMWH/ZqdQVICisUYiN9CgUD7RDJ6KTJ9rVth3LNB05HOskdXu6HlHV2tZnREhWhkwFSiYqYD0fP1d/PHNK2sMjI6+7E+2ugJJxHUt79G2dg46ww+BZvsGC7w9+AIgGmiyx7Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XEKpyGIM; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3f1aff41e7eso807863f8f.0
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 02:49:44 -0700 (PDT)
+	s=arc-20240116; t=1758793869; c=relaxed/simple;
+	bh=ZmkFbEfQivCqBMVs45gL6yXtOiKwXDMn9AvVAlKM2NA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YGxVZ4Z7O7qGdtEtt2Wo0TBYjbSCJQCdYdhQfyyme9fPUXWxLXQVVHISpIOJj/eFJIZI0MoRn089Wa7rjiQJfxDJRXjQi8axLkO5Vqb/qMLnFyzsgDzih4ItPXIN4XO5fUyygw7SAVm4gXum21BLVRDgLBJqF1vauIZnnRqK/xE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=LU6oAXxM; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b2e66a300cbso146276366b.3
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 02:51:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758793783; x=1759398583; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xAdB0h6gywyYGEbcKZEpB8tiADjT0Zg7QlPCyUrAOtk=;
-        b=XEKpyGIMZUrpgF9oIsujNdtSj4k/VSkSfIzAkzjWUxj0H6Y/SMWD1RbXfErURNXU0D
-         o7zEodBsBdwiAX34eDRxol6XTXv24VZHaodDP9iaYMcLfFxpROo/iiuyfqGgAEeI4h0A
-         CYiCFdQ9C9/pLqK5YM3LjHRreTnLuFHfslkHohaG6f9e+Zgt7srZWBl22zMra6+u0d/E
-         Wi2R/LwGByUajOyFDCEzYW7WUfIhWJ4d9/h8KXs/XOzYR7/Ei20FsRSRl8iy9bZsWuF/
-         aBbanQVbnbfA7oIw0KPE5zehwk0jNGO1h+4+eOn04kn/Ck3pkgnowwmpLWW7WSWMREW6
-         t/DQ==
+        d=cloudflare.com; s=google09082023; t=1758793867; x=1759398667; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZmkFbEfQivCqBMVs45gL6yXtOiKwXDMn9AvVAlKM2NA=;
+        b=LU6oAXxM646knKdDRetHDdvY5uXOb4M4EZgpP8OGwWE5C5MTxEB/SMWkDEpO1K4WXU
+         peE6mvythlUU1n6naOwG9r0orSbpuEn5pM7wOOIdJYTM9IxUNWeS+E7Bx2LVA6CwQ+Uv
+         ZC00HEdLuz90PmjEf0YdItWdhcNXN6xpANEXnChhMndyO1JJiAZEfPUymK/GBIiPvObO
+         7YaYlZFrC4zBQTEfcv2fuNk1UcsyE3+9GQApNA+/ual1fCWG8fsGOHMNbvGLjVFhY5F+
+         5Fg5ToleSGmSB6IyYPql3RFwYnondio1r6BuuHmuPVoTPZJ6P/TX/a8MkD9wRz+KFCZo
+         agaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758793783; x=1759398583;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xAdB0h6gywyYGEbcKZEpB8tiADjT0Zg7QlPCyUrAOtk=;
-        b=KzvS/GzVuZO15Orj5ytoC86e73TjhrUa3Zx4EIOmxrE02S7ZAgHrD7GiXSNHRhz72e
-         mAO9vxqU9zK2GjhVHSDsUPM9RtEzLXPVPZW9sS7vixfA9I0PqnJb92jqZ0MzR2Bnrp0b
-         NKXWWiP0px8BPC2YKef99HnB7TG10sFfHLJYWBwO+ytx0j9+KtIsx5y70vlTBLxV0BZ+
-         5wZPcOdMzvJ+GkkY0RgUlZGVnGcCLcfk0zeVOqxnE86O94sL0I1Njcl1t0RFsmvjl1kH
-         4JJXZln3XYFv/EDOQQdZOMlcGQpvKttU+c/GD6C3hHo8DVf2TrmZxTJO9lOW8gXvSrLz
-         eXOQ==
-X-Gm-Message-State: AOJu0Yy9Bf6oK+JzfjH5MsUMdxI+iguIERjAfZ8p5SKkoRpCXiKib1cC
-	cI9LAxDkYUDjAklcjh26Y4IA0WcvnIuDZFz68kA6BUZdG8P4oDyUtDJ0GDVfoiFv8SDDJ5gtvhy
-	wDYMFFgqUewcrYN/XOWbN6BRkQ2nnjKkBKpQrVdZGsQ==
-X-Gm-Gg: ASbGnctS9ZXVnD9w3iceqekaUp03Q1yBEEEukyiuldzHpN7Pt24al3ytD4pqo+8oEfi
-	mGV0RWbg8ayXMP50OFFwKqmrob0DEwV2A4/L6Cac5vn81XSstqTnaFuUJ/7NCP6mHyFG33+aEkh
-	cPXyOmCiXaLwY5DyMLe5gozbNzGeaHzXgz3fUfZCUKhjUcIE/Qy20TY6Tu/Y/jBfFbrWPEGTaJa
-	cTrjQ==
-X-Google-Smtp-Source: AGHT+IEo0J7byEs7BdWOXsGPzkT2J09Ix+etXUhkwQcB9QQkq4MZ1w/7V+zQyT9gfSuagZLTrmn+cv5Vxa5I6YBHVns=
-X-Received: by 2002:a05:6000:220f:b0:3ec:3cac:7dfd with SMTP id
- ffacd0b85a97d-40e44c3da28mr2914145f8f.26.1758793782363; Thu, 25 Sep 2025
- 02:49:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758793867; x=1759398667;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZmkFbEfQivCqBMVs45gL6yXtOiKwXDMn9AvVAlKM2NA=;
+        b=SYdIWWG5s+SaaDlSb1X9HwWP/2uY+3xGiRiIw2ik0vB9aCuWIZ0OBlvyC0BfXxfsJ9
+         3db0/VX1LBU2QM5x5djpeXqNYA/o/vEG08t0UfMa+KQg/a8CQaSPa9jD2WrFoJRmRje3
+         GT/5ymbkhwHG+klgs0Rmiysihsan1lY48hM0NXqRh+EmDO7U87nQr/vqvD8wNk+5jwF/
+         u2l0QvuNImatzVicNprk/iDANOWsmixK0FhNJOMPaFBLkx6n6B/JeXdtIF4WDUfwKefj
+         IKL52qgg2Haq1cilaJt90zSdvyO+AToPMBGVcSYJEci9iROZTUO1xyNc+u5otiKfHXqC
+         5CGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU2UhYRHqjpwJel8jtTBrw6WuMjWqEb0VQ41U6OXcLMIeiSeEs4roMNCGTBigNimINKFpE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYQPhp6WmsWZDduqSENfldrsnYRb88KTz6J5dnff65hD6sjc4D
+	MTzZcFNxcfNPxMH9sXZddC6qq5kaxGxMYNATiiBwlbHHL4qdiYs1lCCW66gBfdgauPo=
+X-Gm-Gg: ASbGncvsjyG6DIzoV9IFQ/4ebLAFja3+fDJVYmvlqHZiug2LMaPJDtKCRF7e3eCvll7
+	LhqcgrLoF32NvRaqoTCsiDJ7uLaNasGNJgTferpdIzB3jLc8Omr9ElUWlCYtyWONo/RAr7dCMUF
+	JS2kC/7woTRnOn9zb1i0YFLJD269SqZWGGXM+hRQPisxZFEM9HpAzb48juB2YclO1l+TE5LVzaU
+	3WI/FpONGLSXNZTT+SQXV6d+ONBja95VFrA7yeBg2lEu4ihdlqSi2Lo8tt+7y3vdn9aKc+2aL0D
+	O6HTRIN60YKK993upUp8PEh9XFxhzgZHRvEfZGsvEAilragciosmaeZh9Qq4y3be6s1EUI3UTQv
+	Tf+012IgO3ca65oo=
+X-Google-Smtp-Source: AGHT+IGEVGUv7B9GwkQ2/AJ6K1sBRZgNTUuhBCswgHVtL42XXaKHIxqK5bg7kju7asdvwIL8eCRs8w==
+X-Received: by 2002:a17:907:1c8d:b0:b33:671:8a58 with SMTP id a640c23a62f3a-b34bd440633mr294373466b.37.1758793866605;
+        Thu, 25 Sep 2025 02:51:06 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac6:d677:295f::41f:5e])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b353f8686e6sm131994066b.38.2025.09.25.02.51.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Sep 2025 02:51:05 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Donald Hunter <donald.hunter@gmail.com>,  Jakub Kicinski
+ <kuba@kernel.org>,  "David S. Miller" <davem@davemloft.net>,  Eric Dumazet
+ <edumazet@google.com>,  Paolo Abeni <pabeni@redhat.com>,  Simon Horman
+ <horms@kernel.org>,  Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Jesper Dangaard Brouer <hawk@kernel.org>,  John
+ Fastabend <john.fastabend@gmail.com>,  Stanislav Fomichev
+ <sdf@fomichev.me>,  Andrew Lunn <andrew+netdev@lunn.ch>,  Tony Nguyen
+ <anthony.l.nguyen@intel.com>,  Przemek Kitszel
+ <przemyslaw.kitszel@intel.com>,  Alexander Lobakin
+ <aleksander.lobakin@intel.com>,  Andrii Nakryiko <andrii@kernel.org>,
+  Martin KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman
+ <eddyz87@gmail.com>,  Song Liu <song@kernel.org>,  Yonghong Song
+ <yonghong.song@linux.dev>,  KP Singh <kpsingh@kernel.org>,  Hao Luo
+ <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>,  Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+  netdev@vger.kernel.org,  bpf@vger.kernel.org,
+  intel-wired-lan@lists.osuosl.org,  linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v2 0/5] Add the the capability to load HW
+ RX checsum in eBPF programs
+In-Reply-To: <20250925-bpf-xdp-meta-rxcksum-v2-0-6b3fe987ce91@kernel.org>
+	(Lorenzo Bianconi's message of "Thu, 25 Sep 2025 11:30:32 +0200")
+References: <20250925-bpf-xdp-meta-rxcksum-v2-0-6b3fe987ce91@kernel.org>
+Date: Thu, 25 Sep 2025 11:51:04 +0200
+Message-ID: <87bjmy508n.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250924211716.1287715-1-ihor.solodrai@linux.dev> <20250924211716.1287715-2-ihor.solodrai@linux.dev>
-In-Reply-To: <20250924211716.1287715-2-ihor.solodrai@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 25 Sep 2025 10:49:31 +0100
-X-Gm-Features: AS18NWDI0PcoHJucBujAEwrYnqvMKkwuEPh-avG_8_H40XT5_nl48CsvY_ofg7w
-Message-ID: <CAADnVQLvuubey0A0Fk=bzN-=JG2UUQHRqBijZpuvqMQ+xy4W4g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/6] bpf: implement KF_IMPLICIT_PROG_AUX_ARG flag
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, dwarves <dwarves@vger.kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Wed, Sep 24, 2025 at 10:17=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux=
-.dev> wrote:
->
-> Define KF_IMPLICIT_PROG_AUX_ARG and handle it in the BPF verifier.
->
-> The mechanism of patching is exactly the same as for __prog parameter
-> annotation: in check_kfunc_args() detect the relevant parameter and
-> remember regno in cur_aux(env)->arg_prog.
->
-> Then the (unchanged in this patch) fixup_kfunc_call() adds a mov
-> instruction to set the actual pointer to prog_aux.
->
-> The caveat for KF_IMPLICIT_PROG_AUX_ARG is in implicitness. We have to
-> separately check that the number of arguments is under
-> MAX_BPF_FUNC_REG_ARGS.
->
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> ---
->  include/linux/btf.h   |  3 +++
->  kernel/bpf/verifier.c | 43 ++++++++++++++++++++++++++++++++++++-------
->  2 files changed, 39 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index f06976ffb63f..479ee96c2c97 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -79,6 +79,9 @@
->  #define KF_ARENA_RET    (1 << 13) /* kfunc returns an arena pointer */
->  #define KF_ARENA_ARG1   (1 << 14) /* kfunc takes an arena pointer as its=
- first argument */
->  #define KF_ARENA_ARG2   (1 << 15) /* kfunc takes an arena pointer as its=
- second argument */
-> +/* kfunc takes a pointer to struct bpf_prog_aux as the last argument,
-> + * passed implicitly in BPF */
+On Thu, Sep 25, 2025 at 11:30 AM +02, Lorenzo Bianconi wrote:
+> Introduce bpf_xdp_metadata_rx_checksum() kfunc in order to load the HW
+> RX cheksum results in the eBPF program binded to the NIC.
+> Implement xmo_rx_checksum callback for veth and ice drivers.
 
-This is neither networking nor kernel comment style.
-Pls use proper kernel comment style in a new code,
-and reformat old net/bpf style when adjusting old comments.
-
-> +#define KF_IMPLICIT_PROG_AUX_ARG (1 << 16)
-
-The name is too verbose imo.
-How about
-KF_HIDDEN_PROG_ARG
-or
-KF_PROG_LAST_ARG
-
-"Implicit" is not 100% correct, since it's very explicit
-in kfunc definition in C, but removed from BTF.
-"Hidden" is also not an exact fit for the same reasons.
-Hence my preference is KF_PROG_LAST_ARG.
-
-"aux" part is also an implementation detail.
-
->  /*
->   * Tag marking a kernel function as a kfunc. This is meant to minimize t=
-he
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index e892df386eed..f1f9ea21f99b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11948,6 +11948,11 @@ static bool is_kfunc_rcu_protected(struct bpf_kf=
-unc_call_arg_meta *meta)
->         return meta->kfunc_flags & KF_RCU_PROTECTED;
->  }
->
-> +static bool is_kfunc_with_implicit_prog_aux_arg(struct bpf_kfunc_call_ar=
-g_meta *meta)
-> +{
-> +       return meta->kfunc_flags & KF_IMPLICIT_PROG_AUX_ARG;
-> +}
-> +
->  static bool is_kfunc_arg_mem_size(const struct btf *btf,
->                                   const struct btf_param *arg,
->                                   const struct bpf_reg_state *reg)
-> @@ -12029,6 +12034,18 @@ static bool is_kfunc_arg_prog(const struct btf *=
-btf, const struct btf_param *arg
->         return btf_param_match_suffix(btf, arg, "__prog");
->  }
->
-> +static int set_kfunc_arg_prog_regno(struct bpf_verifier_env *env, struct=
- bpf_kfunc_call_arg_meta *meta, u32 regno)
-> +{
-> +       if (meta->arg_prog) {
-> +               verifier_bug(env, "Only 1 prog->aux argument supported pe=
-r-kfunc");
-> +               return -EFAULT;
-> +       }
-> +       meta->arg_prog =3D true;
-> +       cur_aux(env)->arg_prog =3D regno;
-> +
-> +       return 0;
-> +}
-> +
->  static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
->                                           const struct btf_param *arg,
->                                           const char *name)
-> @@ -13050,6 +13067,21 @@ static int check_kfunc_args(struct bpf_verifier_=
-env *env, struct bpf_kfunc_call_
->                 return -EINVAL;
->         }
->
-> +       /* KF_IMPLICIT_PROG_AUX_ARG means that the kfunc has one less arg=
-ument in BTF,
-> +        * so we have to set_kfunc_arg_prog_regno() outside the arg check=
- loop.
-> +        */
-
-Use kernel comment style.
-
-> +       if (is_kfunc_with_implicit_prog_aux_arg(meta)) {
-> +               if (nargs + 1 > MAX_BPF_FUNC_REG_ARGS) {
-> +                       verifier_bug(env, "A kfunc with KF_IMPLICIT_PROG_=
-AUX_ARG flag has %d > %d args",
-> +                                    nargs + 1, MAX_BPF_FUNC_REG_ARGS);
-> +                       return -EFAULT;
-> +               }
-> +               u32 regno =3D nargs + 1;
-
-Variable declaration should be first in the block
-followed by a blank line.
-
-Also I would remove this double "> MAX_BPF_FUNC_REG_ARGS" check.
-Move if (is_kfunc_with_prog_last_arg(meta))
-couple lines above before the check,
-and actual_nargs =3D nargs + 1;
-if (actual_nargs > MAX_BPF_FUNC_REG_ARGS)
-to cover both cases.
-I wouldn't worry that verbose() isn't too specific.
-If it prints nargs and actual_nargs whoever develops a kfunc
-can get an idea.
-Also in the future there is a good chance we will add more
-KF_FOO_LAST_ARG flags to cleanup other *_impl() kfuncs
-that have a special last argument, like bpf_rbtree_add_impl.
-If all of them copy paste "> MAX_BPF_FUNC_REG_ARGS" check
-it will be too verbose. Hence one nargs check for them all.
-
-pw-bot: cr
+What are going to do with HW RX checksum once XDP prog can access it?
 
