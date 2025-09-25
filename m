@@ -1,137 +1,122 @@
-Return-Path: <bpf+bounces-69782-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC49BA1B01
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 23:52:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 298E8BA1B64
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 23:58:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 151781C83CA7
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 21:53:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAE6D740AE0
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 21:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8A6260580;
-	Thu, 25 Sep 2025 21:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65EC27B34C;
+	Thu, 25 Sep 2025 21:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T3rar/6+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oZjPrux9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D92A23D2A3
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 21:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B863914A8E
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 21:58:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758837158; cv=none; b=bAFTFbT6vY7XxEGu7vBnGepmRIa2s5sVcmwehmHxNqx63f7P5Ci9GY4NPXzG8oCgDcUhJlxZQYqsHVWaTpahA2SmEyBIaNp+HbnXoNguf6czVXqEY1K2j1qQqychQm3nDElZU7whESQaIfkAj2QJoERb/YMwvnfEvqzstMb8z7k=
+	t=1758837508; cv=none; b=ulq96jdD2TFO4vA8J0r1ciBnhoLIGkBSs1iPBDyVYVfx+y6d3ABQuMUarCBNJZQJ7SN17uY58d5YAzSHE2NrkxKvwcseO4qSur2NxDIT1VCrL/wqxOJB8pvrDjfzPy+02zZu9IwUVMAiFqnjKU8O0KlDOd1qoUFndGvxQCz6K18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758837158; c=relaxed/simple;
-	bh=pt0PWF1iYeb6Pq+UhU9hf4xPveXSlksvc0rvOsg1Agc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NbExIymseoCB25HglFyB4EiL1b2A2wo8JkrAoeY86klM34efTYfR8l6fmeWnYSrfdS6Zm4bUj4bXf59cOZuwL3Jz99165yBEigVsbGSPfO8Kd1uXLNxJcJJpgvkt3F9thdStRIMloCijGzqnKR4+jr70pgobqJ0lUruhx3Pqv3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T3rar/6+; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-46e1bc8ffa1so15229325e9.0
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 14:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758837155; x=1759441955; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mLHHbHGfPj3J3/wKQu2mQmlChmV4J+DsdRekIjllmZg=;
-        b=T3rar/6+57+Yhb/DSkMqSrLDqYnSxYnHyuFzi+dB1AwglRVAVLBduDZiBfCJmZxPW5
-         rCBPgfR9tod/4CPpgXK6sXW3eM6lwHp56D5IF4+7aPJB/nYzK+NYOAxF1+QXqcHc/rEc
-         tN+0cwcjjyErOWlZCYC/RNIjTbQ7AcIz91gkStTJ4aJFmdQMIc8SIUn+ZhlqZIlfUQe4
-         unhXrVjj4RJV4b2bXQDO+xIzV8jhTvLnyvvHOVrm41teBnDV0GmgilFTDN+juYUXvL9m
-         psfsKDLjR4T5ZLjqBNVImAL0eHjVA+XP4zf4GlztxlkR/G8PDXWJh+vp4LQWR0IOmGjY
-         w5kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758837155; x=1759441955;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mLHHbHGfPj3J3/wKQu2mQmlChmV4J+DsdRekIjllmZg=;
-        b=iA+GcS8wR6HV0LaDP7J8xk6/DqdpXfi8EOMG+0RDQB3ajVKBLRBEl1BHdmqYk7vP+C
-         Bx5HKB6K+bTVFUELsYPJU/i00GQXK+4X7z9+ekwNnBWePqYknbOl9xmdK25X6oGDxnWz
-         19q7rSPD9x43ypOb2mqqsCOnGaQFRJLGXzxvJVDi1vbMMu9JOu8aQvgLpi8stHmMp1z3
-         xg0Zplh2XLd24jdk7CpPw2wySgsMdwxt5I4Y/+pGfc/b3o6U7m1d8D5hX3vvonYJy7KY
-         iirwNb+lnzZRNvLKfwa09scJ4C5mg3E5P789/aKexDJP/tQjO1b0Lz9cw3p7VOU2H3xn
-         WBmg==
-X-Gm-Message-State: AOJu0YxpFT4cJIb0+vs3JItXCO70ERKAGvowHbPYXugnPq5f4ZetM+iq
-	TbODVclHS42r5HScQbr9GnfJb/aF4iN/sgHy9vyA+0SbganDt7jtbrZe1c3ZlQ==
-X-Gm-Gg: ASbGncskgNIl6MXlYGlPeT34ELTG4Z/vxqI7rhsrsvPCUyf6eojoDH21wXw9GJLCYAy
-	1+iBS4meaJnrmav4X32HUwEAuWidyWQuGQrnZcCMRYH+Hb2oTTWevZFReszScHlRAlGAujbe4JT
-	9Csuqtrwn0mwYeW7F8Wxu/mkbkfDOASVZbWobUoNi/sNtSGNjUzH+pVS0fy9I6Ounp1RWc2lmBY
-	oyWfjttWZtdN4ERCE+t6Jgx92ogxo1ipf/6C1DK4Eq00rf8b82nm2oaz5PGZnPtgY4cHDu6qs/u
-	gBJoRsCI4faK6EoHN1kEJdhAKl+1//C5/uzlxk3LS1WlJ0uCnhqPVVSt1wShZm6AfIIRTgLHTuw
-	U7dVqdRJgB/DbzLjD/GOSzA==
-X-Google-Smtp-Source: AGHT+IE0S1suVE5vI1auCI2NVSPQSPPbUM8vU/itsEkP48Ypv+3CQAcrcIaPNx+dUPLzcrT6yckLbQ==
-X-Received: by 2002:a05:600c:4ec6:b0:465:a51d:d4 with SMTP id 5b1f17b1804b1-46e329aed1amr53689775e9.6.1758837154953;
-        Thu, 25 Sep 2025 14:52:34 -0700 (PDT)
-Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e2ab31e97sm92290605e9.14.2025.09.25.14.52.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 14:52:34 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v2] selftests/bpf: fix flaky bpf_cookie selftest
-Date: Thu, 25 Sep 2025 22:52:30 +0100
-Message-ID: <20250925215230.265501-1-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1758837508; c=relaxed/simple;
+	bh=cToozM6ezO+LQr3pSe4C/JWreMuOsGdBuu32DliRvYM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uJ4afmJhNrKpSw894+4OK2H0yMVJ54WJsnwKJU/IF6wPMWezdFWmRERqAWz5pvq44ve/uvW8Ayw3COAdyOKHspO0j4N56H2SrDtl9AaVatyfpC1rNb/JgeFabK4fqE1+o/Dh17ixodwEBvQgtnC8vBn9xVQDiflNcgMEsuEOw/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oZjPrux9; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <87a79618-cd71-4f4f-ad65-b492e571ade5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758837503;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Da1AnYFKZOYbydtOENlbTwNXKCnTdbj62v3042MjlAw=;
+	b=oZjPrux9myXDIybzr3Vb2r3jkYsQMpallQPCY1TmDjwAtt5p37XKogi8PxZqnid5Pa2pKW
+	knMsUR77+khyiAPqdsbHaMij7MUoQJSeHm8u97sffD3Gp0+k+Z7jhunqEssLivqe5pKcF7
+	cx4OkwPxjZbXs7HlSIyWzBoYtXnSqbg=
+Date: Thu, 25 Sep 2025 14:58:16 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Test changing packet data
+ from global functions with a kfunc
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, kernel-team@meta.com
+References: <20250925170013.1752561-1-ameryhung@gmail.com>
+ <20250925170013.1752561-2-ameryhung@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20250925170013.1752561-2-ameryhung@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On 9/25/25 10:00 AM, Amery Hung wrote:
+> The verifier should invalidate all packet pointers after a packet data
+> changing kfunc is called. So, similar to commit 3f23ee5590d9
+> ("selftests/bpf: test for changing packet data from global functions"),
+> test changing packet data from global functions to make sure packet
+> pointers are indeed invalidated.
 
-bpf_cookie can fail on perf_event_open(), when it runs after the task_work
-selftest. The task_work test causes perf to lower
-sysctl_perf_event_sample_rate, and bpf_cookie uses sample_freq,
-which is validated against that sysctl. As a result,
-perf_event_open() rejects the attr if the (now tighter) limit is
-exceeded.
+Applied. Thanks.
 
-From perf_event_open():
-if (attr.freq) {
-	if (attr.sample_freq > sysctl_perf_event_sample_rate)
-		return -EINVAL;
-} else {
-	if (attr.sample_period & (1ULL << 63))
-		return -EINVAL;
-}
+> +__noinline
+> +long xdp_pull_data2(struct xdp_md *x, __u32 len)
+> +{
+> +	return bpf_xdp_pull_data(x, len);
 
-Switch bpf_cookie to use sample_period, which is not checked against
-sysctl_perf_event_sample_rate.
+This tested the mark_subprog_changes_pkt_data() in visit_insn().
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/testing/selftests/bpf/prog_tests/bpf_cookie.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+afaik, it does not test the clear_all_pkt_pointers() in check_"k"func_call(). 
+Unlike the existing "changes_data" helpers, it is the first kfunc doing it. 
+Although we know that it should work after fixing the xdp_native.bpf.c :), it is 
+still good to have a regression test for it. Probably another xdp prog in 
+verifier_sock.c that does bpf_xdp_pull_data() in the main prog. Please follow up.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-index 4a0670c056ba..75f4dff7d042 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -450,8 +450,7 @@ static void pe_subtest(struct test_bpf_cookie *skel)
- 	attr.size = sizeof(attr);
- 	attr.type = PERF_TYPE_SOFTWARE;
- 	attr.config = PERF_COUNT_SW_CPU_CLOCK;
--	attr.freq = 1;
--	attr.sample_freq = 10000;
-+	attr.sample_period = 100000;
- 	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
- 	if (!ASSERT_GE(pfd, 0, "perf_fd"))
- 		goto cleanup;
--- 
-2.51.0
+
+> +}
+> +
+> +__noinline
+> +long xdp_pull_data1(struct xdp_md *x, __u32 len)
+> +{
+> +	return xdp_pull_data2(x, len);
+> +}
+> +
+> +/* global function calls bpf_xdp_pull_data(), which invalidates packet
+> + * pointers established before global function call.
+> + */
+> +SEC("xdp")
+> +__failure __msg("invalid mem access")
+> +int invalidate_xdp_pkt_pointers_from_global_func(struct xdp_md *x)
+> +{
+> +	int *p = (void *)(long)x->data;
+> +
+> +	if ((void *)(p + 1) > (void *)(long)x->data_end)
+> +		return TCX_DROP;
+> +	xdp_pull_data1(x, 0);
+> +	*p = 42; /* this is unsafe */
+> +	return TCX_PASS;
+
+I fixed this to XDP_PASS as we discussed offline.
+
+> +}
+> +
+>   __noinline
+>   int tail_call(struct __sk_buff *sk)
+>   {
 
 
