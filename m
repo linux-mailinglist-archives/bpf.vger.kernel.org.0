@@ -1,199 +1,182 @@
-Return-Path: <bpf+bounces-69764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B193BBA0F94
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 20:08:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38BD6BA1034
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 20:28:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B6887AEB45
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 18:06:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 373F13B321A
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 18:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6773B3128D7;
-	Thu, 25 Sep 2025 18:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41ADF3164CF;
+	Thu, 25 Sep 2025 18:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HlAUVMow"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TnVkZeCy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335453B2A0
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 18:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB0D314B83;
+	Thu, 25 Sep 2025 18:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758823695; cv=none; b=PUidLUDainWk40UwiAeKZncpTx97L7yhg7x6yOa2A1K6HEH5Ke2Z56Pc9Fv/bik5B4DQ8THZysyR6CZLBUrhq5RB+i81DDrG9OyTZyw3QwJv8qVJ6lLDpRWgmoX8UqqSzDoEqvvJQRqya4aYElocX5ZVBumj5ONK+BioYeOwGAQ=
+	t=1758824880; cv=none; b=JFzVpo76yMFKrCmKKoe8t4XvJKOpP8YvXB7VFDrNGCeXyQox6yeL5+99KlbaK1WTUJG1PAnqDK4ECGx3DxvpYDKn8g9/er9LBPYdtmj/jCrqlngPu8oE7YXf/PVeR/8H7l4Qor4oFYHHOeq5F6IzYyJ0siYQu87w/SrHo/mvk1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758823695; c=relaxed/simple;
-	bh=pC3OqEkMNULWSdZKrg5g2TUu6Cf+gxHxzNoP4AMCyWk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fjOvgxy4Vb3QNxKmgoupDFLmKWflrPRCpUnzNFYAqWqwpa6UmTMdfLU0/YWhO/8b5iD7eLmugmmqCtsfTQ4ikAFDZvFDN4JvT82p40UxGDntNnCDydE5V9FmOpk6eCSVXpIOQsiz72kD0GlFrnVDHgDXGrKFRY5RArTDqZr5Em8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HlAUVMow; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-46e2e363118so12886985e9.0
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 11:08:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758823692; x=1759428492; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pl0d2USndmPuwfUMorsqM+pj4ZYIOWY49U+4BqE1Tmw=;
-        b=HlAUVMowLtCF8/3g5qyLY46mzSWaL3/YEEnYzA0nB8S4PGI2yjYcL/WtMSi1+SKWbk
-         yDK5P+xo5WGFuEAUIqPi6OVz+8H2UJgPInXZK/nNtTBA2Keta2zPU+sgclIlNAFD6tmI
-         dpnPBFbZlZGK8w5RKjtsQB3I4ULcis0YXiSbIUHLIDpOfZ3nuzsjfQMFnmd7s33dcNxJ
-         GfVSET32+wVVaDpBwEJZmwouORPDbdQdcgxX2XUQTbd+8RY0M6QBTVD3KbjiuQPVsKkm
-         pKPpJfWEBiVtE4QhKkJN6snbFMyFum9dfDobpLVrcU4kk2a8HPAfRQSmztwkM7MU77W0
-         JsAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758823692; x=1759428492;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pl0d2USndmPuwfUMorsqM+pj4ZYIOWY49U+4BqE1Tmw=;
-        b=CYwQWoriSl7MFAxmhchA09vohu7W/39abB25MYZh3K3nUGgzBRzF0P5/vV2cZ53Giv
-         DBPvWgUB8vCjsn2+/GJPvws07NOkFsC6lDzjH9/vpr65FJDXwW9SyL2wVMz+JS2WwSzk
-         UG3RYl1SXj+LisSUmR+mi2CuzuA7lkUq3LaPlenYxZ+AE8Yb5vJm+SXNhMOfibFKlpKH
-         q5jthmFoc9tq+exyYpSdBFFU7fciID3MzY2s4r/8rL4DxyM83AurPUToEb+XvPH8BbpL
-         97qYV19ZjdKzrbjxowyAzsFfXE31/LPvzNvzgeUxDKcFFb9iZpR06fYcn23pBKt3Z25o
-         sKlQ==
-X-Gm-Message-State: AOJu0Yx6r9PiD9rV0JoPFt4v+HwvwM1FCJWTLeD0QA1TDx7hBW/VmYJj
-	0+nZElAabc85JCxdofSfX+hItW7Z4MMPjNArYpLJ2uJfPi59IvPoY101Ly+g4g==
-X-Gm-Gg: ASbGncvsO8uSRjJ/++2rCRGzxUigJD3MVA/cVtNG2LwOGvavv1ECQsDQiWF86D8xM5i
-	iVNWJiqjAeOQecqsj6avZowbr0yv1RULSXryUwDANpNBx0vH3frFWvLLFMYcDJ7tjgVb/zOR9rP
-	1WregHynmLoS6gBeoMnWJ5yNaowaLhgVdX3Ft1qmKV/NULdhzldelWLX1E3Doy5WnwuL4OKmHNM
-	wG5hITN5FZd3BBf+nX2tv+9Qf4bAXtB1qIWERPZ1Dd+Inlyjgl3slnDqbgtMee5BFvHtEOxK6+L
-	s/Un99x/WIg32zp+LtNgW3SYynVbNAwJSTXseu1om2h9xORHnHoij1Gfyso+TBwcb8eF2GLVfH5
-	XJSJ+aCyjSlTC+WU+5y3aArIHq/a4+PS0
-X-Google-Smtp-Source: AGHT+IGyovc+O0SoO0ZvJGtzJsUr7gWEbGZuqb0UIN5nsxY+FSIK6CjHyDmqhTWRoXojErD1hY2o4A==
-X-Received: by 2002:a5d:5d07:0:b0:3ff:d5c5:6b0d with SMTP id ffacd0b85a97d-40e44a5479fmr3499952f8f.4.1758823692308;
-        Thu, 25 Sep 2025 11:08:12 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e2ab48c28sm85373685e9.18.2025.09.25.11.08.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 11:08:11 -0700 (PDT)
-Date: Thu, 25 Sep 2025 18:14:05 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <qmo@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v3 bpf-next 13/13] selftests/bpf: add selftests for
- indirect jumps
-Message-ID: <aNWGbdMKci1gu2iU@mail.gmail.com>
-References: <20250918093850.455051-1-a.s.protopopov@gmail.com>
- <20250918093850.455051-14-a.s.protopopov@gmail.com>
- <71cc9b1aaae03dc948f2543b44efab2ed6c1b74f.camel@gmail.com>
- <8f529733004eed937b92cc7afab25a6f288b29aa.camel@gmail.com>
+	s=arc-20240116; t=1758824880; c=relaxed/simple;
+	bh=gllL0jFsSMTv+WKLgz1TzNrM4HELZ+1hcm3IMJUm3Jk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Uet3InTZk5zCGYywPBUvVgcrkZF1zCHp6FmG08TLLFSBRFVdpRy4KpTPFP6fXq0UmQMV+ZINVlbVxLzgpFtxxr4YrdDIY51mH3isdmPCr9PYJVoNKBMdp4Z9fQqNKmW6Jcb32HtG8F25ydF9XkrSROQn0svSREUx95kP4aqb0Q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TnVkZeCy; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1758824880; x=1790360880;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=gllL0jFsSMTv+WKLgz1TzNrM4HELZ+1hcm3IMJUm3Jk=;
+  b=TnVkZeCyWUmzloGVxvu1+LPZPYu/t1GCxgqq0gdM2BT12NCFKcEyxtx6
+   C64FUzQ7cUWRvJbvNB94jq6GrMZH2rC+dTF69BUXKmOgbkXvNmLsmhG6L
+   trzUVQ6kZD8osK/F+bOCMH+6iUlqsP/PB6AQvMr+NGHKmcgdCSNMSUHAy
+   xYlsQMtrsgEGXM4c3Mk0Nsqy7tGY+Z3QvRBGGaNeMr4kHiwohqdmCYZwl
+   vJATxhdi583V/fX2YgmfE5rtUE+bg2XduvdibE/CiadOLmkq/dnrNcpTo
+   fY5lsgQdeLbHr1lhOftM6qjbe73yBUyVoYt5MSiVGrjMUdJxdEYyCSUfq
+   g==;
+X-CSE-ConnectionGUID: lcHsZjvjSyi27uvf95B5EA==
+X-CSE-MsgGUID: sH897NYKRqC6ddjGo9K1+Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11564"; a="61206585"
+X-IronPort-AV: E=Sophos;i="6.18,293,1751266800"; 
+   d="scan'208";a="61206585"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2025 11:27:58 -0700
+X-CSE-ConnectionGUID: QhFvsIm2QUGJPg2v+owCag==
+X-CSE-MsgGUID: O2Oud7SaSaypMhr6Xe/2hA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,293,1751266800"; 
+   d="scan'208";a="208338229"
+Received: from unknown (HELO [10.24.81.144]) ([10.24.81.144])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2025 11:27:54 -0700
+Message-ID: <e25867b6-ffc0-4c7c-9635-9b3f47b186ca@intel.com>
+Date: Thu, 25 Sep 2025 11:27:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f529733004eed937b92cc7afab25a6f288b29aa.camel@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 06/12] KVM: guest_memfd: add module param for disabling
+ TLB flushing
+To: "Roy, Patrick" <roypat@amazon.co.uk>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>,
+ "corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>,
+ "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+ "joey.gouly@arm.com" <joey.gouly@arm.com>,
+ "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+ "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+ "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+ "will@kernel.org" <will@kernel.org>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>,
+ "bp@alien8.de" <bp@alien8.de>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+ "luto@kernel.org" <luto@kernel.org>,
+ "peterz@infradead.org" <peterz@infradead.org>,
+ "willy@infradead.org" <willy@infradead.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "david@redhat.com" <david@redhat.com>,
+ "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+ "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+ "vbabka@suse.cz" <vbabka@suse.cz>, "rppt@kernel.org" <rppt@kernel.org>,
+ "surenb@google.com" <surenb@google.com>, "mhocko@suse.com"
+ <mhocko@suse.com>, "song@kernel.org" <song@kernel.org>,
+ "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>,
+ "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@fomichev.me"
+ <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>,
+ "jgg@ziepe.ca" <jgg@ziepe.ca>, "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+ "peterx@redhat.com" <peterx@redhat.com>, "jannh@google.com"
+ <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>,
+ "shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com"
+ <seanjc@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "Cali, Marco" <xmarcalx@amazon.co.uk>,
+ "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
+ "Thomson, Jack" <jackabt@amazon.co.uk>,
+ "derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
+ "tabba@google.com" <tabba@google.com>,
+ "ackerleytng@google.com" <ackerleytng@google.com>
+References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
+ <20250924152214.7292-1-roypat@amazon.co.uk>
+ <20250924152214.7292-3-roypat@amazon.co.uk>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20250924152214.7292-3-roypat@amazon.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 25/09/20 03:27PM, Eduard Zingerman wrote:
-> On Fri, 2025-09-19 at 17:58 -0700, Eduard Zingerman wrote:
-> > On Thu, 2025-09-18 at 09:38 +0000, Anton Protopopov wrote:
-> > > Add selftests for indirect jumps. All the indirect jumps are
-> > > generated from C switch statements, so, if compiled by a compiler
-> > > which doesn't support indirect jumps, then should pass as well.
-> > >
-> > > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > > ---
-> >
-> > Patch #8 adds a lot of error conditions that are effectively untested
-> > at the moment. I think we need to figure out a way to express gotox
-> > tests in inline assembly, independent of clang version, and add a
-> > bunch of correctness tests.
-> >
-> > [...]
-> 
-> Here is an example (I modifier verifier_and.c, the patch should use
-> some verifier_gotox.c, of course):
-> 
->   #include <linux/bpf.h>
->   #include <bpf/bpf_helpers.h>
->   #include "bpf_misc.h"
->   #include "../../../include/linux/filter.h"
-> 
->   SEC("socket")
->   __success
->   __retval(1)
->   __naked void jump_table1(void)
->   {
->   	asm volatile (
->   ".pushsection .jumptables,\"\",@progbits;\n"
->   "jt0_%=:\n"
->   	".quad ret0_%=;\n"
->   	".quad ret1_%=;\n"
->   ".size jt0_%=, 16;\n"
->   ".global jt0_%=;\n"
->   ".popsection;\n"
-> 
->   	"r0 = jt0_%= ll;\n"
->   	"r0 += 8;\n"
->   	"r0 = *(u64 *)(r0 + 0);\n"
->   	".8byte %[gotox_r0];\n"
->   "ret0_%=:\n"
->   	"r0 = 0;\n"
->   	"exit;\n"
->   "ret1_%=:\n"
->   	"r0 = 1;\n"
->   	"exit;\n"
->   	:
->   	: __imm_insn(gotox_r0, BPF_RAW_INSN(BPF_JMP | BPF_JA | BPF_X, BPF_REG_0, 0, 0 , 0))
->   	: __clobber_all);
->   }
-> 
->   char _license[] SEC("license") = "GPL";
-> 
-> It verifies and executes (having fix for emit_indirect_jump() applied):
-> 
->   VERIFIER LOG:
->   =============
->   func#0 @0
->   Live regs before insn:
->         0: .......... (18) r0 = 0xffff888108c66700
->         2: 0......... (07) r0 += 8
->         3: 0......... (79) r0 = *(u64 *)(r0 +0)
->         4: .......... (0d) gotox r0
->         5: .......... (b7) r0 = 0
->         6: 0......... (95) exit
->         7: .......... (b7) r0 = 1
->         8: 0......... (95) exit
->   Global function jump_table1() doesn't return scalar. Only those are supported.
->   0: R1=ctx() R10=fp0
->   ; asm volatile ( @ verifier_and.c:122
->   0: (18) r0 = 0xffff888108c66700       ; R0_w=map_value(map=jt,ks=4,vs=8)
->   2: (07) r0 += 8                       ; R0_w=map_value(map=jt,ks=4,vs=8,off=8)
->   3: (79) r0 = *(u64 *)(r0 +0)          ; R0_w=insn(off=8)
->   4: (0d) gotox r0
->   7: (b7) r0 = 1                        ; R0_w=1
->   8: (95) exit
->   processed 6 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->   =============
->   do_prog_test_run:PASS:bpf_prog_test_run 0 nsec
->   #488/1   verifier_and/jump_table1:OK
->   #488     verifier_and:OK
->   Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> This example can be mutated in various ways to check behaviour and
-> error conditions.
-> 
-> Having such complete set of such tests, I'd only keep a few canary
-> C-level tests.
+On 9/24/25 08:22, Roy, Patrick wrote:
+> Add an option to not perform TLB flushes after direct map manipulations.
 
-Thanks a lot, I can use it for sure!
-
-As for C-level tests, I want to keep a bunch of them in any
-case to test libbpf operations.
-
-(I also remember your request to extend compute_live_registers,
-just didn't have time to get to it yet.)
+I'd really prefer this be left out for now. It's a massive can of worms.
+Let's agree on something that works and has well-defined behavior before
+we go breaking it on purpose.
 
