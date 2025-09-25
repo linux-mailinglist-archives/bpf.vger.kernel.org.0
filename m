@@ -1,121 +1,122 @@
-Return-Path: <bpf+bounces-69658-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69659-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14164B9D50D
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 05:33:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15AC0B9D594
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 05:59:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 817DB7A1677
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 03:32:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB9434A7288
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 03:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E8E2D9EE7;
-	Thu, 25 Sep 2025 03:33:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87E892E03E6;
+	Thu, 25 Sep 2025 03:59:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gpeIJVxS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WcZH+J4d"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E302FDDC3;
-	Thu, 25 Sep 2025 03:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBA22E7631
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 03:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758771216; cv=none; b=qM7pHryZMtxs8/yuNj/vZJM0gX542r92WddAxaYMIk9hh9XVk2FQ9uZ0KEnLw3lSjmK23rcR41YnpTUgAfe0yjicWbRBMy5qKIRmbrHudEbgHqFLtRdzMAeUUJQI8jJ36oEpExWvFBmR3MBgtJvVmkA9abOUgtZlt49zt1pt0p8=
+	t=1758772777; cv=none; b=gnxEK5u+RraNKLI3yFpsFhawh55GjF+yRWZM3ib9QySyyOrU+ZY66iN3c9G2tvyj/AXxwUPrWzwbM+eNerBdYrXX2MxUjW278NTRofcI9U2MZdLJIyPS2P+QvaegKjxfLjznZGvT0I9GioHoSIEQARqXvhMbC9g9LDedbG4o7CY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758771216; c=relaxed/simple;
-	bh=DWfe4aECbsuwyz8AkW6vviHZuLumZTzAPaTzGlzdesg=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=mHBAPBl6FkhKahKCZ1yrEK51ZExBcOTqFGPJFZ5rJ5YKOzUvmW+LcCezRCrr7vpdW9hOYe/1WbPDT9nG22FrBZ1E2FYxdOEWvJnMes5bRhflltuyv7M07vydzWMU+K93Q2vT1hPpc3V/V6dPEjpUbtoEDUINQTTp7Av4gaMnJpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gpeIJVxS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85439C4CEF0;
-	Thu, 25 Sep 2025 03:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758771215;
-	bh=DWfe4aECbsuwyz8AkW6vviHZuLumZTzAPaTzGlzdesg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=gpeIJVxSOHjl/s2K8uNPyOH91Xr617pjQoR98gz6255BMQrq87DcqAlwrDI5mkwV1
-	 OwqJ/CFHdKfkUJ3wYO9bINfdIr0MHVaWR1+OSvggIr/hARfQiX+S4rcsReLDfEbD9q
-	 MKd8Xy5VfVA8CRV7N4KRVXVu6H9GssHI4m6v6mwTGO3cu4gsojzr2OSzoEryixJfjb
-	 NpZzaAOoJcIWx2/C0lx0Vqir9ub0YHAqj8w46XnMGx+tzuHKGuP6u/RPR5ZsQTvWiO
-	 0iaRHn+FkuAm9xJNxWkGXdwOGHb5h0nVLjor90w6cwsPHBpitKqEUbnoClLtbG9qy6
-	 Y7pyQyENmtwtg==
-Date: Thu, 25 Sep 2025 12:33:31 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Feng Yang <yangfeng59949@163.com>
-Cc: rostedt@goodmis.org, mark.rutland@arm.com, catalin.marinas@arm.com,
- will@kernel.org, revest@chromium.org, alexei.starovoitov@gmail.com,
- olsajiri@gmail.com, andrii@kernel.org, ast@kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] tracing: Fix the bug where bpf_get_stackid returns
- -EFAULT on the ARM64
-Message-Id: <20250925123331.f4158581bd488ca0ba838d1c@kernel.org>
-In-Reply-To: <20250925020822.119302-1-yangfeng59949@163.com>
-References: <20250925020822.119302-1-yangfeng59949@163.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1758772777; c=relaxed/simple;
+	bh=ePsaRNAeU6Xr6umqa5d+ci1pHN6nOzsF/9/qmOkJ3pM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ozqfx3oxSrDfjUQ7cPSjRjwiqOaImdufYy9zuxFMssl2U2R941CFguOcFGobffD/b9KE4W+v4dQlHw2Yrq2MokCkfYSTE5gWIQFcn/ZTjCmuS8JbZHT7LNuehnK5bIRq1nOVIZsh6ofApq6oTUdMbuHk/ts6X8I+DgdKw5ReN5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WcZH+J4d; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a7f28918-7eda-42e9-ae41-446b7a2d9759@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758772772;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cPRyhmW5HLnkAnQTp0om7bXwksvc0OFNthNGDCOxHs8=;
+	b=WcZH+J4d7cFDX1qJfeczpAARaAzFB/97y3hyZXiY8ETU/+qax9aoQL15HACsKQk1YAd+Cf
+	2O1I9sreC6IfLmkts6LsqluHi45n7vT32aNLMPJySRw9p0SJbFcUbZeR5eTI8YtAjqvU5M
+	sKAHj3zGEf75lG+/sMWzqW7MgIU4o+Y=
+Date: Wed, 24 Sep 2025 20:59:28 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Subject: Re: [PATCH dwarves v1 2/2] btf_encoder: implement
+ KF_IMPLICIT_PROG_AUX_ARG kfunc flag handling
+To: Eduard Zingerman <eddyz87@gmail.com>, dwarves@vger.kernel.org,
+ alan.maguire@oracle.com, acme@kernel.org, andrii <andrii@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>
+Cc: bpf@vger.kernel.org, tj@kernel.org, kernel-team@meta.com
+References: <20250924211512.1287298-1-ihor.solodrai@linux.dev>
+ <20250924211512.1287298-3-ihor.solodrai@linux.dev>
+ <4fb8a812fdd01f115a99317c8e46ad055b5bf102.camel@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <4fb8a812fdd01f115a99317c8e46ad055b5bf102.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 25 Sep 2025 10:08:22 +0800
-Feng Yang <yangfeng59949@163.com> wrote:
 
-> From: Feng Yang <yangfeng@kylinos.cn>
+
+On 9/24/25 6:22 PM, Eduard Zingerman wrote:
+> On Wed, 2025-09-24 at 14:15 -0700, Ihor Solodrai wrote:
+>> When a kfunc is marked with KF_IMPLICIT_PROG_AUX_ARG, do not emit the
+>> last parameter of this function to BTF.
 > 
-> When using bpf_program__attach_kprobe_multi_opts on ARM64 to hook a BPF program
-> that contains the bpf_get_stackid function, the BPF program fails
-> to obtain the stack trace and returns -EFAULT.
+> [...]
 > 
-> This is because ftrace_partial_regs omits the configuration of the pstate register,
-> leaving pstate at the default value of 0. When get_perf_callchain executes,
-> it uses user_mode(regs) to determine whether it is in kernel mode.
-> This leads to a misjudgment that the code is in user mode,
-> so perf_callchain_kernel is not executed and the function returns directly.
-> As a result, trace->nr becomes 0, and finally -EFAULT is returned.
+>> @@ -887,6 +923,12 @@ static int32_t btf_encoder__add_func_proto_for_state(struct btf_encoder *encoder
+>>  	nr_params = state->nr_parms;
+>>  	type_id = state->ret_type_id;
+>>  
+>> +	if (is_kfunc_state(state) && KF_IMPLICIT_PROG_AUX_ARG & state->elf->kfunc_flags) {
+>> +		if (validate_kfunc_with_implicit_prog_aux_arg(state))
+>> +			return -1;
+>> +		nr_params--;
+>> +	}
+>> +
+>>  	id = btf_encoder__emit_func_proto(encoder, type_id, nr_params);
+>>  	if (id < 0)
+>>  		return id;
 > 
-> Therefore, the assignment of the pstate register is added here.
-> 
-> Fixes: b9b55c8912ce ("tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs")
-> Closes: https://lore.kernel.org/bpf/20250919071902.554223-1-yangfeng59949@163.com/
-> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+> This change hides the fact that function accepts one more parameter
+> both from kernel BTF and from program BTF (via vmlinux.h).
 
-Thanks for fixing!
+Right, this is intentional.
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Do we anticipate other implicit parameter types?
 
-This is actually a fix for arm64. So I think it will be
-merged via arm64 tree, right?
+It's very plausible, but I don't know of specific examples.
 
-Thank you,
+> Because if we do, it seems like having some generic KF_IMPLICIT_ARG
+> and hiding it only from vmlinux.h seem more flexible.
 
-> ---
->  arch/arm64/include/asm/ftrace.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-> index bfe3ce9df197..ba7cf7fec5e9 100644
-> --- a/arch/arm64/include/asm/ftrace.h
-> +++ b/arch/arm64/include/asm/ftrace.h
-> @@ -153,6 +153,7 @@ ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
->  	regs->pc = afregs->pc;
->  	regs->regs[29] = afregs->fp;
->  	regs->regs[30] = afregs->lr;
-> +	regs->pstate = PSR_MODE_EL1h;
->  	return regs;
->  }
->  
-> -- 
-> 2.25.1
-> 
+I'm not sure how generic KF_IMPLICIT_ARG would even work.
 
+Any *implicit* parameter requires a very concrete implementation in
+the verifier: an actual pointer of a particular type is injected after
+the verification. So we have to do a type check on pahole side to
+catch invalid kfunc declarations. And the verifier of course must be
+very strict about where it can pass pointers to kernel objects.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+From a couple of discussions with Andrii, my impression is that it
+would be beneficial to have some kind of generic "execution context"
+available to BPF programs and/or kfuncs to cover all potential
+implicit arguments. But that's a separate big discussion.
+
+Supporting bpf_prog_aux specifically is a pragmatic improvement to the
+current inconvenience that sched_ext has to deal with [1].
+
+[1] https://lore.kernel.org/bpf/20250920005931.2753828-42-tj@kernel.org/
+
 
