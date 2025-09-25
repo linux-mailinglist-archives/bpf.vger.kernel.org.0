@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-69695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B111B9EA22
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EA6BB9EA28
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:28:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16A7F3BA778
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:27:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C964420963
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16EDE2EC55A;
-	Thu, 25 Sep 2025 10:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C06A2EB5B1;
+	Thu, 25 Sep 2025 10:26:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45BDD2EACFB;
-	Thu, 25 Sep 2025 10:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB8A2EACFB;
+	Thu, 25 Sep 2025 10:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758796012; cv=none; b=LbXfpMvoUcjHCE7mE9kobnOVPrrm9KbKTB0Wom4tQNheS+o1j1DPEf0dMZXrSqa9h2yvc6mbv6IiH0Eva3AVhJWnahJGxvZw9+6Xk0f52pKqqgTwVlLP1H1FzqKSSfprhCPcF0L2rRD2W3rAEfFEoppflpMVL9tqxTNapFHlTiE=
+	t=1758796017; cv=none; b=hRHwl/a6dxpohykrXAhLc+dX2ctXVycmMrQjTP7mhlBUTKh6kNEIAhuhhVPyLFrDYjja/RA3HkYy61EGa2gfBzFtEAqO73RNpEaFnpIfD52gUQxrMBjQhJJsOBtOVU1OIcMmfE8n6J9F5Min32z+k900zMXDHRU5LM9pBkmW8Sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758796012; c=relaxed/simple;
-	bh=cmg2aP/OdJEbju4k0iOcFl8K9ZROTOnbUW84a1thBFk=;
+	s=arc-20240116; t=1758796017; c=relaxed/simple;
+	bh=a3IPmV5jlnePssZURERzGDN5YmfphWeM3ATbsnwKAQg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=QpcZ0zpcQfiH3GWttBuwaQBxqsi6ao/zaOi3O7HQsN2HTmhM36siBp1ExE+z6v/am3pasP+c8AgPLsdrAyLzKCNZzPCzcWbeoc5UQf0PtlF3lqM/vhKSUryquVpenT2tvl5BPFTPxCOzG2GP9qhqrSywAWwaaubOpb8ESOI1di8=
+	 In-Reply-To:To:Cc; b=QtjMkboJNUGxJfswVfvByum/4WohfZv5mWVUvlPFQ0KyqLEOlXw/hWDorRZkD0FJ2RniDF1w6oSiCNLYRzZ6xIp4Cmflz4JzG6hWLVHJr9gqaUQqWv0EtCcxGGQwJreZM5tQxh+FPY3iC8ynIv9HD3ya50vSVEwxwRsrKDpGIe8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 756F81692;
-	Thu, 25 Sep 2025 03:26:42 -0700 (PDT)
-Received: from e132581.arm.com (e132581.arm.com [10.1.196.87])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1165E3F694;
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 49D301E5E;
 	Thu, 25 Sep 2025 03:26:46 -0700 (PDT)
+Received: from e132581.arm.com (e132581.arm.com [10.1.196.87])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D67AC3F694;
+	Thu, 25 Sep 2025 03:26:50 -0700 (PDT)
 From: Leo Yan <leo.yan@arm.com>
-Date: Thu, 25 Sep 2025 11:26:28 +0100
-Subject: [PATCH 4/8] perf test coresight: Dismiss clang warning for memcpy
- thread
+Date: Thu, 25 Sep 2025 11:26:29 +0100
+Subject: [PATCH 5/8] perf test coresight: Dismiss clang warning for thread
+ loop
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -45,7 +45,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250925-perf_build_android_ndk-v1-4-8b35aadde3dc@arm.com>
+Message-Id: <20250925-perf_build_android_ndk-v1-5-8b35aadde3dc@arm.com>
 References: <20250925-perf_build_android_ndk-v1-0-8b35aadde3dc@arm.com>
 In-Reply-To: <20250925-perf_build_android_ndk-v1-0-8b35aadde3dc@arm.com>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>, 
@@ -65,40 +65,67 @@ To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
  llvm@lists.linux.dev, bpf@vger.kernel.org, Leo Yan <leo.yan@arm.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1758795991; l=1020;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1758795991; l=2703;
  i=leo.yan@arm.com; s=20250604; h=from:subject:message-id;
- bh=cmg2aP/OdJEbju4k0iOcFl8K9ZROTOnbUW84a1thBFk=;
- b=N4ytt9jcTFxaCzq+v5NQwi4fvTEvMRYnevdJLt3AAyfjperNdUUMtAEB6PpbpFptkJrpnJ6/S
- 97ssYz57sDlCsYcwrKXtUBomKDy6BBuZz7ULdxCKI5RbH4rHJCGlksL
+ bh=a3IPmV5jlnePssZURERzGDN5YmfphWeM3ATbsnwKAQg=;
+ b=nUhuDSkMrBlnNCBDLmMmvLHq8n8o8Gue5GV4rlCFtxC79zv/N/9PRB8pDjgRUeODCBPDWOYKJ
+ m0+Tyux1ImmBCJKyav4UeclDc+OZcoAO9WrqqZN4hS/q0FCpgEVnocx
 X-Developer-Key: i=leo.yan@arm.com; a=ed25519;
  pk=k4BaDbvkCXzBFA7Nw184KHGP5thju8lKqJYIrOWxDhI=
 
 clang-18.1.3 on Ubuntu 24.04.2 reports warning:
 
-  memcpy_thread.c:30:1: warning: non-void function does not return a value in all control paths [-Wreturn-type]
-     30 | }
-        | ^
+  thread_loop.c:41:23: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+     41 |                 : /* in */ [i] "r" (i), [len] "r" (len)
+        |                                     ^
+  thread_loop.c:37:8: note: use constraint modifier "w"
+     37 |                 "add %[i], %[i], #1\n"
+        |                      ^~~~
+        |                      %w[i]
+  thread_loop.c:41:23: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+     41 |                 : /* in */ [i] "r" (i), [len] "r" (len)
+        |                                     ^
+  thread_loop.c:37:14: note: use constraint modifier "w"
+     37 |                 "add %[i], %[i], #1\n"
+        |                            ^~~~
+        |                            %w[i]
+  thread_loop.c:41:23: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+     41 |                 : /* in */ [i] "r" (i), [len] "r" (len)
+        |                                     ^
+  thread_loop.c:38:8: note: use constraint modifier "w"
+     38 |                 "cmp %[i], %[len]\n"
+        |                      ^~~~
+        |                      %w[i]
+  thread_loop.c:41:38: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
+     41 |                 : /* in */ [i] "r" (i), [len] "r" (len)
+        |                                                    ^
+  thread_loop.c:38:14: note: use constraint modifier "w"
+     38 |                 "cmp %[i], %[len]\n"
+        |                            ^~~~~~
+        |                            %w[len]
 
-Dismiss the warning with returning NULL from the thread function.
+Use the modifier "w" for 32-bit register access.
 
 Signed-off-by: Leo Yan <leo.yan@arm.com>
 ---
- tools/perf/tests/shell/coresight/memcpy_thread/memcpy_thread.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/tests/shell/coresight/thread_loop/thread_loop.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/tests/shell/coresight/memcpy_thread/memcpy_thread.c b/tools/perf/tests/shell/coresight/memcpy_thread/memcpy_thread.c
-index 5f886cd09e6b3a62b5690dade94f1f8cae3279d2..7e879217be30a86431989dbf1f36d2134ef259cc 100644
---- a/tools/perf/tests/shell/coresight/memcpy_thread/memcpy_thread.c
-+++ b/tools/perf/tests/shell/coresight/memcpy_thread/memcpy_thread.c
-@@ -27,6 +27,8 @@ static void *thrfn(void *arg)
+diff --git a/tools/perf/tests/shell/coresight/thread_loop/thread_loop.c b/tools/perf/tests/shell/coresight/thread_loop/thread_loop.c
+index e05a559253ca9d9366ad321d520349042fb07fca..86f3f548b00631682767665fc5e9d5b8551a3634 100644
+--- a/tools/perf/tests/shell/coresight/thread_loop/thread_loop.c
++++ b/tools/perf/tests/shell/coresight/thread_loop/thread_loop.c
+@@ -34,8 +34,8 @@ static void *thrfn(void *arg)
  	}
- 	for (i = 0; i < len; i++)
- 		memcpy(dst, src, a->size * 1024);
-+
-+	return NULL;
- }
- 
- static pthread_t new_thr(void *(*fn) (void *arg), void *arg)
+ 	asm volatile(
+ 		"loop:\n"
+-		"add %[i], %[i], #1\n"
+-		"cmp %[i], %[len]\n"
++		"add %w[i], %w[i], #1\n"
++		"cmp %w[i], %w[len]\n"
+ 		"blt loop\n"
+ 		: /* out */
+ 		: /* in */ [i] "r" (i), [len] "r" (len)
 
 -- 
 2.34.1
