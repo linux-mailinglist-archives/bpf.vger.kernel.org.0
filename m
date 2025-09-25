@@ -1,245 +1,233 @@
-Return-Path: <bpf+bounces-69772-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69773-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07CDFBA11E3
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 21:08:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32AB3BA126E
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 21:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC5D91C24E7D
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:08:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C88D16D4F8
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E464631B803;
-	Thu, 25 Sep 2025 19:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093D331BCB4;
+	Thu, 25 Sep 2025 19:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="O91EGX/i"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Iges5XVn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80510319875
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 19:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F395C31B83A
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 19:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758827277; cv=none; b=tMJjlMDXXrgLZKGMB9oHTRMg3YWu/fYRa1fqwvNLE6746PfFydosraZv0ROw+htLgI5ymszaxESOkjJKdt0MRS+25GYeQu5Ujiby77O9Ze0QqWk8DqJsiT0sS3pfog1ZRPlyoXVL6gzutilk5JM6mym0Q9pqbd+Xvw2rFjR/97A=
+	t=1758828035; cv=none; b=ATloDZtGPv1BkrIeoDIzT6Vsjutb7i/YYp6lVF6DaZCPhP0CTWOvhYrzgZuqT+gx12M8J6dWYzzW8Ksp9e8SA8Qnef//hgTWe7dSy2cvPSijN5tk3WagQWhO3NbZh6xR8EDJU0dNtqsBhbN6D3hsovKyAjoPdTmkCD/6GvyPto0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758827277; c=relaxed/simple;
-	bh=KoOuFDKSPX2klwRtvL8Njx5yrBi2bJBopsiE7v/B7qs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HfpndAqu4KHQ18Q1iguBfrgDPpv9ZrVTKhYwxSR+hhax8Wt/3yZe8wTFEuIxlCUM59DTRvXMI/BP8IBIqtB8QMaBaEIuWFETEJnlvV2DXbu4n0Db87yj/TrUyfTCCBObyEHnmy9vm71n01cv8HCoLJz7t/dgL3D+5pERO4Id+aM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=O91EGX/i; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-634a3327ff7so2294691a12.1
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 12:07:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1758827274; x=1759432074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AnE2Gq1iLGz1QD5Hyp8/IV1Uxk92c5IOYXKZcLObpV0=;
-        b=O91EGX/iZNbrpETfZYwAgHl5GkSJF//ti0ApumUs6lqWdSxgXxnUYZZ+MGWQsikJ4a
-         NyctULfZROtgDRkKAQe9L8gTF8PWIzZbyDog1jmhyRbPOmo7YnuZ4z2ALjQ3Cf7Cl543
-         dhfQzl/UznG9QXgPQCsAZJxtvSNQLKPRYrAaAZdXSS0gGdGrlJ7PYL5uciNG/1g9szJr
-         ydA1UyLgKzsIeVOJ7S2OCSM1ppL+AlZ5+TeCDiJM2ziCwLNfxdeYICIWCJ49mbW04RQ9
-         9ye9KS5qQXwkw7pgJn6oRU6OJH7FVwd+P0X9b+OWnIY8SRu+Xyg0odUW21FZrvMe3SeA
-         kpPg==
+	s=arc-20240116; t=1758828035; c=relaxed/simple;
+	bh=0qt1kVFbZLxtcDdlc4iPdOQMdlYv4LAreD6jep8j/jo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gmWCF+TSyR7VgXOrcHYn1MsLV+ZczEXFf9AuHaQ4sfbLwdJt8zX76M1Wzgw8qVXBU27R/pLKQ4DZqF6ZzVx87gK9FCgIEcrfCV37tiEhiP874AccABWW5+f1dnCz+9iMrC5RfkS6zhLZ9TM+GTUqcvyFbP+ZOm8hyjIFpb7rAO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Iges5XVn; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1758828033;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=h9NwUDyMGoW+yRpMBA8+utUcpjFyfg+r5YqhwRloimY=;
+	b=Iges5XVnimx4aOnJj9dJpHqldDqSLgLg4QQX4y9fkJB+CmTSpJ5pQUOwiHW0YDoQ7iWH/9
+	1NhcQQOY8tgimCMXFN8Hf0rGh04acXu0Y4uPaIBCUPINxY+S23P+hcabRyZ0uJloD1M1jV
+	f/GWS36yoxmHlwF1V2rNE68Zqd5iEXI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-355-ibJlZ5PKM-e8Mnrv7XNVHA-1; Thu, 25 Sep 2025 15:20:31 -0400
+X-MC-Unique: ibJlZ5PKM-e8Mnrv7XNVHA-1
+X-Mimecast-MFC-AGG-ID: ibJlZ5PKM-e8Mnrv7XNVHA_1758828029
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-46e377d8c80so4315545e9.3
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 12:20:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758827274; x=1759432074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AnE2Gq1iLGz1QD5Hyp8/IV1Uxk92c5IOYXKZcLObpV0=;
-        b=h66hzvI1n4XY4wHC5wgph1eD5NsWfQoym3rVKittLqA65HWr3+5sw76eCfNiKtqHdB
-         M7eHpeCZl59Vg7Y4PkRqdMSj+TOyepFnCCT7yEl4wi2bXdycKSe9StiMabzyZQ55wrb8
-         ueChEpZTn8BFqVQEkb1ggzJcaiSlifN4/MbnjhJOl7fGmFBu5U/CbtsWP07xt3cRph/h
-         83Ty9QWu6wQ/QBvxLvg6FL1UA1XIokNb9n3GiMDGMQIgSwr9JDJwNtiIu7u0JJ9m+xam
-         ITw6jMY6FMT1ZzWt85VIpKcTV2j0qbQiBK91SZFeON4YVlQDsLggYX4KJPNiN3ZURioZ
-         l04w==
-X-Forwarded-Encrypted: i=1; AJvYcCWDVoyOPtkzwDCUQ89z7jmOlHfUXbKgG1XERjjhbwDuQrML/Sn5Et48Bpgvqwip3aGbvIs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzU9JWEVz3lgaydqpaTapZ1kum10GpQ5zD6lQYzHmNgplHSrkfb
-	Pj0qgM3d/oeSTF4D7FedVj6+H49pvvRFmPiXNUjZTmzrx5m8DxGOg2EC/F2czT4JIcHg42dzwsA
-	5QoGH7xV6WIn4uOcmxr+yxyGistOvgPwi4SdvrpKO
-X-Gm-Gg: ASbGncv+PRot1dhJBmdd6O+c374AoqCGp0ngVlMRf79Lr7ru0yNJx9oV/mbS7Fw5zUg
-	BxT1HhGwQY/1oRvHcnZ1ihBxXvC/qcr98TLHxXgx03q82bKme/M5pEWgEbl5ibnWUXfMzB8Fvfz
-	OTZm+vcfF2yfkPc7EitxUnJtZsefDgOlaVooY5yL8UoqLd2brRlGcKn175MlTJ1UYsLXs55g2he
-	WS7dVU=
-X-Google-Smtp-Source: AGHT+IGLc7hFNG8WuXb2SfufhUFhhl1/ya5jRSzbJcWtufW9tGBtXFiVuposkEkIcCeVdtoUErBBP6Keqv0SnBd3hsE=
-X-Received: by 2002:a05:6402:2685:b0:62b:2f0:974f with SMTP id
- 4fb4d7f45d1cf-6349fa06340mr3619141a12.15.1758827273663; Thu, 25 Sep 2025
- 12:07:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758828029; x=1759432829;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h9NwUDyMGoW+yRpMBA8+utUcpjFyfg+r5YqhwRloimY=;
+        b=sjHTUAOpj/m9Z4sTR+OGhbbcK5UW0NbEnxiKyhBmX1yEguLk+PJ01SrO9D53uQo0wP
+         ztYxBmK13mQByeH6Km7sabbtuuNr6IZ17DbC7CFOoI9GrC2Xo+DKMUdATi37qDzFUv4u
+         mWULBuKZ5BiFjOQuZ8VHSY3pFkBNxjJPXnjlvpYJDdcNuD+vMlak8xfsMPOATUeWBDlj
+         mx814eQzVVFWJaoox+LFSAXwvru7Bi/FsoWCJ6k1b5iENRmJY/aTfnwIUpqn7RwZQtN2
+         LEtEQ+Iv7quhDL0MzGLOPUDVH4jVi0m0yD+XGbWzHl2MIYwiNQvX5eBEpNpb6xBCx/7d
+         VNEg==
+X-Forwarded-Encrypted: i=1; AJvYcCWNLvn52Ja/dYJ/wXOUUou4Gc7y0j5JduwRFc94GRR4ShLNzBuPVgucuJN8DF9BREVdSDw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywa0andWNQI4DrDj/Ae/Vb0qfgncFRVygivDpI8GWR/CqMrN+LT
+	77lwc2wyT/Dbgx142cQXzmjJUeyiEYlOuOh3e2r/KwZcJXee16hVqX3QgJUsSV60k06ZMUoETzT
+	AIqVsniug3mkjhOlFn6H8GCoitDmoaqX9Ou5yWfA/eNavtZj/Wp363A==
+X-Gm-Gg: ASbGncv9JH25Gzmw1VJY52WPLCbYNhO/Q2wB/6R/Wmpr16fvSb8z57X7ONmuBgW44Sl
+	ZOXxgrXapDYxaN48JsRQG2eVE/H14ymOpRbugFQA1JCQt0rIcnqYGP87zyqkftTKcxPQX3lhPOm
+	+OK7GZuWk4OCaLlx/fR64Ex2mDEcDTUinA6Pg+N5DHG7ixk/LaW5kTcm77V/dhlEoRCe5U67YrM
+	37rtOwr+oNHgpsxR+JkIGcLoWrmcj/7NFZ91yHLESMNpaa4XGFyZQdVzJQeuK/FiyFmfnWTppzI
+	XaZuIFctWr/bUYzPBAAWeiZKOssmNZKgwmV0vwwyhVwp3HtsnvkKfMG/sVyldJhmsPWBhRaDTiI
+	85iqbrqdySpy60oQLlcd3h1GfKFyue4QVSI8IQTmUiYyvB0GMJzboqElHm+zzvkEaQ0sW
+X-Received: by 2002:a05:6000:2303:b0:3e0:c28a:abbb with SMTP id ffacd0b85a97d-40e4486c1cbmr4591384f8f.13.1758828029102;
+        Thu, 25 Sep 2025 12:20:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEJ+UtY+HbfBva2JwQPg+uM2EuLkaDWOJR6EHo9MAeCOLTp2sMMeqqF95LTWT8dRmlKajEcTg==
+X-Received: by 2002:a05:6000:2303:b0:3e0:c28a:abbb with SMTP id ffacd0b85a97d-40e4486c1cbmr4591314f8f.13.1758828028587;
+        Thu, 25 Sep 2025 12:20:28 -0700 (PDT)
+Received: from ?IPV6:2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08? (p200300d82f3ff800c1015c9f3bc93d08.dip0.t-ipconnect.de. [2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fc82f2ff6sm3956465f8f.56.2025.09.25.12.20.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Sep 2025 12:20:27 -0700 (PDT)
+Message-ID: <c1875a54-0c87-450f-9370-29e7ec4fea3d@redhat.com>
+Date: Thu, 25 Sep 2025 21:20:23 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e5d594d0aee93da67a22a42d0e2b4e6e463ab894.camel@gmail.com>
- <CAHC9VhRu=-J5xdKgYOJ1eqQ6EiMoEJ3M+cjDU8AHrts-=DoTvg@mail.gmail.com>
- <cd35aa283cf010188a3b0e318f2c16655224767c.camel@gmail.com>
- <CAHC9VhQ-c65UJS+dRaRFn_D=Sq++QXePTsCkN+cV5BVQEbf9fQ@mail.gmail.com> <9df66167c205e341bd5896376e06950aa7bd7240.camel@gmail.com>
-In-Reply-To: <9df66167c205e341bd5896376e06950aa7bd7240.camel@gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Thu, 25 Sep 2025 15:07:40 -0400
-X-Gm-Features: AS18NWDrz8xrbmHXwU1qY0zPoiMU7YlGfdslHp8uO3WfwIh7peya76l18x6AcR4
-Message-ID: <CAHC9VhThNjmKjaJL_G-ow-eBEwTyn6nNe8irOu8yDWMrGhOnAA@mail.gmail.com>
-Subject: Re: [bug report] [regression?] bpf lsm breaks /proc/*/attr/current
- with security= on commandline
-To: Filip Hejsek <filip.hejsek@gmail.com>
-Cc: linux-security-module@vger.kernel.org, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 06/12] KVM: guest_memfd: add module param for disabling
+ TLB flushing
+To: Dave Hansen <dave.hansen@intel.com>, "Roy, Patrick" <roypat@amazon.co.uk>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>,
+ "corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>,
+ "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+ "joey.gouly@arm.com" <joey.gouly@arm.com>,
+ "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+ "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+ "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+ "will@kernel.org" <will@kernel.org>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>,
+ "bp@alien8.de" <bp@alien8.de>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+ "luto@kernel.org" <luto@kernel.org>,
+ "peterz@infradead.org" <peterz@infradead.org>,
+ "willy@infradead.org" <willy@infradead.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+ "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+ "vbabka@suse.cz" <vbabka@suse.cz>, "rppt@kernel.org" <rppt@kernel.org>,
+ "surenb@google.com" <surenb@google.com>, "mhocko@suse.com"
+ <mhocko@suse.com>, "song@kernel.org" <song@kernel.org>,
+ "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>,
+ "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@fomichev.me"
+ <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>,
+ "jgg@ziepe.ca" <jgg@ziepe.ca>, "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+ "peterx@redhat.com" <peterx@redhat.com>, "jannh@google.com"
+ <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>,
+ "shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com"
+ <seanjc@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "Cali, Marco" <xmarcalx@amazon.co.uk>,
+ "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
+ "Thomson, Jack" <jackabt@amazon.co.uk>,
+ "derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
+ "tabba@google.com" <tabba@google.com>,
+ "ackerleytng@google.com" <ackerleytng@google.com>
+References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
+ <20250924152214.7292-1-roypat@amazon.co.uk>
+ <20250924152214.7292-3-roypat@amazon.co.uk>
+ <e25867b6-ffc0-4c7c-9635-9b3f47b186ca@intel.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZoEEwEIAEQCGwMCF4ACGQEFCwkIBwICIgIG
+ FQoJCAsCBBYCAwECHgcWIQQb2cqtc1xMOkYN/MpN3hD3AP+DWgUCaJzangUJJlgIpAAKCRBN
+ 3hD3AP+DWhAxD/9wcL0A+2rtaAmutaKTfxhTP0b4AAp1r/eLxjrbfbCCmh4pqzBhmSX/4z11
+ opn2KqcOsueRF1t2ENLOWzQu3Roiny2HOU7DajqB4dm1BVMaXQya5ae2ghzlJN9SIoopTWlR
+ 0Af3hPj5E2PYvQhlcqeoehKlBo9rROJv/rjmr2x0yOM8qeTroH/ZzNlCtJ56AsE6Tvl+r7cW
+ 3x7/Jq5WvWeudKrhFh7/yQ7eRvHCjd9bBrZTlgAfiHmX9AnCCPRPpNGNedV9Yty2Jnxhfmbv
+ Pw37LA/jef8zlCDyUh2KCU1xVEOWqg15o1RtTyGV1nXV2O/mfuQJud5vIgzBvHhypc3p6VZJ
+ lEf8YmT+Ol5P7SfCs5/uGdWUYQEMqOlg6w9R4Pe8d+mk8KGvfE9/zTwGg0nRgKqlQXrWRERv
+ cuEwQbridlPAoQHrFWtwpgYMXx2TaZ3sihcIPo9uU5eBs0rf4mOERY75SK+Ekayv2ucTfjxr
+ Kf014py2aoRJHuvy85ee/zIyLmve5hngZTTe3Wg3TInT9UTFzTPhItam6dZ1xqdTGHZYGU0O
+ otRHcwLGt470grdiob6PfVTXoHlBvkWRadMhSuG4RORCDpq89vu5QralFNIf3EysNohoFy2A
+ LYg2/D53xbU/aa4DDzBb5b1Rkg/udO1gZocVQWrDh6I2K3+cCs7BTQRVy5+RARAA59fefSDR
+ 9nMGCb9LbMX+TFAoIQo/wgP5XPyzLYakO+94GrgfZjfhdaxPXMsl2+o8jhp/hlIzG56taNdt
+ VZtPp3ih1AgbR8rHgXw1xwOpuAd5lE1qNd54ndHuADO9a9A0vPimIes78Hi1/yy+ZEEvRkHk
+ /kDa6F3AtTc1m4rbbOk2fiKzzsE9YXweFjQvl9p+AMw6qd/iC4lUk9g0+FQXNdRs+o4o6Qvy
+ iOQJfGQ4UcBuOy1IrkJrd8qq5jet1fcM2j4QvsW8CLDWZS1L7kZ5gT5EycMKxUWb8LuRjxzZ
+ 3QY1aQH2kkzn6acigU3HLtgFyV1gBNV44ehjgvJpRY2cC8VhanTx0dZ9mj1YKIky5N+C0f21
+ zvntBqcxV0+3p8MrxRRcgEtDZNav+xAoT3G0W4SahAaUTWXpsZoOecwtxi74CyneQNPTDjNg
+ azHmvpdBVEfj7k3p4dmJp5i0U66Onmf6mMFpArvBRSMOKU9DlAzMi4IvhiNWjKVaIE2Se9BY
+ FdKVAJaZq85P2y20ZBd08ILnKcj7XKZkLU5FkoA0udEBvQ0f9QLNyyy3DZMCQWcwRuj1m73D
+ sq8DEFBdZ5eEkj1dCyx+t/ga6x2rHyc8Sl86oK1tvAkwBNsfKou3v+jP/l14a7DGBvrmlYjO
+ 59o3t6inu6H7pt7OL6u6BQj7DoMAEQEAAcLBfAQYAQgAJgIbDBYhBBvZyq1zXEw6Rg38yk3e
+ EPcA/4NaBQJonNqrBQkmWAihAAoJEE3eEPcA/4NaKtMQALAJ8PzprBEXbXcEXwDKQu+P/vts
+ IfUb1UNMfMV76BicGa5NCZnJNQASDP/+bFg6O3gx5NbhHHPeaWz/VxlOmYHokHodOvtL0WCC
+ 8A5PEP8tOk6029Z+J+xUcMrJClNVFpzVvOpb1lCbhjwAV465Hy+NUSbbUiRxdzNQtLtgZzOV
+ Zw7jxUCs4UUZLQTCuBpFgb15bBxYZ/BL9MbzxPxvfUQIPbnzQMcqtpUs21CMK2PdfCh5c4gS
+ sDci6D5/ZIBw94UQWmGpM/O1ilGXde2ZzzGYl64glmccD8e87OnEgKnH3FbnJnT4iJchtSvx
+ yJNi1+t0+qDti4m88+/9IuPqCKb6Stl+s2dnLtJNrjXBGJtsQG/sRpqsJz5x1/2nPJSRMsx9
+ 5YfqbdrJSOFXDzZ8/r82HgQEtUvlSXNaXCa95ez0UkOG7+bDm2b3s0XahBQeLVCH0mw3RAQg
+ r7xDAYKIrAwfHHmMTnBQDPJwVqxJjVNr7yBic4yfzVWGCGNE4DnOW0vcIeoyhy9vnIa3w1uZ
+ 3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
+ CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
+ qIws/H2t
+In-Reply-To: <e25867b6-ffc0-4c7c-9635-9b3f47b186ca@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Sep 25, 2025 at 12:25=E2=80=AFPM Filip Hejsek <filip.hejsek@gmail.c=
-om> wrote:
-> On Thu, 2025-09-25 at 11:28 -0400, Paul Moore wrote:
-> > On Thu, Sep 25, 2025 at 10:56=E2=80=AFAM Filip Hejsek <filip.hejsek@gma=
-il.com> wrote:
-> > > On Wed, 2025-09-24 at 17:24 -0400, Paul Moore wrote:
-> > > > On Sat, Sep 13, 2025 at 1:01=E2=80=AFPM Filip Hejsek <filip.hejsek@=
-gmail.com> wrote:
-> > > > >
-> > > > > Hello,
-> > > > >
-> > > > > TLDR: because of bpf lsm, putting security=3Dselinux on commandli=
-ne
-> > > > >       results in /proc/*/attr/current returning errors.
-> > > > >
-> > > > > When the legacy security=3D commandline option is used, the speci=
-fied lsm
-> > > > > is added to the end of the lsm list. For example, security=3Dappa=
-rmor
-> > > > > results in the following order of security modules:
-> > > > >
-> > > > >    capability,landlock,lockdown,yama,bpf,apparmor
-> > > > >
-> > > > > In particular, the bpf lsm will be ordered before the chosen majo=
-r lsm.
-> > > > >
-> > > > > This causes reads and writes of /proc/*/attr/current to fail, bec=
-ause
-> > > > > the bpf hook overrides the apparmor/selinux hook.
-> > > >
-> > > > What kernel are you using?
-> > >
-> > > I'm using Arch Linux kernel, which is very close to mainline. I have
-> > > also tested my own build from git sources (I used a stripped down
-> > > config which I based on config from Arch). Example in QEMU:
-> > >
-> > > $ qemu-system-x86_64 -nodefaults -accel kvm -cpu host -smp cpus=3D2 -=
-m 1G -display none -kernel ~/git/linux/arch/x86/boot/bzImage -initrd ./init=
-ramfs.img -serial mon:stdio -append 'console=3DttyS0 security=3Dselinux'
-> > > :: mounting '' on real root
-> > > mount: /new_root: no valid filesystem type specified.
-> > > ERROR: Failed to mount '' on real root
-> > > You are now being dropped into an emergency shell.
-> > > sh: can't access tty; job control turned off
-> > > [rootfs ~]# uname -a
-> > > Linux archlinux 6.17.0-rc7-00020-gcec1e6e5d1ab #3 SMP PREEMPT_DYNAMIC=
- Thu Sep 25 16:28:02 CEST 2025 x86_64 GNU/Linux
-> > > [rootfs ~]# mount -t securityfs securityfs /sys/kernel/security
-> > > [rootfs ~]# cat /proc/cmdline
-> > > console=3DttyS0 security=3Dselinux
-> > > [rootfs ~]# cat /sys/kernel/security/lsm; echo
-> > > capability,landlock,lockdown,yama,bpf,selinux
-> > > [rootfs ~]# cat /proc/self/attr/current
-> > > cat: read error: Invalid argument
-> > >
-> > > (Note: In this example, uname reports archlinux, but that's only
-> > > because I based the config on Arch config, it's not actually an Arch
-> > > kernel.)
-> > >
-> > > Maybe the different behavior is caused by a different config? You can
-> > > find the Arch config at [1]. Based on Fedora package sources, I think
-> > > their config has
-> > >
-> > >    CONFIG_LSM=3D"lockdown,yama,integrity,selinux,bpf,landlock,ipe"
-> > >
-> > > while the Arch config has
-> > >
-> > >    CONFIG_LSM=3D"landlock,lockdown,yama,integrity,bpf"
-> >
-> > That's interesting, you're running a LSM that isn't normally run in
-> > your distro and you're not properly initializing it (no policy load).
-> > Both are acceptable, but you're definitely operating in the
-> > corner-iest of corner cases ;)
-> >
-> > I'd have to look at the relevant code, but I suspect that with
-> > "selinux" missing from the CONFIG_LSM list and you manually specifying
-> > it on the kernel command line with "security=3Dselinux" you are getting
-> > it placed at the very end as opposed to what I saw (I have "selinux"
-> > in my CONFIG_LSM list).  It's further complicated by the fact that the
-> > procfs call into the LSM's security_getprocattr() hook is going to
-> > pass a 0/zero into the hook as the @lsmid which means "first
-> > available".
-> >
-> > Considering that the "security=3D" parameter is a legacy option, I'd
-> > encourage you to try the "lsm=3D" parameter (make sure you specify the
-> > full list of LSMs you want, in order) to see if that works.
->
-> Yes, that works.
->
-> The problem isn't that there wouldn't be any working configuration. The
-> problem is that a userspace program (in my case CRIU) was broken and I
-> had to spend time figuring out what the cause of the issue was. I'm not
-> the only one who encountered this issue [1].
+On 25.09.25 20:27, Dave Hansen wrote:
+> On 9/24/25 08:22, Roy, Patrick wrote:
+>> Add an option to not perform TLB flushes after direct map manipulations.
+> 
+> I'd really prefer this be left out for now. It's a massive can of worms.
+> Let's agree on something that works and has well-defined behavior before
+> we go breaking it on purpose.
 
-Arguably, when a Linux distro that is enabling new features, e.g.
-multiple LSMs and/or the BPF LSM, they have an obligation to migrate
-away from legacy/deprecated configuration knobs to properly use those
-new features.
+May I ask what the big concern here is? Not to challenge your position 
+but to understand the involved problems and what would have to be 
+documented at some point in a patch.
 
-With the "security=3D" command line option only supporting one LSM, it's
-going to be hard to do the right thing in all situations; someone is
-always going to be upset with the placement in a multi-LSM system.
-Perhaps it's time to make a push to properly deprecate and eventually
-remove the "security=3D" command line option; it would definitely
-simplify the kernel code.
+Essentially we're removing the direct map from some memory we allocated 
+through the buddy to reinstall it before we free the memory back to the 
+buddy.
 
-> So in reporting this issue, I was just hoping to help future users
-> avoid the same problem. If you think this is a waste of time, feel free
-> to ignore this (and sorry I didn't make this clear in the first email).
->
-> Lastly, I will offer a few thoughts:
->  * The fact that the security parameter can break programs like this is
->    highly non-obvious and undocumented.
+So from the buddy POV whether we flush or don't flush the TLB shouldn't 
+matter, right?
 
-https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
+Where the missing TLB flush would be relevant is to the workload (VM) 
+where some (speculative) access through the direct map would be possible 
+until the TLB was flushed.
 
-I'll agree that the documentation probably should carry a stronger
-warning, but it is marked as deprecated.
+So until flushed, it's not-as-secure-as-you think. A flush after some 
+time (batched over multiple page allocations?) could make it deterministic.
 
->  * The BPF LSM hook which causes this breakage is useless, because a
->    BPF program cannot be attached to it. I think it would make sense to
->    just remove it.
+Is there something else that's problematic?
 
-That would be a decision the BPF LSM maintainer would need to make.
-There is precedent for doing things like this in the BPF LSM, and I
-would tend to agree that this hook probably has little use for the
-usual BPF LSMs.
+-- 
+Cheers
 
->  * Switching to using /proc/*/attr/<lsm>/* solves the problem from the
->    userspace side. Unfortunately, selinux does not have its
->    subdirectory in attr.
+David / dhildenb
 
-This is a legacy carryover from the early days of the LSM framework
-and SELinux.  By the time there was a need for LSM specific entries in
-procfs there was already a significant amount of userspace that relied
-on getting SELinux info from /proc/*/attr; migrating to
-/proc/*/attr/selinux (or any other path for that matter) would have
-broken too many things.
-
-The good news is that there are a number of reasons why we want to get
-away from using procfs for these things anyway, and we recently added
-a few LSM syscalls to both solve the procfs problems and better
-support multiple LSMs.  LWN.net wrote a nice article on the syscalls
-which you can find at the link below:
-
-* https://lwn.net/Articles/919059
-
---=20
-paul-moore.com
 
