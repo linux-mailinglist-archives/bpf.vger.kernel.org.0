@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-69693-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69694-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77802B9EA1F
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:27:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C6CB9EA19
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:27:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA80F7B3B61
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:25:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04DB23B72E8
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352972EAB84;
-	Thu, 25 Sep 2025 10:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1B52EAB7F;
+	Thu, 25 Sep 2025 10:26:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 531E22EB85F;
-	Thu, 25 Sep 2025 10:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1132EAB63;
+	Thu, 25 Sep 2025 10:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758796004; cv=none; b=PrVNnQcpW5TrYqXGHnJzkzEfKeMxkVCbEhjDgkcbFs+50bZTQSwmrEJIV00iTsEZsl/7gy3eUlMxQrfYFGtLFOCCk3z8ku9tharlFn2cjKIkqzDR4er+75waJV0hnuvKZlb8D5Oy4HL1cS+f4pP0yPbY2OTiqVJkKJe1i9ZBA6g=
+	t=1758796008; cv=none; b=TuRh0LMiLeK6xdqFdRIz44AfybbfCo+mtd5WAvu1wO5NLhPQfU1g7iPqHdUNx017MHFRXDW3TL8kQrsveQAtvtS0W5YaLZhG3fsnGocYRyTWpJwW9hXrj7gZC2dTHlcIsRx1HcQvFQefqNyEdkxQo73wqbcF+bqMx942qKnIxYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758796004; c=relaxed/simple;
-	bh=H3wg4rcmLVUVzF6Navqmshn4de5zeGYk8fBYI7vbo5o=;
+	s=arc-20240116; t=1758796008; c=relaxed/simple;
+	bh=VJZzRV2G21iA5x83mYxoxWgeXu6NWW7QN9XhzccIjOw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rjbC0QeEaiKQPNoUFyzqZ1qDAso7H8qdzXZ0uzOHWR5Z7G+er6ChB/7z6JMbjT+Xj+wqVcjSAtsLWt3pTAJwdDzYlR0BixC2X/Mwmc7ayOw2QU+GvtIJMy+uMC401MDvxM9Jh5+iovMeCMjPTSj1xkZaDICvskZlkgOu89vWvh4=
+	 In-Reply-To:To:Cc; b=sFBpk1qRuscEl86/5ujw/wW3ypX8Tw7/5T0AJJoGBb44ANrUuDSWnGRy8DZT+ynhdWYZmKw8K48hEupw0oP0n6Y+jc7dj5zpRFgbeffrdoqCB43+8wlJMb5xbMZ9IFnoRIfBgywYkwaUPLU/7Z2GTzFSdjeQicybHEaKwUtRFMM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0BCE2934;
-	Thu, 25 Sep 2025 03:26:34 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A78E42936;
+	Thu, 25 Sep 2025 03:26:38 -0700 (PDT)
 Received: from e132581.arm.com (e132581.arm.com [10.1.196.87])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C35C3F694;
-	Thu, 25 Sep 2025 03:26:39 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3DA543F694;
+	Thu, 25 Sep 2025 03:26:43 -0700 (PDT)
 From: Leo Yan <leo.yan@arm.com>
-Date: Thu, 25 Sep 2025 11:26:26 +0100
-Subject: [PATCH 2/8] perf python: split Clang options when invoking Popen
+Date: Thu, 25 Sep 2025 11:26:27 +0100
+Subject: [PATCH 3/8] bpftool: Conditionally add -Wformat-signedness flag
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -44,7 +44,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250925-perf_build_android_ndk-v1-2-8b35aadde3dc@arm.com>
+Message-Id: <20250925-perf_build_android_ndk-v1-3-8b35aadde3dc@arm.com>
 References: <20250925-perf_build_android_ndk-v1-0-8b35aadde3dc@arm.com>
 In-Reply-To: <20250925-perf_build_android_ndk-v1-0-8b35aadde3dc@arm.com>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>, 
@@ -64,63 +64,52 @@ To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
  llvm@lists.linux.dev, bpf@vger.kernel.org, Leo Yan <leo.yan@arm.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1758795991; l=2000;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1758795991; l=1336;
  i=leo.yan@arm.com; s=20250604; h=from:subject:message-id;
- bh=H3wg4rcmLVUVzF6Navqmshn4de5zeGYk8fBYI7vbo5o=;
- b=mivZ7IFeiPpzpIcuPit02dmW5nDXt0G4ItotnnkmhISWhuuBbHQKDGbS6h5R22myI5K3HQpqy
- o4FSTP4K3/wD6P7AsczSZeRjnP3d0kbFEiLoi0+edOWQs5xq9FNwAW2
+ bh=VJZzRV2G21iA5x83mYxoxWgeXu6NWW7QN9XhzccIjOw=;
+ b=5GNgul1OTFxQHj/IeyET7LW6e7d62JGQWlIFg9tx9Jl1PuU7OB88zlshiQSelFXPDqInRZBea
+ SuEuIHnLEobD/7wU6vNDFnJorWPldQRzI0fOe6ufyMQeBz3OH28QBHb
 X-Developer-Key: i=leo.yan@arm.com; a=ed25519;
  pk=k4BaDbvkCXzBFA7Nw184KHGP5thju8lKqJYIrOWxDhI=
 
-When passing a list to subprocess.Popen, each element maps to one argv
-token. Current code bundles multiple Clang flags into a single element,
-something like:
+clang-18.1.3 on Ubuntu 24.04.2 reports warning:
 
-  cmd = ['clang',
-         '--target=x86_64-linux-gnu -fintegrated-as -Wno-cast-function-type-mismatch',
-	 'test-hello.c']
+  warning: unknown warning option '-Wformat-signedness' [-Wunknown-warning-option]
 
-So Clang only sees one long, invalid option instead of separate flags,
-as a result, the script cannot capture any log via PIPE.
+Conditionally add the option only when it is supported by compiler.
 
-Fix this by using shlex.split() to separate the string so each option
-becomes its own argv element. The fixed list will be:
-
-  cmd = ['clang',
-         '--target=x86_64-linux-gnu',
-	 '-fintegrated-as',
-	 '-Wno-cast-function-type-mismatch',
-	 'test-hello.c']
-
-Fixes: 09e6f9f98370 ("perf python: Fix splitting CC into compiler and options")
 Signed-off-by: Leo Yan <leo.yan@arm.com>
 ---
- tools/perf/util/setup.py | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/bpf/bpftool/Makefile | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/setup.py b/tools/perf/util/setup.py
-index dd289d15acfd62ff058bbaed7e565bb958e3a3c8..9cae2c472f4ad4d9579e8528b8bb0152df6fe20e 100644
---- a/tools/perf/util/setup.py
-+++ b/tools/perf/util/setup.py
-@@ -1,6 +1,7 @@
- from os import getenv, path
- from subprocess import Popen, PIPE
- from re import sub
-+import shlex
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 9e9a5f006cd2aabe1e89bd83e394455c0d4473e0..948a0cc98b39d3f9afa0de73643eab04e8798ff5 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -64,11 +64,21 @@ $(LIBBPF_BOOTSTRAP)-clean: FORCE | $(LIBBPF_BOOTSTRAP_OUTPUT)
+ prefix ?= /usr/local
+ bash_compdir ?= /usr/share/bash-completion/completions
  
- cc = getenv("CC")
- assert cc, "Environment variable CC not set"
-@@ -22,7 +23,9 @@ assert srctree, "Environment variable srctree, for the Linux sources, not set"
- src_feature_tests  = f'{srctree}/tools/build/feature'
- 
- def clang_has_option(option):
--    cc_output = Popen([cc, cc_options + option, path.join(src_feature_tests, "test-hello.c") ], stderr=PIPE).stderr.readlines()
-+    cmd = shlex.split(f"{cc} {cc_options} {option}")
-+    cmd.append(path.join(src_feature_tests, "test-hello.c"))
-+    cc_output = Popen(cmd, stderr=PIPE).stderr.readlines()
-     return [o for o in cc_output if ((b"unknown argument" in o) or (b"is not supported" in o) or (b"unknown warning option" in o))] == [ ]
- 
- if cc_is_clang:
++try-run = $(shell set -e;		\
++	if ($(1)) >/dev/null 2>&1;	\
++	then echo "$(2)";		\
++	else echo "$(3)";		\
++	fi)
++
++__cc-option = $(call try-run,\
++	$(1) -Werror $(2) -c -x c /dev/null -o /dev/null,$(2),)
++cc-option = $(call __cc-option, $(CC),$(1))
++
+ CFLAGS += -O2
+ CFLAGS += -W
+ CFLAGS += -Wall
+ CFLAGS += -Wextra
+-CFLAGS += -Wformat-signedness
++CFLAGS += $(call cc-option,-Wformat-signedness)
+ CFLAGS += -Wno-unused-parameter
+ CFLAGS += -Wno-missing-field-initializers
+ CFLAGS += $(filter-out -Wswitch-enum -Wnested-externs,$(EXTRA_WARNINGS))
 
 -- 
 2.34.1
