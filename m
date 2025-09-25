@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-69723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D80DDBA0269
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:12:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A18B4BA0436
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:24:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B3CC1C2233A
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 15:10:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 451023A54A2
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 15:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C7DA31282D;
-	Thu, 25 Sep 2025 15:05:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977F32E3AF5;
+	Thu, 25 Sep 2025 15:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="rGKfUvhS"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="FjuLb5Qe"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B2E311C1E;
-	Thu, 25 Sep 2025 15:04:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EADC91EDA2C;
+	Thu, 25 Sep 2025 15:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758812703; cv=none; b=Ot5dpMaCgVdW2ZhxzxqyJqLD3T/cpid+SHoD/zK5HvNeaht5unGFXf4IAYbcjfaEJe/hozA3jzigCPntJYyikZnFVI9lWcEwcDIjM7neajJAzC2PkmdRuD4KP0CBaMHeaWO7Hj2JyDlhZ5jiKe6X1yUX9AGKLjngr7U1E9+3Td4=
+	t=1758813239; cv=none; b=a7Elz/sDBfzIUhaimEp8mJvfj1rj9K4aDeV2f9075bGvqw6Am4BsyS7ECUfyLisInHlmjYO1cT1Sz3auwrwv0/IaQzZXW5EB+w4iEVOJaZRigIQROkl6wwAqbVOsN1SdDbX3jvZ3hrrftiPzmgfkXJjRBjsAtFtbDmCxaeM0Jlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758812703; c=relaxed/simple;
-	bh=ZUmA5g3BZdtkkQzAyxPcPgH/CExuKMSZgLOzO2vj6sw=;
+	s=arc-20240116; t=1758813239; c=relaxed/simple;
+	bh=5KE8fEuMRN+X+ribjZhvbgmmDFjpZg6ol18Jr3kvPrc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GxV7JZRMBHsUM1OdSTEwr0mNJRlZv8qKFVFI2SfzxIfq/n25Xn5/n63kQxupWHMHlsElPLnnpRPijvi1nig49ECO7U2eu15VkxryWDhCe/MJii9MhQDENYRAjP3Din0elzd0MDoqmJTEOjbFtVBGyagMUDNbhXeeCZwz4gfVCak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=rGKfUvhS; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=UhlABq+4JHmO9t5EE+8Xx9k6af/SDDXrMY55FPa9CMoD2HwBbTYOK24OEzvZSKFa25HsoxtdnBHcymRGSmMO9evgN8494sB5KlO+HkHTEIS1KLE2ADVzAEhD2MvmgmpeXxzIm0yAXShlhPdo6NkBQ8+nZmG0+uwqeFy0BDB/uQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=FjuLb5Qe; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=qLwM3MlL3IIwt9UZSY1QYh/F3mEc/jCvsT/k+vTJVdE=; b=rGKfUvhSKTl+tneE8WdOVj2THv
-	32mR6pFYzq6Ce/cYz+bzMSBJiU/M4X5clHaxw1O2/SECLxCBtgSYOcvTK+BDWSJBhNVJUcLxleFr6
-	wBRocnBf+SdpO/2EHWlkkQdsh+nUkQ2kQbvfVZjaoavzTqRSW9S5A7GwzcT1JEeeAZr5JAonS4vo/
-	LyV5Pdk7m8zn0ONtJeKhUGE0LF7mBoC/WpzriDLj7J2oyP9U2b+yMpFhAcnR40Zl+Kd/9TYfdZ2w5
-	VUAgetqetQMf49l/gK+lyi1mvHsQ0ZCAzEXsKKwDLv8NACVWJ4hgDAuWLOSdr9WyVA9fKCZezQaNL
-	Gx839A9Q==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
+	bh=UDJZn+Ac105Mb+HZvbqF0SQyoV4T7vt8zW8zHN4DfEs=; b=FjuLb5Qe0+5d/Lni02o9LBjSc4
+	2dApprgTByuxUAkrMsUhw8/HbA1RUUewfMLoHmuuW33HDmTSywegQWxdCS7rLDhYLtA8EwYPE0xmB
+	is9/YDeUfJTtykd6YBX07J2fmRS55B7Nc8/BTuj6jDTVI6qOLRtCRR2DF/FxLwgHYZNiIJV0WhFMy
+	/0ffaDemtIadvO/yoNv4Edidv32B8EQvqFh6zS9uHHIIhmQYou4Jz8I7HW48H8Ki7xObykwtZsUsY
+	fHltIuET40ZsyBszgHt0JL91MYq51Skf9beXKdz/3N2A+IV3+W+viofwEuE/G9HQYIsrtZex6Jxpy
+	TV3lzT1g==;
+Received: from sslproxy08.your-server.de ([78.47.166.52])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1v1nWc-00033c-0x;
-	Thu, 25 Sep 2025 17:04:50 +0200
+	id 1v1nfP-0004us-0G;
+	Thu, 25 Sep 2025 17:13:55 +0200
 Received: from localhost ([127.0.0.1])
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1v1nWZ-000Cz3-0f;
-	Thu, 25 Sep 2025 17:04:48 +0200
-Message-ID: <5ad26663-a3cc-4bf4-9d6f-8213ac8e8ce6@iogearbox.net>
-Date: Thu, 25 Sep 2025 17:04:46 +0200
+	id 1v1nfP-0006DC-08;
+	Thu, 25 Sep 2025 17:13:54 +0200
+Message-ID: <6e8951bb-a869-4230-a2a5-c303b4434598@iogearbox.net>
+Date: Thu, 25 Sep 2025 17:13:53 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,27 +63,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] selftests/bpf: Prepare to add -Wsign-compare for
- bpf tests
-To: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>,
- andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, martin.lau@linux.dev,
+Subject: Re: [PATCH -next] bpf: Remove duplicate crypto/sha2.h header
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, ast@kernel.org
+Cc: andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
  song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
  kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- shuah@kernel.org, matttbe@kernel.org, martineau@kernel.org,
- geliang@kernel.org, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
- linux@jordanrome.com, ameryhung@gmail.com, toke@redhat.com,
- houtao1@huawei.com, emil@etsalapatis.com, yatsenko@meta.com,
- isolodrai@meta.com, a.s.protopopov@gmail.com, dxu@dxuuu.xyz,
- memxor@gmail.com, vmalik@redhat.com, bigeasy@linutronix.de, tj@kernel.org,
- gregkh@linuxfoundation.org, paul@paul-moore.com,
- bboscaccy@linux.microsoft.com, James.Bottomley@HansenPartnership.com,
- mrpre@163.com, jakub@cloudflare.com
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
- mptcp@lists.linux.dev, linux-kernel-mentees@lists.linuxfoundation.org,
- skhan@linuxfoundation.org, david.hunter.linux@gmail.com
-References: <20250925103559.14876-1-mehdi.benhadjkhelifa@gmail.com>
- <20250925103559.14876-4-mehdi.benhadjkhelifa@gmail.com>
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Abaci Robot <abaci@linux.alibaba.com>
+References: <20250925092800.2012758-1-jiapeng.chong@linux.alibaba.com>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -129,136 +116,23 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <20250925103559.14876-4-mehdi.benhadjkhelifa@gmail.com>
+In-Reply-To: <20250925092800.2012758-1-jiapeng.chong@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27773/Thu Sep 25 10:27:35 2025)
 
-On 9/25/25 12:35 PM, Mehdi Ben Hadj Khelifa wrote:
-> -Change only variable types for correct sign comparisons
+On 9/25/25 11:28 AM, Jiapeng Chong wrote:
+> ./include/linux/bpf.h: crypto/sha2.h is included more than once.
 > 
-> Signed-off-by: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=25501
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Pls write some better commit messages and not just copy/paste the same $subj/
-message every time; proper sentences w/o the weird " -" indent. Also say why
-this is needed in the commit message, and add a reference to the commit which
-initially added this as a TODO, i.e. 495d2d8133fd ("selftests/bpf: Attempt to
-build BPF programs with -Wsign-compare"). If you group these, then maybe also
-include the parts of the compiler-emitted warnings during build which are
-relevant to the code changes you do here.
+Jiapeng, is this one and the bpftool one the only two such patches you have
+for bpf or is there more to come? Asking in case there is more, then lets
+consolidate all of them into one for bpf kernel side and one for bpf tooling
+side to reduce too much noise from this..
 
-> ---
->   tools/testing/selftests/bpf/progs/test_xdp_dynptr.c          | 2 +-
->   tools/testing/selftests/bpf/progs/test_xdp_loop.c            | 2 +-
->   tools/testing/selftests/bpf/progs/test_xdp_noinline.c        | 4 ++--
->   tools/testing/selftests/bpf/progs/uprobe_multi.c             | 4 ++--
->   .../selftests/bpf/progs/uprobe_multi_session_recursive.c     | 5 +++--
->   .../selftests/bpf/progs/verifier_iterating_callbacks.c       | 2 +-
->   6 files changed, 10 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c b/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
-> index 67a77944ef29..12ad0ec91021 100644
-> --- a/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
-> @@ -89,7 +89,7 @@ static __always_inline int handle_ipv4(struct xdp_md *xdp, struct bpf_dynptr *xd
->   	struct vip vip = {};
->   	int dport;
->   	__u32 csum = 0;
-> -	int i;
-> +	size_t i;
->   
->   	__builtin_memset(eth_buffer, 0, sizeof(eth_buffer));
->   	__builtin_memset(iph_buffer_tcp, 0, sizeof(iph_buffer_tcp));
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_loop.c b/tools/testing/selftests/bpf/progs/test_xdp_loop.c
-> index 93267a68825b..e9b7bbff5c23 100644
-> --- a/tools/testing/selftests/bpf/progs/test_xdp_loop.c
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_loop.c
-> @@ -85,7 +85,7 @@ static __always_inline int handle_ipv4(struct xdp_md *xdp)
->   	struct vip vip = {};
->   	int dport;
->   	__u32 csum = 0;
-> -	int i;
-> +	size_t i;
->   
->   	if (iph + 1 > data_end)
->   		return XDP_DROP;
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> index fad94e41cef9..85ef3c0a3e20 100644
-> --- a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> @@ -372,7 +372,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
->   
->   	next_iph_u16 = (__u16 *) iph;
->   	__pragma_loop_unroll_full
-> -	for (int i = 0; i < sizeof(struct iphdr) >> 1; i++)
-> +	for (size_t i = 0; i < sizeof(struct iphdr) >> 1; i++)
->   		csum += *next_iph_u16++;
->   	iph->check = ~((csum & 0xffff) + (csum >> 16));
->   	if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct iphdr)))
-> @@ -423,7 +423,7 @@ int send_icmp_reply(void *data, void *data_end)
->   	iph->check = 0;
->   	next_iph_u16 = (__u16 *) iph;
->   	__pragma_loop_unroll_full
-> -	for (int i = 0; i < sizeof(struct iphdr) >> 1; i++)
-> +	for (size_t i = 0; i < sizeof(struct iphdr) >> 1; i++)
->   		csum += *next_iph_u16++;
->   	iph->check = ~((csum & 0xffff) + (csum >> 16));
->   	return swap_mac_and_send(data, data_end);
-> diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> index 44190efcdba2..f99957773c3a 100644
-> --- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> +++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> @@ -20,13 +20,13 @@ __u64 uretprobe_multi_func_3_result = 0;
->   
->   __u64 uprobe_multi_sleep_result = 0;
->   
-> -int pid = 0;
-> +__u32 pid = 0;
->   int child_pid = 0;
->   int child_tid = 0;
->   int child_pid_usdt = 0;
->   int child_tid_usdt = 0;
->   
-> -int expect_pid = 0;
-> +__u32 expect_pid = 0;
->   bool bad_pid_seen = false;
->   bool bad_pid_seen_usdt = false;
->   
-> diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c b/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
-> index 8fbcd69fae22..017f1859ebe8 100644
-> --- a/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
-> +++ b/tools/testing/selftests/bpf/progs/uprobe_multi_session_recursive.c
-> @@ -3,6 +3,7 @@
->   #include <bpf/bpf_helpers.h>
->   #include <bpf/bpf_tracing.h>
->   #include <stdbool.h>
-> +#include <stddef.h>
->   #include "bpf_kfuncs.h"
->   #include "bpf_misc.h"
->   
-> @@ -10,8 +11,8 @@ char _license[] SEC("license") = "GPL";
->   
->   int pid = 0;
->   
-> -int idx_entry = 0;
-> -int idx_return = 0;
-> +size_t idx_entry = 0;
-> +size_t idx_return = 0;
->   
->   __u64 test_uprobe_cookie_entry[6];
->   __u64 test_uprobe_cookie_return[3];
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-> index 75dd922e4e9f..72f9f8c23c93 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-> @@ -593,7 +593,7 @@ int loop_inside_iter_volatile_limit(const void *ctx)
->   {
->   	struct bpf_iter_num it;
->   	int *v, sum = 0;
-> -	__u64 i = 0;
-> +	__s32 i = 0;
->   
->   	bpf_iter_num_new(&it, 0, ARR2_SZ);
->   	while ((v = bpf_iter_num_next(&it))) {
-
+Thanks,
+Daniel
 
