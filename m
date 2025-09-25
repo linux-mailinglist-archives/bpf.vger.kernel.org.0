@@ -1,98 +1,103 @@
-Return-Path: <bpf+bounces-69704-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69705-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FF8CB9ECE9
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:49:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A9F5B9ED67
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:58:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E6151897372
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:48:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E06C3AF87E
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5CD2F7478;
-	Thu, 25 Sep 2025 10:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E54A2F532B;
+	Thu, 25 Sep 2025 10:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="TjmvLZoD"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="edjWrsJp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A3614658D
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C3714658D
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758797228; cv=none; b=rQqtRLtAFBtEJhXY06XXdUx8+BvEdLivT/IdB9nDPmgFW703sY3RSGvqyuwbSBFZHuVvBgdZMLjI/g7jYkazi3w0FvRuQUFCb3z3Zp3tCeCP7Xh8cHtg/D0tKmnAy3BzVOb/vwgZ248mSPV331jGKEQ5t/ZwQVt0ZKgP/jo2+6Q=
+	t=1758797899; cv=none; b=sSPUSYvMdmM3h4nG8u0/q2/O26NGpZ1th/XwpHJGAPZOeYQoqpaDCtqFZad4yALPN0/Xi9+Sa3emzC8nQfH9UZdocvEshcaBzv+kBD5bg/rroDlGCmqRdBZKNd5m03OCPNFit23HP2OcPpIzya27+9iCOToQqx9UWMDZH3DhyqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758797228; c=relaxed/simple;
-	bh=8nvJ8A7foyLcKS29tCoL0fPQRMxEjUQMAs2niNyf/vM=;
+	s=arc-20240116; t=1758797899; c=relaxed/simple;
+	bh=goeEHV8pp0nSp3KK7+LsINEPmAxyg+E+nyBBoSFwzRE=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ioh3zv4hsbxvyzOr2mUY50Qo91f4L+asGDNzODSF/luMMN4N9biViNORDRc4a5stYeKkzSlWuXyRYIksdBcFRcbIE3VRcviZkb0LopTYCR7dcldw35C2D2vTbow9bUf4UYQE22er48rMhvMTqsRUNC+n5grgn0JcTOpHmPalsKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=TjmvLZoD; arc=none smtp.client-ip=209.85.208.48
+	 MIME-Version:Content-Type; b=smZtPpTDp+w7Pif3I2U+HQpL93RLlXWW+qAYXdwGNuzeR04Qzvs/MIA3SezPUJkvTQdyjBpDFDPWJLP/SNxa+/Z0tDTwpRx1y/Ej5mypJPzDdhnrqNrmzWvPq/USjIvxLL9XlWTBtKCzLvp31fdV+7+xwW9P9NqAZKMJ9n49nKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=edjWrsJp; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-62fc0b7bf62so1137920a12.2
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 03:47:07 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b04ba58a84fso140034966b.2
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 03:58:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1758797226; x=1759402026; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1758797896; x=1759402696; darn=vger.kernel.org;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WtezjMk6/bO0x/tPzo5ofmo/kKFHp0RyWiXSJ7o70so=;
-        b=TjmvLZoDR1ZuQaL4P8J1XHY/ORwiC/F+3lKzWOBkh0OsDPetD3+z7WqOUWUj9kKHKf
-         34O9dAdfPY0qRv1YCTw17V5aIIj6iSY5xYZcMf6NvGEbxg8IFdKzpmmDmoVBIun1ymFX
-         CUK5HCGn7uD1nvayqvdvp2m6D4GLhbZZnpOE4fyKsfzGqzYZS1BA+1xTLsRSl7PunAoV
-         /lO2gqIBOj7LxARwe7lkepO59nAX4ecpO4QYuCUaTY1JcUIBL5+R4D31xqwIjIVZE2ui
-         6QrmXBwDby1kq2E9wWym0EfKaHSaurEIhSYJQa2RjxD6pKzBdT5o5PJHgSAK2DAMOvj8
-         W+hA==
+        bh=qoutmRJfBiooSSHCtQV7QJz0oS7nanw5QS3919xibtc=;
+        b=edjWrsJpcWLUjAgftTi47573qE+Q2uX/ylea3V3EEONhCNHIf2DLvmZ8SvZQGb2KjT
+         afCEBcg3p72MbxotM1nz9kMB5kI/42aQ+B7POIUtqbeopzcAHrHKT347OIMG6aetH/RZ
+         XWOEOxsr+Ei3h6yBi6i5Amml64oj73cAtYwN5gI0NQPKDevh7WqD3ZRGlBW7cBiM5hAo
+         mJs71VaPRjU5N3bal6U+XTCx8+Tt47G8QNWHMptXPSIVeFQradmAWPlhUaUh533GhGrH
+         4mXKm3hk1g6BlfT/nJ77+7HTEWgSiKtd3QzRr1rPSpnMpAPGui+RFunYX5FHzElgO54A
+         Vsfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758797226; x=1759402026;
+        d=1e100.net; s=20230601; t=1758797896; x=1759402696;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WtezjMk6/bO0x/tPzo5ofmo/kKFHp0RyWiXSJ7o70so=;
-        b=nNWTaB/JidTTmpCsD1On36+0S3eB2yRq5sGBJNPfOmFXeJoa/ImkiVmWFSe7oQk1uz
-         PdS/wSAftM0Yy2KUjdnP1/rdsnC/REiJ5zyeL8tCWQB2ALBG61bxzz2OASn6hVAvFv/z
-         1qEtMicX9dbXFkRQfaWEyEEIXmBleG1KygGKqqgf9v1Oc+OLploDcu/9mc5ssRIDSFit
-         SvdSc4QNWuiXztDA7jAo3Agon/VtsS2deytk2pTR6K4USmZ/8Tf8Z6Fg20VoWhKir9nH
-         D4HKFQ+shbWbB2caTNd7wP7oaJ6w9CfabOxFLYqeja73BY3o9UXVzdFQXYgV93Hew0cT
-         VPRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVdjmoPKVFmuOyik20274f3p3cHHjuCnbYxGEakB614snD9kl5q4E3s1wHocDJrsdN/HCY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrQvbFEOP4gDD/0Zz2MLtUYswJrPCNFFCzJzd8BWCLgcy+mbt2
-	OPdRRvoy+Zn+C+b54jD+XBswj+mfEQ/Mm/tOgKzfqmiZUGN8ykY87KabmmnKJj7Gbqs=
-X-Gm-Gg: ASbGncvI5xA2/K+nmsIpW/vtlKIqtOzkSyFxwdALhd2mEt3Ax4thXP7MGpC2X1vlsNi
-	sOdnX1Zri9qQp33ZNfcHz8wUOMYk+2J0NXnIfTk0z9s+JQ+2WRSSjsFVaPzB7RpJQDXF70fSlXq
-	yxcReSH9iDEQSCSK08TPBDMm3Bg4IXqaWvQu/aZiT8DgEUYKWPhj3G7+CfPq7GC9efpxCXwrPml
-	T+D8yTfzhmrhs3DWTCqWzQWH8UaPytAnZU6Ixc8yFUTMDdgtLyWGEPVxdelQGIOVQXe6HV2ztJ8
-	2y6zgT4crFBH013wkmQGAweqkNPpy7b6EhNxvhkYRP6rIxh+VzEeVWgFQNcF7pucIQs69gLsI1I
-	IGUUsAPR1Kijhr38=
-X-Google-Smtp-Source: AGHT+IEEcfDn2RrVsshiYTVRq+15zLodFJyHTF6YE6Rd2TNw1hBwfGLx4qw9HosoUAVdPzH9DGkLsA==
-X-Received: by 2002:a17:906:6a14:b0:b29:8743:8203 with SMTP id a640c23a62f3a-b34b14ad9e0mr345065266b.0.1758797225581;
-        Thu, 25 Sep 2025 03:47:05 -0700 (PDT)
+        bh=qoutmRJfBiooSSHCtQV7QJz0oS7nanw5QS3919xibtc=;
+        b=su8xGtMFTKvgwVRjFBE9dRhfmvAbLAN+Q32w0M9UfROzJTBnGaMwVbAt77CTeNoI1k
+         QQdeIY4LpDWqbg3OEigoEVeqdNGS16AMdfcFjnKF9looWWpfgDJiRjD+A9VnzSf/0kkr
+         8GFUwVcGajfMCOzBKSAX4WefIRXAdFcVhFLvTmpOI5I9JezBUzhFjV5wPnbf5/F7ewYV
+         8i/578ecNY3COFDFzf0aGwK7U2XhoTviaCb3G9o+nbY5Ke98R4SFRSqSqvWk9ToEGBC8
+         GhI66epSd54a2wyfGB5NP2ELHlmIrSZgsUt/nsGO3OixjBOrxPPrjZvIwVsqyubWOKdc
+         eH4g==
+X-Forwarded-Encrypted: i=1; AJvYcCUhVY54pnRr+GVBqwumdOGcOYcJLct3Xrry8cHUVpP1JAz6y1Rp7wtgB3Rv8NdOdDIwyUc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOE5q5KqJbRAr9pwILiuz3B/0aSkr7ZpBUMxAFUNUy0IPBnQdf
+	OLgyOkC2zj55beNhhauQ50M4nIVAwFUVMVI7z6tU42UVbzYBEYEklbua1PKG5S31zQY=
+X-Gm-Gg: ASbGncuZrcb/IixFedUAlOdgiaoSB6w/2q98otdhIketuwXmUVSrxoa3vHzJN6k2dI4
+	KHDMlaf/EsnL2Vlo1HTFvzzM3bA8SPmm6nvBUFsx2nmvfZvhup832vWSbiUMUauXe1rnRhnBVha
+	yoR8rFqDltc0wctdZYjgsy77IqaX3u4BTgNchqdjVAfpFPqu73xlWxpZo8Sb0bkSOkZyw7X9Pc2
+	iX3K1/GuCCDZlUICYtUEmUrUScoHq+Q35un/ID0ZkUWtb24AtX4YEz81mzxLynZ6YukqHy3jL2S
+	4H4mcGNBgHfiswDram1id9Y/u+zO7pA8n3oJCFVqJaYSqp/I5GEr+k/C7DuUMzTZ0EBXCsqfBW5
+	GT2ySLQYFiRghBNA=
+X-Google-Smtp-Source: AGHT+IEinH3OcipauCDmRqja5aQEPZ/J+HFOTVgp17H/W3ZS2eXjpFNwJ5ilU5Q4ue35F4Z7ahPnlw==
+X-Received: by 2002:a17:907:3d90:b0:b10:3eb2:2074 with SMTP id a640c23a62f3a-b34baa34934mr375500866b.18.1758797896306;
+        Thu, 25 Sep 2025 03:58:16 -0700 (PDT)
 Received: from cloudflare.com ([2a09:bac6:d677:295f::41f:5e])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b3545a983ffsm140688266b.94.2025.09.25.03.47.04
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b353efa4c35sm143452466b.26.2025.09.25.03.58.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 03:47:04 -0700 (PDT)
+        Thu, 25 Sep 2025 03:58:15 -0700 (PDT)
 From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
-Cc: davem@davemloft.net,  edumazet@google.com,  kuba@kernel.org,
-  pabeni@redhat.com,  donald.hunter@gmail.com,  andrew+netdev@lunn.ch,
-  ast@kernel.org,  daniel@iogearbox.net,  hawk@kernel.org,
-  john.fastabend@gmail.com,  matttbe@kernel.org,  chuck.lever@oracle.com,
-  jdamato@fastly.com,  skhawaja@google.com,  dw@davidwei.uk,
-  mkarsten@uwaterloo.ca,  yoong.siang.song@intel.com,
-  david.hunter.linux@gmail.com,  skhan@linuxfoundation.org,
-  horms@kernel.org,  sdf@fomichev.me,  netdev@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  bpf@vger.kernel.org,
-  linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH RFC 0/4] Add XDP RX queue index metadata via kfuncs
-In-Reply-To: <e85e7bb2-6229-4b04-9c2a-7a7b79497c6c@gmail.com> (Mehdi Ben Hadj
-	Khelifa's message of "Thu, 25 Sep 2025 12:28:07 +0100")
-References: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
-	<87h5wq50l0.fsf@cloudflare.com>
-	<0cddb596-a70b-48d4-9d8e-c6cb76abd9d2@gmail.com>
-	<87348a4yyd.fsf@cloudflare.com>
-	<e85e7bb2-6229-4b04-9c2a-7a7b79497c6c@gmail.com>
-Date: Thu, 25 Sep 2025 12:47:03 +0200
-Message-ID: <87y0q23j2w.fsf@cloudflare.com>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Donald Hunter <donald.hunter@gmail.com>,  Jakub Kicinski
+ <kuba@kernel.org>,  "David S. Miller" <davem@davemloft.net>,  Eric Dumazet
+ <edumazet@google.com>,  Paolo Abeni <pabeni@redhat.com>,  Simon Horman
+ <horms@kernel.org>,  Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Jesper Dangaard Brouer <hawk@kernel.org>,  John
+ Fastabend <john.fastabend@gmail.com>,  Stanislav Fomichev
+ <sdf@fomichev.me>,  Andrew Lunn <andrew+netdev@lunn.ch>,  Tony Nguyen
+ <anthony.l.nguyen@intel.com>,  Przemek Kitszel
+ <przemyslaw.kitszel@intel.com>,  Alexander Lobakin
+ <aleksander.lobakin@intel.com>,  Andrii Nakryiko <andrii@kernel.org>,
+  Martin KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman
+ <eddyz87@gmail.com>,  Song Liu <song@kernel.org>,  Yonghong Song
+ <yonghong.song@linux.dev>,  KP Singh <kpsingh@kernel.org>,  Hao Luo
+ <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>,  Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+  netdev@vger.kernel.org,  bpf@vger.kernel.org,
+  intel-wired-lan@lists.osuosl.org,  linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v2 0/5] Add the the capability to load HW
+ RX checsum in eBPF programs
+In-Reply-To: <aNUb2rB8QAJj-aUX@lore-desk> (Lorenzo Bianconi's message of "Thu,
+	25 Sep 2025 12:39:22 +0200")
+References: <20250925-bpf-xdp-meta-rxcksum-v2-0-6b3fe987ce91@kernel.org>
+	<87bjmy508n.fsf@cloudflare.com> <aNUb2rB8QAJj-aUX@lore-desk>
+Date: Thu, 25 Sep 2025 12:58:14 +0200
+Message-ID: <87tt0q3ik9.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,46 +106,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-On Thu, Sep 25, 2025 at 12:28 PM +01, Mehdi Ben Hadj Khelifa wrote:
-> On 9/25/25 11:18 AM, Jakub Sitnicki wrote:
->> On Thu, Sep 25, 2025 at 11:54 AM +01, Mehdi Ben Hadj Khelifa wrote:
->>> On 9/25/25 10:43 AM, Jakub Sitnicki wrote:
->>>> On Tue, Sep 23, 2025 at 10:00 PM +01, Mehdi Ben Hadj Khelifa wrote:
->>>>>    This patch series is intended to make a base for setting
->>>>>    queue_index in the xdp_rxq_info struct in bpf/cpumap.c to
->>>>>    the right index. Although that part I still didn't figure
->>>>>    out yet,I m searching for my guidance to do that as well
->>>>>    as for the correctness of the patches in this series.
->>>> What is the use case/movtivation behind this work?
->>>
->>> The goal of the work is to have xdp programs have the correct packet RX queue
->>> index after being redirected through cpumap because currently the queue_index
->>> gets unset or more accurately set to 0 as a default in xdp_rxq_info. This is my
->>> current understanding.I still have to know how I can propogate that HW hint from
->>> the NICs to the function where I need it.
->> This explains what this series does, the desired end state of
->> information passing, but not why is does it - how that information is
->> going to be consumed? To what end?
+On Thu, Sep 25, 2025 at 12:39 PM +02, Lorenzo Bianconi wrote:
+>> On Thu, Sep 25, 2025 at 11:30 AM +02, Lorenzo Bianconi wrote:
+>> > Introduce bpf_xdp_metadata_rx_checksum() kfunc in order to load the HW
+>> > RX cheksum results in the eBPF program binded to the NIC.
+>> > Implement xmo_rx_checksum callback for veth and ice drivers.
+>> 
+>> What are going to do with HW RX checksum once XDP prog can access it?
 >
-> In my vision,The queue index propagated correctly through cpumap can help xdp
-> programs use it for things such as per queue load balancing,Adaptive RSS tuning
-> and even maybe for DDoS mitigation where they can drop traffic per queue.I mean
-> if these aren't correct intents or if they don't justify the added code, I can
-> abort working on it. Even if they weren't I need more guidance on how I can have
-> that metadata from HW hints...
+> I guess there are multiple use-cases for bpf_xdp_metadata_rx_checksum()
+> kfunc. The first the I have in mind is when packets are received by an af_xdp
+> application. In this case I think we currently do not have any way to check if
+> the packet checksum is correct, right?
+> I think Jesper has other use-cases in mind, I will let him comment
+> here.
 
-Both filtering or load balancing you'd want to do early on - in the XDP
-program invoked on receive from NIC, which as Stanislav pointed out
-already has access to the RX queue index in its context. Not on the
-remote CPU after spending cycles on a redirect.
+Can you share more details on what the AF_XDP application would that
+info?
 
-And even if you wanted to pass that information to the remote XDP
-program, to do something with it, you can already store it in custom XDP
-metadata [1].
+Regarding the use cases that Jesper is trying to unlock, as things stand
+we don't have a way, or an agreement on how to inject/propagate even the
+already existing NIC hints back into the network stack.
 
-So while perhaps there is something that you can't do today but would be
-useful, I don't know what it is. Hence my question about the use case.
+Hence my question - why do we want to expose another NIC hint to XDP
+that we can't consume in any useful way yet?
 
-[1] https://docs.ebpf.io/linux/helper-function/bpf_xdp_adjust_meta/
-
+Shouldn't we first figure out how we're planning to re-inject that info
+into the stack?
 
