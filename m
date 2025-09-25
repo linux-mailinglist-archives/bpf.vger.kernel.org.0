@@ -1,144 +1,142 @@
-Return-Path: <bpf+bounces-69667-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27623B9E26D
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:57:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DF76B9E87E
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 12:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E20053B476B
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 08:57:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EDE81BC1727
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 10:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4016279DB1;
-	Thu, 25 Sep 2025 08:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106302EA179;
+	Thu, 25 Sep 2025 10:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BHDiEPeN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="me7MDBbx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BF9E55A
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 08:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB652882B6
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:01:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758790658; cv=none; b=g9qj40/qRn/DZ20mDK2USfHGLJW9C/bIKtWJzqGnc32n0ZsJMv/o9hpmkaixwqrF/fOFnIcRt1yTc1abD3SAQejfdELgKvzy2njO+dR0G8TyKVt+C3whBWOMGs2WKUxVdHrh8brjfPQ2GcUiDeGGl5IMsYWLjfJRMbmslMLCUus=
+	t=1758794477; cv=none; b=FPt4EoF+2WT/mNviZH2FynsXWSkSLw+RjtXYwSBgT9JhiNDrZF1clb7BvN9VHvvlB47ux820dsbloI7qiRg4q9TMnMHNQDf+h9BcwZysiG22WQuNwa8yDDblw9/uV/gTycMzO3+CZS5MCPIqjSBTIRwrn3NO3UGzTYXAR2LWVoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758790658; c=relaxed/simple;
-	bh=QQ2vjrQn/Zieqm61suYuD8VfLZgZWU8v8LJfcKU4ZZk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JTY6ZHg7jgnO+LpXKb1ziumrEx6adoGgnHXkoVRMNjQgW5HKT0YNVoXJjVUNjBWADdfzSk6kw4lZZP5cGDNydEtH2K98BUyL6iEGdQUWSa7C7pXxdV5ThtkTbIJ1ywzh1NGbUPDjOzv/obPM2EH3QAAw8XHbJTWMdqrFAmBiFMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BHDiEPeN; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1758794477; c=relaxed/simple;
+	bh=MmaMbvm0BD9NGLBFscAIFMVqjCmdg8rnqQ4WZdh20jg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qYEZrzTX0piqOE6rBC15iYT6CMHUuUf+A1xwYYihEO1XyLdOLwJs4cqGeu8lECtrkwJWB3IB7eYgiGcGMy/ZF4rqckQ5pnHwD+MNz8SFxfJRGDQwrxHMvYYevyv1cMC1BRoPxErF1dMfk6GxiUhFgztQQckn1bgkUFRLyt3aRTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=me7MDBbx; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b2b8b6a1429so10165266b.1
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 01:57:35 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3ee1221ceaaso493944f8f.3
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 03:01:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758790654; x=1759395454; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J1ieKdh8ZnL9X5ENVHhQYpO7ehaHx1VKRXFWr/P98Bs=;
-        b=BHDiEPeNjx7s5Cw3qnHAcG0G2+VJpqG7zkFKViiXqASTpsPj9NnKR0r2JoUMFJ1n1E
-         talS9PQKEpCbAx3F0qNbbK08xrzMYWixi9M9YKcwA/LlLnAgklC7o+koibOOz6yU42ha
-         yKaVew5HXBImky6/Uwobgbqx5XY0fuyfHmwwuX8wczaNVCQR16x4w8DPRKH4g4uqGAFa
-         HpmQuLV9NDczZDLsKs+ksFLI+uXPZiawxPV9mrJYC66J6iezcY2hOyh6i+4t7Rdagnqs
-         aWXtfl4qcia0yL4pF+yVYw9cgKBh4g2573Dmv1MIGsZt+qsEqp2maXMiUxiyEc63Otpy
-         6Xug==
+        d=gmail.com; s=20230601; t=1758794474; x=1759399274; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ua5lAPnVTXrXgCW85PYKdWzoS2UhfrJn6AOwiqTs+L0=;
+        b=me7MDBbxXUkYk/48dM6L9kTINAkz84AfsffG60w0KJNtx+nUhhY4FmKUe6Jxn+crey
+         vwnxtgb9oK7oH18SfMCxe6x6Pby2cafFqcH90iVfo3sm1+sUfO/8t7z+yAJrKS/JT5eO
+         Yw8SZk98nZKQo5sM2S8SO3jZBO0FtSLbJ2c4rN98oia5IzrO6OxKedsT27UHZ4siTGvU
+         qm8OZLLUCPtWgfuaxAgwHfdSAoiUPJO2N+HJR3jFUMsbwcVbRnPhibW8RCTYFvargrzH
+         LQHqlfQvXHyefM0VGiAsjmd3j+RrspBg9Na2TwlRvXbm+Gjf4i5SvI+L95NlMrfm4Pgl
+         DBHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758790654; x=1759395454;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J1ieKdh8ZnL9X5ENVHhQYpO7ehaHx1VKRXFWr/P98Bs=;
-        b=n3BR3eteN5JhEsM4IxOQfVN7OmH+CaJ6LdZyJ7zFmcjvwV6rM+k2PCP0vhKY/ZVORV
-         Icbt8PrD2uiBcigzq+KBb9P3RUDW+Ah2H+wvfU5DbCdjr8BVSQyRaQA4LlY6fzZicSES
-         5ayz7392OkQJM2KSldGpNk2uJQKNXRbE5MzUn+y30O13CQXfJgJvgHvHnmEitg11Dp4h
-         sIjrq2HsLCzZYDbPhpULqqlh3k1/981i9+wbmIQn37939oM63HYAORHxI8zGjNMd0sHc
-         zjxxHvlh1zSxpZpemY9BZRSKpz3wwD3Y5w1cbC+bohR93pqvSNyJg8+a+trc6RDmmYcT
-         zZTg==
-X-Forwarded-Encrypted: i=1; AJvYcCXqfRAaub0kGgQFYMasN+wpduxiYFQt4JsfYQvH8DxfDCgAwp5bn4xrExRziBVXyUc7+3s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyomZniff/GF+93iH8fG7zESrgAYmYZbL3/2PI+Z4sJcjnH1vAM
-	/LB0dIIQzaSrTf1yaJzN8n88v753BcemI1/lArZMb+GlW/Be3u83To0R
-X-Gm-Gg: ASbGncs4n1HkfWYOuo8W1AJYm6O0PO8oYzBAj8984Iq82O8jesqS7/vjsTTqvESkFyg
-	GFZKNb/5CM/uZuO+VAFd/tM0R10cbosgQHTYlQFjfwgZ7QV7Y54bCKq5dXVYZlKgczYDgegwEV+
-	XgmSMUsl7/z1xZyYr6Ay5NrhdtCJqvE5APfFPxSWEDOMrWYuLqwBMmPc6jP5nUhq5G2XPM8Prkf
-	dGaQQyHxEuXaXTJI0teF8c66VmM2y98fDVnQ+Z7ZwTYhOKZfZbbG9YjMGNWctp7QpKzlhW0iryj
-	AaRRYgF1qzspoaaZb2WVP+dIKpSDci7gOTaBUfJOxEnLrcBBB6te4P3gtu9NZ+QdAAd15OM0o9N
-	zUNL8x2u4aHksEsfiosOdOMRZieEOXTHW9oy7YqfcLqU=
-X-Google-Smtp-Source: AGHT+IHgxhg/8L0HWZrIRreMxlREkgm0qw2qxTqKaDyvZUongIqmZ+eF5XRwzrB4DjOfUfKpvkk3Ig==
-X-Received: by 2002:a17:906:f599:b0:b0c:ac7d:474f with SMTP id a640c23a62f3a-b34bfe4619bmr131647766b.10.1758790653822;
-        Thu, 25 Sep 2025 01:57:33 -0700 (PDT)
-Received: from [192.168.1.105] ([165.50.112.244])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b353efb8903sm123418466b.33.2025.09.25.01.57.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Sep 2025 01:57:33 -0700 (PDT)
-Message-ID: <9773fb16-d497-4d67-804d-0c6e70def886@gmail.com>
-Date: Thu, 25 Sep 2025 10:57:30 +0100
+        d=1e100.net; s=20230601; t=1758794474; x=1759399274;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ua5lAPnVTXrXgCW85PYKdWzoS2UhfrJn6AOwiqTs+L0=;
+        b=aI8lOIO7fL9EaTmsisymBGfB96Ht04ux9AkLnXgyjmGPC0T2oiKt0citfPYQri144t
+         CMOFWPADT+KAK/wKNYLTLbflOun8UWq0Z+Z3F/dTLFRWHOmI6U2p8OPSM57eGV1Kzyb1
+         4g6GfM/lftYjj+I6vUD71We26x+x4ptnfNUzSPVhAJNb1ierlzCAu1ihdPYAj2y2y+UR
+         KE+Ttr2rpC0QafS7kZI7NOYQe4XgHLcoD5tDuS+MDRHiqzuzHuW5xod7cue8VMB6XDN4
+         DRQOzVd2D544o1hU8bZjGPlF+m0Tm7VkEieox8Rr9I1Xv2fCxKTl+9LsqPNo5C0OK1lw
+         E7tQ==
+X-Gm-Message-State: AOJu0YyUyFS99YfpuRQNOLwj4qzXeWOXBKejXuUJB8TMoW3mYk61v1SI
+	ycExD1NDgSCOGJZBlhZtxflo48AAbg61GViY9+EkW+OkxK2I1V8/aJJ+f2+d+iqWJEJ0Dshz5tu
+	IVTXtei0RIZ8uoOt1QcknXP+kdNDp3YM=
+X-Gm-Gg: ASbGncuRrO3zt2qpNCqFiuSERuK5wO7Vxuw4hVijYnpjS3g5waGPslL0rX/n18VRMwe
+	4J8iAGWT/qXUMtz/noNgGC8BFLbgFucVcDIV7PlUn+JcOlEgmOEYLRP/W54Y8ibYwrlVvW4KBSt
+	e04O+tMmwdogO6n51wivkYM5+MsgTM0nTUm9AdCudV9c3VbhV09rWh7myhShN6CoqU07wBUF2sQ
+	FwQfQ==
+X-Google-Smtp-Source: AGHT+IGtR2czsdkyEmAICV40coZ6c28sg3u9AZr4AKSP8hxkY5faznN8s+d+okKrk1LIYnfpOO2+/acK3rYiukENt30=
+X-Received: by 2002:a5d:588c:0:b0:3ee:15b9:97c4 with SMTP id
+ ffacd0b85a97d-40e4cc63177mr2528966f8f.52.1758794474154; Thu, 25 Sep 2025
+ 03:01:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/4] Add XDP RX queue index metadata via kfuncs
-To: Stanislav Fomichev <stfomichev@gmail.com>, lorenzo@kernel.org
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, donald.hunter@gmail.com, andrew+netdev@lunn.ch,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, matttbe@kernel.org, chuck.lever@oracle.com,
- jdamato@fastly.com, skhawaja@google.com, dw@davidwei.uk,
- mkarsten@uwaterloo.ca, yoong.siang.song@intel.com,
- david.hunter.linux@gmail.com, skhan@linuxfoundation.org, horms@kernel.org,
- sdf@fomichev.me, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
-References: <20250923210026.3870-1-mehdi.benhadjkhelifa@gmail.com>
- <aNMG2X2GLDLBIjzB@mini-arch> <f103da72-0973-4a45-af81-ec1537422433@gmail.com>
- <aNRxRRSfjOzSPNks@mini-arch>
-Content-Language: en-US
-From: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
-In-Reply-To: <aNRxRRSfjOzSPNks@mini-arch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250924211716.1287715-1-ihor.solodrai@linux.dev> <20250924211716.1287715-6-ihor.solodrai@linux.dev>
+In-Reply-To: <20250924211716.1287715-6-ihor.solodrai@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 25 Sep 2025 11:01:03 +0100
+X-Gm-Features: AS18NWBuk_kSerlDHBMCegasZ7D_viImTdL1RG35VfP-zH03EO5RnHpv-wkb75c
+Message-ID: <CAADnVQLVeZd0JOz-GBgZfi=t5kvtH_z1Ri2w6b-AW7DHgEBv5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 5/6] bpf: mark bpf_stream_vprink kfunc with KF_IMPLICIT_PROG_AUX_ARG
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, dwarves <dwarves@vger.kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/24/25 11:31 PM, Stanislav Fomichev wrote:
-> On 09/24, Mehdi Ben Hadj Khelifa wrote:
->> On 9/23/25 9:45 PM, Stanislav Fomichev wrote:
->>> On 09/23, Mehdi Ben Hadj Khelifa wrote:
->>>> ---
->>>> Mehdi Ben Hadj Khelifa (4):
->>>>     netlink: specs: Add XDP RX queue index to XDP metadata
->>>>     net: xdp: Add xmo_rx_queue_index callback
->>>>     uapi: netdev: Add XDP RX queue index metadata flags
->>>>     net: veth: Implement RX queue index XDP hint
->>>>
->>>>    Documentation/netlink/specs/netdev.yaml |  5 +++++
->>>>    drivers/net/veth.c                      | 12 ++++++++++++
->>>>    include/net/xdp.h                       |  5 +++++
->>>>    include/uapi/linux/netdev.h             |  3 +++
->>>>    net/core/xdp.c                          | 15 +++++++++++++++
->>>>    tools/include/uapi/linux/netdev.h       |  3 +++
->>>>    6 files changed, 43 insertions(+)
->>>>    ---
->>>>    base-commit: 07e27ad16399afcd693be20211b0dfae63e0615f
->>>>    this is the commit of tag: v6.17-rc7 on the mainline.
->>>>    This patch series is intended to make a base for setting
->>>>    queue_index in the xdp_rxq_info struct in bpf/cpumap.c to
->>>>    the right index. Although that part I still didn't figure
->>>>    out yet,I m searching for my guidance to do that as well
->>>>    as for the correctness of the patches in this series.
->>
->>>
-> I don't really understand what queue_index means for the cpu map. It is
-> a kernel thread doing work, there is no queue. Maybe whoever added
-> the todo can clarify?
+On Wed, Sep 24, 2025 at 10:17=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux=
+.dev> wrote:
+>
+> Update bpf_stream_vprink macro in libbpf and fix call sites in
 
-Hi Lorenzo,
-Can you help us clarify the todo added in cpu_map_bpf_prog_run_xdp() in 
-this commit: 
-github.com/torvalds/linux/commit/9216477449f33cdbc9c9a99d49f500b7fbb81702 ?
+'t' is missing in bpf_stream_vprintk().
 
-Regards,
-Mehdi
+> the relevant selftests.
+>
+> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> ---
+>  kernel/bpf/helpers.c                            | 2 +-
+>  kernel/bpf/stream.c                             | 3 +--
+>  tools/lib/bpf/bpf_helpers.h                     | 4 ++--
+>  tools/testing/selftests/bpf/progs/stream_fail.c | 6 +++---
+>  4 files changed, 7 insertions(+), 8 deletions(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 6b46acfec790..875195a0ea72 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -4378,7 +4378,7 @@ BTF_ID_FLAGS(func, bpf_strnstr);
+>  #if defined(CONFIG_BPF_LSM) && defined(CONFIG_CGROUPS)
+>  BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
+>  #endif
+> -BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS | KF_IMPLICIT_PRO=
+G_AUX_ARG)
+
+This kfunc will be in part of 6.17 release in a couple days,
+so backward compat work is necessary.
+I don't think we can just remove the arg.
+
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -316,7 +316,7 @@ enum libbpf_tristate {
+>  })
+>
+>  extern int bpf_stream_vprintk(int stream_id, const char *fmt__str, const=
+ void *args,
+> -                             __u32 len__sz, void *aux__prog) __weak __ks=
+ym;
+> +                             __u32 len__sz) __weak __ksym;
+
+CI is complaining of conflicting types for 'bpf_stream_vprintk',
+since it's using pahole master.
+It will stop complaining once pahole changes are merged,
+but this issue will affect all developers until they
+update pahole.
+Not sure how to keep backward compat.
 
