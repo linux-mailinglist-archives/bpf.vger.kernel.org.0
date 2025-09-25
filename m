@@ -1,109 +1,266 @@
-Return-Path: <bpf+bounces-69767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69768-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A76BA104E
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 20:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9528EBA10CC
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 20:39:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE6F17B3C17
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 18:27:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 278D77B6207
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 18:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DFB31690A;
-	Thu, 25 Sep 2025 18:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7825F31A568;
+	Thu, 25 Sep 2025 18:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O0FJtEel"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KhzdCY0o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F2E315D33
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 18:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FB031A06A
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 18:39:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758824939; cv=none; b=VDBMFVv851U7GjWa6mf+26s8vUHFm1IwA6v8RK7ZbWbO8sFUZ8JiA5avkTGISgIu/XeeFDeaWJUZkBS2KJmmBSS+CMEnZJpn1m+7oGvSdRgwV9T2bIR5NW1/wCcfPAsBYFGrE10GzUxB6Q7SQdclIkKx1w0CVGZJoGRlEHLBvxg=
+	t=1758825576; cv=none; b=IBYd4raFMnpImO/q5PbpNv83Q3clp5bhuDmopcWx38eGI4Iim5hT2azWxaFt3aeJgLeut5yvVR/n/7JIQDsMMJ5qLLv94YWOskOLT3BeNNX9+YK5ettEbvM3xJi5ISGK1J8qPAKX0VFYsbc660qPrrDUmmIY85KqpPxysdFYof4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758824939; c=relaxed/simple;
-	bh=1nr6UiL0tyQ+0aJSlnfdUcMVSTpFvmIzYQrq5SrDkXA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B5tbKD0OCGva9pRShinCPKLEaucHolPTFi6NiJRRLslODJDBUW8ad6f4u20ao5qPgJeMm/9OMeF7kRKyfMMaHLf04iip1LT6nO2y6vyOSA5fqCOqq5uBjAYFs/W0oyKuM4fDXy+8Hwsl7i/3L8rUudan+F/aWxReZueX5rYEukk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O0FJtEel; arc=none smtp.client-ip=209.85.210.175
+	s=arc-20240116; t=1758825576; c=relaxed/simple;
+	bh=i7GLpPjPBvVQWjuEK/nlyhoW5qJe/Sfaozh+wuUpN6g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U3OmQr6tFEfgxf79DX/WMaly/TtABrHWo5IdxyGmYbxUod4NvXu3U0XFqUrqq82xb35r6OaudwUmHp65ASXltaR0FtMXt88Ky4jMZz6WXVjtAb8d3mW2x6EmhTt6gM/uZmkSteZpJOvbUDcFrn4Gbwh4w8WVIZvZsJ/VdORj2TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KhzdCY0o; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7810289cd4bso1124363b3a.2
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 11:28:57 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-27d2c35c459so11298075ad.0
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 11:39:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758824937; x=1759429737; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MYnCr9LBwa+zohnNGGqjbDVQQNg+nC+1DZrTTslb0CI=;
-        b=O0FJtEelN9f3ywD94qS7IBOG/bTa+mFdBm6hPWXTBRODyVS+VwKRUf5ZHma/ooTmKP
-         Y1DpBqzNzFOesoKDvoaFrqRtOlFs72jhzdxHqfjgysCBsWZETH4Sc12phuBnX/mZV2TF
-         3X7KhNK2WGYJjOUjxhDG6T34QvlK22g6YhFCRvhNtm4J+1PV69OfpMP1U5s6wejOvvge
-         N6vEhl7Y90N5XQyRFqWQVLlwvH1UmMFjDHE4tLYZBdUEl0mjRCddLOeubZZGlFqFPky1
-         dq/mV4OsAKHpNem9b1gU4n27P79sSlNP/n6jjf+X43NUYrjCzmsxoI3ZYsq0Vob1blGe
-         zpow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758824937; x=1759429737;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1758825574; x=1759430374; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MYnCr9LBwa+zohnNGGqjbDVQQNg+nC+1DZrTTslb0CI=;
-        b=vdn3vU2odjVHYMs5NRNTJXnXpwCRMPKgVjuim1dKUUdkCYiE0m7/0DJzt5mG/FWgPs
-         p50DKRrvPDbwfLnRZq5FvAVD1ZUCcNPhpA2B/8LtOPN0fIUcVp35Z+rHSxrntGr6dgKM
-         y7W9G5ukpYS41iqJnDrA1w78xY4OozKK1gzMGH70IiokxDzMGkNNWuzbPzN8mNMvmzcK
-         5Gb4MuZUNmwMp+8sGxVPhPf5M0GWhoi1ockxUfbB7M1YTduhMEG8TUaXULg8EUBTlHmV
-         8DtWf/uDlrzm75CAno2+Z3WmV6RMgnx7DN7Nr3EBSDiMYlqmpJzkAloJNrn5sPedQ8sm
-         JcbQ==
-X-Gm-Message-State: AOJu0YxsqR5mh2evTJOF7Sl+kLiM3CYudm5emhy5Zzf6WgMOv9489RGX
-	obfz+QcE+A5zNH2y5b2z5ysBb2Z18K3a3QQru1twnWm72cV7esZR8iQ=
-X-Gm-Gg: ASbGnctJLfaWsyXV2Y+s/4WWk8c6AM1XYuq+S2rTbNZpVaM9Ixwa84NqNBiTZbORMnr
-	aWDvU9zK690JVJjpMnfM5BtMBf0HOXgXSQQ9D4qZA2NgE5ZKQOI3fSAeTR3exwcgxfDc+sbHW2g
-	lgEEgJYYlJ5Vqf7070pNjzThx1I7HERAbRrrW6I5CA3Wtz5JN39rQWz0AiUi9r0kEad5HcaVNuu
-	oINzuq5MLU8RkD80GPxOBGoYvAwQ2NR4YhaY5BSgqJD01Iarbkm8rayWxyN6TpW+/qKGFK2mvBJ
-	gjpv1kTahOLQS0UAUrHkZXy/I2fUvI2f4eTh2bgMPeK4bMtd4cjYC6hVkg4cVNkzR/47l2WA7VE
-	ZmkBq0+VYSX1IT/+RaMsYm035vEy/7lk5UGlp9e7u4LSB7RU6vfhG84nCH6gi7NPCD+Fr40BdEr
-	Ne2HfBDJUTXzjz+uO8vXo987xxIV0P6O72I4/HWE7tO/zqqcXlydvPrZE6kWH+nMklh4XN52efC
-	k1/
-X-Google-Smtp-Source: AGHT+IGs7opWWff+bb7bUYaQzMzMGxk2nmquY73QNVXgVlvbPnuAJ5ZcfR7pxd/fm1x93mlovokxsw==
-X-Received: by 2002:a05:6a20:e212:b0:24d:56d5:3693 with SMTP id adf61e73a8af0-2e7c44124e3mr4671670637.9.1758824937196;
-        Thu, 25 Sep 2025 11:28:57 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-78102b23092sm2580058b3a.60.2025.09.25.11.28.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 11:28:56 -0700 (PDT)
-Date: Thu, 25 Sep 2025 11:28:56 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, netdev@vger.kernel.org,
-	magnus.karlsson@intel.com, kerneljasonxing@gmail.com
-Subject: Re: [PATCH v2 bpf-next 2/3] xsk: remove @first_frag from
- xsk_build_skb()
-Message-ID: <aNWJ6KcLpdVNom82@mini-arch>
-References: <20250925160009.2474816-1-maciej.fijalkowski@intel.com>
- <20250925160009.2474816-3-maciej.fijalkowski@intel.com>
+        bh=/aOtjyDHmsqCIz7rR6q+jApNpJ0ke3+flpbgYL/MfZI=;
+        b=KhzdCY0oOuERhtOJDkwLOsj6knxCdsSQrM7zubpL9RNVJ8YHu8ZukmccrvTi6RPnPT
+         SLk63+P3bf42P3kx2jFQktdF/WHbJZhxv5/IuQr9IDOXv/DTomk/KykLbt7KFZz5dZm4
+         qoLNF1i9iE+7ZbGFBQltSS0R0AvgvjpPYvuwwrPNGjLL72D286oXITqzeKRyCSAB8Sp3
+         O26TtOxb3zkfw/Zp1pV52pQUn2eTFIg2Zm52YOmWk48iiNEbh5ueTjpXBQaJqWF+aQo3
+         tBz9ZjtTXOH53GWfuuP2E3fOurLr+ZAHgscNyw1NTVYH/fIm20B971F7X1GfI5/pcaY4
+         D+Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758825574; x=1759430374;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/aOtjyDHmsqCIz7rR6q+jApNpJ0ke3+flpbgYL/MfZI=;
+        b=RC4nuIkc28G81Tk364pVvBcC8cyoelwj535DnIMS3MuEZMN0p/lO/Juv0HqvttyQrC
+         nbvxaZizh2gyU7vA8SRZ2+JvrdtcQdUxYkGwYoHmfno5AL3Ix9rw0b+1oXZibPxW4Hrf
+         ux8rF4reAunoz4BKTc6HeO9aeLcFL6wTleyj+wVAUgKCVZEuRrql2yrRqXpm2lFpizUk
+         osedyEe0+obFJWlV4DdR72PNz8tfUHCm//1EQj1juWPK8qqpuBaAUXNeNeVu8mggg4dC
+         CUpd1lPEQlTBU/Lwy78iVyVye+hXiGTQ7pbSqHLDKmIxELZ84OQU/vQomGdxVwaLzfac
+         yTKg==
+X-Forwarded-Encrypted: i=1; AJvYcCWPKR4w6CvUJRH5b81AzJtjs5dOY2IZqPfWHjDzEEDBCxJsTqv+HSHcffPqaSvOsOO5ay4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0ac1AVOZygSplgbsHdvBhFTrZwW36+cQK979eLd7XdmvEEBjD
+	/ApZtkUO9f0ox37kgcT2kYz9YlGpjRHXeIFB4kMPv1KhocBAGbW2kk9wAZ8uLuSjf3sMpZqw0Dv
+	Sr702ep1Vv5ZSFK5yIgzZj5r2zZtODX4=
+X-Gm-Gg: ASbGnctEHlLqAN2+RRaLMHZ/GBArQbZl39StFfaVeAjVZmN6z23Sb5GhHYFy8JespC3
+	iPnCQTyjAh+avLeTM2fa9Kb3vPNc5yWJJNT9Xi+oUfHKwxhlBdcARI2ep/EE+/bbO2yCCaYCRzX
+	5XkDRytpgBOHi1v7K8bzAtx5G7RTNtUof0Im5c1Dfb4o0h1cfMxwN1hIx9WXloQejq8gLrrgx9i
+	J13bw1d+HStqtAULO9s828DTEk/Sa8U0w==
+X-Google-Smtp-Source: AGHT+IERsujXswi5CQpVX+uwrI/EOY0gASLqeRQdQ8nQLXP6JNzAU+nJhK+3EmsbHE1U2CitbY4z5HqDwZmyGAehnro=
+X-Received: by 2002:a17:903:fa4:b0:26e:146e:7692 with SMTP id
+ d9443c01a7336-27ed49d0931mr53365205ad.17.1758825573656; Thu, 25 Sep 2025
+ 11:39:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250925160009.2474816-3-maciej.fijalkowski@intel.com>
+References: <580ea2de-799a-4ddc-bde9-c16f3fb1e6e7@paulmck-laptop> <20250923142036.112290-1-paulmck@kernel.org>
+In-Reply-To: <20250923142036.112290-1-paulmck@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Sep 2025 11:39:18 -0700
+X-Gm-Features: AS18NWCKjC5vc6d6hJ8nJpmgoTLBlPcTgAy1h98sL0EUChh4svSRk8DVvw0VrRQ
+Message-ID: <CAEf4Bzan+yAzKcBG8VWFWOwR6PigRAjmQB8KrcRwheZnRaTEyQ@mail.gmail.com>
+Subject: Re: [PATCH 01/34] rcu: Re-implement RCU Tasks Trace in terms of SRCU-fast
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
+	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 09/25, Maciej Fijalkowski wrote:
-> Instead of using auxiliary boolean that tracks if we are at first frag
-> when gathering all elements of skb, same functionality can be achieved
-> with checking if skb_shared_info::nr_frags is 0.
-> 
-> Remove @first_frag but be careful around xsk_build_skb_zerocopy() and
-> NULL the skb pointer when it failed so that common error path does not
-> incorrectly interpret it during decision whether to call kfree_skb().
-> 
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Tue, Sep 23, 2025 at 7:22=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> This commit saves more than 500 lines of RCU code by re-implementing
+> RCU Tasks Trace in terms of SRCU-fast.  Follow-up work will remove
+> more code that does not cause problems by its presence, but that is no
+> longer required.
+>
+> This variant places smp_mb() in rcu_read_{,un}lock_trace(), which will
+> be removed on common-case architectures in a later commit.
+>
+> [ paulmck: Apply kernel test robot, Boqun Feng, and Zqiang feedback. ]
+>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Tested-by: kernel test robot <oliver.sang@intel.com>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: <bpf@vger.kernel.org>
+> ---
+>  include/linux/rcupdate_trace.h | 107 ++++--
+>  include/linux/sched.h          |   1 +
+>  kernel/rcu/srcutiny.c          |  13 +-
+>  kernel/rcu/tasks.h             | 617 +--------------------------------
+>  4 files changed, 104 insertions(+), 634 deletions(-)
+>
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+makes sense to me overall, but I had a few questions below
+
+> diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trac=
+e.h
+> index e6c44eb428ab63..3f46cbe6700038 100644
+> --- a/include/linux/rcupdate_trace.h
+> +++ b/include/linux/rcupdate_trace.h
+> @@ -12,28 +12,28 @@
+>  #include <linux/rcupdate.h>
+>  #include <linux/cleanup.h>
+>
+> -extern struct lockdep_map rcu_trace_lock_map;
+> +#ifdef CONFIG_TASKS_TRACE_RCU
+> +extern struct srcu_struct rcu_tasks_trace_srcu_struct;
+> +#endif // #ifdef CONFIG_TASKS_TRACE_RCU
+>
+> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> +#if defined(CONFIG_DEBUG_LOCK_ALLOC) && defined(CONFIG_TASKS_TRACE_RCU)
+>
+>  static inline int rcu_read_lock_trace_held(void)
+>  {
+> -       return lock_is_held(&rcu_trace_lock_map);
+> +       return srcu_read_lock_held(&rcu_tasks_trace_srcu_struct);
+>  }
+>
+> -#else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> +#else // #if defined(CONFIG_DEBUG_LOCK_ALLOC) && defined(CONFIG_TASKS_TR=
+ACE_RCU)
+>
+>  static inline int rcu_read_lock_trace_held(void)
+>  {
+>         return 1;
+>  }
+>
+> -#endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> +#endif // #else // #if defined(CONFIG_DEBUG_LOCK_ALLOC) && defined(CONFI=
+G_TASKS_TRACE_RCU)
+
+nit: // #else // #if... looks very unconventional
+
+>
+>  #ifdef CONFIG_TASKS_TRACE_RCU
+>
+> -void rcu_read_unlock_trace_special(struct task_struct *t);
+> -
+>  /**
+>   * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical =
+section
+>   *
+> @@ -50,12 +50,14 @@ static inline void rcu_read_lock_trace(void)
+>  {
+>         struct task_struct *t =3D current;
+>
+> -       WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting=
+) + 1);
+> -       barrier();
+> -       if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
+> -           t->trc_reader_special.b.need_mb)
+> -               smp_mb(); // Pairs with update-side barriers
+> -       rcu_lock_acquire(&rcu_trace_lock_map);
+> +       if (t->trc_reader_nesting++) {
+> +               // In case we interrupted a Tasks Trace RCU reader.
+> +               rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map=
+);
+
+why is this a "try_lock" variant instead of a no-try "lock_acquire"
+one? Some lockdep special treatment for nested locking?
+
+> +               return;
+> +       }
+> +       barrier();  // nesting before scp to protect against interrupt ha=
+ndler.
+> +       t->trc_reader_scp =3D srcu_read_lock_fast(&rcu_tasks_trace_srcu_s=
+truct);
+> +       smp_mb(); // Placeholder for more selective ordering
+>  }
+>
+>  /**
+
+[...]
+
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 2b272382673d62..89d3646155525f 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -939,6 +939,7 @@ struct task_struct {
+>
+>  #ifdef CONFIG_TASKS_TRACE_RCU
+>         int                             trc_reader_nesting;
+> +       struct srcu_ctr __percpu        *trc_reader_scp;
+>         int                             trc_ipi_to_cpu;
+>         union rcu_special               trc_reader_special;
+>         struct list_head                trc_holdout_list;
+> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> index e3b64a5e0ec7e1..3450c3751ef7ad 100644
+> --- a/kernel/rcu/srcutiny.c
+> +++ b/kernel/rcu/srcutiny.c
+> @@ -106,15 +106,15 @@ void __srcu_read_unlock(struct srcu_struct *ssp, in=
+t idx)
+>         newval =3D READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
+>         WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
+>         preempt_enable();
+> -       if (!newval && READ_ONCE(ssp->srcu_gp_waiting) && in_task())
+> +       if (!newval && READ_ONCE(ssp->srcu_gp_waiting) && in_task() && !i=
+rqs_disabled())
+
+this seems like something that probably should be done in a separate
+patch with an explanation on why?
+
+>                 swake_up_one(&ssp->srcu_wq);
+>  }
+>  EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+>
+>  /*
+>   * Workqueue handler to drive one grace period and invoke any callbacks
+> - * that become ready as a result.  Single-CPU and !PREEMPTION operation
+> - * means that we get away with murder on synchronization.  ;-)
+> + * that become ready as a result.  Single-CPU operation and preemption
+> + * disabling mean that we get away with murder on synchronization.  ;-)
+>   */
+>  void srcu_drive_gp(struct work_struct *wp)
+>  {
+> @@ -141,7 +141,12 @@ void srcu_drive_gp(struct work_struct *wp)
+>         WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+>         WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wa=
+kes! */
+>         preempt_enable();
+> -       swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nes=
+ting[idx]));
+> +       do {
+> +               // Deadlock issues prevent __srcu_read_unlock() from
+> +               // doing an unconditional wakeup, so polling is required.
+> +               swait_event_timeout_exclusive(ssp->srcu_wq,
+> +                                             !READ_ONCE(ssp->srcu_lock_n=
+esting[idx]), HZ / 10);
+> +       } while (READ_ONCE(ssp->srcu_lock_nesting[idx]));
+
+ditto, generic srcu change, driven by RCU Tasks Trace transformation,
+but probably worth calling it out separately?
+
+>         preempt_disable();  // Needed for PREEMPT_LAZY
+>         WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() ch=
+eap. */
+>         WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+
+[...]
 
