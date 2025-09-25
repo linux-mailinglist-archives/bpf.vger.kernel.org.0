@@ -1,276 +1,218 @@
-Return-Path: <bpf+bounces-69711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 746CAB9F00E
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 13:52:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56E69B9F0D1
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 13:59:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 52EE04E10C7
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:52:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87F3A3AD2DD
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08912FBE1A;
-	Thu, 25 Sep 2025 11:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED9D22FC87B;
+	Thu, 25 Sep 2025 11:59:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o8mabVUb"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="lO9k8AfL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C8142ED84A;
-	Thu, 25 Sep 2025 11:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD7C25B67D;
+	Thu, 25 Sep 2025 11:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758801119; cv=none; b=JAtR2tmOmo4I1dlhedyNS5lQrDnY9VGJ0wQQciIz2vpl16hI9Qkm5J+fvT3m7fwawIuH8SLaB1gMY7RNDu9yTP7CYArY3MXsp9d07wKVcSdIfhvdfjM/3MZBcgnSFvcBej4QtIcSGbej0wOnLaezPXsswhFk5OWHTby7KqYDIgM=
+	t=1758801543; cv=none; b=mIF55fjHFjCY2yFyXtEzJPO8CE6TX/8iHaSr81VHp/GCSsYMJOr2Xa95gs6Sna+kCa3xZ4gjhR8LqUhTou9rWdh3rIZWDXY2TB7dsw+0KyqObX3VdFt8kImWVdk7f0NxLARvOAOYqBuRWD4C/wjIzN/hWY1RiPECn/aCmqZFRKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758801119; c=relaxed/simple;
-	bh=wfgqwt+NXtirlCpuguERid2O5/nt96XopcicVnATzLI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iH5HKQOmzjT8+pCP7XnanXVBA0LQYxiV/KhZGNh5lW8860ZblN10hGod79WLfED4ingDZb3W9mu0WN1c8MjphmTKG6by5b9YKHAuOC8T/Gg3SB30wSKJdqBmdY4JIU46noDGigIo6gtUiO30QUJoPRFRPickrHaGeXkoyFECptc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o8mabVUb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5978C4CEF0;
-	Thu, 25 Sep 2025 11:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758801119;
-	bh=wfgqwt+NXtirlCpuguERid2O5/nt96XopcicVnATzLI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=o8mabVUbJgXlvnQxRfysKj9zaPpL4bgmOIrAjLAsKaLEkC7sNSfmoynpJc3xVw01l
-	 eBOavrRQcyeYsasd0RN7lwMAfFneLx3wcJPK6K8VuCUqev7hfk8De52MJnP1CNngIP
-	 zAO8I1D+0EQoLUP0QHpDBJmsDDCmuP8RZXetSj+hTU/p7KcWs7rNY+7pzm9C+/FMuj
-	 6EALZHFWhe4SjNd8thf2UwEKlEaN9xHi3jVc4qEmmllRH/5nvHNi+6ClkX5a0pTY7f
-	 fxIEn7YLVCCx4j8lyjk7TLFLUwvWblh5DNCzjso7Sh83+DiIk0O/IPWwRuRP4Y9gJK
-	 EjsRlA90zDAcQ==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Feng Yang <yangfeng59949@163.com>,
-	bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf-next] selftests/bpf: Add stacktrace test for kprobe multi
-Date: Thu, 25 Sep 2025 13:51:45 +0200
-Message-ID: <20250925115145.1916664-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1758801543; c=relaxed/simple;
+	bh=+IY2OXXnsRKbkGAIpo4vaVP6VC/er3FaJDr3rMxY6QM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cMvg+XHNM8FcklpuSJ8oOmCns8nGjjuDh7EKcifzJDwLiqsl39Eo37JX8cfgjzFRFiGvf+jkgHwqicHjCLOHg4SmxTPECPoKHpGPS6wj2CftmDUAV0amHCw2c5FNUgR8wwIDTgyMYYuMRYJmcTOYSJcsDVRHbAfPARbcvFcg67w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=lO9k8AfL; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=/1G5FUDQpvZvuASdzQAKejgHTSFRJSHzx2wHymQgnpA=; b=lO9k8AfLGlZrBE2HyV1pQtekmf
+	s/tGoCLfQi2HkmQX5fwM/N2UaaXYnIVqwzWi4Co9VA2pU6G/q81Qkp9SUV835YkljwvcLOGsng4+G
+	OVCLDKRLG5W2OtDRKnXOD+Tld9KPwKXXjCLZkcQpPTJSnp+8IdK8yS0GscZcH2ARxglAuZthsenff
+	TZ6HOW61qfz20F89bGipaW6+XZ2QIm5d/xl5JkSslv/CWbsPy1pvDj62FTM6gVCD2lv1idNmsXJx5
+	ty+NThmAgXFIY7GQLR3EYuKdmn436FLRhZDYO+nsb3Qgo3RdUy8ofmoZikdpStqY2P50WtotTwe+W
+	G8LHcp9w==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v1kcW-000MhS-1u;
+	Thu, 25 Sep 2025 13:58:44 +0200
+Received: from localhost ([127.0.0.1])
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1v1kcU-000ICJ-1m;
+	Thu, 25 Sep 2025 13:58:42 +0200
+Message-ID: <b05e5979-2c62-4de5-ba29-e3b9e9167da8@iogearbox.net>
+Date: Thu, 25 Sep 2025 13:58:41 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Add -Wsign-compare C
+ compilation flag
+To: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>,
+ andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ shuah@kernel.org, matttbe@kernel.org, martineau@kernel.org,
+ geliang@kernel.org, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ linux@jordanrome.com, ameryhung@gmail.com, toke@redhat.com,
+ houtao1@huawei.com, emil@etsalapatis.com, yatsenko@meta.com,
+ isolodrai@meta.com, a.s.protopopov@gmail.com, dxu@dxuuu.xyz,
+ memxor@gmail.com, vmalik@redhat.com, bigeasy@linutronix.de, tj@kernel.org,
+ gregkh@linuxfoundation.org, paul@paul-moore.com,
+ bboscaccy@linux.microsoft.com, James.Bottomley@HansenPartnership.com,
+ mrpre@163.com, jakub@cloudflare.com
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+ mptcp@lists.linux.dev, linux-kernel-mentees@lists.linuxfoundation.org,
+ skhan@linuxfoundation.org, david.hunter.linux@gmail.com
+References: <20250924195731.6374-1-mehdi.benhadjkhelifa@gmail.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20250924195731.6374-1-mehdi.benhadjkhelifa@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27773/Thu Sep 25 10:27:35 2025)
 
-Adding stacktrace test for kprobe multi probe.
+On 9/24/25 9:57 PM, Mehdi Ben Hadj Khelifa wrote:
+> -Change all the source files and the corresponding headers
+> to having matching sign comparisons.
+> 
+> Signed-off-by: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+> ---
+> Changelog:
+> 
+> Changes since v1:
+> - Fix CI failed builds where it failed due to do missing .c and
+> .h files in my patch for working in mainline.
+> https://lore.kernel.org/bpf/20250924162408.815137-1-mehdi.benhadjkhelifa@gmail.com/T/#u
+> ---
+>   tools/lib/bpf/usdt.bpf.h                         |  4 ++--
+>   tools/testing/selftests/bpf/Makefile             |  4 ++--
+>   tools/testing/selftests/bpf/bpf_arena_htab.h     |  2 +-
+>   tools/testing/selftests/bpf/progs/arena_list.c   |  2 +-
+>   .../bpf/progs/bench_local_storage_create.c       |  2 +-
+>   tools/testing/selftests/bpf/progs/bind_perm.c    |  2 +-
+>   tools/testing/selftests/bpf/progs/bpf_cc_cubic.c |  2 +-
+>   tools/testing/selftests/bpf/progs/bpf_cubic.c    |  8 ++++----
+>   .../bpf/progs/bpf_iter_bpf_percpu_array_map.c    |  2 +-
+>   .../selftests/bpf/progs/bpf_iter_task_stack.c    |  2 +-
+>   .../testing/selftests/bpf/progs/bpf_iter_tasks.c |  3 ++-
+>   .../selftests/bpf/progs/bpf_iter_vma_offset.c    |  4 ++--
+>   .../testing/selftests/bpf/progs/bpf_qdisc_fifo.c |  2 +-
+>   tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c |  4 ++--
+>   .../bpf/progs/cgroup_getset_retval_getsockopt.c  |  6 +++---
+>   .../selftests/bpf/progs/connect4_dropper.c       |  2 +-
+>   .../selftests/bpf/progs/cpumask_success.c        |  4 ++--
+>   .../testing/selftests/bpf/progs/dynptr_success.c |  8 ++++----
+>   tools/testing/selftests/bpf/progs/iters.c        | 16 ++++++++--------
+>   .../selftests/bpf/progs/kfunc_call_test.c        |  2 +-
+>   tools/testing/selftests/bpf/progs/linked_list.c  | 10 +++++-----
+>   tools/testing/selftests/bpf/progs/lsm.c          |  2 +-
+>   .../testing/selftests/bpf/progs/map_in_map_btf.c |  2 +-
+>   tools/testing/selftests/bpf/progs/map_ptr_kern.c |  2 +-
+>   .../selftests/bpf/progs/mmap_inner_array.c       |  2 +-
+>   .../testing/selftests/bpf/progs/mptcp_subflow.c  |  2 +-
+>   .../selftests/bpf/progs/netif_receive_skb.c      |  4 ++--
+>   tools/testing/selftests/bpf/progs/profiler.inc.h |  6 +++---
+>   .../testing/selftests/bpf/progs/rcu_read_lock.c  |  4 ++--
+>   .../bpf/progs/sk_storage_omem_uncharge.c         |  6 +++---
+>   .../selftests/bpf/progs/sockopt_inherit.c        |  4 ++--
+>   tools/testing/selftests/bpf/progs/sockopt_sk.c   |  4 ++--
+>   tools/testing/selftests/bpf/progs/strobemeta.h   |  2 +-
+>   .../selftests/bpf/progs/task_local_data.bpf.h    |  6 +++---
+>   .../selftests/bpf/progs/test_bpf_cookie.c        |  2 +-
+>   .../testing/selftests/bpf/progs/test_check_mtu.c |  4 ++--
+>   .../selftests/bpf/progs/test_core_extern.c       |  2 +-
+>   .../testing/selftests/bpf/progs/test_get_xattr.c |  4 ++--
+>   .../selftests/bpf/progs/test_global_func11.c     |  2 +-
+>   .../selftests/bpf/progs/test_global_func12.c     |  2 +-
+>   .../selftests/bpf/progs/test_global_func13.c     |  2 +-
+>   .../selftests/bpf/progs/test_global_func14.c     |  2 +-
+>   .../selftests/bpf/progs/test_global_func9.c      |  2 +-
+>   .../selftests/bpf/progs/test_lwt_seg6local.c     |  4 ++--
+>   .../testing/selftests/bpf/progs/test_map_init.c  |  2 +-
+>   .../selftests/bpf/progs/test_parse_tcp_hdr_opt.c |  2 +-
+>   .../bpf/progs/test_parse_tcp_hdr_opt_dynptr.c    |  2 +-
+>   .../selftests/bpf/progs/test_pkt_access.c        |  6 +++---
+>   .../testing/selftests/bpf/progs/test_seg6_loop.c |  4 ++--
+>   tools/testing/selftests/bpf/progs/test_skb_ctx.c |  2 +-
+>   .../testing/selftests/bpf/progs/test_snprintf.c  |  2 +-
+>   .../selftests/bpf/progs/test_sockmap_kern.h      |  2 +-
+>   .../selftests/bpf/progs/test_sockmap_strp.c      |  2 +-
+>   .../testing/selftests/bpf/progs/test_tc_tunnel.c |  2 +-
+>   tools/testing/selftests/bpf/progs/test_xdp.c     |  2 +-
+>   .../selftests/bpf/progs/test_xdp_dynptr.c        |  2 +-
+>   .../testing/selftests/bpf/progs/test_xdp_loop.c  |  2 +-
+>   .../selftests/bpf/progs/test_xdp_noinline.c      |  4 ++--
+>   tools/testing/selftests/bpf/progs/udp_limit.c    |  2 +-
+>   tools/testing/selftests/bpf/progs/uprobe_multi.c |  4 ++--
+>   .../bpf/progs/uprobe_multi_session_recursive.c   |  5 +++--
+>   .../selftests/bpf/progs/verifier_arena_large.c   |  4 ++--
+>   .../bpf/progs/verifier_iterating_callbacks.c     |  2 +-
+>   63 files changed, 109 insertions(+), 107 deletions(-)
 
-Cc: Feng Yang <yangfeng59949@163.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
-test for arm64 fix posted separately in here:
-  https://lore.kernel.org/bpf/20250925020822.119302-1-yangfeng59949@163.com/
+Big churn all over the place :/ Either way, it looks like you haven't run
+the tests locally before submitting, some are failing:
 
- .../selftests/bpf/prog_tests/stacktrace_map.c | 107 +++++++++++++-----
- .../selftests/bpf/progs/test_stacktrace_map.c |  28 ++++-
- 2 files changed, 106 insertions(+), 29 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-index 84a7e405e912..922224adc86b 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-@@ -1,13 +1,44 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include "test_stacktrace_map.skel.h"
- 
--void test_stacktrace_map(void)
-+static void check_stackmap(int control_map_fd, int stackid_hmap_fd,
-+			   int stackmap_fd, int stack_amap_fd)
-+{
-+	__u32 key, val, duration = 0;
-+	int err, stack_trace_len;
-+
-+	/* disable stack trace collection */
-+	key = 0;
-+	val = 1;
-+	bpf_map_update_elem(control_map_fd, &key, &val, 0);
-+
-+	/* for every element in stackid_hmap, we can find a corresponding one
-+	 * in stackmap, and vice versa.
-+	 */
-+	err = compare_map_keys(stackid_hmap_fd, stackmap_fd);
-+	if (CHECK(err, "compare_map_keys stackid_hmap vs. stackmap",
-+		  "err %d errno %d\n", err, errno))
-+		return;
-+
-+	err = compare_map_keys(stackmap_fd, stackid_hmap_fd);
-+	if (CHECK(err, "compare_map_keys stackmap vs. stackid_hmap",
-+		  "err %d errno %d\n", err, errno))
-+		return;
-+
-+	stack_trace_len = PERF_MAX_STACK_DEPTH * sizeof(__u64);
-+	err = compare_stack_ips(stackmap_fd, stack_amap_fd, stack_trace_len);
-+	CHECK(err, "compare_stack_ips stackmap vs. stack_amap",
-+		"err %d errno %d\n", err, errno);
-+}
-+
-+static void test_stacktrace_map_tp(void)
- {
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
- 	const char *prog_name = "oncpu";
--	int err, prog_fd, stack_trace_len;
-+	int err, prog_fd;
- 	const char *file = "./test_stacktrace_map.bpf.o";
--	__u32 key, val, duration = 0;
-+	__u32 duration = 0;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	struct bpf_link *link;
-@@ -44,32 +75,56 @@ void test_stacktrace_map(void)
- 	/* give some time for bpf program run */
- 	sleep(1);
- 
--	/* disable stack trace collection */
--	key = 0;
--	val = 1;
--	bpf_map_update_elem(control_map_fd, &key, &val, 0);
--
--	/* for every element in stackid_hmap, we can find a corresponding one
--	 * in stackmap, and vice versa.
--	 */
--	err = compare_map_keys(stackid_hmap_fd, stackmap_fd);
--	if (CHECK(err, "compare_map_keys stackid_hmap vs. stackmap",
--		  "err %d errno %d\n", err, errno))
--		goto disable_pmu;
--
--	err = compare_map_keys(stackmap_fd, stackid_hmap_fd);
--	if (CHECK(err, "compare_map_keys stackmap vs. stackid_hmap",
--		  "err %d errno %d\n", err, errno))
--		goto disable_pmu;
--
--	stack_trace_len = PERF_MAX_STACK_DEPTH * sizeof(__u64);
--	err = compare_stack_ips(stackmap_fd, stack_amap_fd, stack_trace_len);
--	if (CHECK(err, "compare_stack_ips stackmap vs. stack_amap",
--		  "err %d errno %d\n", err, errno))
--		goto disable_pmu;
-+	check_stackmap(control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd);
- 
- disable_pmu:
- 	bpf_link__destroy(link);
- close_prog:
- 	bpf_object__close(obj);
- }
-+
-+static void test_stacktrace_map_kprobe_multi(bool retprobe)
-+{
-+	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts,
-+		.retprobe = retprobe
-+	);
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	struct test_stacktrace_map *skel;
-+	struct bpf_link *link;
-+	int prog_fd, err;
-+
-+	skel = test_stacktrace_map__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_stacktrace_map__open_and_load"))
-+		return;
-+
-+	link = bpf_program__attach_kprobe_multi_opts(skel->progs.kprobe,
-+						     "bpf_fentry_test1", &opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_kprobe_multi_opts"))
-+		goto cleanup;
-+
-+	prog_fd = bpf_program__fd(skel->progs.trigger);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 0, "test_run");
-+
-+	control_map_fd  = bpf_map__fd(skel->maps.control_map);
-+	stackid_hmap_fd = bpf_map__fd(skel->maps.stackid_hmap);
-+	stackmap_fd     = bpf_map__fd(skel->maps.stackmap);
-+	stack_amap_fd   = bpf_map__fd(skel->maps.stack_amap);
-+
-+	check_stackmap(control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd);
-+
-+cleanup:
-+	test_stacktrace_map__destroy(skel);
-+}
-+
-+void test_stacktrace_map(void)
-+{
-+	if (test__start_subtest("tp"))
-+		test_stacktrace_map_tp();
-+	if (test__start_subtest("kprobe_multi"))
-+		test_stacktrace_map_kprobe_multi(false);
-+	if (test__start_subtest("kretprobe_multi"))
-+		test_stacktrace_map_kprobe_multi(true);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
-index 47568007b668..7a27e162a407 100644
---- a/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/progs/test_stacktrace_map.c
-@@ -3,6 +3,7 @@
- 
- #include <vmlinux.h>
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
- 
- #ifndef PERF_MAX_STACK_DEPTH
- #define PERF_MAX_STACK_DEPTH         127
-@@ -50,8 +51,7 @@ struct sched_switch_args {
- 	int next_prio;
- };
- 
--SEC("tracepoint/sched/sched_switch")
--int oncpu(struct sched_switch_args *ctx)
-+static inline void test_stackmap(void *ctx)
- {
- 	__u32 max_len = PERF_MAX_STACK_DEPTH * sizeof(__u64);
- 	__u32 key = 0, val = 0, *value_p;
-@@ -59,7 +59,7 @@ int oncpu(struct sched_switch_args *ctx)
- 
- 	value_p = bpf_map_lookup_elem(&control_map, &key);
- 	if (value_p && *value_p)
--		return 0; /* skip if non-zero *value_p */
-+		return; /* skip if non-zero *value_p */
- 
- 	/* The size of stackmap and stackid_hmap should be the same */
- 	key = bpf_get_stackid(ctx, &stackmap, 0);
-@@ -69,7 +69,29 @@ int oncpu(struct sched_switch_args *ctx)
- 		if (stack_p)
- 			bpf_get_stack(ctx, stack_p, max_len, 0);
- 	}
-+}
-+
-+SEC("tracepoint/sched/sched_switch")
-+int oncpu(struct sched_switch_args *ctx)
-+{
-+	test_stackmap(ctx);
-+	return 0;
-+}
- 
-+/*
-+ * No tests in here, just to trigger 'bpf_fentry_test*'
-+ * through tracing test_run.
-+ */
-+SEC("fentry/bpf_modify_return_test")
-+int BPF_PROG(trigger)
-+{
-+	return 0;
-+}
-+
-+SEC("kprobe.multi")
-+int kprobe(struct pt_regs *ctx)
-+{
-+	test_stackmap(ctx);
- 	return 0;
- }
- 
--- 
-2.51.0
-
+https://github.com/kernel-patches/bpf/actions/runs/17993782331
 
