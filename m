@@ -1,273 +1,195 @@
-Return-Path: <bpf+bounces-69778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CBCDBA1400
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 21:44:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 840E9BA1478
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 21:59:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAE6D3816F3
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:44:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F5D738855B
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C3631E0E3;
-	Thu, 25 Sep 2025 19:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BADA31E880;
+	Thu, 25 Sep 2025 19:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="btgMcyXE"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L+gUNV7Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495CD31D746
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 19:44:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B52E27A903;
+	Thu, 25 Sep 2025 19:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758829448; cv=none; b=tRMxjcGTuS4X0IP8eWtudCA79bSupdDzNzgbavZvgUt6j6gsKFiF/YBKmxqnwsPA9n4mgwrL3Yctz0wGEhghU9PRj75ZuzCxKO/k7OP7BWKRzzDXpCFNvgV90k6fqq0Ar4/1meANZK26QnJ/jRMgcgVD4sAcugRkSmX1AeIzW6s=
+	t=1758830359; cv=none; b=Pt49uhIcm3tiZxeN70e6Ov0VzLncWNjrGVz8sXc1NHtNN8yIm4MYaVdCtJK3HWmiRPCCQvTmgon/jUMh8lxHFwRjVcJj864xx0CAMRD/XlQKz7AeMBhuVA5CsOGZly6FtWeHBO0GfnUPkJ3zMR82q3Us85kMKTlk/Bn1JEqqdps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758829448; c=relaxed/simple;
-	bh=pjWJxaDm5i7+W2bvMI0+orl3tlEoItTaV2bGShqdtrA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hWNaj5gTaaCJQnXGm7N6kQpUUrbA8u2wMfR6GNG4ZyoLDwiyzQgOPedNaQKn8SsuAEPXyP9q7O4jZsM/UNsEmN3Zisi3rqtMGMJUK8VbjVOx8koai4Tf4etaKa11o8jRcfO1wDUUYr/srqWcx1XjcUX5Opbw46INXVJLv4DACto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=btgMcyXE; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2731ff54949so4055ad.1
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 12:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758829446; x=1759434246; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EWIVbuiBuwrZgK3Twemi+KiTjZ5ODWZWrr9NFDHeWqg=;
-        b=btgMcyXEL+g3cYqyvjU9NPlwAuymKDL1iAhV+7+8ennyphXZg3Wl2NPplcHmSy5Wce
-         4wEk4SsT7nThlGGrgLWGq/UMIE/hyDCf6U7DOkiKdHftAiUMGHXznTXXDexJFlAURIgC
-         Wg8ZWvsDo5jS5fayYK2ZwN9cKbrC0xEllPRls8x0CM9ULnuBYbPC6maIS2a0II22FWxU
-         DipTTkWsITNVo2jt5+Jt8hfIJD0tMdf7HXPRZt3o3P5grVkfQRcFC4bpSgFdtJko/Xym
-         0aJRDBDIL0Qx/k+fKDgMHzLGWgh6dntmCzVEvNPvWMGANO3gAyDRLq78/U3dLDoxhX/n
-         qOCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758829446; x=1759434246;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EWIVbuiBuwrZgK3Twemi+KiTjZ5ODWZWrr9NFDHeWqg=;
-        b=wF04GrViRDkd57SVTomtzWmKsOGLhi4HdtA3NRFnaGQlKQES+oNYkdhMykqlWmyEyZ
-         ufrrossqAU0gC2tGEK/vefGIQ8lxAihTQguvkEM0IexnCc9iUXZ3SPi7FSbN6aifMGQR
-         Ud25pevSmpwkR86CFEhKSjzoju00PrIFzFUN5D5qimscYeNkWc+E6m2OWmdiWtbz8+eH
-         0LfOW8JFD8J5FcmK/d0HZliS8BF1nxZAWjRxcqwvvrmX9hppQ/Px2BwKXaHqyTy04eEN
-         NJmnlQNaNOiKMH9efuPRo/TH/TFt2EGKYsZM4MaFXTHkx3Kbb55IyuIeSBD8nhjgV5YG
-         UWrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzScDJgQzFkm/Yaml+rwuc2442xGSZj/9sLzKRUxe757aSyCl4YLoYMGVTKDUFUDuGyvY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGX1UrlSRwxOmNUNmlt1vjHTXp6C6qsMTS4qZReGENfnD2VS9j
-	bgZ2L8nN4c/Zo5GqR6i8RGSRHD1mn06LBm3AzcrOOSYVrH9MgvcIgCQMwKqKBhvvv2DipXtrqor
-	rjmKjg/DkQOQ7goYKfUVBfYp+Z3eH/BkmmGwDJj/0
-X-Gm-Gg: ASbGncv0+8MkiXLVevPuc/guL7h+MvuqykqddmyHcdvQVleKY0JLQOn55KtIjtlwS/3
-	jQjhlE9jnpdNJDEZWLmwyOMZrKSA1mfivAwFRnAUYab+B2r/4dvHl3P73CpzMG1IPJqQXPoEa7l
-	8XHvuc5l20wqC8y2xcYbQAVXktZnFAwiYNRfRt/C8eaDtWstu7/XeOCtf8IkeaHBB7rDA1vEtN/
-	LVUf3RPNjBK3XxxWVDqRqboX/iLGux9nlGrBIcFdQ==
-X-Google-Smtp-Source: AGHT+IEUyAVjqPX29ofytiPs9/vT5tWzpQXe+AgtwNfhcQZ1fspmy16qFs8VgNTSSJwUxGbfDch9a94qyUKDSBMfn+g=
-X-Received: by 2002:a17:902:d48b:b0:265:e66:6c10 with SMTP id
- d9443c01a7336-27eec9da82amr1083625ad.4.1758829446064; Thu, 25 Sep 2025
- 12:44:06 -0700 (PDT)
+	s=arc-20240116; t=1758830359; c=relaxed/simple;
+	bh=ifRJk811qNPEsFfNdRG90y0xS7LckLrNUOB82ykqBQk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jBWkWw3BjXPZHgg/tbxcKvY1jPqa+dnxRfsd+EdHjq7DDHWj9CwQ00bY6KfpZYgjCDDOS1kTL2Gobotsp8EIHeSFrIieP33bb9k+iaTfrV6kBb6XIkAxHbmZ/JVWqNv7z6pWKYzy4e4FQid1/QMFIqOhr3ceFgXTzLlY9o1mcNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L+gUNV7Y; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1758830358; x=1790366358;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ifRJk811qNPEsFfNdRG90y0xS7LckLrNUOB82ykqBQk=;
+  b=L+gUNV7Y7Z4ukQUATo1CNa1Writq6U+OJlWBk6ZBJ3lfz9LHToXbFYzE
+   FVgSt5jjxAikDvgTc1uNFSw2tvbQR70LNtSeGl7qmRSSmD81QR29qm0IR
+   /b1KWWkH9A/Xymp9aiSBymmoGCsBfy/btJFu76ffwbaG/hU7lbU+NLRKp
+   g9zScuCRacCMIAOgs6HMJRIzsCBVhOeyVCacViPoUJTg/O+RdzGuqsTsx
+   2dcc+AitXWrAnYzFZIL1a25dIzKLhOnFYlF+PCLKH0GHtwejS3r+eJugX
+   TaG10+SyrRrCGb5F3iFSR0fO7ybH8YqlNynk5VTivQcHZ99opBkh7jhZK
+   w==;
+X-CSE-ConnectionGUID: 9RSxBqMzTh6T2CVvMaZzdw==
+X-CSE-MsgGUID: 3EoJZiomRDaNjBxTRBUZhA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="61112114"
+X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
+   d="scan'208";a="61112114"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2025 12:59:17 -0700
+X-CSE-ConnectionGUID: 9f2J8JOTT9OzQxVDvp1k1w==
+X-CSE-MsgGUID: McENJBkSTp6URj4A/sRW9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,293,1751266800"; 
+   d="scan'208";a="201105063"
+Received: from ray2.jf.intel.com (HELO [10.24.81.144]) ([10.24.81.144])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2025 12:59:13 -0700
+Message-ID: <82bff1c4-987f-46cb-833c-bd99eaa46e7a@intel.com>
+Date: Thu, 25 Sep 2025 12:59:13 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250925-perf_build_android_ndk-v1-0-8b35aadde3dc@arm.com> <20250925-perf_build_android_ndk-v1-8-8b35aadde3dc@arm.com>
-In-Reply-To: <20250925-perf_build_android_ndk-v1-8-8b35aadde3dc@arm.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 25 Sep 2025 12:43:55 -0700
-X-Gm-Features: AS18NWBRqTNACmFmffSTOBpsayhFYwgysTlFqWMT9G5XiIoGQQ5fG2mtSFmvcWI
-Message-ID: <CAP-5=fV45npmMUVGakzpB0XDMJ+WudiHoanBXzJtrX2442k-YA@mail.gmail.com>
-Subject: Re: [PATCH 8/8] perf docs: Document building with Clang
-To: Leo Yan <leo.yan@arm.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Quentin Monnet <qmo@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	James Clark <james.clark@linaro.org>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, llvm@lists.linux.dev, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 06/12] KVM: guest_memfd: add module param for disabling
+ TLB flushing
+To: David Hildenbrand <david@redhat.com>, "Roy, Patrick" <roypat@amazon.co.uk>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>,
+ "corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>,
+ "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+ "joey.gouly@arm.com" <joey.gouly@arm.com>,
+ "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+ "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+ "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+ "will@kernel.org" <will@kernel.org>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>,
+ "bp@alien8.de" <bp@alien8.de>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+ "luto@kernel.org" <luto@kernel.org>,
+ "peterz@infradead.org" <peterz@infradead.org>,
+ "willy@infradead.org" <willy@infradead.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+ "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+ "vbabka@suse.cz" <vbabka@suse.cz>, "rppt@kernel.org" <rppt@kernel.org>,
+ "surenb@google.com" <surenb@google.com>, "mhocko@suse.com"
+ <mhocko@suse.com>, "song@kernel.org" <song@kernel.org>,
+ "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>,
+ "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@fomichev.me"
+ <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>,
+ "jgg@ziepe.ca" <jgg@ziepe.ca>, "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+ "peterx@redhat.com" <peterx@redhat.com>, "jannh@google.com"
+ <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>,
+ "shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com"
+ <seanjc@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "Cali, Marco" <xmarcalx@amazon.co.uk>,
+ "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
+ "Thomson, Jack" <jackabt@amazon.co.uk>,
+ "derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
+ "tabba@google.com" <tabba@google.com>,
+ "ackerleytng@google.com" <ackerleytng@google.com>
+References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
+ <20250924152214.7292-1-roypat@amazon.co.uk>
+ <20250924152214.7292-3-roypat@amazon.co.uk>
+ <e25867b6-ffc0-4c7c-9635-9b3f47b186ca@intel.com>
+ <c1875a54-0c87-450f-9370-29e7ec4fea3d@redhat.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
+ LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
+ lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
+ MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
+ IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
+ aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
+ I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
+ E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
+ F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
+ CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
+ P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
+ 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
+ GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
+ MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
+ Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
+ lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
+ 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
+ qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
+ BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
+ 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
+ vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
+ FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
+ l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
+ yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
+ +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
+ asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
+ WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
+ sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
+ KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
+ MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
+ hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
+ vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
+In-Reply-To: <c1875a54-0c87-450f-9370-29e7ec4fea3d@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Sep 25, 2025 at 3:27=E2=80=AFAM Leo Yan <leo.yan@arm.com> wrote:
->
-> Add example commands for building perf with Clang.
->
-> Since recent Android NDK releases use Clang as the default compiler, a
-> separate Android specific document is no longer needed; point to the
-> general build documentation instead.
->
-> Signed-off-by: Leo Yan <leo.yan@arm.com>
-> ---
->  tools/perf/Documentation/Build.txt   | 18 ++++++++
->  tools/perf/Documentation/android.txt | 82 ++++--------------------------=
-------
->  2 files changed, 26 insertions(+), 74 deletions(-)
->
-> diff --git a/tools/perf/Documentation/Build.txt b/tools/perf/Documentatio=
-n/Build.txt
-> index 83dc87c662b63ecc17553a15cc15a6b8d6f01d83..3e4104e605ac0d7d30b4408ef=
-413cf1f90b034c1 100644
-> --- a/tools/perf/Documentation/Build.txt
-> +++ b/tools/perf/Documentation/Build.txt
-> @@ -99,3 +99,21 @@ configuration paths for cross building:
->  In this case, the variable PKG_CONFIG_SYSROOT_DIR can be used alongside =
-the
->  variable PKG_CONFIG_LIBDIR or PKG_CONFIG_PATH to prepend the sysroot pat=
-h to
->  the library paths for cross compilation.
-> +
-> +5) Build with clang
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +By default, the makefile uses GCC as compiler. With specifying environme=
-nt
-> +variables HOSTCC, CC and CXX, it allows to build perf with clang.
-> +
-> +Using clang for native build:
-> +
-> +  $ HOSTCC=3Dclang CC=3Dclang CXX=3Dclang++ make -C tools/perf
-> +
-> +Using clang for cross compilation:
-> +
-> +  $ HOSTCC=3Dclang CC=3Dclang CXX=3Dclang++ \
-> +    make ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- -C tools/perf \
-> +    NO_LIBELF=3D1 NO_LIBTRACEEVENT=3D1 NO_JEVENTS=3D1
+On 9/25/25 12:20, David Hildenbrand wrote:
+> On 25.09.25 20:27, Dave Hansen wrote:
+>> On 9/24/25 08:22, Roy, Patrick wrote:
+>>> Add an option to not perform TLB flushes after direct map manipulations.
+>>
+>> I'd really prefer this be left out for now. It's a massive can of worms.
+>> Let's agree on something that works and has well-defined behavior before
+>> we go breaking it on purpose.
+> 
+> May I ask what the big concern here is?
 
-The three NO_-s here are going to cripple the build quite a lot, I
-wonder if we can list package dependencies to install and failing that
-use the NO_-s.
+It's not a _big_ concern. I just think we want to start on something
+like this as simple, secure, and deterministic as possible.
 
-> +
-> +In the example above, due to lack libelf, python and libtraceevent for
-> +cross comiplation, disable the features accordingly.
+Let's say that with all the unmaps that load_unaligned_zeropad() faults
+start to bite us. It'll take longer to find them if the TLB isn't flushed.
 
-nit: s/comiplation/compilation/
-
-> diff --git a/tools/perf/Documentation/android.txt b/tools/perf/Documentat=
-ion/android.txt
-> index 24a59998fc91e814ad96f658d3481d88d798b60c..e65204cf2921f6bd8a7987578=
-4c5b3d5487ce05d 100644
-> --- a/tools/perf/Documentation/android.txt
-> +++ b/tools/perf/Documentation/android.txt
-> @@ -1,78 +1,12 @@
->  How to compile perf for Android
-> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
->
-> -I. Set the Android NDK environment
-> -------------------------------------------------
-> +There have two ways to build perf and run it on Android.
-
-nit: s/There have/There are/
-
-Thanks for doing this series!
-Ian
-
->
-> -(a). Use the Android NDK
-> -------------------------------------------------
-> -1. You need to download and install the Android Native Development Kit (=
-NDK).
-> -Set the NDK variable to point to the path where you installed the NDK:
-> -  export NDK=3D/path/to/android-ndk
-> +- The first method is to build perf with static linking, please refer to
-> +  Build.txt, section "4) Cross compilation" for how to build a static
-> +  perf binary.
->
-> -2. Set cross-compiling environment variables for NDK toolchain and sysro=
-ot.
-> -For arm:
-> -  export NDK_TOOLCHAIN=3D${NDK}/toolchains/arm-linux-androideabi-4.9/pre=
-built/linux-x86_64/bin/arm-linux-androideabi-
-> -  export NDK_SYSROOT=3D${NDK}/platforms/android-24/arch-arm
-> -For x86:
-> -  export NDK_TOOLCHAIN=3D${NDK}/toolchains/x86-4.9/prebuilt/linux-x86_64=
-/bin/i686-linux-android-
-> -  export NDK_SYSROOT=3D${NDK}/platforms/android-24/arch-x86
-> -
-> -This method is only tested for Android NDK versions Revision 11b and lat=
-er.
-> -perf uses some bionic enhancements that are not included in prior NDK ve=
-rsions.
-> -You can use method (b) described below instead.
-> -
-> -(b). Use the Android source tree
-> ------------------------------------------------
-> -1. Download the master branch of the Android source tree.
-> -Set the environment for the target you want using:
-> -  source build/envsetup.sh
-> -  lunch
-> -
-> -2. Build your own NDK sysroot to contain latest bionic changes and set t=
-he
-> -NDK sysroot environment variable.
-> -  cd ${ANDROID_BUILD_TOP}/ndk
-> -For arm:
-> -  ./build/tools/build-ndk-sysroot.sh --abi=3Darm
-> -  export NDK_SYSROOT=3D${ANDROID_BUILD_TOP}/ndk/build/platforms/android-=
-3/arch-arm
-> -For x86:
-> -  ./build/tools/build-ndk-sysroot.sh --abi=3Dx86
-> -  export NDK_SYSROOT=3D${ANDROID_BUILD_TOP}/ndk/build/platforms/android-=
-3/arch-x86
-> -
-> -3. Set the NDK toolchain environment variable.
-> -For arm:
-> -  export NDK_TOOLCHAIN=3D${ANDROID_TOOLCHAIN}/arm-linux-androideabi-
-> -For x86:
-> -  export NDK_TOOLCHAIN=3D${ANDROID_TOOLCHAIN}/i686-linux-android-
-> -
-> -II. Compile perf for Android
-> -------------------------------------------------
-> -You need to run make with the NDK toolchain and sysroot defined above:
-> -For arm:
-> -  make WERROR=3D0 ARCH=3Darm CROSS_COMPILE=3D${NDK_TOOLCHAIN} EXTRA_CFLA=
-GS=3D"-pie --sysroot=3D${NDK_SYSROOT}"
-> -For x86:
-> -  make WERROR=3D0 ARCH=3Dx86 CROSS_COMPILE=3D${NDK_TOOLCHAIN} EXTRA_CFLA=
-GS=3D"-pie --sysroot=3D${NDK_SYSROOT}"
-> -
-> -III. Install perf
-> ------------------------------------------------
-> -You need to connect to your Android device/emulator using adb.
-> -Install perf using:
-> -  adb push perf /data/perf
-> -
-> -If you also want to use perf-archive you need busybox tools for Android.
-> -For installing perf-archive, you first need to replace #!/bin/bash with =
-#!/system/bin/sh:
-> -  sed 's/#!\/bin\/bash/#!\/system\/bin\/sh/g' perf-archive >> /tmp/perf-=
-archive
-> -  chmod +x /tmp/perf-archive
-> -  adb push /tmp/perf-archive /data/perf-archive
-> -
-> -IV. Environment settings for running perf
-> -------------------------------------------------
-> -Some perf features need environment variables to run properly.
-> -You need to set these before running perf on the target:
-> -  adb shell
-> -  # PERF_PAGER=3Dcat
-> -
-> -IV. Run perf
-> -------------------------------------------------
-> -Run perf on your device/emulator to which you previously connected using=
- adb:
-> -  # ./data/perf
-> +- The second method is to download Android NDK, then use the contained
-> +  clang compiler for building perf. Please refer to Build.txt, section
-> +  "5) Build with clang" for details.
->
-> --
-> 2.34.1
->
+Basically, it'll make the bad things happen sooner rather than later.
 
