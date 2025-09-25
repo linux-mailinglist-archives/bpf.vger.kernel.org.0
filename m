@@ -1,114 +1,127 @@
-Return-Path: <bpf+bounces-69684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02F4EB9E80F
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:51:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8520B9E82A
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 11:53:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1857425B5B
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 09:51:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 241D77ACF08
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 09:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66888279DC9;
-	Thu, 25 Sep 2025 09:51:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF942D7DD1;
+	Thu, 25 Sep 2025 09:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="LU6oAXxM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UHklCjot"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D1827979A
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 09:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FEF2874E4
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 09:53:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758793869; cv=none; b=B+jI8DZo1S7iJoQimmNdkX1MHxW3RTFAcWonpErk0Gj7Z71u8FbEL6oKbapf/TXXk4EyACrl7QcpMIWle8rBcElM6uem7HYQu+E3Qk9v5df7LMmEQgUk2ZMPfDO3cKjwixlXuTNXXioUDHIQXd9/7lrKEZX12IVa3kIQ4WerU0I=
+	t=1758793999; cv=none; b=OQREa1uPLTbTOnwinmP/AvLMStZOmX6ug8aDmGo1yRdvHEicxasseosf7KhZC0vr1N3Uv+2zQ1/h+H3Ylo2yb6x84bYz8at462cEIkxWIOvLZeu7kDHJlg0ntcxPN8if80cAtMKi0imkm8QOfl/Tzkq0lJ2BWEtcFNGoPnhiWc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758793869; c=relaxed/simple;
-	bh=ZmkFbEfQivCqBMVs45gL6yXtOiKwXDMn9AvVAlKM2NA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YGxVZ4Z7O7qGdtEtt2Wo0TBYjbSCJQCdYdhQfyyme9fPUXWxLXQVVHISpIOJj/eFJIZI0MoRn089Wa7rjiQJfxDJRXjQi8axLkO5Vqb/qMLnFyzsgDzih4ItPXIN4XO5fUyygw7SAVm4gXum21BLVRDgLBJqF1vauIZnnRqK/xE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=LU6oAXxM; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b2e66a300cbso146276366b.3
-        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 02:51:08 -0700 (PDT)
+	s=arc-20240116; t=1758793999; c=relaxed/simple;
+	bh=lu9Tc9pURgZ0381dUEwXBCbkX3e5TEeN4qRYRoLV158=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aldyctXvQOomN8dbRIqDDjSijWGQ5ln9fNAWUSGQrwlDC8lqhcIFQBczFu2uNzfvSjJMTrZx949WxwXYVSpMVjMVs4HUerp81z+kjnGl9n2GSkogsEdBFWVHftanCfJfeWCHBX1NFa4v2gQqp9xtT06lpOnfR2S4o4qTkyVYFbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UHklCjot; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3f2ae6fadb4so778770f8f.1
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 02:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1758793867; x=1759398667; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZmkFbEfQivCqBMVs45gL6yXtOiKwXDMn9AvVAlKM2NA=;
-        b=LU6oAXxM646knKdDRetHDdvY5uXOb4M4EZgpP8OGwWE5C5MTxEB/SMWkDEpO1K4WXU
-         peE6mvythlUU1n6naOwG9r0orSbpuEn5pM7wOOIdJYTM9IxUNWeS+E7Bx2LVA6CwQ+Uv
-         ZC00HEdLuz90PmjEf0YdItWdhcNXN6xpANEXnChhMndyO1JJiAZEfPUymK/GBIiPvObO
-         7YaYlZFrC4zBQTEfcv2fuNk1UcsyE3+9GQApNA+/ual1fCWG8fsGOHMNbvGLjVFhY5F+
-         5Fg5ToleSGmSB6IyYPql3RFwYnondio1r6BuuHmuPVoTPZJ6P/TX/a8MkD9wRz+KFCZo
-         agaw==
+        d=gmail.com; s=20230601; t=1758793996; x=1759398796; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YZcpU2w/VB5YKX06iIgQfBUU6i35jTYfqMGO23xOBP4=;
+        b=UHklCjotzVCgszSSsq1v32EDLcxKlRu4szU1a2b3oaBr9pZhVGP0NIOY64YBiSGtzQ
+         H8lYKnwa1VzQFAtLSHuTZ6/sBQ9II9ThxzRy6kBMWtokey5FALe2AxmtQfgiI3b7CRZA
+         +EsbO0lIzzsSTEu9kL0peL068UUyjUSflva/xP0G+oYhQVN7UcP9PILSimUf5DbdgW6P
+         T/uLENxBPymw+kq5ZNQzlitN0miER0HWXlhE8uco4YU/E9zDR80guRW5h+tlRRnMcuc/
+         yaAPZc93j6gR9Q7kOpVlojdVVj8bLun/Ta4geqfG0mR4SP6T8Z70ZesYD2Hn9WzGEOSP
+         0I+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758793867; x=1759398667;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZmkFbEfQivCqBMVs45gL6yXtOiKwXDMn9AvVAlKM2NA=;
-        b=SYdIWWG5s+SaaDlSb1X9HwWP/2uY+3xGiRiIw2ik0vB9aCuWIZ0OBlvyC0BfXxfsJ9
-         3db0/VX1LBU2QM5x5djpeXqNYA/o/vEG08t0UfMa+KQg/a8CQaSPa9jD2WrFoJRmRje3
-         GT/5ymbkhwHG+klgs0Rmiysihsan1lY48hM0NXqRh+EmDO7U87nQr/vqvD8wNk+5jwF/
-         u2l0QvuNImatzVicNprk/iDANOWsmixK0FhNJOMPaFBLkx6n6B/JeXdtIF4WDUfwKefj
-         IKL52qgg2Haq1cilaJt90zSdvyO+AToPMBGVcSYJEci9iROZTUO1xyNc+u5otiKfHXqC
-         5CGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2UhYRHqjpwJel8jtTBrw6WuMjWqEb0VQ41U6OXcLMIeiSeEs4roMNCGTBigNimINKFpE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzYQPhp6WmsWZDduqSENfldrsnYRb88KTz6J5dnff65hD6sjc4D
-	MTzZcFNxcfNPxMH9sXZddC6qq5kaxGxMYNATiiBwlbHHL4qdiYs1lCCW66gBfdgauPo=
-X-Gm-Gg: ASbGncvsjyG6DIzoV9IFQ/4ebLAFja3+fDJVYmvlqHZiug2LMaPJDtKCRF7e3eCvll7
-	LhqcgrLoF32NvRaqoTCsiDJ7uLaNasGNJgTferpdIzB3jLc8Omr9ElUWlCYtyWONo/RAr7dCMUF
-	JS2kC/7woTRnOn9zb1i0YFLJD269SqZWGGXM+hRQPisxZFEM9HpAzb48juB2YclO1l+TE5LVzaU
-	3WI/FpONGLSXNZTT+SQXV6d+ONBja95VFrA7yeBg2lEu4ihdlqSi2Lo8tt+7y3vdn9aKc+2aL0D
-	O6HTRIN60YKK993upUp8PEh9XFxhzgZHRvEfZGsvEAilragciosmaeZh9Qq4y3be6s1EUI3UTQv
-	Tf+012IgO3ca65oo=
-X-Google-Smtp-Source: AGHT+IGEVGUv7B9GwkQ2/AJ6K1sBRZgNTUuhBCswgHVtL42XXaKHIxqK5bg7kju7asdvwIL8eCRs8w==
-X-Received: by 2002:a17:907:1c8d:b0:b33:671:8a58 with SMTP id a640c23a62f3a-b34bd440633mr294373466b.37.1758793866605;
-        Thu, 25 Sep 2025 02:51:06 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac6:d677:295f::41f:5e])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b353f8686e6sm131994066b.38.2025.09.25.02.51.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 02:51:05 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Donald Hunter <donald.hunter@gmail.com>,  Jakub Kicinski
- <kuba@kernel.org>,  "David S. Miller" <davem@davemloft.net>,  Eric Dumazet
- <edumazet@google.com>,  Paolo Abeni <pabeni@redhat.com>,  Simon Horman
- <horms@kernel.org>,  Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Jesper Dangaard Brouer <hawk@kernel.org>,  John
- Fastabend <john.fastabend@gmail.com>,  Stanislav Fomichev
- <sdf@fomichev.me>,  Andrew Lunn <andrew+netdev@lunn.ch>,  Tony Nguyen
- <anthony.l.nguyen@intel.com>,  Przemek Kitszel
- <przemyslaw.kitszel@intel.com>,  Alexander Lobakin
- <aleksander.lobakin@intel.com>,  Andrii Nakryiko <andrii@kernel.org>,
-  Martin KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman
- <eddyz87@gmail.com>,  Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>,  KP Singh <kpsingh@kernel.org>,  Hao Luo
- <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>,  Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-  netdev@vger.kernel.org,  bpf@vger.kernel.org,
-  intel-wired-lan@lists.osuosl.org,  linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v2 0/5] Add the the capability to load HW
- RX checsum in eBPF programs
-In-Reply-To: <20250925-bpf-xdp-meta-rxcksum-v2-0-6b3fe987ce91@kernel.org>
-	(Lorenzo Bianconi's message of "Thu, 25 Sep 2025 11:30:32 +0200")
-References: <20250925-bpf-xdp-meta-rxcksum-v2-0-6b3fe987ce91@kernel.org>
-Date: Thu, 25 Sep 2025 11:51:04 +0200
-Message-ID: <87bjmy508n.fsf@cloudflare.com>
+        d=1e100.net; s=20230601; t=1758793996; x=1759398796;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YZcpU2w/VB5YKX06iIgQfBUU6i35jTYfqMGO23xOBP4=;
+        b=XUf+DIHNubEjHDd27E9WQ/45XE1P+G4RaPIP3T5S4EGwH43/Hp6h2KzR0lE9B7PVch
+         O86JjfP6K6pdlQ+B0tTkPfZ3q01sLQVKvtTZ5REzyAMmVgpmQq5zpijC7Yhc5TtxqDi8
+         R7bemdfaZaASGs0pO7hlqQsfKBQfVgkMY9Ufy9sUkDcisf7ozDTlCbCZfhCMLLbH4Wvn
+         GlxGRa6n5Yj8fqDSLJ/HbygdS2j9uZGl0QwlRqBNYVCf2ICTKytmVDkX+U9F6bNTeqZH
+         mLA8PsSH6V5Gxw0jsdzxuaR+gsu4LqZ7QOxKykSv760n4H5y/8AuMFJGJDkFZliIAwkL
+         D2Dw==
+X-Gm-Message-State: AOJu0YwhNykR6EFlF6F9h8ufcDoLqdBYnTdYWhNEAtDQ4f1R2HhUIjJZ
+	aKBAXc7OfeawGI4ZzrTReeEabfoL/1L9fVUNQXNWK/23REThhwJadJl49Jq15oQgu7BTkPd7esn
+	9+OGs7kPdq+CHIwtcjrryatOoji/SDKhn4/dD3qfAAA==
+X-Gm-Gg: ASbGncueWwUIUefcz+GrNz3eZ47K65SLWis/Si/4ujacr4Ys2e7gzhSD3iOdTh8Ra3/
+	5S77PbtalaEzfcuQvPfCop/drdYRQrj/N/rhLLQCBK/jgmRytl+6hCjRH21BKaMTowkW0js+1Zb
+	vCfpoqiZgR5eL68bLxxefXlrZLgl5ELQpwgtmgSkxljfXQXMiM6G9R21Ndh9C4STosCiLMAeVLz
+	jAXqsDWhz+9u2aU
+X-Google-Smtp-Source: AGHT+IEmU8rnXWa62/3qZo+R7CiKruEkD4ZCa9MZ8GPj2WiUPf+P7ttT+U2icSZcwgkOfcyw7mPkVrfynUcxItvgZY4=
+X-Received: by 2002:a05:6000:25c3:b0:3b7:8da6:1bb4 with SMTP id
+ ffacd0b85a97d-40e4accc86fmr2650916f8f.58.1758793995865; Thu, 25 Sep 2025
+ 02:53:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20250924211716.1287715-1-ihor.solodrai@linux.dev> <20250924211716.1287715-4-ihor.solodrai@linux.dev>
+In-Reply-To: <20250924211716.1287715-4-ihor.solodrai@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 25 Sep 2025 10:53:03 +0100
+X-Gm-Features: AS18NWDbLB5YJC0TDfFpCPIYOHpFNKW8roC_ShfUbE2jyM3iqoVhOozM0foMtQw
+Message-ID: <CAADnVQLG1=xr9OWKZna0hjfswZ+pZ8RM3fAtsVd+aYW7xaFFcQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/6] selftests/bpf: update bpf_wq_set_callback macro
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, dwarves <dwarves@vger.kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 25, 2025 at 11:30 AM +02, Lorenzo Bianconi wrote:
-> Introduce bpf_xdp_metadata_rx_checksum() kfunc in order to load the HW
-> RX cheksum results in the eBPF program binded to the NIC.
-> Implement xmo_rx_checksum callback for veth and ice drivers.
+On Wed, Sep 24, 2025 at 10:17=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux=
+.dev> wrote:
+>
+> Subsequent patch introduces bpf_wq_set_callback kfunc with an
+> implicit bpf_prog_aux argument.
+>
+> To ensure backward compatibility add a weak declaration and make
+> bpf_wq_set_callback macro to check for the new kfunc first.
+>
+> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> ---
+>  tools/testing/selftests/bpf/bpf_experimental.h | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
+ng/selftests/bpf/bpf_experimental.h
+> index d89eda3fd8a3..341408d017ea 100644
+> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> @@ -583,8 +583,13 @@ extern int bpf_wq_start(struct bpf_wq *wq, unsigned =
+int flags) __weak __ksym;
+>  extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+>                 int (callback_fn)(void *map, int *key, void *value),
+>                 unsigned int flags__k, void *aux__ign) __ksym;
+> +extern int bpf_wq_set_callback(struct bpf_wq *wq,
+> +               int (callback_fn)(void *map, int *key, void *value),
+> +               unsigned int flags) __weak __ksym;
+>  #define bpf_wq_set_callback(timer, cb, flags) \
+> -       bpf_wq_set_callback_impl(timer, cb, flags, NULL)
+> +       (bpf_wq_set_callback ? \
+> +               bpf_wq_set_callback(timer, cb, flags) : \
+> +               bpf_wq_set_callback_impl(timer, cb, flags, NULL))
 
-What are going to do with HW RX checksum once XDP prog can access it?
+There is also drivers/hid/bpf/progs/hid_bpf_helpers.h
+Pls double check that hid-bpf still compiles and works.
 
