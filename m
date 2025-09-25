@@ -1,139 +1,120 @@
-Return-Path: <bpf+bounces-69749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69750-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51E8BA09F1
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 18:33:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75391BA0B92
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 19:00:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D561319C4E69
-	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 16:33:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56FA03A45AD
+	for <lists+bpf@lfdr.de>; Thu, 25 Sep 2025 17:00:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7432F5A12;
-	Thu, 25 Sep 2025 16:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B171A306B15;
+	Thu, 25 Sep 2025 17:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kULI3936"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dJ/UgMLe"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91241D5CD9
-	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 16:33:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787853081A9
+	for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 17:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758817995; cv=none; b=JZjY30I7NO64HsTDvj8eQssgBBt8Fcue6ARjqUdKMeFX+Ohuk3eXiH01lMgEMpVDCvuPXLDjY71yKmJKH1PrbnC9tTKI4kh06FSUXegs1PYq2G3/+g1KpuYZ+NunZ6v3xxdVjkAQum7v9Zg9o2vEPawzEAHxeCFMTLLsiKEeqEc=
+	t=1758819617; cv=none; b=sDO+gIONqGYpE0RfGuyP+P21/3G9WBc2ArW5fK4sZFO1q3dl6/oJHGPBezULk4yea2s1vYYchSnZvhAhzZpeijoOhLBdBdoolyOJpi9Esfez2IofqJtc6TCiEuhsvfAPHO4QQmD6nsw6P9mJKIyAZJWEMkuReJM8wVRZOzeKL9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758817995; c=relaxed/simple;
-	bh=S3NKEt4GRgoBwPONRw+g8M2LkQgCWtko1S2apP7hbdA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sYXoQekesAA4cInfYMNWuJ/D4bFkWu1Rz1Ul+FOTTccFeW0uqR6oEMG6LupfsN6shbGU9lC7msudB0lVRlBa50dr58Vs5UQplpGxxdN22Y5ZHSrN1tO28jpeNgKRO6VjHZ5IBN3AmiHAeed7WE+SJob7azstVxJAHMOHcdfN27Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kULI3936; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <977e0020-fb79-4bf7-9349-cd99dc0d93d6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758817981;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XHyNLQlojJR72U3JVe8KHfwEXQ2ZW6KVB1AD3T02K0A=;
-	b=kULI3936GhlERED/54S8LILzUfOPEmXkPI3zcfMSH4D1UNT8RO+Y5kfvLBfKFIrGOi7pqp
-	U+eWD612LQdfa7XVAN/p9/cAKoybrJqMv3GHRejORIEeEf/SNcGThIZ5ntQEDZx4jxase9
-	Prf8hO6CaJ13AFvK1ySlBv+HOElNBGc=
-Date: Thu, 25 Sep 2025 09:32:55 -0700
+	s=arc-20240116; t=1758819617; c=relaxed/simple;
+	bh=SPvutgf/0wlSxzU/BGGR07xozaCO3CWXty8/w3Fcp54=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VcOXKjSK3on/KXC76RT7dkmADIc1eUIcTGZhBLR8HcvELOof03Z6KZGG7cFP6Iz5UcPcl340v8dNcwxg4BqSslAysbdWL8ZuAVR67mjnI1Huj9MrjHeDEIYUntNIwJIwqajaxMiIKxlW0oUoQabBIdxxCM/tzISE/T7BOdI1HH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dJ/UgMLe; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-26a0a694ea8so11423295ad.3
+        for <bpf@vger.kernel.org>; Thu, 25 Sep 2025 10:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758819614; x=1759424414; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wyDMrFJ10ozuZKJidiIpM+48MXCub922AW0orXQAw94=;
+        b=dJ/UgMLesl4e/UR6ScLdpZmcKEUnIPFFeato/M0guf6lPfmPXEfaSmu9xFKz4ua5KG
+         PrpbYqP9w6vvezHHoaRToOj7q3imKLy8bK5X7VN/WXLrfyrgTrlsUhA7faG3GIkorQWq
+         w0HDyDgwyQIKFuInD/hb5e44TqxUAfo+7wtcNxKS6X633PcloZS51BRatf3uoC/sR529
+         svPDukhNNTIQe7WUStYgrVfLodgn/C6gKcc/65HMyKzLs2u6zbpAB9RfbUzHQ+ohe41o
+         3s32zzkVV0rhzMQ5PScijs4ToGUTaWJpApGRvUH7wjQ5EBI784bNQdjqT2lZKJgBYsx4
+         0daw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758819614; x=1759424414;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wyDMrFJ10ozuZKJidiIpM+48MXCub922AW0orXQAw94=;
+        b=GAen8J+64eeko9JqZ8xSTLRgeXc8kftqzQADRZOLQY/3iwsR44Cfgl+4BpDevqqZNw
+         U39NGFfbI9PqRgPrCoeTgabOTZnJHyzGqEIM3GRcjXK9xZwr4hCWRzfZTeXHNJhlBwWv
+         2rhkObPOJUFkIIqY4T/P0r8uR06HDt+apZVi9PSX7UcZxs2+EXVLU6RAu6y870STM11B
+         FediQ/C7picgm3v5kT8dmll+q2lqyKUqwbEYPoAFy7w2EyYzAW63CpiYSIuGxripoPpF
+         oyy0Pd4b4vDX7rKZJBtTi21imljn6unnzrkP9pr7gXSX0yx9f4sVvK6TybpMsPwn6OMz
+         WoIw==
+X-Gm-Message-State: AOJu0YyjmfwH1C0j4xIsiugvlWM1x4vDcG4vyIFPP8JKtXGBlNm+47ca
+	vDhwTpByivT7NaY3go9ue9AKZUc62elWZwVwwwjlc24tTC94IkTGmkzCq5Ir8A==
+X-Gm-Gg: ASbGncuuhQkRQW0kXLMlsTvzCXj4wvgDnfGhz3Q77MlYfSbb8ps3/HXPgmwWLDnW4/9
+	S+WA/yw76YsB4nNQHXUFaG8Jxg5VlnjwLM1ZBl3e2zgtC/ccc9aXqRdSYhkDl8VIz5JrjIC/8JW
+	l+p0LoXqhszayv62Vn+xDnK5vulwYbYALb9Fjh8KDMsMMO/NUNhUDiL6PjN5Hivgx97lHmGv3JH
+	EJzc+b7gHDPsOA1JrrTt9E72Czm/bOvyaoMo4D/f/wbzrqMgS17lPputZy9V/3saNiBAOZpV2c0
+	WJ2gbmlTsyAeKGbJGONln0SwgZ5T1rdtKINEahwk2m63C/jLl0ONFg9iVg7Qkn5qwpVEjL1Ntq6
+	gSlhLtRzrOxhOYTt01UuTmTA=
+X-Google-Smtp-Source: AGHT+IECup8tv/RPmEj9LeHqIi9Nezmq0eALAm1L5tBiIgzTFrtGP33k18mujwoJhJTZsvz//a8CCQ==
+X-Received: by 2002:a17:903:3d0e:b0:269:6e73:b90a with SMTP id d9443c01a7336-27ed49d0298mr42964225ad.15.1758819614292;
+        Thu, 25 Sep 2025 10:00:14 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:7::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-27ed69beeafsm29744395ad.126.2025.09.25.10.00.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Sep 2025 10:00:13 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next 1/2] bpf: Emit struct bpf_xdp_sock type in vmlinux BTF
+Date: Thu, 25 Sep 2025 10:00:12 -0700
+Message-ID: <20250925170013.1752561-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 5/6] bpf: mark bpf_stream_vprink kfunc with
- KF_IMPLICIT_PROG_AUX_ARG
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, dwarves <dwarves@vger.kernel.org>,
- Alan Maguire <alan.maguire@oracle.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Eduard <eddyz87@gmail.com>,
- Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@meta.com>
-References: <20250924211716.1287715-1-ihor.solodrai@linux.dev>
- <20250924211716.1287715-6-ihor.solodrai@linux.dev>
- <CAADnVQLVeZd0JOz-GBgZfi=t5kvtH_z1Ri2w6b-AW7DHgEBv5w@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAADnVQLVeZd0JOz-GBgZfi=t5kvtH_z1Ri2w6b-AW7DHgEBv5w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+Similar to other BPF UAPI struct, force emit BTF of struct bpf_xdp_sock
+so that it is defined in vmlinux.h.
 
+In a later patch, a selftest will use vmlinux.h to get the definition of
+struct bpf_xdp_sock instead of bpf.h.
 
-On 9/25/25 3:01 AM, Alexei Starovoitov wrote:
-> On Wed, Sep 24, 2025 at 10:17 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->>
->> Update bpf_stream_vprink macro in libbpf and fix call sites in
-> 
-> 't' is missing in bpf_stream_vprintk().
-> 
->> the relevant selftests.
->>
->> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
->> ---
->>  kernel/bpf/helpers.c                            | 2 +-
->>  kernel/bpf/stream.c                             | 3 +--
->>  tools/lib/bpf/bpf_helpers.h                     | 4 ++--
->>  tools/testing/selftests/bpf/progs/stream_fail.c | 6 +++---
->>  4 files changed, 7 insertions(+), 8 deletions(-)
->>
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 6b46acfec790..875195a0ea72 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -4378,7 +4378,7 @@ BTF_ID_FLAGS(func, bpf_strnstr);
->>  #if defined(CONFIG_BPF_LSM) && defined(CONFIG_CGROUPS)
->>  BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
->>  #endif
->> -BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS)
->> +BTF_ID_FLAGS(func, bpf_stream_vprintk, KF_TRUSTED_ARGS | KF_IMPLICIT_PROG_AUX_ARG)
-> 
-> This kfunc will be in part of 6.17 release in a couple days,
-> so backward compat work is necessary.
-> I don't think we can just remove the arg.
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
+---
+ net/core/filter.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Acked.
+diff --git a/net/core/filter.c b/net/core/filter.c
+index b20d59bb19b8..2af0a5f1d748 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -7439,6 +7439,8 @@ u32 bpf_xdp_sock_convert_ctx_access(enum bpf_access_type type,
+ 				      offsetof(struct xdp_sock, FIELD)); \
+ 	} while (0)
+ 
++	BTF_TYPE_EMIT(struct bpf_xdp_sock);
++
+ 	switch (si->off) {
+ 	case offsetof(struct bpf_xdp_sock, queue_id):
+ 		BPF_XDP_SOCK_GET(queue_id);
+-- 
+2.47.3
 
-> 
->> --- a/tools/lib/bpf/bpf_helpers.h
->> +++ b/tools/lib/bpf/bpf_helpers.h
->> @@ -316,7 +316,7 @@ enum libbpf_tristate {
->>  })
->>
->>  extern int bpf_stream_vprintk(int stream_id, const char *fmt__str, const void *args,
->> -                             __u32 len__sz, void *aux__prog) __weak __ksym;
->> +                             __u32 len__sz) __weak __ksym;
-> 
-> CI is complaining of conflicting types for 'bpf_stream_vprintk',
-> since it's using pahole master.
-> It will stop complaining once pahole changes are merged,
-> but this issue will affect all developers until they
-> update pahole.
-> Not sure how to keep backward compat.
-
-Right.
-
-One way to do it is to conditionalize new kfunc defitions under a
-config flag similar to how we have CONFIG_PAHOLE_HAS_SPLIT_BTF and co.
-
-But this seems like too much trouble for just a couple of kfuncs,
-especially since we do not guarantee stable interface for kfuncs.
-
-We could ask people to update pahole version if they run into
-issues. And they shouldn't unless they are actually using the kfuncs,
-or more specifically: have their own declarations of said kfuncs.
-
-bpf_stream_vprintk() is a special case, because it is already in
-libbpf.
 
