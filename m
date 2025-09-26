@@ -1,169 +1,143 @@
-Return-Path: <bpf+bounces-69807-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69808-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 989E6BA2CDD
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 09:34:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B65C7BA2DFA
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 10:00:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABE1E1C0139D
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 07:34:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1569E4A3877
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 08:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B96127E071;
-	Fri, 26 Sep 2025 07:34:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE6228C84F;
+	Fri, 26 Sep 2025 08:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Tha4Fn6e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ehZazaXU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577C617A2EB
-	for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 07:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D009028750A
+	for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 08:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758872042; cv=none; b=a891r42D5CYchmD8JBEYwcfrGJtQb8mn1YzjlQPoYzXcs97vMDmq7iQRWjBeaCfbrJzzQWSombiRfIR3uPSFP2sHs1/y6wpIJQ6ItoNpJNygUonu5jvIh5/Mx5bXtD7eNdda/rULLGx7gOW7kxvKwGuGEzQX7rb2LyaPh6nHp7c=
+	t=1758873634; cv=none; b=nTUkCjPewuKfo9hQ0689AATOFl1DhyyYfGLVVA5trRg/QY53QsPs6apAvOM51u0fa0gXW7GLY1dkBAkHDEe1KL4pfVDBeBDrAGzMt18/RbIqsVEK0WUej2R8e7dLTg/MGfVBFiajnoGS5Ju468Gqf9mEcvR/5Cq4o53ydPruVkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758872042; c=relaxed/simple;
-	bh=43+arxHIZZPcm1CwK9O5ILMH9H6gVenccJ0NbaovTm4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H6SRTzZ1NA7wXXo7hqfDaS44VwMQQbnYfTwyDY/nDauOliRsaDtwYIEihtWbwQXqo6CGsyCaVaD5xRbhAXrzCkl3FgDLLZL/NlK9xaHzrYApcavIHUnB0O9nUMdw0cU9MPuoLPMtyoDQ1YuZT0Byagu1SWwog5TGxhXmxJWDXEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Tha4Fn6e; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-57dda094f6cso5085e87.0
-        for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 00:34:00 -0700 (PDT)
+	s=arc-20240116; t=1758873634; c=relaxed/simple;
+	bh=uKv781t5pHxGX9XHdWBHGON9HVERC0KRbzcEdEyQXDA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ChF08LTLmN0Vm4KoORc4HwDWXtLZpw/6eTxoYF+QGjgSbDbK8EIVBGfUD0nR31mT+TaYPdcTlIHCtz3CftsqUJpoSB9HEE+UQBOl8v6/X2lGwkWH0qnFN7d5Tih7p9PB1BprAWg4fmx1JxlcT4dr4fCux/6h/qSKTv0GORd/1O0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ehZazaXU; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-46e32139ef7so2695945e9.1
+        for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 01:00:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1758872038; x=1759476838; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EBZhJSbHuJVNYFNQx8sDjlGQJWDTuWRThogwStulwmo=;
-        b=Tha4Fn6ejp20uDxclEfPDzw7NIK1NBymvBn/1fEXlS31N+IyNhpxOEDSZqumUw0fQ8
-         RpnCI9yZnTwSheTVTPhHrjJ+Smjk5vN91MSQ20+5L+CH8rTPG1BN7D6G0ORpliffEFTs
-         BDrj4E8OqIY5aeLqwAjGbE5D7eL/MO5Lp/0h3tKfQUEqqdSmCTanftApbqGc/yGhJsNM
-         TcGAwLqVvdEsl3g/uibutE6t/9b3XtjTsSuPS6RdBZjbb6ijc2FEckqqrY9GErUxe57F
-         Ev/4rJ88RMxQLg6Pp2OOaPDbWYwWuGi9RWZo9IO0fgtwcDzkkA4V7cfT+RWB17SFnX0Q
-         DQGw==
+        d=gmail.com; s=20230601; t=1758873631; x=1759478431; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1Iu0F1mpJxkFZwruVTis8t8NuagO8uvem8I8R547GH8=;
+        b=ehZazaXUgdfxqtOEp3DjAUVmzKXPtmMOGUFz/v9Wx0T6rquzHgEFJ+YSqHmT8ExDSL
+         Mu0b62zd0iKycRSDgh+ew3ZQ4tsqcYlG4IoMkyaUNVpSbyAyR7z2ZEQFZ4Us0vzpApnO
+         jlo+Zq9azq6fKqpJ1WdiqtezFOawJVJaqU8d8nWPGihIwITmTG4OyMU2FPs84ynMre/J
+         J/Ba0y6hHN9hsBnZHAzWUtcIPXrwrMpLz0L1lKcRUVcunNQ4GpOKv1j8FMbVn3VCGdrK
+         sSiA144hNBEYukfeFKY0k+TggNXaurZENH/7unCeEwndVXUPPjf5ldiyl82GDLpMRIDF
+         l6yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758872038; x=1759476838;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EBZhJSbHuJVNYFNQx8sDjlGQJWDTuWRThogwStulwmo=;
-        b=t0BjX6dzWvmozP4SX3DrLxSn8P6fpi9kEexUdfC49rR6qoHYHShugh5tJ2DMlGY0q1
-         oiBBcgRJHKf3BiT7Ksz/9jwoYQUJCLQOuLas0Ixq3iNhdT2//a4CPN40Vr74CtLQxXdp
-         oHOJnDhhC4d7+hnwDinFmgjIbEgeWjoO0jmBNkreBkRkbHWeygjV1IsQ4wDUMRI+1wBJ
-         LTgTsaxl80PxRPTDWR0011hqR8wW00swnset5Nf32Gcma+iihOevrXxU2YiWSK+aboAO
-         WR8CUT/kFECXDbZ+VA3dDovckcWHH9VoSXNnI7rpAholzfdSBtrMMiURmoaXKhXW8oVC
-         jhmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWzxfvvwSIXgixn5o+hrjbol7/3v6EjwSG6ZSMTv3y+uwV2xRCipvghnXC2svwjgf5G/QE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeQosLkHyx1+LfL03I0pFu8wfdY/arZcmzp9lP+qhHwKUS36WA
-	KXZMHP2LJaEsAOyB1TAhrYxIAr4fKY92LQUtG1DRkv84fjFvpXoEofJM17sBONUhNS/XyVKBGrX
-	TdyZJwFlL7uk+1o7hmyCc/Djn7XLmIVw36cPceAZM
-X-Gm-Gg: ASbGncv5jY1zjV4AtfBP82ZlhlYQP2d5g2l8FCgBFbkfkQ/3fN8HwmDNsORAHu7euk5
-	scH3CbVWp5y/zwDeG647342aBwncs7vjfIx4CBeTFRMt/UQc6DwOUYDupBelbNLo82zqDMSVqhC
-	D4tSpKLOp6Eyr30+DorroEbOXULBXKXphIcqE9eidUDua6zwunAqXhqv3ZAFRSy2GK0z4Zzuotx
-	la0NCB8FefkV6njcx61P8Rfz+5cY8hhz1+x2KeLrfq/9XE=
-X-Google-Smtp-Source: AGHT+IG0I1cuFdB5NzE00N0rhpCLOpSuSGU9Q2QmiolE+hhpYTRAWFN4+R73lM2EIdTtEteIap5lRAfNxHQuKEHssf4=
-X-Received: by 2002:ac2:5ded:0:b0:57b:f611:f918 with SMTP id
- 2adb3069b0e04-58438d03dfamr209489e87.3.1758872038112; Fri, 26 Sep 2025
- 00:33:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1758873631; x=1759478431;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Iu0F1mpJxkFZwruVTis8t8NuagO8uvem8I8R547GH8=;
+        b=cbmbLn6maOvzjGK5ldWkG/wHYcLRcQfsdbjq3SJ+lI5VATJjv9YDX6M1o6HE+E8ZM6
+         3WcQrgcUnFq8kCyZ8E9g1HoqOpcI0GKep9OEwxqXvE7nJgr7u7ug0AdK2U9MrXY6fU4p
+         Fw/BzEPUyoIQ1E/FERp2Uq5lNiTkWlpbgYVksICStU4mKqg0wtqNV4k8+NIJ8vmFXC0O
+         DucU4Yqr7UO1ebjRAfPqIceqCbfSR7x1BkntLJ6yHypV5O+pUvXDjE+OAIdnyA0vUEeC
+         S6Fu6ekcqjE5IpAW9+2En5ULa4G8OL+hWKeipkbyS1ivcfLjNZq6k8J3+rc/qYLzAboJ
+         R3oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXjxzOxD2Fyy1BeUQkLbVr0aa5+lgEzYTJK7O5FXRj1NT4NWKmkpWX11i2ax9SVwJB6BsE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywl4X8d6oa2KBfgAWLyD3rqqUJaLsCoALaTBZmnouAm8oprsLZ3
+	sD6MCh1Ba8YWAqtnFp9Gln9MEspLgjjp8n+b20Makf0WAw2IckHTVFb6
+X-Gm-Gg: ASbGnctHycfBofW4zgJpTrfgsaD1sTtPsbuclkKsUG6AD61HiziJYXBYqqxea9KUYgQ
+	g4pMJ9gvwkiTqZCou5yJUzuQgfVv3ZJYnbxnKBHfp6LqLKAt2NFm9GWYzWAsAq3oJx6M6fFln20
+	bM0v17EOZlLKZLOGonRODoaeXkdAJNZfPHBvRkaB4HaEPdqzlE+uL1HKM0QD5HL/dmLBSUCGGXl
+	iCeFtk8I6xJr5JGYQyw5CQHMSejrAJcKP0O5zA1qMoJefpO+3fNdBmbA7hsJg81vWewLIPsmQVM
+	6QE5Sa2B5C/HZs2qTQCMHQAwQ1dMUko0+B5nq1wi1Js6MHLhrmE4AeWMqwLfGmrOeEjY51UzNVb
+	SxmA5UY2Dfh23UMerkhgsFd7oUv5Ng/FvgZegJSlH
+X-Google-Smtp-Source: AGHT+IHNpFF3srU1saXcXVO6zTDT4O5u6j9Vyxp4h+sviEeunSEZcOR+GiZEhHwsuD8UAwncJOuzoQ==
+X-Received: by 2002:a05:6000:310d:b0:3fc:854:8b84 with SMTP id ffacd0b85a97d-40e455ca678mr3054531f8f.3.1758873630709;
+        Fri, 26 Sep 2025 01:00:30 -0700 (PDT)
+Received: from [172.16.20.151] ([41.229.125.2])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fb9e1bd14sm6212872f8f.28.2025.09.26.01.00.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Sep 2025 01:00:30 -0700 (PDT)
+Message-ID: <fcbdfd79-3996-47cb-9d91-ad049147d352@gmail.com>
+Date: Fri, 26 Sep 2025 09:00:32 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250924060843.2280499-1-tavip@google.com> <20250924170914.20aac680@kernel.org>
- <CAGWr4cQCp4OwF8ESCk4QtEmPUCkhgVXZitp5esDc++rgxUhO8A@mail.gmail.com>
- <aNUObDuryXVFJ1T9@boxer> <20250925191219.13a29106@kernel.org>
-In-Reply-To: <20250925191219.13a29106@kernel.org>
-From: Octavian Purdila <tavip@google.com>
-Date: Fri, 26 Sep 2025 00:33:46 -0700
-X-Gm-Features: AS18NWC04uq5PgWIZ1vcjFQEJzvryXi-17sPAp4VHgGoES1fwf9NPZmqEHUgz1Y
-Message-ID: <CAGWr4cSiVDTUDfqAsHrsu1TRbumDf-rUUP=Q9PVajwUTHf2bYg@mail.gmail.com>
-Subject: Re: [PATCH net] xdp: use multi-buff only if receive queue supports
- page pool
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, davem@davemloft.net, edumazet@google.com, 
-	pabeni@redhat.com, horms@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me, 
-	ahmed.zaki@intel.com, aleksander.lobakin@intel.com, toke@redhat.com, 
-	lorenzo@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com, 
-	Kuniyuki Iwashima <kuniyu@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] selftests/bpf: Prepare to add -Wsign-compare for
+ bpf selftests
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, daniel@iogearbox.net
+Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ matttbe@kernel.org, martineau@kernel.org, geliang@kernel.org,
+ davem@davemloft.net, kuba@kernel.org, hawk@kernel.org, linux@jordanrome.com,
+ ameryhung@gmail.com, toke@redhat.com, houtao1@huawei.com,
+ emil@etsalapatis.com, yatsenko@meta.com, isolodrai@meta.com,
+ a.s.protopopov@gmail.com, dxu@dxuuu.xyz, memxor@gmail.com,
+ vmalik@redhat.com, bigeasy@linutronix.de, tj@kernel.org,
+ gregkh@linuxfoundation.org, paul@paul-moore.com,
+ bboscaccy@linux.microsoft.com, James.Bottomley@hansenpartnership.com,
+ mrpre@163.com, jakub@cloudflare.com, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ netdev@vger.kernel.org, mptcp@lists.linux.dev,
+ linux-kernel-mentees@lists.linuxfoundation.org, skhan@linuxfoundation.org,
+ david.hunter.linux@gmail.com
+References: <20250925103559.14876-1-mehdi.benhadjkhelifa@gmail.com>
+ <CAEf4Bzaf81OYLTzpN6E4ths_mN2gP29rMYBmbp7P2GqSMj8FbA@mail.gmail.com>
+Content-Language: en-US
+From: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+In-Reply-To: <CAEf4Bzaf81OYLTzpN6E4ths_mN2gP29rMYBmbp7P2GqSMj8FbA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Sep 25, 2025 at 7:12=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Thu, 25 Sep 2025 11:42:04 +0200 Maciej Fijalkowski wrote:
-> > On Thu, Sep 25, 2025 at 12:53:53AM -0700, Octavian Purdila wrote:
-> > > On Wed, Sep 24, 2025 at 5:09=E2=80=AFPM Jakub Kicinski <kuba@kernel.o=
-rg> wrote:
-> > > >
-> > > > On Wed, 24 Sep 2025 06:08:42 +0000 Octavian Purdila wrote:
-> >  [...]
-> > > >
-> > > > This can also happen on veth, right? And veth re-stamps the Rx queu=
-es.
-> >
-> > What do you mean by 're-stamps' in this case?
-> >
-> > >
-> > > I am not sure if re-stamps will have ill effects.
-> > >
-> > > The allocation and deallocation for this issue happens while
-> > > processing the same packet (receive skb -> skb_pp_cow_data ->
-> > > page_pool alloc ... __bpf_prog_run ->  bpf_xdp_adjust_tail).
-> > >
-> > > IIUC, if the veth re-stamps the RX queue to MEM_TYPE_PAGE_POOL
-> > > skb_pp_cow_data will proceed to allocate from page_pool and
-> > > bpf_xdp_adjust_tail will correctly free from page_pool.
-> >
-> > netif_get_rxqueue() gives you a pointer the netstack queue, not the dri=
-ver
-> > one. Then you take the xdp_rxq from there. Do we even register memory
-> > model for these queues? Or am I missing something here.
-> >
 
-Ah, yes, you are right. So my comment in the commit message about
-TUN/TAP registering a page shared memory model is wrong. But I think
-the fix is still correct for the reported syzkaller issue. From
-bpf_prog_run_generic_xdp:
+> I see little value in these transformations. Did we catch any real
+> issue here? All this type casting and replacement is just churn.
+> 
+> I certainly don't want such churn in libbpf, and I'd leave BPF
+> selftests as is as well. int vs u64 can have subtle and non-obvious
+> implications for BPF code generation (for no-alu32 variants
+> especially), and I think BPF CI already exposed some of those already.
+> 
+> I think we can live without -Wsign-compare just fine.
+> 
 
-        rxqueue =3D netif_get_rxqueue(skb);
-        xdp_init_buff(xdp, frame_sz, rxq: &rxqueue->xdp_rxq);
+I was convinced by [1] that this needed to be done not just for current 
+version of the code but for future code being more robust initially.I 
+have already done all the work and I can follow daniel's suggestion for 
+the next version.Otherwise,This means then that the TODO comment to add 
+that compiler warning in the makefile needs to be removed.
 
-So xdp_buff's rxq is set to the netstack queue for the generic XDP
-hook. And adding the check in netif_skb_check_for_xdp based on the
-netstack queue should be correct, right?
+Also I wanted to ask since the CI bot had success with my patch.What 
+does this [2] mean exactly.
 
-> > We're in generic XDP hook where driver specifics should not matter here
-> > IMHO.
->
-> Well, IDK how helpful the flow below would be but:
->
-> veth_xdp_xmit() -> [ptr ring] -> veth_xdp_rcv() -> veth_xdp_rcv_one()
->                                                                |
->                             | xdp_convert_frame_to_buff()   <-'
->     ( "re-stamps" ;) ->     | xdp->rxq =3D &rq->xdp_rxq;
->   can eat frags but now rxq | bpf_prog_run_xdp()
->          is veth's          |
->
-> I just glanced at the code so >50% changes I'm wrong, but that's what
-> I meant.
+Thank you for your time reviewing and helping.
 
-Thanks for the clarification, I thought that "re-stamps" means the:
+Regards,
+Mehdi
 
-    xdp->rxq->mem.type =3D frame->mem_type;
+[1]:https://github.com/kernel-patches/bpf/commit/495d2d8133fd1407519170a5238f455abbd9ec9b
+[2]:https://github.com/kernel-patches/bpf/actions/runs/18006172526
 
-from veth_xdp_rcv_one in the XDP_TX/XDP_REDIRECT cases.
 
-And yes, now I think the same issue can happen because veth sets the
-memory model to MEM_TYPE_PAGE_SHARED but veth_convert_skb_to_xdp_buff
-calls skb_pp_cow_data that uses page_pool for allocations. I'll try to
-see if I can adapt the syzkaller repro to trigger it for confirmation.
 
