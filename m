@@ -1,307 +1,279 @@
-Return-Path: <bpf+bounces-69843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03FAABA40E3
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 16:12:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B416ABA449B
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 16:50:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23ED41C0144A
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 14:12:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6530C7AB151
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 14:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50228155C97;
-	Fri, 26 Sep 2025 14:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014611EA7C9;
+	Fri, 26 Sep 2025 14:49:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XvCxvQPl"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p0uimPCK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004172F3605
-	for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 14:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C17199FBA;
+	Fri, 26 Sep 2025 14:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758895907; cv=none; b=JYpQIaSu9Ml/R3dpRyaipZSAmPzZkW0B5rhhlXNcttoAQSer6erNq3VplQcNDRpJcW9dAetLWOzcbUIKcDjPgYtqExuEG0cr+zguSs5nKVIOzXk0a2HkyPYljWbI3NpaaBZHe/FuokLmyj+N+NN/oxHMiM0KTxTv5xf2HO4bAlg=
+	t=1758898173; cv=none; b=Fie7LPtj5zL+qCSKEwxHWzL8ZTtSph0Daro1RXJHKFeXqquSIcNNy57/KegBnixOjbNVsloxkbvaj2Ej8Vh843c20as9QCYbXo3NLG8gmcROvbF4dFR3snzWhUkHG+20rbc1ejWJRya/BF7Aazz0/E63TMLnI//TtJWMCnk0/HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758895907; c=relaxed/simple;
-	bh=Cda4WGQXonbSWQhrD5cw1RbmvTmA5UggAyb6jdw1c9E=;
+	s=arc-20240116; t=1758898173; c=relaxed/simple;
+	bh=X4MWoMvZpNFx+OVJEAY7k+/NlF9jfSSaTBDZkjwLetc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=of53p+VL0q1AD8fZAmCeWlx493mZgjwmmw2BnecRL4Q0sbwckpx059hyX/EJ5hb/9YLONdrioC2v/TACa5aCH+Z8BkEkoer92ivO4o/kp87mnnoM7Ae6EhjFB2N+QMix9xqcqxwsmu2eCVCqLA3r5c461yI6Pq1keDJ8W+iPyaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XvCxvQPl; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45f2cf99bbbso10617395e9.0
-        for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 07:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758895904; x=1759500704; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ny7pIQ2SCuYpPr5sAoZMtmx+LX6//dYVYgLJ9SYLcgQ=;
-        b=XvCxvQPlDYqNLlioV8HtmIGG/oa15gRdbBsw13aV1VoxGSuLVyElGE18ESBpqaJW/y
-         Hr5D8NBbmNVUNPDg4pbPVQkJ+Wve9bSaXBT6JEVjlny0003+0LviusNT16buzcIyc4i9
-         EkFYqvFCK9bC/hOmmKMEE+gl4brhFJ6/72w8fT3Pelpl22w7mBJ6gbA07g7UpcBmRCkl
-         f8+tFvJuUu16ihZ/3R/tL+WZG8ujAf9vIqHDjEu6/6al2L0MPoiP/DUVPHdl1iO5fV8D
-         TPAasuut4XXXoguArQvRoAlg8EydSyAo3B44fEQHMdWJfBFxlkeB/zmQX76UM+AUr1Cz
-         S4Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758895904; x=1759500704;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ny7pIQ2SCuYpPr5sAoZMtmx+LX6//dYVYgLJ9SYLcgQ=;
-        b=UHXwarGdFPagb/trhHfrFF3bW0P93qJlhmaHlyvbpHDB4XuoKmEP8IOnTzTc2wMKLO
-         T/T+3tuyAhY45mkDadvcinixGboicRlXNxYjp4bDBTXbLqv0c+6eb8NMqvl7yA1tiUS7
-         Xs4bOC2OFmejBWWys/JwSF+XOk8Adl7fG7YDDoTozKFATUff7jVLITASQ6zrVqTqOi3Q
-         0FliYv1m1kHQmrW//mV0fa81iqNslp4zpTAqjhsEqNZXtobGcw3rnV8HsUZH3LyH/Sgm
-         /DnT+6rkQpt3/J8logb71eUEEgcaPhDA08vX370yKW7I1OjwS4G+p2bUHqerRZhkhrUE
-         XZ4w==
-X-Gm-Message-State: AOJu0YxeypIeJp8TIV8m2WcuVE9DoQS1szA4Lr7wNQqLsTzWttCfWvj+
-	pQIx+jDDuInN6Rk8vFEoM3ulVLsLntiv+CNEZX6yAvsTQW5JxE3DNB+I
-X-Gm-Gg: ASbGncuCQzlGAylZ6YBQbkYDzm0dGIqk4xhL46ihYONpGTntVTjMdpfVZeAckusP29T
-	civunX3LdodxlM8kPFLmmYZQ5xHtSagTH9hm57nGa0HByf5Tk+hUAJanCMQVBo5kVQKRxkBca8V
-	TTCwAudFlXpLBpJ+Rg99E++V87g7vTX54MNDDXF21iouPs3VhzqkAqHATSgeVZ1xSKlZ1rQopr+
-	2lB7NZi57FyGPSqRjkO3tzohzXBvBJ+GAZmXCG3Ymju4vdhfOPfypNdswiP92VXu3PuX3Jt+3Ju
-	78L24kvEUm+mgJta8dNE+yeJrJL7MMo8mDYm6OghbDwOas3MImfVXWe+NRw5yqV4/FJeOGhvSiU
-	JCCQ1bwlaXYkOVioQpOGkiiFN7J3NNzXbD0JCFmmPwf/1rXWBfJdVbEdrgG0dprYlXz743t/HAy
-	AxY8IEp56GPQcOmqrNuwEHreWzr0slIXE3yQ==
-X-Google-Smtp-Source: AGHT+IGIsygixbycwSxGEYYSjqdX4hw6Wrb2gEHvzCCx3um4Q8sxCxU/06IukXa1VlsWWUmFmo66KA==
-X-Received: by 2002:a05:600c:4fca:b0:46d:45e:350a with SMTP id 5b1f17b1804b1-46e329fb93bmr92609295e9.17.1758895903786;
-        Fri, 26 Sep 2025 07:11:43 -0700 (PDT)
-Received: from ?IPV6:2a02:6b6f:e750:1b00:1cfc:9209:4810:3ae5? ([2a02:6b6f:e750:1b00:1cfc:9209:4810:3ae5])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e32bd6360sm39873825e9.1.2025.09.26.07.11.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Sep 2025 07:11:43 -0700 (PDT)
-Message-ID: <34a9440f-b0c4-4f76-a2ac-f88b54c2242e@gmail.com>
-Date: Fri, 26 Sep 2025 15:11:42 +0100
+	 In-Reply-To:Content-Type; b=CmXvn2wVr5z7JzPj343KDVFF0HpDQrZtk4Dol4t2VTz2IpIoRZ3uZxSkiZTwHaN3ra4axQIbVqlP0ZZAk4mzUCciXaStm8XtWO9lZlsDI3ls+xsvbrY6hVoG4Xi+63Poc0WQ8+7ybIxl6lfB7NPD+clKfZKppmhRNgfN3ZxFRlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p0uimPCK; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <32608c1b-6da5-4a06-9790-58dfd4ba2011@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758898159;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gXM7GNVXlwNM6qgC8RcEz4DIWXulx4en7MnJK64sYug=;
+	b=p0uimPCKzx+0lRZWcpXNlJCkvBNo1Ljba0JQRRiJr1JwGeyRPb/ZvYNiwaZnqmaqBF7Hfc
+	3c7Khai3reWQ5g+jEsG9PV/jiNF/B/MaQknVMCzw1Eig28PrpuaUFhS2uvhY6e0GXpTSzo
+	qpRv/xQvchLVI0CesjUiAFowJOpaF6Q=
+Date: Fri, 26 Sep 2025 15:49:13 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 mm-new 01/12] mm: thp: remove disabled task from
- khugepaged_mm_slot
-Content-Language: en-GB
-To: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
- david@redhat.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, npache@redhat.com,
- ryan.roberts@arm.com, dev.jain@arm.com, hannes@cmpxchg.org,
- gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com,
- rientjes@google.com, corbet@lwn.net, 21cnbao@gmail.com,
- shakeel.butt@linux.dev, tj@kernel.org, lance.yang@linux.dev
-Cc: bpf@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250926093343.1000-1-laoar.shao@gmail.com>
- <20250926093343.1000-2-laoar.shao@gmail.com>
-From: Usama Arif <usamaarif642@gmail.com>
-In-Reply-To: <20250926093343.1000-2-laoar.shao@gmail.com>
+Subject: Re: [PATCH v7 05/12] KVM: guest_memfd: Add flag to remove from direct
+ map
+To: "Roy, Patrick" <roypat@amazon.co.uk>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>,
+ "corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>,
+ "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+ "joey.gouly@arm.com" <joey.gouly@arm.com>,
+ "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+ "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+ "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+ "will@kernel.org" <will@kernel.org>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>,
+ "bp@alien8.de" <bp@alien8.de>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+ "luto@kernel.org" <luto@kernel.org>,
+ "peterz@infradead.org" <peterz@infradead.org>,
+ "willy@infradead.org" <willy@infradead.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "david@redhat.com" <david@redhat.com>,
+ "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+ "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+ "vbabka@suse.cz" <vbabka@suse.cz>, "rppt@kernel.org" <rppt@kernel.org>,
+ "surenb@google.com" <surenb@google.com>, "mhocko@suse.com"
+ <mhocko@suse.com>, "song@kernel.org" <song@kernel.org>,
+ "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>,
+ "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@fomichev.me"
+ <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>,
+ "jgg@ziepe.ca" <jgg@ziepe.ca>, "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+ "peterx@redhat.com" <peterx@redhat.com>, "jannh@google.com"
+ <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>,
+ "shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com"
+ <seanjc@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "Cali, Marco" <xmarcalx@amazon.co.uk>,
+ "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
+ "Thomson, Jack" <jackabt@amazon.co.uk>,
+ "derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
+ "tabba@google.com" <tabba@google.com>,
+ "ackerleytng@google.com" <ackerleytng@google.com>
+References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
+ <20250924152214.7292-1-roypat@amazon.co.uk>
+ <20250924152214.7292-2-roypat@amazon.co.uk>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Patrick Roy <patrick.roy@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20250924152214.7292-2-roypat@amazon.co.uk>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
 
-On 26/09/2025 10:33, Yafang Shao wrote:
-> Since a task with MMF_DISABLE_THP_COMPLETELY cannot use THP, remove it from
-> the khugepaged_mm_slot to stop khugepaged from processing it.
-> 
-> After this change, the following semantic relationship always holds:
-> 
->   MMF_VM_HUGEPAGE is set     == task is in khugepaged mm_slot
->   MMF_VM_HUGEPAGE is not set == task is not in khugepaged mm_slot
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Acked-by: Lance Yang <lance.yang@linux.dev>
-> ---
->  include/linux/khugepaged.h |  4 ++++
->  kernel/sys.c               |  7 ++++--
->  mm/khugepaged.c            | 49 ++++++++++++++++++++------------------
->  3 files changed, 35 insertions(+), 25 deletions(-)
-> 
+On Wed, 2025-09-24 at 16:22 +0100, "Roy, Patrick" wrote:
 
+[...]
 
-Hi Yafang,
-
-Thanks for the patch! Sorry wasnt able to review the previous revisions.
-
-I think it would be good to separate this patch out of the series?
-It would make the review of this series shorter and this patch can be merged independently.
-
-In the commit message, we also need to write explicitly that when prctl
-PR_SET_THP_DISABLE is cleared, the mm is added back for khugepaged to consider.
-
-Could you also mention in the commit message why the BUG was turned into WARN?
-
-Thanks!
-
-> diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
-> index eb1946a70cff..f14680cd9854 100644
-> --- a/include/linux/khugepaged.h
-> +++ b/include/linux/khugepaged.h
-> @@ -15,6 +15,7 @@ extern void __khugepaged_enter(struct mm_struct *mm);
->  extern void __khugepaged_exit(struct mm_struct *mm);
->  extern void khugepaged_enter_vma(struct vm_area_struct *vma,
->  				 vm_flags_t vm_flags);
-> +extern void khugepaged_enter_mm(struct mm_struct *mm);
->  extern void khugepaged_min_free_kbytes_update(void);
->  extern bool current_is_khugepaged(void);
->  extern int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
-> @@ -42,6 +43,9 @@ static inline void khugepaged_enter_vma(struct vm_area_struct *vma,
->  					vm_flags_t vm_flags)
->  {
->  }
-> +static inline void khugepaged_enter_mm(struct mm_struct *mm)
-> +{
-> +}
->  static inline int collapse_pte_mapped_thp(struct mm_struct *mm,
->  					  unsigned long addr, bool install_pmd)
->  {
-> diff --git a/kernel/sys.c b/kernel/sys.c
-> index a46d9b75880b..2c445bf44ce3 100644
-> --- a/kernel/sys.c
-> +++ b/kernel/sys.c
-> @@ -8,6 +8,7 @@
->  #include <linux/export.h>
->  #include <linux/mm.h>
->  #include <linux/mm_inline.h>
-> +#include <linux/khugepaged.h>
->  #include <linux/utsname.h>
->  #include <linux/mman.h>
->  #include <linux/reboot.h>
-> @@ -2479,7 +2480,7 @@ static int prctl_set_thp_disable(bool thp_disable, unsigned long flags,
->  	/* Flags are only allowed when disabling. */
->  	if ((!thp_disable && flags) || (flags & ~PR_THP_DISABLE_EXCEPT_ADVISED))
->  		return -EINVAL;
-> -	if (mmap_write_lock_killable(current->mm))
-> +	if (mmap_write_lock_killable(mm))
->  		return -EINTR;
->  	if (thp_disable) {
->  		if (flags & PR_THP_DISABLE_EXCEPT_ADVISED) {
-> @@ -2493,7 +2494,9 @@ static int prctl_set_thp_disable(bool thp_disable, unsigned long flags,
->  		mm_flags_clear(MMF_DISABLE_THP_COMPLETELY, mm);
->  		mm_flags_clear(MMF_DISABLE_THP_EXCEPT_ADVISED, mm);
->  	}
-> -	mmap_write_unlock(current->mm);
+> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+> index 55b8d739779f..b7129c4868c5 100644
+> --- a/virt/kvm/guest_memfd.c
+> +++ b/virt/kvm/guest_memfd.c
+> @@ -4,6 +4,9 @@
+>  #include <linux/kvm_host.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/anon_inodes.h>
+> +#include <linux/set_memory.h>
 > +
-> +	khugepaged_enter_mm(mm);
-> +	mmap_write_unlock(mm);
+> +#include <asm/tlbflush.h>
+>  
+>  #include "kvm_mm.h"
+>  
+> @@ -42,6 +45,44 @@ static int __kvm_gmem_prepare_folio(struct kvm *kvm, struct kvm_memory_slot *slo
 >  	return 0;
 >  }
 >  
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 7ab2d1a42df3..f47ac8c19447 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -396,15 +396,10 @@ void __init khugepaged_destroy(void)
->  	kmem_cache_destroy(mm_slot_cache);
->  }
->  
-> -static inline int hpage_collapse_test_exit(struct mm_struct *mm)
-> -{
-> -	return atomic_read(&mm->mm_users) == 0;
-> -}
-> -
->  static inline int hpage_collapse_test_exit_or_disable(struct mm_struct *mm)
->  {
-> -	return hpage_collapse_test_exit(mm) ||
-> -		mm_flags_test(MMF_DISABLE_THP_COMPLETELY, mm);
-> +	return !atomic_read(&mm->mm_users) ||			/* exit */
-> +		mm_flags_test(MMF_DISABLE_THP_COMPLETELY, mm);  /* disable */
->  }
->  
->  static bool hugepage_pmd_enabled(void)
-> @@ -437,7 +432,7 @@ void __khugepaged_enter(struct mm_struct *mm)
->  	int wakeup;
->  
->  	/* __khugepaged_exit() must not run from under us */
-> -	VM_BUG_ON_MM(hpage_collapse_test_exit(mm), mm);
-> +	VM_WARN_ON_ONCE(hpage_collapse_test_exit_or_disable(mm));
->  	if (unlikely(mm_flags_test_and_set(MMF_VM_HUGEPAGE, mm)))
->  		return;
->  
-> @@ -460,14 +455,25 @@ void __khugepaged_enter(struct mm_struct *mm)
->  		wake_up_interruptible(&khugepaged_wait);
->  }
->  
-> +void khugepaged_enter_mm(struct mm_struct *mm)
-> +{
-> +	if (mm_flags_test(MMF_DISABLE_THP_COMPLETELY, mm))
-> +		return;
-> +	if (mm_flags_test(MMF_VM_HUGEPAGE, mm))
-> +		return;
-> +	if (!hugepage_pmd_enabled())
-> +		return;
+> +#define KVM_GMEM_FOLIO_NO_DIRECT_MAP BIT(0)
 > +
-> +	__khugepaged_enter(mm);
+> +static bool kvm_gmem_folio_no_direct_map(struct folio *folio)
+> +{
+> +	return ((u64) folio->private) & KVM_GMEM_FOLIO_NO_DIRECT_MAP;
 > +}
 > +
->  void khugepaged_enter_vma(struct vm_area_struct *vma,
->  			  vm_flags_t vm_flags)
->  {
-> -	if (!mm_flags_test(MMF_VM_HUGEPAGE, vma->vm_mm) &&
-> -	    hugepage_pmd_enabled()) {
-> -		if (thp_vma_allowable_order(vma, vm_flags, TVA_KHUGEPAGED, PMD_ORDER))
-> -			__khugepaged_enter(vma->vm_mm);
-> -	}
-> +	if (!thp_vma_allowable_order(vma, vm_flags, TVA_KHUGEPAGED, PMD_ORDER))
-> +		return;
+> +static int kvm_gmem_folio_zap_direct_map(struct folio *folio)
+> +{
+> +	if (kvm_gmem_folio_no_direct_map(folio))
+> +		return 0;
 > +
-> +	khugepaged_enter_mm(vma->vm_mm);
+> +	int r = set_direct_map_valid_noflush(folio_page(folio, 0), folio_nr_pages(folio),
+> +					 false);
+> +
+> +	if (!r) {
+> +		unsigned long addr = (unsigned long) folio_address(folio);
+> +		folio->private = (void *) ((u64) folio->private & KVM_GMEM_FOLIO_NO_DIRECT_MAP);
+> +		flush_tlb_kernel_range(addr, addr + folio_size(folio));
+> +	}
+> +
+> +	return r;
+> +}
+
+No idea how I managed to mess this function up so completely, but it
+should be more like
+
+static int kvm_gmem_folio_zap_direct_map(struct folio *folio)
+{
+	int r = 0;
+	unsigned long addr = (unsigned long) folio_address(folio);
+	u64 gmem_flags = (u64) folio_inode(folio)->i_private;
+
+	if (kvm_gmem_folio_no_direct_map(folio) || !(gmem_flags & GUEST_MEMFD_FLAG_NO_DIRECT_MAP))
+		goto out;
+
+	r = set_direct_map_valid_noflush(folio_page(folio, 0), folio_nr_pages(folio), false);
+
+	if (r)
+		goto out;
+
+	folio->private = (void *) KVM_GMEM_FOLIO_NO_DIRECT_MAP;
+	flush_tlb_kernel_range(addr, addr + folio_size(folio));
+
+out:
+	return r;
+}
+
+the version I sent (a) does not respect the flags passed to guest_memfd
+on creation, and (b) does not correctly set the bit in folio->private.
+
+> +static void kvm_gmem_folio_restore_direct_map(struct folio *folio)
+> +{
+> +	/*
+> +	 * Direct map restoration cannot fail, as the only error condition
+> +	 * for direct map manipulation is failure to allocate page tables
+> +	 * when splitting huge pages, but this split would have already
+> +	 * happened in set_direct_map_invalid_noflush() in kvm_gmem_folio_zap_direct_map().
+> +	 * Thus set_direct_map_valid_noflush() here only updates prot bits.
+> +	 */
+> +	if (kvm_gmem_folio_no_direct_map(folio))
+> +		set_direct_map_valid_noflush(folio_page(folio, 0), folio_nr_pages(folio),
+> +					 true);
+> +}
+> +
+>  static inline void kvm_gmem_mark_prepared(struct folio *folio)
+>  {
+>  	folio_mark_uptodate(folio);
+> @@ -324,13 +365,14 @@ static vm_fault_t kvm_gmem_fault_user_mapping(struct vm_fault *vmf)
+>  	struct inode *inode = file_inode(vmf->vma->vm_file);
+>  	struct folio *folio;
+>  	vm_fault_t ret = VM_FAULT_LOCKED;
+> +	int err;
+>  
+>  	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
+>  		return VM_FAULT_SIGBUS;
+>  
+>  	folio = kvm_gmem_get_folio(inode, vmf->pgoff);
+>  	if (IS_ERR(folio)) {
+> -		int err = PTR_ERR(folio);
+> +		err = PTR_ERR(folio);
+>  
+>  		if (err == -EAGAIN)
+>  			return VM_FAULT_RETRY;
+> @@ -348,6 +390,13 @@ static vm_fault_t kvm_gmem_fault_user_mapping(struct vm_fault *vmf)
+>  		kvm_gmem_mark_prepared(folio);
+>  	}
+>  
+> +	err = kvm_gmem_folio_zap_direct_map(folio);
+> +
+> +	if (err) {
+> +		ret = vmf_error(err);
+> +		goto out_folio;
+> +	}
+> +
+>  	vmf->page = folio_file_page(folio, vmf->pgoff);
+>  
+>  out_folio:
+> @@ -435,6 +484,8 @@ static void kvm_gmem_free_folio(struct folio *folio)
+>  	kvm_pfn_t pfn = page_to_pfn(page);
+>  	int order = folio_order(folio);
+>  
+> +	kvm_gmem_folio_restore_direct_map(folio);
+> +
+>  	kvm_arch_gmem_invalidate(pfn, pfn + (1ul << order));
 >  }
 >  
->  void __khugepaged_exit(struct mm_struct *mm)
-> @@ -491,7 +497,7 @@ void __khugepaged_exit(struct mm_struct *mm)
->  	} else if (slot) {
->  		/*
->  		 * This is required to serialize against
-> -		 * hpage_collapse_test_exit() (which is guaranteed to run
-> +		 * hpage_collapse_test_exit_or_disable() (which is guaranteed to run
->  		 * under mmap sem read mode). Stop here (after we return all
->  		 * pagetables will be destroyed) until khugepaged has finished
->  		 * working on the pagetables under the mmap_lock.
-> @@ -1429,16 +1435,13 @@ static void collect_mm_slot(struct mm_slot *slot)
+> @@ -499,6 +550,9 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
+>  	/* Unmovable mappings are supposed to be marked unevictable as well. */
+>  	WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
 >  
->  	lockdep_assert_held(&khugepaged_mm_lock);
+> +	if (flags & GUEST_MEMFD_FLAG_NO_DIRECT_MAP)
+> +		mapping_set_no_direct_map(inode->i_mapping);
+> +
+>  	kvm_get_kvm(kvm);
+>  	gmem->kvm = kvm;
+>  	xa_init(&gmem->bindings);
+> @@ -523,6 +577,9 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
+>  	if (kvm_arch_supports_gmem_mmap(kvm))
+>  		valid_flags |= GUEST_MEMFD_FLAG_MMAP;
 >  
-> -	if (hpage_collapse_test_exit(mm)) {
-> +	if (hpage_collapse_test_exit_or_disable(mm)) {
->  		/* free mm_slot */
->  		hash_del(&slot->hash);
->  		list_del(&slot->mm_node);
+> +	if (kvm_arch_gmem_supports_no_direct_map())
+> +		valid_flags |= GUEST_MEMFD_FLAG_NO_DIRECT_MAP;
+> +
+>  	if (flags & ~valid_flags)
+>  		return -EINVAL;
 >  
-> -		/*
-> -		 * Not strictly needed because the mm exited already.
-> -		 *
-> -		 * mm_flags_clear(MMF_VM_HUGEPAGE, mm);
-> -		 */
-> +		/* If the mm is disabled, this flag must be cleared. */
-> +		mm_flags_clear(MMF_VM_HUGEPAGE, mm);
+> @@ -687,6 +744,8 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+>  	if (!is_prepared)
+>  		r = kvm_gmem_prepare_folio(kvm, slot, gfn, folio);
 >  
->  		/* khugepaged_mm_lock actually not necessary for the below */
->  		mm_slot_free(mm_slot_cache, slot);
-> @@ -1749,7 +1752,7 @@ static void retract_page_tables(struct address_space *mapping, pgoff_t pgoff)
->  		if (find_pmd_or_thp_or_none(mm, addr, &pmd) != SCAN_SUCCEED)
->  			continue;
+> +	kvm_gmem_folio_zap_direct_map(folio);
+> +
+>  	folio_unlock(folio);
 >  
-> -		if (hpage_collapse_test_exit(mm))
-> +		if (hpage_collapse_test_exit_or_disable(mm))
->  			continue;
->  		/*
->  		 * When a vma is registered with uffd-wp, we cannot recycle
-> @@ -2500,9 +2503,9 @@ static unsigned int khugepaged_scan_mm_slot(unsigned int pages, int *result,
->  	VM_BUG_ON(khugepaged_scan.mm_slot != slot);
->  	/*
->  	 * Release the current mm_slot if this mm is about to die, or
-> -	 * if we scanned all vmas of this mm.
-> +	 * if we scanned all vmas of this mm, or if this mm is disabled.
->  	 */
-> -	if (hpage_collapse_test_exit(mm) || !vma) {
-> +	if (hpage_collapse_test_exit_or_disable(mm) || !vma) {
->  		/*
->  		 * Make sure that if mm_users is reaching zero while
->  		 * khugepaged runs here, khugepaged_exit will find
+>  	if (!r)
 
+[...]
 
