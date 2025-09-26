@@ -1,176 +1,165 @@
-Return-Path: <bpf+bounces-69823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D29CDBA32F3
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 11:37:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6784EBA3382
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 11:47:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9645E4E2259
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 09:37:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFFF87AA982
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 09:45:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF452C235F;
-	Fri, 26 Sep 2025 09:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C159C2BDC23;
+	Fri, 26 Sep 2025 09:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TZTZNqqX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YNZESI5h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7932BE620
-	for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 09:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3887B29E11D
+	for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 09:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758879327; cv=none; b=PI1w8zAFhnTmgvwxRtZi5oYYAPYJlUsTPOaKtrCmwcGHw2ZTx4E/gADq1QNrAveZeIoqvDaUEGEnVFLCXg2lPv4j6JyGN+NQc55YeFN2FeOUXmnfVkXOWRpFEC5lofIKNaaCpqSzMg9adbTKnS70RuQrzYB0Hev+R+QG4ROCmLM=
+	t=1758879995; cv=none; b=ehudFNMfXb6NGAINeMhSQvxvl5Rk3D9Y07drwriTVPbmjgXgWlXmb4jMp1eBf9LUXBx7BCxqSC8CYX+WD7ASfBy/Yumnxqi7+h3670suZ8K4r0BBo+MncPeS1u60a6p1PbN6146WGYQi2wc0P9Wg5+nJirII/YrW31JhWzFsOmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758879327; c=relaxed/simple;
-	bh=UBiranDCCKyEzq2tHLJoYwbpNJseAjiAQrhPN7Tvoyk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XI1iaoNJLwZBoLrlXMRe0syw0TfOi3IYAOfcY7AefiPSv9iTrrQnOrmz4SdKuciB7SdalHtN5WIdeiN2MCBbO1sq86u90upkqiDo8tHfm659STtGizyWDZjZe5jHimRSsNmc04+OrzKZiQxJIDtjoEUBMNDS9qnDQgeOO+p9YJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TZTZNqqX; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-b553412a19bso1519864a12.1
-        for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 02:35:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758879325; x=1759484125; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=huK0MPI+64vH11fsWziyabmXxqecdshCDlVy93FTD7M=;
-        b=TZTZNqqXH+AfeJ44oI7xZfdHiyZfUVc36Sbzn8bU6P3ojXxKXwPchN/xSYUw+Q0zKy
-         R2EdxBuB6bCnR/VCKuteb6e3Drc+ulJehOIy3mL7CEvYPjoQv0vX4o5eQXCD0boZ9/jh
-         0U5plxSxr5g7+k4zk+A0aAhpLG+p0SpDn/NNfzGn37ujpQaKHHYmtEOqcUqxICfuAZIA
-         VhBnbTStPdJueLt+6J1ePe7jKDnSiVutxHXQD5u+JL0TEBnxtvIfKnFojzyMl9yhLaxj
-         HyRNHwCvpDpzSUXizriFjI0x8Sb1hay8fwKZrmXySw+6hBpdlCsJCWU7QBivdGBbd5nZ
-         bJqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758879325; x=1759484125;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=huK0MPI+64vH11fsWziyabmXxqecdshCDlVy93FTD7M=;
-        b=nJgpKT4aSqYbWhFgllt/Bh2Fs7BPYN+HySE8cijffYMzG6EHnuDAcWPqK3GKX7iuHV
-         JvCBMSDFYTX9kPolGMfO7rMwardWagOmu5WQ11kud9B23KPQX+lVrR3Ef9S4hmh2yhgn
-         gVEtSe1NphHdCviWIqlo56lSHiaYNQIQ8Iy3936tvs7kF69CWEF3djiACKFiMPyoNTZL
-         fe9O0WPetcgJVbb8Dga16+j9GS+3XRpoCEWHk+fQWankmV8+tafrO3JIy/yFpsEQKGhX
-         A6Ogt3NMIrhNHjVg58siMi9wqKk14lrG6eeYRuk1hwgB1WH73ZekpAqZTKUgoz7cRu7W
-         woDw==
-X-Gm-Message-State: AOJu0YwpqdYnciBIzoN/ro7CDm50jh7qgj94MbXvMlT4ITI6j+U2mgWH
-	NZEMVWeMM5nVNqWyEH3bohhmKVuz2MxX4ESj1sHqH4yxOZ2XpGDVbGea
-X-Gm-Gg: ASbGncv2+qF4a1oIpqVZtB5ZnD+O+4cIKgI4E5OmRku3Vm2NrP9i4jGYizZVCa3E7/C
-	jSezwoBUfsF2TjSeOxyFLIE5SUw5Bf0RIhQwvcyCWA2gPveVET80l+D/AU6B/wBkFCiBmXL4XQ6
-	R+eKPChzbDnY5EZ30XHqTzw+s+N6Uy82+xfwSiDa9HMl4PDwSnqXAvReRcT8F1Y6IG/tnP3EDEW
-	1Sv/0ukxWpokQYsRFvTLG5rBGrikk5FAIRQZYdGs+hvZfbJRiiHhXfXio3/k5C4651+IknQoHSL
-	oSz+urm8hVB4N36Q2jwcWNZ50AUhHF6wLtK5YLkMTMAPI2ZqSoAsUOePwV+Iz3AeMgv1vyoIvhW
-	HoedXv5hJVC0OhHNMpuKDLxHlzIL3qrB+kpywGHqIKGbM68BjlUX8fW52M1H6SqsUPnvBUoXQhE
-	CMEwoct4aCL+SI
-X-Google-Smtp-Source: AGHT+IGaBFISMjqZ56jhqOkqG6YgWjBFJGtoPxP49Jy/1yngaLT4ocjmKacYDQWcrmZR3MpcJrfLmA==
-X-Received: by 2002:a17:903:1c2:b0:26b:5346:5857 with SMTP id d9443c01a7336-27ed4a3719bmr75144915ad.24.1758879324875;
-        Fri, 26 Sep 2025 02:35:24 -0700 (PDT)
-Received: from localhost.localdomain ([2409:891f:1c21:566:e1d1:c082:790c:7be6])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-27ed66cda43sm49247475ad.25.2025.09.26.02.35.18
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 26 Sep 2025 02:35:24 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: akpm@linux-foundation.org,
-	david@redhat.com,
-	ziy@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	dev.jain@arm.com,
-	hannes@cmpxchg.org,
-	usamaarif642@gmail.com,
-	gutierrez.asier@huawei-partners.com,
-	willy@infradead.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	ameryhung@gmail.com,
-	rientjes@google.com,
-	corbet@lwn.net,
-	21cnbao@gmail.com,
-	shakeel.butt@linux.dev,
-	tj@kernel.org,
-	lance.yang@linux.dev
-Cc: bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v8 mm-new 12/12] Documentation: add BPF-based THP policy management
-Date: Fri, 26 Sep 2025 17:33:43 +0800
-Message-Id: <20250926093343.1000-13-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20250926093343.1000-1-laoar.shao@gmail.com>
-References: <20250926093343.1000-1-laoar.shao@gmail.com>
+	s=arc-20240116; t=1758879995; c=relaxed/simple;
+	bh=hUMRS7DJvk7Xj1VzsmX84BYsYqaTZzC1ukrIfumPYIU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pMvVhKUirlXoxgxzBMCR0GQFUfcBRshGlPRUGi3C6EFQBICO4DTPBRPVrv+dvvHJLTLGTolgCVRAVvZ6YxAUpiyP4d4Ru9GVShUQ9ZOCy5Z8QyVCNznPBdOgGD1my3fjoANF9+LVor0B+AGizZsG/AlY7sXwlxZokrPgY5AIaVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YNZESI5h; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c88514c3-e15f-4853-8acf-15e7b4b979f4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758879980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wL/DKY7lmmAFsSL3d0RvnMPd7olra+yxGHLjKGhoofY=;
+	b=YNZESI5h/jXNDiLLb7j86+j+TkXx1nKw543VaKtpr8w5CCCBn8PBOYUz9LE0gA3VqxAeTq
+	vk8gHrlHjKvE2h5y4LlVK9XHV23gdoSJUvecSr6p74DcXM6u9ckDN633ckuAjfmHnKaOOB
+	P/laAqnp0QFmiI8hpwCxa0nGYMdpMzQ=
+Date: Fri, 26 Sep 2025 10:46:15 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v7 06/12] KVM: guest_memfd: add module param for disabling
+ TLB flushing
+To: David Hildenbrand <david@redhat.com>, Dave Hansen
+ <dave.hansen@intel.com>, "Roy, Patrick" <roypat@amazon.co.uk>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>,
+ "corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>,
+ "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+ "joey.gouly@arm.com" <joey.gouly@arm.com>,
+ "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+ "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+ "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+ "will@kernel.org" <will@kernel.org>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>,
+ "bp@alien8.de" <bp@alien8.de>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+ "luto@kernel.org" <luto@kernel.org>,
+ "peterz@infradead.org" <peterz@infradead.org>,
+ "willy@infradead.org" <willy@infradead.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+ "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+ "vbabka@suse.cz" <vbabka@suse.cz>, "rppt@kernel.org" <rppt@kernel.org>,
+ "surenb@google.com" <surenb@google.com>, "mhocko@suse.com"
+ <mhocko@suse.com>, "song@kernel.org" <song@kernel.org>,
+ "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "andrii@kernel.org" <andrii@kernel.org>,
+ "martin.lau@linux.dev" <martin.lau@linux.dev>,
+ "eddyz87@gmail.com" <eddyz87@gmail.com>,
+ "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@fomichev.me"
+ <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>,
+ "jgg@ziepe.ca" <jgg@ziepe.ca>, "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+ "peterx@redhat.com" <peterx@redhat.com>, "jannh@google.com"
+ <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>,
+ "shuah@kernel.org" <shuah@kernel.org>, "seanjc@google.com"
+ <seanjc@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "Cali, Marco" <xmarcalx@amazon.co.uk>,
+ "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
+ "Thomson, Jack" <jackabt@amazon.co.uk>,
+ "derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
+ "tabba@google.com" <tabba@google.com>,
+ "ackerleytng@google.com" <ackerleytng@google.com>
+References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
+ <20250924152214.7292-1-roypat@amazon.co.uk>
+ <20250924152214.7292-3-roypat@amazon.co.uk>
+ <e25867b6-ffc0-4c7c-9635-9b3f47b186ca@intel.com>
+ <c1875a54-0c87-450f-9370-29e7ec4fea3d@redhat.com>
+ <82bff1c4-987f-46cb-833c-bd99eaa46e7a@intel.com>
+ <c79173d8-6f18-40fa-9621-e691990501e4@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Patrick Roy <patrick.roy@linux.dev>
+Content-Language: en-US
+In-Reply-To: <c79173d8-6f18-40fa-9621-e691990501e4@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Add the documentation.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- Documentation/admin-guide/mm/transhuge.rst | 39 ++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
 
-diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
-index 1654211cc6cf..fa03bcdb8854 100644
---- a/Documentation/admin-guide/mm/transhuge.rst
-+++ b/Documentation/admin-guide/mm/transhuge.rst
-@@ -738,3 +738,42 @@ support enabled just fine as always. No difference can be noted in
- hugetlbfs other than there will be less overall fragmentation. All
- usual features belonging to hugetlbfs are preserved and
- unaffected. libhugetlbfs will also work fine as usual.
-+
-+BPF-based THP adjustment
-+========================
-+
-+Overview
-+--------
-+
-+When the system is configured with "always" or "madvise" THP mode, a BPF program
-+can be used to adjust THP allocation policies dynamically. This enables
-+fine-grained control over THP decisions based on various factors including
-+workload identity, allocation context, and system memory pressure.
-+
-+Program Interface
-+-----------------
-+
-+This feature implements a struct_ops BPF program with the following interface::
-+
-+  int thp_get_order(struct vm_area_struct *vma,
-+                    enum tva_type type,
-+                    unsigned long orders);
-+
-+Parameters::
-+
-+  @vma: vm_area_struct associated with the THP allocation
-+  @type: TVA type for current @vma
-+  @orders: Bitmask of available THP orders for this allocation
-+
-+Return value::
-+
-+  The suggested THP order for allocation from the BPF program. Must be
-+  a valid, available order.
-+
-+Implementation Notes
-+--------------------
-+
-+This is currently an experimental feature.
-+CONFIG_BPF_THP_GET_ORDER_EXPERIMENTAL must be enabled to use it.
-+Only one BPF program can be attached at a time, but the program can be updated
-+dynamically to adjust policies without requiring affected tasks to be restarted.
--- 
-2.47.3
+On Thu, 2025-09-25 at 21:13 +0100, David Hildenbrand wrote:
+> On 25.09.25 21:59, Dave Hansen wrote:
+>> On 9/25/25 12:20, David Hildenbrand wrote:
+>>> On 25.09.25 20:27, Dave Hansen wrote:
+>>>> On 9/24/25 08:22, Roy, Patrick wrote:
+>>>>> Add an option to not perform TLB flushes after direct map manipulations.
+>>>>
+>>>> I'd really prefer this be left out for now. It's a massive can of worms.
+>>>> Let's agree on something that works and has well-defined behavior before
+>>>> we go breaking it on purpose.
+>>>
+>>> May I ask what the big concern here is?
+>>
+>> It's not a _big_ concern. 
+> 
+> Oh, I read "can of worms" and thought there is something seriously problematic :)
+> 
+>> I just think we want to start on something
+>> like this as simple, secure, and deterministic as possible.
+> 
+> Yes, I agree. And it should be the default. Less secure would have to be opt-in and documented thoroughly.
 
+Yes, I am definitely happy to have the 100% secure behavior be the
+default, and the skipping of TLB flushes be an opt-in, with thorough
+documentation!
+
+But I would like to include the "skip tlb flushes" option as part of
+this patch series straight away, because as I was alluding to in the
+commit message, with TLB flushes this is not usable for Firecracker for
+performance reasons :(
+
+>>
+>> Let's say that with all the unmaps that load_unaligned_zeropad() faults
+>> start to bite us. It'll take longer to find them if the TLB isn't flushed.
+>>
+>> Basically, it'll make the bad things happen sooner rather than later.
+> 
+> Agreed.
+> 
+
+Best,
+Patrick
 
