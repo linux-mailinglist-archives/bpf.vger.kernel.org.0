@@ -1,177 +1,166 @@
-Return-Path: <bpf+bounces-69830-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69831-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD252BA3606
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 12:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B23C8BA365C
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 12:53:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 951F91891878
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 10:37:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE49A1893A7C
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 10:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6ECE2F363D;
-	Fri, 26 Sep 2025 10:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B452F49EA;
+	Fri, 26 Sep 2025 10:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XIjs4V8m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uD1JE0tX"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91802F3607
-	for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 10:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40324374C4;
+	Fri, 26 Sep 2025 10:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758883030; cv=none; b=IBZDLvCqQ4QAxOhPgaN/+jvTj/5HCQeteFUSeVWCBLAW0b0ht1U2OQ8w8Ms16yrW+4+cAcPKHaGeD9bvFNnZywuHt2Je0GLlQVkVIwjUjiMBJ3Osh9idntekiNim5cUCzdatjAAv7yMPFEQAatQfHyV6/2DyPBf3WHpUV3hkz0o=
+	t=1758884006; cv=none; b=S2AR9BlTavjGPILdjCnsn5zcQgsT79FWVsUxDcMev2O/8NCuOBnCiE0YJ7yFlbuP/Tzrk3am13HOzLFd2r2WDFr2oXiS1i5z9AHDs9s3SjKix+nHyaQkz0gsV5Z+kXt5s03qTCCZ30QpSd0cJmYyp5gvmNnVbRk/cIhE2DlDxEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758883030; c=relaxed/simple;
-	bh=ZTug48IAnMD3yhiHMIVmwBvbyMFuE3UaW93XHmjETNc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ef+0zQUP0lTCcOaVcmVIa4I2WCODUXqh4b0xaCb2ueXfK8u12v5ifMUjkAYaqGaFlBaqBDDnnw4GHjlMkS4Jg0A4M0O8kYlwSCj6PXrXTyHQ2LpUpwx198mJmGxWi52xQOkLkFd4MuM3ivxi8fSwePcsPSLxaW576Et6cMKs9HU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XIjs4V8m; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <14a30aa593f8d8c018bf54439261a8f05182aa87.camel@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758883024;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZTug48IAnMD3yhiHMIVmwBvbyMFuE3UaW93XHmjETNc=;
-	b=XIjs4V8mPqHWsmdMVGDTWvCnguAA/13ei+Bgda8NjxRNvwp/WZj/Czr12bQ7XcBIPO5jKc
-	a21qXlWBx9kRuu/a93yC9dsckqoz2cVQ3+50p+o7xnToj2XQ5dW+vS4xjSDMA3hcBqIZZ/
-	r/3hhdk3NdZfS6kvCYt/FscWpplT+WM=
-Subject: Re: [PATCH v2] bpf: fix NULL pointer dereference in
- print_reg_state()
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: KaFai Wan <kafai.wan@linux.dev>
-To: Brahmajit Das <listout@listout.xyz>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
- syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com, Andrii Nakryiko
- <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf
- <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eduard
- <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, John Fastabend
- <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, KP Singh
- <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Song Liu
- <song@kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>, 
- Yonghong Song <yonghong.song@linux.dev>
-Date: Fri, 26 Sep 2025 18:36:54 +0800
-In-Reply-To: <5fjhzkvgvbpcm2vvqlxhgcobbkiwvo36aalj5lbqrfbznbpynf@jzokg4ba2mwp>
-References: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
-	 <20250923174738.1713751-1-listout@listout.xyz>
-	 <CAADnVQ+SkF2jL6NZLTF7ZKwNOfOtpMqr0ubjXpF1K0+EkHdJHw@mail.gmail.com>
-	 <qj5y7pjdx2f5alp7sfx2gepfylkk2bytiyeoiapyp3dpzwloyk@aljz7o77tt3m>
-	 <9051652cf548271da9c349758cbd70aaa3cee444.camel@linux.dev>
-	 <wz6god46aom7lfyuvhju67w47czdznzflec3ilqs6f7fpyf3di@k5wliusgqlut>
-	 <933a66f3e0e1f642ef53726abe617c4d138a91fa.camel@linux.dev>
-	 <5fjhzkvgvbpcm2vvqlxhgcobbkiwvo36aalj5lbqrfbznbpynf@jzokg4ba2mwp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1758884006; c=relaxed/simple;
+	bh=7hmmYSJPRgv/HC65SCjVCWih93S3343uLCIvyfBCuoY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jv5ZpxRLEmuLamgxBVYX/dtNj6nfGWPzBPldSzmpQkzlUIy3+ynOceroNyVjen2sUfBXO+7kYOrMVgrt3ffohpJcx2mywkDiZQsaxdHKO2krHk8MC3+G/L6S361qCWnXnbHZsPTktnmA3ow+mleYGawFZBUwq8fiLvSqApCgnMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uD1JE0tX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70D44C4CEF4;
+	Fri, 26 Sep 2025 10:53:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758884005;
+	bh=7hmmYSJPRgv/HC65SCjVCWih93S3343uLCIvyfBCuoY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uD1JE0tXSNlpM8sPhyTXW479bU0LI8INqzK4TERYGl4X7uWhmA9lmVftkg1kWXZ5R
+	 77GIltP55fsK1VaNF04SNJorVj4he00rts0ps3WabgzU+pkpIwJ4s8I+R0hmUJnUtU
+	 RiaA5H5VESS2asBJWt7pSZgGaIv0Nm+KYRCGG+rPlSqbN+Dbh5Z/Txoz0wlINXpYEV
+	 XpuzK1hMtXmi8NPXs68yGAwo2DcoOz/MQPBrQn8al4WKuMkf07ZITw6sd0eQuO6+Q/
+	 NxEbMuIeeoejXQN3nR+oF+rAs5zBbLTi3No4iK9EUmEyBi7Uiryz2YSyhJ74rbGMLA
+	 g299/90nvCdmA==
+Date: Fri, 26 Sep 2025 11:53:12 +0100
+From: Will Deacon <will@kernel.org>
+To: Patrick Roy <patrick.roy@linux.dev>
+Cc: David Hildenbrand <david@redhat.com>,
+	Dave Hansen <dave.hansen@intel.com>,
+	"Roy, Patrick" <roypat@amazon.co.uk>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"maz@kernel.org" <maz@kernel.org>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"joey.gouly@arm.com" <joey.gouly@arm.com>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"willy@infradead.org" <willy@infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+	"vbabka@suse.cz" <vbabka@suse.cz>,
+	"rppt@kernel.org" <rppt@kernel.org>,
+	"surenb@google.com" <surenb@google.com>,
+	"mhocko@suse.com" <mhocko@suse.com>,
+	"song@kernel.org" <song@kernel.org>,
+	"jolsa@kernel.org" <jolsa@kernel.org>,
+	"ast@kernel.org" <ast@kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"andrii@kernel.org" <andrii@kernel.org>,
+	"martin.lau@linux.dev" <martin.lau@linux.dev>,
+	"eddyz87@gmail.com" <eddyz87@gmail.com>,
+	"yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"kpsingh@kernel.org" <kpsingh@kernel.org>,
+	"sdf@fomichev.me" <sdf@fomichev.me>,
+	"haoluo@google.com" <haoluo@google.com>,
+	"jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+	"peterx@redhat.com" <peterx@redhat.com>,
+	"jannh@google.com" <jannh@google.com>,
+	"pfalcato@suse.de" <pfalcato@suse.de>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"Cali, Marco" <xmarcalx@amazon.co.uk>,
+	"Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
+	"Thomson, Jack" <jackabt@amazon.co.uk>,
+	"derekmn@amazon.co.uk" <derekmn@amazon.co.uk>,
+	"tabba@google.com" <tabba@google.com>,
+	"ackerleytng@google.com" <ackerleytng@google.com>
+Subject: Re: [PATCH v7 06/12] KVM: guest_memfd: add module param for
+ disabling TLB flushing
+Message-ID: <aNZwmPFAxm_HRYpC@willie-the-truck>
+References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
+ <20250924152214.7292-1-roypat@amazon.co.uk>
+ <20250924152214.7292-3-roypat@amazon.co.uk>
+ <e25867b6-ffc0-4c7c-9635-9b3f47b186ca@intel.com>
+ <c1875a54-0c87-450f-9370-29e7ec4fea3d@redhat.com>
+ <82bff1c4-987f-46cb-833c-bd99eaa46e7a@intel.com>
+ <c79173d8-6f18-40fa-9621-e691990501e4@redhat.com>
+ <c88514c3-e15f-4853-8acf-15e7b4b979f4@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c88514c3-e15f-4853-8acf-15e7b4b979f4@linux.dev>
 
-T24gRnJpLCAyMDI1LTA5LTI2IGF0IDA2OjM0ICswNTMwLCBCcmFobWFqaXQgRGFzIHdyb3RlOgo+
-IE9uIDI1LjA5LjIwMjUgMjM6MzEsIEthRmFpIFdhbiB3cm90ZToKPiA+IE9uIFdlZCwgMjAyNS0w
-OS0yNCBhdCAyMzo1OCArMDUzMCwgQnJhaG1haml0IERhcyB3cm90ZToKPiA+ID4gT24gMjUuMDku
-MjAyNSAwMTozOCwgS2FGYWkgV2FuIHdyb3RlOgo+ID4gPiA+IE9uIFdlZCwgMjAyNS0wOS0yNCBh
-dCAyMToxMCArMDUzMCwgQnJhaG1haml0IERhcyB3cm90ZToKPiA+ID4gPiA+IE9uIDI0LjA5LjIw
-MjUgMDk6MzIsIEFsZXhlaSBTdGFyb3ZvaXRvdiB3cm90ZToKPiA+ID4gPiA+ID4gT24gV2VkLCBT
-ZXAgMjQsIDIwMjUgYXQgMTo0M+KAr0FNIEJyYWhtYWppdCBEYXMKPiA+ID4gPiA+ID4gPGxpc3Rv
-dXRAbGlzdG91dC54eXo+Cj4gPiA+ID4gPiA+IHdyb3RlOgo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+
-ID4gPiA+IFN5emthbGxlciByZXBvcnRlZCBhIGdlbmVyYWwgcHJvdGVjdGlvbiBmYXVsdCBkdWUg
-dG8gYQo+ID4gPiA+ID4gPiA+IE5VTEwKPiA+ID4gPiA+ID4gPiBwb2ludGVyCj4gPiA+ID4gPiA+
-ID4gZGVyZWZlcmVuY2UgaW4gcHJpbnRfcmVnX3N0YXRlKCkgd2hlbiBhY2Nlc3NpbmcgcmVnLQo+
-ID4gPiA+ID4gPiA+ID5tYXBfcHRyCj4gPiA+ID4gPiA+ID4gd2l0aG91dAo+ID4gPiA+ID4gPiA+
-IGNoZWNraW5nIGlmIGl0IGlzIE5VTEwuCj4gPiA+ID4gPiA+ID4gCj4gLi4uc25pcC4uLgo+ID4g
-PiA+IAo+ID4gPiA+IExvb2tzIGxpa2Ugd2UncmUgZ2V0dGluZyBzb21ld2hlcmUuCj4gPiA+ID4g
-SXQgc2VlbXMgdGhlIHZlcmlmaWVyIGlzIG5vdCBjbGVhcmluZyByZWctPnR5cGUuCj4gPiA+ID4g
-YWRqdXN0X3NjYWxhcl9taW5fbWF4X3ZhbHMoKSBzaG91bGQgYmUgY2FsbGVkIG9uIHNjYWxhciB0
-eXBlcwo+ID4gPiA+IG9ubHkuCj4gPiA+IAo+ID4gPiBSaWdodCwgdGhlcmUgaXMgYSBjaGVjayBp
-biBjaGVja19hbHVfb3AKPiA+ID4gCj4gPiA+IAkJaWYgKGlzX3BvaW50ZXJfdmFsdWUoZW52LCBp
-bnNuLT5kc3RfcmVnKSkgewo+ID4gPiAJCQl2ZXJib3NlKGVudiwgIlIlZCBwb2ludGVyIGFyaXRo
-bWV0aWMKPiA+ID4gcHJvaGliaXRlZFxuIiwKPiA+ID4gCQkJCWluc24tPmRzdF9yZWcpOwo+ID4g
-PiAJCQlyZXR1cm4gLUVBQ0NFUzsKPiA+ID4gCQl9Cj4gPiA+IAo+ID4gPiBpc19wb2ludGVyX3Zh
-bHVlIGNhbGxzIF9faXNfcG9pbnRlcl92YWx1ZSB3aGljaCB0YWtlcyBib29sCj4gPiA+IGFsbG93
-X3B0cl9sZWFrcyBhcyB0aGUgZmlyc3QgYXJndW1lbnQuIE5vdyBmb3Igc29tZSByZWFzb24gaW4K
-PiA+ID4gdGhpcwo+ID4gPiBjYXNlCj4gPiA+IGFsbG93X3B0cl9sZWFrcyBpcyBiZWluZyBwYXNz
-ZWQgYXMgdHJ1ZSwgYXMgYSByZXN1bHQKPiA+ID4gX19pc19wb2ludGVyX3ZhbHVlCj4gPiA+IChh
-bmQgaW4gdHVybiBpc19wb2ludGVyX3ZhbHVlKSByZXR1cm5zIGZhbHNlIHdoZW4gZXZlbiB3aGVu
-Cj4gPiA+IHJlZ2lzdGVyCj4gPiA+IHR5cGUgaXMgQ09OU1RfUFRSX1RPX01BUC4KPiA+ID4gCj4g
-PiAKPiA+IElJVUMsIGBlbnYtPmFsbG93X3B0cl9sZWFrc2Agc2V0IHRydWUgbWVhbnMgcHJpdmls
-ZWdlZCBtb2RlICgKPiA+IENBUF9QRVJGTU9OIG9yIENBUF9TWVNfQURNSU4gKSwgZmFsc2UgZm9y
-IHVucHJpdmlsZWdlZCBtb2RlLiAKPiA+IAo+ID4gCj4gPiBXZSBjYW4gdXNlIF9faXNfcG9pbnRl
-cl92YWx1ZSB0byBjaGVjayBpZiB0aGUgcmVnaXN0ZXIgdHlwZSBpcyBhCj4gPiBwb2ludGVyLiBG
-b3IgcG9pbnRlcnMsIHdlIGNoZWNrIGFzIGJlZm9yZSAoYmVmb3JlIGNoZWNraW5nIEJQRl9ORUcK
-PiA+IHNlcGFyYXRlbHkpLCBhbmQgZm9yIHNjYWxhcnMsIGl0IHJlbWFpbnMgdW5jaGFuZ2VkLsKg
-UGVyaGFwcyB0aGlzCj4gPiB3YXkgd2UKPiA+IGNhbiBmaXggdGhlIGVycm9yLgo+ID4gCj4gPiBp
-ZiAob3Bjb2RlID09IEJQRl9ORUcpIHsKPiA+IAlpZiAoX19pc19wb2ludGVyX3ZhbHVlKGZhbHNl
-LCAmcmVnc1tpbnNuLT5kc3RfcmVnXSkpIHsKPiA+IAkJZXJyID0gY2hlY2tfcmVnX2FyZyhlbnYs
-IGluc24tPmRzdF9yZWcsIERTVF9PUCk7Cj4gPiAJfSBlbHNlIHsKPiA+IAkJZXJyID0gY2hlY2tf
-cmVnX2FyZyhlbnYsIGluc24tPmRzdF9yZWcsCj4gPiBEU1RfT1BfTk9fTUFSSyk7Cj4gPiAJCWVy
-ciA9IGVyciA/OiBhZGp1c3Rfc2NhbGFyX21pbl9tYXhfdmFscyhlbnYsIGluc24sCj4gPiAJCQkJ
-CQkmcmVnc1tpbnNuLQo+ID4gPmRzdF9yZWddLAo+ID4gCQkJCQkJcmVnc1tpbnNuLQo+ID4gPmRz
-dF9yZWddKTsKPiA+IAl9Cj4gPiB9IGVsc2Ugewo+ID4gCj4gPiAKPiA+IC0tIAo+ID4gVGhhbmtz
-LAo+ID4gS2FGYWkKPiAKPiBZZXAsIHRoYXQgd29ya3MuCj4gCk9rCj4gLS0tIGEva2VybmVsL2Jw
-Zi92ZXJpZmllci5jCj4gKysrIGIva2VybmVsL2JwZi92ZXJpZmllci5jCj4gQEAgLTE1NTA1LDEw
-ICsxNTUwNSwxNyBAQCBzdGF0aWMgaW50IGNoZWNrX2FsdV9vcChzdHJ1Y3QKPiBicGZfdmVyaWZp
-ZXJfZW52ICplbnYsIHN0cnVjdCBicGZfaW5zbiAqaW5zbikKPiAKPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgLyogY2hlY2sgZGVzdCBvcGVyYW5kICovCj4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIGlmIChvcGNvZGUgPT0gQlBGX05FRykgewo+IC3CoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlcnIgPSBjaGVja19yZWdfYXJnKGVudiwg
-aW5zbi0+ZHN0X3JlZywKPiBEU1RfT1BfTk9fTUFSSyk7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVyciA9IGVyciA/OiBhZGp1c3Rfc2NhbGFyX21pbl9t
-YXhfdmFscyhlbnYsCj4gaW5zbiwKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgJnJlZ3NbaW5zbi0KPiA+ZHN0X3JlZ10sCj4gLcKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlZ3NbaW5zbi0K
-PiA+ZHN0X3JlZ10pOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBpZiAoX19pc19wb2ludGVyX3ZhbHVlKGZhbHNlLCAmcmVnc1tpbnNuLQo+ID5kc3RfcmVn
-XSkpIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGVyciA9IGNoZWNrX3JlZ19hcmcoZW52LCBpbnNuLQo+ID5kc3RfcmVnLCBE
-U1RfT1ApOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9
-IGVsc2Ugewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgZXJyID0gY2hlY2tfcmVnX2FyZyhlbnYsIGluc24tCj4gPmRzdF9yZWcs
-Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgRFNUX09QX05P
-X01BUkspOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgZXJyID0gZXJywqDCoCA/Ogo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgCj4gYWRqdXN0X3NjYWxhcl9taW5fbWF4X3ZhbHMoCj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVudiwgaW5zbiwKPiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgJnJlZ3NbaW5zbi0KPiA+ZHN0
-X3JlZ10sCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHJlZ3NbaW5zbi0KPiA+ZHN0X3JlZ10pOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCB9Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0gZWxz
-ZSB7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlcnIg
-PSBjaGVja19yZWdfYXJnKGVudiwgaW5zbi0+ZHN0X3JlZywKPiBEU1RfT1ApOwo+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4gCgpXZSBjYW4gbWFrZSBjb2RlIGNsZWFuZXIgYW5k
-IGNoYW5nZSBqdXN0IG9uZSBsaW5lIGZvciBhbGwuCgppZiAob3Bjb2RlID09IEJQRl9ORUcgJiYg
-IV9faXNfcG9pbnRlcl92YWx1ZShmYWxzZSwgJnJlZ3NbaW5zbi0KPmRzdF9yZWddKSkgewoJZXJy
-ID0gY2hlY2tfcmVnX2FyZyhlbnYsIGluc24tPmRzdF9yZWcsIERTVF9PUF9OT19NQVJLKTsKCWVy
-ciA9IGVyciA/OiBhZGp1c3Rfc2NhbGFyX21pbl9tYXhfdmFscyhlbnYsIGluc24sCgkJCQkJICZy
-ZWdzW2luc24tPmRzdF9yZWddLAoJCQkJCSByZWdzW2luc24tPmRzdF9yZWddKTsKfSBlbHNlIHsK
-CWVyciA9IGNoZWNrX3JlZ19hcmcoZW52LCBpbnNuLT5kc3RfcmVnLCBEU1RfT1ApOwp9Cgo+IAo+
-IEknbGwganVzdCB3YWl0IGZvciBvdGhlciBkZXZlbG9wZXIgb3IgQWxleGVpLCBpbiBjYXNlIHRo
-ZXkgaGF2ZSBhbnkKPiBmZWVkYmFjayBiZWZvcmUgc2VuZGluZyBhIHYzLgo+IAoKWW91IHNob3Vs
-ZCBhZGQgYSBGaXhlcyBsYWJlbCBpbiB0aGUgY29tbWl0IGxvZyBhbmQgYWRkIHNlbGZ0ZXN0IGZv
-ciBpdAppbiBWMy7CoApGaXhlcyBsYWJlbCBpcyBGaXhlczogYWNlZDEzMjU5OWIzICgiYnBmOiBB
-ZGQgcmFuZ2UgdHJhY2tpbmcgZm9yCkJQRl9ORUciKQpGb3Igc2VsZnRlc3QgeW91IG1heSBjaGVj
-ayB0aGUgdGVzdCBpbiB2ZXJpZmllcl92YWx1ZV9pbGxlZ2FsX2FsdS5jIGFuZApvdGhlciBmaWxl
-cy4gIAoKVGhlIGNvZGUgaW4geW91ciBuZXh0IHBvc3Qgd291bGQgY2hhbmdlIHRoZSBiZWhhdmlv
-ciBvZiBCUEZfTkVHIGFuZCAKQlBGX0VORCwgeW91IGNhbiBydW4gdGhlIHNlbGZ0ZXN0IHRvIGNo
-ZWNrIHRoYXQuCgoKVGhlIGVtYWlsIEkgc2VudCBsYXN0IHRpbWUgd2FzIHJlamVjdGVkIGJ5IHRo
-ZSBtYWlsIHNlcnZlciBiZWNhdXNlIGl0CndhcyBpbiBIVE1MIGZvcm1hdO+8jHNvcnJ5IGZvciB0
-aGF0LgotLSAKVGhhbmtzLApLYUZhaQo=
+On Fri, Sep 26, 2025 at 10:46:15AM +0100, Patrick Roy wrote:
+> 
+> 
+> On Thu, 2025-09-25 at 21:13 +0100, David Hildenbrand wrote:
+> > On 25.09.25 21:59, Dave Hansen wrote:
+> >> On 9/25/25 12:20, David Hildenbrand wrote:
+> >>> On 25.09.25 20:27, Dave Hansen wrote:
+> >>>> On 9/24/25 08:22, Roy, Patrick wrote:
+> >>>>> Add an option to not perform TLB flushes after direct map manipulations.
+> >>>>
+> >>>> I'd really prefer this be left out for now. It's a massive can of worms.
+> >>>> Let's agree on something that works and has well-defined behavior before
+> >>>> we go breaking it on purpose.
+> >>>
+> >>> May I ask what the big concern here is?
+> >>
+> >> It's not a _big_ concern. 
+> > 
+> > Oh, I read "can of worms" and thought there is something seriously problematic :)
+> > 
+> >> I just think we want to start on something
+> >> like this as simple, secure, and deterministic as possible.
+> > 
+> > Yes, I agree. And it should be the default. Less secure would have to be opt-in and documented thoroughly.
+> 
+> Yes, I am definitely happy to have the 100% secure behavior be the
+> default, and the skipping of TLB flushes be an opt-in, with thorough
+> documentation!
+> 
+> But I would like to include the "skip tlb flushes" option as part of
+> this patch series straight away, because as I was alluding to in the
+> commit message, with TLB flushes this is not usable for Firecracker for
+> performance reasons :(
 
+I really don't want that option for arm64. If we're going to bother
+unmapping from the linear map, we should invalidate the TLB.
+
+Will
 
