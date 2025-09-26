@@ -1,115 +1,192 @@
-Return-Path: <bpf+bounces-69872-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69873-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6017BA54FA
-	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 00:20:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F705BA55EA
+	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 00:53:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CFC444E1BF8
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 22:20:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4282E327109
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 22:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A73E29A307;
-	Fri, 26 Sep 2025 22:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C95D52BCF4C;
+	Fri, 26 Sep 2025 22:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AI05CVt7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PMmYyxbD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA542848A2;
-	Fri, 26 Sep 2025 22:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90A328D8FD
+	for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 22:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758925227; cv=none; b=CiyZXT8nQX3OReu9plarvW8SdOMQlH2oz4V229se9ZqzhpuWev/lxzUXBQGXPB3KntyY/kHoB5+1DeHO+s1xnlZ/U/fxMRDUz9mkopH12BFp5mnPOLVIK6soVt4UgqF37hfQ8VaikLKcU78dCGw8haycLJxFv4hP4BuACHQvmn4=
+	t=1758927225; cv=none; b=EE4Nz+kE2zPnnjn6pvYMIWAzx7AJ28FFvCMerLVv8UJIRWNg4VPBp7vY9ubThNYyO0dolLfJOZf8bC/ZtfUozm7EGDOI2W/KPk2uR7p/A78bKrCyvAQTcIZ/mp77/o7YXPd/SswrCFBawz5X+sYb0szJmRAGl2E4M/yNGUjdXo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758925227; c=relaxed/simple;
-	bh=ni0jaNTxjzQ5iV15IwrDN+UTPw7OdPLj8fWrz3N34DI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ILiEUVSHqEBKJwI4Lwttoxxq+MG6ERlWBqOPz2xKum9ZeOYKLRwKQXZ0x4AEMvttjjHPcaV5TOe9JpGa78pc1FXnrVNa2l9OuQQuyHEO3chxcuhutfLYk+uiJB7ZNdC1erymMEi8CfMqJUAcvnFhw++PUTTsiSapCBmwv87Kw38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AI05CVt7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81701C4CEF4;
-	Fri, 26 Sep 2025 22:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758925226;
-	bh=ni0jaNTxjzQ5iV15IwrDN+UTPw7OdPLj8fWrz3N34DI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=AI05CVt7sHRkylsE/Et4vba3SgNCyr24xHt/I0fnQ2+JfEdxmQniwMvFH/bth4m45
-	 9ubE6HSB0UDuAB8uh2BF8PMPvj7QzIL/g6Dvt8BfgkKQPSLW7PNdiuLWrqm+GoIFzt
-	 SBvixLB5+nAuciANxticJ5+Mw6hvnpQ6onCsu5yBO7Y5HdGEK8vWtkUIm0NoKXKy1o
-	 D5qWtr735ZYS5qTEnma9RzNWhO9uTUKa7jL+IMbGggOB8UrbHXcx5qZOINOeP/jb6z
-	 VKJvUVKcMFLUsjOO2adlmGqIqz10S46DfCkMIrZx1iQrKGaHo55HvN3ZJZK77CKxth
-	 ANCHW6+7Dh9Tg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EADEA39D0C3F;
-	Fri, 26 Sep 2025 22:20:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1758927225; c=relaxed/simple;
+	bh=fEomOeWR3k8vHaHxgyePZUTIkATiM1CSbm2n2U1m+B0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JAUWYZ24iyctIdUnh+qlC2yNbH9F73TyhwiF81Y/SFFy9VkYLwO/2wfuxnxhdnGh0o2Rd/vgrqnrfn3LfvJt+2qJEli6CvB5qjjfai50KDNxu/d9I5nQ2kQZoYgVFXfnoDa2HJz+XYeQeiKFS3+8Y/fxPcTCpfZulnJATRG4T1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PMmYyxbD; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-78100be28easo2037083b3a.1
+        for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 15:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758927223; x=1759532023; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=L64jj/1bEf6Wb3tfKGPiM7Hcv1CIUMxOk206Ub6oLd8=;
+        b=PMmYyxbD0YaFKI+2YT7DJGdSeDPhG94zrNIQx4VdrU3m8w4dwCKu7T6UeiitHXbmwT
+         iuIIoUjSgLARZjpAsKyt23goMtb6FJ7D8QefdwvEASMoVzIxWtlkwBJkZIeFf5Y2Z6xi
+         TaPIEqwdLRJ1itbKJ5g7tvzsktHFNXoyl6uitjM9QAKszWe4cRZQrnb3byl6Zlu3RfmH
+         ngzeZxnFhyvmeNCR2NibUFS8CLYUg7tv8uUsnAbFi9pgzOs9mXdu8yk+h6YcGKQNI4w6
+         WaXMoger9qHLon6cZUKi6buVW9Yf882SfT2RngkVD4Zo92ZI1HLCGVlAH0AzA6s0BcGM
+         lWPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758927223; x=1759532023;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L64jj/1bEf6Wb3tfKGPiM7Hcv1CIUMxOk206Ub6oLd8=;
+        b=XMtet3R2aX4DVfFYXUR3TeJ+kq7HbUlRI0F+xZxwkRfE8YqXehD3aWUivDENwZXfQP
+         6ZErp8bIgiaZxMjSRIxvsnJTD188POnOUqbCf0WIUgsaQXc4yKQyLYq2iv3WRf35CdnG
+         mbF36RebEMMFViA9333KrUL53VL28R7rN/z9jjYMHBsIPqhB8XvZm2sTB9sOzmZlmyxf
+         p2OAg/FRYcz30CvK9dfuzBq1ZfWETVL6YXJZBzjjRpN6hwF6cunkMcC3j99BBADl/oyx
+         QnjWp3lNtTDQlcE2WXtaifk09sRxGFuMqRduShP9nai/NUEJM1Wtqy9yluZ3EJsnWGH3
+         rrCg==
+X-Forwarded-Encrypted: i=1; AJvYcCUl+pKYDS8GHtFmsRkwCej54vIE9/xJCoQAGfuL6RC6d9vnE734E4tN0H9SlsLstiWkIYY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqDMxTjUsn7r3vtNjnt9ePLFmnjwhDrCYd1d3sWv+gb4ab+4Tu
+	GhRkcbGbpVG8NcFB54DhyAGcrHc0h5QM5o8gn/Gi4eT1umGddomKc90=
+X-Gm-Gg: ASbGncsmtCE/aFvrBYfR2vDBQWbcm87ZQavdBJoNpf8mYQLjAXwV/EHS8FAFEG6rZME
+	RPvY0AoWWxJjS5a7jyoIntJCXS81GHal/zUZONb1/5BWqtzmkj5cwNLc4DsTAmAhs+6/PUmJ7/8
+	bhwKFahsSqJvA9Qr6TBeG6gY4Odcb2fMk8C3IHip1nkDMPUYyQZTvt839KnEUXuA8w0R+JQtdGZ
+	zcOrNikdlCWR9ykUF+oMozIkzGp6klbnnojKkls1KubyzH8Pg+D+ZZLoqsPuGPeA2yMPz/FoXby
+	PN0jySff8hVY65NM5V4/MQYE5Qd8KZbwNtop4Ho8HqzBvZMB7P1BJHIsQidBic6iLW0hpLy7gtS
+	xAMI3HR3loQL26O/lvCEosvxDyOMqxE4bhOzmWM/fa+kHcubWSPyk4wKFtbJC7cbnAGKZf5d4fc
+	fQZN5qcBSRUpktFJ0bFpLMfcFhPJcyGXNmc+mLeA7XsKObWvc2hDVYEcTtKtF60gFmRtalMyWt4
+	nNv830otxM4ayU=
+X-Google-Smtp-Source: AGHT+IHzUVqGkwRKGx9oX64k2CwdiQYFO+LB2LrVkfcj7y3QFUFaw1ssnQ7tqKDzQxD8YBaWVCcYfg==
+X-Received: by 2002:a05:6a00:2345:b0:77f:2e62:1e32 with SMTP id d2e1a72fcca58-780fce1f177mr9884757b3a.2.1758927222725;
+        Fri, 26 Sep 2025 15:53:42 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-78102b22f5fsm5418527b3a.53.2025.09.26.15.53.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Sep 2025 15:53:42 -0700 (PDT)
+Date: Fri, 26 Sep 2025 15:53:41 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v2 1/5] netlink: specs: Add XDP RX checksum
+ capability to XDP metadata specs
+Message-ID: <aNcZdfCivLR2slFw@mini-arch>
+References: <20250925-bpf-xdp-meta-rxcksum-v2-0-6b3fe987ce91@kernel.org>
+ <20250925-bpf-xdp-meta-rxcksum-v2-1-6b3fe987ce91@kernel.org>
+ <aNYUqdaIJV1cvFCb@mini-arch>
+ <e03d6d69-73ea-46dc-b632-149ef5831f85@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/5][pull request] idpf: add XSk support
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175892522173.77570.9707782331084725672.git-patchwork-notify@kernel.org>
-Date: Fri, 26 Sep 2025 22:20:21 +0000
-References: <20250924175230.1290529-1-anthony.l.nguyen@intel.com>
-In-Reply-To: <20250924175230.1290529-1-anthony.l.nguyen@intel.com>
-To: Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, andrew+netdev@lunn.ch, netdev@vger.kernel.org,
- aleksander.lobakin@intel.com, michal.kubiak@intel.com,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
- przemyslaw.kitszel@intel.com, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, horms@kernel.org, sdf@fomichev.me,
- nxne.cnse.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e03d6d69-73ea-46dc-b632-149ef5831f85@kernel.org>
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Tony Nguyen <anthony.l.nguyen@intel.com>:
-
-On Wed, 24 Sep 2025 10:52:23 -0700 you wrote:
-> Alexander Lobakin says:
+On 09/26, Jesper Dangaard Brouer wrote:
 > 
-> Add support for XSk xmit and receive using libeth_xdp.
 > 
-> This includes adding interfaces to reconfigure/enable/disable only
-> a particular set of queues and support for checksum offload XSk Tx
-> metadata.
-> libeth_xdp's implementation mostly matches the one of ice: batched
-> allocations and sending, unrolled descriptor writes etc. But unlike
-> other Intel drivers, XSk wakeup is implemented using CSD/IPI instead
-> of HW "software interrupt". In lots of different tests, this yielded
-> way better perf than SW interrupts, but also, this gives better
-> control over which CPU will handle the NAPI loop (SW interrupts are
-> a subject to irqbalance and stuff, while CSDs are strictly pinned
-> 1:1 to the core of the same index).
-> Note that the header split is always disabled for XSk queues, as
-> for now we see no reasons to have it there.
+> On 26/09/2025 06.20, Stanislav Fomichev wrote:
+> > On 09/25, Lorenzo Bianconi wrote:
+> > > Introduce XDP RX checksum capability to XDP metadata specs. XDP RX
+> > > checksum will be use by devices capable of exposing receive checksum
+> > > result via bpf_xdp_metadata_rx_checksum().
+> > > Moreover, introduce xmo_rx_checksum netdev callback in order allow the
+> > > eBPF program bounded to the device to retrieve the RX checksum result
+> > > computed by the hw NIC.
+> > > 
+> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > ---
+> > >   Documentation/netlink/specs/netdev.yaml |  5 +++++
+> > >   include/net/xdp.h                       | 14 ++++++++++++++
+> > >   net/core/xdp.c                          | 29 +++++++++++++++++++++++++++++
+> > >   3 files changed, 48 insertions(+)
+> > > 
+> > > diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+> > > index e00d3fa1c152d7165e9485d6d383a2cc9cef7cfd..00699bf4a7fdb67c6b9ee3548098b0c933fd39a4 100644
+> > > --- a/Documentation/netlink/specs/netdev.yaml
+> > > +++ b/Documentation/netlink/specs/netdev.yaml
+> > > @@ -61,6 +61,11 @@ definitions:
+> > >           doc: |
+> > >             Device is capable of exposing receive packet VLAN tag via
+> > >             bpf_xdp_metadata_rx_vlan_tag().
+> > > +      -
+> > > +        name: checksum
+> > > +        doc: |
+> > > +          Device is capable of exposing receive checksum result via
+> > > +          bpf_xdp_metadata_rx_checksum().
+> > >     -
+> > >       type: flags
+> > >       name: xsk-flags
+> > > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > > index aa742f413c358575396530879af4570dc3fc18de..9ab9ac10ae2074b70618a9d4f32544d8b9a30b63 100644
+> > > --- a/include/net/xdp.h
+> > > +++ b/include/net/xdp.h
+> > > @@ -586,6 +586,10 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
+> > >   			   NETDEV_XDP_RX_METADATA_VLAN_TAG, \
+> > >   			   bpf_xdp_metadata_rx_vlan_tag, \
+> > >   			   xmo_rx_vlan_tag) \
+> > > +	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_CHECKSUM, \
+> > > +			   NETDEV_XDP_RX_METADATA_CHECKSUM, \
+> > > +			   bpf_xdp_metadata_rx_checksum, \
+> > > +			   xmo_rx_checksum)
+> > >   enum xdp_rx_metadata {
+> > >   #define XDP_METADATA_KFUNC(name, _, __, ___) name,
+> > > @@ -643,12 +647,22 @@ enum xdp_rss_hash_type {
+> > >   	XDP_RSS_TYPE_L4_IPV6_SCTP_EX = XDP_RSS_TYPE_L4_IPV6_SCTP | XDP_RSS_L3_DYNHDR,
+> > >   };
+> > > +enum xdp_checksum {
+> > > +	XDP_CHECKSUM_NONE		= CHECKSUM_NONE,
+> > > +	XDP_CHECKSUM_UNNECESSARY	= CHECKSUM_UNNECESSARY,
+> > > +	XDP_CHECKSUM_COMPLETE		= CHECKSUM_COMPLETE,
+> > > +	XDP_CHECKSUM_PARTIAL		= CHECKSUM_PARTIAL,
+> > > +};
+> > 
+> > Btw, might be worth mentioning, awhile ago we had settled on a smaller set of
+> > exposed types:
+> > 
+> > https://lore.kernel.org/netdev/20230811161509.19722-13-larysa.zaremba@intel.com/
+> > 
+> > Maybe go through the previous postings and check if the arguments are
+> > still relevant? (or explain why we want more checksum now)
 > 
-> [...]
+> IHMO the linked proposal reduced the types too much.
 
-Here is the summary with links:
-  - [net-next,1/5] idpf: add virtchnl functions to manage selected queues
-    https://git.kernel.org/netdev/net-next/c/6b8e30b64065
-  - [net-next,2/5] idpf: add XSk pool initialization
-    https://git.kernel.org/netdev/net-next/c/3d57b2c00f09
-  - [net-next,3/5] idpf: implement XSk xmit
-    https://git.kernel.org/netdev/net-next/c/8ff6d62261a3
-  - [net-next,4/5] idpf: implement Rx path for AF_XDP
-    https://git.kernel.org/netdev/net-next/c/9705d6552f58
-  - [net-next,5/5] idpf: enable XSk features and ndo_xsk_wakeup
-    https://git.kernel.org/netdev/net-next/c/96da9d67da78
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+IIRC, PARTIAL was removed because it's mostly (or only) a TX feature?
+So no real need to expose it as an rx hint. And I think empty xdp_csum_status
+in that proposal might have indicated NONE?
 
