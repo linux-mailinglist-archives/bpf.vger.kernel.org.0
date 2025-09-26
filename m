@@ -1,220 +1,129 @@
-Return-Path: <bpf+bounces-69851-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69852-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9CE4BA4749
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 17:40:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0ED3BA4752
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 17:41:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D4007408F2
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 15:40:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 444287B5D73
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 15:40:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE64215F7D;
-	Fri, 26 Sep 2025 15:40:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MmquPv5s"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B26D21A95D;
+	Fri, 26 Sep 2025 15:41:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3500D219A67
-	for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 15:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51B135966;
+	Fri, 26 Sep 2025 15:41:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758901234; cv=none; b=R2jcrPzQmru2oUl1r5NZycCgFQPhhpnuF8Nf9SKJrA8daOWr/CkPEOTz38upGU2EtZwDNzqFjrBOSOuhHZSBBQctaiN3GktgO3ltm2DCBWst7X5//F8kbNkJakhw2DpZyhPgfsMZlm9oaR8lJeq5W4MhnSPGH6wy9mFny9/GpI4=
+	t=1758901302; cv=none; b=uQdqf9A51ke8lYJuEM36zeQdG11cYFR7ZnrWqnk+JhZ0Oi3XQs7Ok3qNtZByBBV9wd1SM7PHyci8TRL+dBeGrnxjedZwXLoPWgV+RFt/JQ6SW0D5EOzkN9tBUfiSNMQE2+ahr8teSk8rFrnuK1SptXZfSsXV2mpiM9z9q26sxBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758901234; c=relaxed/simple;
-	bh=OiLMjwD6YYiOtFjG9N2Py1ORaI9GhEFST8KctH4GqKU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L5l95oPeSRWCqXHweTSPskkQQVNtdIlk6deUVz61Icjh5YK4NstD/W2NdTgSGl0nQeTeghq72uasUGTOPW6FcT/TNnY3vczhbpPOLoIDm2MnmxULRowf+4i6GvFEH5t+XwzgDJoPyxdEWwhkxRjQwsBpEwuF6rQiw0ysDtEGTRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MmquPv5s; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758901220;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=vsn9shmdm9oEX/iOQrOVgeb6RG1rrnA0a9na9r1L0Og=;
-	b=MmquPv5s5IcolI3VnVJWTr+n62AZ9kxki5J/BsYrzb/H4Lmw/tHYkRJku066VyzNcO24CV
-	d2S6bgnfFNen4/w4mQlPjzUhIO96vW/Ilwn4a9m0mpqMsPxuXFyaqkKAL6zw7oBAQ5PY8j
-	tQFKFPq8AX5yZk7ipvf7HcPP3g9WxuE=
-From: Tao Chen <chen.dylane@linux.dev>
-To: song@kernel.org,
-	jolsa@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v2] bpf: Add preempt_disable to protect get_perf_callchain
-Date: Fri, 26 Sep 2025 23:39:52 +0800
-Message-ID: <20250926153952.1661146-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1758901302; c=relaxed/simple;
+	bh=8kE59LS+3I081Ra628/WHl3xrBDQHSFblc54GpQcwys=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R8av4cPiZFGyU6wMgruioT1P/vLySMNJPD9fgw1QwQa7/a4rHYSnYklCqjd20e12KHH3gLuocva1RCj9Z+5RjWop9h3c1KZi+0aIG21Q5mVu+JCXDrQFl8UPVkv/79kOLD7gYE+z1/UQvUwX8jDW222XRk6KJ6QCNF6dQ0AUuqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14DAC168F;
+	Fri, 26 Sep 2025 08:41:32 -0700 (PDT)
+Received: from localhost (e132581.arm.com [10.1.196.87])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C0E863F66E;
+	Fri, 26 Sep 2025 08:41:39 -0700 (PDT)
+Date: Fri, 26 Sep 2025 16:41:37 +0100
+From: Leo Yan <leo.yan@arm.com>
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Quentin Monnet <qmo@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, James Clark <james.clark@linaro.org>,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	llvm@lists.linux.dev, bpf@vger.kernel.org
+Subject: Re: [PATCH 8/8] perf docs: Document building with Clang
+Message-ID: <20250926154137.GF7985@e132581.arm.com>
+References: <20250925-perf_build_android_ndk-v1-0-8b35aadde3dc@arm.com>
+ <20250925-perf_build_android_ndk-v1-8-8b35aadde3dc@arm.com>
+ <CAP-5=fV45npmMUVGakzpB0XDMJ+WudiHoanBXzJtrX2442k-YA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fV45npmMUVGakzpB0XDMJ+WudiHoanBXzJtrX2442k-YA@mail.gmail.com>
 
-As Alexei noted, get_perf_callchain() return values may be reused
-if a task is preempted after the BPF program enters migrate disable
-mode. We therefore use bpf_perf_callchain_entries percpu entries
-similarly to bpf_try_get_buffers to preserve the current task's
-callchain and prevent overwriting by preempting tasks. And we also
-add preempt_disable to protect get_perf_callchain.
+Hi Ian,
 
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Closes: https://lore.kernel.org/bpf/CAADnVQ+s8B7-fvR1TNO-bniSyKv57cH_ihRszmZV7pQDyV=VDQ@mail.gmail.com
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- kernel/bpf/stackmap.c | 76 ++++++++++++++++++++++++++++++++++---------
- 1 file changed, 61 insertions(+), 15 deletions(-)
+On Thu, Sep 25, 2025 at 12:43:55PM -0700, Ian Rogers wrote:
 
-Change list:
- v1 -> v2:
-  From Alexei
-  - create percpu entris to preserve current task's callchain
-    similarly to bpf_try_get_buffers.
-  v1: https://lore.kernel.org/bpf/20250922075333.1452803-1-chen.dylane@linux.dev
+[...]
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 2e182a3ac4c..8788c219926 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -31,6 +31,55 @@ struct bpf_stack_map {
- 	struct stack_map_bucket *buckets[] __counted_by(n_buckets);
- };
- 
-+struct bpf_perf_callchain_entry {
-+	u64 nr;
-+	u64 ip[PERF_MAX_STACK_DEPTH];
-+};
-+
-+#define MAX_PERF_CALLCHAIN_PREEMPT 3
-+static DEFINE_PER_CPU(struct bpf_perf_callchain_entry[MAX_PERF_CALLCHAIN_PREEMPT],
-+		      bpf_perf_callchain_entries);
-+static DEFINE_PER_CPU(int, bpf_perf_callchain_preempt_cnt);
-+
-+static int bpf_get_perf_callchain(struct bpf_perf_callchain_entry **entry,
-+				  struct pt_regs *regs, u32 init_nr, bool kernel,
-+				  bool user, u32 max_stack, bool crosstack,
-+				  bool add_mark)
-+{
-+	struct bpf_perf_callchain_entry *bpf_entry;
-+	struct perf_callchain_entry *perf_entry;
-+	int preempt_cnt;
-+
-+	preempt_cnt = this_cpu_inc_return(bpf_perf_callchain_preempt_cnt);
-+	if (WARN_ON_ONCE(preempt_cnt > MAX_PERF_CALLCHAIN_PREEMPT)) {
-+		this_cpu_dec(bpf_perf_callchain_preempt_cnt);
-+		return -EBUSY;
-+	}
-+
-+	bpf_entry = this_cpu_ptr(&bpf_perf_callchain_entries[preempt_cnt - 1]);
-+
-+	preempt_disable();
-+	perf_entry = get_perf_callchain(regs, init_nr, kernel, user, max_stack,
-+					crosstack, add_mark);
-+	if (unlikely(!perf_entry)) {
-+		preempt_enable();
-+		this_cpu_dec(bpf_perf_callchain_preempt_cnt);
-+		return -EFAULT;
-+	}
-+	memcpy(bpf_entry, perf_entry, sizeof(u64) * (perf_entry->nr + 1));
-+	*entry = bpf_entry;
-+	preempt_enable();
-+
-+	return 0;
-+}
-+
-+static void bpf_put_perf_callchain(void)
-+{
-+	if (WARN_ON_ONCE(this_cpu_read(bpf_perf_callchain_preempt_cnt) == 0))
-+		return;
-+	this_cpu_dec(bpf_perf_callchain_preempt_cnt);
-+}
-+
- static inline bool stack_map_use_build_id(struct bpf_map *map)
- {
- 	return (map->map_flags & BPF_F_STACK_BUILD_ID);
-@@ -303,8 +352,9 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 	u32 max_depth = map->value_size / stack_map_data_size(map);
- 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
- 	bool user = flags & BPF_F_USER_STACK;
--	struct perf_callchain_entry *trace;
-+	struct bpf_perf_callchain_entry *trace;
- 	bool kernel = !user;
-+	int err;
- 
- 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
- 			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
-@@ -314,14 +364,15 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 	if (max_depth > sysctl_perf_event_max_stack)
- 		max_depth = sysctl_perf_event_max_stack;
- 
--	trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
--				   false, false);
-+	err = bpf_get_perf_callchain(&trace, regs, 0, kernel, user, max_depth,
-+				     false, false);
-+	if (err)
-+		return err;
- 
--	if (unlikely(!trace))
--		/* couldn't fetch the stack trace */
--		return -EFAULT;
-+	err = __bpf_get_stackid(map, (struct perf_callchain_entry *)trace, flags);
-+	bpf_put_perf_callchain();
- 
--	return __bpf_get_stackid(map, trace, flags);
-+	return err;
- }
- 
- const struct bpf_func_proto bpf_get_stackid_proto = {
-@@ -443,8 +494,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 	if (sysctl_perf_event_max_stack < max_depth)
- 		max_depth = sysctl_perf_event_max_stack;
- 
--	if (may_fault)
--		rcu_read_lock(); /* need RCU for perf's callchain below */
-+	preempt_disable();
- 
- 	if (trace_in)
- 		trace = trace_in;
-@@ -455,8 +505,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 					   crosstask, false);
- 
- 	if (unlikely(!trace) || trace->nr < skip) {
--		if (may_fault)
--			rcu_read_unlock();
-+		preempt_enable();
- 		goto err_fault;
- 	}
- 
-@@ -474,10 +523,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 	} else {
- 		memcpy(buf, ips, copy_len);
- 	}
--
--	/* trace/ips should not be dereferenced after this point */
--	if (may_fault)
--		rcu_read_unlock();
-+	preempt_enable();
- 
- 	if (user_build_id)
- 		stack_map_get_build_id_offset(buf, trace_nr, user, may_fault);
--- 
-2.48.1
+> > +5) Build with clang
+> > +===================
+> > +By default, the makefile uses GCC as compiler. With specifying environment
+> > +variables HOSTCC, CC and CXX, it allows to build perf with clang.
+> > +
+> > +Using clang for native build:
+> > +
+> > +  $ HOSTCC=clang CC=clang CXX=clang++ make -C tools/perf
+> > +
+> > +Using clang for cross compilation:
+> > +
+> > +  $ HOSTCC=clang CC=clang CXX=clang++ \
+> > +    make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -C tools/perf \
+> > +    NO_LIBELF=1 NO_LIBTRACEEVENT=1 NO_JEVENTS=1
+> 
+> The three NO_-s here are going to cripple the build quite a lot, I
+> wonder if we can list package dependencies to install and failing that
+> use the NO_-s.
 
+In the next version, I will drop NO_ options to avoid confusing.
+
+Missing libraries can occur in both native build and cross build, so
+this is not a specific issue for cross build. OTOH, the build logs
+already provide clear reminders, here no need to bother readers for
+these NO_ options.
+
+> > +
+> > +In the example above, due to lack libelf, python and libtraceevent for
+> > +cross comiplation, disable the features accordingly.
+> 
+> nit: s/comiplation/compilation/
+> 
+> > diff --git a/tools/perf/Documentation/android.txt b/tools/perf/Documentation/android.txt
+> > index 24a59998fc91e814ad96f658d3481d88d798b60c..e65204cf2921f6bd8a79875784c5b3d5487ce05d 100644
+> > --- a/tools/perf/Documentation/android.txt
+> > +++ b/tools/perf/Documentation/android.txt
+> > @@ -1,78 +1,12 @@
+> >  How to compile perf for Android
+> > -=========================================
+> > +===============================
+> >
+> > -I. Set the Android NDK environment
+> > -------------------------------------------------
+> > +There have two ways to build perf and run it on Android.
+> 
+> nit: s/There have/There are/
+
+Will do.  Thanks a lot for review!
+
+Leo
 
