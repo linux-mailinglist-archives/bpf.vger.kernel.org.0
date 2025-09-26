@@ -1,103 +1,147 @@
-Return-Path: <bpf+bounces-69826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD72CBA33FE
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 11:53:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58F90BA3410
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 11:53:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22CBC624998
-	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 09:53:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81A327AFFF1
+	for <lists+bpf@lfdr.de>; Fri, 26 Sep 2025 09:52:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A83429DB99;
-	Fri, 26 Sep 2025 09:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CF12BD5A7;
+	Fri, 26 Sep 2025 09:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="AAlnd/zt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cas4uuwF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9D529D282;
-	Fri, 26 Sep 2025 09:53:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED98429BDB9;
+	Fri, 26 Sep 2025 09:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758880399; cv=none; b=h57waewFXLLoEEZxYlwhYIf0iBsbBrmKqytsppcmRheajl+oLviusPHnoZHVoPmbOXr96IecbO8P3RvPgd8o0a4L2LRSMxKTEf0zndJDH3ckBxVakmbtRphhR1GG/r7awQP/MbhTaDRMlTXJGUbUZ+l8SSLSENNFrfj+5oumOfM=
+	t=1758880414; cv=none; b=EdUmem6yRr5OsRgifCCauUICkIysHQLK44WxcrsSpeiy16Q17yTn4+ag3JrW/XLcDFjVGmZC4adaT7OQeMuq6eqg7LJpZCjkwvxWbqJhiV5lyAtCmBCwMbd28eqGDy+DuQURils0ILvzAUhSEFZTlHTn5cBtdRE7KCcFhhk8y4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758880399; c=relaxed/simple;
-	bh=YUKhSKV5krxK7aq0YL6uBUQZ9x8JAclefSml8Zbo5u8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r4xDUGjQtdyYxDQ1OvnaInOmduZf+VIMUl4nKqzDBeiwUsec8AuNjCrppvRjM5CbULGX69woUPtGsQFCCpkD3f9Nlk4KzGwf/nKEfYIAA1fdRlAjltbpqfcXsEyjDJQhDDJL3urbtQBMhf05vl+cJimvAcD6nRl2ATpFsNU0RrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=AAlnd/zt; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1758880386; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=07lNl39kQLzLpg6IBgmzyG/mxPBQl/aph/gu4dnu+TY=;
-	b=AAlnd/ztAKCMUrDpOjF4QDVrYvplq7O0MHWr2SehHrdpalkLXEVaz39hYy8iaFEl8RgIV9uap5oF5XdKe8vVGEkjtkjwstSmO7qO699HWJQhaZeYNNcp9qaoXKnd8cOFLcr2Zz4ZuTCrrtrhuAWtwDugZ8GvHBAc7R68mhMgYsg=
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Wornc9V_1758880382 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 26 Sep 2025 17:53:05 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: qmo@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next v2 2/2] bpftool: Remove duplicate string.h header
-Date: Fri, 26 Sep 2025 17:52:40 +0800
-Message-ID: <20250926095240.3397539-2-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250926095240.3397539-1-jiapeng.chong@linux.alibaba.com>
-References: <20250926095240.3397539-1-jiapeng.chong@linux.alibaba.com>
+	s=arc-20240116; t=1758880414; c=relaxed/simple;
+	bh=ABg3JBeJ+y7C2RlZnbDls+ChldG2KSsda0gRwyTvuI0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RwLjgw5LtCAfrtdEyKbRJGmLWK/nx9qdJrFs2CGS7spPWwyc1rBG6IXWfWaJABTYCWHIaxUYwM3NUFlQLg9o1dFbuFd/A6Ah0532a/CmBuGd6n2zfo9jh06PVB7D02z48gEQ9XsBRMVMmCfVugClnXABhBdmLzMXDPXde5nZu00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cas4uuwF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E7FCC4CEF4;
+	Fri, 26 Sep 2025 09:53:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758880413;
+	bh=ABg3JBeJ+y7C2RlZnbDls+ChldG2KSsda0gRwyTvuI0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cas4uuwFB7OKkpV/FnG+acSoxR41ScdeuIv7ja/onD16BlgqutbP/jnASuWyGWEdM
+	 8A4uYWl5EAcwpG98C1N4Ag1ZWbEMdhOxY1CwbS9Y093SnHo/Sin1nllvyrnAwoE4wY
+	 /ntmer5ATxSnRkDWeyQm9kDH6SgE7j1xrIeQQ5gV6+naE0yRVLQg3yN3zR5TwsOwPL
+	 ryAMFZtLb7ksQyThdnNDE0OO4R8B+WSD34eiH244lSeGsUy6BHHQtJY9/5HS8rzLa4
+	 CYBCEcCYH2R+CoaLVfxIQlXLRnqv3w1HQ1sfFRZDF2xZqoZrxOEgSX94ofgcD2uSFz
+	 e/lJOFgG/SQaA==
+Message-ID: <0608935c-1c1c-4374-a058-bc78d114c630@kernel.org>
+Date: Fri, 26 Sep 2025 11:53:25 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC bpf-next v2 1/5] netlink: specs: Add XDP RX checksum
+ capability to XDP metadata specs
+To: Lorenzo Bianconi <lorenzo@kernel.org>,
+ Donald Hunter <donald.hunter@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, linux-kselftest@vger.kernel.org
+References: <20250925-bpf-xdp-meta-rxcksum-v2-0-6b3fe987ce91@kernel.org>
+ <20250925-bpf-xdp-meta-rxcksum-v2-1-6b3fe987ce91@kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250925-bpf-xdp-meta-rxcksum-v2-1-6b3fe987ce91@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-./tools/bpf/bpftool/sign.c: string.h is included more than once.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=25502
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
-Changes in v2:
-  -Modify in the 'close' section
-https://bugzilla.openanolis.cn/show_bug.cgi?id=25499 for
-https://bugzilla.openanolis.cn/show_bug.cgi?id=25502.
 
- tools/bpf/bpftool/sign.c | 1 -
- 1 file changed, 1 deletion(-)
+On 25/09/2025 11.30, Lorenzo Bianconi wrote:
+> +/**
+> + * bpf_xdp_metadata_rx_checksum - Read XDP frame RX checksum.
+> + * @ctx: XDP context pointer.
+> + * @ip_summed: Return value pointer indicating checksum result.
+> + * @cksum_meta: Return value pointer indicating checksum result metadata.
+> + *
+> + * In case of success, ``ip_summed`` is set to the RX checksum result. Possible
+> + * values are:
+> + * ``XDP_CHECKSUM_NONE``
+> + * ``XDP_CHECKSUM_UNNECESSARY``
+> + * ``XDP_CHECKSUM_COMPLETE``
+> + * ``XDP_CHECKSUM_PARTIAL``
+> + *
+> + * In case of success, ``cksum_meta`` contains the hw computed checksum value
+> + * for ``XDP_CHECKSUM_COMPLETE`` or the ``csum_level`` for
+> + * ``XDP_CHECKSUM_UNNECESSARY``. It is set to 0 for ``XDP_CHECKSUM_NONE`` and
+> + * ``XDP_CHECKSUM_PARTIAL``.
+> + *
 
-diff --git a/tools/bpf/bpftool/sign.c b/tools/bpf/bpftool/sign.c
-index b29d825bb1d4..b34f74d210e9 100644
---- a/tools/bpf/bpftool/sign.c
-+++ b/tools/bpf/bpftool/sign.c
-@@ -11,7 +11,6 @@
- #include <stdint.h>
- #include <stdbool.h>
- #include <string.h>
--#include <string.h>
- #include <getopt.h>
- #include <err.h>
- #include <openssl/opensslv.h>
--- 
-2.43.5
+It is very important that we explain the meaning of XDP_CHECKSUM_NONE.
+As I hinted in other email, this also covers the non-existing FAIL case.
+
+If the hardware detects a wrong or failed checksum, the code still
+returns CHECKSUM_NONE. This is where we could consider adding a
+CHECKSUM_FAIL return value instead.
+The driver will also return CHECKSUM_NONE for the cases where it cannot
+parse the packet, and therefor naturally cannot calculate the checksum
+(given it doesn't know the protocol).
+
+Thus, for CHECKSUM_NONE we don't know if this is because of bad checksum
+or hardware don't know this packet type.  The philosophy is that 
+hardware might be wrong and cannot know of newer protocols, so it is 
+safer to let software handle recalculation of checksum for all negative 
+cases.
+
+Thus, if we want to use this in a (XDP) DDoS filter, then we need to
+combine RX-hash info about if hardware saw this as an L4 packet or not
+(see XDP_RSS_L4 / enum xdp_rss_hash_type).  If hardware saw this as e.g.
+XDP_RSS_L4_TCP (or XDP_RSS_L4_UDP) and rx-csum is CHECKSUM_NONE, then we
+know this was a wrong/failed checksum (given this hardware knows howto
+csum TCP).
+
+What do people think: Do we leave it as an exercise to the BPF-developer
+to deduct hardware detected a wrong/failed checksum, as that is possible
+as described above.  Or do we introduce a CHECKSUM_FAILED?
+
+An argument for sticking with CHECKSUM_NONE, is that it will make it
+much easier to add driver support, as we don't need to deal with any
+logic changes in the existing code.
+
+
+> + * Return:
+> + * * Returns 0 on success or ``-errno`` on error.
+> + * * ``-EOPNOTSUPP`` : means device driver does not implement kfunc
+> + * * ``-ENODATA``    : means no RX-timestamp available for this frame
+> + */
+> +__bpf_kfunc int bpf_xdp_metadata_rx_checksum(const struct xdp_md *ctx,
+> +					     u8 *ip_summed, u32 *cksum_meta)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
 
 
