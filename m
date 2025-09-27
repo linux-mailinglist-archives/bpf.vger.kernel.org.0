@@ -1,215 +1,280 @@
-Return-Path: <bpf+bounces-69898-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69899-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D739BA5B85
-	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 10:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42CDBBA5E43
+	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 13:19:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2BB41888BA9
-	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 08:50:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ECC81B22C1B
+	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 11:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296CC2D9ED1;
-	Sat, 27 Sep 2025 08:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08FB2E06E6;
+	Sat, 27 Sep 2025 11:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="sxRhtGHH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W9RqxR7B"
 X-Original-To: bpf@vger.kernel.org
-Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11013022.outbound.protection.outlook.com [52.101.72.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C4E2D949C;
-	Sat, 27 Sep 2025 08:48:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.72.22
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758962915; cv=fail; b=AFOTnocgw+0xfvVcL/UBjrfVZeQM+Tm9RBVN/7VKGB6+iad5CdlGHKH+m1eYexzoqphgvYxFbOlZOWy7H/N3FnewEo8wdZ1vW81m5byg2gS5Vfoo0kV/0996WaCFjoB2otWfpbcD3B8Qd/zKdM7VIXvy3I2olsTy6Oc6K/ps6cM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758962915; c=relaxed/simple;
-	bh=KTBsrRS6D/43oWkxJJXk7PDL01xGj6ILj/9SxXVFdBY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mWxVosI2WrcBGtN1s/CrnmMEQGjmIQ3W24cbyeb0udC2q3vR1TDFPp/VTwJHvY5jNe6L3z/PVoFM+siMDp9PZANp8IbVs6prU3Q2GWijAFClebkx9qUykq+BHMF83kPAF9JoXLVQanjS401YmCxXge8sYVvEKW1I9GOVvWCymGQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=sxRhtGHH; arc=fail smtp.client-ip=52.101.72.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VwGna1EaVXF7yFAYlA3NtvKCrqgmTCSJTda6AcSqIZ4gx6I22MyFdQbolxygY3aEvs4ND46j99sD/2J4yn0TQoUFDZMlUTaHhHeXeZVhW8E/MTdky39XtD2WltGDw6eeyXEegEWjhuDeVn7GPb0B7ocdo73f8ipf1IrhqX395h/7MQrNHDES6aYyL4mRkvymYWhv2ihDz8wM8AMmdkU3KTIsHY7eUtZ04J36l2+xjeCftUahVQawIFz6G5wLd7wqbXvB9r3uxekn7+y4zdQTDL/RQwz5u2iln3Y9Ky2AkhWv2YInY2/puqs2fdK7s5gP8VTjW0S5qRMXQuwxAzuTig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JsoIhmFoB+0bvj05Al5hGf7EtssXfY7zXNkjoPQM4JM=;
- b=XyAVehZ6SgU9vtkqogncbLtN6tdTvevMnFS7uhbBsRnkVyQzJ+f2Mf2kq9VNmRBx2qwsWuCcdpJbBHkBVkf6pDpeH5ZjIQV8accNKU7tDwKUer87ram9TWBn556At9zFj+syeVCZZKO16MuuGuq6lg6Clj4mKbP9TQe6H2VWm99LkYn3uhETftkF6hJV7GRtwXWgY6tuZdICCWg+rYawRHBlgeAK4a9OnVbNZSzWyLRzkz+qrDbANEexoCNb52LIoZix4HUGff80VsX3Tvs80YPkU21f8py1vPdUk9NqZMRBCgSlSkeY6HLGUZljw0C5/fRJt+TiwxKT500hOLNrbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 131.228.2.240) smtp.rcpttodomain=amazon.com
- smtp.mailfrom=nokia-bell-labs.com; dmarc=pass (p=reject sp=reject pct=100)
- action=none header.from=nokia-bell-labs.com; dkim=none (message not signed);
- arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JsoIhmFoB+0bvj05Al5hGf7EtssXfY7zXNkjoPQM4JM=;
- b=sxRhtGHHHIv7ekkHbOoFHB6UzYpua4lDasJBH4vA7qxT9vBvHlXipW1fC+vOpvdhKdEoOd6NGrUqLvw/8FEKUy7sHes81rtw1iQd+GUvpuPZJ+w4eJLQnNOjLoXOb0k6dg20fxAutdsYXuOzJoFQw+B2VwaRsLZ6RLQP0Nf7CGxQgQ5ilb6q8e72QwwBifYZMg6MUvn0gHfMWJNix6ns2W5bBr9xg6lsUkPSqlKRp3x8nDqX2ZI4kfwK+mWiUJu8wtkcb+Je32p7Ble8pywLi5uXGzC2z4nV1nhezjGzi1w3bvzvqsKsUtkfAAbwXdlaQltxayZH4rv652GnCFVLdw==
-Received: from DB9PR02CA0011.eurprd02.prod.outlook.com (2603:10a6:10:1d9::16)
- by DU0PR07MB10681.eurprd07.prod.outlook.com (2603:10a6:10:59e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9160.9; Sat, 27 Sep
- 2025 08:48:29 +0000
-Received: from DB5PEPF00014B99.eurprd02.prod.outlook.com
- (2603:10a6:10:1d9:cafe::d) by DB9PR02CA0011.outlook.office365.com
- (2603:10a6:10:1d9::16) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9160.11 via Frontend Transport; Sat,
- 27 Sep 2025 08:48:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.240)
- smtp.mailfrom=nokia-bell-labs.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nokia-bell-labs.com;
-Received-SPF: Pass (protection.outlook.com: domain of nokia-bell-labs.com
- designates 131.228.2.240 as permitted sender)
- receiver=protection.outlook.com; client-ip=131.228.2.240;
- helo=fihe3nok0735.emea.nsn-net.net; pr=C
-Received: from fihe3nok0735.emea.nsn-net.net (131.228.2.240) by
- DB5PEPF00014B99.mail.protection.outlook.com (10.167.8.166) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9160.9
- via Frontend Transport; Sat, 27 Sep 2025 08:48:29 +0000
-Received: from sarah.nbl.nsn-rdnet.net (sarah.nbl.nsn-rdnet.net [10.0.73.150])
-	by fihe3nok0735.emea.nsn-net.net (Postfix) with ESMTP id D6FF0200B2;
-	Sat, 27 Sep 2025 11:48:27 +0300 (EEST)
-From: chia-yu.chang@nokia-bell-labs.com
-To: pabeni@redhat.com,
-	edumazet@google.com,
-	linux-doc@vger.kernel.org,
-	corbet@lwn.net,
-	horms@kernel.org,
-	dsahern@kernel.org,
-	kuniyu@amazon.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	dave.taht@gmail.com,
-	jhs@mojatatu.com,
-	kuba@kernel.org,
-	stephen@networkplumber.org,
-	xiyou.wangcong@gmail.com,
-	jiri@resnulli.us,
-	davem@davemloft.net,
-	andrew+netdev@lunn.ch,
-	donald.hunter@gmail.com,
-	ast@fiberby.net,
-	liuhangbin@gmail.com,
-	shuah@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	ij@kernel.org,
-	ncardwell@google.com,
-	koen.de_schepper@nokia-bell-labs.com,
-	g.white@cablelabs.com,
-	ingemar.s.johansson@ericsson.com,
-	mirja.kuehlewind@ericsson.com,
-	cheshire@apple.com,
-	rs.ietf@gmx.at,
-	Jason_Livingood@comcast.com,
-	vidhi_goel@apple.com
-Cc: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-Subject: [PATCH v3 net-next 12/12] tcp: accecn: enable AccECN
-Date: Sat, 27 Sep 2025 10:48:03 +0200
-Message-Id: <20250927084803.17784-13-chia-yu.chang@nokia-bell-labs.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250927084803.17784-1-chia-yu.chang@nokia-bell-labs.com>
-References: <20250927084803.17784-1-chia-yu.chang@nokia-bell-labs.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74E22D6E6A
+	for <bpf@vger.kernel.org>; Sat, 27 Sep 2025 11:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758971983; cv=none; b=eSHpUCcd5HhM2IyMY4kP0WG2jnqeMcIHhoVcHGjIEFrfBa6l2h4Yl79oY8UeDuuJoE5lvHz3j4TEn3/Jg1wpSu9H2F31UHHfo7xSutW1tpinDyL91vKZDUVBpVU05ov6OL8o8ZmjQGJtbeZFLkFnp3EAk5PyLI6jAUlwKJZpv+w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758971983; c=relaxed/simple;
+	bh=lyQK3dj3jb79A9aBAEl6D8zz7Yd9JsVkwnwAPGtyMMc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zcnt2hobsTgPQ+X6qayXtg0hcSsxGHng3M73Hx42OEbopOo2YpmW4Pf4dPOWwcXaTaAANd1Mh4/9V/a45e/tr67vMADdvbWw+AKz5KqOM/xGNTt9RPT91sWtsSu4FJANEBVz+pwRlvS5joM10VJ8gzjQhaq0LVWNNWjY+rAetVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W9RqxR7B; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3f0ae439b56so1842381f8f.3
+        for <bpf@vger.kernel.org>; Sat, 27 Sep 2025 04:19:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758971979; x=1759576779; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rJlOnjCtecqKlwNZP2ZTCvHch+/LxWyg3xr+1OSMJVs=;
+        b=W9RqxR7BCrus8J1Ry5NVOGWfomuvyc4e+9IZC4dGE7NdSNIBVN+PGMJkvo9iMHcw1e
+         qnuvpXZ5GrGSme6+h3BeF/CJak3wMCTKLtWSYBbVlm8tsfgb+6x2w41drV76vtl4ZOZ8
+         TQ0w3AxTEQoHGjVC5vH4kXLK94VPj0eOkK2O35GVX+s7AUaH3a+JO0nKDnvtQh9UjzTU
+         d8Ct5AM2aVPO7S71jNQE9FT5mn3MJDbd35VPPf8TyhotuyFc1HxrLWaGr9j++g8EK88A
+         a6fcHLJbmdFUEoa9kmTGlwaAlzQnRnhebrSq5iM1B+CTLfADkyUkjqYrbfCbNcIn05Ta
+         0B+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758971979; x=1759576779;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rJlOnjCtecqKlwNZP2ZTCvHch+/LxWyg3xr+1OSMJVs=;
+        b=vFiBGassKKeXAD+PHQ9O1XDk762nT6CPVw2MpsStcgYdZZZp2Ch5o8AUgIUjnxrST3
+         cmQmQEJNUGeKRqP4TAqN5m0aDHCYIw6uOKwOft18EjTvRli/pF5Ag3AJC6OjozjdCRtk
+         ASSXDPmea2BjPS7DVPcnG2OTGPVF/0w2AM2Jxo9pHkeHGAflz5tZ3sVaiwawSTaBNnai
+         zNT/3LwZEMSBGmXZWPTd0agICTWTCo1rSMLaqUfQn9TFIxcl5s38YaQU9mslpE4/8fet
+         d0LjOBpUfm9u1u0OETC6qNIkMbKO0e0Z0eowdDi9fvcLPN3sMjDOVvkswVxsXv4ODQic
+         8YkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWAgU+d9rg9AUtoH7kNR/iQYs3gW22DD+bno/ofjzx+r/oQMu1ZF0dR5TajTz38+IpxEow=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1+Lr/5TU/YW1OsCxkQpXfwJaemQbPO3sbarTdqm9taAtZ3nLU
+	/fc5h9mGHc7I2z4BRBzAAAOiEsT5YcnGFiC3nO+pkb5IM+LAJf56L9ymGYezIu2fAnae7Y6hLrC
+	GwRufM/AY/5kziklDnV8xkVYrZ5vffDY=
+X-Gm-Gg: ASbGncvgXRM720kKfclihT4HwhUAz4WYEAN3HvNGBIz8oRo2uiGcp9GHDGoRO5VnHh/
+	85ZDp6/p+3fzYvyZE66f82H7W4M7bnKT6EFMwPt+FLz5LwMosniMH3K8KCtyrsKAg1NLdOyai6/
+	0X6y2MzQSK7bAJ/hluIQfDr7uZVr+InoE4uOdyZpbZD9AqJCjA3rcB7Mt/BLVR390xAJZ6oU2cL
+	UAqKp/vGeQY5/awPT00
+X-Google-Smtp-Source: AGHT+IE/8kjdOpfLVHLONIbxVJySVHCTebxcS+AchC7X+h8+eAJSQaSSm3VZ5ohxYM2cNjZfF5Ea7BqI+k5sWd9cnhg=
+X-Received: by 2002:a05:6000:2509:b0:3fa:5925:4b07 with SMTP id
+ ffacd0b85a97d-40e45a9280dmr8125948f8f.18.1758971978632; Sat, 27 Sep 2025
+ 04:19:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB5PEPF00014B99:EE_|DU0PR07MB10681:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 1832cad9-cd92-4604-5b91-08ddfda2a19f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|376014|7416014|36860700013|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?BCO1TFOc7Cxvg1X7RSsXtlRV2y2Kjs0eDer2+nZAnTQRcBf4TsS/v6EJ9J91?=
- =?us-ascii?Q?qNMziYnENIUF+hC96JkSNWye1OkPYGWTThJl/Xx6bR0IyxX61CUQX/ouINxW?=
- =?us-ascii?Q?dNcAOc/AFj+HU0GyasJBKtI5pKdGWSExY68lYSEQxsTXh60G/39Rwsw4083B?=
- =?us-ascii?Q?ixv209fg7yoAysQ1fcKArBCODEP/VYgXockASYVdQnO2I7HMowHqXQhpYg/t?=
- =?us-ascii?Q?vD3q5nyfnCw6+wtlHFwgw4rZpC7BaFUbJur/gqgF3hxjpsOr4irtqYp7TMYb?=
- =?us-ascii?Q?IaCAlWcyqdEcnPDKSQ6Q6w/RzRanz0J/724buKgcdDF80U00vXOAO+FI5CBg?=
- =?us-ascii?Q?ECUDsq/7mOVFb4nPH4ZnAIvfOzV5w1H/6KivGi3nFsHdu6mtOb89m/MvYwo7?=
- =?us-ascii?Q?IMLM7mwbDz11NTdZEYq4bBz82s0gd6AbD0l2ykjX5j3l/UnCpBkTynHULAes?=
- =?us-ascii?Q?MgUvdhHEsLJz9Z6rSy4FEwuwAzIC4jZ+YQLfv0NtJXdNO9RRA46P7Csu933J?=
- =?us-ascii?Q?OTiZv8zdcsUY7P3IaqSWlSOBY2dyqePgOd/6l5OvazGHpX5eFEs7T2eDOfI/?=
- =?us-ascii?Q?r6dmLdmc7Lis42SfSzu0SQGXmpCpxhDBIc98QGRz/E92mU+xYVt5Gh/wwkVR?=
- =?us-ascii?Q?6CvdzoGOTB1C3O+qtlFiFrj5XcGFmJ7h6aRm3NcQ+XMN0/G+wnqQEZ6JEr/3?=
- =?us-ascii?Q?mgJwI55r60y8A2SNQId7ykOl7uu8rmvmrO47CnqPDtpvP5UovdGFs8GR0Ash?=
- =?us-ascii?Q?oxoZN7kVzEJsiZW8gjdqo+RtLVPDC0l8dG7ORfM1MVLYjXHUlwrKszvIibds?=
- =?us-ascii?Q?Jxi+EBD8L6pgDsN5YFfXOU9qD+VslyONh+k6f/p439GBkLDq3VAAi+w0mtX7?=
- =?us-ascii?Q?UjkfeJ/za8FAf6q1vS968vGXPyz9G2RavY7AxAlpyfptU7QDt7gv9jGFIDOx?=
- =?us-ascii?Q?K70VPrSdBITP4lVb86eBkV+MBwfMkx/t9UqobeMl6QwOTKxYONerllYkggkW?=
- =?us-ascii?Q?03cuiA/GqHOY6SK1PrPE90dB/qcySPutJGN1yE1xDVQGNnVI12ONQTUseinY?=
- =?us-ascii?Q?5Erc96OEYBdl/vRiIPRJpnCo9n6uCePXLcf4B5iegyny6m7+Ih8VMj5hdpZ7?=
- =?us-ascii?Q?t96cAIL6esRuhYvIPyWqrRJnzXsA6y5xzrsnkPW49jb4q76lDvadHRwMlFoj?=
- =?us-ascii?Q?H6C8/CIOkyyO5oqnPXzrT0WiQEj281owXjiKCativPEyA44fkq/dnstslmv8?=
- =?us-ascii?Q?rrvD1VTyRvUPpT+IhDnHCkCCEW6A4ARpQPf1IxwjAseFkMLyKPYB+EKPqbuW?=
- =?us-ascii?Q?qHyoktePSxHy/9feSsutUXO7WdQZB7D+d53Zs2FVHlhBoLD/FE+O5p1jiF6h?=
- =?us-ascii?Q?mDlvK/PgdSprqJf0CWsauEbl+hcnHyccNl2iZBXR4v0lsTibi8a/73Wn548A?=
- =?us-ascii?Q?xcvSooR99G+u6oNzRq8zjOwsUU5v5RIqmF4H32wuyfwh6A0VUEgr9PtC2JDV?=
- =?us-ascii?Q?OUHG2dwdXjcb9RezLwNopDQncAoFHQbB1V9yKfHHQ7BRH5tQ2hxfP93GLWB2?=
- =?us-ascii?Q?Oyx5CSHybj6bJK1FPHZ2aMsFPgQnCMeObHBxe/0C?=
-X-Forefront-Antispam-Report:
-	CIP:131.228.2.240;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0735.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(7416014)(36860700013)(921020);DIR:OUT;SFP:1101;
-X-OriginatorOrg: nokia-bell-labs.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2025 08:48:29.3788
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1832cad9-cd92-4604-5b91-08ddfda2a19f
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.240];Helo=[fihe3nok0735.emea.nsn-net.net]
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TreatMessagesAsInternal-DB5PEPF00014B99.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR07MB10681
+References: <20250924-xsk-v4-0-20e57537b876@bootlin.com> <20250924-xsk-v4-4-20e57537b876@bootlin.com>
+ <aNVEiTJywHNJeEzL@boxer> <fd600cd5-062e-4806-9e8e-b7f6aacad242@bootlin.com> <aNZ9VWLgNGHQg1Tv@boxer>
+In-Reply-To: <aNZ9VWLgNGHQg1Tv@boxer>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 27 Sep 2025 12:19:27 +0100
+X-Gm-Features: AS18NWDtQbz9DZq8vxqL04kjSoY9eMmtejmUmGibpefP6w_KaVbyNhB1QiIHlQ4
+Message-ID: <CAADnVQ+bBofJDfieyOYzSmSujSfJwDTQhiz3aJw7hE+4E2_iPA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 04/15] selftests/bpf: test_xsk: fix memory
+ leak in testapp_stats_rx_dropped()
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	Alexis Lothore <alexis.lothore@bootlin.com>, Network Development <netdev@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+On Fri, Sep 26, 2025 at 12:47=E2=80=AFPM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> On Fri, Sep 26, 2025 at 08:39:28AM +0200, Bastien Curutchet wrote:
+> > Hi Maciej,
+> >
+> > On 9/25/25 3:32 PM, Maciej Fijalkowski wrote:
+> > > On Wed, Sep 24, 2025 at 04:49:39PM +0200, Bastien Curutchet (eBPF Fou=
+ndation) wrote:
+> > > > testapp_stats_rx_dropped() generates pkt_stream twice. The last
+> > > > generated is released by pkt_stream_restore_default() at the end of=
+ the
+> > > > test but we lose the pointer of the first pkt_stream.
+> > > >
+> > > > Release the 'middle' pkt_stream when it's getting replaced to preve=
+nt
+> > > > memory leaks.
+> > > >
+> > > > Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutch=
+et@bootlin.com>
+> > > > ---
+> > > >   tools/testing/selftests/bpf/test_xsk.c | 7 +++++++
+> > > >   1 file changed, 7 insertions(+)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/test_xsk.c b/tools/testing=
+/selftests/bpf/test_xsk.c
+> > > > index 8d7c38eb32ca3537cb019f120c3350ebd9f8c6bc..eb18288ea1e4aa1c933=
+7d16333b7174ecaed0999 100644
+> > > > --- a/tools/testing/selftests/bpf/test_xsk.c
+> > > > +++ b/tools/testing/selftests/bpf/test_xsk.c
+> > > > @@ -536,6 +536,13 @@ static void pkt_stream_receive_half(struct tes=
+t_spec *test)
+> > > >           struct pkt_stream *pkt_stream =3D test->ifobj_tx->xsk->pk=
+t_stream;
+> > > >           u32 i;
+> > > > + if (test->ifobj_rx->xsk->pkt_stream !=3D test->rx_pkt_stream_defa=
+ult)
+> > > > +         /* Packet stream has already been replaced so we have to =
+release this one.
+> > > > +          * The newly created one will be freed by the restore_def=
+ault() at the
+> > > > +          * end of the test
+> > > > +          */
+> > > > +         pkt_stream_delete(test->ifobj_rx->xsk->pkt_stream);
+> > >
+> > > I don't see why this one is not addressed within test case
+> > > (testapp_stats_rx_dropped()) and other fix is (testapp_xdp_shared_ume=
+m()).
+> > >
+> >
+> > pkt_stream_receive_half() can be used by other tests. I thought it woul=
+d be
+>
+> So is pkt_stream_replace_half() and other routines that eventually call
+> pkt_stream_generate() and overwrite the pkt_stream, right?
+>
+> It just feels odd to have a special treatment in one function and other
+> are left as-is just because currently we don't have another abusive test
+> case.
+>
+> Maybe it's enough of bike-shedding here, just wanted to clarify on my POV=
+.
+>
+> In the end don't get me wrong here, this interface is a bit PITA for me
+> and thanks for whole effort!
 
-Enable Accurate ECN negotiation and request for incoming and
-outgoing connection by setting sysctl_tcp_ecn:
+My reading of this discussion that it doesn't block the series
+and can be done in the follow up if necessary.
 
-+==============+===========================================+
-|              |  Highest ECN variant (Accurate ECN, ECN,  |
-|   tcp_ecn    |  or no ECN) to be negotiated & requested  |
-|              +---------------------+---------------------+
-|              | Incoming connection | Outgoing connection |
-+==============+=====================+=====================+
-|      0       |        No ECN       |        No ECN       |
-|      1       |         ECN         |         ECN         |
-|      2       |         ECN         |        No ECN       |
-+--------------+---------------------+---------------------+
-|      3       |     Accurate ECN    |     Accurate ECN    |
-|      4       |     Accurate ECN    |         ECN         |
-|      5       |     Accurate ECN    |        No ECN       |
-+==============+=====================+=====================+
+So I was planning to apply it, but it found real bugs:
 
-Refer Documentation/networking/ip-sysctl.rst for more details.
+./test_progs -t xsk
+[   18.066989] bpf_testmod: loading out-of-tree module taints kernel.
+[   32.204881] BUG: Bad page state in process test_progs  pfn:11c98b
+[   32.207167] page: refcount:0 mapcount:0 mapping:0000000000000000
+index:0x0 pfn:0x11c98b
+[   32.210084] flags: 0x1fffe0000000000(node=3D0|zone=3D1|lastcpupid=3D0x7f=
+ff)
+[   32.212493] raw: 01fffe0000000000 dead000000000040 ff11000123c9b000
+0000000000000000
+[   32.218056] raw: 0000000000000000 0000000000000001 00000000ffffffff
+0000000000000000
+[   32.220900] page dumped because: page_pool leak
+[   32.222636] Modules linked in: bpf_testmod(O) bpf_preload
+[   32.224632] CPU: 6 UID: 0 PID: 3612 Comm: test_progs Tainted: G
+      O        6.17.0-rc5-gfec474d29325 #6969 PREEMPT
+[   32.224638] Tainted: [O]=3DOOT_MODULE
+[   32.224639] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[   32.224641] Call Trace:
+[   32.224644]  <IRQ>
+[   32.224646]  dump_stack_lvl+0x4b/0x70
+[   32.224653]  bad_page.cold+0xbd/0xe0
+[   32.224657]  __free_frozen_pages+0x838/0x10b0
+[   32.224660]  ? skb_pp_cow_data+0x782/0xc30
+[   32.224665]  bpf_xdp_shrink_data+0x221/0x530
+[   32.224668]  ? skb_pp_cow_data+0x6d1/0xc30
+[   32.224671]  bpf_xdp_adjust_tail+0x598/0x810
+[   32.224673]  ? xsk_destruct_skb+0x321/0x800
+[   32.224678]  bpf_prog_004ac6bb21de57a7_xsk_xdp_adjust_tail+0x52/0xd6
+[   32.224681]  veth_xdp_rcv_skb+0x45d/0x15a0
+[   32.224684]  ? get_stack_info_noinstr+0x16/0xe0
+[   32.224688]  ? veth_set_channels+0x920/0x920
+[   32.224691]  ? get_stack_info+0x2f/0x80
+[   32.224693]  ? unwind_next_frame+0x3af/0x1df0
+[   32.224697]  veth_xdp_rcv.constprop.0+0x38a/0xbe0
+[   32.224700]  ? common_startup_64+0x13e/0x148
+[   32.224703]  ? veth_xdp_rcv_one+0xcd0/0xcd0
+[   32.224706]  ? stack_trace_save+0x84/0xa0
+[   32.224709]  ? stack_depot_save_flags+0x28/0x820
+[   32.224713]  ? __resched_curr.constprop.0+0x332/0x3b0
+[   32.224716]  ? timerqueue_add+0x217/0x320
+[   32.224719]  veth_poll+0x115/0x5e0
+[   32.224722]  ? veth_xdp_rcv.constprop.0+0xbe0/0xbe0
+[   32.224726]  ? update_load_avg+0x1cb/0x12d0
+[   32.224730]  ? update_cfs_group+0x121/0x2c0
+[   32.224733]  __napi_poll+0xa0/0x420
+[   32.224736]  net_rx_action+0x901/0xe90
+[   32.224740]  ? run_backlog_napi+0x50/0x50
+[   32.224743]  ? clockevents_program_event+0x1cc/0x280
+[   32.224746]  ? hrtimer_interrupt+0x31e/0x7c0
+[   32.224749]  handle_softirqs+0x151/0x430
+[   32.224752]  do_softirq+0x3f/0x60
+[   32.224755]  </IRQ>
+[   32.224756]  <TASK>
+[   32.224757]  __local_bh_enable_ip+0x58/0x60
+[   32.224759]  __dev_direct_xmit+0x295/0x540
+[   32.224762]  __xsk_generic_xmit+0x180a/0x2df0
+[   32.224764]  ? ___kmalloc_large_node+0xdf/0x130
+[   32.224767]  ? __mutex_unlock_slowpath.isra.0+0x330/0x330
+[   32.224770]  ? __rtnl_unlock+0x65/0xd0
+[   32.224773]  ? xsk_create+0x700/0x700
+[   32.224774]  ? netdev_run_todo+0xce/0xbe0
+[   32.224777]  ? _raw_spin_lock_irqsave+0x7b/0xc0
+[   32.224780]  xsk_sendmsg+0x365/0x770
+[   32.224782]  ? xsk_poll+0x640/0x640
+[   32.224783]  __sock_sendmsg+0xc1/0x150
+[   32.224787]  __sys_sendto+0x1d0/0x260
+[   32.224790]  ? __ia32_sys_getpeername+0xb0/0xb0
+[   32.224793]  ? fput+0x29/0x80
+[   32.224796]  ? __sys_bind+0x187/0x1c0
+[   32.224798]  ? __sys_bind_socket+0x90/0x90
+[   32.224801]  ? randomize_page+0x60/0x60
+[   32.224804]  ? fget+0x18e/0x230
+[   32.224807]  __x64_sys_sendto+0xe0/0x1b0
+[   32.224810]  ? fpregs_assert_state_consistent+0x57/0xe0
+[   32.224812]  do_syscall_64+0x46/0x180
+[   32.224815]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
 
-Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
----
- net/ipv4/sysctl_net_ipv4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+and at the end:
 
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index 24dbc603cc44..169a393374b3 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -47,7 +47,7 @@ static unsigned int udp_child_hash_entries_max = UDP_HTABLE_SIZE_MAX;
- static int tcp_plb_max_rounds = 31;
- static int tcp_plb_max_cong_thresh = 256;
- static unsigned int tcp_tw_reuse_delay_max = TCP_PAWS_MSL * MSEC_PER_SEC;
--static int tcp_ecn_mode_max = 2;
-+static int tcp_ecn_mode_max = 5;
- 
- /* obsolete */
- static int sysctl_tcp_low_latency __read_mostly;
--- 
-2.34.1
+# ERROR: [receive_pkts] Receive loop timed out
+test_xsk:FAIL:Run test unexpected error: -1 (errno 12)
+#251/32  ns_xsk_drv/XDP_ADJUST_TAIL_SHRINK_MULTI_BUFF:FAIL
+#251     ns_xsk_drv:FAIL
+Summary: 1/67 PASSED, 0 SKIPPED, 1 FAILED
 
+[   99.308243] page_pool_release_retry() stalled pool shutdown: id
+185, 48 inflight 60 sec
+[  159.724173] page_pool_release_retry() stalled pool shutdown: id
+185, 48 inflight 120 sec
+
+
+The test is great and the work to make it run as part of test_progs
+paid off big time.
+
+But we cannot enable it by default, since it will be crashing CI VMs.
+
+Please reproduce the above issue.
+You might need
+CONFIG_DEBUG_VM=3Dy
+and other mm debug flags.
+
+If the fix can be done quickly let's land the fix first.
+If not, please respin the series, but disable the test by default
+until the bug is fixed.
 
