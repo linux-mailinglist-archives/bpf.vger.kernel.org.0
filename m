@@ -1,273 +1,180 @@
-Return-Path: <bpf+bounces-69879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA840BA57B7
-	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 03:17:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AC6FBA595C
+	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 07:48:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69FAB32583F
-	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 01:17:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4427232621F
+	for <lists+bpf@lfdr.de>; Sat, 27 Sep 2025 05:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5E21F1921;
-	Sat, 27 Sep 2025 01:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="cJy+nJaQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF15981ACA;
+	Sat, 27 Sep 2025 05:47:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1934B19F115
-	for <bpf@vger.kernel.org>; Sat, 27 Sep 2025 01:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0464923B62C
+	for <bpf@vger.kernel.org>; Sat, 27 Sep 2025 05:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758935868; cv=none; b=vAjA9cLS1xUPjhof0Cli2iN8gbnOLzWll0yQav2hC/s4MAeJSvtHhaCiXAc24GFu8Z7F2BOV51V3Bzw6b2Yj1AO0AogY7DBv5XKMpZP0GIuFCT4LJNWb9IdN9KYPzs5FRyK9AI4t1euKnPFU62L4ClfUVejC7RPS1w23upviaAU=
+	t=1758952072; cv=none; b=gcMjyhE3qZC8DJkRC013IqigTFPSJ9+fKcSPA9trFIQix1QzVRkkC3RjjrzKikgdIo6kX77nwjqv5wVlmEgtIURtcrrZui/eKgFq7v13cNZRHghGNZYb4UhJLonAfGz5yCMnHiGjSMIwr/xhYpB2fPiH10JogaNKiO7iFF9yTW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758935868; c=relaxed/simple;
-	bh=5H8iigtTkRnjUWhdaCUi7PgMbrrTXbvad8rvtH4bH9Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RZ+dU68PYDOhXrWOxRavpBE7gEsuIAblPTnrcjFJbXIj7sCO2qd7MW1I2IJGTW2HTm8GKMoAJEfcstKRb2dsxyUbWwy5Q0A/5yaFhAD+WhV9Mvl/KQriqJnTMrdCOo+d1Vkfrto7Hi425pFrv4jHuZyDDGlXaCp8zUAom6BO30w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=cJy+nJaQ; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-26e81c17d60so5150625ad.0
-        for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 18:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1758935866; x=1759540666; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BFIzrSFllSLMKrfYWnZwU9FYy16cJgR0sTCe9xWmcOY=;
-        b=cJy+nJaQvg0qNR+s0v9wyZaKn1Rd7iwCQESHMVLSRzaW+MLhdcjwEJIrTVmv1snH8a
-         u/MudCbNmfOnp+V6AG02/pTDhNX3+Rq9/8vgIgix7hKI1VpHkTJ8c3pxbFgBoLbB+f2S
-         SU5p+jARGyaDFNls/iSg56LQLnmirLKbOGD+w8a0mimaXbc5J1tnL9dXiT/pNr9Gm3YK
-         ROEKm6MkfyIAdpl/CrEFDkGgriotlrq1k94UtdiL8xJUC8v4hjTMa4T/0AF+XkT6r590
-         DDR7XDeeuD5pma+55tReVJoxucHWNbiuvpaDlWWPNQWaxWLMuCNrtRAC1yl9hUSjVNfP
-         W05Q==
+	s=arc-20240116; t=1758952072; c=relaxed/simple;
+	bh=/A1XHfYqiL6m86d/twQMNE7yCNuB0WyY5f1thFLlGzU=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=IWy0SsoPszFqbWhIxsoqi67VocRKq4Ar3eSxOaXlRYY/30eiMzt7FoelnEH1BmYylzSipWbpGs6Aqd1Nw56rQ/7LCyyiWY/IKnjKvJmZ7WU91N0zJuLO5KeU/E2cDSjV+cg2w62jGCmwllS9E1u8fhTETDd6+SZ4n0cU78At20c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-42594b7f324so53623445ab.1
+        for <bpf@vger.kernel.org>; Fri, 26 Sep 2025 22:47:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758935866; x=1759540666;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BFIzrSFllSLMKrfYWnZwU9FYy16cJgR0sTCe9xWmcOY=;
-        b=up6JgrJXc1sGEl11AYMfwZC+SkGd1ipI7c7aoh3d0Eppi7Dp905fxLwI6gVr3EtDAC
-         n++Fe2XsRn9M6MkJqKqrjbl6iuYMcvGDXgrc3tKPzYvMkeX949FhKMRdkcR/juUBOPhL
-         eK3iNTjhwzgytGx5ctplHcWMAByngJ8dPQrqUEefbBte2KZgw0preaaruu96TUChQtdq
-         rOqjxlOVZu8UTdnoBQtvvSj7+ZFF1HsqWCXWZHzoHK6Hcx+9pxn7Zr0Pd7w3RQNRf3f4
-         2LgLjNSAXUWqtgi1++IajaTaaS9fUfzsljiXM7gyVcA39A/2uEsT/J677zWtAa0UIuHq
-         X0gA==
-X-Forwarded-Encrypted: i=1; AJvYcCV/pMGOVHnS/q4uNoh63DeQLFplEYLCB8r4z3L2nkm/UBymWnwTzgdI9IlaXdWYHt2Okms=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzdv3IYhtalNwbpfscsreDTV5N8lPcc9G2Nyv0OjufLk33OGTYN
-	hGMGg316BQd7gpsJ1laaCk3T8/0CjTIHTN1OYktTLR/M/c3KQDgxrZcd4tKuI+4R6Zo=
-X-Gm-Gg: ASbGncvfMMIyxZSjVR/yKzC10we/GrFnO+HKc1bYDUdcP9GPtcCQLYAzPKYEsydElG8
-	yvArxndZEu7GmkGYe8T/8ebu1xsR6kostEd4vEgLzmpEVvI+AQodVkgJ/lMGAIGsUe643j2e98A
-	oY9j1PJDRXfuo4Uk+83L+uUozpHL4gT2hgWW2e4LYI192TghHOB/MMOeHen/Ak+2oLP/6mQVg6n
-	sftog9iW48wvQryE1wvBEhSkeNyfuBNLGReUFDcSJPWjfCLEMOIw0gQkbu1jcuM3yFJy5f6Oey5
-	VjiPKKZwxUNc3p4TlF6ZrbrD9YatitEOJWbQuTn7F0mKe1GpMeIp93v7+gp+fIhtdd59oqvnxRe
-	p1goUipPaBBx5ZVevbXbupkbr06CCuE5D6I1acqXi6vhS3kGHWcVzxgphQ/nx
-X-Google-Smtp-Source: AGHT+IG1zJIOFx48QAoU6hWUKdfepzoYZ9zayKUuvh9YmBCsOklF1hmPiMOIGSCxqZ5Yt+Vaqa/Rbw==
-X-Received: by 2002:a17:902:d2cf:b0:273:a653:bacf with SMTP id d9443c01a7336-27ed4942463mr59483475ad.0.1758935866246;
-        Fri, 26 Sep 2025 18:17:46 -0700 (PDT)
-Received: from m2 (192-184-204-241.fiber.dynamic.sonic.net. [192.184.204.241])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3341be2353dsm10132237a91.21.2025.09.26.18.17.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Sep 2025 18:17:45 -0700 (PDT)
-Date: Fri, 26 Sep 2025 18:17:43 -0700
-From: Jordan Rife <jordan@jrife.io>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org, 
-	davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com, willemb@google.com, 
-	sdf@fomichev.me, john.fastabend@gmail.com, martin.lau@kernel.org, 
-	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, David Wei <dw@davidwei.uk>
-Subject: Re: [PATCH net-next 16/20] netkit: Implement rtnl_link_ops->alloc
-Message-ID: <3yy7htlhsx2c2v7jkoh23iywiwacxdb3y7qpr2s5hwjw3zazhb@kivqcblixanb>
-References: <20250919213153.103606-1-daniel@iogearbox.net>
- <20250919213153.103606-17-daniel@iogearbox.net>
+        d=1e100.net; s=20230601; t=1758952070; x=1759556870;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S+sFNfH61oBTsVvfdy0ADyi6bsfNMI5oeFbdyvXP4cY=;
+        b=aoRZu20VIifPzJ6jKBhAj71tQypbkQexz/UYBxuy0sgtyueHpvvuQ8e54HqWn8F44t
+         oer6iNw5fFnz/VdRkMEhQw1Kz2mXT5d3rKWboXpvHU3yNcNRCAslrP+ZjYpKO+HLH6EC
+         aNvWgriYl0R3gzAQYD+vdo8wkriAeJCQLOTUk/+ChHJv/Gc4SDey3pGzPbxf72DYLN3c
+         sUJjjL2ak8JOHucpt4GRXzy18gerEHIgUHQVmMsGy0I/s3mXrrtHnXwVgmSdgkPsq8Sw
+         WHBTbeEfsjZq047N68hq3ojndHV7vR+z/N/kshb6RpgviHkXrRNcCjQ4iL+qfX0s3n4Y
+         O6Gw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFt1USPli9N+B0p8hV/z2p/x1jEqrMPaAP7ljQbgEe9x8gZM1fKpKNWyBaVO/2KO1N1Ew=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjOLyNDHhCrjViXGz1P5LBYbFay1/qJfg/Dlmw8Fe4NZJjhQvl
+	X7d3UJevDpDfLiDPgHlUsJ/zbVL5QkL5YEnasUc15xMLOgX+6MgjNjHh4oeyl3d1xJWOzK8Jzxg
+	UP4EiHTNS7uDF0nDE3PigiLb5OX9ituo7meeIkFabj2z4RHK4VeDi+Q3svnc=
+X-Google-Smtp-Source: AGHT+IF0bLvN1Dwx1fHUb16SHVoEGHd0AUYxhYgc+MSqPvVsgj217nsAlE5b4G9WpWqsBJcPBvwDqAYkxPUiNWu1XO4rNBhbQ3sP
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250919213153.103606-17-daniel@iogearbox.net>
+X-Received: by 2002:a05:6e02:1489:b0:425:7a75:1014 with SMTP id
+ e9e14a558f8ab-425c2b1c47cmr105751285ab.12.1758952070125; Fri, 26 Sep 2025
+ 22:47:50 -0700 (PDT)
+Date: Fri, 26 Sep 2025 22:47:50 -0700
+In-Reply-To: <20250926203111.1305999-1-bboscaccy@linux.microsoft.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68d77a86.050a0220.25d7ab.0252.GAE@google.com>
+Subject: [syzbot ci] Re: BPF signature hash chains
+From: syzbot ci <syzbot+ci175b04b41cdfef4d@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bboscaccy@linux.microsoft.com, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, 
+	james.bottomley@hansenpartnership.com, kpsingh@kernel.org, kys@microsoft.com, 
+	linux-security-module@vger.kernel.org, paul@paul-moore.com, 
+	wufan@linux.microsoft.com
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Sep 19, 2025 at 11:31:49PM +0200, Daniel Borkmann wrote:
-> From: David Wei <dw@davidwei.uk>
-> 
-> Implement rtnl_link_ops->alloc that allows the number of rx queues to be
-> set when netkit is created. By default, netkit has only a single rxq (and
-> single txq). The number of queues is deliberately not allowed to be changed
-> via ethtool -L and is fixed for the lifetime of a netkit instance.
-> 
-> For netkit device creation, numrxqueues with larger than one rxq can be
-> specified. These rxqs are then mappable to real rxqs in physical netdevs:
-> 
->   ip link add numrxqueues 2 type netkit
-> 
-> As a starting point, the limit of numrxqueues for netkit is currently set
-> to 2, but future work is going to allow mapping multiple real rxqs from
+syzbot ci has tested the following series
 
-Is the reason for the limit just because QEMU can't take advantage of
-more today or is there some other technical limitation?
+[v1] BPF signature hash chains
+https://lore.kernel.org/all/20250926203111.1305999-1-bboscaccy@linux.microsoft.com
+* [PATCH bpf-next 1/2] bpf: Add hash chain signature support for arbitrary maps
+* [PATCH bpf-next 2/2] selftests/bpf: Enable map verification for some lskel tests
 
-> physical netdevs, potentially at some point even from different physical
-> netdevs.
+and found the following issue:
+general protection fault in bpf_prog_verify_signature
 
-What would be the use case for having proxied queues from multiple
-physical netdevs to the same netkit device? Couldn't you just create
-multiple netkit devices, one per physical device?
+Full report is available here:
+https://ci.syzbot.org/series/9d93d1cd-d2bd-4967-a631-f3e84ee6fb41
 
-> Signed-off-by: David Wei <dw@davidwei.uk>
-> Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> ---
->  drivers/net/netkit.c | 78 ++++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 72 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-> index 8f1285513d82..e5dfbf7ea351 100644
-> --- a/drivers/net/netkit.c
-> +++ b/drivers/net/netkit.c
-> @@ -9,11 +9,19 @@
->  #include <linux/bpf_mprog.h>
->  #include <linux/indirect_call_wrapper.h>
->  
-> +#include <net/netdev_queues.h>
-> +#include <net/netdev_rx_queue.h>
->  #include <net/netkit.h>
->  #include <net/dst.h>
->  #include <net/tcx.h>
->  
-> -#define DRV_NAME "netkit"
-> +#define NETKIT_DRV_NAME	"netkit"
-> +
-> +#define NETKIT_NUM_TX_QUEUES_MAX  1
-> +#define NETKIT_NUM_RX_QUEUES_MAX  2
-> +
-> +#define NETKIT_NUM_TX_QUEUES_REAL 1
-> +#define NETKIT_NUM_RX_QUEUES_REAL 1
->  
->  struct netkit {
->  	__cacheline_group_begin(netkit_fastpath);
-> @@ -37,6 +45,8 @@ struct netkit_link {
->  	struct net_device *dev;
->  };
->  
-> +static struct rtnl_link_ops netkit_link_ops;
-> +
->  static __always_inline int
->  netkit_run(const struct bpf_mprog_entry *entry, struct sk_buff *skb,
->  	   enum netkit_action ret)
-> @@ -243,13 +253,69 @@ static const struct net_device_ops netkit_netdev_ops = {
->  static void netkit_get_drvinfo(struct net_device *dev,
->  			       struct ethtool_drvinfo *info)
->  {
-> -	strscpy(info->driver, DRV_NAME, sizeof(info->driver));
-> +	strscpy(info->driver, NETKIT_DRV_NAME, sizeof(info->driver));
-> +}
-> +
-> +static void netkit_get_channels(struct net_device *dev,
-> +				struct ethtool_channels *channels)
-> +{
-> +	channels->max_rx = dev->num_rx_queues;
-> +	channels->max_tx = dev->num_tx_queues;
-> +	channels->max_other = 0;
-> +	channels->max_combined = 1;
-> +	channels->rx_count = dev->real_num_rx_queues;
-> +	channels->tx_count = dev->real_num_tx_queues;
-> +	channels->other_count = 0;
-> +	channels->combined_count = 0;
->  }
->  
->  static const struct ethtool_ops netkit_ethtool_ops = {
->  	.get_drvinfo		= netkit_get_drvinfo,
-> +	.get_channels		= netkit_get_channels,
->  };
->  
-> +static struct net_device *netkit_alloc(struct nlattr *tb[],
-> +				       const char *ifname,
-> +				       unsigned char name_assign_type,
-> +				       unsigned int num_tx_queues,
-> +				       unsigned int num_rx_queues)
-> +{
-> +	const struct rtnl_link_ops *ops = &netkit_link_ops;
-> +	struct net_device *dev;
-> +
-> +	if (num_tx_queues > NETKIT_NUM_TX_QUEUES_MAX ||
-> +	    num_rx_queues > NETKIT_NUM_RX_QUEUES_MAX)
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +
-> +	dev = alloc_netdev_mqs(ops->priv_size, ifname,
-> +			       name_assign_type, ops->setup,
-> +			       num_tx_queues, num_rx_queues);
-> +	if (dev) {
-> +		dev->real_num_tx_queues = NETKIT_NUM_TX_QUEUES_REAL;
-> +		dev->real_num_rx_queues = NETKIT_NUM_RX_QUEUES_REAL;
-> +	}
-> +	return dev;
-> +}
-> +
-> +static void netkit_queue_unpeer(struct net_device *dev)
-> +{
-> +	struct netdev_rx_queue *src_rxq, *dst_rxq;
-> +	struct net_device *src_dev;
-> +	int i;
-> +
-> +	if (dev->real_num_rx_queues == 1)
-> +		return;
-> +	for (i = 1; i < dev->real_num_rx_queues; i++) {
-> +		dst_rxq = __netif_get_rx_queue(dev, i);
-> +		src_rxq = dst_rxq->peer;
-> +		src_dev = src_rxq->dev;
-> +
-> +		netdev_lock(src_dev);
-> +		netdev_rx_queue_unpeer(src_dev, src_rxq, dst_rxq);
-> +		netdev_unlock(src_dev);
-> +	}
-> +}
-> +
->  static void netkit_setup(struct net_device *dev)
->  {
->  	static const netdev_features_t netkit_features_hw_vlan =
-> @@ -330,8 +396,6 @@ static int netkit_validate(struct nlattr *tb[], struct nlattr *data[],
->  	return 0;
->  }
->  
-> -static struct rtnl_link_ops netkit_link_ops;
-> -
->  static int netkit_new_link(struct net_device *dev,
->  			   struct rtnl_newlink_params *params,
->  			   struct netlink_ext_ack *extack)
-> @@ -865,6 +929,7 @@ static void netkit_release_all(struct net_device *dev)
->  static void netkit_uninit(struct net_device *dev)
->  {
->  	netkit_release_all(dev);
-> +	netkit_queue_unpeer(dev);
->  }
->  
->  static void netkit_del_link(struct net_device *dev, struct list_head *head)
-> @@ -1005,8 +1070,9 @@ static const struct nla_policy netkit_policy[IFLA_NETKIT_MAX + 1] = {
->  };
->  
->  static struct rtnl_link_ops netkit_link_ops = {
-> -	.kind		= DRV_NAME,
-> +	.kind		= NETKIT_DRV_NAME,
->  	.priv_size	= sizeof(struct netkit),
-> +	.alloc		= netkit_alloc,
->  	.setup		= netkit_setup,
->  	.newlink	= netkit_new_link,
->  	.dellink	= netkit_del_link,
-> @@ -1042,4 +1108,4 @@ MODULE_DESCRIPTION("BPF-programmable network device");
->  MODULE_AUTHOR("Daniel Borkmann <daniel@iogearbox.net>");
->  MODULE_AUTHOR("Nikolay Aleksandrov <razor@blackwall.org>");
->  MODULE_LICENSE("GPL");
-> -MODULE_ALIAS_RTNL_LINK(DRV_NAME);
-> +MODULE_ALIAS_RTNL_LINK(NETKIT_DRV_NAME);
-> -- 
-> 2.43.0
-> 
+***
 
-Reviewed-by: Jordan Rife <jordan@jrife.io>
+general protection fault in bpf_prog_verify_signature
+
+tree:      bpf-next
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf-next.git
+base:      d43029ff7d1b7183dc0cf11b6cc2c12a0b810ad8
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/a6b64e3c-6f08-4a6d-b484-ece99910a3f0/config
+C repro:   https://ci.syzbot.org/findings/a6c59e03-c4f7-4752-8d4f-526ccf945b7c/c_repro
+syz repro: https://ci.syzbot.org/findings/a6c59e03-c4f7-4752-8d4f-526ccf945b7c/syz_repro
+
+Oops: general protection fault, probably for non-canonical address 0xdffffc00020244a9: 0000 [#1] SMP KASAN PTI
+KASAN: probably user-memory-access in range [0x0000000010122548-0x000000001012254f]
+CPU: 1 UID: 0 PID: 6002 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:bpf_prog_verify_signature+0x610/0xc40 kernel/bpf/syscall.c:2873
+Code: f7 e8 04 73 52 00 4d 8b 2e 89 d8 25 ff ff ff 7f 48 8b 4c 24 10 4c 8d 34 81 4c 89 f0 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <0f> b6 04 08 84 c0 0f 85 c9 03 00 00 49 63 06 4c 8d 34 85 00 00 00
+RSP: 0018:ffffc90002bff920 EFLAGS: 00010206
+RAX: 00000000020244a9 RBX: 0000000004048956 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90002bffb30 R08: ffffffff8fa3b537 R09: 1ffffffff1f476a6
+R10: dffffc0000000000 R11: fffffbfff1f476a7 R12: 1ffff9200057ff34
+R13: 0000000000000000 R14: 000000001012254a R15: 0000000080000000
+FS:  0000555591f35500(0000) GS:ffff8881a3c11000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000011081a000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ bpf_prog_load+0xcc7/0x19e0 kernel/bpf/syscall.c:3072
+ __sys_bpf+0x4ff/0x850 kernel/bpf/syscall.c:6199
+ __do_sys_bpf kernel/bpf/syscall.c:6309 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6307 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6307
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7feeb318ec29
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffd613f7e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007feeb33d5fa0 RCX: 00007feeb318ec29
+RDX: 00000000000000b9 RSI: 0000200000000100 RDI: 0000000000000005
+RBP: 00007feeb3211e41 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007feeb33d5fa0 R14: 00007feeb33d5fa0 R15: 0000000000000003
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bpf_prog_verify_signature+0x610/0xc40 kernel/bpf/syscall.c:2873
+Code: f7 e8 04 73 52 00 4d 8b 2e 89 d8 25 ff ff ff 7f 48 8b 4c 24 10 4c 8d 34 81 4c 89 f0 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <0f> b6 04 08 84 c0 0f 85 c9 03 00 00 49 63 06 4c 8d 34 85 00 00 00
+RSP: 0018:ffffc90002bff920 EFLAGS: 00010206
+RAX: 00000000020244a9 RBX: 0000000004048956 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90002bffb30 R08: ffffffff8fa3b537 R09: 1ffffffff1f476a6
+R10: dffffc0000000000 R11: fffffbfff1f476a7 R12: 1ffff9200057ff34
+R13: 0000000000000000 R14: 000000001012254a R15: 0000000080000000
+FS:  0000555591f35500(0000) GS:ffff8881a3c11000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000011081a000 CR4: 00000000000006f0
+----------------
+Code disassembly (best guess):
+   0:	f7 e8                	imul   %eax
+   2:	04 73                	add    $0x73,%al
+   4:	52                   	push   %rdx
+   5:	00 4d 8b             	add    %cl,-0x75(%rbp)
+   8:	2e 89 d8             	cs mov %ebx,%eax
+   b:	25 ff ff ff 7f       	and    $0x7fffffff,%eax
+  10:	48 8b 4c 24 10       	mov    0x10(%rsp),%rcx
+  15:	4c 8d 34 81          	lea    (%rcx,%rax,4),%r14
+  19:	4c 89 f0             	mov    %r14,%rax
+  1c:	48 c1 e8 03          	shr    $0x3,%rax
+  20:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
+  27:	fc ff df
+* 2a:	0f b6 04 08          	movzbl (%rax,%rcx,1),%eax <-- trapping instruction
+  2e:	84 c0                	test   %al,%al
+  30:	0f 85 c9 03 00 00    	jne    0x3ff
+  36:	49 63 06             	movslq (%r14),%rax
+  39:	4c                   	rex.WR
+  3a:	8d                   	.byte 0x8d
+  3b:	34 85                	xor    $0x85,%al
+  3d:	00 00                	add    %al,(%rax)
+
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
