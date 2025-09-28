@@ -1,410 +1,366 @@
-Return-Path: <bpf+bounces-69911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 641D1BA6521
-	for <lists+bpf@lfdr.de>; Sun, 28 Sep 2025 02:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBCAABA663F
+	for <lists+bpf@lfdr.de>; Sun, 28 Sep 2025 04:14:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1232A16AB77
-	for <lists+bpf@lfdr.de>; Sun, 28 Sep 2025 00:39:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8659917A7C3
+	for <lists+bpf@lfdr.de>; Sun, 28 Sep 2025 02:14:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A50101D130E;
-	Sun, 28 Sep 2025 00:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BFD324729D;
+	Sun, 28 Sep 2025 02:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TASQTGTL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NJMrghd+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174C37E792;
-	Sun, 28 Sep 2025 00:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B47E1B423B
+	for <bpf@vger.kernel.org>; Sun, 28 Sep 2025 02:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759019984; cv=none; b=sNbANcKCIwZJuTUC/uc9Y/ySSiUq1JNGD7ZSVX5aDUAEVscO1pkLvUcZgm1ZqeuPhOVn1BziHTNATXcyMslzko8OV6jYOociLJYD1RSEMvEQcDBSvFSFcV/BfJpoQzGOtSw6yB3l+R1M0Wd6JLudp3dQl1x+dQcekKjq0jy89Ok=
+	t=1759025649; cv=none; b=uJnc/4N0uwyic9cFTV6a60S/pErc69wj17GPKMoU3lJ5jLUjNY5cYI40I/wIVpZ5dwQVFb7aSpG3cfCP1I9gFSJDky2PSK3C2I058Kc3c0FwSMV0UOZxfKCu8fRVjxSeeCkTxNNk2YN4JGpD8NWahOAV/vytOtmICIFWY80xrOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759019984; c=relaxed/simple;
-	bh=kEqH5fgtL52UshkxVVLAiHpS74J+PDgKwwge+vhNfQM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iM1GLwyZZokp5Iz06ZArwWOnA9nKECnSTJa1Q351H9Mtj75ohLxZva2PyJ8zsX13RWTwy9Oq9flmyZt766uHTGm6lURH7U3pVrfB6tZP/872b5v5feSL0P91Gg/2IIOX3CKnRyT2vd2VvNnbHeCOA/KhIkr4oDXtpqDWaWpHCvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TASQTGTL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1710C4CEF7;
-	Sun, 28 Sep 2025 00:39:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759019983;
-	bh=kEqH5fgtL52UshkxVVLAiHpS74J+PDgKwwge+vhNfQM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TASQTGTLISosDqihx6YL/f8fmn142yjH5bvmjAJPlli8oJDc7LLvHmdzhFio5nrsW
-	 Anl9ieR7cQd7NB4lxxKq6oJKHGG4ATV0Qf9FbH88NlYSpztLI1pAA8U5R7FGFcNhTG
-	 DwFM0zbyMLgs+l4dA+CsUkpoXdUkNMQnrJnwZW2wL2cXJREep94HhaXOinLYA+JBeK
-	 wFTwYfUQhMhwzlj96aWVFbeBbEuVXL2mQBBm3hK+MFIDbwbapD9r8b5QF42ZmYcLy9
-	 v+lVgrpB9dzLtebYmmtq6+aSE+FzBV/Kim/vlpOvhncgT1EqDTTxiRgqq16YK00XmN
-	 dgJPz+1mwFlBw==
-From: Eric Biggers <ebiggers@kernel.org>
-To: bpf@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	linux-crypto@vger.kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH bpf-next] libbpf: Don't use AF_ALG for SHA-256
-Date: Sat, 27 Sep 2025 17:38:33 -0700
-Message-ID: <20250928003833.138407-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1759025649; c=relaxed/simple;
+	bh=IH83jEiyJrKrhlVsP4em5vaOm3ovsNKL/2Uh1Adnpk0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FwIiBpKGaDHIAn5tabDysl9aHuieR8Sv9Wq3VRPTmYobooyx8ft8UhL/MvOQ/Wge+71+sWiTghODRD73GcnIpX4EruC5vMpV8A9UKlKs7VpMtlsaiePZ6Tc5Qf3rmJj6j904ju7sDjprwAYO4Ts2DqX30Ff9m6NLcdu1pnLI4Sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NJMrghd+; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-78e4056623fso27209626d6.2
+        for <bpf@vger.kernel.org>; Sat, 27 Sep 2025 19:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759025646; x=1759630446; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IgfyK+ERvcGdu6t0lNJixg5TdROYvSdbOndCTyoB1XA=;
+        b=NJMrghd+NzTNy+rZLfNHIxKTh0zezSix1IpIyyWbtU14v+nX1F4T+5ltr4QrSIEnb9
+         qhO7GkvsLzOwiUfAlkeJ9HXT1OnK4Heo68iLKsMQ7Pe+4D8j9NH3C7CY6UmVmt4v5ZSv
+         otE3feIkUYBE1n/wM5woBGpyB+aLZYEzzpgJNVI61j1kznRwa91FTE6ihX1RhR/Lv1s0
+         uc0B5tLWw2l2DRDfJoO6mgBBjaP3ViZUsg+CBcx6SvUcfBYc4ONwINJIX8ahmGe84hpT
+         3iKnIRNxASYAEgNKX9lBN4eRHR3IC+BGoxOdzqfBPsoM6J17m2t0OInrX7lSVnRvVJEE
+         67EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759025646; x=1759630446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IgfyK+ERvcGdu6t0lNJixg5TdROYvSdbOndCTyoB1XA=;
+        b=jjxtefZsX3oekj/T4s7Ay13QMF+DWtNYm+b4if/j5LJ21uf4gmBCgV8LvTlvSoiGQQ
+         xMXfdNnUJLgiTDeFCE21gJ/HsKw4GMxt250ZVO4QU8QnL61eg0euQ9cDTs5YSfrrP1JR
+         2lFEvMG65ZGrExmGPLcD3qRtd7+TY9YqoCDEIOFikNBN3KvdP+r2BWICgu/oGLrjJIBL
+         BnJ/Ld1Q9L2oCA/Qgz481lFUN2+jYLv+MZU9p/2N+330KK/45uh8byR9A5MyDTfNUilS
+         JDPd5OEelojc2f9DWNJFv4RtwFE0zLoTixsRgt8mCQm5YoDvEtG6P3oTp7x0pdZDVfVx
+         Pl+w==
+X-Forwarded-Encrypted: i=1; AJvYcCUSB7FUgYeTWzDerF2pJv9oKMyVf8nyNy9EQkHv2nov0fHW5og2FdqSKxWpn8GnE31q4Hw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjDk6nkUJrLNjlELCytnAIuxA9ylVZxj3G/mpzwdwtgsF/uvW6
+	imeZsiO70HPbYHMjs2dJhxGSEejf6wF0b3HpQF/QJZitK2jA4kWB+1Pd+2ugfBgLIByk9uQ0M57
+	taL7RWCcZ2KWQ/SRCnW0QO/hnhKpxHjw=
+X-Gm-Gg: ASbGncuUbA0f1BGBz0s/uXE2/av0oH/CQjEAFW8iT677SlHKyohMG110wYNJVgV5MEl
+	Mj00lnRQAMRYY9EiQ+iDbY4gq3ayS1eg8fIXBiOubnVM6JGi/maZYmo+9UrxyQsFKHrDoihEWt4
+	nSKvqtJqn8+Puu7yh8Z4oF84xkrMBdyfIrxIwf6hsOfHQPMPVpgkqCucLiOg2Mt+L1BDe0HUFjk
+	wHU5738p8elTXXyesTjL+8HN9ZY677eiFt62YKNZzGUvqP+FFo=
+X-Google-Smtp-Source: AGHT+IFBzSCWT9hh0pEexdSgkq3kl3qXsAZzuIThj+zxZ39IC7nb4rfO/kyEpmVN3tJ4CnGQisxqrYSyLve72cAkf2M=
+X-Received: by 2002:a05:6214:21a3:b0:7ef:5587:5427 with SMTP id
+ 6a1803df08f44-7fc3ca0be80mr189169576d6.32.1759025645980; Sat, 27 Sep 2025
+ 19:14:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250926093343.1000-1-laoar.shao@gmail.com> <20250926093343.1000-5-laoar.shao@gmail.com>
+ <073d5246-6da7-4abb-93d6-38d814daedcc@gmail.com>
+In-Reply-To: <073d5246-6da7-4abb-93d6-38d814daedcc@gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 28 Sep 2025 10:13:29 +0800
+X-Gm-Features: AS18NWAeAit0xGzG8ueU72wy7682FqeEqNkhZer2yoKGcZbdy1zHQ6f7MpL24z0
+Message-ID: <CALOAHbCS1ndOUtMizCGxFRU8Xd9oJkK2GG1OmZVN1dEZ=iZmUw@mail.gmail.com>
+Subject: Re: [PATCH v8 mm-new 04/12] mm: thp: add support for BPF based THP
+ order selection
+To: Usama Arif <usamaarif642@gmail.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com, 
+	dev.jain@arm.com, hannes@cmpxchg.org, gutierrez.asier@huawei-partners.com, 
+	willy@infradead.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	ameryhung@gmail.com, rientjes@google.com, corbet@lwn.net, 21cnbao@gmail.com, 
+	shakeel.butt@linux.dev, tj@kernel.org, lance.yang@linux.dev, 
+	bpf@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Reimplement libbpf_sha256() using some basic SHA-256 C code.  This
-eliminates the newly-added dependency on AF_ALG, which is a problematic
-UAPI that is not supported by all kernels.
+On Fri, Sep 26, 2025 at 11:13=E2=80=AFPM Usama Arif <usamaarif642@gmail.com=
+> wrote:
+>
+>
+>
+> On 26/09/2025 10:33, Yafang Shao wrote:
+> > This patch introduces a new BPF struct_ops called bpf_thp_ops for dynam=
+ic
+> > THP tuning. It includes a hook bpf_hook_thp_get_order(), allowing BPF
+> > programs to influence THP order selection based on factors such as:
+> > - Workload identity
+> >   For example, workloads running in specific containers or cgroups.
+> > - Allocation context
+> >   Whether the allocation occurs during a page fault, khugepaged, swap o=
+r
+> >   other paths.
+> > - VMA's memory advice settings
+> >   MADV_HUGEPAGE or MADV_NOHUGEPAGE
+> > - Memory pressure
+> >   PSI system data or associated cgroup PSI metrics
+> >
+> > The kernel API of this new BPF hook is as follows,
+> >
+> > /**
+> >  * thp_order_fn_t: Get the suggested THP order from a BPF program for a=
+llocation
+> >  * @vma: vm_area_struct associated with the THP allocation
+> >  * @type: TVA type for current @vma
+> >  * @orders: Bitmask of available THP orders for this allocation
+> >  *
+> >  * Return: The suggested THP order for allocation from the BPF program.=
+ Must be
+> >  *         a valid, available order.
+> >  */
+> > typedef int thp_order_fn_t(struct vm_area_struct *vma,
+> >                          enum tva_type type,
+> >                          unsigned long orders);
+> >
+> > Only a single BPF program can be attached at any given time, though it =
+can
+> > be dynamically updated to adjust the policy. The implementation support=
+s
+> > anonymous THP, shmem THP, and mTHP, with future extensions planned for
+> > file-backed THP.
+> >
+> > This functionality is only active when system-wide THP is configured to
+> > madvise or always mode. It remains disabled in never mode. Additionally=
+,
+> > if THP is explicitly disabled for a specific task via prctl(), this BPF
+> > functionality will also be unavailable for that task.
+> >
+> > This BPF hook enables the implementation of flexible THP allocation
+> > policies at the system, per-cgroup, or per-task level.
+> >
+> > This feature requires CONFIG_BPF_THP_GET_ORDER_EXPERIMENTAL to be
+> > enabled. Note that this capability is currently unstable and may underg=
+o
+> > significant changes=E2=80=94including potential removal=E2=80=94in futu=
+re kernel versions.
+> >
+> > Suggested-by: David Hildenbrand <david@redhat.com>
+> > Suggested-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  MAINTAINERS             |   1 +
+> >  include/linux/huge_mm.h |  23 +++++
+> >  mm/Kconfig              |  12 +++
+> >  mm/Makefile             |   1 +
+> >  mm/huge_memory_bpf.c    | 204 ++++++++++++++++++++++++++++++++++++++++
+> >  5 files changed, 241 insertions(+)
+> >  create mode 100644 mm/huge_memory_bpf.c
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index ca8e3d18eedd..7be34b2a64fd 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -16257,6 +16257,7 @@ F:    include/linux/huge_mm.h
+> >  F:   include/linux/khugepaged.h
+> >  F:   include/trace/events/huge_memory.h
+> >  F:   mm/huge_memory.c
+> > +F:   mm/huge_memory_bpf.c
+> >  F:   mm/khugepaged.c
+> >  F:   mm/mm_slot.h
+> >  F:   tools/testing/selftests/mm/khugepaged.c
+> > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> > index a635dcbb2b99..fea94c059bed 100644
+> > --- a/include/linux/huge_mm.h
+> > +++ b/include/linux/huge_mm.h
+> > @@ -56,6 +56,7 @@ enum transparent_hugepage_flag {
+> >       TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG,
+> >       TRANSPARENT_HUGEPAGE_DEFRAG_KHUGEPAGED_FLAG,
+> >       TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG,
+> > +     TRANSPARENT_HUGEPAGE_BPF_ATTACHED,      /* BPF prog is attached *=
+/
+> >  };
+> >
+> >  struct kobject;
+> > @@ -269,6 +270,23 @@ unsigned long __thp_vma_allowable_orders(struct vm=
+_area_struct *vma,
+> >                                        enum tva_type type,
+> >                                        unsigned long orders);
+> >
+> > +#ifdef CONFIG_BPF_THP_GET_ORDER_EXPERIMENTAL
+> > +
+> > +unsigned long
+> > +bpf_hook_thp_get_orders(struct vm_area_struct *vma, enum tva_type type=
+,
+> > +                     unsigned long orders);
+> > +
+> > +#else
+> > +
+> > +static inline unsigned long
+> > +bpf_hook_thp_get_orders(struct vm_area_struct *vma, enum tva_type type=
+,
+> > +                     unsigned long orders)
+> > +{
+> > +     return orders;
+> > +}
+> > +
+> > +#endif
+> > +
+> >  /**
+> >   * thp_vma_allowable_orders - determine hugepage orders that are allow=
+ed for vma
+> >   * @vma:  the vm area to check
+> > @@ -290,6 +308,11 @@ unsigned long thp_vma_allowable_orders(struct vm_a=
+rea_struct *vma,
+> >  {
+> >       vm_flags_t vm_flags =3D vma->vm_flags;
+> >
+> > +     /* The BPF-specified order overrides which order is selected. */
+> > +     orders &=3D bpf_hook_thp_get_orders(vma, type, orders);
+> > +     if (!orders)
+> > +             return 0;
+> > +
+> >       /*
+> >        * Optimization to check if required orders are enabled early. On=
+ly
+> >        * forced collapse ignores sysfs configs.
+> > diff --git a/mm/Kconfig b/mm/Kconfig
+> > index bde9f842a4a8..fd7459eecb2d 100644
+> > --- a/mm/Kconfig
+> > +++ b/mm/Kconfig
+> > @@ -895,6 +895,18 @@ config NO_PAGE_MAPCOUNT
+> >
+> >         EXPERIMENTAL because the impact of some changes is still unclea=
+r.
+> >
+> > +config BPF_THP_GET_ORDER_EXPERIMENTAL
+> > +     bool "BPF-based THP order selection (EXPERIMENTAL)"
+> > +     depends on TRANSPARENT_HUGEPAGE && BPF_SYSCALL
+> > +
+> > +     help
+> > +       Enable dynamic THP order selection using BPF programs. This
+> > +       experimental feature allows custom BPF logic to determine optim=
+al
+> > +       transparent hugepage allocation sizes at runtime.
+> > +
+> > +       WARNING: This feature is unstable and may change in future kern=
+el
+> > +       versions.
+> > +
+>
+> I am assuming this series opens up the possibility of additional hooks be=
+ing added in
+> the future. Instead of naming this BPF_THP_GET_ORDER_EXPERIMENTAL, should=
+ we
+> name it BPF_THP? Otherwise we will end up with 1 Kconfig option per hook,=
+ which
+> is quite bad.
 
-Make libbpf_sha256() return void, since it can no longer fail.  This
-simplifies some callers.  Also drop the unnecessary 'sha_out_sz'
-parameter.  Finally, also fix the typo in "compute_sha_udpate_offsets".
+makes sense.
 
-Tested by uncommenting the included test code and running
-'make -C tools/bpf/bpftool', which causes the test to be executed.
+>
+> Also It would be really nice if we dont put "EXPERIMENTAL" in the name of=
+ the defconfig.
+> If its decided that its not experimental anymore without any change to th=
+e code needed,
+> renaming the defconfig will break it for everyone.
 
-Fixes: c297fe3e9f99 ("libbpf: Implement SHA256 internal helper")
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
+makes sense to me.
+Lorenzo, what do you think ?
 
-Let me know if there's some way I should wire up the test.  But libbpf
-doesn't seem to have an internal test suite.
+>
+>
+> >  endif # TRANSPARENT_HUGEPAGE
+> >
+> >  # simple helper to make the code a bit easier to read
+> > diff --git a/mm/Makefile b/mm/Makefile
+> > index 21abb3353550..62ebfa23635a 100644
+> > --- a/mm/Makefile
+> > +++ b/mm/Makefile
+> > @@ -99,6 +99,7 @@ obj-$(CONFIG_MIGRATION) +=3D migrate.o
+> >  obj-$(CONFIG_NUMA) +=3D memory-tiers.o
+> >  obj-$(CONFIG_DEVICE_MIGRATION) +=3D migrate_device.o
+> >  obj-$(CONFIG_TRANSPARENT_HUGEPAGE) +=3D huge_memory.o khugepaged.o
+> > +obj-$(CONFIG_BPF_THP_GET_ORDER_EXPERIMENTAL) +=3D huge_memory_bpf.o
+> >  obj-$(CONFIG_PAGE_COUNTER) +=3D page_counter.o
+> >  obj-$(CONFIG_MEMCG_V1) +=3D memcontrol-v1.o
+> >  obj-$(CONFIG_MEMCG) +=3D memcontrol.o vmpressure.o
+> > diff --git a/mm/huge_memory_bpf.c b/mm/huge_memory_bpf.c
+> > new file mode 100644
+> > index 000000000000..b59a65d70a93
+> > --- /dev/null
+> > +++ b/mm/huge_memory_bpf.c
+> > @@ -0,0 +1,204 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * BPF-based THP policy management
+> > + *
+> > + * Author: Yafang Shao <laoar.shao@gmail.com>
+> > + */
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <linux/btf.h>
+> > +#include <linux/huge_mm.h>
+> > +#include <linux/khugepaged.h>
+> > +
+> > +/**
+> > + * @thp_order_fn_t: Get the suggested THP order from a BPF program for=
+ allocation
+> > + * @vma: vm_area_struct associated with the THP allocation
+> > + * @type: TVA type for current @vma
+> > + * @orders: Bitmask of available THP orders for this allocation
+> > + *
+> > + * Return: The suggested THP order for allocation from the BPF program=
+. Must be
+> > + *         a valid, available order.
+> > + */
+> > +typedef int thp_order_fn_t(struct vm_area_struct *vma,
+> > +                        enum tva_type type,
+> > +                        unsigned long orders);
+> > +
+> > +struct bpf_thp_ops {
+> > +     thp_order_fn_t __rcu *thp_get_order;
+> > +};
+> > +
+> > +static struct bpf_thp_ops bpf_thp;
+> > +static DEFINE_SPINLOCK(thp_ops_lock);
+> > +
+> > +unsigned long bpf_hook_thp_get_orders(struct vm_area_struct *vma,
+> > +                                   enum tva_type type,
+> > +                                   unsigned long orders)
+> > +{
+> > +     thp_order_fn_t *bpf_hook_thp_get_order;
+> > +     int bpf_order;
+> > +
+> > +     /* No BPF program is attached */
+> > +     if (!test_bit(TRANSPARENT_HUGEPAGE_BPF_ATTACHED,
+> > +                   &transparent_hugepage_flags))
+> > +             return orders;
+> > +
+> > +     rcu_read_lock();
+> > +     bpf_hook_thp_get_order =3D rcu_dereference(bpf_thp.thp_get_order)=
+;
+> > +     if (!bpf_hook_thp_get_order)
+>
+> Should we warn over here if we are going to out? TRANSPARENT_HUGEPAGE_BPF=
+_ATTACHED
+> being set + !bpf_hook_thp_get_order shouldnt be possible, right?
 
- tools/lib/bpf/gen_loader.c      |  20 ++--
- tools/lib/bpf/libbpf.c          | 169 ++++++++++++++++++++++----------
- tools/lib/bpf/libbpf_internal.h |   2 +-
- 3 files changed, 124 insertions(+), 67 deletions(-)
+will add a warning in the next version.
 
-diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
-index 376eef292d3a8..6945dd99a8469 100644
---- a/tools/lib/bpf/gen_loader.c
-+++ b/tools/lib/bpf/gen_loader.c
-@@ -369,11 +369,11 @@ static void emit_sys_close_blob(struct bpf_gen *gen, int blob_off)
- 					 0, 0, 0, blob_off));
- 	emit(gen, BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0));
- 	__emit_sys_close(gen);
- }
- 
--static int compute_sha_udpate_offsets(struct bpf_gen *gen);
-+static void compute_sha_update_offsets(struct bpf_gen *gen);
- 
- int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps)
- {
- 	int i;
- 
-@@ -397,15 +397,12 @@ int bpf_gen__finish(struct bpf_gen *gen, int nr_progs, int nr_maps)
- 			      sizeof(struct bpf_map_desc) * i +
- 			      offsetof(struct bpf_map_desc, map_fd), 4,
- 			      blob_fd_array_off(gen, i));
- 	emit(gen, BPF_MOV64_IMM(BPF_REG_0, 0));
- 	emit(gen, BPF_EXIT_INSN());
--	if (OPTS_GET(gen->opts, gen_hash, false)) {
--		gen->error = compute_sha_udpate_offsets(gen);
--		if (gen->error)
--			return gen->error;
--	}
-+	if (OPTS_GET(gen->opts, gen_hash, false))
-+		compute_sha_update_offsets(gen);
- 
- 	pr_debug("gen: finish %s\n", errstr(gen->error));
- 	if (!gen->error) {
- 		struct gen_loader_opts *opts = gen->opts;
- 
-@@ -455,29 +452,24 @@ void bpf_gen__free(struct bpf_gen *gen)
- 		}						\
- 	}							\
- 	_val;							\
- })
- 
--static int compute_sha_udpate_offsets(struct bpf_gen *gen)
-+static void compute_sha_update_offsets(struct bpf_gen *gen)
- {
- 	__u64 sha[SHA256_DWORD_SIZE];
- 	__u64 sha_dw;
--	int i, err;
-+	int i;
- 
--	err = libbpf_sha256(gen->data_start, gen->data_cur - gen->data_start, sha, SHA256_DIGEST_LENGTH);
--	if (err < 0) {
--		pr_warn("sha256 computation of the metadata failed");
--		return err;
--	}
-+	libbpf_sha256(gen->data_start, gen->data_cur - gen->data_start, (__u8 *)sha);
- 	for (i = 0; i < SHA256_DWORD_SIZE; i++) {
- 		struct bpf_insn *insn =
- 			(struct bpf_insn *)(gen->insn_start + gen->hash_insn_offset[i]);
- 		sha_dw = tgt_endian(sha[i]);
- 		insn[0].imm = (__u32)sha_dw;
- 		insn[1].imm = sha_dw >> 32;
- 	}
--	return 0;
- }
- 
- void bpf_gen__load_btf(struct bpf_gen *gen, const void *btf_raw_data,
- 		       __u32 btf_raw_size)
- {
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 7edb36aa88e1d..f804c7b3fa8a2 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -33,21 +33,19 @@
- #include <linux/filter.h>
- #include <linux/limits.h>
- #include <linux/perf_event.h>
- #include <linux/bpf_perf_event.h>
- #include <linux/ring_buffer.h>
-+#include <linux/unaligned.h>
- #include <sys/epoll.h>
- #include <sys/ioctl.h>
- #include <sys/mman.h>
- #include <sys/stat.h>
- #include <sys/types.h>
- #include <sys/vfs.h>
- #include <sys/utsname.h>
- #include <sys/resource.h>
--#include <sys/socket.h>
--#include <linux/if_alg.h>
--#include <linux/socket.h>
- #include <libelf.h>
- #include <gelf.h>
- #include <zlib.h>
- 
- #include "libbpf.h"
-@@ -4489,11 +4487,11 @@ bpf_object__section_to_libbpf_map_type(const struct bpf_object *obj, int shndx)
- }
- 
- static int bpf_prog_compute_hash(struct bpf_program *prog)
- {
- 	struct bpf_insn *purged;
--	int i, err;
-+	int i, err = 0;
- 
- 	purged = calloc(prog->insns_cnt, BPF_INSN_SZ);
- 	if (!purged)
- 		return -ENOMEM;
- 
-@@ -4517,12 +4515,12 @@ static int bpf_prog_compute_hash(struct bpf_program *prog)
- 			}
- 			purged[i] = prog->insns[i];
- 			purged[i].imm = 0;
- 		}
- 	}
--	err = libbpf_sha256(purged, prog->insns_cnt * sizeof(struct bpf_insn),
--			    prog->hash, SHA256_DIGEST_LENGTH);
-+	libbpf_sha256(purged, prog->insns_cnt * sizeof(struct bpf_insn),
-+		      prog->hash);
- out:
- 	free(purged);
- 	return err;
- }
- 
-@@ -14286,60 +14284,127 @@ void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s)
- 	free(s->maps);
- 	free(s->progs);
- 	free(s);
- }
- 
--int libbpf_sha256(const void *data, size_t data_sz, void *sha_out, size_t sha_out_sz)
-+static inline __u32 ror32(__u32 v, int bits)
- {
--	struct sockaddr_alg sa = {
--		.salg_family = AF_ALG,
--		.salg_type   = "hash",
--		.salg_name   = "sha256"
--	};
--	int sock_fd = -1;
--	int op_fd = -1;
--	int err = 0;
-+	return (v >> bits) | (v << (32 - bits));
-+}
- 
--	if (sha_out_sz != SHA256_DIGEST_LENGTH) {
--		pr_warn("sha_out_sz should be exactly 32 bytes for a SHA256 digest");
--		return -EINVAL;
--	}
-+#define SHA256_BLOCK_LENGTH 64
-+#define Ch(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
-+#define Maj(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
-+#define Sigma_0(x) (ror32((x), 2) ^ ror32((x), 13) ^ ror32((x), 22))
-+#define Sigma_1(x) (ror32((x), 6) ^ ror32((x), 11) ^ ror32((x), 25))
-+#define sigma_0(x) (ror32((x), 7) ^ ror32((x), 18) ^ ((x) >> 3))
-+#define sigma_1(x) (ror32((x), 17) ^ ror32((x), 19) ^ ((x) >> 10))
- 
--	sock_fd = socket(AF_ALG, SOCK_SEQPACKET, 0);
--	if (sock_fd < 0) {
--		err = -errno;
--		pr_warn("failed to create AF_ALG socket for SHA256: %s\n", errstr(err));
--		return err;
--	}
-+static const __u32 sha256_K[64] = {
-+	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
-+	0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
-+	0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
-+	0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-+	0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
-+	0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
-+	0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
-+	0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-+	0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
-+	0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
-+	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
-+};
- 
--	if (bind(sock_fd, (struct sockaddr *)&sa, sizeof(sa)) < 0) {
--		err = -errno;
--		pr_warn("failed to bind to AF_ALG socket for SHA256: %s\n", errstr(err));
--		goto out;
--	}
-+#define SHA256_ROUND(i, a, b, c, d, e, f, g, h)                                \
-+	{                                                                      \
-+		__u32 tmp = h + Sigma_1(e) + Ch(e, f, g) + sha256_K[i] + w[i]; \
-+		d += tmp;                                                      \
-+		h = tmp + Sigma_0(a) + Maj(a, b, c);                           \
-+	}
-+
-+static void sha256_blocks(__u32 state[8], const __u8 *data, size_t nblocks)
-+{
-+	while (nblocks--) {
-+		__u32 a = state[0];
-+		__u32 b = state[1];
-+		__u32 c = state[2];
-+		__u32 d = state[3];
-+		__u32 e = state[4];
-+		__u32 f = state[5];
-+		__u32 g = state[6];
-+		__u32 h = state[7];
-+		__u32 w[64];
-+		int i;
-+
-+		for (i = 0; i < 16; i++)
-+			w[i] = get_unaligned_be32(&data[4 * i]);
-+		for (; i < ARRAY_SIZE(w); i++)
-+			w[i] = sigma_1(w[i - 2]) + w[i - 7] +
-+			       sigma_0(w[i - 15]) + w[i - 16];
-+		for (i = 0; i < ARRAY_SIZE(w); i += 8) {
-+			SHA256_ROUND(i + 0, a, b, c, d, e, f, g, h);
-+			SHA256_ROUND(i + 1, h, a, b, c, d, e, f, g);
-+			SHA256_ROUND(i + 2, g, h, a, b, c, d, e, f);
-+			SHA256_ROUND(i + 3, f, g, h, a, b, c, d, e);
-+			SHA256_ROUND(i + 4, e, f, g, h, a, b, c, d);
-+			SHA256_ROUND(i + 5, d, e, f, g, h, a, b, c);
-+			SHA256_ROUND(i + 6, c, d, e, f, g, h, a, b);
-+			SHA256_ROUND(i + 7, b, c, d, e, f, g, h, a);
-+		}
-+		state[0] += a;
-+		state[1] += b;
-+		state[2] += c;
-+		state[3] += d;
-+		state[4] += e;
-+		state[5] += f;
-+		state[6] += g;
-+		state[7] += h;
-+		data += SHA256_BLOCK_LENGTH;
-+	}
-+}
-+
-+void libbpf_sha256(const void *data, size_t len, __u8 out[SHA256_DIGEST_LENGTH])
-+{
-+	__u32 state[8] = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-+			   0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
-+	const __be64 bitcount = cpu_to_be64((__u64)len * 8);
-+	__u8 final_data[2 * SHA256_BLOCK_LENGTH] = { 0 };
-+	size_t final_len = len % SHA256_BLOCK_LENGTH;
-+	int i;
- 
--	op_fd = accept(sock_fd, NULL, 0);
--	if (op_fd < 0) {
--		err = -errno;
--		pr_warn("failed to accept from AF_ALG socket for SHA256: %s\n", errstr(err));
--		goto out;
--	}
-+	sha256_blocks(state, data, len / SHA256_BLOCK_LENGTH);
- 
--	if (write(op_fd, data, data_sz) != data_sz) {
--		err = -errno;
--		pr_warn("failed to write data to AF_ALG socket for SHA256: %s\n", errstr(err));
--		goto out;
--	}
-+	memcpy(final_data, data + len - final_len, final_len);
-+	final_data[final_len] = 0x80;
-+	final_len = round_up(final_len + 9, SHA256_BLOCK_LENGTH);
-+	memcpy(&final_data[final_len - 8], &bitcount, 8);
- 
--	if (read(op_fd, sha_out, SHA256_DIGEST_LENGTH) != SHA256_DIGEST_LENGTH) {
--		err = -errno;
--		pr_warn("failed to read SHA256 from AF_ALG socket: %s\n", errstr(err));
--		goto out;
--	}
-+	sha256_blocks(state, final_data, final_len / SHA256_BLOCK_LENGTH);
- 
--out:
--	if (op_fd >= 0)
--		close(op_fd);
--	if (sock_fd >= 0)
--		close(sock_fd);
--	return err;
-+	for (i = 0; i < ARRAY_SIZE(state); i++)
-+		put_unaligned_be32(state[i], &out[4 * i]);
-+}
-+
-+#if 0 /* To test libbpf_sha256(), uncomment this.  Requires -lcrypto. */
-+#include <openssl/sha.h>
-+
-+/* Test libbpf_sha256() for all lengths from 0 to 4096 bytes inclusively. */
-+static void __attribute__((constructor)) test_libbpf_sha256(void)
-+{
-+	__u8 data[4096];
-+	__u8 hash1[SHA256_DIGEST_LENGTH];
-+	__u8 hash2[SHA256_DIGEST_LENGTH];
-+	size_t i;
-+
-+	for (i = 0; i < sizeof(data); i++)
-+		data[i] = rand();
-+
-+	for (i = 0; i <= sizeof(data); i++) {
-+		libbpf_sha256(data, i, hash1);
-+		SHA256(data, i, hash2); /* Uses OpenSSL */
-+		if (memcmp(hash1, hash2, sizeof(hash1)) != 0) {
-+			pr_warn("libbpf_sha256() test failed\n");
-+			abort();
-+		}
-+	}
-+	pr_info("libbpf_sha256() test passed\n");
- }
-+#endif
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 8a055de0d3248..c93797dcaf5bc 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -737,7 +737,7 @@ int elf_resolve_pattern_offsets(const char *binary_path, const char *pattern,
- int probe_fd(int fd);
- 
- #define SHA256_DIGEST_LENGTH 32
- #define SHA256_DWORD_SIZE SHA256_DIGEST_LENGTH / sizeof(__u64)
- 
--int libbpf_sha256(const void *data, size_t data_sz, void *sha_out, size_t sha_out_sz);
-+void libbpf_sha256(const void *data, size_t len, __u8 out[SHA256_DIGEST_LENGTH]);
- #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
-
-base-commit: 0e8e60e86cf3292e747a0fa7cc13127f290323ad
--- 
-2.51.0
-
+--=20
+Regards
+Yafang
 
