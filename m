@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-69919-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69920-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F4C3BA6793
-	for <lists+bpf@lfdr.de>; Sun, 28 Sep 2025 06:12:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AFEABA67C2
+	for <lists+bpf@lfdr.de>; Sun, 28 Sep 2025 06:28:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 389863BDC27
-	for <lists+bpf@lfdr.de>; Sun, 28 Sep 2025 04:11:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 806F61899F07
+	for <lists+bpf@lfdr.de>; Sun, 28 Sep 2025 04:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B364283695;
-	Sun, 28 Sep 2025 04:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57D5F2877EE;
+	Sun, 28 Sep 2025 04:28:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mhym6ZsV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VKvJboHT"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E36DD259CA7
-	for <bpf@vger.kernel.org>; Sun, 28 Sep 2025 04:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D13F9287272
+	for <bpf@vger.kernel.org>; Sun, 28 Sep 2025 04:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759032713; cv=none; b=QMWZenP3oPmC9fgUq3rKojc29+QJQXSkValwgOn7cVVEdlAH5Uy9VuQuz7Seg5kS1jyy6gD+l3T9SaMKRndpEXaqcZsCej9IGwknyDoyzI+gc2MvJoCZVyvZ1Z/QMLKWtCXdy4DBBOngPRk69fzj3LmYP9yszn2JWzpWvj+9Gew=
+	t=1759033732; cv=none; b=KBI5VRsFvo1BBhulCWKTaq7wokTS/OIsWyIbzfTAt2UCQokEukTFBPHzl9miuv06Qb6JmS5wH/E9EkSPp+9t3al0aD7VJCnjkedMbYbetuCanr9DqMSaJ+QPp1/Sknvm7K6gOprPPESmVlPyfNUY2qvkTD66sodElFVjLrKfv8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759032713; c=relaxed/simple;
-	bh=+qDzAiKj/w/3mHf+fMrBzq+hgXPWUw8DSBBX0hWelN8=;
+	s=arc-20240116; t=1759033732; c=relaxed/simple;
+	bh=aGJzrxX/6tyC66XM5+5CXfFahLXDJKs8U5VVSlR/nJM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ctHFR08ajoZKOaKpqsZrgzWz5Mzdw9X92RgF7Q2u5AsI5G67iPxeTyMqUBmJFwnX3kKD7pceLeCK71JT5BL0mbX3Yuty3mImGG0J8sX+8vo+CHz/dwsOJwVDC6ptpPaWJM/DtN8wiNUpGFMfFPbYbYTUyUUS+2kH4WBhaFzWC1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mhym6ZsV; arc=none smtp.client-ip=95.215.58.172
+	 In-Reply-To:Content-Type; b=oa/BNCQCIqfpHcAvc9P0yhWG6pqCfKhbWq9yEe35XWVREN2G7AW+bk/AnMGddFklLEZn1ORDCL2roYHQavR8vDVTlbChvrJJ5SComnaRvNvYyB5l5DiFaC+Q1GAzyWpx5z4ds4fcu/yVmKPuZSG8voF06jQNWhPcjzTlSvQCII8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VKvJboHT; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a0a4134e-66f0-4266-b4d3-0c080a684d96@linux.dev>
+Message-ID: <71799ce4-cc2e-41d6-a5fb-d4af5c445e43@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759032699;
+	t=1759033719;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FTjbTzemrHJVc5NjsMYuvPqqXOO67dFYOMRW5eKsCg8=;
-	b=Mhym6ZsVzRRan1ZeS/YgWYJufGMlNPPpzFc8SA3lvP6GI9e8ebDu9DlE485Se4miOHhE8W
-	TT0FBHnR8+4dLa8QWMon9hjsHx7geRHZNnFOpKpv9RQhDjf/a1K7RetzfqkDy9yINw27h9
-	yIkJ4vXngUT58nk3LJxrRSjZAad3Ei8=
-Date: Sun, 28 Sep 2025 12:11:28 +0800
+	bh=uBCSfd9thTLA3FjzbiGVoo7eVJR3xdivXq6kfTEcxEU=;
+	b=VKvJboHTewBe8S6pxoc9+ncgfgD7CxJJDHoc19V6jDlvJ1gI1s4poS+le9OQ9GcIyejdjU
+	G55JV7+kzZwH3zcOJIAyJmzRvKM0YTG/M9NB6BnU0i7bNVdHzOTjVRACU+1nD+OESejfp4
+	j3Wq/LUL5RIXMw6d1p9i580UCSN9NiQ=
+Date: Sun, 28 Sep 2025 12:28:26 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -147,10 +147,6 @@ X-Migadu-Flow: FLOW_OUT
 > the stack to simplify and speed up stack trace capture is a good
 > enough reason.
 > 
-
-It's a good idea, if that's the case, do we also not need 
-preempt_disable for get_perf_callchain?
-
 >> +       *entry = bpf_entry;
 >> +       preempt_enable();
 >> +
@@ -237,6 +233,11 @@ preempt_disable for get_perf_callchain?
 > why we are trying to avoid preemption around it. But for non-build_id
 > case, can we avoid extra copying?
 > 
+
+Maybe possible, you mean optimize the memcpy(buf, ips, copy_len) for
+non-build_id? I'm trying to add an external entry in get_perf_callchain 
+to see if the perf maintainers agree. If it's approved, everything seems 
+manageable.
 >> --
 >> 2.48.1
 >>
