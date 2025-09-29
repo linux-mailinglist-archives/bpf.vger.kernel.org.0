@@ -1,238 +1,229 @@
-Return-Path: <bpf+bounces-69967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A92D4BA9FFB
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 18:17:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7015DBAA270
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 19:22:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1E033C68DB
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 16:17:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98197169CDB
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 17:22:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F92930B508;
-	Mon, 29 Sep 2025 16:17:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F1E30DEB9;
+	Mon, 29 Sep 2025 17:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c1weMz+X"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="fcXwy0xZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fra-out-005.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-005.esa.eu-central-1.outbound.mail-perimeter.amazon.com [63.176.194.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A7A309F11
-	for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 16:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6B530C0F0;
+	Mon, 29 Sep 2025 17:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.176.194.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759162644; cv=none; b=MCAbSMENz8I7X8hrwQBegob2xe4Wb/VyhxlgB7tRPon+G9oqWvBVoRuLfDbZkYrOLFw0wXfeBQJV3M5NOKr+neYZ4u1zELZ6X7qsEr/KbSMkUcF6D561sPpBiX/w+lyIErsOGL8aqEltwF/ynxHOjOLLl2pL19urTHqcLPf8LAY=
+	t=1759166536; cv=none; b=eoX2Y6dCaxvXM0Xa6dhzOEmZQhQoFuz3FrgB484FjApQphFAGM7VsuSHha5Yxyz0DToFnYO4Efe9FI7q6NsD3ytmkpR+8RsNTgapFASDAEl9qr2E8fSwWUj4lc5IVj8RbfX/XWGXSDR3j/zw0MdWTrqftrG9SsSa9cjRJZcpirw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759162644; c=relaxed/simple;
-	bh=8o2s1tF4eaZwpeZFW06G2tuYw74hhrixUG98PqTe0gI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bmX4UYpkcsGFOoW2PuQpttA1CIxdExNIjKtkWMgRCvR/l9eL/BDPy24lytbwDZ8PNr2QofVIYIuwL4EchMiXMYzH1OkZV2p6HCowEhivt/8S6G98wiZgoNW2+WtfAFeNzsQa8JYYfBLA4a6x3f7gGdOJFfv8ro1dZ/F2V8SMJP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c1weMz+X; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-3369dcfef12so2976360a91.2
-        for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 09:17:21 -0700 (PDT)
+	s=arc-20240116; t=1759166536; c=relaxed/simple;
+	bh=rPvAb70eX+xtNxLsT31tJqXSjUME1o5yfKSfCT5CPok=;
+	h=Subject:From:To:CC:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=fDvEqNhO31fEMODo+2dv4KYxTaS4Rt/WCVE16Ck7B1KaPagYptjSMtEtKytng8Pku3txV7lCQS6Pp2vVAAIGJw8wcp1hdeSqoJXs+iUciWPlS8jF//IHL0Z7w5sD9QJVY+ovlVEXvZHYxXs9mpHijNc5Uh2DXSH3okp4nQM3uVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=fcXwy0xZ; arc=none smtp.client-ip=63.176.194.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759162641; x=1759767441; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0B2o+rXDQaT/xS8xobKGHrDnzOe/RiiKRhwSstM/iCU=;
-        b=c1weMz+X8Dzc1J+ejaUrFlr/xqA62TiDH4GdE8IXoOmQHPr6yXL1QVRs2YorTMFGc6
-         XxBlhNqXAlj1HUE28u1gqrrcNcH9rVRgo1cURzyBLwbLtAbiIzTXYEOETvepj5v7gVwB
-         5DvUOV7Jx6BUFs8MLkZq7gzc6N7CTVc6z8D+vh1rRfeW62ilrm4KhdNtp5fISJfftQhP
-         QQbPu5oj6CtWKRTc5EQr2q2IgvOBcUXDbTKhgeUIx6+jdv1OolWRcsoA/xAkg1LZFs7g
-         NAxebSVSbDqaDHub3rIl0r4tMUguZRK2TemHY073oSTXe2g2YUKqXtckHRfcU7fcOsvT
-         9twA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759162641; x=1759767441;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0B2o+rXDQaT/xS8xobKGHrDnzOe/RiiKRhwSstM/iCU=;
-        b=YMEMQQIygg0Ah0GmB0QuYl6OkgiAerRoZC4DVqqjg0PRdEYUKikpUPXpkdOwewRLiP
-         s+stXAjX4VhOQqrGyRduLuQiAVWkfeM+RTHtsN5JWQZWGrGFWY/cjZihjQCjwSgCICH5
-         hxKZ11NwM71xF3aXVXrqrn5oM5jRZTa8uWud2ShR5u57SO5blafnvh9SjZaOfJpGbCZH
-         SCIJX7X5pbnaMWA0QzTlP5JuRkyszDHQBApvwcLgKcjwbagNoSZv6PC0B6XPm/74ne9U
-         6OvVYYx2h8FgpAK11Lgcol4uDcOAEDPRlaGky/g/q/pdKz0Xuw7WPv7wnW+hunAzgD2g
-         mMGQ==
-X-Gm-Message-State: AOJu0Yz3zbQ/rEjx37qkb0CL399iYpXYOwxEkEvUIcIi4o1i/7CdBXpQ
-	deWti7dDVWNjcsAN0I2uGdAYohyodrk8NxJo8UU4TNgN/Pa9BPiGFyEm6KF+FztAzp9ZWV6+23r
-	ZWQYyhSuCt1hPiRpEtoHKgHwQ7CFMdCI=
-X-Gm-Gg: ASbGncskyV5aPV8p/KRLOkbt1FHO8uqNYQFoiKE6DTzgBgDFM8ZPti37S8RuNkpUayt
-	fPlfhSq0/TX/09kQtHwUZd2Jd/9gQEem12Q7KpiKzkGDFTRsRlJ9rOivTuaN7N9TVQTgMIZkch/
-	UZEl1IVrBEc/U5NcYQZkushhjYh1yHud3CnXsg1lKMdO7dcME2qQUY1PPO6u764HPQ7RcPFzLDI
-	8W1QszHbz01XtoLd8yNBif/iqDrygb1fA==
-X-Google-Smtp-Source: AGHT+IFgdWOMh4DmcKRzA2FDQjzJw2H17sYEudBXenHuiSFHaPV3EZDmU0DN5nNaFUUpFp+uZpv4UYS5ySAH87sBJIY=
-X-Received: by 2002:a17:90b:17d0:b0:32b:96fa:5f46 with SMTP id
- 98e67ed59e1d1-3342a22be59mr18834574a91.5.1759162641108; Mon, 29 Sep 2025
- 09:17:21 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1759166534; x=1790702534;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version:subject;
+  bh=gKvaxmrs9uqyIGzbajJ1O5Hd1/ndu7xAtdLZV5bBh5k=;
+  b=fcXwy0xZFAjAG5ioqFJQdp7u9bZ9wRmoEjyyVPcJ36wXTbuWjbqRrDi7
+   B49UmJ1lE87OmyPGFnRTh4urVX2YvQ7BXyR0RaXgcG7ZphjDe/kmHXrch
+   8yMJE3K0TKE+hsJqDwrj7oH+nXc34eAmsI7+WFQJIOHItZAhtpdX+ZnQI
+   7CGMQXfX1PkHmzrlfTxQrOs8M8lTX6D3juk6EXZ+fWXR3a/j4oqby4k6T
+   uky/VIhuvQcXk1okeqSY4uphf4dKMuUnlZOkbaJyQUD/TMYbtSr8f2ZPJ
+   6o70OCOZNPv81QXGcsSUwhJTee+FiHKucpAf2Ma6YL9IFbOzwdWM1ewpv
+   w==;
+X-CSE-ConnectionGUID: IafcEd3hQO6oGZOiLnLKqg==
+X-CSE-MsgGUID: Itl7dVAmRv28mSSF4DAfeA==
+X-IronPort-AV: E=Sophos;i="6.18,302,1751241600"; 
+   d="scan'208";a="2841710"
+Subject: RE: [PATCH 07/19 v6.1.y] minmax: make generic MIN() and MAX() macros
+ available everywhere
+Thread-Topic: [PATCH 07/19 v6.1.y] minmax: make generic MIN() and MAX() macros available
+ everywhere
+Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
+  by internal-fra-out-005.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2025 17:22:02 +0000
+Received: from EX19MTAEUA002.ant.amazon.com [54.240.197.232:7433]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.19.222:2525] with esmtp (Farcaster)
+ id 39c95fb2-68e2-4279-8b5a-834631637cab; Mon, 29 Sep 2025 17:22:01 +0000 (UTC)
+X-Farcaster-Flow-ID: 39c95fb2-68e2-4279-8b5a-834631637cab
+Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
+ Mon, 29 Sep 2025 17:21:59 +0000
+Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
+ EX19D018EUA004.ant.amazon.com (10.252.50.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
+ Mon, 29 Sep 2025 17:21:59 +0000
+Received: from EX19D018EUA004.ant.amazon.com ([fe80::e53:84f8:3456:a97d]) by
+ EX19D018EUA004.ant.amazon.com ([fe80::e53:84f8:3456:a97d%3]) with mapi id
+ 15.02.2562.020; Mon, 29 Sep 2025 17:21:59 +0000
+From: "Farber, Eliav" <farbere@amazon.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+CC: "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "richard@nod.at"
+	<richard@nod.at>, "anton.ivanov@cambridgegreys.com"
+	<anton.ivanov@cambridgegreys.com>, "johannes@sipsolutions.net"
+	<johannes@sipsolutions.net>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "luto@kernel.org" <luto@kernel.org>,
+	"peterz@infradead.org" <peterz@infradead.org>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de"
+	<bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com"
+	<hpa@zytor.com>, "tony.luck@intel.com" <tony.luck@intel.com>,
+	"qiuxu.zhuo@intel.com" <qiuxu.zhuo@intel.com>, "mchehab@kernel.org"
+	<mchehab@kernel.org>, "james.morse@arm.com" <james.morse@arm.com>,
+	"rric@kernel.org" <rric@kernel.org>, "harry.wentland@amd.com"
+	<harry.wentland@amd.com>, "sunpeng.li@amd.com" <sunpeng.li@amd.com>,
+	"Rodrigo.Siqueira@amd.com" <Rodrigo.Siqueira@amd.com>,
+	"alexander.deucher@amd.com" <alexander.deucher@amd.com>,
+	"christian.koenig@amd.com" <christian.koenig@amd.com>, "Xinhui.Pan@amd.com"
+	<Xinhui.Pan@amd.com>, "airlied@gmail.com" <airlied@gmail.com>,
+	"daniel@ffwll.ch" <daniel@ffwll.ch>, "evan.quan@amd.com" <evan.quan@amd.com>,
+	"james.qian.wang@arm.com" <james.qian.wang@arm.com>, "liviu.dudau@arm.com"
+	<liviu.dudau@arm.com>, "mihail.atanassov@arm.com" <mihail.atanassov@arm.com>,
+	"brian.starkey@arm.com" <brian.starkey@arm.com>,
+	"maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
+	"mripard@kernel.org" <mripard@kernel.org>, "tzimmermann@suse.de"
+	<tzimmermann@suse.de>, "robdclark@gmail.com" <robdclark@gmail.com>,
+	"quic_abhinavk@quicinc.com" <quic_abhinavk@quicinc.com>,
+	"dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
+	"sean@poorly.run" <sean@poorly.run>, "jdelvare@suse.com" <jdelvare@suse.com>,
+	"linux@roeck-us.net" <linux@roeck-us.net>, "linus.walleij@linaro.org"
+	<linus.walleij@linaro.org>, "dmitry.torokhov@gmail.com"
+	<dmitry.torokhov@gmail.com>, "maz@kernel.org" <maz@kernel.org>,
+	"wens@csie.org" <wens@csie.org>, "jernej.skrabec@gmail.com"
+	<jernej.skrabec@gmail.com>, "samuel@sholland.org" <samuel@sholland.org>,
+	"agk@redhat.com" <agk@redhat.com>, "snitzer@kernel.org" <snitzer@kernel.org>,
+	"dm-devel@redhat.com" <dm-devel@redhat.com>, "rajur@chelsio.com"
+	<rajur@chelsio.com>, "davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+	"alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+	"joabreu@synopsys.com" <joabreu@synopsys.com>, "mcoquelin.stm32@gmail.com"
+	<mcoquelin.stm32@gmail.com>, "krzysztof.kozlowski@linaro.org"
+	<krzysztof.kozlowski@linaro.org>, "malattia@linux.it" <malattia@linux.it>,
+	"hdegoede@redhat.com" <hdegoede@redhat.com>, "markgross@kernel.org"
+	<markgross@kernel.org>, "artur.paszkiewicz@intel.com"
+	<artur.paszkiewicz@intel.com>, "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+	"martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+	"sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+	"fei1.li@intel.com" <fei1.li@intel.com>, "clm@fb.com" <clm@fb.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>, "dsterba@suse.com"
+	<dsterba@suse.com>, "jack@suse.com" <jack@suse.com>, "tytso@mit.edu"
+	<tytso@mit.edu>, "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+	"dushistov@mail.ru" <dushistov@mail.ru>, "luc.vanoostenryck@gmail.com"
+	<luc.vanoostenryck@gmail.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"mhiramat@kernel.org" <mhiramat@kernel.org>, "pmladek@suse.com"
+	<pmladek@suse.com>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+	"andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+	"linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>, "minchan@kernel.org"
+	<minchan@kernel.org>, "ngupta@vflare.org" <ngupta@vflare.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>, "dsahern@kernel.org"
+	<dsahern@kernel.org>, "pablo@netfilter.org" <pablo@netfilter.org>,
+	"kadlec@netfilter.org" <kadlec@netfilter.org>, "fw@strlen.de" <fw@strlen.de>,
+	"jmaloy@redhat.com" <jmaloy@redhat.com>, "ying.xue@windriver.com"
+	<ying.xue@windriver.com>, "andrii@kernel.org" <andrii@kernel.org>,
+	"mykolal@fb.com" <mykolal@fb.com>, "ast@kernel.org" <ast@kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev"
+	<martin.lau@linux.dev>, "song@kernel.org" <song@kernel.org>, "yhs@fb.com"
+	<yhs@fb.com>, "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@google.com" <sdf@google.com>,
+	"haoluo@google.com" <haoluo@google.com>, "jolsa@kernel.org"
+	<jolsa@kernel.org>, "shuah@kernel.org" <shuah@kernel.org>,
+	"keescook@chromium.org" <keescook@chromium.org>, "wad@chromium.org"
+	<wad@chromium.org>, "willy@infradead.org" <willy@infradead.org>,
+	"sashal@kernel.org" <sashal@kernel.org>, "ruanjinjie@huawei.com"
+	<ruanjinjie@huawei.com>, "quic_akhilpo@quicinc.com"
+	<quic_akhilpo@quicinc.com>, "David.Laight@aculab.com"
+	<David.Laight@aculab.com>, "herve.codina@bootlin.com"
+	<herve.codina@bootlin.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-um@lists.infradead.org"
+	<linux-um@lists.infradead.org>, "linux-edac@vger.kernel.org"
+	<linux-edac@vger.kernel.org>, "amd-gfx@lists.freedesktop.org"
+	<amd-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "linux-arm-msm@vger.kernel.org"
+	<linux-arm-msm@vger.kernel.org>, "freedreno@lists.freedesktop.org"
+	<freedreno@lists.freedesktop.org>, "linux-hwmon@vger.kernel.org"
+	<linux-hwmon@vger.kernel.org>, "linux-input@vger.kernel.org"
+	<linux-input@vger.kernel.org>, "linux-sunxi@lists.linux.dev"
+	<linux-sunxi@lists.linux.dev>, "linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-stm32@st-md-mailman.stormreply.com"
+	<linux-stm32@st-md-mailman.stormreply.com>,
+	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+	"linux-sparse@vger.kernel.org" <linux-sparse@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "netfilter-devel@vger.kernel.org"
+	<netfilter-devel@vger.kernel.org>, "coreteam@netfilter.org"
+	<coreteam@netfilter.org>, "tipc-discussion@lists.sourceforge.net"
+	<tipc-discussion@lists.sourceforge.net>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "linux-kselftest@vger.kernel.org"
+	<linux-kselftest@vger.kernel.org>, "stable@vger.kernel.org"
+	<stable@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Thread-Index: AQHcLZHEroQ9W2lH4EW9XJumD1KlZrSqNL0AgAAM8ACAAAMmgIAAKtlA
+Date: Mon, 29 Sep 2025 17:21:58 +0000
+Message-ID: <e754fed7d53040fb92e1ef9b64c64f6e@amazon.com>
+References: <20250924202320.32333-1-farbere@amazon.com>
+ <20250924202320.32333-8-farbere@amazon.com>
+ <2025092923-stove-rule-a00f@gregkh>
+ <85a995bb59474300aa3d5f973d279a13@amazon.com>
+ <2025092955-module-landfall-ed45@gregkh>
+In-Reply-To: <2025092955-module-landfall-ed45@gregkh>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250925153746.96154-1-leon.hwang@linux.dev> <20250925153746.96154-6-leon.hwang@linux.dev>
- <CAEf4Bzacd768RGKyujM7TTWa-JeNnZntJbJoZr2FetCR4X-soQ@mail.gmail.com> <b3eb97bb-ba9e-4f1c-96e6-8fab12efab2d@linux.dev>
-In-Reply-To: <b3eb97bb-ba9e-4f1c-96e6-8fab12efab2d@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Sep 2025 09:17:09 -0700
-X-Gm-Features: AS18NWAfLik0w1d1I9NfBbiCWxoeq7iNKLHjT9p3dQ5vEK8dUwZSAd1IcjpLE8I
-Message-ID: <CAEf4BzbKpsCee5k03XgSzLNNGxXjK5jyx6Yk=2mQxAzSetgwMg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 5/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
- flags support for percpu_cgroup_storage maps
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, jolsa@kernel.org, yonghong.song@linux.dev, 
-	song@kernel.org, eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net, 
-	kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 28, 2025 at 8:06=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
->
->
->
-> On 2025/9/28 10:42, Andrii Nakryiko wrote:
-> > On Thu, Sep 25, 2025 at 8:38=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
-v> wrote:
-> >>
-> >> Introduce BPF_F_ALL_CPUS flag support for percpu_cgroup_storage maps t=
-o
-> >> allow updating values for all CPUs with a single value for update_elem
-> >> API.
-> >>
-> >> Introduce BPF_F_CPU flag support for percpu_cgroup_storage maps to
-> >> allow:
-> >>
-> >> * update value for specified CPU for update_elem API.
-> >> * lookup value for specified CPU for lookup_elem API.
-> >>
-> >> The BPF_F_CPU flag is passed via map_flags along with embedded cpu inf=
-o.
-> >>
-> >> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> >> ---
-> >>  include/linux/bpf-cgroup.h |  4 ++--
-> >>  include/linux/bpf.h        |  1 +
-> >>  kernel/bpf/local_storage.c | 22 +++++++++++++++++++---
-> >>  kernel/bpf/syscall.c       |  2 +-
-> >>  4 files changed, 23 insertions(+), 6 deletions(-)
-> >>
+> On Mon, Sep 29, 2025 at 02:39:26PM +0000, Farber, Eliav wrote:
+> > > On Wed, Sep 24, 2025 at 08:23:08PM +0000, Eliav Farber wrote:
+> > > > From: Linus Torvalds <torvalds@linux-foundation.org>
+> > > >
+> > > > [ Upstream commit 1a251f52cfdc417c84411a056bc142cbd77baef4 ]
+> > >
+> > > <snip>
+> > >
+> > > As this didn't go into 6.6.y yet, I'll stop here on this series for n=
+ow.
+> > > Please fix up for newer kernels first and then resend these.
 > >
-> > [...]
+> > For 6.6.y I backported 15 commits:
+> > https://lore.kernel.org/stable/20250922103241.16213-1-farbere@amazon.co=
+m/T/#t
 > >
-> >>  int bpf_percpu_cgroup_storage_copy(struct bpf_map *_map, void *key,
-> >> -                                  void *value)
-> >> +                                  void *value, u64 map_flags)
-> >>  {
-> >>         struct bpf_cgroup_storage_map *map =3D map_to_storage(_map);
-> >>         struct bpf_cgroup_storage *storage;
-> >> @@ -199,11 +199,17 @@ int bpf_percpu_cgroup_storage_copy(struct bpf_ma=
-p *_map, void *key,
-> >>          * will not leak any kernel data
-> >>          */
-> >>         size =3D round_up(_map->value_size, 8);
-> >
-> > um... same issue with rounding up value_size when BPF_F_CPU is set, no?
-> >
-> >> +       if (map_flags & BPF_F_CPU) {
-> >> +               cpu =3D map_flags >> 32;
-> >> +               bpf_long_memcpy(value, per_cpu_ptr(storage->percpu_buf=
-, cpu), size);
-> >> +               goto unlock;
-> >> +       }
-> >>         for_each_possible_cpu(cpu) {
-> >>                 bpf_long_memcpy(value + off,
-> >>                                 per_cpu_ptr(storage->percpu_buf, cpu),=
- size);
-> >>                 off +=3D size;
-> >>         }
-> >> +unlock:
-> >>         rcu_read_unlock();
-> >>         return 0;
-> >>  }
-> >> @@ -216,7 +222,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_ma=
-p *_map, void *key,
-> >>         int cpu, off =3D 0;
-> >>         u32 size;
-> >>
-> >> -       if (map_flags !=3D BPF_ANY && map_flags !=3D BPF_EXIST)
-> >> +       if ((u32)map_flags & ~(BPF_ANY | BPF_EXIST | BPF_F_CPU | BPF_F=
-_ALL_CPUS))
-> >>                 return -EINVAL;
-> >>
-> >>         rcu_read_lock();
-> >> @@ -233,11 +239,21 @@ int bpf_percpu_cgroup_storage_update(struct bpf_=
-map *_map, void *key,
-> >>          * so no kernel data leaks possible
-> >>          */
-> >>         size =3D round_up(_map->value_size, 8);
-> >> +       if (map_flags & BPF_F_CPU) {
-> >> +               cpu =3D map_flags >> 32;
-> >> +               bpf_long_memcpy(per_cpu_ptr(storage->percpu_buf, cpu),=
- value, size);
-> >
-> > ditto
-> >
-> >> +               goto unlock;
-> >> +       }
-> >>         for_each_possible_cpu(cpu) {
-> >>                 bpf_long_memcpy(per_cpu_ptr(storage->percpu_buf, cpu),
-> >>                                 value + off, size);
-> >> -               off +=3D size;
-> >> +               /* same user-provided value is used if BPF_F_ALL_CPUS =
-is
-> >> +                * specified, otherwise value is an array of per-CPU v=
-alues.
-> >> +                */
-> >> +               if (!(map_flags & BPF_F_ALL_CPUS))
-> >> +                       off +=3D size;
-> >
-> > btw, given we'll need another revision to fix up all those round_up()
-> > issues, what do you think about make this offset logic completely
-> > stateless (and, in my opinion, more obvious):
-> >
-> > for_each_possible_cpu(cpu) {
-> >     p =3D (map_flags & BPF_F_ALL_CPUS) ? value : value + size * cpu;
-> >     memcpy(per_cpu_ptr(storage->percpu_buf, cpu), p, size);
-> > }
-> >
-> > seems more straightforward to me
+> > Why weren't all of them picked?
 >
-> lgtm.
->
-> But I think the correct memcpy() should look like this:
->
-> memcpy(per_cpu_ptr(storage->percpu_buf, cpu), p,
->        (map_flags & BPF_F_ALL_CPUS) ? _map->value_size : size);
->
-> because 'size' is 8-byte aligned and can=E2=80=99t be used directly when
-> 'map_flags & BPF_F_ALL_CPUS' is set.
->
-> So the more accurate version would be:
->
-> for_each_possible_cpu(cpu) {
->     p =3D (map_flags & BPF_F_ALL_CPUS) ? value : value + size * cpu;
->     s =3D (map_flags & BPF_F_ALL_CPUS) ? _map->value_size : size;
->     memcpy(per_cpu_ptr(storage->percpu_buf, cpu), p, s);
-> }
->
-> Isn=E2=80=99t this the correct approach?
->
+> Because one of them broke the build, as I wrote a week ago here:
+>         https://lore.kernel.org/all/2025092209-owl-whisking-03e3@gregkh/
 
-Yes, but I think it would be better to update:
+Fixed:
+https://lore.kernel.org/stable/20250929171733.20671-1-farbere@amazon.com/T/=
+#t
 
-size =3D round_up(_map->value_size, 8);
-
-to take into account BPF_F_ALL_CPUS instead and do it once outside of
-the loop. But same idea, of course, yes.
-
-> Thanks,
-> Leon
->
-> [...]
+---
+Thanks, Eliav
 
