@@ -1,133 +1,168 @@
-Return-Path: <bpf+bounces-69985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69987-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B83DBAA6E6
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 21:12:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCE91BAA711
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 21:17:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D11E21923722
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 19:12:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 657273AEFFA
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 19:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7922BDC33;
-	Mon, 29 Sep 2025 19:09:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E180F2417E6;
+	Mon, 29 Sep 2025 19:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L9yQeoMo"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ZXp2VoDt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E402517A5
-	for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 19:09:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028CB19343B;
+	Mon, 29 Sep 2025 19:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759172966; cv=none; b=Mcf/zfpuin+0KvhWA93ANPZUZB6jyHidAlQmLGLZSLv+N2FHbtRJ1tIj/kj7d1FG6Q9cekSVGtFIss4cC/8mv4Kf3mvCxdLrkztlWYTBdSglc3QfpzzEAfHO5/RgRnlxUj5yv5XBJ1jzFXoDqZ4veIr9aenvQCdkm92qPFKjhrQ=
+	t=1759173462; cv=none; b=Ch/glLUZVIDGA6Yj518NEhPKlGHNrD2Yqbwt6z+gJsf6BEqPon09xha9Ml4HbhKy5Eht1ezlJQJPjTV6JdxW1dS6QHam9sV0x/P/FVvNwYGnAlJaKzxNbdJkOqrVVXe+rWUhhagPBb4mD81cB+E+sz7JXm6AfLhHNiiFW0/nRWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759172966; c=relaxed/simple;
-	bh=AdUfJ3+HbRhbK7PtlXvfEfALYxdhT7u77r7aSN4uwZk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=J13YBJZriCfO96nhCUCDB084qud11lmmNyl+JU6ymlFfEgnYATHjZNsiSE0JLd3QUfKTDJKR+qy8OCy6Onag3TZc+6Bixv1y42LUbukKW45euoglXSqi2ZOwne6MFvMEYCoeJt+APdECfN+WPW1wGR+4NAyNj2a8Oaoc5fBFx/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=L9yQeoMo; arc=none smtp.client-ip=209.85.214.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-27eeb9730d9so40566685ad.0
-        for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 12:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759172964; x=1759777764; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4971M/0zABDO+i83fcQEQWVemuah1MT0Et0WsfrEZzk=;
-        b=L9yQeoMoPkXg5d5lT2D7Ra4n++RDy2SE9MSuD1eTVbKyNZt8WSLkEloIFCzXNqO3cf
-         wgo7N6WOlI3EbhXo5y3QghXVKhaL+Zvz8smMzTX6PYl9BbIVf1GEj4T9C4wjsBNEy4Q1
-         KlOwLH5/fBorFi9cSI8qqlETXPIa4jpkZ8BNK0uEtWK6NZAVH6EQ+bKbkY9YGqEsyc6E
-         BLs/sdBbGMY+DbRGhMRogroFvjoCF9NtRqAFJi8SLM2GPrX1fIc/hJ4vsLdpOiDW5Wft
-         CCZEQXne39KFIdsPDNuxX8Nvhvcr9ivaFvj2gSVR3Mwpc54sE3l3Kzq5pqKdVIvy3Gzj
-         r7NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759172964; x=1759777764;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4971M/0zABDO+i83fcQEQWVemuah1MT0Et0WsfrEZzk=;
-        b=LInmBcjGfQccefOZwmbqY1h9fyFbge5dX/92y+SXdyyzrmBGlKRR91JrEARVNUdVKh
-         uluP+dBCgdST4K+DDF6V02D2/Q/uPckB0vOuKLtmujaxxL1JBwQKrP/MmtCUdT2iR3vW
-         exJSrEEgJv03d5SiK6vhPYXSNsgmWdddM/e3zB8ICql3aauAmTXQHP5gtbqZATzQrnSM
-         DjkkXG2RqKyBcyJzmEeuLRbw2PbzAiTMIE+yyHodIkYvxq89BRtoDC1WQ04zIlKCqiHn
-         6RT/MClIFXVwyyxupsu09NxdFzXV8zNUcHpOzTPefDeB+iE2Ym35OHEAVnK+Rrvw3EIz
-         KKJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUiKv11DIzgfhOzBnaST+CdliL6hU9r/DqAi9F2fOjHgyLaBH7sKmxq0FRIKqd/YsRyOKM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxx/olNUo6LY0WCwyV7ZbCezwhvhYK8bcruveeaphQSIqOK5vgG
-	f5y9g3pFcGuAyFglXEQmN0TDwBYr3p9S1TGfGiCrVlpjdYkONnKmVJYRZSBD1Zr/UKen+JOankJ
-	BmyzTrBxcxA==
-X-Google-Smtp-Source: AGHT+IGSCDVx0cLNNfPAO34F5NCMZLpRD91/a9vLPfmnYqOXMggPFusn25YIXzpM5IEFpb7ikaAU0IUITXOR
-X-Received: from pgar25.prod.google.com ([2002:a05:6a02:2e99:b0:b58:4e62:6f3d])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:acf:b0:274:5030:2906
- with SMTP id d9443c01a7336-27ed4ab8df8mr196816435ad.46.1759172963586; Mon, 29
- Sep 2025 12:09:23 -0700 (PDT)
-Date: Mon, 29 Sep 2025 12:08:05 -0700
-In-Reply-To: <20250929190805.201446-1-irogers@google.com>
+	s=arc-20240116; t=1759173462; c=relaxed/simple;
+	bh=6tsZa/MERNesxGFOy+Dd6WFSrpVJ+4w+3pDW0q7INFo=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ZvUnqZqbc1vrP3pd7acrNXBkLAlOm345AdkATyiZ8ituv5TjGKxNNtyYbUBnQYwypw5hZ2S/+RI6uJymSfiRYp6wfDJs0GpLEQjaOe+2trr+yt2Ju8Pu5GQuWGBsiiTVYeX3i8VVMpYq3lVnnbjryRvvc6a+/fB2yyfWg6gZgTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ZXp2VoDt; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [13.88.17.9])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 3DC6E2127313;
+	Mon, 29 Sep 2025 12:17:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3DC6E2127313
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1759173460;
+	bh=pW4imUcmU1Cp0sMaL/8GyVY1QQK6kUNt+BCT3yuw0+c=;
+	h=From:To:Subject:In-Reply-To:References:Date:From;
+	b=ZXp2VoDtNVJlfr9ZFHcMPUGvXuSThJq6Ss5HlEXjNn6Z1Y/8yphZd0PH7YrtbaL9P
+	 jyQHnXP6ejNoghx1twkMAWXteQzYGxbNWUcVEW2ocg/USJMLFpfmKcK/iun9LeifQi
+	 ecCY+7aesrAJw2K7xufAm5yER5oWWioqGh+RA3oo=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: Quentin Monnet <qmo@kernel.org>, bpf@vger.kernel.org,
+ linux-security-module@vger.kernel.org, kpsingh@kernel.org,
+ paul@paul-moore.com, kys@microsoft.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org,
+ James.Bottomley@hansenpartnership.com, wufan@linux.microsoft.com
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add hash chain signature support for
+ arbitrary maps
+In-Reply-To: <ab14f430-f4a7-4d5f-8062-8d2113cf8e0d@kernel.org>
+References: <20250926203111.1305999-1-bboscaccy@linux.microsoft.com>
+ <20250926203111.1305999-2-bboscaccy@linux.microsoft.com>
+ <ab14f430-f4a7-4d5f-8062-8d2113cf8e0d@kernel.org>
+Date: Mon, 29 Sep 2025 12:17:37 -0700
+Message-ID: <874islysoe.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250929190805.201446-1-irogers@google.com>
-X-Mailer: git-send-email 2.51.0.570.gb178f27e6d-goog
-Message-ID: <20250929190805.201446-16-irogers@google.com>
-Subject: [PATCH v6 15/15] perf disasm: Remove unused evsel from annotate_args
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Charlie Jenkins <charlie@rivosinc.com>, Eric Biggers <ebiggers@kernel.org>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
-	Collin Funk <collin.funk1@gmail.com>, "Dr. David Alan Gilbert" <linux@treblig.org>, 
-	Li Huafei <lihuafei1@huawei.com>, Athira Rajeev <atrajeev@linux.ibm.com>, 
-	Stephen Brennan <stephen.s.brennan@oracle.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Haibo Xu <haibo1.xu@intel.com>, 
-	Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev, 
-	Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain
 
-Set in symbol__annotate but never used.
+Quentin Monnet <qmo@kernel.org> writes:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/annotate.c | 1 -
- tools/perf/util/disasm.h   | 1 -
- 2 files changed, 2 deletions(-)
+> 2025-09-26 13:30 UTC-0700 ~ Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+>> This patch introduces hash chain support for signature verification of
+>> arbitrary bpf map objects which was described here:
+>> https://lore.kernel.org/linux-security-module/20250721211958.1881379-1-kpsingh@kernel.org/
+>> 
+>> The UAPI is extended to allow for in-kernel checking of maps passed in
+>> via the fd_array. A hash chain is constructed from the maps, in order
+>> specified by the signature_maps field. The hash chain is terminated
+>> with the hash of the program itself.
+>> 
+>> Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+>> ---
+>>  include/uapi/linux/bpf.h                      |  6 ++
+>>  kernel/bpf/syscall.c                          | 73 ++++++++++++++++++-
+>>  .../bpf/bpftool/Documentation/bpftool-gen.rst |  7 +-
+>>  tools/bpf/bpftool/gen.c                       | 27 ++++++-
+>>  tools/bpf/bpftool/main.c                      |  9 ++-
+>>  tools/bpf/bpftool/main.h                      |  1 +
+>>  tools/bpf/bpftool/sign.c                      | 17 ++++-
+>>  tools/include/uapi/linux/bpf.h                |  6 ++
+>>  tools/lib/bpf/libbpf.h                        |  3 +-
+>>  tools/lib/bpf/skel_internal.h                 |  6 +-
+>>  10 files changed, 143 insertions(+), 12 deletions(-)
+>> 
+>
+> [...]
+>
+>> diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+>> index d0a36f442db72..b632ab87adf20 100644
+>> --- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+>> +++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+>> @@ -16,7 +16,7 @@ SYNOPSIS
+>>  
+>>  **bpftool** [*OPTIONS*] **gen** *COMMAND*
+>>  
+>> -*OPTIONS* := { |COMMON_OPTIONS| | { **-L** | **--use-loader** } | [ { **-S** | **--sign** } {**-k** <private_key.pem>} **-i** <certificate.x509> ] }
+>> +*OPTIONS* := { |COMMON_OPTIONS| | { **-L** | **--use-loader** } | [ { **-S** | **--sign** } { **-M** | **--sign-maps** } {**-k** <private_key.pem>} **-i** <certificate.x509> ] }
+>>  
+>>  *COMMAND* := { **object** | **skeleton** | **help** }
+>>  
+>> @@ -190,6 +190,11 @@ OPTIONS
+>>      For skeletons, generate a signed skeleton. This option must be used with
+>>      **-k** and **-i**. Using this flag implicitly enables **--use-loader**.
+>>  
+>> +-M --sign-maps
+>> +    For skeletons, generate a signed skeleton that includes a hash chain for the
+>> +    skeletons maps. This option must be used with **-k** and **-i**. Using this
+>> +    flag implicitly enables **--use-loader** and **--sign**.
+>> +
+>
+>
+> Hi! Pardon my ignorance, I haven't followed all the details of the
+> discussions around signing. Is there a use case for signing the programs
+> only (using -S) without signing the maps (using -M)? Or should we
+> consider collapsing maps signing under the existing -S option?
+>
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index c9b220d9f924..a2e34f149a07 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -1015,7 +1015,6 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
- 	struct symbol *sym = ms->sym;
- 	struct annotation *notes = symbol__annotation(sym);
- 	struct annotate_args args = {
--		.evsel		= evsel,
- 		.options	= &annotate_opts,
- 	};
- 	struct arch *arch = NULL;
-diff --git a/tools/perf/util/disasm.h b/tools/perf/util/disasm.h
-index 09c86f540f7f..d2cb555e4a3b 100644
---- a/tools/perf/util/disasm.h
-+++ b/tools/perf/util/disasm.h
-@@ -98,7 +98,6 @@ struct ins_ops {
- struct annotate_args {
- 	struct arch		  *arch;
- 	struct map_symbol	  ms;
--	struct evsel		  *evsel;
- 	struct annotation_options *options;
- 	s64			  offset;
- 	char			  *line;
--- 
-2.51.0.570.gb178f27e6d-goog
+Hi Quentin! Yes, there are some use cases where having both map signing
+and program signing doesn't make much sense. For the light-skeleton use
+case, where the map contains your actual program, it makes a lot of
+sense. For other more dynamic use cases, maps can contain dynamically
+generated user data or simply be providing program input and
+output. Signing of those maps wouldn't provide much benefit, or even be
+practical or possible in some scenarios. 
 
+> If you do keep the new option, would you mind updating the bash
+> completion file, please? Simply adding the long form like this:
+>
+
+> ------
+>
+> diff --git i/tools/bpf/bpftool/bash-completion/bpftool w/tools/bpf/bpftool/bash-completion/bpftool
+> index 53bcfeb1a76e..f8c217f09989 100644
+> --- i/tools/bpf/bpftool/bash-completion/bpftool
+> +++ w/tools/bpf/bpftool/bash-completion/bpftool
+> @@ -262,7 +262,7 @@ _bpftool()
+>      # Deal with options
+>      if [[ ${words[cword]} == -* ]]; then
+>          local c='--version --json --pretty --bpffs --mapcompat --debug \
+> -            --use-loader --base-btf --sign -i -k'
+> +            --use-loader --base-btf --sign --sign-maps -i -k'
+>          COMPREPLY=( $( compgen -W "$c" -- "$cur" ) )
+>          return 0
+>      fi
+>
+> ------
+
+Of course. Thanks for the diff. I'll get that incorporated. 
+
+>
+> Other than that, the changes for bpftool look OK from my side. I'd
+> probably split the patch further into kernel/libbpf/bpftool changes, but
+> that's your call.
+>
+
+Sure, I'll get the userspace and kernel changes split out.
+
+-blaise
+
+> Thanks,
+> Quentin
 
