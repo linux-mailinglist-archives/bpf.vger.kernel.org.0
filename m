@@ -1,218 +1,207 @@
-Return-Path: <bpf+bounces-69964-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69965-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F50ABA9AEE
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 16:48:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B8FBA9BFD
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 17:03:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E432C17417B
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 14:48:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8831F192244D
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 15:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCC630B516;
-	Mon, 29 Sep 2025 14:47:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD653093A5;
+	Mon, 29 Sep 2025 15:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ixd7lGKj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MX0j0bys"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C851D88B4;
-	Mon, 29 Sep 2025 14:47:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C3B826E6FF
+	for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 15:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759157255; cv=none; b=t/bALcIQAuivsscwd8QegwVsEbSfiaVWAFBs9mW6r+JKQFFbpnnZYTMHsbR0JeSwVuEkTx7cjcZdUyu5bkKI9h7E4iMAv6FLbCoqsrpZMaUwJRwDh1o2SJHJK2244rzdw8TykTsTpYVzvMQnPQE+s4/bsFiwaf5Zktm/o2syBA0=
+	t=1759158219; cv=none; b=thuBC1eQazmOCYT4lxDAIGZlJQRACGvNeU9t7CO9iSDcexmywe3J13JZ5YukOsFXs1zB4XEwnu4Ge3FCpx6lwBTEnR71zIqR2ffpa+FYkrc8NRYH9EDopRin5LybjJRfG42YuDy1JW0WjOmohnZES9+5b9zahIu0RMy6vw1+v4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759157255; c=relaxed/simple;
-	bh=8W8Q+OA2dF6Ur3uVnm6arrgUauWJ5keNKgi5Rakv08M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fCI95pa9MUCDThxqKdqLHeJCa5zZUq3ftIqwJynDKOifK8hqI0CdJmpqHh1rL6rti1Ge65MPR5j8XyEUdUxC8lxdm+RWU8a2qn/ag67XP/VoNM5GW/3oX2Z5E4FC6xMKEKiY3j4XFIxtdVSek/Jlei2mKLD/50/17Az4Jaedo0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ixd7lGKj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C51EEC4CEF4;
-	Mon, 29 Sep 2025 14:47:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1759157255;
-	bh=8W8Q+OA2dF6Ur3uVnm6arrgUauWJ5keNKgi5Rakv08M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ixd7lGKjU8rPs4OWaLyHTILBe27JWFNUeW7ErLrq5kAqdgQvDcohTydA9pilDkaVH
-	 z52PdLZ/6lQF/TxWojd21t/6vwpwNY0xwdJgToPIfkLHWKKVz+QIaSh4krNdfG/Qsg
-	 H3crXkWEyIu0mULyxpLF7vZzJx+xJCpRFqbsU2Dk=
-Date: Mon, 29 Sep 2025 16:47:31 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: "Farber, Eliav" <farbere@amazon.com>
-Cc: "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-	"richard@nod.at" <richard@nod.at>,
-	"anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>,
-	"johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-	"hpa@zytor.com" <hpa@zytor.com>,
-	"tony.luck@intel.com" <tony.luck@intel.com>,
-	"qiuxu.zhuo@intel.com" <qiuxu.zhuo@intel.com>,
-	"mchehab@kernel.org" <mchehab@kernel.org>,
-	"james.morse@arm.com" <james.morse@arm.com>,
-	"rric@kernel.org" <rric@kernel.org>,
-	"harry.wentland@amd.com" <harry.wentland@amd.com>,
-	"sunpeng.li@amd.com" <sunpeng.li@amd.com>,
-	"Rodrigo.Siqueira@amd.com" <Rodrigo.Siqueira@amd.com>,
-	"alexander.deucher@amd.com" <alexander.deucher@amd.com>,
-	"christian.koenig@amd.com" <christian.koenig@amd.com>,
-	"Xinhui.Pan@amd.com" <Xinhui.Pan@amd.com>,
-	"airlied@gmail.com" <airlied@gmail.com>,
-	"daniel@ffwll.ch" <daniel@ffwll.ch>,
-	"evan.quan@amd.com" <evan.quan@amd.com>,
-	"james.qian.wang@arm.com" <james.qian.wang@arm.com>,
-	"liviu.dudau@arm.com" <liviu.dudau@arm.com>,
-	"mihail.atanassov@arm.com" <mihail.atanassov@arm.com>,
-	"brian.starkey@arm.com" <brian.starkey@arm.com>,
-	"maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
-	"mripard@kernel.org" <mripard@kernel.org>,
-	"tzimmermann@suse.de" <tzimmermann@suse.de>,
-	"robdclark@gmail.com" <robdclark@gmail.com>,
-	"quic_abhinavk@quicinc.com" <quic_abhinavk@quicinc.com>,
-	"dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
-	"sean@poorly.run" <sean@poorly.run>,
-	"jdelvare@suse.com" <jdelvare@suse.com>,
-	"linux@roeck-us.net" <linux@roeck-us.net>,
-	"linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-	"dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
-	"maz@kernel.org" <maz@kernel.org>, "wens@csie.org" <wens@csie.org>,
-	"jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-	"samuel@sholland.org" <samuel@sholland.org>,
-	"agk@redhat.com" <agk@redhat.com>,
-	"snitzer@kernel.org" <snitzer@kernel.org>,
-	"dm-devel@redhat.com" <dm-devel@redhat.com>,
-	"rajur@chelsio.com" <rajur@chelsio.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
-	"alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-	"joabreu@synopsys.com" <joabreu@synopsys.com>,
-	"mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-	"krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-	"malattia@linux.it" <malattia@linux.it>,
-	"hdegoede@redhat.com" <hdegoede@redhat.com>,
-	"markgross@kernel.org" <markgross@kernel.org>,
-	"artur.paszkiewicz@intel.com" <artur.paszkiewicz@intel.com>,
-	"jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-	"martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-	"sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-	"fei1.li@intel.com" <fei1.li@intel.com>, "clm@fb.com" <clm@fb.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"dsterba@suse.com" <dsterba@suse.com>,
-	"jack@suse.com" <jack@suse.com>, "tytso@mit.edu" <tytso@mit.edu>,
-	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-	"dushistov@mail.ru" <dushistov@mail.ru>,
-	"luc.vanoostenryck@gmail.com" <luc.vanoostenryck@gmail.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"mhiramat@kernel.org" <mhiramat@kernel.org>,
-	"pmladek@suse.com" <pmladek@suse.com>,
-	"senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-	"andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
-	"linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-	"minchan@kernel.org" <minchan@kernel.org>,
-	"ngupta@vflare.org" <ngupta@vflare.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-	"dsahern@kernel.org" <dsahern@kernel.org>,
-	"pablo@netfilter.org" <pablo@netfilter.org>,
-	"kadlec@netfilter.org" <kadlec@netfilter.org>,
-	"fw@strlen.de" <fw@strlen.de>,
-	"jmaloy@redhat.com" <jmaloy@redhat.com>,
-	"ying.xue@windriver.com" <ying.xue@windriver.com>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"mykolal@fb.com" <mykolal@fb.com>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"martin.lau@linux.dev" <martin.lau@linux.dev>,
-	"song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"kpsingh@kernel.org" <kpsingh@kernel.org>,
-	"sdf@google.com" <sdf@google.com>,
-	"haoluo@google.com" <haoluo@google.com>,
-	"jolsa@kernel.org" <jolsa@kernel.org>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"wad@chromium.org" <wad@chromium.org>,
-	"willy@infradead.org" <willy@infradead.org>,
-	"sashal@kernel.org" <sashal@kernel.org>,
-	"ruanjinjie@huawei.com" <ruanjinjie@huawei.com>,
-	"quic_akhilpo@quicinc.com" <quic_akhilpo@quicinc.com>,
-	"David.Laight@aculab.com" <David.Laight@aculab.com>,
-	"herve.codina@bootlin.com" <herve.codina@bootlin.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-	"amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	"freedreno@lists.freedesktop.org" <freedreno@lists.freedesktop.org>,
-	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-	"linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-	"linux-sunxi@lists.linux.dev" <linux-sunxi@lists.linux.dev>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>,
-	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	"linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-	"linux-sparse@vger.kernel.org" <linux-sparse@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-	"coreteam@netfilter.org" <coreteam@netfilter.org>,
-	"tipc-discussion@lists.sourceforge.net" <tipc-discussion@lists.sourceforge.net>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Subject: Re: [PATCH 07/19 v6.1.y] minmax: make generic MIN() and MAX() macros
- available everywhere
-Message-ID: <2025092955-module-landfall-ed45@gregkh>
-References: <20250924202320.32333-1-farbere@amazon.com>
- <20250924202320.32333-8-farbere@amazon.com>
- <2025092923-stove-rule-a00f@gregkh>
- <85a995bb59474300aa3d5f973d279a13@amazon.com>
+	s=arc-20240116; t=1759158219; c=relaxed/simple;
+	bh=Txljvt4Nq0aTqDJEu/ZXvtErmn62T+wSfeV8ckXdBe8=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=UDpgnbXnDvEcH6ADDF+yxRRwEbvAsAM5EfjoQCPqYvWgsahLuRi7+sKKdaXdIsAj1uYaYu4/YOTofm+ff70p7aHxYMsj34lLt0LcVBoXmI4AdK1MqSC5wBF9Pg2xQvTSQWEtyUg5uJ+kKh19RFVwVRFuxdrJKGnfWvVuBQMZHsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MX0j0bys; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-b2ad83fe986so71472366b.3
+        for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 08:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759158216; x=1759763016; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=n1XrYQjyYcqW6k1KsAQsJ4lFAw/seygwzewKvhwTUHM=;
+        b=MX0j0bys+2sTRt04ax4Cv9+y88VhGGSiPiDidNJNjjci3SaJGmGJBGXUiLuN+2cv+/
+         sEA6MkKd5jJexcg8wgFweiMNKgkwi0Jc3Nlo7OIUa0cw9Y8R7hvYNxmqLwA7LBx5zwdP
+         M5zT+87/VSqx2Q/JQEe11mId4Rik7YkqnPVo+0KfMyIyPxAs9jLI14Z5QzcBPTv8zyky
+         7qMudrMAedHjqUior0bWZiabfSO1jLK7SqdlPKK5BRrWBDD+nfbbq1wT9j9IJdXjzSpB
+         mtECKRv7ATv0XLmwNta0ExKMd7JLN6fDtzUPqsfJj8VyE5IydH8qBgNZvQHKXKp7EDnQ
+         G3Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759158216; x=1759763016;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n1XrYQjyYcqW6k1KsAQsJ4lFAw/seygwzewKvhwTUHM=;
+        b=KWQKszQzgUC6tQaroRsD1Gp6QlqiAhHnuGEJQXczZGgT8KOcJcTf8ThEav/52AK97n
+         P1U4qAURZgGD8R3VBFUsONWfjAP8vIKA2w83vY53FSdlRmvqMMle08g/ZfkN9g3fUTuZ
+         bAZqpn2szG0GuWwHSVeYmHzehp/4xUa9+i2yILgrvD4JzkONt1a5SSap9F2GTMgh0mM5
+         DCZBPNpQ0FfXbrbCTItxGKX6886dJfV0FHYF1ROpGcXv4YBsQkCmoVoMTZPt9z52gNo8
+         V/ztBA03+egkXNt1GPaJ1hJLT1esABEZcf15jHQ7mAKnZQXp8vAM/9asFObrw6LKz6Kg
+         0Zgw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/Xu4KRJXQ+zdbpPzlfJvqYwJN752N7etVLILrGdPjKYVZtwWsnGG1hbVtDrb8SEpoeqo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5gYq8zGi2f9yb2TBc5aN/XZxBuc7uBCqAdAy7PnMbCZnhvDaI
+	EGkoXm1SwSgMYLIdiZZnxis7VBeP2Uii50AUHxNHQWXAtNpnFsKNK0vP
+X-Gm-Gg: ASbGncuT61L/WVN7+6tj15yK72n19zPkJ64e1KWYqs6WzH3yhTqpZCoE1LqkCNDdLUW
+	ssOrR7+t0ktPjN/BxYMDA4EesIdAd9dc9myHFRH63scRQ1TV9SIlwsTy4Y6U6u5UVh51N1rSjre
+	7zrrmjq/Mj8xFu/d9U1poaPdhlCsscQLT1NkGTcskVtrGhnzmPX8PPQ0i7fgoBZ+RU2cbDj0qlC
+	le/vCdF1RQl7xacc8EEcj8xSBRwkoa4HidWtO21Mbw3CypYRlLPD2C/rMpTpOvJhTkJg2AzMx8i
+	opXnwcvMJiimHno5S7t6EuvwdNFDIM3TMD8SoJJPQw4IREBTviq8XmlwU77Y7yPrFPPoxzhB8NW
+	2O4zN1LPyDwzj8sKk5Wsq5cme6h9v/Nap5U/BIvW060WT
+X-Google-Smtp-Source: AGHT+IGB16HNv+Jp1bLAOldcBF3kwkXvbqxilb33Pzgtml+xb1qiDD8br1uCM6zm8zTtfrtEl6gFPw==
+X-Received: by 2002:a17:906:c14b:b0:b07:c715:1e44 with SMTP id a640c23a62f3a-b34b8999455mr944929466b.5.1759158215348;
+        Mon, 29 Sep 2025 08:03:35 -0700 (PDT)
+Received: from [192.168.1.105] ([165.50.77.34])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b3d461a411fsm309818066b.10.2025.09.29.08.03.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Sep 2025 08:03:35 -0700 (PDT)
+Message-ID: <e3a0d8ff-d03d-4854-bf04-8ff8265b0257@gmail.com>
+Date: Mon, 29 Sep 2025 17:03:29 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85a995bb59474300aa3d5f973d279a13@amazon.com>
+User-Agent: Mozilla Thunderbird
+From: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Add -Wsign-compare C compilation flag
+To: David Laight <david.laight.linux@gmail.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ matttbe@kernel.org, martineau@kernel.org, geliang@kernel.org,
+ davem@davemloft.net, kuba@kernel.org, hawk@kernel.org, linux@jordanrome.com,
+ ameryhung@gmail.com, toke@redhat.com, houtao1@huawei.com,
+ emil@etsalapatis.com, yatsenko@meta.com, isolodrai@meta.com,
+ a.s.protopopov@gmail.com, dxu@dxuuu.xyz, memxor@gmail.com,
+ vmalik@redhat.com, bigeasy@linutronix.de, tj@kernel.org,
+ gregkh@linuxfoundation.org, paul@paul-moore.com,
+ bboscaccy@linux.microsoft.com, James.Bottomley@HansenPartnership.com,
+ mrpre@163.com, jakub@cloudflare.com, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ netdev@vger.kernel.org, mptcp@lists.linux.dev,
+ linux-kernel-mentees@lists.linuxfoundation.org, skhan@linuxfoundation.org,
+ david.hunter.linux@gmail.com
+References: <20250924162408.815137-1-mehdi.benhadjkhelifa@gmail.com>
+ <20250926124555.009bfcd6@pumpkin>
+Content-Language: en-US
+In-Reply-To: <20250926124555.009bfcd6@pumpkin>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Sep 29, 2025 at 02:39:26PM +0000, Farber, Eliav wrote:
-> > On Wed, Sep 24, 2025 at 08:23:08PM +0000, Eliav Farber wrote:
-> > > From: Linus Torvalds <torvalds@linux-foundation.org>
-> > >
-> > > [ Upstream commit 1a251f52cfdc417c84411a056bc142cbd77baef4 ]
-> >
-> > <snip>
-> >
-> > As this didn't go into 6.6.y yet, I'll stop here on this series for now.
-> > Please fix up for newer kernels first and then resend these.
+On 9/26/25 12:45 PM, David Laight wrote:
+> On Wed, 24 Sep 2025 17:23:49 +0100
+> Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com> wrote:
 > 
-> For 6.6.y I backported 15 commits:
-> https://lore.kernel.org/stable/20250922103241.16213-1-farbere@amazon.com/T/#t
+>> -Change all the source files and the corresponding headers
+>> to having matching sign comparisons.
+
+Hi david,
+sorry for the late reply.
+
+> 'Fixing' -Wsign-compare by adding loads of casts doesn't seem right.
+> The only real way is to change all the types to unsigned ones.
+The last v3 did only do that with no casting as it was suggested by 
+David too.
+
+> Consider the following:
+> 	int x = read(fd, buf, len);
+> 	if (x < 0)
+> 		return -1;
+> 	if (x > sizeof (struct fubar))
+> 		return -1;
+> That will generate a 'sign-compare' error, but min(x, sizeof (struct fubar))
+> doesn't generate an error because the compiler knows 'x' isn't negative.
+
+  Yes,-Wsign-compare does add errors with -Werror enabled in that case 
+and many other cases where the code is perfectly fine which is one of 
+it's drawbacks.Also I though that because of GCC/Clang heuristics 
+sometimes min() suppress the warning not because that the compiler knows 
+that x isn't negative.I'm probably wrong here.
+> A well known compiler also rejects:
+> 	unsigned char a;
+> 	unsigned int b;
+> 	if (b > a)
+> 		return;
+> because 'a' is promoted to 'signed int' before it does the check.
+
+In my knowledge,compilers don't necessarily reject the above code by 
+default. Since -Wall in GCC includes -Wsign-compare but -Wall in clang 
+doesn't, doing -Wall -Werror for clang compiler won't trigger an error 
+in the case above not even a warning.My changes are to make those 
+comparisons produce an error since the -Werror flag is already enabled 
+in the Makefile.
+
+> So until the compilers start looking at the known domain of the value
+> (not just the type) I enabling -Wsign-compare' is pretty pointless.
+
+I agree that enabling -Wsign-compare is pretty noisy. But it does have 
+some usefulness. Take for example this code:
+	int n = -5;
+	for (unsigned i = 0; i < n; i++) {
+     	// ...
+	}
+Since this is valid code by the compiler, it will allow it but n here is 
+promoted to an unsigned which converts -5 to being 4294967291 thus 
+making the loop run more than what was desired.of course,here the 
+example is much easy to follow and variables are very well set but the 
+point is that these could cause issues when hidden inside a lot of macro 
+code.
+
+> As a matter of interest did you actually find any bugs?
+No,I have not found any bug related to the current state of code in bpf 
+selftests but It works as a prevention mechanism for future bugs.Rather 
+than wait until something breaks in future code.
+> 	David
 > 
-> Why weren't all of them picked?
 
-Because one of them broke the build, as I wrote a week ago here:
-	https://lore.kernel.org/all/2025092209-owl-whisking-03e3@gregkh/
+Thank you for your time David.I would appreciate if you suggest on how I 
+can have a useful patch on this or if I should drop this.
+Best Regards,
+Mehdi
+> 
+>>
+>> Signed-off-by: Mehdi Ben Hadj Khelifa <mehdi.benhadjkhelifa@gmail.com>
+>> ---
+>> As suggested by the TODO, -Wsign-compare was added to the C compilation
+>> flags for the selftests/bpf/Makefile and all corresponding files in
+>> selftests and a single file under tools/lib/bpf/usdt.bpf.h have been
+>> carefully changed to account for correct sign comparisons either by
+>> explicit casting or changing the variable type.Only local variables
+>> and variables which are in limited scope have been changed in cases
+>> where it doesn't break the code.Other struct variables or global ones
+>> have left untouched to avoid other conflicts and opted to explicit
+>> casting in this case.This change will help avoid implicit type
+>> conversions and have predictable behavior.
+>>
+>> I have already compiled all bpf tests with no errors as well as the
+>> kernel and have ran all the selftests with no obvious side effects.
+>> I would like to know if it's more convinient to have all changes as
+>> a single patch like here or if it needs to be divided in some way
+>> and sent as a patch series.
+>>
+>> Best Regards,
+>> Mehdi Ben Hadj Khelifa
+> ...
 
-thanks,
-
-greg k-h
 
