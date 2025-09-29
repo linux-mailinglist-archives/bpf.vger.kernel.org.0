@@ -1,128 +1,151 @@
-Return-Path: <bpf+bounces-69940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7E05BA881B
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 11:02:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9909CBA89E7
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 11:30:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 968A3171331
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 09:02:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C2193AF7FE
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 09:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889DA26A08A;
-	Mon, 29 Sep 2025 09:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A7B2C3263;
+	Mon, 29 Sep 2025 09:25:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UttOKA4p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rkvlYptS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64AC81E1DE5
-	for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 09:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 328A928466A;
+	Mon, 29 Sep 2025 09:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759136568; cv=none; b=s/HoqY82sGpi3nTIiighgUDJ1x9mu1kDtD1FMGS9NtJaWZioqiaZtIQKDf0kmuiJXCQ6K/31GmHQtU8JOCaL88ePvWTTzhI9Pe1Aia2IbHouIbKn8egc8D2izubvG6x59xR5gh9i7/yVFB6Bc937hlb1XNaUxHBB7hzyf4LH4iQ=
+	t=1759137958; cv=none; b=ZNBcjPUgJ0TVQqA28h+o0w3AnASWKBj+bs5SgBxiiawAIZ3QjyTuTA5wvbm8Z7sjpgLLajHwf0+bBkq7K/uOo47apLOiX7df48P1gXGSwvmfqIjk1S7hkTfIBRMMv2qHgi0IADro7oHhajX8V5u5hYv78lE5FT6gNtzZvGwAVE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759136568; c=relaxed/simple;
-	bh=HbDR50AGAGqCWFE9RBG/GDxS3ix8J3y9vF7AjGkkqsw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sA09nfVCbhz2Y6WNOWXeJIxNNSQjaXqt0y8clPXSdzM8xgpM2tx7QSAL6zQQcvC4dlz2X0f8mMrS7TtpbWvuhxEKPObntD+1YOlxEOlFOncUhiYe3LXW+I75vTaWkajVEwDvylanEqPok/aEEDXEjarAlo7d33gZjQQFgiuqNbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UttOKA4p; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-46e42deffa8so32422605e9.0
-        for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 02:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759136565; x=1759741365; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HbDR50AGAGqCWFE9RBG/GDxS3ix8J3y9vF7AjGkkqsw=;
-        b=UttOKA4pm7qI+GYJAYwp3/4jzuxebTvk42SUxkENl17IixX9jlmso0HGbR1xEJZYVO
-         y9h9GBBmGuxvaK9VTsAbOdfERKmqX7Fh5V5uBOTLRssIqkfGdpTENFdDTdxQsCeg7a3p
-         T9LxKSmDv7wI9ZF/0yo1YcI17V6bf3bhgxSDAuJeQLUkeH3sBoprl5h7z66TSN2P81UN
-         4PHSODbPPaCtIvhzi355x8XtR4pMgNYNvOi/4Aene7Cfl31zCRO65R7zPaH0+f2rgKpU
-         mmuwzcAl++QEZVOTIcOCsd9L9Pg+PBkSexS6mr8McksUv6sOcSxLTW8e6WWf4xCthQO4
-         3nGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759136565; x=1759741365;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HbDR50AGAGqCWFE9RBG/GDxS3ix8J3y9vF7AjGkkqsw=;
-        b=sUM85VW4mccRxBZqKT7lUCE8rj6nMhwZniLsE8p0EsZhs6j+666YxKS6ghv5jl1k54
-         pGKiTC8IEvJeH7ML94LioiX7Gi2ltxYBYxOrj0fABQjLcyfBgSq7EcMAG13KImUSarVq
-         doswRkUmNlCsdtE5cM0R2tTJG5p1Ys+70AkmmqQ56f7SqOg4uyWSYzCJl6Ikhkenfi+/
-         yapDKhIDSr9CzX58r7hAoV9DW//pfg8p2xtZC5jY/XUqZq0/Z4Hhj2XbdGVhPfn8Rzky
-         ANcuFmKsrXoxlz5GvsJ/opTLiYf1KTa19IH50RbsHahtElyl2o3rBxKql0X0i3nDCYW0
-         HVKQ==
-X-Gm-Message-State: AOJu0YzNjuije1CLJmc0o07jHzET2cne2j6yzMCfnHhfFMF3wBhm76f6
-	ie8zZhB2rgR2M8+9PboGwy0dAeBUkQTIMnVpU8d+ReDth+Jc7rvUNeSk7skm+5yOGO44BQQjqbv
-	pDxQPErpGp+qRC5ZUS/Bw08TTnVMUr/4=
-X-Gm-Gg: ASbGnctzeAzAi7AfYmuj0/V2zf/C6t/6E32m2SQHbUpOLCqgDvJh+7QIUMeBCeLol0E
-	vLrcaETjpcRJcZFX5Y0GwTELtpH5n9j7PVxGV1BhyZre8PaiiEcDSgD5h/+b3M0OShO9Pj/ndsj
-	PtZFDXGQjtHXdLEf81J3Z0YtVLF0RAN4QH6HPzFoxHfmQIzvdR11+Dj9ZDCY1PQn8E96/MP9F31
-	CmVnA==
-X-Google-Smtp-Source: AGHT+IE5VCULlJEEtq/OIAqRQgmiR2iiq1YUFiZcIao4n7vQKXxhLzOn1UOh5lyPB3W4tM4t2LpDcaj4ecfMwDcqYk0=
-X-Received: by 2002:a05:600c:1986:b0:45d:d8d6:7fcc with SMTP id
- 5b1f17b1804b1-46e32a057c2mr131581055e9.27.1759136564518; Mon, 29 Sep 2025
- 02:02:44 -0700 (PDT)
+	s=arc-20240116; t=1759137958; c=relaxed/simple;
+	bh=5NSXHwAmHTN2RIz7pn4i8jJ6CQKzoJ5MskXvfH6ROts=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=DUZMBLyeYEz0eRZS50ZBnl9GYNkOA0xjrbK+ndbdyqeDq78D3j+xAWI8fbLumP2ZPbGliGceY4mtNku4jFL+DCmIPUksaIuuxvaj5crrpB/2mdsfeMirZy9cAsOnLS9j0sNyRl0PMHemFtsDWkr8aSfMQCuCZdPWFn+iIQJC19g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rkvlYptS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 218C8C4CEF4;
+	Mon, 29 Sep 2025 09:25:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759137957;
+	bh=5NSXHwAmHTN2RIz7pn4i8jJ6CQKzoJ5MskXvfH6ROts=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=rkvlYptSIM7qq4/NP3QajaglGReKJujuT+HH+d7y30N/hv2ZuAApCEsolRmcMYSvc
+	 z7jOQnfJ7002h33xDqNZ0Y6NKzDvcxNn7F4y6TYAFSG+2CD4bxGrTtM2KpI2F7TOTT
+	 IDR8WiIjY+G+1pgW6Qsk3drGhUQdrNfHPVTSVZ9VGuqH0lMFOIfivk8mJbF2Z0vl+o
+	 241tDwPr0nvxy1qmfN0Hu7dDxL0O1T3vuDFDnhznmfSg/I6RY0WvITD9DPTTYK5PzR
+	 Ts/IjLMUQu38wa8K1DyG5m39SaFrIBEVtqJ633lE2si8cz2vwMuhsdebKT/8mivhvc
+	 3Fjcu2x+gtj5w==
+Message-ID: <ab14f430-f4a7-4d5f-8062-8d2113cf8e0d@kernel.org>
+Date: Mon, 29 Sep 2025 10:25:54 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250927205304.199760-1-memxor@gmail.com>
-In-Reply-To: <20250927205304.199760-1-memxor@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 29 Sep 2025 10:02:33 +0100
-X-Gm-Features: AS18NWBVLVQpHRJXRNZmA3aS0Ig3ZTVLl_IKPIsfu6QrMFKrnv30nA13LkopHXQ
-Message-ID: <CAADnVQJDEMXmvFJzcug-bpZoYaghKOY+8u1uCo2=3-r60Xg3Vw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Add stress test for rqspinlock
- in NMI
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add hash chain signature support for
+ arbitrary maps
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, bpf@vger.kernel.org,
+ linux-security-module@vger.kernel.org, kpsingh@kernel.org,
+ paul@paul-moore.com, kys@microsoft.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org,
+ James.Bottomley@hansenpartnership.com, wufan@linux.microsoft.com
+References: <20250926203111.1305999-1-bboscaccy@linux.microsoft.com>
+ <20250926203111.1305999-2-bboscaccy@linux.microsoft.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20250926203111.1305999-2-bboscaccy@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Sep 27, 2025 at 9:53=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> Introduce a kernel module that will exercise lock acquisition in the NMI
-> path, and bias toward creating contention such that NMI waiters end up
-> being non-head waiters. Prior to the rqspinlock fix made in the commit
-> 0d80e7f951be ("rqspinlock: Choose trylock fallback for NMI waiters"), it
-> was possible for the queueing path of non-head waiters to get stuck in
-> NMI, which this stress test reproduces fairly easily with just 3 CPUs.
->
-> Both AA and ABBA flavors are supported, and it will serve as a test case
-> for future fixes that address this corner case. More information about
-> the problem in question is available in the commit cited above. When the
-> fix is reverted, this stress test will lock up the system.
->
-> To enable this test automatically through the test_progs infrastructure,
-> add a load_module_params API to exercise both AA and ABBA cases when
-> running the test.
->
-> Note that the test runs for at most 5 seconds, and becomes a noop after
-> that, in order to allow the system to make forward progress. In
-> addition, CPU 0 is always kept untouched by the created threads and
-> NMIs. The test will automatically scale to the number of available
-> online CPUs.
->
-> Note that at least 3 CPUs are necessary to run this test, hence skip the
-> selftest in case the environment has less than 3 CPUs available.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+2025-09-26 13:30 UTC-0700 ~ Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+> This patch introduces hash chain support for signature verification of
+> arbitrary bpf map objects which was described here:
+> https://lore.kernel.org/linux-security-module/20250721211958.1881379-1-kpsingh@kernel.org/
+> 
+> The UAPI is extended to allow for in-kernel checking of maps passed in
+> via the fd_array. A hash chain is constructed from the maps, in order
+> specified by the signature_maps field. The hash chain is terminated
+> with the hash of the program itself.
+> 
+> Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
 > ---
-> Changelog:
-> v1 -> v2
-> v1: https://lore.kernel.org/bpf/20250926235907.3357831-1-memxor@gmail.com
+>  include/uapi/linux/bpf.h                      |  6 ++
+>  kernel/bpf/syscall.c                          | 73 ++++++++++++++++++-
+>  .../bpf/bpftool/Documentation/bpftool-gen.rst |  7 +-
+>  tools/bpf/bpftool/gen.c                       | 27 ++++++-
+>  tools/bpf/bpftool/main.c                      |  9 ++-
+>  tools/bpf/bpftool/main.h                      |  1 +
+>  tools/bpf/bpftool/sign.c                      | 17 ++++-
+>  tools/include/uapi/linux/bpf.h                |  6 ++
+>  tools/lib/bpf/libbpf.h                        |  3 +-
+>  tools/lib/bpf/skel_internal.h                 |  6 +-
+>  10 files changed, 143 insertions(+), 12 deletions(-)
+> 
 
-pw-bot fell asleep. The patch was applied yesterday.
+[...]
+
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> index d0a36f442db72..b632ab87adf20 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> @@ -16,7 +16,7 @@ SYNOPSIS
+>  
+>  **bpftool** [*OPTIONS*] **gen** *COMMAND*
+>  
+> -*OPTIONS* := { |COMMON_OPTIONS| | { **-L** | **--use-loader** } | [ { **-S** | **--sign** } {**-k** <private_key.pem>} **-i** <certificate.x509> ] }
+> +*OPTIONS* := { |COMMON_OPTIONS| | { **-L** | **--use-loader** } | [ { **-S** | **--sign** } { **-M** | **--sign-maps** } {**-k** <private_key.pem>} **-i** <certificate.x509> ] }
+>  
+>  *COMMAND* := { **object** | **skeleton** | **help** }
+>  
+> @@ -190,6 +190,11 @@ OPTIONS
+>      For skeletons, generate a signed skeleton. This option must be used with
+>      **-k** and **-i**. Using this flag implicitly enables **--use-loader**.
+>  
+> +-M --sign-maps
+> +    For skeletons, generate a signed skeleton that includes a hash chain for the
+> +    skeletons maps. This option must be used with **-k** and **-i**. Using this
+> +    flag implicitly enables **--use-loader** and **--sign**.
+> +
+
+
+Hi! Pardon my ignorance, I haven't followed all the details of the
+discussions around signing. Is there a use case for signing the programs
+only (using -S) without signing the maps (using -M)? Or should we
+consider collapsing maps signing under the existing -S option?
+
+If you do keep the new option, would you mind updating the bash
+completion file, please? Simply adding the long form like this:
+
+------
+
+diff --git i/tools/bpf/bpftool/bash-completion/bpftool w/tools/bpf/bpftool/bash-completion/bpftool
+index 53bcfeb1a76e..f8c217f09989 100644
+--- i/tools/bpf/bpftool/bash-completion/bpftool
++++ w/tools/bpf/bpftool/bash-completion/bpftool
+@@ -262,7 +262,7 @@ _bpftool()
+     # Deal with options
+     if [[ ${words[cword]} == -* ]]; then
+         local c='--version --json --pretty --bpffs --mapcompat --debug \
+-            --use-loader --base-btf --sign -i -k'
++            --use-loader --base-btf --sign --sign-maps -i -k'
+         COMPREPLY=( $( compgen -W "$c" -- "$cur" ) )
+         return 0
+     fi
+
+------
+
+Other than that, the changes for bpftool look OK from my side. I'd
+probably split the patch further into kernel/libbpf/bpftool changes, but
+that's your call.
+
+Thanks,
+Quentin
 
