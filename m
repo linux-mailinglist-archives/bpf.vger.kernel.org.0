@@ -1,130 +1,189 @@
-Return-Path: <bpf+bounces-69949-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69951-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD95CBA96D7
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 15:50:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5D2BA97C4
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 16:09:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5CED16CB11
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 13:50:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9229616661C
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 14:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C7433090E6;
-	Mon, 29 Sep 2025 13:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43DD3090CE;
+	Mon, 29 Sep 2025 14:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2IR/w1Nh"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="GCYix9qL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8312A2AD24;
-	Mon, 29 Sep 2025 13:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7603821C167
+	for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 14:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759153800; cv=none; b=FfEpG40vNgmDbGbR1AiTpKYQoDXO7nmx14qTzejjhTUbCePZiD9vjkNaZPjRNE6N5pwzJTbJcCOfbuPmt6nTQn7tiurbV2cLoGikGtZkv1uzf1B6WD9z2IbrVBIfZccTOLluTYeeFuufuvejZFOVuiBGRezLgb0GOxUA9RQQwAk=
+	t=1759154959; cv=none; b=ppHn6MGuRhRqvDz0Nj0pOa0M4ZmrwqvcJE7uMOzLNf2X4MXbIACIP8aRFloz//nKS1xHzfgMzx96pigNDk/4MgDHy8Y1zJ/LggCCQ76vWnLQ9vIuk1qiuidS9CBOL5NVJLJ35Zm/EWZ7s/KNnRBZTQbCTx+3nR7PZj2B+omLn7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759153800; c=relaxed/simple;
-	bh=ZP+96JhjkkrBnIK+mwXVIYMy7g62X4hPExrb6o1Qe/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g6XKS7nPhbh950zA2K8+x3h3QFYuDWeVRV8F0IfpcurRSqF5Tw4M5WnX7Lgi84DBRf2e/znONUwjhAskkJZMmMaa6KDUgsRo1bplIRvNRbSTQ5rPJzNxg4a9175jjZ8Cvl/z2kDGZqrexwZKpY4zmRT5iI7SVLNhUY+6YrLOWEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=2IR/w1Nh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F31BC4CEF7;
-	Mon, 29 Sep 2025 13:49:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1759153800;
-	bh=ZP+96JhjkkrBnIK+mwXVIYMy7g62X4hPExrb6o1Qe/s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=2IR/w1NhD6rO3VZzjaHsa/G5y5Y6EFTRaRCQoBFOIMmzFRk3gM0W0Mf+I/1sje/zM
-	 6eTkAuMiRzcWzHrNhmk6po9GpoWWRMGPau/mhN/FLC8qEKMftJ9tX/aLdXfc1Agx/E
-	 GgRNIXRtdpmNbgceNNbtDpd4ehAmTPd7HqANSrhw=
-Date: Mon, 29 Sep 2025 15:49:56 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Eliav Farber <farbere@amazon.com>
-Cc: linux@armlinux.org.uk, richard@nod.at, anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net, dave.hansen@linux.intel.com,
-	luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-	tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
-	james.morse@arm.com, rric@kernel.org, harry.wentland@amd.com,
-	sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
-	alexander.deucher@amd.com, christian.koenig@amd.com,
-	Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-	evan.quan@amd.com, james.qian.wang@arm.com, liviu.dudau@arm.com,
-	mihail.atanassov@arm.com, brian.starkey@arm.com,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, robdclark@gmail.com, quic_abhinavk@quicinc.com,
-	dmitry.baryshkov@linaro.org, sean@poorly.run, jdelvare@suse.com,
-	linux@roeck-us.net, linus.walleij@linaro.org,
-	dmitry.torokhov@gmail.com, maz@kernel.org, wens@csie.org,
-	jernej.skrabec@gmail.com, samuel@sholland.org, agk@redhat.com,
-	snitzer@kernel.org, dm-devel@redhat.com, rajur@chelsio.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, peppe.cavallaro@st.com,
-	alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-	mcoquelin.stm32@gmail.com, krzysztof.kozlowski@linaro.org,
-	malattia@linux.it, hdegoede@redhat.com, markgross@kernel.org,
-	artur.paszkiewicz@intel.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, sakari.ailus@linux.intel.com,
-	fei1.li@intel.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, jack@suse.com, tytso@mit.edu,
-	adilger.kernel@dilger.ca, dushistov@mail.ru,
-	luc.vanoostenryck@gmail.com, rostedt@goodmis.org,
-	mhiramat@kernel.org, pmladek@suse.com, senozhatsky@chromium.org,
-	andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-	minchan@kernel.org, ngupta@vflare.org, akpm@linux-foundation.org,
-	yoshfuji@linux-ipv6.org, dsahern@kernel.org, pablo@netfilter.org,
-	kadlec@netfilter.org, fw@strlen.de, jmaloy@redhat.com,
-	ying.xue@windriver.com, andrii@kernel.org, mykolal@fb.com,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	jolsa@kernel.org, shuah@kernel.org, keescook@chromium.org,
-	wad@chromium.org, willy@infradead.org, sashal@kernel.org,
-	ruanjinjie@huawei.com, quic_akhilpo@quicinc.com,
-	David.Laight@aculab.com, herve.codina@bootlin.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-edac@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-	linux-hwmon@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-sunxi@lists.linux.dev, linux-media@vger.kernel.org,
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-sparse@vger.kernel.org,
-	linux-mm@kvack.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, tipc-discussion@lists.sourceforge.net,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	stable@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Subject: Re: [PATCH 07/19 v6.1.y] minmax: make generic MIN() and MAX() macros
- available everywhere
-Message-ID: <2025092923-stove-rule-a00f@gregkh>
-References: <20250924202320.32333-1-farbere@amazon.com>
- <20250924202320.32333-8-farbere@amazon.com>
+	s=arc-20240116; t=1759154959; c=relaxed/simple;
+	bh=48s8Hg61qVmVWj3SNE5V5DpYtluWFVwT7W9u4lbbMTU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=JhTfy4SjmKBBrhR1wlsSLOnKTXNqxCAtBG+jckGpqEp5ypJI7qiyXeAmhKlW2vqmuQ3buOFIHx8gKJPloVoVyZqF6uim46NWnPfkoUjaq1cMt5Q7YMldflaGyMj02lFcJwNPqk/t8pPRifyozyLUXnyr+14XwkA6eETXTI3em4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=GCYix9qL; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-afcb7322da8so919253266b.0
+        for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 07:09:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1759154956; x=1759759756; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wN+LPFtxhJNfpbpMv95C2Zwlgczra1tC+I74+t8xWMk=;
+        b=GCYix9qLfUqon5KEm+8QLSnCGPGvMLLKIqcdWgHAijLZx8wEaTyxHODcT8r8FVSPQc
+         OlNsrAHknNwC2yEHKOMzhMb9ikKDkkAgMBgKkmWJOW4IPVXSlaLQjHyWn9DAaGAWbIma
+         l5QkGjlj8pXxAhyqCTUwFMfqC0HjAgOswje3KNyVEqxJztViSkG1UKPWA3j6oKXypCtU
+         TLvUE4rQml9e1rqpE4rx5U00UzvWFD+JVFB5w6PNIiuHGw0zepkAGYxbkXgbgkrDrpaB
+         GWhs8yZQRrPnWW7K0GgyHzlv3A9fmzuO4WVsNUgPcM6CXQKFK6U+rP/WWk0bCisNlFs5
+         UeJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759154956; x=1759759756;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wN+LPFtxhJNfpbpMv95C2Zwlgczra1tC+I74+t8xWMk=;
+        b=s00FljhGfXp6Dypo7YWnqvr7vONX7/y9lyxCpMsCuZYmK54cZwGN8YYMIorVUcboW+
+         y/9LFEqcQsSMdZO+tGeIyjEWd+/eFwio8BNdBBKphJ0C1dcZ5B2vf81FT9IyFMJITzuJ
+         /pjfHBAyrUwdBoQke0BdHucQYURHDYGCtV1aiguBy1Fz4tSUfXHxw02qUk57m3nF4t2v
+         pXXv7EPvDL00DpmnUe5kaqXjpKjDPPdOjIaJ597YqlqVO1xn/pZtBPfG2SkYNbKuYFnZ
+         wrtFpn5Kht16W4tMrgAZjZNRuFtk1yMu8AxxvmtEiWg/ZDT6fMX38VhTBZCQ8d7XhDQt
+         /ZMA==
+X-Gm-Message-State: AOJu0Yw9e4x/pYlJUHtPUvi7hE36rT89UUfuaaw7szkxkUmgrGTGPu53
+	gi8W3Y1hGL6TLrBIhgYkhSHsFp7XqVuFXS9mda/akwlCdXucA2jqFS7Bx9mAkvvzCjw=
+X-Gm-Gg: ASbGncs3UpvYFdOoAwJMoVPMV3KyX0+px9oqEyEmanMn8DXjaxYRllQGOupB09I+tbB
+	Jf/Czxu8oboydYdVkvqUWdLMJyzQrTi2/BHlUc73g2LwXq6viM5O6tSa1eTu8VoXAjJN4aZdQHn
+	b1Go0FZgj/37WkgWdDp92tdIsAA2md0iwrxWPeSTBIyLgu0JFnc8bZ3SgBs+/jWzzMqWLCi0q79
+	v29TWHYpAYAlOLcy6s+1RPWap9KlJeLAzuXcIK7YmH5biqWqVikRFiv0pn+YpNeBIdxSzge1KbZ
+	HWcEJJGIjk8C2bnhOMsG9leElQVPiCP0IeO1Ak1DVcR+QYOIncLtVscxrKD/PEXrTevccbDHJbZ
+	OCLGBcTcJ1ddf8EX1S+jN8GBxvMRXk7RsU9Ce6rsRZXxnPLdidS7+ccEzv1ZI0o3WW6WOReQ=
+X-Google-Smtp-Source: AGHT+IG8ZUQJ2MKJPm6k+4REUWeQbBnmHCKYES9QZv9JQHcFsnBpSWlzdUQHFeIL00+Gdja9OgEDiQ==
+X-Received: by 2002:a17:906:3587:b0:b3d:4ab4:ea2f with SMTP id a640c23a62f3a-b3d4ab4eeefmr474118666b.19.1759154955716;
+        Mon, 29 Sep 2025 07:09:15 -0700 (PDT)
+Received: from cloudflare.com (79.184.145.122.ipv4.supernova.orange.pl. [79.184.145.122])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b3d277598bdsm316166766b.3.2025.09.29.07.09.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Sep 2025 07:09:14 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [PATCH RFC bpf-next 0/9] Make TC BPF helpers preserve skb metadata
+Date: Mon, 29 Sep 2025 16:09:05 +0200
+Message-Id: <20250929-skb-meta-rx-path-v1-0-de700a7ab1cb@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250924202320.32333-8-farbere@amazon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAAGT2mgC/x2MQQqDMBAAvyJ7diEqInoVfIDX0sOmbnQRY0hCC
+ Yh/b+xxBmYuCOyFAwzFBZ6/EuS0GaqygM9GdmWUJTPUqm5VrxoMu8aDI6FP6ChuqLlVuqGqI9N
+ DzpxnI+m/fME8jY/TzqDlFOF93z/W6b4rcwAAAA==
+X-Change-ID: 20250903-skb-meta-rx-path-be50b3a17af9
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, kernel-team@cloudflare.com
+X-Mailer: b4 0.15-dev-07fe9
 
-On Wed, Sep 24, 2025 at 08:23:08PM +0000, Eliav Farber wrote:
-> From: Linus Torvalds <torvalds@linux-foundation.org>
-> 
-> [ Upstream commit 1a251f52cfdc417c84411a056bc142cbd77baef4 ]
+This patch set continues our work [1] to allow BPF programs and user-space
+applications to attach multiple bytes of metadata to packets via the
+XDP/skb metadata area.
 
-<snip>
+The focus of this patch set it to ensure that skb metadata remains intact
+when packets pass through a chain of TC BPF programs that call helpers
+operating on skb->data.
 
-As this didn't go into 6.6.y yet, I'll stop here on this series for now.
-Please fix up for newer kernels first and then resend these.
+Currently, several helpers that adjust the skb->data pointer or reallocate
+skb->head do not preserve metadata at its expected location (before the MAC
+header) after the operation. Affected helpers include:
 
-thanks,
+- bpf_skb_adjust_room
+- bpf_skb_change_head
+- bpf_skb_change_proto
+- bpf_skb_change_tail
+- bpf_skb_vlan_push
+- bpf_skb_vlan_pop
+- (did I miss any?)
 
-greg k-h
+Sadly, in TC BPF context, metadata must be moved whenever headroom changes
+to keep the skb->data_meta pointer valid (unless someone can come up with a
+workaround for that...).
+
+We can patch the helpers in at least two different ways:
+
+1. Integrate metadata move into header move
+
+   Replace the existing memmove, which follows skb_push/pull, with a helper
+   that moves both headers and metadata in a single call. This avoids an
+   extra memmove but reduces transparency.
+
+        skb_pull(skb, len);
+-       memmove(skb->data, skb->data - len, n);
++       skb_postpull_data_move(skb, len, n);
+        skb->mac_header += len;
+
+        skb_push(skb, len)
+-       memmove(skb->data, skb->data + len, n);
++       skb_postpush_data_move(skb, len, n);
+        skb->mac_header -= len;
+
+2. Move metadata separately
+
+   Add a dedicated metadata move after the header move. This is more
+   explicit but costs an additional memmove.
+
+        skb_pull(skb, len);
+        memmove(skb->data, skb->data - len, n);
++       skb_metadata_postpull_move(skb, len);
+        skb->mac_header += len;
+
+        skb_push(skb, len)
++       skb_metadata_postpush_move(skb, len);
+        memmove(skb->data, skb->data + len, n);
+        skb->mac_header -= len;
+
+This RFC implements option (1), expecting that "you can have just one
+memmove" will be the most obvious feedback, while readability is a somewhat
+more subjective matter of taste (which I don't claim to have ;-).
+
+TODO:
+
+- Extend skb metadata tests inselftests/bpf. So far, I've only adapted
+tests for cloned skbs. However, the changes have been tested using a shell
+script–based test suite [2], which allowed for faster iteration in this
+early phase.
+
+PTAL. Early comments and feedback much appreciated.
+
+Thanks,
+-jkbs
+
+[1] https://lore.kernel.org/all/20250814-skb-metadata-thru-dynptr-v7-0-8a39e636e0fb@cloudflare.com/
+[2] https://github.com/jsitnicki/skb-metadata-tests
+
+---
+Jakub Sitnicki (9):
+      net: Preserve metadata on pskb_expand_head
+      net: Helper to move packet data and metadata after skb_push/pull
+      vlan: Make vlan_remove_tag return nothing
+      bpf: Make bpf_skb_vlan_pop helper metadata-safe
+      bpf: Make bpf_skb_vlan_push helper metadata-safe
+      bpf: Make bpf_skb_adjust_room metadata-safe
+      bpf: Make bpf_skb_change_proto helper metadata-safe
+      bpf: Make bpf_skb_change_head helper metadata-safe
+      selftests/bpf: Expect unclone to preserve metadata
+
+ include/linux/if_vlan.h                            | 13 ++-
+ include/linux/skbuff.h                             | 74 +++++++++++++++++
+ net/core/filter.c                                  | 16 ++--
+ net/core/skbuff.c                                  |  2 -
+ .../bpf/prog_tests/xdp_context_test_run.c          | 20 ++---
+ tools/testing/selftests/bpf/progs/test_xdp_meta.c  | 94 +++++++++++++---------
+ 6 files changed, 156 insertions(+), 63 deletions(-)
+
 
