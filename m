@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-69935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F54BA851F
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 09:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EE54BA856A
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 09:55:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FAFC162C6B
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 07:50:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4C51177CC3
+	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 07:55:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60F80260569;
-	Mon, 29 Sep 2025 07:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB57269D17;
+	Mon, 29 Sep 2025 07:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="pHGgyYnG"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="iJLGwQjv"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DFB25C81B;
-	Mon, 29 Sep 2025 07:50:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2399266B67;
+	Mon, 29 Sep 2025 07:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759132226; cv=none; b=l4CkpDoRANUto8laONvAr+LFkjsmvnl6ZU1dx3J20zlJdB2wWSmZpoMmURbUa4OL9ZX2OnjHNrTo91NkDExCOJ31WHrhC31IR/izbgs60GV1vUSnkoT9WtjUMxLL0fNF8wZJ9ZT3LRBx7AE93rCqu0BnpvccX9zRlXPFPZ0xwJU=
+	t=1759132541; cv=none; b=kS3Ez0qjVqHJzSO/cNCpY3NJoHmeszhyW/UMPqzC4MCmseu6b8yD3Xo7zcdi4cp03X8xWTEBsUCC5jiv3TXZoP0y2EFMYvjAAKCU1SFdyyW/v5RmllV2fOoGaB92CpWSwB55nVG+QW8/cn0IjKffrRVolti1YozfCHrwt+fKj4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759132226; c=relaxed/simple;
-	bh=wHHgT9TWN3ummlMcBAEKy21fR9iI72gTe4X5SFt/kh8=;
+	s=arc-20240116; t=1759132541; c=relaxed/simple;
+	bh=s9duhkn+Oy/8XxWsWjAIhr4fGMNSAQzlL72/A49WId8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q+rzwottOuF9dLlzTf8YwV3KCbdpzX4Mf6OkhdmPmwUuZxT5KTLV3mQJkh6Pdw+nKQhUbBg4mqvVNPYwFX7uAVRBxK3NEWAWM5KWxDlGHlC8hCzgfeVHzqti19dfCn2ciNDcYleRf1kgWX0cLF7RJpDCPqTP6t6+/ZXJpDEYAMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=pHGgyYnG; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=WWoc+OguZUaNJ1t5dMbiGig5GCxztmeu8/kvz6YAubBbzn5DhACi9eips64qQPCw/qdgvYcsktjysG/dcy0/XjCGdsmyc8dszLoqcjC5ZS8ufC+ciXVkeWMZAVeCoyw2+QkdYDaTHU1B4qDGpIW4kBUs6hRCwOTduPHYoOY5icU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=iJLGwQjv; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=1+zncF8b3MbPJoGw6nVrDy+l6atv/uUptEYhnyEZQn8=; b=pHGgyYnGncwYc8NQ1dVUB1SewU
-	2dsCej+n8EhIcwg0Ix2eZEuUEjqx488Ter7tgN461IkvkZ0ffvkUe4xsdPFRamaz9URSbGGFRkXMp
-	Ry/BGpLZAZ92YogIUryYcd41/OcO5ruwJ/fVACy5JygwtYi0C+CfCYDvBwEUVdMxzuxUP06bpDy16
-	aD4LYggv/5ACaneqReTn9PtiQR2kOBA3SAfmqkdhPf2gAROiE+FSx1xs5Kg7/4X87RriFEwKZIXN0
-	Z+aOPDIBNvJn+IPCMsTblj2r3d6Qw0IUVCamKkHG11sKkExybdAzdqE/L3TjSwaSFJovaCuEKO+zV
-	HgDHkUnA==;
+	bh=iVR1ip5/1sScn5VRVaoazvic8ifwlUIPspBFeeJkQs8=; b=iJLGwQjvpqBMXN1G846iNF0D6t
+	LmUf/oK5hnBAYoNHpDn67CduF9jgZa9G9VupzbxWFdpfhadpgJUn8JoMIt7jYqoxPPaXpumnqDU/d
+	IX5ZX+NzER+QAYowPwPQCtkjGbl0YalyivuefD0StGQJptCaTWsF8Z+QyOKqveSMik9StMVrHMsVQ
+	yP9AD1pFtPTUvAcd5rhJdapV3lzzESu5cCJ/wVTSSm96Cu6k6O05P2WSwzWHTVZd3VDuhd/E7LlHo
+	0hoal2jcFTXVCiCTkzvpgyBLj2VBFUeBnn0/eMpDfjDRP0WALTFCWlQsIdH+5WutDAC2HPec4DD2i
+	aRDna6cA==;
 Received: from sslproxy04.your-server.de ([78.46.152.42])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1v38e1-000FJu-1s;
-	Mon, 29 Sep 2025 09:50:01 +0200
+	id 1v38jJ-000G4v-0B;
+	Mon, 29 Sep 2025 09:55:29 +0200
 Received: from localhost ([127.0.0.1])
 	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1v38e0-000K2r-2K;
-	Mon, 29 Sep 2025 09:50:00 +0200
-Message-ID: <b630ea02-3e31-4be9-b929-9b06d93bdc03@iogearbox.net>
-Date: Mon, 29 Sep 2025 09:50:00 +0200
+	id 1v38jI-000B9y-0z;
+	Mon, 29 Sep 2025 09:55:28 +0200
+Message-ID: <5950fc56-bfbb-4dc0-9f9e-e84117b0b550@iogearbox.net>
+Date: Mon, 29 Sep 2025 09:55:27 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 16/20] netkit: Implement rtnl_link_ops->alloc
+Subject: Re: [PATCH net-next 14/20] netkit: Add single device mode for netkit
 To: Jordan Rife <jordan@jrife.io>
 Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
  davem@davemloft.net, razor@blackwall.org, pabeni@redhat.com,
@@ -71,8 +71,8 @@ Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
  martin.lau@kernel.org, maciej.fijalkowski@intel.com,
  magnus.karlsson@intel.com, David Wei <dw@davidwei.uk>
 References: <20250919213153.103606-1-daniel@iogearbox.net>
- <20250919213153.103606-17-daniel@iogearbox.net>
- <3yy7htlhsx2c2v7jkoh23iywiwacxdb3y7qpr2s5hwjw3zazhb@kivqcblixanb>
+ <20250919213153.103606-15-daniel@iogearbox.net>
+ <mcwr6vpkmbmkrixfnwyxuph6ziy5r2of67vvhgkvpiwxezfdtu@mitfrbd52rty>
 Content-Language: en-US
 From: Daniel Borkmann <daniel@iogearbox.net>
 Autocrypt: addr=daniel@iogearbox.net; keydata=
@@ -118,42 +118,34 @@ Autocrypt: addr=daniel@iogearbox.net; keydata=
  rUD9YI1Je/WifL/HbIubHCCdK8/N7rblgUrZJMG3W+7vAvZsOh/6VTZeP4wCe7Gs/cJhE2gI
  DmGcR+7rQvbFQC4zQxEjo8fNaTwjpzLM9NIp4vG9SDIqAm20MXzLBAeVkofixCsosUWUODxP
  owLbpg7pFRJGL9YyEHpS7MGPb3jSLzucMAFXgoI8rVqoq6si2sxr2l0VsNH5o3NgoAgJNIg=
-In-Reply-To: <3yy7htlhsx2c2v7jkoh23iywiwacxdb3y7qpr2s5hwjw3zazhb@kivqcblixanb>
+In-Reply-To: <mcwr6vpkmbmkrixfnwyxuph6ziy5r2of67vvhgkvpiwxezfdtu@mitfrbd52rty>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Virus-Scanned: Clear (ClamAV 1.0.9/27776/Sun Sep 28 10:26:36 2025)
 
-On 9/27/25 3:17 AM, Jordan Rife wrote:
-> On Fri, Sep 19, 2025 at 11:31:49PM +0200, Daniel Borkmann wrote:
->> From: David Wei <dw@davidwei.uk>
->>
->> Implement rtnl_link_ops->alloc that allows the number of rx queues to be
->> set when netkit is created. By default, netkit has only a single rxq (and
->> single txq). The number of queues is deliberately not allowed to be changed
->> via ethtool -L and is fixed for the lifetime of a netkit instance.
->>
->> For netkit device creation, numrxqueues with larger than one rxq can be
->> specified. These rxqs are then mappable to real rxqs in physical netdevs:
->>
->>    ip link add numrxqueues 2 type netkit
->>
->> As a starting point, the limit of numrxqueues for netkit is currently set
->> to 2, but future work is going to allow mapping multiple real rxqs from
+On 9/27/25 3:10 AM, Jordan Rife wrote:
+> On Fri, Sep 19, 2025 at 11:31:47PM +0200, Daniel Borkmann wrote:
+[...]
 > 
-> Is the reason for the limit just because QEMU can't take advantage of
-> more today or is there some other technical limitation?
+> This seems very cool. I'm curious, in single device mode, how would
+> traffic originating in the host ns make its way into a pod hosting a
+> QEMU VM using an AF_XDP backend? How would redirection work between two
+> such VMs on the same host?
 
-Mainly just to keep the initial series smaller, plan is to lift this to more
-queues for both io_uring and af_xdp. QEMU supports multiple queues for af_xdp
-but when I spoke to QEMU folks, there is still the issue that QEMU internally
-needs to be able to support processing inbound traffic through multiple threads
-so its not a backend but QEMU internal limitation atm.
+For this case the plan would be to have the regular netkit pair connecting
+host to Pod through skbs and then we'd direct traffic to that queue bound
+netkit device which injects it into the af_xdp socket in ndo_start_xmit.
 
->> physical netdevs, potentially at some point even from different physical
->> netdevs.
+[...]
+>> +	if (pair != NETKIT_DEVICE_PAIR &&
 > 
-> What would be the use case for having proxied queues from multiple
-> physical netdevs to the same netkit device? Couldn't you just create
-> multiple netkit devices, one per physical device?
-Yes, multiple netkit devices would work as well in that case.
+> nit: IMO this would be a little clearer without the inverted logic:
+
+Ack, will fix.
+
+[...]
+> 
+> Reviewed-by: Jordan Rife <jordan@jrife.io>
+
+Thanks!
 
