@@ -1,258 +1,296 @@
-Return-Path: <bpf+bounces-70008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98147BAC2A1
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 11:02:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83DB0BAC8CC
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 12:49:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21F937A952F
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 09:00:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E082A189D8C0
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 10:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89472853F1;
-	Tue, 30 Sep 2025 09:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AFD22F7ACE;
+	Tue, 30 Sep 2025 10:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TYbcZse5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hTWrTkYT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8CC7D07D
-	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 09:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31C71F5820
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 10:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759222934; cv=none; b=lMEpFD5dg6Dzh8XxZ830YAUdHGtgXNXO2adyxYPxHQToqG7fprjXblo4D6aVGkF8mxqNko8Qr2JJbzHwGII+UErJXKQGDaxGXXSGH6J1Nu2+2BnEJA91MQlTw5ydP4xjq19ZJtGqJPJyLApcRz7i9vg+lNf7SnRzKg7JX8kyM8Q=
+	t=1759229388; cv=none; b=LEfwLKF+ASRKda5Bj3x+veyNND1sv4KfnR4SZ3gcSAQJ4y/8ucSxMfuySJapNTVFRrMLTE+K6tQZOZJmqeXTh9hAovVLaNYCmyuoKWdZCpeOG3qo1OZmrIbTGJJg78nrX1nAgiZge8He7vCs0CaOFiRYbd5T+qG6uBpLwoLi02g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759222934; c=relaxed/simple;
-	bh=8cA29iBU8VAAXKJXKbsOGxeRiMAs9PB7kcOg6wbZNKk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NC0/dNn2BNMkz4s3AK9I1CYW6ABa9DQr56DP7Pw6RXDiKi1P3GzdxkGgxRBIl+Z4q9XhfdCtPn+qmaXgbwnKO/E4agyewshpPnhiuXddfuKQCFYTrJpRJMTk1lnJ4QYROdT3uiZIJRVIY4dlPr4Zyi5yGdmE0wPbFA+8xVoqPbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TYbcZse5; arc=none smtp.client-ip=209.85.221.42
+	s=arc-20240116; t=1759229388; c=relaxed/simple;
+	bh=sgywMiKXLH2D9fgSBYZJpcNxegOBPaaPUYsMCesvCqE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=neNRhBxQZjdcZfDcoTMj5lYJE7vxydKkLXbjHB+g+1HKkiSqLGE7LotImZJwfeN37Wzpppjkx/WH5vX3cZA4wrdTqXHE7z1lNTO4ZjyPxXPF5txVBrNgMfkBJZsYj1RmeimK+InCJABsR6tFZQ+8QqK4o2MJ1VCmDNZkYB0uk9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hTWrTkYT; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3f1aff41e7eso4341000f8f.0
-        for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 02:02:12 -0700 (PDT)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-46e2826d5c6so43966265e9.1
+        for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 03:49:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759222930; x=1759827730; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0YeFKVTA92RsSMsTUK9J2VEX6PqfTv9kdKMH8GkOS+E=;
-        b=TYbcZse5tKWSZLoV3amUf2ddwTnfp+wECt7ZPPxkuLMdWxLlUXXJ7x/1HwQWZTR5u5
-         xRVWmUSm0Rnj45BxKp3WLcCp4j65+7mZUDQGx4tiOtbYbdIr/H07aTbebdfauxfekVSj
-         AV6oLhD34tcY+hAzgZQX7QKRxKUlHeibbp6bbdHXkN19H8IQslyVgbwRqvTvj5Vc13rz
-         W1+RboTBcSuBkhedK82IdRlA/duJrPoDz9sePRIEPxTzKmgz657O0knvAHVgNpsnrVPS
-         ML7kZ6R3LuD0+d5uu5SR1HSrCa4v5T68lfLoSqe0vD+9k97DCE0gXLS48NEQjhOw2fK0
-         U+aQ==
+        d=gmail.com; s=20230601; t=1759229385; x=1759834185; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rndqic6w25eSXszKVUtmgI8XuyrchFYVRZXfsoOhzV4=;
+        b=hTWrTkYT5eNzQbEk6ViefWLugYnvcjeApZ8BnMB3AFu4xb/USucGSy3ILdghT4nzpm
+         KOf96c8eex3J6f5MPXFKbDYDNZt0VXQSsDT+UMhhScMIVU7umETp818v/N3jgNl1+5BP
+         K6RsfKDdgDEbDjzd0Nhdrt/PVMzQlz98EAF+/mh8RjUvzCwQ2Q+j81XS7xMt7Wv+eiF2
+         bJg0VuEA2ym1k/5+nABKUpH4OcKa1QYzYeqWbQ2ob48P3+x5ZsRSQ+bCdQtDnjTAG1FH
+         2Yvw6gE/wD2HsrwplsJbGvn7sCSyKcKWvhcJdZ6jOrCLjhBRLmzT3oc3k4s19sw5zvc3
+         OCag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759222930; x=1759827730;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0YeFKVTA92RsSMsTUK9J2VEX6PqfTv9kdKMH8GkOS+E=;
-        b=Fv75p5ZLRdiqkmrSgqEi9vWKAcL8jrWv4u/WIVbnOSxB4RhgaUrp9J2AE9Zjqmfe9D
-         zXTSbpddzfiqMYYSqE9SpIUm3B3Yz9wQxCDKZThMTWbwuFsKuZXHzaW8Y7PG2Zt89yY2
-         W1y5pGjwTmZ3zfMEhxXnkAKub+Jo8Yk1MEGqLQpZfJG/jFA5H8ZhdfJLNuzAk+5QSu+M
-         gwZtyxVKHcTt+GoipWgVZlCX8ooNqFEUMiukMEuI2EVJHVQgeXpJqOuhXotRHao0uW6H
-         Cxd3F357R61j/Xd/FPHvBZ3YH3H/JQTF5W2dw4NxxoKRlNb4RSqZzgXuF/Jda/giNKlx
-         GnHw==
-X-Forwarded-Encrypted: i=1; AJvYcCX7zfXsil4/HnKdSRIz6wFQSNhfH5DN0VnDslYXxfV21z7Kxv+FHAensoOW/OEVjWfRFzA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyx/ofTvz2TZw+U+bfX73HcL+TSlXJS5l2Sb6uT65bL4Kf9/lKt
-	+0vPgf76lsRGC2b9UA+a66eYjalpJ+fq/SKvdDS8NQFhH+nnnhEpMvtt
-X-Gm-Gg: ASbGncuYdH8Ji75ICQW0MgiJHUIrly1IvtRuHbZFzy3KuulJrtmdKKi0J+FXnfxvI0D
-	SqBOm64ua2OB8AX7m4jvbM07CY4s0xIhr/q6KyZDHg2/3dG7vMRAX64KAV8o2QJOyE8hQG6oU25
-	z9VbAam0o5Q85AUjx5Qzlife4t65pVlvSOO8CE9tyILckLlf7WfkIkU4seY3OzrEJ0M7ifh8NJP
-	D+bkmjtpQPyRVVX+yO13Vvafc0PGblW33cbnXx4UWfkW3NHSdtjFaIhw+IvBMLmn0OE7cMUirHH
-	RLErEoW7mzfJOs0Po6qJIM6azzg3a1DAmKfb70Y6baM1AdMveZqA2MnfSZt+8p+C1hcLT5hrryt
-	R4xzn8uwwSktTSGOzYKriGR1DwQEp3ckxaEM3J74jxLevJUcpEMc/Tb2C
-X-Google-Smtp-Source: AGHT+IEM9GJZ075ajqvPEmLLEhL1ayoGfiYUT1m0rXMqvB0EUXZsfAlvPyrWlRR31Ay08OzXtYdb9g==
-X-Received: by 2002:a05:6000:240c:b0:3ec:e152:e31c with SMTP id ffacd0b85a97d-40e429c9ba3mr15790220f8f.1.1759222930254;
-        Tue, 30 Sep 2025 02:02:10 -0700 (PDT)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fc56f7badsm21582293f8f.29.2025.09.30.02.02.09
+        d=1e100.net; s=20230601; t=1759229385; x=1759834185;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Rndqic6w25eSXszKVUtmgI8XuyrchFYVRZXfsoOhzV4=;
+        b=mE+lQziChO1si18xrlxtOr13tl7tWAGS5FFOpXxATITivRsTftExircF127JDzhE5r
+         d23HjUN7SjwNrF/Y5+ZSHSrHxHcAoV2tt14uJdiKb7e5vC758onjLPq8AIbuWkO9/dN0
+         BDXUOKVnNk3lyM/p620anZLbTpIjWEEHzduhli8ZyHztW8+S0aKg2i4lSZC6ghdg+iqu
+         t2M//lSEB34AXSxtDoX6sSMEOy6DcOE8c3ssuCG1iniDSbUaZast1gzHMFx9h0jgd+GP
+         TVIV/MxjzCw9yVOl65tj51LQWK7jwdnrYMwpUrZloRJRr+hbNYt9WNMDk8XOjY/jXldU
+         p1Lg==
+X-Gm-Message-State: AOJu0YxecdJlmSbTSNOJnqild+nGVbVxOWJkj9Ta1h2bHKHX07mKLFzU
+	Ks88JA1RqkoPLxCNd1c8NdCheECfD2xAAOMlX0f+h7y25cF9scpR8uHMit3S7Q==
+X-Gm-Gg: ASbGncv+hxZyudTsJQg4CiphKoS90u82iWkbYyMPed9JuOi9S8ArMlWgZfo93fAJE0J
+	EB8zl23lGjkUwx/nelA9Hnb7nQ5PxqJhE17MuB7uUN79poNU+CsSNv3dP9nWFsKwN+XYYZdvLpI
+	+vMIURNGyB76C4v+2JxM0ZOobVg9IuMjtYs7AkkY5HNcMAJw8V8qYdov+6wQAcDzz32faDPADN5
+	3JZyizq13k/fM7ajwB4HMe89ZVhHb+S120gLe4wBxncbjXn7vYtiZdRhsxWJkxtSiSikD+C43jH
+	4WOoUJ8tnPad8D+VxhB5MROVgqjVzIxUd/VHm43jeILgB2wBfuun1argwTCqh0LpwLueJ0r1LSf
+	2wlNzy3S//zx+0DvR/9B0oWiT/OMWvuwHU0z3WCR7EFdcOaOEru5zWx+rqKTzgD5l3Q==
+X-Google-Smtp-Source: AGHT+IHzsCKP/+EcD3XGQw3RUIFCyDjpxfY/wsiCXUnoDErQPMp1H4bkbORUhTgGz+Jb0cspZEuEhQ==
+X-Received: by 2002:a05:600c:4743:b0:46e:33b2:c8da with SMTP id 5b1f17b1804b1-46e33b2ca06mr161420415e9.32.1759229384374;
+        Tue, 30 Sep 2025 03:49:44 -0700 (PDT)
+Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fc5602dfdsm21982161f8f.33.2025.09.30.03.49.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Sep 2025 02:02:09 -0700 (PDT)
-Date: Tue, 30 Sep 2025 09:07:50 +0000
+        Tue, 30 Sep 2025 03:49:43 -0700 (PDT)
 From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To: bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Anton Protopopov <aspsk@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
 	Quentin Monnet <qmo@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v3 bpf-next 05/13] bpf: support instructions arrays with
- constants blinding
-Message-ID: <aNud5j56WV+4L0LX@mail.gmail.com>
-References: <20250918093850.455051-6-a.s.protopopov@gmail.com>
- <0be32d7a07dbcc54b77fe8d9ffd283977126c0ff.camel@gmail.com>
- <aM0AuFAnqGJgI0Kf@mail.gmail.com>
- <6f9b59010382d1410ecad7d03f36ce44702ed1e5.camel@gmail.com>
- <CAADnVQKsZnOXo-+sK-+=aov80WLgouVPbUXvdg8Na9uU-CmCew@mail.gmail.com>
- <284404c7-c6e0-4cf9-8ada-71ebfc681541@iogearbox.net>
- <6237d7ce580a4c99361a460bd4724f882706746b.camel@gmail.com>
- <aM28lJL8ivnbr1yf@mail.gmail.com>
- <60c2444047bd44be26f9410515177d6ad2d1f1e2.camel@gmail.com>
- <aNEWx4TqHE0pzuB0@mail.gmail.com>
+Cc: Anton Protopopov <a.s.protopopov@gmail.com>
+Subject: [PATCH v4 bpf-next 00/15] BPF indirect jumps
+Date: Tue, 30 Sep 2025 10:55:08 +0000
+Message-Id: <20250930105523.1014140-1-a.s.protopopov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <aNEWx4TqHE0pzuB0@mail.gmail.com>
 
-On 25/09/22 09:28AM, Anton Protopopov wrote:
-> On 25/09/19 01:47PM, Eduard Zingerman wrote:
-> > On Fri, 2025-09-19 at 20:27 +0000, Anton Protopopov wrote:
-> > > On 25/09/19 12:44PM, Eduard Zingerman wrote:
-> > > > On Fri, 2025-09-19 at 21:28 +0200, Daniel Borkmann wrote:
-> > > > > On 9/19/25 8:26 PM, Alexei Starovoitov wrote:
-> > > > > > On Fri, Sep 19, 2025 at 12:12 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
-> > > > > > > On Fri, 2025-09-19 at 07:05 +0000, Anton Protopopov wrote:
-> > > > > > > > On 25/09/18 11:35PM, Eduard Zingerman wrote:
-> > > > > > > > > On Thu, 2025-09-18 at 09:38 +0000, Anton Protopopov wrote:
-> > > > > > > > > 
-> > > > > > > > > [...]
-> > > > > > > > > 
-> > > > > > > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > > > > > > > index a7ad4fe756da..5c1e4e37d1f8 100644
-> > > > > > > > > > --- a/kernel/bpf/verifier.c
-> > > > > > > > > > +++ b/kernel/bpf/verifier.c
-> > > > > > > > > > @@ -21578,6 +21578,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
-> > > > > > > > > >    struct bpf_insn *insn;
-> > > > > > > > > >    void *old_bpf_func;
-> > > > > > > > > >    int err, num_exentries;
-> > > > > > > > > > + int old_len, subprog_start_adjustment = 0;
-> > > > > > > > > > 
-> > > > > > > > > >    if (env->subprog_cnt <= 1)
-> > > > > > > > > >            return 0;
-> > > > > > > > > > @@ -21652,7 +21653,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
-> > > > > > > > > >            func[i]->aux->func_idx = i;
-> > > > > > > > > >            /* Below members will be freed only at prog->aux */
-> > > > > > > > > >            func[i]->aux->btf = prog->aux->btf;
-> > > > > > > > > > -         func[i]->aux->subprog_start = subprog_start;
-> > > > > > > > > > +         func[i]->aux->subprog_start = subprog_start + subprog_start_adjustment;
-> > > > > > > > > >            func[i]->aux->func_info = prog->aux->func_info;
-> > > > > > > > > >            func[i]->aux->func_info_cnt = prog->aux->func_info_cnt;
-> > > > > > > > > >            func[i]->aux->poke_tab = prog->aux->poke_tab;
-> > > > > > > > > > @@ -21705,7 +21706,15 @@ static int jit_subprogs(struct bpf_verifier_env *env)
-> > > > > > > > > >            func[i]->aux->might_sleep = env->subprog_info[i].might_sleep;
-> > > > > > > > > >            if (!i)
-> > > > > > > > > >                    func[i]->aux->exception_boundary = env->seen_exception;
-> > > > > > > > > > +
-> > > > > > > > > > +         /*
-> > > > > > > > > > +          * To properly pass the absolute subprog start to jit
-> > > > > > > > > > +          * all instruction adjustments should be accumulated
-> > > > > > > > > > +          */
-> > > > > > > > > > +         old_len = func[i]->len;
-> > > > > > > > > >            func[i] = bpf_int_jit_compile(func[i]);
-> > > > > > > > > > +         subprog_start_adjustment += func[i]->len - old_len;
-> > > > > > > > > > +
-> > > > > > > > > >            if (!func[i]->jited) {
-> > > > > > > > > >                    err = -ENOTSUPP;
-> > > > > > > > > >                    goto out_free;
-> > > > > > > > > 
-> > > > > > > > > This change makes sense, however, would it be possible to move
-> > > > > > > > > bpf_jit_blind_constants() out from jit to verifier.c:do_check,
-> > > > > > > > > somewhere after do_misc_fixups?
-> > > > > > > > > Looking at the source code, bpf_jit_blind_constants() is the first
-> > > > > > > > > thing any bpf_int_jit_compile() does.
-> > > > > > > > > Another alternative is to add adjust_subprog_starts() call to this
-> > > > > > > > > function. Wdyt?
-> > > > > > > > 
-> > > > > > > > Yes, it makes total sense. Blinding was added to x86 jit initially and then
-> > > > > > > > every other jit copy-pasted it.  I was considering to move blinding up some
-> > > > > > > > time back (see https://lore.kernel.org/bpf/20250318143318.656785-1-aspsk@isovalent.com/),
-> > > > > > > > but then I've decided to avoid this, as this requires to patch every JIT, and I
-> > > > > > > > am not sure what is the way to test such a change (any hints?)
-> > > > > > > 
-> > > > > > > We have the following covered by CI:
-> > > > > > > - arch/x86/net/bpf_jit_comp.c
-> > > > > > > - arch/s390/net/bpf_jit_comp.c
-> > > > > > > - arch/arm64/net/bpf_jit_comp.c
-> > > > > > > 
-> > > > > > > People work on these jits actively:
-> > > > > > > - arch/riscv/net/bpf_jit_core.c
-> > > > > > > - arch/loongarch/net/bpf_jit.c
-> > > > > > > - arch/powerpc/net/bpf_jit_comp.c
-> > > > > > > 
-> > > > > > > So, we can probably ask to test the patch-set.
-> > > > > > > 
-> > > > > > > The remaining are:
-> > > > > > > - arch/x86/net/bpf_jit_comp32.c
-> > > > > > > - arch/parisc/net/bpf_jit_core.c
-> > > > > > > - arch/mips/net/bpf_jit_comp.c
-> > > > > > > - arch/arm/net/bpf_jit_32.c
-> > > > > > > - arch/sparc/net/bpf_jit_comp_64.c
-> > > > > > > - arch/arc/net/bpf_jit_core.c
-> > > > > > > 
-> > > > > > > The change to each individual jit is not complicated, just removing
-> > > > > > > the transformation call. Idk, I'd just go for it.
-> > > > > > > Maybe Alexei has concerns?
-> > > > > > 
-> > > > > > No concerns.
-> > > > > > I don't remember why JIT calls it instead of the verifier.
-> > > > > > 
-> > > > > > Daniel,
-> > > > > > do you recall? Any concern?
-> > > > > 
-> > > > > Hm, I think we did this in the JIT back then for couple of reasons iirc,
-> > > > > the constant blinding needs to work from native bpf(2) as well as from
-> > > > > cbpf->ebpf (seccomp-bpf, filters, etc), so the JIT was a natural location
-> > > > > to capture them all, and to fallback to interpreter with the non-blinded
-> > > > > BPF-insns when something went wrong during blinding or JIT process (e.g.
-> > > > > JIT hits some internal limits etc). Moving bpf_jit_blind_constants() out
-> > > > > from JIT to verifier.c:do_check() means constant blinding of cbpf->ebpf
-> > > > > are not covered anymore (and in this case its reachable from unpriv).
-> > > > 
-> > > > Hi Daniel,
-> > > > 
-> > > > Thank you for the context.
-> > > > So, the ideal location for bpf_jit_blind_constants() would be in
-> > > > core.c in some wrapper function for bpf_int_jit_compile():
-> > > > 
-> > > >   static struct bpf_prog *jit_compile(prog)
-> > > >   {
-> > > >   	tmp = bpf_jit_blind_constants()
-> > > >         if (!tmp)
-> > > >            return prog;
-> > > >         return bpf_int_jit_compile(tmp);
-> > > >   }
-> > > > 
-> > > > A bit of a hassle.
-> > > > 
-> > > > Anton, wdyt about a second option: adding adjust_subprog_starts()
-> > > > to bpf_jit_blind_constants() and leaving all the rest as-is?
-> > > > It would have to happen either way of call to bpf_jit_blind_constants()
-> > > > itself is moved.
-> > > 
-> > > So, to be clear, in this case adjust_insn_arrays() stays as in the
-> > > original patch, but the "subprog_start_adjustment" chunks are
-> > > replaced by calling the adjust_subprog_starts() (for better
-> > > readability and consistency, right?)
-> > 
-> > Yes, by adding adjust_subprog_starts() call inside
-> > bpf_jit_blind_constants() it should be possible to read
-> > env->subprog_info[*].start in the jit_subprogs() loop directly,
-> > w/o tracking the subprog_start_adjustment delta.
-> > (At-least I think this should work).
-> 
-> Ok, will do this way, thanks.
+This patchset implements a new type of map, instruction set, and uses
+it to build support for indirect branches in BPF (on x86). (The same
+map will be later used to provide support for indirect calls and static
+keys.) See [1], [2] for more context.
 
-Actually, I think I will skip it this time. During jit_subprogs
-the code of the original program is split into subfuncs via the
-_unchanged_ subprog info, as the xlated code is copied for each
-new subprog in the loop. So this "adjustment" thing will appear
-in some form in any case.
+Short table of contents:
 
-Also, doing adjust_subprog_starts() requires passing env to jits,
-which wasn't done yet, and needs to be faked for non-ebpf progs,
-I think. So maybe this is better to cleanup/generalize this later,
-not as part of this patch.
+  * Patches 1-7 implement the new map of type
+    BPF_MAP_TYPE_INSN_SET and corresponding selftests. This map can
+    be used to track the "original -> xlated -> jitted mapping" for
+    a given program. Patches 6,7 add support for "blinded" variant.
+
+  * Patches 8,9,10,11 implement the support for indirect jumps
+
+  * Patches 12,13,14,15 add support for LLVM-compiled programs
+    containing indirect jumps.
+
+Since the v3 the jump table support was merged to LLVM and now can be
+enabled with v4. See [3] for the PR which added the support.
+
+There is still a list of TBDs for selftests, mainly, to test all the error
+conditions introduce by the patch "bpf, x86: add support for indirect jumps"
+in a new "verifier_indirect_jumps" style, but I wanted to see the kernel side
+calming down before doing this.
+
+See individual patches for more details on the implementation details.
+
+v3 -> v4 (this series):
+
+  * instruction arrays:
+    * add copyright (Alexei)
+    * remove mutexes, add frozen back (Alexei)
+    * setup 1:1 prog-map correspondence using atomic_xchg
+    * do not copy/paste array_map_get_next_key, add a common helper (Alexei)
+    * misc minor code cleanups (Alexei)
+
+  * indirect jumps, kernel side:
+    * remove jt_allocated, just check if insn is gotox (Eduard)
+    * use copy_register_state instead of individual copies (Eduard)
+    * in push_stack is_speculative should be inherited (Eduard)
+    * a few cleanups for insn_successors, including omitting error path (Eduard)
+    * check if reserved fields are used when considering `gotox` instruction (Eduard)
+    * read size and alignment of read from insn_array should be 8 (Eduard)
+    * put buffer for sorting in subfun info and realloc to grow as needed (Eduard)
+    * properly do `jump_point` / `prune_point` from `push_gotox_edge` (Eduard)
+    * use range_within to check states (Eduard)
+    * some minor cleanups and fix commit message (Eduard)
+
+  * indirect jumps, libbpf side:
+    * close map_fd in some error paths in create_jt_map (Andrii)
+    * maps for jump tables are actually not closed at all, fix this (Andrii)
+    * rename map from `jt` to `.jumptables` (Andrii)
+    * use `errstr` in an error message (Andrii)
+    * rephrase error message to look more standard (Andrii)
+    * misc other minor renames and cleanups (Andrii)
+
+  * selftests:
+    * add the frozen selftest back
+    * add a selftest for two jumps loading same table
+
+  * some other changes:
+    * rebase and split insn_successor changes into separate patch
+    * use PTR_ERR_OR_ZERO in the push stack patch (Eduard)
+    * indirect jumps on x86: properly re-read *pprog (Eduard)
+
+v2 -> v3 (https://lore.kernel.org/bpf/20250918093850.455051-1-a.s.protopopov@gmail.com/):
+
+  * fix build failure when CONFIG_BPF_SYSCALL is not set (kbuild-bot)
+  * reformat bpftool help messages (Quentin)
+
+v1 -> v2 (https://lore.kernel.org/bpf/20250913193922.1910480-1-a.s.protopopov@gmail.com/):
+
+  * push_stack changes:
+    * sanitize_speculative_path should just return int (Eduard)
+    * return code from sanitize_speculative_path, not EFAULT (Eduard)
+    * when BPF_COMPLEXITY_LIMIT_JMP_SEQ is reached, return E2BIG (Eduard)
+
+  * indirect jumps:
+    * omit support for .imm=fd in gotox, as we're not using it for now (Eduard)
+    * struct jt -> struct bpf_iarray (Eduard)
+    * insn_successors: rewrite the interface to just return a pointer (Eduard)
+    * remove min_index/max_index, use umin_value/umax_value instead (Alexei, Eduard)
+    * move emit_indirect_jump args change to the previous patch (Eduard)
+    * add a comment to map_mem_size() (Eduard)
+    * use verifier_bug for some error cases in check_indirect_jump (Eduard)
+    * clear_insn_aux_data: use start,len instead of start,end (Eduard)
+    * make regs[insn->dst_reg].type = PTR_TO_INSN part of check_mem_access (Eduard)
+
+  * constant blinding changes:
+    * make subprog_start adjustment better readable (Eduard)
+    * do not set subprog len, it is already set (Eduard)
+
+  * libbpf:
+    * remove check that relocations from .rodata are ok (Anton)
+    * do not freeze the map, it is not necessary anymore (Anton)
+    * rename the goto_x -> gotox everywhere (Anton)
+    * use u64 when parsing LLVM jump tables (Eduard)
+    * split patch in two due to spaces->tabs change (Eduard)
+    * split bpftool changes to bpftool patch (Andrii)
+    * make sym_size it a union with ext_idx (Andrii)
+    * properly copy/free the jumptables_data section from elf (Andrii)
+    * a few cosmetic changes around create_jt_map (Andrii)
+    * fix some comments + rewrite patch description (Andrii)
+    * inline bpf_prog__append_subprog_offsets (Andrii)
+    * subprog_sec_offst -> subprog_sec_off (Andrii)
+    * !strcmp -> strcmp() == 0 (Andrii)
+    * make some function names more readable (Andrii)
+    * allocate table of subfunc offsets via libbpf_reallocarray (Andrii)
+
+  * selftests:
+    * squash insn_array* tests together (Anton)
+
+  * fixed build warnings (kernel test robot)
+
+RFC -> v1 (https://lore.kernel.org/bpf/20250816180631.952085-1-a.s.protopopov@gmail.com/):
+
+  * I've tried to address all the comments provided by Alexei and
+    Eduard in RFC. Will try to list the most important of them below.
+  * One big change: move from older LLVM version [5] to newer [4].
+    Now LLVM generates jump tables as symbols in the new special
+    section ".jumptables". Another part of this change is that
+    libbpf now doesn't try to link map load and goto *rX, as
+    1) this is absolutely not reliable 2) for some use cases this
+    is impossible (namely, when more than one jump table can be used
+    in the same gotox instruction).
+  * Added insn_successors() support (Alexei, Eduard). This includes
+    getting rid of the ugly bpf_insn_set_iter_xlated_offset()
+    interface (Eduard).
+  * Removed hack for the unreachable instruction, as new LLVM thank to
+    Eduard doesn't generate it.
+  * Set mem_size for direct map access properly instead of hacking.
+    Remove off>0 check. (Alexei)
+  * Do not allocate new memory for min_index/max_index (Alexei, Eduard)
+  * Information required during check_cfg is now cached to be reused
+    later (Alexei + general logic for supporting multiple JT per jump)
+  * Properly compare registers in regsafe (Alexei, Eduard)
+  * Remove support for JMP32 (Eduard)
+  * Better checks in adjust_ptr_min_max_vals (Eduard)
+  * More selftests were added (but still there's room for more) which
+    directly use gotox (Alexei)
+  * More checks and verbose messages added
+  * "unique pointers" are no more in the map
+
+Links:
+  1. https://lpc.events/event/18/contributions/1941/
+  2. https://lwn.net/Articles/1017439/
+  3. https://github.com/llvm/llvm-project/pull/149715
+  4. https://github.com/llvm/llvm-project/pull/149715#issuecomment-3274833753
+  6. rfc: https://lore.kernel.org/bpf/20250615085943.3871208-1-a.s.protopopov@gmail.com/
+
+Anton Protopopov (15):
+  bpf: fix the return value of push_stack
+  bpf: save the start of functions in bpf_prog_aux
+  bpf: generalize and export map_get_next_key for arrays
+  bpf, x86: add new map type: instructions array
+  selftests/bpf: add selftests for new insn_array map
+  bpf: support instructions arrays with constants blinding
+  selftests/bpf: test instructions arrays with blinding
+  bpf, x86: allow indirect jumps to r8...r15
+  bpf: make bpf_insn_successors to return a pointer
+  bpf, x86: add support for indirect jumps
+  bpf: disasm: add support for BPF_JMP|BPF_JA|BPF_X
+  libbpf: fix formatting of bpf_object__append_subprog_code
+  libbpf: support llvm-generated indirect jumps
+  bpftool: Recognize insn_array map type
+  selftests/bpf: add selftests for indirect jumps
+
+ arch/x86/net/bpf_jit_comp.c                   |  39 +-
+ include/linux/bpf.h                           |  46 ++
+ include/linux/bpf_types.h                     |   1 +
+ include/linux/bpf_verifier.h                  |  27 +-
+ include/uapi/linux/bpf.h                      |  11 +
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/arraymap.c                         |  19 +-
+ kernel/bpf/bpf_insn_array.c                   | 300 +++++++++
+ kernel/bpf/core.c                             |  21 +
+ kernel/bpf/disasm.c                           |   9 +
+ kernel/bpf/liveness.c                         |  39 +-
+ kernel/bpf/log.c                              |   1 +
+ kernel/bpf/syscall.c                          |  22 +
+ kernel/bpf/verifier.c                         | 596 ++++++++++++++++--
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
+ tools/bpf/bpftool/map.c                       |   3 +-
+ tools/include/uapi/linux/bpf.h                |  11 +
+ tools/lib/bpf/libbpf.c                        | 263 +++++++-
+ tools/lib/bpf/libbpf_probes.c                 |   4 +
+ tools/lib/bpf/linker.c                        |  10 +-
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../selftests/bpf/prog_tests/bpf_gotox.c      | 177 ++++++
+ .../selftests/bpf/prog_tests/bpf_insn_array.c | 574 +++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_gotox.c | 411 ++++++++++++
+ 24 files changed, 2466 insertions(+), 127 deletions(-)
+ create mode 100644 kernel/bpf/bpf_insn_array.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_gotox.c
+
+-- 
+2.34.1
+
 
