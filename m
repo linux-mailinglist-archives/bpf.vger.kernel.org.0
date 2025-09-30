@@ -1,179 +1,163 @@
-Return-Path: <bpf+bounces-70063-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70064-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C4F9BAEA1F
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 23:49:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0562EBAEB6D
+	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 00:51:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 623D87A1387
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 21:47:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72905189DD87
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 22:52:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E251119D087;
-	Tue, 30 Sep 2025 21:48:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE524298CC7;
+	Tue, 30 Sep 2025 22:51:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWs5CVnd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GjBEwhoT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F374516132F
-	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 21:48:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684AA4C81
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 22:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759268935; cv=none; b=I1AxIF9bteWgZlE5pFZIk3mgKjv9Cg3DdM/VAA9wAcgLZtapHNRg9fCdv6xTeKos7dmGTOdEnjObW6GceN9J7+qeJE+xUYDlOogFZrGs+d196ApA/WmQjJChJ1d6HNuYuz3EaHvB0qD6P1vsPbUe9CqSIGJ3eUhk5MYuPc8Hz08=
+	t=1759272701; cv=none; b=LlmdaohB9CZd63j7Qaog+3ErZ80/NHEbx33PMzfB7jguHIDCYH40l74o2ob5F04HdUgsP9RxcZ69AmQDLGnxIjfl79U1SXF6VEDoRwwxkhzmKKllIr2fEWBu4t1onpKo3ty5Eao4w7Xqljtdfpd2kPM1Of2AD40dJviRv0R09bQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759268935; c=relaxed/simple;
-	bh=GEHluQiE0bq1sqBOr/jIOS3GWqS2lnKfKhNZ6Pn+Dl8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D+Wu6NBwcoYCC2EJ07prkT92pe9zTuTzlo+qLltJXrShgJj1u3TBpGtc02jg8MU1ym8dop1jKP3aVwR96RbJ2WOjNTIHtiizx4RpxHyS5OVDMnOva2c8Ho14U2MMN4vpwi2LYtipDd7jVOD3hiLPIgNR3J26ZIFH+nf1UM+vQAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jWs5CVnd; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3306b83ebdaso6351357a91.3
-        for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 14:48:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759268933; x=1759873733; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YiuCZ8J2LOb9mc1h8YM6VbvszA18OMNaNkAGL17qwgo=;
-        b=jWs5CVndHufNaYtc3CFnDfhCJzp8wuifxIVK7iwB+/DIpOQG25Qa6YkS1Z7cO6oRdq
-         TLaYIQY3c8alenEDCQp8HD3seRK1wVggt7b3HXeKBqEmh4N3QGysJuS8UtGZeDaTYPu3
-         AfOdUUavqfjLM/zya/sJ7hab3WIUL6h+rhoaNycwfbwFANgYoi8jkV5N98EOrVzFtII8
-         O/A73nlG16iQdGJDb7VQayFewv5hZl1b4fI+2NoKJhdO3M4BE/xAFvlIUvcsKGMNgnKv
-         QeG9NLWsLl2XTmQTfJ4028XkcHL8MVpsBLFSrDuxV1uAQTbAZhMb053qBDR2lBdbvhdS
-         t6nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759268933; x=1759873733;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YiuCZ8J2LOb9mc1h8YM6VbvszA18OMNaNkAGL17qwgo=;
-        b=pjDfE9qMoHVVa+R3ZUCRH3EtDbmQSQCzKQHUcaHlWNqi2sPKV6yO/0X6hhaL21T/E4
-         qM+UgeZxWu4fJ8NVsRXiPIlp/1RWhP9jlWibja/Q14ZQf7ViwKma6W+5vp3Zyz7EgS2k
-         fisMA1h/bNeWt0Xrhqryt1GAYffQexOAxu9v6m52j3gVGbFoDQNtsbP0wDWWHzNVzDwJ
-         80Bs2cF8Afkpp9Ggqr4i5nBEla3bLfJsDmtCm9hvYLodFQo3Zrpuhce0BQC0hVY8zBDH
-         c5DbUaKzypaINdUkRL153Pcd5HtKGu8zPlmRj0pXYWrFn/RXF0aj93lFKi+l0GbzBVBz
-         //XQ==
-X-Gm-Message-State: AOJu0Yy4HqeYBqYbEM5LQ0sWm9QutdTevSjWn4muLQuApEHUpWXEjiXS
-	SgolLHBvuZaMYmGZTh9NBMoX/6NpLYcHCu4Qivs6iV3SUnlNhkrh2Y4vMa3F0f2Npm2UuRJCcXr
-	tx9DsOPKKJGHdEHsfndkDTEoKQzcjHXupNWFe
-X-Gm-Gg: ASbGnctEiXGnu0zK+WaJlqqsTs6t6Tec7GMDaAB9++EtLPkU93RlihWzbKnSwHP3t8r
-	kOOcxpAu9XCIUT3KWEk3Qmmq1SLl7a3nTOiwjfkPs0uUt1xY6jsqrlgvuwFOpfwFIVp2V2ZDmc2
-	2JjHPo0X7CfbNX+UDUuS/K8XA6K8qQPZdgYnxtIUN84lCvRG/2eAqLgucX/AtDfdn13UZpvVnXt
-	6qRa7xu07lp8elZ4SDq1XRk0L0qOqHJ+f2HZ/1A6B39qoc=
-X-Google-Smtp-Source: AGHT+IFS+JR844b57BEve7hybLWwLxbJyROL/yVHoPGcN+Q+mnqMhrX6GovsYctgw7H7Zf9VicSaMYQBSvL2vaL3V6M=
-X-Received: by 2002:a17:90b:1b03:b0:32e:8931:b59c with SMTP id
- 98e67ed59e1d1-339a6f35b48mr841234a91.27.1759268933070; Tue, 30 Sep 2025
- 14:48:53 -0700 (PDT)
+	s=arc-20240116; t=1759272701; c=relaxed/simple;
+	bh=W6fGZswsETaiYp+vnrP47GCktmIpYRDQTQHdCgwjTIY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LSve957fGC276sve2584MPrBnKP7TGdwoI+4gvgG7X2prynOSwm3HqsU7EwPiJC/GQAwwOnBkLwvxyV/H4uWUJ89Jo43OyXalf6W/PnEaGQXBUNI3FicqPZIN67VhLDJMswehojLLN7QObdfJs7cnbAnwlf8XRW4MuUVrIC6tHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GjBEwhoT; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <df4c8852-f6d1-4278-84d8-441aad1f9994@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759272696;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mtBSg3QsPPTaP+NQAUZ72XmJ08HeC+LB2BKpcmTsYt0=;
+	b=GjBEwhoTMJ2qnPtFoURNCY+S8DQry6qeNP6ZfuuPw1Wxv0NLmkXwsTpdlkK/5FDH8O2in4
+	vnlCWMubiCwlxxhtDCfKwdcJ2RWkclNLatEnadc6ly9a3zagDeuDFzfWa2CxQM4Gjtz3w8
+	07rQyZT8XeJZ3xHnoe0WowCaVDt2lts=
+Date: Tue, 30 Sep 2025 15:51:26 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250930212619.1645410-1-andrii@kernel.org> <20250930212619.1645410-6-andrii@kernel.org>
- <CAEf4BzZcX-H710BYjjRuAcu+ROHN+a+HDZCgGkMa3AZaC5sqpg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZcX-H710BYjjRuAcu+ROHN+a+HDZCgGkMa3AZaC5sqpg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 30 Sep 2025 14:48:38 -0700
-X-Gm-Features: AS18NWA6qQr8TJz0QHLJ1b-w8oWMajQlMcyIN3l5kva_yMWKJlyXW-55dHPDkKA
-Message-ID: <CAEf4BzajJpRQ6KqEaAET6meTRYr8KuuJOsKKC9rS_g2jrERSCw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] libbpf: remove linux/unaligned.h dependency
- for libbpf_sha256()
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH bpf-next 00/14] bpf: Efficient socket destruction
+To: Jordan Rife <jordan@jrife.io>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev
+ <sdf@fomichev.me>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Kuniyuki Iwashima <kuniyu@google.com>, Aditi Ghag
+ <aditi.ghag@isovalent.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20250909170011.239356-1-jordan@jrife.io>
+ <80b309fe-6ba0-4ca5-a0b7-b04485964f5d@linux.dev>
+ <ilrnfpmoawkbsz2qnyne7haznfjxek4oqeyl7x5cmtds5sdvxe@dy6fs3ej4rbr>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <ilrnfpmoawkbsz2qnyne7haznfjxek4oqeyl7x5cmtds5sdvxe@dy6fs3ej4rbr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 30, 2025 at 2:38=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Sep 30, 2025 at 2:26=E2=80=AFPM Andrii Nakryiko <andrii@kernel.or=
-g> wrote:
-> >
-> > linux/unaligned.h include dependency is causing issues for libbpf's
-> > Github mirror due to {get,put}_unaligned_be32() usage.
-> >
-> > So get rid of it by implementing custom variants of those macros that
-> > will work both in kernel repo and in Github mirror repo.
-> >
-> > Also fix switch from round_up() to roundup(), as the former is not
-> > available in Github mirror (and is just a subtle more specific variant
-> > of roundup() anyways).
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  tools/lib/bpf/libbpf_utils.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf_utils.c b/tools/lib/bpf/libbpf_utils.=
-c
-> > index f8290a0b3aaf..4189504fae75 100644
-> > --- a/tools/lib/bpf/libbpf_utils.c
-> > +++ b/tools/lib/bpf/libbpf_utils.c
-> > @@ -13,7 +13,6 @@
-> >  #include <errno.h>
-> >  #include <inttypes.h>
-> >  #include <linux/kernel.h>
-> > -#include <linux/unaligned.h>
-> >
-> >  #include "libbpf.h"
-> >  #include "libbpf_internal.h"
-> > @@ -149,6 +148,14 @@ const char *libbpf_errstr(int err)
-> >         }
-> >  }
-> >
-> > +#pragma GCC diagnostic push
-> > +#pragma GCC diagnostic ignored "-Wpacked"
-> > +struct __packed_u32 { __u32 __val; } __attribute__((packed));
-> > +#pragma GCC diagnostic pop
-> > +
-> > +#define get_unaligned_be32(p) (((struct __packed_u32 *)(p))->__val)
-> > +#define put_unaligned_be32(v, p) do { ((struct __packed_u32 *)(p))->__=
-val =3D (v); } while (0)
->
-> doh, obviously these miss be32 conversions, will fix in v2. But let's
-> see if AI catches this.
+On 9/21/25 9:03 AM, Jordan Rife wrote:
+> Hi Martin,
+> 
+> Thanks for taking a look.
+> 
+>> How many sockets were destroyed?
+> 
+> Between 1 and 5 per trial IIRC during this test. Generally, there would
+> be a small set of sockets to destroy for a given backend relative to the
+> total number UDP/TCP sockets on a system.
+> 
+>> For TCP, is it possible to abort the connection in BPF_SOCK_OPS_RTO_CB to
+>> stop the retry? RTO is not a per packet event.
+> 
+> To clarify, are you suggesting bpf_sock_destroy() from that context or
+> something else? If the former, bpf_sock_destroy() only works from socket
+> iterator contexts today, so that's one adjustment that would have to be
 
-It did, very nice ([0]):
+Regarding how to abort, I was thinking something (simpler?) like having the 
+BPF_SOCK_OPS_RTO_CB prog to enforce the "expired" logic in the 
+tcp_write_timeout() by using the prog's return value. The caveat is the return 
+value of the BPF_SOCK_OPS_RTO_CB prog is currently ignored, so it may 
+potentially break existing use cases. However, I think only checking retval == 
+ETIMEOUT should be something reasonable. The retval can be set by 
+bpf_set_retval(). I have only briefly looked at tcp_write_timeout, so please check.
 
-  Can these custom macros produce incorrect results on little-endian system=
-s?
-  The original kernel get_unaligned_be32() uses be32_to_cpu() to convert fr=
-om
-  big-endian to CPU byte order, but this implementation appears to skip the
-  endianness conversion entirely.
+The bpf_sock_destroy() may also work but a few things need to be 
+considered/adjusted. Its tcp_send_active_reset() seems unnecessary during RTO. 
+Maybe only tcp_done_with_err() is enough which seems to be a new kfunc itself. 
+It also needs bh_lock_sock() which I am not sure it is true for all sock_ops 
+callback. This could be tricky to filter out by the cb enum. Passing "struct 
+bpf_sock_ops *" instead of "struct sock *" to a new kfunc seems not generic 
+enough. It also has a tcp_set_state() call which will recur to the 
+BPF_SOCK_OPS_STATE_CB prog. This can use more thought if the above "expired" 
+idea in tcp_write_timeout() does not work out.
 
-  Since libbpf_sha256() processes data in big-endian format per the SHA256
-  specification, won't this cause incorrect hash computation on little-endi=
-an
-  architectures where most libbpf users run?
+[ Unrelated, but in case it needs a new BPF_SOCK_OPS_*_CB enum. I would mostly 
+freeze any new BPF_SOCK_OPS_*_CB addition and requiring to move the bpf_sock_ops 
+to the struct_ops infrastructure first before adding new ops. ]
+
+> made. It seems like this could work, but I'd have to think more about
+> how to mark certain sockets for destruction (possibly using socket
+> storage or some auxiliary map).
+
+The BPF_SOCK_OPS_RTO_CB should have the sk which then should have all 4 tuples 
+for an established connection.
 
 
-  [0] https://github.com/kernel-patches/bpf/pull/9901#issuecomment-33538963=
-00
+>> Before diving into the discussion whether it is a good idea to add another
+>> key to a bpf hashmap, it seems that a hashmap does not actually fit your use
+>> case. A different data structure (or at least a different way of grouping
+>> sk) is needed. Have you considered using the
+> 
+> If I were to design my ideal data structure for grouping sockets
+> (ignoring current BPF limitations), it would look quite similar to the
+> modified SOCK_HASH in this series. Really what would be ideal is
+> something more like a multihash where a single key maps to a set of
+> sockets, but that felt much too specific to this use case and doesn't
+> fit well within the BPF map paradigm. The modification to SOCK_HASH with
+> the key prefix stuff kind of achieves and felt like a good starting
+> point.
 
->
-> > +
-> >  #define SHA256_BLOCK_LENGTH 64
-> >  #define Ch(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
-> >  #define Maj(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
-> > @@ -232,7 +239,7 @@ void libbpf_sha256(const void *data, size_t len, __=
-u8 out[SHA256_DIGEST_LENGTH])
-> >
-> >         memcpy(final_data, data + len - final_len, final_len);
-> >         final_data[final_len] =3D 0x80;
-> > -       final_len =3D round_up(final_len + 9, SHA256_BLOCK_LENGTH);
-> > +       final_len =3D roundup(final_len + 9, SHA256_BLOCK_LENGTH);
-> >         memcpy(&final_data[final_len - 8], &bitcount, 8);
-> >
-> >         sha256_blocks(state, final_data, final_len / SHA256_BLOCK_LENGT=
-H);
-> > --
-> > 2.47.3
-> >
+imo, I don't think it justifies to cross this bridge only for sock_hash map and 
+then later being copied to other bpf map like xsk/dev/cpumap...etc. Lets stay 
+with the existing bpf map semantic. The bpf rb/list/arena is created for this. 
+Lets try it and improve what is missing.
+  >
+>> bpf_list_head/bpf_rb_root/bpf_arena? Potentially, the sk could be stored as
+>> a __kptr but I don't think it is supported yet, aside from considerations
+>> when sk is closed, etc. However, it can store the numeric ip/port and then
+>> use the bpf_sk_lookup helper, which can take netns_id. Iteration could
+>> potentially be done in a sleepable SEC("syscall") program in test_prog_run,
+>> where lock_sock is allowed. TCP sockops has a state change callback (i.e.
+> 
+> You could create a data structure tailored for efficient iteration over
+> a group of ip/port pairs, although I'm not sure how you would acquire
+> the socket lock unless, e.g., bpf_sock_destroy or a sleepable variant
+> thereof acquires the lock itself in that context after the sk lookup?
+> E.g. (pseudocode):
+> 
+> ...
+> for each (ip,port,ns) in my custom data structure:
+>      sk = bpf_sk_lookup_tcp(ip, port, ns)
+>      if (sk)
+>      	bpf_sock_destroy_sleepable(sk) // acquires socket lock?
+> ...
+> 
+
+The verifier could override the kfunc call to another function pointer but I am 
+not sure we should complicate verifier further for this case, so adding a 
+bpf_sock_destroy_sleepable() is fine, imo. Not sure about the naming though, may 
+be bpf_sock_destroy_might_sleep()?
+
 
