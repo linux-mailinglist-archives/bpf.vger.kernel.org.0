@@ -1,163 +1,105 @@
-Return-Path: <bpf+bounces-70064-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70065-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0562EBAEB6D
-	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 00:51:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C131BBAEB73
+	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 00:53:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72905189DD87
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 22:52:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78C0A3C7382
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 22:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE524298CC7;
-	Tue, 30 Sep 2025 22:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00F317B50A;
+	Tue, 30 Sep 2025 22:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GjBEwhoT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WNUyFLHo"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684AA4C81
-	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 22:51:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44BD4298CC7
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 22:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759272701; cv=none; b=LlmdaohB9CZd63j7Qaog+3ErZ80/NHEbx33PMzfB7jguHIDCYH40l74o2ob5F04HdUgsP9RxcZ69AmQDLGnxIjfl79U1SXF6VEDoRwwxkhzmKKllIr2fEWBu4t1onpKo3ty5Eao4w7Xqljtdfpd2kPM1Of2AD40dJviRv0R09bQ=
+	t=1759272806; cv=none; b=f8Z4959apOc62VzUkzJfMi18ZgGoWistDm3b/Cm8JH2Q9rGqJnsja6LFQKJ8miThCrCmBZrLkyW2HEpTJXhn+dIYakz1UOWXW0asYF2SkbRpcn2cRp3KcttiD3NelZy5ECFCoSJ5XTnflBMpwnBEhtlCrmuwqlR/QSpiPU/tcoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759272701; c=relaxed/simple;
-	bh=W6fGZswsETaiYp+vnrP47GCktmIpYRDQTQHdCgwjTIY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LSve957fGC276sve2584MPrBnKP7TGdwoI+4gvgG7X2prynOSwm3HqsU7EwPiJC/GQAwwOnBkLwvxyV/H4uWUJ89Jo43OyXalf6W/PnEaGQXBUNI3FicqPZIN67VhLDJMswehojLLN7QObdfJs7cnbAnwlf8XRW4MuUVrIC6tHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GjBEwhoT; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <df4c8852-f6d1-4278-84d8-441aad1f9994@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759272696;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mtBSg3QsPPTaP+NQAUZ72XmJ08HeC+LB2BKpcmTsYt0=;
-	b=GjBEwhoTMJ2qnPtFoURNCY+S8DQry6qeNP6ZfuuPw1Wxv0NLmkXwsTpdlkK/5FDH8O2in4
-	vnlCWMubiCwlxxhtDCfKwdcJ2RWkclNLatEnadc6ly9a3zagDeuDFzfWa2CxQM4Gjtz3w8
-	07rQyZT8XeJZ3xHnoe0WowCaVDt2lts=
-Date: Tue, 30 Sep 2025 15:51:26 -0700
+	s=arc-20240116; t=1759272806; c=relaxed/simple;
+	bh=ftaJsDi1cTHdr3a6B+UCkg7tIDNZrC/w6D2aQacxCc0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sGcYhBCJna3iCADnVmrvIHdZsSQl1oA42lump5NQKSl7irwEO5yqiIvtp/vrGC47pevqA+l8R7IPCpYKaYuYtfeQam+1BmiIEJ77LlZmqtcrSPPWqH1b21Iaod43L+U/Spm04nrGOTCjotkfkybu5r5SosPrkrF7mwOi6HhXj+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WNUyFLHo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFEEFC113CF
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 22:53:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759272805;
+	bh=ftaJsDi1cTHdr3a6B+UCkg7tIDNZrC/w6D2aQacxCc0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WNUyFLHohpsl2ThU8cgH6OWAKn4k+OHoRoerLI8xW9KJThOiITa5Rmyn8haj457w0
+	 sRQC8vPr0R7t1iWJCoZ8Fk6aYUZcZ1r+0KAz/ap7ti7HzNdCt6H4y1gMVlWbl/t27D
+	 Pxd6+N9BHBNg5baXp0T82YObEEGt9kp/1K+EBmGfCv3ax3R8h35eaPEa7SJqeUMI0e
+	 GytIMNhRI3A/aDP+7J7FLif/2R8X6udwHtACYCwULp7HvkjJdApbVDuEGNcIPIhZmC
+	 BlZBVMZghqRLGCv7FBaflZXouQFn2PqROLoXhzDWHwn/hPg/l4mcQE8yx54vhuayjU
+	 tnjUU9QbrmZdg==
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-85cee530df9so708924985a.3
+        for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 15:53:25 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUoZggIKJ64NfDfirsL1xppOwJBsHrnNYJ73TXM+QGrtc+CY+CXH0sTjbNlOS+Ixd0Ub0k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyyWtL1uwGMAaF6dPEmXpJCMsW/bheXrXcgWl1GMNlSxZpXa1mx
+	rbBArwkgY8/7wPLu+8lu6Jlhcxmk2Yd5mR5tiLcSCOGE4uAW9b7/XkDhlLMygSA1LmrlLmrp2gF
+	4fCm8Tsy8j1NmnXs/zW+v7QjV0mX621A=
+X-Google-Smtp-Source: AGHT+IEcn44kGGuAkmfWg5LVPItA0vXao+JmpHbijNNt3uLu5DIz4+XEUDkslfIRHHrGXzU6pndt4RW8UsDh25ymIf4=
+X-Received: by 2002:ad4:5b8e:0:b0:802:ef74:d792 with SMTP id
+ 6a1803df08f44-873a8c18ce7mr22955726d6.67.1759272805006; Tue, 30 Sep 2025
+ 15:53:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 00/14] bpf: Efficient socket destruction
-To: Jordan Rife <jordan@jrife.io>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev
- <sdf@fomichev.me>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Kuniyuki Iwashima <kuniyu@google.com>, Aditi Ghag
- <aditi.ghag@isovalent.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20250909170011.239356-1-jordan@jrife.io>
- <80b309fe-6ba0-4ca5-a0b7-b04485964f5d@linux.dev>
- <ilrnfpmoawkbsz2qnyne7haznfjxek4oqeyl7x5cmtds5sdvxe@dy6fs3ej4rbr>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <ilrnfpmoawkbsz2qnyne7haznfjxek4oqeyl7x5cmtds5sdvxe@dy6fs3ej4rbr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250929125158.2488188-1-jolsa@kernel.org>
+In-Reply-To: <20250929125158.2488188-1-jolsa@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Tue, 30 Sep 2025 15:53:13 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4QQG0x_5XUHa6LUqG_voWUii=_8+m=YG7REGsEQVyAeg@mail.gmail.com>
+X-Gm-Features: AS18NWBdMSrS7l90Zd2j6V1Kr8cgP4R-o0xIF2Nsx6RnG6WbSbxX-pYGAjbIr_U
+Message-ID: <CAPhsuW4QQG0x_5XUHa6LUqG_voWUii=_8+m=YG7REGsEQVyAeg@mail.gmail.com>
+Subject: Re: [RFC] Revert "perf/x86: Always store regs->ip in perf_callchain_kernel()"
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/21/25 9:03 AM, Jordan Rife wrote:
-> Hi Martin,
-> 
-> Thanks for taking a look.
-> 
->> How many sockets were destroyed?
-> 
-> Between 1 and 5 per trial IIRC during this test. Generally, there would
-> be a small set of sockets to destroy for a given backend relative to the
-> total number UDP/TCP sockets on a system.
-> 
->> For TCP, is it possible to abort the connection in BPF_SOCK_OPS_RTO_CB to
->> stop the retry? RTO is not a per packet event.
-> 
-> To clarify, are you suggesting bpf_sock_destroy() from that context or
-> something else? If the former, bpf_sock_destroy() only works from socket
-> iterator contexts today, so that's one adjustment that would have to be
+On Tue, Sep 30, 2025 at 6:29=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> This reverts commit 83f44ae0f8afcc9da659799db8693f74847e66b3.
+>
+> hi,
+> non hw events store first stack trace entry twice:
+>
+>         bpf_prog_2beb79c650d605dd_rawtracepoint_sched_process_exec_1+324
+>         bpf_prog_2beb79c650d605dd_rawtracepoint_sched_process_exec_1+324
+>         bpf_trace_run3+138
+>         bprm_execve+1191
+>         do_execveat_common.isra.0+404
+>         __x64_sys_execve+56
+>         do_syscall_64+130
+>         entry_SYSCALL_64_after_hwframe+118
+>
+> I traced it to [1] from 2019, which stores regs->ip implicitly to fix
+> raw tracepoints stacktrace. Revert does not seem to break raw tp
+> stacktrace for me. Song, any idea? I know it's long time ;-)
 
-Regarding how to abort, I was thinking something (simpler?) like having the 
-BPF_SOCK_OPS_RTO_CB prog to enforce the "expired" logic in the 
-tcp_write_timeout() by using the prog's return value. The caveat is the return 
-value of the BPF_SOCK_OPS_RTO_CB prog is currently ignored, so it may 
-potentially break existing use cases. However, I think only checking retval == 
-ETIMEOUT should be something reasonable. The retval can be set by 
-bpf_set_retval(). I have only briefly looked at tcp_write_timeout, so please check.
+I cannot recall the original issue.
 
-The bpf_sock_destroy() may also work but a few things need to be 
-considered/adjusted. Its tcp_send_active_reset() seems unnecessary during RTO. 
-Maybe only tcp_done_with_err() is enough which seems to be a new kfunc itself. 
-It also needs bh_lock_sock() which I am not sure it is true for all sock_ops 
-callback. This could be tricky to filter out by the cb enum. Passing "struct 
-bpf_sock_ops *" instead of "struct sock *" to a new kfunc seems not generic 
-enough. It also has a tcp_set_state() call which will recur to the 
-BPF_SOCK_OPS_STATE_CB prog. This can use more thought if the above "expired" 
-idea in tcp_write_timeout() does not work out.
+I tried the revert with multiple different tests. Everything seems to
+work fine. I guess we can ship this revert.
 
-[ Unrelated, but in case it needs a new BPF_SOCK_OPS_*_CB enum. I would mostly 
-freeze any new BPF_SOCK_OPS_*_CB addition and requiring to move the bpf_sock_ops 
-to the struct_ops infrastructure first before adding new ops. ]
+Thanks for the fix!
+Song
 
-> made. It seems like this could work, but I'd have to think more about
-> how to mark certain sockets for destruction (possibly using socket
-> storage or some auxiliary map).
-
-The BPF_SOCK_OPS_RTO_CB should have the sk which then should have all 4 tuples 
-for an established connection.
-
-
->> Before diving into the discussion whether it is a good idea to add another
->> key to a bpf hashmap, it seems that a hashmap does not actually fit your use
->> case. A different data structure (or at least a different way of grouping
->> sk) is needed. Have you considered using the
-> 
-> If I were to design my ideal data structure for grouping sockets
-> (ignoring current BPF limitations), it would look quite similar to the
-> modified SOCK_HASH in this series. Really what would be ideal is
-> something more like a multihash where a single key maps to a set of
-> sockets, but that felt much too specific to this use case and doesn't
-> fit well within the BPF map paradigm. The modification to SOCK_HASH with
-> the key prefix stuff kind of achieves and felt like a good starting
-> point.
-
-imo, I don't think it justifies to cross this bridge only for sock_hash map and 
-then later being copied to other bpf map like xsk/dev/cpumap...etc. Lets stay 
-with the existing bpf map semantic. The bpf rb/list/arena is created for this. 
-Lets try it and improve what is missing.
-  >
->> bpf_list_head/bpf_rb_root/bpf_arena? Potentially, the sk could be stored as
->> a __kptr but I don't think it is supported yet, aside from considerations
->> when sk is closed, etc. However, it can store the numeric ip/port and then
->> use the bpf_sk_lookup helper, which can take netns_id. Iteration could
->> potentially be done in a sleepable SEC("syscall") program in test_prog_run,
->> where lock_sock is allowed. TCP sockops has a state change callback (i.e.
-> 
-> You could create a data structure tailored for efficient iteration over
-> a group of ip/port pairs, although I'm not sure how you would acquire
-> the socket lock unless, e.g., bpf_sock_destroy or a sleepable variant
-> thereof acquires the lock itself in that context after the sk lookup?
-> E.g. (pseudocode):
-> 
-> ...
-> for each (ip,port,ns) in my custom data structure:
->      sk = bpf_sk_lookup_tcp(ip, port, ns)
->      if (sk)
->      	bpf_sock_destroy_sleepable(sk) // acquires socket lock?
-> ...
-> 
-
-The verifier could override the kfunc call to another function pointer but I am 
-not sure we should complicate verifier further for this case, so adding a 
-bpf_sock_destroy_sleepable() is fine, imo. Not sure about the naming though, may 
-be bpf_sock_destroy_might_sleep()?
-
+Acked-by: Song Liu <song@kernel.org>
 
