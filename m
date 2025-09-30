@@ -1,129 +1,108 @@
-Return-Path: <bpf+bounces-70055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4083BAE4A8
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 20:22:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DBADBAE9D3
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 23:26:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63BED3AAC2D
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 18:22:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E35F16F636
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 21:26:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA787238C29;
-	Tue, 30 Sep 2025 18:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179AC29D281;
+	Tue, 30 Sep 2025 21:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="e4D+xKYa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qOLpYIjY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E02211499;
-	Tue, 30 Sep 2025 18:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80004246332
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 21:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759256546; cv=none; b=ZE0SHVDxu2/23K8YodSiQt8d3N21eQrAfQH15kQIxkTX/RE1eN2AxvsWU+b5LVsRvz8H7XMKi4KcPxz0ywfA+SLAT5hqWDnsJu9FqGfPIeYwzqPibd+iqHCQoKhYOs6QNugmuL7OG/aTlR9qcgWs0yPqmrSK6uY+qG/9ivYTjp8=
+	t=1759267594; cv=none; b=W4egBQuBj316HD03iFo6JeWuH5hsJznWAqqqXofsL8TpaFy3hnCNAq93+Bkxz3Z6zIHWVwM/mhCeRs6+s4AjlbDw3pIkJ2T4nL4/Qux+WXnRhSj22mgfp5451xYqDvrRfOY7ByFeJsz17APSAvH3Bf37/9YBGTnBtbCL6ZqjFEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759256546; c=relaxed/simple;
-	bh=+V+RzqHTVSHWzwZql2VkU320P7hVykf40jxm+lgamc4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lNBrS+Ybjkm81FeWoEpRGKqcZiIrsmEReMRZMTsw59ryBGa1PM2fNRUE1yTygpGB98WPxIRnTfAyRZGJZndFfQt0maQ353gjt3al0Zv9kbWmUmdW24wtETl0Z4LtXcN/h0XDK1hh89zSWhnw4aSaIIu/siiWDV5taj4AsUDJ10g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=e4D+xKYa; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4cbmcQ3NrYz9ty1;
-	Tue, 30 Sep 2025 20:22:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
-	t=1759256534;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nsIAQsUWXW/abWKM0AdhZQuMsTYSb9DGGhwXEon9Kys=;
-	b=e4D+xKYacgca7yRC4+baMCLEP9JFksX5bINk0w1rZEYr5fJidLlw07CvlF23JgZpNPbPDP
-	s90zXK60JWLdHp64ieLgAha4kTvd7sCgDifGGTUiplKwlIUkiBm9fOYCk9AZSAd3SUysbu
-	hxQUizEH5uHdUJQiumozsCSkO07w7po1XZm9vdMxJjjAcs/LrhDn0+XJIeZZ2r9j64Se4T
-	ZsFHGYxJ50oU/zbGAd9a173mf5//M+enpuxPqGdfxWe8OXlGnh23oArlKiLyL2EiLuqzOG
-	06C6+9TtA+4sQQ587Q5onuPRXU5sa4hsYXrZj50t8jTMXogWGB8mwHfld8cdkw==
-Date: Tue, 30 Sep 2025 23:51:56 +0530
-From: Brahmajit Das <listout@listout.xyz>
-To: KaFai Wan <kafai.wan@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eduard <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Song Liu <song@kernel.org>, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH v2] bpf: fix NULL pointer dereference in print_reg_state()
-Message-ID: <vgtxqzgqxtyfd3pzfngq4l43eeocpputr5syqstbnw2yibl6bv@3yep75dnifgp>
-References: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
- <20250923174738.1713751-1-listout@listout.xyz>
- <CAADnVQ+SkF2jL6NZLTF7ZKwNOfOtpMqr0ubjXpF1K0+EkHdJHw@mail.gmail.com>
- <qj5y7pjdx2f5alp7sfx2gepfylkk2bytiyeoiapyp3dpzwloyk@aljz7o77tt3m>
- <9051652cf548271da9c349758cbd70aaa3cee444.camel@linux.dev>
- <wz6god46aom7lfyuvhju67w47czdznzflec3ilqs6f7fpyf3di@k5wliusgqlut>
- <933a66f3e0e1f642ef53726abe617c4d138a91fa.camel@linux.dev>
- <5fjhzkvgvbpcm2vvqlxhgcobbkiwvo36aalj5lbqrfbznbpynf@jzokg4ba2mwp>
- <14a30aa593f8d8c018bf54439261a8f05182aa87.camel@linux.dev>
+	s=arc-20240116; t=1759267594; c=relaxed/simple;
+	bh=pZ6hN1vODeDkDdpepsUndFVWMJ5dvgJslYdYbdfalL8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=scwWQoL2OfcImufrq+PKehNjY5GMT1GL4ur+J/8l01WO0knJ47ZL78EFhcNMqjYmr2T+EyrPj4E6ACJn5EUL0EFnizNymVyFu5AN2+PdWYAn37d5bvVB1b+tGzRIszR6NBoiZrv3hrojRItyEdt7OVW/OEyyXJfy/39xlTKF3ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qOLpYIjY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4A0CC4CEF0;
+	Tue, 30 Sep 2025 21:26:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759267593;
+	bh=pZ6hN1vODeDkDdpepsUndFVWMJ5dvgJslYdYbdfalL8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qOLpYIjYSGxouVpgMtPXUYfM84io3iiPVmwuIUnTdyh7QRwf3nkWbXUJZq2mE4OD0
+	 FdpzzQ5XPti7VrJos+r2VQxPZbOdr4GSoMR8GS/7vxElnyGcpr14uNoi6czyJv3UUH
+	 m+0kiU6zjnk3UJnrfMoU/QQH4nIBdeRtifLlEKo9SrRjw78IpYz67JXbJQFQzq99V2
+	 l5QxbxDdC1TE4gfqH6BE00o1SZ8wZl9F+9MBvTOiIbpu2LqBhf/CpBSSTGCGzEUyVA
+	 v6wX+wF5AuZKWy8GHyBtMfdw9RnC37esl/ujturX7zFDdIM3nES3YYngvQeA1AMsHW
+	 uqWvM1WM2Rr3g==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: andrii@kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next 0/5] libbpf: fix libbp_sha256() for Github compatibility
+Date: Tue, 30 Sep 2025 14:26:14 -0700
+Message-ID: <20250930212619.1645410-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <14a30aa593f8d8c018bf54439261a8f05182aa87.camel@linux.dev>
 
-On 26.09.2025 18:36, KaFai Wan wrote:
-> On Fri, 2025-09-26 at 06:34 +0530, Brahmajit Das wrote:
-> > On 25.09.2025 23:31, KaFai Wan wrote:
-> > > On Wed, 2025-09-24 at 23:58 +0530, Brahmajit Das wrote:
-> > > > On 25.09.2025 01:38, KaFai Wan wrote:
-> > > > > On Wed, 2025-09-24 at 21:10 +0530, Brahmajit Das wrote:
-> > > > > > On 24.09.2025 09:32, Alexei Starovoitov wrote:
-> > > > > > > On Wed, Sep 24, 2025 at 1:43 AM Brahmajit Das
-> > > > > > > <listout@listout.xyz>
-> > > > > > > wrote:
-> > > > > > > > 
-> > > > > > > > Syzkaller reported a general protection fault due to a
-> > > > > > > > NULL
-> > > > > > > > pointer
-> > > > > > > > dereference in print_reg_state() when accessing reg-
-> > > > > > > > >map_ptr
-> > > > > > > > without
-> > > > > > > > checking if it is NULL.
-> > > > > > > > 
-...snip...
-> 
-> You should add a Fixes label in the commit log and add selftest for it
-> in V3. 
-> Fixes label is Fixes: aced132599b3 ("bpf: Add range tracking for
-> BPF_NEG")
-> For selftest you may check the test in verifier_value_illegal_alu.c and
-> other files.  
-> 
-> The code in your next post would change the behavior of BPF_NEG and 
-> BPF_END, you can run the selftest to check that.
-> 
+Recent reimplementation of libbpf_sha256() introduced issues for libbpf's
+Github mirror due to reliance on linux/unaligned.h header. This patch set
+fixes those issues to make libbpf source code compatible with Github mirror
+setup.
 
-KaFai, I'm quite new to kernel development. I'm been trying to write a
-selftest for this unfortunately been having a hard time. I would really
-appreciate some help. For now I tried to create on from the initial test
-you used to verify this bug i.e. r0 -= r0.
+This patch set starts with a bit of organization: we introduce libbpf_utils.c
+as a place for generic internal helpers like libbpf_errstr() and
+libbpf_sha256(), and move a few existing helpers there. We also clean up
+libbpf_strerror_r(), which seems to be a leftover of some previous
+refactorings.
 
-I have tried testing my changes via sending a pull request on the
-kernel-patches/bpf repository, but seems like it's failing.
-My pull request: https://github.com/kernel-patches/bpf/pull/9900
+And finally, we move libbpf_sha256() from huge libbpf.c into libbpf_utils.c,
+following up with fix ups to make its code more Github-friendly.
+
+Andrii Nakryiko (5):
+  libbpf: make libbpf_errno.c into more generic libbpf_utils.c
+  libbpf: remove unused libbpf_strerror_r and STRERR_BUFSIZE
+  libbpf: move libbpf_errstr() into libbpf_utils.c
+  libbpf: move libbpf_sha256() implementation into libbpf_utils.c
+  libbpf: remove linux/unaligned.h dependency for libbpf_sha256()
+
+ tools/lib/bpf/Build             |   2 +-
+ tools/lib/bpf/btf.c             |   1 -
+ tools/lib/bpf/btf_dump.c        |   1 -
+ tools/lib/bpf/elf.c             |   1 -
+ tools/lib/bpf/features.c        |   1 -
+ tools/lib/bpf/gen_loader.c      |   3 +-
+ tools/lib/bpf/libbpf.c          | 101 -------------
+ tools/lib/bpf/libbpf_errno.c    |  75 ----------
+ tools/lib/bpf/libbpf_internal.h |  15 ++
+ tools/lib/bpf/libbpf_utils.c    | 249 ++++++++++++++++++++++++++++++++
+ tools/lib/bpf/linker.c          |   1 -
+ tools/lib/bpf/relo_core.c       |   1 -
+ tools/lib/bpf/ringbuf.c         |   1 -
+ tools/lib/bpf/str_error.c       | 104 -------------
+ tools/lib/bpf/str_error.h       |  19 ---
+ tools/lib/bpf/usdt.c            |   1 -
+ 16 files changed, 266 insertions(+), 310 deletions(-)
+ delete mode 100644 tools/lib/bpf/libbpf_errno.c
+ create mode 100644 tools/lib/bpf/libbpf_utils.c
+ delete mode 100644 tools/lib/bpf/str_error.c
+ delete mode 100644 tools/lib/bpf/str_error.h
 
 -- 
-Regards,
-listout
+2.47.3
+
 
