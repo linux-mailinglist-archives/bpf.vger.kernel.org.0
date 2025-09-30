@@ -1,84 +1,61 @@
-Return-Path: <bpf+bounces-70045-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70046-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30D7EBAD80C
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 17:06:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1579DBADED6
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 17:40:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62F7616D8EC
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 15:04:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84C6F19433A6
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 15:40:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0C030594A;
-	Tue, 30 Sep 2025 15:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5202FF16B;
+	Tue, 30 Sep 2025 15:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="BYQF3UX5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n3sZ5Vv9"
 X-Original-To: bpf@vger.kernel.org
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4391F152D
-	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 15:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F16173
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 15:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759244695; cv=none; b=XnjM5qei6HXzbM92EeFNRfLMd/Th2bs7HgYo1d9WXmyEwUo5OJuUk91o4SZ1Pm70ac5FVKcwdI4POGNkjeSXBqGISoCIUunn/QgElASzi6wfhVetrPFw4TUc6+Uaq8eLNNPUB1ho4VCXq8VL9eGXlFImHMB9OyTYySGMHcY7Y/E=
+	t=1759246799; cv=none; b=Zi9MAdGH+2FqCB4hUBv0SbjlPtBD/1Iqbu+Vu14MlLnH9bdXDc33O8VtuXeZ80EgIeoigoRtLkSV4JllI0hXt6sQk8OLDO3i5BN/2TdRM4Sub6VvhF0pyRW6LlQp4YA1k8Az5Go5jRSQx2pKVqI/r90Ly87dwZcnuACWTWtTE+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759244695; c=relaxed/simple;
-	bh=2J+m+KUOe0/Qtk8XxGSTelGZQaGfyxhyyfOSdkx1+I8=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=eKOkXs/NxygVPx1nDN28pz3vZTovD8kdHRPAQuZNTzESK5VjercIoOWFp2BhViOARPapydp2VSK4L4YzSuSRcPDuwzenkkUbbF3SYdwNzbd+3w37aak3L552c9ofCNQsODh9iev0MQQJoHyGTLasqDr7NmTJC55joV6CucGI1o0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=BYQF3UX5; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1759244689;
-	bh=ym6iNn1ua3asUIf21e7ENsD/BN82VmDIXPA/hK+Tj78=;
-	h=From:To:Cc:Subject:Date;
-	b=BYQF3UX5Lrx7yT+KK2haG7a5lmn+y6rlZdp6V1iKQy5mQb13HaRcXHA+ip17fW8zd
-	 yY4lnYhUVxahLoO1Qad8trEBCKN5gh6+hWg6YDB/BbCBxu/AwQTJWElAJFr+YYn7JB
-	 wGWSBgXcSvf9VOtAkxDPuWuhpqjRNYgLIUOmtEuU=
-Received: from wolframium.tail477849.ts.net ([112.10.248.244])
-	by newxmesmtplogicsvrsza29-0.qq.com (NewEsmtp) with SMTP
-	id 12E2F4DF; Tue, 30 Sep 2025 23:04:46 +0800
-X-QQ-mid: xmsmtpt1759244686t0qfaej2j
-Message-ID: <tencent_70D024BAE70A0A309A4781694C7B764B0608@qq.com>
-X-QQ-XMAILINFO: NmRjDopJZVxOgyFM6sPB0M50HmrLjpCL3OxeHnWLcKpZcf/LFe4AveIPYTMsiy
-	 G21kbVyTK7nFpymsyHOdUo09ooqg2IDiUAIf1hXeiOvZLV+N80fm3/fuB2DoPlPpz/XDGl7RvAJH
-	 6+WI3rkA3Sv9bgpUYuC0l9wdjAd2Z3OZMBQSo6qnc1OCxlaxU1lHxCc0hkBe9VMOp4RkrSbi8eOK
-	 PZY2PCapI9pSij/kj5SXi/QgoYsJuNjCin8PuvNqkQe/mZH3Au8MTWo1UpQ6vHG2+gc9ooXlGgg7
-	 tt7tUru3cQZaf9Do2bJTcbCglTtoM0MDNUOeBmjJsy/z/8RLSsd1BhyVNVDEJTF9yJU28dxui9hL
-	 HxONWVDfUX2pDPNGpOS62e1GUDtIF2Lf9XS/hnl/9RC9Q7hr5EvZbvjZxUZFj+ljgMWMmU6nBnns
-	 U3BZh1DO5z4PsQ+ndn1rerHYAuZcCJZhmW8fMxXltrvNv2uzhWPk8zGtLV3vfyY8cSDpMfXdOuWc
-	 c5Mexu8oRPEM7gUxWacmWGadnt5K7q7ejlozUrN0nEWUXeKr8OvZmulO5vifhrAe/Hrww+3qfeo5
-	 CY5i94NUxCBPmeMugQCeTCr2v76EHODLcQK9mFxAc0pNw8C2UX462RL4t5oqxju96Jrp1LtahKM3
-	 PlzyZNY9fXFh8GVJz+U/WNbyV/8usp51o8/xzZR33BuCyYG5F5Jwh1HoDuLjnfIWPdqVnLwxXuLB
-	 f1ug7i6hAb7vJp+3P0cCD08jxYY1ThVX2mRiXWN5lUdx6WKqZci7u4XQazRCf1++nb8iS5Kx1yPg
-	 X3yg9LDIC2+UyB5KraU2L+uym+Ioa2hWhUcMwHderxCbsnBawlTp7q57ZxdBNQIUCFN8IZIr1kWL
-	 qqi0+tCtE66BQW+++qCJs1Hlx2PYm47p4Jxho2wq8beiDk3oTsGky6kh1QLJfcx0eq7WlUguRNpV
-	 FFIbzqYpyEe0IBM9utgVc2+ZmiDgsQfIer4e3ki16uEAz+DGe8+10qsTIflErwkfx0RiwvOQ/ufo
-	 L28CjAj8KwjcWjdqI6+4W4NSaG4iQJ/16d6Aop8jTAHJ/lhxTXybuIj0YLVfU=
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: yazhoutang@foxmail.com
+	s=arc-20240116; t=1759246799; c=relaxed/simple;
+	bh=Lml1IXfWlRQOJmFCxzCsjHwnM/xGP5qm09c6SKAxeLY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UWVVW26FOnywQg9pZuXBafabcSHykYu5d6YOmd/fkSRiJEasq+4Fjk08DJFvIohi5uJIsEVDVDZKmR5w5vfpoz3tyuyk6LIPrnuN8A5iz6Uq+8g/9AJMYPB6EcwLqoFo8mqO4eyhU9N547Ix9aFguVbmUalgs9HkdA7GRgu6w0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n3sZ5Vv9; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759246794;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=QHNwPETbYzND9P+tvxlQTNofgkyZ1yIP3cCtgSKdI8k=;
+	b=n3sZ5Vv9Z8bUrJ9gHMISdxtzauGKPoUQw+h5f7J5c8GBRYEi78dLElrBtZ6vIqTAZYXrxi
+	Bjpr6KgBiIZ4IblL6qbwhpy3p0PZ+IqGpLRJQRj+xVbwGmVqlAxqjoZwKL99qgb5BHnz+9
+	QeDAlaBNwzrwHltx314ata2eN726guE=
+From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
 	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
+	daniel@iogearbox.net,
 	jolsa@kernel.org,
-	Yazhou Tang <tangyazhou518@outlook.com>,
-	Shenghao Yuan <shenghaoyuan0928@163.com>,
-	Tianci Cao <ziye@zju.edu.cn>
-Subject: [PATCH bpf] bpf: Correctly reject negative offsets for ALU ops
-Date: Tue, 30 Sep 2025 23:04:33 +0800
-X-OQ-MSGID: <20250930150433.139672-1-yazhoutang@foxmail.com>
-X-Mailer: git-send-email 2.51.0
+	yonghong.song@linux.dev,
+	song@kernel.org,
+	eddyz87@gmail.com,
+	dxu@dxuuu.xyz,
+	deso@posteo.net,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v9 0/7] bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags for percpu maps
+Date: Tue, 30 Sep 2025 23:39:35 +0800
+Message-ID: <20250930153942.41781-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,54 +63,128 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Yazhou Tang <tangyazhou518@outlook.com>
+This patch set introduces the BPF_F_CPU and BPF_F_ALL_CPUS flags for
+percpu maps, as the requirement of BPF_F_ALL_CPUS flag for percpu_array
+maps was discussed in the thread of
+"[PATCH bpf-next v3 0/4] bpf: Introduce global percpu data"[1].
 
-When verifying BPF programs, the check_alu_op() function validates
-instructions with ALU operations. The 'offset' field in these
-instructions is a signed 16-bit integer.
+The goal of BPF_F_ALL_CPUS flag is to reduce data caching overhead in light
+skeletons by allowing a single value to be reused to update values across all
+CPUs. This avoids the M:N problem where M cached values are used to update a
+map on N CPUs kernel.
 
-The existing check 'insn->off > 1' was intended to ensure the offset is
-either 0, or 1 for BPF_MOD/BPF_DIV. However, because 'insn->off' is
-signed, this check incorrectly accepts all negative values (e.g., -1).
+The BPF_F_CPU flag is accompanied by *flags*-embedded cpu info, which
+specifies the target CPU for the operation:
 
-This commit tightens the validation by changing the condition to
-'(insn->off != 0 && insn->off != 1)'. This ensures that any value
-other than the explicitly permitted 0 and 1 is rejected, hardening the
-verifier against malformed BPF programs.
+* For lookup operations: the flag field alongside cpu info enable querying
+  a value on the specified CPU.
+* For update operations: the flag field alongside cpu info enable
+  updating value for specified CPU.
 
-Co-developed-by: Shenghao Yuan <shenghaoyuan0928@163.com>
-Signed-off-by: Shenghao Yuan <shenghaoyuan0928@163.com>
-Co-developed-by: Tianci Cao <ziye@zju.edu.cn>
-Signed-off-by: Tianci Cao <ziye@zju.edu.cn>
-Signed-off-by: Yazhou Tang <tangyazhou518@outlook.com>
----
- kernel/bpf/verifier.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Links:
+[1] https://lore.kernel.org/bpf/20250526162146.24429-1-leon.hwang@linux.dev/
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9fb1f957a093..8979a84f9253 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15739,7 +15739,7 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 	} else {	/* all other ALU ops: and, sub, xor, add, ... */
- 
- 		if (BPF_SRC(insn->code) == BPF_X) {
--			if (insn->imm != 0 || insn->off > 1 ||
-+			if (insn->imm != 0 || (insn->off != 0 && insn->off != 1) ||
- 			    (insn->off == 1 && opcode != BPF_MOD && opcode != BPF_DIV)) {
- 				verbose(env, "BPF_ALU uses reserved fields\n");
- 				return -EINVAL;
-@@ -15749,7 +15749,7 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 			if (err)
- 				return err;
- 		} else {
--			if (insn->src_reg != BPF_REG_0 || insn->off > 1 ||
-+			if (insn->src_reg != BPF_REG_0 || (insn->off != 0 && insn->off != 1) ||
- 			    (insn->off == 1 && opcode != BPF_MOD && opcode != BPF_DIV)) {
- 				verbose(env, "BPF_ALU uses reserved fields\n");
- 				return -EINVAL;
--- 
+Changes:
+v8 -> v9:
+* Change value type from u64 to u32 in selftests.
+* Address comments from Andrii:
+  * Keep value_size unaligned and update everywhere for consistency when
+    cpu flags are specified.
+  * Update value by getting pointer for percpu hash and percpu
+    cgroup_storage maps.
+
+v7 -> v8:
+* Address comments from Andrii:
+  * Check BPF_F_LOCK when update percpu_array, percpu_hash and
+    lru_percpu_hash maps.
+  * Refactor flags check in __htab_map_lookup_and_delete_batch().
+  * Keep value_size unaligned and copy value using copy_map_value() in
+    __htab_map_lookup_and_delete_batch() when BPF_F_CPU is specified.
+  * Update warn message in libbpf's validate_map_op().
+  * Update comment of libbpf's bpf_map__lookup_elem().
+
+v6 -> v7:
+* Get correct value size for percpu_hash and lru_percpu_hash in
+  update_batch API.
+* Set 'count' as 'max_entries' in test cases for lookup_batch API.
+* Address comment from Alexei:
+  * Move cpu flags check into bpf_map_check_op_flags().
+
+v5 -> v6:
+* Move bpf_map_check_op_flags() from 'bpf.h' to 'syscall.c'.
+* Address comments from Alexei:
+  * Drop the refactoring code of data copying logic for percpu maps.
+  * Drop bpf_map_check_op_flags() wrappers.
+
+v4 -> v5:
+* Address comments from Andrii:
+  * Refactor data copying logic for all percpu maps.
+  * Drop this_cpu_ptr() micro-optimization.
+  * Drop cpu check in libbpf's validate_map_op().
+  * Enhance bpf_map_check_op_flags() using *allowed flags* instead of
+    'extra_flags_mask'.
+
+v3 -> v4:
+* Address comments from Andrii:
+  * Remove unnecessary map_type check in bpf_map_value_size().
+  * Reduce code churn.
+  * Remove unnecessary do_delete check in
+    __htab_map_lookup_and_delete_batch().
+  * Introduce bpf_percpu_copy_to_user() and bpf_percpu_copy_from_user().
+  * Rename check_map_flags() to bpf_map_check_op_flags() with
+    extra_flags_mask.
+  * Add human-readable pr_warn() explanations in validate_map_op().
+  * Use flags in bpf_map__delete_elem() and
+    bpf_map__lookup_and_delete_elem().
+  * Drop "for alignment reasons".
+v3 link: https://lore.kernel.org/bpf/20250821160817.70285-1-leon.hwang@linux.dev/
+
+v2 -> v3:
+* Address comments from Alexei:
+  * Use BPF_F_ALL_CPUS instead of BPF_ALL_CPUS magic.
+  * Introduce these two cpu flags for all percpu maps.
+* Address comments from Jiri:
+  * Reduce some unnecessary u32 cast.
+  * Refactor more generic map flags check function.
+  * A code style issue.
+v2 link: https://lore.kernel.org/bpf/20250805163017.17015-1-leon.hwang@linux.dev/
+
+v1 -> v2:
+* Address comments from Andrii:
+  * Embed cpu info as high 32 bits of *flags* totally.
+  * Use ERANGE instead of E2BIG.
+  * Few format issues.
+
+Leon Hwang (7):
+  bpf: Introduce internal bpf_map_check_op_flags helper function
+  bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_array
+    maps
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_hash
+    and lru_percpu_hash maps
+  bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for
+    percpu_cgroup_storage maps
+  libbpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu maps
+  selftests/bpf: Add cases to test BPF_F_CPU and BPF_F_ALL_CPUS flags
+
+ include/linux/bpf-cgroup.h                    |   4 +-
+ include/linux/bpf.h                           |  44 +++-
+ include/uapi/linux/bpf.h                      |   2 +
+ kernel/bpf/arraymap.c                         |  25 +-
+ kernel/bpf/hashtab.c                          |  82 ++++--
+ kernel/bpf/local_storage.c                    |  27 +-
+ kernel/bpf/syscall.c                          |  65 ++---
+ tools/include/uapi/linux/bpf.h                |   2 +
+ tools/lib/bpf/bpf.h                           |   8 +
+ tools/lib/bpf/libbpf.c                        |  26 +-
+ tools/lib/bpf/libbpf.h                        |  21 +-
+ .../selftests/bpf/prog_tests/percpu_alloc.c   | 248 ++++++++++++++++++
+ .../selftests/bpf/progs/percpu_alloc_array.c  |  32 +++
+ 13 files changed, 487 insertions(+), 99 deletions(-)
+
+--
 2.51.0
 
 
