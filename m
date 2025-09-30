@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-70058-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70059-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBB59BAE9D9
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 23:26:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94678BAE9DC
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 23:26:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D3863B980E
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 21:26:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D64093BA555
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 21:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151D229D297;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813B9246332;
 	Tue, 30 Sep 2025 21:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="texjR5vl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pa9y68CM"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C482246332
-	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 21:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B8329D295
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 21:26:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759267609; cv=none; b=Zk5Q9r5E/5IrEv2kvYNvSxSGUhdSkUSnI+PHRhox56zRK1hig4avIocS52a5+bTOucS6GEWzf5tJ1uPjtl2KiqHlb2eTlqLyLwTyTmOc/gXBIcIvLTjLI1/YaFvhciwVDWiMMCImzBmPjAMLh41bsR5Hmh2z72TCvwuYdIXRbKM=
+	t=1759267610; cv=none; b=uZ1ODkk1uxirY+xpUV+JTIp/tNWbqqmiml+IHLJ4Oq7y6Lv/NnQFrobjx1GNFGge2lkJSnDMt6LnvcvnwyRf1QICnh8nJywpgnxIqRBLqCDgf2Z15Jj523fLszjzK3HBfARCdFJSKuu9XTJ4sHf/ILcvfm3QCdo81SS5oBV0B+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759267609; c=relaxed/simple;
-	bh=T9L5AUT324IzFxfdT5uEZ6UrhxXR8yqMUK7yvO79PJk=;
+	s=arc-20240116; t=1759267610; c=relaxed/simple;
+	bh=AYYIZdfWyPi4F8g0ZI0Fcc2/MUst6OnV79iQdwF1rrg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lf2hXGInwwceajTCBavDKBTRyOrm7xeplJEkQuG52c4MYUf2sQUQkf6jnS7ywhvq/zbXl4djMEhXaXS5TwawyVb8zPC9me9hoiOqWIx5Uhg3Q8W25+5fKaGfRlOcvV0VRACa5a3DGPNBFdE1s9Q71kSpA2PPzym8sLLD1wI99LM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=texjR5vl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11D4FC4CEF0;
-	Tue, 30 Sep 2025 21:26:46 +0000 (UTC)
+	 MIME-Version; b=UW9iveIVF0w5sCffbALj41XWaciOHJY6fl6KtBTGRU9/FKEtMxWqQPS2vdr4nqfK0vf+iWR5Kd1LVJiV5P27dp/D35iuQNgkTrXCaMI2sBuGg+ca4fXwcjUi9w4Gbx4WxjjkzKc2JYwDjDm7ut/xuTQMcIYbfqQt4MatJWiEsDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pa9y68CM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B102C4CEF7;
+	Tue, 30 Sep 2025 21:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759267606;
-	bh=T9L5AUT324IzFxfdT5uEZ6UrhxXR8yqMUK7yvO79PJk=;
+	s=k20201202; t=1759267609;
+	bh=AYYIZdfWyPi4F8g0ZI0Fcc2/MUst6OnV79iQdwF1rrg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=texjR5vlrTZcidAaKqc1TTw3omWGPc3PbOGUf0XsAlAkMI2b+46HsqZWypEU1qq0o
-	 +z04P62G2RJ+1/Up/RUqsDdpGr08VDLS6Sgr56qLnNLlT3wpmLbhhWg0RhAcjltHKw
-	 uSwwjvDV51JMH6jXAxX380AGlUYbM+EIug829CLATjEA7NWFNi2B6tV6eZpAMvonXL
-	 qnvA93MqgFfV7CBm7pZUrfKeJwNe3Eobj8kd0Gr6yEhgzAf8rJhWuIAWFqPa1thbUo
-	 c3Ynzx/3OEvKF5dchIDIgxEejmkTwGAdzLkmnUVyIatJ8nrJrG8s4aJclAButmgjmK
-	 zBAsXM7TdQ71Q==
+	b=Pa9y68CMHoieUbs67x+trp6HeDQRD4Hb7UHF2Q5I807o+m0dg1Fvva3ZouMq6WV5n
+	 PNkEAEZ8+wIuEc4URObsbxcRa/MfOLWBkkc9Ky8c4E67N/HWffA/RpONbGnez6AtnR
+	 aP9G4ooMbw2tEWTvNzdn1qkQfAXT81uVMs+tfm8TuZLMY1G2OUGHaT+1AQ8VkCCSHo
+	 QttmumeGQGPY15tEAd3hPLA6Kf9meS7Q6UbM9gDuCwS0wH+BxfhXZxaS9Aszjn87TG
+	 mHgXWNM2zMfzxvYR3N8H+5A0ENxUVHo9qWos6HIOHZ6ybueWlgkFaMygljMOAEJjBP
+	 kL9zn60xGpdHQ==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -48,9 +48,9 @@ To: bpf@vger.kernel.org,
 	martin.lau@kernel.org
 Cc: andrii@kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next 2/5] libbpf: remove unused libbpf_strerror_r and STRERR_BUFSIZE
-Date: Tue, 30 Sep 2025 14:26:16 -0700
-Message-ID: <20250930212619.1645410-3-andrii@kernel.org>
+Subject: [PATCH bpf-next 3/5] libbpf: move libbpf_errstr() into libbpf_utils.c
+Date: Tue, 30 Sep 2025 14:26:17 -0700
+Message-ID: <20250930212619.1645410-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250930212619.1645410-1-andrii@kernel.org>
 References: <20250930212619.1645410-1-andrii@kernel.org>
@@ -62,82 +62,388 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-libbpf_strerror_r() is not exposed as public API and neither is it used
-inside libbpf itself. Remove it altogether.
-
-Same for STRERR_BUFSIZE, it's just an orphaned leftover constant which
-we missed to clean up some time earlier.
+Get rid of str_err.{c,h} by moving implementation of libbpf_errstr()
+into libbpf_utils.c and declarations into libbpf_internal.h.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c    |  2 --
- tools/lib/bpf/str_error.c | 24 ------------------------
- tools/lib/bpf/str_error.h |  4 ----
- 3 files changed, 30 deletions(-)
+ tools/lib/bpf/Build             |  2 +-
+ tools/lib/bpf/btf.c             |  1 -
+ tools/lib/bpf/btf_dump.c        |  1 -
+ tools/lib/bpf/elf.c             |  1 -
+ tools/lib/bpf/features.c        |  1 -
+ tools/lib/bpf/gen_loader.c      |  3 +-
+ tools/lib/bpf/libbpf.c          |  1 -
+ tools/lib/bpf/libbpf_internal.h | 10 +++++
+ tools/lib/bpf/libbpf_utils.c    | 72 +++++++++++++++++++++++++++++
+ tools/lib/bpf/linker.c          |  1 -
+ tools/lib/bpf/relo_core.c       |  1 -
+ tools/lib/bpf/ringbuf.c         |  1 -
+ tools/lib/bpf/str_error.c       | 80 ---------------------------------
+ tools/lib/bpf/str_error.h       | 15 -------
+ tools/lib/bpf/usdt.c            |  1 -
+ 15 files changed, 84 insertions(+), 107 deletions(-)
+ delete mode 100644 tools/lib/bpf/str_error.c
+ delete mode 100644 tools/lib/bpf/str_error.h
 
+diff --git a/tools/lib/bpf/Build b/tools/lib/bpf/Build
+index c30927135fd6..c80204bb72a2 100644
+--- a/tools/lib/bpf/Build
++++ b/tools/lib/bpf/Build
+@@ -1,4 +1,4 @@
+-libbpf-y := libbpf.o bpf.o nlattr.o btf.o libbpf_utils.o str_error.o \
++libbpf-y := libbpf.o bpf.o nlattr.o btf.o libbpf_utils.o \
+ 	    netlink.o bpf_prog_linfo.o libbpf_probes.o hashmap.o \
+ 	    btf_dump.o ringbuf.o strset.o linker.o gen_loader.o relo_core.o \
+ 	    usdt.o zip.o elf.o features.o btf_iter.o btf_relocate.o
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 37682908cb0f..18907f0fcf9f 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -23,7 +23,6 @@
+ #include "libbpf_internal.h"
+ #include "hashmap.h"
+ #include "strset.h"
+-#include "str_error.h"
+ 
+ #define BTF_MAX_NR_TYPES 0x7fffffffU
+ #define BTF_MAX_STR_OFFSET 0x7fffffffU
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index f09f25eccf3c..6388392f49a0 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -21,7 +21,6 @@
+ #include "hashmap.h"
+ #include "libbpf.h"
+ #include "libbpf_internal.h"
+-#include "str_error.h"
+ 
+ static const char PREFIXES[] = "\t\t\t\t\t\t\t\t\t\t\t\t\t";
+ static const size_t PREFIX_CNT = sizeof(PREFIXES) - 1;
+diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
+index 823f83ad819c..295dbda24580 100644
+--- a/tools/lib/bpf/elf.c
++++ b/tools/lib/bpf/elf.c
+@@ -9,7 +9,6 @@
+ #include <linux/kernel.h>
+ 
+ #include "libbpf_internal.h"
+-#include "str_error.h"
+ 
+ /* A SHT_GNU_versym section holds 16-bit words. This bit is set if
+  * the symbol is hidden and can only be seen when referenced using an
+diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
+index 760657f5224c..b842b83e2480 100644
+--- a/tools/lib/bpf/features.c
++++ b/tools/lib/bpf/features.c
+@@ -6,7 +6,6 @@
+ #include "libbpf.h"
+ #include "libbpf_common.h"
+ #include "libbpf_internal.h"
+-#include "str_error.h"
+ 
+ static inline __u64 ptr_to_u64(const void *ptr)
+ {
+diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
+index 6945dd99a846..cd5c2543f54d 100644
+--- a/tools/lib/bpf/gen_loader.c
++++ b/tools/lib/bpf/gen_loader.c
+@@ -4,6 +4,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
++#include <asm/byteorder.h>
+ #include <linux/filter.h>
+ #include <sys/param.h>
+ #include "btf.h"
+@@ -13,8 +14,6 @@
+ #include "hashmap.h"
+ #include "bpf_gen_internal.h"
+ #include "skel_internal.h"
+-#include <asm/byteorder.h>
+-#include "str_error.h"
+ 
+ #define MAX_USED_MAPS	64
+ #define MAX_USED_PROGS	32
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index f92083f51bdb..c21bc61f5ff4 100644
+index c21bc61f5ff4..6d19e0db492c 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -319,8 +319,6 @@ static void pr_perm_msg(int err)
- 		buf);
- }
+@@ -51,7 +51,6 @@
+ #include "libbpf.h"
+ #include "bpf.h"
+ #include "btf.h"
+-#include "str_error.h"
+ #include "libbpf_internal.h"
+ #include "hashmap.h"
+ #include "bpf_gen_internal.h"
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index c93797dcaf5b..a8f204139371 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -172,6 +172,16 @@ do {				\
+ #define pr_info(fmt, ...)	__pr(LIBBPF_INFO, fmt, ##__VA_ARGS__)
+ #define pr_debug(fmt, ...)	__pr(LIBBPF_DEBUG, fmt, ##__VA_ARGS__)
  
--#define STRERR_BUFSIZE  128
--
- /* Copied from tools/perf/util/util.h */
- #ifndef zfree
- # define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
-diff --git a/tools/lib/bpf/str_error.c b/tools/lib/bpf/str_error.c
-index 9a541762f54c..92dbd801102f 100644
---- a/tools/lib/bpf/str_error.c
-+++ b/tools/lib/bpf/str_error.c
-@@ -12,30 +12,6 @@
++/**
++ * @brief **libbpf_errstr()** returns string corresponding to numeric errno
++ * @param err negative numeric errno
++ * @return pointer to string representation of the errno, that is invalidated
++ * upon the next call.
++ */
++const char *libbpf_errstr(int err);
++
++#define errstr(err) libbpf_errstr(err)
++
+ #ifndef __has_builtin
+ #define __has_builtin(x) 0
+ #endif
+diff --git a/tools/lib/bpf/libbpf_utils.c b/tools/lib/bpf/libbpf_utils.c
+index 6b180172ec6b..ee3013e9b77c 100644
+--- a/tools/lib/bpf/libbpf_utils.c
++++ b/tools/lib/bpf/libbpf_utils.c
+@@ -10,10 +10,15 @@
+ #undef _GNU_SOURCE
+ #include <stdio.h>
+ #include <string.h>
++#include <errno.h>
+ 
+ #include "libbpf.h"
+ #include "libbpf_internal.h"
+ 
++#ifndef ENOTSUPP
++#define ENOTSUPP	524
++#endif
++
  /* make sure libbpf doesn't use kernel-only integer typedefs */
  #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
  
--/*
-- * Wrapper to allow for building in non-GNU systems such as Alpine Linux's musl
-- * libc, while checking strerror_r() return to avoid having to check this in
-- * all places calling it.
-- */
--char *libbpf_strerror_r(int err, char *dst, int len)
--{
--	int ret = strerror_r(err < 0 ? -err : err, dst, len);
--	/* on glibc <2.13, ret == -1 and errno is set, if strerror_r() can't
--	 * handle the error, on glibc >=2.13 *positive* (errno-like) error
--	 * code is returned directly
--	 */
--	if (ret == -1)
--		ret = errno;
--	if (ret) {
--		if (ret == EINVAL)
--			/* strerror_r() doesn't recognize this specific error */
--			snprintf(dst, len, "unknown error (%d)", err < 0 ? err : -err);
--		else
--			snprintf(dst, len, "ERROR: strerror_r(%d)=%d", err, ret);
--	}
--	return dst;
--}
--
- const char *libbpf_errstr(int err)
- {
- 	static __thread char buf[12];
-diff --git a/tools/lib/bpf/str_error.h b/tools/lib/bpf/str_error.h
-index 53e7fbffc13e..d4c82eec034d 100644
---- a/tools/lib/bpf/str_error.h
-+++ b/tools/lib/bpf/str_error.h
-@@ -2,10 +2,6 @@
- #ifndef __LIBBPF_STR_ERROR_H
- #define __LIBBPF_STR_ERROR_H
+@@ -73,3 +78,70 @@ int libbpf_strerror(int err, char *buf, size_t size)
+ 		return libbpf_err(-ERANGE);
+ 	return libbpf_err(-ENOENT);
+ }
++
++const char *libbpf_errstr(int err)
++{
++	static __thread char buf[12];
++
++	if (err > 0)
++		err = -err;
++
++	switch (err) {
++	case -E2BIG:		return "-E2BIG";
++	case -EACCES:		return "-EACCES";
++	case -EADDRINUSE:	return "-EADDRINUSE";
++	case -EADDRNOTAVAIL:	return "-EADDRNOTAVAIL";
++	case -EAGAIN:		return "-EAGAIN";
++	case -EALREADY:		return "-EALREADY";
++	case -EBADF:		return "-EBADF";
++	case -EBADFD:		return "-EBADFD";
++	case -EBUSY:		return "-EBUSY";
++	case -ECANCELED:	return "-ECANCELED";
++	case -ECHILD:		return "-ECHILD";
++	case -EDEADLK:		return "-EDEADLK";
++	case -EDOM:		return "-EDOM";
++	case -EEXIST:		return "-EEXIST";
++	case -EFAULT:		return "-EFAULT";
++	case -EFBIG:		return "-EFBIG";
++	case -EILSEQ:		return "-EILSEQ";
++	case -EINPROGRESS:	return "-EINPROGRESS";
++	case -EINTR:		return "-EINTR";
++	case -EINVAL:		return "-EINVAL";
++	case -EIO:		return "-EIO";
++	case -EISDIR:		return "-EISDIR";
++	case -ELOOP:		return "-ELOOP";
++	case -EMFILE:		return "-EMFILE";
++	case -EMLINK:		return "-EMLINK";
++	case -EMSGSIZE:		return "-EMSGSIZE";
++	case -ENAMETOOLONG:	return "-ENAMETOOLONG";
++	case -ENFILE:		return "-ENFILE";
++	case -ENODATA:		return "-ENODATA";
++	case -ENODEV:		return "-ENODEV";
++	case -ENOENT:		return "-ENOENT";
++	case -ENOEXEC:		return "-ENOEXEC";
++	case -ENOLINK:		return "-ENOLINK";
++	case -ENOMEM:		return "-ENOMEM";
++	case -ENOSPC:		return "-ENOSPC";
++	case -ENOTBLK:		return "-ENOTBLK";
++	case -ENOTDIR:		return "-ENOTDIR";
++	case -ENOTSUPP:		return "-ENOTSUPP";
++	case -ENOTTY:		return "-ENOTTY";
++	case -ENXIO:		return "-ENXIO";
++	case -EOPNOTSUPP:	return "-EOPNOTSUPP";
++	case -EOVERFLOW:	return "-EOVERFLOW";
++	case -EPERM:		return "-EPERM";
++	case -EPIPE:		return "-EPIPE";
++	case -EPROTO:		return "-EPROTO";
++	case -EPROTONOSUPPORT:	return "-EPROTONOSUPPORT";
++	case -ERANGE:		return "-ERANGE";
++	case -EROFS:		return "-EROFS";
++	case -ESPIPE:		return "-ESPIPE";
++	case -ESRCH:		return "-ESRCH";
++	case -ETXTBSY:		return "-ETXTBSY";
++	case -EUCLEAN:		return "-EUCLEAN";
++	case -EXDEV:		return "-EXDEV";
++	default:
++		snprintf(buf, sizeof(buf), "%d", err);
++		return buf;
++	}
++}
+diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+index a469e5d4fee7..56ae77047bc3 100644
+--- a/tools/lib/bpf/linker.c
++++ b/tools/lib/bpf/linker.c
+@@ -25,7 +25,6 @@
+ #include "btf.h"
+ #include "libbpf_internal.h"
+ #include "strset.h"
+-#include "str_error.h"
  
--#define STRERR_BUFSIZE  128
+ #define BTF_EXTERN_SEC ".extern"
+ 
+diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+index 2b83c98a1137..6eea5edba58a 100644
+--- a/tools/lib/bpf/relo_core.c
++++ b/tools/lib/bpf/relo_core.c
+@@ -64,7 +64,6 @@ enum libbpf_print_level {
+ #include "libbpf.h"
+ #include "bpf.h"
+ #include "btf.h"
+-#include "str_error.h"
+ #include "libbpf_internal.h"
+ #endif
+ 
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index 9702b70da444..00ec4837a06d 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -21,7 +21,6 @@
+ #include "libbpf.h"
+ #include "libbpf_internal.h"
+ #include "bpf.h"
+-#include "str_error.h"
+ 
+ struct ring {
+ 	ring_buffer_sample_fn sample_cb;
+diff --git a/tools/lib/bpf/str_error.c b/tools/lib/bpf/str_error.c
+deleted file mode 100644
+index 92dbd801102f..000000000000
+--- a/tools/lib/bpf/str_error.c
++++ /dev/null
+@@ -1,80 +0,0 @@
+-// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+-#undef _GNU_SOURCE
+-#include <string.h>
+-#include <stdio.h>
+-#include <errno.h>
+-#include "str_error.h"
 -
--char *libbpf_strerror_r(int err, char *dst, int len);
+-#ifndef ENOTSUPP
+-#define ENOTSUPP	524
+-#endif
 -
- /**
-  * @brief **libbpf_errstr()** returns string corresponding to numeric errno
-  * @param err negative numeric errno
+-/* make sure libbpf doesn't use kernel-only integer typedefs */
+-#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
+-
+-const char *libbpf_errstr(int err)
+-{
+-	static __thread char buf[12];
+-
+-	if (err > 0)
+-		err = -err;
+-
+-	switch (err) {
+-	case -E2BIG:		return "-E2BIG";
+-	case -EACCES:		return "-EACCES";
+-	case -EADDRINUSE:	return "-EADDRINUSE";
+-	case -EADDRNOTAVAIL:	return "-EADDRNOTAVAIL";
+-	case -EAGAIN:		return "-EAGAIN";
+-	case -EALREADY:		return "-EALREADY";
+-	case -EBADF:		return "-EBADF";
+-	case -EBADFD:		return "-EBADFD";
+-	case -EBUSY:		return "-EBUSY";
+-	case -ECANCELED:	return "-ECANCELED";
+-	case -ECHILD:		return "-ECHILD";
+-	case -EDEADLK:		return "-EDEADLK";
+-	case -EDOM:		return "-EDOM";
+-	case -EEXIST:		return "-EEXIST";
+-	case -EFAULT:		return "-EFAULT";
+-	case -EFBIG:		return "-EFBIG";
+-	case -EILSEQ:		return "-EILSEQ";
+-	case -EINPROGRESS:	return "-EINPROGRESS";
+-	case -EINTR:		return "-EINTR";
+-	case -EINVAL:		return "-EINVAL";
+-	case -EIO:		return "-EIO";
+-	case -EISDIR:		return "-EISDIR";
+-	case -ELOOP:		return "-ELOOP";
+-	case -EMFILE:		return "-EMFILE";
+-	case -EMLINK:		return "-EMLINK";
+-	case -EMSGSIZE:		return "-EMSGSIZE";
+-	case -ENAMETOOLONG:	return "-ENAMETOOLONG";
+-	case -ENFILE:		return "-ENFILE";
+-	case -ENODATA:		return "-ENODATA";
+-	case -ENODEV:		return "-ENODEV";
+-	case -ENOENT:		return "-ENOENT";
+-	case -ENOEXEC:		return "-ENOEXEC";
+-	case -ENOLINK:		return "-ENOLINK";
+-	case -ENOMEM:		return "-ENOMEM";
+-	case -ENOSPC:		return "-ENOSPC";
+-	case -ENOTBLK:		return "-ENOTBLK";
+-	case -ENOTDIR:		return "-ENOTDIR";
+-	case -ENOTSUPP:		return "-ENOTSUPP";
+-	case -ENOTTY:		return "-ENOTTY";
+-	case -ENXIO:		return "-ENXIO";
+-	case -EOPNOTSUPP:	return "-EOPNOTSUPP";
+-	case -EOVERFLOW:	return "-EOVERFLOW";
+-	case -EPERM:		return "-EPERM";
+-	case -EPIPE:		return "-EPIPE";
+-	case -EPROTO:		return "-EPROTO";
+-	case -EPROTONOSUPPORT:	return "-EPROTONOSUPPORT";
+-	case -ERANGE:		return "-ERANGE";
+-	case -EROFS:		return "-EROFS";
+-	case -ESPIPE:		return "-ESPIPE";
+-	case -ESRCH:		return "-ESRCH";
+-	case -ETXTBSY:		return "-ETXTBSY";
+-	case -EUCLEAN:		return "-EUCLEAN";
+-	case -EXDEV:		return "-EXDEV";
+-	default:
+-		snprintf(buf, sizeof(buf), "%d", err);
+-		return buf;
+-	}
+-}
+diff --git a/tools/lib/bpf/str_error.h b/tools/lib/bpf/str_error.h
+deleted file mode 100644
+index d4c82eec034d..000000000000
+--- a/tools/lib/bpf/str_error.h
++++ /dev/null
+@@ -1,15 +0,0 @@
+-/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+-#ifndef __LIBBPF_STR_ERROR_H
+-#define __LIBBPF_STR_ERROR_H
+-
+-/**
+- * @brief **libbpf_errstr()** returns string corresponding to numeric errno
+- * @param err negative numeric errno
+- * @return pointer to string representation of the errno, that is invalidated
+- * upon the next call.
+- */
+-const char *libbpf_errstr(int err);
+-
+-#define errstr(err) libbpf_errstr(err)
+-
+-#endif /* __LIBBPF_STR_ERROR_H */
+diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+index fc2785eecc17..c174b4086673 100644
+--- a/tools/lib/bpf/usdt.c
++++ b/tools/lib/bpf/usdt.c
+@@ -20,7 +20,6 @@
+ #include "libbpf_common.h"
+ #include "libbpf_internal.h"
+ #include "hashmap.h"
+-#include "str_error.h"
+ 
+ /* libbpf's USDT support consists of BPF-side state/code and user-space
+  * state/code working together in concert. BPF-side parts are defined in
 -- 
 2.47.3
 
