@@ -1,75 +1,78 @@
-Return-Path: <bpf+bounces-70009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83DB0BAC8CC
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 12:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9FFBAC8D4
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 12:50:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E082A189D8C0
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 10:50:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 959391922FFC
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 10:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AFD22F7ACE;
-	Tue, 30 Sep 2025 10:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E4F2FABE3;
+	Tue, 30 Sep 2025 10:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hTWrTkYT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WW07DEBm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31C71F5820
-	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 10:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA6E22CBE6
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 10:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759229388; cv=none; b=LEfwLKF+ASRKda5Bj3x+veyNND1sv4KfnR4SZ3gcSAQJ4y/8ucSxMfuySJapNTVFRrMLTE+K6tQZOZJmqeXTh9hAovVLaNYCmyuoKWdZCpeOG3qo1OZmrIbTGJJg78nrX1nAgiZge8He7vCs0CaOFiRYbd5T+qG6uBpLwoLi02g=
+	t=1759229390; cv=none; b=Z2BQ+uhjqqQbtZZqZchcFrbVEinPF7DH5sbZWTuuY94hqVltkNOpEnV7s8zHnvY7fdo6vRP0nvg3p5yx7vYMzxhERej84HsIo6ZkZuxYDqiBrrIDweoO/67cJN6VZygfjX9jdDGnPLGxReEVWHary6N0vXXVGWUsbXlcVyu5V7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759229388; c=relaxed/simple;
-	bh=sgywMiKXLH2D9fgSBYZJpcNxegOBPaaPUYsMCesvCqE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=neNRhBxQZjdcZfDcoTMj5lYJE7vxydKkLXbjHB+g+1HKkiSqLGE7LotImZJwfeN37Wzpppjkx/WH5vX3cZA4wrdTqXHE7z1lNTO4ZjyPxXPF5txVBrNgMfkBJZsYj1RmeimK+InCJABsR6tFZQ+8QqK4o2MJ1VCmDNZkYB0uk9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hTWrTkYT; arc=none smtp.client-ip=209.85.128.53
+	s=arc-20240116; t=1759229390; c=relaxed/simple;
+	bh=9lzryIoxIfu5/aeQ/0L3x8wB87LYi6IIE/Cf5yJ3su8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ZtkxuOWqtfB4khrmK7OFoc0g98SboBN20onI4kFP3T2Q7ylBfZlmwvb6uN7uch9SuLAjN678vJY2lFQlT/r7HlqmvtLRVpIPPSjpBmRfbn+esTdNPEfV2xehjf3i4/Tsc/1skMBliPIMgYPX5Pq2LdpZNpl29Nw9JeKYYesHBnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WW07DEBm; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-46e2826d5c6so43966265e9.1
-        for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 03:49:46 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-46e4473d7f6so26063975e9.1
+        for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 03:49:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1759229385; x=1759834185; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rndqic6w25eSXszKVUtmgI8XuyrchFYVRZXfsoOhzV4=;
-        b=hTWrTkYT5eNzQbEk6ViefWLugYnvcjeApZ8BnMB3AFu4xb/USucGSy3ILdghT4nzpm
-         KOf96c8eex3J6f5MPXFKbDYDNZt0VXQSsDT+UMhhScMIVU7umETp818v/N3jgNl1+5BP
-         K6RsfKDdgDEbDjzd0Nhdrt/PVMzQlz98EAF+/mh8RjUvzCwQ2Q+j81XS7xMt7Wv+eiF2
-         bJg0VuEA2ym1k/5+nABKUpH4OcKa1QYzYeqWbQ2ob48P3+x5ZsRSQ+bCdQtDnjTAG1FH
-         2Yvw6gE/wD2HsrwplsJbGvn7sCSyKcKWvhcJdZ6jOrCLjhBRLmzT3oc3k4s19sw5zvc3
-         OCag==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GCQy1tuDeG1Ms6dk4B/xAnraCqj2iNWnwM+yI7cgWFQ=;
+        b=WW07DEBmdECMJQelQQxZPBPdK4EkjxIuTnWVS0+DY+DGJelYaubbqNWMFcx+RQHGPt
+         QqaIvtplP6Vpmv37taDf8s632/fxDUyKffikFQLqGKavzCAN04GNS0BLSaPKLf8fQWHM
+         6na8ynYtGzN/EWXk1rl3NSdwKnZpiRgoYVZEca0UhczaDDJwIOVdN7iyAQECfkPAJVnC
+         vrLUQq4FZfrjSwgmSKgp5meYobK5f/6LG0UHaMKw9h//xtdYFcTpRc2BU+uGGd3PQR4t
+         cRWubO0cdSElQkuekrq1AnREfU95Vuun9Z/pAteGOPxsdVrREGaRtcOhNf8hVWLhUt5w
+         MQ4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1759229385; x=1759834185;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rndqic6w25eSXszKVUtmgI8XuyrchFYVRZXfsoOhzV4=;
-        b=mE+lQziChO1si18xrlxtOr13tl7tWAGS5FFOpXxATITivRsTftExircF127JDzhE5r
-         d23HjUN7SjwNrF/Y5+ZSHSrHxHcAoV2tt14uJdiKb7e5vC758onjLPq8AIbuWkO9/dN0
-         BDXUOKVnNk3lyM/p620anZLbTpIjWEEHzduhli8ZyHztW8+S0aKg2i4lSZC6ghdg+iqu
-         t2M//lSEB34AXSxtDoX6sSMEOy6DcOE8c3ssuCG1iniDSbUaZast1gzHMFx9h0jgd+GP
-         TVIV/MxjzCw9yVOl65tj51LQWK7jwdnrYMwpUrZloRJRr+hbNYt9WNMDk8XOjY/jXldU
-         p1Lg==
-X-Gm-Message-State: AOJu0YxecdJlmSbTSNOJnqild+nGVbVxOWJkj9Ta1h2bHKHX07mKLFzU
-	Ks88JA1RqkoPLxCNd1c8NdCheECfD2xAAOMlX0f+h7y25cF9scpR8uHMit3S7Q==
-X-Gm-Gg: ASbGncv+hxZyudTsJQg4CiphKoS90u82iWkbYyMPed9JuOi9S8ArMlWgZfo93fAJE0J
-	EB8zl23lGjkUwx/nelA9Hnb7nQ5PxqJhE17MuB7uUN79poNU+CsSNv3dP9nWFsKwN+XYYZdvLpI
-	+vMIURNGyB76C4v+2JxM0ZOobVg9IuMjtYs7AkkY5HNcMAJw8V8qYdov+6wQAcDzz32faDPADN5
-	3JZyizq13k/fM7ajwB4HMe89ZVhHb+S120gLe4wBxncbjXn7vYtiZdRhsxWJkxtSiSikD+C43jH
-	4WOoUJ8tnPad8D+VxhB5MROVgqjVzIxUd/VHm43jeILgB2wBfuun1argwTCqh0LpwLueJ0r1LSf
-	2wlNzy3S//zx+0DvR/9B0oWiT/OMWvuwHU0z3WCR7EFdcOaOEru5zWx+rqKTzgD5l3Q==
-X-Google-Smtp-Source: AGHT+IHzsCKP/+EcD3XGQw3RUIFCyDjpxfY/wsiCXUnoDErQPMp1H4bkbORUhTgGz+Jb0cspZEuEhQ==
-X-Received: by 2002:a05:600c:4743:b0:46e:33b2:c8da with SMTP id 5b1f17b1804b1-46e33b2ca06mr161420415e9.32.1759229384374;
-        Tue, 30 Sep 2025 03:49:44 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GCQy1tuDeG1Ms6dk4B/xAnraCqj2iNWnwM+yI7cgWFQ=;
+        b=hvb2fwRHLrSnVtNkghGoTiXmGxbEpLxGoZhYheVYcH1t4S823JqhL+1WeDuKHlOjNd
+         Qgq+gDg4eLoctRS27nekLAF9fHA7h28z+IB6kqEhYYY8aVgkam/u++BR1QjfzgmmTyWb
+         CIdMU92bu8yzVZIolXeQ4WPQduyCvw21YycnfD1OOTs+e2/9LrFGjdY4HuYv6tT0vwcL
+         NemE6Pj+U103aI82qfLDO3YCidz4f5eSaQYe+sO+yQi75lKBI3ygD+QY9GbyPucYLYw7
+         ASFWqjFQj/5nmWuz9IX4n5WeW4GpL1A6Q6Ps/HFyU3ARIqk49KTxH0G4VnxDHOeOBGV2
+         AYhg==
+X-Gm-Message-State: AOJu0Yweyskjz+C7yIH0bzGonia1Mx/rEktOhnzWD033CDxmopPtJOEu
+	QabilVZ8eCvY1me+JLvJAgyN3/D3ScjehSrNkCEmIpDEqU1R48Nx0TMedFmsAg==
+X-Gm-Gg: ASbGncvqT7QVNF6geVlgBNXJ+XpT1rSLeZVyWBguO1z4gBQR19VrxOxZQodFCd65Mw9
+	0crLWjfOGyZ77Je+yCc9TlQG/afoaPRPk/1/npbE4UbOkb8D9vV0rysrZi+wpzWOBqc8nB0v2EN
+	8cv8UqnNp6gH+BkeSjfq82WyFq0YtKHKcXJ4dpLhUAoSvsNCIP/rDwxtnjf+JV+Lv1CYHBBOKOF
+	5zWZ2GcXciDH7676KTdoJ0SSWshHkt2N+u7bHfyrLQwpUkOE2NpSmkAvTy+IbgT5de8aGQ3bf7l
+	WiI87N13k6C1Ixht6UKx5OKcdDTnsnVcdREppiL8dnIvlUejxh+1TPI9hNOikPmjzHWku1JinmO
+	khTleZQOOfOVMvE/23jcaN+BubZHkKJKB8d0OjevBhmPVcjbJHn1BFChchD03qNjkesGRRG27hZ
+	Uh
+X-Google-Smtp-Source: AGHT+IFEzd2KfFGHoCTvttW8BiNeSz+bxZc6UBruBVt/kiGrP/pUGVmWYpK3FhCwsnKhzzsB/tkvUw==
+X-Received: by 2002:a05:600c:21d1:b0:450:cabd:b4a9 with SMTP id 5b1f17b1804b1-46e32a00a42mr135882295e9.29.1759229385114;
+        Tue, 30 Sep 2025 03:49:45 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fc5602dfdsm21982161f8f.33.2025.09.30.03.49.43
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fc5602dfdsm21982161f8f.33.2025.09.30.03.49.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Sep 2025 03:49:43 -0700 (PDT)
+        Tue, 30 Sep 2025 03:49:44 -0700 (PDT)
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -80,216 +83,249 @@ To: bpf@vger.kernel.org,
 	Quentin Monnet <qmo@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>
 Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH v4 bpf-next 00/15] BPF indirect jumps
-Date: Tue, 30 Sep 2025 10:55:08 +0000
-Message-Id: <20250930105523.1014140-1-a.s.protopopov@gmail.com>
+Subject: [PATCH v4 bpf-next 01/15] bpf: fix the return value of push_stack
+Date: Tue, 30 Sep 2025 10:55:09 +0000
+Message-Id: <20250930105523.1014140-2-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250930105523.1014140-1-a.s.protopopov@gmail.com>
+References: <20250930105523.1014140-1-a.s.protopopov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This patchset implements a new type of map, instruction set, and uses
-it to build support for indirect branches in BPF (on x86). (The same
-map will be later used to provide support for indirect calls and static
-keys.) See [1], [2] for more context.
+In [1] Eduard mentioned that on push_stack failure verifier code
+should return -ENOMEM instead of -EFAULT. After checking with the
+other call sites I've found that code randomly returns either -ENOMEM
+or -EFAULT. This patch unifies the return values for the push_stack
+(and similar push_async_cb) functions such that error codes are
+always assigned properly.
 
-Short table of contents:
+  [1] https://lore.kernel.org/bpf/20250615085943.3871208-1-a.s.protopopov@gmail.com
 
-  * Patches 1-7 implement the new map of type
-    BPF_MAP_TYPE_INSN_SET and corresponding selftests. This map can
-    be used to track the "original -> xlated -> jitted mapping" for
-    a given program. Patches 6,7 add support for "blinded" variant.
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ kernel/bpf/verifier.c | 80 +++++++++++++++++++++----------------------
+ 1 file changed, 40 insertions(+), 40 deletions(-)
 
-  * Patches 8,9,10,11 implement the support for indirect jumps
-
-  * Patches 12,13,14,15 add support for LLVM-compiled programs
-    containing indirect jumps.
-
-Since the v3 the jump table support was merged to LLVM and now can be
-enabled with v4. See [3] for the PR which added the support.
-
-There is still a list of TBDs for selftests, mainly, to test all the error
-conditions introduce by the patch "bpf, x86: add support for indirect jumps"
-in a new "verifier_indirect_jumps" style, but I wanted to see the kernel side
-calming down before doing this.
-
-See individual patches for more details on the implementation details.
-
-v3 -> v4 (this series):
-
-  * instruction arrays:
-    * add copyright (Alexei)
-    * remove mutexes, add frozen back (Alexei)
-    * setup 1:1 prog-map correspondence using atomic_xchg
-    * do not copy/paste array_map_get_next_key, add a common helper (Alexei)
-    * misc minor code cleanups (Alexei)
-
-  * indirect jumps, kernel side:
-    * remove jt_allocated, just check if insn is gotox (Eduard)
-    * use copy_register_state instead of individual copies (Eduard)
-    * in push_stack is_speculative should be inherited (Eduard)
-    * a few cleanups for insn_successors, including omitting error path (Eduard)
-    * check if reserved fields are used when considering `gotox` instruction (Eduard)
-    * read size and alignment of read from insn_array should be 8 (Eduard)
-    * put buffer for sorting in subfun info and realloc to grow as needed (Eduard)
-    * properly do `jump_point` / `prune_point` from `push_gotox_edge` (Eduard)
-    * use range_within to check states (Eduard)
-    * some minor cleanups and fix commit message (Eduard)
-
-  * indirect jumps, libbpf side:
-    * close map_fd in some error paths in create_jt_map (Andrii)
-    * maps for jump tables are actually not closed at all, fix this (Andrii)
-    * rename map from `jt` to `.jumptables` (Andrii)
-    * use `errstr` in an error message (Andrii)
-    * rephrase error message to look more standard (Andrii)
-    * misc other minor renames and cleanups (Andrii)
-
-  * selftests:
-    * add the frozen selftest back
-    * add a selftest for two jumps loading same table
-
-  * some other changes:
-    * rebase and split insn_successor changes into separate patch
-    * use PTR_ERR_OR_ZERO in the push stack patch (Eduard)
-    * indirect jumps on x86: properly re-read *pprog (Eduard)
-
-v2 -> v3 (https://lore.kernel.org/bpf/20250918093850.455051-1-a.s.protopopov@gmail.com/):
-
-  * fix build failure when CONFIG_BPF_SYSCALL is not set (kbuild-bot)
-  * reformat bpftool help messages (Quentin)
-
-v1 -> v2 (https://lore.kernel.org/bpf/20250913193922.1910480-1-a.s.protopopov@gmail.com/):
-
-  * push_stack changes:
-    * sanitize_speculative_path should just return int (Eduard)
-    * return code from sanitize_speculative_path, not EFAULT (Eduard)
-    * when BPF_COMPLEXITY_LIMIT_JMP_SEQ is reached, return E2BIG (Eduard)
-
-  * indirect jumps:
-    * omit support for .imm=fd in gotox, as we're not using it for now (Eduard)
-    * struct jt -> struct bpf_iarray (Eduard)
-    * insn_successors: rewrite the interface to just return a pointer (Eduard)
-    * remove min_index/max_index, use umin_value/umax_value instead (Alexei, Eduard)
-    * move emit_indirect_jump args change to the previous patch (Eduard)
-    * add a comment to map_mem_size() (Eduard)
-    * use verifier_bug for some error cases in check_indirect_jump (Eduard)
-    * clear_insn_aux_data: use start,len instead of start,end (Eduard)
-    * make regs[insn->dst_reg].type = PTR_TO_INSN part of check_mem_access (Eduard)
-
-  * constant blinding changes:
-    * make subprog_start adjustment better readable (Eduard)
-    * do not set subprog len, it is already set (Eduard)
-
-  * libbpf:
-    * remove check that relocations from .rodata are ok (Anton)
-    * do not freeze the map, it is not necessary anymore (Anton)
-    * rename the goto_x -> gotox everywhere (Anton)
-    * use u64 when parsing LLVM jump tables (Eduard)
-    * split patch in two due to spaces->tabs change (Eduard)
-    * split bpftool changes to bpftool patch (Andrii)
-    * make sym_size it a union with ext_idx (Andrii)
-    * properly copy/free the jumptables_data section from elf (Andrii)
-    * a few cosmetic changes around create_jt_map (Andrii)
-    * fix some comments + rewrite patch description (Andrii)
-    * inline bpf_prog__append_subprog_offsets (Andrii)
-    * subprog_sec_offst -> subprog_sec_off (Andrii)
-    * !strcmp -> strcmp() == 0 (Andrii)
-    * make some function names more readable (Andrii)
-    * allocate table of subfunc offsets via libbpf_reallocarray (Andrii)
-
-  * selftests:
-    * squash insn_array* tests together (Anton)
-
-  * fixed build warnings (kernel test robot)
-
-RFC -> v1 (https://lore.kernel.org/bpf/20250816180631.952085-1-a.s.protopopov@gmail.com/):
-
-  * I've tried to address all the comments provided by Alexei and
-    Eduard in RFC. Will try to list the most important of them below.
-  * One big change: move from older LLVM version [5] to newer [4].
-    Now LLVM generates jump tables as symbols in the new special
-    section ".jumptables". Another part of this change is that
-    libbpf now doesn't try to link map load and goto *rX, as
-    1) this is absolutely not reliable 2) for some use cases this
-    is impossible (namely, when more than one jump table can be used
-    in the same gotox instruction).
-  * Added insn_successors() support (Alexei, Eduard). This includes
-    getting rid of the ugly bpf_insn_set_iter_xlated_offset()
-    interface (Eduard).
-  * Removed hack for the unreachable instruction, as new LLVM thank to
-    Eduard doesn't generate it.
-  * Set mem_size for direct map access properly instead of hacking.
-    Remove off>0 check. (Alexei)
-  * Do not allocate new memory for min_index/max_index (Alexei, Eduard)
-  * Information required during check_cfg is now cached to be reused
-    later (Alexei + general logic for supporting multiple JT per jump)
-  * Properly compare registers in regsafe (Alexei, Eduard)
-  * Remove support for JMP32 (Eduard)
-  * Better checks in adjust_ptr_min_max_vals (Eduard)
-  * More selftests were added (but still there's room for more) which
-    directly use gotox (Alexei)
-  * More checks and verbose messages added
-  * "unique pointers" are no more in the map
-
-Links:
-  1. https://lpc.events/event/18/contributions/1941/
-  2. https://lwn.net/Articles/1017439/
-  3. https://github.com/llvm/llvm-project/pull/149715
-  4. https://github.com/llvm/llvm-project/pull/149715#issuecomment-3274833753
-  6. rfc: https://lore.kernel.org/bpf/20250615085943.3871208-1-a.s.protopopov@gmail.com/
-
-Anton Protopopov (15):
-  bpf: fix the return value of push_stack
-  bpf: save the start of functions in bpf_prog_aux
-  bpf: generalize and export map_get_next_key for arrays
-  bpf, x86: add new map type: instructions array
-  selftests/bpf: add selftests for new insn_array map
-  bpf: support instructions arrays with constants blinding
-  selftests/bpf: test instructions arrays with blinding
-  bpf, x86: allow indirect jumps to r8...r15
-  bpf: make bpf_insn_successors to return a pointer
-  bpf, x86: add support for indirect jumps
-  bpf: disasm: add support for BPF_JMP|BPF_JA|BPF_X
-  libbpf: fix formatting of bpf_object__append_subprog_code
-  libbpf: support llvm-generated indirect jumps
-  bpftool: Recognize insn_array map type
-  selftests/bpf: add selftests for indirect jumps
-
- arch/x86/net/bpf_jit_comp.c                   |  39 +-
- include/linux/bpf.h                           |  46 ++
- include/linux/bpf_types.h                     |   1 +
- include/linux/bpf_verifier.h                  |  27 +-
- include/uapi/linux/bpf.h                      |  11 +
- kernel/bpf/Makefile                           |   2 +-
- kernel/bpf/arraymap.c                         |  19 +-
- kernel/bpf/bpf_insn_array.c                   | 300 +++++++++
- kernel/bpf/core.c                             |  21 +
- kernel/bpf/disasm.c                           |   9 +
- kernel/bpf/liveness.c                         |  39 +-
- kernel/bpf/log.c                              |   1 +
- kernel/bpf/syscall.c                          |  22 +
- kernel/bpf/verifier.c                         | 596 ++++++++++++++++--
- .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
- tools/bpf/bpftool/map.c                       |   3 +-
- tools/include/uapi/linux/bpf.h                |  11 +
- tools/lib/bpf/libbpf.c                        | 263 +++++++-
- tools/lib/bpf/libbpf_probes.c                 |   4 +
- tools/lib/bpf/linker.c                        |  10 +-
- tools/testing/selftests/bpf/Makefile          |   4 +-
- .../selftests/bpf/prog_tests/bpf_gotox.c      | 177 ++++++
- .../selftests/bpf/prog_tests/bpf_insn_array.c | 574 +++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_gotox.c | 411 ++++++++++++
- 24 files changed, 2466 insertions(+), 127 deletions(-)
- create mode 100644 kernel/bpf/bpf_insn_array.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_insn_array.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_gotox.c
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1d4183bc3cd1..9677006bdfe4 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2093,7 +2093,7 @@ static struct bpf_verifier_state *push_stack(struct bpf_verifier_env *env,
+ 
+ 	elem = kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL_ACCOUNT);
+ 	if (!elem)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	elem->insn_idx = insn_idx;
+ 	elem->prev_insn_idx = prev_insn_idx;
+@@ -2103,12 +2103,12 @@ static struct bpf_verifier_state *push_stack(struct bpf_verifier_env *env,
+ 	env->stack_size++;
+ 	err = copy_verifier_state(&elem->st, cur);
+ 	if (err)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 	elem->st.speculative |= speculative;
+ 	if (env->stack_size > BPF_COMPLEXITY_LIMIT_JMP_SEQ) {
+ 		verbose(env, "The sequence of %d jumps is too complex.\n",
+ 			env->stack_size);
+-		return NULL;
++		return ERR_PTR(-E2BIG);
+ 	}
+ 	if (elem->st.parent) {
+ 		++elem->st.parent->branches;
+@@ -2903,7 +2903,7 @@ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
+ 
+ 	elem = kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL_ACCOUNT);
+ 	if (!elem)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	elem->insn_idx = insn_idx;
+ 	elem->prev_insn_idx = prev_insn_idx;
+@@ -2915,7 +2915,7 @@ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
+ 		verbose(env,
+ 			"The sequence of %d jumps is too complex for async cb.\n",
+ 			env->stack_size);
+-		return NULL;
++		return ERR_PTR(-E2BIG);
+ 	}
+ 	/* Unlike push_stack() do not copy_verifier_state().
+ 	 * The caller state doesn't matter.
+@@ -2926,7 +2926,7 @@ static struct bpf_verifier_state *push_async_cb(struct bpf_verifier_env *env,
+ 	elem->st.in_sleepable = is_sleepable;
+ 	frame = kzalloc(sizeof(*frame), GFP_KERNEL_ACCOUNT);
+ 	if (!frame)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 	init_func_state(env, frame,
+ 			BPF_MAIN_FUNC /* callsite */,
+ 			0 /* frameno within this callchain */,
+@@ -8966,8 +8966,8 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
+ 		prev_st = find_prev_entry(env, cur_st->parent, insn_idx);
+ 		/* branch out active iter state */
+ 		queued_st = push_stack(env, insn_idx + 1, insn_idx, false);
+-		if (!queued_st)
+-			return -ENOMEM;
++		if (IS_ERR(queued_st))
++			return PTR_ERR(queued_st);
+ 
+ 		queued_iter = get_iter_from_state(queued_st, meta);
+ 		queued_iter->iter.state = BPF_ITER_STATE_ACTIVE;
+@@ -10537,8 +10537,8 @@ static int push_callback_call(struct bpf_verifier_env *env, struct bpf_insn *ins
+ 		async_cb = push_async_cb(env, env->subprog_info[subprog].start,
+ 					 insn_idx, subprog,
+ 					 is_bpf_wq_set_callback_impl_kfunc(insn->imm));
+-		if (!async_cb)
+-			return -EFAULT;
++		if (IS_ERR(async_cb))
++			return PTR_ERR(async_cb);
+ 		callee = async_cb->frame[0];
+ 		callee->async_entry_cnt = caller->async_entry_cnt + 1;
+ 
+@@ -10554,8 +10554,8 @@ static int push_callback_call(struct bpf_verifier_env *env, struct bpf_insn *ins
+ 	 * proceed with next instruction within current frame.
+ 	 */
+ 	callback_state = push_stack(env, env->subprog_info[subprog].start, insn_idx, false);
+-	if (!callback_state)
+-		return -ENOMEM;
++	if (IS_ERR(callback_state))
++		return PTR_ERR(callback_state);
+ 
+ 	err = setup_func_entry(env, subprog, insn_idx, set_callee_state_cb,
+ 			       callback_state);
+@@ -13699,9 +13699,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 		struct bpf_reg_state *regs;
+ 
+ 		branch = push_stack(env, env->insn_idx + 1, env->insn_idx, false);
+-		if (!branch) {
++		if (IS_ERR(branch)) {
+ 			verbose(env, "failed to push state for failed lock acquisition\n");
+-			return -ENOMEM;
++			return PTR_ERR(branch);
+ 		}
+ 
+ 		regs = branch->frame[branch->curframe]->regs;
+@@ -14139,16 +14139,15 @@ struct bpf_sanitize_info {
+ 	bool mask_to_left;
+ };
+ 
+-static struct bpf_verifier_state *
+-sanitize_speculative_path(struct bpf_verifier_env *env,
+-			  const struct bpf_insn *insn,
+-			  u32 next_idx, u32 curr_idx)
++static int sanitize_speculative_path(struct bpf_verifier_env *env,
++				     const struct bpf_insn *insn,
++				     u32 next_idx, u32 curr_idx)
+ {
+ 	struct bpf_verifier_state *branch;
+ 	struct bpf_reg_state *regs;
+ 
+ 	branch = push_stack(env, next_idx, curr_idx, true);
+-	if (branch && insn) {
++	if (!IS_ERR(branch) && insn) {
+ 		regs = branch->frame[branch->curframe]->regs;
+ 		if (BPF_SRC(insn->code) == BPF_K) {
+ 			mark_reg_unknown(env, regs, insn->dst_reg);
+@@ -14157,7 +14156,7 @@ sanitize_speculative_path(struct bpf_verifier_env *env,
+ 			mark_reg_unknown(env, regs, insn->src_reg);
+ 		}
+ 	}
+-	return branch;
++	return PTR_ERR_OR_ZERO(branch);
+ }
+ 
+ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
+@@ -14176,7 +14175,6 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
+ 	u8 opcode = BPF_OP(insn->code);
+ 	u32 alu_state, alu_limit;
+ 	struct bpf_reg_state tmp;
+-	bool ret;
+ 	int err;
+ 
+ 	if (can_skip_alu_sanitation(env, insn))
+@@ -14249,11 +14247,12 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
+ 		tmp = *dst_reg;
+ 		copy_register_state(dst_reg, ptr_reg);
+ 	}
+-	ret = sanitize_speculative_path(env, NULL, env->insn_idx + 1,
+-					env->insn_idx);
+-	if (!ptr_is_dst_reg && ret)
++	err = sanitize_speculative_path(env, NULL, env->insn_idx + 1, env->insn_idx);
++	if (err < 0)
++		return REASON_STACK;
++	if (!ptr_is_dst_reg)
+ 		*dst_reg = tmp;
+-	return !ret ? REASON_STACK : 0;
++	return 0;
+ }
+ 
+ static void sanitize_mark_insn_seen(struct bpf_verifier_env *env)
+@@ -16572,8 +16571,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 
+ 		/* branch out 'fallthrough' insn as a new state to explore */
+ 		queued_st = push_stack(env, idx + 1, idx, false);
+-		if (!queued_st)
+-			return -ENOMEM;
++		if (IS_ERR(queued_st))
++			return PTR_ERR(queued_st);
+ 
+ 		queued_st->may_goto_depth++;
+ 		if (prev_st)
+@@ -16651,10 +16650,11 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 		 * the fall-through branch for simulation under speculative
+ 		 * execution.
+ 		 */
+-		if (!env->bypass_spec_v1 &&
+-		    !sanitize_speculative_path(env, insn, *insn_idx + 1,
+-					       *insn_idx))
+-			return -EFAULT;
++		if (!env->bypass_spec_v1) {
++			err = sanitize_speculative_path(env, insn, *insn_idx + 1, *insn_idx);
++			if (err < 0)
++				return err;
++		}
+ 		if (env->log.level & BPF_LOG_LEVEL)
+ 			print_insn_state(env, this_branch, this_branch->curframe);
+ 		*insn_idx += insn->off;
+@@ -16664,11 +16664,12 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 		 * program will go. If needed, push the goto branch for
+ 		 * simulation under speculative execution.
+ 		 */
+-		if (!env->bypass_spec_v1 &&
+-		    !sanitize_speculative_path(env, insn,
+-					       *insn_idx + insn->off + 1,
+-					       *insn_idx))
+-			return -EFAULT;
++		if (!env->bypass_spec_v1) {
++			err = sanitize_speculative_path(env, insn, *insn_idx + insn->off + 1,
++							*insn_idx);
++			if (err < 0)
++				return err;
++		}
+ 		if (env->log.level & BPF_LOG_LEVEL)
+ 			print_insn_state(env, this_branch, this_branch->curframe);
+ 		return 0;
+@@ -16689,10 +16690,9 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 			return err;
+ 	}
+ 
+-	other_branch = push_stack(env, *insn_idx + insn->off + 1, *insn_idx,
+-				  false);
+-	if (!other_branch)
+-		return -EFAULT;
++	other_branch = push_stack(env, *insn_idx + insn->off + 1, *insn_idx, false);
++	if (IS_ERR(other_branch))
++		return PTR_ERR(other_branch);
+ 	other_branch_regs = other_branch->frame[other_branch->curframe]->regs;
+ 
+ 	if (BPF_SRC(insn->code) == BPF_X) {
 -- 
 2.34.1
 
