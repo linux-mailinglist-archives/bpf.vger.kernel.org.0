@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-70043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30667BACEA7
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 14:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B18D9BACEAA
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 14:46:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02E251895BF0
-	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 12:46:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA18918881A0
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 12:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C95633002DE;
-	Tue, 30 Sep 2025 12:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB4CD302CBE;
+	Tue, 30 Sep 2025 12:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CYSczRul"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WOFa+Wx/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F974301714
-	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 12:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8710302753
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 12:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759236355; cv=none; b=aT+VeA7Y7Qyc5y4+NSEWekJB18P+M3C4/kyyzGLga5wrQyjGzqFS8TP/6YpGX278kyULVq0HcrAqePG6H5NV4YhJ/UFJlp+kGygaYGrW+6+Z6KJ7r8+w3pniziAUD0arB1zLsT7AjF32sI/GJ5XxRKwJjuEmSCxrsDBo4M+1HVk=
+	t=1759236356; cv=none; b=ONMA00Pcwac+877yqldZ6P+8HzZtbrYqVDOAqXhySzp36o9l5z0pYQbEnCSmgFo45IAr4FireVRjtQj3CUMuz5PHsgUdK4obPRMUyzl+gxBNrB7RKbUhBLvuhYWJJ1x0g65bmIJ/MUHfX52uJvWyYH1VwEwU5og5AGSzo4za+sU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759236355; c=relaxed/simple;
-	bh=h/H3jKCaUNS0v4/PB8F3Btz1k6QZB6pf+HwNnJ0mcIE=;
+	s=arc-20240116; t=1759236356; c=relaxed/simple;
+	bh=/byd9aV8mcAtExc+RykSVGT6Zh47/G3XnhomdBvUEv4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=j0UTpCgB3kz1ctZOo6EFoFll4riqDqju8Q5VODQaiPUQR1w+kHrFstaLHXNgv31PwIS7l9AEvmTDeE2UGJeSnLRYywkA7LbIrSlzuJF+1F6u2FbHBgTPm0nPIr6LG4N6grUluDm2feky2eH1b2XoIuMMfbphZxw0hUXuXfK/ytU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CYSczRul; arc=none smtp.client-ip=209.85.221.49
+	 MIME-Version; b=mVuiInkoyhrqP9luz2Lab2xTr4dZ64p7OS8A65U7UKp84fiT7mbwd6LAzR/GQ3gzTTgSRbqxRtl6I1u01xWK8QpnhgN/x4PSPcJx+G1bev7rGpcIDt4tQjC2Osud1jGyoWOMFtk9Nl5yxlRPEPL3vUPzTMO9P9e9FpUFWOa4hEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WOFa+Wx/; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3f2ae6fadb4so1010772f8f.1
-        for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 05:45:52 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3ee13baf2e1so4630907f8f.3
+        for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 05:45:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759236350; x=1759841150; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759236352; x=1759841152; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ywknrftBjNyhxtILJZTbzsp0u8rThEFASWWoC6kgwfg=;
-        b=CYSczRul+TRzxeWzKLH1AYld8OiYC4H6cR60E9f7vutpbnHCpU+PYxdgjH906UBovW
-         bggMmvW+iuvsKvX94n8JODIgtJGMeOhNcpfLZqSuv+Sf0YIm4KgHoJYhxNZJGZ+qRHAD
-         OUpz471mCR1owUnGzhwU650ITVX6nygucpw7iEw3mcaiOzgsA1uLl9TuHKwdJL6AC1N2
-         8MA0Xq2lEuRCPH7vFLNOlux03+g8q7VShZ0+E5pBLl1sCKgePpTyCPGSEOwT1fbORTbO
-         PJweCgQNYaJtpNI5H728PuHi9I+MGw/vAZWyKzUCSsIV2fGsUBJz40HkhX2BX6nHkDsi
-         VDsg==
+        bh=jvjSt/93gM40KMmfO9TXCYCHaqkqFLHSeYpet1rXXHw=;
+        b=WOFa+Wx/Xq+Z9wk5jxuZhhPclAvUPK3NJG5+6oxjLpJXY3AVkKpxunnxzqIDJfPXUd
+         RPtnSMpx0ofncEyj86Fb+RILUrc3Q95LMK5brVhhKJsGj4lajaKsCa8j2IH2120eR1Ek
+         a8kGbvjVnTvyuLNexiYoRHMHapnXrFMmvVZiQDxFxsBqEusuYiyMgz+MohTB86CubokX
+         02dC8KzOZJVATj9S0uDbtT6FWQdwgcrUQPxY9IYrTf8HJ9vhSgjXwVpmxo3DLfpMDl//
+         AjQ0JwfQgYL/YyBnn4SIpnvWyOBbJMKcTenvXJOKBOTt1y07edtu53qT41WN2WpvAoO8
+         fvKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759236350; x=1759841150;
+        d=1e100.net; s=20230601; t=1759236352; x=1759841152;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ywknrftBjNyhxtILJZTbzsp0u8rThEFASWWoC6kgwfg=;
-        b=BPZYvGqtr4emZQc93x7TWYNixamq7iaoDA/Y1y5iqwUQO/y2EPGd5Qg9QNWy4bTofc
-         LF6sy+8Z0WKqUzozdKRxMLdWgiaJx3KrBvej7TRbORaCYHM3bN3yFgqMZfI7phTUdciE
-         UY0l7yJagBfwBG6kwJCOVJI2t/sdTWbstb/AnZ91uCcT5SC+ZSU3xsA2lcH9r0yuFtub
-         KIWXlCVsNx0tLsxl3a+Ugk5SuhELXjixqFM5O63oY/ef43L3aVSp4MrQRTesHsm0mJW4
-         PXw93FGQInBLxguIgaVMB5+YO7bQ2HenUjQmK1YTye7aJDONJxgRHtFve7YAUAl+n2Cj
-         s51A==
-X-Gm-Message-State: AOJu0YzVBULX+/j6FBAge+puqDCmxq+c0DyP+WxQnEAxDKnu6unsnk/a
-	o8gv7O/ILxdFBVGEdm8ubB1246nI6YElqaLL89iiSMNHKhU3IkFlvUchSQG0Mg==
-X-Gm-Gg: ASbGncvzk82PdwpnRRTa5iHHexP+1l0AHTtwedPSXbYgUL8pK5thZMvvrDcXePlsspD
-	t673+xJH2gahcmcDc1XtNr5rk79xquOaU+BBNSpaJbTaYAUAPARhRjEDCtutnNbo+8ANIz43I+m
-	eX6OLvEWO+ev5JZaar9gBeMgsUgPnhxSQqWYcfuOk0DVLbw4mdSrNnYQIxhzJy+5zNvaN1dBQVq
-	VbzAqsCeZq3UKcJx945IimfqFy6wyicYYe9n1MNyu3T0JEsKtkMSXfTE1SmChLAb18TipUJ9U45
-	u4lsDB+A+n47FLHbaSrVddwNpVMcj8j0SGNAcVz8MmdMfJhfUTRpRbofkTVV2zlavLb6q9IPBE5
-	mVzsTQXD+ULUTfulCpgSOB57ir05CZUYQFU0Z5aF5dFTcLN7/7xCOko41vzgZuV7HBA==
-X-Google-Smtp-Source: AGHT+IFgLpT8E0tx7X4foeXlO+lWOxcFwrNqptenkzeK5NnkY8HPL1AKfXez/NZk5erQ+aK5+aokpA==
-X-Received: by 2002:a5d:64c9:0:b0:405:3028:1be2 with SMTP id ffacd0b85a97d-40e4354d949mr19019938f8f.11.1759236350133;
-        Tue, 30 Sep 2025 05:45:50 -0700 (PDT)
+        bh=jvjSt/93gM40KMmfO9TXCYCHaqkqFLHSeYpet1rXXHw=;
+        b=t7DcKY66DeEXy8bQBTSWtExm/5kf1cFsIQyi9LXTv96ghVHklrh+4iVTaUWFAqJk8w
+         ttRhDIazMAY6NEkr4N5HmCNo4EiuZv9U7q15ySOEDadZcvoWTN2oKmyZb/DdXKaKpOgp
+         suAokAYiUg2KvJagxKOcjNqAR6F0MI9Nqv5dZoVHCttSMwsuGVhfPxXRsU0jT0+sp3f0
+         xIUzIqIHsQ7O9u7isEQ35wN5bpQu6UI4OMUra+pAgCnyH3nNQ94EYp2ypw5PLybut2hn
+         +qVmymaiJU52frk/Jos0qDyKb140tDgQByR8So4FE4abSRz7yc3P0yJfsJFW0u+H0lIA
+         YhzQ==
+X-Gm-Message-State: AOJu0YxI+Gsb3sEKyMv/ESBDD3eUCAVFdUg8FVmD8A3pl6XyNj54zh7y
+	oBbTbES2ej5NQmTJBjU/pfMVj8az9jlnTe8M2zgPkK5uxJx5MeifP7eZ/2MDCw==
+X-Gm-Gg: ASbGncuhZdCzifrVJ9p/6XT4Gvcq3K4CBsPlnrQXvvVwiHcEECohJOXS+90cWxA9Pm4
+	/6EuoI/zdzCTCCqhZmi7DMEH9/aFVaLJUlc0hyiAGym8LOt5AkppjvGOIXqUjNRyjFbGdZY8iPE
+	NZymq+CwkzBooX3uJF/tDeGMv5GYEvkBBsqYmPZkTdcu5NBqyonT2A7k+yCh4PrE+QODPuY92oi
+	tttEl+h5ROLLVA2dHAO6sCtg3acBmHmXAOGsnKHRZE+c2mqg+ZmJJpGDLEcnRVqpxJ6xsgKQ6mn
+	H4zcvYTloGyDdUlzFv7CWx+GjH4eGR28yIfB6ZiJIxGsJyl3jGkH7F/lw7LoiYYJ4hPOAt514mw
+	Qak04zME2pOpLgD6dJHc15bKWXVQ5XeQfd9TLpT+bUtt0wbz3gWufiE0Ma2FU78YcQw==
+X-Google-Smtp-Source: AGHT+IEJVh/ssF8qxmjAfXjFQM8Bn3c/jYOvXrPWgOT19OGEPnlieQHu/4cZMEqlbIwz4y149LXL9g==
+X-Received: by 2002:a05:6000:3101:b0:3e7:492f:72b4 with SMTP id ffacd0b85a97d-40e4be0c940mr17546450f8f.42.1759236351565;
+        Tue, 30 Sep 2025 05:45:51 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fc8aa0078sm22392586f8f.59.2025.09.30.05.45.49
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fc8aa0078sm22392586f8f.59.2025.09.30.05.45.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Sep 2025 05:45:49 -0700 (PDT)
+        Tue, 30 Sep 2025 05:45:50 -0700 (PDT)
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	Quentin Monnet <qmo@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>
 Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH v5 bpf-next 14/15] bpftool: Recognize insn_array map type
-Date: Tue, 30 Sep 2025 12:51:10 +0000
-Message-Id: <20250930125111.1269861-15-a.s.protopopov@gmail.com>
+Subject: [PATCH v5 bpf-next 15/15] selftests/bpf: add selftests for indirect jumps
+Date: Tue, 30 Sep 2025 12:51:11 +0000
+Message-Id: <20250930125111.1269861-16-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250930125111.1269861-1-a.s.protopopov@gmail.com>
 References: <20250930125111.1269861-1-a.s.protopopov@gmail.com>
@@ -96,43 +96,634 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Teach bpftool to recognize instruction array map type.
+Add selftests for indirect jumps. All the indirect jumps are
+generated from C switch statements, so, if compiled by a compiler
+which doesn't support indirect jumps, then should pass as well.
 
 Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-Acked-by: Quentin Monnet <qmo@kernel.org>
 ---
- tools/bpf/bpftool/Documentation/bpftool-map.rst | 3 ++-
- tools/bpf/bpftool/map.c                         | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../selftests/bpf/prog_tests/bpf_gotox.c      | 177 ++++++++
+ tools/testing/selftests/bpf/progs/bpf_gotox.c | 411 ++++++++++++++++++
+ 3 files changed, 591 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_gotox.c
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-index 252e4c538edb..1af3305ea2b2 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-@@ -55,7 +55,8 @@ MAP COMMANDS
- |     | **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
- |     | **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
- |     | **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage**
--|     | **task_storage** | **bloom_filter** | **user_ringbuf** | **cgrp_storage** | **arena** }
-+|     | **task_storage** | **bloom_filter** | **user_ringbuf** | **cgrp_storage** | **arena**
-+|     | **insn_array** }
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index f00587d4ede6..513464ad1d39 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -453,7 +453,9 @@ BPF_CFLAGS = -g -Wall -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)	\
+ 	     -I$(abspath $(OUTPUT)/../usr/include)			\
+ 	     -std=gnu11		 					\
+ 	     -fno-strict-aliasing 					\
+-	     -Wno-compare-distinct-pointer-types
++	     -Wno-compare-distinct-pointer-types			\
++	     -Wno-initializer-overrides					\
++	     #
+ # TODO: enable me -Wsign-compare
  
- DESCRIPTION
- ===========
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index c9de44a45778..7ebf7dbcfba4 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -1477,7 +1477,8 @@ static int do_help(int argc, char **argv)
- 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
- 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
- 		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage |\n"
--		"                 task_storage | bloom_filter | user_ringbuf | cgrp_storage | arena }\n"
-+		"                 task_storage | bloom_filter | user_ringbuf | cgrp_storage | arena |\n"
-+		"                 insn_array }\n"
- 		"       " HELP_SPEC_OPTIONS " |\n"
- 		"                    {-f|--bpffs} | {-n|--nomount} }\n"
- 		"",
+ CLANG_CFLAGS = $(CLANG_SYS_INCLUDES)
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+new file mode 100644
+index 000000000000..199aa4c50678
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_gotox.c
+@@ -0,0 +1,177 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <test_progs.h>
++
++#include <linux/if_ether.h>
++#include <linux/in.h>
++#include <linux/ip.h>
++#include <linux/ipv6.h>
++#include <linux/in6.h>
++#include <linux/udp.h>
++#include <linux/tcp.h>
++
++#include <sys/syscall.h>
++#include <bpf/bpf.h>
++
++#include "bpf_gotox.skel.h"
++
++static void __test_run(struct bpf_program *prog, void *ctx_in, size_t ctx_size_in)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++			    .ctx_in = ctx_in,
++			    .ctx_size_in = ctx_size_in,
++		   );
++	int err, prog_fd;
++
++	prog_fd = bpf_program__fd(prog);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run_opts err");
++}
++
++static void check_simple(struct bpf_gotox *skel,
++			 struct bpf_program *prog,
++			 __u64 ctx_in,
++			 __u64 expected)
++{
++	skel->bss->ret_user = 0;
++
++	__test_run(prog, &ctx_in, sizeof(ctx_in));
++
++	if (!ASSERT_EQ(skel->bss->ret_user, expected, "skel->bss->ret_user"))
++		return;
++}
++
++static void check_simple_fentry(struct bpf_gotox *skel,
++				struct bpf_program *prog,
++				__u64 ctx_in,
++				__u64 expected)
++{
++	skel->bss->in_user = ctx_in;
++	skel->bss->ret_user = 0;
++
++	/* trigger */
++	usleep(1);
++
++	if (!ASSERT_EQ(skel->bss->ret_user, expected, "skel->bss->ret_user"))
++		return;
++}
++
++/* validate that for two loads of the same jump table libbpf generates only one map */
++static void check_one_map_two_jumps(struct bpf_gotox *skel)
++{
++	struct bpf_prog_info prog_info;
++	struct bpf_map_info map_info;
++	__u32 len;
++	__u32 map_ids[16];
++	int prog_fd, map_fd;
++	int ret;
++	int i;
++	bool seen = false;
++
++	memset(&prog_info, 0, sizeof(prog_info));
++	prog_info.map_ids = (long)map_ids;
++	prog_info.nr_map_ids = ARRAY_SIZE(map_ids);
++	prog_fd = bpf_program__fd(skel->progs.one_map_two_jumps);
++	if (!ASSERT_GE(prog_fd, 0, "bpf_program__fd(one_map_two_jumps)"))
++		return;
++
++	len = sizeof(prog_info);
++	ret = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &len);
++	if (!ASSERT_OK(ret, "bpf_obj_get_info_by_fd(prog_fd)"))
++		return;
++
++	for (i = 0; i < prog_info.nr_map_ids; i++) {
++		map_fd  = bpf_map_get_fd_by_id(map_ids[i]);
++		if (!ASSERT_GE(map_fd, 0, "bpf_program__fd(one_map_two_jumps)"))
++			return;
++
++		len = sizeof(map_info);
++		ret = bpf_obj_get_info_by_fd(map_fd, &map_info, &len);
++		if (!ASSERT_OK(ret, "bpf_obj_get_info_by_fd(map_fd)")) {
++			close(map_fd);
++			return;
++		}
++
++		if (map_info.type == BPF_MAP_TYPE_INSN_ARRAY) {
++			if (!ASSERT_EQ(seen, false, "more than one INSN_ARRAY map")) {
++				close(map_fd);
++				return;
++			}
++			seen = true;
++		}
++		close(map_fd);
++	}
++
++	ASSERT_EQ(seen, true, "no INSN_ARRAY map");
++}
++
++static void check_gotox_skel(struct bpf_gotox *skel)
++{
++	int i;
++	__u64 in[]   = {0, 1, 2, 3, 4,  5, 77};
++	__u64 out[]  = {2, 3, 4, 5, 7, 19, 19};
++	__u64 out2[] = {103, 104, 107, 205, 115, 1019, 1019};
++	__u64 in3[]  = {0, 11, 27, 31, 22, 45, 99};
++	__u64 out3[] = {2,  3,  4,  5, 19, 19, 19};
++	__u64 in4[]  = {0, 1, 2, 3, 4,  5, 77};
++	__u64 out4[] = {12, 15, 7 , 15, 12, 15, 15};
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.simple_test, in[i], out[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.simple_test2, in[i], out[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.two_switches, in[i], out2[i]);
++
++	if (0) for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.big_jump_table, in3[i], out3[i]);
++
++	if (0) for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.one_jump_two_maps, in4[i], out4[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.use_static_global1, in[i], out[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.use_static_global2, in[i], out[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.use_nonstatic_global1, in[i], out[i]);
++
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple(skel, skel->progs.use_nonstatic_global2, in[i], out[i]);
++
++	bpf_program__attach(skel->progs.simple_test_other_sec);
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple_fentry(skel, skel->progs.simple_test_other_sec, in[i], out[i]);
++
++	bpf_program__attach(skel->progs.use_static_global_other_sec);
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple_fentry(skel, skel->progs.use_static_global_other_sec, in[i], out[i]);
++
++	bpf_program__attach(skel->progs.use_nonstatic_global_other_sec);
++	for (i = 0; i < ARRAY_SIZE(in); i++)
++		check_simple_fentry(skel, skel->progs.use_nonstatic_global_other_sec, in[i], out[i]);
++
++	if (0) check_one_map_two_jumps(skel);
++}
++
++void test_bpf_gotox(void)
++{
++	struct bpf_gotox *skel;
++	int ret;
++
++	skel = bpf_gotox__open();
++	if (!ASSERT_NEQ(skel, NULL, "bpf_gotox__open"))
++		return;
++
++	ret = bpf_gotox__load(skel);
++	if (!ASSERT_OK(ret, "bpf_gotox__load"))
++		return;
++
++	check_gotox_skel(skel);
++
++	bpf_gotox__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/bpf_gotox.c b/tools/testing/selftests/bpf/progs/bpf_gotox.c
+new file mode 100644
+index 000000000000..4aa4bf251442
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bpf_gotox.c
+@@ -0,0 +1,411 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_misc.h"
++
++__u64 in_user;
++__u64 ret_user;
++
++struct simple_ctx {
++	__u64 x;
++};
++
++__u64 some_var;
++
++/*
++ * This function adds code which will be replaced by a different
++ * number of instructions by the verifier. This adds additional
++ * stress on testing the insn_array maps corresponding to indirect jumps.
++ */
++static __always_inline void adjust_insns(__u64 x)
++{
++	some_var ^= x + bpf_jiffies64();
++}
++
++SEC("syscall")
++int simple_test(struct simple_ctx *ctx)
++{
++	switch (ctx->x) {
++	case 0:
++		adjust_insns(ctx->x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(ctx->x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(ctx->x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(ctx->x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(ctx->x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(ctx->x + 177);
++		ret_user = 19;
++		break;
++	}
++
++	return 0;
++}
++
++SEC("syscall")
++int simple_test2(struct simple_ctx *ctx)
++{
++	switch (ctx->x) {
++	case 0:
++		adjust_insns(ctx->x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(ctx->x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(ctx->x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(ctx->x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(ctx->x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(ctx->x + 177);
++		ret_user = 19;
++		break;
++	}
++
++	return 0;
++}
++
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int simple_test_other_sec(struct pt_regs *ctx)
++{
++	__u64 x = in_user;
++
++	switch (x) {
++	case 0:
++		adjust_insns(x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(x + 177);
++		ret_user = 19;
++		break;
++	}
++
++	return 0;
++}
++
++SEC("syscall")
++int two_switches(struct simple_ctx *ctx)
++{
++	switch (ctx->x) {
++	case 0:
++		adjust_insns(ctx->x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(ctx->x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(ctx->x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(ctx->x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(ctx->x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(ctx->x + 177);
++		ret_user = 19;
++		break;
++	}
++
++	switch (ctx->x + !!ret_user) {
++	case 1:
++		adjust_insns(ctx->x + 7);
++		ret_user = 103;
++		break;
++	case 2:
++		adjust_insns(ctx->x + 9);
++		ret_user = 104;
++		break;
++	case 3:
++		adjust_insns(ctx->x + 11);
++		ret_user = 107;
++		break;
++	case 4:
++		adjust_insns(ctx->x + 11);
++		ret_user = 205;
++		break;
++	case 5:
++		adjust_insns(ctx->x + 11);
++		ret_user = 115;
++		break;
++	default:
++		adjust_insns(ctx->x + 177);
++		ret_user = 1019;
++		break;
++	}
++
++	return 0;
++}
++
++SEC("syscall")
++int big_jump_table(struct simple_ctx *ctx __attribute__((unused)))
++{
++#if 0
++	const void *const jt[256] = {
++		[0 ... 255] = &&default_label,
++		[0] = &&l0,
++		[11] = &&l11,
++		[27] = &&l27,
++		[31] = &&l31,
++	};
++
++	goto *jt[ctx->x & 0xff];
++
++l0:
++	adjust_insns(ctx->x + 1);
++	ret_user = 2;
++	return 0;
++
++l11:
++	adjust_insns(ctx->x + 7);
++	ret_user = 3;
++	return 0;
++
++l27:
++	adjust_insns(ctx->x + 9);
++	ret_user = 4;
++	return 0;
++
++l31:
++	adjust_insns(ctx->x + 11);
++	ret_user = 5;
++	return 0;
++
++default_label:
++	adjust_insns(ctx->x + 177);
++	ret_user = 19;
++	return 0;
++#else
++	return 0;
++#endif
++}
++
++SEC("syscall")
++int one_jump_two_maps(struct simple_ctx *ctx __attribute__((unused)))
++{
++#if 0
++	__label__ l1, l2, l3, l4;
++	void *jt1[2] = { &&l1, &&l2 };
++	void *jt2[2] = { &&l3, &&l4 };
++	unsigned int a = ctx->x % 2;
++	unsigned int b = (ctx->x / 2) % 2;
++	volatile int ret = 0;
++
++	if (!(a < 2 && b < 2))
++		return 19;
++
++	if (ctx->x % 2)
++		goto *jt1[a];
++	else
++		goto *jt2[b];
++
++	l1: ret += 1;
++	l2: ret += 3;
++	l3: ret += 5;
++	l4: ret += 7;
++
++	ret_user = ret;
++	return ret;
++#else
++	return 0;
++#endif
++}
++
++SEC("syscall")
++int one_map_two_jumps(struct simple_ctx *ctx __attribute__((unused)))
++{
++#if 0
++	__label__ l1, l2, l3;
++	void *jt[3] = { &&l1, &&l2, &&l3 };
++	unsigned int a = (ctx->x >> 2) & 1;
++	unsigned int b = (ctx->x >> 3) & 1;
++	volatile int ret = 0;
++
++	if (ctx->x % 2)
++		goto *jt[a];
++
++	if (ctx->x % 3)
++		goto *jt[a + b];
++
++	l1: ret += 3;
++	l2: ret += 5;
++	l3: ret += 7;
++
++	ret_user = ret;
++	return ret;
++#else
++	return 0;
++#endif
++}
++
++/* Just to introduce some non-zero offsets in .text */
++static __noinline int f0(volatile struct simple_ctx *ctx __arg_ctx)
++{
++	if (ctx)
++		return 1;
++	else
++		return 13;
++}
++
++SEC("syscall") int f1(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	return f0(ctx);
++}
++
++static __noinline int __static_global(__u64 x)
++{
++	switch (x) {
++	case 0:
++		adjust_insns(x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(x + 177);
++		ret_user = 19;
++		break;
++	}
++
++	return 0;
++}
++
++SEC("syscall")
++int use_static_global1(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	return __static_global(ctx->x);
++}
++
++SEC("syscall")
++int use_static_global2(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	adjust_insns(ctx->x + 1);
++	return __static_global(ctx->x);
++}
++
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int use_static_global_other_sec(void *ctx)
++{
++	return __static_global(in_user);
++}
++
++__noinline int __nonstatic_global(__u64 x)
++{
++	switch (x) {
++	case 0:
++		adjust_insns(x + 1);
++		ret_user = 2;
++		break;
++	case 1:
++		adjust_insns(x + 7);
++		ret_user = 3;
++		break;
++	case 2:
++		adjust_insns(x + 9);
++		ret_user = 4;
++		break;
++	case 3:
++		adjust_insns(x + 11);
++		ret_user = 5;
++		break;
++	case 4:
++		adjust_insns(x + 17);
++		ret_user = 7;
++		break;
++	default:
++		adjust_insns(x + 177);
++		ret_user = 19;
++		break;
++	}
++
++	return 0;
++}
++
++SEC("syscall")
++int use_nonstatic_global1(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	return __nonstatic_global(ctx->x);
++}
++
++SEC("syscall")
++int use_nonstatic_global2(struct simple_ctx *ctx)
++{
++	ret_user = 0;
++	adjust_insns(ctx->x + 1);
++	return __nonstatic_global(ctx->x);
++}
++
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int use_nonstatic_global_other_sec(void *ctx)
++{
++	return __nonstatic_global(in_user);
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.34.1
 
