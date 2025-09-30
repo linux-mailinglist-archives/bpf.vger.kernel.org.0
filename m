@@ -1,341 +1,219 @@
-Return-Path: <bpf+bounces-69993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-69994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C81BBAAA74
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 23:35:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D081BBAAC54
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 02:02:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 475011C03B1
-	for <lists+bpf@lfdr.de>; Mon, 29 Sep 2025 21:35:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39862189C9F1
+	for <lists+bpf@lfdr.de>; Tue, 30 Sep 2025 00:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2A0259CB9;
-	Mon, 29 Sep 2025 21:35:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B48168BD;
+	Tue, 30 Sep 2025 00:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Hi8kKuxH"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TEUJlpie"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30FF25784E;
-	Mon, 29 Sep 2025 21:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB18D173
+	for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 00:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759181734; cv=none; b=s9QubE87SopVvyuz0dcKoHFcGVGx00Oso88lR6+eQWBqFafj9LhvuCPWUz1cPkheYXHerGr6qxb1X3j/tme4vgHbzE2bS7jiM5oemUEC5O+qwhhecnE7NkY6XBq45mJIHwbdkM2E1HnCKQ6Co4gYgOCxRr0QYc5bk6ln8oyFrrc=
+	t=1759190524; cv=none; b=oyZUmosuCo0cwJBAPWZyVEyHYDcDPsc7bnlRKXSMoteqwPOUyELz736hplF+PLn9FgW6/f/kt4NZiWx+3mWIUlUW2kr5knL/d/bCb7y3TzYIEOSzyFzaVfQdz5U77al1QpFgUubbPDo8IsAlBsxdGyyeejzv4AWQmzbUxjxfXSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759181734; c=relaxed/simple;
-	bh=1ogjZPfGvdRGMXeq4ltonFGtRcvbiN3n7hZPSjnGr38=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bj1qK778ABGsnyTYeFVkpqKZ+1mI3e7GqTHa4IWV20iaiBc91Ir94BsROW/ZVY7IXHezqzDKDn/UgEuMJUXOGboSoIoOYjLYHv0DnmDtg4ucfZVvknIeWR+5AborYQN3f6tGnfegJU6s9tt9vWurWy41UMpZrqUl8DAadgFZ3/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Hi8kKuxH; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia.corp.microsoft.com (unknown [13.88.17.9])
-	by linux.microsoft.com (Postfix) with ESMTPSA id C488C201CEF2;
-	Mon, 29 Sep 2025 14:35:30 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C488C201CEF2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1759181731;
-	bh=NJ0pS0k7flc9QSKhJlzGKAkc9AjbiTcT+RfbRRrlyiM=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Hi8kKuxHw6945GgKiu5a03+5o0xJrsHOQub47HARg7hisvRN2xtauNSqrw50vm+2H
-	 5bfRMMVCCHRGV/gArTxMFyXV6gOrAPDZvDNF0licCzmFjf3tqmEvDwrF5Gl22FBdsw
-	 2vhCaB9iWRX+PuBozY/wThtGEKTOZ/OEEdAeA3NQ=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: bpf@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	kpsingh@kernel.org,
-	bboscaccy@linux.microsoft.com,
-	paul@paul-moore.com,
-	kys@microsoft.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	James.Bottomley@hansenpartnership.com,
-	wufan@linux.microsoft.com,
-	qmo@kernel.org
-Subject: [PATCH bpf-next v2 3/3] bpftool: Add support for signing program and map hash chains
-Date: Mon, 29 Sep 2025 14:34:27 -0700
-Message-ID: <20250929213520.1821223-4-bboscaccy@linux.microsoft.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
-References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
+	s=arc-20240116; t=1759190524; c=relaxed/simple;
+	bh=3AVIRJP0nqO+qELyFtR/A5Yl/+5NLyaw3x+oly8XPm0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OyxW6IwTBcaTihpp+FPqt6s+3qkaswTuPH6iA3cqXGF5JP9GKBVN8I8ut9RCDPesiZ4vJJH2aZo7i4v3j7wJxMOmjZ3JmuBWkkmw/CZGkqLFAdL2vwR4DI9llkqN2a9Yi2ln8fc0qvGi8TGzRIOs6BeIXKWRO51R3mmRsbYrgsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TEUJlpie; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-4df3fabe9c2so71881cf.1
+        for <bpf@vger.kernel.org>; Mon, 29 Sep 2025 17:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1759190522; x=1759795322; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9F+loMYCYWrOcpIXdqB3UxC6d0dMHaZJx1ouukFllGU=;
+        b=TEUJlpiejqa1+V8rV1T8wJ0C3nE0QSigfePW9yJtw1WihafH/TJ66gDMd5b88NcQ91
+         2f8boJ/Pti5W8IzlPAYRsDTuzA8lFrXVqK91W36Qlm6qIFT0T4c5xqWKaYKXgMsTLuaB
+         7PzXk0VqhvBQdUTN7FniUzrUtUMdVCOSfp4725igMf8OmVg6cnDL7vIu/bnVte8SgMOl
+         Txo0HANQIiz8lJlsIp/KsVECp2zSaXQ4claKckyITb4PGEBrTvChptxVcel2bHZJLJOp
+         lzWF4R1ERvOCNL/uC/wF0qnH8MxIbpZ7shxF+GUfoLgP0sfY0H2kHB03IGuqcJKGwys1
+         gXHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759190522; x=1759795322;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9F+loMYCYWrOcpIXdqB3UxC6d0dMHaZJx1ouukFllGU=;
+        b=viWPGaSXZ46RvfBafaXiK+r0XohagoXHsvXLtwGnt4uezBIX0tZpdWD48n3PfkJClc
+         x2pWAyBzdqkC0Hpqp5yPQdGzQFMi7bbPVeYwsv97BmWjeK2Zgzvjq46+tC8suVP3EPPp
+         QyRUV9ikERP2nSRReB2eVJO4MLTuBtqHtNDB7jy4L/x87VJDWIb9KPXddIJBturZ5hnw
+         XLZSRboqGWzRsb7VMnimoBmu8sRTignreFQPm8UYeLxAPWsEqvCDLWWKVsLBW/hcfxuV
+         aEXbzyqAzxVIA0OUMd6YuJQAknRgFkEHCxP29ZoTvjMBCkjzG2Pj/Th2j3ZfYLpQXBcT
+         etZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVt1Rf2V/y7TmHGNXlfJDhleL86FiwleHdj/e+vhes7RA0ovSKQgKSkrkUaSFjHLvgoPcI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0DUCseRefrg0+tjlu5+iAY1/CQZ5ObmxrkKN4Z2QnhgpqRvzw
+	9PLtg+4bNLMqWZ+c5H1s14A3tXkn7m2KU9IHeFJ78/DkyKOE9VVJq+jF0kWo5epNb4hzIrKFO7k
+	uwSzUI5uCvepAmHw/nEhOTaUOFV35iwjYop2KDb2S
+X-Gm-Gg: ASbGncsuaNZ/5imVhjrBKKFtB7OfTaL/W32aBqJulX7Y1Y0LLkusfuV0qgwm9sRonxk
+	S6iJ10QVkiz1rV/zBFe6+/zffwUAkoiFY4DgTT5gbVhK4brQOpmLs+JcC4UXeTyc+JzMOAih+DM
+	0rnpnxwneh3FOIP4tI69GaoU/NPXqileUurwRS81Xbn/jUoEpDewzq1cTBgMwk2Xk0mhoc4aTXZ
+	pKDZ9W3KY/C6P168Og3fLsTB6dFTJ6gv6bch3PkmtrEJaufczI1zYCKxJwg1+kthULDdl33
+X-Google-Smtp-Source: AGHT+IHyFixTMv37JFGgdfgR3NetprEXaidZPluXal7gyPyVZujOxk/XFuZfwHbPtOO0KW2caMWqJjNIRb8Wpqa75y8=
+X-Received: by 2002:a05:622a:106:b0:4b3:19b2:d22 with SMTP id
+ d75a77b69052e-4e2f7ee12aemr1919421cf.13.1759190521092; Mon, 29 Sep 2025
+ 17:02:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250924060843.2280499-1-tavip@google.com> <20250924170914.20aac680@kernel.org>
+ <CAGWr4cQCp4OwF8ESCk4QtEmPUCkhgVXZitp5esDc++rgxUhO8A@mail.gmail.com>
+ <aNUObDuryXVFJ1T9@boxer> <20250925191219.13a29106@kernel.org>
+ <CAGWr4cSiVDTUDfqAsHrsu1TRbumDf-rUUP=Q9PVajwUTHf2bYg@mail.gmail.com>
+ <aNZ33HRt+SxltbcP@boxer> <20250926124010.4566617b@kernel.org>
+In-Reply-To: <20250926124010.4566617b@kernel.org>
+From: Octavian Purdila <tavip@google.com>
+Date: Mon, 29 Sep 2025 17:01:49 -0700
+X-Gm-Features: AS18NWBuATz_lr0JYRD9JYPmM_LItRpBbCQQJlPRqJq-XgoqeJytNn1U8iu8TfU
+Message-ID: <CAGWr4cSwEbuSPEJp6=-8gRbD7O-pOqzn_1fXPxWv-ZX3b7NX_w@mail.gmail.com>
+Subject: Re: [PATCH net] xdp: use multi-buff only if receive queue supports
+ page pool
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, davem@davemloft.net, edumazet@google.com, 
+	pabeni@redhat.com, horms@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me, 
+	ahmed.zaki@intel.com, aleksander.lobakin@intel.com, toke@redhat.com, 
+	lorenzo@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com, 
+	Kuniyuki Iwashima <kuniyu@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add a new mode of operation for program loading which supports the
-generation of signed hash chains for light skeletons, using the new
-signed map hash chain UAPI additions.
+On Fri, Sep 26, 2025 at 12:40=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> w=
+rote:
+>
+> On Fri, 26 Sep 2025 13:24:12 +0200 Maciej Fijalkowski wrote:
+> > On Fri, Sep 26, 2025 at 12:33:46AM -0700, Octavian Purdila wrote:
+> > > On Thu, Sep 25, 2025 at 7:12=E2=80=AFPM Jakub Kicinski <kuba@kernel.o=
+rg> wrote:
+> > > Ah, yes, you are right. So my comment in the commit message about
+> > > TUN/TAP registering a page shared memory model is wrong. But I think
+> > > the fix is still correct for the reported syzkaller issue. From
+> > > bpf_prog_run_generic_xdp:
+> > >
+> > >         rxqueue =3D netif_get_rxqueue(skb);
+> > >         xdp_init_buff(xdp, frame_sz, rxq: &rxqueue->xdp_rxq);
+> > >
+> > > So xdp_buff's rxq is set to the netstack queue for the generic XDP
+> > > hook. And adding the check in netif_skb_check_for_xdp based on the
+> > > netstack queue should be correct, right?
+> >
+> > Per my limited understanding your change is making skb_cow_data_for_xdp=
+()
+> > a dead code as I don't see mem model being registered for these stack
+> > queues - netif_alloc_rx_queues() only calls xdp_rxq_info_reg() and
+> > mem.type defaults to MEM_TYPE_PAGE_SHARED as it's defined as 0, which
+> > means it's never going to be MEM_TYPE_PAGE_POOL.
+>
+> Hah, that's a great catch, how did I miss that..
+>
+> The reason for the cow is that frags can be shared, we are not allowed
+> to modify them. It's orthogonal.
+>
 
-e.g bpftool prog load -S -M -k <private_key> -i <identity_cert> fentry_test.bpf.o
+Could we use the same hack that you mention below (declare rxq on the
+stack and fill in the mem info there) for do_xdp_generic?
 
-The -M or --sign-maps command line switch is introduced. It generates
-a hash chain such that:
+@@ -5442,7 +5448,10 @@ int do_xdp_generic(const struct bpf_prog
+*xdp_prog, struct sk_buff **pskb)
+        struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
 
-H(program, maps) = sha256(sha256(program), sha256(map[0]))
+        if (xdp_prog) {
+-               struct xdp_buff xdp;
++               struct xdp_rxq_info rxq =3D {};
++               struct xdp_buff xdp =3D {
++                       .rxq =3D &rxq,
++               };
+                u32 act;
+                int err;
 
-Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
----
- .../bpf/bpftool/Documentation/bpftool-gen.rst |  7 ++++-
- tools/bpf/bpftool/bash-completion/bpftool     |  2 +-
- tools/bpf/bpftool/gen.c                       | 27 ++++++++++++++++++-
- tools/bpf/bpftool/main.c                      |  9 ++++++-
- tools/bpf/bpftool/main.h                      |  1 +
- tools/bpf/bpftool/sign.c                      | 16 ++++++++---
- tools/lib/bpf/libbpf.h                        |  3 ++-
- tools/lib/bpf/skel_internal.h                 |  6 ++++-
- 8 files changed, 62 insertions(+), 9 deletions(-)
+and then explicitly set the mem type:
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-index d0a36f442db72..b632ab87adf20 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-@@ -16,7 +16,7 @@ SYNOPSIS
- 
- **bpftool** [*OPTIONS*] **gen** *COMMAND*
- 
--*OPTIONS* := { |COMMON_OPTIONS| | { **-L** | **--use-loader** } | [ { **-S** | **--sign** } {**-k** <private_key.pem>} **-i** <certificate.x509> ] }
-+*OPTIONS* := { |COMMON_OPTIONS| | { **-L** | **--use-loader** } | [ { **-S** | **--sign** } { **-M** | **--sign-maps** } {**-k** <private_key.pem>} **-i** <certificate.x509> ] }
- 
- *COMMAND* := { **object** | **skeleton** | **help** }
- 
-@@ -190,6 +190,11 @@ OPTIONS
-     For skeletons, generate a signed skeleton. This option must be used with
-     **-k** and **-i**. Using this flag implicitly enables **--use-loader**.
- 
-+-M --sign-maps
-+    For skeletons, generate a signed skeleton that includes a hash chain for the
-+    skeletons maps. This option must be used with **-k** and **-i**. Using this
-+    flag implicitly enables **--use-loader** and **--sign**.
-+
- -k <private_key.pem>
-     Path to the private key file in PEM format, required for signing.
- 
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 53bcfeb1a76e6..f8c217f09989c 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -262,7 +262,7 @@ _bpftool()
-     # Deal with options
-     if [[ ${words[cword]} == -* ]]; then
-         local c='--version --json --pretty --bpffs --mapcompat --debug \
--            --use-loader --base-btf --sign -i -k'
-+            --use-loader --base-btf --sign --sign-maps -i -k'
-         COMPREPLY=( $( compgen -W "$c" -- "$cur" ) )
-         return 0
-     fi
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 993c7d9484a46..1c4278e2a662b 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -699,6 +699,9 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 	if (sign_progs)
- 		opts.gen_hash = true;
- 
-+	if (sign_maps)
-+		opts.sign_maps = true;
-+
- 	err = bpf_object__gen_loader(obj, &opts);
- 	if (err)
- 		return err;
-@@ -793,6 +796,8 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 	if (sign_progs) {
- 		sopts.insns = opts.insns;
- 		sopts.insns_sz = opts.insns_sz;
-+		sopts.data = opts.data;
-+		sopts.data_sz = opts.data_sz;
- 		sopts.excl_prog_hash = prog_sha;
- 		sopts.excl_prog_hash_sz = sizeof(prog_sha);
- 		sopts.signature = sig_buf;
-@@ -822,6 +827,13 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		\n\
- 		\";\n");
- 
-+		if (sign_maps) {
-+			codegen("\
-+			\n\
-+				static const int opts_signature_maps[1] __attribute__((__aligned__(8))) = {0}; \n\
-+			");
-+		}
-+
- 		codegen("\
- 		\n\
- 			opts.signature = (void *)opts_sig;			\n\
-@@ -830,6 +842,19 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 			opts.excl_prog_hash_sz = sizeof(opts_excl_hash) - 1;	\n\
- 			opts.keyring_id = skel->keyring_id;			\n\
- 		");
-+		if (sign_maps) {
-+			codegen("\
-+			\n\
-+				opts.signature_maps = (void *)opts_signature_maps;	\n\
-+				opts.signature_maps_sz = 1; 				\n\
-+			");
-+		} else {
-+			codegen("\
-+			\n\
-+				opts.signature_maps = (void *)NULL;		\n\
-+				opts.signature_maps_sz = 0;			\n\
-+			");
-+		}
- 	}
- 
- 	codegen("\
-@@ -1990,7 +2015,7 @@ static int do_help(int argc, char **argv)
- 		"       %1$s %2$s help\n"
- 		"\n"
- 		"       " HELP_SPEC_OPTIONS " |\n"
--		"                    {-L|--use-loader} | [ {-S|--sign } {-k} <private_key.pem> {-i} <certificate.x509> ]}\n"
-+		"                    {-L|--use-loader} | [ {-S|--sign } {-M|--sign-maps } {-k} <private_key.pem> {-i} <certificate.x509> ]}\n"
- 		"",
- 		bin_name, "gen");
- 
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index a829a6a49037a..47b14dcbae4ee 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -34,6 +34,7 @@ bool use_loader;
- struct btf *base_btf;
- struct hashmap *refs_table;
- bool sign_progs;
-+bool sign_maps;
- const char *private_key_path;
- const char *cert_path;
- 
-@@ -452,6 +453,7 @@ int main(int argc, char **argv)
- 		{ "debug",	no_argument,	NULL,	'd' },
- 		{ "use-loader",	no_argument,	NULL,	'L' },
- 		{ "sign",	no_argument,	NULL,	'S' },
-+		{ "sign-maps",	no_argument,	NULL,	'M' },
- 		{ "base-btf",	required_argument, NULL, 'B' },
- 		{ 0 }
- 	};
-@@ -478,7 +480,7 @@ int main(int argc, char **argv)
- 	bin_name = "bpftool";
- 
- 	opterr = 0;
--	while ((opt = getopt_long(argc, argv, "VhpjfLmndSi:k:B:l",
-+	while ((opt = getopt_long(argc, argv, "VhpjfLmndSMi:k:B:l",
- 				  options, NULL)) >= 0) {
- 		switch (opt) {
- 		case 'V':
-@@ -528,6 +530,11 @@ int main(int argc, char **argv)
- 			sign_progs = true;
- 			use_loader = true;
- 			break;
-+		case 'M':
-+			sign_maps = true;
-+			sign_progs = true;
-+			use_loader = true;
-+			break;
- 		case 'k':
- 			private_key_path = optarg;
- 			break;
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 1130299cede0b..d4e8b39d97746 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -92,6 +92,7 @@ extern bool use_loader;
- extern struct btf *base_btf;
- extern struct hashmap *refs_table;
- extern bool sign_progs;
-+extern bool sign_maps;
- extern const char *private_key_path;
- extern const char *cert_path;
- 
-diff --git a/tools/bpf/bpftool/sign.c b/tools/bpf/bpftool/sign.c
-index b34f74d210e9c..6338f0309cd91 100644
---- a/tools/bpf/bpftool/sign.c
-+++ b/tools/bpf/bpftool/sign.c
-@@ -23,6 +23,7 @@
- #include <errno.h>
- 
- #include <bpf/skel_internal.h>
-+#include <bpf/libbpf_internal.h>
- 
- #include "main.h"
- 
-@@ -130,8 +131,17 @@ int bpftool_prog_sign(struct bpf_load_and_run_opts *opts)
- 	long actual_sig_len = 0;
- 	X509 *x509 = NULL;
- 	int err = 0;
--
--	bd_in = BIO_new_mem_buf(opts->insns, opts->insns_sz);
-+	unsigned char hash[SHA256_DIGEST_LENGTH  * 2];
-+	unsigned char term[SHA256_DIGEST_LENGTH];
-+
-+	if (sign_maps) {
-+		libbpf_sha256(opts->insns, opts->insns_sz, hash);
-+		libbpf_sha256(opts->data, opts->data_sz, hash + SHA256_DIGEST_LENGTH);
-+		libbpf_sha256(hash, sizeof(hash), term);
-+		bd_in = BIO_new_mem_buf(term, sizeof(term));
-+	} else {
-+		bd_in = BIO_new_mem_buf(opts->insns, opts->insns_sz);
-+	}
- 	if (!bd_in) {
- 		err = -ENOMEM;
- 		goto cleanup;
-@@ -172,7 +182,7 @@ int bpftool_prog_sign(struct bpf_load_and_run_opts *opts)
- 	EVP_Digest(opts->insns, opts->insns_sz, opts->excl_prog_hash,
- 		   &opts->excl_prog_hash_sz, EVP_sha256(), NULL);
- 
--		bd_out = BIO_new(BIO_s_mem());
-+	bd_out = BIO_new(BIO_s_mem());
- 	if (!bd_out) {
- 		err = -ENOMEM;
- 		goto cleanup;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 5118d0a90e243..63946bdad41ad 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1858,9 +1858,10 @@ struct gen_loader_opts {
- 	__u32 data_sz;
- 	__u32 insns_sz;
- 	bool gen_hash;
-+	bool sign_maps;
- };
- 
--#define gen_loader_opts__last_field gen_hash
-+#define gen_loader_opts__last_field sign_maps
- LIBBPF_API int bpf_object__gen_loader(struct bpf_object *obj,
- 				      struct gen_loader_opts *opts);
- 
-diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
-index 6a8f5c7a02eb9..11c2c19a5b2a4 100644
---- a/tools/lib/bpf/skel_internal.h
-+++ b/tools/lib/bpf/skel_internal.h
-@@ -74,6 +74,8 @@ struct bpf_load_and_run_opts {
- 	__s32 keyring_id;
- 	void *excl_prog_hash;
- 	__u32 excl_prog_hash_sz;
-+	const int *signature_maps;
-+	__u32 signature_maps_sz;
- };
- 
- long kern_sys_bpf(__u32 cmd, void *attr, __u32 attr_size);
-@@ -352,7 +354,7 @@ static inline int skel_map_freeze(int fd)
- 
- static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
+@@ -5331,14 +5332,19 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff
+*skb, struct xdp_buff *xdp,
+        return act;
+ }
+
+-static int
+-netif_skb_check_for_xdp(struct sk_buff **pskb, const struct bpf_prog *prog=
+)
++static int netif_skb_check_for_xdp(struct sk_buff **pskb,
++                                  const struct bpf_prog *prog,
++                                  struct xdp_rxq_info *rxq)
  {
--	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, keyring_id);
-+	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, signature_maps_size);
- 	const size_t test_run_attr_sz = offsetofend(union bpf_attr, test);
- 	int map_fd = -1, prog_fd = -1, key = 0, err;
- 	union bpf_attr attr;
-@@ -395,6 +397,8 @@ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
- #ifndef __KERNEL__
- 	attr.signature = (long) opts->signature;
- 	attr.signature_size = opts->signature_sz;
-+	attr.signature_maps = (long) opts->signature_maps;
-+	attr.signature_maps_size = opts->signature_maps_sz;
- #else
- 	if (opts->signature || opts->signature_sz)
- 		pr_warn("signatures are not supported from bpf_preload\n");
--- 
-2.48.1
+        struct sk_buff *skb =3D *pskb;
+        int err, hroom, troom;
++       struct page_pool *pool;
 
+        local_lock_nested_bh(&system_page_pool.bh_lock);
+-       err =3D skb_cow_data_for_xdp(this_cpu_read(system_page_pool.pool),
+pskb, prog);
++       pool =3D this_cpu_read(system_page_pool.pool);
++       err =3D skb_cow_data_for_xdp(pool, pskb, prog);
++       rxq->mem.type =3D MEM_TYPE_PAGE_POOL;
++       rxq->mem.id =3D pool->xdp_mem_id;
+        local_unlock_nested_bh(&system_page_pool.bh_lock);
+        if (!err)
+                return 0;
+
+
+> > IMHO that single case where we rewrite skb to memory backed by page poo=
+l
+> > should have it reflected in mem.type so __xdp_return() potentially used=
+ in
+> > bpf helpers could act correctly.
+> >
+> > > > Well, IDK how helpful the flow below would be but:
+> > > >
+> > > > veth_xdp_xmit() -> [ptr ring] -> veth_xdp_rcv() -> veth_xdp_rcv_one=
+()
+> > > >                                                                |
+> > > >                             | xdp_convert_frame_to_buff()   <-'
+> > > >     ( "re-stamps" ;) ->     | xdp->rxq =3D &rq->xdp_rxq;
+> > > >   can eat frags but now rxq | bpf_prog_run_xdp()
+> > > >          is veth's          |
+> > > >
+> > > > I just glanced at the code so >50% changes I'm wrong, but that's wh=
+at
+> > > > I meant.
+> > >
+> > > Thanks for the clarification, I thought that "re-stamps" means the:
+> > >
+> > >     xdp->rxq->mem.type =3D frame->mem_type;
+> > >
+> > > from veth_xdp_rcv_one in the XDP_TX/XDP_REDIRECT cases.
+> > >
+> > > And yes, now I think the same issue can happen because veth sets the
+> > > memory model to MEM_TYPE_PAGE_SHARED but veth_convert_skb_to_xdp_buff
+> > > calls skb_pp_cow_data that uses page_pool for allocations. I'll try t=
+o
+> > > see if I can adapt the syzkaller repro to trigger it for confirmation=
+.
+> >
+> > That is a good catch.
+>
+> FWIW I think all calls to xdp_convert_frame_to_buff() must come with
+> the hack that cpu_map_bpf_prog_run_xdp() is doing today. Declare rxq
+> on the stack and fill in the mem info there. I wonder if we should add
+> something to the API (xdp_convert_frame_to_buff()) to make sure people
+> don't forget to do this..
 
