@@ -1,59 +1,97 @@
-Return-Path: <bpf+bounces-70122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8C01BB1555
-	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 19:13:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C026BB15C4
+	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 19:27:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68FF94A76F3
-	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 17:13:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A254D19C07C9
+	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 17:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494192D29AC;
-	Wed,  1 Oct 2025 17:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B42E42D3A71;
+	Wed,  1 Oct 2025 17:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cqoOr0+/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XHW4KupK"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDFFA2441A0
-	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 17:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E4D28137D
+	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 17:27:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759338825; cv=none; b=ICJdl1f8ZhRo2V3D4nU6FBlsI681JcB4KQsJS2qPR/1tIUMvOiwZdEbJNujfRPCJU0/FVkArHYPs8bmj4Aro0YRSfSWy6nfiWxqd2WKG4R3hI1UHqDNEHWOzN3Sl41rKzsaKQPwth/B6BIFhQonQvQZkwVap6PcoYRYjmY4Fd/I=
+	t=1759339638; cv=none; b=aHc8H0giv03yCfUBQKgqJo4EsBWHp+T5TFKk8uzj8PBq3WT4jQ8OpvGJW1hwGaIYoP5bnDqCvIlvwuZ0W8d/OC+jtOMjv9GMXqs2bu7x2MQ/axkxnYBDakF7GJWrvPr7KfFRvUstCpJAwHOHpu4e6iSKU1J1sIfo8nLZdbi+NSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759338825; c=relaxed/simple;
-	bh=T2f800xHlrxKh2IrJtp5EiKGHyYHjQxf1r9BRvkOe4M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tbC+7VsCpJAzckUYO+59OUq1ll9Y8ytQhSo0S0dDHZ3IeCIzrOuwSGGCxrXoJC46VDRVNjNXUZVq+jA7IgmRNvWf8T7ECw72tLy3TC5S+QUNtsoJeUdCtTCmy+IB/lCBIakEce8NmJUnO60fne4BF2p9r98Y6sgDAjkixOXgZGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cqoOr0+/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C688C4CEF1;
-	Wed,  1 Oct 2025 17:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759338825;
-	bh=T2f800xHlrxKh2IrJtp5EiKGHyYHjQxf1r9BRvkOe4M=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cqoOr0+/xG+Irfe/7SH6tvycJvisSE2PndYBZUafxZp187JyzRQ5hWVMXKCkN6d3g
-	 98GaLkbPMCASuwBJlufPHLO2gIdhQvJjAz8jgCGUJTbFLplTqJvQLPTI3VXPRPf8rC
-	 We4ctCB2v3MqW7deixOmGZW1fxrVCKhmxnVXW6r9eUM/rcDALVlwQj8sIqOLHGyGH4
-	 oOLj7WnXsUaSZvl+tG1cuVoAjnX1NIbWEMS5CjSqySv7okEIokf3KSOJTbe2WjGnUw
-	 tc00BC7W/8h+NtJlffxV5VSwa0jqwmjpdzhBfvOKZIFcrOue96vGAjFP2byu4RlFwq
-	 F2gko1Ps3ByLQ==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
+	s=arc-20240116; t=1759339638; c=relaxed/simple;
+	bh=ubfK/ePH/veUHp40IZrgk6Me6lIRvwEW5VXGUMLKXg8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HExq3pYdRcriBGZou30fW0vD22ghnjdTVgoFSMfbSGtM8n+7SvlMr1qrqpsUYE8usi+5IL7dLnHpnvJF5ud/7p0+YuRWs2flngidczhzpc4weC3Ti+i61ojxVCVG6vIwEYcfYA3p+IW9T7epRzDkUw2RhJlemjc+yp9ak5VlCp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XHW4KupK; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7811fa91774so179988b3a.0
+        for <bpf@vger.kernel.org>; Wed, 01 Oct 2025 10:27:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759339636; x=1759944436; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PTFSUhPIBDImToz1WTzPiK7finHO4CEiAocRP3PiLlE=;
+        b=XHW4KupKdsR6s0K/s1RCwrcpAF8zzY9bkWofqBLwtLUwki1fFUf8rZ4QPQEHjoFHB7
+         ubEmHBPHxwBX4GyAa75phaVpFGHDHtLk9zXRmM7gd1hBRNqAaQkLq3/pFaHjbffp059H
+         7co8q/eb4Ol3L67cxlAfFUCwU49GzioeVbxaMEP9WnO+sMyt1ppLT2JAp1gzAjFdvsGg
+         6uWQhrR+vUH7sHAqry1QJj1gSzmj8pgLJuAWB1QaMZ7ffEciA6c9MEYtMavCQmdoy/VS
+         sohaCZPbp3iYJ6oiQJimQxGy8TDWXs96ug5lbu57K4YF7BwpJYrDTpbo3jw7EdICuefB
+         jWlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759339636; x=1759944436;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PTFSUhPIBDImToz1WTzPiK7finHO4CEiAocRP3PiLlE=;
+        b=Tccsg1XZ0tfU5aTNhKKZZkE0ZC9gmvnZ/NcUAxb8zY6bb5rvAfuXyJy04BgtrgIYTx
+         N1Waqnew3Gufxx/Ok9RAUuu15n5AwZ3YYvWp3sLfk5PI5Zrx9E/OyTPpgTTC6kGvH+AA
+         h2NuajnM+ziqUdayBrPA0apkCBAEc3l1bGSyq+5JGWP5Qg8+FLiag/QVCIqaeDfdjS4L
+         hjFeQnGbchDzvKa0lwe/mee22YlfQSDxF3JaU8ZbI5F29D3svXkkFHgcBn4cs/r+CkLS
+         qOQ/CidLmgTOtCUkpQI5kHTwgxpaeV/M86uRo61rtOzcjR47ojmd2jQgFe4E+RJ4T+pL
+         GqfQ==
+X-Gm-Message-State: AOJu0YzlULZqF6quu284RNlQMIhCIYnbxsZThxXggjqD7yMrgEeIv1Xc
+	uwPFpDk6DzSDP532KRvFZgz9G1z1EL8ql1X66o3Bq/0iu6o/u67/CR6aSLrbjA==
+X-Gm-Gg: ASbGnctrx6L8JMWbMNlaRq9wG19jUkeqji3ySPOpgNcl/WKulijPzIsFTxiUE/hccQy
+	IM0M25FDpeBJG/Hm1khP+k+RX82L6dQUS9w51M77lnbOsa29eKqiY6Dy49eB9OUDYEacxYsT3xz
+	xEPBMDtDquVehG7T9mPE/cLw6Zr/NskyoffHPwK+EXNvG8YIGSZZrWWAyJ0Xz8Y5UQHo561rrZ4
+	9WV2iSXOyn5CRROaWpqRV5l4xKjVOm4n829bfO0hZVVbBKKjrULPYJo/iftRFg6GD1J7RP/QFml
+	mc1hW4an4vgP7ZM+iDcUXJgNyV6NBR8zJVLonibRGAOa1zu86jEkg8qktXBrKirh+YWxjf6buuz
+	Nye8dsDwOzEHucnaT5gCb7rWcrYoySBs9D0l5ERnnmJp/xK+T8N5emAu4VOL3L1burMfYr83GY6
+	2nNt7ZWvXoxfPK4Xgjz95x1OzPqXwRJihZ0Kxq02SxTVx7
+X-Google-Smtp-Source: AGHT+IEcQTZ97wfnglG+Pjwc9RQfNW7erwNDt2Ki3vNl0N8s+MqP6fdnvV8TfO0hvsk2YlZPWMLnrg==
+X-Received: by 2002:a05:6a00:3ccb:b0:76e:885a:c32c with SMTP id d2e1a72fcca58-78af4176844mr5177741b3a.26.1759339635838;
+        Wed, 01 Oct 2025 10:27:15 -0700 (PDT)
+Received: from sid-dev-env.cgrhrlrrq2nuffriizdlnb1x4b.xx.internal.cloudapp.net ([4.155.54.158])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-78b02053b77sm236976b3a.43.2025.10.01.10.27.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Oct 2025 10:27:15 -0700 (PDT)
+From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
 	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: andrii@kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v2 bpf 5/5] libbpf: remove linux/unaligned.h dependency for libbpf_sha256()
-Date: Wed,  1 Oct 2025 10:13:26 -0700
-Message-ID: <20251001171326.3883055-6-andrii@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251001171326.3883055-1-andrii@kernel.org>
-References: <20251001171326.3883055-1-andrii@kernel.org>
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	memxor@gmail.com,
+	rjsu26@gmail.com,
+	Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Subject: [PATCH bpf-next] bpf: Cleanup unused func args in rqspinlock implementation
+Date: Wed,  1 Oct 2025 17:27:02 +0000
+Message-ID: <20251001172702.122838-1-sidchintamaneni@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,60 +100,84 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-linux/unaligned.h include dependency is causing issues for libbpf's
-Github mirror due to {get,put}_unaligned_be32() usage.
+cleanup unused function args in check_deadlock* functions.
 
-So get rid of it by implementing custom variants of those macros that
-will work both in kernel and Github mirror repos.
-
-Also switch round_up() to roundup(), as the former is not available in
-Github mirror (and is just a subtly more specific variant of roundup()
-anyways).
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Fixes: 31158ad02ddb ("rqspinlock: Add deadlock detection and recovery")
+Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
 ---
- tools/lib/bpf/libbpf_utils.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ kernel/bpf/rqspinlock.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf_utils.c b/tools/lib/bpf/libbpf_utils.c
-index f8290a0b3aaf..2bae8cafc077 100644
---- a/tools/lib/bpf/libbpf_utils.c
-+++ b/tools/lib/bpf/libbpf_utils.c
-@@ -13,7 +13,6 @@
- #include <errno.h>
- #include <inttypes.h>
- #include <linux/kernel.h>
--#include <linux/unaligned.h>
+diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
+index a00561b1d3e5..21be48108e96 100644
+--- a/kernel/bpf/rqspinlock.c
++++ b/kernel/bpf/rqspinlock.c
+@@ -89,15 +89,14 @@ struct rqspinlock_timeout {
+ DEFINE_PER_CPU_ALIGNED(struct rqspinlock_held, rqspinlock_held_locks);
+ EXPORT_SYMBOL_GPL(rqspinlock_held_locks);
  
- #include "libbpf.h"
- #include "libbpf_internal.h"
-@@ -149,6 +148,16 @@ const char *libbpf_errstr(int err)
- 	}
+-static bool is_lock_released(rqspinlock_t *lock, u32 mask, struct rqspinlock_timeout *ts)
++static bool is_lock_released(rqspinlock_t *lock, u32 mask)
+ {
+ 	if (!(atomic_read_acquire(&lock->val) & (mask)))
+ 		return true;
+ 	return false;
  }
  
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wpacked"
-+struct __packed_u32 { __u32 __val; } __attribute__((packed));
-+#pragma GCC diagnostic pop
-+
-+#define get_unaligned_be32(p) be32_to_cpu((((struct __packed_u32 *)(p))->__val))
-+#define put_unaligned_be32(v, p) do {							\
-+	((struct __packed_u32 *)(p))->__val = cpu_to_be32(v);				\
-+} while (0)
-+
- #define SHA256_BLOCK_LENGTH 64
- #define Ch(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
- #define Maj(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
-@@ -232,7 +241,7 @@ void libbpf_sha256(const void *data, size_t len, __u8 out[SHA256_DIGEST_LENGTH])
+-static noinline int check_deadlock_AA(rqspinlock_t *lock, u32 mask,
+-				      struct rqspinlock_timeout *ts)
++static noinline int check_deadlock_AA(rqspinlock_t *lock)
+ {
+ 	struct rqspinlock_held *rqh = this_cpu_ptr(&rqspinlock_held_locks);
+ 	int cnt = min(RES_NR_HELD, rqh->cnt);
+@@ -118,8 +117,7 @@ static noinline int check_deadlock_AA(rqspinlock_t *lock, u32 mask,
+  * more locks, which reduce to ABBA). This is not exhaustive, and we rely on
+  * timeouts as the final line of defense.
+  */
+-static noinline int check_deadlock_ABBA(rqspinlock_t *lock, u32 mask,
+-					struct rqspinlock_timeout *ts)
++static noinline int check_deadlock_ABBA(rqspinlock_t *lock, u32 mask)
+ {
+ 	struct rqspinlock_held *rqh = this_cpu_ptr(&rqspinlock_held_locks);
+ 	int rqh_cnt = min(RES_NR_HELD, rqh->cnt);
+@@ -142,7 +140,7 @@ static noinline int check_deadlock_ABBA(rqspinlock_t *lock, u32 mask,
+ 		 * Let's ensure to break out of this loop if the lock is available for
+ 		 * us to potentially acquire.
+ 		 */
+-		if (is_lock_released(lock, mask, ts))
++		if (is_lock_released(lock, mask))
+ 			return 0;
  
- 	memcpy(final_data, data + len - final_len, final_len);
- 	final_data[final_len] = 0x80;
--	final_len = round_up(final_len + 9, SHA256_BLOCK_LENGTH);
-+	final_len = roundup(final_len + 9, SHA256_BLOCK_LENGTH);
- 	memcpy(&final_data[final_len - 8], &bitcount, 8);
+ 		/*
+@@ -198,15 +196,14 @@ static noinline int check_deadlock_ABBA(rqspinlock_t *lock, u32 mask,
+ 	return 0;
+ }
  
- 	sha256_blocks(state, final_data, final_len / SHA256_BLOCK_LENGTH);
+-static noinline int check_deadlock(rqspinlock_t *lock, u32 mask,
+-				   struct rqspinlock_timeout *ts)
++static noinline int check_deadlock(rqspinlock_t *lock, u32 mask)
+ {
+ 	int ret;
+ 
+-	ret = check_deadlock_AA(lock, mask, ts);
++	ret = check_deadlock_AA(lock);
+ 	if (ret)
+ 		return ret;
+-	ret = check_deadlock_ABBA(lock, mask, ts);
++	ret = check_deadlock_ABBA(lock, mask);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -234,7 +231,7 @@ static noinline int check_timeout(rqspinlock_t *lock, u32 mask,
+ 	 */
+ 	if (prev + NSEC_PER_MSEC < time) {
+ 		ts->cur = time;
+-		return check_deadlock(lock, mask, ts);
++		return check_deadlock(lock, mask);
+ 	}
+ 
+ 	return 0;
 -- 
-2.47.3
+2.43.0
 
 
