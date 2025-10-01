@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-70148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3170FBB1C7D
-	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 23:10:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3950BBB1C86
+	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 23:10:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5AEA1C5FBD
-	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 21:10:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46AB67A75B1
+	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 21:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85DC30C600;
-	Wed,  1 Oct 2025 21:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C7130F946;
+	Wed,  1 Oct 2025 21:10:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UbvI4qTa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LAkaecVE"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562561EDA0E;
-	Wed,  1 Oct 2025 21:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB11A30F804;
+	Wed,  1 Oct 2025 21:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759353017; cv=none; b=XJmfw3ptVnKzz6LZP5L6nqiGrgdR6v3D+4U/bFCY92eu4v1S9wC9Y/LRKdX9j8gNjexeC96EUgWizNUlAvEsaC305tCUFgsJ0X/sy7pmpzt0uc9HbxCQVSGhs4ApX2wTZyppEH/hquuhMzcQRejcrmA0ZCyc62RKbWWOxcn1f5E=
+	t=1759353019; cv=none; b=q+68C0X9Y7H4u+lWwal+zsdthmJYc1YS4VHHCAJFCF1gkPlcRJJuNEqcrFbonHwLYPzBeB3hS+ST5L1iReIoCiQXvpMwsBsceb/mIxPy+3efleXQTK/mK1W0V3RzzbIXKtZ/yIv3LrHLIzONPSccFAlU1kpemSZd879FW8ulI0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759353017; c=relaxed/simple;
-	bh=XPJvyyg2RsgOHg8XgAcCDjEsY62BQfjmmJQGuT90aNo=;
+	s=arc-20240116; t=1759353019; c=relaxed/simple;
+	bh=/9zMh5hjSDQpOvrpxTnoqBN60UtJurO1W77TGHHl22g=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Cj2t/BkPsG20KV2YFvUHxlpiNvOQOE0jaXqOi5FSr1TaGS0FQsTS4vgiH0sHUOJP2HQ36ypCB97dNSHJ/D2R3nnjJb5yxB3pq2gMrzTgfWlprDw0VJk50swO0vtytpSGMc/57a21vxECF+1tGaYGd7F06KR91lFRBaVwnRGHDnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UbvI4qTa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAB0DC4CEF1;
-	Wed,  1 Oct 2025 21:10:16 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=XbUuY1EiussPkDb5wnpc5yLGDCmEVJL3zLuEApuTjCVmUr1bofGrcEtsu4ybjdy+l2ONKRtGSH3kvkBkCgfzTjvuBaCONU4Y6wkl9gt2LYz4MynUoGXzXkC7SaWqQOI6UWZwtfyjhQHA3LzjECYb9XAu8R3AKqEo9grKEF/XkfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LAkaecVE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D8EFC4CEF4;
+	Wed,  1 Oct 2025 21:10:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759353016;
-	bh=XPJvyyg2RsgOHg8XgAcCDjEsY62BQfjmmJQGuT90aNo=;
+	s=k20201202; t=1759353018;
+	bh=/9zMh5hjSDQpOvrpxTnoqBN60UtJurO1W77TGHHl22g=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=UbvI4qTaJ7Jv51s3Ia7AVAscSvIv6/wt+E7JeNGLECacjjAmYUX12MLyNTbso5Dbg
-	 BYAhOPCKdQ16dwYTvjFyEqyxbu5hLA29kqU7D336LEYBLFIIcbJ9+wGDbEVf5T/hKY
-	 iZu3cPVqpHZHNbnIglmD8JtRqCWqS1+oXqvDdDabwnoCJSV8YmqleKM+t4f1/q1gJH
-	 VGFOD/fC+mw0NqXf5lo4q/MZ9MCvQIiMPt0U+DTUaduw2fomti6fd8LWMAMQUJRqT/
-	 0cAOyx0iE9k91+qVrkZvsXtMn0Py8nRKpaF3mb1cxUBw8Tt/lHF0N0fuQ15i77pDR1
-	 TSRtQn/d0SVaQ==
+	b=LAkaecVECqmIZa+/uTld3Ty5zxDBHw8od3GGiSntr+hkY/PxThcydP1ZWJAh85zM6
+	 UAfJs3rPMBkHEwnFUzfXUMpk2Gz9LoTqHOK1sarKT1ezYmzFd2FSxd1HvXmQy8YO4P
+	 mOsqTgRgGNGygoH8zV1VqWnx4wxCF50gT/3T+foGF67PWDLtRcmDq4DU6cqx72czAe
+	 xzWbkuEMW8X4boRRYu6B7xkXTI71hzeyJd2piPH5CrF5TuW2tj/N3pE0OMouxAqzko
+	 E0JkVXjJwsrGCK1Tn6TgFcMAQXrx521m4Jv4NRt6ff0q0e2Xewzq9sivCHxbnCzXJ+
+	 G9TW4PjKj1JKw==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7146A39D0C3F;
-	Wed,  1 Oct 2025 21:10:10 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB91239D0C3F;
+	Wed,  1 Oct 2025 21:10:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,35 +52,36 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 0/2] bpf: Fix verifier crash on BPF_NEG with pointer
- register
+Subject: Re: [PATCH v4 1/2] bpf: Skip scalar adjustment for BPF_NEG if dst is
+ a
+ pointer
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <175935300926.2619259.6844027797276527455.git-patchwork-notify@kernel.org>
-Date: Wed, 01 Oct 2025 21:10:09 +0000
-References: <20251001191739.2323644-1-listout@listout.xyz>
-In-Reply-To: <20251001191739.2323644-1-listout@listout.xyz>
+ <175935301050.2619259.17892458478308442429.git-patchwork-notify@kernel.org>
+Date: Wed, 01 Oct 2025 21:10:10 +0000
+References: <20251001192859.2343567-2-listout@listout.xyz>
+In-Reply-To: <20251001192859.2343567-2-listout@listout.xyz>
 To: Brahmajit Das <listout@listout.xyz>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me,
- song@kernel.org, syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Cc: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com, andrii@kernel.org,
+ ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
+ haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+ sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com,
+ yonghong.song@linux.dev, kafai.wan@linux.dev
 
 Hello:
 
 This series was applied to bpf/bpf.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu,  2 Oct 2025 00:47:37 +0530 you wrote:
-> This patch fixes a crash in the BPF verifier triggered when the BPF_NEG
-> operation is applied to a pointer-typed register. The verifier now
-> checks that the destination register is not a pointer before performing
-> the operation.
+On Thu,  2 Oct 2025 00:58:58 +0530 you wrote:
+> In check_alu_op(), the verifier currently calls check_reg_arg() and
+> adjust_scalar_min_max_vals() unconditionally for BPF_NEG operations.
+> However, if the destination register holds a pointer, these scalar
+> adjustments are unnecessary and potentially incorrect.
 > 
-> Tested with syzkaller reproducer and new BPF sefltest.
-> Closes: https://syzkaller.appspot.com/bug?extid=d36d5ae81e1b0a53ef58
+> This patch adds a check to skip the adjustment logic when the destination
+> register contains a pointer.
 > 
 > [...]
 
