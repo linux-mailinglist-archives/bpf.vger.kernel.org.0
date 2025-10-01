@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-70120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70121-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42FB2BB154F
-	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 19:13:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 556F2BB1552
+	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 19:13:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB5D64A6654
-	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 17:13:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B7231C739A
+	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 17:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5F692D29D7;
-	Wed,  1 Oct 2025 17:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC9B2D29AC;
+	Wed,  1 Oct 2025 17:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WjZJRUMe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tkmnnIxW"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5632D29CA
-	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 17:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9298D2D29B7
+	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 17:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759338819; cv=none; b=ME9oSBGiQSkIvcK+5zi1Ufd+UuyAALQB+lyVCpXBpyu4EvYQGA5nW1IBrPuXFRQepoNdYUVOtTu6YhEzVtJYBQntAYpwytbkVbrJiDpZJ554V1wF8v9fth0tbq+2pTfdhTsCHKb22hb/ZBSm6pxe1uSpLQVmzoDMEBHDglActro=
+	t=1759338822; cv=none; b=E74Ll42+qLIoR+EMpQnSkJYYckz5NeFws5wo8iWr4Izn9WenYxuQClkPaR5DhMVmqCInQ24tgj+GUlFC5z3I8Hd1lQS7yXm7hiu4+bDIZT1gM5yNXoQ+nd20OlYqU4i8nnydw1hZ+uodMbw8S2JH6iTty5FlULboDgI9Uk+Z0kA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759338819; c=relaxed/simple;
-	bh=AYYIZdfWyPi4F8g0ZI0Fcc2/MUst6OnV79iQdwF1rrg=;
+	s=arc-20240116; t=1759338822; c=relaxed/simple;
+	bh=qgTcBPKmqH9hFUCtm4cJl0MvK7CA2MqIVISE0URU7dU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RphdgCcP9yxnfqMVmOhVXBWL3rwXdfUtXDtbWWr5z2uC4Tjo4luPTUw9ot/LXRmgahbVgyygVMG+Wvyd0YKcWkhLU8w1ujfOI9T5NBZjYYx/g7AETo+bspqbHS90d7Cmo3jGz1L8rx4bKGCtcmweKhVC7xYMMaIcQiJhiuZiNbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WjZJRUMe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0FC8C4CEF5;
-	Wed,  1 Oct 2025 17:13:38 +0000 (UTC)
+	 MIME-Version; b=PVtn9n88ydw4Y2keuI6+BF/C1oRh16A7x7RzmYbGvfpHCxC1HxBGEZCM3eyx/3Vats+PNrsDpnQedcpXk0V+ZcuyUnUFMHJRTI2hY0zj1N+FiPzXMrMbH+7LpFa1xiV91B4o7MaKLb8vYTq7I98WEl3EAJRxFoULhvQ42UYqMhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tkmnnIxW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06163C4CEF5;
+	Wed,  1 Oct 2025 17:13:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759338819;
-	bh=AYYIZdfWyPi4F8g0ZI0Fcc2/MUst6OnV79iQdwF1rrg=;
+	s=k20201202; t=1759338822;
+	bh=qgTcBPKmqH9hFUCtm4cJl0MvK7CA2MqIVISE0URU7dU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WjZJRUMeEL7KS/+wZA9iCxCtOOvFICQNK09xTRqd71tjxW8u/DQvX/8mEd5H3Yx3y
-	 1B3z6xfnWhGXDKfm3OEIrWNmh2p/CkiuQM13QuFEw04p9nvHf3J6t8RgVKdgOPOx2y
-	 ikECgqrMcEbQyWNNHIEfGEdTJMWykKewemLrkcBF8ikl09N7lSnN8qz3rmfNRkZrVt
-	 RELqmFUooOQ20q/0EvQibSqqOI9XvQWj4ZsRSy27F62QZhXx/o4l5Cq3XFvwcczOCr
-	 aAKKJZjFN88aY4Qzi2G6araNan6niMc2FZR8oPDkElyvUM7qdfPB/sLtxMCcJwzM9F
-	 eJLgqLiwJBHQw==
+	b=tkmnnIxWEjKBz89lqnZw5M7yq6T45TVWVQ2rVXJ4Drt4Hh0O+R6MO0OXhSjtSvLW1
+	 cpUG35D31cNikCaK6SsyBoMOrAkzZ65+pty0gzCl24LgOcawcoik6SDJ2gg0kEQEGp
+	 cDvxf7W7cGuR/dMZmBXUoswtKZ2JzlQMIJognedNvCrVNmYpqOEbCs93a2ERI5zWRN
+	 QDwu8NO8uINN35uQLSWGmt+Fi5vjaIANfHR64pOBV84i1ju9/Jp5KrxIUgro+uuBc3
+	 YkuAvCjK/4+CCMH7MO/sIkCLuPHiWnlpo3em07XghaphfXy4c6Nkek/OwJrpYAmH5x
+	 XI4LWj6Ujr9tg==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -48,9 +48,9 @@ To: bpf@vger.kernel.org,
 	martin.lau@kernel.org
 Cc: andrii@kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH v2 bpf 3/5] libbpf: move libbpf_errstr() into libbpf_utils.c
-Date: Wed,  1 Oct 2025 10:13:24 -0700
-Message-ID: <20251001171326.3883055-4-andrii@kernel.org>
+Subject: [PATCH v2 bpf 4/5] libbpf: move libbpf_sha256() implementation into libbpf_utils.c
+Date: Wed,  1 Oct 2025 10:13:25 -0700
+Message-ID: <20251001171326.3883055-5-andrii@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251001171326.3883055-1-andrii@kernel.org>
 References: <20251001171326.3883055-1-andrii@kernel.org>
@@ -62,388 +62,255 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Get rid of str_err.{c,h} by moving implementation of libbpf_errstr()
-into libbpf_utils.c and declarations into libbpf_internal.h.
+Move sha256 implementation out of already large and unwieldy libbpf.c
+into libbpf_utils.c where we'll keep reusable helpers.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/Build             |  2 +-
- tools/lib/bpf/btf.c             |  1 -
- tools/lib/bpf/btf_dump.c        |  1 -
- tools/lib/bpf/elf.c             |  1 -
- tools/lib/bpf/features.c        |  1 -
- tools/lib/bpf/gen_loader.c      |  3 +-
- tools/lib/bpf/libbpf.c          |  1 -
- tools/lib/bpf/libbpf_internal.h | 10 +++++
- tools/lib/bpf/libbpf_utils.c    | 72 +++++++++++++++++++++++++++++
- tools/lib/bpf/linker.c          |  1 -
- tools/lib/bpf/relo_core.c       |  1 -
- tools/lib/bpf/ringbuf.c         |  1 -
- tools/lib/bpf/str_error.c       | 80 ---------------------------------
- tools/lib/bpf/str_error.h       | 15 -------
- tools/lib/bpf/usdt.c            |  1 -
- 15 files changed, 84 insertions(+), 107 deletions(-)
- delete mode 100644 tools/lib/bpf/str_error.c
- delete mode 100644 tools/lib/bpf/str_error.h
+ tools/lib/bpf/libbpf.c          | 98 ---------------------------------
+ tools/lib/bpf/libbpf_internal.h |  5 ++
+ tools/lib/bpf/libbpf_utils.c    | 95 ++++++++++++++++++++++++++++++++
+ 3 files changed, 100 insertions(+), 98 deletions(-)
 
-diff --git a/tools/lib/bpf/Build b/tools/lib/bpf/Build
-index c30927135fd6..c80204bb72a2 100644
---- a/tools/lib/bpf/Build
-+++ b/tools/lib/bpf/Build
-@@ -1,4 +1,4 @@
--libbpf-y := libbpf.o bpf.o nlattr.o btf.o libbpf_utils.o str_error.o \
-+libbpf-y := libbpf.o bpf.o nlattr.o btf.o libbpf_utils.o \
- 	    netlink.o bpf_prog_linfo.o libbpf_probes.o hashmap.o \
- 	    btf_dump.o ringbuf.o strset.o linker.o gen_loader.o relo_core.o \
- 	    usdt.o zip.o elf.o features.o btf_iter.o btf_relocate.o
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 37682908cb0f..18907f0fcf9f 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -23,7 +23,6 @@
- #include "libbpf_internal.h"
- #include "hashmap.h"
- #include "strset.h"
--#include "str_error.h"
- 
- #define BTF_MAX_NR_TYPES 0x7fffffffU
- #define BTF_MAX_STR_OFFSET 0x7fffffffU
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index f09f25eccf3c..6388392f49a0 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -21,7 +21,6 @@
- #include "hashmap.h"
- #include "libbpf.h"
- #include "libbpf_internal.h"
--#include "str_error.h"
- 
- static const char PREFIXES[] = "\t\t\t\t\t\t\t\t\t\t\t\t\t";
- static const size_t PREFIX_CNT = sizeof(PREFIXES) - 1;
-diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-index 823f83ad819c..295dbda24580 100644
---- a/tools/lib/bpf/elf.c
-+++ b/tools/lib/bpf/elf.c
-@@ -9,7 +9,6 @@
- #include <linux/kernel.h>
- 
- #include "libbpf_internal.h"
--#include "str_error.h"
- 
- /* A SHT_GNU_versym section holds 16-bit words. This bit is set if
-  * the symbol is hidden and can only be seen when referenced using an
-diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
-index 760657f5224c..b842b83e2480 100644
---- a/tools/lib/bpf/features.c
-+++ b/tools/lib/bpf/features.c
-@@ -6,7 +6,6 @@
- #include "libbpf.h"
- #include "libbpf_common.h"
- #include "libbpf_internal.h"
--#include "str_error.h"
- 
- static inline __u64 ptr_to_u64(const void *ptr)
- {
-diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
-index 6945dd99a846..cd5c2543f54d 100644
---- a/tools/lib/bpf/gen_loader.c
-+++ b/tools/lib/bpf/gen_loader.c
-@@ -4,6 +4,7 @@
- #include <stdlib.h>
- #include <string.h>
- #include <errno.h>
-+#include <asm/byteorder.h>
- #include <linux/filter.h>
- #include <sys/param.h>
- #include "btf.h"
-@@ -13,8 +14,6 @@
- #include "hashmap.h"
- #include "bpf_gen_internal.h"
- #include "skel_internal.h"
--#include <asm/byteorder.h>
--#include "str_error.h"
- 
- #define MAX_USED_MAPS	64
- #define MAX_USED_PROGS	32
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index c21bc61f5ff4..6d19e0db492c 100644
+index 6d19e0db492c..dd3b2f57082d 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -51,7 +51,6 @@
- #include "libbpf.h"
- #include "bpf.h"
- #include "btf.h"
--#include "str_error.h"
- #include "libbpf_internal.h"
- #include "hashmap.h"
- #include "bpf_gen_internal.h"
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index c93797dcaf5b..a8f204139371 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -172,6 +172,16 @@ do {				\
- #define pr_info(fmt, ...)	__pr(LIBBPF_INFO, fmt, ##__VA_ARGS__)
- #define pr_debug(fmt, ...)	__pr(LIBBPF_DEBUG, fmt, ##__VA_ARGS__)
- 
-+/**
-+ * @brief **libbpf_errstr()** returns string corresponding to numeric errno
-+ * @param err negative numeric errno
-+ * @return pointer to string representation of the errno, that is invalidated
-+ * upon the next call.
-+ */
-+const char *libbpf_errstr(int err);
-+
-+#define errstr(err) libbpf_errstr(err)
-+
- #ifndef __has_builtin
- #define __has_builtin(x) 0
- #endif
-diff --git a/tools/lib/bpf/libbpf_utils.c b/tools/lib/bpf/libbpf_utils.c
-index 6b180172ec6b..ee3013e9b77c 100644
---- a/tools/lib/bpf/libbpf_utils.c
-+++ b/tools/lib/bpf/libbpf_utils.c
-@@ -10,10 +10,15 @@
- #undef _GNU_SOURCE
- #include <stdio.h>
- #include <string.h>
-+#include <errno.h>
- 
- #include "libbpf.h"
- #include "libbpf_internal.h"
- 
-+#ifndef ENOTSUPP
-+#define ENOTSUPP	524
-+#endif
-+
- /* make sure libbpf doesn't use kernel-only integer typedefs */
- #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
- 
-@@ -73,3 +78,70 @@ int libbpf_strerror(int err, char *buf, size_t size)
- 		return libbpf_err(-ERANGE);
- 	return libbpf_err(-ENOENT);
+@@ -35,7 +35,6 @@
+ #include <linux/perf_event.h>
+ #include <linux/bpf_perf_event.h>
+ #include <linux/ring_buffer.h>
+-#include <linux/unaligned.h>
+ #include <sys/epoll.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+@@ -14282,100 +14281,3 @@ void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s)
+ 	free(s->progs);
+ 	free(s);
  }
-+
-+const char *libbpf_errstr(int err)
-+{
-+	static __thread char buf[12];
-+
-+	if (err > 0)
-+		err = -err;
-+
-+	switch (err) {
-+	case -E2BIG:		return "-E2BIG";
-+	case -EACCES:		return "-EACCES";
-+	case -EADDRINUSE:	return "-EADDRINUSE";
-+	case -EADDRNOTAVAIL:	return "-EADDRNOTAVAIL";
-+	case -EAGAIN:		return "-EAGAIN";
-+	case -EALREADY:		return "-EALREADY";
-+	case -EBADF:		return "-EBADF";
-+	case -EBADFD:		return "-EBADFD";
-+	case -EBUSY:		return "-EBUSY";
-+	case -ECANCELED:	return "-ECANCELED";
-+	case -ECHILD:		return "-ECHILD";
-+	case -EDEADLK:		return "-EDEADLK";
-+	case -EDOM:		return "-EDOM";
-+	case -EEXIST:		return "-EEXIST";
-+	case -EFAULT:		return "-EFAULT";
-+	case -EFBIG:		return "-EFBIG";
-+	case -EILSEQ:		return "-EILSEQ";
-+	case -EINPROGRESS:	return "-EINPROGRESS";
-+	case -EINTR:		return "-EINTR";
-+	case -EINVAL:		return "-EINVAL";
-+	case -EIO:		return "-EIO";
-+	case -EISDIR:		return "-EISDIR";
-+	case -ELOOP:		return "-ELOOP";
-+	case -EMFILE:		return "-EMFILE";
-+	case -EMLINK:		return "-EMLINK";
-+	case -EMSGSIZE:		return "-EMSGSIZE";
-+	case -ENAMETOOLONG:	return "-ENAMETOOLONG";
-+	case -ENFILE:		return "-ENFILE";
-+	case -ENODATA:		return "-ENODATA";
-+	case -ENODEV:		return "-ENODEV";
-+	case -ENOENT:		return "-ENOENT";
-+	case -ENOEXEC:		return "-ENOEXEC";
-+	case -ENOLINK:		return "-ENOLINK";
-+	case -ENOMEM:		return "-ENOMEM";
-+	case -ENOSPC:		return "-ENOSPC";
-+	case -ENOTBLK:		return "-ENOTBLK";
-+	case -ENOTDIR:		return "-ENOTDIR";
-+	case -ENOTSUPP:		return "-ENOTSUPP";
-+	case -ENOTTY:		return "-ENOTTY";
-+	case -ENXIO:		return "-ENXIO";
-+	case -EOPNOTSUPP:	return "-EOPNOTSUPP";
-+	case -EOVERFLOW:	return "-EOVERFLOW";
-+	case -EPERM:		return "-EPERM";
-+	case -EPIPE:		return "-EPIPE";
-+	case -EPROTO:		return "-EPROTO";
-+	case -EPROTONOSUPPORT:	return "-EPROTONOSUPPORT";
-+	case -ERANGE:		return "-ERANGE";
-+	case -EROFS:		return "-EROFS";
-+	case -ESPIPE:		return "-ESPIPE";
-+	case -ESRCH:		return "-ESRCH";
-+	case -ETXTBSY:		return "-ETXTBSY";
-+	case -EUCLEAN:		return "-EUCLEAN";
-+	case -EXDEV:		return "-EXDEV";
-+	default:
-+		snprintf(buf, sizeof(buf), "%d", err);
-+		return buf;
-+	}
-+}
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index a469e5d4fee7..56ae77047bc3 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -25,7 +25,6 @@
- #include "btf.h"
- #include "libbpf_internal.h"
- #include "strset.h"
--#include "str_error.h"
- 
- #define BTF_EXTERN_SEC ".extern"
- 
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index 2b83c98a1137..6eea5edba58a 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -64,7 +64,6 @@ enum libbpf_print_level {
- #include "libbpf.h"
- #include "bpf.h"
- #include "btf.h"
--#include "str_error.h"
- #include "libbpf_internal.h"
- #endif
- 
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index 9702b70da444..00ec4837a06d 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -21,7 +21,6 @@
- #include "libbpf.h"
- #include "libbpf_internal.h"
- #include "bpf.h"
--#include "str_error.h"
- 
- struct ring {
- 	ring_buffer_sample_fn sample_cb;
-diff --git a/tools/lib/bpf/str_error.c b/tools/lib/bpf/str_error.c
-deleted file mode 100644
-index 92dbd801102f..000000000000
---- a/tools/lib/bpf/str_error.c
-+++ /dev/null
-@@ -1,80 +0,0 @@
--// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--#undef _GNU_SOURCE
--#include <string.h>
--#include <stdio.h>
--#include <errno.h>
--#include "str_error.h"
 -
--#ifndef ENOTSUPP
--#define ENOTSUPP	524
--#endif
--
--/* make sure libbpf doesn't use kernel-only integer typedefs */
--#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
--
--const char *libbpf_errstr(int err)
+-static inline __u32 ror32(__u32 v, int bits)
 -{
--	static __thread char buf[12];
+-	return (v >> bits) | (v << (32 - bits));
+-}
 -
--	if (err > 0)
--		err = -err;
+-#define SHA256_BLOCK_LENGTH 64
+-#define Ch(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
+-#define Maj(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
+-#define Sigma_0(x) (ror32((x), 2) ^ ror32((x), 13) ^ ror32((x), 22))
+-#define Sigma_1(x) (ror32((x), 6) ^ ror32((x), 11) ^ ror32((x), 25))
+-#define sigma_0(x) (ror32((x), 7) ^ ror32((x), 18) ^ ((x) >> 3))
+-#define sigma_1(x) (ror32((x), 17) ^ ror32((x), 19) ^ ((x) >> 10))
 -
--	switch (err) {
--	case -E2BIG:		return "-E2BIG";
--	case -EACCES:		return "-EACCES";
--	case -EADDRINUSE:	return "-EADDRINUSE";
--	case -EADDRNOTAVAIL:	return "-EADDRNOTAVAIL";
--	case -EAGAIN:		return "-EAGAIN";
--	case -EALREADY:		return "-EALREADY";
--	case -EBADF:		return "-EBADF";
--	case -EBADFD:		return "-EBADFD";
--	case -EBUSY:		return "-EBUSY";
--	case -ECANCELED:	return "-ECANCELED";
--	case -ECHILD:		return "-ECHILD";
--	case -EDEADLK:		return "-EDEADLK";
--	case -EDOM:		return "-EDOM";
--	case -EEXIST:		return "-EEXIST";
--	case -EFAULT:		return "-EFAULT";
--	case -EFBIG:		return "-EFBIG";
--	case -EILSEQ:		return "-EILSEQ";
--	case -EINPROGRESS:	return "-EINPROGRESS";
--	case -EINTR:		return "-EINTR";
--	case -EINVAL:		return "-EINVAL";
--	case -EIO:		return "-EIO";
--	case -EISDIR:		return "-EISDIR";
--	case -ELOOP:		return "-ELOOP";
--	case -EMFILE:		return "-EMFILE";
--	case -EMLINK:		return "-EMLINK";
--	case -EMSGSIZE:		return "-EMSGSIZE";
--	case -ENAMETOOLONG:	return "-ENAMETOOLONG";
--	case -ENFILE:		return "-ENFILE";
--	case -ENODATA:		return "-ENODATA";
--	case -ENODEV:		return "-ENODEV";
--	case -ENOENT:		return "-ENOENT";
--	case -ENOEXEC:		return "-ENOEXEC";
--	case -ENOLINK:		return "-ENOLINK";
--	case -ENOMEM:		return "-ENOMEM";
--	case -ENOSPC:		return "-ENOSPC";
--	case -ENOTBLK:		return "-ENOTBLK";
--	case -ENOTDIR:		return "-ENOTDIR";
--	case -ENOTSUPP:		return "-ENOTSUPP";
--	case -ENOTTY:		return "-ENOTTY";
--	case -ENXIO:		return "-ENXIO";
--	case -EOPNOTSUPP:	return "-EOPNOTSUPP";
--	case -EOVERFLOW:	return "-EOVERFLOW";
--	case -EPERM:		return "-EPERM";
--	case -EPIPE:		return "-EPIPE";
--	case -EPROTO:		return "-EPROTO";
--	case -EPROTONOSUPPORT:	return "-EPROTONOSUPPORT";
--	case -ERANGE:		return "-ERANGE";
--	case -EROFS:		return "-EROFS";
--	case -ESPIPE:		return "-ESPIPE";
--	case -ESRCH:		return "-ESRCH";
--	case -ETXTBSY:		return "-ETXTBSY";
--	case -EUCLEAN:		return "-EUCLEAN";
--	case -EXDEV:		return "-EXDEV";
--	default:
--		snprintf(buf, sizeof(buf), "%d", err);
--		return buf;
+-static const __u32 sha256_K[64] = {
+-	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
+-	0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+-	0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
+-	0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+-	0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
+-	0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+-	0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
+-	0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+-	0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
+-	0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+-	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+-};
+-
+-#define SHA256_ROUND(i, a, b, c, d, e, f, g, h)                                \
+-	{                                                                      \
+-		__u32 tmp = h + Sigma_1(e) + Ch(e, f, g) + sha256_K[i] + w[i]; \
+-		d += tmp;                                                      \
+-		h = tmp + Sigma_0(a) + Maj(a, b, c);                           \
+-	}
+-
+-static void sha256_blocks(__u32 state[8], const __u8 *data, size_t nblocks)
+-{
+-	while (nblocks--) {
+-		__u32 a = state[0];
+-		__u32 b = state[1];
+-		__u32 c = state[2];
+-		__u32 d = state[3];
+-		__u32 e = state[4];
+-		__u32 f = state[5];
+-		__u32 g = state[6];
+-		__u32 h = state[7];
+-		__u32 w[64];
+-		int i;
+-
+-		for (i = 0; i < 16; i++)
+-			w[i] = get_unaligned_be32(&data[4 * i]);
+-		for (; i < ARRAY_SIZE(w); i++)
+-			w[i] = sigma_1(w[i - 2]) + w[i - 7] +
+-			       sigma_0(w[i - 15]) + w[i - 16];
+-		for (i = 0; i < ARRAY_SIZE(w); i += 8) {
+-			SHA256_ROUND(i + 0, a, b, c, d, e, f, g, h);
+-			SHA256_ROUND(i + 1, h, a, b, c, d, e, f, g);
+-			SHA256_ROUND(i + 2, g, h, a, b, c, d, e, f);
+-			SHA256_ROUND(i + 3, f, g, h, a, b, c, d, e);
+-			SHA256_ROUND(i + 4, e, f, g, h, a, b, c, d);
+-			SHA256_ROUND(i + 5, d, e, f, g, h, a, b, c);
+-			SHA256_ROUND(i + 6, c, d, e, f, g, h, a, b);
+-			SHA256_ROUND(i + 7, b, c, d, e, f, g, h, a);
+-		}
+-		state[0] += a;
+-		state[1] += b;
+-		state[2] += c;
+-		state[3] += d;
+-		state[4] += e;
+-		state[5] += f;
+-		state[6] += g;
+-		state[7] += h;
+-		data += SHA256_BLOCK_LENGTH;
 -	}
 -}
-diff --git a/tools/lib/bpf/str_error.h b/tools/lib/bpf/str_error.h
-deleted file mode 100644
-index d4c82eec034d..000000000000
---- a/tools/lib/bpf/str_error.h
-+++ /dev/null
-@@ -1,15 +0,0 @@
--/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
--#ifndef __LIBBPF_STR_ERROR_H
--#define __LIBBPF_STR_ERROR_H
 -
--/**
-- * @brief **libbpf_errstr()** returns string corresponding to numeric errno
-- * @param err negative numeric errno
-- * @return pointer to string representation of the errno, that is invalidated
-- * upon the next call.
-- */
--const char *libbpf_errstr(int err);
+-void libbpf_sha256(const void *data, size_t len, __u8 out[SHA256_DIGEST_LENGTH])
+-{
+-	__u32 state[8] = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+-			   0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
+-	const __be64 bitcount = cpu_to_be64((__u64)len * 8);
+-	__u8 final_data[2 * SHA256_BLOCK_LENGTH] = { 0 };
+-	size_t final_len = len % SHA256_BLOCK_LENGTH;
+-	int i;
 -
--#define errstr(err) libbpf_errstr(err)
+-	sha256_blocks(state, data, len / SHA256_BLOCK_LENGTH);
 -
--#endif /* __LIBBPF_STR_ERROR_H */
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index fc2785eecc17..c174b4086673 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -20,7 +20,6 @@
- #include "libbpf_common.h"
- #include "libbpf_internal.h"
- #include "hashmap.h"
--#include "str_error.h"
+-	memcpy(final_data, data + len - final_len, final_len);
+-	final_data[final_len] = 0x80;
+-	final_len = round_up(final_len + 9, SHA256_BLOCK_LENGTH);
+-	memcpy(&final_data[final_len - 8], &bitcount, 8);
+-
+-	sha256_blocks(state, final_data, final_len / SHA256_BLOCK_LENGTH);
+-
+-	for (i = 0; i < ARRAY_SIZE(state); i++)
+-		put_unaligned_be32(state[i], &out[4 * i]);
+-}
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index a8f204139371..35b2527bedec 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -722,6 +722,11 @@ static inline bool is_pow_of_2(size_t x)
+ 	return x && (x & (x - 1)) == 0;
+ }
  
- /* libbpf's USDT support consists of BPF-side state/code and user-space
-  * state/code working together in concert. BPF-side parts are defined in
++static inline __u32 ror32(__u32 v, int bits)
++{
++	return (v >> bits) | (v << (32 - bits));
++}
++
+ #define PROG_LOAD_ATTEMPTS 5
+ int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
+ 
+diff --git a/tools/lib/bpf/libbpf_utils.c b/tools/lib/bpf/libbpf_utils.c
+index ee3013e9b77c..f8290a0b3aaf 100644
+--- a/tools/lib/bpf/libbpf_utils.c
++++ b/tools/lib/bpf/libbpf_utils.c
+@@ -11,6 +11,9 @@
+ #include <stdio.h>
+ #include <string.h>
+ #include <errno.h>
++#include <inttypes.h>
++#include <linux/kernel.h>
++#include <linux/unaligned.h>
+ 
+ #include "libbpf.h"
+ #include "libbpf_internal.h"
+@@ -145,3 +148,95 @@ const char *libbpf_errstr(int err)
+ 		return buf;
+ 	}
+ }
++
++#define SHA256_BLOCK_LENGTH 64
++#define Ch(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
++#define Maj(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
++#define Sigma_0(x) (ror32((x), 2) ^ ror32((x), 13) ^ ror32((x), 22))
++#define Sigma_1(x) (ror32((x), 6) ^ ror32((x), 11) ^ ror32((x), 25))
++#define sigma_0(x) (ror32((x), 7) ^ ror32((x), 18) ^ ((x) >> 3))
++#define sigma_1(x) (ror32((x), 17) ^ ror32((x), 19) ^ ((x) >> 10))
++
++static const __u32 sha256_K[64] = {
++	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
++	0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
++	0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
++	0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
++	0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
++	0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
++	0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
++	0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
++	0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
++	0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
++	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
++};
++
++#define SHA256_ROUND(i, a, b, c, d, e, f, g, h)                                \
++	{                                                                      \
++		__u32 tmp = h + Sigma_1(e) + Ch(e, f, g) + sha256_K[i] + w[i]; \
++		d += tmp;                                                      \
++		h = tmp + Sigma_0(a) + Maj(a, b, c);                           \
++	}
++
++static void sha256_blocks(__u32 state[8], const __u8 *data, size_t nblocks)
++{
++	while (nblocks--) {
++		__u32 a = state[0];
++		__u32 b = state[1];
++		__u32 c = state[2];
++		__u32 d = state[3];
++		__u32 e = state[4];
++		__u32 f = state[5];
++		__u32 g = state[6];
++		__u32 h = state[7];
++		__u32 w[64];
++		int i;
++
++		for (i = 0; i < 16; i++)
++			w[i] = get_unaligned_be32(&data[4 * i]);
++		for (; i < ARRAY_SIZE(w); i++)
++			w[i] = sigma_1(w[i - 2]) + w[i - 7] +
++			       sigma_0(w[i - 15]) + w[i - 16];
++		for (i = 0; i < ARRAY_SIZE(w); i += 8) {
++			SHA256_ROUND(i + 0, a, b, c, d, e, f, g, h);
++			SHA256_ROUND(i + 1, h, a, b, c, d, e, f, g);
++			SHA256_ROUND(i + 2, g, h, a, b, c, d, e, f);
++			SHA256_ROUND(i + 3, f, g, h, a, b, c, d, e);
++			SHA256_ROUND(i + 4, e, f, g, h, a, b, c, d);
++			SHA256_ROUND(i + 5, d, e, f, g, h, a, b, c);
++			SHA256_ROUND(i + 6, c, d, e, f, g, h, a, b);
++			SHA256_ROUND(i + 7, b, c, d, e, f, g, h, a);
++		}
++		state[0] += a;
++		state[1] += b;
++		state[2] += c;
++		state[3] += d;
++		state[4] += e;
++		state[5] += f;
++		state[6] += g;
++		state[7] += h;
++		data += SHA256_BLOCK_LENGTH;
++	}
++}
++
++void libbpf_sha256(const void *data, size_t len, __u8 out[SHA256_DIGEST_LENGTH])
++{
++	__u32 state[8] = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
++			   0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
++	const __be64 bitcount = cpu_to_be64((__u64)len * 8);
++	__u8 final_data[2 * SHA256_BLOCK_LENGTH] = { 0 };
++	size_t final_len = len % SHA256_BLOCK_LENGTH;
++	int i;
++
++	sha256_blocks(state, data, len / SHA256_BLOCK_LENGTH);
++
++	memcpy(final_data, data + len - final_len, final_len);
++	final_data[final_len] = 0x80;
++	final_len = round_up(final_len + 9, SHA256_BLOCK_LENGTH);
++	memcpy(&final_data[final_len - 8], &bitcount, 8);
++
++	sha256_blocks(state, final_data, final_len / SHA256_BLOCK_LENGTH);
++
++	for (i = 0; i < ARRAY_SIZE(state); i++)
++		put_unaligned_be32(state[i], &out[4 * i]);
++}
 -- 
 2.47.3
 
