@@ -1,125 +1,113 @@
-Return-Path: <bpf+bounces-70085-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE16FBB0AE2
-	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 16:22:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA46EBB0B93
+	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 16:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84B16189C31C
-	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 14:22:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E5F34A555D
+	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 14:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7B46302CBE;
-	Wed,  1 Oct 2025 14:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A53E25784A;
+	Wed,  1 Oct 2025 14:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KAn3vjKh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XoUv3gGE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B43E32EC562
-	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 14:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801B71CEADB
+	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 14:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759328499; cv=none; b=kOC7PQKYBnbmHcgB4sGqgGd+3dJ4bt+RMSRiLoQofJVboSQQiwL5MTJCmTiHqUGyccG4hlMsyiK9F4BPvdOU0T6KZH8JHWpQ2Sp6oM8tX1fGKlByFl4DWbLsZy+vNeGeUJwh/wBUY2s9AKkZndkJFAcg3oiDInqrq57Fn1PSNdA=
+	t=1759329309; cv=none; b=gVdaKHxc8dYAWyceruGLYVHDSUsTV1ITdAiDXAxCH/3Xy/o72vVnn4lLLZGIhqYI4OOwZ9iYB0+sVhBuy0mCpYuW2Um3ZeywDOAULroZemIQxhsXBevY4iBVB4QzIPGW/l2mSapcIap+RzHE3M8xza+TvfoRA5LiKKaVgWb9z3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759328499; c=relaxed/simple;
-	bh=7wPTpyELQmGX2/gHFloY/1M0+2rpxsGFoW7lJYsgJ+U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IaJmn+9Yj5nUef9xmXFaWW2Z3JF1bDy6BOsZF7ASKKsdcp8/bYeAdnoWAChDn1sFo8PFEioy/d7lnyyuzLkCyImaYaMYFR/b0DUO/HeHYHoDRyegzkcL3Ye0rKRx5KRfsKpA7Z/0o8Gu5ixTa6LbkMyKbuYeB+QT7brUegtfwN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KAn3vjKh; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1759329309; c=relaxed/simple;
+	bh=0u7TZJM98/heR4SOwHNGwHwui4lGqgQQhYNirkwl394=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bGWHgPxw0YpB4qxfBUKB8hyg7i/0F3XreVse4UrNcj8TCOy3L6a9LfjCGSfy4pXiNrh9hMpu/t6MLoxFwk1XEBsKE9ltgdh5mJSVtF2FixaRV9uMN/hU/DHb7KoTDtLO5pg7hdCmau2MLPJRHj9/jzXElRthxxXQawaYhir6a3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XoUv3gGE; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-28e8c5d64d8so561905ad.1
-        for <bpf@vger.kernel.org>; Wed, 01 Oct 2025 07:21:37 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-46e384dfde0so77703085e9.2
+        for <bpf@vger.kernel.org>; Wed, 01 Oct 2025 07:35:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759328497; x=1759933297; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lMWhSbeX6cw48fzbFoy1cFUgN3ejnL4612j1oxAE7Dk=;
-        b=KAn3vjKhSUWz2ZlrV40yh3DsNyIluJrX/cz5wnu0PoKMUVNsBOosFOLleig1AOHn2h
-         SHUMiNYcIgg93OZPBEJk5IUQeGrYNaxT697orU5i0jxfayn+Lja6X/yuj0fZwtOVqt6Z
-         z/hThG/xjnZlCqVs4J8thT0z32uD1ijHH+zlna7o/xjh7g/s/R2e+Elr5Vf9JCQJUGHW
-         aMGtI6FBlvH8zlIt/EehOpsz6tY5hKBZ6VGpjwNws5LZVY8uFUx+HGXMOVyQB+M5c3Aj
-         O6YHnNW/3ndEpo4b3hXxlJrnQdz/0U+XTja0OkD9+E0FWizl2PZwH8cxhDQ2ufmWGG4p
-         mnRg==
+        d=gmail.com; s=20230601; t=1759329306; x=1759934106; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0u7TZJM98/heR4SOwHNGwHwui4lGqgQQhYNirkwl394=;
+        b=XoUv3gGEdPNMHjiNyc79xU89E5ch5/Dhy1nENK/QCV9LUap287W8639EtJzTvdofgv
+         zfHY9E4pX5FCwa7JUdqSXxCJBRGrzTkvYrYuu43QzthERO21QdVoZc9AgIdWYsJYZlE9
+         a5+/qk9Z4XKU45OJBg/h9pSQhMvHJ5V+UA37C+EWWylVGzQVd+YZAVrNn6CnLkr0aJ6f
+         VUi9YALu2BYBcmXb49zWOG/LpcM3sjoGV/pJwUhc5sckiSzJD60UGLWSGPImvk8OvzTa
+         EZTl8iGscv9Z8tIgXslULD7xUEj6l2DRLrNpe6/0AaWGQKh8Xzmnf3VPUBQjnOxgVoem
+         KW5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759328497; x=1759933297;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lMWhSbeX6cw48fzbFoy1cFUgN3ejnL4612j1oxAE7Dk=;
-        b=dbNUZCCWDOd5mBCqI2XIya/1jYzD0D5SRinWSacSGO+Kb6lu6+uP62C0Yl/40YgVPl
-         pU+ZwmxUKFHqo1y4jrUy2XQczyuKcnzqAZlVT00x8tDQCFZrGLAenQTpGHQddKI3bBqs
-         hrx/BWPiFdLqNe4MggpSPeakmoyVeWqgIOJBQ2BJMoZyUHxq/63I7Jc1gfYW2l1x68k9
-         C0eoPowgn7WirhyOPC7b1QGAa6qMvvVgtP1X/C7pJRQTC89IkPGU631OKMACq7OXJZRx
-         F03a28duNyBZAyA8TlB9lRkQXGgi4cIZJ/vOFIpjkkrQ4Mb/m22yVjTBfh4zwbakcHI7
-         IpVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZ73+TTV+I+S1E8x6LG7v0hekov8NlZd0p8SEAe9BrMnsyO9He5yq8T2UTbqBMCOZWkxk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwK70SuGU1SA6u7BckB4Udu9Pix+Ji3hAaq7VsQGBXaXOfYSjcm
-	IKRosRluriLUqOHvhGfNMLiSMlQA/8sA3ll0Yj8o6mOy4Ck04FSAVrVK
-X-Gm-Gg: ASbGncu19ZPsbqtMB92bbFVQa+YA7fhH1tmlob5KgMRAiVE1oeDGQk1OD0eN3e9eenz
-	sbrTRDg3zj8MWWudPsUC5Xz73XeYIYJT1+IrCqA8VRIKauj3vqQdntV4RVxQV+QDEYfkhOQOle/
-	2hSQbvps7lH/g7MFGjNlPKiZSJ/+jxWRowjWCwmcXDZJyZR4ZIFF5+7O2c8PvzKc3tNfcFx7zEj
-	HX+77di6hz9Q4dSU5Wl9RE0007ZLwKCl8IJbt85UmHxGPgUZVRjOKGy1WcDj8xBqnDyPucZhkfC
-	ysc80aHfYWnc8i53vgEqE7BLIL5RbvT/td5Kuxuw9ldtsxqOKf7MSkJfMTSLjc+fj2tRbHH6Fgx
-	t4+7Iban4nAzEvouwIHCTCA9zdCnKFdr5pxvC/45Uwq2l4kJm1MHI6KDR
-X-Google-Smtp-Source: AGHT+IER2jDS6uj2GDbaMnP6L4c3WqPqi3KT3PXd625o+OeslYZ1EKXr3ggxx/CbltvRyA/XG6FRGA==
-X-Received: by 2002:a17:902:db11:b0:248:7018:c739 with SMTP id d9443c01a7336-28e7f2f7581mr50724135ad.28.1759328496781;
-        Wed, 01 Oct 2025 07:21:36 -0700 (PDT)
-Received: from archlinux ([205.254.163.110])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6089794447sm1598595a12.35.2025.10.01.07.21.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Oct 2025 07:21:36 -0700 (PDT)
-From: Suchit Karunakaran <suchitkarunakaran@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org
-Cc: skhan@linuxfoundation.org,
-	linux-kernel@vger.kernel.org
-Subject: verifier: should we handle mark_chain_precision return value properly in loop_flag_is_zero?
-Date: Wed,  1 Oct 2025 19:51:26 +0530
-Message-ID: <20251001142127.37559-1-suchitkarunakaran@gmail.com>
-X-Mailer: git-send-email 2.51.0
+        d=1e100.net; s=20230601; t=1759329306; x=1759934106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0u7TZJM98/heR4SOwHNGwHwui4lGqgQQhYNirkwl394=;
+        b=pNPRrB7Wi82t6BE3RdIzDv652YvU6PpqLYV4PX7r6WvDp7zmqxfe89PNvBEqcn7pXn
+         0dOgp9NwidN/yYNwYeDtyqA77KkCqEE5ev72n+sjtl8zprq3Cm7L0kI0KhaZxhKSI+64
+         pPZGmWNjJWokp50wbv6bp0w3AaS7UfUqBkwmhyL/ToYAviXmI0/87C1RU8i+soumDFAI
+         dTkC3BR/+duORshgFHWrPlIDjpLNgSZQHo2cZji1XekfMNWN8yRVQo1VNMAM3slyQ6tJ
+         WRMaNraUxsFJhCJ3XeXVrXE1H1Hyfnx16gjUiZ/ISvBC31bGGIB3nMylCziAqMJ9uKIp
+         CjuQ==
+X-Gm-Message-State: AOJu0YxRGYiBjrxSgWyY6ia0+xwFoRZxYqV3oYoO1tuwUS8/foCqmhxD
+	EPjn3gnhOu6AwRTSZeHcpxbv9rjSUQ2gVZa1OuPwoD0el+jA+221Sn/EYcJA/GdAkukzNRw7zKP
+	/mEwMIJApBOohVDi46pZxiKH5e0T7TR3EeHR+
+X-Gm-Gg: ASbGncvV3iKRasQWdet0/PF+LCvN/P2huCFYxIanTajV4sj6DJFVn0gp8reMiX9yNsx
+	dsMH8gJ2ivMbGgEXyEaOr3/OWKMAP7Ts/J0DDuvq5JdquiYAL5nKisI2e/RJYQ8vVX8jRJVjgWX
+	mxHQJ4Z5/Cv5VLKnSZV1C75/5JSmAQtVJ8vWUgUqfySYm0uICMZDRkCXY7doeeXkQ0m4fPnUR/s
+	bcvq0p/sVJuYBTrQFdJJ7qrOMrLL2Q1etlRaul8EmZDMfwZuTP9p+4l16aY
+X-Google-Smtp-Source: AGHT+IHFOXFoTaM63mZ5WoVj8vGoqX1xh3RZfuqUPiVUnG1pRrLjaGHKJOBJlXZgOrhoR3j0bV9GnJh71nmPMozAxUA=
+X-Received: by 2002:a05:6000:200d:b0:3ec:e152:e31c with SMTP id
+ ffacd0b85a97d-425577edcf1mr2390761f8f.1.1759329305544; Wed, 01 Oct 2025
+ 07:35:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20250930212619.1645410-1-andrii@kernel.org>
+In-Reply-To: <20250930212619.1645410-1-andrii@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 1 Oct 2025 07:34:54 -0700
+X-Gm-Features: AS18NWCE0q5p-xp5XL6XJG07J3TnOPyc_6Ain5wBtLuRS4s8fF_cZD3t9Aq828g
+Message-ID: <CAADnVQJb_BZ-7dgGrdhOTqQqH1FJ8NBy_3qLAR1K-4_Q-6_XVw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/5] libbpf: fix libbp_sha256() for Github compatibility
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi folks,
-While going through the verifier code, I noticed that the integer return value of mark_chain_precision() is ignored within loop_flag_is_zero().
+On Tue, Sep 30, 2025 at 2:26=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
+>
+> Recent reimplementation of libbpf_sha256() introduced issues for libbpf's
+> Github mirror due to reliance on linux/unaligned.h header. This patch set
+> fixes those issues to make libbpf source code compatible with Github mirr=
+or
+> setup.
+>
+> This patch set starts with a bit of organization: we introduce libbpf_uti=
+ls.c
+> as a place for generic internal helpers like libbpf_errstr() and
+> libbpf_sha256(), and move a few existing helpers there. We also clean up
+> libbpf_strerror_r(), which seems to be a leftover of some previous
+> refactorings.
+>
+> And finally, we move libbpf_sha256() from huge libbpf.c into libbpf_utils=
+.c,
+> following up with fix ups to make its code more Github-friendly.
 
-static bool loop_flag_is_zero(struct bpf_verifier_env *env)
-{
-    struct bpf_reg_state *regs = cur_regs(env);
-    struct bpf_reg_state *reg = &regs[BPF_REG_4];
-    bool reg_is_null = register_is_null(reg);
-
-    if (reg_is_null)
-        mark_chain_precision(env, BPF_REG_4);
-
-    return reg_is_null;
-}
-
-My question is:
-Is this behavior intentional (i.e., errors from mark_chain_precision() are safe to ignore here)?
-Or should loop_flag_is_zero() propagate the error to update_loop_inline_state() and from there to check_helper_call() function?
-I’d appreciate any clarification or suggestions. Apologies if this kind of question isn’t appropriate for the mailing list, I wanted to clarify the intended semantics before attempting a fix.
-
-Thanks,
-Suchit Karunakaran
+Though only patch 5 is a fix, let's get the whole thing into bpf tree,
+since we're still in the merge window.
 
