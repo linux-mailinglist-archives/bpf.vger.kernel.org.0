@@ -1,233 +1,215 @@
-Return-Path: <bpf+bounces-70126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70127-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE45BB1751
-	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 20:13:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FEDCBB1754
+	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 20:14:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B8A83BFC60
-	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 18:13:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D55ED19218C7
+	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 18:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292DE2D47F6;
-	Wed,  1 Oct 2025 18:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841382D3EE0;
+	Wed,  1 Oct 2025 18:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ALNkCant"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SF3BQPsU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343CD2D3A9C
-	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 18:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467AA17AE1D
+	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 18:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759342374; cv=none; b=GSSRdK33MeORm7qqAoV+MNnrvNvftryf4hDhcvuBaMe5vHb852xCkK3wuG3hPiAQz+4IgVhjIY0amu1wMGJzQywkFuoWbaNpC67AIczDah0wl5sfsQdASycWzOidQY7egTmG/zX+WHqoL7+gxxk/5foRT7jo9S+3fwLgQc/dh+E=
+	t=1759342465; cv=none; b=J9Ml+uLr4LQEDNWsL/25+4/4wp9FWFQJ2ahqhzsQPrn3T/2xdHxFqOrnm1nCMi9P/DDdAJU4kzk9KMuw+KegwN+KhyyttcbaJYTQ2AHlHJn4a5R4NpqMLnKL0l0mw4hfLAAWS7ghLXQr/gS8wq1Nk3ulRtnxPN7LBZF+QvDyE9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759342374; c=relaxed/simple;
-	bh=HX9oew4e1XAYFrT5AT7h78qJ1smpZAnVIIJYFY+JefI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=ABkuce1fe+4d500B5i2rY5QqLJ2tYhJl1mmGUDTfPeoAAXa1YXIA0OQ6rl1JRvmAjL5omZCGTO5Xfv7D0d/j5Tj0wIApApR3h+paV8DMSggsC6QcoIHDmrzUcsRvsA1UG28ndlVRfLr0R6uW9JRPNXtskdsd5jiEm21cWxEh0p0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ALNkCant; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-2697410e7f9so1264055ad.2
-        for <bpf@vger.kernel.org>; Wed, 01 Oct 2025 11:12:52 -0700 (PDT)
+	s=arc-20240116; t=1759342465; c=relaxed/simple;
+	bh=xe98Lhw7LN5iEPgVytaXr1jp4D0iugEZP+IAAXeLzcU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=PJidw9PF3G5mW0jQgN3lrfIG7OvMojZzp4zWrQYrnDWIlEulCPujqeyUdqB+xSGadRiv1InkBCbbZJJzW1BhWHwg2rzszZ6NJV3HiLOdaN0SrJh7iOiGABiA71A9HKr/mTtJZDcT1VZqgSlh/hUGc3UgBxCzRRt65IVNQyNyWyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SF3BQPsU; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-33082aed31dso276199a91.3
+        for <bpf@vger.kernel.org>; Wed, 01 Oct 2025 11:14:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759342371; x=1759947171; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EH7kbbVLdziTCdAjxXm5Ue6gNSX07dTrc9Cjc+NPVyU=;
-        b=ALNkCant5jeeKO+LIS6cMCVBRd4+gVeaMrsIdtD12GqcSKUI3yT3qpnJtxUdpa2BMd
-         cgeocP2C2Q63sA4SFS9OU94RYOo9IWzj4ha8SPXAVK0/63B1jFxL7AYEkQ3t/mGSirw2
-         2e4Rdb0DFELWjKwx0j94b89tGMv6y6myWGwf66Xli9ZEEvOoeu8DvHTQaUUOB35fP3Cw
-         nABX3R65FdwfHWARRib3NdCZcRFMguLA567BPsGAewwwbrT1foQtFG2HW8RJ3B0rb+lc
-         aU1lVoxASrBFK/5Epwt37+VUeMs9ApBq/TpYu4E8RAHTATrI0eFKTFQT3BlJoB3b23Au
-         y5VQ==
+        d=gmail.com; s=20230601; t=1759342463; x=1759947263; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OvHGNFVBS9g+ye3VGLtSJiliXheVt4FuI8i4MMUEQk0=;
+        b=SF3BQPsU/IwE7QFtfecoLUb8AWRgdMHFhBm/r54VXWDZtHcAoK6Xhw7/kiB2Mz0waB
+         l15S6o3f5vH4w/QQjD8Xq7hkX3ZH9qxVKYvLzEaRCR3EnBmLYP8vhJi6EpJ7GxqKIZ8k
+         hYrZHDkJesM2qog1Kpg0ZzCRERwt3IKJ6g3Pem+SKw+JSA3oiakXRDGbXmPyaB34Wj0a
+         tEYn/2uX2V1hIlCoiF/PAh4IeapgE23mxH9XWb2r/IXk7W3tRhy/USQEgbul2M80ppw5
+         y4l4bpQHuJL/j7USmG+xBT32p1k4vv9Vx+xcUkcVeflp7c0vz2XcUGGAeMkSwRFgSgnz
+         W45g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759342371; x=1759947171;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EH7kbbVLdziTCdAjxXm5Ue6gNSX07dTrc9Cjc+NPVyU=;
-        b=snJZqJ7HxUWTE+zNwjJr5nDYmvwOK/J16Hreb/+xeZbzGuP11xGk7eYk3Q1oaFZgaI
-         lYXHSgHOE0dTgVuB5MP2/ZoA3j1EA2rR5HrTbvX1tJBh6e/U63Y+EZCfiyLIOu5zzVwi
-         AFSziDf0kI1v1gGF0mgo+8p7AFqjzep9PmJizrAyWY1UKTUYyJhM4eX2wLfzbIY6HL5S
-         KAR/b/2frtRiOnXz0E+ncoz6HcXHUiuHLxzvRlxHFyRQwzsspwA8o9gPrPLLM+18nhZg
-         hd5PITR5XM/ywZ88+7vVtXluf3DyQXIes7th/mvo2JpVOG75U6YrkAsRarsTEosqF0xs
-         sDZA==
-X-Forwarded-Encrypted: i=1; AJvYcCU+KfAvPzWTkqG+DUdeuufXzBsQvm38LU1n1BbvFzYT8USpRPkMmpXs0Y3KVrR6lYL55hM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFdBDankyXkfXDzO/lA3dIHZB4Ql2zOkddgs+sfJfMNktx7uQb
-	kx+cHJs7ci3pQ9nWaQFXR2De/UePtjh/jE9NnATA1cwWDZXwXeuLq1phtZ0NY3pN0HRKDttoN8Z
-	4B8x5hADISg==
-X-Google-Smtp-Source: AGHT+IES+2nYbttOTnv0Js78KqzEulqo5E60Y3lSDZcRX9EumMk5CNUcMSfc2W4thLIdEfbe5dzGHZXjJ9s6
-X-Received: from pjob2.prod.google.com ([2002:a17:90a:8c82:b0:330:6513:c709])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:3847:b0:278:9051:8e9c
- with SMTP id d9443c01a7336-28e7f440874mr63024935ad.42.1759342371336; Wed, 01
- Oct 2025 11:12:51 -0700 (PDT)
-Date: Wed,  1 Oct 2025 11:12:28 -0700
-In-Reply-To: <20251001181229.1010340-1-irogers@google.com>
+        d=1e100.net; s=20230601; t=1759342463; x=1759947263;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OvHGNFVBS9g+ye3VGLtSJiliXheVt4FuI8i4MMUEQk0=;
+        b=XdQ4AI/4Osdm2+2n7DPu87jk8O+bwai6hWtG7nwarv/lQVSqPUvaZypUnDrwnKh/xp
+         URcvlCtVYp2hvLJZbI/1Bs01piYdlifLNyTi43wW9FwxEzqEbUqFXNFUM7eUmwPYZ01h
+         5gjUq96gGvhTlR59BfPNSpD/OwefVNaFWuixhjQG9fDA+MgxWvUkznz9KK1l8gZBF4Ao
+         XnsIh/L+fNb+JUkMN7nUpowDwtdy2l3VvdDlcvAi/dSafsG6gCWL8sFL4vP5hk2kUeWq
+         DdXQyWEOV2cvOa07cSF9JYV4On6yiCMZZnI4FpVwNZo9mYXO9QpUkAKJSu4nvflnK4Tj
+         fS4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVyspIN0NedZjJTmUTCaeN+pLlXd13uKvYtT/BuM3MtSe+kAEoJUVQGjD94Bz48ERdBJL0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUvpdRaqXut6fM6DtZCZp0FZbo0/Uignq8OZK5ifmW5luFMhqg
+	w+qGKqeQavn/fLmUqISLP+KAu+K1zLNikAH0Nv8ooneuAa377wUCO1oiRPNl1q4j
+X-Gm-Gg: ASbGncuNTTIDmyClHTKfMzyrQ5q5n8KaVvqrn0QZYt8ujiUaTIrZ0t1bjKj1kRfNK29
+	Y+JrAii6y+ZRMx6WNLSpoJuPITBYZ3oOqAoGVHCuHCsQvCtX+z2G3EqqV4QTNZyBkgWamyC9FjZ
+	ecSZELmOUoDRXK4DY7taTdTa4Nv1KFyjgr1aU/jiXVvVHW+s2uHEbsmMSFpkZ9UeU7RL4DkM+u1
+	A6KNNrjCiz0juqoNsWOJZojYAHjL2w9g6AWNA1T42zbKwag20zWfxH27QRescFplBDdyY5bQUXo
+	KGw4YNM9QuI1JqbCD2PnkZhK0vRFN5hlsQUc8QH+sVRl5KJU2jadE5D6sdFbhKcbtiAmk+TRI2J
+	C+GRTrBG3YYX+zBc96m/oizc69t1S5sWtVCzvMoGPfvSHKfr+gNYjFV67jTcHY4lNj8X1VFRrdV
+	iUdc2LyA==
+X-Google-Smtp-Source: AGHT+IE4ja9rb0uqnbaM+/U2g/4af/dafj/NRjkIAnoRvhZuTKoph6UKxZxtJ+6qt4mtZ6+RC/DFfQ==
+X-Received: by 2002:a17:90b:4c4b:b0:32d:d5f1:fe7f with SMTP id 98e67ed59e1d1-339a6ea6944mr5075134a91.15.1759342463464;
+        Wed, 01 Oct 2025 11:14:23 -0700 (PDT)
+Received: from ?IPv6:2a03:83e0:115c:1:1ed4:e17:bedc:abbb? ([2620:10d:c090:500::6:420a])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-339b4eb06cdsm343731a91.8.2025.10.01.11.14.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Oct 2025 11:14:23 -0700 (PDT)
+Message-ID: <ce95e0574660f0f9d8cc2a280957aa4f922e6458.camel@gmail.com>
+Subject: Re: [PATCH bpf] bpf: Correctly reject negative offsets for ALU ops
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: yazhoutang@foxmail.com, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, 	kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, Yazhou Tang
+ <tangyazhou518@outlook.com>, Shenghao Yuan <shenghaoyuan0928@163.com>,
+ Tianci Cao	 <ziye@zju.edu.cn>
+Date: Wed, 01 Oct 2025 11:14:21 -0700
+In-Reply-To: <tencent_70D024BAE70A0A309A4781694C7B764B0608@qq.com>
+References: <tencent_70D024BAE70A0A309A4781694C7B764B0608@qq.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20251001181229.1010340-1-irogers@google.com>
-X-Mailer: git-send-email 2.51.0.618.g983fd99d29-goog
-Message-ID: <20251001181229.1010340-2-irogers@google.com>
-Subject: [PATCH v1 2/2] perf bpf_counter: Fix handling of cpumap fixing hybrid
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Tengda Wu <wutengda@huaweicloud.com>, Gabriele Monaco <gmonaco@redhat.com>, 
-	James Clark <james.clark@linaro.org>, Howard Chu <howardchu95@gmail.com>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Song Liu <songliubraving@fb.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
 
-Don't open evsels on all CPUs, open them just on the CPUs they
-support. This avoids opening say an e-core event on a p-core and
-getting a failure - achieve this by getting rid of the "all_cpu_map".
+On Tue, 2025-09-30 at 23:04 +0800, yazhoutang@foxmail.com wrote:
+> From: Yazhou Tang <tangyazhou518@outlook.com>
+>
+> When verifying BPF programs, the check_alu_op() function validates
+> instructions with ALU operations. The 'offset' field in these
+> instructions is a signed 16-bit integer.
+>
+> The existing check 'insn->off > 1' was intended to ensure the offset is
+> either 0, or 1 for BPF_MOD/BPF_DIV. However, because 'insn->off' is
+> signed, this check incorrectly accepts all negative values (e.g., -1).
+>
+> This commit tightens the validation by changing the condition to
+> '(insn->off !=3D 0 && insn->off !=3D 1)'. This ensures that any value
+> other than the explicitly permitted 0 and 1 is rejected, hardening the
+> verifier against malformed BPF programs.
+>
+> Co-developed-by: Shenghao Yuan <shenghaoyuan0928@163.com>
+> Signed-off-by: Shenghao Yuan <shenghaoyuan0928@163.com>
+> Co-developed-by: Tianci Cao <ziye@zju.edu.cn>
+> Signed-off-by: Tianci Cao <ziye@zju.edu.cn>
+> Signed-off-by: Yazhou Tang <tangyazhou518@outlook.com>
+> ---
 
-In install_pe functions don't use the cpu_map_idx as a CPU number,
-translate the cpu_map_idx, which is a dense index into the cpu_map
-skipping holes at the beginning, to a proper CPU number.
+The change makes sense to me.
+Could you please add a selftest?
+Something like this:
 
-Before:
-```
-$ perf stat --bpf-counters -a -e cycles,instructions -- sleep 1
+---- 8< ------------------------------
 
- Performance counter stats for 'system wide':
+diff --git a/tools/testing/selftests/bpf/progs/verifier_sdiv.c b/tools/test=
+ing/selftests/bpf/progs/verifier_sdiv.c
+index 148d2299e5b4..c0f7e6d82e13 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_sdiv.c
++++ b/tools/testing/selftests/bpf/progs/verifier_sdiv.c
+@@ -1221,4 +1221,20 @@ int dummy_test(void)
 
-   <not supported>      cpu_atom/cycles/
-       566,270,672      cpu_core/cycles/
-   <not supported>      cpu_atom/instructions/
-       572,792,836      cpu_core/instructions/           #    1.01  insn per cycle
+ #endif
 
-       1.001595384 seconds time elapsed
-```
-
-After:
-```
-$ perf stat --bpf-counters -a -e cycles,instructions -- sleep 1
-
- Performance counter stats for 'system wide':
-
-       443,299,201      cpu_atom/cycles/
-     1,233,919,737      cpu_core/cycles/
-       213,634,112      cpu_atom/instructions/           #    0.48  insn per cycle
-     2,758,965,527      cpu_core/instructions/           #    2.24  insn per cycle
-
-       1.001699485 seconds time elapsed
-```
-
-Fixes: 7fac83aaf2ee ("perf stat: Introduce 'bperf' to share hardware PMCs with BPF")
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/bpf_counter.c        | 26 ++++++++++----------------
- tools/perf/util/bpf_counter_cgroup.c |  3 ++-
- 2 files changed, 12 insertions(+), 17 deletions(-)
-
-diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index 1c6cb5ea077e..ca5d01b9017d 100644
---- a/tools/perf/util/bpf_counter.c
-+++ b/tools/perf/util/bpf_counter.c
-@@ -336,6 +336,7 @@ static int bpf_program_profiler__install_pe(struct evsel *evsel, int cpu_map_idx
- {
- 	struct bpf_prog_profiler_bpf *skel;
- 	struct bpf_counter *counter;
-+	int cpu = perf_cpu_map__cpu(evsel->core.cpus, cpu_map_idx).cpu;
- 	int ret;
- 
- 	list_for_each_entry(counter, &evsel->bpf_counter_list, list) {
-@@ -343,7 +344,7 @@ static int bpf_program_profiler__install_pe(struct evsel *evsel, int cpu_map_idx
- 		assert(skel != NULL);
- 
- 		ret = bpf_map_update_elem(bpf_map__fd(skel->maps.events),
--					  &cpu_map_idx, &fd, BPF_ANY);
-+					  &cpu, &fd, BPF_ANY);
- 		if (ret)
- 			return ret;
- 	}
-@@ -451,7 +452,6 @@ static int bperf_check_target(struct evsel *evsel,
- 	return 0;
- }
- 
--static	struct perf_cpu_map *all_cpu_map;
- static __u32 filter_entry_cnt;
- 
- static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
-@@ -495,7 +495,7 @@ static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
- 	 * following evsel__open_per_cpu call
- 	 */
- 	evsel->leader_skel = skel;
--	evsel__open_per_cpu(evsel, all_cpu_map, -1);
-+	evsel__open(evsel, evsel->core.cpus, evsel->core.threads);
- 
- out:
- 	bperf_leader_bpf__destroy(skel);
-@@ -533,12 +533,6 @@ static int bperf__load(struct evsel *evsel, struct target *target)
- 	if (bperf_check_target(evsel, target, &filter_type, &filter_entry_cnt))
- 		return -1;
- 
--	if (!all_cpu_map) {
--		all_cpu_map = perf_cpu_map__new_online_cpus();
--		if (!all_cpu_map)
--			return -1;
--	}
--
- 	evsel->bperf_leader_prog_fd = -1;
- 	evsel->bperf_leader_link_fd = -1;
- 
-@@ -656,9 +650,10 @@ static int bperf__load(struct evsel *evsel, struct target *target)
- static int bperf__install_pe(struct evsel *evsel, int cpu_map_idx, int fd)
- {
- 	struct bperf_leader_bpf *skel = evsel->leader_skel;
-+	int cpu = perf_cpu_map__cpu(evsel->core.cpus, cpu_map_idx).cpu;
- 
- 	return bpf_map_update_elem(bpf_map__fd(skel->maps.events),
--				   &cpu_map_idx, &fd, BPF_ANY);
-+				   &cpu, &fd, BPF_ANY);
- }
- 
- /*
-@@ -667,13 +662,12 @@ static int bperf__install_pe(struct evsel *evsel, int cpu_map_idx, int fd)
-  */
- static int bperf_sync_counters(struct evsel *evsel)
- {
--	int num_cpu, i, cpu;
-+	struct perf_cpu cpu;
-+	int idx;
++#include "../../../include/linux/filter.h"
 +
-+	perf_cpu_map__for_each_cpu(cpu, idx, evsel->core.cpus)
-+		bperf_trigger_reading(evsel->bperf_leader_prog_fd, cpu.cpu);
- 
--	num_cpu = perf_cpu_map__nr(all_cpu_map);
--	for (i = 0; i < num_cpu; i++) {
--		cpu = perf_cpu_map__cpu(all_cpu_map, i).cpu;
--		bperf_trigger_reading(evsel->bperf_leader_prog_fd, cpu);
--	}
- 	return 0;
- }
- 
-diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
-index ed6a29b106b4..690be3ce3e11 100644
---- a/tools/perf/util/bpf_counter_cgroup.c
-+++ b/tools/perf/util/bpf_counter_cgroup.c
-@@ -186,7 +186,8 @@ static int bperf_cgrp__load(struct evsel *evsel,
- }
- 
- static int bperf_cgrp__install_pe(struct evsel *evsel __maybe_unused,
--				  int cpu __maybe_unused, int fd __maybe_unused)
-+				  int cpu_map_idx __maybe_unused,
-+				  int fd __maybe_unused)
- {
- 	/* nothing to do */
- 	return 0;
--- 
-2.51.0.618.g983fd99d29-goog
++SEC("socket")
++__failure __msg("BPF_ALU uses reserved fields")
++__naked void div_bad_off(void)
++{
++       asm volatile(
++               "r0 =3D 1;"
++               ".8byte %[bad_div];"
++               "r0 =3D 0;"
++               "exit;"
++       :
++       : __imm_insn(bad_div, BPF_RAW_INSN(BPF_ALU64 | BPF_DIV | BPF_X, 0, =
+0, -1, 0))
++       : __clobber_all);
++}
++
 
+------------------------------ >8 ----
+
+But maybe wrap this with a macro, to try different opcodes and offsets/imm.
+
+>  kernel/bpf/verifier.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 9fb1f957a093..8979a84f9253 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -15739,7 +15739,7 @@ static int check_alu_op(struct bpf_verifier_env *=
+env, struct bpf_insn *insn)
+>  	} else {	/* all other ALU ops: and, sub, xor, add, ... */
+>
+>  		if (BPF_SRC(insn->code) =3D=3D BPF_X) {
+> -			if (insn->imm !=3D 0 || insn->off > 1 ||
+> +			if (insn->imm !=3D 0 || (insn->off !=3D 0 && insn->off !=3D 1) ||
+>  			    (insn->off =3D=3D 1 && opcode !=3D BPF_MOD && opcode !=3D BPF_DIV=
+)) {
+>  				verbose(env, "BPF_ALU uses reserved fields\n");
+>  				return -EINVAL;
+> @@ -15749,7 +15749,7 @@ static int check_alu_op(struct bpf_verifier_env *=
+env, struct bpf_insn *insn)
+>  			if (err)
+>  				return err;
+>  		} else {
+> -			if (insn->src_reg !=3D BPF_REG_0 || insn->off > 1 ||
+> +			if (insn->src_reg !=3D BPF_REG_0 || (insn->off !=3D 0 && insn->off !=
+=3D 1) ||
+>  			    (insn->off =3D=3D 1 && opcode !=3D BPF_MOD && opcode !=3D BPF_DIV=
+)) {
+>  				verbose(env, "BPF_ALU uses reserved fields\n");
+>  				return -EINVAL;
+
+Nit: personally, I'd change this whole 'if' block to something like below:
+
+                bool good_off =3D insn->off =3D=3D 0 ||
+                                (insn->off =3D=3D 1 && (opcode =3D=3D BPF_M=
+OD || opcode =3D=3D BPF_DIV));
+                bool good_imm =3D BPF_SRC(insn->code) =3D=3D BPF_X
+                                ? insn->imm =3D=3D 0
+                                : insn->src_reg =3D=3D BPF_REG_0;
+
+                if (!good_off || !good_imm) { // (or make these bad_off and=
+ bad_imm)
+                        verbose(private_data: env, fmt: "BPF_ALU uses reser=
+ved fields\n");
+                        return -EINVAL;
+                }
+
+                if (BPF_SRC(insn->code) =3D=3D BPF_X) {
+                        err =3D check_reg_arg(env, regno: insn->src_reg, t:=
+ SRC_OP);
+                        if (err)
+                                return err;
+                }
+
+     imo, a bit easier to read, but feel free to ignore this suggestion.
 
