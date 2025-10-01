@@ -1,128 +1,196 @@
-Return-Path: <bpf+bounces-70174-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70175-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52D88BB212B
-	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 01:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8983DBB215E
+	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 01:50:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F18687B2CC7
-	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 23:31:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 655E57AAE13
+	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 23:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB5D29CB52;
-	Wed,  1 Oct 2025 23:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C194C28641F;
+	Wed,  1 Oct 2025 23:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rT9TYikp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G151zavg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281213594A;
-	Wed,  1 Oct 2025 23:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A852454918
+	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 23:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759361590; cv=none; b=tkAEegDCMto6RfyIYxtCpeIgoCRkGnay2h7twQ+ZcmD48/I4BlOpSXwB2Z63Uqy+Y+CqGnBYAgv5MWQAKdDJcEMAb7W8ba0Ytkczp03HSNdULQG098lOWmtXVoTLRkOwxElVMOILrMrbkkXYG8YMIGaDk/3nQaKLEo0nn5gVhf0=
+	t=1759362601; cv=none; b=ZOT4OEs3SqtIpbYleEnvBlnn8VWDgxcNHi6lVb8Uu1QbVzuJZSDpxnWWXejVKPb6Hi3BreTSf2EWEzck/d1EUZL9UNiODwY6IqZrzY9kemRbT1xHAcyTRMpSbyq4MqUPM53/MXLeIJcwDDRRVeE6phqdHDwu/bXLKgJXla02pWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759361590; c=relaxed/simple;
-	bh=nxjPZTH2cboLxbGeiqKY+KyNbeP3fDF19+MMfWultYc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JkmtjCT90EPvVu20QjeS1BbVEQQlFF6X/xaIFY5Wd3V5fxOXcUCrzt5f5PYthO9d+lq78jwAGUVHx2SQifESI8bAtktn49Sa7GSREQShniXftvgsHAlzkNRsADxWZwZkbuJUt2ZDwOnmQBWaSUW17NxGZEH8L6ZkZi16hrItmFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rT9TYikp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CC82C4CEF1;
-	Wed,  1 Oct 2025 23:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759361586;
-	bh=nxjPZTH2cboLxbGeiqKY+KyNbeP3fDF19+MMfWultYc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rT9TYikpnEFDxMjYQQWZZR4Ir7wV22Zs3w1t2MoF5lCYuLy0mDTXYoILShTNUw29l
-	 PcHuvYLkLYMsPhNIk+e0JnttkxbVrIZGQ3LdD1uWusS0T/GoBS0tf14P17U6mlVtSp
-	 8I/LP2CmDq9VamgT9bWizCFm8SjA0BO9OFvmwDg+1mYgO97iOrsWtjCFhnfohycu8i
-	 hgGj9jrwi2gTjMJzIhPFtPacaH23qhoglsaWQ+gx8tW1CP727a0almdHSjbkJKgSVE
-	 Y84DV0bR0qpFjrdUvhyhMvf8UrVhR0EEakpqUs+QiQo+RaKtcC/HFayf9tks4B0SNG
-	 /BC1RlTkDKawA==
-Date: Wed, 1 Oct 2025 16:33:04 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Network Development <netdev@vger.kernel.org>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	bpf <bpf@vger.kernel.org>,
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH iproute2-next v2] lib/bpf_legacy: Use userspace SHA-1
- code instead of AF_ALG
-Message-ID: <20251001233304.GB2760@quark>
-References: <20250929194648.145585-1-ebiggers@kernel.org>
- <CAADnVQKKQEjZjz21e_639XkttoT4NvXYxUb8oTQ4X7hZKYLduQ@mail.gmail.com>
+	s=arc-20240116; t=1759362601; c=relaxed/simple;
+	bh=57bLEy5449KCyJJ8aY5tyTOwG24X0fMdlZmN3mmYJKA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uLWibyhKDqA+IA3OJwleTdxg4yq+Ka09lwJMeYyCxi9rFe+0a+mW/exf8o3eEl3rkejzet3CWuntMXgsNwRNfnq3ZXYn4v+Jq/VNAiECAkXl3wKltKjlYCWn43RHiB3Ag0/J1+FUDKT5fK4hiFaBgKS2dtxGhRQI9whlcZWYs9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G151zavg; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3ee1221ceaaso214151f8f.3
+        for <bpf@vger.kernel.org>; Wed, 01 Oct 2025 16:49:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759362598; x=1759967398; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iH3PCCPEFctCl2XBWJlKZP7VRcRnGvWFKEin5Np52GE=;
+        b=G151zavggRNsXHYsg8v4n1OmfYF/Volu7iKCcX5k2FBghINKH0GtUMzkesggqDwIkE
+         QUo8HWlEZIMAKJF+UvWei2bXEACb2bjFMcIVaispcBXJToVEJhLWTUlIY0O8fQbQFA/4
+         jh2bmOBtsMh8p9kDJVxOZAQ8Q8s7eUb6PT1r7gju2Qa4Qg0P79czCCPBfcYB7C7Ts1J/
+         /uPNvwGHnY4LsL3MOy4352F/YdfVmb7XH2tUaXHXQ1AwM6jGskbjE+iPEVUdE4e3WeJo
+         KUZNl42tv9oDrkB7CRw+Odx9W5GiFExx4lOkxU9Lg8lrP6GWR5g2l4m6RX8j2VTq9OsF
+         SYFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759362598; x=1759967398;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iH3PCCPEFctCl2XBWJlKZP7VRcRnGvWFKEin5Np52GE=;
+        b=LFw+pIrLvUaBvYlQxukfZDdlGcVxKCxZDhIeRATALyv8ZGqAQ8nlRQb/C8N7dPZUew
+         f/RgQZZJFobKjVC0XnjJHHZkvwhrYUU2WdR9NmWaI3+0hy1WO4RoXqCpy0zN4At1jkX4
+         XcwWeg78yRX/ClTFGoFzULdhTvqmWwn13rrYA73b4ZloBtpGyavQ/4UszgrofxmcuP/t
+         unl3GQ8IH4xilEuB8+4mhlZptpq0Ga7sWMGz5bIW4lkfPgyzlUEwA0mAi7Z+T8qnuaz7
+         ossnx26STt2dkKCRClxVgikqDuCONGKT/OSxa8CoQetTKVhkfTxudy6wp5m936/N91MT
+         Ic0g==
+X-Forwarded-Encrypted: i=1; AJvYcCVIMQv1wLdxG4VPc8IXBhjZsF1s92P3vc6gUeosaF4PU58cPElX7lIupjh62oNOhZ9pudc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEhNYk5f4opELxxbm34OAZODVrZ11Zn4OCqllOCXxua9F/Tnq8
+	N9BzMA47BWfjzGS2ZVV7efvPavyTGr9gp1T19+5Piza+avoQR7O8WgsW5PuXONcMvBC60YDj8d5
+	5NqohtT7KP3VF1Hiedc32S140s1EajmY=
+X-Gm-Gg: ASbGncsCgPD8lOs5OeZlrsQSyleyC6tcXNcNJCVM90VjzAEQatJ8iw3Iuqq145dLOA2
+	32aXYsLrMRsGyPG2EohepNpXG1qEgFOdN+5KCiY5lMK2T+KedNM5YKBPD4fYNBT2Mfn9dARKH8H
+	Ly5eVzk4DwzVul3Ndq05ELbmmMnwyEj0wIfC8Dwax6/FZRlm7uz7FRyyJa/zTKQaREjLkLY4l4T
+	V04MF1vYs9I3LWnNLcd/WsIwNLSTEadULHyt86hyju3dCUOqgcYoWK640sq
+X-Google-Smtp-Source: AGHT+IGfagwp//rncdVUW1mF0urxcAmyi9/IcU4r9KohrF8kakINErDwPtbo5UHJLkHyFF/HZq8LlTK3gz5fEr3CPKw=
+X-Received: by 2002:a5d:5d85:0:b0:3b9:148b:e78 with SMTP id
+ ffacd0b85a97d-4255781c7b6mr4363571f8f.53.1759362597946; Wed, 01 Oct 2025
+ 16:49:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKKQEjZjz21e_639XkttoT4NvXYxUb8oTQ4X7hZKYLduQ@mail.gmail.com>
+References: <20250930125111.1269861-1-a.s.protopopov@gmail.com>
+ <20250930125111.1269861-10-a.s.protopopov@gmail.com> <eddce884140f3df9e6c3c7e1b873a570b163ce1d.camel@gmail.com>
+In-Reply-To: <eddce884140f3df9e6c3c7e1b873a570b163ce1d.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 1 Oct 2025 16:49:46 -0700
+X-Gm-Features: AS18NWAGF_I_YP_2PSm_a71hFu08_ZXMFit2pIEqvtqLU_LWZJfUO5azqoZxv2s
+Message-ID: <CAADnVQ+K9hYhwxLO3+2xAcm04=SeyCQuYZtHmKMkmkKTUDQG4Q@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 09/15] bpf: make bpf_insn_successors to return
+ a pointer
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Anton Protopopov <a.s.protopopov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Anton Protopopov <aspsk@isovalent.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Quentin Monnet <qmo@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 01, 2025 at 03:59:31PM -0700, Alexei Starovoitov wrote:
-> On Mon, Sep 29, 2025 at 12:48 PM Eric Biggers <ebiggers@kernel.org> wrote:
+On Wed, Oct 1, 2025 at 3:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Tue, 2025-09-30 at 12:51 +0000, Anton Protopopov wrote:
+> > The bpf_insn_successors() function is used to return successors
+> > to a BPF instruction. So far, an instruction could have 0, 1 or 2
+> > successors. Prepare the verifier code to introduction of instructions
+> > with more than 2 successors (namely, indirect jumps).
 > >
-> > Add a basic SHA-1 implementation to lib/, and make lib/bpf_legacy.c use
-> > it to calculate SHA-1 digests instead of the previous AF_ALG-based code.
+> > To do this, introduce a new struct, struct bpf_iarray, containing
+> > an array of bpf instruction indexes and make bpf_insn_successors
+> > to return a pointer of that type. The storage for all instructions
+> > is allocated in the env->succ, which holds an array of size 2,
+> > to be used for all instructions.
 > >
-> > This eliminates the dependency on AF_ALG, specifically the kernel config
-> > options CONFIG_CRYPTO_USER_API_HASH and CONFIG_CRYPTO_SHA1.
+> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> > ---
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>
+> (but please fix the IS_ERR things, see below).
+>
+> [...]
+>
+> > --- a/include/linux/bpf_verifier.h
+> > +++ b/include/linux/bpf_verifier.h
+> > @@ -509,6 +509,15 @@ struct bpf_map_ptr_state {
+> >  #define BPF_ALU_SANITIZE             (BPF_ALU_SANITIZE_SRC | \
+> >                                        BPF_ALU_SANITIZE_DST)
 > >
-> > Over the years AF_ALG has been very problematic, and it is also not
-> > supported on all kernels.  Escalating to the kernel's privileged
-> > execution context merely to calculate software algorithms, which can be
-> > done in userspace instead, is not something that should have ever been
-> > supported.  Even on kernels that support it, the syscall overhead of
-> > AF_ALG means that it is often slower than userspace code.
-> 
-> Help me understand the crusade against AF_ALG.
-> Do you want to deprecate AF_ALG altogether or when it's used for
-> sha-s like sha1 and sha256 ?
+> > +/*
+> > + * An array of BPF instructions.
+> > + * Primary usage: return value of bpf_insn_successors.
+> > + */
+> > +struct bpf_iarray {
+> > +     int off_cnt;
+> > +     u32 off[];
+> > +};
+> > +
+>
+> Tbh, the names `off` and `off_cnt` are a bit strange in context of
+> instruction successors.
+>
+> [...]
+>
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 705535711d10..6c742d2f4c04 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -17770,6 +17770,22 @@ static int mark_fastcall_patterns(struct bpf_v=
+erifier_env *env)
+> >       return 0;
+> >  }
+> >
+> > +static struct bpf_iarray *iarray_realloc(struct bpf_iarray *old, size_=
+t n_elem)
+> > +{
+> > +     size_t new_size =3D sizeof(struct bpf_iarray) + n_elem * 4;
+>
+> Nit: n_elem * 4 -> n_elem * sizeof(*old->off) ?
+>
+> > +     struct bpf_iarray *new;
+> > +
+> > +     new =3D kvrealloc(old, new_size, GFP_KERNEL_ACCOUNT);
+> > +     if (!new) {
+> > +             /* this is what callers always want, so simplify the call=
+ site */
+> > +             kvfree(old);
+> > +             return NULL;
+> > +     }
+> > +
+> > +     new->off_cnt =3D n_elem;
+> > +     return new;
+> > +}
+>
+> [...]
+>
+> > @@ -24325,14 +24342,18 @@ static int compute_live_registers(struct bpf_=
+verifier_env *env)
+> >               for (i =3D 0; i < env->cfg.cur_postorder; ++i) {
+> >                       int insn_idx =3D env->cfg.insn_postorder[i];
+> >                       struct insn_live_regs *live =3D &state[insn_idx];
+> > -                     int succ_num;
+> > -                     u32 succ[2];
+> > +                     struct bpf_iarray *succ;
+> >                       u16 new_out =3D 0;
+> >                       u16 new_in =3D 0;
+> >
+> > -                     succ_num =3D bpf_insn_successors(env->prog, insn_=
+idx, succ);
+> > -                     for (int s =3D 0; s < succ_num; ++s)
+> > -                             new_out |=3D state[succ[s]].in;
+> > +                     succ =3D bpf_insn_successors(env, insn_idx);
+> > +                     if (IS_ERR(succ)) {
+>
+> This error check is no longer necessary.
 
-Altogether, when possible.  AF_ALG has been (and continues to be)
-incredibly problematic, for both security and maintainability.
+Speaking of IS_ERR checks...
+https://github.com/kernel-patches/bpf/pull/9895#issuecomment-3352016682
 
-> I thought the main advantage of going through the kernel is that
-> the kernel might have an optimized implementation for a specific
-> architecture, while the open coded C version is generic.
-> The cost of syscall and copies in/out is small compared
-> to actual math, especially since compilers might not be smart enough
-> to use single asm insn for rol32() C function.
-
-Not for small amounts of data, since syscalls are expensive these days.
-
-(Aren't BPF programs usually fairly small?)
-
-BTW, both gcc and clang reliably lower rol32() to a single instruction.
-
-> sha1/256 are simple enough in plain C, but other crypto/hash
-> could be complex and the kernel may have HW acceleration for them.
-> CONFIG_CRYPTO_USER_API_HASH has been there forever and plenty
-> of projects have code to use that. Like qemu, stress-ng, ruby.
-> python and rust have standard binding for af_alg too.
-> If the kernel has optimized and/or hw accelerated crypto, I see an appeal
-> to alway use AF_ALG when it's available.
-
-Well, userspace programs that want accelerated crypto routines without
-incorporating them themselves should just use a userspace library that
-has them.  It's not hard.
-
-But iproute2 should be fine with just the generic C code.
-
-As for why AF_ALG support keeps showing up in different programs, it's
-mainly just a misunderstanding.  But I think you're also overestimating
-how often it's used.  Your 5 examples were 4 bindings (not users), and 1
-user where it's disabled by default.
-
-There are Linux systems where it's only iproute2 that's blocking
-CONFIG_CRYPTO_USER_API_HASH from being disabled.  This patch is really
-valuable on such systems.
-
-- Eric
+AI for-the-win!
 
