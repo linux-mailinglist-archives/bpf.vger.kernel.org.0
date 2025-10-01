@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-70140-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70141-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46446BB1998
-	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 21:30:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ABF4BB199E
+	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 21:30:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C3097A9B3B
-	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 19:28:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 975834C3F95
+	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 19:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1A22ED853;
-	Wed,  1 Oct 2025 19:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB4E2D8781;
+	Wed,  1 Oct 2025 19:29:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="FZVF9LpV"
+	dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b="WBpNrBTJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974DA2EC572;
-	Wed,  1 Oct 2025 19:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340B12D7810;
+	Wed,  1 Oct 2025 19:29:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759346980; cv=none; b=pUHZyE1AqHi8gqy8gFNh8y2UUIIcFQ+D45AVWUs5jpTqMlFvUenFV+UOZQ2xH09nN4NIEUEa1zbKzHFKFNpY6O5PpD1+NxOw1K3KRuxGBGBstrZp2tfNd1CO10QXJtzjJI/zilsn59GdmRlBQRgLNgz7qf5B/u9aMQ+wW2UB76A=
+	t=1759346989; cv=none; b=EWdzyonTiOJk7FjKuPXWGUV72oe0G68eOZYy7/EWGLcf1QXHJBAq7kFgw4v8BorcpkULj4EkBuieseX80KmZXkmtiHPmI4A0olsyiPWUgeW8UiLaQzky7XI9RBy75wnmCIOSKJ83wIdtznC7eAuj+UfvkOZz0mrYTlQOG9SU3is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759346980; c=relaxed/simple;
-	bh=NWsYpEpETenNEyKSRXa29OMqa6Pxo8OfTji6y8Fv7Eg=;
+	s=arc-20240116; t=1759346989; c=relaxed/simple;
+	bh=HLYhW50XHaRj/9ZRdiTUSGg8dvCftmf3opE4NOaKOFI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YKO1F/Wa9KxJcdlpycX8/eu4McYTYBM98whEg4bY1BIJk4EDuxGI7ou2LeNzR870MoI8hBWYRQYtf3h1PFNVr+f+30iL/0fW1mUKB2cTDozVDAe/v1oAqOptXBEqzPE9asNF5/E8TE8Ns1IGmjf2+Efpwhm/bpqT7rUi6Cu67xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=FZVF9LpV; arc=none smtp.client-ip=80.241.56.152
+	 MIME-Version; b=rTWPrHShDxS70dEv/Dz/L23Sl2m9IqAKfhmLjXmox2L6rdycSYFPqimQ7mSFKa1w9t3R+1F1R7zAJCtRP6879tlEZWPflJPdlIr8bKaDhD6RScxxL5IWV9FmN4kN7tIecMAT/WqoB30aI/OaSUcVee/BY6BvXycOtKunkFLhaoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz; spf=pass smtp.mailfrom=listout.xyz; dkim=pass (2048-bit key) header.d=listout.xyz header.i=@listout.xyz header.b=WBpNrBTJ; arc=none smtp.client-ip=80.241.56.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=listout.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=listout.xyz
 Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4ccQ3f5Bmmz9vDC;
-	Wed,  1 Oct 2025 21:29:34 +0200 (CEST)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4ccQ3q3XFdz9sbC;
+	Wed,  1 Oct 2025 21:29:43 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
-	t=1759346974;
+	t=1759346983;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AOO4zIFMU9Puw7DtgnyRREAICz2pYE44sks8lsosEKM=;
-	b=FZVF9LpVbdZ3hYQehDLr5Fr8xGiEMBScuU4blRYHhmwotns33swtzIAC+vfrjmJ9vHT+qV
-	v7eVRU/Qe5H02I1UrFxHnYvwjAU88oecVJxxMVLGTCiESVCRkqUk7euFdyP5ED4e4FPc4q
-	sd2bt54G/3ebajYiHaCxm/HQsQ1L8SrAPu0QhMqr9Br8OCeuPCbH0AuuzNH7JTqHl9Lh41
-	Zpf+dCBheABilMYF7pu8eXfNrCPryhdBtS7wgkBqDrAaI6Eoqe/qujicGg96phZKV0qJSc
-	dDPeq88hPBUxWoG5xdJl4z2XG7fHfB5ndGpH9VpBE2tfDQrkv76IpkQvDVh/Dg==
+	bh=mFOt7Q6Yh4zU6HGqC4KBvS7uM2NDq7KoM7BsVGIWIDU=;
+	b=WBpNrBTJDebZFbtWff4fU8NsdEx9UFdfAXhpZVJe49UvJYzwkte308sbBgcbmIxJ0EiHNE
+	qlG+fwBpHwbKhqX8PbnbJ5Ta/BZUtWAk2WHiQiC0Ct4rVk/K/L3YwQzBv5acbj1Phs0SEG
+	E6OOrAlyEPQVdHkbU9FEft5RZU8DtXJPEGfBahyngZv7i/UorgrWNgd/Vbtx97OyP8YzJc
+	u9XkDFim6zISZvo1iv8oKhLgJz0ikJmZPz1BFzDHNekYtokpJgFn5TSc5bs5TM/OY5z2JF
+	OIqXhUey+PZbvlSyDJ+8XYv74KoqazSxt+nf9RSmkp/IrTt73cfqajuArJkR2g==
 From: Brahmajit Das <listout@listout.xyz>
 To: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com
 Cc: andrii@kernel.org,
@@ -67,9 +67,9 @@ Cc: andrii@kernel.org,
 	syzkaller-bugs@googlegroups.com,
 	yonghong.song@linux.dev,
 	KaFai Wan <kafai.wan@linux.dev>
-Subject: [PATCH v4 1/2] bpf: Skip scalar adjustment for BPF_NEG if dst is a pointer
-Date: Thu,  2 Oct 2025 00:58:58 +0530
-Message-ID: <20251001192859.2343567-2-listout@listout.xyz>
+Subject: [PATCH v4 2/2] selftests/bpf: Add test for BPF_NEG alu on CONST_PTR_TO_MAP
+Date: Thu,  2 Oct 2025 00:58:59 +0530
+Message-ID: <20251001192859.2343567-3-listout@listout.xyz>
 In-Reply-To: <20251001192859.2343567-1-listout@listout.xyz>
 References: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
  <20251001192859.2343567-1-listout@listout.xyz>
@@ -81,56 +81,46 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In check_alu_op(), the verifier currently calls check_reg_arg() and
-adjust_scalar_min_max_vals() unconditionally for BPF_NEG operations.
-However, if the destination register holds a pointer, these scalar
-adjustments are unnecessary and potentially incorrect.
+From: KaFai Wan <kafai.wan@linux.dev>
 
-This patch adds a check to skip the adjustment logic when the destination
-register contains a pointer.
+Add a test case for BPF_NEG operation on CONST_PTR_TO_MAP. Tests if
+BPF_NEG operation on map_ptr is rejected in unprivileged mode and is a
+scalar value and do not trigger Oops in privileged mode.
 
-Reported-by: syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=d36d5ae81e1b0a53ef58
-Fixes: aced132599b3 ("bpf: Add range tracking for BPF_NEG")
-Suggested-by: KaFai Wan <kafai.wan@linux.dev>
-Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Brahmajit Das <listout@listout.xyz>
+Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
 ---
-Changes v4:
-Cleaning up, instead of using __is_pointer_value it's further
-simplified by checking if regs[insn->dst_reg].type of SCALAR_VALUE
-Link: 
+ .../bpf/progs/verifier_value_illegal_alu.c     | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-Changes in v3:
-using __is_pointer_value to check if register if of pointer type
-Link: https://lore.kernel.org/all/20251001095613.267475-1-listout@listout.xyz/
-
-Changes in v2: 
-Checking if reg->map_ptr is NULL in bpf/log.c but with cleaner approach
-(wrong approach)
-Link: https://lore.kernel.org/all/20250923174738.1713751-1-listout@listout.xyz/
-
-Changes in v1: 
-Checking if reg->map_ptr is NULL in bpf/log.c (wrong approach)
-Link: https://lore.kernel.org/all/20250923164144.1573636-1-listout@listout.xyz/
----
- kernel/bpf/verifier.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e892df386eed..f3d8ba142faa 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15645,7 +15645,8 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 		}
+diff --git a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
+index a9ab37d3b9e2..dcaab61a11a0 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
++++ b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
+@@ -146,6 +146,24 @@ l0_%=:	exit;						\
+ 	: __clobber_all);
+ }
  
- 		/* check dest operand */
--		if (opcode == BPF_NEG) {
-+		if (opcode == BPF_NEG &&
-+		    regs[insn->dst_reg].type == SCALAR_VALUE) {
- 			err = check_reg_arg(env, insn->dst_reg, DST_OP_NO_MARK);
- 			err = err ?: adjust_scalar_min_max_vals(env, insn,
- 							 &regs[insn->dst_reg],
++SEC("socket")
++__description("map_ptr illegal alu op, map_ptr = -map_ptr")
++__failure __msg("R0 invalid mem access 'scalar'")
++__failure_unpriv __msg_unpriv("R0 pointer arithmetic prohibited")
++__flag(BPF_F_ANY_ALIGNMENT)
++__naked void map_ptr_illegal_alu_op(void)
++{
++	asm volatile ("					\
++	r0 = %[map_hash_48b] ll;			\
++	r0 = -r0;					\
++	r1 = 22;					\
++	*(u64*)(r0 + 0) = r1;				\
++	exit;						\
++"	:
++	: __imm_addr(map_hash_48b)
++	: __clobber_all);
++}
++
+ SEC("flow_dissector")
+ __description("flow_keys illegal alu op with variable offset")
+ __failure __msg("R7 pointer arithmetic on flow_keys prohibited")
 -- 
 2.51.0
 
