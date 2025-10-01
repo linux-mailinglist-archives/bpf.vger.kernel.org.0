@@ -1,262 +1,180 @@
-Return-Path: <bpf+bounces-70068-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BB11BAF1C1
-	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 06:55:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F46BAF209
+	for <lists+bpf@lfdr.de>; Wed, 01 Oct 2025 07:08:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EA983A73C0
-	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 04:55:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 715551940785
+	for <lists+bpf@lfdr.de>; Wed,  1 Oct 2025 05:09:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CCE62D8372;
-	Wed,  1 Oct 2025 04:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C252D8364;
+	Wed,  1 Oct 2025 05:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LAkxomep"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="muuPLZqv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442472D7DCA
-	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 04:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED69D42056
+	for <bpf@vger.kernel.org>; Wed,  1 Oct 2025 05:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759294513; cv=none; b=jLO4HsnXu8ICpSBwFZWBSTYu1/EyuV9JtCst0EdTXDL02RV32rhT1Xbyzp+F1Ne2sn13ft9sJTnnSIIwZEGZJeuNt7dWSP6AFP6/3Y+Gwvxt4m1ICBSkV29LdHgpNBhKNEmFoNhZcW78dTWfpyn6KtRTF+nFidv7lY22/HGAx08=
+	t=1759295314; cv=none; b=h4E03lnsz176z7jGlt4n4OmJPTgsNmT5Vnl+UWjxU2WmNJ/HQBuS/dE1Ji0isUaHkR2pxmMs/LJBXLT9BLdjsGQm8mpAQmsMyhVNhpIzj2sCtTA/a7aJiMQcdSLZSYS0oMHzQtWGJqMe1de4ZDxRM/PszZOMEz1mty/3jyu5oJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759294513; c=relaxed/simple;
-	bh=c8pxOvtyq/c0UIli9jPRzRJjB7VX9/+BBDpMmu+LVPE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lYOrW/R5t+xkGDmtrpAccSlSP7GrAgkzYTMZFKo67eg3nd4kLYor9Dy9C6P7qbQFea/558sRn+cTQR/IhYcD1eOxCWt3cPbJfFIzYQA5ysbraWNmbdS18xkT26fCzIhQ6pikffDbc/Njsskxp0mYHwBWNOTdyELTf4zGFBzuYJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LAkxomep; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-76e4fc419a9so6932260b3a.0
-        for <bpf@vger.kernel.org>; Tue, 30 Sep 2025 21:55:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759294510; x=1759899310; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ri7WDt45zmQrzY579qfISU4VEl3xx5nuQVZaGHjeynE=;
-        b=LAkxomepxKSJ+AD4srYlZjKraEM1bp1Cm9TqdymgVuSRd+kYI09PwBU5JNCNnc4qt4
-         E3zpPhfM/Wf+UoCaqRB7ThbUDX+CG6NdajZmtnMeDye0MLkt38cHrNn9djkWgyw0uCUX
-         25R9Q49yd/6BLk3y5/tKDhb8VRLIMAuMq5bCtxfdPHzQQ7GcnTyEawRiqhF51kX0zQYR
-         fb8AJ3I1C2UQQu+kZCNDFQPI6XY5XQs/STiAXK4Y6NigFcUHqoZifj5b/z6dK/LuJmH6
-         2y6tLKXPKDOCUrBNR5pwaQdKDkuFp1WBTUoLRn+SENt1hjrU5nyh1Nu5oRmp7i0j/Gby
-         eb+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759294510; x=1759899310;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ri7WDt45zmQrzY579qfISU4VEl3xx5nuQVZaGHjeynE=;
-        b=ez8VUEhwMNOUMx4FMr0RDBgpNWSutO4R/yFia75Z1WC+O+RPc5RM/9TaEhxq2SsZYV
-         YC7wYwe6QvXIW4BDF4BNzFi9voxwdzee7IJ0LL/X206OX4PiEHftU4NB1JJboMbyUNJP
-         aSzo4VGTVHN4hk/3NMMzNkRkrwLfkLcZ44bK9lSiMFW+1nkhFgGprl3l2cFSNq7nT8Ft
-         xtWv/nyzo6UDOgi3tgS0nOnkXHd7VTO2BVxmWxPiguqf7/JpdA1OMZtPvqDHPcm9FSgn
-         Q5d9eoAbRHx8xH0sDu3uDViYpcJRiMfdWNvM2Ihbk+qlwqJUtyUwjkK2QTOKQEmIkfUQ
-         3HnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV8P47qr3SREXk+o38WS+kAMGacM3PY5Pgr1PLkKDvP070NCdxICyga93m91xzPd/Fa8Y4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+VW/DjJ/CExRIX0kG1v9Z1Ede9VB3b32OCtg+MgSEyPezh0uG
-	3xfMdZNq09WxjM/htv91kxEVsYpm6MlO9XOGpu+c0qXxhrfL+JgmF1zsI9TWsA==
-X-Gm-Gg: ASbGncuneHtWrkXKsZ+2uYPtRHnB7s88xhrpRQkZk4T8kXO+xCS/Lts7JWoMz+PEE5d
-	gp4MCoMhPBGTPkFM8BPAnYEqop8ecXd+lqnmv7bm0oczzs57tuRJ6zIfceDSAbMELxiJU7SqQ5s
-	OLP7neTMFyqsph1Ek8+4CRQhCi3ItyjnuYfw76rHVPsoPahShXIU323k6vZAbNxumcAQ54/B/a1
-	po31OVXB+a7wGPw0X+BZ9GEpy4nhSJKrBWZg9FcuHi/FRFC9bDpsar7Q8hpWomDmVsMmzuRPLkk
-	op8CNYUydL5pTARp/Fip2tQsZT2K0SW5UYKLPLQHsvNQXpYupuBOmWFamexWrXssTPx2u5Lm0xl
-	wnK2NESp5x9TjTtuUt1MQKbY9k+GeqOWcb/wLz2RjXdYag52XVuqf3KMch14jLBQ3nhgILamWgA
-	==
-X-Google-Smtp-Source: AGHT+IENg8JFMQAvrh08OsAp21v3nqidKkwtj7VlhXv2erEQYAsK9Mahy8m3QZfWW4FUYn06+OTIZQ==
-X-Received: by 2002:a05:6a21:99a6:b0:2bd:2798:7ae7 with SMTP id adf61e73a8af0-321e3edc8cbmr3372698637.31.1759294510242;
-        Tue, 30 Sep 2025 21:55:10 -0700 (PDT)
-Received: from jpkobryn-fedora-PF5CFKNC.lan ([73.222.117.172])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b5f2c1b7608sm1011996a12.5.2025.09.30.21.55.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Sep 2025 21:55:09 -0700 (PDT)
-From: JP Kobryn <inwardvessel@gmail.com>
-To: shakeel.butt@linux.dev,
-	mkoutny@suse.com,
-	yosryahmed@google.com,
-	hannes@cmpxchg.org,
-	tj@kernel.org,
-	akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH] memcg: introduce kfuncs for fetching memcg stats
-Date: Tue, 30 Sep 2025 21:54:56 -0700
-Message-ID: <20251001045456.313750-1-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1759295314; c=relaxed/simple;
+	bh=B4ee0mDnjMvWj0GmGzIeSMHHAkP8TQZ1uT6MvxjRfdE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KJpcwvk1OqvIIwY0dSWB/d9nUEk0Jnifl8UwINzNTuQkgcZRjhFZIAzbe9QJ7r6NQDZPKlFGGCSH+z45tcjKCjZyq7h1DTrGHF1JaQdRVS+KLtgG8BQaauIuJJ6iG8GQpio50nxoOQdDbOqZ84xKm9dNlw+b5DzmaqJSLX8yac0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=muuPLZqv; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <417a8038817ce69e438a59e6916dc04372a47593.camel@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759295300;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j/GS1Z8FKMYfUy5nzmiw7Y8FbV9B8BuD7gRV3M+4vJ4=;
+	b=muuPLZqv3D3f2kSkx/J01qFEGhnSM636NeCtZHYgYl05XJsOVf7grY3E6MYWEwoimEIipt
+	52YLkcu+Aal8zUahpJRYVK5FxS/uG2+yRJfz7XrqxLUFTIqIigUusYWzho6Wb5fm/vjvQz
+	kAhG5fhPUQzg7lEsy1T4kRJGRYB5G9c=
+Subject: Re: [PATCH v2] bpf: fix NULL pointer dereference in
+ print_reg_state()
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: KaFai Wan <kafai.wan@linux.dev>
+To: Brahmajit Das <listout@listout.xyz>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+ syzbot+d36d5ae81e1b0a53ef58@syzkaller.appspotmail.com, Andrii Nakryiko
+ <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf
+ <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eduard
+ <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, John Fastabend
+ <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, KP Singh
+ <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Song Liu
+ <song@kernel.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>, 
+ Yonghong Song <yonghong.song@linux.dev>
+Date: Wed, 01 Oct 2025 13:08:02 +0800
+In-Reply-To: <vgtxqzgqxtyfd3pzfngq4l43eeocpputr5syqstbnw2yibl6bv@3yep75dnifgp>
+References: <68d26227.a70a0220.1b52b.02a4.GAE@google.com>
+	 <20250923174738.1713751-1-listout@listout.xyz>
+	 <CAADnVQ+SkF2jL6NZLTF7ZKwNOfOtpMqr0ubjXpF1K0+EkHdJHw@mail.gmail.com>
+	 <qj5y7pjdx2f5alp7sfx2gepfylkk2bytiyeoiapyp3dpzwloyk@aljz7o77tt3m>
+	 <9051652cf548271da9c349758cbd70aaa3cee444.camel@linux.dev>
+	 <wz6god46aom7lfyuvhju67w47czdznzflec3ilqs6f7fpyf3di@k5wliusgqlut>
+	 <933a66f3e0e1f642ef53726abe617c4d138a91fa.camel@linux.dev>
+	 <5fjhzkvgvbpcm2vvqlxhgcobbkiwvo36aalj5lbqrfbznbpynf@jzokg4ba2mwp>
+	 <14a30aa593f8d8c018bf54439261a8f05182aa87.camel@linux.dev>
+	 <vgtxqzgqxtyfd3pzfngq4l43eeocpputr5syqstbnw2yibl6bv@3yep75dnifgp>
+Content-Type: multipart/mixed; boundary="=-6i2YP6NtZ9D5SofFgrUP"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-When reading cgroup memory.stat files there is significant work the kernel
-has to perform in string formatting the numeric data to text. Once a user
-mode program gets this text further work has to be done, converting the
-text back to numeric data. This work can be expensive for programs that
-periodically sample this data over a large enough fleet.
+--=-6i2YP6NtZ9D5SofFgrUP
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As an alternative to reading memory.stat, introduce new kfuncs to allow
-fetching specific memcg stats from within bpf cgroup iterator programs.
-This approach eliminates the conversion work done by both the kernel and
-user mode programs. Previously a program could open memory.stat and
-repeatedly read from the associated file descriptor (while seeking back to
-zero before each subsequent read). That action can now be replaced by
-setting up a link to the bpf program once in advance and then reusing it to
-invoke the cgroup iterator program each time a read is desired. An example
-program can be found here [0].
+On Tue, 2025-09-30 at 23:51 +0530, Brahmajit Das wrote:
+> On 26.09.2025 18:36, KaFai Wan wrote:
+> > On Fri, 2025-09-26 at 06:34 +0530, Brahmajit Das wrote:
+> > > On 25.09.2025 23:31, KaFai Wan wrote:
+> > > > On Wed, 2025-09-24 at 23:58 +0530, Brahmajit Das wrote:
+> > > > > On 25.09.2025 01:38, KaFai Wan wrote:
+> > > > > > On Wed, 2025-09-24 at 21:10 +0530, Brahmajit Das wrote:
+> > > > > > > On 24.09.2025 09:32, Alexei Starovoitov wrote:
+> > > > > > > > On Wed, Sep 24, 2025 at 1:43=E2=80=AFAM Brahmajit Das
+> > > > > > > > <listout@listout.xyz>
+> > > > > > > > wrote:
+> > > > > > > > >=20
+> > > > > > > > > Syzkaller reported a general protection fault due to a
+> > > > > > > > > NULL
+> > > > > > > > > pointer
+> > > > > > > > > dereference in print_reg_state() when accessing reg-
+> > > > > > > > > > map_ptr
+> > > > > > > > > without
+> > > > > > > > > checking if it is NULL.
+> > > > > > > > >=20
+> ...snip...
+> >=20
+> > You should add a Fixes label in the commit log and add selftest for it
+> > in V3.=C2=A0
+> > Fixes label is Fixes: aced132599b3 ("bpf: Add range tracking for
+> > BPF_NEG")
+> > For selftest you may check the test in verifier_value_illegal_alu.c and
+> > other files.=C2=A0=20
+> >=20
+> > The code in your next post would change the behavior of BPF_NEG and=20
+> > BPF_END, you can run the selftest to check that.
+> >=20
+>=20
+> KaFai, I'm quite new to kernel development. I'm been trying to write a
+> selftest for this unfortunately been having a hard time. I would really
+> appreciate some help. For now I tried to create on from the initial test
+> you used to verify this bug i.e. r0 -=3D r0.
+>=20
+> I have tried testing my changes via sending a pull request on the
+> kernel-patches/bpf repository, but seems like it's failing.
+> My pull request: https://github.com/kernel-patches/bpf/pull/9900
+>=20
 
-There is a significant perf benefit when using this approach. In terms of
-elapsed time, the kfuncs allow a bpf cgroup iterator program to outperform
-the traditional file reading method, saving almost 80% of the time spent in
-kernel.
+The attachment is the patch for selftest, you can apply it.
 
-control: elapsed time
-real    0m14.421s
-user    0m0.183s
-sys     0m14.184s
+The patch#1 in your PR, Add the Oops call trace or the Closes label in comm=
+it
+log could be better.=20
 
-experiment: elapsed time
-real    0m3.250s
-user    0m0.225s
-sys     0m2.916s
+Closes: https://lore.kernel.org/all/68d26227.a70a0220.1b52b.02a4.GAE@google=
+.com/
+--=20
+Thanks,
+KaFai
 
-control: perf data
-22.24% a.out [kernel.kallsyms] [k] vsnprintf
-17.35% a.out [kernel.kallsyms] [k] format_decode
-12.60% a.out [kernel.kallsyms] [k] string
-12.12% a.out [kernel.kallsyms] [k] number
- 8.06% a.out [kernel.kallsyms] [k] strlen
- 5.21% a.out [kernel.kallsyms] [k] memcpy_orig
- 4.26% a.out [kernel.kallsyms] [k] seq_buf_printf
- 4.19% a.out [kernel.kallsyms] [k] memory_stat_format
- 2.53% a.out [kernel.kallsyms] [k] widen_string
- 1.62% a.out [kernel.kallsyms] [k] put_dec_trunc8
- 0.99% a.out [kernel.kallsyms] [k] put_dec_full8
- 0.72% a.out [kernel.kallsyms] [k] put_dec
- 0.70% a.out [kernel.kallsyms] [k] memcpy
- 0.60% a.out [kernel.kallsyms] [k] mutex_lock
- 0.59% a.out [kernel.kallsyms] [k] entry_SYSCALL_64
+--=-6i2YP6NtZ9D5SofFgrUP
+Content-Disposition: attachment;
+	filename*0=0001-selftests-bpf-Add-test-for-BPF_NEG-alu-on-CONST_PTR_.pat;
+	filename*1=ch
+Content-Type: text/x-patch;
+	name="0001-selftests-bpf-Add-test-for-BPF_NEG-alu-on-CONST_PTR_.patch";
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-experiment: perf data
-8.17% memcgstat bpf_prog_c6d320d8e5cfb560_query [k] bpf_prog_c6d320d8e5cfb560_query
-8.03% memcgstat [kernel.kallsyms] [k] memcg_node_stat_fetch
-5.21% memcgstat [kernel.kallsyms] [k] __memcg_slab_post_alloc_hook
-3.87% memcgstat [kernel.kallsyms] [k] _raw_spin_lock
-3.01% memcgstat [kernel.kallsyms] [k] entry_SYSRETQ_unsafe_stack
-2.49% memcgstat [kernel.kallsyms] [k] memcg_vm_event_fetch
-2.47% memcgstat [kernel.kallsyms] [k] __memcg_slab_free_hook
-2.34% memcgstat [kernel.kallsyms] [k] kmem_cache_free
-2.32% memcgstat [kernel.kallsyms] [k] entry_SYSCALL_64
-1.92% memcgstat [kernel.kallsyms] [k] mutex_lock
+RnJvbSAyY2I3ZmU1ZDRjNzA3ZDhmNTY2MzgyOWJhY2YyNjA2NjQ4YmUxODVhIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYUZhaSBXYW4gPGthZmFpLndhbkBsaW51eC5kZXY+CkRhdGU6
+IFdlZCwgMSBPY3QgMjAyNSAxMTo1Njo1MSArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIHNlbGZ0ZXN0
+cy9icGY6IEFkZCB0ZXN0IGZvciBCUEZfTkVHIGFsdSBvbiBDT05TVF9QVFJfVE9fTUFQCgpGcm9t
+OiBLYUZhaSBXYW4gPGthZmFpLndhbkBsaW51eC5kZXY+CgpBZGQgYSB0ZXN0IGNhc2UgZm9yIEJQ
+Rl9ORUcgb3BlcmF0aW9uIG9uIENPTlNUX1BUUl9UT19NQVAuIFRlc3RzIGlmCkJQRl9ORUcgb3Bl
+cmF0aW9uIG9uIG1hcF9wdHIgaXMgcmVqZWN0ZWQgaW4gdW5wcml2aWxlZ2VkIG1vZGUgYW5kIGlz
+IGEKc2NhbGFyIHZhbHVlIGFuZCBkbyBub3QgdHJpZ2dlciBPb3BzIGluIHByaXZpbGVnZWQgbW9k
+ZS4KClNpZ25lZC1vZmYtYnk6IEthRmFpIFdhbiA8a2FmYWkud2FuQGxpbnV4LmRldj4KLS0tCiAu
+Li4vYnBmL3Byb2dzL3ZlcmlmaWVyX3ZhbHVlX2lsbGVnYWxfYWx1LmMgICAgIHwgMTggKysrKysr
+KysrKysrKysrKysrCiAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdp
+dCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy92ZXJpZmllcl92YWx1ZV9pbGxl
+Z2FsX2FsdS5jIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3ZlcmlmaWVyX3Zh
+bHVlX2lsbGVnYWxfYWx1LmMKaW5kZXggYTk5Yjg2YzUwNmY3Li5hODUwZGRlOTVkMGUgMTAwNjQ0
+Ci0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy92ZXJpZmllcl92YWx1ZV9p
+bGxlZ2FsX2FsdS5jCisrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy92ZXJp
+Zmllcl92YWx1ZV9pbGxlZ2FsX2FsdS5jCkBAIC0xODIsNiArMTgyLDI0IEBAIF9fbmFrZWQgdm9p
+ZCBtYXBfcHRyX2lsbGVnYWxfYWx1X29wKHZvaWQpCiAJOiBfX2Nsb2JiZXJfYWxsKTsKIH0KIAor
+U0VDKCJzb2NrZXQiKQorX19kZXNjcmlwdGlvbigibWFwX3B0ciBpbGxlZ2FsIGFsdSBvcCwgbWFw
+X3B0ciA9IC1tYXBfcHRyIikKK19fZmFpbHVyZSBfX21zZygiUjAgaW52YWxpZCBtZW0gYWNjZXNz
+ICdzY2FsYXInIikKK19fZmFpbHVyZV91bnByaXYgX19tc2dfdW5wcml2KCJSMCBwb2ludGVyIGFy
+aXRobWV0aWMgcHJvaGliaXRlZCIpCitfX2ZsYWcoQlBGX0ZfQU5ZX0FMSUdOTUVOVCkKK19fbmFr
+ZWQgdm9pZCBtYXBfcHRyX2lsbGVnYWxfYWx1X29wKHZvaWQpCit7CisJYXNtIHZvbGF0aWxlICgi
+CQkJCQlcCisJcjAgPSAlW21hcF9oYXNoXzQ4Yl0gbGw7CQkJXAorCXIwID0gLXIwOwkJCQkJXAor
+CXIxID0gMjI7CQkJCQlcCisJKih1NjQqKShyMCArIDApID0gcjE7CQkJCVwKKwlleGl0OwkJCQkJ
+CVwKKyIJOgorCTogX19pbW1fYWRkcihtYXBfaGFzaF80OGIpCisJOiBfX2Nsb2JiZXJfYWxsKTsK
+K30KKwogU0VDKCJmbG93X2Rpc3NlY3RvciIpCiBfX2Rlc2NyaXB0aW9uKCJmbG93X2tleXMgaWxs
+ZWdhbCBhbHUgb3Agd2l0aCB2YXJpYWJsZSBvZmZzZXQiKQogX19mYWlsdXJlIF9fbXNnKCJSNyBw
+b2ludGVyIGFyaXRobWV0aWMgb24gZmxvd19rZXlzIHByb2hpYml0ZWQiKQotLSAKMi40My4wCgo=
 
-The overhead of string formatting and text conversion on the control side
-is eliminated on the experimental side since the values are read directly
-through shared memory with the bpf program. The kfunc/bpf approach also
-provides flexibility in how this numeric data could be delivered to a user
-mode program. It is possible to use a struct for example, with select
-memory stat fields instead of an array. This opens up opportunities for
-custom serialization as well since it is totally up to the bpf programmer
-on how to lay out the data.
 
-The patch also includes a kfunc for flushing stats. This is not required
-for fetching stats, since the kernel periodically flushes memcg stats every
-2s. It is up to the programmer if they want the very latest stats or not.
-
-[0] https://gist.github.com/inwardvessel/416d629d6930e22954edb094b4e23347
-    https://gist.github.com/inwardvessel/28e0a9c8bf51ba07fa8516bceeb25669
-    https://gist.github.com/inwardvessel/b05e1b9ea0f766f4ad78dad178c49703
-
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
----
- mm/memcontrol.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8dd7fbed5a94..aa8cbf883d71 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -870,6 +870,73 @@ unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
- }
- #endif
- 
-+static inline struct mem_cgroup *memcg_from_cgroup(struct cgroup *cgrp)
-+{
-+	return cgrp ? mem_cgroup_from_css(cgrp->subsys[memory_cgrp_id]) : NULL;
-+}
-+
-+__bpf_kfunc static void memcg_flush_stats(struct cgroup *cgrp)
-+{
-+	struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
-+
-+	if (!memcg)
-+		return;
-+
-+	mem_cgroup_flush_stats(memcg);
-+}
-+
-+__bpf_kfunc static unsigned long memcg_node_stat_fetch(struct cgroup *cgrp,
-+		enum node_stat_item item)
-+{
-+	struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
-+
-+	if (!memcg)
-+		return 0;
-+
-+	return memcg_page_state_output(memcg, item);
-+}
-+
-+__bpf_kfunc static unsigned long memcg_stat_fetch(struct cgroup *cgrp,
-+		enum memcg_stat_item item)
-+{
-+	struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
-+
-+	if (!memcg)
-+		return 0;
-+
-+	return memcg_page_state_output(memcg, item);
-+}
-+
-+__bpf_kfunc static unsigned long memcg_vm_event_fetch(struct cgroup *cgrp,
-+		enum vm_event_item item)
-+{
-+	struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
-+
-+	if (!memcg)
-+		return 0;
-+
-+	return memcg_events(memcg, item);
-+}
-+
-+BTF_KFUNCS_START(bpf_memcontrol_kfunc_ids)
-+BTF_ID_FLAGS(func, memcg_flush_stats)
-+BTF_ID_FLAGS(func, memcg_node_stat_fetch)
-+BTF_ID_FLAGS(func, memcg_stat_fetch)
-+BTF_ID_FLAGS(func, memcg_vm_event_fetch)
-+BTF_KFUNCS_END(bpf_memcontrol_kfunc_ids)
-+
-+static const struct btf_kfunc_id_set bpf_memcontrol_kfunc_set = {
-+	.owner          = THIS_MODULE,
-+	.set            = &bpf_memcontrol_kfunc_ids,
-+};
-+
-+static int __init bpf_memcontrol_kfunc_init(void)
-+{
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-+					 &bpf_memcontrol_kfunc_set);
-+}
-+late_initcall(bpf_memcontrol_kfunc_init);
-+
- struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p)
- {
- 	/*
--- 
-2.47.3
-
+--=-6i2YP6NtZ9D5SofFgrUP--
 
