@@ -1,115 +1,79 @@
-Return-Path: <bpf+bounces-70261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A957BB59DC
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 01:37:53 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC86BB5A3C
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 01:52:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3F4D1AE1477
-	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 23:38:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CC2BC4EA5B6
+	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 23:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165EC2BEC53;
-	Thu,  2 Oct 2025 23:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185B22C11E4;
+	Thu,  2 Oct 2025 23:51:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mggcXN8i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HhuPB5dM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF4B254B1B
-	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 23:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C992C08D1;
+	Thu,  2 Oct 2025 23:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759448264; cv=none; b=s/tf7ICQuwb/LM0ympehVlxjueFwSwhIf4+lQOlSsEmE+fFSQNx+iFDg6zdoJauOqOdRYTwi1eTTiEeUIXln44Fj2WdnbWVStfFNO0vi6MJ26rn6UqWkxiSHtgWCekHURz1e8HVcZQXveBBEAixLK16Qqcs9FoM+oFbeI9uYJGE=
+	t=1759449098; cv=none; b=MCSySroZDGTEokk+yxnEP7f0rEw8Ach08vBkupmJjKGG2765NLZG6bmT8Q6fdeElAxZq2YOQNMmRCXt/ITFZfq/KbQK6lI4gSjTk5ShMq2YLoTtJnfEYuuZQySa96+R35nqTnbrikMv1I9EBVO68HVaWpD43fhJY8+b1mgFDcRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759448264; c=relaxed/simple;
-	bh=a4iHp1m1jUq01D2H8VN4n08fE9MhQ/vRj7/00NmGVWA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Hn3QeWNpYV491aCKC449oEciMcyFiRxKJTkG/Sjx55xwDGbgoNHik7xwaNZSv8EWCvQ5BOZRa6+yRJYQhrPx7FPYPK1JQZFzcKqA5ah0X1+hCZYPRQIIFMKPKUnLMHmCwHqBNRwRNedJucwBlatLoDXoi0LoHsW3u9Qoukw+B0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mggcXN8i; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-4256866958bso54016f8f.1
-        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 16:37:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759448261; x=1760053061; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pYyRjvvcClZsqK4bgOK/mSlQ3JwKmg6n0DCRi23dNek=;
-        b=mggcXN8iUgsoPa7cHGX0eI6ZYyaZrOdrl36ZDU8CpUOwQTkHTR77sfBGvFNbkMjY4q
-         2a3bAzHnjZoi/ebYKwnvKTUaBfySnOsNQOGjNUX3nn/uOMsTGMyh+dD63CarqyqrLDgz
-         zMoQipnZotf9ZmQOzWcW8J6L/NDLmFBtaU3WZqxBct8SduU/rHZYfvbpqSFZHKnnSO2p
-         pNtaNkqGqzSaDiQhX797jDPiDsSUhWeWcriDsz9vkYTd9mpO9jbwG/LHrdD2WThdY/sk
-         AlYJbvR8tEgIP+tSaLe+xDehWB1qraZGZPeWfkOMNBfWItfnpmamdwPHy/D6tfkEjSAY
-         fV8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759448261; x=1760053061;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pYyRjvvcClZsqK4bgOK/mSlQ3JwKmg6n0DCRi23dNek=;
-        b=iuPiR/zTnxI01zunaspOa2ytf/j8oIpUJV44i/jLA0mEv9oEaMAyROuKA5AQ+lYDDm
-         js+Jy4bVJ7OZbqhfLL3XPvH+bMXaIiUoES8eJQqjJIvN+eNBPhMdg7P3AhfrUpDLPMSz
-         R4OWsugwUYwJDkfAW2lAFTLnC7HW8deMNPNEx8DDqVVsoBMbmRertWAtcOZtRTz06iRY
-         UaGaX7tbU3sKy0loN1ouAzDqeNDc5pVDGaK827HrpsdHSpWAdvvBY2VzhWX+EGZEoHGY
-         TQo//qtlZpb9509vxel1iXxltEjwUOtlERNg6bMw+NnSu7yno0vmlGIwyDySGaJD9A+u
-         Wz7w==
-X-Gm-Message-State: AOJu0Yy7JK3YrNpK813pRgN4R2aFUYbOBtW2IfQwxowP3nIylav03jYX
-	cxL8mllMGHNUmobTVAEVS2Le9e3x0UJ2eUEYiKcA9P/CA+ntvKg2yNUafl5+FAZOfhawYWofgXF
-	3aKyQwAqYUe6BIrD8tEfdkIbLTibnz1JRiQ==
-X-Gm-Gg: ASbGncuhCDhn/iwmW5vLcstdXI1VvLOkbLTdE13EHLkxjVpkjl7NwMX0/svVnnfO3XR
-	/LD5YvzNKiSkb5sIo+lhrNmShNXLSuvB3LficIN2xp8Xo4nLS+q3aPQZq6mINZCHUdzkj/yewVH
-	3wb+g5VDozwhzlPYLq3zyzJaTp4JRN5JhrDGGUOEjkVpWqJvQdx9e74DkXk5vskJ0Kowkf70Rnc
-	TnFlF0opFD4HU1IKxiGqla7Cz1wxvTK0lU29x/WF2g0ypaseBlGXcsjCc8b
-X-Google-Smtp-Source: AGHT+IHb95C9UaqPZtGL0P5fKptKfIz8ZAhVPywIiTLzHIHUdC8qi4d7wOijDm27RI3QjHtP/ObVzgdzJG1YjW47LZY=
-X-Received: by 2002:a05:6000:230c:b0:3ec:3d75:1330 with SMTP id
- ffacd0b85a97d-425671b037amr505734f8f.52.1759448261224; Thu, 02 Oct 2025
- 16:37:41 -0700 (PDT)
+	s=arc-20240116; t=1759449098; c=relaxed/simple;
+	bh=agbz1y5G9uuwFk/Z2DZ7stvM+ukx0jV0WZbYDrD8RDk=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=dK9GWt2DVKjw8Idz0a4ZqZBEXMM5OHNjL/YIvAZzSk++RUZsWIuw/nujW94hYoeHj5JIBCBnYOGCdYhLbGeeQ0HZBh9ZFTC9tYKOzHuD4C33MKm80sI4IsH1Sj1THhIGWB5+T58o48FZTW/JmsLVTJwtoyIQp7RIlQnLsxczkO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HhuPB5dM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67F3DC4CEFA;
+	Thu,  2 Oct 2025 23:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759449098;
+	bh=agbz1y5G9uuwFk/Z2DZ7stvM+ukx0jV0WZbYDrD8RDk=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=HhuPB5dMSWOtFNMv+Ef8ZcqU66crEL/rbf6wgE4cC9HbQB7Sel1pEW45ovugJT7+I
+	 V7y7S/vKhIA/eznuZ50OhNGvxBbEiPwukkVJ19oKsCiQ2oYCT8Yj5vKs5JbSsS0aWR
+	 /do8FZXG4n5h9M8akS+4kx4/qr69XP6+FJpy+vXjAD6bWQ1SAhpEuFisoKXZ1zCEHg
+	 z2fl6JUL4nmME0Pf96TJ7Z068i2QHI2TqNU1pr3mErKXFJCjY6Dhifdbek62FDBGcl
+	 A93LbLn9rsOHDGagIUQtItZihWG3gVHUXyfXnnYnAium/l0aAlCaLD+pTLk4eCISUn
+	 BrGA6OONSDmCQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 71FF139D0C1A;
+	Thu,  2 Oct 2025 23:51:31 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for v6.18
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20251001131156.27805-1-pabeni@redhat.com>
+References: <20251001131156.27805-1-pabeni@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20251001131156.27805-1-pabeni@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-6.18
+X-PR-Tracked-Commit-Id: f1455695d2d99894b65db233877acac9a0e120b9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 07fdad3a93756b872da7b53647715c48d0f4a2d0
+Message-Id: <175944909005.3515818.5407831437099985687.pr-tracker-bot@kernel.org>
+Date: Thu, 02 Oct 2025 23:51:30 +0000
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: torvalds@linux-foundation.org, kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20251002225356.1505480-1-ameryhung@gmail.com> <20251002225356.1505480-7-ameryhung@gmail.com>
-In-Reply-To: <20251002225356.1505480-7-ameryhung@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 2 Oct 2025 16:37:30 -0700
-X-Gm-Features: AS18NWBzOrTlE6SWnP9vH5g1d0_y8ZQPBBlzY0EtKr4sLtLnv87FvFw_6jM2fys
-Message-ID: <CAADnVQ+X1Otu+hrBeCq6Zr9vAaH5vGU42s6jLdBiDiLQcwpj4Q@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 06/12] bpf: Change local_storage->lock and
- b->lock to rqspinlock
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Martin KaFai Lau <martin.lau@kernel.org>, KP Singh <kpsingh@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 2, 2025 at 3:54=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wro=
-te:
->
->         bpf_selem_free_list(&old_selem_free_list, false);
->         if (alloc_selem) {
->                 mem_uncharge(smap, owner, smap->elem_size);
-> @@ -791,7 +812,7 @@ void bpf_local_storage_destroy(struct bpf_local_stora=
-ge *local_storage)
->          * when unlinking elem from the local_storage->list and
->          * the map's bucket->list.
->          */
-> -       raw_spin_lock_irqsave(&local_storage->lock, flags);
-> +       while (raw_res_spin_lock_irqsave(&local_storage->lock, flags));
+The pull request you sent on Wed,  1 Oct 2025 15:11:56 +0200:
 
-This pattern and other while(foo) doesn't make sense to me.
-res_spin_lock will fail only on deadlock or timeout.
-We should not spin, since retry will likely produce the same
-result. So the above pattern just enters into infinite spin.
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-6.18
 
-If it should never fail in practice then pr_warn_once and goto out
-leaking memory. Better yet defer to irq_work and cleanup there.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/07fdad3a93756b872da7b53647715c48d0f4a2d0
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
