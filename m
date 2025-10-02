@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-70257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EF8BBB5937
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 00:56:02 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 082DDBB5931
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 00:55:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8251519C7629
-	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 22:56:05 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E58324E1B4B
+	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 22:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DC62C21D5;
-	Thu,  2 Oct 2025 22:54:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAD2286402;
+	Thu,  2 Oct 2025 22:54:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F7OY1Px2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g4kJ0Q28"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417DB2C1583
-	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 22:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548E12C21DC
+	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 22:54:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759445650; cv=none; b=cS+c6ztChwxbc4j/kqwdpwtzMX6Z4hn+PFO6S2q4/eyYgcgOZurk3UQkDlzL0yxti/mNGtfFGGOgVKk+y/+1fPhfyggLlHLMa2CMjJrdble+1kcbV3Asq1nP4pPZlclPPXwNCCgUGZ1yt3YE5wz6CJAPaLcxgJFiCDcsDu5ZEzo=
+	t=1759445652; cv=none; b=j79SjoGD83MwdJS8JpoyuJcw7k+sPSphAMjns2BItGHlh/L7i1Wgo5qRqwGOgSorZCCd7QXFljhY0s6AYWMreYlhWRbPszgyEFh+KZvx6ptvOqRehcAExJiKugJakeUyoY90kRnqZ/P79Ewc7CSSJ8RM1kc8IVzMhjCR+/9rZqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759445650; c=relaxed/simple;
-	bh=ccp3EztJlEJzQLmiEu1DIzpJsXT5LIfKYR2G67v0qAc=;
+	s=arc-20240116; t=1759445652; c=relaxed/simple;
+	bh=exa/YP9fyICJ77EYEDHbnzjy54eXhqjQuSP7ACG5gVg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Njk9YEHZjlc8Zzg2Wzcy+gIuMmGM5t8U+6OUVYLuCviASrbr3mupajSZ+zNirNQOf9XsoKb1dIcrDHIGY3LBUY4w+mJS7SLYgQBPiliJb1YKkSJXMubQcJy0o0uKWinmXlnahH4EzPL6lhoecRCpyk5offRNK1uDh/dDe5FvQu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F7OY1Px2; arc=none smtp.client-ip=209.85.210.182
+	 MIME-Version; b=PeqQOPGTfJ1MHzjOjN/uQ1TjPEqjmOwD9cvcxsDnt9MUv1lEONyYNySVipl7JwVHbAtcpx2BAcV4bxaW1/ETJM/g4zqLXsn8lZ+E/Mv6jB4EFMH2OtFJx+PEPAByyfQUOOe3IQdmsMY4pUGUkdMBGQIZ0s+4v+SgIjUKvB3BWhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g4kJ0Q28; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7811fa91774so1368727b3a.0
-        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 15:54:08 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-27edcbcd158so19970745ad.3
+        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 15:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759445647; x=1760050447; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759445648; x=1760050448; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6dhstHRDqQgEPx9WkzXkwbtwT/zsNcRbIl8bglWWgQI=;
-        b=F7OY1Px2WNY4hmzwxTbcjClF/0oKKT4vPRtII9id1bGPK9ZpYxhKxF099i5iZ75+bg
-         pIvJhCUzmOfLGZhhwPhJTP7gtBkz7u/oNurtTyi1VYjarNKajgzLi56ECPUcoDarKCBx
-         JjywmTPYB9X4Ipwt5ZsBL1BK4FD0WLTLnhKcd5rObHcNRs7A2r7vsgTQGjqMwZA2ZriG
-         C6Yyzrz0Yi7VSMbIRd1oVuGH7o3oSrOsdSOQ1DPentEL4E0RCe9ngfvUgZqTaG48WZ3t
-         c8slFyc3twvaMEz8wBD8MGgzasbcE51ZkuyzU+ZDMaG/AeDhADqtFXzMynwQWWMv5/iU
-         OkZQ==
+        bh=uRf+SRIGQU8su06GPIQHkqNg5txYSi+urlSE/fCNWGY=;
+        b=g4kJ0Q28UKOE+u8NTSGJYLncLcOQ8E2/630/PhDirRnPmksxKInPb1JsOkaBVuxBM8
+         +6AsFLkqee/GAC9gjipZ0QvOKiaVqT9J2geHwMYKktdMC5DYeQAOtPV2GUalDOeUpEIq
+         Ry9HdpeoufB0Uv3MTFPkC0aAgCq8Kwq0xwqUAo1df2jTr5siILQXuu8fH3sVXq5xEunv
+         NoVGCapbxJPP595+KmE1t7+cTZ98sXl1oj5HuEToBWH60SS4UsFhKlb9KIdQ+um8+Rw6
+         vcoVGMs1G/et5xAG7sV+YxrpPSI+rSyVFLHthHc8I0Yg2ZDLOqsolj+HgdYvVWtJF1Mt
+         D5rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759445647; x=1760050447;
+        d=1e100.net; s=20230601; t=1759445648; x=1760050448;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6dhstHRDqQgEPx9WkzXkwbtwT/zsNcRbIl8bglWWgQI=;
-        b=ROjtoN6IlrNOz6peMPbSo7DS6D/ebGoS3L7q60kUHFEPEaL4Y/3uarERR61ZKMCT3H
-         Fp0QZbHFd3tEENX0Dx+r2Ev623ljIqbmFgv9qCzqR7SLLb3WpgNmGQ2CvEPxF7QZdrxH
-         5xQDnXmTDiz0q9JuQUmW9xgLSoqtmHI1vZI6v3UXyy45AI/yg1zw4vGmQPcBkxZT96Iv
-         e8AMwPFOCqJtXsodMQfgi5d6Wy4KuZbSpmB9ftQ2IiGp+Wfj0Brw1AChFWrl9K2z0UNI
-         dRLvb2DfNVnci7mPsuPIcxMJkbFuoiPBMTvnCXQ+Bh/qSsDg7OQmgx3BOTOjT1mZL9WT
-         8lUA==
-X-Gm-Message-State: AOJu0YwLYyj/uzH4XseNNZg/78AF32/Nbj7L4Tba4sVT4kk7NUDWkTRo
-	QC6hkJQUBrpJCZBcevsxwoLMWVAd6ph23UYICQ9beDOFtnK5cqUQRgngstpXvg==
-X-Gm-Gg: ASbGncuiyVlvLqOVkEySOuWiNArRtobM0IvOKo2g9V7P68rSAmcBZxX5uU8It8gTCB1
-	FdmQgt/Wu4eUa23HYYtk1NsaAyuwGWo3z8M3cdLi2ul8d27Rjqx128EDjxrDUULdYWMILYsqUGV
-	feUt07TcvvPXfe6I0ZZijb3wuTMAajmp4S2do8WjWctQ7dQ6OaheIT00NIU/TyzR/8tCWw7S3WS
-	kYIJDrdsHBtTvYF7IRNjNd73I22Pey2sB6hDS/6hqX/nwwyltrxfFDjuklMIq7wnkdnxiR50r8d
-	T+Y60fV52m//cA+kzvlwRGmwwiPmyTPeZfpVDnpWftzq5Z5HFEk9Jm8vaXj6IY3jPxaICtXNikT
-	Y0k+6DB6yHeFcSjMKoybgB346ayY0+YIDEIrzRA==
-X-Google-Smtp-Source: AGHT+IGv6A+Jvq5qXGGZlhBiT6kH3Hocefmej6BKU9IfabM1utn/i4BDA8eKXllX2J8OtuMkFc0U3A==
-X-Received: by 2002:a05:6a20:2587:b0:249:ba7b:e361 with SMTP id adf61e73a8af0-32b620e88dcmr1283789637.49.1759445647527;
-        Thu, 02 Oct 2025 15:54:07 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:54::])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-78b01fb281bsm3117137b3a.37.2025.10.02.15.54.07
+        bh=uRf+SRIGQU8su06GPIQHkqNg5txYSi+urlSE/fCNWGY=;
+        b=R1zXiyPYqVpfB7oFXPu/Oqx9WQsRlRcnKrk3uHoEX3yEI8kCG+hMfCnIzRgzPgC5u1
+         FHWVlF8q6jolS/Mf+bH4+SLReRO7oLAt0SkALOepj3b/uN6/f5BxQvbnf5Wxq+JG7BW6
+         Az7WsFFoR9vIf8YuRfbEhWsL29ItZE8No9vLYbg2Nlf+5X0OjH8SoaEYutw1QxFA9B6C
+         7yXJL0gAuGTk6+RGO6B2IvcZHJwCeBxpU2Em3PwjOG7L+f2L9Xr0QFN1Y/YuzejaLRkP
+         N3ZRMu6cfBzDZmUr79HOw4opdtqRs6WJcQ4WuEWl7p0n9GGpUKUHR4Pj0dIHQqHH6sM3
+         oATw==
+X-Gm-Message-State: AOJu0YyWtXZdDAoNaoNEMArW4T4fO2ivFInDluE+Sf+yr/YFNiUZkZCh
+	7S3c9idpuScReHZWBZnXMZ/YbXxh/Ph9EHj1LRyIEqMvPOb8ugSj4YWV7w7bdw==
+X-Gm-Gg: ASbGnctxivJaWmnGfgRUHLuIBPN+iAiGAG7uJoRSJYp6n5SnWhHR+rVMyNgvnjb+rsN
+	wHH/nBQboHnp2r0y3Pw97ckEGhcowA5F3nD7pHct0dBcRNj2WgA5XQCM+s1qX09/iXQQ4hBP9D3
+	OHMlv5U3zhGsKNTRIlzippLEC5+kw8muLW7lXVCYZVvVO9z/2FhQ1whejtdKB0TY39dvuLo3pEm
+	+Nmp6WaBsFez7MOETKBYR4gp4a0pt8JnSqNdJlnLz3U0M6zC+kNqatPGfJ8ILslJbU1gX445ieA
+	t4Kc4iG9PxvNkgZVTWMoxJI1twt37s4c1N9J0aoMq736eqKY22UFEPgnaT7Svzp3NKe6wMy8Jm/
+	8My6uFXBVQOqamvXSxIGmrZLqC8vS542Ew/kGig==
+X-Google-Smtp-Source: AGHT+IF6X05WN5IpwEmN95+3RykBUaI/cu06lJOa928MKQCsJfqX3kDVxlPrOL7+Fwsx/f40n9Bx2w==
+X-Received: by 2002:a17:902:c94c:b0:269:7c21:f3f8 with SMTP id d9443c01a7336-28e9a5f7246mr11314725ad.39.1759445648430;
+        Thu, 02 Oct 2025 15:54:08 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:74::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-28e8d1d5635sm30716655ad.102.2025.10.02.15.54.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Oct 2025 15:54:07 -0700 (PDT)
+        Thu, 02 Oct 2025 15:54:08 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -86,9 +86,9 @@ Cc: netdev@vger.kernel.org,
 	haoluo@google.com,
 	ameryhung@gmail.com,
 	kernel-team@meta.com
-Subject: [RFC PATCH bpf-next v2 11/12] selftests/bpf: Remove test_task_storage_map_stress_lookup
-Date: Thu,  2 Oct 2025 15:53:50 -0700
-Message-ID: <20251002225356.1505480-12-ameryhung@gmail.com>
+Subject: [RFC PATCH bpf-next v2 12/12] selftests/bpf: Choose another percpu variable in bpf for btf_dump test
+Date: Thu,  2 Oct 2025 15:53:51 -0700
+Message-ID: <20251002225356.1505480-13-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251002225356.1505480-1-ameryhung@gmail.com>
 References: <20251002225356.1505480-1-ameryhung@gmail.com>
@@ -100,196 +100,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Remove a test in test_maps that checks if the updating of the percpu
-counter in task local storage map is preemption safe as the percpu
-counter is now removed.
+bpf_cgrp_storage_busy has been removed. Use bpf_bprintf_nest_level
+instead. This percpu variable is also in the bpf subsystem so that
+if it is removed in the future, BPF-CI will catch this type of CI-
+breaking change.
 
 Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
- .../bpf/map_tests/task_storage_map.c          | 128 ------------------
- .../bpf/progs/read_bpf_task_storage_busy.c    |  38 ------
- 2 files changed, 166 deletions(-)
- delete mode 100644 tools/testing/selftests/bpf/map_tests/task_storage_map.c
- delete mode 100644 tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
+ tools/testing/selftests/bpf/prog_tests/btf_dump.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/map_tests/task_storage_map.c b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
-deleted file mode 100644
-index a4121d2248ac..000000000000
---- a/tools/testing/selftests/bpf/map_tests/task_storage_map.c
-+++ /dev/null
-@@ -1,128 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
--#define _GNU_SOURCE
--#include <sched.h>
--#include <unistd.h>
--#include <stdlib.h>
--#include <stdbool.h>
--#include <errno.h>
--#include <string.h>
--#include <pthread.h>
--
--#include <bpf/bpf.h>
--#include <bpf/libbpf.h>
--
--#include "bpf_util.h"
--#include "test_maps.h"
--#include "task_local_storage_helpers.h"
--#include "read_bpf_task_storage_busy.skel.h"
--
--struct lookup_ctx {
--	bool start;
--	bool stop;
--	int pid_fd;
--	int map_fd;
--	int loop;
--};
--
--static void *lookup_fn(void *arg)
--{
--	struct lookup_ctx *ctx = arg;
--	long value;
--	int i = 0;
--
--	while (!ctx->start)
--		usleep(1);
--
--	while (!ctx->stop && i++ < ctx->loop)
--		bpf_map_lookup_elem(ctx->map_fd, &ctx->pid_fd, &value);
--	return NULL;
--}
--
--static void abort_lookup(struct lookup_ctx *ctx, pthread_t *tids, unsigned int nr)
--{
--	unsigned int i;
--
--	ctx->stop = true;
--	ctx->start = true;
--	for (i = 0; i < nr; i++)
--		pthread_join(tids[i], NULL);
--}
--
--void test_task_storage_map_stress_lookup(void)
--{
--#define MAX_NR_THREAD 4096
--	unsigned int i, nr = 256, loop = 8192, cpu = 0;
--	struct read_bpf_task_storage_busy *skel;
--	pthread_t tids[MAX_NR_THREAD];
--	struct lookup_ctx ctx;
--	cpu_set_t old, new;
--	const char *cfg;
--	int err;
--
--	cfg = getenv("TASK_STORAGE_MAP_NR_THREAD");
--	if (cfg) {
--		nr = atoi(cfg);
--		if (nr > MAX_NR_THREAD)
--			nr = MAX_NR_THREAD;
--	}
--	cfg = getenv("TASK_STORAGE_MAP_NR_LOOP");
--	if (cfg)
--		loop = atoi(cfg);
--	cfg = getenv("TASK_STORAGE_MAP_PIN_CPU");
--	if (cfg)
--		cpu = atoi(cfg);
--
--	skel = read_bpf_task_storage_busy__open_and_load();
--	err = libbpf_get_error(skel);
--	CHECK(err, "open_and_load", "error %d\n", err);
--
--	/* Only for a fully preemptible kernel */
--	if (!skel->kconfig->CONFIG_PREEMPTION) {
--		printf("%s SKIP (no CONFIG_PREEMPTION)\n", __func__);
--		read_bpf_task_storage_busy__destroy(skel);
--		skips++;
--		return;
--	}
--
--	/* Save the old affinity setting */
--	sched_getaffinity(getpid(), sizeof(old), &old);
--
--	/* Pinned on a specific CPU */
--	CPU_ZERO(&new);
--	CPU_SET(cpu, &new);
--	sched_setaffinity(getpid(), sizeof(new), &new);
--
--	ctx.start = false;
--	ctx.stop = false;
--	ctx.pid_fd = sys_pidfd_open(getpid(), 0);
--	ctx.map_fd = bpf_map__fd(skel->maps.task);
--	ctx.loop = loop;
--	for (i = 0; i < nr; i++) {
--		err = pthread_create(&tids[i], NULL, lookup_fn, &ctx);
--		if (err) {
--			abort_lookup(&ctx, tids, i);
--			CHECK(err, "pthread_create", "error %d\n", err);
--			goto out;
--		}
--	}
--
--	ctx.start = true;
--	for (i = 0; i < nr; i++)
--		pthread_join(tids[i], NULL);
--
--	skel->bss->pid = getpid();
--	err = read_bpf_task_storage_busy__attach(skel);
--	CHECK(err, "attach", "error %d\n", err);
--
--	/* Trigger program */
--	sys_gettid();
--	skel->bss->pid = 0;
--
--	CHECK(skel->bss->busy != 0, "bad bpf_task_storage_busy", "got %d\n", skel->bss->busy);
--out:
--	read_bpf_task_storage_busy__destroy(skel);
--	/* Restore affinity setting */
--	sched_setaffinity(getpid(), sizeof(old), &old);
--	printf("%s:PASS\n", __func__);
--}
-diff --git a/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c b/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
-deleted file mode 100644
-index 69da05bb6c63..000000000000
---- a/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
-+++ /dev/null
-@@ -1,38 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
--#include "vmlinux.h"
--#include <bpf/bpf_helpers.h>
--#include <bpf/bpf_tracing.h>
--
--extern bool CONFIG_PREEMPTION __kconfig __weak;
--extern const int bpf_task_storage_busy __ksym;
--
--char _license[] SEC("license") = "GPL";
--
--int pid = 0;
--int busy = 0;
--
--struct {
--	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
--	__uint(map_flags, BPF_F_NO_PREALLOC);
--	__type(key, int);
--	__type(value, long);
--} task SEC(".maps");
--
--SEC("raw_tp/sys_enter")
--int BPF_PROG(read_bpf_task_storage_busy)
--{
--	int *value;
--
--	if (!CONFIG_PREEMPTION)
--		return 0;
--
--	if (bpf_get_current_pid_tgid() >> 32 != pid)
--		return 0;
--
--	value = bpf_this_cpu_ptr(&bpf_task_storage_busy);
--	if (value)
--		busy = *value;
--
--	return 0;
--}
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+index 10cba526d3e6..f1642794f70e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+@@ -875,8 +875,8 @@ static void test_btf_dump_var_data(struct btf *btf, struct btf_dump *d,
+ 	TEST_BTF_DUMP_VAR(btf, d, NULL, str, "cpu_number", int, BTF_F_COMPACT,
+ 			  "int cpu_number = (int)100", 100);
+ #endif
+-	TEST_BTF_DUMP_VAR(btf, d, NULL, str, "bpf_cgrp_storage_busy", int, BTF_F_COMPACT,
+-			  "static int bpf_cgrp_storage_busy = (int)2", 2);
++	TEST_BTF_DUMP_VAR(btf, d, NULL, str, "bpf_bprintf_nest_level", int, BTF_F_COMPACT,
++			  "static int bpf_bprintf_nest_level = (int)2", 2);
+ }
+ 
+ struct btf_dump_string_ctx {
 -- 
 2.47.3
 
