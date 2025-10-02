@@ -1,182 +1,115 @@
-Return-Path: <bpf+bounces-70260-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70261-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3CE8BB59C1
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 01:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A957BB59DC
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 01:37:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C28119E844A
-	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 23:25:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3F4D1AE1477
+	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 23:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9717228B7DA;
-	Thu,  2 Oct 2025 23:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165EC2BEC53;
+	Thu,  2 Oct 2025 23:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hsuUeCSZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mggcXN8i"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3CC128850E
-	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 23:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF4B254B1B
+	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 23:37:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759447493; cv=none; b=bjwaMNQe4O2jAb4ac9DO1DhklVaQfAtOgaiZA7XeSuSefXI65nT1SyW/xQxTW7vQUN1ESckI3b8Sx7vIyQE5AAhKTtc2m7I0kBqSlr8Efz7zKAG4afQPe6Pyga+AiWbA3+Vn26SL1z/JQ8PLLzEDFT4TS6pCpV/db2/co+kkVkg=
+	t=1759448264; cv=none; b=s/tf7ICQuwb/LM0ympehVlxjueFwSwhIf4+lQOlSsEmE+fFSQNx+iFDg6zdoJauOqOdRYTwi1eTTiEeUIXln44Fj2WdnbWVStfFNO0vi6MJ26rn6UqWkxiSHtgWCekHURz1e8HVcZQXveBBEAixLK16Qqcs9FoM+oFbeI9uYJGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759447493; c=relaxed/simple;
-	bh=kAFajq2w0NV2b6Vym16p2XjMatkmKm7VTqZX/umH5iA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lFoLlwK8ZvbZSJWIxD0PbM3evFquVXNPBOMaCODlUefPrRjYwrxKSo1/MksYj/3Gkrsfk/IAvvf3mRuwRROt67JdADtkosssknSwSqsNjJb2mYfQqO7dCalHDUiI6fQ6TdCy1CKGu4oKUn/VXYcLgL9AUFTxnuJtsQgCDp6vIT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hsuUeCSZ; arc=none smtp.client-ip=209.85.210.178
+	s=arc-20240116; t=1759448264; c=relaxed/simple;
+	bh=a4iHp1m1jUq01D2H8VN4n08fE9MhQ/vRj7/00NmGVWA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Hn3QeWNpYV491aCKC449oEciMcyFiRxKJTkG/Sjx55xwDGbgoNHik7xwaNZSv8EWCvQ5BOZRa6+yRJYQhrPx7FPYPK1JQZFzcKqA5ah0X1+hCZYPRQIIFMKPKUnLMHmCwHqBNRwRNedJucwBlatLoDXoi0LoHsW3u9Qoukw+B0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mggcXN8i; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7811a02316bso1227580b3a.3
-        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 16:24:51 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-4256866958bso54016f8f.1
+        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 16:37:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759447491; x=1760052291; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5rTCZ2QULVi3uiI7GqChmfRdR4ph4yjk9K+npTqoJNw=;
-        b=hsuUeCSZMvAuOvDALODvHpDV2rnM6d/Zx/yAaJJQ2BylO4LTrwii5f3XpbCNHkx7lN
-         oDQ7SYUPbUyQvxa5+dVlxyFwWuAP3iUuQyD7Ezbk+CcbQVBLLoLZ3RmbZQAPjU9w0tLx
-         RneONqb46wxjO0l9uv+bG/5oUAd26eoIEwQ+o56Y/bgnAONaneocgs+Hh40Rotk9Q9on
-         SyUOY1szfthXVQwsq7Q1nWdvBD+3o/ZZqbAmGuDqsJte+FD7aUvnlyt5rXGx0/M7eHHS
-         hNIrxYoFR82ETf3dZxDo20Gbjnat5YBTKLA1F2cyneWq4OdGlwuvBhU+LZRL4Key+F2o
-         X5Nw==
+        d=gmail.com; s=20230601; t=1759448261; x=1760053061; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pYyRjvvcClZsqK4bgOK/mSlQ3JwKmg6n0DCRi23dNek=;
+        b=mggcXN8iUgsoPa7cHGX0eI6ZYyaZrOdrl36ZDU8CpUOwQTkHTR77sfBGvFNbkMjY4q
+         2a3bAzHnjZoi/ebYKwnvKTUaBfySnOsNQOGjNUX3nn/uOMsTGMyh+dD63CarqyqrLDgz
+         zMoQipnZotf9ZmQOzWcW8J6L/NDLmFBtaU3WZqxBct8SduU/rHZYfvbpqSFZHKnnSO2p
+         pNtaNkqGqzSaDiQhX797jDPiDsSUhWeWcriDsz9vkYTd9mpO9jbwG/LHrdD2WThdY/sk
+         AlYJbvR8tEgIP+tSaLe+xDehWB1qraZGZPeWfkOMNBfWItfnpmamdwPHy/D6tfkEjSAY
+         fV8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759447491; x=1760052291;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5rTCZ2QULVi3uiI7GqChmfRdR4ph4yjk9K+npTqoJNw=;
-        b=YUBAIsxjkbhq5FHiZAqdgp3+8fIMQOpf/ww30sfoi9tdZsBAyLcT6mJm5r/L6iOaOb
-         shTolu2Twn4ZladYBWIWMKsM1vp2sGko2jNIfp17YmEEHRqMu35Szdjbzzz1MTkTFSj9
-         7tOvz4sIkks4C0spGnKzoy89esXJuABI8Uszx55VkexQvuiLw2j7P1qmj5zU2oHOCal7
-         UYFZsWcKHctxshxOtgXR111Zs15qt7KUoOWg/PKfAeRgd36Aj+kR94L/H/G457GieUsv
-         0UGb50WjEsMnuTY2S0tHSLOJQR1rCOmrCGvNBNOV4q3OvRYYULoqrXc35uRpet3L82tk
-         hhXg==
-X-Gm-Message-State: AOJu0YwwrysP7ubIHlFBuEoanhN92+XhsX/wdG5MeYiJFgR4DhL++4Vz
-	k/KHH9kwI1YL/sLqdWAgcf+nLE45aTxrDP0QUpP/0PtdcU7YjuonJEBTF58+PA==
-X-Gm-Gg: ASbGncvh6QYDGZEnAXcF2IkCfaIT+ZzBpjGOaKI3GPvrTLLs/qxxbM0QQ/PjJCc9ewZ
-	K6TcbmG+lOKBrUtf8+XQnaX+8F/jCLKPSqrb9CcDu4vAUpabA1PVVvrxonGzbmCSb82u8xaTXJY
-	P9IqCFRHl8GrpfW3tDmHslA7FQtr5UIsDstAAaPHxPSwOCI5GUxIeIsHK44Ucetr3qarFXKsKzs
-	C5gJkDDrVhwztYOieuEjCzkur9K6yZhZJG0yc/xsPws5CttiMzUh+rdn7Pqolq4VEHoDLl0WOlo
-	YEJdmNS6ZJXC5u+4Jmz3Y78tJMCUaIRec2gasDg7ISIoL0xLls2nqborrXckyM0dsvTcu5tWDpj
-	XqFlLrS3MyOoKpg/VMYCnxbexFWfjy+ZHiCowBckZWp8zqPKHMBK6RAagQ/sf1IVRPPAzjqEqzq
-	kBfYvJMLFH9qY=
-X-Google-Smtp-Source: AGHT+IG4fA8XvNMbgoDrZY2PQgukTYexbYKtO5NB7VLBWjD2Whol8EIOUfAS6ZxGGhtX5I3zc02x7w==
-X-Received: by 2002:a17:90b:4ac4:b0:32b:dfdb:b27f with SMTP id 98e67ed59e1d1-339c2797420mr1179040a91.17.1759447490890;
-        Thu, 02 Oct 2025 16:24:50 -0700 (PDT)
-Received: from localhost.localdomain ([2001:558:600a:7:f9d8:fc98:ee10:581e])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-339c4a49b1fsm162513a91.24.2025.10.02.16.24.50
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 02 Oct 2025 16:24:50 -0700 (PDT)
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: torvalds@linux-foundation.org
-Cc: bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@kernel.org
-Subject: [GIT PULL] BPF fixes for 6.18-rc1
-Date: Thu,  2 Oct 2025 16:24:48 -0700
-Message-Id: <20251002232448.57255-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+        d=1e100.net; s=20230601; t=1759448261; x=1760053061;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pYyRjvvcClZsqK4bgOK/mSlQ3JwKmg6n0DCRi23dNek=;
+        b=iuPiR/zTnxI01zunaspOa2ytf/j8oIpUJV44i/jLA0mEv9oEaMAyROuKA5AQ+lYDDm
+         js+Jy4bVJ7OZbqhfLL3XPvH+bMXaIiUoES8eJQqjJIvN+eNBPhMdg7P3AhfrUpDLPMSz
+         R4OWsugwUYwJDkfAW2lAFTLnC7HW8deMNPNEx8DDqVVsoBMbmRertWAtcOZtRTz06iRY
+         UaGaX7tbU3sKy0loN1ouAzDqeNDc5pVDGaK827HrpsdHSpWAdvvBY2VzhWX+EGZEoHGY
+         TQo//qtlZpb9509vxel1iXxltEjwUOtlERNg6bMw+NnSu7yno0vmlGIwyDySGaJD9A+u
+         Wz7w==
+X-Gm-Message-State: AOJu0Yy7JK3YrNpK813pRgN4R2aFUYbOBtW2IfQwxowP3nIylav03jYX
+	cxL8mllMGHNUmobTVAEVS2Le9e3x0UJ2eUEYiKcA9P/CA+ntvKg2yNUafl5+FAZOfhawYWofgXF
+	3aKyQwAqYUe6BIrD8tEfdkIbLTibnz1JRiQ==
+X-Gm-Gg: ASbGncuhCDhn/iwmW5vLcstdXI1VvLOkbLTdE13EHLkxjVpkjl7NwMX0/svVnnfO3XR
+	/LD5YvzNKiSkb5sIo+lhrNmShNXLSuvB3LficIN2xp8Xo4nLS+q3aPQZq6mINZCHUdzkj/yewVH
+	3wb+g5VDozwhzlPYLq3zyzJaTp4JRN5JhrDGGUOEjkVpWqJvQdx9e74DkXk5vskJ0Kowkf70Rnc
+	TnFlF0opFD4HU1IKxiGqla7Cz1wxvTK0lU29x/WF2g0ypaseBlGXcsjCc8b
+X-Google-Smtp-Source: AGHT+IHb95C9UaqPZtGL0P5fKptKfIz8ZAhVPywIiTLzHIHUdC8qi4d7wOijDm27RI3QjHtP/ObVzgdzJG1YjW47LZY=
+X-Received: by 2002:a05:6000:230c:b0:3ec:3d75:1330 with SMTP id
+ ffacd0b85a97d-425671b037amr505734f8f.52.1759448261224; Thu, 02 Oct 2025
+ 16:37:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20251002225356.1505480-1-ameryhung@gmail.com> <20251002225356.1505480-7-ameryhung@gmail.com>
+In-Reply-To: <20251002225356.1505480-7-ameryhung@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 2 Oct 2025 16:37:30 -0700
+X-Gm-Features: AS18NWBzOrTlE6SWnP9vH5g1d0_y8ZQPBBlzY0EtKr4sLtLnv87FvFw_6jM2fys
+Message-ID: <CAADnVQ+X1Otu+hrBeCq6Zr9vAaH5vGU42s6jLdBiDiLQcwpj4Q@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 06/12] bpf: Change local_storage->lock and
+ b->lock to rqspinlock
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Martin KaFai Lau <martin.lau@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Thu, Oct 2, 2025 at 3:54=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wro=
+te:
+>
+>         bpf_selem_free_list(&old_selem_free_list, false);
+>         if (alloc_selem) {
+>                 mem_uncharge(smap, owner, smap->elem_size);
+> @@ -791,7 +812,7 @@ void bpf_local_storage_destroy(struct bpf_local_stora=
+ge *local_storage)
+>          * when unlinking elem from the local_storage->list and
+>          * the map's bucket->list.
+>          */
+> -       raw_spin_lock_irqsave(&local_storage->lock, flags);
+> +       while (raw_res_spin_lock_irqsave(&local_storage->lock, flags));
 
-The following changes since commit d3479214c05dbd07bc56f8823e7bd8719fcd39a9:
+This pattern and other while(foo) doesn't make sense to me.
+res_spin_lock will fail only on deadlock or timeout.
+We should not spin, since retry will likely produce the same
+result. So the above pattern just enters into infinite spin.
 
-  Merge tag 'backlight-next-6.18' of git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight (2025-10-01 12:46:26 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
-
-for you to fetch changes up to 63d2247e2e37d9c589a0a26aa4e684f736a45e29:
-
-  libbpf: Fix missing #pragma in libbpf_utils.c (2025-10-02 14:33:57 -0700)
-
-----------------------------------------------------------------
-- Fix selftests/bpf (typo, conflicts) and unbreak BPF CI (Jiri Olsa)
-
-- Remove linux/unaligned.h dependency for libbpf_sha256 (Andrii Nakryiko)
-  and add a test (Eric Biggers)
-
-- Reject negative offsets for ALU operations in the verifier (Yazhou Tang)
-  and add a test (Eduard Zingerman)
-
-- Skip scalar adjustment for BPF_NEG operation if destination register
-  is a pointer (Brahmajit Das) and add a test (KaFai Wan)
-
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-----------------------------------------------------------------
-Alexei Starovoitov (2):
-      Merge branch 'bpf-fix-verifier-crash-on-bpf_neg-with-pointer-register'
-      Merge branch 'libbpf-fix-libbpf_sha256-for-github-compatibility'
-
-Andrii Nakryiko (5):
-      libbpf: make libbpf_errno.c into more generic libbpf_utils.c
-      libbpf: remove unused libbpf_strerror_r and STRERR_BUFSIZE
-      libbpf: move libbpf_errstr() into libbpf_utils.c
-      libbpf: move libbpf_sha256() implementation into libbpf_utils.c
-      libbpf: remove linux/unaligned.h dependency for libbpf_sha256()
-
-Brahmajit Das (1):
-      bpf: Skip scalar adjustment for BPF_NEG if dst is a pointer
-
-Eduard Zingerman (1):
-      selftests/bpf: Add tests for rejection of ALU ops with negative offsets
-
-Eric Biggers (1):
-      selftests/bpf: Add test for libbpf_sha256()
-
-Jiri Olsa (3):
-      selftests/bpf: Fix open-coded gettid syscall in uprobe syscall tests
-      selftests/bpf: Fix typo in subtest_basic_usdt after merge conflict
-      selftests/bpf: Fix realloc size in bpf_get_addrs
-
-KaFai Wan (1):
-      selftests/bpf: Add test for BPF_NEG alu on CONST_PTR_TO_MAP
-
-Tony Ambardar (1):
-      libbpf: Fix missing #pragma in libbpf_utils.c
-
-Yazhou Tang (1):
-      bpf: Reject negative offsets for ALU ops
-
- kernel/bpf/verifier.c                              |   7 +-
- tools/lib/bpf/Build                                |   2 +-
- tools/lib/bpf/btf.c                                |   1 -
- tools/lib/bpf/btf_dump.c                           |   1 -
- tools/lib/bpf/elf.c                                |   1 -
- tools/lib/bpf/features.c                           |   1 -
- tools/lib/bpf/gen_loader.c                         |   3 +-
- tools/lib/bpf/libbpf.c                             | 101 ---------
- tools/lib/bpf/libbpf_errno.c                       |  75 ------
- tools/lib/bpf/libbpf_internal.h                    |  15 ++
- tools/lib/bpf/libbpf_utils.c                       | 252 +++++++++++++++++++++
- tools/lib/bpf/linker.c                             |   1 -
- tools/lib/bpf/relo_core.c                          |   1 -
- tools/lib/bpf/ringbuf.c                            |   1 -
- tools/lib/bpf/str_error.c                          | 104 ---------
- tools/lib/bpf/str_error.h                          |  19 --
- tools/lib/bpf/usdt.c                               |   1 -
- tools/testing/selftests/bpf/prog_tests/sha256.c    |  52 +++++
- .../selftests/bpf/prog_tests/uprobe_syscall.c      |   4 +-
- tools/testing/selftests/bpf/prog_tests/usdt.c      |   2 +-
- .../bpf/progs/verifier_value_illegal_alu.c         |  47 ++++
- tools/testing/selftests/bpf/trace_helpers.c        |   2 +-
- 22 files changed, 376 insertions(+), 317 deletions(-)
- delete mode 100644 tools/lib/bpf/libbpf_errno.c
- create mode 100644 tools/lib/bpf/libbpf_utils.c
- delete mode 100644 tools/lib/bpf/str_error.c
- delete mode 100644 tools/lib/bpf/str_error.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sha256.c
+If it should never fail in practice then pr_warn_once and goto out
+leaking memory. Better yet defer to irq_work and cleanup there.
 
