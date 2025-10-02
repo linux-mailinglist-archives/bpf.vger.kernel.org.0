@@ -1,155 +1,135 @@
-Return-Path: <bpf+bounces-70238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70239-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 858E1BB5110
-	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 22:01:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB2ABB521C
+	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 22:32:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AAF9F4E4816
-	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 20:01:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 530E519E7C60
+	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 20:33:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E2E287245;
-	Thu,  2 Oct 2025 20:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F55269CE6;
+	Thu,  2 Oct 2025 20:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ojrX/WZJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JcyN11f0"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5F329CE1;
-	Thu,  2 Oct 2025 20:01:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F6426D4CE
+	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 20:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759435295; cv=none; b=b0b/97V2gAF8zLO+YUMEgCqKvHLVKlUILTYEWGN6BNqIzgUwlw1ySov3hHbAnTWXrUPYE4U3IFW3BnsWQLloAuqGNIrq8K3NH+zYHd5/4y/5PjBBfKQ7wD/8SeUFZ5GVtD5tyn/x2MvI2lCIBVvjT41cfUOnj8kwRg9TvvP259k=
+	t=1759437146; cv=none; b=cuDSNV0n/+RhdlUOzZ0eTYVnIIK5iZgLyOrug/m2l410tZaDN72WHxvxuFZsaxLqhfTlXfRWQY4CGjPmFsWagk6O0o8jqiD9gKoyNJtSWoc6zrFqtkM0BPjM7f0V5SjCzAz3hCkP4FmtExZyfoalxv0hXYWPqlNuisu1VUV48fM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759435295; c=relaxed/simple;
-	bh=j5/wsnm0ZL2eU5rOJpuLber2On3pdd7fhYcfRp/o0NU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=jLgEO1YLjFGlJ4moaxGBSW125kKVHsaicJpL+L6rXiqcTcdOWcPrIPwid6E8g4ueGCxwOhPd1EiDyyhkbillkvcYnKk3BR3hvDzO76lRzPfQkvMdPakZ1/GwkdpVIx8mBwcxLQlZpn7cllFBIGlsuO4Z32nyz66ApM95lH+Uu2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ojrX/WZJ; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia (unknown [40.118.131.60])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 35EA4211B7BD;
-	Thu,  2 Oct 2025 13:01:32 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 35EA4211B7BD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1759435293;
-	bh=Udmkclfo3YBk1sYNXKqJn8vhYwLfj3OgpLdf2bcPKes=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ojrX/WZJtpEHhk0p9KnCT9mG1jZ5Qes+FSNM+IyP6gDehtpJO6algIlUHoXKGuSm+
-	 j18xq1ml8z9Mj9LwW+bRpkbpNEweZ0OJnxTyFc1D98xKIVud60vUBhynQWFuSsWw6n
-	 3VDM2uRj69PXKchgwKJnVSc5oIFIFQ4G1LBrFhPM=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: KP Singh <kpsingh@kernel.org>, Paul Moore <paul@paul-moore.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, ast@kernel.org,
- james.bottomley@hansenpartnership.com, bpf@vger.kernel.org,
- linux-security-module@vger.kernel.org, kys@microsoft.com,
- daniel@iogearbox.net, andrii@kernel.org, wufan@linux.microsoft.com,
- qmo@kernel.org
-Subject: Re: [PATCH bpf-next v2 0/3] BPF signature hash chains
-In-Reply-To: <CACYkzJ4yG1d8ujZ8PVzsRr_PWpyr6goD9DezQTu8ydaf-skn6g@mail.gmail.com>
-References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
- <CAHC9VhTQ_DR=ANzoDBjcCtrimV7XcCZVUsANPt=TjcvM4d-vjg@mail.gmail.com>
- <CACYkzJ4yG1d8ujZ8PVzsRr_PWpyr6goD9DezQTu8ydaf-skn6g@mail.gmail.com>
-Date: Thu, 02 Oct 2025 13:01:30 -0700
-Message-ID: <871pnlysx1.fsf@microsoft.com>
+	s=arc-20240116; t=1759437146; c=relaxed/simple;
+	bh=l5SDQF0bzNQKpuWED23qNIahAnKQwl10/hdwnOrh+Uk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Pp82WOw3FGd7ceB3rAtgwOHF1eQzfJJ65AMwhZni3UModQgDaEszN0g++VLlCB12Jk31aD203EilRSUgktmKtWwNvrfkOpjHiLT66ofiGaasgBcWR5DnIre4AvqIGwk2nqcNsrWiegviie+bsc8wx8MygqxtlBlP2agfvvg+HDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JcyN11f0; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b54a588ad96so1011533a12.1
+        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 13:32:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759437143; x=1760041943; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cv+xTyL0FMN0YE/aLYG86t2IgkoAWaFt5tJYlGdaGFA=;
+        b=JcyN11f0BZcUjWneyy102UCpaNiMBvrJyp6qspSweFd3e2ftrM/p9aq74tzAnZ5Bo+
+         FdrH7BwyWvTChuC6zy3cOThwBTUf9R3rUg4pSrM4xd0awPVQKIsyX4GXaligFslqCxfB
+         gCZAppLRMZrOgbRVfWqaQYmtX+IqIP9ykZi5bkPsEzrJCjczWgb5inDi3Fkzzf6o/MHk
+         azohD7pqpVd1MFGQxGT5LLctKF/uvSyZ20L1GdcY6ojhMQZe2bdSyLD/6b0EE5ZmFZyS
+         v3zia5oTOjekGJkycotMrGbSNXRk9KUj/8wgn3uxI1MEWxavkVzhU9ILTGtxiFKLEoua
+         qvAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759437143; x=1760041943;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Cv+xTyL0FMN0YE/aLYG86t2IgkoAWaFt5tJYlGdaGFA=;
+        b=d9Om4lSjI+21nCW3XxkjW8/NJxQ20Pm6+F4ObY15arzN3knb93Hemu8Dxo8kSmfTPR
+         Cmo9SiFx2WSvZsMvnHRc8CgZVe2ci5wqG7lw2yCl0vnrmohA0dpGGw7MIb/nI4rKRdyP
+         7bnO2wghYLYcy9v+hYD6aPda77rib0OmKFg8HzBoJL+HJ3dT1p9kUCl3LG2mwWXLBgwL
+         3AqEdtdWA6NAU24c203I8cgGsgbZPehuoFTK8oUKwsQpOZHBwC8HLvhtIiVpTYEk1ng9
+         efYFDKhas8PyJxOtX6mMY4Xu0vAqX5Yr7ppJ/lzXTbM8DGSYMmAxPU5CPvRIJOAvSA4e
+         2rOA==
+X-Gm-Message-State: AOJu0YwIhGcKjocfRL0kEeESJO/XHXOoPP6Zk+bnJTtEExIZSW8PG1/4
+	4/hxbC5avqHhO9meATBpbZ2GSiPbh7BifcoYJEKRm7j9tCzcfKDPWVrShWXW1Q==
+X-Gm-Gg: ASbGncu+B442EQE+2Z9ljB0O4+Bw3p8j7Ez8z8D+S3HrbFr1wCnAYYaKbUs/2fDVH3d
+	pCiSPDGQJKmNyBj3++n45KIMGxvh1MSvzq1gWNRs6rm5n0ybKHyXGSVJRK7Ylgpky96ath+WTgm
+	Fq8/wc/T8x5dPjUedjV0YiOzib2qQxV1FvqF62bm91dYrEudZknWjc3zQVtIVQ9dbBTguh5qZtm
+	Erw/MKyoYrJN009FJXtA51itMf6hFwWBGrBQvkwXeIPWikCCrpbvxXsSmcZJcKXpWwoTRbzqVkj
+	ZVLjp4hTLMSaYT/Imgon2w2STF6zGbWN72Jl0M7FdID9sKMR18kJswh7qAznFQtMP9iRctYSj3e
+	4OMD20jT4TgZB25RK0ySAz+WurUSBSTTof6EZ3nr/t2WGYu5v6zdxaR2U6+5CZbWSyN7LYjA9PN
+	/t6OtZaDzSaaQIgQNYiyhfkg==
+X-Google-Smtp-Source: AGHT+IFoXZdEjPbnCtnbZLYdCAuWlz+OgxS2JwL9NPvV1i90a7FO0gLQ+Ael2RqfN7HZQ+twpBzhqQ==
+X-Received: by 2002:a17:903:1b6e:b0:24c:af27:b71 with SMTP id d9443c01a7336-28e8d0c9c3fmr45711005ad.20.1759437143461;
+        Thu, 02 Oct 2025 13:32:23 -0700 (PDT)
+Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-28e8d1233c1sm29486395ad.47.2025.10.02.13.32.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Oct 2025 13:32:22 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Tony Ambardar <tony.ambardar@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH bpf v1] libbpf: Fix GCC #pragma usage in libbpf_utils.c
+Date: Thu,  2 Oct 2025 13:31:50 -0700
+Message-Id: <20251002203150.1825678-1-tony.ambardar@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-KP Singh <kpsingh@kernel.org> writes:
+The recent sha256 patch uses a GCC pragma to suppress compile errors for
+a packed struct, but omits a needed pragma (see related link) and thus
+still raises errors: (e.g. on GCC 12.3 armhf)
 
-> On Wed, Oct 1, 2025 at 11:37=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
-wrote:
->>
->
-> [...]
->
+libbpf_utils.c:153:29: error: packed attribute causes inefficient alignment for ‘__val’ [-Werror=attributes]
+  153 | struct __packed_u32 { __u32 __val; } __attribute__((packed));
+      |                             ^~~~~
 
-[...]
+Resolve by adding the GCC diagnostic pragma to ignore "-Wattributes".
 
-I am confident that Paul will address your remaining points. However, I
-would like to clarify a few factual inaccuracies outlined below.
+Link: https://lore.kernel.org/bpf/CAP-5=fXURWoZu2j6Y8xQy23i7=DfgThq3WC1RkGFBx-4moQKYQ@mail.gmail.com/
 
->
-> Blaise's implementation fails on any modern BPF programs since
-> programs use more than one map, BTF information and kernel functions.
->
+Fixes: 4a1c9e544b8d ("libbpf: remove linux/unaligned.h dependency for libbpf_sha256()")
+Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+---
+ tools/lib/bpf/libbpf_utils.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-If you read the patch series you'd see that it supports verification of
-any number of maps. If you've identified an issue with map verification,
-please share the details and I=E2=80=99ll address it.
+diff --git a/tools/lib/bpf/libbpf_utils.c b/tools/lib/bpf/libbpf_utils.c
+index 2bae8cafc077..5d66bc6ff098 100644
+--- a/tools/lib/bpf/libbpf_utils.c
++++ b/tools/lib/bpf/libbpf_utils.c
+@@ -150,6 +150,7 @@ const char *libbpf_errstr(int err)
+ 
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wpacked"
++#pragma GCC diagnostic ignored "-Wattributes"
+ struct __packed_u32 { __u32 __val; } __attribute__((packed));
+ #pragma GCC diagnostic pop
+ 
+-- 
+2.34.1
 
-
-[...]
-
->> conventions around the placement of LSM hooks, this "halfway" approach
->> makes it difficult for LSMs to log anything about the signature status
->> of a BPF program being loaded, or use the signature status in any type
->> of access decision.  This is important for a number of user groups
->> that use LSM based security policies as a way to help reason about the
->> security properties of a system, as KP's scheme would require the
->> users to analyze the signature verification code in every BPF light
->> skeleton they authorize as well as the LSM policy in order to reason
->> about the security mechanisms involved in BPF program loading.
->>
->> Blaise's signature scheme also has the nice property that BPF ELF
->> objects created using his scheme are backwards compatible with
->> existing released kernels that do not support any BPF signature
->> verification schemes, of course without any signature verification.
->> Loading a BPF ELF object using KP's signature scheme will likely fail
->> when loaded on existing released kernels.
->
-> This does not make any sense. The ELF format and the way loaders like
-> libbpf interpret it, has nothing to do with the kernel or UAPI.
->
-
-We signed a program with your upstream tools and it failed to load on a
-vanilla kernel 6.16. The loader in your patchset is intepreting the
-first few fields of struct bpf_map as a byte array containing a sha256
-digest on older kernels.
-
--blaise
-
-
-> I had given detailed feedback to Blaise in
-> https://lore.kernel.org/bpf/CACYkzJ6yNjFOTzC04uOuCmFn=3D+51_ie2tB9_x-u2xb=
-cO=3DyobTw@mail.gmail.com/
-> mentions also why we don't want any additional UAPI.
->
-> You keep mentioning having visibility  in the LSM code and I again
-> ask, to implement what specific security policy and there is no clear
-> answer? On a system where you would like to only allow signed BPF
-> programs, you can purely deny any programs where the signature is not
-> provided and this can be implemented today.
->
-> Stable programs work as it is, programs that require runtime
-> relocation work with loader programs. We don't want to add more UAPI
-> as, in the future, it's quite possible that we can make the
-> instruction buffer stable.
->
-> - KP
->
->>
->> [1] https://lore.kernel.org/linux-security-module/CAADnVQ+C2KNR1ryRtBGOZ=
-TNk961pF+30FnU9n3dt3QjaQu_N6Q@mail.gmail.com/
->> [2] https://lore.kernel.org/linux-security-module/CAHC9VhRjKV4AbSgqb4J_-=
-xhkWAp_VAcKDfLJ4GwhBNPOr+cvpg@mail.gmail.com/
->> [3] https://lore.kernel.org/linux-security-module/87sei58vy3.fsf@microso=
-ft.com/
->> [4] https://lore.kernel.org/linux-security-module/20250909162345.569889-=
-2-bboscaccy@linux.microsoft.com/
->> [5] https://lore.kernel.org/linux-security-module/20250926203111.1305999=
--1-bboscaccy@linux.microsoft.com/
->> [6] https://lore.kernel.org/linux-security-module/20250929213520.1821223=
--1-bboscaccy@linux.microsoft.com/
->>
->> --
->> paul-moore.com
 
