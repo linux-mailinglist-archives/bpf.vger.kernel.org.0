@@ -1,154 +1,149 @@
-Return-Path: <bpf+bounces-70198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70199-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F9EBB463C
-	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 17:46:25 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74711BB4648
+	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 17:49:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01B4419C518F
-	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 15:46:46 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5581F4E1479
+	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 15:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BCC2327A3;
-	Thu,  2 Oct 2025 15:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D85622F74E;
+	Thu,  2 Oct 2025 15:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BDPsa1vF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="goGf1lTG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E74228C99;
-	Thu,  2 Oct 2025 15:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588B321348
+	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 15:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759419973; cv=none; b=qdbd8G76AJe1YlOReJn24N2Sufuo7XFEUPMF5X4EFxTtJjja17GU9bh/h4zRCi/Et0vopzSv5l1dUs3Kjo7pPstxtVWrmScj1WO8mGgdPramF2cWXhYjR3S0JDv4QFaMSPf3N5fGL/7v+6HvNOIpZ4NO+2r3ecDEd6qrXtJiof4=
+	t=1759420158; cv=none; b=I43k8M8Jf9lt13MP0uKPcPYixKZxvB23GsqDeJLpQFztGJfJ3qg4Vf3RPVkcEAx38CCXVjvSCbaQ1TrJ1OWS2ZytTuFrQXPk2lKYjxMJnCYEgy+Uo7Yj6NAbVHtwQ3tKGEGjKGMwAVrxMQj/icp+k/KMJGPC+TWK6sCiAxvXn8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759419973; c=relaxed/simple;
-	bh=4CLzShF5RIJyNi4NFhoaXpGPdvX8vc3yLN1v6Fum6es=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GZNXICRhgZY16TZCIxte/i8DX+lNSXyaDGzlqG0hxzIVFLa/jB5W0kh6R6TixQ6UBIO0OYnCKpstCwE7dlZY0Ygs/UHU7Z981QJkPooq7olocxRL8RmN73BM6KJkTGUERNIQKxU4r0RTX3Mcl3Gobrb0diQHspbpOcblfSd+9B4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BDPsa1vF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C491AC4CEF4;
-	Thu,  2 Oct 2025 15:46:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759419973;
-	bh=4CLzShF5RIJyNi4NFhoaXpGPdvX8vc3yLN1v6Fum6es=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BDPsa1vF1kBbQYp4jb7XpH/DTJEhyWkvrSHRql5UDJjCofAWicEnEg2F/nnhEu03J
-	 L88vF1LbCZRL9a+FzDEBKqL+GqotW1SgTa0TalVs9PHQJguq9wO8FKWmkK/Ak5dcAX
-	 0HymDIJqU2VIVuhACvJRvWEH6OWReLSZk38PceTr9PD5f97XsWByFpi1BIMO5ipYZp
-	 JhQXHl3ywelIwQuBJRQn48uiRBNe5jdTBvg+V2DWImLRLU1fTGvrrVsaMX58V/yNor
-	 s9s+NalpY149uI59y7rnMY43e6PmF5FqYtCVVJxpzzNUN8ky4O9y1TaiKuku8QmfBM
-	 7TmnSeoXZn7oQ==
-Date: Thu, 2 Oct 2025 17:46:10 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 02/21] rcu: Re-implement RCU Tasks Trace in terms of
- SRCU-fast
-Message-ID: <aN6eQuTbdwAAhxIj@localhost.localdomain>
-References: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
- <20251001144832.631770-2-paulmck@kernel.org>
+	s=arc-20240116; t=1759420158; c=relaxed/simple;
+	bh=oJ1XreLqVXi6JUSuK8wCo+so4l5JpYrQFt3TD5T36vs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LNzsBh/zYdXe4rkcVDomfv80FY7Bk2CyLv2Vy9jyf7ptjvBSor1iF1aDJ3PvGLYeBxpShKrHUU+D7l09/B09U+c4+JH371Zw2TyPyHJkQuFNl5gK3moVCMtJpezHqQro8Ypx/oH3NvCMGuI0PnLJXU507Zv4bQ4vyn0yGTJBtG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=goGf1lTG; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759420153;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=cq/ixvEwa1M7q3331DlGTSSLtBLpFmeJlg7Rcs7SewY=;
+	b=goGf1lTGobUQXrSsHqU77h9DAAnvLkNByBtIxSv2h5fRQ4i09y7HPhQHio+/44ppAqcopf
+	v1QWIpz4KANPG982+m2rT6DlLFiukQKFrPadOOx0dwD0CCn/nFKn/ldodRaRaOMDQbImK1
+	Wm+r5GG7nIcitT7C1A3a6lszF5pyEtQ=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	Leon Hwang <leon.hwang@linux.dev>
+Subject: [RFC PATCH bpf-next v3 00/10] bpf: Extend bpf syscall with common attributes support
+Date: Thu,  2 Oct 2025 23:48:31 +0800
+Message-ID: <20251002154841.99348-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251001144832.631770-2-paulmck@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-Le Wed, Oct 01, 2025 at 07:48:13AM -0700, Paul E. McKenney a écrit :
-> This commit saves more than 500 lines of RCU code by re-implementing
-> RCU Tasks Trace in terms of SRCU-fast.  Follow-up work will remove
-> more code that does not cause problems by its presence, but that is no
-> longer required.
-> 
-> This variant places smp_mb() in rcu_read_{,un}lock_trace(), which will
-> be removed on common-case architectures in a later commit.
+This proposal builds upon the discussion in
+"[PATCH bpf-next v4 0/4] bpf: Improve error reporting for freplace attachment failure"[1].
 
-The changelog doesn't mention what this is ordering :-)
+This patch set introduces support for *common attributes* in the 'bpf()'
+syscall, providing a unified mechanism for passing shared metadata across
+all BPF commands.
 
-> 
-> [ paulmck: Apply kernel test robot, Boqun Feng, and Zqiang feedback. ]
-> [ paulmck: Split out Tiny SRCU fixes per Andrii Nakryiko feedback. ]
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Tested-by: kernel test robot <oliver.sang@intel.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: <bpf@vger.kernel.org>
-> ---
-[...]
-> @@ -50,12 +50,14 @@ static inline void rcu_read_lock_trace(void)
->  {
->  	struct task_struct *t = current;
->  
-> -	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
-> -	barrier();
-> -	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
-> -	    t->trc_reader_special.b.need_mb)
-> -		smp_mb(); // Pairs with update-side barriers
-> -	rcu_lock_acquire(&rcu_trace_lock_map);
-> +	if (t->trc_reader_nesting++) {
-> +		// In case we interrupted a Tasks Trace RCU reader.
-> +		rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
-> +		return;
-> +	}
-> +	barrier();  // nesting before scp to protect against interrupt handler.
-> +	t->trc_reader_scp = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
-> +	smp_mb(); // Placeholder for more selective ordering
+The initial set of common attributes includes:
 
-Mysterious :-)
+1. 'log_buf': User-provided buffer for storing log output.
+2. 'log_size': Size of the provided log buffer.
+3. 'log_level': Verbosity level for logging.
+4. 'log_true_size': The size of log reported by kernel.
 
->  }
->  
->  /**
-> @@ -69,26 +71,75 @@ static inline void rcu_read_lock_trace(void)
->   */
->  static inline void rcu_read_unlock_trace(void)
->  {
-> -	int nesting;
-> +	struct srcu_ctr __percpu *scp;
->  	struct task_struct *t = current;
->  
-> -	rcu_lock_release(&rcu_trace_lock_map);
-> -	nesting = READ_ONCE(t->trc_reader_nesting) - 1;
-> -	barrier(); // Critical section before disabling.
-> -	// Disable IPI-based setting of .need_qs.
-> -	WRITE_ONCE(t->trc_reader_nesting, INT_MIN + nesting);
-> -	if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
-> -		WRITE_ONCE(t->trc_reader_nesting, nesting);
-> -		return;  // We assume shallow reader nesting.
-> -	}
-> -	WARN_ON_ONCE(nesting != 0);
-> -	rcu_read_unlock_trace_special(t);
-> +	smp_mb(); // Placeholder for more selective ordering
+With this extension, the 'bpf()' syscall will be able to return meaningful
+error messages (e.g., failures of creating map), improving debuggability
+and user experience.
 
-Bizarre :-)
+Changes:
+RFC v2 -> RFC v3:
+* Rename probe_sys_bpf_extended to probe_sys_bpf_ext.
+* Refactor reporting 'log_true_size' for prog_load.
+* Refactor reporting 'btf_log_true_size' for btf_load.
+* Add warnings for internal bugs in map_create.
+* Check log_true_size in test cases.
+* Address comment from Alexei:
+  * Change kvzalloc/kvfree to kzalloc/kfree.
+* Address comments from Andrii:
+  * Move BPF_COMMON_ATTRS to 'enum bpf_cmd' alongside brief comment.
+  * Add bpf_check_uarg_tail_zero() for extra checks.
+  * Rename sys_bpf_extended to sys_bpf_ext.
+  * Rename sys_bpf_fd_extended to sys_bpf_ext_fd.
+  * Probe the new feature using NULL and -EFAULT.
+  * Move probe_sys_bpf_ext to libbpf_internal.h and drop LIBBPF_API.
+  * Return -EUERS when log attrs are conflict between bpf_attr and
+    bpf_common_attr.
+  * Avoid touching bpf_vlog_init().
+  * Update the reason messages in map_create.
+  * Finalize the log using __cleanup().
+  * Report log size to users.
+  * Change type of log_buf from '__u64' to 'const char *' and cast type
+    using ptr_to_u64() in bpf_map_create().
+  * Do not return -EOPNOTSUPP when kernel doesn't support this feature
+    in bpf_map_create().
+  * Add log_level support for map creation for consistency.
+* Address comment from Eduard:
+  * Use common_attrs->log_level instead of BPF_LOG_FIXED.
 
-> +	scp = t->trc_reader_scp;
-> +	barrier();  // scp before nesting to protect against interrupt handler.
+RFC v1 -> RFC v2:
+* Fix build error reported by test bot.
+* Address comments from Alexei:
+  * Drop new uapi for freplace.
+  * Add common attributes support for prog_load and btf_load.
+  * Add common attributes support for map_create.
 
-What is it protecting against interrupt?
+Links:
+[1] https://lore.kernel.org/bpf/20250224153352.64689-1-leon.hwang@linux.dev/
 
-> +	if (!--t->trc_reader_nesting)
-> +		srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
-> +	else
-> +		srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
-> +}
+Leon Hwang (10):
+  bpf: Extend bpf syscall with common attributes support
+  libbpf: Add support for extended bpf syscall
+  bpf: Refactor reporting log_true_size for prog_load
+  bpf: Add common attr support for prog_load
+  bpf: Refactor reporting btf_log_true_size for btf_load
+  bpf: Add common attr support for btf_load
+  bpf: Add warnings for internal bugs in map_create
+  bpf: Add common attr support for map_create
+  libbpf: Add common attr support for map_create
+  selftests/bpf: Add cases to test map create failure log
 
-Thanks (very happy to see all the rest of the code going away!)
+ include/linux/bpf.h                           |   2 +-
+ include/linux/btf.h                           |   2 +-
+ include/linux/syscalls.h                      |   3 +-
+ include/uapi/linux/bpf.h                      |   8 +
+ kernel/bpf/btf.c                              |  25 +-
+ kernel/bpf/syscall.c                          | 250 ++++++++++++++++--
+ kernel/bpf/verifier.c                         |  12 +-
+ tools/include/uapi/linux/bpf.h                |   8 +
+ tools/lib/bpf/bpf.c                           |  50 +++-
+ tools/lib/bpf/bpf.h                           |   9 +-
+ tools/lib/bpf/features.c                      |   8 +
+ tools/lib/bpf/libbpf_internal.h               |   3 +
+ .../selftests/bpf/prog_tests/map_init.c       | 140 ++++++++++
+ 13 files changed, 461 insertions(+), 59 deletions(-)
 
--- 
-Frederic Weisbecker
-SUSE Labs
+--
+2.51.0
+
 
