@@ -1,174 +1,182 @@
-Return-Path: <bpf+bounces-70217-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D17CBB4A0F
-	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 19:12:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1397BB4B30
+	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 19:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C7391735D2
-	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 17:12:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A4583B19F4
+	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 17:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A50C22758F;
-	Thu,  2 Oct 2025 17:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2243326D4F1;
+	Thu,  2 Oct 2025 17:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UDxYN0Zg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t9uLzZQm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F70E26CE3B
-	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 17:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963DA4501A;
+	Thu,  2 Oct 2025 17:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759425152; cv=none; b=jZW/SEo9KKAHrHuQ8hwRSET2fckvkEr9fq/h6Xeg8YAW9BKJzctO1oXeEQ7/W3k/Y7slf0DQ0VVuMvyKsPMBghhJhZKKPos7MJfjn/LfZ9B4DxB0/6ldtKGhuILTOTeqqqzNhEKKjQj9X9ARTMDlSPwsTROCwOE00+hdjqcTlbU=
+	t=1759426299; cv=none; b=O2ZYSd90+5d6tfuO8L2nvxq+smWJHhO45hhRn/FXnCyB+ObooEWVNvei22lYfwXaWmqMqREUy2mFj6X7apo9x3+/3oivJSmAlMsRLUIigSWFWuTf1qBlTmUDk9+z1zeRMTG/TVotdjCVPWBjVYGjp9wYers3iBn7KE6ttJ9AVjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759425152; c=relaxed/simple;
-	bh=Vs3Od78lsWY3eVAuifJD7IXnTuiSOYqocBICozC/gbE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qIQJ8i/cqI9CIgHdAjl0CRq0Fg8qo2Q/1gwFEV2AzDEqIQswXgLM2lKhOAElec9hV240lHLPd4XsEOZgEPyGG5VbrvQeqiE6I2c/cAXgPDRZGja8vNux+NypkR1fBPybu7yHjbTHgKYsurpqxQVuCL9NR47V6YUQ/sObOVz/ssk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UDxYN0Zg; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-46e52279279so9266075e9.3
-        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 10:12:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759425147; x=1760029947; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XjVO/8J6cwZWczHY1sJ+Xbg1pNEa0jeZoI5ktypxapw=;
-        b=UDxYN0ZgVT+RNK0VZhYbwqpaM1e9lo7G2UOhYbat+0T8zVxVnN/6fdIcZ0etHRsqbg
-         lT4NxLa1ffqCawVN8+xvVVNuIjXGW+rSFc30Uk6EGYSgjQDtG0oGwRC8GZj1gzYVK1zx
-         YkMQeWE47wYMGChUUW52X6X/TP8coD+O9tqYxhowjybgfo+3PW+qykggIoeeuAW4f/40
-         248jvKdPH4Nkkz8aXiPn4AoG95gETJqm7tXOLRKby1pXz+Qviw6kSn4lzpOTazc+RHW2
-         FYJ0t+iUHvrQaSt5It27I/1budNADjlB6qYGRFxTUQRw66zCHwgAfpoorxF2/racsHEH
-         SHzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759425147; x=1760029947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XjVO/8J6cwZWczHY1sJ+Xbg1pNEa0jeZoI5ktypxapw=;
-        b=NZfdbp99rzzZI3QW/2i1nq8Mf683xRlYH6KRk5RCNfM6WFSESXGtZ5UplTGe0MbQDN
-         90PBHkSsAAA6nkm9Sr19VzOKqDvZSuBJPNhEHsc9a4kPeq0w4jGy7jgS46aEbWLVdnUJ
-         3j66kao8PlE+PYT5RdD2FdTt63+5AY3MGXP7FXuQStdqQ2TjyIJEWCNIBGtdt/7IV7tO
-         2/Y2ySrMGyNRvCvvZNWRrxVvJbeWwN4TkBwAP6UbAPZLFNYgk4gP6d/Tz5mc5gaBThGg
-         y0JNZSii/CduKXmK1caCoQgzKaLzGjwVqAZotkNSDbMoetg+9uFaSkKyO3CBe3Azx+l3
-         uJtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWdDqEX3m30llIbz29M212tkrL9Egd3qZ35Ooi17Bjxt6ua1TPZ9wZ6xD98pjmUL47f1dI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNEZ5IH5lcpPsq0Kv36/j77aRGR63uaTadk7eAaFa6SugQFx5E
-	mW/Whi89H8MOG+f98bnXB5ESERa99ioxQ8U495UC69GCMZoHTGf9Imnwb2f+fTK7QTJPYsB48Y/
-	NSejURU8wtp0RgJ99LsW3y0tzkmxg5X4=
-X-Gm-Gg: ASbGncs+FKLzqcc98qT50v36u5rK1Znd4Tmq8lwdj0jJMrI3eyz34xYn+iCKYGnHLdS
-	fG8AIi0JpJihxN5t12z279FuYwhtGVpuDarnhngpEIrBE3pDYElEikJX4GNTH/XoV8y1GGQQKTH
-	HT26oFaNHm42/+xOg21BdsJ6uuE5Mt8KwnKJy1mJIbhG53EO8wU5LfpZtkOAYXhgdKjWHDtgU/L
-	q4p1SDyR1RJPwZvy6ilMcwmQSHmoEp+ASfPyqX/2C2LJUbzuQNXdbRuJQ==
-X-Google-Smtp-Source: AGHT+IFFlAPEENjXsjwK7bYP+KO48yG0A6g+1HtPLd84tk/Vz6QU9fm/nAqB6Q/bimjlcjZtqjdjdWNinzemU/d2SzI=
-X-Received: by 2002:a05:600c:8b01:b0:46e:59f8:8546 with SMTP id
- 5b1f17b1804b1-46e71140bf4mr224205e9.17.1759425147356; Thu, 02 Oct 2025
- 10:12:27 -0700 (PDT)
+	s=arc-20240116; t=1759426299; c=relaxed/simple;
+	bh=KDjDyeHkoRmO27Arq6cMJwsCPLv+zfc+5LY+k1xHiCY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m+6DWR7/1pMv3VGWH+dGmaDfHJFOZ2biPufMwVGaPLUeFyoJH4qZfAomrfi/Dd0ZjdvrdSQUk6wByfFoXRsyizuT/Qgif/Ir9mTK1Qbl2841pCowzptpE/E6jykkejoGa9dzc5CwXmDu+znk8XHC4GJI1F1qn2y68otngooLtpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t9uLzZQm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E42AC4CEF4;
+	Thu,  2 Oct 2025 17:31:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759426299;
+	bh=KDjDyeHkoRmO27Arq6cMJwsCPLv+zfc+5LY+k1xHiCY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=t9uLzZQmMTYawbDrpuDBhFYuAh9ix3gusakiGevbjudeEwgYJ5yYyjqIXuHxS5Sqa
+	 gmtsW6rH6qSgN647MeaDqlP2JYo+ZGCScFdB9rOySW+7jvJ9HJCpHdoQWLvO9v/fAi
+	 zHKJPy7hzSWNrr19S7IP5GKP4tkn+bbqc+ikez9SbCFtlkRIMQh47xlGwx3QpXObS5
+	 qjYbdnSKk61g6vgvwsUsH7jSFD05Gf6PhBz7aSS68KwvvE6bM2YWoDSpOb+YjbElxW
+	 2hrFFGgHQpkmfRPUJa4YdY/pXwWy8yQqKUogOolevPcKlMysSOAIavNC3pf4OtlcIW
+	 7ws6hq9vwlGdw==
+Date: Thu, 2 Oct 2025 14:31:34 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Andrew Pinski <quic_apinski@quicinc.com>,
+	Namhyung Kim <namhyung@kernel.org>, Sam James <sam@gentoo.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH] perf: use __builtin_preserve_field_info for GCC
+ compatibility
+Message-ID: <aN629m1MlMXYh1te@x1>
+References: <fea380fb0934d039d19821bba88130e632bbfe8d.1754438581.git.sam@gentoo.org>
+ <aJPmX8xc5x0W_r0y@google.com>
+ <CO1PR02MB8460C81562C4608B036F36A5B82DA@CO1PR02MB8460.namprd02.prod.outlook.com>
+ <043721e8-a38e-419d-b9b9-2dad33e267a0@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250929194648.145585-1-ebiggers@kernel.org> <CAADnVQKKQEjZjz21e_639XkttoT4NvXYxUb8oTQ4X7hZKYLduQ@mail.gmail.com>
- <20251001233304.GB2760@quark>
-In-Reply-To: <20251001233304.GB2760@quark>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 2 Oct 2025 10:12:12 -0700
-X-Gm-Features: AS18NWDHorhHHJaEuzPLLApApsbU6t0qJWlskRVAJzEXEEmEQhmHrh4_H7WjqmE
-Message-ID: <CAADnVQL=zs-n1s-0emSuDmpfnU7QzMFo+92D3b4tqa3sG+uiQw@mail.gmail.com>
-Subject: Re: [PATCH iproute2-next v2] lib/bpf_legacy: Use userspace SHA-1 code
- instead of AF_ALG
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Network Development <netdev@vger.kernel.org>, Stephen Hemminger <stephen@networkplumber.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <043721e8-a38e-419d-b9b9-2dad33e267a0@linux.dev>
 
-On Wed, Oct 1, 2025 at 4:33=E2=80=AFPM Eric Biggers <ebiggers@kernel.org> w=
-rote:
->
-> On Wed, Oct 01, 2025 at 03:59:31PM -0700, Alexei Starovoitov wrote:
-> > On Mon, Sep 29, 2025 at 12:48=E2=80=AFPM Eric Biggers <ebiggers@kernel.=
-org> wrote:
-> > >
-> > > Add a basic SHA-1 implementation to lib/, and make lib/bpf_legacy.c u=
-se
-> > > it to calculate SHA-1 digests instead of the previous AF_ALG-based co=
-de.
-> > >
-> > > This eliminates the dependency on AF_ALG, specifically the kernel con=
-fig
-> > > options CONFIG_CRYPTO_USER_API_HASH and CONFIG_CRYPTO_SHA1.
-> > >
-> > > Over the years AF_ALG has been very problematic, and it is also not
-> > > supported on all kernels.  Escalating to the kernel's privileged
-> > > execution context merely to calculate software algorithms, which can =
-be
-> > > done in userspace instead, is not something that should have ever bee=
-n
-> > > supported.  Even on kernels that support it, the syscall overhead of
-> > > AF_ALG means that it is often slower than userspace code.
-> >
-> > Help me understand the crusade against AF_ALG.
-> > Do you want to deprecate AF_ALG altogether or when it's used for
-> > sha-s like sha1 and sha256 ?
->
-> Altogether, when possible.  AF_ALG has been (and continues to be)
-> incredibly problematic, for both security and maintainability.
+On Wed, Aug 06, 2025 at 05:27:02PM -0700, Yonghong Song wrote:
+> On 8/6/25 4:57 PM, Andrew Pinski wrote:
+> > > -----Original Message-----
+> > > From: Namhyung Kim <namhyung@kernel.org>
+> > > Sent: Wednesday, August 6, 2025 4:34 PM
+> > > To: Sam James <sam@gentoo.org>
+> > > Cc: Peter Zijlstra <peterz@infradead.org>; Ingo Molnar
+> > > <mingo@redhat.com>; Arnaldo Carvalho de Melo
+> > > <acme@kernel.org>; Mark Rutland
+> > > <mark.rutland@arm.com>; Alexander Shishkin
+> > > <alexander.shishkin@linux.intel.com>; Jiri Olsa
+> > > <jolsa@kernel.org>; Ian Rogers <irogers@google.com>; Adrian
+> > > Hunter <adrian.hunter@intel.com>; Liang, Kan
+> > > <kan.liang@linux.intel.com>; Andrew Pinski
+> > > <quic_apinski@quicinc.com>; linux-perf-
+> > > users@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > > bpf@vger.kernel.org
+> > > Subject: Re: [PATCH] perf: use __builtin_preserve_field_info
+> > > for GCC compatibility
+> > > 
+> > > Hello,
+> > > 
+> > > On Wed, Aug 06, 2025 at 01:03:01AM +0100, Sam James
+> > > wrote:
+> > > > When exploring building bpf_skel with GCC's BPF support,
+> > > there was a
+> > > > buid failure because of bpf_core_field_exists vs the
+> > > mem_hops bitfield:
+> > > > ```
+> > > >   In file included from util/bpf_skel/sample_filter.bpf.c:6:
+> > > > util/bpf_skel/sample_filter.bpf.c: In function
+> > > 'perf_get_sample':
+> > > > tools/perf/libbpf/include/bpf/bpf_core_read.h:169:42:
+> > > error: cannot take address of bit-field 'mem_hops'
+> > > >    169 | #define ___bpf_field_ref1(field)        (&(field))
+> > > >        |                                          ^
+> > > > tools/perf/libbpf/include/bpf/bpf_helpers.h:222:29: note: in
+> > > expansion of macro '___bpf_field_ref1'
+> > > >    222 | #define ___bpf_concat(a, b) a ## b
+> > > >        |                             ^
+> > > > tools/perf/libbpf/include/bpf/bpf_helpers.h:225:29: note: in
+> > > expansion of macro '___bpf_concat'
+> > > >    225 | #define ___bpf_apply(fn, n) ___bpf_concat(fn, n)
+> > > >        |                             ^~~~~~~~~~~~~
+> > > > tools/perf/libbpf/include/bpf/bpf_core_read.h:173:9: note:
+> > > in expansion of macro '___bpf_apply'
+> > > >    173 |         ___bpf_apply(___bpf_field_ref,
+> > > ___bpf_narg(args))(args)
+> > > >        |         ^~~~~~~~~~~~
+> > > > tools/perf/libbpf/include/bpf/bpf_core_read.h:188:39: note:
+> > > in expansion of macro '___bpf_field_ref'
+> > > >    188 |
+> > > __builtin_preserve_field_info(___bpf_field_ref(field),
+> > > BPF_FIELD_EXISTS)
+> > > >        |                                       ^~~~~~~~~~~~~~~~
+> > > > util/bpf_skel/sample_filter.bpf.c:167:29: note: in expansion
+> > > of macro 'bpf_core_field_exists'
+> > > >    167 |                         if (bpf_core_field_exists(data-
+> > > > mem_hops))
+> > > >        |                             ^~~~~~~~~~~~~~~~~~~~~
+> > > > cc1: error: argument is not a field access ```
+> > > > 
+> > > > ___bpf_field_ref1 was adapted for GCC in
+> > > > 12bbcf8e840f40b82b02981e96e0a5fbb0703ea9
+> > > > but the trick added for compatibility in
+> > > > 3a8b8fc3174891c4c12f5766d82184a82d4b2e3e
+> > > > isn't compatible with that as an address is used as an
+> > > argument.
+> > > > Workaround this by calling __builtin_preserve_field_info
+> > > directly as
+> > > > the bpf_core_field_exists macro does, but without the
+> > > ___bpf_field_ref use.
+> > > 
+> > > IIUC GCC doesn't support bpf_core_fields_exists() for bitfield
+> > > members, right?  Is it gonna change in the future?
+> > Let's discuss how __builtin_preserve_field_info is handled in the first place for BPF. Right now it seems it is passed some expression as the first argument is never evaluated.
+> > The problem is GCC's implementation of __builtin_preserve_field_info is all in the backend and the front end does not understand of the special rules here.
+> > 
+> > GCC implements some "special" builtins in the front-end but not by the normal function call rules but parsing them separately; this is how __builtin_offsetof and a few others are implemented in both the C and C++ front-ends (and implemented separately). Now we could have add a hook to allow a backend to something similar and maybe that is the best way forward here.
+> > But it won't be __builtin_preserve_field_info but rather `__builtin_preserve_field_type_info(type,field,kind)` instead.
+> > 
+> > __builtin_preserve_enum_type_value would also be added with the following:
+> > __builtin_preserve_enum_type_value(enum_type, enum_value, kind)
+> > 
+> > And change all of the rest of the builtins to accept a true type argument rather than having to cast an null pointer to that type.
+> > 
+> > Will clang implement a similar builtin?
+> 
+> The clang only has one builtin for some related relocations:
+>    __builtin_preserve_field_info(..., BPF_FIELD_EXISTS)
+>    __builtin_preserve_field_info(..., BPF_FIELD_BYTE_OFFSET)
+>    ...
+> They are all used in bpf_core_read.h.
+> 
+> > 
+> > Note this won't be done until at least GCC 16; maybe not until GCC 17 depending on if I or someone else gets time to implement the front-end parts which is acceptable to both the C and C++ front-ends.
 
-Could you provide an example of a security issue with AF_ALG ?
-Not challenging the statement. Mainly curious what is going
-to understand it better and pass the message.
+So I'm taking the patch as-is, ok?
 
-> > I thought the main advantage of going through the kernel is that
-> > the kernel might have an optimized implementation for a specific
-> > architecture, while the open coded C version is generic.
-> > The cost of syscall and copies in/out is small compared
-> > to actual math, especially since compilers might not be smart enough
-> > to use single asm insn for rol32() C function.
->
-> Not for small amounts of data, since syscalls are expensive these days.
->
-> (Aren't BPF programs usually fairly small?)
+But first we need the Signed-off-by tag from Andrew Pinski as he is
+listed in a Co-authored-by, that I replaced with Co-developed-by as its
+the term used for this purpose in:
 
-Depends on the definition of small :)
-The largest we have in production is 620kbytes of ELF.
-Couple dozens between 100k to 400k.
-And a hundred between 5k to 50k.
+Yonghong, can I add an Acked-by: you since you participated in this
+discussion agreeing with the original patch (If I'm not mistaken)?
 
->
-> BTW, both gcc and clang reliably lower rol32() to a single instruction.
->
-> > sha1/256 are simple enough in plain C, but other crypto/hash
-> > could be complex and the kernel may have HW acceleration for them.
-> > CONFIG_CRYPTO_USER_API_HASH has been there forever and plenty
-> > of projects have code to use that. Like qemu, stress-ng, ruby.
-> > python and rust have standard binding for af_alg too.
-> > If the kernel has optimized and/or hw accelerated crypto, I see an appe=
-al
-> > to alway use AF_ALG when it's available.
->
-> Well, userspace programs that want accelerated crypto routines without
-> incorporating them themselves should just use a userspace library that
-> has them.  It's not hard.
->
-> But iproute2 should be fine with just the generic C code.
->
-> As for why AF_ALG support keeps showing up in different programs, it's
-> mainly just a misunderstanding.  But I think you're also overestimating
-> how often it's used.  Your 5 examples were 4 bindings (not users), and 1
-> user where it's disabled by default.
->
-> There are Linux systems where it's only iproute2 that's blocking
-> CONFIG_CRYPTO_USER_API_HASH from being disabled.  This patch is really
-> valuable on such systems.
 
-Fair enough.
 
