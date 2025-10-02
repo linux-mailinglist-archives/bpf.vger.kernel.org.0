@@ -1,217 +1,157 @@
-Return-Path: <bpf+bounces-70227-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70228-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B00EBB4DE9
-	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 20:28:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B539BB4E28
+	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 20:33:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49CC91C55EE
-	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 18:28:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B89E3BED5C
+	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 18:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7248274B2F;
-	Thu,  2 Oct 2025 18:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E02274B40;
+	Thu,  2 Oct 2025 18:33:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sG68995W"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sKHttbYC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B09A517A2E1
-	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 18:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22ED534BA2B
+	for <bpf@vger.kernel.org>; Thu,  2 Oct 2025 18:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759429681; cv=none; b=HlOsJpZe4enpqO68Y+ROuxR488rJtRSiHDbvW8mf1fZOpcp2IzhdaTG6EsMp9DXm+fkUxS85ohk5VgQjqRW0El4MpK2b42ZB5uy1wrgJJ9qb/TlOqI+6kASR0C2RawMAuaDYaPVmvCd3TUkUlxQce3cWUkBVxHilO/7lKy144vw=
+	t=1759429994; cv=none; b=M8JtF2F5fRNkMIHE2eFlLVdCm0kjAcWokYuqOu/9R5Boxp7EfR7RV8uOwrH4rIAYJk3QHB6/Zl/oo7l3L59DXgWtbuk/cJmV/vuH4jYeN41L8G47S1Ft23nybkijmcN7WUNz5xXYgg4QHBKXuj4dNt63vUinT5MDqC8+bQjnQYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759429681; c=relaxed/simple;
-	bh=L2TqwgG3JLYRu5iX30Zk4ViWKn+PUFSD2VOUIO5d25M=;
+	s=arc-20240116; t=1759429994; c=relaxed/simple;
+	bh=/Unaob+RvOm8qTbbw6jRofIpk1EQtkCmjfOX2gNp+jw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aZUUCgmPeZ9QNXlqYYdI9c6BZ3MwUeU/u8r9uOaqjBDuNAHUVbvE9Z7M1GkhgDAxbNo6EvtdWKEAj/e07DqsdsVnKdc9U/MrYJXaqwGwyzaiN9Gpk/gp8qj62X/bnl21iusu0VR7RGTOFvmQpjVEPUxd4ePYrWMgMmudPrcucIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sG68995W; arc=none smtp.client-ip=95.215.58.179
+	 In-Reply-To:Content-Type; b=lG0TW3ahOgZg4s2BEugIEYLGMF9yyjWMO4PHa/Gzy9VKisNkRv4iFi+lhQnELnD0BhYYIiSComGG08G4JOePuDQabqKnKq2jIFy9oymdWamJgRZ0YPty3ilmWH5O2bKKqPQ1HQaD/zADKNwSuy23jAkYzUHslkWo7WVRUC50YJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sKHttbYC; arc=none smtp.client-ip=95.215.58.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <943df0e0-358e-4361-81a0-ec7a4118cf29@linux.dev>
+Message-ID: <19df5360-9fee-4ca4-ab66-85aeede3979e@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759429676;
+	t=1759429988;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fK8GGRSENA9+TPX4eUJlkTdEr6vhGVSijj41DYpywuU=;
-	b=sG68995W0JiFGuEASfZ9vN5Dz0JUVtdY4elwN9+tdWvY1NendV0nMaS2lDhCT5p6taOKRS
-	Kv2s9y3q+otvTbX/rafplmjmTxZJBlDRXTSDX3/b5Y8uSKhFd/C6cZ+4gCGayAqP15V2vV
-	TdzdptQesQCZN7/TkIH7JcVot/DYG7o=
-Date: Thu, 2 Oct 2025 11:27:52 -0700
+	bh=QlIHZ4IuPxKLoliu2mwmCuYj3JjRMF3OZh4XaBrkFRc=;
+	b=sKHttbYCIVxy8jEHASH9PVdk/tcmJaasQqIlfGAIR3dv8abyKndn6eKPyKpdxducEnijra
+	5XekhvjeR7OB5yl9q0rcV/GFTA42hL9F8GEiN1erEC80+yosvALkCnOotaLOisdwRWZW1O
+	Z0xj6bvuh8P3ahuc6CY9pGVt8xaluqw=
+Date: Thu, 2 Oct 2025 11:32:59 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 3/5] bpf: Craft non-linear skbs in
- BPF_PROG_TEST_RUN
-To: Paul Chaignon <paul.chaignon@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Amery Hung <ameryhung@gmail.com>,
- bpf@vger.kernel.org
-References: <cover.1759397353.git.paul.chaignon@gmail.com>
- <10502e40a894fc60abf625ec631eadc5ad78e311.1759397354.git.paul.chaignon@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: [PATCH net v2] xdp: update mem type when page pool is used for
+ generic XDP
+To: Octavian Purdila <tavip@google.com>, maciej.fijalkowski@intel.com
+Cc: kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, horms@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
+ kuniyu@google.com, aleksander.lobakin@intel.com, toke@redhat.com,
+ lorenzo@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com,
+ Kernel Team <kernel-team@meta.com>
+References: <20251001074704.2817028-1-tavip@google.com>
+ <5af7b3b9-3ee1-4ef6-8431-72b40445eacd@linux.dev>
+ <CAGWr4cQ6g5xw_iJK2KbyTbSszsf2gacUZ9v0wKAVWnyBAYz9nA@mail.gmail.com>
 Content-Language: en-US
-In-Reply-To: <10502e40a894fc60abf625ec631eadc5ad78e311.1759397354.git.paul.chaignon@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <CAGWr4cQ6g5xw_iJK2KbyTbSszsf2gacUZ9v0wKAVWnyBAYz9nA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On 10/2/25 3:07 AM, Paul Chaignon wrote:
-> This patch adds support for crafting non-linear skbs in BPF test runs
-> for tc programs. The size of the linear area is given by ctx->data_end,
-> with a minimum of ETH_HLEN always pulled in the linear area. If ctx or
-> ctx->data_end are null, a linear skb is used.
+
+
+On 10/1/25 6:02 PM, Octavian Purdila wrote:
+> On Wed, Oct 1, 2025 at 1:26 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>>
+>> Hi Octavian,
+>>
 > 
-> This is particularly useful to test support for non-linear skbs in large
-> codebases such as Cilium. We've had multiple bugs in the past few years
-> where we were missing calls to bpf_skb_pull_data(). This support in
-> BPF_PROG_TEST_RUN would allow us to automatically cover this case in our
-> BPF tests.
+> Hi Ihor,
 > 
-> In addition to the selftests introduced later in the series, this patch
-> was tested by setting enabling non-linear skbs for all tc selftests
-> programs and checking test failures were expected.
+>> This patch seems to be causing a null pointer dereference.
+>> See a splat caught by BPF CI below.
+>>
+>> You might be able to reproduce with:
+>>
+>> cd tools/testing/selftests/bpf
+>> make test_progs
+>> # in kernel with this patch
+>> ./test_progs -t xdp_veth
+>>
+>> Reverting this commit mitigates the failure:
+>> https://github.com/linux-netdev/testing-bpf-ci/commit/9e1eab63cd1bcbe37e205856f7ff7d1ad49669f5
+>>
+>> Could you please take a look?
+>>
 > 
-> Tested-by: syzbot@syzkaller.appspotmail.com
-> Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
-> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
-> ---
->   net/bpf/test_run.c | 67 +++++++++++++++++++++++++++++++++++++++++-----
->   1 file changed, 61 insertions(+), 6 deletions(-)
+> Thanks for the report, it looks like dev needs to be set in
+> xdp_rxq_info. The following fix works me:
 > 
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index 3425100b1e8c..e4f4b423646a 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -910,6 +910,12 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
->   	/* cb is allowed */
->   
->   	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, cb),
-> +			   offsetof(struct __sk_buff, data_end)))
-> +		return -EINVAL;
-> +
-> +	/* data_end is allowed, but not copied to skb */
-> +
-> +	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, data_end),
->   			   offsetof(struct __sk_buff, tstamp)))
->   		return -EINVAL;
->   
-> @@ -984,9 +990,12 @@ static struct proto bpf_dummy_proto = {
->   int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->   			  union bpf_attr __user *uattr)
->   {
-> +	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
->   	bool is_l2 = false, is_direct_pkt_access = false;
->   	struct net *net = current->nsproxy->net_ns;
->   	struct net_device *dev = net->loopback_dev;
-> +	u32 headroom = NET_SKB_PAD + NET_IP_ALIGN;
-> +	u32 linear_sz = kattr->test.data_size_in;
->   	u32 size = kattr->test.data_size_in;
->   	u32 repeat = kattr->test.repeat;
->   	struct __sk_buff *ctx = NULL;
-> @@ -1023,9 +1032,16 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->   	if (IS_ERR(ctx))
->   		return PTR_ERR(ctx);
->   
-> -	data = bpf_test_init(kattr, kattr->test.data_size_in,
-> -			     size, NET_SKB_PAD + NET_IP_ALIGN,
-> -			     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
-> +	if (ctx) {
-> +		if (!is_l2 || ctx->data_end > kattr->test.data_size_in) {
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 365c43ffc9c1..85b52c28660b 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -5449,7 +5449,9 @@ int do_xdp_generic(const struct bpf_prog
+> *xdp_prog, struct sk_buff **pskb)
+>         struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+> 
+>         if (xdp_prog) {
+> -               struct xdp_rxq_info rxq = {};
+> +               struct xdp_rxq_info rxq = {
+> +                       .dev = (*pskb)->dev,
+> +               };
+>                 struct xdp_buff xdp = {
+>                         .rxq = &rxq,
+>                 };
+> 
+> But probably Maciej approach is better.
 
-What is the need for the "!is_l2" test?
+Hi Octavian, Maciej,
 
-> +			ret = -EINVAL;
-> +			goto out;
-> +		}
-> +		if (ctx->data_end)
-> +			linear_sz = max(ETH_HLEN, ctx->data_end);
-> +	}
-> +
-> +	data = bpf_test_init(kattr, linear_sz, size, headroom, tailroom);
+I tested both diffs on BPF CI, no issues.
 
-Instead of passing "size", should linear_sz be passed instead? Unlike xdp, 
-allocating exactly linear_sz should be enough considering bpf_skb_pull_data can 
-allocate new data if needed.
+This patch + diff above assigning .dev:
+* Revision: https://github.com/theihor/bpf/commits/refs/heads/netdev-fix-20251002.1/
+* CI run: https://github.com/kernel-patches/bpf/actions/runs/18199837294
 
-Should linear_sz be limited to "PAGE_SIZE - headroom..." like how test_run_xdp() 
-does it ?
+This patch reverted + Maciej's diff (pasted below):
+* Revision: https://github.com/theihor/bpf/commits/refs/heads/netdev-fix-20251002.2/
+* CI run: https://github.com/kernel-patches/bpf/actions/runs/18199860590
 
->   	if (IS_ERR(data)) {
->   		ret = PTR_ERR(data);
->   		data = NULL;
-> @@ -1044,10 +1060,47 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->   		ret = -ENOMEM;
->   		goto out;
->   	}
-> +
->   	skb->sk = sk;
->   
->   	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
-> -	__skb_put(skb, size);
-> +	__skb_put(skb, linear_sz);
-> +
-> +	if (unlikely(kattr->test.data_size_in > linear_sz)) {
-> +		void __user *data_in = u64_to_user_ptr(kattr->test.data_in);
-> +		struct skb_shared_info *sinfo = skb_shinfo(skb);
-> +
-> +		size = linear_sz;
-> +		while (size < kattr->test.data_size_in) {
-> +			struct page *page;
-> +			u32 data_len;
-> +
-> +			if (sinfo->nr_frags == MAX_SKB_FRAGS) {
-> +				ret = -ENOMEM;
-> +				goto out;
-> +			}
-> +
-> +			page = alloc_page(GFP_KERNEL);
-> +			if (!page) {
-> +				ret = -ENOMEM;
-> +				goto out;
-> +			}
-> +
-> +			data_len = min_t(u32, kattr->test.data_size_in - size,
-> +					 PAGE_SIZE);
-> +			skb_fill_page_desc(skb, sinfo->nr_frags, page, 0, data_len);
-> +
-> +			if (copy_from_user(page_address(page), data_in + size,
-> +					   data_len)) {
-> +				ret = -EFAULT;
-> +				goto out;
-> +			}
-> +			skb->data_len += data_len;
-> +			skb->truesize += PAGE_SIZE;
-> +			skb->len += data_len;
-> +			size += data_len;
-> +		}
-> +	}
->   
->   	data = NULL; /* data released via kfree_skb */
->   
-> @@ -1130,9 +1183,11 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->   	convert_skb_to___skb(skb, ctx);
->   
->   	size = skb->len;
-> -	/* bpf program can never convert linear skb to non-linear */
-> -	if (WARN_ON_ONCE(skb_is_nonlinear(skb)))
-> +	if (skb_is_nonlinear(skb)) {
-> +		/* bpf program can never convert linear skb to non-linear */
-> +		WARN_ON_ONCE(linear_sz == size);
->   		size = skb_headlen(skb);
-> +	}
->   	ret = bpf_test_finish(kattr, uattr, skb->data, NULL, size, retval,
->   			      duration);
->   	if (!ret)
+Tested-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+
+I am going to add the revert diff as a temporary patch to CI for now.
+
+Thanks!
+
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 93a25d87b86b..7707a95ca8ed 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5269,6 +5269,9 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
+ 	orig_bcast = is_multicast_ether_addr_64bits(eth->h_dest);
+ 	orig_eth_type = eth->h_proto;
+ 
++	xdp->rxq->mem.type = page_pool_page_is_pp(virt_to_page(xdp->data)) ?
++		MEM_TYPE_PAGE_POOL : MEM_TYPE_PAGE_SHARED;
++
+ 	act = bpf_prog_run_xdp(xdp_prog, xdp);
+ 
+ 	/* check if bpf_xdp_adjust_head was used */
+
+
 
 
