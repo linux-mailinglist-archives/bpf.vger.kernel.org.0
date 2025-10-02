@@ -1,229 +1,154 @@
-Return-Path: <bpf+bounces-70197-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70198-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19F28BB4597
-	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 17:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8F9EBB463C
+	for <lists+bpf@lfdr.de>; Thu, 02 Oct 2025 17:46:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41A7319E3F0D
-	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 15:31:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01B4419C518F
+	for <lists+bpf@lfdr.de>; Thu,  2 Oct 2025 15:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887682264CF;
-	Thu,  2 Oct 2025 15:30:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BCC2327A3;
+	Thu,  2 Oct 2025 15:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZYqJYnzZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BDPsa1vF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D777B1F19A;
-	Thu,  2 Oct 2025 15:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E74228C99;
+	Thu,  2 Oct 2025 15:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759419056; cv=none; b=N3uhE5Ua9Ekk6vFmCS1ED5hgggzxo7UNKv9VUlw6/DKx1h593uTMOHanmzNybe8s7aIR3QWtIYu6la+rxzd71txiZKezILr0mKHbNythI9h+1MiKbdihfiWlyUKJsMOFgaKbpVC68N+46C7C3kOvu4M20a3zMU7ZwbOJtCml/rU=
+	t=1759419973; cv=none; b=qdbd8G76AJe1YlOReJn24N2Sufuo7XFEUPMF5X4EFxTtJjja17GU9bh/h4zRCi/Et0vopzSv5l1dUs3Kjo7pPstxtVWrmScj1WO8mGgdPramF2cWXhYjR3S0JDv4QFaMSPf3N5fGL/7v+6HvNOIpZ4NO+2r3ecDEd6qrXtJiof4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759419056; c=relaxed/simple;
-	bh=vh0VVOO9+/7GWA6NXZ2Gf0cH0YvjpZ87GMq2P86zrH0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EkH7Cr0gM9sDY9OcHTYALi/Sr0Lntjm5mPAb74gDOsUbIZ+/iKuan8/4yGzxlA3ZCFPUXZoGQtA0pJQwI9fKun//DamRmeiNUFnf1nVyJmh4qQWjJMlgoO7LgBqjp36NeWFLF3T2dAFv6t/mwNds7ohELM7NToxpvU9FjkgQC6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZYqJYnzZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F305DC4CEFB;
-	Thu,  2 Oct 2025 15:30:52 +0000 (UTC)
+	s=arc-20240116; t=1759419973; c=relaxed/simple;
+	bh=4CLzShF5RIJyNi4NFhoaXpGPdvX8vc3yLN1v6Fum6es=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GZNXICRhgZY16TZCIxte/i8DX+lNSXyaDGzlqG0hxzIVFLa/jB5W0kh6R6TixQ6UBIO0OYnCKpstCwE7dlZY0Ygs/UHU7Z981QJkPooq7olocxRL8RmN73BM6KJkTGUERNIQKxU4r0RTX3Mcl3Gobrb0diQHspbpOcblfSd+9B4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BDPsa1vF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C491AC4CEF4;
+	Thu,  2 Oct 2025 15:46:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759419054;
-	bh=vh0VVOO9+/7GWA6NXZ2Gf0cH0YvjpZ87GMq2P86zrH0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZYqJYnzZ1w8DBAyona7bNafm4BWc3nYied2BuWTMMSmdekcl6ywbls5N8SnKajB+z
-	 B7qM+cJsPeewJOMXQV3x3od1Ll+5FO9juWsOIZLMKmVWJhETjDmgW2cVKJD7fSWhPH
-	 WuuKKfu1WCuRdh6gUenRDsRo9uBVtBrp2Tn5XAfaKayuaN0pYqFFK9TJEhoyzDwc5z
-	 maKfJnYayM8ekCD3G7zlaaY1rXQtp5604wiMpUlN9dIZ1vioQQizrp/a/HuCE5/ubF
-	 FNmpsWVKPQkngoqmzlb9xDtmqPg14z5wDMx8CTBzmlY3+doZ1KhdwFFzOBskdQRrJp
-	 rwX+QkfqUrzxQ==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Borislav Petkov <bp@alien8.de>,
-	Sasha Levin <sashal@kernel.org>,
-	yamada.masahiro@socionext.com,
-	michal.lkml@markovi.net,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	linux-kbuild@vger.kernel.org,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.17-6.6] Unbreak 'make tools/*' for user-space targets
-Date: Thu,  2 Oct 2025 11:30:08 -0400
-Message-ID: <20251002153025.2209281-21-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251002153025.2209281-1-sashal@kernel.org>
-References: <20251002153025.2209281-1-sashal@kernel.org>
+	s=k20201202; t=1759419973;
+	bh=4CLzShF5RIJyNi4NFhoaXpGPdvX8vc3yLN1v6Fum6es=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BDPsa1vF1kBbQYp4jb7XpH/DTJEhyWkvrSHRql5UDJjCofAWicEnEg2F/nnhEu03J
+	 L88vF1LbCZRL9a+FzDEBKqL+GqotW1SgTa0TalVs9PHQJguq9wO8FKWmkK/Ak5dcAX
+	 0HymDIJqU2VIVuhACvJRvWEH6OWReLSZk38PceTr9PD5f97XsWByFpi1BIMO5ipYZp
+	 JhQXHl3ywelIwQuBJRQn48uiRBNe5jdTBvg+V2DWImLRLU1fTGvrrVsaMX58V/yNor
+	 s9s+NalpY149uI59y7rnMY43e6PmF5FqYtCVVJxpzzNUN8ky4O9y1TaiKuku8QmfBM
+	 7TmnSeoXZn7oQ==
+Date: Thu, 2 Oct 2025 17:46:10 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 02/21] rcu: Re-implement RCU Tasks Trace in terms of
+ SRCU-fast
+Message-ID: <aN6eQuTbdwAAhxIj@localhost.localdomain>
+References: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
+ <20251001144832.631770-2-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.17
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251001144832.631770-2-paulmck@kernel.org>
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+Le Wed, Oct 01, 2025 at 07:48:13AM -0700, Paul E. McKenney a �crit :
+> This commit saves more than 500 lines of RCU code by re-implementing
+> RCU Tasks Trace in terms of SRCU-fast.  Follow-up work will remove
+> more code that does not cause problems by its presence, but that is no
+> longer required.
+> 
+> This variant places smp_mb() in rcu_read_{,un}lock_trace(), which will
+> be removed on common-case architectures in a later commit.
 
-[ Upstream commit ee916dccd4df6e2fd19c3606c4735282b72f1473 ]
+The changelog doesn't mention what this is ordering :-)
 
-This pattern isn't very documented, and apparently not used much outside
-of 'make tools/help', but it has existed for over a decade (since commit
-ea01fa9f63ae: "tools: Connect to the kernel build system").
+> 
+> [ paulmck: Apply kernel test robot, Boqun Feng, and Zqiang feedback. ]
+> [ paulmck: Split out Tiny SRCU fixes per Andrii Nakryiko feedback. ]
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Tested-by: kernel test robot <oliver.sang@intel.com>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: <bpf@vger.kernel.org>
+> ---
+[...]
+> @@ -50,12 +50,14 @@ static inline void rcu_read_lock_trace(void)
+>  {
+>  	struct task_struct *t = current;
+>  
+> -	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
+> -	barrier();
+> -	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
+> -	    t->trc_reader_special.b.need_mb)
+> -		smp_mb(); // Pairs with update-side barriers
+> -	rcu_lock_acquire(&rcu_trace_lock_map);
+> +	if (t->trc_reader_nesting++) {
+> +		// In case we interrupted a Tasks Trace RCU reader.
+> +		rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
+> +		return;
+> +	}
+> +	barrier();  // nesting before scp to protect against interrupt handler.
+> +	t->trc_reader_scp = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
+> +	smp_mb(); // Placeholder for more selective ordering
 
-However, it doesn't work very well for most cases, particularly the
-useful "tools/all" target, because it overrides the LDFLAGS value with
-an empty one.
+Mysterious :-)
 
-And once overridden, 'make' will then not honor the tooling makefiles
-trying to change it - which then makes any LDFLAGS use in the tooling
-directory break, typically causing odd link errors.
+>  }
+>  
+>  /**
+> @@ -69,26 +71,75 @@ static inline void rcu_read_lock_trace(void)
+>   */
+>  static inline void rcu_read_unlock_trace(void)
+>  {
+> -	int nesting;
+> +	struct srcu_ctr __percpu *scp;
+>  	struct task_struct *t = current;
+>  
+> -	rcu_lock_release(&rcu_trace_lock_map);
+> -	nesting = READ_ONCE(t->trc_reader_nesting) - 1;
+> -	barrier(); // Critical section before disabling.
+> -	// Disable IPI-based setting of .need_qs.
+> -	WRITE_ONCE(t->trc_reader_nesting, INT_MIN + nesting);
+> -	if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
+> -		WRITE_ONCE(t->trc_reader_nesting, nesting);
+> -		return;  // We assume shallow reader nesting.
+> -	}
+> -	WARN_ON_ONCE(nesting != 0);
+> -	rcu_read_unlock_trace_special(t);
+> +	smp_mb(); // Placeholder for more selective ordering
 
-Remove that LDFLAGS override, since it seems to be entirely historical.
-The core kernel makefiles no longer modify LDFLAGS as part of the build,
-and use kernel-specific link flags instead (eg 'KBUILD_LDFLAGS' and
-friends).
+Bizarre :-)
 
-This allows more of the 'make tools/*' cases to work.  I say 'more',
-because some of the tooling build rules make various other assumptions
-or have other issues, so it's still a bit hit-or-miss.  But those issues
-tend to show up with the 'make -C tools xyz' pattern too, so now it's no
-longer an issue of this particular 'tools/*' build rule being special.
+> +	scp = t->trc_reader_scp;
+> +	barrier();  // scp before nesting to protect against interrupt handler.
 
-Acked-by: Nathan Chancellor <nathan@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
+What is it protecting against interrupt?
 
-LLM Generated explanations, may be completely bogus:
+> +	if (!--t->trc_reader_nesting)
+> +		srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
+> +	else
+> +		srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
+> +}
 
-Based on my comprehensive analysis of this commit, here is my
-determination:
+Thanks (very happy to see all the rest of the code going away!)
 
-## **Backport Status: YES**
-
-### Detailed Analysis
-
-#### Historical Context
-The `LDFLAGS=` override was added in commit ea01fa9f63ae (2012) by
-Borislav Petkov with the comment "Clear a bunch of variables before
-executing the submake." This was done when the tools build system was
-first connected to the kernel build system. However, this override is
-now obsolete since modern kernel builds use `KBUILD_LDFLAGS` instead of
-`LDFLAGS` (Makefile:1447-1448).
-
-#### What the Commit Fixes
-
-**Build Errors**: The commit fixes link errors when using `make
-tools/all` or `make tools/<toolname>` from the top-level kernel
-directory. By overriding `LDFLAGS=` (setting it to empty), the top-level
-Makefile prevents tools' makefiles from setting their own linker flags,
-causing link failures.
-
-**Security Issue**: More critically, this prevents distribution-provided
-security flags from being applied. As demonstrated by commit
-0e0b27dbede5e ("tools/rv: Keep user LDFLAGS in build"), not honoring
-`LDFLAGS` causes tools to be built without PIE (Position Independent
-Executable), which prevents ASLR (Address Space Layout Randomization) -
-a critical security mitigation against ROP attacks.
-
-#### Evidence from Related Commits
-
-Multiple tools have had to work around LDFLAGS issues:
-- `d81bab116b485`: tools/bootconfig - explicitly specify LDFLAGS
-- `0e0b27dbede5e`: tools/rv - Keep user LDFLAGS (security: PIE not
-  enabled)
-- `9adc4dc96722b`: tools/runqslower - Fix LDFLAGS usage (caused link
-  failures)
-
-#### Alignment with Stable Kernel Rules
-
-From Documentation/process/stable-kernel-rules.rst:
-
-✅ **Line 18-20**: "It fixes a problem like... **a build error** (but not
-for things marked CONFIG_BROKEN)"
-
-✅ **Line 18**: "a real **security issue**" - Tools not being built with
-PIE/ASLR
-
-✅ **Line 10**: "obviously correct and tested" - Simple 2-line change,
-Acked-by Nathan Chancellor
-
-✅ **Line 11**: "cannot be bigger than 100 lines" - Only 4 lines changed
-total
-
-#### Risk Assessment
-
-**Risk: VERY LOW**
-- Removes obsolete override (kernel hasn't used LDFLAGS since switching
-  to KBUILD_LDFLAGS)
-- Only affects `make tools/*` pattern from top-level Makefile
-- Tools already work correctly with `make -C tools` pattern
-- Change makes behavior consistent between both invocation methods
-
-#### Code Analysis
-
-The change at Makefile:1447-1448:
-```diff
--$(Q)$(MAKE) LDFLAGS= O=$(abspath $(objtree)) subdir=tools -C
-$(srctree)/tools/
-+$(Q)$(MAKE) O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/
-```
-
-This allows tools makefiles like tools/perf/Makefile.perf:528 and
-tools/bpf/bpftool/Makefile:186 to properly use `LDFLAGS` during linking,
-including distribution-provided flags for hardening (PIE, RELRO, etc.).
-
-### Conclusion
-
-This commit **should be backported** because it:
-1. Fixes documented build errors (meets stable rule line 19-20)
-2. Addresses a security issue where tools aren't built with hardening
-   flags (meets stable rule line 18)
-3. Is minimal, safe, and obviously correct
-4. Has been Acked by a kernel maintainer
-5. Removes technical debt that has caused repeated issues across
-   multiple tools
-
-The commit already appears to have been selected for backport via
-AUTOSEL (evidenced by `Signed-off-by: Sasha Levin`), which is
-appropriate given it fixes both build failures and a security concern.
-
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 82bb9cdf73a32..76dddefde0540 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1444,11 +1444,11 @@ endif
- 
- tools/: FORCE
- 	$(Q)mkdir -p $(objtree)/tools
--	$(Q)$(MAKE) LDFLAGS= O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/
-+	$(Q)$(MAKE) O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/
- 
- tools/%: FORCE
- 	$(Q)mkdir -p $(objtree)/tools
--	$(Q)$(MAKE) LDFLAGS= O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/ $*
-+	$(Q)$(MAKE) O=$(abspath $(objtree)) subdir=tools -C $(srctree)/tools/ $*
- 
- # ---------------------------------------------------------------------------
- # Kernel selftest
 -- 
-2.51.0
-
+Frederic Weisbecker
+SUSE Labs
 
