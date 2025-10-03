@@ -1,114 +1,150 @@
-Return-Path: <bpf+bounces-70275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70276-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FD32BB5E2E
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 06:08:28 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19F1DBB5FC7
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 08:39:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AE6E24E467B
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 04:08:26 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B8BDF4E3080
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 06:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F5F19C569;
-	Fri,  3 Oct 2025 04:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aOEytGKB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0DB212551;
+	Fri,  3 Oct 2025 06:38:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A209A8462
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 04:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59261C84DC
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 06:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759464502; cv=none; b=Z/GD8aw/uKQ/ah0jFgif0Dumsdc+FGvVK3KxlShU9ySd8Y+kAc1ew7BJC46DXy6H+JitYQ9XjpShMeEmtN8L6U3OkdIvYreAnkeNgDNAgftq0i+k7abYRidOOvzWPVuQTtUUm5FCItJeggTj66hb579kwh3PLWYIAjuHbvIi5/I=
+	t=1759473536; cv=none; b=nZnBhpbhqUE20HfsDICdm+uKPIs7x8bOYHvjqHf8bEiq3Gi+0xifrRSYOch6vxfDJuxyzbcugsEtaQ7wm0lWOf5jcOSogs0+EN4a6iStjRIVa0j3TAm2x25t038OnaEgA3CGCaN7tmZ3V2zaEVqyFaNhz9CFrbUfRfy9D4QkArk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759464502; c=relaxed/simple;
-	bh=b8UTn+9EASzChdm62Qv3Al8vi42Bhz20c5CYXegPQRs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MlxUsjJ3Lh11UvazO7aYqAZQTYzmtw0OxnjNgi1KBgqoqxM0MY5A7f8vTA7aarrKby2t87q2MrklTSe0bxWOWpuMS0ShVesw9Nlkb8VcSw3bhPfCG0M0Gp49A0tsELk+2WPE5DSKa9R3YiUnclBSbCtHXfzvWPf1rQ33KkiTJY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aOEytGKB; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-78a9793aa09so2164194b3a.0
-        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 21:08:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759464500; x=1760069300; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yhJ+6VVwGfFZf1jd0Sg5lEe+K37tdEH6nqwWqT0zirY=;
-        b=aOEytGKBG9c0wduJVu3Bv4EO4rcs80+ndZsG38pqUlYD2aYN+Nv6DDprWysVtwJcp/
-         b2QuYTGxEYLsIWOpAi+IK+wN5rGi9SkND0QqVulP7+9HxCcuBoOZO5cKY8DxKS+KkKFG
-         VNbQhiQo7DcO5rZgukxyoZFKjuRk7xUA2zi7jXTfbzYicff5D2t1ps3EQjIyXUEdQwk1
-         jF+LTOeb8wsXozWC5q1G4nS9n1jk96TwZRplt1xMcaHaZJ36BxeFTnwR3ldtxQ+Gmdd0
-         iA1nGZ6v6vBeh7xJeLxEFkTcxU7/CTXZucvn1UcD7HlAuchIPY6SbaNAEVVmTb3rDR46
-         UYWQ==
+	s=arc-20240116; t=1759473536; c=relaxed/simple;
+	bh=sS1ci1fRdSyD3bQx+U/qc6pnPlcVXnmRqmrpoymCKQ0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=R9Uog3tZEveJCBeFfBTMaAkgNrSSQ0+I6B8zG7iP/1RCANQQenB/t0/EP8+eESJV6k7zNYTjkYPPlan7WA/xp6N0jsafIwm3tQxxb8ibwAF50FR+JvJ5zqWSS1oY9diHby4TfkIO8fDeKLNC8nmOXmgtsQyx53KpvYU0I8qD028=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-4257e203f14so64927675ab.2
+        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 23:38:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759464500; x=1760069300;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yhJ+6VVwGfFZf1jd0Sg5lEe+K37tdEH6nqwWqT0zirY=;
-        b=bvQmX34vI1byYEmk/Y9cZBsXMBUvY/nJuw4h+qzRffJkGSL3tRIz0pVyEUPGdlKZR3
-         L8QCmsWuj6a8qeo6j1iSzhT3BwX30a9Q5UfYcEsS2uBHju2hF6QEkw/33daRfRa/ZZ8J
-         aBWg7OZSI/zk/LA7mO+pNfnYhRX4P9zkTevtyu+kb2HAsPaZRZ4ry7uKVgJsMT0+Nlbc
-         9sM9ldlU7HpVgneFf0iOAAXNQ5n/5gvISxA5ZLHJDx4oN0Y2OYBrHNM1j5mBykz5T6cv
-         ab2seXjnwTJ/JQxsEkO+EClyJRuCXDfV4qy1xHT5tQFo+xJznB69M31ytm5LE8PqsosD
-         TAkw==
-X-Forwarded-Encrypted: i=1; AJvYcCUhreM3C1cwBigWU24W/SPI6kP1e25Gn7M0xuJ67Mm1elG+cr5+LXLnNDg3SY5e5wc9Xjk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTbntBjR7Irf1Y+n60ZThM1Rs61No2IfDfEAroLoBSeyiu3P5o
-	7n8N5hAMcfftn6OYibV+Ep2qvpa/ZiT194vecZC4L/o32mFO92s+Ptyy
-X-Gm-Gg: ASbGncsceiZrOC9lk2dbcgPtIM7PzZ6KUeseOjiyWEjRtw91WK7WLYwO+rqY1rauM1C
-	J1QvyEXi8oALN53nzyDYcxVzXH+9lNWVSPdIyoLx52Wg5hTax076sq5+plBtSnhVe0uT7Iz+oi3
-	sPdY99Gkdft74uuha13Hi1FyaKVNlh8GAx9cXtRhPNhGog2omskNQ4lu+OLJ9Hsvcwz4Uo99eKs
-	TpYoYWuEbmxIUaH2p8Hb8aFf7MUoIgyr363PAr1bzJU6ZDmr/XnxmJZSDh0eX62WCeryA6vykGo
-	PwyhRHlYghVD4CS7cqjIVRflYTYw3au1MNMmXcmlS2xMh8Aau2sauE5PWOJoReddKX4Nm1tvOAS
-	3eULIgqCfTmG9WJ4UEydO+9QPmp2h27xcuX2j50eOLTu3
-X-Google-Smtp-Source: AGHT+IFlLViM2A6SdjJQjR6hGOzMNBkc078E3B9V3u2/DzpqdwEzzZqxF2hQqrfrgIpGor7I6ihVbA==
-X-Received: by 2002:a05:6a20:12d2:b0:2f5:e435:405c with SMTP id adf61e73a8af0-32b61e5492cmr2170290637.15.1759464499812;
-        Thu, 02 Oct 2025 21:08:19 -0700 (PDT)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6099ad9573sm3264626a12.9.2025.10.02.21.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Oct 2025 21:08:19 -0700 (PDT)
-Message-ID: <cc10f57ca0e61bcee54d2f0e6da7e5df6c36ecd8.camel@gmail.com>
-Subject: Re: [PATCH bpf] bpf: Correctly reject negative offsets for ALU ops
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yazhou Tang <yazhoutang@foxmail.com>, yonghong.song@linux.dev, 
-	ast@kernel.org
-Cc: andrii@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
- kpsingh@kernel.org, 	martin.lau@linux.dev, sdf@fomichev.me,
- shenghaoyuan0928@163.com, song@kernel.org, 	tangyazhou518@outlook.com,
- ziye@zju.edu.cn
-Date: Thu, 02 Oct 2025 21:08:16 -0700
-In-Reply-To: <tencent_2F76E206702452E76A0A4F9A4C815F4CC008@qq.com>
-References: <77da14fed4467c76d6f8f55a620f79988f0fe04d.camel@gmail.com>
-	 <tencent_2F76E206702452E76A0A4F9A4C815F4CC008@qq.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1759473534; x=1760078334;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2436xm47D+NLByyO4GjfDPKkGJK+dE9wS00HxK9m1Q4=;
+        b=GAAbdj8xWl1Wg51K236tV/TXynMPwCMAzjkuB+jM9LwgX/kml9zuotahhgNRpH2Awp
+         SY1euQIJG3q1U3vAZbyXWmC1FjpaVqQwSHoVQ4tEVTVoytJdChOnnWMTHERlimKgpQPS
+         VXmEKonp0B1MC2GewQKMrdRxceXSSIKkYRP9iI8MhcpSPtaUwFPF8wGM/IC0ncSiuQcy
+         XOIR9S1G2OUJnMyr011MEwfIwseLRQDckmrXQcBsl29+6twW7x74CGDkJJnT1V2s0Esz
+         hS7yPIDoP8np75xKDK6K/7xpSMzj7nVyCFjVhAeVbhUw/IE64QZFHs5vOK9Ihi0bepij
+         M8Cw==
+X-Forwarded-Encrypted: i=1; AJvYcCXNeG8amnxoSvx/6v4QAD8+5BrHlLE0A4f9qEsUME6bg+5RKYaMi8O5JytnPFbmF/YEm+U=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yywtp1h0Mjrs8Mjp2LsR8aF8NGzr44TYBnrxJKU+tc28A+7OskK
+	5W3f9k+/zr4rVmJQE1BDNTzTHC4xIOoNYHNlsMHZcruqSW2zLEC6DeX0SO3Qd1ESNOkDIxbBpZV
+	8ZZxrlrTyaQ6BEkLS8dxCbcWwv8JRtXEadM+X3/4zpwmdomKu5fFPWapY4tc=
+X-Google-Smtp-Source: AGHT+IG/YD4xfJmVJxex+ojRpvv3NkHtyFlOMf9aEVCMYEeDVC+l2sWH0rkeLI/I5EuD9MwrUuXhksVgqTLJ/p4cTvkqkCovoxWG
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1a6b:b0:427:a3ef:5701 with SMTP id
+ e9e14a558f8ab-42e7ad2ba96mr26105215ab.14.1759473533863; Thu, 02 Oct 2025
+ 23:38:53 -0700 (PDT)
+Date: Thu, 02 Oct 2025 23:38:53 -0700
+In-Reply-To: <20251002154841.99348-1-leon.hwang@linux.dev>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68df6f7d.050a0220.2c17c1.001b.GAE@google.com>
+Subject: [syzbot ci] Re: bpf: Extend bpf syscall with common attributes support
+From: syzbot ci <syzbot+ci17fb38a78c944e07@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, leon.hwang@linux.dev
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 2025-10-03 at 11:12 +0800, Yazhou Tang wrote:
+syzbot ci has tested the following series
 
-Hi Yazhou,
+[v3] bpf: Extend bpf syscall with common attributes support
+https://lore.kernel.org/all/20251002154841.99348-1-leon.hwang@linux.dev
+* [RFC PATCH bpf-next v3 01/10] bpf: Extend bpf syscall with common attributes support
+* [RFC PATCH bpf-next v3 02/10] libbpf: Add support for extended bpf syscall
+* [RFC PATCH bpf-next v3 03/10] bpf: Refactor reporting log_true_size for prog_load
+* [RFC PATCH bpf-next v3 04/10] bpf: Add common attr support for prog_load
+* [RFC PATCH bpf-next v3 05/10] bpf: Refactor reporting btf_log_true_size for btf_load
+* [RFC PATCH bpf-next v3 06/10] bpf: Add common attr support for btf_load
+* [RFC PATCH bpf-next v3 07/10] bpf: Add warnings for internal bugs in map_create
+* [RFC PATCH bpf-next v3 08/10] bpf: Add common attr support for map_create
+* [RFC PATCH bpf-next v3 09/10] libbpf: Add common attr support for map_create
+* [RFC PATCH bpf-next v3 10/10] selftests/bpf: Add cases to test map create failure log
 
-> As I'm still new to the community, I'm learning to keep up with the
-> pace and workflow. Thanks again to everyone involved for your help
-> and understanding.
+and found the following issue:
+WARNING in map_create
 
-Thank you for identifying and fixing the issue.  Usually there is no
-such hurry, and waiting a day or two is not an issue.  If you need any
-help with selftests setup, please let me know.
+Full report is available here:
+https://ci.syzbot.org/series/71cc3485-c0bb-4e81-ab58-5a3a9b5a785c
 
-Thanks,
-Eduard.
+***
+
+WARNING in map_create
+
+tree:      bpf-next
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf-next.git
+base:      4ef77dd584cfd915526328f516fec59e3a54d66e
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/f37ac003-a816-47bc-ba46-fe604a617a93/config
+C repro:   https://ci.syzbot.org/findings/bbf6cd34-205b-4dba-a0c6-10559caa70de/c_repro
+syz repro: https://ci.syzbot.org/findings/bbf6cd34-205b-4dba-a0c6-10559caa70de/syz_repro
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5987 at kernel/bpf/syscall.c:1470 map_create+0x12b3/0x17a0 kernel/bpf/syscall.c:1470
+Modules linked in:
+CPU: 1 UID: 0 PID: 5987 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:map_create+0x12b3/0x17a0 kernel/bpf/syscall.c:1470
+Code: e8 82 26 ef ff 85 ed 74 29 e8 39 22 ef ff 48 8b 1c 24 48 89 df e8 5d c7 ab 02 4c 8b 64 24 08 e9 7b ff ff ff e8 1e 22 ef ff 90 <0f> 0b 90 e9 d4 f3 ff ff 48 8b 1c 24 48 89 df e8 d9 db 00 00 48 8b
+RSP: 0018:ffffc90002d2fc20 EFLAGS: 00010293
+RAX: ffffffff81d0a382 RBX: 0000000000000001 RCX: ffff888020e55640
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: ffff888020e55640 R09: 0000000000000002
+R10: 0000000000000021 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffc90002d2fd00 R14: 0000000000000000 R15: ffffc90002d2fd40
+FS:  0000555569a59500(0000) GS:ffff8881a3c0f000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8bbc12acf0 CR3: 000000010cfb0000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ __sys_bpf+0x966/0xe00 kernel/bpf/syscall.c:6305
+ __do_sys_bpf kernel/bpf/syscall.c:6450 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6447 [inline]
+ __x64_sys_bpf+0xba/0xd0 kernel/bpf/syscall.c:6447
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f8bbc18eec9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe6b9b55a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f8bbc3e5fa0 RCX: 00007f8bbc18eec9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f8bbc211f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f8bbc3e5fa0 R14: 00007f8bbc3e5fa0 R15: 0000000000000003
+ </TASK>
+
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
