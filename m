@@ -1,165 +1,193 @@
-Return-Path: <bpf+bounces-70318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70319-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C40A4BB7BDE
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 19:29:33 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52088BB7C59
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 19:36:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 877824E974B
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 17:29:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1CAB14EACAD
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 17:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E552DAFA5;
-	Fri,  3 Oct 2025 17:29:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QuIjM07x"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A8E2DA76B;
+	Fri,  3 Oct 2025 17:36:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D162DA751
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 17:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131D83B186
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 17:36:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759512565; cv=none; b=b4DVLCQikAiDGKVPXh31l3el06jwXlq9AQHkBMUJcCuwmDw93tSO65k7HiGjA0CCEFFc8CG8S392mftbpxiebvMy1x+LArMX7uP5CPRaigfzbYQl9JsPnP/r6XGTIEwx4bo78/aUlOQeXufjUHZROFEylCK7J2iaBr13OVn5aoE=
+	t=1759512995; cv=none; b=JX4JXVvsTrayG4ONS15TyKkbX34ismcYBbI71RExlmdH3CHjP9m+Z1XaY2XS06eIlF2Q4UjwsyW6DhKwnLTWOd2L4GzcI11UZBjw02HwbfzToBIcxE4OVO6GxGBOrs7k7WjNxmU1q1BOcGWbhierdDq4HkOeFnLj6wu3Rdqlzbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759512565; c=relaxed/simple;
-	bh=1Z1eZgXUHbUhnt6ifRLgYY1bBpQ7uOGH6Pqiebn6sXs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dkMB93tW3fN5/N8G8sGbsX9eHQaoOKhk87NgQpIsg/ftYfUC77aoB061vibf0KOsT01iMW1PUJQdGkNJe8RnIu2vAMiI9gRm5qsZXMlBpi+1pEH2mJAwSoEw9jhhoFDWTuV+i5DFgk75ER4IOVKjtX1pBnjY6m/J4zO1OGCJgTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QuIjM07x; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-46e4ad36541so28143485e9.0
-        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 10:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759512562; x=1760117362; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BLx0sPfJY19ZneLVq1waLS70fIlfMNWcd5huW0a4ZEY=;
-        b=QuIjM07xjJTmfIrnQR3EvK2scLSxqyNlBoHFsG9ROYsXOWJPdejEubRTYkiHQ7NEXd
-         W+lIlRo8t6S+CNiU0osJ19hvsilUFjvbDcr5utnc2YbGMi3FHi0uQoel3s1q4sjdRSs5
-         eLgI3p62lMP316xqNE5v54EMmNsmyJc6wrXS/2T0++F4LCdE6/MEwF4aeXt3Y9Q7Gd8/
-         dlY7m8xrq2JWT+ExBD38YLx7kEcX8QWHnvHSio6iBlOamAsZONZqiJoE+jZZAPPup36D
-         vkKGbMvplfBieyERTfi6y9wYK6o0AJkmb8Ami78AXI0u5nILJ+0UU8kFYjBCJFY/8qpT
-         Ardw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759512562; x=1760117362;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BLx0sPfJY19ZneLVq1waLS70fIlfMNWcd5huW0a4ZEY=;
-        b=GS3/Xw5scLk4EkLywdY6GIAWWT91jdODznHs5SqQLfCLkqWv/r4okL64k8HPB1pU+o
-         FyVhjlQzu05SXSIFB09sMzmHjUjXYTdRdDzWpy01NE4LPeFuny8GookZGsJ9HFFenXxx
-         /ab+sz8rC1I7323qQ29HN+ZGJpkYlXb6RvgXt0sy7pShRTlDh3N7xIo9qNnAaVhD6kIl
-         eUBdipMleZjcn9eq9LQw+eF63XMUjziy2sGDaO6zqszjzUFFZL0VE/whUf6miIh3dNpR
-         9Sz0wFlcyGEJOEcHvnzKD9E79IyGS9Cfjd7f1accNZbZucunE/stgQwOgBVXr7ZYepM9
-         sMRw==
-X-Gm-Message-State: AOJu0Yx4k2cdHIUh9u1uh8To1+8SEZmNps5Qqhx9NrQrIpOlrso1Couj
-	lSvv9ETxcXw+HhiEmgmm2VzoQ7x4qyxBxk40DTl6lard+IrJYCVJ5n62nA720+iN5ScZbtW6l/e
-	uEXyzS84ApIkhwTydhxRGN81+HwwjzOs=
-X-Gm-Gg: ASbGncttAPOdy3fi5O2vN5aF5VaGFIChbvkB5kptbeJwVp15wilT0F5QsktvT/PnGUY
-	Ls0b4bGypdQ5CseA+rptNYkL5Y/TjEIjcvif2RmkUecYQkq2vAfvzdEQHmMKO3/7LczdiMXWtO+
-	rsVYaIZnKBx7kgPVqaxSBOxhjaPkXsftZ2zGFo8sWC6zzBNff2NtFxblL+I+GJzdqzkBlTTI8Z9
-	bOE8kz+p5b0ei6ZQz/3XsxWiX3v3+zUDwej+nqLb2GoJ8qZSoIHEB5ejg==
-X-Google-Smtp-Source: AGHT+IFvUiOcacXwaHUMPjIbZAC1OpVWo3koSYKr+TsLcvQurc+EbgJSVBHYh7uNlChXhPHr/kAaaE2ILBWf0uEHlSQ=
-X-Received: by 2002:a05:600c:8b6e:b0:46e:4499:ba30 with SMTP id
- 5b1f17b1804b1-46e71153ad0mr27796655e9.30.1759512561771; Fri, 03 Oct 2025
- 10:29:21 -0700 (PDT)
+	s=arc-20240116; t=1759512995; c=relaxed/simple;
+	bh=a/Mu5+DheXOpB8i1cu1MymCnwGhkdja/MOucTZPGgJs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fae/OXrRDRIr568HjXXXSVFEbfZI+bMHwtTch3d4wuaYWaEsggsMvmqD2ZaWk8trmbtY/WEV9VJqTb8kXAr56c7VITfElrqcUfs9MziSPrRCm+h8ZjB9E+sDOfRxzOMaKN8h0mFnPAsipg0UtGE+RFe6H/KxD8SG4bWrRQgPePI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id B99761180DD6F; Fri,  3 Oct 2025 10:36:20 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: Alan Maguire <alan.maguire@oracle.com>,
+	Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+	dwarves@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com
+Subject: [PATCH dwarves] pahole: Avoid generating artificial inlined functions for BTF
+Date: Fri,  3 Oct 2025 10:36:20 -0700
+Message-ID: <20251003173620.2892942-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251003140243.2534865-1-maciej.fijalkowski@intel.com> <20251003140243.2534865-2-maciej.fijalkowski@intel.com>
-In-Reply-To: <20251003140243.2534865-2-maciej.fijalkowski@intel.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 3 Oct 2025 10:29:08 -0700
-X-Gm-Features: AS18NWAYIb2kWQ3CTUdycIF8K0dYH7l-Aatdyqmy8xN3LnrgUgTCfZNHar8kh2k
-Message-ID: <CAADnVQLGocfOT224=9_nJZ6093QDh1M_EDLQ3cNVQZKEDnjwog@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] xdp: update xdp_rxq_info's mem type in XDP
- generic hook
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Stanislav Fomichev <stfomichev@gmail.com>, Alexander Lobakin <aleksander.lobakin@intel.com>, 
-	syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, Octavian Purdila <tavip@google.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 3, 2025 at 7:03=E2=80=AFAM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> Currently, generic XDP hook uses xdp_rxq_info from netstack Rx queues
-> which do not have its XDP memory model registered. There is a case when
-> XDP program calls bpf_xdp_adjust_tail() BPF helper that releases
-> underlying memory. This happens when it consumes enough amount of bytes
-> and when XDP buffer has fragments. For this action the memory model
-> knowledge passed to XDP program is crucial so that core can call
-> suitable function for freeing/recycling the page.
->
-> For netstack queues it defaults to MEM_TYPE_PAGE_SHARED (0) due to lack
-> of mem model registration. The problem we're fixing here is when kernel
-> copied the skb to new buffer backed by system's page_pool and XDP buffer
-> is built around it. Then when bpf_xdp_adjust_tail() calls
-> __xdp_return(), it acts incorrectly due to mem type not being set to
-> MEM_TYPE_PAGE_POOL and causes a page leak.
->
-> For this purpose introduce a small helper, xdp_update_mem_type(), that
-> could be used on other callsites such as veth which are open to this
-> problem as well. Here we call it right before executing XDP program in
-> generic XDP hook.
->
-> This problem was triggered by syzbot as well as AF_XDP test suite which
-> is about to be integrated to BPF CI.
->
-> Reported-by: syzbot+ff145014d6b0ce64a173@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/netdev/6756c37b.050a0220.a30f1.019a.GAE@g=
-oogle.com/
-> Fixes: e6d5dbdd20aa ("xdp: add multi-buff support for xdp running in gene=
-ric mode")
-> Tested-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> Co-developed-by: Octavian Purdila <tavip@google.com>
-> Signed-off-by: Octavian Purdila <tavip@google.com> # whole analysis, test=
-ing, initiating a fix
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com> # commit=
- msg and proposed more robust fix
-> ---
->  include/net/xdp.h | 7 +++++++
->  net/core/dev.c    | 2 ++
->  2 files changed, 9 insertions(+)
->
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index f288c348a6c1..5568e41cc191 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -336,6 +336,13 @@ xdp_update_skb_shared_info(struct sk_buff *skb, u8 n=
-r_frags,
->         skb->pfmemalloc |=3D pfmemalloc;
->  }
->
-> +static inline void
-> +xdp_update_mem_type(struct xdp_buff *xdp)
-> +{
-> +       xdp->rxq->mem.type =3D page_pool_page_is_pp(virt_to_page(xdp->dat=
-a)) ?
-> +               MEM_TYPE_PAGE_POOL : MEM_TYPE_PAGE_SHARED;
-> +}
+In llvm pull request [1], the dwarf is changed to accommodate functions
+whose signatures are different from source level although they have
+the same name. Other non-source functions are also included in dwarf.
 
-AI says that it's racy and I think it's onto something.
-See
-https://github.com/kernel-patches/bpf/actions/runs/18224704286/job/51892959=
-919
-and
-https://github.com/kernel-patches/bpf/actions/runs/18224704286/job/51892959=
-937
+The following is an example:
 
-click on 'Check review-inline.txt'
+The source:
+=3D=3D=3D=3D
+  $ cat test.c
+  struct t { int a; };
+  char *tar(struct t *a, struct t *d);
+  __attribute__((noinline)) static char * foo(struct t *a, struct t *d, i=
+nt b)
+  {
+    return tar(a, d);
+  }
+  char *bar(struct t *a, struct t *d)
+  {
+    return foo(a, d, 1);
+  }
+=3D=3D=3D=3D
+
+Part of generated dwarf:
+=3D=3D=3D=3D
+0x0000005c:   DW_TAG_subprogram
+                DW_AT_low_pc    (0x0000000000000010)
+                DW_AT_high_pc   (0x0000000000000015)
+                DW_AT_frame_base        (DW_OP_reg7 RSP)
+                DW_AT_linkage_name      ("foo")
+                DW_AT_name      ("foo")
+                DW_AT_decl_file ("/home/yhs/tests/sig-change/deadarg/test=
+.c")
+                DW_AT_decl_line (3)
+                DW_AT_type      (0x000000bb "char *")
+                DW_AT_artificial        (true)
+                DW_AT_external  (true)
+
+0x0000006c:     DW_TAG_formal_parameter
+                  DW_AT_location        (DW_OP_reg5 RDI)
+                  DW_AT_decl_file       ("/home/yhs/tests/sig-change/dead=
+arg/test.c")
+                  DW_AT_decl_line       (3)
+                  DW_AT_type    (0x000000c4 "t *")
+
+0x00000075:     DW_TAG_formal_parameter
+                  DW_AT_location        (DW_OP_reg4 RSI)
+                  DW_AT_decl_file       ("/home/yhs/tests/sig-change/dead=
+arg/test.c")
+                  DW_AT_decl_line       (3)
+                  DW_AT_type    (0x000000c4 "t *")
+
+0x0000007e:     DW_TAG_inlined_subroutine
+                  DW_AT_abstract_origin (0x0000009a "foo")
+                  DW_AT_low_pc  (0x0000000000000010)
+                  DW_AT_high_pc (0x0000000000000015)
+                  DW_AT_call_file       ("/home/yhs/tests/sig-change/dead=
+arg/test.c")
+                  DW_AT_call_line       (0)
+
+0x0000008a:       DW_TAG_formal_parameter
+                    DW_AT_location      (DW_OP_reg5 RDI)
+                    DW_AT_abstract_origin       (0x000000a2 "a")
+
+0x00000091:       DW_TAG_formal_parameter
+                    DW_AT_location      (DW_OP_reg4 RSI)
+                    DW_AT_abstract_origin       (0x000000aa "d")
+
+0x00000098:       NULL
+
+0x00000099:     NULL
+
+0x0000009a:   DW_TAG_subprogram
+                DW_AT_name      ("foo")
+                DW_AT_decl_file ("/home/yhs/tests/sig-change/deadarg/test=
+.c")
+                DW_AT_decl_line (3)
+                DW_AT_prototyped        (true)
+                DW_AT_type      (0x000000bb "char *")
+                DW_AT_inline    (DW_INL_inlined)
+
+0x000000a2:     DW_TAG_formal_parameter
+                  DW_AT_name    ("a")
+                  DW_AT_decl_file       ("/home/yhs/tests/sig-change/dead=
+arg/test.c")
+                  DW_AT_decl_line       (3)
+                  DW_AT_type    (0x000000c4 "t *")
+
+0x000000aa:     DW_TAG_formal_parameter
+                  DW_AT_name    ("d")
+                  DW_AT_decl_file       ("/home/yhs/tests/sig-change/dead=
+arg/test.c")
+                  DW_AT_decl_line       (3)
+                  DW_AT_type    (0x000000c4 "t *")
+
+0x000000b2:     DW_TAG_formal_parameter
+                  DW_AT_name    ("b")
+                  DW_AT_decl_file       ("/home/yhs/tests/sig-change/dead=
+arg/test.c")
+                  DW_AT_decl_line       (3)
+                  DW_AT_type    (0x000000d8 "int")
+
+0x000000ba:     NULL
+=3D=3D=3D=3D
+
+In the above, there are two subprograms with the same name 'foo'.
+Currently btf encoder will consider both functions as ELF functions.
+Since two subprograms have different signature, the funciton will
+be ignored.
+
+But actually, one of function 'foo' is marked as DW_INL_inlined which mea=
+ns
+we should not treat it as an elf funciton. The patch fixed this issue
+by filtering subprograms if the corresponding function__inlined() is true=
+.
+
+This will fix the issue for [1]. But it should work fine without [1] too.
+
+  [1] https://github.com/llvm/llvm-project/pull/157349
+---
+ btf_encoder.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/btf_encoder.c b/btf_encoder.c
+index 0bc2334..18f0162 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -2652,6 +2652,8 @@ int btf_encoder__encode_cu(struct btf_encoder *enco=
+der, struct cu *cu, struct co
+ 		 */
+ 		if (fn->declaration)
+ 			continue;
++		if (function__inlined(fn))
++			continue;
+ 		if (!ftype__has_arg_names(&fn->proto))
+ 			continue;
+ 		if (funcs->cnt) {
+--=20
+2.47.3
+
 
