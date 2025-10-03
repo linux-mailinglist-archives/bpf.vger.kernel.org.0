@@ -1,210 +1,138 @@
-Return-Path: <bpf+bounces-70337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39A53BB7F30
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 21:02:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08FEDBB7F76
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 21:17:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5593E4EEC8E
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 19:02:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD321481A0E
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 19:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A691DE8BB;
-	Fri,  3 Oct 2025 19:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E4A217F29;
+	Fri,  3 Oct 2025 19:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Db1xH1E+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ApzJVCIx"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B82985260
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 19:02:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5651F4165
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 19:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759518163; cv=none; b=DMqBJzD4Uw/WAbPnhS5S1qjUb4Y3Va8W4Jv/CONi/USEswCMerjyNeA3yAnSy+4ZcFUVIVHJQVi1lPdyrG35CXxD5ZukI/VCrMCLH7qe3dq77j+YtjCnjH9dDM8LHknCgpRKjJLp3JMmkqy5m6Ut0nmrZuWbHGEe0fKboYllFUU=
+	t=1759519033; cv=none; b=OVKrMVRVbO1eLEPzIOrU3c0CYHLj3j6y/0urKMZHUrMoOOJ63LGUkGGKUkKVMIkVOzrdWmBs9om1b7nLnHm8JfBUfsx+1lVPn/KboVjKxBFaa8tO9ICRKHYSDk9GJ+dfIPllqQ7RUZQ7oqP17HAePn9FcNz156KKFrTcxeqX8HQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759518163; c=relaxed/simple;
-	bh=aNvqNkT5Habi6s8YHYtkgT2tZNgOToqzldxt1NLJSy0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hpxDv0SOZg0Jlha2eqU3bqr3lYkGXY8PU9IVsQ+/H6rrC3LOEZiWzSkg+b12iVsFI/1dolxPnr8FjI7zVYhIhzwUfgL6t6/SAdFRFbs50bqfCUUZ/60vBmtVoexg3Uo7a6VwbXhmSTbH6LZDDoLBo7AXwd/xucKy0xSsivmSMf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Db1xH1E+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD413C4CEFD
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 19:02:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759518162;
-	bh=aNvqNkT5Habi6s8YHYtkgT2tZNgOToqzldxt1NLJSy0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Db1xH1E+8uzR9hXa2wHPZd7Io9zTjdrVJap3ibN4nch824G8VTdJoUQhN4FgkbIu2
-	 88896kJidX8r0wSismtnplUiOhwIGaOJ+7bskFpE1Ek2WyosNU4PmmXBoDQyiQh8rm
-	 GYhpSeh+qkkRHuWybDCJWtXAuwS4lZ4e5A7FNAdyV8XUuGGF04ukghA2LkgA9bVy7j
-	 5+t/fixSUv6iAeZxjd1j0cEcRoNT+cGv6aah7cT4gizBS8Tsw4J7iy2oO3nJdwCaCn
-	 uTKPepc2/xVrwwm/9gEdQlXwGcDaKzBFDn3JgwayQC7n1TL1afwWS7inmruB1iUikv
-	 g/7VJ8gC3KhCw==
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-41174604d88so1399510f8f.2
-        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 12:02:42 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWTDwEUcwCMkTAlZYY39m7WNbBJbhuCC1I3Pd43EV0/x07ArWiQswoxcD7Bm73li8pZKxQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNsHeoDqsr86moxmhRxy6bAv88EAO32+icIeyZT81AKjgTGhwN
-	yIl9PK64QfwD4bpPyRM5R4gHSWDxklHb0ghNwdybxwmVy03r3qm2xJkGlB0uW9P8nihuKT+FH1y
-	eWbP4Nm1aDDW9zqmauzfRapeT2EJmp9lbKCMdy5YN
-X-Google-Smtp-Source: AGHT+IFjcoClIXjqWuHwPuFpTuc9prkzQ3jPOykGjzSm4s2ipT01a6z3ViHn1uMUhO1GIi4WAcYrA1/E0mXqa46FYIY=
-X-Received: by 2002:a05:6000:420a:b0:424:2275:63c7 with SMTP id
- ffacd0b85a97d-425671d6c24mr2621306f8f.56.1759518161289; Fri, 03 Oct 2025
- 12:02:41 -0700 (PDT)
+	s=arc-20240116; t=1759519033; c=relaxed/simple;
+	bh=gdtWHeL4Ll9VQTBhjR6XWZeQhk3nZ9Mr5PYqDE/AMjs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=chRTFFEPUKo1GovJSr9BNJwIzthUBMnYTLI1DOdWYgizXX6x0F8pjOR8og14QscrJHZqA1XCkE6KSn1qEeIskjQpvgYQkdaJiqrYix+pP7VC3oRYdcrSEAdfuj1Zap0tefb9nWDpoaGDAjdnBY/RIbhdrL6mtFMyRmdpUPPhxzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ApzJVCIx; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3ed20bdfdffso2394858f8f.2
+        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 12:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759519030; x=1760123830; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ejVen+2WCs9uB0tmZkymi1DM7ul4TRBrWzfrX5QKQ1o=;
+        b=ApzJVCIxAMCs+2t66KsfupmR9dXvFwFxtjynQbA6v4UMwECeAEYejIjtS1I35QjYaH
+         FGIb7Lrbti5jIM/g07RiC0CgSHJ3vN2xE5xF+kn8o882OiBi+x7RzVoZahWWlJ7cNmwz
+         52o9rWvHBb3ErLCZwrz8CXBwh6Hl7vXUSKBAft6G22mA6dmY9/mlQuJka7ZE3l87tMuQ
+         ToWeQq9mU1Ne946vDOUCV6XG4iNyJzhsG5jC09AU5kv7lImRbg9P83Z5wiIHpR9BD8Zi
+         mxcB8gMS7hVyKQyn7+avBqxSx8HbBdcsYNAQ/x+39YXlqT7gCsKaDzNtxAKxNPaDbDPN
+         hCBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759519030; x=1760123830;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ejVen+2WCs9uB0tmZkymi1DM7ul4TRBrWzfrX5QKQ1o=;
+        b=gDnvl4xAbdvv1GpaOcVYuwiU3305Qz7cTO0SJz27WDgQYF+N4Nt2xUHdUrljmI6+Wx
+         xdIfSgvn/klezZSCbxVG+PbFx5qbt+XlxUq3G/jbXR3L91+CK/zSQ/H6JCju/CwdCYGv
+         clJ8ujwUtJi8SToFIc4yYmILsffEoLz/AvHXdHh7eq3FeWTI1PKluwmHle7I2DhOBJEn
+         v0v2UKXOqlvT5H4E18j7+7Bivrjwbu/DCbgnMVDtKZkBkmY3Zqa84MeAq0wM5xmWSwOT
+         PLGT3FMeCwIKc40M7PHwcpUfq2hjZ/zk6t72PllRL3r2fa4Oc/EtGOVDH6DySH7gHBlm
+         D57g==
+X-Forwarded-Encrypted: i=1; AJvYcCXHsiw1byi6tSwO/PDE7BhPqkRCbwwvpxA5xuy2ArJE/2E8UDmVIAl/6+4VC8DhFv/sWxQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+Lwr+1E0TzwXgQAnCthRE+gl+7EYWZ5PSd+XrdSea+cadLJ1n
+	A/ZqJaUy0HLmoGlrIzyfdyVJG6mvUlAa/M1kvygREKGzGSX3eJt2vAKH
+X-Gm-Gg: ASbGncsCYQ2a/z0I9+DdOD3PM3SYWoYECsmilGBKwCCqe7hiURrg86feX80kk+br8eD
+	1lSFK6blc8z+Momg2z4ZZOXxRkrNg5oz23KKISCWUR3rf0uloWpvi6SZljcuoLC0suh+SVMfABk
+	gBzdo3y57hZv4jBWQVDJMX/HwvTfbO4EVUl69pvQFBugW+N8ibrA7yoxElrBy2jfAHwQl0ZlyyN
+	13TeF7SNsIUtqzYjPVhzQlQTpl2dHbXjp0+MEDtCYtXIfr9XCkVhlARSX1FwCpDBaXbfD8PFeOv
+	nXqyG7ByDUg7hi4H12N8fakJsKi5sf//+3Xepu8qTiIYdSfBo3UEjC4RL6TbC5k6lrsSER40t85
+	oyjLs79QLwBi4NMDgjoSq2lijvjdYKgjV9ECRoZmbGrIPZ46r5KAciWJUhY37QyYV85KTmlY=
+X-Google-Smtp-Source: AGHT+IFuFwVXD6WMJua1/MC0xspFi4ENxE0RkGnlzBRWnDHL9ObljuH7pSZQBwS3yG0/91CUzT92lA==
+X-Received: by 2002:a05:6000:4285:b0:3da:d015:bf84 with SMTP id ffacd0b85a97d-42567153299mr3048274f8f.25.1759519029815;
+        Fri, 03 Oct 2025 12:17:09 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c0c3:1130::123d? ([2620:10d:c092:400::5:5b97])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4255d8f0170sm9182210f8f.49.2025.10.03.12.17.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Oct 2025 12:17:09 -0700 (PDT)
+Message-ID: <f3fd1043-6696-454d-bafd-9d1a84a937c5@gmail.com>
+Date: Fri, 3 Oct 2025 20:17:08 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
- <CAHC9VhTQ_DR=ANzoDBjcCtrimV7XcCZVUsANPt=TjcvM4d-vjg@mail.gmail.com>
- <CACYkzJ4yG1d8ujZ8PVzsRr_PWpyr6goD9DezQTu8ydaf-skn6g@mail.gmail.com>
- <871pnlysx1.fsf@microsoft.com> <CACYkzJ7F6ax2AcWNFxnAkyVb26Dr2mwdBnW=HFVFeJ1pC-BObg@mail.gmail.com>
- <87y0pryhs8.fsf@microsoft.com>
-In-Reply-To: <87y0pryhs8.fsf@microsoft.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Fri, 3 Oct 2025 21:02:30 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6k_3DKKDh8Da87x5jAgP_En5T8VZ8DnYcZ3vJ9SGaUWA@mail.gmail.com>
-X-Gm-Features: AS18NWDhALx-hEC1gejjZQYikQhjyuRlw4Kb0VPtpbEyQGPJxHss_2jI1H56zH4
-Message-ID: <CACYkzJ6k_3DKKDh8Da87x5jAgP_En5T8VZ8DnYcZ3vJ9SGaUWA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/3] BPF signature hash chains
-To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Cc: Paul Moore <paul@paul-moore.com>, Linus Torvalds <torvalds@linux-foundation.org>, ast@kernel.org, 
-	james.bottomley@hansenpartnership.com, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, kys@microsoft.com, 
-	daniel@iogearbox.net, andrii@kernel.org, wufan@linux.microsoft.com, 
-	qmo@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: verifier: refactor bpf_wq handling
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+References: <20251001132252.385398-1-mykyta.yatsenko5@gmail.com>
+ <6b2b44ddbec88ae4690b4eae33b712642b73db4c.camel@gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <6b2b44ddbec88ae4690b4eae33b712642b73db4c.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Oct 3, 2025 at 8:14=E2=80=AFPM Blaise Boscaccy
-<bboscaccy@linux.microsoft.com> wrote:
+On 10/1/25 19:50, Eduard Zingerman wrote:
+> On Wed, 2025-10-01 at 14:22 +0100, Mykyta Yatsenko wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Move bpf_wq map-field validation into the common helper by adding a
+>> BPF_WORKQUEUE case that maps to record->wq_off, and switch
+>> process_wq_func() to use it instead of doing its own offset math.
+>>
+>> This de-duplicates logic with other internal structs (task_work, timer),
+>> keeps error reporting consistent, and makes future changes to the layout
+>> handling centralized.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+> Note to reviewers: technically, this makes the check stricter,
+> but no new correct BPF programs would be rejected.
+> The cases that are checked by check_map_field_pointer,
+> but which were not checked before this patch:
+> - reg value is a constant
+> - corresponding map has BTF
+> - map record has BPF_WORKQUEUE field
 >
-> KP Singh <kpsingh@kernel.org> writes:
+> Not sure if ignoring one of these checks could lead to invalid memory
+> access at runtime. I'd add fixes tag (and maybe a test), so that this
+> commit could be grabbed for backporing:
 >
-> > On Thu, Oct 2, 2025 at 10:01=E2=80=AFPM Blaise Boscaccy
-> > <bboscaccy@linux.microsoft.com> wrote:
-> >>
-> >> KP Singh <kpsingh@kernel.org> writes:
-
-[...]
-
-> >
-> > I am sorry but this does not work, the UAPI here is
-> >
-> > + /* Pointer to a buffer containing the maps used in the signature
-> > + * hash chain of the BPF program.
-> > + */
-> > + __aligned_u64   signature_maps;
-> > + /* Size of the signature maps buffer. */
-> > + __u32 signature_maps_size;
-> >
-> > This needs to be generically applicable and it's not, What happens if
-> > the program is not a loader program / when the instruction buffer is
-> > stable?
-> >
+> Fixes: d940c9b94d7e ("bpf: add support for KF_ARG_PTR_TO_WORKQUEUE")
 >
-> The map array is fully configurable by the signer. Signing any or all
-> maps is optional. If the instruction buffer is stable, the signer can
-> generate the signature without maps and the caller passes zero in
-> those fields.
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 >
-> > If you really want the property that all of the content is signed and
-> > verified within the kernel,
->
-> That's what code signing is.
-
-Sorry, this is wrong, allowing signed and trusted code to verify
-subsequent executions is established in security.
-
-Also you folks keep saying you want in-kernel verification, the loader
-runs in the kernel, the same as any kernel code, so that requirement
-is met. What you want is the logic to be hard coded in the kernel and
-this goes against the BPF approach of flexibility.
-
->
-> > please explore approaches to make the
-> > instruction buffer stable or feel free to deny any programs that do
-> > relocations at load time for whatever "strict" security policy that
-> > you want to implement.
-> >
-> > Please stop pursuing this extension as it adds cruft to the UAPI
-> > that's too specific, encodes the hash chain in the kernel and we won't
-> > need in the future.
-> >
->
-> If your primary complaint at this point is UAPI bloat, we'd be happy to
-> rework the configurable hash-chain patch to use the existing signature
-> buffer provided in your patchset.
->
-> >> [...]
-> >>
-> >> >> conventions around the placement of LSM hooks, this "halfway" appro=
-ach
-> >> >> makes it difficult for LSMs to log anything about the signature sta=
-tus
-
-[...]
-
-> >>
-> >> We signed a program with your upstream tools and it failed to load on =
-a
-> >> vanilla kernel 6.16. The loader in your patchset is intepreting the
-> >> first few fields of struct bpf_map as a byte array containing a sha256
-> >> digest on older kernels.
-> >
-> > We can convert BPF_OBJ_GET_INFO_BY_FD to be called from loader
-> > programs to not rely on the struct field. and or libbbf can call
-> > BPF_OBJ_GET_INFO_BY_FD to check if map_get_hash is supported before it
-> > generates the hash check.
-> >
-> > You should not expect bpftool -S -k -i to work on older kernels but it
-> > should error out if the options are passed.
-> >
->
-> `bpftool gen` shouldn't have a priori knowledge of the target kernel
-> version.
-
-It can check whether the functionality is supported, it already does
-it in many other places. I will follow-up with a fix for this.
-
-- KP
-
->
-> -blaise
->
->
-> > - KP
-> >
-> >>
-> >> -blaise
-> >>
-> >>
-> >> > I had given detailed feedback to Blaise in
-> >> > https://lore.kernel.org/bpf/CACYkzJ6yNjFOTzC04uOuCmFn=3D+51_ie2tB9_x=
--u2xbcO=3DyobTw@mail.gmail.com/
-> >> > mentions also why we don't want any additional UAPI.
-> >> >
-> >> > You keep mentioning having visibility  in the LSM code and I again
-> >> > ask, to implement what specific security policy and there is no clea=
-r
-> >> > answer? On a system where you would like to only allow signed BPF
-> >> > programs, you can purely deny any programs where the signature is no=
-t
-> >> > provided and this can be implemented today.
-> >> >
-> >> > Stable programs work as it is, programs that require runtime
-> >> > relocation work with loader programs. We don't want to add more UAPI
-> >> > as, in the future, it's quite possible that we can make the
-> >> > instruction buffer stable.
-> >> >
-> >> > - KP
-> >> >
-> >> >>
-
-[...]
-
-> >> >> --
-> >> >> paul-moore.com
+> [...]
+I tried to trigger some of these error conditions:
+- map record has no bpf_wq: this errors out earlier: arg#%d doesn't 
+point to a map value
+- corresponding map has no BTF: I think to create a map without BTF
+I need an older libbpf version, not 100% sure how to do this
+- reg value is not constant - this one I don't know how to trigger.
+Given all this, let's keep this simple and not add fixes tag, it does 
+not look like we are
+actually fixing anything.
 
