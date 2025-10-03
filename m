@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-70357-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7975BB8673
-	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 01:31:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64847BB8679
+	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 01:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA65C3C5188
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 23:31:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B0123C6A74
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 23:31:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A88D277CB3;
-	Fri,  3 Oct 2025 23:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1710F27B357;
+	Fri,  3 Oct 2025 23:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="syWKlWL0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="amfDKPVT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB521271451;
-	Fri,  3 Oct 2025 23:30:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6955B278158;
+	Fri,  3 Oct 2025 23:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759534256; cv=none; b=CKYQzYWT9esoJieuzeJJ7vTpeI5Td96BXXxHieCjr2lxHtjTDruh9HAStb7iriqcyDl5WS14+rto+6hdgdJMjjs8UT0S+712INFbDcdQ7MG1NO59fcbYZ4gS3myNnmaJFCHQO5QyPgA+BE57k7cMhJTWYIIHszaIltyfzSs9f0w=
+	t=1759534257; cv=none; b=u44/Cg5X7RnZa4a1aBS2nyc5IR7IVLMZpyVZkZvQgJhkjJDuMY9QI3Tnl8MH14YgfeVFe2szOpLUFs3bTVPYIFs7TwUfWD6IP7oBcgawby6FPv8E7DAKCPg1bPSAb+or3RANQ3wkJeHUuBV9B0yP+jyQwlCCRTenakaMBw/5h6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759534256; c=relaxed/simple;
-	bh=vTZfystQm9nlofRbvHOgOSRGxhsCr0qhYinp9l6gF8Y=;
+	s=arc-20240116; t=1759534257; c=relaxed/simple;
+	bh=FeNLpcaZA4xZuw0anwXZJ831Pe936DwnSYp5C6yeNUw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hxlSj4NkYMUgcxsz2hfavsX6D4SQEYtGBaNhubfbg2Menx/uS2SZ6Ojro4tULQVRKtHTUPvjqzxgLCWd47VHo2Ig8KPfYOVb8XVaYN92RPavryhqVubYEan523WpBGowZ8kf+jThnWUwge0vQ7Pag2QN/5qPVj7/FmhCEIZ2gg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=syWKlWL0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E797FC4CEF7;
-	Fri,  3 Oct 2025 23:30:55 +0000 (UTC)
+	 MIME-Version; b=rJ9QAp+mLV354AzllcxGNB7jXCe6cwH7+fDqLy7KOxW3dS6jOfKUcgydULMh1EtMMU4SS+ze6Sdayo6+dWwNShD9L0Ly3Kqf1z+Ha6Ofv9ayZqjSPvm5cCdmGImcRDX1ghZNGLN4Ne6YFYNrmmySKTmEUglAOox9aOAJHnZHKqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=amfDKPVT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C73AC4CEF5;
+	Fri,  3 Oct 2025 23:30:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759534256;
-	bh=vTZfystQm9nlofRbvHOgOSRGxhsCr0qhYinp9l6gF8Y=;
+	s=k20201202; t=1759534257;
+	bh=FeNLpcaZA4xZuw0anwXZJ831Pe936DwnSYp5C6yeNUw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=syWKlWL07DUx03O9mlkQevS9MNTb+ORvMkHxzmisXr6qd3bY+oBUc8PPyabevDN3i
-	 nmO0xtmZQxEQ03OA6+4LZ83l6X4NgQgVvar3j8HM1IduWdSVWvOrQdgUpoVLtCJnpm
-	 YI8TxKjjKxbGQ786cEQEhfK1i+kxLCTFQjqYnh4Athek8Oree4teiDVetmb17vsXBx
-	 DUU792oawVmG0GYg6aJGFJsZwQ2RyY2TzaGgSk2I4FwE0wqgogo9pGlNGMXcsI65wc
-	 lRmRAjofxLEEah68w99xsRQd5eUEHzF6ARt5KxogEcPTnJfTZL2uWf1z75hV1a8cN6
-	 qDxt2pHMJo9eA==
+	b=amfDKPVT2KjSYTEJsM9lagxiHHmHmUGk6ruU7A4z8/gnwyv0UPM5OcDTwypu22T9x
+	 qa6kuyaJ9j+vtI9n07ccOonFXOxXmZMJDVtbYThdfnUo02WiUvMqFN9wc7PY7Nmkgw
+	 jL/7njX5NMbmSlz+hDGrl24fhcuczgpAeiyJzv0fbX/FsHnwFTv5eGfHPtxXl0Z9jV
+	 tBGJBbsE981e9f2dIksa4ILBW+Wm7JCysqQOWupaRnYVWpnk9YAKKKBDLcFlCZpp5h
+	 xsL9zHkM40cUc9MITDABavvBnacI76oOxLSd1ruL5okRmCHlMO8w3xBiddEVpZtr/P
+	 glbW2ETMmsjOw==
 From: Jakub Kicinski <kuba@kernel.org>
 To: davem@davemloft.net
 Cc: netdev@vger.kernel.org,
@@ -51,11 +51,11 @@ Cc: netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Jakub Kicinski <kuba@kernel.org>,
 	alexanderduyck@fb.com,
-	jacob.e.keller@intel.com,
+	sdf@fomichev.me,
 	mohsin.bashr@gmail.com
-Subject: [PATCH net 1/9] eth: fbnic: fix missing programming of the default descriptor
-Date: Fri,  3 Oct 2025 16:30:17 -0700
-Message-ID: <20251003233025.1157158-2-kuba@kernel.org>
+Subject: [PATCH net 2/9] eth: fbnic: fix accounting of XDP packets
+Date: Fri,  3 Oct 2025 16:30:18 -0700
+Message-ID: <20251003233025.1157158-3-kuba@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251003233025.1157158-1-kuba@kernel.org>
 References: <20251003233025.1157158-1-kuba@kernel.org>
@@ -67,49 +67,107 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-XDP_TX typically uses no offloads. To optimize XDP we added a "default
-descriptor" feature to the chip, which allows us to send XDP frames with
-just the buffer descriptors (DMA address + length). All the metadata
-descriptors are derived from the queue config.
+Make XDP-handled packets appear in the Rx stats. The driver has been
+counting XDP_TX packets on the Tx ring, but there wasn't much accounting
+on the Rx side (the Rx bytes appear to be incremented on XDP_TX but
+XDP_DROP / XDP_ABORT are only counted as Rx drops).
 
-Commit under Fixes missed adding setting the defaults up when transplanting
-the code from the prototype driver. Importantly after reset the "request
-completion" bit is not set. Packets still get sent but there's no
-completion, so ring is not cleaned up. We can send one ring's worth
-of packets and then will start dropping all frames that got the XDP_TX
-action from the XDP prog.
+Counting XDP_TX packets (not just bytes) in Rx stats looks like
+a simple bug of omission.
 
-Fixes: 168deb7b31b2 ("eth: fbnic: Add support for XDP_TX action")
+The XDP_DROP handling appears to be intentional. Whether XDP_DROP
+packets should be counted in interface-level Rx stats is a bit
+unclear historically. When we were defining qstats, however,
+we clarified based on operational experience that in this context:
+
+  name: rx-packets
+  doc: |
+    Number of wire packets successfully received and passed to the stack.
+    For drivers supporting XDP, XDP is considered the first layer
+    of the stack, so packets consumed by XDP are still counted here.
+
+fbnic does not obey this requirement. Since XDP support has been added
+in current release cycle, instead of splitting interface and qstat
+handling - make them both follow the qstat definition.
+
+Another small tweak here is that we count bytes as received on the wire
+rather than post-XDP bytes (xdp_get_buff_len() vs skb->len).
+
+Fixes: 5213ff086344 ("eth: fbnic: Collect packet statistics for XDP")
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
 CC: alexanderduyck@fb.com
-CC: jacob.e.keller@intel.com
+CC: sdf@fomichev.me
 CC: mohsin.bashr@gmail.com
+CC: bpf@vger.kernel.org
 ---
- drivers/net/ethernet/meta/fbnic/fbnic_mac.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/ethernet/meta/fbnic/fbnic_txrx.c | 28 +++++++++++---------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_mac.c b/drivers/net/ethernet/meta/fbnic/fbnic_mac.c
-index 8f998d26b9a3..2a84bd1d7e26 100644
---- a/drivers/net/ethernet/meta/fbnic/fbnic_mac.c
-+++ b/drivers/net/ethernet/meta/fbnic/fbnic_mac.c
-@@ -83,8 +83,16 @@ static void fbnic_mac_init_axi(struct fbnic_dev *fbd)
+diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_txrx.c b/drivers/net/ethernet/meta/fbnic/fbnic_txrx.c
+index cf773cc78e40..b00d44926ba1 100644
+--- a/drivers/net/ethernet/meta/fbnic/fbnic_txrx.c
++++ b/drivers/net/ethernet/meta/fbnic/fbnic_txrx.c
+@@ -1242,6 +1242,7 @@ static int fbnic_clean_rcq(struct fbnic_napi_vector *nv,
+ 	/* Walk the completion queue collecting the heads reported by NIC */
+ 	while (likely(packets < budget)) {
+ 		struct sk_buff *skb = ERR_PTR(-EINVAL);
++		u32 pkt_bytes;
+ 		u64 rcd;
  
- static void fbnic_mac_init_qm(struct fbnic_dev *fbd)
- {
-+	u64 default_meta = FIELD_PREP(FBNIC_TWD_L2_HLEN_MASK, ETH_HLEN) |
-+			   FBNIC_TWD_FLAG_REQ_COMPLETION;
- 	u32 clock_freq;
+ 		if ((*raw_rcd & cpu_to_le64(FBNIC_RCD_DONE)) == done)
+@@ -1272,37 +1273,38 @@ static int fbnic_clean_rcq(struct fbnic_napi_vector *nv,
+ 			/* We currently ignore the action table index */
+ 			break;
+ 		case FBNIC_RCD_TYPE_META:
+-			if (unlikely(pkt->add_frag_failed))
+-				skb = NULL;
+-			else if (likely(!fbnic_rcd_metadata_err(rcd)))
++			if (likely(!fbnic_rcd_metadata_err(rcd) &&
++				   !pkt->add_frag_failed)) {
++				pkt_bytes = xdp_get_buff_len(&pkt->buff);
+ 				skb = fbnic_run_xdp(nv, pkt);
++			}
  
-+	/* Configure default TWQ Metadata descriptor */
-+	wr32(fbd, FBNIC_QM_TWQ_DEFAULT_META_L,
-+	     lower_32_bits(default_meta));
-+	wr32(fbd, FBNIC_QM_TWQ_DEFAULT_META_H,
-+	     upper_32_bits(default_meta));
+ 			/* Populate skb and invalidate XDP */
+ 			if (!IS_ERR_OR_NULL(skb)) {
+ 				fbnic_populate_skb_fields(nv, rcd, skb, qt,
+ 							  &csum_complete,
+ 							  &csum_none);
+-
+-				packets++;
+-				bytes += skb->len;
+-
+ 				napi_gro_receive(&nv->napi, skb);
+ 			} else if (skb == ERR_PTR(-FBNIC_XDP_TX)) {
+ 				pkt_tail = nv->qt[0].sub1.tail;
+-				bytes += xdp_get_buff_len(&pkt->buff);
++			} else if (PTR_ERR(skb) == -FBNIC_XDP_CONSUME) {
++				fbnic_put_pkt_buff(qt, pkt, 1);
+ 			} else {
+-				if (!skb) {
++				if (!skb)
+ 					alloc_failed++;
+-					dropped++;
+-				} else if (skb == ERR_PTR(-FBNIC_XDP_LEN_ERR)) {
 +
- 	/* Configure TSO behavior */
- 	wr32(fbd, FBNIC_QM_TQS_CTL0,
- 	     FIELD_PREP(FBNIC_QM_TQS_CTL0_LSO_TS_MASK,
++				if (skb == ERR_PTR(-FBNIC_XDP_LEN_ERR))
+ 					length_errors++;
+-				} else {
++				else
+ 					dropped++;
+-				}
+ 
+ 				fbnic_put_pkt_buff(qt, pkt, 1);
++				goto next_dont_count;
+ 			}
+ 
++			packets++;
++			bytes += pkt_bytes;
++next_dont_count:
+ 			pkt->buff.data_hard_start = NULL;
+ 
+ 			break;
 -- 
 2.51.0
 
