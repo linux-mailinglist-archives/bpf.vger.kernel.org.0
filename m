@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-70288-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70289-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD9E3BB6433
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 10:47:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5B65BB643F
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 10:47:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D58734EA8E9
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 08:47:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EB6319E5569
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 08:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46431277C9B;
-	Fri,  3 Oct 2025 08:47:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5BB27C172;
+	Fri,  3 Oct 2025 08:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LiPXq2mb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uUksfYjQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF2A1D7E4A
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 08:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001F1275B13
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 08:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759481234; cv=none; b=qctjjyfITGuzsCm7WK0e3emEwJCCIsNrU+DUrbH4RE/O5N2TVqLbxk7pe83AaWvkI1By70WBMelg0R0ef4nvouLM3ujkghywWjEJgSOotgnBS5e8iw1Myhdn9yT7CoBIYCO15unpNLNPgkpEH5Z6GNAXVSCJcJX8S+KSvr3x/Do=
+	t=1759481238; cv=none; b=ohpEffprzD+nRfOcJbHaGKgcEvsuQrjjfBeyCIb6cAfk4CrTSQzZDeO7CoKAQ5X94lZPbE0LJYrJ/EKg+PCv5vvZ0iqc9Zcc0pFOFUKWceMnfmeWhzZrY8CP1ijLhmTL8waR5FBumBdR3pV+zMkYB3IkyLiU1SWxpJbF1AWGUM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759481234; c=relaxed/simple;
-	bh=KdhvngRIzUvJjCKOe7aQRI/7vJZpSB4qLpuJxx/8jSo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=camkH6i4e82TWDfb29JYS1X6afwqnzCQyZwxtUX1syQEgnUomKn/sIa0V0tHN8N6pJAShUzjSWMbEB/sAU6hLiu90+IW8s145CaBWUnFlkEvIBiXQZmYuF8vtBSd9+yaenzL5t9u2INQ2RElwtQxGlylyuKo4hDDNFgZHc6K4H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LiPXq2mb; arc=none smtp.client-ip=91.218.175.188
+	s=arc-20240116; t=1759481238; c=relaxed/simple;
+	bh=XLodWl1Mnqi6n+xmZaM4r4KxwmmAoji2W6kZJLMVLA8=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Qy96/zeVsQWPcv544LAR07azUGtfTPH+p6k260257N/mDuXEoF6+1bxEd1mIyz22Z7qaNIqfShGhSYDSVBHdLtsg1mR4hybZeMCiVf+f/P7nvaKomG3ajJ7cOTBjdthhMu9TYSxehQwuhRbZJTXPanRqWpkKTmjHGTdTaamkkeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uUksfYjQ; arc=none smtp.client-ip=91.218.175.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759481228;
+	t=1759481235;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N+ayMPxTFn1sqgrWQClbx3xLTMHfXKLiK2Xn5bMQL3I=;
-	b=LiPXq2mbY9BWD0v/aKVD5QN0EUAPZQrjkH4EvcwQqECr1mC99hYQNOG6OFf/P4Uk+NxNhI
-	cb6RjlZHblng/T1iLji1uHP0KUzlN3KZhguvTxDh1uaJND70TOiWSdzLqkzkXYsjlv5dVL
-	nCEzg4VrLSniCmt+KwAf8QlXHIrv3Pg=
+	bh=CZM6bExjDs8jz6TVsKvY1N151Suvl2rvzQSjV8ALYIE=;
+	b=uUksfYjQzFzSy+jIUVRgc1r4bn38I5hd+45qOv9/mdFxrvxzk9fcv6zH0laC2n+GqUwYYK
+	LkUwLZKnFojni7xbzvB9JkN87RKhExIzunDQfsiFzpCqzTXr8rFazFgRGqVbh9NlKL6jqy
+	GuCU2BX8K3WYSi4giFgDNlfM4rFjHUA=
 From: KaFai Wan <kafai.wan@linux.dev>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -61,10 +61,9 @@ To: ast@kernel.org,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Cc: Le Chen <tom2cat@sjtu.edu.cn>
-Subject: [PATCH bpf 1/2] bpf: Avoid RCU context warning when unpinning htab with internal structs
-Date: Fri,  3 Oct 2025 16:45:27 +0800
-Message-ID: <20251003084528.502518-2-kafai.wan@linux.dev>
+Subject: [PATCH bpf 2/2] selftests/bpf: Add test for unpinning htab with internal timer struct
+Date: Fri,  3 Oct 2025 16:45:28 +0800
+Message-ID: <20251003084528.502518-3-kafai.wan@linux.dev>
 In-Reply-To: <20251003084528.502518-1-kafai.wan@linux.dev>
 References: <20251003084528.502518-1-kafai.wan@linux.dev>
 Precedence: bulk
@@ -76,53 +75,95 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-When unpinning a BPF hash table (htab or htab_lru) that contains internal
-structures (timer, workqueue, or task_work) in its values, a BUG warning
-is triggered:
- BUG: sleeping function called from invalid context at kernel/bpf/hashtab.c:244
- in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 14, name: ksoftirqd/0
- ...
+Add test to verify that unpinning hash tables containing internal timer
+structures does not trigger context warnings.
 
-The issue arises from the interaction between BPF object unpinning and
-RCU callback mechanisms:
-1. BPF object unpinning uses ->free_inode() which schedules cleanup via
-   call_rcu(), deferring the actual freeing to an RCU callback that
-   executes within the RCU_SOFTIRQ context.
-2. During cleanup of hash tables containing internal structures,
-   htab_map_free_internal_structs() is invoked, which includes
-   cond_resched() or cond_resched_rcu() calls to yield the CPU during
-   potentially long operations.
+Each subtest (timer_prealloc and timer_no_prealloc) can trigger the
+context warning when unpinning, but the warning cannot be triggered
+twice within a short time interval (a HZ), which is expected behavior.
 
-However, cond_resched() or cond_resched_rcu() cannot be safely called from
-atomic RCU softirq context, leading to the BUG warning when attempting
-to reschedule.
-
-Fix this by changing from ->free_inode() to ->destroy_inode() for BPF
-objects (prog, map, link). This allows direct inode freeing without
-RCU callback scheduling, avoiding the invalid context warning.
-
-Reported-by: Le Chen <tom2cat@sjtu.edu.cn>
-Closes: https://lore.kernel.org/all/1444123482.1827743.1750996347470.JavaMail.zimbra@sjtu.edu.cn/
-Fixes: 68134668c17f ("bpf: Add map side support for bpf timers.")
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
 ---
- kernel/bpf/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/pinning_htab.c   | 37 +++++++++++++++++++
+ .../selftests/bpf/progs/test_pinning_htab.c   | 25 +++++++++++++
+ 2 files changed, 62 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_htab.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_htab.c
 
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index f90bdcc0a047..65c2a71d7de1 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -790,7 +790,7 @@ const struct super_operations bpf_super_ops = {
- 	.statfs		= simple_statfs,
- 	.drop_inode	= inode_just_drop,
- 	.show_options	= bpf_show_options,
--	.free_inode	= bpf_free_inode,
-+	.destroy_inode	= bpf_free_inode,
- };
- 
- enum {
+diff --git a/tools/testing/selftests/bpf/prog_tests/pinning_htab.c b/tools/testing/selftests/bpf/prog_tests/pinning_htab.c
+new file mode 100644
+index 000000000000..fc804bb87b26
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/pinning_htab.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <test_progs.h>
++#include "test_pinning_htab.skel.h"
++
++static void unpin_map(const char *map_name, const char *pin_path)
++{
++	struct test_pinning_htab *skel;
++	struct bpf_map *map;
++	int err;
++
++	skel = test_pinning_htab__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel open_and_load"))
++		return;
++
++	map = bpf_object__find_map_by_name(skel->obj, map_name);
++	if (!ASSERT_OK_PTR(map, "bpf_object__find_map_by_name"))
++		goto out;
++
++	err = bpf_map__pin(map, pin_path);
++	if (!ASSERT_OK(err, "bpf_map__pin"))
++		goto out;
++
++	err = bpf_map__unpin(map, pin_path);
++	if (!ASSERT_OK(err, "bpf_map__unpin"))
++		goto out;
++out:
++	test_pinning_htab__destroy(skel);
++}
++
++void test_pinning_htab(void)
++{
++	if (test__start_subtest("timer_prealloc"))
++		unpin_map("timer_prealloc", "/sys/fs/bpf/timer_prealloc");
++	if (test__start_subtest("timer_no_prealloc"))
++		unpin_map("timer_no_prealloc", "/sys/fs/bpf/timer_no_prealloc");
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_pinning_htab.c b/tools/testing/selftests/bpf/progs/test_pinning_htab.c
+new file mode 100644
+index 000000000000..ae227930c73c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_pinning_htab.c
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++
++char _license[] SEC("license") = "GPL";
++
++struct timer_val {
++	struct bpf_timer timer;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__type(key, __u32);
++	__type(value, struct timer_val);
++	__uint(max_entries, 1);
++} timer_prealloc SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__type(key, __u32);
++	__type(value, struct timer_val);
++	__uint(max_entries, 1);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++} timer_no_prealloc SEC(".maps");
 -- 
 2.43.0
 
