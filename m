@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-70305-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70307-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2F03BB7706
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 18:04:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05798BB7709
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 18:04:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 98AEB4EA7E0
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 16:04:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9730919C4C51
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 16:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502BD2BD00C;
-	Fri,  3 Oct 2025 16:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D41D2BDC33;
+	Fri,  3 Oct 2025 16:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HYi4DZQA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iBCXF3EN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37BDC29D26D
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 16:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C81A29E117
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 16:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759507477; cv=none; b=nZtauGwXMrryi1+fm96Bi4iPD8qdUW/NImLXtmKpHxdAG3kVKsph75x3DtpGTkj7Mp9r3lAQ6ynYTWWMdCFH6+qPDUq4+MXBdTWRmwjoxDh7S7ulcsFSUz9Yasx9BNesGbYwe9uMmICNxDDekMg1JGbqI4B3qIeKwbe8i3j93Z0=
+	t=1759507479; cv=none; b=eKwbgcZk3r+4jyFTlEedDNlvpLp5QSpcai0nYJywh2kcM31YZIVeFoXjyvVCvsq8pv/eu4u2W3pM1jU4wFp6VjCt3vhX9zyfG4UK3Q900tMHmj2AbAJWflFS4TTnUYF6WrMY11N2pxW+Bo5ECdlu0eiAxjHrzWJdWCVAhIpTb8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759507477; c=relaxed/simple;
-	bh=4odPFvCdR9H1QjSHbTIRzI3NqpdykuV/8xjZse/zDy4=;
+	s=arc-20240116; t=1759507479; c=relaxed/simple;
+	bh=ATS5JlvbOVLRtV0nKnjlxQ8k3FcxAp+uYwY+cuk4KM8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ARrcpZhd82G8xQBDn+EH89cJkrW5KxX8pqddiSbv0LVaERsYB1L7qHZ4ovMvuj2EHkfUZhOipJhoaTKPrR7g7kXFeT8/hv18A3xuHYsaPl3QW/8Rdk6lFqTMt3o6JGyeOclAENOVmkxsBq3aEigP1NqcBIPNyshy1bBfbrstKMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HYi4DZQA; arc=none smtp.client-ip=209.85.128.52
+	 MIME-Version; b=Df0B20L1JHclRj3sDdh+XbzS3WvbJ0rTmLm5cTqSVF78ZqhGD/QHx3m3z010ygRrR2ZW9fnGHxvXTgMrl/ZZJN0NAAyi3pVdZF+ZiwcMiziq16gbAnOZfGjrxuqaCMxOpizAy7GhR+2Uv/idmCjDGpSenwIgTP3WEbJwRPaWQjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iBCXF3EN; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-46e384dfde0so26441105e9.2
-        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 09:04:35 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-41174604d88so1304773f8f.2
+        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 09:04:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759507474; x=1760112274; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759507476; x=1760112276; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Cd4SSNiDvG3lpDOlsDhUVpHoBkIwIZqrQWDyES5b1rQ=;
-        b=HYi4DZQAhx7b07JAHkIit9xA5tiaMbvCs58pffGRNJy7PkNZ/k9IchOB5PpzouWyrG
-         m0WQrdvandm6PjEsKUdHqfyuB0xcpRO3gShg9GNbcrc/sYqBqNIegQ2Wpupun9fdRuYZ
-         9wWQ1VKR5HcCE27WX4g/JEmpVxx7p4oX+egQOte/P2wfXKvY9Dri9G5UC6cabcF02L1p
-         4ClNqnVcpgVkJhbd8oW/MzcGbSu2q6XTbY1TkGrx/AcdelfsJwvHL2tdtvccnexGFJCQ
-         5dM/j+jAkQC2X33AnRwwnuSVOS7F92dtIc65OKzxCgKUO9IVsqchjk4X0SHiK2A0lKDD
-         6O/g==
+        bh=gqf2WAfJzEUoeg63hcb1dzEDB2Fw0eXJPn14WiGGA40=;
+        b=iBCXF3ENFaT6kvK1v2UYu1ajUXYvFkT9dvYgmh0kMns1uO2f4qawoQy0jsDyT5N+Xk
+         Gh2ARS5A7KG9jbAp94oWUJWaSZHCtVQaxGZTvVROQ7KftGdGo3LQfYt4gqj9SRw1nXUa
+         ow2D28WUZQ6vVTVUiedk3QeQ0J7W3Q3UqOP79KnZxcdepQ/1XnVeq/A0RTF5ibmf5+BW
+         jJvLyNKlm7jWtwXfuVKFMS4RTaCW9mfA+qat/D4+0NWnHHtWPXdyA41GXzXg6eBcSqeq
+         NiGh8TWoEgtaz3jSYPJBtjvrK5ZGX7M5qNsBJP+USw2SAh3CosF7H0ZZKu57FAx0LEyk
+         rzww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759507474; x=1760112274;
+        d=1e100.net; s=20230601; t=1759507476; x=1760112276;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Cd4SSNiDvG3lpDOlsDhUVpHoBkIwIZqrQWDyES5b1rQ=;
-        b=nAjs/kRnz9YT6djauawsO3VrjmR356iuS11NoNyucSzXikVT1pdAARB42geyVRwN+T
-         6wgKmo1WPjalhI4gCZFFrPvtOR9hLjSmud3PerViYdnOriKrWxbzHQSTqdYtnQ+SsTj1
-         DF/vQvzrJ6U2KeHKdffkVX57PXMo+7kwuZvFlt82fYuRjuKFcBsmU42Dy8UyGKHrRNWJ
-         Gm8m9fcaTL++k839JGj6g3GUFhlvg9OgToGfqIfn81PyLbsK/ZQc5F7EcSUlbNHOI9c+
-         e8drsvolmmiEORQTk4nnBHGqcxR6ZYVZE7m1FPfGf3h0QfHeg6b5f8tu3FUhAHJhzuGI
-         aP7Q==
-X-Gm-Message-State: AOJu0Yy57lcqCykuOJnL27bbfd4IOnHxwPOY8fo91IWMN1o0Hq6NaC+a
-	LxoNcBMJ2IUP+tI7cLHF/8Kmm6JjmTFyzYj+XgfmUAO42VqVU0azA1flBgIugw==
-X-Gm-Gg: ASbGncsSpY4mT+b4cTSD3jJpoPQi3lcosaIFBl7FDga8FH2MMpu4I+jjvsaPyvH2O7v
-	hwyjrGzmVRM1wQUUJD31qRNgKjeRZBifU83rVqA93QMauY6cpdXY0cFWEmUinYfd3zzHhh2eKIi
-	C4UdQOI4Ejk0+7Bx2LEZcZ9B4Ky8dj8COMwLJqFMcIDrzzYHg9SuSmcaIS1L9ysGxVPOECU1vlk
-	seYATZk+ixoBK2Jg63c1I+YSil8d/cKoSvQGkv5OYZPLCXQtDdRoYYUdTsVz7wJyI5FjrHJkw28
-	/RM9Sf4RxLGIei3w1Ua6TG7Masapk8YYVY7JY497i1pMyBrA7vR2nvoS09no3pZ5E5kvrJk5y0P
-	Lfwp4tCdwmaLlNIXISHXIH4wM9A==
-X-Google-Smtp-Source: AGHT+IF/wjtM2kl5SBpRYHQMH6EFs0LpUcKIwobTkKgmQ9nRAH6GGeVDXM9ACqto4VQFwZSgzJ998g==
-X-Received: by 2002:a05:600c:3547:b0:46e:652e:16a1 with SMTP id 5b1f17b1804b1-46e711019e2mr24023595e9.7.1759507474074;
-        Fri, 03 Oct 2025 09:04:34 -0700 (PDT)
+        bh=gqf2WAfJzEUoeg63hcb1dzEDB2Fw0eXJPn14WiGGA40=;
+        b=XjxhunZhqZsKrds7LsKUZMdatl6VX395UmHpWeFHaS5Qx00r56SFkc+CwHj3RW3cTn
+         XOeNVGrs2AutzUVqhpI77bLatvxkzVgODkS3M/16BGBB5jccUOtEm0bD6IFAvpWPEqEz
+         svW2ZectKHHasPoTSd0f56gbfdlK8kMnoHVhPnw/jMOx1Ev2W6wjSRG9NL/9f1GH50dv
+         BT5c7WkOZ2x061GcUQfw6knuIbtMzf0FFFW3EjpehppWV47kBvhup0YDbPMNQlgeVsU9
+         NEBniYC8YAgDUW921DPLeJYubDv6EtCws60tzccmKNGY+T5u3uXWRFUOMwNKI4VHh7Zq
+         LcIw==
+X-Gm-Message-State: AOJu0YzX/dobnF3V1lzpBzF8SW0LNqPAfbh0suIG00IIoyxIVA79XOd+
+	rzgPXj2JCE7MV/Fu7MuGnETmjgnrPpNI6raBWk+rreOYJBel5mgT0okpA2Iv9g==
+X-Gm-Gg: ASbGncsI966+Fvm97Rsi4Yr2UJ4Uj4pMFITUYkpzKAc2FHnt1Prd7wtozXQrdGI95uR
+	jaFvY7si5XOiP9qAkilJwGkEauKKH2sQAeGgpjkM+HDs9Ebwtf/IqyDezRVlGmDxO1RGM/JFO4s
+	ZjaarQhPoqeGDc0/KxS9GkWBtOavP8AsK0TMk/vF0wxxyEBq6IyHJtzeiKj1r34wiRSeAW80C3W
+	mRckf0AEGTSsLKwWVyekhTH/9msbX305T9EWmkvBjfPwvEV+xT84k0HKmgWiPUxXZZpg5XMF7GQ
+	fYzlfMAsu3vHQ6jAoVws+J0/0Hgp9m4RVJdDWNQhEgj7fPoae7Vozw18mn7IM8KUOvASDFNu4UM
+	za2a36SM0Iewm6QfSPml2Xota+bNz4WoZ+DyC
+X-Google-Smtp-Source: AGHT+IEHI1HJ9OdB69z2N+AykO7ajT3KGCteE6Nrb3JwdvPGiJmAOYdoaksvu0yUTFCuZYtSMJnjuw==
+X-Received: by 2002:a05:6000:420a:b0:424:2275:63c7 with SMTP id ffacd0b85a97d-425671d6c24mr2285565f8f.56.1759507476319;
+        Fri, 03 Oct 2025 09:04:36 -0700 (PDT)
 Received: from localhost ([2620:10d:c092:400::5:5b97])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e5c3eca22sm84428135e9.4.2025.10.03.09.04.32
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4255d8f0853sm8730488f8f.50.2025.10.03.09.04.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Oct 2025 09:04:32 -0700 (PDT)
+        Fri, 03 Oct 2025 09:04:35 -0700 (PDT)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -82,9 +82,9 @@ To: bpf@vger.kernel.org,
 	eddyz87@gmail.com,
 	memxor@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [RFC PATCH v1 01/10] selftests/bpf: remove unnecessary kfunc prototypes
-Date: Fri,  3 Oct 2025 17:04:07 +0100
-Message-ID: <20251003160416.585080-2-mykyta.yatsenko5@gmail.com>
+Subject: [RFC PATCH v1 03/10] lib: extract freader into a separate files
+Date: Fri,  3 Oct 2025 17:04:09 +0100
+Message-ID: <20251003160416.585080-4-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com>
 References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com>
@@ -98,47 +98,374 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Remove unnecessary kfunc prototypes from test programs, these are
-provided by vmlinux.h
+Move the freader implementation from buildid.{c,h} into a dedicated
+compilation unit, freader.{c,h}.
+
+This allows reuse of freader outside buildid, e.g. for file dynptr
+support added later. Includes are updated and symbols are exported as
+needed. No functional change intended.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- tools/testing/selftests/bpf/progs/ip_check_defrag.c        | 5 -----
- tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c | 5 -----
- 2 files changed, 10 deletions(-)
+ include/linux/freader.h |  32 +++++++++
+ lib/Makefile            |   2 +-
+ lib/buildid.c           | 145 +---------------------------------------
+ lib/freader.c           | 133 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 167 insertions(+), 145 deletions(-)
+ create mode 100644 include/linux/freader.h
+ create mode 100644 lib/freader.c
 
-diff --git a/tools/testing/selftests/bpf/progs/ip_check_defrag.c b/tools/testing/selftests/bpf/progs/ip_check_defrag.c
-index 645b2c9f7867..0e87ad1ebcfa 100644
---- a/tools/testing/selftests/bpf/progs/ip_check_defrag.c
-+++ b/tools/testing/selftests/bpf/progs/ip_check_defrag.c
-@@ -12,11 +12,6 @@
- #define IP_OFFSET		0x1FFF
- #define NEXTHDR_FRAGMENT	44
+diff --git a/include/linux/freader.h b/include/linux/freader.h
+new file mode 100644
+index 000000000000..a08ea9f59945
+--- /dev/null
++++ b/include/linux/freader.h
+@@ -0,0 +1,32 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_FREADER_H
++#define _LINUX_FREADER_H
++
++#include <linux/types.h>
++
++struct freader {
++	void *buf;
++	u32 buf_sz;
++	int err;
++	union {
++		struct {
++			struct file *file;
++			struct folio *folio;
++			void *addr;
++			loff_t folio_off;
++			bool may_fault;
++		};
++		struct {
++			const char *data;
++			u64 data_sz;
++		};
++	};
++};
++
++void freader_init_from_file(struct freader *r, void *buf, u32 buf_sz,
++			    struct file *file, bool may_fault);
++void freader_init_from_mem(struct freader *r, const char *data, u64 data_sz);
++const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz);
++void freader_cleanup(struct freader *r);
++int freader_err(struct freader *r);
++#endif
+diff --git a/lib/Makefile b/lib/Makefile
+index 392ff808c9b9..4761885228fa 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -40,7 +40,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
+ 	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
+ 	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
+ 	 nmi_backtrace.o win_minmax.o memcat_p.o \
+-	 buildid.o objpool.o iomem_copy.o sys_info.o
++	 buildid.o objpool.o iomem_copy.o sys_info.o freader.o
  
--extern int bpf_dynptr_from_skb(struct __sk_buff *skb, __u64 flags,
--			      struct bpf_dynptr *ptr__uninit) __ksym;
--extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, uint32_t offset,
--			      void *buffer, uint32_t buffer__sz) __ksym;
+ lib-$(CONFIG_UNION_FIND) += union_find.o
+ lib-$(CONFIG_PRINTK) += dump_stack.o
+diff --git a/lib/buildid.c b/lib/buildid.c
+index c4b0f376fb34..e770dc4b73d3 100644
+--- a/lib/buildid.c
++++ b/lib/buildid.c
+@@ -6,155 +6,12 @@
+ #include <linux/kernel.h>
+ #include <linux/pagemap.h>
+ #include <linux/secretmem.h>
++#include <linux/freader.h>
+ 
+ #define BUILD_ID 3
+ 
+ #define MAX_PHDR_CNT 256
+ 
+-struct freader {
+-	void *buf;
+-	u32 buf_sz;
+-	int err;
+-	union {
+-		struct {
+-			struct file *file;
+-			struct folio *folio;
+-			void *addr;
+-			loff_t folio_off;
+-			bool may_fault;
+-		};
+-		struct {
+-			const char *data;
+-			u64 data_sz;
+-		};
+-	};
+-};
 -
- volatile int shootdowns = 0;
- 
- static bool is_frag_v4(struct iphdr *iph)
-diff --git a/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c b/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c
-index ab9f9f2620ed..e2cbc5bda65e 100644
---- a/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c
-@@ -79,11 +79,6 @@ int with_invalid_ctx_access_test5(struct bpf_nf_ctx *ctx)
- 	return NF_ACCEPT;
- }
- 
--extern int bpf_dynptr_from_skb(struct __sk_buff *skb, __u64 flags,
--                               struct bpf_dynptr *ptr__uninit) __ksym;
--extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, uint32_t offset,
--                                   void *buffer, uint32_t buffer__sz) __ksym;
+-static void freader_init_from_file(struct freader *r, void *buf, u32 buf_sz,
+-				   struct file *file, bool may_fault)
+-{
+-	memset(r, 0, sizeof(*r));
+-	r->buf = buf;
+-	r->buf_sz = buf_sz;
+-	r->file = file;
+-	r->may_fault = may_fault;
+-}
 -
- SEC("netfilter")
- __description("netfilter test prog with skb and state read access")
- __success __failure_unpriv
+-static void freader_init_from_mem(struct freader *r, const char *data, u64 data_sz)
+-{
+-	memset(r, 0, sizeof(*r));
+-	r->data = data;
+-	r->data_sz = data_sz;
+-}
+-
+-static void freader_put_folio(struct freader *r)
+-{
+-	if (!r->folio)
+-		return;
+-	kunmap_local(r->addr);
+-	folio_put(r->folio);
+-	r->folio = NULL;
+-}
+-
+-static int freader_get_folio(struct freader *r, loff_t file_off)
+-{
+-	/* check if we can just reuse current folio */
+-	if (r->folio && file_off >= r->folio_off &&
+-	    file_off < r->folio_off + folio_size(r->folio))
+-		return 0;
+-
+-	freader_put_folio(r);
+-
+-	/* reject secretmem folios created with memfd_secret() */
+-	if (secretmem_mapping(r->file->f_mapping))
+-		return -EFAULT;
+-
+-	r->folio = filemap_get_folio(r->file->f_mapping, file_off >> PAGE_SHIFT);
+-
+-	/* if sleeping is allowed, wait for the page, if necessary */
+-	if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->folio))) {
+-		filemap_invalidate_lock_shared(r->file->f_mapping);
+-		r->folio = read_cache_folio(r->file->f_mapping, file_off >> PAGE_SHIFT,
+-					    NULL, r->file);
+-		filemap_invalidate_unlock_shared(r->file->f_mapping);
+-	}
+-
+-	if (IS_ERR(r->folio) || !folio_test_uptodate(r->folio)) {
+-		if (!IS_ERR(r->folio))
+-			folio_put(r->folio);
+-		r->folio = NULL;
+-		return -EFAULT;
+-	}
+-
+-	r->folio_off = folio_pos(r->folio);
+-	r->addr = kmap_local_folio(r->folio, 0);
+-
+-	return 0;
+-}
+-
+-static const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz)
+-{
+-	size_t folio_sz;
+-
+-	/* provided internal temporary buffer should be sized correctly */
+-	if (WARN_ON(r->buf && sz > r->buf_sz)) {
+-		r->err = -E2BIG;
+-		return NULL;
+-	}
+-
+-	if (unlikely(file_off + sz < file_off)) {
+-		r->err = -EOVERFLOW;
+-		return NULL;
+-	}
+-
+-	/* working with memory buffer is much more straightforward */
+-	if (!r->buf) {
+-		if (file_off + sz > r->data_sz) {
+-			r->err = -ERANGE;
+-			return NULL;
+-		}
+-		return r->data + file_off;
+-	}
+-
+-	/* fetch or reuse folio for given file offset */
+-	r->err = freader_get_folio(r, file_off);
+-	if (r->err)
+-		return NULL;
+-
+-	/* if requested data is crossing folio boundaries, we have to copy
+-	 * everything into our local buffer to keep a simple linear memory
+-	 * access interface
+-	 */
+-	folio_sz = folio_size(r->folio);
+-	if (file_off + sz > r->folio_off + folio_sz) {
+-		int part_sz = r->folio_off + folio_sz - file_off;
+-
+-		/* copy the part that resides in the current folio */
+-		memcpy(r->buf, r->addr + (file_off - r->folio_off), part_sz);
+-
+-		/* fetch next folio */
+-		r->err = freader_get_folio(r, r->folio_off + folio_sz);
+-		if (r->err)
+-			return NULL;
+-
+-		/* copy the rest of requested data */
+-		memcpy(r->buf + part_sz, r->addr, sz - part_sz);
+-
+-		return r->buf;
+-	}
+-
+-	/* if data fits in a single folio, just return direct pointer */
+-	return r->addr + (file_off - r->folio_off);
+-}
+-
+-static void freader_cleanup(struct freader *r)
+-{
+-	if (!r->buf)
+-		return; /* non-file-backed mode */
+-
+-	freader_put_folio(r);
+-}
+-
+ /*
+  * Parse build id from the note segment. This logic can be shared between
+  * 32-bit and 64-bit system, because Elf32_Nhdr and Elf64_Nhdr are
+diff --git a/lib/freader.c b/lib/freader.c
+new file mode 100644
+index 000000000000..32a17d137b32
+--- /dev/null
++++ b/lib/freader.c
+@@ -0,0 +1,133 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/freader.h>
++#include <linux/cache.h>
++#include <linux/elf.h>
++#include <linux/kernel.h>
++#include <linux/pagemap.h>
++#include <linux/secretmem.h>
++
++void freader_init_from_file(struct freader *r, void *buf, u32 buf_sz,
++			    struct file *file, bool may_fault)
++{
++	memset(r, 0, sizeof(*r));
++	r->buf = buf;
++	r->buf_sz = buf_sz;
++	r->file = file;
++	r->may_fault = may_fault;
++}
++
++void freader_init_from_mem(struct freader *r, const char *data, u64 data_sz)
++{
++	memset(r, 0, sizeof(*r));
++	r->data = data;
++	r->data_sz = data_sz;
++}
++
++static void freader_put_folio(struct freader *r)
++{
++	if (!r->folio)
++		return;
++	kunmap_local(r->addr);
++	folio_put(r->folio);
++	r->folio = NULL;
++}
++
++static int freader_get_folio(struct freader *r, loff_t file_off)
++{
++	/* check if we can just reuse current folio */
++	if (r->folio && file_off >= r->folio_off &&
++	    file_off < r->folio_off + folio_size(r->folio))
++		return 0;
++
++	freader_put_folio(r);
++
++	/* reject secretmem folios created with memfd_secret() */
++	if (secretmem_mapping(r->file->f_mapping))
++		return -EFAULT;
++
++	r->folio = filemap_get_folio(r->file->f_mapping, file_off >> PAGE_SHIFT);
++
++	/* if sleeping is allowed, wait for the page, if necessary */
++	if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->folio))) {
++		filemap_invalidate_lock_shared(r->file->f_mapping);
++		r->folio = read_cache_folio(r->file->f_mapping, file_off >> PAGE_SHIFT,
++					    NULL, r->file);
++		filemap_invalidate_unlock_shared(r->file->f_mapping);
++	}
++
++	if (IS_ERR(r->folio) || !folio_test_uptodate(r->folio)) {
++		if (!IS_ERR(r->folio))
++			folio_put(r->folio);
++		r->folio = NULL;
++		return -EFAULT;
++	}
++
++	r->folio_off = folio_pos(r->folio);
++	r->addr = kmap_local_folio(r->folio, 0);
++
++	return 0;
++}
++
++const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz)
++{
++	size_t folio_sz;
++
++	/* provided internal temporary buffer should be sized correctly */
++	if (WARN_ON(r->buf && sz > r->buf_sz)) {
++		r->err = -E2BIG;
++		return NULL;
++	}
++
++	if (unlikely(file_off + sz < file_off)) {
++		r->err = -EOVERFLOW;
++		return NULL;
++	}
++
++	/* working with memory buffer is much more straightforward */
++	if (!r->buf) {
++		if (file_off + sz > r->data_sz) {
++			r->err = -ERANGE;
++			return NULL;
++		}
++		return r->data + file_off;
++	}
++
++	/* fetch or reuse folio for given file offset */
++	r->err = freader_get_folio(r, file_off);
++	if (r->err)
++		return NULL;
++
++	/* if requested data is crossing folio boundaries, we have to copy
++	 * everything into our local buffer to keep a simple linear memory
++	 * access interface
++	 */
++	folio_sz = folio_size(r->folio);
++	if (file_off + sz > r->folio_off + folio_sz) {
++		int part_sz = r->folio_off + folio_sz - file_off;
++
++		/* copy the part that resides in the current folio */
++		memcpy(r->buf, r->addr + (file_off - r->folio_off), part_sz);
++
++		/* fetch next folio */
++		r->err = freader_get_folio(r, r->folio_off + folio_sz);
++		if (r->err)
++			return NULL;
++
++		/* copy the rest of requested data */
++		memcpy(r->buf + part_sz, r->addr, sz - part_sz);
++
++		return r->buf;
++	}
++
++	/* if data fits in a single folio, just return direct pointer */
++	return r->addr + (file_off - r->folio_off);
++}
++
++void freader_cleanup(struct freader *r)
++{
++	if (!r->buf)
++		return; /* non-file-backed mode */
++
++	freader_put_folio(r);
++}
 -- 
 2.51.0
 
