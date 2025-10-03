@@ -1,78 +1,81 @@
-Return-Path: <bpf+bounces-70267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3B7FBB5BB9
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 03:24:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1451BB5BBF
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 03:24:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7C21E4E35E2
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 01:24:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA4C94C061A
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 01:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C65D27B332;
-	Fri,  3 Oct 2025 01:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B227E27E056;
+	Fri,  3 Oct 2025 01:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UVBHv3gA"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RdygujaT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A56E274B23
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 01:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48C6274B5D
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 01:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759454647; cv=none; b=Jr3+72cx7mEnpB4E9FMM9n0YyJhWGLVnvDQh/WxTvxd6usG/knUchWZVg44QAsmAa4yc4NBTTzuwkXSjAwIKUitviVO4w3lfMV3w7+/7/gFnOhacYoczYxWRGOGf7NyUkFo8U+g7HxbWIC5EA1V6wfiSdUG98u3HF5EI0fLNTUw=
+	t=1759454649; cv=none; b=ItgorcppAxGWKSEdY4DSNkQGMNu/2g9D519/hHGBNkthI9f595wDOYBDb6nOqiTHay/lPunJHQzJz440Xg+qmtzdKwRYDSj4RA0HXsMt3n/e81VQ2eVssPdJ/7K8AJGlAO0Bq/bC2iKPGLxSFT21ZruVOUbHIUPzmA8N+8bKe8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759454647; c=relaxed/simple;
-	bh=kUOXFIeRSqDtSv2ZkPiFOO36c2y12fUPmamNdNMIsfE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Content-Type; b=fBXH+BOLvv6PrRyvxHpd21ymP0/Ts3YJpKEm+sWNLTu3XzcTKuUwG1saUj9ZQCRS36CJSjonzI4DY4cidve7Gtz3NMOOVbJFKcO/A+Pbq0Z4UH3F0e/WwedXlI5C0+ou7QwYoF03VnJd39IUULEly7IzEhAWCg0gTJaQOk6LG8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UVBHv3gA; arc=none smtp.client-ip=209.85.214.202
+	s=arc-20240116; t=1759454649; c=relaxed/simple;
+	bh=5YQj5whNsy944Tq1nsPgEs2SC3r0ANA3hsB9j366qHU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Content-Type; b=IDzO5oBW3ay+Biet5jjlZk+sifi4A1upbEw+MSsD0LezVbSNHXsMKu+Rr4WNKDSbKkZEBisNdJNpx4sM7sV1h3DBMrM0jyg13J25gUd6lkvDvU9VWpYJ26AnOiiOX5c7JtnONM5AjPQMbPIZcIHBrpPQmPas9w2wXxo7/ybJ8nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RdygujaT; arc=none smtp.client-ip=209.85.216.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-27ee41e062cso19623165ad.1
-        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 18:24:01 -0700 (PDT)
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-336b646768eso2404494a91.1
+        for <bpf@vger.kernel.org>; Thu, 02 Oct 2025 18:24:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759454640; x=1760059440; darn=vger.kernel.org;
-        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=n/6Q8RQGaqyFoWu3nQe4KiS7k5Z8ub45H9dHX2o1RRQ=;
-        b=UVBHv3gAg1rd9c5sckDrLg/yS2Z6lgfm9nmrQzvl30np4Yi4eQN9V5XnW38TDU0k/T
-         O3wdrneRM3nIJaUtmlENcBH1vHMJsnQ8zwBCYBXgf/dwZkZjjjgXOcQ3TTZa2J0qYvtg
-         ijav5ZNxEKCQr/JHzPbz92PFGRB9KOjIJkFpu1hipN6/sBaUjN52FZwTbQ/hexe6k8CP
-         fsWTgrk2xHZMqOBf71oxCnD6SNrp4HUpM9++2b8JR4DVkQM2UsYfn29S0Xh4DWdruLr3
-         2GKhF8P48m4Jpqw9IJSeLKog3ZflSCueLg6vXrXGaruoVdWjCweHFAAM2vJFB4zkKTO7
-         lnKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759454640; x=1760059440;
-        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=google.com; s=20230601; t=1759454643; x=1760059443; darn=vger.kernel.org;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=n/6Q8RQGaqyFoWu3nQe4KiS7k5Z8ub45H9dHX2o1RRQ=;
-        b=RlfdgHt8AcHvIltXctqu/OlbQHR96d9gGRnpagFqcU9Z8HpOw3zO36x6qI6tIHn9tC
-         wcm8TrLsck4PMV1xapWEHHO0Gj4HpdajpzMpKH+Z2/FtEkOtdRsdHkrm7YnhnvK190IH
-         scAVIz/KdS9EhWPgLHPMBivK7UbLVbVyGgrzJ9tUOsm8njDqmqrqVcFsRE/U5yDsg7aV
-         IIpdzUR2YuCuIoFXXfaB1P1eQFstO/q8C4FTIpRX9/t8ey6adhvS0kblETT9Rue6sgnt
-         dgib1TuDCa18Ua3LSlo4ZiKzrRo1qhyLks03PydMtigSnvVakxCKD1PJYGOjss5gL3Ym
-         eToQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVB0QXG5IOis/VFVa/RuJ7y1cHC7ime/T2dj4OA3QSFEZMUfuxtgOLvbLS5W3/BlPAQb08=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDcS9eA5CyjmLkYizZJ4/7SVP5acwVc4A/4k/82fnzcUCi1H2X
-	MK9MgjLaDxhVt6naqOf/3NEVniQswuvu6MmCn++YZiIBag6600sbhpmYJ+n5KqW1e8FWZ9UsT5P
-	jdrdqJ1ymow==
-X-Google-Smtp-Source: AGHT+IFY9UEJwnhtwJqOYlJ+khMMlSHN/ze27dGvQJuRPcqqkdwyu6/B38lIGuCrw1Ue1guMSz5HzG4uq6lR
-X-Received: from plev16.prod.google.com ([2002:a17:903:31d0:b0:267:e964:bc69])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:2405:b0:264:a34c:c6d
- with SMTP id d9443c01a7336-28e9a6a90c6mr13499045ad.37.1759454640628; Thu, 02
- Oct 2025 18:24:00 -0700 (PDT)
-Date: Thu,  2 Oct 2025 18:23:48 -0700
+        bh=4a36ssrUk2NOwqoWNNokgafRmPGrKtrh3ueHGKtWlXo=;
+        b=RdygujaTfvghY5aIrVszsg0i07xaYCGZ4tm89wKO89C4R9j9a54A7fJumfv++d/y6G
+         2ghPPmp922lzXOcVBmxbOeu6LzoviFthD/Whysjv/CKa9oGHHesWpbtNvZkhqZLsTifA
+         pGvT5QnynywUsl63+MM7n8oqeugrwzS8Wma5HtKGd/2Fw/LmwW9h2uLxvj7kQZwDx88k
+         K2G26JCbuPbVu6sHQOH7gPf02ZwPU2mUUH/CPkvSN24lhwN9ttjlz/m7ENjwaWEE8i8K
+         g8c0A2bSaaK20ugkeLfDJ4SXoxy5YHKaDCuBdsLnKcnHve/fDwpnRk3UamqP8fvCuzuf
+         lr4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759454643; x=1760059443;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4a36ssrUk2NOwqoWNNokgafRmPGrKtrh3ueHGKtWlXo=;
+        b=tOqvR++/HmODsXqyX8IjsRj9VfiFna7irekd9tjI25XnYP03uDWqLa3i3uolGuJKpa
+         Z+qTHfjnXdDG5u73c1Y4EFpVKhur1UsgPEAn1p/IjDVNVjD275ps6AlSGoTm6CvrJHGh
+         HhpOOJ+dQ5cpxVOZkYaC0Vj9DWo/SqlzlfY75d2TfxYAriwDuRC0NEbvWbl1jcVCsYGd
+         O0BD31ce55XWb7ncKNmfcM9QWqDqp9YW/DvTqmaD+bQuQAhhboV9H9ZxEJg1s1iLFhFG
+         Y7gPb+awiqcFxS/RZ45W7KG3TFD8oCMSNZ1GiDBt7z2Mf4fx/elbj5YRqFi1ChvXcVe4
+         EoMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWOK39ZUvL23x+fzI+itA0MquhjV7N6Fdp6aWSxTAi+Psx4S6MwDWdy2TEbEjxPbu1eyL4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxjse9HASkfjnyrLkI9OQMwQDyzGm6/VycmvO/M26NNUA4I7NS7
+	985VJJyfRI36krUD1w0VCX/yybmeY+PizFPkCdensPm1siwjn2jO2VZv11wmm+iQGPmLyLWohAQ
+	q79d0m6mDkQ==
+X-Google-Smtp-Source: AGHT+IHfyZpoMDCQT8hkrc//s6nFD45TPZ427CL0dAfY14RayEbEgz2tiGZWsZyPld8miWOzUhmcMlj6XJBu
+X-Received: from pjsk12.prod.google.com ([2002:a17:90a:62cc:b0:330:49f5:c0a7])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1845:b0:32e:32f8:bf9f
+ with SMTP id 98e67ed59e1d1-339c27d2ec8mr1417437a91.30.1759454642812; Thu, 02
+ Oct 2025 18:24:02 -0700 (PDT)
+Date: Thu,  2 Oct 2025 18:23:49 -0700
+In-Reply-To: <20251003012349.2396685-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20251003012349.2396685-1-irogers@google.com>
 X-Mailer: git-send-email 2.51.0.618.g983fd99d29-goog
-Message-ID: <20251003012349.2396685-1-irogers@google.com>
-Subject: [PATCH v1 1/2] perf bpf-event: Use libbpf version rather than feature check
+Message-ID: <20251003012349.2396685-2-irogers@google.com>
+Subject: [PATCH v1 2/2] tools build: Remove libbpf-strings feature test
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -83,78 +86,68 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-The feature check guarded the -DHAVE_LIBBPF_STRINGS_SUPPORT is
-unnecessary as it is sufficient and easier to use the
-LIBBPF_CURRENT_VERSION_GEQ macro.
+The feature test is unnecessary as the LIBBPF_CURRENT_VERSION_GEQ(1,7)
+macro can be used instead. The only use was in perf and this is now
+removed.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/Makefile.config  | 7 -------
- tools/perf/builtin-check.c  | 1 +
- tools/perf/util/bpf-event.c | 2 --
- tools/perf/util/bpf-utils.h | 5 +++++
- 4 files changed, 6 insertions(+), 9 deletions(-)
+ tools/build/Makefile.feature              |  1 -
+ tools/build/feature/Makefile              |  4 ----
+ tools/build/feature/test-libbpf-strings.c | 10 ----------
+ 3 files changed, 15 deletions(-)
+ delete mode 100644 tools/build/feature/test-libbpf-strings.c
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 6cdb96576cb8..b0e15721c5a5 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -596,13 +596,6 @@ ifndef NO_LIBELF
- 	  LIBBPF_INCLUDE = $(LIBBPF_DIR)/..
-         endif
-       endif
--
--      FEATURE_CHECK_CFLAGS-libbpf-strings="-I$(LIBBPF_INCLUDE)"
--      $(call feature_check,libbpf-strings)
--      ifeq ($(feature-libbpf-strings), 1)
--        $(call detected,CONFIG_LIBBPF_STRINGS)
--        CFLAGS += -DHAVE_LIBBPF_STRINGS_SUPPORT
--      endif
-     endif
-   endif # NO_LIBBPF
- endif # NO_LIBELF
-diff --git a/tools/perf/builtin-check.c b/tools/perf/builtin-check.c
-index 7fd054760e47..8c0668911fb1 100644
---- a/tools/perf/builtin-check.c
-+++ b/tools/perf/builtin-check.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include "builtin.h"
- #include "color.h"
-+#include "util/bpf-utils.h"
- #include "util/debug.h"
- #include "util/header.h"
- #include <tools/config.h>
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 59f84aef91b4..2298cd396c42 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -288,9 +288,7 @@ static void format_btf_variable(struct btf *btf, char *buf, size_t buf_size,
- 		.sz = sizeof(struct btf_dump_type_data_opts),
- 		.skip_names = 1,
- 		.compact = 1,
--#if LIBBPF_CURRENT_VERSION_GEQ(1, 7)
- 		.emit_strings = 1,
--#endif
- 	};
- 	struct btf_dump *d;
- 	size_t btf_size;
-diff --git a/tools/perf/util/bpf-utils.h b/tools/perf/util/bpf-utils.h
-index eafc43b8731f..a8bc1a232968 100644
---- a/tools/perf/util/bpf-utils.h
-+++ b/tools/perf/util/bpf-utils.h
-@@ -14,6 +14,11 @@
-        (LIBBPF_MAJOR_VERSION > (major) ||                              \
-         (LIBBPF_MAJOR_VERSION == (major) && LIBBPF_MINOR_VERSION >= (minor)))
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 9399f591bd69..f9477df18841 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -124,7 +124,6 @@ FEATURE_TESTS_EXTRA :=                  \
+          llvm                           \
+          clang                          \
+          libbpf                         \
+-         libbpf-strings                 \
+          libpfm4                        \
+          libdebuginfod			\
+          clang-bpf-co-re		\
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index d13d2a1f44fe..fd304dc2aafd 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -57,7 +57,6 @@ FILES=                                          \
+          test-lzma.bin                          \
+          test-bpf.bin                           \
+          test-libbpf.bin                        \
+-         test-libbpf-strings.bin                \
+          test-get_cpuid.bin                     \
+          test-sdt.bin                           \
+          test-cxx.bin                           \
+@@ -332,9 +331,6 @@ $(OUTPUT)test-bpf.bin:
+ $(OUTPUT)test-libbpf.bin:
+ 	$(BUILD) -lbpf
  
-+#if LIBBPF_CURRENT_VERSION_GEQ(1, 7)
-+// libbpf 1.7+ support the btf_dump_type_data_opts.emit_strings option.
-+#define HAVE_LIBBPF_STRINGS_SUPPORT 1
-+#endif
-+
- /*
-  * Get bpf_prog_info in continuous memory
-  *
+-$(OUTPUT)test-libbpf-strings.bin:
+-	$(BUILD)
+-
+ $(OUTPUT)test-sdt.bin:
+ 	$(BUILD)
+ 
+diff --git a/tools/build/feature/test-libbpf-strings.c b/tools/build/feature/test-libbpf-strings.c
+deleted file mode 100644
+index 83e6c45f5c85..000000000000
+--- a/tools/build/feature/test-libbpf-strings.c
++++ /dev/null
+@@ -1,10 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <bpf/btf.h>
+-
+-int main(void)
+-{
+-	struct btf_dump_type_data_opts opts;
+-
+-	opts.emit_strings = 0;
+-	return opts.emit_strings;
+-}
 -- 
 2.51.0.618.g983fd99d29-goog
 
