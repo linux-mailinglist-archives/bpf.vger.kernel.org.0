@@ -1,111 +1,123 @@
-Return-Path: <bpf+bounces-70346-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70345-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A12AABB8067
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 22:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13089BB805E
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 22:05:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 620B24C3517
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 20:07:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C076F3C862D
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 20:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10BE21D3E6;
-	Fri,  3 Oct 2025 20:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0EE203710;
+	Fri,  3 Oct 2025 20:05:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="BPdnfDUN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BJ+eJWQ4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-3.rrze.uni-erlangen.de (mx-rz-3.rrze.uni-erlangen.de [131.188.11.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED41A204F93
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 20:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167D017A2E1
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 20:05:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759522024; cv=none; b=qz6dD+vWJ7yl04NgbYPyh5BzaUyyFr72+s18JzRMfXjQTLNeDk/u9aUlcwZA/tQvXvCW94m3INTOJpTRkmsuLqUtyC2IaHKGPUjLofpduDXSE7puhReFEBNr3Z5d+Qw1+gxkvdOoY5F8vkT3z1e57g6XM9GgVRzvj5bAE60c8Ww=
+	t=1759521904; cv=none; b=JnL6QQVfc//qUFo/NR9c3XMj56M2GPpYfAahPe0K91IDkMASrRSSE0Gf8OjPWxhXgTzfmkZu7S7F90nL+1/yHyjxW4Py+1cmKM+h5/2gXYU47rxXxoE0g9h1oZWbWkgl8vtPO+5aFEqZQuR7S65ezRmaE0Be0HpYHXitbvdrl5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759522024; c=relaxed/simple;
-	bh=TWxN4otPp0pz8coB2LWoyR1N8EqwEQNr9xccToEnb6c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uHyucJqAn9kQZdq9t+WNrTUi8CqyuO2Wu7fayDvIZDzd6GtmYII1gjMPT3IQR4z6VCga0Z0cRopYAB2Zk8C/bLi2wOJESSVNoVXsO/9NYYTf7ke0N+nJREe17onshugwlfZYvw+hvsVNEgRUO72xr2brS2a0f9N0H6JV7mCJdVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=BPdnfDUN; arc=none smtp.client-ip=131.188.11.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1759521596; bh=TWxN4otPp0pz8coB2LWoyR1N8EqwEQNr9xccToEnb6c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
-	 Subject;
-	b=BPdnfDUNarLqrW8zBDhTmlQ+HohuG16UUBvs9jWNjgLSMWxAiMYHvZqXYex6tZen0
-	 TDRtw1myRPKi2vzoBpDYVrZ+G1fR4CIt/mtIA5oesOiO01DDsEZiE8lQjeKxtUXC2z
-	 Txm54R4VoaR06QTI8RbWsOF9Fv6fKZH07iIfl2+m67bPqGP1DgNG26H2JuvGX1Li6W
-	 O7Tl/mVXIpcX+KMflMhCKFSBl7YgmV2lNdmEuHsSXkAIfLkhnqifcbpEWUvQJDaIJX
-	 tAhFeRK7V16hj4Nv2d1ixO4BrFzKr9w4MHd666WpKZdvuDuiCY3sXFR/uD/Q1onF9D
-	 KnPkP3LfoDr6Q==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4cdfdm1dpMz1y2m;
-	Fri,  3 Oct 2025 21:59:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck2.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:3625:e000:56ed:e747:251a:4bef
-Received: from localhost (unknown [IPv6:2001:9e8:3625:e000:56ed:e747:251a:4bef])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX19XDJ+MJ108UTWpr1Qf5TKL+2wPO3kUVMI=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4cdfdj1F7Dz1y2V;
-	Fri,  3 Oct 2025 21:59:53 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,  Andrii Nakryiko
- <andrii@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,  Eduard
- Zingerman <eddyz87@gmail.com>,  Tiezhu Yang <yangtiezhu@loongson.cn>,  bpf
- <bpf@vger.kernel.org>
-Subject: Re: Some unpriv verifier tests failed due to bpf_jit_bypass_spec_v1
-In-Reply-To: <CAEyhmHTvj4cDRfu1FXSEXmdCqyWfs3ehw5gtB9qJCrThuUy2Kw@mail.gmail.com>
-	(Hengqi Chen's message of "Tue, 23 Sep 2025 17:52:11 +0800")
-References: <CAEyhmHTvj4cDRfu1FXSEXmdCqyWfs3ehw5gtB9qJCrThuUy2Kw@mail.gmail.com>
-User-Agent: mu4e 1.12.12; emacs 30.2
-Date: Fri, 03 Oct 2025 21:59:52 +0200
-Message-ID: <878qhr69jb.fsf@fau.de>
+	s=arc-20240116; t=1759521904; c=relaxed/simple;
+	bh=oEg8tIsIC58HTMS2A1kpleh+25w35gugnGp9CGZZ4K0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bZoIGGpZOQMjxMx2hKehTLkmsoaJTdYg/99HdraV5vbZqKQ+n3E4nsiWX7Gx4QH6ZOXGtd5DUjVz6K4J6cb45ZPpUXmJwVslJgGwcwnfLu9BdUkEnqbZj1TMlkr7z6dSvaMoZoLVuj7HPkgfYaIVXnHaO6eBkUrJs6QH5kUsdpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BJ+eJWQ4; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-46e2c3b6d4cso21516115e9.3
+        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 13:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759521901; x=1760126701; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QouYmczGicW3zQ/QltZkNbFY5oekMPlNP9t/krMeOKk=;
+        b=BJ+eJWQ4c4TJaSfIbjfglqiVhqvTXp2pzGbrGJIijYfyI0ymJzpYilN8u/YJkxtEQS
+         HzmSO2RWnipMIXZL/xarg1+qg6MTIoHl//YYOvt+fCVq1ioPRnoXdnrhcyBC4ocUeSAY
+         unUiqXWV6r9XKLi/PiTWXnlD/SIxIeOqoZEnIpC48qL9ip6YorBEGQv83xtIy2b5BdGi
+         tdxKGllKy+HRB/1JSUHNnvF65eVjxpeiZQbI98+IR1iSKWpyBvzTHwsPfI7NKPLvdyiE
+         1pXzgDvZkPhVs7XIyliNAq4lGqWcmdgQeXQSGA7Wl5OLDkIq4XbnbhGtmAA3Q0Tzvy7i
+         Aw2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759521901; x=1760126701;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QouYmczGicW3zQ/QltZkNbFY5oekMPlNP9t/krMeOKk=;
+        b=XbHU4CPVDRLzSrc6Ke+bVr4A9emNpKs9dkPtMdutqh5KgmattvoJh7xwJ0YI81+uJo
+         xdd6lOChrL7EIfYqDAKqbHxPq63jkuexdz3fyH28qV5/we9Cebn7VQCt1RcMxdN45F64
+         sQzAMjyzSxhWsNF6m8pwBzkmqL+wt3v8VWSsZa2PHtgMWNNVv5oGrHtxF1qHRLQqu4uS
+         hdlwW4Edx/+rDo6iSoI2X71a8doysRSP7Z2DMeVMdkeD4qzclGZmh9M5EX0lnwlYFO6V
+         JYAVVs1iEtGA1GRleO5qgLkDUJnNkMBFBGiZxbirNlZcS/l5U26BvaYF5uHOtTW1AZnj
+         DtWA==
+X-Gm-Message-State: AOJu0YxeOYcr6+G6GOaW/jgFu0VbaPk8f+4aKB19o7ICdY18NclhlJXN
+	qraAzKMIP3aWpKJj7/wcrBGhoGQcyL+IxKFkGjTP6MbAFNXqhkH5CyXLOAkeUAmR10ogzEG56FQ
+	/qhFUOIB7qQ2tL7kUnApgIajodCeuL10=
+X-Gm-Gg: ASbGnctPBOwKs8nkJXFQOc99ffr/l9M4RJkBhEMLJrjDS4oZYhYBypiDm4g5dyhuqgl
+	cUiR5zF9U5V2MVarz8QB+2AmzC1+4xD6y5RzM/LOBEdkFu98yh4A7BxwjxhKKAlU6359xYQZEqb
+	Ju7r3EKxW20Ci/XnoIXLq5dOgTTH26Tu7q/KJNhtws6ipISXK1LQ7tNwX2bI7WJMcFjnoowY7Qx
+	W0hxWK/e2uHR37BQ63Xzffz0pCpa8ekUhNOF2TC4iVNNqA=
+X-Google-Smtp-Source: AGHT+IEwfBP1s7tm96NDtSRVg9hJhthQiAo4VWZuJMjjzWWF58pGiU6wCMKrGzowv5yyIOhPcSZcrrTiSpg3bqE2ssc=
+X-Received: by 2002:a05:600c:34cc:b0:46e:1f86:aeba with SMTP id
+ 5b1f17b1804b1-46e7113f7a4mr38010645e9.17.1759521901206; Fri, 03 Oct 2025
+ 13:05:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com> <20251003160416.585080-4-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20251003160416.585080-4-mykyta.yatsenko5@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 3 Oct 2025 13:04:47 -0700
+X-Gm-Features: AS18NWAgdMVW55UAQeXBhgAlv007aTSuS0a52zFSdcmrYgTWGSwZzzgzLghXU5U
+Message-ID: <CAADnVQLQU5Wf=H4Y=Aywu1H24+6OhNg_tvqJALUd7F58wYBrPg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 03/10] lib: extract freader into a separate files
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hengqi Chen <hengqi.chen@gmail.com> writes:
-
-> Some unpriv verifier tests (e.g. bounds_map_value_variant_2) failed
-> on LoongArch which implements bpf_jit_bypass_spec_v1().
+On Fri, Oct 3, 2025 at 9:04=E2=80=AFAM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
-> This is because some verifier paths do can_skip_alu_sanitation().
-> So for such cases, the priv/unpriv test cases will have the same
-> verifier error messages and the tests failed with unexpected error
-> messages.
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 >
-> How can we fix them?
+> Move the freader implementation from buildid.{c,h} into a dedicated
+> compilation unit, freader.{c,h}.
+>
+> This allows reuse of freader outside buildid, e.g. for file dynptr
+> support added later. Includes are updated and symbols are exported as
+> needed. No functional change intended.
+>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  include/linux/freader.h |  32 +++++++++
+>  lib/Makefile            |   2 +-
+>  lib/buildid.c           | 145 +---------------------------------------
+>  lib/freader.c           | 133 ++++++++++++++++++++++++++++++++++++
+>  4 files changed, 167 insertions(+), 145 deletions(-)
+>  create mode 100644 include/linux/freader.h
+>  create mode 100644 lib/freader.c
 
-Please excuse the late reply.
+Pls update maintainers file in this patch as well to
+make sure that ./scripts/get_maintainer.pl lib/freader.c
+does the right thing.
 
-The most simple fix would be to add the missing '#ifdef SPEC_V1' to
-these tests, however, I anyway intend to send a new version of [1] which
-removes some of these errors altogether. The patch did not get merged
-with the rest of the series earlier because there was a merge conflict
-with another fix (now resolved).
-
-I ran the CI with bypass_spec_v1 set for x86 to reproduce your issue [2]
-and the patch fixes some of the tests as expected [3]. Can you confirm
-this is the same for LoongArch?
-
-Some test still fail because the '#ifdef SPEC_V1' is still missing for
-them. I will prepare a patch to resolve this.
-
-[1] https://lore.kernel.org/all/CAADnVQLC_zViaCs5Huu63Jr2oCx1NGY3f_VCkJhrKvqst7HL=g@mail.gmail.com/
-[2] https://github.com/kernel-patches/bpf/pull/9929
-[3] https://github.com/kernel-patches/bpf/pull/9927
+tbh I'd rather move it to kernel/bpf/ directory,
+and include/linux/freader.h into kernel/bpf/freader.h,
+since include/linux/ is for generic api-s
+for the whole kernel to use. This is not generic.
+It's dynptr and buildid specific.
 
