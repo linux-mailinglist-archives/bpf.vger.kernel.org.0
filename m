@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-70328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 142AABB7E40
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 20:38:41 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79057BB7E43
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 20:39:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2F3E4A36DD
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 18:38:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 291714E375F
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 18:39:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7CB1F8BA6;
-	Fri,  3 Oct 2025 18:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED662DA750;
+	Fri,  3 Oct 2025 18:38:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q4T4m+n9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nIazYUrr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1A718B0F
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 18:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245B91F0991
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 18:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759516715; cv=none; b=jiA2y5KUdWU5JeOdeqBA/s+pSlncwpEm5cU7sFLfYw4A1MM+4xOrL+Vy4X806TbrK8/OtJ4mySYrSqUz7CYDpfHtQM1s/6RTWDOutiPAXcruFaUNIoy41kCN9Ue2kafkBt6e37hLyFt2JSoBOPT1wQhgON9ZCZvVYVWs/GaewCc=
+	t=1759516737; cv=none; b=mryq8k+f51bOS9BgJuySEMyUaf7YDMmaQCMeLF0F5yGRT2Th+YgMU1EHNlJINi5414d70UrPO0oMScafbzQkSkyeA9YJNvgOvQ5btXh9bj4thW85rbAWgMSdg6JwN0Azfvw7P4mY80rauanBq8O6yyOK100bkF04vg9fPyzemkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759516715; c=relaxed/simple;
-	bh=ZCkwtpEgfdVLUlHskQ0wVk2b1a3I2jthOt4sLFiuzVQ=;
+	s=arc-20240116; t=1759516737; c=relaxed/simple;
+	bh=/VNNcKduapbgSNGY5u9u7EVBbrgcJ9nGjAStpdzE5F4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u7y+KeXxwRVtsyKrKA0hAw4gLJkASKWVutEmty1mzj+3OcXI+20W5VLn6PKovRfNAdaho00NZ/Q+vwneSVMhzrNF1IFQ//qtQWvAjwX/NtEvCpfQ8qch/Xkv6IZ1YNsr168MacS82K2UCml5SwIQAgr046MGW7lzAcQInLMYVIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q4T4m+n9; arc=none smtp.client-ip=209.85.210.172
+	 To:Cc:Content-Type; b=VmipWTcECXmMSnhY52Ge2e2uZPL9D61A7zCYdW1MtKfEd/VNGCnBqm12DJ6RmvkJZ/0CJCgVHk5xmv3nQasvFb+IhpUuirjSwQo1KjRpkC9LmGwFHevukyJaI/kYGtwCWcy0C2odR+1jJvjfc+mU+C6Vrl9ro8yoElSTzSoEvyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nIazYUrr; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7811a5ec5b6so2893383b3a.1
-        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 11:38:33 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-28832ad6f64so30634095ad.1
+        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 11:38:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759516713; x=1760121513; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759516734; x=1760121534; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=slQB3wMtldCf4MiuiHVRdvJMvO4u4oJ+OACs7uKno9k=;
-        b=Q4T4m+n9hRcRezwfko12IBkH2q2HXSt5rGYAZKEBSodQn/aRk3BxN04FJxdleyRfBk
-         f3a04/a4kx+2fnwuPndHdOXdof7l3q53KQgdK2ncVAX7E50MAMrcnusLB56oXWuXlTdl
-         eY0yJln3DwEtsmi1BEs5S1EljC729uTVd7SnA24QZEmDvLUuEr1wR+nJeDUNCrTRN7pi
-         QswS9u9aIf+ASbSeSJeWQ5+3XtCaJ4SYNYEV7TiP+ZTdGzQctx2BpgbgoamjvUFC5qhA
-         0cBEXvhjJu6/mKT6h/rxQKbY//s3bXB21/9Ck/aLnbLwtKtOlvpRWaZAfsCfDU2AnVu6
-         i9yA==
+        bh=z6Ur6zVZ/fYynGVHZXez85LnNPC6dAXtC+tyGQ/82Gc=;
+        b=nIazYUrr59OwcfWP8DlKhrm5NKa/3z4UywwT7T7VG6qs+nFw0R8MuzhzllQ4HPOLFU
+         zsB4F63S/hlDA8qOzQjYUUVsEEd6YkxbjG54d+5M4hu4HVT8GN54B+3dUV1jwYcROYwE
+         LJCpDZzICMRpD8a7EPItAkyoMLqX9YCwbuw/rX1ROWsUuwMVp/+2AeKKacY0jF5YY8Fs
+         nRC79k0MNNKURWc+VSguX8SdLlOe2s9bRTeKVgG4n/SwCtkUmNcxe9H1jBNn3vOXJVDF
+         AM4p2o6od9wpZayCHITvy+EOpHx/Fc6bTJylX1tqgv9e1biOrCS+oRtgT7qjQXqywD0J
+         h1fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759516713; x=1760121513;
+        d=1e100.net; s=20230601; t=1759516734; x=1760121534;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=slQB3wMtldCf4MiuiHVRdvJMvO4u4oJ+OACs7uKno9k=;
-        b=qGZm0TDBLPVDFlP9kQocR8FX2FYb/QvHcoNq/GqJozCg6frJi5M7WrhA7xekOfVxQu
-         3Bv0Yqwlu3F3uDcxj6YAvj+4hqUwlgZUSicO2urnDM0Qzn8xi8TQaO7FPC4mmnwTYxkU
-         N4kMejiUIoBHJtfDgk0nlpB+0cx4pwvGLNV34i18hBq2jt78SgISC2uAZTSPHIUGuCSm
-         AEqAKz9Ha87bt/SGpitZa3YcBe4rQGrb9f12W87dBb8ZntlmtMSj28CZoH+XebhfEYDV
-         hAKE7zqg6NNvH+POPA8mxPZtssD3UAh3i1rieyFaB7yj2i5NcksUMuftdL5iIVGCDYQZ
-         9Zbg==
-X-Gm-Message-State: AOJu0YyAGeEBVAJJshBPamVLOIFvbbff5V0cKQafTIqQ12wf2KdDJFK4
-	/HWsCHmLE/jSKzLHrNf+BeXAPh0wIXDciPDC09TQTD6+qhFfiGkPM5eI5GdZipFB1eSi6f9vxV6
-	meQDI8NOoByrut7y4j/G8Z2+EhKV9Rr8=
-X-Gm-Gg: ASbGnct83nYyv2Vy9R4/rLFNWEl/3Z8X9Y4V75OWhn32QXcl5LE1S3zEGIT/Jl6ap59
-	iz6scLNgKLMbYqfKr95XEQ3+CmzCHxqO2xDvX4It5ljojBkVbyFg77uMpjadOYXpY2TRTo8sp2Z
-	IIKZCA9D712BOetuYWoCfrmkSotZ71RElL/oyS7DRCQ6Ckssv+8ItT4FIdVlkpttLjKyTmqfMtR
-	sERxG6msz1weM6DYYnhm11HruvvLH/kyepLNp1cLBBDTZw=
-X-Google-Smtp-Source: AGHT+IHdrx+lQpv/HR0zjjL1WGEwnl7RbFUi2yxtnNrpH61fcc+nQyroTL5oxK2Rej3cJ/KsSSIFOZAyXsG4WgdCJEE=
-X-Received: by 2002:a17:90b:4e83:b0:32e:dcc6:cd3f with SMTP id
- 98e67ed59e1d1-339b50fe9b0mr10713062a91.14.1759516713391; Fri, 03 Oct 2025
- 11:38:33 -0700 (PDT)
+        bh=z6Ur6zVZ/fYynGVHZXez85LnNPC6dAXtC+tyGQ/82Gc=;
+        b=NQ4cQgLeAcfpcM9SpJM+KuPKzVqe15WmUWVGq94ff4mgx0uwzw+GJL+hD8vBryB5t9
+         8tEsFdxv0dkH3uh29NpDSNn/cOqODNAR0i5uRrwEnQtmOLRoFXKfz+YGPXsBu6ig+TeM
+         B1wYpS584HmEDQ9mDhjP+pJmmCDh2Rl5t60W3XZdqvpjXEttkHg6lOVI7zaOpmV2dImP
+         z9uaP8VzHymN4MljGOKLyRUnK6nruZZ/xe260W1H6tHxvRIORwmu4Hig35lJP3dAYfsb
+         cQDcJkz1jhfScVhgZuY0JSMM7CQmIwsx15NjL/54GnJCRCKKJAAHRACGrAps1hvS+J69
+         C6wA==
+X-Gm-Message-State: AOJu0YxprmKnOqMXgsPzuiFI+bPcVTsrCtFzD5by4NALwKSvnNQmf+i9
+	Wm+kVkJhXbxnl37mKk27zILzfYAcrszTloqgudUhRCqjNPCOEYHigp0P/KXgw6jjo++rVk28luH
+	5P7VnmR2jb3DY1Smvb53YqS6tH8Z9SlQ=
+X-Gm-Gg: ASbGncu2ReiCBXedF37nhomSb8S//Cza/SLV0lgXw8EfkRmdgKtGHcoQV5P9f3Hugrz
+	+8f1oNy18dfdZclswLB9LKnwtrrokkzpA63T0L5T5VdQjJUDkHCIDm6NWXRPW3QJxFMrfMR6AcG
+	wXX1yiXQLsTAdU4UwllDSOmUadpoZAzvT/voEibEmL7OYceuThoU3XYe5+43VHKNKIMDKm3wgSj
+	qU02kN8t4ZSYp+uOp/9W6zwps2ykJ0Ew5+Vqr6cM9NMvCM=
+X-Google-Smtp-Source: AGHT+IEWHKl4GxQGAVfmS0+gtm95NW8BAvNxuIjpODnrZdIyOEYlnHezwvNl8jMohrBdTbkYMXCWRakTn3r/ltGPnmU=
+X-Received: by 2002:a17:903:1a4c:b0:263:3e96:8c1b with SMTP id
+ d9443c01a7336-28e9a61aba5mr43331485ad.33.1759516733743; Fri, 03 Oct 2025
+ 11:38:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com> <20251003160416.585080-8-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20251003160416.585080-8-mykyta.yatsenko5@gmail.com>
+References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com> <20251003160416.585080-7-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20251003160416.585080-7-mykyta.yatsenko5@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 3 Oct 2025 11:38:17 -0700
-X-Gm-Features: AS18NWDbY2ah-ZvojnpTPEnARZ8ZH8YGy50JbsGq_6T7fRKOzJb3tKkju9UZLhs
-Message-ID: <CAEf4BzYunpO3hBb3T_RGEUcYJBk=awgx+jCS8Naw1nK_SUEHUw@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 07/10] bpf: add kfuncs and helpers support for file dynptrs
+Date: Fri, 3 Oct 2025 11:38:39 -0700
+X-Gm-Features: AS18NWDBMvgCu1ruaXbcLPseK2G10harWSbDsi9oBENGQfcJd1sYR3Cf-hEJ_LE
+Message-ID: <CAEf4BzY4nHek8Bm2G-4xQ9FTK-Ge5b-B0-w2PiZMxLKLTn_T-w@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 06/10] bpf: add plumbing for file-backed dynptr
 To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
@@ -93,169 +93,88 @@ On Fri, Oct 3, 2025 at 9:04=E2=80=AFAM Mykyta Yatsenko
 >
 > From: Mykyta Yatsenko <yatsenko@meta.com>
 >
-> Add support for file dynptr.
+> Add the necessary verifier plumbing for the new file-backed dynptr type.
+> Introduce two kfuncs for its lifecycle management:
+>  * bpf_dynptr_from_file() for initialization
+>  * bpf_dynptr_file_discard() for destruction
 >
-> Introduce struct bpf_dynptr_file_impl to hold internal state for file
-> dynptrs, with 64-bit size and offset support.
->
-> Introduce lifecycle management kfuncs:
->   - bpf_dynptr_from_file() for initialization
->   - bpf_dynptr_file_discard() for destruction
->
-> Extend existing helpers to support file dynptrs in:
->   - bpf_dynptr_read()
->   - bpf_dynptr_slice()
+> Currently there is no mechanism for kfunc to release dynptr, this patch
+> add one:
+>  * Introduce is_dynptr_release_arg() to tell if given dynptr argument
+>  should be released
+>  * Set meta->release_regno and regs[regno].ref_obj_id to make release
+>  happen
 >
 > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 > ---
->  kernel/bpf/helpers.c | 97 +++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 95 insertions(+), 2 deletions(-)
+>  include/linux/bpf.h   |  7 ++++++-
+>  kernel/bpf/helpers.c  | 12 ++++++++++++
+>  kernel/bpf/log.c      |  2 ++
+>  kernel/bpf/verifier.c | 22 ++++++++++++++++++++--
+>  4 files changed, 40 insertions(+), 3 deletions(-)
 >
 
 [...]
 
-> +static int bpf_file_fetch_bytes(struct bpf_dynptr_file_impl *df, u64 off=
-set, void *buf, u64 len)
-> +{
-> +       const void *ptr;
-> +
-> +       if (!buf || len =3D=3D 0)
+>  static void __mark_dynptr_reg(struct bpf_reg_state *reg,
+> @@ -12258,6 +12262,8 @@ enum special_kfunc_type {
+>         KF_bpf_res_spin_unlock,
+>         KF_bpf_res_spin_lock_irqsave,
+>         KF_bpf_res_spin_unlock_irqrestore,
+> +       KF_bpf_dynptr_from_file,
+> +       KF_bpf_dynptr_file_discard,
+>         KF___bpf_trap,
+>         KF_bpf_task_work_schedule_signal,
+>         KF_bpf_task_work_schedule_resume,
+> @@ -12330,6 +12336,8 @@ BTF_ID(func, bpf_res_spin_lock)
+>  BTF_ID(func, bpf_res_spin_unlock)
+>  BTF_ID(func, bpf_res_spin_lock_irqsave)
+>  BTF_ID(func, bpf_res_spin_unlock_irqrestore)
+> +BTF_ID(func, bpf_dynptr_from_file)
 
-len =3D=3D 0 doesn't return error for LOCAL and RINGBUF (at least), I
-don't think we should deviate. Just treat len =3D=3D 0 as no-op.
+KF_TRUSTED for that file reference?
 
-> +               return -EINVAL;
-> +
-> +       df->freader.buf =3D buf;
-> +       df->freader.buf_sz =3D len;
-> +       ptr =3D freader_fetch(&df->freader, offset + df->offset, len);
-> +       if (!ptr)
-> +               return df->freader.err;
-> +
-> +       if (ptr !=3D buf) /* Force copying into the buffer */
-> +               memcpy(buf, ptr, len);
-> +
-> +       return 0;
-> +}
-> +
->  void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data,
->                      enum bpf_dynptr_type type, u32 offset, u32 size)
->  {
-> @@ -1782,6 +1832,8 @@ static int __bpf_dynptr_read(void *dst, u64 len, co=
-nst struct bpf_dynptr_kern *s
->         case BPF_DYNPTR_TYPE_SKB_META:
->                 memmove(dst, bpf_skb_meta_pointer(src->data, src->offset =
-+ offset), len);
->                 return 0;
-> +       case BPF_DYNPTR_TYPE_FILE:
-> +               return bpf_file_fetch_bytes(src->data, offset, dst, len);
->         default:
->                 WARN_ONCE(true, "bpf_dynptr_read: unknown dynptr type %d\=
-n", type);
->                 return -EFAULT;
-> @@ -2177,6 +2229,35 @@ void bpf_rb_root_free(const struct btf_field *fiel=
-d, void *rb_root,
->         }
->  }
->
-> +enum bpf_is_sleepable {
-> +       MAY_SLEEP,
-> +       MAY_NOT_SLEEP,
-> +};
 
-might be a bit of an overkill to have enum for this, but I don't feel
-strongly about this
-
+> +BTF_ID(func, bpf_dynptr_file_discard)
+>  BTF_ID(func, __bpf_trap)
+>  BTF_ID(func, bpf_task_work_schedule_signal)
+>  BTF_ID(func, bpf_task_work_schedule_resume)
+> @@ -13293,6 +13301,11 @@ static int check_kfunc_args(struct bpf_verifier_=
+env *env, struct bpf_kfunc_call_
+>                                 dynptr_arg_type |=3D DYNPTR_TYPE_XDP;
+>                         } else if (meta->func_id =3D=3D special_kfunc_lis=
+t[KF_bpf_dynptr_from_skb_meta]) {
+>                                 dynptr_arg_type |=3D DYNPTR_TYPE_SKB_META=
+;
+> +                       } else if (meta->func_id =3D=3D special_kfunc_lis=
+t[KF_bpf_dynptr_from_file]) {
+> +                               dynptr_arg_type |=3D DYNPTR_TYPE_FILE;
+> +                       } else if (meta->func_id =3D=3D special_kfunc_lis=
+t[KF_bpf_dynptr_file_discard]) {
+> +                               dynptr_arg_type |=3D DYNPTR_TYPE_FILE;
+> +                               meta->release_regno =3D regno;
+>                         } else if (meta->func_id =3D=3D special_kfunc_lis=
+t[KF_bpf_dynptr_clone] &&
+>                                    (dynptr_arg_type & MEM_UNINIT)) {
+>                                 enum bpf_dynptr_type parent_type =3D meta=
+->initialized_dynptr.type;
+> @@ -13969,7 +13982,12 @@ static int check_kfunc_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn,
+>          * PTR_TO_BTF_ID in bpf_kfunc_arg_meta, do the release now.
+>          */
+>         if (meta.release_regno) {
+> -               err =3D release_reference(env, regs[meta.release_regno].r=
+ef_obj_id);
+> +               struct bpf_reg_state *reg =3D &regs[meta.release_regno];
 > +
-> +static int make_file_dynptr(struct file *file, u32 flags, enum bpf_is_sl=
-eepable sleepable,
-> +                           struct bpf_dynptr_kern *ptr)
-> +{
-
-nit: put it right before bpf_dynptr_from_file()?
-
-> +       struct bpf_dynptr_file_impl *state;
-> +
-> +       /* flags is currently unsupported */
-> +       if (flags) {
-> +               bpf_dynptr_set_null(ptr);
-> +               return -EINVAL;
-> +       }
-> +
-> +       state =3D bpf_mem_alloc(&bpf_global_ma, sizeof(struct bpf_dynptr_=
-file_impl));
-> +       if (!state) {
-> +               bpf_dynptr_set_null(ptr);
-> +               return -ENOMEM;
-> +       }
-> +       state->offset =3D 0;
-> +       state->size =3D U64_MAX; /* Don't restrict size, as file may chan=
-ge anyways */
-> +       freader_init_from_file(&state->freader, NULL, 0, file, sleepable =
-=3D=3D MAY_SLEEP);
-> +       bpf_dynptr_init(ptr, state, BPF_DYNPTR_TYPE_FILE, 0, 0);
-> +       bpf_dynptr_set_rdonly(ptr);
-> +       return 0;
-> +}
-> +
->  __bpf_kfunc_start_defs();
->
->  __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign=
-)
-> @@ -2720,6 +2801,9 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf=
-_dynptr *p, u64 offset,
->         }
->         case BPF_DYNPTR_TYPE_SKB_META:
->                 return bpf_skb_meta_pointer(ptr->data, ptr->offset + offs=
-et);
-> +       case BPF_DYNPTR_TYPE_FILE:
-> +               err =3D bpf_file_fetch_bytes(ptr->data, offset, buffer__o=
-pt, buffer__szk);
-> +               return err ? NULL : buffer__opt;
->         default:
->                 WARN_ONCE(true, "unknown dynptr type %d\n", type);
->                 return NULL;
-> @@ -2814,7 +2898,7 @@ __bpf_kfunc int bpf_dynptr_adjust(const struct bpf_=
-dynptr *p, u64 start, u64 end
->         if (start > size || end > size)
->                 return -ERANGE;
->
-> -       ptr->offset +=3D start;
-> +       bpf_dynptr_advance_offset(ptr, start);
->         bpf_dynptr_set_size(ptr, end - start);
->
->         return 0;
-> @@ -4201,11 +4285,20 @@ __bpf_kfunc int bpf_task_work_schedule_resume(str=
-uct task_struct *task, struct b
->
->  __bpf_kfunc int bpf_dynptr_from_file(struct file *file, u32 flags, struc=
-t bpf_dynptr *ptr__uninit)
->  {
-> -       return 0;
-> +       return make_file_dynptr(file, flags, MAY_NOT_SLEEP, (struct bpf_d=
-ynptr_kern *)ptr__uninit);
->  }
->
->  __bpf_kfunc int bpf_dynptr_file_discard(struct bpf_dynptr *dynptr)
->  {
-> +       struct bpf_dynptr_kern *ptr =3D (struct bpf_dynptr_kern *)dynptr;
-> +       struct bpf_dynptr_file_impl *df;
-> +
-> +       if (bpf_dynptr_get_type(ptr) =3D=3D BPF_DYNPTR_TYPE_INVALID)
-> +               return 0;
-
-nit: let's just do what dynptr_read does:
-
-if (!dynptr->data)
-    return 0;
-
-> +
-> +       df =3D ptr->data;
-> +       freader_cleanup(&df->freader);
-> +       bpf_mem_free(&bpf_global_ma, df);
->         return 0;
->  }
->
+> +               if (meta.initialized_dynptr.ref_obj_id)
+> +                       err =3D unmark_stack_slots_dynptr(env, reg);
+> +               else
+> +                       err =3D release_reference(env, reg->ref_obj_id);
+>                 if (err) {
+>                         verbose(env, "kfunc %s#%d reference has not been =
+acquired before\n",
+>                                 func_name, meta.func_id);
 > --
 > 2.51.0
 >
