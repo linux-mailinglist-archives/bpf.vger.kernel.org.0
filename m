@@ -1,170 +1,203 @@
-Return-Path: <bpf+bounces-70289-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70290-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5B65BB643F
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 10:47:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24A78BB6445
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 10:48:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EB6319E5569
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 08:48:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF2CD3B391D
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 08:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5BB27C172;
-	Fri,  3 Oct 2025 08:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 805AC275864;
+	Fri,  3 Oct 2025 08:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uUksfYjQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O2Q4jrWB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001F1275B13
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 08:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AFE72556E
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 08:48:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759481238; cv=none; b=ohpEffprzD+nRfOcJbHaGKgcEvsuQrjjfBeyCIb6cAfk4CrTSQzZDeO7CoKAQ5X94lZPbE0LJYrJ/EKg+PCv5vvZ0iqc9Zcc0pFOFUKWceMnfmeWhzZrY8CP1ijLhmTL8waR5FBumBdR3pV+zMkYB3IkyLiU1SWxpJbF1AWGUM0=
+	t=1759481318; cv=none; b=JTarvA70FLKGHgIJlCvLNzOlBNSFd2JfF0GBAR9GsbvFDm0XtlziHQYSDAA89YKyKbkZgYsKqXEcslY2lnY3/WkopyGl6NZj+xiBsWCfqHJifrVOdyVbUjvxmb/9GmaN9G+X8aV3P15R/DMziqE21/Z2t0EHjXZMBNYw4gdvJEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759481238; c=relaxed/simple;
-	bh=XLodWl1Mnqi6n+xmZaM4r4KxwmmAoji2W6kZJLMVLA8=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Qy96/zeVsQWPcv544LAR07azUGtfTPH+p6k260257N/mDuXEoF6+1bxEd1mIyz22Z7qaNIqfShGhSYDSVBHdLtsg1mR4hybZeMCiVf+f/P7nvaKomG3ajJ7cOTBjdthhMu9TYSxehQwuhRbZJTXPanRqWpkKTmjHGTdTaamkkeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uUksfYjQ; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759481235;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CZM6bExjDs8jz6TVsKvY1N151Suvl2rvzQSjV8ALYIE=;
-	b=uUksfYjQzFzSy+jIUVRgc1r4bn38I5hd+45qOv9/mdFxrvxzk9fcv6zH0laC2n+GqUwYYK
-	LkUwLZKnFojni7xbzvB9JkN87RKhExIzunDQfsiFzpCqzTXr8rFazFgRGqVbh9NlKL6jqy
-	GuCU2BX8K3WYSi4giFgDNlfM4rFjHUA=
-From: KaFai Wan <kafai.wan@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	kafai.wan@linux.dev,
-	toke@redhat.com,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf 2/2] selftests/bpf: Add test for unpinning htab with internal timer struct
-Date: Fri,  3 Oct 2025 16:45:28 +0800
-Message-ID: <20251003084528.502518-3-kafai.wan@linux.dev>
-In-Reply-To: <20251003084528.502518-1-kafai.wan@linux.dev>
-References: <20251003084528.502518-1-kafai.wan@linux.dev>
+	s=arc-20240116; t=1759481318; c=relaxed/simple;
+	bh=7/aYymvTSqWw7GvnTH/EcYDe/tscxOeGGUsYmp8EV3E=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NIIKQZNAvZ/6wW0qj92+81v2fwehI241P4o0Nu3MeatDfdGERJbafzWTL5lBNGugD+Ba0r21x7D7im8ruspnssmPwxShUFTMkDCwhUn8w/y+HQQ2EeiNhGCSEvPekrzo4l0QewCE5ZqYuhkDmVzwYzw6+9ET79b01KBQ3uPDqts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O2Q4jrWB; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-330b0bb4507so1984975a91.3
+        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 01:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759481316; x=1760086116; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8kUQOFfR1ghgs9vA7icC/TFRRA49ZCU9WllruQa+oAI=;
+        b=O2Q4jrWBSvU7ryQUniqQX3fJEqxfhysfzj6KjbzsxRs09XN3ZX4PaSWRNS2jzDzOkF
+         ICvzkttAWuecA+XAhiw9Ggjj+m03q31WRLodhyADQ/Szpr701NDbFhw1D2mGgqL6MxY8
+         jkwANmy7iwY92pVGGlgZfJs1KLLnYTefyBbGViBU7UiePovDgpaWXHXGSR0rm/Bp7of1
+         3shODgww1kJQSGlK7+it0z1b6z/1Yr7DeJNczHKKqh5fUh8L5v0bthKO/UfFJiVt/5oD
+         eHb7lvAusKBzqPdIE1HtJaX9GX3TbjGA5P00eK+06cEJA+7OmdC0CkNqLjMWZq8pcIcp
+         5Edg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759481316; x=1760086116;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8kUQOFfR1ghgs9vA7icC/TFRRA49ZCU9WllruQa+oAI=;
+        b=khf5qJVIyrvhkC7fKBkE1PKbx+JPxNr9cPW1BFcgjQT66pLCf26IPHh5IksDVwAt25
+         hiDQEumhbo11ZgGBgY7VNXGXlaA4sq3v6FJ/WSyNKrZERqm/eifl3ZcNpYrBMKGYuz7W
+         +9hHrSV4BfiR8nKYLSPO2GrFe8kyRyY93i9cFl6qSxpRuq0LtTxm1b6TjVYaGo9chh/+
+         5QiS77EDoAxHiaRIWGL3vXbvtlzuXP3g5d/iWhMQQOoBaH3f6JLPAJQ/oUVoc2XWLRZB
+         +2y6x41SBSwHgKxXIzwNuQtr4nP7hN9rb4BuoPozjnKPYWCp75Mf7fvQRJvpyFYRmWvp
+         +zNA==
+X-Gm-Message-State: AOJu0Ywss0jblSuBq5Z+LUmAdQBpYBr6SCcbvY1NuT9kc0JRdeBEW6pv
+	tFknmzsPncTIO5P9THxsbv+EoXvLXziR5/EwruvN9IBc07saQrcHgdHigkokng==
+X-Gm-Gg: ASbGncvwkPbLPzy9a2IP92g20h8VLy19Pbciz7EAG8oxo7MbBptzjpZmtK7A6GVq9Nh
+	/I1WzWS+OljNl7bYLvC6gDlT/Ato6c1fRWOXdf5uJONOjG39L/xQgg4KQO0OegpB/cUEf/Te6y2
+	sV0cQp1F31Dx+kpIWhbKh8DcNmKNfTaSQLaONrOsY+N21SmGZPb/0vskMmHCCs8sRPipVewaE0r
+	vhpKT/F+xLOR207Nam1dklMW7+RW/JEDV9hNDQhFxkiD0RUcU+jj0viL+KbkbWckA8WVraIUsEd
+	XMaqV0DeRgp7xcKTfiQj/lAD5KhaagLkQcPHYRwDLesJD4sEG3GrAEEy4C+uuiWxEkv834iYRBF
+	BCYew9aBaFmEaG9uNhGXcvEmDEz4ydK0ijt7Zh2CJypLlmBI7g85SUa8=
+X-Google-Smtp-Source: AGHT+IFj2smw4Ko+UBszUv6Wx/RNlxmLiq5SUAvCJghbXBoYeGHftjAlRufqPdl8HvET0mFTa9BbaQ==
+X-Received: by 2002:a17:90b:1d89:b0:32b:df0e:9283 with SMTP id 98e67ed59e1d1-339c27e8309mr2416649a91.34.1759481315737;
+        Fri, 03 Oct 2025 01:48:35 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-339c4a0d50esm1491897a91.2.2025.10.03.01.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Oct 2025 01:48:35 -0700 (PDT)
+Message-ID: <83421daaf2db3319b12ab95bc5406b4d5fc7c076.camel@gmail.com>
+Subject: Re: [PATCH v5 bpf-next 04/15] bpf, x86: add new map type:
+ instructions array
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko	 <andrii@kernel.org>, Anton Protopopov <aspsk@isovalent.com>,
+ Daniel Borkmann	 <daniel@iogearbox.net>, Quentin Monnet <qmo@kernel.org>,
+ Yonghong Song	 <yonghong.song@linux.dev>
+Date: Fri, 03 Oct 2025 01:48:32 -0700
+In-Reply-To: <aN99rP7iS2O0kJMN@mail.gmail.com>
+References: <20250930125111.1269861-1-a.s.protopopov@gmail.com>
+	 <20250930125111.1269861-5-a.s.protopopov@gmail.com>
+	 <7f2e28c4cee292fb6eb5785830d5e572b7bd59c2.camel@gmail.com>
+	 <aN99rP7iS2O0kJMN@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Add test to verify that unpinning hash tables containing internal timer
-structures does not trigger context warnings.
+On Fri, 2025-10-03 at 07:39 +0000, Anton Protopopov wrote:
+> On 25/10/02 05:50PM, Eduard Zingerman wrote:
+> > On Tue, 2025-09-30 at 12:51 +0000, Anton Protopopov wrote:
+> >
+> > Overall I think this patch is fine.
+> > We discussed this some time ago, but I can't find the previous discussi=
+on:
+> > would it be possible to make this map element a tuple of three elements
+> > (orig_off, xlated_off, jitted_off)?
+> > Visible to user as well.
+>
+> See https://lore.kernel.org/bpf/8ff2059d38afbd49eccb4bb3fd5ba741fefc5b57.=
+camel@gmail.com/
+>
+> In short, this will make the map element to be of different size
+> from userspace and kernel (BPF) perspective.
 
-Each subtest (timer_prealloc and timer_no_prealloc) can trigger the
-context warning when unpinning, but the warning cannot be triggered
-twice within a short time interval (a HZ), which is expected behavior.
+But why does map element size has to be different between kernel and user?
+For internal use there is an `ips` array and that has to be 64-bit.
+For external use, it appears that any structure can be used.
+I probably don't understand something.
 
-Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
----
- .../selftests/bpf/prog_tests/pinning_htab.c   | 37 +++++++++++++++++++
- .../selftests/bpf/progs/test_pinning_htab.c   | 25 +++++++++++++
- 2 files changed, 62 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_htab.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_htab.c
+> (Userspace can build the orig_off -> xlated_off mapping easily, if needed=
+,
+> just keep a copy of the map before the load.)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/pinning_htab.c b/tools/testing/selftests/bpf/prog_tests/pinning_htab.c
-new file mode 100644
-index 000000000000..fc804bb87b26
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/pinning_htab.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "test_pinning_htab.skel.h"
-+
-+static void unpin_map(const char *map_name, const char *pin_path)
-+{
-+	struct test_pinning_htab *skel;
-+	struct bpf_map *map;
-+	int err;
-+
-+	skel = test_pinning_htab__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel open_and_load"))
-+		return;
-+
-+	map = bpf_object__find_map_by_name(skel->obj, map_name);
-+	if (!ASSERT_OK_PTR(map, "bpf_object__find_map_by_name"))
-+		goto out;
-+
-+	err = bpf_map__pin(map, pin_path);
-+	if (!ASSERT_OK(err, "bpf_map__pin"))
-+		goto out;
-+
-+	err = bpf_map__unpin(map, pin_path);
-+	if (!ASSERT_OK(err, "bpf_map__unpin"))
-+		goto out;
-+out:
-+	test_pinning_htab__destroy(skel);
-+}
-+
-+void test_pinning_htab(void)
-+{
-+	if (test__start_subtest("timer_prealloc"))
-+		unpin_map("timer_prealloc", "/sys/fs/bpf/timer_prealloc");
-+	if (test__start_subtest("timer_no_prealloc"))
-+		unpin_map("timer_no_prealloc", "/sys/fs/bpf/timer_no_prealloc");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_pinning_htab.c b/tools/testing/selftests/bpf/progs/test_pinning_htab.c
-new file mode 100644
-index 000000000000..ae227930c73c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_pinning_htab.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct timer_val {
-+	struct bpf_timer timer;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, __u32);
-+	__type(value, struct timer_val);
-+	__uint(max_entries, 1);
-+} timer_prealloc SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, __u32);
-+	__type(value, struct timer_val);
-+	__uint(max_entries, 1);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+} timer_no_prealloc SEC(".maps");
--- 
-2.43.0
+[...]
 
+> > > +#define MAX_INSN_ARRAY_ENTRIES 256
+> >
+> > Hm, did not notice this before.  We probably need an option limiting
+> > max number of jump table alternatives.
+
+(I meant LLVM option, but you probably inferred)
+
+> >
+> > Yonghong, wdyt?
+>
+> This one comes from the fact I've mentioned in the other place: need
+> to optimize the lookup from jit (not it is brute force). Then this
+> limitation will go away.
+>
+> But also curious, what LLVM thinks about this. Will it,
+> theoretically, create say 65K tables or so?
+
+This generates a 4K jump table for me:
+
+  $ cat gen-foo.py
+  import random as r
+
+  print('int foo(int i) {')
+  print('  switch(i) {')
+  for c in r.sample(range(0, 4096), 1024):
+      print(f'  case {c}: return {r.randint(-10000, 10000)};')
+  print('  }')
+  print('  return 0;')
+  print('}')
+
+  $ python3 gen-foo.py | clang -xc -O2 -S -o - - | grep '.quad' | wc -l
+  4093
+
+[...]
+
+> > > +void bpf_prog_update_insn_ptr(struct bpf_prog *prog,
+> > > +			      u32 xlated_off,
+> > > +			      u32 jitted_off,
+> > > +			      void *jitted_ip)
+> > > +{
+> > > +	struct bpf_insn_array *insn_array;
+> > > +	struct bpf_map *map;
+> > > +	int i, j;
+> > > +
+> > > +	for (i =3D 0; i < prog->aux->used_map_cnt; i++) {
+> > > +		map =3D prog->aux->used_maps[i];
+> > > +		if (!is_insn_array(map))
+> > > +			continue;
+> > > +
+> > > +		insn_array =3D cast_insn_array(map);
+> > > +		for (j =3D 0; j < map->max_entries; j++) {
+> > > +			if (insn_array->ptrs[j].user_value.xlated_off =3D=3D xlated_off) =
+{
+> >
+> > If this would check for `insn_array->ptrs[j].orig_xlated_off =3D=3D xla=
+ted_off`
+> > there would be no need in `user_value.xlated_off =3D orig_xlated_off`
+> > in the `bpf_insn_array_init()`, right?
+>
+> The copy of the original offset is kept inside the map for the
+> following reason.  When the map is first loaded, it is frozen. Thus
+> user can't update it anymore.  During load some of xlated_off are
+> changed (together with program code). If the program load fails, it
+> is common to reload it with a log buffer. If map was changed, it now
+> will point to incorrect instructions. So in this case the map should
+> be seen as the original one, and the orig_xlated_off is used to reset
+> it.
+
+Missed this part:
+
+> 'If map was changed, it now will point to incorrect instructions.'
+
+Makes sense, thank you for explaining.
+
+[...]
 
