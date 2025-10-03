@@ -1,156 +1,247 @@
-Return-Path: <bpf+bounces-70330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ABFEBB7E4C
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 20:40:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBE2BB7E8E
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 20:46:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50AFF19E66BF
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 18:40:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FF1D3C0C71
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 18:46:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2432DA750;
-	Fri,  3 Oct 2025 18:40:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137C927C864;
+	Fri,  3 Oct 2025 18:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y6NeoKDp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YzjXZxbF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 046141F0991
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 18:40:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D74727456
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 18:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759516822; cv=none; b=XQ6uT38BDRhXCl4EzL7v5mHarXpOMJ4KexFitGNOdHL0OrV7R0EBog/kAOUPPS2//r1Irn4OGMhgkBCea+xBq2iYhW6AIQ4C83m+MKnXf48pa8i07EbbyQGkuL/ITK/ywdsvMKZDVqDFs5myaMiFRtvEKFldsSUT537JmsT8XWk=
+	t=1759517160; cv=none; b=Rssz/m7U7tdIRhDCbS+B0JFv0fwE34hFEFEcYEaNL2dJgfjACaR5fBL6CflDhkAS2mSHmSilb7b+6pPdSEYB/t5aSJlrcAzAGJ5sehHqEOICWufx4uzEiUjU0NTgCTQIeNQeqqQEfLCyPwLjBlIRVYwlCTfAGyRatjH/WYQCKck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759516822; c=relaxed/simple;
-	bh=Woq853mvGAMO6CmEsURJF3tx+e9e31WCa8gexM5Tm14=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WqYNS+uoeELsq0Vfkys3Me2ZwuMqySJC++n2/prBiXUKuWnWH8knhwhkdWv8Bl4qfKioesBP1EeIebRM7UHGj/OSXarkWOjQOFfLoYdv8ukV7Eit4HOFCRZ9U5a+tva0TrFbFu8tUT9bIiYk/AYBy9tGhxvLq8lpvqAGNSU1+Xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y6NeoKDp; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1759517160; c=relaxed/simple;
+	bh=/lVx/2yovW/YtsUKKVN09nO0NvFnXhfLINOoJTnZQDM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IifKv5vG/4QrkjZoSb8f1kkmsxeRCsA3xR+3WUzpcrfcu8luSelEdNSHREcPStBbK/C4PpR2DW6s5v61KHPnITpm1RyDVC/n8QIzSUfoC6FkQOvmv1JIbNWSe5KaF1P4YSdDR2ABnLZ2Ufcn/K29im+5vNX2CaSY00Ls2plp/Nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YzjXZxbF; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7811a5ec5b6so2894486b3a.1
-        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 11:40:20 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b55640a2e33so1956009a12.2
+        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 11:45:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759516820; x=1760121620; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=q03YCDb11ma83spptLR/yIQFhTXTEgL/uv2nY2wRfSI=;
-        b=Y6NeoKDpouQodgjlGs3Q2o68dkKyqQYmXVSz78dmccuRUs1kRkhUSjvoOoOEto2a90
-         ZyGK9NIG2AZiuDvAV4lsIC5SYQZAcHDmch2j2gxuPpITmTsd4AWRQqDkARfOCxoLW2Dt
-         31uQ5SGsNpwsmbtvxlojQX006KrFyu3FMuqhUsVRmJTqnaAnTmdOsuJLhSb1XgqoxykH
-         k8jEVnrhLuRDL3AgK1QFAr3cB0Zwh6siLPkQgrIZCRPUd3kxmpiHvZ9IbmYUq6BVSwOY
-         Gr/n3BAusRdcjZgqYTTdQ0EO+3sWyGT4kMlvIUjvvGXn8hbHrNNDAoaSKOszCl4Na8EV
-         lgqg==
+        d=gmail.com; s=20230601; t=1759517158; x=1760121958; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kfJflTNRNvD4vMPLcnvBsThHYOO95XFoALbkWDA8QMs=;
+        b=YzjXZxbFqS0BzFu6VJkc2pdGylEnIN56QskFHP0LpFZzXhZYSCViIDnsV8EfDefM70
+         5EnnwubRWSFBn1pUvxzi6La+C5j23Pn7JMdZQiD5d7hL3o7fzuWn6QoVFEZypT3nUL5F
+         fzQTQers3/oQMOwWePsJ2pzbsplwJR/PQysCpsuhHfCqmLsaQNtbuPvZWT8FQTq01CUW
+         aykhG72CAiYZrgJOt0DQ0uz2NXVxxGAU75qgF0A5sR5vRCuqJGUZyxhciPAbZPfDWc18
+         yVp4A+wCJZwhuBSsp5JpV7hELky1VdsNSVIXfkCxyYMmnuNQDFQSq04jq4UBi0wf9fNu
+         kyTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759516820; x=1760121620;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=q03YCDb11ma83spptLR/yIQFhTXTEgL/uv2nY2wRfSI=;
-        b=CSpLs655vUJSylf4oaQqX/SuvvNPxAa7rgn1JSQEXory8NhU0J3h+Pz7E2moz4EYnM
-         fvAJiyI6pd8CT+Nmg5mQY9sDs21PpxohAzNvR+W36xx1PyLXhC4deKPIA+mn2ybheQ1I
-         fH90t5I38rwpsQGNEhSkquI/h7Bz97zaMpMi1CrlMRCf90ilnIHC7kpvvgaHrdV5C3r5
-         f0FoIXJNZiamzWYPwjb3XnGxn3rokN9TTXMkMdD6rZ33AHeWgo8bOK9uQMqpAZSF64Bq
-         3vnc/BK34JU7WCjYGXTrjPUqJgE0YJndp4DArZcfvqlz/hICAzWJxFx5SERiuGfVZnOQ
-         QVdw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMIpTnk6pTbEMot2RDRHVaNVvAOE04UcO9PETUujwSevTum6dD7Rp3MMx/n8c2FVO0aDs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwN2zyTyzj6KtNC5A1pNtmzBe55gUI64PvXP+w1Ch9Dm26cm0yE
-	60JV29Fz2spmZC0CUNjuuqgol2tiJNP05zC14mjtT9QhuL8GmEv3J6AI
-X-Gm-Gg: ASbGncsPmjR3gk2HVfaZqBBD/unCp8pxZUfWsfipw15+LjCDoWQVNCe+NHH0unt2wJo
-	swg1qrznA1/4j9epvCp564KsDk/MZ4ASenviXrZBLjUL2+DgUVMgR9AcUMOFOmKeYaNMIn+r8BL
-	fKZo6rTgV40IsZZzCJemJPeLugBKxo8HPyjD6CXl/Bqkbjn0TU7V2eq+wvH63HifzXv86wsPzzN
-	uk93qRPgMvg4CpB2lXviR0sv7oydYpDY9oNM3mMEbxVqx/94f+XfE/mHlFNYw64WKXTIVyFRkBC
-	qDtY1AZjZZmo1XWN6DlifejbGSCaeXrylT97+emwgz2LkVUsz0ngUGmUMOXI4QY4eu/kKUkStig
-	/hJ5SD1OV51Gs9vLnLFUA8gh/FattMjs34bXerh+KTh2ROgnUQ0p3Flx+K+SR/vgv9xC4qpap
-X-Google-Smtp-Source: AGHT+IFPujm6mea2pKOdlFHvhx6ubnZr5TKhJm4/X2h6P+evPOm3QaW0bkTTqOzdT8rZycIjjH2nCw==
-X-Received: by 2002:a17:90b:1c8e:b0:330:b9e8:32e3 with SMTP id 98e67ed59e1d1-339c221543cmr5102593a91.12.1759516820184;
-        Fri, 03 Oct 2025 11:40:20 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:2a3b:74c8:31da:d808? ([2620:10d:c090:500::4:e149])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-339c4a3255bsm2891520a91.16.2025.10.03.11.40.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Oct 2025 11:40:19 -0700 (PDT)
-Message-ID: <10973dbe691484a3a77938db374f9056ce23513a.camel@gmail.com>
-Subject: Re: [RFC PATCH v1 02/10] bpf: widen dynptr size/offset to 64 bit
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Fri, 03 Oct 2025 11:40:18 -0700
-In-Reply-To: <20251003160416.585080-3-mykyta.yatsenko5@gmail.com>
-References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com>
-	 <20251003160416.585080-3-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        d=1e100.net; s=20230601; t=1759517158; x=1760121958;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kfJflTNRNvD4vMPLcnvBsThHYOO95XFoALbkWDA8QMs=;
+        b=fxgLCycPq3KPBjM7pDNAlax6CgWpr4mZbi8tZPvGBP9MQ+tQNzKI5kdAzckLxi3y/9
+         LPDYvjIwSeddTF8YfiIN4tMr77AAfaHcQupR31ppFgBco6lAD3TvQwJXX3bYT/6uvivS
+         bxQZkS/YFp1qnLA58Fqs8G43Mn6GVFyQqVZ7xY6epl2qkWGSXe2wq4Rv+lAbkpClTUEV
+         tNxVZ92vaQOykC16pjD3ZwLPsNo9YWj81uBxqQ2ku87qIqeGd5eMrylZBCkfDUnLvrgv
+         CKEzqdoeBLKPzOrcGS9rRW8p1/ZXNjLtda6I41hNHqaDerzhY1oK2sfK1vftb/L2SHNu
+         vbSA==
+X-Gm-Message-State: AOJu0YzaVHhAgXa12lW5yQxEY6pA6VPri6qa291nvySFJ2mx6SxXCzPf
+	cDFIT+MaSKBqKFD12WYHl8Y5+5Fk+DFTDNKSxOoAz/ngjSXihkl6C82l8+nsF8c3AQA51I6D4rR
+	l46uQuh0Sn36oJORHPZ+CLBl2+EXiUTM=
+X-Gm-Gg: ASbGnctZdykyu1D155EmiGeZRKQjxasBt7b/oLvI+AuKdTrIS2aCE6L1Cg6WzK+jT0b
+	ogaUDKl8duAh5H4Mos8aCD+tsD6h5ZO2S9cJje/sDYRcsUEqRDPTwN4vgsIVwOHTfjmAPd7nS7G
+	TJPf+VzOefadhfq3LoqKQhxcMko8UPAIx7d3MpdRWkULE/uTPvLPDJOaDjo8FdS6Qed3HWamwDL
+	MvYOqaMJK1Fp9uXqF/9y738jwpcmo26xgbVFsvZcnzhiaw=
+X-Google-Smtp-Source: AGHT+IG/oHwAJexJD/7YppQ1CcJ48acQTPtwezWT/s0XIP9yU7V0mjNfLvT9VHad7qvIRQBm7taLd62al+HxUGK1V3M=
+X-Received: by 2002:a17:903:2284:b0:27e:ee83:fc80 with SMTP id
+ d9443c01a7336-28e9a6ab31bmr50169675ad.57.1759517158309; Fri, 03 Oct 2025
+ 11:45:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com> <20251003160416.585080-10-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20251003160416.585080-10-mykyta.yatsenko5@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 3 Oct 2025 11:45:44 -0700
+X-Gm-Features: AS18NWBX0IX3uyxgSE694nhXPyINUan7U9aNfGnVHU6V804vlR3JYpEDotEjODc
+Message-ID: <CAEf4BzaAOsCYSOa7yW-Z7qTirAKi4MUN6xLqW9OjOpS7Lj1NBg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 09/10] bpf: dispatch to sleepable file dynptr
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	memxor@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2025-10-03 at 17:04 +0100, Mykyta Yatsenko wrote:
+On Fri, Oct 3, 2025 at 9:04=E2=80=AFAM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
 > From: Mykyta Yatsenko <yatsenko@meta.com>
->=20
-> Dynptr currently caps size and offset at 24 bits, which isn=E2=80=99t suf=
-ficient
-> for file-backed use cases; even 32 bits can be limiting. Refactor dynptr
-> helpers/kfuncs to use 64-bit size and offset, ensuring consistency
-> across the APIs.
->=20
-> This change does not affect internals of xdp, skb or other dynptrs,
-> which continue to behave as before.
->=20
-> The widening enables large-file access support via dynptr, implemented
-> in the next patches.
-
-Maybe add a note here that this change does not break binary
-compatibility with BPF programs compiled for older kernels?
-
->=20
+>
+> File dynptr reads may sleep when the requested folios are not in
+> the page cache. To avoid sleeping in non-sleepable contexts while still
+> supporting valid sleepable use, given that dynptrs are non-sleepable by
+> default, enable sleeping only when bpf_dynptr_from_file() is invoked
+> from a sleepable context.
+>
+> This change:
+>   * Introduces a sleepable constructor: bpf_dynptr_from_file_sleepable()
+>   * Detects whether the kfunc is called in a sleepable context and
+>   stores the result in bpf_insn_aux_data (kfunc_in_sleepable_ctx)
+>   * Rewrites bpf_dynptr_from_file() calls to the sleepable variant when
+>   kfunc_in_sleepable_ctx is set
+>
 > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 > ---
+>  include/linux/bpf.h          |  3 +++
+>  include/linux/bpf_verifier.h |  2 ++
+>  kernel/bpf/helpers.c         |  5 +++++
+>  kernel/bpf/verifier.c        | 12 +++++++++---
+>  4 files changed, 19 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index bd70117b8e84..9da7460e078c 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -663,6 +663,9 @@ int map_check_no_btf(const struct bpf_map *map,
+>  bool bpf_map_meta_equal(const struct bpf_map *meta0,
+>                         const struct bpf_map *meta1);
+>
+> +int bpf_dynptr_from_file_sleepable(struct file *file, u32 flags,
+> +                                  struct bpf_dynptr *ptr__uninit);
+> +
+>  extern const struct bpf_map_ops bpf_map_offload_ops;
+>
+>  /* bpf_type_flag contains a set of flags that are applicable to the valu=
+es of
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 4c497e839526..6078d5e9b535 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -581,6 +581,8 @@ struct bpf_insn_aux_data {
+>         u32 scc;
+>         /* registers alive before this instruction. */
+>         u16 live_regs_before;
+> +       /* kfunc is called in sleepable context */
+> +       bool kfunc_in_sleepable_ctx;
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+there is one byte left after call_with_percpu_alloc_ptr, please move this t=
+here
 
-[...]
-
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 8f23f5273bab..7cc4f2e05ed2 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3372,13 +3372,13 @@ typedef int (*copy_fn_t)(void *dst, const void *s=
-rc, u32 size, struct task_struc
->   * direct calls into all the specific callback implementations
->   * (copy_user_data_sleepable, copy_user_data_nofault, and so on)
->   */
-> -static __always_inline int __bpf_dynptr_copy_str(struct bpf_dynptr *dptr=
-, u32 doff, u32 size,
-> +static __always_inline int __bpf_dynptr_copy_str(struct bpf_dynptr *dptr=
-, u64 doff, u64 size,
->  						 const void *unsafe_src,
->  						 copy_fn_t str_copy_fn,
-
-The definition for copy_fn_t looks like:
-
-  typedef int (*copy_fn_t)(void *dst, const void *src, u32 size, struct tas=
-k_struct *tsk);
-
-should we change it to use u64 as well? Probably does not matter.
-
->  						 struct task_struct *tsk)
+>  };
+>
+>  #define MAX_USED_MAPS 64 /* max number of maps accessed by one eBPF prog=
+ram */
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 4bba516599c7..f452e22333fe 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -4288,6 +4288,11 @@ __bpf_kfunc int bpf_dynptr_from_file(struct file *=
+file, u32 flags, struct bpf_dy
+>         return make_file_dynptr(file, flags, MAY_NOT_SLEEP, (struct bpf_d=
+ynptr_kern *)ptr__uninit);
+>  }
+>
+> +int bpf_dynptr_from_file_sleepable(struct file *file, u32 flags, struct =
+bpf_dynptr *ptr__uninit)
+> +{
+> +       return make_file_dynptr(file, flags, MAY_SLEEP, (struct bpf_dynpt=
+r_kern *)ptr__uninit);
+> +}
+> +
+>  __bpf_kfunc int bpf_dynptr_file_discard(struct bpf_dynptr *dynptr)
 >  {
->  	struct bpf_dynptr_kern *dst;
-> -	u32 chunk_sz, off;
-> +	u64 chunk_sz, off;
->  	void *dst_slice;
->  	int cnt, err;
->  	char buf[256];
+>         struct bpf_dynptr_kern *ptr =3D (struct bpf_dynptr_kern *)dynptr;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index aacefa3d0544..82762eab3f17 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3105,7 +3105,8 @@ struct bpf_kfunc_btf_tab {
+>
+>  static unsigned long kfunc_call_imm(unsigned long func_addr, u32 func_id=
+);
+>
+> -static void specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kf=
+unc_desc *desc);
+> +static void specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kf=
+unc_desc *desc,
+> +                            int insn_idx);
+>
+>  static int kfunc_desc_cmp_by_id_off(const void *a, const void *b)
+>  {
+> @@ -13833,6 +13834,7 @@ static int check_kfunc_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn,
+>         insn_aux =3D &env->insn_aux_data[insn_idx];
+>
+>         insn_aux->is_iter_next =3D is_iter_next_kfunc(&meta);
+> +       insn_aux->kfunc_in_sleepable_ctx =3D in_sleepable(env);
 
-[...]
+can it happen that same instruction will be called both from sleepable
+and non-sleepable contexts? E.g., if async callback calls into subprog
+that is also called from main non-sleepable program? We should detect
+this (and have a test)
+
+(and then maybe generalize this field to mean "does this instruction
+always run in sleepable/non-sleepable/mixed context"?
+
+
+>
+>         if (!insn->off &&
+>             (insn->imm =3D=3D special_kfunc_list[KF_bpf_res_spin_lock] ||
+> @@ -21832,7 +21834,8 @@ static unsigned long kfunc_call_imm(unsigned long=
+ func_addr, u32 func_id)
+>  }
+>
+>  /* replace a generic kfunc with a specialized version if necessary */
+> -static void specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kf=
+unc_desc *desc)
+> +static void specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kf=
+unc_desc *desc,
+> +                            int insn_idx)
+>  {
+>         struct bpf_prog_aux *prog_aux =3D env->prog->aux;
+>         struct bpf_kfunc_desc_tab *tab =3D prog_aux->kfunc_tab;
+> @@ -21872,6 +21875,9 @@ static void specialize_kfunc(struct bpf_verifier_=
+env *env, struct bpf_kfunc_desc
+>         } else if (func_id =3D=3D special_kfunc_list[KF_bpf_remove_dentry=
+_xattr]) {
+>                 if (bpf_lsm_has_d_inode_locked(prog))
+>                         addr =3D (unsigned long)bpf_remove_dentry_xattr_l=
+ocked;
+> +       } else if (func_id =3D=3D special_kfunc_list[KF_bpf_dynptr_from_f=
+ile]) {
+> +               if (env->insn_aux_data[insn_idx].kfunc_in_sleepable_ctx)
+> +                       addr =3D (unsigned long)bpf_dynptr_from_file_slee=
+pable;
+>         }
+>
+>         if (!addr) /* Nothing to patch with */
+> @@ -21924,7 +21930,7 @@ static int fixup_kfunc_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn,
+>                 return -EFAULT;
+>         }
+>
+> -       specialize_kfunc(env, desc);
+> +       specialize_kfunc(env, desc, insn_idx);
+>
+>         if (!bpf_jit_supports_far_kfunc_call())
+>                 insn->imm =3D BPF_CALL_IMM(desc->addr);
+> --
+> 2.51.0
+>
 
