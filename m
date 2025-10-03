@@ -1,139 +1,177 @@
-Return-Path: <bpf+bounces-70340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C7DBBB7F97
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 21:24:17 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A06CCBB7FC4
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 21:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CA1519E2C15
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 19:24:40 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 37FBB4ED6B7
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 19:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE762222564;
-	Fri,  3 Oct 2025 19:24:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D60521C194;
+	Fri,  3 Oct 2025 19:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="BbOerJCy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NEKVbyGk"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3021CD15;
-	Fri,  3 Oct 2025 19:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F62D1A9F9B
+	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 19:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759519449; cv=none; b=ikP3qzbJGwkgQ9kCClJaix9hyp1vDfsm0p76gC+y0dXxE3GvU9fg9zCd6OtNAJaiBYRmkdCMY/DO4VTX6lJs1rn8msoBgx5LKdBWWUx/fseLTsmrW7sQ9ywiQVFdeMCRUpsVEx/mNIAwqPVXjCQoaONR6hRD7OFWUga4PSEUycM=
+	t=1759520039; cv=none; b=IzqScgV1yofVbzbwjZJWMrObJ1GpJd7dOc76dV7BA5cOHfFLBunlQ50byZKAIH4DNXMWbSylmDB2nOb/b0Vo4pSCHFq5DXr6Ez73AVTpYuLtFWYI+3Pc+kTffF15rJfYxkrM7s7riO7lSt0Azv57Lr+HuMeK0TAjm+Jh0VTd2Bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759519449; c=relaxed/simple;
-	bh=56VSLS2VlGSOben/JtMQvJrP5v2Yl2PSVueoKr9MCtU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KrXP/PA9HslnvAF4vLJnY6uk4vsxMGLDeYhCb3IOTi4OVrweWXohp1rprGgmwHHLNm6DBLTBTMUZz7sZmxHQY9iyxFg5Wff3AtKOZQVV7AWjj1243XWNNauWYtfHyqWzMID6pKsqw49qnQPecHixpFDg9lCUbhhHtat1kX/9tjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=BbOerJCy; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=9PXuoo318fq1CcfElZH622V33pk+DRAH3Sxiejf9rrs=; b=BbOerJCyLKgrz27BDaY2RrWt3d
-	AD66V1qm7geNqjOjnPqtScHSO0qmO9p6vLlTcxMB88q3zWylwUnAi6u37ySK7nBdDsIYrHPuaS4cK
-	MxLWQUj1D+zHdqRE05xoO2d7BlA882uXh+CRCd/tmMCJsNi3QzTknMGEh90VTPKcUVLSpuEMsYxD3
-	5dceZK/t1WuQMLPMy61Ojf+DfC7hElgR4FEq0JqxN2ub7UmQQNkjMukRg6pMbjxlOxVwMZxf8xOBj
-	xzficWS79wFJZjkkZvOYnkeu+xPCq6XP3ulvSIW1MB2rV64K8VJW416LiamYAjCX3bLA/2KEX5hmq
-	nGTMkryA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1v4lNp-0006Lz-2R;
-	Fri, 03 Oct 2025 21:24:01 +0200
-Received: from localhost ([127.0.0.1])
-	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1v4lNo-000Gpc-2x;
-	Fri, 03 Oct 2025 21:24:01 +0200
-Message-ID: <1587bfe1-8672-4677-b76e-ab516e5c52c5@iogearbox.net>
-Date: Fri, 3 Oct 2025 21:24:00 +0200
+	s=arc-20240116; t=1759520039; c=relaxed/simple;
+	bh=jC8eULY20ofIjKxdvLVRodI+igZO9E4aCs+AzlnAbdo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=TS19ROPYnQxWTH9PRvoGu0Y7b8gJV5SdhyOjgnrqE22k3GVpP/VZp/mRTfOlZExgLTn9oL4nOgiV8Ciym1Zm5d9aH8d++6LeH1k1HjyqzFJxqjXCz3wjbcwSNgUAAlEdt1Gte1Vhws6z1lO3QH9SNS4OV4ST8By+mznTaFZ4veQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NEKVbyGk; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-279e2554c8fso24215105ad.2
+        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 12:33:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759520037; x=1760124837; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KbXuS0HizFy+F4mpbvFwK4owwOp/bA81IBQeDuM9u6E=;
+        b=NEKVbyGk51pQ6dWPVSquU+8uZcriMiSUxhtvfDuGySzvcUVkf1FyAFoGxU9Fmgyx6O
+         R2v4rfdbEyxLc3sWS6fa5CQD9QOgh4OEfjOiOjeUteLkIisGFCLQ9Hi07bMH3r2R09ZN
+         xaH4kQ//UEzX5IbPMkUPt4iV9wbC/8IZays0XhZ+QLyiccDe7lDbMoOOaq6SfAehlcpr
+         Ga66063wDIf3wPXDkhb/j+4kq4qt4wraks4+wDljnS8mHPZ+TAY/B3LCTGtx8xRQQGK/
+         8C7ugceDVe7nC6OwaEVtkS9A44Ckibpx0QAx1b40oLU6Hr+ZrwK/shDCAwnea4X8tIl3
+         n7Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759520037; x=1760124837;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KbXuS0HizFy+F4mpbvFwK4owwOp/bA81IBQeDuM9u6E=;
+        b=QRNpYG0LK6QQHnf/JZmblKpJZbfIR+34p0d2krhF0Y+cNl6CHSf2RdixTcv8DxYNWl
+         49mEAVDkt2kMOD8LFZCNsbw0/SfoS1qIn8jsIQ2iWYuKQMNVWwkHd7bDSqLaswGTEDFe
+         e/FBhITcL0nMBlyXJjgqknezwhWQYJSk4NK3Kx6EAKdUFM7bcx5+2qQvUGZWvz2Vtug8
+         +qghxKUjtX9b3TEdKWRDhukFpHhxNhiXkwQQHz1dFVTWfdIjCa6Nn2aH+Cu9UZpMnRsM
+         jEN+s6DV6HUkPfMlvattJom/IG0L88xdV8iqKM9YvDjjF1l5Ob/gncE90XyM90HAmNkx
+         n+eA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7TWhjJCB9nt+swv8Dgc0k5KrC7Ww3J024nbTe4CZw3UoI9EoGP1XVksOWl4ljLU+Maa0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzUQDiKIOEbvZFh0zniy1V56Cg1oHmztFAdNDsbEUNfpyhoKyWy
+	epyH00bzTkxxzcoFhCI1r1vfV7BeLEV0GlYOgsqa3EJmhpDlykgpztlm
+X-Gm-Gg: ASbGncuFCwqYiOiQkqV+j3COdguU4nqup4uVVsGoEADSX+c+pYesu5WhpAE7IHYeYVV
+	wVAjwun4Wk4QUiyp3uKdya3y4sFgY9701GYfBykHqWbCZhSzrjr7qx2tr7wTu8Ty5wkcswu33/B
+	QN5opM2Xq9lvsL60pQcriR/DzVBI+1i5tsUO6ppnAgfnHj/Kd0JS+JpJ5+l++EaUEWJmsqX615Z
+	JaKaK0jFNs8ac2636ghromOdVJgzRmbC/kbPHO3bqXTHajLP29fm/fAXAVcCnAdz5YINSQKWuAE
+	tenXjvmsLbpnKGo394fQUnrms/3lMC/Vdd7bd6B6UOqwQ08CtHHj1OOxAIbtVxjzlaqkoFghPjx
+	8zX9FSYxyeJRWs5x8iEC/FYEpZ0MNmiksbon66zjtsYy/arDj4hbf0L6w2u7rt0zp3YveuBhqnL
+	0DD90Z4Qg=
+X-Google-Smtp-Source: AGHT+IGhzlFwsTVF07HMKSDtQ97xfo6sP/E2JUVj6J0pXGa3Q9iG7uJR/lmL8+dTHqPSQUCZP5RR9Q==
+X-Received: by 2002:a17:902:e952:b0:246:7a43:3f66 with SMTP id d9443c01a7336-28e9a5435d5mr46839505ad.7.1759520037519;
+        Fri, 03 Oct 2025 12:33:57 -0700 (PDT)
+Received: from ?IPv6:2a03:83e0:115c:1:2a3b:74c8:31da:d808? ([2620:10d:c090:500::4:e149])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-28e8d110d16sm58017475ad.19.2025.10.03.12.33.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Oct 2025 12:33:57 -0700 (PDT)
+Message-ID: <ad9f22c83c1585d521df4160dd71af6b06df411e.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: verifier: refactor bpf_wq handling
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Fri, 03 Oct 2025 12:33:55 -0700
+In-Reply-To: <f3fd1043-6696-454d-bafd-9d1a84a937c5@gmail.com>
+References: <20251001132252.385398-1-mykyta.yatsenko5@gmail.com>
+	 <6b2b44ddbec88ae4690b4eae33b712642b73db4c.camel@gmail.com>
+	 <f3fd1043-6696-454d-bafd-9d1a84a937c5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf] bpf: Fix metadata_dst leak
- __bpf_redirect_neigh_v{4,6}
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- Yusuke Suzuki <yusuke.suzuki@isovalent.com>,
- Julian Wiedmann <jwi@isovalent.com>, Martin KaFai Lau
- <martin.lau@kernel.org>, Jordan Rife <jrife@google.com>
-References: <20251003073418.291171-1-daniel@iogearbox.net>
- <20251003090235.09521adc@kernel.org>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20251003090235.09521adc@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27780/Thu Oct  2 04:58:32 2025)
 
-On 10/3/25 6:02 PM, Jakub Kicinski wrote:
-> On Fri,  3 Oct 2025 09:34:18 +0200 Daniel Borkmann wrote:
->> Cilium has a BPF egress gateway feature which forces outgoing K8s Pod
->> traffic to pass through dedicated egress gateways which then SNAT the
->> traffic in order to interact with stable IPs outside the cluster.
-> 
-> Nice! The warning Stan added at work?
+On Fri, 2025-10-03 at 20:17 +0100, Mykyta Yatsenko wrote:
+> On 10/1/25 19:50, Eduard Zingerman wrote:
+> > On Wed, 2025-10-01 at 14:22 +0100, Mykyta Yatsenko wrote:
+> > > From: Mykyta Yatsenko <yatsenko@meta.com>
+> > >
+> > > Move bpf_wq map-field validation into the common helper by adding a
+> > > BPF_WORKQUEUE case that maps to record->wq_off, and switch
+> > > process_wq_func() to use it instead of doing its own offset math.
+> > >
+> > > This de-duplicates logic with other internal structs (task_work, time=
+r),
+> > > keeps error reporting consistent, and makes future changes to the lay=
+out
+> > > handling centralized.
+> > >
+> > > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> > > ---
+> > Note to reviewers: technically, this makes the check stricter,
+> > but no new correct BPF programs would be rejected.
+> > The cases that are checked by check_map_field_pointer,
+> > but which were not checked before this patch:
+> > - reg value is a constant
+> > - corresponding map has BTF
+> > - map record has BPF_WORKQUEUE field
+> >
+> > Not sure if ignoring one of these checks could lead to invalid memory
+> > access at runtime. I'd add fixes tag (and maybe a test), so that this
+> > commit could be grabbed for backporing:
+> >
+> > Fixes: d940c9b94d7e ("bpf: add support for KF_ARG_PTR_TO_WORKQUEUE")
+> >
+> > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> >
+> > [...]
+> I tried to trigger some of these error conditions:
+> - map record has no bpf_wq: this errors out earlier: arg#%d doesn't
+> point to a map value
+> - corresponding map has no BTF: I think to create a map without BTF
+> I need an older libbpf version, not 100% sure how to do this
 
-We should add CONFIG_DEBUG_NET to our Cilium CI test kernels actually.
-The memory leak was observed on AWS nodes with the above Cilium config,
-so bpftrace came to the rescue in the end.
+BPF programs can be defined w/o libbpf.
+Here is a recent example:
+https://lore.kernel.org/bpf/20250930125111.1269861-1-a.s.protopopov@gmail.c=
+om/T/#m055919e0dd8ca15af3749bae6f9cbd2b13e4945f
+test cases there define a short program and pass a map w/o BTF to it.
 
-Thanks,
-Daniel
+> - reg value is not constant - this one I don't know how to trigger.
+> Given all this, let's keep this simple and not add fixes tag, it does
+> not look like we are
+> actually fixing anything.
+
+ static int process_wq_func(struct bpf_verifier_env *env, int regno,
+                            struct bpf_kfunc_call_arg_meta *meta)
+ {
+         struct bpf_reg_state *regs =3D cur_regs(env), *reg =3D &regs[regno=
+];
+         struct bpf_map *map =3D reg->map_ptr;
+         u64 val =3D reg->var_off.value;
+
+         if (map->record->wq_off !=3D val + reg->off) {
+	     ^^^^^^^^^^^            ^^^^^^^^^^^^^^=20
+	     |                      reg->off is 0, but 'val' is under attacker con=
+trol,
+	     |                      all is necessary is to conjure a tnum with kno=
+wn bits
+	     |                      corresponding to wq_off value.
+	     |
+	  This can be NULL, so there is a potential null pointer dereference
+
+                 verbose(private_data: env, fmt: "off %lld doesn't point to=
+ 'struct bpf_wq' that is at %d\n",
+                         val + reg->off, map->record->wq_off);
+                 return -EINVAL;
+         }
+         meta->map.uid =3D reg->map_uid;
+         meta->map.ptr =3D map;
+         return 0;
+ }
 
