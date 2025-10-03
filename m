@@ -1,149 +1,197 @@
-Return-Path: <bpf+bounces-70301-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70302-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98774BB743D
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 17:01:36 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFA07BB7504
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 17:24:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52570424A10
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 15:01:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B15844E1338
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 15:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7904A283CB0;
-	Fri,  3 Oct 2025 15:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2894285C9D;
+	Fri,  3 Oct 2025 15:24:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="r8W9bJSe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uScpE9gw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9789878F4A
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 15:01:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C5928507C;
+	Fri,  3 Oct 2025 15:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759503684; cv=none; b=msG6KuSLQrFHIqjo9wCOoeolN+6Gq6FkpWiKU7mHao2KEpSClqob3A6BhDUGhzb5isggW8tfwUMmX9y/H3b9soS/SMZm2mgwDxl01sC10w46lfg/Sw7+0Z/VEP0L/Z0NFpjnoq7ekT4XrxteVwRNayZG5GRtgAM5nyX/NAdwyWw=
+	t=1759505068; cv=none; b=BqHGfwULOcobtX1m1GkWM+Lr5hLZ80yFpnIqrAb23xnXyTkWw33p+oBFJh3eXjKXOgSmG9bXtFtIJfWtVTayFwX1PMEp/fpBb2oohgNkeKUThc99AbWw+loK6X2qAmp62VKu/TDb7d+lVKLM1K+XAC1PMzcvKi6tXt/nRThDJTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759503684; c=relaxed/simple;
-	bh=LVDJBgXtoMN71uCAVEeMR+49ypUsWLxZrHU16qX+6gk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RDnOxdenJESNlaylDDyWgwjMe8jCsCfbm9uoYv9FN1VV6l090dqCN8VxPCdjNf+B/BI7WuMAi3GFm2NGoc/gQJozGV6F7+JjIdIZnUnyBQFMC+mzw4aYYSau+sjK8JgmwzMLgpRvRSRqjVY5RMJJD8CwgH7Zp5j25ITeyf0w9Kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=r8W9bJSe; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2731ff54949so149705ad.1
-        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 08:01:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759503682; x=1760108482; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zenS1wKelhByRdZ8R4MywqW+WKf5VchsSGKYTzbwgA=;
-        b=r8W9bJSe7YOuOheQUVYNUsZ+f/R4w1pbby/yr52deeKtWXWRkIbKh0b7/37Fx0ZBu1
-         rGnF6+swOxci60Ga+hdgiKKKIUPMPbfhbok5NGAnvm6nT5u09kjx+26XRQew5vfh95SU
-         opoo8+PXAzs4f0veDciHTplf3g5MwZDW4EZcA9184Vr72hyea+lqZFi9tz1ncyqvd9kY
-         L5uT7uZ++FX7Hri2PxTl8XRZpcE5/h+R6MJkcA/vuh7txpTFv3sFmlfO9dCchraJW40o
-         lPpMl+b+lKLK79/4y8O8+5ZX8Z285RD5742EuixPu7qwr8QfmVU9HBreD8UUoJ+RXGaV
-         34gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759503682; x=1760108482;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0zenS1wKelhByRdZ8R4MywqW+WKf5VchsSGKYTzbwgA=;
-        b=p+ihdlJyQRlE/HgOoIOlXB3H4CJ9wrG8Ekeu7jI1AU3lRdCMaM35hejpv59QnZm+pG
-         CSDpNxRU+FIlhFlZ41sv24nwsxR29btk+pHfDD3eawkD2mHkOFOAr0gwMFXXHhBQn/sw
-         lANvHt4SceeOgj1HudsxMxI8vbx6V2NSajj/ya+w4/oMEwTeAipLOYkziF4bKiY1Jozx
-         ULEYUsFX2epOrbuT+Ewr5Rvt/Yu7Q06q7Vnb5RdkDfEPTrcajnpkdyo1nFX9WboVG2ej
-         Hy1ziEgDBXMhqPg0E74Z/4PPkplQxZg1Lqj6/Z/A5ion1ik/falJNyf3D8cGELhZrvMb
-         1OwQ==
-X-Gm-Message-State: AOJu0YzPADNhCkSTXiBNnnLqCu0R7xllbbFii2EbJS5rRN4GICgKx/gl
-	EeTZU2cyHOTBLDDU9NalSUXzq06gxXBWSl/Yc/Gx5xz83H+VkWzGnQkZ1B4q3E26YpuHDvJIb5X
-	k+8bL3Q==
-X-Gm-Gg: ASbGncuVLT86ctrM2W6lm1tHQgVQJJJLqqxqhSALs/w7GIjHAtpfrYVHN1Et9zJz+Cb
-	VQyIhsDzFAjKHuUZxEtGXyn8o5DCY69iq295Q7eqiIRkzoQ2EPu4nT0r4cOV1XKsGk94951AK3Y
-	nh7Nkd4eMQSvAy6X/3Zh8YzGzEufyQBltjHn8kJH3gS3aYvmv092Kwdec9U6x+gv5XJc0lNLFmg
-	oo5INbj+HvUIiMzW2xe1T8ImzDaP7NRLSNFqFPHFuqBrQO1OyQAdaCY5FpCiRDgbANW2ZgY6W2p
-	bQ2gBPc4XbzxEWn3Oi0DqCZD22qRBdGdrxk8x5bScG4q/8vnAewFQ1lM2X81CD9XaHMmM8QIvUN
-	pCvdTyph0orco9lMJ8iafJuGCQv8V1m7XrZWUOwn9SjGWVe10HQ+rao7NuxUNlB+PtCAjNnpwZD
-	/CCQ+cSEclD7j91Q==
-X-Google-Smtp-Source: AGHT+IHQSlB6y0yoS/2SJRGI6OmxNreWIDSNmKLWw1s8pQn38QPypGMNjNRREJMfXdM8WQ5+i1jsOQ==
-X-Received: by 2002:a17:903:2447:b0:275:8110:7a4d with SMTP id d9443c01a7336-28e9a1d169fmr4442805ad.0.1759503680938;
-        Fri, 03 Oct 2025 08:01:20 -0700 (PDT)
-Received: from google.com (133.101.105.34.bc.googleusercontent.com. [34.105.101.133])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6099f73537sm4826900a12.43.2025.10.03.08.01.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Oct 2025 08:01:20 -0700 (PDT)
-Date: Fri, 3 Oct 2025 15:01:16 +0000
-From: Jordan Rife <jrife@google.com>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Yusuke Suzuki <yusuke.suzuki@isovalent.com>, Julian Wiedmann <jwi@isovalent.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH bpf] bpf: Fix metadata_dst leak
- __bpf_redirect_neigh_v{4,6}
-Message-ID: <76nzfqbnb7dfbzrezpaeudtdzub7l26v6fdubbif6quu3hyvcv@gfhmjdh64r2c>
-References: <20251003073418.291171-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1759505068; c=relaxed/simple;
+	bh=DQbc540c3F4b2scI1GiUAhd/lmG2n6h9j6Q7f/kL6PA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=PF/aSVtIx95bm4U8p8jeB0LRXFJXaM3Bze7fgs4+JX+DOecaUUPnYlDx/tCfryYEWXM1RhmJEllVcDQ2Aj7TABPD4U/xIJKTGAmnJKZo2V+HyTWHYLIaDKNmXsXlydgZpiPR+ZGaLSYoJjyQIt/qH/AkRIkVekaDNckMHQ01l+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uScpE9gw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08774C4CEF5;
+	Fri,  3 Oct 2025 15:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759505067;
+	bh=DQbc540c3F4b2scI1GiUAhd/lmG2n6h9j6Q7f/kL6PA=;
+	h=From:Date:Subject:To:Cc:From;
+	b=uScpE9gwKBXzfsOqJsm8nsTLuyY8dsZmu4CVbMgtH7C3okBfq1cziyx+eSwvIfGU0
+	 DjYjQF8St5imJ7he/JHa1lANjODwgVgnyiimp9BC9HfVZ+99bD8xLq+CaxXYhHSnI/
+	 e7AJg0YNd1EDn8rwhRLpyPRHYWwnup4Sg8sXdBIKMBbACWlz+lb1XtHdIwmf+UamFE
+	 7Nk6XFlkxVGXcbL/km/QdRNVGiRQz9RxUGqprrTede8gGP6x5iw1d5ZpPmb1D4QzCV
+	 uuZ2wrLr6fazv7XN8GUph1QAHMc0YfGxBBjqa8GwmYt54C/yaXOOFQa05igBKZLEti
+	 2ISx/BcmVFI/Q==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Date: Fri, 03 Oct 2025 17:24:17 +0200
+Subject: [PATCH bpf] selftests/bpf: fix implicit-function-declaration
+ errors
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251003073418.291171-1-daniel@iogearbox.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20251003-bpf-sft-fix-build-err-6-18-v1-1-2a71170861ef@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAKDq32gC/x2MwQqDQAwFf0Vy7oPsahfpr5QeVs3WgFjJtqUg/
+ nuDx4GZ2amKqVS6NTuZfLXqa3UIl4bGOa9PgU7OFDleA3OLYSuo5Y2iPwwfXSaIGRJCj5S7kdt
+ YUs+ZfLCZuHXO7+QdPY7jD0VWMm9xAAAA
+X-Change-ID: 20251003-bpf-sft-fix-build-err-6-18-6a4c032f680a
+To: Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+ Nathan Chancellor <nathan@kernel.org>, 
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6355; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=DQbc540c3F4b2scI1GiUAhd/lmG2n6h9j6Q7f/kL6PA=;
+ b=owGbwMvMwCVWo/Th0Gd3rumMp9WSGDLuv1oe9TQgbcvhc1tWTA27r1zjXS04JeVS00qtaYw2O
+ 30ZPNXaO0pZGMS4GGTFFFmk2yLzZz6v4i3x8rOAmcPKBDKEgYtTACayP5rhv9Pj04ERzaufnPq+
+ xW/FnIyQ1U41sRqdAnVvfyxlivh4lY2RYbFWa0DUrrCz/70U1vnunjk3sm2BUU32XUUGv5XvPgS
+ XswMA
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-On Fri, Oct 03, 2025 at 09:34:18AM +0200, Daniel Borkmann wrote:
-> Cilium has a BPF egress gateway feature which forces outgoing K8s Pod
-> traffic to pass through dedicated egress gateways which then SNAT the
-> traffic in order to interact with stable IPs outside the cluster.
-> 
-> The traffic is directed to the gateway via vxlan tunnel in collect md
-> mode. A recent BPF change utilized the bpf_redirect_neigh() helper to
-> forward packets after the arrival and decap on vxlan, which turned out
-> over time that the kmalloc-256 slab usage in kernel was ever-increasing.
-> 
-> The issue was that vxlan allocates the metadata_dst object and attaches
-> it through a fake dst entry to the skb. The latter was never released
-> though given bpf_redirect_neigh() was merely setting the new dst entry
-> via skb_dst_set() without dropping an existing one first.
-> 
-> Fixes: b4ab31414970 ("bpf: Add redirect_neigh helper as redirect drop-in")
-> Reported-by: Yusuke Suzuki <yusuke.suzuki@isovalent.com>
-> Reported-by: Julian Wiedmann <jwi@isovalent.com>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <martin.lau@kernel.org>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Jordan Rife <jrife@google.com>
-> ---
->  net/core/filter.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index b005363f482c..c3c0b5a37504 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2281,6 +2281,7 @@ static int __bpf_redirect_neigh_v6(struct sk_buff *skb, struct net_device *dev,
->  		if (IS_ERR(dst))
->  			goto out_drop;
->  
-> +		skb_dst_drop(skb);
->  		skb_dst_set(skb, dst);
->  	} else if (nh->nh_family != AF_INET6) {
->  		goto out_drop;
-> @@ -2389,6 +2390,7 @@ static int __bpf_redirect_neigh_v4(struct sk_buff *skb, struct net_device *dev,
->  			goto out_drop;
->  		}
->  
-> +		skb_dst_drop(skb);
->  		skb_dst_set(skb, &rt->dst);
->  	}
->  
-> -- 
-> 2.43.0
->
+When trying to build the latest BPF selftests, with a debug kernel
+config, Pahole 1.30 and CLang 20.1.8 (and GCC 15.2), I got these errors:
 
-Nice catch!
+  progs/dynptr_success.c:579:9: error: call to undeclared function 'bpf_dynptr_slice'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    579 |         data = bpf_dynptr_slice(&ptr, 0, NULL, 1);
+        |                ^
+  progs/dynptr_success.c:579:9: note: did you mean 'bpf_dynptr_size'?
+  .virtme/build-debug-btf//tools/include/vmlinux.h:120280:14: note: 'bpf_dynptr_size' declared here
+   120280 | extern __u32 bpf_dynptr_size(const struct bpf_dynptr *p) __weak __ksym;
+          |              ^
+  progs/dynptr_success.c:579:7: error: incompatible integer to pointer conversion assigning to '__u64 *' (aka 'unsigned long long *') from 'int' [-Wint-conversion]
+    579 |         data = bpf_dynptr_slice(&ptr, 0, NULL, 1);
+        |              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  progs/dynptr_success.c:596:9: error: call to undeclared function 'bpf_dynptr_slice'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    596 |         data = bpf_dynptr_slice(&ptr, 0, NULL, 10);
+        |                ^
+  progs/dynptr_success.c:596:7: error: incompatible integer to pointer conversion assigning to 'char *' from 'int' [-Wint-conversion]
+    596 |         data = bpf_dynptr_slice(&ptr, 0, NULL, 10);
+        |              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Reviewed-by: Jordan Rife <jrife@google.com>
+I don't have these errors without the debug kernel config from
+kernel/configs/debug.config. With the debug kernel, bpf_dynptr_slice()
+is not declared in vmlinux.h. It is declared there without debug.config.
+
+The fix is similar to what is done in dynptr_fail.c which is also using
+bpf_dynptr_slice(): bpf_kfuncs.h is now included.
+
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+Notes:
+ - This patch looks wrong, I guess bpf_dynptr_slice() should be in
+   vmlinux.h even with a "debug" kernel, but it is not:
+   $ grep -cw bpf_dynptr_slice .virtme/build-debug-btf/tools/include/vmlinux.h
+   0
+   $ grep -w bpf_dynptr_slice .virtme/build-btf/tools/include/vmlinux.h
+   extern void *bpf_dynptr_slice(...) __weak __ksym;
+ - This is on top of bpf/master: commit 63d2247e2e37, tag bpf-fixes.
+ - I only see this error when using kernel/configs/debug.config.
+ - Because this has not been spot by the BPF CI, I wonder if I'm
+   building the BPF selftests properly... Here is what I did:
+   $ virtme-configkernel --arch x86_64 --defconfig \
+     --custom tools/testing/selftests/net/mptcp/config \
+     --custom kernel/configs/debug.config \
+     --custom tools/testing/selftests/bpf/config \
+     O=${PWD}/.virtme/build-debug-btf
+   $ ./scripts/config --file ${PWD}/.virtme/build-debug-btf/.config \
+     -e NET_NS_REFCNT_TRACKER -d SLUB_DEBUG_ON \
+     -d DEBUG_KMEMLEAK_AUTO_SCAN -e PANIC_ON_OOPS \
+     -e SOFTLOCKUP_DETECTOR -e BOOTPARAM_SOFTLOCKUP_PANIC \
+     -e HARDLOCKUP_DETECTOR -e BOOTPARAM_HUNG_TASK_PANIC \
+     -e DETECT_HUNG_TASK -e BOOTPARAM_HUNG_TASK_PANIC -e DEBUG_INFO \
+     -e DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT -e GDB_SCRIPTS \
+     -e DEBUG_INFO_DWARF4 -e DEBUG_INFO_COMPRESSED \
+     -e DEBUG_INFO_COMPRESSED_ZLIB -e DEBUG_INFO_BTF_MODULES \
+     -e MODULE_ALLOW_BTF_MISMATCH -d IA32_EMULATION -e DYNAMIC_DEBUG \
+     --set-val CONSOLE_LOGLEVEL_DEFAULT 8 -e FTRACE -e FUNCTION_TRACER \
+     -e DYNAMIC_FTRACE -e FTRACE_SYSCALLS -e HIST_TRIGGERS -e DEBUG_NET \
+     -m KUNIT -e KUNIT_DEBUGFS -d KUNIT_ALL_TESTS -m MPTCP_KUNIT_TEST \
+     -e BPF_JIT -e BPF_SYSCALL -e TUN -e CRYPTO_USER_API_HASH \
+     -e CRYPTO_SHA1 -e NET_SCH_TBF -e BRIDGE -d RETPOLINE -d PCCARD \
+     -d MACINTOSH_DRIVERS -d SOUND -d USB_SUPPORT -d NEW_LEDS -d SCSI \
+     -d SURFACE_PLATFORMS -d DRM -d FB -d ATA -d MISC_FILESYSTEMS
+     # sorry, long list used by the MPTCP CI to accelerate builds, etc.
+   $ make O=${PWD}/.virtme/build-debug-btf olddefconfig
+   $ make O=${PWD}/.virtme/build-debug-btf -j$(nproc) -l$(nproc)
+   $ make O=${PWD}/.virtme/build-debug-btf headers_install \
+     INSTALL_HDR_PATH=${PWD}/.virtme/headers
+   $ make O=${PWD}/.virtme/build-debug-btf \
+     KHDR_INCLUDES=-I${PWD}/.virtme/headers/includes \
+     -C tools/testing/selftests/bpf
+ - The errors I got should be reproducible using:
+   $ docker run -v "${PWD}:${PWD}:rw" -w "${PWD}" --privileged --rm -it \
+     -e INPUT_EXTRA_ENV=INPUT_RUN_TESTS_ONLY=bpftest_all \
+     --pull always mptcp/mptcp-upstream-virtme-docker:latest \
+     auto-btf-debug
+ - These issues were originally spot by our MPTCP CI:
+   https://github.com/multipath-tcp/mptcp_net-next/actions/runs/18222911614/job/51886811332
+ - No errors without kernel/configs/debug.config on the CI and on my side
+ - This CI got different issues, and I had to declare more kfuncs there:
+   https://github.com/multipath-tcp/mptcp_net-next/commit/4435d4da9f4f
+   but this CI is currently on top of 'net', with Jiri's patches from
+   https://lore.kernel.org/20251001122223.170830-1-jolsa@kernel.org
+ - The builds have been done from a clean build directory each time.
+ - Do you think the issue is on my side? Dependences? How the selftests
+   are built? I didn't change the way the BPF selftests are built for a
+   while. I had other issues with pahole 1.29, but fixed with 1.30.
+ - Feel free to discard this patch for a better solution (if any).
+ - I don't know which Fixes tag adding, but I doubt this patch is valid.
+---
+ tools/testing/selftests/bpf/progs/dynptr_success.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
+index 127dea342e5a67dda33e0a39e84d135206d2f3f1..60daf5ce8eb283d8c8bf2d7853eda6313df4fa87 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_success.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+@@ -6,6 +6,7 @@
+ #include <stdbool.h>
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
++#include "bpf_kfuncs.h"
+ #include "bpf_misc.h"
+ #include "errno.h"
+ 
+
+---
+base-commit: 63d2247e2e37d9c589a0a26aa4e684f736a45e29
+change-id: 20251003-bpf-sft-fix-build-err-6-18-6a4c032f680a
+
+Best regards,
+-- 
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
+
 
