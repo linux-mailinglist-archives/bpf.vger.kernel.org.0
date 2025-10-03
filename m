@@ -1,150 +1,146 @@
-Return-Path: <bpf+bounces-70354-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70355-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F05CBB8443
-	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 00:24:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAB47BB85EE
+	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 01:10:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC2593A921F
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 22:24:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E89023B0E6C
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 23:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941D426FDB2;
-	Fri,  3 Oct 2025 22:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A904274FD0;
+	Fri,  3 Oct 2025 23:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WsRcjlJ3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IYGevoed"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0DD819882B
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 22:24:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B116EED8;
+	Fri,  3 Oct 2025 23:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759530289; cv=none; b=hEwAEGBFafcyF4DvXFNo+LvVHpiqvXkdRNYhCT/Qrhm4XqB0S+/+sxj/0w341HNQWVrTLj9ABXDKKZDQMzMVJoRp4VFsHPdQn+DGA/K5oJrW5rVkanqu6KUhmRFdYH8u/vHE/hemrTGdvYUgsr/BlZL1zZuAtTgB/dfvP+T1d/s=
+	t=1759533028; cv=none; b=Cs28uCO4iP00eNbIIFpoTud7I7dz8wA69xoX5pCdxZ1oRDlps07OdQRpju5njS7ofUOr8xn+x4iqdvjdEwXnLzKmwAYAGQnhDgbJO3F2v6ppfgkat5lU+PdYbE05dONtXmcp1cZvPc/eEtsGFiiVqHqWHR0CHGeh2cJe2iTAzsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759530289; c=relaxed/simple;
-	bh=kcQAgoo83Bexpr/8zfx7c396lT6bG9YcngspcPTW7v4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LAvn33p1Hk4Ro8Ag4Eyajdjv0q3SEZzsC6awbdKbCnHJ4kD/lrdoYI/pxBTVUux+VRKDTpqIPjQJi4sw3Vo/PCNZya3R2ODeGRiDrqrlwrydFWGaSJcq4DowK9+QmKqcASeWG8G3AYKayjJyXzO9qztlZn/dJ8p/yUp3MzWEYkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WsRcjlJ3; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-78af743c232so2448384b3a.1
-        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 15:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759530287; x=1760135087; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vBmP+DfX8oR08gPWspQnQq2fDep3HKwLUS/lkABT/30=;
-        b=WsRcjlJ3AvEePNfiWCl/zwelvCyhGvMw+kWygqHzcO023AHOOJFa8fHY89mOQZYOdM
-         o9dMX8Q7jWYYivLYjrH44CSwF0qjPHlP8awuvdXm+7KP2Ksobd80Io7EXteDVFtxOHrU
-         IMmh/XzX/M0m0GVYj7i3bBcyqpCfBeVvHRT7o1h7AQ+Eej8NgU6C4a4qMho5Zmmq1h/d
-         Ahv9wN6O8xCCJE3gKH4wwfbWcsua0P4Py8XT5jIo0ZMtBv7zwKrLqZo/Oar3xF+BT6qx
-         P/SOqPEhmKIOG0bdRDnUfl3uKYj9TCZhoTy54qUiMgKtxIm5idoErzb/W9v41VM259Bn
-         EKxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759530287; x=1760135087;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vBmP+DfX8oR08gPWspQnQq2fDep3HKwLUS/lkABT/30=;
-        b=VTGZS4CBRasW+pIjJI/HmtZfHhM5r9J+BBUOc6Y5+vq1QXi4CL9PsfAdu1qUESuTwy
-         uRDVjBldV88HeMud9qkioYclTnMjFnmEOzN7tQNlb3fft9qTPHJTZWWDxb9wXwIwaRfB
-         uPfrXJdjEwnuirWzXBcJVr3vxS+3dlPlIPiff4bM9RdUHC+A744n/jnflmYICEgBazw/
-         J8rE7CTqzdDLkES9VqDMmiK5rNjumk06ny/CzXl7C3lz9GLhx+ajKiZkN8RRgcJKHv97
-         MDxu8p3YYJwx3Ay4oMRYbqCbb+6AGZ/tW7gefROnNFjzIZ/n/0xWaqNQVedVmW8hOSlw
-         9fsg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3DIJGeOF3rxBYbQYo333gzxNBv9381R5pSZA0ohny4++pbNG3UVE7smkP+nWTKaWY7ns=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyjy5GpMfLVcwuIscC5N/Jgw0FgSieNCQ2fKetJ8KUKTNxvEogz
-	NOqYNCJoLT3rn+rBmCKZC5fAhVMkd5O1C4p15BuUXhC8YkrMehXegpys
-X-Gm-Gg: ASbGncvwn6tV8YZJbeZscmWhXWM3j3TOhp6Vdz0GuuwptOD1zg9i8nZmzp2vXi+6gwX
-	4vnvkSkb9V1OSZ0u3c51lGX9UW7v+7KlsPdKZxWggGOYLOyoxZfHdJox53RRbT7g9UKQdRLOa7l
-	op/fKwfHFwlQIOI7BQK11zplxQuuRNvOhP/O2nzj1MMYPybfy6PUwfFhwb+XIsD5HXyHkcgycf+
-	zERsSQ+9XLzrpDhygm97FX3xlU7cUmlSCr7nYTDR+Veo8+lbKemV5T+EEZubZw7A1eL5VT8mK7o
-	eLJjhZeHkT+2NLAsWOXhEV4dUqJFIWrsQgLx779Q73HHHGsHhZd29sZKqMLoGEIMpR8qB4sVfB2
-	ZChsZ6QoWIUaQTOT9dsPDjfELoTPyFNx4SOdypZVfmWPA3a5fUsMeAJ1FynTv3pCnCvE9HkeS
-X-Google-Smtp-Source: AGHT+IH/9/+/xFoCy/ohh8p5dgoo7+Z4PqEAd2RR3ByUPjMzP2j7KkHZbfXXGWGMUBx8f4NfYIJeoQ==
-X-Received: by 2002:a05:6a20:2444:b0:2f6:6d95:69db with SMTP id adf61e73a8af0-32b621282d9mr6535150637.57.1759530287009;
-        Fri, 03 Oct 2025 15:24:47 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:2a3b:74c8:31da:d808? ([2620:10d:c090:500::4:e149])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b6099adce33sm5468478a12.1.2025.10.03.15.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Oct 2025 15:24:46 -0700 (PDT)
-Message-ID: <47e2812f633ad990f6d1a38234d99bc1e6c3bd87.camel@gmail.com>
-Subject: Re: [RFC PATCH v1 10/10] selftests/bpf: add file dynptr tests
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Fri, 03 Oct 2025 15:24:45 -0700
-In-Reply-To: <20251003160416.585080-11-mykyta.yatsenko5@gmail.com>
-References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com>
-	 <20251003160416.585080-11-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1759533028; c=relaxed/simple;
+	bh=DGCFwTHdzwoyUt2airE4UfS1rzXskWvCAT/NjTMw5kE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=I1AwhSmaXQcu6wfbThbn4c8PUF3z8/LYht0nlr2gZWESpnTZQ5b0E5g5FvMDBTqke6x9IWSpfAJAghNfIpiiCSqJy7vyEioNTy27ywu/YRs3CHk1BlIGsOepQGtdD0gtrQNxWeFdWMsQ/Yexi28J2wmtm697c//splw662zGFnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IYGevoed; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67DB2C4CEF5;
+	Fri,  3 Oct 2025 23:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759533028;
+	bh=DGCFwTHdzwoyUt2airE4UfS1rzXskWvCAT/NjTMw5kE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IYGevoedU4k5uOJYbDIBOhb/iK0EXt0Z6nffEeR0L2BMMVKZcuNgKfFEWbyeXTWcl
+	 wx0nhCJn0UgqXoRPi2HYfgLME59iR+CYHKONpFO/+6JN+0WL4NVnhG49HJauxrG1NP
+	 BkZI6RCihoMunUgTJbiYGp5xWsK1r7xDdhNKnucyMxmUWrxMB3jxFQoHkes1Mf9Qwo
+	 50HVYqdNzgQ6UpjGpYLaKNanM8cAxABVFBIVNdRpdRkwWGytgO1mGb5cUmEI7b1wW4
+	 0rtFlNMiVbG8v5XH92Gb3CnkUpBnLMXxgbBXBQEnWGW4yIozQl4iL8KcLAvaHqMdKX
+	 lwfHN8r46ZpZg==
+Date: Fri, 3 Oct 2025 16:10:26 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, ilias.apalodimas@linaro.org, toke@redhat.com,
+ lorenzo@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com,
+ andrii@kernel.org, stfomichev@gmail.com, aleksander.lobakin@intel.com
+Subject: Re: [PATCH bpf 2/2] veth: update mem type in xdp_buff
+Message-ID: <20251003161026.5190fcd2@kernel.org>
+In-Reply-To: <20251003140243.2534865-3-maciej.fijalkowski@intel.com>
+References: <20251003140243.2534865-1-maciej.fijalkowski@intel.com>
+	<20251003140243.2534865-3-maciej.fijalkowski@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2025-10-03 at 17:04 +0100, Mykyta Yatsenko wrote:
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/file_reader.c b/tools/test=
-ing/selftests/bpf/progs/file_reader.c
-> new file mode 100644
-> index 000000000000..9dd9a68f3563
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/file_reader.c
-
-Do we really need an example of ELF parsing in selftests?
-Maybe just stick to smaller test cases, exercising specific behaviors?
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/file_reader_fail.c b/tools=
-/testing/selftests/bpf/progs/file_reader_fail.c
-> new file mode 100644
-> index 000000000000..449c4f9a1c74
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/file_reader_fail.c
-
-[...]
-
-> +static long process_vma_unreleased_ref(struct task_struct *task, struct =
-vm_area_struct *vma,
-> +				       void *data)
-> +{
-> +	struct bpf_dynptr dynptr;
+On Fri,  3 Oct 2025 16:02:43 +0200 Maciej Fijalkowski wrote:
+> +	xdp_update_mem_type(xdp);
 > +
-> +	if (!vma->vm_file)
-> +		return 1;
-> +
-> +	err =3D bpf_dynptr_from_file(vma->vm_file, 0, &dynptr);
-> +	return err ? 1 : 0;
-> +}
-> +
-> +SEC("fentry.s/" SYS_PREFIX "sys_nanosleep")
-> +__failure __msg("Unreleased reference id=3D") int on_nanosleep_unrelease=
-d_ref(void *ctx)
-> +{
-> +	struct task_struct *task =3D bpf_get_current_task_btf();
-> +
-> +	bpf_find_vma(task, (unsigned long)user_ptr, process_vma_unreleased_ref,=
- NULL, 0);
+>  	act = bpf_prog_run_xdp(xdp_prog, xdp);
 
-Why testing this via callback?
+The new helper doesn't really express what's going on. Developers
+won't know what are we updating mem_type() to, and why. Right?
 
-> +	return 0;
-> +}
+My thinking was that we should try to bake the rxq into "conversion"
+APIs, draft diff below, very much unfinished and I'm probably missing
+some cases but hopefully gets the point across:
 
-[...]
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index aa742f413c35..e7f75d551d8f 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -384,9 +384,21 @@ struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+ 					 struct net_device *dev);
+ struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
+ 
++/* Initialize rxq struct on the stack for processing @frame.
++ * Not necessary when processing in context of a driver which has a real rxq,
++ * and passes it to xdp_convert_frame_to_buff().
++ */
++static inline
++void xdp_rxq_prep_on_stack(const struct xdp_frame *frame,
++			   struct xdp_rxq_info *rxq)
++{
++	rxq->dev = xdpf->dev_rx;
++	/* TODO: report queue_index to xdp_rxq_info */
++}
++
+ static inline
+ void xdp_convert_frame_to_buff(const struct xdp_frame *frame,
+-			       struct xdp_buff *xdp)
++			       struct xdp_buff *xdp, struct xdp_rxq_info *rxq)
+ {
+ 	xdp->data_hard_start = frame->data - frame->headroom - sizeof(*frame);
+ 	xdp->data = frame->data;
+@@ -394,6 +406,22 @@ void xdp_convert_frame_to_buff(const struct xdp_frame *frame,
+ 	xdp->data_meta = frame->data - frame->metasize;
+ 	xdp->frame_sz = frame->frame_sz;
+ 	xdp->flags = frame->flags;
++
++	rxq->mem.type = xdpf->mem_type;
++}
++
++/* Initialize an xdp_buff from an skb.
++ *
++ * Note: if skb has frags skb_cow_data_for_xdp() must be called first,
++ * or caller must otherwise guarantee that the frags come from a page pool
++ */
++static inline
++void xdp_convert_skb_to_buff(const struct xdp_frame *frame,
++			     struct xdp_buff *xdp, struct xdp_rxq_info *rxq)
++{
++	// copy the init_buff / prep_buff here
++
++	rxq->mem.type = MEM_TYPE_PAGE_POOL; /* see note above the function */
+ }
+ 
+ static inline
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 703e5df1f4ef..60ba15bbec59 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -193,11 +193,8 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+ 		u32 act;
+ 		int err;
+ 
+-		rxq.dev = xdpf->dev_rx;
+-		rxq.mem.type = xdpf->mem_type;
+-		/* TODO: report queue_index to xdp_rxq_info */
+-
+-		xdp_convert_frame_to_buff(xdpf, &xdp);
++		xdp_rxq_prep_on_stack(xdpf, &rxq);
++		xdp_convert_frame_to_buff(xdpf, &xdp, &rxq);
+ 
+ 		act = bpf_prog_run_xdp(rcpu->prog, &xdp);
+ 		switch (act) {
+
 
