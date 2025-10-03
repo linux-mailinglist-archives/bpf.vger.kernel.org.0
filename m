@@ -1,111 +1,219 @@
-Return-Path: <bpf+bounces-70321-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70322-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6191EBB7CD1
-	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 19:47:01 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44937BB7D98
+	for <lists+bpf@lfdr.de>; Fri, 03 Oct 2025 20:14:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1BDA34EE6A9
-	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 17:47:00 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8A8E1347C0E
+	for <lists+bpf@lfdr.de>; Fri,  3 Oct 2025 18:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06BFB29E117;
-	Fri,  3 Oct 2025 17:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E90F22DC774;
+	Fri,  3 Oct 2025 18:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C+auxx15"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="jU2jVPkk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5F13594F
-	for <bpf@vger.kernel.org>; Fri,  3 Oct 2025 17:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042B42D46A1;
+	Fri,  3 Oct 2025 18:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759513616; cv=none; b=ey9TNCn8XWmZ/aBA26WRpJLVQPxawFxmEVVepvHYLBd4xRAUcyppvmbOgkf+IvXPYFmnwYTFhrs8raW27aGG+S1z4oQo80XV2mEUTINSR3CckHnZTCy28FuEfgPqdXSXUD1eH3Zw+6cPIxBP19pCKo1GqON/HZOAFK0gw0MuzzU=
+	t=1759515260; cv=none; b=tjUH4N7mOpGIzmCzbrW7pW1ScqykYY8GA3tGk4iLVl3K6/WVD0Jg9yAUMNYeJzGVHKioeWM2paXcTQRhXU14FH7MKjkt/fp9XKRov8nCkUyeDCfUYqZM9FI/izsiYN/bPoE76ErO19PMCiqXjb69zWuqhYPK6cAyqHQEHIrVYw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759513616; c=relaxed/simple;
-	bh=DZGeE+1FXYx60PCCvE+c9NIt2hR75yBBwFUcnxJTLn8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BeyC+RerSQbVGdmP6VZyu0wtSzdrwLQGvMd/b0dzTEpS3l1WVfdQkayKHmwGQKE4WB4pj/SIUbzXe/Nnj+Eu3gOxRjNFTqLhX62RYgoY8KXGqF4BFNOx5ENxccxIzI5YwOIsUYJuD8sJBlqIjiUulo169Z+m2UgIVYuuT8/bCS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C+auxx15; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3306b83ebdaso2639489a91.3
-        for <bpf@vger.kernel.org>; Fri, 03 Oct 2025 10:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759513613; x=1760118413; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DZGeE+1FXYx60PCCvE+c9NIt2hR75yBBwFUcnxJTLn8=;
-        b=C+auxx15UeK2O3BaAEK/9tejDUSldLnw/gAk29sfUiT+E9hJQRHfWMsrDx9JdRMc3n
-         92qCOUJfcIO4BGpHKPILD/xppC011YM9cpJMRC6lUWEl6CYZotjKlb50CwFNFLbSovpI
-         +HA90rgERAAf1RWI+V054UbH2NahIJEScjnqdQoSAnLFUJOKDFOTG6/Tayd4o9FwnKWc
-         88C77JecVowV+Q6gTnKbNjq04EPA9jvbR4EG0HrfmbtwUHoF2c0zUyIcsjO8RtCP/MGT
-         vc0f3AQqcse8oGU3Zgec2qOLHfbHeHNtaa7NlZU1bipI1qk0OVI0IAknsH589o8Ac7/+
-         R1vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759513613; x=1760118413;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DZGeE+1FXYx60PCCvE+c9NIt2hR75yBBwFUcnxJTLn8=;
-        b=owqvRtWGGZko22iWQRxRwnNaKYF31Y6E6uTNXhF272j3G8IgVE6TlfKiUGpwmzcbZp
-         Vz3Y6YJeeyXCp8Xk5oZOL5t4CbqlKNlhrXLhI1j+SoBrTPpfvH8aLtH3xp+hpWupXkr6
-         nNHSPeUYh2JJrLbGmqsBmXwtv9JerNF45xWP9J3/Oye1VbYyPLPnuJHI/EvCqWb1+A2m
-         OwuevrUpyNXQxbzhBDwcy6VG1hCVm8bN73aykI6QqJV3vJ01WXfxz6zIWI2BtmNWyMZ1
-         ZrJPJPhupnCAI/gIK7tOe0op2zqnmBJMwlLAhXBct2mxQkPnnFleGFKi2jX+ci7j5rSb
-         Prmg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJbc7mTdA1k+jPnenvsxSBLHAKR+t4o8PmFRuQIYqlzkvPrM4H663jEjPPtzPhTY+2MS8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQic9uPsFevhR4a/EKPgYCUipGFej3XhiffD1At6+yQUso3SKX
-	NeEydQfC9HwWvqdG6WgpWldKHX212V02EchFwy0UC0mpuFTRH19uPWFl
-X-Gm-Gg: ASbGncviC6YQ1+m+a30S9x/DjgivCchneioLu5wScxyOI98iXtKkKjaLR5MQreRPtX7
-	23bM84qGFzwx6q/S22CHXmPxX+mbnKOk5vPdyFen+w31Fdh+GWt+sA9D1+whK5cldql4vkzSIJr
-	rCzdepSHrqnazGacnhXGlu4hlh0BSNi6uP2L5TCZ5yrsIEBp0CSMGui8A1GhoYhYQHZx16VhWrz
-	Lb7e0m1IHJI0qfiGIWM2tGKuISaX0ccXgLJbqD3ugBpyHyiApni1pgfSiFKfJgjQ1MvzfiEVn8S
-	8myVzgkB499+qKtoJwTWEgmhU66KG1x5sgxKAQ58pOJlUxk2+niDYCX79pZF7i0lWP0qEgEQeb2
-	lANklNAFQaXQUt4jAEA4KuK8g8KHc1DBpuE0RbZ+3EEyZnLirmIS3LNKj4U5xsZca4UJFpeysY0
-	9oO5Yfb6c=
-X-Google-Smtp-Source: AGHT+IGrevGpywlXmk7P/ETr63/ezKZr4EirRqkP/9RASMCd0PrX1SwE2gE8NSbOX4gcnvuN2AUOlA==
-X-Received: by 2002:a17:90b:1b0d:b0:332:afb1:d050 with SMTP id 98e67ed59e1d1-339c278238fmr4573866a91.14.1759513613336;
-        Fri, 03 Oct 2025 10:46:53 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:2a3b:74c8:31da:d808? ([2620:10d:c090:500::4:e149])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3399ce52317sm4703104a91.11.2025.10.03.10.46.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Oct 2025 10:46:53 -0700 (PDT)
-Message-ID: <46a62c903816f9fdd4102d6ccfd3199e322441cf.camel@gmail.com>
-Subject: Re: [RFC PATCH v1 01/10] selftests/bpf: remove unnecessary kfunc
- prototypes
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Fri, 03 Oct 2025 10:46:51 -0700
-In-Reply-To: <20251003160416.585080-2-mykyta.yatsenko5@gmail.com>
-References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com>
-	 <20251003160416.585080-2-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	s=arc-20240116; t=1759515260; c=relaxed/simple;
+	bh=yUrgQcSQzrZ5Ta9Vf3S5xvsgcx6/DiVNWzNo/n0L8KM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GdIH9BMjVOBP/jtUJgpBPo82XAAEhzhgv5joPue6dz6MgwCuaVwHdKCV0uRS4VW+Nx9QURjkYhnGJyr5gWXXmilzWbefUCPp+z1AbQCqoZVva5M5DsEqLOUbnolWWLc8XA9/0ukKM3DfYUA+aR6I2h8+DLQDk3pNWjI38JlSe1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=jU2jVPkk; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [13.88.17.9])
+	by linux.microsoft.com (Postfix) with ESMTPSA id E4B3A2119CC3;
+	Fri,  3 Oct 2025 11:14:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E4B3A2119CC3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1759515257;
+	bh=Qctu12DZ/u25F+IcVR/hU6aQU6NIYzIeD1je2vjJPI8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=jU2jVPkkFknlQuUQHDxjxlB8aIROnUHxQpFbnskDwWqvY2sPN9TrNeEQd3Xx0e8zz
+	 GH2Cb+9SPS68TyQ454JTfvu7cb9iaGID0mjLP6/Es6NyhNPgbzO7xMSKLn6VFwMqi0
+	 wdtuQe3gXuQCbQpz8k3CK9R2SyNOJFY1TWp95bLo=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: KP Singh <kpsingh@kernel.org>
+Cc: Paul Moore <paul@paul-moore.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, ast@kernel.org,
+ james.bottomley@hansenpartnership.com, bpf@vger.kernel.org,
+ linux-security-module@vger.kernel.org, kys@microsoft.com,
+ daniel@iogearbox.net, andrii@kernel.org, wufan@linux.microsoft.com,
+ qmo@kernel.org
+Subject: Re: [PATCH bpf-next v2 0/3] BPF signature hash chains
+In-Reply-To: <CACYkzJ7F6ax2AcWNFxnAkyVb26Dr2mwdBnW=HFVFeJ1pC-BObg@mail.gmail.com>
+References: <20250929213520.1821223-1-bboscaccy@linux.microsoft.com>
+ <CAHC9VhTQ_DR=ANzoDBjcCtrimV7XcCZVUsANPt=TjcvM4d-vjg@mail.gmail.com>
+ <CACYkzJ4yG1d8ujZ8PVzsRr_PWpyr6goD9DezQTu8ydaf-skn6g@mail.gmail.com>
+ <871pnlysx1.fsf@microsoft.com>
+ <CACYkzJ7F6ax2AcWNFxnAkyVb26Dr2mwdBnW=HFVFeJ1pC-BObg@mail.gmail.com>
+Date: Fri, 03 Oct 2025 11:14:15 -0700
+Message-ID: <87y0pryhs8.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2025-10-03 at 17:04 +0100, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
->=20
-> Remove unnecessary kfunc prototypes from test programs, these are
-> provided by vmlinux.h
->=20
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
+KP Singh <kpsingh@kernel.org> writes:
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> On Thu, Oct 2, 2025 at 10:01=E2=80=AFPM Blaise Boscaccy
+> <bboscaccy@linux.microsoft.com> wrote:
+>>
+>> KP Singh <kpsingh@kernel.org> writes:
+>>
+>> > On Wed, Oct 1, 2025 at 11:37=E2=80=AFPM Paul Moore <paul@paul-moore.co=
+m> wrote:
+>> >>
+>> >
+>> > [...]
+>> >
+>>
+>> [...]
+>>
+>> I am confident that Paul will address your remaining points. However, I
+>> would like to clarify a few factual inaccuracies outlined below.
+>>
+>> >
+>> > Blaise's implementation fails on any modern BPF programs since
+>> > programs use more than one map, BTF information and kernel functions.
+>> >
+>>
+>> If you read the patch series you'd see that it supports verification of
+>> any number of maps. If you've identified an issue with map verification,
+>> please share the details and I=E2=80=99ll address it.
+>>
+>
+> I am sorry but this does not work, the UAPI here is
+>
+> + /* Pointer to a buffer containing the maps used in the signature
+> + * hash chain of the BPF program.
+> + */
+> + __aligned_u64   signature_maps;
+> + /* Size of the signature maps buffer. */
+> + __u32 signature_maps_size;
+>
+> This needs to be generically applicable and it's not, What happens if
+> the program is not a loader program / when the instruction buffer is
+> stable?
+>
 
-[...]
+The map array is fully configurable by the signer. Signing any or all
+maps is optional. If the instruction buffer is stable, the signer can
+generate the signature without maps and the caller passes zero in
+those fields.
+
+> If you really want the property that all of the content is signed and
+> verified within the kernel,
+
+That's what code signing is.=20
+
+> please explore approaches to make the
+> instruction buffer stable or feel free to deny any programs that do
+> relocations at load time for whatever "strict" security policy that
+> you want to implement.
+>
+> Please stop pursuing this extension as it adds cruft to the UAPI
+> that's too specific, encodes the hash chain in the kernel and we won't
+> need in the future.
+>
+
+If your primary complaint at this point is UAPI bloat, we'd be happy to
+rework the configurable hash-chain patch to use the existing signature
+buffer provided in your patchset.=20
+
+>> [...]
+>>
+>> >> conventions around the placement of LSM hooks, this "halfway" approach
+>> >> makes it difficult for LSMs to log anything about the signature status
+>> >> of a BPF program being loaded, or use the signature status in any type
+>> >> of access decision.  This is important for a number of user groups
+>> >> that use LSM based security policies as a way to help reason about the
+>> >> security properties of a system, as KP's scheme would require the
+>> >> users to analyze the signature verification code in every BPF light
+>> >> skeleton they authorize as well as the LSM policy in order to reason
+>> >> about the security mechanisms involved in BPF program loading.
+>> >>
+>> >> Blaise's signature scheme also has the nice property that BPF ELF
+>> >> objects created using his scheme are backwards compatible with
+>> >> existing released kernels that do not support any BPF signature
+>> >> verification schemes, of course without any signature verification.
+>> >> Loading a BPF ELF object using KP's signature scheme will likely fail
+>> >> when loaded on existing released kernels.
+>> >
+>> > This does not make any sense. The ELF format and the way loaders like
+>> > libbpf interpret it, has nothing to do with the kernel or UAPI.
+>> >
+>>
+>> We signed a program with your upstream tools and it failed to load on a
+>> vanilla kernel 6.16. The loader in your patchset is intepreting the
+>> first few fields of struct bpf_map as a byte array containing a sha256
+>> digest on older kernels.
+>
+> We can convert BPF_OBJ_GET_INFO_BY_FD to be called from loader
+> programs to not rely on the struct field. and or libbbf can call
+> BPF_OBJ_GET_INFO_BY_FD to check if map_get_hash is supported before it
+> generates the hash check.
+>
+> You should not expect bpftool -S -k -i to work on older kernels but it
+> should error out if the options are passed.
+>
+
+`bpftool gen` shouldn't have a priori knowledge of the target kernel
+version.=20
+
+-blaise
+
+
+> - KP
+>
+>>
+>> -blaise
+>>
+>>
+>> > I had given detailed feedback to Blaise in
+>> > https://lore.kernel.org/bpf/CACYkzJ6yNjFOTzC04uOuCmFn=3D+51_ie2tB9_x-u=
+2xbcO=3DyobTw@mail.gmail.com/
+>> > mentions also why we don't want any additional UAPI.
+>> >
+>> > You keep mentioning having visibility  in the LSM code and I again
+>> > ask, to implement what specific security policy and there is no clear
+>> > answer? On a system where you would like to only allow signed BPF
+>> > programs, you can purely deny any programs where the signature is not
+>> > provided and this can be implemented today.
+>> >
+>> > Stable programs work as it is, programs that require runtime
+>> > relocation work with loader programs. We don't want to add more UAPI
+>> > as, in the future, it's quite possible that we can make the
+>> > instruction buffer stable.
+>> >
+>> > - KP
+>> >
+>> >>
+>> >> [1] https://lore.kernel.org/linux-security-module/CAADnVQ+C2KNR1ryRtB=
+GOZTNk961pF+30FnU9n3dt3QjaQu_N6Q@mail.gmail.com/
+>> >> [2] https://lore.kernel.org/linux-security-module/CAHC9VhRjKV4AbSgqb4=
+J_-xhkWAp_VAcKDfLJ4GwhBNPOr+cvpg@mail.gmail.com/
+>> >> [3] https://lore.kernel.org/linux-security-module/87sei58vy3.fsf@micr=
+osoft.com/
+>> >> [4] https://lore.kernel.org/linux-security-module/20250909162345.5698=
+89-2-bboscaccy@linux.microsoft.com/
+>> >> [5] https://lore.kernel.org/linux-security-module/20250926203111.1305=
+999-1-bboscaccy@linux.microsoft.com/
+>> >> [6] https://lore.kernel.org/linux-security-module/20250929213520.1821=
+223-1-bboscaccy@linux.microsoft.com/
+>> >>
+>> >> --
+>> >> paul-moore.com
 
