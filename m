@@ -1,79 +1,136 @@
-Return-Path: <bpf+bounces-70368-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AC1FBB889D
-	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 04:43:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5467FBB88BB
+	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 05:09:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 44B1C4F1AB8
-	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 02:42:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B3623C8688
+	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 03:09:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726572116F4;
-	Sat,  4 Oct 2025 02:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E889D21A457;
+	Sat,  4 Oct 2025 03:08:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BC/FHygp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Z+6Lp6AJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E873234BA31
-	for <bpf@vger.kernel.org>; Sat,  4 Oct 2025 02:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D931189B80
+	for <bpf@vger.kernel.org>; Sat,  4 Oct 2025 03:08:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759545748; cv=none; b=lyjMKvBcQ44bW7P14M46lhrzRSxn3oS5INOhsBKbLYh5J4UCkSTUZI88RI4jkTzr+b/oQZwF9quEBsuGPQ8CnRtTbdm/gXASpXeNv/NWMPeylN+Yez00fjuFwp79Ffk4ojaco+hXkjLBQmj2MMv7rdqM5fn12kVhrM0SCMFf7zY=
+	t=1759547335; cv=none; b=pNJNngAMHrdJuejRJR9ejVMLbHMJ2BN2HUqXCtlNIcL784HC8VJ9vyXGDAWmK3TL7hlJwzWsK9JYuTGpgrqQrhy9fxoyfnHMcg2sb+DP+vVqkgdyRCYNfJ23EhFUS5BOTG52q8t6qIbJg4DlrONeQeVnTH6wuAOwEy2jjxdEBoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759545748; c=relaxed/simple;
-	bh=Z0rWcx86a+wMnipgpZixaiPtzEBDHRwR3fDIm+sF7XE=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=MAefEZGdjb7dRjPE2dKO+7FBxSGhGFBe8YLm6eYssVqDMrjBMQNty1Wxvkn+5iTXF9HlOhY6x4iXiEMR59zfvkENAFGV7qfGMTBw8poolC+bFc5ypCNdSIpA1SpzDpShqKMP7OhnqDDM+eR53OC03aoVR3xiSf3MEFDf+OXKvYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BC/FHygp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C58CAC4CEF5;
-	Sat,  4 Oct 2025 02:42:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759545747;
-	bh=Z0rWcx86a+wMnipgpZixaiPtzEBDHRwR3fDIm+sF7XE=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=BC/FHygp9TaWkeQxHIjR5g8mlDj20g88nM6gQ1o6WFt/GMOnhS29Az//Syg6WHUis
-	 neHuo5B9QRoKdRVQxVVTYpBovkk5OwwGql6qZkuJT/yC8nlIpoqt3Xsv/Ky3gyMcB+
-	 X+0vpEMkZrZbiqJcrYVAT2On2HkR6foDXEt3r81qvy9LI/WWOVUs9BW0r5pOXkAE8a
-	 vh6CoO7lrH3/cEzALtCV+2+8CgRfFEHsJzYufDNy4XJRD8+VovzDNSSZsXInbtPL5e
-	 BgMIjDv2GMyc4r/5mqEIfWpKam5ZWAzS+LZKCZ7lSitANq2fSB8xxAlelbGCNHTjhS
-	 lK25jfQwXA+eg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33EE039D0C1A;
-	Sat,  4 Oct 2025 02:42:20 +0000 (UTC)
-Subject: Re: [GIT PULL] BPF fixes for 6.18-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20251002232448.57255-1-alexei.starovoitov@gmail.com>
-References: <20251002232448.57255-1-alexei.starovoitov@gmail.com>
-X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20251002232448.57255-1-alexei.starovoitov@gmail.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
-X-PR-Tracked-Commit-Id: 63d2247e2e37d9c589a0a26aa4e684f736a45e29
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cbf33b8e0b360f667b17106c15d9e2aac77a76a1
-Message-Id: <175954573878.166651.716292636038518748.pr-tracker-bot@kernel.org>
-Date: Sat, 04 Oct 2025 02:42:18 +0000
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: torvalds@linux-foundation.org, bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org
+	s=arc-20240116; t=1759547335; c=relaxed/simple;
+	bh=SA0GQY/BUXdQlPfp3N1GJWXZvhF2ZRNt7QOm5VUjtSo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lb5kix9WpyHfCYK4fBsITYxZj6lWoaUPZJyn5HI7LRFSGUN9J86Rk2cUPExXqxoWkZbRXRyWhoBqTaURcSOzlU4xDO8WiKVriUzxIolY4GYi3U/QLVtLGoWUOjUIPdPV5e30zexDNaKQXR1cH9Q2nFMkwmrr1gvjHkPnbg4+8Cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Z+6Lp6AJ; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <43eebdf1-5ea9-4991-88c3-f0780d7c42c6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759547331;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zn+pcM7PQPj2tE8YHaK7fwhWUvFKFy4bznwVXHweHVY=;
+	b=Z+6Lp6AJQO+Zr74dHglZWtWNzr+SiYMEOYvM1NBytfEaRtdZk+9vh5xO6BrGJT7K+ripU8
+	k2Lei0zV0flgdgHrgFezD7ItwSjz7jIC00eS0NcU1EWRQ8tQRnpXkLYn2bqAmhp0S2BwWg
+	rFdNwQEBOODNFwRPFky0yyUYKz4b4Bo=
+Date: Fri, 3 Oct 2025 20:08:40 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf] selftests/bpf: fix implicit-function-declaration
+ errors
+To: Eduard Zingerman <eddyz87@gmail.com>,
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, alan.maguire@oracle.com
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+ Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+References: <20251003-bpf-sft-fix-build-err-6-18-v1-1-2a71170861ef@kernel.org>
+ <d108d59be611a63c73303347d07fe0ba5f2b74b7.camel@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <d108d59be611a63c73303347d07fe0ba5f2b74b7.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-The pull request you sent on Thu,  2 Oct 2025 16:24:48 -0700:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cbf33b8e0b360f667b17106c15d9e2aac77a76a1
+On 10/3/25 4:37 PM, Eduard Zingerman wrote:
+> On Fri, 2025-10-03 at 17:24 +0200, Matthieu Baerts (NGI0) wrote:
+>> When trying to build the latest BPF selftests, with a debug kernel
+>> config, Pahole 1.30 and CLang 20.1.8 (and GCC 15.2), I got these errors:
+>>
+>>   progs/dynptr_success.c:579:9: error: call to undeclared function 'bpf_dynptr_slice'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+>>     579 |         data = bpf_dynptr_slice(&ptr, 0, NULL, 1);
+>>         |                ^
+>>   progs/dynptr_success.c:579:9: note: did you mean 'bpf_dynptr_size'?
+>>   .virtme/build-debug-btf//tools/include/vmlinux.h:120280:14: note: 'bpf_dynptr_size' declared here
+>>    120280 | extern __u32 bpf_dynptr_size(const struct bpf_dynptr *p) __weak __ksym;
+>>           |              ^
+>>   progs/dynptr_success.c:579:7: error: incompatible integer to pointer conversion assigning to '__u64 *' (aka 'unsigned long long *') from 'int' [-Wint-conversion]
+>>     579 |         data = bpf_dynptr_slice(&ptr, 0, NULL, 1);
+>>         |              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>   progs/dynptr_success.c:596:9: error: call to undeclared function 'bpf_dynptr_slice'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+>>     596 |         data = bpf_dynptr_slice(&ptr, 0, NULL, 10);
+>>         |                ^
+>>   progs/dynptr_success.c:596:7: error: incompatible integer to pointer conversion assigning to 'char *' from 'int' [-Wint-conversion]
+>>     596 |         data = bpf_dynptr_slice(&ptr, 0, NULL, 10);
+>>         |              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>
+>> I don't have these errors without the debug kernel config from
+>> kernel/configs/debug.config. With the debug kernel, bpf_dynptr_slice()
+>> is not declared in vmlinux.h. It is declared there without debug.config.
+>>
+>> The fix is similar to what is done in dynptr_fail.c which is also using
+>> bpf_dynptr_slice(): bpf_kfuncs.h is now included.
+>>
+>> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+>> ---
+> 
+> I can reproduce similar issue when including
+> kernel/configs/debug.config with my regular dev config, but for
+> different functions: bpf_rcu_read_{un,}lock().
+> 
+> However, this is not a way to fix this.
+> Kfuncs are not supposed to just disappear from DWARF.
+> 
+> Running pahole in verbose mode I see the following output:
+> 
+>   $ pahole -V \
+>       --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs \
+>       --btf_features=attributes \
+>       --lang_exclude=rust \
+>       --btf_encode_detached=/dev/null vmlinux
+>   ...
+>   matched function 'bpf_rcu_read_lock' with 'bpf_rcu_read_lock.cold'
+>   ...
+> 
+> Alan, Ihor, does this sound familiar?
 
-Thank you!
+This is most likely the issue addressed in this patch:
+https://lore.kernel.org/dwarves/f7553b3f-5827-4f50-81a9-9bd0802734b9@linux.dev/
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+There wasn't a new pahole release with it yet.
 
