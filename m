@@ -1,165 +1,183 @@
-Return-Path: <bpf+bounces-70372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0618BB8B6D
-	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 10:52:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10611BB8C28
+	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 11:47:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D96119C0256
-	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 08:53:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CADDE19C2559
+	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 09:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F2023B627;
-	Sat,  4 Oct 2025 08:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44BDE23A994;
+	Sat,  4 Oct 2025 09:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MCBa5Enz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FTYsfwb6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1D8A95E;
-	Sat,  4 Oct 2025 08:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CF2157A6B;
+	Sat,  4 Oct 2025 09:47:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759567959; cv=none; b=mZdxWAEmsK8JW54j6vWd3nR+ZKKzJp4X7Zu2D2778Z1mtT+NP2bHvd/izveBR5H4e53VS1eA/X6z6pqL/rk6IdUsl/5M7st1T9vyDC1/27+g6ThBo+Bk3LQpTiNO2dejoW3ebNrIIGCvNOVASWMcveJlkpLGsX31cLDDUf6oYIU=
+	t=1759571233; cv=none; b=gY47rIbgSvWqgpZq32GAUze+sDCbsFw8UaP3hUIUErbP+Up6KjaXJbH1QxTjCTwASiYeX6qlwUyW8wsrB9IHOFJ1AckhCNDL152Ql/hmnXhEmlxjHnO4rLJ9BtX6VcNg0FDlWJovVOhvjw4BT1e65/aBnemGKH/omEiiiiCj8Y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759567959; c=relaxed/simple;
-	bh=+1FuWl5I+o5vbR6D5URC87uuqNI/3M12IrDJO+LT0OQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mhNSx3GPxvunujsg5k+xg8IXiv2wgcL/KfGLIcP0UVk8rcWMVDIxQPi8uq0Yc0/qTSQP8tb3bcRlyVzcd5dt6/7QodtGIwypjNyBsXHY2O0U7JvHr9xguk3zKaUmmRLLdoovaENnJnjNt2cw0B0Sq8hQENKPlxKWKuaDw8WSbeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MCBa5Enz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CF1BC4CEF1;
-	Sat,  4 Oct 2025 08:52:32 +0000 (UTC)
+	s=arc-20240116; t=1759571233; c=relaxed/simple;
+	bh=8Z58r/lUJzR4nNBETqyf17v4ZDZhpa1ENzKinXNi7qY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qtd6mP6MMjA3Xgt0kjj5NfFUX8kVnP6m7AFWScBbgY0SKgMwXqfpgSUZCk6Fjq2YiDFQ6/+Ty2aYdARm3YccsyxRmmjnLSxlR6B8UkpjDN3Yn7jxvrSoJGmpF5+Nugizv/zo7x/XHHAJAuHP0U2s6pPVUhCqsCuR9B+zEzPyrHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FTYsfwb6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE5BFC4CEF1;
+	Sat,  4 Oct 2025 09:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759567957;
-	bh=+1FuWl5I+o5vbR6D5URC87uuqNI/3M12IrDJO+LT0OQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=MCBa5EnzvrNE2XD0RZVc9DpeettsJJsWvVHlxanra6AUSpJ/ONhJVpOlaZyKOltu6
-	 Qr3nhsYIthHi6rigCotZtbLALHUWvORKW7ei4djuN0EzqiRcZai86dshJlv+tW/u0f
-	 WulJxxGup1X2bm35D9EZ1idkMBFK67S8zoPsvhznazac7fXCNoNl66vnjEREHBZiC4
-	 LDx6l84vVFF6iT8qDky5sUZqZSCPdNVOIJMssj+hN+o7KliRrR/z8JqhmNBgrnktPa
-	 rP8fGiPDpFFXnVtSwU9cueJk4p6xApjz53APTIr90S9Uk7drUOnuYOJ1bmjdpGbRhO
-	 izQTZdyfEHW5A==
-Message-ID: <a6b7b46b-6959-458f-a975-866443351f87@kernel.org>
-Date: Sat, 4 Oct 2025 10:52:28 +0200
+	s=k20201202; t=1759571231;
+	bh=8Z58r/lUJzR4nNBETqyf17v4ZDZhpa1ENzKinXNi7qY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=FTYsfwb6WZuYXqI1zLQPguxDOLQQ6mG7D9bZCgc99AHzD5BiR5KTwqoX/hsQn0UON
+	 5JMujNUfq5w+kWbUvGUUA21TmmB/t+m/3JZbwwYkIdQXBfc3ZeqNxw8QoOh5IbEHm5
+	 kht9558spz+O0vYPWYXrOw0EF1qk81YkE331ReqxqyLBB5Nb7nSGY0e3RQoNY332a3
+	 yzuKzZjCmz+yvaAtN/waOg5f1Z0Ws9MeUYC3CEM0cdoXr9wCZLLOn69Dgu4IF66nSN
+	 JP3cZ/Mq8J51HMkJ6Ft06fZANE/7IKGIRMot7oYbUS+SvfwkN2/lKgqkcCBIT1ZB/M
+	 xv+qb2UafWdzw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B432ECE0CA6; Sat,  4 Oct 2025 02:47:08 -0700 (PDT)
+Date: Sat, 4 Oct 2025 02:47:08 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, kernel test robot <oliver.sang@intel.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 02/21] rcu: Re-implement RCU Tasks Trace in terms of
+ SRCU-fast
+Message-ID: <d24f3987-48de-43e3-a841-2a116ac6d5c7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <7fa58961-2dce-4e08-8174-1d1cc592210f@paulmck-laptop>
+ <20251001144832.631770-2-paulmck@kernel.org>
+ <aN6eQuTbdwAAhxIj@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH bpf] selftests/bpf: fix implicit-function-declaration
- errors
-Content-Language: en-GB, fr-BE
-To: Ihor Solodrai <ihor.solodrai@linux.dev>,
- Eduard Zingerman <eddyz87@gmail.com>, alan.maguire@oracle.com
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>
-References: <20251003-bpf-sft-fix-build-err-6-18-v1-1-2a71170861ef@kernel.org>
- <d108d59be611a63c73303347d07fe0ba5f2b74b7.camel@gmail.com>
- <43eebdf1-5ea9-4991-88c3-f0780d7c42c6@linux.dev>
- <c8b609ef-2d46-46b3-89ac-5ae84122cb93@linux.dev>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- xsFNBFXj+ekBEADxVr99p2guPcqHFeI/JcFxls6KibzyZD5TQTyfuYlzEp7C7A9swoK5iCvf
- YBNdx5Xl74NLSgx6y/1NiMQGuKeu+2BmtnkiGxBNanfXcnl4L4Lzz+iXBvvbtCbynnnqDDqU
- c7SPFMpMesgpcu1xFt0F6bcxE+0ojRtSCZ5HDElKlHJNYtD1uwY4UYVGWUGCF/+cY1YLmtfb
- WdNb/SFo+Mp0HItfBC12qtDIXYvbfNUGVnA5jXeWMEyYhSNktLnpDL2gBUCsdbkov5VjiOX7
- CRTkX0UgNWRjyFZwThaZADEvAOo12M5uSBk7h07yJ97gqvBtcx45IsJwfUJE4hy8qZqsA62A
- nTRflBvp647IXAiCcwWsEgE5AXKwA3aL6dcpVR17JXJ6nwHHnslVi8WesiqzUI9sbO/hXeXw
- TDSB+YhErbNOxvHqCzZEnGAAFf6ges26fRVyuU119AzO40sjdLV0l6LE7GshddyazWZf0iac
- nEhX9NKxGnuhMu5SXmo2poIQttJuYAvTVUNwQVEx/0yY5xmiuyqvXa+XT7NKJkOZSiAPlNt6
- VffjgOP62S7M9wDShUghN3F7CPOrrRsOHWO/l6I/qJdUMW+MHSFYPfYiFXoLUZyPvNVCYSgs
- 3oQaFhHapq1f345XBtfG3fOYp1K2wTXd4ThFraTLl8PHxCn4ywARAQABzSRNYXR0aGlldSBC
- YWVydHMgPG1hdHR0YmVAa2VybmVsLm9yZz7CwZEEEwEIADsCGwMFCwkIBwIGFQoJCAsCBBYC
- AwECHgECF4AWIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZUDpDAIZAQAKCRD2t4JPQmmgcz33
- EACjROM3nj9FGclR5AlyPUbAq/txEX7E0EFQCDtdLPrjBcLAoaYJIQUV8IDCcPjZMJy2ADp7
- /zSwYba2rE2C9vRgjXZJNt21mySvKnnkPbNQGkNRl3TZAinO1Ddq3fp2c/GmYaW1NWFSfOmw
- MvB5CJaN0UK5l0/drnaA6Hxsu62V5UnpvxWgexqDuo0wfpEeP1PEqMNzyiVPvJ8bJxgM8qoC
- cpXLp1Rq/jq7pbUycY8GeYw2j+FVZJHlhL0w0Zm9CFHThHxRAm1tsIPc+oTorx7haXP+nN0J
- iqBXVAxLK2KxrHtMygim50xk2QpUotWYfZpRRv8dMygEPIB3f1Vi5JMwP4M47NZNdpqVkHrm
- jvcNuLfDgf/vqUvuXs2eA2/BkIHcOuAAbsvreX1WX1rTHmx5ud3OhsWQQRVL2rt+0p1DpROI
- 3Ob8F78W5rKr4HYvjX2Inpy3WahAm7FzUY184OyfPO/2zadKCqg8n01mWA9PXxs84bFEV2mP
- VzC5j6K8U3RNA6cb9bpE5bzXut6T2gxj6j+7TsgMQFhbyH/tZgpDjWvAiPZHb3sV29t8XaOF
- BwzqiI2AEkiWMySiHwCCMsIH9WUH7r7vpwROko89Tk+InpEbiphPjd7qAkyJ+tNIEWd1+MlX
- ZPtOaFLVHhLQ3PLFLkrU3+Yi3tXqpvLE3gO3LM7BTQRV4/npARAA5+u/Sx1n9anIqcgHpA7l
- 5SUCP1e/qF7n5DK8LiM10gYglgY0XHOBi0S7vHppH8hrtpizx+7t5DBdPJgVtR6SilyK0/mp
- 9nWHDhc9rwU3KmHYgFFsnX58eEmZxz2qsIY8juFor5r7kpcM5dRR9aB+HjlOOJJgyDxcJTwM
- 1ey4L/79P72wuXRhMibN14SX6TZzf+/XIOrM6TsULVJEIv1+NdczQbs6pBTpEK/G2apME7vf
- mjTsZU26Ezn+LDMX16lHTmIJi7Hlh7eifCGGM+g/AlDV6aWKFS+sBbwy+YoS0Zc3Yz8zrdbi
- Kzn3kbKd+99//mysSVsHaekQYyVvO0KD2KPKBs1S/ImrBb6XecqxGy/y/3HWHdngGEY2v2IP
- Qox7mAPznyKyXEfG+0rrVseZSEssKmY01IsgwwbmN9ZcqUKYNhjv67WMX7tNwiVbSrGLZoqf
- Xlgw4aAdnIMQyTW8nE6hH/Iwqay4S2str4HZtWwyWLitk7N+e+vxuK5qto4AxtB7VdimvKUs
- x6kQO5F3YWcC3vCXCgPwyV8133+fIR2L81R1L1q3swaEuh95vWj6iskxeNWSTyFAVKYYVskG
- V+OTtB71P1XCnb6AJCW9cKpC25+zxQqD2Zy0dK3u2RuKErajKBa/YWzuSaKAOkneFxG3LJIv
- Hl7iqPF+JDCjB5sAEQEAAcLBXwQYAQIACQUCVeP56QIbDAAKCRD2t4JPQmmgc5VnD/9YgbCr
- HR1FbMbm7td54UrYvZV/i7m3dIQNXK2e+Cbv5PXf19ce3XluaE+wA8D+vnIW5mbAAiojt3Mb
- 6p0WJS3QzbObzHNgAp3zy/L4lXwc6WW5vnpWAzqXFHP8D9PTpqvBALbXqL06smP47JqbyQxj
- Xf7D2rrPeIqbYmVY9da1KzMOVf3gReazYa89zZSdVkMojfWsbq05zwYU+SCWS3NiyF6QghbW
- voxbFwX1i/0xRwJiX9NNbRj1huVKQuS4W7rbWA87TrVQPXUAdkyd7FRYICNW+0gddysIwPoa
- KrLfx3Ba6Rpx0JznbrVOtXlihjl4KV8mtOPjYDY9u+8x412xXnlGl6AC4HLu2F3ECkamY4G6
- UxejX+E6vW6Xe4n7H+rEX5UFgPRdYkS1TA/X3nMen9bouxNsvIJv7C6adZmMHqu/2azX7S7I
- vrxxySzOw9GxjoVTuzWMKWpDGP8n71IFeOot8JuPZtJ8omz+DZel+WCNZMVdVNLPOd5frqOv
- mpz0VhFAlNTjU1Vy0CnuxX3AM51J8dpdNyG0S8rADh6C8AKCDOfUstpq28/6oTaQv7QZdge0
- JY6dglzGKnCi/zsmp2+1w559frz4+IC7j/igvJGX4KDDKUs0mlld8J2u2sBXv7CGxdzQoHaz
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <c8b609ef-2d46-46b3-89ac-5ae84122cb93@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aN6eQuTbdwAAhxIj@localhost.localdomain>
 
-Hi Ihor,
-
-On 04/10/2025 05:19, Ihor Solodrai wrote:
+On Thu, Oct 02, 2025 at 05:46:10PM +0200, Frederic Weisbecker wrote:
+> Le Wed, Oct 01, 2025 at 07:48:13AM -0700, Paul E. McKenney a écrit :
+> > This commit saves more than 500 lines of RCU code by re-implementing
+> > RCU Tasks Trace in terms of SRCU-fast.  Follow-up work will remove
+> > more code that does not cause problems by its presence, but that is no
+> > longer required.
+> > 
+> > This variant places smp_mb() in rcu_read_{,un}lock_trace(), which will
+> > be removed on common-case architectures in a later commit.
 > 
+> The changelog doesn't mention what this is ordering :-)
+
+"The ordering that dare not be named"?  ;-)
+
+How about like this for that second paragraph?
+
+	This variant places smp_mb() in rcu_read_{,un}lock_trace(),
+	which will be removed on common-case architectures in a
+	later commit.  In the meantime, it serves to enforce ordering
+	between the underlying srcu_read_{,un}lock_fast() markers and
+	the intervening critical section, even on architectures that
+	permit attaching tracepoints on regions of code not watched
+	by RCU.  Such architectures defeat SRCU-fast's use of implicit
+	single-instruction, interrupts-disabled, and atomic-operation
+	RCU read-side critical sections, which have no effect when RCU is
+	not watching.  The aforementioned later commit will insert these
+	smp_mb() calls only on architectures that have not used noinstr to
+	prevent attaching tracepoints to code where RCU is not watching.
+
+> > [ paulmck: Apply kernel test robot, Boqun Feng, and Zqiang feedback. ]
+> > [ paulmck: Split out Tiny SRCU fixes per Andrii Nakryiko feedback. ]
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Tested-by: kernel test robot <oliver.sang@intel.com>
+> > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: <bpf@vger.kernel.org>
+> > ---
+> [...]
+> > @@ -50,12 +50,14 @@ static inline void rcu_read_lock_trace(void)
+> >  {
+> >  	struct task_struct *t = current;
+> >  
+> > -	WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
+> > -	barrier();
+> > -	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
+> > -	    t->trc_reader_special.b.need_mb)
+> > -		smp_mb(); // Pairs with update-side barriers
+> > -	rcu_lock_acquire(&rcu_trace_lock_map);
+> > +	if (t->trc_reader_nesting++) {
+> > +		// In case we interrupted a Tasks Trace RCU reader.
+> > +		rcu_try_lock_acquire(&rcu_tasks_trace_srcu_struct.dep_map);
+> > +		return;
+> > +	}
+> > +	barrier();  // nesting before scp to protect against interrupt handler.
+> > +	t->trc_reader_scp = srcu_read_lock_fast(&rcu_tasks_trace_srcu_struct);
+> > +	smp_mb(); // Placeholder for more selective ordering
 > 
-> On 10/3/25 8:08 PM, Ihor Solodrai wrote:
->>
->>
->> On 10/3/25 4:37 PM, Eduard Zingerman wrote:
->>> On Fri, 2025-10-03 at 17:24 +0200, Matthieu Baerts (NGI0) wrote:
->>> [...]
->>>
->>> Alan, Ihor, does this sound familiar?
->>
->> This is most likely the issue addressed in this patch:
->> https://lore.kernel.org/dwarves/f7553b3f-5827-4f50-81a9-9bd0802734b9@linux.dev/
->>
->> There wasn't a new pahole release with it yet.
+> Mysterious :-)
+
+Does the reworked commit-log paragraph help clear up this mystery?
+
+> >  }
+> >  
+> >  /**
+> > @@ -69,26 +71,75 @@ static inline void rcu_read_lock_trace(void)
+> >   */
+> >  static inline void rcu_read_unlock_trace(void)
+> >  {
+> > -	int nesting;
+> > +	struct srcu_ctr __percpu *scp;
+> >  	struct task_struct *t = current;
+> >  
+> > -	rcu_lock_release(&rcu_trace_lock_map);
+> > -	nesting = READ_ONCE(t->trc_reader_nesting) - 1;
+> > -	barrier(); // Critical section before disabling.
+> > -	// Disable IPI-based setting of .need_qs.
+> > -	WRITE_ONCE(t->trc_reader_nesting, INT_MIN + nesting);
+> > -	if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
+> > -		WRITE_ONCE(t->trc_reader_nesting, nesting);
+> > -		return;  // We assume shallow reader nesting.
+> > -	}
+> > -	WARN_ON_ONCE(nesting != 0);
+> > -	rcu_read_unlock_trace_special(t);
+> > +	smp_mb(); // Placeholder for more selective ordering
 > 
-> Not the best link, sorry. That patch wasn't picked up by lore, only
-> discussion remains.
+> Bizarre :-)
+
+And this bizarreness?  ;-)
+
+> > +	scp = t->trc_reader_scp;
+> > +	barrier();  // scp before nesting to protect against interrupt handler.
 > 
-> Here is the commit pushed to pahole/next:
-> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=next&id=09c1e9c924da02dc02bba0a3e59490e64449df96
+> What is it protecting against interrupt?
 
-Thank you for the links!
+The incrementing of ->trc_reader_nesting vs the fetch of ->trc_reader_scp.
 
-OK so I guess to be (fully) able to use BTF in the future v6.18, we
-should use the future Pahole v1.31, and not include extra kfuncs. Is
-that correct?
+							Thanx, Paul
 
-If yes, we can drop this patch. (The MPTCP CI will use it internally not
-to have to depend on a dev version of Pahole.)
-
-Also, should this dependency be more explicit somehow, to help people
-having errors when not using a recent enough Pahole version?
-
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
-
+> > +	if (!--t->trc_reader_nesting)
+> > +		srcu_read_unlock_fast(&rcu_tasks_trace_srcu_struct, scp);
+> > +	else
+> > +		srcu_lock_release(&rcu_tasks_trace_srcu_struct.dep_map);
+> > +}
+> 
+> Thanks (very happy to see all the rest of the code going away!)
+> 
+> -- 
+> Frederic Weisbecker
+> SUSE Labs
 
