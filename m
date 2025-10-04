@@ -1,57 +1,56 @@
-Return-Path: <bpf+bounces-70389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72B41BB901E
-	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 18:46:08 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DE06BB9027
+	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 18:46:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31CA03BE79A
-	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 16:46:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B1E3D4E571E
+	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 16:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DED427F18F;
-	Sat,  4 Oct 2025 16:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA0A280014;
+	Sat,  4 Oct 2025 16:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DSpYvjKr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I3WaAOJC"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 802A234BA5C;
-	Sat,  4 Oct 2025 16:46:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287EB27FD4B;
+	Sat,  4 Oct 2025 16:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759596361; cv=none; b=qUvDmtsuadh4Vk2aA6B10SSK6hZzN/nPw2dCqF/qwZj2OVQDTuLbjAUwEEVe+NPjwl5hRmoK2tumtbJGq6J+4DvUsFmY2OIYDP6HDoCwdRP3eofO8tsQsr7ezEOhSdHHG5haN3pVV2hjskPXnfyzbIZFwnQsmGQ2XFGzv0CcYiE=
+	t=1759596380; cv=none; b=t8GND6FpYn2vVN1YrePJvnS5xzVYnDRUeZ8Tkyn0t8MF+tQRRGx2kLXc2UUk7bTTZtLTSnps+eTdfzKWtetoZqmTJEk00zQv03zM/jlafjT1Md+m02iOw9RbiqbxdlBFfnQGZ9Ns8Mj53gX187UWZhkaQ1L+C19Bx92YncsYHFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759596361; c=relaxed/simple;
-	bh=3Zkc7jR/aAZsMuJesAzvh3ylS2v+ebDFzJyAV+5QVis=;
+	s=arc-20240116; t=1759596380; c=relaxed/simple;
+	bh=HEbhFwQzix9J/A1HjH0nCPblIv+aseE2jUlEGi85+cg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MIYba5pUCJQBilrlBpFsYCR9AprHNlJHOJJ/UFw9Qo6uQ5Ge+P4v9WG6Xmg7/rzHGpQdc0AIrazIwoE/a6Xg8glYhZHjZMgul1vqipxq+YJyuM4IzWeV0ZtDH0PSfi72C2KJ8wj1G/nzmsw/E7w7L4ZDfhK0LrcL7T2iZ6miCLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DSpYvjKr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5E6AC4CEF1;
-	Sat,  4 Oct 2025 16:45:58 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=B1iKtsFZZsLw3/xAtOB//cGBkR2pzrnJ9OonHgMvbWcMDIG7Yq7UFb8TDNWtmCMtKSa8HCostZEBzahk3lJNQKyiYz4Eg777gf3rL88mZRCq9zysvzB3iZlmn944NSFvLWSpwausRKXTkVP7P/UzCR+V421ZeDovrvLNfy4DTYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I3WaAOJC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EFC1C4CEF1;
+	Sat,  4 Oct 2025 16:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759596361;
-	bh=3Zkc7jR/aAZsMuJesAzvh3ylS2v+ebDFzJyAV+5QVis=;
+	s=k20201202; t=1759596379;
+	bh=HEbhFwQzix9J/A1HjH0nCPblIv+aseE2jUlEGi85+cg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DSpYvjKrAvLnr1TXiEJw9EyD1FdJqQCFVmrsvXaxr9WkLlROQxXGKdz+f4OaGBe9k
-	 o3Wo66lTUGcINwlCh8+sG2MDzS8osofsqPsgA5SRxDF05L2W87wvaGOmzw1bugfIRd
-	 x/PFBSFbd+/nByCQxX6ly6F4cMz8g3WAT+6E8FKjUcgyvW5WD3l5CARwrdaR6P1W4g
-	 dzm3oiibV8b4BpEwAdCSd41/6szRGGWBR4tdccKQfe59btEuWXIe+huvROYNYdz8Fq
-	 9IgdMKdCob2iLcp6nAiFryd/koO71XDgY7Y3K88XlJzpJbvX7gavGwdBTQtmypdxKt
-	 XkS86NLaRvxjg==
-Date: Sat, 4 Oct 2025 17:45:56 +0100
+	b=I3WaAOJCzyGQJ5PpA/25gkQcpaJEk3vE7/07fH/pBNBqV8SEpNiCcBvEeHVPNhL61
+	 X+PnE0G6sfNs4w2TgkUL+/EOErgDWNfoVkXP/Qhplig2mWw6fLGlCYVfGvmu8XT0h1
+	 dFGh5fOB/PopTiJB8E77U3Tv3v05dbNCvqktgoOOF8lRQEldm2e+923b1QiKRPc83l
+	 XgcuZqDQtkxHK8OauD6KG6ZTl4AYEC+fXaqIYXXYNFEGQnB8WfZxVFyZZu+lUh3xX+
+	 jHs4xkTFQ8YjCxn7Dr+5OWBVPja1rE+p9kQq2IZDxGTzLLpEB1K+Gsc8mdF78BZiDb
+	 rOoh9QRLC9PYg==
+Date: Sat, 4 Oct 2025 17:46:15 +0100
 From: Simon Horman <horms@kernel.org>
 To: Jakub Kicinski <kuba@kernel.org>
 Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
 	pabeni@redhat.com, andrew+netdev@lunn.ch, bpf@vger.kernel.org,
-	alexanderduyck@fb.com, sdf@fomichev.me, mohsin.bashr@gmail.com
-Subject: Re: [PATCH net 3/9] eth: fbnic: fix saving stats from XDP_TX rings
- on close
-Message-ID: <20251004164556.GH3060232@horms.kernel.org>
+	shuah@kernel.org, sdf@fomichev.me, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net 4/9] selftests: drv-net: xdp: rename netnl to ethnl
+Message-ID: <20251004164615.GI3060232@horms.kernel.org>
 References: <20251003233025.1157158-1-kuba@kernel.org>
- <20251003233025.1157158-4-kuba@kernel.org>
+ <20251003233025.1157158-5-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,19 +59,14 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251003233025.1157158-4-kuba@kernel.org>
+In-Reply-To: <20251003233025.1157158-5-kuba@kernel.org>
 
-On Fri, Oct 03, 2025 at 04:30:19PM -0700, Jakub Kicinski wrote:
-> When rings are freed - stats get added to the device level stat
-> structs. Save the stats from the XDP_TX ring just as Tx stats.
-> Previously they would be saved to Rx and Tx stats. So we'd not
-> see XDP_TX packets as Rx during runtime but after an down/up cycle
-> the packets would appear in stats.
+On Fri, Oct 03, 2025 at 04:30:20PM -0700, Jakub Kicinski wrote:
+> Test uses "netnl" for the ethtool family which is quite confusing
+> (one would expect netdev family would use this name).
 > 
-> Correct the helper used by ethtool code which does a runtime
-> config switch.
+> No functional changes.
 > 
-> Fixes: 5213ff086344 ("eth: fbnic: Collect packet statistics for XDP")
 > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
 Reviewed-by: Simon Horman <horms@kernel.org>
