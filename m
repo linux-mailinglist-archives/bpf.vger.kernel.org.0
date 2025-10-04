@@ -1,110 +1,106 @@
-Return-Path: <bpf+bounces-70378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 944DDBB8EC3
-	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 16:28:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ABF3BB8EFF
+	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 16:46:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 548C04A1618
-	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 14:28:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB1D23C4CBC
+	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 14:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64696221FD0;
-	Sat,  4 Oct 2025 14:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C35E230BD5;
+	Sat,  4 Oct 2025 14:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XZKZJaEQ"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="E3CbVV53"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546BD21D3EE
-	for <bpf@vger.kernel.org>; Sat,  4 Oct 2025 14:28:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397197260F;
+	Sat,  4 Oct 2025 14:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759588119; cv=none; b=Jjbt+G17smkxOWMOZrt68l3odsJfrn5uF/tZI8kvM4/4syrBSBCUf5AQvcscFLXXROfOWLgVq/aDIlLqfufzfbxzuL7L0NDQgSArKaKKgGoBLKtOUxXp1GvHr2hBtxS8h6dEzQj/gmk1rvxL9iY0gyDe3a61AtGIzKXj6LAPjfA=
+	t=1759589157; cv=none; b=gPJXtgAPdqxYZHeI6Xz38LaE7QX8cQqymytgnV4vOU5NWr6lux3aQJCamkQMJ6usc3Pq7Nc/rp1cGk4ka0QW1DrU/KJLwOtwysj+3I5iruus8kyWvLjHi/Xgsae6ksI67VSEum6kGD2UARaatz3ashJVP1y+TaHF2vWi+Sc+3gM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759588119; c=relaxed/simple;
-	bh=ojfKhhX/8wUyfMb+0xl3q5bck6Je10S6jxPo6lslJEg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Msjzi6IBKxhSKwV9ratyf9cEwfWu/VQcjnhsTSNwjtj6GBdV/KcG3aJIiEfpRueLPWaTjDCg8bSQof8dyK2qorqS+XM/Ydi54CTAAgemp+1gvtXJuxDgyATLmGkFp6WaTWFwKLbOHRpa2i4sNXphwRR1rL7ijPcpS8XcTUmh4Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XZKZJaEQ; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-46e3a50bc0fso26650235e9.3
-        for <bpf@vger.kernel.org>; Sat, 04 Oct 2025 07:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759588115; x=1760192915; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CK0v4OX8W8IlBqQJ3Wzl4GiNbbL02OCOeiXzShfxTf4=;
-        b=XZKZJaEQRpd5vYP6qooEAwK5kOayE4jcfODHzcU5UWQysIYInQJEfHZ6YSkp5MGNnD
-         wtqHsB0pX9W1jMNePz8YHCvpYh78490I8Jv9pEwNjVHicLMaezBioZlA2K8d5VU1rOb5
-         J3xm89wLYnil/HxZkXQMRFQ2F07atPA8buqTajbJE1RZbnP5uQdzML1hGdIA8AlsmFqD
-         9/QEEAlr6xJqozmocI2PzuwhVtxrNeTEv6++hx3LL4GbS9qDz8heykCeTxAC0sNiv22A
-         Z3GYZRh6iA1KK+tb0GczoDmH7mDY1pORgajFcZ2wOmaW/IsB74gFPqGRVa+8HXZKyX5t
-         LO1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759588115; x=1760192915;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CK0v4OX8W8IlBqQJ3Wzl4GiNbbL02OCOeiXzShfxTf4=;
-        b=byvW6Sq0zYlg1prmbgVxnkKfRebXv8DZ8MYCoUnh7qcgW8pYm4cZfWtp+oSCepNk9h
-         v1dEqD7y9/3QOXVB8Ocn27/cKvXvd9F7n1HM3y7s0FhFC4kTaXCuP9lWsV1hggQsgyot
-         K4O5P+rOcudeJ8qTkdd6ajiO7+/lpfKYPdsL99BiLkrQOEQuJbNl82WdqWNTfRDvOUGD
-         dfTp2TF28hjTm6RMCmS+OwjntjJzt6AHLWuRNtPAGk0CYU13RIc4cHwZV6hUjbAzrImF
-         xFvJQKClT+Vs/yxaeSdg10rVGNN9JCU09y0o6MwE8gw+5f+zp0zin9DH0iVKUM2pDnhq
-         vt0A==
-X-Forwarded-Encrypted: i=1; AJvYcCXYtuZpoqRhk0PyTo30lEiyHrdDNk3Iydm8wGLoOPtyt0bmhltKPp8ye6C/W4PIbw1NWCs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwuMZQmkkN9cIriTnDzbk4Il+AgRV9+sz0NeEzmrbNOEWuISxt5
-	AHPsKGwv5p1hQDw6bQKcXM9Lo6DzdyW1D36VR8JfxXU5a/lWugH0Ii4bntGkcTFlCxF2mSDbIW8
-	C5KJNP+66x7vlxewzx6Ha9vPZa3fxxM8=
-X-Gm-Gg: ASbGncvaTDXauHkrF4Z5YwDa87Ae8TVQFmHaasSvkvcoO+qlaFYG2vqBGEd5vJ/6NpD
-	neo55KePjMxVaWHy/0y4qLlKc7n1uOwebN1A0wzv6Cqj8wBBSfqwhKTolmHs6+v+VVOTNLLGvty
-	Gia55908hjQrLZe8OlvTO8BBjFnLDUOCR92NLY9D5AEV/k6u4NHlPOVV/qVQxXjx6zLfu5iHsX8
-	l2UXmmBwNIBwyJh1ydjzBI/kpOBxAt/v7JyFxR0wYNQVYTxjOphLrKZI/08
-X-Google-Smtp-Source: AGHT+IE4Og6jwiPBBmHNkCPbBDPgBPqP5LwHuX1iUxTwECiL+8Mx2MUFp14C8Hb8qOdMhIteAMZP/szUC0EtCxKPQzg=
-X-Received: by 2002:a05:6000:2dc3:b0:425:58d0:483b with SMTP id
- ffacd0b85a97d-425671ab837mr4385671f8f.45.1759588115404; Sat, 04 Oct 2025
- 07:28:35 -0700 (PDT)
+	s=arc-20240116; t=1759589157; c=relaxed/simple;
+	bh=jZC1BOtd0LyldamzCt8vT7MOrYp+3AuVfEqGHLUN6AI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yqy7PwGuqCwGPtp1pA22mj3N5avNKgC+aWkQ2LJbP6ozcRNIlZhP+vGtxG2Zo0BncUk3s+mr4LaedCZdTstMowwpRnARENSlWcqaHy1627xn5c9owZAYz6dndj3cAg0ciUQSwxwo4u1JKmHLjHq1C1HWJcx/khThFXgk6uFOs/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=E3CbVV53; arc=none smtp.client-ip=162.62.57.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1759588846;
+	bh=aLcQxDEB2zHHil1vKTJsBzjH+TWu7SDHe03d6zrJ1F8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=E3CbVV531YZ2G/rLUJxAQJaH95CGuiiCz97SBEdDLTLUAT6A0TQW+w1FRmMsVPR2J
+	 1yyyimZq9BGSbk2PjCK7XzYkvn6RbeoJ85L+tA7u0+7368FOVAF2rDPFBW+gDni22H
+	 +pQ0BbGBXbpb15+ZcSuZ5CethyCB6vX+Wh4WCXd4=
+Received: from [192.168.2.102] ([183.198.135.10])
+	by newxmesmtplogicsvrszc13-0.qq.com (NewEsmtp) with SMTP
+	id A2B218DE; Sat, 04 Oct 2025 22:40:43 +0800
+X-QQ-mid: xmsmtpt1759588843tnh7o3u37
+Message-ID: <tencent_0838BCA28C3E230A19B4094167455E1AA90A@qq.com>
+X-QQ-XMAILINFO: NojR6Ao/DkEDkg3c0+Z9uQofb6JONCqOnZ55W0B3MJjiZ4nNrtT9ThwZw0G71z
+	 m3pRzXB5tg1bagag7YBsNUy/lKZVWEC5A0QAA4QImROoN8Z88Syy+huqIrIpF/Im65jhFFMJUsmA
+	 JRJntPA3RJnxHqV6WrV8iNNNzT1u6tU51v7+tJdq627teD7csWzu7OinSpb4+5N6B6P2KMTGM4ZZ
+	 GXJIIY8dnUbmyq7ZIyK5IiAJ4YUX4iy9tDsBjoeB/8UaylanvAYbe8w5O1+HRMuFlc0JTtjRf53h
+	 /G3Le0MdGSFE/NEFJS05+7AtCdHaFIwL83yacIuIMwsos+KBN/941DTg2QmVdg3/yKf2opgssJJx
+	 uNb/L57pHo07JTaNexLeoblDM+N09DYdl6tzn+X1o6cTM3AZq67IXSeobIc3FWKwA3ApxWvuWNK5
+	 xNsHJcC8GHICiwo1RwyYEnM//8G6LfjFfO4Ls4Ia0aEJdlxB7hw6xmhgNL2k5z3ur1/e6vvyqe19
+	 4g9dptopDuXk+YdYsA/50ORB/mJWb6ucSRfQ28/8EXbKYRJ9hUXuD3O16bYXLNtE/ZuohtZYqBeL
+	 m8tN1k9tK5rN5awAkwGvkTR7h+bEV4rQYYwaneU6olk5SZdsWaqptXiHTsfsjBVv1ss3BgGFl5fc
+	 jkUGOcDo3gLiZV/yk0yPCWp7Flan6WlVHOs6mBC+0lGKxvKJiHxPra0FrQv1yQ4cN/ssCS+6OWDp
+	 e4WocwxlU76QXJ0QaukrYHH6p1pM2QI5A20xpNLKMr0+eMfrLen2Msr6BjPs6hD8e1PM0AkUj9oj
+	 KmBfRX9THEfm/q+iDGmR8yZ5Z7EDOGTW2aIzwb1n64UaFMFDwvYLyM1/hsHA3LZB1u//aMS43wLx
+	 NUDOuqSOn49oklEyaesafGfDzQ9OGsNX+8xVClJeOgS428Pq+OS52SbpwOFz/VC7l74ZD9E3FFo8
+	 EYWct3KU8Bi298xrSEmeJXMPugUfTRVqfdmC816DEw09erscW9r6YT940goDfy6L+nrWqvOQNEi/
+	 9CWS/TLJM2Lm04eu1Y5a+FK6QdLvRKmndsRkZXt0ZYX59daI++dQc4TvgggftfUXUpfMzsQQ==
+X-QQ-XMRINFO: MFN5R+/RXzhDMAgaz0rNTGk=
+X-OQ-MSGID: <48872fbc-e896-4b9a-8a4f-3b7bdb558eb8@foxmail.com>
+Date: Sat, 4 Oct 2025 22:40:42 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1759584052.git.rongtao@cestc.cn> <tencent_8AF4D15B4475031E2185ACDE4B1495995707@qq.com>
-In-Reply-To: <tencent_8AF4D15B4475031E2185ACDE4B1495995707@qq.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sat, 4 Oct 2025 07:28:24 -0700
-X-Gm-Features: AS18NWCncY86K82MEOsvI4_LR56kfq3c6aMGWJWk4LCNmAzvAbhcCXDAaeximk8
-Message-ID: <CAADnVQ+iERbZZ35CbPRamMqEu32ptEAXL0OQAhansfzBX+HDKQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_strcasestr,bpf_strncasestr kfuncs
-To: Rong Tao <rtoax@foxmail.com>
-Cc: Viktor Malik <vmalik@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Rong Tao <rongtao@cestc.cn>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_strcasestr,bpf_strncasestr
+ kfuncs
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Viktor Malik <vmalik@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Rong Tao <rongtao@cestc.cn>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)"
+ <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+References: <cover.1759584052.git.rongtao@cestc.cn>
+ <tencent_8AF4D15B4475031E2185ACDE4B1495995707@qq.com>
+ <CAADnVQ+iERbZZ35CbPRamMqEu32ptEAXL0OQAhansfzBX+HDKQ@mail.gmail.com>
+Content-Language: en-US
+From: "rtoax@foxmail.com" <rtoax@foxmail.com>
+In-Reply-To: <CAADnVQ+iERbZZ35CbPRamMqEu32ptEAXL0OQAhansfzBX+HDKQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, Oct 4, 2025 at 6:37=E2=80=AFAM Rong Tao <rtoax@foxmail.com> wrote:
+
+On 10/4/25 10:28 PM, Alexei Starovoitov wrote:
+> On Sat, Oct 4, 2025 at 6:37 AM Rong Tao <rtoax@foxmail.com> wrote:
+>> -__bpf_kfunc int bpf_strnstr(const char *s1__ign, const char *s2__ign, size_t len)
+>> +__bpf_kfunc int __bpf_strnstr(const char *s1, const char *s2, size_t len,
+>> +                                                         bool ignore_case)
+>>   {
+> Still __bpf_kfunc ?
+Sorry about that, i'll fix it right now.
 >
-> -__bpf_kfunc int bpf_strnstr(const char *s1__ign, const char *s2__ign, si=
-ze_t len)
-> +__bpf_kfunc int __bpf_strnstr(const char *s1, const char *s2, size_t len=
-,
-> +                                                         bool ignore_cas=
-e)
->  {
+> pw-bot: cr
 
-Still __bpf_kfunc ?
-
-pw-bot: cr
 
