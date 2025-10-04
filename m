@@ -1,106 +1,79 @@
-Return-Path: <bpf+bounces-70367-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70368-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BDBCBB880F
-	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 04:00:56 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC1FBB889D
+	for <lists+bpf@lfdr.de>; Sat, 04 Oct 2025 04:43:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC88A19C72AA
-	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 02:01:18 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 44B1C4F1AB8
+	for <lists+bpf@lfdr.de>; Sat,  4 Oct 2025 02:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0CF9278772;
-	Sat,  4 Oct 2025 02:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726572116F4;
+	Sat,  4 Oct 2025 02:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Xw4hpKXq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BC/FHygp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5640A2777F2
-	for <bpf@vger.kernel.org>; Sat,  4 Oct 2025 02:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E873234BA31
+	for <bpf@vger.kernel.org>; Sat,  4 Oct 2025 02:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759543251; cv=none; b=n8RRXxeQEXvynK6ZKD3MDCjnLC6pDcVA4sW3a+Fzp4KXd/ecsQjRB5ugdH5UH/FhBc7vU7k19Ki5k0FWHW9FMHPlmIao/bFiJ/bDaiMcnSA/kpt3P8S0ZYlrsL/3ub0csmd8x2h6Vvf+IFEsXolfj8T2pfTsXHs63dpsJmOousU=
+	t=1759545748; cv=none; b=lyjMKvBcQ44bW7P14M46lhrzRSxn3oS5INOhsBKbLYh5J4UCkSTUZI88RI4jkTzr+b/oQZwF9quEBsuGPQ8CnRtTbdm/gXASpXeNv/NWMPeylN+Yez00fjuFwp79Ffk4ojaco+hXkjLBQmj2MMv7rdqM5fn12kVhrM0SCMFf7zY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759543251; c=relaxed/simple;
-	bh=jrJAE+yo+55T40YTks85z53PnQfp5DevLHkYvHmgTnQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=jmu4GLQzgfoVbWsublryzaLZBTd4ootR9kcDFMpsCo1rgYgBA0hCKp/fwrYgqxam1PMXzlNYo0SJCENubKC5Z0ZvUa+akmfrHt47hf31lmUpSlK0MzUtcyBuJar5t/5a7hWM9A8/K8qshiQpr+hmlRQhaIsWKP8MM3KjjJ31ixM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Xw4hpKXq; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759543246;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jrJAE+yo+55T40YTks85z53PnQfp5DevLHkYvHmgTnQ=;
-	b=Xw4hpKXqFzlpYALq1quqLQ0CrgqfXLsoU+klxVxSFx/6BeI0RA/lStu0wl6FV1/Cac66YU
-	Z+tDA84oMUHOtigtgnpGL/AZK9FnTEflgh80gTwvNeYCAhyQ4P6Rm5sduIEaax3qyekls8
-	37UbTTk9UN02+a8ofiCmGlIuwdVJMUM=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,  Kumar Kartikeya
- Dwivedi <memxor@gmail.com>,  linux-mm <linux-mm@kvack.org>,  bpf
- <bpf@vger.kernel.org>,  Suren Baghdasaryan <surenb@google.com>,  Johannes
- Weiner <hannes@cmpxchg.org>,  Michal Hocko <mhocko@suse.com>,  David
- Rientjes <rientjes@google.com>,  Matt Bobrowski
- <mattbobrowski@google.com>,  Song Liu <song@kernel.org>,  Alexei
- Starovoitov <ast@kernel.org>,  Andrew Morton <akpm@linux-foundation.org>,
-  LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 01/14] mm: introduce bpf struct ops for OOM handling
-In-Reply-To: <a76ad1e9-07d5-4ba1-83e4-22fe36a32df0@linux.dev> (Martin KaFai
-	Lau's message of "Tue, 2 Sep 2025 15:30:04 -0700")
-References: <20250818170136.209169-1-roman.gushchin@linux.dev>
-	<20250818170136.209169-2-roman.gushchin@linux.dev>
-	<CAP01T76AUkN_v425s5DjCyOg_xxFGQ=P1jGBDv6XkbL5wwetHA@mail.gmail.com>
-	<87ms7tldwo.fsf@linux.dev>
-	<1f2711b1-d809-4063-804b-7b2a3c8d933e@linux.dev>
-	<87wm6rwd4d.fsf@linux.dev>
-	<ef890e96-5c2a-4023-bcb2-7ffd799155be@linux.dev>
-	<CAADnVQ+LGbXXHHTbBB9b-RjAXO4B6=3Z=G0=7ToZVuH61OONWA@mail.gmail.com>
-	<87iki0n4lm.fsf@linux.dev>
-	<a76ad1e9-07d5-4ba1-83e4-22fe36a32df0@linux.dev>
-Date: Fri, 03 Oct 2025 19:00:38 -0700
-Message-ID: <877bxb77eh.fsf@linux.dev>
+	s=arc-20240116; t=1759545748; c=relaxed/simple;
+	bh=Z0rWcx86a+wMnipgpZixaiPtzEBDHRwR3fDIm+sF7XE=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=MAefEZGdjb7dRjPE2dKO+7FBxSGhGFBe8YLm6eYssVqDMrjBMQNty1Wxvkn+5iTXF9HlOhY6x4iXiEMR59zfvkENAFGV7qfGMTBw8poolC+bFc5ypCNdSIpA1SpzDpShqKMP7OhnqDDM+eR53OC03aoVR3xiSf3MEFDf+OXKvYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BC/FHygp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C58CAC4CEF5;
+	Sat,  4 Oct 2025 02:42:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759545747;
+	bh=Z0rWcx86a+wMnipgpZixaiPtzEBDHRwR3fDIm+sF7XE=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=BC/FHygp9TaWkeQxHIjR5g8mlDj20g88nM6gQ1o6WFt/GMOnhS29Az//Syg6WHUis
+	 neHuo5B9QRoKdRVQxVVTYpBovkk5OwwGql6qZkuJT/yC8nlIpoqt3Xsv/Ky3gyMcB+
+	 X+0vpEMkZrZbiqJcrYVAT2On2HkR6foDXEt3r81qvy9LI/WWOVUs9BW0r5pOXkAE8a
+	 vh6CoO7lrH3/cEzALtCV+2+8CgRfFEHsJzYufDNy4XJRD8+VovzDNSSZsXInbtPL5e
+	 BgMIjDv2GMyc4r/5mqEIfWpKam5ZWAzS+LZKCZ7lSitANq2fSB8xxAlelbGCNHTjhS
+	 lK25jfQwXA+eg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33EE039D0C1A;
+	Sat,  4 Oct 2025 02:42:20 +0000 (UTC)
+Subject: Re: [GIT PULL] BPF fixes for 6.18-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20251002232448.57255-1-alexei.starovoitov@gmail.com>
+References: <20251002232448.57255-1-alexei.starovoitov@gmail.com>
+X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20251002232448.57255-1-alexei.starovoitov@gmail.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+X-PR-Tracked-Commit-Id: 63d2247e2e37d9c589a0a26aa4e684f736a45e29
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cbf33b8e0b360f667b17106c15d9e2aac77a76a1
+Message-Id: <175954573878.166651.716292636038518748.pr-tracker-bot@kernel.org>
+Date: Sat, 04 Oct 2025 02:42:18 +0000
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: torvalds@linux-foundation.org, bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
 
-Martin KaFai Lau <martin.lau@linux.dev> writes:
+The pull request you sent on Thu,  2 Oct 2025 16:24:48 -0700:
 
-> On 9/2/25 10:31 AM, Roman Gushchin wrote:
->> Btw, what's the right way to attach struct ops to a cgroup, if there is
->> one? Add a cgroup_id field to the struct and use it in the .reg()
->
-> Adding a cgroup id/fd field to the struct bpf_oom_ops will be hard to
-> attach the same bpf_oom_ops to multiple cgroups.
->
->> callback? Or there is something better?
->
-> There is a link_create.target_fd in the "union bpf_attr". The
-> cgroup_bpf_link_attach() is using it as cgroup fd. May be it can be
-> used here also. This will limit it to link attach only. Meaning the
-> SEC(".struct_ops.link") is supported but not the older
-> SEC(".struct_ops"). I think this should be fine.
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
 
-I thought a bit more about it (sorry for the delay):
-if we want to be able to attach a single struct ops to multiple cgroups
-(and potentially other objects, e.g. sockets), we can't really
-use the existing struct ops's bpf_link.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cbf33b8e0b360f667b17106c15d9e2aac77a76a1
 
-So I guess we need to add a new .attach() function beside .reg()
-which will take the existing link and struct bpf_attr as arguments and
-return a new bpf_link. And in libbpf we need a corresponding new
-bpf_link__attach_cgroup().
+Thank you!
 
-Does it sound right?
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
