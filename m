@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-70402-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70403-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EA16BBCC43
-	for <lists+bpf@lfdr.de>; Sun, 05 Oct 2025 23:22:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4D97BBCC49
+	for <lists+bpf@lfdr.de>; Sun, 05 Oct 2025 23:22:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 353853B8A94
-	for <lists+bpf@lfdr.de>; Sun,  5 Oct 2025 21:22:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED8E9189564E
+	for <lists+bpf@lfdr.de>; Sun,  5 Oct 2025 21:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218082BE03D;
-	Sun,  5 Oct 2025 21:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9E62BEC53;
+	Sun,  5 Oct 2025 21:22:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IXg33RJl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SepvnjU1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3662BDC19
-	for <bpf@vger.kernel.org>; Sun,  5 Oct 2025 21:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7476F2BE620
+	for <bpf@vger.kernel.org>; Sun,  5 Oct 2025 21:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759699344; cv=none; b=qcBDMTukIUMXDjZvzQrihr9wxjB4VN02VPRfMj9dh5a9OHX7p82tR1oDdRiG9EMaOzAvQX9ofjjsVeJcu9BIK9hYt60FUAkRPhCwczaVA1/WEUuDD3Gt/u//JzDgoLr7ZhmG9ycueZV9u/yZwNU9p4p9GjoSWc/MkGWvIb/vqFM=
+	t=1759699347; cv=none; b=m/QIQWGISJgeZJXl9mBpTWK4Za5Szkw7JqNH4rhsyMajEQ4FaMEZt5G+gU8jzQ98TgmFwzJARkErwtCWN+eYumy1li94cwUmxhbsH/O9YcYbCWMtdU27tPdEeXN1ZH5hxB0RTwEMx2ixuAl0/cJXCK6ELREjXt+lfgTxbd0gjUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759699344; c=relaxed/simple;
-	bh=/luZGaDcmbSsI2ELFDFE/EBkhdco1hXagnVGpUVsYwI=;
+	s=arc-20240116; t=1759699347; c=relaxed/simple;
+	bh=jjogxjWTo8LEEeITCvVJ5lej7lh2270zJAspkUYjJfk=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=AbgTi1eWY00dodRMtw7kNE9ot0/8m6cJGwYYf5U++5s6X5sz717+IvA30tSeKrNek7sXFzk8WpAXLHQPPDeUZXNinuPQ3GEoy8zDMmZC7czswyRtF2fdD6/02U9/nfUXyb+f5wnOyXGKNAP21jddmFN6+8zljqo4xg/lpCg+sN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IXg33RJl; arc=none smtp.client-ip=209.85.215.202
+	 To:Content-Type; b=nqW42HgBH3+1b5IwFMsM7yfeN7u9Qrwqa7dvt8x+VttVPvxPq6ye4So/yMcaFFbzfgVXQa5OQ/mU33z+euaF7JgMFrDKoQ+na3bchFx9yLVU1FNGkmC2Ow8dM8lClhgHbtwCFtLd6T6BOTCnxVMo0tnJHUNmqpfbL68TJsvTygM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SepvnjU1; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-b551338c2c9so2436604a12.1
-        for <bpf@vger.kernel.org>; Sun, 05 Oct 2025 14:22:23 -0700 (PDT)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-267fa90a2fbso56916755ad.1
+        for <bpf@vger.kernel.org>; Sun, 05 Oct 2025 14:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759699342; x=1760304142; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1759699345; x=1760304145; darn=vger.kernel.org;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hHVoU7VdAErJHQsuyUDkFaSuPa656SpDfPesPL1Iw7A=;
-        b=IXg33RJlj48b2bkYOpkR0XWqYzep0REFMiUaUYvH9UfvnRQy6a2KIrV1R+tsyO60Yg
-         FNKDIFwQpUv7L8CX/e1Oh0HtAeezREx6kOil8bB00vd0unfWmxZ/NOEMxAwTJpUJsNRw
-         1SnBASv9l7OlI8NKalSqK5KNYGx7KECqY5/HQ9S2OT7zoj2dB9Yt9hNGHRa77+aks4nz
-         WnCmxb6h74FjAFyQVA/Xe4gqrQM9HOmEkFRDGo0nw3jn87wezKvI2qNwT7gYspywh3N/
-         /jyWAwZ/weLeDXTasBTTMBCRt5i5tM2PAVe3m95imxNvC4hVxlvQIzDky8LmWSY3ojBq
-         uwLQ==
+        bh=zr9vg9+dbl377j7bj7cPlJqbhOg0YG22m54UFPy9WZs=;
+        b=SepvnjU1Ud8J2ZZQxQGdPV2bc4S1FGHbD6D17/aWCpSPJ9ihEVF2KZDI5M05Zpb0zs
+         t49rH4bREqOGMzHo4aB3BHweQtb/jDcphq+wnJN9S2+WUuVxw8xLPRKN5jnpg6fI36sX
+         6+TvrrIxTtUKHwoRT+sXESumjFMhp2rSfI72r+tHEYG0BHlgf/KulgizVf14sUlPCUQR
+         Z8Ll5MHe7bU2QWRCq+1DIxieFto/DMiQYoZaVix7u1optdGKfzHfuv546+dE5Uqi8GPs
+         iiTKywyRcQEqqZxBI7lvEtCx1Z3lO9TwU1H7X98/PWUdO1dj0thQoNc7h22w5FuKoLsy
+         xMsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759699342; x=1760304142;
+        d=1e100.net; s=20230601; t=1759699345; x=1760304145;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hHVoU7VdAErJHQsuyUDkFaSuPa656SpDfPesPL1Iw7A=;
-        b=D3DFNYd+mTbQzLHg/tgiWuOtkEutiRJTKr7Yrc8OSd6pL2AdBzyaiclTNd6rf0o/ff
-         jkHtk/7oGIMZ2hbtmeuvkGSOkwA/H8kxb7I6LXnJwLELmEjfP4glQug1oKJHb8f1PVcx
-         MJ4f9/XUbeKluh1YGxzybfu2jFuS8pSV0IP05V7BphVRYk/4zYs451KEpnuQ8ooc0YGD
-         XkHX+oPObzlcR+Vs2v0Ov4spKU0/S/fC2UHZ//WsBsU983f+4XGf/0hCh6zUYEvHtRiI
-         /c0V6XnxIrm7NAlCOMxi9zhoUIidt3Sh/caJMSAD/xrOmA8HVJnsutNN1gYbp4H1qho/
-         G/8A==
-X-Forwarded-Encrypted: i=1; AJvYcCVIrfO8tAkkGDbG7MqlVZe3k4xSOOYIInZGhuscMfeh/jFmHd4cfYV/8+HpIaFlb2gHovk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIxTd/4dm1YCkQucMfOJmqmBTnnF6uJSsv2XeogEQsCkKB5Fuz
-	/lYL+Dl+7T44/C5Vf98IkxKKoCBlibphgRnJjxeSj4XULWF6S1G3MpWvsIbhfKxZm0RKSL5uS0t
-	d3weEfdZv1g==
-X-Google-Smtp-Source: AGHT+IF9xACFD4NCBC8YA4+1DxHgAs4tVBez0mS1xBu199M+awLsaSCkEQ1/ioP2OUdMojXU72RjQE/JWxIn
-X-Received: from pjbpf16.prod.google.com ([2002:a17:90b:1d90:b0:330:6c04:207])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a20:e211:b0:240:1a3a:d7bc
- with SMTP id adf61e73a8af0-32b61dff87emr14700817637.3.1759699342575; Sun, 05
- Oct 2025 14:22:22 -0700 (PDT)
-Date: Sun,  5 Oct 2025 14:22:02 -0700
+        bh=zr9vg9+dbl377j7bj7cPlJqbhOg0YG22m54UFPy9WZs=;
+        b=WZAWksgTI3FNm50pA2BPYv26RcdVm8///W4k2ZbU2bBA8Jq/HFOJYjyv2GlImL4glw
+         a1DHTHXWbuwN2KY3btRJ9n5LpSkHFSoZ7MRfYx2+EMiwmbspbTFmbO2gfNlhF5hh/QP4
+         EgIJYoQqm7o+sOKM4f+IPu5kjf5wK8IyVdIJMblJOWwLTNFqtNL+bxrqsqlds3/IUVtn
+         9Sn2aQf+pnLlI1i73VSK9fbohbvcbmY3lhdZaLL30Saj/B+5gKyCtdLQmjVzfKMLnuJC
+         T7rZGqvcSpai13DLRdryEobeIXLzwByxyOLr2p+PrFKICMA1sytg1pjrknawB1/yA27m
+         Bh3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWX+qLLHVJdY2hEz1hi+0P2468WSrJEKTgUMDgzis2jJnwMX3Npgz0Zs2FXMzNHYVEvMUA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/txxctxs4AqFa7L/obl7f5VcZDp2/fE76B6t80PgbQx2wvnY4
+	mMNGZAsAgOn50njX5JIY/0GCnwejCODt7U5f+CorOK8wM8oEUGV24tVwfTb/SnJd4tw1Gm1YtkH
+	VxYy+b6XKpA==
+X-Google-Smtp-Source: AGHT+IFEaM+mFQzGCobgqNknXJ7y1TlfovFXjd/cXa5mwCMiuAzlKf2cDvpg0Dz2Z/gtCSnKr3ofcMi/Sj1q
+X-Received: from pjbqo8.prod.google.com ([2002:a17:90b:3dc8:b0:32e:e06a:4668])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:2c0e:b0:27e:f03e:c6b7
+ with SMTP id d9443c01a7336-28e8d038b9cmr181830185ad.10.1759699344812; Sun, 05
+ Oct 2025 14:22:24 -0700 (PDT)
+Date: Sun,  5 Oct 2025 14:22:03 -0700
 In-Reply-To: <20251005212212.2892175-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251005212212.2892175-1-irogers@google.com>
 X-Mailer: git-send-email 2.51.0.618.g983fd99d29-goog
-Message-ID: <20251005212212.2892175-2-irogers@google.com>
-Subject: [PATCH v7 01/11] perf check: Add libLLVM feature
+Message-ID: <20251005212212.2892175-3-irogers@google.com>
+Subject: [PATCH v7 02/11] perf llvm: Reduce LLVM initialization
 From: Ian Rogers <irogers@google.com>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
 	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>, 
@@ -94,38 +94,82 @@ To: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead
 	Song Liu <song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-Advertise when perf is built with the HAVE_LIBLLVM_SUPPORT option.
+Move the 3 LLVM initialization routines to be called in a single
+init_llvm function that has its own bool to avoid repeated
+initialization. Reduce the scope of triplet and avoid copying strings
+for x86.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/Documentation/perf-check.txt | 1 +
- tools/perf/builtin-check.c              | 1 +
- 2 files changed, 2 insertions(+)
+ tools/perf/util/llvm.c | 31 ++++++++++++++++++++-----------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-check.txt b/tools/perf/Documentation/perf-check.txt
-index ee92042082f7..4c9ccda6ce91 100644
---- a/tools/perf/Documentation/perf-check.txt
-+++ b/tools/perf/Documentation/perf-check.txt
-@@ -56,6 +56,7 @@ feature::
-                 libcapstone             /  HAVE_LIBCAPSTONE_SUPPORT
-                 libdw-dwarf-unwind      /  HAVE_LIBDW_SUPPORT
-                 libelf                  /  HAVE_LIBELF_SUPPORT
-+                libLLVM                 /  HAVE_LIBLLVM_SUPPORT
-                 libnuma                 /  HAVE_LIBNUMA_SUPPORT
-                 libopencsd              /  HAVE_CSTRACE_SUPPORT
-                 libperl                 /  HAVE_LIBPERL_SUPPORT
-diff --git a/tools/perf/builtin-check.c b/tools/perf/builtin-check.c
-index 8c0668911fb1..9ce2e71999df 100644
---- a/tools/perf/builtin-check.c
-+++ b/tools/perf/builtin-check.c
-@@ -48,6 +48,7 @@ struct feature_status supported_features[] = {
- 	FEATURE_STATUS("libcapstone", HAVE_LIBCAPSTONE_SUPPORT),
- 	FEATURE_STATUS("libdw-dwarf-unwind", HAVE_LIBDW_SUPPORT),
- 	FEATURE_STATUS("libelf", HAVE_LIBELF_SUPPORT),
-+	FEATURE_STATUS("libLLVM", HAVE_LIBLLVM_SUPPORT),
- 	FEATURE_STATUS("libnuma", HAVE_LIBNUMA_SUPPORT),
- 	FEATURE_STATUS("libopencsd", HAVE_CSTRACE_SUPPORT),
- 	FEATURE_STATUS_TIP("libperl", HAVE_LIBPERL_SUPPORT, "Deprecated, use LIBPERL=1 and install perl-ExtUtils-Embed/libperl-dev to build with it"),
+diff --git a/tools/perf/util/llvm.c b/tools/perf/util/llvm.c
+index ddc737194692..2356778955fe 100644
+--- a/tools/perf/util/llvm.c
++++ b/tools/perf/util/llvm.c
+@@ -74,6 +74,17 @@ void dso__free_a2l_llvm(struct dso *dso __maybe_unused)
+ 	/* Nothing to free. */
+ }
+ 
++static void init_llvm(void)
++{
++	static bool init;
++
++	if (!init) {
++		LLVMInitializeAllTargetInfos();
++		LLVMInitializeAllTargetMCs();
++		LLVMInitializeAllDisassemblers();
++		init = true;
++	}
++}
+ 
+ #if defined(HAVE_LIBLLVM_SUPPORT)
+ struct find_file_offset_data {
+@@ -184,7 +195,6 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+ 	u64 len;
+ 	u64 pc;
+ 	bool is_64bit;
+-	char triplet[64];
+ 	char disasm_buf[2048];
+ 	size_t disasm_len;
+ 	struct disasm_line *dl;
+@@ -197,26 +207,25 @@ int symbol__disassemble_llvm(const char *filename, struct symbol *sym,
+ 	if (args->options->objdump_path)
+ 		return -1;
+ 
+-	LLVMInitializeAllTargetInfos();
+-	LLVMInitializeAllTargetMCs();
+-	LLVMInitializeAllDisassemblers();
+-
+ 	buf = read_symbol(filename, map, sym, &len, &is_64bit);
+ 	if (buf == NULL)
+ 		return -1;
+ 
++	init_llvm();
+ 	if (arch__is(args->arch, "x86")) {
+-		if (is_64bit)
+-			scnprintf(triplet, sizeof(triplet), "x86_64-pc-linux");
+-		else
+-			scnprintf(triplet, sizeof(triplet), "i686-pc-linux");
++		const char *triplet = is_64bit ? "x86_64-pc-linux" : "i686-pc-linux";
++
++		disasm = LLVMCreateDisasm(triplet, &storage, /*tag_type=*/0,
++					  /*get_op_info=*/NULL, symbol_lookup_callback);
+ 	} else {
++		char triplet[64];
++
+ 		scnprintf(triplet, sizeof(triplet), "%s-linux-gnu",
+ 			  args->arch->name);
++		disasm = LLVMCreateDisasm(triplet, &storage, /*tag_type=*/0,
++					  /*get_op_info=*/NULL, symbol_lookup_callback);
+ 	}
+ 
+-	disasm = LLVMCreateDisasm(triplet, &storage, 0, NULL,
+-				  symbol_lookup_callback);
+ 	if (disasm == NULL)
+ 		goto err;
+ 
 -- 
 2.51.0.618.g983fd99d29-goog
 
