@@ -1,81 +1,82 @@
-Return-Path: <bpf+bounces-70419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75FC0BBDED6
-	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 13:54:33 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF7CBBE2B9
+	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 15:21:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 67DC94EA069
-	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 11:54:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 822F94EC340
+	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 13:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6AF271454;
-	Mon,  6 Oct 2025 11:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA52F2C327D;
+	Mon,  6 Oct 2025 13:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lBhjTOb1"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nwJi8nhR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F0034BA3A
-	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 11:54:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020A42C2377;
+	Mon,  6 Oct 2025 13:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759751669; cv=none; b=H4JonRADtv1pOJbTdnmdg/V2MpsIvi6u46tdWLDGmnChE3koACBNvYTB/5JkcY2w17yXSOSD1Nqv9HQPKIljzrdeKY219GA1MSuRw1XcAPYG9w/U9UUpMSNFatRJZEOlswh0vMopQWgsdBoIjUN+eotvFnuM5k/D5dIMB3FBWdk=
+	t=1759756865; cv=none; b=SDWi973iop7w6JsR9j28t2KsmNRfuDOrPiCIPEtA/qDEEAftu9p+86jhySqynnnsEe5/9gWBuUcerMAsrFwSP/dvlYJ1ShrMDUxr7EuMMGKGJTrOE6tdP9ghsIHG5fLwIo14pdz6eybpOCeCrF/7Nx9Ns96vAyb3S1ItYLwd2R8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759751669; c=relaxed/simple;
-	bh=i9uqsNT8rzXv/9EvNvLZhyocTOen2CGKBN8AJEgArZs=;
+	s=arc-20240116; t=1759756865; c=relaxed/simple;
+	bh=/3uYFPThRd7f5dDBGRig/25KVUhGsPZAgU+MWJbb9iY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wp5AhjLBhVwZQlsHL8pKHvetMJlh3gUvUej8l0idWXVoNYtSgFrk6PAc8F/YTN/Rtq1CORxI3p2R8IF3zG1iPOCDqdb+TeCG/z7e1IPZWRX80M9nTqXDRePr97mq4m5AiO802AsAV2XquijK75D86et8LOB+oZCi1q6+cJukNyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lBhjTOb1; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-46e3af7889fso29558165e9.2
-        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 04:54:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759751666; x=1760356466; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+m60T0hNEVBmnWG3wzqmTKTjrvxrAYcamiIcA8lZgnA=;
-        b=lBhjTOb1OZrfbz8I9btz0vfyJJA0wzndKVORyHbEavJhIDq0bDMewQLPMAWc0uk4U+
-         EBCx4ZznYUJUVLglX3lsQ3dYEex03aLDehgp8tks+MNpaDLYyS0Y7DhVosvHUsDJl66O
-         tWFBRpMGhIAI08x5L9Ai+s+V4bX3LRtTFBWJEDfqTkblUnsv+gOZmCoHNRfUFlvEtFbO
-         OFHJP/JY/73o1RMP4ltzY3Gi169yNscAEUSi2Wf7n7rufkHSaPp2B3PWrBX6t+3OM5n+
-         hRoOSfg/SwMC4XsbcB1P769Jcl3TwlSbczlv5qFplxXbx7+7klXCkQhTe36BT6IzGd+C
-         oVKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759751666; x=1760356466;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+m60T0hNEVBmnWG3wzqmTKTjrvxrAYcamiIcA8lZgnA=;
-        b=JCWhOHXbg8JsKnIm6aESJkRjuTnatTe6jw+UA/psEVq9/08IrvSgfG9op2xjUzUh/+
-         MR+dy6ezEJSVzbemi/i+3KOaAGUKrmK5JmdFUBBf1YYniED8T+NRNRMIDKGvYUr7tCi7
-         bbkVISFQGUI37Db0z0fs6YU5rnAO9CRez+Fa5DC94NJ7blWu+x5iMTE9+IDRNdAnpCQm
-         q6kl/OInsVVuLVTeoxt8YmPDea+q7ljsbbcAH7kA1EjD89vb8cbv1vUotJv0f9uXFdPR
-         Rz0IO2ny34lS30KOVN8qe3WBbszWpRUNfTtJwT9KWNkCW0xUjutW9853pVyZojJonEwm
-         hdwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVL03ljmx1AOseeSFyzAj3JfZT/0GPIhWgfckgSzP9h2/AEmAteOpSgOq3NXca8GGVMR7k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyStJzUHdmSP1EKdQYkKbPMTkQXobWOxag8eTW1JBJA1hBc83hk
-	f4BFGAcJxbNSiLkGIeRUuR/ahL8Lc4fsdmV2ks+MWRSJ1R72Pu7ejVW3
-X-Gm-Gg: ASbGncsuJi5KhhLDS4z6nbohWRZT651kgGs+V375q9vFcCdXBmQ9XJ9OlE2N30p3hgY
-	SQLw4nNMRA0v/SIxxbz++W6PKs9Mjsc5PI9s10UK13muK9Zg4MtHHDh/PLX8EEH+TtidUYRBFpH
-	wfok6JNc+RErkUBeosxK9vw+3r4YOGXwbtx8tbFiaYS0VOEvaVzjRiOlhUN87dC3omTzwQ9clFk
-	3rqas5NFPdtufCMPSdSkDYlVG7R5t4k3IxW6SoH3GNhDwlJ0DKFjpbAlsLb+KcS8YHJTkhO/dta
-	lEHl6SsdzMXGCmiUtkBdr2U/JL+5+IHT2n53nLLJoPMbgieqvGoVr8K03wJXrog7tyAKv0csLeL
-	K5OpyifFb6yTpjZM/+6fM2uADdw5/eqhAm8G8MyN5l4ifQDgj+AvPOOuatJohyFbd/VmqfHRRNB
-	IOIDL3iFs=
-X-Google-Smtp-Source: AGHT+IFXX9iXDoIIpGAL+MbUKNzImwWdEgRUDmsQT3SjAREz3WuHSAOyVUAjvZt9CCz5Y3eL+ONSpg==
-X-Received: by 2002:a05:600c:4fc6:b0:46c:adf8:c845 with SMTP id 5b1f17b1804b1-46e71124395mr97653725e9.16.1759751665573;
-        Mon, 06 Oct 2025 04:54:25 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1126:4:7da0:ba20:3ec:edc7? ([2620:10d:c092:500::5:6287])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e72359e0asm161986165e9.12.2025.10.06.04.54.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Oct 2025 04:54:25 -0700 (PDT)
-Message-ID: <1b1c9d10-efff-4eaf-8ff3-0d4ff6e24eb1@gmail.com>
-Date: Mon, 6 Oct 2025 12:54:22 +0100
+	 In-Reply-To:Content-Type; b=mV6nUbtad/P6pY22kVnhtocgPaIOeFYiIeC2Hlw3vpZiXC4lakp4+ok//X14Ch3OKlh/2LSpGbnBJO80Wfg9ifuZy2MxZqtl3S7KGKOvpPOWFZ/2IZs2262rCZGcIQIWhDKCH3xwrECVmURbbEVmlxlB5qj1cA2XIxMle1efRbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nwJi8nhR; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5967RPwa007333;
+	Mon, 6 Oct 2025 13:20:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=Adyqo2
+	RDwH7Ji7GzTgMHXn7nNzgmOFeaUC9MXOMqYWQ=; b=nwJi8nhRYJhBd+wR+MBQEb
+	d1naO4IL/m8uyNsy3cYmE2TE2Cqc2pIhpnUEfdAEALgPWg/xouAxVDKCoZRgcsUM
+	2o2OCdSX9qfPzDBurB15letIjfVwd66MQNC/AQgdRRKg0y7Lyw5vdouy9mP8xYUh
+	M8aYGL4fjXKLFveLCXgKZSGiFqCRmt1IpfDyzMUN4qV6zs6fTnxuzpSgiNlxi8Uk
+	14Mdv7h2hIOvyS9lLogqMIJqk2bKX7q1hFAZXefjiX17PRjynONzaJVNAMgZiXga
+	mKmlHRbErVpAO4Shd49DSIQgSbaA5pNNe2dlo47z/9oC8210NMnggIYi8F2fI6hw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49js0s9d5p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 06 Oct 2025 13:20:29 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 596DIfI4026620;
+	Mon, 6 Oct 2025 13:20:28 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49js0s9d5k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 06 Oct 2025 13:20:28 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 596DCq4S028041;
+	Mon, 6 Oct 2025 13:20:27 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 49kewmx54p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 06 Oct 2025 13:20:27 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 596DKPhY10289608
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 6 Oct 2025 13:20:25 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF31220043;
+	Mon,  6 Oct 2025 13:20:25 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5230420040;
+	Mon,  6 Oct 2025 13:20:21 +0000 (GMT)
+Received: from [9.43.4.184] (unknown [9.43.4.184])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  6 Oct 2025 13:20:21 +0000 (GMT)
+Message-ID: <17f49a63-eccb-4075-91dd-b1f37aa762c7@linux.ibm.com>
+Date: Mon, 6 Oct 2025 18:50:20 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,68 +84,68 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 10/10] selftests/bpf: add file dynptr tests
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
- kernel-team@meta.com, memxor@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com>
- <20251003160416.585080-11-mykyta.yatsenko5@gmail.com>
- <47e2812f633ad990f6d1a38234d99bc1e6c3bd87.camel@gmail.com>
+Subject: Re: [PATCH] powerpc64/bpf: support direct_call on livepatch function
+To: Naveen N Rao <naveen@kernel.org>
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>, Viktor Malik <vmalik@redhat.com>,
+        live-patching@vger.kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joe Lawrence
+ <joe.lawrence@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, linux-trace-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>
+References: <20251002192755.86441-1-hbathini@linux.ibm.com>
+ <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
 Content-Language: en-US
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-In-Reply-To: <47e2812f633ad990f6d1a38234d99bc1e6c3bd87.camel@gmail.com>
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=EqnfbCcA c=1 sm=1 tr=0 ts=68e3c21d cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=DZLZDooBFCjsWUrdwfsA:9
+ a=QEXdDO2ut3YA:10 a=nl4s5V0KI7Kw-pW0DWrs:22 a=pHzHmUro8NiASowvMSCR:22
+ a=xoEH_sTeL_Rfw54TyV31:22
+X-Proofpoint-GUID: 9bb_aLzmcPSvXKCGBvozPZOBFqkT_dAR
+X-Proofpoint-ORIG-GUID: D8iz1VRdcHOatwH3KohDk0_uNtOhiBB_
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDAzMDIwMSBTYWx0ZWRfX7YUmjwQnbUqn
+ HhX64a7FtyNfRjw7FAh71FGVGr2iK2omaWPyAloKuVOkG4qnZTq05EOUKkDy46nMvPX+0GdLUsC
+ iJCQHHunmA7M4C8/a3q8Ewpl83hrxCagjLEsIvZ6hFXT4fOMM7m8yVgqeeMMcMpTyR/fY+F9d4R
+ u1V76Fligboasrgt7YTbSMuDeqOJszb4y1hLy5ASJnOk5UohnYja5NyJuwnbpXrxFoagzG2CaLp
+ O88T2ZCPLmgbm2Lk/gaSA3DDRnr9Yp9jOW/ATQHH9ESlp9KcEPXZHCHzZyNVAz7oupILU4ggrkj
+ EGlz3YZaTXElefqikE0AAXp2QCwHpGinhLyDEOy1kPNXWVUGQjeTL/KTGlCWgm2HG7oUFlMJ9vS
+ YVWW7Gvb3N1asuzkYinYMNStadk+Tg==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-06_04,2025-10-02_03,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 malwarescore=0 impostorscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2509150000 definitions=main-2510030201
 
-On 10/3/25 23:24, Eduard Zingerman wrote:
-> On Fri, 2025-10-03 at 17:04 +0100, Mykyta Yatsenko wrote:
->
-> [...]
->
->> diff --git a/tools/testing/selftests/bpf/progs/file_reader.c b/tools/testing/selftests/bpf/progs/file_reader.c
->> new file mode 100644
->> index 000000000000..9dd9a68f3563
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/file_reader.c
-> Do we really need an example of ELF parsing in selftests?
-> Maybe just stick to smaller test cases, exercising specific behaviors?
-This may be a good idea, I implemented ELF parsing as a proof of concept,
-to make sure we reach the goal.
-For the selftests, maybe just verifying that the contents of the
-file seen in BPF is the same as userspace is good enough.
->
-> [...]
->
->> diff --git a/tools/testing/selftests/bpf/progs/file_reader_fail.c b/tools/testing/selftests/bpf/progs/file_reader_fail.c
->> new file mode 100644
->> index 000000000000..449c4f9a1c74
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/file_reader_fail.c
-> [...]
->
->> +static long process_vma_unreleased_ref(struct task_struct *task, struct vm_area_struct *vma,
->> +				       void *data)
->> +{
->> +	struct bpf_dynptr dynptr;
->> +
->> +	if (!vma->vm_file)
->> +		return 1;
->> +
->> +	err = bpf_dynptr_from_file(vma->vm_file, 0, &dynptr);
->> +	return err ? 1 : 0;
->> +}
->> +
->> +SEC("fentry.s/" SYS_PREFIX "sys_nanosleep")
->> +__failure __msg("Unreleased reference id=") int on_nanosleep_unreleased_ref(void *ctx)
->> +{
->> +	struct task_struct *task = bpf_get_current_task_btf();
->> +
->> +	bpf_find_vma(task, (unsigned long)user_ptr, process_vma_unreleased_ref, NULL, 0);
-> Why testing this via callback?
->
->> +	return 0;
->> +}
-> [...]
 
+
+On 06/10/25 1:22 pm, Naveen N Rao wrote:
+> On Fri, Oct 03, 2025 at 12:57:54AM +0530, Hari Bathini wrote:
+>> Today, livepatch takes precedence over direct_call. Instead, save the
+>> state and make direct_call before handling livepatch.
+> 
+> If we call into the BPF trampoline first and if we have
+> BPF_TRAMP_F_CALL_ORIG set, does this result in the BPF trampoline
+> calling the new copy of the live-patched function or the old one?
+
+Naveen, calls the new copy of the live-patched function..
+
+- Hari
 
