@@ -1,151 +1,204 @@
-Return-Path: <bpf+bounces-70420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAF7CBBE2B9
-	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 15:21:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C07E2BBE465
+	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 16:04:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 822F94EC340
-	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 13:21:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0C443B5B93
+	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 14:04:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA52F2C327D;
-	Mon,  6 Oct 2025 13:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326E32D0634;
+	Mon,  6 Oct 2025 14:04:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nwJi8nhR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="llABVwdP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020A42C2377;
-	Mon,  6 Oct 2025 13:21:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF07B3770B
+	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 14:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759756865; cv=none; b=SDWi973iop7w6JsR9j28t2KsmNRfuDOrPiCIPEtA/qDEEAftu9p+86jhySqynnnsEe5/9gWBuUcerMAsrFwSP/dvlYJ1ShrMDUxr7EuMMGKGJTrOE6tdP9ghsIHG5fLwIo14pdz6eybpOCeCrF/7Nx9Ns96vAyb3S1ItYLwd2R8=
+	t=1759759457; cv=none; b=PTRLwQvnyEr0Ky9I+SJecD7UARpdu9XpvbjjKFeD9nd8U0in/zhtVcOkSPJBLP67PGrR65DKG2ja21PHk8mJfXZI4+AHBbz6WPIR39Z2H54PFaKenOHW5ldKmZTRVJRkaEkvRY2pcfRDJqcMVyGU/7KGrLiUGKRQrJV0EAnfS5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759756865; c=relaxed/simple;
-	bh=/3uYFPThRd7f5dDBGRig/25KVUhGsPZAgU+MWJbb9iY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mV6nUbtad/P6pY22kVnhtocgPaIOeFYiIeC2Hlw3vpZiXC4lakp4+ok//X14Ch3OKlh/2LSpGbnBJO80Wfg9ifuZy2MxZqtl3S7KGKOvpPOWFZ/2IZs2262rCZGcIQIWhDKCH3xwrECVmURbbEVmlxlB5qj1cA2XIxMle1efRbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nwJi8nhR; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5967RPwa007333;
-	Mon, 6 Oct 2025 13:20:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=Adyqo2
-	RDwH7Ji7GzTgMHXn7nNzgmOFeaUC9MXOMqYWQ=; b=nwJi8nhRYJhBd+wR+MBQEb
-	d1naO4IL/m8uyNsy3cYmE2TE2Cqc2pIhpnUEfdAEALgPWg/xouAxVDKCoZRgcsUM
-	2o2OCdSX9qfPzDBurB15letIjfVwd66MQNC/AQgdRRKg0y7Lyw5vdouy9mP8xYUh
-	M8aYGL4fjXKLFveLCXgKZSGiFqCRmt1IpfDyzMUN4qV6zs6fTnxuzpSgiNlxi8Uk
-	14Mdv7h2hIOvyS9lLogqMIJqk2bKX7q1hFAZXefjiX17PRjynONzaJVNAMgZiXga
-	mKmlHRbErVpAO4Shd49DSIQgSbaA5pNNe2dlo47z/9oC8210NMnggIYi8F2fI6hw
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49js0s9d5p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 Oct 2025 13:20:29 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 596DIfI4026620;
-	Mon, 6 Oct 2025 13:20:28 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49js0s9d5k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 Oct 2025 13:20:28 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 596DCq4S028041;
-	Mon, 6 Oct 2025 13:20:27 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 49kewmx54p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 Oct 2025 13:20:27 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 596DKPhY10289608
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 6 Oct 2025 13:20:25 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CF31220043;
-	Mon,  6 Oct 2025 13:20:25 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5230420040;
-	Mon,  6 Oct 2025 13:20:21 +0000 (GMT)
-Received: from [9.43.4.184] (unknown [9.43.4.184])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  6 Oct 2025 13:20:21 +0000 (GMT)
-Message-ID: <17f49a63-eccb-4075-91dd-b1f37aa762c7@linux.ibm.com>
-Date: Mon, 6 Oct 2025 18:50:20 +0530
+	s=arc-20240116; t=1759759457; c=relaxed/simple;
+	bh=FXpA0GzTDlirVgxLbKXCuND5BDcVshb9VBMgly8yATM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jEYejR07GI9rxfMCH33+JpbCs/PyyiyWy8+Ryh3oaLa0bjC590by5vWfrS1CYrR5xSLtyaUEcihxFgr1wB8XOr15QVb1VmlMLQcaAh0dxeITJa/kyMOs+95VoIbkPYOmfkBSg1y7UWQSfF7766NpQM7OCBbZebxzVnUR/Po5SZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=llABVwdP; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-46f53f88e0bso9395935e9.1
+        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 07:04:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759759454; x=1760364254; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gdKOlA9c2Pdc069xxJqmJShetX8EovtgTeTPusLf6o0=;
+        b=llABVwdP496zi+YhW9WdpXT2+mnDqAzox0F3I3SOoyu+bAGgxJEUqdG0sALreqvbBd
+         6Ze2MYy4d29Ox4kH4+phhhyv9Y/hZJrYno2CZNdCFJjCEdx5VnPrL5yQhwcH6vzroTFT
+         a628OEZoGxQb7RjDymtOHmpPNWMDaeuBwxurPsgdp58wEq5dgS3K2HsOgXc4PLbGSVLb
+         gqe1MLQwxs93J4RxtaZwENAZ89Wnyxk+RQceILfzwYNMghs+zkyIVdmMHHC5jtD9TDvd
+         7QGvmrlV++OWczHmxkKFYkzNuxPdro2xzVzddWV1b0ujcC2GQFEy8qb2hEXmJY2twAsB
+         GGag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759759454; x=1760364254;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gdKOlA9c2Pdc069xxJqmJShetX8EovtgTeTPusLf6o0=;
+        b=GAEoBby+qWoiTA3yRH7EQgygB2SglUFcPw5XrV/X4ilVOvWibTz1Lbes5+Z8JMMOh0
+         xJFjThtdXP6itcK5KPVUDxa9LludwVMX5hyr9K6VCTiIQLaOt0p2zyGhXh+uSS1Ovr/8
+         eKs4pP9jIOGbIvQYWIR2D7lv+FXEUPi8LUU5C4HIVt8OQ8VWmlpu4XbBSgHl0GpHlEPD
+         V84SegVUZV7P765/vYeywm08UbOIOH7VsuYJo73/nPhU+ttc4a04JWFi2YZtGAbXjqis
+         7UFX21YopgdBj8O218ecGtrYY97wxt2bzggqqvCI7T4o5zzkPWPbsoTz+O2nH1l3Tkx+
+         coow==
+X-Forwarded-Encrypted: i=1; AJvYcCU5lX3Y09mGrd5tX482Z9ys7dh5+sj12WEy4pAkKWsN2dZCey0EaobeUpP/ZVUWr7ZOhVk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyyoI+NgSaWjr44D3HwdqP+M0xP9cbKJ1uxphi4nqrTKGbABExE
+	8xhhJlh1lkAtBKS4RzbWXzjppDI1Bm+hNKsmhhAsN7MEP/Sp9zZDUIUL
+X-Gm-Gg: ASbGncsp4U+AI3NAwB4j/fZ1A/69ei0x9N4Weycwg4CQZ7DwghaqKsa3PxmtkrpnRre
+	r1FAwnKQp9DTKKMC9MdORV8cWyLykTGcg97po5xT/EPbjNW8fT6TRW9bivdKKvpJNQlTuy4t+Dl
+	Lhyo/OvEFBRaCjOUYnOnm5NcJKM+o7qi8y5yXi0VF9tdEyEpqTp21gIxUynVHRP7vTltxMDqqNt
+	IWb8WS/1ufwA3sEhcEDqetDdkE5KcjsdEo944zeqY6oi7WZ0UtMF7JXXXxx3e+vvOoCQ6+1NX3S
+	RKag16YKEDOXckjQFTZKzXLrYMqphwWUZEadlrvD1bm7IxBkk0QXkZ2rdEMkEg6w39wn/bhYYvD
+	aui83Xg9yoPeTCv/KYHACD2sJ0W6ejqxhw1GJRHTD5IQrAlTByTGPHEPh0It2fGKSwgQSIauc15
+	MQZnGhCShP/MOGRe9dnYa2gkhcwJx58NViDnf7AA3t78T8MHZSFilGD10w
+X-Google-Smtp-Source: AGHT+IFVw2Nkni+2zRHCuNEHTr+I0UGux8DlY0HajKnt0upI99rd76c0LF9DnH0Pi2MFzYrdy+8Cuw==
+X-Received: by 2002:a05:600c:1d1c:b0:46e:32f5:2d4b with SMTP id 5b1f17b1804b1-46e7116119bmr93128915e9.37.1759759453919;
+        Mon, 06 Oct 2025 07:04:13 -0700 (PDT)
+Received: from mail.gmail.com (2a01cb0889497e0014cd65e068af8bf0.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:14cd:65e0:68af:8bf0])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e61a029a0sm255759145e9.13.2025.10.06.07.04.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Oct 2025 07:04:12 -0700 (PDT)
+Date: Mon, 6 Oct 2025 16:04:10 +0200
+From: Paul Chaignon <paul.chaignon@gmail.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 3/5] bpf: Craft non-linear skbs in
+ BPF_PROG_TEST_RUN
+Message-ID: <aOPMWoiFY78QT5Er@mail.gmail.com>
+References: <cover.1759397353.git.paul.chaignon@gmail.com>
+ <10502e40a894fc60abf625ec631eadc5ad78e311.1759397354.git.paul.chaignon@gmail.com>
+ <943df0e0-358e-4361-81a0-ec7a4118cf29@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] powerpc64/bpf: support direct_call on livepatch function
-To: Naveen N Rao <naveen@kernel.org>
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>, Viktor Malik <vmalik@redhat.com>,
-        live-patching@vger.kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joe Lawrence
- <joe.lawrence@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, linux-trace-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>
-References: <20251002192755.86441-1-hbathini@linux.ibm.com>
- <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
-Content-Language: en-US
-From: Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=EqnfbCcA c=1 sm=1 tr=0 ts=68e3c21d cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
- a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=DZLZDooBFCjsWUrdwfsA:9
- a=QEXdDO2ut3YA:10 a=nl4s5V0KI7Kw-pW0DWrs:22 a=pHzHmUro8NiASowvMSCR:22
- a=xoEH_sTeL_Rfw54TyV31:22
-X-Proofpoint-GUID: 9bb_aLzmcPSvXKCGBvozPZOBFqkT_dAR
-X-Proofpoint-ORIG-GUID: D8iz1VRdcHOatwH3KohDk0_uNtOhiBB_
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDAzMDIwMSBTYWx0ZWRfX7YUmjwQnbUqn
- HhX64a7FtyNfRjw7FAh71FGVGr2iK2omaWPyAloKuVOkG4qnZTq05EOUKkDy46nMvPX+0GdLUsC
- iJCQHHunmA7M4C8/a3q8Ewpl83hrxCagjLEsIvZ6hFXT4fOMM7m8yVgqeeMMcMpTyR/fY+F9d4R
- u1V76Fligboasrgt7YTbSMuDeqOJszb4y1hLy5ASJnOk5UohnYja5NyJuwnbpXrxFoagzG2CaLp
- O88T2ZCPLmgbm2Lk/gaSA3DDRnr9Yp9jOW/ATQHH9ESlp9KcEPXZHCHzZyNVAz7oupILU4ggrkj
- EGlz3YZaTXElefqikE0AAXp2QCwHpGinhLyDEOy1kPNXWVUGQjeTL/KTGlCWgm2HG7oUFlMJ9vS
- YVWW7Gvb3N1asuzkYinYMNStadk+Tg==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-06_04,2025-10-02_03,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 malwarescore=0 impostorscore=0 adultscore=0 phishscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2509150000 definitions=main-2510030201
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <943df0e0-358e-4361-81a0-ec7a4118cf29@linux.dev>
 
-
-
-On 06/10/25 1:22 pm, Naveen N Rao wrote:
-> On Fri, Oct 03, 2025 at 12:57:54AM +0530, Hari Bathini wrote:
->> Today, livepatch takes precedence over direct_call. Instead, save the
->> state and make direct_call before handling livepatch.
+On Thu, Oct 02, 2025 at 11:27:52AM -0700, Martin KaFai Lau wrote:
+> On 10/2/25 3:07 AM, Paul Chaignon wrote:
+> > This patch adds support for crafting non-linear skbs in BPF test runs
+> > for tc programs. The size of the linear area is given by ctx->data_end,
+> > with a minimum of ETH_HLEN always pulled in the linear area. If ctx or
+> > ctx->data_end are null, a linear skb is used.
+> > 
+> > This is particularly useful to test support for non-linear skbs in large
+> > codebases such as Cilium. We've had multiple bugs in the past few years
+> > where we were missing calls to bpf_skb_pull_data(). This support in
+> > BPF_PROG_TEST_RUN would allow us to automatically cover this case in our
+> > BPF tests.
+> > 
+> > In addition to the selftests introduced later in the series, this patch
+> > was tested by setting enabling non-linear skbs for all tc selftests
+> > programs and checking test failures were expected.
+> > 
+> > Tested-by: syzbot@syzkaller.appspotmail.com
+> > Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
+> > Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+> > ---
+> >   net/bpf/test_run.c | 67 +++++++++++++++++++++++++++++++++++++++++-----
+> >   1 file changed, 61 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> > index 3425100b1e8c..e4f4b423646a 100644
+> > --- a/net/bpf/test_run.c
+> > +++ b/net/bpf/test_run.c
+> > @@ -910,6 +910,12 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+> >   	/* cb is allowed */
+> >   	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, cb),
+> > +			   offsetof(struct __sk_buff, data_end)))
+> > +		return -EINVAL;
+> > +
+> > +	/* data_end is allowed, but not copied to skb */
+> > +
+> > +	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, data_end),
+> >   			   offsetof(struct __sk_buff, tstamp)))
+> >   		return -EINVAL;
+> > @@ -984,9 +990,12 @@ static struct proto bpf_dummy_proto = {
+> >   int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+> >   			  union bpf_attr __user *uattr)
+> >   {
+> > +	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+> >   	bool is_l2 = false, is_direct_pkt_access = false;
+> >   	struct net *net = current->nsproxy->net_ns;
+> >   	struct net_device *dev = net->loopback_dev;
+> > +	u32 headroom = NET_SKB_PAD + NET_IP_ALIGN;
+> > +	u32 linear_sz = kattr->test.data_size_in;
+> >   	u32 size = kattr->test.data_size_in;
+> >   	u32 repeat = kattr->test.repeat;
+> >   	struct __sk_buff *ctx = NULL;
+> > @@ -1023,9 +1032,16 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+> >   	if (IS_ERR(ctx))
+> >   		return PTR_ERR(ctx);
+> > -	data = bpf_test_init(kattr, kattr->test.data_size_in,
+> > -			     size, NET_SKB_PAD + NET_IP_ALIGN,
+> > -			     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
+> > +	if (ctx) {
+> > +		if (!is_l2 || ctx->data_end > kattr->test.data_size_in) {
 > 
-> If we call into the BPF trampoline first and if we have
-> BPF_TRAMP_F_CALL_ORIG set, does this result in the BPF trampoline
-> calling the new copy of the live-patched function or the old one?
+> What is the need for the "!is_l2" test?
 
-Naveen, calls the new copy of the live-patched function..
+There's nothing limiting us to only tc program types, but I was
+wondering if it makes sense to open this (non-linear skbs) to all
+program types. For example, cgroup_skb programs cannot call
+bpf_skb_pull_data to deal with non-linear skbs.
 
-- Hari
+Even the LWT program types would require special care because ex. the
+bpf_clone_redirect helper can end up calling eth_type_trans which
+assumes we have at least ETH_HLEN in the linear area. I wasn't sure it
+was worth opening this capability to these program types without a clear
+use case.
+
+> 
+> > +			ret = -EINVAL;
+> > +			goto out;
+> > +		}
+> > +		if (ctx->data_end)
+> > +			linear_sz = max(ETH_HLEN, ctx->data_end);
+> > +	}
+> > +
+> > +	data = bpf_test_init(kattr, linear_sz, size, headroom, tailroom);
+> 
+> Instead of passing "size", should linear_sz be passed instead? Unlike xdp,
+> allocating exactly linear_sz should be enough considering bpf_skb_pull_data
+> can allocate new data if needed.
+
+Indeed. Thanks!
+
+> 
+> Should linear_sz be limited to "PAGE_SIZE - headroom..." like how
+> test_run_xdp() does it ?
+
+That changes a bit the current behavior. Currently, we will return
+EINVAL if a user try to pass more than "PAGE_SIZE - headroom..." as
+data_size_in. With the test_run_xdp approach, we'll end up silently
+switching to non-linear mode if they do that.
+
+I'm not against it given it brings consistency with the XDP counterpart,
+but it could also be a bit surprising.
+
+[...]
+
 
