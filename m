@@ -1,268 +1,200 @@
-Return-Path: <bpf+bounces-70452-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70453-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8B23BBFB1F
-	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 00:33:44 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C937DBBFBF2
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 01:08:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D3323BED9A
-	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 22:33:43 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1342C4EA540
+	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 23:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E0B41DF261;
-	Mon,  6 Oct 2025 22:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EBBC1E501C;
+	Mon,  6 Oct 2025 23:08:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PdwFeRXe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f4zcnNf9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25FE4288A2
-	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 22:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B1EA1E47C5
+	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 23:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759790017; cv=none; b=Dzv2W/l5hxAyoOmBZHdfVNJ+STASZPvoqqpXhlY7OefiF+8O5LtJYu2MutTPMYn/IBi1ovpWHtd4yhO8Mt1jNh/tOcPIvnshVzKzlKV5nuE1kSaldbqvndQoOYETDh6I0nlZN19MoBp6s1Q7jsTslqvq3ZvRaw5ddv1iNKCEiFU=
+	t=1759792133; cv=none; b=WgzhmM4kQBYULsT6ByOrrqPiv57gIXtjBl/VB9xuPS3hwFX2JW2ExrxFeuDhr1RAHzEbFK7Es+3/Xqk00V8TN21C7ZT52SccOdBpMM8Ldn+lxm0eeXfqHB2cJ97O4eSwZOHY1jdUsMn8AEL0MCzD5umhtQgWWoeSN8RhMrR+fTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759790017; c=relaxed/simple;
-	bh=yLw8fylRlPw2gvkncXT/IFYqaZTI95TjPb4O1oXGTeU=;
+	s=arc-20240116; t=1759792133; c=relaxed/simple;
+	bh=qup/aG0kBpnmCM7191Fmapt0FxVzkpG/x0GMHw1MjzQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gpe2V1pLnaelykm6Z9GFM3tjEZUaXCH2i6igFhrcTQLkgYj/csWyvsGiyu0Cs7hs2yhaYzHLqIa9+r+JSQqdn27RbRUGACAKIxHptZFXJI7Jd+zO+ZkUdI9PnGHNGbDwdzjTKEcqaHvszYAW6sqzejudYfk8H1M/Shu1PTg+3Dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PdwFeRXe; arc=none smtp.client-ip=209.85.215.181
+	 To:Cc:Content-Type; b=qktyCC72JvuQctVTRNGDPN6vi4zmwk2WJhvEvBmHYr29ABZ2H8pkWZ9EWNugk6+R0vCqYKpF+5GlOoxpTL5AMc2QmTloawrjxY5tZpy9D4XaknCAgO9URDnGmNi2tmJugTZS8POfBSA2xoIZ1Uot2s4oE7NDaDr3pl6HKhs0mVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f4zcnNf9; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-b57bf560703so4001860a12.2
-        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 15:33:35 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-27eceb38eb1so57144755ad.3
+        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 16:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759790015; x=1760394815; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759792131; x=1760396931; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=58v5k8gEKsxcHO6Mr+tFu30Zm0tr0fSTG2lDuYQw5Y4=;
-        b=PdwFeRXearlQBN3zRiiAawgpfVBm7wC2CDSqJifUS9w9TTOCEkKzUGbJIdSJ2Om0M/
-         LmMUMIDZXvhaV+b+KMK7euSYogiHDBFW0TasDdHI+XrP5HOzh0rPdHkgQxcaBqPlmUgW
-         s65T3JZZ7uhm7r0g5FygcgAd4ZIDIOX7pb/LXHv7K7zgemdvLJMjEAv47uvMIY6k71dT
-         dmlFw5J/fUSeR7Xmgywctt41CJVsGkUegfA05kKjVKm0HsOoy0x6LHM5Xf5fnjEjFQds
-         tKWVsikZyQjBFlSOE5mT6Hp1nyReqd1xJhsLBI50K5BEIcLsw0KnCrjg7BLzVcDVYvDM
-         YgBw==
+        bh=W1/ZwQdsS/4N3ZSDI/T4rJ3oMrRgkJEBUSrtnmJNjo4=;
+        b=f4zcnNf9+ZW88aYv8O1ddILBGXT/al+/ibwS3oM8/Elbx9qJuxUSL+TXrtSoUIQD9C
+         FVvdPLZv0ctdofnkgWJ8u6FhX3MOaiFCn7U/nx4bF8wp6FVbyg72oQeky+hc9ykGYego
+         1CuxKa6cYwKDGv5cR0eikXnoa26jdKYt5ZBR3vEBj9m+iQeTWERoZx3YFr0cj7QmDkAB
+         NKux0E34EzKItqesI5Hp/M5DaTkb8cqioIiVZ8QQ3h1jkCUJRtX/QoxP7+waobUnbMTN
+         riitXIUPdYsdQFPzW3go/quEL6fGCH4ANjrlnAOe+LKcgoKo8ohoig8Pz0YePuRp7cqt
+         QMog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759790015; x=1760394815;
+        d=1e100.net; s=20230601; t=1759792131; x=1760396931;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=58v5k8gEKsxcHO6Mr+tFu30Zm0tr0fSTG2lDuYQw5Y4=;
-        b=fX7gpjskpzUlRxTLjmNUejIH2tLu4x3Ch/aKxrpkZ0cpeWV7yziyYt0vLorlAL0cRA
-         weD1AnAYcmxDyqhuNL+YexYaSLnj2zNr42SbK7t9oi/hpx4m7FsszJ/F+5hXH+/pTM9e
-         X2Jwj8QPyn7aqMXly1rOHWqZOGpEabXMY4QDO55jjQmbKQwGjyelTFBf2coMoc7UgUov
-         JaEJbFyLl9vjwopIOBXdeOYhK/1Aq91reXTphScrGRcUwXdnFc/oo9ndtXfYp/1S6x/P
-         rOx1vJCiPBkowdXLhorZcRzPL7pEx481MLLl4iq6r/uCmIJ0QG6tOKbDHnQjdmXLOEyk
-         UqkQ==
-X-Gm-Message-State: AOJu0Yymb7qxY2mX0ZheGwDUNA8pk4URA1GDzSPCxMFldAAzn3ldL7nG
-	cM5IjDz7Mp1bzNwagmV1Y0VdrvnOJdFn7PoZBZbu3oCmGLRANa0J22qmTP7aCNnzOPVSWbDc5Rt
-	1AeztFYJSE2Ez0VYR5x4dEfxfLKvxJ2g=
-X-Gm-Gg: ASbGnctJxQu7UC/iwvtcp6HklDqYqOAfjZoCbqq/W4fAN26ILU7XrRZXAl5m4mxpEGq
-	mBEOMgATdlqcGpC9sIqvDUTEs5UpujnXipe7KiMfyDQvAbnD2d090oyPORxZ430pD6mGM61LeCT
-	s95NufuG6FJFznDXrhIe0056sD5Q5nhNM+jqocPFvrZKqTJI1Gh6Ziqx9pi2pv+zLInSIS7dfff
-	KVaM+Y/7aZcj4PUUeW5JjVQG6CYFECvUpq1VTx4zXf3gsI=
-X-Google-Smtp-Source: AGHT+IHUg4zxb3TQemS6KFPePgjGVudv7igAfbX7lxSSK93lmNFW4WuN2NI6tZvVBmAsUhYbSIEgQx8UtlS3+gjd5ZE=
-X-Received: by 2002:a17:902:d4d2:b0:267:9a29:7800 with SMTP id
- d9443c01a7336-28e9a6609b7mr165304745ad.59.1759790015140; Mon, 06 Oct 2025
- 15:33:35 -0700 (PDT)
+        bh=W1/ZwQdsS/4N3ZSDI/T4rJ3oMrRgkJEBUSrtnmJNjo4=;
+        b=ey5vVzrnvmtzSJYEvCEwvCTM1cW2PEkjxGvzAtxkpkaFYca6idDPXv5AEP1NSTS1LD
+         CJXqPULVBZAf1SIAKlvjun/ODrSVDUUexoLgq2K5NEJh/G2HeGAnvfOKkp47uYNGyF4c
+         zTOwH9CY2v0qEBtTXPPrpZxeYKjHebAulANFoUUg8iOSGnLcv4kC7JsetW227wGFN377
+         an+WO+/hiFOJ7vP0TKV0Z/ktJQnZ0BHGVpmnvzXVgjQD5g5zgKH/TgxhSN0c4Juyo6WN
+         v/mdMBcH2/q3Kkxtfjm/p4gA8viINjRlg9A5H5zOBwb/1nq2aUd/WFmC08oRJH7AvSYQ
+         LMmw==
+X-Gm-Message-State: AOJu0YwLxP3mzgvzfAHhkgbHAZc18bXTj2gMm/UFromlLm5DKotxCAyv
+	XOannLfFbNBfMwc5DfilXwESfD31UFNdKRoqcdt8/GnlShraCxq0eUzyd3+INQO9ql2hSXmKVZ9
+	Ru4WteruQlnYs+Nt5sEXRzU66rgku5KE=
+X-Gm-Gg: ASbGncs+ZdYMl74mjARmoRL8shhrsiMHA55gH6DJKhEEpcc6fNOzhH9J0Tlzx03bab6
+	NBOLxaEjoADEbJZQ85aodfdDGB0HhcpOlyJ1WUqVjgEYALbx9WHode3pcRubo9P7ta/0dGWUPJL
+	gKGM6ZrALz3ihA9oGKxvM8cnHLgzzbYt51lqmaamGHPZmYHHNmHzIMPxLJDxYu3GkMh2t8aEqzL
+	vieKBQkkLHE8mfwBCj7l3hByb/cJIlBUOIhvVA9wRruQ94=
+X-Google-Smtp-Source: AGHT+IHsvarTfBGFGRcfwRM8UgX7mlcqahmDBStsDOQXagOnXLMwQ58ZkuOS2yJmhOXeyfbjyGOvhkJ/LIPUUOSy5Vo=
+X-Received: by 2002:a17:903:38cf:b0:277:71e6:b04d with SMTP id
+ d9443c01a7336-28e9a5135efmr170188405ad.3.1759792131423; Mon, 06 Oct 2025
+ 16:08:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250930153942.41781-1-leon.hwang@linux.dev> <20250930153942.41781-6-leon.hwang@linux.dev>
-In-Reply-To: <20250930153942.41781-6-leon.hwang@linux.dev>
+References: <20251002154841.99348-1-leon.hwang@linux.dev> <20251002154841.99348-10-leon.hwang@linux.dev>
+In-Reply-To: <20251002154841.99348-10-leon.hwang@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 6 Oct 2025 15:33:21 -0700
-X-Gm-Features: AS18NWB1Zh9T_SX5337BrcAaJ44YENEu7yyszXFqyyzJR5wlw8J7Y-zNBUtw37w
-Message-ID: <CAEf4BzaVmJ83q5DxKkeJEhNeQ87HDQ7yZjg_PNFWpNEUvAFOnw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 5/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS
- flags support for percpu_cgroup_storage maps
+Date: Mon, 6 Oct 2025 16:08:37 -0700
+X-Gm-Features: AS18NWDKhB8t0qD6DhvftpC3xAJARkrTHwpuC9eo4fLtInjkXq5jY27hzbY6vgo
+Message-ID: <CAEf4Bzaw9cboFSf1OXmD84S7pKaeyj=bcQg_diUzGwAkFsjUgg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v3 09/10] libbpf: Add common attr support for map_create
 To: Leon Hwang <leon.hwang@linux.dev>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, jolsa@kernel.org, yonghong.song@linux.dev, 
-	song@kernel.org, eddyz87@gmail.com, dxu@dxuuu.xyz, deso@posteo.net, 
-	kernel-patches-bot@fb.com
+	daniel@iogearbox.net
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 30, 2025 at 8:40=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
+On Thu, Oct 2, 2025 at 8:49=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> wr=
+ote:
 >
-> Introduce BPF_F_ALL_CPUS flag support for percpu_cgroup_storage maps to
-> allow updating values for all CPUs with a single value for update_elem
-> API.
+> With the previous commit adding common attribute support for
+> BPF_MAP_CREATE, it is now possible to retrieve detailed error messages
+> when map creation fails by using the 'log_buf' field from the common
+> attributes.
 >
-> Introduce BPF_F_CPU flag support for percpu_cgroup_storage maps to
-> allow:
->
-> * update value for specified CPU for update_elem API.
-> * lookup value for specified CPU for lookup_elem API.
->
-> The BPF_F_CPU flag is passed via map_flags along with embedded cpu info.
+> Extend 'bpf_map_create_opts' with these new fields, 'log_buf', 'log_size'
+> , 'log_level' and 'log_true_size', allowing users to capture and inspect
+
+comma
+
+> those log messages.
 >
 > Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 > ---
->  include/linux/bpf-cgroup.h |  4 ++--
->  include/linux/bpf.h        |  1 +
->  kernel/bpf/local_storage.c | 27 ++++++++++++++++++++-------
->  kernel/bpf/syscall.c       |  2 +-
->  4 files changed, 24 insertions(+), 10 deletions(-)
+>  tools/lib/bpf/bpf.c | 17 +++++++++++++++--
+>  tools/lib/bpf/bpf.h |  9 +++++++--
+>  2 files changed, 22 insertions(+), 4 deletions(-)
 >
-> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> index aedf573bdb426..013f4db9903fd 100644
-> --- a/include/linux/bpf-cgroup.h
-> +++ b/include/linux/bpf-cgroup.h
-> @@ -172,7 +172,7 @@ void bpf_cgroup_storage_link(struct bpf_cgroup_storag=
-e *storage,
->  void bpf_cgroup_storage_unlink(struct bpf_cgroup_storage *storage);
->  int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux, struct bpf_map *=
-map);
->
-> -int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void =
-*value);
-> +int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void =
-*value, u64 flags);
->  int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
->                                      void *value, u64 flags);
->
-> @@ -467,7 +467,7 @@ static inline struct bpf_cgroup_storage *bpf_cgroup_s=
-torage_alloc(
->  static inline void bpf_cgroup_storage_free(
->         struct bpf_cgroup_storage *storage) {}
->  static inline int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, vo=
-id *key,
-> -                                                void *value) {
-> +                                                void *value, u64 flags) =
-{
->         return 0;
->  }
->  static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index b3d9a584f34e2..6250804394b53 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -3774,6 +3774,7 @@ static inline bool bpf_map_supports_cpu_flags(enum =
-bpf_map_type map_type)
->         case BPF_MAP_TYPE_PERCPU_ARRAY:
->         case BPF_MAP_TYPE_PERCPU_HASH:
->         case BPF_MAP_TYPE_LRU_PERCPU_HASH:
-> +       case BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE:
->                 return true;
->         default:
->                 return false;
-> diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-> index c93a756e035c0..f5188e0afa478 100644
-> --- a/kernel/bpf/local_storage.c
-> +++ b/kernel/bpf/local_storage.c
-> @@ -180,7 +180,7 @@ static long cgroup_storage_update_elem(struct bpf_map=
- *map, void *key,
->  }
->
->  int bpf_percpu_cgroup_storage_copy(struct bpf_map *_map, void *key,
-> -                                  void *value)
-> +                                  void *value, u64 map_flags)
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index 9cd79beb13a2d..ca66fcdb3f49f 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -203,10 +203,13 @@ int bpf_map_create(enum bpf_map_type map_type,
+>                    __u32 key_size,
+>                    __u32 value_size,
+>                    __u32 max_entries,
+> -                  const struct bpf_map_create_opts *opts)
+> +                  struct bpf_map_create_opts *opts)
+
+this is a breaking change, see below
+
 >  {
->         struct bpf_cgroup_storage_map *map =3D map_to_storage(_map);
->         struct bpf_cgroup_storage *storage;
-> @@ -198,12 +198,18 @@ int bpf_percpu_cgroup_storage_copy(struct bpf_map *=
-_map, void *key,
->          * access 'value_size' of them, so copying rounded areas
->          * will not leak any kernel data
->          */
-> +       if (map_flags & BPF_F_CPU) {
-> +               cpu =3D map_flags >> 32;
-> +               memcpy(value, per_cpu_ptr(storage->percpu_buf, cpu), _map=
-->value_size);
-
-this is so far ok, because we don't seem to allow special fields for
-PERCPU_CGROUP_STORAGE, but it's best to switch this one to
-copy_map_value()
-
-> +               goto unlock;
-> +       }
->         size =3D round_up(_map->value_size, 8);
->         for_each_possible_cpu(cpu) {
->                 bpf_long_memcpy(value + off,
->                                 per_cpu_ptr(storage->percpu_buf, cpu), si=
-ze);
-
-and let's switch this to copy_map_value_long() to future-proof this:
-copy_map_value[_long]() should work correctly with any type of map and
-will take care of all existing and future special fields
-
-(but maybe have it as a separate patch with just that change to make it obv=
-ious)
-
->                 off +=3D size;
->         }
-> +unlock:
->         rcu_read_unlock();
->         return 0;
->  }
-> @@ -213,10 +219,11 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map=
- *_map, void *key,
->  {
->         struct bpf_cgroup_storage_map *map =3D map_to_storage(_map);
->         struct bpf_cgroup_storage *storage;
-> -       int cpu, off =3D 0;
-> +       void *ptr;
->         u32 size;
-> +       int cpu;
+>         const size_t attr_sz =3D offsetofend(union bpf_attr, excl_prog_ha=
+sh_size);
+> +       const size_t common_attrs_sz =3D sizeof(struct bpf_common_attr);
+> +       struct bpf_common_attr common_attrs;
+>         union bpf_attr attr;
+> +       const char *log_buf;
+>         int fd;
 >
-> -       if (map_flags !=3D BPF_ANY && map_flags !=3D BPF_EXIST)
-> +       if ((u32)map_flags & ~(BPF_ANY | BPF_EXIST | BPF_F_CPU | BPF_F_AL=
-L_CPUS))
->                 return -EINVAL;
+>         bump_rlimit_memlock();
+> @@ -239,7 +242,17 @@ int bpf_map_create(enum bpf_map_type map_type,
+>         attr.excl_prog_hash =3D ptr_to_u64(OPTS_GET(opts, excl_prog_hash,=
+ NULL));
+>         attr.excl_prog_hash_size =3D OPTS_GET(opts, excl_prog_hash_size, =
+0);
 >
->         rcu_read_lock();
-> @@ -232,12 +239,18 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map=
- *_map, void *key,
->          * returned or zeros which were zero-filled by percpu_alloc,
->          * so no kernel data leaks possible
->          */
-> -       size =3D round_up(_map->value_size, 8);
-> +       size =3D (map_flags & (BPF_F_CPU | BPF_F_ALL_CPUS)) ? _map->value=
-_size :
-> +               round_up(_map->value_size, 8);
-> +       if (map_flags & BPF_F_CPU) {
-> +               cpu =3D map_flags >> 32;
-> +               memcpy(per_cpu_ptr(storage->percpu_buf, cpu), value, size=
-);
-> +               goto unlock;
+> -       fd =3D sys_bpf_fd(BPF_MAP_CREATE, &attr, attr_sz);
+> +       log_buf =3D OPTS_GET(opts, log_buf, NULL);
+> +       if (log_buf && feat_supported(NULL, FEAT_EXTENDED_SYSCALL)) {
+> +               memset(&common_attrs, 0, common_attrs_sz);
+> +               common_attrs.log_buf =3D ptr_to_u64(log_buf);
+> +               common_attrs.log_size =3D OPTS_GET(opts, log_size, 0);
+> +               common_attrs.log_level =3D OPTS_GET(opts, log_level, 0);
+> +               fd =3D sys_bpf_ext_fd(BPF_MAP_CREATE, &attr, attr_sz, &co=
+mmon_attrs, common_attrs_sz);
+> +               OPTS_SET(opts, log_true_size, common_attrs.log_true_size)=
+;
+> +       } else {
+> +               fd =3D sys_bpf_fd(BPF_MAP_CREATE, &attr, attr_sz);
 > +       }
->         for_each_possible_cpu(cpu) {
-> -               bpf_long_memcpy(per_cpu_ptr(storage->percpu_buf, cpu),
-> -                               value + off, size);
-> -               off +=3D size;
-> +               ptr =3D (map_flags & BPF_F_ALL_CPUS) ? value : value + si=
-ze * cpu;
-> +               memcpy(per_cpu_ptr(storage->percpu_buf, cpu), ptr, size);
->         }
-> +unlock:
->         rcu_read_unlock();
->         return 0;
+>         return libbpf_err_errno(fd);
 >  }
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index ce525a474656a..b654115c99e01 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -320,7 +320,7 @@ static int bpf_map_copy_value(struct bpf_map *map, vo=
-id *key, void *value,
->         } else if (map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_ARRAY) {
->                 err =3D bpf_percpu_array_copy(map, key, value, flags);
->         } else if (map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_CGROUP_STORAG=
-E) {
-> -               err =3D bpf_percpu_cgroup_storage_copy(map, key, value);
-> +               err =3D bpf_percpu_cgroup_storage_copy(map, key, value, f=
-lags);
->         } else if (map->map_type =3D=3D BPF_MAP_TYPE_STACK_TRACE) {
->                 err =3D bpf_stackmap_extract(map, key, value, false);
->         } else if (IS_FD_ARRAY(map) || IS_FD_PROG_ARRAY(map)) {
+>
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index e983a3e40d612..77d475e7274a0 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -57,16 +57,21 @@ struct bpf_map_create_opts {
+>
+>         const void *excl_prog_hash;
+>         __u32 excl_prog_hash_size;
+> +
+> +       const char *log_buf;
+> +       __u32 log_size;
+> +       __u32 log_level;
+> +       __u32 log_true_size;
+
+I'm thinking that maybe we should have a separate struct that will
+have these 4 fields, and pass a pointer to it. That way
+bpf_map_create_opts can still be passed as const pointer, but libbpf
+will still be able to write out log_true_size without violating
+constness
+
+and then we can reuse the same type (struct bpf_log? struct
+bpf_log_buf? struct bpf_log_info? not sure, let's bikeshed) across
+different commands that support passing log info through
+bpf_common_attrs
+
+>         size_t :0;
+>  };
+> -#define bpf_map_create_opts__last_field excl_prog_hash_size
+> +#define bpf_map_create_opts__last_field log_true_size
+>
+>  LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
+>                               const char *map_name,
+>                               __u32 key_size,
+>                               __u32 value_size,
+>                               __u32 max_entries,
+> -                             const struct bpf_map_create_opts *opts);
+> +                             struct bpf_map_create_opts *opts);
+>
+>  struct bpf_prog_load_opts {
+>         size_t sz; /* size of this struct for forward/backward compatibil=
+ity */
 > --
 > 2.51.0
 >
