@@ -1,80 +1,81 @@
-Return-Path: <bpf+bounces-70418-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70419-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCAE8BBDEAB
-	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 13:50:57 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75FC0BBDED6
+	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 13:54:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5DFC44EC747
-	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 11:50:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 67DC94EA069
+	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 11:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A82273D77;
-	Mon,  6 Oct 2025 11:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6AF271454;
+	Mon,  6 Oct 2025 11:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iYCKoe7Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lBhjTOb1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DAC220F37
-	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 11:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F0034BA3A
+	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 11:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759751424; cv=none; b=hzOISo0+LU4HCN/HPTCr7pO6ThNd7Ts2nGSaetGovY9r1dYptlBLvCQeYXjjvCPgfeXn4b3Efur/kXiEO7uvYjU5UARTP8XWkS8efupTL+ogSxK5hCwhCXEy1lCRvZYJHdEp/rubCHIxIfvIs6hzTUPzmer8YH4ir9aCSInIgZU=
+	t=1759751669; cv=none; b=H4JonRADtv1pOJbTdnmdg/V2MpsIvi6u46tdWLDGmnChE3koACBNvYTB/5JkcY2w17yXSOSD1Nqv9HQPKIljzrdeKY219GA1MSuRw1XcAPYG9w/U9UUpMSNFatRJZEOlswh0vMopQWgsdBoIjUN+eotvFnuM5k/D5dIMB3FBWdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759751424; c=relaxed/simple;
-	bh=T/r6Hc8w6riMkZcl1AUW9uQevocc+gSz0mboT+dPELs=;
+	s=arc-20240116; t=1759751669; c=relaxed/simple;
+	bh=i9uqsNT8rzXv/9EvNvLZhyocTOen2CGKBN8AJEgArZs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=goK4wy8ZQGl8hq+QxUCuTBdu4cDPmMYM5g8O4WITmUWm0mIMpdUAOxPNfSHYTeiIcn97PxmI3PASTQWTI2cbKs3lAItibAiKFJCa3lJihld5I/YCsl5QcxQYUbTXabEnl1z/Hjn+EQxZIdDqBNV6xgWhli7krV1VL54TCmfOwMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iYCKoe7Y; arc=none smtp.client-ip=209.85.221.44
+	 In-Reply-To:Content-Type; b=Wp5AhjLBhVwZQlsHL8pKHvetMJlh3gUvUej8l0idWXVoNYtSgFrk6PAc8F/YTN/Rtq1CORxI3p2R8IF3zG1iPOCDqdb+TeCG/z7e1IPZWRX80M9nTqXDRePr97mq4m5AiO802AsAV2XquijK75D86et8LOB+oZCi1q6+cJukNyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lBhjTOb1; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3c68ac7e18aso2744512f8f.2
-        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 04:50:22 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-46e3af7889fso29558165e9.2
+        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 04:54:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759751421; x=1760356221; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759751666; x=1760356466; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=scF228B0opz5cpAY58qygjOavkwWQDxd7YqNik/1L/U=;
-        b=iYCKoe7Yg15RewfDNTSY3qHTc9eGAdKl99JwgLPHJgRJZXcibOILroFmgK2BFNB11O
-         /5HYkB0aRAt5wuFF29zFGfO45men3nr+qhvwfll9yQXvByIqTGmAzhIPok4NYhXaaCln
-         IZN5yDl3NtPF+7/GU+ADAAHubYCqupgNL3BJxUmhBDgLjaRAOngGlmBH2zsNEseWa8B+
-         WtEdgGrGyN5PEFRNhAsSybZFYM7XusyZiC10iLylHulzI+n/ulIwvQF6qkYPujxJaYHP
-         WpyvGBZQlE5Z2KcU/60SxGyNp0HYjETViDVylHIng0tc6ahUXUZ+RniNL73VeqKtHrV0
-         vs7w==
+        bh=+m60T0hNEVBmnWG3wzqmTKTjrvxrAYcamiIcA8lZgnA=;
+        b=lBhjTOb1OZrfbz8I9btz0vfyJJA0wzndKVORyHbEavJhIDq0bDMewQLPMAWc0uk4U+
+         EBCx4ZznYUJUVLglX3lsQ3dYEex03aLDehgp8tks+MNpaDLYyS0Y7DhVosvHUsDJl66O
+         tWFBRpMGhIAI08x5L9Ai+s+V4bX3LRtTFBWJEDfqTkblUnsv+gOZmCoHNRfUFlvEtFbO
+         OFHJP/JY/73o1RMP4ltzY3Gi169yNscAEUSi2Wf7n7rufkHSaPp2B3PWrBX6t+3OM5n+
+         hRoOSfg/SwMC4XsbcB1P769Jcl3TwlSbczlv5qFplxXbx7+7klXCkQhTe36BT6IzGd+C
+         oVKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759751421; x=1760356221;
+        d=1e100.net; s=20230601; t=1759751666; x=1760356466;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=scF228B0opz5cpAY58qygjOavkwWQDxd7YqNik/1L/U=;
-        b=lK5bKvXq38pBGmapIPsrmQECqZwdgVSup2WJJ++X7CbLExeXnRMCi0WWRRQhfYmK85
-         6g8n+RkFlYgTLUfMIY1bOEWrBymHc2dDKwtHRUor4rot+5Oyk+gnlfE0oZD4mhMoyEs1
-         mVWaP/cVOGASfls13z3A5uMT17q9VYX/fTTaXWuLdVRy5ZqlY60qwynee3PUsnMGe4QA
-         /AkzChWiWWvlqe68LgN8vqrsAHJPiUWVfiLQYtlkfNQ+RxNR7J0HMmGNGwzwqLUBzB5v
-         2+CDIqz7mo/0+Ck1d/G2psULKDv+STq62o+iprR9RAQAwVGLNr0Ot4oBJDWmKSxnJi4w
-         cXNQ==
-X-Gm-Message-State: AOJu0Yx8Fc38RSUnYd+hveTR9mqelmZUMPH5Uw6CB1LWT6zRVBUPaJXA
-	I/eQ//X6pahzMIFzRRY0wJpgrFdfAY5GsKyfYarF23kXjpWsbY2iJXRk
-X-Gm-Gg: ASbGncs4gxd1YdKW+4BRq5l1OAdscsYwMQZZtrbr+3Qt+TmxEr3UrTDLftgYJ6RClPO
-	/oi1e8uur5E7+0o6vfONP3E8NxROMvmvApBmqmhRnAojI26HdVGGVgP51OMC4EQBHC8qWmwKGhY
-	WtPEtrd0U9pJWMKMc2Xy3caLzA2hX97lf4wGRK9yPpeNVMNQBYK4nbxoC2oSB6+2nuJ1ZfSZuP8
-	h+UlfGqJ+r8mPVmQ06hP7sk/vsEx0FlIlrcOQhJtJSIrH/MCs2NSTs4mH9Pj2LP+FQ1u/kwHBSf
-	fQ0w+a/fA++mjVeP4A9rKOA3+0E7rdVGaWVeufHlqyyfz7e4v6fM/R5+WOszmvdaiGg0qflOJLv
-	aqHBex+RtZ1d13bYAmo9KiSR4B4+VO4eSoRyfeh5eIVQldXPY7QEBj0PtaEUYTd8HQjjLbGbvxs
-	q64eHbt92YvVZcL0P8gz1eyu0mhkBe
-X-Google-Smtp-Source: AGHT+IGmciW8Mf3tUy4xX9Uoq+hnEYtTdV0Cb0gIpXX4vtn4t93wwzSzouD0+R6dey930JDwpMJECQ==
-X-Received: by 2002:a05:6000:220b:b0:3e1:9b75:f0b8 with SMTP id ffacd0b85a97d-425671be248mr7723233f8f.47.1759751420750;
-        Mon, 06 Oct 2025 04:50:20 -0700 (PDT)
+        bh=+m60T0hNEVBmnWG3wzqmTKTjrvxrAYcamiIcA8lZgnA=;
+        b=JCWhOHXbg8JsKnIm6aESJkRjuTnatTe6jw+UA/psEVq9/08IrvSgfG9op2xjUzUh/+
+         MR+dy6ezEJSVzbemi/i+3KOaAGUKrmK5JmdFUBBf1YYniED8T+NRNRMIDKGvYUr7tCi7
+         bbkVISFQGUI37Db0z0fs6YU5rnAO9CRez+Fa5DC94NJ7blWu+x5iMTE9+IDRNdAnpCQm
+         q6kl/OInsVVuLVTeoxt8YmPDea+q7ljsbbcAH7kA1EjD89vb8cbv1vUotJv0f9uXFdPR
+         Rz0IO2ny34lS30KOVN8qe3WBbszWpRUNfTtJwT9KWNkCW0xUjutW9853pVyZojJonEwm
+         hdwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVL03ljmx1AOseeSFyzAj3JfZT/0GPIhWgfckgSzP9h2/AEmAteOpSgOq3NXca8GGVMR7k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyStJzUHdmSP1EKdQYkKbPMTkQXobWOxag8eTW1JBJA1hBc83hk
+	f4BFGAcJxbNSiLkGIeRUuR/ahL8Lc4fsdmV2ks+MWRSJ1R72Pu7ejVW3
+X-Gm-Gg: ASbGncsuJi5KhhLDS4z6nbohWRZT651kgGs+V375q9vFcCdXBmQ9XJ9OlE2N30p3hgY
+	SQLw4nNMRA0v/SIxxbz++W6PKs9Mjsc5PI9s10UK13muK9Zg4MtHHDh/PLX8EEH+TtidUYRBFpH
+	wfok6JNc+RErkUBeosxK9vw+3r4YOGXwbtx8tbFiaYS0VOEvaVzjRiOlhUN87dC3omTzwQ9clFk
+	3rqas5NFPdtufCMPSdSkDYlVG7R5t4k3IxW6SoH3GNhDwlJ0DKFjpbAlsLb+KcS8YHJTkhO/dta
+	lEHl6SsdzMXGCmiUtkBdr2U/JL+5+IHT2n53nLLJoPMbgieqvGoVr8K03wJXrog7tyAKv0csLeL
+	K5OpyifFb6yTpjZM/+6fM2uADdw5/eqhAm8G8MyN5l4ifQDgj+AvPOOuatJohyFbd/VmqfHRRNB
+	IOIDL3iFs=
+X-Google-Smtp-Source: AGHT+IFXX9iXDoIIpGAL+MbUKNzImwWdEgRUDmsQT3SjAREz3WuHSAOyVUAjvZt9CCz5Y3eL+ONSpg==
+X-Received: by 2002:a05:600c:4fc6:b0:46c:adf8:c845 with SMTP id 5b1f17b1804b1-46e71124395mr97653725e9.16.1759751665573;
+        Mon, 06 Oct 2025 04:54:25 -0700 (PDT)
 Received: from ?IPV6:2a03:83e0:1126:4:7da0:ba20:3ec:edc7? ([2620:10d:c092:500::5:6287])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4255d8a6c49sm20657717f8f.3.2025.10.06.04.50.19
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e72359e0asm161986165e9.12.2025.10.06.04.54.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Oct 2025 04:50:20 -0700 (PDT)
-Message-ID: <62376422-6d60-42b9-b09e-393396fb7302@gmail.com>
-Date: Mon, 6 Oct 2025 12:50:19 +0100
+        Mon, 06 Oct 2025 04:54:25 -0700 (PDT)
+Message-ID: <1b1c9d10-efff-4eaf-8ff3-0d4ff6e24eb1@gmail.com>
+Date: Mon, 6 Oct 2025 12:54:22 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,128 +84,67 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH v1 10/10] selftests/bpf: add file dynptr tests
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
- eddyz87@gmail.com, memxor@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
+ kernel-team@meta.com, memxor@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
 References: <20251003160416.585080-1-mykyta.yatsenko5@gmail.com>
  <20251003160416.585080-11-mykyta.yatsenko5@gmail.com>
- <CAEf4Bzbw+udD6Fud2WshVrCK=mGqisjagZrapsQwM=0G9ipesg@mail.gmail.com>
+ <47e2812f633ad990f6d1a38234d99bc1e6c3bd87.camel@gmail.com>
 Content-Language: en-US
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-In-Reply-To: <CAEf4Bzbw+udD6Fud2WshVrCK=mGqisjagZrapsQwM=0G9ipesg@mail.gmail.com>
+In-Reply-To: <47e2812f633ad990f6d1a38234d99bc1e6c3bd87.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 10/3/25 21:02, Andrii Nakryiko wrote:
-> On Fri, Oct 3, 2025 at 9:04 AM Mykyta Yatsenko
-> <mykyta.yatsenko5@gmail.com> wrote:
->> From: Mykyta Yatsenko <yatsenko@meta.com>
->>
->> Introducing selftests for validating file-backed dynptr works as
->> expected.
->>   * validate implementation supports dynptr slice and read operations
->>   * validate destructors should be paired with initializers
->>
->> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
->> ---
->>   .../selftests/bpf/prog_tests/file_reader.c    |  81 ++++++
->>   .../testing/selftests/bpf/progs/file_reader.c | 241 ++++++++++++++++++
->>   .../selftests/bpf/progs/file_reader_fail.c    |  57 +++++
->>   3 files changed, 379 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/file_reader.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/file_reader.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/file_reader_fail.c
-> Non-sleepable file dynptr can fail to read, so this test is a bit
-> fragile. Let's have a sleepable test (fentry.s or something like
-> that?)
-This is sleepable, because it runs in task work callback.
+On 10/3/25 23:24, Eduard Zingerman wrote:
+> On Fri, 2025-10-03 at 17:04 +0100, Mykyta Yatsenko wrote:
 >
-> Plus, can you please add a test that validates that we do page in file
-> contents even if it was not physically in memory? see madvise(addr,
-> page_sz, MADV_PAGEOUT) in selftests
-I tried to tell kernel to evict those pages via: posix_fadvise(fd, 0, 0, 
-POSIX_FADV_DONTNEED);
-I'll rework to madvise(addr, page_sz, MADV_PAGEOUT)
+> [...]
 >
->> +int err;
->> +void *user_ptr;
->> +char buf[1024];
->> +char *user_buf;
->> +volatile const __u32 user_buf_sz;
->> +volatile const __s32 test_type = -1;
->> +
->> +static int process_vma(struct task_struct *task, struct vm_area_struct *vma, void *data);
->> +static int search_elf(struct file *file);
->> +static int validate_large_file_read(struct file *file);
->> +static int task_work_callback(struct bpf_map *map, void *key, void *value);
->> +
->> +SEC("raw_tp/sys_enter")
->> +int on_getpid(void *ctx)
->> +{
->> +       struct task_struct *task = bpf_get_current_task_btf();
->> +       struct elem *work;
->> +       int key = 0;
-> this will be called for every syscall in the system, regardless of the
-> process, so you probably need to filter this by process ID?
+>> diff --git a/tools/testing/selftests/bpf/progs/file_reader.c b/tools/testing/selftests/bpf/progs/file_reader.c
+>> new file mode 100644
+>> index 000000000000..9dd9a68f3563
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/file_reader.c
+> Do we really need an example of ELF parsing in selftests?
+> Maybe just stick to smaller test cases, exercising specific behaviors?
+This may be a good idea, I implemented ELF parsing as a proof of concept,
+to make sure we reach the goal.
+For the selftests, maybe just verifying that the contents of the
+file seen in BPF is the same as userspace is good enough.
 >
->> +
->> +       work = bpf_map_lookup_elem(&arrmap, &key);
->> +       if (!work) {
->> +               err = 1;
->> +               return 0;
->> +       }
->> +       bpf_task_work_schedule_signal(task, &work->tw, &arrmap, task_work_callback, NULL);
->> +       return 0;
->> +}
->> +
+> [...]
+>
+>> diff --git a/tools/testing/selftests/bpf/progs/file_reader_fail.c b/tools/testing/selftests/bpf/progs/file_reader_fail.c
+>> new file mode 100644
+>> index 000000000000..449c4f9a1c74
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/file_reader_fail.c
 > [...]
 >
 >> +static long process_vma_unreleased_ref(struct task_struct *task, struct vm_area_struct *vma,
->> +                                      void *data)
+>> +				       void *data)
 >> +{
->> +       struct bpf_dynptr dynptr;
+>> +	struct bpf_dynptr dynptr;
 >> +
->> +       if (!vma->vm_file)
->> +               return 1;
+>> +	if (!vma->vm_file)
+>> +		return 1;
 >> +
->> +       err = bpf_dynptr_from_file(vma->vm_file, 0, &dynptr);
->> +       return err ? 1 : 0;
+>> +	err = bpf_dynptr_from_file(vma->vm_file, 0, &dynptr);
+>> +	return err ? 1 : 0;
 >> +}
 >> +
 >> +SEC("fentry.s/" SYS_PREFIX "sys_nanosleep")
 >> +__failure __msg("Unreleased reference id=") int on_nanosleep_unreleased_ref(void *ctx)
-> nit: keep annotations on separate line from the function itself
+>> +{
+>> +	struct task_struct *task = bpf_get_current_task_btf();
+>> +
+>> +	bpf_find_vma(task, (unsigned long)user_ptr, process_vma_unreleased_ref, NULL, 0);
+> Why testing this via callback?
 >
->> +{
->> +       struct task_struct *task = bpf_get_current_task_btf();
->> +
->> +       bpf_find_vma(task, (unsigned long)user_ptr, process_vma_unreleased_ref, NULL, 0);
->> +       return 0;
+>> +	return 0;
 >> +}
->> +
->> +SEC("xdp")
->> +__failure __msg("Expected a dynptr of type file as arg #0")
->> +int xdp_wrong_dynptr_type(struct xdp_md *xdp)
->> +{
->> +       struct bpf_dynptr dynptr;
->> +
->> +       bpf_dynptr_from_xdp(xdp, 0, &dynptr);
->> +       bpf_dynptr_file_discard(&dynptr);
->> +       return 0;
->> +}
->> +
->> +SEC("xdp")
->> +__failure __msg("Expected an initialized dynptr as arg #0")
->> +int xdp_no_dynptr_type(struct xdp_md *xdp)
->> +{
->> +       struct bpf_dynptr dynptr;
->> +
->> +       bpf_dynptr_file_discard(&dynptr);
->> +       return 0;
->> +}
->> --
->> 2.51.0
->>
+> [...]
 
 
