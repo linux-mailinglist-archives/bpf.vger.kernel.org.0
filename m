@@ -1,172 +1,606 @@
-Return-Path: <bpf+bounces-70449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34167BBF8D9
-	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 23:21:13 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 579A7BBFA46
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 00:11:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2072B18861B1
-	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 21:21:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1B1F04ED3D8
+	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 22:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E758C25FA13;
-	Mon,  6 Oct 2025 21:21:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7E61EFFB2;
+	Mon,  6 Oct 2025 22:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PwpEJP8o"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cXA5csi3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC719A932
-	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 21:21:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF941D432D
+	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 22:11:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759785662; cv=none; b=cs3dAenSnQivde7nKQMmvp4OI2qRtNj4T5MUS9SL61d08jFvyuUzzvqtZ5h+0luBcDEAkqDRzXExAoEd9u8YS6TNUOsR91QfeuevZ92E/6zKCqRr+mKzUARV7u2ouP8ffLAaYdE5uOTA4aYcerFcy+aucNuDPIEG73g/ayekTqQ=
+	t=1759788671; cv=none; b=WhOrtlLzu7WNHHOkO3afrVCRhIrJgUW3hN24gHueBIXPr68C/8bU3DHZF/3VYZj9kMjwol7XZgHKol0kmC/dlt0S0LbiB090Pyy7urx6Rv5cWuqj4w5Tf4pw3VVomiMOeqdjMXI2ZnbHqc498uWwE3SB0Mvgu1T5yUNMG/7A8+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759785662; c=relaxed/simple;
-	bh=HfIeuybg/mn5ITts2VpFu5Joc84hMYJsBY3p3oUxuIU=;
+	s=arc-20240116; t=1759788671; c=relaxed/simple;
+	bh=DHV3EiN0lxv+lYErWqmZujGIa1fkv0wlyETbSMIGW2U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mzw6V2uBJBcBePfD1zc8g8McHJhG7sgP3dSMoK/y0xfls4nlcsqv0IKYgOsBQXKVzfeP9YHeDxEkaMJOAKza5eTzeuE59tAATCmHOE2v7Yr77pjCib10xJlD+vSXymH/D7rXlVVXfnl71NrIxM9MIPQvpszUPAYTZszZLaHjqUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PwpEJP8o; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-27eeafd4882so77045ad.0
-        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 14:21:00 -0700 (PDT)
+	 To:Cc:Content-Type; b=RZOq63DTqtyQANJm86q2Gi1EiJNZporRpPte7dr5DkShmAVXWAiaBmf7xd28AQBuSEAD3QjN7zpt4LEvm91PuqK6imtZx/oj/PvzkvXP/A3k8lw8Ys+h7ibsO6jX/M6sK0PN7GO4jJHltgVTuiP0tR0uH5MqWQrOMGxsTCYCPBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cXA5csi3; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-32ec291a325so4455570a91.1
+        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 15:11:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759785660; x=1760390460; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759788669; x=1760393469; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yygezgppwmN8TaXy2XddLNQ6K72ee2TsBC22bb6zw+c=;
-        b=PwpEJP8og450/iTp4E3+bi54Fs/jRZSd32DyswyasobvxhKrimz2WxeF4BvKKMLUEW
-         4p57QogXdr2rr0N+Y4JJBlA1+qJNW9FLEMDxVnV3Zf7itWuHglIIDM7av603/4DUZ96r
-         JiNymH9YZadPv5+bAqZt/uq/zPoK9nnqS1NoFwrtsZlolQi4mX4TmuydPOsaGfZqUv9Z
-         yLeehYH9kkwGHxnYkoV1S0xZbYCtcYUNvTp3mkWFTkULfxJobXAJ/OkOLo2ZqDCfwcZv
-         UncJSh88XNQRkScKds9hGFMtuoFGN6a5s2izLOZLL8irh7vsBGGvZZNqLKaCOa8PLnjP
-         O0Fw==
+        bh=o1T1yZObjQDef09hirExvqobcRZlViu8SZOj9zM47Jo=;
+        b=cXA5csi3Fno8i2kcihskI0vqmikD5lIbu0rnkIBRUScwYRioVY8UwfEVmAmvJZz7rt
+         1GOvRLo7Xdp/jdmyOJxLAk6XkxCWbiFTl4lSw96SyOUHKRx0bZ2NhaszIm5XdadLw5lx
+         MEKl7pxDINlZjgv0xnP5YxdEeDCC22EacYTkIhi2mgcyZmZ37OiyNwhh6AieuPJflNTd
+         Mq/tL+QTGxrOoZlG5tDufHOKvO8Dn2td1ZVF1jclK15WKsngHC46uMYxk5/5FiIXBTPw
+         g/7f8qcgeZslamwdc6tqO2bhC6E0mTVpVlMR3nPf0RlQnOphWWrmHXy22owPnc/p40Tj
+         0DoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759785660; x=1760390460;
+        d=1e100.net; s=20230601; t=1759788669; x=1760393469;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yygezgppwmN8TaXy2XddLNQ6K72ee2TsBC22bb6zw+c=;
-        b=kC/j/ZN0afmiw6VP81dfkznILt7OMqw0JdTFT/F2aGWB9Sto3riKfd2FJsK4EVRP3r
-         DlayKb2WMyXnb1chrJaMIx8gFOLpSfwA8+xu4+cK4D7jF4AfRhhBcbNPTp+TCtqGPWwU
-         xi9mhOwEqb+x2ZLnbOHSErreKp5+2YPGtWWQ1WunDm4hWuRWjC1xjMz4HPqdWVNvQwUd
-         jepa9UJg4a6Y0neQwR7wiltRni8jKy6mZzPoFY/23oedDp4zyJ6nH99jOHeDVtxRi3GG
-         79p4MWSuB4W2gPB9+AxdQEBcuDe/WyCzasVvz3Nyoqy5yshbY3M1G1WafEYT6qsFNq+0
-         E6Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCVik2O6+dev6S0Ol/9V2v2Qh2ym4hDi9oc3WlNjB070rmiWMznRVPPREU0ssXiL8s96qjU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzzl3UQJYNdCO7m7ZBGnvcyW5LAN9m75owZKvvTWRJl9ULn4/iz
-	z95iwpeldEyPWT6veWFcUpGorQbesFPqCsz7qlzPtvMY8PgiUrvcgQu9VU4AT9qEGeIzpDApP4U
-	dcY8YGZ17IWKcxtH7KKnbBqi9d5iQE1H8aWKXJ2Mb
-X-Gm-Gg: ASbGncvFWXA5C3h2OoCCrwmsxLdSlLgl/OwIC7U6jhaQ3ZoCLxiobjg40GkD2qfqPxb
-	OU15JYqpkCHyjK/Qapj6bIbm9tlbgmpeZllbSKGHNZV31iw3GE4yBG7cbOuhN5REzDzeTUiz7j2
-	/tlWrcsEggWLgQ7lsUYeFTzeYB2IBmPfRPdwG75f6wNI+rMts48UJMbRb+Gi3V/wxTwRKomFsDc
-	9mnSu5DaMM3KMhFchwkIw7DRXl2P2eT8R5zUn+epfPJBVjIQUb8tAVvJszdcA4pfcR1EbuCwgvD
-	LjTU/C4tVCmUsQ==
-X-Google-Smtp-Source: AGHT+IHfTLW5dyXHYQEkC/161hfyYQ3YoYrzeoe+Ds3RuuOmM3FdzL7oX5omaWNuFuoeoDhi+lMYcYEr9UYzi3r4iOA=
-X-Received: by 2002:a17:903:292:b0:266:b8a2:f605 with SMTP id
- d9443c01a7336-28ecb5a0d4dmr485375ad.3.1759785659818; Mon, 06 Oct 2025
- 14:20:59 -0700 (PDT)
+        bh=o1T1yZObjQDef09hirExvqobcRZlViu8SZOj9zM47Jo=;
+        b=NFQJnvzdW2LnZ1AsxMjPD6zg9gcPN3iz/Fm8UlUwepYCi2evwu+WD9tzHIzU/0zw0S
+         D9mZQL/WKZx4l4ewQTe9YJQXAZRW1rd+JYt7xkRGxFFUP5sJxZuEZJgqku1eK/StteK2
+         wM6PFWILZeCGUez5IT4neNnHNwBvQg/Rm7AGffceE1zsrLmSgP3jHT/WCPHx4gKR6J28
+         c2SfY+5i4+TmtZfQqxTkuFXqIAhz9GcurC4isdVcRCx6Gak2Zpbj6XVfj/6RESnjiCvH
+         lnOqinA786uJCiqJ5iEbWJWrxJkYRylnDY/MXav4JFsmOqOWuXUp4+4VNDYn61KX3Ar8
+         Jilg==
+X-Gm-Message-State: AOJu0Yy3UYF0Wn+DBs62+/AQztOqzBJeavK29JPiIV/luzcHSq81e86Y
+	1mqZsGcG2WcHqMAzgI+KqvVBAEE4s2kxTbGH/Dx0ud9DwtSkEUW4QvawjaZQV+XV+sKSMtHk81R
+	cGTN8jCv44JledUkq4VZWq49NxZ9wX2M=
+X-Gm-Gg: ASbGnctT+w3jnyHHCiMfXjo32baJkQ3QkHw8KNoTsVnvhA2F3lo/Fk4vI7az/wNWt7R
+	noKAMLZ7BC0Fg67+BhrfFSBOMRY2zI4qBgwkXAt+tDz31JW9efxJ29nuy/qfcwWslgJl0cUs/gZ
+	Oxjz4NSdM8dqMItqhzq0w4Zvq9jaYge+cyL8fgMMTLzH79PM6ufeyRBvfh+sTLUDY6zNiEeEJoN
+	W4Vt34DSj4xcF7u3Gdx4lIwgbJpdjC/xjquc2+LHCtkTLc=
+X-Google-Smtp-Source: AGHT+IHz9NehlFhfmFmP4pMr9CTJIA862wujINDkFqnf4UqZwpRuRK6M6EHtCF/PZGuo8i83bQZyDh+NNd9gmZrXN7w=
+X-Received: by 2002:a17:90b:1645:b0:336:9e78:c4c1 with SMTP id
+ 98e67ed59e1d1-339c276e987mr20729311a91.15.1759788668944; Mon, 06 Oct 2025
+ 15:11:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251001181229.1010340-1-irogers@google.com> <20251001181229.1010340-2-irogers@google.com>
- <CAP-5=fVHetc8DqdqxURJm_VtaH6apJKoyVOSpfQrE2ntkEa+4g@mail.gmail.com> <aOQfQW5WODbioEiA@x1>
-In-Reply-To: <aOQfQW5WODbioEiA@x1>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 6 Oct 2025 14:20:47 -0700
-X-Gm-Features: AS18NWCk2I9RDjWf4Ty0o9SSdCAq1mkn4MWFQHKRsxoJqJ0SW43PlbtyI2nArh0
-Message-ID: <CAP-5=fX3YDUUZm9K82fxw5a_LYfXh6uYF7HRJ=c4xMwJ1=cXCA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] perf bpf_counter: Fix handling of cpumap fixing hybrid
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Thomas Falcon <thomas.falcon@intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	Jiri Olsa <jolsa@kernel.org>, Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	Howard Chu <howardchu95@gmail.com>, Gabriele Monaco <gmonaco@redhat.com>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, James Clark <james.clark@linaro.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Tengda Wu <wutengda@huaweicloud.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>
+References: <20250905150641.2078838-1-xukuohai@huaweicloud.com>
+ <20250905150641.2078838-2-xukuohai@huaweicloud.com> <CAEf4BzaSEjQzF47BZeh0de9pFbKpaB8JqCs629hV9xZDhMyTgw@mail.gmail.com>
+ <63272c95-9669-41c1-8e77-575ec37d36c0@huaweicloud.com>
+In-Reply-To: <63272c95-9669-41c1-8e77-575ec37d36c0@huaweicloud.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 6 Oct 2025 15:10:54 -0700
+X-Gm-Features: AS18NWBO6M2HICrYOohnJ3ZcBIkCBSv4Q3JzoIHKQHF3U7d0pFnbaajP30rEf9E
+Message-ID: <CAEf4BzbYtaPf0jjoiv16iKWRKkv9ZTH_hBiZMUF+PkjVGOC53A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Add overwrite mode for bpf ring buffer
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, 
+	Song Liu <song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 6, 2025 at 12:57=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Mon, Sep 29, 2025 at 6:41=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
+> wrote:
 >
-> On Mon, Oct 06, 2025 at 09:18:22AM -0700, Ian Rogers wrote:
-> > On Wed, Oct 1, 2025 at 11:12=E2=80=AFAM Ian Rogers <irogers@google.com>=
- wrote:
-> > >
-> > > Don't open evsels on all CPUs, open them just on the CPUs they
-> > > support. This avoids opening say an e-core event on a p-core and
-> > > getting a failure - achieve this by getting rid of the "all_cpu_map".
-> > >
-> > > In install_pe functions don't use the cpu_map_idx as a CPU number,
-> > > translate the cpu_map_idx, which is a dense index into the cpu_map
-> > > skipping holes at the beginning, to a proper CPU number.
-> > >
-> > > Before:
-> > > ```
-> > > $ perf stat --bpf-counters -a -e cycles,instructions -- sleep 1
-> > >
-> > >  Performance counter stats for 'system wide':
-> > >
-> > >    <not supported>      cpu_atom/cycles/
-> > >        566,270,672      cpu_core/cycles/
-> > >    <not supported>      cpu_atom/instructions/
-> > >        572,792,836      cpu_core/instructions/           #    1.01  i=
-nsn per cycle
-> > >
-> > >        1.001595384 seconds time elapsed
-> > > ```
-> > >
-> > > After:
-> > > ```
-> > > $ perf stat --bpf-counters -a -e cycles,instructions -- sleep 1
-> > >
-> > >  Performance counter stats for 'system wide':
-> > >
-> > >        443,299,201      cpu_atom/cycles/
-> > >      1,233,919,737      cpu_core/cycles/
-> > >        213,634,112      cpu_atom/instructions/           #    0.48  i=
-nsn per cycle
-> > >      2,758,965,527      cpu_core/instructions/           #    2.24  i=
-nsn per cycle
-> > >
-> > >        1.001699485 seconds time elapsed
-> > > ```
-> > >
-> > > Fixes: 7fac83aaf2ee ("perf stat: Introduce 'bperf' to share hardware =
-PMCs with BPF")
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> On 9/20/2025 6:10 AM, Andrii Nakryiko wrote:
+> > On Fri, Sep 5, 2025 at 8:13=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.=
+com> wrote:
+> >>
+> >> From: Xu Kuohai <xukuohai@huawei.com>
+> >>
+> >> When the bpf ring buffer is full, new events can not be recorded util
 > >
-> > +Thomas Falcon
+> > typo: until
 > >
-> > I think it'd be nice to get this quite major fix for
-> > --bpf-counters/bperf for hybrid architectures into v6.18 and stable
-> > builds. Thomas would it be possible for you to give a Tested-by tag
-> > using the reproduction in the commit message?
 >
-> Its even already in linux-next:
+> ACK
 >
-> =E2=AC=A2 [acme@toolbx perf-tools-next]$ git log -5 --oneline linux-next/=
-master tools/perf/util/bpf_counter.c
-> b91917c0c6fa6df9 perf bpf_counter: Fix handling of cpumap fixing hybrid
-> 8c519a825b4add85 perf bpf_counter: Move header declarations into C code
-> 07dc3a6de33098b0 perf stat: Support inherit events during fork() for bper=
-f
-> effe957c6bb70cac libperf cpumap: Replace usage of perf_cpu_map__new(NULL)=
- with perf_cpu_map__new_online_cpus()
-> b84b3f47921568a8 perf bpf_counter: Fix a few memory leaks
-> =E2=AC=A2 [acme@toolbx perf-tools-next]$
+> >> the consumer consumes some events to free space. This may cause critic=
+al
+> >> events to be discarded, such as in fault diagnostic, where recent even=
+ts
+> >> are more critical than older ones.
+> >>
+> >> So add ovewrite mode for bpf ring buffer. In this mode, the new event
+> >
+> > overwrite, BPF
+> >
+>
+> ACK
+>
+> >> overwrites the oldest event when the buffer is full.
+> >>
+> >> The scheme is as follows:
+> >>
+> >> 1. producer_pos tracks the next position to write new data. When there
+> >>     is enough free space, producer simply moves producer_pos forward t=
+o
+> >>     make space for the new event.
+> >>
+> >> 2. To avoid waiting for consumer to free space when the buffer is full=
+,
+> >>     a new variable overwrite_pos is introduced for producer. overwrite=
+_pos
+> >>     tracks the next event to be overwritten (the oldest event committe=
+d) in
+> >>     the buffer. producer moves it forward to discard the oldest events=
+ when
+> >>     the buffer is full.
+> >>
+> >> 3. pending_pos tracks the oldest event under committing. producer ensu=
+res
+> >
+> > "under committing" is confusing. Oldest event to be committed?
+> >
+>
+> Yes, 'the oldest event to be committed'. Thanks!
+>
+> >>     producers_pos never passes pending_pos when making space for new e=
+vents.
+> >>     So multiple producers never write to the same position at the same=
+ time.
+> >>
+> >> 4. producer wakes up consumer every half a round ahead to give it a ch=
+ance
+> >>     to retrieve data. However, for an overwrite-mode ring buffer, user=
+s
+> >>     typically only cares about the ring buffer snapshot before a fault=
+ occurs.
+> >>     In this case, the producer should commit data with BPF_RB_NO_WAKEU=
+P flag
+> >>     to avoid unnecessary wakeups.
+> >>
+> >> To make it clear, here are some example diagrams.
+> >>
+> >> 1. Let's say we have a ring buffer with size 4096.
+> >>
+> >>      At first, {producer,overwrite,pending,consumer}_pos are all set t=
+o 0
+> >>
+> >>      0       512      1024    1536     2048     2560     3072     3584=
+       4096
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      |                                                                =
+       |
+> >>      |                                                                =
+       |
+> >>      |                                                                =
+       |
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      ^
+> >>      |
+> >>      |
+> >> producer_pos =3D 0
+> >> overwrite_pos =3D 0
+> >> pending_pos =3D 0
+> >> consumer_pos =3D 0
+> >>
+> >> 2. Reserve event A, size 512.
+> >>
+> >>      There is enough free space, so A is allocated at offset 0 and pro=
+ducer_pos
+> >>      is moved to 512, the end of A. Since A is not submitted, the BUSY=
+ bit is
+> >>      set.
+> >>
+> >>      0       512      1024    1536     2048     2560     3072     3584=
+       4096
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      |        |                                                       =
+       |
+> >>      |   A    |                                                       =
+       |
+> >>      | [BUSY] |                                                       =
+       |
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      ^        ^
+> >>      |        |
+> >>      |        |
+> >>      |    producer_pos =3D 512
+> >>      |
+> >> overwrite_pos =3D 0
+> >> pending_pos =3D 0
+> >> consumer_pos =3D 0
+> >>
+> >> 3. Reserve event B, size 1024.
+> >>
+> >>      B is allocated at offset 512 with BUSY bit set, and producer_pos =
+is moved
+> >>      to the end of B.
+> >>
+> >>      0       512      1024    1536     2048     2560     3072     3584=
+       4096
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      |        |                 |                                     =
+       |
+> >>      |   A    |        B        |                                     =
+       |
+> >>      | [BUSY] |      [BUSY]     |                                     =
+       |
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      ^                          ^
+> >>      |                          |
+> >>      |                          |
+> >>      |                   producer_pos =3D 1536
+> >>      |
+> >> overwrite_pos =3D 0
+> >> pending_pos =3D 0
+> >> consumer_pos =3D 0
+> >>
+> >> 4. Reserve event C, size 2048.
+> >>
+> >>      C is allocated at offset 1536 and producer_pos becomes 3584.
+> >>
+> >>      0       512      1024    1536     2048     2560     3072     3584=
+       4096
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      |        |                 |                                   | =
+       |
+> >>      |    A   |        B        |                 C                 | =
+       |
+> >>      | [BUSY] |      [BUSY]     |               [BUSY]              | =
+       |
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      ^                                                              ^
+> >>      |                                                              |
+> >>      |                                                              |
+> >>      |                                                    producer_pos=
+ =3D 3584
+> >>      |
+> >> overwrite_pos =3D 0
+> >> pending_pos =3D 0
+> >> consumer_pos =3D 0
+> >>
+> >> 5. Submit event A.
+> >>
+> >>      The BUSY bit of A is cleared. B becomes the oldest event under wr=
+iting, so
+> >
+> > Now it's "under writing" :) To be committed? Or "pending committing"
+> > or just "pending", I guess. But not under anything, it just confuses
+> > readers. IMO.
+> >
+>
+> Once again, 'oldest event to be committed'.
+>
+> I should check it with an AI agent first.
+>
+> >>      pending_pos is moved to 512, the start of B.
+> >>
+> >>      0       512      1024    1536     2048     2560     3072     3584=
+       4096
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      |        |                 |                                   | =
+       |
+> >>      |    A   |        B        |                 C                 | =
+       |
+> >>      |        |      [BUSY]     |               [BUSY]              | =
+       |
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      ^        ^                                                     ^
+> >>      |        |                                                     |
+> >>      |        |                                                     |
+> >>      |   pending_pos =3D 512                                  producer=
+_pos =3D 3584
+> >>      |
+> >> overwrite_pos =3D 0
+> >> consumer_pos =3D 0
+> >>
+> >> 6. Submit event B.
+> >>
+> >>      The BUSY bit of B is cleared, and pending_pos is moved to the sta=
+rt of C,
+> >>      which is the oldest event under writing now.
+> >
+> > ditto
+> >
+>
+> Again and again :(
+>
+> >>
+> >>      0       512      1024    1536     2048     2560     3072     3584=
+       4096
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      |        |                 |                                   | =
+       |
+> >>      |    A   |        B        |                 C                 | =
+       |
+> >>      |        |                 |               [BUSY]              | =
+       |
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      ^                          ^                                   ^
+> >>      |                          |                                   |
+> >>      |                          |                                   |
+> >>      |                     pending_pos =3D 1536               producer=
+_pos =3D 3584
+> >>      |
+> >> overwrite_pos =3D 0
+> >> consumer_pos =3D 0
+> >>
+> >> 7. Reserve event D, size 1536 (3 * 512).
+> >>
+> >>      There are 2048 bytes not under writing between producer_pos and p=
+ending_pos,
+> >>      so D is allocated at offset 3584, and producer_pos is moved from =
+3584 to
+> >>      5120.
+> >>
+> >>      Since event D will overwrite all bytes of event A and the beginin=
+g 512 bytes
+> >
+> > typo: beginning, but really "first 512 bytes" would be clearer
+> >
+>
+> OK, I=E2=80=99ll switch to 'first 512 bytes' for clarity.
+>
+> >>      of event B, overwrite_pos is moved to the start of event C, the o=
+ldest event
+> >>      that is not overwritten.
+> >>
+> >>      0       512      1024    1536     2048     2560     3072     3584=
+       4096
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      |                 |        |                                   | =
+       |
+> >>      |      D End      |        |                 C                 | =
+D Begin|
+> >>      |      [BUSY]     |        |               [BUSY]              | =
+[BUSY] |
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      ^                 ^        ^
+> >>      |                 |        |
+> >>      |                 |   pending_pos =3D 1536
+> >>      |                 |   overwrite_pos =3D 1536
+> >>      |                 |
+> >>      |             producer_pos=3D5120
+> >>      |
+> >> consumer_pos =3D 0
+> >>
+> >> 8. Reserve event E, size 1024.
+> >>
+> >>      Though there are 512 bytes not under writing between producer_pos=
+ and
+> >>      pending_pos, E can not be reserved, as it would overwrite the fir=
+st 512
+> >>      bytes of event C, which is still under writing.
+> >>
+> >> 9. Submit event C and D.
+> >>
+> >>      pending_pos is moved to the end of D.
+> >>
+> >>      0       512      1024    1536     2048     2560     3072     3584=
+       4096
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      |                 |        |                                   | =
+       |
+> >>      |      D End      |        |                 C                 | =
+D Begin|
+> >>      |                 |        |                                   | =
+       |
+> >>      +----------------------------------------------------------------=
+-------+
+> >>      ^                 ^        ^
+> >>      |                 |        |
+> >>      |                 |   overwrite_pos =3D 1536
+> >>      |                 |
+> >>      |             producer_pos=3D5120
+> >>      |             pending_pos=3D5120
+> >>      |
+> >> consumer_pos =3D 0
+> >>
+> >> The performance data for overwrite mode will be provided in a follow-u=
+p
+> >> patch that adds overwrite mode benchs.
+> >>
+> >> A sample of performance data for non-overwrite mode on an x86_64 and a=
+rm64
+> >> CPU, before and after this patch, is shown below. As we can see, no ob=
+vious
+> >> performance regression occurs.
+> >>
 
-Oh, thanks! Sorry for missing it. Thanks Thomas for the tag!
+[...]
 
-Ian
+> >> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> >> ---
+> >>   include/uapi/linux/bpf.h       |   4 +
+> >>   kernel/bpf/ringbuf.c           | 159 +++++++++++++++++++++++++++----=
+--
+> >>   tools/include/uapi/linux/bpf.h |   4 +
+> >>   3 files changed, 141 insertions(+), 26 deletions(-)
+> >>
+
+[...]
+
+> >> +
+> >> +       over_pos =3D READ_ONCE(rb->overwrite_pos);
+> >> +       return min(prod_pos - max(cons_pos, over_pos), rb->mask + 1);
+> >
+> > I'm trying to understand why you need to min with `rb->mask + 1`, can
+> > you please elaborate?
+>
+>
+> We need the min because rb->producer_pos and rb->overwrite_pos are read
+> at different times. During this gap, a fast producer may wrap once or
+> more, making over_pos larger than prod_pos.
+>
+
+what if you read overwrite_pos before reading producer_pos? Then it
+can't be larger than producer_pos and available data would be
+producer_pos - max(consumer_pos, overwrite_pos)? would that work?
+
+
+> > And also, at least for consistency, use smp_load_acquire() for overwrit=
+e_pos?
+> >
+>
+> Using READ_ONCE here is to stay symmetric with __bpf_ringbuf_reserve(),
+> where overwrite_pos is WRITE_ONCE first, followed by smp_store_release(pr=
+oducer_pos).
+> So here we do smp_load_acquire(producer_pos) first, then READ_ONCE(overwr=
+ite_pos)
+> to ensure a consistent view of the ring buffer.
+>
+> For consistency when reading consumer_pos and producer_pos, I=E2=80=99m f=
+ine with
+> switching READ_ONCE to smp_load_acquire for overwrite_pos.
+>
+
+I'm not sure it matters much, but this function is called outside of
+rb->spinlock, while __bpf_ringbuf_reserve() does hold a lock while
+doing that WRITE_ONCE(). So it might not make any difference, but I
+have mild preference for smp_load_acquire() here.
+
+> >>   }
+> >>
+> >>   static u32 ringbuf_total_data_sz(const struct bpf_ringbuf *rb)
+> >> @@ -402,11 +419,43 @@ bpf_ringbuf_restore_from_rec(struct bpf_ringbuf_=
+hdr *hdr)
+> >>          return (void*)((addr & PAGE_MASK) - off);
+> >>   }
+> >>
+> >> +
+
+[...]
+
+> >> +       /* In overwrite mode, move overwrite_pos to the next record to=
+ be
+> >> +        * overwritten if the ring buffer is full
+> >> +        */
+> >
+> > hm... here I think the important point is that we search for the next
+> > record boundary until which we need to overwrite data such that it
+> > fits newly reserved record. "next record to be overwritten" isn't that
+> > important (we might never need to overwrite it). Important are those
+> > aspects of a) staying on record boundary and b) consuming enough
+> > records to reserve the new one.
+> >
+> > Can you please update the comment to mention the above points?
+> >
+>
+> Sure, I'll update the comment to:
+>
+> In overwrite mode, advance overwrite_pos when the ring buffer is full.
+> The key points are to stay on record boundaries and consume enough
+> records to fit the new one.
+>
+
+ok
+
+[...]
+
+>
+> >> +                          unsigned long rec_pos,
+> >> +                          unsigned long cons_pos,
+> >> +                          u32 len, u64 flags)
+> >> +{
+> >> +       unsigned long rec_end;
+> >> +
+> >> +       if (flags & BPF_RB_FORCE_WAKEUP)
+> >> +               return true;
+> >> +
+> >> +       if (flags & BPF_RB_NO_WAKEUP)
+> >> +               return false;
+> >> +
+> >> +       /* for non-overwrite mode, if consumer caught up and is waitin=
+g for
+> >> +        * our record, notify about new data availability
+> >> +        */
+> >> +       if (likely(!rb->overwrite_mode))
+> >> +               return cons_pos =3D=3D rec_pos;
+> >> +
+> >> +       /* for overwrite mode, to give the consumer a chance to catch =
+up
+> >> +        * before being overwritten, wake up consumer every half a rou=
+nd
+> >> +        * ahead.
+> >> +        */
+> >> +       rec_end =3D rec_pos + ringbuf_round_up_hdr_len(len);
+> >> +
+> >> +       cons_pos &=3D (rb->mask >> 1);
+> >> +       rec_pos &=3D (rb->mask >> 1);
+> >> +       rec_end &=3D (rb->mask >> 1);
+> >> +
+> >> +       if (cons_pos =3D=3D rec_pos)
+> >> +               return true;
+> >> +
+> >> +       if (rec_pos < cons_pos && cons_pos < rec_end)
+> >> +               return true;
+> >> +
+> >> +       if (rec_end < rec_pos && (cons_pos > rec_pos || cons_pos < rec=
+_end))
+> >> +               return true;
+> >> +
+> >
+> > hm... ok, let's discuss this. Why do we need to do some half-round
+> > heuristic for overwrite mode? If a consumer is falling behind it
+> > should be actively trying to catch up and they don't need notification
+> > (that's the non-overwrite mode logic already).
+> >
+> > So there is more to this than a brief comment you left, can you please
+> > elaborate?
+> >
+>
+> The half-round wakeup was originally intended to work with libbpf in the
+> v1 version. In that version, libbpf used a retry loop to safely copy data
+> from the ring buffer that hadn=E2=80=99t been overwritten. By waking the =
+consumer
+> once every half round, there was always a period where the consumer and
+> producer did not overlap, which helped reduce the number of retries.
+
+I can't say I completely grok the logic here, but do you think we
+should still keep this half-round wakeup? It looks like an arbitrary
+heuristic, so I'd rather not have it.
+
+>
+> > pw-bot: cr
+> >
+> >> +       return false;
+> >> +}
+> >> +
+> >> +static __always_inline
+> >
+> > we didn't have always_inline before, any strong reason to add it now?
+> >
+>
+> I just wanted to avoid introducing any performance regression. Before thi=
+s
+> patch, bpf_ringbuf_commit() was automatically inlined by the compiler, bu=
+t
+> after the patch it wasn=E2=80=99t, so I added always_inline explicitly to=
+ keep it
+> inlined.
+
+how big of a difference was it in benchmarks? It's generally frowned
+upon using __always_inline without a good reason.
+
+[...]
 
