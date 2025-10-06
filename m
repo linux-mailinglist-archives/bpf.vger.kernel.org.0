@@ -1,168 +1,256 @@
-Return-Path: <bpf+bounces-70443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 845CDBBF2D6
-	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 22:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A37E4BBF32D
+	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 22:33:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 200FE4F143A
-	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 20:20:26 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BA36D4F1D60
+	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 20:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF3742DEA74;
-	Mon,  6 Oct 2025 20:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9BA2DEA96;
+	Mon,  6 Oct 2025 20:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ovlTV1jW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uKjbHzCh"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018CE2D73A1
-	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 20:20:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651B42DE6F8
+	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 20:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759782004; cv=none; b=bRIgBcKpjVNvasqDB8T/3b/xdHkvPBBLQ/abUqbMa+YU0Huuq04XeOpV48wUhUDYaXrunfQJdfOiQW8aBXYenb+nYEvX9ScTxC/TlrhsIwo++mvqK3mEyBOMqrzVE1Bg8a9vwhJbes8Cwzmol7nieDSde1JSi+JBK6ZYALfqLtU=
+	t=1759782796; cv=none; b=qS6Go3u1F5MC7Lpasu5ma0K5zBu2gmGUxVUAGIfuPu/Sv+YOPQnbBkYvCmiDWSMpmKATGJCnzN3DnGj/DyF0trIQ7BBO0n1miulEx1JTUsA5oRVAd0B+lM0zW6k45QTo9ZcGijty/5mGBLaZZ7E67CY+fmwr8Yib7CqpBodIVAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759782004; c=relaxed/simple;
-	bh=SQlc/yrGAX9hmo3SfLH4AECETZDXLCtokCVF3sm4WK0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UJTZG1BBN0muXH3CKWoTQ4UEzqeq2N74+ptQ4d0TICMhaMxR5fwP28ZKS7Zfokhh3nOr1ZNWKMVDfUgdE48Bk5PpTFkv3DRxNdWazzGKqDJclKJh7F6xw4AX7uKwHqCVoqnytzKPphMTk3QbScBFPfCBK+ymu57vTxbdStMe1T4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ovlTV1jW; arc=none smtp.client-ip=95.215.58.182
+	s=arc-20240116; t=1759782796; c=relaxed/simple;
+	bh=LhWazHeSgl/2OumXm4GVNbbgKcVFqn2w2hSeAUjf9eg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mrXsN2l1jjOVIFNxw6PKWU2J/vIJB48oWsxWpSkK2MnL8ASMCF+2pKPctLFr/Q06JdyVvitY+C26QeoTHvMeLOcFFO2Ma4Vld72ZKvtfJuOz6kyPTUf4647JQpx4ffBFUERR+PUEyDG3Q+NiQBqvi0ZdO1N0CnvM0VKXc23U5yY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uKjbHzCh; arc=none smtp.client-ip=91.218.175.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d88addc3-bd10-4923-9ded-10fd999f39e7@linux.dev>
+Date: Mon, 6 Oct 2025 13:32:56 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759781989;
+	t=1759782781;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=H25UD2zYRPwdqIMTTOsqvjFnpku+oOdMSbrffDJoc1A=;
-	b=ovlTV1jWZkWhWZ8BCHisF3RGMbpfyerSfxz8CaeBcPS1duwE4XR8S+bTbNXwyB/erwovXS
-	MWV/HcFMHp5ilBoq+y79eifeYvIokCZH/y1iezjTv23PtYDlCAt/goF/IOqvLLBKjyhwju
-	CjrSAyT1Q9v2X7Es8Jy3nByqJZJZdf0=
-Date: Mon, 6 Oct 2025 13:19:43 -0700
+	bh=JHH+4bf3hlBlZ1LmstUIJffws4jWpMP8V0lgu/gJTUg=;
+	b=uKjbHzChnzx2wm6WdKX0G2O+LfEbF03GVh9A/3b/TBEuOow+68ow8vPjH+P53r8tVxfIYY
+	Xy3oB/BjxBm/7ZPUpEhPclJ5X/SBvU6wHFNuj3oRMrkCbsVeg6scn9Vmaf+j15PBbZiWt8
+	JoZsT/ZOhVwDT9f/n4F61TteGGFb/OA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: JP Kobryn <inwardvessel@gmail.com>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Yosry Ahmed <yosryahmed@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
+Subject: Re: [PATCH] memcg: introduce kfuncs for fetching memcg stats
+Message-ID: <galnconmnd4uoupb5dfa7nbfmpeovpjnov6fnxa56sslejl5em@fmhbdnn5v25e>
+References: <20251001045456.313750-1-inwardvessel@gmail.com>
+ <CAADnVQKQpEsgoR5xw0_32deMqT4Pc7ZOo8jwJWkarcOrZijPzw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v2 06/12] bpf: Change local_storage->lock and
- b->lock to rqspinlock
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Amery Hung <ameryhung@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Martin KaFai Lau <martin.lau@kernel.org>, KP Singh <kpsingh@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Kernel Team <kernel-team@meta.com>
-References: <20251002225356.1505480-1-ameryhung@gmail.com>
- <20251002225356.1505480-7-ameryhung@gmail.com>
- <CAADnVQ+X1Otu+hrBeCq6Zr9vAaH5vGU42s6jLdBiDiLQcwpj4Q@mail.gmail.com>
- <CAMB2axOUU5J4Ec=tuBDYePzucw1QQLciFWC01=eVQdPOhT1BGQ@mail.gmail.com>
- <CAADnVQ+=F5SkoRA4LU+JE+u87TLFp-mTS4bv+u9MUST2+CX8AA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAADnVQ+=F5SkoRA4LU+JE+u87TLFp-mTS4bv+u9MUST2+CX8AA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKQpEsgoR5xw0_32deMqT4Pc7ZOo8jwJWkarcOrZijPzw@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On 10/6/25 10:58 AM, Alexei Starovoitov wrote:
-> On Fri, Oct 3, 2025 at 3:03 PM Amery Hung <ameryhung@gmail.com> wrote:
->>
->> On Thu, Oct 2, 2025 at 4:37 PM Alexei Starovoitov
->> <alexei.starovoitov@gmail.com> wrote:
->>>
->>> On Thu, Oct 2, 2025 at 3:54 PM Amery Hung <ameryhung@gmail.com> wrote:
->>>>
->>>>          bpf_selem_free_list(&old_selem_free_list, false);
->>>>          if (alloc_selem) {
->>>>                  mem_uncharge(smap, owner, smap->elem_size);
->>>> @@ -791,7 +812,7 @@ void bpf_local_storage_destroy(struct bpf_local_storage *local_storage)
->>>>           * when unlinking elem from the local_storage->list and
->>>>           * the map's bucket->list.
->>>>           */
->>>> -       raw_spin_lock_irqsave(&local_storage->lock, flags);
->>>> +       while (raw_res_spin_lock_irqsave(&local_storage->lock, flags));
->>>
->>> This pattern and other while(foo) doesn't make sense to me.
->>> res_spin_lock will fail only on deadlock or timeout.
->>> We should not spin, since retry will likely produce the same
->>> result. So the above pattern just enters into infinite spin.
->>
->> I only spin in destroy() and map_free(), which cannot deadlock with
->> itself or each other. However, IIUC, a head waiter that detects
->> deadlock will cause other queued waiters to also return -DEADLOCK. I
->> think they should be able to make progress with a retry.
+On Wed, Oct 01, 2025 at 03:25:22PM -0700, Alexei Starovoitov wrote:
+> On Tue, Sep 30, 2025 at 9:57 PM JP Kobryn <inwardvessel@gmail.com> wrote:
+> >
+> > When reading cgroup memory.stat files there is significant work the kernel
+> > has to perform in string formatting the numeric data to text. Once a user
+> > mode program gets this text further work has to be done, converting the
+> > text back to numeric data. This work can be expensive for programs that
+> > periodically sample this data over a large enough fleet.
+> >
+> > As an alternative to reading memory.stat, introduce new kfuncs to allow
+> > fetching specific memcg stats from within bpf cgroup iterator programs.
+> > This approach eliminates the conversion work done by both the kernel and
+> > user mode programs. Previously a program could open memory.stat and
+> > repeatedly read from the associated file descriptor (while seeking back to
+> > zero before each subsequent read). That action can now be replaced by
+> > setting up a link to the bpf program once in advance and then reusing it to
+> > invoke the cgroup iterator program each time a read is desired. An example
+> > program can be found here [0].
+> >
+> > There is a significant perf benefit when using this approach. In terms of
+> > elapsed time, the kfuncs allow a bpf cgroup iterator program to outperform
+> > the traditional file reading method, saving almost 80% of the time spent in
+> > kernel.
+> >
+> > control: elapsed time
+> > real    0m14.421s
+> > user    0m0.183s
+> > sys     0m14.184s
+> >
+> > experiment: elapsed time
+> > real    0m3.250s
+> > user    0m0.225s
+> > sys     0m2.916s
 > 
-> If it's in map_free() path then why are we taking the lock at all?
-> There are supposed to be no active users of it.
+> Nice, but github repo somewhere doesn't guarantee that
+> the work is equivalent.
+> Please add it as a selftest/bpf instead.
+> Like was done in commit
+> https://lore.kernel.org/bpf/20200509175921.2477493-1-yhs@fb.com/
+> to demonstrate equivalence of 'cat /proc' vs iterator approach.
 
-There is no user from the syscall or from the bpf prog.
-
-There are still kernel users, bpf_cgrp_storage_free() and bpf_sk_storage_free(), 
-that can race with map_free().
-
-> If there are users and we actually need that lock then the deadlock
-> is possible and retrying will deadlock the same way.
-> I feel AI explained it better:
-> "
-> raw_res_spin_lock_irqsave() can return -ETIMEDOUT (after 250ms) or
-> -EDEADLK. Both are non-zero, so the while() loop continues. The commit
-> message says "it cannot deadlock with itself or
-> bpf_local_storage_map_free", but:
-> 
-> 1. If -ETIMEDOUT is returned because the lock holder is taking too long,
->     retrying immediately won't help. The timeout means progress isn't
->     being made, and spinning in a retry loop without any backoff or
->     limit will prevent other work from proceeding.
-> 
-> 2. If -EDEADLK is returned, it means the deadlock detector found a
->     cycle. Retrying immediately without any state change won't break the
->     deadlock cycle.
-> "
-> 
->> Or better if
->> rqspinlock does not force queued waiters to exit the queue if it is
->> deadlock not timeout.
-> 
-> If a deadlock is detected, it's the same issue for all waiters.
-> I don't see the difference between timeout and deadlock.
-> Both are in the "do-not-retry" category.
-> Both mean that there is a bug somewhere.
-
-Both bpf_cgrp_storage_free() and map_free() are the only remaining kernel users 
-of the locks, so no deadlock is expected unless there is a bug. The busy percpu 
-counter is currently not used in both of them also. Theoretically, the 
-res_spin_lock (and the current regular spin_lock) should never fail here in 
-bpf_cgrp_storage_free() and map_free(). If res_spin_lock returns error, there is 
-a bug somewhere.
++1.
 
 > 
->>>
->>> If it should never fail in practice then pr_warn_once and goto out
->>> leaking memory. Better yet defer to irq_work and cleanup there.>>
-
-Not sure how to handle the bug. yeah, maybe just leak it and then splat.
-I think deferring it still need to take the lock.
-
->> Hmm, both functions are already called in some deferred callbacks.
->> Even if we defer the cleanup again, they still need to grab locks and
->> still might fail, no?
+> >
+> > control: perf data
+> > 22.24% a.out [kernel.kallsyms] [k] vsnprintf
+> > 17.35% a.out [kernel.kallsyms] [k] format_decode
+> > 12.60% a.out [kernel.kallsyms] [k] string
+> > 12.12% a.out [kernel.kallsyms] [k] number
+> >  8.06% a.out [kernel.kallsyms] [k] strlen
+> >  5.21% a.out [kernel.kallsyms] [k] memcpy_orig
+> >  4.26% a.out [kernel.kallsyms] [k] seq_buf_printf
+> >  4.19% a.out [kernel.kallsyms] [k] memory_stat_format
+> >  2.53% a.out [kernel.kallsyms] [k] widen_string
+> >  1.62% a.out [kernel.kallsyms] [k] put_dec_trunc8
+> >  0.99% a.out [kernel.kallsyms] [k] put_dec_full8
+> >  0.72% a.out [kernel.kallsyms] [k] put_dec
+> >  0.70% a.out [kernel.kallsyms] [k] memcpy
+> >  0.60% a.out [kernel.kallsyms] [k] mutex_lock
+> >  0.59% a.out [kernel.kallsyms] [k] entry_SYSCALL_64
+> >
+> > experiment: perf data
+> > 8.17% memcgstat bpf_prog_c6d320d8e5cfb560_query [k] bpf_prog_c6d320d8e5cfb560_query
+> > 8.03% memcgstat [kernel.kallsyms] [k] memcg_node_stat_fetch
+> > 5.21% memcgstat [kernel.kallsyms] [k] __memcg_slab_post_alloc_hook
+> > 3.87% memcgstat [kernel.kallsyms] [k] _raw_spin_lock
+> > 3.01% memcgstat [kernel.kallsyms] [k] entry_SYSRETQ_unsafe_stack
+> > 2.49% memcgstat [kernel.kallsyms] [k] memcg_vm_event_fetch
+> > 2.47% memcgstat [kernel.kallsyms] [k] __memcg_slab_free_hook
+> > 2.34% memcgstat [kernel.kallsyms] [k] kmem_cache_free
+> > 2.32% memcgstat [kernel.kallsyms] [k] entry_SYSCALL_64
+> > 1.92% memcgstat [kernel.kallsyms] [k] mutex_lock
+> >
+> > The overhead of string formatting and text conversion on the control side
+> > is eliminated on the experimental side since the values are read directly
+> > through shared memory with the bpf program. The kfunc/bpf approach also
+> > provides flexibility in how this numeric data could be delivered to a user
+> > mode program. It is possible to use a struct for example, with select
+> > memory stat fields instead of an array. This opens up opportunities for
+> > custom serialization as well since it is totally up to the bpf programmer
+> > on how to lay out the data.
+> >
+> > The patch also includes a kfunc for flushing stats. This is not required
+> > for fetching stats, since the kernel periodically flushes memcg stats every
+> > 2s. It is up to the programmer if they want the very latest stats or not.
+> >
+> > [0] https://gist.github.com/inwardvessel/416d629d6930e22954edb094b4e23347
+> >     https://gist.github.com/inwardvessel/28e0a9c8bf51ba07fa8516bceeb25669
+> >     https://gist.github.com/inwardvessel/b05e1b9ea0f766f4ad78dad178c49703
+> >
+> > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> > ---
+> >  mm/memcontrol.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 67 insertions(+)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 8dd7fbed5a94..aa8cbf883d71 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -870,6 +870,73 @@ unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
+> >  }
+> >  #endif
+> >
+> > +static inline struct mem_cgroup *memcg_from_cgroup(struct cgroup *cgrp)
+> > +{
+> > +       return cgrp ? mem_cgroup_from_css(cgrp->subsys[memory_cgrp_id]) : NULL;
+> > +}
+> > +
+> > +__bpf_kfunc static void memcg_flush_stats(struct cgroup *cgrp)
+> > +{
+> > +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
+> > +
+> > +       if (!memcg)
+> > +               return;
+> > +
+> > +       mem_cgroup_flush_stats(memcg);
+> > +}
 > 
-> If it's a map destroy path and we waited for RCU GP, there shouldn't be
-> a need to take a lock.
-> The css_free_rwork_fn() -> bpf_cgrp_storage_free() path
-> is currently implemented like it's similar to:
-> bpf_cgrp_storage_delete() which needs a lock.
-> But bpf_cgrp_storage_free() doesn't have to.
-> In css_free_rwork_fn() no prog or user space
-> should see 'cgrp' pointer, since we're about to kfree(cgrp); it.
-> I could be certainly missing something.
+> css_rstat_flush() is sleepable, so this kfunc must be sleepable too.
+> Not sure about the rest.
+> 
+> > +
+> > +__bpf_kfunc static unsigned long memcg_node_stat_fetch(struct cgroup *cgrp,
+> > +               enum node_stat_item item)
+> > +{
+> > +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
+> > +
+> > +       if (!memcg)
+> > +               return 0;
+> > +
+> > +       return memcg_page_state_output(memcg, item);
+> > +}
+> > +
+> > +__bpf_kfunc static unsigned long memcg_stat_fetch(struct cgroup *cgrp,
+> > +               enum memcg_stat_item item)
+> > +{
+> > +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
+> > +
+> > +       if (!memcg)
+> > +               return 0;
+> > +
+> > +       return memcg_page_state_output(memcg, item);
+> > +}
+> > +
+> > +__bpf_kfunc static unsigned long memcg_vm_event_fetch(struct cgroup *cgrp,
+> > +               enum vm_event_item item)
+> > +{
+> > +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
+> > +
+> > +       if (!memcg)
+> > +               return 0;
+> > +
+> > +       return memcg_events(memcg, item);
+> > +}
+> > +
+> > +BTF_KFUNCS_START(bpf_memcontrol_kfunc_ids)
+> > +BTF_ID_FLAGS(func, memcg_flush_stats)
+> > +BTF_ID_FLAGS(func, memcg_node_stat_fetch)
+> > +BTF_ID_FLAGS(func, memcg_stat_fetch)
+> > +BTF_ID_FLAGS(func, memcg_vm_event_fetch)
+> > +BTF_KFUNCS_END(bpf_memcontrol_kfunc_ids)
+> 
+> At least one of them must be sleepable and the rest probably too?
+> All of them must be KF_TRUSTED_ARGS too.
 
+The *_fetch ones don't need to be sleepable. Will marking them sleepable
+here make them more restrictive?
+
+> 
+> > +
+> > +static const struct btf_kfunc_id_set bpf_memcontrol_kfunc_set = {
+> > +       .owner          = THIS_MODULE,
+> > +       .set            = &bpf_memcontrol_kfunc_ids,
+> > +};
+> > +
+> > +static int __init bpf_memcontrol_kfunc_init(void)
+> > +{
+> > +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+> > +                                        &bpf_memcontrol_kfunc_set);
+> > +}
+> 
+> Why tracing only?
+
+I can see sched_ext using these to make fancy scheduling decisions and
+definitely bpf oom-killer will need these.
 
