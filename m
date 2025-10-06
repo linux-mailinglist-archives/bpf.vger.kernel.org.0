@@ -1,80 +1,129 @@
-Return-Path: <bpf+bounces-70416-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70417-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 826B9BBD4AD
-	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 09:59:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8585BBD67B
+	for <lists+bpf@lfdr.de>; Mon, 06 Oct 2025 11:01:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F3AF1894143
-	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 07:59:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFCC4188CF04
+	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 09:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680E925A2C2;
-	Mon,  6 Oct 2025 07:59:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22FE6265CA8;
+	Mon,  6 Oct 2025 09:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uh7FPxH4"
+	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="WrJ2cpU8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DFE24E4BD;
-	Mon,  6 Oct 2025 07:59:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC0C25785F;
+	Mon,  6 Oct 2025 09:00:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.244.183.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759737558; cv=none; b=Ou8jF8Dyjr4HyHxWw81TR6Fz/bxpWRBRcPccf3o3jJje9L3osGwWqIvKQ/UQxID6hCuU/9zH25zHpcQj6xVZ5Cys/NBCQyMRsmCRgYf2Z4fiHQkqoDeye1DRf1zT6VoFVmBYZvD/37N0BC03XeSIQs4wkhGoKp5f8b5W5q9Kknw=
+	t=1759741260; cv=none; b=IqH6EmQuZust5dvOqCqeJY0nYigQFQcgkB0dz64Bjl8sE9sNAhrZLUIGt3D7COGLe5GKazNRdZ6UZ9n1rzrHZba1Ns2TcSOXP1c6g9t+jrn+pdPjh/Ygh/6e+3beveIoASFhVjmLX+Iq9ffJlR9Cf9Gj1H5ICvKUlkin26RX7VY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759737558; c=relaxed/simple;
-	bh=xR9H+rVXuSmCG/aFcq1+uRILqW8RGM2Gf7+XvYtCszI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UeOm9zCSF+a6BrwzVrYoPBaPGkm/dGXLlL+FiTu1AdO9XQfNOTa/JLo4IQXWdWT6J2oeCUJlWoOzrXmMFmcUpAP38bFkIJ5FNYwCYgA8nNKzHB14MWbA+R3b2ooAQFKE8D1jmTNj3qWR0hCuLQh0jWFJN//CftwX+h8GBbc0RvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uh7FPxH4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4493C4CEF5;
-	Mon,  6 Oct 2025 07:59:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759737557;
-	bh=xR9H+rVXuSmCG/aFcq1+uRILqW8RGM2Gf7+XvYtCszI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Uh7FPxH4RneVNbXICvn+i3fnzPJBXfNXPclLpaWSWSUYFgAM0jRULI27hyu1GhE8B
-	 7X6zKOe9S3wRUfQbjXZu4r8ihMaBthA9uu0Xmf+Sq27gzI3e/SQv5/u7jqcH9DWByR
-	 u1Sw7v4DFIOayWEr8mZvRlsy1ddEW5DubHbi3TCz4jkFiNJkPZ7hG2/0i0WmMxP48A
-	 vfva/6tK/IqPlfsGBInRmWXjY3FgA3UXuwdp5m5Bv4MwMg+dCx3gUYTUjqGpPtgrJq
-	 WgM4xJFHyEx6Y7EoXPZYxKUt3JT5T+QyBc+abbGgStqdYd1s9o66TTBpxCFlQizTa0
-	 NN9Ocjn78QDHg==
-Date: Mon, 6 Oct 2025 13:22:38 +0530
-From: Naveen N Rao <naveen@kernel.org>
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Viktor Malik <vmalik@redhat.com>, live-patching@vger.kernel.org, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Joe Lawrence <joe.lawrence@redhat.com>, 
-	Jiri Kosina <jikos@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: Re: [PATCH] powerpc64/bpf: support direct_call on livepatch function
-Message-ID: <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
-References: <20251002192755.86441-1-hbathini@linux.ibm.com>
+	s=arc-20240116; t=1759741260; c=relaxed/simple;
+	bh=3yL/MhIsstwXpp2kQreRg3k8ycTGLBAeFgRtPXuUXJk=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=HD+fvEL+MsTVZOXO/N+8diQYaNmTOZUuk/gJqtX3x7z2sOfxQRYTOOUPXOTHKnuuBOQLeViHtmokPYnvuzPQHXt+/1trYrfvkrhHjYxm23qTkDcfETvhPEiCcNmluLjgvOZ1mA3itD7VNKp+4pVWoriY/ADpbEUSVHtv6tFfCA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=WrJ2cpU8; arc=none smtp.client-ip=91.244.183.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infotecs.ru
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+	by mx0.infotecs.ru (Postfix) with ESMTP id BE5BF111B77C;
+	Mon,  6 Oct 2025 11:53:17 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru BE5BF111B77C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+	t=1759740798; bh=K//1oiUz0yl4wjuaNs+08F7DIiqQSpK/jGrr8MbB2P4=;
+	h=From:To:CC:Subject:Date:From;
+	b=WrJ2cpU8NKL7cB7l5/5n4nbRDTy8frsC0wYWG/eMrZZ8ecgw5+0GXMZsrOidpzUW3
+	 CIkdvBPyBefibpobjX6c+/HzKB9nf9v5NTa1f1rpR+lQ/StbwUMf8Sb78b6FxcQ5d4
+	 mIVMPW2pqlVrDKQ9qmothE5GkRjNySUKgX89RmUg=
+Received: from msk-exch-01.infotecs-nt (msk-exch-01.infotecs-nt [10.0.7.191])
+	by mx0.infotecs-nt (Postfix) with ESMTP id BB16230FC54C;
+	Mon,  6 Oct 2025 11:53:17 +0300 (MSK)
+From: Ilia Gavrilov <Ilia.Gavrilov@infotecs.ru>
+To: Magnus Karlsson <magnus.karlsson@intel.com>
+CC: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Stanislav Fomichev
+	<sdf@fomichev.me>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "Jesper Dangaard
+ Brouer" <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, "Song
+ Yoong Siang" <yoong.siang.song@intel.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: [PATCH net] xsk: Fix overflow in descriptor validation@@
+Thread-Topic: [PATCH net] xsk: Fix overflow in descriptor validation@@
+Thread-Index: AQHcNp6oT200QhNWsUqu3koqEXW7oA==
+Date: Mon, 6 Oct 2025 08:53:17 +0000
+Message-ID: <20251006085316.470279-1-Ilia.Gavrilov@infotecs.ru>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251002192755.86441-1-hbathini@linux.ibm.com>
+X-KLMS-Rule-ID: 5
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2025/10/06 07:29:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2025/10/06 03:07:00 #27884785
+X-KLMS-AntiVirus-Status: Clean, skipped
 
-On Fri, Oct 03, 2025 at 12:57:54AM +0530, Hari Bathini wrote:
-> Today, livepatch takes precedence over direct_call. Instead, save the
-> state and make direct_call before handling livepatch.
+The desc->len value can be set up to U32_MAX. If umem tx_metadata_len
+option is also set, then the value of the expression
+'desc->len + pool->tx_metadata_len' can overflow and validation
+of the incorrect descriptor will be successfully passed.
+This can lead to a subsequent chain of arithmetic overflows
+in the xsk_build_skb() function and incorrect sk_buff allocation.
 
-If we call into the BPF trampoline first and if we have 
-BPF_TRAMP_F_CALL_ORIG set, does this result in the BPF trampoline 
-calling the new copy of the live-patched function or the old one?
+Found by InfoTeCS on behalf of Linux Verification Center
+(linuxtesting.org) with SVACE.
 
-- Naveen
+Fixes: 341ac980eab9 ("xsk: Support tx_metadata_len")
+Cc: stable@vger.kernel.org
+Signed-off-by: Ilia Gavrilov <Ilia.Gavrilov@infotecs.ru>
+---
+ net/xdp/xsk_queue.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index f16f390370dc..b206a8839b39 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -144,7 +144,7 @@ static inline bool xp_aligned_validate_desc(struct xsk_=
+buff_pool *pool,
+ 					    struct xdp_desc *desc)
+ {
+ 	u64 addr =3D desc->addr - pool->tx_metadata_len;
+-	u64 len =3D desc->len + pool->tx_metadata_len;
++	u64 len =3D (u64)desc->len + pool->tx_metadata_len;
+ 	u64 offset =3D addr & (pool->chunk_size - 1);
+=20
+ 	if (!desc->len)
+@@ -165,7 +165,7 @@ static inline bool xp_unaligned_validate_desc(struct xs=
+k_buff_pool *pool,
+ 					      struct xdp_desc *desc)
+ {
+ 	u64 addr =3D xp_unaligned_add_offset_to_addr(desc->addr) - pool->tx_metad=
+ata_len;
+-	u64 len =3D desc->len + pool->tx_metadata_len;
++	u64 len =3D (u64)desc->len + pool->tx_metadata_len;
+=20
+ 	if (!desc->len)
+ 		return false;
+--=20
+2.39.5
 
