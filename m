@@ -1,194 +1,147 @@
-Return-Path: <bpf+bounces-70497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70498-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25005BC0CF0
-	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 11:05:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26790BC12E5
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 13:21:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 817433AA3E4
-	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 09:05:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE1BF19A0D31
+	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 11:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60F8B288527;
-	Tue,  7 Oct 2025 09:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B0DE2DC333;
+	Tue,  7 Oct 2025 11:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SgmTK8vM"
+	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="UHZ07eBF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FD0A28467C
-	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 09:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A469B2D979B;
+	Tue,  7 Oct 2025 11:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.244.183.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759827947; cv=none; b=t+K5ANJgoTn0bil2h+fw56PuoWdwkbRAA3xk60Z67ECK0fiet7Gxup5T7GjwE+Ak8pnRuSF+DbPMTcZNLPdwD2xdHID8QluxbfaKXVXTfimTUrYR2L4rY9duWeNfxfJ6Jrcr4Mck1Muv0zVK2kzcLoPWXm9dME5qYmjQ6OTv9Xs=
+	t=1759835972; cv=none; b=qurhNayQFSABBU9OiXFjHrgERN4pMB7NecqGmkEsH5LgcczSx6cBtDWjfmCrVeq9dyJQKTLysQvXjpMR42lfSzVnjMfsfg5l/VuZ2eIimfIfDaxIb+DqmQ0PXronjYg8/WP59xpYPb9lw0Ye9c0VgT8xjnlksVn7UCZTa+AO8ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759827947; c=relaxed/simple;
-	bh=9levaWjJHA7TcNU8jT56uzj+7qYLXaVXyFf+WgEeBT4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k8NTR7k3Khf6DDsohku4VlazbAXrKZWB438ozsV5KxY5wrNFRN6Rx+k/ijgFs/OdT7H6id8bZ4/iuFuDy2q2Y22RdXqJpKupz11NtCNxMn2VGpq5aSUR6yY1JkxDvutsBStTyB8kqd/Elo+s8kGPlD8dNKprZc74uveHWikBHuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SgmTK8vM; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-78e4056623fso49961226d6.2
-        for <bpf@vger.kernel.org>; Tue, 07 Oct 2025 02:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759827945; x=1760432745; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yxkYIe5lCPbXvt5LEAWJhmf35lUqskMAv390SOAEtUw=;
-        b=SgmTK8vMKYX7QMxUZFnxBPsBbjGyf/Opx3B9nD/U7vCHW696STNWUVqvJi75fANRi2
-         lS8RPHU4TVCeqWojLlxugAC213SVLQZknqV2nVU8dyKeTviS/8AE76u5LWXPMQ2ZYaVq
-         FJZTDIEpTTxSM75mLqE3WW19/oOYhYP2hkNKspjhys6rvkROIh54D9Vnqc7JUCuBpQPT
-         JYz5GL06B41Zx82dm7wEgboWHMOaxpEQ5vooCeUUEd6HtDqOfTkuNNIbIS5aAW7jK5fy
-         5z98JF/X41FF5qNtDrMjXfdNX+DPLideG0YsO51c10WinV4Ro4pjNMdJWQILxb/rYEjp
-         kQeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759827945; x=1760432745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yxkYIe5lCPbXvt5LEAWJhmf35lUqskMAv390SOAEtUw=;
-        b=FfWr5N87S8+Qe9/LYO5me/lYvBslvexGsvdYl7viJN7T5UFGpvYeYSeIpuLr1bF9/a
-         +pnyfa8hnJVxxtQ1QR3QRLA84bW0gsduEi8wizo0lACpjvd8RI3csqU5vf9MgpAxJEsP
-         hF3simY8NZupr1x1u2q3jDcM620hZC3WFxxV5X9JNGSVRoCPv+mFkBBPYcjK9+CexFVJ
-         xM2OzqZrANDqOYWntCcLSZiAwS1iX2rtCMV2+f6x+hIJiXtbKvcga+EBHzs28L7RflHq
-         KsjbR6DOXxJqsStN1VZmonve+Ak/wqDlXjhH+jiUxpvCa26OyZAkohT7XyhxFzzfodxZ
-         JeuA==
-X-Forwarded-Encrypted: i=1; AJvYcCViuQTBA9FM73FK9iotbJxXTRlgBtMNMA4tBV6wbp57HCKqjCw569IyO6TqngNASbyzASM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzC6JVr89Yh5v4DhxazcscBjKRFoFe44MevygjFd8hdJN3UXLma
-	bM1UJJARVNCB2/xniSDhW+2SVMLcXRqRTFW4qCk3HA2BYXpnvTp+ONCVj00fSo3gWIW027K0XU3
-	o9iHsTu8XxMmabIReqrTO9oZo+H7Xd1A=
-X-Gm-Gg: ASbGncsKVfRlx9tFYx/LKPceWe3dVEmh4WP/JdE5Rj46yjNhfO8X1nV8vzijHnQqJzg
-	eA9oONXknVSIAkeG0CIXQSm9RagxGXblwp6j2CcfwBada80UKoQJNTqoFduTTJdosUy9jdDWsYE
-	nLJm+tFhPYLPcKL0ScjVwylAY8p6CY2lIYdC3u/yyw9V+GWfgp7pr018yx7ZDhynbnSOj/g5HIb
-	VgNP8MgN+cIKUJnZqlD3h5kAvEY9RIO6eyxKRGj3C9Vsg6IIpWfYdpTQ2VH+g==
-X-Google-Smtp-Source: AGHT+IGTSensva01uwyL1nNEvPr5059D7N0uaBb6xfNhSuXkh0+a6Mjpi5hSZUB/CGpt8XTeEb3Ofa98l86qjtZh1Ag=
-X-Received: by 2002:a05:6214:ccd:b0:856:d1d4:d127 with SMTP id
- 6a1803df08f44-879dc77bd7emr193257366d6.4.1759827945115; Tue, 07 Oct 2025
- 02:05:45 -0700 (PDT)
+	s=arc-20240116; t=1759835972; c=relaxed/simple;
+	bh=i2/mIJZywNFRDzg/L8D1NE6gFQ2BKhRmpA3TA90foLk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=FLItfWJosY9sovURGOEPl1oawCm+XqFgEKGFataawqakZbPc0n3f0GhH3HExeL6rs9KtnsrdYVgRhdr50R8sqCtpeaUYtBy6SqTs94N/uOWnJ8kt7maHMNI07SezygyHAfZhM4xGoBhu+7isSQGOiEbuLw2njEMgoAhpureTOUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=UHZ07eBF; arc=none smtp.client-ip=91.244.183.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infotecs.ru
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+	by mx0.infotecs.ru (Postfix) with ESMTP id 441871050FB6;
+	Tue,  7 Oct 2025 14:19:20 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 441871050FB6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+	t=1759835960; bh=i2/mIJZywNFRDzg/L8D1NE6gFQ2BKhRmpA3TA90foLk=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=UHZ07eBFT7U1enM5SLzkO5DhLNgV6zxrFfnOKr/xMNAoDTUQKL1G+6ElA6WjV0x8m
+	 vE9/PMe2a4ByPgyN+C2o4lMYukaOSFXWA4IIckRt7JVrhAGh2csDhemEBn0WnirKhW
+	 AaeaH47bllfR6RI/GrX4Dgmp74u3H5iPfyuU0Akc=
+Received: from msk-exch-02.infotecs-nt (msk-exch-02.infotecs-nt [10.0.7.192])
+	by mx0.infotecs-nt (Postfix) with ESMTP id 3F00931118DB;
+	Tue,  7 Oct 2025 14:19:20 +0300 (MSK)
+From: Ilia Gavrilov <Ilia.Gavrilov@infotecs.ru>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+CC: Song Yoong Siang <yoong.siang.song@intel.com>, Maciej Fijalkowski
+	<maciej.fijalkowski@intel.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, John Fastabend <john.fastabend@gmail.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, "stable@vger.kernel.org"
+	<stable@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+	"Stanislav Fomichev" <sdf@fomichev.me>, Simon Horman <horms@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, "David S. Miller"
+	<davem@davemloft.net>, Magnus Karlsson <magnus.karlsson@intel.com>,
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: Re: [lvc-project] [PATCH net] xsk: Fix overflow in descriptor
+ validation@@
+Thread-Topic: [lvc-project] [PATCH net] xsk: Fix overflow in descriptor
+ validation@@
+Thread-Index: AQHcN3w5Ve3VV/I+jk+9of8ehLdFkg==
+Date: Tue, 7 Oct 2025 11:19:19 +0000
+Message-ID: <06da20bf-79f6-4ad7-92cc-75f19685b530@infotecs.ru>
+References: <20251006085316.470279-1-Ilia.Gavrilov@infotecs.ru>
+ <c5a1c806-2c4c-47c5-b83a-cb83f93369b4@intel.com>
+In-Reply-To: <c5a1c806-2c4c-47c5-b83a-cb83f93369b4@intel.com>
+Accept-Language: ru-RU, en-US
+Content-Language: ru-RU
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <56B79B3E998EB0499C802CA4B2F65111@infotecs.ru>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250930055826.9810-1-laoar.shao@gmail.com> <20250930055826.9810-8-laoar.shao@gmail.com>
- <CAEf4BzaGRDiW3fRt3i+7vvRB+oQszKjaLWVMSU6JrfmXHsJ45w@mail.gmail.com>
-In-Reply-To: <CAEf4BzaGRDiW3fRt3i+7vvRB+oQszKjaLWVMSU6JrfmXHsJ45w@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 7 Oct 2025 17:05:07 +0800
-X-Gm-Features: AS18NWAVWP6POrSHevBgT5yY56gEiBpWAjVVmPfMtRV7VvEgPMFL-SAZ0sgTI4U
-Message-ID: <CALOAHbD5OM+_iUg3DXw+BqYU+PFae6DcQGnE1CrLoKmb9OV9Ug@mail.gmail.com>
-Subject: Re: [PATCH v9 mm-new 07/11] bpf: mark vma->vm_mm as __safe_trusted_or_null
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, ziy@nvidia.com, 
-	baolin.wang@linux.alibaba.com, lorenzo.stoakes@oracle.com, 
-	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com, 
-	dev.jain@arm.com, hannes@cmpxchg.org, usamaarif642@gmail.com, 
-	gutierrez.asier@huawei-partners.com, willy@infradead.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, ameryhung@gmail.com, 
-	rientjes@google.com, corbet@lwn.net, 21cnbao@gmail.com, 
-	shakeel.butt@linux.dev, tj@kernel.org, lance.yang@linux.dev, 
-	rdunlap@infradead.org, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 5
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2025/10/07 08:54:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2025/10/07 08:21:00 #27888622
+X-KLMS-AntiVirus-Status: Clean, skipped
 
-On Tue, Oct 7, 2025 at 5:07=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Sep 29, 2025 at 11:00=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
-m> wrote:
-> >
-> > The vma->vm_mm might be NULL and it can be accessed outside of RCU. Thu=
-s,
-> > we can mark it as trusted_or_null. With this change, BPF helpers can sa=
-fely
-> > access vma->vm_mm to retrieve the associated mm_struct from the VMA.
-> > Then we can make policy decision from the VMA.
-> >
-> > The "trusted" annotation enables direct access to vma->vm_mm within kfu=
-ncs
-> > marked with KF_TRUSTED_ARGS or KF_RCU, such as bpf_task_get_cgroup1() a=
-nd
-> > bpf_task_under_cgroup(). Conversely, "null" enforcement requires all
-> > callsites using vma->vm_mm to perform NULL checks.
-> >
-> > The lsm selftest must be modified because it directly accesses vma->vm_=
-mm
-> > without a NULL pointer check; otherwise it will break due to this
-> > change.
-> >
-> > For the VMA based THP policy, the use case is as follows,
-> >
-> >   @mm =3D @vma->vm_mm; // vm_area_struct::vm_mm is trusted or null
-> >   if (!@mm)
-> >       return;
-> >   bpf_rcu_read_lock(); // rcu lock must be held to dereference the owne=
-r
-> >   @owner =3D @mm->owner; // mm_struct::owner is rcu trusted or null
-> >   if (!@owner)
-> >     goto out;
-> >   @cgroup1 =3D bpf_task_get_cgroup1(@owner, MEMCG_HIERARCHY_ID);
-> >
-> >   /* make the decision based on the @cgroup1 attribute */
-> >
-> >   bpf_cgroup_release(@cgroup1); // release the associated cgroup
-> > out:
-> >   bpf_rcu_read_unlock();
-> >
-> > PSI memory information can be obtained from the associated cgroup to in=
-form
-> > policy decisions. Since upstream PSI support is currently limited to cg=
-roup
-> > v2, the following example demonstrates cgroup v2 implementation:
-> >
-> >   @owner =3D @mm->owner;
-> >   if (@owner) {
-> >       // @ancestor_cgid is user-configured
-> >       @ancestor =3D bpf_cgroup_from_id(@ancestor_cgid);
-> >       if (bpf_task_under_cgroup(@owner, @ancestor)) {
-> >           @psi_group =3D @ancestor->psi;
-> >
-> >           /* Extract PSI metrics from @psi_group and
-> >            * implement policy logic based on the values
-> >            */
-> >
-> >       }
-> >   }
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Acked-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-> > Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-> > ---
-> >  kernel/bpf/verifier.c                   | 5 +++++
-> >  tools/testing/selftests/bpf/progs/lsm.c | 8 +++++---
-> >  2 files changed, 10 insertions(+), 3 deletions(-)
-> >
->
-> Hey Yafang,
->
-> This looks like a generally useful change, so I think it would be best
-> if you can send it as a stand-alone patch to bpf-next to land it
-> sooner.
-
-Sure. I will do it.
-
->
-> Also, am I imagining this, or did you have similar change for the
-> vm_file field as well? Any reasons to not mark vm_file as trusted as
-> well?
-
-Marking vm_file as trusted will directly support our follow-up work on
-file-backed THP policies, where we need to apply different policies to
-different files in production. I will include this change in the same
-stand-alone patch. Thanks for the suggestion.
-
---=20
-Regards
-Yafang
+T24gMTAvNi8yNSAxODoxOSwgQWxleGFuZGVyIExvYmFraW4gd3JvdGU6DQo+IEZyb206IElsaWEg
+R2F2cmlsb3YgPElsaWEuR2F2cmlsb3ZAaW5mb3RlY3MucnU+DQo+IERhdGU6IE1vbiwgNiBPY3Qg
+MjAyNSAwODo1MzoxNyArMDAwMA0KPiANCj4+IFRoZSBkZXNjLT5sZW4gdmFsdWUgY2FuIGJlIHNl
+dCB1cCB0byBVMzJfTUFYLiBJZiB1bWVtIHR4X21ldGFkYXRhX2xlbg0KPiANCj4gSW4gdGhlb3J5
+LiBOZXZlciBpbiBwcmFjdGljZS4NCj4gDQoNCkhpIEFsZXhhbmRlciwNClRoYW5rIHlvdSBmb3Ig
+dGhlIHJldmlldy4NCg0KSXQgc2VlbXMgdG8gbWUgdGhhdCB0aGlzIHByb2JsZW0gc2hvdWxkIGJl
+IGNvbnNpZGVyZWQgbm90IGZyb20gdGhlIHBvaW50IG9mIHZpZXcgb2YgcHJhY3RpY2FsIHVzZSwg
+DQpidXQgZnJvbSB0aGUgcG9pbnQgb2YgdmlldyBvZiBzZWN1cml0eS4gQW4gYXR0YWNrZXIgY2Fu
+IHNldCBhbnkgbGVuZ3RoIG9mIHRoZSBwYWNrZXQgaW4gdGhlIGRlc2NyaXB0b3IgDQpmcm9tIHRo
+ZSB1c2VyIHNwYWNlIGFuZCBkZXNjcmlwdG9yIHZhbGlkYXRpb24gd2lsbCBwYXNzLg0KDQoNCj4+
+IG9wdGlvbiBpcyBhbHNvIHNldCwgdGhlbiB0aGUgdmFsdWUgb2YgdGhlIGV4cHJlc3Npb24NCj4+
+ICdkZXNjLT5sZW4gKyBwb29sLT50eF9tZXRhZGF0YV9sZW4nIGNhbiBvdmVyZmxvdyBhbmQgdmFs
+aWRhdGlvbg0KPj4gb2YgdGhlIGluY29ycmVjdCBkZXNjcmlwdG9yIHdpbGwgYmUgc3VjY2Vzc2Z1
+bGx5IHBhc3NlZC4NCj4+IFRoaXMgY2FuIGxlYWQgdG8gYSBzdWJzZXF1ZW50IGNoYWluIG9mIGFy
+aXRobWV0aWMgb3ZlcmZsb3dzDQo+PiBpbiB0aGUgeHNrX2J1aWxkX3NrYigpIGZ1bmN0aW9uIGFu
+ZCBpbmNvcnJlY3Qgc2tfYnVmZiBhbGxvY2F0aW9uLg0KPj4NCj4+IEZvdW5kIGJ5IEluZm9UZUNT
+IG9uIGJlaGFsZiBvZiBMaW51eCBWZXJpZmljYXRpb24gQ2VudGVyDQo+PiAobGludXh0ZXN0aW5n
+Lm9yZykgd2l0aCBTVkFDRS4NCj4gDQo+IEkgdGhpbmsgdGhlIGdlbmVyYWwgcnVsZSBmb3Igc2Vu
+ZGluZyBmaXhlcyBpcyB0aGF0IGEgZml4IG11c3QgZml4IGEgcmVhbA0KPiBidWcgd2hpY2ggY2Fu
+IGJlIHJlcHJvZHVjZWQgaW4gcmVhbCBsaWZlIHNjZW5hcmlvcy4NCg0KSSBhZ3JlZSB3aXRoIHRo
+YXQsIHNvIEkgbWFrZSBhIHRlc3QgcHJvZ3JhbSAoUG9DKS4gU29tZXRoaW5nIGxpa2UgdGhhdDoN
+Cg0KCXN0cnVjdCB4ZHBfdW1lbV9yZWcgdW1lbV9yZWc7DQoJdW1lbV9yZWcuYWRkciA9IChfX3U2
+NCkodm9pZCAqKXVtZW07DQoJLi4uDQoJdW1lbV9yZWcuY2h1bmtfc2l6ZSA9IDQwOTY7DQoJdW1l
+bV9yZWcudHhfbWV0YWRhdGFfbGVuID0gMTY7DQoJdW1lbV9yZWcuZmxhZ3MgPSBYRFBfVU1FTV9U
+WF9NRVRBREFUQV9MRU47DQoJc2V0c29ja29wdChzZmQsIFNPTF9YRFAsIFhEUF9VTUVNX1JFRywg
+JnVtZW1fcmVnLCBzaXplb2YodW1lbV9yZWcpKTsNCgkuLi4NCgkNCgl4c2tfcmluZ19wcm9kX19y
+ZXNlcnZlKHRxLCBiYXRjaF9zaXplLCAmaWR4KTsNCg0KCWZvciAoaSA9IDA7IGkgPCBucl9wYWNr
+ZXRzOyArK2kpIHsNCgkJc3RydWN0IHhkcF9kZXNjICp0eF9kZXNjID0geHNrX3JpbmdfcHJvZF9f
+dHhfZGVzYyh0cSwgaWR4ICsgaSk7DQoJCXR4X2Rlc2MtPmFkZHIgPSBwYWNrZXRzW2ldLmFkZHI7
+DQoJCXR4X2Rlc2MtPmFkZHIgKz0gdW1lbS0+dHhfbWV0YWRhdGFfbGVuOw0KCQl0eF9kZXNjLT5v
+cHRpb25zID0gWERQX1RYX01FVEFEQVRBOw0KCQl0eF9kZXNjLT5sZW4gPSBVSU5UMzJfTUFYOw0K
+CX0NCg0KCXhza19yaW5nX3Byb2RfX3N1Ym1pdCh0cSwgbnJfcGFja2V0cyk7DQoJLi4uDQoJc2Vu
+ZHRvKHNmZCwgTlVMTCwgMCwgTVNHX0RPTlRXQUlULCBOVUxMLCAwKTsNCg0KU2luY2UgdGhlIGNo
+ZWNrIG9mIGFuIGludmFsaWQgZGVzY3JpcHRvciBoYXMgcGFzc2VkLCBrZXJuZWwgdHJ5IHRvIGFs
+bG9jYXRlDQphIHNrYiB3aXRoIHNpemUgb2YgJ2hyICsgbGVuICsgdHInIGluIHRoZSBzb2NrX2Fs
+bG9jX3NlbmRfcHNrYigpIGZ1bmN0aW9uDQphbmQgdGhpcyBpcyB3aGVyZSB0aGUgbmV4dCBvdmVy
+ZmxvdyBvY2N1cnMuDQpza2IgYWxsb2NhdGVzIHdpdGggYSBzaXplIG9mIDYzLiBOZXh0IHRoZSBz
+a2JfcHV0KCkgaXMgY2FsbGVkLCB3aGljaCBhZGRzIFUzMl9NQVggdG8gc2tiLT50YWlsIGFuZCBz
+a2ItPmVuZC4NCk5leHQgdGhlIHNrYl9zdG9yZV9iaXRzKCkgdHJpZXMgdG8gY29weSAtMSBieXRl
+cywgYnV0IGZhaWxzLg0KDQogX194c2tfZ2VuZXJpY194bWl0DQoJeHNrX2J1aWxkX3NrYg0KCQls
+ZW4gPSBkZXNjLT5sZW47IC8vIGZyb20gZGVzY3JpcHRvcg0KCQlzb2NrX2FsbG9jX3NlbmRfc2ti
+KC4uLiwgaHIgKyBsZW4gKyB0ciwgLi4uKSAvLyB0aGUgbmV4dCBvdmVyZmxvdw0KCQkJc29ja19h
+bGxvY19zZW5kX3Bza2INCgkJCQlhbGxvY19za2Jfd2l0aF9mcmFncw0KCQlza2JfcHV0KHNrYiwg
+bGVuKSAgLy8gbGVuIGNhc3RzIHRvIGludA0KCQlza2Jfc3RvcmVfYml0cyhza2IsIDAsIGJ1ZmZl
+ciwgbGVuKQ0KDQo+IFN0YXRpYyBBbmFseXNpcyBUb29scyBoYXZlIG5vIGlkZWEgdGhhdCBub2Jv
+ZHkgc2VuZHMgNCBHYiBzaXplZCBuZXR3b3JrDQo+IHBhY2tldHMuDQo+IA0KDQpUaGF0J3Mgcmln
+aHQuIFN0YXRpYyBhbmFseXplciBpcyBvbmx5IGEgdG9vbCwgYnV0IGluIHRoaXMgY2FzZSwgdGhl
+IG92ZXJmbG93DQpoaWdobGlnaHRlZCBieSB0aGUgc3RhdGljIGFuYWx5emVyIGNhbiBiZSB1c2Vk
+IGZvciBtYWxpY2lvdXMgcHVycG9zZXMuDQogDQoNCj4+DQo+PiBGaXhlczogMzQxYWM5ODBlYWI5
+ICgieHNrOiBTdXBwb3J0IHR4X21ldGFkYXRhX2xlbiIpDQo+PiBDYzogc3RhYmxlQHZnZXIua2Vy
+bmVsLm9yZw0KPj4gU2lnbmVkLW9mZi1ieTogSWxpYSBHYXZyaWxvdiA8SWxpYS5HYXZyaWxvdkBp
+bmZvdGVjcy5ydT4NCj4+IC0tLQ0KPj4gIG5ldC94ZHAveHNrX3F1ZXVlLmggfCA0ICsrLS0NCj4+
+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiBUaGFu
+a3MsDQo+IE9sZWsNCg0KVGhhbmtzLCANCklsaWENCg0K
 
