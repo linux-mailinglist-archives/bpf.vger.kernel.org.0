@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-70506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68DD1BC1890
-	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 15:39:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAE9CBC18A2
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 15:40:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5BDD94F63F1
-	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 13:39:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1348419A41B5
+	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 13:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94CBD2E1737;
-	Tue,  7 Oct 2025 13:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 711B92E0B5A;
+	Tue,  7 Oct 2025 13:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LYfOL4o2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M+A3ZWrg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F7919755B
-	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 13:38:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268B42E11C6
+	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 13:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759844300; cv=none; b=TX3hwK0X4gfIM5nkUgG57nohZsZPBHMzOZC+y77s8wUErAzh96w1wHKn2FBj8NGzerZBL6OnB+99ejeoWoWNx7excrxDZ5T8e8rPd67kzL0aGH10yxHT/1E5kM80v+twxAMa/YweB+FMxsCQpCwNoAATrFCCdCrLVxDRcEi1NhI=
+	t=1759844322; cv=none; b=O822v5261E40PKQmbbqrcLUY47wNJ8PRNAxce0oQG7f3GSD+0H4nc9D2UMexVsvy/j3gsBf6kudyao9eyd+9fyH2PBh24AE6ogvY19nAKbxk50Nl2qIOInl2JDEUtKxN0WbzX+2iYns/KyC28ov6etxVIhREcrBL7Dbz5IDNUro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759844300; c=relaxed/simple;
-	bh=H43nY8Pezz3wueotZRHqRJG5DOYHY1gpApWftSTnBww=;
+	s=arc-20240116; t=1759844322; c=relaxed/simple;
+	bh=np4B6Dcvwn1dTa2ukaBRLomS5/EqF3Vd2s46p5+oj2g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dUHRyA9IY6NCkOvi6/u3d+9Xz3iClXVRIwkrFz0l+sUbW/dPbnlg8zX4fQQ+qBeTGCQxHIw8VvMdX5IJnyeAmz2HZtut/BwllgGex6GGpMTRMoUJ5FDFSaW4xnFwAR7WsfWU0XBQwO9Oj/mmko6ThObpBHlneHobcm7egaF0pCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LYfOL4o2; arc=none smtp.client-ip=209.85.221.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=VjLw7l3suBVNzGV+AiYUb2I+e0OlFqSFJxpMK4au6L8mE8R1MQQCDb6WDxkvdNdnli9LNWCrkwgCpcSg6LevKmqeLcz1oGlUZXo7robPkeLKiQpOiF1kJedZL8HU/RDn6KdFWQ7AqjDfjQSGwTYkmWY/KCtmHWbnZvP/8QjsX4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M+A3ZWrg; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3f44000626bso4048507f8f.3
-        for <bpf@vger.kernel.org>; Tue, 07 Oct 2025 06:38:17 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-46e542196c7so40818215e9.0
+        for <bpf@vger.kernel.org>; Tue, 07 Oct 2025 06:38:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759844296; x=1760449096; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1759844318; x=1760449118; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=A9rp+yjRrMywKbiM0Wx6YLvEQdEziOs4NoZkWEUPV3E=;
-        b=LYfOL4o26qoXUCGxD23WG1r/UX61frzQS56JQr+ywdFzzPF2rW3CQMaBJ55NtwUGwN
-         ZGDlYdTqr5GD578Ijb6zMdzeGnImWJUVhNXExTMmxIy04Mm3cr0MXiWhMlAGjiIuHWFk
-         U+AgH/hoWRltg8TBX58cECMWD9YbINadO2bz5FZg4cQ/vy35cZniEJo4a3NQH8BH06T4
-         c2AZV1tcmtCarv5H2Pj7keUmoceHgD3jxvJRoe0TKFnDQObCZ/nlV2zJ3XIMx/+924UG
-         pqHBf9px1qE4dE6W/VYk1dfzPwYbdPpxucSrIUgO3kKbH2uYtPL2ZU+PrgU4+Y73QiJY
-         iQWg==
+        bh=ma+pbiVq6Y9+sUaOpiOPEynkbEVW/eMv8yb6AhQR5Wk=;
+        b=M+A3ZWrgN853IwumawjEcrX1hHy9ML3NMLE6XKTz/GRk9FBBuTWuADQtECdtrwX0n8
+         cShH8a8bAXq3Kwv7qnOl6GCRoF9k9sUhnfbBMgUi+OUgf0vZKQ9inwxL/Sa4X0ptSRSE
+         Ct1xHYgi6dCHYafQQpkGsVqm2WpwhnhNzl9/xI0xe9Cp36I4IdtkiwFgmsa7btevNwgc
+         7rtKEYD24OpV8FgCoHIOY3hRKssEiKyS50kqkw0bw/p+3mOW8tdxST4++UIs+fSChsdb
+         xLy44Y1+OOsaKeMJWhF0OfGfmQjhbO83jiyZF0NjWmKPXH2wMM+FzAT70sV0ouTciKYk
+         lhHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759844296; x=1760449096;
+        d=1e100.net; s=20230601; t=1759844318; x=1760449118;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A9rp+yjRrMywKbiM0Wx6YLvEQdEziOs4NoZkWEUPV3E=;
-        b=XU1MDp9PGp5V8fYUgcLmEMdOmak4VqXGGLPGl6o4YWcwX3DsEx0j9UT4VUlGqfNC0c
-         VOcgcm3VC2YN+v91ae+YTEVxpKFYN3Ybg8CKoX7gSZy9l3fI8CpNsoJQu4Mnwoc8CxGR
-         KbrowRpwH4Q5cORz5dW6azGpqrEjODQXD7mc99O3Pu479dgdaN9lL37qVujevG3F5PYe
-         I1WafIVqM2QhSrSlSs0ZsTY03iIZMIre27kMV+CDvBs9Xgwsu6DKhbOLCWax5ou2QlHK
-         VBG2h/KvCg8DKFLx5j5Tqgnmjrxo3eVina0F+zeaN6sN2b/vYiSVEl5f1D6RIC7PhgfK
-         URvQ==
-X-Gm-Message-State: AOJu0Ywut6pNsldO83irvQeL68MawR2JC45wFsAf3OzL/Gq9k5qp2bVV
-	8NMRrwc2zz7HfpPCJCsOwrO8VqKrK6fVyT7F/J6ehdFnjaTqQwCwduwgVzfNJbRw
-X-Gm-Gg: ASbGncsGvRJD4YlgJWQDnNcij6jzEqIbt7/dcxPrYRuc4OXTrAeQC05buFd+WfK7hQm
-	MHdsK0O7XIuAD2iUlzmm59xfL61VRw2us5Z7C197bUjlzJuKk+np79C56Z5mOswHwvio/xWNrdB
-	qHbFuqRSkXj77WpJzDLfNn9EtrGLCGyVTFh/6LBHGH4gozv6PQ2U3Qz8Q3B8nz2FOFnqlG6RAXG
-	Fp1p9yHD+8WFfUzs8HZZMyKTKrbulvO5tM1Bn3eyEQ0PMSrEzUXWYSwHqHsrT5iGz2q3Q24J5oh
-	mH/5PFrDfDqHNZBf76hIwYCeAZUxqrIz5mKWSxNyWVOlRi6UbuH03xKsrC3IfDO1ItIjQXcCn+r
-	2rK3dO3X0LVGdLBTPXWlhOgngDOd70DN7N0Y8qplSV0/P2+csXTQpyOfXPbEUjeM3rpxZMRTpN7
-	CPEkjygd4M7ynZqzEdmsoSf8RjSAYS80s3hzYTmYJQxFXw+w==
-X-Google-Smtp-Source: AGHT+IHaBIFw4emFolb6J5A3iPzmOZ92sVUme0pZmQbil5ueOGQFzWGIEO+vazKPn62M03Q05GXTqg==
-X-Received: by 2002:a05:6000:420d:b0:425:8bc2:9c4b with SMTP id ffacd0b85a97d-4258bc29dc8mr508399f8f.6.1759844296310;
-        Tue, 07 Oct 2025 06:38:16 -0700 (PDT)
+        bh=ma+pbiVq6Y9+sUaOpiOPEynkbEVW/eMv8yb6AhQR5Wk=;
+        b=mWZWvLwaOo1i1EehlNUbFutYEWTp2sthSe7BXyTWLoM6Jq5ONOMGv5t2yJNe+40SzP
+         cPvXKGVsI78rVpsY2sfTArxlwX4KvMZeGLSjEuDSLtyaPbtoIFVipI0IHamgEAnnvwQS
+         6+ICM/aHGni1M8BD7Zv5wpAQdwhCxJ0hxXsMcSsl9sDJ5zYPfsOe1V+pmD8aXKzTYitu
+         dwNkKLYY9mYuSJvCZIwRIw2oknfa/n0lLDbFck2Qudnt6ZJMlVzNg4+j1yiUl/AU1TUw
+         GjGn4y0XCHwn1kvEhQRsvYwWXBww//yERcEC+W/RJEenpF0RKRHB+a+5FhPvB9U4ttkQ
+         X5Wg==
+X-Gm-Message-State: AOJu0YwyCJYJLmaTuxobfUqdET7gg5E/uMZcDK8X0be8xm5hO0qMdOwL
+	rHK3mFUu9NWvpKOrp+yz3uB/+SXKIJSnyS07q6VLE+v5aAlSXAXu1hLWc2cg1gka
+X-Gm-Gg: ASbGncvgOMo0+8O+SNddD4eIuNz4rl05blzGynzbTCIgtQlht9VT1V9BPfi6RdI1dyy
+	sQci+aY6oygAwA/ZKKyAmEEZ/gAcdtohCb/DOlnNdSSp07ZOA2vu6ugJ4QTmTK8ON7zIL0XCqmo
+	xYBRdWKvkD0PVNpzlShhCmMVv1jSdGmobFVvMWeIjM9quqTVFURUDGvgWTGTso8wVFOWh6vbFEC
+	JvIHaa0SUVZUlre9RSWs4IUXGjoH1n6uXjhTwMypFX9G0Tia8v0F9+EEWEiYXUZOWSQtDjb6sIC
+	Dl0IVVWUvBkuIvqgyV9UT6o4y6KGE+QaeFmpnr0dYSQ0pvM5GPyCFKRtxhtpy/DyyiKFIbSqC/d
+	Lqi4FelZ8uYuSmzSFneGp70eNcTD97u+KnRHzFUBIGInekVGcRv8AnMSpDtnwDxOGic7nnNtj6u
+	IujJ0zlOENksHpZpZi6PmRPuqANkBMchV5GIjB9mMitaWi6Q==
+X-Google-Smtp-Source: AGHT+IE+QVyk0/17sNBKjZ6RQqlFO7pJPg3N8yQIPE854MLlD4DZvVi3S24iw2hbBwfe28aa4Kq1cA==
+X-Received: by 2002:a05:600d:810a:b0:46e:59bd:f7e2 with SMTP id 5b1f17b1804b1-46fa29b2a32mr25017115e9.11.1759844318346;
+        Tue, 07 Oct 2025 06:38:38 -0700 (PDT)
 Received: from mail.gmail.com (2a01cb0889497e0079f574fca42e1d7a.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:79f5:74fc:a42e:1d7a])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4255d8b0068sm25614378f8f.26.2025.10.07.06.38.15
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e77972d2csm166484745e9.5.2025.10.07.06.38.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Oct 2025 06:38:15 -0700 (PDT)
-Date: Tue, 7 Oct 2025 15:38:14 +0200
+        Tue, 07 Oct 2025 06:38:37 -0700 (PDT)
+Date: Tue, 7 Oct 2025 15:38:36 +0200
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -81,9 +81,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Amery Hung <ameryhung@gmail.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>
-Subject: [PATCH bpf-next v6 3/5] bpf: Craft non-linear skbs in
- BPF_PROG_TEST_RUN
-Message-ID: <8347068dc4ee9030be13e886c05d59d3ef1ce949.1759843268.git.paul.chaignon@gmail.com>
+Subject: [PATCH bpf-next v6 4/5] selftests/bpf: Support non-linear flag in
+ test loader
+Message-ID: <7f2ef84283295564c12915dde6144efbfa39e055.1759843268.git.paul.chaignon@gmail.com>
 References: <cover.1759843268.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -95,168 +95,119 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1759843268.git.paul.chaignon@gmail.com>
 
-This patch adds support for crafting non-linear skbs in BPF test runs
-for tc programs. The size of the linear area is given by ctx->data_end,
-with a minimum of ETH_HLEN always pulled in the linear area. If ctx or
-ctx->data_end are null, a linear skb is used.
+This patch adds support for a new tag __linear_size in the test loader,
+to specify the size of the linear area in case of non-linear skbs. If
+the tag is absent or null, a linear skb is crafted.
 
-This is particularly useful to test support for non-linear skbs in large
-codebases such as Cilium. We've had multiple bugs in the past few years
-where we were missing calls to bpf_skb_pull_data(). This support in
-BPF_PROG_TEST_RUN would allow us to automatically cover this case in our
-BPF tests.
-
-In addition to the selftests introduced later in the series, this patch
-was tested by setting enabling non-linear skbs for all tc selftests
-programs and checking test failures were expected.
-
-Tested-by: syzbot@syzkaller.appspotmail.com
-Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
- net/bpf/test_run.c | 82 +++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 74 insertions(+), 8 deletions(-)
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |  4 ++++
+ .../bpf/progs/verifier_direct_packet_access.c |  1 +
+ tools/testing/selftests/bpf/test_loader.c     | 19 +++++++++++++++++--
+ 3 files changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index b9b49d0c7014..0cdf894c1d05 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -910,6 +910,12 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
- 	/* cb is allowed */
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index a7a1a684eed1..c9bfbe1bafc1 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -126,6 +126,9 @@
+  *                   Several __arch_* annotations could be specified at once.
+  *                   When test case is not run on current arch it is marked as skipped.
+  * __caps_unpriv     Specify the capabilities that should be set when running the test.
++ *
++ * __linear_size     Specify the size of the linear area of non-linear skbs, or
++ *                   0 for linear skbs.
+  */
+ #define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" XSTR(__COUNTER__) "=" msg)))
+ #define __not_msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_not_msg=" XSTR(__COUNTER__) "=" msg)))
+@@ -159,6 +162,7 @@
+ #define __stderr_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_stderr_unpriv=" XSTR(__COUNTER__) "=" msg)))
+ #define __stdout(msg)		__attribute__((btf_decl_tag("comment:test_expect_stdout=" XSTR(__COUNTER__) "=" msg)))
+ #define __stdout_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_stdout_unpriv=" XSTR(__COUNTER__) "=" msg)))
++#define __linear_size(sz)	__attribute__((btf_decl_tag("comment:test_linear_size=" XSTR(sz))))
  
- 	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, cb),
-+			   offsetof(struct __sk_buff, data_end)))
-+		return -EINVAL;
-+
-+	/* data_end is allowed, but not copied to skb */
-+
-+	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, data_end),
- 			   offsetof(struct __sk_buff, tstamp)))
- 		return -EINVAL;
+ /* Define common capabilities tested using __caps_unpriv */
+ #define CAP_NET_ADMIN		12
+diff --git a/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c b/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
+index 28b602ac9cbe..a61897e01a50 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
++++ b/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Converted from tools/testing/selftests/bpf/verifier/direct_packet_access.c */
  
-@@ -984,9 +990,12 @@ static struct proto bpf_dummy_proto = {
- int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			  union bpf_attr __user *uattr)
- {
--	bool is_l2 = false, is_direct_pkt_access = false;
-+	bool is_l2 = false, is_direct_pkt_access = false, is_lwt = false;
-+	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 	struct net *net = current->nsproxy->net_ns;
- 	struct net_device *dev = net->loopback_dev;
-+	u32 headroom = NET_SKB_PAD + NET_IP_ALIGN;
-+	u32 linear_sz = kattr->test.data_size_in;
- 	u32 size = kattr->test.data_size_in;
- 	u32 repeat = kattr->test.repeat;
- 	struct __sk_buff *ctx = NULL;
-@@ -1007,11 +1016,14 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	switch (prog->type) {
- 	case BPF_PROG_TYPE_SCHED_CLS:
- 	case BPF_PROG_TYPE_SCHED_ACT:
-+		is_direct_pkt_access = true;
- 		is_l2 = true;
--		fallthrough;
-+		break;
- 	case BPF_PROG_TYPE_LWT_IN:
- 	case BPF_PROG_TYPE_LWT_OUT:
- 	case BPF_PROG_TYPE_LWT_XMIT:
-+		is_lwt = true;
-+		fallthrough;
- 	case BPF_PROG_TYPE_CGROUP_SKB:
- 		is_direct_pkt_access = true;
- 		break;
-@@ -1023,9 +1035,24 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
++#include <linux/if_ether.h>
+ #include <linux/bpf.h>
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+index 74ecc281bb8c..690181617f04 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -43,6 +43,7 @@
+ #define TEST_TAG_EXPECT_STDERR_PFX_UNPRIV "comment:test_expect_stderr_unpriv="
+ #define TEST_TAG_EXPECT_STDOUT_PFX "comment:test_expect_stdout="
+ #define TEST_TAG_EXPECT_STDOUT_PFX_UNPRIV "comment:test_expect_stdout_unpriv="
++#define TEST_TAG_LINEAR_SIZE "comment:test_linear_size="
  
--	data = bpf_test_init(kattr, kattr->test.data_size_in,
--			     size, NET_SKB_PAD + NET_IP_ALIGN,
--			     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
-+	if (ctx) {
-+		if (ctx->data_end > kattr->test.data_size_in || ctx->data || ctx->data_meta) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+		if (ctx->data_end) {
-+			/* Non-linear LWT test_run is unsupported for now. */
-+			if (is_lwt) {
-+				ret = -EINVAL;
-+				goto out;
-+			}
-+			linear_sz = max(ETH_HLEN, ctx->data_end);
-+		}
-+	}
-+
-+	linear_sz = min_t(u32, linear_sz, PAGE_SIZE - headroom - tailroom);
-+
-+	data = bpf_test_init(kattr, linear_sz, linear_sz, headroom, tailroom);
- 	if (IS_ERR(data)) {
- 		ret = PTR_ERR(data);
- 		data = NULL;
-@@ -1044,12 +1071,49 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 		ret = -ENOMEM;
- 		goto out;
+ /* Warning: duplicated in bpf_misc.h */
+ #define POINTER_VALUE	0xbadcafe
+@@ -89,6 +90,7 @@ struct test_spec {
+ 	int mode_mask;
+ 	int arch_mask;
+ 	int load_mask;
++	int linear_sz;
+ 	bool auxiliary;
+ 	bool valid;
+ };
+@@ -633,6 +635,11 @@ static int parse_test_spec(struct test_loader *tester,
+ 					      &spec->unpriv.stdout);
+ 			if (err)
+ 				goto cleanup;
++		} else if (str_has_pfx(s, TEST_TAG_LINEAR_SIZE)) {
++			val = s + sizeof(TEST_TAG_LINEAR_SIZE) - 1;
++			err = parse_int(val, &spec->linear_sz, "test linear size");
++			if (err)
++				goto cleanup;
+ 		}
  	}
-+
- 	skb->sk = sk;
  
- 	data = NULL; /* data released via kfree_skb */
+@@ -1007,10 +1014,11 @@ static bool is_unpriv_capable_map(struct bpf_map *map)
+ 	}
+ }
  
- 	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
--	__skb_put(skb, size);
-+	__skb_put(skb, linear_sz);
-+
-+	if (unlikely(kattr->test.data_size_in > linear_sz)) {
-+		void __user *data_in = u64_to_user_ptr(kattr->test.data_in);
-+		struct skb_shared_info *sinfo = skb_shinfo(skb);
-+
-+		size = linear_sz;
-+		while (size < kattr->test.data_size_in) {
-+			struct page *page;
-+			u32 data_len;
-+
-+			if (sinfo->nr_frags == MAX_SKB_FRAGS) {
-+				ret = -ENOMEM;
-+				goto out;
-+			}
-+
-+			page = alloc_page(GFP_KERNEL);
-+			if (!page) {
-+				ret = -ENOMEM;
-+				goto out;
-+			}
-+
-+			data_len = min_t(u32, kattr->test.data_size_in - size,
-+					 PAGE_SIZE);
-+			skb_fill_page_desc(skb, sinfo->nr_frags, page, 0, data_len);
-+
-+			if (copy_from_user(page_address(page), data_in + size,
-+					   data_len)) {
-+				ret = -EFAULT;
-+				goto out;
-+			}
-+			skb->data_len += data_len;
-+			skb->truesize += PAGE_SIZE;
-+			skb->len += data_len;
-+			size += data_len;
-+		}
+-static int do_prog_test_run(int fd_prog, int *retval, bool empty_opts)
++static int do_prog_test_run(int fd_prog, int *retval, bool empty_opts, int linear_sz)
+ {
+ 	__u8 tmp_out[TEST_DATA_LEN << 2] = {};
+ 	__u8 tmp_in[TEST_DATA_LEN] = {};
++	struct __sk_buff ctx = {};
+ 	int err, saved_errno;
+ 	LIBBPF_OPTS(bpf_test_run_opts, topts,
+ 		.data_in = tmp_in,
+@@ -1020,6 +1028,12 @@ static int do_prog_test_run(int fd_prog, int *retval, bool empty_opts)
+ 		.repeat = 1,
+ 	);
+ 
++	if (linear_sz) {
++		ctx.data_end = linear_sz;
++		topts.ctx_in = &ctx;
++		topts.ctx_size_in = sizeof(ctx);
 +	}
++
+ 	if (empty_opts) {
+ 		memset(&topts, 0, sizeof(struct bpf_test_run_opts));
+ 		topts.sz = sizeof(struct bpf_test_run_opts);
+@@ -1269,7 +1283,8 @@ void run_subtest(struct test_loader *tester,
+ 		}
  
- 	if (ctx && ctx->ifindex > 1) {
- 		dev = dev_get_by_index(net, ctx->ifindex);
-@@ -1130,9 +1194,11 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	convert_skb_to___skb(skb, ctx);
- 
- 	size = skb->len;
--	/* bpf program can never convert linear skb to non-linear */
--	if (WARN_ON_ONCE(skb_is_nonlinear(skb)))
-+	if (skb_is_nonlinear(skb)) {
-+		/* bpf program can never convert linear skb to non-linear */
-+		WARN_ON_ONCE(linear_sz == size);
- 		size = skb_headlen(skb);
-+	}
- 	ret = bpf_test_finish(kattr, uattr, skb->data, NULL, size, retval,
- 			      duration);
- 	if (!ret)
+ 		err = do_prog_test_run(bpf_program__fd(tprog), &retval,
+-				       bpf_program__type(tprog) == BPF_PROG_TYPE_SYSCALL ? true : false);
++				       bpf_program__type(tprog) == BPF_PROG_TYPE_SYSCALL ? true : false,
++				       spec->linear_sz);
+ 		if (!err && retval != subspec->retval && subspec->retval != POINTER_VALUE) {
+ 			PRINT_FAIL("Unexpected retval: %d != %d\n", retval, subspec->retval);
+ 			goto tobj_cleanup;
 -- 
 2.43.0
 
