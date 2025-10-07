@@ -1,131 +1,145 @@
-Return-Path: <bpf+bounces-70529-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25BA6BC281A
-	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 21:26:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33CE2BC281D
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 21:27:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EF7B19A2877
-	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 19:27:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33E2D19A2C92
+	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 19:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458E322F389;
-	Tue,  7 Oct 2025 19:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D51722F389;
+	Tue,  7 Oct 2025 19:27:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bpb7RWju"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XTM9BRx1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25DDC1C5F23
-	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 19:26:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416601C5F23
+	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 19:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759865211; cv=none; b=r8I5ptT9Q8v6kUGwp98N8cSdyozYx2DBfxIWULEXiSs0K/IN4dkfqE9jpU5KgtbLiQNfmfPgfqdhFBP6CnzY8HilEHwF3efI1sry4iUm3OdHXIBxRN4khA3GBol2VYM1UhpXWQvJKVnLnLLzI3aPgxZk7Qkc+7zoQKSNUI5+kCE=
+	t=1759865262; cv=none; b=o79OOjMbQ+OC5WvVzxjxBKMtUAtAoKHhhHjrY6+aCcxXpJOAbM7moPm3LIiW8FqNYPjooQ+WkBfk5kpGWM1f30ZsaJTDHc61c8FHXxlw0d3Mz/WievV4XQOiImAbmPn0BRgW7L6OoriLOz84N//T7dCSNZPacROEck7PUM2sBzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759865211; c=relaxed/simple;
-	bh=Mi6Vbjm7Iid4NFhZb4q/gBDOU9qvvDxC6+oTtaj6Hoo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mm3WQjfsqSpJUYH8MPcfhAutmRAlXtjEbXNNrhD+cV9jiVNrPonQevvXJbeNiM6IeOA7MC/dyRW8bLlpkHzeGNlBjoST3jKaHcrZwprWqJvq1BLFDyQXSupMhapbc8zndUZImUA+JN8J4nHL5juMTkoA5bsppy3f3DrYtbdVOC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bpb7RWju; arc=none smtp.client-ip=209.85.218.66
+	s=arc-20240116; t=1759865262; c=relaxed/simple;
+	bh=1YMhuC9LuEOXVRzbp39Bm4jmqR+AtLSS92dKsxBvZjg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=I7Umd/vikViWf/BeSzKQL4YG6In0MvMXsJ4fErvt9OGiXYl9rW7n9yyl46AISNhoyZm2swh8kxJxnw8D6gR7+1Rx6djmnwhSYdPPmf6BLl/c9qTA+Vr4h2K7P4C++AGvXtaGcx71PjE28AGv3gTRisHI6FqHc8alsyfdNiknrtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XTM9BRx1; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-b4f323cf89bso287370166b.2
-        for <bpf@vger.kernel.org>; Tue, 07 Oct 2025 12:26:49 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-781251eec51so5093389b3a.3
+        for <bpf@vger.kernel.org>; Tue, 07 Oct 2025 12:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759865208; x=1760470008; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fDPiTVesHzW0Mznm6dhS+pQ+Go7uie9wNfKlP+bUmUg=;
-        b=bpb7RWjuO+8FAIN8BEz0CrEkgFTF22RZ6vVk18kpVoLh82vHrNzF6UD+Fenqr8Cv/d
-         fE+KpjoRNuqYXwOq1hSMAPituITa4t+CdKRMhw1V8E07omglAD/ZF6TzY5/K+Z1w0a2j
-         uNivqnE8bnFyw75oOQKU2nrpfvm9BYzAlKNruELlkF0/RgI/+eR1eVNY2xeKUUnOTYMs
-         ENdt2CevVE5r48O6awd+kZjIpj2UP1VKV2Z5+UR8d8m2DaQ9yItVLEFcQFQl8jn2vV9i
-         XAmwHc/7IMFEJ1mzofZDA6G1gLf2jC5DEnqnEJA9Tiifmz6HDAvUTere6Xuoh4UwgOkb
-         tVzw==
+        d=gmail.com; s=20230601; t=1759865260; x=1760470060; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hakZoKWBsteNZaL8oou4T+YNCWEBfVBAAsGCqAapbbQ=;
+        b=XTM9BRx18c6+HMcpkTu/gRjn6DTA8gGNc4eD6czNi/y1PXGd9i8akNvy+uO8Kz/Tpy
+         9yznsrxvU6nDa0Nsdr5wfQHTCKEwKKweUBJ2ynXmfj6rGlER4hO+e+5eVocIbJ4b00mS
+         W2Hrgl7sLI3mu5CeIaWCn9W3CftN2S/LZ9mZ3hy3Zv4qNRkrx/aJz4Hs9a7dha+jjO7L
+         RhDjWnTHJq6TLwKDKepukBxbmcoce7monJNdfzj7sJAjNoE4RuSUJz0+so43KNekceop
+         ujgjtyK9LUe9jeUk4xQAb3pVWuAl+ITBnWTlsv0bqn0yOhy5GU6VFyb9ekekcuyLBjZT
+         G4cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759865208; x=1760470008;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fDPiTVesHzW0Mznm6dhS+pQ+Go7uie9wNfKlP+bUmUg=;
-        b=XHnZUMRrTZhctjc693B8iM0YXXAbIboXfqw+KOaiowYwBLNNLcFtp3zviZuvietqyc
-         4kctLzOI/iyLdjDavcwkXd5TcqmKVYlVkBwP/Vau+lUGZ5ETEHvsQAyBPJtMm8jcCjKv
-         MaOqpFxYkSVxJX9tE2fKPX1+4ygJ/nhC5AZlPkQ1ZTFy4l6p/v0mYNgXkExa4o1+XhvR
-         8Io9lkRg4aAefPOPzDSu4vC28DUD7lJFnCIgAc9Mk7PmOy13AaMDjsUth12FAll50ahj
-         9TKoIxUyrh1AAXS4FAGD7x1xgFnGJ9sbVAzujcFPCrLYzO19gj8OOijGbL8PDaCun0+4
-         iR1w==
-X-Gm-Message-State: AOJu0Yz+iNcIK44lxm3Y+sSVSDgPCmKE6Vl1fFMT+aqf9Z9ayi2/+WUI
-	EKZo4BVIPlj/y+v8aM9u9/4K+sKVAOpgExlm7/l2Qc6Ac0KPQJkcVrJUZpR7ZzDtwQBXmgxzOiZ
-	ImIAXNfQMs/6AD1I1cY1ApE+uQ5bdK4g=
-X-Gm-Gg: ASbGncsdcy5Wf/4Hrn6hyRE2SkYVzXXuWklm7APxkK2Ivw0JbwPhT5og2qlOesx0+rJ
-	ReEDjzYmEgKvX9EBOokV96xTf55wRL4hmI94OGLvebk8Qpp5jZ2KjyivdlB4L7q3IXSPBr527Fk
-	agtf66F8KONWbXf1I0uKCkwi2Me2mZMx2CQDCMpujMdZDIccdVJt2sJINWsbtAJNqa8/cvi8xb7
-	gURUMNEAvkfTbLUb1lpxszC7gSPAaWj9LjcLaE2sZUlekY/hylpE7yBM1tBMQ+dn81oBebXeJY+
-	KtgQjRXVX0AsmMahCJGG2A==
-X-Google-Smtp-Source: AGHT+IH0q6th/LwGv6OJtqxDWsDZ87vTjyUgcfS+1t+tsLbyydsZo7yXSBt9R91/MjE9jgUm8SvpSUibzSxUotsJWBY=
-X-Received: by 2002:a17:907:9411:b0:b40:6d68:34a4 with SMTP id
- a640c23a62f3a-b50a9d700b5mr91990866b.2.1759865208416; Tue, 07 Oct 2025
- 12:26:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1759865260; x=1760470060;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hakZoKWBsteNZaL8oou4T+YNCWEBfVBAAsGCqAapbbQ=;
+        b=K6xBGfj8jyIlrN7yFkfp6Fw3sZLysNsHbc7XSAxln1N8gUhTn0TkrrCUMIjc3mopim
+         mP8PhYpdxCkEM0lo28nUCY0VuWxY8SsjX+QbBGEzbfgRpBI4PSa0r4zkUk/TEQdXmsgz
+         0Qb7Kv20924FqbW1KSAn7BU+lBTDdAnfHXKB4JVZBhpsVZVAqSV5r5WZ3+Iyq9DzTgey
+         ULoC5tHmpXKQfQJF4o+ISTfLT0lyxh/d38zCkvbfnJ/1qdinccWLveCBBgylIYF/gv+t
+         jab6SbDT4K2ouP6TqZOaEJruGsEUlp4gP2HXW+uK3AHLluUI3/LyucYLk4S6GlgYJPrt
+         JcWA==
+X-Gm-Message-State: AOJu0YyGkjnzwC97putd5FKv7YYnJD/pIg0/t7KVLzdiBnm43+4HB6ro
+	h1HGyEQ9sneuG9D6WFeKRs0K+H70SfASd4JAAeIWkCc7x9xVPs4PIAxO
+X-Gm-Gg: ASbGncsO6ZBWQt1Tdd399A0yIy13uu2NJsSej/j6To1BuGbJ2Chm816jrQQoLbnkGeq
+	+o2yL+A/zrdXqrcW+lW88N4PR3TfMfkSUemRZMOii2PDlHY6+GqicD9d+B2QA24DGVJ2QOj5iM/
+	7nB2hD+9Qmsb4HNP2aknqWhgpU09sF5RTCqRfAb/KfldhEcVknEfwqdXlhPX+njm8QWjrC+IPYE
+	HT7N8qTO197+khF4DpoKnD10gIu9K0Yn/c3DHBO9j0XxMMcEHHO1vroG/JuRlF0oEvLHJCYjv6M
+	fSRfro1nAM7PtEOB4SmqZqx6x9PvJ4hj66fWam9Tglqa2R3FmAsUkFNcpYsfFmjqC0Il8beGUrO
+	Uw1+WVT0tkky1XogiPCgyQJ1nGceCPd7Tywwv9aaPqICERNeBr2t+uQb5p+Zpu6/CKu4ofgVk
+X-Google-Smtp-Source: AGHT+IE9WCFNhTeilA3DCsBOtR4HHXbN6vdUNgzHA9m/WFPB7vswqaayDDClSiEm1SHIhlxXPSRdpg==
+X-Received: by 2002:a05:6a21:3387:b0:2fd:5bf0:706c with SMTP id adf61e73a8af0-32da8462d9fmr823559637.58.1759865260538;
+        Tue, 07 Oct 2025 12:27:40 -0700 (PDT)
+Received: from ?IPv6:2a03:83e0:115c:1:8bd3:2c4e:e9b8:4ad1? ([2620:10d:c090:500::5:b7ce])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-78b01f9daffsm16337094b3a.17.2025.10.07.12.27.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Oct 2025 12:27:40 -0700 (PDT)
+Message-ID: <cfefcedfc1f038bf316a3b0d0617b76edb049d9a.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Fix sleepable context for async
+ callbacks
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko	 <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau	 <martin.lau@kernel.org>, kkd@meta.com,
+ kernel-team@meta.com
+Date: Tue, 07 Oct 2025 12:27:38 -0700
+In-Reply-To: <CAP01T77hX=3Q-bMQNDp_U5ei3Av_mWh5BomAXcvHDjCyj07HXw@mail.gmail.com>
+References: <20251007014310.2889183-1-memxor@gmail.com>
+	 <20251007014310.2889183-2-memxor@gmail.com>
+	 <340fce3310df92a9a2cefb25e3eb2781424958e0.camel@gmail.com>
+	 <CAP01T75XqJZa5PCtWm29W3+G5y04ok5F7zM4Q-ge_z2kORuJ0Q@mail.gmail.com>
+	 <12692a9d8dfce6317025949515b9e057823b70c7.camel@gmail.com>
+	 <CAP01T77hX=3Q-bMQNDp_U5ei3Av_mWh5BomAXcvHDjCyj07HXw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251007014310.2889183-1-memxor@gmail.com> <20251007014310.2889183-3-memxor@gmail.com>
- <5ab5aa0dd0a769cfcee7fe9407f95d3956947794.camel@gmail.com>
-In-Reply-To: <5ab5aa0dd0a769cfcee7fe9407f95d3956947794.camel@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 7 Oct 2025 21:26:10 +0200
-X-Gm-Features: AS18NWBaxywSdyZ58OMsqibVIdhmQtUkQf7YQtCd_BuHL4rDlSgy7RGRO2Qs5ms
-Message-ID: <CAP01T77cYTG8v8LrviWFcptdTh5XanqSvUp5Wx9Hvf-LUGQzBA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/3] bpf: Fix GFP flags for non-sleepable
- async callbacks
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, kkd@meta.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 7 Oct 2025 at 21:14, Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> On Tue, 2025-10-07 at 01:43 +0000, Kumar Kartikeya Dwivedi wrote:
->
-> [...]
->
-> > @@ -11460,10 +11460,17 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> >                       return -EINVAL;
-> >               }
-> >
-> > -             if (in_sleepable(env) && is_storage_get_function(func_id))
-> > +             if (is_storage_get_function(func_id))
-> >                       env->insn_aux_data[insn_idx].storage_get_func_atomic = true;
-> >       }
-> >
-> > +     /*
-> > +      * Non-sleepable contexts in sleepable programs (e.g., timer callbacks)
-> > +      * are atomic and must use GFP_ATOMIC for storage_get helpers.
-> > +      */
-> > +     if (!in_sleepable(env) && is_storage_get_function(func_id))
-> > +             env->insn_aux_data[insn_idx].storage_get_func_atomic = true;
-> > +
->
-> Note this discussion:
-> https://lore.kernel.org/bpf/8e1e6e4e3ae2eb9454a37613f30d883d3f4a7270.camel@gmail.com/
->
-> It appears there is already a need to have a flag in struct
-> subprog_info, indicating whether subprogram might run in a sleepable
-> context. Maybe add this flag and remove .storage_get_func_atomic
-> altogether? (And check subprog_info in the do_misc_fixups()).
+On Tue, 2025-10-07 at 21:25 +0200, Kumar Kartikeya Dwivedi wrote:
+> On Tue, 7 Oct 2025 at 21:21, Eduard Zingerman <eddyz87@gmail.com> wrote:
+> >=20
+> > On Tue, 2025-10-07 at 21:14 +0200, Kumar Kartikeya Dwivedi wrote:
+> >=20
+> > [...]
+> >=20
+> > > > > @@ -22483,7 +22495,7 @@ static int do_misc_fixups(struct bpf_veri=
+fier_env *env)
+> > > > >               }
+> > > > >=20
+> > > > >               if (is_storage_get_function(insn->imm)) {
+> > > > > -                     if (!in_sleepable(env) ||
+> > > > > +                     if (!env->prog->sleepable ||
+> > > >=20
+> > > > This is not exactly correct.
+> > > > I think that this and the second patch need to be squashed.
+> > >=20
+> > > I was mostly trying to reduce it to what it would evaluate to.
+> > > env->cur_state is always false, so the only check that matters is thi=
+s one.
+> > > And we fix it separately in the next one. Unless I missed something.
+> >=20
+> > Well, yes, but that is not a complete fix, you need a second patch in
+> > any case, right?
+> >=20
+>=20
+> Yeah, but I meant it's an orthogonal problem wrt GFP flags.
+> I can actually squash both into the same patch and add two fixes tags
+> then to the commit log, and expand the message a bit, I don't have a
+> preference here.
+> Let me know if that sounds good.
 
-Ok, I can add a subprog field and check it that way.
+I think these should be squashed, but no hard feelings if they are not.
 
->
-> >       meta.func_id = func_id;
-> >       /* check args */
-> >       for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
->
-> [...]
+> > > >=20
+> > > > >                           env->insn_aux_data[i + delta].storage_g=
+et_func_atomic)
+> > > > >                               insn_buf[0] =3D BPF_MOV64_IMM(BPF_R=
+EG_5, (__force __s32)GFP_ATOMIC);
+> > > > >                       else
+> > > >=20
+> > > > [...]
 
