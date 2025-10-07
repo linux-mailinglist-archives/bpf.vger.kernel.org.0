@@ -1,92 +1,70 @@
-Return-Path: <bpf+bounces-70518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id F011DBC2234
-	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 18:41:10 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEF76BC2249
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 18:43:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 31EA34F7444
-	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 16:39:52 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A9ECF4F7077
+	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 16:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF142E88B7;
-	Tue,  7 Oct 2025 16:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB002E7F11;
+	Tue,  7 Oct 2025 16:43:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="msJqzst7"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="ILOV0jd0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F8D2D9EE6
-	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 16:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49DCD2E62B1;
+	Tue,  7 Oct 2025 16:43:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759855179; cv=none; b=VRBmxfTKXC6AATYTQNwpC4C0bMjvYjBksWSoMQlgegRm+FGxsjvJI1jhNvZWlPamuhWA5H1kWWKrcDlqIrjHVP/sIOUDBdYtP/KPMGFoHGl+hiy8M+gv0+PWfxNT5dwonIQhBcOwcjoGhQpLa3ayYc/71IfAmjmJLGj78OrV0bc=
+	t=1759855401; cv=none; b=FsCsxGGjCG/pGQShc4CPXhFWUe0DOX9tVsN9IKXb2QSm//Vn6ine/shgY5/JfiJiakhOEbJ8/hPrnMAqg5HWAMA/xPUJxlkRW8UnwCjolJS4O1OnCeBvH9fyR8IwZmolNm2J4u2GbdXUEH8U0sIbSCuoYzgmcRDsCt6zvDq+B3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759855179; c=relaxed/simple;
-	bh=oME/+hzuiaGqyosVLKIvCUeXrS71HCR4GBalR30FlZc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KdpbiPlbdqaN0ftr4jYt8lZlF4MIlNMOhx114alMn5G4meFYZe/JBaFPChRkhKNTZkrhmV6W6e9aQOc2h19Pq9J64nugRTk18JThsF9JXufJzmkDHI0R7fHupIF8ZsT5j81Ibagazxj859ywRr0yp4PAjBBQvvSt59uwVfo42MY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=msJqzst7; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-46e61ebddd6so60775665e9.0
-        for <bpf@vger.kernel.org>; Tue, 07 Oct 2025 09:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759855175; x=1760459975; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xUSIun5eMgxCw3M8hzuIgKKExgOlyAvKwzs2ROP/c6M=;
-        b=msJqzst7hlmkV8vTfiTRmBK8Cgm++RjbhihONfJq2gnqMdRZO1ln79u+bJtabiHHBZ
-         qShcGVJU199UwvKPcKnEfsR5oGkm8vqwtiXXqybmdIlL5+CFjTbAvHJpUHoAj7yvpAZ+
-         QX5QOPSAxOWVyjwJB1h71z0x6LULjUW2KJDjt/8lNQUW49l8a59Jm3deiZVsXqDn7dcu
-         NuAxE5KZC+7jTCnfoAg3d17AXl4UJU7G8QOy0iBpE+mQLLHxJdDy/RT7GOU0OYbrRJcS
-         bfWTZep2j41SUuhteNbqLuE0ViSyJqVQ2+WgAvc2xXxHApBLatCl20S3d5nPgdEFMYJl
-         L4yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759855175; x=1760459975;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xUSIun5eMgxCw3M8hzuIgKKExgOlyAvKwzs2ROP/c6M=;
-        b=fRxb8V/tCpFaGuqEHVpgy62gc/+H6geuvuZjg5378dEXOfFu10vmAlmfaBiPjnESYv
-         hgfQTKbU/cd63aYfr9OXblTWqA81ZyATjp2EGFw35TnrSvg8iPAvFQ+jwAcRNIwb2Ysm
-         2X+BBITMGNqQcX6HsGtr1SK44uB31XymtAyDLrzQ/cxA++Utv0YAO1tOKsMLK61P+JND
-         FAPJ18a697iatJ51HrBdrDp2O9qGERljItoCoRfH80QoFxSBNUrOClwtYqgdtlt8yX+e
-         qwyIy7MhC1UXzaAaPOzkvYzxkrHUvbXWdoZWInzHzpQ3ZSrTF9Uzlg8ydC0VpEQPEhTb
-         UTyA==
-X-Gm-Message-State: AOJu0Yy1SVw0Dzho/2yiJhjYhA9bq/Qge7FAzgBY8TY0FzoYSlpyq1Iy
-	ODXyWvW1yKHWYUWAGP+wfzuEkDRwd4GaBWWbxVTwt779ddauyD4ptelsEhqjrA==
-X-Gm-Gg: ASbGncvz4H2S+Q8hy3Bzt7DXujlDvYdxVVVktzd2xVTdGOlxJRF8bbq6v2bUzsIvdTP
-	C+4L8toLgLTQjNFjTczUxDIo/sKR30Zsc8+KV/oPPBfkfyz1rvB241lIR20EXU+dEsX6CMgKzV2
-	sVdbRdCb579WE569wmggB9m2WjjrX1StlrWsn0y1CgL5396bcU+NKFFlpHYe17p65y8n0cHS0v3
-	KI3sj2LB6xizZ5eWzWexjXG4f24KerlUgKoq5Olz7lMIc87teLIiyS2Ew0IJv94P7WDAJdxqhqj
-	9HBuccgca/gJTo7RHD3BmrJzIAc2BrwgFXIHr7ejVYdeCl0HOEZQi2QLx4vjnmz+WRFhCHYv0S7
-	Up1Jx1ErWvqlfgw/kKrY+S2RFgLY6tji3mhOi653KXkVEFQ==
-X-Google-Smtp-Source: AGHT+IEwpVjrnXMjorbVXxpwL2cR31XA/pym0GFUT5Xt0BkDpTPK5bORg67xyRGFzT6EMmoTEgJ6ag==
-X-Received: by 2002:a05:600c:3b11:b0:46e:4c7c:515c with SMTP id 5b1f17b1804b1-46fa9b182e2mr1762825e9.34.1759855175144;
-        Tue, 07 Oct 2025 09:39:35 -0700 (PDT)
-Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fa9bf6c64sm1602435e9.4.2025.10.07.09.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Oct 2025 09:39:34 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v3 3/3] bpf: extract internal structs helpers
-Date: Tue,  7 Oct 2025 17:39:30 +0100
-Message-ID: <20251007163930.731312-3-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251007163930.731312-1-mykyta.yatsenko5@gmail.com>
-References: <20251007163930.731312-1-mykyta.yatsenko5@gmail.com>
+	s=arc-20240116; t=1759855401; c=relaxed/simple;
+	bh=Jaz+/BZCqVxcqYDoHpP9Kj5r/09VltHAJQYFTSMdr9w=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WAUfutVPSV7mddUpViSJwfkGGp5N2DLPAy9D+/7MZX4jTpVe7lqBadQhM6Ht7uMbx55+FyLFxLaF1PL0Xuuux8AFHvuRXWQtR4LmYH/29dbXSg7wtoOGqDBBmVV7PN3NipVGMH7nXB++CD0w/r0rKStYN6uz9ONYymoTxfiepWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=ILOV0jd0; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 597Fq39e3928046;
+	Tue, 7 Oct 2025 09:43:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=zzmjj3IqYxbJ3FZW9fNFsn2i9xeCEwlnVhm4zbtDAzM=; b=ILOV0jd093/R
+	stWNwcG9zUZp6axVUg4kEiL7ZqdBUpUAS6qz5I/+95Wez1qCgrXe4Jg4NSNCQMxz
+	ucR0wwo2WHKRnRHw2eMUcB58dzYbiNaQbqzY2ewst4wnx0BtuUOejb7DsrwEd33r
+	74HDKgln5EzvCicgML30oWveRqgkns03PuZDTomTMr+7gnuFN1irm0l5mAVrYnr4
+	bTHJKXgI2orb8d1TIcQxUfMjlxeQ9gQvVH6hSv2SARHeOai49gnqK3hxdnmNw4dG
+	N2eJyH0SQNy3KmMZ1086UgjA0QC7DK11XYXTmQt2WGUROKzaMclJp7+uBOziaGXo
+	pUZG6h/PkA==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 49mx0ebw21-4
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Tue, 07 Oct 2025 09:43:01 -0700 (PDT)
+Received: from devbig091.ldc1.facebook.com (2620:10d:c0a8:fe::f072) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.20; Tue, 7 Oct 2025 16:42:34 +0000
+From: Chris Mason <clm@meta.com>
+To: KP Singh <kpsingh@kernel.org>
+CC: Chris Mason <clm@meta.com>, <bpf@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <bboscaccy@linux.microsoft.com>, <paul@paul-moore.com>,
+        <kys@microsoft.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <syzbot@syzkaller.appspotmail.com>
+Subject: Re: [PATCH bpf-next v7 1/5] bpf: Implement signature verification for BPF programs
+Date: Tue, 7 Oct 2025 09:42:10 -0700
+Message-ID: <20251007164217.1966541-1-clm@meta.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20250921160120.9711-2-kpsingh@kernel.org>
+References:
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,170 +72,86 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 9lbpTvL3nYOlIO1UFZ3xafeUvuj14frt
+X-Authority-Analysis: v=2.4 cv=SoGdKfO0 c=1 sm=1 tr=0 ts=68e54315 cx=c_pps
+ a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
+ a=x6icFKpwvdMA:10 a=VwQbUJbxAAAA:8 a=kxiUpit_5B_PL5oZeFQA:9
+ a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-GUID: 9lbpTvL3nYOlIO1UFZ3xafeUvuj14frt
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDA3MDEzMiBTYWx0ZWRfX9CNAHxvDFayD
+ JyhwT8OrJByCG8/4WcUp70oj1VO65vQTDHoYW8ba2RPHtmeGJJ+HTsv1lw1pnOeyoNP2ePb4Fgh
+ SJyOQ2nqFsTyTD5TDSoaNeNZTVKUNtvusdLdZOH7OUvS6e+w1UXKlvIwvC8/GWfzlfNhODe5b8o
+ Yjb2fBWrMIPOW6p7YHPL/Sskg+so0S8X4wo1XuL5hi42BZ5UJ9Cs0NZ6oMkv3RIW5FbOBPMH6r8
+ KylpuzGtrAXOQHZB7Xx34HjCfm0GDth16/ZllG3bP572E7VCq+C9A/MV+vU/+qzeUGemMmn3lj4
+ juGxQTCyPzpuMQTEktLnnfo8iIazvTaJXFiYrg7l9HCCLL8z5CJD18DLUlzZCRJCCGd4KLe0ak/
+ 8wk6TIGHgmCY4ImtqI27ZzpJ1b0VJg==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-07_02,2025-10-06_01,2025-03-28_01
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+Hi KP,
 
-arraymap and hashtab duplicate the logic that checks for and frees
-internal structs (timer, workqueue, task_work) based on
-BTF record flags. Centralize this by introducing two helpers:
+On Sun, 21 Sep 2025 18:01:16 +0200 KP Singh <kpsingh@kernel.org> wrote:
 
-  * bpf_map_has_internal_structs(map)
-    Returns true if the map value contains any of internal structs:
-    BPF_TIMER | BPF_WORKQUEUE | BPF_TASK_WORK.
+> This patch extends the BPF_PROG_LOAD command by adding three new fields
+> to `union bpf_attr` in the user-space API:
+> 
+>   - signature: A pointer to the signature blob.
+>   - signature_size: The size of the signature blob.
+>   - keyring_id: The serial number of a loaded kernel keyring (e.g.,
+>     the user or session keyring) containing the trusted public keys.
+> 
+> When a BPF program is loaded with a signature, the kernel:
+> 
+> 1.  Retrieves the trusted keyring using the provided `keyring_id`.
+> 2.  Verifies the supplied signature against the BPF program's
+>     instruction buffer.
+> 3.  If the signature is valid and was generated by a key in the trusted
+>     keyring, the program load proceeds.
+> 4.  If no signature is provided, the load proceeds as before, allowing
+>     for backward compatibility. LSMs can chose to restrict unsigned
+>     programs and implement a security policy.
+> 5.  If signature verification fails for any reason,
+>     the program is not loaded.
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index cf7173b1bb83..8a3c3d26f6e2 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -39,6 +39,7 @@
+>  #include <linux/tracepoint.h>
+>  #include <linux/overflow.h>
+>  #include <linux/cookie.h>
+> +#include <linux/verification.h>
+>  
+>  #include <net/netfilter/nf_bpf_link.h>
+>  #include <net/netkit.h>
+> @@ -2785,8 +2786,44 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
+>  	}
+>  }
+>  
+> +static int bpf_prog_verify_signature(struct bpf_prog *prog, union bpf_attr *attr,
+> +				     bool is_kernel)
+> +{
+> +	bpfptr_t usig = make_bpfptr(attr->signature, is_kernel);
+> +	struct bpf_dynptr_kern sig_ptr, insns_ptr;
+> +	struct bpf_key *key = NULL;
+> +	void *sig;
+> +	int err = 0;
+> +
+> +	if (system_keyring_id_check(attr->keyring_id) == 0)
+> +		key = bpf_lookup_system_key(attr->keyring_id);
+> +	else
+> +		key = bpf_lookup_user_key(attr->keyring_id, 0);
+> +
+> +	if (!key)
+> +		return -EINVAL;
+> +
+> +	sig = kvmemdup_bpfptr(usig, attr->signature_size);
 
-  * bpf_map_free_internal_structs(map, obj)
-    Frees the internal structs for a single value object.
+Should there be some validation on signature_size?  It looks like we're
+giving vmalloc exactly what userland sent.
 
-Convert arraymap and both the prealloc/malloc hashtab paths to use the
-new generic functions. This keeps the functionality for when/how to free
-these special fields in one place and makes it easier to add support for
-new internal structs in the future without touching every map
-implementation.
-
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
----
- include/linux/bpf.h   |  7 +++++++
- kernel/bpf/arraymap.c | 19 ++++++-------------
- kernel/bpf/hashtab.c  | 36 +++++++++++++-----------------------
- kernel/bpf/helpers.c  | 10 ++++++++++
- 4 files changed, 36 insertions(+), 36 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a98c83346134..f87fb203aaae 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -663,6 +663,13 @@ int map_check_no_btf(const struct bpf_map *map,
- bool bpf_map_meta_equal(const struct bpf_map *meta0,
- 			const struct bpf_map *meta1);
- 
-+static inline bool bpf_map_has_internal_structs(struct bpf_map *map)
-+{
-+	return btf_record_has_field(map->record, BPF_TIMER | BPF_WORKQUEUE | BPF_TASK_WORK);
-+}
-+
-+void bpf_map_free_internal_structs(struct bpf_map *map, void *obj);
-+
- extern const struct bpf_map_ops bpf_map_offload_ops;
- 
- /* bpf_type_flag contains a set of flags that are applicable to the values of
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 80b1765a3159..0ba790c2d2e5 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -448,19 +448,12 @@ static void array_map_free_internal_structs(struct bpf_map *map)
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
- 	int i;
- 
--	/* We don't reset or free fields other than timer and workqueue
--	 * on uref dropping to zero.
--	 */
--	if (btf_record_has_field(map->record, BPF_TIMER | BPF_WORKQUEUE | BPF_TASK_WORK)) {
--		for (i = 0; i < array->map.max_entries; i++) {
--			if (btf_record_has_field(map->record, BPF_TIMER))
--				bpf_obj_free_timer(map->record, array_map_elem_ptr(array, i));
--			if (btf_record_has_field(map->record, BPF_WORKQUEUE))
--				bpf_obj_free_workqueue(map->record, array_map_elem_ptr(array, i));
--			if (btf_record_has_field(map->record, BPF_TASK_WORK))
--				bpf_obj_free_task_work(map->record, array_map_elem_ptr(array, i));
--		}
--	}
-+	/* We only free internal structs on uref dropping to zero */
-+	if (!bpf_map_has_internal_structs(map))
-+		return;
-+
-+	for (i = 0; i < array->map.max_entries; i++)
-+		bpf_map_free_internal_structs(map, array_map_elem_ptr(array, i));
- }
- 
- /* Called when map->refcnt goes to zero, either from workqueue or from syscall */
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index c2fcd0cd51e5..e7a6ba04dc82 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -215,19 +215,6 @@ static bool htab_has_extra_elems(struct bpf_htab *htab)
- 	return !htab_is_percpu(htab) && !htab_is_lru(htab) && !is_fd_htab(htab);
- }
- 
--static void htab_free_internal_structs(struct bpf_htab *htab, struct htab_elem *elem)
--{
--	if (btf_record_has_field(htab->map.record, BPF_TIMER))
--		bpf_obj_free_timer(htab->map.record,
--				   htab_elem_value(elem, htab->map.key_size));
--	if (btf_record_has_field(htab->map.record, BPF_WORKQUEUE))
--		bpf_obj_free_workqueue(htab->map.record,
--				       htab_elem_value(elem, htab->map.key_size));
--	if (btf_record_has_field(htab->map.record, BPF_TASK_WORK))
--		bpf_obj_free_task_work(htab->map.record,
--				       htab_elem_value(elem, htab->map.key_size));
--}
--
- static void htab_free_prealloced_internal_structs(struct bpf_htab *htab)
- {
- 	u32 num_entries = htab->map.max_entries;
-@@ -240,7 +227,8 @@ static void htab_free_prealloced_internal_structs(struct bpf_htab *htab)
- 		struct htab_elem *elem;
- 
- 		elem = get_htab_elem(htab, i);
--		htab_free_internal_structs(htab, elem);
-+		bpf_map_free_internal_structs(&htab->map,
-+					      htab_elem_value(elem, htab->map.key_size));
- 		cond_resched();
- 	}
- }
-@@ -1509,8 +1497,9 @@ static void htab_free_malloced_internal_structs(struct bpf_htab *htab)
- 		struct htab_elem *l;
- 
- 		hlist_nulls_for_each_entry(l, n, head, hash_node) {
--			/* We only free timer on uref dropping to zero */
--			htab_free_internal_structs(htab, l);
-+			/* We only free internal structs on uref dropping to zero */
-+			bpf_map_free_internal_structs(&htab->map,
-+						      htab_elem_value(l, htab->map.key_size));
- 		}
- 		cond_resched_rcu();
- 	}
-@@ -1521,13 +1510,14 @@ static void htab_map_free_internal_structs(struct bpf_map *map)
- {
- 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
- 
--	/* We only free timer and workqueue on uref dropping to zero */
--	if (btf_record_has_field(htab->map.record, BPF_TIMER | BPF_WORKQUEUE | BPF_TASK_WORK)) {
--		if (!htab_is_prealloc(htab))
--			htab_free_malloced_internal_structs(htab);
--		else
--			htab_free_prealloced_internal_structs(htab);
--	}
-+	/* We only free internal structs on uref dropping to zero */
-+	if (!bpf_map_has_internal_structs(map))
-+		return;
-+
-+	if (htab_is_prealloc(htab))
-+		htab_free_prealloced_internal_structs(htab);
-+	else
-+		htab_free_malloced_internal_structs(htab);
- }
- 
- /* Called when map->refcnt goes to zero, either from workqueue or from syscall */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index c9fab9a356df..22fbff8310f6 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -4431,3 +4431,13 @@ void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len)
- 		return NULL;
- 	return (void *)__bpf_dynptr_data(ptr, len);
- }
-+
-+void bpf_map_free_internal_structs(struct bpf_map *map, void *val)
-+{
-+	if (btf_record_has_field(map->record, BPF_TIMER))
-+		bpf_obj_free_timer(map->record, val);
-+	if (btf_record_has_field(map->record, BPF_WORKQUEUE))
-+		bpf_obj_free_workqueue(map->record, val);
-+	if (btf_record_has_field(map->record, BPF_TASK_WORK))
-+		bpf_obj_free_task_work(map->record, val);
-+}
--- 
-2.51.0
-
+-chris
 
