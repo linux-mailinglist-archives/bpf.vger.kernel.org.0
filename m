@@ -1,179 +1,108 @@
-Return-Path: <bpf+bounces-70470-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70471-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C203EBBFD9A
-	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 02:29:46 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CEF2BBFDA9
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 02:35:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F3F63AA5DB
-	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 00:29:45 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8692434C1AE
+	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 00:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B7B1C7013;
-	Tue,  7 Oct 2025 00:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07BD51C2DB2;
+	Tue,  7 Oct 2025 00:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FWNQ7Yzb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O8i+Fs59"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7E31A254E
-	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 00:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C59B8248B
+	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 00:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759796978; cv=none; b=ZBPq/diHgTZ0aGGHF8b0MREnmDNmGdLWb43KHbrsLqJ5Z1QfC6zsb5/abaaE2ofZxbu9zXailSdBrgXYfJLpIgnyEz+zx4wKnfA2yawln61bfhsdhKzFhVtRX0BCqWbsvLdQ3JWe6Ms687it4CU0yml/C9+hg6mLYIG7AbhMitE=
+	t=1759797295; cv=none; b=ZACPhvBG64GlJNPKv/oDdG0StddxLcNBlD6xnNUfv72sqnZSoAQlFAYsYgybsnQLoo8n90xn6aUvhZ3D0QZ8ZAKZ9RMSlhLsy/unnR7dC5hTKPDFtlBwXZOb4jE/RMTFI97SzF0XrMRSYlMMik7rqNDVONg7VN/4YJDPDCA4dl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759796978; c=relaxed/simple;
-	bh=VhE3lEq1z32eklFQuWsYnAJ9lZnTGtD7Yhza8TRvObM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nxAb3en5wCxlgOGw4qNfdVsijTdt7fvVtR8lqm1ZhLlQHI/vkxtV/7z/cR+MkvKvtwKKDbCQvqBMeodYn1i9EoKDJR7RDpcRboizWsTT2gvXhTpW0i96Kdtm2dpxjh80d0uyXRRSIpMDmeKfpWRmM/k1y/aaeSp0R2rjrrGIGXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FWNQ7Yzb; arc=none smtp.client-ip=209.85.215.169
+	s=arc-20240116; t=1759797295; c=relaxed/simple;
+	bh=dVxE4kqsayik9spu5iC05JI2jJiP0Lo28tGW/vykYxs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S7BiqlhMzLWbaevpMgltKrSadxxdinbTYaIeretXEPGhbqnFykTv3XpD5TvKQRppIbWYZ+rByinRuNHekIMnhAFh9EwGPSgdrmbmP5PsCXfRL7/5bJOsucJ2a/fWTw8cf0Y3j+Ow0wW6QLgEyfRkt/6/OtUIWkFLdGbua8m2X5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O8i+Fs59; arc=none smtp.client-ip=209.85.217.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b55517e74e3so6544580a12.2
-        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 17:29:36 -0700 (PDT)
+Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-59a8c1eb90cso3131480137.0
+        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 17:34:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759796976; x=1760401776; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P1hcAc7s4XhYQRH+R2s8ZmE/7qgDIwbOMHGuS8cxmck=;
-        b=FWNQ7YzbPGGVtDv8QM3eamo20TyaTXxDNzZAA/9wLALc51sDgYd5+vZw8Z/cN+J/0L
-         WzzjlJovjDRnsHCIBzzYwslNodV/GbKCzNZoC4ci5+3cKdIckLISeO/0+VKraWxMoCYu
-         ExeWMWIySW5A0Bh1UN2cEWnVEdwoiGnsvAfWrk2l2PfVXMe4Hk/u+5B3bHsYSg8exAoL
-         mvIanMj/R8f9uqpVfooHp18ROTgI9LzvKDcQ8LpPF9J0R9MVxb/3uhxZDvB7mHq7i/ce
-         JDx+IcCTiNFtGqwCAMYoZieCywpKELLyMyhG5X54dcyVKQmRS15fiTA2ngWSoie1XTKB
-         kpQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759796976; x=1760401776;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=gmail.com; s=20230601; t=1759797293; x=1760402093; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=P1hcAc7s4XhYQRH+R2s8ZmE/7qgDIwbOMHGuS8cxmck=;
-        b=gROWuzICej1ZSnf4nMx+SGmSXVaif66EZC6cgluacTbnhW+rpu28SSHhM1O11ZX6ku
-         Qbc/X54xrbKNL8HJTo+70hqr7J7ikLnJ6XtDwzvrUF3VvGa+76sFo1Dx6KZ+GuZxKyWk
-         J4UOfqVm/7OLDQiSPLD8PPcv62iJ4TkDotgIjWPVnxcR3pnJcoT+YtDahgGPgyxrVgnS
-         lJ1681Hi3mtRDUSOZiCoP1CJANeZRgxxUUprs8E8/AFFTPmQRd98BIQ17mFGvciLMXu9
-         j52l6Hk23FndbPNAVu+bYYO19GRP5Q9NftLxpZOY+AAprR1fRNfn+7XJ4Qr5XuH2d456
-         ZZdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW1RbrH+SXhmdI8ARjnXeZeV243lyPK+0Le3iw3CKH29WMy2pq9Nu7aRvHRvKytaJZFlhY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzb2bFrOH01PiaPw4qBUhnKXaJFFzC5UZAk8v0Id99N55bK/Tzd
-	A2OgC/yTQ1Vt5XRDZCTuhXf6JpXVjti5Q5AGb6qsHi1yiiVj2vvFxwpq
-X-Gm-Gg: ASbGncujCkDp73UVezkxNxCWa06O950oZDHFEb11vbCC5Vb04mnMpUZ+CmRZ2nqlDIR
-	lHSxeohMAm9tDBK7Fl3kbyNUr3rCizXh3lWWEsWiIzCTlTVEqsITk8agGgX455zh8f7z7YoUFIH
-	716DGrzwUzqw49zBeqkGxZ8sed3zrudB7RPazDxb1rq3b7N6Py6ic4OdP7xI0GqvCGBE1f3uvRI
-	vVNbMBSd5eQbj6qyMQ6V1KUaED0KojjKcRYpA+6oG+pMk8oMAsAJV39J6WKqzmm6g9zFmW/7aH6
-	VHj8Ag3kr/DhH/u3QC9rn7bEDknysKQuTpNAXz0Qg8PU1Hxt0cHdy1ObmbgaizFbmwX3tgLk1rI
-	vlzlnQ2iNTe5WrFdmUccyfZNMfp4lYmPGYxrqrB6b7jK33MvCWIeDFy6kEMoULOYPRUZjNqU8
-X-Google-Smtp-Source: AGHT+IEHDV8lJwxzCwsyHrfSYwJV2pBhYeFFmns7zfDlhAwW+nJPp4T/QHVKbEtSEmo+3rnHX8uZ2g==
-X-Received: by 2002:a17:903:3c66:b0:26c:2e56:ec27 with SMTP id d9443c01a7336-28e9a5ec80bmr168213335ad.19.1759796976151;
-        Mon, 06 Oct 2025 17:29:36 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:d60a:adc8:135e:572b? ([2620:10d:c090:500::5:b20b])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-28e8d1b87e7sm146377475ad.82.2025.10.06.17.29.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Oct 2025 17:29:35 -0700 (PDT)
-Message-ID: <405da03e33853622da3a70ad88df3396c85926e4.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Test
- bpf_strcasestr,bpf_strncasestr kfuncs
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Rong Tao <rtoax@foxmail.com>, vmalik@redhat.com, ast@kernel.org
-Cc: Rong Tao <rongtao@cestc.cn>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh	 <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo	
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan
- <shuah@kernel.org>,  "open list:BPF [GENERAL] (Safe Dynamic Programs and
- Tools)"	 <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK"	 <linux-kselftest@vger.kernel.org>
-Date: Mon, 06 Oct 2025 17:29:33 -0700
-In-Reply-To: <tencent_FC91DA604BE83F2BE3524865EA956DB41A05@qq.com>
-References: <cover.1759588929.git.rongtao@cestc.cn>
-	 <tencent_FC91DA604BE83F2BE3524865EA956DB41A05@qq.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+        bh=dVxE4kqsayik9spu5iC05JI2jJiP0Lo28tGW/vykYxs=;
+        b=O8i+Fs59v+RApqmjxLQTsjINrjwmMkBgpV+NHyy+yBgjg4jRTbvM1rwgb9I1w4kXpm
+         ajFx1qwzt4WzWk++fzHIpC6rX3/E8j0o7Et1bMynrT+cXPNGdai/+Cz2uxOwpNHPgHI0
+         2EnpEOo1WDROSdZn7nU8RYbrkvtni2yz8Lo2s0zHjNCuEy1S+Ng0oZOD4SauESpB0sMe
+         p8oXlkLssAeYLupLiikR71+sHT23H79YcKjHbI+wXnFeQM2qmze9IpL0iQaYOPXUNEhd
+         rRaH0cPu9sLiUIoyVQi1o9ig6bLumBeVDLvrs9P21UAQG5OKhnfPRFMBFpHPEygd/xKk
+         TlfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759797293; x=1760402093;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dVxE4kqsayik9spu5iC05JI2jJiP0Lo28tGW/vykYxs=;
+        b=mESED3b9DdSPE2PDjS/FBIMV2xQ8sUXuQ3enFXonKgp71GJfLIBQ8rXmHQhiPyM73m
+         Sq2yA5F0lbT08I3ihccgnpCAGUloq37nSJmRK1s6neYOk6+06xi1rdmJv7cl2zNJ7nlW
+         DR+YqqB2Gq2hyKlDcg7RmBY7Y88+icdLRxzhddv/f6jmHm+DLOeFsDdgGI023oM3Wd80
+         d7K/EDP3PsxGLD1Uo312KUqRUWd6nfygKINLj9IZNMhp8MkJBRnEMaenpxkl+YPgQg4B
+         AvEu6sWCkgPfZosUKigXr3xo/zfgdXqyho0oay4WxJklv/YpzxQJQU0w1VU6XjaDNmqy
+         Xuig==
+X-Forwarded-Encrypted: i=1; AJvYcCXkUHxvcN0cpimuhy1wC3aV7frd2OvercLTPTdczy+UWvCZ2o6Boch3ikLUTRZLsznOQTU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw5mZUMx5/f+lXy7TMB6uSwg0K/ofFrqI6zXKgUQZbt4oJ4KKNI
+	uRVqA6LtiHyjJj+AOlzPTCNIIdUvjPtiAzVSNZLU3e7ssl7nKXpqdkxS
+X-Gm-Gg: ASbGncuPhLhFf+VZr4QADASl+Ej48iUjix1AwrPYImcYub31cWLKmYkc3CYZ5bCI12D
+	j9VUROq/uow0QaqNMBdpVd/IHTvqEVqBCFKJ3AJ16DoHK27irH6HzCbddQyBIZZOHxKkvzJ/EeQ
+	8YPZuHKA6TyRzHE3kDxSoRP4MEG3hvzNPr4GO/dIMe+OZYmQwrrLbQ5R9vI6KGhOwAyGCzrf/zi
+	vUay2lvf/Q6uXuG2HTVoG0vlE2REZe8slkDMQWY2vgiGN6TXLx6uhuAjS4o66MaJQGcM6zocw2n
+	YbDSt8vQQQ4Ibl3XVuW1bHFL41ZpOWTmkhilwimocJMqhpYB+Nf8DonikkBk/lnx2Mu+2TO1uf0
+	SN5FddSFDkQs5Bay8h/h+/RI9QCsaW5Jo9aUsYtrLyWfCnjChAaT7WERQ41cAxjs=
+X-Google-Smtp-Source: AGHT+IE3DxDJy1X2O0RVTDrH5pK6Mahm73HMjAQ3c3xbUcpHPjYdcbPHQ3+bH9uPCNtWQ0OHwdA6iQ==
+X-Received: by 2002:a05:6102:54a6:b0:4f9:d929:8558 with SMTP id ada2fe7eead31-5d41d0588b7mr5504246137.10.1759797292906;
+        Mon, 06 Oct 2025 17:34:52 -0700 (PDT)
+Received: from [192.168.1.145] ([104.203.11.126])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-5d5d3571cd4sm425310137.0.2025.10.06.17.34.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Oct 2025 17:34:52 -0700 (PDT)
+Message-ID: <1265ca13-ac43-4ee4-a9f0-a6b5ae2af4e2@gmail.com>
+Date: Mon, 6 Oct 2025 20:34:49 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpf: test_run: Fix timer mode initialization to
+ NO_MIGRATE mode
+To: Sahil Chandna <chandna.linuxkernel@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, john.fastabend@gmail.com, haoluo@google.com,
+ jolsa@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc: skhan@linuxfoundation.org, khalid@kernel.org,
+ syzbot+1f1fbecb9413cdbfbef8@syzkaller.appspotmail.com
+References: <20251006054320.159321-1-chandna.linuxkernel@gmail.com>
+Content-Language: en-US
+From: David Hunter <david.hunter.linux@gmail.com>
+In-Reply-To: <20251006054320.159321-1-chandna.linuxkernel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, 2025-10-04 at 22:47 +0800, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
->=20
-> Add tests for new kfuncs bpf_strcasestr() and bpf_strncasestr().
->=20
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
+On 10/6/25 01:43, Sahil Chandna wrote:
+> By default, the timer mode is being initialized to `NO_PREEMPT`.
+> This disables preemption and forces execution in atomic context.
+> This can cause issue with PREEMPT_RT when calling spin_lock_bh() due
+> to sleeping nature of the lock.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c b/=
-tools/testing/selftests/bpf/progs/string_kfuncs_success.c
-> index 2e3498e37b9c..d21330b4cc3b 100644
-> --- a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
-> +++ b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
-> @@ -33,8 +33,12 @@ __test(11) int test_strnlen(void *ctx) { return bpf_st=
-rnlen(str, 12); }
->  __test(5) int test_strspn(void *ctx) { return bpf_strspn(str, "ehlo"); }
->  __test(2) int test_strcspn(void *ctx) { return bpf_strcspn(str, "lo"); }
->  __test(6) int test_strstr_found(void *ctx) { return bpf_strstr(str, "wor=
-ld"); }
-> +__test(6) int test_strcasestr_found1(void *ctx) { return bpf_strcasestr(=
-str, "world"); }
-> +__test(6) int test_strcasestr_found2(void *ctx) { return bpf_strcasestr(=
-str, "WORLD"); }
-
-Nit: I'd compress these two tests into one:
-     __test(6) int test_strcasestr_found1(void *ctx) { return bpf_strcasest=
-r(str, "woRLD"); }
-     (and did the same for (str, "hello") variants below).
-
->  __test(-ENOENT) int test_strstr_notfound(void *ctx) { return bpf_strstr(=
-str, "hi"); }
-> +__test(-ENOENT) int test_strcasestr_notfound(void *ctx) { return bpf_str=
-casestr(str, "hi"); }
->  __test(0) int test_strstr_empty(void *ctx) { return bpf_strstr(str, "");=
- }
-> +__test(0) int test_strcasestr_empty(void *ctx) { return bpf_strcasestr(s=
-tr, ""); }
->  __test(0) int test_strnstr_found1(void *ctx) { return bpf_strnstr("", ""=
-, 0); }
->  __test(0) int test_strnstr_found2(void *ctx) { return bpf_strnstr(str, "=
-hello", 5); }
->  __test(0) int test_strnstr_found3(void *ctx) { return bpf_strnstr(str, "=
-hello", 6); }
-> @@ -42,5 +46,14 @@ __test(-ENOENT) int test_strnstr_notfound1(void *ctx) =
-{ return bpf_strnstr(str,
->  __test(-ENOENT) int test_strnstr_notfound2(void *ctx) { return bpf_strns=
-tr(str, "hello", 4); }
->  __test(-ENOENT) int test_strnstr_notfound3(void *ctx) { return bpf_strns=
-tr("", "a", 0); }
->  __test(0) int test_strnstr_empty(void *ctx) { return bpf_strnstr(str, ""=
-, 1); }
-> +__test(0) int test_strncasestr_found1(void *ctx) { return bpf_strncasest=
-r("", "", 0); }
-> +__test(0) int test_strncasestr_found2(void *ctx) { return bpf_strncasest=
-r(str, "hello", 5); }
-> +__test(0) int test_strncasestr_found3(void *ctx) { return bpf_strncasest=
-r(str, "hello", 6); }
-> +__test(0) int test_strncasestr_found4(void *ctx) { return bpf_strncasest=
-r(str, "HELLO", 5); }
-> +__test(0) int test_strncasestr_found5(void *ctx) { return bpf_strncasest=
-r(str, "HELLO", 6); }
-> +__test(-ENOENT) int test_strncasestr_notfound1(void *ctx) { return bpf_s=
-trncasestr(str, "hi", 10); }
-> +__test(-ENOENT) int test_strncasestr_notfound2(void *ctx) { return bpf_s=
-trncasestr(str, "hello", 4); }
-> +__test(-ENOENT) int test_strncasestr_notfound3(void *ctx) { return bpf_s=
-trncasestr("", "a", 0); }
-> +__test(0) int test_strncasestr_empty(void *ctx) { return bpf_strncasestr=
-(str, "", 1); }
-> =20
->  char _license[] SEC("license") =3D "GPL";
+What kind of testing did you do for this?
 
