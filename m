@@ -1,156 +1,116 @@
-Return-Path: <bpf+bounces-70460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD65DBBFCE6
-	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 01:59:24 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2618FBBFD47
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 02:06:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 607C54F2FCE
-	for <lists+bpf@lfdr.de>; Mon,  6 Oct 2025 23:59:14 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B810D4E6835
+	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 00:06:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA6621771B;
-	Mon,  6 Oct 2025 23:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E941643B;
+	Tue,  7 Oct 2025 00:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UzXl6WU+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i2j5bYAO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8644F21255E
-	for <bpf@vger.kernel.org>; Mon,  6 Oct 2025 23:59:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79DB34BA44
+	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 00:06:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759795151; cv=none; b=rWYwAQNidY/wBXJ2SeuZ5SBU3GA8UqKKDiZG8EMKPcjEvOVzcb4xvEiQHp7Enc6pazQGjblYhMoY/a1WSw5w30LljvB1IW2yVLlD6zWegU8ds5DWLVkLzwNZ5yGAEgdW0Hll8PkuPsMp3/HGeTSV4ZNXGfq6WWdUdHWqdjNRYwY=
+	t=1759795571; cv=none; b=R9HnxIY5rZEqMk6uIq6LAtON2ZUYPfYNFF5OfGQt01ErvW1WU+hiyKZOloe7t5HOXetCo1Tg4lLqOksplO4OrOIztQy5MOT/Tp8Gb+wmLAfB9SO9yNMIjjK3q8CyKOJUp0balCd4ZgbI+wEm/T2IdvANuCKHGyAHmIr+pkkF3JM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759795151; c=relaxed/simple;
-	bh=yEnB1nBeGRent2IIvd6hQLtCygf0oXvi69od+spuRNY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dy/uyzUoPInCgm12ljO27o5zhdHpfXhl2QlXrO3hgh/Vge7oY2XXuNPjeX8BoqZ6admlG4MBt+Xsn/PyqEmQrzGa3p1sMFFrDtBooVw88rgOmby2hBx/sCZlMHguU7qejOFOGpQ6PLrBVmkfCq6Ft1yIXFZNkDwOdr0Ix6pXWi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UzXl6WU+; arc=none smtp.client-ip=209.85.210.179
+	s=arc-20240116; t=1759795571; c=relaxed/simple;
+	bh=QkUM17RIWIWT2WqGHpap897QMNt5vpXsfzPR5YiMYt4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ArSfrw0PKX07u0PdmRJG4t+6YGgHoVGLFk/1gi0xpLwyaYPBQxMx+6TUJniFlqKGjdKkXEUSOeyqDOoXjEKo5QZguIrTIPnACNc60pYEcVqRz5pBFb6ZObBZA8AhH2rtJxVEYblzeaGacp5xACDGUSzIUCecRN6rgvRr/UpPjyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i2j5bYAO; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-78125ed4052so5931469b3a.0
-        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 16:59:09 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-3306d3ab2e4so6590770a91.3
+        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 17:06:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759795149; x=1760399949; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FepuSa5zpS2qY3jH9SDyENacoULTXD5eHH5yQtM5tdE=;
-        b=UzXl6WU+Rblt2uMtrVTcAg11kLQvklqx3pvqc2L7rSLFaVQqTBo0fvoEPhzzD00Uqw
-         OzZuj+Nw0SnH04XiIGqO3e/Es3PRBinfj23IjdefkpO073/scyMVJff5r38pJNojShs0
-         eyUWZbysIh4EhWA6hxpdq/n28X1PgmpyQ10gjHF5DJjvzIWJoc2L1cEVbR0cKEKbBYY6
-         37wwJg96ZLKQwx+hURt837c5HZDrBMY2XhhAU6n3VuNQgMkTtFZiCHGhfQuB54r29c9S
-         ytEIhldDIB6pFNSPHGi1vDW9sUMQJ4sjMlhwB2XR80Ovl5JUME1iShqgU1TgywqzVRZH
-         AZSQ==
+        d=gmail.com; s=20230601; t=1759795569; x=1760400369; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fv2ng8VVbInmm75tiW7IcKlbkfdGHIMIbrXtd3o/uVw=;
+        b=i2j5bYAO0mT+ssncNIkxvBXbRKqjXefeNrhlmTJDPFY/YGDd/q/K2QWGo2ncuXT/ID
+         rgxfLyFYFv5tDp0ThqNn2Gp3FXj/eNE849HWOT0FnSIrwFnoyJEx2c33wvBJTsqwO4Wl
+         s9n8qtX4+g2+XXHeXF3fVqO1/nEbFJ9D32KUBa38Q3+J/EQJWd4FpKKjttiUEWvQNbUK
+         GycH9FUoqjrcqCiw0779lw7n4rzMehgvyYiascRLUd+FCUAeYSuSDMyc8IR1xa0Axff7
+         aayjEyrVqDRQMQ0puXYDbxm35H5hRhagSFmLyG0sdhiiJcfUsJU9Jas12kA0P2or457k
+         pLRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759795149; x=1760399949;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FepuSa5zpS2qY3jH9SDyENacoULTXD5eHH5yQtM5tdE=;
-        b=o606wLhKV/ay0+irpkFhZggxD736et5alroUHZBTa7rkdALuyvOPEVkINgtIgDa0fQ
-         FUUb3yNql39J5gsTw/lzzjvV4aF3sulVY3+Rkkd9nxMit2SjSTdZwFozi9En20DD3hYl
-         ALm0rKJukrMvdWe4o7izJOarIGzyWh9b6uJxQKPFS/0J3mkR4GYNAOAcQTlkAd0Xxdzy
-         Cx+hfH3MazStdd2wXHzzo9X1JviKIMmtpocA1b/2EPAMWQ4XDCJFhQCPOCiQX1MJLLMQ
-         P8tf3jJt5faemReHWkWkchYptN3T2aQmNf81MSxhh+oOHxd8WTFqvBtbC90pt4wp3tJg
-         Z+ag==
-X-Forwarded-Encrypted: i=1; AJvYcCVr7XUSfM9QzVEVgHC+W4N1/1rqLo88LuG4+heLtFJqHmZ3PPqIqx5I9VvG6tp/z97uCIo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywv4EthJnL2FVsdi/ZNOB/zXZzwIZShSazD8uvf6w4Wk8CRp6AE
-	SvyU7SJbDowgMGQ8BTIiyheQsDMa/kDrQVwu8PKU9fzwZ4BLu6EoFvXZW2KTF92zRkb/Skarve4
-	ncFeDZ577p1ycD2yJGE4zlIe3w9s21JA=
-X-Gm-Gg: ASbGncsFQKlaX0cyg1lFzTiFtK2OC8MwMSTJwfCLty8MILDHw1Hl6YO/UDqet6VGRP6
-	c/b9dJBhiL0FQ3KORJLhnvrjGtLSRD/73geGlzZt9xM6OXtwmungZBqRkC/Asa4gr4v3KxwQTUu
-	+zfNNbud4WvygRhtlyujPdA7Rs8HiWn8E9SoKC0K64gJh5KeOhSxrMyh98jWgdDQ1ZIUGpTk8en
-	ThoGkcJTv8s1FY0Bjf2lcPxUVe7UWcNKcGl+zmkDJWQaAo=
-X-Google-Smtp-Source: AGHT+IEcXWYSt/m/zigM7mHo2Pt/BDLFgl60rCh/UppgA5b9eq4RGYqwTL1INcwg7CP+Ov6p4Der6P3ebyIbBmxo9v4=
-X-Received: by 2002:a05:6a20:7493:b0:309:e824:b92d with SMTP id
- adf61e73a8af0-32b6208e8dfmr19527754637.38.1759795148798; Mon, 06 Oct 2025
- 16:59:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1759795569; x=1760400369;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fv2ng8VVbInmm75tiW7IcKlbkfdGHIMIbrXtd3o/uVw=;
+        b=WH8cCnVyQsOYqVktJZFLr2/ILLgHUY6engKzfVjV08kyDbgVBKnbsEFHczmNMmopsv
+         OpUshvsA/rFaTCXNeRCmT/OJG5X45BsSERpZ+YYx1NfaKC2fHuP5A0SvRDvUND2nZ8LH
+         yfO2mZi2w9+MtALJBJ3rUlnAzFluk1wpWmC/PDx4sV1fEcNn/NPpE9noiEFDZA23XLXW
+         1qpIRSiVkB+082+WaAFxUlaEXl7HZIb5mNAZd285y4GTr5DtwjLAAvnMHmHLUNRsKuP8
+         IlRyolA4OG9/XeCkWvz0MIJVePl4Yu7bT3+9HuxxKlGmo9PjhbtUEYKxa8wzCKnuYqAN
+         2yJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX377tCSwyA20cdlGhTeqvOBHt6wVTntHhoW1vwo0yN+19EfSLbPqGXZvj3IYC5Tfoi7pM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1pUr55ZBxhYZX0+qmYd/9nW5Gvnz0AhxKd8lY6CYk3jSRsRF2
+	0z/u06S3oArVclamvU62Eeci6Eiev4viHja9snvpaJ5ZB+eAXZT022Aq
+X-Gm-Gg: ASbGnctWHbWd9QY2vEW23tiy+0GpLJpK4ZBP9dOAR567En8aT5qRnu56gfczlvktDJS
+	CSNSUbeXg8gm2Cp40gGUqSsrfrVTwHrv3TghbicC0YCWqQt7lQUon0qZuDp7Q8OdUdEjSKboWZQ
+	8f45kUFI6GUPFsJgxRjL6VVwtUxeBUgLxP77jWkWWHvacvKTy2exGqu8reAvXJyDthIo+g9RdgP
+	/iU9oU2H5Za3Usc15D8XBYxzhQ1EU5ZMsxojTGvZLZkiHy5ZQE8sdQgW265goBqjWO1C5z4d+oh
+	e1an4jwGA7sm2dATd6IRqlpOOWys45ZdCbi7SiwdHNNI6SRKtr4YTtWeXa06+6gwVYcFUfkHHos
+	+eyv4ouveNCjHEONy7eFng36wYB7ZDGHfXgl5gKLg/q879arXMTOBn4DfyLSR7IVik7s0QRECcH
+	889clZnrA=
+X-Google-Smtp-Source: AGHT+IGVcAQqfvJtbeGJjlJMUGHB1kjldPE0NTxxD48aLJmvPrbIUSxvWeuDaPPKTRtaEZQrqchf6Q==
+X-Received: by 2002:a17:90b:33c7:b0:32e:64ca:e84e with SMTP id 98e67ed59e1d1-339c27351dfmr19475185a91.15.1759795568831;
+        Mon, 06 Oct 2025 17:06:08 -0700 (PDT)
+Received: from ?IPv6:2a03:83e0:115c:1:d60a:adc8:135e:572b? ([2620:10d:c090:500::5:b20b])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-339a6ff26f8sm17948848a91.13.2025.10.06.17.06.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Oct 2025 17:06:08 -0700 (PDT)
+Message-ID: <21daea3f9f53737ceb5de24f96b6e5fb9b6fca1d.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] selftests/bpf: add bpf_wq tests
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Mon, 06 Oct 2025 17:06:07 -0700
+In-Reply-To: <20251006200237.252611-2-mykyta.yatsenko5@gmail.com>
+References: <20251006200237.252611-1-mykyta.yatsenko5@gmail.com>
+	 <20251006200237.252611-2-mykyta.yatsenko5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251003084528.502518-1-kafai.wan@linux.dev> <20251003084528.502518-2-kafai.wan@linux.dev>
-In-Reply-To: <20251003084528.502518-2-kafai.wan@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 6 Oct 2025 16:58:54 -0700
-X-Gm-Features: AS18NWD4l5PN0Xkm5U5E2sJPxTBPSEfY_-na1TMxYF4QAyWDf20kV2tYZdgC1sw
-Message-ID: <CAEf4BzZhGEgW82gweZtW1Cp5L1_pafUwML8jMifBvjzBtnWWeA@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: Avoid RCU context warning when unpinning
- htab with internal structs
-To: KaFai Wan <kafai.wan@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, 
-	toke@redhat.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Le Chen <tom2cat@sjtu.edu.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 3, 2025 at 1:47=E2=80=AFAM KaFai Wan <kafai.wan@linux.dev> wrot=
-e:
->
-> When unpinning a BPF hash table (htab or htab_lru) that contains internal
-> structures (timer, workqueue, or task_work) in its values, a BUG warning
-> is triggered:
->  BUG: sleeping function called from invalid context at kernel/bpf/hashtab=
-.c:244
->  in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 14, name: ksoftir=
-qd/0
->  ...
->
-> The issue arises from the interaction between BPF object unpinning and
-> RCU callback mechanisms:
-> 1. BPF object unpinning uses ->free_inode() which schedules cleanup via
->    call_rcu(), deferring the actual freeing to an RCU callback that
->    executes within the RCU_SOFTIRQ context.
-> 2. During cleanup of hash tables containing internal structures,
->    htab_map_free_internal_structs() is invoked, which includes
->    cond_resched() or cond_resched_rcu() calls to yield the CPU during
->    potentially long operations.
->
-> However, cond_resched() or cond_resched_rcu() cannot be safely called fro=
-m
-> atomic RCU softirq context, leading to the BUG warning when attempting
-> to reschedule.
->
-> Fix this by changing from ->free_inode() to ->destroy_inode() for BPF
-> objects (prog, map, link). This allows direct inode freeing without
-> RCU callback scheduling, avoiding the invalid context warning.
->
-> Reported-by: Le Chen <tom2cat@sjtu.edu.cn>
-> Closes: https://lore.kernel.org/all/1444123482.1827743.1750996347470.Java=
-Mail.zimbra@sjtu.edu.cn/
-> Fixes: 68134668c17f ("bpf: Add map side support for bpf timers.")
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
+On Mon, 2025-10-06 at 21:02 +0100, Mykyta Yatsenko wrote:
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>=20
+> Add bpf_wq selftests to verify:
+>  * BPF program using non-constant offset of struct bpf_wq is rejected
+>  * BPF program using map with no BTF for storing struct bpf_wq is
+>  rejected
+>=20
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 > ---
->  kernel/bpf/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> index f90bdcc0a047..65c2a71d7de1 100644
-> --- a/kernel/bpf/inode.c
-> +++ b/kernel/bpf/inode.c
-> @@ -790,7 +790,7 @@ const struct super_operations bpf_super_ops =3D {
->         .statfs         =3D simple_statfs,
->         .drop_inode     =3D inode_just_drop,
->         .show_options   =3D bpf_show_options,
-> -       .free_inode     =3D bpf_free_inode,
-> +       .destroy_inode  =3D bpf_free_inode,
 
-s/bpf_free_inode/bpf_destroy_inode/ then?
+Both tests fail w/o fix in the first patch.
+Tbh, I think leaving `test_bad_wq_off` and dropping
+`test_failure_map_no_btf` is fine.
 
->  };
->
->  enum {
-> --
-> 2.43.0
->
+Tested-by: Eduard Zingerman <eddyz87@gmail.com>
+
+[...]
 
