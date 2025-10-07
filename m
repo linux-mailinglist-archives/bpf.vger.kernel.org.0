@@ -1,157 +1,261 @@
-Return-Path: <bpf+bounces-70519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEF76BC2249
-	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 18:43:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80263BC24FB
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 19:59:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A9ECF4F7077
-	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 16:43:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44D4819A3B1C
+	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 18:00:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB002E7F11;
-	Tue,  7 Oct 2025 16:43:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCF92E8B9A;
+	Tue,  7 Oct 2025 17:59:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="ILOV0jd0"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iPoS6xWP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49DCD2E62B1;
-	Tue,  7 Oct 2025 16:43:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE53710A1E
+	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 17:59:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759855401; cv=none; b=FsCsxGGjCG/pGQShc4CPXhFWUe0DOX9tVsN9IKXb2QSm//Vn6ine/shgY5/JfiJiakhOEbJ8/hPrnMAqg5HWAMA/xPUJxlkRW8UnwCjolJS4O1OnCeBvH9fyR8IwZmolNm2J4u2GbdXUEH8U0sIbSCuoYzgmcRDsCt6zvDq+B3c=
+	t=1759859981; cv=none; b=W8gUxgetGtD4z8ecbRnZ5kdna8VEdD2Df+3hkprhUsgoWKD7aG3FLsJDEtwbJwKB9GuiHF8NjGXnjknQYX7l9NKUm4TiFfdRm7fYFEsPuX1SynT2b8llilckOvwPPzcOnm+1orcq6cRchrebA7gS3uxSkcHDmMAtvmPThhc6ZEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759855401; c=relaxed/simple;
-	bh=Jaz+/BZCqVxcqYDoHpP9Kj5r/09VltHAJQYFTSMdr9w=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WAUfutVPSV7mddUpViSJwfkGGp5N2DLPAy9D+/7MZX4jTpVe7lqBadQhM6Ht7uMbx55+FyLFxLaF1PL0Xuuux8AFHvuRXWQtR4LmYH/29dbXSg7wtoOGqDBBmVV7PN3NipVGMH7nXB++CD0w/r0rKStYN6uz9ONYymoTxfiepWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=ILOV0jd0; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 597Fq39e3928046;
-	Tue, 7 Oct 2025 09:43:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=zzmjj3IqYxbJ3FZW9fNFsn2i9xeCEwlnVhm4zbtDAzM=; b=ILOV0jd093/R
-	stWNwcG9zUZp6axVUg4kEiL7ZqdBUpUAS6qz5I/+95Wez1qCgrXe4Jg4NSNCQMxz
-	ucR0wwo2WHKRnRHw2eMUcB58dzYbiNaQbqzY2ewst4wnx0BtuUOejb7DsrwEd33r
-	74HDKgln5EzvCicgML30oWveRqgkns03PuZDTomTMr+7gnuFN1irm0l5mAVrYnr4
-	bTHJKXgI2orb8d1TIcQxUfMjlxeQ9gQvVH6hSv2SARHeOai49gnqK3hxdnmNw4dG
-	N2eJyH0SQNy3KmMZ1086UgjA0QC7DK11XYXTmQt2WGUROKzaMclJp7+uBOziaGXo
-	pUZG6h/PkA==
-Received: from maileast.thefacebook.com ([163.114.135.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 49mx0ebw21-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Tue, 07 Oct 2025 09:43:01 -0700 (PDT)
-Received: from devbig091.ldc1.facebook.com (2620:10d:c0a8:fe::f072) by
- mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.20; Tue, 7 Oct 2025 16:42:34 +0000
-From: Chris Mason <clm@meta.com>
-To: KP Singh <kpsingh@kernel.org>
-CC: Chris Mason <clm@meta.com>, <bpf@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <bboscaccy@linux.microsoft.com>, <paul@paul-moore.com>,
-        <kys@microsoft.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <syzbot@syzkaller.appspotmail.com>
-Subject: Re: [PATCH bpf-next v7 1/5] bpf: Implement signature verification for BPF programs
-Date: Tue, 7 Oct 2025 09:42:10 -0700
-Message-ID: <20251007164217.1966541-1-clm@meta.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250921160120.9711-2-kpsingh@kernel.org>
-References:
+	s=arc-20240116; t=1759859981; c=relaxed/simple;
+	bh=bGWr2KCxr4t4cvNOaOGF5v+aAc2pJpaGLg9qHtLQgf4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ogYH3JjxE8lbZ5/t8aQWBOZ33jErX00uBxBQrr3AekJx8/jmg3cKAlksnDY27UIPWn+WdaG5SWAVdd+4Ei9EDk+3Z3qDbuzTvRuyMtnLX3vnHHouMijnW9B8L85N4ZaERCIkbnL9vYAM+r0iqNHpvmjwmSVDZiA9/1o7eXV2is4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iPoS6xWP; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a7a12dcc-4fc4-4c1a-aceb-bb4ce2815a36@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759859976;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2PgrELYGS2fWTQJ+d3kgvuZIDxKzs4UXd64korIL4uY=;
+	b=iPoS6xWPRlphFxtMXHE1zRglLNftxbFK9Gh3TQGFJshRe8uwp8zlNbDiKKjVkL1Pp35Q49
+	J58cwcGl+kEmHj4AFSVKRqr+glxBOVnbpS+VW4bkYw5bWo4VHNyPij/2Lzrc6uoN03pmyk
+	IJbI0m/AYiYf6iXXIl37crDK4POOENM=
+Date: Tue, 7 Oct 2025 10:59:32 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 9lbpTvL3nYOlIO1UFZ3xafeUvuj14frt
-X-Authority-Analysis: v=2.4 cv=SoGdKfO0 c=1 sm=1 tr=0 ts=68e54315 cx=c_pps
- a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
- a=x6icFKpwvdMA:10 a=VwQbUJbxAAAA:8 a=kxiUpit_5B_PL5oZeFQA:9
- a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-GUID: 9lbpTvL3nYOlIO1UFZ3xafeUvuj14frt
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDA3MDEzMiBTYWx0ZWRfX9CNAHxvDFayD
- JyhwT8OrJByCG8/4WcUp70oj1VO65vQTDHoYW8ba2RPHtmeGJJ+HTsv1lw1pnOeyoNP2ePb4Fgh
- SJyOQ2nqFsTyTD5TDSoaNeNZTVKUNtvusdLdZOH7OUvS6e+w1UXKlvIwvC8/GWfzlfNhODe5b8o
- Yjb2fBWrMIPOW6p7YHPL/Sskg+so0S8X4wo1XuL5hi42BZ5UJ9Cs0NZ6oMkv3RIW5FbOBPMH6r8
- KylpuzGtrAXOQHZB7Xx34HjCfm0GDth16/ZllG3bP572E7VCq+C9A/MV+vU/+qzeUGemMmn3lj4
- juGxQTCyPzpuMQTEktLnnfo8iIazvTaJXFiYrg7l9HCCLL8z5CJD18DLUlzZCRJCCGd4KLe0ak/
- 8wk6TIGHgmCY4ImtqI27ZzpJ1b0VJg==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-07_02,2025-10-06_01,2025-03-28_01
+Subject: Re: [PATCH bpf-next v6 3/5] bpf: Craft non-linear skbs in
+ BPF_PROG_TEST_RUN
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Amery Hung <ameryhung@gmail.com>
+References: <cover.1759843268.git.paul.chaignon@gmail.com>
+ <8347068dc4ee9030be13e886c05d59d3ef1ce949.1759843268.git.paul.chaignon@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <8347068dc4ee9030be13e886c05d59d3ef1ce949.1759843268.git.paul.chaignon@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi KP,
-
-On Sun, 21 Sep 2025 18:01:16 +0200 KP Singh <kpsingh@kernel.org> wrote:
-
-> This patch extends the BPF_PROG_LOAD command by adding three new fields
-> to `union bpf_attr` in the user-space API:
+On 10/7/25 6:38 AM, Paul Chaignon wrote:
+> This patch adds support for crafting non-linear skbs in BPF test runs
+> for tc programs. The size of the linear area is given by ctx->data_end,
+> with a minimum of ETH_HLEN always pulled in the linear area. If ctx or
+> ctx->data_end are null, a linear skb is used.
 > 
->   - signature: A pointer to the signature blob.
->   - signature_size: The size of the signature blob.
->   - keyring_id: The serial number of a loaded kernel keyring (e.g.,
->     the user or session keyring) containing the trusted public keys.
+> This is particularly useful to test support for non-linear skbs in large
+> codebases such as Cilium. We've had multiple bugs in the past few years
+> where we were missing calls to bpf_skb_pull_data(). This support in
+> BPF_PROG_TEST_RUN would allow us to automatically cover this case in our
+> BPF tests.
 > 
-> When a BPF program is loaded with a signature, the kernel:
+> In addition to the selftests introduced later in the series, this patch
+> was tested by setting enabling non-linear skbs for all tc selftests
+> programs and checking test failures were expected.
 > 
-> 1.  Retrieves the trusted keyring using the provided `keyring_id`.
-> 2.  Verifies the supplied signature against the BPF program's
->     instruction buffer.
-> 3.  If the signature is valid and was generated by a key in the trusted
->     keyring, the program load proceeds.
-> 4.  If no signature is provided, the load proceeds as before, allowing
->     for backward compatibility. LSMs can chose to restrict unsigned
->     programs and implement a security policy.
-> 5.  If signature verification fails for any reason,
->     the program is not loaded.
+> Tested-by: syzbot@syzkaller.appspotmail.com
+> Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+> ---
+>   net/bpf/test_run.c | 82 +++++++++++++++++++++++++++++++++++++++++-----
+>   1 file changed, 74 insertions(+), 8 deletions(-)
 > 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index cf7173b1bb83..8a3c3d26f6e2 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -39,6 +39,7 @@
->  #include <linux/tracepoint.h>
->  #include <linux/overflow.h>
->  #include <linux/cookie.h>
-> +#include <linux/verification.h>
->  
->  #include <net/netfilter/nf_bpf_link.h>
->  #include <net/netkit.h>
-> @@ -2785,8 +2786,44 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
->  	}
->  }
->  
-> +static int bpf_prog_verify_signature(struct bpf_prog *prog, union bpf_attr *attr,
-> +				     bool is_kernel)
-> +{
-> +	bpfptr_t usig = make_bpfptr(attr->signature, is_kernel);
-> +	struct bpf_dynptr_kern sig_ptr, insns_ptr;
-> +	struct bpf_key *key = NULL;
-> +	void *sig;
-> +	int err = 0;
-> +
-> +	if (system_keyring_id_check(attr->keyring_id) == 0)
-> +		key = bpf_lookup_system_key(attr->keyring_id);
-> +	else
-> +		key = bpf_lookup_user_key(attr->keyring_id, 0);
-> +
-> +	if (!key)
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index b9b49d0c7014..0cdf894c1d05 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -910,6 +910,12 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+>   	/* cb is allowed */
+>   
+>   	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, cb),
+> +			   offsetof(struct __sk_buff, data_end)))
 > +		return -EINVAL;
 > +
-> +	sig = kvmemdup_bpfptr(usig, attr->signature_size);
+> +	/* data_end is allowed, but not copied to skb */
+> +
+> +	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, data_end),
+>   			   offsetof(struct __sk_buff, tstamp)))
+>   		return -EINVAL;
+>   
+> @@ -984,9 +990,12 @@ static struct proto bpf_dummy_proto = {
+>   int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+>   			  union bpf_attr __user *uattr)
+>   {
+> -	bool is_l2 = false, is_direct_pkt_access = false;
+> +	bool is_l2 = false, is_direct_pkt_access = false, is_lwt = false;
+> +	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+>   	struct net *net = current->nsproxy->net_ns;
+>   	struct net_device *dev = net->loopback_dev;
+> +	u32 headroom = NET_SKB_PAD + NET_IP_ALIGN;
+> +	u32 linear_sz = kattr->test.data_size_in;
+>   	u32 size = kattr->test.data_size_in;
+>   	u32 repeat = kattr->test.repeat;
+>   	struct __sk_buff *ctx = NULL;
+> @@ -1007,11 +1016,14 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+>   	switch (prog->type) {
+>   	case BPF_PROG_TYPE_SCHED_CLS:
+>   	case BPF_PROG_TYPE_SCHED_ACT:
+> +		is_direct_pkt_access = true;
+>   		is_l2 = true;
+> -		fallthrough;
+> +		break;
+>   	case BPF_PROG_TYPE_LWT_IN:
+>   	case BPF_PROG_TYPE_LWT_OUT:
+>   	case BPF_PROG_TYPE_LWT_XMIT:
+> +		is_lwt = true;> +		fallthrough;
+>   	case BPF_PROG_TYPE_CGROUP_SKB:
+>   		is_direct_pkt_access = true;
+>   		break;
+> @@ -1023,9 +1035,24 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+>   	if (IS_ERR(ctx))
+>   		return PTR_ERR(ctx);
+>   
+> -	data = bpf_test_init(kattr, kattr->test.data_size_in,
+> -			     size, NET_SKB_PAD + NET_IP_ALIGN,
+> -			     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
+> +	if (ctx) {
+> +		if (ctx->data_end > kattr->test.data_size_in || ctx->data || ctx->data_meta) {
+> +			ret = -EINVAL;
+> +			goto out;
+> +		}
+> +		if (ctx->data_end) {
+> +			/* Non-linear LWT test_run is unsupported for now. */
 
-Should there be some validation on signature_size?  It looks like we're
-giving vmalloc exactly what userland sent.
+Please add some details in the commit message on what may break in the lwt prog.
 
--chris
+> +			if (is_lwt) {
+> +				ret = -EINVAL;
+> +				goto out;
+> +			}
+> +			linear_sz = max(ETH_HLEN, ctx->data_end);
+> +		}
+> +	}
+> +
+> +	linear_sz = min_t(u32, linear_sz, PAGE_SIZE - headroom - tailroom);
+> +
+> +	data = bpf_test_init(kattr, linear_sz, linear_sz, headroom, tailroom);
+>   	if (IS_ERR(data)) {
+>   		ret = PTR_ERR(data);
+>   		data = NULL;
+> @@ -1044,12 +1071,49 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+>   		ret = -ENOMEM;
+>   		goto out;
+>   	}
+> +
+nit. unnecessary newline change.
+
+>   	skb->sk = sk;
+>   
+>   	data = NULL; /* data released via kfree_skb */
+>   
+>   	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
+> -	__skb_put(skb, size);
+> +	__skb_put(skb, linear_sz);
+> +
+> +	if (unlikely(kattr->test.data_size_in > linear_sz)) {
+> +		void __user *data_in = u64_to_user_ptr(kattr->test.data_in);
+> +		struct skb_shared_info *sinfo = skb_shinfo(skb);
+> +
+> +		size = linear_sz;
+
+nit. I find the "size" variable confusing to follow. The "size" is overloaded 
+with different meanings in this function.
+
+Define a "u32 copied = linear_sz;" for this purpose (number of bytes copied so 
+far) here.
+
+The same should be done for test_run_xdp() also in the future (not asking in 
+this set).
+
+> +		while (size < kattr->test.data_size_in) {
+> +			struct page *page;
+> +			u32 data_len;> +
+> +			if (sinfo->nr_frags == MAX_SKB_FRAGS) {
+> +				ret = -ENOMEM;
+> +				goto out;
+> +			}
+> +
+> +			page = alloc_page(GFP_KERNEL);
+> +			if (!page) {
+> +				ret = -ENOMEM;
+> +				goto out;
+> +			}
+> +
+> +			data_len = min_t(u32, kattr->test.data_size_in - size,
+> +					 PAGE_SIZE);
+> +			skb_fill_page_desc(skb, sinfo->nr_frags, page, 0, data_len);
+> +
+> +			if (copy_from_user(page_address(page), data_in + size,
+> +					   data_len)) {
+> +				ret = -EFAULT;
+> +				goto out;
+> +			}
+> +			skb->data_len += data_len;
+> +			skb->truesize += PAGE_SIZE;
+> +			skb->len += data_len;
+> +			size += data_len;
+> +		}
+> +	}
+>   
+>   	if (ctx && ctx->ifindex > 1) {
+>   		dev = dev_get_by_index(net, ctx->ifindex);
+> @@ -1130,9 +1194,11 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+>   	convert_skb_to___skb(skb, ctx);
+>   
+>   	size = skb->len;
+Remove this assignment. iiuc, skb_headlen(skb) can be directly used.
+
+> -	/* bpf program can never convert linear skb to non-linear */
+> -	if (WARN_ON_ONCE(skb_is_nonlinear(skb)))
+> +	if (skb_is_nonlinear(skb)) {
+> +		/* bpf program can never convert linear skb to non-linear */
+> +		WARN_ON_ONCE(linear_sz == size);
+I don't think I understand this WARN. Do you mean "WARN_ON_ONCE(linear_sz ==
+kattr->test.data_size_in)" instead?
+
+>   		size = skb_headlen(skb);
+
+Remove this assignment also. Directly use skb_headlen(skb) instead.
+
+The remaining "u32 size" usage should be at the very beginning "if (size < 
+ETH_HLEN)" check. Directly used "kattr->test.data_size_in" there also. Then the 
+"u32 size" can be removed.
+
+> +	}
+>   	ret = bpf_test_finish(kattr, uattr, skb->data, NULL, size, retval,
+
+What does it take to have bpf_test_finish support the skb's shinfo instead of 
+passing NULL?
+
+>   			      duration);
+>   	if (!ret)
+
 
