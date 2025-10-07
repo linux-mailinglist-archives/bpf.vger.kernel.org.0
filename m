@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-70465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A008EBBFD68
-	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 02:11:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32B56BBFD6C
+	for <lists+bpf@lfdr.de>; Tue, 07 Oct 2025 02:12:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ED9F18976DF
-	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 00:12:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39867189D6EB
+	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 00:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B2528F5;
-	Tue,  7 Oct 2025 00:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899AC7082A;
+	Tue,  7 Oct 2025 00:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ec/R6HPk"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nUkZUofA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1C87260A
-	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 00:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7573223741
+	for <bpf@vger.kernel.org>; Tue,  7 Oct 2025 00:11:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759795889; cv=none; b=eld7ZdOT+uWxZzHLKChJ5wM/oir9GhP9F/64DrhXI70XDTN1j4FnIpd9CgEeqIsK4SK0xBROYPqeV9U9peH/CM9tW+omG4nIadLJB6iRDZ54QemW+9FolWNpVo7lLCqSy+AunddDVHEhjr6xCa8zRIMC3vYbbxbhpwoHxKKW4cE=
+	t=1759795891; cv=none; b=aiHKMGW2Hm/EJgXW+Ju7uddQPmbNohhN4NIVVufRIiF+AiMkPdBLqR6uKGDnIOFiZJJPL79B6LRJlNUjj1zBfB6Qv5oJCQoJBhV4rPyQkHVwHc4CkoBLqBA0aRr2NkFPQlP5Z8GXvkLiSM83aqaOaoSXowZWNuYU3W1lOcxyZPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759795889; c=relaxed/simple;
-	bh=EpcumTPqfNHtxC9fxqegwsrgKSBxr5l+TEXm0sfw8d8=;
+	s=arc-20240116; t=1759795891; c=relaxed/simple;
+	bh=vlEedhQIKxq/ZNMGycnTYfb2Ex/ay6qJbQaJZLR+7Lc=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=qtr+RbKsLhAhd0YFQpHIJzFv7ZCOIa1frPnPcuobnD/SdZQMvC0lUnDNB1GdsCDL5q7WFEkQdSJrGD6G3oie3kYzgFCzd/mKcOOUlL64thMswuxuxsqfGz9tyWk04DS5T8Ec4xHSfujN7PhWDhNytuU8jtgbSutB7mWz93l3Ltc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ec/R6HPk; arc=none smtp.client-ip=209.85.214.202
+	 To:Cc:Content-Type; b=UqJf4h6iGkY/P9CxQA9EP8l0a7UA1+6WFV7IS3aY1we8bTfpFj3Ef0kOTh/Xlc/eVU3PxJsse+2iYixJJ11qgHbO5RAKiAJkuLiqFfg0gxrYrcpeQrE1UY31vZQBa9tB7FsKtO6oM8gWx3xET8zqz3lOV0lKLOdXcEVcaxOknlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nUkZUofA; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-2698b5fbe5bso65546995ad.0
-        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 17:11:27 -0700 (PDT)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-28eb14e3cafso42302755ad.1
+        for <bpf@vger.kernel.org>; Mon, 06 Oct 2025 17:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759795887; x=1760400687; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1759795889; x=1760400689; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RKsDlqQUNGucXp83WfS+22+WClBxI3Ues+3qVbOfGzY=;
-        b=ec/R6HPkXLchw338LPSKa3jmkuctAqeHp5HshdnXsYnQIbRELJyWMB5WgFVj3NPU60
-         stvfTkSkIdhqskytv9dDJScPZf5YzzTcmW28ELhWRAuCS7Wu+tt4MCIfocWfc9yk5XPi
-         mCpBnmQbPfhq7bO6R0LogBgVQXA9WDAE6gKkzHkgQUbixGrH5Yz9+kE6kz+8VrxEgUYf
-         xFD+xo7ZPzmBzmPh84AgRnnRQOP6geFdXeV/6jlRcuE9bPIfspix9ErajnZJarbiLKDa
-         hJ3gTLDczX8yaghd9xNKG0eS2neh+uOal2nX54Fl8fSlE7eafg7mQV9QqqFTFOHTuX8j
-         mzrQ==
+        bh=pcrTlZa8xE3hi6V4oxOodIsPLy9iNjdMsygWAzaOjgM=;
+        b=nUkZUofAYLL88HfRqR2JG84x27n5rZohAH2XczzYF89F+rmo01ZMDMQ1XIp2ndGQjD
+         6Hk3CdS2AEovIol4623YC/qj3W5xVGbp56tKoWxndnCyibgLIHteDg41qn2dLdpH/m3K
+         IWfO4jahJl1a95RoswHUvjW6zFtdksdzsw5J0W94qsbAOB1IXRmnOIfq6GCZGTE43cDi
+         hvAkwePyQ/WTxP7Arz/Z6qtxjc2S1J6ppqj6fHGugq+meVAvIPacFuwdN1JgSJ38jP0J
+         PYe2PMPYrueYhdiN7IBwXFILkFlN94bAu8Hs2BSVKtmhNSIWf3aq4xfMKI1nWTxxF7ak
+         APxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759795887; x=1760400687;
+        d=1e100.net; s=20230601; t=1759795889; x=1760400689;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RKsDlqQUNGucXp83WfS+22+WClBxI3Ues+3qVbOfGzY=;
-        b=ODMwUwEeik/ZD6oG7uQoTlPAE19XOBX00j+0N9v/h4LLFt7/U3nZrAY2bHZR0KeP+7
-         2dVjWvkEtXKj+jtMgaognCqkdXqtEQmIbMK/7AmLnnPqmdWkApmlDY5TSlBzzKGy4eM6
-         32Wpk2FhdsCQSlmWbSWcq2FrJMQDLwDCLtCr7O9nOIMq0fNIxVjNPvBwhSap8g3Vnwy1
-         l4lzpph30jfUrZBO5qasnAZRQwG17bleMDQlPPMtFSmZZuy3eDQpIqkP7kNv4wrYy+ud
-         Eli9j8fpfcoUT+z7gy4eXI2rTqj9hkz0JRj+FW0RXSlmpzUFgSYEn8GZIq7YOcMJOdmi
-         o+bA==
-X-Forwarded-Encrypted: i=1; AJvYcCVCrvFoFJoF7zyZyO1ry/cV16lJWQE61JERALv2uS8+sCZGSkbp/GRZ/mevp2McxaXggpo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YykKcov3gQjo0ohEiWuqFNSUPFgrgmvKxKygGudz11Vte1iPdoS
-	Kwd/vW5nPEKAYnCcezZWEZtetgD17gCTXx23qcKcVl6hlisNl8u97U0yslW7hDa838b+dW8F45V
-	CsK0SkQ==
-X-Google-Smtp-Source: AGHT+IEyLqtAUCvMdzr313XFcu15NT/8XLo8eZD/FfTNrYXLg04f4hYNJtL1R1jJCkcKnOPTMWXox/AUHLw=
-X-Received: from plpf11.prod.google.com ([2002:a17:903:3c4b:b0:269:740f:8ae8])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:f68d:b0:248:79d4:93be
- with SMTP id d9443c01a7336-28e9a62fe10mr169426105ad.30.1759795887300; Mon, 06
- Oct 2025 17:11:27 -0700 (PDT)
-Date: Tue,  7 Oct 2025 00:07:27 +0000
+        bh=pcrTlZa8xE3hi6V4oxOodIsPLy9iNjdMsygWAzaOjgM=;
+        b=t3c4EiPlBFUCq8wZBJbJvZjZcS16qUF0VIfgYKjorpl8NT2+iBBl6v1RzIw7zUVF/o
+         UxfTNzwFy1b0Fguo2/f0Tqc8BWYjJhYRzOZyJb2QJ5gxYBQh0CO1JgTakygSOcox5MGB
+         ZmGSYCdLWjvq8Y9kmArGB+3N82/Nyt/gVFCCJWq1uYRVboEaG4oWrgOBXoU5xSc9gjyj
+         enuoHWE4CTLmjky/a9r4h1dR2PZoe0oKq+WA2/mUdYpNR+6C4kaEDqXgW8hRs8r64fZZ
+         rYqS5SN7yrYK/93O4OvUX80E/WO9LMF5SZYZV0AjvNA815ZaHZOtQ+lAfFs5bhEe1FRS
+         5ang==
+X-Forwarded-Encrypted: i=1; AJvYcCXXnDuqtexoIIYpEuq0d4BSZVlxUc73ad83TIoX1kOaPO1xREtZJny/If2gIh+59Fkcu/s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywv4zDtYeCFRUqZKoMXHNxZZ5SUceEkfyKA1RTgkgAPOpbK7SHm
+	eJ8JZs7AJwzK8RzC+4NJHCoN0HxHCEamPqbJy24OhI/prm1x5wsxaBtiTp+wUtrJZhwOnSsi2Ne
+	Wduccvw==
+X-Google-Smtp-Source: AGHT+IF87VNEWY1ifch7msbf5i6YonTnkf3fKpH5U501ahjV1gsYS9Ug+SOJ66qeqdwuN+EQbQa0pB4eKL4=
+X-Received: from pjbei9.prod.google.com ([2002:a17:90a:e549:b0:330:9af8:3e1d])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:19f0:b0:25b:a5fc:8664
+ with SMTP id d9443c01a7336-28e9a6b0e6bmr148566095ad.51.1759795888718; Mon, 06
+ Oct 2025 17:11:28 -0700 (PDT)
+Date: Tue,  7 Oct 2025 00:07:28 +0000
 In-Reply-To: <20251007001120.2661442-1-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,9 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251007001120.2661442-1-kuniyu@google.com>
 X-Mailer: git-send-email 2.51.0.710.ga91ca5db03-goog
-Message-ID: <20251007001120.2661442-3-kuniyu@google.com>
-Subject: [PATCH bpf-next/net 2/6] net: Allow opt-out from global protocol
- memory accounting.
+Message-ID: <20251007001120.2661442-4-kuniyu@google.com>
+Subject: [PATCH bpf-next/net 3/6] net: Introduce net.core.bypass_prot_mem sysctl.
 From: Kuniyuki Iwashima <kuniyu@google.com>
 To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
@@ -89,265 +88,134 @@ Cc: John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.
 	netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Some protocols (e.g., TCP, UDP) implement memory accounting for socket
-buffers and charge memory to per-protocol global counters pointed to by
-sk->sk_proto->memory_allocated.
+If a socket has sk->sk_bypass_prot_mem flagged, the socket opts out
+of the global protocol memory accounting.
 
-Sometimes, system processes do not want that limitation.  For a similar
-purpose, there is SO_RESERVE_MEM for sockets under memcg.
+Let's control the flag by a new sysctl knob.
 
-Also, by opting out of the per-protocol accounting, sockets under memcg
-can avoid paying costs for two orthogonal memory accounting mechanisms.
-A microbenchmark result is in the subsequent bpf patch.
+The flag is written once during socket(2) and is inherited to child
+sockets.
 
-Let's allow opt-out from the per-protocol memory accounting if
-sk->sk_bypass_prot_mem is true.
+Tested with a script that creates local socket pairs and send()s a
+bunch of data without recv()ing.
 
-sk->sk_bypass_prot_mem and sk->sk_prot are placed in the same cache
-line, and sk_has_account() always fetches sk->sk_prot before accessing
-sk->sk_bypass_prot_mem, so there is no extra cache miss for this patch.
+Setup:
 
-The following patches will set sk->sk_bypass_prot_mem to true, and
-then, the per-protocol memory accounting will be skipped.
+  # mkdir /sys/fs/cgroup/test
+  # echo $$ >> /sys/fs/cgroup/test/cgroup.procs
+  # sysctl -q net.ipv4.tcp_mem="1000 1000 1000"
+  # ulimit -n 524288
 
-Note that this does NOT disable memcg, but rather the per-protocol one.
+Without net.core.bypass_prot_mem, charged to tcp_mem & memcg
 
-Another option not to use the hole in struct sock_common is create
-sk_prot variants like tcp_prot_bypass, but this would complicate
-SOCKMAP logic, tcp_bpf_prots etc.
+  # python3 pressure.py &
+  # cat /sys/fs/cgroup/test/memory.stat | grep sock
+  sock 22642688 <-------------------------------------- charged to memcg
+  # cat /proc/net/sockstat| grep TCP
+  TCP: inuse 2006 orphan 0 tw 0 alloc 2008 mem 5376 <-- charged to tcp_mem
+  # ss -tn | head -n 5
+  State Recv-Q Send-Q Local Address:Port  Peer Address:Port
+  ESTAB 2000   0          127.0.0.1:34479    127.0.0.1:53188
+  ESTAB 2000   0          127.0.0.1:34479    127.0.0.1:49972
+  ESTAB 2000   0          127.0.0.1:34479    127.0.0.1:53868
+  ESTAB 2000   0          127.0.0.1:34479    127.0.0.1:53554
+  # nstat | grep Pressure || echo no pressure
+  TcpExtTCPMemoryPressures        1                  0.0
+
+With net.core.bypass_prot_mem=1, charged to memcg only:
+
+  # sysctl -q net.core.bypass_prot_mem=1
+  # python3 pressure.py &
+  # cat /sys/fs/cgroup/test/memory.stat | grep sock
+  sock 2757468160 <------------------------------------ charged to memcg
+  # cat /proc/net/sockstat | grep TCP
+  TCP: inuse 2006 orphan 0 tw 0 alloc 2008 mem 0 <- NOT charged to tcp_mem
+  # ss -tn | head -n 5
+  State Recv-Q Send-Q  Local Address:Port  Peer Address:Port
+  ESTAB 111000 0           127.0.0.1:36019    127.0.0.1:49026
+  ESTAB 110000 0           127.0.0.1:36019    127.0.0.1:45630
+  ESTAB 110000 0           127.0.0.1:36019    127.0.0.1:44870
+  ESTAB 111000 0           127.0.0.1:36019    127.0.0.1:45274
+  # nstat | grep Pressure || echo no pressure
+  no pressure
 
 Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
 ---
- include/net/proto_memory.h |  3 +++
- include/net/sock.h         |  3 +++
- include/net/tcp.h          |  3 +++
- net/core/sock.c            | 32 +++++++++++++++++++++++++-------
- net/ipv4/tcp.c             |  3 ++-
- net/ipv4/tcp_output.c      |  7 ++++++-
- net/mptcp/protocol.c       |  7 ++++---
- net/tls/tls_device.c       |  3 ++-
- 8 files changed, 48 insertions(+), 13 deletions(-)
+ Documentation/admin-guide/sysctl/net.rst | 8 ++++++++
+ include/net/netns/core.h                 | 1 +
+ net/core/sock.c                          | 5 +++++
+ net/core/sysctl_net_core.c               | 9 +++++++++
+ 4 files changed, 23 insertions(+)
 
-diff --git a/include/net/proto_memory.h b/include/net/proto_memory.h
-index 8e91a8fa31b5..ad6d703ce6fe 100644
---- a/include/net/proto_memory.h
-+++ b/include/net/proto_memory.h
-@@ -35,6 +35,9 @@ static inline bool sk_under_memory_pressure(const struct sock *sk)
- 	    mem_cgroup_sk_under_memory_pressure(sk))
- 		return true;
+diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
+index 2ef50828aff1..3dbe0ea212e8 100644
+--- a/Documentation/admin-guide/sysctl/net.rst
++++ b/Documentation/admin-guide/sysctl/net.rst
+@@ -212,6 +212,14 @@ mem_pcpu_rsv
  
-+	if (sk->sk_bypass_prot_mem)
-+		return false;
+ Per-cpu reserved forward alloc cache size in page units. Default 1MB per CPU.
+ 
++bypass_prot_mem
++---------------
 +
- 	return !!READ_ONCE(*sk->sk_prot->memory_pressure);
- }
- 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 60bcb13f045c..5cf8de6b6bf2 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -118,6 +118,7 @@ typedef __u64 __bitwise __addrpair;
-  *	@skc_reuseport: %SO_REUSEPORT setting
-  *	@skc_ipv6only: socket is IPV6 only
-  *	@skc_net_refcnt: socket is using net ref counting
-+ *	@skc_bypass_prot_mem:
-  *	@skc_bound_dev_if: bound device index if != 0
-  *	@skc_bind_node: bind hash linkage for various protocol lookup tables
-  *	@skc_portaddr_node: second hash linkage for UDP/UDP-Lite protocol
-@@ -174,6 +175,7 @@ struct sock_common {
- 	unsigned char		skc_reuseport:1;
- 	unsigned char		skc_ipv6only:1;
- 	unsigned char		skc_net_refcnt:1;
-+	unsigned char		skc_bypass_prot_mem:1;
- 	int			skc_bound_dev_if;
- 	union {
- 		struct hlist_node	skc_bind_node;
-@@ -380,6 +382,7 @@ struct sock {
- #define sk_reuseport		__sk_common.skc_reuseport
- #define sk_ipv6only		__sk_common.skc_ipv6only
- #define sk_net_refcnt		__sk_common.skc_net_refcnt
-+#define sk_bypass_prot_mem		__sk_common.skc_bypass_prot_mem
- #define sk_bound_dev_if		__sk_common.skc_bound_dev_if
- #define sk_bind_node		__sk_common.skc_bind_node
- #define sk_prot			__sk_common.skc_prot
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 5ca230ed526a..d52ed4fe2335 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -303,6 +303,9 @@ static inline bool tcp_under_memory_pressure(const struct sock *sk)
- 	    mem_cgroup_sk_under_memory_pressure(sk))
- 		return true;
- 
-+	if (sk->sk_bypass_prot_mem)
-+		return false;
++Skip charging socket buffers to the global per-protocol memory
++accounting controlled by net.ipv4.tcp_mem, net.ipv4.udp_mem, etc.
 +
- 	return READ_ONCE(tcp_memory_pressure);
- }
- /*
++Default: 0 (off)
++
+ rmem_default
+ ------------
+ 
+diff --git a/include/net/netns/core.h b/include/net/netns/core.h
+index 9b36f0ff0c20..e9053d64c8ef 100644
+--- a/include/net/netns/core.h
++++ b/include/net/netns/core.h
+@@ -16,6 +16,7 @@ struct netns_core {
+ 	int	sysctl_optmem_max;
+ 	u8	sysctl_txrehash;
+ 	u8	sysctl_tstamp_allow_data;
++	u8	sysctl_bypass_prot_mem;
+ 
+ #ifdef CONFIG_PROC_FS
+ 	struct prot_inuse __percpu *prot_inuse;
 diff --git a/net/core/sock.c b/net/core/sock.c
-index dc03d4b5909a..7de189ec2556 100644
+index 7de189ec2556..b28373e20d74 100644
 --- a/net/core/sock.c
 +++ b/net/core/sock.c
-@@ -1046,9 +1046,13 @@ static int sock_reserve_memory(struct sock *sk, int bytes)
- 	if (!charged)
- 		return -ENOMEM;
- 
-+	if (sk->sk_bypass_prot_mem)
-+		goto success;
+@@ -2306,8 +2306,13 @@ struct sock *sk_alloc(struct net *net, int family, gfp_t priority,
+ 		 * why we need sk_prot_creator -acme
+ 		 */
+ 		sk->sk_prot = sk->sk_prot_creator = prot;
 +
- 	/* pre-charge to forward_alloc */
- 	sk_memory_allocated_add(sk, pages);
- 	allocated = sk_memory_allocated(sk);
++		if (READ_ONCE(net->core.sysctl_bypass_prot_mem))
++			sk->sk_bypass_prot_mem = 1;
 +
- 	/* If the system goes into memory pressure with this
- 	 * precharge, give up and return error.
+ 		sk->sk_kern_sock = kern;
+ 		sock_lock_init(sk);
++
+ 		sk->sk_net_refcnt = kern ? 0 : 1;
+ 		if (likely(sk->sk_net_refcnt)) {
+ 			get_net_track(net, &sk->ns_tracker, priority);
+diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+index 8cf04b57ade1..2e91fe728969 100644
+--- a/net/core/sysctl_net_core.c
++++ b/net/core/sysctl_net_core.c
+@@ -676,6 +676,15 @@ static struct ctl_table netns_core_table[] = {
+ 		.extra1		= SYSCTL_ZERO,
+ 		.extra2		= SYSCTL_ONE
+ 	},
++	{
++		.procname	= "bypass_prot_mem",
++		.data		= &init_net.core.sysctl_bypass_prot_mem,
++		.maxlen		= sizeof(u8),
++		.mode		= 0644,
++		.proc_handler	= proc_dou8vec_minmax,
++		.extra1		= SYSCTL_ZERO,
++		.extra2		= SYSCTL_ONE
++	},
+ 	/* sysctl_core_net_init() will set the values after this
+ 	 * to readonly in network namespaces
  	 */
-@@ -1057,6 +1061,8 @@ static int sock_reserve_memory(struct sock *sk, int bytes)
- 		mem_cgroup_sk_uncharge(sk, pages);
- 		return -ENOMEM;
- 	}
-+
-+success:
- 	sk_forward_alloc_add(sk, pages << PAGE_SHIFT);
- 
- 	WRITE_ONCE(sk->sk_reserved_mem,
-@@ -3136,8 +3142,11 @@ bool sk_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
- 	if (likely(skb_page_frag_refill(32U, pfrag, sk->sk_allocation)))
- 		return true;
- 
--	sk_enter_memory_pressure(sk);
-+	if (!sk->sk_bypass_prot_mem)
-+		sk_enter_memory_pressure(sk);
-+
- 	sk_stream_moderate_sndbuf(sk);
-+
- 	return false;
- }
- EXPORT_SYMBOL(sk_page_frag_refill);
-@@ -3254,10 +3263,12 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
- {
- 	bool memcg_enabled = false, charged = false;
- 	struct proto *prot = sk->sk_prot;
--	long allocated;
-+	long allocated = 0;
- 
--	sk_memory_allocated_add(sk, amt);
--	allocated = sk_memory_allocated(sk);
-+	if (!sk->sk_bypass_prot_mem) {
-+		sk_memory_allocated_add(sk, amt);
-+		allocated = sk_memory_allocated(sk);
-+	}
- 
- 	if (mem_cgroup_sk_enabled(sk)) {
- 		memcg_enabled = true;
-@@ -3266,6 +3277,9 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
- 			goto suppress_allocation;
- 	}
- 
-+	if (!allocated)
-+		return 1;
-+
- 	/* Under limit. */
- 	if (allocated <= sk_prot_mem_limits(sk, 0)) {
- 		sk_leave_memory_pressure(sk);
-@@ -3344,7 +3358,8 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
- 
- 	trace_sock_exceed_buf_limit(sk, prot, allocated, kind);
- 
--	sk_memory_allocated_sub(sk, amt);
-+	if (allocated)
-+		sk_memory_allocated_sub(sk, amt);
- 
- 	if (charged)
- 		mem_cgroup_sk_uncharge(sk, amt);
-@@ -3383,11 +3398,14 @@ EXPORT_SYMBOL(__sk_mem_schedule);
-  */
- void __sk_mem_reduce_allocated(struct sock *sk, int amount)
- {
--	sk_memory_allocated_sub(sk, amount);
--
- 	if (mem_cgroup_sk_enabled(sk))
- 		mem_cgroup_sk_uncharge(sk, amount);
- 
-+	if (sk->sk_bypass_prot_mem)
-+		return;
-+
-+	sk_memory_allocated_sub(sk, amount);
-+
- 	if (sk_under_global_memory_pressure(sk) &&
- 	    (sk_memory_allocated(sk) < sk_prot_mem_limits(sk, 0)))
- 		sk_leave_memory_pressure(sk);
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 7949d16506a4..feb0aea23a59 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -928,7 +928,8 @@ struct sk_buff *tcp_stream_alloc_skb(struct sock *sk, gfp_t gfp,
- 		}
- 		__kfree_skb(skb);
- 	} else {
--		sk->sk_prot->enter_memory_pressure(sk);
-+		if (!sk->sk_bypass_prot_mem)
-+			tcp_enter_memory_pressure(sk);
- 		sk_stream_moderate_sndbuf(sk);
- 	}
- 	return NULL;
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index bb3576ac0ad7..0fb2a3bb62cd 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -3732,12 +3732,17 @@ void sk_forced_mem_schedule(struct sock *sk, int size)
- 	delta = size - sk->sk_forward_alloc;
- 	if (delta <= 0)
- 		return;
-+
- 	amt = sk_mem_pages(delta);
- 	sk_forward_alloc_add(sk, amt << PAGE_SHIFT);
--	sk_memory_allocated_add(sk, amt);
- 
- 	if (mem_cgroup_sk_enabled(sk))
- 		mem_cgroup_sk_charge(sk, amt, gfp_memcg_charge() | __GFP_NOFAIL);
-+
-+	if (sk->sk_bypass_prot_mem)
-+		return;
-+
-+	sk_memory_allocated_add(sk, amt);
- }
- 
- /* Send a FIN. The caller locks the socket for us.
-diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index 0292162a14ee..94a5f6dcc577 100644
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -1065,11 +1065,12 @@ static void mptcp_enter_memory_pressure(struct sock *sk)
- 	mptcp_for_each_subflow(msk, subflow) {
- 		struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
- 
--		if (first)
-+		if (first && !ssk->sk_bypass_prot_mem) {
- 			tcp_enter_memory_pressure(ssk);
--		sk_stream_moderate_sndbuf(ssk);
-+			first = false;
-+		}
- 
--		first = false;
-+		sk_stream_moderate_sndbuf(ssk);
- 	}
- 	__mptcp_sync_sndbuf(sk);
- }
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index a64ae15b1a60..caa2b5d24622 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -373,7 +373,8 @@ static int tls_do_allocation(struct sock *sk,
- 	if (!offload_ctx->open_record) {
- 		if (unlikely(!skb_page_frag_refill(prepend_size, pfrag,
- 						   sk->sk_allocation))) {
--			READ_ONCE(sk->sk_prot)->enter_memory_pressure(sk);
-+			if (!sk->sk_bypass_prot_mem)
-+				READ_ONCE(sk->sk_prot)->enter_memory_pressure(sk);
- 			sk_stream_moderate_sndbuf(sk);
- 			return -ENOMEM;
- 		}
 -- 
 2.51.0.710.ga91ca5db03-goog
 
