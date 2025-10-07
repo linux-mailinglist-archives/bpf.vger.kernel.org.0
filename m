@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-70551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BD9BBC2EF1
-	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 01:27:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9A5BC2EF4
+	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 01:27:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7D4319A1981
-	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 23:27:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15B8C19A2777
+	for <lists+bpf@lfdr.de>; Tue,  7 Oct 2025 23:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B4225C70C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7ABF25D209;
 	Tue,  7 Oct 2025 23:27:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S8CajmAf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iNFg8aRF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 235C7235C01;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236372475CE;
 	Tue,  7 Oct 2025 23:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759879627; cv=none; b=YaDBRZbQOT4HnVG2ozuEBhQEzn5W8HS0CjqPLAH4UoiYAf8dRgtYX79Fao4ebusFWL1xghW8b8qUpiiQiveBSTF0liYIsDbmCNcSITHKmMZhvlfbexZy4PrI1O5c5jvi5ViBtb21G8J5D+eWokjBoOm171ghAg/mo/CfacqYXNg=
+	t=1759879627; cv=none; b=eJ5s+6OXEmfGXt3EwMla82s8OQC7Va4Zaqvi3htNj9z0s6D2JlwcEvBeJlEB0malX3ch74Mk4zcB4NosodhG4pCkQKOS8x3pOjCnOj/1J4S0D5ekWJynUHzLsKC/puuaG+EMUvkBDXXnjqEJCYscivkSlX8NVAUv+d2j5Pn+i/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1759879627; c=relaxed/simple;
-	bh=CaUXBZMISbzNhTMO0YWfXfkTC2QagyAT/MAcDC++FeQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TjkPG1zVz0FK2yAvmc78/C0rCy4JMFDU6HJ8o6yXiG6vkVQ1IQPYrM5IJRu9NwzqFuqFk/FoFWGIs6Rj+L/swxXeqVPcgL/vlT43wXDZutWuwGUu7hIM7MJeJ3WLUQCspfO1mVEiPHjT75BI2sLqON4JQmoI08CfXFlt3wB1+Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S8CajmAf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C122C4CEF1;
-	Tue,  7 Oct 2025 23:27:05 +0000 (UTC)
+	bh=eOYagBJBu947tdZvPRnny66snevmIr01/5hSWXE9pd8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=M+rG5EsNdj0hWk1rcCYuCt8RdHsJOekaCRUuuIYnU1WqGnfHjGrPmhk5Ch6Dhhnrek/Gi7hpxf3rA11M92USQqK4yWYM3O9ujtt0a/LvJsv7ssqv3HAoEqFPPd6L1HkzAe+ifAeM2MO/CthvRMCe9SZwkTjQCCcpHHRvImK3HGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iNFg8aRF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B0BCC116B1;
+	Tue,  7 Oct 2025 23:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759879625;
-	bh=CaUXBZMISbzNhTMO0YWfXfkTC2QagyAT/MAcDC++FeQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=S8CajmAf0ZHhErOJHTIVdQoZ9hHeSqr4IuXHqg3albYqq9pgAgkaC62FNRpjqUwOh
-	 ALyG0Z0xsWOwYDZVKFIg7+sG9ENCf0fLJT72OGrXtArkWQwe/ZagPBUZJblCUHvelz
-	 F2O+HkyjoAMSFSczWesuT3JkZguGaGAN6RILVxBkYJ9rcE8QoYWgF3fgi3WdA7ac9d
-	 JEp7cqC+Sc7nN7vinmCkL/ScJkeoBuZ4xv55ejqeLvoDz/C/3uDfarieVRv/06r1+D
-	 ZcL7RNhwE39CuWNhTD/g+Eh09u7flfK8JSvDfF+GzXVsl60ABriJLKBAceewLWkF6V
-	 vLjNTYgisLJUQ==
+	s=k20201202; t=1759879626;
+	bh=eOYagBJBu947tdZvPRnny66snevmIr01/5hSWXE9pd8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=iNFg8aRF07qN5RVTdkguQG/9MFPY4dz1U8fHUBaleaHpFHgoUSLmM4BpfsxEANEL7
+	 VMQwji7a3BhSAPFLPGPtIqVfRTz698AaL7onBEndMIkMy8r+F6zHajzZyj1XfzCFY0
+	 uQum+TM/Bey6tYJgR8FYRQ3TWcYgNRCsyhYkhTO/o2wSKMWnew1R09D2EdYDRGsnNi
+	 yG/w4vqN+93G3X5cjWaJm6rKUjzTKu9zvQBEgJ2xe0QJiq7+fCuu3/8Pjh/jWfq2mk
+	 vpFB6la4nUfg4JXZIOOLedJe6m3jUQrEcnik6M8xiBIxqNzlYlsbDxiXOJp8b9ONen
+	 GYASjFo6G5kDw==
 From: Jakub Kicinski <kuba@kernel.org>
 To: davem@davemloft.net
 Cc: netdev@vger.kernel.org,
@@ -48,11 +49,16 @@ Cc: netdev@vger.kernel.org,
 	andrew+netdev@lunn.ch,
 	horms@kernel.org,
 	bpf@vger.kernel.org,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net v2 0/9] eth: fbnic: fix XDP_TX and XDP vs qstats
-Date: Tue,  7 Oct 2025 16:26:44 -0700
-Message-ID: <20251007232653.2099376-1-kuba@kernel.org>
+	Jakub Kicinski <kuba@kernel.org>,
+	alexanderduyck@fb.com,
+	jacob.e.keller@intel.com,
+	mohsin.bashr@gmail.com
+Subject: [PATCH net v2 1/9] eth: fbnic: fix missing programming of the default descriptor
+Date: Tue,  7 Oct 2025 16:26:45 -0700
+Message-ID: <20251007232653.2099376-2-kuba@kernel.org>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251007232653.2099376-1-kuba@kernel.org>
+References: <20251007232653.2099376-1-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,81 +67,50 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix XDP_TX hangs and adjust the XDP statistics to match the definition
-of qstats. The three problems are somewhat distinct.
+XDP_TX typically uses no offloads. To optimize XDP we added a "default
+descriptor" feature to the chip, which allows us to send XDP frames with
+just the buffer descriptors (DMA address + length). All the metadata
+descriptors are derived from the queue config.
 
-XDP_TX hangs is a simple coding bug (patch 1).
+Commit under Fixes missed adding setting the defaults up when transplanting
+the code from the prototype driver. Importantly after reset the "request
+completion" bit is not set. Packets still get sent but there's no
+completion, so ring is not cleaned up. We can send one ring's worth
+of packets and then will start dropping all frames that got the XDP_TX
+action from the XDP prog.
 
-The accounting of XDP packets is all over the place. Fix it to obey
-qstat rules (packets seen by XDP always counted as Rx packets).
-Patch 2 fixes the basic accounting, patch 3 touches up saving
-the stats when rings are freed.
+Reviewed-by: Simon Horman <horms@kernel.org>
+Fixes: 168deb7b31b2 ("eth: fbnic: Add support for XDP_TX action")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+CC: alexanderduyck@fb.com
+CC: jacob.e.keller@intel.com
+CC: mohsin.bashr@gmail.com
+---
+ drivers/net/ethernet/meta/fbnic/fbnic_mac.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Patch 6 corrects reporting of alloc_fail stats which prevented
-the pp_alloc_fail test from passing.
-
-Patches 4, 5, 7, 8, 9 add or fix related test cases.
-
-v2:
- - [patch 2] remove now unnecessary byte adjustment
- - [patch 8] use seen_fails more
-v1: https://lore.kernel.org/20251003233025.1157158-1-kuba@kernel.org
-
-Testing on fbnic below:
-
- $ ./tools/testing/selftests/drivers/net/hw/pp_alloc_fail.py
- TAP version 13
- 1..1
- fbnic-err: bad MMIO read address 0x80074
- fbnic-err: bad MMIO read address 0x80074
- # Seen: pkts:20605 fails:40 (pass thrs:12)
- # ethtool -G change retval: success
- ok 1 pp_alloc_fail.test_pp_alloc
- # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-
- $ ./tools/testing/selftests/drivers/net/xdp.py
- TAP version 13
- 1..13
- ok 1 xdp.test_xdp_native_pass_sb
- ok 2 xdp.test_xdp_native_pass_mb
- ok 3 xdp.test_xdp_native_drop_sb
- ok 4 xdp.test_xdp_native_drop_mb
- ok 5 xdp.test_xdp_native_tx_sb
- ok 6 xdp.test_xdp_native_tx_mb
- # Failed run: pkt_sz 2048, offset 1. Last successful run: pkt_sz 1024, offset 256. Reason: Adjustment failed
- ok 7 xdp.test_xdp_native_adjst_tail_grow_data
- ok 8 xdp.test_xdp_native_adjst_tail_shrnk_data
- # Failed run: pkt_sz 512, offset -256. Last successful run: pkt_sz 512, offset -128. Reason: Adjustment failed
- ok 9 xdp.test_xdp_native_adjst_head_grow_data
- # Failed run: pkt_sz (2048) > HDS threshold (1536) and offset 64 > 48
- ok 10 xdp.test_xdp_native_adjst_head_shrnk_data
- ok 11 xdp.test_xdp_native_qstats_pass
- ok 12 xdp.test_xdp_native_qstats_drop
- ok 13 xdp.test_xdp_native_qstats_tx
- # Totals: pass:13 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-Jakub Kicinski (9):
-  eth: fbnic: fix missing programming of the default descriptor
-  eth: fbnic: fix accounting of XDP packets
-  eth: fbnic: fix saving stats from XDP_TX rings on close
-  selftests: drv-net: xdp: rename netnl to ethnl
-  selftests: drv-net: xdp: add test for interface level qstats
-  eth: fbnic: fix reporting of alloc_failed qstats
-  selftests: drv-net: fix linter warnings in pp_alloc_fail
-  selftests: drv-net: pp_alloc_fail: lower traffic expectations
-  selftests: drv-net: pp_alloc_fail: add necessary optoins to config
-
- .../net/ethernet/meta/fbnic/fbnic_netdev.h    |  1 +
- drivers/net/ethernet/meta/fbnic/fbnic_txrx.h  |  7 ++
- .../net/ethernet/meta/fbnic/fbnic_ethtool.c   |  6 +-
- drivers/net/ethernet/meta/fbnic/fbnic_mac.c   |  8 ++
- .../net/ethernet/meta/fbnic/fbnic_netdev.c    | 23 ++++-
- drivers/net/ethernet/meta/fbnic/fbnic_txrx.c  | 74 +++++++++-----
- tools/testing/selftests/drivers/net/hw/config |  4 +
- .../selftests/drivers/net/hw/pp_alloc_fail.py | 36 ++++---
- tools/testing/selftests/drivers/net/xdp.py    | 99 +++++++++++++++++--
- 9 files changed, 209 insertions(+), 49 deletions(-)
-
+diff --git a/drivers/net/ethernet/meta/fbnic/fbnic_mac.c b/drivers/net/ethernet/meta/fbnic/fbnic_mac.c
+index 8f998d26b9a3..2a84bd1d7e26 100644
+--- a/drivers/net/ethernet/meta/fbnic/fbnic_mac.c
++++ b/drivers/net/ethernet/meta/fbnic/fbnic_mac.c
+@@ -83,8 +83,16 @@ static void fbnic_mac_init_axi(struct fbnic_dev *fbd)
+ 
+ static void fbnic_mac_init_qm(struct fbnic_dev *fbd)
+ {
++	u64 default_meta = FIELD_PREP(FBNIC_TWD_L2_HLEN_MASK, ETH_HLEN) |
++			   FBNIC_TWD_FLAG_REQ_COMPLETION;
+ 	u32 clock_freq;
+ 
++	/* Configure default TWQ Metadata descriptor */
++	wr32(fbd, FBNIC_QM_TWQ_DEFAULT_META_L,
++	     lower_32_bits(default_meta));
++	wr32(fbd, FBNIC_QM_TWQ_DEFAULT_META_H,
++	     upper_32_bits(default_meta));
++
+ 	/* Configure TSO behavior */
+ 	wr32(fbd, FBNIC_QM_TQS_CTL0,
+ 	     FIELD_PREP(FBNIC_QM_TQS_CTL0_LSO_TS_MASK,
 -- 
 2.51.0
 
