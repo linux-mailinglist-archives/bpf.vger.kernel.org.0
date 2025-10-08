@@ -1,137 +1,208 @@
-Return-Path: <bpf+bounces-70597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1D46BC61CC
-	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 19:02:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18219BC61F1
+	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 19:09:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 668A0403FC0
-	for <lists+bpf@lfdr.de>; Wed,  8 Oct 2025 17:02:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16947189F304
+	for <lists+bpf@lfdr.de>; Wed,  8 Oct 2025 17:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66BC2580D7;
-	Wed,  8 Oct 2025 17:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A6329B8E5;
+	Wed,  8 Oct 2025 17:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ImEtogTh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FgBEjyJz"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2B41E32D3
-	for <bpf@vger.kernel.org>; Wed,  8 Oct 2025 17:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E702246782
+	for <bpf@vger.kernel.org>; Wed,  8 Oct 2025 17:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759942974; cv=none; b=d0QBhCHI2gNP6Ee5vIoLnaUOas2CdJ9iK7gp5TC0lc6m8msNd9vYAv6WPV7/yyzCWHYgoG6F5Gis9H/Lniq4oB6QzEx7ni31ni6gxMOHI3EW/7LHoPjKQFJPJptENQLQNNFisG0KSC6grkGkXxl2NHrTVyNArdXCh7Bgd5RxwI0=
+	t=1759943373; cv=none; b=UvNLq2RBLRLqdmKpgVE12+433Fq/8BPAG1XqoOYsV4qGLRFhaZFVSi6Sj5NhynF0oQcWsFDtklovjLyRotLDa5F2pKGuMNIruaMJeCp1U5MTGAPQiFhs3trLCyPwaLy4BG3NxxU45jINvv53Y2a+VR3xUbGC27KKF+WmPfyk0jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759942974; c=relaxed/simple;
-	bh=BODKjR/Yrua4uagxV7JAKQu5Y6484FclXcvnVtP0Ids=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ie/cNRgz8yDGvxmWrqtOH6BfiBhP/pn5FjWDVKEo8aAJJmRV6FkG+PoB1Uzd1jwfYU/ZrVXRu24EVLvl8l5x54GBkRjY4xUDUYm19+3538TW3EzBv0XQ3L0FniswZt2zGD4JAJ0Ci+/OsZ9Vn7MjNr4rMUjJX98OQRWuPEdvchU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ImEtogTh; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759942960;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BODKjR/Yrua4uagxV7JAKQu5Y6484FclXcvnVtP0Ids=;
-	b=ImEtogTh0Qu0BQbbsIQhE3xhi2kpV56iAk7nUKH+E+BrfzLTe1IFnAs1u2nKXZ4WwXK+rP
-	N4Qk9gMKmXy+ZNj+q5FZFsQxoYmLp0idznsWNAYeTnVwQAUsZ+z4suI0RtYA3ZrCJZnGqD
-	4lTBro4kASUXODnrVr2/PzmbAiart0s=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Song Liu <liu.song.linuxdev@gmail.com>
-Cc: Song Liu <song@kernel.org>,  Andrii Nakryiko
- <andrii.nakryiko@gmail.com>,  Martin KaFai Lau <martin.lau@linux.dev>,
-  Alexei Starovoitov <alexei.starovoitov@gmail.com>,  Kumar Kartikeya
- Dwivedi <memxor@gmail.com>,  linux-mm <linux-mm@kvack.org>,  bpf
- <bpf@vger.kernel.org>,  Suren Baghdasaryan <surenb@google.com>,  Johannes
- Weiner <hannes@cmpxchg.org>,  Michal Hocko <mhocko@suse.com>,  David
- Rientjes <rientjes@google.com>,  Matt Bobrowski
- <mattbobrowski@google.com>,  Alexei Starovoitov <ast@kernel.org>,  Andrew
- Morton <akpm@linux-foundation.org>,  LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 01/14] mm: introduce bpf struct ops for OOM handling
-In-Reply-To: <CAHzjS_tq34QC4NDQd_L8crQii2QZCxZr28ywSw=gMnFnqD_z2A@mail.gmail.com>
-	(Song Liu's message of "Wed, 8 Oct 2025 00:03:37 -0700")
-References: <20250818170136.209169-1-roman.gushchin@linux.dev>
-	<20250818170136.209169-2-roman.gushchin@linux.dev>
-	<CAP01T76AUkN_v425s5DjCyOg_xxFGQ=P1jGBDv6XkbL5wwetHA@mail.gmail.com>
-	<87ms7tldwo.fsf@linux.dev>
-	<1f2711b1-d809-4063-804b-7b2a3c8d933e@linux.dev>
-	<87wm6rwd4d.fsf@linux.dev>
-	<ef890e96-5c2a-4023-bcb2-7ffd799155be@linux.dev>
-	<CAADnVQ+LGbXXHHTbBB9b-RjAXO4B6=3Z=G0=7ToZVuH61OONWA@mail.gmail.com>
-	<87iki0n4lm.fsf@linux.dev>
-	<a76ad1e9-07d5-4ba1-83e4-22fe36a32df0@linux.dev>
-	<877bxb77eh.fsf@linux.dev>
-	<CAEf4BzafXv-PstSAP6krers=S74ri1+zTB4Y2oT6f+33yznqsA@mail.gmail.com>
-	<871pnfk2px.fsf@linux.dev>
-	<CAEf4BzaVvNwt18eqVpigKh8Ftm=KfO_EsB2Hoh+LQCDLsWxRwg@mail.gmail.com>
-	<87tt0bfsq7.fsf@linux.dev>
-	<CAHzjS_v+N7UO-yEt-d0w3nE5_Y1LExQ5hFWYnHqARp9L-5P_cg@mail.gmail.com>
-	<87playf8ab.fsf@linux.dev>
-	<CAHzjS_tq34QC4NDQd_L8crQii2QZCxZr28ywSw=gMnFnqD_z2A@mail.gmail.com>
-Date: Wed, 08 Oct 2025 10:02:28 -0700
-Message-ID: <871pnd2uor.fsf@linux.dev>
+	s=arc-20240116; t=1759943373; c=relaxed/simple;
+	bh=q0rNAxg4DjEP/hoHH/PTjQm+3uqQRVCpSz5pRz7Z0hM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IeW1Z5BmrX3C8q6x+ntLlmJo/tvJufe0bBKGsq5MeM5OfjScLS+GIOySjYd4gFcRNIr1kKkUMoWF3Dn36LDx05a0bC003piHzZYaKFbt9bId27ZZNiJ4JTl6e23M3dNZJBqUzjpx+jArxfI3YhgfIUzYuacCFX5CAP1XnK/jUeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FgBEjyJz; arc=none smtp.client-ip=209.85.208.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-636de696e18so62310a12.3
+        for <bpf@vger.kernel.org>; Wed, 08 Oct 2025 10:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759943370; x=1760548170; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jz9qwl9ylUOWf25zEeAiwwPcUX4IEwoawwp4R3pWXHk=;
+        b=FgBEjyJzNM9OGRqFNZpXFY0dBGMwEWd4ta6hRrvGKG9z7E1HAVdDubpHVJY5MfLbB8
+         P4JQfI5WLl2H7AojzD/DZ/XOJfHkc1wGucai4fgCqhp9lSGLmT82b70b05czoOq96mE/
+         kiHuYUvfyVHAk6uCjp96V2HEdV571X2kqShuwUvQvXEm6uy1WY/LqOzKb82SAPuntCng
+         M0bHef679eOa6qn8Fq7S3MfbM+Pc+p0TBTiFEN5cbOQsR0AGQeVIzMWSu1u68BTFnt+H
+         xsRLOsXHXeIXw+++gopYXn8js/kZM1Gl+aiVrImIZi1fHfsRPz2ex8DR950ru+2PFgUH
+         kItg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759943370; x=1760548170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jz9qwl9ylUOWf25zEeAiwwPcUX4IEwoawwp4R3pWXHk=;
+        b=rs3dqpQvbKHzK4GzEiUIfc8oot+8eRPKSzh1cLdleAbijg0j51iKpB3S1l/WqMZGiy
+         gd76kRIV450eMRVlzDHU96oC0hXHLERDX9H+oDGH6Qho9U7XklPDupU0ZIS4qp2agS9i
+         +J2Z6at65ngWhewy6rccp6GNVnbYgYyGA5YFgzQfnGea/290QLadEZbV7rWhuBv6VrxJ
+         uy9YR2phy3wPt0qKt+zW5+qzp6Vca+nFESrzaFNFC5muizAMQOBWjxMHswGRfLKZY2fa
+         WDufO1E2pviIjytDowKnfjL2ZIa/t+PY5HPRDpMK4z4//KTCVP+16KDqE9XIfBGo+HiP
+         N59A==
+X-Forwarded-Encrypted: i=1; AJvYcCV0kL8DqChyBH7Oe1bbiKXrzrmLgYiEqXlTvtxJOOBqkRgAHAYecBrK2VyoSrs+8P8LuCs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3gzx7WQUVPkEZLrv4ouhezYNYJMkjMG1QPdA11/BXwh8i91p+
+	y2KYYCXIn3Eszqj5iVRoDlWz70fB3xw6yO6qomIJ5DbL4C5rkUM1vsFaSUUB8Lhnt2h2DVu9Pc1
+	2COKAiA28tKTIYXRKx6P3NutpGQuMNXM=
+X-Gm-Gg: ASbGncv3ujFspjVliu+ZRZMlXMYVl6Ww/q0P52EPoP+5rwqh6wHEJymJqdLPQa4hkfz
+	oUvTHgtfYDNZ1KkzMgzLB9WsGcwQUh2BZhkT95x/eQHnXKUs91wGVlmtrk51EZ7bMUkfWKu+ogc
+	Rpw5fLW2krfzVOwQ9Ewo1K0LeCkmRHYy8YWuiyCher3nwDhmFfVKtQ8O80eBWomUHNhRugN05OE
+	n3XD+5Fj6uGt2cUqTzNNyJAjBcd9PUfxzYiEEU8cwirFqbeLpfWRoDIrWFNHlum
+X-Google-Smtp-Source: AGHT+IGWKbwFn3pQh+oqiRBdGn/RoV710Mep4oesQYjLCtzVy294+wOH2skWT01UGyugGuSxO5vuBFKgvwJqzotX83w=
+X-Received: by 2002:a17:907:ea5:b0:b3f:f822:2db2 with SMTP id
+ a640c23a62f3a-b50a9c5b35emr469591566b.11.1759943369545; Wed, 08 Oct 2025
+ 10:09:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20250927061210.194502-1-menglong.dong@linux.dev>
+ <20250927061210.194502-2-menglong.dong@linux.dev> <CAADnVQJAdAxEOWT6avzwq6ZrXhEdovhx3yibgA6T8wnMEnnAjg@mail.gmail.com>
+ <3571660.QJadu78ljV@7950hx> <7f28937c-121a-4ea8-b66a-9da3be8bccad@gmail.com> <CAADnVQLxpUmjbsHeNizRMDkY1a4_gLD0VBFWS8QMYHzpYBs4EQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLxpUmjbsHeNizRMDkY1a4_gLD0VBFWS8QMYHzpYBs4EQ@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 8 Oct 2025 19:08:51 +0200
+X-Gm-Features: AS18NWA7odH1HErK1kZmm5Nkkhj8jiRXGwc5vRm03R1MTC7gsrTHfFhzY-YDTH4
+Message-ID: <CAP01T75TegFO0DrZ=DvpNQBSnJqjn4HvM9OLsbJWFKJwzZeYXw@mail.gmail.com>
+Subject: Re: bpf_errno. Was: [PATCH RFC bpf-next 1/3] bpf: report probe fault
+ to BPF stderr
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Leon Hwang <hffilwlqm@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Menglong Dong <menglong.dong@linux.dev>, Menglong Dong <menglong8.dong@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, jiang.biao@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Migadu-Flow: FLOW_OUT
 
-Song Liu <liu.song.linuxdev@gmail.com> writes:
-
-> On Tue, Oct 7, 2025 at 7:15=E2=80=AFPM Roman Gushchin <roman.gushchin@lin=
-ux.dev> wrote:
-> [...]
->> >
->> > I am not sure what is the best option for cgroup oom killer. There
->> > are multiple options. Technically, it can even be a sysfs entry.
->> > We can use it as:
->> >
->> > # load and pin oom killers first
->> > $ cat /sys/fs/cgroup/user.slice/oom.killer
->> > [oom_a] oom_b oom_c
->> > $ echo oom_b > /sys/fs/cgroup/user.slice/oom.killer
->> > $ cat /sys/fs/cgroup/user.slice/oom.killer
->> > oom_a [oom_b] oom_c
->>
->> It actually looks nice!
->> But I expect that most users of bpf_oom won't use it directly,
->> but through some sort of middleware (e.g. systemd), so Idk if
->> such a user-oriented interface makes a lot of sense.
->>
->> > Note that, I am not proposing to use sysfs entries for oom killer.
->> > I just want to say it is an option.
->> >
->> > Given attach() can be implemented in different ways, we probably
->> > don't need to add it to bpf_struct_ops. But if that turns out to be
->> > the best option, I would not argue against it. OTOH, I think it is
->> > better to keep reg() and attach() separate, though sched_ext is
->> > using reg() for both options.
->>
->> I'm inclining towards a similar approach, except that I don't want
->> to embed cgroup_id into the struct_ops, but keep it in the link,
->> as Martin suggested. But I need to implement it end-to-end before I can
->> be sure that it's the best option. Working on it...
+On Wed, 8 Oct 2025 at 18:27, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> If we add cgroup_id to the link, I guess this means we need the link
-> (some fd in user space) to hold reference on the attachment of this
-> oom struct_ops on this is cgroup. Do we also need this link to hold
-> a reference on the cgroup?
+> On Wed, Oct 8, 2025 at 7:41=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> w=
+rote:
+> >
+> >
+> >
+> > On 2025/10/7 14:14, Menglong Dong wrote:
+> > > On 2025/10/2 10:03, Alexei Starovoitov wrote:
+> > >> On Fri, Sep 26, 2025 at 11:12=E2=80=AFPM Menglong Dong <menglong8.do=
+ng@gmail.com> wrote:
+> > >>>
+> > >>> Introduce the function bpf_prog_report_probe_violation(), which is =
+used
+> > >>> to report the memory probe fault to the user by the BPF stderr.
+> > >>>
+> > >>> Signed-off-by: Menglong Dong <menglong.dong@linux.dev>
+> >
+> > [...]
+> >
+> > >>
+> > >> Interesting idea, but the above message is not helpful.
+> > >> Users cannot decipher a fault_ip within a bpf prog.
+> > >> It's just a random number.
+> > >
+> > > Yeah, I have noticed this too. What useful is the
+> > > bpf_stream_dump_stack(), which will print the code
+> > > line that trigger the fault.
+> > >
+> > >> But stepping back... just faults are common in tracing.
+> > >> If we start printing them we will just fill the stream to the max,
+> > >> but users won't know that the message is there, since no one
+> > >
+> > > You are right, we definitely can't output this message
+> > > to STDERR directly. We can add an extra flag for it, as you
+> > > said below.
+> > >
+> > > Or, maybe we can introduce a enum stream_type, and
+> > > the users can subscribe what kind of messages they
+> > > want to receive.
+> > >
+> > >> expects it. arena and lock errors are rare and arena faults
+> > >> were specifically requested by folks who develop progs that use aren=
+a.
+> > >> This one is different. These faults have been around for a long time
+> > >> and I don't recall people asking for more verbosity.
+> > >> We can add them with an extra flag specified at prog load time,
+> > >> but even then. Doesn't feel that useful.
+> > >
+> > > Generally speaking, users can do invalid checking before
+> > > they do the memory reading, such as NULL checking. And
+> > > the pointer in function arguments that we hook is initialized
+> > > in most case. So the fault is someting that can be prevented.
+> > >
+> > > I have a BPF tools which is writed for 4.X kernel and kprobe
+> > > based BPF is used. Now I'm planing to migrate it to 6.X kernel
+> > > and replace bpf_probe_read_kernel() with bpf_core_cast() to
+> > > obtain better performance. Then I find that I can't check if the
+> > > memory reading is success, which can lead to potential risk.
+> > > So my tool will be happy to get such fault event :)
+> > >
+> > > Leon suggested to add a global errno for each BPF programs,
+> > > and I haven't dig deeply on this idea yet.
+> > >
+> >
+> > Yeah, as we discussed, a global errno would be a much more lightweight
+> > approach for handling such faults.
+> >
+> > The idea would look like this:
+> >
+> > DEFINE_PER_CPU(int, bpf_errno);
+> >
+> > __bpf_kfunc void bpf_errno_clear(void);
+> > __bpf_kfunc void bpf_errno_set(int errno);
+> > __bpf_kfunc int bpf_errno_get(void);
+> >
+> > When a fault occurs, the kernel can simply call
+> > 'bpf_errno_set(-EFAULT);'.
+> >
+> > If users want to detect whether a fault happened, they can do:
+> >
+> > bpf_errno_clear();
+> > header =3D READ_ONCE(skb->network_header);
+> > if (header =3D=3D 0 && bpf_errno_get() =3D=3D -EFAULT)
+> >         /* handle fault */;
+> >
+> > This way, users can identify faults immediately and handle them gracefu=
+lly.
+> >
+> > Furthermore, these kfuncs can be inlined by the verifier, so there woul=
+d
+> > be no runtime function call overhead.
+>
+> Interesting idea, but errno as-is doesn't quite fit,
+> since we only have 2 (or 3 ?) cases without explicit error return:
+> probe_read_kernel above, arena read, arena write.
+> I guess we can add may_goto to this set as well.
+> But in all these cases we'll struggle to find an appropriate errno code,
+> so it probably should be a custom enum and not called "errno".
 
-Not necessarily. I agree that the struct_ops should not hold a reference
-to the cgroup, it's better to do the opposite.
-This is why the link can have cgroup_id, not cgroup pointer.
-I think it's similar to Tejun's approach to embed cgroup_id into the
-struct ops, but potentially more flexible.
-
-Thanks!
+Yeah, agreed that this would be useful, particularly in this case. I'm
+wondering how we'll end up implementing this.
+Sounds like it needs to be tied to the program's invocation, so it
+cannot be per-cpu per-program, since they nest. Most likely should be
+backed by run_ctx, but that is unavailable in all program types. Next
+best thing that comes to mind is reserving some space in the stack
+frame at a known offset in each subprog that invokes this helper, and
+use that to signal (by finding the program's bp and writing to the
+stack), the downside being it likely becomes yet-another arch-specific
+thing. Any other better ideas?
 
