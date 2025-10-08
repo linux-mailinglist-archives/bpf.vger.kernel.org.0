@@ -1,211 +1,137 @@
-Return-Path: <bpf+bounces-70596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95331BC61A5
-	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 18:58:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1D46BC61CC
+	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 19:02:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A3E3A4EDB70
-	for <lists+bpf@lfdr.de>; Wed,  8 Oct 2025 16:58:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 668A0403FC0
+	for <lists+bpf@lfdr.de>; Wed,  8 Oct 2025 17:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1BB12F5306;
-	Wed,  8 Oct 2025 16:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66BC2580D7;
+	Wed,  8 Oct 2025 17:02:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j+sEn+dh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ImEtogTh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F070C2ECE8A;
-	Wed,  8 Oct 2025 16:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2B41E32D3
+	for <bpf@vger.kernel.org>; Wed,  8 Oct 2025 17:02:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759942672; cv=none; b=UuMnCxreCsgGjocqLKP/4g/dXwElzIVZA1s2gIY85ChCwVYB+UwIlMZZp5ciFel//fneaCMIgr48FCyv1NBShMpB9sBTytGNi2jDMQXldBvOEZBl3nHeAf0KlWZnpxThDibY6sLNjfdv1MBk3/SuU7wrghJn9I56rqnRwoe5OP0=
+	t=1759942974; cv=none; b=d0QBhCHI2gNP6Ee5vIoLnaUOas2CdJ9iK7gp5TC0lc6m8msNd9vYAv6WPV7/yyzCWHYgoG6F5Gis9H/Lniq4oB6QzEx7ni31ni6gxMOHI3EW/7LHoPjKQFJPJptENQLQNNFisG0KSC6grkGkXxl2NHrTVyNArdXCh7Bgd5RxwI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759942672; c=relaxed/simple;
-	bh=Eq/1r+VZp2Evz/CTTMUVwGClrUgMN6C7oaQOpB9fUXg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bqGv9veypl/NZXr4t1SCX640uXHgPFmdNk8F/tBzoVDEoKF6WcEviiiGzuXgi5fbVuky7FMlUnB1N6LjAliai6GHii9FVLJfgJGCN5NKBlLS8YvRYV7/C3deYZbGIDI6Iy1fpsyT0BIKamyLsPZIZV7BbNx0U3DZtoIPUZcT6Fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j+sEn+dh; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1759942670; x=1791478670;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Eq/1r+VZp2Evz/CTTMUVwGClrUgMN6C7oaQOpB9fUXg=;
-  b=j+sEn+dhI43ifrjcmSo6DCMXjbSzRwq9gPMElX+ogPPPC/y8YZdI+xt4
-   mmDUL4X4wMlaqNLr/jKaARR3izr/Q8W4z175DWuKoiD6IM87meUeKrJSU
-   EdCgC89qZ5sxZVRuF929pBV9AJ8LNzZ47oIYpOPFIQm3zBzCj9xwI27M/
-   Naxkyx+6/Ln5U9dCy9mUxVR9TmngkueS4EX4AT/dlZasuyAzUbmFyfHyv
-   qJNVUo5eECAci75vXyzTreS3uQBda+mMrVFNEAEWf5CzU7wXPiF0iMVaT
-   v/bSapTsfB5Nf69vMCYGMJ8g4T3capBSOcgbPAiL7aL+7Z2Cu6H5X806g
-   w==;
-X-CSE-ConnectionGUID: Y/aM1mXCQUWeKB/A/ckrHA==
-X-CSE-MsgGUID: d2B82jBjRMCjX46+/zZ0cw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11576"; a="73487536"
-X-IronPort-AV: E=Sophos;i="6.19,213,1754982000"; 
-   d="scan'208";a="73487536"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2025 09:57:49 -0700
-X-CSE-ConnectionGUID: wXKPDV8WQKuQWySFSquJpg==
-X-CSE-MsgGUID: oTtQcRjZRaeEq3izNJbQpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,213,1754982000"; 
-   d="scan'208";a="181255763"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa010.fm.intel.com with ESMTP; 08 Oct 2025 09:57:45 -0700
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Kees Cook <kees@kernel.org>,
-	nxne.cnse.osdt.itp.upstreaming@intel.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] xsk: harden userspace-supplied &xdp_desc validation
-Date: Wed,  8 Oct 2025 18:56:59 +0200
-Message-ID: <20251008165659.4141318-1-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1759942974; c=relaxed/simple;
+	bh=BODKjR/Yrua4uagxV7JAKQu5Y6484FclXcvnVtP0Ids=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ie/cNRgz8yDGvxmWrqtOH6BfiBhP/pn5FjWDVKEo8aAJJmRV6FkG+PoB1Uzd1jwfYU/ZrVXRu24EVLvl8l5x54GBkRjY4xUDUYm19+3538TW3EzBv0XQ3L0FniswZt2zGD4JAJ0Ci+/OsZ9Vn7MjNr4rMUjJX98OQRWuPEdvchU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ImEtogTh; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759942960;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BODKjR/Yrua4uagxV7JAKQu5Y6484FclXcvnVtP0Ids=;
+	b=ImEtogTh0Qu0BQbbsIQhE3xhi2kpV56iAk7nUKH+E+BrfzLTe1IFnAs1u2nKXZ4WwXK+rP
+	N4Qk9gMKmXy+ZNj+q5FZFsQxoYmLp0idznsWNAYeTnVwQAUsZ+z4suI0RtYA3ZrCJZnGqD
+	4lTBro4kASUXODnrVr2/PzmbAiart0s=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Song Liu <liu.song.linuxdev@gmail.com>
+Cc: Song Liu <song@kernel.org>,  Andrii Nakryiko
+ <andrii.nakryiko@gmail.com>,  Martin KaFai Lau <martin.lau@linux.dev>,
+  Alexei Starovoitov <alexei.starovoitov@gmail.com>,  Kumar Kartikeya
+ Dwivedi <memxor@gmail.com>,  linux-mm <linux-mm@kvack.org>,  bpf
+ <bpf@vger.kernel.org>,  Suren Baghdasaryan <surenb@google.com>,  Johannes
+ Weiner <hannes@cmpxchg.org>,  Michal Hocko <mhocko@suse.com>,  David
+ Rientjes <rientjes@google.com>,  Matt Bobrowski
+ <mattbobrowski@google.com>,  Alexei Starovoitov <ast@kernel.org>,  Andrew
+ Morton <akpm@linux-foundation.org>,  LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 01/14] mm: introduce bpf struct ops for OOM handling
+In-Reply-To: <CAHzjS_tq34QC4NDQd_L8crQii2QZCxZr28ywSw=gMnFnqD_z2A@mail.gmail.com>
+	(Song Liu's message of "Wed, 8 Oct 2025 00:03:37 -0700")
+References: <20250818170136.209169-1-roman.gushchin@linux.dev>
+	<20250818170136.209169-2-roman.gushchin@linux.dev>
+	<CAP01T76AUkN_v425s5DjCyOg_xxFGQ=P1jGBDv6XkbL5wwetHA@mail.gmail.com>
+	<87ms7tldwo.fsf@linux.dev>
+	<1f2711b1-d809-4063-804b-7b2a3c8d933e@linux.dev>
+	<87wm6rwd4d.fsf@linux.dev>
+	<ef890e96-5c2a-4023-bcb2-7ffd799155be@linux.dev>
+	<CAADnVQ+LGbXXHHTbBB9b-RjAXO4B6=3Z=G0=7ToZVuH61OONWA@mail.gmail.com>
+	<87iki0n4lm.fsf@linux.dev>
+	<a76ad1e9-07d5-4ba1-83e4-22fe36a32df0@linux.dev>
+	<877bxb77eh.fsf@linux.dev>
+	<CAEf4BzafXv-PstSAP6krers=S74ri1+zTB4Y2oT6f+33yznqsA@mail.gmail.com>
+	<871pnfk2px.fsf@linux.dev>
+	<CAEf4BzaVvNwt18eqVpigKh8Ftm=KfO_EsB2Hoh+LQCDLsWxRwg@mail.gmail.com>
+	<87tt0bfsq7.fsf@linux.dev>
+	<CAHzjS_v+N7UO-yEt-d0w3nE5_Y1LExQ5hFWYnHqARp9L-5P_cg@mail.gmail.com>
+	<87playf8ab.fsf@linux.dev>
+	<CAHzjS_tq34QC4NDQd_L8crQii2QZCxZr28ywSw=gMnFnqD_z2A@mail.gmail.com>
+Date: Wed, 08 Oct 2025 10:02:28 -0700
+Message-ID: <871pnd2uor.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-Turned out certain clearly invalid values passed in &xdp_desc from
-userspace can pass xp_{,un}aligned_validate_desc() and then lead
-to UBs or just invalid frames to be queued for xmit.
+Song Liu <liu.song.linuxdev@gmail.com> writes:
 
-desc->len close to ``U32_MAX`` with a non-zero pool->tx_metadata_len
-can cause positive integer overflow and wraparound, the same way low
-enough desc->addr with a non-zero pool->tx_metadata_len can cause
-negative integer overflow. Both scenarios can then pass the
-validation successfully.
-This doesn't happen with valid XSk applications, but can be used
-to perform attacks.
+> On Tue, Oct 7, 2025 at 7:15=E2=80=AFPM Roman Gushchin <roman.gushchin@lin=
+ux.dev> wrote:
+> [...]
+>> >
+>> > I am not sure what is the best option for cgroup oom killer. There
+>> > are multiple options. Technically, it can even be a sysfs entry.
+>> > We can use it as:
+>> >
+>> > # load and pin oom killers first
+>> > $ cat /sys/fs/cgroup/user.slice/oom.killer
+>> > [oom_a] oom_b oom_c
+>> > $ echo oom_b > /sys/fs/cgroup/user.slice/oom.killer
+>> > $ cat /sys/fs/cgroup/user.slice/oom.killer
+>> > oom_a [oom_b] oom_c
+>>
+>> It actually looks nice!
+>> But I expect that most users of bpf_oom won't use it directly,
+>> but through some sort of middleware (e.g. systemd), so Idk if
+>> such a user-oriented interface makes a lot of sense.
+>>
+>> > Note that, I am not proposing to use sysfs entries for oom killer.
+>> > I just want to say it is an option.
+>> >
+>> > Given attach() can be implemented in different ways, we probably
+>> > don't need to add it to bpf_struct_ops. But if that turns out to be
+>> > the best option, I would not argue against it. OTOH, I think it is
+>> > better to keep reg() and attach() separate, though sched_ext is
+>> > using reg() for both options.
+>>
+>> I'm inclining towards a similar approach, except that I don't want
+>> to embed cgroup_id into the struct_ops, but keep it in the link,
+>> as Martin suggested. But I need to implement it end-to-end before I can
+>> be sure that it's the best option. Working on it...
+>
+> If we add cgroup_id to the link, I guess this means we need the link
+> (some fd in user space) to hold reference on the attachment of this
+> oom struct_ops on this is cgroup. Do we also need this link to hold
+> a reference on the cgroup?
 
-Always promote desc->len to ``u64`` first to exclude positive
-overflows of it. Use explicit check_{add,sub}_overflow() when
-validating desc->addr (which is ``u64`` already).
+Not necessarily. I agree that the struct_ops should not hold a reference
+to the cgroup, it's better to do the opposite.
+This is why the link can have cgroup_id, not cgroup pointer.
+I think it's similar to Tejun's approach to embed cgroup_id into the
+struct ops, but potentially more flexible.
 
-bloat-o-meter reports a little growth of the code size:
-
-add/remove: 0/0 grow/shrink: 2/1 up/down: 60/-16 (44)
-Function                                     old     new   delta
-xskq_cons_peek_desc                          299     330     +31
-xsk_tx_peek_release_desc_batch               973    1002     +29
-xsk_generic_xmit                            3148    3132     -16
-
-but hopefully this doesn't hurt the performance much.
-
-Fixes: 341ac980eab9 ("xsk: Support tx_metadata_len")
-Cc: stable@vger.kernel.org # 6.8+
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- net/xdp/xsk_queue.h | 45 +++++++++++++++++++++++++++++++++++----------
- 1 file changed, 35 insertions(+), 10 deletions(-)
-
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index f16f390370dc..1eb8d9f8b104 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -143,14 +143,24 @@ static inline bool xp_unused_options_set(u32 options)
- static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- 					    struct xdp_desc *desc)
- {
--	u64 addr = desc->addr - pool->tx_metadata_len;
--	u64 len = desc->len + pool->tx_metadata_len;
--	u64 offset = addr & (pool->chunk_size - 1);
-+	u64 len = desc->len;
-+	u64 addr, offset;
- 
--	if (!desc->len)
-+	if (!len)
- 		return false;
- 
--	if (offset + len > pool->chunk_size)
-+	/* Can overflow if desc->addr < pool->tx_metadata_len */
-+	if (check_sub_overflow(desc->addr, pool->tx_metadata_len, &addr))
-+		return false;
-+
-+	offset = addr & (pool->chunk_size - 1);
-+
-+	/*
-+	 * Can't overflow: @offset is guaranteed to be < ``U32_MAX``
-+	 * (pool->chunk_size is ``u32``), @len is guaranteed
-+	 * to be <= ``U32_MAX``.
-+	 */
-+	if (offset + len + pool->tx_metadata_len > pool->chunk_size)
- 		return false;
- 
- 	if (addr >= pool->addrs_cnt)
-@@ -158,27 +168,42 @@ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- 
- 	if (xp_unused_options_set(desc->options))
- 		return false;
-+
- 	return true;
- }
- 
- static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool,
- 					      struct xdp_desc *desc)
- {
--	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr) - pool->tx_metadata_len;
--	u64 len = desc->len + pool->tx_metadata_len;
-+	u64 len = desc->len;
-+	u64 addr, end;
- 
--	if (!desc->len)
-+	if (!len)
- 		return false;
- 
-+	/* Can't overflow: @len is guaranteed to be <= ``U32_MAX`` */
-+	len += pool->tx_metadata_len;
- 	if (len > pool->chunk_size)
- 		return false;
- 
--	if (addr >= pool->addrs_cnt || addr + len > pool->addrs_cnt ||
--	    xp_desc_crosses_non_contig_pg(pool, addr, len))
-+	/* Can overflow if desc->addr is close to 0 */
-+	if (check_sub_overflow(xp_unaligned_add_offset_to_addr(desc->addr),
-+			       pool->tx_metadata_len, &addr))
-+		return false;
-+
-+	if (addr >= pool->addrs_cnt)
-+		return false;
-+
-+	/* Can overflow if pool->addrs_cnt is high enough */
-+	if (check_add_overflow(addr, len, &end) || end > pool->addrs_cnt)
-+		return false;
-+
-+	if (xp_desc_crosses_non_contig_pg(pool, addr, len))
- 		return false;
- 
- 	if (xp_unused_options_set(desc->options))
- 		return false;
-+
- 	return true;
- }
- 
--- 
-2.51.0
-
+Thanks!
 
