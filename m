@@ -1,192 +1,211 @@
-Return-Path: <bpf+bounces-70595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70596-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FD1BBC6046
-	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 18:27:28 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95331BC61A5
+	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 18:58:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8CD2935181A
-	for <lists+bpf@lfdr.de>; Wed,  8 Oct 2025 16:27:27 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A3E3A4EDB70
+	for <lists+bpf@lfdr.de>; Wed,  8 Oct 2025 16:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B9F291C1E;
-	Wed,  8 Oct 2025 16:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1BB12F5306;
+	Wed,  8 Oct 2025 16:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ktKijQ2Z"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j+sEn+dh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9EEC10957
-	for <bpf@vger.kernel.org>; Wed,  8 Oct 2025 16:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F070C2ECE8A;
+	Wed,  8 Oct 2025 16:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759940841; cv=none; b=fXy2lEyrUxAEBXOZnEVW7dxpHq17hMdEHYPT7eyKB2wloV7zgIJA/IMS7d74T7ZzVsuywe1JHijAbadNlJvlJs3H70gohnCPc2rnuH9fkLYX9+FlCMD86uc/l8veLFuAZFadrC4XBKcHJBogUMq0F/7vhltbw97qcQ7DUHBl/Zg=
+	t=1759942672; cv=none; b=UuMnCxreCsgGjocqLKP/4g/dXwElzIVZA1s2gIY85ChCwVYB+UwIlMZZp5ciFel//fneaCMIgr48FCyv1NBShMpB9sBTytGNi2jDMQXldBvOEZBl3nHeAf0KlWZnpxThDibY6sLNjfdv1MBk3/SuU7wrghJn9I56rqnRwoe5OP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759940841; c=relaxed/simple;
-	bh=ESYUvIrXIZf8LOINPbGCLLFX0IwDLy3Yro+8H8/WXj4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pOQOQOWqnP4OldRkaaYb/B6K/ZE9Ic8JV5Wk9u/F5++RylhesbDLGspT43ok0jMIl8yg5qvogsvbRRgf5jqGJF3eWZsgX726lHtrInrpXnwGYcVLIcsuuzj0bq9V4yihGVO/dD+GJyRs1O5Zhk5jHwPyI0LFbqDJHaay1bq8z6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ktKijQ2Z; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-46e52279279so317405e9.3
-        for <bpf@vger.kernel.org>; Wed, 08 Oct 2025 09:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759940838; x=1760545638; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VMmT0yBvVqJ1w9268h9UX0+UvY7Ypnz5qKgFPlEn+l4=;
-        b=ktKijQ2Zz61w+9Nb65gDjpEk7FqIES4Vs7UEtdWcb1yuqrDQmiGLWaU++F5+xO3mL6
-         9w8OgLBWH63jLJdGb6AAVn81KE9aExlZ/Z+mU34bAVfb1FpMym95A1KD5msOPDtkya1I
-         12//hGl9Xx+eOWhTH7MFL4q+xwtFkijLLzCigSTnYKgztpYfo9xhc04WpfQJLArGLXtv
-         Wvl80hcH9mAE4e85d05k2yvtG2/Gq4y+XRFKSP5ktgBy1z3n22QfeND6khI3IezBkZ4N
-         TIwvOWXazNv4zqXu1lB/ZpOVUvBItlAvMP6dmQxGaWhYIIeNPiiyN7pHQYwV6iY8d0br
-         dHAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759940838; x=1760545638;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VMmT0yBvVqJ1w9268h9UX0+UvY7Ypnz5qKgFPlEn+l4=;
-        b=qSDd2ZRLsi8D2uArwgAl7RheSXKEb2XIMgOhMnj2PgEUIme7secCBZJ9sbaE0UbxJj
-         cDOVVz445ki9QtLPwXh4zReMpZaknOtx/9LGccl3zVG66CumcnTePmQeXg6nMxsC/fmF
-         mTRfMdtZs/g1xLefToh9z912oH9n9cU/kn0/L5zxYDIZZOfUFYYUWZMuKih1AfoAbDrL
-         Lbx/41km82qXqt9MBtLXwCM+5VJwB3hnaEqINXwokFeBPlYhFYetpgzUjIkR9w04/BbE
-         +Y8YcYUI7odR1MbDJ9ezAgUbVINoLxZQVJfyupK9Nhi3eCS2XiSqogmJmBQyDCXuRCOB
-         RI3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVZ59JUd4Rx98+S9MtETR02y2/xzzvmH2CDCnOEXRQyeuM8jpeUkL1H1ef1lhy/ZzS/nrs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGH6EVi5fKAGMwHcBL/+eMn7GCVfR7ZK02Z1SayfrDFMKkCbul
-	RHI42/QIyjHB9rKCGaoxjeiuqU7PnbvOd+J4TsPLineaKKPu1X6x8SxqOHDFb7mXnXhoLZiEXfi
-	pkxSw7kkvs/Yoxp588ZAFzsnAWkeqzqKLvw==
-X-Gm-Gg: ASbGncuOJsLgDbgEpbKhgNDZ5iieIfL1jWydgyWns7JOtcR1E/55x+kf/GaNz8u62SR
-	ecb61DU2rATVG//ObMSPFdxWHBsLqp6Zmq6OvSebOhHB9XbspFUVSunsfU2QR3pdSCOFq/XADIX
-	Vfk3Ob11Gv9iBcitUg7SLdhjYslGG8rqpT99+SokECfWVI50CwKkxOG7piZn829xz+2eMy82jwX
-	Zc01UvdSsjOjn29FGCzOUTjK8un7NjdweixlkFDAwKz7A0/1s+m08EzrA==
-X-Google-Smtp-Source: AGHT+IGydoa+Uq4878Yb/9h/myuPsA/hLU+ClnU6wU58PGmdNNA/S+SuciJyS4EWhUfyI1GnU9R2Dc7R6qET/aovPX4=
-X-Received: by 2002:a05:6000:1449:b0:425:8559:5d17 with SMTP id
- ffacd0b85a97d-4266e7dfebfmr2645912f8f.30.1759940837904; Wed, 08 Oct 2025
- 09:27:17 -0700 (PDT)
+	s=arc-20240116; t=1759942672; c=relaxed/simple;
+	bh=Eq/1r+VZp2Evz/CTTMUVwGClrUgMN6C7oaQOpB9fUXg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bqGv9veypl/NZXr4t1SCX640uXHgPFmdNk8F/tBzoVDEoKF6WcEviiiGzuXgi5fbVuky7FMlUnB1N6LjAliai6GHii9FVLJfgJGCN5NKBlLS8YvRYV7/C3deYZbGIDI6Iy1fpsyT0BIKamyLsPZIZV7BbNx0U3DZtoIPUZcT6Fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j+sEn+dh; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1759942670; x=1791478670;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Eq/1r+VZp2Evz/CTTMUVwGClrUgMN6C7oaQOpB9fUXg=;
+  b=j+sEn+dhI43ifrjcmSo6DCMXjbSzRwq9gPMElX+ogPPPC/y8YZdI+xt4
+   mmDUL4X4wMlaqNLr/jKaARR3izr/Q8W4z175DWuKoiD6IM87meUeKrJSU
+   EdCgC89qZ5sxZVRuF929pBV9AJ8LNzZ47oIYpOPFIQm3zBzCj9xwI27M/
+   Naxkyx+6/Ln5U9dCy9mUxVR9TmngkueS4EX4AT/dlZasuyAzUbmFyfHyv
+   qJNVUo5eECAci75vXyzTreS3uQBda+mMrVFNEAEWf5CzU7wXPiF0iMVaT
+   v/bSapTsfB5Nf69vMCYGMJ8g4T3capBSOcgbPAiL7aL+7Z2Cu6H5X806g
+   w==;
+X-CSE-ConnectionGUID: Y/aM1mXCQUWeKB/A/ckrHA==
+X-CSE-MsgGUID: d2B82jBjRMCjX46+/zZ0cw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11576"; a="73487536"
+X-IronPort-AV: E=Sophos;i="6.19,213,1754982000"; 
+   d="scan'208";a="73487536"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2025 09:57:49 -0700
+X-CSE-ConnectionGUID: wXKPDV8WQKuQWySFSquJpg==
+X-CSE-MsgGUID: oTtQcRjZRaeEq3izNJbQpQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,213,1754982000"; 
+   d="scan'208";a="181255763"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmviesa010.fm.intel.com with ESMTP; 08 Oct 2025 09:57:45 -0700
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	nxne.cnse.osdt.itp.upstreaming@intel.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	stable@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] xsk: harden userspace-supplied &xdp_desc validation
+Date: Wed,  8 Oct 2025 18:56:59 +0200
+Message-ID: <20251008165659.4141318-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250927061210.194502-1-menglong.dong@linux.dev>
- <20250927061210.194502-2-menglong.dong@linux.dev> <CAADnVQJAdAxEOWT6avzwq6ZrXhEdovhx3yibgA6T8wnMEnnAjg@mail.gmail.com>
- <3571660.QJadu78ljV@7950hx> <7f28937c-121a-4ea8-b66a-9da3be8bccad@gmail.com>
-In-Reply-To: <7f28937c-121a-4ea8-b66a-9da3be8bccad@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 8 Oct 2025 09:27:04 -0700
-X-Gm-Features: AS18NWBNt40LsuCSwzLCuqapaMgwYyUIMoVcfLF6Ag31yVFMBDU-uVz2cE-RisI
-Message-ID: <CAADnVQLxpUmjbsHeNizRMDkY1a4_gLD0VBFWS8QMYHzpYBs4EQ@mail.gmail.com>
-Subject: bpf_errno. Was: [PATCH RFC bpf-next 1/3] bpf: report probe fault to
- BPF stderr
-To: Leon Hwang <hffilwlqm@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Menglong Dong <menglong.dong@linux.dev>, Menglong Dong <menglong8.dong@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, jiang.biao@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 8, 2025 at 7:41=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> wro=
-te:
->
->
->
-> On 2025/10/7 14:14, Menglong Dong wrote:
-> > On 2025/10/2 10:03, Alexei Starovoitov wrote:
-> >> On Fri, Sep 26, 2025 at 11:12=E2=80=AFPM Menglong Dong <menglong8.dong=
-@gmail.com> wrote:
-> >>>
-> >>> Introduce the function bpf_prog_report_probe_violation(), which is us=
-ed
-> >>> to report the memory probe fault to the user by the BPF stderr.
-> >>>
-> >>> Signed-off-by: Menglong Dong <menglong.dong@linux.dev>
->
-> [...]
->
-> >>
-> >> Interesting idea, but the above message is not helpful.
-> >> Users cannot decipher a fault_ip within a bpf prog.
-> >> It's just a random number.
-> >
-> > Yeah, I have noticed this too. What useful is the
-> > bpf_stream_dump_stack(), which will print the code
-> > line that trigger the fault.
-> >
-> >> But stepping back... just faults are common in tracing.
-> >> If we start printing them we will just fill the stream to the max,
-> >> but users won't know that the message is there, since no one
-> >
-> > You are right, we definitely can't output this message
-> > to STDERR directly. We can add an extra flag for it, as you
-> > said below.
-> >
-> > Or, maybe we can introduce a enum stream_type, and
-> > the users can subscribe what kind of messages they
-> > want to receive.
-> >
-> >> expects it. arena and lock errors are rare and arena faults
-> >> were specifically requested by folks who develop progs that use arena.
-> >> This one is different. These faults have been around for a long time
-> >> and I don't recall people asking for more verbosity.
-> >> We can add them with an extra flag specified at prog load time,
-> >> but even then. Doesn't feel that useful.
-> >
-> > Generally speaking, users can do invalid checking before
-> > they do the memory reading, such as NULL checking. And
-> > the pointer in function arguments that we hook is initialized
-> > in most case. So the fault is someting that can be prevented.
-> >
-> > I have a BPF tools which is writed for 4.X kernel and kprobe
-> > based BPF is used. Now I'm planing to migrate it to 6.X kernel
-> > and replace bpf_probe_read_kernel() with bpf_core_cast() to
-> > obtain better performance. Then I find that I can't check if the
-> > memory reading is success, which can lead to potential risk.
-> > So my tool will be happy to get such fault event :)
-> >
-> > Leon suggested to add a global errno for each BPF programs,
-> > and I haven't dig deeply on this idea yet.
-> >
->
-> Yeah, as we discussed, a global errno would be a much more lightweight
-> approach for handling such faults.
->
-> The idea would look like this:
->
-> DEFINE_PER_CPU(int, bpf_errno);
->
-> __bpf_kfunc void bpf_errno_clear(void);
-> __bpf_kfunc void bpf_errno_set(int errno);
-> __bpf_kfunc int bpf_errno_get(void);
->
-> When a fault occurs, the kernel can simply call
-> 'bpf_errno_set(-EFAULT);'.
->
-> If users want to detect whether a fault happened, they can do:
->
-> bpf_errno_clear();
-> header =3D READ_ONCE(skb->network_header);
-> if (header =3D=3D 0 && bpf_errno_get() =3D=3D -EFAULT)
->         /* handle fault */;
->
-> This way, users can identify faults immediately and handle them gracefull=
-y.
->
-> Furthermore, these kfuncs can be inlined by the verifier, so there would
-> be no runtime function call overhead.
+Turned out certain clearly invalid values passed in &xdp_desc from
+userspace can pass xp_{,un}aligned_validate_desc() and then lead
+to UBs or just invalid frames to be queued for xmit.
 
-Interesting idea, but errno as-is doesn't quite fit,
-since we only have 2 (or 3 ?) cases without explicit error return:
-probe_read_kernel above, arena read, arena write.
-I guess we can add may_goto to this set as well.
-But in all these cases we'll struggle to find an appropriate errno code,
-so it probably should be a custom enum and not called "errno".
+desc->len close to ``U32_MAX`` with a non-zero pool->tx_metadata_len
+can cause positive integer overflow and wraparound, the same way low
+enough desc->addr with a non-zero pool->tx_metadata_len can cause
+negative integer overflow. Both scenarios can then pass the
+validation successfully.
+This doesn't happen with valid XSk applications, but can be used
+to perform attacks.
+
+Always promote desc->len to ``u64`` first to exclude positive
+overflows of it. Use explicit check_{add,sub}_overflow() when
+validating desc->addr (which is ``u64`` already).
+
+bloat-o-meter reports a little growth of the code size:
+
+add/remove: 0/0 grow/shrink: 2/1 up/down: 60/-16 (44)
+Function                                     old     new   delta
+xskq_cons_peek_desc                          299     330     +31
+xsk_tx_peek_release_desc_batch               973    1002     +29
+xsk_generic_xmit                            3148    3132     -16
+
+but hopefully this doesn't hurt the performance much.
+
+Fixes: 341ac980eab9 ("xsk: Support tx_metadata_len")
+Cc: stable@vger.kernel.org # 6.8+
+Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+---
+ net/xdp/xsk_queue.h | 45 +++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 35 insertions(+), 10 deletions(-)
+
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index f16f390370dc..1eb8d9f8b104 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -143,14 +143,24 @@ static inline bool xp_unused_options_set(u32 options)
+ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
+ 					    struct xdp_desc *desc)
+ {
+-	u64 addr = desc->addr - pool->tx_metadata_len;
+-	u64 len = desc->len + pool->tx_metadata_len;
+-	u64 offset = addr & (pool->chunk_size - 1);
++	u64 len = desc->len;
++	u64 addr, offset;
+ 
+-	if (!desc->len)
++	if (!len)
+ 		return false;
+ 
+-	if (offset + len > pool->chunk_size)
++	/* Can overflow if desc->addr < pool->tx_metadata_len */
++	if (check_sub_overflow(desc->addr, pool->tx_metadata_len, &addr))
++		return false;
++
++	offset = addr & (pool->chunk_size - 1);
++
++	/*
++	 * Can't overflow: @offset is guaranteed to be < ``U32_MAX``
++	 * (pool->chunk_size is ``u32``), @len is guaranteed
++	 * to be <= ``U32_MAX``.
++	 */
++	if (offset + len + pool->tx_metadata_len > pool->chunk_size)
+ 		return false;
+ 
+ 	if (addr >= pool->addrs_cnt)
+@@ -158,27 +168,42 @@ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
+ 
+ 	if (xp_unused_options_set(desc->options))
+ 		return false;
++
+ 	return true;
+ }
+ 
+ static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool,
+ 					      struct xdp_desc *desc)
+ {
+-	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr) - pool->tx_metadata_len;
+-	u64 len = desc->len + pool->tx_metadata_len;
++	u64 len = desc->len;
++	u64 addr, end;
+ 
+-	if (!desc->len)
++	if (!len)
+ 		return false;
+ 
++	/* Can't overflow: @len is guaranteed to be <= ``U32_MAX`` */
++	len += pool->tx_metadata_len;
+ 	if (len > pool->chunk_size)
+ 		return false;
+ 
+-	if (addr >= pool->addrs_cnt || addr + len > pool->addrs_cnt ||
+-	    xp_desc_crosses_non_contig_pg(pool, addr, len))
++	/* Can overflow if desc->addr is close to 0 */
++	if (check_sub_overflow(xp_unaligned_add_offset_to_addr(desc->addr),
++			       pool->tx_metadata_len, &addr))
++		return false;
++
++	if (addr >= pool->addrs_cnt)
++		return false;
++
++	/* Can overflow if pool->addrs_cnt is high enough */
++	if (check_add_overflow(addr, len, &end) || end > pool->addrs_cnt)
++		return false;
++
++	if (xp_desc_crosses_non_contig_pg(pool, addr, len))
+ 		return false;
+ 
+ 	if (xp_unused_options_set(desc->options))
+ 		return false;
++
+ 	return true;
+ }
+ 
+-- 
+2.51.0
+
 
