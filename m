@@ -1,96 +1,104 @@
-Return-Path: <bpf+bounces-70588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70585-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61592BC48D2
-	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 13:26:21 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40EF6BC4502
+	for <lists+bpf@lfdr.de>; Wed, 08 Oct 2025 12:27:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3704B3B548D
-	for <lists+bpf@lfdr.de>; Wed,  8 Oct 2025 11:25:41 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 05EFB4EDC1F
+	for <lists+bpf@lfdr.de>; Wed,  8 Oct 2025 10:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED6E2F6592;
-	Wed,  8 Oct 2025 11:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C922F6184;
+	Wed,  8 Oct 2025 10:26:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IErWHqCA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RcSnmZFl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D432ECD33;
-	Wed,  8 Oct 2025 11:25:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A0B2E7BDC
+	for <bpf@vger.kernel.org>; Wed,  8 Oct 2025 10:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759922738; cv=none; b=MfovSlCO9o8oDm1NVo/dS6z/V9vDrpTIRyoLHZo0Xe93GSm6EReq3xH0XvWTtJ959r2/jDx/LTrbI6b0H7Ln7q1hiO96U8gdAZwdLdmANtOjXCMr0L+Pv1TR2+6uE4lETOGIr9vAx4VDpM5EKDGH643g3KBqoc5FrKxHSMreUAY=
+	t=1759919217; cv=none; b=SqPhh7+eZaig3ihaKBjosM8/0II1u4qLonGbNj7MG8+HtCKo9awtjiY1BiaVuiCVTGhfBgDZq+/KuhpnQzmJ5CsFcXVnEeIsV0QDdTE0pGxh2ANxaTTNmjWb1XumNuIThV0s7ZJnQWuG1w9NdbN5yCkM47HYwOCayqtVQXIn16o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759922738; c=relaxed/simple;
-	bh=88c3sFsoUsAiJupZku1KMo3Q2xahgwOIy0yqsCJN198=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KQRBw/r2Pn3PWB/Kq0hzHv5oe3jepb2oph4KswM3u2l7QeiRlUd5jSkEjVUgyD9Txy0KpldgrI4sja7+0DKbnQwMZlx33yewnbIfDaLirU+AIRYn4tDZyFWQyN6sz+G08LQBQ9Om+PCb+Wky4nWFTUNS+hD4pvnYrxj8VNtJR3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IErWHqCA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9AE7C4CEF4;
-	Wed,  8 Oct 2025 11:25:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759922738;
-	bh=88c3sFsoUsAiJupZku1KMo3Q2xahgwOIy0yqsCJN198=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IErWHqCA6ccIxcCPwE8YbXw6DkiJYJbafos4nPLuNA+TS6FWePh2R4YkjF+ybV27D
-	 sTxAA4IxJQRbATvGd7wBycDlqgFnYXYxH3Y+bB8M7E7htDh0O1dkt1wl633ky7EQBh
-	 UBfuHWrgNkdFImsYk7pqZLnGRZsem9S6LKaFaoRlp4X+fh3QvrSevIxunNOdgQGDd6
-	 i/8BcSl6uhGVA8LtueRygAPAla+4klwvi1ionQ/qvM/HG9nl+FKfjyb2kiQMiZpY3w
-	 i74lJDrKXDrCyt5jl6h1bSCJLjF5kxL1CKBZJFOjf74oH0gDoDdj+V4z23+YTA7M9K
-	 iz+O2Hiyh3gAA==
-Date: Wed, 8 Oct 2025 13:43:25 +0530
-From: Naveen N Rao <naveen@kernel.org>
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Viktor Malik <vmalik@redhat.com>, live-patching@vger.kernel.org, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Joe Lawrence <joe.lawrence@redhat.com>, 
-	Jiri Kosina <jikos@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: Re: [PATCH] powerpc64/bpf: support direct_call on livepatch function
-Message-ID: <unegysw3bihg32od7aham3npsdpm5govboo3uglorwsrjqfqfk@pbyzwwztmqtc>
-References: <20251002192755.86441-1-hbathini@linux.ibm.com>
- <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
- <17f49a63-eccb-4075-91dd-b1f37aa762c7@linux.ibm.com>
+	s=arc-20240116; t=1759919217; c=relaxed/simple;
+	bh=AEFel8Jyuz/acM4rK1Kr9Q7YLMR6GVipoE2WsOQReR4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=X0Hk79uMfFQvt1qtqAQ294r2/iLURsjvQjwdrRp9T4sk0QYhh8rTesfx6LeNxR/049CPY7NhY+0zXz+ecUszLiRqDFpXCa9cnzsHeHfmsb2UWQZ94mKXpQQIg8Jd+HhDrHDrt0owjwHIzSzaFtnLjTUHa4VH7WO7nFPPSpdWTJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RcSnmZFl; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759919202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=g6KcRE+7jq80YyojGjcpCzmM0DGnxx2JGBpTmSjkJUM=;
+	b=RcSnmZFl17t/tG5HV3zY0RGJUPLeSikcyFaU03nYTXtQes6lCzUELJg207w0XPfMz4CHcH
+	/68451It8zsEjMo/7eOXhISNnXMcUB1EFWrby2hSXnK7eJRknPUVJgYNWGwSi6qgXepnsp
+	XAcqKloTYrnAZhgATz6Xl3/+3wwOFQU=
+From: KaFai Wan <kafai.wan@linux.dev>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	kafai.wan@linux.dev,
+	toke@redhat.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf v3 0/2] bpf: Avoid RCU context warning when unpinning htab with internal structs
+Date: Wed,  8 Oct 2025 18:26:25 +0800
+Message-ID: <20251008102628.808045-1-kafai.wan@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17f49a63-eccb-4075-91dd-b1f37aa762c7@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 06, 2025 at 06:50:20PM +0530, Hari Bathini wrote:
-> 
-> 
-> On 06/10/25 1:22 pm, Naveen N Rao wrote:
-> > On Fri, Oct 03, 2025 at 12:57:54AM +0530, Hari Bathini wrote:
-> > > Today, livepatch takes precedence over direct_call. Instead, save the
-> > > state and make direct_call before handling livepatch.
-> > 
-> > If we call into the BPF trampoline first and if we have
-> > BPF_TRAMP_F_CALL_ORIG set, does this result in the BPF trampoline
-> > calling the new copy of the live-patched function or the old one?
-> 
-> Naveen, calls the new copy of the live-patched function..
+This small patchset is about avoid RCU context warning when unpinning
+htab with internal structs (timer, workqueue, or task_work).
 
-Hmm... I'm probably missing something.
+v3:
+  - fix nit (Yonghong Song)
+  - add Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-With ftrace OOL stubs, what I recall is that BPF trampoline derives the 
-original function address from the OOL stub (which would be associated 
-with the original function, not the livepatch one). This should mean 
-that the trampoline continues to invoke the original function.
+v2:
+  - rename bpf_free_inode() to bpf_destroy_inode() (Andrii)
+ https://lore.kernel.org/all/20251007012235.755853-1-kafai.wan@linux.dev/
 
+v1:
+ https://lore.kernel.org/all/20251003084528.502518-1-kafai.wan@linux.dev/
 
-- Naveen
+---
+KaFai Wan (2):
+  bpf: Avoid RCU context warning when unpinning htab with internal
+    structs
+  selftests/bpf: Add test for unpinning htab with internal timer struct
+
+ kernel/bpf/inode.c                            |  4 +--
+ .../selftests/bpf/prog_tests/pinning_htab.c   | 36 +++++++++++++++++++
+ .../selftests/bpf/progs/test_pinning_htab.c   | 25 +++++++++++++
+ 3 files changed, 63 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_htab.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_htab.c
+
+-- 
+2.43.0
 
 
