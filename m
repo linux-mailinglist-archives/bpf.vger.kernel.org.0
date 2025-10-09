@@ -1,164 +1,121 @@
-Return-Path: <bpf+bounces-70667-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70668-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id EECF6BC9B75
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 17:15:55 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9D81BC9B98
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 17:18:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D274F4EA026
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 15:15:54 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 000F43480EB
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 15:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F18155C97;
-	Thu,  9 Oct 2025 15:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C0101D6193;
+	Thu,  9 Oct 2025 15:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JySqrzpB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QchALc0U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3548E4C81
-	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 15:15:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481741D5ADE
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 15:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760022948; cv=none; b=PSLDl46rt8/r/QHJITObgbepsewPO7FMAgd524gBEKNxQtBJonWl89LoWAj0MGwnLpTQUEP57TxBxEJOwjJt6U/af7UHznMhPwUmhPNSZklBnNqA15jpQxNRvmPd1JiWX0BVkt/lW9O3iNHo+n7iG8Qgfw2N/2T9Oe7HlR1ZOEo=
+	t=1760023091; cv=none; b=i0ZC6VEVtjebTtaKBUSe5Oz/ClSdxq4qm2h9Igzpze78FRDCvb5O1yIIJFlbV/8N/bTUGyzgwg4GVXwz76zpGc4iExKlJGtAo85M3MnWgImr/t5JLMreBOoIfRDlNrD6EHOzJegtf0yTBzkQu2PtuHUhzJ8vjceI6P9fxNUmamQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760022948; c=relaxed/simple;
-	bh=qshWedy9zOFfj4S/MRqOfZgJWqZsXgvtsuKhKKMr4zs=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=fGWreNAxlSpBLR3NrVLFnbEp7heGN8gyuSw7GXcv/XbMbIl61LFr6fc2g873grgsSkKr1tGrdgCiSGeW9Lg4eJTuGBSRz4WceiD5hXosA1Ikpi1whi8FYxjADAE+16umhhMOjGyiVgi3yZ34LaE3LeNfEqDKy5DAxEhrS4yEtH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JySqrzpB; arc=none smtp.client-ip=209.85.210.170
+	s=arc-20240116; t=1760023091; c=relaxed/simple;
+	bh=2OdZCuvMPhyb/oX+g/qQuxgXRvbsQA7OE8rAsab4a9o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=plpBLpf3qeEvpWEhdlNDED8/4zSLfd1LkRAEokLj/mKshP0jWqI35TQSoZDQBtbPYHwJO7d5djSJ0eA0oWWD3WOxZCiR8020Jc0nhOA/OsAdutpHlXTfpZdPGWQGkYDkyv5OaMv25ky0QDCqKByJgdqReMAmMaP5hlwUr4w/Ah4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QchALc0U; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7841da939deso1016196b3a.2
-        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 08:15:47 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3ee15b5435bso680970f8f.0
+        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 08:18:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760022947; x=1760627747; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QW3441uRfgKwaWkCvF0+xgoQHEkKkpXbASbo2YsQ298=;
-        b=JySqrzpBKWSQvVdv4mP/Ji3WoJcaqqnP7i8wF1hAogeKz7ra+/+RSMJzFKDblZLoxm
-         kFjQsIeKsyV5envbsisrA4QatiWY+AaCTwSloE4YVAXGRGncre8Et2UZfNdS5YA90Xb4
-         GL7168efjd+JP9hduygeWil2mox4I9CMvQ2jYH5jf7T7FREgcXotIoSzJIrkWLFW/y/y
-         XIeOUsmEbm3IW8bMM6BEf+N16Wp91W4I+DAohQZE90vswMnoDHvYbahSCrDT1Hq7egwe
-         QU7ucfTRnyDMWwJSIswRY0rnimQPj5vOOS+CdtP6PSff2vHJR+YG36V0iDVUv042h4Zk
-         8GoQ==
+        d=gmail.com; s=20230601; t=1760023087; x=1760627887; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2OdZCuvMPhyb/oX+g/qQuxgXRvbsQA7OE8rAsab4a9o=;
+        b=QchALc0UupidtcvXks1cDQ0qMA/LiKjiUT1/XnC6sALCfjESIJNyJm+VYmDglFw1ML
+         5ZG1GQZO6IdSlYLvHMaXhrgMnviyO9QtVI4mmaKx+JpqACwb55/EVudawSO20yIeiNan
+         TUzv6lg70xxLGrVxI5EdmMGnzLdZfIMTn9N1KTRLF3lUamOJjrVPm143ob2Os/o8uyPe
+         ty6V5HOlheh8P9S0BSvQqgHU3qDRJMxsj+OUhcXlAQYEJK2nh4q/0o30MUNoafmBpT9N
+         2SxWCZYYffwv1kZ+QD/1znoghHUfr8ekUL1wJuMI4ptmkKiB7KwjYGGO+K2l96RDXN7L
+         1aUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760022947; x=1760627747;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QW3441uRfgKwaWkCvF0+xgoQHEkKkpXbASbo2YsQ298=;
-        b=sGzHeD+XDxvzauIDTiotUrqlaV2qx7PPk0RWxG9Coc53pfgm/a/tQaLxfdLTVkMgvE
-         EssZ4vFDPjf8lBkn2Vu/+mlfbViD+wLldhI2B+YUIoxnu/mVwRXUoLG+O0FogndeMoxB
-         qBzH7nTRtoI+MNH5CWsACmHglQY9wzrjZDandJM9V7/B1BNlLZY5LUKRNfFP4GR6mHXR
-         F6oS/+vQiaxArH30MqO8DvZ1FNcChO63KFqPM+zDeDqGrcOaglB7jDXUyvmN7V6ikIr8
-         HJza0+rD5OL3VFair+q8+M/tdXMfB+FpM+kpczEJmchwFGsjA75KTKwghld2EcUPvKpZ
-         rmBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWzE0tz9l0+5hO1RHmBycJfo4pjaLpJHwpeR6ePxST2TjhX7JUjBCD9Htv19jusdt1vXpI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjzLHLLMILDmpSVof0Wu7TQVqM18gHIu03bpIsujkAOsxoiSYC
-	HfT9vd4SseT8wlp3eHKmOqMDkq4pfUpUkub2crZ496FnOKIcgvHS9NDs
-X-Gm-Gg: ASbGncuhlRPgc4HDl9I0yA5xC0CZtYwaSY/C1ECTMTHHQuJYaqyeUapwciBYrgIK2Pl
-	EZNVfJqOEw7GYsg6CtQd2f0PlAjVTftA8c6zxODbaAibIU/VZBnczPLqEUcNNUizy+k9IqnNPrU
-	mXqOhE6beMJb5UhQMv5/YBsNTyCXWrtJL2aChQL4w/NW3ue9HbnplQs82B+UZdn4owDtpZSOSTE
-	U0NOUIXrYXBXqgTDFNqgcrAe8YH+SfELsi8qc3fa6RRhA2kY3B7lQfXEDXEOhbaH+QNfe4Zdkc+
-	zmz7aXFwX+cPU4XqD3f27VLpUErwjDnw/vzua7phGPI4ZjZlVLuCv/j7/uKAYlDJy41x+mW8Z7s
-	GHpCZ+WNBxvQGcnaj1HDjFeGhSF2aAkyFGGeWqjQXaGFhZaFmycDmGFqwd8G/C2g3kRPPKA==
-X-Google-Smtp-Source: AGHT+IGzWj2f7GE9unACisTFXTIm/6m0yZrlPKrykcpQ5kEtz/hxMKqimFAb0PWKVC9eCmlcr6WDoA==
-X-Received: by 2002:a05:6a00:464f:b0:781:15b0:bed9 with SMTP id d2e1a72fcca58-79387052040mr11267934b3a.17.1760022946316;
-        Thu, 09 Oct 2025 08:15:46 -0700 (PDT)
-Received: from [172.20.10.4] ([117.20.154.54])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7992d09a87asm2637b3a.46.2025.10.09.08.15.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Oct 2025 08:15:45 -0700 (PDT)
-Message-ID: <6485d7de-2af6-48d6-b427-66d3697ec2b2@gmail.com>
-Date: Thu, 9 Oct 2025 23:15:40 +0800
+        d=1e100.net; s=20230601; t=1760023087; x=1760627887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2OdZCuvMPhyb/oX+g/qQuxgXRvbsQA7OE8rAsab4a9o=;
+        b=r8zllyGF7I3/ym5pv4KCGWNO3FBSvJDLfx+Gp0KTQtL0LKhICAG1Yh4pX3IaDmcN0O
+         7l1LQDHT0fbya7Rxa0zuKF94D/DtKZGTo4wmmiVxnbDeQSJ3+ejo2dQFS2EMb6VKlOZh
+         YrdHEibAt4xeJ/Ai1d1W0vaMpvg2zOE99011ZzJjcwWAJFgFe4VHhUCpw7Xt9oPlCVjF
+         K0OPKFMTh5dHKjMwbUz4P+q+DjsXnCfr9XxtOdMVFQl/bLjGVG+2t+s5ySIUWYXZ1nEC
+         0OHjfCFp2cXxjgKvWrjEf7d3U1sNaDN9q6edQNZ0ruNZ8dHMHqldPx8XWwQGxqVZYOPp
+         JZ6w==
+X-Forwarded-Encrypted: i=1; AJvYcCUNc6rNCGTkUkVMVQdw2xg+37U0fTebUGryIRglk/aBlRG4RrRm0ZZwZxaph9wNTYgY4nE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YweJaO5Fs59P4McCcx/KK0GI+5VnK6AzDyNqgCdymJhX3PJMJ/w
+	4aZFe+raHQex9zWHdZpTX3Y1GM6UJusrjjeXO9QM7dTIs2d7ZORNX/Z4gB9H/i9D+dmTtoA7AAA
+	M7/CBfOJ5JY3H+RFmkee+voYZaHMqpj8=
+X-Gm-Gg: ASbGncvH4K4lY27ay6iQrUfLa2gWKo7VuMax5U3JtMl8WtsbhFi3FbbPEeb69wKadDq
+	BYjgh2M5Ut98jRjaPn+5BtnRxsYtcjiPc9nTyOpjRUa1Oqd71U7eHRE8yxiTuSjMrbvqV0fHjSo
+	OaxMOF3IwA5mEmq8LdFdSGs5E8jB2vMKJItX9+QJvy48xOO7WBHpJOyhY2diIGLBL5WBNOdM4S9
+	beKiBDNfNRS30HjoyCYKLRSF1amI6X/vx7TKF4ioooCS/1TD4oNOxgPZRIeTv+QfZ1OzbmaA3k=
+X-Google-Smtp-Source: AGHT+IHFIW2ZRuVj6JW+2Xc5kVTwqVxqOqN9ru2LkZbWzNc2F/DIEJsdL0gLuDd10vTbWFu9LcmuEXrfEs4ejeimT+E=
+X-Received: by 2002:a05:6000:2c0c:b0:3f0:2ab8:710f with SMTP id
+ ffacd0b85a97d-42666ac39afmr4150639f8f.8.1760023087351; Thu, 09 Oct 2025
+ 08:18:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: bpf_errno. Was: [PATCH RFC bpf-next 1/3] bpf: report probe fault
- to BPF stderr
-From: Leon Hwang <hffilwlqm@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Menglong Dong
- <menglong.dong@linux.dev>, Menglong Dong <menglong8.dong@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, jiang.biao@linux.dev
-References: <20250927061210.194502-1-menglong.dong@linux.dev>
- <20250927061210.194502-2-menglong.dong@linux.dev>
- <CAADnVQJAdAxEOWT6avzwq6ZrXhEdovhx3yibgA6T8wnMEnnAjg@mail.gmail.com>
- <3571660.QJadu78ljV@7950hx> <7f28937c-121a-4ea8-b66a-9da3be8bccad@gmail.com>
- <CAADnVQLxpUmjbsHeNizRMDkY1a4_gLD0VBFWS8QMYHzpYBs4EQ@mail.gmail.com>
- <CAP01T75TegFO0DrZ=DvpNQBSnJqjn4HvM9OLsbJWFKJwzZeYXw@mail.gmail.com>
- <0adc5d8a299483004f4796a418420fe1c69f24bc.camel@gmail.com>
- <CAP01T77agpqQWY7zaPt9kb6+EmbUucGkgJ_wEwkPFpFNfxweBg@mail.gmail.com>
- <5766a834-3b21-47b0-8793-2673c25ab6b0@gmail.com>
-Content-Language: en-US
-In-Reply-To: <5766a834-3b21-47b0-8793-2673c25ab6b0@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <cover.1759875560.git.fthain@linux-m68k.org> <807cfee43bbcb34cdc6452b083ccdc754344d624.1759875560.git.fthain@linux-m68k.org>
+ <CAADnVQLOQq5m3yN4hqqrx4n1hagY73rV03d7g5Wm9OwVwR_0fA@mail.gmail.com> <20251009070206.GA4067720@noisy.programming.kicks-ass.net>
+In-Reply-To: <20251009070206.GA4067720@noisy.programming.kicks-ass.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 9 Oct 2025 08:17:55 -0700
+X-Gm-Features: AS18NWCd-roHqFuBtFB_rLNuX70SLGKwer7HfRV2M50Son7-GOgDqpYYiOdZQVU
+Message-ID: <CAADnVQK1GqQKxdoM9e1Z92QK68GEjqgMnC36ooVgS1uUNiP6eg@mail.gmail.com>
+Subject: Re: [RFC v3 2/5] bpf: Explicitly align bpf_res_spin_lock
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Finn Thain <fthain@linux-m68k.org>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Oct 9, 2025 at 12:02=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Wed, Oct 08, 2025 at 07:10:13PM -0700, Alexei Starovoitov wrote:
+>
+> > Are you saying 'int' on m68k is not 4 byte aligned by default,
+> > so you have to force 4 byte align?
+>
+> This; m68k has u16 alignment, just to keep life interesting I suppose
+> :-)
 
->>
->> Since we're piling on ideas, one of the other things that I think
->> could be useful in general (and maybe should be done orthogonally to
->> bpf_errno)
->> is making some empty nop function and making it not traceable reliably
->> across arches and invoke it in the bpf exception handler.
-> 
-> No new traceable function is needed, since ex_handler_bpf itself can
-> already be traced via fentry.
-> 
-> If users really want to detect whether a fault occurred, they could
-> attach a program to ex_handler_bpf and record fault events into a map.
-> However, this approach would be too heavyweight just to check for a
-> simple fault condition.
-> 
-
-As ex_handler_bpf can already be traced using fentry, a potential
-approach without modifying the kernel would be:
-
-1. In the fentry program:
-
-int is_fault SEC(".percpu.fault");
-
-SEC("fentry/ex_handler_bpf")
-int BPF_PROG(f__ex, const struct exception_table_entry *x, struct
-pt_regs *regs)
-{
-    is_fault = 1;
-    return 0;
-}
-
-2. In the main program:
-
-int is_fault SEC(".percpu.fault");
-
-is_fault = 0;
-/* probe read */
-if (is_fault)
-    /* handle fault */;
-
-The main idea is that both programs share the same ".percpu.fault" map,
-so the variable 'is_fault' can be accessed from both sides.
-
-Here, ".percpu.fault" represents a percpu_array map section, which is
-expected to be supported in the future.
-In the meantime, it can simply be replaced with a regular percpu_array map.
-
-Finally, this approach is conceptually similar to the idea of using a
-global errno.
-
-Thanks,
-Leon
-
+It's not "interesting". It adds burden to the rest of the kernel
+for this architectural quirk.
+Linus put the foot down for big-endian on arm64 and riscv.
+We should do the same here.
+x86 uses -mcmodel=3Dkernel for 64-bit and -mregparm=3D3 for 32-bit.
+m68k can do the same.
+They can adjust the compiler to make 'int' 4 byte aligned under some
+compiler flag. The kernel is built standalone, so it doesn't have
+to conform to native calling convention or anything else.
 
