@@ -1,92 +1,170 @@
-Return-Path: <bpf+bounces-70644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880ADBC79A7
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 09:02:42 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C13CBC79C2
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 09:08:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BDB744F4F8A
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 07:02:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1CA0B4F3695
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 07:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290492C0268;
-	Thu,  9 Oct 2025 07:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1302E2C0268;
+	Thu,  9 Oct 2025 07:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WBaT4VqF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TnvQmqxZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803581F151C;
-	Thu,  9 Oct 2025 07:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4721A23A4
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 07:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759993341; cv=none; b=Q8io+y6kMXTXmE6Yl5eEdgT4rTiBxESyhVai0/pS8HPBSwYU7uhO4FezmeFr6yEaJfaV8Uzp2q3rbQqxEg9a8AAPywlyEphe8wnjY7SM+bo4bH/INuASv0y5O1GmjlcnujufipjJ/blbzgh+Oo0PiIc8beBfL15lwebFH2aDYyM=
+	t=1759993678; cv=none; b=p9/th68dpUAqG9U8WZ9ZftbnzXill55VTafBOmK8aLzmeE/cqqMgNMWu7FtofS8nsYdXOZXv9hetSDINtpOwZWvMC1Jp9j6nTvFXyCgNK1z/yCPwA8q79d0tmPSXYWSAd9RuE0fmjCpCynoVFbjSemZx4sN3GPl1Fq6h2br1qeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759993341; c=relaxed/simple;
-	bh=tvYLvDIBb3D303eQ6KXixRkOCxS6SBhi1y+E7dgsZjU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a/jPxCKm9nYWaWGGvVWgEl/W+DFFzI2ye4rkMtQAtf2ZH83FgLtV3ju1IWdqUtDf7kmd/sKN0uAHyMYJumAsKvWrEtxuMJwbwsGciBdjPtXWHm+KcrOjwUQtDxXTPXXGmVGcIXSmLj9qmoUaWZyAcIOffMsKW4ufEJmW1gqmvZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WBaT4VqF; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=tvYLvDIBb3D303eQ6KXixRkOCxS6SBhi1y+E7dgsZjU=; b=WBaT4VqF0KMSU3YMU58QP5Bn3z
-	xQ6JqzyO427EMlxrPHeLN/qRgrc/vKL7a87trCT4g+wIEHDF63CKcdFqUfzqXbp6VWXeQrwvRVrNE
-	DnvMtI6VKv0wJcxOa6ZCEH7O5xooDmgLJELxgAqtW+Ho2DQMxDGvp2agPelh47rpjCObmTizjwgfe
-	2nQSt0M3tEl/IHn23qcJ+TJ0ZsJECPM812nZp6VxdNlL0Dj/YrIFCImqWqw+gEUaSo9Jy1uhZAw7y
-	IitWIVIzrbz35f0V6hzS7NWZeFru5L9ZJ0DyUFWi0p1PC0oDzMr1+6H/q726fWBse42Oto5j3pHyL
-	grv+IQXA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v6kf8-00000002ykY-0j1O;
-	Thu, 09 Oct 2025 07:02:07 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 612A3300400; Thu, 09 Oct 2025 09:02:06 +0200 (CEST)
-Date: Thu, 9 Oct 2025 09:02:06 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Finn Thain <fthain@linux-m68k.org>, Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-	Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-arch <linux-arch@vger.kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC v3 2/5] bpf: Explicitly align bpf_res_spin_lock
-Message-ID: <20251009070206.GA4067720@noisy.programming.kicks-ass.net>
-References: <cover.1759875560.git.fthain@linux-m68k.org>
- <807cfee43bbcb34cdc6452b083ccdc754344d624.1759875560.git.fthain@linux-m68k.org>
- <CAADnVQLOQq5m3yN4hqqrx4n1hagY73rV03d7g5Wm9OwVwR_0fA@mail.gmail.com>
+	s=arc-20240116; t=1759993678; c=relaxed/simple;
+	bh=lbbVyk5jCBer66b9CPFbrfSyMRiBlKAI8daIXk3lt70=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CHIsqbun2RJcUWxoFMrUuXFeX37F6xQXsaXwgK1rsv/gbmJ5HS0BbhgZmR9/EnZynO91ngPUQkPj83aQwJv0QeHkTFaxexdc2+loQQolzLwVJL3GZjVcWrIbKrn1SCWwfq6pfqwavj6hHJ0T3fNSStNuEcKFH63NFJX8M1gZjfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TnvQmqxZ; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4df60ea79d1so5696421cf.2
+        for <bpf@vger.kernel.org>; Thu, 09 Oct 2025 00:07:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1759993676; x=1760598476; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3M52dh1h+FfVjykyrFeFn3fcuq9jJ8NMh6+SJVp+QDw=;
+        b=TnvQmqxZFG/sxOwPBPwnYGgMkEc4zqUpG4EHS4nuKORDYTrncQOkNboEATQGD+jc8k
+         Fx9Dgl5Xlv8+PULY5zYHD/7tehLiEpgt+dupflPvF2x69WkLuDREPnjj4m8iJK9cxSss
+         0yBCfCBmnxR1Qi/RKE547TJnRZcrRUll3hwlTBnfTGm8lb/qaJM76Wv/SSjeUeavR5Ts
+         9TUL++xlKd+7mS732GqXIDn3pEY7Tmximo7hstttDYJs1naJiGgmWmCJo+edOLiYM3aZ
+         TAkTm2d3OYXFOxoHexAf62Qpvutax+IxHbsKTJaSN2YACZd7u++x0sjlgcNjXBU9V7cx
+         dLQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759993676; x=1760598476;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3M52dh1h+FfVjykyrFeFn3fcuq9jJ8NMh6+SJVp+QDw=;
+        b=Xlo2gj8a+pK6Aox6993hrwb+kwZOdr23pRkkVYJy4Jp4MWGoDgq2eHK6/Q0fPGKbG/
+         PU7dPpYGkgshNujCqQkwd89BPHxG8RgUPpG+TsNmSLIa//ehpY3jo9qJj3FeVzijuB+D
+         jss387mdkfiCbeKSoJrkm1JgRL0dZ65Jl81tHTWiopRgc5q/iwwMTOSU+EwlgIRRZ6ns
+         EPP2VEncOwWTOO1hDUWw9dkbyCI6Tt2inljKI8p/+7VzS6ZZ3jUnlanLdelkePwgytwv
+         B8UpR4Mr5PUGfeVr5Bb5gRc7j2xM/o0VtLldeXfcx7Sk555fQdqkhhoUH5+e3XlDU1fX
+         cZxg==
+X-Forwarded-Encrypted: i=1; AJvYcCW+1aAJe/rdPgHAEjuh7a9in4geChiuFDmHwek/hxKuGrLqjASBLu7HMBc04FXlnkY29kI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyxE/4zm7C8nW1+obyi4jkJ2XveJqxpPX03D+HgioU5RZtRSNML
+	QTVILtLAfEeKiMyM2RlV4vwLqa1TNsx655A9wfgGWqKCEP/l24cL9nKQegvJ4g7V5crRaJXEryS
+	sNlp7LYEwWSgkltTtkrWU9j9O9kYmkIQj2XA82Lm0
+X-Gm-Gg: ASbGncviPeZqMJCUJjy+FzoIyqvv+iS0885tYcEJX0KhaPfRZADJK0tLvebK53FovU7
+	1yRwGVjOWxTwbYGPK3XNFVx/6Xzcus1N2252wBeJGt5gkiZQyMQoGFa43thNGkKvRQy73yL44+e
+	3J8nVJQKVmrymFv3P6QMq1OaOMkcdweuwr/j8zeWzBPQyy0afuto+SNeQCl06UlnLIorbtngMin
+	ETLv58wCrY8aVMciL/SsjQmf2xxIelYOAICVw==
+X-Google-Smtp-Source: AGHT+IGX8qBecZyb+pIbR5G0iTKPZsClm1K9y+5nFkeZs4NBukkbXnHL7r7xRdYK4Yr36ptDZgKGjM2jiXSeZKLPycE=
+X-Received: by 2002:ac8:5847:0:b0:4d2:95ab:ecb0 with SMTP id
+ d75a77b69052e-4e6ead5afb8mr84565721cf.64.1759993675359; Thu, 09 Oct 2025
+ 00:07:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLOQq5m3yN4hqqrx4n1hagY73rV03d7g5Wm9OwVwR_0fA@mail.gmail.com>
+References: <3b78ca04-f4b9-4d12-998d-4e21a3a8397f@chinatelecom.cn>
+In-Reply-To: <3b78ca04-f4b9-4d12-998d-4e21a3a8397f@chinatelecom.cn>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 9 Oct 2025 00:07:44 -0700
+X-Gm-Features: AS18NWASjTPvsTSPBC6XRuDuoZqgCPV0bsX2fSbCWNUjwlh1HcRwARWtjH3Fxjw
+Message-ID: <CANn89i+rHTU2eVtkc0H=v+8PczfonOxTqc=fCw+6QRwj_3MURg@mail.gmail.com>
+Subject: Re: [PATCH] bpf, sockmap: Update tp->rcv_nxt in sk_psock_skb_ingress
+To: zhengguoyong <zhenggy@chinatelecom.cn>
+Cc: john.fastabend@gmail.com, jakub@cloudflare.com, davem@davemloft.net, 
+	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 08, 2025 at 07:10:13PM -0700, Alexei Starovoitov wrote:
+On Wed, Oct 8, 2025 at 8:07=E2=80=AFPM zhengguoyong <zhenggy@chinatelecom.c=
+n> wrote:
+>
+> When using sockmap to forward TCP traffic to the application
+> layer of the peer socket, the peer socket's tcp_bpf_recvmsg_parser
+> processing flow will synchronously update the tp->copied_seq field.
+> This causes tp->rcv_nxt to become less than tp->copied_seq.
+>
+> Later, when this socket receives SKB packets from the protocol stack,
+> in the call chain tcp_data_ready =E2=86=92 tcp_epollin_ready, the functio=
+n
+> tcp_epollin_ready will return false, preventing the socket from being
+> woken up to receive new packets.
+>
+> Therefore, it is necessary to synchronously update the tp->rcv_nxt
+> information in sk_psock_skb_ingress.
+>
+> Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
 
-> Are you saying 'int' on m68k is not 4 byte aligned by default,
-> so you have to force 4 byte align?
+Hi GuoYong Zheng
 
-This; m68k has u16 alignment, just to keep life interesting I suppose
-:-)
+We request a Fixes: tag for patches claiming to fix a bug.
+
+How would stable teams decide to backport a patch or not, and to which vers=
+ions,
+without having to fully understand this code ?
+
+
+> ---
+>  net/core/skmsg.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> index 9becadd..e9d841c 100644
+> --- a/net/core/skmsg.c
+> +++ b/net/core/skmsg.c
+> @@ -576,6 +576,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psoc=
+k, struct sk_buff *skb,
+>         struct sock *sk =3D psock->sk;
+>         struct sk_msg *msg;
+>         int err;
+> +       u32 seq;
+>
+>         /* If we are receiving on the same sock skb->sk is already assign=
+ed,
+>          * skip memory accounting and owner transition seeing it already =
+set
+> @@ -595,8 +596,15 @@ static int sk_psock_skb_ingress(struct sk_psock *pso=
+ck, struct sk_buff *skb,
+>          */
+>         skb_set_owner_r(skb, sk);
+>         err =3D sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, ms=
+g, true);
+> -       if (err < 0)
+> +       if (err < 0) {
+>                 kfree(msg);
+> +       } else {
+> +               bh_lock_sock_nested(sk);
+> +               seq =3D READ_ONCE(tcp_sk(sk)->rcv_nxt) + len;
+> +               WRITE_ONCE(tcp_sk(sk)->rcv_nxt, seq);
+
+This does not look to be the right place.
+
+Re-locking a socket _after_ the fundamental change took place is
+fundamentally racy.
+
+Also do we have a guarantee sk is always a TCP socket at this point ?
+
+If yes, why do we have sk_is_tcp() check in sk_psock_init_strp() ?
+
+> +               bh_unlock_sock(sk);
+> +       }
+> +
+>         return err;
+>  }
+>
+> --
+> 1.8.3.1
 
