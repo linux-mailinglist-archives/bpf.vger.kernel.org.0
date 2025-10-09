@@ -1,111 +1,171 @@
-Return-Path: <bpf+bounces-70639-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70640-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87B4BBC7489
-	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 05:19:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A4ABC7696
+	for <lists+bpf@lfdr.de>; Thu, 09 Oct 2025 07:15:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2BA4134F37B
-	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 03:19:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BBC319E4BC3
+	for <lists+bpf@lfdr.de>; Thu,  9 Oct 2025 05:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7B5231830;
-	Thu,  9 Oct 2025 03:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E896425522B;
+	Thu,  9 Oct 2025 05:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hdYwunMd"
 X-Original-To: bpf@vger.kernel.org
-Received: from chinatelecom.cn (smtpnm6-09.21cn.com [182.42.152.55])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42052230BCC;
-	Thu,  9 Oct 2025 03:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=182.42.152.55
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726271863E
+	for <bpf@vger.kernel.org>; Thu,  9 Oct 2025 05:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759979946; cv=none; b=IdjUkNLj+9+kjv2CSv2REqJeDNQFeYnzk+BRoc+Ylkja7kWR69By5fw+yXAh4MoZ6gUbmNherKQr9bcNkcNoRHgVGqykG1FaRhZAz/l9hvtteFEsDjN8rIkGJzTDJ/H+59RFRXuHCNTXWCPHuPUH+ezdg4rArOd6PbFgO9f2pks=
+	t=1759986915; cv=none; b=VW6PaX3Z0+ZGejzhQQTC2kv67hfb1MxVOA0+SWCRfVo/ENfHAfLPBVNmwLhcVRtPUU4gKpUTEfuegvF1vWZQMZqv7nSNxvJGWzfyvYrQZ4YxcjMnpjweLUZaoiWkDbQhhelXW3opiqRSa3zzOCKOZyc8FTweveRZI4S+AVhOJNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759979946; c=relaxed/simple;
-	bh=2dVoS6G/45/uzPULkcFB5snwNDzAAe9QEfhs6uojtSY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=VLZxef+JmQygGNk58yhAQ9of+oEdixn5LwAHPcpRblvBNVNIXZoyH6LHGfqZelhJeEjCrmIMBy7y/cP6/wRT2s1v+QttuPwrsdXJX6k0PbJwKq9QMpIKxDSginwhXzPtXiiZVDFjhB+qmibaEQaUL8r4TkRPLGveGpsrkE+/pmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn; spf=pass smtp.mailfrom=chinatelecom.cn; arc=none smtp.client-ip=182.42.152.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chinatelecom.cn
-HMM_SOURCE_IP:192.168.137.232:0.1902175892
-HMM_ATTACHE_NUM:0000
-HMM_SOURCE_TYPE:SMTP
-Received: from clientip-27.148.194.68 (unknown [192.168.137.232])
-	by chinatelecom.cn (HERMES) with SMTP id B83E41120EE27;
-	Thu,  9 Oct 2025 11:06:57 +0800 (CST)
-X-189-SAVE-TO-SEND: zhenggy@chinatelecom.cn
-Received: from  ([27.148.194.68])
-	by gateway-ssl-dep-79cdd9d55b-2nzwx with ESMTP id 375b2c6fbcaa43b497e9cf07ee1cdf4b for john.fastabend@gmail.com;
-	Thu, 09 Oct 2025 11:07:06 CST
-X-Transaction-ID: 375b2c6fbcaa43b497e9cf07ee1cdf4b
-X-Real-From: zhenggy@chinatelecom.cn
-X-Receive-IP: 27.148.194.68
-X-MEDUSA-Status: 0
-Sender: zhenggy@chinatelecom.cn
-Message-ID: <3b78ca04-f4b9-4d12-998d-4e21a3a8397f@chinatelecom.cn>
-Date: Thu, 9 Oct 2025 11:07:33 +0800
+	s=arc-20240116; t=1759986915; c=relaxed/simple;
+	bh=hqBXsWPKReLz9LZ8krUyi3BUZW+u8N/A7yVKpo4D2yY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hjzWaukTly1VB+D6Amn5EO1dLu9/EG0BOTdWMsLFc8JXAv3AEQ1zHpcHdFR4DH7rF+wLt28k2d8XFoCu50ovICQeezRIZFZNHGaNLYCWPDXq4PJ31xxD0fnofga/V1UcVGCrtYoJsLYC94rs1MUeilomSNHrYXyJLiveTKtzzzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hdYwunMd; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e8580e7e-05f5-4b28-9709-1b46712469a2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759986910;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=665d1WN3x3XS/tIXF12imEW+cMGaatMKQ0vVnsRKUS0=;
+	b=hdYwunMdJ/hZun4s2xa7aKlFvvwT4/d5hlH5xa1WV2/oBpGBIX4i3Yu5VpJxDgcdHn3KDf
+	xAGcOrPut7GnmPTTqInDor6DjGCT/C4ZbKE62Bjpo7/s2JOsMv7SYD1HkydXCaA/xQ+3jj
+	06iQl2r84VZwNgBeEcPLb7GnLxzbONk=
+Date: Thu, 9 Oct 2025 13:15:01 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Ctyun AOneMail
+Subject: Re: [RFC PATCH bpf-next v3 02/10] libbpf: Add support for extended
+ bpf syscall
 Content-Language: en-US
-To: john.fastabend@gmail.com, jakub@cloudflare.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org
-From: zhengguoyong <zhenggy@chinatelecom.cn>
-Subject: [PATCH] bpf, sockmap: Update tp->rcv_nxt in sk_psock_skb_ingress
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net
+References: <20251002154841.99348-1-leon.hwang@linux.dev>
+ <20251002154841.99348-3-leon.hwang@linux.dev>
+ <CAEf4BzZm+51H6hRq1UOTyXi7UtRX9o3Y8Fr_GS_UkaqJJX4d1g@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAEf4BzZm+51H6hRq1UOTyXi7UtRX9o3Y8Fr_GS_UkaqJJX4d1g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-When using sockmap to forward TCP traffic to the application
-layer of the peer socket, the peer socket's tcp_bpf_recvmsg_parser
-processing flow will synchronously update the tp->copied_seq field.
-This causes tp->rcv_nxt to become less than tp->copied_seq.
 
-Later, when this socket receives SKB packets from the protocol stack,
-in the call chain tcp_data_ready → tcp_epollin_ready, the function
-tcp_epollin_ready will return false, preventing the socket from being
-woken up to receive new packets.
 
-Therefore, it is necessary to synchronously update the tp->rcv_nxt
-information in sk_psock_skb_ingress.
+On 7/10/25 07:08, Andrii Nakryiko wrote:
+> On Thu, Oct 2, 2025 at 8:49 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>
+>> To support the extended 'bpf()' syscall introduced in the previous commit,
+>> introduce the following internal APIs:
+>>
+>> * 'sys_bpf_ext()'
+>> * 'sys_bpf_ext_fd()'
+>>   They wrap the raw 'syscall()' interface to support passing extended
+>>   attributes.
+>> * 'probe_sys_bpf_ext()'
+>>   Check whether current kernel supports the extended attributes.
+>>
+>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>> ---
+>>  tools/lib/bpf/bpf.c             | 33 +++++++++++++++++++++++++++++++++
+>>  tools/lib/bpf/features.c        |  8 ++++++++
+>>  tools/lib/bpf/libbpf_internal.h |  3 +++
+>>  3 files changed, 44 insertions(+)
+>>
+>> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+>> index 339b197972374..9cd79beb13a2d 100644
+>> --- a/tools/lib/bpf/bpf.c
+>> +++ b/tools/lib/bpf/bpf.c
+>> @@ -69,6 +69,39 @@ static inline __u64 ptr_to_u64(const void *ptr)
+>>         return (__u64) (unsigned long) ptr;
+>>  }
+>>
+>> +static inline int sys_bpf_ext(enum bpf_cmd cmd, union bpf_attr *attr,
+>> +                             unsigned int size,
+>> +                             struct bpf_common_attr *common_attrs,
+>> +                             unsigned int size_common)
+>> +{
+>> +       cmd = common_attrs ? cmd | BPF_COMMON_ATTRS : cmd & ~BPF_COMMON_ATTRS;
+>
+> nit: put those () two branches of ternary operator, there is no need
+> to rely on obscure C operator precedence order here
+>
 
-Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
----
- net/core/skmsg.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Ack.
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 9becadd..e9d841c 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -576,6 +576,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
- 	struct sock *sk = psock->sk;
- 	struct sk_msg *msg;
- 	int err;
-+	u32 seq;
+>> +       return syscall(__NR_bpf, cmd, attr, size, common_attrs, size_common);
+>> +}
+>> +
+>> +static inline int sys_bpf_ext_fd(enum bpf_cmd cmd, union bpf_attr *attr,
+>> +                                unsigned int size,
+>> +                                struct bpf_common_attr *common_attrs,
+>> +                                unsigned int size_common)
+>> +{
+>> +       int fd;
+>> +
+>> +       fd = sys_bpf_ext(cmd, attr, size, common_attrs, size_common);
+>> +       return ensure_good_fd(fd);
+>> +}
+>> +
+>> +int probe_sys_bpf_ext(void)
+>> +{
+>> +       const size_t attr_sz = offsetofend(union bpf_attr, prog_token_fd);
+>> +       union bpf_attr attr;
+>> +       int fd;
+>> +
+>> +       memset(&attr, 0, attr_sz);
+>> +       fd = syscall(__NR_bpf, BPF_PROG_LOAD | BPF_COMMON_ATTRS, &attr, attr_sz, NULL,
+>> +                    sizeof(struct bpf_common_attr));
+>> +       fd = errno == EFAULT ? syscall(__NR_memfd_create, "fd", 0) : fd;
+>> +       return ensure_good_fd(fd);
+>
+> why do we need to create FD?..
+>
+>> +}
+>> +
+>>  static inline int sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
+>>                           unsigned int size)
+>>  {
+>> diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
+>> index 760657f5224c2..d01df62394f89 100644
+>> --- a/tools/lib/bpf/features.c
+>> +++ b/tools/lib/bpf/features.c
+>> @@ -507,6 +507,11 @@ static int probe_kern_arg_ctx_tag(int token_fd)
+>>         return probe_fd(prog_fd);
+>>  }
+>>
+>> +static int probe_kern_extended_syscall(int token_fd)
+>> +{
+>> +       return probe_fd(probe_sys_bpf_ext());
+>> +}
+>> +
+>
+> just do that feature detection right here without creating any new
+> FDs... make sys_bpf_ext() exposed just like we do that with sys_bpf()
+> and use this here
+>
 
- 	/* If we are receiving on the same sock skb->sk is already assigned,
- 	 * skip memory accounting and owner transition seeing it already set
-@@ -595,8 +596,15 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
- 	 */
- 	skb_set_owner_r(skb, sk);
- 	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg, true);
--	if (err < 0)
-+	if (err < 0) {
- 		kfree(msg);
-+	} else {
-+		bh_lock_sock_nested(sk);
-+		seq = READ_ONCE(tcp_sk(sk)->rcv_nxt) + len;
-+		WRITE_ONCE(tcp_sk(sk)->rcv_nxt, seq);
-+		bh_unlock_sock(sk);
-+	}
-+
- 	return err;
- }
+Ack.
 
--- 
-1.8.3.1
+Then I'll expose sys_bpf_ext() directly without creating any new FDs.
+
+Thanks,
+Leon
+
+[...]
 
